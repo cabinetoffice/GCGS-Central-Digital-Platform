@@ -62,7 +62,7 @@ public class JoinOrganisationModel(
                 return Redirect("/registration/" + identifier + "/join-organisation/success");
             }
 
-            return Redirect("/registration/has-companies-house-number");
+            return Redirect("/organisation-selection");
         }
         else
         {
