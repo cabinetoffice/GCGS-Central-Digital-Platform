@@ -25,21 +25,18 @@
       "Type": "Choice",
       "Choices": [
         {
-              "Variable": "$.detail.state",
-              "StringMatches": "STARTED",
-
+          "Variable": "$.detail.state",
+          "StringMatches": "STARTED",
           "Next": "Translate STARTED"
         },
         {
           "Variable": "$.detail.state",
           "StringMatches": "SUCCEEDED",
-
           "Next": "Translate SUCCEEDED"
         },
         {
           "Variable": "$.detail.state",
           "StringMatches": "FAILED",
-
           "Next": "Translate FAILED"
         }
       ],
@@ -64,7 +61,7 @@
     "Translate FAILED": {
       "Type": "Pass",
       "Parameters": {
-        "translated_state.$": "States.Format(':red_circle: ` FAILED  ` @ `{}` [:homer-doh:<!here>:mega:]', $.detail['start-time'])"
+        "translated_state.$": "States.Format(':red_circle: ` FAILED  ` @ `{}`', $.detail['start-time'])"
       },
       "ResultPath": "$.translated_state",
       "Next": "Is Source Action"
@@ -179,6 +176,44 @@
         "Name.$": "$.execution_params.execution_name",
         "Input.$": "$",
         "TraceHeader": "MiddlemanStepFunctionExecution"
+      },
+      "ResultPath": "$.Name",
+      "Next": "Was It A Filed Action"
+    },
+    "Was It A Filed Action": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "And": [
+            {
+              "Variable": "$.detail.state",
+              "IsPresent": true
+            },
+            {
+              "Variable": "$.detail.state",
+              "StringMatches": "FAILED"
+            }
+          ],
+          "Next": "Invoke Slack Alert StepFunction"
+        }
+      ],
+      "Default": "Fin"
+    },
+    "Invoke Slack Alert StepFunction": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::aws-sdk:sfn:startExecution",
+      "Parameters": {
+        "StateMachineArn": "${slack_alert_arn}",
+        "Name.$": "$.execution_params.execution_name",
+        "Input.$": "$",
+        "TraceHeader": "MiddlemanStepFunctionExecution"
+      },
+      "Next": "Fin"
+    },
+    "Fin": {
+      "Type": "Pass",
+      "Parameters": {
+        "trimmed_execution_name.$": "States.ArrayGetItem(States.StringSplit($$.Execution.Name, '-'), 0)"
       },
       "End": true
     },

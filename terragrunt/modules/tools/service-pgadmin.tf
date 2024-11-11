@@ -5,6 +5,7 @@ module "ecs_service_pgadmin" {
     "${path.module}/templates/task-definitions/pgadmin.json.tftpl",
     {
       account_id                      = data.aws_caller_identity.current.account_id
+      allow_save_password             = var.is_production ? "False" : "True"
       container_port                  = var.pgadmin_config.port
       cpu                             = var.pgadmin_config.cpu
       db_entity_verification_address  = var.db_entity_verification_address
