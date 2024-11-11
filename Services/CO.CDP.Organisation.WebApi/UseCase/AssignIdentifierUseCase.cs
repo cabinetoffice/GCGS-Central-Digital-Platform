@@ -14,7 +14,22 @@ public class AssignIdentifierUseCase(IOrganisationRepository organisations, IIde
         public const string Vat = "VAT";
         public const string CompaniesHouse = "GB-COH";
     }
-
+    public static IDictionary<string, string> IdentifierSchemesUK = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+    {
+        { "GB-COH", "CompaniesHouse" },
+        { "GB-CHC", "CharityCommissionEnglandWales" },
+        { "GB-SC", "ScottishCharityRegulator" },
+        { "GB-NIC", "CharityCommissionNorthernIreland" },
+        { "GB-MPR", "MutualsPublicRegister" },
+        { "GG-RCE", "GuernseyRegistry" },
+        { "JE-FSC", "JerseyFinancialServicesCommission" },
+        { "IM-CR", "IsleOfManCompaniesRegistry" },
+        { "GB-NHS", "NHSOrganisationsRegistry" },
+        { "GB-UKPRN", "UKRegisterOfLearningProviders" },
+        { "VAT", "VAT" },
+        { "Other", "Other" },
+        { "GB-PPON", "Ppon" }
+    };
     public async Task<bool> Execute(AssignOrganisationIdentifier command)
     {
         await FindOrganisation(command)
@@ -60,6 +75,10 @@ public class AssignIdentifierUseCase(IOrganisationRepository organisations, IIde
     public static bool IsPrimaryIdentifier(OrganisationInformation.Persistence.Organisation organisation, string newIdentifierSchemeName)
     {
         if (newIdentifierSchemeName == IdentifierSchemes.Vat)
+        {
+            return false;
+        }
+        if (!IdentifierSchemesUK.ContainsKey(newIdentifierSchemeName)) // check for International identifier
         {
             return false;
         }
