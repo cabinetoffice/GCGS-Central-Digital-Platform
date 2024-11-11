@@ -23,5 +23,4 @@ locals {
 inputs = {
   account_ids         = local.global_vars.locals.account_ids
   tags                = local.tags
-  terraform_operators = local.global_vars.locals.terraform_operators
 }
