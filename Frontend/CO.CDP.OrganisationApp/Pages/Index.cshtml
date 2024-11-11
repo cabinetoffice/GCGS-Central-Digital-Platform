@@ -4,8 +4,6 @@
     ViewData["Title"] = "Register your details as a buyer or supplier of procurements";
 }
 
-<main class="govuk-main-wrapper" id="main-content">
-
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds govuk-body">
             @if (Request.Query.ContainsKey("one-login-error"))
@@ -48,4 +46,3 @@
             <p>You can <a class="govuk-link govuk-link--no-visited-state" href="/one-login/sign-in">sign in to your account.</a></p>
         </div>
     </div>
-</main>

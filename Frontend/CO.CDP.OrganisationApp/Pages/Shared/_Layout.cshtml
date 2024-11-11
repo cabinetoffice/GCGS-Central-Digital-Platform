@@ -148,9 +148,11 @@
         @* inside the <main> element and, crucially, should appear before the flash messages below *@
         @await RenderSectionAsync("BeforeContent", required: false)
 
-        <partial name="_FlashMessage" />
+        <main class="govuk-main-wrapper" id="main-content">
+            <partial name="_FlashMessage" />
 
-        @RenderBody()
+            @RenderBody()
+        </main>
     </div>
 
     <footer class="govuk-footer">
