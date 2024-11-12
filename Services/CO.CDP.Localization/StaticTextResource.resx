@@ -187,10 +187,10 @@
     <value>Complete and share your supplier information to bid for procurements.</value>
   </data>
   <data name="Organisation_ViewApiKeys" xml:space="preserve">
-    <value>View</value>
+    <value>View API keys</value>
   </data>
   <data name="Organisation_ManageApiKeys" xml:space="preserve">
-    <value>Manage</value>
+    <value>Manage API keys</value>
   </data>
   <data name="Organisation_ApiKeysForBuyers" xml:space="preserve">
     <value> (for Buyers)</value>

@@ -144,7 +144,7 @@
                 @if (organisationDetails.IsBuyer())
                 {
                     <h3 class="govuk-heading-s govuk-!-margin-bottom-3">
-                        <a class="govuk-link" href="/organisation/@RouteData.Values["id"]/manage-api-keys">@(isViewer ? StaticTextResource.Organisation_ViewApiKeys : StaticTextResource.Organisation_ManageApiKeys) API keys@(organisationDetails.IsTenderer() ? StaticTextResource.Organisation_ApiKeysForBuyers : "")</a>
+                        <a class="govuk-link" href="/organisation/@RouteData.Values["id"]/manage-api-keys">@(isViewer ? StaticTextResource.Organisation_ViewApiKeys : StaticTextResource.Organisation_ManageApiKeys) @(organisationDetails.IsTenderer() ? StaticTextResource.Organisation_ApiKeysForBuyers : "")</a>
                     </h3>
 
                     <p class="govuk-body">@StaticTextResource.Organisation_CreateApiKey</p>
