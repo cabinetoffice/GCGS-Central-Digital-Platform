@@ -94,7 +94,7 @@ public class JoinOrganisationModelTests
     }
 
     [Fact]
-    public async Task OnPost_UserHasPersonId_JoinIsFalse_RedirectsToCompaniesHouseNumber()
+    public async Task OnPost_UserHasPersonId_JoinIsFalse_RedirectsToMyAccount()
     {
         _organisationClientMock.Setup(client => client.LookupOrganisationAsync(string.Empty, _identifier))
             .ReturnsAsync(_organisation);
@@ -104,7 +104,7 @@ public class JoinOrganisationModelTests
         var result = await _joinOrganisationModel.OnPost(_identifier);
 
         result.Should().BeOfType<RedirectResult>()
-            .Which.Url.Should().Be("/registration/has-companies-house-number");
+            .Which.Url.Should().Be("/organisation-selection");
 
         _organisationClientMock.Verify(client => client.CreateJoinRequestAsync(It.IsAny<Guid>(), It.IsAny<CreateOrganisationJoinRequest>()), Times.Never);
     }
