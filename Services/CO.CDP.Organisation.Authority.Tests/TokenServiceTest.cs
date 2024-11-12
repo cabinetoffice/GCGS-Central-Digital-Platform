@@ -155,7 +155,7 @@ public class TokenServiceTest : IClassFixture<AutoMapperFixture>
     }
 
     [Fact]
-    public async Task ValidateRefreshToken_ShouldReturnValidWhenTokenIsCorrect()
+    public async Task ValidateAndRevokeRefreshToken_ShouldReturnValidWhenTokenIsCorrect()
     {
         string token = "password:dmFsaWQtc2FsdA==";
         string hashToValidate = "RfLTQtUMjxyhUSKTJOzTW6PIPv+zRvvWTM1ylJlnNS8=";
@@ -163,18 +163,18 @@ public class TokenServiceTest : IClassFixture<AutoMapperFixture>
         _authorityRepositoryMock.Setup(x => x.Find(hashToValidate))
             .ReturnsAsync(new RefreshToken { TokenHash = hashToValidate, ExpiryDate = DateTimeOffset.Now.AddMinutes(1) });
 
-        var (valid, urn) = await _tokenService.ValidateRefreshToken(token);
+        var (valid, urn) = await _tokenService.ValidateAndRevokeRefreshToken(token);
 
         valid.Should().BeTrue();
         urn.Should().Be("valid-salt");
     }
 
     [Fact]
-    public async Task ValidateRefreshToken_ShouldReturnInvalidWhenTokenIsIncorrect()
+    public async Task ValidateAndRevokeRefreshToken_ShouldReturnInvalidWhenTokenIsIncorrect()
     {
         string token = "invalid-token";
 
-        var result = await _tokenService.ValidateRefreshToken(token);
+        var result = await _tokenService.ValidateAndRevokeRefreshToken(token);
 
         result.valid.Should().BeFalse();
         result.urn.Should().BeNull();
