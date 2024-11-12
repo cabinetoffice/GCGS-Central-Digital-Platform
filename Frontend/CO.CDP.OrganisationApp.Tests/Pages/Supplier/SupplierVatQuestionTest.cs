@@ -141,8 +141,11 @@ public class SupplierVatModelQuestionTest
 
         var result = await _model.OnPost();
 
-        result.Should().BeOfType<RedirectToPageResult>();
-        (result as RedirectToPageResult)?.PageName.Should().Be("/Registration/OrganisationAlreadyRegistered");
+        _model.ModelState.ContainsKey("VatNumber").Should().BeTrue();
+        _model.ModelState["VatNumber"]!.Errors.Should().ContainSingle()
+            .Which.ErrorMessage.Should().Be("The VAT Number entered has been used by another Organisation. Please check the VAT Number and re-enter.");
+
+        result.Should().BeOfType<PageResult>();
 
         _organisationClientMock.Verify(o => o.UpdateSupplierInformationAsync(It.IsAny<Guid>(),
             It.Is<UpdateSupplierInformation>(u => u.Type == SupplierInformationUpdateType.CompletedVat)), Times.Never);

@@ -151,6 +151,11 @@
         "Attributes.$": "$.Attributes"
       },
       "ResultPath": "$.dynamoResult",
+      "Next": "Wait"
+    },
+    "Wait": {
+      "Type": "Wait",
+      "Seconds": 1,
       "Next": "Update Message"
     },
     "Update Message": {

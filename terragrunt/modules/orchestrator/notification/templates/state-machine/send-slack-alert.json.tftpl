@@ -1,0 +1,33 @@
+{
+  "Comment": "State machine for alerting in the given slack channel",
+  "StartAt": "Format Slack Message",
+  "States": {
+    "Format Slack Message": {
+      "Type": "Pass",
+      "Parameters": {
+        "formattedMessage": {
+          "text.$": "States.Format(':homer-doh: :mega: <!here> an issue was reported:\n- Owner     : `{}`\n- Provider  : `{}`\n- Category : `{}`\n- Summary : `{}`\n- Action      : <{}|{}>', $.detail.type.owner, $.detail.type.provider, $.detail.type.category, $.detail['execution-result']['external-execution-summary'], $.detail['execution-result']['external-execution-url'], $.detail.action)"
+        }
+      },
+      "ResultPath": "$.formattedMessage",
+      "Next": "Slack Post Message"
+    },
+    "Slack Post Message": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::http:invoke",
+      "Parameters": {
+        "Method": "POST",
+        "ApiEndpoint": "${slack_post_endpoint}",
+        "Authentication": {
+          "ConnectionArn": "${auth_connection_arn}"
+        },
+        "RequestBody": {
+          "channel": "${slack_channel_id}",
+          "text.$": "$.formattedMessage.formattedMessage.text"
+        }
+      },
+      "ResultPath": "$.slackResponse",
+      "End": true
+    }
+  }
+}

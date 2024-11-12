@@ -6,10 +6,12 @@ using CO.CDP.Forms.WebApiClient;
 using CO.CDP.Localization;
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp;
+using CO.CDP.OrganisationApp.Authentication;
 using CO.CDP.OrganisationApp.Authorization;
 using CO.CDP.OrganisationApp.Pages;
 using CO.CDP.OrganisationApp.Pages.Forms.ChoiceProviderStrategies;
 using CO.CDP.OrganisationApp.ThirdPartyApiClients.CompaniesHouse;
+using CO.CDP.OrganisationApp.WebApiClients;
 using CO.CDP.Person.WebApiClient;
 using CO.CDP.Tenant.WebApiClient;
 using Microsoft.AspNetCore.Authentication;
@@ -20,7 +22,6 @@ using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using System.Globalization;
-// using Microsoft.AspNetCore.DataProtection;
 using static IdentityModel.OidcConstants;
 using static System.Net.Mime.MediaTypeNames;
 using ISession = CO.CDP.OrganisationApp.ISession;
@@ -30,7 +31,6 @@ const string TenantHttpClientName = "TenantHttpClient";
 const string OrganisationHttpClientName = "OrganisationHttpClient";
 const string DataSharingHttpClientName = "DataSharingHttpClient";
 const string PersonHttpClientName = "PersonHttpClient";
-const string OrganisationAuthorityHttpClientName = "OrganisationAuthorityHttpClient";
 const string EvHttpClient = "EvHttpClient";
 
 var builder = WebApplication.CreateBuilder(args);
@@ -47,7 +47,8 @@ builder.Services.Configure<RequestLocalizationOptions>(options =>
 
 var mvcBuilder = builder.Services.AddRazorPages()
     .AddViewLocalization()
-    .AddDataAnnotationsLocalization(options => {
+    .AddDataAnnotationsLocalization(options =>
+    {
         options.DataAnnotationLocalizerProvider = (type, factory) => factory.Create(typeof(StaticTextResource));
     })
     .AddSessionStateTempDataProvider();
@@ -61,9 +62,11 @@ builder.ConfigureForwardedHeaders();
 
 builder.Services.AddDistributedMemoryCache();
 
+var sessionTimeoutInMinutes = builder.Configuration.GetValue<double>("SessionTimeoutInMinutes");
+
 builder.Services.AddSession(options =>
 {
-    options.IdleTimeout = TimeSpan.FromMinutes(builder.Configuration.GetValue<double>("SessionTimeoutInMinutes"));
+    options.IdleTimeout = TimeSpan.FromMinutes(sessionTimeoutInMinutes);
     options.Cookie.IsEssential = true;
 });
 
@@ -142,21 +145,32 @@ builder.Services.AddTransient<IPponClient, PponClient>(
 
 var organisationAuthority = builder.Configuration.GetValue<Uri>("Organisation:Authority")
             ?? throw new Exception("Missing configuration key: Organisation:Authority.");
-builder.Services.AddHttpClient(OrganisationAuthorityHttpClientName, c => { c.BaseAddress = organisationAuthority; });
+builder.Services.AddHttpClient(AuthorityClient.OrganisationAuthorityHttpClientName, c => { c.BaseAddress = organisationAuthority; });
 
+builder.Services.AddTransient<CookieEvents>();
+builder.Services.AddTransient<IOneLoginAuthority, OneLoginAuthority>();
+builder.Services.AddSingleton<IOneLoginSessionManager, OneLoginSessionManager>();
+builder.Services.AddTransient<ITokenService, TokenService>();
 builder.Services.AddTransient<OidcEvents>();
+builder.Services.AddTransient<IAuthorityClient, AuthorityClient>();
 
 var oneLoginAuthority = builder.Configuration.GetValue<string>("OneLogin:Authority")
             ?? throw new Exception("Missing configuration key: OneLogin:Authority.");
 
 var oneLoginClientId = builder.Configuration.GetValue<string>("OneLogin:ClientId")
             ?? throw new Exception("Missing configuration key: OneLogin:ClientId.");
+
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
 })
-.AddCookie()
+.AddCookie(options =>
+{
+    options.ExpireTimeSpan = TimeSpan.FromMinutes(sessionTimeoutInMinutes);
+    options.SlidingExpiration = true;
+    options.EventsType = typeof(CookieEvents);
+})
 .AddOpenIdConnect(options =>
 {
     options.Authority = oneLoginAuthority;
