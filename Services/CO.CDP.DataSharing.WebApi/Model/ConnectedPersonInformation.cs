@@ -17,7 +17,9 @@ public record ConnectedPersonInformation
     List<string> ControlConditions,
     string? CompanyHouseNumber,
     ConnectedIndividualTrust? IndividualTrust,
-    ConnectedOrganisation? Organisation
+    ConnectedOrganisation? Organisation,
+    OrganisationInformation.Persistence.ConnectedEntity.ConnectedEntityType EntityType,
+    ConnectedOrganisationCategory ConnectedOrganisationCategoryType
 );
 
 public record ConnectedIndividualTrust
