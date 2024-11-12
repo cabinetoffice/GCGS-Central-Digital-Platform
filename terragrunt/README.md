@@ -20,6 +20,8 @@ This code base is responsible for provisioning the AWS infrastructure needed to 
    - [Update GOVUKNotify ApiKey](./docs/manage-secrets.md#update-govuknotify-apikey)
    - [Update GOVUKNotify Support Admin Email](./docs/manage-secrets.md#update-govuknotify-support-admin-email)
    - [Update OneLogin Secrets](./docs/manage-secrets.md#update-onelogin-secrets)
+   - [Update Pen Testing Configuration](./docs/manage-secrets.md#update-pen-testing-configuration)
    - [Update Slack Configuration](./docs/manage-secrets.md#update-slack-configuration)
+   - [Update Terraform Operators](./docs/manage-secrets.md#update-terraform-operators)
 - [Pin Application/Service Version](./docs/bootstap-new-account.md#pin-applicationservice-version)
 - [Run Databases' Migrations](./docs/bootstap-new-account.md#run-databases-migrations)

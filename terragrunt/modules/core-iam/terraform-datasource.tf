@@ -7,7 +7,7 @@ data "aws_iam_policy_document" "terraform_assume" {
     actions = ["sts:AssumeRole"]
     principals {
       type        = "AWS"
-      identifiers = var.terraform_operators
+      identifiers = local.terraform_operators
     }
     condition {
       test     = "Bool"
