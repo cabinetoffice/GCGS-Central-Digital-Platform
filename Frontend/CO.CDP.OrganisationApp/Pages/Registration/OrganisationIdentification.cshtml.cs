@@ -114,7 +114,7 @@ public class OrganisationIdentificationModel(ISession session,
 
     public string? OrganisationName;
 
-    public FlashMessage NotificationBannerCompanyAlreadyRegistered { get { return new FlashMessage("An organisation with this registration number already exists. Change the registration number or <a class='govuk-notification-banner__link' href='/registration/" + Identifier + "/join-organisation'>request to join " + OrganisationName + ".</a>"); } }
+    public FlashMessage NotificationBannerCompanyAlreadyRegistered { get { return new FlashMessage($"An organisation with this registration number already exists. Change the registration number or <a class='govuk-notification-banner__link' href='/registration/{Identifier}/join-organisation'>request to join {OrganisationName}.</a>"); } }
 
     public void OnGet()
     {
