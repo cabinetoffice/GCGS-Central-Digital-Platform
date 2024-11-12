@@ -126,6 +126,12 @@ variable "tags" {
   type        = map(string)
 }
 
+variable "unhealthy_threshold" {
+  description = "Number of consecutive health check failures required before considering a target unhealthy. The range is 2-10. Defaults to 3."
+  type        = number
+  default     = 3
+}
+
 variable "user_pool_arn" {
   default = null
   type    = string
