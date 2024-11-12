@@ -16,3 +16,7 @@ resource "aws_secretsmanager_secret_version" "pgadmin_credentials_version" {
     ADMIN_PASSWORD = random_string.pgadmin_admin_password.result,
   })
 }
+
+data "aws_secretsmanager_secret" "pgadmin_production_support_users" {
+  name        = "${local.name_prefix}-${var.pgadmin_config.name}-production-support-users"
+}
