@@ -222,4 +222,261 @@
   <data name="Footer_SupportLinks" xml:space="preserve">
     <value>Support links</value>
   </data>
+  <data name="Supplementary_Title" xml:space="preserve">
+    <value>Thank you for contacting GOV.UK</value>
+  </data>
+  <data name="Supplementary_CloseThisWindow" xml:space="preserve">
+      <value>Close this window</value>
+  </data>
+  <data name="Supplementary_PrivacyNotice_Title" xml:space="preserve">
+    <value>Privacy notice: how we use your data</value>
+  </data>
+  <data name="Supplementary_PrivacyNotice_Intro" xml:space="preserve">
+    <value>GOV.UK Digital Service Platform is provided by &lt;a href="https://www.gov.uk/government/organisations/government-digital-service" class="govuk-link"&gt;Government Digital Service&lt;/a&gt; (GDS), which is part of the Cabinet Office. The data controller for GDS is the Cabinet Office. A data controller determines how and why personal data can be processed.</value>
+  </data>
+  <data name="Supplementary_PrivacyNotice_ReadMore" xml:space="preserve">
+    <value>Read the &lt;a href="https://ico.org.uk/ESDWebPages/Entry/Z7414053" class="govuk-link"&gt;Cabinet Office’s entry in the Data Protection Public Register&lt;/a&gt; for more information.</value>
+  </data>
+  <data name="Supplementary_PageNotFound_Title" xml:space="preserve">
+    <value>Page not found</value>
+  </data>
+  <data name="Supplementary_PageNotFound_TypedAddress" xml:space="preserve">
+    <value>If you typed the web address, check it is correct.</value>
+  </data>
+  <data name="Supplementary_PageNotFound_PastedAddress" xml:space="preserve">
+    <value>If you pasted the web address, check you copied the entire address.</value>
+  </data>
+  <data name="Supplementary_Index_Title" xml:space="preserve">
+    <value>Register your details as a buyer or supplier of procurements</value>
+  </data>
+  <data name="Supplementary_Index_Problem" xml:space="preserve">
+    <value>There is a problem</value>
+  </data>
+  <data name="Supplementary_Index_UnableToAuthenticate" xml:space="preserve">
+    <value>Unable to authenticate user, please retry</value>
+  </data>
+  <data name="Supplementary_Index_Intro" xml:space="preserve">
+    <value>The Central Digital Platform (CDP) service is for both procurement professionals and suppliers in the UK's public and utilities sectors.</value>
+  </data>
+  <data name="Supplementary_Index_UseService" xml:space="preserve">
+    <value>Use the service if you are:</value>
+  </data>
+  <data name="Supplementary_Index_ContractingAuthority" xml:space="preserve">
+    <value>a contracting authority working in procurement who buys goods, works, and services, supplies them, or both</value>
+  </data>
+  <data name="Supplementary_Index_Organisation" xml:space="preserve">
+    <value>an organisation or sole trader who applies for contracts to supply goods, works, and services</value>
+  </data>
+  <data name="Supplementary_Index_CreateLogin" xml:space="preserve">
+    <value>You will first &lt;a class="govuk-link govuk-link--no-visited-state" id="one-login-anchor" href="/one-login/sign-in"&gt;create GOV.UK One Login or sign in.&lt;/a&gt;</value>
+  </data>
+  <data name="Supplementary_Index_AlreadyRegistered" xml:space="preserve">
+    <value>If your organisation is already registered</value>
+  </data>
+  <data name="Supplementary_Index_SignIn" xml:space="preserve">
+    <value>You can &lt;a class="govuk-link govuk-link--no-visited-state" href="/one-login/sign-in"&gt;sign in to your account.&lt;/a&gt;</value>
+  </data>
+  <data name="Supplementary_Error_Title" xml:space="preserve">
+    <value>Sorry, there is a problem with the service</value>
+  </data>
+  <data name="Supplementary_Error_TryAgain" xml:space="preserve">
+    <value>Try again later.</value>
+  </data>
+  <data name="Supplementary_ContactUs_Title" xml:space="preserve">
+    <value>Message sent</value>
+  </data>
+  <data name="Supplementary_ContactUs_WhatHappensNext" xml:space="preserve">
+    <value>What happens next</value>
+  </data>
+  <data name="Supplementary_ContactUs_SupportTeam" xml:space="preserve">
+    <value>Our support team will contact you by email, Monday to Friday from 9am to 5pm, excluding bank holidays.</value>
+  </data>
+  <data name="Supplementary_ContactUs_ContactUs" xml:space="preserve">
+    <value>Contact us</value>
+  </data>
+  <data name="Supplementary_ContactUs_Message" xml:space="preserve">
+    <value>Message</value>
+  </data>
+  <data name="Supplementary_ContactUs_Send" xml:space="preserve">
+    <value>Send</value>
+  </data>
+  <data name="Supplementary_ContactUs_CharsAvailable" xml:space="preserve">
+    <value>You have 10,000 characters available</value>
+  </data>
+  <data name="Supplementary_ContactUs_Name" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="Supplementary_ContactUs_Name_ErrorMessage" xml:space="preserve">
+    <value>Enter your name</value>
+  </data>
+  <data name="Supplementary_ContactUs_Email" xml:space="preserve">
+    <value>Email</value>
+  </data>
+  <data name="Supplementary_ContactUs_Email_ErrorMessage" xml:space="preserve">
+    <value>Enter your email</value>
+  </data>
+  <data name="Supplementary_ContactUs_Organisation" xml:space="preserve">
+    <value>Organisation</value>
+  </data>
+  <data name="Supplementary_ContactUs_Organisation_ErrorMessage" xml:space="preserve">
+    <value>Enter your Organisation</value>
+  </data>
+  <data name="Supplementary_ContactUs_Email_ValidationErrorMessage" xml:space="preserve">
+    <value>Enter an email address in the correct format, like name@example.com</value>
+  </data>
+
+  <data name="Supplementary_ContactUs_Message" xml:space="preserve">
+    <value>Message</value>
+  </data>
+  <data name="Supplementary_ContactUs_Message_ErrorMessage" xml:space="preserve">
+    <value>Enter your message</value>
+  </data>
+  <data name="Supplementary_ContactUs_Message_ValidationErrorMessage" xml:space="preserve">
+    <value>Message must be between 10 and 10,000 characters</value>
+  </data>
+
+  <data name="Supplementary_CookieDetails_Title" xml:space="preserve">
+    <value>Details about cookies on Find a Tender</value>
+  </data>
+  <data name="Supplementary_CookieDetails_Intro" xml:space="preserve">
+    <value>Find a Tender puts small files (known as ‘cookies’) onto your computer to collect information about how you browse the site. Find out more about the cookies we use, what they’re for and when they expire.</value>
+  </data>
+  <data name="Supplementary_CookieDetails_WebsiteUse" xml:space="preserve">
+    <value>Cookies that measure website use</value>
+  </data>
+  <data name="Supplementary_CookieDetails_GoogleAnalytics" xml:space="preserve">
+    <value>We use Google Analytics software (Universal Analytics) to collect anonymised information about how you use Find a Tender. We do this to help make sure the site is meeting the needs of its users and to help us make improvements to the site.</value>
+  </data>
+  <data name="Supplementary_CookieDetails_NoGoogleShare" xml:space="preserve">
+    <value>We do not allow Google to use or share the data about how you use this site.</value>
+  </data>
+  <data name="Supplementary_CookieDetails_GoogleAnalyticsInfo" xml:space="preserve">
+    <value>Google Analytics stores information about:</value>
+  </data>
+  <data name="Supplementary_CookieDetails_ListItem1" xml:space="preserve">
+    <value>how you got to the site</value>
+  </data>
+  <data name="Supplementary_CookieDetails_ListItem2" xml:space="preserve">
+    <value>the pages you visit on GOV.UK and how long you spend on them</value>
+  </data>
+  <data name="Supplementary_CookieDetails_ListItem3" xml:space="preserve">
+    <value>what you click on while you’re visiting the site</value>
+  </data>
+  <data name="Supplementary_CookieDetails_ListItem4" xml:space="preserve">
+    <value>Google Analytics sets the following cookies.</value>
+  </data>
+  <data name="Supplementary_CookieDetails_StrictlyNecessary" xml:space="preserve">
+    <value>Strictly necessary cookies</value>
+  </data>
+  <data name="Supplementary_CookieDetails_KeepingSignedIn" xml:space="preserve">
+    <value>Keeping you signed in</value>
+  </data>
+  <data name="Supplementary_CookieDetails_SignedInInfo" xml:space="preserve">
+    <value>When you sign in to the service, we’ll set cookies to keep you signed in as you use the site. These cookies do not store your personal data and are deleted when you close your browser.</value>
+  </data>
+  <data name="Supplementary_CookieDetails_BannerMessages" xml:space="preserve">
+    <value>Banner messages and preferences</value>
+  </data>
+  <data name="Supplementary_CookieDetails_BannerInfo" xml:space="preserve">
+    <value>You may see banners when you visit Find a Tender inviting you to select your cookie preferences. We’ll set cookies so that your computer knows you’ve seen such messages and not to show them again, and also to store your settings.</value>
+  </data>
+  <data name="Supplementary_CookieDetails_ChangeSettings" xml:space="preserve">
+    <value>Change your settings</value>
+  </data>
+  <data name="Supplementary_CookieDetails_ChangeSettingsInfo" xml:space="preserve">
+    <value>You can &lt;a href="/cookies"&gt;change which cookies you're happy for us to use&lt;/a&gt;.</value>
+  </data>
+  <data name="Supplementary_CookieDetails_TableHeader_Name" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="Supplementary_CookieDetails_TableHeader_Purpose" xml:space="preserve">
+    <value>Purpose</value>
+  </data>
+  <data name="Supplementary_CookieDetails_TableHeader_Expires" xml:space="preserve">
+    <value>Expires</value>
+  </data>
+  <data name="Supplementary_CookieDetails_TableRow_GA" xml:space="preserve">
+    <value>This cookie is used with Google Universal Analytics. This cookie allows Google to track unique users via a client identifier that is randomly generated</value>
+  </data>
+  <data name="Supplementary_CookieDetails_TableRow_GAT" xml:space="preserve">
+    <value>This cookie is used with Google Universal Analytics. This cookie is used to monitor and track visitors’ behaviour on the site anonymously</value>
+  </data>
+  <data name="Supplementary_CookieDetails_TableRow_GID" xml:space="preserve">
+    <value>This cookie is used with Google Universal Analytics. This cookie is used to group the user behaviour</value>
+  </data>
+  <data name="Supplementary_CookieDetails_TableRow_Antiforgery" xml:space="preserve">
+    <value>This cookie keeps the service secure, preventing cross-site forgery requests.</value>
+  </data>
+  <data name="Supplementary_CookieDetails_TableRow_Cookies" xml:space="preserve">
+    <value>Stores details of the currently authenticated user.</value>
+  </data>
+  <data name="Supplementary_CookieDetails_TableRow_Culture" xml:space="preserve">
+    <value>Stores the currently selected language requirement.</value>
+  </data>
+  <data name="Supplementary_CookieDetails_TableRow_Preferences" xml:space="preserve">
+    <value>Stores the cookies accept / reject preference.</value>
+  </data>
+  <data name="Supplementary_CookieDetails_TableRow_Preferences" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Supplementary_Cookies_Title" xml:space="preserve">
+    <value>Cookies on Find a Tender</value>
+  </data>
+  <data name="Supplementary_Cookies_Intro1" xml:space="preserve">
+    <value>Cookies are files saved on your phone, tablet or computer when you visit a website.</value>
+  </data>
+  <data name="Supplementary_Cookies_Intro2" xml:space="preserve">
+    <value>We use cookies to store information about how you use the Find a Tender website, such as the pages you visit.</value>
+  </data>
+  <data name="Supplementary_Cookies_Settings" xml:space="preserve">
+    <value>Cookie settings</value>
+  </data>
+  <data name="Supplementary_Cookies_Settings_Intro" xml:space="preserve">
+    <value>We use 2 types of cookie. You can choose which types you’re happy for us to use, except for those that are essential.</value>
+  </data>
+  <data name="Supplementary_Cookies_WebsiteUse" xml:space="preserve">
+    <value>Cookies that measure website use</value>
+  </data>
+  <data name="Supplementary_Cookies_GoogleAnalytics" xml:space="preserve">
+    <value>We use Google Analytics to measure how you use the website so we can improve it based on user needs. We do not allow Google to use or share the data about how you use this site.</value>
+  </data>
+  <data name="Supplementary_Cookies_GoogleAnalyticsInfo" xml:space="preserve">
+    <value>Google Analytics sets cookies that store anonymised information about:</value>
+  </data>
+  <data name="Supplementary_Cookies_ListItem1" xml:space="preserve">
+    <value>how you got to the site</value>
+  </data>
+  <data name="Supplementary_Cookies_ListItem2" xml:space="preserve">
+    <value>the pages you visit on Find a Tender and how long you spend on each page</value>
+  </data>
+  <data name="Supplementary_Cookies_ListItem3" xml:space="preserve">
+    <value>what you click on while you’re visiting the site</value>
+  </data>
+  <data name="Supplementary_Cookies_UseCookies" xml:space="preserve">
+    <value>Use cookies that measure my website use</value>
+  </data>
+  <data name="Supplementary_Cookies_DoNotUseCookies" xml:space="preserve">
+    <value>Do not use cookies that measure my website use</value>
+  </data>
+  <data name="Supplementary_Cookies_StrictlyNecessary" xml:space="preserve">
+    <value>Strictly necessary cookies</value>
+  </data>
+  <data name="Supplementary_Cookies_StrictlyNecessary_Info1" xml:space="preserve">
+    <value>These essential cookies do things like remember when you are signed in, the language you want to view the site in, and the notifications you’ve seen so we do not show them to you again.</value>
+  </data>
+  <data name="Supplementary_Cookies_StrictlyNecessary_Info2" xml:space="preserve">
+    <value>They always need to be on.</value>
+  </data>
+  <data name="Supplementary_Cookies_FindOutMore" xml:space="preserve">
+    <value>Find out more about cookies on Find a Tender</value>
+  </data>
+  <data name="Supplementary_Cookies_SaveChanges" xml:space="preserve">
+    <value>Save changes</value>
+  </data>
+  <data name="Supplementary_Cookies_GovServices" xml:space="preserve">
+    <value>Government services</value>
+  </data>
+  <data name="Supplementary_Cookies_GovServices_Info" xml:space="preserve">
+    <value>Most services we link to are run by different government departments, for example DWP’s Universal Credit online, DVLA’s vehicle tax service, or HMRC’s webchat. These services may set additional cookies and, if so, will have their own cookie policy and banner linking to it.</value>
+  </data>
 </root>
