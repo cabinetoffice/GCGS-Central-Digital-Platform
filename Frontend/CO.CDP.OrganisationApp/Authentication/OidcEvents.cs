@@ -6,7 +6,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 
-namespace CO.CDP.OrganisationApp;
+namespace CO.CDP.OrganisationApp.Authentication;
 
 public class OidcEvents(IConfiguration configuration) : OpenIdConnectEvents
 {

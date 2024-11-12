@@ -20,7 +20,8 @@ public class PdfGeneratorTests
             BasicInformation = DataSharingFactory.CreateMockBasicInformation(),
             ConnectedPersonInformation = DataSharingFactory.CreateMockConnectedPersonInformation(),
             FormAnswerSetForPdfs = DataSharingFactory.CreateMockFormAnswerSetForPdfs(),
-            AttachedDocuments = []
+            AttachedDocuments = [],
+            AdditionalIdentifiers = []
         };
 
         var pdfBytes = _pdfGenerator.GenerateBasicInformationPdf(supplierInformation);

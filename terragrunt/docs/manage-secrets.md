@@ -16,7 +16,9 @@
 - [Update GOVUKNotify ApiKey](#update-govuknotify-apikey)
 - [Update GOVUKNotify Support Admin Email](#update-govuknotify-support-admin-email)
 - [Update OneLogin Secrets](#update-onelogin-secrets)
+- [Update Pen Testing Configuration](#update-pen-testing-configuration)
 - [Update Slack Configuration](#update-slack-configuration)
+- [Update Terraform Operators](#update-terraform-operators)
 
 ---
 
@@ -146,9 +148,44 @@ ave aws secretsmanager put-secret-value --secret-id cdp-sirsi-one-login-credenti
 
 ---
 
+## Update Pen Testing Configuration
+
+1. Create a JSON file in the `./secrets` folder with the list of operators' IAM user ARNs who will be granted permission to assume the Terraform role in the account, e.g., **pen-testing-configuration.json**:
+
+```json
+{
+  "allowed_ips": [
+    "123.123.123.123",
+    "321.321.21.0/24"
+  ],
+  "user_arns": [
+    "arn:aws:iam::123456789999:user/user1",
+    "arn:aws:iam::123456789999:user/user2"
+  ],
+  "external_user_arns": []
+}
+```
+
+*Note: The `./secrets` folder is set to ignore all files to ensure no sensitive information is committed.*
+
+2. Assume the appropriate role for the target environment and update the secret:
+
+```shell
+# Add using:
+# ave aws secretsmanager create-secret --name cdp-sirsi-pen-testing-configuration --secret-string file://secrets/pen-testing-configuration.json | jq .
+# Or update using:
+ave aws secretsmanager put-secret-value --secret-id cdp-sirsi-pen-testing-configuration --secret-string file://secrets/pen-testing-configuration.json | jq .
+```
+
+3. Plan and apply Terraform to the `core/iam` component.
+
+---
+
 ## Update Slack Configuration
 
-When the orchestrator's notification component is enabled, the system will notify a specified Slack channel about important CI/CD events. The required configuration for this connection must be stored as a secret named `cdp-sirsi-slack-configuration` in the Orchestrator account. To create this secret, add a file named `cdp-sirsi-slack-configuration.json` under the `secrets` directory, containing the following:
+When the orchestrator's notification component is enabled, the system will notify a specified Slack channel about important CI/CD events. The required configuration for this connection must be stored as a secret.
+
+1.  Add a file named `cdp-sirsi-slack-configuration.json` under the `secrets` directory, containing the following:
 
 ```json
 {
@@ -157,7 +194,9 @@ When the orchestrator's notification component is enabled, the system will notif
   "SERVICE_ENDPOINT": "https://hooks.slack.com/services/xxxx/xxxxx/xxxx" 
 }
 ```
-Then, run the following command:
+*Note: The `./secrets` folder is set to ignore all files to ensure no sensitive information is committed.*
+
+2. Assume the appropriate role for the orchestrator environment and update the secret:
 
 ```shell
 aws-switch-to-cdp-sirsi-orchestrator-goaco-terraform
@@ -167,4 +206,30 @@ aws-switch-to-cdp-sirsi-orchestrator-goaco-terraform
 ave aws secretsmanager put-secret-value --secret-id cdp-sirsi-slack-configuration --secret-string file://secrets/cdp-sirsi-slack-configuration.json | jq .
 ```
 
-This command will create a secret named `cdp-sirsi-slack-configuration` in AWS Secrets Manager, setting its value from the contents of the `slack-notification-api-endpoint.txt` file in the `secrets` directory.
+---
+
+## Update Terraform Operators
+
+1. Create a JSON file in the `./secrets` folder with the list of operators' IAM user ARNs who will be granted permission to assume the Terraform role in the account, e.g., **terraform-operators.json**:
+
+```json
+{
+  "operators": [
+    "arn:aws:iam::123456789999:user/user1",
+    "arn:aws:iam::123456789999:user/user2"
+  ]
+}
+```
+
+*Note: The `./secrets` folder is set to ignore all files to ensure no sensitive information is committed.*
+
+2. Assume the appropriate role for the target environment and update the secret:
+
+```shell
+# Add using:
+# ave aws secretsmanager create-secret --name cdp-sirsi-terraform-operators --secret-string file://secrets/terraform-operators.json | jq .
+# Or update using:
+ave aws secretsmanager put-secret-value --secret-id cdp-sirsi-terraform-operators --secret-string file://secrets/terraform-operators.json | jq .
+```
+
+3. Plan and apply Terraform to the `core/iam` component.

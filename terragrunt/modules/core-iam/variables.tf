@@ -8,24 +8,6 @@ variable "environment" {
   type        = string
 }
 
-variable "pen_testing_allowed_ips" {
-  description = "List of IP addresses to allow access for pen testing"
-  type        = list(string)
-  default     = []
-}
-
-variable "pen_testing_external_user_arns" {
-  description = "List of external user ARNs to grant access for pen testing"
-  type        = list(string)
-  default     = []
-}
-
-variable "pen_testing_user_arns" {
-  description = "List of user ARNs to grant access for pen testing"
-  type        = list(string)
-  default     = []
-}
-
 variable "product" {
   description = "product's common attributes"
   type = object({
@@ -38,11 +20,6 @@ variable "product" {
 variable "tags" {
   description = "Tags to apply to all resources in this module"
   type        = map(string)
-}
-
-variable "terraform_operators" {
-  description = "List of IAM user ARNs allowed to assume terraform roles"
-  type        = list(string)
 }
 
 variable "tfstate_bucket_name" {
