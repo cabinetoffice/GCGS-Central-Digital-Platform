@@ -11,6 +11,7 @@ public class TenantLookup
         public required string Name { get; init; }
         public required string Urn { get; init; }
         public required string Email { get; init; }
+        public required List<string> Scopes { get; init; }
     }
 
     public class Tenant
