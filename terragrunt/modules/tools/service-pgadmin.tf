@@ -14,6 +14,7 @@ module "ecs_service_pgadmin" {
       db_sirsi_address                = var.db_sirsi_address
       db_sirsi_name                   = var.db_sirsi_name
       db_sirsi_username               = "${var.db_sirsi_credentials_arn}:username::"
+      support_usernames               = data.aws_secretsmanager_secret.pgadmin_production_support_users.arn
       pgadmin_admin_password          = "${aws_secretsmanager_secret.pgadmin_credentials.arn}:ADMIN_PASSWORD::"
       pgadmin_admin_user              = "${aws_secretsmanager_secret.pgadmin_credentials.arn}:ADMIN_USERNAME::"
       pgadmin_database_host           = module.rds_pgadmin.db_address
