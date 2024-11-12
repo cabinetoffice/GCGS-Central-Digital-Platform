@@ -1,17 +1,69 @@
 using CO.CDP.OrganisationApp.Authentication;
 using CO.CDP.OrganisationApp.Models;
+using Microsoft.Extensions.Caching.Distributed;
 using System.Text.Json.Serialization;
 using static IdentityModel.OidcConstants;
 
 namespace CO.CDP.OrganisationApp.WebApiClients;
 
 public class AuthorityClient(
+    IConfiguration config,
+    ICacheService cache,
     ITokenService tokenService,
     IHttpClientFactory httpClientFactory) : IAuthorityClient
 {
     public const string OrganisationAuthorityHttpClientName = "OrganisationAuthorityHttpClient";
 
-    public async Task<(bool newToken, AuthTokens tokens)> GetAuthTokens(AuthTokens? tokens)
+    public async Task<AuthTokens?> GetAuthTokens(string? userUrn)
+        => await GetAuthTokens(userUrn, true);
+
+    public async Task RevokeRefreshToken(string? userUrn)
+    {
+        var tokens = await GetAuthTokens(userUrn, false);
+
+        if (tokens == null || tokens.RefreshTokenExpiry <= DateTime.Now) return;
+
+        var request = new HttpRequestMessage(HttpMethod.Post, "/revocation")
+        {
+            Content = new FormUrlEncodedContent(
+            [
+                new KeyValuePair<string, string>(TokenIntrospectionRequest.Token, tokens.RefreshToken),
+                new KeyValuePair<string, string>(TokenIntrospectionRequest.TokenTypeHint, TokenTypes.RefreshToken)
+            ])
+        };
+
+        var response = await GetClient().SendAsync(request);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            throw new Exception($"Unable to revoke refresh token from Organisation Authority, " +
+                    $"{response.StatusCode} {await response.Content.ReadAsStringAsync()}");
+        }
+    }
+
+    private async Task<AuthTokens?> GetAuthTokens(string? userUrn, bool fetchIfNotAvailable = true)
+    {
+        if (userUrn == null) return null;
+
+        var cacheKey = AuthTokensCacheKey(userUrn);
+        var tokens = await cache.Get<AuthTokens>(cacheKey);
+
+        if (fetchIfNotAvailable)
+        {
+            (bool newToken, tokens) = await GetAuthTokens(tokens);
+            if (newToken)
+            {
+                await cache.Set(cacheKey, tokens, new DistributedCacheEntryOptions
+                {
+                    AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(config.GetValue<double>("SessionTimeoutInMinutes"))
+                });
+            }
+        }
+
+        return tokens;
+    }
+
+    private async Task<(bool newToken, AuthTokens tokens)> GetAuthTokens(AuthTokens? tokens)
     {
         var newToken = false;
 
@@ -45,7 +97,6 @@ public class AuthorityClient(
 
     private async Task<AuthTokens> GetAccessTokenAsync(string grantType, string tokenRequestType, string credential)
     {
-        using var httpClient = httpClientFactory.CreateClient(OrganisationAuthorityHttpClientName);
         var request = new HttpRequestMessage(HttpMethod.Post, "/token")
         {
             Content = new FormUrlEncodedContent(
@@ -55,7 +106,8 @@ public class AuthorityClient(
             ])
         };
 
-        var response = await httpClient.SendAsync(request);
+        var response = await GetClient().SendAsync(request);
+
         if (response.IsSuccessStatusCode)
         {
             var payload = await response.Content.ReadFromJsonAsync<TokenResponse>();
@@ -74,6 +126,13 @@ public class AuthorityClient(
         throw new Exception($"Unable to get access token from Organisation Authority, " +
                 $"{response.StatusCode} {await response.Content.ReadAsStringAsync()}");
     }
+
+    private HttpClient GetClient()
+    {
+        return httpClientFactory.CreateClient(OrganisationAuthorityHttpClientName);
+    }
+
+    private static string AuthTokensCacheKey(string userUrn) => $"UserAuthTokens_{userUrn}";
 
     public class TokenResponse
     {

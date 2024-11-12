@@ -8,5 +8,5 @@ public interface ITokenService
 
     Task<(bool valid, string? urn)> ValidateOneLoginToken(string? token);
 
-    Task<(bool valid, string? urn)> ValidateRefreshToken(string? token);
+    Task<(bool valid, string? urn)> ValidateAndRevokeRefreshToken(string? token);
 }

@@ -21,6 +21,7 @@ public static class EndpointExtensions
                 {
                     Issuer = config.Issuer,
                     TokenEndpoint = $"{config.Issuer}/token",
+                    RevocationEndpoint = $"{config.Issuer}/revocation",
                     JwksUri = $"{config.Issuer}/{Discovery.DiscoveryEndpoint}/jwks",
                     ResponseTypesSupported = [ResponseTypes.Token],
                     ScopesSupported = [StandardScopes.OpenId],
@@ -44,7 +45,7 @@ public static class EndpointExtensions
                     {
                         Kty = "RSA",
                         Use = "sig",
-                        Kid = "c2c3b22ac07f425eb893123de395464e",
+                        Kid = config.Kid,
                         Alg = SecurityAlgorithms.RsaSha256,
                         N = Base64UrlEncoder.Encode(config.RsaPublicParams.Modulus!),
                         E = Base64UrlEncoder.Encode(config.RsaPublicParams.Exponent!)
@@ -67,7 +68,7 @@ public static class EndpointExtensions
                         return Results.Problem(statusCode: StatusCodes.Status400BadRequest, detail: "Invalid client secret");
 
                     case GrantTypes.RefreshToken:
-                        (valid, urn) = await service.ValidateRefreshToken(request.RefreshToken);
+                        (valid, urn) = await service.ValidateAndRevokeRefreshToken(request.RefreshToken);
                         if (valid && !string.IsNullOrWhiteSpace(urn))
                         {
                             return Results.Ok(await service.CreateToken(urn));
@@ -81,6 +82,25 @@ public static class EndpointExtensions
             .DisableAntiforgery()
             .WithMetadata(new ConsumesAttribute(MediaTypeNames.Application.FormUrlEncoded))
             .Produces<Model.TokenResponse>(StatusCodes.Status200OK)
+            .Produces<ProblemDetails>(StatusCodes.Status400BadRequest)
+            .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError);
+
+        app.MapPost("/revocation",
+            async ([AsParameters] RevocationRequest request, ITokenService service) =>
+            {
+                switch (request.TokenTypeHint)
+                {
+                    case TokenTypes.RefreshToken:
+                        await service.ValidateAndRevokeRefreshToken(request.Token);
+                        return Results.Ok();
+
+                    default:
+                        return Results.Problem(statusCode: StatusCodes.Status400BadRequest, detail: "Unsupported token type");
+                }
+            })
+            .DisableAntiforgery()
+            .WithMetadata(new ConsumesAttribute(MediaTypeNames.Application.FormUrlEncoded))
+            .Produces(StatusCodes.Status200OK)
             .Produces<ProblemDetails>(StatusCodes.Status400BadRequest)
             .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError);
     }
