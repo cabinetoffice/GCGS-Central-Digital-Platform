@@ -1,122 +1,125 @@
 @page "/cookies/details"
 @model CO.CDP.OrganisationApp.Pages.CookieDetailsModel
 
+@using CO.CDP.Localization
+@using Microsoft.AspNetCore.Mvc.Localization
+
 @{
-    ViewData["Title"] = "Details about cookies on Find a Tender";
+    ViewData["Title"] = StaticTextResource.Supplementary_CookieDetails_Title;
 }
 
 <main class="govuk-main-wrapper" id="main-content">
     <h1 class="govuk-heading-l">@ViewData["Title"]</h1>
 
-    <p class="govuk-body">Find a Tender puts small files (known as ‘cookies’) onto your computer to collect information about how you browse the site. Find out more about the cookies we use, what they’re for and when they expire.</p>
+    <p class="govuk-body">@StaticTextResource.Supplementary_CookieDetails_Intro</p>
 
-    <h2 class="govuk-heading-m">Cookies that measure website use</h2>
-    <p class="govuk-body">We use Google Analytics software (Universal Analytics) to collect anonymised information about how you use Find a Tender. We do this to help make sure the site is meeting the needs of its users and to help us make improvements to the site.</p>
-    <p class="govuk-body">We do not allow Google to use or share the data about how you use this site.</p>
-    <p class="govuk-body">Google Analytics stores information about:</p>
+    <h2 class="govuk-heading-m">@StaticTextResource.Supplementary_CookieDetails_WebsiteUse</h2>
+    <p class="govuk-body">@StaticTextResource.Supplementary_CookieDetails_GoogleAnalytics</p>
+    <p class="govuk-body">@StaticTextResource.Supplementary_CookieDetails_NoGoogleShare</p>
+    <p class="govuk-body">@StaticTextResource.Supplementary_CookieDetails_GoogleAnalyticsInfo</p>
 
     <ul class="govuk-list govuk-list--bullet">
-        <li>how you got to the site</li>
-        <li>the pages you visit on GOV.UK and how long you spend on them</li>
-        <li>what you click on while you’re visiting the site</li>
-        <li>Google Analytics sets the following cookies.</li>
+        <li>@StaticTextResource.Supplementary_CookieDetails_ListItem1</li>
+        <li>@StaticTextResource.Supplementary_CookieDetails_ListItem2</li>
+        <li>@StaticTextResource.Supplementary_CookieDetails_ListItem3</li>
+        <li>@StaticTextResource.Supplementary_CookieDetails_ListItem4</li>
     </ul>
 
     <table class="govuk-table">
         <thead class="govuk-table__head">
             <tr class="govuk-table__row">
-                <th scope="col" class="govuk-table__header">Name</th>
-                <th scope="col" class="govuk-table__header">Purpose</th>
-                <th scope="col" class="govuk-table__header">Expires</th>
+                <th scope="col" class="govuk-table__header">@StaticTextResource.Supplementary_CookieDetails_TableHeader_Name</th>
+                <th scope="col" class="govuk-table__header">@StaticTextResource.Supplementary_CookieDetails_TableHeader_Purpose</th>
+                <th scope="col" class="govuk-table__header">@StaticTextResource.Supplementary_CookieDetails_TableHeader_Expires</th>
             </tr>
         </thead>
         <tbody class="govuk-table__body">
             <tr class="govuk-table__row">
                 <th scope="row" class="govuk-table__header">_ga</th>
-                <td class="govuk-table__cell">This cookie is used with Google Universal Analytics. This cookie allows Google to track unique users via a client identifier that is randomly generated</td>
+                <td class="govuk-table__cell">@StaticTextResource.Supplementary_CookieDetails_TableRow_GA</td>
                 <td class="govuk-table__cell">2 years</td>
             </tr>
             <tr class="govuk-table__row">
                 <th scope="row" class="govuk-table__header">_gat</th>
-                <td class="govuk-table__cell">This cookie is used with Google Universal Analytics. This cookie is used to monitor and track visitors’ behaviour on the site anonymously</td>
+                <td class="govuk-table__cell">@StaticTextResource.Supplementary_CookieDetails_TableRow_GAT</td>
                 <td class="govuk-table__cell">10 minutes</td>
             </tr>
             <tr class="govuk-table__row">
                 <th scope="row" class="govuk-table__header">_gid</th>
-                <td class="govuk-table__cell">This cookie is used with Google Universal Analytics. This cookie is used to group the user behaviour</td>
+                <td class="govuk-table__cell">@StaticTextResource.Supplementary_CookieDetails_TableRow_GID</td>
                 <td class="govuk-table__cell">24 hours</td>
             </tr>
         </tbody>
     </table>
 
-    <h2 class="govuk-heading-m">Strictly necessary cookies</h2>
+    <h2 class="govuk-heading-m">@StaticTextResource.Supplementary_CookieDetails_StrictlyNecessary</h2>
 
-    <h3 class="govuk-heading-s">Keeping you signed in</h3>
-    <p class="govuk-body">When you sign in to the service, we’ll set cookies to keep you signed in as you use the site. These cookies do not store your personal data and are deleted when you close your browser.</p>
+    <h3 class="govuk-heading-s">@StaticTextResource.Supplementary_CookieDetails_KeepingSignedIn</h3>
+    <p class="govuk-body">@StaticTextResource.Supplementary_CookieDetails_SignedInInfo</p>
 
     <table class="govuk-table">
         <thead class="govuk-table__head">
             <tr class="govuk-table__row">
-                <th scope="col" class="govuk-table__header">Name</th>
-                <th scope="col" class="govuk-table__header">Purpose</th>
-                <th scope="col" class="govuk-table__header">Expires</th>
+                <th scope="col" class="govuk-table__header">@StaticTextResource.Supplementary_CookieDetails_TableHeader_Name</th>
+                <th scope="col" class="govuk-table__header">@StaticTextResource.Supplementary_CookieDetails_TableHeader_Purpose</th>
+                <th scope="col" class="govuk-table__header">@StaticTextResource.Supplementary_CookieDetails_TableHeader_Expires</th>
             </tr>
         </thead>
         <tbody class="govuk-table__body">
             <tr class="govuk-table__row">
                 <th scope="row" class="govuk-table__header">.AspNetCore.Antiforgery.*</th>
-                <td class="govuk-table__cell">This cookie keeps the service secure, preventing cross-site forgery requests.</td>
+                <td class="govuk-table__cell">@StaticTextResource.Supplementary_CookieDetails_TableRow_Antiforgery</td>
                 <td class="govuk-table__cell">When you close your browser</td>
             </tr>
             <tr class="govuk-table__row">
                 <th scope="row" class="govuk-table__header">.AspNetCore.Cookies</th>
-                <td class="govuk-table__cell">Stores details of the currently authenticated user.</td>
+                <td class="govuk-table__cell">@StaticTextResource.Supplementary_CookieDetails_TableRow_Cookies</td>
                 <td class="govuk-table__cell">When you close your browser</td>
             </tr>
             <tr class="govuk-table__row">
                 <th scope="row" class="govuk-table__header">.AspNetCore.CookiesC1</th>
-                <td class="govuk-table__cell">Stores details of the currently authenticated user.</td>
+                <td class="govuk-table__cell">@StaticTextResource.Supplementary_CookieDetails_TableRow_Cookies</td>
                 <td class="govuk-table__cell">When you close your browser</td>
             </tr>
             <tr class="govuk-table__row">
                 <th scope="row" class="govuk-table__header">.AspNetCore.CookiesC2</th>
-                <td class="govuk-table__cell">Stores details of the currently authenticated user.</td>
+                <td class="govuk-table__cell">@StaticTextResource.Supplementary_CookieDetails_TableRow_Cookies</td>
                 <td class="govuk-table__cell">When you close your browser</td>
             </tr>
             <tr class="govuk-table__row">
                 <th scope="row" class="govuk-table__header">.AspNetCore.Session</th>
-                <td class="govuk-table__cell">Stores details of the currently authenticated user.</td>
+                <td class="govuk-table__cell">@StaticTextResource.Supplementary_CookieDetails_TableRow_Cookies</td>
                 <td class="govuk-table__cell">When you close your browser</td>
             </tr>
         </tbody>
     </table>
 
-    <h3 class="govuk-heading-s">Banner messages and preferences</h3>
+    <h3 class="govuk-heading-s">@StaticTextResource.Supplementary_CookieDetails_BannerMessages</h3>
 
-    <p class="govuk-body">You may see banners when you visit Find a Tender inviting you to select your cookie preferences. We’ll set cookies so that your computer knows you’ve seen such messages and not to show them again, and also to store your settings.</p>
+    <p class="govuk-body">@StaticTextResource.Supplementary_CookieDetails_BannerInfo</p>
 
     <table class="govuk-table">
         <thead class="govuk-table__head">
             <tr class="govuk-table__row">
-                <th scope="col" class="govuk-table__header">Name</th>
-                <th scope="col" class="govuk-table__header">Purpose</th>
-                <th scope="col" class="govuk-table__header">Expires</th>
+                <th scope="col" class="govuk-table__header">@StaticTextResource.Supplementary_CookieDetails_TableHeader_Name</th>
+                <th scope="col" class="govuk-table__header">@StaticTextResource.Supplementary_CookieDetails_TableHeader_Purpose</th>
+                <th scope="col" class="govuk-table__header">@StaticTextResource.Supplementary_CookieDetails_TableHeader_Expires</th>
             </tr>
         </thead>
         <tbody class="govuk-table__body">
             <tr class="govuk-table__row">
                 <th scope="row" class="govuk-table__header">.AspNetCore.Culture</th>
-                <td class="govuk-table__cell">Stores the currently selected language requirement.</td>
+                <td class="govuk-table__cell">@StaticTextResource.Supplementary_CookieDetails_TableRow_Culture</td>
                 <td class="govuk-table__cell">1 year</td>
             </tr>
             <tr class="govuk-table__row">
                 <th scope="row" class="govuk-table__header">SIRSI_COOKIES_PREFERENCES_SET</th>
-                <td class="govuk-table__cell">Stores the cookies accept / reject preference.</td>
+                <td class="govuk-table__cell">@StaticTextResource.Supplementary_CookieDetails_TableRow_Preferences</td>
                 <td class="govuk-table__cell">1 year</td>
             </tr>
         </tbody>
     </table>
 
-    <h2 class="govuk-heading-m">Change your settings</h2>
-    <p class="govuk-body">You can <a href="/cookies">change which cookies you're happy for us to use</a>.</p>
+    <h2 class="govuk-heading-m">@StaticTextResource.Supplementary_CookieDetails_ChangeSettings</h2>
+    <p class="govuk-body">@StaticTextResource.Supplementary_CookieDetails_ChangeSettingsInfo</p>
 </main>

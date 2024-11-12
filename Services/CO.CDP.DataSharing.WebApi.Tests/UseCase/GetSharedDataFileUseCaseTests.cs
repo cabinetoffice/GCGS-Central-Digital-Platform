@@ -31,7 +31,8 @@ public class GetSharedDataFileUseCaseTests
             BasicInformation = DataSharingFactory.CreateMockBasicInformation(),
             ConnectedPersonInformation = DataSharingFactory.CreateMockConnectedPersonInformation(),
             FormAnswerSetForPdfs = DataSharingFactory.CreateMockFormAnswerSetForPdfs(),
-            AttachedDocuments = []
+            AttachedDocuments = [],
+            AdditionalIdentifiers = []
         };
 
         var pdfBytes = new byte[] { 1, 2, 3 };
@@ -66,7 +67,8 @@ public class GetSharedDataFileUseCaseTests
                 BasicInformation = DataSharingFactory.CreateMockBasicInformation(),
                 ConnectedPersonInformation = DataSharingFactory.CreateMockConnectedPersonInformation(),
                 FormAnswerSetForPdfs = DataSharingFactory.CreateMockFormAnswerSetForPdfs(),
-                AttachedDocuments = []
+                AttachedDocuments = [],
+                AdditionalIdentifiers = []
             });
 
         _claimService.Setup(cs => cs.HaveAccessToOrganisation(organisationId, invalidscope, null))
@@ -90,7 +92,8 @@ public class GetSharedDataFileUseCaseTests
             BasicInformation = DataSharingFactory.CreateMockBasicInformation(),
             ConnectedPersonInformation = DataSharingFactory.CreateMockConnectedPersonInformation(),
             FormAnswerSetForPdfs = DataSharingFactory.CreateMockFormAnswerSetForPdfs(),
-            AttachedDocuments = []
+            AttachedDocuments = [],
+            AdditionalIdentifiers = []
         };
 
         _dataService.Setup(service => service.GetSharedSupplierInformationAsync(sharecode))

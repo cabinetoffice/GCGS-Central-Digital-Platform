@@ -44,16 +44,24 @@ public class CreateOrganisationJoinRequestUseCase(
                            ?? throw new UnknownPersonException($"Unknown person {command.createOrganisationJoinRequestCommand.PersonId}.");
 
         await GuardPersonIsNotAlreadyAdded(organisation, person);
-        await GuardPersonIsNotAlreadyInvited(organisation, person);
+        
+        var joinRequest = await organisationJoinRequestRepository.FindByOrganisationAndPerson(organisation.Guid, person.Guid);
 
-        var organisationJoinRequest = CreateOrganisationJoinRequest(organisation, person);
+        if (joinRequest != null)
+        {
+            joinRequest.Status = OrganisationJoinRequestStatus.Pending;
+        }
+        else
+        {
+            joinRequest = CreateOrganisationJoinRequest(organisation, person);
+        }
 
-        organisationJoinRequestRepository.Save(organisationJoinRequest);
+        organisationJoinRequestRepository.Save(joinRequest);
 
         await NotifyUserRequestSent(organisation: organisation, person: person);
         await NotifyOrgAdminsOfApprovalRequest(organisation: organisation, person: person);
 
-        return mapper.Map<OrganisationJoinRequest>(organisationJoinRequest);
+        return mapper.Map<OrganisationJoinRequest>(joinRequest);
     }
 
     private Persistence.OrganisationJoinRequest CreateOrganisationJoinRequest(
@@ -161,18 +169,7 @@ public class CreateOrganisationJoinRequestUseCase(
         var organisationPersons = await organisationRepository.FindOrganisationPersons(organisation.Guid);
         return organisationPersons.Where(op => op.Scopes.Contains(Constants.OrganisationPersonScope.Admin)).Select(op => op.Person).ToList();
     }
-
-    private async Task GuardPersonIsNotAlreadyInvited(Persistence.Organisation organisation, Person person)
-    {
-        var joinRequest = await organisationJoinRequestRepository.FindByOrganisationAndPerson(organisation.Guid, person.Guid);
-
-        if (joinRequest != null)
-        {
-            throw new PersonAlreadyInvitedToOrganisationException(
-                $"Person {person.Guid} already invited to organisation {organisation.Guid}.");
-        }
-    }
-
+        
     private async Task GuardPersonIsNotAlreadyAdded(Persistence.Organisation organisation, Person person)
     {
         var matchingOrganisationPerson = await organisationRepository.FindOrganisationPerson(organisation.Guid, person.Guid);
