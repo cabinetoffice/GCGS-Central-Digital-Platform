@@ -16,6 +16,9 @@ public class OpenIdConfiguration
     [JsonPropertyName("response_types_supported")]
     public required ICollection<string> ResponseTypesSupported { get; init; }
 
+    [JsonPropertyName("revocation_endpoint")]
+    public required string RevocationEndpoint { get; set; }
+
     [JsonPropertyName("scopes_supported")]
     public required ICollection<string> ScopesSupported { get; init; }
 

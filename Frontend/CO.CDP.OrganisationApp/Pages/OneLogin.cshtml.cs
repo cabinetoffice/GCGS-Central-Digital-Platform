@@ -57,7 +57,7 @@ public class OneLoginModel(
             return BadRequest();
         }
 
-        oneLoginSessionManager.AddToSignedOutSessionsList(urn);
+        await oneLoginSessionManager.AddToSignedOutSessionsList(urn);
 
         logger.LogInformation("One Login page post endpoint process request successfully and added user {URN} to the signed-out sessions list. {Token}",
             urn, logout_token);
@@ -92,7 +92,7 @@ public class OneLoginModel(
         {
             return SignIn();
         }
-        oneLoginSessionManager.RemoveFromSignedOutSessionsList(urn);
+        await oneLoginSessionManager.RemoveFromSignedOutSessionsList(urn);
 
         var ud = new UserDetails { UserUrn = urn, Email = email, Phone = phone };
         session.Set(Session.UserDetailsKey, ud);
