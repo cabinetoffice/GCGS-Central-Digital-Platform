@@ -183,4 +183,7 @@
   <data name="OrganisationRegistration_EnterOrganisationEmail_Hint" xml:space="preserve">
     <value>Lle bo modd, defnyddiwch fewnflwch a rennir y gall aelodau eraill y tîm gael mynediad iddo</value>
   </data>
+  <data name="OrganisationRegistration_CompanyHouseNumberQuestion_Label" xml:space="preserve">
+    <value>Rhowch rif eich cwmni</value>
+  </data>
 </root>
