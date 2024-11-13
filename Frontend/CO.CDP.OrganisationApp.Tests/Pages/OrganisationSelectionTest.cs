@@ -98,7 +98,7 @@ public class OrganisationSelectionTest
                 new List<UserTenant>
                 {
                     new(
-                        id: new Guid(),
+                        id: Guid.NewGuid(),
                         name: "TrentTheTenant",
                         organisations: new List<UserOrganisation>()
                         {
