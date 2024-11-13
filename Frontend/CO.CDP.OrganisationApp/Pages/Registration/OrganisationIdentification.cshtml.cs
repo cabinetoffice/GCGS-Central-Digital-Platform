@@ -5,13 +5,15 @@ using CO.CDP.OrganisationApp.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using CO.CDP.OrganisationApp.Constants;
 
 namespace CO.CDP.OrganisationApp.Pages.Registration;
 
 [ValidateRegistrationStep]
 public class OrganisationIdentificationModel(ISession session,
     IOrganisationClient organisationClient,
-    IPponClient pponClient) : RegistrationStepModel(session)
+    IPponClient pponClient,
+    ITempDataService tempDataService) : RegistrationStepModel(session)
 {
     public override string CurrentPage => OrganisationIdentifierPage;
 
@@ -110,6 +112,10 @@ public class OrganisationIdentificationModel(ISession session,
 
     public string? Identifier { get; set; }
 
+    public string? OrganisationName;
+
+    public FlashMessage NotificationBannerCompanyAlreadyRegistered { get { return new FlashMessage($"An organisation with this registration number already exists. Change the registration number or <a class='govuk-notification-banner__link' href='/registration/{Identifier}/join-organisation'>request to join {OrganisationName}.</a>"); } }
+
     public void OnGet()
     {
         OrganisationScheme = RegistrationDetails.OrganisationScheme;
@@ -179,7 +185,8 @@ public class OrganisationIdentificationModel(ISession session,
         try
         {
             SessionContext.Set(Session.RegistrationDetailsKey, RegistrationDetails);
-            await LookupOrganisationAsync();
+            var organisation = await LookupOrganisationAsync();
+            OrganisationName = organisation?.Name;
         }
         catch (Exception orgApiException) when (orgApiException is CO.CDP.Organisation.WebApiClient.ApiException && ((CO.CDP.Organisation.WebApiClient.ApiException)orgApiException).StatusCode == 404)
         {
@@ -204,7 +211,8 @@ public class OrganisationIdentificationModel(ISession session,
             }
         }
 
-        return RedirectToPage("OrganisationAlreadyRegistered", new { Identifier });
+        tempDataService.Put(FlashMessageTypes.Important, NotificationBannerCompanyAlreadyRegistered);
+        return Page();
     }
 
     private async Task<CO.CDP.Organisation.WebApiClient.Organisation> LookupOrganisationAsync()

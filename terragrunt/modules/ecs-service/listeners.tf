@@ -17,14 +17,15 @@ resource "aws_lb_target_group" "this" {
   }
 
   health_check {
-    enabled           = true
-    interval          = var.healthcheck_interval
-    timeout           = var.healthcheck_timeout
-    healthy_threshold = var.healthcheck_healthy_threshold
-    path              = var.healthcheck_path
-    port              = var.host_port
-    protocol          = "HTTP"
-    matcher           = "200"
+    enabled             = true
+    interval            = var.healthcheck_interval
+    timeout             = var.healthcheck_timeout
+    healthy_threshold   = var.healthcheck_healthy_threshold
+    unhealthy_threshold = var.unhealthy_threshold
+    path                = var.healthcheck_path
+    port                = var.host_port
+    protocol            = "HTTP"
+    matcher             = "200"
   }
 
   lifecycle {

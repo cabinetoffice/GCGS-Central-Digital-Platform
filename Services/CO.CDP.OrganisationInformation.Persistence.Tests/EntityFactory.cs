@@ -37,10 +37,12 @@ public static class EntityFactory
         string lastname = "doe",
         string? email = null,
         string phone = "07925123123",
+        List<string>? scopes = null,
         Tenant? tenant = null,
         List<(Organisation, List<string>)>? organisationsWithScope = null
     )
     {
+        scopes = scopes ?? [];
         var personGuid = guid ?? Guid.NewGuid();
         var person = new Person
         {
@@ -49,7 +51,8 @@ public static class EntityFactory
             FirstName = firstname,
             LastName = lastname,
             Email = email ?? $"jon{personGuid}@example.com",
-            Phone = phone
+            Phone = phone,
+            Scopes = scopes
         };
         if (tenant != null)
         {

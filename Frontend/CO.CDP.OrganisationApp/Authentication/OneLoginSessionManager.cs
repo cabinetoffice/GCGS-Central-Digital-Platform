@@ -4,28 +4,27 @@ namespace CO.CDP.OrganisationApp.Authentication;
 
 public class OneLoginSessionManager(
     IConfiguration config,
-    IDistributedCache cache) : IOneLoginSessionManager
+    ICacheService cache) : IOneLoginSessionManager
 {
     private const string Value = "1";
-    private double? _sessionTimeoutInMinutes;
 
-    public void AddToSignedOutSessionsList(string userUrn)
+    public async Task AddToSignedOutSessionsList(string userUrn)
     {
-        _sessionTimeoutInMinutes ??= config.GetValue<double>("SessionTimeoutInMinutes");
-
-        cache.SetString(userUrn, Value, new DistributedCacheEntryOptions
+        await cache.Set(SignedOutUserKey(userUrn), Value, new DistributedCacheEntryOptions
         {
-            AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(_sessionTimeoutInMinutes.Value)
+            AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(config.GetValue<double>("SessionTimeoutInMinutes"))
         });
     }
 
-    public void RemoveFromSignedOutSessionsList(string userUrn)
+    public async Task RemoveFromSignedOutSessionsList(string userUrn)
     {
-        cache.Remove(userUrn);
+        await cache.Remove(SignedOutUserKey(userUrn));
     }
 
-    public bool HasSignedOut(string userUrn)
+    public async Task<bool> HasSignedOut(string userUrn)
     {
-        return cache.GetString(userUrn) == Value;
+        return await cache.Get<string?>(SignedOutUserKey(userUrn)) == Value;
     }
+
+    private static string SignedOutUserKey(string userUrn) => $"SignedOutUser_{userUrn}";
 }
