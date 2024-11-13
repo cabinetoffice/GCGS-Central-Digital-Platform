@@ -1,6 +1,7 @@
 @page "/registration/organisation-already-registered/{Identifier}"
 
 @model OrganisationAlreadyRegistered
+@using CO.CDP.Localization
 
 @{
     ViewData["Title"] = "This organisation has already registered";
@@ -13,7 +14,9 @@
     }
 }
 
-<a href="@backLink" class="govuk-back-link">Back</a>
+<a href="@backLink" class="govuk-back-link">
+    @StaticTextResource.Global_Back
+</a>
 
 <main class="govuk-main-wrapper" id="main-content">
     <div class="govuk-grid-row">

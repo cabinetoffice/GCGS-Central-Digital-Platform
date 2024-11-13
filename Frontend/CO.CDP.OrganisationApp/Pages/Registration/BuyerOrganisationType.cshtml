@@ -1,9 +1,10 @@
 @page
 @attribute [RazorCompiledItemMetadata("RouteTemplate", RegistrationStepModel.BuyerOrganisationTypePage)]
 @model BuyerOrganisationTypeModel
+@using CO.CDP.Localization
 
 @{
-    ViewData["Title"] = "Select the organisation type";
+    ViewData["Title"] = @StaticTextResource.OrganisationRegistration_BuyerOrganisationType_Heading;
     var organisationTypeHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.BuyerOrganisationType)).HasInnerHtml;
     var otherHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.OtherValue)).HasInnerHtml;
 
@@ -21,7 +22,7 @@
 }
 
 <a href="@backLink" class="govuk-back-link">
-    Back
+    @StaticTextResource.Global_Back
 </a>
 
 <main class="govuk-main-wrapper" id="main-content">
@@ -135,7 +136,7 @@
                     </fieldset>
                 </div>
                 <govuk-button>
-                    Continue
+                    @StaticTextResource.Global_Continue
                 </govuk-button>
             </form>
         </div>

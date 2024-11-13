@@ -564,4 +564,22 @@
   <data name="Shared_Address_NonUk_Link" xml:space="preserve">
     <value>Enter a non-UK address</value>
   </data>
+  <data name="OrganisationRegistration_BuyerDevolvedRegulation_Heading" xml:space="preserve">
+    <value>Do devolved regulations apply to your organisation?</value>
+  </data>
+  <data name="OrganisationRegistration_BuyerDevolvedRegulation_ValidationErrorMessage" xml:space="preserve">
+    <value>Select 'yes' or 'no'</value>
+  </data>
+  <data name="OrganisationRegistration_BuyerOrganisationType_Heading" xml:space="preserve">
+    <value>Select the organisation type</value>
+  </data>
+  <data name="OrganisationRegistration_BuyerOrganisationType_ValidationErrorMessage" xml:space="preserve">
+    <value>Select the organisation type</value>
+  </data>
+  <data name="OrganisationRegistration_BuyerSelectDevolvedRegulation_Heading" xml:space="preserve">
+    <value>Which devolved regulations apply?</value>
+  </data>
+  <data name="OrganisationRegistration_BuyerSelectDevolvedRegulation_ValidationErrorMessage" xml:space="preserve">
+    <value>Select a devolved region</value>
+  </data>
 </root>

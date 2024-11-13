@@ -2,9 +2,10 @@
 @attribute [RazorCompiledItemMetadata("RouteTemplate", RegistrationStepModel.BuyerSelectDevolvedRegulationPage)]
 @model BuyerSelectDevolvedRegulationModel
 @using CO.CDP.OrganisationApp.Constants
+@using CO.CDP.Localization
 
 @{
-    ViewData["Title"] = "Which devolved regulations apply?";
+    ViewData["Title"] = @StaticTextResource.OrganisationRegistration_BuyerSelectDevolvedRegulation_Heading;
     var regulationsHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Regulations)).HasInnerHtml;
 
     var backLink = RegistrationStepModel.BuyerDevolvedRegulationPage;
@@ -21,7 +22,7 @@
 }
 
 <a href="@backLink" class="govuk-back-link">
-    Back
+    @StaticTextResource.Global_Back
 </a>
 
 <main class="govuk-main-wrapper" id="main-content">
@@ -69,7 +70,7 @@
                     </fieldset>
                 </div>
                 <govuk-button>
-                    Continue
+                    @StaticTextResource.Global_Continue
                 </govuk-button>
             </form>
         </div>

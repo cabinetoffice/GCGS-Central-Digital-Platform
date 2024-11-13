@@ -1,6 +1,7 @@
 using CO.CDP.Mvc.Validation;
 using CO.CDP.OrganisationApp.Constants;
 using Microsoft.AspNetCore.Mvc;
+using CO.CDP.Localization;
 
 namespace CO.CDP.OrganisationApp.Pages.Registration;
 
@@ -10,7 +11,7 @@ public class BuyerSelectDevolvedRegulationModel(ISession session) : Registration
     public override string CurrentPage => BuyerSelectDevolvedRegulationPage;
 
     [BindProperty]
-    [NotEmpty(ErrorMessage = "Select a devolved region")]
+    [NotEmpty(ErrorMessage = nameof(StaticTextResource.OrganisationRegistration_BuyerSelectDevolvedRegulation_ValidationErrorMessage))]
     public required List<DevolvedRegulation> Regulations { get; set; } = [];
 
     [BindProperty]

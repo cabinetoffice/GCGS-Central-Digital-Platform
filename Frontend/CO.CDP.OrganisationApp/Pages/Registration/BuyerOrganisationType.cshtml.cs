@@ -3,6 +3,7 @@ using CO.CDP.OrganisationApp.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using CO.CDP.Localization;
 
 namespace CO.CDP.OrganisationApp.Pages.Registration;
 
@@ -12,7 +13,7 @@ public class BuyerOrganisationTypeModel(ISession session) : RegistrationStepMode
     public override string CurrentPage => BuyerOrganisationTypePage;
 
     [BindProperty]
-    [Required(ErrorMessage = "Select the organisation type")]
+    [Required(ErrorMessage = nameof(StaticTextResource.OrganisationRegistration_BuyerOrganisationType_ValidationErrorMessage))]
     public string? BuyerOrganisationType { get; set; }
 
     [BindProperty]

@@ -4,7 +4,7 @@
 @using CO.CDP.Localization
 
 @{
-    ViewData["Title"] = "Do devolved regulations apply to your organisation?";
+    ViewData["Title"] = @StaticTextResource.OrganisationRegistration_BuyerDevolvedRegulation_Heading;
     var devolvedHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Devolved)).HasInnerHtml;
 
     var backLink = RegistrationStepModel.BuyerOrganisationTypePage;
@@ -16,7 +16,7 @@
 }
 
 <a href="@backLink" class="govuk-back-link">
-    Back
+    @StaticTextResource.Global_Back
 </a>
 
 <main class="govuk-main-wrapper" id="main-content">
