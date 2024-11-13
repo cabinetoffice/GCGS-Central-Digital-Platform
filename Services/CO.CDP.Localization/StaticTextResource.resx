@@ -683,7 +683,7 @@
     <value>Enter the NHS Organisation Data Service number.</value>
   </data>
   <data name="Organisation_OrganisationIdentification_GB_UKPRN_Label" xml:space="preserve">
-    <value>UK Register of Learning Providers (GB-UKPRN)</value>
+    <value>UK Register of Learning Providers</value>
   </data>
   <data name="Organisation_OrganisationIdentification_GB_UKPRN_Number_Label" xml:space="preserve">
     <value>UK Register of Learning Providers (GB-UKPRN)</value>
@@ -702,5 +702,29 @@
   </data>
   <data name="Organisation_OrganisationIdentification_ValidationErrorMessage" xml:space="preserve">
     <value>Select your organisation type</value>
+  </data>
+  <data name="Organisation_OrganisationIdentification_Registration_Number_Label" xml:space="preserve">
+    <value>Registration number</value>
+  </data>
+  <data name="Organisation_OrganisationIdentification_Number_ErrorMessage" xml:space="preserve">
+    <value>Enter the number</value>
+  </data>
+  <data name="Organisation_OrganisationIdentification_Hint" xml:space="preserve">
+    <value>Select one option. Then enter the registration number.</value>
+  </data>
+  <data name="Organisation_OrganisationIdentification_ErrorMessage" xml:space="preserve">
+    <value>Select the organisation on any of these registries</value>
+  </data>
+  <data name="Organisation_OrganisationIdentification_Charity_Number_Label" xml:space="preserve">
+    <value>Charity number</value>
+  </data>
+  <data name="Organisation_OrganisationIdentification_Company_Number_Label" xml:space="preserve">
+    <value>Company number</value>
+  </data>
+  <data name="Organisation_OrganisationIdentification_ODS_Code_Label" xml:space="preserve">
+    <value>ODS code</value>
+  </data>
+  <data name="Organisation_OrganisationIdentification_ODS_Code_ErrorMessage" xml:space="preserve">
+    <value>Enter the code</value>
   </data>
 </root>

@@ -55,7 +55,7 @@
                                     </div>
                                 </div>
                             }
-                            @if (existingOrganisationScheme.Contains("GB-CHC") == false)
+                            @if (existingOrganisationScheme.Contains("GB-CHC") == false)    
                             {
                                 <div class="govuk-checkboxes__item">
                                     <input class="govuk-checkboxes__input" id="GB-CHC" name="OrganisationScheme" type="checkbox" value="GB-CHC" data-aria-controls="conditional-GB-CHC" @(Model.OrganisationScheme!.Contains("GB-CHC") ? "checked" : "")>

@@ -105,7 +105,7 @@ public class OrganisationIdentificationModel(OrganisationWebApiClient.IOrganisat
     public string? NationalHealthServiceOrganisationsRegistryNumber { get; set; }
 
     [BindProperty]
-    [DisplayName(nameof(StaticTextResource.Organisation_OrganisationIdentification_GB_UKPRN_Label))]
+    [DisplayName(nameof(StaticTextResource.Organisation_OrganisationIdentification_GB_UKPRN_Number_Label))]
     public string? UKLearningProviderReference { get; set; }
 
     [BindProperty]
