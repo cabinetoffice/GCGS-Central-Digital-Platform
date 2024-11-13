@@ -1,5 +1,5 @@
-using System.ComponentModel.DataAnnotations;
 using CO.CDP.OrganisationInformation;
+using System.ComponentModel.DataAnnotations;
 
 namespace CO.CDP.DataSharing.WebApi.Model;
 
@@ -15,8 +15,8 @@ public record SupplierInformation
     [Required] public required List<AssociatedPerson> AssociatedPersons { get; init; } = [];
     [Required] public required List<OrganisationReference> AdditionalParties { get; init; } = [];
     [Required] public required List<OrganisationReference> AdditionalEntities { get; init; } = [];
-    [Required] public required Identifier Identifier { get; init; }
-    [Required] public required List<Identifier> AdditionalIdentifiers { get; init; } = [];
+    [Required] public required OrganisationInformation.Identifier Identifier { get; init; }
+    [Required] public required List<OrganisationInformation.Identifier> AdditionalIdentifiers { get; init; } = [];
     [Required] public required Address Address { get; init; }
     [Required] public required ContactPoint ContactPoint { get; init; }
 

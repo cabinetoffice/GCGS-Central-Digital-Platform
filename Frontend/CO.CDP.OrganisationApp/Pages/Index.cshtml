@@ -1,7 +1,11 @@
 @page
 @model IndexModel
+
+@using CO.CDP.Localization
+@using Microsoft.AspNetCore.Mvc.Localization
+
 @{
-    ViewData["Title"] = "Register your details as a buyer or supplier of procurements";
+    ViewData["Title"] = StaticTextResource.Supplementary_Index_Title;
 }
 
 <main class="govuk-main-wrapper" id="main-content">
@@ -13,11 +17,11 @@
                 <div class="govuk-error-summary" data-module="govuk-error-summary">
                     <div role="alert">
                         <h2 class="govuk-error-summary__title">
-                            There is a problem
+                            @StaticTextResource.Supplementary_Index_Problem
                         </h2>
                         <div class="govuk-error-summary__body">
                             <ul class="govuk-list govuk-error-summary__list">
-                                <li><a href="#one-login-anchor">Unable to authenticate user, please retry</a></li>
+                                <li><a href="#one-login-anchor">@StaticTextResource.Supplementary_Index_UnableToAuthenticate</a></li>
                             </ul>
                         </div>
                     </div>
@@ -28,24 +32,22 @@
                 <span class="govuk-label--l">@ViewData["Title"]</span>
             </h1>
 
-            <p>The Central Digital Platform (CDP) service is for both procurement professionals and suppliers in the UK's public and utilities sectors.</p>
+            <p>@StaticTextResource.Supplementary_Index_Intro</p>
 
-            <p>Use the service if you are:</p>
+            <p>@StaticTextResource.Supplementary_Index_UseService</p>
 
             <ul class="govuk-list govuk-list--bullet">
-                <li>a contracting authority working in procurement who buys goods, works, and services, supplies them, or both</li>
-                <li>an organisation or sole trader who applies for contracts to supply goods, works, and services</li>
+                <li>@StaticTextResource.Supplementary_Index_ContractingAuthority</li>
+                <li>@StaticTextResource.Supplementary_Index_Organisation</li>
             </ul>
 
-            <p>You will first <a class="govuk-link govuk-link--no-visited-state" id="one-login-anchor"
-                href="/one-login/sign-in">create GOV.UK One Login or sign in.</a></p>
+            <p>@Html.Raw(@StaticTextResource.Supplementary_Index_CreateLogin)</p>
 
             <h2 class="govuk-heading-m">
-                If your organisation is already registered
+                @StaticTextResource.Supplementary_Index_AlreadyRegistered
             </h2>
 
-
-            <p>You can <a class="govuk-link govuk-link--no-visited-state" href="/one-login/sign-in">sign in to your account.</a></p>
+            <p>@Html.Raw(@StaticTextResource.Supplementary_Index_SignIn)</p>
         </div>
     </div>
 </main>

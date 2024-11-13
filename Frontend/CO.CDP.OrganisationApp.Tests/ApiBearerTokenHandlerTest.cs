@@ -33,15 +33,19 @@ public class ApiBearerTokenHandlerTests
         request.Headers.Authorization.Should().BeNull();
     }
 
-    [Theory]
-    [InlineData(false)]
-    [InlineData(true)]
-    public async Task SendAsync_ShouldAddAuthorizationHeader_WhenTokenIsValid(bool isNewToken)
+    [Fact]
+    public async Task SendAsync_ShouldAddAuthorizationHeader_WhenTokenIsValid()
     {
-        sessionMock.Setup(s => s.Get<UserDetails>(Session.UserDetailsKey))
-            .Returns(new UserDetails { UserUrn = "test:urn" });
-        authorityClientMock.Setup(a => a.GetAuthTokens(It.IsAny<AuthTokens>()))
-            .ReturnsAsync((isNewToken, GivenAuthToken()));
+        var tokens = new AuthTokens
+        {
+            AccessToken = "access_token",
+            AccessTokenExpiry = DateTime.Now.AddMinutes(60),
+            RefreshToken = "refresh_token",
+            RefreshTokenExpiry = DateTime.Now.AddDays(1)
+        };
+
+        authorityClientMock.Setup(a => a.GetAuthTokens(It.IsAny<string?>())).ReturnsAsync(tokens);
+
         var request = new HttpRequestMessage(HttpMethod.Get, "http://test.com");
 
         var response = await handler.SendAsync(request, CancellationToken.None);
@@ -49,8 +53,7 @@ public class ApiBearerTokenHandlerTests
         response.StatusCode.Should().Be(HttpStatusCode.OK);
         request.Headers.Authorization.Should().NotBeNull();
         request.Headers.Authorization!.Scheme.Should().Be("Bearer");
-        request.Headers.Authorization.Parameter.Should().Be("access_token");
-        sessionMock.Verify(s => s.Set(Session.UserDetailsKey, It.IsAny<UserDetails>()), isNewToken ? Times.Once : Times.Never);
+        request.Headers.Authorization.Parameter.Should().Be(tokens.AccessToken);
     }
 
     private class TestableApiBearerTokenHandler(
@@ -69,16 +72,5 @@ public class ApiBearerTokenHandlerTests
         {
             return Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK));
         }
-    }
-
-    private static AuthTokens GivenAuthToken()
-    {
-        return new AuthTokens
-        {
-            AccessToken = "access_token",
-            AccessTokenExpiry = DateTime.Now.AddMinutes(60),
-            RefreshToken = "refresh_token",
-            RefreshTokenExpiry = DateTime.Now.AddDays(1)
-        };
     }
 }

@@ -1,3 +1,4 @@
+using CO.CDP.Localization;
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.WebApiClients;
 using Microsoft.AspNetCore.Mvc;
@@ -14,25 +15,25 @@ public class ContactUsModel(IOrganisationClient organisationClient) : PageModel
     public bool? MessageSent { get; set; }
 
     [BindProperty]
-    [DisplayName("Name")]
-    [Required(ErrorMessage = "Enter your name")]
+    [DisplayName(nameof(StaticTextResource.Supplementary_ContactUs_Name))]
+    [Required(ErrorMessage = nameof(StaticTextResource.Supplementary_ContactUs_Name_ErrorMessage))]
     public string? Name { get; set; }
 
     [BindProperty]
-    [DisplayName("Email")]
-    [Required(ErrorMessage = "Enter your email")]
-    [EmailAddress(ErrorMessage = "Enter an email address in the correct format, like name@example.com")]
+    [DisplayName(nameof(StaticTextResource.Supplementary_ContactUs_Email))]
+    [Required(ErrorMessage = nameof(StaticTextResource.Supplementary_ContactUs_Email_ErrorMessage))]
+    [EmailAddress(ErrorMessage = nameof(StaticTextResource.Supplementary_ContactUs_Email_ValidationErrorMessage))]
     public string? EmailAddress { get; set; }
 
     [BindProperty]
-    [DisplayName("Organisation")]
-    [Required(ErrorMessage = "Enter your Organisation")]
+    [DisplayName(nameof(StaticTextResource.Supplementary_ContactUs_Organisation))]
+    [Required(ErrorMessage = nameof(StaticTextResource.Supplementary_ContactUs_Organisation_ErrorMessage))]
     public string? OrganisationName { get; set; }
 
     [BindProperty]
-    [DisplayName("Message")]
-    [Required(ErrorMessage = "Enter your message")]
-    [MinLength(10, ErrorMessage = "Message must be between 10 and 10,000 characters")]
+    [DisplayName(nameof(StaticTextResource.Supplementary_ContactUs_Message))]
+    [Required(ErrorMessage = nameof(StaticTextResource.Supplementary_ContactUs_Message_ErrorMessage))]
+    [MinLength(10, ErrorMessage = nameof(StaticTextResource.Supplementary_ContactUs_Message_ValidationErrorMessage))]
     [MaxLength(10000)]
     public string? Message { get; set; }
 

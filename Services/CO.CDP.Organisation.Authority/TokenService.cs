@@ -43,18 +43,15 @@ public class TokenService(
 
     public async Task<(bool valid, string? urn)> ValidateOneLoginToken(string? token)
     {
+        if (string.IsNullOrWhiteSpace(token))
+        {
+            logger.LogInformation("Invalid onelogin token request, empty token");
+            return (false, null);
+        }
+
         try
         {
-            ArgumentException.ThrowIfNullOrWhiteSpace(token);
-
-            var tokenHandler = new JwtSecurityTokenHandler();
-
-            var jsonToken = (JwtSecurityToken)tokenHandler.ReadToken(token);
-
             var config = await configService.GetOneLoginConfiguration();
-
-            var issuerSigningPublicKey = config.SigningKeys.FirstOrDefault(sk => sk.IsSupportedAlgorithm(jsonToken.SignatureAlgorithm))
-                            ?? throw new Exception($"Missing {jsonToken.SignatureAlgorithm} auth signing security key.");
 
             var parameters = new TokenValidationParameters
             {
@@ -63,29 +60,33 @@ public class TokenService(
                 ValidateAudience = false,
                 ValidateLifetime = true,
                 ValidateIssuerSigningKey = true,
-                IssuerSigningKey = issuerSigningPublicKey
+                IssuerSigningKeys = config.SigningKeys
             };
 
+            var tokenHandler = new JwtSecurityTokenHandler();
             tokenHandler.ValidateToken(token, parameters, out SecurityToken validatedToken);
 
-            var sub = ((JwtSecurityToken)validatedToken).Claims.FirstOrDefault(c => c.Type == JwtClaimTypes.Subject)
-                            ?? throw new Exception($"Missing 'sub' claim from JWT token.");
+            var sub = ((JwtSecurityToken)validatedToken).Subject ?? throw new Exception($"Missing 'sub' claim from JWT token.");
 
-            return (true, sub.Value);
+            return (true, sub);
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, ex.ToString());
+            logger.LogError(ex, ex.Message);
             return (false, null);
         }
     }
 
-    public async Task<(bool valid, string? urn)> ValidateRefreshToken(string? token)
+    public async Task<(bool valid, string? urn)> ValidateAndRevokeRefreshToken(string? token)
     {
+        if (string.IsNullOrWhiteSpace(token))
+        {
+            logger.LogInformation("Invalid refresh token request, empty token");
+            return (false, null);
+        }
+
         try
         {
-            ArgumentException.ThrowIfNullOrWhiteSpace(token);
-
             var splits = token.Split(':', StringSplitOptions.RemoveEmptyEntries);
             if (splits.Length != 2) return (false, null);
             var password = splits[0];
@@ -132,11 +133,13 @@ public class TokenService(
             Subject = new ClaimsIdentity(claims),
             Expires = DateTime.Now.AddSeconds(tokenExpiry),
             Issuer = config.Issuer,
-            SigningCredentials = new SigningCredentials(config.RsaPrivateKey, SecurityAlgorithms.RsaSha256)
+            SigningCredentials = new SigningCredentials(config.RsaPrivateKey, SecurityAlgorithms.RsaSha256),
         };
 
         var tokenHandler = new JwtSecurityTokenHandler();
-        var token = tokenHandler.CreateToken(tokenDescriptor);
+        var token = tokenHandler.CreateJwtSecurityToken(tokenDescriptor);
+        token.Header["kid"] = config.Kid;
+
         var tokenString = tokenHandler.WriteToken(token);
         return tokenString;
     }

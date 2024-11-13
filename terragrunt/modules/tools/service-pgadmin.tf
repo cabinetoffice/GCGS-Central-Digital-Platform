@@ -14,6 +14,7 @@ module "ecs_service_pgadmin" {
       db_sirsi_address                = var.db_sirsi_address
       db_sirsi_name                   = var.db_sirsi_name
       db_sirsi_username               = "${var.db_sirsi_credentials_arn}:username::"
+      support_usernames               = data.aws_secretsmanager_secret.pgadmin_production_support_users.arn
       pgadmin_admin_password          = "${aws_secretsmanager_secret.pgadmin_credentials.arn}:ADMIN_PASSWORD::"
       pgadmin_admin_user              = "${aws_secretsmanager_secret.pgadmin_credentials.arn}:ADMIN_USERNAME::"
       pgadmin_database_host           = module.rds_pgadmin.db_address
@@ -25,6 +26,7 @@ module "ecs_service_pgadmin" {
       lg_name                         = aws_cloudwatch_log_group.pgadmin.name
       lg_prefix                       = "tools"
       lg_region                       = data.aws_region.current.name
+      login_banner                    = "${upper(local.name_prefix)} ${title(var.environment)}"
       memory                          = var.pgadmin_config.memory
       name                            = var.pgadmin_config.name
     }
@@ -37,10 +39,10 @@ module "ecs_service_pgadmin" {
   ecs_listener_arn              = var.ecs_listener_arn
   ecs_service_base_sg_id        = var.ecs_sg_id
   family                        = "tools"
-  healthcheck_healthy_threshold = 5
+  healthcheck_healthy_threshold = 3
   healthcheck_interval          = 60
   healthcheck_path              = "/login"
-  healthcheck_timeout           = 30
+  healthcheck_timeout           = 40
   host_port                     = var.pgadmin_config.port
   memory                        = var.pgadmin_config.memory
   name                          = var.pgadmin_config.name
@@ -50,6 +52,7 @@ module "ecs_service_pgadmin" {
   role_ecs_task_arn             = var.role_ecs_task_arn
   role_ecs_task_exec_arn        = var.role_ecs_task_exec_arn
   tags                          = var.tags
+  unhealthy_threshold           = 6
   user_pool_arn                 = var.is_production ? var.user_pool_arn_pgadmin : null
   user_pool_client_id           = var.is_production ? var.user_pool_client_id_pgadmin : null
   user_pool_domain              = var.is_production ? var.user_pool_domain_pgadmin : null
