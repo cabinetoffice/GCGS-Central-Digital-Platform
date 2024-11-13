@@ -56,7 +56,9 @@ public class AssignIdentifierUseCaseTest
                 IdentifierId = "c0777aeb968b4113a27d94e55b10c1b4",
                 LegalName = "Acme Ltd"
             }
-            ))));
+            ) &&
+            o.Identifiers.Count(i => i.Primary) == 1
+            )));
         result.Should().BeTrue();
     }
 
@@ -95,7 +97,8 @@ public class AssignIdentifierUseCaseTest
              LegalName = "Acme Ltd",
              Primary = false,
              Scheme = "Other"
-         })
+         }) &&
+            o.Identifiers.Count(i => i.Primary) == 1
          )));
 
         result.Should().BeTrue();
@@ -138,7 +141,8 @@ public class AssignIdentifierUseCaseTest
              Scheme = AssignIdentifierUseCase.IdentifierSchemes.CompaniesHouse,
              LegalName = "Acme Ltd",
              Primary = true
-         })
+         }) &&
+            o.Identifiers.Count(i => i.Primary) == 1
          )));
 
         result.Should().BeTrue();
@@ -167,7 +171,9 @@ public class AssignIdentifierUseCaseTest
              Primary = true,
              Scheme = "Other",
              LegalName = "Acme Ltd"
-         }))));
+         }) &&
+            o.Identifiers.Count(i => i.Primary) == 1
+        )));
 
         result.Should().BeTrue();
     }
@@ -207,7 +213,9 @@ public class AssignIdentifierUseCaseTest
                 IdentifierId = "c0777aeb968b4113a27d94e55b10c1b4",
                 LegalName = "Acme Ltd"
             }
-            ))));
+            ) &&
+            o.Identifiers.Count(i => i.Primary) == 1
+        )));
         result.Should().BeTrue();
     }
 
