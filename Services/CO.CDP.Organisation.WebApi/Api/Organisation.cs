@@ -109,7 +109,7 @@ public static class EndpointExtensions
                 [Constants.PersonScope.SupportAdmin])]
         async (Guid organisationId, IUseCase<Guid, IEnumerable<Review>> useCase) =>
         await useCase.Execute(organisationId)
-                   .AndThen(organisation => organisation != null ? Results.Ok(organisation) : Results.NotFound()))
+                   .AndThen(reviews => reviews.Count() != 0 ? Results.Ok(reviews) : Results.NotFound()))
             .Produces<IEnumerable<Review>>(StatusCodes.Status200OK, "application/json")
             .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
             .Produces<ProblemDetails>(StatusCodes.Status404NotFound)

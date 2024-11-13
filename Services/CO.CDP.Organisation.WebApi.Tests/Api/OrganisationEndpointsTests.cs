@@ -284,6 +284,25 @@ public class OrganisationEndpointsTests
         }
     }
 
+    [Fact]
+    public async Task GetOrganisationReviews_Returns404_WhenThereAreNoReviews()
+    {
+        var organisationId = Guid.NewGuid();
+
+        var reviews = new List<Review> {};
+
+        _getReviewsUseCase.Setup(uc => uc.Execute(organisationId))
+            .ReturnsAsync(reviews);
+
+        var factory = new TestAuthorizationWebApplicationFactory<Program>(
+            Channel.OneLogin, organisationId, OrganisationPersonScope.Editor,
+            services => services.AddScoped(_ => _getReviewsUseCase.Object));
+
+        var response = await factory.CreateClient().GetAsync($"/organisations/{organisationId}/reviews");
+
+        response.StatusCode.Should().Be(NotFound);
+    }
+
     public static Model.Organisation GivenOrganisation(Guid organisationId)
     {
         var command = GivenRegisterOrganisationCommand();
