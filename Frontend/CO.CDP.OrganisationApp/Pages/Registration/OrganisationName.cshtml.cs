@@ -14,7 +14,7 @@ public class OrganisationNameModel(ISession session, ICompaniesHouseApi companie
 
     [BindProperty]
     [DisplayName(nameof(StaticTextResource.OrganisationRegistration_EnterOrganisationName_Heading))]
-    [Required(ErrorMessage = nameof(StaticTextResource.Organisation_EnterOrganisationName_ErrorMessage))]
+    [Required(ErrorMessage = nameof(StaticTextResource.OrganisationRegistration_EnterOrganisationName_Heading))]
     public string? OrganisationName { get; set; }
 
     [BindProperty]

@@ -138,6 +138,9 @@
   <data name="Global_Back" xml:space="preserve">
     <value>Yn ôl</value>
   </data>
+  <data name="OrganisationRegistration_EnterOrganisationName_Heading" xml:space="preserve">
+    <value>Rhowch enw’r sefydliad</value>
+  </data>
   <data name="Organisation_EnterOrganisationName_Supplier_Hint" xml:space="preserve">
     <value>Fel y'i cofrestrwyd â Thŷ'r Cwmnïau os yw'n gorfforedig, neu enw masnachu'r cwmni.</value>
   </data>
@@ -156,167 +159,7 @@
   <data name="Global_EmailAddress_Error" xml:space="preserve">
     <value>Rhowch gyfeiriad e-bost yn y fformat cywir, fel enw@enghraifft.com</value>
   </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="Shared_Address_Country" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="Shared_Address_Country_ErrorMessage" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="Shared_Address_ValidationErrorMessage" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="OrganisationRegistration_Address_Buyer_Heading" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="OrganisationRegistration_Address_Buyer_Hint" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="OrganisationRegistration_Address_Supplier_Heading" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="OrganisationRegistration_Address_Supplier_Hint" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="OrganisationRegistration_Address_NonUk_Heading" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="OrganisationRegistration_Address_NonUk_Hint" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="OrganisationRegistration_BuyerDevolvedRegulation_Heading" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="OrganisationRegistration_BuyerDevolvedRegulation_ValidationErrorMessage" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="OrganisationRegistration_BuyerOrganisationType_Heading" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="OrganisationRegistration_BuyerOrganisationType_ValidationErrorMessage" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="OrganisationRegistration_BuyerSelectDevolvedRegulation_Heading" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="OrganisationRegistration_BuyerSelectDevolvedRegulation_ValidationErrorMessage" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
   <data name="Organisation_EnterOrganisationName_ErrorMessage" xml:space="preserve">
-    <value>Rhowch enw eich sefydliad</value>
-  </data>
-  <data name="Organisation_EnterOrganisationEmail_Heading" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="Organisation_EnterOrganisationEmail_ErrorMessage" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="Organisation_EnterOrganisationEmail_Hint" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="Organisation_OrganisationIdentification_Heading" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="Organisation_OrganisationIdentification_CH_Label" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="Organisation_OrganisationIdentification_CH_ErrorMessage" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="Organisation_OrganisationIdentification_GB_CHC_Number_ErrorMessage" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="Organisation_OrganisationIdentification_GB_SC_Label" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="Organisation_OrganisationIdentification_GB_SC_Number_Label" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="Organisation_OrganisationIdentification_GB_SC_Number_ErrorMessage" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="Organisation_OrganisationIdentification_GB_NIC_Label" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="Organisation_OrganisationIdentification_GB_NIC_Number_Label" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="Organisation_OrganisationIdentification_GB_NIC_Number_ErrorMessage" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="Organisation_OrganisationIdentification_GB_MPR_Label" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="Organisation_OrganisationIdentification_GB_MPR_Number_Label" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="Organisation_OrganisationIdentification_GB_MPR_Number_ErrorMessage" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="Organisation_OrganisationIdentification_JE_FSC_Label" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="Organisation_OrganisationIdentification_JE_FSC_Number_Label" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="Organisation_OrganisationIdentification_JE_FSC_Number_ErrorMessage" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="Organisation_OrganisationIdentification_IM_CR_Label" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="Organisation_OrganisationIdentification_IM_CR_Number_Label" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="Organisation_OrganisationIdentification_IM_CR_Number_ErrorMessage" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="Organisation_OrganisationIdentification_GB_NHS_Label" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="Organisation_OrganisationIdentification_GB_NHS_Number_Label" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="Organisation_OrganisationIdentification_GB_UKPRN_Number_Label" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="Organisation_OrganisationIdentification_GB_UKPRN_Number_ErrorMessage" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="Organisation_OrganisationIdentification_Other_Label" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="Organisation_OrganisationIdentification_Other_Hint" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="Organisation_OrganisationIdentification_ValidationErrorMessage" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="Organisation_OrganisationIdentification_Registration_Number_Label" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="Organisation_OrganisationIdentification_Number_ErrorMessage" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="Organisation_OrganisationIdentification_Hint" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="Organisation_OrganisationIdentification_ErrorMessage" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="Organisation_OrganisationIdentification_Charity_Number_Label" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="Organisation_OrganisationIdentification_Company_Number_Label" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="Organisation_OrganisationIdentification_ODS_Code_Label" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="Organisation_OrganisationIdentification_ODS_Code_ErrorMessage" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="OrganisationRegistration_CompanyHouseNumberQuestion_Hint" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
+    <value>Rhowch enw’r sefydliad</value>
   </data>
 </root>
