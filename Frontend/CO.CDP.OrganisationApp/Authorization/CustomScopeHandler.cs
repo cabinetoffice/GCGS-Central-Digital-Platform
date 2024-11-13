@@ -1,4 +1,5 @@
 using CO.CDP.OrganisationApp.Constants;
+using CO.CDP.Tenant.WebApiClient;
 using Microsoft.AspNetCore.Authorization;
 
 namespace CO.CDP.OrganisationApp.Authorization;
@@ -18,12 +19,11 @@ public class CustomScopeHandler(
                 // The UserInfoService is scoped, but authorization is a singleton, so we need to work around that with a ServiceScopeFactory
                 using (var serviceScope = serviceScopeFactory.CreateScope())
                 {
-                    IUserInfoService _userInfo = serviceScope.ServiceProvider.GetRequiredService<IUserInfoService>();
+                    var tenantClient = serviceScope.ServiceProvider.GetRequiredService<ITenantClient>();
 
-                    var userScopes = await _userInfo.GetUserScopes();
-
-                    // GetOrganisationUserScopes below will 404 for support admins who do not have an org of their own
-                    // Therefore we deal with support admin permissions first because we can exit early
+                    var tenantLookup = await tenantClient.LookupTenantAsync();
+                    var userScopes = tenantLookup.User.Scopes;
+                    var organisationUserScopes = tenantLookup.Tenants.SelectMany(x => x.Organisations.SelectMany(y => y.Scopes)).ToList();
 
                     // Support admin implies viewer permissions
                     if (requirement.Scope == OrganisationPersonScopes.Viewer && userScopes.Contains(PersonScopes.SupportAdmin))
@@ -37,9 +37,6 @@ public class CustomScopeHandler(
                         context.Succeed(requirement);
                         return;
                     }
-
-                    // Deal with organisation permissions second
-                    var organisationUserScopes = await _userInfo.GetOrganisationUserScopes();
 
                     // Admin role can do anything within this organisation
                     if (organisationUserScopes.Contains(OrganisationPersonScopes.Admin) && requirement.Scope != PersonScopes.SupportAdmin)

@@ -28,7 +28,9 @@
         {"name": "PGADMIN_DATABASE_HOST" , "value": "${pgadmin_database_host}"},
         {"name": "PGADMIN_DATABASE_NAME" , "value": "${pgadmin_database_name}"},
         {"name": "PGADMIN_CONFIG_SERVER_MODE" , "value": "True"},
-        {"name": "PGADMIN_LISTEN_PORT", "value": "${host_port}"}
+        {"name": "PGADMIN_LISTEN_PORT", "value": "${host_port}"},
+        {"name": "LOG_LEVEL", "value": "ERROR"},
+        {"name": "LOGIN_BANNER", "value": "${login_banner}"}
     ],
     "secrets": [
         {"name": "DB_ENTITY_VERIFICATION_USERNAME", "valueFrom": "${db_entity_verification_username}"},
@@ -36,7 +38,8 @@
         {"name": "PGADMIN_DATABASE_PASSWORD" , "valueFrom": "${pgadmin_database_password}"},
         {"name": "PGADMIN_DATABASE_USERNAME" , "valueFrom": "${pgadmin_database_username}"},
         {"name": "PGADMIN_DEFAULT_EMAIL", "valueFrom": "${pgadmin_admin_user}"},
-        {"name": "PGADMIN_DEFAULT_PASSWORD", "valueFrom": "${pgadmin_admin_password}"}
+        {"name": "PGADMIN_DEFAULT_PASSWORD", "valueFrom": "${pgadmin_admin_password}"},
+        {"name": "SUPPORT_USERNAMES", "valueFrom": "${support_usernames}"}
     ],
     "volumesFrom": [],
     "mountPoints": [],

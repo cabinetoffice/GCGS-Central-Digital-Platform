@@ -3,14 +3,15 @@ using FluentAssertions;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
 using Moq;
-using System.Text;
 
 namespace CO.CDP.OrganisationApp.Tests.Authentication;
 
 public class OneLoginSessionManagerTests
 {
-    private readonly Mock<IDistributedCache> cacheMock = new();
+    private readonly Mock<ICacheService> cacheMock = new();
     private readonly OneLoginSessionManager sessionManager;
+    private const string UserUrn = "user123";
+    private const string CacheKey = "SignedOutUser_user123";
 
     public OneLoginSessionManagerTests()
     {
@@ -21,47 +22,40 @@ public class OneLoginSessionManagerTests
     }
 
     [Fact]
-    public void AddToSignedOutSessionsList_ShouldSetCache_WithCorrectExpiration()
+    public async Task AddToSignedOutSessionsList_ShouldSetCache_WithCorrectExpiration()
     {
-        var userUrn = "user123";
+        await sessionManager.AddToSignedOutSessionsList(UserUrn);
 
-        sessionManager.AddToSignedOutSessionsList(userUrn);
-
-        cacheMock.Verify(c => c.Set(
-            userUrn,
-            Encoding.UTF8.GetBytes("1"),
+        cacheMock.Verify(c => c.Set(CacheKey, "1",
             It.Is<DistributedCacheEntryOptions>(options => options.AbsoluteExpirationRelativeToNow == TimeSpan.FromMinutes(30))),
             Times.Once);
     }
 
     [Fact]
-    public void RemoveFromSignedOutSessionsList_ShouldRemoveCacheEntry()
+    public async Task RemoveFromSignedOutSessionsList_ShouldRemoveCacheEntry()
     {
-        var userUrn = "user123";
+        await sessionManager.RemoveFromSignedOutSessionsList(UserUrn);
 
-        sessionManager.RemoveFromSignedOutSessionsList(userUrn);
-
-        cacheMock.Verify(c => c.Remove(userUrn), Times.Once);
+        cacheMock.Verify(c => c.Remove(CacheKey), Times.Once);
     }
 
     [Fact]
-    public void HasSignedOut_ShouldReturnTrue_WhenUserIsSignedOut()
+    public async Task HasSignedOut_ShouldReturnTrue_WhenUserIsSignedOut()
     {
-        var userUrn = "user123";
-        cacheMock.Setup(c => c.Get(userUrn)).Returns(Encoding.UTF8.GetBytes("1"));
+        cacheMock.Setup(c => c.Get<string>(CacheKey)).ReturnsAsync("1");
 
-        var result = sessionManager.HasSignedOut(userUrn);
+        var result = await sessionManager.HasSignedOut(UserUrn);
 
         result.Should().BeTrue();
     }
 
     [Fact]
-    public void HasSignedOut_ShouldReturnFalse_WhenUserIsNotSignedOut()
+    public async Task HasSignedOut_ShouldReturnFalse_WhenUserIsNotSignedOut()
     {
-        var userUrn = "user123";
-        cacheMock.Setup(c => c.Get(userUrn)).Returns((byte[]?)null);
+        var UserUrn = "user123";
+        cacheMock.Setup(c => c.Get<string?>(CacheKey)).ReturnsAsync((string?)null);
 
-        var result = sessionManager.HasSignedOut(userUrn);
+        var result = await sessionManager.HasSignedOut(UserUrn);
 
         result.Should().BeFalse();
     }

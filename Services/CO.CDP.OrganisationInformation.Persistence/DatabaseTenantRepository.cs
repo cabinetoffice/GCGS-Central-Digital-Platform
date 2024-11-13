@@ -40,7 +40,8 @@ public class DatabaseTenantRepository(OrganisationInformationContext context) : 
                      {
                          Email = p.Email,
                          Urn = p.UserUrn ?? "",
-                         Name = $"{p.FirstName} {p.LastName}"
+                         Name = $"{p.FirstName} {p.LastName}",
+                         Scopes = p.Scopes
                      },
                      Tenants = p.Tenants.Select(t => new TenantLookup.Tenant
                      {
