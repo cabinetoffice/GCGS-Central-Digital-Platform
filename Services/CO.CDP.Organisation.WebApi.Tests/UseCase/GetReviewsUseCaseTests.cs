@@ -4,20 +4,19 @@ using AutoMapper;
 using CO.CDP.Organisation.WebApi.UseCase;
 using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.OrganisationInformation.Persistence;
+using CO.CDP.Organisation.WebApi.Tests.AutoMapper;
 
 namespace CO.CDP.Organisation.WebApi.Tests.UseCase;
 
-public class GetReviewsUseCaseTests
+public class GetReviewsUseCaseTests : IClassFixture<AutoMapperFixture>
 {
     private readonly Mock<IOrganisationRepository> _organisationRepositoryMock;
-    private readonly Mock<IMapper> _mapperMock;
     private readonly GetReviewsUseCase _useCase;
 
-    public GetReviewsUseCaseTests()
+    public GetReviewsUseCaseTests(AutoMapperFixture mapperFixture)
     {
         _organisationRepositoryMock = new Mock<IOrganisationRepository>();
-        _mapperMock = new Mock<IMapper>();
-        _useCase = new GetReviewsUseCase(_organisationRepositoryMock.Object, _mapperMock.Object);
+        _useCase = new GetReviewsUseCase(_organisationRepositoryMock.Object, mapperFixture.Mapper);
     }
 
     [Fact]
@@ -30,10 +29,6 @@ public class GetReviewsUseCaseTests
         _organisationRepositoryMock
             .Setup(repo => repo.Find(organisationId))
             .ReturnsAsync(organisation);
-
-        _mapperMock
-            .Setup(mapper => mapper.Map<Review>(organisation))
-            .Returns(expectedReview);
 
         var result = await _useCase.Execute(organisationId);
 
@@ -53,27 +48,6 @@ public class GetReviewsUseCaseTests
 
         await act.Should().ThrowAsync<UnknownOrganisationException>()
             .WithMessage($"Unknown organisation {organisationId}.");
-    }
-
-    [Fact]
-    public async Task Execute_ShouldCallRepositoryAndMapper_WithCorrectParameters()
-    {
-        var organisationId = Guid.NewGuid();
-        var organisation = GivenOrganisation(organisationId);
-        var expectedReview = GivenReview();
-
-        _organisationRepositoryMock
-            .Setup(repo => repo.Find(organisationId))
-            .ReturnsAsync(organisation);
-
-        _mapperMock
-            .Setup(mapper => mapper.Map<Review>(organisation))
-            .Returns(expectedReview);
-
-        await _useCase.Execute(organisationId);
-
-        _organisationRepositoryMock.Verify(repo => repo.Find(organisationId), Times.Once);
-        _mapperMock.Verify(mapper => mapper.Map<Review>(organisation), Times.Once);
     }
 
     private static Review GivenReview()
