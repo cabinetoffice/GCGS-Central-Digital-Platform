@@ -186,4 +186,47 @@
   <data name="OrganisationRegistration_CompanyHouseNumberQuestion_Label" xml:space="preserve">
     <value>Rhowch rif eich cwmni</value>
   </data>
+  <data name="Shared_Address_AddressLine1" xml:space="preserve">
+    <value>Cyfeiriad llinell 1</value>
+  </data>
+  <data name="Shared_Address_TownOrCity" xml:space="preserve">
+    <value>Tref neu ddinas</value>
+  </data>
+  <data name="Shared_Address_Postcode" xml:space="preserve">
+    <value>Cod post</value>
+  </data>
+  <data name="Shared_Address_Postcode_NonUk" xml:space="preserve">
+    <value>Cod post neu zip</value>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="Shared_Address_Country" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value />
+  </data>
+  <data name="Shared_Address_Country_ErrorMessage" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value />
+  </data>
+  <data name="Shared_Address_ValidationErrorMessage" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value />
+  </data>
+  <data name="OrganisationRegistration_Address_Buyer_Heading" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value />
+  </data>
+  <data name="OrganisationRegistration_Address_Buyer_Hint" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value />
+  </data>
+  <data name="OrganisationRegistration_Address_Supplier_Heading" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value />
+  </data>
+  <data name="OrganisationRegistration_Address_Supplier_Hint" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value />
+  </data>
+  <data name="OrganisationRegistration_Address_NonUk_Heading" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value />
+  </data>
+  <data name="OrganisationRegistration_Address_NonUk_Hint" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value />
+  </data>
+  <data name="Shared_Address_NonUk_Link" xml:space="preserve">
+    <value>Rhowch gyfeiriad y tu allan i'r Deyrnas Unedig</value>
+  </data>
 </root>

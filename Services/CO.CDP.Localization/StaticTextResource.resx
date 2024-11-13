@@ -510,4 +510,58 @@
   <data name="OrganisationRegistration_CompanyHouseNumberQuestion_Label" xml:space="preserve">
     <value>Enter your company number</value>
   </data>
+  <data name="Shared_Address_AddressLine1" xml:space="preserve">
+    <value>Address line 1</value>
+  </data>
+  <data name="Shared_Address_TownOrCity" xml:space="preserve">
+    <value>Town or city</value>
+  </data>
+  <data name="Shared_Address_AddressLine1_ErrorMessage" xml:space="preserve">
+    <value>Enter address line 1, typically the building and street</value>
+  </data>
+  <data name="Shared_Address_TownOrCity_ErrorMessage" xml:space="preserve">
+    <value>Enter town or city</value>
+  </data>
+  <data name="Shared_Address_Postcode" xml:space="preserve">
+    <value>Postcode</value>
+  </data>
+  <data name="Shared_Address_Postcode_NonUk" xml:space="preserve">
+    <value>Postal or Zip Code</value>
+  </data>
+  <data name="Shared_Address_Postcode_ErrorMessage" xml:space="preserve">
+    <value>Enter postcode</value>
+  </data>
+  <data name="Shared_Address_Postcode_NonUk_ErrorMessage" xml:space="preserve">
+    <value>Enter postal or Zip Code</value>
+  </data>
+  <data name="Shared_Address_Country" xml:space="preserve">
+    <value>Country</value>
+  </data>
+  <data name="Shared_Address_Country_ErrorMessage" xml:space="preserve">
+    <value>Enter country</value>
+  </data>
+  <data name="Shared_Address_ValidationErrorMessage" xml:space="preserve">
+    <value>Invalid country name</value>
+  </data>
+  <data name="OrganisationRegistration_Address_Buyer_Heading" xml:space="preserve">
+    <value>Enter your organisation's address</value>
+  </data>
+  <data name="OrganisationRegistration_Address_Buyer_Hint" xml:space="preserve">
+    <value>The principal address the organisation conducts its activities. For example, a head office.</value>
+  </data>
+  <data name="OrganisationRegistration_Address_Supplier_Heading" xml:space="preserve">
+    <value>Enter your organisation's registered address</value>
+  </data>
+  <data name="OrganisationRegistration_Address_Supplier_Hint" xml:space="preserve">
+    <value>The address registered with Companies House, or the principal address the business conducts its activities. For example, a head office.</value>
+  </data>
+  <data name="OrganisationRegistration_Address_NonUk_Heading" xml:space="preserve">
+    <value>Enter your organisation's registered non-UK address</value>
+  </data>
+  <data name="OrganisationRegistration_Address_NonUk_Hint" xml:space="preserve">
+    <value>The address recorded on public records or within the public domain.</value>
+  </data>
+  <data name="Shared_Address_NonUk_Link" xml:space="preserve">
+    <value>Enter a non-UK address</value>
+  </data>
 </root>
