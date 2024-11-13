@@ -138,6 +138,9 @@
   <data name="Global_Back" xml:space="preserve">
     <value>Yn ôl</value>
   </data>
+  <data name="Organisation_EnterOrganisationName_Supplier_Hint" xml:space="preserve">
+    <value>Fel y'i cofrestrwyd â Thŷ'r Cwmnïau os yw'n gorfforedig, neu enw masnachu'r cwmni.</value>
+  </data>
   <data name="Global_Continue" xml:space="preserve">
     <value>Parhau</value>
   </data>
@@ -199,8 +202,8 @@
   <data name="OrganisationRegistration_BuyerSelectDevolvedRegulation_ValidationErrorMessage" type="System.Resources.ResXNullRef, System.Windows.Forms">
     <value />
   </data>
-  <data name="Organisation_EnterOrganisationName_Heading" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
+  <data name="Organisation_EnterOrganisationName_ErrorMessage" xml:space="preserve">
+    <value>Rhowch enw eich sefydliad</value>
   </data>
   <data name="Organisation_EnterOrganisationEmail_Heading" type="System.Resources.ResXNullRef, System.Windows.Forms">
     <value />
@@ -311,6 +314,9 @@
     <value />
   </data>
   <data name="Organisation_OrganisationIdentification_ODS_Code_ErrorMessage" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value />
+  </data>
+  <data name="OrganisationRegistration_CompanyHouseNumberQuestion_Hint" type="System.Resources.ResXNullRef, System.Windows.Forms">
     <value />
   </data>
 </root>
