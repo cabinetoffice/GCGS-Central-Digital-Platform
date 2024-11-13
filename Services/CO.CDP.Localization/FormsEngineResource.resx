@@ -132,4 +132,43 @@
   <data name="FinancialInformation_SectionTitle" xml:space="preserve">
     <value>Financial information</value>
   </data>
+  <data name="FinancialInformation_01_Title" xml:space="preserve">
+    <value>What is the financial year end date for the information you uploaded?</value>
+  </data>
+  <data name="FinancialInformation_01_SummaryTitle" xml:space="preserve">
+    <value>Date of financial year end</value>
+  </data>
+  <data name="FinancialInformation_02_Title" xml:space="preserve">
+    <value>Upload your accounts</value>
+  </data>
+  <data name="FinancialInformation_02_Description" xml:space="preserve">
+    <value>&lt;p class="govuk-body"&gt;Upload your most recent 2 financial years. If you do not have 2, upload your most recent financial year.&lt;/p&gt;</value>
+  </data>
+  <data name="FinancialInformation_02_SummaryTitle" xml:space="preserve">
+    <value>Document uploaded</value>
+  </data>
+  <data name="FinancialInformation_03_Title" xml:space="preserve">
+    <value>Were your accounts audited?</value>
+  </data>
+  <data name="FinancialInformation_03_SummaryTitle" xml:space="preserve">
+    <value>Audited accounts</value>
+  </data>
+  <data name="FinancialInformation_04_Title" xml:space="preserve">
+    <value>The financial information you will need</value>
+  </data>
+  <data name="FinancialInformation_04_Description" xml:space="preserve">
+    <value>&lt;p class="govuk-body"&gt;You will need to upload accounts or statements for your 2 most recent financial years.&lt;/p&gt;&lt;p class="govuk-body"&gt;If you do not have 2 years, you can upload your most recent financial year.&lt;/p&gt;&lt;p class="govuk-body"&gt;You will need to enter the financial year end date for the information you upload.&lt;/p&gt;</value>
+  </data>
+  <data name="FinancialInformation_Configuration_AddAnotherAnswerLabel" xml:space="preserve">
+    <value>Add another file?</value>
+  </data>
+  <data name="FinancialInformation_Configuration_SingularSummaryHeading" xml:space="preserve">
+    <value>You have added 1 file</value>
+  </data>
+  <data name="FinancialInformation_Configuration_RemoveConfirmationHeading" xml:space="preserve">
+    <value>Are you sure you want to remove this file?</value>
+  </data>
+  <data name="FinancialInformation_Configuration_PluralSummaryHeadingFormat" xml:space="preserve">
+    <value>You have added {0} files</value>
+  </data>
 </root>
