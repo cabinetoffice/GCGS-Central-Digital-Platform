@@ -26,7 +26,7 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
 
                     UPDATE form_questions
                     SET title = 'Exclusions_05_Title',
-                    description = 'Exclusions_05_Title',
+                    description = 'Exclusions_05_Description',
                     summary_title = 'Exclusions_05_SummaryTitle'
                     WHERE name = '_Exclusion05'
 
@@ -75,7 +75,7 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                     WHERE name = '_Exclusion08'
 
                     UPDATE form_sections
-                    SET configuration = '{{""AddAnotherAnswerLabel"": ""Exclusions_Configuration_AddAnotherAnswerLabel"", ""SingularSummaryHeading"": ""Exclusions_Configuration_SingularSummaryHeading"", ""RemoveConfirmationCaption"": ""Exclusions_SectionTitle"", ""RemoveConfirmationHeading"": ""Exclusions_Configuration_RemoveConfirmationHeading"", ""PluralSummaryHeadingFormat"": ""Exclusions_Configuration_PluralSummaryHeadingFormat"", ""FurtherQuestionsExemptedHint"": ""Exclusions_Configuration_FurtherQuestionsExemptedHint"", ""FurtherQuestionsExemptedHeading"": ""Exclusions_Configuration_FurtherQuestionsExemptedHeading""}}'
+                    SET configuration = '{{""AddAnotherAnswerLabel"": ""Exclusions_Configuration_AddAnotherAnswerLabel"", ""SingularSummaryHeading"": ""Exclusions_Configuration_SingularSummaryHeading"", ""RemoveConfirmationCaption"": ""Exclusions_SectionTitle"", ""RemoveConfirmationHeading"": ""Exclusions_Configuration_RemoveConfirmationHeading"", ""PluralSummaryHeadingFormat"": ""Exclusions_Configuration_PluralSummaryHeadingFormat"", ""FurtherQuestionsExemptedHeading"": ""Exclusions_Configuration_FurtherQuestionsExemptedHeading""}}'
                     WHERE title = 'Exclusions_SectionTitle';
                 END $$;
              ");
