@@ -25,7 +25,9 @@
             <partial name="_ErrorSummary" model="@Model.ModelState" />
 
             <h1 class="govuk-heading-l">@ViewData["Title"]</h1>
-            <p class="govuk-body">You can <a href="https://find-and-update.company-information.service.gov.uk/" target="_blank">find your company number on Companies House (opens in a new tab)</a>. It is an 8 digit or 2 letter and 6 digit number. For example, 12345678 or SC123456.</p>
+            <p class="govuk-body">
+                @Html.Raw(StaticTextResource.OrganisationRegistration_CompanyHouseNumberQuestion_Hint)
+            </p>
             <form method="post">
                 @if (Request.Query.ContainsKey("frm-summary"))
                 {

@@ -723,4 +723,7 @@
   <data name="Organisation_OrganisationIdentification_ODS_Code_ErrorMessage" xml:space="preserve">
     <value>Enter the code</value>
   </data>
+  <data name="OrganisationRegistration_CompanyHouseNumberQuestion_Hint" xml:space="preserve">
+    <value>You can &lt;a href="https://find-and-update.company-information.service.gov.uk/" target="_blank"&gt;find your company number on Companies House (opens in a new tab)&lt;/a&gt;. It is an 8 digit or 2 letter and 6 digit number. For example, 12345678 or SC123456.</value>
+  </data>
 </root>
