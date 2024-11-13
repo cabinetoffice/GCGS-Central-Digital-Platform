@@ -14,6 +14,7 @@ public class AssignIdentifierUseCase(IOrganisationRepository organisations, IIde
         public const string Vat = "VAT";
         public const string CompaniesHouse = "GB-COH";
     }
+
     public static IDictionary<string, string> IdentifierSchemesUK = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
     {
         { "GB-COH", "CompaniesHouse" },
@@ -30,6 +31,7 @@ public class AssignIdentifierUseCase(IOrganisationRepository organisations, IIde
         { "Other", "Other" },
         { "GB-PPON", "Ppon" }
     };
+
     public async Task<bool> Execute(AssignOrganisationIdentifier command)
     {
         await FindOrganisation(command)
@@ -62,7 +64,7 @@ public class AssignIdentifierUseCase(IOrganisationRepository organisations, IIde
         });
 
         return organisation;
-    }  
+    }
 
     private static void ResetPrimaryIdentifiers(IEnumerable<OrganisationInformation.Persistence.Organisation.Identifier> identifiers)
     {
@@ -78,7 +80,7 @@ public class AssignIdentifierUseCase(IOrganisationRepository organisations, IIde
         {
             return false;
         }
-       
+
         if (organisation.Identifiers.Count == 0)
         {
             return true;
@@ -94,7 +96,7 @@ public class AssignIdentifierUseCase(IOrganisationRepository organisations, IIde
             return true;
         }
 
-        return false;       
+        return false;
     }
 
     private async Task<OrganisationInformation.Persistence.Organisation> FindOrganisation(
