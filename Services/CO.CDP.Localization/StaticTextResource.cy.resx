@@ -229,4 +229,28 @@
   <data name="Shared_Address_NonUk_Link" xml:space="preserve">
     <value>Rhowch gyfeiriad y tu allan i'r Deyrnas Unedig</value>
   </data>
+  <data name="OrganisationRegistration_BuyerDevolvedRegulation_Heading" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value />
+  </data>
+  <data name="OrganisationRegistration_BuyerDevolvedRegulation_ValidationErrorMessage" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value />
+  </data>
+  <data name="OrganisationRegistration_BuyerOrganisationType_Heading" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value />
+  </data>
+  <data name="OrganisationRegistration_BuyerOrganisationType_ValidationErrorMessage" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value />
+  </data>
+  <data name="OrganisationRegistration_BuyerSelectDevolvedRegulation_Heading" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value />
+  </data>
+  <data name="OrganisationRegistration_BuyerSelectDevolvedRegulation_ValidationErrorMessage" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value />
+  </data>
+  <data name="Organisation_EnterOrganisationName_Heading" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value />
+  </data>
+  <data name="Organisation_EnterOrganisationName_ErrorMessage" xml:space="preserve">
+    <value>Rhowch enw eich sefydliad</value>
+  </data>
 </root>

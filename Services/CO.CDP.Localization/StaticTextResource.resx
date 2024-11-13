@@ -582,4 +582,125 @@
   <data name="OrganisationRegistration_BuyerSelectDevolvedRegulation_ValidationErrorMessage" xml:space="preserve">
     <value>Select a devolved region</value>
   </data>
+  <data name="Organisation_EnterOrganisationName_Heading" xml:space="preserve">
+    <value>Enter your organisation's name</value>
+  </data>
+  <data name="Organisation_EnterOrganisationName_ErrorMessage" xml:space="preserve">
+    <value>Enter your organisation's name</value>
+  </data>
+  <data name="Organisation_EnterOrganisationEmail_Heading" xml:space="preserve">
+    <value>Enter your organisation's email address</value>
+  </data>
+  <data name="Organisation_EnterOrganisationEmail_ErrorMessage" xml:space="preserve">
+    <value>Enter your organisation's email address</value>
+  </data>
+  <data name="Organisation_EnterOrganisationEmail_Hint" xml:space="preserve">
+    <value>Where possible, use a shared inbox that other team members can access</value>
+  </data>
+  <data name="Organisation_OrganisationIdentification_Heading" xml:space="preserve">
+    <value>Is your organisation on any of these registries?</value>
+  </data>
+  <data name="Organisation_OrganisationIdentification_CH_Label" xml:space="preserve">
+    <value>Company House Number</value>
+  </data>
+  <data name="Organisation_OrganisationIdentification_CH_ErrorMessage" xml:space="preserve">
+    <value>Enter the Company House number.</value>
+  </data>
+  <data name="Organisation_OrganisationIdentification_GB_CHC_Label" xml:space="preserve">
+    <value>Charity Commission for England &amp; Wales</value>
+  </data>
+  <data name="Organisation_OrganisationIdentification_GB_CHC_Number_Label" xml:space="preserve">
+    <value>Charity Commission for England &amp; Wales Number</value>
+  </data>
+  <data name="Organisation_OrganisationIdentification_GB_CHC_Number_ErrorMessage" xml:space="preserve">
+    <value>Enter the Charity Commission for England &amp; Wales number.</value>
+  </data>
+  <data name="Organisation_OrganisationIdentification_GB_SC_Label" xml:space="preserve">
+    <value>Scottish Charity Regulator</value>
+  </data>
+  <data name="Organisation_OrganisationIdentification_GB_SC_Number_Label" xml:space="preserve">
+    <value>Scottish Charity Regulator Number</value>
+  </data>
+  <data name="Organisation_OrganisationIdentification_GB_SC_Number_ErrorMessage" xml:space="preserve">
+    <value>Enter the Scottish Charity Regulator number.</value>
+  </data>
+  <data name="Organisation_OrganisationIdentification_GB_NIC_Label" xml:space="preserve">
+    <value>Charity Commission for Northern Ireland</value>
+  </data>
+  <data name="Organisation_OrganisationIdentification_GB_NIC_Number_Label" xml:space="preserve">
+    <value>Charity Commission for Northern Ireland Number</value>
+  </data>
+  <data name="Organisation_OrganisationIdentification_GB_NIC_Number_ErrorMessage" xml:space="preserve">
+    <value>Enter the Charity Commission for Northern Ireland number.</value>
+  </data>
+  <data name="Organisation_OrganisationIdentification_GB_MPR_Label" xml:space="preserve">
+    <value>Mutuals Public Register</value>
+  </data>
+  <data name="Organisation_OrganisationIdentification_GB_MPR_Number_Label" xml:space="preserve">
+    <value>Mutuals Public Register Number</value>
+  </data>
+  <data name="Organisation_OrganisationIdentification_GB_MPR_Number_ErrorMessage" xml:space="preserve">
+    <value>Enter the Mutuals Public Register number.</value>
+  </data>
+  <data name="Organisation_OrganisationIdentification_GG_RCE_Label" xml:space="preserve">
+    <value>Guernsey Registry</value>
+  </data>
+  <data name="Organisation_OrganisationIdentification_GG_RCE_Number_Label" xml:space="preserve">
+    <value>Guernsey Registry Number</value>
+  </data>
+  <data name="Organisation_OrganisationIdentification_GG_RCE_Number_ErrorMessage" xml:space="preserve">
+    <value>Enter the Guernsey Registry number.</value>
+  </data>
+  <data name="Organisation_OrganisationIdentification_JE_FSC_Label" xml:space="preserve">
+    <value>Jersey Financial Services Commission Registry</value>
+  </data>
+  <data name="Organisation_OrganisationIdentification_JE_FSC_Number_Label" xml:space="preserve">
+    <value>Jersey Financial Services Commission Registry Number</value>
+  </data>
+  <data name="Organisation_OrganisationIdentification_JE_FSC_Number_ErrorMessage" xml:space="preserve">
+    <value>Enter the Jersey Financial Services Commission Registry number.</value>
+  </data>
+  <data name="Organisation_OrganisationIdentification_IM_CR_Label" xml:space="preserve">
+    <value>Isle of Man Companies Registry</value>
+  </data>
+  <data name="Organisation_OrganisationIdentification_IM_CR_Number_Label" xml:space="preserve">
+    <value>Isle of Man Companies Registry Number</value>
+  </data>
+  <data name="String1" xml:space="preserve">
+    <value>Organisation_OrganisationIdentification_IM_CR_Number_ErrorMessage</value>
+    <comment>Enter Isle of Man Companies Registry number.</comment>
+  </data>
+  <data name="Organisation_OrganisationIdentification_IM_CR_Number_ErrorMessage" xml:space="preserve">
+    <value>Enter Isle of Man Companies Registry number.</value>
+  </data>
+  <data name="Organisation_OrganisationIdentification_GB_NHS_Label" xml:space="preserve">
+    <value>NHS Organisation Data Service (ODS)</value>
+  </data>
+  <data name="Organisation_OrganisationIdentification_GB_NHS_Number_Label" xml:space="preserve">
+    <value>NHS Organisation Data Service (ODS) Number</value>
+  </data>
+  <data name="Organisation_OrganisationIdentification_GB_NHS_Number_ErrorMessage" xml:space="preserve">
+    <value>Enter the NHS Organisation Data Service number.</value>
+  </data>
+  <data name="Organisation_OrganisationIdentification_GB_UKPRN_Label" xml:space="preserve">
+    <value>UK Register of Learning Providers (GB-UKPRN)</value>
+  </data>
+  <data name="Organisation_OrganisationIdentification_GB_UKPRN_Number_Label" xml:space="preserve">
+    <value>UK Register of Learning Providers (GB-UKPRN)</value>
+  </data>
+  <data name="Organisation_OrganisationIdentification_GB_UKPRN_Number_ErrorMessage" xml:space="preserve">
+    <value>Enter the UK Register of Learning Providers number.</value>
+  </data>
+  <data name="Organisation_OrganisationIdentification_Other_Label" xml:space="preserve">
+    <value>None apply</value>
+  </data>
+  <data name="Organisation_OrganisationIdentification_Other_Hint" xml:space="preserve">
+    <value>You'll get a public procurement organisation number (PPON) as an identifier</value>
+  </data>
+  <data name="Organisation_OrganisationIdentification_GG_RCE_Hint" xml:space="preserve">
+    <value>Include prefix, if applicable. For example, GY.</value>
+  </data>
+  <data name="Organisation_OrganisationIdentification_ValidationErrorMessage" xml:space="preserve">
+    <value>Select your organisation type</value>
+  </data>
 </root>

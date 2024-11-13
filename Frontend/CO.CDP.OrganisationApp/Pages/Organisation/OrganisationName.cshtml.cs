@@ -1,3 +1,4 @@
+using CO.CDP.Localization;
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.WebApiClients;
@@ -14,8 +15,8 @@ namespace CO.CDP.OrganisationApp.Pages.Organisation;
 public class OrganisationNameModel(IOrganisationClient organisationClient) : PageModel
 {
     [BindProperty]
-    [DisplayName("Enter your organisation's name")]
-    [Required(ErrorMessage = "Enter your organisation's name")]
+    [DisplayName(nameof(StaticTextResource.Organisation_EnterOrganisationName_Heading))]
+    [Required(ErrorMessage = nameof(StaticTextResource.Organisation_EnterOrganisationName_ErrorMessage))]
     public string? OrganisationName { get; set; }
 
     [BindProperty(SupportsGet = true)]
