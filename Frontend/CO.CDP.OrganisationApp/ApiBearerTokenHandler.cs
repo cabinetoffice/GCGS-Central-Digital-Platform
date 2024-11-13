@@ -15,16 +15,11 @@ public class ApiBearerTokenHandler(
         await semaphore.WaitAsync(cancellationToken);
         try
         {
-            var userDetails = session.Get<UserDetails>(Session.UserDetailsKey);
-            if (userDetails != null)
-            {
-                (bool newToken, AuthTokens tokens) = await authorityClient.GetAuthTokens(userDetails.AuthTokens);
-                if (newToken)
-                {
-                    userDetails.AuthTokens = tokens;
-                    session.Set(Session.UserDetailsKey, userDetails);
-                }
+            var userUrn = session.Get<UserDetails>(Session.UserDetailsKey)?.UserUrn;
+            var tokens = await authorityClient.GetAuthTokens(userUrn);
 
+            if (tokens != null)
+            {
                 request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", tokens.AccessToken);
             }
         }

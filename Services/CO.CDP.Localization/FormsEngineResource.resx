@@ -1,17 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
-  <!-- 
-    Microsoft ResX Schema 
-    
+  <!--
+    Microsoft ResX Schema
+
     Version 2.0
-    
-    The primary goals of this format is to allow a simple XML format 
-    that is mostly human readable. The generation and parsing of the 
-    various data types are done through the TypeConverter classes 
+
+    The primary goals of this format is to allow a simple XML format
+    that is mostly human readable. The generation and parsing of the
+    various data types are done through the TypeConverter classes
     associated with the data types.
-    
+
     Example:
-    
+
     ... ado.net/XML headers & schema ...
     <resheader name="resmimetype">text/microsoft-resx</resheader>
     <resheader name="version">2.0</resheader>
@@ -26,36 +26,36 @@
         <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
         <comment>This is a comment</comment>
     </data>
-                
-    There are any number of "resheader" rows that contain simple 
+
+    There are any number of "resheader" rows that contain simple
     name/value pairs.
-    
-    Each data row contains a name, and value. The row also contains a 
-    type or mimetype. Type corresponds to a .NET class that support 
-    text/value conversion through the TypeConverter architecture. 
-    Classes that don't support this are serialized and stored with the 
+
+    Each data row contains a name, and value. The row also contains a
+    type or mimetype. Type corresponds to a .NET class that support
+    text/value conversion through the TypeConverter architecture.
+    Classes that don't support this are serialized and stored with the
     mimetype set.
-    
-    The mimetype is used for serialized objects, and tells the 
-    ResXResourceReader how to depersist the object. This is currently not 
+
+    The mimetype is used for serialized objects, and tells the
+    ResXResourceReader how to depersist the object. This is currently not
     extensible. For a given mimetype the value must be set accordingly:
-    
-    Note - application/x-microsoft.net.object.binary.base64 is the format 
-    that the ResXResourceWriter will generate, however the reader can 
+
+    Note - application/x-microsoft.net.object.binary.base64 is the format
+    that the ResXResourceWriter will generate, however the reader can
     read any of the formats listed below.
-    
+
     mimetype: application/x-microsoft.net.object.binary.base64
-    value   : The object must be serialized with 
+    value   : The object must be serialized with
             : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
             : and then encoded with base64 encoding.
-    
+
     mimetype: application/x-microsoft.net.object.soap.base64
-    value   : The object must be serialized with 
+    value   : The object must be serialized with
             : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
             : and then encoded with base64 encoding.
 
     mimetype: application/x-microsoft.net.object.bytearray.base64
-    value   : The object must be serialized into a byte array 
+    value   : The object must be serialized into a byte array
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
@@ -131,6 +131,45 @@
   </data>
   <data name="FinancialInformation_SectionTitle" xml:space="preserve">
     <value>Financial information</value>
+  </data>
+  <data name="FinancialInformation_01_Title" xml:space="preserve">
+    <value>What is the financial year end date for the information you uploaded?</value>
+  </data>
+  <data name="FinancialInformation_01_SummaryTitle" xml:space="preserve">
+    <value>Date of financial year end</value>
+  </data>
+  <data name="FinancialInformation_02_Title" xml:space="preserve">
+    <value>Upload your accounts</value>
+  </data>
+  <data name="FinancialInformation_02_Description" xml:space="preserve">
+    <value>&lt;p class="govuk-body"&gt;Upload your most recent 2 financial years. If you do not have 2, upload your most recent financial year.&lt;/p&gt;</value>
+  </data>
+  <data name="FinancialInformation_02_SummaryTitle" xml:space="preserve">
+    <value>Document uploaded</value>
+  </data>
+  <data name="FinancialInformation_03_Title" xml:space="preserve">
+    <value>Were your accounts audited?</value>
+  </data>
+  <data name="FinancialInformation_03_SummaryTitle" xml:space="preserve">
+    <value>Audited accounts</value>
+  </data>
+  <data name="FinancialInformation_04_Title" xml:space="preserve">
+    <value>The financial information you will need</value>
+  </data>
+  <data name="FinancialInformation_04_Description" xml:space="preserve">
+    <value>&lt;p class="govuk-body"&gt;You will need to upload accounts or statements for your 2 most recent financial years.&lt;/p&gt;&lt;p class="govuk-body"&gt;If you do not have 2 years, you can upload your most recent financial year.&lt;/p&gt;&lt;p class="govuk-body"&gt;You will need to enter the financial year end date for the information you upload.&lt;/p&gt;</value>
+  </data>
+  <data name="FinancialInformation_Configuration_AddAnotherAnswerLabel" xml:space="preserve">
+    <value>Add another file?</value>
+  </data>
+  <data name="FinancialInformation_Configuration_SingularSummaryHeading" xml:space="preserve">
+    <value>You have added 1 file</value>
+  </data>
+  <data name="FinancialInformation_Configuration_RemoveConfirmationHeading" xml:space="preserve">
+    <value>Are you sure you want to remove this file?</value>
+  </data>
+  <data name="FinancialInformation_Configuration_PluralSummaryHeadingFormat" xml:space="preserve">
+    <value>You have added {0} files</value>
   </data>
   <data name="TradeAssurance_01_Title" xml:space="preserve">
     <value>Who awarded the trade assurance?</value>

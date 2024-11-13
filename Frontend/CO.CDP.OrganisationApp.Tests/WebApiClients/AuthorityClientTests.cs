@@ -2,6 +2,7 @@ using CO.CDP.OrganisationApp.Authentication;
 using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.WebApiClients;
 using FluentAssertions;
+using Microsoft.Extensions.Configuration;
 using Moq;
 using Moq.Protected;
 using System.Net;
@@ -11,30 +12,52 @@ namespace CO.CDP.OrganisationApp.Tests.WebApiClients;
 
 public class AuthorityClientTests
 {
-    private readonly Mock<ITokenService> _tokenServiceMock = new();
-    private readonly Mock<IHttpClientFactory> _httpClientFactoryMock = new();
+    private readonly Mock<ICacheService> cacheServiceMock = new();
+    private readonly Mock<ITokenService> tokenServiceMock = new();
+    private readonly Mock<IHttpClientFactory> httpClientFactoryMock = new();
     private readonly AuthorityClient _authorityClient;
+    private const string UserUrn = "user123";
+    private const string CacheKey = "UserAuthTokens_user123";
 
     public AuthorityClientTests()
     {
-        _authorityClient = new AuthorityClient(_tokenServiceMock.Object, _httpClientFactoryMock.Object);
+        var inMemorySettings = new List<KeyValuePair<string, string?>>
+            { new("SessionTimeoutInMinutes", "60") };
+
+        var mockConfiguration = new ConfigurationBuilder()
+            .AddInMemoryCollection(inMemorySettings)
+            .Build();
+
+        _authorityClient = new AuthorityClient(
+            mockConfiguration,
+            cacheServiceMock.Object,
+            tokenServiceMock.Object,
+            httpClientFactoryMock.Object);
     }
 
     [Fact]
-    public async Task GetAuthTokens_ShouldRequestNewToken_WhenTokensAreNull()
+    public async Task GetAuthTokens_ShouldReturnNull_WhenUserUrnIsNull()
     {
-        var authTokens = GivenToken("new-access-token", "new-refresh-token", 5, 10);
+        var tokens = await _authorityClient.GetAuthTokens(null);
 
-        _tokenServiceMock.Setup(t => t.GetTokenAsync("access_token"))
+        tokens.Should().BeNull();
+    }
+
+    [Fact]
+    public async Task GetAuthTokens_ShouldRequestNewToken_WhenTokensInCacheAreNull()
+    {
+        cacheServiceMock.Setup(t => t.Get<AuthTokens>(CacheKey)).ReturnsAsync((AuthTokens?)null);
+
+        var authTokens = GivenToken("new-access-token", "new-refresh-token", 5, 10);
+        tokenServiceMock.Setup(t => t.GetTokenAsync("access_token"))
             .ReturnsAsync("onelogin-access-token");
 
         MockHttpClientFactory(authTokens);
 
-        var (newToken, tokens) = await _authorityClient.GetAuthTokens(null);
+        var tokens = await _authorityClient.GetAuthTokens(UserUrn);
 
-        newToken.Should().BeTrue();
         tokens.Should().NotBeNull();
-        tokens.AccessToken.Should().Be(authTokens.AccessToken);
+        tokens!.AccessToken.Should().Be(authTokens.AccessToken);
         tokens.RefreshToken.Should().Be(authTokens.RefreshToken);
     }
 
@@ -42,39 +65,40 @@ public class AuthorityClientTests
     public async Task GetAuthTokens_ShouldRequestNewToken_WhenAccessTokenAndRefreshTokenAreExpired()
     {
         var expiredTokens = GivenToken("expired-access-token", "expired-refresh-token", -10, -5);
+        cacheServiceMock.Setup(t => t.Get<AuthTokens>(CacheKey)).ReturnsAsync(expiredTokens);
 
-        var newTokens = GivenToken("new-access-token", "valid-refresh-token", 5, 10);
-
-        _tokenServiceMock.Setup(t => t.GetTokenAsync("access_token"))
+        tokenServiceMock.Setup(t => t.GetTokenAsync("access_token"))
             .ReturnsAsync("onelogin-access-token");
 
+        var newTokens = GivenToken("new-access-token", "valid-refresh-token", 5, 10);
         MockHttpClientFactory(newTokens);
 
-        var (newToken, tokens) = await _authorityClient.GetAuthTokens(expiredTokens);
+        var tokens = await _authorityClient.GetAuthTokens(UserUrn);
 
-        newToken.Should().BeTrue();
-        tokens.AccessToken.Should().Be(newTokens.AccessToken);
+        tokens.Should().NotBeNull();
+        tokens!.AccessToken.Should().Be(newTokens.AccessToken);
     }
 
     [Fact]
     public async Task GetAuthTokens_ShouldRefreshAccessToken_WhenAccessTokenIsExpiredAndRefreshTokenIsValid()
     {
         var expiredTokens = GivenToken("expired-access-token", "valid-refresh-token", -5, 10);
+        cacheServiceMock.Setup(t => t.Get<AuthTokens>(CacheKey)).ReturnsAsync(expiredTokens);
 
         var newTokens = GivenToken("new-access-token", "valid-refresh-token", 5, 10);
 
         MockHttpClientFactory(newTokens);
 
-        var (newToken, tokens) = await _authorityClient.GetAuthTokens(expiredTokens);
+        var tokens = await _authorityClient.GetAuthTokens(UserUrn);
 
-        newToken.Should().BeTrue();
-        tokens.AccessToken.Should().Be(newTokens.AccessToken);
+        tokens.Should().NotBeNull();
+        tokens!.AccessToken.Should().Be(newTokens.AccessToken);
     }
 
     [Fact]
     public async Task GetOneloginAccessToken_ShouldThrowException_WhenTokenIsMissing()
     {
-        Func<Task> act = async () => await _authorityClient.GetAuthTokens(null);
+        Func<Task> act = async () => await _authorityClient.GetAuthTokens(UserUrn);
 
         await act.Should().ThrowAsync<Exception>()
             .WithMessage("User logged out");
@@ -108,7 +132,7 @@ public class AuthorityClientTests
             BaseAddress = new Uri("http://test.com")
         };
 
-        _httpClientFactoryMock.Setup(f => f.CreateClient(AuthorityClient.OrganisationAuthorityHttpClientName))
+        httpClientFactoryMock.Setup(f => f.CreateClient(AuthorityClient.OrganisationAuthorityHttpClientName))
             .Returns(httpClient);
     }
 

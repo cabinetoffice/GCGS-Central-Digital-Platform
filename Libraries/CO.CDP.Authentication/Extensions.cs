@@ -54,6 +54,8 @@ public static class Extensions
             options.MapInboundClaims = false;
             options.TokenValidationParameters = new TokenValidationParameters
             {
+                ValidateIssuer = true,
+                ValidIssuer = authority,
                 ValidateAudience = false,
                 ValidateIssuerSigningKey = true
             };
