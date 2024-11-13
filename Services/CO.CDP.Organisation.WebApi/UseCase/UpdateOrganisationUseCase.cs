@@ -211,9 +211,9 @@ public class UpdateOrganisationUseCase(
             && organisation.PendingRoles.Contains(PartyRole.Buyer)
         )
         {
-            var organisationWithReviewedBy = await organisationRepository.FindIncludingReviewedBy(organisation.Guid);
+            var review = mapper.Map<Review>(await organisationRepository.FindIncludingReviewedBy(organisation.Guid));
 
-            if(organisationWithReviewedBy != null && organisationWithReviewedBy.ReviewedBy != null)
+            if (review.Status == ReviewStatus.Rejected)
             {
                 await ResendBuyerApprovalEmail(organisation);
 
