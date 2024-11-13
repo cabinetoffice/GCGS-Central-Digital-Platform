@@ -685,6 +685,7 @@ public class UpdateOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
         };
 
         _organisationRepositoryMock.Setup(repo => repo.FindIncludingTenant(It.IsAny<Guid>())).ReturnsAsync(organisation);
+        _organisationRepositoryMock.Setup(repo => repo.FindIncludingReviewedBy(It.IsAny<Guid>())).ReturnsAsync(organisation);
 
         var result = await _useCase.Execute((Guid.NewGuid(), updateOrganisation));
 
@@ -710,6 +711,7 @@ public class UpdateOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
         };
 
         _organisationRepositoryMock.Setup(repo => repo.FindIncludingTenant(It.IsAny<Guid>())).ReturnsAsync(organisation);
+        _organisationRepositoryMock.Setup(repo => repo.FindIncludingReviewedBy(It.IsAny<Guid>())).ReturnsAsync(organisation);
 
         var result = await _useCase.Execute((Guid.NewGuid(), updateOrganisation));
 
@@ -760,6 +762,7 @@ public class UpdateOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
         };
 
         _organisationRepositoryMock.Setup(repo => repo.FindIncludingTenant(It.IsAny<Guid>())).ReturnsAsync(organisation);
+        _organisationRepositoryMock.Setup(repo => repo.FindIncludingReviewedBy(It.IsAny<Guid>())).ReturnsAsync(organisation);
 
         var result = await _useCase.Execute((Guid.NewGuid(), updateOrganisation));
 
@@ -789,6 +792,7 @@ public class UpdateOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
         };
 
         _organisationRepositoryMock.Setup(repo => repo.FindIncludingTenant(It.IsAny<Guid>())).ReturnsAsync(organisation);
+        _organisationRepositoryMock.Setup(repo => repo.FindIncludingReviewedBy(It.IsAny<Guid>())).ReturnsAsync(organisation);
 
         var result = await _useCase.Execute((Guid.NewGuid(), updateOrganisation));
 

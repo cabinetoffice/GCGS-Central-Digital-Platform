@@ -7,7 +7,7 @@ public class GetReviewsUseCase(IOrganisationRepository organisationRepository, I
 {
     public async Task<IEnumerable<Model.Review>> Execute(Guid organisationId)
     {
-        var organisation = await organisationRepository.Find(organisationId)
+        var organisation = await organisationRepository.FindIncludingReviewedBy(organisationId)
                            ?? throw new UnknownOrganisationException($"Unknown organisation {organisationId}.");
 
         return [ mapper.Map<Review>(organisation) ];

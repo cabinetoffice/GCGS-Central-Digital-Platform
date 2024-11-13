@@ -27,7 +27,7 @@ public class GetReviewsUseCaseTests : IClassFixture<AutoMapperFixture>
         var expectedReview = GivenReview();
 
         _organisationRepositoryMock
-            .Setup(repo => repo.Find(organisationId))
+            .Setup(repo => repo.FindIncludingReviewedBy(organisationId))
             .ReturnsAsync(organisation);
 
         var result = await _useCase.Execute(organisationId);

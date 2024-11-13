@@ -8,7 +8,6 @@ using CO.CDP.OrganisationInformation;
 using CO.CDP.OrganisationInformation.Persistence;
 using Persistence = CO.CDP.OrganisationInformation.Persistence;
 using Address = CO.CDP.OrganisationInformation.Persistence.Address;
-using CO.CDP.Authentication;
 
 namespace CO.CDP.Organisation.WebApi.UseCase;
 
@@ -210,13 +209,17 @@ public class UpdateOrganisationUseCase(
         if (
             (updateType == OrganisationUpdateType.OrganisationName || updateType == OrganisationUpdateType.OrganisationEmail)
             && organisation.PendingRoles.Contains(PartyRole.Buyer)
-            && organisation.ReviewedBy != null
         )
         {
-            await ResendBuyerApprovalEmail(organisation);
+            var organisationWithReviewedBy = await organisationRepository.FindIncludingReviewedBy(organisation.Guid);
 
-            organisation.ReviewComment = null;
-            organisation.ReviewedBy = null;
+            if(organisationWithReviewedBy != null && organisationWithReviewedBy.ReviewedBy != null)
+            {
+                await ResendBuyerApprovalEmail(organisation);
+
+                organisation.ReviewComment = null;
+                organisation.ReviewedBy = null;
+            }
         }
     }
 
