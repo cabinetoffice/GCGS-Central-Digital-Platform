@@ -251,7 +251,7 @@ public class AssignIdentifierUseCaseTest
     }
 
     [Fact]
-    public async Task ItAssignsPPONPrimaryIdentifierIfOnlyInternationalIdentifierExists1()
+    public async Task ItAssignsUKPrimaryIdentifierIfInternationalAndPPONAndUKIdentifiersExists()
     {
         var organisation = GivenOrganisationExist(
             organisationId: Guid.NewGuid(),
