@@ -212,7 +212,7 @@ public class AssignIdentifierUseCaseTest
     }
 
     [Fact]
-    public async Task ItDoesNotAssignsInternationalPrimaryIdentifier()
+    public async Task ItAssignsPPONPrimaryIdentifierIfOnlyInternationalIdentifierExists()
     {
         var organisation = GivenOrganisationExist(
             organisationId: Guid.NewGuid(),
@@ -221,9 +221,103 @@ public class AssignIdentifierUseCaseTest
                 new Persistence.Organisation.Identifier
                 {
                     Primary = true,
-                    Scheme = "GB-COH",
+                    Scheme = "FR-COH",
                     IdentifierId = "944432342",
-                    LegalName = "Acme Ltd"
+                    LegalName = "France Acme Ltd"
+                }
+            ]);
+
+        var result = await UseCase.Execute(new AssignOrganisationIdentifier
+        {
+            OrganisationId = organisation.Guid,
+            Identifier = new OrganisationIdentifier
+            {
+                Id = "c0777aeb968b4113a27d94e55b10c1b4",
+                Scheme = "GB-PPON",
+                LegalName = "France Acme Ltd"
+            }
+        });
+
+        _organisations.Verify(r => r.Save(It.Is<Persistence.Organisation>(o =>
+            o.Guid == organisation.Guid && o.Identifiers.Contains(new Persistence.Organisation.Identifier
+            {
+                Primary = true,
+                Scheme = "GB-PPON",
+                IdentifierId = "c0777aeb968b4113a27d94e55b10c1b4",
+                LegalName = "France Acme Ltd"
+            }
+            ))));
+        result.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task ItAssignsPPONPrimaryIdentifierIfOnlyInternationalIdentifierExists1()
+    {
+        var organisation = GivenOrganisationExist(
+            organisationId: Guid.NewGuid(),
+            identifiers:
+            [
+                new Persistence.Organisation.Identifier
+                {
+                    Primary = false,
+                    Scheme = "FR-COH",
+                    IdentifierId = "944432342",
+                    LegalName = "France Acme Ltd"
+                },
+                new Persistence.Organisation.Identifier
+                {
+                    Primary = true,
+                    Scheme = "GB-PPON",
+                    IdentifierId = "12944432342",
+                    LegalName = "France Acme Ltd"
+                }
+            ]);
+
+        var result = await UseCase.Execute(new AssignOrganisationIdentifier
+        {
+            OrganisationId = organisation.Guid,
+            Identifier = new OrganisationIdentifier
+            {
+                Id = "c0777aeb968b4113a27d94e66b10c1b5",
+                Scheme = "GB-COH",
+                LegalName = "France Acme Ltd"
+            }
+        });
+
+        _organisations.Verify(r => r.Save(It.Is<Persistence.Organisation>(o =>
+            o.Guid == organisation.Guid && o.Identifiers.Contains(new Persistence.Organisation.Identifier
+            {
+                Primary = true,
+                Scheme = "GB-COH",
+                IdentifierId = "c0777aeb968b4113a27d94e66b10c1b5",
+                LegalName = "France Acme Ltd"
+            }
+            ))));
+        result.Should().BeTrue();
+    }
+
+    [Theory]
+    [InlineData("Other", "12345678", "Acme Ltd", false)]    
+    [InlineData("GB-COH", "944432342", "Acme Ltd", false)]
+    public async Task ItDoesNotAssignsInternationalPrimaryIdentifier(string scheme, string identifierId, string legalName, bool primary)
+    {
+        var organisation = GivenOrganisationExist(
+            organisationId: Guid.NewGuid(),
+            identifiers:
+            [
+                new Persistence.Organisation.Identifier
+                {
+                    Primary = primary,
+                    Scheme = scheme,
+                    IdentifierId = identifierId,
+                    LegalName = legalName
+                },
+                 new Persistence.Organisation.Identifier
+                {
+                    Primary = true,
+                    Scheme = "GB-PPON",
+                    IdentifierId = "8765456",
+                    LegalName = legalName
                 }
             ]);
 

@@ -62,39 +62,39 @@ public class AssignIdentifierUseCase(IOrganisationRepository organisations, IIde
         });
 
         return organisation;
-    }
+    }  
 
-    private static void ResetIdentifierPrimaryToFalse(OrganisationInformation.Persistence.Organisation.Identifier? identifier)
+    private static void ResetPrimaryIdentifiers(IEnumerable<OrganisationInformation.Persistence.Organisation.Identifier> identifiers)
     {
-        if (identifier != null)
+        foreach (var identifier in identifiers.Where(id => id.Primary))
         {
             identifier.Primary = false;
-        }    
+        }
     }
 
     public static bool IsPrimaryIdentifier(OrganisationInformation.Persistence.Organisation organisation, string newIdentifierSchemeName)
     {
-        if (newIdentifierSchemeName == IdentifierSchemes.Vat)
+        if (newIdentifierSchemeName == IdentifierSchemes.Vat || !IdentifierSchemesUK.ContainsKey(newIdentifierSchemeName))
         {
             return false;
         }
-        if (!IdentifierSchemesUK.ContainsKey(newIdentifierSchemeName)) // check for International identifier
+       
+        if (organisation.Identifiers.Count == 0)
         {
-            return false;
+            return true;
         }
 
-        bool isPrimary = organisation.Identifiers.Count == 0;
+        var primaryIdentifiers = organisation.Identifiers
+           .Where(i => i.Primary && (i.Scheme == IdentifierSchemes.Other || i.Scheme == IdentifierSchemes.Ppon || !IdentifierSchemesUK.ContainsKey(i.Scheme)))
+           .ToList();
 
-        if (organisation.Identifiers.Any(i => i.Scheme == IdentifierSchemes.Other && i.Primary) ||
-            organisation.Identifiers.Any(i => i.Scheme == IdentifierSchemes.Ppon && i.Primary))
+        if (primaryIdentifiers.Any())
         {
-            ResetIdentifierPrimaryToFalse(organisation.Identifiers.FirstOrDefault(i => i.Scheme == IdentifierSchemes.Other && i.Primary));
-            ResetIdentifierPrimaryToFalse(organisation.Identifiers.FirstOrDefault(i => i.Scheme == IdentifierSchemes.Ppon && i.Primary));
-
-            isPrimary = true;
+            ResetPrimaryIdentifiers(primaryIdentifiers);
+            return true;
         }
 
-        return isPrimary;
+        return false;       
     }
 
     private async Task<OrganisationInformation.Persistence.Organisation> FindOrganisation(
