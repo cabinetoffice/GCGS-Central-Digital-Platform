@@ -23,7 +23,7 @@ public class UpdateOrganisationUseCase(
 {
     public async Task<bool> Execute((Guid organisationId, UpdateOrganisation updateOrganisation) command)
     {
-        var organisation = await organisationRepository.Find(command.organisationId)
+        var organisation = await organisationRepository.FindIncludingTenant(command.organisationId)
             ?? throw new UnknownOrganisationException($"Unknown organisation {command.organisationId}.");
 
         var updateObject = command.updateOrganisation.Organisation;
@@ -36,6 +36,8 @@ public class UpdateOrganisationUseCase(
                     throw new InvalidUpdateOrganisationCommand.MissingOrganisationName();
                 }
                 organisation.Name = updateObject.OrganisationName;
+                organisation.Tenant.Name = updateObject.OrganisationName;
+                organisation.Identifiers.Select(x => x.LegalName = updateObject.OrganisationName).ToList();
                 break;
 
             case OrganisationUpdateType.AddRoles:
