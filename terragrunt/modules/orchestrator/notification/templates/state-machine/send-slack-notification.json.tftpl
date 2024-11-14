@@ -185,11 +185,6 @@
         "Attributes.$": "$.Attributes"
       },
       "ResultPath": "$.dynamoResult",
-      "Next": "Wait"
-    },
-    "Wait": {
-      "Type": "Wait",
-      "Seconds": 1,
       "Next": "Update Message"
     },
     "Update Message": {
@@ -217,7 +212,15 @@
         "Attributes.$": "$.Attributes"
       },
       "ResultPath": "$.dynamoResult",
-      "Next": "Format Slack Message"
+      "Next": "Format Slack Message",
+      "Retry": [
+          {
+            "ErrorEquals": ["DynamoDB.AmazonDynamoDBException"],
+            "IntervalSeconds": 1,
+            "MaxAttempts": 10,
+            "BackoffRate": 2.0
+          }
+        ]
     },
     "Format Slack Message": {
       "Type": "Pass",
