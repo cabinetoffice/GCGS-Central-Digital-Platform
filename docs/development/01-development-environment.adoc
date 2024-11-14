@@ -39,6 +39,8 @@ The `OrganisationApp` requires the following secrets / environment variables:
 * `OneLogin:PrivateKey` / `OneLogin__PrivateKey`
 * `CompaniesHouse:Url` / `CompaniesHouse__Url`
 * `CompaniesHouse:User` / `CompaniesHouse__User`
+* `CharityCommission:Url` / `CharityCommission__Url`
+* `CharityCommission:SubscriptionKey` / `CharityCommission__SubscriptionKey`
 These can be set as secrets with the following dotnet commands:
 
 [source,bash]
