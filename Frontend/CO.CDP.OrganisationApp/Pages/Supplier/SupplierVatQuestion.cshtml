@@ -1,4 +1,5 @@
 @page "/organisation/{id}/supplier-information/vat-question"
+@using CO.CDP.Localization
 @model CO.CDP.OrganisationApp.Pages.Supplier.SupplierVatQuestionModel
 
 @{
@@ -40,9 +41,15 @@
                                         <!--This is 9 numbers, sometimes with 'GB' at the start, for example 123456789 or GB123456789.-->You can find it
                                         on your VAT registration certificate.
                                     </div>
+
+                                    <p id="organisation-vat-error" class="govuk-error-message">
+                                        <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span>
+                                        @Html.ValidationMessageFor(m => m.VatNumber)
+                                    </p>
+
                                     <input class="govuk-input govuk-!-width-one-third @(vatRegHasError ? "govuk-form-group--error" : "")"
                                            id="vatNumber" name="VatNumber" spellcheck="false" autocomplete="false" aria-describedby="vat-registration-number-hint"
-                                           value="@(Model.HasVatNumber == true ? Model.VatNumber : "")">
+                                           value="@(Model.HasVatNumber == true ? Model.VatNumber : "")" @(vatRegHasError ? "aria-describedby=organisation-vat-error" : "")>
                                 </div>
                             </div>
 
