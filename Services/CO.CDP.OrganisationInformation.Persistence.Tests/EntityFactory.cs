@@ -164,6 +164,7 @@ public static class EntityFactory
                     Scopes = personWithScope.Item2
                 }
             );
+            organisation.Tenant.Persons.Add(personWithScope.Item1);
         }
         return organisation;
     }
