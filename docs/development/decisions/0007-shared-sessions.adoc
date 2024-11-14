@@ -31,7 +31,8 @@ Advantages:
 
 Disadvantages:
 
-* User journeys can be disrupted by sub-optimal distribution across containers, especially during container restarts, i.e. deployments.
+* User journeys will be disrupted when containers are restarted, i.e. during the deployment
+* Sub-optimal user distribution per running containers
 
 === Option 2: DynamoDB
 
