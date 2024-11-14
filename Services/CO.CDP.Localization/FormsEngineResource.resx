@@ -216,4 +216,46 @@
   <data name="Qualifications_Configuration_FurtherQuestionsExemptedHeading" xml:space="preserve">
     <value>Do you want to add any relevant qualifications?</value>
   </data>
+  <data name="TradeAssurance_01_Title" xml:space="preserve">
+    <value>Who awarded the trade assurance?</value>
+  </data>
+  <data name="TradeAssurance_01_Description" xml:space="preserve">
+    <value>&lt;div class="govuk-hint"&gt;Enter the name of the person or body. You can add another at the end if you need to. For example, Red Tractor Assurance, QMS Assurance.&lt;/div&gt;</value>
+  </data>
+  <data name="TradeAssurance_01_SummaryTitle" xml:space="preserve">
+    <value>Awarded by</value>
+  </data>
+  <data name="TradeAssurance_02_Title" xml:space="preserve">
+    <value>Do you know the reference number?</value>
+  </data>
+  <data name="TradeAssurance_02_SummaryTitle" xml:space="preserve">
+    <value>Reference number</value>
+  </data>
+  <data name="TradeAssurance_03_Title" xml:space="preserve">
+    <value>What date was the trade assurance awarded?</value>
+  </data>
+  <data name="TradeAssurance_03_SummaryTitle" xml:space="preserve">
+    <value>Date awarded</value>
+  </data>
+  <data name="TradeAssurances_Configuration_AddAnotherAnswerLabel" xml:space="preserve">
+    <value>Add another trade assurance?</value>
+  </data>
+  <data name="TradeAssurances_Configuration_SingularSummaryHeading" xml:space="preserve">
+    <value>You have added 1 trade assurance</value>
+  </data>
+  <data name="TradeAssurances_Configuration_RemoveConfirmationHeading" xml:space="preserve">
+    <value>Are you sure you want to remove this trade assurance?</value>
+  </data>
+  <data name="TradeAssurances_Configuration_PluralSummaryHeadingFormat" xml:space="preserve">
+    <value>You have added {0} trade assurances</value>
+  </data>
+  <data name="TradeAssurances_Configuration_FurtherQuestionsExemptedHint" xml:space="preserve">
+    <value>These are trade assurances for business and trade, not procurement specific. Adding them will provide confidence to contracting authorities and support any bids you submit. For example, Red Tractor Assurance covers food safety, traceability, animal welfare and environmental protection.</value>
+  </data>
+  <data name="TradeAssurances_Configuration_FurtherQuestionsExemptedHeading" xml:space="preserve">
+    <value>Do you want to add any trade assurances?</value>
+  </data>
+  <data name="TradeAssurance_02_Caption" xml:space="preserve">
+    <value>Trade assurance reference number</value>
+  </data>
 </root>
