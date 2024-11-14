@@ -52,7 +52,7 @@
 
                                     <input class="govuk-input govuk-!-width-one-third @(vatRegHasError ? "govuk-input--error" : "")"
                                            id="@nameof(Model.VatNumber)" name="@nameof(Model.VatNumber)" spellcheck="false" autocomplete="false"
-                                           value="@(Model.HasVatNumber == true ? Model.VatNumber : "")" @(vatRegHasError ? "aria-describedby=vat-registration-number-hint organisation-vat-error" : "vat-registration-number-hint")>
+                                           value="@(Model.HasVatNumber == true ? Model.VatNumber : "")" aria-describedy="vat-registration-number-hint @(vatRegHasError ? "organisation-vat-error" : "")">
                                 </div>
                             </div>
 
