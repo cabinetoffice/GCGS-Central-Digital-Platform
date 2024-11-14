@@ -90,6 +90,7 @@ app.MapHealthChecks("/health").AllowAnonymous();
 app.UseAuthentication();
 app.UseAuthorization();
 app.UsePponEndpoints();
+app.UseCountryIdentifiersEndpoints();
 app.Run();
 
 public abstract partial class Program;

@@ -36,6 +36,30 @@ public static class PponEndpointExtensions
                 return operation;
             });
     }
+
+    public static void UseCountryIdentifiersEndpoints(this WebApplication app)
+    {
+        app.MapGet("/registries/{countryCode}",
+            [Authorize(Policy = "OneLoginPolicy")]
+        async (string countryCode, IUseCase<string, IEnumerable<CountryIdentifiers>> useCase) =>
+                await useCase.Execute(countryCode)
+                    .AndThen(identifier => identifier.Any() ? Results.Ok(identifier) : Results.NotFound()))
+            .Produces<IEnumerable<CountryIdentifiers>>(StatusCodes.Status200OK, "application/json")
+            .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
+            .Produces<ProblemDetails>(StatusCodes.Status404NotFound)
+            .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError)
+            .WithOpenApi(operation =>
+            {
+                operation.OperationId = "GetCountryIdentifiers";
+                operation.Description = "Get country identifiers.";
+                operation.Summary = "Get country identifiers.";
+                operation.Responses["200"].Description = "List of identifiers.";
+                operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
+                operation.Responses["404"].Description = "Identifiers not found.";
+                operation.Responses["500"].Description = "Internal server error.";
+                return operation;
+            });
+    }
 }
 
 public static class PponApiExtensions
