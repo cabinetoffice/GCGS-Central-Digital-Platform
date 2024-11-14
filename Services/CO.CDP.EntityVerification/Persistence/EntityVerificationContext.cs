@@ -16,6 +16,7 @@ public class EntityVerificationContext(DbContextOptions<EntityVerificationContex
     public DbSet<Ppon> Ppons { get; set; } = null!;
     public DbSet<Identifier> Identifiers { get; set; } = null!;
     public DbSet<OutboxMessage> OutboxMessages { get; set; }
+    public DbSet<CountryIndentifiers> CountryIdentifiers { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -43,6 +44,13 @@ public class EntityVerificationContext(DbContextOptions<EntityVerificationContex
                 .WithMany(p => p.Identifiers)
                 .HasForeignKey("PponId")
                 .IsRequired();
+        });
+
+        modelBuilder.Entity<CountryIndentifiers>(identifier =>
+        {
+            identifier.HasIndex(p => p.Scheme);
+            identifier.Property(p => p.CreatedOn).HasTimestampDefault();
+            identifier.Property(p => p.UpdatedOn).HasTimestampDefault();           
         });
 
         modelBuilder.OnOutboxMessageCreating();
