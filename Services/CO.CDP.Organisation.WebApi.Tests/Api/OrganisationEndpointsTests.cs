@@ -9,6 +9,7 @@ using Microsoft.Extensions.Hosting;
 using Moq;
 using System.Net;
 using System.Net.Http.Json;
+using System.Text.Json;
 using static CO.CDP.Authentication.Constants;
 using static System.Net.HttpStatusCode;
 
@@ -19,6 +20,7 @@ public class OrganisationEndpointsTests
     private readonly Mock<IUseCase<RegisterOrganisation, Model.Organisation>> _registerOrganisationUseCase = new();
     private readonly Mock<IUseCase<PaginatedOrganisationQuery, IEnumerable<OrganisationExtended>>> _getOrganisationsUseCase = new();
     private readonly Mock<IUseCase<Guid, Model.Organisation>> _getOrganisationUseCase = new();
+    private readonly Mock<IUseCase<Guid, IEnumerable<Review>>> _getReviewsUseCase = new();
     private readonly Mock<IUseCase<(Guid, UpdateOrganisation), bool>> _updatesOrganisationUseCase = new();
     private readonly Mock<IUseCase<(Guid, OrganisationJoinRequestStatus?), IEnumerable<JoinRequestLookUp>>> _getOrganisationJoinRequestsUseCase = new();
     private readonly Mock<IUseCase<(Guid, Guid, UpdateJoinRequest), bool>> _updateJoinRequestUseCase = new();
@@ -240,6 +242,65 @@ public class OrganisationEndpointsTests
         var response = await factory.CreateClient().PatchAsJsonAsync($"/organisations/{organisationId}/join-requests/{joinRequestId}", updateJoinRequest);
 
         response.StatusCode.Should().Be(expectedStatusCode);
+    }
+
+    [Theory]
+    [InlineData(OK, Channel.OneLogin, OrganisationPersonScope.Admin)]
+    [InlineData(OK, Channel.OneLogin, OrganisationPersonScope.Editor)]
+    [InlineData(OK, Channel.OneLogin, OrganisationPersonScope.Viewer)]
+    [InlineData(OK, Channel.ServiceKey)]
+    [InlineData(Forbidden, Channel.OrganisationKey)]
+    [InlineData(Forbidden, "unknown_channel")]
+    [InlineData(Forbidden, Channel.OneLogin, OrganisationPersonScope.Responder)]
+    public async Task GetOrganisationReviews_Authorization_ReturnsExpectedStatusCode(
+        HttpStatusCode expectedStatusCode, string channel, string? scope = null)
+    {
+        var organisationId = Guid.NewGuid();
+
+        var reviews = new List<Review> {
+                new Review {
+                    ApprovedOn = null,
+                    ReviewedBy = new ReviewedBy { Id = new Guid(), Name = "Reviewer name"},
+                    Comment = "Org name is wrong",
+                    Status = ReviewStatus.Rejected
+                }
+            };
+
+        _getReviewsUseCase.Setup(uc => uc.Execute(organisationId))
+            .ReturnsAsync(reviews);
+
+        var factory = new TestAuthorizationWebApplicationFactory<Program>(
+            channel, organisationId, scope,
+            services => services.AddScoped(_ => _getReviewsUseCase.Object));
+
+        var response = await factory.CreateClient().GetAsync($"/organisations/{organisationId}/reviews");
+
+        response.StatusCode.Should().Be(expectedStatusCode);
+
+        if(expectedStatusCode != Forbidden)
+        {
+            var returnedReviews = await response.Content.ReadFromJsonAsync<List<Review>>();
+            returnedReviews.Should().BeEquivalentTo(reviews, options => options.ComparingByMembers<Review>());
+        }
+    }
+
+    [Fact]
+    public async Task GetOrganisationReviews_Returns404_WhenThereAreNoReviews()
+    {
+        var organisationId = Guid.NewGuid();
+
+        var reviews = new List<Review> {};
+
+        _getReviewsUseCase.Setup(uc => uc.Execute(organisationId))
+            .ReturnsAsync(reviews);
+
+        var factory = new TestAuthorizationWebApplicationFactory<Program>(
+            Channel.OneLogin, organisationId, OrganisationPersonScope.Editor,
+            services => services.AddScoped(_ => _getReviewsUseCase.Object));
+
+        var response = await factory.CreateClient().GetAsync($"/organisations/{organisationId}/reviews");
+
+        response.StatusCode.Should().Be(NotFound);
     }
 
     public static Model.Organisation GivenOrganisation(Guid organisationId)
