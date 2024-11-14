@@ -43,13 +43,13 @@ variable "slack_channel_id" {
   default     = "C07FUD6GL7R"
 }
 
-variable "ssm_service_version_arn" {
-  description = "ARN of the parameter holding the service version"
+variable "ssm_envs_service_version_arn" {
+  description = "ARN of the parameter holding the service versions for all environments"
   type        = string
 }
 
-variable "ssm_service_version_name" {
-  description = "Name of the parameter holding the service version"
+variable "ssm_envs_service_version_name" {
+  description = "Name of the parameter holding the service versions for all environments"
   type        = string
 }
 
