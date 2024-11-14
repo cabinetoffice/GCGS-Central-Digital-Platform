@@ -1,9 +1,9 @@
+using CO.CDP.Localization;
 using CO.CDP.Mvc.Validation;
 using CO.CDP.OrganisationApp.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using CO.CDP.Localization;
 
 namespace CO.CDP.OrganisationApp.Pages.Registration;
 
@@ -17,7 +17,7 @@ public class BuyerOrganisationTypeModel(ISession session) : RegistrationStepMode
     public string? BuyerOrganisationType { get; set; }
 
     [BindProperty]
-    [DisplayName("Enter type")]
+    [DisplayName(nameof(StaticTextResource.OrganisationRegistration_BuyerOrganisationType_OtherEnterType_Label))]
     [RequiredIf("BuyerOrganisationType", "Other")]
     public string? OtherValue { get; set; }
 
@@ -59,9 +59,9 @@ public class BuyerOrganisationTypeModel(ISession session) : RegistrationStepMode
 
     public static Dictionary<string, string> BuyerTypes => new()
     {
-        { "CentralGovernment", "Central government, public authority: UK, Scottish, Welsh and Northern Irish Executive"},
-        { "RegionalAndLocalGovernment", "Regional and local government, public authority: UK, Scottish, Welsh and Northern Irish"},
-        { "PublicUndertaking", "Public undertaking"},
-        { "PrivateUtility", "Private utility"}
+        { "CentralGovernment", StaticTextResource.OrganisationRegistration_BuyerOrganisationType_CentralGovernment_Label},
+        { "RegionalAndLocalGovernment", StaticTextResource.OrganisationRegistration_BuyerOrganisationType_RegionalAndLocalGovernment_Label},
+        { "PublicUndertaking", StaticTextResource.OrganisationRegistration_BuyerOrganisationType_PublicUndertaking_Label},
+        { "PrivateUtility", StaticTextResource.OrganisationRegistration_BuyerOrganisationType_PrivateUtility_Label}
     };
 }

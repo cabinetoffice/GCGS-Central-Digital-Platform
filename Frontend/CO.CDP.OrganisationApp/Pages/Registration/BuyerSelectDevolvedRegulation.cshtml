@@ -38,7 +38,7 @@
                             </h1>
                         </legend>
                         <div id="waste-hint" class="govuk-hint">
-                            Select all that apply
+                            @StaticTextResource.OrganisationRegistration_BuyerSelectDevolvedRegulation_Hint
                         </div>
                         @if (regulationsHasError)
                         {
@@ -51,19 +51,19 @@
                             <div class="govuk-checkboxes__item">
                                 <input class="govuk-checkboxes__input" id="chkni" name="Regulations" type="checkbox" value="@DevolvedRegulation.NorthernIreland" @IsSelected(DevolvedRegulation.NorthernIreland)>
                                 <label class="govuk-label govuk-checkboxes__label" for="chkni">
-                                    Northern Ireland
+                                    @StaticTextResource.OrganisationRegistration_BuyerSelectDevolvedRegulation_NI_Label
                                 </label>
                             </div>
                             <div class="govuk-checkboxes__item">
                                 <input class="govuk-checkboxes__input" id="chkscotland" name="Regulations" type="checkbox" value="@DevolvedRegulation.Scotland" @IsSelected(DevolvedRegulation.Scotland)>
                                 <label class="govuk-label govuk-checkboxes__label" for="chkscotland">
-                                    Scotland
+                                    @StaticTextResource.OrganisationRegistration_BuyerSelectDevolvedRegulation_Scotland_Label
                                 </label>
                             </div>
                             <div class="govuk-checkboxes__item">
                                 <input class="govuk-checkboxes__input" id="chkwales" name="Regulations" type="checkbox" value="@DevolvedRegulation.Wales" @IsSelected(DevolvedRegulation.Wales)>
                                 <label class="govuk-label govuk-checkboxes__label" for="chkwales">
-                                    Wales
+                                    @StaticTextResource.OrganisationRegistration_BuyerSelectDevolvedRegulation_Wales_Label
                                 </label>
                             </div>
                         </div>
