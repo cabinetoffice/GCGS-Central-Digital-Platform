@@ -19,6 +19,17 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
             .FirstOrDefaultAsync(t => t.Guid == organisationId);
     }
 
+    public async Task<Organisation?> FindIncludingPersons(Guid organisationId)
+    {
+        return await context.Organisations
+            .Include(o => o.Tenant)
+            .ThenInclude(t => t.Persons)
+            .Include(o => o.OrganisationPersons)
+            .ThenInclude(op => op.Person)
+            .AsSingleQuery()
+            .FirstOrDefaultAsync(t => t.Guid == organisationId);
+    }
+
     public async Task<Organisation?> FindIncludingTenantByOrgId(int id)
     {
         return await context.Organisations
