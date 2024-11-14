@@ -618,6 +618,7 @@ pre.rouge .gs {
 <li><a href="#_4_error_handling_and_validation">4. Error Handling and Validation</a></li>
 <li><a href="#_5_database_naming_conventions">5. Database naming conventions</a></li>
 <li><a href="#_6_acceptance_tests">6. Acceptance tests</a></li>
+<li><a href="#_7_shared_user_sessions">7. Shared user sessions</a></li>
 </ul>
 </li>
 </ul>
@@ -2614,13 +2615,165 @@ The main difference to SpecFlow is that it&#8217;s built on top of xUnit.</p>
 </div>
 </div>
 </div>
+<div class="sect3">
+<h4 id="_7_shared_user_sessions">7. Shared user sessions</h4>
+<div class="paragraph">
+<p>Date: 2024-11-13</p>
+</div>
+<div class="sect4">
+<h5 id="_status_7">Status</h5>
+<div class="paragraph">
+<p>Accepted</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_context_8">Context</h5>
+<div class="paragraph">
+<p>We need shared sessions between containers. In dev we only have one instance of the organisation-app that handles user
+session. In production we&#8217;ll be scaling app the organisation-app depending on current demand, so it will never be a
+single instance.</p>
+</div>
+<div class="paragraph">
+<p>We need sessions to be stored outside of the running container (current behaviour), to provide users with a seamless
+experience.</p>
+</div>
+<div class="paragraph">
+<p>There are no Non Functional Requirements provided by the stakeholders, so it&#8217;s difficult to estimate the number of
+concurrent users we have to to prepare for. We&#8217;ve ballpark estimated it to be anything between 50k to 500k, likely
+double that at the initial rollout. Customer expects 3.5m active users within first 2 years.</p>
+</div>
+<div class="sect5">
+<h6 id="_option_1_sticky_sessions">Option 1: Sticky sessions</h6>
+<div class="paragraph">
+<p>Sticky sessions can be enabled at the infrastructure level, so user&#8217;s requests are handled by a single container.</p>
+</div>
+<div class="paragraph">
+<p>Advantages:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Easy to set up</p>
+</li>
+<li>
+<p>No code changes required</p>
+</li>
+<li>
+<p>No additional cost</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Disadvantages:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>User journeys will be disrupted when containers are restarted, i.e. during the deployment</p>
+</li>
+<li>
+<p>Sub-optimal user distribution per running containers</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect5">
+<h6 id="_option_2_dynamodb">Option 2: DynamoDB</h6>
+<div class="paragraph">
+<p>Advantages:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Easy to implement</p>
+</li>
+<li>
+<p>Cheaper than Redis</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Disadvantages:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Slow compared to other solutions and may not be efficient enough at peak times</p>
+</li>
+<li>
+<p>Manual task required to clear expired sessions</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect5">
+<h6 id="_option_redis">Option: Redis</h6>
+<div class="paragraph">
+<p>Advantages:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Serverless - easy to scale up or down depending on demand</p>
+</li>
+<li>
+<p>Easy to implement</p>
+</li>
+<li>
+<p>Low latency - can provide session details with a minimal lag</p>
+</li>
+<li>
+<p>Can set up TTL, so expired sessions will be automatically removed</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Disadvantages:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Potentially more expensive than DynamoDB</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_decision_6">Decision</h5>
+<div class="paragraph">
+<p>Redis</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>It has lower latency compared to DynamoDB</p>
+</li>
+<li>
+<p>Future proof given the fact we don&#8217;t have any metrics provided by the client</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_consequences_6">Consequences</h5>
+<div class="paragraph">
+<p>We&#8217;ll use Redis as a service on AWS, docker container on local developer set up. This will require additional DevOps
+work as well as modifications to the OrganisationApp to handle shared sessions.</p>
+</div>
+<div class="paragraph">
+<p>Given the fact we don&#8217;t have metrics to design the system for, we should plan for the worst case scenario. Once service
+is live we can monitor the number of concurrent users and re-evaluate the solution.</p>
+</div>
+</div>
+</div>
 </div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2024-11-14 11:42:47 UTC
+Last updated 2024-11-14 11:54:42 UTC
 </div>
 </div>
 </body>
