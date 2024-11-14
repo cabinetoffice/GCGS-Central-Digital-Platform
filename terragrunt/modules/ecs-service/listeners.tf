@@ -37,7 +37,7 @@ resource "aws_lb_listener_rule" "this" {
   count = var.host_port != null ? 1 : 0
 
   listener_arn = var.ecs_listener_arn
-  priority     = var.family == "app" ? var.host_port - 8000 : var.host_port
+  priority     = local.service_listener_rule_priority
 
   dynamic "action" {
     for_each = var.user_pool_arn != null && var.user_pool_client_id != null && var.user_pool_domain != null ? [1] : []
@@ -65,6 +65,28 @@ resource "aws_lb_listener_rule" "this" {
   condition {
     host_header {
       values = var.is_frontend_app ? local.tg_host_header_with_alias : local.tg_host_header
+    }
+  }
+
+  tags = merge(var.tags, { Name : var.name })
+}
+
+resource "aws_lb_listener_rule" "this_allowed_unauthenticated_paths" {
+  count = var.host_port != null && length(var.allowed_unauthenticated_paths) > 0 ? 1 : 0
+
+  listener_arn = var.ecs_listener_arn
+  // To ensure overriding the authenticated rule. @TODO (ABN) (GO Live) Remove when removing Cognito
+  priority     = local.service_listener_rule_priority - 55
+
+  action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.this[0].arn
+    order            = 1
+  }
+
+  condition {
+    path_pattern {
+      values = var.allowed_unauthenticated_paths
     }
   }
 
