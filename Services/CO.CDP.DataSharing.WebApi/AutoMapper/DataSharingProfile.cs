@@ -108,9 +108,9 @@ public class DataSharingProfile : Profile
 
         CreateMap<Persistence.FormQuestion, FormQuestion>()
             .ForMember(m => m.Type, o => o.MapFrom<CustomFormQuestionTypeResolver>())
-            .ForMember(m => m.Title, o => o.MapFrom(m => m.Title))
+            .ForMember(m => m.Title, opt => opt.MapFrom<LocalizedPropertyResolver<Persistence.FormQuestion, FormQuestion>, string>(m => m.Title))
             .ForMember(m => m.Name, o => o.MapFrom(m => m.Name))
-            .ForMember(m => m.Text, o => o.MapFrom(m => m.Description))
+            .ForMember(m => m.Text, opt => opt.MapFrom<NullableLocalizedPropertyResolver<Persistence.FormQuestion, FormQuestion>, string?>(m => m.Description))
             .ForMember(m => m.IsRequired, o => o.MapFrom(m => m.IsRequired))
             .ForMember(m => m.SectionName, opt => opt.MapFrom<LocalizedPropertyResolver<Persistence.FormQuestion, FormQuestion>, string>(m => m.Section.Title))
             .ForMember(m => m.Options, o => o.MapFrom(m => m.Options.Choices))
@@ -118,7 +118,7 @@ public class DataSharingProfile : Profile
 
         CreateMap<Persistence.FormQuestionChoice, FormQuestionOption>()
             .ForMember(m => m.Id, o => o.MapFrom(m => m.Id))
-            .ForMember(m => m.Value, o => o.MapFrom(m => m.Title));
+            .ForMember(m => m.Value, opt => opt.MapFrom<LocalizedPropertyResolver<Persistence.FormQuestionChoice, FormQuestionOption>, string>(m => m.Title));
 
         CreateMap<Organisation.LegalForm, LegalForm>()
             .ForMember(m => m.LawRegistered, o => o.MapFrom(m => m.LawRegistered))
