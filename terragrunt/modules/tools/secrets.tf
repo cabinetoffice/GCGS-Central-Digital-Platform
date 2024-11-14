@@ -18,5 +18,5 @@ resource "aws_secretsmanager_secret_version" "pgadmin_credentials_version" {
 }
 
 data "aws_secretsmanager_secret" "pgadmin_production_support_users" {
-  name        = "${local.name_prefix}-${var.pgadmin_config.name}-production-support-users"
+  name = "${local.name_prefix}-${var.pgadmin_config.name}-production-support-users"
 }
