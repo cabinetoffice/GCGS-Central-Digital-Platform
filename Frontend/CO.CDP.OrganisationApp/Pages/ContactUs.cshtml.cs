@@ -1,5 +1,6 @@
 using CO.CDP.Localization;
 using CO.CDP.Organisation.WebApiClient;
+using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.WebApiClients;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -22,7 +23,7 @@ public class ContactUsModel(IOrganisationClient organisationClient) : PageModel
     [BindProperty]
     [DisplayName(nameof(StaticTextResource.Supplementary_ContactUs_Email))]
     [Required(ErrorMessage = nameof(StaticTextResource.Supplementary_ContactUs_Email_ErrorMessage))]
-    [EmailAddress(ErrorMessage = nameof(StaticTextResource.Supplementary_ContactUs_Email_ValidationErrorMessage))]
+    [RegularExpression(RegExPatterns.EmailAddress, ErrorMessage = nameof(StaticTextResource.Supplementary_ContactUs_Email_ValidationErrorMessage))]
     public string? EmailAddress { get; set; }
 
     [BindProperty]
