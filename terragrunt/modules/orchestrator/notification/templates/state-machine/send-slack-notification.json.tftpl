@@ -1,8 +1,8 @@
 {
   "Comment": "State machine for updating DynamoDB and Slack without Lambda",
-  "StartAt": "Is First Message",
+  "StartAt": "What To Do",
   "States": {
-    "Is First Message": {
+    "What To Do": {
       "Type": "Choice",
       "Choices": [
         {
@@ -16,7 +16,7 @@
               "StringMatches": "STARTED"
             }
           ],
-          "Next": "Get Envs Service Versions"
+          "Next": "Create Message"
         },
         {
           "And": [
@@ -30,33 +30,29 @@
             }
           ],
           "Next": "Update Message Source Details"
+        },
+        {
+          "And": [
+            {
+              "Variable": "$.detail.action",
+              "StringEquals": "cdp-sirsi-deployment-to-orchestrator"
+            },
+            {
+              "Variable": "$.detail.state",
+              "StringEquals": "SUCCEEDED"
+            }
+          ],
+          "Next": "Get Envs Service Versions"
         }
       ],
-      "Default": "Update Message"
-    },
-    "Get Envs Service Versions": {
-      "Type": "Task",
-      "Resource": "arn:aws:states:::aws-sdk:ssm:getParameter",
-      "Parameters": {
-        "Name": "${ssm_envs_service_version_name}",
-        "WithDecryption": true
-      },
-      "ResultPath": "$.serviceVersions",
-      "Next": "Parse Service Versions"
-    },
-    "Parse Service Versions": {
-    "Type": "Pass",
-      "Parameters": {
-        "parsedServiceVersions.$": "States.StringToJson($.serviceVersions.Parameter.Value)"
-      },
-      "ResultPath": "$.parsedServiceVersions",
-      "Next": "Create Message"
+      "Default": "Update Message State"
     },
     "Create Message": {
       "Type": "Task",
       "Resource": "arn:aws:states:::dynamodb:putItem",
       "Parameters": {
         "TableName": "${dynamodb_table_name}",
+        "ConditionExpression": "attribute_not_exists(pipeline_execution_id)",
         "Item": {
           "pipeline_execution_id": {
             "S.$": "$.detail.execution-id"
@@ -92,26 +88,36 @@
               }
             }
           },
-          "Versions": {
+          "versions": {
             "M": {
               "development": {
-                "S.$": "$.parsedServiceVersions.parsedServiceVersions['development']"
+                "S": "?.?.?"
               },
               "staging": {
-                "S.$": "$.parsedServiceVersions.parsedServiceVersions['staging']"
+                "S": "?.?.?"
               },
               "integration": {
-                "S.$": "$.parsedServiceVersions.parsedServiceVersions['integration']"
+                "S": "?.?.?"
               },
               "production": {
-                "S.$": "$.parsedServiceVersions.parsedServiceVersions['production']"
+                "S": "?.?.?"
               }
             }
           }
         }
       },
       "ResultPath": "$.result",
-      "Next": "Get Message"
+      "Next": "Get Message",
+      "Catch": [
+        {
+          "ErrorEquals": ["DynamoDB.ConditionalCheckFailedException"],
+          "ResultPath": "$.error",
+          "Next": "Nothing To Do Here"
+        }
+      ]
+    },
+    "Nothing To Do Here": {
+      "Type": "Succeed"
     },
     "Get Message": {
       "Type": "Task",
@@ -185,9 +191,64 @@
         "Attributes.$": "$.Attributes"
       },
       "ResultPath": "$.dynamoResult",
-      "Next": "Update Message"
+      "Next": "Update Message State"
     },
-    "Update Message": {
+    "Get Envs Service Versions": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::aws-sdk:ssm:getParameter",
+      "Parameters": {
+        "Name": "${ssm_envs_service_version_name}",
+        "WithDecryption": true
+      },
+      "ResultPath": "$.serviceVersions",
+      "Next": "Parse Service Versions"
+    },
+    "Parse Service Versions": {
+    "Type": "Pass",
+      "Parameters": {
+        "parsedServiceVersions.$": "States.StringToJson($.serviceVersions.Parameter.Value)"
+      },
+      "ResultPath": "$.parsedServiceVersions",
+      "Next": "Update Message Versions"
+    },
+    "Update Message Versions": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::dynamodb:updateItem",
+      "Parameters": {
+        "TableName": "${dynamodb_table_name}",
+        "Key": {
+          "pipeline_execution_id": {
+            "S.$": "$.detail.execution-id"
+          }
+        },
+        "UpdateExpression": "SET versions = :versions",
+        "ExpressionAttributeValues": {
+          ":versions": {
+            "M": {
+              "development": {
+                "S.$": "$.parsedServiceVersions.parsedServiceVersions['development']"
+              },
+              "staging": {
+                "S.$": "$.parsedServiceVersions.parsedServiceVersions['staging']"
+              },
+              "integration": {
+                "S.$": "$.parsedServiceVersions.parsedServiceVersions['integration']"
+              },
+              "production": {
+                "S.$": "$.parsedServiceVersions.parsedServiceVersions['production']"
+              }
+            }
+          }
+        },
+        "ReturnValues": "ALL_NEW"
+      },
+      "ResultSelector": {
+        "Attributes.$": "$.Attributes"
+      },
+      "ResultPath": "$.dynamoResult",
+      "Next": "Update Message State"
+    },
+    "Update Message State": {
       "Type": "Task",
       "Resource": "arn:aws:states:::dynamodb:updateItem",
       "Parameters": {
@@ -212,7 +273,7 @@
         "Attributes.$": "$.Attributes"
       },
       "ResultPath": "$.dynamoResult",
-      "Next": "Format Slack Message",
+      "Next": "Get Message",
       "Retry": [
           {
             "ErrorEquals": ["DynamoDB.AmazonDynamoDBException"],
@@ -227,7 +288,7 @@
       "InputPath": "$.dynamoResult.Attributes",
       "Parameters": {
         "formattedMessage": {
-          "text.$": "States.Format(':github: Git commit: {}\n```{}```\n:aws-codepipeline: AWS Execution ID: <https://eu-west-2.console.aws.amazon.com/codesuite/codepipeline/pipelines/cdp-sirsi-deployment/executions/{}/visualization?region=eu-west-2|{}>\n*Started Deployment Pipeline:* \n{} Pull *Source Code*\n{} Update *Orchestrator*\n{} Deploy `v{}` to *Development*\n{} Deploy `v{}` to *Staging*\n{} Deploy `v{}` to *Integration*\n{} Deploy `v{}` to *Production*', $.commit_link.S, $.commit_message.S, $.pipeline_execution_id.S,$.pipeline_execution_id.S,$.stages.M.Source.S,$.stages.M['cdp-sirsi-deployment-to-orchestrator'].S, $.stages.M['cdp-sirsi-deployment-to-development'].S, $.Versions.M['development'].S, $.stages.M['cdp-sirsi-deployment-to-staging'].S, $.Versions.M['staging'].S, $.stages.M['cdp-sirsi-deployment-to-integration'].S, $.Versions.M['integration'].S, $.stages.M['cdp-sirsi-deployment-to-production'].S, $.Versions.M['production'].S)"
+          "text.$": "States.Format(':github: Git commit: {}\n```{}```\n:aws-codepipeline: AWS Execution ID: <https://eu-west-2.console.aws.amazon.com/codesuite/codepipeline/pipelines/cdp-sirsi-deployment/executions/{}/visualization?region=eu-west-2|{}>\n*Started Deployment Pipeline:* \n{} Pull *Source Code*\n{} Update *Orchestrator*\n{} Deploy `v{}` to *Development*\n{} Deploy `v{}` to *Staging*\n{} Deploy `v{}` to *Integration*\n{} Deploy `v{}` to *Production*', $.commit_link.S, $.commit_message.S, $.pipeline_execution_id.S,$.pipeline_execution_id.S,$.stages.M.Source.S,$.stages.M['cdp-sirsi-deployment-to-orchestrator'].S, $.stages.M['cdp-sirsi-deployment-to-development'].S, $.versions.M['development'].S, $.stages.M['cdp-sirsi-deployment-to-staging'].S, $.versions.M['staging'].S, $.stages.M['cdp-sirsi-deployment-to-integration'].S, $.versions.M['integration'].S, $.stages.M['cdp-sirsi-deployment-to-production'].S, $.versions.M['production'].S)"
         }
       },
       "ResultPath": "$.formattedMessage",
