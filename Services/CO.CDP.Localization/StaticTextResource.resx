@@ -797,4 +797,28 @@
   <data name="OrganisationRegistration_BuyerOrganisationType_OtherEnterType_Label" xml:space="preserve">
     <value>Enter type</value>
   </data>
+  <data name="OrganisationRegistration_JoinOrganisationSuccess_Heading" xml:space="preserve">
+    <value>Request to join sent</value>
+  </data>
+  <data name="OrganisationRegistration_JoinOrganisationSuccess_Message" xml:space="preserve">
+    <value>You have successfully applied to join</value>
+  </data>
+  <data name="OrganisationRegistration_JoinOrganisation_Heading" xml:space="preserve">
+    <value>Join company</value>
+  </data>
+  <data name="OrganisationRegistration_JoinOrganisation_Firstname_Label" xml:space="preserve">
+    <value>First name</value>
+  </data>
+  <data name="OrganisationRegistration_JoinOrganisation_Lastname_Label" xml:space="preserve">
+    <value>Last name</value>
+  </data>
+  <data name="OrganisationRegistration_JoinOrganisation_EmailAddress_Label" xml:space="preserve">
+    <value>Email address</value>
+  </data>
+  <data name="OrganisationRegistration_JoinOrganisation_OrganisationName_Label" xml:space="preserve">
+    <value>Organisation name</value>
+  </data>
+  <data name="OrganisationRegistration_JoinOrganisation_ValidationErrorMessage" xml:space="preserve">
+    <value>Select an option</value>
+  </data>
 </root>

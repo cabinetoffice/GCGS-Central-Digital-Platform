@@ -1,15 +1,16 @@
 @page "/registration/{identifier}/join-organisation"
 @model JoinOrganisationModel
+@using CO.CDP.Localization
 
 @{
     var organisationDetails = Model.OrganisationDetails!;
     var userDetails = Model.UserDetails;
     var joinHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Join)).HasInnerHtml;
-    ViewData["Title"] = $"Join company: {@organisationDetails.Name}";
+    ViewData["Title"] = $"{@StaticTextResource.OrganisationRegistration_JoinOrganisation_Heading}: {@organisationDetails.Name}";
 }
 
 <a href="/registration/has-companies-house-number" class="govuk-back-link">
-    Back
+    @StaticTextResource.Global_Back
 </a>
 
 <main class="govuk-main-wrapper">
@@ -24,7 +25,7 @@
                 <dl class="govuk-summary-list">
                     <div class="govuk-summary-list__row">
                         <dt class="govuk-summary-list__key">
-                            Organisation name
+                            @StaticTextResource.OrganisationRegistration_JoinOrganisation_OrganisationName_Label
                         </dt>
                         <dd class="govuk-summary-list__value">
                             <p class="govuk-body">@organisationDetails.Name</p>
@@ -36,7 +37,7 @@
                 <dl class="govuk-summary-list">
                     <div class="govuk-summary-list__row">
                         <dt class="govuk-summary-list__key">
-                            Firstname
+                            @StaticTextResource.OrganisationRegistration_JoinOrganisation_Firstname_Label
                         </dt>
                         <dd class="govuk-summary-list__value">
                             <p class="govuk-body">@userDetails.FirstName</p>
@@ -44,7 +45,7 @@
                     </div>
                     <div class="govuk-summary-list__row">
                         <dt class="govuk-summary-list__key">
-                            Lastname
+                            @StaticTextResource.OrganisationRegistration_JoinOrganisation_Lastname_Label
                         </dt>
                         <dd class="govuk-summary-list__value">
                             <p class="govuk-body">@userDetails.LastName</p>
@@ -52,7 +53,7 @@
                     </div>
                     <div class="govuk-summary-list__row">
                         <dt class="govuk-summary-list__key">
-                            Email address
+                            @StaticTextResource.OrganisationRegistration_JoinOrganisation_EmailAddress_Label
                         </dt>
                         <dd class="govuk-summary-list__value">
                             <p class="govuk-body">@userDetails.Email</p>
@@ -82,18 +83,18 @@
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input" id="@nameof(Model.Join)" name="@nameof(Model.Join)" type="radio"
                                        value="true">
-                                <label class="govuk-label govuk-radios__label" for="@nameof(Model.Join)">Yes</label>
+                                <label class="govuk-label govuk-radios__label" for="@nameof(Model.Join)">@StaticTextResource.Global_Yes</label>
                             </div>
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input" id="@nameof(Model.Join)-no" name="@nameof(Model.Join)" type="radio"
                                        value="false">
-                                <label class="govuk-label govuk-radios__label" for="@nameof(Model.Join)-no">No</label>
+                                <label class="govuk-label govuk-radios__label" for="@nameof(Model.Join)-no">@StaticTextResource.Global_No</label>
                             </div>
                         </div>
                     </legend>
                 </fieldset>
                 <govuk-button>
-                    Continue
+                    @StaticTextResource.Global_Continue
                 </govuk-button>
             </form>
         </div>

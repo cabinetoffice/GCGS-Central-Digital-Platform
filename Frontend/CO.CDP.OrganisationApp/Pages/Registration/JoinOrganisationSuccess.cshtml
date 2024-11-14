@@ -1,13 +1,14 @@
 @page "/registration/{identifier}/join-organisation/success"
 @model JoinOrganisationSuccessModel
+@using CO.CDP.Localization
 
 @{
-    ViewData["Title"] = "Request to join sent";
+    ViewData["Title"] = @StaticTextResource.OrganisationRegistration_JoinOrganisationSuccess_Heading;
     var organisationDetails = Model.OrganisationDetails!;
 }
 
 <a href="/organisation-selection" class="govuk-back-link">
-    Back
+    @StaticTextResource.Global_Back
 </a>
 
 <main class="govuk-main-wrapper">
@@ -18,7 +19,7 @@
                     @ViewData["Title"]
                 </h1>
                 <div class="govuk-panel__body">
-                    You have successfully applied to join @organisationDetails.Name
+                    @($"{@StaticTextResource.OrganisationRegistration_JoinOrganisationSuccess_Message} {@organisationDetails.Name}")
                 </div>
             </div>
         </div>
