@@ -10,4 +10,6 @@ public record AuthorityConfiguration
     public required RsaSecurityKey RsaPrivateKey { get; init; }
 
     public required RSAParameters RsaPublicParams { get; init; }
+
+    public string Kid { get; } = "c2c3b22ac07f425eb893123de395464e";
 }

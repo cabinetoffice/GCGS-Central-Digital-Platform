@@ -52,7 +52,7 @@ public class DataSharingProfile : Profile
                 o => o.MapFrom((_, _, _, context) => context.Items["AdditionalParties"]));
 
         Uri? tempResult;
-        CreateMap<Organisation.Identifier, Identifier>()
+        CreateMap<Organisation.Identifier, OrganisationInformation.Identifier>()
             .ForMember(m => m.Scheme, o => o.MapFrom(m => m.Scheme))
             .ForMember(m => m.Id, o => o.MapFrom(m => m.IdentifierId))
             .ForMember(m => m.LegalName, o => o.MapFrom(m => m.LegalName))
@@ -91,7 +91,7 @@ public class DataSharingProfile : Profile
 
         CreateMap<Persistence.FormAnswerSet, FormAnswerSet>()
             .ForMember(m => m.Id, o => o.MapFrom(m => m.Guid))
-            .ForMember(m => m.SectionName, opt => opt.MapFrom<LocalizedPropertyResolver<Persistence.FormAnswerSet, FormAnswerSet>, string>(m => m.Section.Title))
+            .ForMember(m => m.SectionName, o => o.MapFrom<LocalizedPropertyResolver<Persistence.FormAnswerSet, FormAnswerSet>, string>(m => m.Section.Title))
             .ForMember(m => m.Answers, o => o.MapFrom(m => m.Answers.Where(x => x.Question.Type != Persistence.FormQuestionType.NoInput && x.Question.Type != Persistence.FormQuestionType.CheckYourAnswers)));
 
         CreateMap<Persistence.FormAnswer, FormAnswer>()
@@ -108,17 +108,17 @@ public class DataSharingProfile : Profile
 
         CreateMap<Persistence.FormQuestion, FormQuestion>()
             .ForMember(m => m.Type, o => o.MapFrom<CustomFormQuestionTypeResolver>())
-            .ForMember(m => m.Title, o => o.MapFrom(m => m.Title))
+            .ForMember(m => m.Title, o => o.MapFrom<LocalizedPropertyResolver<Persistence.FormQuestion, FormQuestion>, string>(m => m.Title))
             .ForMember(m => m.Name, o => o.MapFrom(m => m.Name))
-            .ForMember(m => m.Text, o => o.MapFrom(m => m.Description))
+            .ForMember(m => m.Text, o => o.MapFrom<LocalizedPropertyResolver<Persistence.FormQuestion, FormQuestion>, string>(m => m.Description ?? string.Empty))
             .ForMember(m => m.IsRequired, o => o.MapFrom(m => m.IsRequired))
-            .ForMember(m => m.SectionName, opt => opt.MapFrom<LocalizedPropertyResolver<Persistence.FormQuestion, FormQuestion>, string>(m => m.Section.Title))
+            .ForMember(m => m.SectionName, o => o.MapFrom<LocalizedPropertyResolver<Persistence.FormQuestion, FormQuestion>, string>(m => m.Section.Title))
             .ForMember(m => m.Options, o => o.MapFrom(m => m.Options.Choices))
             .ForMember(m => m.SortOrder, o => o.MapFrom(m => m.SortOrder));
 
         CreateMap<Persistence.FormQuestionChoice, FormQuestionOption>()
             .ForMember(m => m.Id, o => o.MapFrom(m => m.Id))
-            .ForMember(m => m.Value, o => o.MapFrom(m => m.Title));
+            .ForMember(m => m.Value, o => o.MapFrom<LocalizedPropertyResolver<Persistence.FormQuestionChoice, FormQuestionOption>, string>(m => m.Title));
 
         CreateMap<Organisation.LegalForm, LegalForm>()
             .ForMember(m => m.LawRegistered, o => o.MapFrom(m => m.LawRegistered))
@@ -177,7 +177,8 @@ public class CustomResolver : IValueResolver<Persistence.SharedConsentQuestionAn
                 return source.Answer.DateValue.ToString();
             case Persistence.FormQuestionType.Address:
                 return source.Answer.AddressValue != null ? ToHtmlString(source.Answer.AddressValue) : "";
-            default: return "";
+            default:
+                return "";
         }
     }
 

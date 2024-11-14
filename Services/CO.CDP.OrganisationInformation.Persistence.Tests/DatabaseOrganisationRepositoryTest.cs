@@ -23,7 +23,6 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql) : 
         found.Should().Be(organisation);
         found.As<Organisation>().Id.Should().BePositive();
         found.As<Organisation>().OrganisationPersons.First().Scopes.Should().Equal(["ADMIN"]);
-        found.As<Organisation>().Tenant.Persons.First().Should().NotBeNull();
     }
 
     [Fact]
@@ -634,7 +633,10 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql) : 
 
         var alice = GivenPerson(firstname: "Alice");
         var bob = GivenPerson(firstname: "Bob");
-        var organisation = GivenOrganisation(personsWithScope: [(alice, []), (bob, [])]);
+        var organisation = GivenOrganisation(
+            personsWithScope: [(alice, []), (bob, [])],
+            tenantPersons: [alice, bob]
+        );
 
         await using var context = postgreSql.OrganisationInformationContext();
         await context.Organisations.AddAsync(organisation);

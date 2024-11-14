@@ -22,9 +22,9 @@ public class DataServiceTests
         _localizer.Setup(l => l[It.IsAny<string>()])
             .Returns((string key) =>
             {
-                if (key == "FinancialInformation_SectionTitle")
+                if (key == "Localized_String")
                 {
-                    return new LocalizedHtmlString("FinancialInformation_SectionTitle", "Financial Information");
+                    return new LocalizedHtmlString("Localized_String", "Localized string");
                 }
 
                 return new LocalizedHtmlString(key, key);
@@ -106,10 +106,11 @@ public class DataServiceTests
 
         result.FormAnswerSetForPdfs.Should().ContainSingle();
 
-        var exclusionsSection = result.FormAnswerSetForPdfs.First(fa => fa.SectionType == CO.CDP.OrganisationInformation.Persistence.Forms.FormSectionType.Exclusions);
-        exclusionsSection.SectionName.Should().Be("Financial Information");
-        exclusionsSection.QuestionAnswers.Should().Contain(qa => qa.Item1 == "Were your accounts audited?" && qa.Item2 == "yes");
-        exclusionsSection.QuestionAnswers.Should().Contain(qa => qa.Item1 == "What is the financial year end date for the information you uploaded?" && qa.Item2 == DateTime.Today.ToString("dd-MM-yyyy"));
-        exclusionsSection.QuestionAnswers.Should().Contain(qa => qa.Item1 == "Upload your accounts" && qa.Item2 == "a_dummy_file.pdf");
+        var formSection = result.FormAnswerSetForPdfs.First(fa => fa.SectionType == CO.CDP.OrganisationInformation.Persistence.Forms.FormSectionType.Exclusions);
+        formSection.SectionName.Should().Be("Localized string");
+        formSection.QuestionAnswers.Should().Contain(qa => qa.Item1 == "Localized string" && qa.Item2 == "yes");
+        formSection.QuestionAnswers.Should().Contain(qa => qa.Item1 == "What is the financial year end date for the information you uploaded?" && qa.Item2 == DateTime.Today.ToString("dd MMMM yyyy"));
+        formSection.QuestionAnswers.Should().Contain(qa => qa.Item1 == "Upload your accounts" && qa.Item2 == "a_dummy_file.pdf");
+
     }
 }

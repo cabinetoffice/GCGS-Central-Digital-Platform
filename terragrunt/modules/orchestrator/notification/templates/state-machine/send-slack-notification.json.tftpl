@@ -16,7 +16,7 @@
               "StringMatches": "STARTED"
             }
           ],
-          "Next": "Create Message"
+          "Next": "Get Envs Service Versions"
         },
         {
           "And": [
@@ -33,6 +33,24 @@
         }
       ],
       "Default": "Update Message"
+    },
+    "Get Envs Service Versions": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::aws-sdk:ssm:getParameter",
+      "Parameters": {
+        "Name": "${ssm_envs_service_version_name}",
+        "WithDecryption": true
+      },
+      "ResultPath": "$.serviceVersions",
+      "Next": "Parse Service Versions"
+    },
+    "Parse Service Versions": {
+    "Type": "Pass",
+      "Parameters": {
+        "parsedServiceVersions.$": "States.StringToJson($.serviceVersions.Parameter.Value)"
+      },
+      "ResultPath": "$.parsedServiceVersions",
+      "Next": "Create Message"
     },
     "Create Message": {
       "Type": "Task",
@@ -71,6 +89,22 @@
               },
               "cdp-sirsi-deployment-to-production": {
                 "S.$": "States.Format(':white_circle: ` PENDING ` @ `{}....`', $.time)"
+              }
+            }
+          },
+          "Versions": {
+            "M": {
+              "development": {
+                "S.$": "$.parsedServiceVersions.parsedServiceVersions['development']"
+              },
+              "staging": {
+                "S.$": "$.parsedServiceVersions.parsedServiceVersions['staging']"
+              },
+              "integration": {
+                "S.$": "$.parsedServiceVersions.parsedServiceVersions['integration']"
+              },
+              "production": {
+                "S.$": "$.parsedServiceVersions.parsedServiceVersions['production']"
               }
             }
           }
@@ -190,7 +224,7 @@
       "InputPath": "$.dynamoResult.Attributes",
       "Parameters": {
         "formattedMessage": {
-          "text.$": "States.Format(':github: Git commit: {}\n```{}```\n:aws-codepipeline: AWS Execution ID: <https://eu-west-2.console.aws.amazon.com/codesuite/codepipeline/pipelines/cdp-sirsi-deployment/executions/{}/visualization?region=eu-west-2|{}>\n*Started Deployment Pipeline:* \n{} Pull *Source Code*\n{} Update *Orchestrator*\n{} Update *Development*\n{} Update *Staging*\n{} Update *Integration*\n{} Update *Production*', $.commit_link.S, $.commit_message.S, $.pipeline_execution_id.S,$.pipeline_execution_id.S,$.stages.M.Source.S,$.stages.M['cdp-sirsi-deployment-to-orchestrator'].S, $.stages.M['cdp-sirsi-deployment-to-development'].S, $.stages.M['cdp-sirsi-deployment-to-staging'].S, $.stages.M['cdp-sirsi-deployment-to-integration'].S, $.stages.M['cdp-sirsi-deployment-to-production'].S)"
+          "text.$": "States.Format(':github: Git commit: {}\n```{}```\n:aws-codepipeline: AWS Execution ID: <https://eu-west-2.console.aws.amazon.com/codesuite/codepipeline/pipelines/cdp-sirsi-deployment/executions/{}/visualization?region=eu-west-2|{}>\n*Started Deployment Pipeline:* \n{} Pull *Source Code*\n{} Update *Orchestrator*\n{} Deploy `v{}` to *Development*\n{} Deploy `v{}` to *Staging*\n{} Deploy `v{}` to *Integration*\n{} Deploy `v{}` to *Production*', $.commit_link.S, $.commit_message.S, $.pipeline_execution_id.S,$.pipeline_execution_id.S,$.stages.M.Source.S,$.stages.M['cdp-sirsi-deployment-to-orchestrator'].S, $.stages.M['cdp-sirsi-deployment-to-development'].S, $.Versions.M['development'].S, $.stages.M['cdp-sirsi-deployment-to-staging'].S, $.Versions.M['staging'].S, $.stages.M['cdp-sirsi-deployment-to-integration'].S, $.Versions.M['integration'].S, $.stages.M['cdp-sirsi-deployment-to-production'].S, $.Versions.M['production'].S)"
         }
       },
       "ResultPath": "$.formattedMessage",

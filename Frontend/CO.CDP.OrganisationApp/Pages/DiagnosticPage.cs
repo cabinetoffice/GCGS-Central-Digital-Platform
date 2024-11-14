@@ -1,4 +1,5 @@
 using CO.CDP.OrganisationApp.Models;
+using CO.CDP.OrganisationApp.WebApiClients;
 using Microsoft.AspNetCore.Authentication;
 using System.Text;
 
@@ -10,8 +11,9 @@ public interface IDiagnosticPage
 }
 
 public class DiagnosticPage(
+    ISession session,
     IHttpContextAccessor httpContextAccessor,
-    ISession session) : IDiagnosticPage
+    IAuthorityClient authorityClient) : IDiagnosticPage
 {
     public async Task<string> GetContent()
     {
@@ -23,8 +25,6 @@ public class DiagnosticPage(
             oneLoginToken = await httpContextAccessor.HttpContext.GetTokenAsync("access_token");
             oneLoginTokenExpiry = await httpContextAccessor.HttpContext.GetTokenAsync("expires_at");
         }
-
-        var userDetails = session.Get<UserDetails>(Session.UserDetailsKey);
 
         static string tokenHtml(string text, string value, string id) =>
             $"<p><strong>{text} (<a target='_blank' href='https://jwt.io/#debugger-io?token={value}'>Decode</a>) (<a style='text-decoration: none;' href=\"javascript:copyContent('{id}');\">📄 Copy</a>):</strong><br/><span id='{id}' style='overflow-wrap: break-word;'>{value}</span></p>";
@@ -41,13 +41,18 @@ public class DiagnosticPage(
             sb.Append($"<p><strong>OneLogin Access Token Expiry: </strong><br/>{DateTimeOffset.Parse(oneLoginTokenExpiry).ToLocalTime()}</p>");
         }
 
-        if (userDetails?.AuthTokens != null)
+        var userUrn = session.Get<UserDetails>(Session.UserDetailsKey)?.UserUrn;
+        if (userUrn != null)
         {
-            sb.Append(tokenHtml("Authority Access Token", userDetails.AuthTokens.AccessToken, "aat"));
-            sb.Append($"<p><strong>Authority Access Token Expiry: </strong><br/>{userDetails.AuthTokens.AccessTokenExpiry}</p>");
+            var tokens = await authorityClient.GetAuthTokens(userUrn);
+            if (tokens != null)
+            {
+                sb.Append(tokenHtml("Authority Access Token", tokens.AccessToken, "aat"));
+                sb.Append($"<p><strong>Authority Access Token Expiry: </strong><br/>{tokens.AccessTokenExpiry}</p>");
 
-            sb.Append($"<p><strong>Authority Refresh Token: </strong><br/><span style='overflow-wrap: break-word;'>{userDetails.AuthTokens.RefreshToken}</span></p>");
-            sb.Append($"<p><strong>Authority Refresh Token Expiry: </strong><br/>{userDetails.AuthTokens.RefreshTokenExpiry}</p>");
+                sb.Append($"<p><strong>Authority Refresh Token: </strong><br/><span style='overflow-wrap: break-word;'>{tokens.RefreshToken}</span></p>");
+                sb.Append($"<p><strong>Authority Refresh Token Expiry: </strong><br/>{tokens.RefreshTokenExpiry}</p>");
+            }
         }
 
         sb.Append("<script>const copyContent = async (id) => {try {const text = document.getElementById(id).innerHTML;await navigator.clipboard.writeText(text);} catch (e) {}}</script>");

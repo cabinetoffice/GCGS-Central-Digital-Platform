@@ -1,7 +1,10 @@
 @page "/confirmation-message"
 
+@using CO.CDP.Localization
+@using Microsoft.AspNetCore.Mvc.Localization
+
 @{
-    ViewData["Title"] = "Thank you for contacting GOV.UK";
+    ViewData["Title"] = @StaticTextResource.Supplementary_Title;
 }
 
 <main class="govuk-main-wrapper" id="main-content">
@@ -13,7 +16,7 @@
                 </h1>
             </div>
 
-            <p class="govuk-body"><a href="#" onclick="self.close()">Close this window</a></p>
+            <p class="govuk-body"><a href="#" onclick="self.close()">@StaticTextResource.Supplementary_CloseThisWindow</a></p>
 
         </div>
     </div>

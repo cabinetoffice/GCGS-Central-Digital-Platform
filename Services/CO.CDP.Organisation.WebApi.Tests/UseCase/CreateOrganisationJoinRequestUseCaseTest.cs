@@ -9,7 +9,7 @@ using CO.CDP.Organisation.WebApi.UseCase;
 using CO.CDP.OrganisationInformation;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using OrganisationJoinRequest = CO.CDP.Organisation.WebApi.Model.OrganisationJoinRequest;
+using OrganisationJoinRequestModel = CO.CDP.Organisation.WebApi.Model.OrganisationJoinRequest;
 using Person = CO.CDP.OrganisationInformation.Persistence.Person;
 
 namespace CO.CDP.Organisation.WebApi.Tests.UseCase;
@@ -72,7 +72,7 @@ public class CreateOrganisationJoinRequestUseCaseTests
     }
 
     [Fact]
-    public async Task Execute_WhenOrganisationIsUnknown_ShouldThrowUnknownOrganisationException()
+    public async Task Execute_ShouldThrowUnknownOrganisationException_WhenOrganisationIsUnknown()
     {
         var organisationId = Guid.NewGuid();
         var createJoinRequestCommand = new CreateOrganisationJoinRequest { PersonId = Guid.NewGuid() };
@@ -87,10 +87,21 @@ public class CreateOrganisationJoinRequestUseCaseTests
     }
 
     [Fact]
-    public async Task Execute_WhenOrganisationIsknownAndPersonAlreadyInvited_ShouldThrowPersonAlreadyInvitedToOrganisationException()
+    public async Task Execute_ShouldUpdateExistingJoinRequest_WhenPersonAlreadyHasPendingRequest()
     {
         var createJoinRequestCommand = new CreateOrganisationJoinRequest { PersonId = _person.Guid };
-        
+        var joinRequestId = Guid.NewGuid();
+        var existingJoinRequest = new CO.CDP.OrganisationInformation.Persistence.OrganisationJoinRequest
+        {
+            Guid = joinRequestId,
+            Status = OrganisationJoinRequestStatus.Rejected,
+            Id = default,
+            Person = null!,
+            Organisation = null!,
+            ReviewedBy = null!,
+            ReviewedOn = default
+        };
+
         _mockOrganisationRepository.Setup(repo => repo.Find(_organisation.Guid))
             .ReturnsAsync(_organisation);
 
@@ -98,15 +109,28 @@ public class CreateOrganisationJoinRequestUseCaseTests
             .ReturnsAsync(_person);
 
         _mockOrganisationJoinRequestRepository.Setup(repo => repo.FindByOrganisationAndPerson(_organisation.Guid, _person.Guid))
-            .ReturnsAsync(new OrganisationInformation.Persistence.OrganisationJoinRequest() { Guid = Guid.NewGuid(), Status = OrganisationJoinRequestStatus.Pending});
+            .ReturnsAsync(new OrganisationInformation.Persistence.OrganisationJoinRequest() { Guid = joinRequestId, Status = OrganisationJoinRequestStatus.Rejected });
 
-        Func<Task> action = async () => await _useCase.Execute((_organisation.Guid, createJoinRequestCommand));
+        _mockMapper.Setup(mapper => mapper.Map<OrganisationJoinRequestModel>(It.IsAny<CO.CDP.OrganisationInformation.Persistence.OrganisationJoinRequest>()))
+            .Returns(new OrganisationJoinRequestModel
+            {
+                Status = OrganisationJoinRequestStatus.Pending,
+                Id = default,
+                Person = null!,
+                Organisation = null!,
+                ReviewedBy = null!,
+                ReviewedOn = default
+            });
 
-        await action.Should().ThrowAsync<PersonAlreadyInvitedToOrganisationException>();
+        var result = await _useCase.Execute((_organisation.Guid, createJoinRequestCommand));
+
+        result.Status.Should().Be(OrganisationJoinRequestStatus.Pending);        
+        _mockOrganisationJoinRequestRepository.Verify(repo => repo.Save(It.IsAny<CO.CDP.OrganisationInformation.Persistence.OrganisationJoinRequest>()), Times.Once);
+        _mockMapper.Verify(mapper => mapper.Map<OrganisationJoinRequestModel>(It.IsAny<CO.CDP.OrganisationInformation.Persistence.OrganisationJoinRequest>()), Times.Once);
     }
 
     [Fact]
-    public async Task Execute_WhenPersonIsUnknown_ShouldThrowUnknownPersonException()
+    public async Task Execute_ShouldThrowUnknownPersonException_WhenPersonIsUnknown()
     {
         var personId = Guid.NewGuid();
         var createJoinRequestCommand = new CreateOrganisationJoinRequest { PersonId = personId };
@@ -134,8 +158,8 @@ public class CreateOrganisationJoinRequestUseCaseTests
         _mockPersonRepository.Setup(repo => repo.Find(_person.Guid))
             .ReturnsAsync(_person);
 
-        _mockMapper.Setup(mapper => mapper.Map<OrganisationJoinRequest>(It.IsAny<CO.CDP.OrganisationInformation.Persistence.OrganisationJoinRequest>()))
-            .Returns(new OrganisationJoinRequest
+        _mockMapper.Setup(mapper => mapper.Map<OrganisationJoinRequestModel>(It.IsAny<CO.CDP.OrganisationInformation.Persistence.OrganisationJoinRequest>()))
+            .Returns(new OrganisationJoinRequestModel
             {
                 Status = OrganisationJoinRequestStatus.Pending,
                 Id = default,
@@ -151,7 +175,7 @@ public class CreateOrganisationJoinRequestUseCaseTests
         result.Status.Should().Be(OrganisationJoinRequestStatus.Pending);
 
         _mockOrganisationJoinRequestRepository.Verify(repo => repo.Save(It.IsAny<CO.CDP.OrganisationInformation.Persistence.OrganisationJoinRequest>()), Times.Once);
-        _mockMapper.Verify(mapper => mapper.Map<OrganisationJoinRequest>(It.IsAny<CO.CDP.OrganisationInformation.Persistence.OrganisationJoinRequest>()), Times.Once);
+        _mockMapper.Verify(mapper => mapper.Map<OrganisationJoinRequestModel>(It.IsAny<CO.CDP.OrganisationInformation.Persistence.OrganisationJoinRequest>()), Times.Once);
     }
 
     [Fact]
@@ -165,8 +189,8 @@ public class CreateOrganisationJoinRequestUseCaseTests
         _mockPersonRepository.Setup(repo => repo.Find(_person.Guid))
             .ReturnsAsync(_person);
 
-        _mockMapper.Setup(mapper => mapper.Map<OrganisationJoinRequest>(It.IsAny<CO.CDP.OrganisationInformation.Persistence.OrganisationJoinRequest>()))
-            .Returns(new OrganisationJoinRequest
+        _mockMapper.Setup(mapper => mapper.Map<OrganisationJoinRequestModel>(It.IsAny<CO.CDP.OrganisationInformation.Persistence.OrganisationJoinRequest>()))
+            .Returns(new OrganisationJoinRequestModel
             {
                 Status = OrganisationJoinRequestStatus.Pending,
                 Id = default,
@@ -222,8 +246,8 @@ public class CreateOrganisationJoinRequestUseCaseTests
                 Organisation = null!
             }).ToList());
 
-        _mockMapper.Setup(mapper => mapper.Map<OrganisationJoinRequest>(It.IsAny<CO.CDP.OrganisationInformation.Persistence.OrganisationJoinRequest>()))
-            .Returns(new OrganisationJoinRequest
+        _mockMapper.Setup(mapper => mapper.Map<OrganisationJoinRequestModel>(It.IsAny<CO.CDP.OrganisationInformation.Persistence.OrganisationJoinRequest>()))
+            .Returns(new OrganisationJoinRequestModel
             {
                 Status = OrganisationJoinRequestStatus.Pending,
                 Id = default,

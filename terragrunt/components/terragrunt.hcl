@@ -66,7 +66,7 @@ locals {
       canary_schedule_expression = "rate(30 minutes)"
       fts_azure_frontdoor        = null
       name                       = "staging"
-      pinned_service_version     = "1.0.6"
+      pinned_service_version     = "1.0.7"
       postgres_instance_type     = "db.t4g.micro"
       private_subnets = [
         "10.${local.cidr_b_staging}.101.0/24",
@@ -353,25 +353,6 @@ locals {
       port_host = 5050
     }
   }
-
-  pen_testing = {
-    allowed_ips = [
-      "212.139.19.138", # GOACO
-      "94.174.71.0/24", # Ali Bahman
-      "82.38.3.0/24",   # Dorian Stefan
-    ]
-    user_arns = [
-      "arn:aws:iam::525593800265:user/ali.bahman@goaco.com",
-      "arn:aws:iam::525593800265:user/dorian.stefan@goaco.com",
-    ]
-    external_user_arns = []
-  }
-
-
-  terraform_operators = [
-    "arn:aws:iam::525593800265:user/ali.bahman@goaco.com",
-    "arn:aws:iam::525593800265:user/jakub.zalas@goaco.com",
-  ]
 
   tg = {
     state_bucket = "tfstate-${local.product.resource_name}-${local.environment}-${get_aws_account_id()}"

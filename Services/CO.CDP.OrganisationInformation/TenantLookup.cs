@@ -19,6 +19,7 @@ public record UserDetails
     /// <example>"john@example.com"</example>
     [EmailAddress]
     public required string Email { get; init; }
+    public required List<string> Scopes { get; init; }
 }
 
 public record UserTenant

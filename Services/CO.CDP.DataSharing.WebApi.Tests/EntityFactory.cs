@@ -1,10 +1,13 @@
 using CO.CDP.DataSharing.WebApi.Model;
 using CO.CDP.OrganisationInformation;
 using CO.CDP.OrganisationInformation.Persistence;
+using CO.CDP.OrganisationInformation.Persistence.Forms;
 using static CO.CDP.OrganisationInformation.Persistence.ConnectedEntity;
 using static CO.CDP.OrganisationInformation.Persistence.Organisation;
 using ConnectedEntityType = CO.CDP.OrganisationInformation.Persistence.ConnectedEntity.ConnectedEntityType;
 using ConnectedOrganisationCategory = CO.CDP.OrganisationInformation.Persistence.ConnectedEntity.ConnectedOrganisationCategory;
+using Form = CO.CDP.OrganisationInformation.Persistence.Forms.Form;
+using FormQuestion = CO.CDP.OrganisationInformation.Persistence.Forms.FormQuestion;
 using PersistenceForms = CO.CDP.OrganisationInformation.Persistence.Forms;
 
 namespace CO.CDP.DataSharing.WebApi.Tests;
@@ -40,14 +43,48 @@ internal static class EntityFactory
 
     internal static PersistenceForms.SharedConsent GetSharedConsent(int organisationId, Guid organisationGuid, Guid formId)
     {
-        var form = new PersistenceForms.Form
+        var form = new Form
         {
             Guid = formId,
             Name = "Standard Questions",
             Version = "1.0",
             IsRequired = true,
             Scope = PersistenceForms.FormScope.SupplierInformation,
-            Sections = new List<PersistenceForms.FormSection> { }
+            Sections = new List<PersistenceForms.FormSection> {
+                new FormSection
+                {
+                    Id = 1,
+                    Guid = Guid.NewGuid(),
+                    Title = "General Information",
+                    Type = FormSectionType.Standard,
+                    FormId = 1,
+                    Form = new Form { Id = 1, Guid = Guid.NewGuid(), Name = "", Version = "1", Scope = FormScope.SupplierInformation, Sections = new List<FormSection>(), IsRequired = false },
+                    Questions = new List<FormQuestion>
+                    {
+                        new() {
+                            Caption = null,
+                            Description = "Localized_String",
+                            Title = "Localized_String",
+                            Guid = Guid.NewGuid(),
+                            NextQuestion = null,
+                            NextQuestionAlternative = null,
+                            SortOrder = 1,
+                            Section = null!,
+                            IsRequired = false,
+                            Name = "Name",
+                            Options = null!,
+                            Type = PersistenceForms.FormQuestionType.Text
+                        }
+                    },
+                    AllowsMultipleAnswerSets = false,
+                    CheckFurtherQuestionsExempted = false,
+                    DisplayOrder = 1,
+                    Configuration = new FormSectionConfiguration
+                    { SingularSummaryHeading = "", PluralSummaryHeadingFormat = "", AddAnotherAnswerLabel = "", RemoveConfirmationCaption = "", RemoveConfirmationHeading = "", FurtherQuestionsExemptedHeading = "", FurtherQuestionsExemptedHint = "" },
+                    CreatedOn = DateTimeOffset.UtcNow,
+                    UpdatedOn = DateTimeOffset.UtcNow
+                }
+            }
         };
 
         var organisation = GivenOrganisation(
@@ -291,7 +328,7 @@ internal static class EntityFactory
             FormId = form.Id,
             Form = form,
             Questions = new List<PersistenceForms.FormQuestion>(),
-            Title = "FinancialInformation_SectionTitle",
+            Title = "Localized_String",
             Type = sectionType ?? PersistenceForms.FormSectionType.Declaration,
             AllowsMultipleAnswerSets = true,
             CheckFurtherQuestionsExempted = false,
@@ -351,8 +388,8 @@ internal static class EntityFactory
                         Guid = Guid.NewGuid(),
                         Caption = "Page caption",
                         Name = "_Section0" + GetQuestionNumber(),
-                        Title = "Were your accounts audited?",
-                        Description = String.Empty,
+                        Title = "Localized_String",
+                        Description = "Localized_String",
                         Type = PersistenceForms.FormQuestionType.YesOrNo,
                         IsRequired = true,
                         Options = new PersistenceForms.FormQuestionOptions(),

@@ -88,11 +88,6 @@ variable "role_terraform_arn" {
   type        = string
 }
 
-variable "role_terraform_name" {
-  description = "Terraform IAM role name"
-  type        = string
-}
-
 variable "tags" {
   description = "Tags to apply to all resources in this module"
   type        = map(string)
