@@ -39,7 +39,7 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
             }
         };
         var organisation = Organisation;
-        _organisationRepositoryMock.Setup(repo => repo.Find(_organisationId)).ReturnsAsync(organisation);
+        _organisationRepositoryMock.Setup(repo => repo.FindIncludingTenant(_organisationId)).ReturnsAsync(organisation);
 
         var result = await UseCase.Execute((_organisationId, updateOrganisation));
 
@@ -64,7 +64,7 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
             }
         };
         var organisation = OrganisationWithOtherIdentifier;
-        _organisationRepositoryMock.Setup(repo => repo.Find(_organisationId)).ReturnsAsync(organisation);
+        _organisationRepositoryMock.Setup(repo => repo.FindIncludingTenant(_organisationId)).ReturnsAsync(organisation);
 
         var result = await UseCase.Execute((_organisationId, updateOrganisation));
 
@@ -92,7 +92,7 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
             }
         };
         var organisation = OrganisationWithPponIdentifier;
-        _organisationRepositoryMock.Setup(repo => repo.Find(_organisationId)).ReturnsAsync(organisation);
+        _organisationRepositoryMock.Setup(repo => repo.FindIncludingTenant(_organisationId)).ReturnsAsync(organisation);
 
         var result = await UseCase.Execute((_organisationId, updateOrganisation));
 
@@ -128,7 +128,7 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
             Type = (OrganisationUpdateType)999, // Unknown type
             Organisation = new()
         };
-        _organisationRepositoryMock.Setup(repo => repo.Find(_organisationId)).ReturnsAsync(Organisation);
+        _organisationRepositoryMock.Setup(repo => repo.FindIncludingTenant(_organisationId)).ReturnsAsync(Organisation);
 
         Func<Task> act = async () => await UseCase.Execute((_organisationId, updateOrganisation));
 
@@ -144,7 +144,7 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
             Type = OrganisationUpdateType.AdditionalIdentifiers,
             Organisation = new()
         };
-        _organisationRepositoryMock.Setup(repo => repo.Find(_organisationId)).ReturnsAsync(Organisation);
+        _organisationRepositoryMock.Setup(repo => repo.FindIncludingTenant(_organisationId)).ReturnsAsync(Organisation);
 
         Func<Task> act = async () => await UseCase.Execute((_organisationId, updateOrganisation));
 
@@ -171,7 +171,7 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
 
         var existingOrganisationWithSameIdentifier = Organisation;
 
-        _organisationRepositoryMock.Setup(repo => repo.Find(_anotherOrganisationId)).ReturnsAsync(AnotherOrganisation);
+        _organisationRepositoryMock.Setup(repo => repo.FindIncludingTenant(_anotherOrganisationId)).ReturnsAsync(AnotherOrganisation);
 
         _organisationRepositoryMock.Setup(repo => repo.FindByIdentifier("VAT", "13294342")).ReturnsAsync(existingOrganisationWithSameIdentifier);
 
@@ -201,7 +201,7 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
 
         var anotherOrganisation = AnotherOrganisation;
 
-        _organisationRepositoryMock.Setup(repo => repo.Find(_anotherOrganisationId)).ReturnsAsync(anotherOrganisation);
+        _organisationRepositoryMock.Setup(repo => repo.FindIncludingTenant(_anotherOrganisationId)).ReturnsAsync(anotherOrganisation);
 
         _organisationRepositoryMock.Setup(repo => repo.FindByIdentifier("VAT", "13294342")).ReturnsAsync((Persistence.Organisation?)null);
 
@@ -225,7 +225,7 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
             Type = OrganisationUpdateType.Address,
             Organisation = new()
         };
-        _organisationRepositoryMock.Setup(repo => repo.Find(_organisationId)).ReturnsAsync(Organisation);
+        _organisationRepositoryMock.Setup(repo => repo.FindIncludingTenant(_organisationId)).ReturnsAsync(Organisation);
 
         Func<Task> act = async () => await UseCase.Execute((_organisationId, updateOrganisation));
 
@@ -250,7 +250,7 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
             }
         };
         var organisation = Organisation;
-        _organisationRepositoryMock.Setup(repo => repo.Find(_organisationId)).ReturnsAsync(organisation);
+        _organisationRepositoryMock.Setup(repo => repo.FindIncludingTenant(_organisationId)).ReturnsAsync(organisation);
 
         await UseCase.Execute((_organisationId, command));
 
@@ -286,7 +286,7 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
             }
         };
         var organisation = Organisation;
-        _organisationRepositoryMock.Setup(repo => repo.Find(_organisationId)).ReturnsAsync(organisation);
+        _organisationRepositoryMock.Setup(repo => repo.FindIncludingTenant(_organisationId)).ReturnsAsync(organisation);
 
         var result = await UseCase.Execute((_organisationId, command));
 
@@ -314,7 +314,7 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
             }
         };
         var organisation = Organisation;
-        _organisationRepositoryMock.Setup(repo => repo.Find(_organisationId)).ReturnsAsync(organisation);
+        _organisationRepositoryMock.Setup(repo => repo.FindIncludingTenant(_organisationId)).ReturnsAsync(organisation);
 
         Func<Task> act = async () => await UseCase.Execute((_organisationId, command));
 
@@ -339,7 +339,7 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
             }
         };
         var organisation = OrganisationWithVatPrimaryAndPpon;
-        _organisationRepositoryMock.Setup(repo => repo.Find(_organisationId)).ReturnsAsync(organisation);
+        _organisationRepositoryMock.Setup(repo => repo.FindIncludingTenant(_organisationId)).ReturnsAsync(organisation);
 
         var result = await UseCase.Execute((_organisationId, command));
 
@@ -375,7 +375,7 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
             }
         };
         var organisation = OrganisationWithPponIdentifier;
-        _organisationRepositoryMock.Setup(repo => repo.Find(_organisationId)).ReturnsAsync(organisation);
+        _organisationRepositoryMock.Setup(repo => repo.FindIncludingTenant(_organisationId)).ReturnsAsync(organisation);
 
         Func<Task> act = async () => await UseCase.Execute((_organisationId, command));
 
@@ -393,7 +393,7 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
             Type = OrganisationUpdateType.OrganisationName,
             Organisation = new()
         };
-        _organisationRepositoryMock.Setup(repo => repo.Find(_organisationId)).ReturnsAsync(Organisation);
+        _organisationRepositoryMock.Setup(repo => repo.FindIncludingTenant(_organisationId)).ReturnsAsync(Organisation);
 
         Func<Task> act = async () => await UseCase.Execute((_organisationId, updateOrganisation));
 
@@ -402,7 +402,7 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
     }
 
     [Fact]
-    public async Task Execute_ShouldUpdateOrganisationName_WhenOrganisationAlreadyExists()
+    public async Task Execute_ShouldUpdateOrganisationNameAndTenantAndIdentifiersNames_WhenOrganisationAlreadyExists()
     {
         var command = new UpdateOrganisation
         {
@@ -413,7 +413,13 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
             }
         };
         var organisation = Organisation;
-        _organisationRepositoryMock.Setup(repo => repo.Find(_organisationId)).ReturnsAsync(organisation);
+        organisation.Tenant = new Persistence.Tenant()
+        {
+            Guid = Guid.NewGuid(),
+            Name = "Test1"
+        };
+
+        _organisationRepositoryMock.Setup(repo => repo.FindIncludingTenant(_organisationId)).ReturnsAsync(organisation);
 
         var result = await UseCase.Execute((_organisationId, command));
 
@@ -421,6 +427,8 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
         _organisationRepositoryMock.Verify(repo => repo.SaveAsync(organisation, AnyOnSave()), Times.Once);
 
         organisation.Name.Should().Be("Updated Organisation Name");
+        organisation.Tenant.Name.Should().Be("Updated Organisation Name");
+        organisation.Identifiers.Select(x => x.LegalName.Should().Be("Updated Organisation Name"));
     }
 
 
@@ -432,7 +440,7 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
             Type = OrganisationUpdateType.OrganisationEmail,
             Organisation = new()
         };
-        _organisationRepositoryMock.Setup(repo => repo.Find(_organisationId)).ReturnsAsync(Organisation);
+        _organisationRepositoryMock.Setup(repo => repo.FindIncludingTenant(_organisationId)).ReturnsAsync(Organisation);
 
         Func<Task> act = async () => await UseCase.Execute((_organisationId, updateOrganisation));
 
@@ -457,7 +465,7 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
         var organisation = Organisation;
         organisation.ContactPoints = [];
 
-        _organisationRepositoryMock.Setup(repo => repo.Find(_organisationId)).ReturnsAsync(organisation);
+        _organisationRepositoryMock.Setup(repo => repo.FindIncludingTenant(_organisationId)).ReturnsAsync(organisation);
 
         Func<Task> act = async () => await UseCase.Execute((_organisationId, updateOrganisation));
 
@@ -478,7 +486,7 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
             }
         };
         var organisation = Organisation;
-        _organisationRepositoryMock.Setup(repo => repo.Find(_organisationId)).ReturnsAsync(organisation);
+        _organisationRepositoryMock.Setup(repo => repo.FindIncludingTenant(_organisationId)).ReturnsAsync(organisation);
 
         var result = await UseCase.Execute((_organisationId, command));
 
@@ -496,7 +504,7 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
             Type = OrganisationUpdateType.RegisteredAddress,
             Organisation = new()
         };
-        _organisationRepositoryMock.Setup(repo => repo.Find(_organisationId)).ReturnsAsync(Organisation);
+        _organisationRepositoryMock.Setup(repo => repo.FindIncludingTenant(_organisationId)).ReturnsAsync(Organisation);
 
         Func<Task> act = async () => await UseCase.Execute((_organisationId, updateOrganisation));
 
@@ -527,7 +535,7 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
             }
         };
 
-        _organisationRepositoryMock.Setup(repo => repo.Find(_organisationId)).ReturnsAsync(Organisation);
+        _organisationRepositoryMock.Setup(repo => repo.FindIncludingTenant(_organisationId)).ReturnsAsync(Organisation);
 
         Func<Task> act = async () => await UseCase.Execute((_organisationId, updateOrganisation));
 
@@ -558,7 +566,7 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
             }
         };
         var organisation = Organisation;
-        _organisationRepositoryMock.Setup(repo => repo.Find(_organisationId)).ReturnsAsync(organisation);
+        _organisationRepositoryMock.Setup(repo => repo.FindIncludingTenant(_organisationId)).ReturnsAsync(organisation);
 
         var result = await UseCase.Execute((_organisationId, command));
 
@@ -580,7 +588,7 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
             }
         };
         var organisation = Organisation;
-        _organisationRepositoryMock.Setup(repo => repo.Find(_organisationId)).ReturnsAsync(organisation);
+        _organisationRepositoryMock.Setup(repo => repo.FindIncludingTenant(_organisationId)).ReturnsAsync(organisation);
 
         var result = await UseCase.Execute((_organisationId, command));
 
@@ -601,7 +609,7 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
             }
         };
         var organisation = Organisation;
-        _organisationRepositoryMock.Setup(repo => repo.Find(_organisationId)).ReturnsAsync(organisation);
+        _organisationRepositoryMock.Setup(repo => repo.FindIncludingTenant(_organisationId)).ReturnsAsync(organisation);
 
         Func<Task> act = async () => await UseCase.Execute((_organisationId, command));
 
@@ -619,7 +627,7 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
         };
         var organisation = Organisation;
 
-        _organisationRepositoryMock.Setup(repo => repo.Find(_organisationId)).ReturnsAsync(organisation);
+        _organisationRepositoryMock.Setup(repo => repo.FindIncludingTenant(_organisationId)).ReturnsAsync(organisation);
 
         Func<Task> act = async () => await UseCase.Execute((_organisationId, updateOrganisation));
 

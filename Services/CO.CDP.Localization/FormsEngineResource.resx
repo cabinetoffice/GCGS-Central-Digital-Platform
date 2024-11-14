@@ -171,6 +171,51 @@
   <data name="FinancialInformation_Configuration_PluralSummaryHeadingFormat" xml:space="preserve">
     <value>You have added {0} files</value>
   </data>
+  <data name="Qualifications_01_SummaryTitle" xml:space="preserve">
+    <value>Qualification name</value>
+  </data>
+  <data name="Qualifications_01_Description" xml:space="preserve">
+    <value>&lt;div class="govuk-hint"&gt;Enter one qualification at a time. You can add another at the end if you need to. For example, ISO 45001 Health and Safety Management.&lt;/div&gt;</value>
+  </data>
+  <data name="Qualifications_01_Title" xml:space="preserve">
+    <value>Enter the qualification name</value>
+  </data>
+  <data name="Qualifications_02_SummaryTitle" xml:space="preserve">
+    <value>Awarded by</value>
+  </data>
+  <data name="Qualifications_02_Title" xml:space="preserve">
+    <value>Who awarded the qualification?</value>
+  </data>
+  <data name="Qualifications_02_Description" xml:space="preserve">
+    <value>&lt;div class="govuk-hint"&gt;Enter the name of the person or body. For example, ISO, Constructionline or Red Tractor Assurance.&lt;/div&gt;</value>
+  </data>
+  <data name="Qualifications_03_SummaryTitle" xml:space="preserve">
+    <value>Date awarded</value>
+  </data>
+  <data name="Qualifications_03_Title" xml:space="preserve">
+    <value>What date was the qualification awarded?</value>
+  </data>
+  <data name="Global_CheckYourAnswers" xml:space="preserve">
+    <value>Check your answers</value>
+  </data>
+  <data name="Qualifications_Configuration_AddAnotherAnswerLabel" xml:space="preserve">
+    <value>Add another qualification?</value>
+  </data>
+  <data name="Qualifications_Configuration_SingularSummaryHeading" xml:space="preserve">
+    <value>You have added 1 qualification</value>
+  </data>
+  <data name="Qualifications_Configuration_RemoveConfirmationHeading" xml:space="preserve">
+    <value>Are you sure you want to remove this qualification?</value>
+  </data>
+  <data name="Qualifications_Configuration_PluralSummaryHeadingFormat" xml:space="preserve">
+    <value>You have added {0} qualifications</value>
+  </data>
+  <data name="Qualifications_Configuration_FurtherQuestionsExemptedHint" xml:space="preserve">
+    <value>These are general qualifications for business and trade, not procurement specific. Adding them will provide evidence of your suitability to contracting authorities and support any bids you submit. For example, ISO certification.</value>
+  </data>
+  <data name="Qualifications_Configuration_FurtherQuestionsExemptedHeading" xml:space="preserve">
+    <value>Do you want to add any relevant qualifications?</value>
+  </data>
   <data name="TradeAssurance_01_Title" xml:space="preserve">
     <value>Who awarded the trade assurance?</value>
   </data>
