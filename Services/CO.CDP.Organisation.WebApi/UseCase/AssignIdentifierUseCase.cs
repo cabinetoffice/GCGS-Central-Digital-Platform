@@ -15,7 +15,7 @@ public class AssignIdentifierUseCase(IOrganisationRepository organisations, IIde
         public const string CompaniesHouse = "GB-COH";
     }
 
-    public static IDictionary<string, string> IdentifierSchemesUK = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+    private static IDictionary<string, string> IdentifierSchemesUK = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
     {
         { "GB-COH", "CompaniesHouse" },
         { "GB-CHC", "CharityCommissionEnglandWales" },
