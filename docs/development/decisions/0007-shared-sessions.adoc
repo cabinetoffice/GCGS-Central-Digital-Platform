@@ -1,10 +1,10 @@
-= 6. Shared user sessions
+= 7. Shared user sessions
 
 Date: 2024-11-13
 
 == Status
 
-Draft
+Accepted
 
 == Context
 
