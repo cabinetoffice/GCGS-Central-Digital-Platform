@@ -2,6 +2,7 @@ using CO.CDP.EntityFrameworkCore.DbContext;
 using CO.CDP.EntityVerification.Events;
 using Microsoft.EntityFrameworkCore;
 using static CO.CDP.EntityVerification.Persistence.IPponRepository.PponRepositoryException;
+using static System.Collections.Specialized.BitVector32;
 
 namespace CO.CDP.EntityVerification.Persistence;
 
@@ -60,5 +61,10 @@ public class DatabasePponRepository(EntityVerificationContext context) : IPponRe
             default:
                 throw cause;
         }
+    }
+
+    public async Task<IEnumerable<CountryIndentifiers>> GetCountryIdentifiersAsync(string countryCode)
+    {
+        return await context.CountryIdentifiers.Where(q => q.CountryCode == countryCode).ToListAsync();
     }
 }
