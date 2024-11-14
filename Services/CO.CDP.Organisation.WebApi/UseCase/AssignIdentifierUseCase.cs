@@ -15,21 +15,21 @@ public class AssignIdentifierUseCase(IOrganisationRepository organisations, IIde
         public const string CompaniesHouse = "GB-COH";
     }
 
-    private static IDictionary<string, string> IdentifierSchemesUK = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+    private static ISet<string> IdentifierSchemesUK = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
     {
-        { "GB-COH", "CompaniesHouse" },
-        { "GB-CHC", "CharityCommissionEnglandWales" },
-        { "GB-SC", "ScottishCharityRegulator" },
-        { "GB-NIC", "CharityCommissionNorthernIreland" },
-        { "GB-MPR", "MutualsPublicRegister" },
-        { "GG-RCE", "GuernseyRegistry" },
-        { "JE-FSC", "JerseyFinancialServicesCommission" },
-        { "IM-CR", "IsleOfManCompaniesRegistry" },
-        { "GB-NHS", "NHSOrganisationsRegistry" },
-        { "GB-UKPRN", "UKRegisterOfLearningProviders" },
-        { "VAT", "VAT" },
-        { "Other", "Other" },
-        { "GB-PPON", "Ppon" }
+        "GB-COH",
+        "GB-CHC",
+        "GB-SC",
+        "GB-NIC",
+        "GB-MPR",
+        "GG-RCE",
+        "JE-FSC",
+        "IM-CR",
+        "GB-NHS",
+        "GB-UKPRN",
+        "VAT",
+        "Other",
+        "GB-PPON"
     };
 
     public async Task<bool> Execute(AssignOrganisationIdentifier command)
@@ -76,7 +76,7 @@ public class AssignIdentifierUseCase(IOrganisationRepository organisations, IIde
 
     public static bool IsPrimaryIdentifier(OrganisationInformation.Persistence.Organisation organisation, string newIdentifierSchemeName)
     {
-        if (newIdentifierSchemeName == IdentifierSchemes.Vat || !IdentifierSchemesUK.ContainsKey(newIdentifierSchemeName))
+        if (newIdentifierSchemeName == IdentifierSchemes.Vat || !IdentifierSchemesUK.Contains(newIdentifierSchemeName))
         {
             return false;
         }
@@ -87,7 +87,7 @@ public class AssignIdentifierUseCase(IOrganisationRepository organisations, IIde
         }
 
         var primaryIdentifiers = organisation.Identifiers
-           .Where(i => i.Primary && (i.Scheme == IdentifierSchemes.Other || i.Scheme == IdentifierSchemes.Ppon || !IdentifierSchemesUK.ContainsKey(i.Scheme)))
+           .Where(i => i.Primary && (i.Scheme == IdentifierSchemes.Other || i.Scheme == IdentifierSchemes.Ppon || !IdentifierSchemesUK.Contains(i.Scheme)))
            .ToList();
 
         if (primaryIdentifiers.Any())
