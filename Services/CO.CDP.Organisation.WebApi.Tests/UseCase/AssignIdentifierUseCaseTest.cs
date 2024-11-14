@@ -56,7 +56,9 @@ public class AssignIdentifierUseCaseTest
                 IdentifierId = "c0777aeb968b4113a27d94e55b10c1b4",
                 LegalName = "Acme Ltd"
             }
-            ))));
+            ) &&
+            o.Identifiers.Count(i => i.Primary) == 1
+            )));
         result.Should().BeTrue();
     }
 
@@ -85,17 +87,18 @@ public class AssignIdentifierUseCaseTest
 
         _organisations.Verify(r => r.Save(It.Is<Persistence.Organisation>(o =>
          o.Guid == organisation.Guid && o.Identifiers.Contains(new Persistence.Organisation.Identifier
-             {
-                 Primary = true,
-                 Scheme = "GB-PPON",
-                 IdentifierId = "c0777aeb968b4113a27d94e55b10c1b4",
-                 LegalName = "Acme Ltd"
-             }) && o.Identifiers.Contains(new Persistence.Organisation.Identifier
-             {
-                 LegalName = "Acme Ltd",
-                 Primary = false,
-                 Scheme = "Other"
-             })
+         {
+             Primary = true,
+             Scheme = "GB-PPON",
+             IdentifierId = "c0777aeb968b4113a27d94e55b10c1b4",
+             LegalName = "Acme Ltd"
+         }) && o.Identifiers.Contains(new Persistence.Organisation.Identifier
+         {
+             LegalName = "Acme Ltd",
+             Primary = false,
+             Scheme = "Other"
+         }) &&
+            o.Identifiers.Count(i => i.Primary) == 1
          )));
 
         result.Should().BeTrue();
@@ -138,7 +141,8 @@ public class AssignIdentifierUseCaseTest
              Scheme = AssignIdentifierUseCase.IdentifierSchemes.CompaniesHouse,
              LegalName = "Acme Ltd",
              Primary = true
-         })
+         }) &&
+            o.Identifiers.Count(i => i.Primary) == 1
          )));
 
         result.Should().BeTrue();
@@ -149,7 +153,7 @@ public class AssignIdentifierUseCaseTest
     {
         var organisation = GivenOrganisationExist(
             organisationId: Guid.NewGuid(),
-            identifiers: [ ]);
+            identifiers: []);
 
         var result = await UseCase.Execute(new AssignOrganisationIdentifier
         {
@@ -167,7 +171,9 @@ public class AssignIdentifierUseCaseTest
              Primary = true,
              Scheme = "Other",
              LegalName = "Acme Ltd"
-         }))));
+         }) &&
+            o.Identifiers.Count(i => i.Primary) == 1
+        )));
 
         result.Should().BeTrue();
     }
@@ -207,8 +213,172 @@ public class AssignIdentifierUseCaseTest
                 IdentifierId = "c0777aeb968b4113a27d94e55b10c1b4",
                 LegalName = "Acme Ltd"
             }
-            ))));
+            ) &&
+            o.Identifiers.Count(i => i.Primary) == 1
+        )));
         result.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task ItAssignsPPONPrimaryIdentifierIfOnlyInternationalIdentifierExists()
+    {
+        var organisation = GivenOrganisationExist(
+            organisationId: Guid.NewGuid(),
+            identifiers:
+            [
+                new Persistence.Organisation.Identifier
+                {
+                    Primary = true,
+                    Scheme = "FR-COH",
+                    IdentifierId = "944432342",
+                    LegalName = "France Acme Ltd"
+                }
+            ]);
+
+        var result = await UseCase.Execute(new AssignOrganisationIdentifier
+        {
+            OrganisationId = organisation.Guid,
+            Identifier = new OrganisationIdentifier
+            {
+                Id = "c0777aeb968b4113a27d94e55b10c1b4",
+                Scheme = "GB-PPON",
+                LegalName = "France Acme Ltd"
+            }
+        });
+
+        _organisations.Verify(r => r.Save(It.Is<Persistence.Organisation>(o =>
+            o.Guid == organisation.Guid && o.Identifiers.Contains(new Persistence.Organisation.Identifier
+            {
+                Primary = true,
+                Scheme = "GB-PPON",
+                IdentifierId = "c0777aeb968b4113a27d94e55b10c1b4",
+                LegalName = "France Acme Ltd"
+            }
+            ) &&
+            o.Identifiers.Count(i => i.Primary) == 1
+        )));
+
+
+        result.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task ItAssignsUKPrimaryIdentifierIfInternationalAndPPONAndUKIdentifiersExists()
+    {
+        var organisation = GivenOrganisationExist(
+            organisationId: Guid.NewGuid(),
+            identifiers:
+            [
+                new Persistence.Organisation.Identifier
+                {
+                    Primary = false,
+                    Scheme = "FR-COH",
+                    IdentifierId = "944432342",
+                    LegalName = "France Acme Ltd"
+                },
+                new Persistence.Organisation.Identifier
+                {
+                    Primary = true,
+                    Scheme = "GB-PPON",
+                    IdentifierId = "12944432342",
+                    LegalName = "France Acme Ltd"
+                }
+            ]);
+
+        var result = await UseCase.Execute(new AssignOrganisationIdentifier
+        {
+            OrganisationId = organisation.Guid,
+            Identifier = new OrganisationIdentifier
+            {
+                Id = "c0777aeb968b4113a27d94e66b10c1b5",
+                Scheme = "GB-COH",
+                LegalName = "France Acme Ltd"
+            }
+        });
+
+        _organisations.Verify(r => r.Save(It.Is<Persistence.Organisation>(o =>
+            o.Guid == organisation.Guid && o.Identifiers.Contains(new Persistence.Organisation.Identifier
+            {
+                Primary = true,
+                Scheme = "GB-COH",
+                IdentifierId = "c0777aeb968b4113a27d94e66b10c1b5",
+                LegalName = "France Acme Ltd"
+            }
+            ) &&
+            o.Identifiers.Count(i => i.Primary) == 1
+        )));
+        result.Should().BeTrue();
+    }
+
+    [Theory]
+    [InlineData("Other", "12345678", "Acme Ltd", false)]
+    [InlineData("GB-COH", "944432342", "Acme Ltd", false)]
+    public async Task ItDoesNotAssignsInternationalPrimaryIdentifier(string scheme, string identifierId, string legalName, bool primary)
+    {
+        var organisation = GivenOrganisationExist(
+            organisationId: Guid.NewGuid(),
+            identifiers:
+            [
+                new Persistence.Organisation.Identifier
+                {
+                    Primary = primary,
+                    Scheme = scheme,
+                    IdentifierId = identifierId,
+                    LegalName = legalName
+                },
+                 new Persistence.Organisation.Identifier
+                {
+                    Primary = true,
+                    Scheme = "GB-PPON",
+                    IdentifierId = "8765456",
+                    LegalName = legalName
+                }
+            ]);
+
+        var result = await UseCase.Execute(new AssignOrganisationIdentifier
+        {
+            OrganisationId = organisation.Guid,
+            Identifier = new OrganisationIdentifier
+            {
+                Id = "c0777aeb968b4113a27d94e55b16876788",
+                Scheme = "FR-CPR",
+                LegalName = "France CPR Ltd"
+            }
+        });
+
+        _organisations.Verify(r => r.Save(It.Is<Persistence.Organisation>(o =>
+            o.Guid == organisation.Guid && o.Identifiers.Contains(new Persistence.Organisation.Identifier
+            {
+                Primary = false,
+                Scheme = "FR-CPR",
+                IdentifierId = "c0777aeb968b4113a27d94e55b16876788",
+                LegalName = "France CPR Ltd"
+            }
+            ) &&
+            o.Identifiers.Count(i => i.Primary) == 1
+        )));
+        result.Should().BeTrue();
+    }
+
+    [Fact]
+    public void IsPrimaryIdentifier_ShouldReturnFalse_WhenSchemeIsNotInIdentifierSchemesUK()
+    {
+        var organisation = GivenOrganisationExist(
+            organisationId: Guid.NewGuid(),
+            identifiers:
+            [
+                new Persistence.Organisation.Identifier
+                {
+                    Primary = true,
+                    Scheme = "FR-CDH",
+                    IdentifierId = "678932342",
+                    LegalName = "France Acme Ltd"
+                }
+            ]);
+
+        var result = AssignIdentifierUseCase.IsPrimaryIdentifier(organisation, "FR-GHH");
+
+        result.Should().BeFalse();
     }
 
     [Fact]
