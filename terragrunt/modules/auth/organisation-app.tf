@@ -13,7 +13,7 @@ resource "aws_cognito_user_pool_client" "organisation_app" {
     "ALLOW_REFRESH_TOKEN_AUTH"
   ]
   generate_secret = true
-  logout_urls     = ["${local.organisation_app_url}/logout"]
+  logout_urls     = ["${local.organisation_app_url}/one-login/back-channel-sign-out"]
 
   supported_identity_providers = ["COGNITO"]
   user_pool_id                 = aws_cognito_user_pool.auth.id
