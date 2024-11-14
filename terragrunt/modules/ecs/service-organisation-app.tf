@@ -72,6 +72,7 @@ module "ecs_service_organisation_app" {
   role_ecs_task_arn      = var.role_ecs_task_arn
   role_ecs_task_exec_arn = var.role_ecs_task_exec_arn
   tags                   = var.tags
+  allowed_unauthenticated_paths = ["/one-login/back-channel-sign-out", "/assets/*", "/css/*", "/manifest.json"]
   user_pool_arn          = var.user_pool_arn
   user_pool_client_id    = var.user_pool_client_id
   user_pool_domain       = var.user_pool_domain
