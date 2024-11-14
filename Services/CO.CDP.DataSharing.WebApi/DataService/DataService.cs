@@ -61,47 +61,48 @@ public class DataService(IShareCodeRepository shareCodeRepository, IConnectedEnt
 
             foreach (var answer in answerSet.Answers)
             {
+                var title = localizer[answer.Question.Title].Value;
                 switch (answer.Question.Type)
                 {
                     case FormQuestionType.YesOrNo:
                         {
-                            pdfAnswerSet.QuestionAnswers.Add(new Tuple<string, string>($"{answer.Question.Title}",
+                            pdfAnswerSet.QuestionAnswers.Add(new Tuple<string, string>($"{title}",
                                 answer.OptionValue ?? (answer.BoolValue == true ? "Yes" : "Not specified")));
                             break;
                         }
                     case FormQuestionType.Date:
                         {
-                            pdfAnswerSet.QuestionAnswers.Add(new Tuple<string, string>($"{answer.Question.Title}",
+                            pdfAnswerSet.QuestionAnswers.Add(new Tuple<string, string>($"{title}",
                                 answer.DateValue?.ToString("dd MMMM yyyy") ?? "Not specified"));
                             break;
                         }
                     case FormQuestionType.Url:
                         {
-                            pdfAnswerSet.QuestionAnswers.Add(new Tuple<string, string>($"{answer.Question.Title}",
+                            pdfAnswerSet.QuestionAnswers.Add(new Tuple<string, string>($"{title}",
                                answer.TextValue ?? "Not specified"));
                             break;
                         }
                     case FormQuestionType.FileUpload:
                         {
-                            pdfAnswerSet.QuestionAnswers.Add(new Tuple<string, string>($"{answer.Question.Title}",
+                            pdfAnswerSet.QuestionAnswers.Add(new Tuple<string, string>($"{title}",
                                answer.TextValue ?? "Not specified"));
                             break;
                         }
                     case FormQuestionType.Text:
                         {
-                            pdfAnswerSet.QuestionAnswers.Add(new Tuple<string, string>($"{answer.Question.Title}:",
+                            pdfAnswerSet.QuestionAnswers.Add(new Tuple<string, string>($"{title}:",
                                 answer.TextValue ?? "Not specified"));
                             break;
                         }
                     case FormQuestionType.MultiLine:
                         {
-                            pdfAnswerSet.QuestionAnswers.Add(new Tuple<string, string>($"{answer.Question.Title}:",
+                            pdfAnswerSet.QuestionAnswers.Add(new Tuple<string, string>($"{title}:",
                                 answer.TextValue ?? "Not specified"));
                             break;
                         }
                     case FormQuestionType.GroupedSingleChoice:
                         {
-                            pdfAnswerSet.QuestionAnswers.Add(new Tuple<string, string>($"{answer.Question.Title}:",
+                            pdfAnswerSet.QuestionAnswers.Add(new Tuple<string, string>($"{title}:",
                                 GetTitleFromValue(answer.OptionValue ?? "Not specified")));
                             break;
                         }

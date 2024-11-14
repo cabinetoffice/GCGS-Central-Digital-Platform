@@ -207,8 +207,8 @@ public class OneLoginTest
 
         var result = await model.OnGetAsync();
 
-        result.Should().BeOfType<RedirectToPageResult>()
-            .Which.PageName.Should().Be("/");
+        result.Should().BeOfType<RedirectResult>()
+            .Which.Url.Should().Be("/");
     }
 
     [Fact]
@@ -218,7 +218,8 @@ public class OneLoginTest
 
         var result = await model.OnPostAsync("valid-token");
 
-        result.Should().BeOfType<BadRequestResult>();
+        result.Should().BeOfType<BadRequestObjectResult>()
+            .Which.Value.Should().Be("Invalid page request");
     }
 
     [Fact]
@@ -228,19 +229,21 @@ public class OneLoginTest
 
         var result = await model.OnPostAsync("");
 
-        result.Should().BeOfType<BadRequestResult>();
+        result.Should().BeOfType<BadRequestObjectResult>()
+            .Which.Value.Should().Be("Missing token");
     }
 
     [Fact]
     public async Task OnPostAsync_ShouldReturnBadRequest_WhenValidateLogoutTokenReturnsNull()
     {
         var model = GivenOneLoginModel("back-channel-sign-out");
-        var logoutToken = "valid-token";
+        var logoutToken = "invalid-token";
         oneLoginAuthorityMock.Setup(m => m.ValidateLogoutToken(logoutToken)).ReturnsAsync((string?)null);
 
         var result = await model.OnPostAsync(logoutToken);
 
-        result.Should().BeOfType<BadRequestResult>();
+        result.Should().BeOfType<BadRequestObjectResult>()
+            .Which.Value.Should().Be("Invalid token");
     }
 
     [Fact]

@@ -1,0 +1,75 @@
+= 7. Shared user sessions
+
+Date: 2024-11-13
+
+== Status
+
+Accepted
+
+== Context
+
+We need shared sessions between containers. In dev we only have one instance of the organisation-app that handles user
+session. In production we'll be scaling app the organisation-app depending on current demand, so it will never be a
+single instance.
+
+We need sessions to be stored outside of the running container (current behaviour), to provide users with a seamless
+experience.
+
+There are no Non Functional Requirements provided by the stakeholders, so it's difficult to estimate the number of
+concurrent users we have to to prepare for. We've ballpark estimated it to be anything between 50k to 500k, likely
+double that at the initial rollout. Customer expects 3.5m active users within first 2 years.
+
+=== Option 1: Sticky sessions
+
+Sticky sessions can be enabled at the infrastructure level, so user's requests are handled by a single container.
+
+Advantages:
+
+* Easy to set up
+* No code changes required
+* No additional cost
+
+Disadvantages:
+
+* User journeys will be disrupted when containers are restarted, i.e. during the deployment
+* Sub-optimal user distribution per running containers
+
+=== Option 2: DynamoDB
+
+Advantages:
+
+* Easy to implement
+* Cheaper than Redis
+
+Disadvantages:
+
+* Slow compared to other solutions and may not be efficient enough at peak times
+* Manual task required to clear expired sessions
+
+=== Option: Redis
+
+Advantages:
+
+* Serverless - easy to scale up or down depending on demand
+* Easy to implement
+* Low latency - can provide session details with a minimal lag
+* Can set up TTL, so expired sessions will be automatically removed
+
+Disadvantages:
+
+* Potentially more expensive than DynamoDB
+
+== Decision
+
+Redis
+
+* It has lower latency compared to DynamoDB
+* Future proof given the fact we don't have any metrics provided by the client
+
+== Consequences
+
+We'll use Redis as a service on AWS, docker container on local developer set up. This will require additional DevOps
+work as well as modifications to the OrganisationApp to handle shared sessions.
+
+Given the fact we don't have metrics to design the system for, we should plan for the worst case scenario. Once service
+is live we can monitor the number of concurrent users and re-evaluate the solution.
