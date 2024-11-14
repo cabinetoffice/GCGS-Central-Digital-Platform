@@ -56,7 +56,7 @@ Advantages:
 
 Disadvantages:
 
-* Slightly more expensive than DynamoDB
+* Potentially more expensive than DynamoDB
 
 == Decision
 
@@ -69,3 +69,6 @@ Redis
 
 We'll use Redis as a service on AWS, docker container on local developer set up. This will require additional DevOps
 work as well as modifications to the OrganisationApp to handle shared sessions.
+
+Given the fact we don't have metrics to design the system for, we should plan for the worst case scenario. Once service
+is live we can monitor the number of concurrent users and re-evaluate the solution.
