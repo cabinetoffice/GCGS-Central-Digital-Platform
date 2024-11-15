@@ -147,16 +147,8 @@
   <data name="Global_Continue" xml:space="preserve">
     <value>Parhau</value>
   </data>
-  <data name="Global_Yes" xml:space="preserve">
-    <value>Ydw</value>
-  </data>
-  <data name="Global_No" xml:space="preserve">
-    <value>Nac ydw</value>
-  </data>
-  <data name="Global_ErrorSummary_Heading" xml:space="preserve">
-    <value>Mae yna broblem</value>
-  </data>
-  <data name="Global_EmailAddress_Error" xml:space="preserve">
-    <value>Rhowch gyfeiriad e-bost yn y fformat cywir, fel enw@enghraifft.com</value>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="Header_Menu" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value />
   </data>
 </root>
