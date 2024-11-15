@@ -8,7 +8,7 @@ public class PponServiceTests
     public void GeneratePponId_CreatesNewPponId_ReturnsPponIdWithValidLength()
     {
         PponService ppon = new PponService();
-        var idLength = 32;
+        var idLength = 17;
 
         string pponId = ppon.GeneratePponId();
 
