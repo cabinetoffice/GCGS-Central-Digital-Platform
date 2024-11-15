@@ -1,3 +1,4 @@
+using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Pages.Organisation;
 using CO.CDP.Tenant.WebApiClient;
 using FluentAssertions;
@@ -9,14 +10,16 @@ namespace CO.CDP.OrganisationApp.Tests.Pages;
 public class OrganisationSelectionTest
 {
     private readonly Mock<ISession> sessionMock;
-    private readonly Mock<ITenantClient> organisationClientMock;
+    private readonly Mock<ITenantClient> tenantClientMock;
+    private readonly Mock<IOrganisationClient> organisationClientMock;
 
     public OrganisationSelectionTest()
     {
         sessionMock = new Mock<ISession>();
         sessionMock.Setup(session => session.Get<Models.UserDetails>(Session.UserDetailsKey))
             .Returns(new Models.UserDetails { UserUrn = "urn:test" });
-        organisationClientMock = new Mock<ITenantClient>();
+        tenantClientMock = new Mock<ITenantClient>();
+        organisationClientMock = new Mock<IOrganisationClient>();
     }
 
     [Fact]
@@ -27,7 +30,7 @@ public class OrganisationSelectionTest
         sessionMock.Setup(s => s.Get<Models.UserDetails>(Session.UserDetailsKey))
             .Returns(new Models.UserDetails { UserUrn = "urn:test" });
 
-        organisationClientMock.Setup(o => o.LookupTenantAsync())
+        tenantClientMock.Setup(o => o.LookupTenantAsync())
             .ReturnsAsync(GetUserTenant());
 
         var actionResult = await model.OnGet();
@@ -35,12 +38,61 @@ public class OrganisationSelectionTest
         model.UserOrganisations.Should().HaveCount(1);
     }
 
-    private OrganisationSelectionModel GivenOrganisationSelectionModelModel()
+    [Fact]
+    public async Task OnGet_WhenOrgHasPendingRoles_ShouldCallGetOrganisationReviewsAsync()
     {
-        return new OrganisationSelectionModel(organisationClientMock.Object, sessionMock.Object);
+        var model = GivenOrganisationSelectionModelModel();
+
+        sessionMock.Setup(s => s.Get<Models.UserDetails>(Session.UserDetailsKey))
+            .Returns(new Models.UserDetails { UserUrn = "urn:test" });
+
+        tenantClientMock.Setup(o => o.LookupTenantAsync())
+            .ReturnsAsync(GetUserTenant(pendingRoles: [PartyRole.Buyer]));
+
+        organisationClientMock.Setup(o => o.GetOrganisationReviewsAsync(It.IsAny<Guid>()))
+            .ReturnsAsync([GivenReview(ReviewStatus.Pending)]);
+
+        var actionResult = await model.OnGet();
+
+        organisationClientMock.Verify(c => c.GetOrganisationReviewsAsync(It.IsAny<Guid>()), Times.Once);
+
+        model.UserOrganisations.Should().HaveCount(1);
+        model.UserOrganisations?.FirstOrDefault().Review?.Status.Should().Be(ReviewStatus.Pending);
     }
 
-    private TenantLookup GetUserTenant()
+    [Fact]
+    public async Task OnGet_WhenOrgHasPendingRoles_AndIsRejected_CallToGetOrganisationReviewsAsync_ShouldReturnRejectedStatus()
+    {
+        var model = GivenOrganisationSelectionModelModel();
+
+        sessionMock.Setup(s => s.Get<Models.UserDetails>(Session.UserDetailsKey))
+            .Returns(new Models.UserDetails { UserUrn = "urn:test" });
+
+        tenantClientMock.Setup(o => o.LookupTenantAsync())
+            .ReturnsAsync(GetUserTenant(pendingRoles: [PartyRole.Buyer]));
+
+        organisationClientMock.Setup(o => o.GetOrganisationReviewsAsync(It.IsAny<Guid>()))
+            .ReturnsAsync([GivenReview(ReviewStatus.Rejected)]);
+
+        var actionResult = await model.OnGet();
+
+        organisationClientMock.Verify(c => c.GetOrganisationReviewsAsync(It.IsAny<Guid>()), Times.Once);
+
+        model.UserOrganisations.Should().HaveCount(1);
+        model.UserOrganisations?.FirstOrDefault().Review?.Status.Should().Be(ReviewStatus.Rejected);
+    }
+
+    private OrganisationSelectionModel GivenOrganisationSelectionModelModel()
+    {
+        return new OrganisationSelectionModel(tenantClientMock.Object, organisationClientMock.Object, sessionMock.Object);
+    }
+
+    private static Review GivenReview(ReviewStatus reviewStatus)
+    {
+        return new Review(null, null, null, reviewStatus);
+    }
+
+    private TenantLookup GetUserTenant(ICollection<PartyRole>? pendingRoles = null)
     {
         return new TenantLookup(
                 new List<UserTenant>
@@ -54,7 +106,7 @@ public class OrganisationSelectionTest
                                 id: Guid.NewGuid(),
                                 name: "Acme Ltd",
                                 roles: new List<PartyRole> { PartyRole.Payee },
-                                pendingRoles: [],
+                                pendingRoles: pendingRoles != null ? pendingRoles : [],
                                 scopes: new List<string> { "Scope" },
                                 uri: new Uri("http://www.acme.com"))
                         }

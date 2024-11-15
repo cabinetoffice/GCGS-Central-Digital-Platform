@@ -24,6 +24,18 @@ public class WebApiToPersistenceProfile : Profile
                 PendingRoles = m.PendingRoles
             }));
 
+        CreateMap<Persistence.Organisation, Review>()
+            .ForMember(m => m.ApprovedOn, o => o.MapFrom(m => m.ApprovedOn))
+            .ForMember(m => m.ReviewedBy, o => o.MapFrom(m =>
+                m.ReviewedBy != null ?
+                new ReviewedBy
+                {
+                    Name = $"{m.ReviewedBy.FirstName} {m.ReviewedBy.LastName}",
+                    Id = m.ReviewedBy.Guid
+                } : null))
+            .ForMember(m => m.Comment, o => o.MapFrom(m => m.ReviewComment))
+            .ForMember(m => m.Status, o => o.MapFrom<ReviewStatusResolver>());
+
         CreateMap<Persistence.Organisation, OrganisationExtended>()
             .ForMember(m => m.Id, o => o.MapFrom(m => m.Guid))
             .ForMember(m => m.Identifier, o => o.MapFrom(m => m.Identifiers.FirstOrDefault(i => i.Primary)))
@@ -276,6 +288,31 @@ public class WebApiToPersistenceProfile : Profile
             ai.ForEach(i => i.Primary = false);
 
             return [pi, .. ai];
+        }
+    }
+
+    public class ReviewStatusResolver : IValueResolver<Persistence.Organisation, Review, ReviewStatus>
+    {
+        public ReviewStatus Resolve(
+            Persistence.Organisation organisation,
+            Review review,
+            ReviewStatus status,
+            ResolutionContext context)
+        {
+            if (organisation.PendingRoles.Count > 0)
+            {
+                if (organisation.ReviewedBy == null)
+                {
+                    return ReviewStatus.Pending;
+                }
+                else
+                {
+                    return ReviewStatus.Rejected;
+                }
+            } else
+            {
+                return ReviewStatus.Approved;
+            }
         }
     }
 }

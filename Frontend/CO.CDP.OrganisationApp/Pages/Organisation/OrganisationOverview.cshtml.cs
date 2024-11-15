@@ -5,12 +5,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using OrganisationWebApiClient = CO.CDP.Organisation.WebApiClient;
 
-namespace CO.CDP.OrganisationApp.Pages;
+namespace CO.CDP.OrganisationApp.Pages.Organisation;
 
 [Authorize(Policy = OrgScopeRequirement.Viewer)]
 public class OrganisationOverviewModel(IOrganisationClient organisationClient) : PageModel
 {
     public OrganisationWebApiClient.Organisation? OrganisationDetails { get; set; }
+    public Review? Review { get; set; }
 
     [BindProperty(SupportsGet = true)]
     public Guid Id { get; set; }
@@ -20,6 +21,10 @@ public class OrganisationOverviewModel(IOrganisationClient organisationClient) :
         try
         {
             OrganisationDetails = await organisationClient.GetOrganisationAsync(Id);
+            if (OrganisationDetails.Details.PendingRoles.Count > 0)
+            {
+                Review = (await organisationClient.GetOrganisationReviewsAsync(Id)).FirstOrDefault();
+            }
             return Page();
         }
         catch (ApiException ex) when (ex.StatusCode == 404)

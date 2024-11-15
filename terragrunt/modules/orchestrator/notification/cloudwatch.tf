@@ -26,12 +26,6 @@ resource "aws_cloudwatch_event_connection" "slack_unified_notification" {
   }
 }
 
-resource "aws_cloudwatch_event_target" "service_version_slack_notification" {
-  arn      = aws_sfn_state_machine.slack_notification.arn
-  role_arn = var.role_cloudwatch_events_arn
-  rule     = var.event_rule_ci_service_version_updated_name
-}
-
 resource "aws_cloudwatch_event_rule" "deployment_codebuild" {
 
   name        = "${local.name_prefix}-ci-deployment-codebuild"
