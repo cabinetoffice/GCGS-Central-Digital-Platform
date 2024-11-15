@@ -1,14 +1,15 @@
 @page "/organisation/{id}/manage-api-key/create"
 @model CreateApiKeyModel
+@using CO.CDP.Localization
 
 @{
-    ViewData["Title"] = "Name your API key";
+    ViewData["Title"] = StaticTextResource.ApiKeyManagement_CreateApiKey_Title;
 }
 
 @{
     var apiKeyNameHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.ApiKeyName)).HasInnerHtml;
 }
-<a href="/organisation/@Model.Id/manage-api-keys" class="govuk-back-link">Back</a>
+<a href="/organisation/@Model.Id/manage-api-keys" class="govuk-back-link">@StaticTextResource.Global_Back</a>
 
 <main class="govuk-main-wrapper" id="main-content">
     <div class="govuk-grid-row">
@@ -22,13 +23,13 @@
                         </label>
                     </h1>
                     <div id="hint" class="govuk-hint">
-                        For security we only show the API key once on the confirmation page. Add a name for reference. For example, the name of the eSender it's for.
+                        @StaticTextResource.ApiKeyManagement_CreateApiKey_Hint
                     </div>
                     <div class="govuk-form-group @(apiKeyNameHasError ? "govuk-form-group--error" : "")">
                         @if (apiKeyNameHasError)
                         {
                             <p id="api-key-name-error" class="govuk-error-message">
-                                <span class="govuk-visually-hidden">Error:</span>
+                                <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span>
                                 @Html.ValidationMessageFor(m => m.ApiKeyName)
                             </p>
                         }
@@ -40,7 +41,7 @@
                 </div>
 
                 <govuk-button class="govuk-!-margin-top-6">
-                    Continue
+                    @StaticTextResource.Global_Continue
                 </govuk-button>
             </form>
         </div>

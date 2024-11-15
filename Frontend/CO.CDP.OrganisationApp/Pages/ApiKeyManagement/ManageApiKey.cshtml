@@ -1,21 +1,26 @@
 @page "/organisation/{id}/manage-api-keys"
 @model ManageApiKeyModel
+@using CO.CDP.Localization
 @using CO.CDP.OrganisationApp.Constants
+@using CO.CDP.OrganisationApp.Extensions
 
 @{
     var apiKeys = Model.AuthenticationKeys;
     var count = apiKeys.Count();
 
-    if(count == 0)
+    if (count == 0)
     {
-        ViewData["Title"] = "Manage API keys";
-    } else
+        ViewData["Title"] = StaticTextResource.ApiKeyManagement_ManageApiKey_Title;
+    }
+    else
     {
-        ViewData["Title"] = $"You have {count} API {(count == 1 ? "key" : "keys")}";
+        ViewData["Title"] = string.Format(
+            count == 1 ? StaticTextResource.ApiKeyManagement_ManageApiKey_YouHaveKeys_Singular : StaticTextResource.ApiKeyManagement_ManageApiKey_YouHaveKeys_Plural,
+            count
+        );
     }
 }
-
-<a href="/organisation/@Model.Id" class="govuk-back-link">Back</a>
+<a href="/organisation/@Model.Id" class="govuk-back-link">@StaticTextResource.Global_Back</a>
 
 <main class="govuk-main-wrapper" id="main-content">
     <form class="form" method="post">
@@ -26,52 +31,52 @@
         @if (count == 0)
         {
             <p class="govuk-body">
-                API keys that you create will be listed here.
+                @StaticTextResource.ApiKeyManagement_ManageApiKey_NoKeysText
             </p>
         }
         else
-        {            
+        {
             <p class="govuk-body">
-                View your active and cancelled API keys. <authorize scope="@OrgScopeRequirement.Editor">You can cancel any that are no longer needed.</authorize>
+                @StaticTextResource.ApiKeyManagement_ManageApiKey_Description <authorize scope="@OrgScopeRequirement.Editor">@StaticTextResource.ApiKeyManagement_ManageApiKey_Description_Editor</authorize>
             </p>
             <div class="govuk-form-group">
                 <dl class="govuk-summary-list ros-add-to-a-list">
                     <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">Name</dt>
-                        <dt class="govuk-summary-list__key">Date created</dt>
-                        <dt class="govuk-summary-list__key">Date cancelled</dt>
+                        <dt class="govuk-summary-list__key">@StaticTextResource.ApiKeyManagement_ManageApiKey_TableHeader_Name</dt>
+                        <dt class="govuk-summary-list__key">@StaticTextResource.ApiKeyManagement_ManageApiKey_TableHeader_DateCreated</dt>
+                        <dt class="govuk-summary-list__key">@StaticTextResource.ApiKeyManagement_ManageApiKey_TableHeader_DateCancelled</dt>
                         <dt class="govuk-summary-list__key govuk-summary-list__actions">
-                            Actions
+                            @StaticTextResource.ApiKeyManagement_ManageApiKey_TableHeader_Actions
                         </dt>
                     </div>
                     @foreach (var ak in apiKeys)
                     {
                         <div class="govuk-summary-list__row">
                             <dd class="govuk-summary-list__value">@ak.Name</dd>
-                            <dd class="govuk-summary-list__value">@ak.CreatedOn.ToString("d")</dd>
-                            <dd class="govuk-summary-list__value">@(ak.Revoked == true ? ak.RevokedOn?.ToString("d") : "")</dd>
+                            <dd class="govuk-summary-list__value">@ak.CreatedOn.ToFormattedString()</dd>
+                            <dd class="govuk-summary-list__value">@(ak.Revoked == true ? ak.RevokedOn?.ToFormattedString() : "")</dd>
                             <dd class="govuk-summary-list__actions">
                                 @if (ak.Revoked == true)
                                 {
-                                    <span class="govuk-tag govuk-tag--red govuk-!-font-size-16">Cancelled</span>
+                                    <span class="govuk-tag govuk-tag--red govuk-!-font-size-16">@StaticTextResource.ApiKeyManagement_ManageApiKey_Status_Cancelled</span>
                                 }
                                 else
                                 {
-                                    <authorize scope="@OrgScopeRequirement.Editor">                                        
-                                        <a asp-page="RevokeApiKey" class="govuk-link" asp-route-id="@Model.Id" asp-route-apiKeyName="@ak.Name">Cancel</a>
+                                    <authorize scope="@OrgScopeRequirement.Editor">
+                                        <a asp-page="RevokeApiKey" class="govuk-link" asp-route-id="@Model.Id" asp-route-apiKeyName="@ak.Name">@StaticTextResource.ApiKeyManagement_ManageApiKey_Action_Cancel</a>
                                     </authorize>
                                 }
-                            </dd>                                    
+                            </dd>
                         </div>
                     }
                 </dl>
             </div>
-                    
+
         }
 
         <authorize scope="@OrgScopeRequirement.Editor">
             <govuk-button class="govuk-!-margin-top-6">
-                Create an API key
+                @StaticTextResource.ApiKeyManagement_ManageApiKey_CreateButton
             </govuk-button>
         </authorize>
     </form>
