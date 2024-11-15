@@ -159,7 +159,4 @@
   <data name="Global_EmailAddress_Error" xml:space="preserve">
     <value>Rhowch gyfeiriad e-bost yn y fformat cywir, fel enw@enghraifft.com</value>
   </data>
-  <data name="Organisation_EnterOrganisationName_ErrorMessage" xml:space="preserve">
-    <value>Rhowch enw’r sefydliad</value>
-  </data>
 </root>

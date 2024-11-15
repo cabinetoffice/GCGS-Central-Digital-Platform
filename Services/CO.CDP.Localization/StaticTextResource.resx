@@ -821,4 +821,21 @@
   <data name="OrganisationRegistration_JoinOrganisation_ValidationErrorMessage" xml:space="preserve">
     <value>Select an option</value>
   </data>
+  <data name="OrganisationRegistration_JoinOrganisation_OrganisationDetails_Heading" xml:space="preserve">
+    <value>Organisation details</value>
+  </data>
+  <data name="OrganisationRegistration_JoinOrganisation_UserDetails_Heading" xml:space="preserve">
+    <value>User details</value>
+  </data>
+  <data name="OrganisationRegistration_JoinOrganisation_Notification_Heading" xml:space="preserve">
+    <value>Would you like to join</value>
+  </data>
+  <data name="OrganisationRegistration_OrganisationAlreadyRegistered_Heading" xml:space="preserve">
+    <value>This organisation has already registered</value>
+  </data>
+  <data name="OrganisationRegistration_OrganisationAlreadyRegistered_Message" xml:space="preserve">
+    <value>&lt;p class="govuk-body"&gt;The organisation's details are already registered with the service.&lt;/p&gt;
+&lt;p class="govuk-body"&gt;If you know the person who registered the organisation, they can invite you to join. Or you can request to join below.&lt;/p&gt;
+&lt;a class="govuk-button" href="/registration/{0}/join-organisation"&gt;Request to Join&lt;/a&gt;</value>
+  </data>
 </root>

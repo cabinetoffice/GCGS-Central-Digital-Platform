@@ -46,7 +46,7 @@
                         @if (organisationTypeHasError)
                         {
                             <p id="organisationType-error" class="govuk-error-message">
-                                <span class="govuk-visually-hidden">Error:</span> @Html.ValidationMessageFor(m => m.OrganisationType)
+                                <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span> @Html.ValidationMessageFor(m => m.OrganisationType)
                             </p>
                         }
 

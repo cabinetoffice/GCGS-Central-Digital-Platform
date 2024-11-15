@@ -34,7 +34,7 @@
                         @if (devolvedHasError)
                         {
                             <p id="devolved-error" class="govuk-error-message">
-                                <span class="govuk-visually-hidden">Error:</span> @Html.ValidationMessageFor(m => m.Devolved)
+                                <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span> @Html.ValidationMessageFor(m => m.Devolved)
                             </p>
                         }
 

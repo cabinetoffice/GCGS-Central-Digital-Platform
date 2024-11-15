@@ -4,7 +4,7 @@
 @using CO.CDP.Localization
 
 @{
-    ViewData["Title"] = "This organisation has already registered";
+    ViewData["Title"] = StaticTextResource.OrganisationRegistration_OrganisationAlreadyRegistered_Heading;
     var backLink = RegistrationStepModel.OrganisationIdentifierPage;
     var overrideBackLink = Request.Query.ContainsKey("backLink");
 
@@ -24,18 +24,7 @@
             <h1 class="govuk-heading-l">
                 @ViewData["Title"]
             </h1>
-
-            <p class="govuk-body">
-                The organisation's details are already registered with the service.
-            </p>
-
-            <p class="govuk-body">
-                If you know the person who registered the organisation, they can invite you to join. Or you can request to join below.
-            </p>
-
-            <a class="govuk-button" href="/registration/@Model.Identifier/join-organisation">
-                Request to Join
-            </a>
+            @Html.Raw(string.Format(StaticTextResource.OrganisationRegistration_OrganisationAlreadyRegistered_Message, Model.Identifier))
         </div>
     </div>
 </main>

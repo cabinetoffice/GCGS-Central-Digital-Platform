@@ -43,7 +43,7 @@
                         @if (regulationsHasError)
                         {
                             <p id="devolved-error" class="govuk-error-message">
-                                <span class="govuk-visually-hidden">Error:</span> @Html.ValidationMessageFor(m => m.Regulations)
+                                <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span> @Html.ValidationMessageFor(m => m.Regulations)
                             </p>
                         }
 
