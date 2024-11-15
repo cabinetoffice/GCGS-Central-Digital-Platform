@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Moq;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
+using CO.CDP.Tenant.WebApiClient;
 
 namespace CO.CDP.OrganisationApp.Tests.Authorization;
 
@@ -12,7 +13,7 @@ public class CustomScopeHandlerTests
     private readonly Mock<ISession> _sessionMock;
     private readonly Mock<IServiceScopeFactory> _serviceScopeFactoryMock;
     private readonly Mock<IServiceScope> _serviceScopeMock;
-    private readonly Mock<IUserInfoService> _userInfoServiceMock;
+    private readonly Mock<ITenantClient> _tenantClientMock;
     private readonly CustomScopeHandler _handler;
     private readonly Guid _defaultPersonId;
     private readonly Models.UserDetails _defaultUserDetails;
@@ -22,11 +23,11 @@ public class CustomScopeHandlerTests
         _sessionMock = new Mock<ISession>();
         _serviceScopeFactoryMock = new Mock<IServiceScopeFactory>();
         _serviceScopeMock = new Mock<IServiceScope>();
-        _userInfoServiceMock = new Mock<IUserInfoService>();
+        _tenantClientMock = new Mock<ITenantClient>();
 
         _serviceScopeFactoryMock.Setup(x => x.CreateScope()).Returns(_serviceScopeMock.Object);
-        _serviceScopeMock.Setup(x => x.ServiceProvider.GetService(typeof(IUserInfoService)))
-            .Returns(_userInfoServiceMock.Object);
+        _serviceScopeMock.Setup(x => x.ServiceProvider.GetService(typeof(ITenantClient)))
+            .Returns(_tenantClientMock.Object);
 
         _handler = new CustomScopeHandler(_sessionMock.Object, _serviceScopeFactoryMock.Object);
 
@@ -63,35 +64,33 @@ public class CustomScopeHandlerTests
         bool expectedResult)
     {
         var requirement = new ScopeRequirement(requirementScope);
-        var context = new AuthorizationHandlerContext(new[] { requirement }, null!, null);
+        var context = new AuthorizationHandlerContext([requirement], null!, null);
 
         _sessionMock.Setup(x => x.Get<Models.UserDetails>(Session.UserDetailsKey))
                     .Returns(_defaultUserDetails);
 
-        if (organisationUserScope != null)
-        {
-            _userInfoServiceMock.Setup(x => x.GetOrganisationUserScopes())
-                .ReturnsAsync(new[] { organisationUserScope });
-        }
-        else
-        {
-            _userInfoServiceMock.Setup(x => x.GetOrganisationUserScopes())
-                .ReturnsAsync(new string[] { });
-        }
-
-        if (userScope != null)
-        {
-            _userInfoServiceMock.Setup(x => x.GetUserScopes())
-                .ReturnsAsync(new[] { userScope });
-        }
-        else
-        {
-            _userInfoServiceMock.Setup(x => x.GetUserScopes())
-                .ReturnsAsync(new string[] { });
-        }
+        _tenantClientMock.Setup(x => x.LookupTenantAsync())
+                         .ReturnsAsync(TenantLookupBuilder(organisationUserScope, userScope));
 
         await _handler.HandleAsync(context);
 
         context.HasSucceeded.Should().Be(expectedResult);
+    }
+
+    private TenantLookup TenantLookupBuilder(string? organisationUserScope, string? userScope)
+    {
+        var organisations = new List<UserOrganisation>()
+        {
+            new UserOrganisation(Guid.NewGuid(), string.Empty, [], [], organisationUserScope != null ? [organisationUserScope] : [], null)
+        };
+
+        var tenants = new List<UserTenant>
+        {
+            new UserTenant(Guid.NewGuid(), string.Empty, organisations)
+        };
+
+        var user = new UserDetails(string.Empty, string.Empty, userScope != null ? [userScope] : [], _defaultUserDetails.UserUrn);
+
+        return new TenantLookup(tenants, user);
     }
 }

@@ -15,6 +15,23 @@ public class AssignIdentifierUseCase(IOrganisationRepository organisations, IIde
         public const string CompaniesHouse = "GB-COH";
     }
 
+    private static ISet<string> IdentifierSchemesUK = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+    {
+        "GB-COH",
+        "GB-CHC",
+        "GB-SC",
+        "GB-NIC",
+        "GB-MPR",
+        "GG-RCE",
+        "JE-FSC",
+        "IM-CR",
+        "GB-NHS",
+        "GB-UKPRN",
+        "VAT",
+        "Other",
+        "GB-PPON"
+    };
+
     public async Task<bool> Execute(AssignOrganisationIdentifier command)
     {
         await FindOrganisation(command)
@@ -49,33 +66,37 @@ public class AssignIdentifierUseCase(IOrganisationRepository organisations, IIde
         return organisation;
     }
 
-    private static void ResetIdentifierPrimaryToFalse(OrganisationInformation.Persistence.Organisation.Identifier? identifier)
+    private static void ResetPrimaryIdentifiers(IEnumerable<OrganisationInformation.Persistence.Organisation.Identifier> identifiers)
     {
-        if (identifier != null)
+        foreach (var identifier in identifiers.Where(id => id.Primary))
         {
             identifier.Primary = false;
-        }    
+        }
     }
 
     public static bool IsPrimaryIdentifier(OrganisationInformation.Persistence.Organisation organisation, string newIdentifierSchemeName)
     {
-        if (newIdentifierSchemeName == IdentifierSchemes.Vat)
+        if (newIdentifierSchemeName == IdentifierSchemes.Vat || !IdentifierSchemesUK.Contains(newIdentifierSchemeName))
         {
             return false;
         }
 
-        bool isPrimary = organisation.Identifiers.Count == 0;
-
-        if (organisation.Identifiers.Any(i => i.Scheme == IdentifierSchemes.Other && i.Primary) ||
-            organisation.Identifiers.Any(i => i.Scheme == IdentifierSchemes.Ppon && i.Primary))
+        if (organisation.Identifiers.Count == 0)
         {
-            ResetIdentifierPrimaryToFalse(organisation.Identifiers.FirstOrDefault(i => i.Scheme == IdentifierSchemes.Other && i.Primary));
-            ResetIdentifierPrimaryToFalse(organisation.Identifiers.FirstOrDefault(i => i.Scheme == IdentifierSchemes.Ppon && i.Primary));
-
-            isPrimary = true;
+            return true;
         }
 
-        return isPrimary;
+        var primaryIdentifiers = organisation.Identifiers
+           .Where(i => i.Primary && (i.Scheme == IdentifierSchemes.Other || i.Scheme == IdentifierSchemes.Ppon || !IdentifierSchemesUK.Contains(i.Scheme)))
+           .ToList();
+
+        if (primaryIdentifiers.Any())
+        {
+            ResetPrimaryIdentifiers(primaryIdentifiers);
+            return true;
+        }
+
+        return false;
     }
 
     private async Task<OrganisationInformation.Persistence.Organisation> FindOrganisation(

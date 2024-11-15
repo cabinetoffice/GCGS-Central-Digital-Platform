@@ -195,6 +195,12 @@
   <data name="Organisation_ApiKeysForBuyers" xml:space="preserve">
     <value> (for Buyers)</value>
   </data>
+  <data name="Organisation_RegistrationNotApproved" xml:space="preserve">
+    <value>Registration Not Approved</value>
+  </data>
+  <data name="Organisation_WeCouldNotApproveYourRequest" xml:space="preserve">
+    <value>We could not approve your request because:</value>
+  </data>
   <data name="Organisation_CreateApiKey" xml:space="preserve">
     <value>Create an API key and share it with the e-Sender you use to publish procurement notices.</value>
   </data>
@@ -269,6 +275,9 @@
   </data>
   <data name="Organisation_PendingApproval" xml:space="preserve">
     <value>Pending approval</value>
+  </data>
+  <data name="Organisation_NotApproved" xml:space="preserve">
+    <value>Not approved</value>
   </data>
   <data name="Organisation_AddAnotherOrganisation" xml:space="preserve">
     <value>Add another organisation</value>

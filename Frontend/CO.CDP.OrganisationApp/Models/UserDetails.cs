@@ -13,8 +13,6 @@ public class UserDetails
     public string? Phone { get; set; }
 
     public Guid? PersonId { get; set; }
-
-    public AuthTokens? AuthTokens { get; set; }
 }
 
 public record AuthTokens
