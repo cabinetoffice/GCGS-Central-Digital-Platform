@@ -141,6 +141,9 @@
   <data name="Global_Back" xml:space="preserve">
     <value>Back</value>
   </data>
+  <data name="Global_Email_Invalid_ErrorMessage" xml:space="preserve">
+    <value>Enter an email address in the correct format, like name@example.com</value>
+  </data>
   <data name="Supplier_SupplierInformationSummary_ConnectedPersonCount_Singular" xml:space="preserve">
     <value>{0} Connected person</value>
   </data>
@@ -159,14 +162,23 @@
   <data name="Supplier_SupplierInformationSummary_FormRecordCount_Plural" xml:space="preserve">
     <value>{0} records</value>
   </data>
+  <data name="Supplier_Email_Required_ErrorMessage" xml:space="preserve">
+    <value>Enter your email address</value>
+  </data>
   <data name="OrganisationRegistration_EnterOrganisationName_Heading" xml:space="preserve">
     <value>Enter your organisation's name</value>
+  </data>
+  <data name="Organisation_Email_Heading" xml:space="preserve">
+    <value>Enter your organisation's email address</value>
   </data>
   <data name="Organisation_EnterOrganisationName_Buyer_Hint" xml:space="preserve">
     <value>If you’re a department, agency or public body on the &lt;a class="govuk-link" target="_blank" href="https://www.gov.uk/government/organisations"&gt;GOV.UK organisations list (opens in a new tab)&lt;/a&gt;, use the exact name shown. If not, use your full official name. For example, HM Revenue &amp; Customs not HMRC.</value>
   </data>
   <data name="Organisation_EnterOrganisationName_Supplier_Hint" xml:space="preserve">
     <value>As registered on Companies House if incorporated, or the trading name of the company.</value>
+  </data>
+  <data name="Organisation_Email_Required_ErrorMessage" xml:space="preserve">
+    <value>Enter your organisation's email address</value>
   </data>
   <data name="Global_Error" xml:space="preserve">
     <value>Error</value>
@@ -478,5 +490,17 @@
   </data>
   <data name="Supplementary_Cookies_GovServices_Info" xml:space="preserve">
     <value>Most services we link to are run by different government departments, for example DWP’s Universal Credit online, DVLA’s vehicle tax service, or HMRC’s webchat. These services may set additional cookies and, if so, will have their own cookie policy and banner linking to it.</value>
+  </data>
+  <data name="User_FirstName_Required_ErrorMessage" xml:space="preserve">
+    <value>Email required</value>
+  </data>
+  <data name="User_LastName_Required_ErrorMessage" xml:space="preserve">
+    <value>Email required</value>
+  </data>
+  <data name="User_Email_Required_ErrorMessage" xml:space="preserve">
+    <value>Email required</value>
+  </data>
+  <data name="User_Role_Required_ErrorMessage" xml:space="preserve">
+    <value>Email required</value>
   </data>
 </root>

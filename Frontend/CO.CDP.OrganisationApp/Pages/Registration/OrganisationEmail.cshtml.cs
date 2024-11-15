@@ -1,5 +1,6 @@
-using CO.CDP.OrganisationApp.Constants;
+using CO.CDP.Localization;
 using CO.CDP.OrganisationApp.Models;
+using CO.CDP.OrganisationApp.Validation;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -12,9 +13,9 @@ public class OrganisationEmailModel(ISession session) : RegistrationStepModel(se
     public override string CurrentPage => OrganisationEmailPage;
 
     [BindProperty]
-    [DisplayName("Enter your organisation's email address")]
-    [Required(ErrorMessage = "Enter your organisation's email address")]
-    [RegularExpression(RegExPatterns.EmailAddress, ErrorMessage = "Enter an email address in the correct format, like name@example.com")]
+    [DisplayName(nameof(StaticTextResource.Organisation_Email_Heading))]
+    [Required(ErrorMessage = nameof(StaticTextResource.Organisation_Email_Required_ErrorMessage))]
+    [ValidEmailAddress(ErrorMessage = nameof(StaticTextResource.Global_Email_Invalid_ErrorMessage))]
     public string? EmailAddress { get; set; }
 
     [BindProperty]

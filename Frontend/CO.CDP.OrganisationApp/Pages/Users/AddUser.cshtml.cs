@@ -4,6 +4,8 @@ using System.ComponentModel.DataAnnotations;
 using Microsoft.IdentityModel.Tokens;
 using CO.CDP.OrganisationApp.Constants;
 using Microsoft.AspNetCore.Authorization;
+using CO.CDP.OrganisationApp.Validation;
+using CO.CDP.Localization;
 
 namespace CO.CDP.OrganisationApp.Pages.Users;
 
@@ -18,23 +20,23 @@ public class AddUserModel(
     public Guid? PersonInviteId { get; set; }
 
     [BindProperty]
-    [Required(ErrorMessage = "Firstname required")]
+    [Required(ErrorMessage = nameof(StaticTextResource.User_FirstName_Required_ErrorMessage))]
     public string? FirstName { get; set; }
 
     [BindProperty]
-    [Required(ErrorMessage = "Lastname required")]
+    [Required(ErrorMessage = nameof(StaticTextResource.User_LastName_Required_ErrorMessage))]
     public string? LastName { get; set; }
 
     [BindProperty]
-    [Required(ErrorMessage = "Email required")]
-    [RegularExpression(RegExPatterns.EmailAddress, ErrorMessage = "Enter an email address in the correct format, like name@example.com")]
+    [Required(ErrorMessage = nameof(StaticTextResource.User_Email_Required_ErrorMessage))]
+    [ValidEmailAddress(ErrorMessage = nameof(StaticTextResource.Global_Email_Invalid_ErrorMessage))]
     public string? Email { get; set; }
 
     [BindProperty]
     public bool? IsAdmin { get; set; }
 
     [BindProperty]
-    [Required(ErrorMessage = "Role required")]
+    [Required(ErrorMessage = nameof(StaticTextResource.User_Role_Required_ErrorMessage))]
     public string? Role { get; set; }
 
     public PersonInviteState? PersonInviteStateData;

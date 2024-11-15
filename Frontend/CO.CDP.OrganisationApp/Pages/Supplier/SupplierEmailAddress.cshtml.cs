@@ -1,5 +1,7 @@
+using CO.CDP.Localization;
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Constants;
+using CO.CDP.OrganisationApp.Validation;
 using CO.CDP.OrganisationApp.WebApiClients;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -12,8 +14,8 @@ namespace CO.CDP.OrganisationApp.Pages.Supplier;
 public class SupplierEmailAddressModel(IOrganisationClient organisationClient) : PageModel
 {
     [BindProperty]
-    [Required(ErrorMessage = "Enter your email address")]
-    [RegularExpression(RegExPatterns.EmailAddress, ErrorMessage = "Enter an email address in the correct format, like name@example.com")]
+    [Required(ErrorMessage = nameof(StaticTextResource.Supplier_Email_Required_ErrorMessage))]
+    [ValidEmailAddress(ErrorMessage = nameof(StaticTextResource.Global_Email_Invalid_ErrorMessage))]
     public string? EmailAddress { get; set; }
 
     [BindProperty(SupportsGet = true)]
