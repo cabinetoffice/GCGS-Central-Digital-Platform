@@ -598,7 +598,7 @@
     <value>Which specified conditions of control does {0} have?</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityControlCondition_SelectConditionError" xml:space="preserve">
-    <value>Select which specified conditions of control does your organisation have</value>
+    <value>Select which specified conditions of control your organisation has</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityControlCondition_Hint" xml:space="preserve">
     <value>As defined in &lt;a href="https://www.legislation.gov.uk/ukpga/2006/46/schedule/1A/part/1?timeline=false" target="_blank"&gt;part 1 schedule 1a of the Companies Act 2006&lt;/a&gt;. Select all that apply.</value>
@@ -655,7 +655,7 @@
     <value>Please select</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityCompanyRegisterName_SelectIfRegisteredError" xml:space="preserve">
-    <value>Select if the organisation is registered as person with significant control</value>
+    <value>Select if organisation is registered as person with significant control</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityCompanyRegisterName_OtherRegisterNameLabel" xml:space="preserve">
     <value>Register name</value>
@@ -784,7 +784,7 @@
     <value>Enter your nationality</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityRegistrationDateQuestion_HasRegistrationDateError" xml:space="preserve">
-    <value>Select yes if the organisation has a registration date</value>
+    <value>Select yes if you were required to register them as a person with significant control</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityRegistrationDateQuestion_DayRequiredError" xml:space="preserve">
     <value>Date of registration must include a day</value>
@@ -862,7 +862,7 @@
     <value>Is the supplier organisation registered with Companies House as required by the Companies Act 2006? We’ve already asked you this, but please reconfirm.</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntitySupplierCompanyQuestion_RegisteredWithChError" xml:space="preserve">
-    <value>Select yes if your organisation is registered with Companies House</value>
+    <value>Select yes if supplier organisation registered with Companies House</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntitySupplierHasControl_PageTitle" xml:space="preserve">
     <value>Is your organisation influenced or controlled by another person or company?</value>

@@ -8,7 +8,7 @@
     var personQuestionHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.ConnectedEntityCategory)).HasInnerHtml;
     string IsSelected(Constants.ConnectedEntityOrganisationCategoryType radioValue)
     {
-        return Model.ConnectedEntityCategory == radioValue ? "checked='checked'" : string.Empty;
+        return Model.ConnectedEntityCategory == radioValue ? "checked" : string.Empty;
     }
 }
 

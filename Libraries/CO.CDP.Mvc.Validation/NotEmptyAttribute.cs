@@ -1,3 +1,4 @@
+using CO.CDP.Localization;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using System.Collections;
 
@@ -17,7 +18,7 @@ public class NotEmptyAttribute : Attribute, IModelValidator
 
         return new List<ModelValidationResult>
         {
-            new ModelValidationResult(context.ModelMetadata.PropertyName, ErrorMessage)
+            new ModelValidationResult(context.ModelMetadata.PropertyName, StaticTextResource.ResourceManager.GetString(ErrorMessage))
         };
     }
 }
