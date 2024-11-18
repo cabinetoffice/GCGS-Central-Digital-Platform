@@ -10,7 +10,7 @@ public static class ErrorCodes
     {
         { typeof(BadHttpRequestException), (StatusCodes.Status422UnprocessableEntity, "UNPROCESSABLE_ENTITY") },
         { typeof(InvalidIdentifierFormatException), (StatusCodes.Status400BadRequest, "INVALID_IDENTIFIER_FORMAT") },
-        { typeof(NotFoundException), (StatusCodes.Status400BadRequest, "IDENTIFIERS_NOT_FOUND") },
+        { typeof(NotFoundException), (StatusCodes.Status404NotFound, "IDENTIFIERS_NOT_FOUND") },
         { typeof(InvalidInputException), (StatusCodes.Status400BadRequest, "INVALID_INPUT") },
     };
 }
