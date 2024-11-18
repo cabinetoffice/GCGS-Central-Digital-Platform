@@ -28,4 +28,8 @@
       <ProjectReference Include="..\..\Services\CO.CDP.Localization\CO.CDP.Localization.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Pages\Forms\InternationalIdentifier\" />
+    </ItemGroup>
+
 </Project>
