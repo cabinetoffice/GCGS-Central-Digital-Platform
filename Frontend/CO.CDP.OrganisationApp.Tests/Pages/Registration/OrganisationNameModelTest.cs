@@ -43,26 +43,26 @@ public class OrganisationNameModelTest
     {
         var model = GivenOrganisationNameModel();
 
-        var mockStringLocalizer = new Mock<IStringLocalizer>();
-        mockStringLocalizer
+        var stringLocalizerMock = new Mock<IStringLocalizer>();
+        stringLocalizerMock
             .Setup(localizer => localizer[nameof(StaticTextResource.OrganisationRegistration_EnterOrganisationName_Heading)])
             .Returns(new LocalizedString(nameof(StaticTextResource.OrganisationRegistration_EnterOrganisationName_Heading), StaticTextResource.OrganisationRegistration_EnterOrganisationName_Heading));
 
-        var mockStringLocalizerFactory = new Mock<IStringLocalizerFactory>();
-        mockStringLocalizerFactory
+        var stringLocalizerFactoryMock = new Mock<IStringLocalizerFactory>();
+        stringLocalizerFactoryMock
             .Setup(factory => factory.Create(It.IsAny<Type>()))
-            .Returns(mockStringLocalizer.Object);
+            .Returns(stringLocalizerMock.Object);
 
-        var mockServiceProvider = new Mock<IServiceProvider>();
-        mockServiceProvider
+        var serviceProviderMock = new Mock<IServiceProvider>();
+        serviceProviderMock
             .Setup(provider => provider.GetService(typeof(IServiceProvider)))
-            .Returns(mockServiceProvider.Object);
+            .Returns(serviceProviderMock.Object);
 
-        mockServiceProvider
+        serviceProviderMock
             .Setup(provider => provider.GetService(typeof(IStringLocalizerFactory)))
-            .Returns(mockStringLocalizerFactory.Object);
+            .Returns(stringLocalizerFactoryMock.Object);
 
-        var validationContext = new ValidationContext(model, mockServiceProvider.Object, null);
+        var validationContext = new ValidationContext(model, serviceProviderMock.Object, null);
 
         var results = ModelValidationHelper.Validate(model, validationContext);
 

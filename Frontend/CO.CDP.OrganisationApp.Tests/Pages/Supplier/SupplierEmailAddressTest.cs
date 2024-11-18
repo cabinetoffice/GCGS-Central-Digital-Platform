@@ -85,26 +85,26 @@ public class SupplierEmailAddressTest
     {
         _model.EmailAddress = "dummy";
 
-        var mockStringLocalizer = new Mock<IStringLocalizer>();
-        mockStringLocalizer
+        var stringLocalizerMock = new Mock<IStringLocalizer>();
+        stringLocalizerMock
             .Setup(localizer => localizer[nameof(StaticTextResource.Global_Email_Invalid_ErrorMessage)])
             .Returns(new LocalizedString(nameof(StaticTextResource.Global_Email_Invalid_ErrorMessage), StaticTextResource.Global_Email_Invalid_ErrorMessage));
 
-        var mockStringLocalizerFactory = new Mock<IStringLocalizerFactory>();
-        mockStringLocalizerFactory
+        var stringLocalizerFactoryMock = new Mock<IStringLocalizerFactory>();
+        stringLocalizerFactoryMock
             .Setup(factory => factory.Create(It.IsAny<Type>()))
-            .Returns(mockStringLocalizer.Object);
+            .Returns(stringLocalizerMock.Object);
 
-        var mockServiceProvider = new Mock<IServiceProvider>();
-        mockServiceProvider
+        var serviceProviderMock = new Mock<IServiceProvider>();
+        serviceProviderMock
             .Setup(provider => provider.GetService(typeof(IServiceProvider)))
-            .Returns(mockServiceProvider.Object);
+            .Returns(serviceProviderMock.Object);
 
-        mockServiceProvider
+        serviceProviderMock
             .Setup(provider => provider.GetService(typeof(IStringLocalizerFactory)))
-            .Returns(mockStringLocalizerFactory.Object);
+            .Returns(stringLocalizerFactoryMock.Object);
 
-        var validationContext = new ValidationContext(_model, mockServiceProvider.Object, null);
+        var validationContext = new ValidationContext(_model, serviceProviderMock.Object, null);
 
         var results = ModelValidationHelper.Validate(_model, validationContext);
 
