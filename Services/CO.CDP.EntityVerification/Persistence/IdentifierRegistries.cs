@@ -2,7 +2,7 @@ using CO.CDP.EntityFrameworkCore.Timestamps;
 
 namespace CO.CDP.EntityVerification.Persistence;
 
-public class CountryIndentifiers : IEntityDate
+public class IdentifierRegistries : IEntityDate
 {
     public int Id { get; set; }
     public required string CountryCode { get; set; }

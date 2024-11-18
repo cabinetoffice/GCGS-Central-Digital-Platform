@@ -41,18 +41,18 @@ public static class PponEndpointExtensions
     {
         app.MapGet("/registries/{countrycode}",
            [Authorize(Policy = "OneLoginPolicy")]
-        async (string countrycode, IUseCase<string, IEnumerable<CountryIdentifiers>> useCase) =>
+        async (string countrycode, IUseCase<string, IEnumerable<IdentifierRegistries>> useCase) =>
            await useCase.Execute(countrycode)
-                  .AndThen(organisation => organisation != null ? Results.Ok(organisation) : Results.NotFound()))
-      .Produces<IEnumerable<CountryIdentifiers>>(StatusCodes.Status200OK, "application/json")
+                  .AndThen(identifiers => identifiers != null ? Results.Ok(identifiers) : Results.NotFound()))
+      .Produces<IEnumerable<IdentifierRegistries>>(StatusCodes.Status200OK, "application/json")
       .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
       .Produces<ProblemDetails>(StatusCodes.Status404NotFound)
       .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError)
       .WithOpenApi(operation =>
       {
-          operation.OperationId = "GetCountryIdentifiers";
-          operation.Description = "Get country identifiers.";
-          operation.Summary = "Get country identifiers.";
+          operation.OperationId = "GetIdentifierRegistries";
+          operation.Description = "Get Identifier Registeries.";
+          operation.Summary = "Get Identifier Registeries.";
           operation.Responses["200"].Description = "List of identifiers.";
           operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
           operation.Responses["404"].Description = "Identifiers not found.";

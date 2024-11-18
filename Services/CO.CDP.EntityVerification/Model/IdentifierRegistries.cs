@@ -1,6 +1,6 @@
 namespace CO.CDP.EntityVerification.Model;
 
-public record CountryIdentifiers
+public record IdentifierRegistries
 {
     /// <example>"FR-GDP"</example>
     public required string Scheme { get; init; }

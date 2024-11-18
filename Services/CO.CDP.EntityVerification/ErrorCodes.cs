@@ -1,5 +1,5 @@
 using static CO.CDP.EntityVerification.UseCase.LookupIdentifierUseCase.LookupIdentifierException;
-using static CO.CDP.EntityVerification.UseCase.GetCountryIdentifiersUseCase.GetCountryIdentifiersException;
+using static CO.CDP.EntityVerification.UseCase.GetIdentifierRegistriesUseCase.GetIdentifierRegistriesException;
 
 
 namespace CO.CDP.EntityVerification;

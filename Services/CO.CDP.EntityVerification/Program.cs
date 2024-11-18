@@ -15,6 +15,7 @@ using CO.CDP.MQ.Hosting;
 using CO.CDP.WebApi.Foundation;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
+using IdentifierRegistries = CO.CDP.EntityVerification.Model.IdentifierRegistries;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.ConfigureForwardedHeaders();
@@ -31,7 +32,7 @@ builder.Services.AddDbContext<EntityVerificationContext>(o =>
 builder.Services.AddScoped<IPponRepository, DatabasePponRepository>();
 builder.Services.AddScoped<IPponService, PponService>();
 builder.Services.AddScoped<IUseCase<LookupIdentifierQuery, IEnumerable<CO.CDP.EntityVerification.Model.Identifier>>, LookupIdentifierUseCase>();
-builder.Services.AddScoped<IUseCase<string, IEnumerable<CountryIdentifiers>>, GetCountryIdentifiersUseCase>();
+builder.Services.AddScoped<IUseCase<string, IEnumerable<IdentifierRegistries>>, GetIdentifierRegistriesUseCase>();
 
 if (Assembly.GetEntryAssembly().IsRunAs("CO.CDP.EntityVerification"))
 {

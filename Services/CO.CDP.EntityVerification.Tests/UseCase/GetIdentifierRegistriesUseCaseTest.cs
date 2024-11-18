@@ -5,24 +5,24 @@ using CO.CDP.OrganisationInformation.Persistence;
 using CO.CDP.Testcontainers.PostgreSql;
 using FluentAssertions;
 using Moq;
-using static CO.CDP.EntityVerification.UseCase.GetCountryIdentifiersUseCase;
-using static CO.CDP.EntityVerification.UseCase.GetCountryIdentifiersUseCase.GetCountryIdentifiersException;
+using static CO.CDP.EntityVerification.UseCase.GetIdentifierRegistriesUseCase;
+using static CO.CDP.EntityVerification.UseCase.GetIdentifierRegistriesUseCase.GetIdentifierRegistriesException;
 
 namespace CO.CDP.EntityVerification.Tests.UseCase;
 
 using Moq;
 using Xunit;
 
-public class GetCountryIdentifiersUseCaseTest
+public class GetIdentifierRegistriesUseCaseTest
 {
     private readonly Mock<IPponRepository> _repository;
-    private readonly GetCountryIdentifiersUseCase _useCase;
+    private readonly GetIdentifierRegistriesUseCase _useCase;
 
-    public GetCountryIdentifiersUseCaseTest()
+    public GetIdentifierRegistriesUseCaseTest()
     {
         _repository = new Mock<IPponRepository>();
 
-        _useCase = new GetCountryIdentifiersUseCase(_repository.Object);
+        _useCase = new GetIdentifierRegistriesUseCase(_repository.Object);
     }
 
     [Fact]
@@ -32,7 +32,7 @@ public class GetCountryIdentifiersUseCaseTest
 
         Func<Task> action = async () => await _useCase.Execute(countryCode!);
 
-        await action.Should().ThrowAsync<GetCountryIdentifiersException.InvalidInputException>()
+        await action.Should().ThrowAsync<GetIdentifierRegistriesException.InvalidInputException>()
             .WithMessage("Country code cannot be null or empty.");
     }
 
@@ -41,9 +41,9 @@ public class GetCountryIdentifiersUseCaseTest
     {
 
         var countryCode = "US";
-        var expectedData = new List<CountryIndentifiers>
+        var expectedData = new List<IdentifierRegistries>
         {
-            new CountryIndentifiers
+            new IdentifierRegistries
             {
                 Id = 1,
                 CountryCode = "US",
@@ -52,7 +52,7 @@ public class GetCountryIdentifiersUseCaseTest
                 CreatedOn = DateTimeOffset.UtcNow.AddDays(-10),
                 UpdatedOn = DateTimeOffset.UtcNow.AddDays(-1)
             },
-            new CountryIndentifiers
+            new IdentifierRegistries
             {
                 Id = 2,
                 CountryCode = "US",
@@ -64,15 +64,15 @@ public class GetCountryIdentifiersUseCaseTest
         };
 
         _repository
-            .Setup(repo => repo.GetCountryIdentifiersAsync(countryCode))
+            .Setup(repo => repo.GetIdentifierRegistriesAsync(countryCode))
             .ReturnsAsync(expectedData);
 
         var result = await _useCase.Execute(countryCode);
 
-        Assert.NotNull(result);
-        Assert.Equal(2, result.Count());
-        Assert.Equal("ISO", result.First().Scheme);
-        Assert.Equal("GS1", result.Last().Scheme);
+        result.Should().NotBeNull();
+        result.Should().Equals(2);
+        result.First().Scheme.Should().Be("ISO");
+        result.Last().Scheme.Should().Be("GS1");
     }
 
     [Fact]
@@ -80,8 +80,8 @@ public class GetCountryIdentifiersUseCaseTest
     {
         var countryCode = "US";
 
-        _repository.Setup(repo => repo.GetCountryIdentifiersAsync(countryCode))
-                    .ReturnsAsync(new List<CountryIndentifiers>());
+        _repository.Setup(repo => repo.GetIdentifierRegistriesAsync(countryCode))
+                    .ReturnsAsync(new List<IdentifierRegistries>());
 
 
         await Assert.ThrowsAsync<NotFoundException>(() => _useCase.Execute(countryCode));
