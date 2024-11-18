@@ -192,9 +192,7 @@
                     </p>
                 }
 
-                @* TODO*****: ask Luke <authorize scope="@OrgScopeRequirement.Admin"> *@
                 <authorize scope="@OrgScopeRequirement.Admin">
-
                     @if (organisationDetails.IsTenderer() && !(organisationDetails.IsPendingBuyer() || organisationDetails.IsBuyer())) 
                     {
                         <h3 class="govuk-heading-s govuk-!-margin-bottom-3">

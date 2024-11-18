@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace CO.CDP.OrganisationApp.Pages.Organisation;
 
-[Authorize(Policy = OrgScopeRequirement.Admin)] // TODO **** : ASK before PR the question to Luke <authorize scope="@OrgScopeRequirement.Admin">
+[Authorize(Policy = OrgScopeRequirement.Admin)]
 public class OrganisationRegisterSupplierAsBuyerModel(
    ITempDataService tempDataService,
    IOrganisationClient organisationClient) : PageModel
@@ -20,10 +20,11 @@ public class OrganisationRegisterSupplierAsBuyerModel(
     public async Task<IActionResult> OnGet(Guid id)
     {
         var orgInfo = await organisationClient.GetOrganisationAsync(id);
-        if (!orgInfo.Roles.Contains(PartyRole.Buyer)) // add isPendding logic check here if possible - also can you add multiple buyers
+
+        if (!orgInfo.Roles.Contains(PartyRole.Buyer))
         {
             var state = tempDataService.PeekOrDefault<SupplierToBuyerDetails>(SupplierToBuyerStateKey);
-            state.OrganisationType = orgInfo.IsTenderer() ? OrganisationType.Supplier : OrganisationType.Buyer; // check this logic
+            state.OrganisationType = orgInfo.IsTenderer() ? OrganisationType.Supplier : OrganisationType.Buyer;
 
             tempDataService.Put(SupplierToBuyerStateKey, state);
 
@@ -32,6 +33,4 @@ public class OrganisationRegisterSupplierAsBuyerModel(
 
         return RedirectToPage("OrganisationOverview", new { id });
     }
-
-
 }

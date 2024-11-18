@@ -1,12 +1,14 @@
 using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.WebApiClients;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using OrganisationWebApiClient = CO.CDP.Organisation.WebApiClient;
 
 namespace CO.CDP.OrganisationApp.Pages.Organisation;
 
+[Authorize(Policy = OrgScopeRequirement.Admin)]
 public class SupplierToBuyerOrganisationDetailsSummaryModel(
     ITempDataService tempDataService,
     OrganisationWebApiClient.IOrganisationClient organisationClient) : PageModel

@@ -1,5 +1,7 @@
 using CO.CDP.Mvc.Validation;
+using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel;
@@ -7,6 +9,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CO.CDP.OrganisationApp.Pages.Organisation;
 
+[Authorize(Policy = OrgScopeRequirement.Admin)]
 public class SupplierToBuyerOrganisationTypeModel(ITempDataService tempDataService) : PageModel
 {
     [BindProperty]
@@ -79,7 +82,6 @@ public class SupplierToBuyerOrganisationTypeModel(ITempDataService tempDataServi
         {
             state.BuyerOrganisationOtherValue = OtherValue;
         }
-
 
         tempDataService.Put(SupplierToBuyerStateKey, state);
     }
