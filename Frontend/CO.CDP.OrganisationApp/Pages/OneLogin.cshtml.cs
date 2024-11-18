@@ -32,7 +32,7 @@ public class OneLoginModel(
             "sign-in" => SignIn(redirectUri),
             "user-info" => await UserInfo(redirectUri),
             "sign-out" => SignOut(),
-            _ => RedirectToPage("/"),
+            _ => Redirect("/"),
         };
     }
 
@@ -40,24 +40,27 @@ public class OneLoginModel(
     {
         logger.LogInformation("One Login page post endpoint requested. {PageAction} {Token}", PageAction, logout_token);
 
-        if (PageAction.ToLower() != "back-channel-sign-out" || string.IsNullOrWhiteSpace(logout_token))
+        if (!PageAction.Equals("back-channel-sign-out", StringComparison.CurrentCultureIgnoreCase))
         {
-            logger.LogInformation("One Login page post endpoint returns BadRequest response. {PageAction} {Token}", PageAction, logout_token);
+            logger.LogInformation("One Login page post endpoint returns BadRequest response. {PageAction}", PageAction);
+            return BadRequest("Invalid page request");
+        }
 
-            return BadRequest();
+        if (string.IsNullOrWhiteSpace(logout_token))
+        {
+            logger.LogInformation("One Login page post endpoint returns BadRequest response. {Token}", logout_token);
+            return BadRequest("Missing token");
         }
 
         var urn = await oneLoginAuthority.ValidateLogoutToken(logout_token);
 
         if (string.IsNullOrWhiteSpace(urn))
         {
-            logger.LogInformation("One Login page post endpoint returns BadRequest response, because unable to validate logout token. {Token}",
-                logout_token);
-
-            return BadRequest();
+            logger.LogInformation("One Login page post endpoint returns BadRequest response, because unable to validate logout token. {Token}", logout_token);
+            return BadRequest("Invalid token");
         }
 
-        oneLoginSessionManager.AddToSignedOutSessionsList(urn);
+        await oneLoginSessionManager.AddToSignedOutSessionsList(urn);
 
         logger.LogInformation("One Login page post endpoint process request successfully and added user {URN} to the signed-out sessions list. {Token}",
             urn, logout_token);
@@ -92,7 +95,7 @@ public class OneLoginModel(
         {
             return SignIn();
         }
-        oneLoginSessionManager.RemoveFromSignedOutSessionsList(urn);
+        await oneLoginSessionManager.RemoveFromSignedOutSessionsList(urn);
 
         var ud = new UserDetails { UserUrn = urn, Email = email, Phone = phone };
         session.Set(Session.UserDetailsKey, ud);

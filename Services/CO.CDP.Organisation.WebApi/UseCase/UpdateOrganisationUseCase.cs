@@ -1,9 +1,12 @@
 using AutoMapper;
+using CO.CDP.GovUKNotify.Models;
+using CO.CDP.GovUKNotify;
 using CO.CDP.MQ;
 using CO.CDP.Organisation.WebApi.Events;
 using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.OrganisationInformation;
 using CO.CDP.OrganisationInformation.Persistence;
+using Persistence = CO.CDP.OrganisationInformation.Persistence;
 using Address = CO.CDP.OrganisationInformation.Persistence.Address;
 
 namespace CO.CDP.Organisation.WebApi.UseCase;
@@ -11,12 +14,15 @@ namespace CO.CDP.Organisation.WebApi.UseCase;
 public class UpdateOrganisationUseCase(
     IOrganisationRepository organisationRepository,
     IPublisher publisher,
-    IMapper mapper
+    IMapper mapper,
+    IConfiguration configuration,
+    IGovUKNotifyApiClient govUKNotifyApiClient,
+    ILogger<UpdateOrganisationUseCase> logger
 ) : IUseCase<(Guid organisationId, UpdateOrganisation updateOrganisation), bool>
 {
     public async Task<bool> Execute((Guid organisationId, UpdateOrganisation updateOrganisation) command)
     {
-        var organisation = await organisationRepository.Find(command.organisationId)
+        var organisation = await organisationRepository.FindIncludingTenant(command.organisationId)
             ?? throw new UnknownOrganisationException($"Unknown organisation {command.organisationId}.");
 
         var updateObject = command.updateOrganisation.Organisation;
@@ -29,6 +35,8 @@ public class UpdateOrganisationUseCase(
                     throw new InvalidUpdateOrganisationCommand.MissingOrganisationName();
                 }
                 organisation.Name = updateObject.OrganisationName;
+                organisation.Tenant.Name = updateObject.OrganisationName;
+                organisation.Identifiers.Select(x => x.LegalName = updateObject.OrganisationName).ToList();
                 break;
 
             case OrganisationUpdateType.AddRoles:
@@ -204,10 +212,72 @@ public class UpdateOrganisationUseCase(
 
         organisation.UpdateSupplierInformation();
 
+        await ResetRejectedStatus(command.updateOrganisation.Type, organisation);
+
         await organisationRepository.SaveAsync(organisation,
             async o => await publisher.Publish(mapper.Map<OrganisationUpdated>(o)));
 
         return await Task.FromResult(true);
+    }
+
+    private async Task ResetRejectedStatus(OrganisationUpdateType updateType, Persistence.Organisation organisation)
+    {
+        if (
+            (updateType == OrganisationUpdateType.OrganisationName || updateType == OrganisationUpdateType.OrganisationEmail)
+            && organisation.PendingRoles.Contains(PartyRole.Buyer)
+        )
+        {
+            var review = mapper.Map<Review>(await organisationRepository.FindIncludingReviewedBy(organisation.Guid));
+
+            if (review.Status == ReviewStatus.Rejected)
+            {
+                await ResendBuyerApprovalEmail(organisation);
+
+                organisation.ReviewComment = null;
+                organisation.ReviewedBy = null;
+            }
+        }
+    }
+
+    private async Task ResendBuyerApprovalEmail(Persistence.Organisation organisation)
+    {
+        var baseAppUrl = configuration.GetValue<string>("OrganisationAppUrl") ?? "";
+        var templateId = configuration.GetValue<string>("GOVUKNotify:RequestReviewApplicationEmailTemplateId") ?? "";
+        var supportAdminEmailAddress = configuration.GetValue<string>("GOVUKNotify:SupportAdminEmailAddress") ?? "";
+
+        var missingConfigs = new List<string>();
+
+        if (string.IsNullOrEmpty(baseAppUrl)) missingConfigs.Add("OrganisationAppUrl");
+        if (string.IsNullOrEmpty(templateId)) missingConfigs.Add("GOVUKNotify:RequestReviewApplicationEmailTemplateId");
+        if (string.IsNullOrEmpty(supportAdminEmailAddress)) missingConfigs.Add("GOVUKNotify:SupportAdminEmailAddress");
+
+        if (missingConfigs.Count != 0)
+        {
+            logger.LogError(new Exception("Unable to send email to support admin"), $"Missing configuration keys: {string.Join(", ", missingConfigs)}. Unable to send email to support admin.");
+            return;
+        }
+
+        var requestLink = new Uri(new Uri(baseAppUrl), $"/support/organisation/{organisation.Guid}/approval").ToString();
+
+        var emailRequest = new EmailNotificationRequest
+        {
+            EmailAddress = supportAdminEmailAddress,
+            TemplateId = templateId,
+            Personalisation = new Dictionary<string, string>
+            {
+                { "org_name", organisation.Name },
+                { "request_link", requestLink }
+            }
+        };
+
+        try
+        {
+            await govUKNotifyApiClient.SendEmail(emailRequest);
+        }
+        catch
+        {
+            return;
+        }
     }
 
     private async Task ValidateIdentifierIsNotKnownToUs(OrganisationIdentifier identifier)

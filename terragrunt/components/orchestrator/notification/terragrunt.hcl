@@ -46,6 +46,13 @@ dependency orchestrator_ci {
   }
 }
 
+dependency orchestrator_common {
+  config_path = "../common"
+  mock_outputs = {
+    ssm_envs_service_version_name = "mock"
+  }
+}
+
 dependency orchestrator_ecr {
   config_path = "../ecr"
   mock_outputs = {
@@ -67,6 +74,7 @@ inputs = {
 
   deployment_pipeline_name                   = dependency.orchestrator_ci.outputs.deployment_pipeline_name
   event_rule_ci_service_version_updated_name = dependency.orchestrator_ci.outputs.event_rule_ci_service_version_updated_name
-  ssm_service_version_arn                    = dependency.orchestrator_ci.outputs.ssm_service_version_arn
-  ssm_service_version_name                   = dependency.orchestrator_ci.outputs.ssm_service_version_name
+
+  ssm_envs_service_version_arn  = dependency.orchestrator_common.outputs.ssm_envs_service_version_arn
+  ssm_envs_service_version_name = dependency.orchestrator_common.outputs.ssm_envs_service_version_name
 }

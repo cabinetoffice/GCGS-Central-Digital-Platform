@@ -5,6 +5,7 @@
 - [High-Level Overview (DNS, Networking, ECS, and Data Flow)](#cdp-sirsi-application-high-level-overview-of-dns-networking-ecs-and-data-flow)
 - [ECS and RDS Database Integration](#cdp-sirsi-application-ecs-and-rds-database-integration)
 - [ECS and SQS Queue Integration](#cdp-sirsi-application-ecs-and-sqs-queue-integration)
+- [CI/CD Build and Deployment Pipelines](#cicd-build-and-deployment-pipelines)
 
 ---
 
@@ -31,3 +32,9 @@ Additionally, the PG Admin Task is a tool used in the non-production environment
 This diagram illustrates the integration between the ECS cluster and SQS queues for the CDP-SIRSI application. It shows how different services within the ECS tasks, such as Entity Verification and Organisation tasks, interact with both standard and dead-letter FIFO queues. The IAM role: cdp-sirsi-ecs-task is granted access to these SQS queues, allowing secure interaction and message handling. Queue attributes, including deduplication, message retention, and encryption with SSE-SQS, are highlighted to ensure system security and reliable message processing.
 
 ![CDP-SIRSI-ECS-SQS](./diagrams/CDP-SIRSI-ECS-SQS.png)
+
+---
+
+### CI/CD Build and Deployment Pipelines
+
+TBC...

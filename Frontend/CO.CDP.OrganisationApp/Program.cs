@@ -81,6 +81,7 @@ builder.Services.AddTransient(provider =>
     return factory.GetTempData(context);
 });
 builder.Services.AddScoped<ITempDataService, TempDataService>();
+builder.Services.AddScoped<ICacheService, CacheService>();
 builder.Services.AddScoped<ApiBearerTokenHandler>();
 builder.Services.AddScoped<CultureDelegatingHandler>();
 builder.Services.AddScoped<ICompaniesHouseApi, CompaniesHouseApi>();
@@ -148,8 +149,8 @@ var organisationAuthority = builder.Configuration.GetValue<Uri>("Organisation:Au
 builder.Services.AddHttpClient(AuthorityClient.OrganisationAuthorityHttpClientName, c => { c.BaseAddress = organisationAuthority; });
 
 builder.Services.AddTransient<CookieEvents>();
-builder.Services.AddTransient<IOneLoginAuthority, OneLoginAuthority>();
-builder.Services.AddSingleton<IOneLoginSessionManager, OneLoginSessionManager>();
+builder.Services.AddSingleton<IOneLoginAuthority, OneLoginAuthority>();
+builder.Services.AddTransient<IOneLoginSessionManager, OneLoginSessionManager>();
 builder.Services.AddTransient<ITokenService, TokenService>();
 builder.Services.AddTransient<OidcEvents>();
 builder.Services.AddTransient<IAuthorityClient, AuthorityClient>();
