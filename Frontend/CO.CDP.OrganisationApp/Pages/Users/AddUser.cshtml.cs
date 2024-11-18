@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using Microsoft.IdentityModel.Tokens;
 using CO.CDP.OrganisationApp.Constants;
 using Microsoft.AspNetCore.Authorization;
-using CO.CDP.OrganisationApp.Validation;
+using CO.CDP.Mvc.Validation;
 using CO.CDP.Localization;
 
 namespace CO.CDP.OrganisationApp.Pages.Users;

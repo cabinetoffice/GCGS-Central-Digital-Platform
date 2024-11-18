@@ -1,6 +1,6 @@
 using CO.CDP.Localization;
 using CO.CDP.Organisation.WebApiClient;
-using CO.CDP.OrganisationApp.Validation;
+using CO.CDP.Mvc.Validation;
 using CO.CDP.OrganisationApp.WebApiClients;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;

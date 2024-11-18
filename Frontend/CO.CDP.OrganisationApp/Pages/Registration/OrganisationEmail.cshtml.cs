@@ -1,6 +1,6 @@
 using CO.CDP.Localization;
 using CO.CDP.OrganisationApp.Models;
-using CO.CDP.OrganisationApp.Validation;
+using CO.CDP.Mvc.Validation;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
