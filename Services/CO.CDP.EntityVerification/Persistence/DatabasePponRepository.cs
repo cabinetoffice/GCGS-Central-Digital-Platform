@@ -51,6 +51,11 @@ public class DatabasePponRepository(EntityVerificationContext context) : IPponRe
                 (scheme == IdentifierSchemes.Ppon && p.IdentifierId == id));
     }
 
+    public async Task<IEnumerable<CountryIndentifiers>> GetCountryIdentifiersAsync(string countryCode)
+    {
+        return await context.CountryIdentifiers.Where(q => q.CountryCode == countryCode).ToListAsync();
+    }
+
     private static void HandleDbUpdateException(Ppon identifier, DbUpdateException cause)
     {
         switch (cause.InnerException)

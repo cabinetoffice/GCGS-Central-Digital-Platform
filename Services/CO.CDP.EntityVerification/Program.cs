@@ -31,6 +31,7 @@ builder.Services.AddDbContext<EntityVerificationContext>(o =>
 builder.Services.AddScoped<IPponRepository, DatabasePponRepository>();
 builder.Services.AddScoped<IPponService, PponService>();
 builder.Services.AddScoped<IUseCase<LookupIdentifierQuery, IEnumerable<CO.CDP.EntityVerification.Model.Identifier>>, LookupIdentifierUseCase>();
+builder.Services.AddScoped<IUseCase<string, IEnumerable<CountryIdentifiers>>, GetCountryIdentifiersUseCase>();
 
 if (Assembly.GetEntryAssembly().IsRunAs("CO.CDP.EntityVerification"))
 {
@@ -90,6 +91,7 @@ app.MapHealthChecks("/health").AllowAnonymous();
 app.UseAuthentication();
 app.UseAuthorization();
 app.UsePponEndpoints();
+
 app.Run();
 
 public abstract partial class Program;

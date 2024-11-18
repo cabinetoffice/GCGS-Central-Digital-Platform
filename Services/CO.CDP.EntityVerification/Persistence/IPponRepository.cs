@@ -6,6 +6,8 @@ public interface IPponRepository : IDisposable
     public Task SaveAsync(Ppon identifier, Func<Ppon, Task> onSave);
     public Task<Ppon?> FindPponByPponIdAsync(string pponId);
     public Task<Ppon?> FindPponByIdentifierAsync(string scheme, string id);
+    public Task<IEnumerable<CountryIndentifiers>> GetCountryIdentifiersAsync(string countryCode);
+
     public class PponRepositoryException(string message, Exception? cause = null) : Exception(message, cause)
     {
         public class DuplicatePponException(string message, Exception? cause = null)
