@@ -60,7 +60,7 @@ public class ConnectedEntityRegistrationDateQuestionModel(ISession session) : Pa
                 : "ConnectedEntitySupplierCompanyQuestion", new { Id, ConnectedEntityId });
         }
 
-        InitModal(state, true);
+        InitModel(state, true);
         HasRegistrationDate = selected.HasValue ? selected : state.HasRegistrationDate;
 
         return Page();
@@ -78,7 +78,7 @@ public class ConnectedEntityRegistrationDateQuestionModel(ISession session) : Pa
                 : "ConnectedEntitySupplierCompanyQuestion", new { Id, ConnectedEntityId });
         }
 
-        InitModal(state);
+        InitModel(state);
 
         if (!ModelState.IsValid)
         {
@@ -186,7 +186,7 @@ public class ConnectedEntityRegistrationDateQuestionModel(ISession session) : Pa
         return redirectPage;
     }
 
-    private void InitModal(ConnectedEntityState state, bool reset = false)
+    private void InitModel(ConnectedEntityState state, bool reset = false)
     {
         Caption = state.GetCaption();
         Heading = string.Format(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityRegistrationDateQuestion_Heading, (state.ConnectedEntityType == Constants.ConnectedEntityType.Organisation ? state.OrganisationName : state.FirstName));

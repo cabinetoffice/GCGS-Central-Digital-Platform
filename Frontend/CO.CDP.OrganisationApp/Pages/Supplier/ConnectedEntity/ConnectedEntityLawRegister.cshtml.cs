@@ -22,7 +22,6 @@ public class ConnectedEntityLawRegisterModel(ISession session) : PageModel
     public string? LegalForm { get; set; }
 
     [BindProperty]
-    [Display(Name = "Supplier_ConnectedEntity_ConnectedEntityLawRegister_LawEnforcesLabel", ResourceType = typeof(StaticTextResource))]
     [Required(ErrorMessage = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityLawRegister_LawEnforcesRequiredError))]
     public string? LawRegistered { get; set; }
 
@@ -50,7 +49,7 @@ public class ConnectedEntityLawRegisterModel(ISession session) : PageModel
                 : "ConnectedEntitySupplierCompanyQuestion", new { Id, ConnectedEntityId });
         }
 
-        InitModal(state, true);
+        InitModel(state, true);
 
         return Page();
     }
@@ -67,7 +66,7 @@ public class ConnectedEntityLawRegisterModel(ISession session) : PageModel
                 : "ConnectedEntitySupplierCompanyQuestion", new { Id, ConnectedEntityId });
         }
 
-        InitModal(state);
+        InitModel(state);
 
         if (!ModelState.IsValid) return Page();
 
@@ -85,7 +84,7 @@ public class ConnectedEntityLawRegisterModel(ISession session) : PageModel
         return RedirectToPage(redirectPage, new { Id, ConnectedEntityId });
     }
 
-    private void InitModal(ConnectedEntityState state, bool reset = false)
+    private void InitModel(ConnectedEntityState state, bool reset = false)
     {
         Caption = state.GetCaption();
         BackPageLink = GetBackLinkPageName(state);

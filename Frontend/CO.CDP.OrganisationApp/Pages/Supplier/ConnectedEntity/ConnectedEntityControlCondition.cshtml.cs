@@ -40,7 +40,7 @@ public class ConnectedEntityControlConditionModel(ISession session) : PageModel
                 : "ConnectedEntitySupplierCompanyQuestion", new { Id, ConnectedEntityId });
         }
 
-        InitModal(state, true);
+        InitModel(state, true);
 
         return Page();
     }
@@ -56,7 +56,7 @@ public class ConnectedEntityControlConditionModel(ISession session) : PageModel
                 : "ConnectedEntitySupplierCompanyQuestion", new { Id, ConnectedEntityId });
         }
 
-        InitModal(state);
+        InitModel(state);
 
         if (!ModelState.IsValid) return Page();
 
@@ -87,7 +87,7 @@ public class ConnectedEntityControlConditionModel(ISession session) : PageModel
         return (true, cp);
     }
 
-    private void InitModal(ConnectedEntityState state, bool reset = false)
+    private void InitModel(ConnectedEntityState state, bool reset = false)
     {
         Caption = state.GetCaption();
         Heading = string.Format(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityControlCondition_Heading, state.OrganisationName);

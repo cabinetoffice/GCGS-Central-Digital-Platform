@@ -76,7 +76,7 @@ public class ConnectedEntityPscDetailsModel(ISession session) : PageModel
                 : "ConnectedEntitySupplierCompanyQuestion", new { Id, ConnectedEntityId });
         }
 
-        InitModal(state, true);
+        InitModel(state, true);
 
         return Page();
     }
@@ -93,7 +93,7 @@ public class ConnectedEntityPscDetailsModel(ISession session) : PageModel
                 : "ConnectedEntitySupplierCompanyQuestion", new { Id, ConnectedEntityId });
         }
 
-        InitModal(state);
+        InitModel(state);
 
         ModelState.Clear();
 
@@ -142,7 +142,7 @@ public class ConnectedEntityPscDetailsModel(ISession session) : PageModel
         return RedirectToPage(redirectPage, new { Id, ConnectedEntityId, AddressType = AddressType.Registered, UkOrNonUk = "uk" });
     }
 
-    private void InitModal(ConnectedEntityState state, bool reset = false)
+    private void InitModel(ConnectedEntityState state, bool reset = false)
     {
         Caption = state.GetCaption();
         Heading = $"Enter the person with significant control's details";

@@ -55,7 +55,7 @@ public class ConnectedEntityCompanyInsolvencyDateModel(ISession session) : PageM
                 : "ConnectedEntitySupplierCompanyQuestion", new { Id, ConnectedEntityId });
         }
 
-        InitModal(state, true);
+        InitModel(state, true);
 
         return Page();
     }
@@ -72,7 +72,7 @@ public class ConnectedEntityCompanyInsolvencyDateModel(ISession session) : PageM
             : "ConnectedEntitySupplierCompanyQuestion", new { Id, ConnectedEntityId });
         }
 
-        InitModal(state);
+        InitModel(state);
 
         if (!ModelState.IsValid)
         {
@@ -113,7 +113,7 @@ public class ConnectedEntityCompanyInsolvencyDateModel(ISession session) : PageM
         }
         return (true, cp);
     }
-    private void InitModal(ConnectedEntityState state, bool reset = false)
+    private void InitModel(ConnectedEntityState state, bool reset = false)
     {
         Caption = state.GetCaption();
         Heading = $"When did {state.OrganisationName} become insolvent?";

@@ -42,7 +42,7 @@ public class ConnectedEntityPostalSameAsRegisteredAddressModel(ISession session)
 
         DifferentThanRegiseterdAddress = selected.HasValue ? selected : (sameAddress.HasValue ? !sameAddress : sameAddress);
 
-        InitModal(state);
+        InitModel(state);
 
         return Page();
     }
@@ -59,7 +59,7 @@ public class ConnectedEntityPostalSameAsRegisteredAddressModel(ISession session)
                 : "ConnectedEntitySupplierCompanyQuestion", new { Id, ConnectedEntityId });
         }
 
-        InitModal(state);
+        InitModel(state);
         if (!ModelState.IsValid)
         {
             return Page();
@@ -91,7 +91,7 @@ public class ConnectedEntityPostalSameAsRegisteredAddressModel(ISession session)
         return (true, cp);
     }
 
-    private void InitModal(ConnectedEntityState state)
+    private void InitModel(ConnectedEntityState state)
     {
         OrganisationName = state.OrganisationName;
         Caption = state.GetCaption();

@@ -56,7 +56,7 @@ public class ConnectedEntityCompanyRegistrationDateModel(ISession session) : Pag
                 : "ConnectedEntitySupplierCompanyQuestion", new { Id, ConnectedEntityId });
         }
 
-        InitModal(state, true);
+        InitModel(state, true);
 
         return Page();
     }
@@ -73,7 +73,7 @@ public class ConnectedEntityCompanyRegistrationDateModel(ISession session) : Pag
                 : "ConnectedEntitySupplierCompanyQuestion", new { Id, ConnectedEntityId });
         }
 
-        InitModal(state);
+        InitModel(state);
 
         if (!ModelState.IsValid)
         {
@@ -164,7 +164,7 @@ public class ConnectedEntityCompanyRegistrationDateModel(ISession session) : Pag
         }
         return (true, cp);
     }
-    private void InitModal(ConnectedEntityState state, bool reset = false)
+    private void InitModel(ConnectedEntityState state, bool reset = false)
     {
         Caption = state.GetCaption();
         Heading = string.Format(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityCompanyRegistrationDate_Heading,

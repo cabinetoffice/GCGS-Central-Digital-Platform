@@ -37,7 +37,7 @@ public class ConnectedEntityCheckAnswersOrganisationModel(
                 "ConnectedEntityCheckAnswersOrganisation" : "ConnectedEntitySupplierCompanyQuestion", new { Id, ConnectedEntityId });
         }
 
-        InitModal(state);
+        InitModel(state);
 
         try
         {
@@ -63,7 +63,7 @@ public class ConnectedEntityCheckAnswersOrganisationModel(
 
             ConnectedEntityDetails = ConnectedEntityCheckAnswersCommon.GetConnectedEntityStateFromEntity(Id, connectedEntity);
 
-            InitModal(ConnectedEntityDetails);
+            InitModel(ConnectedEntityDetails);
 
             session.Set<ConnectedEntityState?>(Session.ConnectedPersonKey, ConnectedEntityDetails);
 
@@ -83,7 +83,7 @@ public class ConnectedEntityCheckAnswersOrganisationModel(
             return RedirectToPage("ConnectedEntitySupplierHasControl", new { Id });
         }
 
-        InitModal(state);
+        InitModel(state);
 
         try
         {
@@ -124,7 +124,7 @@ public class ConnectedEntityCheckAnswersOrganisationModel(
         return RedirectToPage("ConnectedPersonSummary", new { Id });
     }
 
-    private void InitModal(ConnectedEntityState state)
+    private void InitModel(ConnectedEntityState state)
     {
         Caption = state.GetCaption();
         Heading = StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_PageTitle;

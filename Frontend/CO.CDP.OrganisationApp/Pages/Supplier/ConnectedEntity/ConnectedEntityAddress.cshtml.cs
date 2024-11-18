@@ -46,7 +46,7 @@ public class ConnectedEntityAddressModel(ISession session) : PageModel
                 : "ConnectedEntitySupplierCompanyQuestion", new { Id, ConnectedEntityId });
         }
 
-        InitModal(state, true);
+        InitModel(state, true);
         ConnectedEntityState.Address? stateAddress = null;
         if (AddressType == AddressType.Registered) stateAddress = state.RegisteredAddress;
         if (AddressType == AddressType.Postal) stateAddress = state.PostalAddress;
@@ -74,7 +74,7 @@ public class ConnectedEntityAddressModel(ISession session) : PageModel
             : "ConnectedEntitySupplierCompanyQuestion", new { Id, ConnectedEntityId });
         }
 
-        InitModal(state);
+        InitModel(state);
 
         if (!ModelState.IsValid) return Page();
 
@@ -227,7 +227,7 @@ public class ConnectedEntityAddressModel(ISession session) : PageModel
         return (true, cp);
     }
 
-    private void InitModal(ConnectedEntityState state, bool reset = false)
+    private void InitModel(ConnectedEntityState state, bool reset = false)
     {
         Caption = state.GetCaption();
         ConnectedEntityType = state.ConnectedEntityType;

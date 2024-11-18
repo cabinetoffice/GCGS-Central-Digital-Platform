@@ -39,7 +39,7 @@ public class ConnectedEntityLegalFormQuestionModel(ISession session) : PageModel
             return RedirectToPage("ConnectedEntitySupplierHasControl", new { Id });
         }
 
-        InitModal(state);
+        InitModel(state);
 
         HasLegalForm = selected.HasValue ? selected : state.HasLegalForm;
         LegalFormName = state.LegalForm;
@@ -55,7 +55,7 @@ public class ConnectedEntityLegalFormQuestionModel(ISession session) : PageModel
             return RedirectToPage("ConnectedEntitySupplierHasControl", new { Id });
         }
 
-        InitModal(state);
+        InitModel(state);
 
         if (!ModelState.IsValid)
         {
@@ -118,7 +118,7 @@ public class ConnectedEntityLegalFormQuestionModel(ISession session) : PageModel
         return redirectPage;
     }
 
-    private void InitModal(ConnectedEntityState state)
+    private void InitModel(ConnectedEntityState state)
     {
         Caption = state.GetCaption();
         Heading = $"Does {state.OrganisationName} have a legal form?";

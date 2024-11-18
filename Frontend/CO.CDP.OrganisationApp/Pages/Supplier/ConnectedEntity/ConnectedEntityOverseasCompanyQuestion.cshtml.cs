@@ -40,7 +40,7 @@ public class ConnectedEntityOverseasCompanyQuestionModel(ISession session) : Pag
             return RedirectToPage("ConnectedEntitySupplierHasControl", new { Id });
         }
 
-        InitModal(state);
+        InitModel(state);
 
         HasOverseasCompaniesHouseNumber = selected.HasValue ? selected : state.HasOverseasCompaniesHouseNumber;
         OverseasCompaniesHouseNumber = state.OverseasCompaniesHouseNumber;
@@ -56,7 +56,7 @@ public class ConnectedEntityOverseasCompanyQuestionModel(ISession session) : Pag
             return RedirectToPage("ConnectedEntitySupplierHasControl", new { Id });
         }
 
-        InitModal(state);
+        InitModel(state);
 
         if (!ModelState.IsValid)
         {
@@ -120,7 +120,7 @@ public class ConnectedEntityOverseasCompanyQuestionModel(ISession session) : Pag
         return redirectPage;
     }
 
-    private void InitModal(ConnectedEntityState state)
+    private void InitModel(ConnectedEntityState state)
     {
         Caption = state.GetCaption();
         Heading = string.Format(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityOverseasCompanyQuestion_Heading, state.OrganisationName);
