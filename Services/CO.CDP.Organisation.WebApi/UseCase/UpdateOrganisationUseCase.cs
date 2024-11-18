@@ -40,6 +40,22 @@ public class UpdateOrganisationUseCase(
                 organisation.Roles.AddRange(updateObject.Roles);
                 break;
 
+            case OrganisationUpdateType.AddAsBuyerRole:
+                if (updateObject.BuyerInformation?.BuyerType == null || updateObject.BuyerInformation.DevolvedRegulations == null)
+                {
+                    throw new InvalidUpdateOrganisationCommand.MissingBuyerInformation();
+                }
+
+                organisation.BuyerInfo = new OrganisationInformation.Persistence.Organisation.BuyerInformation
+                {
+                    BuyerType = updateObject.BuyerInformation.BuyerType,
+                    DevolvedRegulations = updateObject.BuyerInformation.DevolvedRegulations,
+                    OrganisationId = organisation.Id
+                };
+
+                organisation.Roles.Add(PartyRole.Buyer);
+                break;
+
             case OrganisationUpdateType.OrganisationEmail:
                 if (updateObject.ContactPoint == null || string.IsNullOrEmpty(updateObject.ContactPoint.Email))
                     throw new InvalidUpdateOrganisationCommand.MissingOrganisationEmail();

@@ -1,0 +1,87 @@
+@page "/organisation/{id}/supplier-to-buyer-organisation-details-summary"
+@using CO.CDP.OrganisationApp.Constants
+@model CO.CDP.OrganisationApp.Pages.Organisation.SupplierToBuyerOrganisationDetailsSummaryModel
+@{
+    ViewData["Title"] = "Check your answers";
+    var details = Model.SupplierToBuyerDetailsModel!;
+
+    var supplierToBuyerOrganisationTypePage = $"/organisation/{@Model.Id}/supplier-to-buyer-organisation-type";
+    var supplierToBuyerDevolvedRegulationsPage = $"/organisation/{@Model.Id}/supplier-to-buyer-devolved-regulation";
+    var supplierToBuyerSelectDevolvedRegulationsPage = $"/organisation/{@Model.Id}/supplier-to-buyer-select-devolved-regulation";
+
+    var backLink = $"/organisation/{@Model.Id}/supplier-to-buyer-select-devolved-regulation";
+
+    if (details.Devolved == true)
+    {
+        backLink = $"/organisation/{@Model.Id}/supplier-to-buyer-select-devolved-regulation";
+    }   
+}
+
+<a href="@backLink" class="govuk-back-link">
+    Back
+</a>
+
+<main class="govuk-main-wrapper" id="main-content">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <partial name="_ErrorSummary" model="@ModelState" />
+            <span class="govuk-caption-l">Buyer details</span>
+            <h1 class="govuk-heading-l">
+                @ViewData["Title"]
+            </h1>
+            <fieldset class="govuk-fieldset">
+                <dl class="govuk-summary-list">
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            Organisation type
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            @if (SupplierToBuyerOrganisationTypeModel.BuyerTypes.Keys.Contains(details.BuyerOrganisationType!))
+                            {
+                                @(SupplierToBuyerOrganisationTypeModel.BuyerTypes[details.BuyerOrganisationType!])
+                            }
+                            else
+                            {
+                                @(details.BuyerOrganisationType)
+                            }
+                        </dd>
+                        <dd class="govuk-summary-list__actions">
+                            <a class="govuk-link govuk-link--no-visited-state" href="@supplierToBuyerOrganisationTypePage?frm-summary">Change<span class="govuk-visually-hidden"> the organisation type</span></a>
+                        </dd>
+                    </div>
+
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            Devolved regulations
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            @(details.Devolved == true ? "Yes" : "No")
+                        </dd>
+                        <dd class="govuk-summary-list__actions">
+                            <a class="govuk-link govuk-link--no-visited-state" href="@supplierToBuyerDevolvedRegulationsPage?frm-summary">Change<span class="govuk-visually-hidden"> the devolved regulations</span></a>
+                        </dd>
+                    </div>
+                    @if (details.Devolved == true)
+                    {
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">
+                                Devolved regions
+                            </dt>
+                            <dd class="govuk-summary-list__value">
+                                @Html.Raw(string.Join("<br /> ", details.Regulations.Select(x => x.Description())))
+                            </dd>
+                            <dd class="govuk-summary-list__actions">
+                                <a class="govuk-link govuk-link--no-visited-state" href="@supplierToBuyerSelectDevolvedRegulationsPage?frm-summary">Change<span class="govuk-visually-hidden"> the devolved regions</span></a>
+                            </dd>
+                        </div>
+                    }
+                </dl>
+            </fieldset>
+            <form method="post">
+                <govuk-button>
+                    Save
+                </govuk-button>
+            </form>
+        </div>
+    </div>
+</main>

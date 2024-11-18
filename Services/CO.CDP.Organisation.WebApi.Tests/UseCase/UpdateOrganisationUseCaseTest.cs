@@ -4,12 +4,11 @@ using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.Organisation.WebApi.Tests.AutoMapper;
 using CO.CDP.Organisation.WebApi.Tests.UseCase.Extensions;
 using CO.CDP.Organisation.WebApi.UseCase;
+using CO.CDP.OrganisationInformation;
 using FluentAssertions;
 using Moq;
-using Persistence = CO.CDP.OrganisationInformation.Persistence;
 using Address = CO.CDP.OrganisationInformation.Persistence.Address;
-using CO.CDP.OrganisationInformation;
-using static CO.CDP.Organisation.WebApi.Model.InvalidUpdateOrganisationCommand;
+using Persistence = CO.CDP.OrganisationInformation.Persistence;
 
 namespace CO.CDP.Organisation.WebApi.Tests.UseCase;
 
@@ -154,7 +153,7 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
 
     [Fact]
     public async Task ShouldThrowIdentiferNumberAlreadyExists_WhenIdentifierAlreadyExists()
-    {        
+    {
         var command = new UpdateOrganisation
         {
             Type = OrganisationUpdateType.AdditionalIdentifiers,
@@ -184,7 +183,7 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
 
     [Fact]
     public async Task ShouldAddNewIdentifier_WhenIdentifierDoesNotExistInOrganisation()
-    {       
+    {
         var command = new UpdateOrganisation
         {
             Type = OrganisationUpdateType.AdditionalIdentifiers,
@@ -210,7 +209,7 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
         result.Should().BeTrue();
 
         _organisationRepositoryMock.Verify(repo => repo.SaveAsync(anotherOrganisation, AnyOnSave()), Times.Once);
-       
+
         anotherOrganisation.Identifiers.Should().ContainSingle(i =>
             i.IdentifierId == "342" &&
             i.Scheme == "VAT" &&
@@ -588,6 +587,33 @@ public class UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
         _organisationRepositoryMock.Verify(repo => repo.SaveAsync(organisation, AnyOnSave()), Times.Once);
 
         organisation.Roles.Should().BeEquivalentTo([PartyRole.Buyer, PartyRole.Tenderer]);
+    }
+
+    [Fact]
+    public async Task Execute_ShouldUpdateOrganisation_WhenOrganisationHasAddAsBuyerRole()
+    {
+        var command = new UpdateOrganisation
+        {
+            Type = OrganisationUpdateType.AddAsBuyerRole,
+            Organisation = new OrganisationInfo
+            {
+                BuyerInformation = new BuyerInformation
+                {
+                    BuyerType = "A buyer type",
+                    DevolvedRegulations = []
+                }
+            }
+
+        };
+        var organisation = Organisation;
+        _organisationRepositoryMock.Setup(repo => repo.Find(_organisationId)).ReturnsAsync(organisation);
+
+        var result = await UseCase.Execute((_organisationId, command));
+
+        result.Should().BeTrue();
+        _organisationRepositoryMock.Verify(repo => repo.SaveAsync(organisation, AnyOnSave()), Times.Once);
+        organisation.BuyerInfo?.BuyerType.Should().BeEquivalentTo("A buyer type");
+        organisation.Roles.Distinct().Should().BeEquivalentTo(new[] { PartyRole.Buyer });
     }
 
     [Fact]
