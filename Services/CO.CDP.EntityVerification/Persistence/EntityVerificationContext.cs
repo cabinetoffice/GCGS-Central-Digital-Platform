@@ -50,6 +50,7 @@ public class EntityVerificationContext(DbContextOptions<EntityVerificationContex
 
         modelBuilder.Entity<IdentifierRegistries>(identifier =>
         {
+            identifier.HasIndex(p => p.CountryCode).IsUnique();
             identifier.HasIndex(p => p.Scheme);
             identifier.Property(p => p.CreatedOn).HasTimestampDefault();
             identifier.Property(p => p.UpdatedOn).HasTimestampDefault();
