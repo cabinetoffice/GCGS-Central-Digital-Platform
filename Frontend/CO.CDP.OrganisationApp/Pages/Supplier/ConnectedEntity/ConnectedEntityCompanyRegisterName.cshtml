@@ -20,64 +20,64 @@
     }
 }
 
-<a href="@backLink" class="govuk-back-link">@StaticTextResource.Global_Back</a>
+@section BeforeContent {
+    <a href="@backLink" class="govuk-back-link">@StaticTextResource.Global_Back</a>
+}
 
-<main class="govuk-main-wrapper" id="main-content">
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
-            <partial name="_ErrorSummary" model="@ModelState" />
-            <span class="govuk-caption-l">@Model.Caption</span>
-            <form class="form" method="post">
-                <div class="govuk-form-group @(registerNameHasError ? "govuk-form-group--error" : "")">
-                    <h1 class="govuk-label-wrapper">
-                        <label class="govuk-label govuk-label--l" for="registerName">@ViewData["Title"]</label>
-                    </h1>
-                    @if (registerNameHasError)
-                    {
-                        <p id="organisation-name-error" class="govuk-error-message">
-                            <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span>
-                            @Html.ValidationMessageFor(m => m.RegisterName)
-                        </p>
-                    }
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <partial name="_ErrorSummary" model="@ModelState" />
+        <span class="govuk-caption-l">@Model.Caption</span>
+        <form class="form" method="post">
+            <div class="govuk-form-group @(registerNameHasError ? "govuk-form-group--error" : "")">
+                <h1 class="govuk-label-wrapper">
+                    <label class="govuk-label govuk-label--l" for="registerName">@ViewData["Title"]</label>
+                </h1>
+                @if (registerNameHasError)
+                {
+                    <p id="organisation-name-error" class="govuk-error-message">
+                        <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span>
+                        @Html.ValidationMessageFor(m => m.RegisterName)
+                    </p>
+                }
 
-                    <div class="govuk-radios" data-module="govuk-radios">
-                        <div class="govuk-radios__item">
-                            <input class="govuk-radios__input" id="registerNameCompaniesHouse" name="registerName" type="radio"
-                                   value="CompaniesHouse" @(Model.RegisterName == "CompaniesHouse" ? "checked" : "")>
-                            <label class="govuk-label govuk-radios__label" for="registerNameCompaniesHouse">
-                                @ConnectedEntityCompanyRegisterNameModel.RegisterNameType["CompaniesHouse"]
+                <div class="govuk-radios" data-module="govuk-radios">
+                    <div class="govuk-radios__item">
+                        <input class="govuk-radios__input" id="registerNameCompaniesHouse" name="registerName" type="radio"
+                                value="CompaniesHouse" @(Model.RegisterName == "CompaniesHouse" ? "checked" : "")>
+                        <label class="govuk-label govuk-radios__label" for="registerNameCompaniesHouse">
+                            @ConnectedEntityCompanyRegisterNameModel.RegisterNameType["CompaniesHouse"]
+                        </label>
+                    </div>
+                    <div class="govuk-radios__item">
+                        <input class="govuk-radios__input" id="registerNameOther" name="registerName" type="radio"
+                                value="Other" data-aria-controls="conditional-Other" @(Model.RegisterName == "Other" ? "checked" : "")>
+                        <label class="govuk-label govuk-radios__label" for="registerNameOther">
+                            @StaticTextResource.Global_Other
+                        </label>
+
+                    </div>
+                    <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-Other">
+                        @if (otherHasError)
+                        {
+                            <p id="organisation-name-error" class="govuk-error-message">
+                                <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span>
+                                @Html.ValidationMessageFor(m => m.RegisterNameInput)
+                            </p>
+                        }
+
+                        <div class="govuk-form-group @(otherHasError ? "govuk-form-group--error" : "")">
+                            <label class="govuk-label" for="registerNameInput">
+                                @StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityCompanyRegisterName_OtherRegisterNameLabel
                             </label>
-                        </div>
-                        <div class="govuk-radios__item">
-                            <input class="govuk-radios__input" id="registerNameOther" name="registerName" type="radio"
-                                   value="Other" data-aria-controls="conditional-Other" @(Model.RegisterName == "Other" ? "checked" : "")>
-                            <label class="govuk-label govuk-radios__label" for="registerNameOther">
-                                @StaticTextResource.Global_Other
-                            </label>
-
-                        </div>
-                        <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-Other">
-                            @if (otherHasError)
-                            {
-                                <p id="organisation-name-error" class="govuk-error-message">
-                                    <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span>
-                                    @Html.ValidationMessageFor(m => m.RegisterNameInput)
-                                </p>
-                            }
-
-                            <div class="govuk-form-group @(otherHasError ? "govuk-form-group--error" : "")">
-                                <label class="govuk-label" for="registerNameInput">
-                                    @StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityCompanyRegisterName_OtherRegisterNameLabel
-                                </label>
-                                <input class="govuk-input govuk-!-width-one-half @(otherHasError ? "govuk-input--error" : "")"
-                                       id="RegisterNameInput" name="RegisterNameInput"
-                                       value="@(Model.RegisterName == "Other" ? Model.RegisterNameInput : "")">
-                            </div>
+                            <input class="govuk-input govuk-!-width-one-half @(otherHasError ? "govuk-input--error" : "")"
+                                    id="RegisterNameInput" name="RegisterNameInput"
+                                    value="@(Model.RegisterName == "Other" ? Model.RegisterNameInput : "")">
                         </div>
                     </div>
                 </div>
-                <govuk-button>@StaticTextResource.Global_Continue</govuk-button>
-            </form>
-        </div>
+            </div>
+            <govuk-button>@StaticTextResource.Global_Continue</govuk-button>
+        </form>
     </div>
-</main>
+</div>

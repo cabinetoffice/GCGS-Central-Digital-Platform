@@ -25,89 +25,89 @@
     var backLink = $"/organisation/{Model.Id}/supplier-information/connected-person/{backPage}/{Model.ConnectedEntityId}";
 }
 
-<a href="@backLink" class="govuk-back-link">@StaticTextResource.Global_Back</a>
+@section BeforeContent {
+    <a href="@backLink" class="govuk-back-link">@StaticTextResource.Global_Back</a>
+}
 
-<main class="govuk-main-wrapper" id="main-content">
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
-            <partial name="_ErrorSummary" model="@ModelState" />
-            <form class="form" method="post">
-                @if (Request.Query.ContainsKey("frm-chk-answer"))
-                {
-                    <input type="hidden" name="RedirectToCheckYourAnswer" value="true" />
-                }
-                <div class="govuk-form-group @(controlConditionsHasError ? "govuk-form-group--error" : "")">
-                    <fieldset class="govuk-fieldset" aria-describedby="natureOfControlHint">
-                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                            <span class="govuk-caption-l">@Model.Caption</span>
-                            <h1 class="govuk-fieldset__heading">@ViewData["Title"]</h1>
-                        </legend>
-                        <div id="natureOfControl-hint" class="govuk-hint">
-                            @Html.Raw(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityControlCondition_Hint)
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <partial name="_ErrorSummary" model="@ModelState" />
+        <form class="form" method="post">
+            @if (Request.Query.ContainsKey("frm-chk-answer"))
+            {
+                <input type="hidden" name="RedirectToCheckYourAnswer" value="true" />
+            }
+            <div class="govuk-form-group @(controlConditionsHasError ? "govuk-form-group--error" : "")">
+                <fieldset class="govuk-fieldset" aria-describedby="natureOfControlHint">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                        <span class="govuk-caption-l">@Model.Caption</span>
+                        <h1 class="govuk-fieldset__heading">@ViewData["Title"]</h1>
+                    </legend>
+                    <div id="natureOfControl-hint" class="govuk-hint">
+                        @Html.Raw(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityControlCondition_Hint)
+                    </div>
+                    @if (controlConditionsHasError)
+                    {
+                        <p id="natureOfControl-error" class="govuk-error-message">
+                            <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span> @Html.ValidationMessageFor(m => m.ControlConditions)
+                        </p>
+                    }
+                    <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+                        <div class="govuk-checkboxes__item">
+                            <input class="govuk-checkboxes__input" id="natureOfControl-0" name="ControlConditions" type="checkbox"
+                                    value="@ConnectedEntityControlCondition.OwnsShares" @IsSelected(ConnectedEntityControlCondition.OwnsShares)>
+                            <label class="govuk-label govuk-checkboxes__label" for="natureOfControl-0">
+                                @StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityControlCondition_OwnsSharesLabel
+                            </label>
+                            <div id="natureOfControlHint-0" class="govuk-hint govuk-checkboxes__hint">
+                                @StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityControlCondition_OwnsSharesHint
+                            </div>
                         </div>
-                        @if (controlConditionsHasError)
+                        <div class="govuk-checkboxes__item">
+                            <input class="govuk-checkboxes__input" id="natureOfControl-1" name="ControlConditions" type="checkbox"
+                                    value="@ConnectedEntityControlCondition.HasVotingRights" @IsSelected(ConnectedEntityControlCondition.HasVotingRights)>
+                            <label class="govuk-label govuk-checkboxes__label" for="natureOfControl-1">
+                                @StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityControlCondition_HasVotingRightsLabel
+                            </label>
+                            <div id="natureOfControlHint-1" class="govuk-hint govuk-checkboxes__hint">
+                                @StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityControlCondition_HasVotingRightsHint
+                            </div>
+                        </div>
+                        <div class="govuk-checkboxes__item">
+                            <input class="govuk-checkboxes__input" id="natureOfControl-2" name="ControlConditions" type="checkbox"
+                                    value="@ConnectedEntityControlCondition.CanAppointOrRemoveDirectors" @IsSelected(ConnectedEntityControlCondition.CanAppointOrRemoveDirectors)>
+                            <label class="govuk-label govuk-checkboxes__label" for="natureOfControl-2">
+                                @StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityControlCondition_CanAppointOrRemoveDirectorsLabel
+                            </label>
+                            <div id="natureOfControlHint-2" class="govuk-hint govuk-checkboxes__hint">
+                                @StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityControlCondition_CanAppointOrRemoveDirectorsHint
+                            </div>
+                        </div>
+                        <div class="govuk-checkboxes__item">
+                            <input class="govuk-checkboxes__input" id="natureOfControl-3" name="ControlConditions" type="checkbox"
+                                    value="@ConnectedEntityControlCondition.HasOtherSignificantInfluenceOrControl" @IsSelected(ConnectedEntityControlCondition.HasOtherSignificantInfluenceOrControl)>
+                            <label class="govuk-label govuk-checkboxes__label" for="natureOfControl-3">
+                                @StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityControlCondition_HasOtherSignificantInfluenceOrControlLabel
+                            </label>
+                            <div id="natureOfControlHint-3" class="govuk-hint govuk-checkboxes__hint">
+                                @Html.Raw(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityControlCondition_HasOtherSignificantInfluenceOrControlHint)
+                            </div>
+                        </div>
+                        @if (!Model.SupplierHasCompanyHouseNumber)
                         {
-                            <p id="natureOfControl-error" class="govuk-error-message">
-                                <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span> @Html.ValidationMessageFor(m => m.ControlConditions)
-                            </p>
+                            <div class="govuk-checkboxes__divider">@StaticTextResource.Global_Or</div>
+                            <div class="govuk-checkboxes__item">
+                                <input class="govuk-checkboxes__input" id="natureOfControl-4" name="ControlConditions" type="checkbox"
+                                        value="@ConnectedEntityControlCondition.None" @IsSelected(ConnectedEntityControlCondition.None) data-behaviour="exclusive">
+                                <label class="govuk-label govuk-checkboxes__label" for="natureOfControl-4">
+                                    @StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityControlCondition_NoneApplyLabel
+                                </label>
+                            </div>
                         }
-                        <div class="govuk-checkboxes" data-module="govuk-checkboxes">
-                            <div class="govuk-checkboxes__item">
-                                <input class="govuk-checkboxes__input" id="natureOfControl-0" name="ControlConditions" type="checkbox"
-                                       value="@ConnectedEntityControlCondition.OwnsShares" @IsSelected(ConnectedEntityControlCondition.OwnsShares)>
-                                <label class="govuk-label govuk-checkboxes__label" for="natureOfControl-0">
-                                    @StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityControlCondition_OwnsSharesLabel
-                                </label>
-                                <div id="natureOfControlHint-0" class="govuk-hint govuk-checkboxes__hint">
-                                    @StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityControlCondition_OwnsSharesHint
-                                </div>
-                            </div>
-                            <div class="govuk-checkboxes__item">
-                                <input class="govuk-checkboxes__input" id="natureOfControl-1" name="ControlConditions" type="checkbox"
-                                       value="@ConnectedEntityControlCondition.HasVotingRights" @IsSelected(ConnectedEntityControlCondition.HasVotingRights)>
-                                <label class="govuk-label govuk-checkboxes__label" for="natureOfControl-1">
-                                    @StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityControlCondition_HasVotingRightsLabel
-                                </label>
-                                <div id="natureOfControlHint-1" class="govuk-hint govuk-checkboxes__hint">
-                                    @StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityControlCondition_HasVotingRightsHint
-                                </div>
-                            </div>
-                            <div class="govuk-checkboxes__item">
-                                <input class="govuk-checkboxes__input" id="natureOfControl-2" name="ControlConditions" type="checkbox"
-                                       value="@ConnectedEntityControlCondition.CanAppointOrRemoveDirectors" @IsSelected(ConnectedEntityControlCondition.CanAppointOrRemoveDirectors)>
-                                <label class="govuk-label govuk-checkboxes__label" for="natureOfControl-2">
-                                    @StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityControlCondition_CanAppointOrRemoveDirectorsLabel
-                                </label>
-                                <div id="natureOfControlHint-2" class="govuk-hint govuk-checkboxes__hint">
-                                    @StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityControlCondition_CanAppointOrRemoveDirectorsHint
-                                </div>
-                            </div>
-                            <div class="govuk-checkboxes__item">
-                                <input class="govuk-checkboxes__input" id="natureOfControl-3" name="ControlConditions" type="checkbox"
-                                       value="@ConnectedEntityControlCondition.HasOtherSignificantInfluenceOrControl" @IsSelected(ConnectedEntityControlCondition.HasOtherSignificantInfluenceOrControl)>
-                                <label class="govuk-label govuk-checkboxes__label" for="natureOfControl-3">
-                                    @StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityControlCondition_HasOtherSignificantInfluenceOrControlLabel
-                                </label>
-                                <div id="natureOfControlHint-3" class="govuk-hint govuk-checkboxes__hint">
-                                    @Html.Raw(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityControlCondition_HasOtherSignificantInfluenceOrControlHint)
-                                </div>
-                            </div>
-                            @if (!Model.SupplierHasCompanyHouseNumber)
-                            {
-                                <div class="govuk-checkboxes__divider">@StaticTextResource.Global_Or</div>
-                                <div class="govuk-checkboxes__item">
-                                    <input class="govuk-checkboxes__input" id="natureOfControl-4" name="ControlConditions" type="checkbox"
-                                           value="@ConnectedEntityControlCondition.None" @IsSelected(ConnectedEntityControlCondition.None) data-behaviour="exclusive">
-                                    <label class="govuk-label govuk-checkboxes__label" for="natureOfControl-4">
-                                        @StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityControlCondition_NoneApplyLabel
-                                    </label>
-                                </div>
-                            }
-                        </div>
-                    </fieldset>
-                </div>
-                <govuk-button>@StaticTextResource.Global_Continue</govuk-button>
-            </form>
-        </div>
+                    </div>
+                </fieldset>
+            </div>
+            <govuk-button>@StaticTextResource.Global_Continue</govuk-button>
+        </form>
     </div>
-</main>
+</div>

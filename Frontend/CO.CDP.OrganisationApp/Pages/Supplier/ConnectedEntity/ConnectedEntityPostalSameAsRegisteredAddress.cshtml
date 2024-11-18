@@ -10,47 +10,46 @@
     var ukNonUkAddress = Model.IsNonUkAddress.GetValueOrDefault() ? "non-uk" : "uk";
 }
 
-@* // TODO 6: Previous page link?? *@
-<a href="/organisation/@Model.Id/supplier-information/connected-person/registered-address/@ukNonUkAddress/@Model.ConnectedEntityId" class="govuk-back-link">@StaticTextResource.Global_Back</a>
+@section BeforeContent {
+    <a href="/organisation/@Model.Id/supplier-information/connected-person/registered-address/@ukNonUkAddress/@Model.ConnectedEntityId" class="govuk-back-link">@StaticTextResource.Global_Back</a>
+}
 
-<main class="govuk-main-wrapper" id="main-content">
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
-            <partial name="_ErrorSummary" model="@Model.ModelState" />
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <partial name="_ErrorSummary" model="@Model.ModelState" />
 
-            <span class="govuk-caption-xl">@Model.Caption</span>
+        <span class="govuk-caption-xl">@Model.Caption</span>
 
-            <form method="post">
-                <div class="govuk-form-group">
-                    <fieldset class="govuk-fieldset">
+        <form method="post">
+            <div class="govuk-form-group">
+                <fieldset class="govuk-fieldset">
 
-                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                            <h1 class="govuk-fieldset__heading">
-                                @ViewData["Title"]
-                            </h1>
-                        </legend>
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                        <h1 class="govuk-fieldset__heading">
+                            @ViewData["Title"]
+                        </h1>
+                    </legend>
 
-                        <div class="govuk-hint">
-                            @StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityPostalSameAsRegisteredAddress_Hint
+                    <div class="govuk-hint">
+                        @StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityPostalSameAsRegisteredAddress_Hint
+                    </div>
+
+                    <div class="govuk-radios" data-module="govuk-radios">
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="YES" name="DifferentThanRegiseterdAddress" type="radio"
+                                    value="true" @(Model.DifferentThanRegiseterdAddress == true ? "checked" : "")>
+                            <label class="govuk-label govuk-radios__label" for="YES">@StaticTextResource.Global_Yes</label>
                         </div>
 
-                        <div class="govuk-radios" data-module="govuk-radios">
-                            <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="YES" name="DifferentThanRegiseterdAddress" type="radio"
-                                       value="true" @(Model.DifferentThanRegiseterdAddress == true ? "checked" : "")>
-                                <label class="govuk-label govuk-radios__label" for="YES">@StaticTextResource.Global_Yes</label>
-                            </div>
-
-                            <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="NO" name="DifferentThanRegiseterdAddress" type="radio"
-                                       value="false" @(Model.DifferentThanRegiseterdAddress == false ? "checked" : "")>
-                                <label class="govuk-label govuk-radios__label" for="NO">@StaticTextResource.Global_No</label>
-                            </div>
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="NO" name="DifferentThanRegiseterdAddress" type="radio"
+                                    value="false" @(Model.DifferentThanRegiseterdAddress == false ? "checked" : "")>
+                            <label class="govuk-label govuk-radios__label" for="NO">@StaticTextResource.Global_No</label>
                         </div>
-                    </fieldset>
-                </div>
-                <govuk-button>@StaticTextResource.Global_Continue</govuk-button>
-            </form>
-        </div>
+                    </div>
+                </fieldset>
+            </div>
+            <govuk-button>@StaticTextResource.Global_Continue</govuk-button>
+        </form>
     </div>
-</main>
+</div>

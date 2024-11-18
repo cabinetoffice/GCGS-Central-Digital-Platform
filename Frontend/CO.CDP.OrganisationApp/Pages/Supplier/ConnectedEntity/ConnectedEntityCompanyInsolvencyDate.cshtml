@@ -18,62 +18,62 @@
     }
 }
 
-<a href="@backLink" class="govuk-back-link">@StaticTextResource.Global_Back</a>
+@section BeforeContent {
+    <a href="@backLink" class="govuk-back-link">@StaticTextResource.Global_Back</a>
+}
 
-<main class="govuk-main-wrapper" id="main-content">
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
-            <partial name="_ErrorSummary" model="@Model.ModelState" />
-            <form class="form" method="post">
-                <div class="govuk-form-group @(hasError ? "govuk-form-group--error" : "")">
-                    <fieldset class="govuk-fieldset" role="group" aria-describedby="connectedPersonDateHint">
-                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                            <span class="govuk-caption-l">@Model.Caption</span>
-                            <h1 class="govuk-fieldset__heading">@ViewData["Title"]</h1>
-                        </legend>
-                        <div id="connectedPersonDate-hint" class="govuk-hint">
-                            @StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityCompanyInsolvencyDate_Hint
-                        </div>
-                        @if (dateOfInsolvencyHasError)
-                        {
-                            <p id="date-of-formation-error" class="govuk-error-message">
-                                <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span>
-                                @Html.ValidationMessageFor(m => m.InsolvencyDate)
-                            </p>
-                        }
-                        <div class="govuk-date-input" id="connectedPersonDate">
-                            <div class="govuk-date-input__item">
-                                <div class="govuk-form-group">
-                                    <label class="govuk-label govuk-date-input__label" for="connectedPersonInsolvencyDateDay">
-                                        @StaticTextResource.Global_Day
-                                    </label>
-                                    <input class="govuk-input govuk-date-input__input govuk-input--width-2 @(dayHasError || dateOfInsolvencyHasError ? "govuk-input--error" : "")"
-                                           id="connectedPersonInsolvencyDateDay" name="Day" type="text" inputmode="numeric" value="@Model.Day">
-                                </div>
-                            </div>
-                            <div class="govuk-date-input__item">
-                                <div class="govuk-form-group">
-                                    <label class="govuk-label govuk-date-input__label" for="connectedPersonInsolvencyDateMonth">
-                                        @StaticTextResource.Global_Month
-                                    </label>
-                                    <input class="govuk-input govuk-date-input__input govuk-input--width-2 @(monthHasError || dateOfInsolvencyHasError ? "govuk-input--error" : "")"
-                                           id="connectedPersonInsolvencyDateMonth" name="Month" type="text" inputmode="numeric" value="@Model.Month">
-                                </div>
-                            </div>
-                            <div class="govuk-date-input__item">
-                                <div class="govuk-form-group">
-                                    <label class="govuk-label govuk-date-input__label" for="connectedPersonInsolvencyDateYear">
-                                        @StaticTextResource.Global_Year
-                                    </label>
-                                    <input class="govuk-input govuk-date-input__input govuk-input--width-4 @(yearHasError || dateOfInsolvencyHasError ? "govuk-input--error" : "")"
-                                           id="connectedPersonInsolvencyDateYear" name="Year" type="text" inputmode="numeric" value="@Model.Year">
-                                </div>
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <partial name="_ErrorSummary" model="@Model.ModelState" />
+        <form class="form" method="post">
+            <div class="govuk-form-group @(hasError ? "govuk-form-group--error" : "")">
+                <fieldset class="govuk-fieldset" role="group" aria-describedby="connectedPersonDateHint">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                        <span class="govuk-caption-l">@Model.Caption</span>
+                        <h1 class="govuk-fieldset__heading">@ViewData["Title"]</h1>
+                    </legend>
+                    <div id="connectedPersonDate-hint" class="govuk-hint">
+                        @StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityCompanyInsolvencyDate_Hint
+                    </div>
+                    @if (dateOfInsolvencyHasError)
+                    {
+                        <p id="date-of-formation-error" class="govuk-error-message">
+                            <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span>
+                            @Html.ValidationMessageFor(m => m.InsolvencyDate)
+                        </p>
+                    }
+                    <div class="govuk-date-input" id="connectedPersonDate">
+                        <div class="govuk-date-input__item">
+                            <div class="govuk-form-group">
+                                <label class="govuk-label govuk-date-input__label" for="connectedPersonInsolvencyDateDay">
+                                    @StaticTextResource.Global_Day
+                                </label>
+                                <input class="govuk-input govuk-date-input__input govuk-input--width-2 @(dayHasError || dateOfInsolvencyHasError ? "govuk-input--error" : "")"
+                                        id="connectedPersonInsolvencyDateDay" name="Day" type="text" inputmode="numeric" value="@Model.Day">
                             </div>
                         </div>
-                    </fieldset>
-                </div>
-                <govuk-button>@StaticTextResource.Global_Continue</govuk-button>
-            </form>
-        </div>
+                        <div class="govuk-date-input__item">
+                            <div class="govuk-form-group">
+                                <label class="govuk-label govuk-date-input__label" for="connectedPersonInsolvencyDateMonth">
+                                    @StaticTextResource.Global_Month
+                                </label>
+                                <input class="govuk-input govuk-date-input__input govuk-input--width-2 @(monthHasError || dateOfInsolvencyHasError ? "govuk-input--error" : "")"
+                                        id="connectedPersonInsolvencyDateMonth" name="Month" type="text" inputmode="numeric" value="@Model.Month">
+                            </div>
+                        </div>
+                        <div class="govuk-date-input__item">
+                            <div class="govuk-form-group">
+                                <label class="govuk-label govuk-date-input__label" for="connectedPersonInsolvencyDateYear">
+                                    @StaticTextResource.Global_Year
+                                </label>
+                                <input class="govuk-input govuk-date-input__input govuk-input--width-4 @(yearHasError || dateOfInsolvencyHasError ? "govuk-input--error" : "")"
+                                        id="connectedPersonInsolvencyDateYear" name="Year" type="text" inputmode="numeric" value="@Model.Year">
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+            <govuk-button>@StaticTextResource.Global_Continue</govuk-button>
+        </form>
     </div>
-</main>
+</div>

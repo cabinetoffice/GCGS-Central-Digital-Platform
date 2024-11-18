@@ -12,55 +12,55 @@
     var backLink = $"/organisation/{Model.Id}/supplier-information/connected-person/{backPage}/{Model.ConnectedEntityId}";
 }
 
-<a href="@backLink" class="govuk-back-link">@StaticTextResource.Global_Back</a>
+@section BeforeContent {
+    <a href="@backLink" class="govuk-back-link">@StaticTextResource.Global_Back</a>
+}
 
-<main class="govuk-main-wrapper" id="main-content">
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
-            <partial name="_ErrorSummary" model="@Model.ModelState" />
-            <span class="govuk-caption-l">@Model.Caption</span>
-            <form class="form" method="post">
-                @if (Request.Query.ContainsKey("frm-chk-answer"))
-                {
-                    <input type="hidden" name="RedirectToCheckYourAnswer" value="true" />
-                }
-                <div class="govuk-form-group">
-                    <fieldset class="govuk-fieldset">
-                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                            <h1 class="govuk-fieldset__heading">@ViewData["Title"]</h1>
-                        </legend>
-                        <div id="hasCompaniesHouseNumber-hint" class="govuk-hint">
-                            @Model.Hint
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <partial name="_ErrorSummary" model="@Model.ModelState" />
+        <span class="govuk-caption-l">@Model.Caption</span>
+        <form class="form" method="post">
+            @if (Request.Query.ContainsKey("frm-chk-answer"))
+            {
+                <input type="hidden" name="RedirectToCheckYourAnswer" value="true" />
+            }
+            <div class="govuk-form-group">
+                <fieldset class="govuk-fieldset">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                        <h1 class="govuk-fieldset__heading">@ViewData["Title"]</h1>
+                    </legend>
+                    <div id="hasCompaniesHouseNumber-hint" class="govuk-hint">
+                        @Model.Hint
+                    </div>
+
+                    <div class="govuk-radios" data-module="govuk-radios">
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="YES" name="HasCompaniesHouseNumber" type="radio"
+                                    value="true" data-aria-controls="conditional-YES" @(Model.HasCompaniesHouseNumber == true ? "checked" : "")>
+                            <label class="govuk-label govuk-radios__label" for="YES">@StaticTextResource.Global_Yes</label>
                         </div>
 
-                        <div class="govuk-radios" data-module="govuk-radios">
-                            <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="YES" name="HasCompaniesHouseNumber" type="radio"
-                                       value="true" data-aria-controls="conditional-YES" @(Model.HasCompaniesHouseNumber == true ? "checked" : "")>
-                                <label class="govuk-label govuk-radios__label" for="YES">@StaticTextResource.Global_Yes</label>
-                            </div>
-
-                            <div class="govuk-radios__conditional" id="conditional-YES">
-                                <div class="govuk-form-group @(companiesHouseNumberHasError ? "govuk-form-group--error" : "")">
-                                    <label class="govuk-label" for="CompaniesHouseNumber">@StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityCompanyQuestion_CompanyHouseNumberLabel</label>
-                                    <input class="govuk-input govuk-!-width-one-half @(companiesHouseNumberHasError ? "govuk-input--error" : "")"
-                                           id="CompaniesHouseNumber" name="CompaniesHouseNumber" type="text" spellcheck="false" autocomplete="off"
-                                           value="@(Model.HasCompaniesHouseNumber == true ? Model.CompaniesHouseNumber : "")">
-                                </div>
-                            </div>
-
-                            <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="NO" name="HasCompaniesHouseNumber" type="radio"
-                                       value="false" @(Model.HasCompaniesHouseNumber == false ? "checked" : "")>
-                                <label class="govuk-label govuk-radios__label" for="NO">@StaticTextResource.Global_No</label>
+                        <div class="govuk-radios__conditional" id="conditional-YES">
+                            <div class="govuk-form-group @(companiesHouseNumberHasError ? "govuk-form-group--error" : "")">
+                                <label class="govuk-label" for="CompaniesHouseNumber">@StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityCompanyQuestion_CompanyHouseNumberLabel</label>
+                                <input class="govuk-input govuk-!-width-one-half @(companiesHouseNumberHasError ? "govuk-input--error" : "")"
+                                        id="CompaniesHouseNumber" name="CompaniesHouseNumber" type="text" spellcheck="false" autocomplete="off"
+                                        value="@(Model.HasCompaniesHouseNumber == true ? Model.CompaniesHouseNumber : "")">
                             </div>
                         </div>
 
-                    </fieldset>
-                </div>
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="NO" name="HasCompaniesHouseNumber" type="radio"
+                                    value="false" @(Model.HasCompaniesHouseNumber == false ? "checked" : "")>
+                            <label class="govuk-label govuk-radios__label" for="NO">@StaticTextResource.Global_No</label>
+                        </div>
+                    </div>
 
-                <govuk-button>@StaticTextResource.Global_Continue</govuk-button>
-            </form>
-        </div>
+                </fieldset>
+            </div>
+
+            <govuk-button>@StaticTextResource.Global_Continue</govuk-button>
+        </form>
     </div>
-</main>
+</div>

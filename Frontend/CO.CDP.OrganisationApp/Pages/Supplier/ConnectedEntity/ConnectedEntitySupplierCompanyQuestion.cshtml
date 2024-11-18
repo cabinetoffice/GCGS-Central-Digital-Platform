@@ -7,55 +7,55 @@
     var registeredWithChHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.RegisteredWithCh)).HasInnerHtml;
 }
 
-<a href="/organisation/@Model.Id/supplier-information/connected-person/supplier-has-control?selected=true" class="govuk-back-link">@StaticTextResource.Global_Back</a>
+@section BeforeContent {
+    <a href="/organisation/@Model.Id/supplier-information/connected-person/supplier-has-control?selected=true" class="govuk-back-link">@StaticTextResource.Global_Back</a>
+}
 
-<main class="govuk-main-wrapper" id="main-content">
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
-            <partial name="_ErrorSummary" model="@Model.ModelState" />
-            <form class="form" method="post">
-                <div class="govuk-form-group @(registeredWithChHasError ? "govuk-form-group--error": "")">
-                    <fieldset class="govuk-fieldset">
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <partial name="_ErrorSummary" model="@Model.ModelState" />
+        <form class="form" method="post">
+            <div class="govuk-form-group @(registeredWithChHasError ? "govuk-form-group--error": "")">
+                <fieldset class="govuk-fieldset">
 
-                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                            <h1 class="govuk-fieldset__heading">
-                                @ViewData["Title"]
-                            </h1>
-                        </legend>
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                        <h1 class="govuk-fieldset__heading">
+                            @ViewData["Title"]
+                        </h1>
+                    </legend>
 
-                        <div id="connected-hint" class="govuk-hint">
-                            @StaticTextResource.Supplier_ConnectedEntity_ConnectedEntitySupplierCompanyQuestion_Hint
+                    <div id="connected-hint" class="govuk-hint">
+                        @StaticTextResource.Supplier_ConnectedEntity_ConnectedEntitySupplierCompanyQuestion_Hint
+                    </div>
+
+                    <div class="govuk-radios" data-module="govuk-radios">
+                        @if (registeredWithChHasError)
+                        {
+                            <p id="devolved-error" class="govuk-error-message">
+                                <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span> @Html.ValidationMessageFor(m => m.RegisteredWithCh)
+                            </p>
+                        }
+
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="registeredWithCh" name="RegisteredWithCh" type="radio"
+                                    value="true" aria-controls="conditional-vat-yes" aria-expanded="false" @(Model.RegisteredWithCh == true ? "checked" : "")>
+                            <label class="govuk-label govuk-radios__label" for="registeredWithCh">
+                                @StaticTextResource.Global_Yes
+                            </label>
                         </div>
 
-                        <div class="govuk-radios" data-module="govuk-radios">
-                            @if (registeredWithChHasError)
-                            {
-                                <p id="devolved-error" class="govuk-error-message">
-                                    <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span> @Html.ValidationMessageFor(m => m.RegisteredWithCh)
-                                </p>
-                            }
-
-                            <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="registeredWithCh" name="RegisteredWithCh" type="radio"
-                                       value="true" aria-controls="conditional-vat-yes" aria-expanded="false" @(Model.RegisteredWithCh == true ? "checked" : "")>
-                                <label class="govuk-label govuk-radios__label" for="registeredWithCh">
-                                    @StaticTextResource.Global_Yes
-                                </label>
-                            </div>
-
-                            <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="registeredWithCh-2" name="RegisteredWithCh" type="radio" value="false"
-                                @(Model.RegisteredWithCh == false ? "checked" : "")>
-                                <label class="govuk-label govuk-radios__label" for="registeredWithCh-2">@StaticTextResource.Global_No</label>
-                            </div>
-
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="registeredWithCh-2" name="RegisteredWithCh" type="radio" value="false"
+                            @(Model.RegisteredWithCh == false ? "checked" : "")>
+                            <label class="govuk-label govuk-radios__label" for="registeredWithCh-2">@StaticTextResource.Global_No</label>
                         </div>
 
-                    </fieldset>
-                </div>
+                    </div>
 
-                <govuk-button>@StaticTextResource.Global_Continue</govuk-button>
-            </form>
-        </div>
+                </fieldset>
+            </div>
+
+            <govuk-button>@StaticTextResource.Global_Continue</govuk-button>
+        </form>
     </div>
-</main>
+</div>

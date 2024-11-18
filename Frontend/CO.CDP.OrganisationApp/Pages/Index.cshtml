@@ -8,8 +8,6 @@
     ViewData["Title"] = StaticTextResource.Supplementary_Index_Title;
 }
 
-<main class="govuk-main-wrapper" id="main-content">
-
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds govuk-body">
             @if (Request.Query.ContainsKey("one-login-error"))
@@ -50,4 +48,3 @@
             <p>@Html.Raw(@StaticTextResource.Supplementary_Index_SignIn)</p>
         </div>
     </div>
-</main>
