@@ -15,9 +15,10 @@
     }
 }
 
-<a href="/organisation/@Model.Id" class="govuk-back-link">Back</a>
+@section BeforeContent {
+    <a href="/organisation/@Model.Id" class="govuk-back-link">Back</a>
+}
 
-<main class="govuk-main-wrapper" id="main-content">
     <form class="form" method="post">
         <h1 class="govuk-heading-l">
             @ViewData["Title"]
@@ -75,4 +76,3 @@
             </govuk-button>
         </authorize>
     </form>
-</main>

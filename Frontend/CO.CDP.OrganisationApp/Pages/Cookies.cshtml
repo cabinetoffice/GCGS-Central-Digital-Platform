@@ -9,7 +9,6 @@
     var hasError = ((TagBuilder)Html.ValidationMessageFor(m => m.CookieAcceptance)).HasInnerHtml;
 }
 
-<main class="govuk-main-wrapper" id="main-content">
     <partial name="_ErrorSummary" model="@Model.ModelState" />
 
     <h1 class="govuk-heading-l">@ViewData["Title"]</h1>
@@ -75,4 +74,3 @@
                         
     <h2 class="govuk-heading-m">@StaticTextResource.Supplementary_Cookies_GovServices</h2>
     <p class="govuk-body">@StaticTextResource.Supplementary_Cookies_GovServices_Info</p>
-</main>

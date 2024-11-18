@@ -1,4 +1,5 @@
 @page "/organisation/{id}/supplier-information/vat-question"
+@using CO.CDP.Localization
 @model CO.CDP.OrganisationApp.Pages.Supplier.SupplierVatQuestionModel
 
 @{
@@ -7,9 +8,10 @@
     var vatRegHasError = invalidSelection || ((TagBuilder)Html.ValidationMessageFor(m => m.VatNumber)).HasInnerHtml;
 }
 
-<a href="/organisation/@Model.Id/supplier-information/basic-information" class="govuk-back-link">Back</a>
+@section BeforeContent {
+    <a href="/organisation/@Model.Id/supplier-information/basic-information" class="govuk-back-link">Back</a>
+}
 
-<main class="govuk-main-wrapper" id="main-content">
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <partial name="_ErrorSummary" model="@Model.ModelState" />
@@ -40,9 +42,18 @@
                                         <!--This is 9 numbers, sometimes with 'GB' at the start, for example 123456789 or GB123456789.-->You can find it
                                         on your VAT registration certificate.
                                     </div>
-                                    <input class="govuk-input govuk-!-width-one-third @(vatRegHasError ? "govuk-form-group--error" : "")"
-                                           id="vatNumber" name="VatNumber" spellcheck="false" autocomplete="false" aria-describedby="vat-registration-number-hint"
-                                           value="@(Model.HasVatNumber == true ? Model.VatNumber : "")">
+
+                                    @if (vatRegHasError)
+                                    {
+                                        <p id="organisation-vat-error" class="govuk-error-message">
+                                            <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span>
+                                            @Html.ValidationMessageFor(m => m.VatNumber)
+                                        </p>
+                                    }
+
+                                    <input class="govuk-input govuk-!-width-one-third @(vatRegHasError ? "govuk-input--error" : "")"
+                                           id="@nameof(Model.VatNumber)" name="@nameof(Model.VatNumber)" spellcheck="false" autocomplete="false"
+                                           value="@(Model.HasVatNumber == true ? Model.VatNumber : "")" aria-describedy="vat-registration-number-hint @(vatRegHasError ? "organisation-vat-error" : "")">
                                 </div>
                             </div>
 
@@ -61,4 +72,3 @@
             </form>
         </div>
     </div>
-</main>

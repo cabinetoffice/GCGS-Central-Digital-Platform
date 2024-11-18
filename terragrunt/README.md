@@ -15,6 +15,7 @@ This code base is responsible for provisioning the AWS infrastructure needed to 
 - [Create New User](./docs/bootstap-new-account.md#create-new-users)
 - [Manage Secrets](./docs/manage-secrets.md)
    - [Retrieve Diagnostic URI](./docs/manage-secrets.md#retrieve-diagnostic-uri)
+   - [Update Charity Commission Secrets](./docs/manage-secrets.md#update-charity-commission-secrets)
    - [Update Companies House Secrets](./docs/manage-secrets.md#update-companies-house-secrets)
    - [Update FtsService URL](./docs/manage-secrets.md#update-ftsservice-url)
    - [Update GOVUKNotify ApiKey](./docs/manage-secrets.md#update-govuknotify-apikey)
