@@ -70,7 +70,7 @@ public class GetIdentifierRegistriesUseCaseTest
         var result = await _useCase.Execute(countryCode);
 
         result.Should().NotBeNull();
-        result.Should().Equals(2);
+        result.Should().HaveCount(2);
         result.First().Scheme.Should().Be("ISO");
         result.Last().Scheme.Should().Be("GS1");
     }
