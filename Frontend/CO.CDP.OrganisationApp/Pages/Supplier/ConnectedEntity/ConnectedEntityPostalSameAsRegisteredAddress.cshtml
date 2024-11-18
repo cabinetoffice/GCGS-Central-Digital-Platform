@@ -1,16 +1,17 @@
 @page "/organisation/{id}/supplier-information/connected-person/postal-address-same-as-registered/{ConnectedEntityId?}"
 
 @model ConnectedEntityPostalSameAsRegisteredAddressModel
+@using CO.CDP.Localization
 
 @{
-    ViewData["Title"] = $"Does {Model.OrganisationName} have a different postal address?";
+    ViewData["Title"] = string.Format(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityPostalSameAsRegisteredAddress_PageTitle, Model.OrganisationName);
 
     var hasError = ((TagBuilder)Html.ValidationMessageFor(m => m.DifferentThanRegiseterdAddress)).HasInnerHtml;
     var ukNonUkAddress = Model.IsNonUkAddress.GetValueOrDefault() ? "non-uk" : "uk";
 }
 
 @* // TODO 6: Previous page link?? *@
-<a href="/organisation/@Model.Id/supplier-information/connected-person/registered-address/@ukNonUkAddress/@Model.ConnectedEntityId" class="govuk-back-link">Back</a>
+<a href="/organisation/@Model.Id/supplier-information/connected-person/registered-address/@ukNonUkAddress/@Model.ConnectedEntityId" class="govuk-back-link">@StaticTextResource.Global_Back</a>
 
 <main class="govuk-main-wrapper" id="main-content">
     <div class="govuk-grid-row">
@@ -30,25 +31,25 @@
                         </legend>
 
                         <div class="govuk-hint">
-                            The place where an organisation receives official post can be different from its registered address. For example, a branch office.
+                            @StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityPostalSameAsRegisteredAddress_Hint
                         </div>
 
                         <div class="govuk-radios" data-module="govuk-radios">
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input" id="YES" name="DifferentThanRegiseterdAddress" type="radio"
                                        value="true" @(Model.DifferentThanRegiseterdAddress == true ? "checked" : "")>
-                                <label class="govuk-label govuk-radios__label" for="YES">Yes</label>
+                                <label class="govuk-label govuk-radios__label" for="YES">@StaticTextResource.Global_Yes</label>
                             </div>
 
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input" id="NO" name="DifferentThanRegiseterdAddress" type="radio"
                                        value="false" @(Model.DifferentThanRegiseterdAddress == false ? "checked" : "")>
-                                <label class="govuk-label govuk-radios__label" for="NO">No</label>
+                                <label class="govuk-label govuk-radios__label" for="NO">@StaticTextResource.Global_No</label>
                             </div>
                         </div>
                     </fieldset>
                 </div>
-                <govuk-button>Continue</govuk-button>
+                <govuk-button>@StaticTextResource.Global_Continue</govuk-button>
             </form>
         </div>
     </div>

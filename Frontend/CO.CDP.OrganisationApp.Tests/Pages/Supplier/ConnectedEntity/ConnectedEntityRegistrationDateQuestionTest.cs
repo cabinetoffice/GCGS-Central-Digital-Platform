@@ -1,5 +1,6 @@
 using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Pages.Supplier;
+using CO.CDP.OrganisationApp.Pages.Supplier.ConnectedEntity;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;

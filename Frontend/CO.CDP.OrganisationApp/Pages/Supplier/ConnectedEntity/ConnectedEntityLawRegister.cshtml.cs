@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using CO.CDP.Localization;
 
 namespace CO.CDP.OrganisationApp.Pages.Supplier;
 
@@ -17,12 +18,12 @@ public class ConnectedEntityLawRegisterModel(ISession session) : PageModel
     public Guid? ConnectedEntityId { get; set; }
 
     [BindProperty]
-    [Required(ErrorMessage = "Enter what is organisation's legal form?")]
+    [Required(ErrorMessage = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityLawRegister_LegalFormRequiredError))]
     public string? LegalForm { get; set; }
 
     [BindProperty]
-    [DisplayName("Which law enforces it?")]
-    [Required(ErrorMessage = "Enter which law enforces it?")]
+    [Display(Name = "Supplier_ConnectedEntity_ConnectedEntityLawRegister_LawEnforcesLabel", ResourceType = typeof(StaticTextResource))]
+    [Required(ErrorMessage = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityLawRegister_LawEnforcesRequiredError))]
     public string? LawRegistered { get; set; }
 
     [BindProperty]
@@ -88,7 +89,7 @@ public class ConnectedEntityLawRegisterModel(ISession session) : PageModel
     {
         Caption = state.GetCaption();
         BackPageLink = GetBackLinkPageName(state);
-        LegalFormDisplayText = $"What is {state.OrganisationName}'s legal form?";
+        LegalFormDisplayText = string.Format(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityLawRegister_LegalFormQuestion, state.OrganisationName);
         ConnectedEntityType = state.ConnectedEntityType;
         if (reset)
         {

@@ -1,8 +1,9 @@
 @page "/organisation/{id}/supplier-information/connected-person/organisation-name/{ConnectedEntityId?}"
 @model CO.CDP.OrganisationApp.Pages.Supplier.ConnectedEntityOrganisationNameModel
+@using CO.CDP.Localization
 
 @{
-    ViewData["Title"] = Html.DisplayNameFor(m => m.OrganisationName);
+    ViewData["Title"] = StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityOrganisationName_PageTitle;
 
     var organisationNameHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.OrganisationName)).HasInnerHtml;
 
@@ -15,7 +16,7 @@
 }
 
 <a href="@backLink" class="govuk-back-link">
-    Back
+    @StaticTextResource.Global_Back
 </a>
 
 <main class="govuk-main-wrapper" id="main-content">
@@ -38,13 +39,13 @@
                             </label>
                         </h1>
 
-                        <div id="hint" class="govuk-hint">The name of the 'connected person' that has control or influence over your organisation.</div>
+                        <div id="hint" class="govuk-hint">@StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityOrganisationName_Hint</div>
 
                         <div class="govuk-form-group @(organisationNameHasError ? "govuk-form-group--error" : "")">
                             @if (organisationNameHasError)
                             {
                                 <p id="organisation-name-error" class="govuk-error-message">
-                                    <span class="govuk-visually-hidden">Error:</span>
+                                    <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span>
                                     @Html.ValidationMessageFor(m => m.OrganisationName)
                                 </p>
                             }
@@ -57,7 +58,7 @@
                 </div>
 
                 <govuk-button>
-                    Continue
+                    @StaticTextResource.Global_Continue
                 </govuk-button>
 
             </form>

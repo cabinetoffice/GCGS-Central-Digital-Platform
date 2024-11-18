@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
+using CO.CDP.Localization;
 
 namespace CO.CDP.OrganisationApp.Pages.Supplier;
 
@@ -81,13 +82,13 @@ public class ConnectedEntityCompanyInsolvencyDateModel(ISession session) : PageM
         var dateString = $"{Year}-{Month!.PadLeft(2, '0')}-{Day!.PadLeft(2, '0')}";
         if (!DateTime.TryParseExact(dateString, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
         {
-            ModelState.AddModelError(nameof(InsolvencyDate), "Date of insolvency must be a real date");
+            ModelState.AddModelError(nameof(InsolvencyDate), StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityCompanyInsolvencyDate_InvalidDate);
             return Page();
         }
 
         if (parsedDate > DateTime.Today)
         {
-            ModelState.AddModelError(nameof(InsolvencyDate), "Date of insolvency must be today or in the past");
+            ModelState.AddModelError(nameof(InsolvencyDate), StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityCompanyInsolvencyDate_DateInFuture);
             return Page();
         }
 

@@ -1,8 +1,9 @@
 @page "/organisation/{id}/supplier-information/connected-person/organisation-category"
 @model CO.CDP.OrganisationApp.Pages.Supplier.ConnectedEntityOrganisationCategoryModel
+@using CO.CDP.Localization
 
 @{
-    ViewData["Title"] = "Select the category that best describes the 'connected person'";
+    ViewData["Title"] = StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityOrganisationCategory_PageTitle;
 
     var personQuestionHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.ConnectedEntityCategory)).HasInnerHtml;
     string IsSelected(Constants.ConnectedEntityOrganisationCategoryType radioValue)
@@ -11,7 +12,7 @@
     }
 }
 
-<a href="/organisation/@Model.Id/supplier-information/connected-person/person-type" class="govuk-back-link">Back</a>
+<a href="/organisation/@Model.Id/supplier-information/connected-person/person-type" class="govuk-back-link">@StaticTextResource.Global_Back</a>
 
 <main class="govuk-main-wrapper" id="main-content">
     <div class="govuk-grid-row">
@@ -26,13 +27,13 @@
                             </h1>
                         </legend>
                         <div id="connected-hint" class="govuk-hint">
-                            The ‘connected person’ that has control or influence over your organisation should fall into one of these categories.
+                            @StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityOrganisationCategory_Hint
                         </div>
                         <div class="govuk-radios" data-module="govuk-radios">
                             @if (personQuestionHasError)
                             {
                                 <p id="registered-org-error" class="govuk-error-message">
-                                    <span class="govuk-visually-hidden">Error:</span> @Html.ValidationMessageFor(m => m.ConnectedEntityCategory)
+                                    <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span> @Html.ValidationMessageFor(m => m.ConnectedEntityCategory)
                                 </p>
                             }
 
@@ -42,7 +43,7 @@
                                        @IsSelected(Constants.ConnectedEntityOrganisationCategoryType.RegisteredCompany)>
 
                                 <label class="govuk-label govuk-radios__label" for="entityCategory">
-                                    @ConnectedEntityOrganisationCategoryModel.ConnectedEntityCategoryOption["RegisteredCompany"] @(Model.RegisteredWithCh == false ? " or equivalent" : "")
+                                    @(Model.RegisteredWithCh == false ? @ConnectedEntityOrganisationCategoryModel.ConnectedEntityCategoryOption["RegisteredCompanyOrEquivalent"] : @ConnectedEntityOrganisationCategoryModel.ConnectedEntityCategoryOption["RegisteredCompany"])
                                 </label>
                             </div>
 
@@ -89,7 +90,7 @@
                     </fieldset>
                 </div>
 
-                <govuk-button>Continue</govuk-button>
+                <govuk-button>@StaticTextResource.Global_Continue</govuk-button>
             </form>
         </div>
     </div>

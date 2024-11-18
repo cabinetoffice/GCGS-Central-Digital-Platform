@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
+using CO.CDP.Localization;
 
 namespace CO.CDP.OrganisationApp.Pages.Supplier;
 
@@ -16,7 +17,7 @@ public class ConnectedEntityDirectorResidencyModel(ISession session) : PageModel
     public Guid? ConnectedEntityId { get; set; }
 
     [BindProperty]
-    [Required(ErrorMessage = "Select country")]
+    [Required(ErrorMessage = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityDirectorResidency_SelectCountryError))]
     public string? DirectorLocation { get; set; }
     public string? Caption { get; set; }
     public string? Heading { get; set; }
@@ -66,7 +67,7 @@ public class ConnectedEntityDirectorResidencyModel(ISession session) : PageModel
     private void InitModal(ConnectedEntityState state, bool reset = false)
     {
         Caption = state.GetCaption();
-        Heading = $"What country does {state.FirstName} usually live in?";
+        Heading = string.Format(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityDirectorResidency_Heading, state.FirstName);
 
         if (reset)
         {

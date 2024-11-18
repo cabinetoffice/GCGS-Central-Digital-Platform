@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
+using CO.CDP.Localization;
 
 namespace CO.CDP.OrganisationApp.Pages.Supplier;
 
@@ -14,7 +15,7 @@ public class ConnectedEntitySupplierHasControlModel(
     ISession session) : PageModel
 {
     [BindProperty]
-    [Required(ErrorMessage = "Select if your organisation influenced or controlled by another person or company")]
+    [Required(ErrorMessage = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntitySupplierHasControl_ControlledByPersonOrCompanyError))]
     public bool? ControlledByPersonOrCompany { get; set; }
 
     [BindProperty(SupportsGet = true)]

@@ -1,12 +1,13 @@
-using CO.CDP.Mvc.Validation;
 using CO.CDP.OrganisationApp.Constants;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
+using CO.CDP.Localization;
 using System.Globalization;
+using CO.CDP.Mvc.Validation;
 
-namespace CO.CDP.OrganisationApp.Pages.Supplier;
+namespace CO.CDP.OrganisationApp.Pages.Supplier.ConnectedEntity;
 
 [Authorize(Policy = OrgScopeRequirement.Editor)]
 public class ConnectedEntityRegistrationDateQuestionModel(ISession session) : PageModel
@@ -18,22 +19,22 @@ public class ConnectedEntityRegistrationDateQuestionModel(ISession session) : Pa
     public Guid? ConnectedEntityId { get; set; }
 
     [BindProperty]
-    [Required(ErrorMessage = "Select yes if you required to register organisation as a person with significant control")]
+    [Required(ErrorMessage = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityRegistrationDateQuestion_HasRegistrationDateError))]
     public bool? HasRegistartionDate { get; set; }
 
     [BindProperty]
-    [RequiredIf(nameof(HasRegistartionDate), true, ErrorMessage = "Date of registration must include a day")]
-    [RegularExpression(RegExPatterns.Day, ErrorMessage = "Day must be a valid number")]
+    [RequiredIf(nameof(HasRegistartionDate), true, ErrorMessage = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityRegistrationDateQuestion_DayRequiredError))]
+    [RegularExpression(RegExPatterns.Day, ErrorMessage = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityRegistrationDateQuestion_DayInvalidError))]
     public string? Day { get; set; }
 
     [BindProperty]
-    [RequiredIf(nameof(HasRegistartionDate), true, ErrorMessage = "Date of registration must include a month")]
-    [RegularExpression(RegExPatterns.Month, ErrorMessage = "Month must be a valid number")]
+    [RequiredIf(nameof(HasRegistartionDate), true, ErrorMessage = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityRegistrationDateQuestion_MonthRequiredError))]
+    [RegularExpression(RegExPatterns.Month, ErrorMessage = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityRegistrationDateQuestion_MonthInvalidError))]
     public string? Month { get; set; }
 
     [BindProperty]
-    [RequiredIf(nameof(HasRegistartionDate), true, ErrorMessage = "Date of registration must include a year")]
-    [RegularExpression(RegExPatterns.Year, ErrorMessage = "Year must be a valid number")]
+    [RequiredIf(nameof(HasRegistartionDate), true, ErrorMessage = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityRegistrationDateQuestion_YearRequiredError))]
+    [RegularExpression(RegExPatterns.Year, ErrorMessage = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityRegistrationDateQuestion_YearInvalidError))]
     public string? Year { get; set; }
 
     [BindProperty]
@@ -60,7 +61,6 @@ public class ConnectedEntityRegistrationDateQuestionModel(ISession session) : Pa
         }
 
         InitModal(state, true);
-
         HasRegistartionDate = selected.HasValue ? selected : state.HasRegistartionDate;
 
         return Page();
@@ -93,7 +93,7 @@ public class ConnectedEntityRegistrationDateQuestionModel(ISession session) : Pa
             var dateString = $"{Year}-{Month!.PadLeft(2, '0')}-{Day!.PadLeft(2, '0')}";
             if (!DateTime.TryParseExact(dateString, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
             {
-                ModelState.AddModelError(nameof(RegistrationDate), "Date of registration must be a real date");
+                ModelState.AddModelError(nameof(RegistrationDate), StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityRegistrationDateQuestion_DateInvalidError);
                 return Page();
             }
 
@@ -101,7 +101,7 @@ public class ConnectedEntityRegistrationDateQuestionModel(ISession session) : Pa
         }
         else
         { state.RegistrationDate = null; }
-
+        
         state.HasRegistartionDate = HasRegistartionDate;
         if (HasRegistartionDate == false)
         {
@@ -189,9 +189,7 @@ public class ConnectedEntityRegistrationDateQuestionModel(ISession session) : Pa
     private void InitModal(ConnectedEntityState state, bool reset = false)
     {
         Caption = state.GetCaption();
-        Heading = $"Were you required to register " +
-            $"{(state.ConnectedEntityType == Constants.ConnectedEntityType.Organisation ? state.OrganisationName : state.FirstName)}" +
-            $" as a person with significant control?";
+        Heading = string.Format(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityRegistrationDateQuestion_Heading, (state.ConnectedEntityType == Constants.ConnectedEntityType.Organisation ? state.OrganisationName : state.FirstName));
         BackPageLink = GetBackLinkPageName(state);
         ConnectedEntityType = state.ConnectedEntityType;
         if (reset && state.RegistrationDate.HasValue)

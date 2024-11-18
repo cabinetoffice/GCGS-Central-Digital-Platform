@@ -1,6 +1,7 @@
 @page "/organisation/{id}/supplier-information/connected-person/nature-of-control/{ConnectedEntityId?}"
-@model CO.CDP.OrganisationApp.Pages.Supplier.ConnectedEntityControlConditionModel
+@model ConnectedEntityControlConditionModel
 @using CO.CDP.OrganisationApp.Constants
+@using CO.CDP.Localization
 
 @{
     ViewData["Title"] = Model.Heading;
@@ -24,7 +25,7 @@
     var backLink = $"/organisation/{Model.Id}/supplier-information/connected-person/{backPage}/{Model.ConnectedEntityId}";
 }
 
-<a href="@backLink" class="govuk-back-link">Back</a>
+<a href="@backLink" class="govuk-back-link">@StaticTextResource.Global_Back</a>
 
 <main class="govuk-main-wrapper" id="main-content">
     <div class="govuk-grid-row">
@@ -42,12 +43,12 @@
                             <h1 class="govuk-fieldset__heading">@ViewData["Title"]</h1>
                         </legend>
                         <div id="natureOfControl-hint" class="govuk-hint">
-                            As defined in <a href="https://www.legislation.gov.uk/ukpga/2006/46/schedule/1A/part/1?timeline=false" target="_blank">part 1 schedule 1a of the Companies Act 2006</a>. Select all that apply.
+                            @Html.Raw(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityControlCondition_Hint)
                         </div>
                         @if (controlConditionsHasError)
                         {
                             <p id="natureOfControl-error" class="govuk-error-message">
-                                <span class="govuk-visually-hidden">Error:</span> @Html.ValidationMessageFor(m => m.ControlConditions)
+                                <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span> @Html.ValidationMessageFor(m => m.ControlConditions)
                             </p>
                         }
                         <div class="govuk-checkboxes" data-module="govuk-checkboxes">
@@ -55,58 +56,57 @@
                                 <input class="govuk-checkboxes__input" id="natureOfControl-0" name="ControlConditions" type="checkbox"
                                        value="@ConnectedEntityControlCondition.OwnsShares" @IsSelected(ConnectedEntityControlCondition.OwnsShares)>
                                 <label class="govuk-label govuk-checkboxes__label" for="natureOfControl-0">
-                                    Owns shares
+                                    @StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityControlCondition_OwnsSharesLabel
                                 </label>
                                 <div id="natureOfControlHint-0" class="govuk-hint govuk-checkboxes__hint">
-                                    Directly or indirectly holds more than 25% of the company's shares
+                                    @StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityControlCondition_OwnsSharesHint
                                 </div>
                             </div>
                             <div class="govuk-checkboxes__item">
                                 <input class="govuk-checkboxes__input" id="natureOfControl-1" name="ControlConditions" type="checkbox"
                                        value="@ConnectedEntityControlCondition.HasVotingRights" @IsSelected(ConnectedEntityControlCondition.HasVotingRights)>
                                 <label class="govuk-label govuk-checkboxes__label" for="natureOfControl-1">
-                                    Has voting rights
+                                    @StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityControlCondition_HasVotingRightsLabel
                                 </label>
                                 <div id="natureOfControlHint-1" class="govuk-hint govuk-checkboxes__hint">
-                                    Directly or indirectly holds more than 25% of the voting rights in the company
+                                    @StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityControlCondition_HasVotingRightsHint
                                 </div>
                             </div>
                             <div class="govuk-checkboxes__item">
                                 <input class="govuk-checkboxes__input" id="natureOfControl-2" name="ControlConditions" type="checkbox"
                                        value="@ConnectedEntityControlCondition.CanAppointOrRemoveDirectors" @IsSelected(ConnectedEntityControlCondition.CanAppointOrRemoveDirectors)>
                                 <label class="govuk-label govuk-checkboxes__label" for="natureOfControl-2">
-                                    Can appoint or remove directors
+                                    @StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityControlCondition_CanAppointOrRemoveDirectorsLabel
                                 </label>
                                 <div id="natureOfControlHint-2" class="govuk-hint govuk-checkboxes__hint">
-                                    Directly or indirectly holds the right to appoint or remove a majority of the company's board of directors
+                                    @StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityControlCondition_CanAppointOrRemoveDirectorsHint
                                 </div>
                             </div>
                             <div class="govuk-checkboxes__item">
                                 <input class="govuk-checkboxes__input" id="natureOfControl-3" name="ControlConditions" type="checkbox"
                                        value="@ConnectedEntityControlCondition.HasOtherSignificantInfluenceOrControl" @IsSelected(ConnectedEntityControlCondition.HasOtherSignificantInfluenceOrControl)>
                                 <label class="govuk-label govuk-checkboxes__label" for="natureOfControl-3">
-                                    Has other significant influence or control
+                                    @StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityControlCondition_HasOtherSignificantInfluenceOrControlLabel
                                 </label>
                                 <div id="natureOfControlHint-3" class="govuk-hint govuk-checkboxes__hint">
-                                    Has the right to exercise, or exercises, significant influence or control over company. As defined in the
-                                    <a href="https://www.gov.uk/government/publications/guidance-to-the-people-with-significant-control-requirements-for-companies-and-limited-liability-partnerships" target="_blank">person of significant control (PSC) guidance</a>
+                                    @Html.Raw(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityControlCondition_HasOtherSignificantInfluenceOrControlHint)
                                 </div>
                             </div>
                             @if (!Model.SupplierHasCompanyHouseNumber)
                             {
-                                <div class="govuk-checkboxes__divider">or</div>
+                                <div class="govuk-checkboxes__divider">@StaticTextResource.Global_Or</div>
                                 <div class="govuk-checkboxes__item">
                                     <input class="govuk-checkboxes__input" id="natureOfControl-4" name="ControlConditions" type="checkbox"
                                            value="@ConnectedEntityControlCondition.None" @IsSelected(ConnectedEntityControlCondition.None) data-behaviour="exclusive">
                                     <label class="govuk-label govuk-checkboxes__label" for="natureOfControl-4">
-                                        None apply
+                                        @StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityControlCondition_NoneApplyLabel
                                     </label>
                                 </div>
                             }
                         </div>
                     </fieldset>
                 </div>
-                <govuk-button>Continue</govuk-button>
+                <govuk-button>@StaticTextResource.Global_Continue</govuk-button>
             </form>
         </div>
     </div>

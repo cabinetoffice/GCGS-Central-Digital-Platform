@@ -1,5 +1,6 @@
 @page "/organisation/{id}/supplier-information/connected-person/individual-psc-details/{ConnectedEntityId?}"
 @model CO.CDP.OrganisationApp.Pages.Supplier.ConnectedEntityPscDetailsModel
+@using CO.CDP.Localization
 
 @{
     ViewData["Title"] = Model.Heading;
@@ -20,7 +21,7 @@
 }
 
 <a href="@backLink" class="govuk-back-link">
-    Back
+    @StaticTextResource.Global_Back
 </a>
 
 <main class="govuk-main-wrapper" id="main-content">
@@ -40,14 +41,14 @@
                     </h1>
                     <div class="govuk-form-group">
                         <label class="govuk-label" for="firstName">
-                            First name
+                            @StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityPscDetails_FirstNameLabel
                         </label>
 
                         <div class="govuk-form-group @(firstNameHasError ? "govuk-form-group--error" : "")">
                             @if (firstNameHasError)
                             {
                                 <p id="first-name-error" class="govuk-error-message">
-                                    <span class="govuk-visually-hidden">Error:</span>
+                                    <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span>
                                     @Html.ValidationMessageFor(m => m.FirstName)
                                 </p>
                             }
@@ -60,13 +61,13 @@
                     <div class="govuk-form-group">
 
                         <label class="govuk-label" for="lastName">
-                            Last name
+                            @StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityPscDetails_LastNameLabel
                         </label>
                         <div class="govuk-form-group @(lastNameHasError ? "govuk-form-group--error" : "")">
                             @if (lastNameHasError)
                             {
                                 <p id="last-name-error" class="govuk-error-message">
-                                    <span class="govuk-visually-hidden">Error:</span>
+                                    <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span>
                                     @Html.ValidationMessageFor(m => m.LastName)
                                 </p>
                             }
@@ -80,36 +81,36 @@
                         <div class="govuk-form-group">
                             <fieldset class="govuk-fieldset" role="group" aria-describedby="Hint">
                                 <legend class="govuk-fieldset__legend">
-                                    Date of birth
+                                    @StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityPscDetails_DateOfBirthLabel
                                 </legend>
                                 <div id="-hint" class="govuk-hint">
-                                    For example, 27 3 2007
+                                    @StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityPscDetails_DateOfBirthHint
                                 </div>
                                 @if (dayHasError)
                                 {
                                     <p id="day-error" class="govuk-error-message">
-                                        <span class="govuk-visually-hidden">Error:</span>
+                                        <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span>
                                         @Html.ValidationMessageFor(m => m.Day)
                                     </p>
                                 }
                                 @if (monthHasError)
                                 {
                                     <p id="month-error" class="govuk-error-message">
-                                        <span class="govuk-visually-hidden">Error:</span>
+                                        <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span>
                                         @Html.ValidationMessageFor(m => m.Month)
                                     </p>
                                 }
                                 @if (yearHasError)
                                 {
                                     <p id="year-error" class="govuk-error-message">
-                                        <span class="govuk-visually-hidden">Error:</span>
+                                        <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span>
                                         @Html.ValidationMessageFor(m => m.Year)
                                     </p>
                                 }
                                 @if (dateOfBirthHasError)
                                 {
                                     <p id="date-of-formation-error" class="govuk-error-message">
-                                        <span class="govuk-visually-hidden">Error:</span>
+                                        <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span>
                                         @Html.ValidationMessageFor(m => m.DateOfBirth)
                                     </p>
                                 }
@@ -117,7 +118,7 @@
                                     <div class="govuk-date-input__item">
                                         <div class="govuk-form-group">
                                             <label class="govuk-label govuk-date-input__label" for="pscDateOfBirthDay">
-                                                Day
+                                                @StaticTextResource.Global_Day
                                             </label>
                                             <input class="govuk-input govuk-date-input__input govuk-input--width-2 @(dayHasError || dateOfBirthHasError ? "govuk-input--error" : "")"
                                                    id="pscDateOfBirthDay" name="Day" type="text" inputmode="numeric" value="@Model.Day">
@@ -126,7 +127,7 @@
                                     <div class="govuk-date-input__item">
                                         <div class="govuk-form-group">
                                             <label class="govuk-label govuk-date-input__label" for="pscDateOfBirthMonth">
-                                                Month
+                                                @StaticTextResource.Global_Month
                                             </label>
                                             <input class="govuk-input govuk-date-input__input govuk-input--width-2 @(monthHasError || dateOfBirthHasError ? "govuk-input--error" : "")"
                                                    id="pscDateOfBirthMonth" name="Month" type="text" inputmode="numeric" value="@Model.Month">
@@ -135,7 +136,7 @@
                                     <div class="govuk-date-input__item">
                                         <div class="govuk-form-group">
                                             <label class="govuk-label govuk-date-input__label" for="pscDateOfBirthYear">
-                                                Year
+                                                @StaticTextResource.Global_Year
                                             </label>
                                             <input class="govuk-input govuk-date-input__input govuk-input--width-4 @(yearHasError || dateOfBirthHasError ? "govuk-input--error" : "")"
                                                    id="pscDateOfBirthYear" name="Year" type="text" inputmode="numeric" value="@Model.Year">
@@ -151,12 +152,12 @@
                             @if (nationalityHasError)
                             {
                                 <p id="country-error" class="govuk-error-message">
-                                    <span class="govuk-visually-hidden">Error:</span>
+                                    <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span>
                                     @Html.ValidationMessageFor(m => m.Nationality)
                                 </p>
                             }
                             <select asp-for="Nationality" class="govuk-select @(nationalityHasError ? "govuk-select--error" : "")">
-                                <option value="">Please select</option>
+                                <option value="">@StaticTextResource.Global_PleaseSelect</option>
                                 @foreach (var cnt in Constants.Country.Nationalities)
                                 {
                                     <option value="@cnt">@cnt</option>
@@ -165,7 +166,7 @@
                         </div>
                     }
                     <govuk-button>
-                        Continue
+                        @StaticTextResource.Global_Continue
                     </govuk-button>
                 </fieldset>
             </form>

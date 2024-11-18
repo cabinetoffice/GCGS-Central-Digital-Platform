@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
+using CO.CDP.Localization;
 
 namespace CO.CDP.OrganisationApp.Pages.Supplier;
 
@@ -19,18 +20,18 @@ public class ConnectedEntityCompanyRegistrationDateModel(ISession session) : Pag
     public ConnectedEntityType? ConnectedEntityType { get; set; }
 
     [BindProperty]
-    [Required(ErrorMessage = "Date of registration must include a day")]
-    [RegularExpression(RegExPatterns.Day, ErrorMessage = "Day must be a valid number")]
+    [Required(ErrorMessage = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityCompanyRegistrationDate_DayRequiredError))]
+    [RegularExpression(RegExPatterns.Day, ErrorMessage = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityCompanyRegistrationDate_DayInvalidError))]
     public string? Day { get; set; }
 
     [BindProperty]
-    [Required(ErrorMessage = "Date of registration must include a month")]
-    [RegularExpression(RegExPatterns.Month, ErrorMessage = "Month must be a valid number")]
+    [Required(ErrorMessage = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityCompanyRegistrationDate_MonthRequiredError))]
+    [RegularExpression(RegExPatterns.Month, ErrorMessage = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityCompanyRegistrationDate_MonthInvalidError))]
     public string? Month { get; set; }
 
     [BindProperty]
-    [Required(ErrorMessage = "Date of registration must include a year")]
-    [RegularExpression(RegExPatterns.Year, ErrorMessage = "Year must be a valid number")]
+    [Required(ErrorMessage = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityCompanyRegistrationDate_YearRequiredError))]
+    [RegularExpression(RegExPatterns.Year, ErrorMessage = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityCompanyRegistrationDate_YearInvalidError))]
     public string? Year { get; set; }
 
     [BindProperty]
@@ -82,7 +83,7 @@ public class ConnectedEntityCompanyRegistrationDateModel(ISession session) : Pag
         var dateString = $"{Year}-{Month!.PadLeft(2, '0')}-{Day!.PadLeft(2, '0')}";
         if (!DateTime.TryParseExact(dateString, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
         {
-            ModelState.AddModelError(nameof(RegistrationDate), "Date of registration must be a real date");
+            ModelState.AddModelError(nameof(RegistrationDate), StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityCompanyRegistrationDate_DateInvalidError);
             return Page();
         }
 
@@ -166,9 +167,8 @@ public class ConnectedEntityCompanyRegistrationDateModel(ISession session) : Pag
     private void InitModal(ConnectedEntityState state, bool reset = false)
     {
         Caption = state.GetCaption();
-        Heading = $"What date was {(state.ConnectedEntityType == Constants.ConnectedEntityType.Organisation
-                                    ? state.OrganisationName
-                                    : state.FirstName)} registered as a 'connected person'?";
+        Heading = string.Format(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityCompanyRegistrationDate_Heading,
+            (state.ConnectedEntityType == Constants.ConnectedEntityType.Organisation ? state.OrganisationName : state.FirstName));
 
         ConnectedEntityType = state.ConnectedEntityType;
 

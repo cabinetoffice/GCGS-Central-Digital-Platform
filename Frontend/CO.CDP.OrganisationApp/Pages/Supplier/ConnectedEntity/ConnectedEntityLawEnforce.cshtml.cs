@@ -1,3 +1,4 @@
+using CO.CDP.Localization;
 using CO.CDP.OrganisationApp.Constants;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -18,7 +19,7 @@ public class ConnectedEntityLawEnforceModel(ISession session) : PageModel
 
     [BindProperty]
     [DisplayName("Which law enforces it?")]
-    [Required(ErrorMessage = "Enter which law enforces it?")]
+    [Required(ErrorMessage = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityLawEnforce_LawRegisteredRequiredError))]
     public string? LawRegistered { get; set; }
 
     [BindProperty]
@@ -83,7 +84,7 @@ public class ConnectedEntityLawEnforceModel(ISession session) : PageModel
     {
         Caption = state.GetCaption();
         BackPageLink = GetBackLinkPageName(state);
-        Heading = $"Which law enforces {state.OrganisationName}'s legal form?";
+        Heading = string.Format(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityLawEnforce_Heading, state.OrganisationName);
         ConnectedEntityType = state.ConnectedEntityType;
         if (reset)
         {

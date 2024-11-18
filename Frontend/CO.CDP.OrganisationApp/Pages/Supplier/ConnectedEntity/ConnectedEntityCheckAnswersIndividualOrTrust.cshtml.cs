@@ -5,6 +5,7 @@ using CO.CDP.OrganisationApp.WebApiClients;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using CO.CDP.Localization;
 
 namespace CO.CDP.OrganisationApp.Pages.Supplier;
 
@@ -137,7 +138,7 @@ public class ConnectedEntityCheckAnswersIndividualOrTrustModel(
     private void InitModal(ConnectedEntityState state)
     {
         Caption = state.GetCaption();
-        Heading = $"Check your answers";
+        Heading = StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityCheckAnswers_PageTitle;
         BackPageLink = GetBackLinkPageName(state);
         ShowRegisterDate = SetShowRegisterDate(state);
     }

@@ -1,6 +1,7 @@
 @page "/organisation/{id}/supplier-information/connected-person/{addressType}-address/{UkOrNonUk}/{ConnectedEntityId?}"
 @using CO.CDP.OrganisationApp.Pages.Shared
 @model CO.CDP.OrganisationApp.Pages.Supplier.ConnectedEntityAddressModel
+@using CO.CDP.Localization
 
 @{
     ViewData["Title"] = Model.Address.Heading;
@@ -39,7 +40,7 @@
     }
 }
 
-<a href="@backLink" class="govuk-back-link">Back</a>
+<a href="@backLink" class="govuk-back-link">@StaticTextResource.Global_Back</a>
 
 <main class="govuk-main-wrapper" id="main-content">
     <div class="govuk-grid-row">

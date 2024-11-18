@@ -2,6 +2,8 @@
 @using CO.CDP.OrganisationApp.Constants
 @using CO.CDP.OrganisationApp.Extensions
 @model CO.CDP.OrganisationApp.Pages.Supplier.ConnectedEntityCheckAnswersIndividualOrTrustModel
+@using CO.CDP.Localization
+
 @{
     ViewData["Title"] = Model.Heading;
 
@@ -18,12 +20,12 @@
 
     var registrationLink = $"/organisation/{Model.Id}/supplier-information/connected-person/{registerDatePage}/{Model.ConnectedEntityId}?frm-chk-answer=true";
     if (Model.ShowRegisterDate)
-    {        
+    {
         registrationLink += details.HasRegistartionDate.HasValue ? "" : "&selected=false";
     }
 }
 
-<a href="@backLink" class="govuk-back-link">Back</a>
+<a href="@backLink" class="govuk-back-link">@StaticTextResource.Global_Back</a>
 
 <main class="govuk-main-wrapper" id="main-content">
     <div class="govuk-grid-row">
@@ -35,14 +37,14 @@
 
                     <div class="govuk-summary-list__row">
                         <dt class="govuk-summary-list__key">
-                            PSC details:
+                            @StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityCheckAnswers_PSCDetails
                         </dt>
                         <dd class="govuk-summary-list__value">
                             <p class="govuk-body">@details.FirstName</p>
                             <p class="govuk-body">@details.LastName</p>
                             @if (details.DateOfBirth.HasValue)
                             {
-                                <p class="govuk-body">DoB: @details.DateOfBirth?.ToFormattedString()</p>
+                                <p class="govuk-body">@StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityCheckAnswers_DoB @details.DateOfBirth?.ToFormattedString()</p>
                             }
                             @if (!string.IsNullOrEmpty(@details.Nationality))
                             {
@@ -51,9 +53,7 @@
                         </dd>
                         <dd class="govuk-summary-list__actions">
                             <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/connected-person/individual-psc-details/@Model.ConnectedEntityId?frm-chk-answer=true">
-                                Change<span class="govuk-visually-hidden">
-                                    the person of significant control's details
-                                </span>
+                                @Html.Raw(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityCheckAnswers_ChangePSCDetails)
                             </a>
                         </dd>
                     </div>
@@ -61,16 +61,14 @@
                     {
                         <div class="govuk-summary-list__row">
                             <dt class="govuk-summary-list__key">
-                                Director's residency:
+                                @StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityCheckAnswers_DirectorResidency
                             </dt>
                             <dd class="govuk-summary-list__value">
                                 @Constants.Country.NonUKCountries[details.DirectorLocation]
                             </dd>
                             <dd class="govuk-summary-list__actions">
                                 <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/connected-person/director-residency/@Model.ConnectedEntityId?frm-chk-answer=true">
-                                    Change<span class="govuk-visually-hidden">
-                                        the director's residency
-                                    </span>
+                                    @Html.Raw(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityCheckAnswers_ChangeDirectorResidency)
                                 </a>
                             </dd>
                         </div>
@@ -80,7 +78,7 @@
                     {
                         <div class="govuk-summary-list__row">
                             <dt class="govuk-summary-list__key">
-                                Registered address:
+                                @StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityCheckAnswers_RegisteredAddress
                             </dt>
                             <dd class="govuk-summary-list__value">
                                 <p class="govuk-body">@details.RegisteredAddress!.AddressLine1</p>
@@ -90,9 +88,7 @@
                             </dd>
                             <dd class="govuk-summary-list__actions">
                                 <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/connected-person/registered-address/@ukNonUkRegisterAddress/@Model.ConnectedEntityId?frm-chk-answer=true">
-                                    Change<span class="govuk-visually-hidden">
-                                        the registered address
-                                    </span>
+                                    @Html.Raw(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityCheckAnswers_ChangeRegisteredAddress)
                                 </a>
                             </dd>
                         </div>
@@ -104,7 +100,7 @@
 
                         <div class="govuk-summary-list__row">
                             <dt class="govuk-summary-list__key">
-                                Postal address:
+                                @StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityCheckAnswers_PostalAddress
                             </dt>
                             <dd class="govuk-summary-list__value">
 
@@ -116,9 +112,7 @@
                             </dd>
                             <dd class="govuk-summary-list__actions">
                                 <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/connected-person/postal-address/@ukNonUkPostalAddress/@Model.ConnectedEntityId?frm-chk-answer=true">
-                                    Change<span class="govuk-visually-hidden">
-                                        the postal address
-                                    </span>
+                                    @Html.Raw(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityCheckAnswers_ChangePostalAddress)
                                 </a>
                             </dd>
                         </div>
@@ -128,16 +122,14 @@
                     {
                         <div class="govuk-summary-list__row">
                             <dt class="govuk-summary-list__key">
-                                Conditions of control:
+                                @StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityCheckAnswers_ControlConditions
                             </dt>
                             <dd class="govuk-summary-list__value">
                                 @Html.Raw(string.Join("", details.ControlConditions.Select(x => $"<li>{x.Description()}</li>")))
                             </dd>
                             <dd class="govuk-summary-list__actions">
                                 <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/connected-person/nature-of-control/@Model.ConnectedEntityId?frm-chk-answer=true">
-                                    Change<span class="govuk-visually-hidden">
-                                        the conditions of control
-                                    </span>
+                                    @Html.Raw(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityCheckAnswers_ChangeControlConditions)
                                 </a>
                             </dd>
                         </div>
@@ -147,18 +139,16 @@
                     {
                         <div class="govuk-summary-list__row">
                             <dt class="govuk-summary-list__key">
-                                Registered as PSC:
+                                @StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityCheckAnswers_RegisteredAsPSC
                             </dt>
                             <dd class="govuk-summary-list__value">
                                 @Html.Raw(details.RegistrationDate.HasValue == true
-                                         ? $"Yes<br>On {details.RegistrationDate.Value.ToFormattedString()}"
-                                    : "No")
+                                         ? StaticTextResource.Global_Yes + $"<br>" + string.Format(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityCheckAnswers_OnDate, details.RegistrationDate.Value.ToFormattedString())
+                                         : StaticTextResource.Global_No)
                             </dd>
                             <dd class="govuk-summary-list__actions">
                                 <a class="govuk-link" href="@registrationLink">
-                                    Change<span class="govuk-visually-hidden">
-                                        the registered as PSC date
-                                    </span>
+                                    @Html.Raw(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityCheckAnswers_ChangeRegisteredAsPSC)
                                 </a>
                             </dd>
                         </div>
@@ -168,7 +158,7 @@
                     {
                         <div class="govuk-summary-list__row">
                             <dt class="govuk-summary-list__key">
-                                Register name:
+                                @StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityCheckAnswers_RegisterName
                             </dt>
                             <dd class="govuk-summary-list__value">
                                 @if (ConnectedEntityCompanyRegisterNameModel.RegisterNameType.Keys.Contains(details.RegisterName!))
@@ -177,21 +167,19 @@
                                 }
                                 else
                                 {
-                                    @Html.Raw($"Other<br>{details.RegisterName}")
+                                    @Html.Raw(StaticTextResource.Global_Other + $"<br>{details.RegisterName}")
                                 }
                             </dd>
                             <dd class="govuk-summary-list__actions">
                                 <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/connected-person/company-register-name/@Model.ConnectedEntityId?frm-chk-answer=true">
-                                    Change<span class="govuk-visually-hidden">
-                                        the register name
-                                    </span>
+                                    @Html.Raw(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityCheckAnswers_ChangeRegisterName)
                                 </a>
                             </dd>
                         </div>
                     }
                 </dl>
 
-                <govuk-button>Submit</govuk-button>
+                <govuk-button>@StaticTextResource.Global_Submit</govuk-button>
             </form>
         </div>
     </div>

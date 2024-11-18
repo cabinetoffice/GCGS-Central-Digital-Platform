@@ -2,8 +2,8 @@ using CO.CDP.OrganisationApp.Constants;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using CO.CDP.Localization;
 
 namespace CO.CDP.OrganisationApp.Pages.Supplier;
 
@@ -17,8 +17,7 @@ public class ConnectedEntityOrganisationNameModel(ISession session) : PageModel
     public Guid? ConnectedEntityId { get; set; }
 
     [BindProperty]
-    [DisplayName("Enter the organisation's name")]
-    [Required(ErrorMessage = "Enter the organisation's name")]
+    [Required(ErrorMessage = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityOrganisationName_EnterNameError))]
     public string? OrganisationName { get; set; }
 
     [BindProperty]

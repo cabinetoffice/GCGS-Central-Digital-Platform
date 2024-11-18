@@ -1,3 +1,4 @@
+using CO.CDP.Localization;
 using CO.CDP.OrganisationApp.Constants;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -10,7 +11,7 @@ namespace CO.CDP.OrganisationApp.Pages.Supplier;
 public class ConnectedEntityIndividualCategoryModel(ISession session) : PageModel
 {
     [BindProperty]
-    [Required(ErrorMessage = "Select the category that best describes the 'connected person'")]
+    [Required(ErrorMessage = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityIndividualCategory_SelectCategoryError))]
     public ConnectedEntityIndividualAndTrustCategoryType? ConnectedEntityCategory { get; set; }
 
     [BindProperty(SupportsGet = true)]
@@ -52,9 +53,9 @@ public class ConnectedEntityIndividualCategoryModel(ISession session) : PageMode
 
     public static Dictionary<string, string> ConnectedEntityCategoryOption => new()
     {
-        { "PSC", "person with significant control" },
-        { "Director", "director or individual with the same responsibilities"},
-        { "IndividualWithSignificantControl", "any other individual with significant influence or control"}
+        { "PSC", StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityIndividualCategory_CategoryOption_PSC },
+        { "Director", StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityIndividualCategory_CategoryOption_PSC_Director},
+        { "IndividualWithSignificantControl", StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityIndividualCategory_CategoryOption_PSC_Individual}
     };
 
     private string GetRedirectLinkPageName(ConnectedEntityState state)

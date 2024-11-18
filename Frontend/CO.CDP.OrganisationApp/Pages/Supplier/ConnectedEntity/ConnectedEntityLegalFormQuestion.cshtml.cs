@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
+using CO.CDP.Localization;
 
 namespace CO.CDP.OrganisationApp.Pages.Supplier;
 
@@ -17,11 +18,11 @@ public class ConnectedEntityLegalFormQuestionModel(ISession session) : PageModel
     public Guid? ConnectedEntityId { get; set; }
 
     [BindProperty]
-    [Required(ErrorMessage = "Select yes if organisation have a legal form")]
+    [Required(ErrorMessage = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityLegalFormQuestion_HasLegalFormError))]
     public bool? HasLegalForm { get; set; }
 
     [BindProperty]
-    [RequiredIf(nameof(HasLegalForm), true, ErrorMessage = "Enter the legal form name")]
+    [RequiredIf(nameof(HasLegalForm), true, ErrorMessage = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityLegalFormQuestion_LegalFormNameRequiredError))]
     public string? LegalFormName { get; set; }
     public string? Caption { get; set; }
     public string? Heading { get; set; }

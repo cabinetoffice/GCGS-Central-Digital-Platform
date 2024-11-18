@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using CO.CDP.Mvc.Validation;
 using CO.CDP.OrganisationApp.Constants;
 using Microsoft.AspNetCore.Authorization;
+using CO.CDP.Localization;
 
 namespace CO.CDP.OrganisationApp.Pages.Supplier.ConnectedEntity;
 
@@ -19,22 +20,22 @@ IOrganisationClient organisationClient) : PageModel
     public Guid ConnectedPersonId { get; set; }
 
     [BindProperty]
-    [Required(ErrorMessage = "Select yes to confirm remove connected person")]
+    [Required(ErrorMessage = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityRemoveConfirmation_ConfirmRemoveError))]
     public bool? ConfirmRemove { get; set; }
 
     [BindProperty]
-    [RequiredIf("ConfirmRemove", true, ErrorMessage = "Date of removal must include a day")]
-    [RegularExpression(RegExPatterns.Day, ErrorMessage = "Day must be a valid number")]
+    [RequiredIf("ConfirmRemove", true, ErrorMessage = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityRemoveConfirmation_DayRequiredError))]
+    [RegularExpression(RegExPatterns.Day, ErrorMessage = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityRemoveConfirmation_DayInvalidError))]
     public string? EndDay { get; set; }
 
     [BindProperty]
-    [RequiredIf("ConfirmRemove", true, ErrorMessage = "Date of removal must include a month")]
-    [RegularExpression(RegExPatterns.Month, ErrorMessage = "Month must be a valid number")]
+    [RequiredIf("ConfirmRemove", true, ErrorMessage = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityRemoveConfirmation_MonthRequiredError))]
+    [RegularExpression(RegExPatterns.Month, ErrorMessage = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityRemoveConfirmation_MonthInvalidError))]
     public string? EndMonth { get; set; }
 
     [BindProperty]
-    [RequiredIf("ConfirmRemove", true, ErrorMessage = "Date of removal must include a year")]
-    [RegularExpression(RegExPatterns.Year, ErrorMessage = "Year must be a valid number")]
+    [RequiredIf("ConfirmRemove", true, ErrorMessage = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityRemoveConfirmation_YearRequiredError))]
+    [RegularExpression(RegExPatterns.Year, ErrorMessage = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityRemoveConfirmation_YearInvalidError))]
     public string? EndYear { get; set; }
 
     [BindProperty]
@@ -66,7 +67,7 @@ IOrganisationClient organisationClient) : PageModel
 
             if (!DateTime.TryParse(dateString, out var endDate))
             {
-                ModelState.AddModelError(nameof(EndDate), "Date of removal must be a real date");
+                ModelState.AddModelError(nameof(EndDate), StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityRemoveConfirmation_DateInvalidError);
                 return Page();
             }
             endDate = endDate.AddHours(23).AddMinutes(59).AddSeconds(59).ToUniversalTime();

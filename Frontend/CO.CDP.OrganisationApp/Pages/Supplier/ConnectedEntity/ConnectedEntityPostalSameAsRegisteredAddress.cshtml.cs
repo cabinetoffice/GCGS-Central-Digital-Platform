@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
+using CO.CDP.Localization;
 
 namespace CO.CDP.OrganisationApp.Pages.Supplier.ConnectedEntity;
 
@@ -16,7 +17,7 @@ public class ConnectedEntityPostalSameAsRegisteredAddressModel(ISession session)
     public Guid? ConnectedEntityId { get; set; }
 
     [BindProperty]
-    [Required(ErrorMessage = "Select yes if organisation have a different postal address")]
+    [Required(ErrorMessage = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityPostalSameAsRegisteredAddress_HasDifferentPostalAddressError))]
     public bool? DifferentThanRegiseterdAddress { get; set; }
 
     public string? Caption { get; set; }

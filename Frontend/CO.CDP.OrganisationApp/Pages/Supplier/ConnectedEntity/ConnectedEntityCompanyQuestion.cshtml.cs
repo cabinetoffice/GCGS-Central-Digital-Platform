@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
+using CO.CDP.Localization;
 
 namespace CO.CDP.OrganisationApp.Pages.Supplier;
 
@@ -17,11 +18,11 @@ public class ConnectedEntityCompanyQuestionModel(ISession session) : PageModel
     public Guid? ConnectedEntityId { get; set; }
 
     [BindProperty]
-    [Required(ErrorMessage = "Select yes if an organisation is registered with Companies House")]
+    [Required(ErrorMessage = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityCompanyQuestion_HasCompaniesHouseError))]
     public bool? HasCompaniesHouseNumber { get; set; }
 
     [BindProperty]
-    [RequiredIf(nameof(HasCompaniesHouseNumber), true, ErrorMessage = "Enter the Companies House number.")]
+    [RequiredIf(nameof(HasCompaniesHouseNumber), true, ErrorMessage = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityCompanyQuestion_EnterNumberError))]
     public string? CompaniesHouseNumber { get; set; }
     public string? Caption { get; set; }
     public string? Heading { get; set; }
@@ -138,8 +139,8 @@ public class ConnectedEntityCompanyQuestionModel(ISession session) : PageModel
     private void InitModal(ConnectedEntityState state)
     {
         Caption = state.GetCaption();
-        Heading = $"Is {state.OrganisationName} registered with Companies House?";
-        Hint = "Is the ‘connected person’ registered with Companies House as required by the Companies Act 2006.";
+        Heading = string.Format(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityCompanyQuestion_Heading, state.OrganisationName);
+        Hint = StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityCompanyQuestion_Hint;
         BackPageLink = GetBackLinkPageName(state);
     }
 
@@ -172,7 +173,6 @@ public class ConnectedEntityCompanyQuestionModel(ISession session) : PageModel
                     case ConnectedEntityOrganisationCategoryType.ACompanyYourOrganisationHasTakenOver:
                         backPage = $"{AddressType.Registered}-address/{(string.Equals(state.RegisteredAddress?.Country, Country.UKCountryCode, StringComparison.OrdinalIgnoreCase) ? "uk" : "non-uk")}";
                         break;
-
                 }
                 break;
             case ConnectedEntityType.Individual:
