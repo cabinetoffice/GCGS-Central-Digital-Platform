@@ -54,6 +54,7 @@ public static class PponEndpointExtensions
           operation.Description = "Get Identifier Registeries.";
           operation.Summary = "Get Identifier Registeries.";
           operation.Responses["200"].Description = "List of identifiers.";
+          operation.Responses["400"].Description = "Bad request.";
           operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
           operation.Responses["404"].Description = "Identifiers not found.";
           operation.Responses["500"].Description = "Internal server error.";
