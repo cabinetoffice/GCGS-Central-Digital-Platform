@@ -91,6 +91,7 @@ app.MapHealthChecks("/health").AllowAnonymous();
 app.UseAuthentication();
 app.UseAuthorization();
 app.UsePponEndpoints();
+app.UseRegistriesEndpoints();
 
 app.Run();
 
