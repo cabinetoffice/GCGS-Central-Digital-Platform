@@ -34,7 +34,7 @@ public class ContactUsModel(IOrganisationClient organisationClient) : PageModel
     [BindProperty]
     [DisplayName(nameof(StaticTextResource.Supplementary_ContactUs_Message))]
     [Required(ErrorMessageResourceName = nameof(StaticTextResource.Supplementary_ContactUs_Message_ErrorMessage), ErrorMessageResourceType = typeof(StaticTextResource))]
-    [MinLength(10, ErrorMessage = nameof(StaticTextResource.Supplementary_ContactUs_Message_ValidationErrorMessage))]
+    [MinLength(10, ErrorMessageResourceName = nameof(StaticTextResource.Supplementary_ContactUs_Message_ValidationErrorMessage), ErrorMessageResourceType = typeof(StaticTextResource))]
     [MaxLength(10000)]
     public string? Message { get; set; }
 

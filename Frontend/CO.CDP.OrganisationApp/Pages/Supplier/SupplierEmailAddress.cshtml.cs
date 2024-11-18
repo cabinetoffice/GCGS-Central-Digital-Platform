@@ -14,7 +14,7 @@ namespace CO.CDP.OrganisationApp.Pages.Supplier;
 public class SupplierEmailAddressModel(IOrganisationClient organisationClient) : PageModel
 {
     [BindProperty]
-    [Required(ErrorMessage = nameof(StaticTextResource.Supplier_Email_Required_ErrorMessage))]
+    [Required(ErrorMessageResourceName = nameof(StaticTextResource.Supplier_Email_Required_ErrorMessage), ErrorMessageResourceType = typeof(StaticTextResource))]
     [ValidEmailAddress(ErrorMessageResourceName = nameof(StaticTextResource.Global_Email_Invalid_ErrorMessage), ErrorMessageResourceType = typeof(StaticTextResource))]
     public string? EmailAddress { get; set; }
 
