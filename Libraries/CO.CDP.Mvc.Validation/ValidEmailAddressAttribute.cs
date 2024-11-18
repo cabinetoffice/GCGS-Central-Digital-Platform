@@ -20,7 +20,7 @@ public class ValidEmailAddressAttribute : ValidationAttribute
                 ? stringLocalizer[ErrorMessageResourceName]
                 : $"{validationContext.MemberName} is invalid.";
 
-            return new ValidationResult(errorMessage, [validationContext.MemberName]);
+            return new ValidationResult(errorMessage, validationContext.MemberName != null ? [validationContext.MemberName] : null);
         }
         return ValidationResult.Success!;
     }
