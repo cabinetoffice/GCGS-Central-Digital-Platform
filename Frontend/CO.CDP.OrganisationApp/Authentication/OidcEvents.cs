@@ -16,13 +16,17 @@ public class OidcEvents(IConfiguration configuration) : OpenIdConnectEvents
 
         logger.LogError(context.Exception, "Oidc Authentication failed");
 
-        if (context.Exception is InvalidOperationException invalidOpException &&
-            invalidOpException.Message.Contains("Correlation failed"))
+        if (context.Exception.Message.Contains("Correlation failed"))
         {
-            logger.LogError("Correlation failed. State: {State}", context.ProtocolMessage?.State);
-            logger.LogError("Redirect URI: {RedirectUri}", context.ProtocolMessage?.RedirectUri);
-            logger.LogError("Cookies: {Cookies}", context.HttpContext.Request.Headers["Cookie"].ToString());
-            logger.LogError("Query: {Query}", context.HttpContext.Request.QueryString);
+            logger.LogError("Correlation failed.{NewLine}State: {State}{NewLine}Redirect URI: {RedirectUri}{NewLine}Cookies: {Cookies}{NewLine}Query: {Query}",
+                Environment.NewLine,
+                context.ProtocolMessage?.State,
+                Environment.NewLine,
+                context.ProtocolMessage?.RedirectUri,
+                Environment.NewLine,
+                context.HttpContext.Request.Headers["Cookie"].ToString(),
+                Environment.NewLine,
+                context.HttpContext.Request.QueryString);
         }
 
         return base.AuthenticationFailed(context);
@@ -32,9 +36,11 @@ public class OidcEvents(IConfiguration configuration) : OpenIdConnectEvents
     {
         var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<OidcEvents>>();
 
-        logger.LogError(context.Failure, "Oidc Remote Failure, Redirect URI: {RedirectUri}",
-            context.Request.Path + context.Request.QueryString);
-        logger.LogError("Cookies: {Cookies}", context.HttpContext.Request.Headers["Cookie"].ToString());
+        logger.LogError("Oidc Remote Failure.{NewLine}Redirect URI: {RedirectUri}{NewLine}Cookies: {Cookies}",
+                Environment.NewLine,
+                context.Request.Path + context.Request.QueryString,
+                Environment.NewLine,
+                context.HttpContext.Request.Headers["Cookie"].ToString());
 
         context.Response.Redirect($"/?one-login-error={Uri.EscapeDataString(context.Failure?.Message ?? "Unknown error")}");
         context.HandleResponse();
