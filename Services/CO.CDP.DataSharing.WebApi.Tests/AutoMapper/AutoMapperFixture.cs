@@ -22,9 +22,9 @@ public class AutoMapperFixture
         localizerMock.Setup(l => l[It.IsAny<string>()])
             .Returns((string key) =>
             {
-                if (key == "FinancialInformation_SectionTitle")
+                if (key == "Localized_String")
                 {
-                    return new LocalizedHtmlString("FinancialInformation_SectionTitle", "Financial Information");
+                    return new LocalizedHtmlString("Localized_String", "Localized string");
                 }
 
                 return new LocalizedHtmlString(key, key);

@@ -41,6 +41,7 @@ public class EndpointTest
         {
             Issuer = _issuer,
             TokenEndpoint = $"{_issuer}/token",
+            RevocationEndpoint = $"{_issuer}/revocation",
             JwksUri = $"{_issuer}/.well-known/openid-configuration/jwks",
             ResponseTypesSupported = ["token"],
             ScopesSupported = ["openid"],
@@ -130,7 +131,7 @@ public class EndpointTest
             RefreshTokenExpiresIn = 36000,
         };
 
-        _tokenService.Setup(c => c.ValidateRefreshToken(refreshToken)).ReturnsAsync((true, urn));
+        _tokenService.Setup(c => c.ValidateAndRevokeRefreshToken(refreshToken)).ReturnsAsync((true, urn));
         _tokenService.Setup(c => c.CreateToken(urn)).ReturnsAsync(tokenResponse);
 
         var response = await _client.PostAsync("/token", new FormUrlEncodedContent(formData));
@@ -179,7 +180,7 @@ public class EndpointTest
             { "grant_type", GrantTypes.RefreshToken },
             { "refresh_token", refreshToken }
         };
-        _tokenService.Setup(c => c.ValidateRefreshToken(refreshToken)).ReturnsAsync((false, null));
+        _tokenService.Setup(c => c.ValidateAndRevokeRefreshToken(refreshToken)).ReturnsAsync((false, null));
 
         var response = await _client.PostAsync("/token", new FormUrlEncodedContent(formData));
 

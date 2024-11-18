@@ -134,7 +134,7 @@ public class GetSharedDataUseCaseTest : IClassFixture<AutoMapperFixture>
         additionalEntities.Should().HaveCount(EntityFactory.GetMockAdditionalEntities().Count);
     }
 
-    private void AssertIdentifier(Identifier? identifier)
+    private void AssertIdentifier(OrganisationInformation.Identifier? identifier)
     {
         identifier.Should().NotBeNull();
         identifier?.LegalName.Should().Be("DefaultLegalName");
@@ -145,7 +145,7 @@ public class GetSharedDataUseCaseTest : IClassFixture<AutoMapperFixture>
         additionalParties.Should().NotBeNull();
     }
 
-    private void AssertAdditionalIdentifiers(IEnumerable<Identifier>? additionalIdentifiers)
+    private void AssertAdditionalIdentifiers(IEnumerable<OrganisationInformation.Identifier>? additionalIdentifiers)
     {
         additionalIdentifiers.Should().NotBeNull();
         additionalIdentifiers.Should().HaveCount(1);
@@ -199,11 +199,14 @@ public class GetSharedDataUseCaseTest : IClassFixture<AutoMapperFixture>
         supplierInformationData?.AnswerSets.First().Answers.Should().HaveCount(3);
 
         supplierInformationData?.AnswerSets.First().SectionName.Should().NotBeNull();
-        supplierInformationData?.AnswerSets.First().SectionName.Should().Be("Financial Information");
+        supplierInformationData?.AnswerSets.First().SectionName.Should().Be("Localized string");
 
         supplierInformationData?.AnswerSets.First().Answers.First().QuestionName.Should().NotBeNull();
 
         supplierInformationData?.Questions.Should().NotBeNull();
+        supplierInformationData?.Questions.First().SectionName.Should().Be("Localized string");
+        supplierInformationData?.Questions.First().Title.Should().Be("Localized string");
+        supplierInformationData?.Questions.First().Text.Should().Be("Localized string");
 
         supplierInformationData.Should().NotBeNull();
         supplierInformationData!.Form.Name.Should().Be("Standard Questions");

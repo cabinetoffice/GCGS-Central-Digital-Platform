@@ -46,7 +46,7 @@
     <a href="#main-content" class="govuk-skip-link" data-module="govuk-skip-link">Skip to main content</a>
 
     <header class="govuk-header" role="banner" data-module="govuk-header">
-        <div class="govuk-header__container govuk-width-container">
+        <div class="govuk-header__container govuk-width-container @ViewData["ContainerClasses"]">
             <div class="govuk-header__logo">
                 <a href="https://gov.uk" class="govuk-header__link govuk-header__link--homepage">
                     <svg focusable="false"
@@ -131,7 +131,7 @@
             </div>
         </div>
     </header>
-    <div class="govuk-width-container app-width-container">
+    <div class="govuk-width-container @ViewData["ContainerClasses"]">
         <div class="govuk-phase-banner">
             <p class="govuk-phase-banner__content">
                 <strong class="govuk-tag govuk-phase-banner__content__tag">

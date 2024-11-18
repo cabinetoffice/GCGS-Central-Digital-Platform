@@ -11,12 +11,16 @@
 ## Table of Contents
 - [Retrieve Diagnostic URI](#retrieve-diagnostic-uri)
 - [Update Authority Secrets](#update-authority-secrets)
+- [Update Charity Commission Secrets](#update-charity-commission-secrets)
 - [Update Companies House Secrets](#update-companies-house-secrets)
 - [Update FtsService URL](#update-ftsservice-url)
 - [Update GOVUKNotify ApiKey](#update-govuknotify-apikey)
 - [Update GOVUKNotify Support Admin Email](#update-govuknotify-support-admin-email)
 - [Update OneLogin Secrets](#update-onelogin-secrets)
+- [Update Pen Testing Configuration](#update-pen-testing-configuration)
+- [Update Production Database Users](#update-production-database-users)
 - [Update Slack Configuration](#update-slack-configuration)
+- [Update Terraform Operators](#update-terraform-operators)
 
 ---
 
@@ -38,6 +42,31 @@ echo "https://$(ave aws route53 list-hosted-zones --query 'HostedZones[0].Name' 
 make generate-authority-keys
 ave make aws-push-authority-private-key
 ```
+
+---
+
+## Update Charity Commission Secrets
+
+1. Create a JSON file in the `./secrets` folder with the following attributes, e.g., **charity-commission-api.json**:
+
+```json
+{
+  "Url": "https://api.charityxxx/xxx/xxx",
+  "SubscriptionKey": "xxxxxxxxxxxxxxxxxx"
+}
+```
+*Note: The `./secrets` folder is set to ignore all files to ensure no sensitive information is committed.*
+
+2. Assume the appropriate role for the target environment and update the secret:
+
+```shell
+# Add using:
+# ave aws secretsmanager create-secret --name cdp-sirsi-charity-commission-credentials --secret-string file://secrets/charity-commission-api.json | jq .
+# Or update using:
+ave aws secretsmanager put-secret-value --secret-id cdp-sirsi-charity-commission-credentials --secret-string file://secrets/charity-commission-api.json | jq .
+```
+
+3. Redeploy the `organisation-app` service.
 
 ---
 
@@ -146,9 +175,67 @@ ave aws secretsmanager put-secret-value --secret-id cdp-sirsi-one-login-credenti
 
 ---
 
+## Update Pen Testing Configuration
+
+1. Create a JSON file in the `./secrets` folder with the list of operators' IAM user ARNs who will be granted permission to assume the Terraform role in the account, e.g., **pen-testing-configuration.json**:
+
+```json
+{
+  "allowed_ips": [
+    "123.123.123.123",
+    "321.321.21.0/24"
+  ],
+  "user_arns": [
+    "arn:aws:iam::123456789999:user/user1",
+    "arn:aws:iam::123456789999:user/user2"
+  ],
+  "external_user_arns": []
+}
+```
+
+*Note: The `./secrets` folder is set to ignore all files to ensure no sensitive information is committed.*
+
+2. Assume the appropriate role for the target environment and update the secret:
+
+```shell
+# Add using:
+# ave aws secretsmanager create-secret --name cdp-sirsi-pen-testing-configuration --secret-string file://secrets/pen-testing-configuration.json | jq .
+# Or update using:
+ave aws secretsmanager put-secret-value --secret-id cdp-sirsi-pen-testing-configuration --secret-string file://secrets/pen-testing-configuration.json | jq .
+```
+
+3. Plan and apply Terraform to the `core/iam` component.
+
+---
+
+## Update Production Database Users
+
+> Note:\
+> This is a temporary solution until the application has the capability to manage data updates as required.\
+> Ensure you do not accidentally remove previously approved users. Always check the existing list in the cdp-sirsi-pgadmin-production-support-users secret before making updates.
+
+1. Identify the list of users who need full permissions over production-level data.
+2. prepare a comma separted list of those usernames i.e. `firstname1.lastname1,firstname2.lastname2`
+3. Set your AWS profile to target the Production's AWS account, and use the AWS CLI to update the secret:
+
+```shell
+aws-switch-to-cdp-sirsi-production-goaco-terraform
+# Add using:
+# ave aws secretsmanager create-secret --name cdp-sirsi-pgadmin-production-support-users --secret-string "firstname1.lastname1,firstname2.lastname2" | jq .
+# Or update using:
+ave aws secretsmanager put-secret-value --secret-id cdp-sirsi-pgadmin-production-support-users --secret-string "firstname1.lastname1,firstname2.lastname2,firstname3.lastname3" | jq .
+```
+
+4. Redeploy the `pgadmin` service.
+5. Refer to the [../tools/pgadmin](../tools/pgadmin) for instructions on creating database users with matching IDs and granting them the necessary privileges.
+
+---
+
 ## Update Slack Configuration
 
-When the orchestrator's notification component is enabled, the system will notify a specified Slack channel about important CI/CD events. The required configuration for this connection must be stored as a secret named `cdp-sirsi-slack-configuration` in the Orchestrator account. To create this secret, add a file named `cdp-sirsi-slack-configuration.json` under the `secrets` directory, containing the following:
+When the orchestrator's notification component is enabled, the system will notify a specified Slack channel about important CI/CD events. The required configuration for this connection must be stored as a secret.
+
+1.  Add a file named `cdp-sirsi-slack-configuration.json` under the `secrets` directory, containing the following:
 
 ```json
 {
@@ -157,7 +244,9 @@ When the orchestrator's notification component is enabled, the system will notif
   "SERVICE_ENDPOINT": "https://hooks.slack.com/services/xxxx/xxxxx/xxxx" 
 }
 ```
-Then, run the following command:
+*Note: The `./secrets` folder is set to ignore all files to ensure no sensitive information is committed.*
+
+2. Assume the appropriate role for the orchestrator environment and update the secret:
 
 ```shell
 aws-switch-to-cdp-sirsi-orchestrator-goaco-terraform
@@ -167,4 +256,30 @@ aws-switch-to-cdp-sirsi-orchestrator-goaco-terraform
 ave aws secretsmanager put-secret-value --secret-id cdp-sirsi-slack-configuration --secret-string file://secrets/cdp-sirsi-slack-configuration.json | jq .
 ```
 
-This command will create a secret named `cdp-sirsi-slack-configuration` in AWS Secrets Manager, setting its value from the contents of the `slack-notification-api-endpoint.txt` file in the `secrets` directory.
+---
+
+## Update Terraform Operators
+
+1. Create a JSON file in the `./secrets` folder with the list of operators' IAM user ARNs who will be granted permission to assume the Terraform role in the account, e.g., **terraform-operators.json**:
+
+```json
+{
+  "operators": [
+    "arn:aws:iam::123456789999:user/user1",
+    "arn:aws:iam::123456789999:user/user2"
+  ]
+}
+```
+
+*Note: The `./secrets` folder is set to ignore all files to ensure no sensitive information is committed.*
+
+2. Assume the appropriate role for the target environment and update the secret:
+
+```shell
+# Add using:
+# ave aws secretsmanager create-secret --name cdp-sirsi-terraform-operators --secret-string file://secrets/terraform-operators.json | jq .
+# Or update using:
+ave aws secretsmanager put-secret-value --secret-id cdp-sirsi-terraform-operators --secret-string file://secrets/terraform-operators.json | jq .
+```
+
+3. Plan and apply Terraform to the `core/iam` component.

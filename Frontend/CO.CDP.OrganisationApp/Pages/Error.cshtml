@@ -1,12 +1,16 @@
 @page
 @model CO.CDP.OrganisationApp.Pages.ErrorModel
+
+@using CO.CDP.Localization
+@using Microsoft.AspNetCore.Mvc.Localization
+
 @{
-    ViewData["Title"] = "Sorry, there is a problem with the service";
+    ViewData["Title"] = StaticTextResource.Supplementary_Error_Title;
 }
 
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <h1 class="govuk-heading-l">@ViewData["Title"]</h1>
-            <p class="govuk-body">Try again later.</p>                                
+            <p class="govuk-body">@StaticTextResource.Supplementary_Error_TryAgain</p>                                
         </div>
     </div>

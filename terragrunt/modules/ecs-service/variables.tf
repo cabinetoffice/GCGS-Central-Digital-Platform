@@ -126,6 +126,18 @@ variable "tags" {
   type        = map(string)
 }
 
+variable "allowed_unauthenticated_paths" {
+  description = "List of paths allowed access to protected services, bypassing Cognito authentication."
+  type        = list(string)
+  default     = []
+}
+
+variable "unhealthy_threshold" {
+  description = "Number of consecutive health check failures required before considering a target unhealthy. The range is 2-10. Defaults to 3."
+  type        = number
+  default     = 3
+}
+
 variable "user_pool_arn" {
   default = null
   type    = string
