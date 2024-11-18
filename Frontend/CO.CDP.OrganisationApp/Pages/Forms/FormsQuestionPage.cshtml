@@ -25,9 +25,10 @@
     }
 }
 
-<a href="@backUrl" class="govuk-back-link">Back</a>
+@section BeforeContent {
+    <a href="@backUrl" class="govuk-back-link">Back</a>
+}
 
-<main class="govuk-main-wrapper" id="main-content">
     <div class="govuk-grid-row">
         <div class="@(isCheckYourAnswersPage ? "govuk-grid-column-full" : "govuk-grid-column-two-thirds")">
             <partial name="_ErrorSummary" model="@ModelState" />
@@ -83,4 +84,3 @@
             </form>
         </div>
     </div>
-</main>

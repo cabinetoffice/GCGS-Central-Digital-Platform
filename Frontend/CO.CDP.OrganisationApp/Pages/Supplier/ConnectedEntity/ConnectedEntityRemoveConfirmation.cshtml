@@ -9,9 +9,10 @@
     var hasError = endDateHasError || dayHasError || monthHasError || yearHasError;
 }
 
-<a href="/organisation/@Model.Id/supplier-information/connected-person-summary" class="govuk-back-link">Back</a>
+@section BeforeContent {
+    <a href="/organisation/@Model.Id/supplier-information/connected-person-summary" class="govuk-back-link">Back</a>
+}
 
-<main class="govuk-main-wrapper" id="main-content">
     <div class="govuk-grid-row">
 
         <div class="govuk-grid-column-two-thirds">
@@ -110,4 +111,3 @@
             </form>
         </div>
     </div>
-</main>
