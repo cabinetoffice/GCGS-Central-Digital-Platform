@@ -5,9 +5,11 @@
     var backLink = $"/organisation/{@Model.Id}/manage-api-keys";
     ViewData["Title"] = "Cancel API key";
 }
-<a href="@backLink" class="govuk-back-link">Back</a>
 
-<main class="govuk-main-wrapper" id="main-content">
+@section BeforeContent {
+    <a href="@backLink" class="govuk-back-link">Back</a>
+}
+
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <form class="form" method="post">
@@ -27,4 +29,3 @@
             </form>
         </div>
     </div>
-</main>
