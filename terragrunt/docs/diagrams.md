@@ -37,4 +37,18 @@ This diagram illustrates the integration between the ECS cluster and SQS queues 
 
 ### CI/CD Build and Deployment Pipelines
 
-TBC...
+This diagram provides a high-level overview of the CDP-SIRSI CI/CD build and deployment mechanisms. It illustrates the process starting from team members contributing to the codebase through GitHub workflows, including testing, building, and publishing Docker containers, to deploying changes across various AWS accounts.
+
+Key highlights include:
+
+- **Development Environment:** Always reflects the latest changes for both infrastructure and application.
+- **Staging, Integration, and Production Environments:** Pinned to specific application versions to ensure controlled releases while the infrastructure always pulls updates from the latest main branch.
+- **Orchestrator Account:** Tasks include provisioning and maintaining the CodePipeline and CodeBuild jobs for rolling out updates across all service accounts.
+- **CloudWatch Event Rules:** Enable automated responses to key events, such as triggering new deployments when application service versions are updated.
+- **Slack Feedback:** Provides notifications on the status of different deployment pipeline stages and actions.
+
+This pipeline ensures a reliable and controlled process for deploying changes across environments, maintaining infrastructure consistency while allowing for precise application versioning.
+
+![CDP-SIRSI-CI-CD](./diagrams/CDP-SIRSI-CI-CD.png)
+
+---
