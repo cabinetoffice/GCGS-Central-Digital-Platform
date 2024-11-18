@@ -20,20 +20,20 @@ public class ConnectedEntityRegistrationDateQuestionModel(ISession session) : Pa
 
     [BindProperty]
     [Required(ErrorMessage = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityRegistrationDateQuestion_HasRegistrationDateError))]
-    public bool? HasRegistartionDate { get; set; }
+    public bool? HasRegistrationDate { get; set; }
 
     [BindProperty]
-    [RequiredIf(nameof(HasRegistartionDate), true, ErrorMessage = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityRegistrationDateQuestion_DayRequiredError))]
+    [RequiredIf(nameof(HasRegistrationDate), true, ErrorMessage = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityRegistrationDateQuestion_DayRequiredError))]
     [RegularExpression(RegExPatterns.Day, ErrorMessage = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityRegistrationDateQuestion_DayInvalidError))]
     public string? Day { get; set; }
 
     [BindProperty]
-    [RequiredIf(nameof(HasRegistartionDate), true, ErrorMessage = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityRegistrationDateQuestion_MonthRequiredError))]
+    [RequiredIf(nameof(HasRegistrationDate), true, ErrorMessage = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityRegistrationDateQuestion_MonthRequiredError))]
     [RegularExpression(RegExPatterns.Month, ErrorMessage = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityRegistrationDateQuestion_MonthInvalidError))]
     public string? Month { get; set; }
 
     [BindProperty]
-    [RequiredIf(nameof(HasRegistartionDate), true, ErrorMessage = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityRegistrationDateQuestion_YearRequiredError))]
+    [RequiredIf(nameof(HasRegistrationDate), true, ErrorMessage = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityRegistrationDateQuestion_YearRequiredError))]
     [RegularExpression(RegExPatterns.Year, ErrorMessage = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityRegistrationDateQuestion_YearInvalidError))]
     public string? Year { get; set; }
 
@@ -61,7 +61,7 @@ public class ConnectedEntityRegistrationDateQuestionModel(ISession session) : Pa
         }
 
         InitModal(state, true);
-        HasRegistartionDate = selected.HasValue ? selected : state.HasRegistartionDate;
+        HasRegistrationDate = selected.HasValue ? selected : state.HasRegistrationDate;
 
         return Page();
     }
@@ -85,10 +85,10 @@ public class ConnectedEntityRegistrationDateQuestionModel(ISession session) : Pa
             return Page();
         }
 
-        if (state.HasRegistartionDate != HasRegistartionDate)
+        if (state.HasRegistrationDate != HasRegistrationDate)
         { RedirectToCheckYourAnswer = false; }
 
-        if (HasRegistartionDate == true)
+        if (HasRegistrationDate == true)
         {
             var dateString = $"{Year}-{Month!.PadLeft(2, '0')}-{Day!.PadLeft(2, '0')}";
             if (!DateTime.TryParseExact(dateString, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
@@ -102,8 +102,8 @@ public class ConnectedEntityRegistrationDateQuestionModel(ISession session) : Pa
         else
         { state.RegistrationDate = null; }
         
-        state.HasRegistartionDate = HasRegistartionDate;
-        if (HasRegistartionDate == false)
+        state.HasRegistrationDate = HasRegistrationDate;
+        if (HasRegistrationDate == false)
         {
             state.RegisterName = null;
         }
@@ -140,12 +140,12 @@ public class ConnectedEntityRegistrationDateQuestionModel(ISession session) : Pa
                 switch (state.ConnectedEntityOrganisationCategoryType)
                 {
                     case ConnectedEntityOrganisationCategoryType.RegisteredCompany:
-                        redirectPage = HasRegistartionDate == true
+                        redirectPage = HasRegistrationDate == true
                                         ? "ConnectedEntityCompanyRegisterName"
                                         : "ConnectedEntityCheckAnswersOrganisation";
                         break;
                     case ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl:
-                        redirectPage = HasRegistartionDate == true
+                        redirectPage = HasRegistrationDate == true
                                         ? "ConnectedEntityCompanyRegisterName"
                                         : "ConnectedEntityLegalFormQuestion";
                         break;
@@ -155,7 +155,7 @@ public class ConnectedEntityRegistrationDateQuestionModel(ISession session) : Pa
                 switch (state.ConnectedEntityIndividualAndTrustCategoryType)
                 {
                     case ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForIndividual:
-                        redirectPage = HasRegistartionDate == true
+                        redirectPage = HasRegistrationDate == true
                                         ? "ConnectedEntityCompanyRegisterName"
                                         : "ConnectedEntityCheckAnswersIndividualOrTrust";
                         break;
@@ -170,7 +170,7 @@ public class ConnectedEntityRegistrationDateQuestionModel(ISession session) : Pa
                 switch (state.ConnectedEntityIndividualAndTrustCategoryType)
                 {
                     case ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForTrust:
-                        redirectPage = HasRegistartionDate == true
+                        redirectPage = HasRegistrationDate == true
                                         ? "ConnectedEntityCompanyRegisterName"
                                         : "ConnectedEntityCheckAnswersIndividualOrTrust";
                         break;

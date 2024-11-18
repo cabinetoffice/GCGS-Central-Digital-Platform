@@ -5,7 +5,7 @@
 @{
     ViewData["Title"] = Model.Heading;
 
-    var selectionError = ((TagBuilder)Html.ValidationMessageFor(m => m.HasRegistartionDate)).HasInnerHtml;
+    var selectionError = ((TagBuilder)Html.ValidationMessageFor(m => m.HasRegistrationDate)).HasInnerHtml;
     var dayHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Day)).HasInnerHtml;
     var monthHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Month)).HasInnerHtml;
     var yearHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Year)).HasInnerHtml;
@@ -47,8 +47,8 @@
 
                         <div class="govuk-radios" data-module="govuk-radios">
                             <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="YES" name="HasRegistartionDate" type="radio"
-                                       value="true" data-aria-controls="conditional-YES" @(Model.HasRegistartionDate == true ? "checked" : "")>
+                                <input class="govuk-radios__input" id="YES" name="HasRegistrationDate" type="radio"
+                                       value="true" data-aria-controls="conditional-YES" @(Model.HasRegistrationDate == true ? "checked" : "")>
                                 <label class="govuk-label govuk-radios__label" for="YES">@StaticTextResource.Global_Yes</label>
                             </div>
 
@@ -123,8 +123,8 @@
                             </div>
 
                             <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="NO" name="HasRegistartionDate" type="radio"
-                                       value="false" @(Model.HasRegistartionDate == false ? "checked" : "")>
+                                <input class="govuk-radios__input" id="NO" name="HasRegistrationDate" type="radio"
+                                       value="false" @(Model.HasRegistrationDate == false ? "checked" : "")>
                                 <label class="govuk-label govuk-radios__label" for="NO">@StaticTextResource.Global_No</label>
                             </div>
                         </div>

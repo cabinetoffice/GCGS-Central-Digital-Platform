@@ -108,7 +108,7 @@ public class ConnectedEntityRegistrationDateQuestionTest
         SetValidDate();
 
         var state = DummyConnectedPersonDetails();
-        _model.HasRegistartionDate = true;
+        _model.HasRegistrationDate = true;
 
         _sessionMock.Setup(s => s.Get<ConnectedEntityState>(Session.ConnectedPersonKey)).
             Returns(state);
@@ -157,14 +157,14 @@ public class ConnectedEntityRegistrationDateQuestionTest
         bool hasCompanyHouseNumber = false)
     {
         SetValidDate();
-        _model.HasRegistartionDate = hasRegistrationDate;
+        _model.HasRegistrationDate = hasRegistrationDate;
 
         var state = DummyConnectedPersonDetails();
         state.HasCompaniesHouseNumber = hasCompanyHouseNumber;
         state.ConnectedEntityType = connectedEntityType;
         state.ConnectedEntityOrganisationCategoryType = organisationCategoryType;
         state.ConnectedEntityIndividualAndTrustCategoryType = individualAndTrustCategoryType;
-        state.HasRegistartionDate = hasRegistrationDate;
+        state.HasRegistrationDate = hasRegistrationDate;
         state.RegistrationDate = hasRegistrationDate == true ? DateTime.UtcNow : null;
 
 
@@ -185,7 +185,7 @@ public class ConnectedEntityRegistrationDateQuestionTest
     {
         SetDateFields("31", "2", "2023");
 
-        _model.HasRegistartionDate = true;
+        _model.HasRegistrationDate = true;
         var state = DummyConnectedPersonDetails();
 
         _sessionMock
@@ -205,7 +205,7 @@ public class ConnectedEntityRegistrationDateQuestionTest
     {
         SetDateFields(day, month, year);
         var state = DummyConnectedPersonDetails();
-        _model.HasRegistartionDate = true;
+        _model.HasRegistrationDate = true;
 
         _sessionMock
             .Setup(s => s.Get<ConnectedEntityState>(Session.ConnectedPersonKey))
@@ -250,7 +250,7 @@ public class ConnectedEntityRegistrationDateQuestionTest
             CompaniesHouseNumber = "12345678",
             ControlConditions = [Constants.ConnectedEntityControlCondition.OwnsShares],
             RegistrationDate = new DateTimeOffset(2011, 7, 15, 0, 0, 0, TimeSpan.FromHours(0)),
-            HasRegistartionDate = true,
+            HasRegistrationDate = true,
         };
 
         return connectedPersonDetails;
