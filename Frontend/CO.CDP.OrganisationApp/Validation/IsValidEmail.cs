@@ -15,11 +15,11 @@ public class ValidEmailAddressAttribute : ValidationAttribute
             ?.GetService<IStringLocalizerFactory>()
             ?.Create(typeof(StaticTextResource));
 
-            var errorMessage = !string.IsNullOrWhiteSpace(ErrorMessage) && stringLocalizer != null
-                ? stringLocalizer[ErrorMessage]
+            var errorMessage = !string.IsNullOrWhiteSpace(ErrorMessageResourceName) && stringLocalizer != null
+                ? stringLocalizer[ErrorMessageResourceName]
                 : $"{validationContext.MemberName} is invalid.";
 
-            return new ValidationResult(errorMessage);
+            return new ValidationResult(errorMessage, [validationContext.MemberName]);
         }
         return ValidationResult.Success!;
     }

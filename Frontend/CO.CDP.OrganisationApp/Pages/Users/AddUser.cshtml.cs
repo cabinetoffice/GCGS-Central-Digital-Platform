@@ -20,23 +20,23 @@ public class AddUserModel(
     public Guid? PersonInviteId { get; set; }
 
     [BindProperty]
-    [Required(ErrorMessage = nameof(StaticTextResource.User_FirstName_Required_ErrorMessage))]
+    [Required(ErrorMessageResourceName = nameof(StaticTextResource.User_FirstName_Required_ErrorMessage), ErrorMessageResourceType = typeof(StaticTextResource))]
     public string? FirstName { get; set; }
 
     [BindProperty]
-    [Required(ErrorMessage = nameof(StaticTextResource.User_LastName_Required_ErrorMessage))]
+    [Required(ErrorMessageResourceName = nameof(StaticTextResource.User_LastName_Required_ErrorMessage), ErrorMessageResourceType = typeof(StaticTextResource))]
     public string? LastName { get; set; }
 
     [BindProperty]
-    [Required(ErrorMessage = nameof(StaticTextResource.User_Email_Required_ErrorMessage))]
-    [ValidEmailAddress(ErrorMessage = nameof(StaticTextResource.Global_Email_Invalid_ErrorMessage))]
+    [Required(ErrorMessageResourceName = nameof(StaticTextResource.User_Email_Required_ErrorMessage), ErrorMessageResourceType = typeof(StaticTextResource))]
+    [ValidEmailAddress(ErrorMessageResourceName = nameof(StaticTextResource.Global_Email_Invalid_ErrorMessage), ErrorMessageResourceType = typeof(StaticTextResource))]
     public string? Email { get; set; }
 
     [BindProperty]
     public bool? IsAdmin { get; set; }
 
     [BindProperty]
-    [Required(ErrorMessage = nameof(StaticTextResource.User_Role_Required_ErrorMessage))]
+    [Required(ErrorMessageResourceName = nameof(StaticTextResource.User_Role_Required_ErrorMessage), ErrorMessageResourceType = typeof(StaticTextResource))]
     public string? Role { get; set; }
 
     public PersonInviteState? PersonInviteStateData;

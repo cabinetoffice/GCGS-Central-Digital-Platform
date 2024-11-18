@@ -17,23 +17,23 @@ public class ContactUsModel(IOrganisationClient organisationClient) : PageModel
 
     [BindProperty]
     [DisplayName(nameof(StaticTextResource.Supplementary_ContactUs_Name))]
-    [Required(ErrorMessage = nameof(StaticTextResource.Supplementary_ContactUs_Name_ErrorMessage))]
+    [Required(ErrorMessageResourceName = nameof(StaticTextResource.Supplementary_ContactUs_Name_ErrorMessage), ErrorMessageResourceType = typeof(StaticTextResource))]
     public string? Name { get; set; }
 
     [BindProperty]
     [DisplayName(nameof(StaticTextResource.Supplementary_ContactUs_Email))]
-    [Required(ErrorMessage = nameof(StaticTextResource.Supplementary_ContactUs_Email_ErrorMessage))]
-    [ValidEmailAddress(ErrorMessage = nameof(StaticTextResource.Global_Email_Invalid_ErrorMessage))]
+    [Required(ErrorMessageResourceName = nameof(StaticTextResource.Supplementary_ContactUs_Email_ErrorMessage), ErrorMessageResourceType = typeof(StaticTextResource))]
+    [ValidEmailAddress(ErrorMessageResourceName = nameof(StaticTextResource.Global_Email_Invalid_ErrorMessage), ErrorMessageResourceType = typeof(StaticTextResource))]
     public string? EmailAddress { get; set; }
 
     [BindProperty]
     [DisplayName(nameof(StaticTextResource.Supplementary_ContactUs_Organisation))]
-    [Required(ErrorMessage = nameof(StaticTextResource.Supplementary_ContactUs_Organisation_ErrorMessage))]
+    [Required(ErrorMessageResourceName = nameof(StaticTextResource.Supplementary_ContactUs_Organisation_ErrorMessage), ErrorMessageResourceType = typeof(StaticTextResource))]
     public string? OrganisationName { get; set; }
 
     [BindProperty]
     [DisplayName(nameof(StaticTextResource.Supplementary_ContactUs_Message))]
-    [Required(ErrorMessage = nameof(StaticTextResource.Supplementary_ContactUs_Message_ErrorMessage))]
+    [Required(ErrorMessageResourceName = nameof(StaticTextResource.Supplementary_ContactUs_Message_ErrorMessage), ErrorMessageResourceType = typeof(StaticTextResource))]
     [MinLength(10, ErrorMessage = nameof(StaticTextResource.Supplementary_ContactUs_Message_ValidationErrorMessage))]
     [MaxLength(10000)]
     public string? Message { get; set; }

@@ -16,8 +16,8 @@ public class OrganisationEmailModel(OrganisationWebApiClient.IOrganisationClient
 {
     [BindProperty]
     [DisplayName(nameof(StaticTextResource.Organisation_Email_Heading))]
-    [Required(ErrorMessage = nameof(StaticTextResource.Organisation_Email_Required_ErrorMessage))]
-    [ValidEmailAddress(ErrorMessage = nameof(StaticTextResource.Global_Email_Invalid_ErrorMessage))]
+    [Required(ErrorMessageResourceName = nameof(StaticTextResource.Organisation_Email_Required_ErrorMessage), ErrorMessageResourceType = typeof(StaticTextResource))]
+    [ValidEmailAddress(ErrorMessageResourceName = nameof(StaticTextResource.Global_Email_Invalid_ErrorMessage), ErrorMessageResourceType = typeof(StaticTextResource))]
     public string? EmailAddress { get; set; }
 
     [BindProperty(SupportsGet = true)]

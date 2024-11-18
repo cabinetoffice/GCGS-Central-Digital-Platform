@@ -15,7 +15,7 @@ public class SupplierEmailAddressModel(IOrganisationClient organisationClient) :
 {
     [BindProperty]
     [Required(ErrorMessage = nameof(StaticTextResource.Supplier_Email_Required_ErrorMessage))]
-    [ValidEmailAddress(ErrorMessage = nameof(StaticTextResource.Global_Email_Invalid_ErrorMessage))]
+    [ValidEmailAddress(ErrorMessageResourceName = nameof(StaticTextResource.Global_Email_Invalid_ErrorMessage), ErrorMessageResourceType = typeof(StaticTextResource))]
     public string? EmailAddress { get; set; }
 
     [BindProperty(SupportsGet = true)]

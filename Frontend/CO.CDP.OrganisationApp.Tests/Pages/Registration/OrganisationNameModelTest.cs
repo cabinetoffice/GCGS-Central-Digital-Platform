@@ -1,3 +1,4 @@
+using CO.CDP.Localization;
 using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.Pages.Registration;
 using CO.CDP.OrganisationApp.ThirdPartyApiClients;
@@ -8,7 +9,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.Localization;
 using Moq;
+using System.ComponentModel.DataAnnotations;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages.Registration;
 
@@ -40,12 +43,33 @@ public class OrganisationNameModelTest
     {
         var model = GivenOrganisationNameModel();
 
-        var results = ModelValidationHelper.Validate(model);
+        var mockStringLocalizer = new Mock<IStringLocalizer>();
+        mockStringLocalizer
+            .Setup(localizer => localizer[nameof(StaticTextResource.OrganisationRegistration_EnterOrganisationName_Heading)])
+            .Returns(new LocalizedString(nameof(StaticTextResource.OrganisationRegistration_EnterOrganisationName_Heading), StaticTextResource.OrganisationRegistration_EnterOrganisationName_Heading));
+
+        var mockStringLocalizerFactory = new Mock<IStringLocalizerFactory>();
+        mockStringLocalizerFactory
+            .Setup(factory => factory.Create(It.IsAny<Type>()))
+            .Returns(mockStringLocalizer.Object);
+
+        var mockServiceProvider = new Mock<IServiceProvider>();
+        mockServiceProvider
+            .Setup(provider => provider.GetService(typeof(IServiceProvider)))
+            .Returns(mockServiceProvider.Object);
+
+        mockServiceProvider
+            .Setup(provider => provider.GetService(typeof(IStringLocalizerFactory)))
+            .Returns(mockStringLocalizerFactory.Object);
+
+        var validationContext = new ValidationContext(model, mockServiceProvider.Object, null);
+
+        var results = ModelValidationHelper.Validate(model, validationContext);
 
         results.Any(c => c.MemberNames.Contains("OrganisationName")).Should().BeTrue();
 
         results.Where(c => c.MemberNames.Contains("OrganisationName")).First()
-            .ErrorMessage.Should().Be("OrganisationRegistration_EnterOrganisationName_Heading");    // Not passed through localization at this point
+            .ErrorMessage.Should().Be(StaticTextResource.OrganisationRegistration_EnterOrganisationName_Heading);    // Not passed through localization at this point
     }
 
     [Fact]
