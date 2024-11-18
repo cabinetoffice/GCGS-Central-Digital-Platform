@@ -4,9 +4,8 @@ namespace CO.CDP.EntityVerification.Ppon;
 
 public class PponService : IPponService
 {
-    private readonly char[] CharPool = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".ToCharArray();
-    private readonly char[] EuansIdea = "ABCDEFGHIJKLMNPQRSTUVWXYZ".ToCharArray();
-    private readonly char[] EuansIdea2 = "123456789".ToCharArray();
+    private readonly char[] ValidAlphaChars = "ABCDEFGHIJKLMNPQRSTUVWXYZ".ToCharArray();
+    private readonly char[] ValidNumericChars = "123456789".ToCharArray();
     private readonly Random RandomGenerator = new();
 
     public string GeneratePponId()
@@ -20,8 +19,8 @@ public class PponService : IPponService
         for (int i = 0; i < 12; i++)
         {
             char nextChar = (i / 4) % 2 == 0
-                        ? EuansIdea[RandomGenerator.Next(EuansIdea.Length)]
-                        : EuansIdea2[RandomGenerator.Next(EuansIdea2.Length)];
+                        ? ValidAlphaChars[RandomGenerator.Next(ValidAlphaChars.Length)]
+                        : ValidNumericChars[RandomGenerator.Next(ValidNumericChars.Length)];
 
 
 
@@ -37,10 +36,12 @@ public class PponService : IPponService
 
     private string GenerateMultiplier()
     {
+        char[] ValidCharPool = ValidAlphaChars.Concat(ValidNumericChars).ToArray();
         var builder = new StringBuilder();
+
         for (int i = 0; i < 2; i++)
         {
-            builder.Append(CharPool[RandomGenerator.Next(CharPool.Length)]);
+            builder.Append(ValidCharPool[RandomGenerator.Next(ValidCharPool.Length)]);
         }
         return builder.ToString();
     }
