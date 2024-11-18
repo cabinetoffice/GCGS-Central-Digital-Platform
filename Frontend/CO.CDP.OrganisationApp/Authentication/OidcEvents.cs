@@ -10,9 +10,33 @@ namespace CO.CDP.OrganisationApp.Authentication;
 
 public class OidcEvents(IConfiguration configuration) : OpenIdConnectEvents
 {
+    public override Task AuthenticationFailed(AuthenticationFailedContext context)
+    {
+        var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<OidcEvents>>();
+
+        logger.LogError(context.Exception, "Oidc Authentication failed");
+
+        if (context.Exception is InvalidOperationException invalidOpException &&
+            invalidOpException.Message.Contains("Correlation failed"))
+        {
+            logger.LogError("Correlation failed. State: {State}", context.ProtocolMessage?.State);
+            logger.LogError("Redirect URI: {RedirectUri}", context.ProtocolMessage?.RedirectUri);
+            logger.LogError("Cookies: {Cookies}", context.HttpContext.Request.Headers["Cookie"].ToString());
+            logger.LogError("Query: {Query}", context.HttpContext.Request.QueryString);
+        }
+
+        return base.AuthenticationFailed(context);
+    }
+
     public override Task RemoteFailure(RemoteFailureContext context)
     {
-        context.Response.Redirect($"/?one-login-error={context.Failure?.Message}");
+        var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<OidcEvents>>();
+
+        logger.LogError(context.Failure, "Oidc Remote Failure, Redirect URI: {RedirectUri}",
+            context.Request.Path + context.Request.QueryString);
+        logger.LogError("Cookies: {Cookies}", context.HttpContext.Request.Headers["Cookie"].ToString());
+
+        context.Response.Redirect($"/?one-login-error={Uri.EscapeDataString(context.Failure?.Message ?? "Unknown error")}");
         context.HandleResponse();
 
         return Task.CompletedTask;

@@ -161,6 +161,14 @@ var oneLoginAuthority = builder.Configuration.GetValue<string>("OneLogin:Authori
 var oneLoginClientId = builder.Configuration.GetValue<string>("OneLogin:ClientId")
             ?? throw new Exception("Missing configuration key: OneLogin:ClientId.");
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowOneLoginAuthority",
+        builder => builder.WithOrigins(oneLoginAuthority)
+                          .AllowAnyHeader()
+                          .AllowAnyMethod());
+});
+
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
