@@ -1,6 +1,8 @@
 using CO.CDP.EntityVerification.Persistence;
 using CO.CDP.Testcontainers.PostgreSql;
 using FluentAssertions;
+using Microsoft.EntityFrameworkCore;
+using Moq;
 using static CO.CDP.EntityVerification.Persistence.IPponRepository.PponRepositoryException;
 using static CO.CDP.EntityVerification.Tests.Ppon.PponFactories;
 
@@ -45,6 +47,51 @@ public class DatabasePponRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
         found.Should().NotBeNull();
         found.As<EntityVerification.Persistence.Ppon>().Identifiers.Should().ContainSingle();
         found.As<EntityVerification.Persistence.Ppon>().Identifiers.First().IdentifierId.Should().Be("GB123123123");
+    }
+
+    [Fact]
+    public async Task ItFindsregistriesByCountryCode()
+    {
+        await using var context = postgreSql.EntityVerificationContext();
+        using var repository = PponRepository(context);
+
+        var identifierRegistries = new List<IdentifierRegistries>
+        {
+            new IdentifierRegistries
+            {
+                CountryCode = "US",
+                Scheme = "Scheme1",
+                RegisterName = "Registry1",
+                CreatedOn = DateTimeOffset.UtcNow,
+                UpdatedOn = DateTimeOffset.UtcNow
+            },
+            new IdentifierRegistries
+            {
+                CountryCode = "US",
+                Scheme = "Scheme2",
+                RegisterName = "Registry2",
+                CreatedOn = DateTimeOffset.UtcNow,
+                UpdatedOn = DateTimeOffset.UtcNow
+            },
+            new IdentifierRegistries
+            {
+                CountryCode = "CA",
+                Scheme = "Scheme3",
+                RegisterName = "Registry3",
+                CreatedOn = DateTimeOffset.UtcNow,
+                UpdatedOn = DateTimeOffset.UtcNow
+            }
+        }.AsQueryable();
+
+        await context.AddRangeAsync(identifierRegistries);
+        await context.SaveChangesAsync();
+
+        var found = await repository.GetIdentifierRegistriesAsync("US");
+
+        found.Should().NotBeNull();
+        found.Should().HaveCount(2);
+        found.Should().OnlyContain(r => r.CountryCode == "US");
+        found.Select(r => r.Scheme).Should().BeEquivalentTo(new[] { "Scheme1", "Scheme2" });
     }
 
     [Fact]

@@ -131,7 +131,6 @@ namespace CO.CDP.EntityVerification.Migrations
                         .HasName("pk_identifier_registries");
 
                     b.HasIndex("CountryCode")
-                        .IsUnique()
                         .HasDatabaseName("ix_identifier_registries_country_code");
 
                     b.HasIndex("Scheme")
