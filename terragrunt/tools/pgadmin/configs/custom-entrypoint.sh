@@ -6,6 +6,11 @@ clear_all_servers() {
   PGPASSWORD="$PGADMIN_DATABASE_PASSWORD" psql -h "$PGADMIN_DATABASE_HOST" -U "$PGADMIN_DATABASE_USERNAME" -d "$PGADMIN_DATABASE_NAME" -c "DELETE FROM public.servergroup;"
 }
 
+unlock_pgadmin() {
+  echo "#### Unlocking all user accounts in pgAdmin ####"
+  PGPASSWORD="$PGADMIN_DATABASE_PASSWORD" psql -h "$PGADMIN_DATABASE_HOST" -U "$PGADMIN_DATABASE_USERNAME" -d "$PGADMIN_DATABASE_NAME" -c "UPDATE public.user SET login_attempts = 0 WHERE login_attempts > 0;"
+}
+
 # Function to check if a server already exists in pgAdmin
 check_server_exists() {
   server_name=$1
@@ -91,6 +96,7 @@ echo "#### Configuring pgAdmin... ####"
 # clear_all_servers # Use only to force a fresh start
 configure_servers_json
 write_local_config
+unlock_pgadmin
 echo "#### Configuration of pgAdmin is complete! ####"
 
 echo "Handing over to pgAdmin."

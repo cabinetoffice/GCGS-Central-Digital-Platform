@@ -9,10 +9,10 @@
     var ukNonUkAddress = Model.IsNonUkAddress.GetValueOrDefault() ? "non-uk" : "uk";
 }
 
-@* // TODO 6: Previous page link?? *@
-<a href="/organisation/@Model.Id/supplier-information/connected-person/registered-address/@ukNonUkAddress/@Model.ConnectedEntityId" class="govuk-back-link">Back</a>
+@section BeforeContent {
+    <a href="/organisation/@Model.Id/supplier-information/connected-person/registered-address/@ukNonUkAddress/@Model.ConnectedEntityId" class="govuk-back-link">Back</a>
+}
 
-<main class="govuk-main-wrapper" id="main-content">
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <partial name="_ErrorSummary" model="@Model.ModelState" />
@@ -52,4 +52,3 @@
             </form>
         </div>
     </div>
-</main>

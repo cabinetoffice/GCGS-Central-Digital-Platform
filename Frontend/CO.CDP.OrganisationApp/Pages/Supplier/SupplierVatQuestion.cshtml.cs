@@ -85,7 +85,7 @@ public class SupplierVatQuestionModel(IOrganisationClient organisationClient,
                 try
                 {
                     await LookupOrganisationAsync();
-                    ModelState.AddModelError(nameof(VatNumber), "The VAT Number entered has been used by another Organisation. Please check the VAT Number and re-enter.");
+                    ModelState.AddModelError(nameof(VatNumber), "This VAT number belongs to another organisation. Enter a different VAT number.");
                     return Page();
                 }
                 catch (Exception orgApiException) when (orgApiException is CO.CDP.Organisation.WebApiClient.ApiException && ((CO.CDP.Organisation.WebApiClient.ApiException)orgApiException).StatusCode == 404)

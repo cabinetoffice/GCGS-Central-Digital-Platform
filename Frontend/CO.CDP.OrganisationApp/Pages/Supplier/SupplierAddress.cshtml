@@ -6,20 +6,21 @@
     ViewData["Title"] = Model.Address.Heading;
 }
 
-@if (Model.Address.IsNonUkAddress)
-{
-    <a href="/organisation/@Model.Id/supplier-information/@Model.AddressType.ToString().ToLower()-address/uk" class="govuk-back-link">Back</a>
-}
-else if (Model.AddressType == Constants.AddressType.Postal)
-{
-    <a href="/organisation/@Model.Id/supplier-information/postal-address-same-as-registered" class="govuk-back-link">Back</a>
-}
-else
-{
-    <a href="/organisation/@Model.Id/supplier-information/basic-information" class="govuk-back-link">Back</a>
+@section BeforeContent {
+    @if (Model.Address.IsNonUkAddress)
+    {
+        <a href="/organisation/@Model.Id/supplier-information/@Model.AddressType.ToString().ToLower()-address/uk" class="govuk-back-link">Back</a>
+    }
+    else if (Model.AddressType == Constants.AddressType.Postal)
+    {
+        <a href="/organisation/@Model.Id/supplier-information/postal-address-same-as-registered" class="govuk-back-link">Back</a>
+    }
+    else
+    {
+        <a href="/organisation/@Model.Id/supplier-information/basic-information" class="govuk-back-link">Back</a>
+    }
 }
 
-<main class="govuk-main-wrapper" id="main-content">
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <partial name="_ErrorSummary" model="@ModelState" />
@@ -29,4 +30,3 @@ else
             </form>
         </div>
     </div>
-</main>

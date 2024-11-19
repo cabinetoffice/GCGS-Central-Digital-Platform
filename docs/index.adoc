@@ -5,6 +5,7 @@
 :data-uri:
 :imagesdir: images
 :source-highlighter: rouge
+:docinfo: shared
 
 This is a technical documentation for the Cabinet Office's Central Digital Platform.
 

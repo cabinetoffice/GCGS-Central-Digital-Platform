@@ -143,7 +143,7 @@ public class SupplierVatModelQuestionTest
 
         _model.ModelState.ContainsKey("VatNumber").Should().BeTrue();
         _model.ModelState["VatNumber"]!.Errors.Should().ContainSingle()
-            .Which.ErrorMessage.Should().Be("The VAT Number entered has been used by another Organisation. Please check the VAT Number and re-enter.");
+            .Which.ErrorMessage.Should().Be("This VAT number belongs to another organisation. Enter a different VAT number.");
 
         result.Should().BeOfType<PageResult>();
 
