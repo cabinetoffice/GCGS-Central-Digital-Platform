@@ -11,7 +11,7 @@ public class BuyerSelectDevolvedRegulationModel(ISession session) : Registration
     public override string CurrentPage => BuyerSelectDevolvedRegulationPage;
 
     [BindProperty]
-    [NotEmpty(ErrorMessage = nameof(StaticTextResource.OrganisationRegistration_BuyerSelectDevolvedRegulation_ValidationErrorMessage))]
+    [NotEmpty(ErrorMessageResourceName = nameof(StaticTextResource.OrganisationRegistration_BuyerSelectDevolvedRegulation_ValidationErrorMessage), ErrorMessageResourceType = typeof(StaticTextResource))]
     public required List<DevolvedRegulation> Regulations { get; set; } = [];
 
     [BindProperty]
