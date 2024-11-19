@@ -17,7 +17,7 @@ public class ConnectedEntityControlConditionModel(ISession session) : PageModel
     public Guid? ConnectedEntityId { get; set; }
 
     [BindProperty]
-    [NotEmpty(ErrorMessage = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityControlCondition_SelectConditionError))]
+    [NotEmpty(ErrorMessageResourceName = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityControlCondition_SelectConditionError), ErrorMessageResourceType = typeof(StaticTextResource))]
     public required List<ConnectedEntityControlCondition> ControlConditions { get; set; } = [];
 
     [BindProperty]
