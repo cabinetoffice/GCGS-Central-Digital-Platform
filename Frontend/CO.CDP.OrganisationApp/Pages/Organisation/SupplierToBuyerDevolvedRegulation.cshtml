@@ -20,7 +20,7 @@
             <partial name="_ErrorSummary" model="@ModelState" />
             <form method="post">
                 <div class="govuk-form-group @(devolvedHasError ? "govuk-form-group--error" : "")">
-                    <fieldset class="govuk-fieldset">
+                    <fieldset class="govuk-fieldset" aria-describedby="devolved-hint @(devolvedHasError ? "devolved-error" : "")">
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                             <h1 class="govuk-fieldset__heading">
                                 @ViewData["Title"]
@@ -35,13 +35,19 @@
 
                         <div class="govuk-radios" data-module="govuk-radios">
                             <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="devolved-yes" name="Devolved" type="radio" value="true" @(Model.Devolved == true ? "checked" : "")>
+                                <input class="govuk-radios__input" id="devolved-yes" name="Devolved"
+                                type="radio"
+                                value="true"
+                                aria-describedby="devolved-hint @(devolvedHasError ? "devolved-error" : "")" @(Model.Devolved == true ? "checked" : "")>
                                 <label class="govuk-label govuk-radios__label" for="devolved-yes">
                                     Yes
                                 </label>
                             </div>
                             <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="devolved-na" name="Devolved" type="radio" value="false" @(Model.Devolved == false ? "checked" : "")>
+                                <input class="govuk-radios__input" id="devolved-na" name="Devolved"
+                                type="radio"
+                                value="false"
+                                aria-describedby="devolved-hint @(devolvedHasError ? "devolved-error" : "")" @(Model.Devolved == false ? "checked" : "")>
                                 <label class="govuk-label govuk-radios__label" for="devolved-na">
                                     No
                                 </label>
