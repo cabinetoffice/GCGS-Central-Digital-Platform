@@ -19,7 +19,7 @@
             <partial name="_ErrorSummary" model="@ModelState" />
             <form method="post">
                 <div class="govuk-form-group @(devolvedHasError ? "govuk-form-group--error" : "")">
-                    <fieldset class="govuk-fieldset" aria-describedby="devolved-hint @(devolvedHasError ? "devolved-error" : "")">
+                    <fieldset class="govuk-fieldset" @(devolvedHasError ? "aria-describedby=devolved-error" : "")>
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                             <h1 class="govuk-fieldset__heading">
                                 @ViewData["Title"]
@@ -37,7 +37,7 @@
                                 <input class="govuk-radios__input" id="@nameof(Model.Devolved)" name="@nameof(Model.Devolved)"
                                        type="radio"
                                 value="true"
-                                aria-describedby="devolved-hint @(devolvedHasError ? "devolved-error" : "")" @(Model.Devolved == true ? "checked" : "")>
+                                @(Model.Devolved == true ? "checked" : "")>
                                 <label class="govuk-label govuk-radios__label" for="@nameof(Model.Devolved)">
                                     Yes
                                 </label>
@@ -46,7 +46,7 @@
                                 <input class="govuk-radios__input" id="@nameof(Model.Devolved)-1" name="@nameof(Model.Devolved)"
                                        type="radio"
                                 value="false"
-                                aria-describedby="devolved-hint @(devolvedHasError ? "devolved-error" : "")" @(Model.Devolved == false ? "checked" : "")>
+                                @(Model.Devolved == false ? "checked" : "")>
                                 <label class="govuk-label govuk-radios__label" for="@nameof(Model.Devolved)-1">
                                     No
                                 </label>
