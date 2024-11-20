@@ -13,6 +13,12 @@ This code base is responsible for provisioning the AWS infrastructure needed to 
 ## Table of Contents
 - [Bootstrap New Account](./docs/bootstap-new-account.md)
 - [Create New User](./docs/bootstap-new-account.md#create-new-users)
+- [Diagrams](./docs/diagrams.md)
+  - [CI/CD Build and Deployment Pipelines](./docs/diagrams.md#cicd-build-and-deployment-pipelines)
+  - [ECS and RDS Database Integration](./docs/diagrams.md#cdp-sirsi-application-ecs-and-rds-database-integration)
+  - [ECS and SQS Queue Integration](./docs/diagrams.md#cdp-sirsi-application-ecs-and-sqs-queue-integration)
+  - [High-Level Overview (DNS, Networking, ECS, and Data Flow)](#cdp-sirsi-application-high-level-overview-of-dns-networking-ecs-and-data-flow)
+- [Create New User](./docs/bootstap-new-account.md#create-new-users)
 - [Manage Secrets](./docs/manage-secrets.md)
    - [Retrieve Diagnostic URI](./docs/manage-secrets.md#retrieve-diagnostic-uri)
    - [Update Charity Commission Secrets](./docs/manage-secrets.md#update-charity-commission-secrets)
