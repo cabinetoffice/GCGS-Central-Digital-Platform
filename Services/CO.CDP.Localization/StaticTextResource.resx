@@ -1,17 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
-  <!-- 
-    Microsoft ResX Schema 
-    
+  <!--
+    Microsoft ResX Schema
+
     Version 2.0
-    
-    The primary goals of this format is to allow a simple XML format 
-    that is mostly human readable. The generation and parsing of the 
-    various data types are done through the TypeConverter classes 
+
+    The primary goals of this format is to allow a simple XML format
+    that is mostly human readable. The generation and parsing of the
+    various data types are done through the TypeConverter classes
     associated with the data types.
-    
+
     Example:
-    
+
     ... ado.net/XML headers & schema ...
     <resheader name="resmimetype">text/microsoft-resx</resheader>
     <resheader name="version">2.0</resheader>
@@ -26,36 +26,36 @@
         <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
         <comment>This is a comment</comment>
     </data>
-                
-    There are any number of "resheader" rows that contain simple 
+
+    There are any number of "resheader" rows that contain simple
     name/value pairs.
-    
-    Each data row contains a name, and value. The row also contains a 
-    type or mimetype. Type corresponds to a .NET class that support 
-    text/value conversion through the TypeConverter architecture. 
-    Classes that don't support this are serialized and stored with the 
+
+    Each data row contains a name, and value. The row also contains a
+    type or mimetype. Type corresponds to a .NET class that support
+    text/value conversion through the TypeConverter architecture.
+    Classes that don't support this are serialized and stored with the
     mimetype set.
-    
-    The mimetype is used for serialized objects, and tells the 
-    ResXResourceReader how to depersist the object. This is currently not 
+
+    The mimetype is used for serialized objects, and tells the
+    ResXResourceReader how to depersist the object. This is currently not
     extensible. For a given mimetype the value must be set accordingly:
-    
-    Note - application/x-microsoft.net.object.binary.base64 is the format 
-    that the ResXResourceWriter will generate, however the reader can 
+
+    Note - application/x-microsoft.net.object.binary.base64 is the format
+    that the ResXResourceWriter will generate, however the reader can
     read any of the formats listed below.
-    
+
     mimetype: application/x-microsoft.net.object.binary.base64
-    value   : The object must be serialized with 
+    value   : The object must be serialized with
             : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
             : and then encoded with base64 encoding.
-    
+
     mimetype: application/x-microsoft.net.object.soap.base64
-    value   : The object must be serialized with 
+    value   : The object must be serialized with
             : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
             : and then encoded with base64 encoding.
 
     mimetype: application/x-microsoft.net.object.bytearray.base64
-    value   : The object must be serialized into a byte array 
+    value   : The object must be serialized into a byte array
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
@@ -837,5 +837,83 @@
     <value>&lt;p class="govuk-body"&gt;The organisation's details are already registered with the service.&lt;/p&gt;
 &lt;p class="govuk-body"&gt;If you know the person who registered the organisation, they can invite you to join. Or you can request to join below.&lt;/p&gt;
 &lt;a class="govuk-button" href="/registration/{0}/join-organisation"&gt;Request to Join&lt;/a&gt;</value>
+  </data>
+  <data name="ApiKeyManagement_RevokeApiKey_Title" xml:space="preserve">
+    <value>Cancel API key</value>
+  </data>
+  <data name="ApiKeyManagement_RevokeApiKey_Description1" xml:space="preserve">
+    <value>Cancelling this API key will stop the sharing of information between this service and the eSender that's using it.</value>
+  </data>
+  <data name="ApiKeyManagement_RevokeApiKey_Description2" xml:space="preserve">
+    <value>You cannot re-activate a cancelled API key. You'll need to create a new one to share information again.</value>
+  </data>
+  <data name="ApiKeyManagement_RevokeApiKey_CancelButton" xml:space="preserve">
+    <value>Cancel key</value>
+  </data>
+  <data name="ApiKeyManagement_NewApiKeyDetails_Title" xml:space="preserve">
+    <value>API key created</value>
+  </data>
+  <data name="ApiKeyManagement_NewApiKeyDetails_YourApiKey" xml:space="preserve">
+    <value>Your API key</value>
+  </data>
+  <data name="ApiKeyManagement_NewApiKeyDetails_CopyApiKey" xml:space="preserve">
+    <value>Copy the API key and keep it safe.</value>
+  </data>
+  <data name="ApiKeyManagement_NewApiKeyDetails_Notice" xml:space="preserve">
+    <value>This is the only time we show you the API key. If you lose it, you’ll need to cancel it and create a new one.</value>
+  </data>
+  <data name="ApiKeyManagement_NewApiKeyDetails_CopyButton" xml:space="preserve">
+    <value>Copy API key to clipboard</value>
+  </data>
+  <data name="ApiKeyManagement_NewApiKeyDetails_BackToApiKeys" xml:space="preserve">
+    <value>Back to your API keys</value>
+  </data>
+  <data name="ApiKeyManagement_ManageApiKey_Title" xml:space="preserve">
+    <value>Manage API keys</value>
+  </data>
+  <data name="ApiKeyManagement_ManageApiKey_YouHaveKeys_Singular" xml:space="preserve">
+    <value>You have {0} API key</value>
+  </data>
+  <data name="ApiKeyManagement_ManageApiKey_YouHaveKeys_Plural" xml:space="preserve">
+    <value>You have {0} API keys</value>
+  </data>
+  <data name="ApiKeyManagement_ManageApiKey_NoKeysText" xml:space="preserve">
+    <value>API keys that you create will be listed here.</value>
+  </data>
+  <data name="ApiKeyManagement_ManageApiKey_Description" xml:space="preserve">
+    <value>View your active and cancelled API keys.</value>
+  </data>
+  <data name="ApiKeyManagement_ManageApiKey_Description_Editor" xml:space="preserve">
+    <value>You can cancel any that are no longer needed.</value>
+  </data>
+  <data name="ApiKeyManagement_ManageApiKey_TableHeader_Name" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="ApiKeyManagement_ManageApiKey_TableHeader_DateCreated" xml:space="preserve">
+    <value>Date created</value>
+  </data>
+  <data name="ApiKeyManagement_ManageApiKey_TableHeader_DateCancelled" xml:space="preserve">
+    <value>Date cancelled</value>
+  </data>
+  <data name="ApiKeyManagement_ManageApiKey_TableHeader_Actions" xml:space="preserve">
+    <value>Actions</value>
+  </data>
+  <data name="ApiKeyManagement_ManageApiKey_Status_Cancelled" xml:space="preserve">
+    <value>Cancelled</value>
+  </data>
+  <data name="ApiKeyManagement_ManageApiKey_Action_Cancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="ApiKeyManagement_ManageApiKey_CreateButton" xml:space="preserve">
+    <value>Create an API key</value>
+  </data>
+  <data name="ApiKeyManagement_CreateApiKey_Title" xml:space="preserve">
+    <value>Name your API key</value>
+  </data>
+  <data name="ApiKeyManagement_CreateApiKey_Hint" xml:space="preserve">
+    <value>For security we only show the API key once on the confirmation page. Add a name for reference. For example, the name of the eSender it's for.</value>
+  </data>
+  <data name="ApiKeyManagement_CreateApiKey_ValidationError" xml:space="preserve">
+    <value>Enter the api key name</value>
   </data>
 </root>

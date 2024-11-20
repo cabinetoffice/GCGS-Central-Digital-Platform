@@ -1,3 +1,4 @@
+using CO.CDP.Localization;
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.WebApiClients;
@@ -16,7 +17,7 @@ public class CreateApiKeyModel(IOrganisationClient organisationClient) : PageMod
     public Guid Id { get; set; }
 
     [BindProperty]
-    [Required(ErrorMessage = "Enter the api key name")]
+    [Required(ErrorMessageResourceName = nameof(StaticTextResource.ApiKeyManagement_CreateApiKey_ValidationError), ErrorMessageResourceType = typeof(StaticTextResource))]
     public string? ApiKeyName { get; set; }
 
     public async Task<IActionResult> OnPost()

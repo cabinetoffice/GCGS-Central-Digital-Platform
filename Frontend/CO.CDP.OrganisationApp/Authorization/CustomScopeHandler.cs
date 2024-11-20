@@ -6,6 +6,7 @@ namespace CO.CDP.OrganisationApp.Authorization;
 
 public class CustomScopeHandler(
     ISession session,
+    IHttpContextAccessor httpContextAccessor,
     IServiceScopeFactory serviceScopeFactory) : AuthorizationHandler<ScopeRequirement>
 {
     protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, ScopeRequirement requirement)
@@ -23,7 +24,8 @@ public class CustomScopeHandler(
 
                     var tenantLookup = await tenantClient.LookupTenantAsync();
                     var userScopes = tenantLookup.User.Scopes;
-                    var organisationUserScopes = tenantLookup.Tenants.SelectMany(x => x.Organisations.SelectMany(y => y.Scopes)).ToList();
+                    var organisationId = GetOrganisationId();
+                    var organisationUserScopes = tenantLookup.Tenants.SelectMany(x => x.Organisations.Where(y => y.Id == organisationId).SelectMany(y => y.Scopes)).ToList();
 
                     // Support admin implies viewer permissions
                     if (requirement.Scope == OrganisationPersonScopes.Viewer && userScopes.Contains(PersonScopes.SupportAdmin))
@@ -66,5 +68,26 @@ public class CustomScopeHandler(
         }
 
         context.Fail();
+    }
+
+    private Guid? GetOrganisationId()
+    {
+        if (httpContextAccessor?.HttpContext?.Request?.Path.Value == null)
+        {
+            return null;
+        }
+
+        var path = httpContextAccessor.HttpContext.Request.Path.Value;
+
+        if (path != null)
+        {
+            var pathSegments = path.Split('/', StringSplitOptions.RemoveEmptyEntries);
+            if (pathSegments.Length >= 2 && pathSegments[0] == "organisation" && Guid.TryParse(pathSegments[1], out Guid organisationId))
+            {
+                return organisationId;
+            }
+        }
+
+        return null;
     }
 }

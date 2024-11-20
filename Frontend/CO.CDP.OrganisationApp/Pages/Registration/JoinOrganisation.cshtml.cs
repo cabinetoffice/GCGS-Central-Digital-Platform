@@ -60,6 +60,8 @@ public class JoinOrganisationModel(
                     return Page();
                 }
 
+                SessionContext.Remove(Session.RegistrationDetailsKey);
+
                 return Redirect("/registration/" + identifier + "/join-organisation/success");
             }
 
