@@ -17,7 +17,7 @@ public class CreateApiKeyModel(IOrganisationClient organisationClient) : PageMod
     public Guid Id { get; set; }
 
     [BindProperty]
-    [Required(ErrorMessage = nameof(StaticTextResource.ApiKeyManagement_CreateApiKey_ValidationError))]
+    [Required(ErrorMessageResourceName = nameof(StaticTextResource.ApiKeyManagement_CreateApiKey_ValidationError), ErrorMessageResourceType = typeof(StaticTextResource))]
     public string? ApiKeyName { get; set; }
 
     public async Task<IActionResult> OnPost()
