@@ -13,23 +13,23 @@
     }
 }
 
-<a href="@backLink" class="govuk-back-link">
-    Back
-</a>
+@section BeforeContent {
+    <a href="@backLink" class="govuk-back-link">Back</a>
+}
 
-<main class="govuk-main-wrapper" id="main-content">
+
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds govuk-body">
             <partial name="_ErrorSummary" model="@ModelState" />
             <form method="post">
                 <div class="govuk-form-group @(regulationsHasError ? "govuk-form-group--error" : "")">
-                    <fieldset class="govuk-fieldset">
+                    <fieldset class="govuk-fieldset" aria-describedby="regulations-hint @(regulationsHasError ? "devolved-error" : "")">
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                             <h1 class="govuk-fieldset__heading">
                                 @ViewData["Title"]
                             </h1>
                         </legend>
-                        <div id="waste-hint" class="govuk-hint">
+                        <div id="regulations-hint" class="govuk-hint">
                             Select all that apply
                         </div>
                         @if (regulationsHasError)
@@ -41,8 +41,8 @@
 
                         <div class="govuk-checkboxes" data-module="govuk-checkboxes">
                             <div class="govuk-checkboxes__item">
-                                <input class="govuk-checkboxes__input" id="chkni" name="Regulations" type="checkbox" value="@DevolvedRegulation.NorthernIreland" @IsSelected(DevolvedRegulation.NorthernIreland)>
-                                <label class="govuk-label govuk-checkboxes__label" for="chkni">
+                            <input class="govuk-checkboxes__input" id="Regulations" name="Regulations" type="checkbox" value="@DevolvedRegulation.NorthernIreland" @IsSelected(DevolvedRegulation.NorthernIreland)>
+                            <label class="govuk-label govuk-checkboxes__label" for="Regulations">
                                     Northern Ireland
                                 </label>
                             </div>
@@ -67,4 +67,4 @@
             </form>
         </div>
     </div>
-</main>
+

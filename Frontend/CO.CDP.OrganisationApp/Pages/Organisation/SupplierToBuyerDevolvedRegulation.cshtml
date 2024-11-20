@@ -10,11 +10,10 @@
 
 }
 
-<a href="@backLink" class="govuk-back-link">
-    Back
-</a>
+@section BeforeContent {
+    <a href="@backLink" class="govuk-back-link">Back</a>
+}
 
-<main class="govuk-main-wrapper" id="main-content">
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds govuk-body">
             <partial name="_ErrorSummary" model="@ModelState" />
@@ -35,32 +34,31 @@
 
                         <div class="govuk-radios" data-module="govuk-radios">
                             <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="devolved-yes" name="Devolved"
-                                type="radio"
+                                <input class="govuk-radios__input" id="@nameof(Model.Devolved)" name="@nameof(Model.Devolved)"
+                                       type="radio"
                                 value="true"
                                 aria-describedby="devolved-hint @(devolvedHasError ? "devolved-error" : "")" @(Model.Devolved == true ? "checked" : "")>
-                                <label class="govuk-label govuk-radios__label" for="devolved-yes">
+                                <label class="govuk-label govuk-radios__label" for="@nameof(Model.Devolved)">
                                     Yes
                                 </label>
                             </div>
                             <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="devolved-na" name="Devolved"
-                                type="radio"
+                                <input class="govuk-radios__input" id="@nameof(Model.Devolved)-1" name="@nameof(Model.Devolved)"
+                                       type="radio"
                                 value="false"
                                 aria-describedby="devolved-hint @(devolvedHasError ? "devolved-error" : "")" @(Model.Devolved == false ? "checked" : "")>
-                                <label class="govuk-label govuk-radios__label" for="devolved-na">
+                                <label class="govuk-label govuk-radios__label" for="@nameof(Model.Devolved)-1">
                                     No
                                 </label>
                             </div>
                         </div>
                     </fieldset>
                 </div>
-                <a href="/registration/buyer-select-devolved-regulations">
-                    <govuk-button>
-                        Continue
-                    </govuk-button>
-                </a>
+                
+                <govuk-button>
+                    Continue
+                </govuk-button>
+                
             </form>
         </div>
     </div>
-</main>

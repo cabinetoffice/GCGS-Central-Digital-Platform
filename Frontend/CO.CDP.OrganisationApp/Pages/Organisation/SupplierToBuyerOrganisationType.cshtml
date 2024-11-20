@@ -18,12 +18,9 @@
         return Model.BuyerOrganisationType == radioValue ? "checked='checked'" : string.Empty;
     }
 }
-
-<a href="@backLink" class="govuk-back-link">
-    Back
-</a>
-
-<main class="govuk-main-wrapper" id="main-content">
+@section BeforeContent {
+    <a href="@backLink" class="govuk-back-link">Back</a>
+}
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds govuk-body">
             <partial name="_ErrorSummary" model="@ModelState" />
@@ -33,7 +30,7 @@
                     <input type="hidden" name="RedirectToSummary" value="true" />
                 }
                 <div class="govuk-form-group @(organisationTypeHasError ? "govuk-form-group--error" : "")">
-                    <fieldset class="govuk-fieldset">
+                    <fieldset class="govuk-fieldset" aria-describedby="organisationType-hint @(organisationTypeHasError ? "organisationType-error" : "")">
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                             <h1 class="govuk-fieldset__heading">
                                 @ViewData["Title"]
@@ -46,13 +43,15 @@
                                 <span class="govuk-visually-hidden">Error:</span> @Html.ValidationMessageFor(m => m.BuyerOrganisationType)
                             </p>
                         }
-
+                        <div id="organisationType-hint" class="govuk-hint">
+                            Select the type of organisation that best describes your organisation's role.
+                        </div>
                         <div class="govuk-radios" data-module="govuk-radios">
                             <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="ca-type" name="BuyerOrganisationType"
+                            <input class="govuk-radios__input" id="@nameof(Model.BuyerOrganisationType)" name="BuyerOrganisationType"
                                        type="radio" value="CentralGovernment"
                                        aria-describedby="ca-type-item-hint" @IsSelected("CentralGovernment")>
-                                <label class="govuk-label govuk-radios__label" for="ca-type">
+                            <label class="govuk-label govuk-radios__label" for="@nameof(Model.BuyerOrganisationType)">
                                     @SupplierToBuyerOrganisationTypeModel.BuyerTypes["CentralGovernment"]
                                 </label>
                                 <div id="ca-type-item-hint" class="govuk-hint govuk-radios__hint">
@@ -67,10 +66,10 @@
                             </div>
 
                             <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="ca-type-2" name="BuyerOrganisationType"
+                            <input class="govuk-radios__input" id="@nameof(Model.BuyerOrganisationType)-1" name="BuyerOrganisationType"
                                        type="radio" value="RegionalAndLocalGovernment"
                                        aria-describedby="ca-type-2-item-hint" @IsSelected("RegionalAndLocalGovernment")>
-                                <label class="govuk-label govuk-radios__label" for="ca-type-2">
+                            <label class="govuk-label govuk-radios__label" for="@nameof(Model.BuyerOrganisationType)-1">
                                     @SupplierToBuyerOrganisationTypeModel.BuyerTypes["RegionalAndLocalGovernment"]
                                 </label>
                                 <div id="ca-type-2-item-hint" class="govuk-hint govuk-radios__hint">
@@ -87,9 +86,9 @@
                             </div>
 
                             <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="ca-type-3" name="BuyerOrganisationType"
+                            <input class="govuk-radios__input" id="@nameof(Model.BuyerOrganisationType)-2" name="BuyerOrganisationType"
                                        type="radio" value="PublicUndertaking" aria-describedby="ca-type-3-item-hint" @IsSelected("PublicUndertaking")>
-                                <label class="govuk-label govuk-radios__label" for="ca-type-3">
+                            <label class="govuk-label govuk-radios__label" for="@nameof(Model.BuyerOrganisationType)-2">
                                     @SupplierToBuyerOrganisationTypeModel.BuyerTypes["PublicUndertaking"]
                                 </label>
                                 <div id="ca-type-3-item-hint" class="govuk-hint govuk-radios__hint">
@@ -97,9 +96,9 @@
                                 </div>
                             </div>
                             <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="ca-type-4" name="BuyerOrganisationType"
+                            <input class="govuk-radios__input" id="@nameof(Model.BuyerOrganisationType)-3" name="BuyerOrganisationType"
                                        type="radio" value="PrivateUtility" aria-describedby="ca-type-4-item-hint" @IsSelected("PrivateUtility")>
-                                <label class="govuk-label govuk-radios__label" for="ca-type-4">
+                            <label class="govuk-label govuk-radios__label" for="@nameof(Model.BuyerOrganisationType)-3">
                                     @SupplierToBuyerOrganisationTypeModel.BuyerTypes["PrivateUtility"]
                                 </label>
                                 <div id="ca-type-4-item-hint" class="govuk-hint govuk-radios__hint">
@@ -107,9 +106,9 @@
                                 </div>
                             </div>
                             <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="ca-type-5" name="BuyerOrganisationType"
+                            <input class="govuk-radios__input" id="@nameof(Model.BuyerOrganisationType)-4" name="BuyerOrganisationType"
                                        type="radio" value="Other" data-aria-controls="conditional-ca-type-5" @IsSelected("Other")>
-                                <label class="govuk-label govuk-radios__label" for="ca-type-5">
+                            <label class="govuk-label govuk-radios__label" for="@nameof(Model.BuyerOrganisationType)-4">
                                     Other
                                 </label>
                             </div>
@@ -126,7 +125,10 @@
                                     </div>
 
                                     <input autocomplete="off" class="govuk-input @(otherHasError ? "govuk-input--error" : "")"
-                                           id="OtherValue" name="OtherValue" type="text" value="@(Model.BuyerOrganisationType == "Other" ? Model.OtherValue : "")">
+                                        id="OtherValue"
+                                        name="OtherValue"
+                                       type="text" aria-describedby="@(otherHasError ? "other-buyer-type-error" : "ca-type-5-item-hint")"
+                                       value="@(Model.BuyerOrganisationType == "Other" ? Model.OtherValue : "")">
 
                                 </div>
                             </div>
@@ -139,4 +141,3 @@
             </form>
         </div>
     </div>
-</main>
