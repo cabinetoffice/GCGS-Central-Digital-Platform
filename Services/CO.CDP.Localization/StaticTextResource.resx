@@ -564,9 +564,6 @@
   <data name="Supplier_ConnectedEntity_ConnectedEntityCompanyInsolvencyDate_Hint" xml:space="preserve">
     <value>The date it stopped trading under its own name.&lt;br&gt;&lt;br&gt;For example, 27 03 2007</value>
   </data>
-  <data name="Supplier_ConnectedEntity_ConnectedEntityCompanyInsolvencyDate_InvalidDate" xml:space="preserve">
-    <value>Date of insolvency must be a real date</value>
-  </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityCompanyInsolvencyDate_DateInFuture" xml:space="preserve">
     <value>Date of insolvency must be today or in the past</value>
   </data>
@@ -1058,5 +1055,29 @@
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityIndividualCategory_CategoryOption_PSC_Individual" xml:space="preserve">
     <value>any other individual with significant influence or control</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCompanyInsolvencyDate_DayRequiredError" xml:space="preserve">
+    <value>Date of insolvency must include a day</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCompanyInsolvencyDate_DayInvalidError" xml:space="preserve">
+    <value>Day must be a valid number</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCompanyInsolvencyDate_MonthRequiredError" xml:space="preserve">
+    <value>Date of insolvency must include a month</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCompanyInsolvencyDate_MonthInvalidError" xml:space="preserve">
+    <value>Month must be a valid number</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCompanyInsolvencyDate_YearRequiredError" xml:space="preserve">
+    <value>Date of insolvency must include a year</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCompanyInsolvencyDate_YearInvalidError" xml:space="preserve">
+    <value>Year must be a valid number</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCompanyInsolvencyDate_InvalidDate" xml:space="preserve">
+    <value>Date of insolvency must be a real date</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCompanyInsolvencyDate_Heading" xml:space="preserve">
+    <value>When did {0} become insolvent?</value>
   </data>
 </root>
