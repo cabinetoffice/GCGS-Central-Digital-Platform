@@ -16,7 +16,7 @@ variable "db_name" {
 }
 
 variable "db_parameters_cluster" {
-  description = "A map of database parameters to apply to the RDS DB parameter group. Keys are parameter names, and values are the desired settings."
+  description = "A map of database parameters to apply to the RDS DB Cluster parameter group. Keys are parameter names, and values are the desired settings."
   type        = map(string)
   default     = {}
 }
