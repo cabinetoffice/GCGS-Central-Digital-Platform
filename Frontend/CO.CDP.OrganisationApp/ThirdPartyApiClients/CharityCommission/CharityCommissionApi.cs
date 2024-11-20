@@ -37,9 +37,9 @@ public class CharityCommissionApi(IConfiguration configuration,
 
     private void Log(Exception exc, string registeredNumber)
     {
-        var logException = new CdpExceptionLogging($"Failed to call Charity Commission API for registration number: {registeredNumber}.", CdpErrorCodes.CompaniesHouseApiError, exc);
+        var logException = new CdpExceptionLogging($"Failed to call Charity Commission API for registration number: {registeredNumber}.", CdpErrorCodes.CharityCommissionApiError, exc);
 
-        logger.LogError(logException, "Failed to call Companies House API.");
+        logger.LogError(logException, "Failed to call Charity Commission API.");
     }
 
     private string GetCharityCommissionUrl()
