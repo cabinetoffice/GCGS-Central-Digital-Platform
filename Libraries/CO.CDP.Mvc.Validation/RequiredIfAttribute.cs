@@ -1,3 +1,6 @@
+using CO.CDP.Localization;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Localization;
 using System.ComponentModel.DataAnnotations;
 
 namespace CO.CDP.Mvc.Validation;
@@ -12,9 +15,20 @@ public class RequiredIfAttribute(string dependentProperty, object? targetValue) 
 
         bool conditionMet = (propertyValue?.Equals(targetValue) ?? false);
 
+        string? errorMessage = ErrorMessage;
+
+        if(ErrorMessageResourceType != null && ErrorMessageResourceName != null)
+        {
+            var stringLocalizer = validationContext.GetRequiredService<IServiceProvider>()
+                .GetRequiredService<IStringLocalizerFactory>()
+                .Create(ErrorMessageResourceType);
+
+            errorMessage = stringLocalizer[ErrorMessageResourceName];
+        }
+
         if (conditionMet && (value == null || (value is string str && string.IsNullOrWhiteSpace(str))))
         {
-            return new ValidationResult(ErrorMessage ?? $"{validationContext.DisplayName} is required");
+            return new ValidationResult(errorMessage ?? $"{validationContext.DisplayName} is required");
         }
 
         return ValidationResult.Success!;
