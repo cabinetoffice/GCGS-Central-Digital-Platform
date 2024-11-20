@@ -1,3 +1,5 @@
+namespace CO.CDP.OrganisationApp;
+
 public interface IUserInfoService
 {
     public Guid? GetOrganisationId();
