@@ -321,6 +321,9 @@
   <data name="Supplementary_ContactUs_Email_ValidationErrorMessage" xml:space="preserve">
     <value>Enter an email address in the correct format, like name@example.com</value>
   </data>
+  <data name="Supplementary_ContactUs_Message" xml:space="preserve">
+    <value>Message</value>
+  </data>
   <data name="Supplementary_ContactUs_Message_ErrorMessage" xml:space="preserve">
     <value>Enter your message</value>
   </data>
