@@ -17,7 +17,7 @@ public class ConnectedEntityOrganisationNameModel(ISession session) : PageModel
     public Guid? ConnectedEntityId { get; set; }
 
     [BindProperty]
-    [Required(ErrorMessage = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityOrganisationName_EnterNameError))]
+    [Required(ErrorMessageResourceName = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityOrganisationName_EnterNameError), ErrorMessageResourceType = typeof(StaticTextResource))]
     public string? OrganisationName { get; set; }
 
     [BindProperty]

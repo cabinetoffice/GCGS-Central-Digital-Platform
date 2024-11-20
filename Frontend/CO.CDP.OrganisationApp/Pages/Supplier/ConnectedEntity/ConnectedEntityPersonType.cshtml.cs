@@ -11,7 +11,7 @@ namespace CO.CDP.OrganisationApp.Pages.Supplier.ConnectedEntity;
 public class ConnectedEntityPersonTypeModel(ISession session) : PageModel
 {
     [BindProperty]
-    [Required(ErrorMessage = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityPersonType_SelectOptionError))]
+    [Required(ErrorMessageResourceName = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityPersonType_SelectOptionError), ErrorMessageResourceType = typeof(StaticTextResource))]
     public ConnectedEntityType? ConnectedEntityType { get; set; }
 
     [BindProperty(SupportsGet = true)]

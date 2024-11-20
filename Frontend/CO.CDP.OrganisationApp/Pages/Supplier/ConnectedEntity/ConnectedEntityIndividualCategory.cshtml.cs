@@ -11,7 +11,7 @@ namespace CO.CDP.OrganisationApp.Pages.Supplier;
 public class ConnectedEntityIndividualCategoryModel(ISession session) : PageModel
 {
     [BindProperty]
-    [Required(ErrorMessage = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityIndividualCategory_SelectCategoryError))]
+    [Required(ErrorMessageResourceName = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityIndividualCategory_SelectCategoryError), ErrorMessageResourceType = typeof(StaticTextResource))]
     public ConnectedEntityIndividualAndTrustCategoryType? ConnectedEntityCategory { get; set; }
 
     [BindProperty(SupportsGet = true)]

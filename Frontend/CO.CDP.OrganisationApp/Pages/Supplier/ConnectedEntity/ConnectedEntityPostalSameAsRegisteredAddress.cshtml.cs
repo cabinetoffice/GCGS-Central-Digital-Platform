@@ -17,7 +17,7 @@ public class ConnectedEntityPostalSameAsRegisteredAddressModel(ISession session)
     public Guid? ConnectedEntityId { get; set; }
 
     [BindProperty]
-    [Required(ErrorMessage = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityPostalSameAsRegisteredAddress_HasDifferentPostalAddressError))]
+    [Required(ErrorMessageResourceName = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityPostalSameAsRegisteredAddress_HasDifferentPostalAddressError), ErrorMessageResourceType = typeof(StaticTextResource))]
     public bool? DifferentThanRegiseterdAddress { get; set; }
 
     public string? Caption { get; set; }

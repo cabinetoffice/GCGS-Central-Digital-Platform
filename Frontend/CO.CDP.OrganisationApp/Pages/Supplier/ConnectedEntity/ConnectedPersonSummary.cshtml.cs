@@ -20,7 +20,7 @@ public class ConnectedPersonSummaryModel(
     [BindProperty] public ICollection<ConnectedEntityLookup> ConnectedEntities { get; set; } = [];
 
     [BindProperty]
-    [Required(ErrorMessage = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedPersonSummary_AddAnotherConnectedPersonError))]
+    [Required(ErrorMessageResourceName = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedPersonSummary_AddAnotherConnectedPersonError), ErrorMessageResourceType = typeof(StaticTextResource))]
     public bool? HasConnectedEntity { get; set; }
 
     public async Task<IActionResult> OnGet(bool? selected)

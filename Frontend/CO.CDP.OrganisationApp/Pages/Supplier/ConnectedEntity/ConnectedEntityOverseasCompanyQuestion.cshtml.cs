@@ -18,11 +18,11 @@ public class ConnectedEntityOverseasCompanyQuestionModel(ISession session) : Pag
     public Guid? ConnectedEntityId { get; set; }
 
     [BindProperty]
-    [Required(ErrorMessage = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityOverseasCompanyQuestion_HasOverseasCompaniesHouseNumberError))]
+    [Required(ErrorMessageResourceName = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityOverseasCompanyQuestion_HasOverseasCompaniesHouseNumberError), ErrorMessageResourceType = typeof(StaticTextResource))]
     public bool? HasOverseasCompaniesHouseNumber { get; set; }
 
     [BindProperty]
-    [RequiredIf(nameof(HasOverseasCompaniesHouseNumber), true, ErrorMessage = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityOverseasCompanyQuestion_CompanyRegistrationNumberRequiredError))]
+    [RequiredIf(nameof(HasOverseasCompaniesHouseNumber), true, ErrorMessageResourceName = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityOverseasCompanyQuestion_CompanyRegistrationNumberRequiredError), ErrorMessageResourceType = typeof(StaticTextResource))]
     public string? OverseasCompaniesHouseNumber { get; set; }
     public string? Caption { get; set; }
     public string? Heading { get; set; }

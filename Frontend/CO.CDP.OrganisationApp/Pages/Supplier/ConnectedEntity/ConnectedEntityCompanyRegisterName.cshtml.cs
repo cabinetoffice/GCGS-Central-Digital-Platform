@@ -20,11 +20,11 @@ public class ConnectedEntityCompanyRegisterNameModel(ISession session) : PageMod
     public Guid? ConnectedEntityId { get; set; }
 
     [BindProperty]
-    [Required(ErrorMessage = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityCompanyRegisterName_SelectIfRegisteredError))]
+    [Required(ErrorMessageResourceName = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityCompanyRegisterName_SelectIfRegisteredError), ErrorMessageResourceType = typeof(StaticTextResource))]
     public string? RegisterName { get; set; }
 
     [BindProperty]
-    [RequiredIf("RegisterName", "Other", ErrorMessage = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityCompanyRegisterName_OtherRegisterNameRequiredError))]
+    [RequiredIf("RegisterName", "Other", ErrorMessageResourceName = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityCompanyRegisterName_OtherRegisterNameRequiredError), ErrorMessageResourceType = typeof(StaticTextResource))]
     public string? RegisterNameInput { get; set; }
 
     [BindProperty]

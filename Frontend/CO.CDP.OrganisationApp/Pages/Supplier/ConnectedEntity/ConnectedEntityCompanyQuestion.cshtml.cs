@@ -18,11 +18,11 @@ public class ConnectedEntityCompanyQuestionModel(ISession session) : PageModel
     public Guid? ConnectedEntityId { get; set; }
 
     [BindProperty]
-    [Required(ErrorMessage = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityCompanyQuestion_HasCompaniesHouseError))]
+    [Required(ErrorMessageResourceName = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityCompanyQuestion_HasCompaniesHouseError), ErrorMessageResourceType = typeof(StaticTextResource))]
     public bool? HasCompaniesHouseNumber { get; set; }
 
     [BindProperty]
-    [RequiredIf(nameof(HasCompaniesHouseNumber), true, ErrorMessage = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityCompanyQuestion_EnterNumberError))]
+    [RequiredIf(nameof(HasCompaniesHouseNumber), true, ErrorMessageResourceName = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityCompanyQuestion_EnterNumberError), ErrorMessageResourceType = typeof(StaticTextResource))]
     public string? CompaniesHouseNumber { get; set; }
     public string? Caption { get; set; }
     public string? Heading { get; set; }

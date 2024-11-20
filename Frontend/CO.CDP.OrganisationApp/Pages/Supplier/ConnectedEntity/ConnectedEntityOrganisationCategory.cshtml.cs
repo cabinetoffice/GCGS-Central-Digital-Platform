@@ -11,7 +11,7 @@ namespace CO.CDP.OrganisationApp.Pages.Supplier;
 public class ConnectedEntityOrganisationCategoryModel(ISession session) : PageModel
 {
     [BindProperty]
-    [Required(ErrorMessage = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityOrganisationCategory_SelectCategoryError))]
+    [Required(ErrorMessageResourceName = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityOrganisationCategory_SelectCategoryError), ErrorMessageResourceType = typeof(StaticTextResource))]
     public ConnectedEntityOrganisationCategoryType? ConnectedEntityCategory { get; set; }
 
     [BindProperty(SupportsGet = true)]

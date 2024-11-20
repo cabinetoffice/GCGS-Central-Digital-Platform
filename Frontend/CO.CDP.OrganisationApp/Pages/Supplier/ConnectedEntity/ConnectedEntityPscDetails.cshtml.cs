@@ -22,27 +22,27 @@ public class ConnectedEntityPscDetailsModel(ISession session) : PageModel
 
     [BindProperty]
     [Display(Name = "Supplier_ConnectedEntity_ConnectedEntityPscDetails_FirstNameLabel", ResourceType = typeof(StaticTextResource))]
-    [Required(ErrorMessage = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityPscDetails_FirstNameRequiredError))]
+    [Required(ErrorMessageResourceName = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityPscDetails_FirstNameRequiredError), ErrorMessageResourceType = typeof(StaticTextResource))]
     public string? FirstName { get; set; }
 
     [BindProperty]
     [Display(Name = "Supplier_ConnectedEntity_ConnectedEntityPscDetails_LastNameLabel", ResourceType = typeof(StaticTextResource))]
-    [Required(ErrorMessage = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityPscDetails_LastNameRequiredError))]
+    [Required(ErrorMessageResourceName = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityPscDetails_LastNameRequiredError), ErrorMessageResourceType = typeof(StaticTextResource))]
     public string? LastName { get; set; }
 
     [BindProperty]
-    [RequiredIf(nameof(ShowDobAndNationality), true, ErrorMessage = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityPscDetails_DateOfBirthDayRequiredError))]
-    [RegularExpression(RegExPatterns.Day, ErrorMessage = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityPscDetails_DateOfBirthDayInvalidError))]
+    [RequiredIf(nameof(ShowDobAndNationality), true, ErrorMessageResourceName = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityPscDetails_DateOfBirthDayRequiredError), ErrorMessageResourceType = typeof(StaticTextResource))]
+    [RegularExpression(RegExPatterns.Day, ErrorMessageResourceName = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityPscDetails_DateOfBirthDayInvalidError), ErrorMessageResourceType = typeof(StaticTextResource))]
     public string? Day { get; set; }
 
     [BindProperty]
-    [RequiredIf(nameof(ShowDobAndNationality), true, ErrorMessage = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityPscDetails_DateOfBirthMonthRequiredError))]
-    [RegularExpression(RegExPatterns.Month, ErrorMessage = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityPscDetails_DateOfBirthMonthInvalidError))]
+    [RequiredIf(nameof(ShowDobAndNationality), true, ErrorMessageResourceName = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityPscDetails_DateOfBirthMonthRequiredError), ErrorMessageResourceType = typeof(StaticTextResource))]
+    [RegularExpression(RegExPatterns.Month, ErrorMessageResourceName = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityPscDetails_DateOfBirthMonthInvalidError), ErrorMessageResourceType = typeof(StaticTextResource))]
     public string? Month { get; set; }
 
     [BindProperty]
-    [RequiredIf(nameof(ShowDobAndNationality), true, ErrorMessage = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityPscDetails_DateOfBirthYearRequiredError))]
-    [RegularExpression(RegExPatterns.Year, ErrorMessage = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityPscDetails_DateOfBirthYearInvalidError))]
+    [RequiredIf(nameof(ShowDobAndNationality), true, ErrorMessageResourceName = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityPscDetails_DateOfBirthYearRequiredError), ErrorMessageResourceType = typeof(StaticTextResource))]
+    [RegularExpression(RegExPatterns.Year, ErrorMessageResourceName = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityPscDetails_DateOfBirthYearInvalidError), ErrorMessageResourceType = typeof(StaticTextResource))]
     public string? Year { get; set; }
 
     [BindProperty]
@@ -50,7 +50,7 @@ public class ConnectedEntityPscDetailsModel(ISession session) : PageModel
 
     [BindProperty]
     [Display(Name = "Supplier_ConnectedEntity_ConnectedEntityPscDetails_NationalityLabel", ResourceType = typeof(StaticTextResource))]
-    [RequiredIf(nameof(ShowDobAndNationality), true, ErrorMessage = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityPscDetails_NationalityRequiredError))]
+    [RequiredIf(nameof(ShowDobAndNationality), true, ErrorMessageResourceName = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityPscDetails_NationalityRequiredError), ErrorMessageResourceType = typeof(StaticTextResource))]
     public string? Nationality { get; set; }
 
     [BindProperty]

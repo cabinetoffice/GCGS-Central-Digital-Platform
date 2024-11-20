@@ -17,7 +17,7 @@ public class ConnectedEntityDirectorResidencyModel(ISession session) : PageModel
     public Guid? ConnectedEntityId { get; set; }
 
     [BindProperty]
-    [Required(ErrorMessage = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityDirectorResidency_SelectCountryError))]
+    [Required(ErrorMessageResourceName = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityDirectorResidency_SelectCountryError), ErrorMessageResourceType = typeof(StaticTextResource))]
     public string? DirectorLocation { get; set; }
     public string? Caption { get; set; }
     public string? Heading { get; set; }

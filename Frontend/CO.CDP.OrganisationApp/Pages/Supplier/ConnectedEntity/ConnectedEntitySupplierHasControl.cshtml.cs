@@ -15,7 +15,7 @@ public class ConnectedEntitySupplierHasControlModel(
     ISession session) : PageModel
 {
     [BindProperty]
-    [Required(ErrorMessage = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntitySupplierHasControl_ControlledByPersonOrCompanyError))]
+    [Required(ErrorMessageResourceName = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntitySupplierHasControl_ControlledByPersonOrCompanyError), ErrorMessageResourceType = typeof(StaticTextResource))]
     public bool? ControlledByPersonOrCompany { get; set; }
 
     [BindProperty(SupportsGet = true)]

@@ -18,11 +18,11 @@ public class ConnectedEntityLegalFormQuestionModel(ISession session) : PageModel
     public Guid? ConnectedEntityId { get; set; }
 
     [BindProperty]
-    [Required(ErrorMessage = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityLegalFormQuestion_HasLegalFormError))]
+    [Required(ErrorMessageResourceName = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityLegalFormQuestion_HasLegalFormError), ErrorMessageResourceType = typeof(StaticTextResource))]
     public bool? HasLegalForm { get; set; }
 
     [BindProperty]
-    [RequiredIf(nameof(HasLegalForm), true, ErrorMessage = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityLegalFormQuestion_LegalFormNameRequiredError))]
+    [RequiredIf(nameof(HasLegalForm), true, ErrorMessageResourceName = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityLegalFormQuestion_LegalFormNameRequiredError), ErrorMessageResourceType = typeof(StaticTextResource))]
     public string? LegalFormName { get; set; }
     public string? Caption { get; set; }
     public string? Heading { get; set; }
