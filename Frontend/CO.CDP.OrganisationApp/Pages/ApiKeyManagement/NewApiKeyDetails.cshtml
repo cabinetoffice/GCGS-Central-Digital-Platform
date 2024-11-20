@@ -6,51 +6,49 @@
     ViewData["Title"] = StaticTextResource.ApiKeyManagement_NewApiKeyDetails_Title;
 }
 
-<main class="govuk-main-wrapper" id="main-content">
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
-            <form class="form" method="post">
-                <div class="govuk-grid-column-full">
-                    <div class="govuk-panel govuk-panel--confirmation">
-                        <h1 class="govuk-panel__title">@ViewData["Title"]</h1>
-                        <div class="govuk-panel__body">
-                            @StaticTextResource.ApiKeyManagement_NewApiKeyDetails_YourApiKey<br>
-                            <strong id="apikeytext">@Model.ApiKey</strong>
-                        </div>
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <form class="form" method="post">
+            <div class="govuk-grid-column-full">
+                <div class="govuk-panel govuk-panel--confirmation">
+                    <h1 class="govuk-panel__title">@ViewData["Title"]</h1>
+                    <div class="govuk-panel__body">
+                        @StaticTextResource.ApiKeyManagement_NewApiKeyDetails_YourApiKey<br>
+                        <strong id="apikeytext">@Model.ApiKey</strong>
                     </div>
                 </div>
+            </div>
 
-                <div class="govuk-grid-row">
-                    <div class="govuk-grid-column-two-thirds">
-                        <div class="govuk-inset-text">
-                            @StaticTextResource.ApiKeyManagement_NewApiKeyDetails_CopyApiKey
-                        </div>
-                        <p class="govuk-body">
-                            @StaticTextResource.ApiKeyManagement_NewApiKeyDetails_Notice
-                        </p>
-
-                        <govuk-button id="copybutton" type="button" class="govuk-button--secondary govuk-visually-hidden" onclick="javascript:copyContent('apikeytext');" prevent-double-click="false">
-                            @StaticTextResource.ApiKeyManagement_NewApiKeyDetails_CopyButton
-                        </govuk-button>
-
-                        <p>
-                            <a class="govuk-link govuk-link--no-visited-state" href="/organisation/@Model.Id/manage-api-keys">@StaticTextResource.ApiKeyManagement_NewApiKeyDetails_BackToApiKeys</a>
-                        </p>
+            <div class="govuk-grid-row">
+                <div class="govuk-grid-column-two-thirds">
+                    <div class="govuk-inset-text">
+                        @StaticTextResource.ApiKeyManagement_NewApiKeyDetails_CopyApiKey
                     </div>
-                </div>
-            </form>
-            <script>
-                document.getElementById("copybutton").classList.remove('govuk-visually-hidden');
+                    <p class="govuk-body">
+                        @StaticTextResource.ApiKeyManagement_NewApiKeyDetails_Notice
+                    </p>
 
-                const copyContent =
-                    async (id) => {
-                        try {
-                            const text = document.getElementById(id).innerHTML;
-                            await navigator.clipboard.writeText(text);
-                        }
-                        catch (e) { }
+                    <govuk-button id="copybutton" type="button" class="govuk-button--secondary govuk-visually-hidden" onclick="javascript:copyContent('apikeytext');" prevent-double-click="false">
+                        @StaticTextResource.ApiKeyManagement_NewApiKeyDetails_CopyButton
+                    </govuk-button>
+
+                    <p>
+                        <a class="govuk-link govuk-link--no-visited-state" href="/organisation/@Model.Id/manage-api-keys">@StaticTextResource.ApiKeyManagement_NewApiKeyDetails_BackToApiKeys</a>
+                    </p>
+                </div>
+            </div>
+        </form>
+        <script>
+            document.getElementById("copybutton").classList.remove('govuk-visually-hidden');
+
+            const copyContent =
+                async (id) => {
+                    try {
+                        const text = document.getElementById(id).innerHTML;
+                        await navigator.clipboard.writeText(text);
                     }
-            </script>
-        </div>
+                    catch (e) { }
+                }
+        </script>
     </div>
-</main>
+</div>

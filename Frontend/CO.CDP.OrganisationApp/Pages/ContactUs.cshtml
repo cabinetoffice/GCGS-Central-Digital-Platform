@@ -12,7 +12,6 @@
     var messageHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Message)).HasInnerHtml;
 }
 
-<main class="govuk-main-wrapper" id="main-content">
     @if (Model.MessageSent == true)
     {
         <div class="govuk-grid-row">
@@ -114,4 +113,3 @@
             </div>
         </div>
     }
-</main>

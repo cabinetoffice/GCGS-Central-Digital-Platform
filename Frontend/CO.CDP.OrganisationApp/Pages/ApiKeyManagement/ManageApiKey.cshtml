@@ -20,64 +20,65 @@
         );
     }
 }
-<a href="/organisation/@Model.Id" class="govuk-back-link">@StaticTextResource.Global_Back</a>
 
-<main class="govuk-main-wrapper" id="main-content">
-    <form class="form" method="post">
-        <h1 class="govuk-heading-l">
-            @ViewData["Title"]
-        </h1>
+@section BeforeContent {
+    <a href="/organisation/@Model.Id" class="govuk-back-link">@StaticTextResource.Global_Back</a>
+}
 
-        @if (count == 0)
-        {
-            <p class="govuk-body">
-                @StaticTextResource.ApiKeyManagement_ManageApiKey_NoKeysText
-            </p>
-        }
-        else
-        {
-            <p class="govuk-body">
-                @StaticTextResource.ApiKeyManagement_ManageApiKey_Description <authorize scope="@OrgScopeRequirement.Editor">@StaticTextResource.ApiKeyManagement_ManageApiKey_Description_Editor</authorize>
-            </p>
-            <div class="govuk-form-group">
-                <dl class="govuk-summary-list ros-add-to-a-list">
+<form class="form" method="post">
+    <h1 class="govuk-heading-l">
+        @ViewData["Title"]
+    </h1>
+
+    @if (count == 0)
+    {
+        <p class="govuk-body">
+            @StaticTextResource.ApiKeyManagement_ManageApiKey_NoKeysText
+        </p>
+    }
+    else
+    {
+        <p class="govuk-body">
+            @StaticTextResource.ApiKeyManagement_ManageApiKey_Description <authorize scope="@OrgScopeRequirement.Editor">@StaticTextResource.ApiKeyManagement_ManageApiKey_Description_Editor</authorize>
+        </p>
+        <div class="govuk-form-group">
+            <dl class="govuk-summary-list ros-add-to-a-list">
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">@StaticTextResource.ApiKeyManagement_ManageApiKey_TableHeader_Name</dt>
+                    <dt class="govuk-summary-list__key">@StaticTextResource.ApiKeyManagement_ManageApiKey_TableHeader_DateCreated</dt>
+                    <dt class="govuk-summary-list__key">@StaticTextResource.ApiKeyManagement_ManageApiKey_TableHeader_DateCancelled</dt>
+                    <dt class="govuk-summary-list__key govuk-summary-list__actions">
+                        @StaticTextResource.ApiKeyManagement_ManageApiKey_TableHeader_Actions
+                    </dt>
+                </div>
+                @foreach (var ak in apiKeys)
+                {
                     <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">@StaticTextResource.ApiKeyManagement_ManageApiKey_TableHeader_Name</dt>
-                        <dt class="govuk-summary-list__key">@StaticTextResource.ApiKeyManagement_ManageApiKey_TableHeader_DateCreated</dt>
-                        <dt class="govuk-summary-list__key">@StaticTextResource.ApiKeyManagement_ManageApiKey_TableHeader_DateCancelled</dt>
-                        <dt class="govuk-summary-list__key govuk-summary-list__actions">
-                            @StaticTextResource.ApiKeyManagement_ManageApiKey_TableHeader_Actions
-                        </dt>
+                        <dd class="govuk-summary-list__value">@ak.Name</dd>
+                        <dd class="govuk-summary-list__value">@ak.CreatedOn.ToFormattedString()</dd>
+                        <dd class="govuk-summary-list__value">@(ak.Revoked == true ? ak.RevokedOn?.ToFormattedString() : "")</dd>
+                        <dd class="govuk-summary-list__actions">
+                            @if (ak.Revoked == true)
+                            {
+                                <span class="govuk-tag govuk-tag--red govuk-!-font-size-16">@StaticTextResource.ApiKeyManagement_ManageApiKey_Status_Cancelled</span>
+                            }
+                            else
+                            {
+                                <authorize scope="@OrgScopeRequirement.Editor">
+                                    <a asp-page="RevokeApiKey" class="govuk-link" asp-route-id="@Model.Id" asp-route-apiKeyName="@ak.Name">@StaticTextResource.ApiKeyManagement_ManageApiKey_Action_Cancel</a>
+                                </authorize>
+                            }
+                        </dd>
                     </div>
-                    @foreach (var ak in apiKeys)
-                    {
-                        <div class="govuk-summary-list__row">
-                            <dd class="govuk-summary-list__value">@ak.Name</dd>
-                            <dd class="govuk-summary-list__value">@ak.CreatedOn.ToFormattedString()</dd>
-                            <dd class="govuk-summary-list__value">@(ak.Revoked == true ? ak.RevokedOn?.ToFormattedString() : "")</dd>
-                            <dd class="govuk-summary-list__actions">
-                                @if (ak.Revoked == true)
-                                {
-                                    <span class="govuk-tag govuk-tag--red govuk-!-font-size-16">@StaticTextResource.ApiKeyManagement_ManageApiKey_Status_Cancelled</span>
-                                }
-                                else
-                                {
-                                    <authorize scope="@OrgScopeRequirement.Editor">
-                                        <a asp-page="RevokeApiKey" class="govuk-link" asp-route-id="@Model.Id" asp-route-apiKeyName="@ak.Name">@StaticTextResource.ApiKeyManagement_ManageApiKey_Action_Cancel</a>
-                                    </authorize>
-                                }
-                            </dd>
-                        </div>
-                    }
-                </dl>
-            </div>
+                }
+            </dl>
+        </div>
 
-        }
+    }
 
-        <authorize scope="@OrgScopeRequirement.Editor">
-            <govuk-button class="govuk-!-margin-top-6">
-                @StaticTextResource.ApiKeyManagement_ManageApiKey_CreateButton
-            </govuk-button>
-        </authorize>
-    </form>
-</main>
+    <authorize scope="@OrgScopeRequirement.Editor">
+        <govuk-button class="govuk-!-margin-top-6">
+            @StaticTextResource.ApiKeyManagement_ManageApiKey_CreateButton
+        </govuk-button>
+    </authorize>
+</form>

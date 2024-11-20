@@ -6,26 +6,27 @@
     var backLink = $"/organisation/{@Model.Id}/manage-api-keys";
     ViewData["Title"] = StaticTextResource.ApiKeyManagement_RevokeApiKey_Title;
 }
-<a href="@backLink" class="govuk-back-link">@StaticTextResource.Global_Back</a>
 
-<main class="govuk-main-wrapper" id="main-content">
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
-            <form class="form" method="post">
-                <h1 class="govuk-heading-l">@ViewData["Title"]</h1>
-                <p class="govuk-body">
-                    @StaticTextResource.ApiKeyManagement_RevokeApiKey_Description1
-                </p>
-                <p class="govuk-body">
-                    @StaticTextResource.ApiKeyManagement_RevokeApiKey_Description2
-                </p>
-                <div class="govuk-button-group govuk-!-margin-top-6">
-                    <govuk-button class="govuk-button--warning">
-                        @StaticTextResource.ApiKeyManagement_RevokeApiKey_CancelButton
-                    </govuk-button>
-                    <a class="govuk-link govuk-link--no-visited-state" href="@backLink">@StaticTextResource.Global_Back</a>
-                </div>
-            </form>
-        </div>
+@section BeforeContent {
+    <a href="@backLink" class="govuk-back-link">@StaticTextResource.Global_Back</a>
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <form class="form" method="post">
+            <h1 class="govuk-heading-l">@ViewData["Title"]</h1>
+            <p class="govuk-body">
+                @StaticTextResource.ApiKeyManagement_RevokeApiKey_Description1
+            </p>
+            <p class="govuk-body">
+                @StaticTextResource.ApiKeyManagement_RevokeApiKey_Description2
+            </p>
+            <div class="govuk-button-group govuk-!-margin-top-6">
+                <govuk-button class="govuk-button--warning">
+                    @StaticTextResource.ApiKeyManagement_RevokeApiKey_CancelButton
+                </govuk-button>
+                <a class="govuk-link govuk-link--no-visited-state" href="@backLink">@StaticTextResource.Global_Back</a>
+            </div>
+        </form>
     </div>
-</main>
+</div>

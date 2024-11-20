@@ -9,7 +9,8 @@ public class UserInfoService(IHttpContextAccessor httpContextAccessor, ITenantCl
     {
         var tenantLookup = await tenantClient.LookupTenantAsync();
         var userScopes = tenantLookup.User.Scopes;
-        var organisationUserScopes = tenantLookup.Tenants.SelectMany(x => x.Organisations.SelectMany(y => y.Scopes)).ToList();
+        var organisationId = GetOrganisationId();
+        var organisationUserScopes = tenantLookup.Tenants.SelectMany(x => x.Organisations.Where(y => y.Id == organisationId).SelectMany(y => y.Scopes)).ToList();
 
         return organisationUserScopes.Contains(OrganisationPersonScopes.Viewer) || (organisationUserScopes.Count == 0 && userScopes.Contains(PersonScopes.SupportAdmin));
     }

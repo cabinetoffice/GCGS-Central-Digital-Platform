@@ -9,41 +9,42 @@
 @{
     var apiKeyNameHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.ApiKeyName)).HasInnerHtml;
 }
-<a href="/organisation/@Model.Id/manage-api-keys" class="govuk-back-link">@StaticTextResource.Global_Back</a>
 
-<main class="govuk-main-wrapper" id="main-content">
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
-            <partial name="_ErrorSummary" model="@ModelState" />
-            <form class="form" method="post">
-                <div class="govuk-form-group">
-                    <h1 class="govuk-label-wrapper">
-                        <label class="govuk-label govuk-label--l" for="APIKeyName">
-                            @ViewData["Title"]
-                        </label>
-                    </h1>
-                    <div id="hint" class="govuk-hint">
-                        @StaticTextResource.ApiKeyManagement_CreateApiKey_Hint
-                    </div>
-                    <div class="govuk-form-group @(apiKeyNameHasError ? "govuk-form-group--error" : "")">
-                        @if (apiKeyNameHasError)
-                        {
-                            <p id="api-key-name-error" class="govuk-error-message">
-                                <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span>
-                                @Html.ValidationMessageFor(m => m.ApiKeyName)
-                            </p>
-                        }
-                        <input class="govuk-input govuk-!-width-two-thirds @(apiKeyNameHasError ? "govuk-input--error" : "")"
-                               id="@nameof(Model.ApiKeyName)" value="@Model.ApiKeyName" name="@nameof(Model.ApiKeyName)" type="text"
-                               @(apiKeyNameHasError ? "aria-describedby=api-key-name-error" : "")>
+@section BeforeContent {
+    <a href="/organisation/@Model.Id/manage-api-keys" class="govuk-back-link">@StaticTextResource.Global_Back</a>
+}
 
-                    </div>
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <partial name="_ErrorSummary" model="@ModelState" />
+        <form class="form" method="post">
+            <div class="govuk-form-group">
+                <h1 class="govuk-label-wrapper">
+                    <label class="govuk-label govuk-label--l" for="APIKeyName">
+                        @ViewData["Title"]
+                    </label>
+                </h1>
+                <div id="hint" class="govuk-hint">
+                    @StaticTextResource.ApiKeyManagement_CreateApiKey_Hint
                 </div>
+                <div class="govuk-form-group @(apiKeyNameHasError ? "govuk-form-group--error" : "")">
+                    @if (apiKeyNameHasError)
+                    {
+                        <p id="api-key-name-error" class="govuk-error-message">
+                            <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span>
+                            @Html.ValidationMessageFor(m => m.ApiKeyName)
+                        </p>
+                    }
+                    <input class="govuk-input govuk-!-width-two-thirds @(apiKeyNameHasError ? "govuk-input--error" : "")"
+                            id="@nameof(Model.ApiKeyName)" value="@Model.ApiKeyName" name="@nameof(Model.ApiKeyName)" type="text"
+                            @(apiKeyNameHasError ? "aria-describedby=api-key-name-error" : "")>
 
-                <govuk-button class="govuk-!-margin-top-6">
-                    @StaticTextResource.Global_Continue
-                </govuk-button>
-            </form>
-        </div>
+                </div>
+            </div>
+
+            <govuk-button class="govuk-!-margin-top-6">
+                @StaticTextResource.Global_Continue
+            </govuk-button>
+        </form>
     </div>
-</main>
+</div>

@@ -5,9 +5,10 @@
     var backUrl = $"/organisation/{Model.OrganisationId}/forms/{Model.FormId}/sections/{Model.SectionId}/share-codes-list-view";
 }
 
-<a href="@backUrl" class="govuk-back-link">Back</a>
+@section BeforeContent {
+    <a href="@backUrl" class="govuk-back-link">Back</a>
+}
 
-<main class="govuk-main-wrapper" id="main-content">
     <div class="govuk-grid-column-ful-width">
         <div class="govuk-panel govuk-panel--confirmation">
             <h1 class="govuk-panel__title">
@@ -21,4 +22,3 @@
         <p class="govuk-body">If your supplier information changes, you can update it and create a new share code and file to share the new information.</p>
         <p class="govuk-body"><a href="/organisation/@Model.OrganisationId/supplier-information">Back to organisation details</a></p>
     </div>
-</main>
