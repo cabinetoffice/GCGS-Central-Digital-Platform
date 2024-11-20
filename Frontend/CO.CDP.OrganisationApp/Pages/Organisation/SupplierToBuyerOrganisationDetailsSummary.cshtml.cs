@@ -55,8 +55,6 @@ public class SupplierToBuyerOrganisationDetailsSummaryModel(
             await organisationClient.UpdateOrganisationAddAsBuyerRole(Id, state);
 
             tempDataService.Remove(SupplierToBuyerStateKey);
-            tempDataService.Put(FlashMessageTypes.Success, new FlashMessage(
-                  "Buyer registration pending approval"));
 
             return RedirectToPage("OrganisationOverview", new { Id });
         }

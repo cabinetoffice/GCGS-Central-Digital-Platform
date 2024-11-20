@@ -101,8 +101,6 @@ public class SupplierToBuyerOrganisationDetailsSummaryTest
             Times.Once);
 
         tempDataServiceMock.Verify(td => td.Remove($"Supplier_To_Buyer_{orgId}_Answers"), Times.Once);
-        tempDataServiceMock.Verify(td => td.Put(FlashMessageTypes.Success, It.Is<FlashMessage>(fm =>
-            fm.Heading == "Buyer registration pending approval")), Times.Once);
 
         var redirectResult = result.Should().BeOfType<RedirectToPageResult>().Subject;
         redirectResult.PageName.Should().Be("OrganisationOverview");

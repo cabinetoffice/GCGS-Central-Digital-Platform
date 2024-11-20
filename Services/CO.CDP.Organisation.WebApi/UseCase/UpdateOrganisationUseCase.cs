@@ -1,13 +1,13 @@
 using AutoMapper;
-using CO.CDP.GovUKNotify.Models;
 using CO.CDP.GovUKNotify;
+using CO.CDP.GovUKNotify.Models;
 using CO.CDP.MQ;
 using CO.CDP.Organisation.WebApi.Events;
 using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.OrganisationInformation;
 using CO.CDP.OrganisationInformation.Persistence;
-using Persistence = CO.CDP.OrganisationInformation.Persistence;
 using Address = CO.CDP.OrganisationInformation.Persistence.Address;
+using Persistence = CO.CDP.OrganisationInformation.Persistence;
 
 namespace CO.CDP.Organisation.WebApi.UseCase;
 
@@ -61,7 +61,10 @@ public class UpdateOrganisationUseCase(
                     OrganisationId = organisation.Id
                 };
 
-                organisation.Roles.Add(PartyRole.Buyer);
+                organisation.PendingRoles.Add(PartyRole.Buyer);
+
+                await SendBuyerApprovalEmail(organisation);
+
                 break;
 
             case OrganisationUpdateType.OrganisationEmail:
@@ -231,7 +234,7 @@ public class UpdateOrganisationUseCase(
 
             if (review.Status == ReviewStatus.Rejected)
             {
-                await ResendBuyerApprovalEmail(organisation);
+                await SendBuyerApprovalEmail(organisation);
 
                 organisation.ReviewComment = null;
                 organisation.ReviewedBy = null;
@@ -239,7 +242,7 @@ public class UpdateOrganisationUseCase(
         }
     }
 
-    private async Task ResendBuyerApprovalEmail(Persistence.Organisation organisation)
+    private async Task SendBuyerApprovalEmail(Persistence.Organisation organisation)
     {
         var baseAppUrl = configuration.GetValue<string>("OrganisationAppUrl") ?? "";
         var templateId = configuration.GetValue<string>("GOVUKNotify:RequestReviewApplicationEmailTemplateId") ?? "";
@@ -247,9 +250,12 @@ public class UpdateOrganisationUseCase(
 
         var missingConfigs = new List<string>();
 
-        if (string.IsNullOrEmpty(baseAppUrl)) missingConfigs.Add("OrganisationAppUrl");
-        if (string.IsNullOrEmpty(templateId)) missingConfigs.Add("GOVUKNotify:RequestReviewApplicationEmailTemplateId");
-        if (string.IsNullOrEmpty(supportAdminEmailAddress)) missingConfigs.Add("GOVUKNotify:SupportAdminEmailAddress");
+        if (string.IsNullOrEmpty(baseAppUrl))
+            missingConfigs.Add("OrganisationAppUrl");
+        if (string.IsNullOrEmpty(templateId))
+            missingConfigs.Add("GOVUKNotify:RequestReviewApplicationEmailTemplateId");
+        if (string.IsNullOrEmpty(supportAdminEmailAddress))
+            missingConfigs.Add("GOVUKNotify:SupportAdminEmailAddress");
 
         if (missingConfigs.Count != 0)
         {

@@ -645,17 +645,23 @@ public class UpdateOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
                     DevolvedRegulations = []
                 }
             }
-
         };
+
         var organisation = GivenOrganisation([PartyRole.Tenderer]);
         _organisationRepositoryMock.Setup(repo => repo.FindIncludingTenant(_organisationId)).ReturnsAsync(organisation);
 
         var result = await _useCase.Execute((_organisationId, command));
 
         result.Should().BeTrue();
+
         _organisationRepositoryMock.Verify(repo => repo.SaveAsync(organisation, AnyOnSave()), Times.Once);
         organisation.BuyerInfo?.BuyerType.Should().BeEquivalentTo("A buyer type");
-        organisation.Roles.Distinct().Should().BeEquivalentTo(new[] { PartyRole.Tenderer, PartyRole.Buyer });
+
+        organisation.PendingRoles.Should().ContainSingle().Which.Should().Be(PartyRole.Buyer);
+
+        organisation.Roles.Distinct().Should().BeEquivalentTo(new[] { PartyRole.Tenderer });
+
+        _notifyClient.Verify(n => n.SendEmail(It.IsAny<EmailNotificationRequest>()), Times.Once);
     }
 
     [Fact]
