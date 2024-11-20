@@ -6,7 +6,7 @@
 @{
     ViewData["Title"] = string.Format(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityPostalSameAsRegisteredAddress_PageTitle, Model.OrganisationName);
 
-    var hasError = ((TagBuilder)Html.ValidationMessageFor(m => m.DifferentThanRegiseterdAddress)).HasInnerHtml;
+    var hasError = ((TagBuilder)Html.ValidationMessageFor(m => m.DifferentThanRegisteredAddress)).HasInnerHtml;
     var ukNonUkAddress = Model.IsNonUkAddress.GetValueOrDefault() ? "non-uk" : "uk";
 }
 
@@ -36,14 +36,14 @@
 
                     <div class="govuk-radios" data-module="govuk-radios">
                         <div class="govuk-radios__item">
-                            <input class="govuk-radios__input" id="YES" name="DifferentThanRegiseterdAddress" type="radio"
-                                    value="true" @(Model.DifferentThanRegiseterdAddress == true ? "checked" : "")>
+                            <input class="govuk-radios__input" id="YES" name="DifferentThanRegisteredAddress" type="radio"
+                                    value="true" @(Model.DifferentThanRegisteredAddress == true ? "checked" : "")>
                             <label class="govuk-label govuk-radios__label" for="YES">@StaticTextResource.Global_Yes</label>
                         </div>
 
                         <div class="govuk-radios__item">
-                            <input class="govuk-radios__input" id="NO" name="DifferentThanRegiseterdAddress" type="radio"
-                                    value="false" @(Model.DifferentThanRegiseterdAddress == false ? "checked" : "")>
+                            <input class="govuk-radios__input" id="NO" name="DifferentThanRegisteredAddress" type="radio"
+                                    value="false" @(Model.DifferentThanRegisteredAddress == false ? "checked" : "")>
                             <label class="govuk-label govuk-radios__label" for="NO">@StaticTextResource.Global_No</label>
                         </div>
                     </div>

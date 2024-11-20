@@ -11,7 +11,7 @@ namespace CO.CDP.OrganisationApp.Pages.Supplier;
 public class ConnectedEntitySupplierCompanyQuestionModel(ISession session) : PageModel
 {
     [BindProperty]
-    [Required(ErrorMessageResourceName = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntitySupplierCompanyQuestion_RegisteredWithChError), ErrorMessageResourceType = typeof(StaticTextResource))]
+    [Required(ErrorMessageResourceName = nameof(StaticTextResource.Global_SelectYesOrNo), ErrorMessageResourceType = typeof(StaticTextResource))]
     public bool? RegisteredWithCh { get; set; }
 
     [BindProperty(SupportsGet = true)]

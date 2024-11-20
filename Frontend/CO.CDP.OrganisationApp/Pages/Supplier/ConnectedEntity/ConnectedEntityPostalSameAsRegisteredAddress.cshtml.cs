@@ -17,8 +17,8 @@ public class ConnectedEntityPostalSameAsRegisteredAddressModel(ISession session)
     public Guid? ConnectedEntityId { get; set; }
 
     [BindProperty]
-    [Required(ErrorMessageResourceName = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityPostalSameAsRegisteredAddress_HasDifferentPostalAddressError), ErrorMessageResourceType = typeof(StaticTextResource))]
-    public bool? DifferentThanRegiseterdAddress { get; set; }
+    [Required(ErrorMessageResourceName = nameof(StaticTextResource.Global_SelectYesOrNo), ErrorMessageResourceType = typeof(StaticTextResource))]
+    public bool? DifferentThanRegisteredAddress { get; set; }
 
     public string? Caption { get; set; }
 
@@ -40,7 +40,7 @@ public class ConnectedEntityPostalSameAsRegisteredAddressModel(ISession session)
 
         var sameAddress = state.RegisteredAddress?.AreSameAddress(state.PostalAddress);
 
-        DifferentThanRegiseterdAddress = selected.HasValue ? selected : (sameAddress.HasValue ? !sameAddress : sameAddress);
+        DifferentThanRegisteredAddress = selected.HasValue ? selected : (sameAddress.HasValue ? !sameAddress : sameAddress);
 
         InitModel(state);
 
@@ -65,7 +65,7 @@ public class ConnectedEntityPostalSameAsRegisteredAddressModel(ISession session)
             return Page();
         }
         state.PostalAddress = null;
-        if (DifferentThanRegiseterdAddress == false)
+        if (DifferentThanRegisteredAddress == false)
         {
             state.PostalAddress = state.RegisteredAddress;
             session.Set(Session.ConnectedPersonKey, state);

@@ -18,7 +18,7 @@ public class ConnectedEntityLegalFormQuestionModel(ISession session) : PageModel
     public Guid? ConnectedEntityId { get; set; }
 
     [BindProperty]
-    [Required(ErrorMessageResourceName = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityLegalFormQuestion_HasLegalFormError), ErrorMessageResourceType = typeof(StaticTextResource))]
+    [Required(ErrorMessageResourceName = nameof(StaticTextResource.Global_SelectYesOrNo), ErrorMessageResourceType = typeof(StaticTextResource))]
     public bool? HasLegalForm { get; set; }
 
     [BindProperty]

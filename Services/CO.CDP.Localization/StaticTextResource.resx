@@ -582,9 +582,6 @@
   <data name="Supplier_ConnectedEntity_ConnectedEntityCompanyQuestion_Hint" xml:space="preserve">
     <value>Is the ‘connected person’ registered with Companies House as required by the Companies Act 2006.</value>
   </data>
-  <data name="Supplier_ConnectedEntity_ConnectedEntityCompanyQuestion_HasCompaniesHouseError" xml:space="preserve">
-    <value>Select yes if the organisation is registered with Companies House</value>
-  </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityCompanyQuestion_EnterNumberError" xml:space="preserve">
     <value>Enter the Companies House number</value>
   </data>
@@ -595,7 +592,7 @@
     <value>Which specified conditions of control does {0} have?</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityControlCondition_SelectConditionError" xml:space="preserve">
-    <value>Select which specified conditions of control your organisation has</value>
+    <value>Select specified conditions of control</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityControlCondition_Hint" xml:space="preserve">
     <value>As defined in &lt;a href="https://www.legislation.gov.uk/ukpga/2006/46/schedule/1A/part/1?timeline=false" target="_blank"&gt;part 1 schedule 1a of the Companies Act 2006&lt;/a&gt;. Select all that apply.</value>
@@ -652,13 +649,13 @@
     <value>Please select</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityCompanyRegisterName_SelectIfRegisteredError" xml:space="preserve">
-    <value>Select if organisation is registered as person with significant control</value>
+    <value>Select where registered</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityCompanyRegisterName_OtherRegisterNameLabel" xml:space="preserve">
     <value>Register name</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityCompanyRegisterName_OtherRegisterNameRequiredError" xml:space="preserve">
-    <value>Enter the register name</value>
+    <value>Enter register name</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityCompanyRegisterName_Heading" xml:space="preserve">
     <value>Select where {0} is registered as person with significant control</value>
@@ -667,13 +664,13 @@
     <value>People with significant control register on Companies House</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityLawRegister_LegalFormRequiredError" xml:space="preserve">
-    <value>Enter the organisation's legal form</value>
+    <value>Enter legal formation</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityLawRegister_LawEnforcesLabel" xml:space="preserve">
     <value>Which law enforces it?</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityLawRegister_LawEnforcesRequiredError" xml:space="preserve">
-    <value>Enter which law enforces it</value>
+    <value>Enter law</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityLawRegister_LegalFormQuestion" xml:space="preserve">
     <value>What is {0}'s legal form?</value>
@@ -686,9 +683,6 @@
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityLawRegister_LawEnforcesHint" xml:space="preserve">
     <value>For example, Companies Act 2006.</value>
-  </data>
-  <data name="Supplier_ConnectedEntity_ConnectedEntityLegalFormQuestion_HasLegalFormError" xml:space="preserve">
-    <value>Select yes if the organisation has a legal form</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityLegalFormQuestion_LegalFormNameRequiredError" xml:space="preserve">
     <value>Enter the legal form name</value>
@@ -709,7 +703,7 @@
     <value>The ‘connected person’ that has control or influence over your organisation should fall into one of these categories.</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityOrganisationCategory_SelectCategoryError" xml:space="preserve">
-    <value>Select the category that best describes the 'connected person'</value>
+    <value>Select the category</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityOrganisationCategory_Option_RegisteredCompany" xml:space="preserve">
     <value>registered company</value>
@@ -734,9 +728,6 @@
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityPostalSameAsRegisteredAddress_Hint" xml:space="preserve">
     <value>The place where an organisation receives official post can be different from its registered address. For example, a branch office.</value>
-  </data>
-  <data name="Supplier_ConnectedEntity_ConnectedEntityPostalSameAsRegisteredAddress_HasDifferentPostalAddressError" xml:space="preserve">
-    <value>Select yes if the organisation has a different postal address</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityPscDetails_FirstNameLabel" xml:space="preserve">
     <value>First name</value>
@@ -778,10 +769,7 @@
     <value>Nationality</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityPscDetails_NationalityRequiredError" xml:space="preserve">
-    <value>Enter your nationality</value>
-  </data>
-  <data name="Supplier_ConnectedEntity_ConnectedEntityRegistrationDateQuestion_HasRegistrationDateError" xml:space="preserve">
-    <value>Select yes if you were required to register them as a person with significant control</value>
+    <value>Enter nationality</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityRegistrationDateQuestion_DayRequiredError" xml:space="preserve">
     <value>Date of registration must include a day</value>
@@ -858,14 +846,11 @@
   <data name="Supplier_ConnectedEntity_ConnectedEntitySupplierCompanyQuestion_Hint" xml:space="preserve">
     <value>Is the supplier organisation registered with Companies House as required by the Companies Act 2006? We’ve already asked you this, but please reconfirm.</value>
   </data>
-  <data name="Supplier_ConnectedEntity_ConnectedEntitySupplierCompanyQuestion_RegisteredWithChError" xml:space="preserve">
-    <value>Select yes if supplier organisation registered with Companies House</value>
-  </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntitySupplierHasControl_PageTitle" xml:space="preserve">
     <value>Is your organisation influenced or controlled by another person or company?</value>
   </data>
-  <data name="Supplier_ConnectedEntity_ConnectedEntitySupplierHasControl_ControlledByPersonOrCompanyError" xml:space="preserve">
-    <value>Select if your organisation is influenced or controlled by another person or company</value>
+  <data name="Global_SelectYesOrNo" xml:space="preserve">
+    <value>Select yes or no</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedPersonSummary_PageTitle" xml:space="preserve">
     <value>You have added {0} connected person(s)</value>
@@ -950,9 +935,6 @@
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityOverseasCompanyQuestion_CompanyRegistrationNumberLabel" xml:space="preserve">
     <value>Company registration number</value>
-  </data>
-  <data name="Supplier_ConnectedEntity_ConnectedEntityOverseasCompanyQuestion_HasOverseasCompaniesHouseNumberError" xml:space="preserve">
-    <value>Select yes if the organisation is registered with an overseas equivalent to Companies House</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityOverseasCompanyQuestion_CompanyRegistrationNumberRequiredError" xml:space="preserve">
     <value>Enter the overseas company registration number</value>

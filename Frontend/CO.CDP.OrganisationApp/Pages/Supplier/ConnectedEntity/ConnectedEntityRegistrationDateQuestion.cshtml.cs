@@ -19,7 +19,7 @@ public class ConnectedEntityRegistrationDateQuestionModel(ISession session) : Pa
     public Guid? ConnectedEntityId { get; set; }
 
     [BindProperty]
-    [Required(ErrorMessageResourceName = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityRegistrationDateQuestion_HasRegistrationDateError), ErrorMessageResourceType = typeof(StaticTextResource))]
+    [Required(ErrorMessageResourceName = nameof(StaticTextResource.Global_SelectYesOrNo), ErrorMessageResourceType = typeof(StaticTextResource))]
     public bool? HasRegistrationDate { get; set; }
 
     [BindProperty]

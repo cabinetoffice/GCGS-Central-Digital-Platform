@@ -18,7 +18,7 @@ public class ConnectedEntityCompanyQuestionModel(ISession session) : PageModel
     public Guid? ConnectedEntityId { get; set; }
 
     [BindProperty]
-    [Required(ErrorMessageResourceName = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityCompanyQuestion_HasCompaniesHouseError), ErrorMessageResourceType = typeof(StaticTextResource))]
+    [Required(ErrorMessageResourceName = nameof(StaticTextResource.Global_SelectYesOrNo), ErrorMessageResourceType = typeof(StaticTextResource))]
     public bool? HasCompaniesHouseNumber { get; set; }
 
     [BindProperty]
