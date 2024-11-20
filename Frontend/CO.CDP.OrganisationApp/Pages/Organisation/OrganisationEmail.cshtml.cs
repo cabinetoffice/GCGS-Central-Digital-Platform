@@ -15,7 +15,7 @@ public class OrganisationEmailModel(OrganisationWebApiClient.IOrganisationClient
     [BindProperty]
     [DisplayName("Enter your organisation's email address")]
     [Required(ErrorMessage = "Enter your organisation's email address")]
-    [EmailAddress(ErrorMessage = "Enter an email address in the correct format, like name@example.com")]
+    [RegularExpression(RegExPatterns.EmailAddress, ErrorMessage = "Enter an email address in the correct format, like name@example.com")]
     public string? EmailAddress { get; set; }
 
     [BindProperty(SupportsGet = true)]
