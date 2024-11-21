@@ -27,11 +27,14 @@ public class OrganisationEmailModel(ISession session, ICharityCommissionApi char
 
         if ((RegistrationDetails.OrganisationScheme == OrganisationSchemeType.CharityCommissionEnglandWales) && (string.IsNullOrEmpty(EmailAddress)))
         {
-            var details = await charityCommissionApi.GetCharityDetails(RegistrationDetails.OrganisationIdentificationNumber!);
-
-            if (details != null)
+            if (RegistrationDetails.OrganisationIdentificationNumber != null)
             {
-                EmailAddress = details.Email;
+                var details = await charityCommissionApi.GetCharityDetails(RegistrationDetails.OrganisationIdentificationNumber);
+
+                if (details != null)
+                {
+                    EmailAddress = details.Email;
+                }
             }
         }
     }

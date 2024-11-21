@@ -38,11 +38,14 @@ public class OrganisationNameModel(ISession session, ICharityCommissionApi chari
 
         if ((RegistrationDetails.OrganisationScheme == OrganisationSchemeType.CharityCommissionEnglandWales) && (string.IsNullOrEmpty(OrganisationName)))
         {
-            var details = await charityCommissionApi.GetCharityDetails(RegistrationDetails.OrganisationIdentificationNumber!);
-
-            if (details != null)
+            if (RegistrationDetails.OrganisationIdentificationNumber != null)
             {
-                OrganisationName = details.Name;
+                var details = await charityCommissionApi.GetCharityDetails(RegistrationDetails.OrganisationIdentificationNumber);
+
+                if (details != null)
+                {
+                    OrganisationName = details.Name;
+                }
             }
         }
     }

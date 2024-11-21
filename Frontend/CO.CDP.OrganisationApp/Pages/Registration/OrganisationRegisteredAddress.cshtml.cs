@@ -57,14 +57,17 @@ public class OrganisationRegisteredAddressModel(ISession session, ICharityCommis
             (string.IsNullOrEmpty(Address.TownOrCity)) &&
             (string.IsNullOrEmpty(Address.Postcode)))
         {
-            var details = await charityCommissionApi.GetCharityDetails(RegistrationDetails.OrganisationIdentificationNumber!);
-
-            if (details != null)
+            if (RegistrationDetails.OrganisationIdentificationNumber != null)
             {
-                Address.AddressLine1 = details.AddressLine2;
-                Address.TownOrCity = details.AddressLine3;
-                Address.Postcode = details.PostalCode;
-                Address.Country = RegistrationDetails.OrganisationCountryCode;
+                var details = await charityCommissionApi.GetCharityDetails(RegistrationDetails.OrganisationIdentificationNumber);
+
+                if (details != null)
+                {
+                    Address.AddressLine1 = details.AddressLine2;
+                    Address.TownOrCity = details.AddressLine3;
+                    Address.Postcode = details.PostalCode;
+                    Address.Country = RegistrationDetails.OrganisationCountryCode;
+                }
             }
         }
     }

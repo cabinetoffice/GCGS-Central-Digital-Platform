@@ -39,6 +39,7 @@ The `OrganisationApp` requires the following secrets / environment variables:
 * `OneLogin:PrivateKey` / `OneLogin__PrivateKey`
 * `CompaniesHouse:Url` / `CompaniesHouse__Url`
 * `CompaniesHouse:User` / `CompaniesHouse__User`
+* `CompaniesHouse:Password` / `CompaniesHouse__Password`
 * `CharityCommission:Url` / `CharityCommission__Url`
 * `CharityCommission:SubscriptionKey` / `CharityCommission__SubscriptionKey`
 These can be set as secrets with the following dotnet commands:
@@ -65,6 +66,11 @@ for the `organisation-app` service:
       OneLogin__Authority: "https://oidc.example.com"
       OneLogin__ClientId: "client-id"
       OneLogin__PrivateKey: "-----BEGIN RSA PRIVATE KEY-----SECRET KEY-----END RSA PRIVATE KEY-----"
+      CompaniesHouse__Url: "https://api.company-information.service.gov.uk"
+      CompaniesHouse__User: "--UserId--"
+      CompaniesHouse__Password: ""
+      CharityCommission__Url: "https://api.charitycommission.gov.uk/register/api/"
+      CharityCommission__SubscriptionKey: "--SubscriptionKey --"
 ----
 
 === Organisation WebApi
