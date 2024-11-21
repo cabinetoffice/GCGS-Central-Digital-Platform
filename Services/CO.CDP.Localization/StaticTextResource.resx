@@ -1,17 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
-  <!-- 
-    Microsoft ResX Schema 
-    
+  <!--
+    Microsoft ResX Schema
+
     Version 2.0
-    
-    The primary goals of this format is to allow a simple XML format 
-    that is mostly human readable. The generation and parsing of the 
-    various data types are done through the TypeConverter classes 
+
+    The primary goals of this format is to allow a simple XML format
+    that is mostly human readable. The generation and parsing of the
+    various data types are done through the TypeConverter classes
     associated with the data types.
-    
+
     Example:
-    
+
     ... ado.net/XML headers & schema ...
     <resheader name="resmimetype">text/microsoft-resx</resheader>
     <resheader name="version">2.0</resheader>
@@ -26,36 +26,36 @@
         <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
         <comment>This is a comment</comment>
     </data>
-                
-    There are any number of "resheader" rows that contain simple 
+
+    There are any number of "resheader" rows that contain simple
     name/value pairs.
-    
-    Each data row contains a name, and value. The row also contains a 
-    type or mimetype. Type corresponds to a .NET class that support 
-    text/value conversion through the TypeConverter architecture. 
-    Classes that don't support this are serialized and stored with the 
+
+    Each data row contains a name, and value. The row also contains a
+    type or mimetype. Type corresponds to a .NET class that support
+    text/value conversion through the TypeConverter architecture.
+    Classes that don't support this are serialized and stored with the
     mimetype set.
-    
-    The mimetype is used for serialized objects, and tells the 
-    ResXResourceReader how to depersist the object. This is currently not 
+
+    The mimetype is used for serialized objects, and tells the
+    ResXResourceReader how to depersist the object. This is currently not
     extensible. For a given mimetype the value must be set accordingly:
-    
-    Note - application/x-microsoft.net.object.binary.base64 is the format 
-    that the ResXResourceWriter will generate, however the reader can 
+
+    Note - application/x-microsoft.net.object.binary.base64 is the format
+    that the ResXResourceWriter will generate, however the reader can
     read any of the formats listed below.
-    
+
     mimetype: application/x-microsoft.net.object.binary.base64
-    value   : The object must be serialized with 
+    value   : The object must be serialized with
             : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
             : and then encoded with base64 encoding.
-    
+
     mimetype: application/x-microsoft.net.object.soap.base64
-    value   : The object must be serialized with 
+    value   : The object must be serialized with
             : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
             : and then encoded with base64 encoding.
 
     mimetype: application/x-microsoft.net.object.bytearray.base64
-    value   : The object must be serialized into a byte array 
+    value   : The object must be serialized into a byte array
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
@@ -238,7 +238,7 @@
     <value>Thank you for contacting GOV.UK</value>
   </data>
   <data name="Supplementary_CloseThisWindow" xml:space="preserve">
-      <value>Close this window</value>
+    <value>Close this window</value>
   </data>
   <data name="Supplementary_PrivacyNotice_Title" xml:space="preserve">
     <value>Privacy notice: how we use your data</value>
@@ -336,17 +336,12 @@
   <data name="Supplementary_ContactUs_Email_ValidationErrorMessage" xml:space="preserve">
     <value>Enter an email address in the correct format, like name@example.com</value>
   </data>
-
-  <data name="Supplementary_ContactUs_Message" xml:space="preserve">
-    <value>Message</value>
-  </data>
   <data name="Supplementary_ContactUs_Message_ErrorMessage" xml:space="preserve">
     <value>Enter your message</value>
   </data>
   <data name="Supplementary_ContactUs_Message_ValidationErrorMessage" xml:space="preserve">
     <value>Message must be between 10 and 10,000 characters</value>
   </data>
-
   <data name="Supplementary_CookieDetails_Title" xml:space="preserve">
     <value>Details about cookies on Find a Tender</value>
   </data>
@@ -426,10 +421,7 @@
     <value>Stores the currently selected language requirement.</value>
   </data>
   <data name="Supplementary_CookieDetails_TableRow_Preferences" xml:space="preserve">
-    <value>Stores the cookies accept / reject preference.</value>
-  </data>
-  <data name="Supplementary_CookieDetails_TableRow_Preferences" xml:space="preserve">
-    <value></value>
+    <value />
   </data>
   <data name="Supplementary_Cookies_Title" xml:space="preserve">
     <value>Cookies on Find a Tender</value>
@@ -502,5 +494,437 @@
   </data>
   <data name="User_Role_Required_ErrorMessage" xml:space="preserve">
     <value>Role required</value>
+  <data name="OrganisationRegistration_OrganisationType_Heading" xml:space="preserve">
+    <value>What do you want to register your organisation as?</value>
+  </data>
+  <data name="OrganisationRegistration_OrganisationType_Buyer" xml:space="preserve">
+    <value>Buyer</value>
+  </data>
+  <data name="OrganisationRegistration_OrganisationType_Supplier" xml:space="preserve">
+    <value>Supplier</value>
+  </data>
+  <data name="OrganisationRegistration_OrganisationType_Buyer_Hint" xml:space="preserve">
+    <value>A contracting authority who publishes notices to buy goods, works, services or utilities</value>
+  </data>
+  <data name="OrganisationRegistration_OrganisationType_Supplier_Hint" xml:space="preserve">
+    <value>An organisation or sole trader who searches for tenders and submits bids to supply goods, works, services or utilities</value>
+  </data>
+  <data name="OrganisationRegistration_CompanyHouseNumberQuestion_Heading" xml:space="preserve">
+    <value>Does your organisation have a Companies House number?</value>
+  </data>
+  <data name="Global_Yes" xml:space="preserve">
+    <value>Yes</value>
+  </data>
+  <data name="Global_No" xml:space="preserve">
+    <value>No</value>
+  </data>
+  <data name="Global_ErrorSummary_Heading" xml:space="preserve">
+    <value>There is a problem</value>
+  </data>
+  <data name="OrganisationRegistration_EnterOrganisationEmail_Hint" xml:space="preserve">
+    <value>Where possible, use a shared inbox that other team members can access</value>
+  </data>
+  <data name="OrganisationRegistration_CompanyHouseNumberQuestion_Label" xml:space="preserve">
+    <value>Enter your company number</value>
+  </data>
+  <data name="Shared_Address_AddressLine1" xml:space="preserve">
+    <value>Address line 1</value>
+  </data>
+  <data name="Shared_Address_TownOrCity" xml:space="preserve">
+    <value>Town or city</value>
+  </data>
+  <data name="Shared_Address_AddressLine1_ErrorMessage" xml:space="preserve">
+    <value>Enter address line 1, typically the building and street</value>
+  </data>
+  <data name="Shared_Address_TownOrCity_ErrorMessage" xml:space="preserve">
+    <value>Enter town or city</value>
+  </data>
+  <data name="Shared_Address_Postcode" xml:space="preserve">
+    <value>Postcode</value>
+  </data>
+  <data name="Shared_Address_Postcode_NonUk" xml:space="preserve">
+    <value>Postal or Zip Code</value>
+  </data>
+  <data name="Shared_Address_Postcode_ErrorMessage" xml:space="preserve">
+    <value>Enter postcode</value>
+  </data>
+  <data name="Shared_Address_Postcode_NonUk_ErrorMessage" xml:space="preserve">
+    <value>Enter postal or Zip Code</value>
+  </data>
+  <data name="Shared_Address_Country" xml:space="preserve">
+    <value>Country</value>
+  </data>
+  <data name="Shared_Address_Country_ErrorMessage" xml:space="preserve">
+    <value>Enter country</value>
+  </data>
+  <data name="Shared_Address_ValidationErrorMessage" xml:space="preserve">
+    <value>Invalid country name</value>
+  </data>
+  <data name="OrganisationRegistration_Address_Buyer_Heading" xml:space="preserve">
+    <value>Enter your organisation's address</value>
+  </data>
+  <data name="OrganisationRegistration_Address_Buyer_Hint" xml:space="preserve">
+    <value>The principal address the organisation conducts its activities. For example, a head office.</value>
+  </data>
+  <data name="OrganisationRegistration_Address_Supplier_Heading" xml:space="preserve">
+    <value>Enter your organisation's registered address</value>
+  </data>
+  <data name="OrganisationRegistration_Address_Supplier_Hint" xml:space="preserve">
+    <value>The address registered with Companies House, or the principal address the business conducts its activities. For example, a head office.</value>
+  </data>
+  <data name="OrganisationRegistration_Address_NonUk_Heading" xml:space="preserve">
+    <value>Enter your organisation's registered non-UK address</value>
+  </data>
+  <data name="OrganisationRegistration_Address_NonUk_Hint" xml:space="preserve">
+    <value>The address recorded on public records or within the public domain.</value>
+  </data>
+  <data name="Shared_Address_NonUk_Link" xml:space="preserve">
+    <value>Enter a non-UK address</value>
+  </data>
+  <data name="OrganisationRegistration_BuyerDevolvedRegulation_Heading" xml:space="preserve">
+    <value>Do devolved regulations apply to your organisation?</value>
+  </data>
+  <data name="OrganisationRegistration_BuyerDevolvedRegulation_ValidationErrorMessage" xml:space="preserve">
+    <value>Select 'yes' or 'no'</value>
+  </data>
+  <data name="OrganisationRegistration_BuyerOrganisationType_Heading" xml:space="preserve">
+    <value>Select the organisation type</value>
+  </data>
+  <data name="OrganisationRegistration_BuyerOrganisationType_ValidationErrorMessage" xml:space="preserve">
+    <value>Select the organisation type</value>
+  </data>
+  <data name="OrganisationRegistration_BuyerSelectDevolvedRegulation_Heading" xml:space="preserve">
+    <value>Which devolved regulations apply?</value>
+  </data>
+  <data name="OrganisationRegistration_BuyerSelectDevolvedRegulation_ValidationErrorMessage" xml:space="preserve">
+    <value>Select a devolved region</value>
+  </data>
+  <data name="Organisation_EnterOrganisationName_Heading" xml:space="preserve">
+    <value>Enter your organisation's name</value>
+  </data>
+  <data name="Organisation_EnterOrganisationName_ErrorMessage" xml:space="preserve">
+    <value>Enter your organisation's name</value>
+  </data>
+  <data name="Organisation_EnterOrganisationEmail_Hint" xml:space="preserve">
+    <value>Where possible, use a shared inbox that other team members can access</value>
+  </data>
+  <data name="Organisation_OrganisationIdentification_Heading" xml:space="preserve">
+    <value>Is your organisation on any of these registries?</value>
+  </data>
+  <data name="Organisation_OrganisationIdentification_CH_Label" xml:space="preserve">
+    <value>Company House Number</value>
+  </data>
+  <data name="Organisation_OrganisationIdentification_CH_ErrorMessage" xml:space="preserve">
+    <value>Enter the Company House number.</value>
+  </data>
+  <data name="Organisation_OrganisationIdentification_GB_CHC_Label" xml:space="preserve">
+    <value>Charity Commission for England &amp; Wales</value>
+  </data>
+  <data name="Organisation_OrganisationIdentification_GB_CHC_Number_Label" xml:space="preserve">
+    <value>Charity Commission for England &amp; Wales Number</value>
+  </data>
+  <data name="Organisation_OrganisationIdentification_GB_CHC_Number_ErrorMessage" xml:space="preserve">
+    <value>Enter the Charity Commission for England &amp; Wales number.</value>
+  </data>
+  <data name="Organisation_OrganisationIdentification_GB_SC_Label" xml:space="preserve">
+    <value>Scottish Charity Regulator</value>
+  </data>
+  <data name="Organisation_OrganisationIdentification_GB_SC_Number_Label" xml:space="preserve">
+    <value>Scottish Charity Regulator Number</value>
+  </data>
+  <data name="Organisation_OrganisationIdentification_GB_SC_Number_ErrorMessage" xml:space="preserve">
+    <value>Enter the Scottish Charity Regulator number.</value>
+  </data>
+  <data name="Organisation_OrganisationIdentification_GB_NIC_Label" xml:space="preserve">
+    <value>Charity Commission for Northern Ireland</value>
+  </data>
+  <data name="Organisation_OrganisationIdentification_GB_NIC_Number_Label" xml:space="preserve">
+    <value>Charity Commission for Northern Ireland Number</value>
+  </data>
+  <data name="Organisation_OrganisationIdentification_GB_NIC_Number_ErrorMessage" xml:space="preserve">
+    <value>Enter the Charity Commission for Northern Ireland number.</value>
+  </data>
+  <data name="Organisation_OrganisationIdentification_GB_MPR_Label" xml:space="preserve">
+    <value>Mutuals Public Register</value>
+  </data>
+  <data name="Organisation_OrganisationIdentification_GB_MPR_Number_Label" xml:space="preserve">
+    <value>Mutuals Public Register Number</value>
+  </data>
+  <data name="Organisation_OrganisationIdentification_GB_MPR_Number_ErrorMessage" xml:space="preserve">
+    <value>Enter the Mutuals Public Register number.</value>
+  </data>
+  <data name="Organisation_OrganisationIdentification_GG_RCE_Label" xml:space="preserve">
+    <value>Guernsey Registry</value>
+  </data>
+  <data name="Organisation_OrganisationIdentification_GG_RCE_Number_Label" xml:space="preserve">
+    <value>Guernsey Registry Number</value>
+  </data>
+  <data name="Organisation_OrganisationIdentification_GG_RCE_Number_ErrorMessage" xml:space="preserve">
+    <value>Enter the Guernsey Registry number.</value>
+  </data>
+  <data name="Organisation_OrganisationIdentification_JE_FSC_Label" xml:space="preserve">
+    <value>Jersey Financial Services Commission Registry</value>
+  </data>
+  <data name="Organisation_OrganisationIdentification_JE_FSC_Number_Label" xml:space="preserve">
+    <value>Jersey Financial Services Commission Registry Number</value>
+  </data>
+  <data name="Organisation_OrganisationIdentification_JE_FSC_Number_ErrorMessage" xml:space="preserve">
+    <value>Enter the Jersey Financial Services Commission Registry number.</value>
+  </data>
+  <data name="Organisation_OrganisationIdentification_IM_CR_Label" xml:space="preserve">
+    <value>Isle of Man Companies Registry</value>
+  </data>
+  <data name="Organisation_OrganisationIdentification_IM_CR_Number_Label" xml:space="preserve">
+    <value>Isle of Man Companies Registry Number</value>
+  </data>
+  <data name="Organisation_OrganisationIdentification_IM_CR_Number_ErrorMessage" xml:space="preserve">
+    <value>Enter Isle of Man Companies Registry number.</value>
+  </data>
+  <data name="Organisation_OrganisationIdentification_GB_NHS_Label" xml:space="preserve">
+    <value>NHS Organisation Data Service (ODS)</value>
+  </data>
+  <data name="Organisation_OrganisationIdentification_GB_NHS_Number_Label" xml:space="preserve">
+    <value>NHS Organisation Data Service (ODS) Number</value>
+  </data>
+  <data name="Organisation_OrganisationIdentification_GB_NHS_Number_ErrorMessage" xml:space="preserve">
+    <value>Enter the NHS Organisation Data Service number.</value>
+  </data>
+  <data name="Organisation_OrganisationIdentification_GB_UKPRN_Label" xml:space="preserve">
+    <value>UK Register of Learning Providers</value>
+  </data>
+  <data name="Organisation_OrganisationIdentification_GB_UKPRN_Number_Label" xml:space="preserve">
+    <value>UK Register of Learning Providers (GB-UKPRN)</value>
+  </data>
+  <data name="Organisation_OrganisationIdentification_GB_UKPRN_Number_ErrorMessage" xml:space="preserve">
+    <value>Enter the UK Register of Learning Providers number.</value>
+  </data>
+  <data name="Organisation_OrganisationIdentification_Other_Label" xml:space="preserve">
+    <value>None apply</value>
+  </data>
+  <data name="Organisation_OrganisationIdentification_Other_Hint" xml:space="preserve">
+    <value>You'll get a public procurement organisation number (PPON) as an identifier</value>
+  </data>
+  <data name="Organisation_OrganisationIdentification_GG_RCE_Hint" xml:space="preserve">
+    <value>Include prefix, if applicable. For example, GY.</value>
+  </data>
+  <data name="Organisation_OrganisationIdentification_ValidationErrorMessage" xml:space="preserve">
+    <value>Select your organisation type</value>
+  </data>
+  <data name="Organisation_OrganisationIdentification_Registration_Number_Label" xml:space="preserve">
+    <value>Registration number</value>
+  </data>
+  <data name="Organisation_OrganisationIdentification_Number_ErrorMessage" xml:space="preserve">
+    <value>Enter the number</value>
+  </data>
+  <data name="Organisation_OrganisationIdentification_Hint" xml:space="preserve">
+    <value>Select one option. Then enter the registration number.</value>
+  </data>
+  <data name="Organisation_OrganisationIdentification_ErrorMessage" xml:space="preserve">
+    <value>Select the organisation on any of these registries</value>
+  </data>
+  <data name="Organisation_OrganisationIdentification_Charity_Number_Label" xml:space="preserve">
+    <value>Charity number</value>
+  </data>
+  <data name="Organisation_OrganisationIdentification_Company_Number_Label" xml:space="preserve">
+    <value>Company number</value>
+  </data>
+  <data name="Organisation_OrganisationIdentification_ODS_Code_Label" xml:space="preserve">
+    <value>ODS code</value>
+  </data>
+  <data name="Organisation_OrganisationIdentification_ODS_Code_ErrorMessage" xml:space="preserve">
+    <value>Enter the code</value>
+  </data>
+  <data name="OrganisationRegistration_CompanyHouseNumberQuestion_Hint" xml:space="preserve">
+    <value>You can &lt;a href="https://find-and-update.company-information.service.gov.uk/" target="_blank"&gt;find your company number on Companies House (opens in a new tab)&lt;/a&gt;. It is an 8 digit or 2 letter and 6 digit number. For example, 12345678 or SC123456.</value>
+  </data>
+  <data name="OrganisationRegistration_CompanyHouseNumberQuestion_CompanyNotFound_NotificationBanner" xml:space="preserve">
+    <value>We cannot find your company number on Companies House. If it’s correct, continue and enter your details manually.</value>
+  </data>
+  <data name="OrganisationRegistration_CompanyHouseNumberQuestion_CompanyAlreadyRegistered_NotificationBanner" xml:space="preserve">
+    <value>An organisation with this company number already exists. Change the company number or &lt;a class="govuk-notification-banner__link" href="/registration/{0}/join-organisation"&gt;request to join {1}.&lt;/a&gt;</value>
+  </data>
+  <data name="OrganisationRegistration_CompanyHouseNumberQuestion_ValidationErrorMessage" xml:space="preserve">
+    <value>Select 'yes' or 'no'</value>
+  </data>
+  <data name="OrganisationRegistration_CompanyHouseNumberQuestion_ErrorMessage" xml:space="preserve">
+    <value>Enter a company number</value>
+  </data>
+  <data name="OrganisationRegistration_BuyerSelectDevolvedRegulation_NI_Label" xml:space="preserve">
+    <value>Northern Ireland</value>
+  </data>
+  <data name="OrganisationRegistration_BuyerSelectDevolvedRegulation_Scotland_Label" xml:space="preserve">
+    <value>Scotland</value>
+  </data>
+  <data name="OrganisationRegistration_BuyerSelectDevolvedRegulation_Wales_Label" xml:space="preserve">
+    <value>Wales</value>
+  </data>
+  <data name="OrganisationRegistration_BuyerSelectDevolvedRegulation_Hint" xml:space="preserve">
+    <value>Select all that apply</value>
+  </data>
+  <data name="OrganisationRegistration_BuyerOrganisationType_CentralGovernment_Label" xml:space="preserve">
+    <value>Central government, public authority: UK, Scottish, Welsh and Northern Irish Executive</value>
+  </data>
+  <data name="OrganisationRegistration_BuyerOrganisationType_RegionalAndLocalGovernment_Label" xml:space="preserve">
+    <value>Regional and local government, public authority: UK, Scottish, Welsh and Northern Irish</value>
+  </data>
+  <data name="OrganisationRegistration_BuyerOrganisationType_PublicUndertaking_Label" xml:space="preserve">
+    <value>Public undertaking</value>
+  </data>
+  <data name="OrganisationRegistration_BuyerOrganisationType_PrivateUtility_Label" xml:space="preserve">
+    <value>Private utility</value>
+  </data>
+  <data name="OrganisationRegistration_BuyerOrganisationType_CentralGovernment_Hint" xml:space="preserve">
+    <value>Includes arm's-length bodies:
+&lt;ul&gt;
+    &lt;li&gt;executive agencies (EA)&lt;/li&gt;
+    &lt;li&gt;non-departmental public bodies (NDPB)&lt;/li&gt;
+    &lt;li&gt;non-ministerial departments (NMD)&lt;/li&gt;
+    &lt;li&gt;Trading Funds&lt;/li&gt;
+&lt;/ul&gt;</value>
+  </data>
+  <data name="OrganisationRegistration_BuyerOrganisationType_RegionalAndLocalGovernment_Hint" xml:space="preserve">
+    <value>Includes:
+&lt;ul&gt;
+    &lt;li&gt;unitary authorities&lt;/li&gt;
+    &lt;li&gt;county, district, borough and parish councils&lt;/li&gt;
+    &lt;li&gt;the Greater London Authority&lt;/li&gt;
+    &lt;li&gt;charities&lt;/li&gt;
+    &lt;li&gt;housing associations&lt;/li&gt;
+    &lt;li&gt;blue light organisations - ambulance, police, and other emergency services&lt;/li&gt;
+&lt;/ul&gt;</value>
+  </data>
+  <data name="OrganisationRegistration_BuyerOrganisationType_PublicUndertaking_Hint" xml:space="preserve">
+    <value>Unlike a public authority, organisations that operate commercially and provide utility activities to the public. For example, Transport for Wales.</value>
+  </data>
+  <data name="OrganisationRegistration_BuyerOrganisationType_PrivateUtility_Hint" xml:space="preserve">
+    <value>For example, private companies that have been granted a special or exclusive right to provide utility activities to the public. Such as National Grid or British Gas.</value>
+  </data>
+  <data name="OrganisationRegistration_BuyerOrganisationType_Other_Label" xml:space="preserve">
+    <value>Other</value>
+  </data>
+  <data name="OrganisationRegistration_BuyerOrganisationType_Other_Hint" xml:space="preserve">
+    <value>For example, the establishment of a utilities dynamic market by a non-contracting authority.</value>
+  </data>
+  <data name="OrganisationRegistration_BuyerOrganisationType_OtherEnterType_Label" xml:space="preserve">
+    <value>Enter type</value>
+  </data>
+  <data name="OrganisationRegistration_JoinOrganisationSuccess_Heading" xml:space="preserve">
+    <value>Request to join sent</value>
+  </data>
+  <data name="OrganisationRegistration_JoinOrganisationSuccess_Message" xml:space="preserve">
+    <value>You have successfully applied to join</value>
+  </data>
+  <data name="OrganisationRegistration_JoinOrganisation_Heading" xml:space="preserve">
+    <value>Join company</value>
+  </data>
+  <data name="OrganisationRegistration_JoinOrganisation_Firstname_Label" xml:space="preserve">
+    <value>First name</value>
+  </data>
+  <data name="OrganisationRegistration_JoinOrganisation_Lastname_Label" xml:space="preserve">
+    <value>Last name</value>
+  </data>
+  <data name="OrganisationRegistration_JoinOrganisation_EmailAddress_Label" xml:space="preserve">
+    <value>Email address</value>
+  </data>
+  <data name="OrganisationRegistration_JoinOrganisation_OrganisationName_Label" xml:space="preserve">
+    <value>Organisation name</value>
+  </data>
+  <data name="OrganisationRegistration_JoinOrganisation_ValidationErrorMessage" xml:space="preserve">
+    <value>Select an option</value>
+  </data>
+  <data name="OrganisationRegistration_JoinOrganisation_OrganisationDetails_Heading" xml:space="preserve">
+    <value>Organisation details</value>
+  </data>
+  <data name="OrganisationRegistration_JoinOrganisation_UserDetails_Heading" xml:space="preserve">
+    <value>User details</value>
+  </data>
+  <data name="OrganisationRegistration_JoinOrganisation_Notification_Heading" xml:space="preserve">
+    <value>Would you like to join</value>
+  </data>
+  <data name="OrganisationRegistration_OrganisationAlreadyRegistered_Heading" xml:space="preserve">
+    <value>This organisation has already registered</value>
+  </data>
+  <data name="OrganisationRegistration_OrganisationAlreadyRegistered_Message" xml:space="preserve">
+    <value>&lt;p class="govuk-body"&gt;The organisation's details are already registered with the service.&lt;/p&gt;
+&lt;p class="govuk-body"&gt;If you know the person who registered the organisation, they can invite you to join. Or you can request to join below.&lt;/p&gt;
+&lt;a class="govuk-button" href="/registration/{0}/join-organisation"&gt;Request to Join&lt;/a&gt;</value>
+  </data>
+  <data name="ApiKeyManagement_RevokeApiKey_Title" xml:space="preserve">
+    <value>Cancel API key</value>
+  </data>
+  <data name="ApiKeyManagement_RevokeApiKey_Description1" xml:space="preserve">
+    <value>Cancelling this API key will stop the sharing of information between this service and the eSender that's using it.</value>
+  </data>
+  <data name="ApiKeyManagement_RevokeApiKey_Description2" xml:space="preserve">
+    <value>You cannot re-activate a cancelled API key. You'll need to create a new one to share information again.</value>
+  </data>
+  <data name="ApiKeyManagement_RevokeApiKey_CancelButton" xml:space="preserve">
+    <value>Cancel key</value>
+  </data>
+  <data name="ApiKeyManagement_NewApiKeyDetails_Title" xml:space="preserve">
+    <value>API key created</value>
+  </data>
+  <data name="ApiKeyManagement_NewApiKeyDetails_YourApiKey" xml:space="preserve">
+    <value>Your API key</value>
+  </data>
+  <data name="ApiKeyManagement_NewApiKeyDetails_CopyApiKey" xml:space="preserve">
+    <value>Copy the API key and keep it safe.</value>
+  </data>
+  <data name="ApiKeyManagement_NewApiKeyDetails_Notice" xml:space="preserve">
+    <value>This is the only time we show you the API key. If you lose it, you’ll need to cancel it and create a new one.</value>
+  </data>
+  <data name="ApiKeyManagement_NewApiKeyDetails_CopyButton" xml:space="preserve">
+    <value>Copy API key to clipboard</value>
+  </data>
+  <data name="ApiKeyManagement_NewApiKeyDetails_BackToApiKeys" xml:space="preserve">
+    <value>Back to your API keys</value>
+  </data>
+  <data name="ApiKeyManagement_ManageApiKey_Title" xml:space="preserve">
+    <value>Manage API keys</value>
+  </data>
+  <data name="ApiKeyManagement_ManageApiKey_YouHaveKeys_Singular" xml:space="preserve">
+    <value>You have {0} API key</value>
+  </data>
+  <data name="ApiKeyManagement_ManageApiKey_YouHaveKeys_Plural" xml:space="preserve">
+    <value>You have {0} API keys</value>
+  </data>
+  <data name="ApiKeyManagement_ManageApiKey_NoKeysText" xml:space="preserve">
+    <value>API keys that you create will be listed here.</value>
+  </data>
+  <data name="ApiKeyManagement_ManageApiKey_Description" xml:space="preserve">
+    <value>View your active and cancelled API keys.</value>
+  </data>
+  <data name="ApiKeyManagement_ManageApiKey_Description_Editor" xml:space="preserve">
+    <value>You can cancel any that are no longer needed.</value>
+  </data>
+  <data name="ApiKeyManagement_ManageApiKey_TableHeader_Name" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="ApiKeyManagement_ManageApiKey_TableHeader_DateCreated" xml:space="preserve">
+    <value>Date created</value>
+  </data>
+  <data name="ApiKeyManagement_ManageApiKey_TableHeader_DateCancelled" xml:space="preserve">
+    <value>Date cancelled</value>
+  </data>
+  <data name="ApiKeyManagement_ManageApiKey_TableHeader_Actions" xml:space="preserve">
+    <value>Actions</value>
+  </data>
+  <data name="ApiKeyManagement_ManageApiKey_Status_Cancelled" xml:space="preserve">
+    <value>Cancelled</value>
+  </data>
+  <data name="ApiKeyManagement_ManageApiKey_Action_Cancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="ApiKeyManagement_ManageApiKey_CreateButton" xml:space="preserve">
+    <value>Create an API key</value>
+  </data>
+  <data name="ApiKeyManagement_CreateApiKey_Title" xml:space="preserve">
+    <value>Name your API key</value>
+  </data>
+  <data name="ApiKeyManagement_CreateApiKey_Hint" xml:space="preserve">
+    <value>For security we only show the API key once on the confirmation page. Add a name for reference. For example, the name of the eSender it's for.</value>
+  </data>
+  <data name="ApiKeyManagement_CreateApiKey_ValidationError" xml:space="preserve">
+    <value>Enter the api key name</value>
   </data>
 </root>

@@ -164,10 +164,14 @@ data "aws_iam_policy_document" "terraform_product" {
       "rds:Describe*",
       "rds:List*",
       "rds:Modify*",
+      "rds:ModifyDBCluster",
+      "rds:ResetDBClusterParameterGroup",
+      "rds:ResetDBParameterGroup",
     ]
     effect = "Allow"
     resources = [
       "arn:aws:rds:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:cluster:cdp-*",
+      "arn:aws:rds:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:cluster-pg:cdp-*",
       "arn:aws:rds:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:db:cdp-*",
       "arn:aws:rds:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:pg:cdp-*",
       "arn:aws:rds:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:subgrp:cdp-*",

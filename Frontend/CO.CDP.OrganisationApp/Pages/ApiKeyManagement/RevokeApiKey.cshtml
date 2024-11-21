@@ -1,30 +1,32 @@
 @page "/organisation/{id}/manage-api-key/{apiKeyName}/revoke-api-key"
 @model RevokeApiKeyModel
+@using CO.CDP.Localization
 
 @{
     var backLink = $"/organisation/{@Model.Id}/manage-api-keys";
-    ViewData["Title"] = "Cancel API key";
+    ViewData["Title"] = StaticTextResource.ApiKeyManagement_RevokeApiKey_Title;
 }
-<a href="@backLink" class="govuk-back-link">Back</a>
 
-<main class="govuk-main-wrapper" id="main-content">
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
-            <form class="form" method="post">
-                <h1 class="govuk-heading-l">@ViewData["Title"]</h1>
-                <p class="govuk-body">
-                    Cancelling this API key will stop the sharing of information between this service and the eSender that's using it.
-                </p>
-                <p class="govuk-body">
-                    You cannot re-activate a cancelled API key. You'll need to create a new one to share information again.
-                </p>
-                <div class="govuk-button-group govuk-!-margin-top-6">
-                    <govuk-button class="govuk-button--warning">
-                        Cancel key
-                    </govuk-button>
-                    <a class="govuk-link govuk-link--no-visited-state" href="@backLink">Back</a>
-                </div>
-            </form>
-        </div>
+@section BeforeContent {
+    <a href="@backLink" class="govuk-back-link">@StaticTextResource.Global_Back</a>
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <form class="form" method="post">
+            <h1 class="govuk-heading-l">@ViewData["Title"]</h1>
+            <p class="govuk-body">
+                @StaticTextResource.ApiKeyManagement_RevokeApiKey_Description1
+            </p>
+            <p class="govuk-body">
+                @StaticTextResource.ApiKeyManagement_RevokeApiKey_Description2
+            </p>
+            <div class="govuk-button-group govuk-!-margin-top-6">
+                <govuk-button class="govuk-button--warning">
+                    @StaticTextResource.ApiKeyManagement_RevokeApiKey_CancelButton
+                </govuk-button>
+                <a class="govuk-link govuk-link--no-visited-state" href="@backLink">@StaticTextResource.Global_Back</a>
+            </div>
+        </form>
     </div>
-</main>
+</div>

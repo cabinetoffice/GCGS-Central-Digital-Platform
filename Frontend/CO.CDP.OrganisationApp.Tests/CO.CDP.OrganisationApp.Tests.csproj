@@ -26,6 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Services\CO.CDP.Localization\CO.CDP.Localization.csproj" />
     <ProjectReference Include="..\..\TestKit\CO.CDP.TestKit.Mvc\CO.CDP.TestKit.Mvc.csproj" />
     <ProjectReference Include="..\CO.CDP.OrganisationApp\CO.CDP.OrganisationApp.csproj" />
   </ItemGroup>

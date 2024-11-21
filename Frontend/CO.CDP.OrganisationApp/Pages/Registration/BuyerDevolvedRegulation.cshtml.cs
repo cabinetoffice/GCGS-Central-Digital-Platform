@@ -1,3 +1,4 @@
+using CO.CDP.Localization;
 using CO.CDP.OrganisationApp.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
@@ -10,7 +11,7 @@ public class BuyerDevolvedRegulationModel(ISession session) : RegistrationStepMo
     public override string CurrentPage => BuyerDevolvedRegulationPage;
 
     [BindProperty]
-    [Required(ErrorMessage = "Select 'yes' or 'no'")]
+    [Required(ErrorMessage = nameof(StaticTextResource.OrganisationRegistration_BuyerDevolvedRegulation_ValidationErrorMessage))]
     public bool? Devolved { get; set; }
 
     [BindProperty]

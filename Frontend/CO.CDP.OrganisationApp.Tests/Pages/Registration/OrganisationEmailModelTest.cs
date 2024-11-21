@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Localization;
 using Moq;
+using CO.CDP.Localization;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages.Registration;
 
@@ -69,7 +70,7 @@ public class OrganisationEmailModelTest
         var results = ModelValidationHelper.Validate(model, validationContext);
 
         results.Any(c => c.MemberNames.Contains("EmailAddress")).Should().BeTrue();
-
+        
         results.Where(c => c.MemberNames.Contains("EmailAddress")).First()
             .ErrorMessage.Should().Be(StaticTextResource.Global_Email_Invalid_ErrorMessage);
     }
