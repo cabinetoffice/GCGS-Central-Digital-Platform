@@ -1,11 +1,12 @@
 using CO.CDP.EntityVerificationClient;
+using CO.CDP.Localization;
 using CO.CDP.Mvc.Validation;
 using CO.CDP.Organisation.WebApiClient;
+using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using CO.CDP.OrganisationApp.Constants;
 
 namespace CO.CDP.OrganisationApp.Pages.Registration;
 
@@ -19,92 +20,92 @@ public class OrganisationIdentificationModel(ISession session,
 
     [BindProperty]
     [DisplayName("Organisation Type")]
-    [Required(ErrorMessage = "Select an option")]
+    [Required(ErrorMessage = nameof(StaticTextResource.Organisation_OrganisationIdentification_ErrorMessage))]
     public string? OrganisationScheme { get; set; }
 
     [BindProperty]
-    [DisplayName("Charity Commission for England and Wales")]
+    [DisplayName(nameof(StaticTextResource.Organisation_OrganisationIdentification_GB_CHC_Label))]
     public string? CharityCommissionEnglandWales { get; set; }
 
     [BindProperty]
-    [DisplayName("Charity number")]
-    [RequiredIf(nameof(OrganisationScheme), "GB-CHC", ErrorMessage = "Enter the number")]
+    [DisplayName(nameof(StaticTextResource.Organisation_OrganisationIdentification_Charity_Number_Label))]
+    [RequiredIf(nameof(OrganisationScheme), "GB-CHC", ErrorMessage = nameof(StaticTextResource.Organisation_OrganisationIdentification_Number_ErrorMessage))]
     public string? CharityCommissionEnglandWalesNumber { get; set; }
 
     [BindProperty]
-    [DisplayName("Scottish Charity Regulator")]
+    [DisplayName(nameof(StaticTextResource.Organisation_OrganisationIdentification_GB_SC_Label))]
     public string? ScottishCharityRegulator { get; set; }
 
     [BindProperty]
-    [DisplayName("Charity number")]
-    [RequiredIf(nameof(OrganisationScheme), "GB-SC", ErrorMessage = "Enter the number")]
+    [DisplayName(nameof(StaticTextResource.Organisation_OrganisationIdentification_Charity_Number_Label))]
+    [RequiredIf(nameof(OrganisationScheme), "GB-SC", ErrorMessage = nameof(StaticTextResource.Organisation_OrganisationIdentification_Number_ErrorMessage))]
     public string? ScottishCharityRegulatorNumber { get; set; }
 
     [BindProperty]
-    [DisplayName("Charity Commission for Northern Ireland")]
+    [DisplayName(nameof(StaticTextResource.Organisation_OrganisationIdentification_GB_NIC_Label))]
     public string? CharityCommissionNorthernIreland { get; set; }
 
     [BindProperty]
-    [DisplayName("Charity number")]
-    [RequiredIf(nameof(OrganisationScheme), "GB-NIC", ErrorMessage = "Enter the number")]
+    [DisplayName(nameof(StaticTextResource.Organisation_OrganisationIdentification_Charity_Number_Label))]
+    [RequiredIf(nameof(OrganisationScheme), "GB-NIC", ErrorMessage = nameof(StaticTextResource.Organisation_OrganisationIdentification_Number_ErrorMessage))]
     public string? CharityCommissionNorthernIrelandNumber { get; set; }
 
     [BindProperty]
-    [DisplayName("Mutuals Public Register")]
+    [DisplayName(nameof(StaticTextResource.Organisation_OrganisationIdentification_GB_MPR_Label))]
     public string? MutualsPublicRegister { get; set; }
 
     [BindProperty]
-    [DisplayName("Registration number")]
-    [RequiredIf(nameof(OrganisationScheme), "GB-MPR", ErrorMessage = "Enter the number")]
+    [DisplayName(nameof(StaticTextResource.Organisation_OrganisationIdentification_Registration_Number_Label))]
+    [RequiredIf(nameof(OrganisationScheme), "GB-MPR", ErrorMessage = nameof(StaticTextResource.Organisation_OrganisationIdentification_Number_ErrorMessage))]
     public string? MutualsPublicRegisterNumber { get; set; }
 
     [BindProperty]
-    [DisplayName("Guernsey Registry")]
+    [DisplayName(nameof(StaticTextResource.Organisation_OrganisationIdentification_GG_RCE_Label))]
     public string? GuernseyRegistry { get; set; }
 
     [BindProperty]
     [DisplayName("Entity number")]
-    [RequiredIf(nameof(OrganisationScheme), "GG-RCE", ErrorMessage = "Enter the number")]
+    [RequiredIf(nameof(OrganisationScheme), "GG-RCE", ErrorMessage = nameof(StaticTextResource.Organisation_OrganisationIdentification_Number_ErrorMessage))]
     public string? GuernseyRegistryNumber { get; set; }
 
     [BindProperty]
-    [DisplayName("Jersey Financial Services Commission Registry")]
+    [DisplayName(nameof(StaticTextResource.Organisation_OrganisationIdentification_JE_FSC_Label))]
     public string? JerseyFinancialServicesCommissionRegistry { get; set; }
 
     [BindProperty]
-    [DisplayName("Registration number")]
-    [RequiredIf(nameof(OrganisationScheme), "JE-FSC", ErrorMessage = "Enter the number")]
+    [DisplayName(nameof(StaticTextResource.Organisation_OrganisationIdentification_Registration_Number_Label))]
+    [RequiredIf(nameof(OrganisationScheme), "JE-FSC", ErrorMessage = nameof(StaticTextResource.Organisation_OrganisationIdentification_Number_ErrorMessage))]
     public string? JerseyFinancialServicesCommissionRegistryNumber { get; set; }
 
     [BindProperty]
-    [DisplayName("Isle of Man Companies Registry")]
+    [DisplayName(nameof(StaticTextResource.Organisation_OrganisationIdentification_IM_CR_Label))]
     public string? IsleofManCompaniesRegistry { get; set; }
 
     [BindProperty]
-    [DisplayName("Company number")]
-    [RequiredIf(nameof(OrganisationScheme), "IM-CR", ErrorMessage = "Enter the number")]
+    [DisplayName(nameof(StaticTextResource.Organisation_OrganisationIdentification_Company_Number_Label))]
+    [RequiredIf(nameof(OrganisationScheme), "IM-CR", ErrorMessage = nameof(StaticTextResource.Organisation_OrganisationIdentification_Number_ErrorMessage))]
     public string? IsleofManCompaniesRegistryNumber { get; set; }
 
     [BindProperty]
-    [DisplayName("NHS Organisation Data Service (ODS)")]
+    [DisplayName(nameof(StaticTextResource.Organisation_OrganisationIdentification_GB_NHS_Label))]
     public string? NationalHealthServiceOrganisationsRegistry { get; set; }
 
     [BindProperty]
-    [DisplayName("ODS code")]
-    [RequiredIf(nameof(OrganisationScheme), "GB-NHS", ErrorMessage = "Enter the code")]
+    [DisplayName(nameof(StaticTextResource.Organisation_OrganisationIdentification_ODS_Code_Label))]
+    [RequiredIf(nameof(OrganisationScheme), "GB-NHS", ErrorMessage = nameof(StaticTextResource.Organisation_OrganisationIdentification_ODS_Code_ErrorMessage))]
     public string? NationalHealthServiceOrganisationsRegistryNumber { get; set; }
 
     [BindProperty]
-    [DisplayName("UK Register of Learning Providers")]
+    [DisplayName(nameof(StaticTextResource.Organisation_OrganisationIdentification_GB_UKPRN_Label))]
     public string? UKLearningProviderReference { get; set; }
 
     [BindProperty]
-    [DisplayName("UK Provider Reference Number (UKPRN)")]
-    [RequiredIf(nameof(OrganisationScheme), "GB-UKPRN", ErrorMessage = "Enter the number")]
+    [DisplayName(nameof(StaticTextResource.Organisation_OrganisationIdentification_GB_UKPRN_Number_Label))]
+    [RequiredIf(nameof(OrganisationScheme), "GB-UKPRN", ErrorMessage = nameof(StaticTextResource.Organisation_OrganisationIdentification_Number_ErrorMessage))]
     public string? UKLearningProviderReferenceNumber { get; set; }
 
     [BindProperty]
-    [DisplayName("None apply")]
+    [DisplayName(nameof(StaticTextResource.Organisation_OrganisationIdentification_Other_Label))]
     public string? Other { get; set; }
 
     [BindProperty]
