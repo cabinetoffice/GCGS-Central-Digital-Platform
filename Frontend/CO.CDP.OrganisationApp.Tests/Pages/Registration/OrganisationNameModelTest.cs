@@ -11,21 +11,22 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Localization;
 using Moq;
-using System.ComponentModel.DataAnnotations;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages.Registration;
 
 public class OrganisationNameModelTest
 {
-    private readonly Mock<ISession> sessionMock;
-    private readonly Mock<ICompaniesHouseApi> companiesHouseMock;
+    private readonly Mock<ISession> _sessionMock;
+    private readonly Mock<ICompaniesHouseApi> _companiesHouseMock;
+    private readonly Mock<IStringLocalizer> _stringLocalizerMock;
 
     public OrganisationNameModelTest()
     {
-        sessionMock = new Mock<ISession>();
-        companiesHouseMock = new Mock<ICompaniesHouseApi>();
-        sessionMock.Setup(session => session.Get<UserDetails>(Session.UserDetailsKey))
+        _sessionMock = new Mock<ISession>();
+        _companiesHouseMock = new Mock<ICompaniesHouseApi>();
+        _sessionMock.Setup(session => session.Get<UserDetails>(Session.UserDetailsKey))
             .Returns(new UserDetails { UserUrn = "urn:test" });
+        _stringLocalizerMock = new Mock<IStringLocalizer>();
     }
 
     [Fact]
@@ -43,26 +44,11 @@ public class OrganisationNameModelTest
     {
         var model = GivenOrganisationNameModel();
 
-        var stringLocalizerMock = new Mock<IStringLocalizer>();
-        stringLocalizerMock
+        _stringLocalizerMock
             .Setup(localizer => localizer[nameof(StaticTextResource.OrganisationRegistration_EnterOrganisationName_Heading)])
             .Returns(new LocalizedString(nameof(StaticTextResource.OrganisationRegistration_EnterOrganisationName_Heading), StaticTextResource.OrganisationRegistration_EnterOrganisationName_Heading));
 
-        var stringLocalizerFactoryMock = new Mock<IStringLocalizerFactory>();
-        stringLocalizerFactoryMock
-            .Setup(factory => factory.Create(It.IsAny<Type>()))
-            .Returns(stringLocalizerMock.Object);
-
-        var serviceProviderMock = new Mock<IServiceProvider>();
-        serviceProviderMock
-            .Setup(provider => provider.GetService(typeof(IServiceProvider)))
-            .Returns(serviceProviderMock.Object);
-
-        serviceProviderMock
-            .Setup(provider => provider.GetService(typeof(IStringLocalizerFactory)))
-            .Returns(stringLocalizerFactoryMock.Object);
-
-        var validationContext = new ValidationContext(model, serviceProviderMock.Object, null);
+        var validationContext = ValidationContextFactory.GivenValidationContextWithStringLocalizerFactory(model, _stringLocalizerMock.Object);
 
         var results = ModelValidationHelper.Validate(model, validationContext);
 
@@ -86,7 +72,7 @@ public class OrganisationNameModelTest
     [Fact]
     public void OnPost_WhenInValidModel_ShouldReturnSamePage()
     {
-        sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).
+        _sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).
             Returns(DummyRegistrationDetails());
         var modelState = new ModelStateDictionary();
         modelState.AddModelError("error", "some error");
@@ -109,12 +95,12 @@ public class OrganisationNameModelTest
 
         RegistrationDetails registrationDetails = DummyRegistrationDetails();
 
-        sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(registrationDetails);
+        _sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(registrationDetails);
 
         model.OnPost();
 
-        sessionMock.Verify(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey), Times.Once);
-        sessionMock.Verify(s => s.Set(Session.RegistrationDetailsKey, It.IsAny<RegistrationDetails>()), Times.Once);
+        _sessionMock.Verify(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey), Times.Once);
+        _sessionMock.Verify(s => s.Set(Session.RegistrationDetailsKey, It.IsAny<RegistrationDetails>()), Times.Once);
     }
 
     [Fact]
@@ -122,7 +108,7 @@ public class OrganisationNameModelTest
     {
         RegistrationDetails registrationDetails = DummyRegistrationDetails();
 
-        sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(registrationDetails);
+        _sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(registrationDetails);
 
         var model = GivenOrganisationNameModel();
         await model.OnGet();
@@ -134,12 +120,12 @@ public class OrganisationNameModelTest
     public async Task OnGet_WhenCompaniesHouseNumberProvided_ShouldPrepopulateCompanyName()
     {
         var registrationDetails = DummyRegistrationDetails();
-        sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(registrationDetails);
+        _sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(registrationDetails);
 
         var profile = GivenProfileOnCompaniesHouse(organisationName: "Acme Ltd");
         var model = GivenOrganisationNameModel();
 
-        companiesHouseMock.Setup(ch => ch.GetProfile(registrationDetails.OrganisationIdentificationNumber!))
+        _companiesHouseMock.Setup(ch => ch.GetProfile(registrationDetails.OrganisationIdentificationNumber!))
             .ReturnsAsync(profile);
 
         await model.OnGet();
@@ -151,12 +137,12 @@ public class OrganisationNameModelTest
     public async Task OnGet_WhenCompaniesHouseNumberAndCompanyNameProvided_ShouldNotPrepopulateCompanyName()
     {
         var registrationDetails = DummyRegistrationDetails("Microsoft Limited");
-        sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(registrationDetails);
+        _sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(registrationDetails);
 
         var model = GivenOrganisationNameModel();
         var profile = GivenProfileOnCompaniesHouse(organisationName: "Acme Ltd");
 
-        companiesHouseMock.Setup(ch => ch.GetProfile(registrationDetails.OrganisationIdentificationNumber!))
+        _companiesHouseMock.Setup(ch => ch.GetProfile(registrationDetails.OrganisationIdentificationNumber!))
             .ReturnsAsync(profile);
         
         await model.OnGet();
@@ -170,7 +156,7 @@ public class OrganisationNameModelTest
         var model = GivenOrganisationNameModel();
 
         RegistrationDetails registrationDetails = DummyRegistrationDetails();
-        sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(registrationDetails);
+        _sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(registrationDetails);
 
         var actionResult = model.OnPost();
 
@@ -185,7 +171,7 @@ public class OrganisationNameModelTest
         model.RedirectToSummary = true;
 
         RegistrationDetails registrationDetails = DummyRegistrationDetails();
-        sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(registrationDetails);
+        _sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(registrationDetails);
 
         var actionResult = model.OnPost();
 
@@ -226,6 +212,6 @@ public class OrganisationNameModelTest
 
     private OrganisationNameModel GivenOrganisationNameModel()
     {
-        return new OrganisationNameModel(sessionMock.Object, companiesHouseMock.Object);
+        return new OrganisationNameModel(_sessionMock.Object, _companiesHouseMock.Object);
     }
 }

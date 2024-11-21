@@ -9,19 +9,20 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Localization;
 using Moq;
-using System.ComponentModel.DataAnnotations;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages.Registration;
 
 public class OrganisationEmailModelTest
 {
-    private readonly Mock<ISession> sessionMock;
+    private readonly Mock<ISession> _sessionMock;
+    private readonly Mock<IStringLocalizer> _stringLocalizerMock;
 
     public OrganisationEmailModelTest()
     {
-        sessionMock = new Mock<ISession>();
-        sessionMock.Setup(session => session.Get<UserDetails>(Session.UserDetailsKey))
+        _sessionMock = new Mock<ISession>();
+        _sessionMock.Setup(session => session.Get<UserDetails>(Session.UserDetailsKey))
             .Returns(new UserDetails { UserUrn = "urn:test" });
+        _stringLocalizerMock = new Mock<IStringLocalizer>();
     }
 
     [Fact]
@@ -39,26 +40,11 @@ public class OrganisationEmailModelTest
     {
         var model = GivenOrganisationEmailModel();
 
-        var stringLocalizerMock = new Mock<IStringLocalizer>();
-        stringLocalizerMock
+        _stringLocalizerMock
             .Setup(localizer => localizer[nameof(StaticTextResource.Organisation_Email_Required_ErrorMessage)])
             .Returns(new LocalizedString(nameof(StaticTextResource.Organisation_Email_Required_ErrorMessage), StaticTextResource.Organisation_Email_Required_ErrorMessage));
 
-        var stringLocalizerFactoryMock = new Mock<IStringLocalizerFactory>();
-        stringLocalizerFactoryMock
-            .Setup(factory => factory.Create(It.IsAny<Type>()))
-            .Returns(stringLocalizerMock.Object);
-
-        var serviceProviderMock = new Mock<IServiceProvider>();
-        serviceProviderMock
-            .Setup(provider => provider.GetService(typeof(IServiceProvider)))
-            .Returns(serviceProviderMock.Object);
-
-        serviceProviderMock
-            .Setup(provider => provider.GetService(typeof(IStringLocalizerFactory)))
-            .Returns(stringLocalizerFactoryMock.Object);
-
-        var validationContext = new ValidationContext(model, serviceProviderMock.Object, null);
+        var validationContext = ValidationContextFactory.GivenValidationContextWithStringLocalizerFactory(model, _stringLocalizerMock.Object);
 
         var results = ModelValidationHelper.Validate(model, validationContext);
 
@@ -74,26 +60,11 @@ public class OrganisationEmailModelTest
         var model = GivenOrganisationEmailModel();
         model.EmailAddress = "dummy";
 
-        var stringLocalizerMock = new Mock<IStringLocalizer>();
-        stringLocalizerMock
+        _stringLocalizerMock
             .Setup(localizer => localizer[nameof(StaticTextResource.Global_Email_Invalid_ErrorMessage)])
             .Returns(new LocalizedString(nameof(StaticTextResource.Global_Email_Invalid_ErrorMessage), StaticTextResource.Global_Email_Invalid_ErrorMessage));
 
-        var stringLocalizerFactoryMock = new Mock<IStringLocalizerFactory>();
-        stringLocalizerFactoryMock
-            .Setup(factory => factory.Create(It.IsAny<Type>()))
-            .Returns(stringLocalizerMock.Object);
-
-        var serviceProviderMock = new Mock<IServiceProvider>();
-        serviceProviderMock
-            .Setup(provider => provider.GetService(typeof(IServiceProvider)))
-            .Returns(serviceProviderMock.Object);
-
-        serviceProviderMock
-            .Setup(provider => provider.GetService(typeof(IStringLocalizerFactory)))
-            .Returns(stringLocalizerFactoryMock.Object);
-
-        var validationContext = new ValidationContext(model, serviceProviderMock.Object, null);
+        var validationContext = ValidationContextFactory.GivenValidationContextWithStringLocalizerFactory(model, _stringLocalizerMock.Object);
 
         var results = ModelValidationHelper.Validate(model, validationContext);
 
@@ -138,12 +109,12 @@ public class OrganisationEmailModelTest
 
         RegistrationDetails registrationDetails = DummyRegistrationDetails();
 
-        sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(registrationDetails);
+        _sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(registrationDetails);
 
         model.OnPost();
 
-        sessionMock.Verify(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey), Times.Once);
-        sessionMock.Verify(s => s.Set(Session.RegistrationDetailsKey, It.IsAny<RegistrationDetails>()), Times.Once);
+        _sessionMock.Verify(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey), Times.Once);
+        _sessionMock.Verify(s => s.Set(Session.RegistrationDetailsKey, It.IsAny<RegistrationDetails>()), Times.Once);
     }
 
     [Fact]
@@ -151,7 +122,7 @@ public class OrganisationEmailModelTest
     {
         RegistrationDetails registrationDetails = DummyRegistrationDetails();
 
-        sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(registrationDetails);
+        _sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(registrationDetails);
 
         var model = GivenOrganisationEmailModel();
         model.OnGet();
@@ -165,7 +136,7 @@ public class OrganisationEmailModelTest
         var model = GivenOrganisationEmailModel();
 
         RegistrationDetails registrationDetails = DummyRegistrationDetails();
-        sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(registrationDetails);
+        _sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(registrationDetails);
 
         var actionResult = model.OnPost();
 
@@ -180,7 +151,7 @@ public class OrganisationEmailModelTest
         model.RedirectToSummary = true;
 
         RegistrationDetails registrationDetails = DummyRegistrationDetails();
-        sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(registrationDetails);
+        _sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(registrationDetails);
 
         var actionResult = model.OnPost();
 
@@ -202,6 +173,6 @@ public class OrganisationEmailModelTest
 
     private OrganisationEmailModel GivenOrganisationEmailModel()
     {
-        return new OrganisationEmailModel(sessionMock.Object);
+        return new OrganisationEmailModel(_sessionMock.Object);
     }
 }

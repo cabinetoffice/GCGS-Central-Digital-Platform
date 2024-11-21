@@ -9,18 +9,20 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Localization;
 using Moq;
-using System.ComponentModel.DataAnnotations;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages.Organisation;
 
 public class OrganisationEmailModelTest
 {
-    private readonly Mock<IOrganisationClient> organisationClientMock;
+    private readonly Mock<IOrganisationClient> _organisationClientMock;
     private readonly OrganisationEmailModel _model;
+    private readonly Mock<IStringLocalizer> _stringLocalizerMock;
+
     public OrganisationEmailModelTest()
     {
-        organisationClientMock = new Mock<IOrganisationClient>();
-        _model = new OrganisationEmailModel(organisationClientMock.Object);
+        _organisationClientMock = new Mock<IOrganisationClient>();
+        _model = new OrganisationEmailModel(_organisationClientMock.Object);
+        _stringLocalizerMock = new Mock<IStringLocalizer>();
     }
 
     [Fact]
@@ -38,28 +40,13 @@ public class OrganisationEmailModelTest
     {
         var model = GivenOrganisationEmailModel();
 
-        var stringLocalizerMock = new Mock<IStringLocalizer>();
-        stringLocalizerMock
+        _stringLocalizerMock
             .Setup(localizer => localizer[nameof(StaticTextResource.Organisation_Email_Required_ErrorMessage)])
             .Returns(new LocalizedString(nameof(StaticTextResource.Organisation_Email_Required_ErrorMessage), StaticTextResource.Organisation_Email_Required_ErrorMessage));
 
-        var stringLocalizerFactoryMock = new Mock<IStringLocalizerFactory>();
-        stringLocalizerFactoryMock
-            .Setup(factory => factory.Create(It.IsAny<Type>()))
-            .Returns(stringLocalizerMock.Object);
+        var validationContext = ValidationContextFactory.GivenValidationContextWithStringLocalizerFactory(model, _stringLocalizerMock.Object);
 
-        var serviceProviderMock = new Mock<IServiceProvider>();
-        serviceProviderMock
-            .Setup(provider => provider.GetService(typeof(IServiceProvider)))
-            .Returns(serviceProviderMock.Object);
-
-        serviceProviderMock
-            .Setup(provider => provider.GetService(typeof(IStringLocalizerFactory)))
-            .Returns(stringLocalizerFactoryMock.Object);
-
-        var validationContext = new ValidationContext(model, serviceProviderMock.Object, null);
-
-        var results = ModelValidationHelper.Validate(model);
+        var results = ModelValidationHelper.Validate(model, validationContext);
 
         results.Any(c => c.MemberNames.Contains("EmailAddress")).Should().BeTrue();
 
@@ -84,26 +71,11 @@ public class OrganisationEmailModelTest
         var model = GivenOrganisationEmailModel();
         model.EmailAddress = "dummy";
 
-        var stringLocalizerMock = new Mock<IStringLocalizer>();
-        stringLocalizerMock
+        _stringLocalizerMock
             .Setup(localizer => localizer[nameof(StaticTextResource.Global_Email_Invalid_ErrorMessage)])
             .Returns(new LocalizedString(nameof(StaticTextResource.Global_Email_Invalid_ErrorMessage), StaticTextResource.Global_Email_Invalid_ErrorMessage));
 
-        var stringLocalizerFactoryMock = new Mock<IStringLocalizerFactory>();
-        stringLocalizerFactoryMock
-            .Setup(factory => factory.Create(It.IsAny<Type>()))
-            .Returns(stringLocalizerMock.Object);
-
-        var serviceProviderMock = new Mock<IServiceProvider>();
-        serviceProviderMock
-            .Setup(provider => provider.GetService(typeof(IServiceProvider)))
-            .Returns(serviceProviderMock.Object);
-
-        serviceProviderMock
-            .Setup(provider => provider.GetService(typeof(IStringLocalizerFactory)))
-            .Returns(stringLocalizerFactoryMock.Object);
-
-        var validationContext = new ValidationContext(model, serviceProviderMock.Object, null);
+        var validationContext = ValidationContextFactory.GivenValidationContextWithStringLocalizerFactory(model, _stringLocalizerMock.Object);
 
         var results = ModelValidationHelper.Validate(model, validationContext);
 
@@ -147,7 +119,7 @@ public class OrganisationEmailModelTest
         var id = Guid.NewGuid();
         _model.Id = id;
         _model.EmailAddress = "updated@test.com";
-        organisationClientMock.Setup(o => o.GetOrganisationAsync(id))
+        _organisationClientMock.Setup(o => o.GetOrganisationAsync(id))
             .ReturnsAsync(GivenOrganisationClientModel(id));
 
         var result = await _model.OnPost();
@@ -162,12 +134,12 @@ public class OrganisationEmailModelTest
     {
         var id = Guid.NewGuid();
         _model.Id = id;
-        organisationClientMock.Setup(o => o.GetOrganisationAsync(id))
+        _organisationClientMock.Setup(o => o.GetOrganisationAsync(id))
             .ReturnsAsync(GivenOrganisationClientModel(id));
 
         await _model.OnGet();
 
-        organisationClientMock.Verify(c => c.GetOrganisationAsync(id), Times.Once);
+        _organisationClientMock.Verify(c => c.GetOrganisationAsync(id), Times.Once);
     }
 
 
@@ -178,6 +150,6 @@ public class OrganisationEmailModelTest
 
     private OrganisationEmailModel GivenOrganisationEmailModel()
     {
-        return new OrganisationEmailModel(organisationClientMock.Object);
+        return new OrganisationEmailModel(_organisationClientMock.Object);
     }
 }

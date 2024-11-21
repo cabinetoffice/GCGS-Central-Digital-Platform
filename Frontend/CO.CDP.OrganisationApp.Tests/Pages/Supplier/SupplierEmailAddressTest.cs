@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Localization;
 using Moq;
-using System.ComponentModel.DataAnnotations;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages.Supplier;
 
@@ -14,11 +13,13 @@ public class SupplierEmailAddressTest
 {
     private readonly Mock<IOrganisationClient> _organisationClientMock;
     private readonly SupplierEmailAddressModel _model;
+    private readonly Mock<IStringLocalizer> _stringLocalizerMock;
 
     public SupplierEmailAddressTest()
     {
         _organisationClientMock = new Mock<IOrganisationClient>();
         _model = new SupplierEmailAddressModel(_organisationClientMock.Object);
+        _stringLocalizerMock = new Mock<IStringLocalizer>();
     }
 
     [Fact]
@@ -85,26 +86,11 @@ public class SupplierEmailAddressTest
     {
         _model.EmailAddress = "dummy";
 
-        var stringLocalizerMock = new Mock<IStringLocalizer>();
-        stringLocalizerMock
+        _stringLocalizerMock
             .Setup(localizer => localizer[nameof(StaticTextResource.Global_Email_Invalid_ErrorMessage)])
             .Returns(new LocalizedString(nameof(StaticTextResource.Global_Email_Invalid_ErrorMessage), StaticTextResource.Global_Email_Invalid_ErrorMessage));
 
-        var stringLocalizerFactoryMock = new Mock<IStringLocalizerFactory>();
-        stringLocalizerFactoryMock
-            .Setup(factory => factory.Create(It.IsAny<Type>()))
-            .Returns(stringLocalizerMock.Object);
-
-        var serviceProviderMock = new Mock<IServiceProvider>();
-        serviceProviderMock
-            .Setup(provider => provider.GetService(typeof(IServiceProvider)))
-            .Returns(serviceProviderMock.Object);
-
-        serviceProviderMock
-            .Setup(provider => provider.GetService(typeof(IStringLocalizerFactory)))
-            .Returns(stringLocalizerFactoryMock.Object);
-
-        var validationContext = new ValidationContext(_model, serviceProviderMock.Object, null);
+        var validationContext = ValidationContextFactory.GivenValidationContextWithStringLocalizerFactory(_model, _stringLocalizerMock.Object);
 
         var results = ModelValidationHelper.Validate(_model, validationContext);
 
