@@ -492,15 +492,15 @@
     <value>Most services we link to are run by different government departments, for example DWP’s Universal Credit online, DVLA’s vehicle tax service, or HMRC’s webchat. These services may set additional cookies and, if so, will have their own cookie policy and banner linking to it.</value>
   </data>
   <data name="User_FirstName_Required_ErrorMessage" xml:space="preserve">
-    <value>Email required</value>
+    <value>Firstname required</value>
   </data>
   <data name="User_LastName_Required_ErrorMessage" xml:space="preserve">
-    <value>Email required</value>
+    <value>Lastname required</value>
   </data>
   <data name="User_Email_Required_ErrorMessage" xml:space="preserve">
     <value>Email required</value>
   </data>
   <data name="User_Role_Required_ErrorMessage" xml:space="preserve">
-    <value>Email required</value>
+    <value>Role required</value>
   </data>
 </root>
