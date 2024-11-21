@@ -1,6 +1,6 @@
 using CO.CDP.OrganisationApp.Authorization;
 using CO.CDP.OrganisationApp.Constants;
-using CO.CDP.Tenant.WebApiClient;
+using CO.CDP.OrganisationApp.Models;
 using FluentAssertions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -11,33 +11,26 @@ namespace CO.CDP.OrganisationApp.Tests.Authorization;
 
 public class CustomScopeHandlerTests
 {
-    private readonly Mock<ISession> _sessionMock;
-    private readonly Mock<HttpContext> _httpContextMock;
-    private readonly Mock<IHttpContextAccessor> _httpContextAccessorMock;
-    private readonly Mock<ITenantClient> _tenantClientMock;
+    private readonly Mock<ISession> _session = new();
+    private readonly Mock<HttpContext> _httpContext = new();
+    private readonly Mock<IHttpContextAccessor> _httpContextAccessor = new();
+    private readonly Mock<IUserInfoService> _userInfoService = new();
     private readonly CustomScopeHandler _handler;
-    private readonly Models.UserDetails _defaultUserDetails;
+    private readonly UserDetails _defaultUserDetails = new()
+    {
+        UserUrn = "TestUserUrn",
+        PersonId = Guid.NewGuid()
+    };
 
     public CustomScopeHandlerTests()
     {
-        _sessionMock = new Mock<ISession>();
-        _httpContextMock = new Mock<HttpContext>();
-        _httpContextAccessorMock = new Mock<IHttpContextAccessor>();
-        _tenantClientMock = new Mock<ITenantClient>();
-        Mock<IServiceScopeFactory> serviceScopeFactoryMock = new();
-        Mock<IServiceScope> serviceScopeMock = new();
-
-        serviceScopeFactoryMock.Setup(x => x.CreateScope()).Returns(serviceScopeMock.Object);
-        serviceScopeMock.Setup(x => x.ServiceProvider.GetService(typeof(ITenantClient)))
-            .Returns(_tenantClientMock.Object);
-
-        _handler = new CustomScopeHandler(_sessionMock.Object, _httpContextAccessorMock.Object, serviceScopeFactoryMock.Object);
-
-        _defaultUserDetails = new Models.UserDetails
+        var serviceScopeFactory = GivenServiceScopeFactory(new()
         {
-            UserUrn = "TestUserUrn",
-            PersonId = Guid.NewGuid()
-        };
+            { typeof(IUserInfoService), _userInfoService.Object },
+        });
+        _session.Setup(x => x.Get<UserDetails>(Session.UserDetailsKey)).Returns(_defaultUserDetails);
+        _httpContextAccessor.Setup(x => x.HttpContext).Returns(_httpContext.Object);
+        _handler = new CustomScopeHandler(_session.Object, serviceScopeFactory);
     }
 
     [Theory]
@@ -67,37 +60,47 @@ public class CustomScopeHandlerTests
         var context = new AuthorizationHandlerContext([requirement], null!, null);
         var organisationId = Guid.NewGuid();
 
-        _sessionMock.Setup(x => x.Get<Models.UserDetails>(Session.UserDetailsKey))
-                    .Returns(_defaultUserDetails);
-
-        _httpContextMock.Setup(x => x.Request.Path)
-            .Returns(new PathString("/organisation/" + organisationId));
-
-        _httpContextAccessorMock.Setup(x => x.HttpContext)
-            .Returns(_httpContextMock.Object);
-
-        _tenantClientMock.Setup(x => x.LookupTenantAsync())
-                         .ReturnsAsync(TenantLookupBuilder(organisationUserScope, userScope, organisationId));
+        _userInfoService.Setup(x => x.GetUserInfo())
+            .ReturnsAsync(UserInfo(organisationUserScope, userScope, organisationId));
+        _userInfoService.Setup(x => x.GetOrganisationId()).Returns(organisationId);
 
         await _handler.HandleAsync(context);
 
         context.HasSucceeded.Should().Be(expectedResult);
     }
 
-    private TenantLookup TenantLookupBuilder(string? organisationUserScope, string? userScope, Guid? organisationId = null)
+    private UserInfo UserInfo(string? organisationUserScope, string? userScope, Guid? organisationId = null)
     {
-        var organisations = new List<UserOrganisation>()
+        return new UserInfo
         {
-            new(organisationId ?? Guid.NewGuid(), string.Empty, [], [], organisationUserScope != null ? [organisationUserScope] : [], null)
+            Name = "John Doe",
+            Email = "john.doe@example.com",
+            Scopes = userScope != null ? [userScope] : [],
+            Organisations =
+            [
+                new UserOrganisationInfo
+                {
+                    Id = organisationId ?? Guid.NewGuid(),
+                    Name = "Acme Ltd",
+                    Roles = [],
+                    PendingRoles = [],
+                    Scopes = organisationUserScope != null ? [organisationUserScope] : []
+                }
+            ]
         };
+    }
 
-        var tenants = new List<UserTenant>
+    private IServiceScopeFactory GivenServiceScopeFactory(Dictionary<Type, object> services)
+    {
+        Mock<IServiceScopeFactory> serviceScopeFactory = new();
+        Mock<IServiceScope> serviceScope = new();
+
+        serviceScopeFactory.Setup(x => x.CreateScope()).Returns(serviceScope.Object);
+        foreach (var (type, service) in services)
         {
-            new(Guid.NewGuid(), string.Empty, organisations)
-        };
+            serviceScope.Setup(x => x.ServiceProvider.GetService(type)).Returns(service);
+        }
 
-        var user = new UserDetails(string.Empty, string.Empty, userScope != null ? [userScope] : [], _defaultUserDetails.UserUrn);
-
-        return new TenantLookup(tenants, user);
+        return serviceScopeFactory.Object;
     }
 }
