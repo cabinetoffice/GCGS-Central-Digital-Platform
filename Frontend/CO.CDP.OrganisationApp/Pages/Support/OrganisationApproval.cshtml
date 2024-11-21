@@ -1,5 +1,6 @@
 @page "/support/organisation/{organisationId}/approval"
 @using CO.CDP.OrganisationApp.Constants
+@using CO.CDP.Localization
 @model OrganisationApprovalModel
 
 @{
@@ -12,132 +13,132 @@
 
 @section BeforeContent {
     <a href="/support/organisations/buyer" class="govuk-back-link">
-        Back
+        @StaticTextResource.Global_Back
     </a>
 }
 
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
-            <partial name="_ErrorSummary" model="@Model.ModelState" />
-            <fieldset class="govuk-fieldset">
-                <h1 class="govuk-heading-l">
-                    @ViewData["Title"]
-                </h1>
-                <h2 class="govuk-heading-m">Organisation details</h2>
-                <dl class="govuk-summary-list">
-                    <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">
-                            Organisation name
-                        </dt>
-                        <dd class="govuk-summary-list__value">
-                            <p class="govuk-body">@organisationDetails.Name</p>
-                        </dd>
-                    </div>
-
-                    <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">
-                            Organisation identifier
-                        </dt>
-                        <dd class="govuk-summary-list__value">
-                            <p class="govuk-body">
-                                @organisationDetails.Identifier.Scheme.SchemeDescription()
-                            </p>
-                            <p class="govuk-body">
-                                @if (@organisationDetails.Identifier.Id == null)
-                                {
-                                    <text>PPON generation pending</text>
-                                }
-                                else
-                                {
-                                    @organisationDetails.Identifier.Id
-                                }
-                            </p>
-                        </dd>
-                    </div>
-
-                    <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">
-                            Organisation email
-                        </dt>
-                        <dd class="govuk-summary-list__value">
-                            <p class="govuk-body">@organisationDetails.ContactPoint.Email</p>
-                        </dd>
-                    </div>
-
-                    @if (registeredAddress != null)
-                    {
-                        <div class="govuk-summary-list__row">
-                            <dt class="govuk-summary-list__key">
-                                Organisation address
-                            </dt>
-                            <dd class="govuk-summary-list__value">
-                                <p class="govuk-body">@registeredAddress.StreetAddress</p>
-                                <p class="govuk-body">@registeredAddress.Locality</p>
-                                @if (!string.IsNullOrWhiteSpace(registeredAddress.Region))
-                                {
-                                    <p class="govuk-body">@registeredAddress.Region</p>
-                                }
-                                <p class="govuk-body">@registeredAddress.PostalCode</p>
-                                <p class="govuk-body">@registeredAddress.CountryName</p>
-                            </dd>
-                        </div>
-                    }
-
-                </dl>
-
-            </fieldset>
-        </div>
-    </div>
-
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
-            <form method="post">
-                <div class="govuk-form-group @(approvalHasError ? "govuk-form-group--error" : "")" @(approvalHasError ? "aria-describedby=approval-error" : "")>
-                    <fieldset class="govuk-fieldset">
-                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Approve the request?</legend>
-
-                        @if (approvalHasError)
-                        {
-                            <p id="approval-error" class="govuk-error-message">
-                                <span class="govuk-visually-hidden">Error:</span>
-                                @Html.ValidationMessageFor(m => m.Approval)
-                            </p>
-                        }
-                        <div class="govuk-radios" data-module="govuk-radios">
-                            <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="@nameof(Model.Approval)" name="@nameof(Model.Approval)" type="radio" value="true" checked="@(ModelState.ErrorCount > 0 && Model.Approval == true)">
-                                <label class="govuk-label govuk-radios__label" for="@nameof(Model.Approval)">Yes</label>
-                            </div>
-                            <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="@nameof(Model.Approval)-1" name="@nameof(Model.Approval)" type="radio" value="false" data-aria-controls="conditional-comment" checked="@(ModelState.ErrorCount > 0 && Model.Approval == false)">
-                                <label class="govuk-label govuk-radios__label" for="@nameof(Model.Approval)-1">No</label>
-                            </div>
-
-                            <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-comment">
-                                <div class="govuk-form-group @(commentHasError ? "govuk-form-group--error" : "")">
-                                    <label class="govuk-label govuk-label--s" for="@nameof(Model.Comments)">
-                                        Tell the user why you could not approve
-                                    </label>
-                                    <div class="govuk-hint" id="comments-hint">
-                                        <p>For example, ‘You need to change the email address. The domain name in the organisation email address you gave us does not match the organisation name you want to register’.</p>
-                                    </div>
-                                    @if (commentHasError)
-                                    {
-                                        <p id="comments-error" class="govuk-error-message">
-                                            <span class="govuk-visually-hidden">Error:</span>
-                                            @Html.ValidationMessageFor(m => m.Comments)
-                                        </p>
-                                    }
-                                    <textarea class="govuk-textarea" id="@nameof(Model.Comments)" name="@nameof(Model.Comments)" rows="3" maxlength="10000" aria-describedby="comments-hint @(commentHasError ? "comments-error" : "")"></textarea>
-                                </div>
-                            </div>
-                        </div>
-                    </fieldset>
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <partial name="_ErrorSummary" model="@Model.ModelState" />
+        <fieldset class="govuk-fieldset">
+            <h1 class="govuk-heading-l">
+                @ViewData["Title"]
+            </h1>
+            <h2 class="govuk-heading-m">@StaticTextResource.Support_OrganisationApproval_Heading</h2>
+            <dl class="govuk-summary-list">
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        @StaticTextResource.Support_OrganisationApproval_OrganisationName_List
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        <p class="govuk-body">@organisationDetails.Name</p>
+                    </dd>
                 </div>
 
-                <govuk-button>
-                    Continue
-                </govuk-button>
-            </form>
-        </div>
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        @StaticTextResource.Support_OrganisationApproval_OrganisationIdentifier_List
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        <p class="govuk-body">
+                            @organisationDetails.Identifier.Scheme.SchemeDescription()
+                        </p>
+                        <p class="govuk-body">
+                            @if (@organisationDetails.Identifier.Id == null)
+                            {
+                                <text>@StaticTextResource.Support_OrganisationApproval_PPONGenerationPending_List</text>
+                            }
+                            else
+                            {
+                                @organisationDetails.Identifier.Id
+                            }
+                        </p>
+                    </dd>
+                </div>
+
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        @StaticTextResource.Support_OrganisationApproval_OrganisationEmail_List
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        <p class="govuk-body">@organisationDetails.ContactPoint.Email</p>
+                    </dd>
+                </div>
+
+                @if (registeredAddress != null)
+                {
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            @StaticTextResource.Support_OrganisationApproval_OrganisationAddress_List
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            <p class="govuk-body">@registeredAddress.StreetAddress</p>
+                            <p class="govuk-body">@registeredAddress.Locality</p>
+                            @if (!string.IsNullOrWhiteSpace(registeredAddress.Region))
+                            {
+                                <p class="govuk-body">@registeredAddress.Region</p>
+                            }
+                            <p class="govuk-body">@registeredAddress.PostalCode</p>
+                            <p class="govuk-body">@registeredAddress.CountryName</p>
+                        </dd>
+                    </div>
+                }
+
+            </dl>
+
+        </fieldset>
     </div>
+</div>
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <form method="post">
+            <div class="govuk-form-group @(approvalHasError ? "govuk-form-group--error" : "")" @(approvalHasError ? "aria-describedby=approval-error" : "")>
+                <fieldset class="govuk-fieldset">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">@StaticTextResource.Support_OrganisationApproval_Radio_Heading</legend>
+
+                    @if (approvalHasError)
+                    {
+                        <p id="approval-error" class="govuk-error-message">
+                            <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span>
+                            @Html.ValidationMessageFor(m => m.Approval)
+                        </p>
+                    }
+                    <div class="govuk-radios" data-module="govuk-radios">
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="@nameof(Model.Approval)" name="@nameof(Model.Approval)" type="radio" value="true" checked="@(ModelState.ErrorCount > 0 && Model.Approval == true)">
+                            <label class="govuk-label govuk-radios__label" for="@nameof(Model.Approval)">@StaticTextResource.Global_Yes</label>
+                        </div>
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="@nameof(Model.Approval)-1" name="@nameof(Model.Approval)" type="radio" value="false" data-aria-controls="conditional-comment" checked="@(ModelState.ErrorCount > 0 && Model.Approval == false)">
+                            <label class="govuk-label govuk-radios__label" for="@nameof(Model.Approval)-1">@StaticTextResource.Global_No</label>
+                        </div>
+
+                        <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-comment">
+                            <div class="govuk-form-group @(commentHasError ? "govuk-form-group--error" : "")">
+                                <label class="govuk-label govuk-label--s" for="@nameof(Model.Comments)">
+                                    @StaticTextResource.Support_OrganisationApproval_ErrorMessage_Hint
+                                </label>
+                                <div class="govuk-hint" id="comments-hint">
+                                    <p>For example, ‘You need to change the email address. The domain name in the organisation email address you gave us does not match the organisation name you want to register’.</p>
+                                </div>
+                                @if (commentHasError)
+                                {
+                                    <p id="comments-error" class="govuk-error-message">
+                                        <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span>
+                                        @Html.ValidationMessageFor(m => m.Comments)
+                                    </p>
+                                }
+                                <textarea class="govuk-textarea" id="@nameof(Model.Comments)" name="@nameof(Model.Comments)" rows="3" maxlength="10000" aria-describedby="comments-hint @(commentHasError ? "comments-error" : "")"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+
+            <govuk-button>
+                @StaticTextResource.Global_Continue
+            </govuk-button>
+        </form>
+    </div>
+</div>
