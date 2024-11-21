@@ -494,6 +494,7 @@
   </data>
   <data name="User_Role_Required_ErrorMessage" xml:space="preserve">
     <value>Role required</value>
+  </data>
   <data name="OrganisationRegistration_OrganisationType_Heading" xml:space="preserve">
     <value>What do you want to register your organisation as?</value>
   </data>
