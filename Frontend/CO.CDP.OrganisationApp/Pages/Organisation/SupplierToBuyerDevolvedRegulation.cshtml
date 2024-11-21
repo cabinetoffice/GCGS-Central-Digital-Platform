@@ -6,7 +6,7 @@
     ViewData["Title"] = "Do devolved regulations apply to your organisation?";
     var devolvedHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Devolved)).HasInnerHtml;
 
-    var backLink = $"/organisation/{@Model.Id}/supplier-to-buyer-devolved-regulation";
+    var backLink = $"/organisation/{@Model.Id}/supplier-to-buyer-organisation-type";
 
 }
 

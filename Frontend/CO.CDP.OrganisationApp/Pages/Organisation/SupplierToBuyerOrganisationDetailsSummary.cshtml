@@ -9,12 +9,12 @@
     var supplierToBuyerDevolvedRegulationsPage = $"/organisation/{@Model.Id}/supplier-to-buyer-devolved-regulation";
     var supplierToBuyerSelectDevolvedRegulationsPage = $"/organisation/{@Model.Id}/supplier-to-buyer-select-devolved-regulation";
 
-    var backLink = $"/organisation/{@Model.Id}/supplier-to-buyer-select-devolved-regulation";
+    var backLink = $"/organisation/{@Model.Id}/supplier-to-buyer-devolved-regulation";
 
     if (details.Devolved == true)
     {
         backLink = $"/organisation/{@Model.Id}/supplier-to-buyer-select-devolved-regulation";
-    }   
+    }
 }
 @section BeforeContent {
     <a href="@backLink" class="govuk-back-link">Back</a>
@@ -28,7 +28,7 @@
             <span class="govuk-caption-l">Buyer details</span>
                 @ViewData["Title"]
             </h1>
-            <fieldset class="govuk-fieldset">
+            
                 <dl class="govuk-summary-list">
                     <div class="govuk-summary-list__row">
                         <dt class="govuk-summary-list__key">
@@ -75,7 +75,7 @@
                         </div>
                     }
                 </dl>
-            </fieldset>
+            
             <form method="post">
                 <govuk-button>
                     Save
