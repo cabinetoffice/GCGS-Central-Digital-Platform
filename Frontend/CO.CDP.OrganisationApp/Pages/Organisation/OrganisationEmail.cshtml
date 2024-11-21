@@ -1,5 +1,6 @@
 @page "/organisation/{id}/email"
 @model CO.CDP.OrganisationApp.Pages.Organisation.OrganisationEmailModel
+@using CO.CDP.Localization
 
 @{
     ViewData["Title"] = Html.DisplayNameFor(m => m.EmailAddress);
@@ -8,7 +9,7 @@
 
 @section BeforeContent {
     <a href="/organisation/@Model.Id" class="govuk-back-link">
-        Back
+        @StaticTextResource.Global_Back
     </a>
 }
 
@@ -32,13 +33,13 @@
                             </label>
                         </h1>
 
-                        <div id="hint" class="govuk-hint">Where possible, use a shared inbox that other team members can access</div>
+                        <div id="hint" class="govuk-hint">@StaticTextResource.Organisation_EnterOrganisationEmail_Hint</div>
 
                         <div class="govuk-form-group govuk-!-width-two-thirds @(emailAddressHasError ? "govuk-form-group--error" : "")">
                             @if (emailAddressHasError)
                             {
                                 <p id="email-address-error" class="govuk-error-message">
-                                    <span class="govuk-visually-hidden">Error:</span>
+                                    <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span>
                                     @Html.ValidationMessageFor(m => m.EmailAddress)
                                 </p>
                             }
@@ -50,7 +51,7 @@
                 </div>
 
                 <govuk-button>
-                    Continue
+                    @StaticTextResource.Global_Continue
                 </govuk-button>
 
             </form>

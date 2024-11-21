@@ -15,6 +15,18 @@ variable "db_name" {
   type        = string
 }
 
+variable "db_parameters_cluster" {
+  description = "A map of database parameters to apply to the RDS DB Cluster parameter group. Keys are parameter names, and values are the desired settings."
+  type        = map(string)
+  default     = {}
+}
+
+variable "db_parameters_instance" {
+  description = "A map of database parameters to apply to the RDS DB parameter group. Keys are parameter names, and values are the desired settings."
+  type        = map(string)
+  default     = {}
+}
+
 variable "db_sg_id" {
   description = "DB security group ID"
   type        = string
@@ -54,12 +66,6 @@ variable "instance_type" {
   type        = string
 }
 
-variable "max_allocated_storage" {
-  description = "The maximum amount of storage (in GB) that can be automatically allocated to the RDS instance."
-  type        = number
-  default     = 0
-}
-
 variable "monitoring_interval" {
   description = "The interval, in seconds, between points when Enhanced Monitoring metrics are collected for the DB instance. To disable collecting Enhanced Monitoring metrics, specify 0."
   type        = number
@@ -75,11 +81,6 @@ variable "monitoring_role_arn" {
   description = "The ARN for the IAM role that permits RDS to send enhanced monitoring metrics to CloudWatch Logs. Required if monitoring_interval is greater than 0."
   type        = string
   default     = ""
-}
-
-variable "parameter_group_name" {
-  description = "The name of the DB parameter group."
-  type        = string
 }
 
 variable "performance_insights_enabled" {
