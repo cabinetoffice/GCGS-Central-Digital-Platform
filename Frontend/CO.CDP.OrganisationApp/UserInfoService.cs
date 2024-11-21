@@ -16,10 +16,11 @@ public class UserInfoService(IHttpContextAccessor httpContextAccessor, ITenantCl
 
     public async Task<bool> IsViewer()
     {
-        var tenantLookup = await tenantClient.LookupTenantAsync();
-        var userScopes = tenantLookup.User.Scopes;
+        var userInfo = await GetUserInfo();
+        var userScopes = userInfo.Scopes;
         var organisationId = GetOrganisationId();
-        var organisationUserScopes = tenantLookup.Tenants.SelectMany(x => x.Organisations.Where(y => y.Id == organisationId).SelectMany(y => y.Scopes)).ToList();
+        var organisationUserScopes =
+            userInfo.Organisations.Where(o => o.Id == organisationId).SelectMany(o => o.Scopes).ToList();
 
         return organisationUserScopes.Contains(OrganisationPersonScopes.Viewer) || (organisationUserScopes.Count == 0 && userScopes.Contains(PersonScopes.SupportAdmin));
     }

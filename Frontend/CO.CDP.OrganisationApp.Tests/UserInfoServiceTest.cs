@@ -62,6 +62,101 @@ public class UserInfoServiceTest
         userInfo3.Should().Be(userInfo1);
     }
 
+    [Theory]
+    [MemberData(nameof(ViewerScopeCases))]
+    public async Task ItChecksIfUserHasViewerScope(
+        List<string> userScopes,
+        List<string> userOrganisationScopes,
+        string organisationId,
+        string path,
+        bool outcome)
+    {
+        var tenantLookup = GivenTenantLookup(
+            userDetails: GivenUserDetails(scopes: userScopes),
+            tenants:
+            [
+                GivenUserTenant(organisations:
+                [
+                    GivenUserOrganisation(scopes: ["ADMIN"]),
+                    GivenUserOrganisation(id: Guid.Parse(organisationId), scopes: userOrganisationScopes)
+                ])
+            ]
+        );
+        GivenRequestPath(path);
+
+        _tenantClient.Setup(c => c.LookupTenantAsync()).ReturnsAsync(tenantLookup);
+
+        (await UserInfoService.IsViewer()).Should().Be(outcome);
+    }
+
+    public static IEnumerable<object[]> ViewerScopeCases() => new List<object[]>
+    {
+        new object[]
+        {
+            new List<string>(),
+            new List<string> { OrganisationPersonScopes.Viewer },
+            "49c8b8de-457a-40ee-9c29-bb1aa900941c",
+            "/organisation/49c8b8de-457a-40ee-9c29-bb1aa900941c",
+            true
+        },
+        new object[]
+        {
+            new List<string>(),
+            new List<string> { OrganisationPersonScopes.Viewer },
+            "49c8b8de-457a-40ee-9c29-bb1aa900941c",
+            "/non-organisation-page",
+            false
+        },
+        new object[]
+        {
+            new List<string>(),
+            new List<string> { OrganisationPersonScopes.Viewer },
+            "5c08b265-8cad-466d-a8d3-c7096c51e2b1",
+            "/organisation/49c8b8de-457a-40ee-9c29-bb1aa900941c",
+            false
+        },
+        new object[]
+        {
+            new List<string>(),
+            new List<string> { OrganisationPersonScopes.Admin },
+            "49c8b8de-457a-40ee-9c29-bb1aa900941c",
+            "/organisation/49c8b8de-457a-40ee-9c29-bb1aa900941c",
+            false
+        },
+        new object[]
+        {
+            new List<string>(),
+            new List<string> { OrganisationPersonScopes.Admin, OrganisationPersonScopes.Viewer },
+            "49c8b8de-457a-40ee-9c29-bb1aa900941c",
+            "/organisation/49c8b8de-457a-40ee-9c29-bb1aa900941c",
+            true
+        },
+        new object[]
+        {
+            new List<string> { PersonScopes.SupportAdmin },
+            new List<string> { OrganisationPersonScopes.Admin, OrganisationPersonScopes.Viewer },
+            "49c8b8de-457a-40ee-9c29-bb1aa900941c",
+            "/organisation/49c8b8de-457a-40ee-9c29-bb1aa900941c",
+            true
+        },
+        new object[]
+        {
+            new List<string> { PersonScopes.SupportAdmin },
+            new List<string> { OrganisationPersonScopes.Admin },
+            "49c8b8de-457a-40ee-9c29-bb1aa900941c",
+            "/organisation/49c8b8de-457a-40ee-9c29-bb1aa900941c",
+            false
+        },
+        new object[]
+        {
+            new List<string> { PersonScopes.SupportAdmin },
+            new List<string>(),
+            "49c8b8de-457a-40ee-9c29-bb1aa900941c",
+            "/organisation/49c8b8de-457a-40ee-9c29-bb1aa900941c",
+            true
+        },
+    };
+
     private static UserDetails GivenUserDetails(string? name = null, string? email = null, List<string>? scopes = null)
     {
         return new UserDetails(
@@ -92,19 +187,32 @@ public class UserInfoServiceTest
     }
 
     private static UserOrganisation GivenUserOrganisation(
+        Guid? id = null,
         string? name = null,
         ICollection<string>? scopes = null,
         ICollection<PartyRole>? roles = null,
         ICollection<PartyRole>? pendingRoles = null)
     {
         return new UserOrganisation(
-            id: Guid.NewGuid(),
+            id: id ?? Guid.NewGuid(),
             name: name,
             pendingRoles: pendingRoles,
             roles: roles,
             scopes: scopes,
             uri: new Uri("https://example.com")
         );
+    }
+
+    private void GivenRequestPath(string path)
+    {
+        if (_httpContextAccessor.HttpContext is not null)
+        {
+            _httpContextAccessor.HttpContext.Request.Path = new PathString(path);
+        }
+        else
+        {
+            throw new Exception("Http context is missing.");
+        }
     }
 
     private static IHttpContextAccessor GivenHttpContext()
