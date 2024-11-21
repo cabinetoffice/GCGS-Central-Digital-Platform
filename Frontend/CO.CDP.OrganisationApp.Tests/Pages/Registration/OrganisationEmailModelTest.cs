@@ -201,7 +201,8 @@ public class OrganisationEmailModelTest
         {
             OrganisationName = organisationName,
             OrganisationScheme = scheme,
-            OrganisationEmailAddress = organisationEmailAddress
+            OrganisationEmailAddress = organisationEmailAddress,
+            OrganisationIdentificationNumber = "987654321"
         };
 
         return registrationDetails;
