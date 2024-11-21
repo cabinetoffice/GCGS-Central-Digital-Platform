@@ -576,4 +576,103 @@
   <data name="Forms_FormElementMultiLineInput_CharacterCountMessage" xml:space="preserve">
     <value>You can enter up to 10,000 characters</value>
   </data>
+  <data name="Forms_FormElementCheckBoxInput_DeclarationRequiredError" xml:space="preserve">
+    <value>You must agree to the declaration statements to proceed.</value>
+  </data>
+  <data name="Global_RadioField_SelectOptionError" xml:space="preserve">
+    <value>Select an option</value>
+  </data>
+  <data name="Global_RadioField__InvalidOptionError" xml:space="preserve">
+    <value>Invalid option selected</value>
+  </data>
+  <data name="Global_DateInput_DayRequiredError" xml:space="preserve">
+    <value>Date must include a day</value>
+  </data>
+  <data name="Global_DateInput_DayInvalidError" xml:space="preserve">
+    <value>Day must be a valid number</value>
+  </data>
+  <data name="Global_DateInput_MonthRequiredError" xml:space="preserve">
+    <value>Date must include a month</value>
+  </data>
+  <data name="Global_DateInput_MonthInvalidError" xml:space="preserve">
+    <value>Month must be a valid number</value>
+  </data>
+  <data name="Global_DateInput_YearRequiredError" xml:space="preserve">
+    <value>Date must include a year</value>
+  </data>
+  <data name="Global_DateInput_YearInvalidError" xml:space="preserve">
+    <value>Year must be a valid number</value>
+  </data>
+  <data name="Global_DateInput_DateInvalidError" xml:space="preserve">
+    <value>Date must be a real date</value>
+  </data>
+  <data name="Global_DateInput_DateInFutureError" xml:space="preserve">
+    <value>Date must be today or in the past</value>
+  </data>
+  <data name="Forms_FormElementFileUpload_NoFileSelectedError" xml:space="preserve">
+    <value>No file selected.</value>
+  </data>
+  <data name="Forms_FormElementFileUpload_FileSizeExceededError" xml:space="preserve">
+    <value>The file size must not exceed {0}MB.</value>
+  </data>
+  <data name="Forms_FormElementFileUpload_InvalidFileExtensionError" xml:space="preserve">
+    <value>Please upload a file which has one of the following extensions: {0}</value>
+  </data>
+  <data name="Forms_FormElementMultiLineInput_AllInformationRequiredError" xml:space="preserve">
+    <value>All information is required on this page</value>
+  </data>
+  <data name="Forms_FormElementTextInput_InvalidEmailError" xml:space="preserve">
+    <value>Enter an email address in the correct format, like name@example.com.</value>
+  </data>
+  <data name="Forms_FormElementTextInput_EnterValueError" xml:space="preserve">
+    <value>Enter a value</value>
+  </data>
+  <data name="Forms_FormElementUrlInput_EnterWebsiteAddressError" xml:space="preserve">
+    <value>Enter a website address</value>
+  </data>
+  <data name="Forms_FormElementUrlInput_InvalidWebsiteAddressError" xml:space="preserve">
+    <value>Website address must be in the correct format, like www.companyname.com</value>
+  </data>
+  <data name="Forms_FormElementAddress_AddressLine1_Label" xml:space="preserve">
+    <value>Address line 1</value>
+  </data>
+  <data name="Forms_FormElementAddress_TownOrCity_Label" xml:space="preserve">
+    <value>Town or city</value>
+  </data>
+  <data name="Forms_FormElementAddress_Country_Label" xml:space="preserve">
+    <value>Country</value>
+  </data>
+  <data name="Forms_FormElementAddress_Postcode_Label" xml:space="preserve">
+    <value>Postcode</value>
+  </data>
+  <data name="Forms_FormElementAddress_PostalOrZipCode_Label" xml:space="preserve">
+    <value>Postal or Zip code</value>
+  </data>
+  <data name="Forms_FormElementAddress_AddressLine1_RequiredError" xml:space="preserve">
+    <value>Enter your address line 1</value>
+  </data>
+  <data name="Forms_FormElementAddress_TownOrCity_RequiredError" xml:space="preserve">
+    <value>Enter your town or city</value>
+  </data>
+  <data name="Forms_FormElementAddress_Postcode_RequiredError" xml:space="preserve">
+    <value>Enter your postcode</value>
+  </data>
+  <data name="Forms_FormElementAddress_PostalOrZipCode_RequiredError" xml:space="preserve">
+    <value>Enter your postal or zip code</value>
+  </data>
+  <data name="Forms_FormElementAddress_Country_RequiredError" xml:space="preserve">
+    <value>Enter your country</value>
+  </data>
+  <data name="Forms_FormElementAddress_InvalidCountryError" xml:space="preserve">
+    <value>Invalid country name '{0}'</value>
+  </data>
+  <data name="Global_Yes" xml:space="preserve">
+    <value>Yes</value>
+  </data>
+  <data name="Global_No" xml:space="preserve">
+    <value>No</value>
+  </data>
+  <data name="Global_PleaseSelect" xml:space="preserve">
+    <value>Please select</value>
+  </data>
 </root>

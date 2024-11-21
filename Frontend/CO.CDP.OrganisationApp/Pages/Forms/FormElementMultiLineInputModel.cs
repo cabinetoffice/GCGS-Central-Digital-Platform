@@ -1,6 +1,7 @@
 using CO.CDP.OrganisationApp.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
+using CO.CDP.Localization;
 
 namespace CO.CDP.OrganisationApp.Pages.Forms;
 
@@ -24,15 +25,14 @@ public class FormElementMultiLineInputModel : FormElementModel, IValidatableObje
 
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {
-
         if (IsRequired == true && string.IsNullOrWhiteSpace(TextInput))
         {
-            yield return new ValidationResult("All information is required on this page", new[] { nameof(TextInput) });
+            yield return new ValidationResult(StaticTextResource.Forms_FormElementMultiLineInput_AllInformationRequiredError, [nameof(TextInput)]);
         }
 
         if (TextInput != null && TextInput.Length > 10000)
         {
-            yield return new ValidationResult("Enter 10,000 characters or fewer", new[] { nameof(TextInput) });
+            yield return new ValidationResult(StaticTextResource.Forms_FormElementMultiLineInput_CharacterCountMessage, [nameof(TextInput)]);
         }
     }
 }

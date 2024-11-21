@@ -1,6 +1,7 @@
 using CO.CDP.OrganisationApp.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
+using CO.CDP.Localization;
 
 namespace CO.CDP.OrganisationApp.Pages.Forms;
 
@@ -26,7 +27,7 @@ public class FormElementCheckBoxInputModel : FormElementModel, IValidatableObjec
     {
         if (CurrentFormQuestionType == FormQuestionType.CheckBox && IsRequired == true && CheckBoxInput != true)
         {
-            yield return new ValidationResult("You must agree to the declaration statements to proceed.", new[] { nameof(CheckBoxInput) });
+            yield return new ValidationResult(StaticTextResource.Forms_FormElementCheckBoxInput_DeclarationRequiredError, [nameof(CheckBoxInput)]);
         }
     }
 }
