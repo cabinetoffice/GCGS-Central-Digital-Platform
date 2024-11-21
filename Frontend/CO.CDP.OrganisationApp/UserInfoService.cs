@@ -25,19 +25,6 @@ public class UserInfoService(IHttpContextAccessor httpContextAccessor, ITenantCl
         return organisationUserScopes.Contains(OrganisationPersonScopes.Viewer) || (organisationUserScopes.Count == 0 && userScopes.Contains(PersonScopes.SupportAdmin));
     }
 
-    public async Task<bool> HasTenant()
-    {
-        try
-        {
-            var usersTenant = await tenantClient.LookupTenantAsync();
-            return usersTenant.Tenants.Count > 0;
-        }
-        catch
-        {
-            return false;
-        }
-    }
-
     public Guid? GetOrganisationId()
     {
         var path = httpContextAccessor.HttpContext?.Request.Path.Value;

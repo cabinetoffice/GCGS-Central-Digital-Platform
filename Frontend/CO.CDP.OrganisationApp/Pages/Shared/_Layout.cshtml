@@ -35,6 +35,7 @@
     var ftsService = config["FtsService"] ?? "";
     ftsService = ftsService.EndsWith("/") ? ftsService.TrimEnd(new Char[] { '/' }) : ftsService;
     var organisationId = userInfoService.GetOrganisationId();
+    var userInfo = await userInfoService.GetUserInfo();
     var homeLink = organisationId == null ? $"{this.Context.Request.Path}{this.Context.Request.QueryString}" : $"{ftsService}/login?organisation_id={organisationId}&redirect_url=/Search";
 }
 
@@ -78,7 +79,7 @@
                             <ul id="navigation" class="govuk-header__navigation-list">
                                 @if (User?.Identity?.IsAuthenticated == true)
                                 {
-                                    @if (await userInfoService.HasTenant())
+                                    @if (userInfo.HasOrganisations())
                                     {
                                         if (organisationId != null)
                                         {

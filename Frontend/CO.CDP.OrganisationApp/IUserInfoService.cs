@@ -8,7 +8,6 @@ public interface IUserInfoService
     public Task<UserInfo> GetUserInfo();
     public Guid? GetOrganisationId();
     public Task<bool> IsViewer();
-    Task<bool> HasTenant();
 }
 
 public record UserInfo
@@ -17,6 +16,11 @@ public record UserInfo
     public required string Email { get; init; }
     public ICollection<string> Scopes { get; init; } = [];
     public ICollection<UserOrganisationInfo> Organisations { get; init; } = [];
+
+    public bool HasOrganisations()
+    {
+        return Organisations.Count > 0;
+    }
 }
 
 public record UserOrganisationInfo
