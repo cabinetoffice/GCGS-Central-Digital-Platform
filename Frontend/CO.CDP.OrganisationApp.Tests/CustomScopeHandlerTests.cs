@@ -5,12 +5,15 @@ using Moq;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using CO.CDP.Tenant.WebApiClient;
+using Microsoft.AspNetCore.Http;
 
 namespace CO.CDP.OrganisationApp.Tests.Authorization;
 
 public class CustomScopeHandlerTests
 {
     private readonly Mock<ISession> _sessionMock;
+    private readonly Mock<HttpContext> _httpContextMock;
+    private readonly Mock<IHttpContextAccessor> _htttpContextAccessorMock;
     private readonly Mock<IServiceScopeFactory> _serviceScopeFactoryMock;
     private readonly Mock<IServiceScope> _serviceScopeMock;
     private readonly Mock<ITenantClient> _tenantClientMock;
@@ -21,6 +24,8 @@ public class CustomScopeHandlerTests
     public CustomScopeHandlerTests()
     {
         _sessionMock = new Mock<ISession>();
+        _httpContextMock = new Mock<HttpContext>();
+        _htttpContextAccessorMock = new Mock<IHttpContextAccessor>();
         _serviceScopeFactoryMock = new Mock<IServiceScopeFactory>();
         _serviceScopeMock = new Mock<IServiceScope>();
         _tenantClientMock = new Mock<ITenantClient>();
@@ -29,7 +34,7 @@ public class CustomScopeHandlerTests
         _serviceScopeMock.Setup(x => x.ServiceProvider.GetService(typeof(ITenantClient)))
             .Returns(_tenantClientMock.Object);
 
-        _handler = new CustomScopeHandler(_sessionMock.Object, _serviceScopeFactoryMock.Object);
+        _handler = new CustomScopeHandler(_sessionMock.Object, _htttpContextAccessorMock.Object, _serviceScopeFactoryMock.Object);
 
         _defaultPersonId = new Guid();
 
@@ -65,23 +70,30 @@ public class CustomScopeHandlerTests
     {
         var requirement = new ScopeRequirement(requirementScope);
         var context = new AuthorizationHandlerContext([requirement], null!, null);
+        var organisationId = Guid.NewGuid();
 
         _sessionMock.Setup(x => x.Get<Models.UserDetails>(Session.UserDetailsKey))
                     .Returns(_defaultUserDetails);
 
+        _httpContextMock.Setup(x => x.Request.Path)
+            .Returns(new PathString("/organisation/" + organisationId));
+
+        _htttpContextAccessorMock.Setup(x => x.HttpContext)
+            .Returns(_httpContextMock.Object);
+
         _tenantClientMock.Setup(x => x.LookupTenantAsync())
-                         .ReturnsAsync(TenantLookupBuilder(organisationUserScope, userScope));
+                         .ReturnsAsync(TenantLookupBuilder(organisationUserScope, userScope, organisationId));
 
         await _handler.HandleAsync(context);
 
         context.HasSucceeded.Should().Be(expectedResult);
     }
 
-    private TenantLookup TenantLookupBuilder(string? organisationUserScope, string? userScope)
+    private TenantLookup TenantLookupBuilder(string? organisationUserScope, string? userScope, Guid? organisationId = null)
     {
         var organisations = new List<UserOrganisation>()
         {
-            new UserOrganisation(Guid.NewGuid(), string.Empty, [], [], organisationUserScope != null ? [organisationUserScope] : [], null)
+            new UserOrganisation(organisationId ?? Guid.NewGuid(), string.Empty, [], [], organisationUserScope != null ? [organisationUserScope] : [], null)
         };
 
         var tenants = new List<UserTenant>

@@ -1,3 +1,4 @@
+using CO.CDP.Localization;
 using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.ThirdPartyApiClients.CharityCommission;
@@ -13,9 +14,9 @@ public class OrganisationEmailModel(ISession session, ICharityCommissionApi char
     public override string CurrentPage => OrganisationEmailPage;
 
     [BindProperty]
-    [DisplayName("Enter your organisation's email address")]
-    [Required(ErrorMessage = "Enter your organisation's email address")]
-    [EmailAddress(ErrorMessage = "Enter an email address in the correct format, like name@example.com")]
+    [DisplayName(nameof(StaticTextResource.OrganisationRegistration_EnterOrganisationEmail_Heading))]
+    [Required(ErrorMessage = nameof(StaticTextResource.OrganisationRegistration_EnterOrganisationEmail_Heading))]
+    [EmailAddress(ErrorMessage = nameof(StaticTextResource.Global_EmailAddress_Error))]
     public string? EmailAddress { get; set; }
 
     [BindProperty]

@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using CO.CDP.Localization;
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
@@ -15,7 +16,7 @@ public class JoinOrganisationModel(
     public OrganisationWebApiClient.Organisation? OrganisationDetails { get; set; }
 
     [BindProperty]
-    [Required(ErrorMessage = "Select an option")]
+    [Required(ErrorMessage = nameof(StaticTextResource.OrganisationRegistration_JoinOrganisation_ValidationErrorMessage))]
     public bool Join { get; set; }
 
     public FlashMessage NotificationBannerAlreadyMemberOfOrganisation { get { return new FlashMessage(ErrorMessagesList.AlreadyMemberOfOrganisation); } }
@@ -58,6 +59,8 @@ public class JoinOrganisationModel(
                     tempDataService.Put(FlashMessageTypes.Important, NotificationBannerAlreadyMemberOfOrganisation);
                     return Page();
                 }
+
+                SessionContext.Remove(Session.RegistrationDetailsKey);
 
                 return Redirect("/registration/" + identifier + "/join-organisation/success");
             }

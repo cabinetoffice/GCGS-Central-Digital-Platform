@@ -4,6 +4,7 @@ using CO.CDP.OrganisationApp.Pages.Shared;
 using CO.CDP.OrganisationApp.ThirdPartyApiClients.CharityCommission;
 using CO.CDP.OrganisationApp.ThirdPartyApiClients.CompaniesHouse;
 using Microsoft.AspNetCore.Mvc;
+using CO.CDP.Localization;
 
 namespace CO.CDP.OrganisationApp.Pages.Registration;
 
@@ -108,18 +109,18 @@ public class OrganisationRegisteredAddressModel(ISession session, ICharityCommis
 
         if (Address.IsNonUkAddress)
         {
-            Address.Heading = "Enter your organisation's registered non-UK address";
-            Address.AddressHint = "The address recorded on public records or within the public domain.";
+            Address.Heading = StaticTextResource.OrganisationRegistration_Address_NonUk_Heading;
+            Address.AddressHint = StaticTextResource.OrganisationRegistration_Address_NonUk_Hint;
         } else
         {
             if(RegistrationDetails.OrganisationType == OrganisationType.Buyer)
             {
-                Address.Heading = "Enter your organisation's address";
-                Address.AddressHint = "The principal address the organisation conducts its activities. For example, a head office.";
+                Address.Heading = StaticTextResource.OrganisationRegistration_Address_Buyer_Heading;
+                Address.AddressHint = StaticTextResource.OrganisationRegistration_Address_Buyer_Hint;
             } else
             {
-                Address.Heading = "Enter your organisation's registered address";
-                Address.AddressHint = "The address registered with Companies House, or the principal address the business conducts its activities. For example, a head office.";
+                Address.Heading = StaticTextResource.OrganisationRegistration_Address_Supplier_Heading;
+                Address.AddressHint = StaticTextResource.OrganisationRegistration_Address_Supplier_Hint;
             }
         }
 

@@ -1,16 +1,18 @@
 @page "/organisation/{id}/email"
 @model CO.CDP.OrganisationApp.Pages.Organisation.OrganisationEmailModel
+@using CO.CDP.Localization
 
 @{
     ViewData["Title"] = Html.DisplayNameFor(m => m.EmailAddress);
     var emailAddressHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.EmailAddress)).HasInnerHtml;
 }
 
-<a href="/organisation/@Model.Id" class="govuk-back-link">
-    Back
-</a>
+@section BeforeContent {
+    <a href="/organisation/@Model.Id" class="govuk-back-link">
+        @StaticTextResource.Global_Back
+    </a>
+}
 
-<main class="govuk-main-wrapper" id="main-content">
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <partial name="_ErrorSummary" model="@ModelState" />
@@ -31,13 +33,13 @@
                             </label>
                         </h1>
 
-                        <div id="hint" class="govuk-hint">Where possible, use a shared inbox that other team members can access</div>
+                        <div id="hint" class="govuk-hint">@StaticTextResource.Organisation_EnterOrganisationEmail_Hint</div>
 
                         <div class="govuk-form-group govuk-!-width-two-thirds @(emailAddressHasError ? "govuk-form-group--error" : "")">
                             @if (emailAddressHasError)
                             {
                                 <p id="email-address-error" class="govuk-error-message">
-                                    <span class="govuk-visually-hidden">Error:</span>
+                                    <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span>
                                     @Html.ValidationMessageFor(m => m.EmailAddress)
                                 </p>
                             }
@@ -49,10 +51,9 @@
                 </div>
 
                 <govuk-button>
-                    Continue
+                    @StaticTextResource.Global_Continue
                 </govuk-button>
 
             </form>
         </div>
     </div>
-</main>

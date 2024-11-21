@@ -3,9 +3,10 @@
 @model OrganisationTypeModel
 @using CO.CDP.Organisation.WebApiClient
 @using CO.CDP.OrganisationApp.Constants
+@using CO.CDP.Localization
 
 @{
-    ViewData["Title"] = "What do you want to register your organisation as?";
+    ViewData["Title"] = @StaticTextResource.OrganisationRegistration_OrganisationType_Heading;
     var organisationTypeHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.OrganisationType)).HasInnerHtml;
 
     var backLink = "/organisation-selection";
@@ -21,11 +22,12 @@
     }
 }
 
-<a href="@backLink" class="govuk-back-link">
-    Back
-</a>
+@section BeforeContent {
+    <a href="@backLink" class="govuk-back-link">
+        @StaticTextResource.Global_Back
+    </a>
+}
 
-<main class="govuk-main-wrapper" id="main-content">
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <partial name="_ErrorSummary" model="@ModelState" />
@@ -45,7 +47,7 @@
                         @if (organisationTypeHasError)
                         {
                             <p id="organisationType-error" class="govuk-error-message">
-                                <span class="govuk-visually-hidden">Error:</span> @Html.ValidationMessageFor(m => m.OrganisationType)
+                                <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span> @Html.ValidationMessageFor(m => m.OrganisationType)
                             </p>
                         }
 
@@ -55,10 +57,10 @@
                                        type="radio" value="@OrganisationType.Buyer"
                                        aria-describedby="buyer-hint" @IsSelected(OrganisationType.Buyer)>
                                 <label class="govuk-label govuk-radios__label" for="buyer">
-                                    Buyer
+                                    @StaticTextResource.OrganisationRegistration_OrganisationType_Buyer
                                 </label>
                                 <div id="buyer-hint" class="govuk-hint govuk-radios__hint">
-                                    A contracting authority who publishes notices to buy goods, works, services or utilities
+                                    @StaticTextResource.OrganisationRegistration_OrganisationType_Buyer_Hint
                                 </div>
                             </div>
 
@@ -67,10 +69,10 @@
                                        type="radio" value="@OrganisationType.Supplier"
                                        aria-describedby="supplier-hint" @IsSelected(OrganisationType.Supplier)>
                                 <label class="govuk-label govuk-radios__label" for="supplier">
-                                    Supplier
+                                    @StaticTextResource.OrganisationRegistration_OrganisationType_Supplier
                                 </label>
                                 <div id="supplier-hint" class="govuk-hint govuk-radios__hint">
-                                    An organisation or sole trader who searches for tenders and submits bids to supply goods, works, services or utilities
+                                    @StaticTextResource.OrganisationRegistration_OrganisationType_Supplier_Hint
                                 </div>
                             </div>
                         </div>
@@ -78,10 +80,9 @@
                 </div>
                 <a href="/registration/organisation-details">
                     <govuk-button>
-                        Continue
+                        @StaticTextResource.Global_Continue
                     </govuk-button>
                 </a>
             </form>
         </div>
     </div>
-</main>

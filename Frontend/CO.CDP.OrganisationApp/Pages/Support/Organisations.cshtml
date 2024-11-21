@@ -4,9 +4,9 @@
 
 @{
     ViewData["Title"] = Model.Title;
+    ViewData["ContainerClasses"] = "app-width-container--wide";
 }
 
-<main class="govuk-main-wrapper" id="main-content">
     <table class="govuk-table">
         <caption class="govuk-table__caption govuk-table__caption--m">@ViewData["Title"]</caption>
         <thead class="govuk-table__head">
@@ -105,5 +105,3 @@
             <a class="govuk-link" href="/support/organisations/buyer">Buyer organisations</a>
         }
     }
-
-</main>

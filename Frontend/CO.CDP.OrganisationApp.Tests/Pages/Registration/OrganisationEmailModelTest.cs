@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Routing;
 using Moq;
+using CO.CDP.Localization;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages.Registration;
 
@@ -46,7 +47,7 @@ public class OrganisationEmailModelTest
         results.Any(c => c.MemberNames.Contains("EmailAddress")).Should().BeTrue();
 
         results.Where(c => c.MemberNames.Contains("EmailAddress")).First()
-            .ErrorMessage.Should().Be("Enter your organisation's email address");
+            .ErrorMessage.Should().Be(nameof(StaticTextResource.OrganisationRegistration_EnterOrganisationEmail_Heading));
     }
 
     [Fact]
@@ -58,9 +59,9 @@ public class OrganisationEmailModelTest
         var results = ModelValidationHelper.Validate(model);
 
         results.Any(c => c.MemberNames.Contains("EmailAddress")).Should().BeTrue();
-
+        
         results.Where(c => c.MemberNames.Contains("EmailAddress")).First()
-            .ErrorMessage.Should().Be("Enter an email address in the correct format, like name@example.com");
+            .ErrorMessage.Should().Be(nameof(StaticTextResource.Global_EmailAddress_Error));
     }
 
     [Fact]

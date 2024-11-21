@@ -1,17 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
-  <!-- 
-    Microsoft ResX Schema 
-    
+  <!--
+    Microsoft ResX Schema
+
     Version 2.0
-    
-    The primary goals of this format is to allow a simple XML format 
-    that is mostly human readable. The generation and parsing of the 
-    various data types are done through the TypeConverter classes 
+
+    The primary goals of this format is to allow a simple XML format
+    that is mostly human readable. The generation and parsing of the
+    various data types are done through the TypeConverter classes
     associated with the data types.
-    
+
     Example:
-    
+
     ... ado.net/XML headers & schema ...
     <resheader name="resmimetype">text/microsoft-resx</resheader>
     <resheader name="version">2.0</resheader>
@@ -26,36 +26,36 @@
         <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
         <comment>This is a comment</comment>
     </data>
-                
-    There are any number of "resheader" rows that contain simple 
+
+    There are any number of "resheader" rows that contain simple
     name/value pairs.
-    
-    Each data row contains a name, and value. The row also contains a 
-    type or mimetype. Type corresponds to a .NET class that support 
-    text/value conversion through the TypeConverter architecture. 
-    Classes that don't support this are serialized and stored with the 
+
+    Each data row contains a name, and value. The row also contains a
+    type or mimetype. Type corresponds to a .NET class that support
+    text/value conversion through the TypeConverter architecture.
+    Classes that don't support this are serialized and stored with the
     mimetype set.
-    
-    The mimetype is used for serialized objects, and tells the 
-    ResXResourceReader how to depersist the object. This is currently not 
+
+    The mimetype is used for serialized objects, and tells the
+    ResXResourceReader how to depersist the object. This is currently not
     extensible. For a given mimetype the value must be set accordingly:
-    
-    Note - application/x-microsoft.net.object.binary.base64 is the format 
-    that the ResXResourceWriter will generate, however the reader can 
+
+    Note - application/x-microsoft.net.object.binary.base64 is the format
+    that the ResXResourceWriter will generate, however the reader can
     read any of the formats listed below.
-    
+
     mimetype: application/x-microsoft.net.object.binary.base64
-    value   : The object must be serialized with 
+    value   : The object must be serialized with
             : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
             : and then encoded with base64 encoding.
-    
+
     mimetype: application/x-microsoft.net.object.soap.base64
-    value   : The object must be serialized with 
+    value   : The object must be serialized with
             : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
             : and then encoded with base64 encoding.
 
     mimetype: application/x-microsoft.net.object.bytearray.base64
-    value   : The object must be serialized into a byte array 
+    value   : The object must be serialized into a byte array
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
@@ -170,5 +170,293 @@
   </data>
   <data name="FinancialInformation_Configuration_PluralSummaryHeadingFormat" xml:space="preserve">
     <value>You have added {0} files</value>
+  </data>
+  <data name="Qualifications_01_SummaryTitle" xml:space="preserve">
+    <value>Qualification name</value>
+  </data>
+  <data name="Qualifications_01_Description" xml:space="preserve">
+    <value>&lt;div class="govuk-hint"&gt;Enter one qualification at a time. You can add another at the end if you need to. For example, ISO 45001 Health and Safety Management.&lt;/div&gt;</value>
+  </data>
+  <data name="Qualifications_01_Title" xml:space="preserve">
+    <value>Enter the qualification name</value>
+  </data>
+  <data name="Qualifications_02_SummaryTitle" xml:space="preserve">
+    <value>Awarded by</value>
+  </data>
+  <data name="Qualifications_02_Title" xml:space="preserve">
+    <value>Who awarded the qualification?</value>
+  </data>
+  <data name="Qualifications_02_Description" xml:space="preserve">
+    <value>&lt;div class="govuk-hint"&gt;Enter the name of the person or body. For example, ISO, Constructionline or Red Tractor Assurance.&lt;/div&gt;</value>
+  </data>
+  <data name="Qualifications_03_SummaryTitle" xml:space="preserve">
+    <value>Date awarded</value>
+  </data>
+  <data name="Qualifications_03_Title" xml:space="preserve">
+    <value>What date was the qualification awarded?</value>
+  </data>
+  <data name="Global_CheckYourAnswers" xml:space="preserve">
+    <value>Check your answers</value>
+  </data>
+  <data name="Qualifications_Configuration_AddAnotherAnswerLabel" xml:space="preserve">
+    <value>Add another qualification?</value>
+  </data>
+  <data name="Qualifications_Configuration_SingularSummaryHeading" xml:space="preserve">
+    <value>You have added 1 qualification</value>
+  </data>
+  <data name="Qualifications_Configuration_RemoveConfirmationHeading" xml:space="preserve">
+    <value>Are you sure you want to remove this qualification?</value>
+  </data>
+  <data name="Qualifications_Configuration_PluralSummaryHeadingFormat" xml:space="preserve">
+    <value>You have added {0} qualifications</value>
+  </data>
+  <data name="Qualifications_Configuration_FurtherQuestionsExemptedHint" xml:space="preserve">
+    <value>These are general qualifications for business and trade, not procurement specific. Adding them will provide evidence of your suitability to contracting authorities and support any bids you submit. For example, ISO certification.</value>
+  </data>
+  <data name="Qualifications_Configuration_FurtherQuestionsExemptedHeading" xml:space="preserve">
+    <value>Do you want to add any relevant qualifications?</value>
+  </data>
+  <data name="Exclusions_07_Title" xml:space="preserve">
+    <value>Did this exclusion happen in the UK?</value>
+  </data>
+  <data name="Exclusions_07_SummaryTitle" xml:space="preserve">
+    <value>UK exclusion</value>
+  </data>
+  <data name="Exclusions_06_Title" xml:space="preserve">
+    <value>Enter an email address</value>
+  </data>
+  <data name="Exclusions_06_Description" xml:space="preserve">
+    <value>&lt;div class="govuk-hint"&gt;Where the contracting authority can contact someone about the exclusion&lt;/div&gt;</value>
+  </data>
+  <data name="Exclusions_06_SummaryTitle" xml:space="preserve">
+    <value>Contact email</value>
+  </data>
+  <data name="Exclusions_05_Title" xml:space="preserve">
+    <value>Describe the exclusion in more detail</value>
+  </data>
+  <data name="Exclusions_05_SummaryTitle" xml:space="preserve">
+    <value>Exclusion in detail</value>
+  </data>
+  <data name="Exclusions_05_Description" xml:space="preserve">
+    <value>&lt;div class="govuk-hint"&gt;Give us your explanation of the event. For example, any background information you can give about what happened or what caused the exclusion.&lt;/div&gt;</value>
+  </data>
+  <data name="Exclusions_04_Title" xml:space="preserve">
+    <value>How the exclusion is being managed</value>
+  </data>
+  <data name="Exclusions_04_Description" xml:space="preserve">
+    <value>&lt;div class="govuk-hint"&gt;&lt;p class="govuk-body"&gt;You must tell us what you or the person who was subject to the event:&lt;/p&gt;&lt;ul class="govuk-list govuk-list--bullet"&gt;&lt;li&gt;have done to prove it was taken seriously - for example, paid a fine or compensation&lt;/li&gt;&lt;li&gt;have done to stop the circumstances that caused it from happening again - for example, taking steps like changing staff or management or putting procedures or training in place&lt;/li&gt;&lt;li&gt;are doing to monitor the steps that were taken - for example, regular meetings&lt;/li&gt;&lt;/ul&gt;&lt;/div&gt;</value>
+  </data>
+  <data name="Exclusions_04_SummaryTitle" xml:space="preserve">
+    <value>Exclusion being managed</value>
+  </data>
+  <data name="Exclusions_03_Title" xml:space="preserve">
+    <value>Do you have a supporting document to upload?</value>
+  </data>
+  <data name="Exclusions_03_Description" xml:space="preserve">
+    <value>&lt;div id="documents-hint" class="govuk-hint"&gt;A decision from a public authority that was the basis for the offence. For example, documentation from the police, HMRC or the court.&lt;/div&gt;</value>
+  </data>
+  <data name="Exclusions_03_Caption" xml:space="preserve">
+    <value>Upload a file, You can upload most file types including: PDF, scans, mobile phone photos, Word, Excel and PowerPoint, multimedia and ZIP files that are smaller than 25MB.</value>
+  </data>
+  <data name="Exclusions_03_SummaryTitle" xml:space="preserve">
+    <value>Supporting document</value>
+  </data>
+  <data name="Exclusions_02_Title" xml:space="preserve">
+    <value>Have the circumstances that led to the exclusion ended?</value>
+  </data>
+  <data name="Exclusions_02_Description" xml:space="preserve">
+    <value>&lt;div id="isEventEnded-hint" class="govuk-hint"&gt;For example, a court decision for environmental misconduct led your organisation or the connected person to stop harming the environment.&lt;/div&gt;</value>
+  </data>
+  <data name="Exclusions_02_Caption" xml:space="preserve">
+    <value>&lt;legend class="govuk-fieldset__legend"&gt;Enter the date the circumstances ended&lt;/legend&gt;&lt;div class="govuk-hint"&gt;For example, 27 3 2007&lt;/div&gt;</value>
+  </data>
+  <data name="Exclusions_02_SummaryTitle" xml:space="preserve">
+    <value>Date circumstances ended</value>
+  </data>
+  <data name="Exclusions_09_Title" xml:space="preserve">
+    <value>Select who the exclusion applies to</value>
+  </data>
+  <data name="Exclusions_09_Description" xml:space="preserve">
+    <value>&lt;div class="govuk-inset-text govuk-!-margin-top-0"&gt;If it applies to someone not listed, you must go back to the ‘Add a connected person’ section and add them.&lt;/div&gt;</value>
+  </data>
+  <data name="Exclusions_09_SummaryTitle" xml:space="preserve">
+    <value>Exclusion applies to</value>
+  </data>
+  <data name="Exclusions_10_Title" xml:space="preserve">
+    <value>Was the decision recorded on a public authority website?</value>
+  </data>
+  <data name="Exclusions_10_Description" xml:space="preserve">
+    <value>&lt;div class="govuk-hint"&gt;For example, the outcome of a court decision for a conviction or other event&lt;/div&gt;</value>
+  </data>
+  <data name="Exclusions_10_Caption" xml:space="preserve">
+    <value>Website address</value>
+  </data>
+  <data name="Exclusions_10_SummaryTitle" xml:space="preserve">
+    <value>Recorded on a website</value>
+  </data>
+  <data name="Exclusions_08_Title" xml:space="preserve">
+    <value>Select which exclusion applies</value>
+  </data>
+  <data name="Exclusions_08_Description" xml:space="preserve">
+    <value>&lt;div class="govuk-hint"&gt;&lt;p&gt;Only select one exclusion. You can add another at the end if you need to.&lt;/p&gt;&lt;p&gt;If this exclusion happened outside the UK, select the equivalent offence in the UK for where it took place.&lt;/p&gt;&lt;/div&gt;</value>
+  </data>
+  <data name="Exclusions_08_Options_Groups_01_Hint" xml:space="preserve">
+    <value>Defined in &lt;a target=\"_blank\" href=\"https://www.legislation.gov.uk/ukpga/2023/54/schedule/6\"&gt;schedule 6 of the Procurement Act 2023 (opens in new tab).&lt;/a&gt;</value>
+  </data>
+  <data name="Exclusions_08_Options_Groups_01_Name" xml:space="preserve">
+    <value>Penalties and other events</value>
+  </data>
+  <data name="Exclusions_08_Options_Groups_01_Caption" xml:space="preserve">
+    <value>Mandatory exclusions</value>
+  </data>
+  <data name="Exclusions_08_Options_Groups_01_Choices_01_Title" xml:space="preserve">
+    <value>Adjustments for tax arrangements that are abusive</value>
+  </data>
+  <data name="Exclusions_08_Options_Groups_01_Choices_02_Title" xml:space="preserve">
+    <value>Competition law infringements</value>
+  </data>
+  <data name="Exclusions_08_Options_Groups_01_Choices_03_Title" xml:space="preserve">
+    <value>Defeat in respect of notifiable tax arrangements</value>
+  </data>
+  <data name="Exclusions_08_Options_Groups_01_Choices_04_Title" xml:space="preserve">
+    <value>Failure to cooperate with an investigation</value>
+  </data>
+  <data name="Exclusions_08_Options_Groups_01_Choices_05_Title" xml:space="preserve">
+    <value>Finding by HMRC, in exercise of its powers in respect of VAT, of abusive practice</value>
+  </data>
+  <data name="Exclusions_08_Options_Groups_01_Choices_06_Title" xml:space="preserve">
+    <value>Penalties for transactions connected with VAT fraud and evasion of tax or duty</value>
+  </data>
+  <data name="Exclusions_08_Options_Groups_01_Choices_07_Title" xml:space="preserve">
+    <value>Penalties payable for errors in tax documentation and failure to notify, and certain VAT and excise</value>
+  </data>
+  <data name="Exclusions_08_Options_Groups_02_Hint" xml:space="preserve">
+    <value>Defined in &lt;a target=\"_blank\" href=\"https://www.legislation.gov.uk/ukpga/2023/54/schedule/6\"&gt;schedule 6 of the Procurement Act 2023 (opens in new tab).&lt;/a&gt;</value>
+  </data>
+  <data name="Exclusions_08_Options_Groups_02_Name" xml:space="preserve">
+    <value>Convictions</value>
+  </data>
+  <data name="Exclusions_08_Options_Groups_02_Caption" xml:space="preserve">
+    <value>Mandatory exclusions</value>
+  </data>
+  <data name="Exclusions_08_Options_Groups_02_Choices_01_Title" xml:space="preserve">
+    <value>Ancillary offences - aiding, abetting, encouraging or assisting crime</value>
+  </data>
+  <data name="Exclusions_08_Options_Groups_02_Choices_02_Title" xml:space="preserve">
+    <value>Cartel offences</value>
+  </data>
+  <data name="Exclusions_08_Options_Groups_02_Choices_03_Title" xml:space="preserve">
+    <value>Corporate manslaughter or homicide</value>
+  </data>
+  <data name="Exclusions_08_Options_Groups_02_Choices_04_Title" xml:space="preserve">
+    <value>Labour market, slavery and human trafficking offences</value>
+  </data>
+  <data name="Exclusions_08_Options_Groups_02_Choices_05_Title" xml:space="preserve">
+    <value>Organised crime</value>
+  </data>
+  <data name="Exclusions_08_Options_Groups_02_Choices_06_Title" xml:space="preserve">
+    <value>Tax offences</value>
+  </data>
+  <data name="Exclusions_08_Options_Groups_02_Choices_07_Title" xml:space="preserve">
+    <value>Terrorism and offences having a terrorist connection</value>
+  </data>
+  <data name="Exclusions_08_Options_Groups_02_Choices_08_Title" xml:space="preserve">
+    <value>Theft, fraud and bribery</value>
+  </data>
+  <data name="Exclusions_08_Options_Groups_03_Hint" xml:space="preserve">
+    <value>Defined in &lt;a target=\"_blank\" href=\"https://www.legislation.gov.uk/ukpga/2023/54/schedule/7\"&gt;schedule 7 of the Procurement Act 2023 (opens in new tab).&lt;/a&gt;</value>
+  </data>
+  <data name="Exclusions_08_Options_Groups_03_Name" xml:space="preserve">
+    <value>Discretionary exclusions</value>
+  </data>
+  <data name="Exclusions_08_Options_Groups_03_Caption" xml:space="preserve">
+    <value>Discretionary exclusions</value>
+  </data>
+  <data name="Exclusions_08_Options_Groups_03_Choices_01_Title" xml:space="preserve">
+    <value>Acting improperly in procurement</value>
+  </data>
+  <data name="Exclusions_08_Options_Groups_03_Choices_02_Title" xml:space="preserve">
+    <value>Breach of contract and poor performance</value>
+  </data>
+  <data name="Exclusions_08_Options_Groups_03_Choices_03_Title" xml:space="preserve">
+    <value>Environmental misconduct</value>
+  </data>
+  <data name="Exclusions_08_Options_Groups_03_Choices_04_Title" xml:space="preserve">
+    <value>Infringement of Competition Act 1998, under Chapter II prohibition</value>
+  </data>
+  <data name="Exclusions_08_Options_Groups_03_Choices_05_Title" xml:space="preserve">
+    <value>Insolvency or bankruptcy</value>
+  </data>
+  <data name="Exclusions_08_Options_Groups_03_Choices_06_Title" xml:space="preserve">
+    <value>Labour market misconduct</value>
+  </data>
+  <data name="Exclusions_08_Options_Groups_03_Choices_07_Title" xml:space="preserve">
+    <value>Potential competition and competition law infringements</value>
+  </data>
+  <data name="Exclusions_08_Options_Groups_03_Choices_08_Title" xml:space="preserve">
+    <value>Professional misconduct</value>
+  </data>
+  <data name="Exclusions_08_Options_Groups_03_Choices_09_Title" xml:space="preserve">
+    <value>Suspension or ceasing to carry on all or a substantial part of a business</value>
+  </data>
+  <data name="Exclusions_08_SummaryTitle" xml:space="preserve">
+    <value>Exclusion applies</value>
+  </data>
+  <data name="Exclusions_Configuration_AddAnotherAnswerLabel" xml:space="preserve">
+    <value>Add another exclusion?</value>
+  </data>
+  <data name="Exclusions_Configuration_SingularSummaryHeading" xml:space="preserve">
+    <value>You have added 1 exclusion</value>
+  </data>
+  <data name="Exclusions_Configuration_RemoveConfirmationHeading" xml:space="preserve">
+    <value>Are you sure you want to remove this exclusion?</value>
+  </data>
+  <data name="Exclusions_Configuration_PluralSummaryHeadingFormat" xml:space="preserve">
+    <value>You have added {0} exclusions</value>
+  </data>
+  <data name="Exclusions_Configuration_FurtherQuestionsExemptedHeading" xml:space="preserve">
+    <value>Do you have any exclusions to add for your organisation or a connected person?</value>
+  </data>
+  <data name="TradeAssurance_01_Title" xml:space="preserve">
+    <value>Who awarded the trade assurance?</value>
+  </data>
+  <data name="TradeAssurance_01_Description" xml:space="preserve">
+    <value>&lt;div class="govuk-hint"&gt;Enter the name of the person or body. You can add another at the end if you need to. For example, Red Tractor Assurance, QMS Assurance.&lt;/div&gt;</value>
+  </data>
+  <data name="TradeAssurance_01_SummaryTitle" xml:space="preserve">
+    <value>Awarded by</value>
+  </data>
+  <data name="TradeAssurance_02_Title" xml:space="preserve">
+    <value>Do you know the reference number?</value>
+  </data>
+  <data name="TradeAssurance_02_SummaryTitle" xml:space="preserve">
+    <value>Reference number</value>
+  </data>
+  <data name="TradeAssurance_03_Title" xml:space="preserve">
+    <value>What date was the trade assurance awarded?</value>
+  </data>
+  <data name="TradeAssurance_03_SummaryTitle" xml:space="preserve">
+    <value>Date awarded</value>
+  </data>
+  <data name="TradeAssurances_Configuration_AddAnotherAnswerLabel" xml:space="preserve">
+    <value>Add another trade assurance?</value>
+  </data>
+  <data name="TradeAssurances_Configuration_SingularSummaryHeading" xml:space="preserve">
+    <value>You have added 1 trade assurance</value>
+  </data>
+  <data name="TradeAssurances_Configuration_RemoveConfirmationHeading" xml:space="preserve">
+    <value>Are you sure you want to remove this trade assurance?</value>
+  </data>
+  <data name="TradeAssurances_Configuration_PluralSummaryHeadingFormat" xml:space="preserve">
+    <value>You have added {0} trade assurances</value>
+  </data>
+  <data name="TradeAssurances_Configuration_FurtherQuestionsExemptedHint" xml:space="preserve">
+    <value>These are trade assurances for business and trade, not procurement specific. Adding them will provide confidence to contracting authorities and support any bids you submit. For example, Red Tractor Assurance covers food safety, traceability, animal welfare and environmental protection.</value>
+  </data>
+  <data name="TradeAssurances_Configuration_FurtherQuestionsExemptedHeading" xml:space="preserve">
+    <value>Do you want to add any trade assurances?</value>
+  </data>
+  <data name="TradeAssurance_02_Caption" xml:space="preserve">
+    <value>Trade assurance reference number</value>
   </data>
 </root>

@@ -1,3 +1,4 @@
+using CO.CDP.Localization;
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Pages.Organisation;
 using FluentAssertions;
@@ -40,7 +41,7 @@ public class OrganisationNameModelTest
         results.Any(c => c.MemberNames.Contains("OrganisationName")).Should().BeTrue();
 
         results.Where(c => c.MemberNames.Contains("OrganisationName")).First()
-            .ErrorMessage.Should().Be("Enter your organisation's name");
+            .ErrorMessage.Should().Be(nameof(StaticTextResource.Organisation_EnterOrganisationName_ErrorMessage));
     }
 
     [Fact]

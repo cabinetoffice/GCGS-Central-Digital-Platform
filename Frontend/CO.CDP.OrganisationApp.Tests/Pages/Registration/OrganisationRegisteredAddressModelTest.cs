@@ -1,3 +1,4 @@
+using CO.CDP.Localization;
 using CO.CDP.OrganisationApp.CharityCommission;
 using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
@@ -50,7 +51,7 @@ public class OrganisationRegisteredAddressModelTest
         results.Any(c => c.MemberNames.Contains("AddressLine1")).Should().BeTrue();
 
         results.Where(c => c.MemberNames.Contains("AddressLine1")).First()
-            .ErrorMessage.Should().Be("Enter address line 1, typically the building and street");
+            .ErrorMessage.Should().Be(nameof(StaticTextResource.Shared_Address_AddressLine1_ErrorMessage));
     }
 
     [Fact]
@@ -74,7 +75,7 @@ public class OrganisationRegisteredAddressModelTest
         results.Any(c => c.MemberNames.Contains("TownOrCity")).Should().BeTrue();
 
         results.Where(c => c.MemberNames.Contains("TownOrCity")).First()
-            .ErrorMessage.Should().Be("Enter town or city");
+            .ErrorMessage.Should().Be(nameof(StaticTextResource.Shared_Address_TownOrCity_ErrorMessage));
     }
 
     [Fact]
