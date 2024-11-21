@@ -154,8 +154,30 @@ public class UserInfoServiceTest
             "49c8b8de-457a-40ee-9c29-bb1aa900941c",
             "/organisation/49c8b8de-457a-40ee-9c29-bb1aa900941c",
             true
-        },
+        }
     };
+
+    [Fact]
+    public void ItReturnsNoOrganisationIdIfHttpContextIsMissing()
+    {
+        var httpContextAccessor = GivenMissingHttpContext();
+        var userInfoService = new UserInfoService(httpContextAccessor, _tenantClient.Object);
+
+        userInfoService.GetOrganisationId().Should().BeNull();
+    }
+
+    [Theory]
+    [InlineData("/organisation/a86ba407-b1ec-4184-b70c-6133f8bbed88", "a86ba407-b1ec-4184-b70c-6133f8bbed88")]
+    [InlineData("/organisation/a86ba407-b1ec-4184-b70c-6133f8bbed88/profile", "a86ba407-b1ec-4184-b70c-6133f8bbed88")]
+    [InlineData("/organisation/not-a-guid", null)]
+    [InlineData("/organisations/a86ba407-b1ec-4184-b70c-6133f8bbed88", null)]
+    [InlineData(null, null)]
+    public void ItFindsOrganisationIdInThePath(string? path, string? organisationId)
+    {
+        GivenRequestPath(path);
+
+        UserInfoService.GetOrganisationId().Should().Be(organisationId != null ? Guid.Parse(organisationId) : null);
+    }
 
     private static UserDetails GivenUserDetails(string? name = null, string? email = null, List<string>? scopes = null)
     {
@@ -203,7 +225,7 @@ public class UserInfoServiceTest
         );
     }
 
-    private void GivenRequestPath(string path)
+    private void GivenRequestPath(string? path)
     {
         if (_httpContextAccessor.HttpContext is not null)
         {
@@ -220,6 +242,14 @@ public class UserInfoServiceTest
         return new HttpContextAccessor
         {
             HttpContext = new DefaultHttpContext()
+        };
+    }
+
+    private static IHttpContextAccessor GivenMissingHttpContext()
+    {
+        return new HttpContextAccessor
+        {
+            HttpContext = null
         };
     }
 }

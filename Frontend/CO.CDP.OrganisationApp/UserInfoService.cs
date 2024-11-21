@@ -40,20 +40,12 @@ public class UserInfoService(IHttpContextAccessor httpContextAccessor, ITenantCl
 
     public Guid? GetOrganisationId()
     {
-        if (httpContextAccessor?.HttpContext?.Request?.Path.Value == null)
-        {
-            return null;
-        }
+        var path = httpContextAccessor.HttpContext?.Request.Path.Value;
 
-        var path = httpContextAccessor.HttpContext.Request.Path.Value;
-
-        if (path != null)
+        var pathSegments = path?.Split('/', StringSplitOptions.RemoveEmptyEntries);
+        if (pathSegments is ["organisation", _, ..] && Guid.TryParse(pathSegments[1], out Guid organisationId))
         {
-            var pathSegments = path.Split('/', StringSplitOptions.RemoveEmptyEntries);
-            if (pathSegments.Length >= 2 && pathSegments[0] == "organisation" && Guid.TryParse(pathSegments[1], out Guid organisationId))
-            {
-                return organisationId;
-            }
+            return organisationId;
         }
 
         return null;
