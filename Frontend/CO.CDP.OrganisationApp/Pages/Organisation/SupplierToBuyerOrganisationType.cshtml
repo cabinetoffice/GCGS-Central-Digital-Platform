@@ -127,7 +127,7 @@
                                     <input autocomplete="off" class="govuk-input @(otherHasError ? "govuk-input--error" : "")"
                                         id="OtherValue"
                                         name="OtherValue"
-                                       type="text" aria-describedby="@(otherHasError ? "other-buyer-type-error" : "ca-type-5-item-hint")"
+                                       type="text" aria-describedby="ca-type-5-item-hint @(otherHasError ? "other-buyer-type-error" : "")"
                                        value="@(Model.BuyerOrganisationType == "Other" ? Model.OtherValue : "")">
 
                                 </div>
