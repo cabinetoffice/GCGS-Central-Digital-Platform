@@ -38,6 +38,7 @@ resource "aws_rds_cluster_instance" "this" {
   count = var.instance_count
 
   cluster_identifier           = aws_rds_cluster.this.id
+  db_parameter_group_name      = aws_db_parameter_group.this.name
   engine                       = var.engine
   identifier                   = "${var.db_name}-${count.index}"
   instance_class               = var.instance_type
@@ -52,45 +53,4 @@ resource "aws_rds_cluster_instance" "this" {
       Name = "${replace(var.db_name, "-", "_")}-${count.index}"
     }
   )
-}
-
-resource "aws_db_parameter_group" "this" {
-  family = var.family
-  name   = "${var.db_name}-instance"
-
-  dynamic "parameter" {
-    for_each = var.db_parameters_instance
-    content {
-      apply_method = "pending-reboot"
-      name         = parameter.key
-      value        = parameter.value
-    }
-  }
-
-  lifecycle {
-    create_before_destroy = true
-  }
-
-  tags = var.tags
-}
-
-
-resource "aws_rds_cluster_parameter_group" "this" {
-  family      = var.family
-  name        = "${var.db_name}-cluster"
-
-  dynamic "parameter" {
-    for_each = var.db_parameters_cluster
-    content {
-      apply_method = "pending-reboot"
-      name         = parameter.key
-      value        = parameter.value
-    }
-  }
-
-  lifecycle {
-    create_before_destroy = true
-  }
-
-  tags = var.tags
 }
