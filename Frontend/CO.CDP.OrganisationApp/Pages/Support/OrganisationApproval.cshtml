@@ -46,7 +46,7 @@
                         <p class="govuk-body">
                             @if (@organisationDetails.Identifier.Id == null)
                             {
-                                <text>@StaticTextResource.Support_OrganisationApproval_PPONGenerationPending_List</text>
+                                <text>@StaticTextResource.Support_OrganisationApproval_PponGenerationPending_List</text>
                             }
                             else
                             {
@@ -117,10 +117,10 @@
                         <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-comment">
                             <div class="govuk-form-group @(commentHasError ? "govuk-form-group--error" : "")">
                                 <label class="govuk-label govuk-label--s" for="@nameof(Model.Comments)">
-                                    @StaticTextResource.Support_OrganisationApproval_ErrorMessage_Hint
+                                    @StaticTextResource.Support_OrganisationApproval_ErrorMessage
                                 </label>
                                 <div class="govuk-hint" id="comments-hint">
-                                    <p>For example, ‘You need to change the email address. The domain name in the organisation email address you gave us does not match the organisation name you want to register’.</p>
+                                    <p>@StaticTextResource.Support_OrganisationApproval_ErrorMessage_Hint</p>
                                 </div>
                                 @if (commentHasError)
                                 {

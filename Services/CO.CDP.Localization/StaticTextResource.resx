@@ -976,4 +976,10 @@
   <data name="Support_OrganisationApproval_Radio_Heading" xml:space="preserve">
     <value>Approve the request?</value>
   </data>
+  <data name="Support_OrganisationApproval_ErrorMessage" xml:space="preserve">
+    <value>Tell the user why you could not approve</value>
+  </data>
+  <data name="Support_OrganisationApproval_ErrorMessage_Hint" xml:space="preserve">
+    <value>For example, ‘You need to change the email address. The domain name in the organisation email address you gave us does not match the organisation name you want to register’.</value>
+  </data>
 </root>
