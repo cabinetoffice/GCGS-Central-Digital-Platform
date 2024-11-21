@@ -1,4 +1,3 @@
-using CO.CDP.Localization;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Localization;
 using System.ComponentModel.DataAnnotations;
@@ -12,13 +11,17 @@ public class ValidEmailAddressAttribute : ValidationAttribute
     {
         if (value is string email && !MailAddress.TryCreate(email, out var _))
         {
-            var stringLocalizer = validationContext.GetService<IServiceProvider>()
-            ?.GetService<IStringLocalizerFactory>()
-            ?.Create(typeof(StaticTextResource));
+            string? errorMessage = null;
 
-            var errorMessage = !string.IsNullOrWhiteSpace(ErrorMessageResourceName) && stringLocalizer != null
-                ? stringLocalizer[ErrorMessageResourceName]
-                : $"{validationContext.MemberName} is invalid.";
+            if(ErrorMessageResourceName != null && ErrorMessageResourceType != null)
+            {
+                var stringLocalizer = validationContext.GetService<IServiceProvider>()
+                    ?.GetService<IStringLocalizerFactory>()
+                    ?.Create(ErrorMessageResourceType);
+
+                errorMessage = stringLocalizer?[ErrorMessageResourceName]!;
+            }
+            errorMessage ??= ErrorMessage ?? $"{validationContext.MemberName} is invalid.";
 
             return new ValidationResult(errorMessage, validationContext.MemberName != null ? [validationContext.MemberName] : null);
         }
