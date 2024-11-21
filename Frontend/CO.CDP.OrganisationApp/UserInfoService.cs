@@ -18,9 +18,7 @@ public class UserInfoService(IHttpContextAccessor httpContextAccessor, ITenantCl
     {
         var userInfo = await GetUserInfo();
         var userScopes = userInfo.Scopes;
-        var organisationId = GetOrganisationId();
-        var organisationUserScopes =
-            userInfo.Organisations.Where(o => o.Id == organisationId).SelectMany(o => o.Scopes).ToList();
+        var organisationUserScopes = userInfo.OrganisationScopes(GetOrganisationId());
 
         return organisationUserScopes.Contains(OrganisationPersonScopes.Viewer) || (organisationUserScopes.Count == 0 && userScopes.Contains(PersonScopes.SupportAdmin));
     }

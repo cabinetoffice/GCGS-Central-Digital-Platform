@@ -21,6 +21,13 @@ public record UserInfo
     {
         return Organisations.Count > 0;
     }
+
+    public ICollection<string> OrganisationScopes(Guid? organisationId)
+    {
+        return Organisations
+            .Where(o => o.Id == organisationId)
+            .SelectMany(o => o.Scopes).ToList();
+    }
 }
 
 public record UserOrganisationInfo
