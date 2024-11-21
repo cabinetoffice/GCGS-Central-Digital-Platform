@@ -1,5 +1,4 @@
 using CO.CDP.Functional;
-using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.Tenant.WebApiClient;
 
 namespace CO.CDP.OrganisationApp;
@@ -17,12 +16,8 @@ public class UserInfoService(IHttpContextAccessor httpContextAccessor, ITenantCl
     public async Task<bool> IsViewer()
     {
         var userInfo = await GetUserInfo();
-        var userScopes = userInfo.Scopes;
         var organisationId = GetOrganisationId();
-        var organisationUserScopes =
-            userInfo.Organisations.Where(o => o.Id == organisationId).SelectMany(o => o.Scopes).ToList();
-
-        return organisationUserScopes.Contains(OrganisationPersonScopes.Viewer) || (organisationUserScopes.Count == 0 && userScopes.Contains(PersonScopes.SupportAdmin));
+        return userInfo.IsViewerOf(organisationId);
     }
 
     public Guid? GetOrganisationId()

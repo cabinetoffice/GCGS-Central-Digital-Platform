@@ -21,6 +21,17 @@ public record UserInfo
     {
         return Organisations.Count > 0;
     }
+
+    public bool IsViewerOf(Guid? organisationId)
+    {
+        var organisationUserScopes = Organisations
+            .Where(o => o.Id == organisationId)
+            .SelectMany(o => o.Scopes)
+            .ToList();
+
+        return organisationUserScopes.Contains(OrganisationPersonScopes.Viewer) ||
+               (organisationUserScopes.Count == 0 && Scopes.Contains(PersonScopes.SupportAdmin));
+    }
 }
 
 public record UserOrganisationInfo
