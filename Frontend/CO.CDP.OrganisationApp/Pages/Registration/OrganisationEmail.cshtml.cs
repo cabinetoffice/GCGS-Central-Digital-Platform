@@ -1,6 +1,7 @@
 using CO.CDP.Localization;
 using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
+using CO.CDP.Mvc.Validation;
 using CO.CDP.OrganisationApp.ThirdPartyApiClients.CharityCommission;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel;
@@ -14,9 +15,9 @@ public class OrganisationEmailModel(ISession session, ICharityCommissionApi char
     public override string CurrentPage => OrganisationEmailPage;
 
     [BindProperty]
-    [DisplayName(nameof(StaticTextResource.OrganisationRegistration_EnterOrganisationEmail_Heading))]
-    [Required(ErrorMessage = nameof(StaticTextResource.OrganisationRegistration_EnterOrganisationEmail_Heading))]
-    [EmailAddress(ErrorMessage = nameof(StaticTextResource.Global_EmailAddress_Error))]
+    [DisplayName(nameof(StaticTextResource.Organisation_Email_Heading))]
+    [Required(ErrorMessageResourceName = nameof(StaticTextResource.Organisation_Email_Required_ErrorMessage), ErrorMessageResourceType = typeof(StaticTextResource))]
+    [ValidEmailAddress(ErrorMessageResourceName = nameof(StaticTextResource.Global_Email_Invalid_ErrorMessage), ErrorMessageResourceType = typeof(StaticTextResource))]
     public string? EmailAddress { get; set; }
 
     [BindProperty]

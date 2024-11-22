@@ -16,7 +16,7 @@ public class OrganisationNameModel(ISession session, ICharityCommissionApi chari
 
     [BindProperty]
     [DisplayName(nameof(StaticTextResource.OrganisationRegistration_EnterOrganisationName_Heading))]
-    [Required(ErrorMessage = nameof(StaticTextResource.OrganisationRegistration_EnterOrganisationName_Heading))]
+    [Required(ErrorMessageResourceName = nameof(StaticTextResource.OrganisationRegistration_EnterOrganisationName_Heading), ErrorMessageResourceType = typeof(StaticTextResource))]
     public string? OrganisationName { get; set; }
 
     [BindProperty]
