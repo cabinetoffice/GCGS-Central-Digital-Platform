@@ -985,7 +985,7 @@
     <value>Other</value>
   </data>
   <data name="Global_Remove" xml:space="preserve">
-    <value>Other</value>
+    <value>Remove</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswers_ChangePSCDetails" xml:space="preserve">
     <value>Change&lt;span class="govuk-visually-hidden"&gt; the person of significant control's details&lt;/span&gt;</value>
