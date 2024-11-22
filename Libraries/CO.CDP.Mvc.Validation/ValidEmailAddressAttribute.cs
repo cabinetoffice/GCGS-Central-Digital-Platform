@@ -11,19 +11,18 @@ public class ValidEmailAddressAttribute : ValidationAttribute
     {
         if (value is string email && !MailAddress.TryCreate(email, out var _))
         {
-            string? errorMessage = null;
+            var errorMessage = ErrorMessage ?? $"{validationContext.MemberName} is invalid.";
 
             if(ErrorMessageResourceName != null && ErrorMessageResourceType != null)
             {
-                var stringLocalizer = validationContext.GetService<IServiceProvider>()
-                    ?.GetService<IStringLocalizerFactory>()
-                    ?.Create(ErrorMessageResourceType);
+                var stringLocalizer = validationContext.GetRequiredService<IServiceProvider>()
+                    .GetRequiredService<IStringLocalizerFactory>()
+                    .Create(ErrorMessageResourceType);
 
-                errorMessage = stringLocalizer?[ErrorMessageResourceName]!;
+                errorMessage = stringLocalizer[ErrorMessageResourceName];
             }
-            errorMessage ??= ErrorMessage ?? $"{validationContext.MemberName} is invalid.";
 
-            return new ValidationResult(errorMessage, validationContext.MemberName != null ? [validationContext.MemberName] : null);
+            return new ValidationResult(errorMessage, [validationContext.MemberName!]);
         }
         return ValidationResult.Success!;
     }
