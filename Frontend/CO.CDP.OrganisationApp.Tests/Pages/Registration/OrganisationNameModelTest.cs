@@ -159,7 +159,7 @@ public class OrganisationNameModelTest
     public async Task OnGet_WhenCharityCommissionNumberProvided_ShouldPrepopulateCompanyName()
     {
         var registrationDetails = DummyRegistrationDetails(organisationName: "", scheme: OrganisationSchemeType.CharityCommissionEnglandWales);
-        sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(registrationDetails);
+        _sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(registrationDetails);
 
         var chartiyDetails = GivenNameOnCharitiesCommission(organisationName: "British Red Cross");
         var model = GivenOrganisationNameModel();
@@ -176,7 +176,7 @@ public class OrganisationNameModelTest
     public async Task OnGet_WhenCharityCommissionNumberProvidedAndRegDetailsProvided_ShouldNotPrepopulateCompanyName()
     {
         var registrationDetails = DummyRegistrationDetails(organisationName: "British Heart Foundation", scheme: OrganisationSchemeType.CharityCommissionEnglandWales);
-        sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(registrationDetails);
+        _sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(registrationDetails);
 
         var chartiyDetails = GivenNameOnCharitiesCommission(organisationName: "British Red Cross");
         var model = GivenOrganisationNameModel();

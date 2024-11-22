@@ -1,5 +1,3 @@
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Localization;
 using System.ComponentModel.DataAnnotations;
 using System.Net.Mail;
 
@@ -11,18 +9,9 @@ public class ValidEmailAddressAttribute : ValidationAttribute
     {
         if (value is string email && !MailAddress.TryCreate(email, out var _))
         {
-            var errorMessage = ErrorMessage ?? $"{validationContext.MemberName} is invalid.";
+            var errorMessage = ErrorMessageResolver.GetErrorMessage(ErrorMessage, ErrorMessageResourceName, ErrorMessageResourceType);
 
-            if(ErrorMessageResourceName != null && ErrorMessageResourceType != null)
-            {
-                var stringLocalizer = validationContext.GetRequiredService<IServiceProvider>()
-                    .GetRequiredService<IStringLocalizerFactory>()
-                    .Create(ErrorMessageResourceType);
-
-                errorMessage = stringLocalizer[ErrorMessageResourceName];
-            }
-
-            return new ValidationResult(errorMessage, [validationContext.MemberName!]);
+            return new ValidationResult(errorMessage ?? $"{validationContext.DisplayName} is invalid.", [validationContext.MemberName!]);
         }
         return ValidationResult.Success!;
     }

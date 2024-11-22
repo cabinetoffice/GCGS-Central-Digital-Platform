@@ -170,7 +170,7 @@ public class OrganisationEmailModelTest
         var registrationDetails = DummyRegistrationDetails(organisationName: "",
             scheme: OrganisationSchemeType.CharityCommissionEnglandWales,
             organisationEmailAddress: "");
-        sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(registrationDetails);
+        _sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(registrationDetails);
 
         var chartiyDetails = GivenEmailOnCharitiesCommission();
         var model = GivenOrganisationEmailModel();
@@ -187,7 +187,7 @@ public class OrganisationEmailModelTest
     public async Task OnGet_WhenCharityCommissionNumberProvidedRegDetailsProvided_ShouldNotPrepopulateEmail()
     {
         var registrationDetails = DummyRegistrationDetails(scheme: OrganisationSchemeType.CharityCommissionEnglandWales);
-        sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(registrationDetails);
+        _sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(registrationDetails);
 
         var chartiyDetails = GivenEmailOnCharitiesCommission();
         var model = GivenOrganisationEmailModel();
