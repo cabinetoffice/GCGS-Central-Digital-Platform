@@ -14,11 +14,11 @@ public class OrganisationApprovalModel(
     public OrganisationWebApiClient.Organisation? OrganisationDetails { get; set; }
 
     [BindProperty]
-    [Required(ErrorMessage = nameof(StaticTextResource.Support_OrganisationApproval_ValidationErrorMessage))]
+    [Required(ErrorMessageResourceName = nameof(StaticTextResource.Support_OrganisationApproval_ValidationErrorMessage), ErrorMessageResourceType = typeof(StaticTextResource))]
     public bool Approval { get; set; }
 
     [BindProperty]
-    [RequiredIf(nameof(Approval), false, ErrorMessage = nameof(StaticTextResource.Support_OrganisationApproval_ErrorMessage))]
+    [RequiredIf(nameof(Approval), false, ErrorMessageResourceName = nameof(StaticTextResource.Support_OrganisationApproval_ErrorMessage), ErrorMessageResourceType = typeof(StaticTextResource))]
     public string? Comments { get; set; }
 
     public async Task<IActionResult> OnGet(Guid organisationId)
