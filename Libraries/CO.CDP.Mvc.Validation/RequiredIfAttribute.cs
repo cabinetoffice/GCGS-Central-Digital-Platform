@@ -1,6 +1,3 @@
-using CO.CDP.Localization;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Localization;
 using System.ComponentModel.DataAnnotations;
 
 namespace CO.CDP.Mvc.Validation;
@@ -15,20 +12,12 @@ public class RequiredIfAttribute(string dependentProperty, object? targetValue) 
 
         bool conditionMet = (propertyValue?.Equals(targetValue) ?? false);
 
-        string? errorMessage = ErrorMessage;
-
-        if(ErrorMessageResourceType != null && ErrorMessageResourceName != null)
-        {
-            var stringLocalizer = validationContext.GetRequiredService<IServiceProvider>()
-                .GetRequiredService<IStringLocalizerFactory>()
-                .Create(ErrorMessageResourceType);
-
-            errorMessage = stringLocalizer[ErrorMessageResourceName];
-        }
+        var errorMessage = ErrorMessageResolver.GetErrorMessage(ErrorMessage, ErrorMessageResourceName, ErrorMessageResourceType);
+        var displayName = validationContext.DisplayName ?? validationContext.MemberName;
 
         if (conditionMet && (value == null || (value is string str && string.IsNullOrWhiteSpace(str))))
         {
-            return new ValidationResult(errorMessage ?? $"{validationContext.DisplayName} is required");
+            return new ValidationResult(errorMessage ?? $"{displayName} is required");
         }
 
         return ValidationResult.Success!;
@@ -45,10 +34,13 @@ public class RequiredIfContainsAttribute(string dependentProperty, string contai
 
         bool conditionMet = propertyValue is List<string> list && list.Contains(containsValue);
 
+        var errorMessage = ErrorMessageResolver.GetErrorMessage(ErrorMessage, ErrorMessageResourceName, ErrorMessageResourceType);
+        var displayName = validationContext.DisplayName ?? validationContext.MemberName;
+
         // Check if value is null or empty when condition is met
         if (conditionMet && (value == null || (value is List<string> str && str.Count == 0)))
         {
-            return new ValidationResult(ErrorMessage ?? $"{validationContext.DisplayName} is required.");
+            return new ValidationResult(errorMessage ?? $"{displayName} is required.");
         }
 
         return ValidationResult.Success;

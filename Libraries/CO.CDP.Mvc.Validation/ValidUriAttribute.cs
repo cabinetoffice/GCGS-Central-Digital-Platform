@@ -10,18 +10,10 @@ public class ValidUriAttribute : RequiredAttribute
     {
         if (value is string str && !string.IsNullOrWhiteSpace(str) && Uri.TryCreate(str, UriKind.Absolute, out var _) == false)
         {
-            string? errorMessage = ErrorMessage;
+            var errorMessage = ErrorMessageResolver.GetErrorMessage(ErrorMessage, ErrorMessageResourceName, ErrorMessageResourceType);
+            var displayName = validationContext.DisplayName ?? validationContext.MemberName;
 
-            if (ErrorMessageResourceType != null && ErrorMessageResourceName != null)
-            {
-                var stringLocalizer = validationContext.GetRequiredService<IServiceProvider>()
-                    .GetRequiredService<IStringLocalizerFactory>()
-                    .Create(ErrorMessageResourceType);
-
-                errorMessage = stringLocalizer[ErrorMessageResourceName];
-            }
-
-            return new ValidationResult(ErrorMessage ?? $"{validationContext.DisplayName} is invalid");
+            return new ValidationResult(errorMessage ?? $"{displayName} is invalid");
         }
 
         return ValidationResult.Success!;

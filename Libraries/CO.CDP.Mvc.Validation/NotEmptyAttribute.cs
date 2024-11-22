@@ -1,7 +1,5 @@
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using System.Collections;
-using System.Reflection;
-using System.Resources;
 
 namespace CO.CDP.Mvc.Validation;
 
@@ -19,37 +17,12 @@ public class NotEmptyAttribute : Attribute, IModelValidator
             return [];
         }
 
+        var errorMessage = ErrorMessageResolver.GetErrorMessage(ErrorMessage, ErrorMessageResourceName, ErrorMessageResourceType);
+        var displayName = context.ModelMetadata.DisplayName ?? context.ModelMetadata.PropertyName;
+
         return new List<ModelValidationResult>
         {
-            new ModelValidationResult(context.ModelMetadata.PropertyName, GetErrorMessage())
+            new ModelValidationResult(context.ModelMetadata.PropertyName, errorMessage ?? $"{displayName} must not be empty")
         };
-    }
-
-    private string? GetErrorMessage()
-    {
-        if(ErrorMessage != null)
-        {
-            return ErrorMessage;
-        }
-
-        if(ErrorMessageResourceName == null)
-        {
-            throw new InvalidOperationException("No Resource specified.");
-        }
-
-        var resourceManagerProperty = ErrorMessageResourceType?.GetProperty("ResourceManager", BindingFlags.Static | BindingFlags.Public);
-        if (resourceManagerProperty == null)
-        {
-            throw new InvalidOperationException($"No ResourceManager found in '{ErrorMessageResourceType?.FullName}'.");
-        }
-
-        var resourceManager = resourceManagerProperty.GetValue(null) as ResourceManager;
-
-        if (resourceManager == null)
-        {
-            throw new InvalidOperationException($"No ResourceManager found in '{ErrorMessageResourceType?.FullName}'.");
-        }
-
-        return resourceManager.GetString(ErrorMessageResourceName);
     }
 }
