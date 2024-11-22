@@ -1,5 +1,6 @@
 @page "/organisation/{id}/supplier-information/connected-person/legal-form-question/{ConnectedEntityId?}"
 @model CO.CDP.OrganisationApp.Pages.Supplier.ConnectedEntityLegalFormQuestionModel
+@using CO.CDP.Localization
 
 @{
     ViewData["Title"] = Model.Heading;
@@ -13,54 +14,54 @@
 }
 
 @section BeforeContent {
-    <a href="@backLink" class="govuk-back-link">Back</a>
+    <a href="@backLink" class="govuk-back-link">@StaticTextResource.Global_Back</a>
 }
 
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
-            <partial name="_ErrorSummary" model="@Model.ModelState" />
-            <span class="govuk-caption-l">@Model.Caption</span>
-            <form class="form" method="post">
-                @if (Request.Query.ContainsKey("frm-chk-answer"))
-                {
-                    <input type="hidden" name="RedirectToCheckYourAnswer" value="true" />
-                }
-                <div class="govuk-form-group @(selectionError ? "govuk-form-group--error" : "")">
-                    <fieldset class="govuk-fieldset">
-                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                            <h1 class="govuk-fieldset__heading">@ViewData["Title"]</h1>
-                        </legend>
-                        <div id="hasLegalForm-hint" class="govuk-hint">
-                            @Model.Hint
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <partial name="_ErrorSummary" model="@Model.ModelState" />
+        <span class="govuk-caption-l">@Model.Caption</span>
+        <form class="form" method="post">
+            @if (Request.Query.ContainsKey("frm-chk-answer"))
+            {
+                <input type="hidden" name="RedirectToCheckYourAnswer" value="true" />
+            }
+            <div class="govuk-form-group @(selectionError ? "govuk-form-group--error" : "")">
+                <fieldset class="govuk-fieldset">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                        <h1 class="govuk-fieldset__heading">@ViewData["Title"]</h1>
+                    </legend>
+                    <div id="hasLegalForm-hint" class="govuk-hint">
+                        @Model.Hint
+                    </div>
+
+                    <div class="govuk-radios" data-module="govuk-radios">
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="YES" name="HasLegalForm" type="radio"
+                                    value="true" data-aria-controls="conditional-YES" @(Model.HasLegalForm == true ? "checked" : "")>
+                            <label class="govuk-label govuk-radios__label" for="YES">@StaticTextResource.Global_Yes</label>
                         </div>
 
-                        <div class="govuk-radios" data-module="govuk-radios">
-                            <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="YES" name="HasLegalForm" type="radio"
-                                       value="true" data-aria-controls="conditional-YES" @(Model.HasLegalForm == true ? "checked" : "")>
-                                <label class="govuk-label govuk-radios__label" for="YES">Yes</label>
-                            </div>
-
-                            <div class="govuk-radios__conditional" id="conditional-YES">
-                                <div class="govuk-form-group @(legalFormNameHasError ? "govuk-form-group--error" : "")">
-                                    <label class="govuk-label" for="HasLegalForm">Legal form name</label>
-                                    <input class="govuk-input govuk-!-width-one-half @(legalFormNameHasError ? "govuk-input--error" : "")"
-                                           id="LegalFormName" name="LegalFormName" type="text" spellcheck="false" autocomplete="off"
-                                           value="@(Model.HasLegalForm == true ? Model.LegalFormName : "")">
-                                </div>
-                            </div>
-
-                            <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="NO" name="HasLegalForm" type="radio"
-                                       value="false" @(Model.HasLegalForm == false ? "checked" : "")>
-                                <label class="govuk-label govuk-radios__label" for="NO">No</label>
+                        <div class="govuk-radios__conditional" id="conditional-YES">
+                            <div class="govuk-form-group @(legalFormNameHasError ? "govuk-form-group--error" : "")">
+                                <label class="govuk-label" for="LegalFormName">@StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityLegalFormQuestion_LegalFormNameLabel</label>
+                                <input class="govuk-input govuk-!-width-one-half @(legalFormNameHasError ? "govuk-input--error" : "")"
+                                        id="LegalFormName" name="LegalFormName" type="text" spellcheck="false" autocomplete="off"
+                                        value="@(Model.HasLegalForm == true ? Model.LegalFormName : "")">
                             </div>
                         </div>
 
-                    </fieldset>
-                </div>
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="NO" name="HasLegalForm" type="radio"
+                                    value="false" @(Model.HasLegalForm == false ? "checked" : "")>
+                            <label class="govuk-label govuk-radios__label" for="NO">@StaticTextResource.Global_No</label>
+                        </div>
+                    </div>
 
-                <govuk-button>Continue</govuk-button>
-            </form>
-        </div>
+                </fieldset>
+            </div>
+
+            <govuk-button>@StaticTextResource.Global_Continue</govuk-button>
+        </form>
     </div>
+</div>

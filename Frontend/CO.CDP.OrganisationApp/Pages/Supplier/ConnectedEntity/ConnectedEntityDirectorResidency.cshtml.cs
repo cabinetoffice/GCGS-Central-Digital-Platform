@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
+using CO.CDP.Localization;
 
 namespace CO.CDP.OrganisationApp.Pages.Supplier;
 
@@ -16,7 +17,7 @@ public class ConnectedEntityDirectorResidencyModel(ISession session) : PageModel
     public Guid? ConnectedEntityId { get; set; }
 
     [BindProperty]
-    [Required(ErrorMessage = "Select country")]
+    [Required(ErrorMessageResourceName = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityDirectorResidency_SelectCountryError), ErrorMessageResourceType = typeof(StaticTextResource))]
     public string? DirectorLocation { get; set; }
     public string? Caption { get; set; }
     public string? Heading { get; set; }
@@ -33,7 +34,7 @@ public class ConnectedEntityDirectorResidencyModel(ISession session) : PageModel
                 : "ConnectedEntitySupplierCompanyQuestion", new { Id, ConnectedEntityId });
         }
 
-        InitModal(state, true);
+        InitModel(state, true);
 
         return Page();
     }
@@ -48,7 +49,7 @@ public class ConnectedEntityDirectorResidencyModel(ISession session) : PageModel
                 : "ConnectedEntitySupplierCompanyQuestion", new { Id, ConnectedEntityId });
         }
 
-        InitModal(state);
+        InitModel(state);
 
         if (!ModelState.IsValid) return Page();
 
@@ -63,10 +64,10 @@ public class ConnectedEntityDirectorResidencyModel(ISession session) : PageModel
         return RedirectToPage(redirectPage, new { Id, ConnectedEntityId, AddressType = AddressType.Registered, UkOrNonUk = "uk" });
     }
 
-    private void InitModal(ConnectedEntityState state, bool reset = false)
+    private void InitModel(ConnectedEntityState state, bool reset = false)
     {
         Caption = state.GetCaption();
-        Heading = $"What country does {state.FirstName} usually live in?";
+        Heading = string.Format(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityDirectorResidency_Heading, state.FirstName);
 
         if (reset)
         {

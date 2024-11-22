@@ -1,9 +1,10 @@
 @page
 @attribute [RazorCompiledItemMetadata("RouteTemplate", RegistrationStepModel.OrganisationIdentifierPage)]
 @model CO.CDP.OrganisationApp.Pages.Registration.OrganisationIdentificationModel
+@using CO.CDP.Localization
 
 @{
-    ViewData["Title"] = "Is your organisation on any of these registries?";
+    ViewData["Title"] = @StaticTextResource.Organisation_OrganisationIdentification_Heading;
     var charityCommissionEnglandWalesNumberHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.CharityCommissionEnglandWalesNumber)).HasInnerHtml;
     var scottishCharityRegulatorNumberHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.ScottishCharityRegulatorNumber)).HasInnerHtml;
     var charityCommissionNorthernIrelandNumberHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.CharityCommissionNorthernIrelandNumber)).HasInnerHtml;
@@ -22,7 +23,7 @@
 
 @section BeforeContent {
     <a href="@backLink" class="govuk-back-link">
-        Back
+        @StaticTextResource.Global_Back
     </a>
 }
 
@@ -42,7 +43,7 @@
                             </h1>
                         </legend>
                         <div id="organisationidentification-hint" class="govuk-hint">
-                            Select all that apply. Then enter the registration number.
+                            @StaticTextResource.Organisation_OrganisationIdentification_Hint
                         </div>
                         <div class="govuk-radios" data-module="govuk-radios">
                             <div class="govuk-radios__item">
@@ -161,7 +162,7 @@
                         </div>
                     </fieldset>
                 </div>
-                <govuk-button>Continue</govuk-button>
+                <govuk-button>@StaticTextResource.Global_Continue</govuk-button>
             </form>
         </div>
     </div>

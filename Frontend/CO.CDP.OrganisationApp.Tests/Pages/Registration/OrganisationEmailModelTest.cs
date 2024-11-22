@@ -1,5 +1,8 @@
+using CO.CDP.OrganisationApp.CharityCommission;
+using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.Pages.Registration;
+using CO.CDP.OrganisationApp.ThirdPartyApiClients.CharityCommission;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -7,16 +10,19 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Routing;
 using Moq;
+using CO.CDP.Localization;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages.Registration;
 
 public class OrganisationEmailModelTest
 {
     private readonly Mock<ISession> sessionMock;
+    private readonly Mock<ICharityCommissionApi> charityCommissionMock;
 
     public OrganisationEmailModelTest()
     {
         sessionMock = new Mock<ISession>();
+        charityCommissionMock = new Mock<ICharityCommissionApi>();
         sessionMock.Setup(session => session.Get<UserDetails>(Session.UserDetailsKey))
             .Returns(new UserDetails { UserUrn = "urn:test" });
     }
@@ -41,7 +47,7 @@ public class OrganisationEmailModelTest
         results.Any(c => c.MemberNames.Contains("EmailAddress")).Should().BeTrue();
 
         results.Where(c => c.MemberNames.Contains("EmailAddress")).First()
-            .ErrorMessage.Should().Be("Enter your organisation's email address");
+            .ErrorMessage.Should().Be(nameof(StaticTextResource.OrganisationRegistration_EnterOrganisationEmail_Heading));
     }
 
     [Fact]
@@ -53,9 +59,9 @@ public class OrganisationEmailModelTest
         var results = ModelValidationHelper.Validate(model);
 
         results.Any(c => c.MemberNames.Contains("EmailAddress")).Should().BeTrue();
-
+        
         results.Where(c => c.MemberNames.Contains("EmailAddress")).First()
-            .ErrorMessage.Should().Be("Enter an email address in the correct format, like name@example.com");
+            .ErrorMessage.Should().Be(nameof(StaticTextResource.Global_EmailAddress_Error));
     }
 
     [Fact]
@@ -143,13 +149,60 @@ public class OrganisationEmailModelTest
             .Which.PageName.Should().Be("OrganisationDetailsSummary");
     }
 
-    private RegistrationDetails DummyRegistrationDetails()
+    [Fact]
+    public async Task OnGet_WhenCharityCommissionNumberProvided_ShouldPrepopulateEmail()
+    {
+        var registrationDetails = DummyRegistrationDetails(organisationName: "",
+            scheme: OrganisationSchemeType.CharityCommissionEnglandWales,
+            organisationEmailAddress: "");
+        sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(registrationDetails);
+
+        var chartiyDetails = GivenEmailOnCharitiesCommission();
+        var model = GivenOrganisationEmailModel();
+
+        charityCommissionMock.Setup(s => s.GetCharityDetails(registrationDetails.OrganisationIdentificationNumber!))
+            .ReturnsAsync(chartiyDetails);
+
+        await model.OnGet();
+
+        model.EmailAddress.Should().Be(chartiyDetails.Email);
+    }
+
+    [Fact]
+    public async Task OnGet_WhenCharityCommissionNumberProvidedRegDetailsProvided_ShouldNotPrepopulateEmail()
+    {
+        var registrationDetails = DummyRegistrationDetails(scheme: OrganisationSchemeType.CharityCommissionEnglandWales);
+        sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(registrationDetails);
+
+        var chartiyDetails = GivenEmailOnCharitiesCommission();
+        var model = GivenOrganisationEmailModel();
+
+        charityCommissionMock.Setup(s => s.GetCharityDetails(registrationDetails.OrganisationIdentificationNumber!))
+            .ReturnsAsync(chartiyDetails);
+
+        await model.OnGet();
+
+        model.EmailAddress.Should().Be(registrationDetails.OrganisationEmailAddress);
+    }
+
+    private CharityDetails GivenEmailOnCharitiesCommission()
+    {
+        return new CharityDetails()
+        {
+            Email = "contactus@britishredcross.org"
+        };
+    }
+
+    private RegistrationDetails DummyRegistrationDetails(string organisationName = "TestOrg",
+        string scheme = "TestType",
+        string organisationEmailAddress = "test@example.com")
     {
         var registrationDetails = new RegistrationDetails
         {
-            OrganisationName = "TestOrg",
-            OrganisationScheme = "TestType",
-            OrganisationEmailAddress = "test@example.com"
+            OrganisationName = organisationName,
+            OrganisationScheme = scheme,
+            OrganisationEmailAddress = organisationEmailAddress,
+            OrganisationIdentificationNumber = "987654321"
         };
 
         return registrationDetails;
@@ -157,6 +210,6 @@ public class OrganisationEmailModelTest
 
     private OrganisationEmailModel GivenOrganisationEmailModel()
     {
-        return new OrganisationEmailModel(sessionMock.Object);
+        return new OrganisationEmailModel(sessionMock.Object, charityCommissionMock.Object);
     }
 }

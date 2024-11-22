@@ -7,6 +7,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.Text.RegularExpressions;
+using CO.CDP.Localization;
 
 namespace CO.CDP.OrganisationApp.Pages.Supplier;
 
@@ -20,36 +21,36 @@ public class ConnectedEntityPscDetailsModel(ISession session) : PageModel
     public Guid? ConnectedEntityId { get; set; }
 
     [BindProperty]
-    [DisplayName("First name")]
-    [Required(ErrorMessage = "Enter first name")]
+    [Display(Name = "Supplier_ConnectedEntity_ConnectedEntityPscDetails_FirstNameLabel", ResourceType = typeof(StaticTextResource))]
+    [Required(ErrorMessageResourceName = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityPscDetails_FirstNameRequiredError), ErrorMessageResourceType = typeof(StaticTextResource))]
     public string? FirstName { get; set; }
 
     [BindProperty]
-    [DisplayName("Last name")]
-    [Required(ErrorMessage = "Enter last name")]
+    [Display(Name = "Supplier_ConnectedEntity_ConnectedEntityPscDetails_LastNameLabel", ResourceType = typeof(StaticTextResource))]
+    [Required(ErrorMessageResourceName = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityPscDetails_LastNameRequiredError), ErrorMessageResourceType = typeof(StaticTextResource))]
     public string? LastName { get; set; }
 
     [BindProperty]
-    [RequiredIf(nameof(ShowDobAndNationality), true, ErrorMessage = "Date of birth must include a day")]
-    [RegularExpression(RegExPatterns.Day, ErrorMessage = "Day must be a valid number")]
+    [RequiredIf(nameof(ShowDobAndNationality), true, ErrorMessageResourceName = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityPscDetails_DateOfBirthDayRequiredError), ErrorMessageResourceType = typeof(StaticTextResource))]
+    [RegularExpression(RegExPatterns.Day, ErrorMessageResourceName = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityPscDetails_DateOfBirthDayInvalidError), ErrorMessageResourceType = typeof(StaticTextResource))]
     public string? Day { get; set; }
 
     [BindProperty]
-    [RequiredIf(nameof(ShowDobAndNationality), true, ErrorMessage = "Date of birth must include a month")]
-    [RegularExpression(RegExPatterns.Month, ErrorMessage = "Month must be a valid number")]
+    [RequiredIf(nameof(ShowDobAndNationality), true, ErrorMessageResourceName = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityPscDetails_DateOfBirthMonthRequiredError), ErrorMessageResourceType = typeof(StaticTextResource))]
+    [RegularExpression(RegExPatterns.Month, ErrorMessageResourceName = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityPscDetails_DateOfBirthMonthInvalidError), ErrorMessageResourceType = typeof(StaticTextResource))]
     public string? Month { get; set; }
 
     [BindProperty]
-    [RequiredIf(nameof(ShowDobAndNationality), true, ErrorMessage = "Date of birth must include a year")]
-    [RegularExpression(RegExPatterns.Year, ErrorMessage = "Year must be a valid number")]
+    [RequiredIf(nameof(ShowDobAndNationality), true, ErrorMessageResourceName = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityPscDetails_DateOfBirthYearRequiredError), ErrorMessageResourceType = typeof(StaticTextResource))]
+    [RegularExpression(RegExPatterns.Year, ErrorMessageResourceName = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityPscDetails_DateOfBirthYearInvalidError), ErrorMessageResourceType = typeof(StaticTextResource))]
     public string? Year { get; set; }
 
     [BindProperty]
     public string? DateOfBirth { get; set; }
 
     [BindProperty]
-    [DisplayName("Nationality")]
-    [RequiredIf(nameof(ShowDobAndNationality), true, ErrorMessage = "Enter your nationality")]
+    [Display(Name = "Supplier_ConnectedEntity_ConnectedEntityPscDetails_NationalityLabel", ResourceType = typeof(StaticTextResource))]
+    [RequiredIf(nameof(ShowDobAndNationality), true, ErrorMessageResourceName = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityPscDetails_NationalityRequiredError), ErrorMessageResourceType = typeof(StaticTextResource))]
     public string? Nationality { get; set; }
 
     [BindProperty]
@@ -75,7 +76,7 @@ public class ConnectedEntityPscDetailsModel(ISession session) : PageModel
                 : "ConnectedEntitySupplierCompanyQuestion", new { Id, ConnectedEntityId });
         }
 
-        InitModal(state, true);
+        InitModel(state, true);
 
         return Page();
     }
@@ -92,7 +93,7 @@ public class ConnectedEntityPscDetailsModel(ISession session) : PageModel
                 : "ConnectedEntitySupplierCompanyQuestion", new { Id, ConnectedEntityId });
         }
 
-        InitModal(state);
+        InitModel(state);
 
         ModelState.Clear();
 
@@ -141,7 +142,7 @@ public class ConnectedEntityPscDetailsModel(ISession session) : PageModel
         return RedirectToPage(redirectPage, new { Id, ConnectedEntityId, AddressType = AddressType.Registered, UkOrNonUk = "uk" });
     }
 
-    private void InitModal(ConnectedEntityState state, bool reset = false)
+    private void InitModel(ConnectedEntityState state, bool reset = false)
     {
         Caption = state.GetCaption();
         Heading = $"Enter the person with significant control's details";

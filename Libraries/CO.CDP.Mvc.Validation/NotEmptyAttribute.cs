@@ -5,7 +5,9 @@ namespace CO.CDP.Mvc.Validation;
 
 public class NotEmptyAttribute : Attribute, IModelValidator
 {
-    public required string ErrorMessage { get; set; }
+    public string? ErrorMessage { get; set; }
+    public string? ErrorMessageResourceName { get; set; }
+    public Type? ErrorMessageResourceType { get; set; }
 
     public IEnumerable<ModelValidationResult> Validate(ModelValidationContext context)
     {
@@ -15,9 +17,11 @@ public class NotEmptyAttribute : Attribute, IModelValidator
             return [];
         }
 
+        var errorMessage = ErrorMessageResolver.GetErrorMessage(ErrorMessage, ErrorMessageResourceName, ErrorMessageResourceType);
+
         return new List<ModelValidationResult>
         {
-            new ModelValidationResult(context.ModelMetadata.PropertyName, ErrorMessage)
+            new ModelValidationResult(context.ModelMetadata.PropertyName, errorMessage ?? $"{context.ModelMetadata.DisplayName} must not be empty")
         };
     }
 }
