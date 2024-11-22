@@ -1,5 +1,6 @@
 @page "/registration/organisation-registered-address/{UkOrNonUk}"
 @model CO.CDP.OrganisationApp.Pages.Registration.OrganisationRegisteredAddressModel
+@using CO.CDP.Localization
 
 @{
     ViewData["Title"] = Model.Address.Heading;
@@ -18,7 +19,9 @@
 }
 
 @section BeforeContent {
-    <a href="@backLink" class="govuk-back-link">Back</a>
+    <a href="@backLink" class="govuk-back-link">
+        @StaticTextResource.Global_Back
+    </a>
 }
 
     <div class="govuk-grid-row">

@@ -1,9 +1,10 @@
 @page
 @attribute [RazorCompiledItemMetadata("RouteTemplate", RegistrationStepModel.BuyerOrganisationTypePage)]
 @model BuyerOrganisationTypeModel
+@using CO.CDP.Localization
 
 @{
-    ViewData["Title"] = "Select the organisation type";
+    ViewData["Title"] = @StaticTextResource.OrganisationRegistration_BuyerOrganisationType_Heading;
     var organisationTypeHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.BuyerOrganisationType)).HasInnerHtml;
     var otherHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.OtherValue)).HasInnerHtml;
 
@@ -22,7 +23,7 @@
 
 @section BeforeContent {
     <a href="@backLink" class="govuk-back-link">
-        Back
+        @StaticTextResource.Global_Back
     </a>
 }
 
@@ -45,7 +46,7 @@
                         @if (organisationTypeHasError)
                         {
                             <p id="organisationType-error" class="govuk-error-message">
-                                <span class="govuk-visually-hidden">Error:</span> @Html.ValidationMessageFor(m => m.BuyerOrganisationType)
+                                <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span> @Html.ValidationMessageFor(m => m.BuyerOrganisationType)
                             </p>
                         }
 
@@ -58,13 +59,7 @@
                                     @BuyerOrganisationTypeModel.BuyerTypes["CentralGovernment"]
                                 </label>
                                 <div id="ca-type-item-hint" class="govuk-hint govuk-radios__hint">
-                                    Includes arm's-length bodies:
-                                    <ul>
-                                        <li>executive agencies (EA)</li>
-                                        <li>non-departmental public bodies (NDPB)</li>
-                                        <li>non-ministerial departments (NMD)</li>
-                                        <li>Trading Funds</li>
-                                    </ul>
+                                    @Html.Raw(StaticTextResource.OrganisationRegistration_BuyerOrganisationType_CentralGovernment_Hint)
                                 </div>
                             </div>
 
@@ -76,15 +71,7 @@
                                     @BuyerOrganisationTypeModel.BuyerTypes["RegionalAndLocalGovernment"]
                                 </label>
                                 <div id="ca-type-2-item-hint" class="govuk-hint govuk-radios__hint">
-                                    Includes:
-                                    <ul>
-                                        <li>unitary authorities</li>
-                                        <li>county, district, borough and parish councils</li>
-                                        <li>the Greater London Authority</li>
-                                        <li>charities</li>
-                                        <li>housing associations</li>
-                                        <li>blue light organisations - ambulance, police, and other emergency services</li>
-                                    </ul>
+                                    @Html.Raw(StaticTextResource.OrganisationRegistration_BuyerOrganisationType_RegionalAndLocalGovernment_Hint)
                                 </div>
                             </div>
 
@@ -95,7 +82,7 @@
                                     @BuyerOrganisationTypeModel.BuyerTypes["PublicUndertaking"]
                                 </label>
                                 <div id="ca-type-3-item-hint" class="govuk-hint govuk-radios__hint">
-                                    Unlike a public authority, organisations that operate commercially and provide utility activities to the public. For example, Transport for Wales.
+                                    @Html.Raw(StaticTextResource.OrganisationRegistration_BuyerOrganisationType_PublicUndertaking_Hint)
                                 </div>
                             </div>
                             <div class="govuk-radios__item">
@@ -105,26 +92,26 @@
                                     @BuyerOrganisationTypeModel.BuyerTypes["PrivateUtility"]
                                 </label>
                                 <div id="ca-type-4-item-hint" class="govuk-hint govuk-radios__hint">
-                                    For example, private companies that have been granted a special or exclusive right to provide utility activities to the public. Such as National Grid or British Gas.
+                                    @Html.Raw(StaticTextResource.OrganisationRegistration_BuyerOrganisationType_PrivateUtility_Hint)
                                 </div>
                             </div>
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input" id="ca-type-5" name="BuyerOrganisationType"
                                        type="radio" value="Other" data-aria-controls="conditional-ca-type-5" @IsSelected("Other")>
                                 <label class="govuk-label govuk-radios__label" for="ca-type-5">
-                                    Other
+                                    @StaticTextResource.OrganisationRegistration_BuyerOrganisationType_Other_Label
                                 </label>
                             </div>
 
                             <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-ca-type-5">
                                 <div class="govuk-form-group @(otherHasError ? "govuk-form-group--error" : "")">
                                     <label class="govuk-label" for="other-buyer-type">
-                                        Enter type
+                                        @StaticTextResource.OrganisationRegistration_BuyerOrganisationType_OtherEnterType_Label
                                     </label>
                                     @Html.ValidationMessageFor(m => m.OtherValue, "", new { @class = "govuk-error-message", @id = "other-buyer-type-error" })
 
                                     <div id="ca-type-5-item-hint" class="govuk-hint">
-                                        For example, the establishment of a utilities dynamic market by a non-contracting authority.
+                                        @StaticTextResource.OrganisationRegistration_BuyerOrganisationType_Other_Hint
                                     </div>
 
                                     <input autocomplete="off" class="govuk-input @(otherHasError ? "govuk-input--error" : "")"
@@ -136,7 +123,7 @@
                     </fieldset>
                 </div>
                 <govuk-button>
-                    Continue
+                    @StaticTextResource.Global_Continue
                 </govuk-button>
             </form>
         </div>
