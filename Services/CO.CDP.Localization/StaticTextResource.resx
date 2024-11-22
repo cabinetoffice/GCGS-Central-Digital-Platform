@@ -985,4 +985,7 @@
   <data name="Supplementary_CookieDetails_TableRow_Preferences" xml:space="preserve">
     <value />
   </data>
+  <data name="Support_OrganisationApproval_ValidationErrorMessage" xml:space="preserve">
+    <value>Select an option</value>
+  </data>
 </root>

@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using CO.CDP.Localization;
 using CO.CDP.Mvc.Validation;
 using CO.CDP.Organisation.WebApiClient;
 using Microsoft.AspNetCore.Mvc;
@@ -13,11 +14,11 @@ public class OrganisationApprovalModel(
     public OrganisationWebApiClient.Organisation? OrganisationDetails { get; set; }
 
     [BindProperty]
-    [Required(ErrorMessage = "Select an option")]
+    [Required(ErrorMessage = nameof(StaticTextResource.Support_OrganisationApproval_ValidationErrorMessage))]
     public bool Approval { get; set; }
 
     [BindProperty]
-    [RequiredIf(nameof(Approval), false, ErrorMessage = "Tell the user why you could not approve")]
+    [RequiredIf(nameof(Approval), false, ErrorMessage = nameof(StaticTextResource.Support_OrganisationApproval_ErrorMessage))]
     public string? Comments { get; set; }
 
     public async Task<IActionResult> OnGet(Guid organisationId)
