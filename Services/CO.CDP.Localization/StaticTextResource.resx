@@ -1525,6 +1525,9 @@
   <data name="Forms_FormElementFileUpload_UploadedFileText" xml:space="preserve">
     <value>Uploaded file: {0}</value>
   </data>
+  <data name="Forms_FormElementMultiLineInput_CharacterCountError" xml:space="preserve">
+    <value>Enter 10,000 characters or fewer</value>
+  </data>
   <data name="Forms_FormElementMultiLineInput_CharacterCountMessage" xml:space="preserve">
     <value>You can enter up to 10,000 characters</value>
   </data>
@@ -1626,10 +1629,10 @@
   </data>
   <data name="Global_SaveAndContinue" xml:space="preserve">
     <value>Save and continue</value>
-  </data>  
+  </data>
   <data name="Global_Save" xml:space="preserve">
     <value>Save</value>
-  </data>  
+  </data>
   <data name="Global_Remove" xml:space="preserve">
     <value>Remove</value>
   </data>

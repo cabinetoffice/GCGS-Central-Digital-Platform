@@ -32,7 +32,7 @@ public class FormElementMultiLineInputModel : FormElementModel, IValidatableObje
 
         if (TextInput != null && TextInput.Length > 10000)
         {
-            yield return new ValidationResult(StaticTextResource.Forms_FormElementMultiLineInput_CharacterCountMessage, [nameof(TextInput)]);
+            yield return new ValidationResult(StaticTextResource.Forms_FormElementMultiLineInput_CharacterCountError, [nameof(TextInput)]);
         }
     }
 }
