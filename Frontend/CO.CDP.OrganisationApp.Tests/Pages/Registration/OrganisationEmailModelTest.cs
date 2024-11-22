@@ -9,7 +9,6 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Localization;
 using Moq;
-using CO.CDP.Localization;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages.Registration;
 
