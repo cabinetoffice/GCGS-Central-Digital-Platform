@@ -45,6 +45,15 @@ services:
       POSTGRES_USER: cdp_user
       POSTGRES_PASSWORD: cdp123
 
+  redis:
+    container_name: co-cdp-redis
+    image: redis:7.4.1
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli ping | grep PONG"]
+      interval: 1s
+      timeout: 3s
+      retries: 5
+
   localstack:
     container_name: co-cdp-localstack
     image: localstack/localstack:3.5
@@ -106,12 +115,15 @@ services:
         Organisation__Authority: '${Organisation__Authority:-http://gateway:${CDP_AUTHORITY_PORT:-8092}}'
 
   organisation-app:
-    container_name: co-cdp-organisation-app
+    # container_name: co-cdp-organisation-app
     build:
       context: .
       dockerfile: Dockerfile
       target: final-organisation-app
     image: 'cabinetoffice/cdp-organisation-app:${IMAGE_VERSION:-latest}'
+    depends_on:
+      redis:
+        condition: service_healthy
     healthcheck:
       test: ["CMD-SHELL", "curl --fail --silent --write-out '{\"status\":%{http_code}}' --output /dev/null http://127.0.0.1:8080/health"]
       start_period: 10s

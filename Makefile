@@ -59,6 +59,10 @@ localstack: compose.override.yml ## Start the localstack service for AWS service
 	@docker compose up -d localstack
 .PHONY: localstack
 
+redis: compose.override.yml ## Start the redis service
+	@docker compose up -d redis
+.PHONY: redis
+
 OpenAPI: OPENAPI_DIR?=OpenAPI
 OpenAPI: build ## Create OpenAPI folder and copy relevant files in
 	@mkdir -p $(OPENAPI_DIR)

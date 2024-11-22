@@ -61,7 +61,15 @@ if (builder.Environment.IsDevelopment())
 
 builder.ConfigureForwardedHeaders();
 
-builder.Services.AddDistributedMemoryCache();
+builder.Services.AddStackExchangeRedisCache(options =>
+{
+    var redisHost = builder.Configuration.GetValue<string>("RedisCache:Hostname");
+    var redisPort = builder.Configuration.GetValue<string>("RedisCache:Port");
+    var instanceName = builder.Configuration.GetValue<string>("RedisCache:Prefix");
+
+    options.Configuration = $"{redisHost}:{redisPort}";
+    options.InstanceName = instanceName;
+});
 
 var sessionTimeoutInMinutes = builder.Configuration.GetValue<double>("SessionTimeoutInMinutes");
 
@@ -214,8 +222,8 @@ builder.Services
     .AddCloudWatchSerilog(builder.Configuration);
 
 // @see DP-723 for details: https://noticingsystem.atlassian.net/browse/DP-723?focusedCommentId=27796
-// builder.Services.AddDataProtection()
-//    .PersistKeysToAWSSystemsManager("/OrganisationApp/DataProtection");
+builder.Services.AddDataProtection()
+   .PersistKeysToAWSSystemsManager("/OrganisationApp/DataProtection");
 
 var app = builder.Build();
 app.UseForwardedHeaders();
