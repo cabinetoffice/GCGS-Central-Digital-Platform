@@ -40,6 +40,8 @@ services:
       CompaniesHouse__Url: ""
       CompaniesHouse__User: ""
       CompaniesHouse__Password: ""
+      CharityCommission__Url: ""
+      CharityCommission__SubscriptionKey: ""
     deploy:
       replicas: 1
   authority:
