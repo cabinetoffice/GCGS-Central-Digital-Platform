@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
+using CO.CDP.Localization;
 
 namespace CO.CDP.OrganisationApp.Pages.Supplier;
 
@@ -10,7 +11,7 @@ namespace CO.CDP.OrganisationApp.Pages.Supplier;
 public class ConnectedEntitySupplierCompanyQuestionModel(ISession session) : PageModel
 {
     [BindProperty]
-    [Required(ErrorMessage = "Select yes if supplier organisation registered with Companies House")]
+    [Required(ErrorMessageResourceName = nameof(StaticTextResource.Global_SelectYesOrNo), ErrorMessageResourceType = typeof(StaticTextResource))]
     public bool? RegisteredWithCh { get; set; }
 
     [BindProperty(SupportsGet = true)]

@@ -15,7 +15,7 @@ public class AddressPostalSameAsRegisteredQuestionModel
 {
     [BindProperty]
     [Required(ErrorMessage = "Please select an option")]
-    public bool? SameAsRegiseterdAddress { get; set; }
+    public bool? SameAsRegisteredAddress { get; set; }
 
     [BindProperty(SupportsGet = true)]
     public Guid Id { get; set; }
@@ -24,7 +24,7 @@ public class AddressPostalSameAsRegisteredQuestionModel
     {
         if (selected.HasValue)
         {
-            SameAsRegiseterdAddress = selected;
+            SameAsRegisteredAddress = selected;
         }
         else
         {
@@ -42,7 +42,7 @@ public class AddressPostalSameAsRegisteredQuestionModel
             {
                 var registeredAddress = composed.Organisation.Addresses.FirstOrDefault(a => a.Type == AddressType.Registered);
                 var postalAddress = composed.Organisation.Addresses.FirstOrDefault(a => a.Type == AddressType.Postal);
-                SameAsRegiseterdAddress = AreSameAddress(registeredAddress, postalAddress);
+                SameAsRegisteredAddress = AreSameAddress(registeredAddress, postalAddress);
             }
         }
 
@@ -56,7 +56,7 @@ public class AddressPostalSameAsRegisteredQuestionModel
             return Page();
         }
 
-        if (SameAsRegiseterdAddress == true)
+        if (SameAsRegisteredAddress == true)
         {
             try
             {
