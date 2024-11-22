@@ -4,7 +4,7 @@ namespace CO.CDP.EntityVerification.Ppon;
 
 public class PponService : IPponService
 {
-    private readonly char[] ValidAlphaChars = "ABCDEFGHIJKLMNPQRSTUVWXYZ".ToCharArray();
+    private readonly char[] ValidAlphaChars = "BCDGHJLMNPQRTVWXYZ".ToCharArray();
     private readonly char[] ValidNumericChars = "123456789".ToCharArray();
     private readonly Random RandomGenerator = new();
 
