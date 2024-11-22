@@ -1,8 +1,10 @@
 using CO.CDP.Localization;
+using CO.CDP.OrganisationApp.CharityCommission;
 using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.Pages.Registration;
 using CO.CDP.OrganisationApp.ThirdPartyApiClients;
+using CO.CDP.OrganisationApp.ThirdPartyApiClients.CharityCommission;
 using CO.CDP.OrganisationApp.ThirdPartyApiClients.CompaniesHouse;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
@@ -18,11 +20,13 @@ public class OrganisationRegisteredAddressModelTest
 {
     private readonly Mock<ISession> sessionMock;
     private readonly Mock<ICompaniesHouseApi> companiesHouseMock;
+    private readonly Mock<ICharityCommissionApi> charityCommissionMock;
 
     public OrganisationRegisteredAddressModelTest()
     {
         sessionMock = new Mock<ISession>();
         companiesHouseMock = new Mock<ICompaniesHouseApi>();
+        charityCommissionMock = new Mock<ICharityCommissionApi>();
         sessionMock.Setup(session => session.Get<UserDetails>(Session.UserDetailsKey))
             .Returns(new UserDetails { UserUrn = "urn:test" });
     }
@@ -185,7 +189,46 @@ public class OrganisationRegisteredAddressModelTest
         model.Address.AddressLine1.Should().Be(registrationDetails.OrganisationAddressLine1);
         model.Address.TownOrCity.Should().Be(registrationDetails.OrganisationCityOrTown);
         model.Address.Postcode.Should().Be(registrationDetails.OrganisationPostcode);
-        //model.Country.Should().Be(registrationDetails.OrganisationCountry);
+    }
+
+    [Fact]
+    public async Task OnGet_WhenCharityCommissionNumberProvided_ShouldPrepopulateRegisteredAddress()
+    {
+        RegistrationDetails registrationDetails = DummyRegistrationDetails(emptyAddress: true,
+            scheme: OrganisationSchemeType.CharityCommissionEnglandWales, hasCompaniesHouseNumber: false);
+        sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(registrationDetails);
+
+        var model = GivenOrganisationAddressModel();
+        var chartiyDetails = GivenRegisteredAddressOnCharitiesCommission();
+
+        charityCommissionMock.Setup(s => s.GetCharityDetails(registrationDetails.OrganisationIdentificationNumber!))
+            .ReturnsAsync(chartiyDetails);
+
+        await model.OnGet();
+
+        model.Address.AddressLine1.Should().Be(chartiyDetails.AddressLine2);
+        model.Address.TownOrCity.Should().Be(chartiyDetails.AddressLine3);
+        model.Address.Postcode.Should().Be(chartiyDetails.PostalCode);
+    }
+
+    [Fact]
+    public async Task OnGet_WhenCharityCommissionNumberAndRegDetailsProvided_ShouldNotPrepopulateRegisteredAddress()
+    {
+        RegistrationDetails registrationDetails = DummyRegistrationDetails(scheme: OrganisationSchemeType.CharityCommissionEnglandWales,
+            hasCompaniesHouseNumber: false);
+        sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(registrationDetails);
+
+        var model = GivenOrganisationAddressModel();
+        var chartiyDetails = GivenRegisteredAddressOnCharitiesCommission();
+
+        charityCommissionMock.Setup(s => s.GetCharityDetails(registrationDetails.OrganisationIdentificationNumber!))
+            .ReturnsAsync(chartiyDetails);
+
+        await model.OnGet();
+
+        model.Address.AddressLine1.Should().Be(registrationDetails.OrganisationAddressLine1);
+        model.Address.TownOrCity.Should().Be(registrationDetails.OrganisationCityOrTown);
+        model.Address.Postcode.Should().Be(registrationDetails.OrganisationPostcode);
     }
 
     [Fact]
@@ -226,7 +269,7 @@ public class OrganisationRegisteredAddressModelTest
         model.Address.Postcode.Should().Be(registrationDetails.OrganisationPostcode);
     }
 
-    private RegistrationDetails DummyRegistrationDetails(bool emptyAddress = false)
+    private RegistrationDetails DummyRegistrationDetails(bool emptyAddress = false, string scheme = "", bool hasCompaniesHouseNumber = true)
     {
         var registrationDetails = new RegistrationDetails
         {
@@ -236,7 +279,8 @@ public class OrganisationRegisteredAddressModelTest
             OrganisationIdentificationNumber = "123456",
             OrganisationHasCompaniesHouseNumber = true,
             OrganisationCountryName = "United Kingdom",
-            OrganisationCountryCode = "GB"
+            OrganisationCountryCode = "GB",
+            OrganisationScheme = scheme
         };
 
         return registrationDetails;
@@ -254,8 +298,18 @@ public class OrganisationRegisteredAddressModelTest
         };
     }
 
+    private CharityDetails GivenRegisteredAddressOnCharitiesCommission()
+    {
+        return new CharityDetails()
+        {
+            AddressLine1 = "1 Mayfair",
+            AddressLine2 = "",
+            PostalCode = "SW2 1PT"
+        };
+    }
+
     private OrganisationRegisteredAddressModel GivenOrganisationAddressModel()
     {
-        return new OrganisationRegisteredAddressModel(sessionMock.Object, companiesHouseMock.Object) { Address = new() };
+        return new OrganisationRegisteredAddressModel(sessionMock.Object, charityCommissionMock.Object, companiesHouseMock.Object) { Address = new() };
     }
 }

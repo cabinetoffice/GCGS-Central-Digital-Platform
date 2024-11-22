@@ -23,6 +23,24 @@ public class RequiredIfAttributeTests
                 .And.BeOfType<ValidationResult>()
                 .Which.ErrorMessage.Should().Be("CharityCommissionNorthernIrelandNumber is required");
         }
+
+        [Fact]
+        public void Should_Fail_ValidationWithDisplayName_When_OrganisationType_Matches_And_IdentificationNumber_IsNull()
+        {
+            var model = new OrganisationTestModel { OrganisationType = "GB-NIC" };
+            var validationContext = new ValidationContext(model, null, null)
+            {
+                MemberName = nameof(OrganisationTestModel.CharityCommissionNorthernIrelandNumber),
+                DisplayName = "Whatever"
+            };
+            var attribute = new RequiredIfAttribute("OrganisationType", "GB-NIC");
+
+            var result = attribute.GetValidationResult(null, validationContext);
+
+            result.Should().NotBeNull()
+                .And.BeOfType<ValidationResult>()
+                .Which.ErrorMessage.Should().Be("Whatever is required");
+        }
     }
 
     [Fact]

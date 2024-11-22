@@ -16,7 +16,7 @@ public class NotEmptyAttributeTests
     {
         _attribute = new NotEmptyAttribute { ErrorMessage = "The collection cannot be empty." };
         _mockMetadata =
-            new Mock<ModelMetadata>(MockBehavior.Strict, ModelMetadataIdentity.ForType(typeof(List<string>)));
+            new Mock<ModelMetadata>(MockBehavior.Default, ModelMetadataIdentity.ForType(typeof(List<string>)));
     }
 
     [Fact]

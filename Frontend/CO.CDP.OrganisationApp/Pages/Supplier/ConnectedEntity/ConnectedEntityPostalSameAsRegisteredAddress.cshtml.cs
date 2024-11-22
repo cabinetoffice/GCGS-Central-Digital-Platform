@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
+using CO.CDP.Localization;
 
 namespace CO.CDP.OrganisationApp.Pages.Supplier.ConnectedEntity;
 
@@ -16,8 +17,8 @@ public class ConnectedEntityPostalSameAsRegisteredAddressModel(ISession session)
     public Guid? ConnectedEntityId { get; set; }
 
     [BindProperty]
-    [Required(ErrorMessage = "Select yes if organisation have a different postal address")]
-    public bool? DifferentThanRegiseterdAddress { get; set; }
+    [Required(ErrorMessageResourceName = nameof(StaticTextResource.Global_SelectYesOrNo), ErrorMessageResourceType = typeof(StaticTextResource))]
+    public bool? DifferentThanRegisteredAddress { get; set; }
 
     public string? Caption { get; set; }
 
@@ -39,9 +40,9 @@ public class ConnectedEntityPostalSameAsRegisteredAddressModel(ISession session)
 
         var sameAddress = state.RegisteredAddress?.AreSameAddress(state.PostalAddress);
 
-        DifferentThanRegiseterdAddress = selected.HasValue ? selected : (sameAddress.HasValue ? !sameAddress : sameAddress);
+        DifferentThanRegisteredAddress = selected.HasValue ? selected : (sameAddress.HasValue ? !sameAddress : sameAddress);
 
-        InitModal(state);
+        InitModel(state);
 
         return Page();
     }
@@ -58,13 +59,13 @@ public class ConnectedEntityPostalSameAsRegisteredAddressModel(ISession session)
                 : "ConnectedEntitySupplierCompanyQuestion", new { Id, ConnectedEntityId });
         }
 
-        InitModal(state);
+        InitModel(state);
         if (!ModelState.IsValid)
         {
             return Page();
         }
         state.PostalAddress = null;
-        if (DifferentThanRegiseterdAddress == false)
+        if (DifferentThanRegisteredAddress == false)
         {
             state.PostalAddress = state.RegisteredAddress;
             session.Set(Session.ConnectedPersonKey, state);
@@ -90,7 +91,7 @@ public class ConnectedEntityPostalSameAsRegisteredAddressModel(ISession session)
         return (true, cp);
     }
 
-    private void InitModal(ConnectedEntityState state)
+    private void InitModel(ConnectedEntityState state)
     {
         OrganisationName = state.OrganisationName;
         Caption = state.GetCaption();

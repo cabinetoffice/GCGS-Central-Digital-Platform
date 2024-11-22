@@ -1,3 +1,4 @@
+using CO.CDP.Localization;
 using CO.CDP.OrganisationApp.Constants;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -18,7 +19,7 @@ public class ConnectedEntityLawEnforceModel(ISession session) : PageModel
 
     [BindProperty]
     [DisplayName("Which law enforces it?")]
-    [Required(ErrorMessage = "Enter which law enforces it?")]
+    [Required(ErrorMessageResourceName = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityLawEnforce_LawRegisteredRequiredError), ErrorMessageResourceType = typeof(StaticTextResource))]
     public string? LawRegistered { get; set; }
 
     [BindProperty]
@@ -45,7 +46,7 @@ public class ConnectedEntityLawEnforceModel(ISession session) : PageModel
                 : "ConnectedEntitySupplierCompanyQuestion", new { Id, ConnectedEntityId });
         }
 
-        InitModal(state, true);
+        InitModel(state, true);
 
         return Page();
     }
@@ -62,7 +63,7 @@ public class ConnectedEntityLawEnforceModel(ISession session) : PageModel
                 : "ConnectedEntitySupplierCompanyQuestion", new { Id, ConnectedEntityId });
         }
 
-        InitModal(state);
+        InitModel(state);
 
         if (!ModelState.IsValid) return Page();
 
@@ -79,11 +80,11 @@ public class ConnectedEntityLawEnforceModel(ISession session) : PageModel
         return RedirectToPage(redirectPage, new { Id, ConnectedEntityId });
     }
 
-    private void InitModal(ConnectedEntityState state, bool reset = false)
+    private void InitModel(ConnectedEntityState state, bool reset = false)
     {
         Caption = state.GetCaption();
         BackPageLink = GetBackLinkPageName(state);
-        Heading = $"Which law enforces {state.OrganisationName}'s legal form?";
+        Heading = string.Format(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityLawEnforce_Heading, state.OrganisationName);
         ConnectedEntityType = state.ConnectedEntityType;
         if (reset)
         {

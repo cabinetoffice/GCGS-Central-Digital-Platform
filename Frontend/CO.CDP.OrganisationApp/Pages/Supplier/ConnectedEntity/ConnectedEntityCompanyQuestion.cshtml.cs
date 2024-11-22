@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
+using CO.CDP.Localization;
 
 namespace CO.CDP.OrganisationApp.Pages.Supplier;
 
@@ -17,11 +18,11 @@ public class ConnectedEntityCompanyQuestionModel(ISession session) : PageModel
     public Guid? ConnectedEntityId { get; set; }
 
     [BindProperty]
-    [Required(ErrorMessage = "Select yes if an organisation is registered with Companies House")]
+    [Required(ErrorMessageResourceName = nameof(StaticTextResource.Global_SelectYesOrNo), ErrorMessageResourceType = typeof(StaticTextResource))]
     public bool? HasCompaniesHouseNumber { get; set; }
 
     [BindProperty]
-    [RequiredIf(nameof(HasCompaniesHouseNumber), true, ErrorMessage = "Enter the Companies House number.")]
+    [RequiredIf(nameof(HasCompaniesHouseNumber), true, ErrorMessageResourceName = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityCompanyQuestion_EnterNumberError), ErrorMessageResourceType = typeof(StaticTextResource))]
     public string? CompaniesHouseNumber { get; set; }
     public string? Caption { get; set; }
     public string? Heading { get; set; }
@@ -38,7 +39,7 @@ public class ConnectedEntityCompanyQuestionModel(ISession session) : PageModel
             return RedirectToPage("ConnectedEntitySupplierHasControl", new { Id });
         }
 
-        InitModal(state);
+        InitModel(state);
 
         HasCompaniesHouseNumber = selected.HasValue ? selected : state.HasCompaniesHouseNumber;
         CompaniesHouseNumber = state.CompaniesHouseNumber;
@@ -54,7 +55,7 @@ public class ConnectedEntityCompanyQuestionModel(ISession session) : PageModel
             return RedirectToPage("ConnectedEntitySupplierHasControl", new { Id });
         }
 
-        InitModal(state);
+        InitModel(state);
 
         if (!ModelState.IsValid)
         {
@@ -135,11 +136,11 @@ public class ConnectedEntityCompanyQuestionModel(ISession session) : PageModel
         return redirectPage;
     }
 
-    private void InitModal(ConnectedEntityState state)
+    private void InitModel(ConnectedEntityState state)
     {
         Caption = state.GetCaption();
-        Heading = $"Is {state.OrganisationName} registered with Companies House?";
-        Hint = "Is the ‘connected person’ registered with Companies House as required by the Companies Act 2006.";
+        Heading = string.Format(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityCompanyQuestion_Heading, state.OrganisationName);
+        Hint = StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityCompanyQuestion_Hint;
         BackPageLink = GetBackLinkPageName(state);
     }
 
@@ -172,7 +173,6 @@ public class ConnectedEntityCompanyQuestionModel(ISession session) : PageModel
                     case ConnectedEntityOrganisationCategoryType.ACompanyYourOrganisationHasTakenOver:
                         backPage = $"{AddressType.Registered}-address/{(string.Equals(state.RegisteredAddress?.Country, Country.UKCountryCode, StringComparison.OrdinalIgnoreCase) ? "uk" : "non-uk")}";
                         break;
-
                 }
                 break;
             case ConnectedEntityType.Individual:

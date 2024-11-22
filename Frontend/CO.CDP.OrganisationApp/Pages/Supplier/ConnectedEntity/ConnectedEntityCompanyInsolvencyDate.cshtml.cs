@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
+using CO.CDP.Localization;
 
 namespace CO.CDP.OrganisationApp.Pages.Supplier;
 
@@ -17,18 +18,18 @@ public class ConnectedEntityCompanyInsolvencyDateModel(ISession session) : PageM
     public Guid? ConnectedEntityId { get; set; }
 
     [BindProperty]
-    [Required(ErrorMessage = "Date of Insolvency must include a day")]
-    [RegularExpression(RegExPatterns.Day, ErrorMessage = "Day must be a valid number")]
+    [Required(ErrorMessageResourceName = "Supplier_ConnectedEntity_ConnectedEntityCompanyInsolvencyDate_DayRequiredError", ErrorMessageResourceType = typeof(StaticTextResource))]
+    [RegularExpression(RegExPatterns.Day, ErrorMessageResourceName = "Supplier_ConnectedEntity_ConnectedEntityCompanyInsolvencyDate_DayInvalidError", ErrorMessageResourceType = typeof(StaticTextResource))]
     public string? Day { get; set; }
 
     [BindProperty]
-    [Required(ErrorMessage = "Date of Insolvency must include a month")]
-    [RegularExpression(RegExPatterns.Month, ErrorMessage = "Month must be a valid number")]
+    [Required(ErrorMessageResourceName = "Supplier_ConnectedEntity_ConnectedEntityCompanyInsolvencyDate_MonthRequiredError", ErrorMessageResourceType = typeof(StaticTextResource))]
+    [RegularExpression(RegExPatterns.Month, ErrorMessageResourceName = "Supplier_ConnectedEntity_ConnectedEntityCompanyInsolvencyDate_MonthInvalidError", ErrorMessageResourceType = typeof(StaticTextResource))]
     public string? Month { get; set; }
 
     [BindProperty]
-    [Required(ErrorMessage = "Date of Insolvency must include a year")]
-    [RegularExpression(RegExPatterns.Year, ErrorMessage = "Year must be a valid number")]
+    [Required(ErrorMessageResourceName = "Supplier_ConnectedEntity_ConnectedEntityCompanyInsolvencyDate_YearRequiredError", ErrorMessageResourceType = typeof(StaticTextResource))]
+    [RegularExpression(RegExPatterns.Year, ErrorMessageResourceName = "Supplier_ConnectedEntity_ConnectedEntityCompanyInsolvencyDate_YearInvalidError", ErrorMessageResourceType = typeof(StaticTextResource))]
     public string? Year { get; set; }
 
     [BindProperty]
@@ -54,7 +55,7 @@ public class ConnectedEntityCompanyInsolvencyDateModel(ISession session) : PageM
                 : "ConnectedEntitySupplierCompanyQuestion", new { Id, ConnectedEntityId });
         }
 
-        InitModal(state, true);
+        InitModel(state, true);
 
         return Page();
     }
@@ -71,7 +72,7 @@ public class ConnectedEntityCompanyInsolvencyDateModel(ISession session) : PageM
             : "ConnectedEntitySupplierCompanyQuestion", new { Id, ConnectedEntityId });
         }
 
-        InitModal(state);
+        InitModel(state);
 
         if (!ModelState.IsValid)
         {
@@ -81,13 +82,13 @@ public class ConnectedEntityCompanyInsolvencyDateModel(ISession session) : PageM
         var dateString = $"{Year}-{Month!.PadLeft(2, '0')}-{Day!.PadLeft(2, '0')}";
         if (!DateTime.TryParseExact(dateString, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
         {
-            ModelState.AddModelError(nameof(InsolvencyDate), "Date of insolvency must be a real date");
+            ModelState.AddModelError(nameof(InsolvencyDate), StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityCompanyInsolvencyDate_InvalidDate);
             return Page();
         }
 
         if (parsedDate > DateTime.Today)
         {
-            ModelState.AddModelError(nameof(InsolvencyDate), "Date of insolvency must be today or in the past");
+            ModelState.AddModelError(nameof(InsolvencyDate), StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityCompanyInsolvencyDate_DateInFuture);
             return Page();
         }
 
@@ -112,10 +113,10 @@ public class ConnectedEntityCompanyInsolvencyDateModel(ISession session) : PageM
         }
         return (true, cp);
     }
-    private void InitModal(ConnectedEntityState state, bool reset = false)
+    private void InitModel(ConnectedEntityState state, bool reset = false)
     {
         Caption = state.GetCaption();
-        Heading = $"When did {state.OrganisationName} become insolvent?";
+        Heading = string.Format(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityCompanyInsolvencyDate_Heading, state.OrganisationName);
         BackPageLink = GetBackLinkPageName(state);
 
         state.RegistrationDate = null;
