@@ -1,3 +1,4 @@
+using CO.CDP.Localization;
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Pages.Organisation;
 using FluentAssertions;
@@ -40,7 +41,7 @@ public class OrganisationEmailModelTest
         results.Any(c => c.MemberNames.Contains("EmailAddress")).Should().BeTrue();
 
         results.Where(c => c.MemberNames.Contains("EmailAddress")).First()
-            .ErrorMessage.Should().Be("Enter your organisation's email address");
+            .ErrorMessage.Should().Be(nameof(StaticTextResource.Organisation_EnterOrganisationEmail_ErrorMessage));
     }
 
     [Fact]
@@ -65,7 +66,7 @@ public class OrganisationEmailModelTest
         results.Any(c => c.MemberNames.Contains("EmailAddress")).Should().BeTrue();
 
         results.Where(c => c.MemberNames.Contains("EmailAddress")).First()
-            .ErrorMessage.Should().Be("Enter an email address in the correct format, like name@example.com");
+            .ErrorMessage.Should().Be(nameof(StaticTextResource.Global_EmailAddress_Error));
     }
 
     [Fact]

@@ -1,6 +1,9 @@
+using CO.CDP.OrganisationApp.CharityCommission;
+using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.Pages.Registration;
 using CO.CDP.OrganisationApp.ThirdPartyApiClients;
+using CO.CDP.OrganisationApp.ThirdPartyApiClients.CharityCommission;
 using CO.CDP.OrganisationApp.ThirdPartyApiClients.CompaniesHouse;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
@@ -16,11 +19,13 @@ public class OrganisationNameModelTest
 {
     private readonly Mock<ISession> sessionMock;
     private readonly Mock<ICompaniesHouseApi> companiesHouseMock;
+    private readonly Mock<ICharityCommissionApi> charityCommissionMock;
 
     public OrganisationNameModelTest()
     {
         sessionMock = new Mock<ISession>();
         companiesHouseMock = new Mock<ICompaniesHouseApi>();
+        charityCommissionMock = new Mock<ICharityCommissionApi>();
         sessionMock.Setup(session => session.Get<UserDetails>(Session.UserDetailsKey))
             .Returns(new UserDetails { UserUrn = "urn:test" });
     }
@@ -141,6 +146,40 @@ public class OrganisationNameModelTest
     }
 
     [Fact]
+    public async Task OnGet_WhenCharityCommissionNumberProvided_ShouldPrepopulateCompanyName()
+    {
+        var registrationDetails = DummyRegistrationDetails(organisationName: "", scheme: OrganisationSchemeType.CharityCommissionEnglandWales);
+        sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(registrationDetails);
+
+        var chartiyDetails = GivenNameOnCharitiesCommission(organisationName: "British Red Cross");
+        var model = GivenOrganisationNameModel();
+
+        charityCommissionMock.Setup(s => s.GetCharityDetails(registrationDetails.OrganisationIdentificationNumber!))
+            .ReturnsAsync(chartiyDetails);
+
+        await model.OnGet();
+
+        model.OrganisationName.Should().Be(chartiyDetails.Name);
+    }
+
+    [Fact]
+    public async Task OnGet_WhenCharityCommissionNumberProvidedAndRegDetailsProvided_ShouldNotPrepopulateCompanyName()
+    {
+        var registrationDetails = DummyRegistrationDetails(organisationName: "British Heart Foundation", scheme: OrganisationSchemeType.CharityCommissionEnglandWales);
+        sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(registrationDetails);
+
+        var chartiyDetails = GivenNameOnCharitiesCommission(organisationName: "British Red Cross");
+        var model = GivenOrganisationNameModel();
+
+        charityCommissionMock.Setup(s => s.GetCharityDetails(registrationDetails.OrganisationIdentificationNumber!))
+            .ReturnsAsync(chartiyDetails);
+
+        await model.OnGet();
+
+        model.OrganisationName.Should().Be(registrationDetails.OrganisationName);
+    }
+
+    [Fact]
     public void OnPost_WhenValidModel_ShouldRedirectToOrganisationEmailPage()
     {
         var model = GivenOrganisationNameModel();
@@ -169,15 +208,15 @@ public class OrganisationNameModelTest
             .Which.PageName.Should().Be("OrganisationDetailsSummary");
     }
 
-    private RegistrationDetails DummyRegistrationDetails(string organisationName = "TestOrg")
+    private RegistrationDetails DummyRegistrationDetails(string organisationName = "TestOrg", string scheme = "")
     {
         var registrationDetails = new RegistrationDetails
         {
-            OrganisationName = "TestOrg",
-            OrganisationScheme = "TestType",
+            OrganisationName = organisationName,
+            OrganisationScheme = scheme,
             OrganisationEmailAddress = "test@example.com",
             OrganisationIdentificationNumber = "123456",
-            OrganisationHasCompaniesHouseNumber = true,
+            OrganisationHasCompaniesHouseNumber = true
         };
 
         return registrationDetails;
@@ -186,6 +225,14 @@ public class OrganisationNameModelTest
     private CompanyProfile GivenProfileOnCompaniesHouse(string organisationName = "")
     {
         return new CompanyProfile() {  CompanyName = organisationName };
+    }
+
+    private CharityDetails GivenNameOnCharitiesCommission(string organisationName = "")
+    {
+        return new CharityDetails()
+        {
+            Name = organisationName
+        };
     }
 
     private RegisteredAddress GivenRegisteredAddressOnCompaniesHouse()
@@ -202,6 +249,6 @@ public class OrganisationNameModelTest
 
     private OrganisationNameModel GivenOrganisationNameModel()
     {
-        return new OrganisationNameModel(sessionMock.Object, companiesHouseMock.Object);
+        return new OrganisationNameModel(sessionMock.Object, charityCommissionMock.Object, companiesHouseMock.Object);
     }
 }

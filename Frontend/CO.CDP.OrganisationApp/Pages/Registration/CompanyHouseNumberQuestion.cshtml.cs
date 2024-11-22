@@ -1,3 +1,4 @@
+using CO.CDP.Localization;
 using CO.CDP.Mvc.Validation;
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Constants;
@@ -17,11 +18,11 @@ public class CompanyHouseNumberQuestionModel(ISession session,
     public override string CurrentPage => OrganisationHasCompanyHouseNumberPage;
 
     [BindProperty]
-    [Required(ErrorMessage = "Select 'yes' or 'no'")]
+    [Required(ErrorMessage = nameof(StaticTextResource.OrganisationRegistration_CompanyHouseNumberQuestion_ValidationErrorMessage))]
     public bool? HasCompaniesHouseNumber { get; set; }
 
     [BindProperty]
-    [RequiredIf(nameof(HasCompaniesHouseNumber), true, ErrorMessage = "Enter a company number")]
+    [RequiredIf(nameof(HasCompaniesHouseNumber), true, ErrorMessage = nameof(StaticTextResource.OrganisationRegistration_CompanyHouseNumberQuestion_ErrorMessage))]
     public string? CompaniesHouseNumber { get; set; }
 
     [BindProperty]
@@ -36,8 +37,10 @@ public class CompanyHouseNumberQuestionModel(ISession session,
 
     public string? OrganisationName;
 
-    public FlashMessage NotificationBannerCompanyNotFound { get { return new FlashMessage("We cannot find your company number on Companies House. If it’s correct, continue and enter your details manually."); } }
-    public FlashMessage NotificationBannerCompanyAlreadyRegistered { get { return new FlashMessage("An organisation with this company number already exists. Change the company number or <a class='govuk-notification-banner__link' href='/registration/" + OrganisationIdentifier + "/join-organisation'>request to join " + OrganisationName + ".</a>"); } }
+    public FlashMessage NotificationBannerCompanyNotFound { get { return new FlashMessage(StaticTextResource.OrganisationRegistration_CompanyHouseNumberQuestion_CompanyNotFound_NotificationBanner); } }
+    
+    public FlashMessage NotificationBannerCompanyAlreadyRegistered { get { return new FlashMessage(string.Format(StaticTextResource.OrganisationRegistration_CompanyHouseNumberQuestion_CompanyAlreadyRegistered_NotificationBanner, OrganisationIdentifier, OrganisationName)); } }
+
 
     public void OnGet()
     {
