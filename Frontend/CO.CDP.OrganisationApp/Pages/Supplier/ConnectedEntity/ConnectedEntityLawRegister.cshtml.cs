@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using CO.CDP.Localization;
 
 namespace CO.CDP.OrganisationApp.Pages.Supplier;
 
@@ -17,12 +18,11 @@ public class ConnectedEntityLawRegisterModel(ISession session) : PageModel
     public Guid? ConnectedEntityId { get; set; }
 
     [BindProperty]
-    [Required(ErrorMessage = "Enter what is organisation's legal form?")]
+    [Required(ErrorMessageResourceName = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityLawRegister_LegalFormRequiredError), ErrorMessageResourceType = typeof(StaticTextResource))]
     public string? LegalForm { get; set; }
 
     [BindProperty]
-    [DisplayName("Which law enforces it?")]
-    [Required(ErrorMessage = "Enter which law enforces it?")]
+    [Required(ErrorMessageResourceName = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityLawRegister_LawEnforcesRequiredError), ErrorMessageResourceType = typeof(StaticTextResource))]
     public string? LawRegistered { get; set; }
 
     [BindProperty]
@@ -49,7 +49,7 @@ public class ConnectedEntityLawRegisterModel(ISession session) : PageModel
                 : "ConnectedEntitySupplierCompanyQuestion", new { Id, ConnectedEntityId });
         }
 
-        InitModal(state, true);
+        InitModel(state, true);
 
         return Page();
     }
@@ -66,7 +66,7 @@ public class ConnectedEntityLawRegisterModel(ISession session) : PageModel
                 : "ConnectedEntitySupplierCompanyQuestion", new { Id, ConnectedEntityId });
         }
 
-        InitModal(state);
+        InitModel(state);
 
         if (!ModelState.IsValid) return Page();
 
@@ -84,11 +84,11 @@ public class ConnectedEntityLawRegisterModel(ISession session) : PageModel
         return RedirectToPage(redirectPage, new { Id, ConnectedEntityId });
     }
 
-    private void InitModal(ConnectedEntityState state, bool reset = false)
+    private void InitModel(ConnectedEntityState state, bool reset = false)
     {
         Caption = state.GetCaption();
         BackPageLink = GetBackLinkPageName(state);
-        LegalFormDisplayText = $"What is {state.OrganisationName}'s legal form?";
+        LegalFormDisplayText = string.Format(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityLawRegister_LegalFormQuestion, state.OrganisationName);
         ConnectedEntityType = state.ConnectedEntityType;
         if (reset)
         {

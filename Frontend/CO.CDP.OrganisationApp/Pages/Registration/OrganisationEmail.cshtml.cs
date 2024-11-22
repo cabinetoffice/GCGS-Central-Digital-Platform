@@ -1,5 +1,7 @@
 using CO.CDP.Localization;
+using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
+using CO.CDP.OrganisationApp.ThirdPartyApiClients.CharityCommission;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -7,7 +9,7 @@ using System.ComponentModel.DataAnnotations;
 namespace CO.CDP.OrganisationApp.Pages.Registration;
 
 [ValidateRegistrationStep]
-public class OrganisationEmailModel(ISession session) : RegistrationStepModel(session)
+public class OrganisationEmailModel(ISession session, ICharityCommissionApi charityCommissionApi) : RegistrationStepModel(session)
 {
     public override string CurrentPage => OrganisationEmailPage;
 
@@ -20,9 +22,22 @@ public class OrganisationEmailModel(ISession session) : RegistrationStepModel(se
     [BindProperty]
     public bool? RedirectToSummary { get; set; }
 
-    public void OnGet()
+    public async Task OnGet()
     {
         EmailAddress = RegistrationDetails.OrganisationEmailAddress;
+
+        if ((RegistrationDetails.OrganisationScheme == OrganisationSchemeType.CharityCommissionEnglandWales) && (string.IsNullOrEmpty(EmailAddress)))
+        {
+            if (RegistrationDetails.OrganisationIdentificationNumber != null)
+            {
+                var details = await charityCommissionApi.GetCharityDetails(RegistrationDetails.OrganisationIdentificationNumber);
+
+                if (details != null)
+                {
+                    EmailAddress = details.Email;
+                }
+            }
+        }
     }
 
     public IActionResult OnPost()

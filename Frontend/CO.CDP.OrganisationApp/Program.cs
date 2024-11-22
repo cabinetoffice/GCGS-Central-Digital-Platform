@@ -11,6 +11,7 @@ using CO.CDP.OrganisationApp.Authorization;
 using CO.CDP.OrganisationApp.Pages;
 using CO.CDP.OrganisationApp.Pages.Forms.ChoiceProviderStrategies;
 using CO.CDP.OrganisationApp.ThirdPartyApiClients.CompaniesHouse;
+using CO.CDP.OrganisationApp.ThirdPartyApiClients.CharityCommission;
 using CO.CDP.OrganisationApp.WebApiClients;
 using CO.CDP.Person.WebApiClient;
 using CO.CDP.Tenant.WebApiClient;
@@ -85,6 +86,7 @@ builder.Services.AddScoped<ICacheService, CacheService>();
 builder.Services.AddScoped<ApiBearerTokenHandler>();
 builder.Services.AddScoped<CultureDelegatingHandler>();
 builder.Services.AddScoped<ICompaniesHouseApi, CompaniesHouseApi>();
+builder.Services.AddScoped<ICharityCommissionApi, CharityCommissionApi>();
 
 builder.Services.AddKeyedTransient<IChoiceProviderStrategy, ExclusionAppliesToChoiceProviderStrategy>("ExclusionAppliesToChoiceProviderStrategy");
 builder.Services.AddKeyedTransient<IChoiceProviderStrategy, DefaultChoiceProviderStrategy>("DefaultChoiceProviderStrategy");

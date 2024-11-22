@@ -3,15 +3,16 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
+using CO.CDP.Localization;
 
-namespace CO.CDP.OrganisationApp.Pages.Supplier;
+namespace CO.CDP.OrganisationApp.Pages.Supplier.ConnectedEntity;
 
 [Authorize(Policy = OrgScopeRequirement.Editor)]
 public class ConnectedEntityPersonTypeModel(ISession session) : PageModel
 {
     [BindProperty]
-    [Required(ErrorMessage = "Select the relevant option")]
-    public Constants.ConnectedEntityType? ConnectedEntityType { get; set; }
+    [Required(ErrorMessageResourceName = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityPersonType_SelectOptionError), ErrorMessageResourceType = typeof(StaticTextResource))]
+    public ConnectedEntityType? ConnectedEntityType { get; set; }
 
     [BindProperty(SupportsGet = true)]
     public Guid Id { get; set; }
