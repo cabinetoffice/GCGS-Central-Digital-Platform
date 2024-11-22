@@ -11,9 +11,8 @@ public class ValidUriAttribute : RequiredAttribute
         if (value is string str && !string.IsNullOrWhiteSpace(str) && Uri.TryCreate(str, UriKind.Absolute, out var _) == false)
         {
             var errorMessage = ErrorMessageResolver.GetErrorMessage(ErrorMessage, ErrorMessageResourceName, ErrorMessageResourceType);
-            var displayName = validationContext.DisplayName ?? validationContext.MemberName;
 
-            return new ValidationResult(errorMessage ?? $"{displayName} is invalid");
+            return new ValidationResult(errorMessage ?? $"{validationContext.DisplayName} is invalid");
         }
 
         return ValidationResult.Success!;

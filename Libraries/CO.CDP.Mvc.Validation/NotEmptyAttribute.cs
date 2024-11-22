@@ -18,11 +18,10 @@ public class NotEmptyAttribute : Attribute, IModelValidator
         }
 
         var errorMessage = ErrorMessageResolver.GetErrorMessage(ErrorMessage, ErrorMessageResourceName, ErrorMessageResourceType);
-        var displayName = context.ModelMetadata.DisplayName ?? context.ModelMetadata.PropertyName;
 
         return new List<ModelValidationResult>
         {
-            new ModelValidationResult(context.ModelMetadata.PropertyName, errorMessage ?? $"{displayName} must not be empty")
+            new ModelValidationResult(context.ModelMetadata.PropertyName, errorMessage ?? $"{context.ModelMetadata.DisplayName} must not be empty")
         };
     }
 }
