@@ -910,7 +910,16 @@ Run the following command to create it with defaults:</p>
 <p><code>CompaniesHouse:Url</code> / <code>CompaniesHouse__Url</code></p>
 </li>
 <li>
-<p><code>CompaniesHouse:User</code> / <code>CompaniesHouse__User</code>
+<p><code>CompaniesHouse:User</code> / <code>CompaniesHouse__User</code></p>
+</li>
+<li>
+<p><code>CompaniesHouse:Password</code> / <code>CompaniesHouse__Password</code></p>
+</li>
+<li>
+<p><code>CharityCommission:Url</code> / <code>CharityCommission__Url</code></p>
+</li>
+<li>
+<p><code>CharityCommission:SubscriptionKey</code> / <code>CharityCommission__SubscriptionKey</code>
 These can be set as secrets with the following dotnet commands:</p>
 </li>
 </ul>
@@ -937,7 +946,12 @@ for the <code>organisation-app</code> service:</p>
       <span class="na">OneLogin__AccountUrl</span><span class="pi">:</span> <span class="s2">"</span><span class="s">https://home.integration.account.gov.uk"</span>
       <span class="na">OneLogin__Authority</span><span class="pi">:</span> <span class="s2">"</span><span class="s">https://oidc.example.com"</span>
       <span class="na">OneLogin__ClientId</span><span class="pi">:</span> <span class="s2">"</span><span class="s">client-id"</span>
-      <span class="na">OneLogin__PrivateKey</span><span class="pi">:</span> <span class="s2">"</span><span class="s">-----BEGIN</span><span class="nv"> </span><span class="s">RSA</span><span class="nv"> </span><span class="s">PRIVATE</span><span class="nv"> </span><span class="s">KEY-----SECRET</span><span class="nv"> </span><span class="s">KEY-----END</span><span class="nv"> </span><span class="s">RSA</span><span class="nv"> </span><span class="s">PRIVATE</span><span class="nv"> </span><span class="s">KEY-----"</span></code></pre>
+      <span class="na">OneLogin__PrivateKey</span><span class="pi">:</span> <span class="s2">"</span><span class="s">-----BEGIN</span><span class="nv"> </span><span class="s">RSA</span><span class="nv"> </span><span class="s">PRIVATE</span><span class="nv"> </span><span class="s">KEY-----SECRET</span><span class="nv"> </span><span class="s">KEY-----END</span><span class="nv"> </span><span class="s">RSA</span><span class="nv"> </span><span class="s">PRIVATE</span><span class="nv"> </span><span class="s">KEY-----"</span>
+      <span class="na">CompaniesHouse__Url</span><span class="pi">:</span> <span class="s2">"</span><span class="s">https://api.company-information.service.gov.uk"</span>
+      <span class="na">CompaniesHouse__User</span><span class="pi">:</span> <span class="s2">"</span><span class="s">--UserId--"</span>
+      <span class="na">CompaniesHouse__Password</span><span class="pi">:</span> <span class="s2">"</span><span class="s">"</span>
+      <span class="na">CharityCommission__Url</span><span class="pi">:</span> <span class="s2">"</span><span class="s">https://api.charitycommission.gov.uk/register/api/"</span>
+      <span class="na">CharityCommission__SubscriptionKey</span><span class="pi">:</span> <span class="s2">"</span><span class="s">--SubscriptionKey</span><span class="nv"> </span><span class="s">--"</span></code></pre>
 </div>
 </div>
 </div>
@@ -2775,7 +2789,7 @@ is live we can monitor the number of concurrent users and re-evaluate the soluti
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2024-11-21 13:19:03 UTC
+Last updated 2024-11-22 09:26:37 UTC
 </div>
 </div>
 </body>
