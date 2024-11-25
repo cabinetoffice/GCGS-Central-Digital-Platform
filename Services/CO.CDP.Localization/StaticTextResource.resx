@@ -141,6 +141,90 @@
   <data name="Global_Back" xml:space="preserve">
     <value>Back</value>
   </data>
+  <data name="Global_Important" xml:space="preserve">
+    <value>Important</value>
+  </data>
+  <data name="Organisation_BuyerRegistrationPendingApproval" xml:space="preserve">
+    <value>Buyer registration pending approval.</value>
+  </data>
+  <data name="Organisation_OrganisationDetails" xml:space="preserve">
+    <value>Organisation details</value>
+  </data>
+  <data name="Organisation_OrganisationName" xml:space="preserve">
+    <value>Organisation name</value>
+  </data>
+  <data name="Organisation_ChangeName" xml:space="preserve">
+    <value>Change&lt;span class="govuk-visually-hidden"&gt; the organisation name&lt;/span&gt;</value>
+  </data>
+  <data name="Organisation_OrganisationIdentifier" xml:space="preserve">
+    <value>Organisation identifier</value>
+  </data>
+  <data name="Organisation_PponGenerationPending" xml:space="preserve">
+    <value>PPON generation pending.</value>
+  </data>
+  <data name="Organisation_Address" xml:space="preserve">
+    <value>address</value>
+  </data>
+  <data name="Organisation_AddAddress" xml:space="preserve">
+    <value>Add&lt;span class="govuk-visually-hidden"&gt; address&lt;/span&gt;</value>
+  </data>
+  <data name="Organisation_ChangeAddress" xml:space="preserve">
+    <value>Change&lt;span class="govuk-visually-hidden"&gt; address&lt;/span&gt;</value>
+  </data>
+  <data name="Organisation_OrganisationEmail" xml:space="preserve">
+    <value>Organisation email</value>
+  </data>
+  <data name="Organisation_ChangeEmail" xml:space="preserve">
+    <value>Change&lt;span class="govuk-visually-hidden"&gt; the organisation email</value>
+  </data>
+  <data name="Organisation_OrganisationAddress" xml:space="preserve">
+    <value>Organisation address</value>
+  </data>
+  <data name="Organisation_CompleteSupplierInformation" xml:space="preserve">
+    <value>Complete supplier information</value>
+  </data>
+  <data name="Organisation_CompleteAndShareSupplierInformation" xml:space="preserve">
+    <value>Complete and share your supplier information to bid for procurements.</value>
+  </data>
+  <data name="Organisation_ViewApiKeys" xml:space="preserve">
+    <value>View API keys</value>
+  </data>
+  <data name="Organisation_ManageApiKeys" xml:space="preserve">
+    <value>Manage API keys</value>
+  </data>
+  <data name="Organisation_ApiKeysForBuyers" xml:space="preserve">
+    <value> (for Buyers)</value>
+  </data>
+  <data name="Organisation_RegistrationNotApproved" xml:space="preserve">
+    <value>Registration Not Approved</value>
+  </data>
+  <data name="Organisation_WeCouldNotApproveYourRequest" xml:space="preserve">
+    <value>We could not approve your request because:</value>
+  </data>
+  <data name="Organisation_CreateApiKey" xml:space="preserve">
+    <value>Create an API key and share it with the e-Sender you use to publish procurement notices.</value>
+  </data>
+  <data name="Organisation_ManageUsers" xml:space="preserve">
+    <value>Manage users</value>
+  </data>
+  <data name="Organisation_ViewAddRemoveUsers" xml:space="preserve">
+    <value>View, add or remove users.</value>
+  </data>
+  <data name="Organisation_RegisterAsSupplier" xml:space="preserve">
+    <value>Register as a supplier</value>
+  </data>
+  <data name="Organisation_SupplyGoodsServices" xml:space="preserve">
+    <value>If you also supply goods, works, services or utilities to the public sector.</value>
+  </data>
+  <data name="Organisation_GetProcurementGuidance" xml:space="preserve">
+    <value>Get procurement guidance on the</value>
+  </data>
+  <data name="Organisation_ProcurementPathwayService" xml:space="preserve">
+    <value>Procurement Pathway service (opens in new tab)</value>
+  </data>
+  <data name="Global_Email_Invalid_ErrorMessage" xml:space="preserve">
+    <value>Enter an email address in the correct format, like name@example.com</value>
+  </data>
   <data name="Supplier_SupplierInformationSummary_ConnectedPersonCount_Singular" xml:space="preserve">
     <value>{0} Connected person</value>
   </data>
@@ -159,8 +243,14 @@
   <data name="Supplier_SupplierInformationSummary_FormRecordCount_Plural" xml:space="preserve">
     <value>{0} records</value>
   </data>
+  <data name="Supplier_Email_Required_ErrorMessage" xml:space="preserve">
+    <value>Enter your email address</value>
+  </data>
   <data name="OrganisationRegistration_EnterOrganisationName_Heading" xml:space="preserve">
     <value>Enter your organisation's name</value>
+  </data>
+  <data name="Organisation_Email_Heading" xml:space="preserve">
+    <value>Enter your organisation's email address</value>
   </data>
   <data name="Organisation_EnterOrganisationName_Buyer_Hint" xml:space="preserve">
     <value>If you’re a department, agency or public body on the &lt;a class="govuk-link" target="_blank" href="https://www.gov.uk/government/organisations"&gt;GOV.UK organisations list (opens in a new tab)&lt;/a&gt;, use the exact name shown. If not, use your full official name. For example, HM Revenue &amp; Customs not HMRC.</value>
@@ -168,11 +258,65 @@
   <data name="Organisation_EnterOrganisationName_Supplier_Hint" xml:space="preserve">
     <value>As registered on Companies House if incorporated, or the trading name of the company.</value>
   </data>
+  <data name="Organisation_Email_Required_ErrorMessage" xml:space="preserve">
+    <value>Enter your organisation's email address</value>
+  </data>
   <data name="Global_Error" xml:space="preserve">
     <value>Error</value>
   </data>
   <data name="Global_Continue" xml:space="preserve">
     <value>Continue</value>
+  </data>
+  <data name="Organisation_MyAccount" xml:space="preserve">
+    <value>My account</value>
+  </data>
+  <data name="Organisation_SignInDetails" xml:space="preserve">
+    <value>Sign in details</value>
+  </data>
+  <data name="Organisation_EmailAddress" xml:space="preserve">
+    <value>Email address:</value>
+  </data>
+  <data name="Organisation_ChangeSignInDetails" xml:space="preserve">
+    <value>You can <a class="govuk-link govuk-link--no-visited-state" href="{0}" target="_blank">change your sign in details in your GOV.UK One Login</a>.</value>
+  </data>
+  <data name="Organisation_MyOrganisations" xml:space="preserve">
+    <value>My organisations</value>
+  </data>
+  <data name="Organisation_OrganisationName" xml:space="preserve">
+    <value>Organisation name</value>
+  </data>
+  <data name="Organisation_PendingApproval" xml:space="preserve">
+    <value>Pending approval</value>
+  </data>
+  <data name="Organisation_NotApproved" xml:space="preserve">
+    <value>Not approved</value>
+  </data>
+  <data name="Organisation_AddAnotherOrganisation" xml:space="preserve">
+    <value>Add another organisation</value>
+  </data>
+  <data name="Organisation_RegisterOrganisation" xml:space="preserve">
+    <value>Register an organisation if you are:</value>
+  </data>
+  <data name="Organisation_ContractingAuthority" xml:space="preserve">
+    <value>a contracting authority who publishes notices to buy goods, works, services or utilities</value>
+  </data>
+  <data name="Organisation_OrganisationOrSoleTrader" xml:space="preserve">
+    <value>an organisation or sole trader who searches for tenders and submits bids to supply goods, works, services or utilities</value>
+  </data>
+  <data name="Organisation_RegisterAnOrganisation" xml:space="preserve">
+    <value>Register an organisation</value>
+  </data>
+  <data name="Organisation_AfterYouveRegistered" xml:space="preserve">
+    <value>After you've registered</value>
+  </data>
+  <data name="Organisation_IfYouNeedTo" xml:space="preserve">
+    <value>If you need to you can:</value>
+  </data>
+  <data name="Organisation_RegisterAsOtherRole" xml:space="preserve">
+    <value>register as the other role, if you are both a buyer and supplier</value>
+  </data>
+  <data name="Organisation_AddMoreOrganisations" xml:space="preserve">
+    <value>add more organisations</value>
   </data>
   <data name="Header_ServiceName" xml:space="preserve">
     <value>Find a Tender</value>
@@ -294,9 +438,6 @@
   <data name="Supplementary_ContactUs_ContactUs" xml:space="preserve">
     <value>Contact us</value>
   </data>
-  <data name="Supplementary_ContactUs_Message" xml:space="preserve">
-    <value>Message</value>
-  </data>
   <data name="Supplementary_ContactUs_Send" xml:space="preserve">
     <value>Send</value>
   </data>
@@ -323,6 +464,9 @@
   </data>
   <data name="Supplementary_ContactUs_Email_ValidationErrorMessage" xml:space="preserve">
     <value>Enter an email address in the correct format, like name@example.com</value>
+  </data>
+  <data name="Supplementary_ContactUs_Message" xml:space="preserve">
+    <value>Message</value>
   </data>
   <data name="Supplementary_ContactUs_Message_ErrorMessage" xml:space="preserve">
     <value>Enter your message</value>
@@ -471,6 +615,504 @@
   <data name="Supplementary_Cookies_GovServices_Info" xml:space="preserve">
     <value>Most services we link to are run by different government departments, for example DWP’s Universal Credit online, DVLA’s vehicle tax service, or HMRC’s webchat. These services may set additional cookies and, if so, will have their own cookie policy and banner linking to it.</value>
   </data>
+  <data name="User_FirstName_Required_ErrorMessage" xml:space="preserve">
+    <value>Firstname required</value>
+  </data>
+  <data name="User_LastName_Required_ErrorMessage" xml:space="preserve">
+    <value>Lastname required</value>
+  </data>
+  <data name="User_Email_Required_ErrorMessage" xml:space="preserve">
+    <value>Email required</value>
+  </data>
+  <data name="User_Role_Required_ErrorMessage" xml:space="preserve">
+    <value>Role required</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_Address_EnterRegisteredAddress_Heading" xml:space="preserve">
+    <value>Enter {0}'s registered address</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_Address_EnterRegisteredAddress_Hint" xml:space="preserve">
+    <value>The address registered with Companies House, or the principal address the business conducts its activities. For example, a head office.</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_Address_EnterPostalAddress_Heading" xml:space="preserve">
+    <value>Enter {0}'s postal address</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_Address_EnterAddress_Heading" xml:space="preserve">
+    <value>Enter {0}'s address</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswers_PageTitle" xml:space="preserve">
+    <value>Check your answers</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswers_PSCDetails" xml:space="preserve">
+    <value>PSC details:</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswers_DoB" xml:space="preserve">
+    <value>DoB:</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswers_DirectorResidency" xml:space="preserve">
+    <value>Director's residency:</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswers_RegisteredAddress" xml:space="preserve">
+    <value>Registered address:</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswers_PostalAddress" xml:space="preserve">
+    <value>Postal address:</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswers_ControlConditions" xml:space="preserve">
+    <value>Conditions of control:</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswers_RegisteredAsPSC" xml:space="preserve">
+    <value>Registered as PSC:</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswers_RegisterName" xml:space="preserve">
+    <value>Register name:</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswers_OnDate" xml:space="preserve">
+    <value>On {0}</value>
+  </data>
+  <data name="Global_Submit" xml:space="preserve">
+    <value>Submit</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_PageTitle" xml:space="preserve">
+    <value>Check your answers</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_CompanyName" xml:space="preserve">
+    <value>Company name:</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_RegisteredAddress" xml:space="preserve">
+    <value>Registered address:</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_PostalAddress" xml:space="preserve">
+    <value>Postal address:</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_LegalFormAndLaw" xml:space="preserve">
+    <value>Legal form and law:</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_LegalForm" xml:space="preserve">
+    <value>Legal form:</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_EnforcedBy" xml:space="preserve">
+    <value>Enforced by:</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_CompaniesHouseRegistered" xml:space="preserve">
+    <value>Companies House registered:</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_CompanyHouseNumber" xml:space="preserve">
+    <value>Company House no. {0}</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_OverseasEquivalent" xml:space="preserve">
+    <value>Registered with overseas equivalent:</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_ControlConditions" xml:space="preserve">
+    <value>Conditions of control:</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_RegisteredDate" xml:space="preserve">
+    <value>Registered date:</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_OnDate" xml:space="preserve">
+    <value>On {0}</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_InsolvencyDate" xml:space="preserve">
+    <value>Insolvency date:</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_RegisterName" xml:space="preserve">
+    <value>Register name:</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCompanyInsolvencyDate_Hint" xml:space="preserve">
+    <value>The date it stopped trading under its own name.&lt;br&gt;&lt;br&gt;For example, 27 03 2007</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCompanyInsolvencyDate_DateInFuture" xml:space="preserve">
+    <value>Date of insolvency must be today or in the past</value>
+  </data>
+  <data name="Global_Day" xml:space="preserve">
+    <value>Day</value>
+  </data>
+  <data name="Global_Month" xml:space="preserve">
+    <value>Month</value>
+  </data>
+  <data name="Global_Year" xml:space="preserve">
+    <value>Year</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCompanyQuestion_Heading" xml:space="preserve">
+    <value>Is {0} registered with Companies House?</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCompanyQuestion_Hint" xml:space="preserve">
+    <value>Is the ‘connected person’ registered with Companies House as required by the Companies Act 2006.</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCompanyQuestion_EnterNumberError" xml:space="preserve">
+    <value>Enter the Companies House number</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCompanyQuestion_CompanyHouseNumberLabel" xml:space="preserve">
+    <value>Companies House number</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityControlCondition_Heading" xml:space="preserve">
+    <value>Which specified conditions of control does {0} have?</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityControlCondition_SelectConditionError" xml:space="preserve">
+    <value>Select specified conditions of control</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityControlCondition_Hint" xml:space="preserve">
+    <value>As defined in &lt;a href="https://www.legislation.gov.uk/ukpga/2006/46/schedule/1A/part/1?timeline=false" target="_blank"&gt;part 1 schedule 1a of the Companies Act 2006&lt;/a&gt;. Select all that apply.</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityControlCondition_OwnsSharesLabel" xml:space="preserve">
+    <value>Owns shares</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityControlCondition_OwnsSharesHint" xml:space="preserve">
+    <value>Directly or indirectly holds more than 25% of the company's shares</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityControlCondition_HasVotingRightsLabel" xml:space="preserve">
+    <value>Has voting rights</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityControlCondition_HasVotingRightsHint" xml:space="preserve">
+    <value>Directly or indirectly holds more than 25% of the voting rights in the company</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityControlCondition_CanAppointOrRemoveDirectorsLabel" xml:space="preserve">
+    <value>Can appoint or remove directors</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityControlCondition_CanAppointOrRemoveDirectorsHint" xml:space="preserve">
+    <value>Directly or indirectly holds the right to appoint or remove a majority of the company's board of directors</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityControlCondition_HasOtherSignificantInfluenceOrControlLabel" xml:space="preserve">
+    <value>Has other significant influence or control</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityControlCondition_HasOtherSignificantInfluenceOrControlHint" xml:space="preserve">
+    <value>Has the right to exercise, or exercises, significant influence or control over the company. As defined in the &lt;a href="https://www.gov.uk/government/publications/guidance-to-the-people-with-significant-control-requirements-for-companies-and-limited-liability-partnerships" target="_blank"&gt;person of significant control (PSC) guidance&lt;/a&gt;.</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityControlCondition_NoneApplyLabel" xml:space="preserve">
+    <value>None apply</value>
+  </data>
+  <data name="Global_Or" xml:space="preserve">
+    <value>or</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityDeclaration_PageTitle" xml:space="preserve">
+    <value>Connected person</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityDeclaration_Paragraph1" xml:space="preserve">
+    <value>A ‘connected person’ is someone who influences or controls your company.</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityDeclaration_Paragraph2" xml:space="preserve">
+    <value>It includes &lt;a href="https://www.gov.uk/guidance/people-with-significant-control-pscs" target="_blank"&gt;people with significant control (opens in new tab)&lt;/a&gt; and any other individual or company other than yourself that has a declarable interest in your organisation.</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityDeclaration_Paragraph3" xml:space="preserve">
+    <value>For example, a director, a trust, a majority shareholder or a parent or subsidiary company.</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityDirectorResidency_Heading" xml:space="preserve">
+    <value>What country does {0} usually live in?</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityDirectorResidency_SelectCountryError" xml:space="preserve">
+    <value>Select a country</value>
+  </data>
+  <data name="Global_PleaseSelect" xml:space="preserve">
+    <value>Please select</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCompanyRegisterName_SelectIfRegisteredError" xml:space="preserve">
+    <value>Select where registered</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCompanyRegisterName_OtherRegisterNameLabel" xml:space="preserve">
+    <value>Register name</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCompanyRegisterName_OtherRegisterNameRequiredError" xml:space="preserve">
+    <value>Enter register name</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCompanyRegisterName_Heading" xml:space="preserve">
+    <value>Select where {0} is registered as person with significant control</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCompanyRegisterName_CompaniesHouseOption" xml:space="preserve">
+    <value>People with significant control register on Companies House</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityLawRegister_LegalFormRequiredError" xml:space="preserve">
+    <value>Enter legal formation</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityLawRegister_LawEnforcesLabel" xml:space="preserve">
+    <value>Which law enforces it?</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityLawRegister_LawEnforcesRequiredError" xml:space="preserve">
+    <value>Enter law</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityLawRegister_LegalFormQuestion" xml:space="preserve">
+    <value>What is {0}'s legal form?</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityLawRegister_LegalFormationLabel" xml:space="preserve">
+    <value>Legal formation</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityLawRegister_LegalFormationHint" xml:space="preserve">
+    <value>When it was set up and registered, what structure was used. Also called trading status. For example, a limited company or limited liability partnership.</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityLawRegister_LawEnforcesHint" xml:space="preserve">
+    <value>For example, Companies Act 2006.</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityLegalFormQuestion_LegalFormNameRequiredError" xml:space="preserve">
+    <value>Enter the legal form name</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityLegalFormQuestion_Heading" xml:space="preserve">
+    <value>Does {0} have a legal form?</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityLegalFormQuestion_Hint" xml:space="preserve">
+    <value>In the UK, this is a business structure or trading status. For example, limited company or limited liability partnership.</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityLegalFormQuestion_LegalFormNameLabel" xml:space="preserve">
+    <value>Legal form name</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityOrganisationCategory_PageTitle" xml:space="preserve">
+    <value>Select the category that best describes the 'connected person'</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityOrganisationCategory_Hint" xml:space="preserve">
+    <value>The ‘connected person’ that has control or influence over your organisation should fall into one of these categories.</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityOrganisationCategory_SelectCategoryError" xml:space="preserve">
+    <value>Select the category</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityOrganisationCategory_Option_RegisteredCompany" xml:space="preserve">
+    <value>registered company</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityOrganisationCategory_Option_RegisteredCompanyOrEquivalent" xml:space="preserve">
+    <value>registered company or equivalent</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityOrganisationCategory_Option_Director" xml:space="preserve">
+    <value>director or organisation with the same responsibilities</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityOrganisationCategory_Option_ParentOrSubCompany" xml:space="preserve">
+    <value>parent or subsidiary company</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityOrganisationCategory_Option_CompanyTakenOver" xml:space="preserve">
+    <value>a company your organisation has taken over</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityOrganisationCategory_Option_OrgWithSignificantControl" xml:space="preserve">
+    <value>any other organisation with significant influence or control</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityPostalSameAsRegisteredAddress_PageTitle" xml:space="preserve">
+    <value>Does {0} have a different postal address?</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityPostalSameAsRegisteredAddress_Hint" xml:space="preserve">
+    <value>The place where an organisation receives official post can be different from its registered address. For example, a branch office.</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityPscDetails_FirstNameLabel" xml:space="preserve">
+    <value>First name</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityPscDetails_LastNameLabel" xml:space="preserve">
+    <value>Last name</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityPscDetails_FirstNameRequiredError" xml:space="preserve">
+    <value>Enter first name</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityPscDetails_LastNameRequiredError" xml:space="preserve">
+    <value>Enter last name</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityPscDetails_DateOfBirthLabel" xml:space="preserve">
+    <value>Date of birth</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityPscDetails_DateOfBirthHint" xml:space="preserve">
+    <value>For example, 27 3 2007</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityPscDetails_DateOfBirthDayRequiredError" xml:space="preserve">
+    <value>Date of birth must include a day</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityPscDetails_DateOfBirthDayInvalidError" xml:space="preserve">
+    <value>Day must be a valid number</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityPscDetails_DateOfBirthMonthRequiredError" xml:space="preserve">
+    <value>Date of birth must include a month</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityPscDetails_DateOfBirthMonthInvalidError" xml:space="preserve">
+    <value>Month must be a valid number</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityPscDetails_DateOfBirthYearRequiredError" xml:space="preserve">
+    <value>Date of birth must include a year</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityPscDetails_DateOfBirthYearInvalidError" xml:space="preserve">
+    <value>Year must be a valid number</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityPscDetails_NationalityLabel" xml:space="preserve">
+    <value>Nationality</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityPscDetails_NationalityRequiredError" xml:space="preserve">
+    <value>Enter nationality</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityRegistrationDateQuestion_DayRequiredError" xml:space="preserve">
+    <value>Date of registration must include a day</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityRegistrationDateQuestion_DayInvalidError" xml:space="preserve">
+    <value>Day must be a valid number</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityRegistrationDateQuestion_MonthRequiredError" xml:space="preserve">
+    <value>Date of registration must include a month</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityRegistrationDateQuestion_MonthInvalidError" xml:space="preserve">
+    <value>Month must be a valid number</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityRegistrationDateQuestion_YearRequiredError" xml:space="preserve">
+    <value>Date of registration must include a year</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityRegistrationDateQuestion_YearInvalidError" xml:space="preserve">
+    <value>Year must be a valid number</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityRegistrationDateQuestion_DateInvalidError" xml:space="preserve">
+    <value>Date of registration must be a real date</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityRegistrationDateQuestion_DateInFutureError" xml:space="preserve">
+    <value>Date of registration must be today or in the past</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityRegistrationDateQuestion_Heading" xml:space="preserve">
+    <value>Were you required to register {0} as a person with significant control?</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityRegistrationDateQuestion_Hint" xml:space="preserve">
+    <value>In the UK this is defined by &lt;a href="https://www.legislation.gov.uk/ukpga/2006/46/section/790C" target="_blank"&gt;section 790C(4) of the Companies Act 2006 (opens in new tab)&lt;/a&gt;</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityRegistrationDateQuestion_DateRegisteredLabel" xml:space="preserve">
+    <value>Date registered</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityRegistrationDateQuestion_DateRegisteredHint" xml:space="preserve">
+    <value>For example, 27 3 2007</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityRemoveConfirmation_PageTitle" xml:space="preserve">
+    <value>Are you sure you want to remove this connected person?</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityRemoveConfirmation_ConfirmRemoveError" xml:space="preserve">
+    <value>Select yes to confirm removal of the connected person</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityRemoveConfirmation_EndDateLabel" xml:space="preserve">
+    <value>When was the connected person no longer associated with your organisation?</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityRemoveConfirmation_EndDateHint" xml:space="preserve">
+    <value>For example, 27 3 2007</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityRemoveConfirmation_DayRequiredError" xml:space="preserve">
+    <value>Date of removal must include a day</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityRemoveConfirmation_DayInvalidError" xml:space="preserve">
+    <value>Day must be a valid number</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityRemoveConfirmation_MonthRequiredError" xml:space="preserve">
+    <value>Date of removal must include a month</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityRemoveConfirmation_MonthInvalidError" xml:space="preserve">
+    <value>Month must be a valid number</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityRemoveConfirmation_YearRequiredError" xml:space="preserve">
+    <value>Date of removal must include a year</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityRemoveConfirmation_YearInvalidError" xml:space="preserve">
+    <value>Year must be a valid number</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityRemoveConfirmation_DateInvalidError" xml:space="preserve">
+    <value>Date of removal must be a real date</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntitySupplierCompanyQuestion_PageTitle" xml:space="preserve">
+    <value>Is your organisation registered with Companies House?</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntitySupplierCompanyQuestion_Hint" xml:space="preserve">
+    <value>Is the supplier organisation registered with Companies House as required by the Companies Act 2006? We’ve already asked you this, but please reconfirm.</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntitySupplierHasControl_PageTitle" xml:space="preserve">
+    <value>Is your organisation influenced or controlled by another person or company?</value>
+  </data>
+  <data name="Global_SelectYesOrNo" xml:space="preserve">
+    <value>Select yes or no</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedPersonSummary_PageTitle" xml:space="preserve">
+    <value>You have added {0} connected person(s)</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedPersonSummary_AddAnotherQuestion" xml:space="preserve">
+    <value>Add another connected person?</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedPersonSummary_AddAnotherConnectedPersonError" xml:space="preserve">
+    <value>Select yes to add another connected person</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedPersonSummary_BackToSupplierInformation" xml:space="preserve">
+    <value>Back to supplier information</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCompanyRegistrationDate_Heading" xml:space="preserve">
+    <value>What date was {0} registered as a ‘connected person’?</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCompanyRegistrationDate_Hint" xml:space="preserve">
+    <value>For example, the date a person with significant control was registered with Companies House.&lt;br&gt;&lt;br&gt;For example, 27 03 2007</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCompanyRegistrationDate_DayRequiredError" xml:space="preserve">
+    <value>Date of registration must include a day</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCompanyRegistrationDate_DayInvalidError" xml:space="preserve">
+    <value>Day must be a valid number</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCompanyRegistrationDate_MonthRequiredError" xml:space="preserve">
+    <value>Date of registration must include a month</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCompanyRegistrationDate_MonthInvalidError" xml:space="preserve">
+    <value>Month must be a valid number</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCompanyRegistrationDate_YearRequiredError" xml:space="preserve">
+    <value>Date of registration must include a year</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCompanyRegistrationDate_YearInvalidError" xml:space="preserve">
+    <value>Year must be a valid number</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCompanyRegistrationDate_DateInvalidError" xml:space="preserve">
+    <value>Date of registration must be a real date</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityIndividualCategory_PageTitle" xml:space="preserve">
+    <value>Select the category that best describes the 'connected person'</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityIndividualCategory_Hint" xml:space="preserve">
+    <value>The ‘connected person’ that has control or influence over your organisation should fall into one of these categories.</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityIndividualCategory_PSC" xml:space="preserve">
+    <value>Person with significant control</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityIndividualCategory_Director" xml:space="preserve">
+    <value>Director or individual with the same responsibilities</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityIndividualCategory_IndividualWithSignificantControl" xml:space="preserve">
+    <value>Any other individual with significant influence or control</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityIndividualCategory_SelectCategoryError" xml:space="preserve">
+    <value>Select the category that best describes the 'connected person'</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityLawEnforce_Heading" xml:space="preserve">
+    <value>Which law enforces {0}'s legal form?</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityLawEnforce_Hint" xml:space="preserve">
+    <value>In the UK the Companies Act 2006 enforces the limited company legal form.</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityLawEnforce_LawRegisteredRequiredError" xml:space="preserve">
+    <value>Enter which law enforces it</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityOrganisationName_PageTitle" xml:space="preserve">
+    <value>Enter the organisation's name</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityOrganisationName_Hint" xml:space="preserve">
+    <value>The name of the 'connected person' that has control or influence over your organisation.</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityOrganisationName_EnterNameError" xml:space="preserve">
+    <value>Enter the organisation's name</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityOverseasCompanyQuestion_Heading" xml:space="preserve">
+    <value>Is {0} registered with an overseas equivalent to Companies House?</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityOverseasCompanyQuestion_Hint" xml:space="preserve">
+    <value>Is the 'connected person' registered with a similar non-UK body that incorporates companies?</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityOverseasCompanyQuestion_CompanyRegistrationNumberLabel" xml:space="preserve">
+    <value>Company registration number</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityOverseasCompanyQuestion_CompanyRegistrationNumberRequiredError" xml:space="preserve">
+    <value>Enter the overseas company registration number</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityPersonType_PageTitle" xml:space="preserve">
+    <value>Select the relevant option</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityPersonType_Hint" xml:space="preserve">
+    <value>A ‘connected person’ can be an individual, organisation or trustee or trust.</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityPersonType_SelectOptionError" xml:space="preserve">
+    <value>Select the relevant option</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityPersonType_OptionOrganisation" xml:space="preserve">
+    <value>Organisation</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityPersonType_OptionIndividual" xml:space="preserve">
+    <value>Individual</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityPersonType_OptionTrustOrTrustee" xml:space="preserve">
+    <value>Trustee or trust</value>
+  </data>
   <data name="OrganisationRegistration_OrganisationType_Heading" xml:space="preserve">
     <value>What do you want to register your organisation as?</value>
   </data>
@@ -495,14 +1137,107 @@
   <data name="Global_No" xml:space="preserve">
     <value>No</value>
   </data>
+  <data name="Global_Other" xml:space="preserve">
+    <value>Other</value>
+  </data>
+  <data name="Global_Remove" xml:space="preserve">
+    <value>Remove</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswers_ChangePSCDetails" xml:space="preserve">
+    <value>Change&lt;span class="govuk-visually-hidden"&gt; the person of significant control's details&lt;/span&gt;</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswers_ChangeDirectorResidency" xml:space="preserve">
+    <value>Change&lt;span class="govuk-visually-hidden"&gt; the director's residency&lt;/span&gt;</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswers_ChangeRegisteredAddress" xml:space="preserve">
+    <value>Change&lt;span class="govuk-visually-hidden"&gt; the registered address&lt;/span&gt;</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswers_ChangePostalAddress" xml:space="preserve">
+    <value>Change&lt;span class="govuk-visually-hidden"&gt; the postal address&lt;/span&gt;</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswers_ChangeControlConditions" xml:space="preserve">
+    <value>Change&lt;span class="govuk-visually-hidden"&gt; the conditions of control&lt;/span&gt;</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswers_ChangeRegisteredAsPSC" xml:space="preserve">
+    <value>Change&lt;span class="govuk-visually-hidden"&gt; the registered as PSC date&lt;/span&gt;</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswers_ChangeRegisterName" xml:space="preserve">
+    <value>Change&lt;span class="govuk-visually-hidden"&gt; the register name&lt;/span&gt;</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_ChangeCompanyName" xml:space="preserve">
+    <value>Change&lt;span class="govuk-visually-hidden"&gt; the company name&lt;/span&gt;</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_ChangeRegisteredAddress" xml:space="preserve">
+    <value>Change&lt;span class="govuk-visually-hidden"&gt;the registered address&lt;/span&gt;</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_ChangePostalAddress" xml:space="preserve">
+    <value>Change&lt;span class="govuk-visually-hidden"&gt; the postal address&lt;/span&gt;</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_ChangeLegalFormAndLaw" xml:space="preserve">
+    <value>Change&lt;span class="govuk-visually-hidden"&gt; the legal form and law&lt;/span&gt;</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_ChangeLegalForm" xml:space="preserve">
+    <value>Change&lt;span class="govuk-visually-hidden"&gt;the legal form &lt;/span&gt;</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_ChangeEnforcedBy" xml:space="preserve">
+    <value>Change&lt;span class="govuk-visually-hidden"&gt; the "enforced by" law&lt;/span&gt;</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_ChangeCompaniesHouseRegistered" xml:space="preserve">
+    <value>Change&lt;span class="govuk-visually-hidden"&gt; the Companies House registration status and number&lt;/span&gt;</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_ChangeOverseasEquivalent" xml:space="preserve">
+    <value>Change&lt;span class="govuk-visually-hidden"&gt; the registered with overseas equivalent&lt;/span&gt;</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_ChangeControlConditions" xml:space="preserve">
+    <value>Change&lt;span class="govuk-visually-hidden"&gt; the conditions of control&lt;/span&gt;</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_ChangeRegisteredDate" xml:space="preserve">
+    <value>Change&lt;span class="govuk-visually-hidden"&gt; the registered date&lt;/span&gt;</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_ChangeInsolvencyDate" xml:space="preserve">
+    <value>Change&lt;span class="govuk-visually-hidden"&gt; the insolvency date&lt;/span&gt;</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_ChangeRegisterName" xml:space="preserve">
+    <value>Change&lt;span class="govuk-visually-hidden"&gt; the register name&lt;/span&gt;</value>
+  </data>
+  <data name="Global_Change" xml:space="preserve">
+    <value>Change</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityIndividualCategory_CategoryOption_PSC" xml:space="preserve">
+    <value>person with significant control</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityIndividualCategory_CategoryOption_PSC_Director" xml:space="preserve">
+    <value>director or individual with the same responsibilities</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityIndividualCategory_CategoryOption_PSC_Individual" xml:space="preserve">
+    <value>any other individual with significant influence or control</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCompanyInsolvencyDate_DayRequiredError" xml:space="preserve">
+    <value>Date of insolvency must include a day</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCompanyInsolvencyDate_DayInvalidError" xml:space="preserve">
+    <value>Day must be a valid number</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCompanyInsolvencyDate_MonthRequiredError" xml:space="preserve">
+    <value>Date of insolvency must include a month</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCompanyInsolvencyDate_MonthInvalidError" xml:space="preserve">
+    <value>Month must be a valid number</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCompanyInsolvencyDate_YearRequiredError" xml:space="preserve">
+    <value>Date of insolvency must include a year</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCompanyInsolvencyDate_YearInvalidError" xml:space="preserve">
+    <value>Year must be a valid number</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCompanyInsolvencyDate_InvalidDate" xml:space="preserve">
+    <value>Date of insolvency must be a real date</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCompanyInsolvencyDate_Heading" xml:space="preserve">
+    <value>When did {0} become insolvent?</value>
+  </data>
   <data name="Global_ErrorSummary_Heading" xml:space="preserve">
     <value>There is a problem</value>
-  </data>
-  <data name="OrganisationRegistration_EnterOrganisationEmail_Heading" xml:space="preserve">
-    <value>Enter your organisation's email address</value>
-  </data>
-  <data name="Global_EmailAddress_Error" xml:space="preserve">
-    <value>Enter an email address in the correct format, like name@example.com</value>
   </data>
   <data name="OrganisationRegistration_EnterOrganisationEmail_Hint" xml:space="preserve">
     <value>Where possible, use a shared inbox that other team members can access</value>
@@ -587,12 +1322,6 @@
   </data>
   <data name="Organisation_EnterOrganisationName_ErrorMessage" xml:space="preserve">
     <value>Enter your organisation's name</value>
-  </data>
-  <data name="Organisation_EnterOrganisationEmail_Heading" xml:space="preserve">
-    <value>Enter your organisation's email address</value>
-  </data>
-  <data name="Organisation_EnterOrganisationEmail_ErrorMessage" xml:space="preserve">
-    <value>Enter your organisation's email address</value>
   </data>
   <data name="Organisation_EnterOrganisationEmail_Hint" xml:space="preserve">
     <value>Where possible, use a shared inbox that other team members can access</value>

@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Constants;
 using Microsoft.AspNetCore.Authorization;
+using CO.CDP.Localization;
 
 namespace CO.CDP.OrganisationApp.Pages.Users;
 
@@ -24,7 +25,7 @@ public class ChangeUserRoleModel(
     public bool? IsAdmin { get; set; }
 
     [BindProperty]
-    [Required(ErrorMessage = "Role required")]
+    [Required(ErrorMessageResourceName = nameof(StaticTextResource.User_Role_Required_ErrorMessage), ErrorMessageResourceType = typeof(StaticTextResource))]
     public string? Role { get; set; }
 
     public string? UserFullName;

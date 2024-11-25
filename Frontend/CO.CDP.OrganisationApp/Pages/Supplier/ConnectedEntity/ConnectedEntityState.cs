@@ -19,7 +19,7 @@ public class ConnectedEntityState
     public bool? HasCompaniesHouseNumber { get; set; }
     public string? CompaniesHouseNumber { get; set; }
     public List<ConnectedEntityControlCondition> ControlConditions { get; set; } = [];
-    public bool? HasRegistartionDate { get; set; }
+    public bool? HasRegistrationDate { get; set; }
     public DateTimeOffset? RegistrationDate { get; set; }
     public string? RegisterName { get; set; }
     public DateTimeOffset? InsolvencyDate { get; set; }

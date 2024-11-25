@@ -3,6 +3,7 @@ using CO.CDP.OrganisationApp.Pages.Shared;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using CO.CDP.Localization;
 
 namespace CO.CDP.OrganisationApp.Pages.Supplier;
 
@@ -45,7 +46,7 @@ public class ConnectedEntityAddressModel(ISession session) : PageModel
                 : "ConnectedEntitySupplierCompanyQuestion", new { Id, ConnectedEntityId });
         }
 
-        InitModal(state, true);
+        InitModel(state, true);
         ConnectedEntityState.Address? stateAddress = null;
         if (AddressType == AddressType.Registered) stateAddress = state.RegisteredAddress;
         if (AddressType == AddressType.Postal) stateAddress = state.PostalAddress;
@@ -73,7 +74,7 @@ public class ConnectedEntityAddressModel(ISession session) : PageModel
             : "ConnectedEntitySupplierCompanyQuestion", new { Id, ConnectedEntityId });
         }
 
-        InitModal(state);
+        InitModel(state);
 
         if (!ModelState.IsValid) return Page();
 
@@ -226,7 +227,7 @@ public class ConnectedEntityAddressModel(ISession session) : PageModel
         return (true, cp);
     }
 
-    private void InitModal(ConnectedEntityState state, bool reset = false)
+    private void InitModel(ConnectedEntityState state, bool reset = false)
     {
         Caption = state.GetCaption();
         ConnectedEntityType = state.ConnectedEntityType;
@@ -246,27 +247,27 @@ public class ConnectedEntityAddressModel(ISession session) : PageModel
                     case ConnectedEntityOrganisationCategoryType.ParentOrSubsidiaryCompany:
                         if (AddressType == AddressType.Registered)
                         {
-                            heading = $"Enter {state.OrganisationName}'s registered address";
-                            hintValue = "The address registered with Companies House, or the principal address the business conducts its activities. For example, a head office.";
+                            heading = string.Format(StaticTextResource.Supplier_ConnectedEntity_Address_EnterRegisteredAddress_Heading, state.OrganisationName);
+                            hintValue = StaticTextResource.Supplier_ConnectedEntity_Address_EnterRegisteredAddress_Hint;
                         }
                         else if (AddressType == AddressType.Postal)
                         {
-                            heading = $"Enter {state.OrganisationName}'s postal address";
+                            heading = string.Format(StaticTextResource.Supplier_ConnectedEntity_Address_EnterPostalAddress_Heading, state.OrganisationName);
                         }
                         break;
                     case ConnectedEntityOrganisationCategoryType.ACompanyYourOrganisationHasTakenOver:
                         if (AddressType == AddressType.Registered)
                         {
-                            heading = $"Enter {state.OrganisationName}'s registered address";
-                            hintValue = "The address registered with Companies House, or the principal address the business conducts its activities. For example, a head office.";
+                            heading = string.Format(StaticTextResource.Supplier_ConnectedEntity_Address_EnterRegisteredAddress_Heading, state.OrganisationName);
+                            hintValue = StaticTextResource.Supplier_ConnectedEntity_Address_EnterRegisteredAddress_Hint;
                         }
                         else if (AddressType == AddressType.Postal)
                         {
-                            heading = $"Enter {state.OrganisationName}'s postal address";
+                            heading = string.Format(StaticTextResource.Supplier_ConnectedEntity_Address_EnterPostalAddress_Heading, state.OrganisationName);
                         }
                         break;
                     case ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl:
-                        heading = $"Enter {state.OrganisationName}'s address";
+                        heading = string.Format(StaticTextResource.Supplier_ConnectedEntity_Address_EnterAddress_Heading, state.OrganisationName);
                         break;
                 }
                 break;
@@ -276,8 +277,8 @@ public class ConnectedEntityAddressModel(ISession session) : PageModel
                     case ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForIndividual:
                     case ConnectedEntityIndividualAndTrustCategoryType.DirectorOrIndividualWithTheSameResponsibilitiesForIndividual:
                     case ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndividualWithSignificantInfluenceOrControlForIndividual:
-                        heading = $"Enter {state.FirstName}'s postal address";
-                        hintValue = "The address registered with Companies House, or the principal address the business conducts its activities. For example, a head office.";
+                        heading = string.Format(StaticTextResource.Supplier_ConnectedEntity_Address_EnterPostalAddress_Heading, state.FirstName);
+                        hintValue = StaticTextResource.Supplier_ConnectedEntity_Address_EnterRegisteredAddress_Hint;
                         break;
                 }
                 break;
@@ -287,8 +288,8 @@ public class ConnectedEntityAddressModel(ISession session) : PageModel
                     case ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForTrust:
                     case ConnectedEntityIndividualAndTrustCategoryType.DirectorOrIndividualWithTheSameResponsibilitiesForTrust:
                     case ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndividualWithSignificantInfluenceOrControlForTrust:
-                        heading = $"Enter {state.FirstName}'s postal address";
-                        hintValue = "The address registered with Companies House, or the principal address the business conducts its activities. For example, a head office.";
+                        heading = string.Format(StaticTextResource.Supplier_ConnectedEntity_Address_EnterPostalAddress_Heading, state.FirstName);
+                        hintValue = StaticTextResource.Supplier_ConnectedEntity_Address_EnterRegisteredAddress_Hint;
                         break;
                 }
                 break;

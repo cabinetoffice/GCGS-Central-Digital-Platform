@@ -1,5 +1,6 @@
 using CO.CDP.Localization;
 using CO.CDP.OrganisationApp.Constants;
+using CO.CDP.Mvc.Validation;
 using CO.CDP.OrganisationApp.WebApiClients;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -14,9 +15,9 @@ namespace CO.CDP.OrganisationApp.Pages.Organisation;
 public class OrganisationEmailModel(OrganisationWebApiClient.IOrganisationClient organisationClient) : PageModel
 {
     [BindProperty]
-    [DisplayName(nameof(StaticTextResource.Organisation_EnterOrganisationEmail_Heading))]
-    [Required(ErrorMessage = nameof(StaticTextResource.Organisation_EnterOrganisationEmail_ErrorMessage))]
-    [EmailAddress(ErrorMessage = nameof(StaticTextResource.Global_EmailAddress_Error))]
+    [DisplayName(nameof(StaticTextResource.Organisation_Email_Heading))]
+    [Required(ErrorMessageResourceName = nameof(StaticTextResource.Organisation_Email_Required_ErrorMessage), ErrorMessageResourceType = typeof(StaticTextResource))]
+    [ValidEmailAddress(ErrorMessageResourceName = nameof(StaticTextResource.Global_Email_Invalid_ErrorMessage), ErrorMessageResourceType = typeof(StaticTextResource))]
     public string? EmailAddress { get; set; }
 
     [BindProperty(SupportsGet = true)]
