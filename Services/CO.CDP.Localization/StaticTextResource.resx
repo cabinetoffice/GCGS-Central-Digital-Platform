@@ -141,6 +141,90 @@
   <data name="Global_Back" xml:space="preserve">
     <value>Back</value>
   </data>
+  <data name="Global_Important" xml:space="preserve">
+    <value>Important</value>
+  </data>
+  <data name="Organisation_BuyerRegistrationPendingApproval" xml:space="preserve">
+    <value>Buyer registration pending approval.</value>
+  </data>
+  <data name="Organisation_OrganisationDetails" xml:space="preserve">
+    <value>Organisation details</value>
+  </data>
+  <data name="Organisation_OrganisationName" xml:space="preserve">
+    <value>Organisation name</value>
+  </data>
+  <data name="Organisation_ChangeName" xml:space="preserve">
+    <value>Change&lt;span class="govuk-visually-hidden"&gt; the organisation name&lt;/span&gt;</value>
+  </data>
+  <data name="Organisation_OrganisationIdentifier" xml:space="preserve">
+    <value>Organisation identifier</value>
+  </data>
+  <data name="Organisation_PponGenerationPending" xml:space="preserve">
+    <value>PPON generation pending.</value>
+  </data>
+  <data name="Organisation_Address" xml:space="preserve">
+    <value>address</value>
+  </data>
+  <data name="Organisation_AddAddress" xml:space="preserve">
+    <value>Add&lt;span class="govuk-visually-hidden"&gt; address&lt;/span&gt;</value>
+  </data>
+  <data name="Organisation_ChangeAddress" xml:space="preserve">
+    <value>Change&lt;span class="govuk-visually-hidden"&gt; address&lt;/span&gt;</value>
+  </data>
+  <data name="Organisation_OrganisationEmail" xml:space="preserve">
+    <value>Organisation email</value>
+  </data>
+  <data name="Organisation_ChangeEmail" xml:space="preserve">
+    <value>Change&lt;span class="govuk-visually-hidden"&gt; the organisation email</value>
+  </data>
+  <data name="Organisation_OrganisationAddress" xml:space="preserve">
+    <value>Organisation address</value>
+  </data>
+  <data name="Organisation_CompleteSupplierInformation" xml:space="preserve">
+    <value>Complete supplier information</value>
+  </data>
+  <data name="Organisation_CompleteAndShareSupplierInformation" xml:space="preserve">
+    <value>Complete and share your supplier information to bid for procurements.</value>
+  </data>
+  <data name="Organisation_ViewApiKeys" xml:space="preserve">
+    <value>View API keys</value>
+  </data>
+  <data name="Organisation_ManageApiKeys" xml:space="preserve">
+    <value>Manage API keys</value>
+  </data>
+  <data name="Organisation_ApiKeysForBuyers" xml:space="preserve">
+    <value> (for Buyers)</value>
+  </data>
+  <data name="Organisation_RegistrationNotApproved" xml:space="preserve">
+    <value>Registration Not Approved</value>
+  </data>
+  <data name="Organisation_WeCouldNotApproveYourRequest" xml:space="preserve">
+    <value>We could not approve your request because:</value>
+  </data>
+  <data name="Organisation_CreateApiKey" xml:space="preserve">
+    <value>Create an API key and share it with the e-Sender you use to publish procurement notices.</value>
+  </data>
+  <data name="Organisation_ManageUsers" xml:space="preserve">
+    <value>Manage users</value>
+  </data>
+  <data name="Organisation_ViewAddRemoveUsers" xml:space="preserve">
+    <value>View, add or remove users.</value>
+  </data>
+  <data name="Organisation_RegisterAsSupplier" xml:space="preserve">
+    <value>Register as a supplier</value>
+  </data>
+  <data name="Organisation_SupplyGoodsServices" xml:space="preserve">
+    <value>If you also supply goods, works, services or utilities to the public sector.</value>
+  </data>
+  <data name="Organisation_GetProcurementGuidance" xml:space="preserve">
+    <value>Get procurement guidance on the</value>
+  </data>
+  <data name="Organisation_ProcurementPathwayService" xml:space="preserve">
+    <value>Procurement Pathway service (opens in new tab)</value>
+  </data>
+  <data name="Global_Email_Invalid_ErrorMessage" xml:space="preserve">
+    <value>Enter an email address in the correct format, like name@example.com</value>
+  </data>
   <data name="Supplier_SupplierInformationSummary_ConnectedPersonCount_Singular" xml:space="preserve">
     <value>{0} Connected person</value>
   </data>
@@ -159,8 +243,14 @@
   <data name="Supplier_SupplierInformationSummary_FormRecordCount_Plural" xml:space="preserve">
     <value>{0} records</value>
   </data>
+  <data name="Supplier_Email_Required_ErrorMessage" xml:space="preserve">
+    <value>Enter your email address</value>
+  </data>
   <data name="OrganisationRegistration_EnterOrganisationName_Heading" xml:space="preserve">
     <value>Enter your organisation's name</value>
+  </data>
+  <data name="Organisation_Email_Heading" xml:space="preserve">
+    <value>Enter your organisation's email address</value>
   </data>
   <data name="Organisation_EnterOrganisationName_Buyer_Hint" xml:space="preserve">
     <value>If you’re a department, agency or public body on the &lt;a class="govuk-link" target="_blank" href="https://www.gov.uk/government/organisations"&gt;GOV.UK organisations list (opens in a new tab)&lt;/a&gt;, use the exact name shown. If not, use your full official name. For example, HM Revenue &amp; Customs not HMRC.</value>
@@ -168,11 +258,65 @@
   <data name="Organisation_EnterOrganisationName_Supplier_Hint" xml:space="preserve">
     <value>As registered on Companies House if incorporated, or the trading name of the company.</value>
   </data>
+  <data name="Organisation_Email_Required_ErrorMessage" xml:space="preserve">
+    <value>Enter your organisation's email address</value>
+  </data>
   <data name="Global_Error" xml:space="preserve">
     <value>Error</value>
   </data>
   <data name="Global_Continue" xml:space="preserve">
     <value>Continue</value>
+  </data>
+  <data name="Organisation_MyAccount" xml:space="preserve">
+    <value>My account</value>
+  </data>
+  <data name="Organisation_SignInDetails" xml:space="preserve">
+    <value>Sign in details</value>
+  </data>
+  <data name="Organisation_EmailAddress" xml:space="preserve">
+    <value>Email address:</value>
+  </data>
+  <data name="Organisation_ChangeSignInDetails" xml:space="preserve">
+    <value>You can <a class="govuk-link govuk-link--no-visited-state" href="{0}" target="_blank">change your sign in details in your GOV.UK One Login</a>.</value>
+  </data>
+  <data name="Organisation_MyOrganisations" xml:space="preserve">
+    <value>My organisations</value>
+  </data>
+  <data name="Organisation_OrganisationName" xml:space="preserve">
+    <value>Organisation name</value>
+  </data>
+  <data name="Organisation_PendingApproval" xml:space="preserve">
+    <value>Pending approval</value>
+  </data>
+  <data name="Organisation_NotApproved" xml:space="preserve">
+    <value>Not approved</value>
+  </data>
+  <data name="Organisation_AddAnotherOrganisation" xml:space="preserve">
+    <value>Add another organisation</value>
+  </data>
+  <data name="Organisation_RegisterOrganisation" xml:space="preserve">
+    <value>Register an organisation if you are:</value>
+  </data>
+  <data name="Organisation_ContractingAuthority" xml:space="preserve">
+    <value>a contracting authority who publishes notices to buy goods, works, services or utilities</value>
+  </data>
+  <data name="Organisation_OrganisationOrSoleTrader" xml:space="preserve">
+    <value>an organisation or sole trader who searches for tenders and submits bids to supply goods, works, services or utilities</value>
+  </data>
+  <data name="Organisation_RegisterAnOrganisation" xml:space="preserve">
+    <value>Register an organisation</value>
+  </data>
+  <data name="Organisation_AfterYouveRegistered" xml:space="preserve">
+    <value>After you've registered</value>
+  </data>
+  <data name="Organisation_IfYouNeedTo" xml:space="preserve">
+    <value>If you need to you can:</value>
+  </data>
+  <data name="Organisation_RegisterAsOtherRole" xml:space="preserve">
+    <value>register as the other role, if you are both a buyer and supplier</value>
+  </data>
+  <data name="Organisation_AddMoreOrganisations" xml:space="preserve">
+    <value>add more organisations</value>
   </data>
   <data name="Header_ServiceName" xml:space="preserve">
     <value>Find a Tender</value>
@@ -467,6 +611,18 @@
   </data>
   <data name="Supplementary_Cookies_GovServices_Info" xml:space="preserve">
     <value>Most services we link to are run by different government departments, for example DWP’s Universal Credit online, DVLA’s vehicle tax service, or HMRC’s webchat. These services may set additional cookies and, if so, will have their own cookie policy and banner linking to it.</value>
+  </data>
+  <data name="User_FirstName_Required_ErrorMessage" xml:space="preserve">
+    <value>Firstname required</value>
+  </data>
+  <data name="User_LastName_Required_ErrorMessage" xml:space="preserve">
+    <value>Lastname required</value>
+  </data>
+  <data name="User_Email_Required_ErrorMessage" xml:space="preserve">
+    <value>Email required</value>
+  </data>
+  <data name="User_Role_Required_ErrorMessage" xml:space="preserve">
+    <value>Role required</value>
   </data>
   <data name="Supplier_ConnectedEntity_Address_EnterRegisteredAddress_Heading" xml:space="preserve">
     <value>Enter {0}'s registered address</value>
@@ -1080,12 +1236,6 @@
   <data name="Global_ErrorSummary_Heading" xml:space="preserve">
     <value>There is a problem</value>
   </data>
-  <data name="OrganisationRegistration_EnterOrganisationEmail_Heading" xml:space="preserve">
-    <value>Enter your organisation's email address</value>
-  </data>
-  <data name="Global_EmailAddress_Error" xml:space="preserve">
-    <value>Enter an email address in the correct format, like name@example.com</value>
-  </data>
   <data name="OrganisationRegistration_EnterOrganisationEmail_Hint" xml:space="preserve">
     <value>Where possible, use a shared inbox that other team members can access</value>
   </data>
@@ -1169,12 +1319,6 @@
   </data>
   <data name="Organisation_EnterOrganisationName_ErrorMessage" xml:space="preserve">
     <value>Enter your organisation's name</value>
-  </data>
-  <data name="Organisation_EnterOrganisationEmail_Heading" xml:space="preserve">
-    <value>Enter your organisation's email address</value>
-  </data>
-  <data name="Organisation_EnterOrganisationEmail_ErrorMessage" xml:space="preserve">
-    <value>Enter your organisation's email address</value>
   </data>
   <data name="Organisation_EnterOrganisationEmail_Hint" xml:space="preserve">
     <value>Where possible, use a shared inbox that other team members can access</value>
