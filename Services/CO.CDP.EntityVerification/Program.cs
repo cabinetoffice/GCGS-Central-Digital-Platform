@@ -29,7 +29,16 @@ builder.Services.AddProblemDetails();
 builder.Services.AddDbContext<EntityVerificationContext>(o =>
     o.UseNpgsql(ConnectionStringHelper.GetConnectionString(builder.Configuration, "EntityVerificationDatabase")));
 builder.Services.AddScoped<IPponRepository, DatabasePponRepository>();
-builder.Services.AddScoped<IPponService, PponService>();
+
+if (builder.Configuration.GetValue("Features:UuidPponService", true))
+{
+    builder.Services.AddScoped<IPponService, UuidPponService>();
+}
+else
+{
+    builder.Services.AddScoped<IPponService, PponService>();
+}
+
 builder.Services.AddScoped<IUseCase<LookupIdentifierQuery, IEnumerable<CO.CDP.EntityVerification.Model.Identifier>>, LookupIdentifierUseCase>();
 
 if (Assembly.GetEntryAssembly().IsRunAs("CO.CDP.EntityVerification"))

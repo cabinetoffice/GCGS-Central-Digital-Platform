@@ -1,20 +1,18 @@
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Localization;
 using System.ComponentModel.DataAnnotations;
+using System.Net.Mail;
 
 namespace CO.CDP.Mvc.Validation;
 
-public class ValidUriAttribute : RequiredAttribute
+public class ValidEmailAddressAttribute : ValidationAttribute
 {
     protected override ValidationResult IsValid(object? value, ValidationContext validationContext)
     {
-        if (value is string str && !string.IsNullOrWhiteSpace(str) && Uri.TryCreate(str, UriKind.Absolute, out var _) == false)
+        if (value is string email && !MailAddress.TryCreate(email, out var _))
         {
             var errorMessage = ErrorMessageResolver.GetErrorMessage(ErrorMessage, ErrorMessageResourceName, ErrorMessageResourceType);
 
-            return new ValidationResult(errorMessage ?? $"{validationContext.DisplayName} is invalid");
+            return new ValidationResult(errorMessage ?? $"{validationContext.DisplayName} is invalid.", [validationContext.MemberName!]);
         }
-
         return ValidationResult.Success!;
     }
 }

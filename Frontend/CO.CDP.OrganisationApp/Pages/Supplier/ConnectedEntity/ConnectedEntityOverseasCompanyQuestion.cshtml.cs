@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
+using CO.CDP.Localization;
 
 namespace CO.CDP.OrganisationApp.Pages.Supplier;
 
@@ -17,11 +18,11 @@ public class ConnectedEntityOverseasCompanyQuestionModel(ISession session) : Pag
     public Guid? ConnectedEntityId { get; set; }
 
     [BindProperty]
-    [Required(ErrorMessage = "Select yes if organisation registered with an overseas equivalent to Companies House")]
+    [Required(ErrorMessageResourceName = nameof(StaticTextResource.Global_SelectYesOrNo), ErrorMessageResourceType = typeof(StaticTextResource))]
     public bool? HasOverseasCompaniesHouseNumber { get; set; }
 
     [BindProperty]
-    [RequiredIf(nameof(HasOverseasCompaniesHouseNumber), true, ErrorMessage = "Enter the overseas company registration number.")]
+    [RequiredIf(nameof(HasOverseasCompaniesHouseNumber), true, ErrorMessageResourceName = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityOverseasCompanyQuestion_CompanyRegistrationNumberRequiredError), ErrorMessageResourceType = typeof(StaticTextResource))]
     public string? OverseasCompaniesHouseNumber { get; set; }
     public string? Caption { get; set; }
     public string? Heading { get; set; }
@@ -39,7 +40,7 @@ public class ConnectedEntityOverseasCompanyQuestionModel(ISession session) : Pag
             return RedirectToPage("ConnectedEntitySupplierHasControl", new { Id });
         }
 
-        InitModal(state);
+        InitModel(state);
 
         HasOverseasCompaniesHouseNumber = selected.HasValue ? selected : state.HasOverseasCompaniesHouseNumber;
         OverseasCompaniesHouseNumber = state.OverseasCompaniesHouseNumber;
@@ -55,7 +56,7 @@ public class ConnectedEntityOverseasCompanyQuestionModel(ISession session) : Pag
             return RedirectToPage("ConnectedEntitySupplierHasControl", new { Id });
         }
 
-        InitModal(state);
+        InitModel(state);
 
         if (!ModelState.IsValid)
         {
@@ -119,11 +120,11 @@ public class ConnectedEntityOverseasCompanyQuestionModel(ISession session) : Pag
         return redirectPage;
     }
 
-    private void InitModal(ConnectedEntityState state)
+    private void InitModel(ConnectedEntityState state)
     {
         Caption = state.GetCaption();
-        Heading = $"Is {state.OrganisationName} registered with an overseas equivalent to Companies House?";
-        Hint = "Is the 'connected person' registered with a similar non-UK body that incorporates companies?";
+        Heading = string.Format(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityOverseasCompanyQuestion_Heading, state.OrganisationName);
+        Hint = StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityOverseasCompanyQuestion_Hint;
         BackPageLink = GetBackLinkPageName(state);
     }
     private string GetBackLinkPageName(ConnectedEntityState state)
