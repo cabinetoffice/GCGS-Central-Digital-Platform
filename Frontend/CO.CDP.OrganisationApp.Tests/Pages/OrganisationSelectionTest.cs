@@ -1,6 +1,6 @@
 using CO.CDP.Organisation.WebApiClient;
+using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.Pages.Organisation;
-using CO.CDP.Tenant.WebApiClient;
 using FluentAssertions;
 using Moq;
 using PartyRole = CO.CDP.Tenant.WebApiClient.PartyRole;
@@ -9,17 +9,14 @@ namespace CO.CDP.OrganisationApp.Tests.Pages;
 
 public class OrganisationSelectionTest
 {
-    private readonly Mock<ISession> sessionMock;
-    private readonly Mock<ITenantClient> tenantClientMock;
-    private readonly Mock<IOrganisationClient> organisationClientMock;
+    private readonly Mock<ISession> _session = new();
+    private readonly Mock<IUserInfoService> _userInfoService = new();
+    private readonly Mock<IOrganisationClient> _organisationClient = new();
 
     public OrganisationSelectionTest()
     {
-        sessionMock = new Mock<ISession>();
-        sessionMock.Setup(session => session.Get<Models.UserDetails>(Session.UserDetailsKey))
-            .Returns(new Models.UserDetails { UserUrn = "urn:test" });
-        tenantClientMock = new Mock<ITenantClient>();
-        organisationClientMock = new Mock<IOrganisationClient>();
+        _session.Setup(session => session.Get<UserDetails>(Session.UserDetailsKey))
+            .Returns(new UserDetails { UserUrn = "urn:test" });
     }
 
     [Fact]
@@ -27,13 +24,12 @@ public class OrganisationSelectionTest
     {
         var model = GivenOrganisationSelectionModelModel();
 
-        sessionMock.Setup(s => s.Get<Models.UserDetails>(Session.UserDetailsKey))
-            .Returns(new Models.UserDetails { UserUrn = "urn:test" });
+        _session.Setup(s => s.Get<UserDetails>(Session.UserDetailsKey))
+            .Returns(new UserDetails { UserUrn = "urn:test" });
 
-        tenantClientMock.Setup(o => o.LookupTenantAsync())
-            .ReturnsAsync(GetUserTenant());
+        _userInfoService.Setup(s => s.GetUserInfo()).ReturnsAsync(UserInfo());
 
-        var actionResult = await model.OnGet();
+        await model.OnGet();
 
         model.UserOrganisations.Should().HaveCount(1);
     }
@@ -43,21 +39,20 @@ public class OrganisationSelectionTest
     {
         var model = GivenOrganisationSelectionModelModel();
 
-        sessionMock.Setup(s => s.Get<Models.UserDetails>(Session.UserDetailsKey))
-            .Returns(new Models.UserDetails { UserUrn = "urn:test" });
+        _session.Setup(s => s.Get<UserDetails>(Session.UserDetailsKey))
+            .Returns(new UserDetails { UserUrn = "urn:test" });
 
-        tenantClientMock.Setup(o => o.LookupTenantAsync())
-            .ReturnsAsync(GetUserTenant(pendingRoles: [PartyRole.Buyer]));
+        _userInfoService.Setup(s => s.GetUserInfo()).ReturnsAsync(UserInfo(pendingRoles: [PartyRole.Buyer]));
 
-        organisationClientMock.Setup(o => o.GetOrganisationReviewsAsync(It.IsAny<Guid>()))
+        _organisationClient.Setup(o => o.GetOrganisationReviewsAsync(It.IsAny<Guid>()))
             .ReturnsAsync([GivenReview(ReviewStatus.Pending)]);
 
-        var actionResult = await model.OnGet();
+        await model.OnGet();
 
-        organisationClientMock.Verify(c => c.GetOrganisationReviewsAsync(It.IsAny<Guid>()), Times.Once);
+        _organisationClient.Verify(c => c.GetOrganisationReviewsAsync(It.IsAny<Guid>()), Times.Once);
 
         model.UserOrganisations.Should().HaveCount(1);
-        model.UserOrganisations?.FirstOrDefault().Review?.Status.Should().Be(ReviewStatus.Pending);
+        model.UserOrganisations.FirstOrDefault().Review?.Status.Should().Be(ReviewStatus.Pending);
     }
 
     [Fact]
@@ -65,26 +60,25 @@ public class OrganisationSelectionTest
     {
         var model = GivenOrganisationSelectionModelModel();
 
-        sessionMock.Setup(s => s.Get<Models.UserDetails>(Session.UserDetailsKey))
-            .Returns(new Models.UserDetails { UserUrn = "urn:test" });
+        _session.Setup(s => s.Get<UserDetails>(Session.UserDetailsKey))
+            .Returns(new UserDetails { UserUrn = "urn:test" });
 
-        tenantClientMock.Setup(o => o.LookupTenantAsync())
-            .ReturnsAsync(GetUserTenant(pendingRoles: [PartyRole.Buyer]));
+        _userInfoService.Setup(s => s.GetUserInfo()).ReturnsAsync(UserInfo(pendingRoles: [PartyRole.Buyer]));
 
-        organisationClientMock.Setup(o => o.GetOrganisationReviewsAsync(It.IsAny<Guid>()))
+        _organisationClient.Setup(o => o.GetOrganisationReviewsAsync(It.IsAny<Guid>()))
             .ReturnsAsync([GivenReview(ReviewStatus.Rejected)]);
 
-        var actionResult = await model.OnGet();
+        await model.OnGet();
 
-        organisationClientMock.Verify(c => c.GetOrganisationReviewsAsync(It.IsAny<Guid>()), Times.Once);
+        _organisationClient.Verify(c => c.GetOrganisationReviewsAsync(It.IsAny<Guid>()), Times.Once);
 
         model.UserOrganisations.Should().HaveCount(1);
-        model.UserOrganisations?.FirstOrDefault().Review?.Status.Should().Be(ReviewStatus.Rejected);
+        model.UserOrganisations.FirstOrDefault().Review?.Status.Should().Be(ReviewStatus.Rejected);
     }
 
     private OrganisationSelectionModel GivenOrganisationSelectionModelModel()
     {
-        return new OrganisationSelectionModel(tenantClientMock.Object, organisationClientMock.Object, sessionMock.Object);
+        return new OrganisationSelectionModel(_userInfoService.Object, _organisationClient.Object, _session.Object);
     }
 
     private static Review GivenReview(ReviewStatus reviewStatus)
@@ -92,26 +86,24 @@ public class OrganisationSelectionTest
         return new Review(null, null, null, reviewStatus);
     }
 
-    private TenantLookup GetUserTenant(ICollection<PartyRole>? pendingRoles = null)
+    private UserInfo UserInfo(ICollection<PartyRole>? pendingRoles = null)
     {
-        return new TenantLookup(
-                new List<UserTenant>
+        return new UserInfo
+        {
+            Name = "Person A",
+            Email = "person@example.com",
+            Scopes = ["SUPPORTADMIN"],
+            Organisations =
+            [
+                new UserOrganisationInfo
                 {
-                    new(
-                        id: Guid.NewGuid(),
-                        name: "TrentTheTenant",
-                        organisations: new List<UserOrganisation>()
-                        {
-                            new(
-                                id: Guid.NewGuid(),
-                                name: "Acme Ltd",
-                                roles: new List<PartyRole> { PartyRole.Payee },
-                                pendingRoles: pendingRoles != null ? pendingRoles : [],
-                                scopes: new List<string> { "Scope" },
-                                uri: new Uri("http://www.acme.com"))
-                        }
-                    )
-                },
-                new UserDetails(email: "person@example.com", name: "Person A", scopes: [ "SUPPORTADMIN" ], urn: "urn:test"));
+                    Id = Guid.NewGuid(),
+                    Name = "Acme Ltd",
+                    Roles = [PartyRole.Tenderer],
+                    PendingRoles = pendingRoles ?? [],
+                    Scopes = ["VIEWER"]
+                }
+            ]
+        };
     }
 }
