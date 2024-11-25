@@ -1,4 +1,5 @@
 using CO.CDP.DataSharing.WebApi.Model;
+using CO.CDP.Localization;
 using CO.CDP.OrganisationInformation;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
@@ -24,7 +25,7 @@ public class PdfGenerator : IPdfGenerator
                 page.DefaultTextStyle(x => x.FontSize(10).FontFamily("DejaVu Sans"));
 
 
-                page.Header().Text("Supplier Information").FontSize(14).Bold().AlignCenter();
+                page.Header().Text(StaticTextResource.PdfGenerator_Title_Supplier_Information).FontSize(14).Bold().AlignCenter();
 
                 page.Content().Column(col =>
                 {
@@ -36,7 +37,7 @@ public class PdfGenerator : IPdfGenerator
 
                 page.Footer().AlignRight().Text(x =>
                 {
-                    x.Span("Generated on: ");
+                    x.Span(StaticTextResource.PdfGenerator_Footer_GeneratedOn);
                     x.Span(DateTime.Now.ToString("dd MMMM yyyy")).Bold();
                 });
             });
@@ -75,41 +76,41 @@ public class PdfGenerator : IPdfGenerator
 
     private void AddBasicInformationSection(ColumnDescriptor col, BasicInformation basicInformation)
     {
-        col.Item().Text("Basic Information").Bold().FontSize(12);
+        col.Item().Text(StaticTextResource.PdfGenerator_Title_Basic_Information).Bold().FontSize(12);
         col.Item().PaddingBottom(10);
 
         if (!string.IsNullOrEmpty(basicInformation.SupplierType?.ToString()))
-            col.Item().Element(container => AddTwoColumnRow(container, "Supplier type", basicInformation.SupplierType?.ToString()));
+            col.Item().Element(container => AddTwoColumnRow(container, StaticTextResource.PdfGenerator_Supplier_type, basicInformation.SupplierType?.ToString()));
 
         if (!string.IsNullOrEmpty(basicInformation.OrganisationName?.ToString()))
-            col.Item().Element(container => AddTwoColumnRow(container, "Organisation name", basicInformation.OrganisationName?.ToString()));
+            col.Item().Element(container => AddTwoColumnRow(container, StaticTextResource.PdfGenerator_Organisation_name, basicInformation.OrganisationName?.ToString()));
 
         if (basicInformation.RegisteredAddress != null)
-            col.Item().Element(container => AddTwoColumnRow(container, "Registered address", FormatAddress(basicInformation.RegisteredAddress)));
+            col.Item().Element(container => AddTwoColumnRow(container, StaticTextResource.PdfGenerator_Registered_address, FormatAddress(basicInformation.RegisteredAddress)));
 
         if (basicInformation.PostalAddress != null)
-            col.Item().Element(container => AddTwoColumnRow(container, "Postal address", FormatAddress(basicInformation.PostalAddress)));
+            col.Item().Element(container => AddTwoColumnRow(container, StaticTextResource.PdfGenerator_Postal_address, FormatAddress(basicInformation.PostalAddress)));
 
         if (!string.IsNullOrEmpty(basicInformation.VatNumber))
-            col.Item().Element(container => AddTwoColumnRow(container, "VAT number", basicInformation.VatNumber));
+            col.Item().Element(container => AddTwoColumnRow(container, StaticTextResource.PdfGenerator_VAT_number, basicInformation.VatNumber));
 
         if (!string.IsNullOrEmpty(basicInformation.WebsiteAddress))
-            col.Item().Element(container => AddTwoColumnRow(container, "Website address", basicInformation.WebsiteAddress));
+            col.Item().Element(container => AddTwoColumnRow(container, StaticTextResource.PdfGenerator_Website_address, basicInformation.WebsiteAddress));
 
         if (!string.IsNullOrEmpty(basicInformation.EmailAddress))
-            col.Item().Element(container => AddTwoColumnRow(container, "Email address", basicInformation.EmailAddress));
+            col.Item().Element(container => AddTwoColumnRow(container, StaticTextResource.PdfGenerator_Email_address, basicInformation.EmailAddress));
 
         if (!string.IsNullOrEmpty(basicInformation.OrganisationType.ToString()))
-            col.Item().Element(container => AddTwoColumnRow(container, "Organisation type", basicInformation.OrganisationType.ToString()));
+            col.Item().Element(container => AddTwoColumnRow(container, StaticTextResource.PdfGenerator_Organisation_type, basicInformation.OrganisationType.ToString()));
 
         if (basicInformation.LegalForm != null)
         {
             col.Item().Element(container =>
             {
-                AddTwoColumnRow(container, "Legal form",
-                    $"Registered legal form: {basicInformation.LegalForm.RegisteredLegalForm}\n" +
-                    $"Law registered: {basicInformation.LegalForm.LawRegistered}\n" +
-                    $"Registration date: {basicInformation.LegalForm.RegistrationDate:dd MMMM yyyy}");
+                AddTwoColumnRow(container, StaticTextResource.PdfGenerator_Legal_form,
+                    $"{StaticTextResource.PdfGenerator_Registered_legal_form}: {basicInformation.LegalForm.RegisteredLegalForm}\n" +
+                    $"{StaticTextResource.PdfGenerator_Law_registered}: {basicInformation.LegalForm.LawRegistered}\n" +
+                    $"{StaticTextResource.PdfGenerator_Registration_date}: {basicInformation.LegalForm.RegistrationDate:dd MMMM yyyy}");
             });
         }
 
@@ -119,7 +120,7 @@ public class PdfGenerator : IPdfGenerator
 
     private void AddConnectedPersonInformationSection(ColumnDescriptor col, List<ConnectedPersonInformation> connectedPersons)
     {
-        col.Item().Text("Connected Person Information").Bold().FontSize(12);
+        col.Item().Text(StaticTextResource.PdfGenerator_Title_Connected_Person_Information).Bold().FontSize(12);
         col.Item().PaddingBottom(10);
 
         if (connectedPersons.Any())
@@ -130,7 +131,7 @@ public class PdfGenerator : IPdfGenerator
 
                 if (person.Organisation != null)
                 {
-                    col.Item().Text("Connected Organisation Information:").Bold();
+                    col.Item().Text($"{StaticTextResource.PdfGenerator_Title_Connected_Organisation_Information}:").Bold();
                     col.Item().PaddingBottom(10);
                     if (!string.IsNullOrEmpty(person.Organisation.Name))
                         col.Item().Element(container => AddTwoColumnRow(container, "Name", person.Organisation.Name));
