@@ -102,3 +102,8 @@ version-commit: ## Determines the last commit hash
 last-tag: ## Determines the last created tag on the repository
 	@git for-each-ref refs/tags --sort=-creatordate --format='%(refname:short)' --count=1
 .PHONY: last-tag
+
+LOCALIZATION_PATH := Services/CO.CDP.Localization
+localization-export-to-csv:
+	python3 $(LOCALIZATION_PATH)/scripts/export_resx_to_csv.py $(LOCALIZATION_PATH)/StaticTextResource.resx $(LOCALIZATION_PATH)/StaticTextResource.cy.resx $(LOCALIZATION_PATH)/csv-output/StaticTextResource.csv
+.PHONY: localization-export-to-csv
