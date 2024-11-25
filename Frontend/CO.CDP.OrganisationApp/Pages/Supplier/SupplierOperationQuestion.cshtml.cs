@@ -1,3 +1,4 @@
+using CO.CDP.Localization;
 using CO.CDP.Mvc.Validation;
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Constants;
@@ -14,7 +15,7 @@ public class SupplierOperationQuestionModel(IOrganisationClient organisationClie
     private readonly IOrganisationClient organisationClient = organisationClient;
 
     [BindProperty]
-    [NotEmpty(ErrorMessage = "Select at least one option to proceed.")]
+    [NotEmpty(ErrorMessage = nameof(StaticTextResource.Supplier_OperationQuestion_SelectOption))]
     [ValidOperationTypeSelection]
     public required List<OperationType>? SelectedOperationTypes { get; set; }
 

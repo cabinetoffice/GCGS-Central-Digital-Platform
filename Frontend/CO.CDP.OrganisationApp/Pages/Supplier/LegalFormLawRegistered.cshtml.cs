@@ -1,3 +1,4 @@
+using CO.CDP.Localization;
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Constants;
 using Microsoft.AspNetCore.Authorization;
@@ -13,7 +14,7 @@ public class LegalFormLawRegisteredModel(
     IOrganisationClient organisationClient) : PageModel
 {
     [BindProperty]
-    [Required(ErrorMessage = "Please enter the law under which your organisation is registered")]
+    [Required(ErrorMessage = nameof(StaticTextResource.Supplier_LegalFormLawRegistered_ErrorMessage))]
     public string? LawRegistered { get; set; }
 
     [BindProperty]

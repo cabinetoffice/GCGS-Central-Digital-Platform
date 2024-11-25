@@ -1,3 +1,4 @@
+using CO.CDP.Localization;
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Constants;
 using Microsoft.AspNetCore.Authorization;
@@ -13,7 +14,7 @@ public class LegalFormOtherOrganisationModel(
         IOrganisationClient organisationClient) : PageModel
 {
     [BindProperty]
-    [Required(ErrorMessage = "Please select your organisation's registered legal form")]
+    [Required(ErrorMessage = nameof(StaticTextResource.Supplier_LegalFormOtherOrganisation_PleaseSelect))]
     public string? OtherOrganisation { get; set; }
 
 

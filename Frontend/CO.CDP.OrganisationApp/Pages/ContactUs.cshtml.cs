@@ -22,7 +22,7 @@ public class ContactUsModel(IOrganisationClient organisationClient) : PageModel
     [BindProperty]
     [DisplayName(nameof(StaticTextResource.Supplementary_ContactUs_Email))]
     [Required(ErrorMessage = nameof(StaticTextResource.Supplementary_ContactUs_Email_ErrorMessage))]
-    [EmailAddress(ErrorMessage = nameof(StaticTextResource.Supplementary_ContactUs_Email_ValidationErrorMessage))]
+    [EmailAddress(ErrorMessage = nameof(StaticTextResource.Global_EmailAddress_Error))]
     public string? EmailAddress { get; set; }
 
     [BindProperty]

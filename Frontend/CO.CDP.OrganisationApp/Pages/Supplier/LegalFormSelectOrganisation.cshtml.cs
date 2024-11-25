@@ -1,3 +1,4 @@
+using CO.CDP.Localization;
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Constants;
 using Microsoft.AspNetCore.Authorization;
@@ -14,7 +15,7 @@ public class LegalFormSelectOrganisationModel(
 {
 
     [BindProperty]
-    [Required(ErrorMessage = "Please select an option")]
+    [Required(ErrorMessage = nameof(StaticTextResource.Global_SelectAnOption))]
     public string? RegisteredOrg { get; set; }
 
 
@@ -53,9 +54,9 @@ public class LegalFormSelectOrganisationModel(
 
     public static Dictionary<string, string> OrganisationLegalForm => new()
     {
-        { "LimitedCompany", "Limited company"},
-        { "LLP", "Limited liability partnership (LLP)"},
-        { "LimitedPartnership", "Limited partnership"},
-        { "Other", "Other"}
+        { "LimitedCompany", StaticTextResource.Supplier_LegalFormSelectOrganisation_LimitedCompany}, 
+        { "LLP", StaticTextResource.Supplier_LegalFormSelectOrganisation_LLP}, 
+        { "LimitedPartnership", StaticTextResource.Supplier_LegalFormSelectOrganisation_LP}, 
+        { "Other", StaticTextResource.Supplier_LegalFormSelectOrganisation_Other}
     };
 }

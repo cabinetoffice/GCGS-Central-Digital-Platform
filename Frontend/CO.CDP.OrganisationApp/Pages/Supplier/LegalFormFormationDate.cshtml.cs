@@ -1,3 +1,4 @@
+using CO.CDP.Localization;
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.WebApiClients;
@@ -18,18 +19,18 @@ public class LegalFormFormationDateModel(
     public Guid Id { get; set; }
 
     [BindProperty]
-    [Required(ErrorMessage = "Date of registration must include a day")]
-    [RegularExpression(RegExPatterns.Day, ErrorMessage = "Day must be a valid number")]
+    [Required(ErrorMessage = nameof(@StaticTextResource.Supplier_LegalFormFormationDate_DayErrorMessage))]
+    [RegularExpression(RegExPatterns.Day, ErrorMessage = nameof(@StaticTextResource.Supplier_LegalFormFormationDate_DayInvalidErrorMessage))]
     public string? Day { get; set; }
 
     [BindProperty]
-    [Required(ErrorMessage = "Date of registration must include a month")]
-    [RegularExpression(RegExPatterns.Month, ErrorMessage = "Month must be a valid number")]
+    [Required(ErrorMessage = nameof(@StaticTextResource.Supplier_LegalFormFormationDate_MonthErrorMessage))]
+    [RegularExpression(RegExPatterns.Month, ErrorMessage = nameof(@StaticTextResource.Supplier_LegalFormFormationDate_MonthInvalidErrorMessage))]
     public string? Month { get; set; }
 
     [BindProperty]
-    [Required(ErrorMessage = "Date of registration must include a year")]
-    [RegularExpression(RegExPatterns.Year, ErrorMessage = "Year must be a valid number")]
+    [Required(ErrorMessage = nameof(@StaticTextResource.Supplier_LegalFormFormationDate_YearErrorMessage))]
+    [RegularExpression(RegExPatterns.Year, ErrorMessage = nameof(@StaticTextResource.Supplier_LegalFormFormationDate_YearInvalidErrorMessage))]
     public string? Year { get; set; }
 
     [BindProperty]
@@ -66,13 +67,13 @@ public class LegalFormFormationDateModel(
         var dateString = $"{Year}-{Month!.PadLeft(2, '0')}-{Day!.PadLeft(2, '0')}";
         if (!DateTime.TryParseExact(dateString, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
         {
-            ModelState.AddModelError(nameof(RegistrationDate), "Date of registration must be a real date");
+            ModelState.AddModelError(nameof(RegistrationDate), StaticTextResource.Supplier_LegalFormFormationDate_InvalidDateErrorMessage);
             return Page();
         }
 
         if (parsedDate > DateTime.Today)
         {
-            ModelState.AddModelError(nameof(RegistrationDate), "Date of registration must be today or in the past");
+            ModelState.AddModelError(nameof(RegistrationDate), StaticTextResource.Supplier_LegalFormFormationDate_FutureDateErrorMessage);
             return Page();
         }
 

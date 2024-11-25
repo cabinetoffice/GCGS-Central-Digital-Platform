@@ -1,9 +1,10 @@
 @page "/organisation/{id}/supplier-information/individual-or-org"
 @using CO.CDP.Organisation.WebApiClient
+@using CO.CDP.Localization
 @model SupplierIndividualOrOrgModel
 
 @{
-    ViewData["Title"] = "What type of supplier are you?";
+    ViewData["Title"] = @StaticTextResource.Supplier_WhatTypeOfSupplier;
     var supplierTypeHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.SupplierType)).HasInnerHtml;
     var backLink = $"/organisation/{Model.Id}/supplier-information/{(Model.SupplierType.HasValue ? "basic-information" : "")}";
     string IsSelected(SupplierType radioValue) => Model.SupplierType == radioValue ? "checked='checked'" : string.Empty;
@@ -11,7 +12,7 @@
 
 @section BeforeContent {
     <a href="@backLink" class="govuk-back-link">
-        Back
+        @StaticTextResource.Global_Back
     </a>
 }
 
@@ -27,11 +28,11 @@
                     <fieldset class="govuk-fieldset">
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                             <h1 class="govuk-fieldset__heading">
-                                @ViewData["Title"]
+                                @StaticTextResource.Supplier_WhatTypeOfSupplier
                             </h1>
                         </legend>
                         <div id="individualOrOrg-hint" class="govuk-hint">
-                            We need information from you based on the type of supplier you are.
+                            @StaticTextResource.Supplier_InformationHint
                         </div>
                         @if (supplierTypeHasError)
                         {
@@ -46,7 +47,7 @@
                                        type="radio" value="@SupplierType.Organisation"
                                        aria-describedby="organisation-hint" @IsSelected(SupplierType.Organisation)>
                                 <label class="govuk-label govuk-radios__label" for="organisation">
-                                    Organisation - for example, a company
+                                    @StaticTextResource.Supplier_Organisation
                                 </label>
                             </div>
 
@@ -55,14 +56,14 @@
                                        type="radio" value="@SupplierType.Individual"
                                        aria-describedby="individual-hint" @IsSelected(SupplierType.Individual)>
                                 <label class="govuk-label govuk-radios__label" for="individual">
-                                    Individual - for example, a sole trader
+                                    @StaticTextResource.Supplier_Individual
                                 </label>
                             </div>
                         </div>
                     </fieldset>
                 </div>
                 <govuk-button>
-                    Continue
+                    @StaticTextResource.Supplier_Continue
                 </govuk-button>
             </form>
         </div>
