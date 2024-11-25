@@ -916,55 +916,94 @@
   <data name="ApiKeyManagement_CreateApiKey_ValidationError" xml:space="preserve">
     <value>Enter the api key name</value>
   </data>
-  <data name="PdfGenerator_Email_address" xml:space="preserve">
+  <data name="PdfGenerator_BasicInformation_EmailAddress" xml:space="preserve">
     <value>Email address</value>
+  </data>
+  <data name="PdfGenerator_BasicInformation_LawRegistered" xml:space="preserve">
+    <value>Law registered</value>
+  </data>
+  <data name="PdfGenerator_BasicInformation_LegalForm" xml:space="preserve">
+    <value>Legal form</value>
+  </data>
+  <data name="PdfGenerator_BasicInformation_OrganisationName" xml:space="preserve">
+    <value>Organisation name</value>
+  </data>
+  <data name="PdfGenerator_BasicInformation_OrganisationType" xml:space="preserve">
+    <value>Organisation type</value>
+  </data>
+  <data name="PdfGenerator_BasicInformation_PostalAddress" xml:space="preserve">
+    <value>Postal address</value>
+  </data>
+  <data name="PdfGenerator_BasicInformation_RegisteredAddress" xml:space="preserve">
+    <value>Registered address</value>
+  </data>
+  <data name="PdfGenerator_BasicInformation_RegisteredLegalForm" xml:space="preserve">
+    <value>Registered legal form</value>
+  </data>
+  <data name="PdfGenerator_BasicInformation_RegistrationDate" xml:space="preserve">
+    <value>Registration date</value>
+  </data>
+  <data name="PdfGenerator_BasicInformation_Suppliertype" xml:space="preserve">
+    <value>Supplier type</value>
+  </data>
+  <data name="PdfGenerator_BasicInformation_Title" xml:space="preserve">
+    <value>Basic Information</value>
+  </data>
+  <data name="PdfGenerator_BasicInformation_VAT_Number" xml:space="preserve">
+    <value>VAT number</value>
+  </data>
+  <data name="PdfGenerator_BasicInformation_WebsiteAddress" xml:space="preserve">
+    <value>Website address</value>
+  </data>
+  <data name="PdfGenerator_ConnectedOrganisationInformation_Title" xml:space="preserve">
+    <value>Connected Organisation Information</value>
+  </data>
+  <data name="PdfGenerator_ConnectedPersonCategory" xml:space="preserve">
+    <value>Category</value>
+  </data>
+  <data name="PdfGenerator_ConnectedPersonInformation_Title" xml:space="preserve">
+    <value>Connected Person Information</value>
+  </data>
+  <data name="PdfGenerator_ConnectedPersonType" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="PdfGenerator_ConnectedPerson_CompanyHouseNumber" xml:space="preserve">
+    <value>Company house number</value>
+  </data>
+  <data name="PdfGenerator_ConnectedPerson_DateOfBirth" xml:space="preserve">
+    <value>Date of birth</value>
+  </data>
+  <data name="PdfGenerator_ConnectedPerson_FirstName" xml:space="preserve">
+    <value>First name</value>
+  </data>
+  <data name="PdfGenerator_ConnectedPerson_LastName" xml:space="preserve">
+    <value>Last name</value>
+  </data>
+  <data name="PdfGenerator_ConnectedPerson_LawRegistered" xml:space="preserve">
+    <value>Law registered</value>
+  </data>
+  <data name="PdfGenerator_ConnectedPerson_Nationality" xml:space="preserve">
+    <value>Nationality</value>
+  </data>
+  <data name="PdfGenerator_ConnectedPerson_OrganisationCategory" xml:space="preserve">
+    <value>Category</value>
+  </data>
+  <data name="PdfGenerator_ConnectedPerson_OrganisationEntityType" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="PdfGenerator_ConnectedPerson_OrganisationName" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="PdfGenerator_ConnectedPerson_RegisteredLegalForm" xml:space="preserve">
+    <value>Registered legal form</value>
+  </data>
+  <data name="PdfGenerator_ConnectedPerson_ResidentCountry" xml:space="preserve">
+    <value>Resident country</value>
   </data>
   <data name="PdfGenerator_Footer_GeneratedOn" xml:space="preserve">
     <value>Generated on</value>
   </data>
-  <data name="PdfGenerator_Law_registered" xml:space="preserve">
-    <value>Law registered</value>
-  </data>
-  <data name="PdfGenerator_Legal_form" xml:space="preserve">
-    <value>Legal form</value>
-  </data>
-  <data name="PdfGenerator_Organisation_name" xml:space="preserve">
-    <value>Organisation name</value>
-  </data>
-  <data name="PdfGenerator_Organisation_type" xml:space="preserve">
-    <value>Organisation type</value>
-  </data>
-  <data name="PdfGenerator_Postal_address" xml:space="preserve">
-    <value>Postal address</value>
-  </data>
-  <data name="PdfGenerator_Registered_address" xml:space="preserve">
-    <value>Registered address</value>
-  </data>
-  <data name="PdfGenerator_Registered_legal_form" xml:space="preserve">
-    <value>Registered legal form</value>
-  </data>
-  <data name="PdfGenerator_Registration_date" xml:space="preserve">
-    <value>Registration date</value>
-  </data>
-  <data name="PdfGenerator_Supplier_type" xml:space="preserve">
-    <value>Supplier type</value>
-  </data>
-  <data name="PdfGenerator_Title_Basic_Information" xml:space="preserve">
-    <value>Basic Information</value>
-  </data>
-  <data name="PdfGenerator_Title_Connected_Organisation_Information" xml:space="preserve">
-    <value>Connected Organisation Information</value>
-  </data>
-  <data name="PdfGenerator_Title_Connected_Person_Information" xml:space="preserve">
-    <value>Connected Person Information</value>
-  </data>
-  <data name="PdfGenerator_Title_Supplier_Information" xml:space="preserve">
+  <data name="PdfGenerator_SupplierInformation_Title" xml:space="preserve">
     <value>Supplier Information</value>
-  </data>
-  <data name="PdfGenerator_VAT_number" xml:space="preserve">
-    <value>VAT number</value>
-  </data>
-  <data name="PdfGenerator_Website_address" xml:space="preserve">
-    <value>Website address</value>
   </data>
 </root>

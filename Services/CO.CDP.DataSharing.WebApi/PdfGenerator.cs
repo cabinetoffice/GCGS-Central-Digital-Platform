@@ -25,7 +25,7 @@ public class PdfGenerator : IPdfGenerator
                 page.DefaultTextStyle(x => x.FontSize(10).FontFamily("DejaVu Sans"));
 
 
-                page.Header().Text(StaticTextResource.PdfGenerator_Title_Supplier_Information).FontSize(14).Bold().AlignCenter();
+                page.Header().Text(StaticTextResource.PdfGenerator_SupplierInformation_Title).FontSize(14).Bold().AlignCenter();
 
                 page.Content().Column(col =>
                 {
@@ -76,41 +76,41 @@ public class PdfGenerator : IPdfGenerator
 
     private void AddBasicInformationSection(ColumnDescriptor col, BasicInformation basicInformation)
     {
-        col.Item().Text(StaticTextResource.PdfGenerator_Title_Basic_Information).Bold().FontSize(12);
+        col.Item().Text(StaticTextResource.PdfGenerator_BasicInformation_Title).Bold().FontSize(12);
         col.Item().PaddingBottom(10);
 
         if (!string.IsNullOrEmpty(basicInformation.SupplierType?.ToString()))
-            col.Item().Element(container => AddTwoColumnRow(container, StaticTextResource.PdfGenerator_Supplier_type, basicInformation.SupplierType?.ToString()));
+            col.Item().Element(container => AddTwoColumnRow(container, StaticTextResource.PdfGenerator_BasicInformation_Suppliertype, basicInformation.SupplierType?.ToString()));
 
         if (!string.IsNullOrEmpty(basicInformation.OrganisationName?.ToString()))
-            col.Item().Element(container => AddTwoColumnRow(container, StaticTextResource.PdfGenerator_Organisation_name, basicInformation.OrganisationName?.ToString()));
+            col.Item().Element(container => AddTwoColumnRow(container, StaticTextResource.PdfGenerator_BasicInformation_OrganisationName, basicInformation.OrganisationName?.ToString()));
 
         if (basicInformation.RegisteredAddress != null)
-            col.Item().Element(container => AddTwoColumnRow(container, StaticTextResource.PdfGenerator_Registered_address, FormatAddress(basicInformation.RegisteredAddress)));
+            col.Item().Element(container => AddTwoColumnRow(container, StaticTextResource.PdfGenerator_BasicInformation_RegisteredAddress, FormatAddress(basicInformation.RegisteredAddress)));
 
         if (basicInformation.PostalAddress != null)
-            col.Item().Element(container => AddTwoColumnRow(container, StaticTextResource.PdfGenerator_Postal_address, FormatAddress(basicInformation.PostalAddress)));
+            col.Item().Element(container => AddTwoColumnRow(container, StaticTextResource.PdfGenerator_BasicInformation_PostalAddress, FormatAddress(basicInformation.PostalAddress)));
 
         if (!string.IsNullOrEmpty(basicInformation.VatNumber))
-            col.Item().Element(container => AddTwoColumnRow(container, StaticTextResource.PdfGenerator_VAT_number, basicInformation.VatNumber));
+            col.Item().Element(container => AddTwoColumnRow(container, StaticTextResource.PdfGenerator_BasicInformation_VAT_Number, basicInformation.VatNumber));
 
         if (!string.IsNullOrEmpty(basicInformation.WebsiteAddress))
-            col.Item().Element(container => AddTwoColumnRow(container, StaticTextResource.PdfGenerator_Website_address, basicInformation.WebsiteAddress));
+            col.Item().Element(container => AddTwoColumnRow(container, StaticTextResource.PdfGenerator_BasicInformation_WebsiteAddress, basicInformation.WebsiteAddress));
 
         if (!string.IsNullOrEmpty(basicInformation.EmailAddress))
-            col.Item().Element(container => AddTwoColumnRow(container, StaticTextResource.PdfGenerator_Email_address, basicInformation.EmailAddress));
+            col.Item().Element(container => AddTwoColumnRow(container, StaticTextResource.PdfGenerator_BasicInformation_EmailAddress, basicInformation.EmailAddress));
 
         if (!string.IsNullOrEmpty(basicInformation.OrganisationType.ToString()))
-            col.Item().Element(container => AddTwoColumnRow(container, StaticTextResource.PdfGenerator_Organisation_type, basicInformation.OrganisationType.ToString()));
+            col.Item().Element(container => AddTwoColumnRow(container, StaticTextResource.PdfGenerator_BasicInformation_OrganisationType, basicInformation.OrganisationType.ToString()));
 
         if (basicInformation.LegalForm != null)
         {
             col.Item().Element(container =>
             {
-                AddTwoColumnRow(container, StaticTextResource.PdfGenerator_Legal_form,
-                    $"{StaticTextResource.PdfGenerator_Registered_legal_form}: {basicInformation.LegalForm.RegisteredLegalForm}\n" +
-                    $"{StaticTextResource.PdfGenerator_Law_registered}: {basicInformation.LegalForm.LawRegistered}\n" +
-                    $"{StaticTextResource.PdfGenerator_Registration_date}: {basicInformation.LegalForm.RegistrationDate:dd MMMM yyyy}");
+                AddTwoColumnRow(container, StaticTextResource.PdfGenerator_BasicInformation_LegalForm,
+                    $"{StaticTextResource.PdfGenerator_BasicInformation_RegisteredLegalForm}: {basicInformation.LegalForm.RegisteredLegalForm}\n" +
+                    $"{StaticTextResource.PdfGenerator_BasicInformation_LawRegistered}: {basicInformation.LegalForm.LawRegistered}\n" +
+                    $"{StaticTextResource.PdfGenerator_BasicInformation_RegistrationDate}: {basicInformation.LegalForm.RegistrationDate:dd MMMM yyyy}");
             });
         }
 
@@ -120,7 +120,7 @@ public class PdfGenerator : IPdfGenerator
 
     private void AddConnectedPersonInformationSection(ColumnDescriptor col, List<ConnectedPersonInformation> connectedPersons)
     {
-        col.Item().Text(StaticTextResource.PdfGenerator_Title_Connected_Person_Information).Bold().FontSize(12);
+        col.Item().Text(StaticTextResource.PdfGenerator_ConnectedPersonInformation_Title).Bold().FontSize(12);
         col.Item().PaddingBottom(10);
 
         if (connectedPersons.Any())
@@ -131,54 +131,54 @@ public class PdfGenerator : IPdfGenerator
 
                 if (person.Organisation != null)
                 {
-                    col.Item().Text($"{StaticTextResource.PdfGenerator_Title_Connected_Organisation_Information}:").Bold();
+                    col.Item().Text($"{StaticTextResource.PdfGenerator_ConnectedOrganisationInformation_Title}:").Bold();
                     col.Item().PaddingBottom(10);
                     if (!string.IsNullOrEmpty(person.Organisation.Name))
-                        col.Item().Element(container => AddTwoColumnRow(container, "Name", person.Organisation.Name));
+                        col.Item().Element(container => AddTwoColumnRow(container, StaticTextResource.PdfGenerator_ConnectedPerson_OrganisationName, person.Organisation.Name));
                     if (!string.IsNullOrEmpty(person.Organisation.RegisteredLegalForm))
-                        col.Item().Element(container => AddTwoColumnRow(container, "Registered legal form", person.Organisation.RegisteredLegalForm));
+                        col.Item().Element(container => AddTwoColumnRow(container, StaticTextResource.PdfGenerator_ConnectedPerson_RegisteredLegalForm, person.Organisation.RegisteredLegalForm));
                     if (!string.IsNullOrEmpty(person.Organisation.LawRegistered))
-                        col.Item().Element(container => AddTwoColumnRow(container, "Law registered", person.Organisation.LawRegistered));
+                        col.Item().Element(container => AddTwoColumnRow(container, StaticTextResource.PdfGenerator_ConnectedPerson_LawRegistered, person.Organisation.LawRegistered));
                 }
 
                 if (!string.IsNullOrEmpty(person.FirstName))
-                    col.Item().Element(container => AddTwoColumnRow(container, "First name", person.FirstName));
+                    col.Item().Element(container => AddTwoColumnRow(container, StaticTextResource.PdfGenerator_ConnectedPerson_FirstName, person.FirstName));
 
                 if (!string.IsNullOrEmpty(person.LastName))
-                    col.Item().Element(container => AddTwoColumnRow(container, "Last name", person.LastName));
+                    col.Item().Element(container => AddTwoColumnRow(container, StaticTextResource.PdfGenerator_ConnectedPerson_LastName, person.LastName));
 
                 if (!string.IsNullOrEmpty(person.Nationality))
-                    col.Item().Element(container => AddTwoColumnRow(container, "Nationality", person.Nationality));
+                    col.Item().Element(container => AddTwoColumnRow(container, StaticTextResource.PdfGenerator_ConnectedPerson_Nationality, person.Nationality));
 
                 if (person.DateOfBirth != null)
-                    col.Item().Element(container => AddTwoColumnRow(container, "Date of birth", person.DateOfBirth?.ToString("dd MMMM yyyy")));
+                    col.Item().Element(container => AddTwoColumnRow(container, StaticTextResource.PdfGenerator_ConnectedPerson_DateOfBirth, person.DateOfBirth?.ToString("dd MMMM yyyy")));
 
                 if (!string.IsNullOrEmpty(person.CompanyHouseNumber))
-                    col.Item().Element(container => AddTwoColumnRow(container, "Company House Number", person.CompanyHouseNumber));
+                    col.Item().Element(container => AddTwoColumnRow(container, StaticTextResource.PdfGenerator_ConnectedPerson_CompanyHouseNumber, person.CompanyHouseNumber));
 
                 if (!string.IsNullOrEmpty(person.PersonType.ToString()))
                 {
                     if (!string.IsNullOrEmpty(person.Organisation?.Name))
                     {
-                        col.Item().Element(container => AddTwoColumnRow(container, "Type", GetFriendlyEntityTypeText(person.EntityType)));
+                        col.Item().Element(container => AddTwoColumnRow(container, StaticTextResource.PdfGenerator_ConnectedPerson_OrganisationEntityType, GetFriendlyEntityTypeText(person.EntityType)));
                     }
                     else
                     {
-                        col.Item().Element(container => AddTwoColumnRow(container, "Type", GetFriendlyPersonTypeText(person.PersonType)));
+                        col.Item().Element(container => AddTwoColumnRow(container, StaticTextResource.PdfGenerator_ConnectedPersonType, GetFriendlyPersonTypeText(person.PersonType)));
                     }
                 }
 
                 if (!string.IsNullOrEmpty(person.Organisation?.Name))
                 {
-                    col.Item().Element(container => AddTwoColumnRow(container, "Category", GetFriendlyOrganisationCategoryText(person.ConnectedOrganisationCategoryType)));
+                    col.Item().Element(container => AddTwoColumnRow(container, StaticTextResource.PdfGenerator_ConnectedPerson_OrganisationCategory, GetFriendlyOrganisationCategoryText(person.ConnectedOrganisationCategoryType)));
                 }
                 else if (!string.IsNullOrEmpty(person.ToString()))
                 {
-                    col.Item().Element(container => AddTwoColumnRow(container, "Category", GetFriendlyCategoryText(person.Category)));
+                    col.Item().Element(container => AddTwoColumnRow(container, StaticTextResource.PdfGenerator_ConnectedPersonCategory, GetFriendlyCategoryText(person.Category)));
                 }
 
                 if (!string.IsNullOrEmpty(person.ResidentCountry))
-                    col.Item().Element(container => AddTwoColumnRow(container, "Resident country", person.ResidentCountry));
+                    col.Item().Element(container => AddTwoColumnRow(container, StaticTextResource.PdfGenerator_ConnectedPerson_ResidentCountry, person.ResidentCountry));
 
                 var registeredAddress = person.Addresses.FirstOrDefault(a => a.Type == AddressType.Registered);
                 var postalAddress = person.Addresses.FirstOrDefault(a => a.Type == AddressType.Postal);
