@@ -18,6 +18,7 @@ module "ecs_service_entity_verification" {
       ev_db_name                          = var.db_entity_verification_name
       ev_db_password                      = "${var.db_entity_verification_credentials_arn}:username::"
       ev_db_username                      = "${var.db_entity_verification_credentials_arn}:password::"
+      uuid_ppon_service_enable            = false
       public_domain                       = var.public_domain
       queue_entity_verification_queue_url = var.queue_entity_verification_queue_url
       queue_organisation_queue_url        = var.queue_organisation_queue_url
