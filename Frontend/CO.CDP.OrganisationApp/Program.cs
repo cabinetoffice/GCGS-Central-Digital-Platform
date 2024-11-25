@@ -152,10 +152,11 @@ builder.Services.AddHttpClient(AuthorityClient.OrganisationAuthorityHttpClientNa
 
 builder.Services.AddTransient<CookieEvents>();
 builder.Services.AddSingleton<IOneLoginAuthority, OneLoginAuthority>();
-builder.Services.AddTransient<IOneLoginSessionManager, OneLoginSessionManager>();
+builder.Services.AddTransient<ILogoutManager, LogoutManager>();
 builder.Services.AddTransient<ITokenService, TokenService>();
 builder.Services.AddTransient<OidcEvents>();
 builder.Services.AddTransient<IAuthorityClient, AuthorityClient>();
+builder.Services.AddHttpClient(LogoutManager.LogoutCallbackHttpClientName, c => c.Timeout = TimeSpan.FromSeconds(5));
 
 var oneLoginAuthority = builder.Configuration.GetValue<string>("OneLogin:Authority")
             ?? throw new Exception("Missing configuration key: OneLogin:Authority.");

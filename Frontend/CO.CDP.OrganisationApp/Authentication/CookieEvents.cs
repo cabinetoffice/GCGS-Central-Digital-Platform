@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 namespace CO.CDP.OrganisationApp.Authentication;
 
 public class CookieEvents(
-    IOneLoginSessionManager oneLoginSessionManager,
+    ILogoutManager logoutManager,
     IAuthorityClient authorityClient) : CookieAuthenticationEvents
 {
     public override async Task ValidatePrincipal(CookieValidatePrincipalContext context)
@@ -17,12 +17,12 @@ public class CookieEvents(
 
         var urn = context.Principal.FindFirst("sub")?.Value;
 
-        if (urn == null || await oneLoginSessionManager.HasSignedOut(urn) == false)
+        if (urn == null || await logoutManager.HasLoggedOut(urn) == false)
         {
             return;
         }
 
-        await oneLoginSessionManager.RemoveFromSignedOutSessionsList(urn);
+        await logoutManager.RemoveAsLoggedOut(urn);
         await authorityClient.RevokeRefreshToken(urn);
 
         context.RejectPrincipal();
