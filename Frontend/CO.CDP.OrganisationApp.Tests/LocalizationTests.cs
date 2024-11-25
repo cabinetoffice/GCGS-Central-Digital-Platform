@@ -2,6 +2,7 @@ using System.Net;
 using Amazon.SimpleSystemsManagement;
 using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
+using CO.CDP.Tenant.WebApiClient;
 using CO.CDP.TestKit.Mvc;
 using FluentAssertions;
 using Microsoft.AspNetCore.Antiforgery;
@@ -16,6 +17,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Moq;
+using UserDetails = CO.CDP.OrganisationApp.Models.UserDetails;
 
 namespace CO.CDP.OrganisationApp.Tests;
 public class LocalizationTests
@@ -47,12 +49,16 @@ public class LocalizationTests
                    "fakeFormFieldName",
                    "fakeHeaderName"));
 
+        var tenantClient = new Mock<ITenantClient>();
+        tenantClient.Setup(c => c.LookupTenantAsync()).ReturnsAsync(AnyTenantLookup());
+
         var factory = new TestWebApplicationFactory<Program>(builder =>
         {
             builder.ConfigureServices(services =>
             {
                 services.AddSingleton(session.Object);
                 services.AddSingleton(antiforgery.Object);
+                services.AddSingleton(tenantClient.Object);
                 services.AddTransient<IAuthenticationSchemeProvider, FakeSchemeProvider>();
                 services.Configure<OpenIdConnectOptions>(OpenIdConnectDefaults.AuthenticationScheme, options => {
                     options.ClientId = "123";
@@ -167,4 +173,29 @@ public class LocalizationTests
 
         responseBody.Should().Contain("<span class=\"field-validation-error\" data-valmsg-for=\"OrganisationName\" data-valmsg-replace=\"true\">Rhowch enw&#x2019;r sefydliad</span>");
     }
+
+    private static TenantLookup AnyTenantLookup() => new(
+        user: new CO.CDP.Tenant.WebApiClient.UserDetails(
+            email: "bob@example.com",
+            name: "Bob",
+            scopes: [],
+            urn: "urn:2024:abc"),
+        tenants:
+        [
+            new UserTenant(
+                id: Guid.NewGuid(),
+                name: "Bob the Tenant",
+                organisations: [
+                    new UserOrganisation(
+                        id: Guid.NewGuid(),
+                        name: "Acme Ltd",
+                        roles: [PartyRole.Tenderer],
+                        pendingRoles: [],
+                        scopes: ["ADMIN"],
+                        uri: new Uri("https://example.com")
+                    )
+                ]
+            )
+        ]
+    );
 }
