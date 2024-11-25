@@ -1455,63 +1455,63 @@
   <data name="Organisation_OrganisationIdentification_ODS_Code_ErrorMessage" xml:space="preserve">
     <value>Enter the code</value>
   </data>
-  <data name="Organisation_ShareYourInformation_Title" xml:space="preserve">
+  <data name="ShareYourInformation_Title" xml:space="preserve">
     <value>Share your supplier information</value>
   </data>
-  <data name="Organisation_ShareYourInformation_HowItWorksSummary" xml:space="preserve">
+  <data name="ShareYourInformation_HowItWorksSummary" xml:space="preserve">
     <value>How it works</value>
   </data>
-  <data name="Organisation_ShareYourInformation_HowItWorksParagraph1" xml:space="preserve">
+  <data name="ShareYourInformation_HowItWorksParagraph1" xml:space="preserve">
     <value>To share your supplier information with buyers you need to create a share code and file, and declare that the information is correct.</value>
   </data>
-  <data name="Organisation_ShareYourInformation_HowItWorksParagraph2" xml:space="preserve">
+  <data name="ShareYourInformation_HowItWorksParagraph2" xml:space="preserve">
     <value>This saves a copy of the supplier information you provided about your organisation, connected persons, exclusions and financial information.</value>
   </data>
-  <data name="Organisation_ShareYourInformation_HowItWorksParagraph3" xml:space="preserve">
+  <data name="ShareYourInformation_HowItWorksParagraph3" xml:space="preserve">
     <value>When you submit a bid for a procurement, the contracting authority will let you know how to give them the share code or file.</value>
   </data>
-  <data name="Organisation_ShareYourInformation_HowItWorksParagraph4" xml:space="preserve">
+  <data name="ShareYourInformation_HowItWorksParagraph4" xml:space="preserve">
     <value>If your supplier information changes, you can update it and create a new share code and file to share the new information.</value>
   </data>
-  <data name="Organisation_ShareYourInformation_Instructions" xml:space="preserve">
+  <data name="ShareYourInformation_Instructions" xml:space="preserve">
     <value>Create a share code once you've completed all sections. You'll be asked for this share code if you apply for a tender.</value>
   </data>
-  <data name="Organisation_ShareYourInformation_CreateShareCodeButton" xml:space="preserve">
+  <data name="ShareYourInformation_CreateShareCodeButton" xml:space="preserve">
     <value>Create a share code</value>
   </data>
-  <data name="Organisation_ShareYourInformation_TableCaption" xml:space="preserve">
+  <data name="ShareYourInformation_TableCaption" xml:space="preserve">
     <value>Your share codes and supplier information files</value>
   </data>
-  <data name="Organisation_ShareYourInformation_TableHeaderShareCodes" xml:space="preserve">
+  <data name="ShareYourInformation_TableHeaderShareCodes" xml:space="preserve">
     <value>Share codes</value>
   </data>
-  <data name="Organisation_ShareYourInformation_TableHeaderCreatedOn" xml:space="preserve">
+  <data name="ShareYourInformation_TableHeaderCreatedOn" xml:space="preserve">
     <value>Created on</value>
   </data>
-  <data name="Organisation_ShareYourInformation_TableHeaderFiles" xml:space="preserve">
+  <data name="ShareYourInformation_TableHeaderFiles" xml:space="preserve">
     <value>Files</value>
   </data>
-  <data name="Organisation_ShareYourInformation_CreatedOn" xml:space="preserve">
+  <data name="ShareYourInformation_CreatedOn" xml:space="preserve">
     <value>Created on</value>
   </data>
-  <data name="Organisation_ShareYourInformation_ShareCode" xml:space="preserve">
+  <data name="ShareYourInformation_ShareCode" xml:space="preserve">
     <value>Share code</value>
   </data>
-  <data name="Organisation_ShareYourInformation_ShareCodeCreated" xml:space="preserve">
+  <data name="ShareYourInformation_ShareCodeCreated" xml:space="preserve">
     <value>Share code created</value>
   </data>
-  <data name="Organisation_ShareYourInformation_YourShareCode" xml:space="preserve">
+  <data name="ShareYourInformation_YourShareCode" xml:space="preserve">
     <value>Your share code</value>
   </data>
-  <data name="Organisation_ShareYourInformation_ShareCodeCreatedFooterBody1" xml:space="preserve">
+  <data name="ShareYourInformation_ShareCodeCreatedFooterBody1" xml:space="preserve">
     <value>
       You can save your share code and &lt;a href="?handler=download&amp;shareCode={0}"&gt;download your supplier information file&lt;/a&gt; or come back and get them when needed.
     </value>
   </data>
-  <data name="Organisation_ShareYourInformation_ShareCodeCreatedFooterBody2" xml:space="preserve">
+  <data name="ShareYourInformation_ShareCodeCreatedFooterBody2" xml:space="preserve">
     <value>If your supplier information changes, you can update it and create a new share code and file to share the new information.</value>
   </data>
-  <data name="Organisation_ShareYourInformation_BackOrganisationDetails" xml:space="preserve">
+  <data name="ShareYourInformation_BackOrganisationDetails" xml:space="preserve">
     <value>Back to organisation details</value>
   </data>
   <data name="OrganisationRegistration_CompanyHouseNumberQuestion_Hint" xml:space="preserve">

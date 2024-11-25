@@ -6,7 +6,7 @@
 @using CO.CDP.OrganisationApp.TagHelpers
 
 @{
-    ViewData["Title"] = StaticTextResource.Organisation_ShareYourInformation_Title;
+    ViewData["Title"] = StaticTextResource.ShareYourInformation_Title;
     var createShareCodeLink = $"/organisation/{Model.OrganisationId}/forms/{Model.FormId}/sections/{Model.SectionId}";
     var backUrl = $"/organisation/{Model.OrganisationId}/supplier-information";
 }
@@ -28,24 +28,24 @@
                 <details class="govuk-details">
                     <summary class="govuk-details__summary">
                         <span class="govuk-details__summary-text">
-                            @StaticTextResource.Organisation_ShareYourInformation_HowItWorksSummary
+                            @StaticTextResource.ShareYourInformation_HowItWorksSummary
                         </span>
                     </summary>
                     <div class="govuk-details__text">
-                        <p>@StaticTextResource.Organisation_ShareYourInformation_HowItWorksParagraph1</p>
-                        <p>@StaticTextResource.Organisation_ShareYourInformation_HowItWorksParagraph2</p>
-                        <p>@StaticTextResource.Organisation_ShareYourInformation_HowItWorksParagraph3</p>
-                        <p>@StaticTextResource.Organisation_ShareYourInformation_HowItWorksParagraph4</p>
+                        <p>@StaticTextResource.ShareYourInformation_HowItWorksParagraph1</p>
+                        <p>@StaticTextResource.ShareYourInformation_HowItWorksParagraph2</p>
+                        <p>@StaticTextResource.ShareYourInformation_HowItWorksParagraph3</p>
+                        <p>@StaticTextResource.ShareYourInformation_HowItWorksParagraph4</p>
                     </div>
                 </details>
 
-                <p class="govuk-body">@StaticTextResource.Organisation_ShareYourInformation_Instructions</p>
+                <p class="govuk-body">@StaticTextResource.ShareYourInformation_Instructions</p>
 
                 <authorize scope="@OrgScopeRequirement.Editor">
                     @if (await Model.MandatorySectionsCompleted())
                     {
                         <a href="@createShareCodeLink" role="button" draggable="false" class="govuk-button" data-module="govuk-button">
-                            @StaticTextResource.Organisation_ShareYourInformation_CreateShareCodeButton
+                            @StaticTextResource.ShareYourInformation_CreateShareCodeButton
                         </a>
                     }
                 </authorize>
@@ -55,12 +55,12 @@
                     <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
                     <div class="govuk-radios govuk-!-margin-top-6">
                         <table class="govuk-table">
-                            <caption class="govuk-table__caption govuk-table__caption--m">@StaticTextResource.Organisation_ShareYourInformation_TableCaption</caption>
+                            <caption class="govuk-table__caption govuk-table__caption--m">@StaticTextResource.ShareYourInformation_TableCaption</caption>
                             <thead class="govuk-table__head">
                             <tr class="govuk-table__row">
-                                <th scope="col" class="govuk-table__header">@StaticTextResource.Organisation_ShareYourInformation_TableHeaderShareCodes</th>
-                                <th scope="col" class="govuk-table__header">@StaticTextResource.Organisation_ShareYourInformation_TableHeaderCreatedOn</th>
-                                <th scope="col" class="govuk-table__header">@StaticTextResource.Organisation_ShareYourInformation_TableHeaderFiles</th>
+                                <th scope="col" class="govuk-table__header">@StaticTextResource.ShareYourInformation_TableHeaderShareCodes</th>
+                                <th scope="col" class="govuk-table__header">@StaticTextResource.ShareYourInformation_TableHeaderCreatedOn</th>
+                                <th scope="col" class="govuk-table__header">@StaticTextResource.ShareYourInformation_TableHeaderFiles</th>
                             </tr>
                             </thead>
                             <tbody class="govuk-table__body">

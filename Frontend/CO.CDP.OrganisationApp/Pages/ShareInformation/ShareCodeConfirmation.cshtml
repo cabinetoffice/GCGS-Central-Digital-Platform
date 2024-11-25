@@ -2,7 +2,7 @@
 @using CO.CDP.Localization
 @model ShareCodeConfirmationModel
 @{
-    ViewData["Title"] = StaticTextResource.Organisation_ShareYourInformation_ShareCodeCreated;
+    ViewData["Title"] = StaticTextResource.ShareYourInformation_ShareCodeCreated;
     var backUrl = $"/organisation/{Model.OrganisationId}/forms/{Model.FormId}/sections/{Model.SectionId}/share-codes-list-view";
 }
 
@@ -16,13 +16,13 @@
                 @ViewData["Title"]
             </h1>
             <div class="govuk-panel__body">
-                @StaticTextResource.Organisation_ShareYourInformation_YourShareCode<br><strong>@Model.ShareCode</strong>
+                @StaticTextResource.ShareYourInformation_YourShareCode<br><strong>@Model.ShareCode</strong>
             </div>
         </div>
 
         <p class="govuk-body">
-            @Html.Raw(string.Format(StaticTextResource.Organisation_ShareYourInformation_ShareCodeCreatedFooterBody1, Model.ShareCode))
+            @Html.Raw(string.Format(StaticTextResource.ShareYourInformation_ShareCodeCreatedFooterBody1, Model.ShareCode))
         </p>
-        <p class="govuk-body">@StaticTextResource.Organisation_ShareYourInformation_ShareCodeCreatedFooterBody2</p>
-        <p class="govuk-body"><a href="/organisation/@Model.OrganisationId/supplier-information">@StaticTextResource.Organisation_ShareYourInformation_BackOrganisationDetails</a></p>
+        <p class="govuk-body">@StaticTextResource.ShareYourInformation_ShareCodeCreatedFooterBody2</p>
+        <p class="govuk-body"><a href="/organisation/@Model.OrganisationId/supplier-information">@StaticTextResource.ShareYourInformation_BackOrganisationDetails</a></p>
     </div>

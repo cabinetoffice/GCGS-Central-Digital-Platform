@@ -14,14 +14,14 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <div class="govuk-form-group">
-                <span class="govuk-caption-l">@StaticTextResource.Organisation_ShareYourInformation_ShareCode</span>
+                <span class="govuk-caption-l">@StaticTextResource.ShareYourInformation_ShareCode</span>
                 <h1 class="govuk-heading-l">
                     @ViewData["Title"]
                 </h1>
                 <dl class="govuk-summary-list">
                     <div class="govuk-summary-list__row">
                         <dt class="govuk-summary-list__key">
-                            @StaticTextResource.Organisation_ShareYourInformation_CreatedOn
+                            @StaticTextResource.ShareYourInformation_CreatedOn
                         </dt>
                         <dd class="govuk-summary-list__value">
                             @Model.SharedConsentDetails?.SubmittedAt.ToFormattedString()
