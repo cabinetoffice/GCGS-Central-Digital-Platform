@@ -166,6 +166,35 @@ public class UserInfoServiceTest
         userInfoService.GetOrganisationId().Should().BeNull();
     }
 
+    [Fact]
+    public async Task ItReturnsTrueIfUserHasAnyOrganisationsAssigned()
+    {
+        var userOrganisation = GivenUserOrganisation();
+        var tenantLookup = GivenTenantLookup(tenants: [GivenUserTenant(organisations: [userOrganisation])]);
+
+        _tenantClient.Setup(c => c.LookupTenantAsync()).ReturnsAsync(tenantLookup);
+
+        (await UserInfoService.HasOrganisations()).Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task ItReturnsFalseIfUserHasNoOrganisationsAssigned()
+    {
+        var tenantLookup = GivenTenantLookup(tenants: [GivenUserTenant(organisations: [])]);
+
+        _tenantClient.Setup(c => c.LookupTenantAsync()).ReturnsAsync(tenantLookup);
+
+        (await UserInfoService.HasOrganisations()).Should().BeFalse();
+    }
+
+    [Fact]
+    public async Task ItReturnsFalseIfUserInfoCannotBeRetrieved()
+    {
+        _tenantClient.Setup(c => c.LookupTenantAsync()).ThrowsAsync(new Exception("Failure during tenant lookup."));
+
+        (await UserInfoService.HasOrganisations()).Should().BeFalse();
+    }
+
     [Theory]
     [InlineData("/organisation/a86ba407-b1ec-4184-b70c-6133f8bbed88", "a86ba407-b1ec-4184-b70c-6133f8bbed88")]
     [InlineData("/organisation/a86ba407-b1ec-4184-b70c-6133f8bbed88/profile", "a86ba407-b1ec-4184-b70c-6133f8bbed88")]

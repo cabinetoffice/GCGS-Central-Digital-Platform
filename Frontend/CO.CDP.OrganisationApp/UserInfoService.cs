@@ -23,6 +23,18 @@ public class UserInfoService(IHttpContextAccessor httpContextAccessor, ITenantCl
         return organisationUserScopes.Contains(OrganisationPersonScopes.Viewer) || (organisationUserScopes.Count == 0 && userScopes.Contains(PersonScopes.SupportAdmin));
     }
 
+    public async Task<bool> HasOrganisations()
+    {
+        try
+        {
+            return (await GetUserInfo()).HasOrganisations();
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
     public Guid? GetOrganisationId()
     {
         var path = httpContextAccessor.HttpContext?.Request.Path.Value;

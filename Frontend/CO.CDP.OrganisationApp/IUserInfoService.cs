@@ -1,4 +1,3 @@
-using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.Tenant.WebApiClient;
 
 namespace CO.CDP.OrganisationApp;
@@ -8,6 +7,7 @@ public interface IUserInfoService
     public Task<UserInfo> GetUserInfo();
     public Guid? GetOrganisationId();
     public Task<bool> IsViewer();
+    public Task<bool> HasOrganisations();
 }
 
 public record UserInfo

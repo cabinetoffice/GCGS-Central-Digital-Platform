@@ -3,19 +3,6 @@
 @using Microsoft.AspNetCore.Mvc.Localization
 @using CO.CDP.Localization
 
-@functions {
-    private async Task<UserInfo?> GetUserInfo()
-    {
-        try
-        {
-            return await userInfoService.GetUserInfo();
-        }
-        catch
-        {
-            return null;
-        }
-    }
-}
 @inject Microsoft.Extensions.Configuration.IConfiguration config
 @inject IUserInfoService userInfoService
 @inject IHtmlLocalizer<StaticTextResource> Localizer
@@ -49,7 +36,6 @@
     var ftsService = config["FtsService"] ?? "";
     ftsService = ftsService.EndsWith("/") ? ftsService.TrimEnd(new Char[] { '/' }) : ftsService;
     var organisationId = userInfoService.GetOrganisationId();
-    var userInfo = User.Identity?.IsAuthenticated == true ? await GetUserInfo() : null;
     var homeLink = organisationId == null ? $"{this.Context.Request.Path}{this.Context.Request.QueryString}" : $"{ftsService}/login?organisation_id={organisationId}&redirect_url=/Search";
 }
 
@@ -93,7 +79,7 @@
                             <ul id="navigation" class="govuk-header__navigation-list">
                                 @if (User.Identity?.IsAuthenticated == true)
                                 {
-                                    @if (userInfo?.HasOrganisations() == true)
+                                    @if (await userInfoService.HasOrganisations())
                                     {
                                         if (organisationId != null)
                                         {
