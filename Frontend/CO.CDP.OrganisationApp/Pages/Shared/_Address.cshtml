@@ -1,4 +1,5 @@
 @model AddressPartialModel
+@using CO.CDP.Localization
 
 @{
     var addressLine1HasError = ((TagBuilder)Html.ValidationMessageFor(m => m.AddressLine1)).HasInnerHtml;
@@ -22,7 +23,7 @@
     @if (!Model.IsNonUkAddress && !string.IsNullOrWhiteSpace(Model.NonUkAddressLink))
     {
         <p>
-            <a class="govuk-link govuk-!-font-size-19" href="@Model.NonUkAddressLink">Enter a non-UK address</a>
+            <a class="govuk-link govuk-!-font-size-19" href="@Model.NonUkAddressLink">@StaticTextResource.Shared_Address_NonUk_Link</a>
         </p>
     }
 
@@ -108,6 +109,6 @@
         }
     </div>
     <div class="govuk-form-group">
-        <govuk-button>Continue</govuk-button>
+        <govuk-button>@StaticTextResource.Global_Continue</govuk-button>
     </div>
 </fieldset>

@@ -1,13 +1,15 @@
 using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.Pages.Shared;
+using CO.CDP.OrganisationApp.ThirdPartyApiClients.CharityCommission;
 using CO.CDP.OrganisationApp.ThirdPartyApiClients.CompaniesHouse;
 using Microsoft.AspNetCore.Mvc;
+using CO.CDP.Localization;
 
 namespace CO.CDP.OrganisationApp.Pages.Registration;
 
 [ValidateRegistrationStep]
-public class OrganisationRegisteredAddressModel(ISession session, ICompaniesHouseApi companiesHouseApi) : RegistrationStepModel(session)
+public class OrganisationRegisteredAddressModel(ISession session, ICharityCommissionApi charityCommissionApi, ICompaniesHouseApi companiesHouseApi) : RegistrationStepModel(session)
 {
     public override string CurrentPage => OrganisationAddressPage;
 
@@ -49,6 +51,26 @@ public class OrganisationRegisteredAddressModel(ISession session, ICompaniesHous
                 Address.Country = RegistrationDetails.OrganisationCountryCode;
             }
         }
+
+        if ((RegistrationDetails.OrganisationCountryCode == Country.UKCountryCode) &&
+            (RegistrationDetails.OrganisationScheme == OrganisationSchemeType.CharityCommissionEnglandWales) &&
+            (string.IsNullOrEmpty(Address.AddressLine1)) &&
+            (string.IsNullOrEmpty(Address.TownOrCity)) &&
+            (string.IsNullOrEmpty(Address.Postcode)))
+        {
+            if (RegistrationDetails.OrganisationIdentificationNumber != null)
+            {
+                var details = await charityCommissionApi.GetCharityDetails(RegistrationDetails.OrganisationIdentificationNumber);
+
+                if (details != null)
+                {
+                    Address.AddressLine1 = details.AddressLine2;
+                    Address.TownOrCity = details.AddressLine3;
+                    Address.Postcode = details.PostalCode;
+                    Address.Country = RegistrationDetails.OrganisationCountryCode;
+                }
+            }
+        }
     }
 
     public IActionResult OnPost()
@@ -87,18 +109,18 @@ public class OrganisationRegisteredAddressModel(ISession session, ICompaniesHous
 
         if (Address.IsNonUkAddress)
         {
-            Address.Heading = "Enter your organisation's registered non-UK address";
-            Address.AddressHint = "The address recorded on public records or within the public domain.";
+            Address.Heading = StaticTextResource.OrganisationRegistration_Address_NonUk_Heading;
+            Address.AddressHint = StaticTextResource.OrganisationRegistration_Address_NonUk_Hint;
         } else
         {
             if(RegistrationDetails.OrganisationType == OrganisationType.Buyer)
             {
-                Address.Heading = "Enter your organisation's address";
-                Address.AddressHint = "The principal address the organisation conducts its activities. For example, a head office.";
+                Address.Heading = StaticTextResource.OrganisationRegistration_Address_Buyer_Heading;
+                Address.AddressHint = StaticTextResource.OrganisationRegistration_Address_Buyer_Hint;
             } else
             {
-                Address.Heading = "Enter your organisation's registered address";
-                Address.AddressHint = "The address registered with Companies House, or the principal address the business conducts its activities. For example, a head office.";
+                Address.Heading = StaticTextResource.OrganisationRegistration_Address_Supplier_Heading;
+                Address.AddressHint = StaticTextResource.OrganisationRegistration_Address_Supplier_Hint;
             }
         }
 

@@ -75,7 +75,7 @@ public class JoinOrganisationModelTests
     }
 
     [Fact]
-    public async Task OnPost_UserHasPersonId_JoinIsTrue_CreatesJoinRequestAndRedirectsToSuccessPage()
+    public async Task OnPost_UserHasPersonId_JoinIsTrue_CreatesJoinRequestRemovedRegistrationSessionAndRedirectsToSuccessPage()
     {
         _organisationClientMock.Setup(client => client.LookupOrganisationAsync(string.Empty, _identifier))
             .ReturnsAsync(_organisation);
@@ -88,6 +88,8 @@ public class JoinOrganisationModelTests
             _organisationId,
             It.Is<CreateOrganisationJoinRequest>(r => r.PersonId == _joinOrganisationModel.UserDetails.PersonId)),
             Times.Once);
+
+        _sessionMock.Verify(s => s.Remove(Session.RegistrationDetailsKey), Times.Once);
 
         result.Should().BeOfType<RedirectResult>()
             .Which.Url.Should().Be($"/registration/{_identifier}/join-organisation/success");

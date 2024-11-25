@@ -4,10 +4,11 @@ namespace CO.CDP.OrganisationApp.Tests.Pages;
 
 public class ModelValidationHelper
 {
-    public static IList<ValidationResult> Validate(object model)
+    public static IList<ValidationResult> Validate(object model, ValidationContext? validationContext = null)
     {
         var results = new List<ValidationResult>();
-        var validationContext = new ValidationContext(model, null, null);
+        validationContext ??= new ValidationContext(model, null, null);
+
         Validator.TryValidateObject(model, validationContext, results, true);
         if (model is IValidatableObject result)
         {

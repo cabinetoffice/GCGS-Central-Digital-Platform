@@ -1,9 +1,10 @@
 @page
 @attribute [RazorCompiledItemMetadata("RouteTemplate", RegistrationStepModel.OrganisationHasCompanyHouseNumberPage)]
 @model CO.CDP.OrganisationApp.Pages.Registration.CompanyHouseNumberQuestionModel
+@using CO.CDP.Localization
 
 @{
-    ViewData["Title"] = "Does your organisation have a Companies House number?";
+    ViewData["Title"] = StaticTextResource.OrganisationRegistration_CompanyHouseNumberQuestion_Heading;
     var companiesHouseNumberHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.HasCompaniesHouseNumber)).HasInnerHtml
         || ((TagBuilder)Html.ValidationMessageFor(m => m.CompaniesHouseNumber)).HasInnerHtml;
 
@@ -14,17 +15,21 @@
         Model.RedirectToSummary = true;
     }
 }
-<a href="@backLink" class="govuk-back-link">
-    Back
-</a>
 
-<main class="govuk-main-wrapper" id="main-content">
+@section BeforeContent {
+    <a href="@backLink" class="govuk-back-link">
+        @StaticTextResource.Global_Back
+    </a>
+}
+
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <partial name="_ErrorSummary" model="@Model.ModelState" />
 
             <h1 class="govuk-heading-l">@ViewData["Title"]</h1>
-            <p class="govuk-body">You can <a href="https://find-and-update.company-information.service.gov.uk/" target="_blank">find your company number on Companies House (opens in a new tab)</a>. It is an 8 digit or 2 letter and 6 digit number. For example, 12345678 or SC123456.</p>
+            <p class="govuk-body">
+                @Html.Raw(StaticTextResource.OrganisationRegistration_CompanyHouseNumberQuestion_Hint)
+            </p>
             <form method="post">
                 @if (Request.Query.ContainsKey("frm-summary"))
                 {
@@ -40,12 +45,12 @@
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input" id="YES" name="HasCompaniesHouseNumber" type="radio"
                                        value="true" data-aria-controls="conditional-YES" @(Model.HasCompaniesHouseNumber == true ? "checked" : "")>
-                                <label class="govuk-label govuk-radios__label" for="YES">Yes</label>
+                                <label class="govuk-label govuk-radios__label" for="YES">@StaticTextResource.Global_Yes</label>
                             </div>
 
                             <div class="govuk-radios__conditional" id="conditional-YES">
                                 <div class="govuk-form-group @(companiesHouseNumberHasError ? "govuk-form-group--error" : "")">
-                                    <label class="govuk-label" for="CompaniesHouseNumber">Enter your company number</label>
+                                    <label class="govuk-label" for="CompaniesHouseNumber">@StaticTextResource.OrganisationRegistration_CompanyHouseNumberQuestion_Label</label>
                                     <input class="govuk-input govuk-!-width-one-half @(companiesHouseNumberHasError ? "govuk-input--error" : "")"
                                            id="CompaniesHouseNumber" name="CompaniesHouseNumber" type="text" spellcheck="false" autocomplete="off"
                                            value="@(Model.HasCompaniesHouseNumber == true ? Model.CompaniesHouseNumber : "")">
@@ -55,13 +60,12 @@
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input" id="NO" name="HasCompaniesHouseNumber" type="radio"
                                        value="false" @(Model.HasCompaniesHouseNumber == false ? "checked" : "")>
-                                <label class="govuk-label govuk-radios__label" for="NO">No</label>
+                                <label class="govuk-label govuk-radios__label" for="NO">@StaticTextResource.Global_No</label>
                             </div>
                         </div>
                     </fieldset>
                 </div>
-                <govuk-button>Continue</govuk-button>
+                <govuk-button>@StaticTextResource.Global_Continue</govuk-button>
             </form>
         </div>
     </div>
-</main>

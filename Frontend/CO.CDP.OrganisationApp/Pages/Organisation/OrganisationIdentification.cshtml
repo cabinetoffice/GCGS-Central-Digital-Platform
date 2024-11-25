@@ -1,8 +1,9 @@
 @page "/organisation/{id}/identifiers"
 @model CO.CDP.OrganisationApp.Pages.Organisation.OrganisationIdentificationModel
+@using CO.CDP.Localization
 
 @{
-    ViewData["Title"] = "Is your organisation on any of these registries?";
+    ViewData["Title"] = @StaticTextResource.Organisation_OrganisationIdentification_Heading;
     var CompanyHouseNumberHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.CompanyHouseNumber)).HasInnerHtml;
     var charityCommissionEnglandWalesNumberHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.CharityCommissionEnglandWalesNumber)).HasInnerHtml;
     var scottishCharityRegulatorNumberHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.ScottishCharityRegulatorNumber)).HasInnerHtml;
@@ -20,11 +21,12 @@
     var existingOrganisationScheme = Model.ExistingOrganisationScheme;
 }
 
-<a href="/organisation/@Model.Id" class="govuk-back-link">
-    Back
-</a>
+@section BeforeContent {
+    <a href="/organisation/@Model.Id" class="govuk-back-link">
+        @StaticTextResource.Global_Back
+    </a>
+}
 
-<main class="govuk-main-wrapper">
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <partial name="_ErrorSummary" model="@Model.ModelState" />
@@ -54,7 +56,7 @@
                                     </div>
                                 </div>
                             }
-                            @if (existingOrganisationScheme.Contains("GB-CHC") == false)
+                            @if (existingOrganisationScheme.Contains("GB-CHC") == false)    
                             {
                                 <div class="govuk-checkboxes__item">
                                     <input class="govuk-checkboxes__input" id="GB-CHC" name="OrganisationScheme" type="checkbox" value="GB-CHC" data-aria-controls="conditional-GB-CHC" @(Model.OrganisationScheme!.Contains("GB-CHC") ? "checked" : "")>
@@ -127,7 +129,7 @@
                                         @Html.TextBoxFor(m => m.GuernseyRegistryNumber, new { @class = "govuk-input " + (guernseyRegistryNumberHasError ? "govuk-input--error" : ""), @id = "GuernseyRegistryNumber", @type = "text", spellcheck = "false", autocomplete = "off" })
                                     </div>
                                     <div id="conditional-GG-RCE-hint" class="govuk-hint govuk-radios__hint">
-                                        Include prefix, if applicable. For example, GY.
+                                        @StaticTextResource.Organisation_OrganisationIdentification_GG_RCE_Hint
                                     </div>
                                 </div>
                             }
@@ -199,15 +201,17 @@
                                     <input class="govuk-checkboxes__input" id="Other" name="OrganisationScheme" type="checkbox" value="Other" data-behaviour="exclusive" @(Model.OrganisationScheme.Contains("Other") ? "checked" : "")>
                                     @Html.LabelFor(m => m.Other, new { @class = "govuk-label govuk-checkboxes__label", @for = "Other" })
                                     <div id="OrganisationSchemeHint" class="govuk-hint govuk-checkboxes__hint">
-                                        You'll get a public procurement organisation number (PPON) as an identifier
+                                        @StaticTextResource.Organisation_OrganisationIdentification_Other_Hint
                                     </div>
                                 </div>
                             }
                         </div>
                     </fieldset>
                 </div>
-                <button type="submit" class="govuk-button" data-module="govuk-button">Continue</button>
+
+                <button type="submit" class="govuk-button" data-module="govuk-button">
+                    @StaticTextResource.Global_Continue
+                </button>
             </form>
         </div>
     </div>
-</main>

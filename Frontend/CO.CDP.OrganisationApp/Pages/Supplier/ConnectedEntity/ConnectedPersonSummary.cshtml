@@ -2,93 +2,94 @@
 @model CO.CDP.OrganisationApp.Pages.Supplier.ConnectedPersonSummaryModel
 @using CO.CDP.OrganisationApp.Constants
 @inject IUserInfoService userInfoService
+@using CO.CDP.Localization
 
 @{
-    ViewData["Title"] = $"You have added {(Model.ConnectedEntities.Count == 1 ? "1 connected person" : $"{Model.ConnectedEntities.Count} connected persons")}";
+    ViewData["Title"] = string.Format(StaticTextResource.Supplier_ConnectedEntity_ConnectedPersonSummary_PageTitle, Model.ConnectedEntities.Count);
     var hasError = ((TagBuilder)Html.ValidationMessageFor(m => m.HasConnectedEntity)).HasInnerHtml;
 }
 
-<a href="/organisation/@Model.Id/supplier-information" class="govuk-back-link">Back</a>
+@section BeforeContent {
+    <a href="/organisation/@Model.Id/supplier-information" class="govuk-back-link">@StaticTextResource.Global_Back</a>
+}
 
-<main class="govuk-main-wrapper" id="main-content">
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
-            <partial name="_ErrorSummary" model="@Model.ModelState" />
-        </div>
-        <div class="govuk-grid-column-full">
-            <h1 class="govuk-heading-l">
-                @ViewData["Title"]
-            </h1>
-
-            @foreach (var ce in Model.ConnectedEntities)
-            {
-                var entityTypePage = (ce.EntityType == CO.CDP.Organisation.WebApiClient.ConnectedEntityType.Organisation
-                ? "check-answers-organisation" : "check-answer-individual-trust");
-
-                <dl class="govuk-summary-list ros-add-to-a-list">
-                    <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">
-                            @ce.Name
-                        </dt>
-                        <dd class="govuk-summary-list__value"></dd>
-                        <authorize scope="@OrgScopeRequirement.Editor">
-                            <dd class="govuk-summary-list__actions">
-                                <ul class="govuk-summary-list__actions-list">
-                                    <li class="govuk-summary-list__actions-list-item">
-                                        <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/connected-person/@entityTypePage/@ce.EntityId?handler=change">Change</a>
-                                    </li>
-                                    <li class="govuk-summary-list__actions-list-item">
-                                        <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/connected-person/@ce.EntityId/remove">Remove</a>
-                                    </li>
-                                </ul>
-                            </dd>
-                        </authorize>
-                    </div>
-                </dl>
-            }
-
-            <authorize scope="@OrgScopeRequirement.Editor">
-                <div class="govuk-form-group @(hasError ? "govuk-form-group--error" : "")">
-                    <form class="form" method="post">
-                        <fieldset class="govuk-fieldset">
-                            <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
-                                <h2 class="govuk-fieldset__heading">
-                                    Add another connected person?
-                                </h2>
-                            </legend>
-                            @if (hasError)
-                            {
-                                <p class="govuk-error-message">
-                                    <span class="govuk-visually-hidden">Error:</span> Select an option
-                                </p>
-                            }
-                            <div class="govuk-radios govuk-radios--inline" data-module="govuk-radios">
-                                <div class="govuk-radios__item">
-                                    <input class="govuk-radios__input" id="conditional-YES" name="HasConnectedEntity" type="radio"
-                                           value="true" @(Model.HasConnectedEntity == true ? "checked" : "")>
-                                    <label class="govuk-label govuk-radios__label" for="conditional-YES">Yes</label>
-                                </div>
-                                <div class="govuk-radios__item">
-                                    <input class="govuk-radios__input" id="conditional-NO" name="HasConnectedEntity" type="radio"
-                                           value="false" @(Model.HasConnectedEntity == false ? "checked" : "")>
-                                    <label class="govuk-label govuk-radios__label" for="conditional-NO">No</label>
-                                </div>
-                            </div>
-                        </fieldset>
-
-                        <govuk-button class="govuk-!-margin-top-6">
-                            Continue
-                        </govuk-button>
-                    </form>
-                </div>
-            </authorize>
-
-            @if (await userInfoService.IsViewer())
-            {
-                <div class="govuk-!-margin-top-3 govuk-body">
-                    <a class="govuk-link" href="/organisation/@Model.Id/supplier-information">Back to supplier information</a>
-                </div>
-            }
-        </div>
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <partial name="_ErrorSummary" model="@Model.ModelState" />
     </div>
-</main>
+    <div class="govuk-grid-column-full">
+        <h1 class="govuk-heading-l">
+            @ViewData["Title"]
+        </h1>
+
+        @foreach (var ce in Model.ConnectedEntities)
+        {
+            var entityTypePage = (ce.EntityType == CO.CDP.Organisation.WebApiClient.ConnectedEntityType.Organisation
+            ? "check-answers-organisation" : "check-answer-individual-trust");
+
+            <dl class="govuk-summary-list ros-add-to-a-list">
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        @ce.Name
+                    </dt>
+                    <dd class="govuk-summary-list__value"></dd>
+                    <authorize scope="@OrgScopeRequirement.Editor">
+                        <dd class="govuk-summary-list__actions">
+                            <ul class="govuk-summary-list__actions-list">
+                                <li class="govuk-summary-list__actions-list-item">
+                                    <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/connected-person/@entityTypePage/@ce.EntityId?handler=change">@StaticTextResource.Global_Change</a>
+                                </li>
+                                <li class="govuk-summary-list__actions-list-item">
+                                    <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/connected-person/@ce.EntityId/remove">@StaticTextResource.Global_Remove</a>
+                                </li>
+                            </ul>
+                        </dd>
+                    </authorize>
+                </div>
+            </dl>
+        }
+
+        <authorize scope="@OrgScopeRequirement.Editor">
+            <div class="govuk-form-group @(hasError ? "govuk-form-group--error" : "")">
+                <form class="form" method="post">
+                    <fieldset class="govuk-fieldset">
+                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                            <h2 class="govuk-fieldset__heading">
+                                @StaticTextResource.Supplier_ConnectedEntity_ConnectedPersonSummary_AddAnotherQuestion
+                            </h2>
+                        </legend>
+                        @if (hasError)
+                        {
+                            <p class="govuk-error-message">
+                                <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span> @StaticTextResource.Supplier_ConnectedEntity_ConnectedPersonSummary_AddAnotherConnectedPersonError
+                            </p>
+                        }
+                        <div class="govuk-radios govuk-radios--inline" data-module="govuk-radios">
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input" id="conditional-YES" name="HasConnectedEntity" type="radio"
+                                        value="true" @(Model.HasConnectedEntity == true ? "checked" : "")>
+                                <label class="govuk-label govuk-radios__label" for="conditional-YES">@StaticTextResource.Global_Yes</label>
+                            </div>
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input" id="conditional-NO" name="HasConnectedEntity" type="radio"
+                                        value="false" @(Model.HasConnectedEntity == false ? "checked" : "")>
+                                <label class="govuk-label govuk-radios__label" for="conditional-NO">@StaticTextResource.Global_No</label>
+                            </div>
+                        </div>
+                    </fieldset>
+
+                    <govuk-button class="govuk-!-margin-top-6">
+                        @StaticTextResource.Global_Continue
+                    </govuk-button>
+                </form>
+            </div>
+        </authorize>
+
+        @if (await userInfoService.IsViewer())
+        {
+            <div class="govuk-!-margin-top-3 govuk-body">
+                <a class="govuk-link" href="/organisation/@Model.Id/supplier-information">@StaticTextResource.Supplier_ConnectedEntity_ConnectedPersonSummary_BackToSupplierInformation</a>
+            </div>
+        }
+    </div>
+</div>

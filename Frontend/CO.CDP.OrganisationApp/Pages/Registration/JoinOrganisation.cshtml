@@ -1,18 +1,20 @@
 @page "/registration/{identifier}/join-organisation"
 @model JoinOrganisationModel
+@using CO.CDP.Localization
 
 @{
     var organisationDetails = Model.OrganisationDetails!;
     var userDetails = Model.UserDetails;
     var joinHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Join)).HasInnerHtml;
-    ViewData["Title"] = $"Join company: {@organisationDetails.Name}";
+    ViewData["Title"] = $"{@StaticTextResource.OrganisationRegistration_JoinOrganisation_Heading}: {@organisationDetails.Name}";
 }
 
-<a href="/registration/has-companies-house-number" class="govuk-back-link">
-    Back
-</a>
+@section BeforeContent {
+    <a href="/registration/has-companies-house-number" class="govuk-back-link">
+        @StaticTextResource.Global_Back
+    </a>
+}
 
-<main class="govuk-main-wrapper">
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <partial name="_ErrorSummary" model="@Model.ModelState" />
@@ -20,11 +22,11 @@
                 <h1 class="govuk-heading-l">
                     <span class="govuk-label--l">@ViewData["Title"]</span>
                 </h1>
-                <h2 class="govuk-heading-m">Organisation details</h2>
+                <h2 class="govuk-heading-m">@StaticTextResource.OrganisationRegistration_JoinOrganisation_OrganisationDetails_Heading</h2>
                 <dl class="govuk-summary-list">
                     <div class="govuk-summary-list__row">
                         <dt class="govuk-summary-list__key">
-                            Organisation name
+                            @StaticTextResource.OrganisationRegistration_JoinOrganisation_OrganisationName_Label
                         </dt>
                         <dd class="govuk-summary-list__value">
                             <p class="govuk-body">@organisationDetails.Name</p>
@@ -32,11 +34,11 @@
                     </div>
                 </dl>
                 <br/>
-                <h2 class="govuk-heading-m">User details</h2>
+                <h2 class="govuk-heading-m">@StaticTextResource.OrganisationRegistration_JoinOrganisation_UserDetails_Heading</h2>
                 <dl class="govuk-summary-list">
                     <div class="govuk-summary-list__row">
                         <dt class="govuk-summary-list__key">
-                            Firstname
+                            @StaticTextResource.OrganisationRegistration_JoinOrganisation_Firstname_Label
                         </dt>
                         <dd class="govuk-summary-list__value">
                             <p class="govuk-body">@userDetails.FirstName</p>
@@ -44,7 +46,7 @@
                     </div>
                     <div class="govuk-summary-list__row">
                         <dt class="govuk-summary-list__key">
-                            Lastname
+                            @StaticTextResource.OrganisationRegistration_JoinOrganisation_Lastname_Label
                         </dt>
                         <dd class="govuk-summary-list__value">
                             <p class="govuk-body">@userDetails.LastName</p>
@@ -52,7 +54,7 @@
                     </div>
                     <div class="govuk-summary-list__row">
                         <dt class="govuk-summary-list__key">
-                            Email address
+                            @StaticTextResource.OrganisationRegistration_JoinOrganisation_EmailAddress_Label
                         </dt>
                         <dd class="govuk-summary-list__value">
                             <p class="govuk-body">@userDetails.Email</p>
@@ -69,12 +71,13 @@
                 <fieldset class="govuk-fieldset" @(joinHasError ? Html.Raw(@"aria-describedby=""approval-error""") : null)>
                     <legend class="govuk-form-group @(joinHasError ? "govuk-form-group--error" : "")">
                         <h2 class="govuk-fieldset__legend govuk-fieldset__legend--m">
-                          Would you like to join @organisationDetails.Name?
+                            @($"{StaticTextResource.OrganisationRegistration_JoinOrganisation_Notification_Heading} {organisationDetails.Name}")
+                            Would you like to join @organisationDetails.Name?
                         </h2>
                         @if (joinHasError)
                         {
                             <p id="approval-error" class="govuk-error-message">
-                                <span class="govuk-visually-hidden">Error:</span>
+                                <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span>
                                 @Html.ValidationMessageFor(m => m.Join)
                             </p>
                         }
@@ -82,20 +85,19 @@
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input" id="@nameof(Model.Join)" name="@nameof(Model.Join)" type="radio"
                                        value="true">
-                                <label class="govuk-label govuk-radios__label" for="@nameof(Model.Join)">Yes</label>
+                                <label class="govuk-label govuk-radios__label" for="@nameof(Model.Join)">@StaticTextResource.Global_Yes</label>
                             </div>
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input" id="@nameof(Model.Join)-no" name="@nameof(Model.Join)" type="radio"
                                        value="false">
-                                <label class="govuk-label govuk-radios__label" for="@nameof(Model.Join)-no">No</label>
+                                <label class="govuk-label govuk-radios__label" for="@nameof(Model.Join)-no">@StaticTextResource.Global_No</label>
                             </div>
                         </div>
                     </legend>
                 </fieldset>
                 <govuk-button>
-                    Continue
+                    @StaticTextResource.Global_Continue
                 </govuk-button>
             </form>
         </div>
     </div>
-</main>

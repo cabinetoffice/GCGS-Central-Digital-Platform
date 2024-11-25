@@ -2,6 +2,8 @@
 @using CO.CDP.OrganisationApp.Constants
 @using CO.CDP.OrganisationApp.Extensions
 @model CO.CDP.OrganisationApp.Pages.Supplier.ConnectedEntityCheckAnswersOrganisationModel
+@using CO.CDP.Localization
+
 @{
     ViewData["Title"] = Model.Heading;
 
@@ -20,272 +22,248 @@
     var registrationLink = $"/organisation/{Model.Id}/supplier-information/connected-person/{registerDatePage}/{Model.ConnectedEntityId}?frm-chk-answer=true";
     if (Model.ShowRegisterDate)
     {
-        registrationLink += details.HasRegistartionDate.HasValue ? "" : "&selected=false";
+        registrationLink += details.HasRegistrationDate.HasValue ? "" : "&selected=false";
     }
 }
 
-<a href="@backLink" class="govuk-back-link">Back</a>
+@section BeforeContent {
+    <a href="@backLink" class="govuk-back-link">@StaticTextResource.Global_Back</a>
+}
 
-<main class="govuk-main-wrapper" id="main-content">
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-full">
-            <form class="form" method="post">
-                <span class="govuk-caption-l">@Model.Caption</span>
-                <h1 class="govuk-heading-l">@ViewData["Title"]</h1>
-                <dl class="govuk-summary-list">
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+        <form class="form" method="post">
+            <span class="govuk-caption-l">@Model.Caption</span>
+            <h1 class="govuk-heading-l">@ViewData["Title"]</h1>
+            <dl class="govuk-summary-list">
 
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        @StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_CompanyName
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        @details.OrganisationName
+                    </dd>
+                    <dd class="govuk-summary-list__actions">
+                        <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/connected-person/organisation-name/@Model.ConnectedEntityId?frm-chk-answer=true">
+                            @Html.Raw(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_ChangeCompanyName)
+                        </a>
+                    </dd>
+                </div>
+                @if (details.RegisteredAddress != null)
+                {
                     <div class="govuk-summary-list__row">
                         <dt class="govuk-summary-list__key">
-                            Company name:
+                            @StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_RegisteredAddress
                         </dt>
                         <dd class="govuk-summary-list__value">
-                            @details.OrganisationName
+                            <p class="govuk-body">@details.RegisteredAddress.AddressLine1</p>
+                            <p class="govuk-body">@details.RegisteredAddress.TownOrCity</p>
+                            <p class="govuk-body">@details.RegisteredAddress.Postcode</p>
+                            <p class="govuk-body">@details.RegisteredAddress.CountryName</p>
                         </dd>
                         <dd class="govuk-summary-list__actions">
-                            <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/connected-person/organisation-name/@Model.ConnectedEntityId?frm-chk-answer=true">
-                                Change<span class="govuk-visually-hidden">
-                                    the company name
-                                </span>
+                            <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/connected-person/registered-address/@ukNonUkRegisterAddress/@Model.ConnectedEntityId?frm-chk-answer=true">
+                                @Html.Raw(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_ChangeRegisteredAddress)
                             </a>
                         </dd>
                     </div>
-                    @if (details.RegisteredAddress != null)
-                    {
-                        <div class="govuk-summary-list__row">
-                            <dt class="govuk-summary-list__key">
-                                Registered address:
-                            </dt>
-                            <dd class="govuk-summary-list__value">
-                                <p class="govuk-body">@details.RegisteredAddress.AddressLine1</p>
-                                <p class="govuk-body">@details.RegisteredAddress.TownOrCity</p>
-                                <p class="govuk-body">@details.RegisteredAddress.Postcode</p>
-                                <p class="govuk-body">@details.RegisteredAddress.CountryName</p>
-                            </dd>
-                            <dd class="govuk-summary-list__actions">
-                                <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/connected-person/registered-address/@ukNonUkRegisterAddress/@Model.ConnectedEntityId?frm-chk-answer=true">
-                                    Change<span class="govuk-visually-hidden">
-                                        the registered address
-                                    </span>
-                                </a>
-                            </dd>
-                        </div>
-                    }
-                    @if (details.PostalAddress != null)
-                    {
-                        <div class="govuk-summary-list__row">
-                            <dt class="govuk-summary-list__key">
-                                Postal address:
-                            </dt>
-                            <dd class="govuk-summary-list__value">
-                                <p class="govuk-body">@details.PostalAddress!.AddressLine1</p>
-                                <p class="govuk-body">@details.PostalAddress.TownOrCity</p>
-                                <p class="govuk-body">@details.PostalAddress.Postcode</p>
-                                <p class="govuk-body">@details.PostalAddress.CountryName</p>
-                            </dd>
-                            <dd class="govuk-summary-list__actions">
-                                <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/connected-person/postal-address/@ukNonUkPostalAddress/@Model.ConnectedEntityId?frm-chk-answer=true">
-                                    Change<span class="govuk-visually-hidden">
-                                        the postal address
-                                    </span>
-                                </a>
-                            </dd>
-                        </div>
-                    }
+                }
+                @if (details.PostalAddress != null)
+                {
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            @StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_PostalAddress
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            <p class="govuk-body">@details.PostalAddress!.AddressLine1</p>
+                            <p class="govuk-body">@details.PostalAddress.TownOrCity</p>
+                            <p class="govuk-body">@details.PostalAddress.Postcode</p>
+                            <p class="govuk-body">@details.PostalAddress.CountryName</p>
+                        </dd>
+                        <dd class="govuk-summary-list__actions">
+                            <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/connected-person/postal-address/@ukNonUkPostalAddress/@Model.ConnectedEntityId?frm-chk-answer=true">
+                                @Html.Raw(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_ChangePostalAddress)
+                            </a>
+                        </dd>
+                    </div>
+                }
 
-                    @if (details.SupplierHasCompanyHouseNumber == true)
+                @if (details.SupplierHasCompanyHouseNumber == true)
+                {
+                    @if (Model.ShowLegalForm)
                     {
-                        @if (Model.ShowLegalForm)
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">
+                                @StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_LegalFormAndLaw
+                            </dt>
+                            <dd class="govuk-summary-list__value">
+                                @details.LegalForm <br>
+                                @details.LawRegistered
+                            </dd>
+                            <dd class="govuk-summary-list__actions">
+                                <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/connected-person/law-register/@Model.ConnectedEntityId?frm-chk-answer=true">
+                                    @Html.Raw(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_ChangeLegalFormAndLaw)
+                                </a>
+                            </dd>
+                        </div>
+                    }
+                }
+                else
+                {
+                    @if (Model.ShowLegalForm)
+                    {
+                        var enforceLinkPage = details.HasLegalForm == true ? "law-enforces" : "legal-form-question";
+                        var legalFormEmpty = string.IsNullOrEmpty(details.LegalForm);
+
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">
+                                @StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_LegalForm
+                            </dt>
+                            <dd class="govuk-summary-list__value">
+                                @(legalFormEmpty == true ? @StaticTextResource.Global_No : @StaticTextResource.Global_Yes + ", " + details.LegalForm)
+                            </dd>
+                            <dd class="govuk-summary-list__actions">
+                                <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/connected-person/legal-form-question/@Model.ConnectedEntityId?frm-chk-answer=true">
+                                    @Html.Raw(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_ChangeLegalForm)
+                                </a>
+                            </dd>
+                        </div>
+
+                        @if (!legalFormEmpty)
                         {
                             <div class="govuk-summary-list__row">
                                 <dt class="govuk-summary-list__key">
-                                    Legal form and law:
+                                    @StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_EnforcedBy
                                 </dt>
                                 <dd class="govuk-summary-list__value">
-                                    @details.LegalForm <br>
                                     @details.LawRegistered
                                 </dd>
                                 <dd class="govuk-summary-list__actions">
-                                    <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/connected-person/law-register/@Model.ConnectedEntityId?frm-chk-answer=true">
-                                        Change<span class="govuk-visually-hidden">
-                                            the legal form and law
-                                        </span>
+                                    <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/connected-person/@enforceLinkPage/@Model.ConnectedEntityId?frm-chk-answer=true">
+                                        @Html.Raw(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_ChangeEnforcedBy)
                                     </a>
                                 </dd>
                             </div>
                         }
                     }
-                    else
-                    {
-                        @if (Model.ShowLegalForm)
-                        {
-                            var enforceLinkPage = details.HasLegalForm == true ? "law-enforces" : "legal-form-question";
-                            var legalFormEmpty = string.IsNullOrEmpty(details.LegalForm);
+                }
 
-                            <div class="govuk-summary-list__row">
-                                <dt class="govuk-summary-list__key">
-                                    Legal form:
-                                </dt>
-                                <dd class="govuk-summary-list__value">
-                                    @(legalFormEmpty == true ? "no" : "yes, " + details.LegalForm)
-                                </dd>
-                                <dd class="govuk-summary-list__actions">
-                                    <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/connected-person/legal-form-question/@Model.ConnectedEntityId?frm-chk-answer=true">
-                                        Change<span class="govuk-visually-hidden">
-                                            the legal form
-                                        </span>
-                                    </a>
-                                </dd>
-                            </div>
+                @if (details.HasCompaniesHouseNumber.HasValue)
+                {
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            @StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_CompaniesHouseRegistered
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            @Html.Raw((details.HasCompaniesHouseNumber == true ?
+                                        @StaticTextResource.Global_Yes + $"<br>" + string.Format(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_CompanyHouseNumber, details.CompaniesHouseNumber)
+                                        : @StaticTextResource.Global_No))
+                        </dd>
+                        <dd class="govuk-summary-list__actions">
+                            <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/connected-person/company-question/@Model.ConnectedEntityId?frm-chk-answer=true">
+                                @Html.Raw(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_ChangeCompaniesHouseRegistered)
+                            </a>
+                        </dd>
+                    </div>
+                }
 
-                            @if (!legalFormEmpty)
+                @if (details.HasOverseasCompaniesHouseNumber.HasValue)
+                {
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            @StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_OverseasEquivalent
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            @Html.Raw(details.HasOverseasCompaniesHouseNumber == true ? @StaticTextResource.Global_Yes + $"<br>{details.OverseasCompaniesHouseNumber}" : @StaticTextResource.Global_No)
+                        </dd>
+                        <dd class="govuk-summary-list__actions">
+                            <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/connected-person/overseas-company-question/@Model.ConnectedEntityId?frm-chk-answer=true">
+                                @Html.Raw(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_ChangeOverseasEquivalent)
+                            </a>
+                        </dd>
+                    </div>
+                }
+
+                @if (details.ControlConditions.Any())
+                {
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            @StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_ControlConditions
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            @Html.Raw(string.Join("", details.ControlConditions.Select(x => $"<li>{x.Description()}</li>")))
+                        </dd>
+                        <dd class="govuk-summary-list__actions">
+                            <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/connected-person/nature-of-control/@Model.ConnectedEntityId?frm-chk-answer=true">
+                                @Html.Raw(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_ChangeControlConditions)
+                            </a>
+                        </dd>
+                    </div>
+                }
+
+                @if (Model.ShowRegisterDate)
+                {
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            @StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_RegisteredDate
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            @Html.Raw(details.RegistrationDate.HasValue == true
+                                        ? @StaticTextResource.Global_Yes + $"<br>" + string.Format(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_OnDate, details.RegistrationDate.Value.ToFormattedString())
+                                        : @StaticTextResource.Global_No)
+                        </dd>
+                        <dd class="govuk-summary-list__actions">
+                            <a class="govuk-link" href="@registrationLink">
+                                @Html.Raw(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_ChangeRegisteredDate)
+                            </a>
+                        </dd>
+                    </div>
+                }
+
+                @if (details.InsolvencyDate.HasValue)
+                {
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            @StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_InsolvencyDate
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            @details.InsolvencyDate!.Value.ToFormattedString()
+                        </dd>
+                        <dd class="govuk-summary-list__actions">
+                            <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/connected-person/date-insolvency/@Model.ConnectedEntityId?frm-chk-answer=true">
+                                @Html.Raw(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_ChangeInsolvencyDate)
+                            </a>
+                        </dd>
+                    </div>
+                }
+
+                @if (!string.IsNullOrWhiteSpace(details.RegisterName))
+                {
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            @StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_RegisterName
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            @if (ConnectedEntityCompanyRegisterNameModel.RegisterNameType.Keys.Contains(details.RegisterName!))
                             {
-                                <div class="govuk-summary-list__row">
-                                    <dt class="govuk-summary-list__key">
-                                        Enforced by:
-                                    </dt>
-                                    <dd class="govuk-summary-list__value">
-                                        @details.LawRegistered
-                                    </dd>
-                                    <dd class="govuk-summary-list__actions">
-                                        <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/connected-person/@enforceLinkPage/@Model.ConnectedEntityId?frm-chk-answer=true">
-                                            Change<span class="govuk-visually-hidden">
-                                                the "enforced by" law
-                                            </span>
-                                        </a>
-                                    </dd>
-                                </div>
+                                @(ConnectedEntityCompanyRegisterNameModel.RegisterNameType[details.RegisterName!])
                             }
-                        }
-                    }
+                            else
+                            {
+                                @StaticTextResource.Global_Other <br> @details.RegisterName
+                            }
+                        </dd>
+                        <dd class="govuk-summary-list__actions">
+                            <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/connected-person/company-register-name/@Model.ConnectedEntityId?frm-chk-answer=true">
+                                @Html.Raw(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_ChangeRegisterName)
+                            </a>
+                        </dd>
+                    </div>
+                }
+            </dl>
 
-                    @if (details.HasCompaniesHouseNumber.HasValue)
-                    {
-                        <div class="govuk-summary-list__row">
-                            <dt class="govuk-summary-list__key">
-                                Companies House registered:
-                            </dt>
-                            <dd class="govuk-summary-list__value">
-                                @Html.Raw((details.HasCompaniesHouseNumber == true ?
-                                         $"Yes<br>Company House no. {details.CompaniesHouseNumber}"
-                                         : "No"))
-                            </dd>
-                            <dd class="govuk-summary-list__actions">
-                                <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/connected-person/company-question/@Model.ConnectedEntityId?frm-chk-answer=true">
-                                    Change<span class="govuk-visually-hidden">
-                                        the Companies House registration status and number
-                                    </span>
-                                </a>
-                            </dd>
-                        </div>
-                    }
-
-                    @if (details.HasOverseasCompaniesHouseNumber.HasValue)
-                    {
-                        <div class="govuk-summary-list__row">
-                            <dt class="govuk-summary-list__key">
-                                Registered with overseas equivalent:
-                            </dt>
-                            <dd class="govuk-summary-list__value">
-                                @Html.Raw(details.HasOverseasCompaniesHouseNumber == true ? $"Yes<br>{details.OverseasCompaniesHouseNumber}" : "No")
-                            </dd>
-                            <dd class="govuk-summary-list__actions">
-                                <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/connected-person/overseas-company-question/@Model.ConnectedEntityId?frm-chk-answer=true">
-                                    Change<span class="govuk-visually-hidden">
-                                        the registered with overseas equivalent
-                                    </span>
-                                </a>
-                            </dd>
-                        </div>
-                    }
-
-                    @if (details.ControlConditions.Any())
-                    {
-                        <div class="govuk-summary-list__row">
-                            <dt class="govuk-summary-list__key">
-                                Conditions of control:
-                            </dt>
-                            <dd class="govuk-summary-list__value">
-                                @Html.Raw(string.Join("", details.ControlConditions.Select(x => $"<li>{x.Description()}</li>")))
-                            </dd>
-                            <dd class="govuk-summary-list__actions">
-                                <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/connected-person/nature-of-control/@Model.ConnectedEntityId?frm-chk-answer=true">
-                                    Change<span class="govuk-visually-hidden">
-                                        the conditions of control
-                                    </span>
-                                </a>
-                            </dd>
-                        </div>
-                    }
-
-                    @if (Model.ShowRegisterDate)
-                    {
-                        <div class="govuk-summary-list__row">
-                            <dt class="govuk-summary-list__key">
-                                Registered date:
-                            </dt>
-                            <dd class="govuk-summary-list__value">
-                                @Html.Raw(details.RegistrationDate.HasValue == true
-                                         ? $"Yes<br>On {details.RegistrationDate.Value.ToFormattedString()}"
-                                         : "No")
-                            </dd>
-                            <dd class="govuk-summary-list__actions">
-                                <a class="govuk-link" href="@registrationLink">
-                                    Change<span class="govuk-visually-hidden">
-                                        the registered date
-                                    </span>
-                                </a>
-                            </dd>
-                        </div>
-                    }
-
-                    @if (details.InsolvencyDate.HasValue)
-                    {
-                        <div class="govuk-summary-list__row">
-                            <dt class="govuk-summary-list__key">
-                                Insolvency date:
-                            </dt>
-                            <dd class="govuk-summary-list__value">
-                                @details.InsolvencyDate!.Value.ToFormattedString()
-                            </dd>
-                            <dd class="govuk-summary-list__actions">
-                                <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/connected-person/date-insolvency/@Model.ConnectedEntityId?frm-chk-answer=true">
-                                    Change<span class="govuk-visually-hidden">
-                                        the insolvency date
-                                    </span>
-                                </a>
-                            </dd>
-                        </div>
-                    }
-
-                    @if (!string.IsNullOrWhiteSpace(details.RegisterName))
-                    {
-                        <div class="govuk-summary-list__row">
-                            <dt class="govuk-summary-list__key">
-                                Register name:
-                            </dt>
-                            <dd class="govuk-summary-list__value">
-                                @if (ConnectedEntityCompanyRegisterNameModel.RegisterNameType.Keys.Contains(details.RegisterName!))
-                                {
-                                    @(ConnectedEntityCompanyRegisterNameModel.RegisterNameType[details.RegisterName!])
-                                }
-                                else
-                                {
-                                    @Html.Raw($"Other<br>{details.RegisterName}")
-                                }
-                            </dd>
-                            <dd class="govuk-summary-list__actions">
-                                <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/connected-person/company-register-name/@Model.ConnectedEntityId?frm-chk-answer=true">
-                                    Change<span class="govuk-visually-hidden">
-                                        the register name
-                                    </span>
-                                </a>
-                            </dd>
-                        </div>
-                    }
-                </dl>
-
-                <govuk-button>Submit</govuk-button>
-            </form>
-        </div>
+            <govuk-button>@StaticTextResource.Global_Submit</govuk-button>
+        </form>
     </div>
-</main>
+</div>

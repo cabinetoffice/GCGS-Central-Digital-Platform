@@ -2,8 +2,8 @@ using CO.CDP.OrganisationApp.Constants;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using CO.CDP.Localization;
 
 namespace CO.CDP.OrganisationApp.Pages.Supplier;
 
@@ -17,8 +17,7 @@ public class ConnectedEntityOrganisationNameModel(ISession session) : PageModel
     public Guid? ConnectedEntityId { get; set; }
 
     [BindProperty]
-    [DisplayName("Enter the organisation's name")]
-    [Required(ErrorMessage = "Enter the organisation's name")]
+    [Required(ErrorMessageResourceName = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityOrganisationName_EnterNameError), ErrorMessageResourceType = typeof(StaticTextResource))]
     public string? OrganisationName { get; set; }
 
     [BindProperty]
@@ -41,7 +40,7 @@ public class ConnectedEntityOrganisationNameModel(ISession session) : PageModel
             : "ConnectedEntitySupplierCompanyQuestion", new { Id, ConnectedEntityId });
         }
 
-        InitModal(state, true);
+        InitModel(state, true);
 
         return Page();
     }
@@ -58,7 +57,7 @@ public class ConnectedEntityOrganisationNameModel(ISession session) : PageModel
                 : "ConnectedEntitySupplierCompanyQuestion", new { Id, ConnectedEntityId });
         }
 
-        InitModal(state);
+        InitModel(state);
         if (!ModelState.IsValid) return Page();
 
         state.OrganisationName = OrganisationName;
@@ -73,7 +72,7 @@ public class ConnectedEntityOrganisationNameModel(ISession session) : PageModel
                 : "ConnectedEntityAddress",
                     new { Id, ConnectedEntityId, AddressType = AddressType.Registered, UkOrNonUk = "uk" });
     }
-    private void InitModal(ConnectedEntityState state, bool reset = false)
+    private void InitModel(ConnectedEntityState state, bool reset = false)
     {
         Caption = state.GetCaption();
         ConnectedEntityType = state.ConnectedEntityType;

@@ -135,6 +135,8 @@ services:
       CompaniesHouse__Url: ""
       CompaniesHouse__User: ""
       CompaniesHouse__Password: ""
+      CharityCommission__Url: ""
+      CharityCommission__SubscriptionKey: ""
   authority:
     container_name: co-cdp-authority
     build:

@@ -1,5 +1,7 @@
 @page "/organisation/{id}/supplier-information/connected-person/overseas-company-question/{ConnectedEntityId?}"
 @model CO.CDP.OrganisationApp.Pages.Supplier.ConnectedEntityOverseasCompanyQuestionModel
+@using CO.CDP.Localization
+
 @{
     ViewData["Title"] = Model.Heading;
 
@@ -13,54 +15,54 @@
 
 }
 
-<a href="@backLink" class="govuk-back-link">Back</a>
+@section BeforeContent {
+    <a href="@backLink" class="govuk-back-link">@StaticTextResource.Global_Back</a>
+}
 
-<main class="govuk-main-wrapper" id="main-content">
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
-            <partial name="_ErrorSummary" model="@Model.ModelState" />
-            <span class="govuk-caption-l">@Model.Caption</span>
-            <form class="form" method="post">
-                <div class="govuk-form-group">
-                    <fieldset class="govuk-fieldset">
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <partial name="_ErrorSummary" model="@Model.ModelState" />
+        <span class="govuk-caption-l">@Model.Caption</span>
+        <form class="form" method="post">
+            <div class="govuk-form-group">
+                <fieldset class="govuk-fieldset">
 
-                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                            <h1 class="govuk-fieldset__heading">@ViewData["Title"]</h1>
-                        </legend>
-                        <div id="hasOverseasCompaniesHouseNumber-hint" class="govuk-hint">
-                            @Model.Hint
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                        <h1 class="govuk-fieldset__heading">@ViewData["Title"]</h1>
+                    </legend>
+                    <div id="hasOverseasCompaniesHouseNumber-hint" class="govuk-hint">
+                        @Model.Hint
+                    </div>
+
+                    <div class="govuk-radios" data-module="govuk-radios">
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="YES" name="HasOverseasCompaniesHouseNumber" type="radio"
+                                    value="true" data-aria-controls="conditional-YES" @(Model.HasOverseasCompaniesHouseNumber == true ? "checked" : "")>
+                            <label class="govuk-label govuk-radios__label" for="YES">@StaticTextResource.Global_Yes</label>
                         </div>
 
-                        <div class="govuk-radios" data-module="govuk-radios">
-                            <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="YES" name="HasOverseasCompaniesHouseNumber" type="radio"
-                                       value="true" data-aria-controls="conditional-YES" @(Model.HasOverseasCompaniesHouseNumber == true ? "checked" : "")>
-                                <label class="govuk-label govuk-radios__label" for="YES">Yes</label>
-                            </div>
-
-                            <div class="govuk-radios__conditional" id="conditional-YES">
-                                <div class="govuk-form-group @(overseasCompaniesHouseNumberHasError ? "govuk-form-group--error" : "")">
-                                    <label class="govuk-label" for="OverseasCompaniesHouseNumber">
-                                        Company registration number
-                                    </label>
-                                    <input class="govuk-input govuk-!-width-one-half @(overseasCompaniesHouseNumberHasError ? "govuk-input--error" : "")"
-                                           id="OverseasCompaniesHouseNumber" name="OverseasCompaniesHouseNumber" type="text" spellcheck="false" autocomplete="off"
-                                           value="@(Model.HasOverseasCompaniesHouseNumber == true ? Model.OverseasCompaniesHouseNumber : "")">
-                                </div>
-                            </div>
-
-                            <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="NO" name="HasOverseasCompaniesHouseNumber" type="radio"
-                                       value="false" @(Model.HasOverseasCompaniesHouseNumber == false ? "checked" : "")>
-                                <label class="govuk-label govuk-radios__label" for="NO">No</label>
+                        <div class="govuk-radios__conditional" id="conditional-YES">
+                            <div class="govuk-form-group @(overseasCompaniesHouseNumberHasError ? "govuk-form-group--error" : "")">
+                                <label class="govuk-label" for="OverseasCompaniesHouseNumber">
+                                    @StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityOverseasCompanyQuestion_CompanyRegistrationNumberLabel
+                                </label>
+                                <input class="govuk-input govuk-!-width-one-half @(overseasCompaniesHouseNumberHasError ? "govuk-input--error" : "")"
+                                        id="OverseasCompaniesHouseNumber" name="OverseasCompaniesHouseNumber" type="text" spellcheck="false" autocomplete="off"
+                                        value="@(Model.HasOverseasCompaniesHouseNumber == true ? Model.OverseasCompaniesHouseNumber : "")">
                             </div>
                         </div>
 
-                    </fieldset>
-                </div>
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="NO" name="HasOverseasCompaniesHouseNumber" type="radio"
+                                    value="false" @(Model.HasOverseasCompaniesHouseNumber == false ? "checked" : "")>
+                            <label class="govuk-label govuk-radios__label" for="NO">@StaticTextResource.Global_No</label>
+                        </div>
+                    </div>
 
-                <govuk-button>Continue</govuk-button>
-            </form>
-        </div>
+                </fieldset>
+            </div>
+
+            <govuk-button>@StaticTextResource.Global_Continue</govuk-button>
+        </form>
     </div>
-</main>
+</div>

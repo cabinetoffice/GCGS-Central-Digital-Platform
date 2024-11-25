@@ -11,6 +11,7 @@ using CO.CDP.OrganisationApp.Authorization;
 using CO.CDP.OrganisationApp.Pages;
 using CO.CDP.OrganisationApp.Pages.Forms.ChoiceProviderStrategies;
 using CO.CDP.OrganisationApp.ThirdPartyApiClients.CompaniesHouse;
+using CO.CDP.OrganisationApp.ThirdPartyApiClients.CharityCommission;
 using CO.CDP.OrganisationApp.WebApiClients;
 using CO.CDP.Person.WebApiClient;
 using CO.CDP.Tenant.WebApiClient;
@@ -85,6 +86,7 @@ builder.Services.AddScoped<ICacheService, CacheService>();
 builder.Services.AddScoped<ApiBearerTokenHandler>();
 builder.Services.AddScoped<CultureDelegatingHandler>();
 builder.Services.AddScoped<ICompaniesHouseApi, CompaniesHouseApi>();
+builder.Services.AddScoped<ICharityCommissionApi, CharityCommissionApi>();
 
 builder.Services.AddKeyedTransient<IChoiceProviderStrategy, ExclusionAppliesToChoiceProviderStrategy>("ExclusionAppliesToChoiceProviderStrategy");
 builder.Services.AddKeyedTransient<IChoiceProviderStrategy, DefaultChoiceProviderStrategy>("DefaultChoiceProviderStrategy");
@@ -160,6 +162,14 @@ var oneLoginAuthority = builder.Configuration.GetValue<string>("OneLogin:Authori
 
 var oneLoginClientId = builder.Configuration.GetValue<string>("OneLogin:ClientId")
             ?? throw new Exception("Missing configuration key: OneLogin:ClientId.");
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowOneLoginAuthority",
+        builder => builder.WithOrigins(oneLoginAuthority)
+                          .AllowAnyHeader()
+                          .AllowAnyMethod());
+});
 
 builder.Services.AddAuthentication(options =>
 {

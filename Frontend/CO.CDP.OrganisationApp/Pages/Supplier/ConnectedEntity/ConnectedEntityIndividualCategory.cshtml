@@ -1,8 +1,9 @@
 @page "/organisation/{id}/supplier-information/connected-person/individual-category"
 @model CO.CDP.OrganisationApp.Pages.Supplier.ConnectedEntityIndividualCategoryModel
+@using CO.CDP.Localization
 
 @{
-    ViewData["Title"] = "Select the category that best describes the 'connected person'";
+    ViewData["Title"] = StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityIndividualCategory_PageTitle;
 
     var personQuestionHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.ConnectedEntityCategory)).HasInnerHtml;
     string IsSelected(Constants.ConnectedEntityIndividualAndTrustCategoryType radioValue)
@@ -16,105 +17,103 @@
         // To be used in next stage of development
         // return Model.RegisteredWithCh ? value.Substring(2) : $"equivalent to {value}";
     }
-
-
 }
 
-<a href="/organisation/@Model.Id/supplier-information/connected-person/person-type" class="govuk-back-link">Back</a>
+@section BeforeContent {
+    <a href="/organisation/@Model.Id/supplier-information/connected-person/person-type" class="govuk-back-link">@StaticTextResource.Global_Back</a>
+}
 
-<main class="govuk-main-wrapper" id="main-content">
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-three-quarters">
-            <partial name="_ErrorSummary" model="@Model.ModelState" />
-            <form class="form" method="post">
-                <div class="govuk-form-group @(personQuestionHasError ? "govuk-form-group--error": "")">
-                    <fieldset class="govuk-fieldset">
-                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                            <h1 class="govuk-fieldset__heading">
-                                @ViewData["Title"]
-                            </h1>
-                        </legend>
-                        <div id="connected-hint" class="govuk-hint">
-                            The ‘connected person’ that has control or influence over your organisation should fall into one of these categories.
-                        </div>
-                        <div class="govuk-radios" data-module="govuk-radios">
-                            @if (personQuestionHasError)
-                            {
-                                <p id="registered-org-error" class="govuk-error-message">
-                                    <span class="govuk-visually-hidden">Error:</span> @Html.ValidationMessageFor(m => m.ConnectedEntityCategory)
-                                </p>
-                            }
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-three-quarters">
+        <partial name="_ErrorSummary" model="@Model.ModelState" />
+        <form class="form" method="post">
+            <div class="govuk-form-group @(personQuestionHasError ? "govuk-form-group--error": "")">
+                <fieldset class="govuk-fieldset">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                        <h1 class="govuk-fieldset__heading">
+                            @ViewData["Title"]
+                        </h1>
+                    </legend>
+                    <div id="connected-hint" class="govuk-hint">
+                        @StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityIndividualCategory_Hint
+                    </div>
+                    <div class="govuk-radios" data-module="govuk-radios">
+                        @if (personQuestionHasError)
+                        {
+                            <p id="registered-org-error" class="govuk-error-message">
+                                <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span> @Html.ValidationMessageFor(m => m.ConnectedEntityCategory)
+                            </p>
+                        }
 
-                            @if (Model.ConnectedEntityType == Constants.ConnectedEntityType.Individual)
-                            {
-                                <div class="govuk-radios__item">
-                                    <input class="govuk-radios__input" id="entityCategory" name="ConnectedEntityCategory" type="radio"
-                                           value="@Constants.ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForIndividual"
-                                           @IsSelected(Constants.ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForIndividual)>
+                        @if (Model.ConnectedEntityType == Constants.ConnectedEntityType.Individual)
+                        {
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input" id="entityCategory" name="ConnectedEntityCategory" type="radio"
+                                        value="@Constants.ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForIndividual"
+                                        @IsSelected(Constants.ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForIndividual)>
 
-                                    <label class="govuk-label govuk-radios__label" for="entityCategory">
-                                        @GetDescriptionIfNotRegisteredWithCH(ConnectedEntityIndividualCategoryModel.ConnectedEntityCategoryOption["PSC"])
-                                    </label>
-                                </div>
+                                <label class="govuk-label govuk-radios__label" for="entityCategory">
+                                    @GetDescriptionIfNotRegisteredWithCH(ConnectedEntityIndividualCategoryModel.ConnectedEntityCategoryOption["PSC"])
+                                </label>
+                            </div>
 
-                                <div class="govuk-radios__item">
-                                    <input class="govuk-radios__input" id="entityCategory-2" name="ConnectedEntityCategory" type="radio"
-                                           value="@Constants.ConnectedEntityIndividualAndTrustCategoryType.DirectorOrIndividualWithTheSameResponsibilitiesForIndividual"
-                                           @IsSelected(Constants.ConnectedEntityIndividualAndTrustCategoryType.DirectorOrIndividualWithTheSameResponsibilitiesForIndividual)>
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input" id="entityCategory-2" name="ConnectedEntityCategory" type="radio"
+                                        value="@Constants.ConnectedEntityIndividualAndTrustCategoryType.DirectorOrIndividualWithTheSameResponsibilitiesForIndividual"
+                                        @IsSelected(Constants.ConnectedEntityIndividualAndTrustCategoryType.DirectorOrIndividualWithTheSameResponsibilitiesForIndividual)>
 
-                                    <label class="govuk-label govuk-radios__label" for="entityCategory-2">
-                                        @GetDescriptionIfNotRegisteredWithCH(ConnectedEntityIndividualCategoryModel.ConnectedEntityCategoryOption["Director"])
-                                    </label>
-                                </div>
+                                <label class="govuk-label govuk-radios__label" for="entityCategory-2">
+                                    @GetDescriptionIfNotRegisteredWithCH(ConnectedEntityIndividualCategoryModel.ConnectedEntityCategoryOption["Director"])
+                                </label>
+                            </div>
 
-                                <div class="govuk-radios__item">
-                                    <input class="govuk-radios__input" id="entityCategory-3" name="ConnectedEntityCategory" type="radio"
-                                           value="@Constants.ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndividualWithSignificantInfluenceOrControlForIndividual"
-                                           @IsSelected(Constants.ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndividualWithSignificantInfluenceOrControlForIndividual)>
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input" id="entityCategory-3" name="ConnectedEntityCategory" type="radio"
+                                        value="@Constants.ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndividualWithSignificantInfluenceOrControlForIndividual"
+                                        @IsSelected(Constants.ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndividualWithSignificantInfluenceOrControlForIndividual)>
 
-                                    <label class="govuk-label govuk-radios__label" for="entityCategory-3">
-                                        @GetDescriptionIfNotRegisteredWithCH(ConnectedEntityIndividualCategoryModel.ConnectedEntityCategoryOption["IndividualWithSignificantControl"])
-                                    </label>
-                                </div>
-                            }
-                            else
-                            {
-                                <div class="govuk-radios__item">
-                                    <input class="govuk-radios__input" id="entityCategory" name="ConnectedEntityCategory" type="radio"
-                                           value="@Constants.ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForTrust"
-                                           @IsSelected(Constants.ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForTrust)>
+                                <label class="govuk-label govuk-radios__label" for="entityCategory-3">
+                                    @GetDescriptionIfNotRegisteredWithCH(ConnectedEntityIndividualCategoryModel.ConnectedEntityCategoryOption["IndividualWithSignificantControl"])
+                                </label>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input" id="entityCategory" name="ConnectedEntityCategory" type="radio"
+                                        value="@Constants.ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForTrust"
+                                        @IsSelected(Constants.ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForTrust)>
 
-                                    <label class="govuk-label govuk-radios__label" for="entityCategory">
-                                        @GetDescriptionIfNotRegisteredWithCH(ConnectedEntityIndividualCategoryModel.ConnectedEntityCategoryOption["PSC"])
-                                    </label>
-                                </div>
+                                <label class="govuk-label govuk-radios__label" for="entityCategory">
+                                    @GetDescriptionIfNotRegisteredWithCH(ConnectedEntityIndividualCategoryModel.ConnectedEntityCategoryOption["PSC"])
+                                </label>
+                            </div>
 
-                                <div class="govuk-radios__item">
-                                    <input class="govuk-radios__input" id="entityCategory-2" name="ConnectedEntityCategory" type="radio"
-                                           value="@Constants.ConnectedEntityIndividualAndTrustCategoryType.DirectorOrIndividualWithTheSameResponsibilitiesForTrust"
-                                           @IsSelected(Constants.ConnectedEntityIndividualAndTrustCategoryType.DirectorOrIndividualWithTheSameResponsibilitiesForTrust)>
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input" id="entityCategory-2" name="ConnectedEntityCategory" type="radio"
+                                        value="@Constants.ConnectedEntityIndividualAndTrustCategoryType.DirectorOrIndividualWithTheSameResponsibilitiesForTrust"
+                                        @IsSelected(Constants.ConnectedEntityIndividualAndTrustCategoryType.DirectorOrIndividualWithTheSameResponsibilitiesForTrust)>
 
-                                    <label class="govuk-label govuk-radios__label" for="entityCategory-2">
-                                        @GetDescriptionIfNotRegisteredWithCH(ConnectedEntityIndividualCategoryModel.ConnectedEntityCategoryOption["Director"])
-                                    </label>
-                                </div>
+                                <label class="govuk-label govuk-radios__label" for="entityCategory-2">
+                                    @GetDescriptionIfNotRegisteredWithCH(ConnectedEntityIndividualCategoryModel.ConnectedEntityCategoryOption["Director"])
+                                </label>
+                            </div>
 
-                                <div class="govuk-radios__item">
-                                    <input class="govuk-radios__input" id="entityCategory-3" name="ConnectedEntityCategory" type="radio"
-                                           value="@Constants.ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndividualWithSignificantInfluenceOrControlForTrust"
-                                           @IsSelected(Constants.ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndividualWithSignificantInfluenceOrControlForTrust)>
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input" id="entityCategory-3" name="ConnectedEntityCategory" type="radio"
+                                        value="@Constants.ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndividualWithSignificantInfluenceOrControlForTrust"
+                                        @IsSelected(Constants.ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndividualWithSignificantInfluenceOrControlForTrust)>
 
-                                    <label class="govuk-label govuk-radios__label" for="entityCategory-3">
-                                        @GetDescriptionIfNotRegisteredWithCH(ConnectedEntityIndividualCategoryModel.ConnectedEntityCategoryOption["IndividualWithSignificantControl"])
-                                    </label>
-                                </div>
-                            }
-                        </div>
-                    </fieldset>
-                </div>
+                                <label class="govuk-label govuk-radios__label" for="entityCategory-3">
+                                    @GetDescriptionIfNotRegisteredWithCH(ConnectedEntityIndividualCategoryModel.ConnectedEntityCategoryOption["IndividualWithSignificantControl"])
+                                </label>
+                            </div>
+                        }
+                    </div>
+                </fieldset>
+            </div>
 
-                <govuk-button>Continue</govuk-button>
-            </form>
-        </div>
+            <govuk-button>@StaticTextResource.Global_Continue</govuk-button>
+        </form>
     </div>
-</main>
+</div>

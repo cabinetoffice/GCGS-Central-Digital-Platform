@@ -8,11 +8,12 @@
     var organisationNameHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.OrganisationName)).HasInnerHtml;
 }
 
-<a href="/organisation/@Model.Id" class="govuk-back-link">
-    Back
-</a>
+@section BeforeContent {
+    <a href="/organisation/@Model.Id" class="govuk-back-link">
+        @StaticTextResource.Global_Back
+    </a>
+}
 
-<main class="govuk-main-wrapper" id="main-content">
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <partial name="_ErrorSummary" model="@ModelState" />
@@ -41,7 +42,7 @@
                             @if (organisationNameHasError)
                             {
                                 <p id="organisation-name-error" class="govuk-error-message">
-                                    <span class="govuk-visually-hidden">Error:</span>
+                                    <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span>
                                     @Html.ValidationMessageFor(m => m.OrganisationName)
                                 </p>
                             }
@@ -54,10 +55,9 @@
                 </div>
 
                 <govuk-button>
-                    Continue
+                    @StaticTextResource.Global_Continue
                 </govuk-button>
 
             </form>
         </div>
     </div>
-</main>
