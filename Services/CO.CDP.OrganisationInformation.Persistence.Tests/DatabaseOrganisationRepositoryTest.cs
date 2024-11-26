@@ -362,7 +362,7 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql) : 
             name: "ABCD Ltd",
             tenant: tenant
         );
-        
+
         repository.Save(organisation);
 
         var found = await repository.FindIncludingTenantByOrgId(organisation.Id);
@@ -624,6 +624,49 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql) : 
         var result = await repository.IsEmailUniqueWithinOrganisation(organisation.Guid, organisationPerson.Person.Email);
 
         result.Should().Be(false);
+    }
+
+    [Fact]
+    public async Task ItFindsOrganisationIncludingTenantPersonsAndOrganisationPersons()
+    {
+        using var repository = OrganisationRepository();
+
+        var alice = GivenPerson(firstname: "Alice");
+        var bob = GivenPerson(firstname: "Bob");
+        var organisation = GivenOrganisation(
+            personsWithScope: [(alice, []), (bob, [])],
+            tenantPersons: [alice, bob]
+        );
+
+        await using var context = postgreSql.OrganisationInformationContext();
+        await context.Organisations.AddAsync(organisation);
+        await context.SaveChangesAsync();
+
+        var result = await repository.FindIncludingPersons(organisation.Guid);
+
+        result.As<Organisation>().OrganisationPersons.Count.Should().Be(2);
+        result.As<Organisation>().Tenant.Persons.Count.Should().Be(2);
+        result.As<Organisation>().OrganisationPersons[0].Person.Guid.Should().Be(alice.Guid);
+        result.As<Organisation>().OrganisationPersons[1].Person.Guid.Should().Be(bob.Guid);
+        result.As<Organisation>().Tenant.Persons[0].Guid.Should().Be(alice.Guid);
+        result.As<Organisation>().Tenant.Persons[1].Guid.Should().Be(bob.Guid);
+    }
+
+    [Fact]
+    public async Task ItFindsOrganisationEvenIfTenantPersonsAndOrganisationPersonsAreMissing()
+    {
+        using var repository = OrganisationRepository();
+
+        var organisation = GivenOrganisation();
+
+        await using var context = postgreSql.OrganisationInformationContext();
+        await context.Organisations.AddAsync(organisation);
+        await context.SaveChangesAsync();
+
+        var result = await repository.FindIncludingPersons(organisation.Guid);
+
+        result.As<Organisation>().OrganisationPersons.Count.Should().Be(0);
+        result.As<Organisation>().Tenant.Persons.Count.Should().Be(0);
     }
 
     private IOrganisationRepository OrganisationRepository(OrganisationInformationContext? context = null)

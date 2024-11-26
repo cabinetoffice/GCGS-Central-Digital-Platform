@@ -73,8 +73,8 @@ public class AddressPartialModel : IValidatableObject
             {
                 return new ValidationResult(
                             address.IsNonUkAddress
-                                ? nameof(StaticTextResource.Shared_Address_Postcode_NonUk_ErrorMessage)
-                                : nameof(StaticTextResource.Shared_Address_Postcode_ErrorMessage));
+                                ? StaticTextResource.Shared_Address_Postcode_NonUk_ErrorMessage
+                                : StaticTextResource.Shared_Address_Postcode_ErrorMessage);
             }
 
             return ValidationResult.Success;
