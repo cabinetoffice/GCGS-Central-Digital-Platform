@@ -115,7 +115,7 @@ services:
         Organisation__Authority: '${Organisation__Authority:-http://gateway:${CDP_AUTHORITY_PORT:-8092}}'
 
   organisation-app:
-    # container_name: co-cdp-organisation-app
+    container_name: co-cdp-organisation-app
     build:
       context: .
       dockerfile: Dockerfile
@@ -137,6 +137,7 @@ services:
       Aws__Credentials__AccessKeyId: test
       Aws__Credentials__SecretAccessKey: test
       Aws__ServiceURL: "http://localstack:4566"
+      Aws__ElastiCache__Hostname: "redis"
       FormsService: '${FormsService:-http://gateway:${CDP_FORMS_PORT:-8086}}'
       OrganisationService: '${OrganisationService:-http://gateway:${CDP_ORGANISATION_PORT:-8082}}'
       Organisation__Authority: '${Organisation__Authority:-http://gateway:${CDP_AUTHORITY_PORT:-8092}}'
