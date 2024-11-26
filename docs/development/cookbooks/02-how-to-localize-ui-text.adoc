@@ -135,4 +135,4 @@ This will take the content and put it back into the XML files.
 
 The script has been designed to retain the same order of keys as is in the original XML files, so the git diff _should_ be minimal and only show the actual changes.
 
-The next time Visual Studio's resource explorer touches the fil, it may make whitespace changes, particularly around the area of the comment in the XML. These can be hidden when viewing the diff in GitHub if necessary.
+The next time Visual Studio's resource explorer touches the fil, it may make whitespace changes, particularly around the area of the comment in the XML. If necessary these can be hidden when viewing the diff by using the `git diff -w` flag.
