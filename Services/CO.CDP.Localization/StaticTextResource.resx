@@ -421,7 +421,7 @@
     <value>Stores the currently selected language requirement.</value>
   </data>
   <data name="Supplementary_CookieDetails_TableRow_Preferences" xml:space="preserve">
-    <value />
+    <value>Stores the cookies accept / reject preference.</value>
   </data>
   <data name="Supplementary_Cookies_Title" xml:space="preserve">
     <value>Cookies on Find a Tender</value>
