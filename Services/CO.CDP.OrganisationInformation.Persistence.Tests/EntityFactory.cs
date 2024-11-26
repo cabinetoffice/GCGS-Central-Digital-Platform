@@ -101,6 +101,7 @@ public static class EntityFactory
         List<PartyRole>? roles = null,
         List<PartyRole>? pendingRoles = null,
         List<(Person, List<string>)>? personsWithScope = null,
+        List<Person>? tenantPersons = null,
         BuyerInformation? buyerInformation = null,
         SupplierInformation? supplierInformation = null
     )
@@ -167,6 +168,10 @@ public static class EntityFactory
                     Scopes = personWithScope.Item2
                 }
             );
+        }
+        foreach (var tenantPerson in tenantPersons ?? [])
+        {
+            organisation.Tenant.Persons.Add(tenantPerson);
         }
         return organisation;
     }
