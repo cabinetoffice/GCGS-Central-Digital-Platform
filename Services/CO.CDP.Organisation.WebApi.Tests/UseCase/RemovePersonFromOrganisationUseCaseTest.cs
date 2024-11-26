@@ -10,10 +10,8 @@ namespace CO.CDP.Organisation.WebApi.Tests.UseCase;
 public class RemovePersonFromOrganisationUseCaseTest
 {
     private readonly Mock<IOrganisationRepository> _organisationRepository = new();
-    private readonly Mock<IPersonRepository> _personRepository = new();
 
-    private RemovePersonFromOrganisationUseCase UseCase =>
-        new(_organisationRepository.Object, _personRepository.Object);
+    private RemovePersonFromOrganisationUseCase UseCase => new(_organisationRepository.Object);
 
     [Fact]
     public async Task Execute_OrganisationPersonAndPersonWithTenant_BothLinksAreRemoved()
