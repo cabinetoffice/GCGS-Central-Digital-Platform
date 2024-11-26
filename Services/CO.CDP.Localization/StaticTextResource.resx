@@ -552,9 +552,6 @@
   <data name="Supplementary_CookieDetails_TableRow_Culture" xml:space="preserve">
     <value>Stores the currently selected language requirement.</value>
   </data>
-  <data name="Supplementary_CookieDetails_TableRow_Preferences" xml:space="preserve">
-    <value>Stores the cookies accept / reject preference.</value>
-  </data>
   <data name="Supplementary_Cookies_Title" xml:space="preserve">
     <value>Cookies on Find a Tender</value>
   </data>
@@ -1713,6 +1710,9 @@
   </data>
   <data name="Support_OrganisationApproval_ErrorMessage_Hint" xml:space="preserve">
     <value>For example, ‘You need to change the email address. The domain name in the organisation email address you gave us does not match the organisation name you want to register’.</value>
+  </data>
+  <data name="Supplementary_CookieDetails_TableRow_Preferences" xml:space="preserve">
+    <value>Stores the cookies accept / reject preference.</value>
   </data>
   <data name="Support_OrganisationApproval_ValidationErrorMessage" xml:space="preserve">
     <value>Select an option</value>
