@@ -46,7 +46,7 @@ def create_resx(data, language, template_file, output_file):
     resx_content = template_content.replace("<!-- TRANSLATIONS -->", "\n".join(translations))
 
     os.makedirs(os.path.dirname(output_file), exist_ok=True)
-    with open(output_file, "w", encoding="utf-8", newline="\r\n") as output:
+    with open(output_file, "w", encoding="utf-8") as output:
         output.write(resx_content)
 
     print(f".resx file created: {output_file}")
