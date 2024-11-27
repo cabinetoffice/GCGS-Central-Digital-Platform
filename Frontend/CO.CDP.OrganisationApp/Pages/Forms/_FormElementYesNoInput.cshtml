@@ -1,4 +1,5 @@
 @model FormElementYesNoInputModel
+@using CO.CDP.Localization
 @{
     var hasError = ((TagBuilder)Html.ValidationMessageFor(m => m.YesNoInput)).HasInnerHtml;
 }
@@ -20,7 +21,7 @@
         @if (hasError)
         {
             <p class="govuk-error-message" id="yes-no-error">
-                <span class="govuk-visually-hidden">Error:</span>
+                <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span>
                 @Html.ValidationMessageFor(m => m.YesNoInput)
             </p>
         }
@@ -28,11 +29,11 @@
         <div class="govuk-radios" data-module="govuk-radios">
             <div class="govuk-radios__item">
                 <input class="govuk-radios__input" id="@nameof(Model.YesNoInput)" name="@nameof(Model.YesNoInput)" type="radio" value="yes" @(Model.YesNoInput == "yes" ? "checked" : "")>
-                <label class="govuk-label govuk-radios__label" for="@nameof(Model.YesNoInput)">Yes</label>
+                <label class="govuk-label govuk-radios__label" for="@nameof(Model.YesNoInput)">@StaticTextResource.Global_Yes</label>
             </div>
             <div class="govuk-radios__item">
                 <input class="govuk-radios__input" id="@nameof(Model.YesNoInput)-1" name="@nameof(Model.YesNoInput)" type="radio" value="no" @(Model.YesNoInput == "no" ? "checked" : "")>
-                <label class="govuk-label govuk-radios__label" for="@nameof(Model.YesNoInput)-1">No</label>
+                <label class="govuk-label govuk-radios__label" for="@nameof(Model.YesNoInput)-1">@StaticTextResource.Global_No</label>
             </div>
         </div>
     </fieldset>

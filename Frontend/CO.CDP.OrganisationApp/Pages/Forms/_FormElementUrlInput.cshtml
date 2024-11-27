@@ -1,4 +1,5 @@
 @model FormElementUrlInputModel
+@using CO.CDP.Localization
 
 @{
     var textInputHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.TextInput)).HasInnerHtml;
@@ -24,7 +25,7 @@
             textInputAriaDescribedby += " TextInput-error";
 
             <p class="govuk-error-message" id="TextInput-error">
-                <span class="govuk-visually-hidden">Error:</span>
+                <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span>
                 @Html.ValidationMessageFor(m => m.TextInput)
             </p>
         }
@@ -71,7 +72,7 @@
             @if (selectOptionHasError)
             {
                 <p class="govuk-error-message">
-                    <span id="input-error" class="govuk-visually-hidden">Error:</span>
+                    <span id="input-error" class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span>
                     @Html.ValidationMessageFor(m => m.HasValue)
                 </p>
             }
@@ -81,7 +82,7 @@
                 <div class="govuk-radios__item">
                     <input class="govuk-radios__input" id="@nameof(Model.HasValue)" name="@nameof(Model.HasValue)" type="radio"
                            value="true" data-aria-controls="conditional-YES" @(Model.HasValue == true ? "checked" : "")>
-                    <label class="govuk-label govuk-radios__label" for="@nameof(Model.HasValue)">Yes</label>
+                    <label class="govuk-label govuk-radios__label" for="@nameof(Model.HasValue)">@StaticTextResource.Global_Yes</label>
                 </div>
 
                 <div class="govuk-radios__conditional" id="conditional-YES">
@@ -96,7 +97,7 @@
                 <div class="govuk-radios__item">
                     <input class="govuk-radios__input" id="@nameof(Model.HasValue)-1" name="@nameof(Model.HasValue)" type="radio"
                            value="false" @(Model.HasValue == false ? "checked" : "")>
-                    <label class="govuk-label govuk-radios__label" for="@nameof(Model.HasValue)-1">No</label>
+                    <label class="govuk-label govuk-radios__label" for="@nameof(Model.HasValue)-1">@StaticTextResource.Global_No</label>
                 </div>
             </div>
         </fieldset>

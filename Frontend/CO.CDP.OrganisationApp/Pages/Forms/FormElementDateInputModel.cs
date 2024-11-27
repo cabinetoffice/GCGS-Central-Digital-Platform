@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.Text.RegularExpressions;
+using CO.CDP.Localization;
 
 namespace CO.CDP.OrganisationApp.Pages.Forms;
 
@@ -72,7 +73,7 @@ public class FormElementDateInputModel : FormElementModel, IValidatableObject
         {
             if (HasValue == null)
             {
-                yield return new ValidationResult("Select an option", [nameof(HasValue)]);
+                yield return new ValidationResult(StaticTextResource.Global_RadioField_SelectOptionError, [nameof(HasValue)]);
             }
             else if (HasValue == true)
             {
@@ -84,29 +85,29 @@ public class FormElementDateInputModel : FormElementModel, IValidatableObject
         {
             if (string.IsNullOrWhiteSpace(Day))
             {
-                yield return new ValidationResult("Date must include a day", [nameof(Day)]);
+                yield return new ValidationResult(StaticTextResource.Global_DateInput_DayRequiredError, [nameof(Day)]);
             }
             else if (!Regex.IsMatch(Day, RegExPatterns.Day))
             {
-                yield return new ValidationResult("Day must be a valid number", [nameof(Day)]);
+                yield return new ValidationResult(StaticTextResource.Global_DateInput_DayInvalidError, [nameof(Day)]);
             }
 
             if (string.IsNullOrWhiteSpace(Month))
             {
-                yield return new ValidationResult("Date must include a month", [nameof(Month)]);
+                yield return new ValidationResult(StaticTextResource.Global_DateInput_MonthRequiredError, [nameof(Month)]);
             }
             else if (!Regex.IsMatch(Month, RegExPatterns.Month))
             {
-                yield return new ValidationResult("Month must be a valid number", [nameof(Month)]);
+                yield return new ValidationResult(StaticTextResource.Global_DateInput_MonthInvalidError, [nameof(Month)]);
             }
 
             if (string.IsNullOrWhiteSpace(Year))
             {
-                yield return new ValidationResult("Date must include a year", [nameof(Year)]);
+                yield return new ValidationResult(StaticTextResource.Global_DateInput_YearRequiredError, [nameof(Year)]);
             }
             else if (!Regex.IsMatch(Year, RegExPatterns.Year))
             {
-                yield return new ValidationResult("Year must be a valid number", [nameof(Year)]);
+                yield return new ValidationResult(StaticTextResource.Global_DateInput_YearInvalidError, [nameof(Year)]);
             }
 
             if (!string.IsNullOrWhiteSpace(Day) && !string.IsNullOrWhiteSpace(Month) && !string.IsNullOrWhiteSpace(Year))
@@ -114,12 +115,12 @@ public class FormElementDateInputModel : FormElementModel, IValidatableObject
                 var dateString = $"{Year}-{Month!.PadLeft(2, '0')}-{Day!.PadLeft(2, '0')}";
                 if (!DateTime.TryParseExact(dateString, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
                 {
-                    yield return new ValidationResult("Date must be a real date", [nameof(DateString)]);
+                    yield return new ValidationResult(StaticTextResource.Global_DateInput_DateInvalidError, [nameof(DateString)]);
                 }
 
                 if (parsedDate > DateTime.Today)
                 {
-                    yield return new ValidationResult("Date must be today or in the past", [nameof(DateString)]);
+                    yield return new ValidationResult(StaticTextResource.Global_DateInput_DateInFutureError, [nameof(DateString)]);
                 }
             }
         }

@@ -2,31 +2,34 @@ using CO.CDP.OrganisationApp.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using CO.CDP.Localization;
 
 namespace CO.CDP.OrganisationApp.Pages.Forms;
 
 public class FormElementAddressModel : FormElementModel, IValidatableObject
 {
     [BindProperty]
-    [DisplayName("Address line 1")]
+    [Display(Name = "Forms_FormElementAddress_AddressLine1_Label", ResourceType = typeof(StaticTextResource))]
     public string? AddressLine1 { get; set; }
 
     [BindProperty]
-    [DisplayName("Town or city")]
+    [Display(Name = "Forms_FormElementAddress_TownOrCity_Label", ResourceType = typeof(StaticTextResource))]
     public string? TownOrCity { get; set; }
 
     [BindProperty]
     public string? Postcode { get; set; }
 
     [BindProperty]
-    [DisplayName("Country")]
+    [Display(Name = "Forms_FormElementAddress_Country_Label", ResourceType = typeof(StaticTextResource))]
     public string? Country { get; set; }
 
     public string UkOrNonUk { get; set; } = "uk";
 
     public bool IsNonUkAddress => UkOrNonUk == "non-uk";
 
-    public string PostcodeLabel => IsNonUkAddress ? "Postal or Zip code" : "Postcode";
+    public string PostcodeLabel => IsNonUkAddress
+        ? StaticTextResource.Forms_FormElementAddress_PostalOrZipCode_Label
+        : StaticTextResource.Forms_FormElementAddress_Postcode_Label;
 
     public string? CountryName
     {
@@ -74,29 +77,31 @@ public class FormElementAddressModel : FormElementModel, IValidatableObject
         {
             if (string.IsNullOrWhiteSpace(AddressLine1))
             {
-                yield return new ValidationResult("Enter your address line 1", [nameof(AddressLine1)]);
+                yield return new ValidationResult(StaticTextResource.Forms_FormElementAddress_AddressLine1_RequiredError, [nameof(AddressLine1)]);
             }
 
             if (string.IsNullOrWhiteSpace(TownOrCity))
             {
-                yield return new ValidationResult("Enter your town or city", [nameof(TownOrCity)]);
+                yield return new ValidationResult(StaticTextResource.Forms_FormElementAddress_TownOrCity_RequiredError, [nameof(TownOrCity)]);
             }
 
             if (string.IsNullOrWhiteSpace(Postcode))
             {
-                yield return new ValidationResult(IsNonUkAddress ? "Enter your postal or zip code" : "Enter your postcode", [nameof(Postcode)]);
+                yield return new ValidationResult(IsNonUkAddress
+                    ? StaticTextResource.Forms_FormElementAddress_PostalOrZipCode_RequiredError
+                    : StaticTextResource.Forms_FormElementAddress_Postcode_RequiredError, [nameof(Postcode)]);
             }
 
             if (string.IsNullOrWhiteSpace(Country))
             {
-                yield return new ValidationResult("Enter your country", [nameof(Country)]);
+                yield return new ValidationResult(StaticTextResource.Forms_FormElementAddress_Country_RequiredError, [nameof(Country)]);
             }
             else
             {
                 var valid = Country == Constants.Country.UKCountryCode || Constants.Country.NonUKCountries.ContainsKey(Country);
                 if (!valid)
                 {
-                    yield return new ValidationResult($"Invalid country name '{Country}'", [nameof(Country)]);
+                    yield return new ValidationResult(string.Format(StaticTextResource.Forms_FormElementAddress_InvalidCountryError, Country), [nameof(Country)]);
                 }
             }
         }

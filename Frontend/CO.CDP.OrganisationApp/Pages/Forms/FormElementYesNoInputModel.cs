@@ -1,6 +1,7 @@
 using CO.CDP.OrganisationApp.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
+using CO.CDP.Localization;
 
 namespace CO.CDP.OrganisationApp.Pages.Forms;
 
@@ -26,7 +27,7 @@ public class FormElementYesNoInputModel : FormElementModel, IValidatableObject
     {
         if (CurrentFormQuestionType == FormQuestionType.YesOrNo && IsRequired == true && string.IsNullOrWhiteSpace(YesNoInput))
         {
-            yield return new ValidationResult("Please select an option.", [nameof(YesNoInput)]);
+            yield return new ValidationResult(StaticTextResource.Global_RadioField_SelectOptionError, [nameof(YesNoInput)]);
         }
     }
 }

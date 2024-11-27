@@ -2,98 +2,99 @@
 @model FormsAnswerSetSummaryModel
 @using CO.CDP.OrganisationApp.Constants
 @inject IUserInfoService userInfoService
+@using CO.CDP.Localization
 
 @{
     var hasError = ((TagBuilder)Html.ValidationMessageFor(m => m.AddAnotherAnswerSet)).HasInnerHtml;
     ViewData["Title"] = Model.Heading;
 }
 
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
-            <partial name="_ErrorSummary" model="@Model.ModelState" />
-        </div>
-        <div class="govuk-grid-column-full">
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <partial name="_ErrorSummary" model="@Model.ModelState" />
+    </div>
+    <div class="govuk-grid-column-full">
 
-            @if (!string.IsNullOrWhiteSpace(Model.Heading))
+        @if (!string.IsNullOrWhiteSpace(Model.Heading))
+        {
+            <h1 class="govuk-heading-l">
+                @Model.Heading
+            </h1>
+        }
+
+        <div class="govuk-form-group">
+            @foreach (var formAnswerSet in Model.FormAnswerSets)
             {
-                <h1 class="govuk-heading-l">
-                    @Model.Heading
-                </h1>
+                <dl class="govuk-summary-list ros-add-to-a-list">
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            @foreach (var item in formAnswerSet.answers)
+                            {
+                                <p class="govuk-!-margin-top-0">@item.Title : @Html.Raw(item.Answer)</p>
+                            }
+                        </dt>
+                        <authorize scope="@OrgScopeRequirement.Editor">
+                            <dd class="govuk-summary-list__actions">
+                                <ul class="govuk-summary-list__actions-list">
+                                    <li class="govuk-summary-list__actions-list-item">
+                                        <a class="govuk-link" href="?handler=change&answer-set-id=@formAnswerSet.answerSetId">@StaticTextResource.Global_Change</a>
+                                    </li>
+                                    <li class="govuk-summary-list__actions-list-item">
+                                        <a class="govuk-link" href="/organisation/@Model.OrganisationId/forms/@Model.FormId/sections/@Model.SectionId/answers/@formAnswerSet.answerSetId/remove-confirmation">@StaticTextResource.Global_Remove</a>
+                                    </li>
+                                </ul>
+                            </dd>
+                        </authorize>
+                    </div>
+                </dl>
             }
 
-            <div class="govuk-form-group">
-                @foreach (var formAnswerSet in Model.FormAnswerSets)
-                {
-                    <dl class="govuk-summary-list ros-add-to-a-list">
-                        <div class="govuk-summary-list__row">
-                            <dt class="govuk-summary-list__key">
-                                @foreach (var item in formAnswerSet.answers)
+            <authorize scope="@OrgScopeRequirement.Editor">
+                <form class="form" method="post">
+                    @if (Model.AllowsMultipleAnswerSets)
+                    {
+                        <fieldset class="govuk-fieldset" @(hasError ? Html.Raw(@"aria-describedby=""add-another-error""") : null)>
+                            <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                                @if (!string.IsNullOrWhiteSpace(Model.AddAnotherAnswerLabel))
                                 {
-                                    <p class="govuk-!-margin-top-0">@item.Title : @Html.Raw(item.Answer)</p>
+                                    <h2 class="govuk-fieldset__heading">
+                                        @Model.AddAnotherAnswerLabel
+                                    </h2>
                                 }
-                            </dt>
-                            <authorize scope="@OrgScopeRequirement.Editor">
-                                <dd class="govuk-summary-list__actions">
-                                    <ul class="govuk-summary-list__actions-list">
-                                        <li class="govuk-summary-list__actions-list-item">
-                                            <a class="govuk-link" href="?handler=change&answer-set-id=@formAnswerSet.answerSetId">Change</a>
-                                        </li>
-                                        <li class="govuk-summary-list__actions-list-item">
-                                            <a class="govuk-link" href="/organisation/@Model.OrganisationId/forms/@Model.FormId/sections/@Model.SectionId/answers/@formAnswerSet.answerSetId/remove-confirmation">Remove</a>
-                                        </li>
-                                    </ul>
-                                </dd>
-                            </authorize>
-                        </div>
-                    </dl>
-                }
-
-                <authorize scope="@OrgScopeRequirement.Editor">
-                    <form class="form" method="post">
-                        @if (Model.AllowsMultipleAnswerSets)
-                        {
-                            <fieldset class="govuk-fieldset" @(hasError ? Html.Raw(@"aria-describedby=""add-another-error""") : null)>
-                                <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
-                                    @if (!string.IsNullOrWhiteSpace(Model.AddAnotherAnswerLabel))
-                                    {
-                                        <h2 class="govuk-fieldset__heading">
-                                            @Model.AddAnotherAnswerLabel
-                                        </h2>
-                                    }
-                                </legend>
-                                @if (hasError)
-                                {
-                                    <p class="govuk-error-message" id="add-another-error">
-                                        <span class="govuk-visually-hidden">Error:</span> Select an option
-                                    </p>
-                                }
-                                <div class="govuk-radios govuk-radios--inline" data-module="govuk-radios">
-                                    <div class="govuk-radios__item">
-                                        <input class="govuk-radios__input" id="@nameof(Model.AddAnotherAnswerSet)" name="@nameof(Model.AddAnotherAnswerSet)" type="radio"
-                                               value="true" @(Model.AddAnotherAnswerSet == true ? "checked" : "")>
-                                        <label class="govuk-label govuk-radios__label" for="@nameof(Model.AddAnotherAnswerSet)">Yes</label>
-                                    </div>
-                                    <div class="govuk-radios__item">
-                                        <input class="govuk-radios__input" id="@nameof(Model.AddAnotherAnswerSet)-1" name="@nameof(Model.AddAnotherAnswerSet)" type="radio"
-                                               value="false" @(Model.AddAnotherAnswerSet == false ? "checked" : "")>
-                                        <label class="govuk-label govuk-radios__label" for="@nameof(Model.AddAnotherAnswerSet)-1">No</label>
-                                    </div>
+                            </legend>
+                            @if (hasError)
+                            {
+                                <p class="govuk-error-message" id="add-another-error">
+                                    <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span> @StaticTextResource.Global_RadioField_SelectOptionError
+                                </p>
+                            }
+                            <div class="govuk-radios govuk-radios--inline" data-module="govuk-radios">
+                                <div class="govuk-radios__item">
+                                    <input class="govuk-radios__input" id="@nameof(Model.AddAnotherAnswerSet)" name="@nameof(Model.AddAnotherAnswerSet)" type="radio"
+                                           value="true" @(Model.AddAnotherAnswerSet == true ? "checked" : "")>
+                                    <label class="govuk-label govuk-radios__label" for="@nameof(Model.AddAnotherAnswerSet)">@StaticTextResource.Global_Yes</label>
                                 </div>
-                            </fieldset>
-                        }
+                                <div class="govuk-radios__item">
+                                    <input class="govuk-radios__input" id="@nameof(Model.AddAnotherAnswerSet)-1" name="@nameof(Model.AddAnotherAnswerSet)" type="radio"
+                                           value="false" @(Model.AddAnotherAnswerSet == false ? "checked" : "")>
+                                    <label class="govuk-label govuk-radios__label" for="@nameof(Model.AddAnotherAnswerSet)-1">@StaticTextResource.Global_No</label>
+                                </div>
+                            </div>
+                        </fieldset>
+                    }
 
-                        <govuk-button class="govuk-!-margin-top-6">
-                            Continue
-                        </govuk-button>
-                    </form>
-                </authorize>
+                    <govuk-button class="govuk-!-margin-top-6">
+                        @StaticTextResource.Global_Continue
+                    </govuk-button>
+                </form>
+            </authorize>
 
-                @if (await userInfoService.IsViewer())
-                {
-                    <div class="govuk-!-margin-top-3 govuk-body">
-                        <a class="govuk-link" href="/organisation/@Model.OrganisationId/supplier-information">Back to supplier information</a>
-                    </div>
-                }
-            </div>
+            @if (await userInfoService.IsViewer())
+            {
+                <div class="govuk-!-margin-top-3 govuk-body">
+                    <a class="govuk-link" href="/organisation/@Model.OrganisationId/supplier-information">@StaticTextResource.Forms_AnswerSetSummary_BackToSupplierInformation</a>
+                </div>
+            }
         </div>
     </div>
+</div>
