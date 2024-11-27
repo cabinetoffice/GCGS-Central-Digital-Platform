@@ -119,14 +119,22 @@ public class ConnectedEntityLawRegisterModel(ISession session) : PageModel
                 {
                     case ConnectedEntityOrganisationCategoryType.RegisteredCompany:
                     case ConnectedEntityOrganisationCategoryType.DirectorOrTheSameResponsibilities:
-                        //Check if postal is same as register and decide                       
+                        //Check if postal is same as register and decide
                         if ((state.RegisteredAddress?.AreSameAddress(state.PostalAddress) ?? false) == true)
                         {
-                            backPage = $"postal-address-same-as-registered/{ConnectedEntityId}";
+                            backPage = "postal-address-same-as-registered";
+                            if (ConnectedEntityId != null)
+                            {
+                                backPage += $"/{ConnectedEntityId}";
+                            }
                         }
                         else
                         {
-                            backPage = $"{AddressType.Postal}-address/{(string.Equals(state.PostalAddress?.Country, Country.UKCountryCode, StringComparison.OrdinalIgnoreCase) ? "uk" : "non-uk")}/{ConnectedEntityId}";
+                            backPage = $"{AddressType.Postal}-address/{(string.Equals(state.PostalAddress?.Country, Country.UKCountryCode, StringComparison.OrdinalIgnoreCase) ? "uk" : "non-uk")}";
+                            if (ConnectedEntityId != null)
+                            {
+                                backPage += $"/{ConnectedEntityId}";
+                            }
                         }
                         break;
 
