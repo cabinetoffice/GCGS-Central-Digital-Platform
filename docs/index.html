@@ -1507,6 +1507,49 @@ return string.Format(count &gt; 1 ? StaticTextResource.Supplier_SupplierInformat
 </div>
 </div>
 </div>
+<div class="sect4">
+<h5 id="_interacting_with_the_translation_team">Interacting with the translation team</h5>
+<div class="paragraph">
+<p>The translation team will operate on a set of <code>.csv</code> files instead of editing the XML files directly.</p>
+</div>
+<div class="paragraph">
+<p>In order to achieve this - there are 2 Python scripts for converting to and from XML. These should be used via the <code>Makefile</code> and the following commands:</p>
+</div>
+<div class="sect5">
+<h6 id="_converting_from_resx_xml_to_csv">Converting from .resx (XML) to .csv</h6>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code>make localization-export-to-csv</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Running this command will take the contents of the resx files and created csv files in the CO.CDP.Localization project inside a <code>csv-files</code> folder.</p>
+</div>
+<div class="paragraph">
+<p>These are the files that should be sent to the translation team, or anyone that wants to work on UI text without editing it via the repo as normal.</p>
+</div>
+</div>
+<div class="sect5">
+<h6 id="_converting_from_csx_to_resx_xml">Converting from .csx to .resx (XML)</h6>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code>make localization-import-from-csv</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Once you have the files back with the updated content, drop them into the same <code>csv-files</code> folder and run the above command.</p>
+</div>
+<div class="paragraph">
+<p>This will take the content and put it back into the XML files.</p>
+</div>
+<div class="paragraph">
+<p>The script has been designed to retain the same order of keys as is in the original XML files, so the git diff <em>should</em> be minimal and only show the actual changes.</p>
+</div>
+<div class="paragraph">
+<p>The next time Visual Studio&#8217;s resource explorer touches the file, it may make whitespace changes, particularly around the area of the comment in the XML. If necessary these can be hidden when viewing the diff by using the <code>git diff -w</code> flag.</p>
+</div>
+</div>
+</div>
 </div>
 </div>
 <div class="sect2">
@@ -2789,7 +2832,7 @@ is live we can monitor the number of concurrent users and re-evaluate the soluti
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2024-11-27 10:03:16 UTC
+Last updated 2024-11-27 10:37:35 UTC
 </div>
 </div>
 </body>
