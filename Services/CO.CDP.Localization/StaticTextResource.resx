@@ -141,6 +141,87 @@
   <data name="Global_Back" xml:space="preserve">
     <value>Back</value>
   </data>
+  <data name="Global_Important" xml:space="preserve">
+    <value>Important</value>
+  </data>
+  <data name="Organisation_BuyerRegistrationPendingApproval" xml:space="preserve">
+    <value>Buyer registration pending approval.</value>
+  </data>
+  <data name="Organisation_OrganisationDetails" xml:space="preserve">
+    <value>Organisation details</value>
+  </data>
+  <data name="Organisation_OrganisationName" xml:space="preserve">
+    <value>Organisation name</value>
+  </data>
+  <data name="Organisation_ChangeName" xml:space="preserve">
+    <value>Change&lt;span class="govuk-visually-hidden"&gt; the organisation name&lt;/span&gt;</value>
+  </data>
+  <data name="Organisation_OrganisationIdentifier" xml:space="preserve">
+    <value>Organisation identifier</value>
+  </data>
+  <data name="Organisation_PponGenerationPending" xml:space="preserve">
+    <value>PPON generation pending.</value>
+  </data>
+  <data name="Organisation_Address" xml:space="preserve">
+    <value>address</value>
+  </data>
+  <data name="Organisation_AddAddress" xml:space="preserve">
+    <value>Add&lt;span class="govuk-visually-hidden"&gt; address&lt;/span&gt;</value>
+  </data>
+  <data name="Organisation_ChangeAddress" xml:space="preserve">
+    <value>Change&lt;span class="govuk-visually-hidden"&gt; address&lt;/span&gt;</value>
+  </data>
+  <data name="Organisation_OrganisationEmail" xml:space="preserve">
+    <value>Organisation email</value>
+  </data>
+  <data name="Organisation_ChangeEmail" xml:space="preserve">
+    <value>Change&lt;span class="govuk-visually-hidden"&gt; the organisation email</value>
+  </data>
+  <data name="Organisation_OrganisationAddress" xml:space="preserve">
+    <value>Organisation address</value>
+  </data>
+  <data name="Organisation_CompleteSupplierInformation" xml:space="preserve">
+    <value>Complete supplier information</value>
+  </data>
+  <data name="Organisation_CompleteAndShareSupplierInformation" xml:space="preserve">
+    <value>Complete and share your supplier information to bid for procurements.</value>
+  </data>
+  <data name="Organisation_ViewApiKeys" xml:space="preserve">
+    <value>View API keys</value>
+  </data>
+  <data name="Organisation_ManageApiKeys" xml:space="preserve">
+    <value>Manage API keys</value>
+  </data>
+  <data name="Organisation_ApiKeysForBuyers" xml:space="preserve">
+    <value> (for Buyers)</value>
+  </data>
+  <data name="Organisation_RegistrationNotApproved" xml:space="preserve">
+    <value>Registration Not Approved</value>
+  </data>
+  <data name="Organisation_WeCouldNotApproveYourRequest" xml:space="preserve">
+    <value>We could not approve your request because:</value>
+  </data>
+  <data name="Organisation_CreateApiKey" xml:space="preserve">
+    <value>Create an API key and share it with the e-Sender you use to publish procurement notices.</value>
+  </data>
+  <data name="Organisation_ManageUsers" xml:space="preserve">
+    <value>Manage users</value>
+  </data>
+  <data name="Organisation_ViewAddRemoveUsers" xml:space="preserve">
+    <value>View, add or remove users.</value>
+  </data>
+  <data name="Organisation_RegisterAsSupplier" xml:space="preserve">
+    <value>Register as a supplier</value>
+  </data>
+  <data name="Organisation_SupplyGoodsServices" xml:space="preserve">
+    <value>If you also supply goods, works, services or utilities to the public sector.</value>
+  </data>
+  <data name="Organisation_GetProcurementGuidance" xml:space="preserve">
+    <value>Get procurement guidance on the</value>
+  </data>
+  <data name="Organisation_ProcurementPathwayService" xml:space="preserve">
+    <value>Procurement Pathway service (opens in new tab)</value>
+  </data>
   <data name="Global_Email_Invalid_ErrorMessage" xml:space="preserve">
     <value>Enter an email address in the correct format, like name@example.com</value>
   </data>
@@ -185,6 +266,57 @@
   </data>
   <data name="Global_Continue" xml:space="preserve">
     <value>Continue</value>
+  </data>
+  <data name="Organisation_MyAccount" xml:space="preserve">
+    <value>My account</value>
+  </data>
+  <data name="Organisation_SignInDetails" xml:space="preserve">
+    <value>Sign in details</value>
+  </data>
+  <data name="Organisation_EmailAddress" xml:space="preserve">
+    <value>Email address:</value>
+  </data>
+  <data name="Organisation_ChangeSignInDetails" xml:space="preserve">
+    <value>You can <a class="govuk-link govuk-link--no-visited-state" href="{0}" target="_blank">change your sign in details in your GOV.UK One Login</a>.</value>
+  </data>
+  <data name="Organisation_MyOrganisations" xml:space="preserve">
+    <value>My organisations</value>
+  </data>
+  <data name="Organisation_OrganisationName" xml:space="preserve">
+    <value>Organisation name</value>
+  </data>
+  <data name="Organisation_PendingApproval" xml:space="preserve">
+    <value>Pending approval</value>
+  </data>
+  <data name="Organisation_NotApproved" xml:space="preserve">
+    <value>Not approved</value>
+  </data>
+  <data name="Organisation_AddAnotherOrganisation" xml:space="preserve">
+    <value>Add another organisation</value>
+  </data>
+  <data name="Organisation_RegisterOrganisation" xml:space="preserve">
+    <value>Register an organisation if you are:</value>
+  </data>
+  <data name="Organisation_ContractingAuthority" xml:space="preserve">
+    <value>a contracting authority who publishes notices to buy goods, works, services or utilities</value>
+  </data>
+  <data name="Organisation_OrganisationOrSoleTrader" xml:space="preserve">
+    <value>an organisation or sole trader who searches for tenders and submits bids to supply goods, works, services or utilities</value>
+  </data>
+  <data name="Organisation_RegisterAnOrganisation" xml:space="preserve">
+    <value>Register an organisation</value>
+  </data>
+  <data name="Organisation_AfterYouveRegistered" xml:space="preserve">
+    <value>After you've registered</value>
+  </data>
+  <data name="Organisation_IfYouNeedTo" xml:space="preserve">
+    <value>If you need to you can:</value>
+  </data>
+  <data name="Organisation_RegisterAsOtherRole" xml:space="preserve">
+    <value>register as the other role, if you are both a buyer and supplier</value>
+  </data>
+  <data name="Organisation_AddMoreOrganisations" xml:space="preserve">
+    <value>add more organisations</value>
   </data>
   <data name="Header_ServiceName" xml:space="preserve">
     <value>Find a Tender</value>
@@ -419,9 +551,6 @@
   </data>
   <data name="Supplementary_CookieDetails_TableRow_Culture" xml:space="preserve">
     <value>Stores the currently selected language requirement.</value>
-  </data>
-  <data name="Supplementary_CookieDetails_TableRow_Preferences" xml:space="preserve">
-    <value />
   </data>
   <data name="Supplementary_Cookies_Title" xml:space="preserve">
     <value>Cookies on Find a Tender</value>
@@ -1665,5 +1794,80 @@
   </data>
   <data name="Forms_DeclarationSection_ConfirmAndGetShareCode" xml:space="preserve">
     <value>Confirm and get share code</value>
+  </data>
+  <data name="Support_Organisations_TableHeader_OrganisationName" xml:space="preserve">
+    <value>Organisation name</value>
+  </data>
+  <data name="Support_Organisations_TableHeader_Identifier" xml:space="preserve">
+    <value>Identifier/s</value>
+  </data>
+  <data name="Support_Organisations_TableHeader_OrgEmail" xml:space="preserve">
+    <value>Org email</value>
+  </data>
+  <data name="Support_Organisations_TableHeader_Status" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="Support_Organisations_TableHeader_DateApproved" xml:space="preserve">
+    <value>Date Approved</value>
+  </data>
+  <data name="Support_Organisations_TableHeader_LastReviewedBy" xml:space="preserve">
+    <value>Last reviewed by</value>
+  </data>
+  <data name="Support_Organisations_TableHeader_Comments" xml:space="preserve">
+    <value>Comments</value>
+  </data>
+  <data name="Support_Organisations_Status_Pending" xml:space="preserve">
+    <value>Pending</value>
+  </data>
+  <data name="Support_Organisations_Status_Approved" xml:space="preserve">
+    <value>Approved</value>
+  </data>
+  <data name="Support_Organisations_Review_Link" xml:space="preserve">
+    <value>Review</value>
+  </data>
+  <data name="Support_Organisations_SupplierOrganisations_Link" xml:space="preserve">
+    <value>Supplier organisations</value>
+  </data>
+  <data name="Support_Organisations_BuyerOrganisations_Link" xml:space="preserve">
+    <value>Buyer organisations</value>
+  </data>
+  <data name="Support_Organisations_BuyerOrganisations_Title" xml:space="preserve">
+    <value>Buyer organisations</value>
+  </data>
+  <data name="Support_Organisations_SupplierOrganisations_Title" xml:space="preserve">
+    <value>Supplier organisations</value>
+  </data>
+  <data name="Support_OrganisationApproval_Heading" xml:space="preserve">
+    <value>Organisation details</value>
+  </data>
+  <data name="Support_OrganisationApproval_OrganisationName_List" xml:space="preserve">
+    <value>Organisation name</value>
+  </data>
+  <data name="Support_OrganisationApproval_OrganisationIdentifier_List" xml:space="preserve">
+    <value>Organisation identifier</value>
+  </data>
+  <data name="Support_OrganisationApproval_PponGenerationPending_List" xml:space="preserve">
+    <value>PPON generation pending</value>
+  </data>
+  <data name="Support_OrganisationApproval_OrganisationEmail_List" xml:space="preserve">
+    <value>Organisation email</value>
+  </data>
+  <data name="Support_OrganisationApproval_OrganisationAddress_List" xml:space="preserve">
+    <value>Organisation address</value>
+  </data>
+  <data name="Support_OrganisationApproval_Radio_Heading" xml:space="preserve">
+    <value>Approve the request?</value>
+  </data>
+  <data name="Support_OrganisationApproval_ErrorMessage" xml:space="preserve">
+    <value>Tell the user why you could not approve</value>
+  </data>
+  <data name="Support_OrganisationApproval_ErrorMessage_Hint" xml:space="preserve">
+    <value>For example, ‘You need to change the email address. The domain name in the organisation email address you gave us does not match the organisation name you want to register’.</value>
+  </data>
+  <data name="Supplementary_CookieDetails_TableRow_Preferences" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Support_OrganisationApproval_ValidationErrorMessage" xml:space="preserve">
+    <value>Select an option</value>
   </data>
 </root>

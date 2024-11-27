@@ -12,19 +12,11 @@ public class DatabasePersonRepository(OrganisationInformationContext context) : 
     public async Task<Person?> Find(Guid personId)
     {
         return await context.Persons.FirstOrDefaultAsync(t => t.Guid == personId);
-    }   
+    }
 
     public async Task<Person?> FindByUrn(string urn)
     {
         return await context.Persons.FirstOrDefaultAsync(t => t.UserUrn == urn);
-    }
-
-    public async Task<Person?> FindPersonWithTenant(Guid personId)
-    {
-        return await context.Persons
-            .Include(p => p.Tenants)
-            .Where(p => p.Tenants.Count != 0)
-            .FirstOrDefaultAsync(o => o.Guid == personId);
     }
 
     public async Task<IEnumerable<Person>> FindByOrganisation(Guid organisationId)

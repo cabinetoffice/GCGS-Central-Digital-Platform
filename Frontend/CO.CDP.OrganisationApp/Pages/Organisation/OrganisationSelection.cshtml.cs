@@ -1,24 +1,22 @@
-using CO.CDP.Tenant.WebApiClient;
-using Microsoft.AspNetCore.Mvc;
 using CO.CDP.Organisation.WebApiClient;
+using Microsoft.AspNetCore.Mvc;
 
 namespace CO.CDP.OrganisationApp.Pages.Organisation;
 
 public class OrganisationSelectionModel(
-    ITenantClient tenantClient,
+    IUserInfoService userInfoService,
     IOrganisationClient organisationClient,
     ISession session) : LoggedInUserAwareModel(session)
 {
-    public IList<(UserOrganisation Organisation, Review? Review)> UserOrganisations { get; set; } = [];
+    public IList<(UserOrganisationInfo Organisation, Review? Review)> UserOrganisations { get; set; } = [];
 
     public string? Error { get; set; }
 
     public async Task<IActionResult> OnGet()
     {
-        var usersTenant = await tenantClient.LookupTenantAsync();
+        var userInfo = await userInfoService.GetUserInfo();
 
-        UserOrganisations = await Task.WhenAll(usersTenant.Tenants
-            .SelectMany(t => t.Organisations)
+        UserOrganisations = await Task.WhenAll(userInfo.Organisations
             .Select(async organisation =>
             {
                 Review? review = null;

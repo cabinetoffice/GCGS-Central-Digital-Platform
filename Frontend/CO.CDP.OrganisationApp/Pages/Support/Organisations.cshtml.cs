@@ -2,6 +2,7 @@ using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Constants;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using CO.CDP.Localization;
 
 namespace CO.CDP.OrganisationApp.Pages.Support;
 [Authorize(Policy = PersonScopeRequirement.SupportAdmin)]
@@ -17,8 +18,10 @@ public class OrganisationsModel(
 
     public async Task<IActionResult> OnGet(string type)
     {
-        Type = type;
-        Title = type.Substring(0, 1).ToUpper() + type.Substring(1, type.Length-1) + " organisations";
+        Type = type;        
+        Title = (Type == "buyer"
+                ? StaticTextResource.Support_Organisations_BuyerOrganisations_Title
+                : StaticTextResource.Support_Organisations_SupplierOrganisations_Title);
 
         Organisations = (await organisationClient.GetAllOrganisationsAsync(Type, 1000, 0)).ToList();
 

@@ -141,7 +141,6 @@ public class CustomFormQuestionTypeResolver : IValueResolver<Persistence.FormQue
             case Persistence.FormQuestionType.CheckBox:
                 return FormQuestionType.Boolean;
             case Persistence.FormQuestionType.Text:
-            case Persistence.FormQuestionType.FileUpload:
             case Persistence.FormQuestionType.Address:
                 return FormQuestionType.Text;
             case Persistence.FormQuestionType.SingleChoice:
@@ -154,6 +153,8 @@ public class CustomFormQuestionTypeResolver : IValueResolver<Persistence.FormQue
             case Persistence.FormQuestionType.NoInput:
             case Persistence.FormQuestionType.CheckYourAnswers:
                 return FormQuestionType.None;
+            case Persistence.FormQuestionType.FileUpload:
+                return FormQuestionType.FileUpload;
             default:
                 return FormQuestionType.None;
         }
