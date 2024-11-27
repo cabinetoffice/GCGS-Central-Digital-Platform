@@ -1,6 +1,7 @@
 using CO.CDP.OrganisationApp.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
+using CO.CDP.Localization;
 
 namespace CO.CDP.OrganisationApp.Pages.Forms;
 
@@ -41,13 +42,13 @@ public class FormElementGroupedSingleChoiceModel : FormElementModel, IValidatabl
     {
         if (string.IsNullOrWhiteSpace(SelectedOption))
         {
-            yield return new ValidationResult("Select an option", new[] { nameof(SelectedOption) });
+            yield return new ValidationResult(StaticTextResource.Global_RadioField_SelectOptionError, [nameof(SelectedOption)]);
             yield break;
         }
 
         if (Options?.Groups == null || !Options.Groups.Any(group => group.Choices != null && group.Choices.Any(choice => choice.Value == SelectedOption)))
         {
-            yield return new ValidationResult("Invalid option selected", new[] { nameof(SelectedOption) });
+            yield return new ValidationResult(StaticTextResource.Global_RadioField__InvalidOptionError, [nameof(SelectedOption)]);
         }
     }
 }

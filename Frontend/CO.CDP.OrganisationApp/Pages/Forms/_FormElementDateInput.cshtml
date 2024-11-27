@@ -1,4 +1,5 @@
 @model FormElementDateInputModel
+@using CO.CDP.Localization
 
 @{
     var dayHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Day)).HasInnerHtml;
@@ -45,35 +46,35 @@
             }
             else
             {
-                <div class="govuk-hint">For example, 27 3 2007</div>
+                <div class="govuk-hint">@StaticTextResource.Forms_FormElementDateInput_ExampleHint</div>
             }
         </div>
 
         @if (dayHasError)
         {
             <p class="govuk-error-message" id="day-error">
-                <span class="govuk-visually-hidden">Error:</span>
+                <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span>
                 @Html.ValidationMessageFor(m => m.Day)
             </p>
         }
         @if (monthHasError)
         {
             <p class="govuk-error-message" id="month-error">
-                <span class="govuk-visually-hidden">Error:</span>
+                <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span>
                 @Html.ValidationMessageFor(m => m.Month)
             </p>
         }
         @if (yearHasError)
         {
             <p class="govuk-error-message" id="year-error">
-                <span class="govuk-visually-hidden">Error:</span>
+                <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span>
                 @Html.ValidationMessageFor(m => m.Year)
             </p>
         }
         @if (dateStringHasError)
         {
             <p class="govuk-error-message" id="date-error">
-                <span class="govuk-visually-hidden">Error:</span>
+                <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span>
                 @Html.ValidationMessageFor(m => m.DateString)
             </p>
         }
@@ -81,7 +82,7 @@
             <div class="govuk-date-input__item">
                 <div class="govuk-form-group">
                     <label class="govuk-label govuk-date-input__label" for="@nameof(Model.Day)">
-                        Day
+                        @StaticTextResource.Global_Day
                     </label>
                     <input class="govuk-input govuk-date-input__input govuk-input--width-2 @(dayHasError || dateStringHasError ? "govuk-input--error" : "")"
                            id="@nameof(Model.Day)" name="@nameof(Model.Day)" type="text" inputmode="numeric" value="@Model.Day">
@@ -90,7 +91,7 @@
             <div class="govuk-date-input__item">
                 <div class="govuk-form-group">
                     <label class="govuk-label govuk-date-input__label" for="@nameof(Model.Month)">
-                        Month
+                        @StaticTextResource.Global_Month
                     </label>
                     <input class="govuk-input govuk-date-input__input govuk-input--width-2 @(monthHasError || dateStringHasError ? "govuk-input--error" : "")"
                            id="@nameof(Model.Month)" name="@nameof(Model.Month)" type="text" inputmode="numeric" value="@Model.Month">
@@ -99,7 +100,7 @@
             <div class="govuk-date-input__item">
                 <div class="govuk-form-group">
                     <label class="govuk-label govuk-date-input__label" for="@nameof(Model.Year)">
-                        Year
+                        @StaticTextResource.Global_Year
                     </label>
                     <input class="govuk-input govuk-date-input__input govuk-input--width-4 @(yearHasError || dateStringHasError ? "govuk-input--error" : "")"
                            id="@nameof(Model.Year)" name="@nameof(Model.Year)" type="text" inputmode="numeric" value="@Model.Year">
@@ -126,7 +127,7 @@
         @if (selectOptionHasError)
         {
             <p class="govuk-error-message" id="has-value-error">
-                <span class="govuk-visually-hidden">Error:</span>
+                <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span>
                 @Html.ValidationMessageFor(m => m.HasValue)
             </p>
         }
@@ -142,7 +143,7 @@
                 <div class="govuk-radios__item">
                     <input class="govuk-radios__input" id="@nameof(Model.HasValue)" name="@nameof(Model.HasValue)" type="radio"
                            value="true" data-aria-controls="conditional-YES" @(Model.HasValue == true ? "checked" : "")>
-                    <label class="govuk-label govuk-radios__label" for="@nameof(Model.HasValue)">Yes</label>
+                    <label class="govuk-label govuk-radios__label" for="@nameof(Model.HasValue)">@StaticTextResource.Global_Yes</label>
                 </div>
 
                 <div class="govuk-radios__conditional" id="conditional-YES">
@@ -156,7 +157,7 @@
                 <div class="govuk-radios__item">
                     <input class="govuk-radios__input" id="@nameof(Model.HasValue)-1" name="@nameof(Model.HasValue)" type="radio"
                            value="false" @(Model.HasValue == false ? "checked" : "")>
-                    <label class="govuk-label govuk-radios__label" for="@nameof(Model.HasValue)-1">No</label>
+                    <label class="govuk-label govuk-radios__label" for="@nameof(Model.HasValue)-1">@StaticTextResource.Global_No</label>
                 </div>
             </div>
         }
