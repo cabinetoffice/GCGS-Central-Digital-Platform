@@ -117,31 +117,5 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="SupplierInformationStatus_StepStatus_NotStarted" xml:space="preserve">
-    <value>Ddim wedi dechrau</value>
-  </data>
-  <data name="SupplierInformationStatus_StepStatus_Completed" xml:space="preserve">
-    <value>Wedi'i gyflawni</value>
-  </data>
-  <data name="Supplier_SupplierInformationSummary_Heading" xml:space="preserve">
-    <value>Gwybodaeth am y cyflenwr</value>
-  </data>
-  <data name="Global_BackToOrganisationDetails" xml:space="preserve">
-    <value>Yn ôl i fanylion y sefydliad</value>
-  </data>
-  <data name="ConnectedPersons_SectionTitle" xml:space="preserve">
-    <value>Unigolion cysylltiedig</value>
-  </data>
-  <data name="BasicInformation_SectionTitle" xml:space="preserve">
-    <value>Gwybodaeth sylfaenol</value>
-  </data>
-  <data name="OrganisationRegistration_EnterOrganisationName_Heading" xml:space="preserve">
-    <value>Rhowch enw’r sefydliad</value>
-  </data>
-  <data name="Organisation_EnterOrganisationName_Supplier_Hint" xml:space="preserve">
-    <value>Fel y'i cofrestrwyd â Thŷ'r Cwmnïau os yw'n gorfforedig, neu enw masnachu'r cwmni.</value>
-  </data>
-  <data name="Global_Continue" xml:space="preserve">
-    <value>Parhau</value>
-  </data>
+<!-- TRANSLATIONS -->
 </root>
