@@ -48,6 +48,13 @@ resource "aws_iam_policy" "terraform_product" {
   tags        = var.tags
 }
 
+resource "aws_iam_policy" "terraform_product_data" {
+  name        = "${local.name_prefix}-terraform-product-data"
+  description = "Product's Data specific policy"
+  policy      = data.aws_iam_policy_document.terraform_product_data.json
+  tags        = var.tags
+}
+
 import {
   to = aws_iam_policy.terraform_assume_orchestrator_role
   id = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:policy/${local.name_prefix}-terraform-assume-orchestrator-role"
@@ -71,6 +78,11 @@ resource "aws_iam_role_policy_attachment" "terraform_global" {
 
 resource "aws_iam_role_policy_attachment" "terraform_production" {
   policy_arn = aws_iam_policy.terraform_product.arn
+  role       = aws_iam_role.terraform.name
+}
+
+resource "aws_iam_role_policy_attachment" "terraform_production_data" {
+  policy_arn = aws_iam_policy.terraform_product_data.arn
   role       = aws_iam_role.terraform.name
 }
 
