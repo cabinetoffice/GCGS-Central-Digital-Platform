@@ -59,7 +59,7 @@
                             </dd>
                             <dd class="govuk-summary-list__actions">
                                 <a class="govuk-link" href="@answer.ChangeLink">
-                                    @string.Format(StaticTextResource.Forms_CheckYourAnswers_Change, answer.Title?.ToLower())
+                                    @Html.Raw(string.Format(StaticTextResource.Forms_CheckYourAnswers_Change, answer.Title?.ToLower()))
                                 </a>
                             </dd>
                         </div>
