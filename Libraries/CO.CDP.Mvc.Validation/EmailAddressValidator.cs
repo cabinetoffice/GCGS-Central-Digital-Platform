@@ -12,7 +12,7 @@ public static class EmailAddressValidator
     private static readonly Regex HostnamePartRegex = new(@"^(xn|[a-z0-9]+)(-?-[a-z0-9]+)*$", RegexOptions.IgnoreCase);
     private static readonly Regex TldPartRegex = new(@"^([a-z]{2,63}|xn--([a-z0-9]+-)*[a-z0-9]+)$", RegexOptions.IgnoreCase);
 
-    public static bool ValidateEmailAddress(string emailAddress)
+    public static bool IsValid(string emailAddress)
     {
         emailAddress = StripAndRemoveObscureWhitespace(emailAddress);
         if (!ValidateFormat(emailAddress))

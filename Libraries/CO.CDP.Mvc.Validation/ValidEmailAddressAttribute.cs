@@ -6,7 +6,7 @@ public class ValidEmailAddressAttribute : ValidationAttribute
 {
     protected override ValidationResult IsValid(object? value, ValidationContext validationContext)
     {
-        if(value is string emailAddress && !EmailAddressValidator.ValidateEmailAddress(emailAddress))
+        if(value is string emailAddress && !EmailAddressValidator.IsValid(emailAddress))
         {
             var errorMessage = ErrorMessageResolver.GetErrorMessage(ErrorMessage, ErrorMessageResourceName, ErrorMessageResourceType);
 
