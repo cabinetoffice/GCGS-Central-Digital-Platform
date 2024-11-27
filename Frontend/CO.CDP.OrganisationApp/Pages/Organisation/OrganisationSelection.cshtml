@@ -34,7 +34,7 @@
                     var oneLoginAccountUrl = config["OneLogin:AccountUrl"];
                 }
                 <p class="govuk-body">
-                    @string.Format(@StaticTextResource.Organisation_ChangeSignInDetails, oneLoginAccountUrl)
+                    @Html.Raw(string.Format(@StaticTextResource.Organisation_ChangeSignInDetails, oneLoginAccountUrl))
                 </p>
 
             </section>

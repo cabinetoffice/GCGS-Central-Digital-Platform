@@ -277,7 +277,7 @@
     <value>Email address:</value>
   </data>
   <data name="Organisation_ChangeSignInDetails" xml:space="preserve">
-    <value>You can <a class="govuk-link govuk-link--no-visited-state" href="{0}" target="_blank">change your sign in details in your GOV.UK One Login</a>.</value>
+    <value>You can &lt;a class="govuk-link govuk-link--no-visited-state" href="{0}" target="_blank"&gt;change your sign in details in your GOV.UK One Login&lt;/a&gt;.</value>
   </data>
   <data name="Organisation_MyOrganisations" xml:space="preserve">
     <value>My organisations</value>
