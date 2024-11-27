@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
+using CO.CDP.Localization;
 
 namespace CO.CDP.OrganisationApp.Pages.Supplier;
 
@@ -17,11 +18,11 @@ public class ConnectedEntityLegalFormQuestionModel(ISession session) : PageModel
     public Guid? ConnectedEntityId { get; set; }
 
     [BindProperty]
-    [Required(ErrorMessage = "Select yes if organisation have a legal form")]
+    [Required(ErrorMessageResourceName = nameof(StaticTextResource.Global_SelectYesOrNo), ErrorMessageResourceType = typeof(StaticTextResource))]
     public bool? HasLegalForm { get; set; }
 
     [BindProperty]
-    [RequiredIf(nameof(HasLegalForm), true, ErrorMessage = "Enter the legal form name")]
+    [RequiredIf(nameof(HasLegalForm), true, ErrorMessageResourceName = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityLegalFormQuestion_LegalFormNameRequiredError), ErrorMessageResourceType = typeof(StaticTextResource))]
     public string? LegalFormName { get; set; }
     public string? Caption { get; set; }
     public string? Heading { get; set; }
@@ -38,7 +39,7 @@ public class ConnectedEntityLegalFormQuestionModel(ISession session) : PageModel
             return RedirectToPage("ConnectedEntitySupplierHasControl", new { Id });
         }
 
-        InitModal(state);
+        InitModel(state);
 
         HasLegalForm = selected.HasValue ? selected : state.HasLegalForm;
         LegalFormName = state.LegalForm;
@@ -54,7 +55,7 @@ public class ConnectedEntityLegalFormQuestionModel(ISession session) : PageModel
             return RedirectToPage("ConnectedEntitySupplierHasControl", new { Id });
         }
 
-        InitModal(state);
+        InitModel(state);
 
         if (!ModelState.IsValid)
         {
@@ -117,7 +118,7 @@ public class ConnectedEntityLegalFormQuestionModel(ISession session) : PageModel
         return redirectPage;
     }
 
-    private void InitModal(ConnectedEntityState state)
+    private void InitModel(ConnectedEntityState state)
     {
         Caption = state.GetCaption();
         Heading = $"Does {state.OrganisationName} have a legal form?";

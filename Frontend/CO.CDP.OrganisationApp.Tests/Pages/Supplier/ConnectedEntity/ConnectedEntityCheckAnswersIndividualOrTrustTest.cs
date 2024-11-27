@@ -188,7 +188,7 @@ public class ConnectedEntityCheckAnswersIndividualOrTrustTest
         state.SupplierHasCompanyHouseNumber = yesJourney;
         state.ConnectedEntityType = connectedEntityType;
         state.ConnectedEntityIndividualAndTrustCategoryType = trustCategoryType;
-        state.HasRegistartionDate = registrationDateHasValue;
+        state.HasRegistrationDate = registrationDateHasValue;
         state.RegistrationDate = registrationDateHasValue == true ? DateTime.UtcNow : null;
         _sessionMock.Setup(s => s.Get<ConnectedEntityState>(Session.ConnectedPersonKey)).
             Returns(state);

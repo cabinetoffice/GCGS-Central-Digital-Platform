@@ -5,6 +5,7 @@ using CO.CDP.OrganisationApp.WebApiClients;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using CO.CDP.Localization;
 
 namespace CO.CDP.OrganisationApp.Pages.Supplier;
 
@@ -38,7 +39,7 @@ public class ConnectedEntityCheckAnswersIndividualOrTrustModel(
                 "ConnectedEntityCheckAnswersIndividualOrTrust" : "ConnectedEntitySupplierCompanyQuestion", new { Id, ConnectedEntityId });
         }
 
-        InitModal(state);
+        InitModel(state);
 
         try
         {
@@ -65,7 +66,7 @@ public class ConnectedEntityCheckAnswersIndividualOrTrustModel(
             ConnectedEntityDetails =
                 ConnectedEntityCheckAnswersCommon.GetConnectedEntityStateFromEntity(Id, connectedEntity);
 
-            InitModal(ConnectedEntityDetails);
+            InitModel(ConnectedEntityDetails);
 
             session.Set<ConnectedEntityState?>(Session.ConnectedPersonKey, ConnectedEntityDetails);
 
@@ -85,7 +86,7 @@ public class ConnectedEntityCheckAnswersIndividualOrTrustModel(
             return RedirectToPage("ConnectedEntitySupplierHasControl", new { Id });
         }
 
-        InitModal(state);
+        InitModel(state);
 
         try
         {
@@ -134,10 +135,10 @@ public class ConnectedEntityCheckAnswersIndividualOrTrustModel(
             || state.ConnectedEntityIndividualAndTrustCategoryType == ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndividualWithSignificantInfluenceOrControlForTrust;
     }
 
-    private void InitModal(ConnectedEntityState state)
+    private void InitModel(ConnectedEntityState state)
     {
         Caption = state.GetCaption();
-        Heading = $"Check your answers";
+        Heading = StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityCheckAnswers_PageTitle;
         BackPageLink = GetBackLinkPageName(state);
         ShowRegisterDate = SetShowRegisterDate(state);
     }

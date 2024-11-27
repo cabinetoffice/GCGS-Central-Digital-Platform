@@ -3,105 +3,112 @@ using CO.CDP.Organisation.WebApi.UseCase;
 using CO.CDP.OrganisationInformation.Persistence;
 using FluentAssertions;
 using Moq;
+using Person = CO.CDP.OrganisationInformation.Persistence.Person;
 
 namespace CO.CDP.Organisation.WebApi.Tests.UseCase;
+
 public class RemovePersonFromOrganisationUseCaseTest
 {
     private readonly Mock<IOrganisationRepository> _organisationRepository = new();
-    private readonly Mock<IPersonRepository> _personRepository = new();
-    private RemovePersonFromOrganisationUseCase UseCase => new(_organisationRepository.Object, _personRepository.Object);
+
+    private RemovePersonFromOrganisationUseCase UseCase => new(_organisationRepository.Object);
 
     [Fact]
-    public async Task Execute_OrganisationPersonAndPersonWithTenant_ReturnsTrue()
+    public async Task Execute_OrganisationPersonAndPersonWithTenant_BothLinksAreRemoved()
     {
-        var person = new OrganisationInformation.Persistence.Person { Id = 1, Guid = Guid.NewGuid(), FirstName = "Tom", LastName = "Smith", Email = "js@biz.com" };
-        var organisation = new OrganisationInformation.Persistence.Organisation
-        {
-            Id = 1,
-            Guid = Guid.NewGuid(),
-            Name = "Acme",
-            OrganisationPersons = [new OrganisationPerson { PersonId = 1, Person = person, Organisation = Mock.Of<OrganisationInformation.Persistence.Organisation>() }],
-            Tenant = new Tenant { Guid = Guid.NewGuid(), Name = "A Tenant" }
-        };
+        var person = GivenPerson();
+        var organisation = GivenOrganisation(organisationPerson: person, tenantPerson: person);
 
         var command = (organisation.Guid, new RemovePersonFromOrganisation { PersonId = person.Guid });
-        _organisationRepository.Setup(r => r.Find(command.Item1)).ReturnsAsync(organisation);
-        _personRepository.Setup(r => r.FindByOrganisation(command.Item1)).ReturnsAsync(new List<OrganisationInformation.Persistence.Person> { person });
-        _personRepository.Setup(r => r.FindPersonWithTenant(person.Guid)).ReturnsAsync(person);
+        _organisationRepository.Setup(r => r.FindIncludingPersons(command.Item1)).ReturnsAsync(organisation);
 
         var result = await UseCase.Execute(command);
 
         result.Should().BeTrue();
-        _organisationRepository.Verify(r => r.Save(organisation), Times.Once);
+        _organisationRepository.Verify(
+            r => r.Save(It.Is<OrganisationInformation.Persistence.Organisation>(o =>
+                o.OrganisationPersons.Count == 0 && o.Tenant.Persons.Count == 0)), Times.Once);
     }
 
     [Fact]
-    public async Task Execute_NoOrganisationPerson_ReturnsTrue()
+    public async Task Execute_NoOrganisationPerson_TenantLinkIsRemoved()
     {
-        var person = new OrganisationInformation.Persistence.Person { Id = 1, Guid = Guid.NewGuid(), FirstName = "Tom", LastName = "Smith", Email = "js@biz.com" };
-        var organisation = new OrganisationInformation.Persistence.Organisation
-        {
-            Id = 1,
-            Guid = Guid.NewGuid(),
-            Name = "Acme",
-            OrganisationPersons = [],
-            Tenant = new Tenant { Guid = Guid.NewGuid(), Name = "A Tenant" }
-        };
+        var person = GivenPerson();
+        var organisation = GivenOrganisation(tenantPerson: person);
 
         var command = (organisation.Guid, new RemovePersonFromOrganisation { PersonId = person.Guid });
-        _organisationRepository.Setup(r => r.Find(command.Item1)).ReturnsAsync(organisation);
-        _personRepository.Setup(r => r.FindByOrganisation(command.Item1)).ReturnsAsync(new List<OrganisationInformation.Persistence.Person> { person });
-        _personRepository.Setup(r => r.FindPersonWithTenant(person.Guid)).ReturnsAsync(person);
+        _organisationRepository.Setup(r => r.FindIncludingPersons(command.Item1)).ReturnsAsync(organisation);
 
         var result = await UseCase.Execute(command);
 
         result.Should().BeTrue();
-        _organisationRepository.Verify(r => r.Save(organisation), Times.Once);
+        _organisationRepository.Verify(
+            r => r.Save(It.Is<OrganisationInformation.Persistence.Organisation>(o =>
+                o.OrganisationPersons.Count == 0 && o.Tenant.Persons.Count == 0)), Times.Once);
     }
 
     [Fact]
-    public async Task Execute_NoPersonWithTenant_ReturnsTrue()
+    public async Task Execute_NoPersonWithTenant_OrganisationPersonIsRemoved()
     {
-        var person = new OrganisationInformation.Persistence.Person { Id = 1, Guid = Guid.NewGuid(), FirstName = "Tom", LastName = "Smith", Email = "js@biz.com" };
-        var organisation = new OrganisationInformation.Persistence.Organisation
-        {
-            Id = 1,
-            Guid = Guid.NewGuid(),
-            Name = "Acme",
-            OrganisationPersons = [new OrganisationPerson { PersonId = 1, Person = person, Organisation = Mock.Of<OrganisationInformation.Persistence.Organisation>() }],
-            Tenant = new Tenant { Guid = Guid.NewGuid(), Name = "A Tenant" }
-        };
+        var person = GivenPerson();
+        var organisation = GivenOrganisation(organisationPerson: person);
 
         var command = (organisation.Guid, new RemovePersonFromOrganisation { PersonId = person.Guid });
-        _organisationRepository.Setup(r => r.Find(command.Item1)).ReturnsAsync(organisation);
-        _personRepository.Setup(r => r.FindByOrganisation(command.Item1)).ReturnsAsync(new List<OrganisationInformation.Persistence.Person> { person });
-        
+        _organisationRepository.Setup(r => r.FindIncludingPersons(command.Item1)).ReturnsAsync(organisation);
+
         var result = await UseCase.Execute(command);
 
         result.Should().BeTrue();
-        _organisationRepository.Verify(r => r.Save(organisation), Times.Once);
+        _organisationRepository.Verify(
+            r => r.Save(It.Is<OrganisationInformation.Persistence.Organisation>(o =>
+                o.OrganisationPersons.Count == 0 && o.Tenant.Persons.Count == 0)), Times.Once);
     }
 
     [Fact]
-    public async Task Execute_NoOrganisationPersonNoPersonWithTenant_ReturnsFalse()
+    public async Task Execute_NoOrganisationPersonNoPersonWithTenant_NoLinksAreRemoved()
     {
-        var person = new OrganisationInformation.Persistence.Person { Id = 1, Guid = Guid.NewGuid(), FirstName = "Tom", LastName = "Smith", Email = "js@biz.com" };
-        var organisation = new OrganisationInformation.Persistence.Organisation
-        {
-            Id = 1,
-            Guid = Guid.NewGuid(),
-            Name = "Acme",
-            OrganisationPersons = [],
-            Tenant = new Tenant { Guid = Guid.NewGuid(), Name = "A Tenant" }
-        };
+        var person = GivenPerson();
+        var organisation = GivenOrganisation();
 
         var command = (organisation.Guid, new RemovePersonFromOrganisation { PersonId = person.Guid });
-        _organisationRepository.Setup(r => r.Find(command.Item1)).ReturnsAsync(organisation);
-        _personRepository.Setup(r => r.FindByOrganisation(command.Item1)).ReturnsAsync(new List<OrganisationInformation.Persistence.Person> { person });
+        _organisationRepository.Setup(r => r.FindIncludingPersons(command.Item1)).ReturnsAsync(organisation);
 
         var result = await UseCase.Execute(command);
 
         result.Should().BeFalse();
         _organisationRepository.Verify(r => r.Save(organisation), Times.Never);
+    }
+
+    private static Person GivenPerson()
+    {
+        return new Person
+            { Id = 1, Guid = Guid.NewGuid(), FirstName = "Tom", LastName = "Smith", Email = "js@biz.com" };
+    }
+
+    private static OrganisationInformation.Persistence.Organisation GivenOrganisation(
+        Person? organisationPerson = null,
+        Person? tenantPerson = null
+    )
+    {
+        var organisation = new OrganisationInformation.Persistence.Organisation
+        {
+            Id = 1,
+            Guid = Guid.NewGuid(),
+            Name = "Acme",
+            OrganisationPersons = [],
+            Tenant = new Tenant { Guid = Guid.NewGuid(), Name = "A Tenant" }
+        };
+        if (organisationPerson != null)
+        {
+            organisation.OrganisationPersons.Add(new OrganisationPerson
+                { PersonId = organisationPerson.Id, Person = organisationPerson, Organisation = organisation });
+        }
+
+        if (tenantPerson != null)
+        {
+            organisation.Tenant.Persons.Add(tenantPerson);
+        }
+
+        return organisation;
     }
 }

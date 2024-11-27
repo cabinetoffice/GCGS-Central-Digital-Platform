@@ -1,12 +1,13 @@
-using CO.CDP.Mvc.Validation;
 using CO.CDP.OrganisationApp.Constants;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
+using CO.CDP.Localization;
 using System.Globalization;
+using CO.CDP.Mvc.Validation;
 
-namespace CO.CDP.OrganisationApp.Pages.Supplier;
+namespace CO.CDP.OrganisationApp.Pages.Supplier.ConnectedEntity;
 
 [Authorize(Policy = OrgScopeRequirement.Editor)]
 public class ConnectedEntityRegistrationDateQuestionModel(ISession session) : PageModel
@@ -18,22 +19,22 @@ public class ConnectedEntityRegistrationDateQuestionModel(ISession session) : Pa
     public Guid? ConnectedEntityId { get; set; }
 
     [BindProperty]
-    [Required(ErrorMessage = "Select yes if you required to register organisation as a person with significant control")]
-    public bool? HasRegistartionDate { get; set; }
+    [Required(ErrorMessageResourceName = nameof(StaticTextResource.Global_SelectYesOrNo), ErrorMessageResourceType = typeof(StaticTextResource))]
+    public bool? HasRegistrationDate { get; set; }
 
     [BindProperty]
-    [RequiredIf(nameof(HasRegistartionDate), true, ErrorMessage = "Date of registration must include a day")]
-    [RegularExpression(RegExPatterns.Day, ErrorMessage = "Day must be a valid number")]
+    [RequiredIf(nameof(HasRegistrationDate), true, ErrorMessageResourceName = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityRegistrationDateQuestion_DayRequiredError), ErrorMessageResourceType = typeof(StaticTextResource))]
+    [RegularExpression(RegExPatterns.Day, ErrorMessageResourceName = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityRegistrationDateQuestion_DayInvalidError), ErrorMessageResourceType = typeof(StaticTextResource))]
     public string? Day { get; set; }
 
     [BindProperty]
-    [RequiredIf(nameof(HasRegistartionDate), true, ErrorMessage = "Date of registration must include a month")]
-    [RegularExpression(RegExPatterns.Month, ErrorMessage = "Month must be a valid number")]
+    [RequiredIf(nameof(HasRegistrationDate), true, ErrorMessageResourceName = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityRegistrationDateQuestion_MonthRequiredError), ErrorMessageResourceType = typeof(StaticTextResource))]
+    [RegularExpression(RegExPatterns.Month, ErrorMessageResourceName = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityRegistrationDateQuestion_MonthInvalidError), ErrorMessageResourceType = typeof(StaticTextResource))]
     public string? Month { get; set; }
 
     [BindProperty]
-    [RequiredIf(nameof(HasRegistartionDate), true, ErrorMessage = "Date of registration must include a year")]
-    [RegularExpression(RegExPatterns.Year, ErrorMessage = "Year must be a valid number")]
+    [RequiredIf(nameof(HasRegistrationDate), true, ErrorMessageResourceName = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityRegistrationDateQuestion_YearRequiredError), ErrorMessageResourceType = typeof(StaticTextResource))]
+    [RegularExpression(RegExPatterns.Year, ErrorMessageResourceName = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityRegistrationDateQuestion_YearInvalidError), ErrorMessageResourceType = typeof(StaticTextResource))]
     public string? Year { get; set; }
 
     [BindProperty]
@@ -59,9 +60,8 @@ public class ConnectedEntityRegistrationDateQuestionModel(ISession session) : Pa
                 : "ConnectedEntitySupplierCompanyQuestion", new { Id, ConnectedEntityId });
         }
 
-        InitModal(state, true);
-
-        HasRegistartionDate = selected.HasValue ? selected : state.HasRegistartionDate;
+        InitModel(state, true);
+        HasRegistrationDate = selected.HasValue ? selected : state.HasRegistrationDate;
 
         return Page();
     }
@@ -78,22 +78,22 @@ public class ConnectedEntityRegistrationDateQuestionModel(ISession session) : Pa
                 : "ConnectedEntitySupplierCompanyQuestion", new { Id, ConnectedEntityId });
         }
 
-        InitModal(state);
+        InitModel(state);
 
         if (!ModelState.IsValid)
         {
             return Page();
         }
 
-        if (state.HasRegistartionDate != HasRegistartionDate)
+        if (state.HasRegistrationDate != HasRegistrationDate)
         { RedirectToCheckYourAnswer = false; }
 
-        if (HasRegistartionDate == true)
+        if (HasRegistrationDate == true)
         {
             var dateString = $"{Year}-{Month!.PadLeft(2, '0')}-{Day!.PadLeft(2, '0')}";
             if (!DateTime.TryParseExact(dateString, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
             {
-                ModelState.AddModelError(nameof(RegistrationDate), "Date of registration must be a real date");
+                ModelState.AddModelError(nameof(RegistrationDate), StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityRegistrationDateQuestion_DateInvalidError);
                 return Page();
             }
 
@@ -101,9 +101,9 @@ public class ConnectedEntityRegistrationDateQuestionModel(ISession session) : Pa
         }
         else
         { state.RegistrationDate = null; }
-
-        state.HasRegistartionDate = HasRegistartionDate;
-        if (HasRegistartionDate == false)
+        
+        state.HasRegistrationDate = HasRegistrationDate;
+        if (HasRegistrationDate == false)
         {
             state.RegisterName = null;
         }
@@ -140,12 +140,12 @@ public class ConnectedEntityRegistrationDateQuestionModel(ISession session) : Pa
                 switch (state.ConnectedEntityOrganisationCategoryType)
                 {
                     case ConnectedEntityOrganisationCategoryType.RegisteredCompany:
-                        redirectPage = HasRegistartionDate == true
+                        redirectPage = HasRegistrationDate == true
                                         ? "ConnectedEntityCompanyRegisterName"
                                         : "ConnectedEntityCheckAnswersOrganisation";
                         break;
                     case ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl:
-                        redirectPage = HasRegistartionDate == true
+                        redirectPage = HasRegistrationDate == true
                                         ? "ConnectedEntityCompanyRegisterName"
                                         : "ConnectedEntityLegalFormQuestion";
                         break;
@@ -155,7 +155,7 @@ public class ConnectedEntityRegistrationDateQuestionModel(ISession session) : Pa
                 switch (state.ConnectedEntityIndividualAndTrustCategoryType)
                 {
                     case ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForIndividual:
-                        redirectPage = HasRegistartionDate == true
+                        redirectPage = HasRegistrationDate == true
                                         ? "ConnectedEntityCompanyRegisterName"
                                         : "ConnectedEntityCheckAnswersIndividualOrTrust";
                         break;
@@ -170,7 +170,7 @@ public class ConnectedEntityRegistrationDateQuestionModel(ISession session) : Pa
                 switch (state.ConnectedEntityIndividualAndTrustCategoryType)
                 {
                     case ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForTrust:
-                        redirectPage = HasRegistartionDate == true
+                        redirectPage = HasRegistrationDate == true
                                         ? "ConnectedEntityCompanyRegisterName"
                                         : "ConnectedEntityCheckAnswersIndividualOrTrust";
                         break;
@@ -186,12 +186,10 @@ public class ConnectedEntityRegistrationDateQuestionModel(ISession session) : Pa
         return redirectPage;
     }
 
-    private void InitModal(ConnectedEntityState state, bool reset = false)
+    private void InitModel(ConnectedEntityState state, bool reset = false)
     {
         Caption = state.GetCaption();
-        Heading = $"Were you required to register " +
-            $"{(state.ConnectedEntityType == Constants.ConnectedEntityType.Organisation ? state.OrganisationName : state.FirstName)}" +
-            $" as a person with significant control?";
+        Heading = string.Format(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityRegistrationDateQuestion_Heading, (state.ConnectedEntityType == Constants.ConnectedEntityType.Organisation ? state.OrganisationName : state.FirstName));
         BackPageLink = GetBackLinkPageName(state);
         ConnectedEntityType = state.ConnectedEntityType;
         if (reset && state.RegistrationDate.HasValue)

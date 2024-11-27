@@ -34,7 +34,31 @@ public static class PponEndpointExtensions
                 operation.Responses["404"].Description = "Identifier not found.";
                 operation.Responses["500"].Description = "Internal server error.";
                 return operation;
-            });
+            });       
+    }
+
+    public static void UseRegistriesEndpoints(this WebApplication app)
+    {
+        app.MapGet("/registries/{countrycode}",
+           [Authorize(Policy = "OneLoginPolicy")]
+        async (string countrycode, IUseCase<string, IEnumerable<IdentifierRegistries>> useCase) =>
+           await useCase.Execute(countrycode)
+                  .AndThen(identifiers => identifiers.Any() ? Results.Ok(identifiers) : Results.NotFound()))
+      .Produces<IEnumerable<IdentifierRegistries>>(StatusCodes.Status200OK, "application/json")
+      .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
+      .Produces<ProblemDetails>(StatusCodes.Status404NotFound)
+      .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError)
+      .WithOpenApi(operation =>
+      {
+          operation.OperationId = "GetIdentifierRegistries";
+          operation.Description = "Get Identifier Registries.";
+          operation.Summary = "Get Identifier Registries.";
+          operation.Responses["200"].Description = "List of identifiers.";          
+          operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
+          operation.Responses["404"].Description = "Identifiers not found.";
+          operation.Responses["500"].Description = "Internal server error.";
+          return operation;
+      });
     }
 }
 
