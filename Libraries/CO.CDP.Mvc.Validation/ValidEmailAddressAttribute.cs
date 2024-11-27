@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using System.Net.Mail;
 
 namespace CO.CDP.Mvc.Validation;
 
@@ -7,7 +6,7 @@ public class ValidEmailAddressAttribute : ValidationAttribute
 {
     protected override ValidationResult IsValid(object? value, ValidationContext validationContext)
     {
-        if (value is string email && (email.Contains(' ') || !MailAddress.TryCreate(email, out var _)))
+        if(value is string emailAddress && !EmailAddressValidator.ValidateEmailAddress(emailAddress))
         {
             var errorMessage = ErrorMessageResolver.GetErrorMessage(ErrorMessage, ErrorMessageResourceName, ErrorMessageResourceType);
 
