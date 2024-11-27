@@ -179,11 +179,13 @@
 
                 @if ((organisationDetails.IsPendingBuyer() || organisationDetails.IsBuyer()) && !organisationDetails.IsTenderer())
                 {
-                    <h3 class="govuk-heading-s govuk-!-margin-bottom-3">
-                        <a class="govuk-link" asp-page="./OrganisationRegisterBuyerAsSupplier" asp-route-id="@Model.Id">@StaticTextResource.Organisation_RegisterAsSupplier</a>
-                    </h3>
-                    <p class="govuk-body">@StaticTextResource.Organisation_SupplyGoodsServices</p>
-                    <div class="govuk-section-break govuk-section-break--visible govuk-section-break--m"></div>
+                    <authorize scope="@OrgScopeRequirement.Editor">
+                        <h3 class="govuk-heading-s govuk-!-margin-bottom-3">
+                            <a class="govuk-link" asp-page="./OrganisationRegisterBuyerAsSupplier" asp-route-id="@Model.Id">@StaticTextResource.Organisation_RegisterAsSupplier</a>
+                        </h3>
+                        <p class="govuk-body">@StaticTextResource.Organisation_SupplyGoodsServices</p>
+                        <div class="govuk-section-break govuk-section-break--visible govuk-section-break--m"></div>
+                    </authorize>
                 }
 
                 @if (organisationDetails.IsBuyer())
