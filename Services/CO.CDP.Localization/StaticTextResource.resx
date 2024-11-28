@@ -412,7 +412,7 @@
     <value>an organisation or sole trader who applies for contracts to supply goods, works, and services</value>
   </data>
   <data name="Supplementary_Index_CreateLogin" xml:space="preserve">
-    <value>You will first &lt;a class="govuk-link govuk-link--no-visited-state" id="one-login-anchor" href="/one-login/sign-in"&gt;create GOV.UK One Login or sign in.&lt;/a&gt;</value>
+    <value>You will need to &lt;a class="govuk-link govuk-link--no-visited-state" id="one-login-anchor" href="/one-login/sign-in"&gt;create a GOV.UK One Login or sign in.&lt;/a&gt;</value>
   </data>
   <data name="Supplementary_Index_AlreadyRegistered" xml:space="preserve">
     <value>If your organisation is already registered</value>
