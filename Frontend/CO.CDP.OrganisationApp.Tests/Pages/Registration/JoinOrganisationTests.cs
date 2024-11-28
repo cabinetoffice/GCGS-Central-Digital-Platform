@@ -7,6 +7,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using OrganisationWebApiClient = CO.CDP.Organisation.WebApiClient;
 using Moq;
+using CO.CDP.Localization;
+using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages.Registration;
 
@@ -62,7 +65,7 @@ public class JoinOrganisationModelTests
     [Fact]
     public async Task OnPost_ModelStateInvalid_ReturnsPageResultWithOrganisationDetails()
     {
-        _joinOrganisationModel.ModelState.AddModelError("Join", "Select an option");
+        _joinOrganisationModel.ModelState.AddModelError("UserWantsToJoin", StaticTextResource.OrganisationRegistration_JoinOrganisation_ValidationErrorMessage);
 
         _organisationClientMock.Setup(client => client.LookupOrganisationAsync(string.Empty, _identifier))
             .ReturnsAsync(_organisation);
@@ -75,12 +78,19 @@ public class JoinOrganisationModelTests
     }
 
     [Fact]
-    public async Task OnPost_UserHasPersonId_JoinIsTrue_CreatesJoinRequestRemovedRegistrationSessionAndRedirectsToSuccessPage()
+    public async Task OnPost_UserHasPersonId_JoinIsTrue_UserConfirmationConfirmed_CreatesJoinRequestRemovedRegistrationSessionAndRedirectsToSuccessPage()
     {
         _organisationClientMock.Setup(client => client.LookupOrganisationAsync(string.Empty, _identifier))
             .ReturnsAsync(_organisation);
 
-        _joinOrganisationModel.Join = true;
+        _joinOrganisationModel.UserWantsToJoin = true;
+        _joinOrganisationModel.UserConfirmation = "Confirmed";
+
+        _organisationClientMock.Setup(client => client.CreateJoinRequestAsync(_organisationId,
+            It.Is<CreateOrganisationJoinRequest>(r => r.PersonId == _joinOrganisationModel.UserDetails.PersonId)))
+            .ReturnsAsync(new OrganisationJoinRequest(Guid.NewGuid(), _organisation, null, null, null, OrganisationJoinRequestStatus.Accepted));
+
+        ValidateModel(_joinOrganisationModel);
 
         var result = await _joinOrganisationModel.OnPost(_identifier);
 
@@ -96,12 +106,37 @@ public class JoinOrganisationModelTests
     }
 
     [Fact]
+    public async Task OnPost_UserHasPersonId_JoinIsPending_CreatesJoinRequestRemovedRegistrationSessionAndRedirectsToSuccessPage()
+    {
+        _organisationClientMock.Setup(client => client.LookupOrganisationAsync(string.Empty, _identifier))
+            .ReturnsAsync(_organisation);
+
+        _joinOrganisationModel.UserWantsToJoin = true;
+        _joinOrganisationModel.UserConfirmation = "Confirmed";
+
+        _organisationClientMock.Setup(client => client.CreateJoinRequestAsync(_organisationId,
+            It.Is<CreateOrganisationJoinRequest>(r => r.PersonId == _joinOrganisationModel.UserDetails.PersonId)))
+            .ReturnsAsync(new OrganisationJoinRequest(Guid.NewGuid(), _organisation, null, null, null, OrganisationJoinRequestStatus.Pending));
+
+        ValidateModel(_joinOrganisationModel);
+
+        var result = await _joinOrganisationModel.OnPost(_identifier);
+
+        _tempDataMock.Verify(tempData => tempData.Put(
+                FlashMessageTypes.Failure,
+                It.IsAny<FlashMessage>()),
+            Times.Once);
+
+        result.Should().BeOfType<PageResult>();
+    }
+
+    [Fact]
     public async Task OnPost_UserHasPersonId_JoinIsFalse_RedirectsToMyAccount()
     {
         _organisationClientMock.Setup(client => client.LookupOrganisationAsync(string.Empty, _identifier))
             .ReturnsAsync(_organisation);
 
-        _joinOrganisationModel.Join = false;
+        _joinOrganisationModel.UserWantsToJoin = false;
 
         var result = await _joinOrganisationModel.OnPost(_identifier);
 
@@ -114,7 +149,7 @@ public class JoinOrganisationModelTests
     [Fact]
     public async Task OnPost_UserHasNoPersonId_RedirectsToHomePage()
     {
-        _joinOrganisationModel.Join = true;
+        _joinOrganisationModel.UserWantsToJoin = true;
         _sessionMock.Setup(s => s.Get<UserDetails>(Session.UserDetailsKey))
             .Returns(new UserDetails() { UserUrn = "testUserUrn", PersonId = null});
 
@@ -131,7 +166,7 @@ public class JoinOrganisationModelTests
     {
         _organisationClientMock.Setup(client => client.LookupOrganisationAsync(string.Empty, _identifier))
             .ReturnsAsync(_organisation);
-        _joinOrganisationModel.Join = true;
+        _joinOrganisationModel.UserWantsToJoin = true;
 
         _organisationClientMock.Setup(client => client.CreateJoinRequestAsync(
                 _organisationId,
@@ -141,12 +176,20 @@ public class JoinOrganisationModelTests
         var result = await _joinOrganisationModel.OnPost(_identifier);
 
         _tempDataMock.Verify(tempData => tempData.Put(
-                FlashMessageTypes.Important,
+                FlashMessageTypes.Failure,
                 It.IsAny<FlashMessage>()),
             Times.Once);
 
         result.Should().BeOfType<PageResult>();
     }
 
+    private void ValidateModel(JoinOrganisationModel model)
+    {
+        var validationResults = new List<ValidationResult>();
+        var validationContext = new ValidationContext(model, null, null);
+        Validator.TryValidateObject(model, validationContext, validationResults, true);
 
+        if (validationResults.Any())
+            model.ModelState.AddModelError("Error", validationResults[0].ErrorMessage ?? "");
+    }
 }

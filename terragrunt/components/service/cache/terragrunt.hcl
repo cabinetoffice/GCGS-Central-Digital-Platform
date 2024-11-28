@@ -20,6 +20,14 @@ locals {
 
 }
 
+dependency core_iam {
+  config_path = "../../core/iam"
+  mock_outputs = {
+    terraform_arn  = "mock"
+    terraform_name = "mock"
+  }
+}
+
 dependency core_networking {
   config_path = "../../core/networking"
   mock_outputs = {

@@ -236,6 +236,7 @@ data "aws_iam_policy_document" "terraform_global" {
 
   statement {
     actions = [
+      "elasticloadbalancing:DescribeListenerAttributes",
       "elasticloadbalancing:DescribeListeners",
       "elasticloadbalancing:DescribeLoadBalancerAttributes",
       "elasticloadbalancing:DescribeLoadBalancers",
@@ -321,6 +322,17 @@ data "aws_iam_policy_document" "terraform_global" {
       "*"
     ]
     sid = "ManageSSMGlobal"
+  }
+
+  statement {
+    actions = [
+      "states:ValidateStateMachineDefinition",
+    ]
+    effect = "Allow"
+    resources = [
+      "arn:aws:states:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:stateMachine:*"
+    ]
+    sid = "ManageStateMachines"
   }
 
 }

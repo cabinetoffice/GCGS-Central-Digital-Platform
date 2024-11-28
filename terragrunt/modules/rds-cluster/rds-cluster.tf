@@ -2,7 +2,7 @@ resource "aws_rds_cluster" "this" {
   backup_retention_period          = var.backup_retention_period
   cluster_identifier               = var.db_name
   copy_tags_to_snapshot            = var.copy_tags_to_snapshot
-  database_name = replace(var.db_name, "-", "_")
+  database_name                    = replace(var.db_name, "-", "_")
   db_cluster_parameter_group_name  = aws_rds_cluster_parameter_group.this.name
   db_instance_parameter_group_name = aws_db_parameter_group.this.name
   db_subnet_group_name             = aws_db_subnet_group.this.name

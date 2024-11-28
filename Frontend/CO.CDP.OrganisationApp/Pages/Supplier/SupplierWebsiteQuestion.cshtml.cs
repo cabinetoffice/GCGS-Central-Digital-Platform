@@ -1,3 +1,4 @@
+using CO.CDP.Localization;
 using CO.CDP.Mvc.Validation;
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Constants;
@@ -14,11 +15,11 @@ namespace CO.CDP.OrganisationApp.Pages.Supplier;
 public class SupplierWebsiteQuestionModel(IOrganisationClient organisationClient) : PageModel
 {
     [BindProperty]
-    [Required(ErrorMessage = "Select an option")]
+    [Required(ErrorMessageResourceName = nameof(StaticTextResource.Supplier_WebsiteQuestion_ErrorSelectOption), ErrorMessageResourceType = typeof(StaticTextResource))]
     public bool? HasWebsiteAddress { get; set; }
 
     [BindProperty]
-    [RequiredIf(nameof(HasWebsiteAddress), true, ErrorMessage = "Enter the website address")]
+    [RequiredIf(nameof(HasWebsiteAddress), true, ErrorMessageResourceName = nameof(StaticTextResource.Supplier_WebsiteAddress_ErrorEnterWebsiteAddress), ErrorMessageResourceType = typeof(StaticTextResource))]
     public string? WebsiteAddress { get; set; }
 
     [BindProperty(SupportsGet = true)]
@@ -60,8 +61,7 @@ public class SupplierWebsiteQuestionModel(IOrganisationClient organisationClient
 
             if (!Uri.TryCreate(WebsiteAddress, UriKind.Absolute, out _))
             {
-                ModelState.AddModelError(nameof(WebsiteAddress),
-                    "Website address must be in the correct format, like https://www.companyname.com");
+                ModelState.AddModelError(nameof(WebsiteAddress), StaticTextResource.Supplier_WebsiteQuestion_ErrorInvalidUrl);
             }
         }
 

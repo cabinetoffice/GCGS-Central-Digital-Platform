@@ -14,7 +14,7 @@ resource "aws_elasticache_replication_group" "this" {
   port                        = var.port
   preferred_cache_cluster_azs = data.aws_availability_zones.current.names
   replication_group_id        = "${local.name_prefix}-org-app-sessions"
-  security_group_ids = [var.elasticache_redis_sg_id]
+  security_group_ids          = [var.elasticache_redis_sg_id]
   subnet_group_name           = aws_elasticache_subnet_group.this.name
   tags                        = var.tags
   transit_encryption_enabled  = true

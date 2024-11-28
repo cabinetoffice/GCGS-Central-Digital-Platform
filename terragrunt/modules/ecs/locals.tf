@@ -25,6 +25,9 @@ locals {
 
   service_version = var.pinned_service_version == null ? data.aws_ssm_parameter.orchestrator_service_version.value : var.pinned_service_version
 
+  shared_sessions_enabled = var.environment == "development" ? true : false
+  ssm_data_protection_prefix = "${local.name_prefix}-ec-sessions"
+
   migrations = ["organisation-information-migrations", "entity-verification-migrations"]
 
   migration_configs = {

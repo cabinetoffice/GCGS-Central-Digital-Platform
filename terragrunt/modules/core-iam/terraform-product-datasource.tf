@@ -89,7 +89,7 @@ data "aws_iam_policy_document" "terraform_product" {
 
   statement {
     actions = ["ec2:*"]
-    effect = "Allow"
+    effect  = "Allow"
     resources = [
       "arn:aws:ec2:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:*/${local.name_prefix}-*"
     ]
@@ -204,7 +204,7 @@ data "aws_iam_policy_document" "terraform_product" {
       "states:List*",
       "states:StartExecution",
       "states:TagResource",
-      "states:UpdateStateMachine"
+      "states:UpdateStateMachine",
     ]
     effect = "Allow"
     resources = [

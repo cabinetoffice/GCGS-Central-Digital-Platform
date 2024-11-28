@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using CO.CDP.Localization;
+using CO.CDP.Mvc.Validation;
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
@@ -17,9 +18,11 @@ public class JoinOrganisationModel(
 
     [BindProperty]
     [Required(ErrorMessage = nameof(StaticTextResource.OrganisationRegistration_JoinOrganisation_ValidationErrorMessage))]
-    public bool Join { get; set; }
+    public bool? UserWantsToJoin { get; set; }
 
-    public FlashMessage NotificationBannerAlreadyMemberOfOrganisation { get { return new FlashMessage(ErrorMessagesList.AlreadyMemberOfOrganisation); } }
+    [BindProperty]
+    [RequiredIf(nameof(UserWantsToJoin), true, ErrorMessage = nameof(StaticTextResource.OrganisationRegistration_JoinOrganisation_ConfirmValidationErrorMessage))]
+    public string? UserConfirmation { get; set; }
 
     public async Task<IActionResult> OnGet(string identifier)
     {
@@ -45,24 +48,37 @@ public class JoinOrganisationModel(
 
         if (UserDetails.PersonId != null && OrganisationDetails != null)
         {
-            if (Join)
+            if (UserWantsToJoin.GetValueOrDefault())
             {
                 try
                 {
-                    await organisationClient.CreateJoinRequestAsync(OrganisationDetails.Id,
+                    var joinRequestStatus = await organisationClient.CreateJoinRequestAsync(OrganisationDetails.Id,
                         new CreateOrganisationJoinRequest(
                             personId: UserDetails.PersonId.Value
                         ));
+
+                    switch(joinRequestStatus.Status)
+                    {
+                        case OrganisationJoinRequestStatus.Pending:
+                            {
+                                tempDataService.Put(FlashMessageTypes.Failure, new FlashMessage(StaticTextResource.OrganisationRegistration_JoinOrganisation_PendingMemberOfOrganisation));
+                                return Page();
+                            }
+                        case OrganisationJoinRequestStatus.Accepted:
+                            {
+                                return Redirect("/registration/" + identifier + "/join-organisation/success");
+                            }
+                    }
                 }
                 catch (ApiException<OrganisationWebApiClient.ProblemDetails>)
                 {
-                    tempDataService.Put(FlashMessageTypes.Important, NotificationBannerAlreadyMemberOfOrganisation);
+                    tempDataService.Put(FlashMessageTypes.Failure, new FlashMessage(StaticTextResource.OrganisationRegistration_JoinOrganisation_AlreadyMemberOfOrganisation));
                     return Page();
                 }
-
-                SessionContext.Remove(Session.RegistrationDetailsKey);
-
-                return Redirect("/registration/" + identifier + "/join-organisation/success");
+                finally
+                {
+                    SessionContext.Remove(Session.RegistrationDetailsKey);
+                }
             }
 
             return Redirect("/organisation-selection");

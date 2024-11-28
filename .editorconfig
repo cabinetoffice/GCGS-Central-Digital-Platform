@@ -7,7 +7,7 @@ insert_final_newline = false
 indent_style = space
 indent_size = 4
 
-[{*.har,*.jsb2,*.jsb3,*.json,*.jsonc,*.postman_collection,*.postman_environment,.babelrc,.eslintrc,.prettierrc,.stylelintrc,bowerrc,jest.config}]
+[{*.resx,*.har,*.jsb2,*.jsb3,*.json,*.jsonc,*.postman_collection,*.postman_environment,.babelrc,.eslintrc,.prettierrc,.stylelintrc,bowerrc,jest.config}]
 indent_size = 2
 
 [Makefile]

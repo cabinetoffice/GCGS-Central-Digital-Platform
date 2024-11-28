@@ -11,6 +11,6 @@ resource "aws_cloudwatch_log_group" "slow_log" {
 }
 
 resource "aws_cloudwatch_log_resource_policy" "elasticache_logs" {
-  policy_name = "ElastiCacheLogAccess"
+  policy_name     = "ElastiCacheLogAccess"
   policy_document = data.aws_iam_policy_document.elasticache_log_policy.json
 }
