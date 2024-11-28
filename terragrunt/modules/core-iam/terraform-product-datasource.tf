@@ -204,7 +204,7 @@ data "aws_iam_policy_document" "terraform_product" {
       "states:List*",
       "states:StartExecution",
       "states:TagResource",
-      "states:UpdateStateMachine"
+      "states:UpdateStateMachine",
     ]
     effect = "Allow"
     resources = [
