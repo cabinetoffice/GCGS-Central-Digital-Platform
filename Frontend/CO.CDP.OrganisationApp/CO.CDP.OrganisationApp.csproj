@@ -32,4 +32,11 @@
       <Folder Include="Pages\Forms\InternationalIdentifier\" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Content Update="Pages\Registration\OrganisationInternationalIdentificationCountry.cshtml">
+        <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      </Content>
+    </ItemGroup>
+
 </Project>

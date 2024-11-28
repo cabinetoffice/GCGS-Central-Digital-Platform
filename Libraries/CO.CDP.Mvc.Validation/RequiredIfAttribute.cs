@@ -21,6 +21,41 @@ public class RequiredIfAttribute(string dependentProperty, object? targetValue) 
     }
 }
 
+public class RequiredIfHasValueAttribute : ValidationAttribute
+{
+    private readonly string _organisationSchemeProperty;
+
+    public RequiredIfHasValueAttribute(string organisationSchemeProperty)
+    {
+        _organisationSchemeProperty = organisationSchemeProperty;
+    }
+
+    protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
+    {
+        var model = validationContext.ObjectInstance;
+        var organisationSchemeProperty = model.GetType().GetProperty(_organisationSchemeProperty);
+        var organisationSchemeValue = organisationSchemeProperty?.GetValue(model) as string;
+
+        if (value is Dictionary<string, string?> registrationNumbers)
+        {
+            if (!string.IsNullOrEmpty(organisationSchemeValue) &&
+                registrationNumbers.TryGetValue(organisationSchemeValue, out var registrationNumberValue))
+            {
+                if (string.IsNullOrEmpty(registrationNumberValue))
+                {
+                    return new ValidationResult(ErrorMessage ?? "Enter the number.");
+                }
+            }
+        }
+        else if (!string.IsNullOrEmpty(organisationSchemeValue) && value == null)
+        {
+            return new ValidationResult("Enter the number.");
+        }
+
+        return ValidationResult.Success;
+    }   
+}
+
 public class RequiredIfContainsAttribute(string dependentProperty, string containsValue) : RequiredAttribute
 {
     protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)

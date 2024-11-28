@@ -12,6 +12,9 @@ public class OrganisationNameModel(ISession session, ICompaniesHouseApi companie
 {
     public override string CurrentPage => OrganisationNamePage;
 
+    [BindProperty(SupportsGet = true)]
+    public bool InternationalIdentifier { get; set; } = false;
+
     [BindProperty]
     [DisplayName(nameof(StaticTextResource.OrganisationRegistration_EnterOrganisationName_Heading))]
     [Required(ErrorMessage = nameof(StaticTextResource.OrganisationRegistration_EnterOrganisationName_Heading))]
