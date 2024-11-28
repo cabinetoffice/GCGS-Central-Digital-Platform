@@ -41,6 +41,12 @@ public static class OrganisationSchemeType
             return null;
 
         OrganisationScheme.TryGetValue(scheme, out var value);
+
+        if (string.IsNullOrEmpty(value))
+        {
+            value = "Other / None";
+        }
+
         return value;
     }
 }
