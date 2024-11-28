@@ -8,9 +8,10 @@ public class ValidEmailAddressAttribute : ValidationAttribute
     {
         if(value is string emailAddress && !EmailAddressValidator.IsValid(emailAddress))
         {
-            var errorMessage = ErrorMessageResolver.GetErrorMessage(ErrorMessage, ErrorMessageResourceName, ErrorMessageResourceType);
+            var errorMessage = ErrorMessageResolver.GetErrorMessage(ErrorMessage, ErrorMessageResourceName, ErrorMessageResourceType)
+                ?? $"{validationContext.DisplayName} is invalid.";
 
-            return new ValidationResult(errorMessage ?? $"{validationContext.DisplayName} is invalid.", [validationContext.MemberName!]);
+            return new ValidationResult(errorMessage, [validationContext.MemberName!]);
         }
         return ValidationResult.Success!;
     }

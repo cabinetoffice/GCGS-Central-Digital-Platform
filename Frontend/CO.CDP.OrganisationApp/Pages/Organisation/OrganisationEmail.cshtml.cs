@@ -52,6 +52,8 @@ public class OrganisationEmailModel(OrganisationWebApiClient.IOrganisationClient
             return Page();
         }
 
+        // Passed when trimmed for validation
+        EmailAddress = EmailAddressValidator.StripAndRemoveObscureWhitespace(EmailAddress!);
         var organisation = await organisationClient.GetOrganisationAsync(Id);
 
         if (organisation == null)

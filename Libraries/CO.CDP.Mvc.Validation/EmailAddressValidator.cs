@@ -39,10 +39,11 @@ public static class EmailAddressValidator
         return true;
     }
 
-    private static string StripAndRemoveObscureWhitespace(string emailAddress)
+    public static string StripAndRemoveObscureWhitespace(string emailAddress)
     {
         emailAddress = emailAddress.Trim();
         emailAddress = Regex.Replace(emailAddress, @"[\u200B-\u200D\uFEFF]", string.Empty);
+
         return emailAddress;
     }
 
@@ -54,6 +55,7 @@ public static class EmailAddressValidator
     private static string GetHostname(string emailAddress)
     {
         var match = Regex.Match(emailAddress, EmailRegexPattern);
+
         return match.Groups[1].Value;
     }
 
