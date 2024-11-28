@@ -4,7 +4,7 @@
 @using CO.CDP.Localization
 
 @{
-    ViewData["Title"] = "Is your organisation on any of these registries?";
+    ViewData["Title"] = @StaticTextResource.OrganisationRegistration_InternationalIdentifier_Heading;
 
     var backLink = $"{RegistrationStepModel.OrganisationInternationalIdentificationCountryPage}{(Request.Query.ContainsKey("frm-summary") ? "?frm-summary" : "")}";
 
@@ -60,11 +60,11 @@
 
                                 <div class="govuk-radios__conditional @(Model.OrganisationScheme == choice.Scheme ? "" : "govuk-radios__conditional--hidden")" id="conditional-@id">
                                     <div class="govuk-form-group @(hasError ? "govuk-form-group--error" : "")">
-                                        <label class="govuk-label" for="RegistrationNumber">Registration number</label>
+                                        @Html.LabelFor(m => m.RegistrationNumbers, htmlAttributes: new { @class = "govuk-label" })
                                         @if (hasError)
                                         {
                                             <span id="RegistrationNumber-error" class="govuk-error-message">
-                                                <span class="govuk-visually-hidden">Error:</span>
+                                                <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span>
                                                 @ModelState[nameof(Model.RegistrationNumbers)]!.Errors[0].ErrorMessage
                                             </span>
                                         }
@@ -97,11 +97,12 @@
                         </div>
                         <div class="govuk-radios__conditional @(Model.OrganisationScheme == $"{Model.Country}-Other" ? "" : "govuk-radios__conditional--hidden")" id="conditional-other">
                             <div class="govuk-form-group @(ModelState[nameof(Model.RegistrationNumbers)]?.Errors?.Any() ?? false ? "govuk-form-group--error" : "")">
-                                <label class="govuk-label" for="RegistrationNumber">Registration number</label>
+                                @Html.LabelFor(m => m.RegistrationNumbers, htmlAttributes: new { @class = "govuk-label" })
+
                                 @if (ModelState[nameof(Model.RegistrationNumbers)]?.Errors?.Any() ?? false)
                                 {
                                     <span id="RegistrationNumber-error" class="govuk-error-message">
-                                        <span class="govuk-visually-hidden">Error:</span>
+                                        <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span>
                                         @ModelState[nameof(Model.RegistrationNumbers)]!.Errors[0].ErrorMessage
                                     </span>
                                 }

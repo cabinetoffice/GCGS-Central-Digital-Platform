@@ -38,20 +38,22 @@ public class RequiredIfHasValueAttribute : ValidationAttribute
         var organisationSchemeProperty = model.GetType().GetProperty(_organisationSchemeProperty);
         var organisationSchemeValue = organisationSchemeProperty?.GetValue(model) as string;
 
+        var errorMessage = ErrorMessageResolver.GetErrorMessage(ErrorMessage, ErrorMessageResourceName, ErrorMessageResourceType);
+
         if (value is Dictionary<string, string?> registrationNumbers)
         {
             if (!string.IsNullOrEmpty(organisationSchemeValue) &&
                 registrationNumbers.TryGetValue(organisationSchemeValue, out var registrationNumberValue))
             {
                 if (string.IsNullOrEmpty(registrationNumberValue))
-                {
-                    return new ValidationResult(ErrorMessage ?? "Enter the number.");
+                {                    
+                    return new ValidationResult(errorMessage ?? $"{validationContext.DisplayName} is required");
                 }
             }
         }
         else if (!string.IsNullOrEmpty(organisationSchemeValue) && value == null)
         {
-            return new ValidationResult("Enter the number.");
+            return new ValidationResult(errorMessage ?? $"{validationContext.DisplayName} is required");
         }
 
         return ValidationResult.Success;
@@ -73,7 +75,7 @@ public class RequiredIfContainsAttribute(string dependentProperty, string contai
         // Check if value is null or empty when condition is met
         if (conditionMet && (value == null || (value is List<string> str && str.Count == 0)))
         {
-            return new ValidationResult(errorMessage ?? $"{validationContext.DisplayName} is required.");
+            return new ValidationResult(errorMessage ?? $"{validationContext.DisplayName} is required");
         }
 
         return ValidationResult.Success;

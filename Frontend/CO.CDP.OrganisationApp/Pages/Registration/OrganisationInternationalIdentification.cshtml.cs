@@ -6,9 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 using CO.CDP.OrganisationApp.Constants;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel;
-using CO.CDP.Mvc.Validation;
 using ApiException = CO.CDP.EntityVerificationClient.ApiException;
-
+using CO.CDP.Localization;
+using CO.CDP.Mvc.Validation;
 
 namespace CO.CDP.OrganisationApp.Pages.Registration;
 
@@ -27,13 +27,13 @@ public class OrganisationInternationalIdentificationModel(ISession session,
     public ICollection<IdentifierRegistries> InternationalIdentifiers { get; set; } = new List<IdentifierRegistries>();
 
     [BindProperty]
-    [DisplayName("Organisation Type")]
-    [Required(ErrorMessage = "Select an option")]
+    [DisplayName(nameof(StaticTextResource.Organisation_International_Type_Heading))]
+    [Required(ErrorMessageResourceName = nameof(StaticTextResource.Organisation_International_Type_Required_ErrorMessage), ErrorMessageResourceType = typeof(StaticTextResource))]   
     public string? OrganisationScheme { get; set; }
 
     [BindProperty]
-    [DisplayName("Registration Number")]
-    [RequiredIfHasValue(nameof(OrganisationScheme), ErrorMessage = "Enter the number")]
+    [DisplayName(nameof(StaticTextResource.Organisation_International_Registration_Number_Heading))]
+    [RequiredIfHasValue("OrganisationScheme", ErrorMessageResourceName = nameof(StaticTextResource.Organisation_International_Registration_Number_Required_ErrorMessage), ErrorMessageResourceType = typeof(StaticTextResource))]
     public Dictionary<string, string?> RegistrationNumbers { get; set; } = new Dictionary<string, string?>();
 
     [BindProperty]
@@ -43,7 +43,7 @@ public class OrganisationInternationalIdentificationModel(ISession session,
 
     public string? OrganisationName;
 
-    public FlashMessage NotificationBannerCompanyAlreadyRegistered { get { return new FlashMessage($"An organisation with this registration number already exists. Change the registration number or <a class='govuk-notification-banner__link' href='/registration/{Identifier}/join-organisation'>request to join {OrganisationName}.</a>"); } }
+    public FlashMessage NotificationBannerCompanyAlreadyRegistered { get { return new FlashMessage(string.Format(StaticTextResource.OrganisationRegistration_CompanyHouseNumberQuestion_CompanyAlreadyRegistered_NotificationBanner, Identifier, OrganisationName)); } }
 
     public async Task OnGet()
     {
