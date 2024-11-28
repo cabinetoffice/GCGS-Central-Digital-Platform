@@ -1,4 +1,5 @@
 @model FormElementCheckBoxInputModel
+@using CO.CDP.Localization
 
 @{
     var hasError = ((TagBuilder)Html.ValidationMessageFor(m => m.CheckBoxInput)).HasInnerHtml;
@@ -23,7 +24,7 @@
         @if (hasError)
         {
             <span class="govuk-error-message" id="checkbox-error">
-                <span class="govuk-visually-hidden">Error:</span>
+                <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span>
                 @Html.ValidationMessageFor(m => m.CheckBoxInput)
             </span>
         }

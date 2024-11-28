@@ -1,4 +1,5 @@
 @model FormElementFileUploadModel
+@using CO.CDP.Localization
 
 @{
     var uploadFileHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.UploadedFile)).HasInnerHtml;
@@ -15,18 +16,18 @@
     void RenderField()
     {
         <label class="govuk-label" for="@nameof(Model.UploadedFile)">
-            Upload a file
+            @StaticTextResource.Forms_FormElementFileUpload_UploadFileLabel
         </label>
         <div id="documents-hint" class="govuk-hint">
-            You can upload most file types including: PDF, scans, mobile phone photos, Word, Excel and PowerPoint, multimedia and ZIP files that are smaller than 25MB.
+            @StaticTextResource.Forms_FormElementFileUpload_DocumentsHint
         </div>
 
         var ariaDescribedby = "documents-hint";
         if (uploadFileHasError)
         {
-            ariaDescribedby += "documents-error";
+            ariaDescribedby += " documents-error";
             <p class="govuk-error-message" id="documents-error">
-                <span class="govuk-visually-hidden">Error:</span>
+                <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span>
                 @Html.ValidationMessageFor(m => m.UploadedFile)
             </p>
         }
@@ -36,7 +37,7 @@
 
         @if (!string.IsNullOrWhiteSpace(@Model.UploadedFileName))
         {
-            <p class="govuk-body">Uploaded file: @Model.UploadedFileName</p>
+            <p class="govuk-body">@string.Format(StaticTextResource.Forms_FormElementFileUpload_UploadedFileText, @Model.UploadedFileName)</p>
         }
     }
 }
@@ -62,7 +63,7 @@
             @if (selectOptionHasError)
             {
                 <p class="govuk-error-message">
-                    <span class="govuk-visually-hidden">Error:</span>
+                    <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span>
                     @Html.ValidationMessageFor(m => m.HasValue)
                 </p>
             }
@@ -72,7 +73,7 @@
                 <div class="govuk-radios__item">
                     <input class="govuk-radios__input" id="@nameof(Model.HasValue)" name="@nameof(Model.HasValue)" type="radio"
                            value="true" data-aria-controls="conditional-YES" @(Model.HasValue == true ? "checked" : "")>
-                    <label class="govuk-label govuk-radios__label" for="@nameof(Model.HasValue)">Yes</label>
+                    <label class="govuk-label govuk-radios__label" for="@nameof(Model.HasValue)">@StaticTextResource.Global_Yes</label>
                 </div>
 
                 <div class="govuk-radios__conditional" id="conditional-YES">
@@ -86,7 +87,7 @@
                 <div class="govuk-radios__item">
                     <input class="govuk-radios__input" id="@nameof(Model.HasValue)-1" name="@nameof(Model.HasValue)" type="radio"
                            value="false" @(Model.HasValue == false ? "checked" : "")>
-                    <label class="govuk-label govuk-radios__label" for="@nameof(Model.HasValue)-1">No</label>
+                    <label class="govuk-label govuk-radios__label" for="@nameof(Model.HasValue)-1">@StaticTextResource.Global_No</label>
                 </div>
             </div>
         </fieldset>

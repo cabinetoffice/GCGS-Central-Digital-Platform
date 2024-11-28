@@ -3,8 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using CO.CDP.OrganisationApp.Constants;
 using Microsoft.AspNetCore.Authorization;
+using CO.CDP.Localization;
 
-namespace CO.CDP.OrganisationApp.Pages.Supplier;
+namespace CO.CDP.OrganisationApp.Pages.Supplier.ConnectedEntity;
 
 [Authorize(Policy = OrgScopeRequirement.Editor)]
 public class ConnectedEntityControlConditionModel(ISession session) : PageModel
@@ -16,7 +17,7 @@ public class ConnectedEntityControlConditionModel(ISession session) : PageModel
     public Guid? ConnectedEntityId { get; set; }
 
     [BindProperty]
-    [NotEmpty(ErrorMessage = "Select the Which specified conditions of control does your organisation have?")]
+    [NotEmpty(ErrorMessageResourceName = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityControlCondition_SelectConditionError), ErrorMessageResourceType = typeof(StaticTextResource))]
     public required List<ConnectedEntityControlCondition> ControlConditions { get; set; } = [];
 
     [BindProperty]
@@ -39,7 +40,7 @@ public class ConnectedEntityControlConditionModel(ISession session) : PageModel
                 : "ConnectedEntitySupplierCompanyQuestion", new { Id, ConnectedEntityId });
         }
 
-        InitModal(state, true);
+        InitModel(state, true);
 
         return Page();
     }
@@ -55,7 +56,7 @@ public class ConnectedEntityControlConditionModel(ISession session) : PageModel
                 : "ConnectedEntitySupplierCompanyQuestion", new { Id, ConnectedEntityId });
         }
 
-        InitModal(state);
+        InitModel(state);
 
         if (!ModelState.IsValid) return Page();
 
@@ -86,10 +87,10 @@ public class ConnectedEntityControlConditionModel(ISession session) : PageModel
         return (true, cp);
     }
 
-    private void InitModal(ConnectedEntityState state, bool reset = false)
+    private void InitModel(ConnectedEntityState state, bool reset = false)
     {
         Caption = state.GetCaption();
-        Heading = $"Which specified conditions of control does {state.OrganisationName} have?";
+        Heading = string.Format(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityControlCondition_Heading, state.OrganisationName);
         BackPageLink = GetBackLinkPageName(state);
         ConnectedEntityType = state.ConnectedEntityType;
         SupplierHasCompanyHouseNumber = state.SupplierHasCompanyHouseNumber ?? false;

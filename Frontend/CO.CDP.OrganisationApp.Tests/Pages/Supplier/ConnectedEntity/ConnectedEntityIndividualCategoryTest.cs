@@ -46,11 +46,24 @@ public class ConnectedEntityIndividualCategoryTest
     }
 
     [Fact]
-    public void OnPost_ShouldReturnPage_WhenModelStateIsInvalid()
+    public void OnPost_ShouldRedirectToConnectedEntitySupplierCompanyQuestion_WhenSessionStateIsNull()
     {
         _sessionMock
            .Setup(s => s.Get<ConnectedEntityState>(Session.ConnectedPersonKey))
            .Returns((ConnectedEntityState?)null);
+
+        var result = _model.OnPost();
+
+        result.Should().BeOfType<RedirectToPageResult>()
+            .Which.PageName.Should().Be("ConnectedEntitySupplierCompanyQuestion");
+    }
+
+    [Fact]
+    public void OnPost_ShouldReturnPage_WhenModelStateIsInvalid()
+    {
+        _sessionMock
+            .Setup(s => s.Get<ConnectedEntityState>(Session.ConnectedPersonKey))
+            .Returns(DummyConnectedPersonDetails());
 
         _model.ModelState.AddModelError("Error", "Model state is invalid");
 
@@ -61,12 +74,17 @@ public class ConnectedEntityIndividualCategoryTest
 
 
     [Theory]
-    [InlineData(Constants.ConnectedEntityType.Individual, "ConnectedEntityPscDetails")]
-    public void OnPost_ShouldRedirectToConnectedEntityPscDetailsPage(Constants.ConnectedEntityType connectedEntityType, string expectedRedirectPage)
+    [InlineData(Constants.ConnectedEntityType.Individual, Constants.ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForIndividual, "ConnectedEntityPscDetails")]
+    [InlineData(Constants.ConnectedEntityType.Individual, Constants.ConnectedEntityIndividualAndTrustCategoryType.DirectorOrIndividualWithTheSameResponsibilitiesForIndividual, "ConnectedEntityPscDetails")]
+    [InlineData(Constants.ConnectedEntityType.Individual, Constants.ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndividualWithSignificantInfluenceOrControlForIndividual, "ConnectedEntityPscDetails")]
+    [InlineData(Constants.ConnectedEntityType.TrustOrTrustee, Constants.ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForTrust, "ConnectedEntityPscDetails")]
+    [InlineData(Constants.ConnectedEntityType.TrustOrTrustee, Constants.ConnectedEntityIndividualAndTrustCategoryType.DirectorOrIndividualWithTheSameResponsibilitiesForTrust, "ConnectedEntityPscDetails")]
+    [InlineData(Constants.ConnectedEntityType.TrustOrTrustee, Constants.ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndividualWithSignificantInfluenceOrControlForTrust, "ConnectedEntityPscDetails")]
+    public void OnPost_ShouldRedirectToConnectedEntityPscDetailsPage(Constants.ConnectedEntityType connectedEntityType, Constants.ConnectedEntityIndividualAndTrustCategoryType connectedEntityCategory, string expectedRedirectPage)
     {
         var state = DummyConnectedPersonDetails();
         state.ConnectedEntityType = connectedEntityType;
-        _model.ConnectedEntityCategory = Constants.ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForIndividual;
+        _model.ConnectedEntityCategory = connectedEntityCategory;
 
         _sessionMock.Setup(s => s.Get<ConnectedEntityState>(Session.ConnectedPersonKey)).
             Returns(state);

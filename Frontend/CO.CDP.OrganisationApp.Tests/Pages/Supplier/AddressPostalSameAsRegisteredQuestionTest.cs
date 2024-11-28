@@ -24,11 +24,11 @@ public class AddressPostalSameAsRegisteredQuestionTest
     }
 
     [Fact]
-    public async Task OnGet_SelectedIsFalse_SameAsRegiseterdAddressShouldBeFalse()
+    public async Task OnGet_SelectedIsFalse_SameAsRegisteredAddressShouldBeFalse()
     {
         var result = await _model.OnGet(false);
 
-        _model.SameAsRegiseterdAddress.Should().BeFalse();
+        _model.SameAsRegisteredAddress.Should().BeFalse();
         result.Should().BeOfType<PageResult>();
     }
 
@@ -45,7 +45,7 @@ public class AddressPostalSameAsRegisteredQuestionTest
     }
 
     [Fact]
-    public async Task OnGet_OrganisationFound_SameAsRegiseterdAddressShouldBeSet()
+    public async Task OnGet_OrganisationFound_SameAsRegisteredAddressShouldBeSet()
     {
         _organisationClientMock.Setup(client => client.GetOrganisationAsync(_organisationId))
             .ReturnsAsync(SupplierDetailsFactory.GivenOrganisationClientModel(_organisationId));
@@ -55,14 +55,14 @@ public class AddressPostalSameAsRegisteredQuestionTest
 
         var result = await _model.OnGet(null);
 
-        _model.SameAsRegiseterdAddress.Should().BeFalse();
+        _model.SameAsRegisteredAddress.Should().BeFalse();
         result.Should().BeOfType<PageResult>();
     }
 
     [Fact]
     public async Task OnPost_ModelStateIsInvalid_ShouldReturnPageResult()
     {
-        _model.ModelState.AddModelError("SameAsRegiseterdAddress", "Please select an option");
+        _model.ModelState.AddModelError("SameAsRegisteredAddress", "Please select an option");
 
         var result = await _model.OnPost();
 
@@ -70,9 +70,9 @@ public class AddressPostalSameAsRegisteredQuestionTest
     }
 
     [Fact]
-    public async Task OnPost_SameAsRegiseterdAddressIsTrue_ShouldUpdateOrganisationAddresses()
+    public async Task OnPost_SameAsRegisteredAddressIsTrue_ShouldUpdateOrganisationAddresses()
     {
-        _model.SameAsRegiseterdAddress = true;
+        _model.SameAsRegisteredAddress = true;
 
         var organisation = SupplierDetailsFactory.GivenOrganisationClientModel(_organisationId);
         _organisationClientMock.Setup(client => client.GetOrganisationAsync(_organisationId))
@@ -95,9 +95,9 @@ public class AddressPostalSameAsRegisteredQuestionTest
     }
 
     [Fact]
-    public async Task OnPost_SameAsRegiseterdAddressIsFalse_ShouldRedirectToAddressTypeQuestion()
+    public async Task OnPost_SameAsRegisteredAddressIsFalse_ShouldRedirectToAddressTypeQuestion()
     {
-        _model.SameAsRegiseterdAddress = false;
+        _model.SameAsRegisteredAddress = false;
 
         var result = await _model.OnPost();
 

@@ -1,3 +1,4 @@
+using CO.CDP.Localization;
 using CO.CDP.OrganisationApp.CharityCommission;
 using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
@@ -9,22 +10,24 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.Localization;
 using Moq;
-using CO.CDP.Localization;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages.Registration;
 
 public class OrganisationEmailModelTest
 {
-    private readonly Mock<ISession> sessionMock;
-    private readonly Mock<ICharityCommissionApi> charityCommissionMock;
+    private readonly Mock<ISession> _sessionMock;
+    private readonly Mock<IStringLocalizer> _stringLocalizerMock;
+    private readonly Mock<ICharityCommissionApi> _charityCommissionMock;
 
     public OrganisationEmailModelTest()
     {
-        sessionMock = new Mock<ISession>();
-        charityCommissionMock = new Mock<ICharityCommissionApi>();
-        sessionMock.Setup(session => session.Get<UserDetails>(Session.UserDetailsKey))
+        _sessionMock = new Mock<ISession>();
+        _charityCommissionMock = new Mock<ICharityCommissionApi>();
+        _sessionMock.Setup(session => session.Get<UserDetails>(Session.UserDetailsKey))
             .Returns(new UserDetails { UserUrn = "urn:test" });
+        _stringLocalizerMock = new Mock<IStringLocalizer>();
     }
 
     [Fact]
@@ -42,12 +45,18 @@ public class OrganisationEmailModelTest
     {
         var model = GivenOrganisationEmailModel();
 
-        var results = ModelValidationHelper.Validate(model);
+        _stringLocalizerMock
+            .Setup(localizer => localizer[nameof(StaticTextResource.Organisation_Email_Required_ErrorMessage)])
+            .Returns(new LocalizedString(nameof(StaticTextResource.Organisation_Email_Required_ErrorMessage), StaticTextResource.Organisation_Email_Required_ErrorMessage));
+
+        var validationContext = ValidationContextFactory.GivenValidationContextWithStringLocalizerFactory(model, _stringLocalizerMock.Object);
+
+        var results = ModelValidationHelper.Validate(model, validationContext);
 
         results.Any(c => c.MemberNames.Contains("EmailAddress")).Should().BeTrue();
 
         results.Where(c => c.MemberNames.Contains("EmailAddress")).First()
-            .ErrorMessage.Should().Be(nameof(StaticTextResource.OrganisationRegistration_EnterOrganisationEmail_Heading));
+            .ErrorMessage.Should().Be(StaticTextResource.Organisation_Email_Required_ErrorMessage);
     }
 
     [Fact]
@@ -56,12 +65,18 @@ public class OrganisationEmailModelTest
         var model = GivenOrganisationEmailModel();
         model.EmailAddress = "dummy";
 
-        var results = ModelValidationHelper.Validate(model);
+        _stringLocalizerMock
+            .Setup(localizer => localizer[nameof(StaticTextResource.Global_Email_Invalid_ErrorMessage)])
+            .Returns(new LocalizedString(nameof(StaticTextResource.Global_Email_Invalid_ErrorMessage), StaticTextResource.Global_Email_Invalid_ErrorMessage));
+
+        var validationContext = ValidationContextFactory.GivenValidationContextWithStringLocalizerFactory(model, _stringLocalizerMock.Object);
+
+        var results = ModelValidationHelper.Validate(model, validationContext);
 
         results.Any(c => c.MemberNames.Contains("EmailAddress")).Should().BeTrue();
         
         results.Where(c => c.MemberNames.Contains("EmailAddress")).First()
-            .ErrorMessage.Should().Be(nameof(StaticTextResource.Global_EmailAddress_Error));
+            .ErrorMessage.Should().Be(StaticTextResource.Global_Email_Invalid_ErrorMessage);
     }
 
     [Fact]
@@ -99,12 +114,12 @@ public class OrganisationEmailModelTest
 
         RegistrationDetails registrationDetails = DummyRegistrationDetails();
 
-        sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(registrationDetails);
+        _sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(registrationDetails);
 
         model.OnPost();
 
-        sessionMock.Verify(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey), Times.Once);
-        sessionMock.Verify(s => s.Set(Session.RegistrationDetailsKey, It.IsAny<RegistrationDetails>()), Times.Once);
+        _sessionMock.Verify(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey), Times.Once);
+        _sessionMock.Verify(s => s.Set(Session.RegistrationDetailsKey, It.IsAny<RegistrationDetails>()), Times.Once);
     }
 
     [Fact]
@@ -112,7 +127,7 @@ public class OrganisationEmailModelTest
     {
         RegistrationDetails registrationDetails = DummyRegistrationDetails();
 
-        sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(registrationDetails);
+        _sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(registrationDetails);
 
         var model = GivenOrganisationEmailModel();
         model.OnGet();
@@ -126,7 +141,7 @@ public class OrganisationEmailModelTest
         var model = GivenOrganisationEmailModel();
 
         RegistrationDetails registrationDetails = DummyRegistrationDetails();
-        sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(registrationDetails);
+        _sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(registrationDetails);
 
         var actionResult = model.OnPost();
 
@@ -141,7 +156,7 @@ public class OrganisationEmailModelTest
         model.RedirectToSummary = true;
 
         RegistrationDetails registrationDetails = DummyRegistrationDetails();
-        sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(registrationDetails);
+        _sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(registrationDetails);
 
         var actionResult = model.OnPost();
 
@@ -155,12 +170,12 @@ public class OrganisationEmailModelTest
         var registrationDetails = DummyRegistrationDetails(organisationName: "",
             scheme: OrganisationSchemeType.CharityCommissionEnglandWales,
             organisationEmailAddress: "");
-        sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(registrationDetails);
+        _sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(registrationDetails);
 
         var chartiyDetails = GivenEmailOnCharitiesCommission();
         var model = GivenOrganisationEmailModel();
 
-        charityCommissionMock.Setup(s => s.GetCharityDetails(registrationDetails.OrganisationIdentificationNumber!))
+        _charityCommissionMock.Setup(s => s.GetCharityDetails(registrationDetails.OrganisationIdentificationNumber!))
             .ReturnsAsync(chartiyDetails);
 
         await model.OnGet();
@@ -172,12 +187,12 @@ public class OrganisationEmailModelTest
     public async Task OnGet_WhenCharityCommissionNumberProvidedRegDetailsProvided_ShouldNotPrepopulateEmail()
     {
         var registrationDetails = DummyRegistrationDetails(scheme: OrganisationSchemeType.CharityCommissionEnglandWales);
-        sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(registrationDetails);
+        _sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(registrationDetails);
 
         var chartiyDetails = GivenEmailOnCharitiesCommission();
         var model = GivenOrganisationEmailModel();
 
-        charityCommissionMock.Setup(s => s.GetCharityDetails(registrationDetails.OrganisationIdentificationNumber!))
+        _charityCommissionMock.Setup(s => s.GetCharityDetails(registrationDetails.OrganisationIdentificationNumber!))
             .ReturnsAsync(chartiyDetails);
 
         await model.OnGet();
@@ -210,6 +225,6 @@ public class OrganisationEmailModelTest
 
     private OrganisationEmailModel GivenOrganisationEmailModel()
     {
-        return new OrganisationEmailModel(sessionMock.Object, charityCommissionMock.Object);
+        return new OrganisationEmailModel(_sessionMock.Object, _charityCommissionMock.Object);
     }
 }

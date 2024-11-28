@@ -2,6 +2,7 @@
 @using CO.CDP.OrganisationApp.Constants
 @using Microsoft.AspNetCore.Mvc.Localization
 @using CO.CDP.Localization
+
 @inject Microsoft.Extensions.Configuration.IConfiguration config
 @inject IUserInfoService userInfoService
 @inject IHtmlLocalizer<StaticTextResource> Localizer
@@ -76,9 +77,9 @@
                                 @StaticTextResource.Header_Menu
                             </button>
                             <ul id="navigation" class="govuk-header__navigation-list">
-                                @if (User?.Identity?.IsAuthenticated == true)
+                                @if (User.Identity?.IsAuthenticated == true)
                                 {
-                                    @if (await userInfoService.HasTenant())
+                                    @if (await userInfoService.HasOrganisations())
                                     {
                                         if (organisationId != null)
                                         {

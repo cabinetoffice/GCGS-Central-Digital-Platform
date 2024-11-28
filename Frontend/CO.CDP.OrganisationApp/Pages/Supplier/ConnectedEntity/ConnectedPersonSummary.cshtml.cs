@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
+using CO.CDP.Localization;
 
 namespace CO.CDP.OrganisationApp.Pages.Supplier;
 
@@ -19,7 +20,7 @@ public class ConnectedPersonSummaryModel(
     [BindProperty] public ICollection<ConnectedEntityLookup> ConnectedEntities { get; set; } = [];
 
     [BindProperty]
-    [Required(ErrorMessage = "Select yes to add another connected person")]
+    [Required(ErrorMessageResourceName = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedPersonSummary_AddAnotherConnectedPersonError), ErrorMessageResourceType = typeof(StaticTextResource))]
     public bool? HasConnectedEntity { get; set; }
 
     public async Task<IActionResult> OnGet(bool? selected)
