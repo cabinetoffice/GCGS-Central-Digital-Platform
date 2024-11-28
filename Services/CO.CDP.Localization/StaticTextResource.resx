@@ -141,6 +141,9 @@
   <data name="Global_Back" xml:space="preserve">
     <value>Back</value>
   </data>
+    <data name="Global_Download" xml:space="preserve">
+    <value>Download</value>
+  </data>
   <data name="Global_Important" xml:space="preserve">
     <value>Important</value>
   </data>
@@ -412,7 +415,7 @@
     <value>an organisation or sole trader who applies for contracts to supply goods, works, and services</value>
   </data>
   <data name="Supplementary_Index_CreateLogin" xml:space="preserve">
-    <value>You will first &lt;a class="govuk-link govuk-link--no-visited-state" id="one-login-anchor" href="/one-login/sign-in"&gt;create GOV.UK One Login or sign in.&lt;/a&gt;</value>
+    <value>You will need to &lt;a class="govuk-link govuk-link--no-visited-state" id="one-login-anchor" href="/one-login/sign-in"&gt;create a GOV.UK One Login or sign in.&lt;/a&gt;</value>
   </data>
   <data name="Supplementary_Index_AlreadyRegistered" xml:space="preserve">
     <value>If your organisation is already registered</value>
@@ -1449,6 +1452,63 @@
   <data name="Organisation_OrganisationIdentification_ODS_Code_ErrorMessage" xml:space="preserve">
     <value>Enter the code</value>
   </data>
+  <data name="ShareYourInformation_Title" xml:space="preserve">
+    <value>Share your supplier information</value>
+  </data>
+  <data name="ShareYourInformation_HowItWorksSummary" xml:space="preserve">
+    <value>How it works</value>
+  </data>
+  <data name="ShareYourInformation_HowItWorksParagraph1" xml:space="preserve">
+    <value>To share your supplier information with buyers you need to create a share code and file, and declare that the information is correct.</value>
+  </data>
+  <data name="ShareYourInformation_HowItWorksParagraph2" xml:space="preserve">
+    <value>This saves a copy of the supplier information you provided about your organisation, connected persons, exclusions and financial information.</value>
+  </data>
+  <data name="ShareYourInformation_HowItWorksParagraph3" xml:space="preserve">
+    <value>When you submit a bid for a procurement, the contracting authority will let you know how to give them the share code or file.</value>
+  </data>
+  <data name="ShareYourInformation_HowItWorksParagraph4" xml:space="preserve">
+    <value>If your supplier information changes, you can update it and create a new share code and file to share the new information.</value>
+  </data>
+  <data name="ShareYourInformation_Instructions" xml:space="preserve">
+    <value>Create a share code once you've completed all sections. You'll be asked for this share code if you apply for a tender.</value>
+  </data>
+  <data name="ShareYourInformation_CreateShareCodeButton" xml:space="preserve">
+    <value>Create a share code</value>
+  </data>
+  <data name="ShareYourInformation_TableCaption" xml:space="preserve">
+    <value>Your share codes and supplier information files</value>
+  </data>
+  <data name="ShareYourInformation_TableHeaderShareCodes" xml:space="preserve">
+    <value>Share codes</value>
+  </data>
+  <data name="ShareYourInformation_TableHeaderCreatedOn" xml:space="preserve">
+    <value>Created on</value>
+  </data>
+  <data name="ShareYourInformation_TableHeaderFiles" xml:space="preserve">
+    <value>Files</value>
+  </data>
+  <data name="ShareYourInformation_CreatedOn" xml:space="preserve">
+    <value>Created on</value>
+  </data>
+  <data name="ShareYourInformation_ShareCode" xml:space="preserve">
+    <value>Share code</value>
+  </data>
+  <data name="ShareYourInformation_ShareCodeCreated" xml:space="preserve">
+    <value>Share code created</value>
+  </data>
+  <data name="ShareYourInformation_YourShareCode" xml:space="preserve">
+    <value>Your share code</value>
+  </data>
+  <data name="ShareYourInformation_ShareCodeCreatedFooterBody1" xml:space="preserve">
+    <value>You can save your share code and &lt;a href="?handler=download&amp;shareCode={0}"&gt;download your supplier information file&lt;/a&gt; or come back and get them when needed.</value>
+  </data>
+  <data name="ShareYourInformation_ShareCodeCreatedFooterBody2" xml:space="preserve">
+    <value>If your supplier information changes, you can update it and create a new share code and file to share the new information.</value>
+  </data>
+  <data name="ShareYourInformation_BackOrganisationDetails" xml:space="preserve">
+    <value>Back to organisation details</value>
+  </data>
   <data name="OrganisationRegistration_CompanyHouseNumberQuestion_Hint" xml:space="preserve">
     <value>You can &lt;a href="https://find-and-update.company-information.service.gov.uk/" target="_blank"&gt;find your company number on Companies House (opens in a new tab)&lt;/a&gt;. It is an 8 digit or 2 letter and 6 digit number. For example, 12345678 or SC123456.</value>
   </data>
@@ -1642,6 +1702,159 @@
   <data name="ApiKeyManagement_CreateApiKey_ValidationError" xml:space="preserve">
     <value>Enter the api key name</value>
   </data>
+  <data name="Forms_FormElementAddress_EnterNonUKAddress" xml:space="preserve">
+    <value>Enter a non-UK address</value>
+  </data>
+  <data name="Forms_FormElementDateInput_ExampleHint" xml:space="preserve">
+    <value>For example, 27 3 2007</value>
+  </data>
+  <data name="Global_Day" xml:space="preserve">
+    <value>Day</value>
+  </data>
+  <data name="Global_Month" xml:space="preserve">
+    <value>Month</value>
+  </data>
+  <data name="Global_Year" xml:space="preserve">
+    <value>Year</value>
+  </data>
+  <data name="Forms_FormElementFileUpload_UploadFileLabel" xml:space="preserve">
+    <value>Upload a file</value>
+  </data>
+  <data name="Forms_FormElementFileUpload_DocumentsHint" xml:space="preserve">
+    <value>You can upload most file types including: PDF, scans, mobile phone photos, Word, Excel and PowerPoint, multimedia and ZIP files that are smaller than 25MB.</value>
+  </data>
+  <data name="Forms_FormElementFileUpload_UploadedFileText" xml:space="preserve">
+    <value>Uploaded file: {0}</value>
+  </data>
+  <data name="Forms_FormElementMultiLineInput_CharacterCountError" xml:space="preserve">
+    <value>Enter 10,000 characters or fewer</value>
+  </data>
+  <data name="Forms_FormElementMultiLineInput_CharacterCountMessage" xml:space="preserve">
+    <value>You can enter up to 10,000 characters</value>
+  </data>
+  <data name="Forms_FormElementCheckBoxInput_DeclarationRequiredError" xml:space="preserve">
+    <value>You must agree to the declaration statements to proceed.</value>
+  </data>
+  <data name="Global_RadioField_SelectOptionError" xml:space="preserve">
+    <value>Select an option</value>
+  </data>
+  <data name="Global_RadioField__InvalidOptionError" xml:space="preserve">
+    <value>Invalid option selected</value>
+  </data>
+  <data name="Global_DateInput_DayRequiredError" xml:space="preserve">
+    <value>Date must include a day</value>
+  </data>
+  <data name="Global_DateInput_DayInvalidError" xml:space="preserve">
+    <value>Day must be a valid number</value>
+  </data>
+  <data name="Global_DateInput_MonthRequiredError" xml:space="preserve">
+    <value>Date must include a month</value>
+  </data>
+  <data name="Global_DateInput_MonthInvalidError" xml:space="preserve">
+    <value>Month must be a valid number</value>
+  </data>
+  <data name="Global_DateInput_YearRequiredError" xml:space="preserve">
+    <value>Date must include a year</value>
+  </data>
+  <data name="Global_DateInput_YearInvalidError" xml:space="preserve">
+    <value>Year must be a valid number</value>
+  </data>
+  <data name="Global_DateInput_DateInvalidError" xml:space="preserve">
+    <value>Date must be a real date</value>
+  </data>
+  <data name="Global_DateInput_DateInFutureError" xml:space="preserve">
+    <value>Date must be today or in the past</value>
+  </data>
+  <data name="Forms_FormElementFileUpload_NoFileSelectedError" xml:space="preserve">
+    <value>No file selected.</value>
+  </data>
+  <data name="Forms_FormElementFileUpload_FileSizeExceededError" xml:space="preserve">
+    <value>The file size must not exceed {0}MB.</value>
+  </data>
+  <data name="Forms_FormElementFileUpload_InvalidFileExtensionError" xml:space="preserve">
+    <value>Please upload a file which has one of the following extensions: {0}</value>
+  </data>
+  <data name="Forms_FormElementMultiLineInput_AllInformationRequiredError" xml:space="preserve">
+    <value>All information is required on this page</value>
+  </data>
+  <data name="Forms_FormElementTextInput_InvalidEmailError" xml:space="preserve">
+    <value>Enter an email address in the correct format, like name@example.com.</value>
+  </data>
+  <data name="Forms_FormElementTextInput_EnterValueError" xml:space="preserve">
+    <value>Enter a value</value>
+  </data>
+  <data name="Forms_FormElementUrlInput_EnterWebsiteAddressError" xml:space="preserve">
+    <value>Enter a website address</value>
+  </data>
+  <data name="Forms_FormElementUrlInput_InvalidWebsiteAddressError" xml:space="preserve">
+    <value>Website address must be in the correct format, like www.companyname.com</value>
+  </data>
+  <data name="Forms_FormElementAddress_AddressLine1_Label" xml:space="preserve">
+    <value>Address line 1</value>
+  </data>
+  <data name="Forms_FormElementAddress_TownOrCity_Label" xml:space="preserve">
+    <value>Town or city</value>
+  </data>
+  <data name="Forms_FormElementAddress_Country_Label" xml:space="preserve">
+    <value>Country</value>
+  </data>
+  <data name="Forms_FormElementAddress_Postcode_Label" xml:space="preserve">
+    <value>Postcode</value>
+  </data>
+  <data name="Forms_FormElementAddress_PostalOrZipCode_Label" xml:space="preserve">
+    <value>Postal or Zip code</value>
+  </data>
+  <data name="Forms_FormElementAddress_AddressLine1_RequiredError" xml:space="preserve">
+    <value>Enter your address line 1</value>
+  </data>
+  <data name="Forms_FormElementAddress_TownOrCity_RequiredError" xml:space="preserve">
+    <value>Enter your town or city</value>
+  </data>
+  <data name="Forms_FormElementAddress_Postcode_RequiredError" xml:space="preserve">
+    <value>Enter your postcode</value>
+  </data>
+  <data name="Forms_FormElementAddress_PostalOrZipCode_RequiredError" xml:space="preserve">
+    <value>Enter your postal or zip code</value>
+  </data>
+  <data name="Forms_FormElementAddress_Country_RequiredError" xml:space="preserve">
+    <value>Enter your country</value>
+  </data>
+  <data name="Forms_FormElementAddress_InvalidCountryError" xml:space="preserve">
+    <value>Invalid country name '{0}'</value>
+  </data>
+  <data name="Global_Yes" xml:space="preserve">
+    <value>Yes</value>
+  </data>
+  <data name="Global_No" xml:space="preserve">
+    <value>No</value>
+  </data>
+  <data name="Global_SaveAndContinue" xml:space="preserve">
+    <value>Save and continue</value>
+  </data>
+  <data name="Global_Save" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="Global_Remove" xml:space="preserve">
+    <value>Remove</value>
+  </data>
+  <data name="Global_PleaseSelect" xml:space="preserve">
+    <value>Please select</value>
+  </data>
+  <data name="Global_Change" xml:space="preserve">
+    <value>Change</value>
+  </data>
+  <data name="Forms_AnswerSetSummary_BackToSupplierInformation" xml:space="preserve">
+    <value>Back to supplier information</value>
+  </data>
+  <data name="Forms_CheckYourAnswers_Title" xml:space="preserve">
+    <value>Check your answers</value>
+  </data>
+  <data name="Forms_CheckYourAnswers_Change" xml:space="preserve">
+    <value>Change&lt;span class="govuk-visually-hidden"&gt; the {0}&lt;/span&gt;</value>
+  </data>
+  <data name="Forms_DeclarationSection_ConfirmAndGetShareCode" xml:space="preserve">
+    <value>Confirm and get share code</value>
+  </data>
   <data name="Support_Organisations_TableHeader_OrganisationName" xml:space="preserve">
     <value>Organisation name</value>
   </data>
@@ -1716,5 +1929,113 @@
   </data>
   <data name="Support_OrganisationApproval_ValidationErrorMessage" xml:space="preserve">
     <value>Select an option</value>
+  </data>
+  <data name="Exclusions_AddExclusionDeclaration_Title" xml:space="preserve">
+    <value>Add any mandatory and discretionary exclusions</value>
+  </data>
+  <data name="Exclusions_AddExclusionDeclaration_Paragraph1" xml:space="preserve">
+    <value>You must tell us if there are any circumstances that may exclude you as a supplier from the procurement process because your organisation or a connected person committed an offence.</value>
+  </data>
+  <data name="Exclusions_AddExclusionDeclaration_Paragraph2" xml:space="preserve">
+    <value>Offences are listed as 'mandatory exclusion grounds' and 'discretionary exclusion grounds' in the Procurement Act 2023.</value>
+  </data>
+  <data name="Exclusions_AddExclusionDeclaration_InsetText" xml:space="preserve">
+    <value>If any exclusions apply to a person with significant control, such as a director or majority shareholder, make sure you have added them as a &lt;a href="{0}"&gt;connected person&lt;/a&gt;.</value>
+  </data>
+  <data name="Exclusions_AddExclusionDeclaration_Paragraph3" xml:space="preserve">
+    <value>You'll need to provide details about each exclusion, such as where it happened and who it applies to and upload any supporting documents you may have.</value>
+  </data>
+  <data name="Exclusions_AddExclusionDeclaration_MandatoryExclusionsHeading" xml:space="preserve">
+    <value>Mandatory exclusions</value>
+  </data>
+  <data name="Exclusions_AddExclusionDeclaration_MandatoryExclusionsIntro" xml:space="preserve">
+    <value>Penalties and other events that may exclude you are:</value>
+  </data>
+  <data name="Exclusions_AddExclusionDeclaration_MandatoryExclusions_Penalty1" xml:space="preserve">
+    <value>adjustments for tax arrangements that are abusive</value>
+  </data>
+  <data name="Exclusions_AddExclusionDeclaration_MandatoryExclusions_Penalty2" xml:space="preserve">
+    <value>competition law infringements</value>
+  </data>
+  <data name="Exclusions_AddExclusionDeclaration_MandatoryExclusions_Penalty3" xml:space="preserve">
+    <value>defeat in respect of notifiable tax arrangements</value>
+  </data>
+  <data name="Exclusions_AddExclusionDeclaration_MandatoryExclusions_Penalty4" xml:space="preserve">
+    <value>failure to cooperate with an investigation</value>
+  </data>
+  <data name="Exclusions_AddExclusionDeclaration_MandatoryExclusions_Penalty5" xml:space="preserve">
+    <value>finding by HMRC, in exercise of its powers in respect of VAT, of abusive practice</value>
+  </data>
+  <data name="Exclusions_AddExclusionDeclaration_MandatoryExclusions_Penalty6" xml:space="preserve">
+    <value>penalties for transactions connected with VAT fraud and evasion of tax or duty</value>
+  </data>
+  <data name="Exclusions_AddExclusionDeclaration_MandatoryExclusions_Penalty7" xml:space="preserve">
+    <value>penalties payable for errors in tax documentation and failure to notify, and certain VAT and excise wrongdoing</value>
+  </data>
+  <data name="Exclusions_AddExclusionDeclaration_MandatoryConvictionsIntro" xml:space="preserve">
+    <value>Convictions that may exclude you are:</value>
+  </data>
+  <data name="Exclusions_AddExclusionDeclaration_MandatoryConvictions_Conviction1" xml:space="preserve">
+    <value>ancillary offences - aiding, abetting, encouraging or assisting crime</value>
+  </data>
+  <data name="Exclusions_AddExclusionDeclaration_MandatoryConvictions_Conviction2" xml:space="preserve">
+    <value>cartel offences</value>
+  </data>
+  <data name="Exclusions_AddExclusionDeclaration_MandatoryConvictions_Conviction3" xml:space="preserve">
+    <value>corporate manslaughter or homicide</value>
+  </data>
+  <data name="Exclusions_AddExclusionDeclaration_MandatoryConvictions_Conviction4" xml:space="preserve">
+    <value>labour market, slavery and human trafficking offences</value>
+  </data>
+  <data name="Exclusions_AddExclusionDeclaration_MandatoryConvictions_Conviction5" xml:space="preserve">
+    <value>organised crime</value>
+  </data>
+  <data name="Exclusions_AddExclusionDeclaration_MandatoryConvictions_Conviction6" xml:space="preserve">
+    <value>tax offences</value>
+  </data>
+  <data name="Exclusions_AddExclusionDeclaration_MandatoryConvictions_Conviction7" xml:space="preserve">
+    <value>terrorism and offences having a terrorist connection</value>
+  </data>
+  <data name="Exclusions_AddExclusionDeclaration_MandatoryConvictions_Conviction8" xml:space="preserve">
+    <value>theft, fraud and bribery</value>
+  </data>
+  <data name="Exclusions_AddExclusionDeclaration_MandatoryExclusionsLinkText" xml:space="preserve">
+    <value>These exclusions are defined in &lt;a href="{0}" target="_blank"&gt;schedule 6 of the Procurement Act 2023 (opens in new tab)&lt;/a&gt;.</value>
+  </data>
+  <data name="Exclusions_AddExclusionDeclaration_DiscretionaryExclusionsHeading" xml:space="preserve">
+    <value>Discretionary exclusions</value>
+  </data>
+  <data name="Exclusions_AddExclusionDeclaration_DiscretionaryExclusionsIntro" xml:space="preserve">
+    <value>Discretionary exclusions that may exclude you are:</value>
+  </data>
+  <data name="Exclusions_AddExclusionDeclaration_DiscretionaryExclusions_Exclusion1" xml:space="preserve">
+    <value>acting improperly in procurement</value>
+  </data>
+  <data name="Exclusions_AddExclusionDeclaration_DiscretionaryExclusions_Exclusion2" xml:space="preserve">
+    <value>breach of contract and poor performance</value>
+  </data>
+  <data name="Exclusions_AddExclusionDeclaration_DiscretionaryExclusions_Exclusion3" xml:space="preserve">
+    <value>environmental misconduct</value>
+  </data>
+  <data name="Exclusions_AddExclusionDeclaration_DiscretionaryExclusions_Exclusion4" xml:space="preserve">
+    <value>infringement of Competition Act 1998, under Chapter II prohibition</value>
+  </data>
+  <data name="Exclusions_AddExclusionDeclaration_DiscretionaryExclusions_Exclusion5" xml:space="preserve">
+    <value>insolvency or bankruptcy</value>
+  </data>
+  <data name="Exclusions_AddExclusionDeclaration_DiscretionaryExclusions_Exclusion6" xml:space="preserve">
+    <value>labour market misconduct</value>
+  </data>
+  <data name="Exclusions_AddExclusionDeclaration_DiscretionaryExclusions_Exclusion7" xml:space="preserve">
+    <value>potential competition and competition law infringements</value>
+  </data>
+  <data name="Exclusions_AddExclusionDeclaration_DiscretionaryExclusions_Exclusion8" xml:space="preserve">
+    <value>professional misconduct</value>
+  </data>
+  <data name="Exclusions_AddExclusionDeclaration_DiscretionaryExclusions_Exclusion9" xml:space="preserve">
+    <value>suspension or ceasing to carry on all or a substantial part of a business</value>
+  </data>
+  <data name="Exclusions_AddExclusionDeclaration_DiscretionaryExclusionsLinkText" xml:space="preserve">
+    <value>These exclusions are defined in &lt;a href="{0}" target="_blank"&gt;schedule 7 of the Procurement Act 2023 (opens in new tab)&lt;/a&gt;.</value>
   </data>
 </root>

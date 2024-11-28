@@ -19,7 +19,6 @@ public class ConnectedEntityIndividualCategoryModel(ISession session) : PageMode
 
     [BindProperty(SupportsGet = true)]
     public Guid? ConnectedEntityId { get; set; }
-    [BindProperty]
     public ConnectedEntityType? ConnectedEntityType { get; set; }
     public bool RegisteredWithCh { get; set; }
 
@@ -40,7 +39,15 @@ public class ConnectedEntityIndividualCategoryModel(ISession session) : PageMode
     public IActionResult OnPost()
     {
         var state = session.Get<ConnectedEntityState>(Session.ConnectedPersonKey);
-        if (state == null || !ModelState.IsValid)
+
+        if (state == null)
+        {
+            return RedirectToPage("ConnectedEntitySupplierCompanyQuestion", new { Id });
+        }
+
+        ConnectedEntityType = state.ConnectedEntityType;
+
+        if (!ModelState.IsValid)
         {
             return Page();
         }

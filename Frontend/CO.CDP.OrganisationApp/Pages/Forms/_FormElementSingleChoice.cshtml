@@ -1,4 +1,5 @@
 @model FormElementSingleChoiceModel
+@using CO.CDP.Localization
 @using CO.CDP.OrganisationApp.Pages.Forms.ChoiceProviderStrategies
 
 @{
@@ -41,7 +42,7 @@
         @if (hasError)
         {
             <p class="govuk-error-message" id="SelectedOption-error">
-                <span class="govuk-visually-hidden">Error:</span>
+                <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span>
                 @Html.ValidationMessageFor(m => m.SelectedOption)
             </p>
         }

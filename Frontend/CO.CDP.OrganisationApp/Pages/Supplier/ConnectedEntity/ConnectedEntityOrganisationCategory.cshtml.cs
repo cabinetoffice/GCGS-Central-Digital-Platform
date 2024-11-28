@@ -35,7 +35,12 @@ public class ConnectedEntityOrganisationCategoryModel(ISession session) : PageMo
     public IActionResult OnPost()
     {
         var state = session.Get<ConnectedEntityState>(Session.ConnectedPersonKey);
-        if (state == null || !ModelState.IsValid)
+        if (state == null)
+        {
+            return RedirectToPage("ConnectedEntitySupplierCompanyQuestion", new { Id });
+        }
+
+        if (!ModelState.IsValid)
         {
             return Page();
         }
