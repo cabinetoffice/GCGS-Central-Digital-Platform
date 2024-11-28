@@ -10,6 +10,9 @@ public class ExceptionMiddleware(
         {
             await next.Invoke(context);
 
+            // https://noticingsystem.atlassian.net/browse/DP-950
+            // Remove below temp logging code of correlation cookie and state
+            // once we identify the cause of login error in private-beta 
             if (context.Request.Path.StartsWithSegments("/one-login/sign-in"))
             {
                 var cookies = context.Response.Headers.SetCookie;
