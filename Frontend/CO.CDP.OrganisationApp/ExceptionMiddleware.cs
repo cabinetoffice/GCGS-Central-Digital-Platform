@@ -9,6 +9,29 @@ public class ExceptionMiddleware(
         try
         {
             await next.Invoke(context);
+
+            if (context.Request.Path.StartsWithSegments("/one-login/sign-in"))
+            {
+                var cookies = context.Response.Headers.SetCookie;
+                var location = context.Response.Headers.Location.ToString();
+                string? state = null;
+                string? correlationCookie = null;
+
+                if (cookies != Microsoft.Extensions.Primitives.StringValues.Empty)
+                {
+                    correlationCookie = cookies.ToArray().FirstOrDefault(c => c!.StartsWith(".AspNetCore.Correlation."));
+                }
+
+                if (!string.IsNullOrWhiteSpace(location) && Uri.TryCreate(location, UriKind.Absolute, out var uri))
+                {
+                    state = System.Web.HttpUtility.ParseQueryString(uri.Query)["state"];
+                }
+
+                if (state != null && correlationCookie != null)
+                {
+                    logger.LogInformation("Correlation Cookie:{Cookie} set for state:{State}", correlationCookie, state);
+                }
+            }
         }
         catch (Exception ex)
         {
