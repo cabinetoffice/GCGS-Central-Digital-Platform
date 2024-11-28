@@ -1,19 +1,20 @@
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using CO.CDP.Localization;
 
 namespace CO.CDP.OrganisationApp.Pages.Shared;
 
 public class AddressPartialModel : IValidatableObject
 {
     [BindProperty]
-    [DisplayName("Address line 1")]
-    [Required(ErrorMessage = "Enter address line 1, typically the building and street")]
+    [DisplayName(nameof(StaticTextResource.Shared_Address_AddressLine1))]
+    [Required(ErrorMessage = nameof(StaticTextResource.Shared_Address_AddressLine1_ErrorMessage))]
     public string? AddressLine1 { get; set; }
 
     [BindProperty]
-    [DisplayName("Town or city")]
-    [Required(ErrorMessage = "Enter town or city")]
+    [DisplayName(nameof(StaticTextResource.Shared_Address_TownOrCity))]
+    [Required(ErrorMessage = nameof(StaticTextResource.Shared_Address_TownOrCity_ErrorMessage))]
     public string? TownOrCity { get; set; }
 
     [BindProperty]
@@ -21,8 +22,8 @@ public class AddressPartialModel : IValidatableObject
     public string? Postcode { get; set; }
 
     [BindProperty]
-    [DisplayName("Country")]
-    [Required(ErrorMessage = "Enter country")]
+    [DisplayName(nameof(StaticTextResource.Shared_Address_Country))]
+    [Required(ErrorMessage = nameof(StaticTextResource.Shared_Address_Country_ErrorMessage))]
     public string? Country { get; set; }
 
     [BindProperty(SupportsGet = true)]
@@ -30,7 +31,7 @@ public class AddressPartialModel : IValidatableObject
 
     public bool IsNonUkAddress => UkOrNonUk == "non-uk";
 
-    public string PostcodeLabel => IsNonUkAddress ? "Postal or Zip Code" : "Postcode";
+    public string PostcodeLabel => IsNonUkAddress ? StaticTextResource.Shared_Address_Postcode_NonUk : StaticTextResource.Shared_Address_Postcode;
 
     public string? CountryName
     {
@@ -57,7 +58,7 @@ public class AddressPartialModel : IValidatableObject
             var valid = Country == Constants.Country.UKCountryCode || Constants.Country.NonUKCountries.ContainsKey(Country);
             if (!valid)
             {
-                yield return new ValidationResult($"Invalid country name '{Country}'", [nameof(Country)]);
+                yield return new ValidationResult($"{StaticTextResource.Shared_Address_ValidationErrorMessage} '{Country}'", [nameof(Country)]);
             }
         }
     }
@@ -70,7 +71,10 @@ public class AddressPartialModel : IValidatableObject
 
             if (string.IsNullOrWhiteSpace(address.Postcode))
             {
-                return new ValidationResult(address.IsNonUkAddress ? "Enter postal or Zip Code" : "Enter postcode");
+                return new ValidationResult(
+                            address.IsNonUkAddress
+                                ? StaticTextResource.Shared_Address_Postcode_NonUk_ErrorMessage
+                                : StaticTextResource.Shared_Address_Postcode_ErrorMessage);
             }
 
             return ValidationResult.Success;

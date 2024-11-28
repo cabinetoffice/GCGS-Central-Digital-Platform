@@ -1,3 +1,4 @@
+using CO.CDP.Localization;
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Pages.Organisation;
 using FluentAssertions;
@@ -6,18 +7,22 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.Localization;
 using Moq;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages.Organisation;
 
 public class OrganisationEmailModelTest
 {
-    private readonly Mock<IOrganisationClient> organisationClientMock;
+    private readonly Mock<IOrganisationClient> _organisationClientMock;
     private readonly OrganisationEmailModel _model;
+    private readonly Mock<IStringLocalizer> _stringLocalizerMock;
+
     public OrganisationEmailModelTest()
     {
-        organisationClientMock = new Mock<IOrganisationClient>();
-        _model = new OrganisationEmailModel(organisationClientMock.Object);
+        _organisationClientMock = new Mock<IOrganisationClient>();
+        _model = new OrganisationEmailModel(_organisationClientMock.Object);
+        _stringLocalizerMock = new Mock<IStringLocalizer>();
     }
 
     [Fact]
@@ -35,12 +40,18 @@ public class OrganisationEmailModelTest
     {
         var model = GivenOrganisationEmailModel();
 
-        var results = ModelValidationHelper.Validate(model);
+        _stringLocalizerMock
+            .Setup(localizer => localizer[nameof(StaticTextResource.Organisation_Email_Required_ErrorMessage)])
+            .Returns(new LocalizedString(nameof(StaticTextResource.Organisation_Email_Required_ErrorMessage), StaticTextResource.Organisation_Email_Required_ErrorMessage));
+
+        var validationContext = ValidationContextFactory.GivenValidationContextWithStringLocalizerFactory(model, _stringLocalizerMock.Object);
+
+        var results = ModelValidationHelper.Validate(model, validationContext);
 
         results.Any(c => c.MemberNames.Contains("EmailAddress")).Should().BeTrue();
 
         results.Where(c => c.MemberNames.Contains("EmailAddress")).First()
-            .ErrorMessage.Should().Be("Enter your organisation's email address");
+            .ErrorMessage.Should().Be(StaticTextResource.Organisation_Email_Required_ErrorMessage);
     }
 
     [Fact]
@@ -60,12 +71,18 @@ public class OrganisationEmailModelTest
         var model = GivenOrganisationEmailModel();
         model.EmailAddress = "dummy";
 
-        var results = ModelValidationHelper.Validate(model);
+        _stringLocalizerMock
+            .Setup(localizer => localizer[nameof(StaticTextResource.Global_Email_Invalid_ErrorMessage)])
+            .Returns(new LocalizedString(nameof(StaticTextResource.Global_Email_Invalid_ErrorMessage), StaticTextResource.Global_Email_Invalid_ErrorMessage));
+
+        var validationContext = ValidationContextFactory.GivenValidationContextWithStringLocalizerFactory(model, _stringLocalizerMock.Object);
+
+        var results = ModelValidationHelper.Validate(model, validationContext);
 
         results.Any(c => c.MemberNames.Contains("EmailAddress")).Should().BeTrue();
 
         results.Where(c => c.MemberNames.Contains("EmailAddress")).First()
-            .ErrorMessage.Should().Be("Enter an email address in the correct format, like name@example.com");
+            .ErrorMessage.Should().Be(StaticTextResource.Global_Email_Invalid_ErrorMessage);
     }
 
     [Fact]
@@ -102,7 +119,7 @@ public class OrganisationEmailModelTest
         var id = Guid.NewGuid();
         _model.Id = id;
         _model.EmailAddress = "updated@test.com";
-        organisationClientMock.Setup(o => o.GetOrganisationAsync(id))
+        _organisationClientMock.Setup(o => o.GetOrganisationAsync(id))
             .ReturnsAsync(GivenOrganisationClientModel(id));
 
         var result = await _model.OnPost();
@@ -117,12 +134,12 @@ public class OrganisationEmailModelTest
     {
         var id = Guid.NewGuid();
         _model.Id = id;
-        organisationClientMock.Setup(o => o.GetOrganisationAsync(id))
+        _organisationClientMock.Setup(o => o.GetOrganisationAsync(id))
             .ReturnsAsync(GivenOrganisationClientModel(id));
 
         await _model.OnGet();
 
-        organisationClientMock.Verify(c => c.GetOrganisationAsync(id), Times.Once);
+        _organisationClientMock.Verify(c => c.GetOrganisationAsync(id), Times.Once);
     }
 
 
@@ -133,6 +150,6 @@ public class OrganisationEmailModelTest
 
     private OrganisationEmailModel GivenOrganisationEmailModel()
     {
-        return new OrganisationEmailModel(organisationClientMock.Object);
+        return new OrganisationEmailModel(_organisationClientMock.Object);
     }
 }

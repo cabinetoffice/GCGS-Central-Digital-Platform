@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CO.CDP.EntityVerification.Migrations
 {
     [DbContext(typeof(EntityVerificationContext))]
-    [Migration("20241118130552_IdentifierRegistries")]
+    [Migration("20241119163516_IdentifierRegistries")]
     partial class IdentifierRegistries
     {
         /// <inheritdoc />
@@ -132,6 +132,9 @@ namespace CO.CDP.EntityVerification.Migrations
 
                     b.HasKey("Id")
                         .HasName("pk_identifier_registries");
+
+                    b.HasIndex("CountryCode")
+                        .HasDatabaseName("ix_identifier_registries_country_code");
 
                     b.HasIndex("Scheme")
                         .HasDatabaseName("ix_identifier_registries_scheme");

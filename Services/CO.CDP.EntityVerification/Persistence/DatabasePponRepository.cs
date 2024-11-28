@@ -16,6 +16,7 @@ public class DatabasePponRepository(EntityVerificationContext context) : IPponRe
         }
         catch (DbUpdateException cause)
         {
+            context.Remove(identifier);
             HandleDbUpdateException(identifier, cause);
         }
     }

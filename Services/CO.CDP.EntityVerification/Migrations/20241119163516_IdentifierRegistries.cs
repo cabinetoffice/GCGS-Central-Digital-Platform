@@ -31,6 +31,12 @@ namespace CO.CDP.EntityVerification.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "ix_identifier_registries_country_code",
+                schema: "entity_verification",
+                table: "identifier_registries",
+                column: "country_code");
+
+            migrationBuilder.CreateIndex(
                 name: "ix_identifier_registries_scheme",
                 schema: "entity_verification",
                 table: "identifier_registries",

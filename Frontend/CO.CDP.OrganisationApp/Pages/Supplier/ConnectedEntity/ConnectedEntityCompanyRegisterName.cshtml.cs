@@ -3,8 +3,8 @@ using CO.CDP.OrganisationApp.Constants;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using CO.CDP.Localization;
 
 namespace CO.CDP.OrganisationApp.Pages.Supplier;
 
@@ -20,12 +20,11 @@ public class ConnectedEntityCompanyRegisterNameModel(ISession session) : PageMod
     public Guid? ConnectedEntityId { get; set; }
 
     [BindProperty]
-    [Required(ErrorMessage = "Select if organisation is registered as person with significant control")]
+    [Required(ErrorMessageResourceName = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityCompanyRegisterName_SelectIfRegisteredError), ErrorMessageResourceType = typeof(StaticTextResource))]
     public string? RegisterName { get; set; }
 
     [BindProperty]
-    [DisplayName("Other register name")]
-    [RequiredIf("RegisterName", "Other")]
+    [RequiredIf("RegisterName", "Other", ErrorMessageResourceName = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityCompanyRegisterName_OtherRegisterNameRequiredError), ErrorMessageResourceType = typeof(StaticTextResource))]
     public string? RegisterNameInput { get; set; }
 
     [BindProperty]
@@ -47,7 +46,7 @@ public class ConnectedEntityCompanyRegisterNameModel(ISession session) : PageMod
                 "ConnectedEntityCheckAnswersOrganisation" : "ConnectedEntitySupplierCompanyQuestion", new { Id, ConnectedEntityId });
         }
 
-        InitModal(state, true);
+        InitModel(state, true);
 
         return Page();
     }
@@ -61,7 +60,7 @@ public class ConnectedEntityCompanyRegisterNameModel(ISession session) : PageMod
                 "ConnectedEntityCheckAnswersOrganisation" : "ConnectedEntitySupplierCompanyQuestion", new { Id, ConnectedEntityId });
         }
 
-        InitModal(state);
+        InitModel(state);
 
         if (!ModelState.IsValid) return Page();
 
@@ -78,13 +77,13 @@ public class ConnectedEntityCompanyRegisterNameModel(ISession session) : PageMod
         return RedirectToPage(redirectPage, new { Id, ConnectedEntityId });
     }
 
-    private void InitModal(ConnectedEntityState state, bool reset = false)
+    private void InitModel(ConnectedEntityState state, bool reset = false)
     {
         Caption = state.GetCaption();
         var name = state.ConnectedEntityType == Constants.ConnectedEntityType.Organisation
                     ? state.OrganisationName : state.FirstName;
 
-        Heading = $"Select where {name} is registered as person with significant control";
+        Heading = string.Format(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityCompanyRegisterName_Heading, name);
         ConnectedEntityType = state.ConnectedEntityType;
         SupplierHasCompanyHouseNumber = state.SupplierHasCompanyHouseNumber ?? false;
         BackPageLink = GetBackLinkPageName(state);
@@ -200,6 +199,6 @@ public class ConnectedEntityCompanyRegisterNameModel(ISession session) : PageMod
 
     public static Dictionary<string, string> RegisterNameType => new()
     {
-        { "CompaniesHouse", "People with significant control register on Companies House" }
+        { "CompaniesHouse", StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityCompanyRegisterName_CompaniesHouseOption }
     };
 }

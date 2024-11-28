@@ -10,7 +10,7 @@
 
 @section BeforeContent {
     <a href="/organisation/@Model.Id" class="govuk-back-link">
-        Back
+        @StaticTextResource.Global_Back
     </a>
 }
 
@@ -42,7 +42,7 @@
                             @if (organisationNameHasError)
                             {
                                 <p id="organisation-name-error" class="govuk-error-message">
-                                    <span class="govuk-visually-hidden">Error:</span>
+                                    <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span>
                                     @Html.ValidationMessageFor(m => m.OrganisationName)
                                 </p>
                             }
@@ -55,7 +55,7 @@
                 </div>
 
                 <govuk-button>
-                    Continue
+                    @StaticTextResource.Global_Continue
                 </govuk-button>
 
             </form>

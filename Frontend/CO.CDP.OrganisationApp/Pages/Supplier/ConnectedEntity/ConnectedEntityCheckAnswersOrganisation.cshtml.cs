@@ -5,6 +5,7 @@ using CO.CDP.OrganisationApp.WebApiClients;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using CO.CDP.Localization;
 
 namespace CO.CDP.OrganisationApp.Pages.Supplier;
 
@@ -36,7 +37,7 @@ public class ConnectedEntityCheckAnswersOrganisationModel(
                 "ConnectedEntityCheckAnswersOrganisation" : "ConnectedEntitySupplierCompanyQuestion", new { Id, ConnectedEntityId });
         }
 
-        InitModal(state);
+        InitModel(state);
 
         try
         {
@@ -62,7 +63,7 @@ public class ConnectedEntityCheckAnswersOrganisationModel(
 
             ConnectedEntityDetails = ConnectedEntityCheckAnswersCommon.GetConnectedEntityStateFromEntity(Id, connectedEntity);
 
-            InitModal(ConnectedEntityDetails);
+            InitModel(ConnectedEntityDetails);
 
             session.Set<ConnectedEntityState?>(Session.ConnectedPersonKey, ConnectedEntityDetails);
 
@@ -82,7 +83,7 @@ public class ConnectedEntityCheckAnswersOrganisationModel(
             return RedirectToPage("ConnectedEntitySupplierHasControl", new { Id });
         }
 
-        InitModal(state);
+        InitModel(state);
 
         try
         {
@@ -123,10 +124,10 @@ public class ConnectedEntityCheckAnswersOrganisationModel(
         return RedirectToPage("ConnectedPersonSummary", new { Id });
     }
 
-    private void InitModal(ConnectedEntityState state)
+    private void InitModel(ConnectedEntityState state)
     {
         Caption = state.GetCaption();
-        Heading = $"Check your answers";
+        Heading = StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_PageTitle;
         BackPageLink = GetBackLinkPageName(state);
         ShowRegisterDate = ConnectedEntityCheckAnswersCommon.SetShowRegisterDate(state);
         ShowLegalForm = ConnectedEntityCheckAnswersCommon.SetShowLegalForm(state);

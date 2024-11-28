@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.StaticFiles;
 using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
+using CO.CDP.Localization;
 
 namespace CO.CDP.OrganisationApp.Pages.Forms;
 
@@ -68,7 +69,7 @@ public class FormElementFileUploadModel : FormElementModel, IValidatableObject
         {
             if (HasValue == null)
             {
-                yield return new ValidationResult("Select an option", [nameof(HasValue)]);
+                yield return new ValidationResult(StaticTextResource.Global_RadioField_SelectOptionError, [nameof(HasValue)]);
             }
             else if (HasValue == true)
             {
@@ -82,19 +83,19 @@ public class FormElementFileUploadModel : FormElementModel, IValidatableObject
             {
                 if (UploadedFile == null)
                 {
-                    yield return new ValidationResult("No file selected.", [nameof(UploadedFile)]);
+                    yield return new ValidationResult(StaticTextResource.Forms_FormElementFileUpload_NoFileSelectedError, [nameof(UploadedFile)]);
                 }
                 else
                 {
                     if (UploadedFile.Length > AllowedMaxFileSizeMB * 1024 * 1024)
                     {
-                        yield return new ValidationResult($"The file size must not exceed {AllowedMaxFileSizeMB}MB.", [nameof(UploadedFile)]);
+                        yield return new ValidationResult(string.Format(StaticTextResource.Forms_FormElementFileUpload_FileSizeExceededError, AllowedMaxFileSizeMB), [nameof(UploadedFile)]);
                     }
 
                     var fileExtension = Path.GetExtension(UploadedFile.FileName).ToLowerInvariant();
                     if (!AllowedExtensions.Contains(fileExtension))
                     {
-                        yield return new ValidationResult($"Please upload a file which has one of the following extensions: {string.Join(", ", AllowedExtensions)}", [nameof(UploadedFile)]);
+                        yield return new ValidationResult(string.Format(StaticTextResource.Forms_FormElementFileUpload_InvalidFileExtensionError, string.Join(", ", AllowedExtensions)), [nameof(UploadedFile)]);
                     }
                 }
             }

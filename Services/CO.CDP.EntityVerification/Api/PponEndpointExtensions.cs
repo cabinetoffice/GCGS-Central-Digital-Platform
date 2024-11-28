@@ -43,7 +43,7 @@ public static class PponEndpointExtensions
            [Authorize(Policy = "OneLoginPolicy")]
         async (string countrycode, IUseCase<string, IEnumerable<IdentifierRegistries>> useCase) =>
            await useCase.Execute(countrycode)
-                  .AndThen(identifiers => identifiers != null ? Results.Ok(identifiers) : Results.NotFound()))
+                  .AndThen(identifiers => identifiers.Any() ? Results.Ok(identifiers) : Results.NotFound()))
       .Produces<IEnumerable<IdentifierRegistries>>(StatusCodes.Status200OK, "application/json")
       .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
       .Produces<ProblemDetails>(StatusCodes.Status404NotFound)
@@ -51,8 +51,8 @@ public static class PponEndpointExtensions
       .WithOpenApi(operation =>
       {
           operation.OperationId = "GetIdentifierRegistries";
-          operation.Description = "Get Identifier Registeries.";
-          operation.Summary = "Get Identifier Registeries.";
+          operation.Description = "Get Identifier Registries.";
+          operation.Summary = "Get Identifier Registries.";
           operation.Responses["200"].Description = "List of identifiers.";          
           operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
           operation.Responses["404"].Description = "Identifiers not found.";
