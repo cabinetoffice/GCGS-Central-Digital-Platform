@@ -19,7 +19,7 @@ public class OneLoginTest
     private readonly Mock<IPersonClient> personClientMock = new();
     private readonly Mock<ISession> sessionMock = new();
     private readonly Mock<IHttpContextAccessor> httpContextAccessorMock = new();
-    private readonly Mock<IOneLoginSessionManager> oneLoginSessionManagerMock = new();
+    private readonly Mock<ILogoutManager> logoutManagerMock = new();
     private readonly Mock<IOneLoginAuthority> oneLoginAuthorityMock = new();
     private readonly Mock<IAuthenticationService> authService = new();
     private const string urn = "urn:fdc:gov.uk:2022:7wTqYGMFQxgukTSpSI2GodMwe9";
@@ -60,7 +60,7 @@ public class OneLoginTest
                 && rd.UserUrn == urn
             )), Times.Once);
 
-        oneLoginSessionManagerMock.Verify(v => v.RemoveFromSignedOutSessionsList(urn), Times.Once);
+        logoutManagerMock.Verify(v => v.RemoveAsLoggedOut(urn), Times.Once);
     }
 
     [Fact]
@@ -257,16 +257,16 @@ public class OneLoginTest
 
         var result = await model.OnPostAsync(logoutToken);
 
-        oneLoginSessionManagerMock.Verify(m => m.AddToSignedOutSessionsList(urn), Times.Once);
+        logoutManagerMock.Verify(m => m.MarkAsLoggedOut(urn, logoutToken), Times.Once);
         result.Should().BeOfType<PageResult>();
     }
 
     private readonly AuthenticateResult authResultSuccess = AuthenticateResult.Success(new AuthenticationTicket(
-                new ClaimsPrincipal(new ClaimsIdentity(new[] {
+                new ClaimsPrincipal(new ClaimsIdentity([
                     new Claim(JwtClaimTypes.Subject, urn),
                     new Claim(JwtClaimTypes.Email, "dummy@test.com"),
                     new Claim(JwtClaimTypes.PhoneNumber, "+44 123456789")
-                })),
+                ])),
             "TestScheme"));
 
     private readonly AuthenticateResult authResultWithMissingSubjectSuccess = AuthenticateResult.Success(new AuthenticationTicket(
@@ -300,7 +300,7 @@ public class OneLoginTest
             httpContextAccessorMock.Object,
             personClientMock.Object,
             sessionMock.Object,
-            oneLoginSessionManagerMock.Object,
+            logoutManagerMock.Object,
             oneLoginAuthorityMock.Object, new Mock<ILogger<OneLoginModel>>().Object)
         { PageAction = pageAction };
     }
