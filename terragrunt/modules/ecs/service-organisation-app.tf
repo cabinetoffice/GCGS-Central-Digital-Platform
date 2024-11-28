@@ -46,6 +46,7 @@ module "ecs_service_organisation_app" {
       onelogin_account_url                = local.one_loging.credential_locations.account_url
       onelogin_authority                  = local.one_loging.credential_locations.authority
       onelogin_client_id                  = local.one_loging.credential_locations.client_id
+      onelogin_logout_notification_urls   = var.onelogin_logout_notification_urls
       onelogin_private_key                = local.one_loging.credential_locations.private_key
       public_domain                       = var.public_domain
       s3_permanent_bucket                 = module.s3_bucket_permanent.bucket
