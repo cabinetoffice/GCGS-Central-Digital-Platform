@@ -137,7 +137,7 @@
   </data>
   <data name="BasicInformation_SectionTitle" xml:space="preserve">
     <value>Basic information</value>
-  </data>
+  </data>  
   <data name="Global_Back" xml:space="preserve">
     <value>Back</value>
   </data>
@@ -2004,6 +2004,9 @@
   </data>
   <data name="Supplier_Back" xml:space="preserve">
     <value>Back</value>
+  </data>
+  <data name="Supplier_BasicInformation_Title" xml:space="preserve">
+    <value>Manage {0}'s basic information</value>
   </data>
   <data name="Supplier_InformationHint" xml:space="preserve">
     <value>We need information from you based on the type of supplier you are.</value>

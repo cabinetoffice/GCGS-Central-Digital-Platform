@@ -27,7 +27,7 @@
                         @if (registeredOtherOrgHasError)
                         {
                             <p id="legal-form-error" class="govuk-error-message">
-                                <span class="govuk-visually-hidden">Error:</span> @Html.ValidationMessageFor(m => m.OtherOrganisation)
+                                <span class="govuk-visually-hidden">@StaticTextResource.Global_Error</span> @Html.ValidationMessageFor(m => m.OtherOrganisation)
                             </p>
                         }
 

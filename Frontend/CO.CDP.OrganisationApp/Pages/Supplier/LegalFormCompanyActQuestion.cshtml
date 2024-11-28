@@ -8,7 +8,7 @@
 }
 
 @section BeforeContent {
-    <a href="/organisation/@Model.Id/supplier-information/basic-information" class="govuk-back-link">Back</a>
+    <a href="/organisation/@Model.Id/supplier-information/basic-information" class="govuk-back-link">@StaticTextResource.Global_Back</a>
 }
 
     <div class="govuk-grid-row">
@@ -30,7 +30,7 @@
                             @if (registeredOnChHasError)
                             {
                                 <p id="devolved-error" class="govuk-error-message">
-                                    <span class="govuk-visually-hidden">Error:</span> @Html.ValidationMessageFor(m => m.RegisteredOnCompanyHouse)
+                                    <span class="govuk-visually-hidden">@StaticTextResource.Global_Error</span> @Html.ValidationMessageFor(m => m.RegisteredOnCompanyHouse)
                                 </p>
                             }
 

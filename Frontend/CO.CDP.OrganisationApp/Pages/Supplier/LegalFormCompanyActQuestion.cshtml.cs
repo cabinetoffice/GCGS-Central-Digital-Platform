@@ -14,7 +14,7 @@ public class LegalFormCompanyActQuestionModel(
     ITempDataService tempDataService) : PageModel
 {
     [BindProperty]
-    [Required(ErrorMessage = nameof(StaticTextResource.Global_SelectAnOption))]
+    [Required(ErrorMessage = nameof(StaticTextResource.Global_SelectAnOption), ErrorMessageResourceType = typeof(StaticTextResource))]
     public bool? RegisteredOnCompanyHouse { get; set; }
 
     [BindProperty(SupportsGet = true)]

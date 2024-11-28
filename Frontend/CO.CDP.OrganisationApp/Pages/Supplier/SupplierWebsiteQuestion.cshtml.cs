@@ -15,11 +15,11 @@ namespace CO.CDP.OrganisationApp.Pages.Supplier;
 public class SupplierWebsiteQuestionModel(IOrganisationClient organisationClient) : PageModel
 {
     [BindProperty]
-    [Required(ErrorMessage = nameof(StaticTextResource.Supplier_WebsiteQuestion_ErrorSelectOption))]
+    [Required(ErrorMessage = nameof(StaticTextResource.Supplier_WebsiteQuestion_ErrorSelectOption), ErrorMessageResourceType = typeof(StaticTextResource))]
     public bool? HasWebsiteAddress { get; set; }
 
     [BindProperty]
-    [RequiredIf(nameof(HasWebsiteAddress), true, ErrorMessage = nameof(StaticTextResource.Supplier_WebsiteAddress_ErrorEnterWebsiteAddress))]
+    [RequiredIf(nameof(HasWebsiteAddress), true, ErrorMessage = nameof(StaticTextResource.Supplier_WebsiteAddress_ErrorEnterWebsiteAddress), ErrorMessageResourceType = typeof(StaticTextResource))]
     public string? WebsiteAddress { get; set; }
 
     [BindProperty(SupportsGet = true)]

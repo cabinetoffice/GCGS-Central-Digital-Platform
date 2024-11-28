@@ -15,7 +15,7 @@ public class SupplierOperationQuestionModel(IOrganisationClient organisationClie
     private readonly IOrganisationClient organisationClient = organisationClient;
 
     [BindProperty]
-    [NotEmpty(ErrorMessage = nameof(StaticTextResource.Supplier_OperationQuestion_SelectOption))]
+    [NotEmpty(ErrorMessage = nameof(StaticTextResource.Supplier_OperationQuestion_SelectOption), ErrorMessageResourceType = typeof(StaticTextResource))]
     [ValidOperationTypeSelection]
     public required List<OperationType>? SelectedOperationTypes { get; set; }
 

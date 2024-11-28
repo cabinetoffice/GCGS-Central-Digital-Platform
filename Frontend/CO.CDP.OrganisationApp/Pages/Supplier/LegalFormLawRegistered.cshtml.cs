@@ -14,7 +14,7 @@ public class LegalFormLawRegisteredModel(
     IOrganisationClient organisationClient) : PageModel
 {
     [BindProperty]
-    [Required(ErrorMessage = nameof(StaticTextResource.Supplier_LegalFormLawRegistered_ErrorMessage))]
+    [Required(ErrorMessage = nameof(StaticTextResource.Supplier_LegalFormLawRegistered_ErrorMessage), ErrorMessageResourceType = typeof(StaticTextResource))]
     public string? LawRegistered { get; set; }
 
     [BindProperty]

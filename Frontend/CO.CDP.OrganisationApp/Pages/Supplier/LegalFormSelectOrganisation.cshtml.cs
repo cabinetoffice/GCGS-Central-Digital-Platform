@@ -15,7 +15,7 @@ public class LegalFormSelectOrganisationModel(
 {
 
     [BindProperty]
-    [Required(ErrorMessage = nameof(StaticTextResource.Global_SelectAnOption))]
+    [Required(ErrorMessage = nameof(StaticTextResource.Global_SelectAnOption), ErrorMessageResourceType = typeof(StaticTextResource))]
     public string? RegisteredOrg { get; set; }
 
 
