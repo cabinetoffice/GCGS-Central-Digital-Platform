@@ -81,31 +81,36 @@ public class ConnectedEntityLawRegisterTest
     }
 
     [Theory]
-    [InlineData(ConnectedEntityType.Organisation, ConnectedEntityOrganisationCategoryType.RegisteredCompany, "postal-address-same-as-registered/")]
-    [InlineData(ConnectedEntityType.Organisation, ConnectedEntityOrganisationCategoryType.DirectorOrTheSameResponsibilities, "postal-address-same-as-registered/")]
-    [InlineData(ConnectedEntityType.Organisation, ConnectedEntityOrganisationCategoryType.RegisteredCompany, "Postal-address/uk/", false)]
-    [InlineData(ConnectedEntityType.Organisation, ConnectedEntityOrganisationCategoryType.DirectorOrTheSameResponsibilities, "Postal-address/uk/", false)]
+    [InlineData(ConnectedEntityType.Organisation, ConnectedEntityOrganisationCategoryType.RegisteredCompany, "postal-address-same-as-registered/{0}", true, true)]
+    [InlineData(ConnectedEntityType.Organisation, ConnectedEntityOrganisationCategoryType.RegisteredCompany, "postal-address-same-as-registered", true, false)]
+    [InlineData(ConnectedEntityType.Organisation, ConnectedEntityOrganisationCategoryType.DirectorOrTheSameResponsibilities, "postal-address-same-as-registered/{0}", true, true)]
+    [InlineData(ConnectedEntityType.Organisation, ConnectedEntityOrganisationCategoryType.DirectorOrTheSameResponsibilities, "postal-address-same-as-registered", true, false)]
+    [InlineData(ConnectedEntityType.Organisation, ConnectedEntityOrganisationCategoryType.RegisteredCompany, "Postal-address/uk/{0}", false, true)]
+    [InlineData(ConnectedEntityType.Organisation, ConnectedEntityOrganisationCategoryType.RegisteredCompany, "Postal-address/uk", false, false)]
+    [InlineData(ConnectedEntityType.Organisation, ConnectedEntityOrganisationCategoryType.DirectorOrTheSameResponsibilities, "Postal-address/uk/{0}", false, true)]
+    [InlineData(ConnectedEntityType.Organisation, ConnectedEntityOrganisationCategoryType.DirectorOrTheSameResponsibilities, "Postal-address/uk", false, false)]
     public void OnPost_BackPageLinkNameShouldExpectedPage(
         ConnectedEntityType connectedEntityType,
         ConnectedEntityOrganisationCategoryType? organisationCategoryType,
-        string expectedBackPageLinkName,
-        bool areSameAddress = true)
+        string expectedBackPageLinkNameTemplate,
+        bool areSameAddress,
+        bool includeConnectedEntityId)
     {
         var state = DummyConnectedPersonDetails();
         state.ConnectedEntityType = connectedEntityType;
         state.ConnectedEntityOrganisationCategoryType = organisationCategoryType;
-        if (areSameAddress == false)
-        {
-            state.PostalAddress!.AddressLine1 = "New Street";
-        }
-        _sessionMock.Setup(s => s.Get<ConnectedEntityState>(Session.ConnectedPersonKey)).
-            Returns(state);
+        state.PostalAddress!.AddressLine1 = areSameAddress ? state.RegisteredAddress!.AddressLine1 : "New Street";
 
+        _model.ConnectedEntityId = includeConnectedEntityId ? _entityId : (Guid?)null;
+
+        _sessionMock.Setup(s => s.Get<ConnectedEntityState>(Session.ConnectedPersonKey))
+            .Returns(state);
 
         var result = _model.OnPost();
 
         var redirectToPageResult = result.Should().BeOfType<RedirectToPageResult>().Subject;
 
+        var expectedBackPageLinkName = string.Format(expectedBackPageLinkNameTemplate, includeConnectedEntityId ? _entityId.ToString() : "");
         _model.BackPageLink.Should().Be(expectedBackPageLinkName);
     }
 
