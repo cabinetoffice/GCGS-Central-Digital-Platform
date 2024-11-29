@@ -24,7 +24,7 @@ public class ValidEmailAddressAttributeTests
     [InlineData("info@german-financial-services.reallylongarbitrarytldthatiswaytoohugejustincase", true)]
     [InlineData("japanese-info@例え.テスト", true)]
     [InlineData("emailAddress@double--hyphen.com", true)]
-    public void IsValid_ShouldSucced(string? email, bool isSuccessExpected)
+    public void IsValid_ShouldSucceed(string? email, bool isSuccessExpected)
     {
         Validate(email, isSuccessExpected);
     }

@@ -9,12 +9,11 @@ public static class EmailAddressValidator
 {
     private static readonly string ValidLocalChars = @"a-zA-Z0-9.!#$%&'*+/=?^_`{|}~\-";
     private static readonly string EmailRegexPattern = $@"^[{ValidLocalChars}]+@([^.@][^@\s]+)$";
-    private static readonly Regex HostnamePartRegex = new(@"^(xn|[a-z0-9]+)(-?-[a-z0-9]+)*$", RegexOptions.IgnoreCase);
-    private static readonly Regex TldPartRegex = new(@"^([a-z]{2,63}|xn--([a-z0-9]+-)*[a-z0-9]+)$", RegexOptions.IgnoreCase);
+    private static readonly string HostnamePartRegex = new(@"^(xn|[a-z0-9]+)(-?-[a-z0-9]+)*$");
+    private static readonly string TldPartRegex = new(@"^([a-z]{2,63}|xn--([a-z0-9]+-)*[a-z0-9]+)$");
 
     public static bool IsValid(string emailAddress)
     {
-        emailAddress = StripAndRemoveObscureWhitespace(emailAddress);
         if (!ValidateFormat(emailAddress))
         {
             return false;
@@ -37,14 +36,6 @@ public static class EmailAddressValidator
         }
 
         return true;
-    }
-
-    public static string StripAndRemoveObscureWhitespace(string emailAddress)
-    {
-        emailAddress = emailAddress.Trim();
-        emailAddress = Regex.Replace(emailAddress, @"[\u200B-\u200D\uFEFF]", string.Empty);
-
-        return emailAddress;
     }
 
     private static bool ValidateFormat(string emailAddress)
@@ -78,13 +69,13 @@ public static class EmailAddressValidator
 
         foreach (var part in parts)
         {
-            if (string.IsNullOrEmpty(part) || part.Length > 63 || !HostnamePartRegex.IsMatch(part))
+            if (string.IsNullOrEmpty(part) || part.Length > 63 || !Regex.IsMatch(part, HostnamePartRegex, RegexOptions.IgnoreCase))
             {
                 return false;
             }
         }
 
-        if (!TldPartRegex.IsMatch(parts[parts.Length - 1]))
+        if (!Regex.IsMatch(parts[parts.Length - 1], TldPartRegex, RegexOptions.IgnoreCase))
         {
             return false;
         }

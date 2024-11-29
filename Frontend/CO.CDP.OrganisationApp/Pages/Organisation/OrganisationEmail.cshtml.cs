@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using OrganisationWebApiClient = CO.CDP.Organisation.WebApiClient;
+using CO.CDP.OrganisationApp.Models;
 
 namespace CO.CDP.OrganisationApp.Pages.Organisation;
 
@@ -15,6 +16,7 @@ namespace CO.CDP.OrganisationApp.Pages.Organisation;
 public class OrganisationEmailModel(OrganisationWebApiClient.IOrganisationClient organisationClient) : PageModel
 {
     [BindProperty]
+    [ModelBinder<SanitisedStringModelBinder>]
     [DisplayName(nameof(StaticTextResource.Organisation_Email_Heading))]
     [Required(ErrorMessageResourceName = nameof(StaticTextResource.Organisation_Email_Required_ErrorMessage), ErrorMessageResourceType = typeof(StaticTextResource))]
     [ValidEmailAddress(ErrorMessageResourceName = nameof(StaticTextResource.Global_Email_Invalid_ErrorMessage), ErrorMessageResourceType = typeof(StaticTextResource))]
@@ -52,10 +54,7 @@ public class OrganisationEmailModel(OrganisationWebApiClient.IOrganisationClient
             return Page();
         }
 
-        // Passed when trimmed for validation
-        EmailAddress = EmailAddressValidator.StripAndRemoveObscureWhitespace(EmailAddress!);
         var organisation = await organisationClient.GetOrganisationAsync(Id);
-
         if (organisation == null)
         {
             return Redirect("/page-not-found");
@@ -69,14 +68,12 @@ public class OrganisationEmailModel(OrganisationWebApiClient.IOrganisationClient
                     telephone: organisation.ContactPoint.Telephone,
                     url: organisation.ContactPoint.Url?.ToString());
 
-
             await organisationClient.UpdateOrganisationEmail(Id, cp);
         }
         catch (CO.CDP.Organisation.WebApiClient.ApiException ex) when (ex.StatusCode == 404)
         {
             return Redirect("/page-not-found");
         }
-
 
         return RedirectToPage("OrganisationOverview", new { Id });
     }
