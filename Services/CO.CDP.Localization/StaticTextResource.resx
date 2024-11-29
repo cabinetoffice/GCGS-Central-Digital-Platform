@@ -1999,9 +1999,6 @@
   <data name="Supplier_EmailAddress_Error" xml:space="preserve">
     <value>Error:</value>
   </data>
-  <data name="Supplier_EmailAddress_SaveAndContinue" xml:space="preserve">
-    <value>Save and continue</value>
-  </data>
   <data name="Supplier_BasicInformation_Title" xml:space="preserve">
     <value>Manage {0}'s basic information</value>
   </data>
@@ -2022,9 +2019,6 @@
   </data>
   <data name="Supplier_OrganisationType" xml:space="preserve">
     <value>Organisation type</value>
-  </data>
-  <data name="Supplier_Change" xml:space="preserve">
-    <value>Change</value>
   </data>
   <data name="Supplier_ReturnToAccountHome" xml:space="preserve">
     <value>Return to account home</value>
@@ -2050,9 +2044,6 @@
   <data name="Supplier_VatQuestion_VatNumberHint" xml:space="preserve">
     <value>You can find it on your VAT registration certificate.</value>
   </data>
-  <data name="Supplier_VatQuestion_SaveAndContinue" xml:space="preserve">
-    <value>Save and continue</value>
-  </data>
   <data name="Supplier_WebsiteQuestion_Title" xml:space="preserve">
     <value>Do you have a website?</value>
   </data>
@@ -2067,9 +2058,6 @@
   </data>
   <data name="Supplier_WebsiteQuestion_WebsiteAddress" xml:space="preserve">
     <value>Website address</value>
-  </data>
-  <data name="Supplier_WebsiteQuestion_SaveAndContinue" xml:space="preserve">
-    <value>Save and continue</value>
   </data>
   <data name="Supplier_WebsiteQuestion_ErrorSelectOption" xml:space="preserve">
     <value>Select an option</value>
@@ -2128,9 +2116,6 @@
   <data name="Supplier_LegalFormCompanyActQuestion_Hint" xml:space="preserve">
     <value>As required by the Companies Act 2006.</value>
   </data>
-  <data name="Supplier_LegalFormCompanyActQuestion_SaveAndContinue" xml:space="preserve">
-    <value>Save and continue</value>
-  </data>
   <data name="Supplier_LegalFormFormationDate_Title" xml:space="preserve">
     <value>What is the equivalent date your company registered under the Companies Act 2006?</value>
   </data>
@@ -2179,17 +2164,8 @@
   <data name="Supplier_LegalFormLawRegistered_ErrorMessage" xml:space="preserve">
     <value>Please enter the law under which your organisation is registered</value>
   </data>
-  <data name="Supplier_LegalFormLawRegistered_SaveAndContinue" xml:space="preserve">
-    <value>Save and continue</value>
-  </data>
-  <data name="Supplier_LegalFormOtherOrganisation_SaveAndContinue" xml:space="preserve">
-    <value>Save and continue</value>
-  </data>
   <data name="Supplier_LegalFormOtherOrganisation_PleaseSelect" xml:space="preserve">
     <value>Please select your organisation's registered legal form</value>
-  </data>
-  <data name="Supplier_LegalFormSelectOrganisation_SaveAndContinue" xml:space="preserve">
-    <value>Save and continue</value>
   </data>
   <data name="Supplier_LegalFormSelectOrganisation_Hint" xml:space="preserve">
     <value>When it was set up and registered, what structure was used.</value>

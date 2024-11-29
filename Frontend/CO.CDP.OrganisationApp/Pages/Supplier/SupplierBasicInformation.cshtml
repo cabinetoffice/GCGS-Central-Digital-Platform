@@ -14,7 +14,7 @@
         return string.Format(StaticTextResource.Supplier_BasicInformation_Title, details.OrganisationName);
     }
 
-    string GetActionString(bool completed) => completed ? StaticTextResource.Supplier_Change : StaticTextResource.Supplier_Add;
+    string GetActionString(bool completed) => completed ? StaticTextResource.Global_Change : StaticTextResource.Supplier_Add;
 
     void RenderAddress(CO.CDP.Organisation.WebApiClient.Address address)
     {
@@ -73,7 +73,7 @@
                     <authorize scope="@OrgScopeRequirement.Editor">
                         <dd class="govuk-summary-list__actions">
                             <a class="govuk-link" href="individual-or-org">
-                                @StaticTextResource.Supplier_Change
+                                @StaticTextResource.Global_Change
                             </a>
                         </dd>
                     </authorize>
