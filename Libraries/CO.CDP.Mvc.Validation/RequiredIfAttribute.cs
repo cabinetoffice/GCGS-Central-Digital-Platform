@@ -25,17 +25,17 @@ public class RequiredIfAttribute(string dependentProperty, object? targetValue) 
 
 public class RequiredIfHasValueAttribute : ValidationAttribute
 {
-    private readonly string _organisationSchemeProperty;
+    private readonly string _dependentProperty;
 
-    public RequiredIfHasValueAttribute(string organisationSchemeProperty)
+    public RequiredIfHasValueAttribute(string dependentProperty)
     {
-        _organisationSchemeProperty = organisationSchemeProperty;
+        _dependentProperty = dependentProperty;
     }
 
     protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
     {
         var model = validationContext.ObjectInstance;
-        var dependentProperty = model.GetType().GetProperty(_organisationSchemeProperty);
+        var dependentProperty = model.GetType().GetProperty(_dependentProperty);
         var dependentPropertyValue = dependentProperty?.GetValue(model) as string;
 
         var errorMessage = ErrorMessageResolver.GetErrorMessage(ErrorMessage, ErrorMessageResourceName, ErrorMessageResourceType);
@@ -43,9 +43,9 @@ public class RequiredIfHasValueAttribute : ValidationAttribute
         if (value is Dictionary<string, string?> collection)
         {
             if (!string.IsNullOrEmpty(dependentPropertyValue) &&
-                collection.TryGetValue(dependentPropertyValue, out var registrationNumberValue))
+                collection.TryGetValue(dependentPropertyValue, out var dependentPropertyValueData))
             {
-                if (string.IsNullOrEmpty(registrationNumberValue))
+                if (string.IsNullOrEmpty(dependentPropertyValueData))
                 {                    
                     return new ValidationResult(errorMessage ?? $"{validationContext.DisplayName} is required");
                 }
