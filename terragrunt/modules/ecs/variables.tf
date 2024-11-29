@@ -69,15 +69,8 @@ variable "is_production" {
 }
 
 variable "onelogin_logout_notification_urls" {
-  description = <<EOT
-    JSON-like string representing a list of notification URLs.
-    This will be passed to the organisation-app as an environment variable.
-
-    Note:
-    - The value must be formatted as a JSON-like string (e.g., "[ \\\"url1\\\", \\\"url2\\\" ]").
-    - This format will result in [ "url1", "url2" ] as instructed, ensuring that the application can properly parse and utilise this value as a JSON array.
-    EOT
-  type        = string
+  description = "A list of URLs that the organisation app will call to notify other services of a logout event"
+  type        = list(string)
 }
 
 variable "pinned_service_version" {
