@@ -93,7 +93,7 @@ public class PdfGenerator(IHtmlLocalizer<FormsEngineResource> localizer) : IPdfG
             col.Item().Element(container => AddTwoColumnRow(container, StaticTextResource.PdfGenerator_BasicInformation_PostalAddress, FormatAddress(basicInformation.PostalAddress)));
 
         if (!string.IsNullOrEmpty(basicInformation.VatNumber))
-            col.Item().Element(container => AddTwoColumnRow(container, StaticTextResource.PdfGenerator_BasicInformation_VAT_Number, basicInformation.VatNumber));
+            col.Item().Element(container => AddTwoColumnRow(container, StaticTextResource.PdfGenerator_BasicInformation_VATNumber, basicInformation.VatNumber));
 
         if (!string.IsNullOrEmpty(basicInformation.WebsiteAddress))
             col.Item().Element(container => AddTwoColumnRow(container, StaticTextResource.PdfGenerator_BasicInformation_WebsiteAddress, basicInformation.WebsiteAddress));
@@ -165,7 +165,7 @@ public class PdfGenerator(IHtmlLocalizer<FormsEngineResource> localizer) : IPdfG
                     }
                     else
                     {
-                        col.Item().Element(container => AddTwoColumnRow(container, StaticTextResource.PdfGenerator_ConnectedPersonType, GetFriendlyPersonTypeText(person.PersonType)));
+                        col.Item().Element(container => AddTwoColumnRow(container, StaticTextResource.PdfGenerator_ConnectedPerson_Type, GetFriendlyPersonTypeText(person.PersonType)));
                     }
                 }
 
@@ -175,7 +175,7 @@ public class PdfGenerator(IHtmlLocalizer<FormsEngineResource> localizer) : IPdfG
                 }
                 else if (!string.IsNullOrEmpty(person.ToString()))
                 {
-                    col.Item().Element(container => AddTwoColumnRow(container, StaticTextResource.PdfGenerator_ConnectedPersonCategory, GetFriendlyCategoryText(person.Category)));
+                    col.Item().Element(container => AddTwoColumnRow(container, StaticTextResource.PdfGenerator_ConnectedPerson_Category, GetFriendlyCategoryText(person.Category)));
                 }
 
                 if (!string.IsNullOrEmpty(person.ResidentCountry))
