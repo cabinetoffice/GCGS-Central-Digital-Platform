@@ -36,8 +36,8 @@
                         @if (countryHasError)
                         {
                             <p id="country-error" class="govuk-error-message">
-                                <span class="govuk-visually-hidden">Error:</span>
-                                @ModelState[nameof(Model.Country)]!.Errors[0].ErrorMessage
+                                <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span>
+                                @Html.ValidationMessageFor(m => m.Country)
                             </p>
                         }
                         <select asp-for="Country" class="govuk-select @(countryHasError ? "govuk-select--error" : "")" aria-describedby="country-error">
