@@ -23,8 +23,7 @@ public class LogoutManagerTests
         var configuration = new ConfigurationBuilder()
             .AddInMemoryCollection([
                 new("SessionTimeoutInMinutes", "30"),
-                new("OneLoginLogoutNotificationUrls:0", "http://example1.com/logout"),
-                new("OneLoginLogoutNotificationUrls:1", "http://example2.com/logout")
+                new("OneLogin:ForwardLogoutNotificationUrls", "http://example1.com/logout,http://example2.com/logout"),
                 ])
             .Build();
 
