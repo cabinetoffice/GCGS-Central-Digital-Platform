@@ -78,6 +78,26 @@ resource "aws_security_group_rule" "ecs_service_to_postregs" {
   type                     = "egress"
 }
 
+resource "aws_security_group_rule" "redis_from_ecs_service" {
+  description              = "From ECS Service"
+  from_port                = var.redis_port
+  protocol                 = "TCP"
+  security_group_id        = var.redis_sg_id
+  source_security_group_id = var.ecs_sg_id
+  to_port                  = var.redis_port
+  type                     = "ingress"
+}
+
+resource "aws_security_group_rule" "ecs_service_to_redis" {
+  description              = "To RDS"
+  from_port                = var.redis_port
+  protocol                 = "TCP"
+  security_group_id        = var.ecs_sg_id
+  source_security_group_id = var.redis_sg_id
+  to_port                  = var.redis_port
+  type                     = "egress"
+}
+
 resource "aws_security_group_rule" "ecs_service_to_vpce_ecr_api" {
   description              = "To ECR API VPCE"
   from_port                = 443
