@@ -9,7 +9,7 @@
 }
 
 @section BeforeContent {
-    <a href="/organisation/@Model.Id/supplier-information/basic-information" class="govuk-back-link">@StaticTextResource.Supplier_Back</a>
+    <a href="/organisation/@Model.Id/supplier-information/basic-information" class="govuk-back-link">@StaticTextResource.Global_Back</a>
 }
 
     <div class="govuk-grid-row">
@@ -39,7 +39,6 @@
                                         @StaticTextResource.Supplier_VatQuestion_VatNumberLabel
                                     </label>
                                     <div id="vat-registration-number-hint" class="govuk-hint">
-                                        <!--This is 9 numbers, sometimes with 'GB' at the start, for example 123456789 or GB123456789.-->
                                         @StaticTextResource.Supplier_VatQuestion_VatNumberHint
                                     </div>
 

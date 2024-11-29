@@ -2002,9 +2002,6 @@
   <data name="Supplier_EmailAddress_SaveAndContinue" xml:space="preserve">
     <value>Save and continue</value>
   </data>
-  <data name="Supplier_Back" xml:space="preserve">
-    <value>Back</value>
-  </data>
   <data name="Supplier_BasicInformation_Title" xml:space="preserve">
     <value>Manage {0}'s basic information</value>
   </data>
@@ -2139,9 +2136,6 @@
   </data>
   <data name="Supplier_LegalFormFormationDate_Hint" xml:space="preserve">
     <value>For example, 27 3 2007.</value>
-  </data>
-  <data name="Supplier_LegalFormFormationDate_Day" xml:space="preserve">
-    <value>Day</value>
   </data>
   <data name="Supplier_LegalFormFormationDate_Month" xml:space="preserve">
     <value>Month</value>

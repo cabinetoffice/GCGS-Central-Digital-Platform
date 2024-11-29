@@ -19,18 +19,18 @@ public class LegalFormFormationDateModel(
     public Guid Id { get; set; }
 
     [BindProperty]
-    [Required(ErrorMessage = nameof(@StaticTextResource.Supplier_LegalFormFormationDate_DayErrorMessage))]
-    [RegularExpression(RegExPatterns.Day, ErrorMessage = nameof(@StaticTextResource.Supplier_LegalFormFormationDate_DayInvalidErrorMessage))]
+    [Required(ErrorMessageResourceName = nameof(@StaticTextResource.Supplier_LegalFormFormationDate_DayErrorMessage), ErrorMessageResourceType = typeof(StaticTextResource))]
+    [RegularExpression(RegExPatterns.Day, ErrorMessageResourceName = nameof(@StaticTextResource.Supplier_LegalFormFormationDate_DayInvalidErrorMessage), ErrorMessageResourceType = typeof(StaticTextResource))]
     public string? Day { get; set; }
 
     [BindProperty]
-    [Required(ErrorMessage = nameof(@StaticTextResource.Supplier_LegalFormFormationDate_MonthErrorMessage))]
-    [RegularExpression(RegExPatterns.Month, ErrorMessage = nameof(@StaticTextResource.Supplier_LegalFormFormationDate_MonthInvalidErrorMessage))]
+    [Required(ErrorMessageResourceName = nameof(@StaticTextResource.Supplier_LegalFormFormationDate_MonthErrorMessage), ErrorMessageResourceType = typeof(StaticTextResource))]
+    [RegularExpression(RegExPatterns.Month, ErrorMessageResourceName = nameof(@StaticTextResource.Supplier_LegalFormFormationDate_MonthInvalidErrorMessage), ErrorMessageResourceType = typeof(StaticTextResource))]
     public string? Month { get; set; }
 
     [BindProperty]
-    [Required(ErrorMessage = nameof(@StaticTextResource.Supplier_LegalFormFormationDate_YearErrorMessage))]
-    [RegularExpression(RegExPatterns.Year, ErrorMessage = nameof(@StaticTextResource.Supplier_LegalFormFormationDate_YearInvalidErrorMessage))]
+    [Required(ErrorMessageResourceName = nameof(@StaticTextResource.Supplier_LegalFormFormationDate_YearErrorMessage), ErrorMessageResourceType = typeof(StaticTextResource))]
+    [RegularExpression(RegExPatterns.Year, ErrorMessageResourceName = nameof(@StaticTextResource.Supplier_LegalFormFormationDate_YearInvalidErrorMessage), ErrorMessageResourceType = typeof(StaticTextResource))]
     public string? Year { get; set; }
 
     [BindProperty]

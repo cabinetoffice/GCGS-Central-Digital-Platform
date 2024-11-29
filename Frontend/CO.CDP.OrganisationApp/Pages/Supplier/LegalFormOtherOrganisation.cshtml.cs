@@ -14,7 +14,7 @@ public class LegalFormOtherOrganisationModel(
         IOrganisationClient organisationClient) : PageModel
 {
     [BindProperty]
-    [Required(ErrorMessage = nameof(StaticTextResource.Supplier_LegalFormOtherOrganisation_PleaseSelect), ErrorMessageResourceType = typeof(StaticTextResource))]
+    [Required(ErrorMessageResourceName = nameof(StaticTextResource.Supplier_LegalFormOtherOrganisation_PleaseSelect), ErrorMessageResourceType = typeof(StaticTextResource))]
     public string? OtherOrganisation { get; set; }
 
 

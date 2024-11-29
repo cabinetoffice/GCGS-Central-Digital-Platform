@@ -18,11 +18,11 @@ public class SupplierVatQuestionModel(IOrganisationClient organisationClient,
     const string VatSchemeName = "VAT";
 
     [BindProperty]
-    [Required(ErrorMessage = nameof(StaticTextResource.Global_SelectAnOption), ErrorMessageResourceType = typeof(StaticTextResource))]
+    [Required(ErrorMessageResourceName = nameof(StaticTextResource.Global_SelectAnOption), ErrorMessageResourceType = typeof(StaticTextResource))]
     public bool? HasVatNumber { get; set; }
 
     [BindProperty]
-    [RequiredIf(nameof(HasVatNumber), true, ErrorMessage = nameof(StaticTextResource.Supplier_VatNumber_Error), ErrorMessageResourceType = typeof(StaticTextResource))]
+    [RequiredIf(nameof(HasVatNumber), true, ErrorMessageResourceName = nameof(StaticTextResource.Supplier_VatNumber_Error), ErrorMessageResourceType = typeof(StaticTextResource))]
     public string? VatNumber { get; set; }
 
     [BindProperty(SupportsGet = true)]
