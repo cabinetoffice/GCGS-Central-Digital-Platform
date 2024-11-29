@@ -34,8 +34,8 @@ public class OneLoginAuthority(
                 IssuerSigningKeys = oneLoginConfig.SigningKeys,
 
                 // Uncomment below line to override signingkey validation for testing purpose only
-                RequireSignedTokens = false,
-                SignatureValidator = (string token, TokenValidationParameters parameters) => new JwtSecurityToken(token)
+                //RequireSignedTokens = false,
+                //SignatureValidator = (string token, TokenValidationParameters parameters) => new JwtSecurityToken(token)
             };
 
             var tokenHandler = new JwtSecurityTokenHandler();
