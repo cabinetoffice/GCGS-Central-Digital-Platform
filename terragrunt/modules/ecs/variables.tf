@@ -128,6 +128,27 @@ variable "queue_organisation_queue_url" {
   type        = string
 }
 
+variable "redis_auth_token_arn" {
+  description = "The ARN of the Secrets Manager secret storing the Redis authentication token."
+  type        = string
+}
+
+variable "redis_port" {
+  description = "The port number used to connect to the ElastiCache Redis cluster."
+  type        = number
+}
+
+variable "redis_primary_endpoint" {
+  description = "The primary endpoint address of the ElastiCache Redis replication group."
+  type        = string
+}
+
+variable "redis_sg_id" {
+  description = "ElastiCache Redis security group ID"
+  type        = string
+}
+
+
 variable "role_cloudwatch_events_name" {
   description = "Name of the IAM role used by CloudWatch Events"
   type        = string
