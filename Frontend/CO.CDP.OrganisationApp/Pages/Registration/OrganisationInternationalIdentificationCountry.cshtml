@@ -41,7 +41,7 @@
                             </p>
                         }
                         <select asp-for="Country" class="govuk-select @(countryHasError ? "govuk-select--error" : "")" aria-describedby="country-error">
-                            <option value="">Please select</option>
+                            <option value="">@StaticTextResource.Global_PleaseSelect</option>
                             @foreach (var cnt in Constants.Country.NonUKCountries)
                             {
                                 <option value="@cnt.Key">@cnt.Value</option>

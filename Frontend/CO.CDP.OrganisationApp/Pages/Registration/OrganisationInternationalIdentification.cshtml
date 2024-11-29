@@ -35,7 +35,7 @@
                     </legend>
 
                     <div id="organisationidentification-hint" class="govuk-hint">
-                        Select one then enter the registration number
+                        @StaticTextResource.OrganisationRegistration_InternationalIdentifier_Select_Indentifier
                     </div>
 
                     <div class="govuk-radios" data-module="govuk-radios">
@@ -64,8 +64,8 @@
                                         @if (hasError)
                                         {
                                             <span id="RegistrationNumber-error" class="govuk-error-message">
-                                                <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span>
-                                                @ModelState[nameof(Model.RegistrationNumbers)]!.Errors[0].ErrorMessage
+                                                <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span>                                                
+                                                @Html.ValidationMessageFor(m => m.RegistrationNumbers)
                                             </span>
                                         }
                                         <input asp-for="RegistrationNumbers[@choice.Scheme]"
@@ -102,8 +102,8 @@
                                 @if (ModelState[nameof(Model.RegistrationNumbers)]?.Errors?.Any() ?? false)
                                 {
                                     <span id="RegistrationNumber-error" class="govuk-error-message">
-                                        <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span>
-                                        @ModelState[nameof(Model.RegistrationNumbers)]!.Errors[0].ErrorMessage
+                                        <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span>                                        
+                                        @Html.ValidationMessageFor(m => m.RegistrationNumbers)
                                     </span>
                                 }
 

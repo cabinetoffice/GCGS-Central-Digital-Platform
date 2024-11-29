@@ -27,17 +27,6 @@
       <ProjectReference Include="..\..\Libraries\CO.CDP.Mvc.Validation\CO.CDP.Mvc.Validation.csproj" />
       <ProjectReference Include="..\..\Libraries\CO.CDP.Configuration\CO.CDP.Configuration.csproj" />
       <ProjectReference Include="..\..\Services\CO.CDP.Localization\CO.CDP.Localization.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Pages\Forms\InternationalIdentifier\" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Content Update="Pages\Registration\OrganisationInternationalIdentificationCountry.cshtml">
-        <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-      </Content>
-    </ItemGroup>
+    </ItemGroup>  
 
 </Project>

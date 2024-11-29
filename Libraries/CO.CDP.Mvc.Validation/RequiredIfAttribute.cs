@@ -35,15 +35,15 @@ public class RequiredIfHasValueAttribute : ValidationAttribute
     protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
     {
         var model = validationContext.ObjectInstance;
-        var organisationSchemeProperty = model.GetType().GetProperty(_organisationSchemeProperty);
-        var organisationSchemeValue = organisationSchemeProperty?.GetValue(model) as string;
+        var dependentProperty = model.GetType().GetProperty(_organisationSchemeProperty);
+        var dependentPropertyValue = dependentProperty?.GetValue(model) as string;
 
         var errorMessage = ErrorMessageResolver.GetErrorMessage(ErrorMessage, ErrorMessageResourceName, ErrorMessageResourceType);
 
-        if (value is Dictionary<string, string?> registrationNumbers)
+        if (value is Dictionary<string, string?> collection)
         {
-            if (!string.IsNullOrEmpty(organisationSchemeValue) &&
-                registrationNumbers.TryGetValue(organisationSchemeValue, out var registrationNumberValue))
+            if (!string.IsNullOrEmpty(dependentPropertyValue) &&
+                collection.TryGetValue(dependentPropertyValue, out var registrationNumberValue))
             {
                 if (string.IsNullOrEmpty(registrationNumberValue))
                 {                    
@@ -51,7 +51,7 @@ public class RequiredIfHasValueAttribute : ValidationAttribute
                 }
             }
         }
-        else if (!string.IsNullOrEmpty(organisationSchemeValue) && value == null)
+        else if (!string.IsNullOrEmpty(dependentPropertyValue) && value == null)
         {
             return new ValidationResult(errorMessage ?? $"{validationContext.DisplayName} is required");
         }

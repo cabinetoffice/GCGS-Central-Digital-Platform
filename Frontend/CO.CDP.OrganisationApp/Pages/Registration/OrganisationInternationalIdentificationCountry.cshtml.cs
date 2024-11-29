@@ -13,9 +13,9 @@ public class OrganisationInternationalIdentificationCountryModel(ISession sessio
     public override string CurrentPage => OrganisationInternationalIdentificationCountryPage;
 
     [BindProperty]
-
-    [DisplayName(nameof(StaticTextResource.Organisation_International_Country_Heading))]
-    [Required(ErrorMessageResourceName = nameof(StaticTextResource.Organisation_International_Country_Required_ErrorMessage), ErrorMessageResourceType = typeof(StaticTextResource))]    
+    
+    [DisplayName(nameof(StaticTextResource.OrganisationRegistration_InternationalIdentifier_Country_Heading))]
+    [Required(ErrorMessageResourceName = nameof(StaticTextResource.OrganisationRegistration_InternationalIdentifier_Country_Required_ErrorMessage), ErrorMessageResourceType = typeof(StaticTextResource))]    
     public string? Country { get; set; } = string.Empty;
 
     public void OnGet()
