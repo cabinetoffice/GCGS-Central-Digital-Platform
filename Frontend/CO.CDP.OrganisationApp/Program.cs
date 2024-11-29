@@ -61,14 +61,22 @@ if (builder.Environment.IsDevelopment())
 
 builder.ConfigureForwardedHeaders();
 
-builder.Services.AddStackExchangeRedisCache(options =>
+// @todo Remove this IF once ElastiCache is configured and working on AWS
+if (builder.Configuration.GetValue<bool>("Sessions:EnableSharedSessions"))
 {
-    var redisHost = builder.Configuration.GetValue<string>("Aws:ElastiCache:Hostname");
-    var redisPort = builder.Configuration.GetValue<string>("Aws:ElastiCache:Port");
+    builder.Services.AddStackExchangeRedisCache(options =>
+    {
+        var redisHost = builder.Configuration.GetValue<string>("Aws:ElastiCache:Hostname");
+        var redisPort = builder.Configuration.GetValue<string>("Aws:ElastiCache:Port");
 
-    options.Configuration = $"{redisHost}:{redisPort}";
-    options.InstanceName = "Sessions";
-});
+        options.Configuration = $"{redisHost}:{redisPort}";
+        options.InstanceName = "Sessions";
+    });
+}
+else
+{
+    builder.Services.AddDistributedMemoryCache();
+}
 
 var sessionTimeoutInMinutes = builder.Configuration.GetValue<double>("SessionTimeoutInMinutes");
 
