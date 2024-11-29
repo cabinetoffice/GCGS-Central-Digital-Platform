@@ -4,7 +4,7 @@
 @using CO.CDP.Localization
 
 @{
-    ViewData["Title"] = @StaticTextResource.OrganisationRegistration_InternationalCountry_Heading;
+    ViewData["Title"] = @StaticTextResource.OrganisationRegistration_InternationalIdentifier_Country_Heading;
 
     var countryHasError = ModelState[nameof(Model.Country)]?.Errors?.Any() ?? false;
     var backLink = $"{RegistrationStepModel.OrganisationIdentifierPage}{(Request.Query.ContainsKey("frm-summary") ? "?frm-summary" : "")}";

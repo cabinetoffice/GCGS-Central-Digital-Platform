@@ -2011,17 +2011,14 @@
   <data name="Exclusions_AddExclusionDeclaration_DiscretionaryExclusionsLinkText" xml:space="preserve">
     <value>These exclusions are defined in &lt;a href="{0}" target="_blank"&gt;schedule 7 of the Procurement Act 2023 (opens in new tab)&lt;/a&gt;.</value>
   </data>
-  <data name="OrganisationRegistration_InternationalCountry_Heading" xml:space="preserve">
-    <value>Select which country your organisation is registered</value>
-  </data>
   <data name="OrganisationRegistration_InternationalIdentifier_Country_Heading" xml:space="preserve">
-    <value>Select which country your organisation is registered</value>
+    <value>Select where your organisation is registered</value>
   </data>
   <data name="OrganisationRegistration_InternationalIdentifier_Country_Required_ErrorMessage" xml:space="preserve">
     <value>Select a country</value>
   </data>
   <data name="OrganisationRegistration_InternationalIdentifier_Heading" xml:space="preserve">
-    <value>Is your organisation on any of these registries?</value>
+    <value>Select your organisation's registry</value>
   </data>
   <data name="OrganisationRegistration_InternationalIdentifier_Type_Heading" xml:space="preserve">
     <value>Organisation Type</value>
