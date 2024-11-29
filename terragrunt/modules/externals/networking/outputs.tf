@@ -1,7 +1,7 @@
 
 output "private_subnet_arns" {
   description = "VPC private subnet ARNs"
-  value       = aws_subnet.private.*.id
+  value       = aws_subnet.private.*.arn
 }
 
 output "private_subnet_ids" {
