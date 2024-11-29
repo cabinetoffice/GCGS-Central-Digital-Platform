@@ -156,9 +156,16 @@
                             @StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_CompaniesHouseRegistered
                         </dt>
                         <dd class="govuk-summary-list__value">
-                            @Html.Raw((details.HasCompaniesHouseNumber == true ?
-                                        @StaticTextResource.Global_Yes + $"<br>" + string.Format(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_CompanyHouseNumber, details.CompaniesHouseNumber)
-                                        : @StaticTextResource.Global_No))
+                            @if (details.HasCompaniesHouseNumber == true)
+                            {
+                                @StaticTextResource.Global_Yes
+                                <br />
+                                @string.Format(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_CompanyHouseNumber, details.CompaniesHouseNumber)
+                            }
+                            else
+                            {
+                                @StaticTextResource.Global_No
+                            }
                         </dd>
                         <dd class="govuk-summary-list__actions">
                             <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/connected-person/company-question/@Model.ConnectedEntityId?frm-chk-answer=true">
@@ -175,7 +182,16 @@
                             @StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_OverseasEquivalent
                         </dt>
                         <dd class="govuk-summary-list__value">
-                            @Html.Raw(details.HasOverseasCompaniesHouseNumber == true ? @StaticTextResource.Global_Yes + $"<br>{details.OverseasCompaniesHouseNumber}" : @StaticTextResource.Global_No)
+                            @if (details.HasOverseasCompaniesHouseNumber == true)
+                            {
+                                @StaticTextResource.Global_Yes
+                                <br />
+                                @details.OverseasCompaniesHouseNumber
+                            }
+                            else
+                            {
+                                @StaticTextResource.Global_No
+                            }
                         </dd>
                         <dd class="govuk-summary-list__actions">
                             <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/connected-person/overseas-company-question/@Model.ConnectedEntityId?frm-chk-answer=true">
@@ -192,7 +208,12 @@
                             @StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_ControlConditions
                         </dt>
                         <dd class="govuk-summary-list__value">
-                            @Html.Raw(string.Join("", details.ControlConditions.Select(x => $"<li>{x.Description()}</li>")))
+                            <ul>
+                                @foreach (var condition in details.ControlConditions)
+                                {
+                                    <li>@condition.Description()</li>
+                                }
+                            </ul>
                         </dd>
                         <dd class="govuk-summary-list__actions">
                             <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/connected-person/nature-of-control/@Model.ConnectedEntityId?frm-chk-answer=true">
@@ -209,9 +230,16 @@
                             @StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_RegisteredDate
                         </dt>
                         <dd class="govuk-summary-list__value">
-                            @Html.Raw(details.RegistrationDate.HasValue == true
-                                        ? @StaticTextResource.Global_Yes + $"<br>" + string.Format(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_OnDate, details.RegistrationDate.Value.ToFormattedString())
-                                        : @StaticTextResource.Global_No)
+                            @if (details.RegistrationDate.HasValue)
+                            {
+                                @StaticTextResource.Global_Yes
+                                <br />
+                                @string.Format(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_OnDate, details.RegistrationDate.Value.ToFormattedString())
+                            }
+                            else
+                            {
+                                @StaticTextResource.Global_No
+                            }
                         </dd>
                         <dd class="govuk-summary-list__actions">
                             <a class="govuk-link" href="@registrationLink">
