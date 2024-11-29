@@ -37,28 +37,34 @@ public class LogoutManager(
 
     private async Task LogoutNotificationCallback(string logout_token)
     {
-        var callbackUrls = config.GetSection("OneLoginLogoutNotificationUrls").Get<string[]>();
+        var callbackUrls = config.GetValue<string>("OneLogin:ForwardLogoutNotificationUrls");
 
         if (callbackUrls != null)
         {
             var httpClient = httpClientFactory.CreateClient(LogoutCallbackHttpClientName);
 
-            var tasks = callbackUrls.Select(async callbackUrl =>
-            {
-                try
+            var tasks = callbackUrls
+                .Split(",", StringSplitOptions.RemoveEmptyEntries)
+                .Select(async callbackUrl =>
                 {
-                    var response = await httpClient.PostAsync(callbackUrl,
-                        new FormUrlEncodedContent([new("logout_token", logout_token)]));
+                    try
+                    {
+                        var response = await httpClient.PostAsync(callbackUrl,
+                            new FormUrlEncodedContent([new("logout_token", logout_token)]));
 
-                    logger.LogInformation("Logout callback to {Site}, Status: {Token}", callbackUrl, response.StatusCode);
-                }
-                catch (Exception ex)
-                {
-                    logger.LogInformation(ex, "Logout callback to {Site} failed", callbackUrl);
-                }
-            });
+                        logger.LogInformation("Logout callback to {Site}, Status: {StatusCode}", callbackUrl, response.StatusCode);
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.LogInformation(ex, "Logout callback to {Site} failed", callbackUrl);
+                    }
+                });
 
             await Task.WhenAll(tasks);
+        }
+        else
+        {
+            logger.LogInformation("Forward logout notification urls configuration not available.");
         }
     }
 
