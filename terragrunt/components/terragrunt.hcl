@@ -4,13 +4,12 @@ locals {
     for name, env in local.environments : name => env.account_id
   }
 
-  cidr_b_production   = 1
-  cidr_b_staging      = 2
-  cidr_b_development  = 3
-  cidr_b_integration  = 4
-  cidr_b_orchestrator = 5
+  cidr_b_production           = 1
+  cidr_b_staging              = 2
+  cidr_b_development          = 3
+  cidr_b_integration          = 4
+  cidr_b_orchestrator         = 5
   cidr_b_external_integration = 6
-
 
   environment = get_env("TG_ENVIRONMENT", "development")
 
@@ -38,13 +37,14 @@ locals {
       externals_private_subnets = "integration account feature" # To be deprecated after FTS Migration
     }
     development = {
-      cidr_block             = "10.${local.cidr_b_development}.0.0/16"
-      account_id             = 471112892058
-      canary_schedule_expression = "rate(30 minutes)" # "cron(15 7,11,15 ? * MON-FRI)" # UTC+0
-      fts_azure_frontdoor    = null
-      name                   = "dev"
-      pinned_service_version = null
-      postgres_instance_type = "db.t4g.micro"
+      cidr_block                        = "10.${local.cidr_b_development}.0.0/16"
+      account_id                        = 471112892058
+      canary_schedule_expression        = "rate(30 minutes)" # "cron(15 7,11,15 ? * MON-FRI)" # UTC+0
+      fts_azure_frontdoor               = null
+      name                              = "dev"
+      onelogin_logout_notification_urls = ["https://test-findtender.nqc.com/auth/backchannellogout"]
+      pinned_service_version            = null
+      postgres_instance_type            = "db.t4g.micro"
       private_subnets = [
         "10.${local.cidr_b_development}.101.0/24",
         "10.${local.cidr_b_development}.102.0/24",
@@ -61,13 +61,14 @@ locals {
       externals_private_subnets = "integration account feature" # To be deprecated after FTS Migration
     }
     staging = {
-      cidr_block                 = "10.${local.cidr_b_staging}.0.0/16"
-      account_id                 = 905418042182
-      canary_schedule_expression = "rate(30 minutes)"
-      fts_azure_frontdoor        = null
-      name                       = "staging"
-      pinned_service_version     = "1.0.7"
-      postgres_instance_type     = "db.t4g.micro"
+      cidr_block                        = "10.${local.cidr_b_staging}.0.0/16"
+      account_id                        = 905418042182
+      canary_schedule_expression        = "rate(30 minutes)"
+      fts_azure_frontdoor               = null
+      name                              = "staging"
+      onelogin_logout_notification_urls = ["https://sirsi-integration-findtender.nqc.com/auth/backchannellogout"]
+      pinned_service_version            = "1.0.10"
+      postgres_instance_type            = "db.t4g.micro"
       private_subnets = [
         "10.${local.cidr_b_staging}.101.0/24",
         "10.${local.cidr_b_staging}.102.0/24",
@@ -84,13 +85,14 @@ locals {
       externals_private_subnets = "integration account feature" # To be deprecated after FTS Migration
     }
     integration = {
-      cidr_block                 = "10.${local.cidr_b_integration}.0.0/16"
-      account_id                 = 767397666448
-      canary_schedule_expression = "rate(30 minutes)"
-      fts_azure_frontdoor        = null
-      name                       = "integration"
-      pinned_service_version     = "1.0.6"
-      postgres_instance_type     = "db.t4g.micro"
+      cidr_block                        = "10.${local.cidr_b_integration}.0.0/16"
+      account_id                        = 767397666448
+      canary_schedule_expression        = "rate(30 minutes)"
+      fts_azure_frontdoor               = null
+      name                              = "integration"
+      onelogin_logout_notification_urls = ["https://test-findtender.nqc.com/auth/backchannellogout"]
+      pinned_service_version            = "1.0.9"
+      postgres_instance_type            = "db.t4g.micro"
       private_subnets = [
         "10.${local.cidr_b_integration}.101.0/24",
         "10.${local.cidr_b_integration}.102.0/24",
@@ -111,13 +113,14 @@ locals {
       ]
     }
     production = {
-      cidr_block                 = "10.${local.cidr_b_production}.0.0/16"
-      account_id                 = 471112843276
-      canary_schedule_expression = "rate(15 minutes)"
-      fts_azure_frontdoor        = "nqc-front-door-uksouth.azurefd.net"
-      name                       = "production"
-      pinned_service_version     = "1.0.6"
-      postgres_instance_type     = "db.t4g.micro"
+      cidr_block                        = "10.${local.cidr_b_production}.0.0/16"
+      account_id                        = 471112843276
+      canary_schedule_expression        = "rate(15 minutes)"
+      fts_azure_frontdoor               = "nqc-front-door-uksouth.azurefd.net"
+      name                              = "production"
+      onelogin_logout_notification_urls = ["https://www.private-beta.find-tender.service.gov.uk/auth/backchannellogout"]
+      pinned_service_version            = "1.0.9"
+      postgres_instance_type            = "db.t4g.micro"
       private_subnets = [
         "10.${local.cidr_b_production}.101.0/24",
         "10.${local.cidr_b_production}.102.0/24",
@@ -135,9 +138,9 @@ locals {
     }
   }
 
-  fts_azure_frontdoor = try(local.environments[local.environment].fts_azure_frontdoor, null)
-
-  pinned_service_version = try(local.environments[local.environment].pinned_service_version, null)
+  fts_azure_frontdoor               = try(local.environments[local.environment].fts_azure_frontdoor, null)
+  onelogin_logout_notification_urls = try(local.environments[local.environment].onelogin_logout_notification_urls, null)
+  pinned_service_version            = try(local.environments[local.environment].pinned_service_version, null)
 
   product = {
     name               = "CDP SIRSI"

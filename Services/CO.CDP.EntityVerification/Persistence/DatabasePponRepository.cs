@@ -16,6 +16,7 @@ public class DatabasePponRepository(EntityVerificationContext context) : IPponRe
         }
         catch (DbUpdateException cause)
         {
+            context.Remove(identifier);
             HandleDbUpdateException(identifier, cause);
         }
     }
@@ -49,6 +50,11 @@ public class DatabasePponRepository(EntityVerificationContext context) : IPponRe
         return ppons.FirstOrDefault(p =>
                 p.Identifiers.Any(i => i.IdentifierId == id && i.Scheme == scheme) ||
                 (scheme == IdentifierSchemes.Ppon && p.IdentifierId == id));
+    }
+
+    public async Task<IEnumerable<IdentifierRegistries>> GetIdentifierRegistriesAsync(string countryCode)
+    {
+        return await context.IdentifierRegistries.Where(q => q.CountryCode.ToUpper() == countryCode.ToUpper()).ToListAsync();
     }
 
     private static void HandleDbUpdateException(Ppon identifier, DbUpdateException cause)

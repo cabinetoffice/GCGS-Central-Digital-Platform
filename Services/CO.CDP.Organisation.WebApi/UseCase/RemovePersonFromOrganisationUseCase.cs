@@ -3,27 +3,22 @@ using CO.CDP.OrganisationInformation.Persistence;
 
 namespace CO.CDP.Organisation.WebApi.UseCase;
 
-public class RemovePersonFromOrganisationUseCase(IOrganisationRepository organisationRepository, IPersonRepository personRepository) : IUseCase<(Guid organisationId, RemovePersonFromOrganisation removePersonFromOrganisation), bool>
+public class RemovePersonFromOrganisationUseCase(IOrganisationRepository organisationRepository)
+    : IUseCase<(Guid organisationId, RemovePersonFromOrganisation removePersonFromOrganisation), bool>
 {
     public async Task<bool> Execute((Guid organisationId, RemovePersonFromOrganisation removePersonFromOrganisation) command)
     {
-        var organisation = await organisationRepository.Find(command.organisationId)
+        var organisation = await organisationRepository.FindIncludingPersons(command.organisationId)
             ?? throw new UnknownOrganisationException($"Unknown organisation {command.organisationId}.");
 
-        var persons = await personRepository.FindByOrganisation(command.organisationId);
+        var organisationPerson = organisation.OrganisationPersons.FindLast(op => op.Person.Guid == command.removePersonFromOrganisation.PersonId);
+        var personWithTenant = organisation.Tenant.Persons.FindLast(tp => tp.Guid == command.removePersonFromOrganisation.PersonId);
 
-        var person = persons.FirstOrDefault(p => p.Guid == command.removePersonFromOrganisation.PersonId);
-
-        if (person == null) return await Task.FromResult(false);
-
-        var organisationPerson = organisation.OrganisationPersons.FindLast(op => op.PersonId == person.Id);
-        var personWithTenant = await personRepository.FindPersonWithTenant(person.Guid);
-
-        if (organisationPerson == null && personWithTenant == null) return await Task.FromResult(false);
+        if (organisationPerson == null && personWithTenant == null) return false;
 
         if (personWithTenant != null)
         {
-            organisation.Tenant.Persons.Remove(person);
+            organisation.Tenant.Persons.Remove(personWithTenant);
         }
 
         if (organisationPerson != null)
@@ -33,6 +28,6 @@ public class RemovePersonFromOrganisationUseCase(IOrganisationRepository organis
 
         organisationRepository.Save(organisation);
 
-        return await Task.FromResult(true);
+        return true;
     }
 }

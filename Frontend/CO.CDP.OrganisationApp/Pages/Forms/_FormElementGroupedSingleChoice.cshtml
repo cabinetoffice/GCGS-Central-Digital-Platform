@@ -1,4 +1,5 @@
 @model FormElementGroupedSingleChoiceModel
+@using CO.CDP.Localization
 
 @{
     var hasError = ((TagBuilder)Html.ValidationMessageFor(m => m.SelectedOption)).HasInnerHtml;
@@ -40,7 +41,7 @@
         @if (hasError)
         {
             <p class="govuk-error-message" id="SelectedOption-error">
-                <span class="govuk-visually-hidden">Error:</span>
+                <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span>
                 @Html.ValidationMessageFor(m => m.SelectedOption)
             </p>
         }

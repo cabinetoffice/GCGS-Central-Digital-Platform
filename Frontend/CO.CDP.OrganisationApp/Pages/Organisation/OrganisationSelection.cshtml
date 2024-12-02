@@ -1,12 +1,15 @@
 @page "/organisation-selection"
 @using CO.CDP.Organisation.WebApiClient
 @using CO.CDP.OrganisationApp.WebApiClients
+@using CO.CDP.Localization
+@using Microsoft.AspNetCore.Mvc.Localization
+
 @inject Microsoft.Extensions.Configuration.IConfiguration config
 
 @model OrganisationSelectionModel
 
 @{
-    ViewData["Title"] = "My account";
+    ViewData["Title"] = StaticTextResource.Organisation_MyAccount;
 }
 
     <div class="govuk-grid-row">
@@ -14,12 +17,12 @@
             <h1 class="govuk-heading-l">@ViewData["Title"]</h1>
 
             <section>
-                <h2 class="govuk-heading-m">Sign in details</h2>
+                <h2 class="govuk-heading-m">@StaticTextResource.Organisation_SignInDetails</h2>
 
                 <dl class="govuk-summary-list">
                     <div class="govuk-summary-list__row">
                         <dt class="govuk-summary-list__key">
-                            Email address:
+                            @StaticTextResource.Organisation_EmailAddress
                         </dt>
                         <dd class="govuk-summary-list__value">
                             @Model.UserDetails.Email
@@ -31,7 +34,7 @@
                     var oneLoginAccountUrl = config["OneLogin:AccountUrl"];
                 }
                 <p class="govuk-body">
-                    You can <a class="govuk-link govuk-link--no-visited-state" href="@oneLoginAccountUrl/security" target="_blank">change your sign in details in your GOV.UK One Login</a>.
+                    @Html.Raw(string.Format(@StaticTextResource.Organisation_ChangeSignInDetails, oneLoginAccountUrl))
                 </p>
 
             </section>
@@ -42,10 +45,10 @@
                 @if (Model.UserOrganisations.Any())
                 {
                     <table class="govuk-table">
-                        <caption class="govuk-table__caption govuk-table__caption--m">My organisations</caption>
+                        <caption class="govuk-table__caption govuk-table__caption--m">@StaticTextResource.Organisation_MyOrganisations</caption>
                         <thead class="govuk-table__head">
                             <tr class="govuk-table__row">
-                                <th scope="col" colspan="2" class="govuk-table__header">Organisation name</th>
+                                <th scope="col" colspan="2" class="govuk-table__header">@StaticTextResource.Organisation_OrganisationName</th>
                             </tr>
                         </thead>
                         <tbody class="govuk-table__body">
@@ -61,13 +64,13 @@
                                                     if (review.Status == ReviewStatus.Rejected)
                                                     {
                                                         <strong class="govuk-tag govuk-tag--red">
-                                                            Not approved
+                                                            @StaticTextResource.Organisation_NotApproved
                                                         </strong>
                                                     }
                                                     else if (review.Status == ReviewStatus.Pending)
                                                     {
                                                         <strong class="govuk-tag govuk-tag--blue">
-                                                            Pending approval
+                                                            @StaticTextResource.Organisation_PendingApproval
                                                         </strong>
                                                     }
                                                 }
@@ -85,30 +88,30 @@
                     </table>
 
                     <a asp-page="/Registration/OrganisationType" class="govuk-body govuk-link govuk-link--no-visited-state">
-                        Add another organisation
+                        @StaticTextResource.Organisation_AddAnotherOrganisation
                     </a>
                 }
                 else
                 {
-                    <h2 class="govuk-heading-m">My organisations</h2>
+                    <h2 class="govuk-heading-m">@StaticTextResource.Organisation_MyOrganisations</h2>
 
-                    <p class="govuk-body">Register an organisation if you are:</p>
+                    <p class="govuk-body">@StaticTextResource.Organisation_RegisterOrganisation</p>
 
                     <ul class="govuk-list govuk-list--bullet">
-                        <li>a contracting authority who publishes notices to buy goods, works, services or utilities</li>
-                        <li>an organisation or sole trader who searches for tenders and submits bids to supply goods, works, services or utilities</li>
+                        <li>@StaticTextResource.Organisation_ContractingAuthority</li>
+                        <li>@StaticTextResource.Organisation_OrganisationOrSoleTrader</li>
                     </ul>
 
                     <a asp-page="/Registration/OrganisationType" class="govuk-button" role="button" data-module="govuk-button">
-                        Register an organisation
+                        @StaticTextResource.Organisation_RegisterAnOrganisation
                     </a>
 
-                    <h3 class="govuk-heading-s">After you've registered</h3>
+                    <h3 class="govuk-heading-s">@StaticTextResource.Organisation_AfterYouveRegistered</h3>
 
-                    <p class="govuk-body">If you need to you can:</p>
+                    <p class="govuk-body">@StaticTextResource.Organisation_IfYouNeedTo</p>
                     <ul class="govuk-list govuk-list--bullet">
-                        <li>register as the other role, if you are both a buyer and supplier</li>
-                        <li>add more organisations</li>
+                        <li>@StaticTextResource.Organisation_RegisterAsOtherRole</li>
+                        <li>@StaticTextResource.Organisation_AddMoreOrganisations</li>
                     </ul>
                 }
             </section>

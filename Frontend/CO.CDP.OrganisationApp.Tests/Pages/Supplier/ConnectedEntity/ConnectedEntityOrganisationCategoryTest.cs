@@ -49,8 +49,8 @@ public class ConnectedEntityOrganisationCategoryTest
     public void OnPost_ShouldReturnPage_WhenModelStateIsInvalid()
     {
         _sessionMock
-           .Setup(s => s.Get<ConnectedEntityState>(Session.ConnectedPersonKey))
-           .Returns((ConnectedEntityState?)null);
+            .Setup(s => s.Get<ConnectedEntityState>(Session.ConnectedPersonKey))
+            .Returns(DummyConnectedPersonDetails());
 
         _model.ModelState.AddModelError("Error", "Model state is invalid");
 

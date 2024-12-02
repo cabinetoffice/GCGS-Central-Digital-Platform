@@ -1,8 +1,10 @@
+using CO.CDP.Localization;
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Pages.Supplier;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Localization;
 using Moq;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages.Supplier;
@@ -11,11 +13,13 @@ public class SupplierEmailAddressTest
 {
     private readonly Mock<IOrganisationClient> _organisationClientMock;
     private readonly SupplierEmailAddressModel _model;
+    private readonly Mock<IStringLocalizer> _stringLocalizerMock;
 
     public SupplierEmailAddressTest()
     {
         _organisationClientMock = new Mock<IOrganisationClient>();
         _model = new SupplierEmailAddressModel(_organisationClientMock.Object);
+        _stringLocalizerMock = new Mock<IStringLocalizer>();
     }
 
     [Fact]
@@ -82,12 +86,18 @@ public class SupplierEmailAddressTest
     {
         _model.EmailAddress = "dummy";
 
-        var results = ModelValidationHelper.Validate(_model);
+        _stringLocalizerMock
+            .Setup(localizer => localizer[nameof(StaticTextResource.Global_Email_Invalid_ErrorMessage)])
+            .Returns(new LocalizedString(nameof(StaticTextResource.Global_Email_Invalid_ErrorMessage), StaticTextResource.Global_Email_Invalid_ErrorMessage));
+
+        var validationContext = ValidationContextFactory.GivenValidationContextWithStringLocalizerFactory(_model, _stringLocalizerMock.Object);
+
+        var results = ModelValidationHelper.Validate(_model, validationContext);
 
         results.Any(c => c.MemberNames.Contains("EmailAddress")).Should().BeTrue();
 
         results.Where(c => c.MemberNames.Contains("EmailAddress")).First()
-            .ErrorMessage.Should().Be("Enter an email address in the correct format, like name@example.com");
+            .ErrorMessage.Should().Be(StaticTextResource.Global_Email_Invalid_ErrorMessage);
     }
 
     [Fact]

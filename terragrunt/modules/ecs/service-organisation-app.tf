@@ -26,32 +26,36 @@ module "ecs_service_organisation_app" {
   container_definitions = templatefile(
     "${path.module}/templates/task-definitions/${var.service_configs.organisation_app.name}.json.tftpl",
     {
-      aspcore_environment                = local.aspcore_environment
-      charity_commission_url             = "${data.aws_secretsmanager_secret.charity_commission.arn}:Url::"
-      charity_commission_SubscriptionKey = "${data.aws_secretsmanager_secret.charity_commission.arn}:SubscriptionKey::"
-      companies_house_url                = "${data.aws_secretsmanager_secret.companies_house.arn}:Url::"
-      companies_house_user               = "${data.aws_secretsmanager_secret.companies_house.arn}:User::"
-      container_port                     = var.service_configs.organisation_app.port
-      cpu                                = var.service_configs.organisation_app.cpu
-      fts_service_url_arn                = data.aws_secretsmanager_secret_version.fts_service_url.arn
-      host_port                          = var.service_configs.organisation_app.port
-      image                              = local.ecr_urls[var.service_configs.organisation_app.name]
-      diagnostic_page_enabled            = !var.is_production || var.environment == "integration"
-      diagnostic_page_path_arn           = aws_secretsmanager_secret.cdp_sirsi_diagnostic_path.arn
-      lg_name                            = aws_cloudwatch_log_group.tasks[var.service_configs.organisation_app.name].name
-      lg_prefix                          = "app"
-      lg_region                          = data.aws_region.current.name
-      memory                             = var.service_configs.organisation_app.memory
-      name                               = var.service_configs.organisation_app.name
-      onelogin_account_url               = local.one_loging.credential_locations.account_url
-      onelogin_authority                 = local.one_loging.credential_locations.authority
-      onelogin_client_id                 = local.one_loging.credential_locations.client_id
-      onelogin_private_key               = local.one_loging.credential_locations.private_key
-      public_domain                      = var.public_domain
-      s3_permanent_bucket                = module.s3_bucket_permanent.bucket
-      s3_staging_bucket                  = module.s3_bucket_staging.bucket
-      service_version                    = local.service_version
-      vpc_cidr                           = var.vpc_cider
+      aspcore_environment                 = local.aspcore_environment
+      charity_commission_url              = "${data.aws_secretsmanager_secret.charity_commission.arn}:Url::"
+      charity_commission_subscription_key = "${data.aws_secretsmanager_secret.charity_commission.arn}:SubscriptionKey::"
+      companies_house_url                 = "${data.aws_secretsmanager_secret.companies_house.arn}:Url::"
+      companies_house_user                = "${data.aws_secretsmanager_secret.companies_house.arn}:User::"
+      container_port                      = var.service_configs.organisation_app.port
+      cpu                                 = var.service_configs.organisation_app.cpu
+      fts_service_url_arn                 = data.aws_secretsmanager_secret_version.fts_service_url.arn
+      host_port                           = var.service_configs.organisation_app.port
+      image                               = local.ecr_urls[var.service_configs.organisation_app.name]
+      diagnostic_page_enabled             = !var.is_production || var.environment == "integration"
+      diagnostic_page_path_arn            = aws_secretsmanager_secret.cdp_sirsi_diagnostic_path.arn
+      lg_name                             = aws_cloudwatch_log_group.tasks[var.service_configs.organisation_app.name].name
+      lg_prefix                           = "app"
+      lg_region                           = data.aws_region.current.name
+      memory                              = var.service_configs.organisation_app.memory
+      name                                = var.service_configs.organisation_app.name
+      onelogin_account_url                = local.one_loging.credential_locations.account_url
+      onelogin_authority                  = local.one_loging.credential_locations.authority
+      onelogin_client_id                  = local.one_loging.credential_locations.client_id
+      onelogin_logout_notification_urls = join(",", var.onelogin_logout_notification_urls)
+      onelogin_private_key                = local.one_loging.credential_locations.private_key
+      public_domain                       = var.public_domain
+      redis_auth_token_arn                = var.redis_auth_token_arn
+      redis_port                          = var.redis_port
+      redis_primary_endpoint_address      = var.redis_primary_endpoint
+      s3_permanent_bucket                 = module.s3_bucket_permanent.bucket
+      s3_staging_bucket                   = module.s3_bucket_staging.bucket
+      service_version                     = local.service_version
+      vpc_cidr                            = var.vpc_cider
     }
   )
 

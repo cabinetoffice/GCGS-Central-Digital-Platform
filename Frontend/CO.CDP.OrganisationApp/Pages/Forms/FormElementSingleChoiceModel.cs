@@ -2,6 +2,7 @@ using CO.CDP.OrganisationApp.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json;
+using CO.CDP.Localization;
 
 namespace CO.CDP.OrganisationApp.Pages.Forms;
 
@@ -78,17 +79,16 @@ public class FormElementSingleChoiceModel : FormElementModel, IValidatableObject
 
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {
-
         if (string.IsNullOrWhiteSpace(SelectedOption))
         {
-            yield return new ValidationResult("Select an option", new[] { nameof(SelectedOption) });
+            yield return new ValidationResult(StaticTextResource.Global_RadioField_SelectOptionError, [nameof(SelectedOption)]);
             yield break;
         }
 
         if(Options?.Choices == null || (SelectedOption != null && !Options.Choices.ContainsKey(SelectedOption)))
         {
             // Note that any JSON responses received from the client *must* be present in the Choices list, and this check ensures that this is the case.
-            yield return new ValidationResult("Invalid option selected", new[] { nameof(SelectedOption) });
+            yield return new ValidationResult(StaticTextResource.Global_RadioField__InvalidOptionError, [nameof(SelectedOption)]);
             yield break;
         }
     }

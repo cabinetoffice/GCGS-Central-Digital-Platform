@@ -1,7 +1,7 @@
 resource "aws_codebuild_project" "this" {
   for_each = local.deployment_environments
 
-  build_timeout = 5
+  build_timeout = 20
   description   = "Deploy infra and application changes into ${each.key}"
   name          = "${local.name_prefix}-deployment-to-${each.key}"
   service_role  = var.ci_build_role_arn
