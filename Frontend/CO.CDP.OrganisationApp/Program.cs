@@ -43,7 +43,12 @@ builder.Services.Configure<RequestLocalizationOptions>(options =>
     options.DefaultRequestCulture = new RequestCulture("en");
     options.SupportedCultures = supportedCultures;
     options.SupportedUICultures = supportedCultures;
-    options.RequestCultureProviders.Insert(0, new CookieRequestCultureProvider());
+
+    options.RequestCultureProviders = new List<IRequestCultureProvider>
+    {
+        new CustomQueryStringCultureProvider(),
+        new CookieRequestCultureProvider()
+    };
 });
 
 var mvcBuilder = builder.Services.AddRazorPages()
@@ -240,6 +245,7 @@ app.UseRequestLocalization(localizationOptions);
 app.MapHealthChecks("/health").AllowAnonymous();
 app.UseStaticFiles();
 app.UseRouting();
+app.UseRequestLocalization();
 app.UseAuthentication();
 app.UseSession();
 app.UseMiddleware<AuthenticatedSessionAwareMiddleware>();

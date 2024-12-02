@@ -1,3 +1,4 @@
+using Flurl;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -34,7 +35,7 @@ public class ChangeLanguageModel(ITempDataService tempDataService) : PageModel
 
         if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
         {
-            return LocalRedirect(returnUrl);
+            return LocalRedirect(returnUrl.RemoveQueryParam("language"));
         }
 
         return Redirect("/");
