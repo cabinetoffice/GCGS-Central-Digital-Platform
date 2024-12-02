@@ -1996,17 +1996,11 @@
   <data name="Supplier_EmailAddress_Hint" xml:space="preserve">
     <value>It should be a shared inbox managed by your team, not your own email address. This will be displayed on notices.</value>
   </data>
-  <data name="Supplier_EmailAddress_Error" xml:space="preserve">
-    <value>Error:</value>
-  </data>
   <data name="Supplier_BasicInformation_Title" xml:space="preserve">
     <value>Manage {0}'s basic information</value>
   </data>
   <data name="Supplier_InformationHint" xml:space="preserve">
     <value>We need information from you based on the type of supplier you are.</value>
-  </data>
-  <data name="Supplier_Continue" xml:space="preserve">
-    <value>Continue</value>
   </data>
   <data name="Supplier_SupplierType" xml:space="preserve">
     <value>Supplier type</value>
@@ -2085,9 +2079,6 @@
   </data>
   <data name="Supplier_OperationQuestion_Hint" xml:space="preserve">
     <value>Select all that apply.</value>
-  </data>
-  <data name="Supplier_OperationQuestion_Error" xml:space="preserve">
-    <value>Error:</value>
   </data>
   <data name="Supplier_OperationQuestion_SmallAndMediumSized_Description" xml:space="preserve">
     <value>Small and medium-sized enterprises are defined by having:</value>

@@ -36,7 +36,7 @@
                     @if (operationTypeHasError)
                     {
                     <p id="organisation-type-error" class="govuk-error-message">
-                        <span class="govuk-visually-hidden">@StaticTextResource.Supplier_OperationQuestion_Error</span> @Html.ValidationMessageFor(m => m.SelectedOperationTypes)
+                        <span class="govuk-visually-hidden">@StaticTextResource.Global_Error</span> @Html.ValidationMessageFor(m => m.SelectedOperationTypes)
                     </p>
                     }
                     <div class="govuk-checkboxes" data-module="govuk-checkboxes">

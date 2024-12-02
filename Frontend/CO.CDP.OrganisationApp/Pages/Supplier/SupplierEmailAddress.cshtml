@@ -29,7 +29,7 @@
                             @if (emailAddressHasError)
                             {
                                 <p id="email-address-error" class="govuk-error-message">
-                                    <span class="govuk-visually-hidden">@StaticTextResource.Supplier_EmailAddress_Error</span>
+                                    <span class="govuk-visually-hidden">@StaticTextResource.Global_Error</span>
                                     @Html.ValidationMessageFor(m => m.EmailAddress)
                                 </p>
                             }
