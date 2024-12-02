@@ -2254,4 +2254,53 @@
   <data name="PdfGenerator_Uri" xml:space="preserve">
     <value>Uri</value>
   </data>
+  <data name="Consortium_ConsortiumStart_Heading" xml:space="preserve">
+    <value>Create a consortium</value>
+  </data>
+  <data name="Consortium_ConsortiumStart_Paragraph1" xml:space="preserve">
+    <value>Two or more suppliers that want to submit a joint bid can create a consortium. You can add as many suppliers as you need to.</value>
+  </data>
+  <data name="Consortium_ConsortiumStart_Paragraph2" xml:space="preserve">
+    <value>As the organisation creating the consortium, you'll need to enter:</value>
+  </data>
+  <data name="Consortium_ConsortiumStart_Paragraph2_list" xml:space="preserve">
+    <value>&lt;li&gt;a consortium name&lt;/li&gt;
+&lt;li&gt;an address&lt;/li&gt;
+&lt;li&gt;an email address&lt;/li&gt;
+&lt;li&gt;your most recent share code&lt;/li&gt;
+&lt;li&gt;the most recent share codes for all the other suppliers&lt;/li&gt;</value>
+  </data>
+  <data name="Consortium_ConsortiumStart_Paragraph3" xml:space="preserve">
+    <value>Any supplier you want to add to the consortium must have completed their supplier information and created a share code.</value>
+  </data>
+  <data name="Consortium_ConsortiumStart_Paragraph4" xml:space="preserve">
+    <value>When you've added all suppliers, you'll create a share code for your combined supplier information.</value>
+  </data>
+  <data name="Consortium_ConsortiumName_Heading" xml:space="preserve">
+    <value>Name your consortium</value>
+  </data>
+  <data name="Consortium_ConsortiumName_Hint" xml:space="preserve">
+    <value>You can change this later if you need to</value>
+  </data>
+  <data name="Consortium_ConsortiumName_EnterNameError" xml:space="preserve">
+    <value>Enter your consortium's name</value>
+  </data>
+  <data name="Consortium_ConsortiumEmail_Heading" xml:space="preserve">
+    <value>Enter an email address for the consortium</value>
+  </data>
+  <data name="Consortium_ConsortiumEmail_Required_ErrorMessage" xml:space="preserve">
+    <value>Enter your consortium's email address</value>
+  </data>
+  <data name="Consortium_ConsortiumAddress_Heading" xml:space="preserve">
+    <value>Enter an address for the consortium</value>
+  </data>
+  <data name="Consortium_ConsortiumAddress_Hint" xml:space="preserve">
+    <value>The address consortium members have agreed will be the service address for the procurement. For example, the postal address of an organisation in the consortium.</value>
+  </data>
+  <data name="Consortium_ConsortiumAddress_NonUk_Heading" xml:space="preserve">
+    <value>Enter an address for the consortium</value>
+  </data>
+  <data name="Consortium_ConsortiumAddress_NonUk_Hint" xml:space="preserve">
+    <value>The address consortium members have agreed will be the service address for the procurement. For example, the postal address of an organisation in the consortium.</value>
+  </data>
 </root>

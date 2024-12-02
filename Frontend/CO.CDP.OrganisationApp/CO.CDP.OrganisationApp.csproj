@@ -29,4 +29,11 @@
       <ProjectReference Include="..\..\Services\CO.CDP.Localization\CO.CDP.Localization.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Content Update="Pages\Consortium\ConsortiumOverview.cshtml">
+        <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      </Content>
+    </ItemGroup>
+
 </Project>

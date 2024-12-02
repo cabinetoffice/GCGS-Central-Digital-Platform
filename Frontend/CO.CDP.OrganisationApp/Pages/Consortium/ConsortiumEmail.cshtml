@@ -1,0 +1,42 @@
+@page "/consortium/email"
+@model ConsortiumEmailModel
+@using CO.CDP.Localization
+
+@{
+    ViewData["Title"] = StaticTextResource.Consortium_ConsortiumEmail_Heading;
+    var emailAddressHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.EmailAddress)).HasInnerHtml;
+}
+
+@section BeforeContent {
+    <a href="/organisation-selection" class="govuk-back-link">@StaticTextResource.Global_Back</a>
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <partial name="_ErrorSummary" model="@Model.ModelState" />
+        <form class="form" method="post">
+            <span class="govuk-caption-l">
+                @Model.ConsortiumName
+            </span>
+            <h1 class="govuk-label-wrapper">
+                <label class="govuk-label govuk-label--l" for="consortiumName">
+                    @ViewData["Title"]
+                </label>
+            </h1>
+
+            <div class="govuk-form-group @(emailAddressHasError ? "govuk-form-group--error" : "")">
+                @if (emailAddressHasError)
+                {
+                    <p id="email-address-error" class="govuk-error-message">
+                        <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span>
+                        @Html.ValidationMessageFor(m => m.EmailAddress)
+                    </p>
+                }
+                <input class="govuk-input @(emailAddressHasError ? "govuk-input--error" : "")" id="@nameof(Model.EmailAddress)"
+                       value="@Model.EmailAddress" type="text" name="@nameof(Model.EmailAddress)"
+                       spellcheck="false" autocomplete="email" @(emailAddressHasError ? "aria-describedby=email-address-error" : "")>
+            </div>
+            <govuk-button>@StaticTextResource.Global_Submit</govuk-button>
+        </form>
+    </div>
+</div>
