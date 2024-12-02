@@ -49,6 +49,9 @@ module "ecs_service_organisation_app" {
       onelogin_logout_notification_urls   = join(",", var.onelogin_logout_notification_urls)
       onelogin_private_key                = local.one_loging.credential_locations.private_key
       public_domain                       = var.public_domain
+      redis_auth_token_arn                = var.redis_auth_token_arn
+      redis_port                          = var.redis_port
+      redis_primary_endpoint_address      = var.redis_primary_endpoint
       s3_permanent_bucket                 = module.s3_bucket_permanent.bucket
       s3_staging_bucket                   = module.s3_bucket_staging.bucket
       service_version                     = local.service_version

@@ -1,6 +1,6 @@
 resource "random_string" "redis_auth_token" {
-  length           = 20
-  special          = true
+  length  = 20
+  special = true
 }
 
 resource "aws_secretsmanager_secret" "redis_auth_token" {

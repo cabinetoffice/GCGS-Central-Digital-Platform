@@ -134,7 +134,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.Localization", "Serv
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.WebApi.Foundation", "Libraries\CO.CDP.WebApi.Foundation\CO.CDP.WebApi.Foundation.csproj", "{E53D77E4-5E2D-4FC1-8013-5169AF88207C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.WebApi.Foundation.Tests", "Libraries\CO.CDP.WebApi.Foundation.Tests\CO.CDP.WebApi.Foundation.Tests.csproj", "{4E41DE38-0B1C-487E-82C1-C45485852280}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.WebApi.Foundation.Tests", "Libraries\CO.CDP.WebApi.Foundation.Tests\CO.CDP.WebApi.Foundation.Tests.csproj", "{4E41DE38-0B1C-487E-82C1-C45485852280}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
