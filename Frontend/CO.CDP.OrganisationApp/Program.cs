@@ -61,18 +61,6 @@ if (builder.Environment.IsDevelopment())
 
 builder.ConfigureForwardedHeaders();
 
-// @todo Remove this IF once ElastiCache is configured and working on AWS
-if (builder.Configuration.GetValue<bool>("Features:SharedSessions"))
-{
-    Console.WriteLine("SharedSession is enabled.");
-    builder.Services.AddElastiCacheService();
-}
-else
-{
-    Console.WriteLine("SharedSession is disabled.");
-    builder.Services.AddDistributedMemoryCache();
-}
-
 var sessionTimeoutInMinutes = builder.Configuration.GetValue<double>("SessionTimeoutInMinutes");
 
 builder.Services.AddSession(options =>
@@ -221,7 +209,8 @@ builder.Services
     .AddAwsS3Service()
     .AddLoggingConfiguration(builder.Configuration)
     .AddAmazonCloudWatchLogsService()
-    .AddCloudWatchSerilog(builder.Configuration);
+    .AddCloudWatchSerilog(builder.Configuration)
+    .AddSharedSessions(builder.Configuration);
 
 // @see DP-723 for details: https://noticingsystem.atlassian.net/browse/DP-723?focusedCommentId=27796
 builder.Services.AddDataProtection()
