@@ -26,9 +26,9 @@ public class FtsUrlService : IFtsUrlService
             { "language", CultureInfo.CurrentUICulture.Name.Replace("-", "_") }
         };
 
-        if (organisationId != null)
+        if (organisationId.HasValue)
         {
-            queryBuilder.Add("organisation_id", organisationId.ToString());
+            queryBuilder.Add("organisation_id", organisationId.Value.ToString());
         }
 
         if (!string.IsNullOrEmpty(redirectUrl))
