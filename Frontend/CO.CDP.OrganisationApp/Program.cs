@@ -62,19 +62,14 @@ if (builder.Environment.IsDevelopment())
 builder.ConfigureForwardedHeaders();
 
 // @todo Remove this IF once ElastiCache is configured and working on AWS
-if (builder.Configuration.GetValue<bool>("Sessions:EnableSharedSessions"))
+if (builder.Configuration.GetValue<bool>("Features:SharedSessions"))
 {
-    builder.Services.AddStackExchangeRedisCache(options =>
-    {
-        var redisHost = builder.Configuration.GetValue<string>("Aws:ElastiCache:Hostname");
-        var redisPort = builder.Configuration.GetValue<string>("Aws:ElastiCache:Port");
-
-        options.Configuration = $"{redisHost}:{redisPort}";
-        options.InstanceName = "Sessions";
-    });
+    Console.WriteLine("SharedSession is enabled.");
+    builder.Services.AddElastiCacheService();
 }
 else
 {
+    Console.WriteLine("SharedSession is disabled.");
     builder.Services.AddDistributedMemoryCache();
 }
 
@@ -230,7 +225,8 @@ builder.Services
 
 // @see DP-723 for details: https://noticingsystem.atlassian.net/browse/DP-723?focusedCommentId=27796
 builder.Services.AddDataProtection()
-   .PersistKeysToAWSSystemsManager(builder.Configuration.GetValue<string>("Aws:SystemManager:Secret"));
+   .PersistKeysToAWSSystemsManager(
+       builder.Configuration.GetValue<string>("Aws:SystemManager:DataProtectionPrefix"));
 
 var app = builder.Build();
 app.UseForwardedHeaders();
