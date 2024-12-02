@@ -44,7 +44,7 @@ public static class OrganisationSchemeType
 
         if (string.IsNullOrEmpty(value))
         {
-            value = "Other / None";
+            value = "Other";
         }
 
         return value;
