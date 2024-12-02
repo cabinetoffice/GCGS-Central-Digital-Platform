@@ -9,7 +9,7 @@ variable "engine" {
   default     = "redis"
 
   validation {
-    condition = contains(["redis", "valkey"], var.engine)
+    condition     = contains(["redis", "valkey"], var.engine)
     error_message = "Invalid value for engine. Valid values are 'redis' or 'valkey'."
   }
 }
@@ -50,7 +50,7 @@ variable "port" {
 
 variable "private_subnet_ids" {
   description = "List of private subnet IDs"
-  type = list(string)
+  type        = list(string)
 }
 
 variable "product" {
@@ -64,5 +64,5 @@ variable "product" {
 
 variable "tags" {
   description = "Tags to apply to all resources in this module"
-  type = map(string)
+  type        = map(string)
 }
