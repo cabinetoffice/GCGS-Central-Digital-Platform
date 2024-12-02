@@ -10,7 +10,7 @@ public class SanitisedStringModelBinder : IModelBinder
         var valueProviderResult = bindingContext.ValueProvider.GetValue(bindingContext.ModelName);
         if (valueProviderResult != ValueProviderResult.None)
         {
-            var value = valueProviderResult.FirstValue?.StripAndRemoveObscureWhitespace();
+            var value = valueProviderResult.FirstValue?.StripAndRemoveObscureWhitespaces();
             bindingContext.Result = ModelBindingResult.Success(value);
         }
         return Task.CompletedTask;
