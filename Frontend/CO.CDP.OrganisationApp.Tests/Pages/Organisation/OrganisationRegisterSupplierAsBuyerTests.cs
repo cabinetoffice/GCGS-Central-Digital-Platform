@@ -25,8 +25,8 @@ public class OrganisationRegisterSupplierAsBuyerTests
     public async Task ShouldRedirectToSupplierToBuyerOrganisationType_WhenOrganisationIsNotABuyer()
     {
         organisationClientMock
-            .Setup(o => o.GetOrganisationAsync(It.IsAny<Guid>()))
-            .ReturnsAsync(new CO.CDP.Organisation.WebApiClient.Organisation(null!, null!, null!, null!, orgGuid, null!, "Org name", new[] { PartyRole.Tenderer }));
+            .Setup<Task<CDP.Organisation.WebApiClient.Organisation>>(o => o.GetOrganisationAsync(It.IsAny<Guid>()))
+            .ReturnsAsync(OrganisationResponse(roles: new[] { PartyRole.Tenderer }, orgGuid: orgGuid));
 
         var initialState = new SupplierToBuyerDetails
         {
@@ -52,7 +52,7 @@ public class OrganisationRegisterSupplierAsBuyerTests
     {
         organisationClientMock
             .Setup(o => o.GetOrganisationAsync(It.IsAny<Guid>()))
-            .ReturnsAsync(new CO.CDP.Organisation.WebApiClient.Organisation(null!, null!, null!, null!, orgGuid, null!, "Org name", new[] { PartyRole.Buyer }));
+            .ReturnsAsync(OrganisationResponse(roles: new[] { PartyRole.Buyer }, orgGuid: orgGuid));
 
         var result = await _model.OnGet(orgGuid);
 
@@ -68,7 +68,7 @@ public class OrganisationRegisterSupplierAsBuyerTests
     {
         organisationClientMock
             .Setup(o => o.GetOrganisationAsync(It.IsAny<Guid>()))
-            .ReturnsAsync(new CO.CDP.Organisation.WebApiClient.Organisation(null!, null!, null!, null!, orgGuid, null!, "Org name", new[] { PartyRole.Tenderer }));
+            .ReturnsAsync(OrganisationResponse(roles: new[] { PartyRole.Tenderer }, orgGuid: orgGuid));
 
         var initialState = new SupplierToBuyerDetails();
         tempDataServiceMock
@@ -80,5 +80,19 @@ public class OrganisationRegisterSupplierAsBuyerTests
         tempDataServiceMock.Verify(t => t.Put(It.IsAny<string>(), It.Is<SupplierToBuyerDetails>(state =>
             state.OrganisationType == OrganisationType.Supplier
         )), Times.Once);
+    }
+
+    private static CDP.Organisation.WebApiClient.Organisation OrganisationResponse(PartyRole[]? roles = null, Guid? orgGuid = null)
+    {
+        return
+            new CO.CDP.Organisation.WebApiClient.Organisation(
+                additionalIdentifiers: null!,
+                addresses: null!,
+                contactPoint: null!,
+                details: null!,
+                id: orgGuid ?? Guid.NewGuid(),
+                identifier: null!,
+                name: "Org name",
+                roles: roles ?? []);
     }
 }
