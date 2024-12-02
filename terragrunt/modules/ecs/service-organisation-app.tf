@@ -55,6 +55,8 @@ module "ecs_service_organisation_app" {
       s3_permanent_bucket                 = module.s3_bucket_permanent.bucket
       s3_staging_bucket                   = module.s3_bucket_staging.bucket
       service_version                     = local.service_version
+      shared_sessions_enabled             = local.shared_sessions_enabled
+      ssm_data_protection_prefix          = local.ssm_data_protection_prefix
       vpc_cidr                            = var.vpc_cider
     }
   )
