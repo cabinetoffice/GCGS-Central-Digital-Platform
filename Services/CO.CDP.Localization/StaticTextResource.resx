@@ -137,7 +137,7 @@
   </data>
   <data name="BasicInformation_SectionTitle" xml:space="preserve">
     <value>Basic information</value>
-  </data>
+  </data>  
   <data name="Global_Back" xml:space="preserve">
     <value>Back</value>
   </data>
@@ -284,6 +284,9 @@
   </data>
   <data name="Organisation_MyOrganisations" xml:space="preserve">
     <value>My organisations</value>
+  </data>
+  <data name="Organisation_OrganisationName" xml:space="preserve">
+    <value>Organisation name</value>
   </data>
   <data name="Organisation_PendingApproval" xml:space="preserve">
     <value>Pending approval</value>
@@ -461,9 +464,6 @@
   </data>
   <data name="Supplementary_ContactUs_Organisation_ErrorMessage" xml:space="preserve">
     <value>Enter your Organisation</value>
-  </data>
-  <data name="Supplementary_ContactUs_Email_ValidationErrorMessage" xml:space="preserve">
-    <value>Enter an email address in the correct format, like name@example.com</value>
   </data>
   <data name="Supplementary_ContactUs_Message" xml:space="preserve">
     <value>Message</value>
@@ -1705,6 +1705,15 @@
   <data name="Forms_FormElementDateInput_ExampleHint" xml:space="preserve">
     <value>For example, 27 3 2007</value>
   </data>
+  <data name="Global_Day" xml:space="preserve">
+    <value>Day</value>
+  </data>
+  <data name="Global_Month" xml:space="preserve">
+    <value>Month</value>
+  </data>
+  <data name="Global_Year" xml:space="preserve">
+    <value>Year</value>
+  </data>
   <data name="Forms_FormElementFileUpload_UploadFileLabel" xml:space="preserve">
     <value>Upload a file</value>
   </data>
@@ -1810,11 +1819,26 @@
   <data name="Forms_FormElementAddress_InvalidCountryError" xml:space="preserve">
     <value>Invalid country name '{0}'</value>
   </data>
+  <data name="Global_Yes" xml:space="preserve">
+    <value>Yes</value>
+  </data>
+  <data name="Global_No" xml:space="preserve">
+    <value>No</value>
+  </data>
   <data name="Global_SaveAndContinue" xml:space="preserve">
     <value>Save and continue</value>
   </data>
   <data name="Global_Save" xml:space="preserve">
     <value>Save</value>
+  </data>
+  <data name="Global_Remove" xml:space="preserve">
+    <value>Remove</value>
+  </data>
+  <data name="Global_PleaseSelect" xml:space="preserve">
+    <value>Please select</value>
+  </data>
+  <data name="Global_Change" xml:space="preserve">
+    <value>Change</value>
   </data>
   <data name="Forms_AnswerSetSummary_BackToSupplierInformation" xml:space="preserve">
     <value>Back to supplier information</value>
@@ -2302,5 +2326,242 @@
   </data>
   <data name="Consortium_ConsortiumAddress_NonUk_Hint" xml:space="preserve">
     <value>The address consortium members have agreed will be the service address for the procurement. For example, the postal address of an organisation in the consortium.</value>
+  </data>
+  <data name="Supplier_RegisteredAddress" xml:space="preserve">
+    <value>Registered address</value>
+  </data>
+  <data name="Supplier_VatNumber" xml:space="preserve">
+    <value>VAT number</value>
+  </data>
+  <data name="Supplier_WebsiteAddress" xml:space="preserve">
+    <value>Website address</value>
+  </data>
+  <data name="Supplier_LegalForm" xml:space="preserve">
+    <value>Legal form</value>
+  </data>
+  <data name="Supplier_Add" xml:space="preserve">
+    <value>Add</value>
+  </data>
+  <data name="Supplier_EmailAddress_Title" xml:space="preserve">
+    <value>Enter your email address</value>
+  </data>
+  <data name="Supplier_EmailAddress_Hint" xml:space="preserve">
+    <value>It should be a shared inbox managed by your team, not your own email address. This will be displayed on notices.</value>
+  </data>
+  <data name="Supplier_BasicInformation_Title" xml:space="preserve">
+    <value>Manage {0}'s basic information</value>
+  </data>
+  <data name="Supplier_InformationHint" xml:space="preserve">
+    <value>We need information from you based on the type of supplier you are.</value>
+  </data>
+  <data name="Supplier_SupplierType" xml:space="preserve">
+    <value>Supplier type</value>
+  </data>
+  <data name="Supplier_PostalAddress" xml:space="preserve">
+    <value>Postal address</value>
+  </data>
+  <data name="Supplier_EmailAddress" xml:space="preserve">
+    <value>Email address</value>
+  </data>
+  <data name="Supplier_OrganisationType" xml:space="preserve">
+    <value>Organisation type</value>
+  </data>
+  <data name="Supplier_ReturnToAccountHome" xml:space="preserve">
+    <value>Return to account home</value>
+  </data>
+  <data name="Supplier_WhatTypeOfSupplier" xml:space="preserve">
+    <value>What type of supplier are you?</value>
+  </data>
+  <data name="Supplier_Organisation" xml:space="preserve">
+    <value>Organisation - for example, a company</value>
+  </data>
+  <data name="Supplier_Individual" xml:space="preserve">
+    <value>Individual - for example, a sole trader</value>
+  </data>
+  <data name="Supplier_VatQuestion_Title" xml:space="preserve">
+    <value>Are you registered for VAT?</value>
+  </data>
+  <data name="Supplier_VatQuestion_No" xml:space="preserve">
+    <value>No</value>
+  </data>
+  <data name="Supplier_VatQuestion_VatNumberLabel" xml:space="preserve">
+    <value>VAT number</value>
+  </data>
+  <data name="Supplier_VatQuestion_VatNumberHint" xml:space="preserve">
+    <value>You can find it on your VAT registration certificate.</value>
+  </data>
+  <data name="Supplier_WebsiteQuestion_Title" xml:space="preserve">
+    <value>Do you have a website?</value>
+  </data>
+  <data name="Global_SelectAnOption" xml:space="preserve">
+    <value>Please select an option</value>
+  </data>
+  <data name="Supplier_VatQuestion_BelongsToAnotherOrganisation_Error" xml:space="preserve">
+    <value>This VAT number belongs to another organisation. Enter a different VAT number.</value>
+  </data>
+  <data name="Supplier_VatNumber_Error" xml:space="preserve">
+    <value>Please enter the VAT number.</value>
+  </data>
+  <data name="Supplier_WebsiteQuestion_WebsiteAddress" xml:space="preserve">
+    <value>Website address</value>
+  </data>
+  <data name="Supplier_WebsiteQuestion_ErrorSelectOption" xml:space="preserve">
+    <value>Select an option</value>
+  </data>
+  <data name="Supplier_WebsiteQuestion_ErrorInvalidUrl" xml:space="preserve">
+    <value>Website address must be in the correct format, like https://www.companyname.com</value>
+  </data>
+  <data name="Supplier_WebsiteAddress_ErrorEnterWebsiteAddress" xml:space="preserve">
+    <value>Enter the website address</value>
+  </data>
+  <data name="Supplier_AddressPostalSameAsRegisteredQuestion_Title" xml:space="preserve">
+    <value>Does your organisation have a different postal address?</value>
+  </data>
+  <data name="Supplier_AddressPostalSameAsRegisteredQuestion_Hint" xml:space="preserve">
+    <value>The place where an organisation receives official post can be different from its registered address. For example, a branch office.</value>
+  </data>
+  <data name="Supplier_Address_EnterRegisteredAddress" xml:space="preserve">
+    <value>Enter your organisation's registered address</value>
+  </data>
+  <data name="Supplier_Address_EnterUkRegisteredAddress" xml:space="preserve">
+    <value>Enter your organisation's UK postal address</value>
+  </data>
+  <data name="Supplier_OperationQuestion_Title" xml:space="preserve">
+    <value>How does your organisation operate?</value>
+  </data>
+  <data name="Supplier_OperationQuestion_Hint" xml:space="preserve">
+    <value>Select all that apply.</value>
+  </data>
+  <data name="Supplier_OperationQuestion_SmallAndMediumSized_Description" xml:space="preserve">
+    <value>Small and medium-sized enterprises are defined by having:</value>
+  </data>
+  <data name="Supplier_OperationQuestion_SmallAndMediumSized_Details" xml:space="preserve">
+    <value>(a) fewer than 250 staff, and &lt;br&gt;&lt;br&gt;(b) a turnover of an amount less than or equal to £44 million, or a balance sheet total of an amount less than or equal to £38 million</value>
+  </data>
+  <data name="Supplier_OperationQuestion_SupportedEmploymentProvider_Description" xml:space="preserve">
+    <value>Supported employment providers are defined by having:</value>
+  </data>
+  <data name="Supplier_OperationQuestion_SupportedEmploymentProvider_Details" xml:space="preserve">
+    <value>Wholly or partly provided employment, or employment related support, to disabled or disadvantaged individuals where:&lt;br&gt;&lt;br&gt;(a) disabled or disadvantaged individuals represent at least 30 per cent of the workforce of the organisation,&lt;br&gt;&lt;br&gt;(b) if a particular part of the organisation is to perform the contract, disabled or disadvantaged individuals represent at least 30 per cent of the workforce of that part of the organisation, or&lt;br&gt;&lt;br&gt;(c) if more than one organisation is to perform the contract, disabled or disadvantaged individuals represent at least 30 per cent of the combined workforce of—&lt;br&gt;&lt;br&gt;(i) those organisations,&lt;br&gt;&lt;br&gt;(ii) where a particular part of each organisation is to perform the contract, those parts, or&lt;br&gt;&lt;br&gt;(iii) where a combination of organisations and parts is to perform the contract, those organisations and parts.</value>
+  </data>
+  <data name="Supplier_OperationQuestion_PublicService_Description" xml:space="preserve">
+    <value>Public service mutuals are defined by having:</value>
+  </data>
+  <data name="Supplier_OperationQuestion_PublicService_Details" xml:space="preserve">
+    <value>Previously left the public sector but continues delivering public services.</value>
+  </data>
+  <data name="Global_SaveAndExit" xml:space="preserve">
+    <value>Save and exit</value>
+  </data>
+  <data name="Supplier_LegalFormCompanyActQuestion_Title" xml:space="preserve">
+    <value>Is your organisation registered on Companies House?</value>
+  </data>
+  <data name="Supplier_LegalFormCompanyActQuestion_Hint" xml:space="preserve">
+    <value>As required by the Companies Act 2006.</value>
+  </data>
+  <data name="Supplier_LegalFormFormationDate_Title" xml:space="preserve">
+    <value>What is the equivalent date your company registered under the Companies Act 2006?</value>
+  </data>
+  <data name="Supplier_LegalFormFormationDate_Hint" xml:space="preserve">
+    <value>For example, 27 3 2007.</value>
+  </data>
+  <data name="Supplier_LegalFormFormationDate_Month" xml:space="preserve">
+    <value>Month</value>
+  </data>
+  <data name="Supplier_LegalFormFormationDate_Year" xml:space="preserve">
+    <value>Year</value>
+  </data>
+  <data name="Supplier_LegalFormFormationDate_DayErrorMessage" xml:space="preserve">
+    <value>Date of registration must include a day</value>
+  </data>
+  <data name="Supplier_LegalFormFormationDate_DayInvalidErrorMessage" xml:space="preserve">
+    <value>Day must be a valid number</value>
+  </data>
+  <data name="Supplier_LegalFormFormationDate_MonthErrorMessage" xml:space="preserve">
+    <value>Date of registration must include a month</value>
+  </data>
+  <data name="Supplier_LegalFormFormationDate_MonthInvalidErrorMessage" xml:space="preserve">
+    <value>Month must be a valid number</value>
+  </data>
+  <data name="Supplier_LegalFormFormationDate_YearErrorMessage" xml:space="preserve">
+    <value>Date of registration must include a year</value>
+  </data>
+  <data name="Supplier_LegalFormFormationDate_YearInvalidErrorMessage" xml:space="preserve">
+    <value>Year must be a valid number</value>
+  </data>
+  <data name="Supplier_LegalFormFormationDate_InvalidDateErrorMessage" xml:space="preserve">
+    <value>Date of registration must be a real date</value>
+  </data>
+  <data name="Supplier_LegalFormFormationDate_FutureDateErrorMessage" xml:space="preserve">
+    <value>Date of registration must be today or in the past</value>
+  </data>
+  <data name="Supplier_LegalFormLawRegistered_Title" xml:space="preserve">
+    <value>Enter the law under which your organisation is registered</value>
+  </data>
+  <data name="Supplier_LegalFormLawRegistered_Hint" xml:space="preserve">
+    <value>For example, the Companies Act 2006.</value>
+  </data>
+  <data name="Supplier_LegalFormLawRegistered_Error" xml:space="preserve">
+    <value>Error:</value>
+  </data>
+  <data name="Supplier_LegalFormLawRegistered_ErrorMessage" xml:space="preserve">
+    <value>Please enter the law under which your organisation is registered</value>
+  </data>
+  <data name="Supplier_LegalFormOtherOrganisation_PleaseSelect" xml:space="preserve">
+    <value>Please select your organisation's registered legal form</value>
+  </data>
+  <data name="Supplier_LegalFormSelectOrganisation_Hint" xml:space="preserve">
+    <value>When it was set up and registered, what structure was used.</value>
+  </data>
+  <data name="Supplier_LegalFormSelectOrganisation_Title" xml:space="preserve">
+    <value>Select your organisation's legal form</value>
+  </data>
+  <data name="Supplier_LegalFormSelectOrganisation_LimitedCompany" xml:space="preserve">
+    <value>Limited company</value>
+  </data>
+  <data name="Supplier_LegalFormSelectOrganisation_LLP" xml:space="preserve">
+    <value>Limited liability partnership (LLP)</value>
+  </data>
+  <data name="Supplier_LegalFormSelectOrganisation_LP" xml:space="preserve">
+    <value>Limited partnership</value>
+  </data>
+  <data name="Supplier_LegalFormSelectOrganisation_Other" xml:space="preserve">
+    <value>Other</value>
+  </data>
+  <data name="Supplier_OperationQuestion_SelectOption" xml:space="preserve">
+    <value>Select at least one option to proceed.</value>
+  </data>
+  <data name="Supplier_OperationType_SmallOrMediumSized" xml:space="preserve">
+    <value>As a small or medium-sized enterprise</value>
+  </data>
+  <data name="Supplier_OperationType_NonGovernmental" xml:space="preserve">
+    <value>As a non-governmental organisation that is value-driven and which principally reinvests its surpluses to further social, environmental or cultural objectives</value>
+  </data>
+  <data name="Supplier_OperationType_SupportedEmploymentProvider" xml:space="preserve">
+    <value>As a supported employment provider</value>
+  </data>
+  <data name="Supplier_OperationType_PublicService" xml:space="preserve">
+    <value>As a public service mutual</value>
+  </data>
+  <data name="Supplier_OperationType_None" xml:space="preserve">
+    <value>My organisation is none of the above</value>
+  </data>
+  <data name="Supplier_OperationType_SmallOrMediumSized_Short" xml:space="preserve">
+    <value>Small or medium-sized enterprise</value>
+  </data>
+  <data name="Supplier_OperationType_NonGovernmental_Short" xml:space="preserve">
+    <value>Non-governmental organisation</value>
+  </data>
+  <data name="Supplier_OperationType_SupportedEmploymentProvider_Short" xml:space="preserve">
+    <value>Supported employment provider</value>
+  </data>
+  <data name="Supplier_OperationType_PublicService_Short" xml:space="preserve">
+    <value>Public service mutual</value>
+  </data>
+  <data name="Supplier_OperationType_None_Short" xml:space="preserve">
+    <value>My organisation is not defined</value>
+  </data>
+  <data name="Supplier_OperationType_ValidationError" xml:space="preserve">
+    <value>You cannot select 'My organisation is none of the above' along with other options.</value>
   </data>
 </root>

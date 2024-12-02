@@ -1,3 +1,4 @@
+using CO.CDP.Localization;
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Pages.Shared;
@@ -87,7 +88,7 @@ public class SupplierAddressModel(IOrganisationClient organisationClient) : Page
         if (reset) Address = new AddressPartialModel { UkOrNonUk = UkOrNonUk };
 
         Address.Heading = AddressType == Constants.AddressType.Registered ?
-            "Enter your organisation's registered address" : "Enter your organisation's UK postal address";
+            StaticTextResource.Supplier_Address_EnterRegisteredAddress : StaticTextResource.Supplier_Address_EnterUkRegisteredAddress;
 
         Address.NonUkAddressLink = $"/organisation/{Id}/supplier-information/{AddressType.ToString().ToLower()}-address/non-uk";
     }

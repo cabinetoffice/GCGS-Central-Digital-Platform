@@ -97,5 +97,5 @@ public class OrganisationDetailsSummaryModel(
             roles: [details.OrganisationType!.Value.AsPartyRole()],
             personId: user.PersonId.Value
         );
-    }  
+    }
 }

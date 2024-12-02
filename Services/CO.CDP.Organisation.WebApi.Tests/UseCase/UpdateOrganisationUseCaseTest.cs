@@ -1,18 +1,18 @@
+using CO.CDP.GovUKNotify;
+using CO.CDP.GovUKNotify.Models;
 using CO.CDP.MQ;
 using CO.CDP.Organisation.WebApi.Events;
 using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.Organisation.WebApi.Tests.AutoMapper;
 using CO.CDP.Organisation.WebApi.Tests.UseCase.Extensions;
 using CO.CDP.Organisation.WebApi.UseCase;
-using FluentAssertions;
-using Moq;
-using Persistence = CO.CDP.OrganisationInformation.Persistence;
-using Address = CO.CDP.OrganisationInformation.Persistence.Address;
 using CO.CDP.OrganisationInformation;
-using CO.CDP.GovUKNotify;
-using Microsoft.Extensions.Logging;
+using FluentAssertions;
 using Microsoft.Extensions.Configuration;
-using CO.CDP.GovUKNotify.Models;
+using Microsoft.Extensions.Logging;
+using Moq;
+using Address = CO.CDP.OrganisationInformation.Persistence.Address;
+using Persistence = CO.CDP.OrganisationInformation.Persistence;
 
 namespace CO.CDP.Organisation.WebApi.Tests.UseCase;
 
@@ -181,7 +181,7 @@ public class UpdateOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
 
     [Fact]
     public async Task ShouldThrowIdentiferNumberAlreadyExists_WhenIdentifierAlreadyExists()
-    {        
+    {
         var command = new UpdateOrganisation
         {
             Type = OrganisationUpdateType.AdditionalIdentifiers,
@@ -211,7 +211,7 @@ public class UpdateOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
 
     [Fact]
     public async Task ShouldAddNewIdentifier_WhenIdentifierDoesNotExistInOrganisation()
-    {       
+    {
         var command = new UpdateOrganisation
         {
             Type = OrganisationUpdateType.AdditionalIdentifiers,
@@ -237,7 +237,7 @@ public class UpdateOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
         result.Should().BeTrue();
 
         _organisationRepositoryMock.Verify(repo => repo.SaveAsync(anotherOrganisation, AnyOnSave()), Times.Once);
-       
+
         anotherOrganisation.Identifiers.Should().ContainSingle(i =>
             i.IdentifierId == "342" &&
             i.Scheme == "VAT" &&
@@ -632,6 +632,39 @@ public class UpdateOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
     }
 
     [Fact]
+    public async Task Execute_ShouldUpdateOrganisation_WhenOrganisationHasAddAsBuyerRole()
+    {
+        var command = new UpdateOrganisation
+        {
+            Type = OrganisationUpdateType.AddAsBuyerRole,
+            Organisation = new OrganisationInfo
+            {
+                BuyerInformation = new BuyerInformation
+                {
+                    BuyerType = "A buyer type",
+                    DevolvedRegulations = []
+                }
+            }
+        };
+
+        var organisation = GivenOrganisation([PartyRole.Tenderer]);
+        _organisationRepositoryMock.Setup(repo => repo.FindIncludingTenant(_organisationId)).ReturnsAsync(organisation);
+
+        var result = await _useCase.Execute((_organisationId, command));
+
+        result.Should().BeTrue();
+
+        _organisationRepositoryMock.Verify(repo => repo.SaveAsync(organisation, AnyOnSave()), Times.Once);
+        organisation.BuyerInfo?.BuyerType.Should().BeEquivalentTo("A buyer type");
+
+        organisation.PendingRoles.Should().ContainSingle().Which.Should().Be(PartyRole.Buyer);
+
+        organisation.Roles.Distinct().Should().BeEquivalentTo(new[] { PartyRole.Tenderer });
+
+        _notifyClient.Verify(n => n.SendEmail(It.IsAny<EmailNotificationRequest>()), Times.Once);
+    }
+
+    [Fact]
     public async Task Execute_ShouldUpdateOrganisationRolesThrowsExceptionMissingRoles_WhenRolesAreMissing()
     {
         var command = new UpdateOrganisation
@@ -731,7 +764,7 @@ public class UpdateOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
         {
             Type = OrganisationUpdateType.RegisteredAddress,
             Organisation = new OrganisationInfo
-            {                
+            {
                 Addresses = [new OrganisationAddress { Country = "UK", CountryName = "UK", Locality = "Devon", PostalCode = "PL1 1LP", StreetAddress = "1 streety street", Type = AddressType.Registered }]
             }
         };
@@ -827,7 +860,7 @@ public class UpdateOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
 
         result.Should().BeTrue();
 
-        _notifyClient.Verify(n => n.SendEmail(It.IsAny<EmailNotificationRequest>()), Times.Never);            
+        _notifyClient.Verify(n => n.SendEmail(It.IsAny<EmailNotificationRequest>()), Times.Never);
     }
 
     [Fact]
