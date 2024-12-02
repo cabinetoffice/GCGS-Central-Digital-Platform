@@ -6,20 +6,13 @@ namespace CO.CDP.AwsServices;
 
 public static class ElastiCacheExtensions
 {
-    public static IServiceCollection AddElastiCacheService(this IServiceCollection services)
-    {
-        return services
-            .AddElastiCacheOptions();
-    }
-
     public static IServiceCollection AddSharedSessions(this IServiceCollection services,
         IConfiguration configuration)
     {
         if (configuration.GetValue<bool>("Features:SharedSessions"))
         {
             Console.WriteLine("SharedSession is enabled.");
-            services
-                .AddElastiCacheService();
+            services.AddElastiCacheService();
         }
         else
         {
@@ -28,6 +21,11 @@ public static class ElastiCacheExtensions
         }
 
         return services;
+    }
+
+    private static IServiceCollection AddElastiCacheService(this IServiceCollection services)
+    {
+        return services.AddElastiCacheOptions();
     }
 
     private static IServiceCollection AddElastiCacheOptions(this IServiceCollection services)
