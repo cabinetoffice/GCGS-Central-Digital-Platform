@@ -17,8 +17,8 @@ resource "aws_db_parameter_group" "this" {
 
 
 resource "aws_rds_cluster_parameter_group" "this" {
-  family      = var.family
-  name        = "${var.db_name}-cluster"
+  family = var.family
+  name   = "${var.db_name}-cluster"
 
   dynamic "parameter" {
     for_each = var.db_parameters_cluster
