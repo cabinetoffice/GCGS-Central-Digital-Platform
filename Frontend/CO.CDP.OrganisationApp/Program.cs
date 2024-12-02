@@ -234,18 +234,10 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-var supportedCultures = new[] { "en", "cy" };
-var localizationOptions = new RequestLocalizationOptions()
-    .SetDefaultCulture("en")
-    .AddSupportedCultures(supportedCultures)
-    .AddSupportedUICultures(supportedCultures);
-
-app.UseRequestLocalization(localizationOptions);
-
+app.UseRequestLocalization();
 app.MapHealthChecks("/health").AllowAnonymous();
 app.UseStaticFiles();
 app.UseRouting();
-app.UseRequestLocalization();
 app.UseAuthentication();
 app.UseSession();
 app.UseMiddleware<AuthenticatedSessionAwareMiddleware>();
