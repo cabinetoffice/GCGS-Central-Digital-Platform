@@ -14,6 +14,10 @@ output "ecs_sg_id" {
   value = aws_security_group.ecs.id
 }
 
+output "elasticache_redis_sg_id" {
+  value = aws_security_group.elasticache_redis.id
+}
+
 output "vpce_ecr_api_sg_id" {
   value = aws_security_group.vpce_ecr_api.id
 }
