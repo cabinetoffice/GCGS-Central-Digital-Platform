@@ -1,0 +1,64 @@
+@page "/organisation/{id}/supplier-to-buyer-devolved-regulation"
+@using CO.CDP.OrganisationApp.Constants
+
+@model CO.CDP.OrganisationApp.Pages.Organisation.SupplierToBuyerDevolvedRegulationModel
+@{
+    ViewData["Title"] = "Do devolved regulations apply to your organisation?";
+    var devolvedHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Devolved)).HasInnerHtml;
+
+    var backLink = $"/organisation/{@Model.Id}/supplier-to-buyer-organisation-type";
+
+}
+
+@section BeforeContent {
+    <a href="@backLink" class="govuk-back-link">Back</a>
+}
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds govuk-body">
+            <partial name="_ErrorSummary" model="@ModelState" />
+            <form method="post">
+                <div class="govuk-form-group @(devolvedHasError ? "govuk-form-group--error" : "")">
+                    <fieldset class="govuk-fieldset" @(devolvedHasError ? "aria-describedby=devolved-error" : "")>
+                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                            <h1 class="govuk-fieldset__heading">
+                                @ViewData["Title"]
+                            </h1>
+                        </legend>
+                        @if (devolvedHasError)
+                        {
+                            <p id="devolved-error" class="govuk-error-message">
+                                <span class="govuk-visually-hidden">Error:</span> @Html.ValidationMessageFor(m => m.Devolved)
+                            </p>
+                        }
+
+                        <div class="govuk-radios" data-module="govuk-radios">
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input" id="@nameof(Model.Devolved)" name="@nameof(Model.Devolved)"
+                                       type="radio"
+                                value="true"
+                                @(Model.Devolved == true ? "checked" : "")>
+                                <label class="govuk-label govuk-radios__label" for="@nameof(Model.Devolved)">
+                                    Yes
+                                </label>
+                            </div>
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input" id="@nameof(Model.Devolved)-1" name="@nameof(Model.Devolved)"
+                                       type="radio"
+                                value="false"
+                                @(Model.Devolved == false ? "checked" : "")>
+                                <label class="govuk-label govuk-radios__label" for="@nameof(Model.Devolved)-1">
+                                    No
+                                </label>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+                
+                <govuk-button>
+                    Continue
+                </govuk-button>
+                
+            </form>
+        </div>
+    </div>

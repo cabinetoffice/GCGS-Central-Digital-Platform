@@ -194,6 +194,17 @@
                         @StaticTextResource.Organisation_GetProcurementGuidance <a rel="noreferrer noopener" target="_blank" class="govuk-link" href="https://www.procurementpathway.civilservice.gov.uk/">@StaticTextResource.Organisation_ProcurementPathwayService</a>
                     </p>
                 }
+
+                <authorize scope="@OrgScopeRequirement.Admin">
+                    @if (organisationDetails.IsTenderer() && !(organisationDetails.IsPendingBuyer() || organisationDetails.IsBuyer())) 
+                    {
+                        <h3 class="govuk-heading-s govuk-!-margin-bottom-3">
+                            <a class="govuk-link" asp-page="./OrganisationRegisterSupplierAsBuyer" asp-route-id="@Model.Id">Register as a buyer</a>
+                        </h3>
+                        <p class="govuk-body">If you also buy public sector goods, works, services or utilities.</p>
+                        <div class="govuk-section-break govuk-section-break--visible govuk-section-break--m"></div>
+                    }
+                </authorize>
             </fieldset>
         </div>
     </div>
