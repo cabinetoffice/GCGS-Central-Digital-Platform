@@ -1,17 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
-  <!--
-    Microsoft ResX Schema
-
+  <!-- 
+    Microsoft ResX Schema 
+    
     Version 2.0
-
-    The primary goals of this format is to allow a simple XML format
-    that is mostly human readable. The generation and parsing of the
-    various data types are done through the TypeConverter classes
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
     associated with the data types.
-
+    
     Example:
-
+    
     ... ado.net/XML headers & schema ...
     <resheader name="resmimetype">text/microsoft-resx</resheader>
     <resheader name="version">2.0</resheader>
@@ -26,36 +26,36 @@
         <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
         <comment>This is a comment</comment>
     </data>
-
-    There are any number of "resheader" rows that contain simple
+                
+    There are any number of "resheader" rows that contain simple 
     name/value pairs.
-
-    Each data row contains a name, and value. The row also contains a
-    type or mimetype. Type corresponds to a .NET class that support
-    text/value conversion through the TypeConverter architecture.
-    Classes that don't support this are serialized and stored with the
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
     mimetype set.
-
-    The mimetype is used for serialized objects, and tells the
-    ResXResourceReader how to depersist the object. This is currently not
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
     extensible. For a given mimetype the value must be set accordingly:
-
-    Note - application/x-microsoft.net.object.binary.base64 is the format
-    that the ResXResourceWriter will generate, however the reader can
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
     read any of the formats listed below.
-
+    
     mimetype: application/x-microsoft.net.object.binary.base64
-    value   : The object must be serialized with
+    value   : The object must be serialized with 
             : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
             : and then encoded with base64 encoding.
-
+    
     mimetype: application/x-microsoft.net.object.soap.base64
-    value   : The object must be serialized with
+    value   : The object must be serialized with 
             : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
             : and then encoded with base64 encoding.
 
     mimetype: application/x-microsoft.net.object.bytearray.base64
-    value   : The object must be serialized into a byte array
+    value   : The object must be serialized into a byte array 
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
@@ -141,7 +141,7 @@
   <data name="Global_Back" xml:space="preserve">
     <value>Back</value>
   </data>
-    <data name="Global_Download" xml:space="preserve">
+  <data name="Global_Download" xml:space="preserve">
     <value>Download</value>
   </data>
   <data name="Global_Important" xml:space="preserve">
@@ -284,9 +284,6 @@
   </data>
   <data name="Organisation_MyOrganisations" xml:space="preserve">
     <value>My organisations</value>
-  </data>
-  <data name="Organisation_OrganisationName" xml:space="preserve">
-    <value>Organisation name</value>
   </data>
   <data name="Organisation_PendingApproval" xml:space="preserve">
     <value>Pending approval</value>
@@ -1708,15 +1705,6 @@
   <data name="Forms_FormElementDateInput_ExampleHint" xml:space="preserve">
     <value>For example, 27 3 2007</value>
   </data>
-  <data name="Global_Day" xml:space="preserve">
-    <value>Day</value>
-  </data>
-  <data name="Global_Month" xml:space="preserve">
-    <value>Month</value>
-  </data>
-  <data name="Global_Year" xml:space="preserve">
-    <value>Year</value>
-  </data>
   <data name="Forms_FormElementFileUpload_UploadFileLabel" xml:space="preserve">
     <value>Upload a file</value>
   </data>
@@ -1822,26 +1810,11 @@
   <data name="Forms_FormElementAddress_InvalidCountryError" xml:space="preserve">
     <value>Invalid country name '{0}'</value>
   </data>
-  <data name="Global_Yes" xml:space="preserve">
-    <value>Yes</value>
-  </data>
-  <data name="Global_No" xml:space="preserve">
-    <value>No</value>
-  </data>
   <data name="Global_SaveAndContinue" xml:space="preserve">
     <value>Save and continue</value>
   </data>
   <data name="Global_Save" xml:space="preserve">
     <value>Save</value>
-  </data>
-  <data name="Global_Remove" xml:space="preserve">
-    <value>Remove</value>
-  </data>
-  <data name="Global_PleaseSelect" xml:space="preserve">
-    <value>Please select</value>
-  </data>
-  <data name="Global_Change" xml:space="preserve">
-    <value>Change</value>
   </data>
   <data name="Forms_AnswerSetSummary_BackToSupplierInformation" xml:space="preserve">
     <value>Back to supplier information</value>
@@ -2037,5 +2010,248 @@
   </data>
   <data name="Exclusions_AddExclusionDeclaration_DiscretionaryExclusionsLinkText" xml:space="preserve">
     <value>These exclusions are defined in &lt;a href="{0}" target="_blank"&gt;schedule 7 of the Procurement Act 2023 (opens in new tab)&lt;/a&gt;.</value>
+  </data>
+  <data name="Global_NotApplicable" xml:space="preserve">
+    <value>N/A</value>
+  </data>
+  <data name="PdfGenerator_AdditionalIdentifiers" xml:space="preserve">
+    <value>Additional identifiers</value>
+  </data>
+  <data name="PdfGenerator_BasicInformation_EmailAddress" xml:space="preserve">
+    <value>Email address</value>
+  </data>
+  <data name="PdfGenerator_BasicInformation_LawRegistered" xml:space="preserve">
+    <value>Law registered</value>
+  </data>
+  <data name="PdfGenerator_BasicInformation_LegalForm" xml:space="preserve">
+    <value>Legal form</value>
+  </data>
+  <data name="PdfGenerator_BasicInformation_OrganisationName" xml:space="preserve">
+    <value>Organisation name</value>
+  </data>
+  <data name="PdfGenerator_BasicInformation_OrganisationType" xml:space="preserve">
+    <value>Organisation type</value>
+  </data>
+  <data name="PdfGenerator_BasicInformation_PostalAddress" xml:space="preserve">
+    <value>Postal address</value>
+  </data>
+  <data name="PdfGenerator_BasicInformation_RegisteredAddress" xml:space="preserve">
+    <value>Registered address</value>
+  </data>
+  <data name="PdfGenerator_BasicInformation_RegisteredLegalForm" xml:space="preserve">
+    <value>Registered legal form</value>
+  </data>
+  <data name="PdfGenerator_BasicInformation_RegistrationDate" xml:space="preserve">
+    <value>Registration date</value>
+  </data>
+  <data name="PdfGenerator_BasicInformation_Suppliertype" xml:space="preserve">
+    <value>Supplier type</value>
+  </data>
+  <data name="PdfGenerator_BasicInformation_Title" xml:space="preserve">
+    <value>Basic Information</value>
+  </data>
+  <data name="PdfGenerator_BasicInformation_VATNumber" xml:space="preserve">
+    <value>VAT number</value>
+  </data>
+  <data name="PdfGenerator_BasicInformation_WebsiteAddress" xml:space="preserve">
+    <value>Website address</value>
+  </data>
+  <data name="PdfGenerator_ConnectedEntityIndividualAndTrustCategory_DirectorOrIndividualSameResponsibilities" xml:space="preserve">
+    <value>Director or individual with same responsibilities</value>
+  </data>
+  <data name="PdfGenerator_ConnectedEntityIndividualAndTrustCategory_OtherIndividualWithSignificantInfluence" xml:space="preserve">
+    <value>Other individual with significant influence or control</value>
+  </data>
+  <data name="PdfGenerator_ConnectedEntityIndividualAndTrustCategory_PersonWithSignificantControl" xml:space="preserve">
+    <value>Person with significant control</value>
+  </data>
+  <data name="PdfGenerator_ConnectedEntityType_Individual" xml:space="preserve">
+    <value>Individual</value>
+  </data>
+  <data name="PdfGenerator_ConnectedEntityType_Organisation" xml:space="preserve">
+    <value>Organisation</value>
+  </data>
+  <data name="PdfGenerator_ConnectedEntityType_TrustTrustee" xml:space="preserve">
+    <value>Trust or Trustee</value>
+  </data>
+  <data name="PdfGenerator_ConnectedOrganisationCategory_DirectorSameResponsibilities" xml:space="preserve">
+    <value>Director or individual with the same responsibilities</value>
+  </data>
+  <data name="PdfGenerator_ConnectedOrganisationCategory_OtherOrganisationWithInfluence" xml:space="preserve">
+    <value>Any other organisation with significant influence or control</value>
+  </data>
+  <data name="PdfGenerator_ConnectedOrganisationCategory_ParentSubsidiaryCompany" xml:space="preserve">
+    <value>Parent or subsidiary company</value>
+  </data>
+  <data name="PdfGenerator_ConnectedOrganisationCategory_RegisteredCompany" xml:space="preserve">
+    <value>Registered company</value>
+  </data>
+  <data name="PdfGenerator_ConnectedOrganisationCategory_TakenOverCompany" xml:space="preserve">
+    <value>A company your organisation has taken over</value>
+  </data>
+  <data name="PdfGenerator_ConnectedOrganisationInformation_Title" xml:space="preserve">
+    <value>Connected Organisation Information</value>
+  </data>
+  <data name="PdfGenerator_ConnectedPerson_Category" xml:space="preserve">
+    <value>Category</value>
+  </data>
+  <data name="PdfGenerator_ConnectedPersonInformation_Title" xml:space="preserve">
+    <value>Connected Person Information</value>
+  </data>
+  <data name="PdfGenerator_ConnectedPerson_Type" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="PdfGenerator_ConnectedPersonType_Individual" xml:space="preserve">
+    <value>Individual</value>
+  </data>
+  <data name="PdfGenerator_ConnectedPersonType_TrustTrustee" xml:space="preserve">
+    <value>Trust or Trustee</value>
+  </data>
+  <data name="PdfGenerator_ConnectedPerson_CompanyHouseNumber" xml:space="preserve">
+    <value>Company house number</value>
+  </data>
+  <data name="PdfGenerator_ConnectedPerson_Country" xml:space="preserve">
+    <value>Country</value>
+  </data>
+  <data name="PdfGenerator_ConnectedPerson_DateOfBirth" xml:space="preserve">
+    <value>Date of birth</value>
+  </data>
+  <data name="PdfGenerator_ConnectedPerson_FirstName" xml:space="preserve">
+    <value>First name</value>
+  </data>
+  <data name="PdfGenerator_ConnectedPerson_LastName" xml:space="preserve">
+    <value>Last name</value>
+  </data>
+  <data name="PdfGenerator_ConnectedPerson_LawRegistered" xml:space="preserve">
+    <value>Law registered</value>
+  </data>
+  <data name="PdfGenerator_ConnectedPerson_Locality" xml:space="preserve">
+    <value>Locality</value>
+  </data>
+  <data name="PdfGenerator_ConnectedPerson_Nationality" xml:space="preserve">
+    <value>Nationality</value>
+  </data>
+  <data name="PdfGenerator_ConnectedPerson_OrganisationCategory" xml:space="preserve">
+    <value>Category</value>
+  </data>
+  <data name="PdfGenerator_ConnectedPerson_OrganisationEntityType" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="PdfGenerator_ConnectedPerson_OrganisationName" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="PdfGenerator_ConnectedPerson_PostalAddress" xml:space="preserve">
+    <value>Postal address</value>
+  </data>
+  <data name="PdfGenerator_ConnectedPerson_Postcode" xml:space="preserve">
+    <value>Postcode</value>
+  </data>
+  <data name="PdfGenerator_ConnectedPerson_RegisteredAddress" xml:space="preserve">
+    <value>Registered address</value>
+  </data>
+  <data name="PdfGenerator_ConnectedPerson_RegisteredLegalForm" xml:space="preserve">
+    <value>Registered legal form</value>
+  </data>
+  <data name="PdfGenerator_ConnectedPerson_ResidentCountry" xml:space="preserve">
+    <value>Resident country</value>
+  </data>
+  <data name="PdfGenerator_ConnectedPerson_StreetAddress" xml:space="preserve">
+    <value>Street address</value>
+  </data>
+  <data name="PdfGenerator_ControlCondition_CanAppointRemoveDirectors" xml:space="preserve">
+    <value>Can appoint or remove directors</value>
+  </data>
+  <data name="PdfGenerator_ControlCondition_HasOtherInfluence" xml:space="preserve">
+    <value>Has other significant influence or control</value>
+  </data>
+  <data name="PdfGenerator_ControlCondition_HasVotingRights" xml:space="preserve">
+    <value>Has voting rights</value>
+  </data>
+  <data name="PdfGenerator_ControlCondition_None" xml:space="preserve">
+    <value>None</value>
+  </data>
+  <data name="PdfGenerator_ControlCondition_OwnsShares" xml:space="preserve">
+    <value>Owns shares</value>
+  </data>
+  <data name="PdfGenerator_Footer_GeneratedOn" xml:space="preserve">
+    <value>Generated on</value>
+  </data>
+  <data name="PdfGenerator_IdentifierId" xml:space="preserve">
+    <value>Identifier id</value>
+  </data>
+  <data name="PdfGenerator_IndividualTrustInformation_Title" xml:space="preserve">
+    <value>Individual Trust Information</value>
+  </data>
+  <data name="PdfGenerator_LegalName" xml:space="preserve">
+    <value>Legal name</value>
+  </data>
+  <data name="PdfGenerator_NoAdditionalIdentifiersAvailableMsg" xml:space="preserve">
+    <value>No additional identifiers available.</value>
+  </data>
+  <data name="PdfGenerator_NoConnectedPersonInformationAvailableMsg" xml:space="preserve">
+    <value>No connected person information available.</value>
+  </data>
+  <data name="PdfGenerator_OrganisationSchemeTitle_CharityCommission" xml:space="preserve">
+    <value>Charity Commission for England &amp; Wales Number</value>
+  </data>
+  <data name="PdfGenerator_OrganisationSchemeTitle_CompaniesHouseNumber" xml:space="preserve">
+    <value>Companies House Number</value>
+  </data>
+  <data name="PdfGenerator_OrganisationSchemeTitle_GuernseyRegistry" xml:space="preserve">
+    <value>Guernsey Registry Number</value>
+  </data>
+  <data name="PdfGenerator_OrganisationSchemeTitle_IsleOfManCompaniesRegistry" xml:space="preserve">
+    <value>Isle of Man Companies Registry Number</value>
+  </data>
+  <data name="PdfGenerator_OrganisationSchemeTitle_JerseyFinancialServices" xml:space="preserve">
+    <value>Jersey Financial Services Commission Registry Number</value>
+  </data>
+  <data name="PdfGenerator_OrganisationSchemeTitle_LearningProviderRegistry" xml:space="preserve">
+    <value>UK Register of Learning Provider Number</value>
+  </data>
+  <data name="PdfGenerator_OrganisationSchemeTitle_MutualsPublicRegister" xml:space="preserve">
+    <value>Mutuals Public Register Number</value>
+  </data>
+  <data name="PdfGenerator_OrganisationSchemeTitle_NHSRegistry" xml:space="preserve">
+    <value>National Health Service Organisations Registry Number</value>
+  </data>
+  <data name="PdfGenerator_OrganisationSchemeTitle_NorthernIrelandCharityCommission" xml:space="preserve">
+    <value>Charity Commission for Northern Ireland Number</value>
+  </data>
+  <data name="PdfGenerator_OrganisationSchemeTitle_Other" xml:space="preserve">
+    <value>Other / None</value>
+  </data>
+  <data name="PdfGenerator_OrganisationSchemeTitle_Ppon" xml:space="preserve">
+    <value>Ppon</value>
+  </data>
+  <data name="PdfGenerator_OrganisationSchemeTitle_ScottishCharityRegulator" xml:space="preserve">
+    <value>Scottish Charity Regulator</value>
+  </data>
+  <data name="PdfGenerator_OrganisationSchemeTitle_Unknown" xml:space="preserve">
+    <value>Unknown</value>
+  </data>
+  <data name="PdfGenerator_OrganisationSchemeTitle_VAT" xml:space="preserve">
+    <value>VAT number</value>
+  </data>
+  <data name="PdfGenerator_Organisation_ControlConditions" xml:space="preserve">
+    <value>Control conditions</value>
+  </data>
+  <data name="PdfGenerator_Scheme" xml:space="preserve">
+    <value>Scheme</value>
+  </data>
+  <data name="PdfGenerator_SupplierInformation_Title" xml:space="preserve">
+    <value>Supplier Information</value>
+  </data>
+  <data name="PdfGenerator_UnknownCategory" xml:space="preserve">
+    <value>Unknown category</value>
+  </data>
+  <data name="PdfGenerator_UnknownControlCondition" xml:space="preserve">
+    <value>Unknown control condition</value>
+  </data>
+  <data name="PdfGenerator_UnknownPersonType" xml:space="preserve">
+    <value>Unknown person type</value>
+  </data>
+  <data name="PdfGenerator_Uri" xml:space="preserve">
+    <value>Uri</value>
   </data>
 </root>
