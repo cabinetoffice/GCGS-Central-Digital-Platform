@@ -36,6 +36,6 @@ public class CustomQueryStringCultureProvider : IRequestCultureProvider
         if (queryValue.StartsWith("cy", StringComparison.OrdinalIgnoreCase))
             return "cy";
 
-        return "en";
+        return "en-GB";
     }
 }

@@ -34,11 +34,11 @@ public class CustomQueryStringCultureProviderTests
         var result = await provider.DetermineProviderCultureResult(httpContext.Object);
 
         result.Should().NotBeNull();
-        result!.Cultures.First().Value.Should().Be("en");
+        result!.Cultures.First().Value.Should().Be("en-GB");
 
         cookies.Verify(c => c.Append(
             CookieRequestCultureProvider.DefaultCookieName,
-            "c=en|uic=en",
+            "c=en-GB|uic=en-GB",
             It.IsAny<CookieOptions>()), Times.Once);
     }
 
@@ -46,16 +46,16 @@ public class CustomQueryStringCultureProviderTests
     public async Task DetermineProviderCultureResult_SetsEnCultureAndCookie_WhenLanguageQueryStringIsEnGB()
     {
         var provider = new CustomQueryStringCultureProvider();
-        var (httpContext, cookies) = GivenHttpContext("en_GB"); // The format we're expecting from FTS
+        var (httpContext, cookies) = GivenHttpContext("en_GB"); // The format we're expecting from FTS, with an underscore instead of the more standard dash
 
         var result = await provider.DetermineProviderCultureResult(httpContext.Object);
 
         result.Should().NotBeNull();
-        result!.Cultures.First().Value.Should().Be("en");
+        result!.Cultures.First().Value.Should().Be("en-GB");
 
         cookies.Verify(c => c.Append(
             CookieRequestCultureProvider.DefaultCookieName,
-            "c=en|uic=en",
+            "c=en-GB|uic=en-GB",
             It.IsAny<CookieOptions>()), Times.Once);
     }
 
@@ -83,11 +83,11 @@ public class CustomQueryStringCultureProviderTests
         var result = await provider.DetermineProviderCultureResult(httpContext.Object);
 
         result.Should().NotBeNull();
-        result!.Cultures.First().Value.Should().Be("en");
+        result!.Cultures.First().Value.Should().Be("en-GB");
 
         cookies.Verify(c => c.Append(
             CookieRequestCultureProvider.DefaultCookieName,
-            "c=en|uic=en",
+            "c=en-GB|uic=en-GB",
             It.IsAny<CookieOptions>()), Times.Once);
     }
 

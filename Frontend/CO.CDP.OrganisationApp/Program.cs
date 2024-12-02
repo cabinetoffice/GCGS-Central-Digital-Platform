@@ -38,9 +38,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.Configure<RequestLocalizationOptions>(options =>
 {
-    var supportedCultures = new[] { new CultureInfo("en"), new CultureInfo("cy") };
+    var supportedCultures = new[] { new CultureInfo("en-GB"), new CultureInfo("cy") };
 
-    options.DefaultRequestCulture = new RequestCulture("en");
+    options.DefaultRequestCulture = new RequestCulture("en-GB");
     options.SupportedCultures = supportedCultures;
     options.SupportedUICultures = supportedCultures;
 
