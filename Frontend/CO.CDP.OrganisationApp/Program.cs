@@ -100,6 +100,8 @@ builder.Services.AddTransient<IChoiceProviderService, ChoiceProviderService>();
 builder.Services.AddTransient<IFormsEngine, FormsEngine>();
 builder.Services.AddTransient<IDiagnosticPage, DiagnosticPage>();
 builder.Services.AddScoped<IUserInfoService, UserInfoService>();
+builder.Services.AddScoped<IFtsUrlService, FtsUrlService>();
+
 
 var formsServiceUrl = builder.Configuration.GetValue<string>("FormsService")
             ?? throw new Exception("Missing configuration key: FormsService.");
