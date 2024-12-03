@@ -1,0 +1,143 @@
+@page "/organisation/{id}/supplier-to-buyer-organisation-type"
+@model CO.CDP.OrganisationApp.Pages.Organisation.SupplierToBuyerOrganisationTypeModel
+@{
+    ViewData["Title"] = "Select the organisation type";
+    var organisationTypeHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.BuyerOrganisationType)).HasInnerHtml;
+    var otherHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.OtherValue)).HasInnerHtml;
+
+    var backLink = $"/organisation/{@Model.Id}";
+
+    if (Request.Query.ContainsKey("frm-summary"))
+    {
+        backLink = $"/organisation/{@Model.Id}/supplier-to-buyer-organisation-details-summary";
+        Model.RedirectToSummary = true;
+    }
+
+    string IsSelected(string? radioValue)
+    {
+        return Model.BuyerOrganisationType == radioValue ? "checked='checked'" : string.Empty;
+    }
+}
+@section BeforeContent {
+    <a href="@backLink" class="govuk-back-link">Back</a>
+}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds govuk-body">
+            <partial name="_ErrorSummary" model="@ModelState" />
+            <form method="post">
+                @if (Request.Query.ContainsKey("frm-summary"))
+                {
+                    <input type="hidden" name="RedirectToSummary" value="true" />
+                }
+                <div class="govuk-form-group @(organisationTypeHasError ? "govuk-form-group--error" : "")">
+                    <fieldset class="govuk-fieldset" aria-describedby="organisationType-hint @(organisationTypeHasError ? "organisationType-error" : "")">
+                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                            <h1 class="govuk-fieldset__heading">
+                                @ViewData["Title"]
+                            </h1>
+                        </legend>
+
+                        @if (organisationTypeHasError)
+                        {
+                            <p id="organisationType-error" class="govuk-error-message">
+                                <span class="govuk-visually-hidden">Error:</span> @Html.ValidationMessageFor(m => m.BuyerOrganisationType)
+                            </p>
+                        }
+                        <div id="organisationType-hint" class="govuk-hint">
+                            Select the type of organisation that best describes your organisation's role.
+                        </div>
+                        <div class="govuk-radios" data-module="govuk-radios">
+                            <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="@nameof(Model.BuyerOrganisationType)" name="BuyerOrganisationType"
+                                       type="radio" value="CentralGovernment"
+                                       aria-describedby="ca-type-item-hint" @IsSelected("CentralGovernment")>
+                            <label class="govuk-label govuk-radios__label" for="@nameof(Model.BuyerOrganisationType)">
+                                    @SupplierToBuyerOrganisationTypeModel.BuyerTypes["CentralGovernment"]
+                                </label>
+                                <div id="ca-type-item-hint" class="govuk-hint govuk-radios__hint">
+                                    Includes arm's-length bodies:
+                                    <ul>
+                                        <li>executive agencies (EA)</li>
+                                        <li>non-departmental public bodies (NDPB)</li>
+                                        <li>non-ministerial departments (NMD)</li>
+                                        <li>Trading Funds</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="@nameof(Model.BuyerOrganisationType)-1" name="BuyerOrganisationType"
+                                       type="radio" value="RegionalAndLocalGovernment"
+                                       aria-describedby="ca-type-2-item-hint" @IsSelected("RegionalAndLocalGovernment")>
+                            <label class="govuk-label govuk-radios__label" for="@nameof(Model.BuyerOrganisationType)-1">
+                                    @SupplierToBuyerOrganisationTypeModel.BuyerTypes["RegionalAndLocalGovernment"]
+                                </label>
+                                <div id="ca-type-2-item-hint" class="govuk-hint govuk-radios__hint">
+                                    Includes:
+                                    <ul>
+                                        <li>unitary authorities</li>
+                                        <li>county, district, borough and parish councils</li>
+                                        <li>the Greater London Authority</li>
+                                        <li>charities</li>
+                                        <li>housing associations</li>
+                                        <li>blue light organisations - ambulance, police, and other emergency services</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="@nameof(Model.BuyerOrganisationType)-2" name="BuyerOrganisationType"
+                                       type="radio" value="PublicUndertaking" aria-describedby="ca-type-3-item-hint" @IsSelected("PublicUndertaking")>
+                            <label class="govuk-label govuk-radios__label" for="@nameof(Model.BuyerOrganisationType)-2">
+                                    @SupplierToBuyerOrganisationTypeModel.BuyerTypes["PublicUndertaking"]
+                                </label>
+                                <div id="ca-type-3-item-hint" class="govuk-hint govuk-radios__hint">
+                                    Unlike a public authority, organisations that operate commercially and provide utility activities to the public. For example, Transport for Wales.
+                                </div>
+                            </div>
+                            <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="@nameof(Model.BuyerOrganisationType)-3" name="BuyerOrganisationType"
+                                       type="radio" value="PrivateUtility" aria-describedby="ca-type-4-item-hint" @IsSelected("PrivateUtility")>
+                            <label class="govuk-label govuk-radios__label" for="@nameof(Model.BuyerOrganisationType)-3">
+                                    @SupplierToBuyerOrganisationTypeModel.BuyerTypes["PrivateUtility"]
+                                </label>
+                                <div id="ca-type-4-item-hint" class="govuk-hint govuk-radios__hint">
+                                    For example, private companies that have been granted a special or exclusive right to provide utility activities to the public. Such as National Grid or British Gas.
+                                </div>
+                            </div>
+                            <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="@nameof(Model.BuyerOrganisationType)-4" name="BuyerOrganisationType"
+                                       type="radio" value="Other" data-aria-controls="conditional-ca-type-5" @IsSelected("Other")>
+                            <label class="govuk-label govuk-radios__label" for="@nameof(Model.BuyerOrganisationType)-4">
+                                    Other
+                                </label>
+                            </div>
+
+                            <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-ca-type-5">
+                                <div class="govuk-form-group @(otherHasError ? "govuk-form-group--error" : "")">
+                                    <label class="govuk-label" for="other-buyer-type">
+                                        Enter type
+                                    </label>
+                                    @Html.ValidationMessageFor(m => m.OtherValue, "", new { @class = "govuk-error-message", @id = "other-buyer-type-error" })
+
+                                    <div id="ca-type-5-item-hint" class="govuk-hint">
+                                        For example, the establishment of a utilities dynamic market by a non-contracting authority.
+                                    </div>
+
+                                    <input autocomplete="off" class="govuk-input @(otherHasError ? "govuk-input--error" : "")"
+                                        id="OtherValue"
+                                        name="OtherValue"
+                                       type="text" aria-describedby="ca-type-5-item-hint @(otherHasError ? "other-buyer-type-error" : "")"
+                                       value="@(Model.BuyerOrganisationType == "Other" ? Model.OtherValue : "")">
+
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+                <govuk-button>
+                    Continue
+                </govuk-button>
+            </form>
+        </div>
+    </div>

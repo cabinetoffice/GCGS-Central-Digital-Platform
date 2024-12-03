@@ -137,7 +137,7 @@
   </data>
   <data name="BasicInformation_SectionTitle" xml:space="preserve">
     <value>Basic information</value>
-  </data>
+  </data>  
   <data name="Global_Back" xml:space="preserve">
     <value>Back</value>
   </data>
@@ -461,9 +461,6 @@
   </data>
   <data name="Supplementary_ContactUs_Organisation_ErrorMessage" xml:space="preserve">
     <value>Enter your Organisation</value>
-  </data>
-  <data name="Supplementary_ContactUs_Email_ValidationErrorMessage" xml:space="preserve">
-    <value>Enter an email address in the correct format, like name@example.com</value>
   </data>
   <data name="Supplementary_ContactUs_Message" xml:space="preserve">
     <value>Message</value>
@@ -2046,5 +2043,485 @@
   </data>
   <data name="Organisation_OrganisationIdentification_Multiple_Hint" xml:space="preserve">
     <value>Select all that apply. Then enter the registration number.</value>
+  </data>
+  <data name="Global_NotApplicable" xml:space="preserve">
+    <value>N/A</value>
+  </data>
+  <data name="PdfGenerator_AdditionalIdentifiers" xml:space="preserve">
+    <value>Additional identifiers</value>
+  </data>
+  <data name="PdfGenerator_BasicInformation_EmailAddress" xml:space="preserve">
+    <value>Email address</value>
+  </data>
+  <data name="PdfGenerator_BasicInformation_LawRegistered" xml:space="preserve">
+    <value>Law registered</value>
+  </data>
+  <data name="PdfGenerator_BasicInformation_LegalForm" xml:space="preserve">
+    <value>Legal form</value>
+  </data>
+  <data name="PdfGenerator_BasicInformation_OrganisationName" xml:space="preserve">
+    <value>Organisation name</value>
+  </data>
+  <data name="PdfGenerator_BasicInformation_OrganisationType" xml:space="preserve">
+    <value>Organisation type</value>
+  </data>
+  <data name="PdfGenerator_BasicInformation_PostalAddress" xml:space="preserve">
+    <value>Postal address</value>
+  </data>
+  <data name="PdfGenerator_BasicInformation_RegisteredAddress" xml:space="preserve">
+    <value>Registered address</value>
+  </data>
+  <data name="PdfGenerator_BasicInformation_RegisteredLegalForm" xml:space="preserve">
+    <value>Registered legal form</value>
+  </data>
+  <data name="PdfGenerator_BasicInformation_RegistrationDate" xml:space="preserve">
+    <value>Registration date</value>
+  </data>
+  <data name="PdfGenerator_BasicInformation_Suppliertype" xml:space="preserve">
+    <value>Supplier type</value>
+  </data>
+  <data name="PdfGenerator_BasicInformation_Title" xml:space="preserve">
+    <value>Basic Information</value>
+  </data>
+  <data name="PdfGenerator_BasicInformation_VATNumber" xml:space="preserve">
+    <value>VAT number</value>
+  </data>
+  <data name="PdfGenerator_BasicInformation_WebsiteAddress" xml:space="preserve">
+    <value>Website address</value>
+  </data>
+  <data name="PdfGenerator_ConnectedEntityIndividualAndTrustCategory_DirectorOrIndividualSameResponsibilities" xml:space="preserve">
+    <value>Director or individual with same responsibilities</value>
+  </data>
+  <data name="PdfGenerator_ConnectedEntityIndividualAndTrustCategory_OtherIndividualWithSignificantInfluence" xml:space="preserve">
+    <value>Other individual with significant influence or control</value>
+  </data>
+  <data name="PdfGenerator_ConnectedEntityIndividualAndTrustCategory_PersonWithSignificantControl" xml:space="preserve">
+    <value>Person with significant control</value>
+  </data>
+  <data name="PdfGenerator_ConnectedEntityType_Individual" xml:space="preserve">
+    <value>Individual</value>
+  </data>
+  <data name="PdfGenerator_ConnectedEntityType_Organisation" xml:space="preserve">
+    <value>Organisation</value>
+  </data>
+  <data name="PdfGenerator_ConnectedEntityType_TrustTrustee" xml:space="preserve">
+    <value>Trust or Trustee</value>
+  </data>
+  <data name="PdfGenerator_ConnectedOrganisationCategory_DirectorSameResponsibilities" xml:space="preserve">
+    <value>Director or individual with the same responsibilities</value>
+  </data>
+  <data name="PdfGenerator_ConnectedOrganisationCategory_OtherOrganisationWithInfluence" xml:space="preserve">
+    <value>Any other organisation with significant influence or control</value>
+  </data>
+  <data name="PdfGenerator_ConnectedOrganisationCategory_ParentSubsidiaryCompany" xml:space="preserve">
+    <value>Parent or subsidiary company</value>
+  </data>
+  <data name="PdfGenerator_ConnectedOrganisationCategory_RegisteredCompany" xml:space="preserve">
+    <value>Registered company</value>
+  </data>
+  <data name="PdfGenerator_ConnectedOrganisationCategory_TakenOverCompany" xml:space="preserve">
+    <value>A company your organisation has taken over</value>
+  </data>
+  <data name="PdfGenerator_ConnectedOrganisationInformation_Title" xml:space="preserve">
+    <value>Connected Organisation Information</value>
+  </data>
+  <data name="PdfGenerator_ConnectedPerson_Category" xml:space="preserve">
+    <value>Category</value>
+  </data>
+  <data name="PdfGenerator_ConnectedPersonInformation_Title" xml:space="preserve">
+    <value>Connected Person Information</value>
+  </data>
+  <data name="PdfGenerator_ConnectedPerson_Type" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="PdfGenerator_ConnectedPersonType_Individual" xml:space="preserve">
+    <value>Individual</value>
+  </data>
+  <data name="PdfGenerator_ConnectedPersonType_TrustTrustee" xml:space="preserve">
+    <value>Trust or Trustee</value>
+  </data>
+  <data name="PdfGenerator_ConnectedPerson_CompanyHouseNumber" xml:space="preserve">
+    <value>Company house number</value>
+  </data>
+  <data name="PdfGenerator_ConnectedPerson_Country" xml:space="preserve">
+    <value>Country</value>
+  </data>
+  <data name="PdfGenerator_ConnectedPerson_DateOfBirth" xml:space="preserve">
+    <value>Date of birth</value>
+  </data>
+  <data name="PdfGenerator_ConnectedPerson_FirstName" xml:space="preserve">
+    <value>First name</value>
+  </data>
+  <data name="PdfGenerator_ConnectedPerson_LastName" xml:space="preserve">
+    <value>Last name</value>
+  </data>
+  <data name="PdfGenerator_ConnectedPerson_LawRegistered" xml:space="preserve">
+    <value>Law registered</value>
+  </data>
+  <data name="PdfGenerator_ConnectedPerson_Locality" xml:space="preserve">
+    <value>Locality</value>
+  </data>
+  <data name="PdfGenerator_ConnectedPerson_Nationality" xml:space="preserve">
+    <value>Nationality</value>
+  </data>
+  <data name="PdfGenerator_ConnectedPerson_OrganisationCategory" xml:space="preserve">
+    <value>Category</value>
+  </data>
+  <data name="PdfGenerator_ConnectedPerson_OrganisationEntityType" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="PdfGenerator_ConnectedPerson_OrganisationName" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="PdfGenerator_ConnectedPerson_PostalAddress" xml:space="preserve">
+    <value>Postal address</value>
+  </data>
+  <data name="PdfGenerator_ConnectedPerson_Postcode" xml:space="preserve">
+    <value>Postcode</value>
+  </data>
+  <data name="PdfGenerator_ConnectedPerson_RegisteredAddress" xml:space="preserve">
+    <value>Registered address</value>
+  </data>
+  <data name="PdfGenerator_ConnectedPerson_RegisteredLegalForm" xml:space="preserve">
+    <value>Registered legal form</value>
+  </data>
+  <data name="PdfGenerator_ConnectedPerson_ResidentCountry" xml:space="preserve">
+    <value>Resident country</value>
+  </data>
+  <data name="PdfGenerator_ConnectedPerson_StreetAddress" xml:space="preserve">
+    <value>Street address</value>
+  </data>
+  <data name="PdfGenerator_ControlCondition_CanAppointRemoveDirectors" xml:space="preserve">
+    <value>Can appoint or remove directors</value>
+  </data>
+  <data name="PdfGenerator_ControlCondition_HasOtherInfluence" xml:space="preserve">
+    <value>Has other significant influence or control</value>
+  </data>
+  <data name="PdfGenerator_ControlCondition_HasVotingRights" xml:space="preserve">
+    <value>Has voting rights</value>
+  </data>
+  <data name="PdfGenerator_ControlCondition_None" xml:space="preserve">
+    <value>None</value>
+  </data>
+  <data name="PdfGenerator_ControlCondition_OwnsShares" xml:space="preserve">
+    <value>Owns shares</value>
+  </data>
+  <data name="PdfGenerator_Footer_GeneratedOn" xml:space="preserve">
+    <value>Generated on</value>
+  </data>
+  <data name="PdfGenerator_IdentifierId" xml:space="preserve">
+    <value>Identifier id</value>
+  </data>
+  <data name="PdfGenerator_IndividualTrustInformation_Title" xml:space="preserve">
+    <value>Individual Trust Information</value>
+  </data>
+  <data name="PdfGenerator_LegalName" xml:space="preserve">
+    <value>Legal name</value>
+  </data>
+  <data name="PdfGenerator_NoAdditionalIdentifiersAvailableMsg" xml:space="preserve">
+    <value>No additional identifiers available.</value>
+  </data>
+  <data name="PdfGenerator_NoConnectedPersonInformationAvailableMsg" xml:space="preserve">
+    <value>No connected person information available.</value>
+  </data>
+  <data name="PdfGenerator_OrganisationSchemeTitle_CharityCommission" xml:space="preserve">
+    <value>Charity Commission for England &amp; Wales Number</value>
+  </data>
+  <data name="PdfGenerator_OrganisationSchemeTitle_CompaniesHouseNumber" xml:space="preserve">
+    <value>Companies House Number</value>
+  </data>
+  <data name="PdfGenerator_OrganisationSchemeTitle_GuernseyRegistry" xml:space="preserve">
+    <value>Guernsey Registry Number</value>
+  </data>
+  <data name="PdfGenerator_OrganisationSchemeTitle_IsleOfManCompaniesRegistry" xml:space="preserve">
+    <value>Isle of Man Companies Registry Number</value>
+  </data>
+  <data name="PdfGenerator_OrganisationSchemeTitle_JerseyFinancialServices" xml:space="preserve">
+    <value>Jersey Financial Services Commission Registry Number</value>
+  </data>
+  <data name="PdfGenerator_OrganisationSchemeTitle_LearningProviderRegistry" xml:space="preserve">
+    <value>UK Register of Learning Provider Number</value>
+  </data>
+  <data name="PdfGenerator_OrganisationSchemeTitle_MutualsPublicRegister" xml:space="preserve">
+    <value>Mutuals Public Register Number</value>
+  </data>
+  <data name="PdfGenerator_OrganisationSchemeTitle_NHSRegistry" xml:space="preserve">
+    <value>National Health Service Organisations Registry Number</value>
+  </data>
+  <data name="PdfGenerator_OrganisationSchemeTitle_NorthernIrelandCharityCommission" xml:space="preserve">
+    <value>Charity Commission for Northern Ireland Number</value>
+  </data>
+  <data name="PdfGenerator_OrganisationSchemeTitle_Other" xml:space="preserve">
+    <value>Other / None</value>
+  </data>
+  <data name="PdfGenerator_OrganisationSchemeTitle_Ppon" xml:space="preserve">
+    <value>Ppon</value>
+  </data>
+  <data name="PdfGenerator_OrganisationSchemeTitle_ScottishCharityRegulator" xml:space="preserve">
+    <value>Scottish Charity Regulator</value>
+  </data>
+  <data name="PdfGenerator_OrganisationSchemeTitle_Unknown" xml:space="preserve">
+    <value>Unknown</value>
+  </data>
+  <data name="PdfGenerator_OrganisationSchemeTitle_VAT" xml:space="preserve">
+    <value>VAT number</value>
+  </data>
+  <data name="PdfGenerator_Organisation_ControlConditions" xml:space="preserve">
+    <value>Control conditions</value>
+  </data>
+  <data name="PdfGenerator_Scheme" xml:space="preserve">
+    <value>Scheme</value>
+  </data>
+  <data name="PdfGenerator_SupplierInformation_Title" xml:space="preserve">
+    <value>Supplier Information</value>
+  </data>
+  <data name="PdfGenerator_UnknownCategory" xml:space="preserve">
+    <value>Unknown category</value>
+  </data>
+  <data name="PdfGenerator_UnknownControlCondition" xml:space="preserve">
+    <value>Unknown control condition</value>
+  </data>
+  <data name="PdfGenerator_UnknownPersonType" xml:space="preserve">
+    <value>Unknown person type</value>
+  </data>
+  <data name="PdfGenerator_Uri" xml:space="preserve">
+    <value>Uri</value>
+  </data>
+  <data name="Supplier_RegisteredAddress" xml:space="preserve">
+    <value>Registered address</value>
+  </data>
+  <data name="Supplier_VatNumber" xml:space="preserve">
+    <value>VAT number</value>
+  </data>
+  <data name="Supplier_WebsiteAddress" xml:space="preserve">
+    <value>Website address</value>
+  </data>
+  <data name="Supplier_LegalForm" xml:space="preserve">
+    <value>Legal form</value>
+  </data>
+  <data name="Supplier_Add" xml:space="preserve">
+    <value>Add</value>
+  </data>
+  <data name="Supplier_EmailAddress_Title" xml:space="preserve">
+    <value>Enter your email address</value>
+  </data>
+  <data name="Supplier_EmailAddress_Hint" xml:space="preserve">
+    <value>It should be a shared inbox managed by your team, not your own email address. This will be displayed on notices.</value>
+  </data>
+  <data name="Supplier_BasicInformation_Title" xml:space="preserve">
+    <value>Manage {0}'s basic information</value>
+  </data>
+  <data name="Supplier_InformationHint" xml:space="preserve">
+    <value>We need information from you based on the type of supplier you are.</value>
+  </data>
+  <data name="Supplier_SupplierType" xml:space="preserve">
+    <value>Supplier type</value>
+  </data>
+  <data name="Supplier_PostalAddress" xml:space="preserve">
+    <value>Postal address</value>
+  </data>
+  <data name="Supplier_EmailAddress" xml:space="preserve">
+    <value>Email address</value>
+  </data>
+  <data name="Supplier_OrganisationType" xml:space="preserve">
+    <value>Organisation type</value>
+  </data>
+  <data name="Supplier_ReturnToAccountHome" xml:space="preserve">
+    <value>Return to account home</value>
+  </data>
+  <data name="Supplier_WhatTypeOfSupplier" xml:space="preserve">
+    <value>What type of supplier are you?</value>
+  </data>
+  <data name="Supplier_Organisation" xml:space="preserve">
+    <value>Organisation - for example, a company</value>
+  </data>
+  <data name="Supplier_Individual" xml:space="preserve">
+    <value>Individual - for example, a sole trader</value>
+  </data>
+  <data name="Supplier_VatQuestion_Title" xml:space="preserve">
+    <value>Are you registered for VAT?</value>
+  </data>
+  <data name="Supplier_VatQuestion_No" xml:space="preserve">
+    <value>No</value>
+  </data>
+  <data name="Supplier_VatQuestion_VatNumberLabel" xml:space="preserve">
+    <value>VAT number</value>
+  </data>
+  <data name="Supplier_VatQuestion_VatNumberHint" xml:space="preserve">
+    <value>You can find it on your VAT registration certificate.</value>
+  </data>
+  <data name="Supplier_WebsiteQuestion_Title" xml:space="preserve">
+    <value>Do you have a website?</value>
+  </data>
+  <data name="Global_SelectAnOption" xml:space="preserve">
+    <value>Please select an option</value>
+  </data>
+  <data name="Supplier_VatQuestion_BelongsToAnotherOrganisation_Error" xml:space="preserve">
+    <value>This VAT number belongs to another organisation. Enter a different VAT number.</value>
+  </data>
+  <data name="Supplier_VatNumber_Error" xml:space="preserve">
+    <value>Please enter the VAT number.</value>
+  </data>
+  <data name="Supplier_WebsiteQuestion_WebsiteAddress" xml:space="preserve">
+    <value>Website address</value>
+  </data>
+  <data name="Supplier_WebsiteQuestion_ErrorSelectOption" xml:space="preserve">
+    <value>Select an option</value>
+  </data>
+  <data name="Supplier_WebsiteQuestion_ErrorInvalidUrl" xml:space="preserve">
+    <value>Website address must be in the correct format, like https://www.companyname.com</value>
+  </data>
+  <data name="Supplier_WebsiteAddress_ErrorEnterWebsiteAddress" xml:space="preserve">
+    <value>Enter the website address</value>
+  </data>
+  <data name="Supplier_AddressPostalSameAsRegisteredQuestion_Title" xml:space="preserve">
+    <value>Does your organisation have a different postal address?</value>
+  </data>
+  <data name="Supplier_AddressPostalSameAsRegisteredQuestion_Hint" xml:space="preserve">
+    <value>The place where an organisation receives official post can be different from its registered address. For example, a branch office.</value>
+  </data>
+  <data name="Supplier_Address_EnterRegisteredAddress" xml:space="preserve">
+    <value>Enter your organisation's registered address</value>
+  </data>
+  <data name="Supplier_Address_EnterUkRegisteredAddress" xml:space="preserve">
+    <value>Enter your organisation's UK postal address</value>
+  </data>
+  <data name="Supplier_OperationQuestion_Title" xml:space="preserve">
+    <value>How does your organisation operate?</value>
+  </data>
+  <data name="Supplier_OperationQuestion_Hint" xml:space="preserve">
+    <value>Select all that apply.</value>
+  </data>
+  <data name="Supplier_OperationQuestion_SmallAndMediumSized_Description" xml:space="preserve">
+    <value>Small and medium-sized enterprises are defined by having:</value>
+  </data>
+  <data name="Supplier_OperationQuestion_SmallAndMediumSized_Details" xml:space="preserve">
+    <value>(a) fewer than 250 staff, and &lt;br&gt;&lt;br&gt;(b) a turnover of an amount less than or equal to £44 million, or a balance sheet total of an amount less than or equal to £38 million</value>
+  </data>
+  <data name="Supplier_OperationQuestion_SupportedEmploymentProvider_Description" xml:space="preserve">
+    <value>Supported employment providers are defined by having:</value>
+  </data>
+  <data name="Supplier_OperationQuestion_SupportedEmploymentProvider_Details" xml:space="preserve">
+    <value>Wholly or partly provided employment, or employment related support, to disabled or disadvantaged individuals where:&lt;br&gt;&lt;br&gt;(a) disabled or disadvantaged individuals represent at least 30 per cent of the workforce of the organisation,&lt;br&gt;&lt;br&gt;(b) if a particular part of the organisation is to perform the contract, disabled or disadvantaged individuals represent at least 30 per cent of the workforce of that part of the organisation, or&lt;br&gt;&lt;br&gt;(c) if more than one organisation is to perform the contract, disabled or disadvantaged individuals represent at least 30 per cent of the combined workforce of—&lt;br&gt;&lt;br&gt;(i) those organisations,&lt;br&gt;&lt;br&gt;(ii) where a particular part of each organisation is to perform the contract, those parts, or&lt;br&gt;&lt;br&gt;(iii) where a combination of organisations and parts is to perform the contract, those organisations and parts.</value>
+  </data>
+  <data name="Supplier_OperationQuestion_PublicService_Description" xml:space="preserve">
+    <value>Public service mutuals are defined by having:</value>
+  </data>
+  <data name="Supplier_OperationQuestion_PublicService_Details" xml:space="preserve">
+    <value>Previously left the public sector but continues delivering public services.</value>
+  </data>
+  <data name="Global_SaveAndExit" xml:space="preserve">
+    <value>Save and exit</value>
+  </data>
+  <data name="Supplier_LegalFormCompanyActQuestion_Title" xml:space="preserve">
+    <value>Is your organisation registered on Companies House?</value>
+  </data>
+  <data name="Supplier_LegalFormCompanyActQuestion_Hint" xml:space="preserve">
+    <value>As required by the Companies Act 2006.</value>
+  </data>
+  <data name="Supplier_LegalFormFormationDate_Title" xml:space="preserve">
+    <value>What is the equivalent date your company registered under the Companies Act 2006?</value>
+  </data>
+  <data name="Supplier_LegalFormFormationDate_Hint" xml:space="preserve">
+    <value>For example, 27 3 2007.</value>
+  </data>
+  <data name="Supplier_LegalFormFormationDate_Month" xml:space="preserve">
+    <value>Month</value>
+  </data>
+  <data name="Supplier_LegalFormFormationDate_Year" xml:space="preserve">
+    <value>Year</value>
+  </data>
+  <data name="Supplier_LegalFormFormationDate_DayErrorMessage" xml:space="preserve">
+    <value>Date of registration must include a day</value>
+  </data>
+  <data name="Supplier_LegalFormFormationDate_DayInvalidErrorMessage" xml:space="preserve">
+    <value>Day must be a valid number</value>
+  </data>
+  <data name="Supplier_LegalFormFormationDate_MonthErrorMessage" xml:space="preserve">
+    <value>Date of registration must include a month</value>
+  </data>
+  <data name="Supplier_LegalFormFormationDate_MonthInvalidErrorMessage" xml:space="preserve">
+    <value>Month must be a valid number</value>
+  </data>
+  <data name="Supplier_LegalFormFormationDate_YearErrorMessage" xml:space="preserve">
+    <value>Date of registration must include a year</value>
+  </data>
+  <data name="Supplier_LegalFormFormationDate_YearInvalidErrorMessage" xml:space="preserve">
+    <value>Year must be a valid number</value>
+  </data>
+  <data name="Supplier_LegalFormFormationDate_InvalidDateErrorMessage" xml:space="preserve">
+    <value>Date of registration must be a real date</value>
+  </data>
+  <data name="Supplier_LegalFormFormationDate_FutureDateErrorMessage" xml:space="preserve">
+    <value>Date of registration must be today or in the past</value>
+  </data>
+  <data name="Supplier_LegalFormLawRegistered_Title" xml:space="preserve">
+    <value>Enter the law under which your organisation is registered</value>
+  </data>
+  <data name="Supplier_LegalFormLawRegistered_Hint" xml:space="preserve">
+    <value>For example, the Companies Act 2006.</value>
+  </data>
+  <data name="Supplier_LegalFormLawRegistered_Error" xml:space="preserve">
+    <value>Error:</value>
+  </data>
+  <data name="Supplier_LegalFormLawRegistered_ErrorMessage" xml:space="preserve">
+    <value>Please enter the law under which your organisation is registered</value>
+  </data>
+  <data name="Supplier_LegalFormOtherOrganisation_PleaseSelect" xml:space="preserve">
+    <value>Please select your organisation's registered legal form</value>
+  </data>
+  <data name="Supplier_LegalFormSelectOrganisation_Hint" xml:space="preserve">
+    <value>When it was set up and registered, what structure was used.</value>
+  </data>
+  <data name="Supplier_LegalFormSelectOrganisation_Title" xml:space="preserve">
+    <value>Select your organisation's legal form</value>
+  </data>
+  <data name="Supplier_LegalFormSelectOrganisation_LimitedCompany" xml:space="preserve">
+    <value>Limited company</value>
+  </data>
+  <data name="Supplier_LegalFormSelectOrganisation_LLP" xml:space="preserve">
+    <value>Limited liability partnership (LLP)</value>
+  </data>
+  <data name="Supplier_LegalFormSelectOrganisation_LP" xml:space="preserve">
+    <value>Limited partnership</value>
+  </data>
+  <data name="Supplier_LegalFormSelectOrganisation_Other" xml:space="preserve">
+    <value>Other</value>
+  </data>
+  <data name="Supplier_OperationQuestion_SelectOption" xml:space="preserve">
+    <value>Select at least one option to proceed.</value>
+  </data>
+  <data name="Supplier_OperationType_SmallOrMediumSized" xml:space="preserve">
+    <value>As a small or medium-sized enterprise</value>
+  </data>
+  <data name="Supplier_OperationType_NonGovernmental" xml:space="preserve">
+    <value>As a non-governmental organisation that is value-driven and which principally reinvests its surpluses to further social, environmental or cultural objectives</value>
+  </data>
+  <data name="Supplier_OperationType_SupportedEmploymentProvider" xml:space="preserve">
+    <value>As a supported employment provider</value>
+  </data>
+  <data name="Supplier_OperationType_PublicService" xml:space="preserve">
+    <value>As a public service mutual</value>
+  </data>
+  <data name="Supplier_OperationType_None" xml:space="preserve">
+    <value>My organisation is none of the above</value>
+  </data>
+  <data name="Supplier_OperationType_SmallOrMediumSized_Short" xml:space="preserve">
+    <value>Small or medium-sized enterprise</value>
+  </data>
+  <data name="Supplier_OperationType_NonGovernmental_Short" xml:space="preserve">
+    <value>Non-governmental organisation</value>
+  </data>
+  <data name="Supplier_OperationType_SupportedEmploymentProvider_Short" xml:space="preserve">
+    <value>Supported employment provider</value>
+  </data>
+  <data name="Supplier_OperationType_PublicService_Short" xml:space="preserve">
+    <value>Public service mutual</value>
+  </data>
+  <data name="Supplier_OperationType_None_Short" xml:space="preserve">
+    <value>My organisation is not defined</value>
+  </data>
+  <data name="Supplier_OperationType_ValidationError" xml:space="preserve">
+    <value>You cannot select 'My organisation is none of the above' along with other options.</value>
   </data>
 </root>

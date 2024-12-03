@@ -42,7 +42,11 @@ locals {
       canary_schedule_expression        = "rate(30 minutes)" # "cron(15 7,11,15 ? * MON-FRI)" # UTC+0
       fts_azure_frontdoor               = null
       name                              = "dev"
-      onelogin_logout_notification_urls = "[ \\\"https://test-findtender.nqc.com/auth/backchannellogout\\\" ]"
+      onelogin_logout_notification_urls = [
+        "https://test-findtender.nqc.com/auth/backchannellogout",
+        "https://stanvolcere.nqc.com/auth/backchannellogout",
+        "https://nadeemshafi2.nqc.com/auth/backchannellogout"
+      ]
       pinned_service_version            = null
       postgres_instance_type            = "db.t4g.micro"
       private_subnets = [
@@ -66,7 +70,7 @@ locals {
       canary_schedule_expression        = "rate(30 minutes)"
       fts_azure_frontdoor               = null
       name                              = "staging"
-      onelogin_logout_notification_urls = "[ \\\"https://sirsi-integration-findtender.nqc.com/auth/backchannellogout\\\" ]"
+      onelogin_logout_notification_urls = ["https://sirsi-integration-findtender.nqc.com/auth/backchannellogout"]
       pinned_service_version            = "1.0.10"
       postgres_instance_type            = "db.t4g.micro"
       private_subnets = [
@@ -90,7 +94,7 @@ locals {
       canary_schedule_expression        = "rate(30 minutes)"
       fts_azure_frontdoor               = null
       name                              = "integration"
-      onelogin_logout_notification_urls = "[ \\\"https://test-findtender.nqc.com/auth/backchannellogout\\\" ]"
+      onelogin_logout_notification_urls = ["https://test-findtender.nqc.com/auth/backchannellogout"]
       pinned_service_version            = "1.0.9"
       postgres_instance_type            = "db.t4g.micro"
       private_subnets = [
@@ -118,7 +122,7 @@ locals {
       canary_schedule_expression        = "rate(15 minutes)"
       fts_azure_frontdoor               = "nqc-front-door-uksouth.azurefd.net"
       name                              = "production"
-      onelogin_logout_notification_urls = "[ \\\"https://www.private-beta.find-tender.service.gov.uk/auth/backchannellogout\\\" ]"
+      onelogin_logout_notification_urls = ["https://www.private-beta.find-tender.service.gov.uk/auth/backchannellogout"]
       pinned_service_version            = "1.0.9"
       postgres_instance_type            = "db.t4g.micro"
       private_subnets = [

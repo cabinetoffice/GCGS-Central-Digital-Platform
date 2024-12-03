@@ -61,7 +61,13 @@ if (builder.Environment.IsDevelopment())
 
 builder.ConfigureForwardedHeaders();
 
-builder.Services.AddDistributedMemoryCache();
+builder.Services
+    .AddAwsConfiguration(builder.Configuration)
+    .AddAwsS3Service()
+    .AddLoggingConfiguration(builder.Configuration)
+    .AddAmazonCloudWatchLogsService()
+    .AddCloudWatchSerilog(builder.Configuration)
+    .AddSharedSessions(builder.Configuration);
 
 var sessionTimeoutInMinutes = builder.Configuration.GetValue<double>("SessionTimeoutInMinutes");
 
@@ -206,16 +212,11 @@ builder.Services.AddSingleton<IAuthorizationMiddlewareResultHandler, CustomAutho
 builder.Services.AddAuthorization();
 
 builder.Services.AddHealthChecks();
-builder.Services
-    .AddAwsConfiguration(builder.Configuration)
-    .AddAwsS3Service()
-    .AddLoggingConfiguration(builder.Configuration)
-    .AddAmazonCloudWatchLogsService()
-    .AddCloudWatchSerilog(builder.Configuration);
 
 // @see DP-723 for details: https://noticingsystem.atlassian.net/browse/DP-723?focusedCommentId=27796
-// builder.Services.AddDataProtection()
-//    .PersistKeysToAWSSystemsManager("/OrganisationApp/DataProtection");
+builder.Services.AddDataProtection()
+   .PersistKeysToAWSSystemsManager(
+       builder.Configuration.GetValue<string>("Aws:SystemManager:DataProtectionPrefix"));
 
 var app = builder.Build();
 app.UseForwardedHeaders();
