@@ -11,6 +11,7 @@ using CO.CDP.OrganisationApp.Authorization;
 using CO.CDP.OrganisationApp.Pages;
 using CO.CDP.OrganisationApp.Pages.Forms.ChoiceProviderStrategies;
 using CO.CDP.OrganisationApp.ThirdPartyApiClients.CompaniesHouse;
+using CO.CDP.OrganisationApp.ThirdPartyApiClients.CharityCommission;
 using CO.CDP.OrganisationApp.WebApiClients;
 using CO.CDP.Person.WebApiClient;
 using CO.CDP.Tenant.WebApiClient;
@@ -60,7 +61,13 @@ if (builder.Environment.IsDevelopment())
 
 builder.ConfigureForwardedHeaders();
 
-builder.Services.AddDistributedMemoryCache();
+builder.Services
+    .AddAwsConfiguration(builder.Configuration)
+    .AddAwsS3Service()
+    .AddLoggingConfiguration(builder.Configuration)
+    .AddAmazonCloudWatchLogsService()
+    .AddCloudWatchSerilog(builder.Configuration)
+    .AddSharedSessions(builder.Configuration);
 
 var sessionTimeoutInMinutes = builder.Configuration.GetValue<double>("SessionTimeoutInMinutes");
 
@@ -85,6 +92,7 @@ builder.Services.AddScoped<ICacheService, CacheService>();
 builder.Services.AddScoped<ApiBearerTokenHandler>();
 builder.Services.AddScoped<CultureDelegatingHandler>();
 builder.Services.AddScoped<ICompaniesHouseApi, CompaniesHouseApi>();
+builder.Services.AddScoped<ICharityCommissionApi, CharityCommissionApi>();
 
 builder.Services.AddKeyedTransient<IChoiceProviderStrategy, ExclusionAppliesToChoiceProviderStrategy>("ExclusionAppliesToChoiceProviderStrategy");
 builder.Services.AddKeyedTransient<IChoiceProviderStrategy, DefaultChoiceProviderStrategy>("DefaultChoiceProviderStrategy");
@@ -150,10 +158,11 @@ builder.Services.AddHttpClient(AuthorityClient.OrganisationAuthorityHttpClientNa
 
 builder.Services.AddTransient<CookieEvents>();
 builder.Services.AddSingleton<IOneLoginAuthority, OneLoginAuthority>();
-builder.Services.AddTransient<IOneLoginSessionManager, OneLoginSessionManager>();
+builder.Services.AddTransient<ILogoutManager, LogoutManager>();
 builder.Services.AddTransient<ITokenService, TokenService>();
 builder.Services.AddTransient<OidcEvents>();
 builder.Services.AddTransient<IAuthorityClient, AuthorityClient>();
+builder.Services.AddHttpClient(LogoutManager.LogoutCallbackHttpClientName, c => c.Timeout = TimeSpan.FromSeconds(60));
 
 var oneLoginAuthority = builder.Configuration.GetValue<string>("OneLogin:Authority")
             ?? throw new Exception("Missing configuration key: OneLogin:Authority.");
@@ -203,16 +212,11 @@ builder.Services.AddSingleton<IAuthorizationMiddlewareResultHandler, CustomAutho
 builder.Services.AddAuthorization();
 
 builder.Services.AddHealthChecks();
-builder.Services
-    .AddAwsConfiguration(builder.Configuration)
-    .AddAwsS3Service()
-    .AddLoggingConfiguration(builder.Configuration)
-    .AddAmazonCloudWatchLogsService()
-    .AddCloudWatchSerilog(builder.Configuration);
 
 // @see DP-723 for details: https://noticingsystem.atlassian.net/browse/DP-723?focusedCommentId=27796
-// builder.Services.AddDataProtection()
-//    .PersistKeysToAWSSystemsManager("/OrganisationApp/DataProtection");
+builder.Services.AddDataProtection()
+   .PersistKeysToAWSSystemsManager(
+       builder.Configuration.GetValue<string>("Aws:SystemManager:DataProtectionPrefix"));
 
 var app = builder.Build();
 app.UseForwardedHeaders();

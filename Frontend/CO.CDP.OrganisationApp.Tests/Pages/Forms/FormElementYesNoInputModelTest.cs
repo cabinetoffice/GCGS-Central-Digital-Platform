@@ -58,8 +58,8 @@ public class FormElementYesNoInputModelTest
     }
 
     [Theory]
-    [InlineData(true, null, "Please select an option.")]
-    [InlineData(true, " ", "Please select an option.")]
+    [InlineData(true, null, "Select an option")]
+    [InlineData(true, " ", "Select an option")]
     [InlineData(false, null, null)]
     [InlineData(false, "Some value", null)]
     public void Validate_ReturnsExpectedResults(bool isRequired, string? textInput, string? expectedErrorMessage)

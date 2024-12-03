@@ -1,6 +1,7 @@
 @page "/organisation/{organisationId:guid}/forms/{formId:guid}/sections/{sectionId:guid}/questions/{currentQuestionId}"
 @using CO.CDP.OrganisationApp.Constants
 @model FormsQuestionPageModel
+@using CO.CDP.Localization
 
 @{
     var isCheckYourAnswersPage = Model.CurrentFormQuestionType == Models.FormQuestionType.CheckYourAnswers;
@@ -26,61 +27,59 @@
 }
 
 @section BeforeContent {
-    <a href="@backUrl" class="govuk-back-link">Back</a>
+    <a href="@backUrl" class="govuk-back-link">@StaticTextResource.Global_Back</a>
 }
 
-    <div class="govuk-grid-row">
-        <div class="@(isCheckYourAnswersPage ? "govuk-grid-column-full" : "govuk-grid-column-two-thirds")">
-            <partial name="_ErrorSummary" model="@ModelState" />
+<div class="govuk-grid-row">
+    <div class="@(isCheckYourAnswersPage ? "govuk-grid-column-full" : "govuk-grid-column-two-thirds")">
+        <partial name="_ErrorSummary" model="@ModelState" />
 
-            <form method="post" enctype="@Model.EncType" novalidate>
-                @if (Model.PartialViewName != null && Model.PartialViewModel != null)
-                {
-                    @await Html.PartialAsync(Model.PartialViewName, Model.PartialViewModel)
-                    ViewData["Title"] = Model.PartialViewModel.Heading;
-                }
+        <form method="post" enctype="@Model.EncType" novalidate>
+            @if (Model.PartialViewName != null && Model.PartialViewModel != null)
+            {
+                @await Html.PartialAsync(Model.PartialViewName, Model.PartialViewModel)
+                ViewData["Title"] = Model.PartialViewModel.Heading;
+            }
 
-                @if (isCheckYourAnswersPage)
-                {
-                    ViewData["Title"] = "Check your answers";
-                    var answers = await Model.GetAnswers();
+            @if (isCheckYourAnswersPage)
+            {
+                ViewData["Title"] = StaticTextResource.Forms_CheckYourAnswers_Title;
+                var answers = await Model.GetAnswers();
 
-                    <h1 class="govuk-heading-l">@ViewData["Title"]</h1>
-                    <dl class="govuk-summary-list govuk-!-margin-bottom-9">
-                        @foreach (var answer in answers)
-                        {
-                            <div class="govuk-summary-list__row">
-                                <dt class="govuk-summary-list__key">
-                                    @answer.Title
-                                </dt>
-                                <dd class="govuk-summary-list__value">
-                                    @Html.Raw(answer.Answer)
-                                </dd>
-                                <dd class="govuk-summary-list__actions">
-                                    <a class="govuk-link" href="@answer.ChangeLink">
-                                        Change<span class="govuk-visually-hidden">
-                                            @($"the {answer.Title?.ToLower()}")
-                                        </span>
-                                    </a>
-                                </dd>
-                            </div>
-                        }
-                    </dl>
-
-                    if (Model.FormSectionType == Models.FormSectionType.Declaration)
+                <h1 class="govuk-heading-l">@ViewData["Title"]</h1>
+                <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+                    @foreach (var answer in answers)
                     {
-                        <govuk-button>Confirm and get share code</govuk-button>
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">
+                                @answer.Title
+                            </dt>
+                            <dd class="govuk-summary-list__value">
+                                @Html.Raw(answer.Answer)
+                            </dd>
+                            <dd class="govuk-summary-list__actions">
+                                <a class="govuk-link" href="@answer.ChangeLink">
+                                    @Html.Raw(string.Format(StaticTextResource.Forms_CheckYourAnswers_Change, answer.Title?.ToLower()))
+                                </a>
+                            </dd>
+                        </div>
                     }
-                    else
-                    {
-                        <govuk-button>Save</govuk-button>
-                    }
+                </dl>
+
+                if (Model.FormSectionType == Models.FormSectionType.Declaration)
+                {
+                    <govuk-button>@StaticTextResource.Forms_DeclarationSection_ConfirmAndGetShareCode</govuk-button>
                 }
                 else
                 {
-                    <govuk-button>Continue</govuk-button>
+                    <govuk-button>@StaticTextResource.Global_Save</govuk-button>
                 }
+            }
+            else
+            {
+                <govuk-button>@StaticTextResource.Global_Continue</govuk-button>
+            }
 
-            </form>
-        </div>
+        </form>
     </div>
+</div>

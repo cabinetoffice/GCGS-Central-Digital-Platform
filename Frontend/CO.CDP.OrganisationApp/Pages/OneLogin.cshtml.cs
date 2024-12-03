@@ -18,7 +18,7 @@ public class OneLoginModel(
     IHttpContextAccessor httpContextAccessor,
     IPersonClient personClient,
     ISession session,
-    IOneLoginSessionManager oneLoginSessionManager,
+    ILogoutManager logoutManager,
     IOneLoginAuthority oneLoginAuthority,
     ILogger<OneLoginModel> logger) : PageModel
 {
@@ -38,8 +38,6 @@ public class OneLoginModel(
 
     public async Task<IActionResult> OnPostAsync(string logout_token)
     {
-        logger.LogInformation("One Login page post endpoint requested. {PageAction} {Token}", PageAction, logout_token);
-
         if (!PageAction.Equals("back-channel-sign-out", StringComparison.CurrentCultureIgnoreCase))
         {
             logger.LogInformation("One Login page post endpoint returns BadRequest response. {PageAction}", PageAction);
@@ -60,7 +58,7 @@ public class OneLoginModel(
             return BadRequest("Invalid token");
         }
 
-        await oneLoginSessionManager.AddToSignedOutSessionsList(urn);
+        await logoutManager.MarkAsLoggedOut(urn, logout_token);
 
         logger.LogInformation("One Login page post endpoint process request successfully and added user {URN} to the signed-out sessions list. {Token}",
             urn, logout_token);
@@ -95,7 +93,7 @@ public class OneLoginModel(
         {
             return SignIn();
         }
-        await oneLoginSessionManager.RemoveFromSignedOutSessionsList(urn);
+        await logoutManager.RemoveAsLoggedOut(urn);
 
         var ud = new UserDetails { UserUrn = urn, Email = email, Phone = phone };
         session.Set(Session.UserDetailsKey, ud);

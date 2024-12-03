@@ -45,6 +45,15 @@ services:
       POSTGRES_USER: cdp_user
       POSTGRES_PASSWORD: cdp123
 
+  redis:
+    container_name: co-cdp-redis
+    image: redis:7.4.1
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli ping | grep PONG"]
+      interval: 1s
+      timeout: 3s
+      retries: 5
+
   localstack:
     container_name: co-cdp-localstack
     image: localstack/localstack:3.5
@@ -112,6 +121,9 @@ services:
       dockerfile: Dockerfile
       target: final-organisation-app
     image: 'cabinetoffice/cdp-organisation-app:${IMAGE_VERSION:-latest}'
+    depends_on:
+      redis:
+        condition: service_healthy
     healthcheck:
       test: ["CMD-SHELL", "curl --fail --silent --write-out '{\"status\":%{http_code}}' --output /dev/null http://127.0.0.1:8080/health"]
       start_period: 10s
@@ -125,6 +137,7 @@ services:
       Aws__Credentials__AccessKeyId: test
       Aws__Credentials__SecretAccessKey: test
       Aws__ServiceURL: "http://localstack:4566"
+      Aws__ElastiCache__Hostname: "redis"
       FormsService: '${FormsService:-http://gateway:${CDP_FORMS_PORT:-8086}}'
       OrganisationService: '${OrganisationService:-http://gateway:${CDP_ORGANISATION_PORT:-8082}}'
       Organisation__Authority: '${Organisation__Authority:-http://gateway:${CDP_AUTHORITY_PORT:-8092}}'
@@ -135,6 +148,8 @@ services:
       CompaniesHouse__Url: ""
       CompaniesHouse__User: ""
       CompaniesHouse__Password: ""
+      CharityCommission__Url: ""
+      CharityCommission__SubscriptionKey: ""
   authority:
     container_name: co-cdp-authority
     build:

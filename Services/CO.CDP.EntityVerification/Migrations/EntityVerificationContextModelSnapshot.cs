@@ -91,6 +91,54 @@ namespace CO.CDP.EntityVerification.Migrations
                     b.ToTable("identifiers", "entity_verification");
                 });
 
+            modelBuilder.Entity("CO.CDP.EntityVerification.Persistence.IdentifierRegistries", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("CountryCode")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("country_code");
+
+                    b.Property<DateTimeOffset>("CreatedOn")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_on")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                    b.Property<string>("RegisterName")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("register_name");
+
+                    b.Property<string>("Scheme")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("scheme");
+
+                    b.Property<DateTimeOffset>("UpdatedOn")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_on")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                    b.HasKey("Id")
+                        .HasName("pk_identifier_registries");
+
+                    b.HasIndex("CountryCode")
+                        .HasDatabaseName("ix_identifier_registries_country_code");
+
+                    b.HasIndex("Scheme")
+                        .HasDatabaseName("ix_identifier_registries_scheme");
+
+                    b.ToTable("identifier_registries", "entity_verification");
+                });
+
             modelBuilder.Entity("CO.CDP.EntityVerification.Persistence.Ppon", b =>
                 {
                     b.Property<int>("Id")

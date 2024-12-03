@@ -1,3 +1,4 @@
+using CO.CDP.Localization;
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Constants;
 using Microsoft.AspNetCore.Authorization;
@@ -13,7 +14,7 @@ public class LegalFormCompanyActQuestionModel(
     ITempDataService tempDataService) : PageModel
 {
     [BindProperty]
-    [Required(ErrorMessage = "Please select an option")]
+    [Required(ErrorMessageResourceName = nameof(StaticTextResource.Global_SelectAnOption), ErrorMessageResourceType = typeof(StaticTextResource))]
     public bool? RegisteredOnCompanyHouse { get; set; }
 
     [BindProperty(SupportsGet = true)]

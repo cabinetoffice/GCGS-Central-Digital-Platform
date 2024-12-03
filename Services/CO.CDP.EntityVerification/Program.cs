@@ -15,6 +15,7 @@ using CO.CDP.MQ.Hosting;
 using CO.CDP.WebApi.Foundation;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
+using IdentifierRegistries = CO.CDP.EntityVerification.Model.IdentifierRegistries;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.ConfigureForwardedHeaders();
@@ -29,8 +30,18 @@ builder.Services.AddProblemDetails();
 builder.Services.AddDbContext<EntityVerificationContext>(o =>
     o.UseNpgsql(ConnectionStringHelper.GetConnectionString(builder.Configuration, "EntityVerificationDatabase")));
 builder.Services.AddScoped<IPponRepository, DatabasePponRepository>();
-builder.Services.AddScoped<IPponService, PponService>();
+
+if (builder.Configuration.GetValue("Features:UuidPponService", true))
+{
+    builder.Services.AddScoped<IPponService, UuidPponService>();
+}
+else
+{
+    builder.Services.AddScoped<IPponService, PponService>();
+}
+
 builder.Services.AddScoped<IUseCase<LookupIdentifierQuery, IEnumerable<CO.CDP.EntityVerification.Model.Identifier>>, LookupIdentifierUseCase>();
+builder.Services.AddScoped<IUseCase<string, IEnumerable<IdentifierRegistries>>, GetIdentifierRegistriesUseCase>();
 
 if (Assembly.GetEntryAssembly().IsRunAs("CO.CDP.EntityVerification"))
 {
@@ -90,6 +101,8 @@ app.MapHealthChecks("/health").AllowAnonymous();
 app.UseAuthentication();
 app.UseAuthorization();
 app.UsePponEndpoints();
+app.UseRegistriesEndpoints();
+
 app.Run();
 
 public abstract partial class Program;

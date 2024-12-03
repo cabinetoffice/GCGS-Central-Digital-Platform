@@ -39,7 +39,7 @@ public class ConnectedEntityCheckAnswersCommon
                 TownOrCity = connectedEntity.Addresses?.FirstOrDefault(a => a.Type == CO.CDP.Organisation.WebApiClient.AddressType.Postal)?.Locality
             } : null),
             RegistrationDate = connectedEntity.RegisteredDate,
-            HasRegistartionDate = connectedEntity.RegisteredDate.HasValue,
+            HasRegistrationDate = connectedEntity.RegisteredDate.HasValue,
             RegisterName = connectedEntity.RegisterName,
             RegisteredAddress = (registerAddress != null ? new ConnectedEntityState.Address
             {

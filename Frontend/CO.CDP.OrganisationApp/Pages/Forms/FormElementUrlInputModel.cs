@@ -2,6 +2,7 @@ using CO.CDP.OrganisationApp.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
+using CO.CDP.Localization;
 
 namespace CO.CDP.OrganisationApp.Pages.Forms;
 
@@ -48,7 +49,7 @@ public class FormElementUrlInputModel : FormElementModel, IValidatableObject
         {
             if (HasValue == null)
             {
-                yield return new ValidationResult("Select an option", [nameof(HasValue)]);
+                yield return new ValidationResult(StaticTextResource.Global_RadioField_SelectOptionError, [nameof(HasValue)]);
             }
             else if (HasValue == true)
             {
@@ -60,13 +61,13 @@ public class FormElementUrlInputModel : FormElementModel, IValidatableObject
         {
             if (string.IsNullOrWhiteSpace(TextInput))
             {
-                yield return new ValidationResult("Enter a website address", [nameof(TextInput)]);
+                yield return new ValidationResult(StaticTextResource.Forms_FormElementUrlInput_EnterWebsiteAddressError, [nameof(TextInput)]);
             }
             else
             {
                 if (!Uri.TryCreate(TryFixUrl(TextInput), UriKind.Absolute, out _))
                 {
-                    yield return new ValidationResult("Website address must be in the correct format, like www.companyname.com", [nameof(TextInput)]);
+                    yield return new ValidationResult(StaticTextResource.Forms_FormElementUrlInput_InvalidWebsiteAddressError, [nameof(TextInput)]);
                 }
             }
         }

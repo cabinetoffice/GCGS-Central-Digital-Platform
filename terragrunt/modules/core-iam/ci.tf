@@ -67,11 +67,6 @@ resource "aws_iam_role_policy_attachment" "generic_pipeline_policy" {
   role       = aws_iam_role.ci_pipeline.name
 }
 
-# resource "aws_iam_role_policy_attachment" "terraform_pipeline_policy" {
-#   policy_arn = aws_iam_policy.terraform.arn
-#   role       = aws_iam_role.ci_pipeline.name
-# }
-
 resource "aws_iam_role_policy_attachment" "terraform_global_pipeline_policy" {
   policy_arn = aws_iam_policy.terraform_global.arn
   role       = aws_iam_role.ci_pipeline.name

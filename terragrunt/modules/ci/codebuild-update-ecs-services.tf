@@ -2,7 +2,7 @@ resource "aws_codebuild_project" "update_ecs_services" {
   name          = "${local.name_prefix}-${local.update_ecs_service_cb_name}"
   description   = "Run terraform in service/ecs component to only update ECS services"
   service_role  = var.ci_build_role_arn
-  build_timeout = 5
+  build_timeout = 20
 
   artifacts {
     type = "CODEPIPELINE"

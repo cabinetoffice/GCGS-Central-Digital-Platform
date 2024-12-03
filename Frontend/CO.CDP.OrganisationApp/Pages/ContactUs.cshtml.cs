@@ -1,5 +1,6 @@
 using CO.CDP.Localization;
 using CO.CDP.Organisation.WebApiClient;
+using CO.CDP.Mvc.Validation;
 using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.WebApiClients;
@@ -18,24 +19,24 @@ public class ContactUsModel(IOrganisationClient organisationClient, ITempDataSer
 
     [BindProperty]
     [DisplayName(nameof(StaticTextResource.Supplementary_ContactUs_Name))]
-    [Required(ErrorMessage = nameof(StaticTextResource.Supplementary_ContactUs_Name_ErrorMessage))]
+    [Required(ErrorMessageResourceName = nameof(StaticTextResource.Supplementary_ContactUs_Name_ErrorMessage), ErrorMessageResourceType = typeof(StaticTextResource))]
     public string? Name { get; set; }
 
     [BindProperty]
     [DisplayName(nameof(StaticTextResource.Supplementary_ContactUs_Email))]
-    [Required(ErrorMessage = nameof(StaticTextResource.Supplementary_ContactUs_Email_ErrorMessage))]
-    [EmailAddress(ErrorMessage = nameof(StaticTextResource.Supplementary_ContactUs_Email_ValidationErrorMessage))]
+    [Required(ErrorMessageResourceName = nameof(StaticTextResource.Supplementary_ContactUs_Email_ErrorMessage), ErrorMessageResourceType = typeof(StaticTextResource))]
+    [ValidEmailAddress(ErrorMessageResourceName = nameof(StaticTextResource.Global_Email_Invalid_ErrorMessage), ErrorMessageResourceType = typeof(StaticTextResource))]
     public string? EmailAddress { get; set; }
 
     [BindProperty]
     [DisplayName(nameof(StaticTextResource.Supplementary_ContactUs_Organisation))]
-    [Required(ErrorMessage = nameof(StaticTextResource.Supplementary_ContactUs_Organisation_ErrorMessage))]
+    [Required(ErrorMessageResourceName = nameof(StaticTextResource.Supplementary_ContactUs_Organisation_ErrorMessage), ErrorMessageResourceType = typeof(StaticTextResource))]
     public string? OrganisationName { get; set; }
 
     [BindProperty]
     [DisplayName(nameof(StaticTextResource.Supplementary_ContactUs_Message))]
-    [Required(ErrorMessage = nameof(StaticTextResource.Supplementary_ContactUs_Message_ErrorMessage))]
-    [MinLength(10, ErrorMessage = nameof(StaticTextResource.Supplementary_ContactUs_Message_ValidationErrorMessage))]
+    [Required(ErrorMessageResourceName = nameof(StaticTextResource.Supplementary_ContactUs_Message_ErrorMessage), ErrorMessageResourceType = typeof(StaticTextResource))]
+    [MinLength(10, ErrorMessageResourceName = nameof(StaticTextResource.Supplementary_ContactUs_Message_ValidationErrorMessage), ErrorMessageResourceType = typeof(StaticTextResource))]
     [MaxLength(10000)]
     public string? Message { get; set; }
 
