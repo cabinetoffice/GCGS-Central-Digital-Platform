@@ -1723,6 +1723,9 @@
   <data name="Global_Year" xml:space="preserve">
     <value>Year</value>
   </data>
+  <data name="Global_Failure_Heading" xml:space="preserve">
+    <value>Failure</value>
+  </data>
   <data name="Forms_FormElementFileUpload_UploadFileLabel" xml:space="preserve">
     <value>Upload a file</value>
   </data>
