@@ -46,7 +46,7 @@
                         @StaticTextResource.Organisation_OrganisationIdentification_Hint
                     </div>
                     <p>
-                        <a class="govuk-link govuk-!-font-size-19" href="/registration/organisation-identification-country">
+                        <a class="govuk-link govuk-!-font-size-19" href="/registration/organisation-identification-country@(Request.Query.ContainsKey("frm-summary")==true ? "?frm-summary" : "")">
                             @StaticTextResource.Organisation_OrganisationIdentification_NonUk_Link
                         </a>
                     </p>

@@ -1,15 +1,15 @@
+using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+
 using CO.CDP.EntityVerificationClient;
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Models;
-using Microsoft.AspNetCore.Mvc;
-
 using CO.CDP.OrganisationApp.Constants;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel;
 using ApiException = CO.CDP.EntityVerificationClient.ApiException;
 using CO.CDP.Localization;
 using CO.CDP.Mvc.Validation;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using OrganisationWebApiClient = CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.WebApiClients;
 
@@ -26,11 +26,13 @@ public class OrganisationInternationalIdentificationModel(
     public string? Country { get; set; }
 
     [BindProperty]
+    public bool HasIdentifierToShow { get; set; } = true;
+
+    [BindProperty]
     public ICollection<IdentifierRegistries> InternationalIdentifiers { get; set; } = new List<IdentifierRegistries>();
 
     [BindProperty]
     public ICollection<string> ExistingInternationalIdentifiers { get; set; } = new List<string>();
-
 
     [BindProperty]
     [DisplayName(nameof(StaticTextResource.OrganisationRegistration_InternationalIdentifier_Type_Heading))]
@@ -42,12 +44,6 @@ public class OrganisationInternationalIdentificationModel(
     [RequiredIfHasValue("OrganisationScheme", ErrorMessageResourceName = nameof(StaticTextResource.OrganisationRegistration_InternationalIdentifier_RegistrationNumber_Required_ErrorMessage), ErrorMessageResourceType = typeof(StaticTextResource))]
     public Dictionary<string, string?> RegistrationNumbers { get; set; } = new Dictionary<string, string?>();
 
-    public string? Identifier { get; set; }
-
-    public string? OrganisationName;
-
-    public FlashMessage NotificationBannerCompanyAlreadyRegistered { get { return new FlashMessage(string.Format(StaticTextResource.OrganisationRegistration_CompanyHouseNumberQuestion_CompanyAlreadyRegistered_NotificationBanner, Identifier, OrganisationName)); } }
-
     public async Task<IActionResult> OnGet()
     {
         if (string.IsNullOrEmpty(Country))
@@ -55,32 +51,30 @@ public class OrganisationInternationalIdentificationModel(
 
         try
         {
-            var (validate, existingIdentifier) = await ValidateAndGetExistingIdentifiers();
+            var validate = await ValidateAndSetExistingIdentifiers();
             if (!validate) return Redirect("/page-not-found");
-
-            ExistingInternationalIdentifiers = existingIdentifier.Select(x => x.Scheme).ToList();            
         }
         catch (OrganisationWebApiClient.ApiException<OrganisationWebApiClient.ProblemDetails> aex)
         {
-            ApiExceptionMapper.MapApiExceptions(aex, ModelState);          
+            ApiExceptionMapper.MapApiExceptions(aex, ModelState);
         }
         catch (ApiException ex) when (ex.StatusCode == 404)
         {
             return Redirect("/page-not-found");
         }
 
-        await IdentifierRegistries();
         return Page();
     }
 
-    private async Task IdentifierRegistries()
+    private async Task<ICollection<IdentifierRegistries>> PopulateIdentifierRegistries()
     {
         try
         {
-            InternationalIdentifiers = await pponClient.GetIdentifierRegistriesAsync(Country);
+            return await pponClient.GetIdentifierRegistriesAsync(Country);
         }
         catch (ApiException ex) when (ex.StatusCode == 404)
         {
+            return new List<IdentifierRegistries>();
             // Show other
         }
     }
@@ -88,16 +82,11 @@ public class OrganisationInternationalIdentificationModel(
     public async Task<IActionResult> OnPost()
     {
         var OrganisationIdentificationNumber = OrganisationScheme != null ? RegistrationNumbers!.GetValueOrDefault(OrganisationScheme) : null;
-        Identifier = $"{OrganisationScheme}:{OrganisationIdentificationNumber}";        
 
         if (!ModelState.IsValid)
         {
-            var (validate, existingIdentifier) = await ValidateAndGetExistingIdentifiers();
+            var validate = await ValidateAndSetExistingIdentifiers();
             if (!validate) return Redirect("/page-not-found");
-
-            ExistingInternationalIdentifiers = existingIdentifier.Select(x => x.Scheme).ToList();
-
-            await IdentifierRegistries();
 
             return Page();
         }
@@ -128,24 +117,64 @@ public class OrganisationInternationalIdentificationModel(
             return Redirect("/page-not-found");
         }
     }
-    private async Task<(bool valid, List<OrganisationWebApiClient.Identifier>)> ValidateAndGetExistingIdentifiers()
+
+    //private async Task<bool> ValidateAndSetExistingIdentifiers()
+    //{
+    //    var organisation = await organisationClient.GetOrganisationAsync(Id);
+    //    if (organisation == null) return false;
+
+    //    var identfiers = organisation.AdditionalIdentifiers;
+    //    identfiers.Add(organisation.Identifier);
+
+    //    ExistingInternationalIdentifiers = identfiers.Select(x => x.Scheme).ToList();
+
+    //    InternationalIdentifiers = await PopulateIdentifierRegistries();
+
+    //    // Check if ExistingInternationalIdentifiers exist in InternationalIdentifiers
+    //    var schemesInRegistries = InternationalIdentifiers.Select(x => x.Scheme).ToHashSet();
+    //    var existingInRegistries = ExistingInternationalIdentifiers.Where(scheme => schemesInRegistries.Contains(scheme) || scheme == Country + "-Other").ToList();
+
+    //    if (schemesInRegistries.Any() && existingInRegistries.Count == 1)
+    //    {
+    //        HasIdentifierToShow = true;
+    //    }
+
+    //    return true;
+    //}
+
+    private async Task<bool> ValidateAndSetExistingIdentifiers()
     {
+        // Fetch organization details
         var organisation = await organisationClient.GetOrganisationAsync(Id);
-        if (organisation == null) return (false, new());
+        if (organisation == null) return false;
 
-        var identfiers = organisation.AdditionalIdentifiers;
-        identfiers.Add(organisation.Identifier);
+        // Populate identifiers
+        PopulateExistingIdentifiers(organisation);
 
-        return (true, identfiers.ToList());
+        // Load registry data
+        InternationalIdentifiers = await PopulateIdentifierRegistries();
+
+        // Check and update identifier status
+        UpdateIdentifierStatus();
+
+        return true;
     }
 
-    private async Task<CO.CDP.Organisation.WebApiClient.Organisation> LookupOrganisationAsync()
+    private void PopulateExistingIdentifiers(OrganisationWebApiClient.Organisation organisation)
     {
-        return await organisationClient.LookupOrganisationAsync(string.Empty, Identifier);
+        var identifiers = organisation.AdditionalIdentifiers ?? new List<OrganisationWebApiClient.Identifier>();
+        identifiers.Add(organisation.Identifier);
+
+        ExistingInternationalIdentifiers = identifiers.Select(x => x.Scheme).ToList();
     }
 
-    private async Task<ICollection<EntityVerificationClient.Identifier>> LookupEntityVerificationAsync()
+    private void UpdateIdentifierStatus()
     {
-        return await pponClient.GetIdentifiersAsync(Identifier);
+        var schemesInRegistries = InternationalIdentifiers.Select(x => x.Scheme).ToHashSet();
+        var validIdentifiers = ExistingInternationalIdentifiers
+            .Where(scheme => schemesInRegistries.Contains(scheme) || scheme == $"{Country}-Other")
+            .ToList();
+
+        HasIdentifierToShow = !(!schemesInRegistries.Any() && validIdentifiers.Count == 1);
     }
 }

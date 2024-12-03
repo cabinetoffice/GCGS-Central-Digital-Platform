@@ -2038,4 +2038,13 @@
   <data name="OrganisationRegistration_InternationalIdentifier_Select_Indentifier" xml:space="preserve">
     <value>Select one then enter the registration number</value>
   </data>
+  <data name="OrganisationRegistration_InternationalIdentifier_None" xml:space="preserve">
+    <value>You cannot add another identifier for this country. </value>
+  </data>
+  <data name="OrganisationRegistration_InternationalIdentifier_None_Back" xml:space="preserve">
+    <value>Back to organisation details</value>
+  </data>
+  <data name="Organisation_OrganisationIdentification_Multiple_Hint" xml:space="preserve">
+    <value>Select all that apply. Then enter the registration number.</value>
+  </data>
 </root>

@@ -12,10 +12,15 @@ public class OrganisationInternationalIdentificationCountryModel(ISession sessio
 {
     public override string CurrentPage => OrganisationInternationalIdentificationCountryPage;
 
+    public string NextPage => OrganisationInternationalIdentifierPage;
+
     [BindProperty]
-    
+    public bool? RedirectToSummary { get; set; }
+
+    [BindProperty]
+
     [DisplayName(nameof(StaticTextResource.OrganisationRegistration_InternationalIdentifier_Country_Heading))]
-    [Required(ErrorMessageResourceName = nameof(StaticTextResource.OrganisationRegistration_InternationalIdentifier_Country_Required_ErrorMessage), ErrorMessageResourceType = typeof(StaticTextResource))]    
+    [Required(ErrorMessageResourceName = nameof(StaticTextResource.OrganisationRegistration_InternationalIdentifier_Country_Required_ErrorMessage), ErrorMessageResourceType = typeof(StaticTextResource))]
     public string? Country { get; set; } = string.Empty;
 
     public void OnGet()
@@ -34,6 +39,14 @@ public class OrganisationInternationalIdentificationCountryModel(ISession sessio
 
         SessionContext.Set(Session.RegistrationDetailsKey, RegistrationDetails);
 
-        return RedirectToPage("OrganisationInternationalIdentification");
+        if (RedirectToSummary == true)
+        {
+            
+            return RedirectToPage(NextPage+ "?frm-summary");
+        }
+        else
+        {
+            return RedirectToPage("OrganisationInternationalIdentification");
+        }
     }
 }
