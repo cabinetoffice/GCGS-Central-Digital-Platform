@@ -1,3 +1,4 @@
+using CO.CDP.Localization;
 using CO.CDP.Mvc.Validation;
 using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
@@ -13,14 +14,14 @@ namespace CO.CDP.OrganisationApp.Pages.Organisation;
 public class SupplierToBuyerOrganisationTypeModel(ITempDataService tempDataService) : PageModel
 {
     [BindProperty]
-    [Required(ErrorMessage = "Select the organisation type")]
+    [Required(ErrorMessageResourceName = nameof(StaticTextResource.SupplierToBuyer_OrganisationType_ErrorMessage), ErrorMessageResourceType = typeof(StaticTextResource))]
     public string? BuyerOrganisationType { get; set; }
 
     [BindProperty(SupportsGet = true)]
     public Guid Id { get; set; }
 
     [BindProperty]
-    [DisplayName("Enter type")]
+    [DisplayName(nameof(StaticTextResource.SupplierToBuyer_OrganisationType_EnterType))]
     [RequiredIf("BuyerOrganisationType", "Other")]
     public string? OtherValue { get; set; }
 
@@ -38,7 +39,7 @@ public class SupplierToBuyerOrganisationTypeModel(ITempDataService tempDataServi
         if (!string.IsNullOrEmpty(BuyerOrganisationType) && !BuyerTypes.Keys.Contains(BuyerOrganisationType))
         {
             OtherValue = BuyerOrganisationType;
-            BuyerOrganisationType = "Other";
+            BuyerOrganisationType = StaticTextResource.SupplierToBuyer_OrganisationType_Other;
         }
 
         return Page();
@@ -78,7 +79,7 @@ public class SupplierToBuyerOrganisationTypeModel(ITempDataService tempDataServi
 
         state.BuyerOrganisationType = BuyerOrganisationType;
 
-        if (BuyerOrganisationType == "Other")
+        if (BuyerOrganisationType == StaticTextResource.SupplierToBuyer_OrganisationType_Other)
         {
             state.BuyerOrganisationOtherValue = OtherValue;
         }
