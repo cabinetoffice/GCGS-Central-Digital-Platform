@@ -59,6 +59,7 @@ jobs:
     outputs:
       version: ${{ steps.version.outputs.version }}
       images: ${{ steps.save.outputs.images }}
+      images_json: ${{ steps.save.outputs.images_json }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -97,9 +98,12 @@ jobs:
         id: save
         run: |
           IMAGES=$(docker images | awk '$1 ~ /cabinetoffice\/cdp-/ && $2 ~ /^'$IMAGE_VERSION'$/ { print $1":"$2}' | tr '\n' ' ')
+          IMAGES_JSON=$(echo $IMAGES | tr " " "\n" | jq -R . | jq -c -s .)
           echo "Images to be saved: $IMAGES"
+          echo "Images to be saved (json): $IMAGES_JSON"
           docker save -o cdp-images.tar $IMAGES
           echo "images=${IMAGES}" >> $GITHUB_OUTPUT
+          echo "images_json=${IMAGES_JSON}" >> $GITHUB_OUTPUT
         env:
           IMAGE_VERSION: ${{ steps.version.outputs.version }}
       - name: Upload Docker Images as Artifacts
@@ -112,8 +116,9 @@ jobs:
     runs-on: ubuntu-latest
     name: Scan for vulnerabilities
     needs: [test, package]
-    env:
-      IMAGES: ${{ needs.package.outputs.images }}
+    strategy:
+      matrix:
+        image: ${{ fromJSON(needs.package.outputs.images_json) }}
     steps:
       - uses: actions/checkout@v4
 
@@ -126,18 +131,22 @@ jobs:
 
       - uses: anchore/scan-action/download-grype@v5
         id: grype
-      - name: Scan Docker Images
+      - name: Scan ${{ matrix.image }}
         id: scan
         run: |
           mkdir -p build/reports
-          echo "$IMAGES" | tr ' ' '\n' | xargs -I'{}' $GRYPE_CMD -o sarif '{}' --file 'build/reports/{}.sarif'
+          image=${{ matrix.image }}
+          category=${image%%:*}
+          $GRYPE_CMD -o sarif "$image" --file "build/reports/$category.sarif"
           echo "sarif=build/reports" >> $GITHUB_OUTPUT
+          echo "category=$category" >> $GITHUB_OUTPUT
         env:
           GRYPE_CMD: ${{ steps.grype.outputs.cmd }}
       - name: Upload Image Vulnerability Reports
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: ${{ steps.scan.outputs.sarif }}
+          category: ${{ steps.scan.outputs.category }}
 
   publish:
     if: (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/')) && github.repository_owner == 'cabinetoffice'
