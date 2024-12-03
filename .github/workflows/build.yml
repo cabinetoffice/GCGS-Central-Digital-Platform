@@ -93,18 +93,6 @@ jobs:
         run: make down
         env:
           IMAGE_VERSION: ${{ steps.version.outputs.version }}
-      - name: Scan Images for Vulnerabilities
-        uses: anchore/scan-action@v5
-        id: scan
-        with:
-          path: "."
-          fail-build: true
-          severity-cutoff: critical
-          output-format: sarif
-      - name: Upload Image Vulnerability Report
-        uses: github/codeql-action/upload-sarif@v3
-        with:
-          sarif_file: ${{ steps.scan.outputs.sarif }}
       - name: Save Docker Images
         id: save
         run: |
@@ -119,6 +107,37 @@ jobs:
         with:
           name: docker-images
           path: cdp-images.tar
+
+  vulnerability-scan:
+    runs-on: ubuntu-latest
+    name: Scan for vulnerabilities
+    needs: [test, package]
+    env:
+      IMAGES: ${{ needs.package.outputs.images }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download Docker Images
+        uses: actions/download-artifact@v4
+        with:
+          name: docker-images
+      - name: Load Docker Images
+        run: docker load -i cdp-images.tar
+
+      - uses: anchore/scan-action/download-grype@v5
+        id: grype
+      - name: Scan Docker Images
+        id: scan
+        run: |
+          mkdir -p build/reports
+          echo "$IMAGES" | tr ' ' '\n' | xargs -I'{}' $GRYPE_CMD -o sarif '{}' --file 'build/reports/{}.sarif'
+          echo "sarif=build/reports" >> $GITHUB_OUTPUT
+        env:
+          GRYPE_CMD: ${{ steps.grype.outputs.cmd }}
+      - name: Upload Image Vulnerability Reports
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: ${{ steps.scan.outputs.sarif }}
 
   publish:
     if: (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/')) && github.repository_owner == 'cabinetoffice'
