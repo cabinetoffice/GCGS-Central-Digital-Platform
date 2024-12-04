@@ -20,6 +20,17 @@ resource "aws_iam_role_policy_attachment" "ecs_task_access_queue" {
   role       = var.role_ecs_task_name
 }
 
+resource "aws_iam_policy" "ecs_task_access_elasticache" {
+  name   = "${local.name_prefix}-ecs-task-access-elasticache"
+  policy = data.aws_iam_policy_document.ecs_task_access_elasticache.json
+  tags   = var.tags
+}
+
+resource "aws_iam_role_policy_attachment" "ecs_task_access_elasticache" {
+  policy_arn = aws_iam_policy.ecs_task_access_elasticache.arn
+  role       = var.role_ecs_task_name
+}
+
 resource "aws_iam_policy" "ecs_task_serilog" {
   name   = "${local.name_prefix}-ecs-task-serilog"
   policy = data.aws_iam_policy_document.ecs_task_serilog.json
