@@ -61,7 +61,7 @@ public class JoinOrganisationModelTests
 
         _organisationClientMock.Verify(client => client.LookupOrganisationAsync(string.Empty, _identifier), Times.Once);
     }
-
+        
     [Fact]
     public async Task OnPost_ModelStateInvalid_ReturnsPageResultWithOrganisationDetails()
     {
@@ -88,7 +88,7 @@ public class JoinOrganisationModelTests
 
         _organisationClientMock.Setup(client => client.CreateJoinRequestAsync(_organisationId,
             It.Is<CreateOrganisationJoinRequest>(r => r.PersonId == _joinOrganisationModel.UserDetails.PersonId)))
-            .ReturnsAsync(new OrganisationJoinRequest(Guid.NewGuid(), _organisation, null, null, null, OrganisationJoinRequestStatus.Accepted));
+            .ReturnsAsync(new OrganisationJoinRequest(Guid.NewGuid(), isNewRequest: true, _organisation, null, null, null, OrganisationJoinRequestStatus.Pending));
 
         ValidateModel(_joinOrganisationModel);
 
@@ -116,7 +116,7 @@ public class JoinOrganisationModelTests
 
         _organisationClientMock.Setup(client => client.CreateJoinRequestAsync(_organisationId,
             It.Is<CreateOrganisationJoinRequest>(r => r.PersonId == _joinOrganisationModel.UserDetails.PersonId)))
-            .ReturnsAsync(new OrganisationJoinRequest(Guid.NewGuid(), _organisation, null, null, null, OrganisationJoinRequestStatus.Pending));
+            .ReturnsAsync(new OrganisationJoinRequest(Guid.NewGuid(), isNewRequest: false, _organisation, null, null, null, OrganisationJoinRequestStatus.Pending));
 
         ValidateModel(_joinOrganisationModel);
 
