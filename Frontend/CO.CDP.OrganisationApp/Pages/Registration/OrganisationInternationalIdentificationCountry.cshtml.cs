@@ -40,8 +40,7 @@ public class OrganisationInternationalIdentificationCountryModel(ISession sessio
         SessionContext.Set(Session.RegistrationDetailsKey, RegistrationDetails);
 
         if (RedirectToSummary == true)
-        {
-            
+        {            
             return RedirectToPage(NextPage+ "?frm-summary");
         }
         else
