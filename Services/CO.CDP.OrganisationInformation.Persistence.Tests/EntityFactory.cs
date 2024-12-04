@@ -112,6 +112,7 @@ public static class EntityFactory
         {
             Guid = theGuid,
             Name = theName,
+            Type = OrganisationType.Organisation,
             Tenant = tenant ?? GivenTenant(name: theName),
 
             Identifiers = identifiers ??

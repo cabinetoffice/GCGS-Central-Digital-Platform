@@ -266,6 +266,7 @@ public class UpdateJoinRequestUseCaseTests
         {
             Guid = _organisationId,
             Name = "Test",
+            Type = OrganisationType.Organisation,
             Tenant = It.IsAny<Tenant>(),
             ContactPoints = [new CO.CDP.OrganisationInformation.Persistence.Organisation.ContactPoint { Email = "test@test.com" }],
             SupplierInfo = new CO.CDP.OrganisationInformation.Persistence.Organisation.SupplierInformation()

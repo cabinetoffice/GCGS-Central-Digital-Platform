@@ -54,6 +54,7 @@ public class SupportUpdateOrganisationUseCaseTests
             PendingRoles = [PartyRole.Buyer],
             Tenant = null!,
             Name = null!,
+            Type = OrganisationType.Organisation,
             ContactPoints = [new Persistence.Organisation.ContactPoint { Email = "org-email@test.com" }]
         };
 

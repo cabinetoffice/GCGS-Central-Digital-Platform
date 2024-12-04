@@ -94,6 +94,7 @@ public class LookupOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
             Id = 1,
             Guid = organisationId,
             Name = "Test Organisation",
+            Type = OrganisationType.Organisation,
             Tenant = new Tenant
             {
                 Id = 102,

@@ -182,6 +182,7 @@ public static class SharedConsentFactory
         {
             Guid = theOrganisationId,
             Name = $"Test Organisation {theOrganisationId}",
+            Type = OrganisationType.Organisation,
             Tenant = new Tenant
             {
                 Guid = Guid.NewGuid(),

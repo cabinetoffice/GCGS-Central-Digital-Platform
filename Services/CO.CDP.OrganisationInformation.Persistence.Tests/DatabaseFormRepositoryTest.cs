@@ -1,12 +1,11 @@
 using CO.CDP.OrganisationInformation.Persistence.Forms;
-using CO.CDP.Testcontainers.PostgreSql;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using static CO.CDP.OrganisationInformation.Persistence.Tests.Factories.SharedConsentFactory;
 
 namespace CO.CDP.OrganisationInformation.Persistence.Tests;
 
-public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFixture<PostgreSqlFixture>
+public class DatabaseFormRepositoryTest(OrganisationInformationPostgreSqlFixture postgreSql) : IClassFixture<OrganisationInformationPostgreSqlFixture>
 {
     private static int _nextQuestionNumber = 100;
 
@@ -36,13 +35,13 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
         var sharedConsent = GivenSharedConsent(form: form);
         var section = GivenFormSection(sectionId, form);
 
-        await using var context = postgreSql.OrganisationInformationContext();
+        await using var context = GetDbContext();
         await context.Forms.AddAsync(form);
         await context.Set<FormSection>().AddAsync(section);
         await context.SharedConsents.AddAsync(sharedConsent);
         await context.SaveChangesAsync();
 
-        using var repository = FormRepository(context);
+        using var repository = FormRepository();
 
         var summaries = await repository.GetFormSummaryAsync(formId, sharedConsent.Organisation.Guid);
 
@@ -61,12 +60,12 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
         var section = GivenFormSection(sectionId, form);
         GivenAnswerSet(sharedConsent: sharedConsent, section: section);
 
-        await using var context = postgreSql.OrganisationInformationContext();
+        await using var context = GetDbContext();
         await context.Forms.AddAsync(form);
         await context.SharedConsents.AddAsync(sharedConsent);
         await context.SaveChangesAsync();
 
-        using var repository = FormRepository(context);
+        using var repository = FormRepository();
 
         var summaries = await repository.GetFormSummaryAsync(formId, sharedConsent.Organisation.Guid);
 
@@ -100,8 +99,8 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
     [Fact]
     public async Task GetQuestionsAsync_WhenSectionExists_ReturnsQuestions()
     {
-        await using var context = postgreSql.OrganisationInformationContext();
-        using var repository = FormRepository(context);
+        await using var context = GetDbContext();
+        using var repository = FormRepository();
         var formId = Guid.NewGuid();
         var sectionId = Guid.NewGuid();
 
@@ -166,8 +165,8 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
     [Fact]
     public async Task GetSectionAsync_WhenSectionExist_ReturnsFormSection()
     {
-        await using var context = postgreSql.OrganisationInformationContext();
-        using var repository = FormRepository(context);
+        await using var context = GetDbContext();
+        using var repository = FormRepository();
         var formId = Guid.NewGuid();
         var sectionId = Guid.NewGuid();
 
@@ -218,11 +217,11 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
     {
         var sharedConsent = GivenSharedConsent();
 
-        await using var context = postgreSql.OrganisationInformationContext();
+        await using var context = GetDbContext();
         await context.SharedConsents.AddAsync(sharedConsent);
         await context.SaveChangesAsync();
 
-        using var repository = FormRepository(context);
+        using var repository = FormRepository();
 
         var found = await repository.GetSharedConsentWithAnswersAsync(sharedConsent.Form.Guid,
             sharedConsent.Organisation.Guid);
@@ -244,12 +243,12 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
         var answerSet = GivenAnswerSet(sharedConsent: sharedConsent, section: section);
         var answer = GivenAnswer(question: question, answerSet: answerSet);
 
-        await using var context = postgreSql.OrganisationInformationContext();
+        await using var context = GetDbContext();
         await context.Forms.AddAsync(form);
         await context.SharedConsents.AddAsync(sharedConsent);
         await context.SaveChangesAsync();
 
-        using var repository = FormRepository(context);
+        using var repository = FormRepository();
 
         var found = await repository.GetSharedConsentWithAnswersAsync(sharedConsent.Form.Guid,
             sharedConsent.Organisation.Guid);
@@ -278,7 +277,7 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
     [Fact]
     public async Task DeleteAnswerSetAsync_ShouldDeleteExistingAnswerSet_WhenAnswerSetFoundForDraftSharedConsent()
     {
-        await using var context = postgreSql.OrganisationInformationContext();
+        await using var context = GetDbContext();
         var organisationId = Guid.NewGuid();
         var answerSetId = Guid.NewGuid();
         var organisation = GivenOrganisation(organisationId: organisationId);
@@ -298,7 +297,7 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
         context.SharedConsents.Add(sharedConsent);
         await context.SaveChangesAsync();
 
-        var repository = FormRepository(context);
+        var repository = FormRepository();
 
         var result = await repository.DeleteAnswerSetAsync(organisationId, answerSetId);
         var foundAnswerSet = await context.FormAnswerSets.FirstAsync(a => a.Guid == answerSetId);
@@ -314,7 +313,7 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
     [Fact]
     public async Task DeleteAnswerSetAsync_ShouldDeleteClonedAnswerSet_WhenAnswerSetFoundForSubmittedSharedConsent()
     {
-        await using var context = postgreSql.OrganisationInformationContext();
+        await using var context = GetDbContext();
         var organisationId = Guid.NewGuid();
         var answerSetId = Guid.NewGuid();
         var organisation = GivenOrganisation(organisationId: organisationId);
@@ -334,7 +333,7 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
         context.SharedConsents.Add(sharedConsent);
         await context.SaveChangesAsync();
 
-        var repository = FormRepository(context);
+        var repository = FormRepository();
 
         var result = await repository.DeleteAnswerSetAsync(organisationId, answerSetId);
         var foundAnswerSet = await context.FormAnswerSets.FirstAsync(a => a.Guid == answerSetId);
@@ -383,8 +382,8 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
     [Fact]
     public async Task GetFormAnswerSetAsync_WhenFormAnswerSetsExists_ReturnsFormAnswerSet()
     {
-        await using var context = postgreSql.OrganisationInformationContext();
-        var repository = FormRepository(context);
+        await using var context = GetDbContext();
+        var repository = FormRepository();
 
         var formId = Guid.NewGuid();
         var sectionId = Guid.NewGuid();
@@ -474,8 +473,8 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
     [Fact]
     public async Task GetQuestionsAsync_WhenOptionsAreSimple_ReturnsCorrectOptions()
     {
-        await using var context = postgreSql.OrganisationInformationContext();
-        using var repository = FormRepository(context);
+        await using var context = GetDbContext();
+        using var repository = FormRepository();
         var formId = Guid.NewGuid();
         var sectionId = Guid.NewGuid();
 
@@ -544,8 +543,15 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
         return GivenFormQuestion(section: section, type: FormQuestionType.YesOrNo);
     }
 
-    private IFormRepository FormRepository(OrganisationInformationContext? context = null)
+    private DatabaseFormRepository FormRepository()
+        => new(GetDbContext());
+
+    private OrganisationInformationContext? context = null;
+
+    private OrganisationInformationContext GetDbContext()
     {
-        return new DatabaseFormRepository(context ?? postgreSql.OrganisationInformationContext());
+        context = context ?? postgreSql.OrganisationInformationContext();
+
+        return context;
     }
 }

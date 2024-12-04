@@ -16,6 +16,7 @@ using CO.CDP.OrganisationInformation;
 using CO.CDP.OrganisationInformation.Persistence;
 using CO.CDP.WebApi.Foundation;
 using Microsoft.EntityFrameworkCore;
+using Npgsql;
 using System.Reflection;
 using ConnectedEntity = CO.CDP.Organisation.WebApi.Model.ConnectedEntity;
 using ConnectedEntityLookup = CO.CDP.Organisation.WebApi.Model.ConnectedEntityLookup;
@@ -30,8 +31,6 @@ builder.ConfigureForwardedHeaders();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options => { options.DocumentOrganisationApi(builder.Configuration); });
-builder.Services.AddHealthChecks()
-    .AddNpgSql(ConnectionStringHelper.GetConnectionString(builder.Configuration, "OrganisationInformationDatabase"));
 builder.Services.AddAutoMapper(typeof(WebApiToPersistenceProfile));
 
 builder.Services
@@ -54,8 +53,12 @@ if (Assembly.GetEntryAssembly().IsRunAs("CO.CDP.Organisation.WebApi"))
     builder.Services.AddHostedService<DispatcherBackgroundService>();
     builder.Services.AddHostedService<OutboxProcessorBackgroundService>();
 }
-builder.Services.AddDbContext<OrganisationInformationContext>(o =>
-    o.UseNpgsql(ConnectionStringHelper.GetConnectionString(builder.Configuration, "OrganisationInformationDatabase")));
+
+var connectionString = ConnectionStringHelper.GetConnectionString(builder.Configuration, "OrganisationInformationDatabase");
+builder.Services.AddHealthChecks().AddNpgSql(connectionString);
+var dbDataSource = new NpgsqlDataSourceBuilder(connectionString).EnableDynamicJson().MapEnums().Build();
+builder.Services.AddDbContext<OrganisationInformationContext>(o => o.UseNpgsql(dbDataSource));
+
 builder.Services.AddScoped<IIdentifierService, IdentifierService>();
 builder.Services.AddScoped<IOrganisationRepository, DatabaseOrganisationRepository>();
 builder.Services.AddScoped<IConnectedEntityRepository, DatabaseConnectedEntityRepository>();

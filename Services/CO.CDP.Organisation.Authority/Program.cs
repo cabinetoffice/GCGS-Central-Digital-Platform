@@ -7,20 +7,22 @@ using CO.CDP.Organisation.Authority;
 using CO.CDP.Organisation.Authority.AutoMapper;
 using CO.CDP.OrganisationInformation.Persistence;
 using Microsoft.EntityFrameworkCore;
+using Npgsql;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.ConfigureForwardedHeaders();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(o => { o.DocumentApi(builder.Configuration); });
-builder.Services.AddHealthChecks()
-    .AddNpgSql(ConnectionStringHelper.GetConnectionString(builder.Configuration, "OrganisationInformationDatabase"));
 builder.Services.AddProblemDetails();
 
 builder.Services.AddAutoMapper(typeof(WebApiToPersistenceProfile));
 
-builder.Services.AddDbContext<OrganisationInformationContext>(o =>
-    o.UseNpgsql(ConnectionStringHelper.GetConnectionString(builder.Configuration, "OrganisationInformationDatabase")));
+var connectionString = ConnectionStringHelper.GetConnectionString(builder.Configuration, "OrganisationInformationDatabase");
+builder.Services.AddHealthChecks().AddNpgSql(connectionString);
+var dbDataSource = new NpgsqlDataSourceBuilder(connectionString).EnableDynamicJson().MapEnums().Build();
+builder.Services.AddDbContext<OrganisationInformationContext>(o => o.UseNpgsql(dbDataSource));
+
 builder.Services.AddScoped<IPersonRepository, DatabasePersonRepository>();
 builder.Services.AddScoped<ITenantRepository, DatabaseTenantRepository>();
 builder.Services.AddScoped<IAuthorityRepository, DatabaseAuthorityRepository>();

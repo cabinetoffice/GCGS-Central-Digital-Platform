@@ -214,7 +214,7 @@ public class OrganisationDetailsSummaryModelTest
             OrganisationName = "TestOrg",
             OrganisationScheme = "TestType",
             OrganisationEmailAddress = "test@example.com",
-            OrganisationType = OrganisationType.Supplier,
+            OrganisationType = Constants.OrganisationType.Supplier,
         };
 
         return registrationDetails;
