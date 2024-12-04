@@ -66,18 +66,7 @@ public class OrganisationInternationalIdentificationModel(
         return Page();
     }
 
-    private async Task<ICollection<IdentifierRegistries>> PopulateIdentifierRegistries()
-    {
-        try
-        {
-            return await pponClient.GetIdentifierRegistriesAsync(Country);
-        }
-        catch (ApiException ex) when (ex.StatusCode == 404)
-        {
-            return new List<IdentifierRegistries>();
-            // Show other
-        }
-    }
+
 
     public async Task<IActionResult> OnPost()
     {
@@ -148,33 +137,47 @@ public class OrganisationInternationalIdentificationModel(
         var organisation = await organisationClient.GetOrganisationAsync(Id);
         if (organisation == null) return false;
 
-        // Populate identifiers
-        PopulateExistingIdentifiers(organisation);
+        // Populate existing identifiers
+        ExistingInternationalIdentifiers = PopulateExistingIdentifiers(organisation);
 
-        // Load registry data
+        // Load identifier registry data
         InternationalIdentifiers = await PopulateIdentifierRegistries();
 
         // Check and update identifier status
-        UpdateIdentifierStatus();
+        HasIdentifierToShow = UpdateIdentifierStatus();
 
         return true;
     }
 
-    private void PopulateExistingIdentifiers(OrganisationWebApiClient.Organisation organisation)
+    private async Task<ICollection<IdentifierRegistries>> PopulateIdentifierRegistries()
+    {
+        try
+        {
+            return await pponClient.GetIdentifierRegistriesAsync(Country);
+        }
+        catch (ApiException ex) when (ex.StatusCode == 404)
+        {
+            return new List<IdentifierRegistries>();
+            // Show other
+        }
+    }
+
+    private ICollection<string> PopulateExistingIdentifiers(OrganisationWebApiClient.Organisation organisation)
     {
         var identifiers = organisation.AdditionalIdentifiers ?? new List<OrganisationWebApiClient.Identifier>();
         identifiers.Add(organisation.Identifier);
 
-        ExistingInternationalIdentifiers = identifiers.Select(x => x.Scheme).ToList();
+        return identifiers.Select(x => x.Scheme).ToList();
     }
 
-    private void UpdateIdentifierStatus()
+    private bool UpdateIdentifierStatus()
     {
-        var schemesInRegistries = InternationalIdentifiers.Select(x => x.Scheme).ToHashSet();
+        var schemesInRegistries = (InternationalIdentifiers?.Select(x => x.Scheme) ?? Enumerable.Empty<string>()).ToHashSet();
+
         var validIdentifiers = ExistingInternationalIdentifiers
             .Where(scheme => schemesInRegistries.Contains(scheme) || scheme == $"{Country}-Other")
             .ToList();
 
-        HasIdentifierToShow = !(!schemesInRegistries.Any() && validIdentifiers.Count == 1);
+        return !(!schemesInRegistries.Any() && validIdentifiers.Count == 1);
     }
 }

@@ -57,6 +57,7 @@ public class OrganisationInternationalIdentificationModelTest
     public async Task OnGet_PopulatesExistingIdentifiers_WhenValidationSucceeds()
     {
         var model = CreateModel();
+        model.Id = _organisationId;
         model.Country = "FR";
         var organisation = GivenOrganisationClientModel();
 
