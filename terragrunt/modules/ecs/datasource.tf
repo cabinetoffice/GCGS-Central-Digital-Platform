@@ -32,6 +32,10 @@ data "aws_secretsmanager_secret" "companies_house" {
   name = "${local.name_prefix}-companies-house-credentials"
 }
 
+data "aws_secretsmanager_secret" "redis_auth_token" {
+  arn = var.redis_auth_token_arn
+}
+
 data "aws_secretsmanager_secret_version" "fts_service_url" {
   secret_id = "${local.name_prefix}-fts-service-url"
 }
@@ -89,6 +93,20 @@ data "aws_iam_policy_document" "ecs_task_access_queue" {
     resources = [
       var.queue_entity_verification_queue_arn,
       var.queue_organisation_queue_arn
+    ]
+  }
+}
+
+data "aws_iam_policy_document" "ecs_task_access_elasticache" {
+  statement {
+    sid    = "AllowAppToManageItsOwnDataProtectionToken"
+    effect = "Allow"
+    actions = [
+      "ssm:GetParametersByPath",
+      "ssm:PutParameter"
+    ]
+    resources = [
+      "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter/${local.name_prefix}-ec-*"
     ]
   }
 }

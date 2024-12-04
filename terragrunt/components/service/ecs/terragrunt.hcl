@@ -55,6 +55,7 @@ dependency core_security_groups {
     alb_sg_id                 = "mock"
     db_postgres_sg_id         = "mock"
     ecs_sg_id                 = "mock"
+    elasticache_redis_sg_id   = "mock"
     vpce_ecr_api_sg_id        = "mock"
     vpce_ecr_dkr_sg_id        = "mock"
     vpce_s3_sg_id             = "mock"
@@ -93,6 +94,15 @@ dependency service_database {
   }
 }
 
+dependency service_cache {
+  config_path = "../../service/cache"
+  mock_outputs = {
+    port                     = "mock"
+    primary_endpoint_address = "mock"
+    redis_auth_token_arn     = "mock"
+  }
+}
+
 dependency service_queue {
   config_path = "../../service/queue"
   mock_outputs = {
@@ -105,11 +115,11 @@ dependency service_queue {
 
 inputs = {
 
-  account_ids                        = local.global_vars.locals.account_ids
-  onelogin_logout_notification_urls  = local.global_vars.locals.onelogin_logout_notification_urls
-  pinned_service_version             = local.global_vars.locals.pinned_service_version
-  service_configs                    = local.global_vars.locals.service_configs
-  tags                               = local.tags
+  account_ids                       = local.global_vars.locals.account_ids
+  onelogin_logout_notification_urls = local.global_vars.locals.onelogin_logout_notification_urls
+  pinned_service_version            = local.global_vars.locals.pinned_service_version
+  service_configs                   = local.global_vars.locals.service_configs
+  tags                              = local.tags
 
   role_cloudwatch_events_arn               = dependency.core_iam.outputs.cloudwatch_events_arn
   role_cloudwatch_events_name              = dependency.core_iam.outputs.cloudwatch_events_name
@@ -137,6 +147,7 @@ inputs = {
   alb_sg_id                 = dependency.core_security_groups.outputs.alb_sg_id
   db_postgres_sg_id         = dependency.core_security_groups.outputs.db_postgres_sg_id
   ecs_sg_id                 = dependency.core_security_groups.outputs.ecs_sg_id
+  redis_sg_id               = dependency.core_security_groups.outputs.elasticache_redis_sg_id
   vpce_ecr_api_sg_id        = dependency.core_security_groups.outputs.vpce_ecr_api_sg_id
   vpce_ecr_dkr_sg_id        = dependency.core_security_groups.outputs.vpce_ecr_dkr_sg_id
   vpce_logs_sg_id           = dependency.core_security_groups.outputs.vpce_logs_sg_id
@@ -156,6 +167,9 @@ inputs = {
   db_sirsi_kms_arn                       = dependency.service_database.outputs.sirsi_kms_arn
   db_sirsi_name                          = dependency.service_database.outputs.sirsi_name
 
+  redis_primary_endpoint = dependency.service_cache.outputs.primary_endpoint_address
+  redis_auth_token_arn   = dependency.service_cache.outputs.redis_auth_token_arn
+  redis_port             = dependency.service_cache.outputs.port
 
   queue_entity_verification_queue_arn = dependency.service_queue.outputs.entity_verification_queue_arn
   queue_entity_verification_queue_url = dependency.service_queue.outputs.entity_verification_queue_url

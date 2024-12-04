@@ -15,6 +15,8 @@ public abstract class InvalidUpdateOrganisationCommand(string message, Exception
 
     public class MissingRoles() : InvalidUpdateOrganisationCommand("Missing roles.");
 
+    public class MissingBuyerInformation() : InvalidUpdateOrganisationCommand("Missing buyer information.");
+
     public class MissingContactPoint() : InvalidUpdateOrganisationCommand("Missing contact point.");
 
     public class NoPrimaryIdentifier()

@@ -42,7 +42,11 @@ locals {
       canary_schedule_expression        = "rate(30 minutes)" # "cron(15 7,11,15 ? * MON-FRI)" # UTC+0
       fts_azure_frontdoor               = null
       name                              = "dev"
-      onelogin_logout_notification_urls = ["https://test-findtender.nqc.com/auth/backchannellogout"]
+      onelogin_logout_notification_urls = [
+        "https://test-findtender.nqc.com/auth/backchannellogout",
+        "https://stanvolcere.nqc.com/auth/backchannellogout",
+        "https://nadeemshafi2.nqc.com/auth/backchannellogout"
+      ]
       pinned_service_version            = null
       postgres_instance_type            = "db.t4g.micro"
       private_subnets = [
@@ -91,7 +95,7 @@ locals {
       fts_azure_frontdoor               = null
       name                              = "integration"
       onelogin_logout_notification_urls = ["https://test-findtender.nqc.com/auth/backchannellogout"]
-      pinned_service_version            = "1.0.9"
+      pinned_service_version            = "1.0.10"
       postgres_instance_type            = "db.t4g.micro"
       private_subnets = [
         "10.${local.cidr_b_integration}.101.0/24",
@@ -119,7 +123,7 @@ locals {
       fts_azure_frontdoor               = "nqc-front-door-uksouth.azurefd.net"
       name                              = "production"
       onelogin_logout_notification_urls = ["https://www.private-beta.find-tender.service.gov.uk/auth/backchannellogout"]
-      pinned_service_version            = "1.0.9"
+      pinned_service_version            = "1.0.10"
       postgres_instance_type            = "db.t4g.micro"
       private_subnets = [
         "10.${local.cidr_b_production}.101.0/24",
