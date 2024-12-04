@@ -33,7 +33,7 @@
             <div class="govuk-checkboxes__item">
                 <input class="govuk-checkboxes__input" id="@nameof(Model.CheckBoxInput)" name="@nameof(Model.CheckBoxInput)" type="checkbox" value="true" @(Model.CheckBoxInput == true ? "checked" : "") @(hasError ? Html.Raw(@"aria-describedby=""checkbox-error""") : null)>
                 <label class="govuk-label govuk-checkboxes__label" for="@nameof(Model.CheckBoxInput)">
-                    @Html.Raw(Model.Options?.Choices?.Values.FirstOrDefault())
+                    @Model.Options?.Choices?.Values.FirstOrDefault()
                 </label>
             </div>
         </div>
