@@ -9,8 +9,8 @@ namespace CO.CDP.OrganisationApp.Pages;
 
 [AuthenticatedSessionNotRequired]
 public class CookiesModel(
-    IWebHostEnvironment env,
-    ITempDataService tempDataService) : PageModel
+    ITempDataService tempDataService,
+    ICookiePreferencesService cookiePreferencesService) : PageModel
 {
     [BindProperty]
     [Required(ErrorMessage="Choose whether you accept cookies that measure website use")]
@@ -38,45 +38,26 @@ public class CookiesModel(
             return Page();
         }
 
-        Response.Cookies.Append(CookieSettings.CookieName, ((int)CookieAcceptance).ToString(), new CookieOptions{
-            Expires = DateTimeOffset.UtcNow.AddDays(365),
-            IsEssential = true,
-            HttpOnly = false,
-            Secure = !env.IsDevelopment()
-        });
+        switch(CookieAcceptance)
+        {
+            case CookieAcceptanceValues.Accept:
+                cookiePreferencesService.Accept();
+            break;
+
+            case CookieAcceptanceValues.Reject:
+                cookiePreferencesService.Reject();
+            break;
+        }
 
         if (!string.IsNullOrEmpty(ReturnUrl) && Url.IsLocalUrl(ReturnUrl))
         {
-            return LocalRedirect(QueryHelpers.AddQueryString(ReturnUrl, CookieSettings.CookiesAcceptedQueryString, "true"));
+            return LocalRedirect(QueryHelpers.AddQueryString(ReturnUrl, CookieSettings.CookieBannerInteractionQueryString, "true"));
         }
+
         tempDataService.Put(FlashMessageTypes.Success, new FlashMessage(
             "You’ve set your cookie preferences."
         ));
 
         return RedirectToPage("/Cookies");
     }
-
-    public bool RadioIsChecked(CookieAcceptanceValues value)
-    {
-        return Request.Cookies.ContainsKey(CookieSettings.CookieName) && Request.Cookies[CookieSettings.CookieName] == ((int)value).ToString();
-    }
-}
-
-public enum CookieAcceptanceValues
-{
-    Accept=1,
-    Reject=2
-}
-
-public static class CookieSettings
-{
-    public const string CookieAcceptanceFieldName = "CookieAcceptance";
-    public const string CookieSettingsPageReturnUrlFieldName = "ReturnUrl";
-    public const string CookiesAcceptedQueryString = "cookiesAccepted";
-
-    // Cookie name in FTS is FT_COOKIES_PREFERENCES_SET
-    // Cookie values have been configured to match (See the 1 and 2 in the CookieAcceptanceValues enum).
-    // So if we're sharing a domain in production,we could switch to using the same cookie name and remove the frontend page
-    // (But keep the post handler for setting it - otherwise our cookie banner would need to post across to their subdomain)
-    public const string CookieName = "SIRSI_COOKIES_PREFERENCES_SET";
 }

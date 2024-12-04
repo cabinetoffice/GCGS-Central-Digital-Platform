@@ -211,6 +211,9 @@ builder.Services.AddSingleton<IAuthorizationHandler, CustomScopeHandler>();
 builder.Services.AddSingleton<IAuthorizationMiddlewareResultHandler, CustomAuthorizationMiddlewareResultHandler>();
 builder.Services.AddAuthorization();
 
+builder.Services.AddScoped<CookieAcceptanceMiddleware>();
+builder.Services.AddScoped<ICookiePreferencesService, CookiePreferencesService>();
+
 builder.Services.AddHealthChecks();
 
 // @see DP-723 for details: https://noticingsystem.atlassian.net/browse/DP-723?focusedCommentId=27796
@@ -221,6 +224,7 @@ builder.Services.AddDataProtection()
 var app = builder.Build();
 app.UseForwardedHeaders();
 app.UseMiddleware<ExceptionMiddleware>();
+app.UseMiddleware<CookieAcceptanceMiddleware>();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
