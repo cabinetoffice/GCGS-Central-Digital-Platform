@@ -22,7 +22,7 @@ public class SupplierToBuyerOrganisationTypeModel(ITempDataService tempDataServi
 
     [BindProperty]
     [DisplayName(nameof(StaticTextResource.SupplierToBuyer_OrganisationType_EnterType))]
-    [RequiredIf("BuyerOrganisationType", "Other")]
+    [RequiredIf(nameof(StaticTextResource.SupplierToBuyer_OrganisationType_BuyerType), nameof(StaticTextResource.SupplierToBuyer_OrganisationType_BuyerTypeOthers))]
     public string? OtherValue { get; set; }
 
     [BindProperty]

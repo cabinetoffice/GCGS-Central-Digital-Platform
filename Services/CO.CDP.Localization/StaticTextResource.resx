@@ -2587,4 +2587,19 @@
   <data name="SupplierToBuyer_SelectDevolvedRegulation_Wales" xml:space="preserve">
     <value>Wales</value>
   </data>
+  <data name="SupplierToBuyer_OrganisationSummary_ChangeDevolvedRegions" xml:space="preserve">
+    <value>Change&lt;span class="govuk-visually-hidden"&gt; the devolved regions</value>
+  </data>
+  <data name="SupplierToBuyer_OrganisationSummary_ChangeDevolvedRegulations" xml:space="preserve">
+    <value>Change&lt;span class="govuk-visually-hidden"&gt; the devolved regulations</value>
+  </data>
+  <data name="SupplierToBuyer_OrganisationSummary_ChangeOrganisationType" xml:space="preserve">
+    <value>Change&lt;span class="govuk-visually-hidden"&gt; the organisation type&lt;/span&gt;</value>
+  </data>
+  <data name="SupplierToBuyer_OrganisationType_BuyerType" xml:space="preserve">
+    <value>BuyerOrganisationType</value>
+  </data>
+  <data name="SupplierToBuyer_OrganisationType_BuyerTypeOthers" xml:space="preserve">
+    <value>Others</value>
+  </data>
 </root>
