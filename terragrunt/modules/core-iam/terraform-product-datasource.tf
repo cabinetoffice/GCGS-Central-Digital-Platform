@@ -126,7 +126,8 @@ data "aws_iam_policy_document" "terraform_product" {
     effect = "Allow"
     resources = [
       "arn:aws:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:log-group:/ecs*",
-      "arn:aws:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:log-group:/cdp-*",
+      "arn:aws:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:log-group:/${local.name_prefix}*",
+      "arn:aws:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:log-group:/aws/vendedlogs/${local.name_prefix}*",
     ]
     sid = "ManageProductLogs"
   }
@@ -154,29 +155,6 @@ data "aws_iam_policy_document" "terraform_product" {
       "arn:aws:events:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:rule/StepFunctionsGetEventsForStepFunctionsExecutionRule",
     ]
     sid = "ManageProductEvents"
-  }
-
-  statement {
-    actions = [
-      "rds:AddTagsToResource",
-      "rds:Create*",
-      "rds:Delete*",
-      "rds:Describe*",
-      "rds:List*",
-      "rds:Modify*",
-      "rds:ModifyDBCluster",
-      "rds:ResetDBClusterParameterGroup",
-      "rds:ResetDBParameterGroup",
-    ]
-    effect = "Allow"
-    resources = [
-      "arn:aws:rds:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:cluster:cdp-*",
-      "arn:aws:rds:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:cluster-pg:cdp-*",
-      "arn:aws:rds:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:db:cdp-*",
-      "arn:aws:rds:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:pg:cdp-*",
-      "arn:aws:rds:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:subgrp:cdp-*",
-    ]
-    sid = "ManageProductRDS"
   }
 
   statement {
@@ -226,7 +204,7 @@ data "aws_iam_policy_document" "terraform_product" {
       "states:List*",
       "states:StartExecution",
       "states:TagResource",
-      "states:UpdateStateMachine"
+      "states:UpdateStateMachine",
     ]
     effect = "Allow"
     resources = [
@@ -247,34 +225,5 @@ data "aws_iam_policy_document" "terraform_product" {
     ]
     sid = "ManageProductCodebuild"
   }
-
-  statement {
-    actions = [
-      "s3:Create*",
-      "s3:Delete*",
-      "s3:Get*",
-      "s3:List*",
-      "s3:Put*",
-    ]
-    effect = "Allow"
-    resources = [
-      "arn:aws:s3:::${local.name_prefix}-*",
-      "arn:aws:s3:::${local.name_prefix}-*/*"
-    ]
-    sid = "ManageProductS3Buckets"
-  }
-
-  statement {
-    actions = [
-      "sqs:*",
-    ]
-    effect = "Allow"
-    resources = [
-      "arn:aws:sqs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:${local.name_prefix}-*"
-    ]
-    sid = "ManageProductSQS"
-  }
-
-
 
 }

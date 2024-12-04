@@ -106,3 +106,33 @@ if (count == 0)
 
 return string.Format(count > 1 ? StaticTextResource.Supplier_SupplierInformationSummary_ConnectedPersonCount_Plural : StaticTextResource.Supplier_SupplierInformationSummary_ConnectedPersonCount_Singular, count);
 ```
+
+== Interacting with the translation team
+
+The translation team will operate on a set of `.csv` files instead of editing the XML files directly.
+
+In order to achieve this - there are 2 Python scripts for converting to and from XML. These should be used via the `Makefile` and the following commands:
+
+=== Converting from .resx (XML) to .csv
+
+```
+make localization-export-to-csv
+```
+
+Running this command will take the contents of the resx files and created csv files in the CO.CDP.Localization project inside a `csv-files` folder.
+
+These are the files that should be sent to the translation team, or anyone that wants to work on UI text without editing it via the repo as normal.
+
+=== Converting from .csx to .resx (XML)
+
+```
+make localization-import-from-csv
+```
+
+Once you have the files back with the updated content, drop them into the same `csv-files` folder and run the above command.
+
+This will take the content and put it back into the XML files.
+
+The script has been designed to retain the same order of keys as is in the original XML files, so the git diff _should_ be minimal and only show the actual changes.
+
+The next time Visual Studio's resource explorer touches the file, it may make whitespace changes, particularly around the area of the comment in the XML. If necessary these can be hidden when viewing the diff by using the `git diff -w` flag.

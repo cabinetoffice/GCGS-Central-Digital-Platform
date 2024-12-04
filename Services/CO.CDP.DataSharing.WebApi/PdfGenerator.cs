@@ -1,12 +1,14 @@
 using CO.CDP.DataSharing.WebApi.Model;
+using CO.CDP.Localization;
 using CO.CDP.OrganisationInformation;
+using Microsoft.AspNetCore.Mvc.Localization;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
 
 namespace CO.CDP.DataSharing.WebApi;
 
-public class PdfGenerator : IPdfGenerator
+public class PdfGenerator(IHtmlLocalizer<FormsEngineResource> localizer) : IPdfGenerator
 {
     public Stream GenerateBasicInformationPdf(SharedSupplierInformation supplierInformation)
     {
@@ -24,7 +26,7 @@ public class PdfGenerator : IPdfGenerator
                 page.DefaultTextStyle(x => x.FontSize(10).FontFamily("DejaVu Sans"));
 
 
-                page.Header().Text("Supplier Information").FontSize(14).Bold().AlignCenter();
+                page.Header().Text(StaticTextResource.PdfGenerator_SupplierInformation_Title).FontSize(14).Bold().AlignCenter();
 
                 page.Content().Column(col =>
                 {
@@ -36,7 +38,7 @@ public class PdfGenerator : IPdfGenerator
 
                 page.Footer().AlignRight().Text(x =>
                 {
-                    x.Span("Generated on: ");
+                    x.Span(StaticTextResource.PdfGenerator_Footer_GeneratedOn);
                     x.Span(DateTime.Now.ToString("dd MMMM yyyy")).Bold();
                 });
             });
@@ -53,7 +55,7 @@ public class PdfGenerator : IPdfGenerator
 
         foreach (var group in groupedSections)
         {
-            col.Item().Text(group.Key).Bold().FontSize(12);
+            col.Item().Text(localizer[group.Key].Value).Bold().FontSize(12);
             col.Item().PaddingBottom(10);
 
             foreach (var answerSet in group)
@@ -62,7 +64,7 @@ public class PdfGenerator : IPdfGenerator
                 {
                     foreach (var qa in answerSet.QuestionAnswers)
                     {
-                        col.Item().Element(container => AddTwoColumnRow(container, qa.Item1, qa.Item2));
+                        col.Item().Element(container => AddTwoColumnRow(container, localizer[qa.Item1].Value, qa.Item2));
                     }
                     col.Item().PaddingBottom(10);
                 }
@@ -75,41 +77,41 @@ public class PdfGenerator : IPdfGenerator
 
     private void AddBasicInformationSection(ColumnDescriptor col, BasicInformation basicInformation)
     {
-        col.Item().Text("Basic Information").Bold().FontSize(12);
+        col.Item().Text(StaticTextResource.PdfGenerator_BasicInformation_Title).Bold().FontSize(12);
         col.Item().PaddingBottom(10);
 
         if (!string.IsNullOrEmpty(basicInformation.SupplierType?.ToString()))
-            col.Item().Element(container => AddTwoColumnRow(container, "Supplier type", basicInformation.SupplierType?.ToString()));
+            col.Item().Element(container => AddTwoColumnRow(container, StaticTextResource.PdfGenerator_BasicInformation_Suppliertype, basicInformation.SupplierType?.ToString()));
 
         if (!string.IsNullOrEmpty(basicInformation.OrganisationName?.ToString()))
-            col.Item().Element(container => AddTwoColumnRow(container, "Organisation name", basicInformation.OrganisationName?.ToString()));
+            col.Item().Element(container => AddTwoColumnRow(container, StaticTextResource.PdfGenerator_BasicInformation_OrganisationName, basicInformation.OrganisationName?.ToString()));
 
         if (basicInformation.RegisteredAddress != null)
-            col.Item().Element(container => AddTwoColumnRow(container, "Registered address", FormatAddress(basicInformation.RegisteredAddress)));
+            col.Item().Element(container => AddTwoColumnRow(container, StaticTextResource.PdfGenerator_BasicInformation_RegisteredAddress, FormatAddress(basicInformation.RegisteredAddress)));
 
         if (basicInformation.PostalAddress != null)
-            col.Item().Element(container => AddTwoColumnRow(container, "Postal address", FormatAddress(basicInformation.PostalAddress)));
+            col.Item().Element(container => AddTwoColumnRow(container, StaticTextResource.PdfGenerator_BasicInformation_PostalAddress, FormatAddress(basicInformation.PostalAddress)));
 
         if (!string.IsNullOrEmpty(basicInformation.VatNumber))
-            col.Item().Element(container => AddTwoColumnRow(container, "VAT number", basicInformation.VatNumber));
+            col.Item().Element(container => AddTwoColumnRow(container, StaticTextResource.PdfGenerator_BasicInformation_VATNumber, basicInformation.VatNumber));
 
         if (!string.IsNullOrEmpty(basicInformation.WebsiteAddress))
-            col.Item().Element(container => AddTwoColumnRow(container, "Website address", basicInformation.WebsiteAddress));
+            col.Item().Element(container => AddTwoColumnRow(container, StaticTextResource.PdfGenerator_BasicInformation_WebsiteAddress, basicInformation.WebsiteAddress));
 
         if (!string.IsNullOrEmpty(basicInformation.EmailAddress))
-            col.Item().Element(container => AddTwoColumnRow(container, "Email address", basicInformation.EmailAddress));
+            col.Item().Element(container => AddTwoColumnRow(container, StaticTextResource.PdfGenerator_BasicInformation_EmailAddress, basicInformation.EmailAddress));
 
         if (!string.IsNullOrEmpty(basicInformation.OrganisationType.ToString()))
-            col.Item().Element(container => AddTwoColumnRow(container, "Organisation type", basicInformation.OrganisationType.ToString()));
+            col.Item().Element(container => AddTwoColumnRow(container, StaticTextResource.PdfGenerator_BasicInformation_OrganisationType, basicInformation.OrganisationType.ToString()));
 
         if (basicInformation.LegalForm != null)
         {
             col.Item().Element(container =>
             {
-                AddTwoColumnRow(container, "Legal form",
-                    $"Registered legal form: {basicInformation.LegalForm.RegisteredLegalForm}\n" +
-                    $"Law registered: {basicInformation.LegalForm.LawRegistered}\n" +
-                    $"Registration date: {basicInformation.LegalForm.RegistrationDate:dd MMMM yyyy}");
+                AddTwoColumnRow(container, StaticTextResource.PdfGenerator_BasicInformation_LegalForm,
+                    $"{StaticTextResource.PdfGenerator_BasicInformation_RegisteredLegalForm}: {basicInformation.LegalForm.RegisteredLegalForm}\n" +
+                    $"{StaticTextResource.PdfGenerator_BasicInformation_LawRegistered}: {basicInformation.LegalForm.LawRegistered}\n" +
+                    $"{StaticTextResource.PdfGenerator_BasicInformation_RegistrationDate}: {basicInformation.LegalForm.RegistrationDate:dd MMMM yyyy}");
             });
         }
 
@@ -119,7 +121,7 @@ public class PdfGenerator : IPdfGenerator
 
     private void AddConnectedPersonInformationSection(ColumnDescriptor col, List<ConnectedPersonInformation> connectedPersons)
     {
-        col.Item().Text("Connected Person Information").Bold().FontSize(12);
+        col.Item().Text(StaticTextResource.PdfGenerator_ConnectedPersonInformation_Title).Bold().FontSize(12);
         col.Item().PaddingBottom(10);
 
         if (connectedPersons.Any())
@@ -130,54 +132,54 @@ public class PdfGenerator : IPdfGenerator
 
                 if (person.Organisation != null)
                 {
-                    col.Item().Text("Connected Organisation Information:").Bold();
+                    col.Item().Text($"{StaticTextResource.PdfGenerator_ConnectedOrganisationInformation_Title}:").Bold();
                     col.Item().PaddingBottom(10);
                     if (!string.IsNullOrEmpty(person.Organisation.Name))
-                        col.Item().Element(container => AddTwoColumnRow(container, "Name", person.Organisation.Name));
+                        col.Item().Element(container => AddTwoColumnRow(container, StaticTextResource.PdfGenerator_ConnectedPerson_OrganisationName, person.Organisation.Name));
                     if (!string.IsNullOrEmpty(person.Organisation.RegisteredLegalForm))
-                        col.Item().Element(container => AddTwoColumnRow(container, "Registered legal form", person.Organisation.RegisteredLegalForm));
+                        col.Item().Element(container => AddTwoColumnRow(container, StaticTextResource.PdfGenerator_ConnectedPerson_RegisteredLegalForm, person.Organisation.RegisteredLegalForm));
                     if (!string.IsNullOrEmpty(person.Organisation.LawRegistered))
-                        col.Item().Element(container => AddTwoColumnRow(container, "Law registered", person.Organisation.LawRegistered));
+                        col.Item().Element(container => AddTwoColumnRow(container, StaticTextResource.PdfGenerator_ConnectedPerson_LawRegistered, person.Organisation.LawRegistered));
                 }
 
                 if (!string.IsNullOrEmpty(person.FirstName))
-                    col.Item().Element(container => AddTwoColumnRow(container, "First name", person.FirstName));
+                    col.Item().Element(container => AddTwoColumnRow(container, StaticTextResource.PdfGenerator_ConnectedPerson_FirstName, person.FirstName));
 
                 if (!string.IsNullOrEmpty(person.LastName))
-                    col.Item().Element(container => AddTwoColumnRow(container, "Last name", person.LastName));
+                    col.Item().Element(container => AddTwoColumnRow(container, StaticTextResource.PdfGenerator_ConnectedPerson_LastName, person.LastName));
 
                 if (!string.IsNullOrEmpty(person.Nationality))
-                    col.Item().Element(container => AddTwoColumnRow(container, "Nationality", person.Nationality));
+                    col.Item().Element(container => AddTwoColumnRow(container, StaticTextResource.PdfGenerator_ConnectedPerson_Nationality, person.Nationality));
 
                 if (person.DateOfBirth != null)
-                    col.Item().Element(container => AddTwoColumnRow(container, "Date of birth", person.DateOfBirth?.ToString("dd MMMM yyyy")));
+                    col.Item().Element(container => AddTwoColumnRow(container, StaticTextResource.PdfGenerator_ConnectedPerson_DateOfBirth, person.DateOfBirth?.ToString("dd MMMM yyyy")));
 
                 if (!string.IsNullOrEmpty(person.CompanyHouseNumber))
-                    col.Item().Element(container => AddTwoColumnRow(container, "Company House Number", person.CompanyHouseNumber));
+                    col.Item().Element(container => AddTwoColumnRow(container, StaticTextResource.PdfGenerator_ConnectedPerson_CompanyHouseNumber, person.CompanyHouseNumber));
 
                 if (!string.IsNullOrEmpty(person.PersonType.ToString()))
                 {
                     if (!string.IsNullOrEmpty(person.Organisation?.Name))
                     {
-                        col.Item().Element(container => AddTwoColumnRow(container, "Type", GetFriendlyEntityTypeText(person.EntityType)));
+                        col.Item().Element(container => AddTwoColumnRow(container, StaticTextResource.PdfGenerator_ConnectedPerson_OrganisationEntityType, GetFriendlyEntityTypeText(person.EntityType)));
                     }
                     else
                     {
-                        col.Item().Element(container => AddTwoColumnRow(container, "Type", GetFriendlyPersonTypeText(person.PersonType)));
+                        col.Item().Element(container => AddTwoColumnRow(container, StaticTextResource.PdfGenerator_ConnectedPerson_Type, GetFriendlyPersonTypeText(person.PersonType)));
                     }
                 }
 
                 if (!string.IsNullOrEmpty(person.Organisation?.Name))
                 {
-                    col.Item().Element(container => AddTwoColumnRow(container, "Category", GetFriendlyOrganisationCategoryText(person.ConnectedOrganisationCategoryType)));
+                    col.Item().Element(container => AddTwoColumnRow(container, StaticTextResource.PdfGenerator_ConnectedPerson_OrganisationCategory, GetFriendlyOrganisationCategoryText(person.ConnectedOrganisationCategoryType)));
                 }
                 else if (!string.IsNullOrEmpty(person.ToString()))
                 {
-                    col.Item().Element(container => AddTwoColumnRow(container, "Category", GetFriendlyCategoryText(person.Category)));
+                    col.Item().Element(container => AddTwoColumnRow(container, StaticTextResource.PdfGenerator_ConnectedPerson_Category, GetFriendlyCategoryText(person.Category)));
                 }
 
                 if (!string.IsNullOrEmpty(person.ResidentCountry))
-                    col.Item().Element(container => AddTwoColumnRow(container, "Resident country", person.ResidentCountry));
+                    col.Item().Element(container => AddTwoColumnRow(container, StaticTextResource.PdfGenerator_ConnectedPerson_ResidentCountry, person.ResidentCountry));
 
                 var registeredAddress = person.Addresses.FirstOrDefault(a => a.Type == AddressType.Registered);
                 var postalAddress = person.Addresses.FirstOrDefault(a => a.Type == AddressType.Postal);
@@ -186,11 +188,11 @@ public class PdfGenerator : IPdfGenerator
                 {
                     col.Item().Element(container =>
                     {
-                        AddTwoColumnRow(container, "Registered address",
-                            $"Street Address: {registeredAddress.StreetAddress}\n" +
-                            $"Locality: {registeredAddress.Locality}\n" +
-                            $"Postcode: {registeredAddress.PostalCode}\n" +
-                            $"Country: {registeredAddress.CountryName}");
+                        AddTwoColumnRow(container, StaticTextResource.PdfGenerator_ConnectedPerson_RegisteredAddress,
+                            $"{StaticTextResource.PdfGenerator_ConnectedPerson_StreetAddress}: {registeredAddress.StreetAddress}\n" +
+                            $"{StaticTextResource.PdfGenerator_ConnectedPerson_Locality}: {registeredAddress.Locality}\n" +
+                            $"{StaticTextResource.PdfGenerator_ConnectedPerson_Postcode}: {registeredAddress.PostalCode}\n" +
+                            $"{StaticTextResource.PdfGenerator_ConnectedPerson_Country}: {registeredAddress.CountryName}");
                     });
                 }
 
@@ -198,11 +200,11 @@ public class PdfGenerator : IPdfGenerator
                 {
                     col.Item().Element(container =>
                     {
-                        AddTwoColumnRow(container, "Postal address",
-                            $"Street Address: {postalAddress.StreetAddress}\n" +
-                            $"Locality: {postalAddress.Locality}\n" +
-                            $"Postcode: {postalAddress.PostalCode}\n" +
-                            $"Country: {postalAddress.CountryName}");
+                        AddTwoColumnRow(container, StaticTextResource.PdfGenerator_ConnectedPerson_PostalAddress,
+                            $"{StaticTextResource.PdfGenerator_ConnectedPerson_StreetAddress}: {postalAddress.StreetAddress}\n" +
+                            $"{StaticTextResource.PdfGenerator_ConnectedPerson_Locality}: {postalAddress.Locality}\n" +
+                            $"{StaticTextResource.PdfGenerator_ConnectedPerson_Postcode}: {postalAddress.PostalCode}\n" +
+                            $"{StaticTextResource.PdfGenerator_ConnectedPerson_Country}: {postalAddress.CountryName}");
                     });
                 }
 
@@ -221,7 +223,7 @@ public class PdfGenerator : IPdfGenerator
                                 return condition;
                             }));
 
-                            AddTwoColumnRow(container, "Control conditions", controlConditionsText);
+                            AddTwoColumnRow(container, StaticTextResource.PdfGenerator_Organisation_ControlConditions, controlConditionsText);
                         });
                     }
                 }
@@ -239,21 +241,21 @@ public class PdfGenerator : IPdfGenerator
                             return condition;
                         }));
 
-                        AddTwoColumnRow(container, "Control conditions", controlConditionsText);
+                        AddTwoColumnRow(container, StaticTextResource.PdfGenerator_Organisation_ControlConditions, controlConditionsText);
                     });
                 }
 
                 if (person.IndividualTrust != null)
                 {
-                    col.Item().Text("Individual Trust Information:").Bold();
+                    col.Item().Text($"{StaticTextResource.PdfGenerator_IndividualTrustInformation_Title}:").Bold();
                     if (!string.IsNullOrEmpty(person.IndividualTrust.FirstName))
-                        col.Item().Element(container => AddTwoColumnRow(container, "First name", person.IndividualTrust.FirstName));
+                        col.Item().Element(container => AddTwoColumnRow(container, StaticTextResource.PdfGenerator_ConnectedPerson_FirstName, person.IndividualTrust.FirstName));
                     if (!string.IsNullOrEmpty(person.IndividualTrust.LastName))
-                        col.Item().Element(container => AddTwoColumnRow(container, "Last name", person.IndividualTrust.LastName));
+                        col.Item().Element(container => AddTwoColumnRow(container, StaticTextResource.PdfGenerator_ConnectedPerson_LastName, person.IndividualTrust.LastName));
                     if (!string.IsNullOrEmpty(person.IndividualTrust.Nationality))
-                        col.Item().Element(container => AddTwoColumnRow(container, "Nationality", person.IndividualTrust.Nationality));
+                        col.Item().Element(container => AddTwoColumnRow(container, StaticTextResource.PdfGenerator_ConnectedPerson_Nationality, person.IndividualTrust.Nationality));
                     if (person.IndividualTrust.DateOfBirth != null)
-                        col.Item().Element(container => AddTwoColumnRow(container, "Date of birth", person.IndividualTrust.DateOfBirth?.ToString("dd MMMM yyyy")));
+                        col.Item().Element(container => AddTwoColumnRow(container, StaticTextResource.PdfGenerator_ConnectedPerson_DateOfBirth, person.IndividualTrust.DateOfBirth?.ToString("dd MMMM yyyy")));
                 }
 
                 if (person.IndividualTrust != null)
@@ -271,7 +273,7 @@ public class PdfGenerator : IPdfGenerator
                                 return condition;
                             }));
 
-                            AddTwoColumnRow(container, "Control conditions", controlConditionsText);
+                            AddTwoColumnRow(container, StaticTextResource.PdfGenerator_Organisation_ControlConditions, controlConditionsText);
                         });
                     }
                 }
@@ -280,7 +282,7 @@ public class PdfGenerator : IPdfGenerator
         }
         else
         {
-            col.Item().Text("No Connected Person Information available.");
+            col.Item().Text(StaticTextResource.PdfGenerator_NoConnectedPersonInformationAvailableMsg);
         }
 
         col.Item().LineHorizontal(1);
@@ -289,7 +291,7 @@ public class PdfGenerator : IPdfGenerator
 
     private void AddAdditionalIdentifiersSection(ColumnDescriptor col, IEnumerable<Model.Identifier> additionalIdentifiers)
     {
-        col.Item().Text("Additional Identifiers").Bold().FontSize(12);
+        col.Item().Text(StaticTextResource.PdfGenerator_AdditionalIdentifiers).Bold().FontSize(12);
         col.Item().PaddingBottom(10);
 
         if (additionalIdentifiers.Any())
@@ -300,21 +302,21 @@ public class PdfGenerator : IPdfGenerator
 
 
                 if (!string.IsNullOrEmpty(identifier.Id))
-                    col.Item().Element(container => AddTwoColumnRow(container, "Identifier id", identifier.Id));
+                    col.Item().Element(container => AddTwoColumnRow(container, StaticTextResource.PdfGenerator_IdentifierId, identifier.Id));
 
                 if (!string.IsNullOrEmpty(identifier.Scheme))
-                    col.Item().Element(container => AddTwoColumnRow(container, "Scheme", GetOrganisationSchemeTitle(identifier.Scheme)));
+                    col.Item().Element(container => AddTwoColumnRow(container, StaticTextResource.PdfGenerator_Scheme, GetOrganisationSchemeTitle(identifier.Scheme)));
 
                 if (!string.IsNullOrEmpty(identifier.Scheme))
-                    col.Item().Element(container => AddTwoColumnRow(container, "Legal name", identifier.LegalName));
+                    col.Item().Element(container => AddTwoColumnRow(container, StaticTextResource.PdfGenerator_LegalName, identifier.LegalName));
 
                 if (!string.IsNullOrEmpty(identifier.Scheme))
-                    col.Item().Element(container => AddTwoColumnRow(container, "Uri", identifier.Uri));
+                    col.Item().Element(container => AddTwoColumnRow(container, StaticTextResource.PdfGenerator_Uri, identifier.Uri));
             }
         }
         else
         {
-            col.Item().Text("No additional identifiers available.");
+            col.Item().Text(StaticTextResource.PdfGenerator_NoAdditionalIdentifiersAvailableMsg);
         }
         col.Item().LineHorizontal(1);
         col.Item().PaddingBottom(10);
@@ -330,14 +332,14 @@ public class PdfGenerator : IPdfGenerator
         container.Row(row =>
         {
             row.RelativeItem().Text(label).Bold();
-            row.RelativeItem().Text(value ?? "N/A");
+            row.RelativeItem().Text(value ?? StaticTextResource.Global_NotApplicable);
         });
     }
 
     private string FormatAddress(Address? address)
     {
         if (address == null)
-            return "N/A";
+            return StaticTextResource.Global_NotApplicable;
 
         return $"{address.StreetAddress}, {address.Locality}, {address.PostalCode}, {address.CountryName}";
     }
@@ -346,13 +348,13 @@ public class PdfGenerator : IPdfGenerator
     {
         return category switch
         {
-            OrganisationInformation.Persistence.ConnectedEntity.ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForIndiv => "Person with significant control",
-            OrganisationInformation.Persistence.ConnectedEntity.ConnectedEntityIndividualAndTrustCategoryType.DirectorOrIndivWithTheSameResponsibilitiesForIndiv => "Director or individual with same responsibilities",
-            OrganisationInformation.Persistence.ConnectedEntity.ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndivWithSignificantInfluenceOrControlForIndiv => "Other individual with significant influence or control",
-            OrganisationInformation.Persistence.ConnectedEntity.ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForTrust => "Person with significant control",
-            OrganisationInformation.Persistence.ConnectedEntity.ConnectedEntityIndividualAndTrustCategoryType.DirectorOrIndivWithTheSameResponsibilitiesForTrust => "Director or individual with same responsibilities",
-            OrganisationInformation.Persistence.ConnectedEntity.ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndivWithSignificantInfluenceOrControlForTrust => "Other individual with significant influence or control",
-            _ => "Unknown category"
+            OrganisationInformation.Persistence.ConnectedEntity.ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForIndiv => StaticTextResource.PdfGenerator_ConnectedEntityIndividualAndTrustCategory_PersonWithSignificantControl,
+            OrganisationInformation.Persistence.ConnectedEntity.ConnectedEntityIndividualAndTrustCategoryType.DirectorOrIndivWithTheSameResponsibilitiesForIndiv => StaticTextResource.PdfGenerator_ConnectedEntityIndividualAndTrustCategory_DirectorOrIndividualSameResponsibilities,
+            OrganisationInformation.Persistence.ConnectedEntity.ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndivWithSignificantInfluenceOrControlForIndiv => StaticTextResource.PdfGenerator_ConnectedEntityIndividualAndTrustCategory_OtherIndividualWithSignificantInfluence,
+            OrganisationInformation.Persistence.ConnectedEntity.ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForTrust => StaticTextResource.PdfGenerator_ConnectedEntityIndividualAndTrustCategory_PersonWithSignificantControl,
+            OrganisationInformation.Persistence.ConnectedEntity.ConnectedEntityIndividualAndTrustCategoryType.DirectorOrIndivWithTheSameResponsibilitiesForTrust => StaticTextResource.PdfGenerator_ConnectedEntityIndividualAndTrustCategory_DirectorOrIndividualSameResponsibilities,
+            OrganisationInformation.Persistence.ConnectedEntity.ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndivWithSignificantInfluenceOrControlForTrust => StaticTextResource.PdfGenerator_ConnectedEntityIndividualAndTrustCategory_OtherIndividualWithSignificantInfluence,
+            _ => StaticTextResource.PdfGenerator_UnknownCategory
         };
     }
 
@@ -360,12 +362,12 @@ public class PdfGenerator : IPdfGenerator
     {
         return organisationCategory switch
         {
-            OrganisationInformation.Persistence.ConnectedEntity.ConnectedOrganisationCategory.RegisteredCompany => "Registered company",
-            OrganisationInformation.Persistence.ConnectedEntity.ConnectedOrganisationCategory.DirectorOrTheSameResponsibilities => "Director or individual with the same responsibilities",
-            OrganisationInformation.Persistence.ConnectedEntity.ConnectedOrganisationCategory.ParentOrSubsidiaryCompany => "Parent or subsidiary company",
-            OrganisationInformation.Persistence.ConnectedEntity.ConnectedOrganisationCategory.ACompanyYourOrganisationHasTakenOver => "A company your organisation has taken over",
-            OrganisationInformation.Persistence.ConnectedEntity.ConnectedOrganisationCategory.AnyOtherOrganisationWithSignificantInfluenceOrControl => "Any other organisation with significant influence or control",
-            _ => "Unknown category"
+            OrganisationInformation.Persistence.ConnectedEntity.ConnectedOrganisationCategory.RegisteredCompany => StaticTextResource.PdfGenerator_ConnectedOrganisationCategory_RegisteredCompany,
+            OrganisationInformation.Persistence.ConnectedEntity.ConnectedOrganisationCategory.DirectorOrTheSameResponsibilities => StaticTextResource.PdfGenerator_ConnectedOrganisationCategory_DirectorSameResponsibilities,
+            OrganisationInformation.Persistence.ConnectedEntity.ConnectedOrganisationCategory.ParentOrSubsidiaryCompany => StaticTextResource.PdfGenerator_ConnectedOrganisationCategory_ParentSubsidiaryCompany,
+            OrganisationInformation.Persistence.ConnectedEntity.ConnectedOrganisationCategory.ACompanyYourOrganisationHasTakenOver => StaticTextResource.PdfGenerator_ConnectedOrganisationCategory_TakenOverCompany,
+            OrganisationInformation.Persistence.ConnectedEntity.ConnectedOrganisationCategory.AnyOtherOrganisationWithSignificantInfluenceOrControl => StaticTextResource.PdfGenerator_ConnectedOrganisationCategory_OtherOrganisationWithInfluence,
+            _ => StaticTextResource.PdfGenerator_UnknownCategory
         };
     }
 
@@ -373,10 +375,10 @@ public class PdfGenerator : IPdfGenerator
     {
         return entityType switch
         {
-            OrganisationInformation.Persistence.ConnectedEntity.ConnectedEntityType.Organisation => "Organisation",
-            OrganisationInformation.Persistence.ConnectedEntity.ConnectedEntityType.Individual => "Individual",
-            OrganisationInformation.Persistence.ConnectedEntity.ConnectedEntityType.TrustOrTrustee => "Trust or Trustee",
-            _ => "Unknown category"
+            OrganisationInformation.Persistence.ConnectedEntity.ConnectedEntityType.Organisation => StaticTextResource.PdfGenerator_ConnectedEntityType_Organisation,
+            OrganisationInformation.Persistence.ConnectedEntity.ConnectedEntityType.Individual => StaticTextResource.PdfGenerator_ConnectedEntityType_Individual,
+            OrganisationInformation.Persistence.ConnectedEntity.ConnectedEntityType.TrustOrTrustee => StaticTextResource.PdfGenerator_ConnectedEntityType_TrustTrustee,
+            _ => StaticTextResource.PdfGenerator_UnknownCategory
         };
     }
 
@@ -384,9 +386,9 @@ public class PdfGenerator : IPdfGenerator
     {
         return personType switch
         {
-            OrganisationInformation.Persistence.ConnectedEntity.ConnectedPersonType.Individual => "Individual",
-            OrganisationInformation.Persistence.ConnectedEntity.ConnectedPersonType.TrustOrTrustee => "Trust or Trustee",
-            _ => "Unknown person type"
+            OrganisationInformation.Persistence.ConnectedEntity.ConnectedPersonType.Individual => StaticTextResource.PdfGenerator_ConnectedPersonType_Individual,
+            OrganisationInformation.Persistence.ConnectedEntity.ConnectedPersonType.TrustOrTrustee => StaticTextResource.PdfGenerator_ConnectedPersonType_TrustTrustee,
+            _ => StaticTextResource.PdfGenerator_UnknownPersonType
         };
     }
 
@@ -394,12 +396,12 @@ public class PdfGenerator : IPdfGenerator
     {
         return controlConditionType switch
         {
-            ControlCondition.OwnsShares => "Owns shares",
-            ControlCondition.None => "None",
-            ControlCondition.HasVotingRights => "Has voting rights",
-            ControlCondition.CanAppointOrRemoveDirectors => "Can appoint or remove directors",
-            ControlCondition.HasOtherSignificantInfluenceOrControl => "Has other dignificant influence or control",
-            _ => "Unknown control condition"
+            ControlCondition.OwnsShares => StaticTextResource.PdfGenerator_ControlCondition_OwnsShares,
+            ControlCondition.None => StaticTextResource.PdfGenerator_ControlCondition_None,
+            ControlCondition.HasVotingRights => StaticTextResource.PdfGenerator_ControlCondition_HasVotingRights,
+            ControlCondition.CanAppointOrRemoveDirectors => StaticTextResource.PdfGenerator_ControlCondition_CanAppointRemoveDirectors,
+            ControlCondition.HasOtherSignificantInfluenceOrControl => StaticTextResource.PdfGenerator_ControlCondition_HasOtherInfluence,
+            _ => StaticTextResource.PdfGenerator_UnknownControlCondition
         };
     }
 
@@ -407,20 +409,20 @@ public class PdfGenerator : IPdfGenerator
     {
         return value.ToUpper() switch
         {
-            "GB-COH" => "Companies House Number",
-            "GB-CHC" => "Charity Commission for England & Wales Number",
-            "GB-SC" => "Scottish Charity Regulator",
-            "GB-NIC" => "Charity Commission for Northern Ireland Number",
-            "GB-MPR" => "Mutuals Public Register Number",
-            "GG-RCE" => "Guernsey Registry Number",
-            "JE-FSC" => "Jersey Financial Services Commission Registry Number",
-            "IM-CR" => "Isle of Man Companies Registry Number",
-            "GB-NHS" => "National Health Service Organisations Registry Number",
-            "GB-UKPRN" => "UK Register of Learning Provider Number",
-            "VAT" => "VAT number",
-            "GB-PPON" => "Ppon",
-            "OTHER" => "Other / None",
-            _ => "Unknown"
+            "GB-COH" => StaticTextResource.PdfGenerator_OrganisationSchemeTitle_CompaniesHouseNumber,
+            "GB-CHC" => StaticTextResource.PdfGenerator_OrganisationSchemeTitle_CharityCommission,
+            "GB-SC" => StaticTextResource.PdfGenerator_OrganisationSchemeTitle_ScottishCharityRegulator,
+            "GB-NIC" => StaticTextResource.PdfGenerator_OrganisationSchemeTitle_NorthernIrelandCharityCommission,
+            "GB-MPR" => StaticTextResource.PdfGenerator_OrganisationSchemeTitle_MutualsPublicRegister,
+            "GG-RCE" => StaticTextResource.PdfGenerator_OrganisationSchemeTitle_GuernseyRegistry,
+            "JE-FSC" => StaticTextResource.PdfGenerator_OrganisationSchemeTitle_JerseyFinancialServices,
+            "IM-CR" => StaticTextResource.PdfGenerator_OrganisationSchemeTitle_IsleOfManCompaniesRegistry,
+            "GB-NHS" => StaticTextResource.PdfGenerator_OrganisationSchemeTitle_NHSRegistry,
+            "GB-UKPRN" => StaticTextResource.PdfGenerator_OrganisationSchemeTitle_LearningProviderRegistry,
+            "VAT" => StaticTextResource.PdfGenerator_OrganisationSchemeTitle_VAT,
+            "GB-PPON" => StaticTextResource.PdfGenerator_OrganisationSchemeTitle_Ppon,
+            "OTHER" => StaticTextResource.PdfGenerator_OrganisationSchemeTitle_Other,
+            _ => StaticTextResource.PdfGenerator_OrganisationSchemeTitle_Unknown
         };
     }
 }

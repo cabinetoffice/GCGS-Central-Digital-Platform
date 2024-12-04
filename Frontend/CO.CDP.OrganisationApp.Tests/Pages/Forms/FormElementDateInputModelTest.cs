@@ -117,7 +117,7 @@ public class FormElementDateInputModelTest
     [InlineData("11", "11", null, "Date must include a year")]
     [InlineData("01", "12", "abcd", "Year must be a valid number")]
     [InlineData("31", "02", "2023", "Date must be a real date")]
-    [InlineData("01", "12", "2124", "Date must be today or in the past")]
+    [InlineData("01", "12", "2099", "Date must be today or in the past")]
     public void Validate_ReturnsError_WhenDateIsInvalid(string? day, string? month, string? year, string expectedErrorMessage)
     {
         _model.IsRequired = true;

@@ -1,12 +1,13 @@
 @page "/organisation/{organisationId:guid}/forms/{formId:guid}/sections/{sectionId:guid}/share-code-confirmation"
+@using CO.CDP.Localization
 @model ShareCodeConfirmationModel
 @{
-    ViewData["Title"] = "Share code created";
+    ViewData["Title"] = StaticTextResource.ShareYourInformation_ShareCodeCreated;
     var backUrl = $"/organisation/{Model.OrganisationId}/forms/{Model.FormId}/sections/{Model.SectionId}/share-codes-list-view";
 }
 
 @section BeforeContent {
-    <a href="@backUrl" class="govuk-back-link">Back</a>
+    <a href="@backUrl" class="govuk-back-link">@StaticTextResource.Global_Back</a>
 }
 
     <div class="govuk-grid-column-ful-width">
@@ -15,10 +16,13 @@
                 @ViewData["Title"]
             </h1>
             <div class="govuk-panel__body">
-                Your share code<br><strong>@Model.ShareCode</strong>
+                @StaticTextResource.ShareYourInformation_YourShareCode<br><strong>@Model.ShareCode</strong>
             </div>
         </div>
-        <p class="govuk-body">You can save your share code and <a href="?handler=download&shareCode=@Model.ShareCode">download your supplier information file</a> or come back and get them when needed.</p>
-        <p class="govuk-body">If your supplier information changes, you can update it and create a new share code and file to share the new information.</p>
-        <p class="govuk-body"><a href="/organisation/@Model.OrganisationId/supplier-information">Back to organisation details</a></p>
+
+        <p class="govuk-body">
+            @Html.Raw(string.Format(StaticTextResource.ShareYourInformation_ShareCodeCreatedFooterBody1, Model.ShareCode))
+        </p>
+        <p class="govuk-body">@StaticTextResource.ShareYourInformation_ShareCodeCreatedFooterBody2</p>
+        <p class="govuk-body"><a href="/organisation/@Model.OrganisationId/supplier-information">@StaticTextResource.ShareYourInformation_BackOrganisationDetails</a></p>
     </div>

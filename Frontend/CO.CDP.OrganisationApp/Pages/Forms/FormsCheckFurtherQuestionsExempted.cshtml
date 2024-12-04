@@ -1,6 +1,7 @@
 @page "/organisation/{organisationId:guid}/forms/{formId:guid}/sections/{sectionId:guid}/check-further-questions-exempted"
 
 @model FormsCheckFurtherQuestionsExemptedModel
+@using CO.CDP.Localization
 
 @{
     var hasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Confirm)).HasInnerHtml;
@@ -8,50 +9,50 @@
 }
 
 @section BeforeContent {
-    <a href="/organisation/@Model.OrganisationId/supplier-information" class="govuk-back-link">Back</a>
+    <a href="/organisation/@Model.OrganisationId/supplier-information" class="govuk-back-link">@StaticTextResource.Global_Back</a>
 }
 
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
-            <partial name="_ErrorSummary" model="@Model.ModelState" />
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <partial name="_ErrorSummary" model="@Model.ModelState" />
 
-            <form method="post">
-                <div class="govuk-form-group @(hasError ? "govuk-form-group--error" : "")">
-                    <fieldset class="govuk-fieldset" @(hasError ? Html.Raw(@"aria-describedby=""confirm-error""") : null)>
-                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                            <h1 class="govuk-fieldset__heading">@Model.Heading</h1>
-                        </legend>
+        <form method="post">
+            <div class="govuk-form-group @(hasError ? "govuk-form-group--error" : "")">
+                <fieldset class="govuk-fieldset" @(hasError ? Html.Raw(@"aria-describedby=""confirm-error""") : null)>
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                        <h1 class="govuk-fieldset__heading">@Model.Heading</h1>
+                    </legend>
 
-                        @if (!string.IsNullOrEmpty(Model.Hint))
-                        {
-                            <div class="govuk-hint">@Model.Hint</div>
-                        }
+                    @if (!string.IsNullOrEmpty(Model.Hint))
+                    {
+                        <div class="govuk-hint">@Model.Hint</div>
+                    }
 
-                        @if (hasError)
-                        {
-                            <p class="govuk-error-message" id="confirm-error">
-                                <span class="govuk-visually-hidden">Error:</span> Select an option
-                            </p>
-                        }
+                    @if (hasError)
+                    {
+                        <p class="govuk-error-message" id="confirm-error">
+                            <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span> @StaticTextResource.Global_RadioField_SelectOptionError
+                        </p>
+                    }
 
-                        <div class="govuk-radios" data-module="govuk-radios">
-                            <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="@nameof(Model.Confirm)" name="@nameof(Model.Confirm)" type="radio"
-                                       value="true" @(Model.Confirm == true ? "checked" : "")>
-                                <label class="govuk-label govuk-radios__label" for="@nameof(Model.Confirm)">Yes</label>
-                            </div>
-                            <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="@nameof(Model.Confirm)-1" name="@nameof(Model.Confirm)" type="radio"
-                                       value="false" @(Model.Confirm == false ? "checked" : "")>
-                                <label class="govuk-label govuk-radios__label" for="@nameof(Model.Confirm)-1">No</label>
-                            </div>
+                    <div class="govuk-radios" data-module="govuk-radios">
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="@nameof(Model.Confirm)" name="@nameof(Model.Confirm)" type="radio"
+                                   value="true" @(Model.Confirm == true ? "checked" : "")>
+                            <label class="govuk-label govuk-radios__label" for="@nameof(Model.Confirm)">@StaticTextResource.Global_Yes</label>
                         </div>
-                    </fieldset>
-                </div>
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="@nameof(Model.Confirm)-1" name="@nameof(Model.Confirm)" type="radio"
+                                   value="false" @(Model.Confirm == false ? "checked" : "")>
+                            <label class="govuk-label govuk-radios__label" for="@nameof(Model.Confirm)-1">@StaticTextResource.Global_No</label>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
 
-                <govuk-button class="govuk-!-margin-top-6">
-                    Continue
-                </govuk-button>
-            </form>
-        </div>
+            <govuk-button class="govuk-!-margin-top-6">
+                @StaticTextResource.Global_Continue
+            </govuk-button>
+        </form>
     </div>
+</div>

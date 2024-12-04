@@ -59,6 +59,10 @@ localstack: compose.override.yml ## Start the localstack service for AWS service
 	@docker compose up -d localstack
 .PHONY: localstack
 
+redis: compose.override.yml ## Start the redis service
+	@docker compose up -d redis
+.PHONY: redis
+
 OpenAPI: OPENAPI_DIR?=OpenAPI
 OpenAPI: build ## Create OpenAPI folder and copy relevant files in
 	@mkdir -p $(OPENAPI_DIR)
@@ -102,3 +106,14 @@ version-commit: ## Determines the last commit hash
 last-tag: ## Determines the last created tag on the repository
 	@git for-each-ref refs/tags --sort=-creatordate --format='%(refname:short)' --count=1
 .PHONY: last-tag
+
+LOCALIZATION_PATH := Services/CO.CDP.Localization
+localization-export-to-csv:
+	python3 $(LOCALIZATION_PATH)/scripts/export_resx_to_csv.py $(LOCALIZATION_PATH)/StaticTextResource.resx $(LOCALIZATION_PATH)/StaticTextResource.cy.resx $(LOCALIZATION_PATH)/csv-files/StaticTextResource.csv
+	python3 $(LOCALIZATION_PATH)/scripts/export_resx_to_csv.py $(LOCALIZATION_PATH)/FormsEngineResource.resx $(LOCALIZATION_PATH)/FormsEngineResource.cy.resx $(LOCALIZATION_PATH)/csv-files/FormsEngineResource.csv
+.PHONY: localization-export-to-csv
+
+localization-import-from-csv:
+	python3 $(LOCALIZATION_PATH)/scripts/import_csv_to_resx.py $(LOCALIZATION_PATH)/csv-files/StaticTextResource.csv $(LOCALIZATION_PATH)/scripts/template.xml $(LOCALIZATION_PATH)/StaticTextResource.resx $(LOCALIZATION_PATH)/StaticTextResource.cy.resx
+	python3 $(LOCALIZATION_PATH)/scripts/import_csv_to_resx.py $(LOCALIZATION_PATH)/csv-files/FormsEngineResource.csv $(LOCALIZATION_PATH)/scripts/template.xml $(LOCALIZATION_PATH)/FormsEngineResource.resx $(LOCALIZATION_PATH)/FormsEngineResource.cy.resx
+.PHONY: localization-import-from-csv

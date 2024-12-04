@@ -7,7 +7,7 @@
 @inject IUserInfoService userInfoService
 @inject IHtmlLocalizer<StaticTextResource> Localizer
 <!DOCTYPE html>
-<html lang="en" class="govuk-template">
+<html lang="@System.Globalization.CultureInfo.CurrentUICulture.Name" class="govuk-template">
 <head>
     @{
         var googleTagId = config["GoogleTagId"];

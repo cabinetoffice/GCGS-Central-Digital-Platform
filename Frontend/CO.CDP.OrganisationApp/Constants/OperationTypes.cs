@@ -1,5 +1,7 @@
+using CO.CDP.Localization;
 using System.ComponentModel.DataAnnotations;
 using CO.CDP.Organisation.WebApiClient;
+using System.Resources;
 
 namespace CO.CDP.OrganisationApp.Constants;
 
@@ -9,11 +11,11 @@ public static class OperationTypeExtensions
     {
         return operationType switch
         {
-            OperationType.SmallOrMediumSized => "As a small or medium-sized enterprise",
-            OperationType.NonGovernmental => "As a non-governmental organisation that is value-driven and which principally reinvests its surpluses to further social, environmental or cultural objectives",
-            OperationType.SupportedEmploymentProvider => "As a supported employment provider",
-            OperationType.PublicService => "As a public service mutual",
-            OperationType.None => "My organisation is none of the above",
+            OperationType.SmallOrMediumSized => StaticTextResource.Supplier_OperationType_SmallOrMediumSized,
+            OperationType.NonGovernmental => StaticTextResource.Supplier_OperationType_NonGovernmental,
+            OperationType.SupportedEmploymentProvider => StaticTextResource.Supplier_OperationType_SupportedEmploymentProvider,
+            OperationType.PublicService => StaticTextResource.Supplier_OperationType_PublicService,
+            OperationType.None => StaticTextResource.Supplier_OperationType_None,
             _ => throw new NotImplementedException()
         };
     }
@@ -22,11 +24,11 @@ public static class OperationTypeExtensions
     {
         return operationType switch
         {
-            OperationType.SmallOrMediumSized => "Small or medium-sized enterprise",
-            OperationType.NonGovernmental => "Non-governmental organisation ",
-            OperationType.SupportedEmploymentProvider => "Supported employment provider",
-            OperationType.PublicService => "Public service mutual",
-            OperationType.None => "My organisation is not defined",
+            OperationType.SmallOrMediumSized => StaticTextResource.Supplier_OperationType_SmallOrMediumSized_Short,
+            OperationType.NonGovernmental => StaticTextResource.Supplier_OperationType_NonGovernmental_Short,
+            OperationType.SupportedEmploymentProvider => StaticTextResource.Supplier_OperationType_SupportedEmploymentProvider_Short,
+            OperationType.PublicService => StaticTextResource.Supplier_OperationType_PublicService_Short,
+            OperationType.None => StaticTextResource.Supplier_OperationType_None_Short,
             _ => throw new NotImplementedException()
         };
     }
@@ -40,7 +42,7 @@ public class ValidOperationTypeSelectionAttribute : ValidationAttribute
         {
             if (operationTypes.Contains(OperationType.None) && operationTypes.Count > 1)
             {
-                return new ValidationResult("You cannot select 'My organisation is none of the above' along with other options.");
+                return new ValidationResult(StaticTextResource.Supplier_OperationType_ValidationError);
             }
         }
 

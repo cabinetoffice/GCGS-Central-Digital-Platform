@@ -16,6 +16,7 @@ public class EntityVerificationContext(DbContextOptions<EntityVerificationContex
     public DbSet<Ppon> Ppons { get; set; } = null!;
     public DbSet<Identifier> Identifiers { get; set; } = null!;
     public DbSet<OutboxMessage> OutboxMessages { get; set; }
+    public DbSet<IdentifierRegistries> IdentifierRegistries { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -47,6 +48,13 @@ public class EntityVerificationContext(DbContextOptions<EntityVerificationContex
 
         modelBuilder.OnOutboxMessageCreating();
 
+        modelBuilder.Entity<IdentifierRegistries>(identifier =>
+        {
+            identifier.HasIndex(p => p.CountryCode).IsUnique(false);
+            identifier.HasIndex(p => p.Scheme);
+            identifier.Property(p => p.CreatedOn).HasTimestampDefault();
+            identifier.Property(p => p.UpdatedOn).HasTimestampDefault();
+        });
         base.OnModelCreating(modelBuilder);
     }
 

@@ -2,6 +2,7 @@ using CO.CDP.OrganisationApp.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
+using CO.CDP.Localization;
 
 namespace CO.CDP.OrganisationApp.Pages.Forms;
 
@@ -48,7 +49,7 @@ public class FormElementTextInputModel : FormElementModel, IValidatableObject
         {
             if (HasValue == null)
             {
-                yield return new ValidationResult("Select an option", [nameof(HasValue)]);
+                yield return new ValidationResult(StaticTextResource.Global_RadioField_SelectOptionError, [nameof(HasValue)]);
             }
             else if (HasValue == true)
             {
@@ -60,11 +61,11 @@ public class FormElementTextInputModel : FormElementModel, IValidatableObject
         {
             if (IsEmailValidationRequired() && !IsValidEmail(TextInput))
             {
-                yield return new ValidationResult("Enter an email address in the correct format, like name@example.com.", [nameof(TextInput)]);
+                yield return new ValidationResult(StaticTextResource.Forms_FormElementTextInput_InvalidEmailError, [nameof(TextInput)]);
             }
             else if (string.IsNullOrWhiteSpace(TextInput))
             {
-                yield return new ValidationResult("Enter a value", [nameof(TextInput)]);
+                yield return new ValidationResult(StaticTextResource.Forms_FormElementTextInput_EnterValueError, [nameof(TextInput)]);
             }
         }
     }

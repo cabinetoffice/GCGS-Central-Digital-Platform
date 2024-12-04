@@ -1,82 +1,83 @@
 @page "/organisation/{organisationId:guid}/forms/{formId:guid}/sections/{sectionId:guid}/add-exclusion-declaration"
 @model AddExclusionDeclarationModel
+@using CO.CDP.Localization
 
 @{
-    ViewData["Title"] = "Add any mandatory and discretionary exclusions";
+    ViewData["Title"] = StaticTextResource.Exclusions_AddExclusionDeclaration_Title;
 }
 
 @section BeforeContent {
-    <a href="/organisation/@Model.OrganisationId/supplier-information" class="govuk-back-link">Back</a>
+    <a href="/organisation/@Model.OrganisationId/supplier-information" class="govuk-back-link">@StaticTextResource.Global_Back</a>
 }
 
-    <div class="govuk-grid-row">
+<div class="govuk-grid-row">
 
-        <div class="govuk-grid-column-two-thirds">
-            <h1 class="govuk-heading-l">@ViewData["Title"]</h1>
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-l">@ViewData["Title"]</h1>
 
-            <p class="govuk-body">
-                You must tell us if there are any circumstances that may exclude you as a supplier from the procurement process because your organisation or a connected person committed an offence.
-            </p>
-            <p class="govuk-body">
-                Offences are listed as 'mandatory exclusion grounds' and 'discretionary exclusion grounds' in the Procurement Act 2023.
-            </p>
-            <div class="govuk-inset-text">
-                If any exclusions apply to a person with significant control, such as a director or majority shareholder, make sure you have added them as a
-                <a href="/organisation/@Model.OrganisationId/supplier-information/connected-person/declaration">connected person</a>.
-            </div>
-            <p class="govuk-body">
-                You'll need to provide details about each exclusion, such as where it happened and who it applies to and upload any supporting documents you may have.
-            </p>
-
-            <h2 class="govuk-heading-m">Mandatory exclusions</h2>
-            <p class="govuk-body">Penalties and other events that may exclude you are:</p>
-            <ul class="govuk-list govuk-list--bullet">
-                <li>adjustments for tax arrangements that are abusive </li>
-                <li>competition law infringements </li>
-                <li>defeat in respect of notifiable tax arrangements </li>
-                <li>failure to cooperate with an investigation</li>
-                <li>finding by HMRC, in exercise of its powers in respect of VAT, of abusive practice  </li>
-                <li>penalties for transactions connected with VAT fraud and evasion of tax or duty  </li>
-                <li>penalties payable for errors in tax documentation and failure to notify, and certain VAT and excise wrongdoing   </li>
-            </ul>
-
-            <p class="govuk-body">Convictions that may exclude you are: </p>
-            <ul class="govuk-list govuk-list--bullet">
-                <li>ancillary offences - aiding, abetting, encouraging or assisting crime </li>
-                <li>cartel offences </li>
-                <li>corporate manslaughter or homicide </li>
-                <li>labour market, slavery and human trafficking offences</li>
-                <li>organised crime </li>
-                <li>tax offences </li>
-                <li>terrorism and offences having a terrorist connection  </li>
-                <li>theft, fraud and bribery </li>
-            </ul>
-
-            <p class="govuk-body">
-                These exclusions are defined in
-                <a href="https://www.legislation.gov.uk/ukpga/2023/54/schedule/6" target="_blank">schedule 6 of the Procurement Act 2023 (opens in new tab)</a>.
-            </p>
-
-            <h2 class="govuk-heading-m">Discretionary exclusions </h2>
-            <p class="govuk-body">Discretionary exclusions that may exclude you are:  </p>
-            <ul class="govuk-list govuk-list--bullet">
-                <li>acting improperly in procurement </li>
-                <li>breach of contract and poor performance  </li>
-                <li>environmental misconduct</li>
-                <li>infringement of Competition Act 1998, under Chapter II prohibition </li>
-                <li>insolvency or bankruptcy </li>
-                <li>labour market misconduct </li>
-                <li>potential competition and competition law infringements </li>
-                <li>professional misconduct  </li>
-                <li>suspension or ceasing to carry on all or a substantial part of a business  </li>
-            </ul>
-
-            <div id="court-rulings-body" class="govuk-body">
-                These exclusions are defined in
-                <a href="https://www.legislation.gov.uk/ukpga/2023/54/schedule/7" target="_blank">schedule 7 of the Procurement Act 2023 (opens in new tab)</a>.
-            </div>
-
-            <a class="govuk-button govuk-!-margin-top-5" role="button" data-module="govuk-button"
-               href="/organisation/@Model.OrganisationId/forms/@Model.FormId/sections/@Model.SectionId">Continue</a>
+        <p class="govuk-body">
+            @StaticTextResource.Exclusions_AddExclusionDeclaration_Paragraph1
+        </p>
+        <p class="govuk-body">
+            @StaticTextResource.Exclusions_AddExclusionDeclaration_Paragraph2
+        </p>
+        <div class="govuk-inset-text">
+            @Html.Raw(string.Format(StaticTextResource.Exclusions_AddExclusionDeclaration_InsetText,
+                     $"/organisation/{Model.OrganisationId}/supplier-information/connected-person/declaration"))
         </div>
+        <p class="govuk-body">
+            @StaticTextResource.Exclusions_AddExclusionDeclaration_Paragraph3
+        </p>
+
+        <h2 class="govuk-heading-m">@StaticTextResource.Exclusions_AddExclusionDeclaration_MandatoryExclusionsHeading</h2>
+        <p class="govuk-body">@StaticTextResource.Exclusions_AddExclusionDeclaration_MandatoryExclusionsIntro</p>
+        <ul class="govuk-list govuk-list--bullet">
+            <li>@StaticTextResource.Exclusions_AddExclusionDeclaration_MandatoryExclusions_Penalty1</li>
+            <li>@StaticTextResource.Exclusions_AddExclusionDeclaration_MandatoryExclusions_Penalty2</li>
+            <li>@StaticTextResource.Exclusions_AddExclusionDeclaration_MandatoryExclusions_Penalty3</li>
+            <li>@StaticTextResource.Exclusions_AddExclusionDeclaration_MandatoryExclusions_Penalty4</li>
+            <li>@StaticTextResource.Exclusions_AddExclusionDeclaration_MandatoryExclusions_Penalty5</li>
+            <li>@StaticTextResource.Exclusions_AddExclusionDeclaration_MandatoryExclusions_Penalty6</li>
+            <li>@StaticTextResource.Exclusions_AddExclusionDeclaration_MandatoryExclusions_Penalty7</li>
+        </ul>
+
+        <p class="govuk-body">@StaticTextResource.Exclusions_AddExclusionDeclaration_MandatoryConvictionsIntro</p>
+        <ul class="govuk-list govuk-list--bullet">
+            <li>@StaticTextResource.Exclusions_AddExclusionDeclaration_MandatoryConvictions_Conviction1</li>
+            <li>@StaticTextResource.Exclusions_AddExclusionDeclaration_MandatoryConvictions_Conviction2</li>
+            <li>@StaticTextResource.Exclusions_AddExclusionDeclaration_MandatoryConvictions_Conviction3</li>
+            <li>@StaticTextResource.Exclusions_AddExclusionDeclaration_MandatoryConvictions_Conviction4</li>
+            <li>@StaticTextResource.Exclusions_AddExclusionDeclaration_MandatoryConvictions_Conviction5</li>
+            <li>@StaticTextResource.Exclusions_AddExclusionDeclaration_MandatoryConvictions_Conviction6</li>
+            <li>@StaticTextResource.Exclusions_AddExclusionDeclaration_MandatoryConvictions_Conviction7</li>
+            <li>@StaticTextResource.Exclusions_AddExclusionDeclaration_MandatoryConvictions_Conviction8</li>
+        </ul>
+
+        <p class="govuk-body">
+            @Html.Raw(string.Format(StaticTextResource.Exclusions_AddExclusionDeclaration_MandatoryExclusionsLinkText,
+                     "https://www.legislation.gov.uk/ukpga/2023/54/schedule/6"))
+        </p>
+
+        <h2 class="govuk-heading-m">@StaticTextResource.Exclusions_AddExclusionDeclaration_DiscretionaryExclusionsHeading</h2>
+        <p class="govuk-body">@StaticTextResource.Exclusions_AddExclusionDeclaration_DiscretionaryExclusionsIntro</p>
+        <ul class="govuk-list govuk-list--bullet">
+            <li>@StaticTextResource.Exclusions_AddExclusionDeclaration_DiscretionaryExclusions_Exclusion1</li>
+            <li>@StaticTextResource.Exclusions_AddExclusionDeclaration_DiscretionaryExclusions_Exclusion2</li>
+            <li>@StaticTextResource.Exclusions_AddExclusionDeclaration_DiscretionaryExclusions_Exclusion3</li>
+            <li>@StaticTextResource.Exclusions_AddExclusionDeclaration_DiscretionaryExclusions_Exclusion4</li>
+            <li>@StaticTextResource.Exclusions_AddExclusionDeclaration_DiscretionaryExclusions_Exclusion5</li>
+            <li>@StaticTextResource.Exclusions_AddExclusionDeclaration_DiscretionaryExclusions_Exclusion6</li>
+            <li>@StaticTextResource.Exclusions_AddExclusionDeclaration_DiscretionaryExclusions_Exclusion7</li>
+            <li>@StaticTextResource.Exclusions_AddExclusionDeclaration_DiscretionaryExclusions_Exclusion8</li>
+            <li>@StaticTextResource.Exclusions_AddExclusionDeclaration_DiscretionaryExclusions_Exclusion9</li>
+        </ul>
+
+        <div id="court-rulings-body" class="govuk-body">
+            @Html.Raw(string.Format(StaticTextResource.Exclusions_AddExclusionDeclaration_DiscretionaryExclusionsLinkText,
+                     "https://www.legislation.gov.uk/ukpga/2023/54/schedule/7"))
+        </div>
+
+        <a class="govuk-button govuk-!-margin-top-5" role="button" data-module="govuk-button"
+           href="/organisation/@Model.OrganisationId/forms/@Model.FormId/sections/@Model.SectionId">@StaticTextResource.Global_Continue</a>
     </div>
+</div>
