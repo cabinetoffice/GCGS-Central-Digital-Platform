@@ -17,11 +17,11 @@ public class JoinOrganisationModel(
     public OrganisationWebApiClient.Organisation? OrganisationDetails { get; set; }
 
     [BindProperty]
-    [Required(ErrorMessage = nameof(StaticTextResource.OrganisationRegistration_JoinOrganisation_ValidationErrorMessage))]
+    [Required(ErrorMessageResourceName = nameof(StaticTextResource.OrganisationRegistration_JoinOrganisation_ValidationErrorMessage), ErrorMessageResourceType = typeof(StaticTextResource))]
     public bool? UserWantsToJoin { get; set; }
 
     [BindProperty]
-    [RequiredIf(nameof(UserWantsToJoin), true, ErrorMessage = nameof(StaticTextResource.OrganisationRegistration_JoinOrganisation_ConfirmValidationErrorMessage))]
+    [RequiredIf(nameof(UserWantsToJoin), true, ErrorMessageResourceName = nameof(StaticTextResource.OrganisationRegistration_JoinOrganisation_ConfirmValidationErrorMessage), ErrorMessageResourceType = typeof(StaticTextResource))]
     public string? UserConfirmation { get; set; }
 
     public async Task<IActionResult> OnGet(string identifier)

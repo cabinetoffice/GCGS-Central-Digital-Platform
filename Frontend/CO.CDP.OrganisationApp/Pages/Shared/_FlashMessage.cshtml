@@ -1,6 +1,7 @@
 @inject ITempDataService tempDataService
 @using CDP.OrganisationApp.Constants
 @using CDP.OrganisationApp.Models
+@using Localization;
 
 @if (tempDataService.Peek<FlashMessage>(FlashMessageTypes.Success) != null)
 {
@@ -56,11 +57,10 @@
                 @if (message.Title != null)
                 {
                     @message.Title
-                    ;
                 }
                 else
                 {
-                    @:Failure
+                    @StaticTextResource.Global_Failure_Heading
                 }
             </h2>
         </div>

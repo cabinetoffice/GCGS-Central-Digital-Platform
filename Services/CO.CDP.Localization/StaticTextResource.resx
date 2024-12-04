@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -1608,7 +1608,7 @@
     <value>You have already requested to join this organisation. Your request is pending approval.</value>
   </data>
   <data name="Global_GoBackToMyAccount" xml:space="preserve">
-    <value>&lt;a class="govuk-link" href="/organisation-selection"&gt;Go back to my account&lt;/a&gt;</value>
+    <value>Go back to my account</value>
   </data>
   <data name="OrganisationRegistration_OrganisationAlreadyRegistered_Heading" xml:space="preserve">
     <value>This organisation has already registered</value>
@@ -2403,6 +2403,9 @@
   </data>
   <data name="Global_SaveAndExit" xml:space="preserve">
     <value>Save and exit</value>
+  </data>
+  <data name="Global_Failure_Heading" xml:space="preserve">
+    <value>Failure</value>
   </data>
   <data name="Supplier_LegalFormCompanyActQuestion_Title" xml:space="preserve">
     <value>Is your organisation registered on Companies House?</value>
