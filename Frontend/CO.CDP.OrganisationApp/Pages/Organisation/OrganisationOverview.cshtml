@@ -171,7 +171,7 @@
                             </dt>
                             <dd class="govuk-summary-list__value">
                                 <p class="govuk-body">
-                                    @(Model.BuyerInformation.DevolvedRegulations.Count > 0 ? "Yes" : "No")
+                                    @(Model.BuyerInformation.DevolvedRegulations.Count > 0 ? StaticTextResource.Global_Yes : StaticTextResource.Global_No)
                                 </p>
                             </dd>
                         </div>
@@ -242,7 +242,7 @@
                 }
 
                 <authorize scope="@OrgScopeRequirement.Admin">
-                    @if (organisationDetails.IsTenderer() && !(organisationDetails.IsPendingBuyer() || organisationDetails.IsBuyer())) 
+                    @if (organisationDetails.IsTenderer() && !(organisationDetails.IsPendingBuyer() || organisationDetails.IsBuyer()))
                     {
                         <h3 class="govuk-heading-s govuk-!-margin-bottom-3">
                             <a class="govuk-link" asp-page="./OrganisationRegisterSupplierAsBuyer" asp-route-id="@Model.Id">Register as a buyer</a>
