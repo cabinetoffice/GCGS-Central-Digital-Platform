@@ -5,6 +5,7 @@ using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.ThirdPartyApiClients.CompaniesHouse;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 using System.ComponentModel.DataAnnotations;
 
 namespace CO.CDP.OrganisationApp.Pages.Registration;
@@ -39,7 +40,7 @@ public class CompanyHouseNumberQuestionModel(ISession session,
 
     public FlashMessage NotificationBannerCompanyNotFound { get { return new FlashMessage(StaticTextResource.OrganisationRegistration_CompanyHouseNumberQuestion_CompanyNotFound_NotificationBanner); } }
     
-    public FlashMessage NotificationBannerCompanyAlreadyRegistered { get { return new FlashMessage(string.Format(StaticTextResource.OrganisationRegistration_CompanyHouseNumberQuestion_CompanyAlreadyRegistered_NotificationBanner, OrganisationIdentifier, OrganisationName)); } }
+    public FlashMessage NotificationBannerCompanyAlreadyRegistered { get { return new FlashMessage(string.Format(StaticTextResource.OrganisationRegistration_CompanyHouseNumberQuestion_CompanyAlreadyRegistered_NotificationBanner, WebUtility.UrlEncode(OrganisationIdentifier), WebUtility.HtmlEncode(OrganisationName))); } }
 
 
     public void OnGet()
