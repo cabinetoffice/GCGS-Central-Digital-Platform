@@ -107,30 +107,6 @@ public class OrganisationInternationalIdentificationModel(
         }
     }
 
-    //private async Task<bool> ValidateAndSetExistingIdentifiers()
-    //{
-    //    var organisation = await organisationClient.GetOrganisationAsync(Id);
-    //    if (organisation == null) return false;
-
-    //    var identfiers = organisation.AdditionalIdentifiers;
-    //    identfiers.Add(organisation.Identifier);
-
-    //    ExistingInternationalIdentifiers = identfiers.Select(x => x.Scheme).ToList();
-
-    //    InternationalIdentifiers = await PopulateIdentifierRegistries();
-
-    //    // Check if ExistingInternationalIdentifiers exist in InternationalIdentifiers
-    //    var schemesInRegistries = InternationalIdentifiers.Select(x => x.Scheme).ToHashSet();
-    //    var existingInRegistries = ExistingInternationalIdentifiers.Where(scheme => schemesInRegistries.Contains(scheme) || scheme == Country + "-Other").ToList();
-
-    //    if (schemesInRegistries.Any() && existingInRegistries.Count == 1)
-    //    {
-    //        HasIdentifierToShow = true;
-    //    }
-
-    //    return true;
-    //}
-
     private async Task<bool> ValidateAndSetExistingIdentifiers()
     {
         // Fetch organization details
