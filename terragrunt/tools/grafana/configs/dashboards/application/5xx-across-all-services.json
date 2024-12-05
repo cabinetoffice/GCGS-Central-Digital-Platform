@@ -82,42 +82,42 @@
           "label": "",
           "logGroups": [
             {
-              "accountId": "905418042182",
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
               "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/authority:*",
               "name": "/ecs/authority"
             },
             {
-              "accountId": "905418042182",
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
               "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/data-sharing:*",
               "name": "/ecs/data-sharing"
             },
             {
-              "accountId": "905418042182",
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
               "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/entity-verification:*",
               "name": "/ecs/entity-verification"
             },
             {
-              "accountId": "905418042182",
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
               "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/forms:*",
               "name": "/ecs/forms"
             },
             {
-              "accountId": "905418042182",
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
               "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/organisation:*",
               "name": "/ecs/organisation"
             },
             {
-              "accountId": "905418042182",
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
               "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/organisation-app:*",
               "name": "/ecs/organisation-app"
             },
             {
-              "accountId": "905418042182",
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
               "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/person:*",
               "name": "/ecs/person"
             },
             {
-              "accountId": "905418042182",
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
               "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/tenant:*",
               "name": "/ecs/tenant"
             }
@@ -254,42 +254,42 @@
           "label": "",
           "logGroups": [
             {
-              "accountId": "905418042182",
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
               "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/authority:*",
               "name": "/ecs/authority"
             },
             {
-              "accountId": "905418042182",
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
               "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/data-sharing:*",
               "name": "/ecs/data-sharing"
             },
             {
-              "accountId": "905418042182",
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
               "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/entity-verification:*",
               "name": "/ecs/entity-verification"
             },
             {
-              "accountId": "905418042182",
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
               "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/forms:*",
               "name": "/ecs/forms"
             },
             {
-              "accountId": "905418042182",
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
               "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/organisation:*",
               "name": "/ecs/organisation"
             },
             {
-              "accountId": "905418042182",
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
               "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/organisation-app:*",
               "name": "/ecs/organisation-app"
             },
             {
-              "accountId": "905418042182",
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
               "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/person:*",
               "name": "/ecs/person"
             },
             {
-              "accountId": "905418042182",
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
               "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/tenant:*",
               "name": "/ecs/tenant"
             }
