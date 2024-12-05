@@ -1,5 +1,5 @@
 resource "aws_elasticache_replication_group" "this" {
-  at_rest_encryption_enabled  = true
+  at_rest_encryption_enabled  = false
   apply_immediately           = true
   automatic_failover_enabled  = true
   description                 = "Redis cluster for organisation-app's authentication sessions"
