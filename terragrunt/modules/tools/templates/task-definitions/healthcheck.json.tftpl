@@ -22,13 +22,19 @@
     "environment": [
         {"name": "ASPNETCORE_ENVIRONMENT", "value": "${environment}"},
         {"name": "ASPNETCORE_HTTP_PORTS", "value": "${host_port}"},
-        {"name": "DB_ENTITY_VERIFICATION_ADDRESS", "value": "${db_entity_verification_address}"},
-        {"name": "DB_ENTITY_VERIFICATION_NAME", "value": "${db_entity_verification_name}"},
-        {"name": "DB_SIRSI_ADDRESS", "value": "${db_sirsi_address}"},
-        {"name": "DB_SIRSI_NAME", "value": "${db_sirsi_name}"},
-        {"name": "QUEUE_URL_HEALTHCHECK", "value": "${queue_healthcheck_queue_url}"}
+        {"name": "ElastiCache__Host", "value": "${redis_primary_endpoint_address}"},
+        {"name": "ElastiCache__Port", "value": "${redis_port}"},
+        {"name": "DB__ENTITY_VERIFICATION_HOST", "value": "${db_entity_verification_address}"},
+        {"name": "DB__ENTITY_VERIFICATION_NAME", "value": "${db_entity_verification_name}"},
+        {"name": "DB__ENTITY_VERIFICATION_PORT", "value": "${db_entity_verification_port}"},
+        {"name": "DB__SIRSI_HOST", "value": "${db_sirsi_address}"},
+        {"name": "DB__SIRSI_NAME", "value": "${db_sirsi_name}"},
+        {"name": "DB__SIRSI_PORT", "value": "${db_sirsi_port}"},
+        {"name": "SQS__entity_verification_url", "value": "${sqs_entity_verification_url}"},
+        {"name": "SQS__organisation_url", "value": "${sqs_organisation_url}"}
     ],
     "secrets": [
+        {"name": "Aws__ElastiCache__Token", "valueFrom": "${redis_auth_token_arn}"},
         {"name": "DB_ENTITY_VERIFICATION_USERNAME", "valueFrom": "${db_entity_verification_username}"},
         {"name": "DB_SIRSI_USERNAME", "valueFrom": "${db_sirsi_username}"}
     ],
