@@ -15,6 +15,7 @@ public class OrganisationEmailModel(ISession session, ICharityCommissionApi char
     public override string CurrentPage => OrganisationEmailPage;
 
     [BindProperty]
+    [ModelBinder<SanitisedStringModelBinder>]
     [DisplayName(nameof(StaticTextResource.Organisation_Email_Heading))]
     [Required(ErrorMessageResourceName = nameof(StaticTextResource.Organisation_Email_Required_ErrorMessage), ErrorMessageResourceType = typeof(StaticTextResource))]
     [ValidEmailAddress(ErrorMessageResourceName = nameof(StaticTextResource.Global_Email_Invalid_ErrorMessage), ErrorMessageResourceType = typeof(StaticTextResource))]
