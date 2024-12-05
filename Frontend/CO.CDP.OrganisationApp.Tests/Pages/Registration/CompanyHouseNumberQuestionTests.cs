@@ -118,6 +118,9 @@ public class CompanyHouseNumberQuestionTests
 
         GivenRegistrationIsInProgress(model.HasCompaniesHouseNumber, model.CompaniesHouseNumber);
 
+        organisationClientMock.Setup(o => o.LookupOrganisationAsync(string.Empty, It.IsAny<string>()))
+            .ReturnsAsync(GivenOrganisation());
+
         var result = await model.OnPost();
 
         Dictionary<string, string> urlParameters = new() { ["organisationIdentifier"] = model.OrganisationIdentifier };
@@ -126,6 +129,7 @@ public class CompanyHouseNumberQuestionTests
         flashMessageServiceMock.Verify(api => api.SetImportantMessage(
             StaticTextResource.OrganisationRegistration_CompanyHouseNumberQuestion_CompanyAlreadyRegistered_NotificationBanner,
             null,
+            null,
             It.Is<Dictionary<string, string>>(d => d["organisationIdentifier"] == model.OrganisationIdentifier),
             It.Is<Dictionary<string, string>>(d => d["organisationName"] == model.OrganisationName)
         ),
@@ -133,6 +137,11 @@ public class CompanyHouseNumberQuestionTests
 
 
         result.Should().BeOfType<PageResult>();
+    }
+
+    private static CDP.Organisation.WebApiClient.Organisation GivenOrganisation()
+    {
+        return new CO.CDP.Organisation.WebApiClient.Organisation(null, null, null, null, new Guid(), null, "Test Org", []);
     }
 
     [Fact]
@@ -153,6 +162,7 @@ public class CompanyHouseNumberQuestionTests
 
         flashMessageServiceMock.Verify(api => api.SetImportantMessage(
             StaticTextResource.OrganisationRegistration_CompanyHouseNumberQuestion_CompanyNotFound_NotificationBanner,
+            null,
             null,
             null,
             null

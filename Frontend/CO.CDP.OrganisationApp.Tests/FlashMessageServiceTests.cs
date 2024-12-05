@@ -29,6 +29,21 @@ public class FlashMessageServiceTests
     }
 
     [Fact]
+    public void SetSuccessMessage_ShouldCallTempDataServiceWithTitle()
+    {
+        var heading = "Test success Heading";
+        var description = "Test success Description";
+        var title = "Test success Title";
+
+        _flashMessageService.SetSuccessMessage(heading, description, title);
+
+        _tempDataServiceMock.Verify(s =>
+            s.Put(FlashMessageTypes.Success,
+                  It.Is<FlashMessage>(m => m.Heading == heading && m.Description == description && m.Title == title)),
+            Times.Once);
+    }
+
+    [Fact]
     public void SetImportantMessage_ShouldCallTempDataServiceWithImportantMessageType()
     {
         var heading = "Test important Heading";
@@ -107,7 +122,7 @@ public class FlashMessageServiceTests
 
         var expectedOutput = "Visit <a href=\"/organisation/12345\">Test Organisation</a>";
 
-        _flashMessageService.SetSuccessMessage(formatString, formatString, urlParameters, htmlParameters);
+        _flashMessageService.SetSuccessMessage(formatString, formatString, null, urlParameters, htmlParameters);
 
         _tempDataServiceMock.Verify(s =>
             s.Put(FlashMessageTypes.Success,
@@ -123,7 +138,7 @@ public class FlashMessageServiceTests
 
         var expectedHeading = "Access <a href=\"/organisation/67890\">your account</a>.";
 
-        _flashMessageService.SetImportantMessage(heading, null, urlParameters, null);
+        _flashMessageService.SetImportantMessage(heading, null, null,urlParameters, null);
 
         _tempDataServiceMock.Verify(s =>
             s.Put(FlashMessageTypes.Important,
@@ -140,7 +155,7 @@ public class FlashMessageServiceTests
 
         var expectedHeading = "Hello Alice";
 
-        _flashMessageService.SetImportantMessage(heading, null, urlParameters, htmlParameters);
+        _flashMessageService.SetImportantMessage(heading, null, null, urlParameters, htmlParameters);
 
         _tempDataServiceMock.Verify(s =>
             s.Put(FlashMessageTypes.Important,
@@ -157,11 +172,11 @@ public class FlashMessageServiceTests
 
         var expectedOutput = "Visit <a href=\"/organisation/%3Cscript%3Ealert(%22hello%22)%3C%2Fscript%3E\">&lt;script&gt;alert(&quot;hello&quot;)&lt;/script&gt;</a>";
 
-        _flashMessageService.SetSuccessMessage(formatString, formatString, urlParameters, htmlParameters);
+        _flashMessageService.SetSuccessMessage(formatString, formatString, formatString, urlParameters, htmlParameters);
 
         _tempDataServiceMock.Verify(s =>
             s.Put(FlashMessageTypes.Success,
-                It.Is<FlashMessage>(m => m.Heading == expectedOutput && m.Description == expectedOutput)),
+                It.Is<FlashMessage>(m => m.Heading == expectedOutput && m.Description == expectedOutput && m.Title == expectedOutput)),
             Times.Once);
     }
 }

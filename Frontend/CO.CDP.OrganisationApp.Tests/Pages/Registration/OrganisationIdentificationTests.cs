@@ -313,6 +313,7 @@ public class OrganisationIdentificationModelTests
         flashMessageServiceMock.Verify(api => api.SetImportantMessage(
             "An organisation with this registration number already exists. Change the registration number or <a class='govuk-notification-banner__link' href='/registration/{identifier}/join-organisation'>request to join {organisationName}.</a>",
             null,
+            null,
             urlParameters,
             htmlParameters
         ),
@@ -328,7 +329,8 @@ public class OrganisationIdentificationModelTests
         var model = new OrganisationIdentificationModel(sessionMock.Object, organisationClientMock.Object, _pponClientMock.Object, flashMessageServiceMock.Object)
         {
             OrganisationScheme = "JE-FSC",
-            RedirectToSummary = true
+            RedirectToSummary = true,
+            OrganisationName = "Org name"
         };
         GivenRegistrationIsInProgress();
 
@@ -343,6 +345,7 @@ public class OrganisationIdentificationModelTests
 
         flashMessageServiceMock.Verify(api => api.SetImportantMessage(
             "An organisation with this registration number already exists. Change the registration number or <a class='govuk-notification-banner__link' href='/registration/{identifier}/join-organisation'>request to join {organisationName}.</a>",
+            null,
             null,
             urlParameters,
             htmlParameters

@@ -10,7 +10,14 @@
         <div class="govuk-notification-banner govuk-notification-banner--success" role="alert" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
             <div class="govuk-notification-banner__header">
                 <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
-                    Success
+                    @if (message.Title != null)
+                    {
+                        @message.Title
+                    }
+                    else
+                    {
+                        <text>Success</text>
+                    }
                 </h2>
             </div>
         
@@ -34,7 +41,14 @@
         <div class="govuk-notification-banner" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
             <div class="govuk-notification-banner__header">
                 <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
-                    Important
+                    @if (message.Title != null)
+                    {
+                        @message.Title
+                    }
+                    else
+                    {
+                        <text>Important</text>
+                    }
                 </h2>
             </div>
         

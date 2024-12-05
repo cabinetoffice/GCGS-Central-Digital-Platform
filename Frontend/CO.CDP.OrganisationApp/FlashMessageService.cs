@@ -6,18 +6,28 @@ namespace CO.CDP.OrganisationApp;
 
 public class FlashMessageService(ITempDataService tempDataService) : IFlashMessageService
 {
-    public void SetSuccessMessage(string heading, string? description = null, Dictionary<string, string>? urlParameters = null, Dictionary<string, string>? htmlParameters = null)
+    public void SetSuccessMessage(string heading, string? description = null, string? title = null, Dictionary<string, string>? urlParameters = null, Dictionary<string, string>? htmlParameters = null)
     {
         var formattedHeading = FormatMessage(heading, urlParameters, htmlParameters);
         var formattedDescription = description!= null ? FormatMessage(description, urlParameters, htmlParameters) : null;
-        SetFlashMessage(FlashMessageTypes.Success, new FlashMessage(formattedHeading, formattedDescription));
+        var formattedTitle = title != null ? FormatMessage(title, urlParameters, htmlParameters) : null;
+        SetFlashMessage(FlashMessageTypes.Success, new FlashMessage(formattedHeading, formattedDescription, formattedTitle));
     }
 
-    public void SetImportantMessage(string heading, string? description = null, Dictionary<string, string>? urlParameters = null, Dictionary<string, string>? htmlParameters = null)
+    public void SetImportantMessage(string heading, string? description = null, string? title = null, Dictionary<string, string>? urlParameters = null, Dictionary<string, string>? htmlParameters = null)
     {
         var formattedHeading = FormatMessage(heading, urlParameters, htmlParameters);
         var formattedDescription = description!= null ? FormatMessage(description, urlParameters, htmlParameters) : null;
-        SetFlashMessage(FlashMessageTypes.Important, new FlashMessage(formattedHeading, formattedDescription));
+        var formattedTitle = title != null ? FormatMessage(title, urlParameters, htmlParameters) : null;
+        SetFlashMessage(FlashMessageTypes.Important, new FlashMessage(formattedHeading, formattedDescription, formattedTitle));
+    }
+
+    public void SetFailureMessage(string heading, string? description = null, string? title = null, Dictionary<string, string>? urlParameters = null, Dictionary<string, string>? htmlParameters = null)
+    {
+        var formattedHeading = FormatMessage(heading, urlParameters, htmlParameters);
+        var formattedDescription = description != null ? FormatMessage(description, urlParameters, htmlParameters) : null;
+        var formattedTitle = title != null ? FormatMessage(title, urlParameters, htmlParameters) : null;
+        SetFlashMessage(FlashMessageTypes.Failure, new FlashMessage(formattedHeading, formattedDescription, formattedTitle));
     }
 
     public FlashMessage? GetFlashMessage(string messageType)
@@ -66,16 +76,19 @@ public interface IFlashMessageService
     void SetSuccessMessage(
         string heading,
         string? description = null,
+        string? title = null,
         Dictionary<string, string>? urlParameters = null,
         Dictionary<string, string>? htmlParameters = null);
 
     void SetImportantMessage(
         string heading,
         string? description = null,
+        string? title = null,
         Dictionary<string, string>? urlParameters = null,
         Dictionary<string, string>? htmlParameters = null);
 
     FlashMessage? GetFlashMessage(string messageType);
 
     FlashMessage? PeekFlashMessage(string messageType);
+    void SetFailureMessage(string heading, string? description = null, string? title = null, Dictionary<string, string>? urlParameters = null, Dictionary<string, string>? htmlParameters = null);
 }

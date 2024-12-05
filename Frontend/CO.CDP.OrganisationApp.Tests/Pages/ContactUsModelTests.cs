@@ -11,12 +11,12 @@ namespace CO.CDP.OrganisationApp.Tests.Pages;
 public class ContactUsModelTests
 {
     private readonly Mock<IOrganisationClient> _mockOrganisationClient = new();
-    private readonly Mock<ITempDataService> _mockTempDataServiceClient = new();
+    private readonly Mock<IFlashMessageService> _mockFlashMessageService = new();
     private readonly ContactUsModel _pageModel;
 
     public ContactUsModelTests()
     {
-        _pageModel = new ContactUsModel(_mockOrganisationClient.Object, _mockTempDataServiceClient.Object)
+        _pageModel = new ContactUsModel(_mockOrganisationClient.Object, _mockFlashMessageService.Object)
         {
             EmailAddress = "test@example.com",
             Message = "message",
@@ -55,6 +55,14 @@ public class ContactUsModelTests
         var result = await _pageModel.OnPost();
 
         result.Should().BeOfType<PageResult>();
-        _mockTempDataServiceClient.Verify(client => client.Put(It.IsAny<string>(), It.IsAny<FlashMessage>()), Times.Once);
+
+        _mockFlashMessageService.Verify(api => api.SetFailureMessage(
+            "There is a problem with the service",
+            "Your message could not be sent. Try again or come back later.",
+            "Failed to send",
+            null,
+            null
+        ),
+        Times.Once);
     }
 }

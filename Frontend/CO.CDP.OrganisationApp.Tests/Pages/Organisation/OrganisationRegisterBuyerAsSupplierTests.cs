@@ -41,6 +41,7 @@ public class OrganisationRegisterBuyerAsSupplierTests
             "You have been registered as a supplier",
             It.IsAny<string>(),
             null,
+            null,
             null
         ),
         Times.Once);
