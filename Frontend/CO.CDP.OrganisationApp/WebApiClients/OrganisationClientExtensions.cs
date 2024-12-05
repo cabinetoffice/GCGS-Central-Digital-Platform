@@ -1,5 +1,6 @@
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Constants;
+using CO.CDP.OrganisationApp.Models;
 using DevolvedRegulation = CO.CDP.OrganisationApp.Constants.DevolvedRegulation;
 
 namespace CO.CDP.OrganisationApp.WebApiClients;
@@ -60,7 +61,7 @@ internal static class OrganisationClientExtensions
             => organisationClient.UpdateOrganisationAsync(organisationId,
                     new UpdatedOrganisation(
                         type: OrganisationUpdateType.AdditionalIdentifiers,
-                        organisation: new OrganisationInfo(additionalIdentifiers: additionalIdentifiers, contactPoint: null, addresses: null, identifierToRemove: null, organisationName: null, roles: null)));
+                        organisation: new OrganisationInfo(additionalIdentifiers: additionalIdentifiers, addresses: null, buyerInformation: null, contactPoint: null, identifierToRemove: null, organisationName: null, roles: null)));
 
     internal static Task UpdateOrganisationRemoveIdentifier(this IOrganisationClient organisationClient,
             Guid organisationId,
@@ -68,7 +69,7 @@ internal static class OrganisationClientExtensions
                 => organisationClient.UpdateOrganisationAsync(organisationId,
                         new UpdatedOrganisation(
                             type: OrganisationUpdateType.RemoveIdentifier,
-                            organisation: new OrganisationInfo(additionalIdentifiers: null, contactPoint: null, addresses: null, identifierToRemove: identifierToRemove, organisationName: null, roles: null)));
+                            organisation: new OrganisationInfo(additionalIdentifiers: null, addresses: null, buyerInformation: null, contactPoint: null, identifierToRemove: identifierToRemove, organisationName: null, roles: null)));
 
 
     internal static Task UpdateOrganisationName(this IOrganisationClient organisationClient,
@@ -77,14 +78,26 @@ internal static class OrganisationClientExtensions
             => organisationClient.UpdateOrganisationAsync(organisationId,
                     new UpdatedOrganisation(
                         type: OrganisationUpdateType.OrganisationName,
-                        organisation: new OrganisationInfo(additionalIdentifiers: null, contactPoint: null, addresses: null, identifierToRemove: null, organisationName: organisationName, roles: null)));
+                        organisation: new OrganisationInfo(additionalIdentifiers: null, contactPoint: null, addresses: null, buyerInformation: null, identifierToRemove: null, organisationName: organisationName, roles: null)));
     internal static Task UpdateOrganisationEmail(this IOrganisationClient organisationClient,
      Guid organisationId,
      OrganisationContactPoint contactPoint)
          => organisationClient.UpdateOrganisationAsync(organisationId,
                  new UpdatedOrganisation(
                      type: OrganisationUpdateType.OrganisationEmail,
-                     organisation: new OrganisationInfo(additionalIdentifiers: null, contactPoint: contactPoint, addresses: null, identifierToRemove: null, organisationName: null, roles: null)));
+                     organisation: new OrganisationInfo(additionalIdentifiers: null, contactPoint: contactPoint, addresses: null, buyerInformation: null, identifierToRemove: null, organisationName: null, roles: null)));
+
+    internal static Task UpdateOrganisationAddAsBuyerRole(this IOrganisationClient organisationClient,
+    Guid organisationId,
+       SupplierToBuyerDetails supplierToBuyerDetails)
+           => organisationClient.UpdateOrganisationAsync(organisationId,
+                   new UpdatedOrganisation(
+                       type: OrganisationUpdateType.AddAsBuyerRole,
+                       organisation: new OrganisationInfo(additionalIdentifiers: null, contactPoint: null, addresses: null,
+                           buyerInformation: new BuyerInformation(
+                           buyerType: supplierToBuyerDetails.BuyerOrganisationType == "Other" ? supplierToBuyerDetails.BuyerOrganisationOtherValue : supplierToBuyerDetails.BuyerOrganisationType,
+                           devolvedRegulations: supplierToBuyerDetails.Regulations.AsApiClientDevolvedRegulationList()), identifierToRemove: null, organisationName: null, roles: null)));
+
 
     internal static Task UpdateOrganisationContactPoint(this IOrganisationClient organisationClient,
         Guid organisationId,
@@ -92,7 +105,7 @@ internal static class OrganisationClientExtensions
             => organisationClient.UpdateOrganisationAsync(organisationId,
                     new UpdatedOrganisation(
                         type: OrganisationUpdateType.ContactPoint,
-                        organisation: new OrganisationInfo(additionalIdentifiers: null, contactPoint: contactPoint, addresses: null, identifierToRemove: null, organisationName: null, roles: null)));
+                        organisation: new OrganisationInfo(additionalIdentifiers: null, contactPoint: contactPoint, addresses: null, identifierToRemove: null, organisationName: null, roles: null, buyerInformation: null)));
 
     internal static Task UpdateOrganisationAddresses(this IOrganisationClient organisationClient,
         Guid organisationId,
@@ -100,7 +113,7 @@ internal static class OrganisationClientExtensions
             => organisationClient.UpdateOrganisationAsync(organisationId,
                     new UpdatedOrganisation(
                         type: OrganisationUpdateType.Address,
-                        organisation: new OrganisationInfo(additionalIdentifiers: null, contactPoint: null, addresses: addresses, identifierToRemove: null, organisationName: null, roles: null)));
+                        organisation: new OrganisationInfo(additionalIdentifiers: null, contactPoint: null, addresses: addresses, identifierToRemove: null, organisationName: null, roles: null, buyerInformation: null)));
 
     internal static Task AddOrganisationRoles(this IOrganisationClient organisationClient,
         Guid organisationId,
@@ -108,7 +121,7 @@ internal static class OrganisationClientExtensions
             => organisationClient.UpdateOrganisationAsync(organisationId,
                     new UpdatedOrganisation(
                         type: OrganisationUpdateType.AddRoles,
-                        organisation: new OrganisationInfo(additionalIdentifiers: null, contactPoint: null, addresses: null, identifierToRemove: null, organisationName: null, roles: roles)));
+                        organisation: new OrganisationInfo(additionalIdentifiers: null, contactPoint: null, addresses: null, identifierToRemove: null, organisationName: null, roles: roles, buyerInformation: null)));
 
     internal static Task UpdateSupplierCompletedEmailAddress(this IOrganisationClient organisationClient, Guid organisationId)
         => organisationClient.UpdateSupplierInformationAsync(

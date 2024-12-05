@@ -23,6 +23,7 @@ resource "aws_lb_listener" "ecs" {
   port              = 443
   protocol          = "HTTPS"
   tags              = var.tags
+  ssl_policy        = "ELBSecurityPolicy-TLS13-1-2-2021-06"
 
   default_action {
     type = "fixed-response"

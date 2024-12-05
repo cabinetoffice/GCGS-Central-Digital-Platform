@@ -4,6 +4,12 @@ variable "add_security_group_roles" {
   type        = bool
 }
 
+variable "allowed_unauthenticated_paths" {
+  description = "List of paths allowed access to protected services, bypassing Cognito authentication."
+  type        = list(string)
+  default     = []
+}
+
 variable "cluster_id" {
   description = "Cluster ID of which the service will be part of"
   type        = string
@@ -124,12 +130,6 @@ variable "role_ecs_task_exec_arn" {
 variable "tags" {
   description = "Tags to apply to all resources in this module"
   type        = map(string)
-}
-
-variable "allowed_unauthenticated_paths" {
-  description = "List of paths allowed access to protected services, bypassing Cognito authentication."
-  type        = list(string)
-  default     = []
 }
 
 variable "unhealthy_threshold" {

@@ -11,6 +11,13 @@ public record AwsConfiguration
     public SqsDispatcherConfiguration? SqsDispatcher { get; init; }
     public SqsPublisherConfiguration? SqsPublisher { get; init; }
     public CloudWatch? CloudWatch { get; init; }
+    public ElastiCache? ElastiCache { get; init; }
+}
+
+public record ElastiCache
+{
+    public required string Hostname { get; init; }
+    public required string Port { get; init; }
 }
 
 public record CloudWatch

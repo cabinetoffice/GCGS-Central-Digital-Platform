@@ -1,8 +1,6 @@
 resource "aws_elasticache_replication_group" "this" {
   at_rest_encryption_enabled  = true
   apply_immediately           = true
-  auth_token                  = aws_secretsmanager_secret_version.redis_auth_token.secret_string
-  auth_token_update_strategy  = "ROTATE"
   automatic_failover_enabled  = true
   description                 = "Redis cluster for organisation-app's authentication sessions"
   engine                      = var.engine
@@ -14,10 +12,10 @@ resource "aws_elasticache_replication_group" "this" {
   port                        = var.port
   preferred_cache_cluster_azs = data.aws_availability_zones.current.names
   replication_group_id        = "${local.name_prefix}-org-app-sessions"
-  security_group_ids = [var.elasticache_redis_sg_id]
+  security_group_ids          = [var.elasticache_redis_sg_id]
   subnet_group_name           = aws_elasticache_subnet_group.this.name
   tags                        = var.tags
-  transit_encryption_enabled  = true
+  transit_encryption_enabled  = false
 
   log_delivery_configuration {
     destination      = aws_cloudwatch_log_group.slow_log.name

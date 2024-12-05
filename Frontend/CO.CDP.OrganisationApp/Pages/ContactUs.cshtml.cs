@@ -1,6 +1,8 @@
 using CO.CDP.Localization;
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.Mvc.Validation;
+using CO.CDP.OrganisationApp.Constants;
+using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.WebApiClients;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -10,7 +12,7 @@ using System.ComponentModel.DataAnnotations;
 namespace CO.CDP.OrganisationApp.Pages;
 
 [AuthenticatedSessionNotRequired]
-public class ContactUsModel(IOrganisationClient organisationClient) : PageModel
+public class ContactUsModel(IOrganisationClient organisationClient, ITempDataService tempDataService) : PageModel
 {
     [BindProperty(SupportsGet = true, Name = "message-sent")]
     public bool? MessageSent { get; set; }
@@ -54,9 +56,19 @@ public class ContactUsModel(IOrganisationClient organisationClient) : PageModel
 
         var contactus = new ContactUs(EmailAddress, Message, Name, OrganisationName);
 
-        await organisationClient.ContactUs(contactus);
+        var success = await organisationClient.ContactUs(contactus);
 
-        return Redirect("/contact-us?message-sent=true");
-
+        if (!success)
+        {
+            tempDataService.Put(FlashMessageTypes.Failure, new FlashMessage(
+                StaticTextResource.Supplementary_ContactUs_Failure_Heading,
+                StaticTextResource.Supplementary_ContactUs_Failure_Description,
+                StaticTextResource.Supplementary_ContactUs_Failure_Title));
+            return Page();
+        }
+        else
+        {
+            return Redirect("/contact-us?message-sent=true");
+        }
     }
 }
