@@ -42,6 +42,9 @@ public class OrganisationOverviewTest
         _organisationClientMock.Setup(o => o.GetOrganisationReviewsAsync(id))
             .ReturnsAsync([new Review(null, null, null, ReviewStatus.Pending)]);
 
+        _organisationClientMock.Setup(o => o.GetOrganisationBuyerInformationAsync(id))
+            .ReturnsAsync(new BuyerInformation(buyerType: "RegionalAndLocalGovernment", new List<DevolvedRegulation>()));
+
         await _model.OnGet();
 
         _organisationClientMock.Verify(c => c.GetOrganisationAsync(id), Times.Once);
