@@ -27,11 +27,11 @@ public class OrganisationInternationalIdentificationModel(ISession session,
     public ICollection<IdentifierRegistries> InternationalIdentifiers { get; set; } = new List<IdentifierRegistries>();
 
     [BindProperty]
-    [DisplayName(nameof(StaticTextResource.OrganisationRegistration_InternationalIdentifier_Type_Heading))]    
-    [Required(ErrorMessageResourceName = nameof(StaticTextResource.OrganisationRegistration_InternationalIdentifier_Type_Required_ErrorMessage), ErrorMessageResourceType = typeof(StaticTextResource))]   
+    [DisplayName(nameof(StaticTextResource.OrganisationRegistration_InternationalIdentifier_Type_Heading))]
+    [Required(ErrorMessageResourceName = nameof(StaticTextResource.OrganisationRegistration_InternationalIdentifier_Type_Required_ErrorMessage), ErrorMessageResourceType = typeof(StaticTextResource))]
     public string? OrganisationScheme { get; set; }
 
-    [BindProperty]    
+    [BindProperty]
     [DisplayName(nameof(StaticTextResource.OrganisationRegistration_InternationalIdentifier_RegistrationNumber_Heading))]
     [RequiredIfHasValue("OrganisationScheme", ErrorMessageResourceName = nameof(StaticTextResource.OrganisationRegistration_InternationalIdentifier_RegistrationNumber_Required_ErrorMessage), ErrorMessageResourceType = typeof(StaticTextResource))]
     public Dictionary<string, string?> RegistrationNumbers { get; set; } = new Dictionary<string, string?>();
@@ -65,7 +65,7 @@ public class OrganisationInternationalIdentificationModel(ISession session,
         }
         catch (ApiException ex) when (ex.StatusCode == 404)
         {
-            // Show other
+            InternationalIdentifiers = new List<IdentifierRegistries>();
         }
     }
 

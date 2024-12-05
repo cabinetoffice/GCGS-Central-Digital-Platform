@@ -133,8 +133,7 @@ public class OrganisationInternationalIdentificationModel(
         }
         catch (ApiException ex) when (ex.StatusCode == 404)
         {
-            return new List<IdentifierRegistries>();
-            // Show other
+            return new List<IdentifierRegistries>();            
         }
     }
 
