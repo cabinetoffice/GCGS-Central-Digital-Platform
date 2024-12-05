@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
+using CO.CDP.OrganisationApp.Models;
 
 namespace CO.CDP.OrganisationApp.Pages.Supplier;
 
@@ -14,6 +15,7 @@ namespace CO.CDP.OrganisationApp.Pages.Supplier;
 public class SupplierEmailAddressModel(IOrganisationClient organisationClient) : PageModel
 {
     [BindProperty]
+    [ModelBinder<SanitisedStringModelBinder>]
     [Required(ErrorMessageResourceName = nameof(StaticTextResource.Supplier_Email_Required_ErrorMessage), ErrorMessageResourceType = typeof(StaticTextResource))]
     [ValidEmailAddress(ErrorMessageResourceName = nameof(StaticTextResource.Global_Email_Invalid_ErrorMessage), ErrorMessageResourceType = typeof(StaticTextResource))]
     public string? EmailAddress { get; set; }

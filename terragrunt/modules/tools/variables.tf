@@ -18,6 +18,12 @@ variable "db_entity_verification_name" {
   type        = string
 }
 
+variable "db_entity_verification_port" {
+  description = "Entity Verification database port"
+  type        = number
+  default     = 5432
+}
+
 variable "db_postgres_sg_id" {
   description = "Postgres DB security group ID"
   type        = string
@@ -36,6 +42,12 @@ variable "db_sirsi_credentials_arn" {
 variable "db_sirsi_name" {
   description = "Sirsi database name"
   type        = string
+}
+
+variable "db_sirsi_port" {
+  description = "Sirsi database port"
+  type        = number
+  default     = 5432
 }
 
 variable "ecs_alb_sg_id" {
@@ -119,8 +131,18 @@ variable "public_hosted_zone_id" {
   type        = string
 }
 
-variable "queue_healthcheck_queue_url" {
-  description = "URL of the Health Check's SQS queue"
+variable "redis_auth_token_arn" {
+  description = "The ARN of the Secrets Manager secret storing the Redis authentication token."
+  type        = string
+}
+
+variable "redis_port" {
+  description = "The port number used to connect to the ElastiCache Redis cluster."
+  type        = number
+}
+
+variable "redis_primary_endpoint" {
+  description = "The primary endpoint address of the ElastiCache Redis replication group."
   type        = string
 }
 
@@ -147,6 +169,16 @@ variable "role_rds_cloudwatch_arn" {
 
 variable "role_terraform_arn" {
   description = "Terraform IAM role ARN"
+  type        = string
+}
+
+variable "sqs_entity_verification_url" {
+  description = "URL of the Entity Verification's SQS queue"
+  type        = string
+}
+
+variable "sqs_organisation_url" {
+  description = "URL of the Organisation's SQS queue"
   type        = string
 }
 
