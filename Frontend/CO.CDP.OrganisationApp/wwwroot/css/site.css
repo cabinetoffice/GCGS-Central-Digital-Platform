@@ -75,3 +75,8 @@
     margin-left: 30px;
     margin-right: 30px;
 }
+
+.app-notification-banner--failure {
+    border-color: #d4351c;
+    background-color: #d4351c;
+}

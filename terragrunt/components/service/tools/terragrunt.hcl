@@ -62,6 +62,15 @@ dependency service_auth {
   }
 }
 
+dependency service_cache {
+  config_path = "../../service/cache"
+  mock_outputs = {
+    port                     = "mock"
+    primary_endpoint_address = "mock"
+    redis_auth_token_arn     = "mock"
+  }
+}
+
 dependency service_ecs {
   config_path = "../../service/ecs"
   mock_outputs = {
@@ -90,8 +99,10 @@ dependency service_database {
 dependency service_queue {
   config_path = "../../service/queue"
   mock_outputs = {
-    healthcheck_queue_arn = "mock"
-    healthcheck_queue_url = "mock"
+    entity_verification_queue_arn = "mock"
+    entity_verification_queue_url = "mock"
+    organisation_queue_arn        = "mock"
+    organisation_queue_url        = "mock"
   }
 }
 
@@ -137,6 +148,10 @@ inputs = {
   db_sirsi_kms_arn                       = dependency.service_database.outputs.sirsi_kms_arn
   db_sirsi_name                          = dependency.service_database.outputs.sirsi_name
 
-  queue_healthcheck_queue_arn = dependency.service_queue.outputs.healthcheck_queue_arn
-  queue_healthcheck_queue_url = dependency.service_queue.outputs.healthcheck_queue_url
+  redis_primary_endpoint = dependency.service_cache.outputs.primary_endpoint_address
+  redis_auth_token_arn   = dependency.service_cache.outputs.redis_auth_token_arn
+  redis_port             = dependency.service_cache.outputs.port
+
+  sqs_entity_verification_url = dependency.service_queue.outputs.entity_verification_queue_url
+  sqs_organisation_url        = dependency.service_queue.outputs.organisation_queue_url
 }
