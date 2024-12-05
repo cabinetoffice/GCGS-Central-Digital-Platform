@@ -137,7 +137,7 @@
   </data>
   <data name="BasicInformation_SectionTitle" xml:space="preserve">
     <value>Basic information</value>
-  </data>  
+  </data>
   <data name="Global_Back" xml:space="preserve">
     <value>Back</value>
   </data>
@@ -1710,6 +1710,9 @@
   </data>
   <data name="Forms_FormElementDateInput_ExampleHint" xml:space="preserve">
     <value>For example, 27 3 2007</value>
+  </data>
+  <data name="Global_Failure_Heading" xml:space="preserve">
+    <value>Failure</value>
   </data>
   <data name="Forms_FormElementFileUpload_UploadFileLabel" xml:space="preserve">
     <value>Upload a file</value>
