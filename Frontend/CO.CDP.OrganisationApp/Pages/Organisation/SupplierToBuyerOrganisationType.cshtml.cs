@@ -66,10 +66,10 @@ public class SupplierToBuyerOrganisationTypeModel(ITempDataService tempDataServi
 
     public static Dictionary<string, string> BuyerTypes => new()
     {
-        { "CentralGovernment", "Central government, public authority: UK, Scottish, Welsh and Northern Irish Executive"},
-        { "RegionalAndLocalGovernment", "Regional and local government, public authority: UK, Scottish, Welsh and Northern Irish"},
-        { "PublicUndertaking", "Public undertaking"},
-        { "PrivateUtility", "Private utility"}
+        { StaticTextResource.SupplierToBuyer_OrganisationType_CentralGovernment_Short, StaticTextResource.SupplierToBuyer_OrganisationType_CentralGovernment},
+        { StaticTextResource.SupplierToBuyer_OrganisationType_RegionalAndLocalGovernment_Short, StaticTextResource.SupplierToBuyer_OrganisationType_RegionalAndLocalGovernment},
+        { StaticTextResource.SupplierToBuyer_OrganisationType_PublicUndertaking_Short, StaticTextResource.SupplierToBuyer_OrganisationType_PublicUndertaking},
+        { StaticTextResource.SupplierToBuyer_OrganisationType_PrivateUtility_Short, StaticTextResource.SupplierToBuyer_OrganisationType_PrivateUtility}
     };
 
     private void SupplierToBuyerStateUpdate()

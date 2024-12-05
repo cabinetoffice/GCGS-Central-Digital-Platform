@@ -51,9 +51,9 @@
                         <div class="govuk-radios__item">
                             <input class="govuk-radios__input" id="@nameof(Model.BuyerOrganisationType)" name="BuyerOrganisationType"
                                    type="radio" value="CentralGovernment"
-                                   aria-describedby="ca-type-item-hint" @IsSelected("CentralGovernment")>
+                                   aria-describedby="ca-type-item-hint" @IsSelected(StaticTextResource.SupplierToBuyer_OrganisationType_CentralGovernment_Short)>
                             <label class="govuk-label govuk-radios__label" for="@nameof(Model.BuyerOrganisationType)">
-                                @SupplierToBuyerOrganisationTypeModel.BuyerTypes["CentralGovernment"]
+                                @SupplierToBuyerOrganisationTypeModel.BuyerTypes[StaticTextResource.SupplierToBuyer_OrganisationType_CentralGovernment_Short]
                             </label>
                             <div id="ca-type-item-hint" class="govuk-hint govuk-radios__hint">
                                 @StaticTextResource.SupplierToBuyer_OrganisationType_CentralGovernment_Title:
@@ -69,9 +69,9 @@
                         <div class="govuk-radios__item">
                             <input class="govuk-radios__input" id="@nameof(Model.BuyerOrganisationType)-1" name="BuyerOrganisationType"
                                    type="radio" value="RegionalAndLocalGovernment"
-                                   aria-describedby="ca-type-2-item-hint" @IsSelected("RegionalAndLocalGovernment")>
+                                   aria-describedby="ca-type-2-item-hint" @IsSelected(StaticTextResource.SupplierToBuyer_OrganisationType_RegionalAndLocalGovernment_Short)>
                             <label class="govuk-label govuk-radios__label" for="@nameof(Model.BuyerOrganisationType)-1">
-                                @SupplierToBuyerOrganisationTypeModel.BuyerTypes["RegionalAndLocalGovernment"]
+                                @SupplierToBuyerOrganisationTypeModel.BuyerTypes[StaticTextResource.SupplierToBuyer_OrganisationType_RegionalAndLocalGovernment_Short]
                             </label>
                             <div id="ca-type-2-item-hint" class="govuk-hint govuk-radios__hint">
                                 @StaticTextResource.SupplierToBuyer_OrganisationType_RegionalAndLocalGovernment_Title:
@@ -88,27 +88,27 @@
 
                         <div class="govuk-radios__item">
                             <input class="govuk-radios__input" id="@nameof(Model.BuyerOrganisationType)-2" name="BuyerOrganisationType"
-                                   type="radio" value="PublicUndertaking" aria-describedby="ca-type-3-item-hint" @IsSelected("PublicUndertaking")>
+                                   type="radio" value="PublicUndertaking" aria-describedby="ca-type-3-item-hint" @IsSelected(StaticTextResource.SupplierToBuyer_OrganisationType_PublicUndertaking_Short)>
                             <label class="govuk-label govuk-radios__label" for="@nameof(Model.BuyerOrganisationType)-2">
-                                @SupplierToBuyerOrganisationTypeModel.BuyerTypes["PublicUndertaking"]
+                                @SupplierToBuyerOrganisationTypeModel.BuyerTypes[StaticTextResource.SupplierToBuyer_OrganisationType_PublicUndertaking_Short]
                             </label>
                             <div id="ca-type-3-item-hint" class="govuk-hint govuk-radios__hint">
-                                @StaticTextResource.SupplierToBuyer_OrganisationType_PublicUndertaking
+                                @StaticTextResource.SupplierToBuyer_OrganisationType_PublicUndertakingAuthority
                             </div>
                         </div>
                         <div class="govuk-radios__item">
                             <input class="govuk-radios__input" id="@nameof(Model.BuyerOrganisationType)-3" name="BuyerOrganisationType"
-                                   type="radio" value="PrivateUtility" aria-describedby="ca-type-4-item-hint" @IsSelected("PrivateUtility")>
+                                   type="radio" value="PrivateUtility" aria-describedby="ca-type-4-item-hint" @IsSelected(StaticTextResource.SupplierToBuyer_OrganisationType_PrivateUtility_Short)>
                             <label class="govuk-label govuk-radios__label" for="@nameof(Model.BuyerOrganisationType)-3">
-                                @SupplierToBuyerOrganisationTypeModel.BuyerTypes["PrivateUtility"]
+                                @SupplierToBuyerOrganisationTypeModel.BuyerTypes[StaticTextResource.SupplierToBuyer_OrganisationType_PrivateUtility_Short]
                             </label>
                             <div id="ca-type-4-item-hint" class="govuk-hint govuk-radios__hint">
-                                @StaticTextResource.SupplierToBuyer_OrganisationType_PrivateUtility
+                                @StaticTextResource.SupplierToBuyer_OrganisationType_PrivateUtility_Hint
                             </div>
                         </div>
                         <div class="govuk-radios__item">
                             <input class="govuk-radios__input" id="@nameof(Model.BuyerOrganisationType)-4" name="BuyerOrganisationType"
-                                   type="radio" value="Other" data-aria-controls="conditional-ca-type-5" @IsSelected("Other")>
+                                   type="radio" value="Other" data-aria-controls="conditional-ca-type-5" @IsSelected(StaticTextResource.SupplierToBuyer_OrganisationType_Other)>
                             <label class="govuk-label govuk-radios__label" for="@nameof(Model.BuyerOrganisationType)-4">
                                 @StaticTextResource.SupplierToBuyer_OrganisationType_Other
                             </label>
@@ -129,7 +129,7 @@
                                        id="OtherValue"
                                        name="OtherValue"
                                        type="text" aria-describedby="ca-type-5-item-hint @(otherHasError ? "other-buyer-type-error" : "")"
-                                       value="@(Model.BuyerOrganisationType == "Other" ? Model.OtherValue : "")">
+                                       value="@(Model.BuyerOrganisationType == StaticTextResource.SupplierToBuyer_OrganisationType_Other ? Model.OtherValue : "")">
 
                             </div>
                         </div>

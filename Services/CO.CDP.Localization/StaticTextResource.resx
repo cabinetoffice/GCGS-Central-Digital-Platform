@@ -2551,10 +2551,10 @@
   <data name="SupplierToBuyer_OrganisationType_Other" xml:space="preserve">
     <value>Other</value>
   </data>
-  <data name="SupplierToBuyer_OrganisationType_PrivateUtility" xml:space="preserve">
+  <data name="SupplierToBuyer_OrganisationType_PrivateUtility_Hint" xml:space="preserve">
     <value>For example, private companies that have been granted a special or exclusive right to provide utility activities to the public. Such as National Grid or British Gas.</value>
   </data>
-  <data name="SupplierToBuyer_OrganisationType_PublicUndertaking" xml:space="preserve">
+  <data name="SupplierToBuyer_OrganisationType_PublicUndertakingAuthority" xml:space="preserve">
     <value>Unlike a public authority, organisations that operate commercially and provide utility activities to the public. For example, Transport for Wales.</value>
   </data>
   <data name="SupplierToBuyer_OrganisationType_RegionalAndLocalGovernment_Title" xml:space="preserve">
@@ -2601,5 +2601,29 @@
   </data>
   <data name="SupplierToBuyer_OrganisationType_BuyerTypeOthers" xml:space="preserve">
     <value>Others</value>
+  </data>
+  <data name="SupplierToBuyer_OrganisationType_CentralGovernment" xml:space="preserve">
+    <value>Central government, public authority: UK, Scottish, Welsh and Northern Irish Executive</value>
+  </data>
+  <data name="SupplierToBuyer_OrganisationType_CentralGovernment_Short" xml:space="preserve">
+    <value>CentralGovernment</value>
+  </data>
+  <data name="SupplierToBuyer_OrganisationType_PrivateUtility" xml:space="preserve">
+    <value>Private utility</value>
+  </data>
+  <data name="SupplierToBuyer_OrganisationType_PrivateUtility_Short" xml:space="preserve">
+    <value>PrivateUtility</value>
+  </data>
+  <data name="SupplierToBuyer_OrganisationType_PublicUndertaking" xml:space="preserve">
+    <value>Public undertaking</value>
+  </data>
+  <data name="SupplierToBuyer_OrganisationType_PublicUndertaking_Short" xml:space="preserve">
+    <value>PublicUndertaking</value>
+  </data>
+  <data name="SupplierToBuyer_OrganisationType_RegionalAndLocalGovernment" xml:space="preserve">
+    <value>Regional and local government, public authority: UK, Scottish, Welsh and Northern Irish</value>
+  </data>
+  <data name="SupplierToBuyer_OrganisationType_RegionalAndLocalGovernment_Short" xml:space="preserve">
+    <value>RegionalAndLocalGovernment</value>
   </data>
 </root>
