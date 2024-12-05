@@ -3,7 +3,11 @@
 @using CO.CDP.OrganisationApp.Pages
 @using CO.CDP.OrganisationApp.WebApiClients
 @using CO.CDP.Localization
+@using CO.CDP.Organisation.WebApiClient
+@using CO.CDP.OrganisationApp.Pages.Registration
+@using CO.CDP.OrganisationApp.TagHelpers
 @using Microsoft.AspNetCore.Mvc.Localization
+@using Microsoft.AspNetCore.Mvc.TagHelpers
 @inject IUserInfoService userInfoService
 @model OrganisationOverviewModel
 
@@ -145,6 +149,50 @@
                                     <a class="govuk-link govuk-link--no-visited-state" href="/organisation/@Model.Id/address/@(registeredAddress.Country == Country.UKCountryCode ? "uk" : "non-uk")?frm-overview">@Html.Raw(StaticTextResource.Organisation_ChangeAddress)</a>
                                 </dd>
                             </authorize>
+                        </div>
+                    }
+
+                    @if (Model.BuyerInformation != null)
+                    {
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">
+                                Organisation type
+                            </dt>
+                            <dd class="govuk-summary-list__value">
+                                <p class="govuk-body">
+                                    @(BuyerOrganisationTypeModel.BuyerTypes[Model.BuyerInformation.BuyerType!])
+                                </p>
+                            </dd>
+                        </div>
+
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">
+                                @* @StaticTextResource.Organisation_DevolvedRegulations *@
+                                Devolved regulations
+                            </dt>
+                            <dd class="govuk-summary-list__value">
+                                <p class="govuk-body">
+                                    @(Model.BuyerInformation.DevolvedRegulations.Count > 0 ? "Yes" : "No")
+                                </p>
+                            </dd>
+                        </div>
+
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">
+                                @* @StaticTextResource.Organisation_DevolvedRegulations *@
+                                Devolved regions
+                            </dt>
+                            <dd class="govuk-summary-list__value">
+                                <p class="govuk-body">
+                                    @if (Model.Regulations != null)
+                                    {
+                                        foreach (var regulation in Model.Regulations)
+                                        {
+                                            @regulation.Description()<br/>
+                                        }
+                                    }
+                                </p>
+                            </dd>
                         </div>
                     }
                 </dl>
