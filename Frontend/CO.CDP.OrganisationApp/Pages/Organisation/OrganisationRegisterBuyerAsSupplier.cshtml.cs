@@ -11,7 +11,7 @@ namespace CO.CDP.OrganisationApp.Pages.Organisation;
 [Authorize(Policy = OrgScopeRequirement.Editor)]
 public class OrganisationRegisterBuyerAsSupplierModel(
     IOrganisationClient organisationClient,
-    ITempDataService tempDataService
+    IFlashMessageService flashMessageService
     ) : PageModel
 {
     public async Task<IActionResult> OnGet(Guid id)
@@ -20,10 +20,10 @@ public class OrganisationRegisterBuyerAsSupplierModel(
         if (!orgInfo.Roles.Contains(PartyRole.Tenderer))
         {
             await organisationClient.AddOrganisationRoles(id, [PartyRole.Tenderer]);
-            tempDataService.Put(FlashMessageTypes.Success, new FlashMessage(
-                "You have been registered as a supplier",
-                $"You'll need to <a class=\"govuk-notification-banner__link\" href=\"/organisation/{id}/supplier-information\"\">complete your supplier information</a> to create sharecode."
-            ));
+            flashMessageService.SetSuccessMessage(
+                heading: "You have been registered as a supplier",
+                description: $"You'll need to <a class=\"govuk-notification-banner__link\" href=\"/organisation/{id}/supplier-information\"\">complete your supplier information</a> to create sharecode."
+            );
         }
 
         return RedirectToPage("OrganisationOverview", new { id });

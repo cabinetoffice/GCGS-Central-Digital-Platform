@@ -1,8 +1,7 @@
-@inject ITempDataService tempDataService
 @using CDP.OrganisationApp.Constants
-@using CDP.OrganisationApp.Models
+@inject IFlashMessageService flashMessageService
 
-@if (tempDataService.Peek<FlashMessage>(FlashMessageTypes.Success) != null)
+@if (flashMessageService.PeekFlashMessage(FlashMessageTypes.Success) != null)
 {
     <div class="govuk-notification-banner govuk-notification-banner--success govuk-!-margin-top-8" role="alert" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
         <div class="govuk-notification-banner__header">
@@ -11,20 +10,22 @@
             </h2>
         </div>
         @{
-            FlashMessage message = tempDataService.Get<FlashMessage>(FlashMessageTypes.Success)!;
+            var message = flashMessageService.GetFlashMessage(FlashMessageTypes.Success);
         }
-        <div class="govuk-notification-banner__content">
-            <p class="govuk-notification-banner__heading">@Html.Raw(message.Heading)</p>
+        @if(message != null) {
+            <div class="govuk-notification-banner__content">
+                <p class="govuk-notification-banner__heading">@Html.Raw(message.Heading)</p>
 
-            @if (message.Description != null)
-            {
-                <p>@Html.Raw(message.Description)</p>
-            }
-        </div>
+                @if (message.Description != null)
+                {
+                    <p>@Html.Raw(message.Description)</p>
+                }
+            </div>
+        }
     </div>
 }
 
-@if (tempDataService.Peek<FlashMessage>(FlashMessageTypes.Important) != null)
+@if (flashMessageService.PeekFlashMessage(FlashMessageTypes.Important) != null)
 {
     <div class="govuk-notification-banner govuk-!-margin-top-8" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
         <div class="govuk-notification-banner__header">
@@ -33,15 +34,18 @@
             </h2>
         </div>
         @{
-            FlashMessage message = tempDataService.Get<FlashMessage>(FlashMessageTypes.Important)!;
+            var message = flashMessageService.GetFlashMessage(FlashMessageTypes.Important);
         }
-        <div class="govuk-notification-banner__content">
-            <p class="govuk-notification-banner__heading">@Html.Raw(message.Heading)</p>
+        @if (message != null)
+        {
+            <div class="govuk-notification-banner__content">
+                <p class="govuk-notification-banner__heading">@Html.Raw(message.Heading)</p>
 
-            @if (message.Description != null)
-            {
-                <p>@Html.Raw(message.Description)</p>
-            }
-        </div>
+                @if (message.Description != null)
+                {
+                    <p>@Html.Raw(message.Description)</p>
+                }
+            </div>
+        }        
     </div>
 }

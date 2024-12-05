@@ -1,3 +1,4 @@
+using CO.CDP.Localization;
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
@@ -8,12 +9,13 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moq;
+using System.Net;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages.Registration;
 public class CompanyHouseNumberQuestionTests
 {
     private readonly Mock<ISession> sessionMock;
-    private readonly Mock<ITempDataService> tempDataServiceMock;
+    private readonly Mock<IFlashMessageService> flashMessageServiceMock;
     private readonly Mock<ICompaniesHouseApi> companiesHouseApiMock;
     private readonly Mock<IOrganisationClient> organisationClientMock;
 
@@ -22,7 +24,7 @@ public class CompanyHouseNumberQuestionTests
         sessionMock = new Mock<ISession>();
         sessionMock.Setup(session => session.Get<UserDetails>(Session.UserDetailsKey))
             .Returns(new UserDetails { UserUrn = "urn:test" });
-        tempDataServiceMock = new Mock<ITempDataService>();
+        flashMessageServiceMock = new Mock<IFlashMessageService>();
         companiesHouseApiMock = new Mock<ICompaniesHouseApi>();
         organisationClientMock = new Mock<IOrganisationClient>();
     }
@@ -118,9 +120,14 @@ public class CompanyHouseNumberQuestionTests
 
         var result = await model.OnPost();
 
-        tempDataServiceMock.Verify(api => api.Put(
-            FlashMessageTypes.Important,
-            It.Is<FlashMessage>(f => f.Heading == model.NotificationBannerCompanyAlreadyRegistered.Heading)),
+        flashMessageServiceMock.Verify(api => api.SetImportantMessage(
+                string.Format(
+                    StaticTextResource.OrganisationRegistration_CompanyHouseNumberQuestion_CompanyAlreadyRegistered_NotificationBanner,
+                    WebUtility.UrlEncode(model.OrganisationIdentifier),
+                    WebUtility.HtmlEncode(model.OrganisationName)
+                ),
+                null
+            ),
             Times.Once);
 
         result.Should().BeOfType<PageResult>();
@@ -142,10 +149,12 @@ public class CompanyHouseNumberQuestionTests
 
         var result = await model.OnPost();
 
-        tempDataServiceMock.Verify(api => api.Put(
-            FlashMessageTypes.Important,
-            It.Is<FlashMessage>(f => f.Heading == model.NotificationBannerCompanyNotFound.Heading)),
+        flashMessageServiceMock.Verify(api => api.SetImportantMessage(
+                StaticTextResource.OrganisationRegistration_CompanyHouseNumberQuestion_CompanyNotFound_NotificationBanner,
+                null
+            ),
             Times.Once);
+
         result.Should().BeOfType<PageResult>();
     }
 
@@ -166,7 +175,7 @@ public class CompanyHouseNumberQuestionTests
         return new CompanyHouseNumberQuestionModel(sessionMock.Object,
             companiesHouseApiMock.Object,
             organisationClientMock.Object,
-            tempDataServiceMock.Object);
+            flashMessageServiceMock.Object);
     }
     private static RegistrationDetails DummyRegistrationDetails(bool? hasNumber, string companyHouseNumber)
     {

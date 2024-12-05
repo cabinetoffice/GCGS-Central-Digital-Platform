@@ -14,7 +14,7 @@ namespace CO.CDP.OrganisationApp.Pages.Registration;
 public class CompanyHouseNumberQuestionModel(ISession session,
     ICompaniesHouseApi companiesHouseApi,
     IOrganisationClient organisationClient,
-    ITempDataService tempDataService) : RegistrationStepModel(session)
+    IFlashMessageService flashMessageService) : RegistrationStepModel(session)
 {
     public override string CurrentPage => OrganisationHasCompanyHouseNumberPage;
 
@@ -37,12 +37,7 @@ public class CompanyHouseNumberQuestionModel(ISession session,
     public string? OrganisationIdentifier;
 
     public string? OrganisationName;
-
-    public FlashMessage NotificationBannerCompanyNotFound { get { return new FlashMessage(StaticTextResource.OrganisationRegistration_CompanyHouseNumberQuestion_CompanyNotFound_NotificationBanner); } }
     
-    public FlashMessage NotificationBannerCompanyAlreadyRegistered { get { return new FlashMessage(string.Format(StaticTextResource.OrganisationRegistration_CompanyHouseNumberQuestion_CompanyAlreadyRegistered_NotificationBanner, WebUtility.UrlEncode(OrganisationIdentifier), WebUtility.HtmlEncode(OrganisationName))); } }
-
-
     public void OnGet()
     {
         HasCompaniesHouseNumber = RegistrationDetails.OrganisationHasCompaniesHouseNumber;
@@ -67,7 +62,7 @@ public class CompanyHouseNumberQuestionModel(ISession session,
             {
                 var organisation = await organisationClient.LookupOrganisationAsync(string.Empty, OrganisationIdentifier);
                 OrganisationName = organisation?.Name;
-                tempDataService.Put(FlashMessageTypes.Important, NotificationBannerCompanyAlreadyRegistered);
+                flashMessageService.SetImportantMessage(string.Format(StaticTextResource.OrganisationRegistration_CompanyHouseNumberQuestion_CompanyAlreadyRegistered_NotificationBanner, WebUtility.UrlEncode(OrganisationIdentifier), WebUtility.HtmlEncode(OrganisationName)));
                 return Page();
             }
             catch (Exception orgApiException) when (orgApiException is ApiException && ((ApiException)orgApiException).StatusCode == 404)
@@ -79,7 +74,8 @@ public class CompanyHouseNumberQuestionModel(ISession session,
                     if (chProfile == null)
                     {
                         FailedCompaniesHouseNumber = CompaniesHouseNumber;
-                        tempDataService.Put(FlashMessageTypes.Important, NotificationBannerCompanyNotFound);
+
+                        flashMessageService.SetImportantMessage(StaticTextResource.OrganisationRegistration_CompanyHouseNumberQuestion_CompanyNotFound_NotificationBanner);
                         return Page();
                     }
                 }

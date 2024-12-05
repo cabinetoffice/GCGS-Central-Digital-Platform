@@ -1,5 +1,3 @@
-using CO.CDP.OrganisationApp.Constants;
-using CO.CDP.OrganisationApp.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
@@ -10,7 +8,7 @@ namespace CO.CDP.OrganisationApp.Pages;
 [AuthenticatedSessionNotRequired]
 public class CookiesModel(
     IWebHostEnvironment env,
-    ITempDataService tempDataService) : PageModel
+    IFlashMessageService flashMessageService) : PageModel
 {
     [BindProperty]
     [Required(ErrorMessage="Choose whether you accept cookies that measure website use")]
@@ -49,10 +47,8 @@ public class CookiesModel(
         {
             return LocalRedirect(QueryHelpers.AddQueryString(ReturnUrl, CookieSettings.CookiesAcceptedQueryString, "true"));
         }
-        tempDataService.Put(FlashMessageTypes.Success, new FlashMessage(
-            "You’ve set your cookie preferences."
-        ));
-
+        flashMessageService.SetSuccessMessage("You’ve set your cookie preferences.");
+        
         return RedirectToPage("/Cookies");
     }
 

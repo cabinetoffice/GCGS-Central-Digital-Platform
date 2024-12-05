@@ -15,7 +15,7 @@ namespace CO.CDP.OrganisationApp.Pages.Registration;
 public class OrganisationIdentificationModel(ISession session,
     IOrganisationClient organisationClient,
     IPponClient pponClient,
-    ITempDataService tempDataService) : RegistrationStepModel(session)
+    IFlashMessageService flashMessageService) : RegistrationStepModel(session)
 {
     public override string CurrentPage => OrganisationIdentifierPage;
 
@@ -116,8 +116,6 @@ public class OrganisationIdentificationModel(ISession session,
 
     public string? OrganisationName;
 
-    public FlashMessage NotificationBannerCompanyAlreadyRegistered { get { return new FlashMessage($"An organisation with this registration number already exists. Change the registration number or <a class='govuk-notification-banner__link' href='/registration/{WebUtility.UrlEncode(Identifier)}/join-organisation'>request to join {WebUtility.HtmlEncode(OrganisationName)}.</a>"); } }
-
     public void OnGet()
     {
         OrganisationScheme = RegistrationDetails.OrganisationScheme;
@@ -213,7 +211,7 @@ public class OrganisationIdentificationModel(ISession session,
             }
         }
 
-        tempDataService.Put(FlashMessageTypes.Important, NotificationBannerCompanyAlreadyRegistered);
+        flashMessageService.SetImportantMessage($"An organisation with this registration number already exists. Change the registration number or <a class='govuk-notification-banner__link' href='/registration/{WebUtility.UrlEncode(Identifier)}/join-organisation'>request to join {WebUtility.HtmlEncode(OrganisationName)}.</a>");
         return Page();
     }
 
