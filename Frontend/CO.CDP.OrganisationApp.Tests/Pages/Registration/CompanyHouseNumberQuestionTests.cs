@@ -120,15 +120,17 @@ public class CompanyHouseNumberQuestionTests
 
         var result = await model.OnPost();
 
+        Dictionary<string, string> urlParameters = new() { ["organisationIdentifier"] = model.OrganisationIdentifier };
+        Dictionary<string, string> htmlParameters = new() { ["organisationName"] = model.OrganisationName };
+
         flashMessageServiceMock.Verify(api => api.SetImportantMessage(
-                string.Format(
-                    StaticTextResource.OrganisationRegistration_CompanyHouseNumberQuestion_CompanyAlreadyRegistered_NotificationBanner,
-                    WebUtility.UrlEncode(model.OrganisationIdentifier),
-                    WebUtility.HtmlEncode(model.OrganisationName)
-                ),
-                null
-            ),
-            Times.Once);
+            StaticTextResource.OrganisationRegistration_CompanyHouseNumberQuestion_CompanyAlreadyRegistered_NotificationBanner,
+            null,
+            It.Is<Dictionary<string, string>>(d => d["organisationIdentifier"] == model.OrganisationIdentifier),
+            It.Is<Dictionary<string, string>>(d => d["organisationName"] == model.OrganisationName)
+        ),
+        Times.Once);
+
 
         result.Should().BeOfType<PageResult>();
     }
@@ -150,10 +152,12 @@ public class CompanyHouseNumberQuestionTests
         var result = await model.OnPost();
 
         flashMessageServiceMock.Verify(api => api.SetImportantMessage(
-                StaticTextResource.OrganisationRegistration_CompanyHouseNumberQuestion_CompanyNotFound_NotificationBanner,
-                null
-            ),
-            Times.Once);
+            StaticTextResource.OrganisationRegistration_CompanyHouseNumberQuestion_CompanyNotFound_NotificationBanner,
+            null,
+            null,
+            null
+        ),
+        Times.Once);
 
         result.Should().BeOfType<PageResult>();
     }

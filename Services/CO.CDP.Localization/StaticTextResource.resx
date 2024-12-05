@@ -1513,7 +1513,7 @@
     <value>We cannot find your company number on Companies House. If it’s correct, continue and enter your details manually.</value>
   </data>
   <data name="OrganisationRegistration_CompanyHouseNumberQuestion_CompanyAlreadyRegistered_NotificationBanner" xml:space="preserve">
-    <value>An organisation with this company number already exists. Change the company number or &lt;a class="govuk-notification-banner__link" href="/registration/{0}/join-organisation"&gt;request to join {1}.&lt;/a&gt;</value>
+    <value>An organisation with this company number already exists. Change the company number or &lt;a class="govuk-notification-banner__link" href="/registration/{organisationIdentifier}/join-organisation"&gt;request to join {organisationName}.&lt;/a&gt;</value>
   </data>
   <data name="OrganisationRegistration_CompanyHouseNumberQuestion_ValidationErrorMessage" xml:space="preserve">
     <value>Select 'yes' or 'no'</value>

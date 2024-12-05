@@ -211,7 +211,15 @@ public class OrganisationIdentificationModel(ISession session,
             }
         }
 
-        flashMessageService.SetImportantMessage($"An organisation with this registration number already exists. Change the registration number or <a class='govuk-notification-banner__link' href='/registration/{WebUtility.UrlEncode(Identifier)}/join-organisation'>request to join {WebUtility.HtmlEncode(OrganisationName)}.</a>");
+        if (OrganisationName != null)
+        {
+            flashMessageService.SetImportantMessage(
+                heading: "An organisation with this registration number already exists. Change the registration number or <a class='govuk-notification-banner__link' href='/registration/{identifier}/join-organisation'>request to join {organisationName}.</a>",
+                urlParameters: new() { ["identifier"] = Identifier },
+                htmlParameters: new() { ["organisationName"] = OrganisationName }
+            );
+        }
+
         return Page();
     }
 

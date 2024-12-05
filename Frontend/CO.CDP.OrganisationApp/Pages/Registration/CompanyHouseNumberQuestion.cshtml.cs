@@ -61,8 +61,17 @@ public class CompanyHouseNumberQuestionModel(ISession session,
             try
             {
                 var organisation = await organisationClient.LookupOrganisationAsync(string.Empty, OrganisationIdentifier);
+
                 OrganisationName = organisation?.Name;
-                flashMessageService.SetImportantMessage(string.Format(StaticTextResource.OrganisationRegistration_CompanyHouseNumberQuestion_CompanyAlreadyRegistered_NotificationBanner, WebUtility.UrlEncode(OrganisationIdentifier), WebUtility.HtmlEncode(OrganisationName)));
+                if (organisation != null)
+                {
+                    flashMessageService.SetImportantMessage(
+                        heading: StaticTextResource.OrganisationRegistration_CompanyHouseNumberQuestion_CompanyAlreadyRegistered_NotificationBanner,
+                        urlParameters: new() { ["organisationIdentifier"] = OrganisationIdentifier },
+                        htmlParameters: new() { ["organisationName"] = organisation.Name }
+                    );
+                }
+
                 return Page();
             }
             catch (Exception orgApiException) when (orgApiException is ApiException && ((ApiException)orgApiException).StatusCode == 404)

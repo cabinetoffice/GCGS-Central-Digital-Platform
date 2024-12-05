@@ -38,10 +38,12 @@ public class OrganisationRegisterBuyerAsSupplierTests
             Times.Once);
 
         flashMessageServiceMock.Verify(api => api.SetSuccessMessage(
-                "You have been registered as a supplier",
-                It.IsAny<string>()
-            ),
-            Times.Once);
+            "You have been registered as a supplier",
+            It.IsAny<string>(),
+            null,
+            null
+        ),
+        Times.Once);
 
         var redirectResult = result.Should().BeOfType<RedirectToPageResult>().Subject;
         redirectResult.PageName.Should().Be("OrganisationOverview");
