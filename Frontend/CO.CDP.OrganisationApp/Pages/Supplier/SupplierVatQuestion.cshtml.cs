@@ -1,4 +1,5 @@
 using CO.CDP.EntityVerificationClient;
+using CO.CDP.Localization;
 using CO.CDP.Mvc.Validation;
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Constants;
@@ -17,11 +18,11 @@ public class SupplierVatQuestionModel(IOrganisationClient organisationClient,
     const string VatSchemeName = "VAT";
 
     [BindProperty]
-    [Required(ErrorMessage = "Please select an option")]
+    [Required(ErrorMessageResourceName = nameof(StaticTextResource.Global_SelectAnOption), ErrorMessageResourceType = typeof(StaticTextResource))]
     public bool? HasVatNumber { get; set; }
 
     [BindProperty]
-    [RequiredIf(nameof(HasVatNumber), true, ErrorMessage = "Please enter the VAT number.")]
+    [RequiredIf(nameof(HasVatNumber), true, ErrorMessageResourceName = nameof(StaticTextResource.Supplier_VatNumber_Error), ErrorMessageResourceType = typeof(StaticTextResource))]
     public string? VatNumber { get; set; }
 
     [BindProperty(SupportsGet = true)]
@@ -85,7 +86,7 @@ public class SupplierVatQuestionModel(IOrganisationClient organisationClient,
                 try
                 {
                     await LookupOrganisationAsync();
-                    ModelState.AddModelError(nameof(VatNumber), "This VAT number belongs to another organisation. Enter a different VAT number.");
+                    ModelState.AddModelError(nameof(VatNumber), StaticTextResource.Supplier_VatQuestion_BelongsToAnotherOrganisation_Error);
                     return Page();
                 }
                 catch (Exception orgApiException) when (orgApiException is CO.CDP.Organisation.WebApiClient.ApiException && ((CO.CDP.Organisation.WebApiClient.ApiException)orgApiException).StatusCode == 404)

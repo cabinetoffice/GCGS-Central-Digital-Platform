@@ -69,15 +69,8 @@ variable "is_production" {
 }
 
 variable "onelogin_logout_notification_urls" {
-  description = <<EOT
-    JSON-like string representing a list of notification URLs.
-    This will be passed to the organisation-app as an environment variable.
-
-    Note:
-    - The value must be formatted as a JSON-like string (e.g., "[ \\\"url1\\\", \\\"url2\\\" ]").
-    - This format will result in [ "url1", "url2" ] as instructed, ensuring that the application can properly parse and utilise this value as a JSON array.
-    EOT
-  type        = string
+  description = "A list of URLs that the organisation app will call to notify other services of a logout event"
+  type        = list(string)
 }
 
 variable "pinned_service_version" {
@@ -134,6 +127,27 @@ variable "queue_organisation_queue_url" {
   description = "URL of the Organisation's outbound SQS queue"
   type        = string
 }
+
+variable "redis_auth_token_arn" {
+  description = "The ARN of the Secrets Manager secret storing the Redis authentication token."
+  type        = string
+}
+
+variable "redis_port" {
+  description = "The port number used to connect to the ElastiCache Redis cluster."
+  type        = number
+}
+
+variable "redis_primary_endpoint" {
+  description = "The primary endpoint address of the ElastiCache Redis replication group."
+  type        = string
+}
+
+variable "redis_sg_id" {
+  description = "ElastiCache Redis security group ID"
+  type        = string
+}
+
 
 variable "role_cloudwatch_events_name" {
   description = "Name of the IAM role used by CloudWatch Events"

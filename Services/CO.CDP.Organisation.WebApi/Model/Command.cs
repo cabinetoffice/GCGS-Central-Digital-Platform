@@ -62,7 +62,8 @@ public enum OrganisationUpdateType
     OrganisationName,
     OrganisationEmail,
     RegisteredAddress,
-    AddRoles
+    AddRoles,
+    AddAsBuyerRole
 }
 
 public record OrganisationInfo
@@ -73,6 +74,8 @@ public record OrganisationInfo
     public List<OrganisationAddress>? Addresses { get; init; }
     public OrganisationIdentifier? IdentifierToRemove { get; init; }
     public List<PartyRole>? Roles { get; init; }
+    public BuyerInformation? BuyerInformation { get; init; }
+
 }
 
 public record OrganisationIdentifier
