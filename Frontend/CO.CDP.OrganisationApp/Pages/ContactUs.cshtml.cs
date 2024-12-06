@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using CO.CDP.OrganisationApp.Models;
 
 namespace CO.CDP.OrganisationApp.Pages;
 
@@ -23,6 +24,7 @@ public class ContactUsModel(IOrganisationClient organisationClient, ITempDataSer
     public string? Name { get; set; }
 
     [BindProperty]
+    [ModelBinder<SanitisedStringModelBinder>]
     [DisplayName(nameof(StaticTextResource.Supplementary_ContactUs_Email))]
     [Required(ErrorMessageResourceName = nameof(StaticTextResource.Supplementary_ContactUs_Email_ErrorMessage), ErrorMessageResourceType = typeof(StaticTextResource))]
     [ValidEmailAddress(ErrorMessageResourceName = nameof(StaticTextResource.Global_Email_Invalid_ErrorMessage), ErrorMessageResourceType = typeof(StaticTextResource))]
