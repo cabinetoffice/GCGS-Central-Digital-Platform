@@ -10,11 +10,11 @@ public class RequiredIfAttribute(string dependentProperty, object? targetValue) 
         var type = instance.GetType();
         var propertyValue = type.GetProperty(dependentProperty)?.GetValue(instance, null);
 
-        bool conditionMet = (propertyValue?.Equals(targetValue) ?? false);
+        bool IsDependentMatchWithTarget = (propertyValue?.Equals(targetValue) ?? false);
 
         var errorMessage = ErrorMessageResolver.GetErrorMessage(ErrorMessage, ErrorMessageResourceName, ErrorMessageResourceType);
 
-        if (conditionMet && (value == null || (value is string str && string.IsNullOrWhiteSpace(str))))
+        if (IsDependentMatchWithTarget && (value == null || (value is string str && string.IsNullOrWhiteSpace(str))))
         {
             return new ValidationResult(errorMessage ?? $"{validationContext.DisplayName} is required");
         }
@@ -68,11 +68,11 @@ public class RequiredIfContainsAttribute(string dependentProperty, string contai
         var type = instance.GetType();
         var propertyValue = type.GetProperty(dependentProperty)?.GetValue(instance, null);
 
-        bool conditionMet = propertyValue is List<string> list && list.Contains(containsValue);
+        bool IsDependentMatchWithTarget = propertyValue is List<string> list && list.Contains(containsValue);
 
         var errorMessage = ErrorMessageResolver.GetErrorMessage(ErrorMessage, ErrorMessageResourceName, ErrorMessageResourceType);
         
-        if (conditionMet && (value == null || (value is List<string> str && str.Count == 0)))
+        if (IsDependentMatchWithTarget && (value == null || (value is List<string> str && str.Count == 0)))
         {
             return new ValidationResult(errorMessage ?? $"{validationContext.DisplayName} is required");
         }
