@@ -1,22 +1,10 @@
 namespace CO.CDP.OrganisationApp;
 
-public interface ICookiePreferencesService
-{
-    bool IsAccepted();
-    bool IsRejected();
-    void Accept();
-    void Reject();
-    void Reset();
-    void SetCookie(CookieAcceptanceValues value);
-    bool ValueIs(CookieAcceptanceValues value);
-    bool IsUnknown();
-}
-
 public class CookiePreferencesService : ICookiePreferencesService
 {
     private readonly HttpContext _context;
 
-    private CookieAcceptanceValues pendingAcceptanceValue;
+    private CookieAcceptanceValues? pendingAcceptanceValue;
 
     public CookiePreferencesService(IHttpContextAccessor httpContextAccessor)
     {
@@ -52,30 +40,38 @@ public class CookiePreferencesService : ICookiePreferencesService
         pendingAcceptanceValue = value;
     }
 
-    public bool ValueIs(CookieAcceptanceValues value)
+    public CookieAcceptanceValues GetValue()
     {
-        if(pendingAcceptanceValue == value)
+        if (pendingAcceptanceValue != null)
         {
-            return true;
+            return (CookieAcceptanceValues)pendingAcceptanceValue;
         }
 
-        return _context.Request.Cookies.ContainsKey(CookieSettings.CookieName)
-            && _context.Request.Cookies[CookieSettings.CookieName] == value.ToString();
+        if(_context.Request.Cookies.ContainsKey(CookieSettings.CookieName))
+        {
+            if (Enum.TryParse(typeof(CookieAcceptanceValues), _context.Request.Cookies[CookieSettings.CookieName], true, out var result))
+            {
+                return (CookieAcceptanceValues)result;
+            }
+        }
+
+        return CookieAcceptanceValues.Unknown;
+
     }
 
     public bool IsAccepted()
     {
-        return ValueIs(CookieAcceptanceValues.Accept);
+        return GetValue() == CookieAcceptanceValues.Accept;
     }
 
     public bool IsRejected()
     {
-        return ValueIs(CookieAcceptanceValues.Reject);
+        return GetValue() == CookieAcceptanceValues.Reject;
     }
 
     public bool IsUnknown()
     {
-        return ValueIs(CookieAcceptanceValues.Unknown);
+        return GetValue() == CookieAcceptanceValues.Unknown;
     }
 }
 public enum CookieAcceptanceValues
