@@ -43,6 +43,7 @@ public class UpdateConnectedEntityUseCaseTests
         {
             Guid = organisationId ?? Guid.NewGuid(),
             Name = "FakeOrg",
+            Type = OrganisationInformation.OrganisationType.Organisation,
             Tenant = new Persistence.Tenant()
             {
                 Guid = Guid.NewGuid(),

@@ -14,6 +14,7 @@ using CO.CDP.WebApi.Foundation;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc.Localization;
 using Microsoft.EntityFrameworkCore;
+using Npgsql;
 using System.Globalization;
 using System.Reflection;
 
@@ -41,14 +42,18 @@ builder.Services.Configure<RequestLocalizationOptions>(options =>
     options.RequestCultureProviders.Insert(0, new AcceptLanguageHeaderRequestCultureProvider());
 });
 
-builder.Services.AddHealthChecks()
-    .AddNpgSql(ConnectionStringHelper.GetConnectionString(builder.Configuration, "OrganisationInformationDatabase"));
-
 builder.Services.AddTransient(typeof(LocalizedPropertyResolver<,>));
 builder.Services.AddAutoMapper(typeof(DataSharingProfile));
 
-builder.Services.AddDbContext<OrganisationInformationContext>(o =>
-    o.UseNpgsql(ConnectionStringHelper.GetConnectionString(builder.Configuration, "OrganisationInformationDatabase")));
+var connectionString = ConnectionStringHelper.GetConnectionString(builder.Configuration, "OrganisationInformationDatabase");
+builder.Services.AddHealthChecks().AddNpgSql(connectionString);
+builder.Services.AddSingleton(new NpgsqlDataSourceBuilder(connectionString).MapEnums().Build());
+builder.Services.AddDbContext<OrganisationInformationContext>((sp, options) =>
+{
+    var dataSource = sp.GetRequiredService<NpgsqlDataSource>();
+    options.UseNpgsql(dataSource);
+});
+
 builder.Services.AddScoped<IDataService, DataService>();
 builder.Services.AddScoped<IPdfGenerator, PdfGenerator>();
 builder.Services.AddScoped<IClaimService, ClaimService>();

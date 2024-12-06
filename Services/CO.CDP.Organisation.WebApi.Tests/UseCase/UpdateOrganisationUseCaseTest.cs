@@ -914,6 +914,7 @@ public class UpdateOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
         {
             Guid = _organisationId,
             Name = "Acme Ltd",
+            Type = OrganisationInformation.OrganisationType.Organisation,
             Tenant = It.IsAny<Persistence.Tenant>(),
             Identifiers = [
                 new Persistence.Organisation.Identifier
@@ -931,6 +932,7 @@ public class UpdateOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
         {
             Guid = _organisationId,
             Name = "Acme Ltd",
+            Type = OrganisationType.Organisation,
             Tenant = It.IsAny<Persistence.Tenant>(),
             Identifiers = [
                 new Persistence.Organisation.Identifier
@@ -950,6 +952,7 @@ public class UpdateOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
         {
             Guid = _organisationId,
             Name = "Acme Ltd",
+            Type = OrganisationType.Organisation,
             Tenant = new Persistence.Tenant()
             {
                 Guid = Guid.NewGuid(),
@@ -989,6 +992,7 @@ public class UpdateOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
      {
          Guid = _organisationId,
          Name = "Tcme Ltd",
+         Type = OrganisationType.Organisation,
          Tenant = It.IsAny<Persistence.Tenant>(),
          Identifiers = [
                   new Persistence.Organisation.Identifier
@@ -1020,6 +1024,7 @@ public class UpdateOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
         {
             Guid = _organisationId,
             Name = "Acme Ltd",
+            Type = OrganisationType.Organisation,
             Tenant = It.IsAny<Persistence.Tenant>(),
             Identifiers = [
                 new Persistence.Organisation.Identifier

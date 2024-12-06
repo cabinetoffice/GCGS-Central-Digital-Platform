@@ -1,10 +1,10 @@
-using CO.CDP.Testcontainers.PostgreSql;
 using FluentAssertions;
 using static CO.CDP.OrganisationInformation.Persistence.Tests.EntityFactory;
 
 namespace CO.CDP.OrganisationInformation.Persistence.Tests;
 
-public class DatabasePersonInviteRepositoryTest(PostgreSqlFixture postgreSql) : IClassFixture<PostgreSqlFixture>
+public class DatabasePersonInviteRepositoryTest(OrganisationInformationPostgreSqlFixture postgreSql)
+    : IClassFixture<OrganisationInformationPostgreSqlFixture>
 {
 
     [Fact]
@@ -48,7 +48,7 @@ public class DatabasePersonInviteRepositoryTest(PostgreSqlFixture postgreSql) : 
         var organisation = GivenOrganisation();
         var invite = GivenPersonInvite(guid: organisation.Guid, email: alreadyInvitedEmail, tenant: tenant, organisation: organisation);
 
-        await using var context = postgreSql.OrganisationInformationContext();
+        await using var context = GetDbContext();
         await context.PersonInvites.AddAsync(invite);
         await context.SaveChangesAsync();
 
@@ -67,7 +67,7 @@ public class DatabasePersonInviteRepositoryTest(PostgreSqlFixture postgreSql) : 
         var organisation = GivenOrganisation();
         var invite = GivenPersonInvite(guid: organisation.Guid, email: inviteEmail, tenant: tenant, organisation: organisation);
 
-        await using var context = postgreSql.OrganisationInformationContext();
+        await using var context = GetDbContext();
         await context.PersonInvites.AddAsync(invite);
         await context.SaveChangesAsync();
 
@@ -86,7 +86,7 @@ public class DatabasePersonInviteRepositoryTest(PostgreSqlFixture postgreSql) : 
         var organisation = GivenOrganisation(tenant: tenant);
         var invite = GivenPersonInvite(guid: Guid.NewGuid(), email: email, organisation: organisation, tenant: tenant);
 
-        await using var context = postgreSql.OrganisationInformationContext();
+        await using var context = GetDbContext();
         await context.PersonInvites.AddAsync(invite);
         await context.SaveChangesAsync();
 
@@ -109,7 +109,7 @@ public class DatabasePersonInviteRepositoryTest(PostgreSqlFixture postgreSql) : 
         var organisation = GivenOrganisation();
         var invite = GivenPersonInvite(guid: Guid.NewGuid(), email: "john.doe@example.com", tenant: tenant, organisation: organisation);
 
-        await using var context = postgreSql.OrganisationInformationContext();
+        await using var context = GetDbContext();
         await context.PersonInvites.AddAsync(invite);
         await context.SaveChangesAsync();
 
@@ -118,8 +118,14 @@ public class DatabasePersonInviteRepositoryTest(PostgreSqlFixture postgreSql) : 
         result.Should().BeEmpty();
     }
 
-    private IPersonInviteRepository PersonInviteRepository()
+    private DatabasePersonInviteRepository PersonInviteRepository()
+        => new(GetDbContext());
+
+    private OrganisationInformationContext? context = null;
+
+    private OrganisationInformationContext GetDbContext()
     {
-        return new DatabasePersonInviteRepository(postgreSql.OrganisationInformationContext());
+        context = context ?? postgreSql.OrganisationInformationContext();
+        return context;
     }
 }

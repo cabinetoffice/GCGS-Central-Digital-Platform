@@ -38,12 +38,17 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.Configure<RequestLocalizationOptions>(options =>
 {
-    var supportedCultures = new[] { new CultureInfo("en"), new CultureInfo("cy") };
+    var supportedCultures = new[] { new CultureInfo("en-GB"), new CultureInfo("cy") };
 
-    options.DefaultRequestCulture = new RequestCulture("en");
+    options.DefaultRequestCulture = new RequestCulture("en-GB");
     options.SupportedCultures = supportedCultures;
     options.SupportedUICultures = supportedCultures;
-    options.RequestCultureProviders.Insert(0, new CookieRequestCultureProvider());
+
+    options.RequestCultureProviders = new List<IRequestCultureProvider>
+    {
+        new CustomQueryStringCultureProvider(),
+        new CookieRequestCultureProvider()
+    };
 });
 
 var mvcBuilder = builder.Services.AddRazorPages()
@@ -61,7 +66,13 @@ if (builder.Environment.IsDevelopment())
 
 builder.ConfigureForwardedHeaders();
 
-builder.Services.AddDistributedMemoryCache();
+builder.Services
+    .AddAwsConfiguration(builder.Configuration)
+    .AddAwsS3Service()
+    .AddLoggingConfiguration(builder.Configuration)
+    .AddAmazonCloudWatchLogsService()
+    .AddCloudWatchSerilog(builder.Configuration)
+    .AddSharedSessions(builder.Configuration);
 
 var sessionTimeoutInMinutes = builder.Configuration.GetValue<double>("SessionTimeoutInMinutes");
 
@@ -95,6 +106,8 @@ builder.Services.AddTransient<IChoiceProviderService, ChoiceProviderService>();
 builder.Services.AddTransient<IFormsEngine, FormsEngine>();
 builder.Services.AddTransient<IDiagnosticPage, DiagnosticPage>();
 builder.Services.AddScoped<IUserInfoService, UserInfoService>();
+builder.Services.AddScoped<IFtsUrlService, FtsUrlService>();
+
 
 var formsServiceUrl = builder.Configuration.GetValue<string>("FormsService")
             ?? throw new Exception("Missing configuration key: FormsService.");
@@ -206,16 +219,11 @@ builder.Services.AddSingleton<IAuthorizationMiddlewareResultHandler, CustomAutho
 builder.Services.AddAuthorization();
 
 builder.Services.AddHealthChecks();
-builder.Services
-    .AddAwsConfiguration(builder.Configuration)
-    .AddAwsS3Service()
-    .AddLoggingConfiguration(builder.Configuration)
-    .AddAmazonCloudWatchLogsService()
-    .AddCloudWatchSerilog(builder.Configuration);
 
 // @see DP-723 for details: https://noticingsystem.atlassian.net/browse/DP-723?focusedCommentId=27796
-// builder.Services.AddDataProtection()
-//    .PersistKeysToAWSSystemsManager("/OrganisationApp/DataProtection");
+builder.Services.AddDataProtection()
+   .PersistKeysToAWSSystemsManager(
+       builder.Configuration.GetValue<string>("Aws:SystemManager:DataProtectionPrefix"));
 
 var app = builder.Build();
 app.UseForwardedHeaders();
@@ -229,14 +237,7 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-var supportedCultures = new[] { "en", "cy" };
-var localizationOptions = new RequestLocalizationOptions()
-    .SetDefaultCulture("en")
-    .AddSupportedCultures(supportedCultures)
-    .AddSupportedUICultures(supportedCultures);
-
-app.UseRequestLocalization(localizationOptions);
-
+app.UseRequestLocalization();
 app.MapHealthChecks("/health").AllowAnonymous();
 app.UseStaticFiles();
 app.UseRouting();

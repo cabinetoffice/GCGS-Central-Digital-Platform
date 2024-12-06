@@ -101,6 +101,7 @@ public class UpdateInvitedPersonToOrganisationUseCaseTests : IClassFixture<AutoM
             Id = 1,
             Guid = _organisationId,
             Name = "Test",
+            Type = OrganisationInformation.OrganisationType.Organisation,
             Tenant = It.IsAny<Tenant>(),
             ContactPoints = [new Persistence.Organisation.ContactPoint { Email = "test@test.com" }],
             SupplierInfo = new Persistence.Organisation.SupplierInformation()

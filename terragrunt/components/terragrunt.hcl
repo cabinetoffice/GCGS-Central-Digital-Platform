@@ -95,7 +95,7 @@ locals {
       fts_azure_frontdoor               = null
       name                              = "integration"
       onelogin_logout_notification_urls = ["https://test-findtender.nqc.com/auth/backchannellogout"]
-      pinned_service_version            = "1.0.9"
+      pinned_service_version            = "1.0.10"
       postgres_instance_type            = "db.t4g.micro"
       private_subnets = [
         "10.${local.cidr_b_integration}.101.0/24",
@@ -123,7 +123,7 @@ locals {
       fts_azure_frontdoor               = "nqc-front-door-uksouth.azurefd.net"
       name                              = "production"
       onelogin_logout_notification_urls = ["https://www.private-beta.find-tender.service.gov.uk/auth/backchannellogout"]
-      pinned_service_version            = "1.0.9"
+      pinned_service_version            = "1.0.10"
       postgres_instance_type            = "db.t4g.micro"
       private_subnets = [
         "10.${local.cidr_b_production}.101.0/24",
@@ -267,11 +267,65 @@ locals {
     }
   }
 
+  # @TODO (ABN) Remove me
+  desired_count_development    = 8
+  service_configs_scaling_development = {
+    authority = {
+      cpu           = 256
+      desired_count = local.desired_count_development
+      memory        = 512
+    }
+    data_sharing = {
+      cpu           = 256
+      desired_count = local.desired_count_development
+      memory        = 512
+    }
+    entity_verification = {
+      cpu           = 256
+      desired_count = local.desired_count_development
+      memory        = 512
+    }
+    entity_verification_migrations = {
+      cpu           = 256
+      desired_count = local.desired_count_development
+      memory        = 512
+    }
+    forms = {
+      cpu           = 256
+      desired_count = local.desired_count_development
+      memory        = 512
+    }
+    organisation = {
+      cpu           = 256
+      desired_count = local.desired_count_development
+      memory        = 512
+    }
+    organisation_app = {
+      cpu           = 256
+      desired_count = local.desired_count_development
+      memory        = 512
+    }
+    organisation_information_migrations = {
+      cpu           = 256
+      desired_count = local.desired_count_development
+      memory        = 512
+    }
+    person = {
+      cpu           = 256
+      desired_count = local.desired_count_development
+      memory        = 512
+    }
+    tenant = {
+      cpu           = 256
+      desired_count = local.desired_count_development
+      memory        = 512
+    }
+  }
 
   service_configs_scaling = {
-    development = local.service_configs_scaling_non_production
+    development = local.service_configs_scaling_development
     staging     = local.service_configs_scaling_non_production
-    integration = local.service_configs_scaling_production
+    integration = local.service_configs_scaling_non_production
   }
 
   service_configs_common = {
@@ -328,7 +382,7 @@ locals {
   }
 
   service_configs = {
-    for key, value in try(local.service_configs_scaling[local.environment], local.service_configs_scaling_non_production) :
+    for key, value in try(local.service_configs_scaling[local.environment], local.service_configs_scaling_production) :
     key => merge(value, local.service_configs_common[key])
   }
 

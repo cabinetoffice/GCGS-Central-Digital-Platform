@@ -172,8 +172,8 @@ public class DataService(IShareCodeRepository shareCodeRepository, IConnectedEnt
             : null;
 
         var organisationType = organisation.Roles.Contains(PartyRole.Tenderer)
-            ? OrganisationType.Supplier
-            : OrganisationType.Buyer;
+            ? Model.OrganisationType.Supplier
+            : Model.OrganisationType.Buyer;
 
         return new BasicInformation
         {

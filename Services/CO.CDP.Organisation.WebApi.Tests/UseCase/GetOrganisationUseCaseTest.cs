@@ -32,6 +32,7 @@ public class GetOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IClas
             Id = 1,
             Guid = organisationId,
             Name = "Test Organisation",
+            Type = OrganisationType.Organisation,
             Tenant = new Tenant
             {
                 Id = 101,

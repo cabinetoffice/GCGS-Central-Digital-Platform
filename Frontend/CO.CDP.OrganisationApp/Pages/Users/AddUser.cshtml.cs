@@ -6,6 +6,7 @@ using CO.CDP.OrganisationApp.Constants;
 using Microsoft.AspNetCore.Authorization;
 using CO.CDP.Mvc.Validation;
 using CO.CDP.Localization;
+using CO.CDP.OrganisationApp.Models;
 
 namespace CO.CDP.OrganisationApp.Pages.Users;
 
@@ -28,6 +29,7 @@ public class AddUserModel(
     public string? LastName { get; set; }
 
     [BindProperty]
+    [ModelBinder<SanitisedStringModelBinder>]
     [Required(ErrorMessageResourceName = nameof(StaticTextResource.User_Email_Required_ErrorMessage), ErrorMessageResourceType = typeof(StaticTextResource))]
     [ValidEmailAddress(ErrorMessageResourceName = nameof(StaticTextResource.Global_Email_Invalid_ErrorMessage), ErrorMessageResourceType = typeof(StaticTextResource))]
     public string? Email { get; set; }

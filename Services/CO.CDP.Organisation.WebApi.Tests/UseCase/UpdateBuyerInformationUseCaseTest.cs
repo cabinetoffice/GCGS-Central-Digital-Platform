@@ -139,6 +139,7 @@ public class UpdateBuyerInformationUseCaseTests
             ContactPoints = [new OrganisationInformation.Persistence.Organisation.ContactPoint { Email = "test@test.com" }],
             Guid = _organisationId,
             Name = "Test",
+            Type = OrganisationType.Organisation,
             Tenant = It.IsAny<Tenant>(),
             BuyerInfo = new OrganisationInformation.Persistence.Organisation.BuyerInformation
             { BuyerType = "NewType", DevolvedRegulations = [DevolvedRegulation.NorthernIreland] },

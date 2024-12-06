@@ -131,6 +131,7 @@ public class UpdateSupplierInformationUseCaseTests : IClassFixture<AutoMapperFix
         {
             Guid = _organisationId,
             Name = "Test",
+            Type = OrganisationType.Organisation,
             Tenant = It.IsAny<Tenant>(),
             ContactPoints = [new Persistence.Organisation.ContactPoint { Email = "test@test.com" }],
             SupplierInfo = new Persistence.Organisation.SupplierInformation()

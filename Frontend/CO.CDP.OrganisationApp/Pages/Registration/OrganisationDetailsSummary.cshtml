@@ -142,7 +142,10 @@
                                     Devolved regions
                                 </dt>
                                 <dd class="govuk-summary-list__value">
-                                    @Html.Raw(string.Join("<br /> ", details.Regulations.Select(x => x.Description())))
+                                    @foreach (var regulation in details.Regulations)
+                                    {
+                                        @regulation.Description()<br />
+                                    }
                                 </dd>
                                 <dd class="govuk-summary-list__actions">
                                     <a class="govuk-link govuk-link--no-visited-state" href="@RegistrationStepModel.BuyerSelectDevolvedRegulationPage?frm-summary">Change<span class="govuk-visually-hidden"> the devolved regions</span></a>

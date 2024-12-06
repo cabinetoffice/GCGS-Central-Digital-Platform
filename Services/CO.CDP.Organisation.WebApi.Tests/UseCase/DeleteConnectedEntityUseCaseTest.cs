@@ -70,7 +70,13 @@ public class DeleteConnectedEntityUseCaseTest
 
     private Persistence.Organisation Organisation()
     {
-        return new Persistence.Organisation { Guid = _organisationId, Name = "Test", Tenant = It.IsAny<Tenant>() };
+        return new Persistence.Organisation
+        {
+            Guid = _organisationId,
+            Name = "Test",
+            Type = OrganisationInformation.OrganisationType.Organisation,
+            Tenant = It.IsAny<Tenant>()
+        };
     }
 
     private Persistence.ConnectedEntity ConnectedEntity(Persistence.Organisation organisation)

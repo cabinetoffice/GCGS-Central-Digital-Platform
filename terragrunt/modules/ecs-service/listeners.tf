@@ -8,12 +8,9 @@ resource "aws_lb_target_group" "this" {
   target_type          = "ip"
   vpc_id               = var.vpc_id
 
-  dynamic "stickiness" {
-    for_each = var.name == "organisation-app" ? [1] : []
-    content {
-      type            = "lb_cookie"
-      cookie_duration = 3600 # 1 hour
-    }
+  stickiness {
+    type = "lb_cookie"
+    enabled = false
   }
 
   health_check {

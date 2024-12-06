@@ -9,19 +9,25 @@ module "ecs_service_healthcheck" {
       cpu                             = var.healthcheck_config.cpu
       db_entity_verification_address  = var.db_entity_verification_address
       db_entity_verification_name     = var.db_entity_verification_name
+      db_entity_verification_port     = var.db_entity_verification_port
       db_entity_verification_username = "${var.db_entity_verification_credentials_arn}:username::"
       db_sirsi_address                = var.db_sirsi_address
       db_sirsi_name                   = var.db_sirsi_name
+      db_sirsi_port                   = var.db_sirsi_port
       db_sirsi_username               = "${var.db_sirsi_credentials_arn}:username::"
       environment                     = title(var.environment)
       host_port                       = var.healthcheck_config.port
-      image                           = "${local.orchestrator_account_id}.dkr.ecr.${data.aws_region.current.name}.amazonaws.com/cdp-healthcheck:latest"
+      image                           = "${local.orchestrator_account_id}.dkr.ecr.${data.aws_region.current.name}.amazonaws.com/cdp-healthcheck:1.0.1"
       lg_name                         = aws_cloudwatch_log_group.healthcheck.name
       lg_prefix                       = "tools"
       lg_region                       = data.aws_region.current.name
       memory                          = var.healthcheck_config.memory
       name                            = var.healthcheck_config.name
-      queue_healthcheck_queue_url     = var.queue_healthcheck_queue_url
+      sqs_entity_verification_url     = var.sqs_entity_verification_url
+      sqs_organisation_url            = var.sqs_organisation_url
+      redis_auth_token_arn            = var.redis_auth_token_arn
+      redis_port                      = var.redis_port
+      redis_primary_endpoint_address  = var.redis_primary_endpoint
     }
   )
 
@@ -32,7 +38,7 @@ module "ecs_service_healthcheck" {
   ecs_listener_arn       = var.ecs_listener_arn
   ecs_service_base_sg_id = var.ecs_sg_id
   family                 = "tools"
-  healthcheck_path       = "/health"
+  healthcheck_path       = "/healthz"
   host_port              = var.healthcheck_config.port
   memory                 = var.healthcheck_config.memory
   name                   = var.healthcheck_config.name

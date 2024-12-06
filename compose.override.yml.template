@@ -25,6 +25,9 @@ services:
       - "${CDP_DB_PORT:-5432}:5432"
     deploy:
       replicas: 1
+  redis:
+    ports:
+      - "${CDP_REDIS_POST:-6379}:6379"
   localstack:
     ports:
       - "4566:4566"
