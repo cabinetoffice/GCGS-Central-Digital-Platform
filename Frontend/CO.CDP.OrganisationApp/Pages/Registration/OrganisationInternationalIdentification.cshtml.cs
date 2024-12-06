@@ -49,7 +49,7 @@ public class OrganisationInternationalIdentificationModel(ISession session,
     {
         Country = RegistrationDetails.OrganisationIdentificationCountry;
         OrganisationScheme = RegistrationDetails.OrganisationScheme;
-        if (!string.IsNullOrEmpty(OrganisationScheme))
+        if (!string.IsNullOrEmpty(OrganisationScheme) && RegistrationNumbers.ContainsKey(OrganisationScheme))
         {
             RegistrationNumbers[OrganisationScheme] = RegistrationDetails.OrganisationIdentificationNumber;
         }
