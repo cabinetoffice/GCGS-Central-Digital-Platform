@@ -213,7 +213,8 @@ public class OrganisationIdentificationModel(ISession session,
 
         if (OrganisationName != null)
         {
-            flashMessageService.SetImportantMessage(
+            flashMessageService.SetFlashMessage(
+                FlashMessageType.Important,
                 heading: "An organisation with this registration number already exists. Change the registration number or <a class='govuk-notification-banner__link' href='/registration/{identifier}/join-organisation'>request to join {organisationName}.</a>",
                 urlParameters: new() { ["identifier"] = Identifier },
                 htmlParameters: new() { ["organisationName"] = OrganisationName }

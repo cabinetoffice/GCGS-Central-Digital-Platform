@@ -65,7 +65,8 @@ public class CompanyHouseNumberQuestionModel(ISession session,
                 OrganisationName = organisation?.Name;
                 if (organisation != null)
                 {
-                    flashMessageService.SetImportantMessage(
+                    flashMessageService.SetFlashMessage(
+                        FlashMessageType.Important,
                         heading: StaticTextResource.OrganisationRegistration_CompanyHouseNumberQuestion_CompanyAlreadyRegistered_NotificationBanner,
                         urlParameters: new() { ["organisationIdentifier"] = OrganisationIdentifier },
                         htmlParameters: new() { ["organisationName"] = organisation.Name }
@@ -84,7 +85,7 @@ public class CompanyHouseNumberQuestionModel(ISession session,
                     {
                         FailedCompaniesHouseNumber = CompaniesHouseNumber;
 
-                        flashMessageService.SetImportantMessage(StaticTextResource.OrganisationRegistration_CompanyHouseNumberQuestion_CompanyNotFound_NotificationBanner);
+                        flashMessageService.SetFlashMessage(FlashMessageType.Important, StaticTextResource.OrganisationRegistration_CompanyHouseNumberQuestion_CompanyNotFound_NotificationBanner);
                         return Page();
                     }
                 }

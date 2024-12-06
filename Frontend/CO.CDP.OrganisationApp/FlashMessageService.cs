@@ -6,41 +6,31 @@ namespace CO.CDP.OrganisationApp;
 
 public class FlashMessageService(ITempDataService tempDataService) : IFlashMessageService
 {
-    public void SetSuccessMessage(string heading, string? description = null, string? title = null, Dictionary<string, string>? urlParameters = null, Dictionary<string, string>? htmlParameters = null)
+    public FlashMessage? GetFlashMessage(FlashMessageType messageType)
     {
-        SetFlashMessage(FlashMessageTypes.Success, heading, description, title, urlParameters, htmlParameters);
+        return tempDataService.Get<FlashMessage>(GetMessageKey(messageType));
     }
 
-    public void SetImportantMessage(string heading, string? description = null, string? title = null, Dictionary<string, string>? urlParameters = null, Dictionary<string, string>? htmlParameters = null)
+    public FlashMessage? PeekFlashMessage(FlashMessageType messageType)
     {
-        SetFlashMessage(FlashMessageTypes.Important, heading, description, title, urlParameters, htmlParameters);
+        return tempDataService.Peek<FlashMessage>(GetMessageKey(messageType));
     }
 
-    public void SetFailureMessage(string heading, string? description = null, string? title = null, Dictionary<string, string>? urlParameters = null, Dictionary<string, string>? htmlParameters = null)
-    {
-        SetFlashMessage(FlashMessageTypes.Failure, heading, description, title, urlParameters, htmlParameters);
-    }
-
-    public FlashMessage? GetFlashMessage(string messageType)
-    {
-        return tempDataService.Get<FlashMessage>(messageType);
-    }
-
-    public FlashMessage? PeekFlashMessage(string messageType)
-    {
-        return tempDataService.Peek<FlashMessage>(messageType);
-    }
-
-    private void SetFlashMessage(string messageType, string heading, string? description, string? title, Dictionary<string, string>? urlParameters, Dictionary<string, string>? htmlParameters)
+    public void SetFlashMessage(FlashMessageType messageType, string heading, string? description = null, string? title = null, Dictionary<string, string>? urlParameters = null, Dictionary<string, string>? htmlParameters = null)
     {
         var formattedHeading = FormatMessage(heading, urlParameters, htmlParameters);
         var formattedDescription = description != null ? FormatMessage(description, urlParameters, htmlParameters) : null;
         var formattedTitle = title != null ? FormatMessage(title, urlParameters, htmlParameters) : null;
 
-        tempDataService.Put(messageType, new FlashMessage(formattedHeading, formattedDescription, formattedTitle));
+        tempDataService.Put(GetMessageKey(messageType), new FlashMessage(formattedHeading, formattedDescription, formattedTitle));
     }
 
-    private string FormatMessage(string format, Dictionary<string, string>? urlParameters, Dictionary<string, string>? htmlParameters)
+    private static string GetMessageKey(FlashMessageType messageType)
+    {
+        return "FlashMessage-" + messageType.ToString();
+    }
+
+    private static string FormatMessage(string format, Dictionary<string, string>? urlParameters, Dictionary<string, string>? htmlParameters)
     {
         var encodedParameters = new Dictionary<string, string>();
 
@@ -65,30 +55,9 @@ public class FlashMessageService(ITempDataService tempDataService) : IFlashMessa
     }
 }
 
-
-public interface IFlashMessageService
+public enum FlashMessageType
 {
-    void SetSuccessMessage(
-        string heading,
-        string? description = null,
-        string? title = null,
-        Dictionary<string, string>? urlParameters = null,
-        Dictionary<string, string>? htmlParameters = null);
-
-    void SetImportantMessage(
-        string heading,
-        string? description = null,
-        string? title = null,
-        Dictionary<string, string>? urlParameters = null,
-        Dictionary<string, string>? htmlParameters = null);
-
-    void SetFailureMessage(string heading,
-        string? description = null,
-        string? title = null,
-        Dictionary<string, string>? urlParameters = null,
-        Dictionary<string, string>? htmlParameters = null);
-
-    FlashMessage? GetFlashMessage(string messageType);
-
-    FlashMessage? PeekFlashMessage(string messageType);
+    Success,
+    Important,
+    Failure
 }

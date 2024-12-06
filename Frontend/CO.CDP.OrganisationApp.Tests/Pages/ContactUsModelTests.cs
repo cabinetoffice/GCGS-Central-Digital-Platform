@@ -56,7 +56,8 @@ public class ContactUsModelTests
 
         result.Should().BeOfType<PageResult>();
 
-        _mockFlashMessageService.Verify(api => api.SetFailureMessage(
+        _mockFlashMessageService.Verify(api => api.SetFlashMessage(
+            FlashMessageType.Failure,
             "There is a problem with the service",
             "Your message could not be sent. Try again or come back later.",
             "Failed to send",

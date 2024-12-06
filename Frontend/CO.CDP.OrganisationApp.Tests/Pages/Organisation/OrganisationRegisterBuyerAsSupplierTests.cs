@@ -37,7 +37,8 @@ public class OrganisationRegisterBuyerAsSupplierTests
                                               uo.Organisation.Roles.SequenceEqual(new[] { PartyRole.Tenderer }))),
             Times.Once);
 
-        flashMessageServiceMock.Verify(api => api.SetSuccessMessage(
+        flashMessageServiceMock.Verify(api => api.SetFlashMessage(
+            FlashMessageType.Success,
             "You have been registered as a supplier",
             It.IsAny<string>(),
             null,

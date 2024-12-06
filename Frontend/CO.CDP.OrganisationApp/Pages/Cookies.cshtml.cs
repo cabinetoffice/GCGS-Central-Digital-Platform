@@ -47,7 +47,7 @@ public class CookiesModel(
         {
             return LocalRedirect(QueryHelpers.AddQueryString(ReturnUrl, CookieSettings.CookiesAcceptedQueryString, "true"));
         }
-        flashMessageService.SetSuccessMessage("You’ve set your cookie preferences.");
+        flashMessageService.SetFlashMessage(FlashMessageType.Success, "You’ve set your cookie preferences.");
         
         return RedirectToPage("/Cookies");
     }

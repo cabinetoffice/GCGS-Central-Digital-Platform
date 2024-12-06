@@ -20,10 +20,10 @@ public class FlashMessageServiceTests
         var heading = "Test success Heading";
         var description = "Test success Description";
 
-        _flashMessageService.SetSuccessMessage(heading, description);
+        _flashMessageService.SetFlashMessage(FlashMessageType.Success, heading, description);
 
         _tempDataServiceMock.Verify(s =>
-            s.Put(FlashMessageTypes.Success,
+            s.Put("FlashMessage-" + FlashMessageType.Success.ToString(),
                   It.Is<FlashMessage>(m => m.Heading == heading && m.Description == description)),
             Times.Once);
     }
@@ -35,10 +35,10 @@ public class FlashMessageServiceTests
         var description = "Test success Description";
         var title = "Test success Title";
 
-        _flashMessageService.SetSuccessMessage(heading, description, title);
+        _flashMessageService.SetFlashMessage(FlashMessageType.Success, heading, description, title);
 
         _tempDataServiceMock.Verify(s =>
-            s.Put(FlashMessageTypes.Success,
+            s.Put("FlashMessage-" + FlashMessageType.Success.ToString(),
                   It.Is<FlashMessage>(m => m.Heading == heading && m.Description == description && m.Title == title)),
             Times.Once);
     }
@@ -49,10 +49,10 @@ public class FlashMessageServiceTests
         var heading = "Test important Heading";
         var description = "Test important Description";
 
-        _flashMessageService.SetImportantMessage(heading, description);
+        _flashMessageService.SetFlashMessage(FlashMessageType.Important, heading, description);
 
         _tempDataServiceMock.Verify(s =>
-            s.Put(FlashMessageTypes.Important,
+            s.Put("FlashMessage-" + FlashMessageType.Important.ToString(),
                   It.Is<FlashMessage>(m => m.Heading == heading && m.Description == description)),
             Times.Once);
     }
@@ -60,57 +60,57 @@ public class FlashMessageServiceTests
     [Fact]
     public void GetFlashMessage_ShouldReturnMessageFromTempDataService()
     {
-        var messageType = FlashMessageTypes.Success;
+        var messageType = FlashMessageType.Success;
         var expectedMessage = new FlashMessage("Test Heading", "Test Description");
-        _tempDataServiceMock.Setup(s => s.Get<FlashMessage>(messageType))
+        _tempDataServiceMock.Setup(s => s.Get<FlashMessage>("FlashMessage-" + messageType.ToString()))
             .Returns(expectedMessage);
 
         var result = _flashMessageService.GetFlashMessage(messageType);
 
         Assert.Equal(expectedMessage.Heading, result!.Heading);
         Assert.Equal(expectedMessage.Description, result.Description);
-        _tempDataServiceMock.Verify(s => s.Get<FlashMessage>(messageType), Times.Once);
+        _tempDataServiceMock.Verify(s => s.Get<FlashMessage>("FlashMessage-" + messageType.ToString()), Times.Once);
     }
 
     [Fact]
     public void PeekFlashMessage_ShouldReturnMessageFromTempDataServiceWithoutRemovingIt()
     {
-        var messageType = FlashMessageTypes.Important;
+        var messageType = FlashMessageType.Important;
         var expectedMessage = new FlashMessage("Test Heading", "Test Description");
-        _tempDataServiceMock.Setup(s => s.Peek<FlashMessage>(messageType))
+        _tempDataServiceMock.Setup(s => s.Peek<FlashMessage>("FlashMessage-" + messageType.ToString()))
             .Returns(expectedMessage);
 
         var result = _flashMessageService.PeekFlashMessage(messageType);
 
         Assert.Equal(expectedMessage.Heading, result!.Heading);
         Assert.Equal(expectedMessage.Description, result.Description);
-        _tempDataServiceMock.Verify(s => s.Peek<FlashMessage>(messageType), Times.Once);
+        _tempDataServiceMock.Verify(s => s.Peek<FlashMessage>("FlashMessage-" + messageType.ToString()), Times.Once);
     }
 
     [Fact]
     public void GetFlashMessage_ShouldReturnNull_WhenMessageDoesNotExist()
     {
-        var messageType = FlashMessageTypes.Success;
-        _tempDataServiceMock.Setup(s => s.Get<FlashMessage>(messageType))
+        var messageType = FlashMessageType.Success;
+        _tempDataServiceMock.Setup(s => s.Get<FlashMessage>("FlashMessage-" + messageType.ToString()))
             .Returns((FlashMessage?)null);
 
         var result = _flashMessageService.GetFlashMessage(messageType);
 
         Assert.Null(result);
-        _tempDataServiceMock.Verify(s => s.Get<FlashMessage>(messageType), Times.Once);
+        _tempDataServiceMock.Verify(s => s.Get<FlashMessage>("FlashMessage-" + messageType.ToString()), Times.Once);
     }
 
     [Fact]
     public void PeekFlashMessage_ShouldReturnNull_WhenMessageDoesNotExist()
     {
-        var messageType = FlashMessageTypes.Important;
-        _tempDataServiceMock.Setup(s => s.Peek<FlashMessage>(messageType))
+        var messageType = FlashMessageType.Important;
+        _tempDataServiceMock.Setup(s => s.Peek<FlashMessage>("FlashMessage-" + messageType.ToString()))
             .Returns((FlashMessage?)null);
 
         var result = _flashMessageService.PeekFlashMessage(messageType);
 
         Assert.Null(result);
-        _tempDataServiceMock.Verify(s => s.Peek<FlashMessage>(messageType), Times.Once);
+        _tempDataServiceMock.Verify(s => s.Peek<FlashMessage>("FlashMessage-" + messageType.ToString()), Times.Once);
     }
 
     [Fact]
@@ -122,10 +122,10 @@ public class FlashMessageServiceTests
 
         var expectedOutput = "Visit <a href=\"/organisation/12345\">Test Organisation</a>";
 
-        _flashMessageService.SetSuccessMessage(formatString, formatString, null, urlParameters, htmlParameters);
+        _flashMessageService.SetFlashMessage(FlashMessageType.Success, formatString, formatString, null, urlParameters, htmlParameters);
 
         _tempDataServiceMock.Verify(s =>
-            s.Put(FlashMessageTypes.Success,
+            s.Put("FlashMessage-" + FlashMessageType.Success.ToString(),
                 It.Is<FlashMessage>(m => m.Heading == expectedOutput && m.Description == expectedOutput)),
             Times.Once);
     }
@@ -138,10 +138,10 @@ public class FlashMessageServiceTests
 
         var expectedHeading = "Access <a href=\"/organisation/67890\">your account</a>.";
 
-        _flashMessageService.SetImportantMessage(heading, null, null,urlParameters, null);
+        _flashMessageService.SetFlashMessage(FlashMessageType.Important, heading, null, null,urlParameters, null);
 
         _tempDataServiceMock.Verify(s =>
-            s.Put(FlashMessageTypes.Important,
+            s.Put("FlashMessage-" + FlashMessageType.Important.ToString(),
                 It.Is<FlashMessage>(m => m.Heading == expectedHeading && m.Description == null)),
             Times.Once);
     }
@@ -155,10 +155,10 @@ public class FlashMessageServiceTests
 
         var expectedHeading = "Hello Alice";
 
-        _flashMessageService.SetImportantMessage(heading, null, null, urlParameters, htmlParameters);
+        _flashMessageService.SetFlashMessage(FlashMessageType.Important, heading, null, null, urlParameters, htmlParameters);
 
         _tempDataServiceMock.Verify(s =>
-            s.Put(FlashMessageTypes.Important,
+            s.Put("FlashMessage-" + FlashMessageType.Important.ToString(),
                 It.Is<FlashMessage>(m => m.Heading == expectedHeading && m.Description == null)),
             Times.Once);
     }
@@ -172,10 +172,10 @@ public class FlashMessageServiceTests
 
         var expectedOutput = "Visit <a href=\"/organisation/%3Cscript%3Ealert(%22hello%22)%3C%2Fscript%3E\">&lt;script&gt;alert(&quot;hello&quot;)&lt;/script&gt;</a>";
 
-        _flashMessageService.SetSuccessMessage(formatString, formatString, formatString, urlParameters, htmlParameters);
+        _flashMessageService.SetFlashMessage(FlashMessageType.Success, formatString, formatString, formatString, urlParameters, htmlParameters);
 
         _tempDataServiceMock.Verify(s =>
-            s.Put(FlashMessageTypes.Success,
+            s.Put("FlashMessage-" + FlashMessageType.Success.ToString(),
                 It.Is<FlashMessage>(m => m.Heading == expectedOutput && m.Description == expectedOutput && m.Title == expectedOutput)),
             Times.Once);
     }

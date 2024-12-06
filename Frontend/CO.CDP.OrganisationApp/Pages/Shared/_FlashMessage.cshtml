@@ -3,9 +3,9 @@
 @using CDP.OrganisationApp.Models
 @using Localization;
 
-@if (flashMessageService.PeekFlashMessage(FlashMessageTypes.Success) != null)
+@if (flashMessageService.PeekFlashMessage(FlashMessageType.Success) != null)
 {
-    var message = flashMessageService.GetFlashMessage(FlashMessageTypes.Success);
+    var message = flashMessageService.GetFlashMessage(FlashMessageType.Success);
     if(message != null) {
         <div class="govuk-notification-banner govuk-notification-banner--success" role="alert" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
             <div class="govuk-notification-banner__header">
@@ -33,9 +33,9 @@
     }
 }
 
-@if (flashMessageService.PeekFlashMessage(FlashMessageTypes.Important) != null)
+@if (flashMessageService.PeekFlashMessage(FlashMessageType.Important) != null)
 {
-    var message = flashMessageService.GetFlashMessage(FlashMessageTypes.Important);
+    var message = flashMessageService.GetFlashMessage(FlashMessageType.Important);
     if (message != null)
     {
         <div class="govuk-notification-banner" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
@@ -65,9 +65,9 @@
     }
 }
 
-@if (flashMessageService.PeekFlashMessage(FlashMessageTypes.Failure) != null)
+@if (flashMessageService.PeekFlashMessage(FlashMessageType.Failure) != null)
 {
-    var message = flashMessageService.GetFlashMessage(FlashMessageTypes.Failure);
+    var message = flashMessageService.GetFlashMessage(FlashMessageType.Failure);
     if(message != null)  {
         <div class="govuk-notification-banner app-notification-banner--failure" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
             <div class="govuk-notification-banner__header">

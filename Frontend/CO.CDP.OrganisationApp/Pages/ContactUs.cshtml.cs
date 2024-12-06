@@ -58,7 +58,8 @@ public class ContactUsModel(IOrganisationClient organisationClient, IFlashMessag
 
         if (!success)
         {
-            flashMessageService.SetFailureMessage(
+            flashMessageService.SetFlashMessage(
+                FlashMessageType.Failure,
                 heading: StaticTextResource.Supplementary_ContactUs_Failure_Heading,
                 description: StaticTextResource.Supplementary_ContactUs_Failure_Description,
                 title: StaticTextResource.Supplementary_ContactUs_Failure_Title

@@ -20,7 +20,8 @@ public class OrganisationRegisterBuyerAsSupplierModel(
         if (!orgInfo.Roles.Contains(PartyRole.Tenderer))
         {
             await organisationClient.AddOrganisationRoles(id, [PartyRole.Tenderer]);
-            flashMessageService.SetSuccessMessage(
+            flashMessageService.SetFlashMessage(
+                FlashMessageType.Success, 
                 heading: "You have been registered as a supplier",
                 description: $"You'll need to <a class=\"govuk-notification-banner__link\" href=\"/organisation/{id}/supplier-information\"\">complete your supplier information</a> to create sharecode."
             );

@@ -54,7 +54,7 @@ public class JoinOrganisationModel(
                 }
                 catch (ApiException<OrganisationWebApiClient.ProblemDetails>)
                 {
-                    flashMessageService.SetImportantMessage(ErrorMessagesList.AlreadyMemberOfOrganisation);
+                    flashMessageService.SetFlashMessage(FlashMessageType.Important, ErrorMessagesList.AlreadyMemberOfOrganisation);
                     return Page();
                 }
 

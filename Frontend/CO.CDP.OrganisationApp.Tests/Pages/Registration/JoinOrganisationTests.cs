@@ -140,7 +140,8 @@ public class JoinOrganisationModelTests
 
         var result = await _joinOrganisationModel.OnPost(_identifier);
 
-        flashMessageServiceMock.Verify(api => api.SetImportantMessage(
+        flashMessageServiceMock.Verify(api => api.SetFlashMessage(
+            FlashMessageType.Important,
             ErrorMessagesList.AlreadyMemberOfOrganisation,
             null,
             null,

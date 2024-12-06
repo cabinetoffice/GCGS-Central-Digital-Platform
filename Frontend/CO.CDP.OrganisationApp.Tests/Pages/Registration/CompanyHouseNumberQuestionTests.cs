@@ -126,7 +126,8 @@ public class CompanyHouseNumberQuestionTests
         Dictionary<string, string> urlParameters = new() { ["organisationIdentifier"] = model.OrganisationIdentifier };
         Dictionary<string, string> htmlParameters = new() { ["organisationName"] = model.OrganisationName };
 
-        flashMessageServiceMock.Verify(api => api.SetImportantMessage(
+        flashMessageServiceMock.Verify(api => api.SetFlashMessage(
+            FlashMessageType.Important,
             StaticTextResource.OrganisationRegistration_CompanyHouseNumberQuestion_CompanyAlreadyRegistered_NotificationBanner,
             null,
             null,
@@ -160,7 +161,8 @@ public class CompanyHouseNumberQuestionTests
 
         var result = await model.OnPost();
 
-        flashMessageServiceMock.Verify(api => api.SetImportantMessage(
+        flashMessageServiceMock.Verify(api => api.SetFlashMessage(
+            FlashMessageType.Important,
             StaticTextResource.OrganisationRegistration_CompanyHouseNumberQuestion_CompanyNotFound_NotificationBanner,
             null,
             null,
