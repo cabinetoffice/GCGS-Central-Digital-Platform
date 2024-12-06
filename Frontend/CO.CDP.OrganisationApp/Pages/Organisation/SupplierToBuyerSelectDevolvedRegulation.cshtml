@@ -1,8 +1,9 @@
 @page "/organisation/{id}/supplier-to-buyer-select-devolved-regulation"
 @model CO.CDP.OrganisationApp.Pages.Organisation.SupplierToBuyerSelectDevolvedRegulationModel
+@using CO.CDP.Localization
 @using CO.CDP.OrganisationApp.Constants
 @{
-    ViewData["Title"] = "Which devolved regulations apply?";
+    ViewData["Title"] = StaticTextResource.SupplierToBuyer_SelectDevolvedRegulation_Title;
     var regulationsHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Regulations)).HasInnerHtml;
 
     var backLink = $"/organisation/{@Model.Id}/supplier-to-buyer-devolved-regulation";
@@ -14,10 +15,8 @@
 }
 
 @section BeforeContent {
-    <a href="@backLink" class="govuk-back-link">Back</a>
+    <a href="@backLink" class="govuk-back-link">@StaticTextResource.Global_Back</a>
 }
-
-
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds govuk-body">
             <partial name="_ErrorSummary" model="@ModelState" />
@@ -30,12 +29,12 @@
                             </h1>
                         </legend>
                         <div id="regulations-hint" class="govuk-hint">
-                            Select all that apply
+                            @StaticTextResource.SupplierToBuyer_SelectDevolvedRegulation_SelectAllThatApply
                         </div>
                         @if (regulationsHasError)
                         {
                             <p id="devolved-error" class="govuk-error-message">
-                                <span class="govuk-visually-hidden">Error:</span> @Html.ValidationMessageFor(m => m.Regulations)
+                            <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span> @Html.ValidationMessageFor(m => m.Regulations)
                             </p>
                         }
 
@@ -43,28 +42,27 @@
                             <div class="govuk-checkboxes__item">
                             <input class="govuk-checkboxes__input" id="Regulations" name="Regulations" type="checkbox" value="@DevolvedRegulation.NorthernIreland" @IsSelected(DevolvedRegulation.NorthernIreland)>
                             <label class="govuk-label govuk-checkboxes__label" for="Regulations">
-                                    Northern Ireland
+                                    @StaticTextResource.SupplierToBuyer_SelectDevolvedRegulation_NorthernIreland
                                 </label>
                             </div>
                             <div class="govuk-checkboxes__item">
                                 <input class="govuk-checkboxes__input" id="chkscotland" name="Regulations" type="checkbox" value="@DevolvedRegulation.Scotland" @IsSelected(DevolvedRegulation.Scotland)>
                                 <label class="govuk-label govuk-checkboxes__label" for="chkscotland">
-                                    Scotland
+                                    @StaticTextResource.SupplierToBuyer_SelectDevolvedRegulation_Scotland
                                 </label>
                             </div>
                             <div class="govuk-checkboxes__item">
                                 <input class="govuk-checkboxes__input" id="chkwales" name="Regulations" type="checkbox" value="@DevolvedRegulation.Wales" @IsSelected(DevolvedRegulation.Wales)>
                                 <label class="govuk-label govuk-checkboxes__label" for="chkwales">
-                                    Wales
+                                @StaticTextResource.SupplierToBuyer_SelectDevolvedRegulation_Wales
                                 </label>
                             </div>
                         </div>
                     </fieldset>
                 </div>
                 <govuk-button>
-                    Continue
+                    @StaticTextResource.Global_Continue
                 </govuk-button>
             </form>
         </div>
     </div>
-

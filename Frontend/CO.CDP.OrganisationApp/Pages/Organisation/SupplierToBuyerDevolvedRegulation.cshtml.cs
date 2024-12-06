@@ -1,3 +1,4 @@
+using CO.CDP.Localization;
 using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -11,7 +12,7 @@ namespace CO.CDP.OrganisationApp.Pages.Organisation;
 public class SupplierToBuyerDevolvedRegulationModel(ITempDataService tempDataService) : PageModel
 {
     [BindProperty]
-    [Required(ErrorMessage = "Select 'yes' or 'no'")]
+    [Required(ErrorMessageResourceName = nameof(StaticTextResource.SupplierToBuyer_DevolvedRegulation_ErrorMessage), ErrorMessageResourceType = typeof(StaticTextResource))]
     public bool? Devolved { get; set; }
 
     [BindProperty(SupportsGet = true)]
