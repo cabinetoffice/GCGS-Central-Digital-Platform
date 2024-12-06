@@ -7,6 +7,7 @@ using CO.CDP.OrganisationApp.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Net;
 
 namespace CO.CDP.OrganisationApp.Pages.Registration;
 
@@ -14,7 +15,7 @@ namespace CO.CDP.OrganisationApp.Pages.Registration;
 public class OrganisationIdentificationModel(ISession session,
     IOrganisationClient organisationClient,
     IPponClient pponClient,
-    ITempDataService tempDataService) : RegistrationStepModel(session)
+    IFlashMessageService flashMessageService) : RegistrationStepModel(session)
 {
     public override string CurrentPage => OrganisationIdentifierPage;
 
@@ -115,8 +116,6 @@ public class OrganisationIdentificationModel(ISession session,
 
     public string? OrganisationName;
 
-    public FlashMessage NotificationBannerCompanyAlreadyRegistered { get { return new FlashMessage($"An organisation with this registration number already exists. Change the registration number or <a class='govuk-notification-banner__link' href='/registration/{Identifier}/join-organisation'>request to join {OrganisationName}.</a>"); } }
-
     public void OnGet()
     {
         OrganisationScheme = RegistrationDetails.OrganisationScheme;
@@ -212,7 +211,16 @@ public class OrganisationIdentificationModel(ISession session,
             }
         }
 
-        tempDataService.Put(FlashMessageTypes.Important, NotificationBannerCompanyAlreadyRegistered);
+        if (OrganisationName != null)
+        {
+            flashMessageService.SetFlashMessage(
+                FlashMessageType.Important,
+                heading: "An organisation with this registration number already exists. Change the registration number or <a class='govuk-notification-banner__link' href='/registration/{identifier}/join-organisation'>request to join {organisationName}.</a>",
+                urlParameters: new() { ["identifier"] = Identifier },
+                htmlParameters: new() { ["organisationName"] = OrganisationName }
+            );
+        }
+
         return Page();
     }
 

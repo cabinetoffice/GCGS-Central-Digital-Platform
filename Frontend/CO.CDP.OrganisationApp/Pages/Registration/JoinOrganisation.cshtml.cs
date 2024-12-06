@@ -11,15 +11,13 @@ namespace CO.CDP.OrganisationApp.Pages.Registration;
 public class JoinOrganisationModel(
     IOrganisationClient organisationClient,
     ISession session,
-    ITempDataService tempDataService) : LoggedInUserAwareModel(session)
+    IFlashMessageService flashMessageService) : LoggedInUserAwareModel(session)
 {
     public OrganisationWebApiClient.Organisation? OrganisationDetails { get; set; }
 
     [BindProperty]
     [Required(ErrorMessage = nameof(StaticTextResource.OrganisationRegistration_JoinOrganisation_ValidationErrorMessage))]
     public bool Join { get; set; }
-
-    public FlashMessage NotificationBannerAlreadyMemberOfOrganisation { get { return new FlashMessage(ErrorMessagesList.AlreadyMemberOfOrganisation); } }
 
     public async Task<IActionResult> OnGet(string identifier)
     {
@@ -56,7 +54,7 @@ public class JoinOrganisationModel(
                 }
                 catch (ApiException<OrganisationWebApiClient.ProblemDetails>)
                 {
-                    tempDataService.Put(FlashMessageTypes.Important, NotificationBannerAlreadyMemberOfOrganisation);
+                    flashMessageService.SetFlashMessage(FlashMessageType.Important, ErrorMessagesList.AlreadyMemberOfOrganisation);
                     return Page();
                 }
 

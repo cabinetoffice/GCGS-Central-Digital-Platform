@@ -1,77 +1,96 @@
-@inject ITempDataService tempDataService
 @using CDP.OrganisationApp.Constants
+@inject IFlashMessageService flashMessageService
 @using CDP.OrganisationApp.Models
 @using Localization;
 
-@if (tempDataService.Peek<FlashMessage>(FlashMessageTypes.Success) != null)
+@if (flashMessageService.PeekFlashMessage(FlashMessageType.Success) != null)
 {
-    <div class="govuk-notification-banner govuk-notification-banner--success govuk-!-margin-top-8" role="alert" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
-        <div class="govuk-notification-banner__header">
-            <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
-                Success
-            </h2>
-        </div>
-        @{
-            FlashMessage message = tempDataService.Get<FlashMessage>(FlashMessageTypes.Success)!;
-        }
-        <div class="govuk-notification-banner__content">
-            <p class="govuk-notification-banner__heading">@Html.Raw(message.Heading)</p>
+    var message = flashMessageService.GetFlashMessage(FlashMessageType.Success);
+    if(message != null) {
+        <div class="govuk-notification-banner govuk-notification-banner--success" role="alert" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
+            <div class="govuk-notification-banner__header">
+                <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
+                    @if (message.Title != null)
+                    {
+                        @message.Title
+                    }
+                    else
+                    {
+                        <text>Success</text>
+                    }
+                </h2>
+            </div>
+        
+            <div class="govuk-notification-banner__content">
+                <p class="govuk-notification-banner__heading">@Html.Raw(message.Heading)</p>
 
-            @if (message.Description != null)
-            {
-                <p>@Html.Raw(message.Description)</p>
-            }
-        </div>
-    </div>
-}
-
-@if (tempDataService.Peek<FlashMessage>(FlashMessageTypes.Important) != null)
-{
-    <div class="govuk-notification-banner govuk-!-margin-top-8" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
-        <div class="govuk-notification-banner__header">
-            <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
-                Important
-            </h2>
-        </div>
-        @{
-            FlashMessage message = tempDataService.Get<FlashMessage>(FlashMessageTypes.Important)!;
-        }
-        <div class="govuk-notification-banner__content">
-            <p class="govuk-notification-banner__heading">@Html.Raw(message.Heading)</p>
-
-            @if (message.Description != null)
-            {
-                <p>@Html.Raw(message.Description)</p>
-            }
-        </div>
-    </div>
-}
-
-@if (tempDataService.Peek<FlashMessage>(FlashMessageTypes.Failure) != null)
-{
-    FlashMessage message = tempDataService.Get<FlashMessage>(FlashMessageTypes.Failure)!;
-
-    <div class="govuk-notification-banner govuk-!-margin-top-8 app-notification-banner--failure" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
-        <div class="govuk-notification-banner__header">
-            <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
-                @if (message.Title != null)
+                @if (message.Description != null)
                 {
-                    @message.Title;
+                    <p>@Html.Raw(message.Description)</p>
                 }
-                else
+            </div>        
+        </div>
+    }
+}
+
+@if (flashMessageService.PeekFlashMessage(FlashMessageType.Important) != null)
+{
+    var message = flashMessageService.GetFlashMessage(FlashMessageType.Important);
+    if (message != null)
+    {
+        <div class="govuk-notification-banner" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
+            <div class="govuk-notification-banner__header">
+                <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
+                    @if (message.Title != null)
+                    {
+                        @message.Title
+                    }
+                    else
+                    {
+                        <text>Important</text>
+                    }
+                </h2>
+            </div>
+        
+        
+            <div class="govuk-notification-banner__content">
+                <p class="govuk-notification-banner__heading">@Html.Raw(message.Heading)</p>
+
+                @if (message.Description != null)
                 {
-                    @StaticTextResource.Global_Failure_Heading
-                } 
-             </h2>
+                    <p>@Html.Raw(message.Description)</p>
+                }
+            </div>        
         </div>
+    }
+}
 
-        <div class="govuk-notification-banner__content">
-            <p class="govuk-notification-banner__heading">@Html.Raw(message.Heading)</p>
+@if (flashMessageService.PeekFlashMessage(FlashMessageType.Failure) != null)
+{
+    var message = flashMessageService.GetFlashMessage(FlashMessageType.Failure);
+    if(message != null)  {
+        <div class="govuk-notification-banner app-notification-banner--failure" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
+            <div class="govuk-notification-banner__header">
+                <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
+                    @if (message.Title != null)
+                    {
+                        @message.Title
+                    }
+                    else
+                    {
+                        @StaticTextResource.Global_Failure_Heading
+                    } 
+                 </h2>
+            </div>
 
-            @if (message.Description != null)
-            {
-                <p>@Html.Raw(message.Description)</p>
-            }
+            <div class="govuk-notification-banner__content">
+                <p class="govuk-notification-banner__heading">@Html.Raw(message.Heading)</p>
+
+                @if (message.Description != null)
+                {
+                    <p>@Html.Raw(message.Description)</p>
+                }
+            </div>
         </div>
-    </div>
+    }
 }
