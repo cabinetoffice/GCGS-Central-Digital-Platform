@@ -7,6 +7,7 @@ public class Session(IHttpContextAccessor httpContextAccessor) : ISession
     public const string UserDetailsKey = "UserDetails";
     public const string RegistrationDetailsKey = "RegistrationDetails";
     public const string ConnectedPersonKey = "ConnectedPerson";
+    public const string ConsortiumKey = "Consortium";
 
     public T? Get<T>(string key)
     {

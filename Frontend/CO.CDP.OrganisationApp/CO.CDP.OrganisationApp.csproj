@@ -13,6 +13,7 @@
       <PackageReference Include="IdentityModel" Version="7.0.0" />
       <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="8.0.8" />
       <PackageReference Include="Amazon.AspNetCore.DataProtection.SSM" Version="3.2.1" />
+      <PackageReference Include="Microsoft.FeatureManagement.AspNetCore" Version="4.0.0" />
       <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="8.0.8" />
       <PackageReference Include="Microsoft.Web.RedisSessionStateProvider" Version="5.0.4" />
     </ItemGroup>
@@ -29,6 +30,13 @@
       <ProjectReference Include="..\..\Libraries\CO.CDP.Mvc.Validation\CO.CDP.Mvc.Validation.csproj" />
       <ProjectReference Include="..\..\Libraries\CO.CDP.Configuration\CO.CDP.Configuration.csproj" />
       <ProjectReference Include="..\..\Services\CO.CDP.Localization\CO.CDP.Localization.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Update="Pages\Consortium\ConsortiumOverview.cshtml">
+        <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      </Content>
     </ItemGroup>
 
 </Project>

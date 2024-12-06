@@ -1,0 +1,24 @@
+@page "/consortium/overview"
+@model ConsortiumOverviewModel
+@using CO.CDP.Localization
+
+@{
+    ViewData["Title"] = "";
+}
+
+@section BeforeContent {
+    <a href="/consortium/address/uk" class="govuk-back-link">@StaticTextResource.Global_Back</a>
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <form class="form" method="post">
+            <span class="govuk-caption-l">
+                PPON: S3XYPP0N
+            </span>
+            <h1 class="govuk-heading-l">
+                My fab consortium
+            </h1>
+        </form>
+    </div>
+</div>
