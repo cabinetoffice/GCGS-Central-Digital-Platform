@@ -42,9 +42,9 @@
     </div>
 }
 
-@if (Context.Request.Cookies.ContainsKey(CookieSettings.CookieName) && Context.Request.Query.ContainsKey(CookieSettings.CookieBannerInteractionQueryString))
+@if (!cookiePreferencesService.IsUnknown() && Context.Request.Query.ContainsKey(CookieSettings.CookieBannerInteractionQueryString))
 {
-    var acceptedState = (Context.Request.Cookies.ContainsKey(CookieSettings.CookieName) && Context.Request.Cookies[CookieSettings.CookieName] == (CookieAcceptanceValues.Accept).ToString()) ? "accepted" : "rejected";
+    var acceptedState = cookiePreferencesService.IsAccepted() ? "accepted" : "rejected";
     <div class="govuk-cookie-banner" data-nosnippet role="region" aria-label="Cookies on Find a Tender">
         <div class="govuk-cookie-banner__message govuk-width-container">
             <div class="govuk-grid-row">
