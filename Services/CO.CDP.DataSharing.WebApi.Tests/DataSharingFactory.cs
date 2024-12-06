@@ -44,6 +44,7 @@ public static class DataSharingFactory
             Id = 1,
             Guid = Guid.NewGuid(),
             Name = "Test Organisation",
+            Type = OrganisationInformation.OrganisationType.Organisation,
             Tenant = new Tenant { Guid = Guid.NewGuid(), Name = "TestTenant" },
             Addresses = new List<OrganisationAddress>
             {
@@ -141,7 +142,7 @@ public static class DataSharingFactory
             VatNumber = "VAT123456",
             WebsiteAddress = "http://example.com",
             EmailAddress = "test@example.com",
-            OrganisationType = OrganisationType.Supplier,
+            OrganisationType = Model.OrganisationType.Supplier,
             LegalForm = new BasicLegalForm
             {
                 RegisteredLegalForm = "Private Limited",

@@ -74,6 +74,7 @@ public class OrganisationClientIntegrationTest
             contactPoint: contactPoint,
             identifier: identifier,
             name: "New Organisation",
+            type: OrganisationType.Organisation,
             roles: roles
         );
 

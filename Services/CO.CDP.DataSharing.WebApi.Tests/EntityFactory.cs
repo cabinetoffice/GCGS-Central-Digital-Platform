@@ -237,6 +237,7 @@ internal static class EntityFactory
         {
             Guid = theGuid,
             Name = theName,
+            Type = OrganisationInformation.OrganisationType.Organisation,
             Tenant = tenant ?? GivenTenant(name: theName),
 
             Identifiers = identifiers ??

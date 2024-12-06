@@ -359,6 +359,7 @@ public class RegisterOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
         return new RegisterOrganisation
         {
             Name = name,
+            Type = OrganisationType.Organisation,
             PersonId = personId ?? Guid.NewGuid(),
             Identifier = new OrganisationIdentifier
             {

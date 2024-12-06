@@ -32,6 +32,17 @@ public static class DevolvedRegulationsExtensions
         }
     }
 
+    public static DevolvedRegulation AsDevolvedRegulation(this WebApiClient.DevolvedRegulation devolvedRegulation)
+    {
+        switch (devolvedRegulation)
+        {
+            case WebApiClient.DevolvedRegulation.NorthernIreland: return DevolvedRegulation.NorthernIreland;
+            case WebApiClient.DevolvedRegulation.Scotland: return DevolvedRegulation.Scotland;
+            case WebApiClient.DevolvedRegulation.Wales: return DevolvedRegulation.Wales;
+            default: return DevolvedRegulation.NorthernIreland;
+        }
+    }
+
     public static ICollection<WebApiClient.DevolvedRegulation> AsApiClientDevolvedRegulationList(this List<DevolvedRegulation> devolvedRegulation)
     {
         var list = new List<WebApiClient.DevolvedRegulation>();
@@ -39,6 +50,18 @@ public static class DevolvedRegulationsExtensions
         foreach (var item in devolvedRegulation)
         {
             list.Add(item.AsApiClientDevolvedRegulation());
+        }
+
+        return list;
+    }
+
+    public static List<DevolvedRegulation> AsDevolvedRegulationList(this ICollection<WebApiClient.DevolvedRegulation> devolvedRegulation)
+    {
+        var list = new List<DevolvedRegulation>();
+
+        foreach (var item in devolvedRegulation)
+        {
+            list.Add(item.AsDevolvedRegulation());
         }
 
         return list;

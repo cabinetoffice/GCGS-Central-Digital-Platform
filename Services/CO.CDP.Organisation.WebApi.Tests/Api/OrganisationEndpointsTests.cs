@@ -325,6 +325,7 @@ public class OrganisationEndpointsTests
         {
             Name = "TheOrganisation",
             PersonId = Guid.NewGuid(),
+            Type = OrganisationType.Organisation,
             Identifier = new OrganisationIdentifier
             {
                 Scheme = "ISO9001",

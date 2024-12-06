@@ -86,6 +86,7 @@ public class RegisterConnectedEntityUseCaseTest(AutoMapperFixture mapperFixture)
         {
             Name = "TheOrganisation",
             Guid = organisationId,
+            Type = OrganisationType.Organisation,
             Addresses = [new Persistence.Organisation.OrganisationAddress
             {
                 Type = AddressType.Registered,

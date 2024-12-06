@@ -35,9 +35,10 @@ public class TestAuthorizationWebApplicationFactory<TProgram>(
             services.AddTransient<IPolicyEvaluator>(sp => new AuthorizationPolicyEvaluator(
                 ActivatorUtilities.CreateInstance<PolicyEvaluator>(sp), channel, additionalUserClaims));
 
+            Mock<IOrganisationRepository> mockDatabaseOrgRepo = new();
+
             if (assignedOrganisationScopes != null && organisationId != null)
             {
-                Mock<IOrganisationRepository> mockDatabaseOrgRepo = new();
                 mockDatabaseOrgRepo.Setup(r => r.FindOrganisationPerson(organisationId.Value, "urn:fake_user"))
                     .ReturnsAsync(new OrganisationPerson
                     {
@@ -45,9 +46,9 @@ public class TestAuthorizationWebApplicationFactory<TProgram>(
                         Organisation = Mock.Of<Organisation>(),
                         Scopes = [assignedOrganisationScopes]
                     });
-
-                services.AddTransient(sc => mockDatabaseOrgRepo.Object);
             }
+
+            services.AddTransient(sc => mockDatabaseOrgRepo.Object);
         });
 
         return base.CreateHost(builder);
