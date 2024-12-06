@@ -14,7 +14,7 @@ public class OrganisationInternationalIdentificationCountryModel(ISession sessio
 
     public string NextPage => OrganisationInternationalIdentifierPage;
 
-    [BindProperty]
+    [BindProperty(SupportsGet= true)]
     public bool? RedirectToSummary { get; set; }
 
     [BindProperty]
@@ -41,7 +41,7 @@ public class OrganisationInternationalIdentificationCountryModel(ISession sessio
 
         if (RedirectToSummary == true)
         {            
-            return RedirectToPage(NextPage+ "?frm-summary");
+            return RedirectToPage("OrganisationInternationalIdentification", new Dictionary<string, string> { { "frm-summary", "true" } });
         }
         else
         {

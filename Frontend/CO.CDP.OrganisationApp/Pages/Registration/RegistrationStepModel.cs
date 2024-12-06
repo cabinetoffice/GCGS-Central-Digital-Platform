@@ -9,7 +9,7 @@ public abstract class RegistrationStepModel : LoggedInUserAwareModel
     public const string OrganisationHasCompanyHouseNumberPage = "/registration/has-companies-house-number";
     public const string OrganisationIdentifierPage = "/registration/organisation-identification";
     public const string OrganisationInternationalIdentificationCountryPage = "/registration/organisation-identification-country";
-    public const string OrganisationInternationalIdentifierPage = "/registration/organisation-identification-identification";
+    public const string OrganisationInternationalIdentifierPage = "/registration/organisation-international-identification";
     public const string OrganisationNamePage = "/registration/organisation-name";
     public const string OrganisationEmailPage = "/registration/organisation-email";
     public const string OrganisationAddressPage = "/registration/organisation-registered-address/uk";
