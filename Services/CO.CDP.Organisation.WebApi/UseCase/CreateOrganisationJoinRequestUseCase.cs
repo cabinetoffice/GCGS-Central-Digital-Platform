@@ -37,6 +37,7 @@ public class CreateOrganisationJoinRequestUseCase(
 
     public async Task<OrganisationJoinRequest> Execute((Guid organisationId, CreateOrganisationJoinRequest createOrganisationJoinRequestCommand) command)
     {
+        bool isNewRequest = false;
         var organisation = await organisationRepository.Find(command.organisationId)
                            ?? throw new UnknownOrganisationException($"Unknown organisation {command.organisationId}.");
 
@@ -54,6 +55,7 @@ public class CreateOrganisationJoinRequestUseCase(
         else
         {
             joinRequest = CreateOrganisationJoinRequest(organisation, person);
+            isNewRequest = true;
         }
 
         organisationJoinRequestRepository.Save(joinRequest);
@@ -61,7 +63,10 @@ public class CreateOrganisationJoinRequestUseCase(
         await NotifyUserRequestSent(organisation: organisation, person: person);
         await NotifyOrgAdminsOfApprovalRequest(organisation: organisation, person: person);
 
-        return mapper.Map<OrganisationJoinRequest>(joinRequest);
+        OrganisationJoinRequest request = mapper.Map<OrganisationJoinRequest>(joinRequest);
+        request.IsNewRequest = isNewRequest;
+
+        return request;
     }
 
     private Persistence.OrganisationJoinRequest CreateOrganisationJoinRequest(
