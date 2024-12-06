@@ -20,12 +20,7 @@ builder.Services.AddAutoMapper(typeof(WebApiToPersistenceProfile));
 
 var connectionString = ConnectionStringHelper.GetConnectionString(builder.Configuration, "OrganisationInformationDatabase");
 builder.Services.AddHealthChecks().AddNpgSql(connectionString);
-builder.Services.AddSingleton(new NpgsqlDataSourceBuilder(connectionString).MapEnums().Build());
-builder.Services.AddDbContext<OrganisationInformationContext>((sp, options) =>
-{
-    var dataSource = sp.GetRequiredService<NpgsqlDataSource>();
-    options.UseNpgsql(dataSource);
-});
+builder.Services.AddDbContext<OrganisationInformationContext>(o => o.UseNpgsql(connectionString));
 
 builder.Services.AddScoped<IPersonRepository, DatabasePersonRepository>();
 builder.Services.AddScoped<ITenantRepository, DatabaseTenantRepository>();
