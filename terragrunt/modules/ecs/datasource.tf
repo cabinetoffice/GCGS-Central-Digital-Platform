@@ -97,6 +97,20 @@ data "aws_iam_policy_document" "ecs_task_access_queue" {
   }
 }
 
+data "aws_iam_policy_document" "ecs_task_access_elasticache" {
+  statement {
+    sid    = "AllowAppToManageItsOwnDataProtectionToken"
+    effect = "Allow"
+    actions = [
+      "ssm:GetParametersByPath",
+      "ssm:PutParameter"
+    ]
+    resources = [
+      "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter/${local.name_prefix}-ec-*"
+    ]
+  }
+}
+
 data "aws_iam_policy_document" "ecs_task_serilog" {
   statement {
     sid    = "AllowSerilogCreateStreamAndLog"

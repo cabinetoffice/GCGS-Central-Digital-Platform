@@ -1,4 +1,5 @@
 using CO.CDP.Organisation.WebApiClient;
+using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.Pages;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
@@ -10,11 +11,12 @@ namespace CO.CDP.OrganisationApp.Tests.Pages;
 public class ContactUsModelTests
 {
     private readonly Mock<IOrganisationClient> _mockOrganisationClient = new();
+    private readonly Mock<ITempDataService> _mockTempDataServiceClient = new();
     private readonly ContactUsModel _pageModel;
 
     public ContactUsModelTests()
     {
-        _pageModel = new ContactUsModel(_mockOrganisationClient.Object)
+        _pageModel = new ContactUsModel(_mockOrganisationClient.Object, _mockTempDataServiceClient.Object)
         {
             EmailAddress = "test@example.com",
             Message = "message",
@@ -43,5 +45,16 @@ public class ContactUsModelTests
         _mockOrganisationClient.Verify(client => client.ContactUsAsync(It.IsAny<ContactUs>()), Times.Once);
         result.Should().BeOfType<RedirectResult>()
               .Which.Url.Should().Be("/contact-us?message-sent=true");
+    }
+
+    [Fact]
+    public async Task OnPost_FailedToSend_CallsTempDataService()
+    {
+        _mockOrganisationClient.Setup(client => client.ContactUsAsync(It.IsAny<ContactUs>())).ReturnsAsync(false);
+
+        var result = await _pageModel.OnPost();
+
+        result.Should().BeOfType<PageResult>();
+        _mockTempDataServiceClient.Verify(client => client.Put(It.IsAny<string>(), It.IsAny<FlashMessage>()), Times.Once);
     }
 }
