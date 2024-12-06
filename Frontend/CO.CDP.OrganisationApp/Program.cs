@@ -26,6 +26,7 @@ using System.Globalization;
 using static IdentityModel.OidcConstants;
 using static System.Net.Mime.MediaTypeNames;
 using ISession = CO.CDP.OrganisationApp.ISession;
+using Microsoft.FeatureManagement;
 
 const string FormsHttpClientName = "FormsHttpClient";
 const string TenantHttpClientName = "TenantHttpClient";
@@ -50,6 +51,8 @@ builder.Services.Configure<RequestLocalizationOptions>(options =>
         new CookieRequestCultureProvider()
     };
 });
+
+builder.Services.AddFeatureManagement(builder.Configuration.GetSection("Features"));
 
 var mvcBuilder = builder.Services.AddRazorPages()
     .AddViewLocalization()

@@ -4,9 +4,11 @@ using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.Pages.Shared;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.FeatureManagement.Mvc;
 
 namespace CO.CDP.OrganisationApp.Pages.Consortium;
 
+[FeatureGate(FeatureFlags.Consortium)]
 public class ConsortiumAddressModel(ISession session) : PageModel
 {
 
