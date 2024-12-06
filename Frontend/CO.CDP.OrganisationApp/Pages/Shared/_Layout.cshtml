@@ -5,6 +5,7 @@
 
 @inject Microsoft.Extensions.Configuration.IConfiguration config
 @inject IUserInfoService userInfoService
+@inject ICookiePreferencesService cookiePreferencesService;
 @inject IHtmlLocalizer<StaticTextResource> Localizer
 @inject IFtsUrlService FtsUrlService
 
@@ -14,8 +15,7 @@
     @{
         var googleTagId = config["GoogleTagId"];
         if (!string.IsNullOrWhiteSpace(googleTagId)
-        && Context.Request.Cookies.ContainsKey(CookieSettings.CookieName)
-        && Context.Request.Cookies[CookieSettings.CookieName] == ((int)CookieAcceptanceValues.Accept).ToString())
+        && cookiePreferencesService.IsAccepted())
         {
             <!-- Google tag (gtag.js) -->
             <script async src="https://www.googletagmanager.com/gtag/js?id=@googleTagId"></script>

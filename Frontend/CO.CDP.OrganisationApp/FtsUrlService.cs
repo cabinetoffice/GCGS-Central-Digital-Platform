@@ -1,17 +1,18 @@
 using Microsoft.AspNetCore.Http.Extensions;
 using System.Globalization;
-using System.Web;
 
 namespace CO.CDP.OrganisationApp;
 
 public class FtsUrlService : IFtsUrlService
 {
     private readonly string _ftsService;
+    private readonly ICookiePreferencesService _cookiePreferencesService;
 
-    public FtsUrlService(IConfiguration configuration)
+    public FtsUrlService(IConfiguration configuration, ICookiePreferencesService cookiePreferencesService)
     {
         var ftsService = configuration["FtsService"] ?? throw new InvalidOperationException("FtsService is not configured.");
         _ftsService = ftsService.TrimEnd('/');
+        _cookiePreferencesService = cookiePreferencesService;
     }
 
     public string BuildUrl(string endpoint, Guid? organisationId = null, string? redirectUrl = null)
@@ -36,13 +37,18 @@ public class FtsUrlService : IFtsUrlService
             queryBuilder.Add("redirect_url", redirectUrl);
         }
 
+        CookieAcceptanceValues cookiesAccepted = _cookiePreferencesService.GetValue();
+        string cookiesAcceptedValue = cookiesAccepted switch
+        {
+            CookieAcceptanceValues.Accept => "true",
+            CookieAcceptanceValues.Reject => "false",
+            _ => "unknown"
+        };
+
+        queryBuilder.Add(CookieSettings.FtsHandoverParameter, cookiesAcceptedValue);
+
         uriBuilder.Query = queryBuilder.ToQueryString().Value;
 
         return uriBuilder.Uri.ToString();
     }
-}
-
-public interface IFtsUrlService
-{
-    string BuildUrl(string endpoint, Guid? organisationId = null, string? redirectUrl = null);
 }
