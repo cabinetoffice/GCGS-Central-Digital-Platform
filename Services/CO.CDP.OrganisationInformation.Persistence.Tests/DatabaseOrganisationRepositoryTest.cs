@@ -1,3 +1,4 @@
+using CO.CDP.Testcontainers.PostgreSql;
 using FluentAssertions;
 using static CO.CDP.OrganisationInformation.Persistence.IOrganisationRepository.OrganisationRepositoryException;
 using static CO.CDP.OrganisationInformation.Persistence.Organisation;
@@ -5,8 +6,8 @@ using static CO.CDP.OrganisationInformation.Persistence.Tests.EntityFactory;
 
 namespace CO.CDP.OrganisationInformation.Persistence.Tests;
 
-public class DatabaseOrganisationRepositoryTest(OrganisationInformationPostgreSqlFixture postgreSql)
-    : IClassFixture<OrganisationInformationPostgreSqlFixture>
+public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql)
+    : IClassFixture<PostgreSqlFixture>
 {
     [Fact]
     public async Task ItFindsSavedOrganisation()

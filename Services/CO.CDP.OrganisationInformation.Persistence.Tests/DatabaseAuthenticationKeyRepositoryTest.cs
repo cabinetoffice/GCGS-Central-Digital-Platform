@@ -1,10 +1,11 @@
+using CO.CDP.Testcontainers.PostgreSql;
 using FluentAssertions;
 using static CO.CDP.OrganisationInformation.Persistence.Tests.EntityFactory;
 
 namespace CO.CDP.OrganisationInformation.Persistence.Tests;
 
-public class DatabaseAuthenticationKeyRepositoryTest(OrganisationInformationPostgreSqlFixture postgreSql)
-    : IClassFixture<OrganisationInformationPostgreSqlFixture>
+public class DatabaseAuthenticationKeyRepositoryTest(PostgreSqlFixture postgreSql)
+    : IClassFixture<PostgreSqlFixture>
 {
     [Fact]
     public async Task ItFindsSavedAuthenticationKey()

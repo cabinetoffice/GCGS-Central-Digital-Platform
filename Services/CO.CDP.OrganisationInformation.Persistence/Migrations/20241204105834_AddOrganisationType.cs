@@ -1,4 +1,4 @@
-﻿using CO.CDP.OrganisationInformation;
+using CO.CDP.OrganisationInformation;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
@@ -24,12 +24,7 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                 .OldAnnotation("Npgsql:Enum:connected_person_type", "individual,trust_or_trustee")
                 .OldAnnotation("Npgsql:Enum:control_condition", "none,owns_shares,has_voting_rights,can_appoint_or_remove_directors,has_other_significant_influence_or_control");
 
-            migrationBuilder.AddColumn<OrganisationType>(
-                name: "type",
-                table: "organisations",
-                type: "organisation_type",
-                nullable: false,
-                defaultValue: OrganisationType.Organisation);
+            migrationBuilder.Sql("ALTER TABLE organisations ADD type organisation_type NOT NULL DEFAULT 'organisation';");
         }
 
         /// <inheritdoc />

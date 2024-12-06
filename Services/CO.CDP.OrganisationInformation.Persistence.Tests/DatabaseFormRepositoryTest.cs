@@ -1,11 +1,12 @@
 using CO.CDP.OrganisationInformation.Persistence.Forms;
+using CO.CDP.Testcontainers.PostgreSql;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using static CO.CDP.OrganisationInformation.Persistence.Tests.Factories.SharedConsentFactory;
 
 namespace CO.CDP.OrganisationInformation.Persistence.Tests;
 
-public class DatabaseFormRepositoryTest(OrganisationInformationPostgreSqlFixture postgreSql) : IClassFixture<OrganisationInformationPostgreSqlFixture>
+public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFixture<PostgreSqlFixture>
 {
     private static int _nextQuestionNumber = 100;
 

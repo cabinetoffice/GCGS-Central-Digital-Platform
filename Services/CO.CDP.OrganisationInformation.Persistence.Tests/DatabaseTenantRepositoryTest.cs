@@ -1,11 +1,12 @@
+using CO.CDP.Testcontainers.PostgreSql;
 using FluentAssertions;
 using Npgsql;
 using static CO.CDP.OrganisationInformation.Persistence.Tests.EntityFactory;
 
 namespace CO.CDP.OrganisationInformation.Persistence.Tests;
 
-public class DatabaseTenantRepositoryTest(OrganisationInformationPostgreSqlFixture postgreSql)
-    : IClassFixture<OrganisationInformationPostgreSqlFixture>
+public class DatabaseTenantRepositoryTest(PostgreSqlFixture postgreSql)
+    : IClassFixture<PostgreSqlFixture>
 {
     [Fact]
     public async Task ItFindsSavedTenant()

@@ -47,12 +47,7 @@ builder.Services.AddAutoMapper(typeof(DataSharingProfile));
 
 var connectionString = ConnectionStringHelper.GetConnectionString(builder.Configuration, "OrganisationInformationDatabase");
 builder.Services.AddHealthChecks().AddNpgSql(connectionString);
-builder.Services.AddSingleton(new NpgsqlDataSourceBuilder(connectionString).MapEnums().Build());
-builder.Services.AddDbContext<OrganisationInformationContext>((sp, options) =>
-{
-    var dataSource = sp.GetRequiredService<NpgsqlDataSource>();
-    options.UseNpgsql(dataSource);
-});
+builder.Services.AddDbContext<OrganisationInformationContext>(o => o.UseNpgsql(connectionString));
 
 builder.Services.AddScoped<IDataService, DataService>();
 builder.Services.AddScoped<IPdfGenerator, PdfGenerator>();
