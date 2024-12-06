@@ -3,7 +3,11 @@
 @using CO.CDP.OrganisationApp.Pages
 @using CO.CDP.OrganisationApp.WebApiClients
 @using CO.CDP.Localization
+@using CO.CDP.Organisation.WebApiClient
+@using CO.CDP.OrganisationApp.Pages.Registration
+@using CO.CDP.OrganisationApp.TagHelpers
 @using Microsoft.AspNetCore.Mvc.Localization
+@using Microsoft.AspNetCore.Mvc.TagHelpers
 @inject IUserInfoService userInfoService
 @model OrganisationOverviewModel
 
@@ -147,6 +151,55 @@
                             </authorize>
                         </div>
                     }
+
+                    @if (Model.BuyerInformation != null)
+                    {
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">
+                                @StaticTextResource.Organisation_BuyerType
+                            </dt>
+                            <dd class="govuk-summary-list__value">
+                                <p class="govuk-body">
+                                    @if (BuyerOrganisationTypeModel.BuyerTypes.Keys.Contains(Model.BuyerInformation.BuyerType!))
+                                    {
+                                        @(BuyerOrganisationTypeModel.BuyerTypes[Model.BuyerInformation.BuyerType!])
+                                    }
+                                    else
+                                    {
+                                        @(Model.BuyerInformation.BuyerType)
+                                    }
+                                </p>
+                            </dd>
+                        </div>
+
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">
+                                @StaticTextResource.Organisation_DevolvedRegulations
+                            </dt>
+                            <dd class="govuk-summary-list__value">
+                                <p class="govuk-body">
+                                    @(Model.BuyerInformation.DevolvedRegulations.Count > 0 ? StaticTextResource.Global_Yes : StaticTextResource.Global_No)
+                                </p>
+                            </dd>
+                        </div>
+
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">
+                                @StaticTextResource.Organisation_DevolvedRegions
+                            </dt>
+                            <dd class="govuk-summary-list__value">
+                                <p class="govuk-body">
+                                    @if (Model.Regulations != null)
+                                    {
+                                        foreach (var regulation in Model.Regulations)
+                                        {
+                                            @regulation.Description()<br/>
+                                        }
+                                    }
+                                </p>
+                            </dd>
+                        </div>
+                    }
                 </dl>
 
                 @if (organisationDetails.IsTenderer())
@@ -196,7 +249,7 @@
                 }
 
                 <authorize scope="@OrgScopeRequirement.Admin">
-                    @if (organisationDetails.IsTenderer() && !(organisationDetails.IsPendingBuyer() || organisationDetails.IsBuyer())) 
+                    @if (organisationDetails.IsTenderer() && !(organisationDetails.IsPendingBuyer() || organisationDetails.IsBuyer()))
                     {
                         <h3 class="govuk-heading-s govuk-!-margin-bottom-3">
                             <a class="govuk-link" asp-page="./OrganisationRegisterSupplierAsBuyer" asp-route-id="@Model.Id">Register as a buyer</a>
