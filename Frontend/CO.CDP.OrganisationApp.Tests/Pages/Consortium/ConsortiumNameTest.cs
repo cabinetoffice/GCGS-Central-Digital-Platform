@@ -1,5 +1,5 @@
+using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.Pages.Consortium;
-using CO.CDP.OrganisationApp.Pages.Supplier;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -22,8 +22,8 @@ public class ConsortiumNameTest
     public void OnPost_ShouldReturnPage_WhenModelStateIsInvalid()
     {
         _sessionMock
-           .Setup(s => s.Get<ConsortiumState>(Session.ConsortiumKey))
-           .Returns((ConsortiumState?)null);
+           .Setup(s => s.Get<ConsortiumDetails>(Session.ConsortiumKey))
+           .Returns((ConsortiumDetails?)null);
 
         _model.ModelState.AddModelError("Error", "Model state is invalid");
 
@@ -40,13 +40,13 @@ public class ConsortiumNameTest
         _model.ConsortiumName = "consortium_name";
 
         _sessionMock
-            .Setup(s => s.Get<ConsortiumState>(Session.ConsortiumKey))
+            .Setup(s => s.Get<ConsortiumDetails>(Session.ConsortiumKey))
             .Returns(state);
 
         _model.OnPost();
 
-        _sessionMock.Verify(s => s.Set(Session.ConsortiumKey, It.Is<ConsortiumState>(st => st.ConstortiumName == "consortium_name")), Times.Once);
-    }
+        _sessionMock.Verify(s => s.Set(Session.ConsortiumKey, It.Is<ConsortiumDetails>(st => st.ConstortiumName == "consortium_name")), Times.Once);
+    }       
 
     [Fact]
     public void OnPost_ShouldRedirectToConsortiumAddressPage_WhenModelStateIsValid()
@@ -56,7 +56,7 @@ public class ConsortiumNameTest
         _model.ConsortiumName = "consortium_name";
 
         _sessionMock
-            .Setup(s => s.Get<ConsortiumState>(Session.ConsortiumKey))
+            .Setup(s => s.Get<ConsortiumDetails>(Session.ConsortiumKey))
             .Returns(state);
 
         var result = _model.OnPost();
@@ -66,9 +66,9 @@ public class ConsortiumNameTest
         redirectToPageResult.PageName.Should().Be("ConsortiumAddress");
     }
 
-    private ConsortiumState DummyConsortiumDetails()
+    private ConsortiumDetails DummyConsortiumDetails()
     {
-        var consortiumState = new ConsortiumState
+        var consortiumState = new ConsortiumDetails
         {
             ConstortiumName = "consortium_name"
         };

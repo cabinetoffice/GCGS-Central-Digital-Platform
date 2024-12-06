@@ -1,10 +1,12 @@
-@page "/consortium/email"
+@page
+@attribute [RazorCompiledItemMetadata("RouteTemplate", ConsortiumStepModel.ConsortiumEmailPage)]
 @model ConsortiumEmailModel
 @using CO.CDP.Localization
 
 @{
     ViewData["Title"] = StaticTextResource.Consortium_ConsortiumEmail_Heading;
     var emailAddressHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.EmailAddress)).HasInnerHtml;
+    var backLink = ConsortiumStepModel.ConsortiumAddressPage;
 }
 
 @section BeforeContent {

@@ -3,36 +3,28 @@ using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.Pages.Shared;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.FeatureManagement.Mvc;
 
 namespace CO.CDP.OrganisationApp.Pages.Consortium;
 
 [FeatureGate(FeatureFlags.Consortium)]
-public class ConsortiumAddressModel(ISession session) : PageModel
+[ValidateConsortiumStep]
+public class ConsortiumAddressModel(ISession session) : ConsortiumStepModel(session)
 {
+    public override string CurrentPage => ConsortiumAddressPage;
 
     [BindProperty(SupportsGet = true)]
     public string UkOrNonUk { get; set; } = "uk";
 
     [BindProperty]
     public AddressPartialModel Address { get; set; } = new();
-    public string? ConsortiumName { get; set; }
+    public string? ConsortiumName => ConsortiumDetails.ConstortiumName;
 
     public IActionResult OnGet()
     {
-        var (valid, state) = ValidatePage();
-
-        if (!valid)
-        {
-            return RedirectToPage("ConsortiumStart");
-        }
-
-        InitModel(state);
-
         SetupAddress(true);
 
-        var stateAddress = state.PostalAddress!;
+        var stateAddress = ConsortiumDetails.PostalAddress!;
         if (stateAddress != null && ((stateAddress.Country != Constants.Country.UKCountryCode) == Address.IsNonUkAddress))
         {
             Address.AddressLine1 = stateAddress.AddressLine1;
@@ -47,16 +39,7 @@ public class ConsortiumAddressModel(ISession session) : PageModel
     public IActionResult OnPost()
     {
         SetupAddress();
-
-        var (valid, state) = ValidatePage();
-
-        if (!valid)
-        {
-            return RedirectToPage("ConsortiumStart");
-        }
-
-        InitModel(state);
-
+            
         if (!ModelState.IsValid)
         {
             return Page();
@@ -71,11 +54,11 @@ public class ConsortiumAddressModel(ISession session) : PageModel
             Country = Address.Country!
         };
 
-        state.PostalAddress = address;
+        ConsortiumDetails.PostalAddress = address;
 
-        session.Set(Session.ConsortiumKey, state);
+        SessionContext.Set(Session.ConsortiumKey, ConsortiumDetails);
 
-        return RedirectToPage("ConsortiumOverview");
+        return RedirectToPage("ConsortiumEmail");
 
     }
 
@@ -95,22 +78,5 @@ public class ConsortiumAddressModel(ISession session) : PageModel
         }
 
         Address.NonUkAddressLink = $"/consortium/address/non-uk";
-    }
-
-    private void InitModel(ConsortiumState state)
-    {
-        ConsortiumName = state.ConstortiumName;
-    }
-
-    private (bool valid, ConsortiumState state) ValidatePage()
-    {
-        var cd = session.Get<ConsortiumState>(Session.ConsortiumKey);
-
-        if (cd == null)
-        {
-            return (false, new());
-        }
-
-        return (true, cd);
     }
 }
