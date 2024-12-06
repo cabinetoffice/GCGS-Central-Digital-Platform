@@ -160,7 +160,14 @@
                             </dt>
                             <dd class="govuk-summary-list__value">
                                 <p class="govuk-body">
-                                    @(BuyerOrganisationTypeModel.BuyerTypes[Model.BuyerInformation.BuyerType!])
+                                    @if (BuyerOrganisationTypeModel.BuyerTypes.Keys.Contains(Model.BuyerInformation.BuyerType!))
+                                    {
+                                        @(BuyerOrganisationTypeModel.BuyerTypes[Model.BuyerInformation.BuyerType!])
+                                    }
+                                    else
+                                    {
+                                        @(Model.BuyerInformation.BuyerType)
+                                    }
                                 </p>
                             </dd>
                         </div>
