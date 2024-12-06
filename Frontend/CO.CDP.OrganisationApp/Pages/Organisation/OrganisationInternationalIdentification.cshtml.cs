@@ -62,6 +62,10 @@ public class OrganisationInternationalIdentificationModel(
         {
             return Redirect("/page-not-found");
         }
+        catch (Exception ex)
+        {
+            return Redirect("/page-not-found");
+        }
 
         return Page();
     }
@@ -133,7 +137,11 @@ public class OrganisationInternationalIdentificationModel(
         }
         catch (ApiException ex) when (ex.StatusCode == 404)
         {
-            return new List<IdentifierRegistries>();            
+            return new List<IdentifierRegistries>();
+        }
+        catch (Exception ex)
+        {
+            return new List<IdentifierRegistries>();
         }
     }
 

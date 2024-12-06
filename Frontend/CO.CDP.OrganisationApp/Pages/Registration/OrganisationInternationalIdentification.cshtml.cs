@@ -67,6 +67,10 @@ public class OrganisationInternationalIdentificationModel(ISession session,
         {
             InternationalIdentifiers = new List<IdentifierRegistries>();
         }
+        catch (Exception ex)
+        {
+            InternationalIdentifiers = new List<IdentifierRegistries>();
+        }
     }
 
     public async Task<IActionResult> OnPost()
