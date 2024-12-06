@@ -69,7 +69,14 @@ public class GetBuyerInformationUseCaseTest(AutoMapperFixture mapperFixture)
                 Guid = Guid.NewGuid(),
                 Name = "Tenant 101"
             },
-            ContactPoints = [new Persistence.Organisation.ContactPoint { Email = "contact@test.org" }]
+            ContactPoints =
+            [
+                new Persistence.Organisation.ContactPoint
+                {
+                    Email = "contact@test.org"
+                }
+            ],
+            Type = OrganisationType.Organisation
         };
 
         if (withBuyerInfo == true)
