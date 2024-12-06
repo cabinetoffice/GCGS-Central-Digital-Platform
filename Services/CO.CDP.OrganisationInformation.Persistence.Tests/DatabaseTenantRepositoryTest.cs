@@ -165,8 +165,6 @@ public class DatabaseTenantRepositoryTest(OrganisationInformationPostgreSqlFixtu
 
     private OrganisationInformationContext? context = null;
 
-    private NpgsqlDataSource? npgsqlDataSource = null;
-
     private OrganisationInformationContext GetDbContext()
     {
         context = context ?? postgreSql.OrganisationInformationContext();
