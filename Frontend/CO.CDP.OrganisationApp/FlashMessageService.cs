@@ -8,26 +8,17 @@ public class FlashMessageService(ITempDataService tempDataService) : IFlashMessa
 {
     public void SetSuccessMessage(string heading, string? description = null, string? title = null, Dictionary<string, string>? urlParameters = null, Dictionary<string, string>? htmlParameters = null)
     {
-        var formattedHeading = FormatMessage(heading, urlParameters, htmlParameters);
-        var formattedDescription = description!= null ? FormatMessage(description, urlParameters, htmlParameters) : null;
-        var formattedTitle = title != null ? FormatMessage(title, urlParameters, htmlParameters) : null;
-        SetFlashMessage(FlashMessageTypes.Success, new FlashMessage(formattedHeading, formattedDescription, formattedTitle));
+        SetFlashMessage(FlashMessageTypes.Success, heading, description, title, urlParameters, htmlParameters);
     }
 
     public void SetImportantMessage(string heading, string? description = null, string? title = null, Dictionary<string, string>? urlParameters = null, Dictionary<string, string>? htmlParameters = null)
     {
-        var formattedHeading = FormatMessage(heading, urlParameters, htmlParameters);
-        var formattedDescription = description!= null ? FormatMessage(description, urlParameters, htmlParameters) : null;
-        var formattedTitle = title != null ? FormatMessage(title, urlParameters, htmlParameters) : null;
-        SetFlashMessage(FlashMessageTypes.Important, new FlashMessage(formattedHeading, formattedDescription, formattedTitle));
+        SetFlashMessage(FlashMessageTypes.Important, heading, description, title, urlParameters, htmlParameters);
     }
 
     public void SetFailureMessage(string heading, string? description = null, string? title = null, Dictionary<string, string>? urlParameters = null, Dictionary<string, string>? htmlParameters = null)
     {
-        var formattedHeading = FormatMessage(heading, urlParameters, htmlParameters);
-        var formattedDescription = description != null ? FormatMessage(description, urlParameters, htmlParameters) : null;
-        var formattedTitle = title != null ? FormatMessage(title, urlParameters, htmlParameters) : null;
-        SetFlashMessage(FlashMessageTypes.Failure, new FlashMessage(formattedHeading, formattedDescription, formattedTitle));
+        SetFlashMessage(FlashMessageTypes.Failure, heading, description, title, urlParameters, htmlParameters);
     }
 
     public FlashMessage? GetFlashMessage(string messageType)
@@ -40,9 +31,13 @@ public class FlashMessageService(ITempDataService tempDataService) : IFlashMessa
         return tempDataService.Peek<FlashMessage>(messageType);
     }
 
-    private void SetFlashMessage(string messageType, FlashMessage message)
+    private void SetFlashMessage(string messageType, string heading, string? description, string? title, Dictionary<string, string>? urlParameters, Dictionary<string, string>? htmlParameters)
     {
-        tempDataService.Put(messageType, message);
+        var formattedHeading = FormatMessage(heading, urlParameters, htmlParameters);
+        var formattedDescription = description != null ? FormatMessage(description, urlParameters, htmlParameters) : null;
+        var formattedTitle = title != null ? FormatMessage(title, urlParameters, htmlParameters) : null;
+
+        tempDataService.Put(messageType, new FlashMessage(formattedHeading, formattedDescription, formattedTitle));
     }
 
     private string FormatMessage(string format, Dictionary<string, string>? urlParameters, Dictionary<string, string>? htmlParameters)
@@ -87,8 +82,13 @@ public interface IFlashMessageService
         Dictionary<string, string>? urlParameters = null,
         Dictionary<string, string>? htmlParameters = null);
 
+    void SetFailureMessage(string heading,
+        string? description = null,
+        string? title = null,
+        Dictionary<string, string>? urlParameters = null,
+        Dictionary<string, string>? htmlParameters = null);
+
     FlashMessage? GetFlashMessage(string messageType);
 
     FlashMessage? PeekFlashMessage(string messageType);
-    void SetFailureMessage(string heading, string? description = null, string? title = null, Dictionary<string, string>? urlParameters = null, Dictionary<string, string>? htmlParameters = null);
 }
