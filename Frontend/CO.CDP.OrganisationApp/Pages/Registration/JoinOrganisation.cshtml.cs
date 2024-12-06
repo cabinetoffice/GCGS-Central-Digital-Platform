@@ -24,6 +24,9 @@ public class JoinOrganisationModel(
     [RequiredIf(nameof(UserWantsToJoin), true, ErrorMessageResourceName = nameof(StaticTextResource.OrganisationRegistration_JoinOrganisation_ConfirmValidationErrorMessage), ErrorMessageResourceType = typeof(StaticTextResource))]
     public string? UserConfirmation { get; set; }
 
+    [BindProperty]
+    public bool UserAlreadyPendingOrJoinedMember { get; set; }
+
     public async Task<IActionResult> OnGet(string identifier)
     {
         try
@@ -65,14 +68,16 @@ public class JoinOrganisationModel(
                         }
                         else
                         {
-                            tempDataService.Put(FlashMessageTypes.Failure, new FlashMessage(StaticTextResource.OrganisationRegistration_JoinOrganisation_PendingMemberOfOrganisation));
+                            UserAlreadyPendingOrJoinedMember = true;
+                            tempDataService.Put(FlashMessageTypes.Failure, new FlashMessage(StaticTextResource.OrganisationRegistration_JoinOrganisation_PendingMemberOfOrganisation, null, StaticTextResource.Global_Important));
                             return Page();
                         }
                     }
                 }
                 catch (ApiException<OrganisationWebApiClient.ProblemDetails>)
                 {
-                    tempDataService.Put(FlashMessageTypes.Failure, new FlashMessage(StaticTextResource.OrganisationRegistration_JoinOrganisation_AlreadyMemberOfOrganisation));
+                    UserAlreadyPendingOrJoinedMember = true;
+                    tempDataService.Put(FlashMessageTypes.Failure, new FlashMessage(StaticTextResource.OrganisationRegistration_JoinOrganisation_AlreadyMemberOfOrganisation, null, StaticTextResource.Global_Important));
                     return Page();
                 }
                 finally

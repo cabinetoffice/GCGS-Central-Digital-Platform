@@ -1599,10 +1599,10 @@
     <value>Send a request to join {0}?</value>
   </data>
   <data name="OrganisationRegistration_JoinOrganisation_ConfirmValidationErrorMessage" xml:space="preserve">
-    <value>You need to confirm acceptance</value>
+    <value>Select that you understand your name and email address will be shared</value>
   </data>
   <data name="OrganisationRegistration_JoinOrganisation_ValidationErrorMessage" xml:space="preserve">
-    <value>Select 'yes' or 'no'</value>
+    <value>Select yes or no</value>
   </data>
   <data name="OrganisationRegistration_JoinOrganisation_OrganisationDetails_Heading" xml:space="preserve">
     <value>Organisation details</value>

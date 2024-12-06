@@ -6,9 +6,10 @@
     var organisationDetails = Model.OrganisationDetails!;
     var userDetails = Model.UserDetails;
     var joinHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.UserWantsToJoin)).HasInnerHtml;
+    var confirmHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.UserConfirmation)).HasInnerHtml;
 
     ViewData["Title"] = GetTitle();
-    
+
     string GetTitle()
     {
         return string.Format(StaticTextResource.OrganisationRegistration_JoinOrganisation_Heading, organisationDetails.Name);
@@ -20,12 +21,22 @@
         @StaticTextResource.Global_Back
     </a>
 }
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
-            <partial name="_ErrorSummary" model="@Model.ModelState" />
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <partial name="_ErrorSummary" model="@Model.ModelState" />
+
+        @if (Model.UserAlreadyPendingOrJoinedMember)
+        {
+            <p class="govuk-body">
+                <a class="govuk-link" href="/organisation-selection">@StaticTextResource.Global_GoBackToMyAccount</a>
+            </p>
+        }
+        else
+        {
             <h1 class="govuk-heading-l">
                 <span class="govuk-label--l">@ViewData["Title"]</span>
             </h1>
+
             <form method="post">
                 <fieldset class="govuk-fieldset" @(joinHasError ? Html.Raw(@"aria-describedby=""approval-error""") : null)>
                     <legend class="govuk-form-group @(joinHasError ? "govuk-form-group--error" : "")">
@@ -38,28 +49,42 @@
                         }
                         <div class="govuk-radios" data-module="govuk-radios">
                             <div class="govuk-radios__item">
-                            <input class="govuk-radios__input" id="@nameof(Model.UserWantsToJoin)" name="@nameof(Model.UserWantsToJoin)" type="radio" value="true" @(Model.UserWantsToJoin == true ? "checked" : "")>
+                                <input class="govuk-radios__input" id="@nameof(Model.UserWantsToJoin)" name="@nameof(Model.UserWantsToJoin)" type="radio" value="true" @(Model.UserWantsToJoin == true ? "checked" : "")>
                                 <label class="govuk-label govuk-radios__label" for="@nameof(Model.UserWantsToJoin)">@StaticTextResource.Global_Yes</label>
                             </div>
                             <div class="govuk-radios__item">
-                            <input class="govuk-radios__input" id="@nameof(Model.UserWantsToJoin)-no" name="@nameof(Model.UserWantsToJoin)" type="radio" value="false" @(Model.UserWantsToJoin == false ? "checked" : "")>
+                                <input class="govuk-radios__input" id="@nameof(Model.UserWantsToJoin)-no" name="@nameof(Model.UserWantsToJoin)" type="radio" value="false" @(Model.UserWantsToJoin == false ? "checked" : "")>
                                 <label class="govuk-label govuk-radios__label" for="@nameof(Model.UserWantsToJoin)-no">@StaticTextResource.Global_No</label>
                             </div>
                         </div>
-                        <br/>
-                        <div class="govuk-checkboxes" data-module="govuk-checkboxes">
-                            <div class="govuk-checkboxes__item">
-                                <input class="govuk-checkboxes__input" id="@nameof(Model.UserConfirmation)" value="confirmed" name="@nameof(Model.UserConfirmation)" type="checkbox">
-                                <label class="govuk-label govuk-checkboxes__label" for="@nameof(Model.UserConfirmation)">
-                                        @StaticTextResource.OrganisationRegistration_UserConfirm
-                                </label>
-                            </div> 
-                        </div>
                     </legend>
+
+                    <fieldset class="govuk-fieldset" @(confirmHasError ? Html.Raw(@"aria-describedby=""confirm-error""") : null)>
+                        <legend class="govuk-form-group @(confirmHasError ? "govuk-form-group--error" : "")">
+                            @if (confirmHasError)
+                            {
+                                <p id="confirm-error" class="govuk-error-message">
+                                    <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span>
+                                    @Html.ValidationMessageFor(m => m.UserConfirmation)
+                                </p>
+                            }
+                            <br />
+                            <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+                                <div class="govuk-checkboxes__item">
+                                    <input class="govuk-checkboxes__input" id="@nameof(Model.UserConfirmation)" value="confirmed" name="@nameof(Model.UserConfirmation)" type="checkbox">
+                                    <label class="govuk-label govuk-checkboxes__label" for="@nameof(Model.UserConfirmation)">
+                                        @StaticTextResource.OrganisationRegistration_UserConfirm
+                                    </label>
+                                </div>
+                            </div>
+                        </legend>
+                    </fieldset>
+
                 </fieldset>
                 <govuk-button>
                     @StaticTextResource.Global_Continue
                 </govuk-button>
             </form>
-        </div>
+        }
     </div>
+</div>
