@@ -10,7 +10,7 @@ public class PponService : IPponService
 
     public string GeneratePponId()
     {
-        return $"{GenerateCodePattern()}-{GenerateMultiplier()}";
+        return $"P{GenerateCodePattern().Substring(1)}";
     }
 
     private string GenerateCodePattern()
@@ -30,18 +30,6 @@ public class PponService : IPponService
             {
                 builder.Append('-');
             }
-        }
-        return builder.ToString();
-    }
-
-    private string GenerateMultiplier()
-    {
-        char[] ValidCharPool = ValidAlphaChars.Concat(ValidNumericChars).ToArray();
-        var builder = new StringBuilder();
-
-        for (int i = 0; i < 2; i++)
-        {
-            builder.Append(ValidCharPool[RandomGenerator.Next(ValidCharPool.Length)]);
         }
         return builder.ToString();
     }

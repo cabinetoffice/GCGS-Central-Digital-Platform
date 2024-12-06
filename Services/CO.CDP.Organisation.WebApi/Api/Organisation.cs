@@ -389,6 +389,34 @@ public static class EndpointExtensions
                 operation.Responses["500"].Description = "Internal server error.";
                 return operation;
             });
+
+        app.MapGet("/{organisationId}/buyer-information",
+                [OrganisationAuthorize(
+                    [AuthenticationChannel.OneLogin],
+                    [Constants.OrganisationPersonScope.Admin, Constants.OrganisationPersonScope.Editor, Constants.OrganisationPersonScope.Viewer],
+                    OrganisationIdLocation.Path,
+                    [Constants.PersonScope.SupportAdmin])]
+                async (Guid organisationId, IUseCase<Guid, BuyerInformation?> useCase) =>
+                    await useCase.Execute(organisationId)
+                        .AndThen(buyer => buyer != null ? Results.Ok(buyer) : Results.NotFound()))
+            .Produces<BuyerInformation>(StatusCodes.Status200OK, "application/json")
+            .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
+            .Produces<ProblemDetails>(StatusCodes.Status404NotFound)
+            .ProducesProblem(StatusCodes.Status422UnprocessableEntity)
+            .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError)
+            .WithOpenApi(operation =>
+            {
+                operation.OperationId = "GetOrganisationBuyerInformation";
+                operation.Description = "Get organisation buyer information by ID.";
+                operation.Summary = "Get organisation buyer information by ID.";
+                operation.Responses["200"].Description = "Organisation buyer information details.";
+                operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
+                operation.Responses["404"].Description = "Organisation buyer information not found.";
+                operation.Responses["422"].Description = "Unprocessable entity.";
+                operation.Responses["500"].Description = "Internal server error.";
+                return operation;
+            });
+
         return app;
     }
 
@@ -804,7 +832,7 @@ public static class EndpointExtensions
                 operation.Responses["500"].Description = "Internal server error.";
                 return operation;
             });
-        
+
         return app;
     }
 
