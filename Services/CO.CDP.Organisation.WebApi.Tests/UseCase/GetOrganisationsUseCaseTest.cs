@@ -31,6 +31,7 @@ public class GetOrganisationsUseCaseTests
             {
                 Guid = Guid.NewGuid(),
                 Name = "Organisation 2",
+                Type = OrganisationType.Organisation,
                 Tenant = null!
             }
         };
@@ -38,6 +39,7 @@ public class GetOrganisationsUseCaseTests
         {
             Guid = Guid.NewGuid(),
             Name = "Organisation 1",
+            Type = OrganisationType.Organisation,
             Tenant = null!
         });
         var mappedOrganisations = new List<OrganisationExtended>

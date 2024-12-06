@@ -61,6 +61,7 @@ public class GetReviewsUseCaseTests : IClassFixture<AutoMapperFixture>
             Id = 1,
             Guid = organisationId,
             Name = "Test Organisation",
+            Type = OrganisationInformation.OrganisationType.Organisation,
             Tenant = new Tenant {
                 Guid = new Guid(),
                 Name = "Tenant"

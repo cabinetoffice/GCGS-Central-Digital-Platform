@@ -47,7 +47,7 @@ public class SupplierToBuyerOrganisationDetailsSummaryTest
     {
         var supplierToBuyerDetails = new SupplierToBuyerDetails
         {
-            OrganisationType = OrganisationType.Supplier,
+            OrganisationType = Constants.OrganisationType.Supplier,
             BuyerOrganisationType = "CentralGovernment",
             BuyerOrganisationOtherValue = null,
             Devolved = true,

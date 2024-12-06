@@ -1,6 +1,6 @@
 using CO.CDP.Localization;
-using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.Mvc.Validation;
+using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.WebApiClients;
@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using CO.CDP.OrganisationApp.Models;
 
 namespace CO.CDP.OrganisationApp.Pages;
 

@@ -98,6 +98,7 @@ public class RevokeAuthenticationKeyUseCaseTest()
             Id = 1,
             Name = "TheOrganisation",
             Guid = organisationId,
+            Type = OrganisationType.Organisation,
             Addresses = [new Persistence.Organisation.OrganisationAddress
             {
                 Type = AddressType.Registered,
