@@ -1,10 +1,10 @@
-using CO.CDP.Testcontainers.PostgreSql;
 using FluentAssertions;
 using static CO.CDP.OrganisationInformation.Persistence.Tests.EntityFactory;
 
 namespace CO.CDP.OrganisationInformation.Persistence.Tests;
 
-public class DatabasePersonTenantLookupTest(PostgreSqlFixture postgreSql) : IClassFixture<PostgreSqlFixture>
+public class DatabasePersonTenantLookupTest(OrganisationInformationPostgreSqlFixture postgreSql)
+    : IClassFixture<OrganisationInformationPostgreSqlFixture>
 {
     [Fact]
     public async Task ItFindsThePersonWithAllTheirTenants()
@@ -169,13 +169,18 @@ public class DatabasePersonTenantLookupTest(PostgreSqlFixture postgreSql) : ICla
 
     }
 
-    private ITenantRepository TenantRepository()
-    {
-        return new DatabaseTenantRepository(postgreSql.OrganisationInformationContext());
-    }
+    private DatabaseTenantRepository TenantRepository()
+        => new(GetDbContext());
 
-    private IPersonRepository PersonRepository()
+    private DatabasePersonRepository PersonRepository()
+        => new(GetDbContext());
+
+    private OrganisationInformationContext? context = null;
+
+    private OrganisationInformationContext GetDbContext()
     {
-        return new DatabasePersonRepository(postgreSql.OrganisationInformationContext());
+        context = context ?? postgreSql.OrganisationInformationContext();
+
+        return context;
     }
 }

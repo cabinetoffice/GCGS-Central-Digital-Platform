@@ -30,7 +30,7 @@ public class OrganisationRegisterSupplierAsBuyerTests
 
         var initialState = new SupplierToBuyerDetails
         {
-            OrganisationType = OrganisationType.Supplier
+            OrganisationType = Constants.OrganisationType.Supplier
         };
         tempDataServiceMock
             .Setup(t => t.PeekOrDefault<SupplierToBuyerDetails>(It.IsAny<string>()))
@@ -39,7 +39,7 @@ public class OrganisationRegisterSupplierAsBuyerTests
         var result = await _model.OnGet(orgGuid);
 
         tempDataServiceMock.Verify(t => t.Put(It.IsAny<string>(), It.Is<SupplierToBuyerDetails>(state =>
-            state.OrganisationType == OrganisationType.Supplier
+            state.OrganisationType == Constants.OrganisationType.Supplier
         )), Times.Once);
 
         var redirectResult = result.Should().BeOfType<RedirectToPageResult>().Subject;
@@ -78,7 +78,7 @@ public class OrganisationRegisterSupplierAsBuyerTests
         await _model.OnGet(orgGuid);
 
         tempDataServiceMock.Verify(t => t.Put(It.IsAny<string>(), It.Is<SupplierToBuyerDetails>(state =>
-            state.OrganisationType == OrganisationType.Supplier
+            state.OrganisationType == Constants.OrganisationType.Supplier
         )), Times.Once);
     }
 

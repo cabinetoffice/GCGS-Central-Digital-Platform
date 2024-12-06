@@ -48,6 +48,7 @@ public class InvitePersonToOrganisationUseCaseTest
         {
             Guid = organisationId,
             Name = "Test Organisation",
+            Type = OrganisationInformation.OrganisationType.Organisation,
             Tenant = It.IsAny<Tenant>()
         };
 
@@ -84,6 +85,7 @@ public class InvitePersonToOrganisationUseCaseTest
         {
             Guid = organisationId,
             Name = "Test Organisation",
+            Type = OrganisationInformation.OrganisationType.Organisation,
             Tenant = It.IsAny<Tenant>()
         };
 
@@ -122,6 +124,7 @@ public class InvitePersonToOrganisationUseCaseTest
         {
             Guid = organisationId,
             Name = "Test Organisation",
+            Type = OrganisationInformation.OrganisationType.Organisation,
             Tenant = It.IsAny<Tenant>()
         };
 
@@ -158,6 +161,7 @@ public async Task Execute_ValidInviteWithSameEmailForOrganisation_ExpiresExistin
     {
         Guid = organisationId,
         Name = "Test Organisation",
+        Type = OrganisationInformation.OrganisationType.Organisation,
         Tenant = It.IsAny<Tenant>()
     };
 

@@ -46,6 +46,7 @@ public class GetAuthenticationKeyUseCaseTest(AutoMapperFixture mapperFixture) : 
             Guid = Orgid,
             Id = 1,
             Name = "FakeOrg",
+            Type = OrganisationInformation.OrganisationType.Organisation,
             Tenant = new Tenant
             {
                 Guid = Guid.NewGuid(),

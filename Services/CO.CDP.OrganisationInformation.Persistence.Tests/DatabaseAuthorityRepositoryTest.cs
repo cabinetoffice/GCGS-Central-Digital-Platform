@@ -1,13 +1,19 @@
-using CO.CDP.Testcontainers.PostgreSql;
 using FluentAssertions;
 
 namespace CO.CDP.OrganisationInformation.Persistence.Tests;
 
-public class DatabaseAuthorityRepositoryTest(PostgreSqlFixture postgreSql) : IClassFixture<PostgreSqlFixture>
+public class DatabaseAuthorityRepositoryTest(OrganisationInformationPostgreSqlFixture postgreSql)
+    : IClassFixture<OrganisationInformationPostgreSqlFixture>
 {
-    private IAuthorityRepository AuthorityRepository()
+    private DatabaseAuthorityRepository AuthorityRepository()
+        => new(GetDbContext());
+
+    private OrganisationInformationContext? context = null;
+
+    private OrganisationInformationContext GetDbContext()
     {
-        return new DatabaseAuthorityRepository(postgreSql.OrganisationInformationContext());
+        context = context ?? postgreSql.OrganisationInformationContext();
+        return context;
     }
 
     private static RefreshToken GivenRefreshToken(string tokenHash, bool revoked = false, bool expired = false)

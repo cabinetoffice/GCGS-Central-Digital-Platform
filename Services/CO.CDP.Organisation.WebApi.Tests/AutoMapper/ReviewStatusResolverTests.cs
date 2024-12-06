@@ -55,6 +55,7 @@ public class ReviewStatusResolverTests
             Guid = Guid.NewGuid(),
             Tenant = new OrganisationInformation.Persistence.Tenant { Guid = new Guid(), Name = "Tenant" },
             Name = "Org name",
+            Type = OrganisationType.Organisation,
             PendingRoles = (pendingRoles != null) ? pendingRoles : [],
             ReviewedBy = (reviewedBy != null) ? reviewedBy : null
         };

@@ -61,6 +61,7 @@ public class GetSupplierInformationUseCaseTest(AutoMapperFixture mapperFixture)
         {
             Guid = Guid.NewGuid(),
             Name = "FakeOrg",
+            Type = OrganisationInformation.OrganisationType.Organisation,
             Tenant = new Tenant
             {
                 Guid = Guid.NewGuid(),

@@ -53,6 +53,7 @@ public class ClaimPersonInviteUseCaseTests
             Id = 1,
             Guid = _defaultOrganisationGuid,
             Name = "Test co",
+            Type = OrganisationInformation.OrganisationType.Organisation,
             Tenant = _defaultTenant,
         };
     }
