@@ -39,7 +39,7 @@ public class SupplierToBuyerOrganisationTypeModel(ITempDataService tempDataServi
         if (!string.IsNullOrEmpty(BuyerOrganisationType) && !BuyerTypes.Keys.Contains(BuyerOrganisationType))
         {
             OtherValue = BuyerOrganisationType;
-            BuyerOrganisationType = StaticTextResource.SupplierToBuyer_OrganisationType_Other;
+            BuyerOrganisationType = "Other";
         }
 
         return Page();
@@ -66,10 +66,10 @@ public class SupplierToBuyerOrganisationTypeModel(ITempDataService tempDataServi
 
     public static Dictionary<string, string> BuyerTypes => new()
     {
-        { StaticTextResource.SupplierToBuyer_OrganisationType_CentralGovernment_Short, StaticTextResource.SupplierToBuyer_OrganisationType_CentralGovernment},
-        { StaticTextResource.SupplierToBuyer_OrganisationType_RegionalAndLocalGovernment_Short, StaticTextResource.SupplierToBuyer_OrganisationType_RegionalAndLocalGovernment},
-        { StaticTextResource.SupplierToBuyer_OrganisationType_PublicUndertaking_Short, StaticTextResource.SupplierToBuyer_OrganisationType_PublicUndertaking},
-        { StaticTextResource.SupplierToBuyer_OrganisationType_PrivateUtility_Short, StaticTextResource.SupplierToBuyer_OrganisationType_PrivateUtility}
+        { "CentralGovernment", StaticTextResource.SupplierToBuyer_OrganisationType_CentralGovernment},
+        { "RegionalAndLocalGovernment", StaticTextResource.SupplierToBuyer_OrganisationType_RegionalAndLocalGovernment},
+        { "PublicUndertaking", StaticTextResource.SupplierToBuyer_OrganisationType_PublicUndertaking},
+        { "PrivateUtility", StaticTextResource.SupplierToBuyer_OrganisationType_PrivateUtility}
     };
 
     private void SupplierToBuyerStateUpdate()
@@ -79,7 +79,7 @@ public class SupplierToBuyerOrganisationTypeModel(ITempDataService tempDataServi
 
         state.BuyerOrganisationType = BuyerOrganisationType;
 
-        if (BuyerOrganisationType == StaticTextResource.SupplierToBuyer_OrganisationType_Other)
+        if (BuyerOrganisationType == "Other")
         {
             state.BuyerOrganisationOtherValue = OtherValue;
         }

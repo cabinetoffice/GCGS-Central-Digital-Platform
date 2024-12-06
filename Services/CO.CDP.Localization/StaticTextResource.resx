@@ -1711,15 +1711,6 @@
   <data name="Forms_FormElementDateInput_ExampleHint" xml:space="preserve">
     <value>For example, 27 3 2007</value>
   </data>
-  <data name="Global_Day" xml:space="preserve">
-    <value>Day</value>
-  </data>
-  <data name="Global_Month" xml:space="preserve">
-    <value>Month</value>
-  </data>
-  <data name="Global_Year" xml:space="preserve">
-    <value>Year</value>
-  </data>
   <data name="Global_Failure_Heading" xml:space="preserve">
     <value>Failure</value>
   </data>
@@ -2626,25 +2617,13 @@
   <data name="SupplierToBuyer_OrganisationType_CentralGovernment" xml:space="preserve">
     <value>Central government, public authority: UK, Scottish, Welsh and Northern Irish Executive</value>
   </data>
-  <data name="SupplierToBuyer_OrganisationType_CentralGovernment_Short" xml:space="preserve">
-    <value>CentralGovernment</value>
-  </data>
   <data name="SupplierToBuyer_OrganisationType_PrivateUtility" xml:space="preserve">
     <value>Private utility</value>
-  </data>
-  <data name="SupplierToBuyer_OrganisationType_PrivateUtility_Short" xml:space="preserve">
-    <value>PrivateUtility</value>
   </data>
   <data name="SupplierToBuyer_OrganisationType_PublicUndertaking" xml:space="preserve">
     <value>Public undertaking</value>
   </data>
-  <data name="SupplierToBuyer_OrganisationType_PublicUndertaking_Short" xml:space="preserve">
-    <value>PublicUndertaking</value>
-  </data>
   <data name="SupplierToBuyer_OrganisationType_RegionalAndLocalGovernment" xml:space="preserve">
     <value>Regional and local government, public authority: UK, Scottish, Welsh and Northern Irish</value>
-  </data>
-  <data name="SupplierToBuyer_OrganisationType_RegionalAndLocalGovernment_Short" xml:space="preserve">
-    <value>RegionalAndLocalGovernment</value>
   </data>
 </root>
