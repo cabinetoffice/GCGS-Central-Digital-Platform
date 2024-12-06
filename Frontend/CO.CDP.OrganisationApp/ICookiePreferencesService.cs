@@ -7,7 +7,6 @@ public interface ICookiePreferencesService
     void Accept();
     void Reject();
     void Reset();
-    void SetCookie(CookieAcceptanceValues value);
     bool IsUnknown();
     CookieAcceptanceValues GetValue();
 }

@@ -28,7 +28,7 @@ public class CookiePreferencesService : ICookiePreferencesService
         pendingAcceptanceValue = CookieAcceptanceValues.Unknown;
     }
 
-    public void SetCookie(CookieAcceptanceValues value)
+    private void SetCookie(CookieAcceptanceValues value)
     {
         _context.Response.Cookies.Append(CookieSettings.CookieName, value.ToString(), new CookieOptions
         {

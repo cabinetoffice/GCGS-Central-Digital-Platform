@@ -78,7 +78,7 @@ public class CookiePreferencesServiceTests
     [Fact]
     public void GetValue_ShouldReturnPendingValue_WhenSet()
     {
-        _cookiePreferencesService.SetCookie(CookieAcceptanceValues.Accept);
+        _cookiePreferencesService.Accept();
 
         _cookiePreferencesService.GetValue().Should().Be(CookieAcceptanceValues.Accept);
     }

@@ -8,17 +8,17 @@ public class CookieAcceptanceMiddleware(ICookiePreferencesService cookiePreferen
         {
             string cookiesAccepted = cookiesAcceptedValue.ToString().ToLower();
 
-            if (cookiesAccepted == "true")
+            switch (cookiesAccepted)
             {
-                cookiePreferencesService.Accept();
-            }
-            else if (cookiesAccepted == "false")
-            {
-                cookiePreferencesService.Reject();
-            }
-            else if (cookiesAccepted == "unknown")
-            {
-                cookiePreferencesService.Reset();
+                case "true":
+                    cookiePreferencesService.Accept();
+                    break;
+                case "false":
+                    cookiePreferencesService.Reject();
+                    break;
+                case "unknown":
+                    cookiePreferencesService.Reset();
+                    break;
             }
         }
 
