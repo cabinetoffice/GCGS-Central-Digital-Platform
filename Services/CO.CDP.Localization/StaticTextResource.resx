@@ -1455,6 +1455,15 @@
   <data name="Organisation_OrganisationIdentification_ODS_Code_ErrorMessage" xml:space="preserve">
     <value>Enter the code</value>
   </data>
+  <data name="Organisation_BuyerType" xml:space="preserve">
+    <value>Organisation type</value>
+  </data>
+  <data name="Organisation_DevolvedRegulations" xml:space="preserve">
+    <value>Devolved regulations</value>
+  </data>
+  <data name="Organisation_DevolvedRegions" xml:space="preserve">
+    <value>Devolved regions</value>
+  </data>
   <data name="ShareYourInformation_Title" xml:space="preserve">
     <value>Share your supplier information</value>
   </data>
