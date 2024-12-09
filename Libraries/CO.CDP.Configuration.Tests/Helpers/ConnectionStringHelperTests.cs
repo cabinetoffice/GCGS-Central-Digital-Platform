@@ -4,6 +4,7 @@ using System.Text;
 using System.Text.Json;
 
 namespace CO.CDP.Configuration.Tests.Helpers;
+
 public class ConnectionStringHelperTests
 {
     [Fact]
@@ -17,6 +18,26 @@ public class ConnectionStringHelperTests
                 {"Database", "cdp"},
                 {"Username", "cdp_user"},
                 {"Password", "password"},
+                {"MaxPoolSize", "10"},
+            }}
+        });
+
+        var connectionString = ConnectionStringHelper.GetConnectionString(configuration, "OrganisationInformationDatabase");
+
+        Assert.Equal("Server=localhost;Database=cdp;Username=cdp_user;Password=password;MaxPoolSize=10;", connectionString);
+    }
+
+    [Fact]
+    public void GetConnectionString_ReturnsCorrectConnectionString_WhenMaxPoolSizeIsMissing()
+    {
+        var configuration = GivenConfiguration(new()
+        {
+            {"OrganisationInformationDatabase", new()
+            {
+                {"Server", "localhost"},
+                {"Database", "cdp"},
+                {"Username", "cdp_user"},
+                {"Password", "password"}
             }}
         });
 
