@@ -94,8 +94,8 @@ public class ConsortiumEmailModel(
                 url: null),
             identifier: new OrganisationWebApiClient.OrganisationIdentifier(
                 id: Guid.NewGuid().ToString(),
-                legalName: "Test legal name",
-                scheme: "Test scheme"),
+                legalName: "GB-PPON",
+                scheme: string.Empty),
             name: details.ConstortiumName,
             type: OrganisationWebApiClient.OrganisationType.Consortium,
             roles: [],
