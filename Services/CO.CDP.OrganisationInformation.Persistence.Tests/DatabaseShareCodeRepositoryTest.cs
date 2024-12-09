@@ -1,10 +1,11 @@
 using CO.CDP.OrganisationInformation.Persistence.Forms;
+using CO.CDP.Testcontainers.PostgreSql;
 using FluentAssertions;
 
 namespace CO.CDP.OrganisationInformation.Persistence.Tests;
 
-public class DatabaseShareCodeRepositoryTest(OrganisationInformationPostgreSqlFixture postgreSql)
-    : IClassFixture<OrganisationInformationPostgreSqlFixture>
+public class DatabaseShareCodeRepositoryTest(PostgreSqlFixture postgreSql)
+    : IClassFixture<PostgreSqlFixture>
 {
     private static int _nextQuestionNumber;
 
