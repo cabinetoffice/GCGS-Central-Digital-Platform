@@ -232,6 +232,6 @@ public class OrganisationDetailsSummaryModelTest
         sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey))
             .Returns(registrationDetails);
 
-        return new OrganisationDetailsSummaryModel(sessionMock.Object, organisationClientMock.Object);
+        return new OrganisationDetailsSummaryModel(sessionMock.Object, organisationClientMock.Object, null);
     }
 }

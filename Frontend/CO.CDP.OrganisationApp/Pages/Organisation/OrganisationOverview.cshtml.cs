@@ -1,18 +1,22 @@
+using CO.CDP.EntityVerificationClient;
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.WebApiClients;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using ApiException = CO.CDP.Organisation.WebApiClient.ApiException;
 using DevolvedRegulation = CO.CDP.OrganisationApp.Constants.DevolvedRegulation;
 using OrganisationWebApiClient = CO.CDP.Organisation.WebApiClient;
 
 namespace CO.CDP.OrganisationApp.Pages.Organisation;
 
 [Authorize(Policy = OrgScopeRequirement.Viewer)]
-public class OrganisationOverviewModel(IOrganisationClient organisationClient) : PageModel
+public class OrganisationOverviewModel(IOrganisationClient organisationClient, IPponClient pponClient) : PageModel
 {
     public OrganisationWebApiClient.Organisation? OrganisationDetails { get; set; }
+
+    public ICollection<IdentifierRegistries> IdentifierRegistriesDetails { get; set; }
 
     public BuyerInformation? BuyerInformation { get; set; }
 
@@ -27,6 +31,8 @@ public class OrganisationOverviewModel(IOrganisationClient organisationClient) :
         try
         {
             OrganisationDetails = await organisationClient.GetOrganisationAsync(Id);
+
+            IdentifierRegistriesDetails = await GetIdentifierDetails(OrganisationDetails);
 
             if (OrganisationDetails.IsBuyer() || OrganisationDetails.IsPendingBuyer())
             {
@@ -46,6 +52,30 @@ public class OrganisationOverviewModel(IOrganisationClient organisationClient) :
         catch (ApiException ex) when (ex.StatusCode == 404)
         {
             return Redirect("/page-not-found");
+        }
+    }
+
+    private async Task<ICollection<IdentifierRegistries>> GetIdentifierDetails(OrganisationWebApiClient.Organisation organisationDetails)
+    {
+        var identifiers = organisationDetails.AdditionalIdentifiers?.ToList()
+                        ?? new List<OrganisationWebApiClient.Identifier>();
+
+        if (organisationDetails.Identifier != null)
+        {
+            identifiers.Add(organisationDetails.Identifier);
+        }
+
+        var schemes = identifiers
+            .Where(x => x != null)
+            .Select(x => x.Scheme)
+            .ToArray();
+        try
+        {
+            return await pponClient.GetIdentifierRegistriesDetailAsync(schemes);
+        }
+        catch (ApiException ex) when (ex.StatusCode == 404)
+        {
+            return new List<IdentifierRegistries>();
         }
     }
 }

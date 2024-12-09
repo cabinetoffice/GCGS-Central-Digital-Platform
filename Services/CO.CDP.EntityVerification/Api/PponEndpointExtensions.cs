@@ -34,7 +34,7 @@ public static class PponEndpointExtensions
                 operation.Responses["404"].Description = "Identifier not found.";
                 operation.Responses["500"].Description = "Internal server error.";
                 return operation;
-            });       
+            });
     }
 
     public static void UseRegistriesEndpoints(this WebApplication app)
@@ -53,12 +53,31 @@ public static class PponEndpointExtensions
           operation.OperationId = "GetIdentifierRegistries";
           operation.Description = "Get Identifier Registries.";
           operation.Summary = "Get Identifier Registries.";
-          operation.Responses["200"].Description = "List of identifiers.";          
+          operation.Responses["200"].Description = "List of identifiers.";
           operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
           operation.Responses["404"].Description = "Identifiers not found.";
           operation.Responses["500"].Description = "Internal server error.";
           return operation;
       });
+
+        app.MapGet("/registries/registerdetails",
+        [Authorize(Policy = "OneLoginPolicy")]
+        async (string[] schemecodes, IUseCase<string[], IEnumerable<IdentifierRegistries>> useCase) =>
+        await useCase.Execute(schemecodes)
+               .AndThen(identifiers => identifiers.Any() ? Results.Ok(identifiers) : Results.NotFound()))
+       .Produces<IEnumerable<IdentifierRegistries>>(StatusCodes.Status200OK, "application/json")
+       .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)   
+       .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError)
+       .WithOpenApi(operation =>
+       {
+           operation.OperationId = "GetIdentifierRegistriesDetail";
+           operation.Description = "Get Identifier Registries Details.";
+           operation.Summary = "Get Identifier Registries details.";
+           operation.Responses["200"].Description = "List of Indentifier Registries Details.";
+           operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";           
+           operation.Responses["500"].Description = "Internal server error.";
+           return operation;
+       });
     }
 }
 

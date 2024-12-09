@@ -14,7 +14,7 @@ public class OrganisationOverviewTest
     public OrganisationOverviewTest()
     {
         _organisationClientMock = new Mock<IOrganisationClient>();
-        _model = new OrganisationOverviewModel(_organisationClientMock.Object);
+        _model = new OrganisationOverviewModel(_organisationClientMock.Object,null);
     }
 
     [Fact]

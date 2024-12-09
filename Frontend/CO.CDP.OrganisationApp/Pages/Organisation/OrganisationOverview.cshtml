@@ -92,7 +92,7 @@
                                     }
                                     else
                                     {
-                                        @organisationDetails.Identifier.Scheme.SchemeDescription()
+                                        @organisationDetails.Identifier.Scheme.SchemeDescription(Model.IdentifierRegistriesDetails)
                                         <br />
                                         @organisationDetails.Identifier.Id
                                     }
@@ -100,7 +100,7 @@
                                 @foreach (var aidentifier in organisationDetails.AdditionalIdentifiersToShow())
                                 {
                                     <li>
-                                        @aidentifier.Scheme.SchemeDescription()
+                                    @aidentifier.Scheme.SchemeDescription(Model.IdentifierRegistriesDetails)
                                         <br />
                                         @aidentifier.Id
                                     </li>
