@@ -268,7 +268,7 @@ locals {
   }
 
   # @TODO (ABN) Remove me
-  desired_count_development    = 8
+  desired_count_development    = 1
   service_configs_scaling_development = {
     authority = {
       cpu           = 256
