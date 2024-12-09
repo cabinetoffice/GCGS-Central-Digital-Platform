@@ -1,0 +1,37 @@
+@page "/consortium/start"
+@model ConsortiumStartModel
+@using CO.CDP.Localization
+
+@{
+    ViewData["Title"] = StaticTextResource.Consortium_ConsortiumStart_Heading;
+}
+
+@section BeforeContent {
+    <a href="/organisation-selection" class="govuk-back-link">@StaticTextResource.Global_Back</a>
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <form class="form" method="post">
+            <h1 class="govuk-heading-l">
+                @ViewData["Title"]
+            </h1>
+            <p class="govuk-body">
+                @StaticTextResource.Consortium_ConsortiumStart_Paragraph1
+            </p>
+            <p class="govuk-body">
+                @StaticTextResource.Consortium_ConsortiumStart_Paragraph2
+            </p>
+            <ul class="govuk-list govuk-list--bullet">
+                @Html.Raw(StaticTextResource.Consortium_ConsortiumStart_Paragraph2_list)
+            </ul>
+            <div class="govuk-inset-text">
+                @StaticTextResource.Consortium_ConsortiumStart_Paragraph3
+            </div>
+            <p class="govuk-body">
+                @StaticTextResource.Consortium_ConsortiumStart_Paragraph4
+            </p>
+            <govuk-button>@StaticTextResource.Global_Continue</govuk-button>
+        </form>
+    </div>
+</div>
