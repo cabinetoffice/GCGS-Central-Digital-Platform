@@ -71,11 +71,11 @@
                                                 <input class="govuk-radios__input" id="@id" name="@nameof(Model.OrganisationScheme)" type="radio" value="@choice.Scheme" data-aria-controls="conditional-@id" @selectedOption />
                                                 <label class="govuk-label govuk-radios__label" for="@id">@choice.RegisterName</label>
                                             </div>
-                                        </div>
+                                        </div>                              
 
                                         <div class="govuk-radios__conditional @(Model.OrganisationScheme == choice.Scheme ? "" : "govuk-radios__conditional--hidden")" id="conditional-@id">
                                             <div class="govuk-form-group @(hasError ? "govuk-form-group--error" : "")">
-                                                @Html.LabelFor(m => m.RegistrationNumbers, htmlAttributes: new { @class = "govuk-label" })
+                                                <label class="govuk-label" for="RegistrationNumbers-@choice.Scheme">@StaticTextResource.OrganisationRegistration_InternationalIdentifier_RegistrationNumber_Heading</label>
                                                 @if (hasError)
                                                 {
                                                     <span id="RegistrationNumber-error" class="govuk-error-message">
@@ -83,10 +83,9 @@
                                                         @Html.ValidationMessageFor(m => m.RegistrationNumbers)
                                                     </span>
                                                 }
-                                                <input asp-for="RegistrationNumbers[@choice.Scheme]"
-                                                       class="govuk-input @(hasError ? "govuk-input--error" : "")"
+                                                <input class="govuk-input @(hasError ? "govuk-input--error" : "")"
                                                        name="RegistrationNumbers[@choice.Scheme]"
-                                                       id="RegistrationNumbers-@id"
+                                                       id="RegistrationNumbers-@choice.Scheme"
                                                        type="text"
                                                        spellcheck="false"
                                                        autocomplete="off"
