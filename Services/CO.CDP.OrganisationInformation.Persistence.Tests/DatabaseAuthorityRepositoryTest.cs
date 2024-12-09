@@ -1,9 +1,10 @@
+using CO.CDP.Testcontainers.PostgreSql;
 using FluentAssertions;
 
 namespace CO.CDP.OrganisationInformation.Persistence.Tests;
 
-public class DatabaseAuthorityRepositoryTest(OrganisationInformationPostgreSqlFixture postgreSql)
-    : IClassFixture<OrganisationInformationPostgreSqlFixture>
+public class DatabaseAuthorityRepositoryTest(PostgreSqlFixture postgreSql)
+    : IClassFixture<PostgreSqlFixture>
 {
     private DatabaseAuthorityRepository AuthorityRepository()
         => new(GetDbContext());

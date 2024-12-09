@@ -4,7 +4,7 @@ namespace CO.CDP.Configuration.Helpers;
 
 public static class ConnectionStringHelper
 {
-    private static readonly string[] requiredKeys = new[] { "Server", "Database", "Username", "Password" };
+    private static readonly string[] requiredKeys = ["Server", "Database", "Username", "Password"];
 
     public static string GetConnectionString(IConfiguration configuration, string name)
     {
@@ -27,7 +27,9 @@ public static class ConnectionStringHelper
         var database = connectionSettings["Database"];
         var username = connectionSettings["Username"];
         var password = connectionSettings["Password"];
+        var maxPoolSize = connectionSettings["MaxPoolSize"];
+        var maxPoolSizeString = string.IsNullOrWhiteSpace(maxPoolSize) ? "" : $"MaxPoolSize={maxPoolSize};";
 
-        return $"Server={server};Database={database};Username={username};Password={password};";
+        return $"Server={server};Database={database};Username={username};Password={password};{maxPoolSizeString}";
     }
 }

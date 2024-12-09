@@ -185,8 +185,14 @@ public class CustomResolver : IValueResolver<Persistence.SharedConsentQuestionAn
 
     private string ToHtmlString(Persistence.FormAddress source)
     {
-        return
-            $"{source.StreetAddress}<br/>{source.Locality}<br/>{source.PostalCode}<br/>{source.Region}<br/>{source.CountryName}";
+        return string.Join(", ", new[]
+            {
+                source.StreetAddress,
+                source.Locality,
+                source.PostalCode,
+                source.Region,
+                source.CountryName
+            }.Where(part => !string.IsNullOrWhiteSpace(part)));
     }
 }
 

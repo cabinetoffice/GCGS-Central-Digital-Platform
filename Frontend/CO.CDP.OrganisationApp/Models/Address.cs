@@ -14,6 +14,6 @@ public class Address
 
     public string ToHtmlString()
     {
-        return $"{AddressLine1}<br/>{TownOrCity}<br/>{Postcode}<br/>{CountryName}";
+        return $"{AddressLine1}, {TownOrCity}, {Postcode}, {CountryName}";
     }
 }
