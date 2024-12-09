@@ -95,8 +95,7 @@ public class OrganisationDetailsSummaryModel(
                 scheme: details.OrganisationScheme),
             name: details.OrganisationName,
             type: OrganisationWebApiClient.OrganisationType.Organisation,
-            roles: [details.OrganisationType!.Value.AsPartyRole()],
-            personId: user.PersonId.Value
+            roles: [details.OrganisationType!.Value.AsPartyRole()]
         );
     }
 }

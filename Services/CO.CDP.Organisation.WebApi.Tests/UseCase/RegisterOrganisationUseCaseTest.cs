@@ -1,3 +1,4 @@
+using CO.CDP.Authentication;
 using CO.CDP.GovUKNotify;
 using CO.CDP.GovUKNotify.Models;
 using CO.CDP.MQ;
@@ -25,8 +26,10 @@ public class RegisterOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
     private readonly Mock<IGovUKNotifyApiClient> _notifyApiClient = new();
     private readonly IConfiguration _mockConfiguration;
     private readonly Mock<ILogger<RegisterOrganisationUseCase>> _logger = new();
+    private readonly Mock<IClaimService> _claimService = new();
     private readonly Guid _generatedGuid = Guid.NewGuid();
     private readonly AutoMapperFixture _mapperFixture;
+
     private RegisterOrganisationUseCase UseCase => new(
         _identifierService.Object,
         _repository.Object,
@@ -36,6 +39,7 @@ public class RegisterOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
         _mapperFixture.Mapper,
         _mockConfiguration,
         _logger.Object,
+        _claimService.Object,
         () => _generatedGuid);
 
     public RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture)
@@ -69,12 +73,9 @@ public class RegisterOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
             .AddInMemoryCollection(inMemorySettings)
             .Build();
 
-        var person = GivenPersonExists(guid: Guid.NewGuid());
+        var person = GivenPersonExists("test_urn");
 
-        var command = GivenRegisterOrganisationCommand(personId: person.Guid, roles: [PartyRole.Buyer]);
-
-
-        _persons.Setup(p => p.Find(command.PersonId)).ReturnsAsync(person);
+        var command = GivenRegisterOrganisationCommand(roles: [PartyRole.Buyer]);
 
         var useCase = new RegisterOrganisationUseCase(
                             _identifierService.Object,
@@ -85,6 +86,7 @@ public class RegisterOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
                             _mapperFixture.Mapper,
                             configurationMock,
                             _logger.Object,
+                            _claimService.Object,
                             () => _generatedGuid
                         );
 
@@ -105,9 +107,9 @@ public class RegisterOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
     [Fact]
     public async Task ItReturnsTheRegisteredOrganisation()
     {
-        var person = GivenPersonExists(guid: Guid.NewGuid());
+        var person = GivenPersonExists("test_urn");
 
-        var command = GivenRegisterOrganisationCommand(personId: person.Guid);
+        var command = GivenRegisterOrganisationCommand();
 
         var createdOrganisation = await UseCase.Execute(command);
 
@@ -130,7 +132,7 @@ public class RegisterOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
     [Fact]
     public async Task ItSavesNewOrganisationInTheRepository()
     {
-        var person = GivenPersonExists(guid: Guid.NewGuid());
+        var person = GivenPersonExists("test_urn");
 
         Persistence.Organisation? persistanceOrganisation = null;
 
@@ -139,7 +141,7 @@ public class RegisterOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
             .Callback<Persistence.Organisation, Func<Persistence.Organisation, Task>>(
                 (b, _) => persistanceOrganisation = b);
 
-        await UseCase.Execute(GivenRegisterOrganisationCommand(personId: person.Guid));
+        await UseCase.Execute(GivenRegisterOrganisationCommand());
 
         _repository.Verify(r => r.SaveAsync(It.Is<Persistence.Organisation>(o =>
             o.Guid == _generatedGuid &&
@@ -201,12 +203,9 @@ public class RegisterOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
     [Fact]
     public async Task ItAssociatesTheTenantWithTheOrganisation()
     {
-        var person = GivenPersonExists(guid: Guid.NewGuid());
+        var person = GivenPersonExists("test_urn");
 
-        await UseCase.Execute(GivenRegisterOrganisationCommand(
-            name: "ACME",
-            personId: person.Guid
-        ));
+        await UseCase.Execute(GivenRegisterOrganisationCommand(name: "ACME"));
 
         _repository.Verify(r => r.SaveAsync(It.Is<Persistence.Organisation>(o =>
             o.Tenant.Name == "ACME"
@@ -216,12 +215,9 @@ public class RegisterOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
     [Fact]
     public async Task ItAssociatesTheTenantWithThePerson()
     {
-        var person = GivenPersonExists(guid: Guid.NewGuid());
+        var person = GivenPersonExists("test_urn");
 
-        await UseCase.Execute(GivenRegisterOrganisationCommand(
-            name: "ACME",
-            personId: person.Guid
-        ));
+        await UseCase.Execute(GivenRegisterOrganisationCommand(name: "ACME"));
 
         _repository.Verify(r => r.SaveAsync(It.Is<Persistence.Organisation>(o =>
             o.Tenant.Persons.Count == 1 && o.Tenant.Persons.First().Guid == person.Guid
@@ -231,12 +227,9 @@ public class RegisterOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
     [Fact]
     public async Task ItAssociatesTheOrganisationWithThePerson()
     {
-        var person = GivenPersonExists(guid: Guid.NewGuid());
+        var person = GivenPersonExists("test_urn");
 
-        await UseCase.Execute(GivenRegisterOrganisationCommand(
-            name: "ACME",
-            personId: person.Guid
-        ));
+        await UseCase.Execute(GivenRegisterOrganisationCommand(name: "ACME"));
 
         _repository.Verify(r => r.SaveAsync(It.Is<Persistence.Organisation>(o =>
             o.OrganisationPersons.Count == 1 && o.OrganisationPersons.First().Person.Guid == person.Guid
@@ -246,13 +239,8 @@ public class RegisterOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
     [Fact]
     public async Task ItRejectsUnknownPersons()
     {
-        var unknownPersonId = Guid.NewGuid();
-
         await UseCase
-            .Invoking(u => u.Execute(GivenRegisterOrganisationCommand(
-                name: "ACME",
-                personId: unknownPersonId
-            )))
+            .Invoking(u => u.Execute(GivenRegisterOrganisationCommand(name: "ACME")))
             .Should()
             .ThrowAsync<UnknownPersonException>();
 
@@ -264,11 +252,8 @@ public class RegisterOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
     [Fact]
     public async Task ItInitialisesBuyerInformationWhenRegisteringBuyerOrganisation()
     {
-        var person = GivenPersonExists(guid: Guid.NewGuid());
-        var command = GivenRegisterOrganisationCommand(
-            personId: person.Guid,
-            roles: [PartyRole.Buyer]
-        );
+        var person = GivenPersonExists("test_urn");
+        var command = GivenRegisterOrganisationCommand(roles: [PartyRole.Buyer]);
 
         await UseCase.Execute(command);
 
@@ -280,11 +265,8 @@ public class RegisterOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
     [Fact]
     public async Task ItRegistersTheBuyerAsPending()
     {
-        var person = GivenPersonExists(guid: Guid.NewGuid());
-        var command = GivenRegisterOrganisationCommand(
-            personId: person.Guid,
-            roles: [PartyRole.Buyer]
-        );
+        var person = GivenPersonExists("test_urn");
+        var command = GivenRegisterOrganisationCommand(roles: [PartyRole.Buyer]);
 
         await UseCase.Execute(command);
 
@@ -296,11 +278,8 @@ public class RegisterOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
     [Fact]
     public async Task ItInitialisesSupplierInformationWhenRegisteringSupplierOrganisation()
     {
-        var person = GivenPersonExists(guid: Guid.NewGuid());
-        var command = GivenRegisterOrganisationCommand(
-            personId: person.Guid,
-            roles: [PartyRole.Tenderer]
-        );
+        var person = GivenPersonExists("test_urn");
+        var command = GivenRegisterOrganisationCommand(roles: [PartyRole.Tenderer]);
 
         await UseCase.Execute(command);
 
@@ -313,7 +292,7 @@ public class RegisterOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
     public async Task ItPublishesOrganisationRegisteredEvent()
     {
         var person = GivenPersonExists();
-        var command = GivenRegisterOrganisationCommand(name: "Acme Ltd", personId: person.Guid);
+        var command = GivenRegisterOrganisationCommand(name: "Acme Ltd");
 
         _repository.Setup(r => r.SaveAsync(It.IsAny<Persistence.Organisation>(), AnyOnSave()));
 
@@ -335,11 +314,11 @@ public class RegisterOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
     [Fact]
     public async Task ItShouldSendEmailIfOrganisationIsBuyer()
     {
-        var person = GivenPersonExists(guid: Guid.NewGuid());
+        var person = GivenPersonExists("test_urn");
         var roles = new List<PartyRole> { PartyRole.Buyer };
-        var command = GivenRegisterOrganisationCommand(personId: person.Guid, roles: roles);
+        var command = GivenRegisterOrganisationCommand(roles: roles);
 
-        _persons.Setup(x => x.Find(command.PersonId)).ReturnsAsync(person);
+        _persons.Setup(p => p.FindByUrn("test_urn")).ReturnsAsync(person);
 
         await UseCase.Execute(command);
 
@@ -352,7 +331,6 @@ public class RegisterOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
 
     private static RegisterOrganisation GivenRegisterOrganisationCommand(
         string name = "TheOrganisation",
-        Guid? personId = null,
         List<PartyRole>? roles = null
     )
     {
@@ -360,7 +338,6 @@ public class RegisterOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
         {
             Name = name,
             Type = OrganisationType.Organisation,
-            PersonId = personId ?? Guid.NewGuid(),
             Identifier = new OrganisationIdentifier
             {
                 Scheme = "ISO9001",
@@ -400,18 +377,20 @@ public class RegisterOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
         };
     }
 
-    private Persistence.Person GivenPersonExists(Guid? guid = null)
+    private Persistence.Person GivenPersonExists(string? userUrn = null)
     {
-        var theGuid = guid ?? Guid.NewGuid();
+        userUrn = userUrn ?? "";
         Persistence.Person person = new Persistence.Person
         {
             Id = 13,
-            Guid = theGuid,
+            Guid = Guid.NewGuid(),
             FirstName = "Bob",
             LastName = "Smith",
             Email = "contact@example.com"
         };
-        _persons.Setup(r => r.Find(theGuid)).ReturnsAsync(person);
+
+        _claimService.Setup(p => p.GetUserUrn()).Returns(userUrn);
+        _persons.Setup(r => r.FindByUrn(userUrn)).ReturnsAsync(person);
         return person;
     }
 

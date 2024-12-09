@@ -1,4 +1,5 @@
 using AutoMapper;
+using CO.CDP.Authentication;
 using CO.CDP.GovUKNotify;
 using CO.CDP.GovUKNotify.Models;
 using CO.CDP.MQ;
@@ -18,6 +19,7 @@ public class RegisterOrganisationUseCase(
     IMapper mapper,
     IConfiguration configuration,
     ILogger<RegisterOrganisationUseCase> logger,
+    IClaimService claimService,
     Func<Guid> guidFactory)
     : IUseCase<RegisterOrganisation, Model.Organisation>
 {
@@ -31,7 +33,8 @@ public class RegisterOrganisationUseCase(
         IPublisher publisher,
         IMapper mapper,
         IConfiguration configuration,
-        ILogger<RegisterOrganisationUseCase> logger)
+        ILogger<RegisterOrganisationUseCase> logger,
+        IClaimService claimService)
         : this(identifierService,
               organisationRepository,
               personRepository,
@@ -40,13 +43,14 @@ public class RegisterOrganisationUseCase(
               mapper,
               configuration,
               logger,
+              claimService,
               Guid.NewGuid)
     {
     }
 
     public async Task<Model.Organisation> Execute(RegisterOrganisation command)
     {
-        var person = await FindPerson(command);
+        var person = await FindPerson();
         var organisation = CreateOrganisation(command, person);
         await organisationRepository.SaveAsync(
             organisation,
@@ -60,15 +64,12 @@ public class RegisterOrganisationUseCase(
         return mapper.Map<Model.Organisation>(organisation);
     }
 
-    private async Task<Person> FindPerson(RegisterOrganisation command)
+    private async Task<Person> FindPerson()
     {
-        Person? person = await personRepository.Find(command.PersonId);
-        if (person == null)
-        {
-            throw new UnknownPersonException($"Unknown person {command.PersonId}.");
-        }
+        var userUrn = claimService.GetUserUrn()
+            ?? throw new UnknownPersonException("Ensure the token is valid and contains the necessary claims.");
 
-        return person;
+        return await personRepository.FindByUrn(userUrn) ?? throw new UnknownPersonException($"Unknown person {userUrn}.");
     }
 
     private OrganisationInformation.Persistence.Organisation CreateOrganisation(
