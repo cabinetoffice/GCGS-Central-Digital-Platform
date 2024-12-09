@@ -10,6 +10,8 @@ public class RegistrationDetails
 
     public string? OrganisationEmailAddress { get; set; }
 
+    public string? OrganisationIdentificationCountry { get; set; }
+
     public string? OrganisationIdentificationNumber { get; set; }
 
     public string? OrganisationAddressLine1 { get; set; }
