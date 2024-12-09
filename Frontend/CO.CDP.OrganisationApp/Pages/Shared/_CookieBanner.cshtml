@@ -1,8 +1,18 @@
+@using Microsoft.AspNetCore.Http.Extensions;
+@using Microsoft.AspNetCore.Http;
+@using Microsoft.AspNetCore.WebUtilities;
+@inject ICookiePreferencesService cookiePreferencesService;
+
 @{
-    string currentUrl = Context.Request.PathBase + Context.Request.Path + Context.Request.QueryString;
+    var queryDict = QueryHelpers.ParseQuery(Context.Request.QueryString.Value);
+    queryDict.Remove(CookieSettings.FtsHandoverParameter);
+    var queryBuilder = new QueryBuilder(queryDict);
+    QueryString updatedQueryString = queryBuilder.ToQueryString();
+    string currentUrl = Context.Request.PathBase + Context.Request.Path + updatedQueryString;
 }
 
-@if (!Context.Request.Cookies.ContainsKey(CookieSettings.CookieName) && !Context.Request.Path.StartsWithSegments("/cookies")) {
+@if (cookiePreferencesService.IsUnknown() && !Context.Request.Query.ContainsKey(CookieSettings.CookieBannerInteractionQueryString) && !Context.Request.Path.StartsWithSegments("/cookies"))
+{
     <div class="govuk-cookie-banner" data-nosnippet role="region" aria-label="Cookies on Find a Tender">
         <div class="govuk-cookie-banner__message govuk-width-container">
             <div class="govuk-grid-row">
@@ -32,9 +42,9 @@
     </div>
 }
 
-@if (Context.Request.Cookies.ContainsKey(CookieSettings.CookieName) && Context.Request.Query.ContainsKey(CookieSettings.CookiesAcceptedQueryString))
+@if (!cookiePreferencesService.IsUnknown() && Context.Request.Query.ContainsKey(CookieSettings.CookieBannerInteractionQueryString))
 {
-    var acceptedState = (Context.Request.Cookies.ContainsKey(CookieSettings.CookieName) && Context.Request.Cookies[CookieSettings.CookieName] == ((int)CookieAcceptanceValues.Accept).ToString()) ? "accepted" : "rejected";
+    var acceptedState = cookiePreferencesService.IsAccepted() ? "accepted" : "rejected";
     <div class="govuk-cookie-banner" data-nosnippet role="region" aria-label="Cookies on Find a Tender">
         <div class="govuk-cookie-banner__message govuk-width-container">
             <div class="govuk-grid-row">
@@ -47,7 +57,7 @@
             <div class="govuk-button-group">
                 @{
                     var currentQueryString = Context.Request.QueryString.ToString();
-                    var cleanedQueryString = currentQueryString.Replace($"{CookieSettings.CookiesAcceptedQueryString}=true", "");
+                    var cleanedQueryString = currentQueryString.Replace($"{CookieSettings.CookieBannerInteractionQueryString}=true", "");
                     cleanedQueryString = cleanedQueryString == "?" ? "" : cleanedQueryString;
                 }
                 <a class="govuk-button" role="button" data-module="govuk-button" href="@(Context.Request.PathBase + Context.Request.Path + cleanedQueryString)">Hide cookie message</a>

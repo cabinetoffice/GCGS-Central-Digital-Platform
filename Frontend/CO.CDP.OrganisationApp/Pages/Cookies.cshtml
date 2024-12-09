@@ -4,6 +4,8 @@
 @using CO.CDP.Localization
 @using Microsoft.AspNetCore.Mvc.Localization
 
+@inject ICookiePreferencesService cookiePreferencesService;
+
 @{
     ViewData["Title"] = StaticTextResource.Supplementary_Cookies_Title;
     var hasError = ((TagBuilder)Html.ValidationMessageFor(m => m.CookieAcceptance)).HasInnerHtml;
@@ -45,13 +47,13 @@
 
                 <div class="govuk-radios govuk-!-margin-bottom-8" data-module="govuk-radios">
                     <div class="govuk-radios__item">
-                        <input class="govuk-radios__input" id="@nameof(Model.CookieAcceptance)" name="@nameof(Model.CookieAcceptance)" type="radio" value="@CookieAcceptanceValues.Accept" checked="@Model.RadioIsChecked(CookieAcceptanceValues.Accept)">
+                        <input class="govuk-radios__input" id="@nameof(Model.CookieAcceptance)" name="@nameof(Model.CookieAcceptance)" type="radio" value="@CookieAcceptanceValues.Accept" checked="@cookiePreferencesService.IsAccepted()">
                         <label class="govuk-label govuk-radios__label" for="@nameof(Model.CookieAcceptance)">
                             @StaticTextResource.Supplementary_Cookies_UseCookies
                         </label>
                     </div>
                     <div class="govuk-radios__item">
-                        <input class="govuk-radios__input" id="@nameof(Model.CookieAcceptance)-1" name="@nameof(Model.CookieAcceptance)" type="radio" value="@CookieAcceptanceValues.Reject" checked="@Model.RadioIsChecked(CookieAcceptanceValues.Reject)">
+                    <input class="govuk-radios__input" id="@nameof(Model.CookieAcceptance)-1" name="@nameof(Model.CookieAcceptance)" type="radio" value="@CookieAcceptanceValues.Reject" checked="@cookiePreferencesService.IsRejected()">
                         <label class="govuk-label govuk-radios__label" for="@nameof(Model.CookieAcceptance)-1">
                             @StaticTextResource.Supplementary_Cookies_DoNotUseCookies
                         </label>
