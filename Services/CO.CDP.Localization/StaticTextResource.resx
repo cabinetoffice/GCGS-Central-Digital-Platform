@@ -1620,10 +1620,10 @@
     <value>Would you like to join</value>
   </data>
   <data name="OrganisationRegistration_JoinOrganisation_AlreadyMemberOfOrganisation" xml:space="preserve">
-    <value>You are already a member of this organisation.</value>
+    <value>You are already a member of this organisation. &lt;a class="govuk-notification-banner__link" href="/organisation-selection"&gt;Go back to my account&lt;/a&gt;</value>
   </data>
   <data name="OrganisationRegistration_JoinOrganisation_PendingMemberOfOrganisation" xml:space="preserve">
-    <value>You have already requested to join this organisation. Your request is pending approval.</value>
+    <value>You have already requested to join this organisation. Your request is pending approval. &lt;a class="govuk-notification-banner__link" href="/organisation-selection"&gt;Go back to my account&lt;/a&gt;</value>
   </data>
   <data name="Global_GoBackToMyAccount" xml:space="preserve">
     <value>Go back to my account</value>
