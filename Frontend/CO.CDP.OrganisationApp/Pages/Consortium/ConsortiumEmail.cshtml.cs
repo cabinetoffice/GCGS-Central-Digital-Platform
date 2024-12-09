@@ -33,19 +33,19 @@ public class ConsortiumEmailModel(
 
         return Page();
     }
-    public IActionResult OnPost()
+    public async Task<IActionResult> OnPost()
     {
         ConsortiumDetails.ConstortiumEmail = EmailAddress;
 
         SessionContext.Set(Session.ConsortiumKey, ConsortiumDetails);
 
-        var organisation = RegisterConsortiumAsync();
+        var organisation = await RegisterConsortiumAsync();
 
         if (!ModelState.IsValid || organisation == null) return Page();
 
         SessionContext.Remove(Session.ConsortiumKey);
 
-        return RedirectToPage("ConsortiumOverview");
+        return RedirectToPage("ConsortiumOverview", new { organisation.Id });
     }
 
     private async Task<OrganisationWebApiClient.Organisation?> RegisterConsortiumAsync()
@@ -80,7 +80,7 @@ public class ConsortiumEmailModel(
         return new OrganisationWebApiClient.NewOrganisation(
             additionalIdentifiers: null,
             addresses: [new OrganisationWebApiClient.OrganisationAddress(
-                type: Constants.AddressType.Registered.AsApiClientAddressType(),
+                type: Constants.AddressType.Postal.AsApiClientAddressType(),
                 streetAddress: details.PostalAddress!.AddressLine1,
                 locality: details.PostalAddress.TownOrCity,
                 region: null,
