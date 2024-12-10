@@ -124,7 +124,16 @@ public class OrganisationInternationalIdentificationTests
 
     private static CO.CDP.Organisation.WebApiClient.Organisation GivenOrganisationClientModel()
     {
-        return new CO.CDP.Organisation.WebApiClient.Organisation(additionalIdentifiers: null, addresses: null, contactPoint: null, id: _organisationId, identifier: null, name: "Test Org", roles: [], details: new Details(approval: null, pendingRoles: []));
+        return new CO.CDP.Organisation.WebApiClient.Organisation(
+                  additionalIdentifiers: null,
+                  addresses: null,
+                  contactPoint: null,
+                  details: new Details(approval: null, pendingRoles: []),
+                  id: _organisationId,
+                  identifier: null,
+                  name: "Test Org",
+                  roles: new List<PartyRole>(),
+                  type: OrganisationType.Organisation);
     }
 }
 
