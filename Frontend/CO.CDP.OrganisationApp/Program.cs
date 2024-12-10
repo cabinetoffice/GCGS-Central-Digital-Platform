@@ -226,6 +226,7 @@ builder.Services.AddDataProtection()
        builder.Configuration.GetValue<string>("Aws:SystemManager:DataProtectionPrefix"));
 
 var app = builder.Build();
+app.UseMiddleware<ContentSecurityPolicyMiddleware>();   // Note: This middleware must run early, before razor rendering
 app.UseForwardedHeaders();
 app.UseMiddleware<ExceptionMiddleware>();
 

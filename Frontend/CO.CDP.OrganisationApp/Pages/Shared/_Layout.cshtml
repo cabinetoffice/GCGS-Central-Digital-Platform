@@ -19,7 +19,7 @@
         {
             <!-- Google tag (gtag.js) -->
             <script async src="https://www.googletagmanager.com/gtag/js?id=@googleTagId"></script>
-            <script>window.dataLayer = window.dataLayer || []; function gtag() { dataLayer.push(arguments); } gtag('js', new Date()); gtag('config', '@googleTagId');</script>
+            <script nonce-csp>window.dataLayer = window.dataLayer || []; function gtag() { dataLayer.push(arguments); } gtag('js', new Date()); gtag('config', '@googleTagId');</script>
         }
     }
     <meta charset="utf-8" />
@@ -40,7 +40,7 @@
 }
 
 <body class="govuk-template__body">
-    <script>document.body.className += ' js-enabled' + ('noModule' in HTMLScriptElement.prototype ? ' govuk-frontend-supported' : '');</script>
+    <script nonce-csp>document.body.className += ' js-enabled' + ('noModule' in HTMLScriptElement.prototype ? ' govuk-frontend-supported' : '');</script>
 
     <partial name="Shared/_CookieBanner" />
 
@@ -225,7 +225,7 @@
     </footer>
 
     <script type="module" src="/js/govuk-frontend-5.7.1.min.js"></script>
-    <script type="module">
+    <script nonce-csp type="module">
         import { initAll } from '/js/govuk-frontend-5.7.1.min.js'
         initAll()
     </script>
