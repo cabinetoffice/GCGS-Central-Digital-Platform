@@ -132,24 +132,24 @@ jobs:
       - name: Load Docker Images
         run: docker load -i cdp-images.tar
 
-      - uses: anchore/scan-action/download-grype@v5
-        id: grype
-      - name: Scan ${{ matrix.image }}
-        id: scan
+      - name: Determine the category
+        id: category
         run: |
-          mkdir -p build/reports
-          image=${{ matrix.image }}
           category=${image%%:*}
-          $GRYPE_CMD -o sarif "$image" --file "build/reports/$category.sarif"
-          echo "sarif=build/reports" >> $GITHUB_OUTPUT
           echo "category=$category" >> $GITHUB_OUTPUT
-        env:
-          GRYPE_CMD: ${{ steps.grype.outputs.cmd }}
+      - name: Scan ${{ matrix.image }}
+        uses: anchore/scan-action@v5
+        id: scan
+        with:
+          image: "${{ matrix.image }}"
+          fail-build: false
+          severity-cutoff: critical
+          output-format: sarif
       - name: Upload Image Vulnerability Reports
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: ${{ steps.scan.outputs.sarif }}
-          category: ${{ steps.scan.outputs.category }}
+          category: ${{ steps.category.outputs.category }}
 
   publish:
     if: (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/')) && github.repository_owner == 'cabinetoffice'
