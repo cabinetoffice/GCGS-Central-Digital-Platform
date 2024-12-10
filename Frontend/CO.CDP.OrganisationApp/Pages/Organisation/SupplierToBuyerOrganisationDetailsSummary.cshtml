@@ -1,8 +1,9 @@
 @page "/organisation/{id}/supplier-to-buyer-organisation-details-summary"
 @using CO.CDP.OrganisationApp.Constants
 @model CO.CDP.OrganisationApp.Pages.Organisation.SupplierToBuyerOrganisationDetailsSummaryModel
+@using CO.CDP.Localization
 @{
-    ViewData["Title"] = "Check your answers";
+    ViewData["Title"] = StaticTextResource.SupplierToBuyer_OrganisationSummary_Title;
     var details = Model.SupplierToBuyerDetailsModel!;
 
     var supplierToBuyerOrganisationTypePage = $"/organisation/{@Model.Id}/supplier-to-buyer-organisation-type";
@@ -17,7 +18,7 @@
     }
 }
 @section BeforeContent {
-    <a href="@backLink" class="govuk-back-link">Back</a>
+    <a href="@backLink" class="govuk-back-link">@StaticTextResource.Global_Back</a>
 }
 
     <div class="govuk-grid-row">
@@ -25,14 +26,14 @@
             <partial name="_ErrorSummary" model="@ModelState" />
             
             <h1 class="govuk-heading-l">
-            <span class="govuk-caption-l">Buyer details</span>
+            <span class="govuk-caption-l">@StaticTextResource.SupplierToBuyer_OrganisationSummary_BuyerDetails</span>
                 @ViewData["Title"]
             </h1>
             
                 <dl class="govuk-summary-list">
                     <div class="govuk-summary-list__row">
                         <dt class="govuk-summary-list__key">
-                            Organisation type
+                            @StaticTextResource.SupplierToBuyer_OrganisationSummary_OrganisationType
                         </dt>
                         <dd class="govuk-summary-list__value">
                             @if (SupplierToBuyerOrganisationTypeModel.BuyerTypes.Keys.Contains(details.BuyerOrganisationType!))
@@ -45,32 +46,32 @@
                             }
                         </dd>
                         <dd class="govuk-summary-list__actions">
-                            <a class="govuk-link govuk-link--no-visited-state" href="@supplierToBuyerOrganisationTypePage?frm-summary">Change<span class="govuk-visually-hidden"> the organisation type</span></a>
+                    <a class="govuk-link govuk-link--no-visited-state" href="@supplierToBuyerOrganisationTypePage?frm-summary">@Html.Raw(@StaticTextResource.SupplierToBuyer_OrganisationSummary_ChangeOrganisationType)</a>
                         </dd>
                     </div>
 
                     <div class="govuk-summary-list__row">
                         <dt class="govuk-summary-list__key">
-                            Devolved regulations
+                            @StaticTextResource.SupplierToBuyer_OrganisationSummary_DevolvedRegulations
                         </dt>
                         <dd class="govuk-summary-list__value">
-                            @(details.Devolved == true ? "Yes" : "No")
+                            @(details.Devolved == true ? StaticTextResource.Global_Yes : StaticTextResource.Global_No)
                         </dd>
                         <dd class="govuk-summary-list__actions">
-                            <a class="govuk-link govuk-link--no-visited-state" href="@supplierToBuyerDevolvedRegulationsPage?frm-summary">Change<span class="govuk-visually-hidden"> the devolved regulations</span></a>
+                    <a class="govuk-link govuk-link--no-visited-state" href="@supplierToBuyerDevolvedRegulationsPage?frm-summary">@Html.Raw(@StaticTextResource.SupplierToBuyer_OrganisationSummary_ChangeDevolvedRegulations)</a>
                         </dd>
                     </div>
                     @if (details.Devolved == true)
                     {
                         <div class="govuk-summary-list__row">
                             <dt class="govuk-summary-list__key">
-                                Devolved regions
+                                @StaticTextResource.SupplierToBuyer_OrganisationSummary_DevolvedRegions
                             </dt>
                             <dd class="govuk-summary-list__value">
                                 @Html.Raw(string.Join("<br /> ", details.Regulations.Select(x => x.Description())))
                             </dd>
                             <dd class="govuk-summary-list__actions">
-                                <a class="govuk-link govuk-link--no-visited-state" href="@supplierToBuyerSelectDevolvedRegulationsPage?frm-summary">Change<span class="govuk-visually-hidden"> the devolved regions</span></a>
+                        <a class="govuk-link govuk-link--no-visited-state" href="@supplierToBuyerSelectDevolvedRegulationsPage?frm-summary">@Html.Raw(@StaticTextResource.SupplierToBuyer_OrganisationSummary_ChangeDevolvedRegions)</a>
                             </dd>
                         </div>
                     }
@@ -78,7 +79,7 @@
             
             <form method="post">
                 <govuk-button>
-                    Save
+                    @StaticTextResource.Global_Save
                 </govuk-button>
             </form>
         </div>

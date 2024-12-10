@@ -137,7 +137,7 @@
   </data>
   <data name="BasicInformation_SectionTitle" xml:space="preserve">
     <value>Basic information</value>
-  </data>  
+  </data>
   <data name="Global_Back" xml:space="preserve">
     <value>Back</value>
   </data>
@@ -284,9 +284,6 @@
   </data>
   <data name="Organisation_MyOrganisations" xml:space="preserve">
     <value>My organisations</value>
-  </data>
-  <data name="Organisation_OrganisationName" xml:space="preserve">
-    <value>Organisation name</value>
   </data>
   <data name="Organisation_PendingApproval" xml:space="preserve">
     <value>Pending approval</value>
@@ -1723,15 +1720,6 @@
   <data name="Forms_FormElementDateInput_ExampleHint" xml:space="preserve">
     <value>For example, 27 3 2007</value>
   </data>
-  <data name="Global_Day" xml:space="preserve">
-    <value>Day</value>
-  </data>
-  <data name="Global_Month" xml:space="preserve">
-    <value>Month</value>
-  </data>
-  <data name="Global_Year" xml:space="preserve">
-    <value>Year</value>
-  </data>
   <data name="Global_Failure_Heading" xml:space="preserve">
     <value>Failure</value>
   </data>
@@ -1840,26 +1828,11 @@
   <data name="Forms_FormElementAddress_InvalidCountryError" xml:space="preserve">
     <value>Invalid country name '{0}'</value>
   </data>
-  <data name="Global_Yes" xml:space="preserve">
-    <value>Yes</value>
-  </data>
-  <data name="Global_No" xml:space="preserve">
-    <value>No</value>
-  </data>
   <data name="Global_SaveAndContinue" xml:space="preserve">
     <value>Save and continue</value>
   </data>
   <data name="Global_Save" xml:space="preserve">
     <value>Save</value>
-  </data>
-  <data name="Global_Remove" xml:space="preserve">
-    <value>Remove</value>
-  </data>
-  <data name="Global_PleaseSelect" xml:space="preserve">
-    <value>Please select</value>
-  </data>
-  <data name="Global_Change" xml:space="preserve">
-    <value>Change</value>
   </data>
   <data name="Forms_AnswerSetSummary_BackToSupplierInformation" xml:space="preserve">
     <value>Back to supplier information</value>
@@ -2535,5 +2508,131 @@
   </data>
   <data name="Supplier_OperationType_ValidationError" xml:space="preserve">
     <value>You cannot select 'My organisation is none of the above' along with other options.</value>
+  </data>
+  <data name="SupplierToBuyer_DevolvedRegulation_ErrorMessage" xml:space="preserve">
+    <value>Select 'yes' or 'no'</value>
+  </data>
+  <data name="SupplierToBuyer_DevolvedRegulation_Title" xml:space="preserve">
+    <value>Do devolved regulations apply to your organisation?</value>
+  </data>
+  <data name="SupplierToBuyer_OrganisationSummary_BuyerDetails" xml:space="preserve">
+    <value>Buyer details</value>
+  </data>
+  <data name="SupplierToBuyer_OrganisationSummary_DevolvedRegions" xml:space="preserve">
+    <value>Devolved regions</value>
+  </data>
+  <data name="SupplierToBuyer_OrganisationSummary_DevolvedRegulations" xml:space="preserve">
+    <value>Devolved regulations</value>
+  </data>
+  <data name="SupplierToBuyer_OrganisationSummary_OrganisationType" xml:space="preserve">
+    <value>Organisation type</value>
+  </data>
+  <data name="SupplierToBuyer_OrganisationSummary_Title" xml:space="preserve">
+    <value>Check your answers</value>
+  </data>
+  <data name="SupplierToBuyer_OrganisationType_BlueLightOrganisations" xml:space="preserve">
+    <value>blue light organisations - ambulance, police, and other emergency services</value>
+  </data>
+  <data name="SupplierToBuyer_OrganisationType_CentralGovernment_Title" xml:space="preserve">
+    <value>Includes arm's-length bodies:</value>
+  </data>
+  <data name="SupplierToBuyer_OrganisationType_Charities" xml:space="preserve">
+    <value>charities</value>
+  </data>
+  <data name="SupplierToBuyer_OrganisationType_ConditionalHint" xml:space="preserve">
+    <value>For example, the establishment of a utilities dynamic market by a non-contracting authority.</value>
+  </data>
+  <data name="SupplierToBuyer_OrganisationType_CountyDistrictBoroughParishCouncils" xml:space="preserve">
+    <value>county, district, borough and parish councils</value>
+  </data>
+  <data name="SupplierToBuyer_OrganisationType_EnterType" xml:space="preserve">
+    <value>Enter type</value>
+  </data>
+  <data name="SupplierToBuyer_OrganisationType_ErrorMessage" xml:space="preserve">
+    <value>Select the organisation type</value>
+  </data>
+  <data name="SupplierToBuyer_OrganisationType_ExecutiveAgencies" xml:space="preserve">
+    <value>executive agencies (EA)</value>
+  </data>
+  <data name="SupplierToBuyer_OrganisationType_GreaterLondonAuthority" xml:space="preserve">
+    <value>the Greater London Authority</value>
+  </data>
+  <data name="SupplierToBuyer_OrganisationType_Hint" xml:space="preserve">
+    <value>Select the type of organisation that best describes your organisation's role.</value>
+  </data>
+  <data name="SupplierToBuyer_OrganisationType_HousingAssociations" xml:space="preserve">
+    <value>housing associations</value>
+  </data>
+  <data name="SupplierToBuyer_OrganisationType_NonDepartmentalPublicBodies" xml:space="preserve">
+    <value>non-departmental public bodies (NDPB)</value>
+  </data>
+  <data name="SupplierToBuyer_OrganisationType_NonMinisterialDepartments" xml:space="preserve">
+    <value>non-ministerial departments (NMD)</value>
+  </data>
+  <data name="SupplierToBuyer_OrganisationType_Other" xml:space="preserve">
+    <value>Other</value>
+  </data>
+  <data name="SupplierToBuyer_OrganisationType_PrivateUtility_Hint" xml:space="preserve">
+    <value>For example, private companies that have been granted a special or exclusive right to provide utility activities to the public. Such as National Grid or British Gas.</value>
+  </data>
+  <data name="SupplierToBuyer_OrganisationType_PublicUndertakingAuthority" xml:space="preserve">
+    <value>Unlike a public authority, organisations that operate commercially and provide utility activities to the public. For example, Transport for Wales.</value>
+  </data>
+  <data name="SupplierToBuyer_OrganisationType_RegionalAndLocalGovernment_Title" xml:space="preserve">
+    <value>Includes:</value>
+  </data>
+  <data name="SupplierToBuyer_OrganisationType_Title" xml:space="preserve">
+    <value>Select the organisation type</value>
+  </data>
+  <data name="SupplierToBuyer_OrganisationType_TradingFunds" xml:space="preserve">
+    <value>Trading Funds</value>
+  </data>
+  <data name="SupplierToBuyer_OrganisationType_UnitaryAuthorities" xml:space="preserve">
+    <value>unitary authorities</value>
+  </data>
+  <data name="SupplierToBuyer_SelectDevolvedRegulation_ErrorMessage" xml:space="preserve">
+    <value>Select a devolved region</value>
+  </data>
+  <data name="SupplierToBuyer_SelectDevolvedRegulation_NorthernIreland" xml:space="preserve">
+    <value>Northern Ireland</value>
+  </data>
+  <data name="SupplierToBuyer_SelectDevolvedRegulation_Scotland" xml:space="preserve">
+    <value>Scotland</value>
+  </data>
+  <data name="SupplierToBuyer_SelectDevolvedRegulation_SelectAllThatApply" xml:space="preserve">
+    <value>Select all that apply</value>
+  </data>
+  <data name="SupplierToBuyer_SelectDevolvedRegulation_Title" xml:space="preserve">
+    <value>Which devolved regulations apply?</value>
+  </data>
+  <data name="SupplierToBuyer_SelectDevolvedRegulation_Wales" xml:space="preserve">
+    <value>Wales</value>
+  </data>
+  <data name="SupplierToBuyer_OrganisationSummary_ChangeDevolvedRegions" xml:space="preserve">
+    <value>Change&lt;span class="govuk-visually-hidden"&gt; the devolved regions</value>
+  </data>
+  <data name="SupplierToBuyer_OrganisationSummary_ChangeDevolvedRegulations" xml:space="preserve">
+    <value>Change&lt;span class="govuk-visually-hidden"&gt; the devolved regulations</value>
+  </data>
+  <data name="SupplierToBuyer_OrganisationSummary_ChangeOrganisationType" xml:space="preserve">
+    <value>Change&lt;span class="govuk-visually-hidden"&gt; the organisation type&lt;/span&gt;</value>
+  </data>
+  <data name="SupplierToBuyer_OrganisationType_BuyerType" xml:space="preserve">
+    <value>BuyerOrganisationType</value>
+  </data>
+  <data name="SupplierToBuyer_OrganisationType_BuyerTypeOthers" xml:space="preserve">
+    <value>Others</value>
+  </data>
+  <data name="SupplierToBuyer_OrganisationType_CentralGovernment" xml:space="preserve">
+    <value>Central government, public authority: UK, Scottish, Welsh and Northern Irish Executive</value>
+  </data>
+  <data name="SupplierToBuyer_OrganisationType_PrivateUtility" xml:space="preserve">
+    <value>Private utility</value>
+  </data>
+  <data name="SupplierToBuyer_OrganisationType_PublicUndertaking" xml:space="preserve">
+    <value>Public undertaking</value>
+  </data>
+  <data name="SupplierToBuyer_OrganisationType_RegionalAndLocalGovernment" xml:space="preserve">
+    <value>Regional and local government, public authority: UK, Scottish, Welsh and Northern Irish</value>
   </data>
 </root>

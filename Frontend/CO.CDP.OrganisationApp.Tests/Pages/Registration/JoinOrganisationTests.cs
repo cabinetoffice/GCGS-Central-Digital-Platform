@@ -29,7 +29,7 @@ public class JoinOrganisationModelTests
         _sessionMock.Setup(s => s.Get<UserDetails>(Session.UserDetailsKey))
             .Returns(new UserDetails() { UserUrn = "testUserUrn", PersonId = _personId});
         _joinOrganisationModel = new JoinOrganisationModel(_organisationClientMock.Object, _sessionMock.Object, _tempDataMock.Object);
-        _organisation = new CO.CDP.Organisation.WebApiClient.Organisation(null, null, null, null, _organisationId, null, "Test Org", []);
+        _organisation = new CO.CDP.Organisation.WebApiClient.Organisation(null, null, null, null, _organisationId, null, "Test Org", [], OrganisationWebApiClient.OrganisationType.Organisation);
     }
 
     [Fact]
