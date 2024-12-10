@@ -154,7 +154,17 @@ public class OrganisationInternationalIdentificationModelTest
                     )
                 };
 
-        return new CO.CDP.Organisation.WebApiClient.Organisation(additionalIdentifiers: additionalIdentifiers, addresses: null, contactPoint: null, id: _organisationId, identifier: identifier, name: "Test Org", roles: [], details: new Details(approval: null, pendingRoles: []));
+        return new CO.CDP.Organisation.WebApiClient.Organisation(
+        additionalIdentifiers: additionalIdentifiers,
+        addresses: null, 
+        contactPoint: null, 
+        details: new Details(approval: null, pendingRoles: []),
+        id: _organisationId,
+        identifier: identifier,
+        name: "Test Org",
+        roles: new List<PartyRole>(), 
+        type: OrganisationType.Organisation 
+    );
     }
     private IList<ValidationResult> ValidateModel(object model)
     {
