@@ -1,3 +1,4 @@
+using CO.CDP.Localization;
 using CO.CDP.Mvc.Validation;
 using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
@@ -13,15 +14,15 @@ namespace CO.CDP.OrganisationApp.Pages.Organisation;
 public class SupplierToBuyerOrganisationTypeModel(ITempDataService tempDataService) : PageModel
 {
     [BindProperty]
-    [Required(ErrorMessage = "Select the organisation type")]
+    [Required(ErrorMessageResourceName = nameof(StaticTextResource.SupplierToBuyer_OrganisationType_ErrorMessage), ErrorMessageResourceType = typeof(StaticTextResource))]
     public string? BuyerOrganisationType { get; set; }
 
     [BindProperty(SupportsGet = true)]
     public Guid Id { get; set; }
 
     [BindProperty]
-    [DisplayName("Enter type")]
-    [RequiredIf("BuyerOrganisationType", "Other")]
+    [DisplayName(nameof(StaticTextResource.SupplierToBuyer_OrganisationType_EnterType))]
+    [RequiredIf(nameof(StaticTextResource.SupplierToBuyer_OrganisationType_BuyerType), nameof(StaticTextResource.SupplierToBuyer_OrganisationType_BuyerTypeOthers))]
     public string? OtherValue { get; set; }
 
     [BindProperty]
@@ -65,10 +66,10 @@ public class SupplierToBuyerOrganisationTypeModel(ITempDataService tempDataServi
 
     public static Dictionary<string, string> BuyerTypes => new()
     {
-        { "CentralGovernment", "Central government, public authority: UK, Scottish, Welsh and Northern Irish Executive"},
-        { "RegionalAndLocalGovernment", "Regional and local government, public authority: UK, Scottish, Welsh and Northern Irish"},
-        { "PublicUndertaking", "Public undertaking"},
-        { "PrivateUtility", "Private utility"}
+        { "CentralGovernment", StaticTextResource.SupplierToBuyer_OrganisationType_CentralGovernment},
+        { "RegionalAndLocalGovernment", StaticTextResource.SupplierToBuyer_OrganisationType_RegionalAndLocalGovernment},
+        { "PublicUndertaking", StaticTextResource.SupplierToBuyer_OrganisationType_PublicUndertaking},
+        { "PrivateUtility", StaticTextResource.SupplierToBuyer_OrganisationType_PrivateUtility}
     };
 
     private void SupplierToBuyerStateUpdate()

@@ -20,7 +20,7 @@ public class ExclusionAppliesToChoiceProviderStrategyTests
 
         mockOrganisationClient
             .Setup(oc => oc.GetOrganisationAsync(It.IsAny<Guid>()))
-            .ReturnsAsync(new CO.CDP.Organisation.WebApiClient.Organisation(null, null, null, null, orgId, null, "Org name", []));
+            .ReturnsAsync(new CO.CDP.Organisation.WebApiClient.Organisation(null, null, null, null, orgId, null, "Org name", [], OrganisationType.Organisation));
 
         choiceProviderStrategy = new ExclusionAppliesToChoiceProviderStrategy(mockUserInfoService.Object, mockOrganisationClient.Object);
     }

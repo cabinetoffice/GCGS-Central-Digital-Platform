@@ -73,6 +73,7 @@ public class OrganisationOverviewTest
             id: id ?? Guid.NewGuid(),
             identifier: null,
             name: "Test Org",
+            type: OrganisationType.Organisation,
             roles: [],
             details: new Details(
                 approval: null,
