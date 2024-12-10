@@ -35,6 +35,7 @@ public class OrganisationInformationContext(DbContextOptions<OrganisationInforma
         modelBuilder.HasPostgresEnum<ConnectedPersonType>();
         modelBuilder.HasPostgresEnum<ConnectedEntityIndividualAndTrustCategoryType>();
         modelBuilder.HasPostgresEnum<ConnectedOrganisationCategory>();
+        modelBuilder.HasPostgresEnum<OrganisationType>();
 
         modelBuilder.Entity<ConnectedEntity>(entity =>
         {

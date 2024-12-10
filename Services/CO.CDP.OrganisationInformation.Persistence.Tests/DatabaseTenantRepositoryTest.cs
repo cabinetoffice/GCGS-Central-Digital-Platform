@@ -1,10 +1,12 @@
 using CO.CDP.Testcontainers.PostgreSql;
 using FluentAssertions;
+using Npgsql;
 using static CO.CDP.OrganisationInformation.Persistence.Tests.EntityFactory;
 
 namespace CO.CDP.OrganisationInformation.Persistence.Tests;
 
-public class DatabaseTenantRepositoryTest(PostgreSqlFixture postgreSql) : IClassFixture<PostgreSqlFixture>
+public class DatabaseTenantRepositoryTest(PostgreSqlFixture postgreSql)
+    : IClassFixture<PostgreSqlFixture>
 {
     [Fact]
     public async Task ItFindsSavedTenant()
@@ -159,8 +161,15 @@ public class DatabaseTenantRepositoryTest(PostgreSqlFixture postgreSql) : IClass
             .WithMessage("Tenant not found for the given URN: urn:nonexistent");
     }
 
-    private ITenantRepository TenantRepository()
+    private DatabaseTenantRepository TenantRepository()
+        => new(GetDbContext());
+
+    private OrganisationInformationContext? context = null;
+
+    private OrganisationInformationContext GetDbContext()
     {
-        return new DatabaseTenantRepository(postgreSql.OrganisationInformationContext());
+        context = context ?? postgreSql.OrganisationInformationContext();
+
+        return context;
     }
 }

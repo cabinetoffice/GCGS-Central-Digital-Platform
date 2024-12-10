@@ -1,6 +1,7 @@
 using CO.CDP.GovUKNotify;
 using CO.CDP.OrganisationInformation.Persistence;
 using CO.CDP.TestKit.Mvc;
+using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using Xunit.Abstractions;
@@ -33,7 +34,6 @@ public class OrganisationClientIntegrationTest
     {
         IOrganisationClient client = new OrganisationClient("https://localhost", _httpClient);
 
-        var unknownPersonId = Guid.NewGuid();
         var identifier = new OrganisationIdentifier(
             scheme: "ISO9001",
             id: "1234567",
@@ -68,17 +68,19 @@ public class OrganisationClientIntegrationTest
             devolvedRegulations: [DevolvedRegulation.NorthernIreland, DevolvedRegulation.Wales]);
 
         var newOrganisation = new NewOrganisation(
-            personId: unknownPersonId,
             additionalIdentifiers: additionalIdentifiers,
             addresses: [address],
             contactPoint: contactPoint,
             identifier: identifier,
             name: "New Organisation",
+            type: OrganisationType.Organisation,
             roles: roles
         );
 
-        var exception = await Assert.ThrowsAsync<ApiException<ProblemDetails>>(() => client.CreateOrganisationAsync(newOrganisation));
-        Assert.Equal(404, exception.StatusCode);
-        Assert.Contains("Unknown person", exception.Result.Detail);
+        Func<Task> act = async () => await client.CreateOrganisationAsync(newOrganisation);
+
+        var exception = await act.Should().ThrowAsync<ApiException<ProblemDetails>>();
+        exception.Which.StatusCode.Should().Be(404);
+        exception.Which.Result.Detail.Should().Contain("Unknown person");
     }
 }

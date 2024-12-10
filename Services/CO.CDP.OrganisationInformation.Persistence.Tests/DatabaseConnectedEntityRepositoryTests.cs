@@ -4,7 +4,8 @@ using static CO.CDP.OrganisationInformation.Persistence.Tests.EntityFactory;
 
 namespace CO.CDP.OrganisationInformation.Persistence.Tests;
 
-public class DatabaseConnectedEntityRepositoryTests(PostgreSqlFixture postgreSql) : IClassFixture<PostgreSqlFixture>
+public class DatabaseConnectedEntityRepositoryTests(PostgreSqlFixture postgreSql)
+    : IClassFixture<PostgreSqlFixture>
 {
     [Fact]
     public async Task ItReturnsNullIfConnectedEntityIsNotFound()
@@ -102,13 +103,17 @@ public class DatabaseConnectedEntityRepositoryTests(PostgreSqlFixture postgreSql
         result.Should().ContainSingle(x => x!.Name == "First Name");
     }
 
-    private IConnectedEntityRepository ConnectedEntityRepository()
-    {
-        return new DatabaseConnectedEntityRepository(postgreSql.OrganisationInformationContext());
-    }
+    private DatabaseConnectedEntityRepository ConnectedEntityRepository()
+        => new(GetDbContext());
 
-    private IOrganisationRepository OrganisationRepository()
+    private DatabaseOrganisationRepository OrganisationRepository()
+        => new(GetDbContext());
+
+    private OrganisationInformationContext? context = null;
+
+    private OrganisationInformationContext GetDbContext()
     {
-        return new DatabaseOrganisationRepository(postgreSql.OrganisationInformationContext());
+        context = context ?? postgreSql.OrganisationInformationContext();
+        return context;
     }
 }

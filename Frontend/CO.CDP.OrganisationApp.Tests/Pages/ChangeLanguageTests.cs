@@ -79,6 +79,21 @@ public class ChangeLanguageTests
     }
 
     [Fact]
+    public void OnGet_Redirects_WhenRedirectUrlIsLocalAndContainsLanguageQueryString()
+    {
+        var cookieValue = CookieRequestCultureProvider.MakeCookieValue(new RequestCulture("cy"));
+
+        _mockUrlHelper.Setup(u => u.IsLocalUrl(It.IsAny<string>())).Returns(true);
+
+        var response = _model.OnGet("cy", "/foo?language=en");
+
+        response.Should().BeOfType<LocalRedirectResult>();
+
+        var localRedirectResult = response as LocalRedirectResult;
+        localRedirectResult!.Url.Should().Be("/foo");
+    }
+
+    [Fact]
     public void OnGet_Redirects_WhenRedirectUrlIsRemote()
     {
         var cookieValue = CookieRequestCultureProvider.MakeCookieValue(new RequestCulture("cy"));

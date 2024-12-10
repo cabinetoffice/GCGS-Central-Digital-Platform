@@ -10,8 +10,7 @@ public record RegisterOrganisation
     /// <example>"Acme Corporation"</example>
     [Required(AllowEmptyStrings = true)] public required string Name { get; init; }
 
-    /// <example>"d230dbc1-b273-4e0e-8f58-d94f2ab3c096"</example>
-    [Required] public required Guid PersonId { get; init; }
+    public required OrganisationType Type { get; set; } = OrganisationType.Organisation;
 
     public required OrganisationIdentifier Identifier { get; init; }
 

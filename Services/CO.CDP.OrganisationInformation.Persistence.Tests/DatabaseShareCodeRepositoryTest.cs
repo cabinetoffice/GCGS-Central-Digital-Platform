@@ -4,7 +4,8 @@ using FluentAssertions;
 
 namespace CO.CDP.OrganisationInformation.Persistence.Tests;
 
-public class DatabaseShareCodeRepositoryTest(PostgreSqlFixture postgreSql) : IClassFixture<PostgreSqlFixture>
+public class DatabaseShareCodeRepositoryTest(PostgreSqlFixture postgreSql)
+    : IClassFixture<PostgreSqlFixture>
 {
     private static int _nextQuestionNumber;
 
@@ -95,7 +96,7 @@ public class DatabaseShareCodeRepositoryTest(PostgreSqlFixture postgreSql) : ICl
         sharedConsent.ShareCode = "share_code";
         sharedConsent.AnswerSets.Add(answerSet);
 
-        await using var context = postgreSql.OrganisationInformationContext();
+        await using var context = GetDbContext();
         await context.SharedConsents.AddAsync(sharedConsent);
         await context.SaveChangesAsync();
 
@@ -111,7 +112,7 @@ public class DatabaseShareCodeRepositoryTest(PostgreSqlFixture postgreSql) : ICl
     {
         var sharedConsent = GivenSharedConsent();
 
-        await using var context = postgreSql.OrganisationInformationContext();
+        await using var context = GetDbContext();
         await context.SharedConsents.AddAsync(sharedConsent);
         await context.SaveChangesAsync();
 
@@ -146,7 +147,7 @@ public class DatabaseShareCodeRepositoryTest(PostgreSqlFixture postgreSql) : ICl
         sharedConsent.SubmissionState = SubmissionState.Submitted;
         sharedConsent.SubmittedAt = DateTime.UtcNow;
 
-        await using var context = postgreSql.OrganisationInformationContext();
+        await using var context = GetDbContext();
         await context.SharedConsents.AddAsync(sharedConsent);
         await context.SaveChangesAsync();
 
@@ -189,7 +190,7 @@ public class DatabaseShareCodeRepositoryTest(PostgreSqlFixture postgreSql) : ICl
         var shareCode = "EXISTING-CODE-2";
         sharedConsent.ShareCode = shareCode;
 
-        await using var context = postgreSql.OrganisationInformationContext();
+        await using var context = GetDbContext();
         await context.SharedConsents.AddAsync(sharedConsent);
         await context.SaveChangesAsync();
 
@@ -241,7 +242,7 @@ public class DatabaseShareCodeRepositoryTest(PostgreSqlFixture postgreSql) : ICl
 
         sharedConsent.ShareCode = shareCode;
 
-        await using var context = postgreSql.OrganisationInformationContext();
+        await using var context = GetDbContext();
         await context.SharedConsents.AddAsync(sharedConsent);
         await context.SaveChangesAsync();
 
@@ -377,6 +378,7 @@ public class DatabaseShareCodeRepositoryTest(PostgreSqlFixture postgreSql) : ICl
         {
             Guid = Guid.NewGuid(),
             Name = "New Corporation " + Guid.NewGuid().ToString(),
+            Type = OrganisationType.Organisation,
             Tenant = GivenTenant(),
             Identifiers = new List<Organisation.Identifier>
         {
@@ -417,9 +419,14 @@ public class DatabaseShareCodeRepositoryTest(PostgreSqlFixture postgreSql) : ICl
         };
     }
 
+    private DatabaseShareCodeRepository ShareCodeRepository()
+        => new(GetDbContext());
 
-    private IShareCodeRepository ShareCodeRepository()
+    private OrganisationInformationContext? context = null;
+
+    private OrganisationInformationContext GetDbContext()
     {
-        return new DatabaseShareCodeRepository(postgreSql.OrganisationInformationContext());
+        context = context ?? postgreSql.OrganisationInformationContext();
+        return context;
     }
 }

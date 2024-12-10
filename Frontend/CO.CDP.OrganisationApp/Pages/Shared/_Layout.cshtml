@@ -6,6 +6,8 @@
 @inject Microsoft.Extensions.Configuration.IConfiguration config
 @inject IUserInfoService userInfoService
 @inject IHtmlLocalizer<StaticTextResource> Localizer
+@inject IFtsUrlService FtsUrlService
+
 <!DOCTYPE html>
 <html lang="@System.Globalization.CultureInfo.CurrentUICulture.Name" class="govuk-template">
 <head>
@@ -33,10 +35,8 @@
 </head>
 
 @{
-    var ftsService = config["FtsService"] ?? "";
-    ftsService = ftsService.EndsWith("/") ? ftsService.TrimEnd(new Char[] { '/' }) : ftsService;
     var organisationId = userInfoService.GetOrganisationId();
-    var homeLink = organisationId == null ? $"{this.Context.Request.Path}{this.Context.Request.QueryString}" : $"{ftsService}/login?organisation_id={organisationId}&redirect_url=/Search";
+    var homeLink = organisationId == null ? $"{this.Context.Request.Path}{this.Context.Request.QueryString}" : FtsUrlService.BuildUrl("/login", organisationId, "/Search");
 }
 
 <body class="govuk-template__body">
@@ -45,6 +45,18 @@
     <partial name="Shared/_CookieBanner" />
 
     <a href="#main-content" class="govuk-skip-link" data-module="govuk-skip-link">Skip to main content</a>
+
+    <div class="app-global-banner govuk-!-padding-top-1 govuk-!-padding-bottom-1">
+        <div class="govuk-width-container">
+            <div class="govuk-warning-text govuk-warning-text--inverted govuk-!-margin-bottom-0 ">
+                <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+                <strong class="govuk-warning-text__text">
+                    <span class="govuk-visually-hidden">Warning</span>
+                    This is a test website. Visit the main <a href="https://www.find-tender.service.gov.uk/" class="govuk-link break-word">Find a Tender</a> service to view UK public sector contract opportunities and awarded contracts.
+                </strong>
+            </div>
+        </div>
+    </div>
 
     <header class="govuk-header" role="banner" data-module="govuk-header">
         <div class="govuk-header__container govuk-width-container @ViewData["ContainerClasses"]">
@@ -84,13 +96,13 @@
                                         if (organisationId != null)
                                         {
                                             <li class="govuk-header__navigation-item">
-                                                <a class="govuk-header__link" href="@($"{ftsService}/login?organisation_id={organisationId}&redirect_url=/Search/Results")">
+                                                <a class="govuk-header__link" href="@FtsUrlService.BuildUrl("/login", organisationId, "/Search/Results")">
                                                     @StaticTextResource.Header_Search
                                                 </a>
                                             </li>
 
                                             <li class="govuk-header__navigation-item">
-                                                <a class="govuk-header__link" href="@($"{ftsService}/login?organisation_id={organisationId}&redirect_url=/dashboard")">
+                                                <a class="govuk-header__link" href="@FtsUrlService.BuildUrl("/login", organisationId, "/dashboard")">
                                                     @StaticTextResource.Header_MyNotices
                                                 </a>
                                             </li>
@@ -169,10 +181,10 @@
                             <a class="govuk-footer__link" target="_blank" href="/contact-us" )">@StaticTextResource.Footer_ContactUs</a>
                         </li>
                         <li class="govuk-footer__inline-list-item">
-                            <a class="govuk-footer__link" href="@($"{ftsService}/Home/AccessibilityStatement")">@StaticTextResource.Footer_AccessibilityStatement</a>
+                            <a class="govuk-footer__link" href="@FtsUrlService.BuildUrl("/Home/AccessibilityStatement")">@StaticTextResource.Footer_AccessibilityStatement</a>
                         </li>
                         <li class="govuk-footer__inline-list-item">
-                            <a class="govuk-footer__link" href="@($"{ftsService}/Home/TermsAndConditions")">@StaticTextResource.Footer_TermsAndConditions</a>
+                            <a class="govuk-footer__link" href="@FtsUrlService.BuildUrl("/Home/TermsAndConditions")">@StaticTextResource.Footer_TermsAndConditions</a>
                         </li>
                         <li class="govuk-footer__inline-list-item">
                             <a class="govuk-footer__link" href="https://www.gov.uk/government/publications/crown-commercial-service-privacy-notice/crown-commercial-service-privacy-notice">@StaticTextResource.Footer_PrivacyNotice</a>
@@ -181,7 +193,7 @@
                             <a class="govuk-footer__link" href="/cookies">@StaticTextResource.Footer_Cookies</a>
                         </li>
                         <li class="govuk-footer__inline-list-item">
-                            <a class="govuk-footer__link" href="@($"{ftsService}/Developer/Documentation")">@StaticTextResource.Footer_DataAndAPI</a>
+                            <a class="govuk-footer__link" href="@FtsUrlService.BuildUrl("/Developer/Documentation")">@StaticTextResource.Footer_DataAndAPI</a>
                         </li>
                     </ul>
                     <svg aria-hidden="true"

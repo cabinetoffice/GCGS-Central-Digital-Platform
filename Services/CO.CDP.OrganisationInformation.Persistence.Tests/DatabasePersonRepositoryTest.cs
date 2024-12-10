@@ -4,7 +4,8 @@ using static CO.CDP.OrganisationInformation.Persistence.Tests.EntityFactory;
 
 namespace CO.CDP.OrganisationInformation.Persistence.Tests;
 
-public class DatabasePersonRepositoryTest(PostgreSqlFixture postgreSql) : IClassFixture<PostgreSqlFixture>
+public class DatabasePersonRepositoryTest(PostgreSqlFixture postgreSql)
+    : IClassFixture<PostgreSqlFixture>
 {
 
     [Fact]
@@ -103,8 +104,15 @@ public class DatabasePersonRepositoryTest(PostgreSqlFixture postgreSql) : IClass
         found.As<Person>().Organisations.Should().Contain(org => org.Guid == organisation.Guid);
     }
 
-    private IPersonRepository PersonRepository()
+    private DatabasePersonRepository PersonRepository()
+        => new(GetDbContext());
+
+    private OrganisationInformationContext? context = null;
+
+    private OrganisationInformationContext GetDbContext()
     {
-        return new DatabasePersonRepository(postgreSql.OrganisationInformationContext());
+        context = context ?? postgreSql.OrganisationInformationContext();
+
+        return context;
     }
 }

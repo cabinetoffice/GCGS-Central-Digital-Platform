@@ -43,6 +43,7 @@ public static class SupplierDetailsFactory
             id: id,
             identifier: null,
             name: "Test Org",
+            type: OrganisationType.Organisation,
             roles: [PartyRole.Supplier],
             details: new Details(approval: null, pendingRoles: [])
         );

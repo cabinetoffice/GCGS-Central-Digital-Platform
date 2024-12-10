@@ -38,12 +38,17 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.Configure<RequestLocalizationOptions>(options =>
 {
-    var supportedCultures = new[] { new CultureInfo("en"), new CultureInfo("cy") };
+    var supportedCultures = new[] { new CultureInfo("en-GB"), new CultureInfo("cy") };
 
-    options.DefaultRequestCulture = new RequestCulture("en");
+    options.DefaultRequestCulture = new RequestCulture("en-GB");
     options.SupportedCultures = supportedCultures;
     options.SupportedUICultures = supportedCultures;
-    options.RequestCultureProviders.Insert(0, new CookieRequestCultureProvider());
+
+    options.RequestCultureProviders = new List<IRequestCultureProvider>
+    {
+        new CustomQueryStringCultureProvider(),
+        new CookieRequestCultureProvider()
+    };
 });
 
 var mvcBuilder = builder.Services.AddRazorPages()
@@ -101,6 +106,8 @@ builder.Services.AddTransient<IChoiceProviderService, ChoiceProviderService>();
 builder.Services.AddTransient<IFormsEngine, FormsEngine>();
 builder.Services.AddTransient<IDiagnosticPage, DiagnosticPage>();
 builder.Services.AddScoped<IUserInfoService, UserInfoService>();
+builder.Services.AddScoped<IFtsUrlService, FtsUrlService>();
+
 
 var formsServiceUrl = builder.Configuration.GetValue<string>("FormsService")
             ?? throw new Exception("Missing configuration key: FormsService.");
@@ -232,14 +239,7 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-var supportedCultures = new[] { "en", "cy" };
-var localizationOptions = new RequestLocalizationOptions()
-    .SetDefaultCulture("en")
-    .AddSupportedCultures(supportedCultures)
-    .AddSupportedUICultures(supportedCultures);
-
-app.UseRequestLocalization(localizationOptions);
-
+app.UseRequestLocalization();
 app.MapHealthChecks("/health").AllowAnonymous();
 app.UseStaticFiles();
 app.UseRouting();

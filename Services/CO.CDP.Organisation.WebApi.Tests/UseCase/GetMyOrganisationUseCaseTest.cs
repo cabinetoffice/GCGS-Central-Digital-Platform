@@ -33,6 +33,7 @@ public class GetMyOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : ICl
             Id = organisationId,
             Guid = organisationGuid,
             Name = "Test Organisation",
+            Type = OrganisationType.Organisation,
             Tenant = new Tenant
             {
                 Id = 101,
@@ -87,6 +88,7 @@ public class GetMyOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : ICl
         {
             Id = organisationGuid,
             Name = "Test Organisation",
+            Type = OrganisationType.Organisation,
             Identifier = new Identifier
             {
                 Id = "123456",
