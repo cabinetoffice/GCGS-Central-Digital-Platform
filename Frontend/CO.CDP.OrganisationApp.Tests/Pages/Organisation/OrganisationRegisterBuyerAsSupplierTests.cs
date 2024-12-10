@@ -26,7 +26,7 @@ public class OrganisationRegisterBuyerAsSupplierTests
     {
         organisationClientMock
             .Setup(o => o.GetOrganisationAsync(It.IsAny<Guid>()))
-            .ReturnsAsync(new CO.CDP.Organisation.WebApiClient.Organisation(null!, null!, null!, null!, orgGuid, null!, "Org name", [PartyRole.Buyer]));
+            .ReturnsAsync(new CO.CDP.Organisation.WebApiClient.Organisation(null!, null!, null!, null!, orgGuid, null!, "Org name", [PartyRole.Buyer], CDP.Organisation.WebApiClient.OrganisationType.Organisation));
 
         var result = await _model.OnGet(orgGuid);
 
@@ -48,7 +48,7 @@ public class OrganisationRegisterBuyerAsSupplierTests
     {
         organisationClientMock
             .Setup(o => o.GetOrganisationAsync(It.IsAny<Guid>()))
-            .ReturnsAsync(new CO.CDP.Organisation.WebApiClient.Organisation(null!, null!, null!, null!, orgGuid, null!, "Org name", [PartyRole.Buyer, PartyRole.Tenderer]));
+            .ReturnsAsync(new CO.CDP.Organisation.WebApiClient.Organisation(null!, null!, null!, null!, orgGuid, null!, "Org name", [PartyRole.Buyer, PartyRole.Tenderer], CDP.Organisation.WebApiClient.OrganisationType.Organisation));
 
         await _model.OnGet(orgGuid);
 

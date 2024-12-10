@@ -183,22 +183,25 @@
                             </dd>
                         </div>
 
-                        <div class="govuk-summary-list__row">
-                            <dt class="govuk-summary-list__key">
-                                @StaticTextResource.Organisation_DevolvedRegions
-                            </dt>
-                            <dd class="govuk-summary-list__value">
-                                <p class="govuk-body">
-                                    @if (Model.Regulations != null)
-                                    {
-                                        foreach (var regulation in Model.Regulations)
+                        @if (Model.BuyerInformation.DevolvedRegulations.Count > 0)
+                        {
+                            <div class="govuk-summary-list__row">
+                                <dt class="govuk-summary-list__key">
+                                    @StaticTextResource.Organisation_DevolvedRegions
+                                </dt>
+                                <dd class="govuk-summary-list__value">
+                                    <p class="govuk-body">
+                                        @if (Model.Regulations != null)
                                         {
-                                            @regulation.Description()<br/>
+                                            foreach (var regulation in Model.Regulations)
+                                            {
+                                                @regulation.Description()<br/>
+                                            }
                                         }
-                                    }
-                                </p>
-                            </dd>
-                        </div>
+                                    </p>
+                                </dd>
+                            </div>
+                        }
                     }
                 </dl>
 

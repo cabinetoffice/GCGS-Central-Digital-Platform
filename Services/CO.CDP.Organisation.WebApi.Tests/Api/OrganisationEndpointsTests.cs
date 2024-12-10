@@ -9,7 +9,6 @@ using Microsoft.Extensions.Hosting;
 using Moq;
 using System.Net;
 using System.Net.Http.Json;
-using System.Text.Json;
 using static CO.CDP.Authentication.Constants;
 using static System.Net.HttpStatusCode;
 
@@ -310,6 +309,7 @@ public class OrganisationEndpointsTests
         {
             Id = organisationId,
             Name = "TheOrganisation",
+            Type = OrganisationType.Organisation,
             Identifier = command.Identifier.AsView(),
             AdditionalIdentifiers = command.AdditionalIdentifiers.AsView(),
             Addresses = command.Addresses.AsView(),
@@ -324,7 +324,6 @@ public class OrganisationEndpointsTests
         return new RegisterOrganisation
         {
             Name = "TheOrganisation",
-            PersonId = Guid.NewGuid(),
             Type = OrganisationType.Organisation,
             Identifier = new OrganisationIdentifier
             {
@@ -368,6 +367,7 @@ public class OrganisationEndpointsTests
         {
             Id = Guid.NewGuid(),
             Name = "TheOrganisation",
+            Type = OrganisationType.Organisation,
             Identifier = command.Identifier.AsView(),
             AdditionalIdentifiers = command.AdditionalIdentifiers.AsView(),
             Addresses = command.Addresses.AsView(),

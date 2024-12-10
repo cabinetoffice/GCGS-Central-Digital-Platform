@@ -12,9 +12,6 @@ public record RegisterOrganisation
 
     public required OrganisationType Type { get; set; } = OrganisationType.Organisation;
 
-    /// <example>"d230dbc1-b273-4e0e-8f58-d94f2ab3c096"</example>
-    [Required] public required Guid PersonId { get; init; }
-
     public required OrganisationIdentifier Identifier { get; init; }
 
     public List<OrganisationIdentifier>? AdditionalIdentifiers { get; init; }

@@ -76,7 +76,7 @@ public class GetOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IClas
                 Url = "https://contact.test.org"
             }],
             Roles = [PartyRole.Buyer],
-            PendingRoles = [PartyRole.Consortium]
+            PendingRoles = [PartyRole.InterestedParty]
         };
 
         _repository.Setup(r => r.Find(organisationId)).ReturnsAsync(persistenceOrganisation);
@@ -86,6 +86,7 @@ public class GetOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IClas
         {
             Id = organisationId,
             Name = "Test Organisation",
+            Type = OrganisationType.Organisation,
             Identifier = new Identifier
             {
                 Id = "123456",
@@ -123,7 +124,7 @@ public class GetOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IClas
             Roles = [PartyRole.Buyer],
             Details = new Details
             {
-                PendingRoles = [PartyRole.Consortium]
+                PendingRoles = [PartyRole.InterestedParty]
             }
         };
 
