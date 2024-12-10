@@ -3,6 +3,7 @@ using CO.CDP.Tenant.WebApiClient;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Moq;
+using OrganisationType = CO.CDP.Tenant.WebApiClient.OrganisationType;
 
 namespace CO.CDP.OrganisationApp.Tests;
 
@@ -242,11 +243,13 @@ public class UserInfoServiceTest
         string? name = null,
         ICollection<string>? scopes = null,
         ICollection<PartyRole>? roles = null,
-        ICollection<PartyRole>? pendingRoles = null)
+        ICollection<PartyRole>? pendingRoles = null,
+        OrganisationType type = OrganisationType.Organisation)
     {
         return new UserOrganisation(
             id: id ?? Guid.NewGuid(),
             name: name,
+            type: type,
             pendingRoles: pendingRoles,
             roles: roles,
             scopes: scopes,

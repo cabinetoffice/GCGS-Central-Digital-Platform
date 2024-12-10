@@ -25,42 +25,42 @@ public class GetOrganisationsUseCaseTests
     public async Task Execute_WithValidCommand_ReturnsMappedOrganisations()
     {
         var command = new PaginatedOrganisationQuery { Type = "buyer" };
-        var organisations = new List<CO.CDP.OrganisationInformation.Persistence.Organisation>
-        {
-            new CO.CDP.OrganisationInformation.Persistence.Organisation
-            {
+        List<CO.CDP.OrganisationInformation.Persistence.Organisation> organisations =
+        [
+            new() {
                 Guid = Guid.NewGuid(),
                 Name = "Organisation 2",
                 Type = OrganisationType.Organisation,
                 Tenant = null!
+            },
+            new() {
+                Guid = Guid.NewGuid(),
+                Name = "Organisation 1",
+                Type = OrganisationType.Organisation,
+                Tenant = null!
             }
-        };
-        organisations.Add(new CO.CDP.OrganisationInformation.Persistence.Organisation
-        {
-            Guid = Guid.NewGuid(),
-            Name = "Organisation 1",
-            Type = OrganisationType.Organisation,
-            Tenant = null!
-        });
-        var mappedOrganisations = new List<OrganisationExtended>
-        {
-            new OrganisationExtended{
+        ];
+        List<OrganisationExtended> mappedOrganisations =
+        [
+            new (){
                 Id = default,
                 Name = "Organisation 1",
+                Type = OrganisationType.Organisation,
                 Identifier = null!,
                 ContactPoint = null!,
                 Roles = new List<PartyRole>(),
                 Details = null!
             },
-            new OrganisationExtended{
+            new (){
                 Id = default,
                 Name = "Organisation 2",
+                Type = OrganisationType.Organisation,
                 Identifier = null!,
                 ContactPoint = null!,
                 Roles = new List<PartyRole>(),
                 Details = null!
             }
-        };
+        ];
 
         _organisationRepositoryMock.Setup(repo => repo.Get(command.Type)).ReturnsAsync(organisations);
         _mapperMock.Setup(m => m.Map<IEnumerable<OrganisationExtended>>(organisations)).Returns(mappedOrganisations);

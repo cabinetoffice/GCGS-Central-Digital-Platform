@@ -18,8 +18,7 @@ public enum PartyRole
     Payer = 7,
     Payee = 8,
     ReviewBody = 9,
-    InterestedParty = 10,
-    Consortium = 11
+    InterestedParty = 10
 }
 
 public static class PartyRoleExtensions

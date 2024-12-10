@@ -8,5 +8,5 @@ namespace CO.CDP.OrganisationInformation;
 public enum OrganisationType
 {
     Organisation = 1,
-    Consortium = 2
+    InformalConsortium = 2
 }

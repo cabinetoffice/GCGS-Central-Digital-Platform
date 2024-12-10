@@ -1,3 +1,4 @@
+using CO.CDP.Localization;
 using CO.CDP.Mvc.Validation;
 using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
@@ -11,7 +12,7 @@ namespace CO.CDP.OrganisationApp.Pages.Organisation;
 public class SupplierToBuyerSelectDevolvedRegulationModel(ITempDataService tempDataService) : PageModel
 {
     [BindProperty]
-    [NotEmpty(ErrorMessage = "Select a devolved region")]
+    [NotEmpty(ErrorMessageResourceName = nameof(StaticTextResource.SupplierToBuyer_SelectDevolvedRegulation_ErrorMessage), ErrorMessageResourceType = typeof(StaticTextResource))]
     public required List<DevolvedRegulation> Regulations { get; set; } = [];
 
     [BindProperty(SupportsGet = true)]

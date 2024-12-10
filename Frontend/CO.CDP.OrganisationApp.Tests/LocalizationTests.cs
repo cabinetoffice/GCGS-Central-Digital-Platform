@@ -35,7 +35,7 @@ public class LocalizationTests
 
         session
             .Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey))
-            .Returns(new RegistrationDetails() { OrganisationType = OrganisationType.Supplier, OrganisationScheme = "Whatever" });
+            .Returns(new RegistrationDetails() { OrganisationType = Constants.OrganisationType.Supplier, OrganisationScheme = "Whatever" });
 
         var antiforgery = new Mock<IAntiforgery>();
 
@@ -60,7 +60,8 @@ public class LocalizationTests
                 services.AddSingleton(antiforgery.Object);
                 services.AddSingleton(tenantClient.Object);
                 services.AddTransient<IAuthenticationSchemeProvider, FakeSchemeProvider>();
-                services.Configure<OpenIdConnectOptions>(OpenIdConnectDefaults.AuthenticationScheme, options => {
+                services.Configure<OpenIdConnectOptions>(OpenIdConnectDefaults.AuthenticationScheme, options =>
+                {
                     options.ClientId = "123";
                     options.Authority = "https://whatever";
                 });
@@ -189,6 +190,7 @@ public class LocalizationTests
                     new UserOrganisation(
                         id: Guid.NewGuid(),
                         name: "Acme Ltd",
+                        type: Tenant.WebApiClient.OrganisationType.Organisation,
                         roles: [PartyRole.Tenderer],
                         pendingRoles: [],
                         scopes: ["ADMIN"],

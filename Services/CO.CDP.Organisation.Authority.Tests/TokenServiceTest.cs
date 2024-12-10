@@ -257,6 +257,7 @@ public class TokenServiceTest : IClassFixture<AutoMapperFixture>
                     {
                         Id = Guid.NewGuid(),
                         Name = $"Test Org{x}{y}",
+                        Type = OrganisationInformation.OrganisationType.Organisation,
                         Roles = [OrganisationInformation.PartyRole.Buyer],
                         PendingRoles = [],
                         Scopes = ["Admin"]
