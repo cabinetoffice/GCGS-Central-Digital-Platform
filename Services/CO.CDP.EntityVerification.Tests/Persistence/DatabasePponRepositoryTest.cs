@@ -100,31 +100,31 @@ public class DatabasePponRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
         await using var context = postgreSql.EntityVerificationContext();
         using var repository = PponRepository(context);
 
-        var schemeCodes = new[] { "SCHEME1", "SCHEME2" };
+        var schemeCodes = new[] { "SCHEME4", "SCHEME5" };
 
         var identifierRegistries = new List<IdentifierRegistries>
         {
             new IdentifierRegistries
             {
-                CountryCode = "US",
-                Scheme = "Scheme1",
-                RegisterName = "Registry1",
+                CountryCode = "FR",
+                Scheme = "Scheme4",
+                RegisterName = "FR Registry1",
                 CreatedOn = DateTimeOffset.UtcNow,
                 UpdatedOn = DateTimeOffset.UtcNow
             },
             new IdentifierRegistries
             {
-                CountryCode = "US",
-                Scheme = "Scheme2",
-                RegisterName = "Registry2",
+                CountryCode = "FR",
+                Scheme = "Scheme5",
+                RegisterName = "FR Registry2",
                 CreatedOn = DateTimeOffset.UtcNow,
                 UpdatedOn = DateTimeOffset.UtcNow
             },
             new IdentifierRegistries
             {
                 CountryCode = "CA",
-                Scheme = "Scheme3",
-                RegisterName = "Registry3",
+                Scheme = "Scheme6",
+                RegisterName = "CA Registry3",
                 CreatedOn = DateTimeOffset.UtcNow,
                 UpdatedOn = DateTimeOffset.UtcNow
             }
@@ -137,8 +137,8 @@ public class DatabasePponRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
 
         found.Should().NotBeNull();
         found.Should().HaveCount(2);
-        found.Should().OnlyContain(r => r.CountryCode == "US");
-        found.Select(r => r.Scheme).Should().BeEquivalentTo(new[] { "Scheme1", "Scheme2" });
+        found.Should().OnlyContain(r => r.CountryCode == "FR");
+        found.Select(r => r.Scheme).Should().BeEquivalentTo(new[] { "Scheme4", "Scheme5" });
     }
 
     [Fact]
