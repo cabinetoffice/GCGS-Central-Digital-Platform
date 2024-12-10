@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -2310,16 +2310,16 @@
     <value>Enter your consortium's email address</value>
   </data>
   <data name="Consortium_ConsortiumAddress_Heading" xml:space="preserve">
-    <value>Enter an address for the consortium</value>
+    <value>Enter a postal address for the consortium</value>
   </data>
   <data name="Consortium_ConsortiumAddress_Hint" xml:space="preserve">
-    <value>The address consortium members have agreed will be the service address for the procurement. For example, the postal address of an organisation in the consortium.</value>
+    <value />
   </data>
   <data name="Consortium_ConsortiumAddress_NonUk_Heading" xml:space="preserve">
-    <value>Enter an address for the consortium</value>
+    <value>Enter a postal address for the consortium</value>
   </data>
   <data name="Consortium_ConsortiumAddress_NonUk_Hint" xml:space="preserve">
-    <value>The address consortium members have agreed will be the service address for the procurement. For example, the postal address of an organisation in the consortium.</value>
+    <value />
   </data>
   <data name="Supplier_RegisteredAddress" xml:space="preserve">
     <value>Registered address</value>
