@@ -1,3 +1,6 @@
+# Run github actions locally with act https://github.com/nektos/act
+# act --container-architecture linux/amd64 --artifact-server-path ./build/artifacts -W ./.github/workflows/build.yml
+
 name: Build
 
 on:
