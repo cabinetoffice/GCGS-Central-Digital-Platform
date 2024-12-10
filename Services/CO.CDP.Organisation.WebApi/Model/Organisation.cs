@@ -14,6 +14,8 @@ public record Organisation
     /// <example>"Acme Corporation"</example>
     public required string Name { get; init; }
 
+    public required OrganisationType Type { get; init; }
+
     public required Identifier Identifier { get; init; }
 
     public List<Identifier> AdditionalIdentifiers { get; init; } = [];

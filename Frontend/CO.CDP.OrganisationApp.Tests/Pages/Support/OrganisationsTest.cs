@@ -62,6 +62,7 @@ public class OrganisationsModelTests
                     uri: new Uri("http://example.com/1")
                 ),
                 name: "Mock Organisation 1",
+                type: OrganisationType.Organisation,
                 roles: new List<PartyRole> { PartyRole.Buyer, PartyRole.Supplier }
             ),
             new OrganisationExtended(
@@ -101,6 +102,7 @@ public class OrganisationsModelTests
                     uri: new Uri("http://example.com/2")
                 ),
                 name: "Mock Organisation 2",
+                type: OrganisationType.Organisation,
                 roles: new List<PartyRole> { PartyRole.Buyer }
             )
         };

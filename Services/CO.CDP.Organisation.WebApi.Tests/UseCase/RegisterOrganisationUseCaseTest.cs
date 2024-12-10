@@ -115,6 +115,7 @@ public class RegisterOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
         {
             Id = _generatedGuid,
             Name = "TheOrganisation",
+            Type = OrganisationType.Organisation,
             Identifier = command.Identifier.AsView(),
             AdditionalIdentifiers = command.AdditionalIdentifiers.AsView(),
             Addresses = command.Addresses.AsView(),
