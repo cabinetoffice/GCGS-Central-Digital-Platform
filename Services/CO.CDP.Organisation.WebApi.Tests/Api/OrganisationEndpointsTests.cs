@@ -9,7 +9,6 @@ using Microsoft.Extensions.Hosting;
 using Moq;
 using System.Net;
 using System.Net.Http.Json;
-using System.Text.Json;
 using static CO.CDP.Authentication.Constants;
 using static System.Net.HttpStatusCode;
 
@@ -325,7 +324,6 @@ public class OrganisationEndpointsTests
         return new RegisterOrganisation
         {
             Name = "TheOrganisation",
-            PersonId = Guid.NewGuid(),
             Type = OrganisationType.Organisation,
             Identifier = new OrganisationIdentifier
             {
