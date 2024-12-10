@@ -24,7 +24,7 @@ public class OrganisationRegisterSupplierAsBuyerModel(
         if (!orgInfo.Roles.Contains(PartyRole.Buyer))
         {
             var state = tempDataService.PeekOrDefault<SupplierToBuyerDetails>(SupplierToBuyerStateKey);
-            state.OrganisationType = orgInfo.IsTenderer() ? OrganisationType.Supplier : OrganisationType.Buyer;
+            state.OrganisationType = orgInfo.IsTenderer() ? Constants.OrganisationType.Supplier : Constants.OrganisationType.Buyer;
 
             tempDataService.Put(SupplierToBuyerStateKey, state);
 

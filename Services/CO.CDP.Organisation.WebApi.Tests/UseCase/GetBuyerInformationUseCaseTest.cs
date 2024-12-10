@@ -1,6 +1,7 @@
 using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.Organisation.WebApi.Tests.AutoMapper;
 using CO.CDP.Organisation.WebApi.UseCase;
+using CO.CDP.OrganisationInformation;
 using CO.CDP.OrganisationInformation.Persistence;
 using FluentAssertions;
 using Moq;
@@ -8,14 +9,14 @@ using Persistence = CO.CDP.OrganisationInformation.Persistence;
 
 namespace CO.CDP.Organisation.WebApi.Tests.UseCase;
 
-public class GetSupplierInformationUseCaseTest(AutoMapperFixture mapperFixture)
+public class GetBuyerInformationUseCaseTest(AutoMapperFixture mapperFixture)
     : IClassFixture<AutoMapperFixture>
 {
     private readonly Mock<IOrganisationRepository> _repository = new();
-    private GetSupplierInformationUseCase UseCase => new(_repository.Object, mapperFixture.Mapper);
+    private GetBuyerInformationUseCase UseCase => new(_repository.Object, mapperFixture.Mapper);
 
     [Fact]
-    public async Task Execute_ValidOrganisationWithSupplierInfo_ReturnsSupplierInformation()
+    public async Task Execute_ValidOrganisationWithBuyerInfo_ReturnsBuyerInformation()
     {
         var organisationId = Guid.NewGuid();
         var organisation = FakeOrganisation();
@@ -26,7 +27,9 @@ public class GetSupplierInformationUseCaseTest(AutoMapperFixture mapperFixture)
         var result = await UseCase.Execute(organisationId);
 
         result.Should().NotBeNull();
-        result.As<SupplierInformation>().OrganisationName.Should().Be("FakeOrg");
+        result.As<BuyerInformation>().BuyerType.Should().Be("FakeBuyerType");
+        result.As<BuyerInformation>().DevolvedRegulations.Should().NotBeNullOrEmpty();
+        result.As<BuyerInformation>().DevolvedRegulations.Should().Contain(DevolvedRegulation.NorthernIreland);
     }
 
     [Fact]
@@ -43,7 +46,7 @@ public class GetSupplierInformationUseCaseTest(AutoMapperFixture mapperFixture)
     }
 
     [Fact]
-    public async Task Execute_OrganisationWithoutSupplierInfo_ReturnsNull()
+    public async Task Execute_OrganisationWithoutBuyerInfo_ReturnsNull()
     {
         var organisationId = Guid.NewGuid();
 
@@ -55,24 +58,37 @@ public class GetSupplierInformationUseCaseTest(AutoMapperFixture mapperFixture)
         result.Should().BeNull();
     }
 
-    private static Persistence.Organisation FakeOrganisation(bool? withSupplierInfo = true)
+    private static Persistence.Organisation FakeOrganisation(bool? withBuyerInfo = true)
     {
         Persistence.Organisation org = new()
         {
             Guid = Guid.NewGuid(),
             Name = "FakeOrg",
-            Type = OrganisationInformation.OrganisationType.Organisation,
             Tenant = new Tenant
             {
                 Guid = Guid.NewGuid(),
                 Name = "Tenant 101"
             },
-            ContactPoints = [new Persistence.Organisation.ContactPoint { Email = "contact@test.org" }]
+            ContactPoints =
+            [
+                new Persistence.Organisation.ContactPoint
+                {
+                    Email = "contact@test.org"
+                }
+            ],
+            Type = OrganisationType.Organisation
         };
 
-        if (withSupplierInfo == true)
+        if (withBuyerInfo == true)
         {
-            org.SupplierInfo = new Persistence.Organisation.SupplierInformation { CompletedRegAddress = true };
+            var devolvedRegulations = new List<DevolvedRegulation>();
+            devolvedRegulations.Add(DevolvedRegulation.NorthernIreland);
+
+            org.BuyerInfo = new Persistence.Organisation.BuyerInformation
+            {
+                BuyerType = "FakeBuyerType",
+                DevolvedRegulations = devolvedRegulations,
+            };
         }
 
         return org;

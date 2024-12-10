@@ -13,6 +13,7 @@ using CO.CDP.WebApi.Foundation;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc.Localization;
 using Microsoft.EntityFrameworkCore;
+using Npgsql;
 using System.Globalization;
 using System.Reflection;
 
@@ -40,16 +41,15 @@ builder.Services.Configure<RequestLocalizationOptions>(options =>
     options.RequestCultureProviders.Insert(0, new AcceptLanguageHeaderRequestCultureProvider());
 });
 
-builder.Services.AddHealthChecks()
-    .AddNpgSql(ConnectionStringHelper.GetConnectionString(builder.Configuration, "OrganisationInformationDatabase"));
-
 builder.Services.AddTransient(typeof(LocalizedPropertyResolver<,>));
 builder.Services.AddAutoMapper(typeof(WebApiToPersistenceProfile));
 
 builder.Services.AddProblemDetails();
 
-builder.Services.AddDbContext<OrganisationInformationContext>(o =>
-    o.UseNpgsql(ConnectionStringHelper.GetConnectionString(builder.Configuration, "OrganisationInformationDatabase")));
+var connectionString = ConnectionStringHelper.GetConnectionString(builder.Configuration, "OrganisationInformationDatabase");
+builder.Services.AddHealthChecks().AddNpgSql(connectionString);
+builder.Services.AddDbContext<OrganisationInformationContext>(o => o.UseNpgsql(connectionString));
+
 builder.Services.AddScoped<IFormRepository, DatabaseFormRepository>();
 builder.Services.AddScoped<IOrganisationRepository, DatabaseOrganisationRepository>();
 builder.Services.AddScoped<IPersonRepository, DatabasePersonRepository>();

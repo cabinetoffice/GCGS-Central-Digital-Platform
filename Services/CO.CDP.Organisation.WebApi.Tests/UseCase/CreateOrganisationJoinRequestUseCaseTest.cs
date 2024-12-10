@@ -37,6 +37,7 @@ public class CreateOrganisationJoinRequestUseCaseTests
             Id = 1,
             Guid = new Guid(),
             Name = "Test organisation",
+            Type = OrganisationType.Organisation,
             Tenant = null!
         };
 

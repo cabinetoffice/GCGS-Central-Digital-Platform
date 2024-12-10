@@ -14,7 +14,7 @@ public static class PostgreSqlFixtureExtensions
     }
 
     private static DbContextOptions<TC> DbContextOptions<TC>(this PostgreSqlFixture postgreSql) where TC : DbContext =>
-        new DbContextOptionsBuilder<TC>()
-            .UseNpgsql(postgreSql.ConnectionString)
-            .Options;
+       new DbContextOptionsBuilder<TC>()
+                .UseNpgsql(postgreSql.ConnectionString)
+                .Options;
 }

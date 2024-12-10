@@ -95,6 +95,7 @@ public class RemovePersonFromOrganisationUseCaseTest
             Id = 1,
             Guid = Guid.NewGuid(),
             Name = "Acme",
+            Type = OrganisationInformation.OrganisationType.Organisation,
             OrganisationPersons = [],
             Tenant = new Tenant { Guid = Guid.NewGuid(), Name = "A Tenant" }
         };

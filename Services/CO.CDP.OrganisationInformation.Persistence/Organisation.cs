@@ -12,6 +12,7 @@ public class Organisation : IEntityDate
     public required Guid Guid { get; set; }
     public required Tenant Tenant { get; set; }
     public required string Name { get; set; }
+    public required OrganisationType Type { get; set; } = OrganisationType.Organisation;
     public IList<Identifier> Identifiers { get; set; } = [];
     public ICollection<OrganisationAddress> Addresses { get; set; } = [];
     public ICollection<ContactPoint> ContactPoints { get; set; } = [];

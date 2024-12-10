@@ -62,7 +62,8 @@ public class GetPersonsUseCaseTest
             Id = 1,
             Guid = organisationGuid,
             Tenant = null!,
-            Name = null!
+            Name = null!,
+            Type = OrganisationInformation.OrganisationType.Organisation
         };
 
         var persons = new List<Person>
