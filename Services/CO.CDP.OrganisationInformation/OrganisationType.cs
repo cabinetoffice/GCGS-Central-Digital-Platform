@@ -7,6 +7,6 @@ namespace CO.CDP.OrganisationInformation;
 [JsonConverter(typeof(LowerCamelCaseEnumConverter<OrganisationType>))]
 public enum OrganisationType
 {
-    Organisation,
-    Consortium
+    Organisation = 1,
+    Consortium = 2
 }
