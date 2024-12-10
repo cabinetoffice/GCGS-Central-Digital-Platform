@@ -1,9 +1,9 @@
 @page "/organisation/{id}/supplier-to-buyer-devolved-regulation"
 @using CO.CDP.OrganisationApp.Constants
-
+@using CO.CDP.Localization
 @model CO.CDP.OrganisationApp.Pages.Organisation.SupplierToBuyerDevolvedRegulationModel
 @{
-    ViewData["Title"] = "Do devolved regulations apply to your organisation?";
+    ViewData["Title"] = StaticTextResource.SupplierToBuyer_DevolvedRegulation_Title;
     var devolvedHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Devolved)).HasInnerHtml;
 
     var backLink = $"/organisation/{@Model.Id}/supplier-to-buyer-organisation-type";
@@ -11,7 +11,7 @@
 }
 
 @section BeforeContent {
-    <a href="@backLink" class="govuk-back-link">Back</a>
+    <a href="@backLink" class="govuk-back-link">@StaticTextResource.Global_Back</a>
 }
 
     <div class="govuk-grid-row">
@@ -28,7 +28,7 @@
                         @if (devolvedHasError)
                         {
                             <p id="devolved-error" class="govuk-error-message">
-                                <span class="govuk-visually-hidden">Error:</span> @Html.ValidationMessageFor(m => m.Devolved)
+                             <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span> @Html.ValidationMessageFor(m => m.Devolved)
                             </p>
                         }
 
@@ -39,7 +39,7 @@
                                 value="true"
                                 @(Model.Devolved == true ? "checked" : "")>
                                 <label class="govuk-label govuk-radios__label" for="@nameof(Model.Devolved)">
-                                    Yes
+                                    @StaticTextResource.Global_Yes
                                 </label>
                             </div>
                             <div class="govuk-radios__item">
@@ -48,7 +48,7 @@
                                 value="false"
                                 @(Model.Devolved == false ? "checked" : "")>
                                 <label class="govuk-label govuk-radios__label" for="@nameof(Model.Devolved)-1">
-                                    No
+                                    @StaticTextResource.Global_No
                                 </label>
                             </div>
                         </div>
@@ -56,7 +56,7 @@
                 </div>
                 
                 <govuk-button>
-                    Continue
+                    @StaticTextResource.Global_Continue
                 </govuk-button>
                 
             </form>
