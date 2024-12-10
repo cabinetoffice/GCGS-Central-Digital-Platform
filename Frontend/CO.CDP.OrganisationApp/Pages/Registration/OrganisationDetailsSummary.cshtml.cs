@@ -112,7 +112,7 @@ public class OrganisationDetailsSummaryModel(
         {
             return await pponClient.GetIdentifierRegistriesDetailAsync(new[] { scheme });
         }
-        catch (ApiException ex) when (ex.StatusCode == 404)
+        catch (EntityVerificationClient.ApiException ex) when (ex.StatusCode == 404)
         {
             return new List<IdentifierRegistries>();
         }

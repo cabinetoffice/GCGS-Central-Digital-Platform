@@ -5,9 +5,10 @@ using CO.CDP.OrganisationApp.WebApiClients;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using ApiException = CO.CDP.Organisation.WebApiClient.ApiException;
+using OrganisationApiException = CO.CDP.Organisation.WebApiClient.ApiException;
 using DevolvedRegulation = CO.CDP.OrganisationApp.Constants.DevolvedRegulation;
 using OrganisationWebApiClient = CO.CDP.Organisation.WebApiClient;
+using EntityVerificationApiException = CO.CDP.EntityVerificationClient.ApiException;
 
 namespace CO.CDP.OrganisationApp.Pages.Organisation;
 
@@ -49,7 +50,7 @@ public class OrganisationOverviewModel(IOrganisationClient organisationClient, I
             }
             return Page();
         }
-        catch (ApiException ex) when (ex.StatusCode == 404)
+        catch (OrganisationApiException ex) when (ex.StatusCode == 404)
         {
             return Redirect("/page-not-found");
         }
@@ -73,7 +74,7 @@ public class OrganisationOverviewModel(IOrganisationClient organisationClient, I
         {
             return await pponClient.GetIdentifierRegistriesDetailAsync(schemes);
         }
-        catch (ApiException ex) when (ex.StatusCode == 404)
+        catch
         {
             return new List<IdentifierRegistries>();
         }

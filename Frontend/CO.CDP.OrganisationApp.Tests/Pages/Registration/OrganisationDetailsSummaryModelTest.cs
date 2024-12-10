@@ -17,6 +17,7 @@ public class OrganisationDetailsSummaryModelTest
 {
     private readonly Mock<ISession> sessionMock;
     private readonly Mock<IOrganisationClient> organisationClientMock;
+    private readonly Mock<EntityVerificationClient.PponClient> pponClient;
     private static readonly Guid _organisationId = Guid.NewGuid();
 
     public OrganisationDetailsSummaryModelTest()
@@ -25,6 +26,7 @@ public class OrganisationDetailsSummaryModelTest
         sessionMock.Setup(session => session.Get<UserDetails>(Session.UserDetailsKey))
             .Returns(new UserDetails { UserUrn = "urn:test" });
         organisationClientMock = new Mock<IOrganisationClient>();
+        pponClient = new Mock<EntityVerificationClient.PponClient>();
     }
 
     [Fact]
@@ -232,6 +234,6 @@ public class OrganisationDetailsSummaryModelTest
         sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey))
             .Returns(registrationDetails);
 
-        return new OrganisationDetailsSummaryModel(sessionMock.Object, organisationClientMock.Object, null);
+        return new OrganisationDetailsSummaryModel(sessionMock.Object, organisationClientMock.Object, pponClient.Object);
     }
 }
