@@ -1,18 +1,23 @@
 using System.Text.RegularExpressions;
-using FluentAssertions;
 using CO.CDP.TestKit.Mvc;
+using UserDetails = CO.CDP.OrganisationApp.Models.UserDetails;
+using System.Net;
+using FluentAssertions;
+using Moq;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Match = System.Text.RegularExpressions.Match;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Amazon.SimpleSystemsManagement;
+using Microsoft.AspNetCore.DataProtection.KeyManagement;
+using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.DataProtection;
 
 namespace CO.CDP.OrganisationApp.Tests;
 
 public class ContentSecurityPolicyTests
 {
-    private HttpClient BuildHttpClient()
-    {
-        var factory = new TestWebApplicationFactory<Program>(builder => {});
-
-        return factory.CreateClient();
-    }
-
     [Fact]
     public async Task CspHeaderShouldBePresentAndMatchNonceInScriptTags()
     {
@@ -38,9 +43,40 @@ public class ContentSecurityPolicyTests
 
         foreach (Match match in scriptMatches)
         {
-            var actualNonce = match.Groups[1].Value;
+            var actualNonce = WebUtility.HtmlDecode(match.Groups[1].Value);
             actualNonce.Should().Be(expectedNonce, "The nonce in the script tag should match the one in the CSP header");
         }
+    }
+
+    private HttpClient BuildHttpClient()
+    {
+        Mock<ISession> session = new();
+        Guid personId = new("5b0d3aa8-94cd-4ede-ba03-546937035690");
+
+        var person = new Person.WebApiClient.Person("a@b.com", "First name", personId, "Last name", null);
+
+        session
+            .Setup(s => s.Get<UserDetails>(Session.UserDetailsKey))
+            .Returns(new UserDetails() { Email = "a@b.com", UserUrn = "urn", PersonId = person.Id });
+
+
+        var factory = new TestWebApplicationFactory<Program>(builder =>
+        {
+            builder.ConfigureServices((context, services) =>
+            {
+                services.AddSingleton(session.Object);
+                services.AddTransient<IAuthenticationSchemeProvider, FakeSchemeProvider>();
+                services.Configure<OpenIdConnectOptions>(OpenIdConnectDefaults.AuthenticationScheme, options => {
+                    options.ClientId = "123";
+                    options.Authority = "https://whatever";
+                });
+                services.RemoveAll<IAmazonSimpleSystemsManagement>();
+                services.RemoveAll<IConfigureOptions<KeyManagementOptions>>();
+                services.AddDataProtection().DisableAutomaticKeyGeneration();
+            });
+        });
+
+        return factory.CreateClient();
     }
 }
 
