@@ -147,6 +147,7 @@ public class LookupOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IC
         {
             Id = organisationId,
             Name = "Test Organisation",
+            Type = OrganisationType.Organisation,
             Identifier = new Identifier
             {
                 Id = "123456",

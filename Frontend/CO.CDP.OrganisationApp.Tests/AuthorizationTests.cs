@@ -81,7 +81,8 @@ public class AuthorizationTests
                     id: OrganisationId,
                     identifier: new Identifier("asd", "asd", "asd", new Uri("http://whatever")),
                     name: "Org name",
-                    roles: [ Organisation.WebApiClient.PartyRole.Supplier, Organisation.WebApiClient.PartyRole.Tenderer ],
+                    type: Organisation.WebApiClient.OrganisationType.Organisation,
+                    roles: [Organisation.WebApiClient.PartyRole.Supplier, Organisation.WebApiClient.PartyRole.Tenderer],
                     details: new Details(approval: null, pendingRoles: [])
                 )
             );
@@ -107,7 +108,8 @@ public class AuthorizationTests
                 services.AddTransient<IPersonClient, PersonClient>(_ => PersonClient.Object);
                 services.AddSingleton(Session.Object);
                 services.AddTransient<IAuthenticationSchemeProvider, FakeSchemeProvider>();
-                services.Configure<OpenIdConnectOptions>(OpenIdConnectDefaults.AuthenticationScheme, options => {
+                services.Configure<OpenIdConnectOptions>(OpenIdConnectDefaults.AuthenticationScheme, options =>
+                {
                     options.ClientId = "123";
                     options.Authority = "https://whatever";
                 });
@@ -183,7 +185,7 @@ public class AuthorizationTests
     [Fact]
     public async Task TestCanSeeUsersLinkOnOrganisationPage_WhenUserIsAllowedToAccessResourceAsAdminUser()
     {
-        var httpClient = BuildHttpClient([ OrganisationPersonScopes.Admin, OrganisationPersonScopes.Viewer ], []);
+        var httpClient = BuildHttpClient([OrganisationPersonScopes.Admin, OrganisationPersonScopes.Viewer], []);
 
         var request = new HttpRequestMessage(HttpMethod.Get, $"/organisation/{OrganisationId}");
 
@@ -200,7 +202,7 @@ public class AuthorizationTests
     [Fact]
     public async Task TestCannotSeeUsersLinkOnOrganisationPage_WhenUserIsNotAllowedToAccessResourceAsEditorUser()
     {
-        var httpClient = BuildHttpClient([ OrganisationPersonScopes.Editor ], []);
+        var httpClient = BuildHttpClient([OrganisationPersonScopes.Editor], []);
 
         var request = new HttpRequestMessage(HttpMethod.Get, $"/organisation/{OrganisationId}");
 
@@ -219,8 +221,8 @@ public class AuthorizationTests
     public static IEnumerable<object[]> SupportAdminAccessTestCases()
     {
         yield return new object[] { $"/organisation/{OrganisationId}", new[] { "Organisation name", "Organisation identifier", "Organisation email", "Complete supplier information" }, new[] { "Change", "Users" }, HttpStatusCode.OK };
-        yield return new object[] { $"/organisation/{OrganisationId}/address/uk?frm-overview", new string[] {}, new string[] {}, HttpStatusCode.NotFound };
-        yield return new object[] { $"/organisation/{OrganisationId}/users/user-summary", new string[] {}, new string[] {}, HttpStatusCode.NotFound };
+        yield return new object[] { $"/organisation/{OrganisationId}/address/uk?frm-overview", new string[] { }, new string[] { }, HttpStatusCode.NotFound };
+        yield return new object[] { $"/organisation/{OrganisationId}/users/user-summary", new string[] { }, new string[] { }, HttpStatusCode.NotFound };
     }
 
     [Theory]
