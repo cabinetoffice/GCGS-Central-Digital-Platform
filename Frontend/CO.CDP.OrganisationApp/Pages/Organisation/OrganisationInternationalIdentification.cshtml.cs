@@ -62,15 +62,13 @@ public class OrganisationInternationalIdentificationModel(
         {
             return Redirect("/page-not-found");
         }
-        catch (Exception ex)
+        catch
         {
             return Redirect("/page-not-found");
         }
 
         return Page();
     }
-
-
 
     public async Task<IActionResult> OnPost()
     {
@@ -138,11 +136,7 @@ public class OrganisationInternationalIdentificationModel(
         catch (ApiException ex) when (ex.StatusCode == 404)
         {
             return new List<IdentifierRegistries>();
-        }
-        catch (Exception ex)
-        {
-            return new List<IdentifierRegistries>();
-        }
+        }      
     }
 
     private ICollection<string> PopulateExistingIdentifiers(OrganisationWebApiClient.Organisation organisation)
