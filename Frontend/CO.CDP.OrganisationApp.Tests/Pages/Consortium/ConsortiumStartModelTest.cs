@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages.Consortium;
 
-public class ConsortiumStartTest
+public class ConsortiumStartModelTest
 {
     [Fact]
     public void OnPost_ShouldRedirectToConsortiumNamePageWith()

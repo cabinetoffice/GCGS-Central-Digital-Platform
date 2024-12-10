@@ -7,12 +7,12 @@ using Moq;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages.Consortium;
 
-public class ConsortiumNameTest
+public class ConsortiumNameModelTest
 {
     private readonly Mock<ISession> _sessionMock;
     private readonly ConsortiumNameModel _model;
 
-    public ConsortiumNameTest()
+    public ConsortiumNameModelTest()
     {
         _sessionMock = new Mock<ISession>();
         _model = new ConsortiumNameModel(_sessionMock.Object);
