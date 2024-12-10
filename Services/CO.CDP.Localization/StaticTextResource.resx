@@ -2561,4 +2561,43 @@
   <data name="Organisation_CreateNewConsortium" xml:space="preserve">
     <value>Creat a new consortium</value>
   </data>
+  <data name="Consortium_ConsortiumOverview_Heading" xml:space="preserve">
+    <value>Consortium details</value>
+  </data>
+  <data name="Consortium_ConsortiumOverview_Address_list" xml:space="preserve">
+    <value>Address</value>
+  </data>
+  <data name="Consortium_ConsortiumOverview_Heading2" xml:space="preserve">
+    <value>Organisations in this consortium</value>
+  </data>
+  <data name="Consortium_ConsortiumOverview_Paragraph1" xml:space="preserve">
+    <value>To add an organisation you'll need its most recent share code</value>
+  </data>
+  <data name="Consortium_ConsortiumOverview_AddAnOrganisation_link" xml:space="preserve">
+    <value>Add an organisation</value>
+  </data>
+  <data name="Consortium_ConsortiumOverview_Heading3" xml:space="preserve">
+    <value>Share your combined supplier information</value>
+  </data>
+  <data name="Consortium_ConsortiumOverview_BackToMyAccount_link" xml:space="preserve">
+    <value>Back to my account</value>
+  </data>
+  <data name="Consortium_ConsortiumOverview_CreateSharecode_list" xml:space="preserve">
+    <value>Declare and create a share code</value>
+  </data>
+  <data name="Consortium_ConsortiumOverview_status_list" xml:space="preserve">
+    <value>Cannot start yet</value>
+  </data>
+  <data name="Consortium_ConsortiumOverview_HiddenSpan_name" xml:space="preserve">
+    <value>consortium name</value>
+  </data>
+  <data name="Consortium_ConsortiumOverview_HiddenSpan_address" xml:space="preserve">
+    <value>address</value>
+  </data>
+  <data name="Consortium_ConsortiumOverview_HiddenSpan_emailaddress" xml:space="preserve">
+    <value>consortium email address</value>
+  </data>
+  <data name="Consortium_ConsortiumOverview_EmailAddress_list" xml:space="preserve">
+    <value>Email address</value>
+  </data>
 </root>
