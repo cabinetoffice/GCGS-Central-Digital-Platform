@@ -1,11 +1,12 @@
 using Microsoft.AspNetCore.Razor.TagHelpers;
 
 [HtmlTargetElement("script", Attributes = "nonce-csp")]
-public class ScriptNonceTagHelper : TagHelper
+[HtmlTargetElement("style", Attributes = "nonce-csp")]
+public class ContentSecurityPolicyNonceTagHelper : TagHelper
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public ScriptNonceTagHelper(IHttpContextAccessor httpContextAccessor)
+    public ContentSecurityPolicyNonceTagHelper(IHttpContextAccessor httpContextAccessor)
     {
         _httpContextAccessor = httpContextAccessor;
     }
@@ -13,9 +14,8 @@ public class ScriptNonceTagHelper : TagHelper
     public override void Process(TagHelperContext context, TagHelperOutput output)
     {
         var httpContext = _httpContextAccessor.HttpContext;
-        if (httpContext == null) return;
 
-        if (httpContext.Items["ContentSecurityPolicyNonce"] is string nonce)
+        if (httpContext != null && httpContext.Items["ContentSecurityPolicyNonce"] is string nonce)
         {
             output.Attributes.SetAttribute("nonce", nonce);
         }
