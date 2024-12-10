@@ -309,6 +309,7 @@ public class OrganisationEndpointsTests
         {
             Id = organisationId,
             Name = "TheOrganisation",
+            Type = OrganisationType.Organisation,
             Identifier = command.Identifier.AsView(),
             AdditionalIdentifiers = command.AdditionalIdentifiers.AsView(),
             Addresses = command.Addresses.AsView(),
@@ -366,6 +367,7 @@ public class OrganisationEndpointsTests
         {
             Id = Guid.NewGuid(),
             Name = "TheOrganisation",
+            Type = OrganisationType.Organisation,
             Identifier = command.Identifier.AsView(),
             AdditionalIdentifiers = command.AdditionalIdentifiers.AsView(),
             Addresses = command.Addresses.AsView(),
