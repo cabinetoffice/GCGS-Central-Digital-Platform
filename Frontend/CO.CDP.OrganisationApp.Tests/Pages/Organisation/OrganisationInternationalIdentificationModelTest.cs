@@ -116,7 +116,7 @@ public class OrganisationInternationalIdentificationModelTest
 
         _organisationClientMock.Setup(x => x.GetOrganisationAsync(It.IsAny<Guid>()))
             .ReturnsAsync(GivenOrganisationClientModel());
-        
+
         model.OrganisationScheme = "FR-DFG";
         model.RegistrationNumbers = new Dictionary<string, string?> { { "FR-DFG", "123456789" } };
 
@@ -139,7 +139,7 @@ public class OrganisationInternationalIdentificationModelTest
 
         validationResult.Should().HaveCount(1);
         validationResult.Should().Contain(error => error.ErrorMessage == StaticTextResource.OrganisationRegistration_InternationalIdentifier_Type_Required_ErrorMessage);
-    }   
+    }
 
     private static CO.CDP.Organisation.WebApiClient.Organisation GivenOrganisationClientModel()
     {
@@ -155,16 +155,15 @@ public class OrganisationInternationalIdentificationModelTest
                 };
 
         return new CO.CDP.Organisation.WebApiClient.Organisation(
-        additionalIdentifiers: additionalIdentifiers,
-        addresses: null, 
-        contactPoint: null, 
-        details: new Details(approval: null, pendingRoles: []),
-        id: _organisationId,
-        identifier: identifier,
-        name: "Test Org",
-        roles: new List<PartyRole>(), 
-        type: OrganisationType.Organisation 
-    );
+               additionalIdentifiers: additionalIdentifiers,
+               addresses: null,
+               contactPoint: null,
+               details: new Details(approval: null, pendingRoles: []),
+               id: _organisationId,
+               identifier: identifier,
+               name: "Test Org",
+               roles: new List<PartyRole>(),
+               type: OrganisationType.Organisation);
     }
     private IList<ValidationResult> ValidateModel(object model)
     {

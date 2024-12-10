@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using CO.CDP.OrganisationApp.Pages.Registration;
 using CO.CDP.EntityVerificationClient;
 using CO.CDP.Organisation.WebApiClient;
+using CO.CDP.Localization;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages.Registration;
 
@@ -13,7 +14,7 @@ public class OrganisationInternationalIdentificationTests
     private readonly Mock<ISession> _sessionMock = new();
     private readonly Mock<IOrganisationClient> _organisationClientMock = new();
     private readonly Mock<IPponClient> _pponClientMock = new();
-    private readonly Mock<ITempDataService> _tempDataServiceMock = new();
+    private readonly Mock<IFlashMessageService> _flashMessageServiceMock = new();
     private static readonly Guid _organisationId = Guid.NewGuid();
 
     private OrganisationInternationalIdentificationModel CreateModel()
@@ -22,7 +23,7 @@ public class OrganisationInternationalIdentificationTests
             _sessionMock.Object,
             _organisationClientMock.Object,
             _pponClientMock.Object,
-            _tempDataServiceMock.Object
+            _flashMessageServiceMock.Object
         );
     }
 
@@ -118,22 +119,31 @@ public class OrganisationInternationalIdentificationTests
 
         var result = await model.OnPost();
 
-        _tempDataServiceMock.Verify(t => t.Put(It.IsAny<string>(), It.IsAny<object>()), Times.Once);
+        _flashMessageServiceMock.Verify(api => api.SetFlashMessage(
+            FlashMessageType.Important,
+            StaticTextResource.OrganisationRegistration_CompanyHouseNumberQuestion_CompanyAlreadyRegistered_NotificationBanner,
+            null,
+            null,
+            It.Is<Dictionary<string, string>>(d => d["organisationIdentifier"] == model.Identifier),
+            It.Is<Dictionary<string, string>>(d => d["organisationName"] == model.OrganisationName)
+        ),
+        Times.Once);
+
         result.Should().BeOfType<PageResult>();
     }
 
     private static CO.CDP.Organisation.WebApiClient.Organisation GivenOrganisationClientModel()
     {
         return new CO.CDP.Organisation.WebApiClient.Organisation(
-      additionalIdentifiers: null,
-      addresses: null,
-      contactPoint: null,
-      details: new Details(approval: null, pendingRoles: []),
-      id: _organisationId,
-      identifier: null,
-      name: "Test Org",
-      roles: new List<PartyRole>(),
-      type: OrganisationType.Organisation);
+                  additionalIdentifiers: null,
+                  addresses: null,
+                  contactPoint: null,
+                  details: new Details(approval: null, pendingRoles: []),
+                  id: _organisationId,
+                  identifier: null,
+                  name: "Test Org",
+                  roles: new List<PartyRole>(),
+                  type: OrganisationType.Organisation);
     }
 }
 

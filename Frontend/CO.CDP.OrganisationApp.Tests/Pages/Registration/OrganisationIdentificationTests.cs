@@ -1,12 +1,12 @@
 using CO.CDP.EntityVerificationClient;
 using CO.CDP.Organisation.WebApiClient;
-using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.Pages.Registration;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moq;
+using System.Net;
 using OrganisationWebApiClient = CO.CDP.Organisation.WebApiClient;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages.Registration;
@@ -17,7 +17,7 @@ public class OrganisationIdentificationModelTests
     private readonly Mock<IOrganisationClient> organisationClientMock;
     private static readonly Guid _organisationId = Guid.NewGuid();
     private readonly Mock<IPponClient> _pponClientMock;
-    private readonly Mock<ITempDataService> tempDataServiceMock;
+    private readonly Mock<IFlashMessageService> flashMessageServiceMock;
 
     public OrganisationIdentificationModelTests()
     {
@@ -26,7 +26,7 @@ public class OrganisationIdentificationModelTests
             .Returns(new UserDetails { UserUrn = "urn:test" });
         _pponClientMock = new Mock<IPponClient>();
         organisationClientMock = new Mock<IOrganisationClient>();
-        tempDataServiceMock = new Mock<ITempDataService>();
+        flashMessageServiceMock = new Mock<IFlashMessageService>();
         organisationClientMock.Setup(api => api.LookupOrganisationAsync(It.IsAny<string>(), It.IsAny<string>()))
                     .ThrowsAsync(new OrganisationWebApiClient.ApiException("Organisation does not exist", 404, "", null, null));
         _pponClientMock.Setup(api => api.GetIdentifiersAsync(It.IsAny<string>()))
@@ -40,7 +40,7 @@ public class OrganisationIdentificationModelTests
 
         sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(registrationDetails);
 
-        var model = new OrganisationIdentificationModel(sessionMock.Object, organisationClientMock.Object, _pponClientMock.Object, tempDataServiceMock.Object);
+        var model = new OrganisationIdentificationModel(sessionMock.Object, organisationClientMock.Object, _pponClientMock.Object, flashMessageServiceMock.Object);
         model.OnGet();
 
         model.OrganisationScheme.Should().Be(registrationDetails.OrganisationScheme);
@@ -87,7 +87,7 @@ public class OrganisationIdentificationModelTests
     public async Task OnPost_WhenOrganisationTypeIsNullOrEmpty_ShouldReturnPageWithModelStateError(string? organisationType)
     {
 
-        var model = new OrganisationIdentificationModel(sessionMock.Object, organisationClientMock.Object, _pponClientMock.Object, tempDataServiceMock.Object)
+        var model = new OrganisationIdentificationModel(sessionMock.Object, organisationClientMock.Object, _pponClientMock.Object, flashMessageServiceMock.Object)
         {
             OrganisationScheme = organisationType
         };
@@ -104,7 +104,7 @@ public class OrganisationIdentificationModelTests
     [InlineData("GB-CHC", "")]
     public async Task OnPost_WhenOrganisationTypeIsCCEWAndCharityCommissionEnglandWalesNumberIsNullOrEmpty_ShouldReturnPageWithModelStateError(string organisationType, string? charityCommissionEnglandWalesNumber)
     {
-        var model = new OrganisationIdentificationModel(sessionMock.Object, organisationClientMock.Object, _pponClientMock.Object, tempDataServiceMock.Object)
+        var model = new OrganisationIdentificationModel(sessionMock.Object, organisationClientMock.Object, _pponClientMock.Object, flashMessageServiceMock.Object)
         {
             OrganisationScheme = organisationType,
             CharityCommissionEnglandWalesNumber = charityCommissionEnglandWalesNumber
@@ -122,7 +122,7 @@ public class OrganisationIdentificationModelTests
     [InlineData("GB-SC", "")]
     public async Task OnPost_WhenOrganisationTypeIsOSCRAndScottishCharityRegulatorNumberIsNullOrEmpty_ShouldReturnPageWithModelStateError(string organisationType, string? scottishCharityRegulatorNumber)
     {
-        var model = new OrganisationIdentificationModel(sessionMock.Object, organisationClientMock.Object, _pponClientMock.Object, tempDataServiceMock.Object)
+        var model = new OrganisationIdentificationModel(sessionMock.Object, organisationClientMock.Object, _pponClientMock.Object, flashMessageServiceMock.Object)
         {
             OrganisationScheme = organisationType,
             ScottishCharityRegulatorNumber = scottishCharityRegulatorNumber
@@ -140,7 +140,7 @@ public class OrganisationIdentificationModelTests
     [InlineData("GB-NIC", "")]
     public async Task OnPost_WhenOrganisationTypeIsGbNicAndCharityCommissionNorthernIrelandNumberIsNullOrEmpty_ShouldReturnPageWithModelStateError(string organisationType, string? charityCommissionNorthernIrelandNumber)
     {
-        var model = new OrganisationIdentificationModel(sessionMock.Object, organisationClientMock.Object, _pponClientMock.Object, tempDataServiceMock.Object)
+        var model = new OrganisationIdentificationModel(sessionMock.Object, organisationClientMock.Object, _pponClientMock.Object, flashMessageServiceMock.Object)
         {
             OrganisationScheme = organisationType,
             CharityCommissionNorthernIrelandNumber = charityCommissionNorthernIrelandNumber
@@ -158,7 +158,7 @@ public class OrganisationIdentificationModelTests
     [InlineData("GB-MPR", "")]
     public async Task OnPost_WhenOrganisationTypeIsMPRAndMutualsPublicRegisterNumberIsNullOrEmpty_ShouldReturnPageWithModelStateError(string organisationType, string? mutualsPublicRegisterNumber)
     {
-        var model = new OrganisationIdentificationModel(sessionMock.Object, organisationClientMock.Object, _pponClientMock.Object, tempDataServiceMock.Object)
+        var model = new OrganisationIdentificationModel(sessionMock.Object, organisationClientMock.Object, _pponClientMock.Object, flashMessageServiceMock.Object)
         {
             OrganisationScheme = organisationType,
             MutualsPublicRegisterNumber = mutualsPublicRegisterNumber
@@ -176,7 +176,7 @@ public class OrganisationIdentificationModelTests
     [InlineData("GG-RCE", "")]
     public async Task OnPost_WhenOrganisationTypeIsGRNAndGuernseyRegistryNumberIsNullOrEmpty_ShouldReturnPageWithModelStateError(string organisationType, string? guernseyRegistryNumber)
     {
-        var model = new OrganisationIdentificationModel(sessionMock.Object, organisationClientMock.Object, _pponClientMock.Object, tempDataServiceMock.Object)
+        var model = new OrganisationIdentificationModel(sessionMock.Object, organisationClientMock.Object, _pponClientMock.Object, flashMessageServiceMock.Object)
         {
             OrganisationScheme = organisationType,
             GuernseyRegistryNumber = guernseyRegistryNumber
@@ -194,7 +194,7 @@ public class OrganisationIdentificationModelTests
     [InlineData("JE-FSC", "")]
     public async Task OnPost_WhenOrganisationTypeIsJFSCAndJerseyFinancialServicesCommissionRegistryNumberIsNullOrEmpty_ShouldReturnPageWithModelStateError(string organisationType, string? jerseyFinancialServicesCommissionRegistryNumber)
     {
-        var model = new OrganisationIdentificationModel(sessionMock.Object, organisationClientMock.Object, _pponClientMock.Object, tempDataServiceMock.Object)
+        var model = new OrganisationIdentificationModel(sessionMock.Object, organisationClientMock.Object, _pponClientMock.Object, flashMessageServiceMock.Object)
         {
             OrganisationScheme = organisationType,
             JerseyFinancialServicesCommissionRegistryNumber = jerseyFinancialServicesCommissionRegistryNumber
@@ -212,7 +212,7 @@ public class OrganisationIdentificationModelTests
     [InlineData("IM-CR", "")]
     public async Task OnPost_WhenOrganisationTypeIsIMCRAndIsleofManCompaniesRegistryNumberIsNullOrEmpty_ShouldReturnPageWithModelStateError(string organisationType, string? isleofManCompaniesRegistryNumber)
     {
-        var model = new OrganisationIdentificationModel(sessionMock.Object, organisationClientMock.Object, _pponClientMock.Object, tempDataServiceMock.Object)
+        var model = new OrganisationIdentificationModel(sessionMock.Object, organisationClientMock.Object, _pponClientMock.Object, flashMessageServiceMock.Object)
         {
             OrganisationScheme = organisationType,
             IsleofManCompaniesRegistryNumber = isleofManCompaniesRegistryNumber
@@ -230,7 +230,7 @@ public class OrganisationIdentificationModelTests
     [InlineData("GB-NHS", "")]
     public async Task OnPost_WhenOrganisationTypeIsNHORAndNationalHealthServiceOrganisationsRegistryNumberIsNullOrEmpty_ShouldReturnPageWithModelStateError(string organisationType, string? nationalHealthServiceOrganisationsRegistryNumber)
     {
-        var model = new OrganisationIdentificationModel(sessionMock.Object, organisationClientMock.Object, _pponClientMock.Object, tempDataServiceMock.Object)
+        var model = new OrganisationIdentificationModel(sessionMock.Object, organisationClientMock.Object, _pponClientMock.Object, flashMessageServiceMock.Object)
         {
             OrganisationScheme = organisationType,
             NationalHealthServiceOrganisationsRegistryNumber = nationalHealthServiceOrganisationsRegistryNumber
@@ -248,7 +248,7 @@ public class OrganisationIdentificationModelTests
     [InlineData("GB-UKPRN", "")]
     public async Task OnPost_WhenOrganisationTypeIsUKPRNAndUKLearningProviderReferenceNumberIsNullOrEmpty_ShouldReturnPageWithModelStateError(string organisationType, string? ukLearningProviderReferenceNumber)
     {
-        var model = new OrganisationIdentificationModel(sessionMock.Object, organisationClientMock.Object, _pponClientMock.Object, tempDataServiceMock.Object)
+        var model = new OrganisationIdentificationModel(sessionMock.Object, organisationClientMock.Object, _pponClientMock.Object, flashMessageServiceMock.Object)
         {
             OrganisationScheme = organisationType,
             UKLearningProviderReferenceNumber = ukLearningProviderReferenceNumber
@@ -264,7 +264,7 @@ public class OrganisationIdentificationModelTests
     [Fact]
     public async Task OnPost_WhenModelStateIsValid_ShouldRedirectToOrganisationName()
     {
-        var model = new OrganisationIdentificationModel(sessionMock.Object, organisationClientMock.Object, _pponClientMock.Object, tempDataServiceMock.Object)
+        var model = new OrganisationIdentificationModel(sessionMock.Object, organisationClientMock.Object, _pponClientMock.Object, flashMessageServiceMock.Object)
         {
             OrganisationScheme = "Other"
         };
@@ -279,7 +279,7 @@ public class OrganisationIdentificationModelTests
     [Fact]
     public async Task OnPost_WhenModelStateIsValidAndRedirectToSummary_ShouldRedirectToOrganisationDetailSummaryPage()
     {
-        var model = new OrganisationIdentificationModel(sessionMock.Object, organisationClientMock.Object, _pponClientMock.Object, tempDataServiceMock.Object)
+        var model = new OrganisationIdentificationModel(sessionMock.Object, organisationClientMock.Object, _pponClientMock.Object, flashMessageServiceMock.Object)
         {
             OrganisationScheme = "Other",
             RedirectToSummary = true
@@ -294,7 +294,7 @@ public class OrganisationIdentificationModelTests
     [Fact]
     public async Task OnPost_WhenSchemeNotOtherAndOrganisationExistsInOganisationService_ShouldShowNotificationBanner()
     {
-        var model = new OrganisationIdentificationModel(sessionMock.Object, organisationClientMock.Object, _pponClientMock.Object, tempDataServiceMock.Object)
+        var model = new OrganisationIdentificationModel(sessionMock.Object, organisationClientMock.Object, _pponClientMock.Object, flashMessageServiceMock.Object)
         {
             OrganisationScheme = "JE-FSC",
             RedirectToSummary = true
@@ -307,10 +307,19 @@ public class OrganisationIdentificationModelTests
 
         var result = await model.OnPost();
 
-        tempDataServiceMock.Verify(tempDataService => tempDataService.Put(
-                FlashMessageTypes.Important,
-                It.Is<FlashMessage>(f => f.Heading == model.NotificationBannerCompanyAlreadyRegistered.Heading)),
-            Times.Once);
+        Dictionary<string, string> urlParameters = new() { ["identifier"] = model.Identifier! };
+        Dictionary<string, string> htmlParameters = new() { ["organisationName"] = model.OrganisationName! };
+
+        flashMessageServiceMock.Verify(api => api.SetFlashMessage(
+            FlashMessageType.Important,
+            "An organisation with this registration number already exists. Change the registration number or <a class='govuk-notification-banner__link' href='/registration/{identifier}/join-organisation'>request to join {organisationName}.</a>",
+            null,
+            null,
+            urlParameters,
+            htmlParameters
+        ),
+        Times.Once);
+
 
         result.Should().BeOfType<PageResult>();
     }
@@ -318,10 +327,11 @@ public class OrganisationIdentificationModelTests
     [Fact]
     public async Task OnPost_WhenSchemeNotOtherAndIdentifierExistsInEntityVerificationService_ShouldShowNotificationBanner()
     {
-        var model = new OrganisationIdentificationModel(sessionMock.Object, organisationClientMock.Object, _pponClientMock.Object, tempDataServiceMock.Object)
+        var model = new OrganisationIdentificationModel(sessionMock.Object, organisationClientMock.Object, _pponClientMock.Object, flashMessageServiceMock.Object)
         {
             OrganisationScheme = "JE-FSC",
-            RedirectToSummary = true
+            RedirectToSummary = true,
+            OrganisationName = "Org name"
         };
         GivenRegistrationIsInProgress();
 
@@ -331,10 +341,19 @@ public class OrganisationIdentificationModelTests
 
         var result = await model.OnPost();
 
-        tempDataServiceMock.Verify(tempDataService => tempDataService.Put(
-                FlashMessageTypes.Important,
-                It.Is<FlashMessage>(f => f.Heading == model.NotificationBannerCompanyAlreadyRegistered.Heading)),
-            Times.Once);
+        Dictionary<string, string> urlParameters = new() { ["identifier"] = model.Identifier! };
+        Dictionary<string, string> htmlParameters = new() { ["organisationName"] = model.OrganisationName! };
+
+        flashMessageServiceMock.Verify(api => api.SetFlashMessage(
+            FlashMessageType.Important,
+            "An organisation with this registration number already exists. Change the registration number or <a class='govuk-notification-banner__link' href='/registration/{identifier}/join-organisation'>request to join {organisationName}.</a>",
+            null,
+            null,
+            urlParameters,
+            htmlParameters
+        ),
+        Times.Once);
+
 
         result.Should().BeOfType<PageResult>();
     }
@@ -342,7 +361,7 @@ public class OrganisationIdentificationModelTests
     [Fact]
     public async Task OnPost_WhenSchemeNotOtherAndEntityVerificationServiceOffLine_ShouldRedirectToOrganisationServiceUnavailablePage()
     {
-        var model = new OrganisationIdentificationModel(sessionMock.Object, organisationClientMock.Object, _pponClientMock.Object, tempDataServiceMock.Object)
+        var model = new OrganisationIdentificationModel(sessionMock.Object, organisationClientMock.Object, _pponClientMock.Object, flashMessageServiceMock.Object)
         {
             OrganisationScheme = "JE-FSC",
             RedirectToSummary = true
@@ -370,7 +389,7 @@ public class OrganisationIdentificationModelTests
     [InlineData("GB-UKPRN", "PRN1234")]
     public async Task OnPost_WhenModelStateIsValid_ShouldStoreOrganisationTypeAndIdentificationNumberInSession(string organisationType, string identificationNumber)
     {
-        var model = new OrganisationIdentificationModel(sessionMock.Object, organisationClientMock.Object, _pponClientMock.Object, tempDataServiceMock.Object)
+        var model = new OrganisationIdentificationModel(sessionMock.Object, organisationClientMock.Object, _pponClientMock.Object, flashMessageServiceMock.Object)
         {
             OrganisationScheme = organisationType
         };

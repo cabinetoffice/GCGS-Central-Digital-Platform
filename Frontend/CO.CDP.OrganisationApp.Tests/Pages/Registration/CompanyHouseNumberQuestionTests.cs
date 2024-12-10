@@ -1,3 +1,4 @@
+using CO.CDP.Localization;
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
@@ -8,12 +9,13 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moq;
+using System.Net;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages.Registration;
 public class CompanyHouseNumberQuestionTests
 {
     private readonly Mock<ISession> sessionMock;
-    private readonly Mock<ITempDataService> tempDataServiceMock;
+    private readonly Mock<IFlashMessageService> flashMessageServiceMock;
     private readonly Mock<ICompaniesHouseApi> companiesHouseApiMock;
     private readonly Mock<IOrganisationClient> organisationClientMock;
 
@@ -22,7 +24,7 @@ public class CompanyHouseNumberQuestionTests
         sessionMock = new Mock<ISession>();
         sessionMock.Setup(session => session.Get<UserDetails>(Session.UserDetailsKey))
             .Returns(new UserDetails { UserUrn = "urn:test" });
-        tempDataServiceMock = new Mock<ITempDataService>();
+        flashMessageServiceMock = new Mock<IFlashMessageService>();
         companiesHouseApiMock = new Mock<ICompaniesHouseApi>();
         organisationClientMock = new Mock<IOrganisationClient>();
     }
@@ -116,14 +118,31 @@ public class CompanyHouseNumberQuestionTests
 
         GivenRegistrationIsInProgress(model.HasCompaniesHouseNumber, model.CompaniesHouseNumber);
 
+        organisationClientMock.Setup(o => o.LookupOrganisationAsync(string.Empty, It.IsAny<string>()))
+            .ReturnsAsync(GivenOrganisation());
+
         var result = await model.OnPost();
 
-        tempDataServiceMock.Verify(api => api.Put(
-            FlashMessageTypes.Important,
-            It.Is<FlashMessage>(f => f.Heading == model.NotificationBannerCompanyAlreadyRegistered.Heading)),
-            Times.Once);
+        Dictionary<string, string> urlParameters = new() { ["organisationIdentifier"] = model.OrganisationIdentifier };
+        Dictionary<string, string> htmlParameters = new() { ["organisationName"] = model.OrganisationName };
+
+        flashMessageServiceMock.Verify(api => api.SetFlashMessage(
+            FlashMessageType.Important,
+            StaticTextResource.OrganisationRegistration_CompanyHouseNumberQuestion_CompanyAlreadyRegistered_NotificationBanner,
+            null,
+            null,
+            It.Is<Dictionary<string, string>>(d => d["organisationIdentifier"] == model.OrganisationIdentifier),
+            It.Is<Dictionary<string, string>>(d => d["organisationName"] == model.OrganisationName)
+        ),
+        Times.Once);
+
 
         result.Should().BeOfType<PageResult>();
+    }
+
+    private static CDP.Organisation.WebApiClient.Organisation GivenOrganisation()
+    {
+        return new CO.CDP.Organisation.WebApiClient.Organisation(null, null, null, null, new Guid(), null, "Test Org", [], CDP.Organisation.WebApiClient.OrganisationType.Organisation);
     }
 
     [Fact]
@@ -142,10 +161,16 @@ public class CompanyHouseNumberQuestionTests
 
         var result = await model.OnPost();
 
-        tempDataServiceMock.Verify(api => api.Put(
-            FlashMessageTypes.Important,
-            It.Is<FlashMessage>(f => f.Heading == model.NotificationBannerCompanyNotFound.Heading)),
-            Times.Once);
+        flashMessageServiceMock.Verify(api => api.SetFlashMessage(
+            FlashMessageType.Important,
+            StaticTextResource.OrganisationRegistration_CompanyHouseNumberQuestion_CompanyNotFound_NotificationBanner,
+            null,
+            null,
+            null,
+            null
+        ),
+        Times.Once);
+
         result.Should().BeOfType<PageResult>();
     }
 
@@ -166,7 +191,7 @@ public class CompanyHouseNumberQuestionTests
         return new CompanyHouseNumberQuestionModel(sessionMock.Object,
             companiesHouseApiMock.Object,
             organisationClientMock.Object,
-            tempDataServiceMock.Object);
+            flashMessageServiceMock.Object);
     }
     private static RegistrationDetails DummyRegistrationDetails(bool? hasNumber, string companyHouseNumber)
     {
