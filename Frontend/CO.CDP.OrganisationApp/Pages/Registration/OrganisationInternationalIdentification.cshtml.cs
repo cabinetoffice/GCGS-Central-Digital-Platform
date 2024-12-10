@@ -16,7 +16,7 @@ namespace CO.CDP.OrganisationApp.Pages.Registration;
 public class OrganisationInternationalIdentificationModel(ISession session,
     IOrganisationClient organisationClient,
     IPponClient pponClient,
-    ITempDataService tempDataService) : RegistrationStepModel(session)
+    IFlashMessageService flashMessageService) : RegistrationStepModel(session)
 {
     public override string CurrentPage => OrganisationInternationalIdentifierPage;
 
@@ -42,8 +42,6 @@ public class OrganisationInternationalIdentificationModel(ISession session,
     public string? Identifier { get; set; }
 
     public string? OrganisationName;
-
-    public FlashMessage NotificationBannerCompanyAlreadyRegistered { get { return new FlashMessage(string.Format(StaticTextResource.OrganisationRegistration_CompanyHouseNumberQuestion_CompanyAlreadyRegistered_NotificationBanner, Identifier, OrganisationName)); } }
 
     public async Task OnGet()
     {
@@ -116,7 +114,16 @@ public class OrganisationInternationalIdentificationModel(ISession session,
             }
         }
 
-        tempDataService.Put(FlashMessageTypes.Important, NotificationBannerCompanyAlreadyRegistered);
+        if (OrganisationName != null)
+        {
+            flashMessageService.SetFlashMessage(
+                FlashMessageType.Important,
+                heading: StaticTextResource.OrganisationRegistration_CompanyHouseNumberQuestion_CompanyAlreadyRegistered_NotificationBanner,
+                urlParameters: new() { ["organisationIdentifier"] = Identifier },
+                htmlParameters: new() { ["organisationName"] = OrganisationName }
+            );
+        }
+
         return Page();
     }
 
