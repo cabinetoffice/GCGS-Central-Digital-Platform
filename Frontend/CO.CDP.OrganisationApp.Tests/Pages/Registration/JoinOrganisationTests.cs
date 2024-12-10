@@ -14,7 +14,7 @@ public class JoinOrganisationModelTests
 {
     private readonly Mock<IOrganisationClient> _organisationClientMock;
     private readonly Mock<ISession> _sessionMock;
-    private readonly Mock<ITempDataService> _tempDataMock;
+    private readonly Mock<IFlashMessageService> flashMessageServiceMock;
     private readonly JoinOrganisationModel _joinOrganisationModel;
     private readonly Guid _organisationId = Guid.NewGuid();
     private readonly string _identifier = "GB-COH:123456789";
@@ -25,10 +25,11 @@ public class JoinOrganisationModelTests
     {
         _organisationClientMock = new Mock<IOrganisationClient>();
         _sessionMock = new Mock<ISession>();
-        _tempDataMock = new Mock<ITempDataService>();
+        flashMessageServiceMock = new Mock<IFlashMessageService>();
         _sessionMock.Setup(s => s.Get<UserDetails>(Session.UserDetailsKey))
             .Returns(new UserDetails() { UserUrn = "testUserUrn", PersonId = _personId});
-        _joinOrganisationModel = new JoinOrganisationModel(_organisationClientMock.Object, _sessionMock.Object, _tempDataMock.Object);
+
+        _joinOrganisationModel = new JoinOrganisationModel(_organisationClientMock.Object, _sessionMock.Object, flashMessageServiceMock.Object);
         _organisation = new CO.CDP.Organisation.WebApiClient.Organisation(null, null, null, null, _organisationId, null, "Test Org", [], OrganisationWebApiClient.OrganisationType.Organisation);
     }
 
@@ -140,10 +141,15 @@ public class JoinOrganisationModelTests
 
         var result = await _joinOrganisationModel.OnPost(_identifier);
 
-        _tempDataMock.Verify(tempData => tempData.Put(
-                FlashMessageTypes.Important,
-                It.IsAny<FlashMessage>()),
-            Times.Once);
+        flashMessageServiceMock.Verify(api => api.SetFlashMessage(
+            FlashMessageType.Important,
+            ErrorMessagesList.AlreadyMemberOfOrganisation,
+            null,
+            null,
+            null,
+            null
+        ),
+        Times.Once);
 
         result.Should().BeOfType<PageResult>();
     }
