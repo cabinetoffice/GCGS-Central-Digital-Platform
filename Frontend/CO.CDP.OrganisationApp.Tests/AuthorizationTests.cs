@@ -32,6 +32,7 @@ public class AuthorizationTests
         var organisation = new UserOrganisation(
                                     id: OrganisationId,
                                     name: "Org name",
+                                    type: Tenant.WebApiClient.OrganisationType.Organisation,
                                     roles:
                                     [
                                         Tenant.WebApiClient.PartyRole.Supplier,
