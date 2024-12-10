@@ -97,9 +97,8 @@ public class ConsortiumEmailModel(
                 legalName: "GB-PPON",
                 scheme: string.Empty),
             name: details.ConstortiumName,
-            type: OrganisationWebApiClient.OrganisationType.Consortium,
-            roles: [],
-            personId: user.PersonId.Value
+            type: OrganisationWebApiClient.OrganisationType.InformalConsortium,
+            roles: []
         );
     }
 }
