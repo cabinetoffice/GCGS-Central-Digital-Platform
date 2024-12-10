@@ -67,9 +67,9 @@ public class OrganisationInternationalIdentificationModel(ISession session,
         {
             InternationalIdentifiers = new List<IdentifierRegistries>();
         }
-        catch (Exception ex)
+        catch
         {
-            InternationalIdentifiers = new List<IdentifierRegistries>();
+            RedirectToPage("OrganisationRegistrationUnavailable");
         }
     }
 
