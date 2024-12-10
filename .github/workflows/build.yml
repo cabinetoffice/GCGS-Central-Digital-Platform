@@ -137,6 +137,7 @@ jobs:
       - name: Determine the category
         id: category
         run: |
+          image=${{ matrix.image }}
           category=${image%%:*}
           echo "category=$category" >> $GITHUB_OUTPUT
       - name: Scan ${{ matrix.image }}
