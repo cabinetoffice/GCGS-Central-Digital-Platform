@@ -8,6 +8,8 @@ public abstract class RegistrationStepModel : LoggedInUserAwareModel
     public const string OrganisationTypePage = "/registration/organisation-type";
     public const string OrganisationHasCompanyHouseNumberPage = "/registration/has-companies-house-number";
     public const string OrganisationIdentifierPage = "/registration/organisation-identification";
+    public const string OrganisationInternationalIdentificationCountryPage = "/registration/organisation-identification-country";
+    public const string OrganisationInternationalIdentifierPage = "/registration/organisation-international-identification";
     public const string OrganisationNamePage = "/registration/organisation-name";
     public const string OrganisationEmailPage = "/registration/organisation-email";
     public const string OrganisationAddressPage = "/registration/organisation-registered-address/uk";
@@ -35,6 +37,8 @@ public abstract class RegistrationStepModel : LoggedInUserAwareModel
         {
             OrganisationTypePage => true,
             OrganisationHasCompanyHouseNumberPage or OrganisationIdentifierPage => ValidType(),
+            OrganisationInternationalIdentificationCountryPage => ValidType(),
+            OrganisationInternationalIdentifierPage => ValidType() && ValidCountry(),
             OrganisationNamePage => ValidType() && ValidIdentifier(),
             OrganisationEmailPage => ValidType() && ValidIdentifier() && ValidName(),
             OrganisationAddressPage or OrganisationNonUKAddressPage => ValidType() && ValidIdentifier() && ValidName() && ValidEmail(),
@@ -83,6 +87,16 @@ public abstract class RegistrationStepModel : LoggedInUserAwareModel
         if (RegistrationDetails.OrganisationName == null)
         {
             ToRedirectPageUrl = OrganisationNamePage;
+            return false;
+        }
+        return true;
+    }
+
+    private bool ValidCountry()
+    {
+        if (RegistrationDetails.OrganisationIdentificationCountry == null)
+        {
+            ToRedirectPageUrl = OrganisationInternationalIdentificationCountryPage;
             return false;
         }
         return true;
