@@ -93,6 +93,7 @@ public class OrganisationRegisterSupplierAsBuyerTests
                 id: orgGuid ?? Guid.NewGuid(),
                 identifier: null!,
                 name: "Org name",
+                type: CDP.Organisation.WebApiClient.OrganisationType.Organisation,
                 roles: roles ?? []);
     }
 }
