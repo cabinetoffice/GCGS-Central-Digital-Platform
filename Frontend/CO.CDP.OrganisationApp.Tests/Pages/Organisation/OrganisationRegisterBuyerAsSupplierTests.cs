@@ -5,20 +5,21 @@ using CO.CDP.OrganisationApp.Pages.Organisation;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
+using System.Net;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages.Organisation;
 public class OrganisationRegisterBuyerAsSupplierTests
 {
     private readonly Mock<IOrganisationClient> organisationClientMock;
-    private readonly Mock<ITempDataService> tempDataService;
+    private readonly Mock<IFlashMessageService> flashMessageServiceMock;
     private readonly OrganisationRegisterBuyerAsSupplierModel _model;
     private readonly Guid orgGuid = new("8b1e9502-2dd5-49fa-ad56-26bae0f85b85");
 
     public OrganisationRegisterBuyerAsSupplierTests()
     {
         organisationClientMock = new Mock<IOrganisationClient>();
-        tempDataService = new Mock<ITempDataService>();
-        _model = new OrganisationRegisterBuyerAsSupplierModel(organisationClientMock.Object, tempDataService.Object);
+        flashMessageServiceMock = new Mock<IFlashMessageService>();
+        _model = new OrganisationRegisterBuyerAsSupplierModel(organisationClientMock.Object, flashMessageServiceMock.Object);
     }
 
     [Fact]
@@ -26,7 +27,7 @@ public class OrganisationRegisterBuyerAsSupplierTests
     {
         organisationClientMock
             .Setup(o => o.GetOrganisationAsync(It.IsAny<Guid>()))
-            .ReturnsAsync(new CO.CDP.Organisation.WebApiClient.Organisation(null!, null!, null!, null!, orgGuid, null!, "Org name", [PartyRole.Buyer]));
+            .ReturnsAsync(new CO.CDP.Organisation.WebApiClient.Organisation(null!, null!, null!, null!, orgGuid, null!, "Org name", [PartyRole.Buyer], CDP.Organisation.WebApiClient.OrganisationType.Organisation));
 
         var result = await _model.OnGet(orgGuid);
 
@@ -36,7 +37,15 @@ public class OrganisationRegisterBuyerAsSupplierTests
                                               uo.Organisation.Roles.SequenceEqual(new[] { PartyRole.Tenderer }))),
             Times.Once);
 
-        tempDataService.Verify(td => td.Put(FlashMessageTypes.Success, It.Is<FlashMessage>(fm => fm.Heading == "You have been registered as a supplier")));
+        flashMessageServiceMock.Verify(api => api.SetFlashMessage(
+            FlashMessageType.Success,
+            "You have been registered as a supplier",
+            It.IsAny<string>(),
+            null,
+            null,
+            null
+        ),
+        Times.Once);
 
         var redirectResult = result.Should().BeOfType<RedirectToPageResult>().Subject;
         redirectResult.PageName.Should().Be("OrganisationOverview");
@@ -48,7 +57,7 @@ public class OrganisationRegisterBuyerAsSupplierTests
     {
         organisationClientMock
             .Setup(o => o.GetOrganisationAsync(It.IsAny<Guid>()))
-            .ReturnsAsync(new CO.CDP.Organisation.WebApiClient.Organisation(null!, null!, null!, null!, orgGuid, null!, "Org name", [PartyRole.Buyer, PartyRole.Tenderer]));
+            .ReturnsAsync(new CO.CDP.Organisation.WebApiClient.Organisation(null!, null!, null!, null!, orgGuid, null!, "Org name", [PartyRole.Buyer, PartyRole.Tenderer], CDP.Organisation.WebApiClient.OrganisationType.Organisation));
 
         await _model.OnGet(orgGuid);
 

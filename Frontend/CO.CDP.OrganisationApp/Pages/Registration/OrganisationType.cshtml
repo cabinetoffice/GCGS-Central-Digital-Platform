@@ -16,7 +16,7 @@
         Model.RedirectToSummary = true;
     }
 
-    string IsSelected(OrganisationType radioValue)
+    string IsSelected(Constants.OrganisationType radioValue)
     {
         return Model.OrganisationType == radioValue ? "checked='checked'" : string.Empty;
     }
@@ -54,8 +54,8 @@
                         <div class="govuk-radios" data-module="govuk-radios">
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input" id="buyer" name="OrganisationType"
-                                       type="radio" value="@OrganisationType.Buyer"
-                                       aria-describedby="buyer-hint" @IsSelected(OrganisationType.Buyer)>
+                                   type="radio" value="@Constants.OrganisationType.Buyer"
+                                   aria-describedby="buyer-hint" @IsSelected(Constants.OrganisationType.Buyer)>
                                 <label class="govuk-label govuk-radios__label" for="buyer">
                                     @StaticTextResource.OrganisationRegistration_OrganisationType_Buyer
                                 </label>
@@ -66,8 +66,8 @@
 
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input" id="supplier" name="OrganisationType"
-                                       type="radio" value="@OrganisationType.Supplier"
-                                       aria-describedby="supplier-hint" @IsSelected(OrganisationType.Supplier)>
+                                   type="radio" value="@Constants.OrganisationType.Supplier"
+                                   aria-describedby="supplier-hint" @IsSelected(Constants.OrganisationType.Supplier)>
                                 <label class="govuk-label govuk-radios__label" for="supplier">
                                     @StaticTextResource.OrganisationRegistration_OrganisationType_Supplier
                                 </label>

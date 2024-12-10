@@ -83,6 +83,7 @@ public class RegisterAuthenticationKeyUseCaseTest()
         {
             Id = 1,
             Name = "TheOrganisation",
+            Type = OrganisationType.Organisation,
             Guid = organisationId,
             Addresses = [new Persistence.Organisation.OrganisationAddress
             {

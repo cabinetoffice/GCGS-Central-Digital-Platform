@@ -220,6 +220,7 @@ builder.Services.AddAuthorization();
 
 builder.Services.AddScoped<CookieAcceptanceMiddleware>();
 builder.Services.AddScoped<ICookiePreferencesService, CookiePreferencesService>();
+builder.Services.AddScoped<IFlashMessageService, FlashMessageService>();
 
 builder.Services.AddHealthChecks();
 

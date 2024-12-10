@@ -11,6 +11,7 @@ using CO.CDP.Tenant.WebApi.Model;
 using CO.CDP.Tenant.WebApi.UseCase;
 using CO.CDP.WebApi.Foundation;
 using Microsoft.EntityFrameworkCore;
+using Npgsql;
 using System.Reflection;
 using Tenant = CO.CDP.Tenant.WebApi.Model.Tenant;
 using TenantLookup = CO.CDP.OrganisationInformation.TenantLookup;
@@ -26,9 +27,8 @@ builder.Services.AddHealthChecks();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddAutoMapper(typeof(WebApiToPersistenceProfile));
 
-builder.Services.AddDbContext<OrganisationInformationContext>(o =>
-    o.UseNpgsql(
-        ConnectionStringHelper.GetConnectionString(builder.Configuration, "OrganisationInformationDatabase")));
+var connectionString = ConnectionStringHelper.GetConnectionString(builder.Configuration, "OrganisationInformationDatabase");
+builder.Services.AddDbContext<OrganisationInformationContext>(o => o.UseNpgsql(connectionString));
 
 builder.Services.AddScoped<ITenantRepository, DatabaseTenantRepository>();
 builder.Services.AddScoped<IPersonRepository, DatabasePersonRepository>();
@@ -50,9 +50,7 @@ if (Assembly.GetEntryAssembly().IsRunAs("CO.CDP.Tenant.WebApi"))
         .AddAmazonCloudWatchLogsService()
         .AddCloudWatchSerilog(builder.Configuration);
 
-    builder.Services.AddHealthChecks()
-        .AddNpgSql(ConnectionStringHelper.GetConnectionString(builder.Configuration,
-            "OrganisationInformationDatabase"));
+    builder.Services.AddHealthChecks().AddNpgSql(connectionString);
 }
 
 var app = builder.Build();

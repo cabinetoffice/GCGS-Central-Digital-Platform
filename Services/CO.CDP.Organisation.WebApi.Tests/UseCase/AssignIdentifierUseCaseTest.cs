@@ -416,6 +416,7 @@ public class AssignIdentifierUseCaseTest
         var organisation = new Persistence.Organisation
         {
             Name = "Acme Ltd",
+            Type = OrganisationInformation.OrganisationType.Organisation,
             Guid = organisationId,
             Identifiers = identifiers ?? [],
             Addresses = [],

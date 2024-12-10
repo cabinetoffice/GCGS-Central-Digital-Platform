@@ -127,6 +127,8 @@ public class WebApiToPersistenceProfile : Profile
         CreateMap<Persistence.Organisation.SupplierInformation, SupplierInformation>()
             .ForMember(m => m.OrganisationName, o => o.Ignore());
 
+        CreateMap<Persistence.Organisation.BuyerInformation, BuyerInformation>();
+
         CreateMap<LegalForm, Persistence.Organisation.LegalForm>()
             .ForMember(m => m.CreatedOn, o => o.Ignore())
             .ForMember(m => m.UpdatedOn, o => o.Ignore())

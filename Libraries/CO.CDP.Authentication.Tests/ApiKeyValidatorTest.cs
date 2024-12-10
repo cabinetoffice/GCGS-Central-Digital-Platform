@@ -49,7 +49,10 @@ public class ApiKeyValidatorTest
                 Name = "FTS",
                 Key = ValidApiKey,
                 OrganisationId = 42,
-                Organisation = new Organisation { Guid = orgId, Name = "", Tenant = new Tenant { Guid = Guid.NewGuid(), Name = "" } },
+                Organisation = new Organisation {
+                    Guid = orgId, Name = "",
+                    Type = OrganisationInformation.OrganisationType.Organisation,
+                    Tenant = new Tenant { Guid = Guid.NewGuid(), Name = "" } },
                 Scopes = ["ADMIN"] });
 
         var (valid, organisation, scopes) = await _validator.Validate(ValidApiKey);

@@ -94,8 +94,8 @@ public class OrganisationDetailsSummaryModel(
                 legalName: details.OrganisationName,
                 scheme: details.OrganisationScheme),
             name: details.OrganisationName,
-            roles: [details.OrganisationType!.Value.AsPartyRole()],
-            personId: user.PersonId.Value
+            type: OrganisationWebApiClient.OrganisationType.Organisation,
+            roles: [details.OrganisationType!.Value.AsPartyRole()]
         );
     }
 }
