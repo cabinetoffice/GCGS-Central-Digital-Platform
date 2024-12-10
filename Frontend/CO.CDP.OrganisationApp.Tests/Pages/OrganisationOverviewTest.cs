@@ -8,14 +8,13 @@ namespace CO.CDP.OrganisationApp.Tests.Pages;
 
 public class OrganisationOverviewTest
 {
-    private readonly Mock<IOrganisationClient> _organisationClientMock;
-    private readonly Mock<EntityVerificationClient.PponClient> _pponClient;
+    private readonly Mock<IOrganisationClient> _organisationClientMock;    
+    private readonly Mock<EntityVerificationClient.IPponClient> _pponClient = new();
     private readonly OrganisationOverviewModel _model;
 
     public OrganisationOverviewTest()
     {
         _organisationClientMock = new Mock<IOrganisationClient>();
-        _pponClient = new Mock<EntityVerificationClient.PponClient>();
         _model = new OrganisationOverviewModel(_organisationClientMock.Object, _pponClient.Object);
     }
 

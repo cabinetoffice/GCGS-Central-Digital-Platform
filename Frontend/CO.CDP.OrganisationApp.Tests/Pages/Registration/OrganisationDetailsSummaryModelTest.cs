@@ -17,7 +17,7 @@ public class OrganisationDetailsSummaryModelTest
 {
     private readonly Mock<ISession> sessionMock;
     private readonly Mock<IOrganisationClient> organisationClientMock;
-    private readonly Mock<EntityVerificationClient.PponClient> pponClient;
+    private readonly Mock<EntityVerificationClient.IPponClient> pponClient;
     private static readonly Guid _organisationId = Guid.NewGuid();
 
     public OrganisationDetailsSummaryModelTest()
@@ -26,15 +26,15 @@ public class OrganisationDetailsSummaryModelTest
         sessionMock.Setup(session => session.Get<UserDetails>(Session.UserDetailsKey))
             .Returns(new UserDetails { UserUrn = "urn:test" });
         organisationClientMock = new Mock<IOrganisationClient>();
-        pponClient = new Mock<EntityVerificationClient.PponClient>();
+        pponClient = new Mock<EntityVerificationClient.IPponClient>();
     }
 
     [Fact]
-    public void OnGet_ValidSession_ReturnsRegistrationDetails()
+    public async Task OnGet_ValidSession_ReturnsRegistrationDetails()
     {
         var model = GivenOrganisationDetailModel();
 
-        model.OnGet();
+        await model.OnGet();
 
         model.RegistrationDetails.As<RegistrationDetails>().Should().NotBeNull();
     }

@@ -17,7 +17,7 @@ public class OrganisationDetailsSummaryModel(
 
     public string? Error { get; set; }
 
-    public ICollection<IdentifierRegistries> IdentifierRegistriesDetails { get; set; }
+    public ICollection<IdentifierRegistries>? IdentifierRegistriesDetails { get; set; }
 
     public async Task OnGet()
     {

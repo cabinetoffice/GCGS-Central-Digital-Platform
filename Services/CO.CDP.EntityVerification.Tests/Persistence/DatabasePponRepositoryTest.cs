@@ -95,6 +95,53 @@ public class DatabasePponRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
     }
 
     [Fact]
+    public async Task ItFindsregistriesBySchemeCodes()
+    {
+        await using var context = postgreSql.EntityVerificationContext();
+        using var repository = PponRepository(context);
+
+        var schemeCodes = new[] { "SCHEME1", "SCHEME2" };
+
+        var identifierRegistries = new List<IdentifierRegistries>
+        {
+            new IdentifierRegistries
+            {
+                CountryCode = "US",
+                Scheme = "Scheme1",
+                RegisterName = "Registry1",
+                CreatedOn = DateTimeOffset.UtcNow,
+                UpdatedOn = DateTimeOffset.UtcNow
+            },
+            new IdentifierRegistries
+            {
+                CountryCode = "US",
+                Scheme = "Scheme2",
+                RegisterName = "Registry2",
+                CreatedOn = DateTimeOffset.UtcNow,
+                UpdatedOn = DateTimeOffset.UtcNow
+            },
+            new IdentifierRegistries
+            {
+                CountryCode = "CA",
+                Scheme = "Scheme3",
+                RegisterName = "Registry3",
+                CreatedOn = DateTimeOffset.UtcNow,
+                UpdatedOn = DateTimeOffset.UtcNow
+            }
+        }.AsQueryable();
+
+        await context.AddRangeAsync(identifierRegistries);
+        await context.SaveChangesAsync();
+
+        var found = await repository.GetIdentifierRegistriesNameAsync(schemeCodes);
+
+        found.Should().NotBeNull();
+        found.Should().HaveCount(2);
+        found.Should().OnlyContain(r => r.CountryCode == "US");
+        found.Select(r => r.Scheme).Should().BeEquivalentTo(new[] { "Scheme1", "Scheme2" });
+    }
+
+    [Fact]
     public void ItRejectsAnAlreadyKnownPponId()
     {
         using var repository = PponRepository();

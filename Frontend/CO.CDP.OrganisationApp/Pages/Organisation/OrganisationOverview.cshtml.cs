@@ -17,7 +17,7 @@ public class OrganisationOverviewModel(IOrganisationClient organisationClient, I
 {
     public OrganisationWebApiClient.Organisation? OrganisationDetails { get; set; }
 
-    public ICollection<IdentifierRegistries> IdentifierRegistriesDetails { get; set; }
+    public ICollection<IdentifierRegistries>? IdentifierRegistriesDetails { get; set; }
 
     public BuyerInformation? BuyerInformation { get; set; }
 
