@@ -10,10 +10,6 @@
         StaticTextResource.OrganisationRegistration_JoinOrganisation_Heading,
         organisationDetails.Name
     );
-    ViewData["RadioQuestionTitle"] = string.Format(
-        StaticTextResource.OrganisationRegistration_JoinOrganisation_WouldYouLikeToJoin,
-        organisationDetails.Name
-    );
 }
 
 @section BeforeContent {
@@ -78,7 +74,10 @@
                 <fieldset class="govuk-fieldset" @(joinHasError ? Html.Raw(@"aria-describedby=""approval-error""") : null)>
                     <legend class="govuk-form-group @(joinHasError ? "govuk-form-group--error" : "")">
                         <h2 class="govuk-fieldset__legend govuk-fieldset__legend--m">
-                            @ViewData["RadioQuestionTitle"]
+                            @(string.Format(
+                                StaticTextResource.OrganisationRegistration_JoinOrganisation_WouldYouLikeToJoin,
+                                organisationDetails.Name
+                            ))
                         </h2>
                         @if (joinHasError)
                         {
