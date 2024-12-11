@@ -25,7 +25,7 @@ public class FormsAnswerSetRemoveConfirmationModel(
     public Guid AnswerSetId { get; set; }
 
     [BindProperty]
-    [Required(ErrorMessage = nameof(StaticTextResource.Global_SelectAnOption))]
+    [Required(ErrorMessageResourceName = nameof(StaticTextResource.Global_SelectAnOption), ErrorMessageResourceType = typeof(StaticTextResource))]
     public bool? ConfirmRemove { get; set; }
 
     public string? Caption { get; set; }

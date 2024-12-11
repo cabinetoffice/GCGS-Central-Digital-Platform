@@ -23,7 +23,7 @@ public class FormsCheckFurtherQuestionsExemptedModel(IFormsClient formsClient, I
 
 
     [BindProperty]
-    [Required(ErrorMessage = nameof(StaticTextResource.Global_SelectAnOption))]
+    [Required(ErrorMessageResourceName = nameof(StaticTextResource.Global_SelectAnOption), ErrorMessageResourceType = typeof(StaticTextResource))]
     public bool? Confirm { get; set; }
 
     public string? Heading { get; set; }
