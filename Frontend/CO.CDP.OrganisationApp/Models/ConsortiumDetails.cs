@@ -2,7 +2,7 @@ namespace CO.CDP.OrganisationApp.Models;
 
 public class ConsortiumDetails
 {
-    public string? ConstortiumName { get; set; }
-    public string? ConstortiumEmail { get; set; }
+    public string? ConsortiumName { get; set; }
+    public string? ConsortiumEmail { get; set; }
     public Address? PostalAddress { get; set; }
 }
