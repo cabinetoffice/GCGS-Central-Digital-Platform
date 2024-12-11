@@ -12,12 +12,15 @@
     var postalAddress = organisationDetails.Addresses.FirstOrDefault(a => a.Type == CO.CDP.Organisation.WebApiClient.AddressType.Postal);
     bool isViewer = await userInfoService.IsViewer();
     ViewData["Title"] = organisationDetails.Name;
+    var ppon = (organisationDetails.Identifier.Scheme == OrganisationSchemeType.Other
+                        ? StaticTextResource.Consortium_ConsortiumOverview_Ppon_Status_Pending
+                        : organisationDetails.Identifier.Id);
 }
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-full govuk-body">
         <span class="govuk-caption-l">
-            PPON: @organisationDetails.Identifier.LegalName
+            PPON: @ppon
         </span>
         <h1 class="govuk-heading-l">
             @organisationDetails.Name
