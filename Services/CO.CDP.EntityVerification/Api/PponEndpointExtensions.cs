@@ -74,9 +74,9 @@ public static class PponEndpointExtensions
            operation.OperationId = "GetIdentifierRegistriesDetail";
            operation.Description = "Get Identifier Registries Details.";
            operation.Summary = "Get Identifier Registries details.";
-           operation.Responses["200"].Description = "List of Indentifier Registries Details.";
+           operation.Responses["200"].Description = "List of Identifier Registries Details.";
            operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
-           operation.Responses["404"].Description = "Indetifier registries not found.";
+           operation.Responses["404"].Description = "Identifier registries not found.";
            operation.Responses["500"].Description = "Internal server error.";
            return operation;
        });
