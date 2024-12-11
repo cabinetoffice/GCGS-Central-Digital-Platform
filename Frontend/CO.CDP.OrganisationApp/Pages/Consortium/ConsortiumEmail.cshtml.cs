@@ -22,6 +22,7 @@ public class ConsortiumEmailModel(
     [BindProperty]
     [DisplayName(nameof(StaticTextResource.Consortium_ConsortiumEmail_Heading))]
     [Required(ErrorMessageResourceName = nameof(StaticTextResource.Consortium_ConsortiumEmail_Required_ErrorMessage), ErrorMessageResourceType = typeof(StaticTextResource))]
+    [ModelBinder<SanitisedStringModelBinder>]
     [ValidEmailAddress(ErrorMessageResourceName = nameof(StaticTextResource.Global_Email_Invalid_ErrorMessage), ErrorMessageResourceType = typeof(StaticTextResource))]
     public string? EmailAddress { get; set; }
 
