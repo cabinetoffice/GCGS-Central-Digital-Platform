@@ -1,3 +1,6 @@
+# Run github actions locally with act https://github.com/nektos/act
+# act --container-architecture linux/amd64 --artifact-server-path ./build/artifacts -W ./.github/workflows/build.yml
+
 name: Build
 
 on:
@@ -59,6 +62,7 @@ jobs:
     outputs:
       version: ${{ steps.version.outputs.version }}
       images: ${{ steps.save.outputs.images }}
+      images_json: ${{ steps.save.outputs.images_json }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -97,9 +101,12 @@ jobs:
         id: save
         run: |
           IMAGES=$(docker images | awk '$1 ~ /cabinetoffice\/cdp-/ && $2 ~ /^'$IMAGE_VERSION'$/ { print $1":"$2}' | tr '\n' ' ')
+          IMAGES_JSON=$(echo $IMAGES | tr " " "\n" | jq -R . | jq -c -s .)
           echo "Images to be saved: $IMAGES"
+          echo "Images to be saved (json): $IMAGES_JSON"
           docker save -o cdp-images.tar $IMAGES
           echo "images=${IMAGES}" >> $GITHUB_OUTPUT
+          echo "images_json=${IMAGES_JSON}" >> $GITHUB_OUTPUT
         env:
           IMAGE_VERSION: ${{ steps.version.outputs.version }}
       - name: Upload Docker Images as Artifacts
@@ -107,6 +114,45 @@ jobs:
         with:
           name: docker-images
           path: cdp-images.tar
+
+  vulnerability-scan:
+    # since we do not fail the build for now, but the report is to get feedback, only run it on the main branch and tags
+    if: (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/')) && github.repository_owner == 'cabinetoffice'
+    runs-on: ubuntu-latest
+    name: Scan for vulnerabilities
+    needs: [test, package]
+    strategy:
+      matrix:
+        image: ${{ fromJSON(needs.package.outputs.images_json) }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download Docker Images
+        uses: actions/download-artifact@v4
+        with:
+          name: docker-images
+      - name: Load Docker Images
+        run: docker load -i cdp-images.tar
+
+      - name: Determine the category
+        id: category
+        run: |
+          image=${{ matrix.image }}
+          category=${image%%:*}
+          echo "category=$category" >> $GITHUB_OUTPUT
+      - name: Scan ${{ matrix.image }}
+        uses: anchore/scan-action@v5
+        id: scan
+        with:
+          image: "${{ matrix.image }}"
+          fail-build: false
+          severity-cutoff: critical
+          output-format: sarif
+      - name: Upload Image Vulnerability Reports
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: ${{ steps.scan.outputs.sarif }}
+          category: ${{ steps.category.outputs.category }}
 
   publish:
     if: (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/')) && github.repository_owner == 'cabinetoffice'
