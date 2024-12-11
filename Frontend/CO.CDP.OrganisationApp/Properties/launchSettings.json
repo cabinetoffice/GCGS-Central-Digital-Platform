@@ -5,6 +5,7 @@
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,
+      "hotReloadEnabled": false,
       "launchUrl": "http://localhost:8090",
       "applicationUrl": "http://localhost:58090",
       "environmentVariables": {
@@ -16,6 +17,7 @@
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,
+      "hotReloadEnabled": false,
       "applicationUrl": "http://localhost:8090",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
