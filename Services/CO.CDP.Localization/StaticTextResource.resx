@@ -1602,7 +1602,10 @@
     <value>You have successfully applied to join</value>
   </data>
   <data name="OrganisationRegistration_JoinOrganisation_Heading" xml:space="preserve">
-    <value>Join company</value>
+    <value>Join company: {0}</value>
+  </data>
+  <data name="OrganisationRegistration_JoinOrganisation_WouldYouLikeToJoin" xml:space="preserve">
+    <value>Would you like to join: {0}?</value>
   </data>
   <data name="OrganisationRegistration_JoinOrganisation_Firstname_Label" xml:space="preserve">
     <value>First name</value>
@@ -1626,7 +1629,7 @@
     <value>User details</value>
   </data>
   <data name="OrganisationRegistration_JoinOrganisation_Notification_Heading" xml:space="preserve">
-    <value>Would you like to join</value>
+    <value>Would you like to join {0}?</value>
   </data>
   <data name="OrganisationRegistration_OrganisationAlreadyRegistered_Heading" xml:space="preserve">
     <value>This organisation has already registered</value>
