@@ -10,7 +10,7 @@ public static class ErrorMessagesList
 
     public const string OrganisationCreationFailed = "Organsiation creation failed, have you provided the correct organisation details.";
     public const string OrganisationNotFound = "The requested organisation was not found.";
-    public const string DuplicateOgranisationName = "An organisation with this name already exists. Please try again.";
+    public const string DuplicateOgranisationName = "An organisation with this name already exists. You’ll need to change the name or contact the organisation directly.";
 
     public const string PayLoadIssueOrNullAurgument = "Please make sure all the required information has been provided correctly.";
 
