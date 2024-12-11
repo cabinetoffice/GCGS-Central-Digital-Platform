@@ -71,12 +71,12 @@ public class ConsortiumAddressModel(ISession session) : ConsortiumStepModel(sess
         if (Address.IsNonUkAddress)
         {
             Address.Heading = StaticTextResource.Consortium_ConsortiumAddress_NonUk_Heading;
-            Address.AddressHint = StaticTextResource.Consortium_ConsortiumAddress_NonUk_Hint;
+            Address.AddressHint = string.Empty;
         }
         else
         {
             Address.Heading = StaticTextResource.Consortium_ConsortiumAddress_Heading;
-            Address.AddressHint = StaticTextResource.Consortium_ConsortiumAddress_Hint;
+            Address.AddressHint = string.Empty;
         }
 
         Address.NonUkAddressLink = $"/consortium/address/non-uk";

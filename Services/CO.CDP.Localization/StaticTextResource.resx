@@ -2348,14 +2348,8 @@
   <data name="Consortium_ConsortiumAddress_Heading" xml:space="preserve">
     <value>Enter a postal address for the consortium</value>
   </data>
-  <data name="Consortium_ConsortiumAddress_Hint" xml:space="preserve">
-    <value />
-  </data>
   <data name="Consortium_ConsortiumAddress_NonUk_Heading" xml:space="preserve">
     <value>Enter a postal address for the consortium</value>
-  </data>
-  <data name="Consortium_ConsortiumAddress_NonUk_Hint" xml:space="preserve">
-    <value />
   </data>
   <data name="Supplier_RegisteredAddress" xml:space="preserve">
     <value>Registered address</value>
@@ -2721,45 +2715,45 @@
     <value>Regional and local government, public authority: UK, Scottish, Welsh and Northern Irish</value>
   </data>
   <data name="Organisation_CreateNewConsortium" xml:space="preserve">
-  <value>Create a new consortium</value>
-</data>
+    <value>Create a new consortium</value>
+  </data>
   <data name="Consortium_ConsortiumOverview_Heading" xml:space="preserve">
-  <value>Consortium details</value>
-</data>
+    <value>Consortium details</value>
+  </data>
   <data name="Consortium_ConsortiumOverview_Address_list" xml:space="preserve">
-  <value>Address</value>
-</data>
+    <value>Address</value>
+  </data>
   <data name="Consortium_ConsortiumOverview_Heading2" xml:space="preserve">
-  <value>Organisations in this consortium</value>
-</data>
+    <value>Organisations in this consortium</value>
+  </data>
   <data name="Consortium_ConsortiumOverview_Paragraph1" xml:space="preserve">
-  <value>To add an organisation you'll need its most recent share code</value>
-</data>
+    <value>To add an organisation you'll need its most recent share code</value>
+  </data>
   <data name="Consortium_ConsortiumOverview_AddAnOrganisation_link" xml:space="preserve">
-  <value>Add an organisation</value>
-</data>
+    <value>Add an organisation</value>
+  </data>
   <data name="Consortium_ConsortiumOverview_Heading3" xml:space="preserve">
-  <value>Share your combined supplier information</value>
-</data>
+    <value>Share your combined supplier information</value>
+  </data>
   <data name="Consortium_ConsortiumOverview_BackToMyAccount_link" xml:space="preserve">
-  <value>Back to my account</value>
-</data>
+    <value>Back to my account</value>
+  </data>
   <data name="Consortium_ConsortiumOverview_CreateSharecode_list" xml:space="preserve">
-  <value>Declare and create a share code</value>
-</data>
+    <value>Declare and create a share code</value>
+  </data>
   <data name="Consortium_ConsortiumOverview_status_list" xml:space="preserve">
-  <value>Cannot start yet</value>
-</data>
+    <value>Cannot start yet</value>
+  </data>
   <data name="Consortium_ConsortiumOverview_HiddenSpan_name" xml:space="preserve">
-  <value>consortium name</value>
-</data>
+    <value>consortium name</value>
+  </data>
   <data name="Consortium_ConsortiumOverview_HiddenSpan_address" xml:space="preserve">
-  <value>address</value>
-</data>
+    <value>address</value>
+  </data>
   <data name="Consortium_ConsortiumOverview_HiddenSpan_emailaddress" xml:space="preserve">
-  <value>consortium email address</value>
-</data>
+    <value>consortium email address</value>
+  </data>
   <data name="Consortium_ConsortiumOverview_EmailAddress_list" xml:space="preserve">
-  <value>Email address</value>
-</data>
+    <value>Email address</value>
+  </data>
 </root>
