@@ -71,8 +71,7 @@
                 <fieldset class="govuk-fieldset" @(joinHasError ? Html.Raw(@"aria-describedby=""approval-error""") : null)>
                     <legend class="govuk-form-group @(joinHasError ? "govuk-form-group--error" : "")">
                         <h2 class="govuk-fieldset__legend govuk-fieldset__legend--m">
-                            @($"{StaticTextResource.OrganisationRegistration_JoinOrganisation_Notification_Heading} {organisationDetails.Name}")
-                            Would you like to join @organisationDetails.Name?
+                            @($"{StaticTextResource.OrganisationRegistration_JoinOrganisation_Notification_Heading} {organisationDetails.Name}")?
                         </h2>
                         @if (joinHasError)
                         {
