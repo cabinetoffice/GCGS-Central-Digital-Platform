@@ -18,7 +18,7 @@ public class ConsortiumAddressModel(ISession session) : ConsortiumStepModel(sess
 
     [BindProperty]
     public AddressPartialModel Address { get; set; } = new();
-    public string? ConsortiumName => ConsortiumDetails.ConstortiumName;
+    public string? ConsortiumName => ConsortiumDetails.ConsortiumName;
 
     public IActionResult OnGet()
     {

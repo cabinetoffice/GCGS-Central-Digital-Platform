@@ -18,7 +18,7 @@ public class ConsortiumNameModel(ISession session) : ConsortiumStepModel(session
 
     public IActionResult OnGet()
     {   
-        ConsortiumName = ConsortiumDetails.ConstortiumName;
+        ConsortiumName = ConsortiumDetails.ConsortiumName;
 
         return Page();
     }
@@ -27,7 +27,7 @@ public class ConsortiumNameModel(ISession session) : ConsortiumStepModel(session
     {
         if (!ModelState.IsValid) return Page();
 
-        ConsortiumDetails.ConstortiumName = ConsortiumName;
+        ConsortiumDetails.ConsortiumName = ConsortiumName;
 
         SessionContext.Set(Session.ConsortiumKey, ConsortiumDetails);
 

@@ -45,7 +45,7 @@ public class ConsortiumNameModelTest
 
         _model.OnPost();
 
-        _sessionMock.Verify(s => s.Set(Session.ConsortiumKey, It.Is<ConsortiumDetails>(st => st.ConstortiumName == "consortium_name")), Times.Once);
+        _sessionMock.Verify(s => s.Set(Session.ConsortiumKey, It.Is<ConsortiumDetails>(st => st.ConsortiumName == "consortium_name")), Times.Once);
     }       
 
     [Fact]
@@ -70,7 +70,7 @@ public class ConsortiumNameModelTest
     {
         var consortiumState = new ConsortiumDetails
         {
-            ConstortiumName = "consortium_name"
+            ConsortiumName = "consortium_name"
         };
 
         return consortiumState;

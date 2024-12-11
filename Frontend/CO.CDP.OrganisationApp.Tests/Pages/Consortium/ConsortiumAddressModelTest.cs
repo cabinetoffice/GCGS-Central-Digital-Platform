@@ -172,8 +172,8 @@ public class ConsortiumAddressModelTest
     {
         var consortiumDetails = new ConsortiumDetails
         {
-            ConstortiumName = consortiumName,
-            ConstortiumEmail = consortiumEmailAddress,
+            ConsortiumName = consortiumName,
+            ConsortiumEmail = consortiumEmailAddress,
             PostalAddress = new Models.Address { AddressLine1 = "Address Line 1", TownOrCity = "London", Postcode = "SW1Y 5ED", CountryName = "United kindom", Country = "GB" }
         };
 

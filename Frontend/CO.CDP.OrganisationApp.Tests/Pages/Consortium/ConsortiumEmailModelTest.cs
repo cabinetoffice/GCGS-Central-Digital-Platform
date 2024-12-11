@@ -107,7 +107,7 @@ public class ConsortiumEmailModelTest
         var model = GivenConsortiumEmailModel();
         model.OnGet();
 
-        model.EmailAddress.Should().Be(consortiumDetails.ConstortiumEmail);
+        model.EmailAddress.Should().Be(consortiumDetails.ConsortiumEmail);
     }
 
     [Fact]
@@ -160,7 +160,7 @@ public class ConsortiumEmailModelTest
 
         var model = GivenConsortiumEmailDetailModel();
 
-        model.EmailAddress = dummyConsortiumDetails.ConstortiumEmail;
+        model.EmailAddress = dummyConsortiumDetails.ConsortiumEmail;
 
         await model.OnPost();
 
@@ -185,7 +185,7 @@ public class ConsortiumEmailModelTest
 
         var model = GivenConsortiumEmailDetailModel();
 
-        model.EmailAddress = dummyConsortiumDetails.ConstortiumEmail;
+        model.EmailAddress = dummyConsortiumDetails.ConsortiumEmail;
 
         var actionResult = await model.OnPost();
 
@@ -198,8 +198,8 @@ public class ConsortiumEmailModelTest
     {
         var consortiumDetails = new ConsortiumDetails
         {
-            ConstortiumName = consortiumName,
-            ConstortiumEmail = consortiumEmailAddress,
+            ConsortiumName = consortiumName,
+            ConsortiumEmail = consortiumEmailAddress,
             PostalAddress = new Models.Address { AddressLine1 = "Address Line 1", TownOrCity = "London", Postcode = "SW1Y 5ED", CountryName = "United kindom", Country = "UK" }
         };
 

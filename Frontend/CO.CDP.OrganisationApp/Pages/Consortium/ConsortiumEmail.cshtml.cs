@@ -25,17 +25,17 @@ public class ConsortiumEmailModel(
     [ValidEmailAddress(ErrorMessageResourceName = nameof(StaticTextResource.Global_Email_Invalid_ErrorMessage), ErrorMessageResourceType = typeof(StaticTextResource))]
     public string? EmailAddress { get; set; }
 
-    public string? ConsortiumName => ConsortiumDetails.ConstortiumName;
+    public string? ConsortiumName => ConsortiumDetails.ConsortiumName;
 
     public IActionResult OnGet()
     {
-        EmailAddress = ConsortiumDetails.ConstortiumEmail;
+        EmailAddress = ConsortiumDetails.ConsortiumEmail;
 
         return Page();
     }
     public async Task<IActionResult> OnPost()
     {
-        ConsortiumDetails.ConstortiumEmail = EmailAddress;
+        ConsortiumDetails.ConsortiumEmail = EmailAddress;
 
         SessionContext.Set(Session.ConsortiumKey, ConsortiumDetails);
 
@@ -88,7 +88,7 @@ public class ConsortiumEmailModel(
                 countryName: details.PostalAddress.CountryName,
                 postalCode: details.PostalAddress.Postcode)],
             contactPoint: new OrganisationWebApiClient.OrganisationContactPoint(
-                email: details.ConstortiumEmail,
+                email: details.ConsortiumEmail,
                 name: null,
                 telephone: null,
                 url: null),
@@ -96,7 +96,7 @@ public class ConsortiumEmailModel(
                 id: Guid.NewGuid().ToString(),
                 legalName: OrganisationSchemeType.Other,
                 scheme: string.Empty),
-            name: details.ConstortiumName,
+            name: details.ConsortiumName,
             type: OrganisationWebApiClient.OrganisationType.InformalConsortium,
             roles: []
         );

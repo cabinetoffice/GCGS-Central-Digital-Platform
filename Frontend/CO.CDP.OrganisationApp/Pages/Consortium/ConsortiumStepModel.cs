@@ -37,7 +37,7 @@ public abstract class ConsortiumStepModel : LoggedInUserAwareModel
 
     private bool ValidName()
     {
-        if (ConsortiumDetails.ConstortiumName == null)
+        if (ConsortiumDetails.ConsortiumName == null)
         {
             ToRedirectPageUrl = ConsortiumNamePage;
             return false;
@@ -47,7 +47,7 @@ public abstract class ConsortiumStepModel : LoggedInUserAwareModel
 
     private bool ValidEmail()
     {
-        if (ConsortiumDetails.ConstortiumEmail == null)
+        if (ConsortiumDetails.ConsortiumEmail == null)
         {
             ToRedirectPageUrl = ConsortiumEmailPage;
             return false;
