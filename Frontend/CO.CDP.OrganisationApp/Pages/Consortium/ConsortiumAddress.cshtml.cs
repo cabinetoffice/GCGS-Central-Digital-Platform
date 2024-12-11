@@ -50,11 +50,11 @@ public class ConsortiumAddressModel(ISession session) : ConsortiumStepModel(sess
 
         var address = new Address()
         {            
-            AddressLine1 = Address.AddressLine1!,
-            TownOrCity = Address.TownOrCity!,
-            Postcode = Address.Postcode!,
-            CountryName = Address.CountryName!,
-            Country = Address.Country!
+            AddressLine1 = Address.AddressLine1 ?? "",
+            TownOrCity = Address.TownOrCity ?? "",
+            Postcode = Address.Postcode ?? "",
+            CountryName = Address.CountryName ?? "",
+            Country = Address.Country ?? ""
         };
 
         ConsortiumDetails.PostalAddress = address;
