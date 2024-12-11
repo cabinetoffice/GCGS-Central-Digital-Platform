@@ -60,7 +60,7 @@ public static class PponEndpointExtensions
           return operation;
       });
 
-        app.MapGet("/registries/registerdetails",
+        app.MapGet("/registries/register-details",
         [Authorize(Policy = "OneLoginPolicy")]
         async (string[] schemecodes, IUseCase<string[], IEnumerable<IdentifierRegistries>> useCase) =>
         await useCase.Execute(schemecodes)
