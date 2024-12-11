@@ -40,6 +40,7 @@ public class OrganisationApprovalModelTests
             id: organisationId,
             identifier: null,
             name: "Test Organisation",
+            type: OrganisationType.Organisation,
             roles: new List<PartyRole>(),
             details: new Details(approval: null, pendingRoles: [])
         );

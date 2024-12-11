@@ -1,10 +1,9 @@
-using System.ComponentModel.DataAnnotations;
 using CO.CDP.Localization;
 using CO.CDP.Mvc.Validation;
 using CO.CDP.Organisation.WebApiClient;
-using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 using OrganisationWebApiClient = CO.CDP.Organisation.WebApiClient;
 
 namespace CO.CDP.OrganisationApp.Pages.Registration;
@@ -12,7 +11,7 @@ namespace CO.CDP.OrganisationApp.Pages.Registration;
 public class JoinOrganisationModel(
     IOrganisationClient organisationClient,
     ISession session,
-    ITempDataService tempDataService) : LoggedInUserAwareModel(session)
+    IFlashMessageService flashMessageService) : LoggedInUserAwareModel(session)
 {
     public OrganisationWebApiClient.Organisation? OrganisationDetails { get; set; }
 
@@ -65,14 +64,14 @@ public class JoinOrganisationModel(
                         }
                         else
                         {
-                            tempDataService.Put(FlashMessageTypes.Failure, new FlashMessage(StaticTextResource.OrganisationRegistration_JoinOrganisation_PendingMemberOfOrganisation, null, StaticTextResource.Global_Important));
+                            flashMessageService.SetFlashMessage(FlashMessageType.Failure, StaticTextResource.OrganisationRegistration_JoinOrganisation_PendingMemberOfOrganisation);
                             return Page();
                         }
                     }
                 }
                 catch (ApiException<OrganisationWebApiClient.ProblemDetails>)
                 {
-                    tempDataService.Put(FlashMessageTypes.Failure, new FlashMessage(StaticTextResource.OrganisationRegistration_JoinOrganisation_AlreadyMemberOfOrganisation, null, StaticTextResource.Global_Important));
+                    flashMessageService.SetFlashMessage(FlashMessageType.Important, StaticTextResource.OrganisationRegistration_JoinOrganisation_AlreadyMemberOfOrganisation);
                     return Page();
                 }
                 finally
