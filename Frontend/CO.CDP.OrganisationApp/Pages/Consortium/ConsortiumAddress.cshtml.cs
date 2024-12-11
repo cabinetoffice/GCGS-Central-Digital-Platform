@@ -28,7 +28,6 @@ public class ConsortiumAddressModel(ISession session) : ConsortiumStepModel(sess
 
         if (stateAddress != null && ((Address.IsNonUkAddress && stateAddress.Country != Country.UKCountryCode)
             || (!Address.IsNonUkAddress && stateAddress.Country == Country.UKCountryCode)))
-            //if (stateAddress != null && ((stateAddress.Country != Constants.Country.UKCountryCode) == Address.IsNonUkAddress))
         {
             Address.AddressLine1 = stateAddress.AddressLine1;
             Address.TownOrCity = stateAddress.TownOrCity;
