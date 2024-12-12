@@ -8,8 +8,8 @@ locals {
   waf_rule_sets_priority = {
     AWSManagedRulesAmazonIpReputationList : 2
     AWSManagedRulesAnonymousIpList : 3
-    AWSManagedRulesBotControlRuleSet : 5
-    AWSManagedRulesCommonRuleSet : 1
+    # AWSManagedRulesBotControlRuleSet : 5
+    # AWSManagedRulesCommonRuleSet : 1
     AWSManagedRulesSQLiRuleSet : 4
   }
 }
