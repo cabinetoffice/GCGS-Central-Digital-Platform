@@ -37,7 +37,6 @@ public class CreateOrganisationJoinRequestUseCase(
 
     public async Task<OrganisationJoinRequest> Execute((Guid organisationId, CreateOrganisationJoinRequest createOrganisationJoinRequestCommand) command)
     {
-        bool isNewRequest = false;
         var organisation = await organisationRepository.Find(command.organisationId)
                            ?? throw new UnknownOrganisationException($"Unknown organisation {command.organisationId}.");
 
@@ -50,12 +49,19 @@ public class CreateOrganisationJoinRequestUseCase(
 
         if (joinRequest != null)
         {
-            joinRequest.Status = OrganisationJoinRequestStatus.Pending;
+            if (joinRequest.Status == OrganisationJoinRequestStatus.Pending)
+            {
+                return mapper.Map<OrganisationJoinRequest>(joinRequest);
+            }
+
+            if (joinRequest.Status == OrganisationJoinRequestStatus.Rejected)
+            {
+                joinRequest.Status = OrganisationJoinRequestStatus.Pending;
+            }
         }
         else
         {
             joinRequest = CreateOrganisationJoinRequest(organisation, person);
-            isNewRequest = true;
         }
 
         organisationJoinRequestRepository.Save(joinRequest);
@@ -64,7 +70,7 @@ public class CreateOrganisationJoinRequestUseCase(
         await NotifyOrgAdminsOfApprovalRequest(organisation: organisation, person: person);
 
         OrganisationJoinRequest request = mapper.Map<OrganisationJoinRequest>(joinRequest);
-        request.IsNewRequest = isNewRequest;
+        request.RequestCreated = true;
 
         return request;
     }

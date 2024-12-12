@@ -56,17 +56,15 @@ public class JoinOrganisationModel(
                             personId: UserDetails.PersonId.Value
                         ));
 
-                    if (joinRequestStatus.Status == OrganisationJoinRequestStatus.Pending)
+                    if (joinRequestStatus != null)
                     {
-                        if (joinRequestStatus.IsNewRequest)
-                        {
-                            return Redirect("/registration/" + identifier + "/join-organisation/success");
-                        }
-                        else
+                        if ((!joinRequestStatus.RequestCreated) && (joinRequestStatus.Status == OrganisationJoinRequestStatus.Pending))
                         {
                             flashMessageService.SetFlashMessage(FlashMessageType.Failure, StaticTextResource.OrganisationRegistration_JoinOrganisation_PendingMemberOfOrganisation);
                             return Page();
                         }
+
+                        return Redirect("/registration/" + identifier + "/join-organisation/success");
                     }
                 }
                 catch (ApiException<OrganisationWebApiClient.ProblemDetails>)

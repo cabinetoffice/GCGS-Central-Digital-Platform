@@ -145,7 +145,7 @@ public class WebApiToPersistenceProfile : Profile
 
         CreateMap<Persistence.OrganisationJoinRequest, OrganisationJoinRequest>()
             .ForMember(m => m.Id, o => o.MapFrom(m => m.Guid))
-            .ForMember(dest => dest.IsNewRequest, opt => opt.Ignore());
+            .ForMember(dest => dest.RequestCreated, opt => opt.Ignore());
 
         CreateMap<Persistence.OrganisationJoinRequest, JoinRequestLookUp>()
             .ForMember(m => m.Id, o => o.MapFrom(m => m.Guid));
