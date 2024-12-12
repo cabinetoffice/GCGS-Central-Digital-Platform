@@ -1,8 +1,10 @@
 @page "/organisation-selection"
 @using CO.CDP.Organisation.WebApiClient
+@using CO.CDP.OrganisationApp.Constants
 @using CO.CDP.OrganisationApp.WebApiClients
 @using CO.CDP.Localization
 @using Microsoft.AspNetCore.Mvc.Localization
+@addTagHelper *, Microsoft.FeatureManagement.AspNetCore
 
 @inject Microsoft.Extensions.Configuration.IConfiguration config
 
@@ -12,108 +14,116 @@
     ViewData["Title"] = StaticTextResource.Organisation_MyAccount;
 }
 
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
-            <h1 class="govuk-heading-l">@ViewData["Title"]</h1>
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-l">@ViewData["Title"]</h1>
 
-            <section>
-                <h2 class="govuk-heading-m">@StaticTextResource.Organisation_SignInDetails</h2>
+        <section>
+            <h2 class="govuk-heading-m">@StaticTextResource.Organisation_SignInDetails</h2>
 
-                <dl class="govuk-summary-list">
-                    <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">
-                            @StaticTextResource.Organisation_EmailAddress
-                        </dt>
-                        <dd class="govuk-summary-list__value">
-                            @Model.UserDetails.Email
-                        </dd>
-                    </div>
-                </dl>
+            <dl class="govuk-summary-list">
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        @StaticTextResource.Organisation_EmailAddress
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        @Model.UserDetails.Email
+                    </dd>
+                </div>
+            </dl>
 
-                @{
-                    var oneLoginAccountUrl = config["OneLogin:AccountUrl"];
-                }
-                <p class="govuk-body">
-                    @Html.Raw(string.Format(@StaticTextResource.Organisation_ChangeSignInDetails, oneLoginAccountUrl))
-                </p>
+            @{
+                var oneLoginAccountUrl = config["OneLogin:AccountUrl"];
+            }
+            <p class="govuk-body">
+                @Html.Raw(string.Format(@StaticTextResource.Organisation_ChangeSignInDetails, oneLoginAccountUrl))
+            </p>
 
-            </section>
+        </section>
 
-            <hr class="govuk-section-break govuk-section-break--invisible govuk-section-break--xl">
+        <hr class="govuk-section-break govuk-section-break--invisible govuk-section-break--xl">
 
-            <section>
-                @if (Model.UserOrganisations.Any())
-                {
-                    <table class="govuk-table">
-                        <caption class="govuk-table__caption govuk-table__caption--m">@StaticTextResource.Organisation_MyOrganisations</caption>
-                        <thead class="govuk-table__head">
-                            <tr class="govuk-table__row">
-                                <th scope="col" colspan="2" class="govuk-table__header">@StaticTextResource.Organisation_OrganisationName</th>
-                            </tr>
-                        </thead>
-                        <tbody class="govuk-table__body">
-                            @{
-                                foreach (var (org, review) in Model.UserOrganisations)
-                                {
-                                    <tr class="govuk-table__row">
-                                        <th scope="row" class="govuk-table__header">
-                                            @org.Name
-                                            @{
-                                                if (review != null)
+        <section>
+            @if (Model.UserOrganisations.Any())
+            {
+                <table class="govuk-table">
+                    <caption class="govuk-table__caption govuk-table__caption--m">@StaticTextResource.Organisation_MyOrganisations</caption>
+                    <thead class="govuk-table__head">
+                        <tr class="govuk-table__row">
+                            <th scope="col" colspan="2" class="govuk-table__header">@StaticTextResource.Organisation_OrganisationName</th>
+                        </tr>
+                    </thead>
+                    <tbody class="govuk-table__body">
+                        @{
+                            foreach (var (org, review) in Model.UserOrganisations)
+                            {
+                                <tr class="govuk-table__row">
+                                    <th scope="row" class="govuk-table__header">
+                                        @org.Name
+                                        @{
+                                            if (review != null)
+                                            {
+                                                if (review.Status == ReviewStatus.Rejected)
                                                 {
-                                                    if (review.Status == ReviewStatus.Rejected)
-                                                    {
-                                                        <strong class="govuk-tag govuk-tag--red">
-                                                            @StaticTextResource.Organisation_NotApproved
-                                                        </strong>
-                                                    }
-                                                    else if (review.Status == ReviewStatus.Pending)
-                                                    {
-                                                        <strong class="govuk-tag govuk-tag--blue">
-                                                            @StaticTextResource.Organisation_PendingApproval
-                                                        </strong>
-                                                    }
+                                                    <strong class="govuk-tag govuk-tag--red">
+                                                        @StaticTextResource.Organisation_NotApproved
+                                                    </strong>
+                                                }
+                                                else if (review.Status == ReviewStatus.Pending)
+                                                {
+                                                    <strong class="govuk-tag govuk-tag--blue">
+                                                        @StaticTextResource.Organisation_PendingApproval
+                                                    </strong>
                                                 }
                                             }
-                                        </th>
+                                        }
+                                    </th>
 
-                                        <td class="govuk-table__cell">
-                                            <a class="govuk-link govuk-link--no-visited-state"
-                                               href="/organisation/@org.Id">View</a>
-                                        </td>
-                                    </tr>
-                                }
+                                    <td class="govuk-table__cell">
+                                        <a class="govuk-link govuk-link--no-visited-state"
+                                           href="/organisation/@org.Id">View</a>
+                                    </td>
+                                </tr>
                             }
-                        </tbody>
-                    </table>
+                        }
+                    </tbody>
+                </table>
 
-                    <a asp-page="/Registration/OrganisationType" class="govuk-body govuk-link govuk-link--no-visited-state">
-                        @StaticTextResource.Organisation_AddAnotherOrganisation
-                    </a>
-                }
-                else
-                {
-                    <h2 class="govuk-heading-m">@StaticTextResource.Organisation_MyOrganisations</h2>
+                <a asp-page="/Registration/OrganisationType" class="govuk-body govuk-link govuk-link--no-visited-state">
+                    @StaticTextResource.Organisation_AddAnotherOrganisation
+                </a>
+            }
+            else
+            {
+                <h2 class="govuk-heading-m">@StaticTextResource.Organisation_MyOrganisations</h2>
 
-                    <p class="govuk-body">@StaticTextResource.Organisation_RegisterOrganisation</p>
+                <p class="govuk-body">@StaticTextResource.Organisation_RegisterOrganisation</p>
 
-                    <ul class="govuk-list govuk-list--bullet">
-                        <li>@StaticTextResource.Organisation_ContractingAuthority</li>
-                        <li>@StaticTextResource.Organisation_OrganisationOrSoleTrader</li>
-                    </ul>
+                <ul class="govuk-list govuk-list--bullet">
+                    <li>@StaticTextResource.Organisation_ContractingAuthority</li>
+                    <li>@StaticTextResource.Organisation_OrganisationOrSoleTrader</li>
+                </ul>
 
-                    <a asp-page="/Registration/OrganisationType" class="govuk-button" role="button" data-module="govuk-button">
-                        @StaticTextResource.Organisation_RegisterAnOrganisation
-                    </a>
+                <a asp-page="/Registration/OrganisationType" class="govuk-button" role="button" data-module="govuk-button">
+                    @StaticTextResource.Organisation_RegisterAnOrganisation
+                </a>
 
-                    <h3 class="govuk-heading-s">@StaticTextResource.Organisation_AfterYouveRegistered</h3>
+                <h3 class="govuk-heading-s">@StaticTextResource.Organisation_AfterYouveRegistered</h3>
 
-                    <p class="govuk-body">@StaticTextResource.Organisation_IfYouNeedTo</p>
-                    <ul class="govuk-list govuk-list--bullet">
-                        <li>@StaticTextResource.Organisation_RegisterAsOtherRole</li>
-                        <li>@StaticTextResource.Organisation_AddMoreOrganisations</li>
-                    </ul>
-                }
-            </section>
-        </div>
+                <p class="govuk-body">@StaticTextResource.Organisation_IfYouNeedTo</p>
+                <ul class="govuk-list govuk-list--bullet">
+                    <li>@StaticTextResource.Organisation_RegisterAsOtherRole</li>
+                    <li>@StaticTextResource.Organisation_AddMoreOrganisations</li>
+                </ul>
+            }
+        </section>
+
+        <hr class="govuk-section-break govuk-section-break--invisible govuk-section-break--xl">
+
+        <feature name="@FeatureFlags.Consortium">
+            <div class="govuk-body">
+                <a class="govuk-button govuk-button--secondary" href="/consortium/start">@StaticTextResource.Organisation_CreateNewConsortium</a>
+            </div>
+        </feature>
     </div>
+</div>

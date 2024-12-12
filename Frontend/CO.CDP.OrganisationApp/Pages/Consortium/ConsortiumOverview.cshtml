@@ -1,0 +1,105 @@
+@page "/consortium/{id}/overview"
+@using CO.CDP.OrganisationApp.Constants
+@using CO.CDP.OrganisationApp.WebApiClients
+@using CO.CDP.Localization
+
+@inject IUserInfoService userInfoService
+
+@model ConsortiumOverviewModel
+
+@{
+    var organisationDetails = Model.OrganisationDetails!;
+    var postalAddress = organisationDetails.Addresses.FirstOrDefault(a => a.Type == CO.CDP.Organisation.WebApiClient.AddressType.Postal);
+    bool isViewer = await userInfoService.IsViewer();
+    ViewData["Title"] = organisationDetails.Name;
+    var ppon = (organisationDetails.Identifier.Scheme == OrganisationSchemeType.Other
+                        ? StaticTextResource.Consortium_ConsortiumOverview_Ppon_Status_Pending
+                        : organisationDetails.Identifier.Id);
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-full govuk-body">
+        <span class="govuk-caption-l">
+            PPON: @ppon
+        </span>
+        <h1 class="govuk-heading-l">
+            @organisationDetails.Name
+        </h1>
+
+        <h2 class="govuk-heading-m">@StaticTextResource.Consortium_ConsortiumOverview_Heading</h2>
+
+        <dl class="govuk-summary-list">
+
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Name</dt>
+                <dd class="govuk-summary-list__value">
+                    <p class="govuk-body">@organisationDetails.Name</p>
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                    <a class="govuk-link govuk-link--no-visited-state" href="#">@Html.Raw(@StaticTextResource.Consortium_ConsortiumOverview_ChangeName)</a>
+                </dd>
+            </div>
+
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">@StaticTextResource.Consortium_ConsortiumOverview_Address_list</dt>
+                <dd class="govuk-summary-list__value">
+                    <p class="govuk-body">@postalAddress!.StreetAddress</p>
+                    <p class="govuk-body">@postalAddress.Locality</p>
+                    @if (!string.IsNullOrWhiteSpace(postalAddress.Region))
+                    {
+                                <p class="govuk-body">@postalAddress.Region</p>
+                    }
+                    <p class="govuk-body">@postalAddress.PostalCode</p>
+                    <p class="govuk-body">@postalAddress.CountryName</p>
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                    <a class="govuk-link govuk-link--no-visited-state" href="#">@Html.Raw(@StaticTextResource.Consortium_ConsortiumOverview_ChangeAddress)</a>
+                </dd>
+            </div>
+
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">@StaticTextResource.Consortium_ConsortiumOverview_EmailAddress_list</dt>
+                <dd class="govuk-summary-list__value">
+                    <p class="govuk-body">@organisationDetails.ContactPoint.Email</p>
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                    <a class="govuk-link govuk-link--no-visited-state" href="#">@Html.Raw(@StaticTextResource.Consortium_ConsortiumOverview_ChangeEmailaddress)</a>
+                </dd>
+            </div>
+        </dl>
+
+        <h2 class="govuk-heading-m">@StaticTextResource.Consortium_ConsortiumOverview_Heading2</h2>
+
+        <p>@StaticTextResource.Consortium_ConsortiumOverview_Paragraph1</p>
+
+        <div class="govuk-body">
+            <a class="govuk-button govuk-button--secondary" href="#">@StaticTextResource.Consortium_ConsortiumOverview_AddAnOrganisation_link</a>
+        </div>
+
+        <hr class="govuk-section-break govuk-section-break--l">
+
+        <h2 class="govuk-heading-m">@StaticTextResource.Consortium_ConsortiumOverview_Heading3</h2>
+
+        <ul class="govuk-task-list">
+            <li class="govuk-task-list__item govuk-task-list__item--with-link">
+                <div class="govuk-task-list__name-and-hint">
+                    <a class="govuk-link govuk-task-list__link" href="#" aria-describedby="before-you-start-2-status">
+                        @StaticTextResource.Consortium_ConsortiumOverview_CreateSharecode_list
+                    </a>
+                </div>
+
+                <div class="govuk-task-list__status" id="before-you-start-2-status">
+                    <strong class="govuk-tag govuk-tag--orange">
+                        @StaticTextResource.Consortium_ConsortiumOverview_status_list
+                    </strong>
+                </div>
+            </li>
+        </ul>
+
+        <hr class="govuk-section-break govuk-section-break--l">
+
+        <div class="govuk-!-margin-top-3">
+            <a class="govuk-link" href="/organisation-selection">@StaticTextResource.Consortium_ConsortiumOverview_BackToMyAccount_link</a>
+        </div>
+    </div>
+</div>
