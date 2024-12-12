@@ -2585,14 +2585,14 @@
   <data name="Consortium_ConsortiumOverview_status_list" xml:space="preserve">
     <value>Cannot start yet</value>
   </data>
-  <data name="Consortium_ConsortiumOverview_HiddenSpan_name" xml:space="preserve">
-    <value>consortium name</value>
+  <data name="Consortium_ConsortiumOverview_ChangeName" xml:space="preserve">
+    <value>Change&lt;span class="govuk-visually-hidden"&gt;consortium name&lt;/span&gt;</value>
   </data>
-  <data name="Consortium_ConsortiumOverview_HiddenSpan_address" xml:space="preserve">
-    <value>address</value>
+  <data name="Consortium_ConsortiumOverview_ChangeAddress" xml:space="preserve">
+    <value>Change&lt;span class="govuk-visually-hidden"&gt;address&lt;/span&gt;</value>
   </data>
-  <data name="Consortium_ConsortiumOverview_HiddenSpan_emailaddress" xml:space="preserve">
-    <value>consortium email address</value>
+  <data name="Consortium_ConsortiumOverview_ChangeEmailaddress" xml:space="preserve">
+    <value>Change&lt;span class="govuk-visually-hidden"&gt;consortium email address&lt;/span&gt;</value>
   </data>
   <data name="Consortium_ConsortiumOverview_EmailAddress_list" xml:space="preserve">
     <value>Email address</value>
