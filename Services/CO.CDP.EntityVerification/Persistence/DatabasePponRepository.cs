@@ -57,6 +57,15 @@ public class DatabasePponRepository(EntityVerificationContext context) : IPponRe
         return await context.IdentifierRegistries.Where(q => q.CountryCode.ToUpper() == countryCode.ToUpper()).ToListAsync();
     }
 
+    public async Task<IEnumerable<IdentifierRegistries>> GetIdentifierRegistriesNameAsync(string[] schemeCodes)
+    {
+        var upperCaseSchemeCodes = schemeCodes.Select(x => x.ToUpper()).ToArray(); 
+
+        return await context.IdentifierRegistries
+            .Where(q => upperCaseSchemeCodes.Contains(q.Scheme.ToUpper())) 
+            .ToListAsync();
+    }
+
     private static void HandleDbUpdateException(Ppon identifier, DbUpdateException cause)
     {
         switch (cause.InnerException)

@@ -1,3 +1,4 @@
+using CO.CDP.EntityVerificationClient;
 using System.Collections.Generic;
 
 namespace CO.CDP.OrganisationApp.Constants;
@@ -35,18 +36,36 @@ public static class OrganisationSchemeType
         { Ppon, "Ppon" }
     };
 
-    public static string? SchemeDescription(this string? scheme)
+    public static string? SchemeDescription(this string? scheme, ICollection<IdentifierRegistries>? registriesDetails = null)
     {
         if (string.IsNullOrWhiteSpace(scheme))
             return null;
 
-        OrganisationScheme.TryGetValue(scheme, out var value);
-
-        if (string.IsNullOrEmpty(value))
+        if (OrganisationScheme.TryGetValue(scheme, out var value) && !string.IsNullOrEmpty(value))
         {
-            value = "Other";
+            return value;
+        }
+        
+        if (registriesDetails != null)
+        {
+            var registryMatch = registriesDetails.FirstOrDefault(r => r.Scheme?.Equals(scheme, StringComparison.OrdinalIgnoreCase) == true);
+            if (registryMatch != null)
+            {
+               
+                if (!string.IsNullOrWhiteSpace(registryMatch.Countrycode) && Constants.Country.NonUKCountries.TryGetValue(registryMatch.Countrycode, out var countryName))
+                {
+                    return $"{countryName} - {registryMatch.RegisterName}";
+                }
+                
+                return $"{registryMatch.RegisterName}";
+            }
+            var schemeCountryCode = scheme.Contains("-") ? scheme.Split('-')[0] : scheme;
+            if (!string.IsNullOrWhiteSpace(schemeCountryCode) && Constants.Country.NonUKCountries.TryGetValue(schemeCountryCode, out var countryNameforOthers))
+            {
+                return $"{countryNameforOthers} - Other";
+            }
         }
 
-        return value;
+        return "Other";
     }
 }

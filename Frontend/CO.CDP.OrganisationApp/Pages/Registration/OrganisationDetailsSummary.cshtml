@@ -41,7 +41,7 @@
                             Organisation identifier
                         </dt>
                         <dd class="govuk-summary-list__value">
-                            @details.OrganisationScheme.SchemeDescription()
+                        @details.OrganisationScheme.SchemeDescription(Model.IdentifierRegistriesDetails)
                             @if (details.OrganisationScheme != "Other")
                             {
                                 <br />
