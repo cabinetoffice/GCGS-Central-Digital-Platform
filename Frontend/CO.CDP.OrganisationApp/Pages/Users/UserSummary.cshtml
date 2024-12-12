@@ -2,193 +2,192 @@
 @model CO.CDP.OrganisationApp.Pages.Users.UserSummaryModel
 @using CO.CDP.Organisation.WebApiClient
 @using CO.CDP.OrganisationApp.Constants
+@using CO.CDP.Localization
 
 @{
-    ViewData["Title"] = "Manage users";
+    ViewData["Title"] = StaticTextResource.UserSummary_ManageUsers_Title;
     var hasError = ((TagBuilder)Html.ValidationMessageFor(m => m.HasPerson)).HasInnerHtml;
     var totalPersons = Model.Persons.Count + Model.PersonInvites.Count;
     var pendingJoinRequests = Model.OrganisationJoinRequests.Where(x => x.Status == CDP.Organisation.WebApiClient.OrganisationJoinRequestStatus.Pending).ToList();
 }
 
 @section BeforeContent {
-    <a href="/organisation/@Model.Id" class="govuk-back-link">Back</a>
+    <a href="/organisation/@Model.Id" class="govuk-back-link">@StaticTextResource.Global_Back</a>
 }
 
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
-            <partial name="_ErrorSummary" model="@Model.ModelState" />
-        </div>
-        <div class="govuk-grid-column-full">
-
-            <h1 class="govuk-visually-hidden">@ViewData["Title"]</h1>
-
-            @if (pendingJoinRequests.Any())
-            {
-                <h2 class="govuk-heading-l">
-                    Join requests
-                </h2>
-            }
-
-            <dl class="govuk-summary-list">
-                @foreach (var pr in pendingJoinRequests)
-                {
-                    <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">
-                            @pr.Person.FirstName @pr.Person.LastName
-                        </dt>
-                        <dd class="govuk-summary-list__value">
-                            @pr.Person.Email
-                        </dd>
-                        <dd class="govuk-summary-list__actions">
-                            <ul class="govuk-summary-list__actions-list">
-                                <li class="govuk-summary-list__actions-list-item">
-
-                                    @{
-                                        var link = $"?handler=JoinRequest&reqid={pr.Id}&personid={pr.Person.Id}&decision=";
-                                    }
-                                    <a class="govuk-link" href="@($"{link}{OrganisationJoinRequestStatus.Accepted}")">Approve</a>
-                                </li>
-                                <li class="govuk-summary-list__actions-list-item">
-                                    <a class="govuk-link" href="@($"{link}{OrganisationJoinRequestStatus.Rejected}")">Reject</a>
-                                </li>
-                            </ul>
-                        </dd>
-                    </div>
-                }
-            </dl>
-
-            <h2 class="govuk-heading-l">
-                Organisation has @(totalPersons == 1 ? "1 user" : $"{totalPersons} users")
-            </h2>
-
-            @foreach (var p in Model.Persons)
-            {
-                <dl class="govuk-summary-list ros-add-to-a-list">
-                    <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">
-                            @p.FirstName @p.LastName
-                            @foreach (var scope in p.Scopes)
-                            {
-                                if (scope == OrganisationPersonScopes.Admin)
-                                {
-                                    <span class="govuk-tag">Admin</span>
-                                }
-
-                                if (scope == OrganisationPersonScopes.Editor)
-                                {
-                                    <span class="govuk-tag govuk-tag--green">Editor</span>
-                                }
-
-                                if (scope == OrganisationPersonScopes.Viewer)
-                                {
-                                    <span class="govuk-tag govuk-tag--yellow">Viewer</span>
-                                }
-                            }
-                        </dt>
-                        <dd class="govuk-summary-list__value">
-                            <strong>@p.Email</strong>
-                        </dd>
-                        <dd class="govuk-summary-list__actions">
-                            <ul class="govuk-summary-list__actions-list">
-                                @if (p.Id != @Model.SignedInPersonId)
-                                {
-                                    <li class="govuk-summary-list__actions-list-item">
-                                        <a class="govuk-link" href="/organisation/@Model.Id/users/@p.Id/change-role?handler=person">Change</a>
-                                    </li>
-                                    <li class="govuk-summary-list__actions-list-item">
-                                        <a class="govuk-link" href="/organisation/@Model.Id/users/@p.Id/remove">Remove</a>
-                                    </li>
-                                }
-                            </ul>
-                        </dd>
-                    </div>
-                </dl>
-            }
-
-            @foreach (var p in Model.PersonInvites)
-            {
-                <dl class="govuk-summary-list ros-add-to-a-list">
-                    <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">
-                            @p.FirstName @p.LastName
-                            @foreach (var scope in p.Scopes)
-                            {
-                                if (scope == OrganisationPersonScopes.Admin)
-                                {
-                                    <span class="govuk-tag">Admin</span>
-                                }
-
-                                if (scope == OrganisationPersonScopes.Editor)
-                                {
-                                    <span class="govuk-tag govuk-tag--green">Editor</span>
-                                }
-
-                                if (scope == OrganisationPersonScopes.Viewer)
-                                {
-                                    <span class="govuk-tag govuk-tag--yellow">Viewer</span>
-                                }
-                            }
-
-                            @if (DateTimeOffset.UtcNow > p.ExpiresOn)
-                            {
-                                <div class="govuk-hint">Invite expired</div>
-                            }
-                            else
-                            {
-                                <div class="govuk-hint">Invite sent</div>
-                            }
-                        </dt>
-                        <dd class="govuk-summary-list__value">
-                            <strong>@p.Email</strong>
-                        </dd>
-                        <dd class="govuk-summary-list__actions">
-                            <ul class="govuk-summary-list__actions-list">
-                                <li class="govuk-summary-list__actions-list-item">
-                                    <a class="govuk-link" href="/organisation/@Model.Id/users/@p.Id/resend-invite">Resend</a>
-                                </li>
-                                <li class="govuk-summary-list__actions-list-item">
-                                    <a class="govuk-link" href="/organisation/@Model.Id/users/@p.Id/change-role?handler=personInvite">Change</a>
-                                </li>
-                                <li class="govuk-summary-list__actions-list-item">
-                                    <a class="govuk-link" href="/organisation/@Model.Id/users/@p.Id/remove?handler=personInvite">Remove</a>
-                                </li>
-                            </ul>
-                        </dd>
-                    </div>
-                </dl>
-            }
-
-            <form class="form" method="post">
-                <div class="govuk-form-group @(hasError ? "govuk-form-group--error" : "")">
-                    <fieldset class="govuk-fieldset" @(hasError ? Html.Raw(@"aria-describedby=""has-person-error""") : "")>
-                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
-                            <h2 class="govuk-fieldset__heading">
-                                Add another user?
-                            </h2>
-                        </legend>
-                        @if (hasError)
-                        {
-                            <p class="govuk-error-message" id="has-person-error">
-                                <span class="govuk-visually-hidden">Error:</span> @Html.ValidationMessageFor(m => m.HasPerson)
-                            </p>
-                        }
-                        <div class="govuk-radios govuk-radios--inline" data-module="govuk-radios">
-                            <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="@nameof(Model.HasPerson)" name="HasPerson" type="radio"
-                                       value="true" @(Model.HasPerson == true ? "checked" : "")>
-                                <label class="govuk-label govuk-radios__label" for="@nameof(Model.HasPerson)">Yes</label>
-                            </div>
-                            <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="@nameof(Model.HasPerson)-1" name="HasPerson" type="radio"
-                                       value="false" @(Model.HasPerson == false ? "checked" : "")>
-                                <label class="govuk-label govuk-radios__label" for="@nameof(Model.HasPerson)-1">No</label>
-                            </div>
-                        </div>
-                    </fieldset>
-                </div>
-                <govuk-button>
-                    Continue
-                </govuk-button>
-            </form>
-        </div>
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <partial name="_ErrorSummary" model="@Model.ModelState" />
     </div>
+    <div class="govuk-grid-column-full">
+        <h1 class="govuk-visually-hidden">@ViewData["Title"]</h1>
+
+        @if (pendingJoinRequests.Any())
+        {
+            <h2 class="govuk-heading-l">
+                @StaticTextResource.UserSummary_JoinRequests
+            </h2>
+        }
+
+        <dl class="govuk-summary-list">
+            @foreach (var pr in pendingJoinRequests)
+            {
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        @pr.Person.FirstName @pr.Person.LastName
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        @pr.Person.Email
+                    </dd>
+                    <dd class="govuk-summary-list__actions">
+                        <ul class="govuk-summary-list__actions-list">
+                            <li class="govuk-summary-list__actions-list-item">
+                                @{
+                                    var link = $"?handler=JoinRequest&reqid={pr.Id}&personid={pr.Person.Id}&decision=";
+                                }
+                                <a class="govuk-link" href="@($"{link}{OrganisationJoinRequestStatus.Accepted}")">@StaticTextResource.Global_Approve</a>
+                            </li>
+                            <li class="govuk-summary-list__actions-list-item">
+                                <a class="govuk-link" href="@($"{link}{OrganisationJoinRequestStatus.Rejected}")">@StaticTextResource.Global_Reject</a>
+                            </li>
+                        </ul>
+                    </dd>
+                </div>
+            }
+        </dl>
+
+        <h2 class="govuk-heading-l">
+            @string.Format(StaticTextResource.UserSummary_TotalUsers, totalPersons, totalPersons == 1 ? StaticTextResource.UserSummary_User : StaticTextResource.UserSummary_Users)
+        </h2>
+
+        @foreach (var p in Model.Persons)
+        {
+            <dl class="govuk-summary-list ros-add-to-a-list">
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        @p.FirstName @p.LastName
+                        @foreach (var scope in p.Scopes)
+                        {
+                            if (scope == OrganisationPersonScopes.Admin)
+                            {
+                                <span class="govuk-tag">@StaticTextResource.Global_Admin</span>
+                            }
+
+                            if (scope == OrganisationPersonScopes.Editor)
+                            {
+                                <span class="govuk-tag govuk-tag--green">@StaticTextResource.Global_Editor</span>
+                            }
+
+                            if (scope == OrganisationPersonScopes.Viewer)
+                            {
+                                <span class="govuk-tag govuk-tag--yellow">@StaticTextResource.Global_Viewer</span>
+                            }
+                        }
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        <strong>@p.Email</strong>
+                    </dd>
+                    <dd class="govuk-summary-list__actions">
+                        <ul class="govuk-summary-list__actions-list">
+                            @if (p.Id != @Model.SignedInPersonId)
+                            {
+                                <li class="govuk-summary-list__actions-list-item">
+                                    <a class="govuk-link" href="/organisation/@Model.Id/users/@p.Id/change-role?handler=person">@StaticTextResource.Global_Change</a>
+                                </li>
+                                <li class="govuk-summary-list__actions-list-item">
+                                    <a class="govuk-link" href="/organisation/@Model.Id/users/@p.Id/remove">@StaticTextResource.Global_Remove</a>
+                                </li>
+                            }
+                        </ul>
+                    </dd>
+                </div>
+            </dl>
+        }
+
+        @foreach (var p in Model.PersonInvites)
+        {
+            <dl class="govuk-summary-list ros-add-to-a-list">
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        @p.FirstName @p.LastName
+                        @foreach (var scope in p.Scopes)
+                        {
+                            if (scope == OrganisationPersonScopes.Admin)
+                            {
+                                <span class="govuk-tag">@StaticTextResource.Global_Admin</span>
+                            }
+
+                            if (scope == OrganisationPersonScopes.Editor)
+                            {
+                                <span class="govuk-tag govuk-tag--green">@StaticTextResource.Global_Editor</span>
+                            }
+
+                            if (scope == OrganisationPersonScopes.Viewer)
+                            {
+                                <span class="govuk-tag govuk-tag--yellow">@StaticTextResource.Global_Viewer</span>
+                            }
+                        }
+
+                        @if (DateTimeOffset.UtcNow > p.ExpiresOn)
+                        {
+                            <div class="govuk-hint">@StaticTextResource.UserSummary_InviteExpired</div>
+                        }
+                        else
+                        {
+                            <div class="govuk-hint">@StaticTextResource.UserSummary_InviteSent</div>
+                        }
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        <strong>@p.Email</strong>
+                    </dd>
+                    <dd class="govuk-summary-list__actions">
+                        <ul class="govuk-summary-list__actions-list">
+                            <li class="govuk-summary-list__actions-list-item">
+                                <a class="govuk-link" href="/organisation/@Model.Id/users/@p.Id/resend-invite">@StaticTextResource.UserSummary_Resend</a>
+                            </li>
+                            <li class="govuk-summary-list__actions-list-item">
+                                <a class="govuk-link" href="/organisation/@Model.Id/users/@p.Id/change-role?handler=personInvite">@StaticTextResource.Global_Change</a>
+                            </li>
+                            <li class="govuk-summary-list__actions-list-item">
+                                <a class="govuk-link" href="/organisation/@Model.Id/users/@p.Id/remove?handler=personInvite">@StaticTextResource.Global_Remove</a>
+                            </li>
+                        </ul>
+                    </dd>
+                </div>
+            </dl>
+        }
+
+        <form class="form" method="post">
+            <div class="govuk-form-group @(hasError ? "govuk-form-group--error" : "")">
+                <fieldset class="govuk-fieldset" @(hasError ? Html.Raw(@"aria-describedby=""has-person-error""") : "")>
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                        <h2 class="govuk-fieldset__heading">
+                            @StaticTextResource.UserSummary_AddAnotherUser
+                        </h2>
+                    </legend>
+                    @if (hasError)
+                    {
+                        <p class="govuk-error-message" id="has-person-error">
+                            <span class="govuk-visually-hidden">@StaticTextResource.Global_Error</span> @Html.ValidationMessageFor(m => m.HasPerson)
+                        </p>
+                    }
+                    <div class="govuk-radios govuk-radios--inline" data-module="govuk-radios">
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="@nameof(Model.HasPerson)" name="HasPerson" type="radio"
+                                   value="true" @(Model.HasPerson == true ? "checked" : "")>
+                            <label class="govuk-label govuk-radios__label" for="@nameof(Model.HasPerson)">@StaticTextResource.Global_Yes</label>
+                        </div>
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="@nameof(Model.HasPerson)-1" name="HasPerson" type="radio"
+                                   value="false" @(Model.HasPerson == false ? "checked" : "")>
+                            <label class="govuk-label govuk-radios__label" for="@nameof(Model.HasPerson)-1">@StaticTextResource.Global_No</label>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+            <govuk-button>
+                @StaticTextResource.Global_Continue
+            </govuk-button>
+        </form>
+    </div>
+</div>

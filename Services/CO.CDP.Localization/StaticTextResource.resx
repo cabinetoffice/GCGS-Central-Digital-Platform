@@ -270,6 +270,21 @@
   <data name="Global_Continue" xml:space="preserve">
     <value>Continue</value>
   </data>
+  <data name="Global_Admin" xml:space="preserve">
+    <value>Admin</value>
+  </data>
+    <data name="Global_Editor" xml:space="preserve">
+      <value>Editor</value>
+  </data>
+    <data name="Global_Viewer" xml:space="preserve">
+      <value>Viewer</value>
+  </data>
+  <data name="Global_Approve" xml:space="preserve">
+    <value>Approve</value>
+  </data>
+  <data name="Global_Reject" xml:space="preserve">
+      <value>Reject</value>
+  </data>
   <data name="Organisation_MyAccount" xml:space="preserve">
     <value>My account</value>
   </data>
@@ -629,6 +644,18 @@
   </data>
   <data name="User_Role_Required_ErrorMessage" xml:space="preserve">
     <value>Role required</value>
+  </data>
+  <data name="User_RemoveConfirmation_Title" xml:space="preserve">
+    <value>Are you sure you want to remove {0}?</value>
+  </data>
+  <data name="User_RemoveConfirmation_Header" xml:space="preserve">
+    <value>Are you sure you want to remove &lt;br/&gt;[{0}]?</value>
+  </data>
+  <data name="User_RemoveConfirmation_ConfirmValidation" xml:space="preserve">
+    <value>Select yes to confirm remove user</value>
+  </data>
+  <data name="User_UserSummary_HasPersonValidation" xml:space="preserve">
+    <value>Select yes to add another user</value>
   </data>
   <data name="Supplier_ConnectedEntity_Address_EnterRegisteredAddress_Heading" xml:space="preserve">
     <value>Enter {0}'s registered address</value>
@@ -2673,5 +2700,38 @@
   </data>
   <data name="SupplierToBuyer_OrganisationType_RegionalAndLocalGovernment" xml:space="preserve">
     <value>Regional and local government, public authority: UK, Scottish, Welsh and Northern Irish</value>
+  </data>
+  <data name="UserSummary_ManageUsers_Title" xml:space="preserve">
+    <value>Manage users</value>
+  </data>
+    <data name="UserSummary_JoinRequests" xml:space="preserve">
+      <value>Join requests</value>
+  </data>
+  <data name="UserSummary_Approve" xml:space="preserve">
+      <value>Approve</value>
+  </data>
+  <data name="UserSummary_TotalUsers" xml:space="preserve">
+      <value>Organisation has {0} {1}</value>
+  </data>
+  <data name="UserSummary_User" xml:space="preserve">
+      <value>user</value>
+  </data>
+   <data name="UserSummary_Users" xml:space="preserve">
+      <value>users</value>
+  </data>
+  <data name="UserSummary_InviteExpired" xml:space="preserve">
+    <value>Invite expired</value>
+  </data>
+  <data name="UserSummary_InviteSent" xml:space="preserve">
+    <value>Invite sent</value>
+  </data>
+  <data name="UserSummary_Resend" xml:space="preserve">
+    <value>Resend</value>
+  </data>
+  <data name="UserSummary_AddAnotherUser" xml:space="preserve">
+    <value>Add another user?</value>
+  </data>
+  <data name="UserSummary_Resend" xml:space="preserve">
+    <value>Resend</value>
   </data>
 </root>
