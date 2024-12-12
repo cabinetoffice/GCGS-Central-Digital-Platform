@@ -335,4 +335,16 @@ data "aws_iam_policy_document" "terraform_global" {
     sid = "ManageStateMachines"
   }
 
+  statement {
+    actions = [
+      "wafv2:CreateWebACL",
+      "wafv2:UpdateWebACL"
+    ]
+    effect = "Allow"
+    resources = [
+      "arn:aws:wafv2:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:regional/managedruleset/*/*",
+    ]
+    sid = "ManageWAF"
+  }
+
 }
