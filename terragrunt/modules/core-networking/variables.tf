@@ -1,3 +1,8 @@
+variable "environment" {
+  description = "The environment we are provisioning"
+  type        = string
+}
+
 variable "is_production" {
   description = "Indicates whether the target account is configured with production-level settings"
   type        = bool
