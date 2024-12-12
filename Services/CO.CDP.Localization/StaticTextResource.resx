@@ -2071,6 +2071,9 @@
   <data name="Global_NotApplicable" xml:space="preserve">
     <value>N/A</value>
   </data>
+  <data name="Global_NotApplicableLong" xml:space="preserve">
+    <value>Not Applicable</value>
+  </data>
   <data name="PdfGenerator_AdditionalIdentifiers" xml:space="preserve">
     <value>Additional identifiers</value>
   </data>
