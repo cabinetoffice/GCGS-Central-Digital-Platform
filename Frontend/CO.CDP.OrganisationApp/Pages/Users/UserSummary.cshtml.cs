@@ -4,6 +4,7 @@ using CO.CDP.OrganisationApp.WebApiClients;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
+using CO.CDP.Localization;
 
 namespace CO.CDP.OrganisationApp.Pages.Users;
 
@@ -29,7 +30,7 @@ public class UserSummaryModel(
     public ICollection<JoinRequestLookUp> OrganisationJoinRequests { get; set; } = [];
 
     [BindProperty]
-    [Required(ErrorMessage = "Select yes to add another user")]
+    [Required(ErrorMessageResourceName = nameof(StaticTextResource.User_UserSummary_HasPersonValidation), ErrorMessageResourceType = typeof(StaticTextResource))]
     public bool? HasPerson { get; set; }
 
     public async Task<IActionResult> OnGet(bool? selected)

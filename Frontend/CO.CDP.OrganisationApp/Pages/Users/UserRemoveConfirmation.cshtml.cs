@@ -4,6 +4,7 @@ using CO.CDP.OrganisationApp.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
+using CO.CDP.Localization;
 
 namespace CO.CDP.OrganisationApp.Pages.Users;
 
@@ -21,7 +22,7 @@ ISession session
     public Guid UserId { get; set; }
 
     [BindProperty]
-    [Required(ErrorMessage = "Select yes to confirm remove user")]
+    [Required(ErrorMessageResourceName = nameof(StaticTextResource.User_RemoveConfirmation_ConfirmValidation), ErrorMessageResourceType = typeof(StaticTextResource))]
     public bool? ConfirmRemove { get; set; }
 
     [BindProperty]
