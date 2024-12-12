@@ -2556,7 +2556,7 @@
     <value>You cannot select 'My organisation is none of the above' along with other options.</value>
   </data>
   <data name="Organisation_CreateNewConsortium" xml:space="preserve">
-    <value>Creat a new consortium</value>
+    <value>Create a new consortium</value>
   </data>
   <data name="Consortium_ConsortiumOverview_Heading" xml:space="preserve">
     <value>Consortium details</value>
