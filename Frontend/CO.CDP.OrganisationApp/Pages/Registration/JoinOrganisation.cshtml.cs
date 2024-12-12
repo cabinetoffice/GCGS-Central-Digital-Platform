@@ -60,7 +60,11 @@ public class JoinOrganisationModel(
                     {
                         if ((!joinRequestStatus.RequestCreated) && (joinRequestStatus.Status == OrganisationJoinRequestStatus.Pending))
                         {
-                            flashMessageService.SetFlashMessage(FlashMessageType.Failure, StaticTextResource.OrganisationRegistration_JoinOrganisation_PendingMemberOfOrganisation);
+                            flashMessageService.SetFlashMessage(
+                                FlashMessageType.Failure,
+                                StaticTextResource.OrganisationRegistration_JoinOrganisation_PendingMemberOfOrganisation,
+                                null,
+                                StaticTextResource.Global_Important);
                             return Page();
                         }
 

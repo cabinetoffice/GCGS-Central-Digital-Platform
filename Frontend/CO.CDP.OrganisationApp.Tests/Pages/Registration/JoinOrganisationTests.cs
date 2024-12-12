@@ -127,7 +127,7 @@ public class JoinOrganisationModelTests
                 FlashMessageType.Failure,
                 StaticTextResource.OrganisationRegistration_JoinOrganisation_PendingMemberOfOrganisation,
                 null,
-                null,
+                StaticTextResource.Global_Important,
                 null,
                 null),
             Times.Once);
