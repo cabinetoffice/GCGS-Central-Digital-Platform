@@ -1,5 +1,5 @@
 [tools]
 dotnet = "8.0.401"
-terraform = "1.9.5"
-terragrunt = "0.66.9"
+terraform = "1.10.2"
+terragrunt = "0.69.10"
 poetry = "1.8.3"
