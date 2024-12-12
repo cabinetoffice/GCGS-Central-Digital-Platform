@@ -850,6 +850,9 @@
     <value>Does {0} have a legal form?</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityLegalFormQuestion_Hint" xml:space="preserve">
+    <value>Does {0} have a legal form?</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityLegalFormQuestion_Hint" xml:space="preserve">
     <value>In the UK, this is a business structure or trading status. For example, limited company or limited liability partnership.</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityLegalFormQuestion_LegalFormNameLabel" xml:space="preserve">
@@ -888,6 +891,9 @@
   <data name="Supplier_ConnectedEntity_ConnectedEntityPostalSameAsRegisteredAddress_Hint" xml:space="preserve">
     <value>The place where an organisation receives official post can be different from its registered address. For example, a branch office.</value>
   </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityPscDetails_Heading" xml:space="preserve">
+    <value>Enter the person with significant control's details</value>
+  </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityPscDetails_FirstNameLabel" xml:space="preserve">
     <value>First name</value>
   </data>
@@ -924,11 +930,20 @@
   <data name="Supplier_ConnectedEntity_ConnectedEntityPscDetails_DateOfBirthYearInvalidError" xml:space="preserve">
     <value>Year must be a valid number</value>
   </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityPscDetails_DateOfBirthRealDateInvalidError" xml:space="preserve">
+    <value>Date of birth must be a real date</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityPscDetails_DateOfBirthInPastInvalidError" xml:space="preserve">
+    <value>Date of birth must be today or in the past</value>
+  </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityPscDetails_NationalityLabel" xml:space="preserve">
     <value>Nationality</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityPscDetails_NationalityRequiredError" xml:space="preserve">
     <value>Enter nationality</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityPscDetails_DateOfBirthYearInvalidError" xml:space="preserve">
+    <value>Year must be a valid number</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityRegistrationDateQuestion_DayRequiredError" xml:space="preserve">
     <value>Date of registration must include a day</value>
@@ -1130,6 +1145,9 @@
   </data>
   <data name="OrganisationRegistration_OrganisationType_Supplier_Hint" xml:space="preserve">
     <value>An organisation or sole trader who searches for tenders and submits bids to supply goods, works, services or utilities</value>
+  </data>
+  <data name="OrganisationRegistration_OrganisationType_BuyerOrSupplierValidation" xml:space="preserve">
+    <value>Select 'buyer' or 'supplier'</value>
   </data>
   <data name="OrganisationRegistration_CompanyHouseNumberQuestion_Heading" xml:space="preserve">
     <value>Does your organisation have a Companies House number?</value>

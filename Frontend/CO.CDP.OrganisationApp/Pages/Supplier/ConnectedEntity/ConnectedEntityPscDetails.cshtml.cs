@@ -112,13 +112,13 @@ public class ConnectedEntityPscDetailsModel(ISession session) : PageModel
             var dateString = $"{Year}-{Month!.PadLeft(2, '0')}-{Day!.PadLeft(2, '0')}";
             if (!DateTime.TryParseExact(dateString, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
             {
-                ModelState.AddModelError(nameof(DateOfBirth), "Date of birth must be a real date");
+                ModelState.AddModelError(nameof(DateOfBirth), StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityPscDetails_DateOfBirthRealDateInvalidError);
                 return Page();
             }
 
             if (parsedDate > DateTime.Today)
             {
-                ModelState.AddModelError(nameof(DateOfBirth), "Date of birth must be today or in the past");
+                ModelState.AddModelError(nameof(DateOfBirth), StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityPscDetails_DateOfBirthInPastInvalidError);
                 return Page();
             }
 
@@ -145,7 +145,7 @@ public class ConnectedEntityPscDetailsModel(ISession session) : PageModel
     private void InitModel(ConnectedEntityState state, bool reset = false)
     {
         Caption = state.GetCaption();
-        Heading = $"Enter the person with significant control's details";
+        Heading = StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityPscDetails_Heading;
         ConnectedEntityType = state.ConnectedEntityType;
         ShowDobAndNationality = (state.ConnectedEntityIndividualAndTrustCategoryType == ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForIndividual
                                 || state.ConnectedEntityIndividualAndTrustCategoryType == ConnectedEntityIndividualAndTrustCategoryType.DirectorOrIndividualWithTheSameResponsibilitiesForIndividual
@@ -186,13 +186,13 @@ public class ConnectedEntityPscDetailsModel(ISession session) : PageModel
         if (string.IsNullOrEmpty(FirstName))
         {
             isValid = false;
-            errors[nameof(FirstName)] = "Enter first name";
+            errors[nameof(FirstName)] = StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityPscDetails_FirstNameRequiredError;
         }
 
         if (string.IsNullOrEmpty(LastName))
         {
             isValid = false;
-            errors[nameof(LastName)] = "Enter last name";
+            errors[nameof(LastName)] = StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityPscDetails_LastNameRequiredError;
         }
 
         if (ShowDobAndNationality == true)
@@ -200,40 +200,40 @@ public class ConnectedEntityPscDetailsModel(ISession session) : PageModel
             if (string.IsNullOrEmpty(Day))
             {
                 isValid = false;
-                errors[nameof(Day)] = "Date of birth must include a day";
+                errors[nameof(Day)] = StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityPscDetails_DateOfBirthDayRequiredError;
             }
             else if (!IsValidPattern(Day, RegExPatterns.Day))
             {
                 isValid = false;
-                errors[nameof(Day)] = "Day must be a valid number";
+                errors[nameof(Day)] = StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityPscDetails_DateOfBirthDayInvalidError;
             }
 
             if (string.IsNullOrEmpty(Month))
             {
                 isValid = false;
-                errors[nameof(Month)] = "Date of birth must include a month";
+                errors[nameof(Month)] = StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityPscDetails_DateOfBirthMonthRequiredError;
             }
             else if (!IsValidPattern(Month, RegExPatterns.Month))
             {
                 isValid = false;
-                errors[nameof(Month)] = "Month must be a valid number";
+                errors[nameof(Month)] = StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityPscDetails_DateOfBirthMonthInvalidError;
             }
 
             if (string.IsNullOrEmpty(Year))
             {
                 isValid = false;
-                errors[nameof(Year)] = "Date of birth must include a year";
+                errors[nameof(Year)] = StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityPscDetails_DateOfBirthYearRequiredError;
             }
             else if (!IsValidPattern(Year, RegExPatterns.Year))
             {
                 isValid = false;
-                errors[nameof(Year)] = "Year must be a valid number";
+                errors[nameof(Year)] = StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityPscDetails_DateOfBirthYearInvalidError;
             }
 
             if (string.IsNullOrEmpty(Nationality))
             {
                 isValid = false;
-                errors[nameof(Nationality)] = "Enter your nationality";
+                errors[nameof(Nationality)] = StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityPscDetails_NationalityRequiredError;
             }
         }
 
