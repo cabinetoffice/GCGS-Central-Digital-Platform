@@ -1,4 +1,6 @@
 resource "aws_wafv2_web_acl" "this" {
+  count = var.environment != "orchestrator" ? 1 : 0
+
   name        = "${local.name_prefix}-acl"
   description = "${local.name_prefix} Web ACL"
   scope       = "REGIONAL" # "CLOUDFRONT" N.Virginia
