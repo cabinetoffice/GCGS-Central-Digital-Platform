@@ -6,7 +6,7 @@ public class FlashMessage
     {
         Heading = heading;
 
-        if(!string.IsNullOrEmpty(description))
+        if (!string.IsNullOrEmpty(description))
         {
             Description = description;
         }

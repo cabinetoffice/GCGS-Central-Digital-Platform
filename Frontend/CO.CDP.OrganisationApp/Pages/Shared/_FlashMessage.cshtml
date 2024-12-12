@@ -68,7 +68,8 @@
 @if (flashMessageService.PeekFlashMessage(FlashMessageType.Failure) != null)
 {
     var message = flashMessageService.GetFlashMessage(FlashMessageType.Failure);
-    if(message != null)  {
+    if(message != null)
+    {
         <div class="govuk-notification-banner app-notification-banner--failure" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
             <div class="govuk-notification-banner__header">
                 <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">

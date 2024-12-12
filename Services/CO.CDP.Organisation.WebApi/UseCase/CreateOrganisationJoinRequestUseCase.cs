@@ -49,7 +49,15 @@ public class CreateOrganisationJoinRequestUseCase(
 
         if (joinRequest != null)
         {
-            joinRequest.Status = OrganisationJoinRequestStatus.Pending;
+            if (joinRequest.Status == OrganisationJoinRequestStatus.Pending)
+            {
+                return mapper.Map<OrganisationJoinRequest>(joinRequest);
+            }
+
+            if (joinRequest.Status == OrganisationJoinRequestStatus.Rejected)
+            {
+                joinRequest.Status = OrganisationJoinRequestStatus.Pending;
+            }
         }
         else
         {
@@ -61,7 +69,10 @@ public class CreateOrganisationJoinRequestUseCase(
         await NotifyUserRequestSent(organisation: organisation, person: person);
         await NotifyOrgAdminsOfApprovalRequest(organisation: organisation, person: person);
 
-        return mapper.Map<OrganisationJoinRequest>(joinRequest);
+        OrganisationJoinRequest request = mapper.Map<OrganisationJoinRequest>(joinRequest);
+        request.RequestCreated = true;
+
+        return request;
     }
 
     private Persistence.OrganisationJoinRequest CreateOrganisationJoinRequest(
