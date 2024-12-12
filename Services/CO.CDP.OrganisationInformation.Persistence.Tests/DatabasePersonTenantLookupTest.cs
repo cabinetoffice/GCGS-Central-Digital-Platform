@@ -81,6 +81,7 @@ public class DatabasePersonTenantLookupTest(PostgreSqlFixture postgreSql)
                         {
                             Id = acmeCoOrganisation.Guid,
                             Name = acmeCoOrganisation.Name,
+                            Type = acmeCoOrganisation.Type,
                             Roles = acmeCoOrganisation.Roles,
                             PendingRoles = acmeCoOrganisation.PendingRoles,
                             Scopes = adminPersonScopes
@@ -113,6 +114,7 @@ public class DatabasePersonTenantLookupTest(PostgreSqlFixture postgreSql)
                         {
                             Id = widgetCoOrganisation.Guid,
                             Name = widgetCoOrganisation.Name,
+                            Type = widgetCoOrganisation.Type,
                             Roles = widgetCoOrganisation.Roles,
                             PendingRoles = widgetCoOrganisation.PendingRoles,
                             Scopes = userPersonScopes
@@ -159,6 +161,7 @@ public class DatabasePersonTenantLookupTest(PostgreSqlFixture postgreSql)
                         {
                             Id = acmeCoOrganisation.Guid,
                             Name = acmeCoOrganisation.Name,
+                            Type = acmeCoOrganisation.Type,
                             Roles = acmeCoOrganisation.Roles,
                             PendingRoles = acmeCoOrganisation.PendingRoles,
                             Scopes = []

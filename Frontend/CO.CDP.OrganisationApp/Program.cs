@@ -218,6 +218,8 @@ builder.Services.AddSingleton<IAuthorizationHandler, CustomScopeHandler>();
 builder.Services.AddSingleton<IAuthorizationMiddlewareResultHandler, CustomAuthorizationMiddlewareResultHandler>();
 builder.Services.AddAuthorization();
 
+builder.Services.AddScoped<CookieAcceptanceMiddleware>();
+builder.Services.AddScoped<ICookiePreferencesService, CookiePreferencesService>();
 builder.Services.AddScoped<IFlashMessageService, FlashMessageService>();
 
 builder.Services.AddHealthChecks();
@@ -227,15 +229,20 @@ builder.Services.AddDataProtection()
    .PersistKeysToAWSSystemsManager(
        builder.Configuration.GetValue<string>("Aws:SystemManager:DataProtectionPrefix"));
 
+builder.Services.AddHsts(options =>
+{
+    options.MaxAge = TimeSpan.FromDays(365); // see https://aka.ms/aspnetcore-hsts
+});
+
 var app = builder.Build();
 app.UseForwardedHeaders();
 app.UseMiddleware<ExceptionMiddleware>();
+app.UseMiddleware<CookieAcceptanceMiddleware>();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 

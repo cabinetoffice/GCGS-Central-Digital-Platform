@@ -51,6 +51,7 @@ public class DatabaseTenantRepository(OrganisationInformationContext context) : 
                          {
                              Id = o.Guid,
                              Name = o.Name,
+                             Type = o.Type,
                              Roles = o.Roles,
                              PendingRoles = o.PendingRoles,
                              // ReSharper disable once NullCoalescingConditionIsAlwaysNotNullAccordingToAPIContract
