@@ -1,0 +1,68 @@
+= 8. Git merge strategy
+
+Date: 2024-12-11
+
+== Status
+
+Draft
+
+== Context
+
+At the moment, we don't have defined strategy for merging pull requests. Each developer
+follows their own preference. As a result timeline of our `main` branch is not linear,
+containing many branches mixing commits with each other and `main`.
+
+We should adopt a consistent git merge strategy.
+
+=== Option 1: Merge strategy
+
+Enabled by default on Github.
+
+Features of Merge strategy:
+
+ * Integrating feature branches into the main development branch.
+ * Resolving conflicts between branches.
+ * Preserving the commit history of both branches.
+
+Advantages:
+
+ * Merging preserves the complete history of changes, making it easy to trace back through the commit history.
+ * The merge commit provides a clear indication that branches have been combined, offering context for future reference.
+
+Disadvantages:
+
+ * CI cannot verify if build and tests would pass post merge.
+ * Merge commits adding noise to the branch history.
+ * Risky feature branch revert, may require an extra commit that resolves conflicts.
+
+=== Option 2: Rebase strategy
+
+Features of Rebase strategy:
+
+ * Maintaining a cleaner and more linear commit history.
+ * Facilitating easier code review and debugging.
+ * Avoiding unnecessary merge commits (less noise).
+
+Advantages:
+
+ * Rebasing creates a linear history, which can make the commit history easier to read and understand.
+ * A linear history simplifies the use of tools like git bisect for debugging.
+ * Rebase before merge allows CI to verify build and tests pass like on `main`.
+
+Disadvantages:
+
+ * Comparatively harder than marge strategy.
+ * Doesn't safeguard history of branches.
+
+== Recommendation
+
+Rebase strategy
+
+ * With our current set up, our CI will be able to verify the build and tests on rebased
+branches as if they were already merged, before merge.
+ * Linear, cleaner history of commits.
+
+== Consequences
+
+* We will change the default branch merge strategy in github to _rebase_. Developers are still urged to rebase their feature branches locally before merge.
+* Additional training may be required for developers on how to work with branches and resolve conflicts with _rebase_.
