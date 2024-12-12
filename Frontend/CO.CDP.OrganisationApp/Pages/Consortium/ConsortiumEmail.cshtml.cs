@@ -36,6 +36,8 @@ public class ConsortiumEmailModel(
     }
     public async Task<IActionResult> OnPost()
     {
+        if (!ModelState.IsValid) return Page();
+
         ConsortiumDetails.ConsortiumEmail = EmailAddress;
 
         SessionContext.Set(Session.ConsortiumKey, ConsortiumDetails);
