@@ -241,6 +241,7 @@ var app = builder.Build();
 app.UseForwardedHeaders();
 app.UseMiddleware<ExceptionMiddleware>();
 app.UseMiddleware<CookieAcceptanceMiddleware>();
+app.UseMiddleware<CacheControlMiddleware>();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
