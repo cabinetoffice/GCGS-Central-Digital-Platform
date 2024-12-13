@@ -185,6 +185,7 @@ data "aws_iam_policy_document" "terraform_product" {
       "elasticloadbalancing:Describe*",
       "elasticloadbalancing:Modify*",
       "elasticloadbalancing:SetRulePriorities",
+      "elasticloadbalancing:SetWebACL",
     ]
     effect = "Allow"
     resources = [
@@ -228,10 +229,11 @@ data "aws_iam_policy_document" "terraform_product" {
 
   statement {
     actions = [
+      "wafv2:AssociateWebACL",
       "wafv2:CreateWebACL",
-      "wafv2:TagResource",
       "wafv2:GetWebACL",
       "wafv2:ListTagsForResource",
+      "wafv2:TagResource",
       "wafv2:UpdateWebACL",
     ]
     effect = "Allow"

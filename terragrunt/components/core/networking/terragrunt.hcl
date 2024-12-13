@@ -6,6 +6,14 @@ include {
   path = find_in_parent_folders()
 }
 
+dependency core_iam {
+  config_path = "../../core/iam"
+  mock_outputs = {
+    terraform_arn                       = "mock"
+    terraform_name                      = "mock"
+  }
+}
+
 locals {
   global_vars = read_terragrunt_config(find_in_parent_folders("terragrunt.hcl"))
   core_vars = read_terragrunt_config(find_in_parent_folders("core.hcl"))
