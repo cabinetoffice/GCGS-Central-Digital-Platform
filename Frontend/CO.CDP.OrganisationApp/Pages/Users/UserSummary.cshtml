@@ -26,7 +26,7 @@
             @if (pendingJoinRequests.Any())
             {
                 <h2 class="govuk-heading-l">
-                    Join requests
+                    @StaticTextResource.UserSummary_JoinRequests
                 </h2>
             }
 
@@ -59,7 +59,7 @@
             </dl>
 
             <h2 class="govuk-heading-l">
-                Organisation has @(totalPersons == 1 ? "1 user" : $"{totalPersons} users")
+                @string.Format(StaticTextResource.UserSummary_TotalUsers, totalPersons, totalPersons == 1 ? StaticTextResource.UserSummary_User : StaticTextResource.UserSummary_Users)
             </h2>
 
             @foreach (var p in Model.Persons)
@@ -164,7 +164,7 @@
                     <fieldset class="govuk-fieldset" @(hasError ? Html.Raw(@"aria-describedby=""has-person-error""") : "")>
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
                             <h2 class="govuk-fieldset__heading">
-                                Add another user?
+                                @StaticTextResource.UserSummary_AddAnotherUser
                             </h2>
                         </legend>
                         @if (hasError)

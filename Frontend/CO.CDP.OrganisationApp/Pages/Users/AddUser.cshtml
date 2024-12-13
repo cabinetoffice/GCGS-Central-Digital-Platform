@@ -1,9 +1,10 @@
 @page "/organisation/{id}/users/add-user/{personId?}"
 @model CO.CDP.OrganisationApp.Pages.Users.AddUserModel
 @using CO.CDP.OrganisationApp.Constants
+@using CO.CDP.Localization
 
 @{
-    ViewData["Title"] = "Add a user";
+    ViewData["Title"] = StaticTextResource.Users_AddUser_Title;
     var firstNameHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.FirstName)).HasInnerHtml;
     var lastNameHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.LastName)).HasInnerHtml;
     var emailHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Email)).HasInnerHtml;
@@ -16,7 +17,7 @@
 }
 
 @section BeforeContent {
-    <a href="/organisation/{@Model.Id}/users/user-summary" class="govuk-back-link">Back</a>
+    <a href="/organisation/{@Model.Id}/users/user-summary" class="govuk-back-link">@StaticTextResource.Global_Back</a>
 }
 
     <div class="govuk-grid-row">
@@ -30,13 +31,13 @@
             <form class="form" method="post">
                 <div class="govuk-form-group @(firstNameHasError ? "govuk-form-group--error" : "")">
                     <label class="govuk-label" for="@nameof(Model.FirstName)">
-                        First name
+                        @StaticTextResource.Users_FirstName_Label
                     </label>
 
                     @if (firstNameHasError)
                     {
                     <p id="first-name-error" class="govuk-error-message">
-                        <span class="govuk-visually-hidden">Error:</span>
+                        <span class="govuk-visually-hidden">@StaticTextResource.Global_ErrorColon</span>
                         @Html.ValidationMessageFor(m => m.FirstName)
                     </p>
                     }
@@ -47,13 +48,13 @@
 
                 <div class="govuk-form-group @(lastNameHasError ? "govuk-form-group--error" : "")">
                     <label class="govuk-label" for="@nameof(Model.LastName)">
-                        Last name
+                        @StaticTextResource.Users_LastName_Label
                     </label>
 
                     @if (lastNameHasError)
                     {
                         <p id="last-name-error" class="govuk-error-message">
-                            <span class="govuk-visually-hidden">Error:</span>
+                            <span class="govuk-visually-hidden">@StaticTextResource.Global_ErrorColon</span>
                             @Html.ValidationMessageFor(m => m.LastName)
                         </p>
                     }
@@ -64,13 +65,13 @@
 
                 <div class="govuk-form-group @(emailHasError ? "govuk-form-group--error" : "")">
                     <label class="govuk-label" for="@nameof(Model.Email)">
-                        Email address
+                        @StaticTextResource.Users_EmailAddress_Label
                     </label>
 
                     @if (emailHasError)
                     {
                         <p id="email-error" class="govuk-error-message">
-                            <span class="govuk-visually-hidden">Error:</span>
+                            <span class="govuk-visually-hidden">@StaticTextResource.Global_ErrorColon</span>
                             @Html.ValidationMessageFor(m => m.Email)
                         </p>
                     }
@@ -82,53 +83,54 @@
                 <div class="govuk-form-group @(roleHasError ? "govuk-form-group--error" : "")">
                     <fieldset class="govuk-fieldset" aria-describedby="role-hint @(roleHasError ? "role-error" : "")">
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
-                            Select user role
+                            @StaticTextResource.Users_UserRole_Label
                         </legend>
                         @if (roleHasError)
                         {
                             <p id="role-error" class="govuk-error-message">
-                                <span class="govuk-visually-hidden">Error:</span>
+                                <span class="govuk-visually-hidden">@StaticTextResource.Global_ErrorColon</span>
                                 @Html.ValidationMessageFor(m => m.Role)
                             </p>
                         }
                         <div id="role-hint" class="govuk-hint">
-                            Select the one that applies
+                            @StaticTextResource.Users_UserRole_Hint
                         </div>
                         <div class="govuk-radios" data-module="govuk-radios">
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input" id="@nameof(Model.Role)" name="role" type="radio" value="@OrganisationPersonScopes.Admin" aria-describedby="role-admin-hint" @IsSelected(Model.Role == OrganisationPersonScopes.Admin)>
                                 <label class="govuk-label govuk-radios__label" for="@nameof(Model.Role)">
-                                    Admin
+                                    @StaticTextResource.Global_Admin
                                 </label>
                                 <div id="role-admin-hint" class="govuk-hint govuk-radios__hint">
-                                    Can do anything, including add, remove and edit users
+
+                                    @StaticTextResource.Users_UserRoleAdmin_Hint
                                 </div>
                             </div>
 
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input" id="@nameof(Model.Role)-1" name="role" type="radio" value="@OrganisationPersonScopes.Editor" aria-describedby="role-editor-hint" @IsSelected(Model.Role == OrganisationPersonScopes.Editor)>
                                 <label class="govuk-label govuk-radios__label" for="@nameof(Model.Role)-1">
-                                    Editor
+                                    @StaticTextResource.Global_Editor
                                 </label>
                                 <div id="role-editor-hint" class="govuk-hint govuk-radios__hint">
-                                    Can view, add and edit organisation information, view supplier information and create API keys
+                                    @StaticTextResource.Users_UserRoleEditor_Hint
                                 </div>
                             </div>
 
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input" id="@nameof(Model.Role)-2" name="role" type="radio" value="@OrganisationPersonScopes.Viewer" aria-describedby="role-viewer-hint" @IsSelected(Model.Role == OrganisationPersonScopes.Viewer)>
                                 <label class="govuk-label govuk-radios__label" for="@nameof(Model.Role)-2">
-                                    Viewer
+                                    @StaticTextResource.Global_Viewer
                                 </label>
                                 <div id="role-viewer-hint" class="govuk-hint govuk-radios__hint">
-                                    Can view organisation and supplier information
+                                    @StaticTextResource.Users_UserRoleViewer_Hint
                                 </div>
                             </div>
                         </div>
                     </fieldset>
                 </div>
 
-                <govuk-button class="govuk-!-margin-top-6">Continue</govuk-button>
+                <govuk-button class="govuk-!-margin-top-6">@StaticTextResource.Global_Continue</govuk-button>
             </form>
         </div>
     </div>

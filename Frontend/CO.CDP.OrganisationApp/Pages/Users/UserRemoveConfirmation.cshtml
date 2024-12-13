@@ -28,7 +28,7 @@
                         @if (hasError)
                         {
                             <p id="confirm-remove-error" class="govuk-error-message">
-                                <span class="govuk-visually-hidden">Error:</span>
+                                <span class="govuk-visually-hidden">@StaticTextResource.Global_ErrorColon</span>
                                 @Html.ValidationMessageFor(m => m.ConfirmRemove)
                             </p>
                         }
@@ -37,12 +37,12 @@
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input" id="conditional-YES" name="ConfirmRemove" type="radio"
                                        value="true" @(Model.ConfirmRemove == true ? "checked" : "")>
-                                <label class="govuk-label govuk-radios__label" for="conditional-YES">Yes</label>
+                                <label class="govuk-label govuk-radios__label" for="conditional-YES">@StaticTextResource.Global_Yes</label>
                             </div>
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input" id="conditional-NO" name="ConfirmRemove" type="radio"
                                        value="false" @(Model.ConfirmRemove == false ? "checked" : "")>
-                                <label class="govuk-label govuk-radios__label" for="conditional-NO">No</label>
+                                <label class="govuk-label govuk-radios__label" for="conditional-NO">@StaticTextResource.Global_No</label>
                             </div>
                         </div>
                     </div>

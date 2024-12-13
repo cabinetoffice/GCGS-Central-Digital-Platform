@@ -147,6 +147,9 @@
   <data name="Global_Important" xml:space="preserve">
     <value>Important</value>
   </data>
+  <data name="Global_ErrorColon" xml:space="preserve">
+    <value>Error:</value>
+  </data>
   <data name="Organisation_BuyerRegistrationPendingApproval" xml:space="preserve">
     <value>Buyer registration pending approval.</value>
   </data>
@@ -2737,4 +2740,53 @@
   <data name="UserSummary_Resend" xml:space="preserve">
     <value>Resend</value>
   </data>
+  <data name="Users_FirstName_Label" xml:space="preserve">
+    <value>First name</value>
+  </data>
+  <data name="Users_LastName_Label" xml:space="preserve">
+    <value>Last name</value>
+  </data>
+  <data name="Users_FirstName_Validation" xml:space="preserve">
+    <value>Enter your first name</value>
+  </data>
+  <data name="Users_LastName_Validation" xml:space="preserve">
+    <value>Enter your last name</value>
+  </data>
+  <data name="Users_AddUser_Title" xml:space="preserve">
+    <value>Add a user</value>
+  </data>
+  <data name="Users_EmailAddress_Label" xml:space="preserve">
+    <value>Email address</value>
+  </data>
+  <data name="Users_UserRole_Label" xml:space="preserve">
+    <value>Select user role</value>
+  </data>
+  <data name="Users_UserRole_Hint" xml:space="preserve">
+    <value>Select the one that applies</value>
+  </data>
+  <data name="Users_UserRoleAdmin_Hint" xml:space="preserve">
+    <value>Can do anything, including add, remove and edit users</value>
+  </data>
+  <data name="Users_UserRoleEditor_Hint" xml:space="preserve">
+    <value>Can view, add and edit organisation information, view supplier information and create API keys</value>
+  </data>
+  <data name="Users_UserRoleViewer_Hint" xml:space="preserve">
+    <value>Can view organisation and supplier information</value>
+  </data>
+  <data name="Users_CheckYourAnswers_Title" xml:space="preserve">
+    <value>Check your answers</value>
+  </data>
+  <data name="Users_SendEmail_Button" xml:space="preserve">
+    <value>Send email</value>
+  </data>
+
+  <data name="Users_SendEmail_Button" xml:space="preserve">
+    <value>Join requests</value>
+  </data>
+
+  <data name="Users_SendEmail_Button" xml:space="preserve">
+    <value>Join requests</value>
+  </data>
+
+
 </root>
