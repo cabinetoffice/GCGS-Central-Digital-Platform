@@ -2771,4 +2771,7 @@
   <data name="Organisation_ConsortiumName" xml:space="preserve">
     <value>Consortium name</value>
   </data>
+  <data name="Consortium_ConsortiumChangeEmail_Heading" xml:space="preserve">
+    <value>Enter an email address for the consortium</value>
+  </data>
 </root>
