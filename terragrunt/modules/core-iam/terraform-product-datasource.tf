@@ -125,9 +125,10 @@ data "aws_iam_policy_document" "terraform_product" {
     ]
     effect = "Allow"
     resources = [
-      "arn:aws:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:log-group:/ecs*",
       "arn:aws:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:log-group:/${local.name_prefix}*",
       "arn:aws:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:log-group:/aws/vendedlogs/${local.name_prefix}*",
+      "arn:aws:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:log-group:/ecs*",
+      "arn:aws:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:log-group:aws-waf-logs-*",
     ]
     sid = "ManageProductLogs"
   }
@@ -231,14 +232,18 @@ data "aws_iam_policy_document" "terraform_product" {
     actions = [
       "wafv2:AssociateWebACL",
       "wafv2:CreateWebACL",
+      "wafv2:DeleteLoggingConfiguration",
+      "wafv2:GetLoggingConfiguration",
       "wafv2:GetWebACL",
       "wafv2:ListTagsForResource",
+      "wafv2:PutLoggingConfiguration",
       "wafv2:TagResource",
       "wafv2:UpdateWebACL",
     ]
     effect = "Allow"
     resources = [
-      "arn:aws:wafv2:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:regional/webacl/${local.name_prefix}-*"
+      "arn:aws:wafv2:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:regional/webacl/${local.name_prefix}-*",
+      "arn:aws:wafv2:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:regional/webacl/${local.name_prefix}-*/*",
     ]
     sid = "ManageProductWAF"
   }
