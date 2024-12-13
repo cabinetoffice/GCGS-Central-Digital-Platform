@@ -185,6 +185,7 @@ data "aws_iam_policy_document" "terraform_product" {
       "elasticloadbalancing:Describe*",
       "elasticloadbalancing:Modify*",
       "elasticloadbalancing:SetRulePriorities",
+      "elasticloadbalancing:SetWebACL",
     ]
     effect = "Allow"
     resources = [
@@ -224,6 +225,22 @@ data "aws_iam_policy_document" "terraform_product" {
       "arn:aws:codepipeline:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:${local.name_prefix}-*"
     ]
     sid = "ManageProductCodebuild"
+  }
+
+  statement {
+    actions = [
+      "wafv2:AssociateWebACL",
+      "wafv2:CreateWebACL",
+      "wafv2:GetWebACL",
+      "wafv2:ListTagsForResource",
+      "wafv2:TagResource",
+      "wafv2:UpdateWebACL",
+    ]
+    effect = "Allow"
+    resources = [
+      "arn:aws:wafv2:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:regional/webacl/${local.name_prefix}-*"
+    ]
+    sid = "ManageProductWAF"
   }
 
 }
