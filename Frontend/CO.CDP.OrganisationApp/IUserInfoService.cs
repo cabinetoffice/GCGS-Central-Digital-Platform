@@ -37,4 +37,5 @@ public record UserOrganisationInfo
     public ICollection<PartyRole> Roles { get; init; } = [];
     public ICollection<PartyRole> PendingRoles { get; init; } = [];
     public ICollection<string> Scopes { get; init; } = [];
+    public OrganisationType Type { get; init; }
 }
