@@ -53,3 +53,22 @@ resource "aws_wafv2_web_acl" "this" {
 
 }
 
+resource "aws_wafv2_web_acl_logging_configuration" "this" {
+  count = var.environment != "orchestrator" ? 1 : 0
+
+  log_destination_configs = [aws_cloudwatch_log_group.waf.arn]
+  resource_arn            = aws_wafv2_web_acl.this[0].arn
+
+  logging_filter {
+    default_behavior = "KEEP"
+    filter {
+      behavior = "DROP"
+      requirement = "MEETS_ALL"
+      condition {
+        action_condition {
+          action = "ALLOW"
+        }
+      }
+    }
+  }
+}
