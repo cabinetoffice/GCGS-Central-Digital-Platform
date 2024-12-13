@@ -257,3 +257,8 @@ variable "vpce_secretsmanager_sg_id" {
   description = "Security group ID of the Secrets Manager VPC endpoint"
   type        = string
 }
+
+variable "waf_acl_arn" {
+  description = "WAF ACL ARN to be associated with the ALB"
+  type        = string
+}

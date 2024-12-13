@@ -46,6 +46,7 @@ dependency core_networking {
     public_subnet_ids           = "mock"
     public_subnets_cidr_blocks  = "mock"
     vpc_id                      = "mock"
+    waf_acl_arn                 = "mock"
   }
 }
 
@@ -142,6 +143,7 @@ inputs = {
   public_subnets_cidr_blocks  = dependency.core_networking.outputs.public_subnets_cidr_blocks
   vpc_id                      = dependency.core_networking.outputs.vpc_id
   vpc_cider                   = dependency.core_networking.outputs.vpc_cider
+  waf_acl_arn                 = dependency.core_networking.outputs.waf_acl_arn
 
 
   alb_sg_id                 = dependency.core_security_groups.outputs.alb_sg_id
