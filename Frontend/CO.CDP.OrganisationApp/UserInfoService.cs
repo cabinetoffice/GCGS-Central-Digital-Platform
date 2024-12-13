@@ -75,7 +75,8 @@ public class UserInfoService(IHttpContextAccessor httpContextAccessor, ITenantCl
                 Name = o.Name,
                 Scopes = o.Scopes,
                 Roles = o.Roles,
-                PendingRoles = o.PendingRoles
+                PendingRoles = o.PendingRoles,
+                Type = o.Type
             })).ToList()
     };
 }
