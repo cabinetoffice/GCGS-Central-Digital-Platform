@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <root>
-  <!--
-    Microsoft ResX Schema
-
+  <!-- 
+    Microsoft ResX Schema 
+    
     Version 2.0
-
-    The primary goals of this format is to allow a simple XML format
-    that is mostly human readable. The generation and parsing of the
-    various data types are done through the TypeConverter classes
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
     associated with the data types.
-
+    
     Example:
-
+    
     ... ado.net/XML headers & schema ...
     <resheader name="resmimetype">text/microsoft-resx</resheader>
     <resheader name="version">2.0</resheader>
@@ -26,36 +26,36 @@
         <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
         <comment>This is a comment</comment>
     </data>
-
-    There are any number of "resheader" rows that contain simple
+                
+    There are any number of "resheader" rows that contain simple 
     name/value pairs.
-
-    Each data row contains a name, and value. The row also contains a
-    type or mimetype. Type corresponds to a .NET class that support
-    text/value conversion through the TypeConverter architecture.
-    Classes that don't support this are serialized and stored with the
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
     mimetype set.
-
-    The mimetype is used for serialized objects, and tells the
-    ResXResourceReader how to depersist the object. This is currently not
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
     extensible. For a given mimetype the value must be set accordingly:
-
-    Note - application/x-microsoft.net.object.binary.base64 is the format
-    that the ResXResourceWriter will generate, however the reader can
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
     read any of the formats listed below.
-
+    
     mimetype: application/x-microsoft.net.object.binary.base64
-    value   : The object must be serialized with
+    value   : The object must be serialized with 
             : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
             : and then encoded with base64 encoding.
-
+    
     mimetype: application/x-microsoft.net.object.soap.base64
-    value   : The object must be serialized with
+    value   : The object must be serialized with 
             : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
             : and then encoded with base64 encoding.
 
     mimetype: application/x-microsoft.net.object.bytearray.base64
-    value   : The object must be serialized into a byte array
+    value   : The object must be serialized into a byte array 
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
@@ -1546,7 +1546,7 @@
     <value>We cannot find your company number on Companies House. If it’s correct, continue and enter your details manually.</value>
   </data>
   <data name="OrganisationRegistration_CompanyHouseNumberQuestion_CompanyAlreadyRegistered_NotificationBanner" xml:space="preserve">
-    <value>An organisation with this company number already exists. Change the company number or &lt;a class="govuk-notification-banner__link" href="/registration/{organisationIdentifier}/join-organisation"&gt;request to join {organisationName}.&lt;/a&gt;</value>
+    <value>An organisation with this company number already exists. Change the company number or &lt;a class="govuk-notification-banner__link" href="/registration/{0}/join-organisation"&gt;request to join {1}.&lt;/a&gt;</value>
   </data>
   <data name="OrganisationRegistration_CompanyHouseNumberQuestion_ValidationErrorMessage" xml:space="preserve">
     <value>Select 'yes' or 'no'</value>
@@ -2050,42 +2050,6 @@
   <data name="Exclusions_AddExclusionDeclaration_DiscretionaryExclusionsLinkText" xml:space="preserve">
     <value>These exclusions are defined in &lt;a href="{0}" target="_blank"&gt;schedule 7 of the Procurement Act 2023 (opens in new tab)&lt;/a&gt;.</value>
   </data>
-  <data name="OrganisationRegistration_InternationalIdentifier_Country_Heading" xml:space="preserve">
-    <value>Select where your organisation is registered</value>
-  </data>
-  <data name="OrganisationRegistration_InternationalIdentifier_Country_Required_ErrorMessage" xml:space="preserve">
-    <value>Select a country</value>
-  </data>
-  <data name="OrganisationRegistration_InternationalIdentifier_Heading" xml:space="preserve">
-    <value>Select your organisation's registry</value>
-  </data>
-  <data name="OrganisationRegistration_InternationalIdentifier_Type_Heading" xml:space="preserve">
-    <value>Organisation Type</value>
-  </data>
-  <data name="OrganisationRegistration_InternationalIdentifier_Type_Required_ErrorMessage" xml:space="preserve">
-    <value>Select an option</value>
-  </data>
-  <data name="OrganisationRegistration_InternationalIdentifier_RegistrationNumber_Heading" xml:space="preserve">
-    <value>Registration Number</value>
-  </data>
-  <data name="OrganisationRegistration_InternationalIdentifier_RegistrationNumber_Required_ErrorMessage" xml:space="preserve">
-    <value>Enter the number</value>
-  </data>
-  <data name="Organisation_OrganisationIdentification_NonUk_Link" xml:space="preserve">
-    <value>Enter a non-UK registry and number</value>
-  </data>
-  <data name="OrganisationRegistration_InternationalIdentifier_Select_Indentifier" xml:space="preserve">
-    <value>Select one then enter the registration number</value>
-  </data>
-  <data name="OrganisationRegistration_InternationalIdentifier_None" xml:space="preserve">
-    <value>You cannot add another identifier for this country. </value>
-  </data>
-  <data name="OrganisationRegistration_InternationalIdentifier_None_Back" xml:space="preserve">
-    <value>Back to organisation details</value>
-  </data>
-  <data name="Organisation_OrganisationIdentification_Multiple_Hint" xml:space="preserve">
-    <value>Select all that apply. Then enter the registration number.</value>
-  </data>
   <data name="Global_NotApplicable" xml:space="preserve">
     <value>N/A</value>
   </data>
@@ -2332,6 +2296,49 @@
   <data name="PdfGenerator_Uri" xml:space="preserve">
     <value>Uri</value>
   </data>
+  <data name="Consortium_ConsortiumStart_Heading" xml:space="preserve">
+    <value>Create a consortium</value>
+  </data>
+  <data name="Consortium_ConsortiumStart_Paragraph1" xml:space="preserve">
+    <value>Two or more suppliers that want to submit a joint bid can create a consortium. You can add as many suppliers as you need to.</value>
+  </data>
+  <data name="Consortium_ConsortiumStart_Paragraph2" xml:space="preserve">
+    <value>As the organisation creating the consortium, you'll need to enter:</value>
+  </data>
+  <data name="Consortium_ConsortiumStart_Paragraph2_list" xml:space="preserve">
+    <value>&lt;li&gt;a consortium name&lt;/li&gt;
+&lt;li&gt;an address&lt;/li&gt;
+&lt;li&gt;an email address&lt;/li&gt;
+&lt;li&gt;your most recent share code&lt;/li&gt;
+&lt;li&gt;the most recent share codes for all the other suppliers&lt;/li&gt;</value>
+  </data>
+  <data name="Consortium_ConsortiumStart_Paragraph3" xml:space="preserve">
+    <value>Any supplier you want to add to the consortium must have completed their supplier information and created a share code.</value>
+  </data>
+  <data name="Consortium_ConsortiumStart_Paragraph4" xml:space="preserve">
+    <value>When you've added all suppliers, you'll create a share code for your combined supplier information.</value>
+  </data>
+  <data name="Consortium_ConsortiumName_Heading" xml:space="preserve">
+    <value>Name your consortium</value>
+  </data>
+  <data name="Consortium_ConsortiumName_Hint" xml:space="preserve">
+    <value>You can change this later if you need to</value>
+  </data>
+  <data name="Consortium_ConsortiumName_EnterNameError" xml:space="preserve">
+    <value>Enter your consortium's name</value>
+  </data>
+  <data name="Consortium_ConsortiumEmail_Heading" xml:space="preserve">
+    <value>Enter an email address for the consortium</value>
+  </data>
+  <data name="Consortium_ConsortiumEmail_Required_ErrorMessage" xml:space="preserve">
+    <value>Enter your consortium's email address</value>
+  </data>
+  <data name="Consortium_ConsortiumAddress_Heading" xml:space="preserve">
+    <value>Enter a postal address for the consortium</value>
+  </data>
+  <data name="Consortium_ConsortiumAddress_NonUk_Heading" xml:space="preserve">
+    <value>Enter a postal address for the consortium</value>
+  </data>
   <data name="Supplier_RegisteredAddress" xml:space="preserve">
     <value>Registered address</value>
   </data>
@@ -2569,6 +2576,87 @@
   <data name="Supplier_OperationType_ValidationError" xml:space="preserve">
     <value>You cannot select 'My organisation is none of the above' along with other options.</value>
   </data>
+  <data name="Organisation_CreateNewConsortium" xml:space="preserve">
+    <value>Create a new consortium</value>
+  </data>
+  <data name="Consortium_ConsortiumOverview_Heading" xml:space="preserve">
+    <value>Consortium details</value>
+  </data>
+  <data name="Consortium_ConsortiumOverview_Address_list" xml:space="preserve">
+    <value>Address</value>
+  </data>
+  <data name="Consortium_ConsortiumOverview_Heading2" xml:space="preserve">
+    <value>Organisations in this consortium</value>
+  </data>
+  <data name="Consortium_ConsortiumOverview_Paragraph1" xml:space="preserve">
+    <value>To add an organisation you'll need its most recent share code</value>
+  </data>
+  <data name="Consortium_ConsortiumOverview_AddAnOrganisation_link" xml:space="preserve">
+    <value>Add an organisation</value>
+  </data>
+  <data name="Consortium_ConsortiumOverview_Heading3" xml:space="preserve">
+    <value>Share your combined supplier information</value>
+  </data>
+  <data name="Consortium_ConsortiumOverview_BackToMyAccount_link" xml:space="preserve">
+    <value>Back to my account</value>
+  </data>
+  <data name="Consortium_ConsortiumOverview_CreateSharecode_list" xml:space="preserve">
+    <value>Declare and create a share code</value>
+  </data>
+  <data name="Consortium_ConsortiumOverview_status_list" xml:space="preserve">
+    <value>Cannot start yet</value>
+  </data>
+  <data name="Consortium_ConsortiumOverview_ChangeName" xml:space="preserve">
+    <value>Change&lt;span class="govuk-visually-hidden"&gt;consortium name&lt;/span&gt;</value>
+  </data>
+  <data name="Consortium_ConsortiumOverview_ChangeAddress" xml:space="preserve">
+    <value>Change&lt;span class="govuk-visually-hidden"&gt;address&lt;/span&gt;</value>
+  </data>
+  <data name="Consortium_ConsortiumOverview_ChangeEmailaddress" xml:space="preserve">
+    <value>Change&lt;span class="govuk-visually-hidden"&gt;consortium email address&lt;/span&gt;</value>
+  </data>
+  <data name="Consortium_ConsortiumOverview_EmailAddress_list" xml:space="preserve">
+    <value>Email address</value>
+  </data>
+  <data name="Consortium_ConsortiumOverview_Ppon_Status_Pending" xml:space="preserve">
+    <value>PPON is pending</value>
+  </data>
+  <data name="OrganisationRegistration_InternationalIdentifier_Country_Heading" xml:space="preserve">
+    <value>Select where your organisation is registered</value>
+  </data>
+  <data name="OrganisationRegistration_InternationalIdentifier_Country_Required_ErrorMessage" xml:space="preserve">
+    <value>Select a country</value>
+  </data>
+  <data name="OrganisationRegistration_InternationalIdentifier_Heading" xml:space="preserve">
+    <value>Select your organisation's registry</value>
+  </data>
+  <data name="OrganisationRegistration_InternationalIdentifier_Type_Heading" xml:space="preserve">
+    <value>Organisation Type</value>
+  </data>
+  <data name="OrganisationRegistration_InternationalIdentifier_Type_Required_ErrorMessage" xml:space="preserve">
+    <value>Select an option</value>
+  </data>
+  <data name="OrganisationRegistration_InternationalIdentifier_RegistrationNumber_Heading" xml:space="preserve">
+    <value>Registration Number</value>
+  </data>
+  <data name="OrganisationRegistration_InternationalIdentifier_RegistrationNumber_Required_ErrorMessage" xml:space="preserve">
+    <value>Enter the number</value>
+  </data>
+  <data name="Organisation_OrganisationIdentification_NonUk_Link" xml:space="preserve">
+    <value>Enter a non-UK registry and number</value>
+  </data>
+  <data name="OrganisationRegistration_InternationalIdentifier_Select_Indentifier" xml:space="preserve">
+    <value>Select one then enter the registration number</value>
+  </data>
+  <data name="OrganisationRegistration_InternationalIdentifier_None" xml:space="preserve">
+    <value>You cannot add another identifier for this country. </value>
+  </data>
+  <data name="OrganisationRegistration_InternationalIdentifier_None_Back" xml:space="preserve">
+    <value>Back to organisation details</value>
+  </data>
+  <data name="Organisation_OrganisationIdentification_Multiple_Hint" xml:space="preserve">
+    <value>Select all that apply. Then enter the registration number.</value>
+  </data>
   <data name="SupplierToBuyer_DevolvedRegulation_ErrorMessage" xml:space="preserve">
     <value>Select 'yes' or 'no'</value>
   </data>
@@ -2694,5 +2782,11 @@
   </data>
   <data name="SupplierToBuyer_OrganisationType_RegionalAndLocalGovernment" xml:space="preserve">
     <value>Regional and local government, public authority: UK, Scottish, Welsh and Northern Irish</value>
+  </data>
+  <data name="Organisation_MyConsortium" xml:space="preserve">
+    <value>Consortiums for joint bids ({0})</value>
+  </data>
+  <data name="Organisation_ConsortiumName" xml:space="preserve">
+    <value>Consortium name</value>
   </data>
 </root>

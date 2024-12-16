@@ -45,4 +45,6 @@ locals {
     config.name
   ]
 
+  waf_enabled = contains(["development", "staging"], var.environment)
+
 }

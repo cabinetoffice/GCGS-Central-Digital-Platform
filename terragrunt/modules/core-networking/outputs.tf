@@ -61,3 +61,7 @@ output "vpc_id" {
   description = "ID of the VPC"
   value       = aws_vpc.this.id
 }
+
+output "waf_acl_arn" {
+  value = try(aws_wafv2_web_acl.this[0].arn, null)
+}

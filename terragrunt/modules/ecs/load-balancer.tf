@@ -16,6 +16,13 @@ resource "aws_lb" "ecs" {
   )
 }
 
+resource "aws_wafv2_web_acl_association" "ecs" {
+  count = local.waf_enabled ? 1 : 0
+
+  resource_arn = aws_lb.ecs.arn
+  web_acl_arn  = var.waf_acl_arn
+}
+
 resource "aws_lb_listener" "ecs" {
 
   certificate_arn   = aws_acm_certificate.this.arn
