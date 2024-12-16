@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -2770,5 +2770,107 @@
   </data>
   <data name="Organisation_ConsortiumName" xml:space="preserve">
     <value>Consortium name</value>
+  </data>
+  <data name="Cookies_ChooseCookiePreferences" xml:space="preserve">
+    <value>Choose whether you accept cookies that measure website use</value>
+  </data>
+  <data name="Cookies_SetCookiePreferences" xml:space="preserve">
+    <value>You’ve set your cookie preferences.</value>
+  </data>
+  <data name="PrivacyPolicy_Title" xml:space="preserve">
+    <value>Agree to privacy policy before continuing</value>
+  </data>
+  <data name="PrivacyPolicy_YesIHaveReadAndAgreePrivacyPolicy" xml:space="preserve">
+    <value>Yes, I have read and agree to the Central Digital Platform service privacy policy</value>
+  </data>
+  <data name="PrivacyPolicy_SelectReadAndAgreeToPrivacyPolicy" xml:space="preserve">
+    <value>Select if you have read and agree to the Central Digital Platform service privacy policy</value>
+  </data>
+  <data name="ProvideFeedbackAndContact_WhatsItToDoWith" xml:space="preserve">
+    <value>What's it to do with</value>
+  </data>
+  <data name="ProvideFeedbackAndContact_ChooseAnOption" xml:space="preserve">
+    <value>Choose an option</value>
+  </data>
+  <data name="ProvideFeedbackAndContact_SpecificPage" xml:space="preserve">
+    <value>Specific Page</value>
+  </data>
+  <data name="ProvideFeedbackAndContact_UrlOfPageRequired" xml:space="preserve">
+    <value>URL of specific page is required</value>
+  </data>
+  <data name="ProvideFeedbackAndContact_EnterDetails" xml:space="preserve">
+    <value>Enter details</value>
+  </data>
+  <data name="ProvideFeedbackAndContact_MessageFieldCannotBeEmpty" xml:space="preserve">
+    <value>The message field cannot be empty</value>
+  </data>
+  <data name="ProvideFeedbackAndContact_EnterEmailAddress" xml:space="preserve">
+    <value>Enter an Email address</value>
+  </data>
+  <data name="ProvideFeedbackAndContact_EnterAName" xml:space="preserve">
+    <value>Enter a name</value>
+  </data>
+  <data name="PrivacyPolicy_Notice_BeforeLink" xml:space="preserve">
+    <value>Before you can continue, you need to read and agree to the </value>
+  </data>
+  <data name="PrivacyPolicy_Notice_Link" xml:space="preserve">
+    <value>Central Digital Platform service privacy policy (opens in new tab)</value>
+  </data>
+  <data name="Global_SendMessage" xml:space="preserve">
+    <value>Send message</value>
+  </data>
+  <data name="Global_EmailAddress" xml:space="preserve">
+    <value>Email address</value>
+  </data>
+
+
+
+  <data name="ProvideFeedbackAndContact_ProvideFindATenderFeedback" xml:space="preserve">
+    <value>Provide Find a Tender Feedback</value>
+  </data>
+  <data name="ProvideFeedbackAndContact_ContactFindATender" xml:space="preserve">
+    <value>Contact Find a Tender</value>
+  </data>
+  <data name="ProvideFeedbackAndContact_UseThisFormToAskAQuestion" xml:space="preserve">
+    <value>Use this form to ask a question, report a problem or suggest an improvement to the Find a Tender service team.</value>
+  </data>
+  <data name="ProvideFeedbackAndContact_ThisFormIsToRaiseIssues" xml:space="preserve">
+    <value>This form is to raise issues or support requests related to Find a Tender website.</value>
+  </data>
+  <data name="ProvideFeedbackAndContact_YouCanAskAQuestion" xml:space="preserve">
+    <value>You can ask a question, report a problem or suggest an improvement to the Find a Tender team.</value>
+  </data>
+  <data name="ProvideFeedbackAndContact_WhatsItToDoWith" xml:space="preserve">
+    <value>What's it to do with?</value>
+  </data>
+  <data name="ProvideFeedbackAndContact_TheWholeService" xml:space="preserve">
+    <value>The whole service</value>
+  </data>
+  <data name="ProvideFeedbackAndContact_ASpecificPage" xml:space="preserve">
+    <value>A specific page</value>
+  </data>
+  <data name="ProvideFeedbackAndContact_EnterUrlOrNameOfPage" xml:space="preserve">
+    <value>Enter URL or name of page</value>
+  </data>
+  <data name="ProvideFeedbackAndContact_EnterYourFeedback" xml:space="preserve">
+    <value>Enter your feedback</value>
+  </data>
+  <data name="ProvideFeedbackAndContact_WhatAreTheDetails" xml:space="preserve">
+    <value>What are the details?</value>
+  </data>
+  <data name="ProvideFeedbackAndContact_DoNotIncludePersonalOrFinancialInformation" xml:space="preserve">
+    <value>Do not include personal or financial information like your National Insurance number or credit card details</value>
+  </data>
+  <data name="ProvideFeedbackAndContact_YouCanEnterUpTo10000Characters" xml:space="preserve">
+    <value>You can enter up to 10000 characters</value>
+  </data>
+  <data name="ProvideFeedbackAndContact_GiveUsYourDetailsIfYouWantAReply" xml:space="preserve">
+    <value>Give us your details if you want a reply (optional)</value>
+  </data>
+  <data name="ProvideFeedbackAndContact_Name" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="ProvideFeedbackAndContact_WellOnlyUseThisToReplyToYourMessage" xml:space="preserve">
+    <value>We'll only use this to reply to your message</value>
   </data>
 </root>

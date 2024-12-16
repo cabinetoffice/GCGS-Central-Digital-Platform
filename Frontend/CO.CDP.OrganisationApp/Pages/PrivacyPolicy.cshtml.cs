@@ -1,14 +1,15 @@
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using CO.CDP.Localization;
 
 namespace CO.CDP.OrganisationApp.Pages;
 
 public class PrivacyPolicyModel(ISession session) : LoggedInUserAwareModel(session)
 {
     [BindProperty]
-    [DisplayName("Yes, I have read and agree to the Central Digital Platform service privacy policy")]
-    [Required(ErrorMessage = "Select if you have read and agree to the Central Digital Platform service privacy policy")]
+    [DisplayName(nameof(StaticTextResource.PrivacyPolicy_YesIHaveReadAndAgreePrivacyPolicy))]
+    [Required(ErrorMessageResourceName=nameof(StaticTextResource.PrivacyPolicy_SelectReadAndAgreeToPrivacyPolicy), ErrorMessageResourceType = typeof(StaticTextResource))]
     public bool? AgreeToPrivacy { get; set; }
 
     public IActionResult OnGet()
