@@ -20,10 +20,11 @@
             {
                 <input type="hidden" name="RedirectToSummary" value="true" />
             }
-            <span class="govuk-caption-l">
-                @Model.ConsortiumName
-            </span>
+            
             <h1 class="govuk-label-wrapper">
+                <span class="govuk-caption-l">
+                    @Model.ConsortiumName
+                </span>
                 <label class="govuk-label govuk-label--l" for="@nameof(Model.EmailAddress)">
                     @ViewData["Title"]
                 </label>

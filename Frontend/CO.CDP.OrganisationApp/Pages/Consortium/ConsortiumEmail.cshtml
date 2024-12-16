@@ -10,17 +10,18 @@
 }
 
 @section BeforeContent {
-    <a href="@backLink" class="govuk-back-link">@StaticTextResource.Global_Back</a>
+     <a href="@backLink" class="govuk-back-link">@StaticTextResource.Global_Back</a>
 }
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <partial name="_ErrorSummary" model="@Model.ModelState" />
         <form class="form" method="post" novalidate>
-            <span class="govuk-caption-l">
-                @Model.ConsortiumName
-            </span>
+
             <h1 class="govuk-label-wrapper">
+                <span class="govuk-caption-l">
+                    @Model.ConsortiumName
+                </span>
                 <label class="govuk-label govuk-label--l" for="consortiumName">
                     @ViewData["Title"]
                 </label>
@@ -31,7 +32,7 @@
                 {
                     <p id="email-address-error" class="govuk-error-message">
                         <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span>
-                        @Html.ValidationMessageFor(m => m.EmailAddress)
+                    @Html.ValidationMessageFor(m => m.EmailAddress)
                     </p>
                 }
                 <input class="govuk-input @(emailAddressHasError ? "govuk-input--error" : "")" id="@nameof(Model.EmailAddress)"
