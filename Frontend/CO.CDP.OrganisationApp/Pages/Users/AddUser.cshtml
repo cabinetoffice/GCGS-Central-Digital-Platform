@@ -37,7 +37,7 @@
                     @if (firstNameHasError)
                     {
                     <p id="first-name-error" class="govuk-error-message">
-                        <span class="govuk-visually-hidden">@StaticTextResource.Global_ErrorColon</span>
+                        <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span>
                         @Html.ValidationMessageFor(m => m.FirstName)
                     </p>
                     }
@@ -54,7 +54,7 @@
                     @if (lastNameHasError)
                     {
                         <p id="last-name-error" class="govuk-error-message">
-                            <span class="govuk-visually-hidden">@StaticTextResource.Global_ErrorColon</span>
+                            <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span>
                             @Html.ValidationMessageFor(m => m.LastName)
                         </p>
                     }
@@ -88,7 +88,7 @@
                         @if (roleHasError)
                         {
                             <p id="role-error" class="govuk-error-message">
-                                <span class="govuk-visually-hidden">@StaticTextResource.Global_ErrorColon</span>
+                                <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span>
                                 @Html.ValidationMessageFor(m => m.Role)
                             </p>
                         }

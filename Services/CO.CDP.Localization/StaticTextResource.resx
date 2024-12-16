@@ -147,9 +147,6 @@
   <data name="Global_Important" xml:space="preserve">
     <value>Important</value>
   </data>
-  <data name="Global_ErrorColon" xml:space="preserve">
-    <value>Error:</value>
-  </data>
   <data name="Organisation_BuyerRegistrationPendingApproval" xml:space="preserve">
     <value>Buyer registration pending approval.</value>
   </data>
