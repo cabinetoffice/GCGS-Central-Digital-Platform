@@ -5,11 +5,11 @@
 @{
     if (Model.Context == ContactFormTypes.Feedback)
     {
-        ViewData["Title"] = @StaticTextResource.ProvideFeedbackAndContact_ProvideFindATenderFeedback;
+        ViewData["Title"] = StaticTextResource.ProvideFeedbackAndContact_ProvideFindATenderFeedback;
     }
     else if (Model.Context == ContactFormTypes.Support)
     {
-        ViewData["Title"] = @StaticTextResource.ProvideFeedbackAndContact_ContactFindATender;
+        ViewData["Title"] = StaticTextResource.ProvideFeedbackAndContact_ContactFindATender;
     }
 
     var feedbackOrContactOptionHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.FeedbackOrContactOption)).HasInnerHtml;
