@@ -57,7 +57,8 @@ public class SupplierAddressModel(IOrganisationClient organisationClient) : Page
     public async Task<IActionResult> OnPost()
     {
         SetupAddress();
-        if (!ModelState.IsValid) return Page();
+        if (!ModelState.IsValid)
+            return Page();
 
         try
         {
@@ -85,10 +86,11 @@ public class SupplierAddressModel(IOrganisationClient organisationClient) : Page
 
     private void SetupAddress(bool reset = false)
     {
-        if (reset) Address = new AddressPartialModel { UkOrNonUk = UkOrNonUk };
+        if (reset)
+            Address = new AddressPartialModel { UkOrNonUk = UkOrNonUk };
 
         Address.Heading = AddressType == Constants.AddressType.Registered ?
-            StaticTextResource.Supplier_Address_EnterRegisteredAddress : StaticTextResource.Supplier_Address_EnterUkRegisteredAddress;
+            StaticTextResource.Supplier_Address_EnterRegisteredAddress : StaticTextResource.Supplier_Address_EnterOrganisationPostalAddress;
 
         Address.NonUkAddressLink = $"/organisation/{Id}/supplier-information/{AddressType.ToString().ToLower()}-address/non-uk";
     }
