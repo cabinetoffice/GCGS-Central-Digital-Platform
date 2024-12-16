@@ -1,3 +1,4 @@
+using CO.CDP.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
@@ -11,7 +12,7 @@ public class CookiesModel(
     ICookiePreferencesService cookiePreferencesService) : PageModel
 {
     [BindProperty]
-    [Required(ErrorMessage="Choose whether you accept cookies that measure website use")]
+    [Required(ErrorMessageResourceName = nameof(StaticTextResource.Cookies_ChooseCookiePreferences), ErrorMessageResourceType = typeof(StaticTextResource))]
     public CookieAcceptanceValues? CookieAcceptance { get; set; }
 
     [BindProperty]
@@ -52,7 +53,7 @@ public class CookiesModel(
             return LocalRedirect(QueryHelpers.AddQueryString(ReturnUrl, CookieSettings.CookieBannerInteractionQueryString, "true"));
         }
 
-        flashMessageService.SetFlashMessage(FlashMessageType.Success, "You’ve set your cookie preferences.");
+        flashMessageService.SetFlashMessage(FlashMessageType.Success, StaticTextResource.Cookies_SetCookiePreferences);
         
         return RedirectToPage("/Cookies");
     }
