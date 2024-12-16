@@ -2417,8 +2417,8 @@
   <data name="Supplier_Address_EnterRegisteredAddress" xml:space="preserve">
     <value>Enter your organisation's registered address</value>
   </data>
-  <data name="Supplier_Address_EnterUkRegisteredAddress" xml:space="preserve">
-    <value>Enter your organisation's UK postal address</value>
+  <data name="Supplier_Address_EnterOrganisationPostalAddress" xml:space="preserve">
+    <value>Enter your organisation's postal address</value>
   </data>
   <data name="Supplier_OperationQuestion_Title" xml:space="preserve">
     <value>How does your organisation operate?</value>
