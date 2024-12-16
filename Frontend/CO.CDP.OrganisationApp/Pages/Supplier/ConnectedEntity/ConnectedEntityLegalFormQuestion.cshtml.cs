@@ -125,7 +125,10 @@ public class ConnectedEntityLegalFormQuestionModel(ISession session) : PageModel
             StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityLegalFormQuestion_Heading,
             state.OrganisationName
         );
-        Hint = StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityLegalFormQuestion_Hint;
+        Hint = string.Format(
+            StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityLegalFormQuestion_Hint,
+            state.OrganisationName
+        );
         BackPageLink = GetBackLinkPageName(state);
     }
 
