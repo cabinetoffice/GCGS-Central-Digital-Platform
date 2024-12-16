@@ -37,7 +37,7 @@ builder.Services.AddAutoMapper(typeof(WebApiToPersistenceProfile));
 builder.Services
     .AddAwsConfiguration(builder.Configuration)
     .AddAwsSqsService()
-    .AddOutboxSqsPublisher<OrganisationInformationContext>()
+    .AddOutboxSqsPublisher<OrganisationInformationContext>(builder.Configuration)
     .AddSqsDispatcher(
         EventDeserializer.Deserializer,
         (services) =>

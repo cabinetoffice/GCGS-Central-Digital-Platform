@@ -4,6 +4,7 @@ using Amazon.S3;
 using Amazon.SQS;
 using CO.CDP.AwsServices.S3;
 using CO.CDP.AwsServices.Sqs;
+using CO.CDP.Configuration.Helpers;
 using CO.CDP.MQ;
 using CO.CDP.MQ.Hosting;
 using CO.CDP.MQ.Outbox;
@@ -73,10 +74,13 @@ public static class Extensions
             .AddAWSService<IAmazonSQS>();
     }
 
-    public static IServiceCollection AddOutboxSqsPublisher<TDbContext>(this IServiceCollection services)
+    public static IServiceCollection AddOutboxSqsPublisher<TDbContext>(this IServiceCollection services, IConfiguration configuration)
         where TDbContext : DbContext, IOutboxMessageDbContext
     {
         services.AddScoped<IOutboxMessageRepository, DatabaseOutboxMessageRepository<TDbContext>>();
+        services.AddScoped<IEventListenerBackgroundService, EventListenerBackgroundService>(x =>
+            new EventListenerBackgroundService(configuration.GetConnectionString("OrganisationInformationDatabase"), x.GetRequiredService<IOutboxMessageRepository>()));
+
 
         services.AddKeyedScoped<IPublisher, SqsPublisher>("SqsPublisher");
         services.AddScoped<IPublisher, OutboxMessagePublisher>();

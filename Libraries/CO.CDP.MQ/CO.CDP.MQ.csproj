@@ -8,7 +8,9 @@
 
     <ItemGroup>
         <FrameworkReference Include="Microsoft.AspNetCore.App" />
+        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.4" />
         <ProjectReference Include="..\..\Libraries\CO.CDP.EntityFrameworkCore\CO.CDP.EntityFrameworkCore.csproj" />
+        <ProjectReference Include="..\CO.CDP.Configuration\CO.CDP.Configuration.csproj" />
     </ItemGroup>
 
 </Project>
