@@ -136,7 +136,7 @@ public class OrganisationInternationalIdentificationModel(
         catch (ApiException ex) when (ex.StatusCode == 404)
         {
             return new List<IdentifierRegistries>();
-        }      
+        }
     }
 
     private ICollection<string> PopulateExistingIdentifiers(OrganisationWebApiClient.Organisation organisation)
@@ -155,6 +155,6 @@ public class OrganisationInternationalIdentificationModel(
             .Where(scheme => schemesInRegistries.Contains(scheme) || scheme == $"{Country}-Other")
             .ToList();
 
-        return !(!schemesInRegistries.Any() && validIdentifiers.Count == 1);
+        return !((schemesInRegistries?.Count ?? 0) + 1 == validIdentifiers.Count);
     }
 }
