@@ -37,7 +37,7 @@ public class CompanyHouseNumberQuestionModel(ISession session,
     public string? OrganisationIdentifier;
 
     public string? OrganisationName;
-    
+
     public void OnGet()
     {
         HasCompaniesHouseNumber = RegistrationDetails.OrganisationHasCompaniesHouseNumber;
@@ -67,7 +67,7 @@ public class CompanyHouseNumberQuestionModel(ISession session,
                 {
                     flashMessageService.SetFlashMessage(
                         FlashMessageType.Important,
-                        heading: StaticTextResource.OrganisationRegistration_CompanyHouseNumberQuestion_CompanyAlreadyRegistered_NotificationBanner,
+                        heading: string.Format(StaticTextResource.OrganisationRegistration_CompanyHouseNumberQuestion_CompanyAlreadyRegistered_NotificationBanner, OrganisationName),
                         urlParameters: new() { ["organisationIdentifier"] = OrganisationIdentifier },
                         htmlParameters: new() { ["organisationName"] = organisation.Name }
                     );
