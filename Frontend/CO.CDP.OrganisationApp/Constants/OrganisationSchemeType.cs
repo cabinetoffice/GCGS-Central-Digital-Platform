@@ -1,5 +1,6 @@
 using CO.CDP.EntityVerificationClient;
 using System.Collections.Generic;
+using CO.CDP.Localization;
 
 namespace CO.CDP.OrganisationApp.Constants;
 
@@ -21,19 +22,19 @@ public static class OrganisationSchemeType
 
     private static readonly Dictionary<string, string> OrganisationScheme = new()
     {
-        { CompaniesHouse, "Companies House Number" },
-        { CharityCommissionEnglandWales, "Charity Commission for England & Wales Number" },
-        { ScottishCharityRegulator, "Scottish Charity Regulator" },
-        { CharityCommissionNorthernIreland, "Charity Commission for Northern Ireland Number" },
-        { MutualsPublicRegister, "Mutuals Public Register Number" },
-        { GuernseyRegistry, "Guernsey Registry Number" },
-        { JerseyFinancialServicesCommission, "Jersey Financial Services Commission Registry Number" },
-        { IsleOfManCompaniesRegistry, "Isle of Man Companies Registry Number" },
-        { NHSOrganisationsRegistry, "National Health Service Organisations Registry Number" },
-        { UKRegisterOfLearningProviders, "UK Register of Learning Provider Number" },
-        { VAT, "VAT number" },
-        { Other, "Other / None" },
-        { Ppon, "Ppon" }
+        { CompaniesHouse, StaticTextResource.OrganisationSchemeType_CompaniesHouse },
+        { CharityCommissionEnglandWales, StaticTextResource.OrganisationSchemeType_CharityCommissionEnglandWales },
+        { ScottishCharityRegulator, StaticTextResource.OrganisationSchemeType_ScottishCharityRegulator },
+        { CharityCommissionNorthernIreland, StaticTextResource.OrganisationSchemeType_CharityCommissionNorthernIreland },
+        { MutualsPublicRegister, StaticTextResource.OrganisationSchemeType_MutualsPublicRegister },
+        { GuernseyRegistry, StaticTextResource.OrganisationSchemeType_GuernseyRegistry },
+        { JerseyFinancialServicesCommission, StaticTextResource.OrganisationSchemeType_JerseyFinancialServicesCommission },
+        { IsleOfManCompaniesRegistry, StaticTextResource.OrganisationSchemeType_IsleOfManCompaniesRegistry },
+        { NHSOrganisationsRegistry, StaticTextResource.OrganisationSchemeType_NHSOrganisationsRegistry },
+        { UKRegisterOfLearningProviders, StaticTextResource.OrganisationSchemeType_UKRegisterOfLearningProviders },
+        { VAT, StaticTextResource.OrganisationSchemeType_VAT },
+        { Other, StaticTextResource.OrganisationSchemeType_OtherNone },
+        { Ppon, StaticTextResource.OrganisationSchemeType_Ppon }
     };
 
     public static string? SchemeDescription(this string? scheme, ICollection<IdentifierRegistries>? registriesDetails = null)
@@ -45,27 +46,27 @@ public static class OrganisationSchemeType
         {
             return value;
         }
-        
+
         if (registriesDetails != null)
         {
             var registryMatch = registriesDetails.FirstOrDefault(r => r.Scheme?.Equals(scheme, StringComparison.OrdinalIgnoreCase) == true);
             if (registryMatch != null)
             {
-               
+
                 if (!string.IsNullOrWhiteSpace(registryMatch.Countrycode) && Constants.Country.NonUKCountries.TryGetValue(registryMatch.Countrycode, out var countryName))
                 {
                     return $"{countryName} - {registryMatch.RegisterName}";
                 }
-                
+
                 return $"{registryMatch.RegisterName}";
             }
             var schemeCountryCode = scheme.Contains("-") ? scheme.Split('-')[0] : scheme;
             if (!string.IsNullOrWhiteSpace(schemeCountryCode) && Constants.Country.NonUKCountries.TryGetValue(schemeCountryCode, out var countryNameforOthers))
             {
-                return $"{countryNameforOthers} - Other";
+                return $"{countryNameforOthers} - {StaticTextResource.OrganisationSchemeType_Other}";
             }
         }
 
-        return "Other";
+        return StaticTextResource.OrganisationSchemeType_Other;
     }
 }
