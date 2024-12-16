@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -2770,5 +2770,89 @@
   </data>
   <data name="Organisation_ConsortiumName" xml:space="preserve">
     <value>Consortium name</value>
+  </data>
+  <data name="ErrorMessageList_DuplicatePersonName" xml:space="preserve">
+    <value>A person with this name already exists. Please try again.</value>
+  </data>
+  <data name="ErrorMessageList_DuplicatePersonEmail" xml:space="preserve">
+    <value>A user with this email address already exists for your organisation.</value>
+  </data>
+  <data name="ErrorMessageList_DuplicateInviteEmail" xml:space="preserve">
+    <value>A user with this email address has already been invited to your organisation.</value>
+  </data>
+  <data name="ErrorMessageList_PersonNotFound" xml:space="preserve">
+    <value>The requested person was not found.</value>
+  </data>
+  <data name="ErrorMessageList_PersonCreationFailed" xml:space="preserve">
+    <value>Adding a person failed, have you provided the correct person details.</value>
+  </data>
+  <data name="ErrorMessageList_OrganisationCreationFailed" xml:space="preserve">
+    <value>Organisation creation failed, have you provided the correct organisation details.</value>
+  </data>
+  <data name="ErrorMessageList_OrganisationNotFound" xml:space="preserve">
+    <value>The requested organisation was not found.</value>
+  </data>
+  <data name="ErrorMessageList_DuplicateOrganisationName" xml:space="preserve">
+    <value>An organisation with this name already exists. Please try again.</value>
+  </data>
+  <data name="ErrorMessageList_PayLoadIssueOrNullAurgument" xml:space="preserve">
+    <value>Please make sure all the required information has been provided correctly.</value>
+  </data>
+  <data name="ErrorMessageList_UnprocessableEntity" xml:space="preserve">
+    <value>An unprocessable entity found. Please try again with valid data.</value>
+  </data>
+  <data name="ErrorMessageList_UnexpectedError" xml:space="preserve">
+    <value>An unexpected error occurred. Please try again with valid data.</value>
+  </data>
+  <data name="ErrorMessageList_UnknownOrganisation" xml:space="preserve">
+    <value>The requested organisation was not found.</value>
+  </data>
+  <data name="ErrorMessageList_BuyerInfoNotExists" xml:space="preserve">
+    <value>The buyer information for requested organisation not exist.</value>
+  </data>
+  <data name="ErrorMessageList_UnknownBuyerInformationUpdateType" xml:space="preserve">
+    <value>The requested buyer information update type is unknown.</value>
+  </data>
+  <data name="ErrorMessageList_DuplicateApiKeyName" xml:space="preserve">
+    <value>An API key with this name already exists. Please try again.</value>
+  </data>
+  <data name="ErrorMessageList_AlreadyMemberOfOrganisation" xml:space="preserve">
+    <value>You are either already a member of this organisation or have already requested to join.</value>
+  </data>
+  <data name="ErrorMessageList_OrganisationInvalidInput" xml:space="preserve">
+    <value>Invalid Input.</value>
+  </data>
+  <data name="ErrorMessageList_MissingOrganisationName" xml:space="preserve">
+    <value>Missing organisation name.</value>
+  </data>
+  <data name="ErrorMessageList_MissingRoles" xml:space="preserve">
+    <value>Missing roles.</value>
+  </data>
+  <data name="ErrorMessageList_MissingContactPoint" xml:space="preserve">
+    <value>Missing contact point.</value>
+  </data>
+  <data name="ErrorMessageList_NoPrimaryIdentifier" xml:space="preserve">
+    <value>There are no identifiers remaining that can be set as the primary.</value>
+  </data>
+  <data name="ErrorMessageList_MissingOrganisationEmail" xml:space="preserve">
+    <value>Missing organisation email.</value>
+  </data>
+  <data name="ErrorMessageList_OrganisationEmailDoesNotExist" xml:space="preserve">
+    <value>Organisation email does not exists.</value>
+  </data>
+  <data name="ErrorMessageList_MissingOrganisationAddress" xml:space="preserve">
+    <value>Missing organisation address.</value>
+  </data>
+  <data name="ErrorMessageList_MissingOrganisationRegisteredAddress" xml:space="preserve">
+    <value>Missing Organisation registered address.</value>
+  </data>
+  <data name="ErrorMessageList_MissingAdditionalIdentifiers" xml:space="preserve">
+    <value>Missing additional identifiers.</value>
+  </data>
+  <data name="ErrorMessageList_MissingIdentifierNumber" xml:space="preserve">
+    <value>Missing identifier number.</value>
+  </data>
+  <data name="ErrorMessageList_IdentiferNumberAlreadyExists" xml:space="preserve">
+    <value>You’ve used this registry number for another organisation. Enter a different registry number.</value>
   </data>
 </root>
