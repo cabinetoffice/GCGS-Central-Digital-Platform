@@ -31,5 +31,6 @@ This code base is responsible for provisioning the AWS infrastructure needed to 
    - [Update Production Database Users](./docs/manage-secrets.md#update-production-database-users)
    - [Update Slack Configuration](./docs/manage-secrets.md#update-slack-configuration)
    - [Update Terraform Operators](./docs/manage-secrets.md#update-terraform-operators)
+   - [Update WAF Allowed IP Set](./docs/manage-secrets.md#update-waf-allowed-ip-set)
 - [Pin Application/Service Version](./docs/bootstap-new-account.md#pin-applicationservice-version)
 - [Run Databases' Migrations](./docs/bootstap-new-account.md#run-databases-migrations)
