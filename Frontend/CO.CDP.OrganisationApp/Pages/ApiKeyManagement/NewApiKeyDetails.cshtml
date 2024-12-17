@@ -28,7 +28,7 @@
                         @StaticTextResource.ApiKeyManagement_NewApiKeyDetails_Notice
                     </p>
 
-                    <govuk-button id="copybutton" type="button" class="govuk-button--secondary govuk-visually-hidden" onclick="javascript:copyContent('apikeytext');" prevent-double-click="false">
+                    <govuk-button id="copybutton" type="button" class="govuk-button--secondary govuk-visually-hidden" prevent-double-click="false">
                         @StaticTextResource.ApiKeyManagement_NewApiKeyDetails_CopyButton
                     </govuk-button>
 
@@ -38,8 +38,9 @@
                 </div>
             </div>
         </form>
-        <script>
-            document.getElementById("copybutton").classList.remove('govuk-visually-hidden');
+        <script nonce-csp>
+            var copyButton = document.getElementById("copybutton");
+            copyButton.classList.remove('govuk-visually-hidden');
 
             const copyContent =
                 async (id) => {
@@ -49,6 +50,8 @@
                     }
                     catch (e) { }
                 }
+
+            copyButton.addEventListener("click", () => copyContent("apikeytext"));
         </script>
     </div>
 </div>

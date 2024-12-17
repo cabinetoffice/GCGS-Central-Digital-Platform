@@ -1,7 +1,9 @@
 @page "/privacy-policy"
 @model PrivacyPolicyModel
+@using Localization;
+
 @{
-    ViewData["Title"] = "Agree to privacy policy before continuing";
+    ViewData["Title"] = StaticTextResource.PrivacyPolicy_Title;
     var agreetoPrivacyPolicyHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.AgreeToPrivacy)).HasInnerHtml;
 }
 
@@ -17,7 +19,7 @@
                             </h1>
                         </legend>
                         <p>
-                            Before you can continue, you need to read and agree to the <a class="govuk-link" target="_blank" href="/privacy-notice">Central Digital Platform service privacy policy (opens in new tab)</a>.
+                            @StaticTextResource.PrivacyPolicy_Notice_BeforeLink<a class="govuk-link" target="_blank" href="/privacy-notice">@StaticTextResource.PrivacyPolicy_Notice_Link</a>.
                         </p>
 
                         @if (agreetoPrivacyPolicyHasError)
@@ -39,7 +41,7 @@
                 </div>
 
                 <govuk-button>
-                    Continue
+                    @StaticTextResource.Global_Continue
                 </govuk-button>
             </form>
         </div>

@@ -126,9 +126,16 @@ public class CompanyHouseNumberQuestionTests
         Dictionary<string, string> urlParameters = new() { ["organisationIdentifier"] = model.OrganisationIdentifier };
         Dictionary<string, string> htmlParameters = new() { ["organisationName"] = model.OrganisationName };
 
+        var heading =
+            string.Format(
+                StaticTextResource
+                    .OrganisationRegistration_CompanyHouseNumberQuestion_CompanyAlreadyRegistered_NotificationBanner,
+                model.OrganisationIdentifier,
+                model.OrganisationName);
+
         flashMessageServiceMock.Verify(api => api.SetFlashMessage(
             FlashMessageType.Important,
-            StaticTextResource.OrganisationRegistration_CompanyHouseNumberQuestion_CompanyAlreadyRegistered_NotificationBanner,
+            heading,
             null,
             null,
             It.Is<Dictionary<string, string>>(d => d["organisationIdentifier"] == model.OrganisationIdentifier),

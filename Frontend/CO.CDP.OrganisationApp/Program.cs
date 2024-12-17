@@ -238,6 +238,7 @@ builder.Services.AddHsts(options =>
 });
 
 var app = builder.Build();
+app.UseMiddleware<ContentSecurityPolicyMiddleware>();   // Note: This middleware must run early, before razor rendering
 app.UseForwardedHeaders();
 app.UseMiddleware<ExceptionMiddleware>();
 app.UseMiddleware<CookieAcceptanceMiddleware>();
