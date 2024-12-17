@@ -1,0 +1,39 @@
+@page "/consortium/{id}/change-name"
+@model ConsortiumChangeNameModel
+@using CO.CDP.Localization
+
+@{
+    ViewData["Title"] = StaticTextResource.Consortium_ConsortiumName_Heading;
+    var consortiumNameHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.ConsortiumName)).HasInnerHtml;
+}
+
+@section BeforeContent {
+    <a href="/consortium/@Model.Id/overview" class="govuk-back-link">@StaticTextResource.Global_Back</a>
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <partial name="_ErrorSummary" model="@Model.ModelState" />
+        <form class="form" method="post">
+            <h1 class="govuk-label-wrapper">
+                <label class="govuk-label govuk-label--l" for="@nameof(Model.ConsortiumName)">
+                    @ViewData["Title"]
+                </label>
+            </h1>
+
+            <div class="govuk-form-group @(consortiumNameHasError ? "govuk-form-group--error" : "")">
+                @if (consortiumNameHasError)
+                {
+                    <p id="consortium-name-error" class="govuk-error-message">
+                        <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span>
+                        @Html.ValidationMessageFor(m => m.ConsortiumName)
+                    </p>
+                }
+                <input class="govuk-input govuk-!-width-two-thirds @(consortiumNameHasError ? "govuk-input--error" : "")" id="@nameof(Model.ConsortiumName)"
+                       value="@Model.ConsortiumName" name="@nameof(Model.ConsortiumName)" type="text"
+                       spellcheck="false" @(consortiumNameHasError ? "aria-describedby=consortium-name-error" : "")>
+            </div>
+            <govuk-button>@StaticTextResource.Global_Continue</govuk-button>
+        </form>
+    </div>
+</div>
