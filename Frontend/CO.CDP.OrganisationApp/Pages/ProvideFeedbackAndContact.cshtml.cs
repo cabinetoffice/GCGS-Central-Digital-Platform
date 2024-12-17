@@ -5,6 +5,7 @@ using System.ComponentModel;
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.WebApiClients;
 using System.ComponentModel.DataAnnotations;
+using CO.CDP.Localization;
 
 namespace CO.CDP.OrganisationApp.Pages;
 
@@ -13,18 +14,18 @@ namespace CO.CDP.OrganisationApp.Pages;
 public class ProvideFeedbackAndContact(IOrganisationClient organisationClient) : PageModel
 {
     [BindProperty]
-    [DisplayName("What's it to do with")]
-    [Required(ErrorMessage = "Choose an option")]
+    [DisplayName(nameof(StaticTextResource.ProvideFeedbackAndContact_WhatsItToDoWith))]
+    [Required(ErrorMessageResourceName = nameof(StaticTextResource.ProvideFeedbackAndContact_ChooseAnOption), ErrorMessageResourceType = typeof(StaticTextResource))]
     public string? FeedbackOrContactOption { get; set; }
 
     [BindProperty]
-    [DisplayName("Specific Page")]
-    [RequiredIf("FeedbackOrContactOption", "SpecificPage", ErrorMessage = "URL of specific page is required")]
+    [DisplayName(nameof(StaticTextResource.ProvideFeedbackAndContact_SpecificPage))]
+    [RequiredIf("FeedbackOrContactOption", "SpecificPage", ErrorMessageResourceName = nameof(StaticTextResource.ProvideFeedbackAndContact_UrlOfPageRequired), ErrorMessageResourceType = typeof(StaticTextResource))]
     public string? UrlOfPage { get; set; }
 
     [BindProperty]
-    [DisplayName("Enter details")]
-    [Required(ErrorMessage = "The message field cannot be empty")]
+    [DisplayName(nameof(StaticTextResource.ProvideFeedbackAndContact_EnterDetails))]
+    [Required(ErrorMessageResourceName = nameof(StaticTextResource.ProvideFeedbackAndContact_MessageFieldCannotBeEmpty), ErrorMessageResourceType = typeof(StaticTextResource))]
     public string? Details { get; set; }
 
     [BindProperty]
@@ -56,7 +57,7 @@ public class ProvideFeedbackAndContact(IOrganisationClient organisationClient) :
             (ModelState[nameof(Email)]!.RawValue as string == string.Empty))
         {
             ModelState[nameof(Email)]!.ValidationState = Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Invalid;
-            ModelState[nameof(Email)]!.Errors.Add("Enter an Email address");
+            ModelState[nameof(Email)]!.Errors.Add(StaticTextResource.ProvideFeedbackAndContact_EnterEmailAddress);
             return Page();
         }
 
@@ -64,7 +65,7 @@ public class ProvideFeedbackAndContact(IOrganisationClient organisationClient) :
             (ModelState[nameof(Name)]!.RawValue as string == string.Empty))
         {
             ModelState[nameof(Name)]!.ValidationState = Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Invalid;
-            ModelState[nameof(Name)]!.Errors.Add("Enter a name");
+            ModelState[nameof(Name)]!.Errors.Add(StaticTextResource.ProvideFeedbackAndContact_EnterAName);
             return Page();
         }
 
