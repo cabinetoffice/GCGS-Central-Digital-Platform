@@ -18,6 +18,7 @@ using CO.CDP.WebApi.Foundation;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
 using System.Reflection;
+using CO.CDP.MQ.Outbox;
 using ConnectedEntity = CO.CDP.Organisation.WebApi.Model.ConnectedEntity;
 using ConnectedEntityLookup = CO.CDP.Organisation.WebApi.Model.ConnectedEntityLookup;
 using MouSignature = CO.CDP.Organisation.WebApi.Model.MouSignature;
@@ -51,8 +52,24 @@ builder.Services
     );
 if (Assembly.GetEntryAssembly().IsRunAs("CO.CDP.Organisation.WebApi"))
 {
+    // FIXME: only register IOutboxProcessorListener if the feature flag is enabled
+    builder.Services.AddScoped<IOutboxProcessorListener>(s =>
+    {
+        // FIXME: Find a better way to open a connection
+        var connection =
+            new NpgsqlConnection(
+                ConnectionStringHelper.GetConnectionString(builder.Configuration, "OrganisationInformationDatabase"));
+        connection.Open();
+        return new OutboxProcessorListener(
+            connection,
+            s.GetRequiredService<IOutboxProcessor>(),
+            s.GetRequiredService<ILogger<OutboxProcessorListener>>()
+        );
+    });
     builder.Services.AddHostedService<DispatcherBackgroundService>();
-    builder.Services.AddHostedService<OutboxProcessorBackgroundService>();
+    // FIXME: only register OutboxProcessorListenerBackgroundService if the feature flag is enabled
+    // builder.Services.AddHostedService<OutboxProcessorBackgroundService>();
+    builder.Services.AddHostedService<OutboxProcessorListenerBackgroundService>();
 }
 
 var connectionString = ConnectionStringHelper.GetConnectionString(builder.Configuration, "OrganisationInformationDatabase");

@@ -1,3 +1,4 @@
+using System.Reflection;
 using CO.CDP.Authentication;
 using CO.CDP.AwsServices;
 using CO.CDP.Configuration.Assembly;
@@ -12,10 +13,11 @@ using CO.CDP.EntityVerification.Ppon;
 using CO.CDP.EntityVerification.UseCase;
 using CO.CDP.MQ;
 using CO.CDP.MQ.Hosting;
+using CO.CDP.MQ.Outbox;
 using CO.CDP.WebApi.Foundation;
 using Microsoft.EntityFrameworkCore;
-using System.Reflection;
 using Npgsql;
+using Identifier = CO.CDP.EntityVerification.Model.Identifier;
 using IdentifierRegistries = CO.CDP.EntityVerification.Model.IdentifierRegistries;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -34,7 +36,7 @@ builder.Services.AddDbContext<EntityVerificationContext>((sp, o) => o.UseNpgsql(
 builder.Services.AddScoped<IPponRepository, DatabasePponRepository>();
 builder.Services.AddScoped<IPponService, PponService>();
 
-builder.Services.AddScoped<IUseCase<LookupIdentifierQuery, IEnumerable<CO.CDP.EntityVerification.Model.Identifier>>, LookupIdentifierUseCase>();
+builder.Services.AddScoped<IUseCase<LookupIdentifierQuery, IEnumerable<Identifier>>, LookupIdentifierUseCase>();
 builder.Services.AddScoped<IUseCase<string, IEnumerable<IdentifierRegistries>>, GetIdentifierRegistriesUseCase>();
 builder.Services.AddScoped<IUseCase<string[], IEnumerable<IdentifierRegistries>>, GetIdentifierRegistriesDetailsUseCase>();
 
@@ -59,8 +61,24 @@ if (Assembly.GetEntryAssembly().IsRunAs("CO.CDP.EntityVerification"))
                 dispatcher.Subscribe<OrganisationUpdated>(services);
             }
         );
+    // FIXME: only register IOutboxProcessorListener if the feature flag is enabled
+    builder.Services.AddScoped<IOutboxProcessorListener>(s =>
+    {
+        // FIXME: Find a better way to open a connection
+        var connection =
+            new NpgsqlConnection(
+                ConnectionStringHelper.GetConnectionString(builder.Configuration, "EntityVerificationDatabase"));
+        connection.Open();
+        return new OutboxProcessorListener(
+            connection,
+            s.GetRequiredService<IOutboxProcessor>(),
+            s.GetRequiredService<ILogger<OutboxProcessorListener>>()
+        );
+    });
     builder.Services.AddHostedService<DispatcherBackgroundService>();
-    builder.Services.AddHostedService<OutboxProcessorBackgroundService>();
+    // FIXME: only register OutboxProcessorListenerBackgroundService if the feature flag is enabled
+    // builder.Services.AddHostedService<OutboxProcessorBackgroundService>();
+    builder.Services.AddHostedService<OutboxProcessorListenerBackgroundService>();
 
     builder.Services
         .AddAwsConfiguration(builder.Configuration)
