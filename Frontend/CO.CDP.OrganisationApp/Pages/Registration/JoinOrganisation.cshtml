@@ -6,7 +6,10 @@
     var organisationDetails = Model.OrganisationDetails!;
     var userDetails = Model.UserDetails;
     var joinHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Join)).HasInnerHtml;
-    ViewData["Title"] = $"{@StaticTextResource.OrganisationRegistration_JoinOrganisation_Heading}: {@organisationDetails.Name}";
+    ViewData["Title"] = string.Format(
+        StaticTextResource.OrganisationRegistration_JoinOrganisation_Heading,
+        organisationDetails.Name
+    );
 }
 
 @section BeforeContent {
@@ -71,8 +74,10 @@
                 <fieldset class="govuk-fieldset" @(joinHasError ? Html.Raw(@"aria-describedby=""approval-error""") : null)>
                     <legend class="govuk-form-group @(joinHasError ? "govuk-form-group--error" : "")">
                         <h2 class="govuk-fieldset__legend govuk-fieldset__legend--m">
-                            @($"{StaticTextResource.OrganisationRegistration_JoinOrganisation_Notification_Heading} {organisationDetails.Name}")
-                            Would you like to join @organisationDetails.Name?
+                            @(string.Format(
+                                StaticTextResource.OrganisationRegistration_JoinOrganisation_WouldYouLikeToJoin,
+                                organisationDetails.Name
+                            ))
                         </h2>
                         @if (joinHasError)
                         {

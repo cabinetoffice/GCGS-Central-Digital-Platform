@@ -5,6 +5,7 @@ using CO.CDP.OrganisationApp.Pages.Forms.ChoiceProviderStrategies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using CO.CDP.Localization;
 
 namespace CO.CDP.OrganisationApp.Pages.Forms;
 
@@ -55,7 +56,8 @@ public class FormsAnswerSetSummaryModel(
         }
 
         if (AllowsMultipleAnswerSets && !AddAnotherAnswerSet.HasValue)
-            ModelState.AddModelError(nameof(AddAnotherAnswerSet), "Please select an option");
+            ModelState.AddModelError(nameof(AddAnotherAnswerSet),
+                StaticTextResource.Global_SelectAnOption);
 
         if (!ModelState.IsValid)
         {
@@ -154,7 +156,7 @@ public class FormsAnswerSetSummaryModel(
 
         if (form.AnswerSets.Any(a => a.FurtherQuestionsExempted == true))
         {
-            Heading = "Not Applicable";
+            Heading = StaticTextResource.Global_NotApplicableLong;
         }
         else
         {
@@ -203,7 +205,7 @@ public class FormsAnswerSetSummaryModel(
             return await choiceProviderStrategy.RenderOption(a) ?? "";
         }
 
-        string boolAnswerString = answer.BoolValue.HasValue == true ? (answer.BoolValue == true ? "Yes" : "No") : "";
+        string boolAnswerString = answer.BoolValue.HasValue == true ? (answer.BoolValue == true ? StaticTextResource.Global_Yes : StaticTextResource.Global_No) : "";
 
         string answerString = question.Type switch
         {

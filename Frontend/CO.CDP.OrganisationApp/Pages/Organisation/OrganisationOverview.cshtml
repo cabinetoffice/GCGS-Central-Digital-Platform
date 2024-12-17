@@ -92,7 +92,7 @@
                                     }
                                     else
                                     {
-                                        @organisationDetails.Identifier.Scheme.SchemeDescription()
+                                        @organisationDetails.Identifier.Scheme.SchemeDescription(Model.IdentifierRegistriesDetails)
                                         <br />
                                         @organisationDetails.Identifier.Id
                                     }
@@ -100,7 +100,7 @@
                                 @foreach (var aidentifier in organisationDetails.AdditionalIdentifiersToShow())
                                 {
                                     <li>
-                                        @aidentifier.Scheme.SchemeDescription()
+                                    @aidentifier.Scheme.SchemeDescription(Model.IdentifierRegistriesDetails)
                                         <br />
                                         @aidentifier.Id
                                     </li>
@@ -235,7 +235,7 @@
 
                 @if ((organisationDetails.IsPendingBuyer() || organisationDetails.IsBuyer()) && !organisationDetails.IsTenderer())
                 {
-                    <authorize scope="@OrgScopeRequirement.Editor">
+                    <authorize scope="@OrgScopeRequirement.Admin">
                         <h3 class="govuk-heading-s govuk-!-margin-bottom-3">
                             <a class="govuk-link" asp-page="./OrganisationRegisterBuyerAsSupplier" asp-route-id="@Model.Id">@StaticTextResource.Organisation_RegisterAsSupplier</a>
                         </h3>

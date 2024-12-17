@@ -23,6 +23,7 @@ data "aws_iam_policy_document" "terraform_global" {
   statement {
     actions = [
       "iam:CreatePolicy",
+      "iam:CreateServiceLinkedRole",
       "iam:GetPolicy",
       "iam:GetPolicyVersion",
       "iam:TagPolicy",
@@ -333,6 +334,47 @@ data "aws_iam_policy_document" "terraform_global" {
       "arn:aws:states:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:stateMachine:*"
     ]
     sid = "ManageStateMachines"
+  }
+
+  statement {
+    actions = [
+      "wafv2:CreateWebACL",
+      "wafv2:GetWebACLForResource",
+      "wafv2:UpdateWebACL",
+    ]
+    effect = "Allow"
+    resources = [
+      "arn:aws:wafv2:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:regional/managedruleset/*/*",
+      "arn:aws:wafv2:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:regional/webacl/*/*",
+    ]
+    sid = "ManageWAF"
+  }
+
+  statement {
+    actions = [
+      "wafv2:DeleteLoggingConfiguration",
+      "wafv2:PutLoggingConfiguration",
+    ]
+    effect = "Allow"
+    resources = [
+      "*",
+    ]
+    sid = "ManageWAFLoggingConfigurationAPI"
+  }
+
+  statement {
+    actions = [
+      "logs:CreateLogDelivery",
+      "logs:DeleteLogDelivery",
+      "logs:PutResourcePolicy",
+      "logs:DescribeResourcePolicies",
+      "logs:DescribeLogGroups"
+    ]
+    effect = "Allow"
+    resources = [
+      "*",
+    ]
+    sid = "ManageWAFWebACLLoggingCWL"
   }
 
 }

@@ -3,20 +3,21 @@ using CO.CDP.Tenant.WebApiClient;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Moq;
+using OrganisationType = CO.CDP.Tenant.WebApiClient.OrganisationType;
 
 namespace CO.CDP.OrganisationApp.Tests;
 
 public class UserInfoServiceTest
 {
-    private readonly IHttpContextAccessor _httpContextAccessor = GivenHttpContext();
+    private readonly IHttpContextAccessor _httpContextAccessor = GivenHttpContext;
     private readonly Mock<ITenantClient> _tenantClient = new();
-    private IUserInfoService UserInfoService => new UserInfoService(_httpContextAccessor, _tenantClient.Object);
+    private UserInfoService UserInfoService => new(_httpContextAccessor, _tenantClient.Object);
 
     [Fact]
     public async Task ItGetsUserInfoBasedOnTenantLookup()
     {
         var userOrganisation = GivenUserOrganisation(
-            name: "Acme Ltd", scopes: ["ADMIN"], roles: [PartyRole.Tenderer], pendingRoles: [PartyRole.Buyer]);
+            name: "Acme Ltd", scopes: ["ADMIN"], roles: [PartyRole.Tenderer], pendingRoles: [PartyRole.Buyer], type: OrganisationType.InformalConsortium);
         var tenantLookup = GivenTenantLookup(
             userDetails: GivenUserDetails(name: "Bob", email: "bob@example.com", scopes: ["SUPPORT"]),
             tenants: [GivenUserTenant(organisations: [userOrganisation])]
@@ -39,7 +40,8 @@ public class UserInfoServiceTest
                     Name = "Acme Ltd",
                     PendingRoles = [PartyRole.Buyer],
                     Roles = [PartyRole.Tenderer],
-                    Scopes = ["ADMIN"]
+                    Scopes = ["ADMIN"],
+                    Type = OrganisationType.InformalConsortium
                 }
             ]
         });
@@ -160,7 +162,7 @@ public class UserInfoServiceTest
     [Fact]
     public void ItReturnsNoOrganisationIdIfHttpContextIsMissing()
     {
-        var httpContextAccessor = GivenMissingHttpContext();
+        var httpContextAccessor = GivenMissingHttpContext;
         var userInfoService = new UserInfoService(httpContextAccessor, _tenantClient.Object);
 
         userInfoService.GetOrganisationId().Should().BeNull();
@@ -242,11 +244,13 @@ public class UserInfoServiceTest
         string? name = null,
         ICollection<string>? scopes = null,
         ICollection<PartyRole>? roles = null,
-        ICollection<PartyRole>? pendingRoles = null)
+        ICollection<PartyRole>? pendingRoles = null,
+        OrganisationType type = OrganisationType.Organisation)
     {
         return new UserOrganisation(
             id: id ?? Guid.NewGuid(),
             name: name,
+            type: type,
             pendingRoles: pendingRoles,
             roles: roles,
             scopes: scopes,
@@ -266,19 +270,9 @@ public class UserInfoServiceTest
         }
     }
 
-    private static IHttpContextAccessor GivenHttpContext()
-    {
-        return new HttpContextAccessor
-        {
-            HttpContext = new DefaultHttpContext()
-        };
-    }
+    private static IHttpContextAccessor GivenHttpContext
+        => new HttpContextAccessor { HttpContext = new DefaultHttpContext() };
 
-    private static IHttpContextAccessor GivenMissingHttpContext()
-    {
-        return new HttpContextAccessor
-        {
-            HttpContext = null
-        };
-    }
+    private static IHttpContextAccessor GivenMissingHttpContext
+        => new HttpContextAccessor { HttpContext = null };
 }

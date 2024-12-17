@@ -1,3 +1,4 @@
+using CO.CDP.EntityVerificationClient;
 using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.WebApiClients;
@@ -9,14 +10,18 @@ namespace CO.CDP.OrganisationApp.Pages.Registration;
 [ValidateRegistrationStep]
 public class OrganisationDetailsSummaryModel(
     ISession session,
-    OrganisationWebApiClient.IOrganisationClient organisationClient) : RegistrationStepModel(session)
+    OrganisationWebApiClient.IOrganisationClient organisationClient,
+    IPponClient pponClient) : RegistrationStepModel(session)
 {
     public override string CurrentPage => OrganisationSummaryPage;
 
     public string? Error { get; set; }
 
-    public void OnGet()
+    public ICollection<IdentifierRegistries>? IdentifierRegistriesDetails { get; set; }
+
+    public async Task OnGet()
     {
+        IdentifierRegistriesDetails = await GetIdentifierDetails();
     }
 
     public async Task<IActionResult> OnPost()
@@ -97,5 +102,18 @@ public class OrganisationDetailsSummaryModel(
             type: OrganisationWebApiClient.OrganisationType.Organisation,
             roles: [details.OrganisationType!.Value.AsPartyRole()]
         );
+    }
+    private async Task<ICollection<IdentifierRegistries>> GetIdentifierDetails()
+    {
+        var scheme = RegistrationDetails.OrganisationScheme;
+
+        try
+        {
+            return await pponClient.GetIdentifierRegistriesDetailAsync(new[] { scheme });
+        }
+        catch (EntityVerificationClient.ApiException ex) when (ex.StatusCode == 404)
+        {
+            return new List<IdentifierRegistries>();
+        }
     }
 }

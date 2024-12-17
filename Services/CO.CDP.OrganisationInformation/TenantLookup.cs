@@ -41,6 +41,8 @@ public record UserOrganisation
     /// <example>"Acme Group Ltd"</example>
     public required string Name { get; init; }
 
+    public required OrganisationType Type { get; init; }
+
     public required List<PartyRole> Roles { get; init; }
 
     public required List<PartyRole> PendingRoles { get; init; }

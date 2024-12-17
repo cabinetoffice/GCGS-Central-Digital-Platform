@@ -21,6 +21,7 @@ public class GetIdentifierRegistriesUseCase(IPponRepository repository) : IUseCa
 
         var identifiers = rawIdentifiers.Select(identifier => new Model.IdentifierRegistries
         {
+            Countrycode = identifier.CountryCode,
             Scheme = identifier.Scheme,
             RegisterName = identifier.RegisterName
         });
