@@ -4,13 +4,13 @@ namespace CO.CDP.MQ.Outbox;
 
 public interface IOutboxProcessor
 {
-    Task ExecuteAsync(int count);
+    Task<int> ExecuteAsync(int count);
 }
 
 public class OutboxProcessor(IPublisher publisher, IOutboxMessageRepository outbox, ILogger<OutboxProcessor> logger)
     : IOutboxProcessor
 {
-    public async Task ExecuteAsync(int count)
+    public async Task<int> ExecuteAsync(int count)
     {
         logger.LogDebug("Executing the outbox processor");
         var messages = await FetchMessages(count);
@@ -18,6 +18,8 @@ public class OutboxProcessor(IPublisher publisher, IOutboxMessageRepository outb
         {
             await PublishMessage(outboxMessage);
         }
+
+        return messages.Count;
     }
 
     private async Task<List<OutboxMessage>> FetchMessages(int count)
