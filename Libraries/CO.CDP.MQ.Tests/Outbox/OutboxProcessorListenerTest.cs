@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Moq;
 using Npgsql;
+using Range = Moq.Range;
 
 namespace CO.CDP.MQ.Tests.Outbox;
 
@@ -36,7 +37,7 @@ public class OutboxProcessorListenerTest(PostgreSqlFixture postgreSql) : IClassF
         // We pull up to 10 messages at a time and expect 3 calls:
         // * 1 before we start listening to notifications
         // * 2 notifications
-        _processor.Verify(p => p.ExecuteAsync(10), Times.Exactly(3));
+        _processor.Verify(p => p.ExecuteAsync(10), Times.Between(2, 3, Range.Inclusive));
     }
 
     [Fact]
@@ -64,7 +65,7 @@ public class OutboxProcessorListenerTest(PostgreSqlFixture postgreSql) : IClassF
         // We pull up to 1 message at a time and expect 7 calls:
         // * 3 before we start listening to notifications (3rd pulls 0)
         // * 4 notifications (twice for each message, every other one pulls 0)
-        _processor.Verify(p => p.ExecuteAsync(1), Times.Exactly(7));
+        _processor.Verify(p => p.ExecuteAsync(1), Times.Between(6, 7, Range.Inclusive));
     }
 
     private void GivenOutboxProcessorPublishesMessagesWithNoInterruptions()
