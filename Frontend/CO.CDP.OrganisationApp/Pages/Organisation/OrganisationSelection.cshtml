@@ -119,9 +119,8 @@
 
         <hr class="govuk-section-break govuk-section-break--invisible govuk-section-break--l">
 
-        <section>
-            @if (Model.UserOrganisations.Any())
-            {
+        <feature name="@FeatureFlags.Consortium">
+            <section>
                 <table class="govuk-table">
                     <caption class="govuk-table__caption govuk-table__caption--m">@string.Format(StaticTextResource.Organisation_MyConsortium, consortiumCount)</caption>
                     <thead class="govuk-table__head">
@@ -149,13 +148,11 @@
                         }
                     </tbody>
                 </table>
-
-                <feature name="@FeatureFlags.Consortium">
-                    <div class="govuk-body">
-                        <a class="govuk-button govuk-button--secondary" href="/consortium/start">@StaticTextResource.Organisation_CreateNewConsortium</a>
-                    </div>
-                </feature>
-            }
-        </section>
+                
+                <div class="govuk-body">
+                    <a class="govuk-button govuk-button--secondary" href="/consortium/start">@StaticTextResource.Organisation_CreateNewConsortium</a>
+                </div>
+            </section>
+        </feature>
     </div>
 </div>
