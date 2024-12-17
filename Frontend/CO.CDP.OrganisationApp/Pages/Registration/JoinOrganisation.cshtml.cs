@@ -1,9 +1,9 @@
-using System.ComponentModel.DataAnnotations;
 using CO.CDP.Localization;
+using CO.CDP.Mvc.Validation;
 using CO.CDP.Organisation.WebApiClient;
-using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 using OrganisationWebApiClient = CO.CDP.Organisation.WebApiClient;
 
 namespace CO.CDP.OrganisationApp.Pages.Registration;
@@ -16,8 +16,12 @@ public class JoinOrganisationModel(
     public OrganisationWebApiClient.Organisation? OrganisationDetails { get; set; }
 
     [BindProperty]
-    [Required(ErrorMessage = nameof(StaticTextResource.OrganisationRegistration_JoinOrganisation_ValidationErrorMessage))]
-    public bool Join { get; set; }
+    [Required(ErrorMessageResourceName = nameof(StaticTextResource.OrganisationRegistration_JoinOrganisation_ValidationErrorMessage), ErrorMessageResourceType = typeof(StaticTextResource))]
+    public bool? UserWantsToJoin { get; set; }
+
+    [BindProperty]
+    [RequiredIf(nameof(UserWantsToJoin), true, ErrorMessageResourceName = nameof(StaticTextResource.OrganisationRegistration_JoinOrganisation_ConfirmValidationErrorMessage), ErrorMessageResourceType = typeof(StaticTextResource))]
+    public string? UserConfirmation { get; set; }
 
     public async Task<IActionResult> OnGet(string identifier)
     {
@@ -43,24 +47,39 @@ public class JoinOrganisationModel(
 
         if (UserDetails.PersonId != null && OrganisationDetails != null)
         {
-            if (Join)
+            if (UserWantsToJoin.GetValueOrDefault())
             {
                 try
                 {
-                    await organisationClient.CreateJoinRequestAsync(OrganisationDetails.Id,
+                    var joinRequestStatus = await organisationClient.CreateJoinRequestAsync(OrganisationDetails.Id,
                         new CreateOrganisationJoinRequest(
                             personId: UserDetails.PersonId.Value
                         ));
+
+                    if (joinRequestStatus != null)
+                    {
+                        if ((!joinRequestStatus.RequestCreated) && (joinRequestStatus.Status == OrganisationJoinRequestStatus.Pending))
+                        {
+                            flashMessageService.SetFlashMessage(
+                                FlashMessageType.Failure,
+                                StaticTextResource.OrganisationRegistration_JoinOrganisation_PendingMemberOfOrganisation,
+                                null,
+                                StaticTextResource.Global_Important);
+                            return Page();
+                        }
+
+                        return Redirect("/registration/" + identifier + "/join-organisation/success");
+                    }
                 }
                 catch (ApiException<OrganisationWebApiClient.ProblemDetails>)
                 {
-                    flashMessageService.SetFlashMessage(FlashMessageType.Important, ErrorMessagesList.AlreadyMemberOfOrganisation);
+                    flashMessageService.SetFlashMessage(FlashMessageType.Important, StaticTextResource.OrganisationRegistration_JoinOrganisation_AlreadyMemberOfOrganisation);
                     return Page();
                 }
-
-                SessionContext.Remove(Session.RegistrationDetailsKey);
-
-                return Redirect("/registration/" + identifier + "/join-organisation/success");
+                finally
+                {
+                    SessionContext.Remove(Session.RegistrationDetailsKey);
+                }
             }
 
             return Redirect("/organisation-selection");

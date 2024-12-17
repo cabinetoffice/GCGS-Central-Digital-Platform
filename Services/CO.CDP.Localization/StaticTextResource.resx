@@ -1596,43 +1596,37 @@
     <value>Enter type</value>
   </data>
   <data name="OrganisationRegistration_JoinOrganisationSuccess_Heading" xml:space="preserve">
-    <value>Request to join sent</value>
+    <value>Your request to join {0} has been sent</value>
   </data>
   <data name="OrganisationRegistration_JoinOrganisationSuccess_Message" xml:space="preserve">
-    <value>You have successfully applied to join</value>
+    <value>You'll receive an email about your request.</value>
   </data>
   <data name="OrganisationRegistration_JoinOrganisation_Heading" xml:space="preserve">
-    <value>Join company: {0}</value>
+    <value>Send a request to join {0}?</value>
   </data>
-  <data name="OrganisationRegistration_JoinOrganisation_WouldYouLikeToJoin" xml:space="preserve">
-    <value>Would you like to join: {0}?</value>
-  </data>
-  <data name="OrganisationRegistration_JoinOrganisation_Firstname_Label" xml:space="preserve">
-    <value>First name</value>
-  </data>
-  <data name="OrganisationRegistration_JoinOrganisation_Lastname_Label" xml:space="preserve">
-    <value>Last name</value>
-  </data>
-  <data name="OrganisationRegistration_JoinOrganisation_EmailAddress_Label" xml:space="preserve">
-    <value>Email address</value>
-  </data>
-  <data name="OrganisationRegistration_JoinOrganisation_OrganisationName_Label" xml:space="preserve">
-    <value>Organisation name</value>
+  <data name="OrganisationRegistration_JoinOrganisation_ConfirmValidationErrorMessage" xml:space="preserve">
+    <value>Select that you understand your name and email address will be shared</value>
   </data>
   <data name="OrganisationRegistration_JoinOrganisation_ValidationErrorMessage" xml:space="preserve">
-    <value>Select an option</value>
+    <value>Select yes or no</value>
   </data>
   <data name="OrganisationRegistration_JoinOrganisation_OrganisationDetails_Heading" xml:space="preserve">
     <value>Organisation details</value>
   </data>
-  <data name="OrganisationRegistration_JoinOrganisation_UserDetails_Heading" xml:space="preserve">
-    <value>User details</value>
+  <data name="OrganisationRegistration_JoinOrganisation_AlreadyMemberOfOrganisation" xml:space="preserve">
+    <value>You are already a member of this organisation. &lt;a class="govuk-notification-banner__link" href="/organisation-selection"&gt;Go back to my account&lt;/a&gt;</value>
   </data>
-  <data name="OrganisationRegistration_JoinOrganisation_Notification_Heading" xml:space="preserve">
-    <value>Would you like to join {0}?</value>
+  <data name="OrganisationRegistration_JoinOrganisation_PendingMemberOfOrganisation" xml:space="preserve">
+    <value>You have already requested to join this organisation. Your request is pending approval. &lt;a class="govuk-notification-banner__link" href="/organisation-selection"&gt;Go back to my account&lt;/a&gt;</value>
+  </data>
+  <data name="Global_GoBackToMyAccount" xml:space="preserve">
+    <value>Go back to my account</value>
   </data>
   <data name="OrganisationRegistration_OrganisationAlreadyRegistered_Heading" xml:space="preserve">
     <value>This organisation has already registered</value>
+  </data>
+    <data name="OrganisationRegistration_UserConfirm" xml:space="preserve">
+    <value>I understand my name and email address will be shared with this organisation</value>
   </data>
   <data name="OrganisationRegistration_OrganisationAlreadyRegistered_Message" xml:space="preserve">
     <value>&lt;p class="govuk-body"&gt;The organisation's details are already registered with the service.&lt;/p&gt;
@@ -2446,6 +2440,9 @@
   </data>
   <data name="Global_SaveAndExit" xml:space="preserve">
     <value>Save and exit</value>
+  </data>
+  <data name="Global_Failure_Heading" xml:space="preserve">
+    <value>Failure</value>
   </data>
   <data name="Supplier_LegalFormCompanyActQuestion_Title" xml:space="preserve">
     <value>Is your organisation registered on Companies House?</value>
