@@ -2870,4 +2870,7 @@
   <data name="ProvideFeedbackAndContact_WellOnlyUseThisToReplyToYourMessage" xml:space="preserve">
     <value>We'll only use this to reply to your message</value>
   </data>
+  <data name="Consortium_ConsortiumChangeEmail_Heading" xml:space="preserve">
+    <value>Enter an email address for the consortium</value>
+  </data>
 </root>

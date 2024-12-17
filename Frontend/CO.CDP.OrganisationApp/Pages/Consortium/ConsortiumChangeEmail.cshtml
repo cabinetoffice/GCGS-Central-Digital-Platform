@@ -1,28 +1,31 @@
-@page
-@attribute [RazorCompiledItemMetadata("RouteTemplate", ConsortiumStepModel.ConsortiumEmailPage)]
-@model ConsortiumEmailModel
+@page "/consortium/{id}/change-email"
+@model ConsortiumChangeEmailModel
 @using CO.CDP.Localization
 
 @{
-    ViewData["Title"] = StaticTextResource.Consortium_ConsortiumEmail_Heading;
+    ViewData["Title"] = StaticTextResource.Consortium_ConsortiumChangeEmail_Heading;
     var emailAddressHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.EmailAddress)).HasInnerHtml;
-    var backLink = ConsortiumStepModel.ConsortiumAddressPage;
+    var backLink = $"/consortium/{Model.Id}/overview";
 }
 
 @section BeforeContent {
-     <a href="@backLink" class="govuk-back-link">@StaticTextResource.Global_Back</a>
+        <a href="@backLink" class="govuk-back-link">@StaticTextResource.Global_Back</a>
 }
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <partial name="_ErrorSummary" model="@Model.ModelState" />
         <form class="form" method="post" novalidate>
-
+            @if (Request.Query.ContainsKey("frm-summary"))
+            {
+                <input type="hidden" name="RedirectToSummary" value="true" />
+            }
+            
             <h1 class="govuk-label-wrapper">
                 <span class="govuk-caption-l">
                     @Model.ConsortiumName
                 </span>
-                <label class="govuk-label govuk-label--l" for="consortiumName">
+                <label class="govuk-label govuk-label--l" for="@nameof(Model.EmailAddress)">
                     @ViewData["Title"]
                 </label>
             </h1>
@@ -31,8 +34,7 @@
                 @if (emailAddressHasError)
                 {
                     <p id="email-address-error" class="govuk-error-message">
-                        <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span>
-                    @Html.ValidationMessageFor(m => m.EmailAddress)
+                        <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span>@Html.ValidationMessageFor(m => m.EmailAddress)
                     </p>
                 }
                 <input class="govuk-input @(emailAddressHasError ? "govuk-input--error" : "")" id="@nameof(Model.EmailAddress)"
