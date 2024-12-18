@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!--
     Microsoft ResX Schema
@@ -877,6 +877,9 @@
     <value>Does {0} have a legal form?</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityLegalFormQuestion_Hint" xml:space="preserve">
+    <value>Does {0} have a legal form?</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityLegalFormQuestion_Hint" xml:space="preserve">
     <value>In the UK, this is a business structure or trading status. For example, limited company or limited liability partnership.</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityLegalFormQuestion_LegalFormNameLabel" xml:space="preserve">
@@ -915,6 +918,9 @@
   <data name="Supplier_ConnectedEntity_ConnectedEntityPostalSameAsRegisteredAddress_Hint" xml:space="preserve">
     <value>The place where an organisation receives official post can be different from its registered address. For example, a branch office.</value>
   </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityPscDetails_Heading" xml:space="preserve">
+    <value>Enter the person with significant control's details</value>
+  </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityPscDetails_FirstNameLabel" xml:space="preserve">
     <value>First name</value>
   </data>
@@ -951,11 +957,20 @@
   <data name="Supplier_ConnectedEntity_ConnectedEntityPscDetails_DateOfBirthYearInvalidError" xml:space="preserve">
     <value>Year must be a valid number</value>
   </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityPscDetails_DateOfBirthRealDateInvalidError" xml:space="preserve">
+    <value>Date of birth must be a real date</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityPscDetails_DateOfBirthInPastInvalidError" xml:space="preserve">
+    <value>Date of birth must be today or in the past</value>
+  </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityPscDetails_NationalityLabel" xml:space="preserve">
     <value>Nationality</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityPscDetails_NationalityRequiredError" xml:space="preserve">
     <value>Enter nationality</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityPscDetails_DateOfBirthYearInvalidError" xml:space="preserve">
+    <value>Year must be a valid number</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityRegistrationDateQuestion_DayRequiredError" xml:space="preserve">
     <value>Date of registration must include a day</value>
@@ -1157,6 +1172,9 @@
   </data>
   <data name="OrganisationRegistration_OrganisationType_Supplier_Hint" xml:space="preserve">
     <value>An organisation or sole trader who searches for tenders and submits bids to supply goods, works, services or utilities</value>
+  </data>
+  <data name="OrganisationRegistration_OrganisationType_BuyerOrSupplierValidation" xml:space="preserve">
+    <value>Select 'buyer' or 'supplier'</value>
   </data>
   <data name="OrganisationRegistration_CompanyHouseNumberQuestion_Heading" xml:space="preserve">
     <value>Does your organisation have a Companies House number?</value>
@@ -1555,7 +1573,7 @@
     <value>We cannot find your company number on Companies House. If it’s correct, continue and enter your details manually.</value>
   </data>
   <data name="OrganisationRegistration_CompanyHouseNumberQuestion_CompanyAlreadyRegistered_NotificationBanner" xml:space="preserve">
-    <value>An organisation with this company number already exists. Change the company number or &lt;a class="govuk-notification-banner__link" href="/registration/{0}/join-organisation"&gt;request to join {1}.&lt;/a&gt;</value>
+    <value>An organisation with this company number already exists. Change the company number or &lt;a class="govuk-notification-banner__link" href="/registration/{organisationIdentifier}/join-organisation"&gt;request to join {organisationName}.&lt;/a&gt;</value>
   </data>
   <data name="OrganisationRegistration_CompanyHouseNumberQuestion_ValidationErrorMessage" xml:space="preserve">
     <value>Select 'yes' or 'no'</value>
@@ -1623,43 +1641,37 @@
     <value>Enter type</value>
   </data>
   <data name="OrganisationRegistration_JoinOrganisationSuccess_Heading" xml:space="preserve">
-    <value>Request to join sent</value>
+    <value>Your request to join {0} has been sent</value>
   </data>
   <data name="OrganisationRegistration_JoinOrganisationSuccess_Message" xml:space="preserve">
-    <value>You have successfully applied to join</value>
+    <value>You'll receive an email about your request.</value>
   </data>
   <data name="OrganisationRegistration_JoinOrganisation_Heading" xml:space="preserve">
-    <value>Join company: {0}</value>
+    <value>Send a request to join {0}?</value>
   </data>
-  <data name="OrganisationRegistration_JoinOrganisation_WouldYouLikeToJoin" xml:space="preserve">
-    <value>Would you like to join: {0}?</value>
-  </data>
-  <data name="OrganisationRegistration_JoinOrganisation_Firstname_Label" xml:space="preserve">
-    <value>First name</value>
-  </data>
-  <data name="OrganisationRegistration_JoinOrganisation_Lastname_Label" xml:space="preserve">
-    <value>Last name</value>
-  </data>
-  <data name="OrganisationRegistration_JoinOrganisation_EmailAddress_Label" xml:space="preserve">
-    <value>Email address</value>
-  </data>
-  <data name="OrganisationRegistration_JoinOrganisation_OrganisationName_Label" xml:space="preserve">
-    <value>Organisation name</value>
+  <data name="OrganisationRegistration_JoinOrganisation_ConfirmValidationErrorMessage" xml:space="preserve">
+    <value>Select that you understand your name and email address will be shared</value>
   </data>
   <data name="OrganisationRegistration_JoinOrganisation_ValidationErrorMessage" xml:space="preserve">
-    <value>Select an option</value>
+    <value>Select yes or no</value>
   </data>
   <data name="OrganisationRegistration_JoinOrganisation_OrganisationDetails_Heading" xml:space="preserve">
     <value>Organisation details</value>
   </data>
-  <data name="OrganisationRegistration_JoinOrganisation_UserDetails_Heading" xml:space="preserve">
-    <value>User details</value>
+  <data name="OrganisationRegistration_JoinOrganisation_AlreadyMemberOfOrganisation" xml:space="preserve">
+    <value>You are already a member of this organisation. &lt;a class="govuk-notification-banner__link" href="/organisation-selection"&gt;Go back to my account&lt;/a&gt;</value>
   </data>
-  <data name="OrganisationRegistration_JoinOrganisation_Notification_Heading" xml:space="preserve">
-    <value>Would you like to join {0}?</value>
+  <data name="OrganisationRegistration_JoinOrganisation_PendingMemberOfOrganisation" xml:space="preserve">
+    <value>You have already requested to join this organisation. Your request is pending approval. &lt;a class="govuk-notification-banner__link" href="/organisation-selection"&gt;Go back to my account&lt;/a&gt;</value>
+  </data>
+  <data name="Global_GoBackToMyAccount" xml:space="preserve">
+    <value>Go back to my account</value>
   </data>
   <data name="OrganisationRegistration_OrganisationAlreadyRegistered_Heading" xml:space="preserve">
     <value>This organisation has already registered</value>
+  </data>
+    <data name="OrganisationRegistration_UserConfirm" xml:space="preserve">
+    <value>I understand my name and email address will be shared with this organisation</value>
   </data>
   <data name="OrganisationRegistration_OrganisationAlreadyRegistered_Message" xml:space="preserve">
     <value>&lt;p class="govuk-body"&gt;The organisation's details are already registered with the service.&lt;/p&gt;
@@ -2474,6 +2486,9 @@
   <data name="Global_SaveAndExit" xml:space="preserve">
     <value>Save and exit</value>
   </data>
+  <data name="Global_Failure_Heading" xml:space="preserve">
+    <value>Failure</value>
+  </data>
   <data name="Supplier_LegalFormCompanyActQuestion_Title" xml:space="preserve">
     <value>Is your organisation registered on Companies House?</value>
   </data>
@@ -2797,6 +2812,111 @@
   </data>
   <data name="Organisation_ConsortiumName" xml:space="preserve">
     <value>Consortium name</value>
+  </data>
+  <data name="Cookies_ChooseCookiePreferences" xml:space="preserve">
+    <value>Choose whether you accept cookies that measure website use</value>
+  </data>
+  <data name="Cookies_SetCookiePreferences" xml:space="preserve">
+    <value>You’ve set your cookie preferences.</value>
+  </data>
+  <data name="PrivacyPolicy_Title" xml:space="preserve">
+    <value>Agree to privacy policy before continuing</value>
+  </data>
+  <data name="PrivacyPolicy_YesIHaveReadAndAgreePrivacyPolicy" xml:space="preserve">
+    <value>Yes, I have read and agree to the Central Digital Platform service privacy policy</value>
+  </data>
+  <data name="PrivacyPolicy_SelectReadAndAgreeToPrivacyPolicy" xml:space="preserve">
+    <value>Select if you have read and agree to the Central Digital Platform service privacy policy</value>
+  </data>
+  <data name="ProvideFeedbackAndContact_WhatsItToDoWith" xml:space="preserve">
+    <value>What's it to do with</value>
+  </data>
+  <data name="ProvideFeedbackAndContact_ChooseAnOption" xml:space="preserve">
+    <value>Choose an option</value>
+  </data>
+  <data name="ProvideFeedbackAndContact_SpecificPage" xml:space="preserve">
+    <value>Specific Page</value>
+  </data>
+  <data name="ProvideFeedbackAndContact_UrlOfPageRequired" xml:space="preserve">
+    <value>URL of specific page is required</value>
+  </data>
+  <data name="ProvideFeedbackAndContact_EnterDetails" xml:space="preserve">
+    <value>Enter details</value>
+  </data>
+  <data name="ProvideFeedbackAndContact_MessageFieldCannotBeEmpty" xml:space="preserve">
+    <value>The message field cannot be empty</value>
+  </data>
+  <data name="ProvideFeedbackAndContact_EnterEmailAddress" xml:space="preserve">
+    <value>Enter an Email address</value>
+  </data>
+  <data name="ProvideFeedbackAndContact_EnterAName" xml:space="preserve">
+    <value>Enter a name</value>
+  </data>
+  <data name="PrivacyPolicy_Notice_BeforeLink" xml:space="preserve">
+    <value>Before you can continue, you need to read and agree to the </value>
+  </data>
+  <data name="PrivacyPolicy_Notice_Link" xml:space="preserve">
+    <value>Central Digital Platform service privacy policy (opens in new tab)</value>
+  </data>
+  <data name="Global_SendMessage" xml:space="preserve">
+    <value>Send message</value>
+  </data>
+  <data name="Global_EmailAddress" xml:space="preserve">
+    <value>Email address</value>
+  </data>
+
+
+
+  <data name="ProvideFeedbackAndContact_ProvideFindATenderFeedback" xml:space="preserve">
+    <value>Provide Find a Tender Feedback</value>
+  </data>
+  <data name="ProvideFeedbackAndContact_ContactFindATender" xml:space="preserve">
+    <value>Contact Find a Tender</value>
+  </data>
+  <data name="ProvideFeedbackAndContact_UseThisFormToAskAQuestion" xml:space="preserve">
+    <value>Use this form to ask a question, report a problem or suggest an improvement to the Find a Tender service team.</value>
+  </data>
+  <data name="ProvideFeedbackAndContact_ThisFormIsToRaiseIssues" xml:space="preserve">
+    <value>This form is to raise issues or support requests related to Find a Tender website.</value>
+  </data>
+  <data name="ProvideFeedbackAndContact_YouCanAskAQuestion" xml:space="preserve">
+    <value>You can ask a question, report a problem or suggest an improvement to the Find a Tender team.</value>
+  </data>
+  <data name="ProvideFeedbackAndContact_WhatsItToDoWith" xml:space="preserve">
+    <value>What's it to do with?</value>
+  </data>
+  <data name="ProvideFeedbackAndContact_TheWholeService" xml:space="preserve">
+    <value>The whole service</value>
+  </data>
+  <data name="ProvideFeedbackAndContact_ASpecificPage" xml:space="preserve">
+    <value>A specific page</value>
+  </data>
+  <data name="ProvideFeedbackAndContact_EnterUrlOrNameOfPage" xml:space="preserve">
+    <value>Enter URL or name of page</value>
+  </data>
+  <data name="ProvideFeedbackAndContact_EnterYourFeedback" xml:space="preserve">
+    <value>Enter your feedback</value>
+  </data>
+  <data name="ProvideFeedbackAndContact_WhatAreTheDetails" xml:space="preserve">
+    <value>What are the details?</value>
+  </data>
+  <data name="ProvideFeedbackAndContact_DoNotIncludePersonalOrFinancialInformation" xml:space="preserve">
+    <value>Do not include personal or financial information like your National Insurance number or credit card details</value>
+  </data>
+  <data name="ProvideFeedbackAndContact_YouCanEnterUpTo10000Characters" xml:space="preserve">
+    <value>You can enter up to 10000 characters</value>
+  </data>
+  <data name="ProvideFeedbackAndContact_GiveUsYourDetailsIfYouWantAReply" xml:space="preserve">
+    <value>Give us your details if you want a reply (optional)</value>
+  </data>
+  <data name="ProvideFeedbackAndContact_Name" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="ProvideFeedbackAndContact_WellOnlyUseThisToReplyToYourMessage" xml:space="preserve">
+    <value>We'll only use this to reply to your message</value>
+  </data>
+  <data name="Consortium_ConsortiumChangeEmail_Heading" xml:space="preserve">
+    <value>Enter an email address for the consortium</value>
   </data>
   <data name="UserSummary_ManageUsers_Title" xml:space="preserve">
     <value>Manage users</value>

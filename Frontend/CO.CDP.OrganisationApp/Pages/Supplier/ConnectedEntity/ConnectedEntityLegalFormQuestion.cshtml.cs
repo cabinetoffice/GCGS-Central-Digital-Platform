@@ -121,8 +121,14 @@ public class ConnectedEntityLegalFormQuestionModel(ISession session) : PageModel
     private void InitModel(ConnectedEntityState state)
     {
         Caption = state.GetCaption();
-        Heading = $"Does {state.OrganisationName} have a legal form?";
-        Hint = "In the UK this is a business structure or trading status. For example, limited company or limited liability partnership.";
+        Heading = string.Format(
+            StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityLegalFormQuestion_Heading,
+            state.OrganisationName
+        );
+        Hint = string.Format(
+            StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityLegalFormQuestion_Hint,
+            state.OrganisationName
+        );
         BackPageLink = GetBackLinkPageName(state);
     }
 

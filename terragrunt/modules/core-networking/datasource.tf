@@ -29,3 +29,7 @@ data "aws_iam_policy_document" "waf_manage_logs" {
     }
   }
 }
+
+data "aws_secretsmanager_secret_version" "waf_allowed_ips" {
+  secret_id = "${local.name_prefix}-waf-allowed-ip-set"
+}

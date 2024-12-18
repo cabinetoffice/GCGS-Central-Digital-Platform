@@ -10,6 +10,7 @@ public record OrganisationJoinRequest
     public Person? ReviewedBy { get; init; }
     public DateTimeOffset? ReviewedOn { get; set; }
     public required OrganisationJoinRequestStatus Status { get; set; }
+    public bool RequestCreated { get; set; }
 }
 
 public record JoinRequestLookUp

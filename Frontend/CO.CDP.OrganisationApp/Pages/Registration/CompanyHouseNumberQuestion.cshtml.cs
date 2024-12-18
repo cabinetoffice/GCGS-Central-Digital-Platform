@@ -37,7 +37,7 @@ public class CompanyHouseNumberQuestionModel(ISession session,
     public string? OrganisationIdentifier;
 
     public string? OrganisationName;
-    
+
     public void OnGet()
     {
         HasCompaniesHouseNumber = RegistrationDetails.OrganisationHasCompaniesHouseNumber;

@@ -5,11 +5,18 @@ locals {
 
   tags = merge(var.tags, { Name = var.product.resource_name })
 
+  waf_allowed_ip_list = length(local.waf_raw_ip_set_json) > 0 ? [
+    for item in local.waf_raw_ip_set_json : item.value if can(item.value)
+  ] : []
+  waf_raw_ip_set_json = try(jsondecode(data.aws_secretsmanager_secret_version.waf_allowed_ips.secret_string), [])
+
   waf_rule_sets_priority = {
-    AWSManagedRulesAmazonIpReputationList : 2
-    AWSManagedRulesAnonymousIpList : 3
-    # AWSManagedRulesBotControlRuleSet : 5
+    AWSManagedRulesAmazonIpReputationList : 3
+    AWSManagedRulesAnonymousIpList : 4
+    AWSManagedRulesKnownBadInputsRuleSet : 2
+    # AWSManagedRulesBotControlRuleSet : 6
     # AWSManagedRulesCommonRuleSet : 1
-    AWSManagedRulesSQLiRuleSet : 4
+    AWSManagedRulesSQLiRuleSet : 5
   }
+
 }
