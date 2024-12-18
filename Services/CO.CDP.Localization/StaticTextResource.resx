@@ -649,7 +649,7 @@
     <value>Are you sure you want to remove {0}?</value>
   </data>
   <data name="User_RemoveConfirmation_Header" xml:space="preserve">
-    <value>Are you sure you want to remove &lt;br/&gt;[{0}]?</value>
+    <value>Are you sure you want to remove [{0}]?</value>
   </data>
   <data name="User_RemoveConfirmation_ConfirmValidation" xml:space="preserve">
     <value>Select yes to confirm remove user</value>
