@@ -231,19 +231,24 @@ data "aws_iam_policy_document" "terraform_product" {
   statement {
     actions = [
       "wafv2:AssociateWebACL",
+      "wafv2:CreateIPSet",
       "wafv2:CreateWebACL",
+      "wafv2:DeleteIPSet",
       "wafv2:DeleteLoggingConfiguration",
+      "wafv2:GetIPSet",
       "wafv2:GetLoggingConfiguration",
       "wafv2:GetWebACL",
       "wafv2:ListTagsForResource",
       "wafv2:PutLoggingConfiguration",
       "wafv2:TagResource",
+      "wafv2:UpdateIPSet",
       "wafv2:UpdateWebACL",
     ]
     effect = "Allow"
     resources = [
       "arn:aws:wafv2:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:regional/webacl/${local.name_prefix}-*",
       "arn:aws:wafv2:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:regional/webacl/${local.name_prefix}-*/*",
+      "arn:aws:wafv2:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:regional/ipset/${local.name_prefix}-*/*",
     ]
     sid = "ManageProductWAF"
   }
