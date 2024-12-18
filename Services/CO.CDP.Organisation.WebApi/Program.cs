@@ -56,7 +56,8 @@ if (Assembly.GetEntryAssembly().IsRunAs("CO.CDP.Organisation.WebApi"))
     builder.Services.AddScoped<IOutboxProcessorListener>(s => new OutboxProcessorListener(
         s.GetRequiredService<NpgsqlDataSource>(),
         s.GetRequiredService<IOutboxProcessor>(),
-        s.GetRequiredService<ILogger<OutboxProcessorListener>>()
+        s.GetRequiredService<ILogger<OutboxProcessorListener>>(),
+        channel: "organisation_information_outbox"
     ));
     builder.Services.AddHostedService<DispatcherBackgroundService>();
     // FIXME: only register OutboxProcessorListenerBackgroundService if the feature flag is enabled
