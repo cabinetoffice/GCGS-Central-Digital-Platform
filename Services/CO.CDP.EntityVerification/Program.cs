@@ -62,19 +62,11 @@ if (Assembly.GetEntryAssembly().IsRunAs("CO.CDP.EntityVerification"))
             }
         );
     // FIXME: only register IOutboxProcessorListener if the feature flag is enabled
-    builder.Services.AddScoped<IOutboxProcessorListener>(s =>
-    {
-        // FIXME: Find a better way to open a connection
-        var connection =
-            new NpgsqlConnection(
-                ConnectionStringHelper.GetConnectionString(builder.Configuration, "EntityVerificationDatabase"));
-        connection.Open();
-        return new OutboxProcessorListener(
-            connection,
-            s.GetRequiredService<IOutboxProcessor>(),
-            s.GetRequiredService<ILogger<OutboxProcessorListener>>()
-        );
-    });
+    builder.Services.AddScoped<IOutboxProcessorListener>(s => new OutboxProcessorListener(
+        s.GetRequiredService<NpgsqlDataSource>(),
+        s.GetRequiredService<IOutboxProcessor>(),
+        s.GetRequiredService<ILogger<OutboxProcessorListener>>()
+    ));
     builder.Services.AddHostedService<DispatcherBackgroundService>();
     // FIXME: only register OutboxProcessorListenerBackgroundService if the feature flag is enabled
     // builder.Services.AddHostedService<OutboxProcessorBackgroundService>();

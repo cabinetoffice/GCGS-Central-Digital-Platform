@@ -9,7 +9,7 @@ public interface IOutboxProcessorListener
 }
 
 public class OutboxProcessorListener(
-    NpgsqlConnection connection,
+    NpgsqlDataSource dataSource,
     IOutboxProcessor processor,
     ILogger<OutboxProcessorListener> logger,
     string channel = "outbox"
@@ -18,8 +18,9 @@ public class OutboxProcessorListener(
     public async Task WaitAsync(int batchSize, CancellationToken cancellationToken)
     {
         logger.LogDebug("Starting the outbox processor listener");
+        await using var connection = await dataSource.OpenConnectionAsync(cancellationToken);
         await ProcessOutbox(batchSize, cancellationToken);
-        await WaitForMessages(batchSize, cancellationToken);
+        await WaitForMessages(batchSize, connection, cancellationToken);
     }
 
     private async Task ProcessOutbox(int batchSize, CancellationToken cancellationToken)
@@ -32,10 +33,10 @@ public class OutboxProcessorListener(
                 logger.LogDebug("Delegating to the outbox processor");
                 processedCount = await processor.ExecuteAsync(batchSize);
             }
-        } while (batchSize <= processedCount);
+        } while (!cancellationToken.IsCancellationRequested && batchSize <= processedCount);
     }
 
-    private async Task WaitForMessages(int batchSize, CancellationToken cancellationToken)
+    private async Task WaitForMessages(int batchSize, NpgsqlConnection connection, CancellationToken cancellationToken)
     {
         connection.Notification += async (_, e) =>
         {
