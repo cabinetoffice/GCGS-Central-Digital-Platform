@@ -2,16 +2,17 @@
 @model CO.CDP.OrganisationApp.Pages.Users.UserSummaryModel
 @using CO.CDP.Organisation.WebApiClient
 @using CO.CDP.OrganisationApp.Constants
+@using CO.CDP.Localization
 
 @{
-    ViewData["Title"] = "Manage users";
+    ViewData["Title"] = StaticTextResource.UserSummary_ManageUsers_Title;
     var hasError = ((TagBuilder)Html.ValidationMessageFor(m => m.HasPerson)).HasInnerHtml;
     var totalPersons = Model.Persons.Count + Model.PersonInvites.Count;
     var pendingJoinRequests = Model.OrganisationJoinRequests.Where(x => x.Status == CDP.Organisation.WebApiClient.OrganisationJoinRequestStatus.Pending).ToList();
 }
 
 @section BeforeContent {
-    <a href="/organisation/@Model.Id" class="govuk-back-link">Back</a>
+    <a href="/organisation/@Model.Id" class="govuk-back-link">@StaticTextResource.Global_Back</a>
 }
 
     <div class="govuk-grid-row">
@@ -25,7 +26,7 @@
             @if (pendingJoinRequests.Any())
             {
                 <h2 class="govuk-heading-l">
-                    Join requests
+                    @StaticTextResource.UserSummary_JoinRequests
                 </h2>
             }
 
@@ -46,10 +47,10 @@
                                     @{
                                         var link = $"?handler=JoinRequest&reqid={pr.Id}&personid={pr.Person.Id}&decision=";
                                     }
-                                    <a class="govuk-link" href="@($"{link}{OrganisationJoinRequestStatus.Accepted}")">Approve</a>
+                                    <a class="govuk-link" href="@($"{link}{OrganisationJoinRequestStatus.Accepted}")">@StaticTextResource.Global_Approve</a>
                                 </li>
                                 <li class="govuk-summary-list__actions-list-item">
-                                    <a class="govuk-link" href="@($"{link}{OrganisationJoinRequestStatus.Rejected}")">Reject</a>
+                                    <a class="govuk-link" href="@($"{link}{OrganisationJoinRequestStatus.Rejected}")">@StaticTextResource.Global_Reject</a>
                                 </li>
                             </ul>
                         </dd>
@@ -58,7 +59,7 @@
             </dl>
 
             <h2 class="govuk-heading-l">
-                Organisation has @(totalPersons == 1 ? "1 user" : $"{totalPersons} users")
+                @string.Format(StaticTextResource.UserSummary_TotalUsers, totalPersons, totalPersons == 1 ? StaticTextResource.UserSummary_User : StaticTextResource.UserSummary_Users)
             </h2>
 
             @foreach (var p in Model.Persons)
@@ -71,17 +72,17 @@
                             {
                                 if (scope == OrganisationPersonScopes.Admin)
                                 {
-                                    <span class="govuk-tag">Admin</span>
+                                    <span class="govuk-tag">@StaticTextResource.Global_Admin</span>
                                 }
 
                                 if (scope == OrganisationPersonScopes.Editor)
                                 {
-                                    <span class="govuk-tag govuk-tag--green">Editor</span>
+                                    <span class="govuk-tag govuk-tag--green">@StaticTextResource.Global_Editor</span>
                                 }
 
                                 if (scope == OrganisationPersonScopes.Viewer)
                                 {
-                                    <span class="govuk-tag govuk-tag--yellow">Viewer</span>
+                                    <span class="govuk-tag govuk-tag--yellow">@StaticTextResource.Global_Viewer</span>
                                 }
                             }
                         </dt>
@@ -93,10 +94,10 @@
                                 @if (p.Id != @Model.SignedInPersonId)
                                 {
                                     <li class="govuk-summary-list__actions-list-item">
-                                        <a class="govuk-link" href="/organisation/@Model.Id/users/@p.Id/change-role?handler=person">Change</a>
+                                        <a class="govuk-link" href="/organisation/@Model.Id/users/@p.Id/change-role?handler=person">@StaticTextResource.Global_Change</a>
                                     </li>
                                     <li class="govuk-summary-list__actions-list-item">
-                                        <a class="govuk-link" href="/organisation/@Model.Id/users/@p.Id/remove">Remove</a>
+                                        <a class="govuk-link" href="/organisation/@Model.Id/users/@p.Id/remove">@StaticTextResource.Global_Remove</a>
                                     </li>
                                 }
                             </ul>
@@ -115,27 +116,27 @@
                             {
                                 if (scope == OrganisationPersonScopes.Admin)
                                 {
-                                    <span class="govuk-tag">Admin</span>
+                                    <span class="govuk-tag">@StaticTextResource.Global_Admin</span>
                                 }
 
                                 if (scope == OrganisationPersonScopes.Editor)
                                 {
-                                    <span class="govuk-tag govuk-tag--green">Editor</span>
+                                    <span class="govuk-tag govuk-tag--green">@StaticTextResource.Global_Editor</span>
                                 }
 
                                 if (scope == OrganisationPersonScopes.Viewer)
                                 {
-                                    <span class="govuk-tag govuk-tag--yellow">Viewer</span>
+                                    <span class="govuk-tag govuk-tag--yellow">@StaticTextResource.Global_Viewer</span>
                                 }
                             }
 
                             @if (DateTimeOffset.UtcNow > p.ExpiresOn)
                             {
-                                <div class="govuk-hint">Invite expired</div>
+                                <div class="govuk-hint">@StaticTextResource.UserSummary_InviteExpired</div>
                             }
                             else
                             {
-                                <div class="govuk-hint">Invite sent</div>
+                                <div class="govuk-hint">@StaticTextResource.UserSummary_InviteSent</div>
                             }
                         </dt>
                         <dd class="govuk-summary-list__value">
@@ -144,13 +145,13 @@
                         <dd class="govuk-summary-list__actions">
                             <ul class="govuk-summary-list__actions-list">
                                 <li class="govuk-summary-list__actions-list-item">
-                                    <a class="govuk-link" href="/organisation/@Model.Id/users/@p.Id/resend-invite">Resend</a>
+                                    <a class="govuk-link" href="/organisation/@Model.Id/users/@p.Id/resend-invite">@StaticTextResource.UserSummary_Resend</a>
                                 </li>
                                 <li class="govuk-summary-list__actions-list-item">
-                                    <a class="govuk-link" href="/organisation/@Model.Id/users/@p.Id/change-role?handler=personInvite">Change</a>
+                                    <a class="govuk-link" href="/organisation/@Model.Id/users/@p.Id/change-role?handler=personInvite">@StaticTextResource.Global_Change</a>
                                 </li>
                                 <li class="govuk-summary-list__actions-list-item">
-                                    <a class="govuk-link" href="/organisation/@Model.Id/users/@p.Id/remove?handler=personInvite">Remove</a>
+                                    <a class="govuk-link" href="/organisation/@Model.Id/users/@p.Id/remove?handler=personInvite">@StaticTextResource.Global_Remove</a>
                                 </li>
                             </ul>
                         </dd>
@@ -163,7 +164,7 @@
                     <fieldset class="govuk-fieldset" @(hasError ? Html.Raw(@"aria-describedby=""has-person-error""") : "")>
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
                             <h2 class="govuk-fieldset__heading">
-                                Add another user?
+                                @StaticTextResource.UserSummary_AddAnotherUser
                             </h2>
                         </legend>
                         @if (hasError)
@@ -176,18 +177,18 @@
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input" id="@nameof(Model.HasPerson)" name="HasPerson" type="radio"
                                        value="true" @(Model.HasPerson == true ? "checked" : "")>
-                                <label class="govuk-label govuk-radios__label" for="@nameof(Model.HasPerson)">Yes</label>
+                                <label class="govuk-label govuk-radios__label" for="@nameof(Model.HasPerson)">@StaticTextResource.Global_Yes</label>
                             </div>
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input" id="@nameof(Model.HasPerson)-1" name="HasPerson" type="radio"
                                        value="false" @(Model.HasPerson == false ? "checked" : "")>
-                                <label class="govuk-label govuk-radios__label" for="@nameof(Model.HasPerson)-1">No</label>
+                                <label class="govuk-label govuk-radios__label" for="@nameof(Model.HasPerson)-1">@StaticTextResource.Global_No</label>
                             </div>
                         </div>
                     </fieldset>
                 </div>
                 <govuk-button>
-                    Continue
+                    @StaticTextResource.Global_Continue
                 </govuk-button>
             </form>
         </div>

@@ -1,17 +1,18 @@
 @page "/organisation/{id}/users/check-answers"
 @using CO.CDP.OrganisationApp.Constants
+@using CO.CDP.Localization
 
 @model CO.CDP.OrganisationApp.Pages.Users.UserCheckAnswersModel
 
 @{
-    ViewData["Title"] = "Check your answers";
+    ViewData["Title"] = StaticTextResource.Users_CheckYourAnswers_Title;
     var scopes = Model.PersonInviteStateData?.Scopes ?? new List<string>();
     var filteredScopes = scopes.Where(scope => !string.Equals(scope, OrganisationPersonScopes.Responder));
     var scopesCsvString = string.Join(", ", filteredScopes);
 }
 
 @section BeforeContent {
-    <a href="/organisation/@Model.Id/users/add-user" class="govuk-back-link">Back</a>
+    <a href="/organisation/@Model.Id/users/add-user" class="govuk-back-link">@StaticTextResource.Global_Back</a>
 }
 
     <div class="govuk-grid-row">
@@ -24,21 +25,21 @@
 
                     <div class="govuk-summary-list__row">
                         <dt class="govuk-summary-list__key">
-                            First name
+                            @StaticTextResource.Users_FirstName_Label
                         </dt>
                         <dd class="govuk-summary-list__value">
                             @Model.PersonInviteStateData?.FirstName
                         </dd>
                         <dd class="govuk-summary-list__actions">
                             <a class="govuk-link" href="/organisation/@Model.Id/users/add-user?frm-chk-answer">
-                                Change
+                                @StaticTextResource.Global_Change
                             </a>
                         </dd>
                     </div>
 
                     <div class="govuk-summary-list__row">
                         <dt class="govuk-summary-list__key">
-                            Last name
+                            @StaticTextResource.Users_LastName_Label
                         </dt>
                         <dd class="govuk-summary-list__value">
                             @Model.PersonInviteStateData?.LastName
@@ -48,7 +49,7 @@
 
                     <div class="govuk-summary-list__row">
                         <dt class="govuk-summary-list__key">
-                            Email address
+                            @StaticTextResource.Users_EmailAddress_Label
                         </dt>
                         <dd class="govuk-summary-list__value">
                             @Model.PersonInviteStateData?.Email
@@ -58,7 +59,7 @@
 
                     <div class="govuk-summary-list__row">
                         <dt class="govuk-summary-list__key">
-                            User role
+                            @StaticTextResource.Users_UserRole_Label
                         </dt>
                         <dd class="govuk-summary-list__value">
                             @scopesCsvString
@@ -67,7 +68,7 @@
                     </div>
                 </dl>
 
-                <govuk-button class="govuk-!-margin-top-9">Send email</govuk-button>
+                <govuk-button class="govuk-!-margin-top-9">@StaticTextResource.Users_SendEmail_Button</govuk-button>
             </form>
         </div>
     </div>
