@@ -22,7 +22,7 @@ def merge_resx_to_csv(english_resx, welsh_resx, output_csv):
     all_keys = sorted(set(english_translations.keys()).union(welsh_translations.keys()))
 
     os.makedirs(os.path.dirname(output_csv), exist_ok=True)
-    with open(output_csv, mode="w", encoding="utf-8", newline="") as csv_file:
+    with open(output_csv, mode="w", encoding="utf-8-sig", newline="") as csv_file:
         writer = csv.writer(csv_file)
         writer.writerow(["Key", "English", "Welsh"])
 
