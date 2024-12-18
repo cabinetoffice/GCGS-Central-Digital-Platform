@@ -17,6 +17,7 @@
 - [Update GOVUKNotify ApiKey](#update-govuknotify-apikey)
 - [Update GOVUKNotify Support Admin Email](#update-govuknotify-support-admin-email)
 - [Update OneLogin Secrets](#update-onelogin-secrets)
+- [Update OneLogin Forward Logout Notification API Key](#update-onelogin-forward-logout-notification-api-key)
 - [Update Pen Testing Configuration](#update-pen-testing-configuration)
 - [Update Production Database Users](#update-production-database-users)
 - [Update Slack Configuration](#update-slack-configuration)
@@ -170,6 +171,31 @@ ave aws secretsmanager put-secret-value --secret-id cdp-sirsi-govuknotify-suppor
 # ave aws secretsmanager create-secret --name cdp-sirsi-one-login-credentials --secret-string file://secrets/onelogin-secrets-development.json | jq .
 # Or update using:
 ave aws secretsmanager put-secret-value --secret-id cdp-sirsi-one-login-credentials --secret-string file://secrets/onelogin-secrets-development.json | jq .
+```
+
+3. Redeploy the `organisation-app` service.
+
+---
+
+## Update OneLogin Forward Logout Notification API Key
+
+1. Use `uuidgen` or a similar tool to generate a new API key and store it in the target environment's Secrets Manager.
+
+```shell
+# Assume the appropriate role for the target environment and...
+# Add a new API key:
+# ave aws secretsmanager create-secret --name cdp-sirsi-one-login-forward-logout-notification-api-key --secret-string $(uuidgen) | jq .
+
+# Or update an existing API key:
+ave aws secretsmanager put-secret-value --secret-id cdp-sirsi-one-login-forward-logout-notification-api-key --secret-string $(uuidgen) | jq .
+
+```
+
+2. Retrieve the stored API key from Secrets Manager and share it securely with the relevant teams using a secure medium (e.g., encrypted email, password manager).
+
+```shell
+ave aws secretsmanager get-secret-value --secret-id cdp-sirsi-one-login-forward-logout-notification-api-key | jq .SecretString
+
 ```
 
 3. Redeploy the `organisation-app` service.
