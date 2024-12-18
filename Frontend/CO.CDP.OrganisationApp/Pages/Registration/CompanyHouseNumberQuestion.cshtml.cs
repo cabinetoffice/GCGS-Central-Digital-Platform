@@ -67,7 +67,7 @@ public class CompanyHouseNumberQuestionModel(ISession session,
                 {
                     flashMessageService.SetFlashMessage(
                         FlashMessageType.Important,
-                        heading: string.Format(StaticTextResource.OrganisationRegistration_CompanyHouseNumberQuestion_CompanyAlreadyRegistered_NotificationBanner, OrganisationIdentifier, OrganisationName),
+                        heading: StaticTextResource.OrganisationRegistration_CompanyHouseNumberQuestion_CompanyAlreadyRegistered_NotificationBanner,
                         urlParameters: new() { ["organisationIdentifier"] = OrganisationIdentifier },
                         htmlParameters: new() { ["organisationName"] = organisation.Name }
                     );
