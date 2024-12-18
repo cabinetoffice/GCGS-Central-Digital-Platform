@@ -1,5 +1,6 @@
 using CO.CDP.MQ.Outbox;
 using CO.CDP.Testcontainers.PostgreSql;
+using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -22,8 +23,8 @@ public class OutboxProcessorListenerTest(PostgreSqlFixture postgreSql) : IClassF
     {
         GivenOutboxProcessorPublishesMessagesWithNoInterruptions();
 
-        var connection = await MakeDbConnection();
-        var listener = new OutboxProcessorListener(connection, _processor.Object, _logger);
+        var dataSource = GetDataSource();
+        var listener = new OutboxProcessorListener(dataSource, _processor.Object, _logger);
 
         _ = listener.WaitAsync(10, _tokenSource.Token);
 
@@ -33,11 +34,13 @@ public class OutboxProcessorListenerTest(PostgreSqlFixture postgreSql) : IClassF
         ]);
 
         await WaitForMessagesToBeProcessed(100);
+        await _tokenSource.CancelAsync();
 
         // We pull up to 10 messages at a time and expect 3 calls:
         // * 1 before we start listening to notifications
         // * 2 notifications
         _processor.Verify(p => p.ExecuteAsync(10), Times.Between(2, 3, Range.Inclusive));
+        _messagesToBeProcessedCount.Should().Be(0);
     }
 
     [Fact]
@@ -45,8 +48,8 @@ public class OutboxProcessorListenerTest(PostgreSqlFixture postgreSql) : IClassF
     {
         GivenOutboxProcessorPublishesMessagesWithNoInterruptions();
 
-        var connection = await MakeDbConnection();
-        var listener = new OutboxProcessorListener(connection, _processor.Object, _logger);
+        var dataSource = GetDataSource();
+        var listener = new OutboxProcessorListener(dataSource, _processor.Object, _logger);
 
         await GivenOutboxMessagesAreCreated([
             OutboxMessage(message: "Hello!", published: false),
@@ -55,17 +58,22 @@ public class OutboxProcessorListenerTest(PostgreSqlFixture postgreSql) : IClassF
 
         _ = listener.WaitAsync(1, _tokenSource.Token);
 
+        // give the listener time to start, otherwise all messages might be processed by the pre-listener processing
+        await WaitForMessagesToBeProcessed(100);
+
         await GivenOutboxMessagesAreCreated([
             OutboxMessage(message: "Bye!", published: false),
             OutboxMessage(message: "Bye, again!", published: false),
         ]);
 
         await WaitForMessagesToBeProcessed(100);
+        await _tokenSource.CancelAsync();
 
         // We pull up to 1 message at a time and expect 7 calls:
         // * 3 before we start listening to notifications (3rd pulls 0)
         // * 4 notifications (twice for each message, every other one pulls 0)
         _processor.Verify(p => p.ExecuteAsync(1), Times.Between(6, 7, Range.Inclusive));
+        _messagesToBeProcessedCount.Should().Be(0);
     }
 
     private void GivenOutboxProcessorPublishesMessagesWithNoInterruptions()
@@ -90,8 +98,6 @@ public class OutboxProcessorListenerTest(PostgreSqlFixture postgreSql) : IClassF
             timeout -= delay;
             await Task.Delay(delay);
         }
-
-        await _tokenSource.CancelAsync();
     }
 
     private static OutboxMessage OutboxMessage(
@@ -118,11 +124,9 @@ public class OutboxProcessorListenerTest(PostgreSqlFixture postgreSql) : IClassF
         }
     }
 
-    private async Task<NpgsqlConnection> MakeDbConnection()
+    private NpgsqlDataSource GetDataSource()
     {
-        NpgsqlConnection connection = new NpgsqlConnection(_dbContext.Database.GetConnectionString());
-        await connection.OpenAsync();
-        return connection;
+        return new NpgsqlDataSourceBuilder(_dbContext.Database.GetConnectionString()).Build();
     }
 
     private DatabaseOutboxMessageRepository<TestDbContext> CreateDatabaseOutboxMessageRepository(
