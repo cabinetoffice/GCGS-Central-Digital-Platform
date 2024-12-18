@@ -4,6 +4,7 @@ using CO.CDP.Person.WebApiClient;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using CO.CDP.Localization;
 
 namespace CO.CDP.OrganisationApp.Pages;
 
@@ -12,13 +13,13 @@ public class YourDetailsModel(
     IPersonClient personClient) : LoggedInUserAwareModel(session)
 {
     [BindProperty]
-    [DisplayName("First name")]
-    [Required(ErrorMessage = "Enter your first name")]
+    [DisplayName(nameof(StaticTextResource.Users_FirstName_Label))]
+    [Required(ErrorMessageResourceName = nameof(StaticTextResource.Users_FirstName_Validation), ErrorMessageResourceType = typeof(StaticTextResource))]
     public string? FirstName { get; set; }
 
     [BindProperty]
-    [DisplayName("Last name")]
-    [Required(ErrorMessage = "Enter your last name")]
+    [DisplayName(nameof(StaticTextResource.Users_LastName_Validation))]
+    [Required(ErrorMessageResourceName = nameof(StaticTextResource.Users_LastName_Validation), ErrorMessageResourceType = typeof(StaticTextResource))]
     public string? LastName { get; set; }
 
     public string? Error { get; set; }
