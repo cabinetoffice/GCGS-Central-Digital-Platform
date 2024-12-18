@@ -2,6 +2,7 @@ using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
+using CO.CDP.Localization;
 
 namespace CO.CDP.OrganisationApp.Pages.Registration;
 
@@ -12,7 +13,7 @@ public class OrganisationTypeModel(
     public override string CurrentPage => OrganisationTypePage;
 
     [BindProperty]
-    [Required(ErrorMessage = "Select 'buyer' or 'supplier'")]
+    [Required(ErrorMessageResourceName = nameof(StaticTextResource.OrganisationRegistration_OrganisationType_BuyerOrSupplierValidation), ErrorMessageResourceType = typeof(StaticTextResource))]
     public OrganisationType? OrganisationType { get; set; }
 
     [BindProperty]
