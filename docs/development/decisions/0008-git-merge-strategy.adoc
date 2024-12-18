@@ -1,10 +1,10 @@
 = 8. Git merge strategy
 
-Date: 2024-12-11
+Date: 2024-12-17
 
 == Status
 
-Draft
+Accepted
 
 == Context
 
@@ -61,6 +61,12 @@ Rebase strategy
  * With our current set up, our CI will be able to verify the build and tests on rebased
 branches as if they were already merged, before merge.
  * Linear, cleaner history of commits.
+
+== Decision
+
+Rebase strategy
+
+We will try it on new pull requests going forward, for the next month, then revise it.
 
 == Consequences
 
