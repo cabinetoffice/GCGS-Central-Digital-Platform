@@ -1,6 +1,7 @@
 using CO.CDP.OrganisationApp.Authentication;
 using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
+using CO.CDP.OrganisationApp.WebApiClients;
 using CO.CDP.Person.WebApiClient;
 using IdentityModel;
 using Microsoft.AspNetCore.Authentication;
@@ -20,6 +21,7 @@ public class OneLoginModel(
     ISession session,
     ILogoutManager logoutManager,
     IOneLoginAuthority oneLoginAuthority,
+    IAuthorityClient authorityClient,
     ILogger<OneLoginModel> logger) : PageModel
 {
     [BindProperty(SupportsGet = true)]
@@ -31,7 +33,7 @@ public class OneLoginModel(
         {
             "sign-in" => SignIn(redirectUri),
             "user-info" => await UserInfo(redirectUri),
-            "sign-out" => SignOut(),
+            "sign-out" => await SignOut(),
             _ => Redirect("/"),
         };
     }
@@ -131,12 +133,17 @@ public class OneLoginModel(
         }
     }
 
-    private IActionResult SignOut()
+    private async Task<IActionResult> SignOut()
     {
+        var ud = session.Get<UserDetails>(Session.UserDetailsKey);
+        if (!string.IsNullOrWhiteSpace(ud?.UserUrn))
+            await authorityClient.RevokeRefreshToken(ud.UserUrn);
+
         session.Clear();
+
         if (httpContextAccessor.HttpContext?.User?.Identity?.IsAuthenticated != true)
         {
-            return RedirectToPage("/");
+            return Redirect("/");
         }
 
         return SignOut(new AuthenticationProperties { RedirectUri = "/" },
