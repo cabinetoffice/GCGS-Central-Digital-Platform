@@ -1,3 +1,4 @@
+using System.Reflection;
 using CO.CDP.Authentication;
 using CO.CDP.AwsServices;
 using CO.CDP.Configuration.Assembly;
@@ -5,7 +6,6 @@ using CO.CDP.Configuration.ForwardedHeaders;
 using CO.CDP.Configuration.Helpers;
 using CO.CDP.GovUKNotify;
 using CO.CDP.MQ;
-using CO.CDP.MQ.Hosting;
 using CO.CDP.Organisation.WebApi;
 using CO.CDP.Organisation.WebApi.Api;
 using CO.CDP.Organisation.WebApi.AutoMapper;
@@ -16,10 +16,7 @@ using CO.CDP.OrganisationInformation;
 using CO.CDP.OrganisationInformation.Persistence;
 using CO.CDP.WebApi.Foundation;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Npgsql;
-using System.Reflection;
-using CO.CDP.MQ.Outbox;
 using ConnectedEntity = CO.CDP.Organisation.WebApi.Model.ConnectedEntity;
 using ConnectedEntityLookup = CO.CDP.Organisation.WebApi.Model.ConnectedEntityLookup;
 using Organisation = CO.CDP.Organisation.WebApi.Model.Organisation;
@@ -34,36 +31,6 @@ builder.ConfigureForwardedHeaders();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options => { options.DocumentOrganisationApi(builder.Configuration); });
 builder.Services.AddAutoMapper(typeof(WebApiToPersistenceProfile));
-
-builder.Services
-    .AddAwsConfiguration(builder.Configuration)
-    .AddAwsSqsService()
-    .AddOutboxSqsPublisher<OrganisationInformationContext>()
-    .AddSqsDispatcher(
-        EventDeserializer.Deserializer,
-        (services) =>
-        {
-            services.AddScoped<ISubscriber<PponGenerated>, PponGeneratedSubscriber>();
-        },
-        (services, dispatcher) =>
-        {
-            dispatcher.Subscribe<PponGenerated>(services);
-        }
-    );
-if (Assembly.GetEntryAssembly().IsRunAs("CO.CDP.Organisation.WebApi"))
-{
-    // FIXME: only register IOutboxProcessorListener if the feature flag is enabled
-    builder.Services.AddScoped<IOutboxProcessorListener>(s => new OutboxProcessorListener(
-        s.GetRequiredService<NpgsqlDataSource>(),
-        s.GetRequiredService<IOutboxProcessor>(),
-        s.GetRequiredService<ILogger<OutboxProcessorListener>>(),
-        channel: "organisation_information_outbox"
-    ));
-    builder.Services.AddHostedService<DispatcherBackgroundService>();
-    // FIXME: only register OutboxProcessorListenerBackgroundService if the feature flag is enabled
-    // builder.Services.AddHostedService<OutboxProcessorBackgroundService>();
-    builder.Services.AddHostedService<OutboxProcessorListenerBackgroundService>();
-}
 
 var connectionString = ConnectionStringHelper.GetConnectionString(builder.Configuration, "OrganisationInformationDatabase");
 builder.Services.AddSingleton(new NpgsqlDataSourceBuilder(connectionString).Build());
@@ -116,6 +83,20 @@ builder.Services.AddProblemDetails();
 
 builder.Services.AddJwtBearerAndApiKeyAuthentication(builder.Configuration, builder.Environment);
 builder.Services.AddOrganisationAuthorization();
+
+builder.Services
+    .AddAwsConfiguration(builder.Configuration)
+    .AddAwsSqsService()
+    .AddOutboxSqsPublisher<OrganisationInformationContext>(
+        builder.Configuration,
+        enableBackgroundServices: Assembly.GetEntryAssembly().IsRunAs("CO.CDP.Organisation.WebApi"),
+        notificationChannel: "organisation_information_outbox")
+    .AddSqsDispatcher(
+        EventDeserializer.Deserializer,
+        enableBackgroundServices: Assembly.GetEntryAssembly().IsRunAs("CO.CDP.Organisation.WebApi"),
+        (services) => { services.AddScoped<ISubscriber<PponGenerated>, PponGeneratedSubscriber>(); },
+        (services, dispatcher) => { dispatcher.Subscribe<PponGenerated>(services); }
+    );
 
 if (Assembly.GetEntryAssembly().IsRunAs("CO.CDP.Organisation.WebApi"))
 {
