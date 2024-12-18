@@ -12,8 +12,6 @@ using CO.CDP.EntityVerification.Persistence;
 using CO.CDP.EntityVerification.Ppon;
 using CO.CDP.EntityVerification.UseCase;
 using CO.CDP.MQ;
-using CO.CDP.MQ.Hosting;
-using CO.CDP.MQ.Outbox;
 using CO.CDP.WebApi.Foundation;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
@@ -46,10 +44,17 @@ if (Assembly.GetEntryAssembly().IsRunAs("CO.CDP.EntityVerification"))
 
     builder.Services
         .AddAwsConfiguration(builder.Configuration)
+        .AddLoggingConfiguration(builder.Configuration)
+        .AddAmazonCloudWatchLogsService()
+        .AddCloudWatchSerilog(builder.Configuration)
         .AddAwsSqsService()
-        .AddOutboxSqsPublisher<EntityVerificationContext>()
+        .AddOutboxSqsPublisher<EntityVerificationContext>(
+            builder.Configuration,
+            enableBackgroundServices: Assembly.GetEntryAssembly().IsRunAs("CO.CDP.EntityVerification"),
+            notificationChannel: "entity_verification_outbox")
         .AddSqsDispatcher(
             EventDeserializer.Deserializer,
+            enableBackgroundServices: Assembly.GetEntryAssembly().IsRunAs("CO.CDP.EntityVerification"),
             services =>
             {
                 services.AddScoped<ISubscriber<OrganisationRegistered>, OrganisationRegisteredSubscriber>();
@@ -61,23 +66,6 @@ if (Assembly.GetEntryAssembly().IsRunAs("CO.CDP.EntityVerification"))
                 dispatcher.Subscribe<OrganisationUpdated>(services);
             }
         );
-    // FIXME: only register IOutboxProcessorListener if the feature flag is enabled
-    builder.Services.AddScoped<IOutboxProcessorListener>(s => new OutboxProcessorListener(
-        s.GetRequiredService<NpgsqlDataSource>(),
-        s.GetRequiredService<IOutboxProcessor>(),
-        s.GetRequiredService<ILogger<OutboxProcessorListener>>(),
-        channel: "entity_verification_outbox"
-    ));
-    builder.Services.AddHostedService<DispatcherBackgroundService>();
-    // FIXME: only register OutboxProcessorListenerBackgroundService if the feature flag is enabled
-    // builder.Services.AddHostedService<OutboxProcessorBackgroundService>();
-    builder.Services.AddHostedService<OutboxProcessorListenerBackgroundService>();
-
-    builder.Services
-        .AddAwsConfiguration(builder.Configuration)
-        .AddLoggingConfiguration(builder.Configuration)
-        .AddAmazonCloudWatchLogsService()
-        .AddCloudWatchSerilog(builder.Configuration);
 }
 
 builder.Services
