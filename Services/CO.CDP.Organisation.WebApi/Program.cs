@@ -56,8 +56,9 @@ if (Assembly.GetEntryAssembly().IsRunAs("CO.CDP.Organisation.WebApi"))
 }
 
 var connectionString = ConnectionStringHelper.GetConnectionString(builder.Configuration, "OrganisationInformationDatabase");
-builder.Services.AddHealthChecks().AddNpgSql(connectionString);
-builder.Services.AddDbContext<OrganisationInformationContext>(o => o.UseNpgsql(connectionString));
+builder.Services.AddSingleton(new NpgsqlDataSourceBuilder(connectionString).Build());
+builder.Services.AddHealthChecks().AddNpgSql(sp => sp.GetRequiredService<NpgsqlDataSource>());
+builder.Services.AddDbContext<OrganisationInformationContext>((sp, o) => o.UseNpgsql(sp.GetRequiredService<NpgsqlDataSource>()));
 
 builder.Services.AddScoped<IIdentifierService, IdentifierService>();
 builder.Services.AddScoped<IOrganisationRepository, DatabaseOrganisationRepository>();
