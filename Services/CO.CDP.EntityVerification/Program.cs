@@ -29,8 +29,9 @@ builder.Services.AddSwaggerGen(o => o.DocumentPponApi(builder.Configuration));
 
 builder.Services.AddHealthChecks();
 builder.Services.AddProblemDetails();
-builder.Services.AddDbContext<EntityVerificationContext>(o =>
-    o.UseNpgsql(ConnectionStringHelper.GetConnectionString(builder.Configuration, "EntityVerificationDatabase")));
+
+builder.Services.AddSingleton(_ => new NpgsqlDataSourceBuilder(ConnectionStringHelper.GetConnectionString(builder.Configuration, "EntityVerificationDatabase")).Build());
+builder.Services.AddDbContext<EntityVerificationContext>((sp, o) => o.UseNpgsql(sp.GetRequiredService<NpgsqlDataSource>()));
 builder.Services.AddScoped<IPponRepository, DatabasePponRepository>();
 
 if (builder.Configuration.GetValue("Features:UuidPponService", true))
@@ -48,8 +49,7 @@ builder.Services.AddScoped<IUseCase<string[], IEnumerable<IdentifierRegistries>>
 
 if (Assembly.GetEntryAssembly().IsRunAs("CO.CDP.EntityVerification"))
 {
-    builder.Services.AddHealthChecks()
-        .AddNpgSql(ConnectionStringHelper.GetConnectionString(builder.Configuration, "EntityVerificationDatabase"));
+    builder.Services.AddHealthChecks().AddNpgSql(sp => sp.GetRequiredService<NpgsqlDataSource>());
 
     builder.Services
         .AddAwsConfiguration(builder.Configuration)
