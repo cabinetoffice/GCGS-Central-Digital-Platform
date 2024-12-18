@@ -18,7 +18,7 @@ public class ConnectedEntityLawEnforceModel(ISession session) : PageModel
     public Guid? ConnectedEntityId { get; set; }
 
     [BindProperty]
-    [DisplayName("Which law enforces it?")]
+    [DisplayName(nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityLawRegister_LawEnforcesLabel))]
     [Required(ErrorMessageResourceName = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityLawEnforce_LawRegisteredRequiredError), ErrorMessageResourceType = typeof(StaticTextResource))]
     public string? LawRegistered { get; set; }
 

@@ -15,6 +15,27 @@ resource "aws_wafv2_web_acl" "this" {
     content_type = "TEXT_PLAIN"
   }
 
+  rule {
+    name     = "${local.name_prefix}-allow-known-ips"
+    priority = 0
+
+    action {
+      allow {}
+    }
+
+    statement {
+      ip_set_reference_statement {
+        arn = aws_wafv2_ip_set.this.arn
+      }
+    }
+
+    visibility_config {
+      cloudwatch_metrics_enabled = true
+      metric_name                = "${local.name_prefix}-allow-known-ips"
+      sampled_requests_enabled   = true
+    }
+  }
+
   dynamic "rule" {
     for_each = local.waf_rule_sets_priority
     content {
@@ -51,6 +72,19 @@ resource "aws_wafv2_web_acl" "this" {
     var.tags
   )
 
+}
+
+resource "aws_wafv2_ip_set" "this" {
+  name               = "${local.name_prefix}-known-ips"
+  description        = "IP Set to explicitly allow known trusted IPs, even if flagged as anonymous by AWS Managed Rules."
+  scope              = "REGIONAL"
+  ip_address_version = "IPV4"
+  addresses          = local.waf_allowed_ip_list
+
+  tags = merge(
+    { Name = "${local.name_prefix}-known-ips" },
+    var.tags
+  )
 }
 
 resource "aws_wafv2_web_acl_logging_configuration" "this" {

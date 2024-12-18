@@ -17,10 +17,12 @@
 - [Update GOVUKNotify ApiKey](#update-govuknotify-apikey)
 - [Update GOVUKNotify Support Admin Email](#update-govuknotify-support-admin-email)
 - [Update OneLogin Secrets](#update-onelogin-secrets)
+- [Update OneLogin Forward Logout Notification API Key](#update-onelogin-forward-logout-notification-api-key)
 - [Update Pen Testing Configuration](#update-pen-testing-configuration)
 - [Update Production Database Users](#update-production-database-users)
 - [Update Slack Configuration](#update-slack-configuration)
 - [Update Terraform Operators](#update-terraform-operators)
+- [Update WAF Allowed IP Set](#update-waf-allowed-ip-set)
 
 ---
 
@@ -175,6 +177,31 @@ ave aws secretsmanager put-secret-value --secret-id cdp-sirsi-one-login-credenti
 
 ---
 
+## Update OneLogin Forward Logout Notification API Key
+
+1. Use `uuidgen` or a similar tool to generate a new API key and store it in the target environment's Secrets Manager.
+
+```shell
+# Assume the appropriate role for the target environment and...
+# Add a new API key:
+# ave aws secretsmanager create-secret --name cdp-sirsi-one-login-forward-logout-notification-api-key --secret-string $(uuidgen) | jq .
+
+# Or update an existing API key:
+ave aws secretsmanager put-secret-value --secret-id cdp-sirsi-one-login-forward-logout-notification-api-key --secret-string $(uuidgen) | jq .
+
+```
+
+2. Retrieve the stored API key from Secrets Manager and share it securely with the relevant teams using a secure medium (e.g., encrypted email, password manager).
+
+```shell
+ave aws secretsmanager get-secret-value --secret-id cdp-sirsi-one-login-forward-logout-notification-api-key | jq .SecretString
+
+```
+
+3. Redeploy the `organisation-app` service.
+
+---
+
 ## Update Pen Testing Configuration
 
 1. Create a JSON file in the `./secrets` folder with the list of operators' IAM user ARNs who will be granted permission to assume the Terraform role in the account, e.g., **pen-testing-configuration.json**:
@@ -283,3 +310,31 @@ ave aws secretsmanager put-secret-value --secret-id cdp-sirsi-terraform-operator
 ```
 
 3. Plan and apply Terraform to the `core/iam` component.
+
+---
+
+## Update WAF Allowed IP Set
+
+1. Create a JSON file in the `./secrets` folder containing the list of IP addresses/ranges with comments to identify the owners. Name the file based on the target environment, for example:, e.g., **waf-allowed-ip-set-development.json**:
+
+```json
+[
+  { "value": "123.123.123.123/32", "comment": "User X in Y team" },
+  { "value": "54.54.54.0/16", "comment": "Team Y, X component's IP Range" }
+]
+
+
+```
+
+*Note: The `./secrets` folder is set to ignore all files to ensure no sensitive information is committed.*
+
+2. Assume the appropriate role for the target environment and update the secret:
+
+```shell
+# Add using:
+# ave aws secretsmanager create-secret --name cdp-sirsi-waf-allowed-ip-set --secret-string file://secrets/waf-allowed-ip-set-development.json | jq .
+# Or update using:
+ave aws secretsmanager put-secret-value --secret-id cdp-sirsi-waf-allowed-ip-set --secret-string file://secrets/waf-allowed-ip-set-development.json | jq .
+```
+
+3. Plan and apply Terraform to the `core/networking` component.

@@ -1,0 +1,26 @@
+@page "/consortium/{id}/change-address/{UkOrNonUk}"
+@model ConsortiumChangeAddressModel
+@using CO.CDP.Localization
+
+@{
+    ViewData["Title"] = StaticTextResource.Consortium_ConsortiumAddress_Heading;
+    var backLink = $"/consortium/{@Model.Id}/overview";
+
+    if (Model.Address.IsNonUkAddress)
+    {
+        backLink = $"/consortium/{@Model.Id}/change-address/uk";
+    }
+}
+
+@section BeforeContent {
+    <a href="@backLink" class="govuk-back-link">@StaticTextResource.Global_Back</a>
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <partial name="_ErrorSummary" model="@ModelState" />
+        <form method="post">
+            <partial name="_Address" model="@Model.Address" />
+        </form>
+    </div>
+</div>
