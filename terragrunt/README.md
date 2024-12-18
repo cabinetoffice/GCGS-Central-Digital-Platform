@@ -27,6 +27,7 @@ This code base is responsible for provisioning the AWS infrastructure needed to 
    - [Update GOVUKNotify ApiKey](./docs/manage-secrets.md#update-govuknotify-apikey)
    - [Update GOVUKNotify Support Admin Email](./docs/manage-secrets.md#update-govuknotify-support-admin-email)
    - [Update OneLogin Secrets](./docs/manage-secrets.md#update-onelogin-secrets)
+   - [Update OneLogin Forward Logout Notification API Key](./docs/manage-secrets.md#update-onelogin-forward-logout-notification-api-key)
    - [Update Pen Testing Configuration](./docs/manage-secrets.md#update-pen-testing-configuration)
    - [Update Production Database Users](./docs/manage-secrets.md#update-production-database-users)
    - [Update Slack Configuration](./docs/manage-secrets.md#update-slack-configuration)
