@@ -16,7 +16,7 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                  name: "trigger_notify_of_outbox_message",
                  function: "notify_of_outbox_message",
                  table: "outbox_messages",
-                 channel: "outbox"
+                 channel: "organisation_information_outbox"
             ));
         }
 

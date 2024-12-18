@@ -16,7 +16,7 @@ namespace CO.CDP.EntityVerification.Migrations
                 name: "trigger_notify_of_outbox_message",
                 function: "notify_of_outbox_message",
                 table: "outbox_messages",
-                channel: "outbox",
+                channel: "entity_verification_outbox",
                 schema: "entity_verification"
             ));
         }
