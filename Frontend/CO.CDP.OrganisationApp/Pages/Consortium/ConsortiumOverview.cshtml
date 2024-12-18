@@ -36,7 +36,9 @@
                     <p class="govuk-body">@organisationDetails.Name</p>
                 </dd>
                 <dd class="govuk-summary-list__actions">
-                    <a class="govuk-link govuk-link--no-visited-state" href="/consortium/@organisationDetails.Id/change-name">@Html.Raw(@StaticTextResource.Consortium_ConsortiumOverview_ChangeName)</a>
+                    <a class="govuk-link govuk-link--no-visited-state" href="/consortium/@organisationDetails.Id/change-name">
+                        @Html.Raw(@StaticTextResource.Consortium_ConsortiumOverview_ChangeName)
+                    </a>
                 </dd>
             </div>
 
@@ -47,13 +49,15 @@
                     <p class="govuk-body">@postalAddress.Locality</p>
                     @if (!string.IsNullOrWhiteSpace(postalAddress.Region))
                     {
-                                <p class="govuk-body">@postalAddress.Region</p>
+                        <p class="govuk-body">@postalAddress.Region</p>
                     }
                     <p class="govuk-body">@postalAddress.PostalCode</p>
                     <p class="govuk-body">@postalAddress.CountryName</p>
                 </dd>
                 <dd class="govuk-summary-list__actions">
-                    <a class="govuk-link govuk-link--no-visited-state" href="#">@Html.Raw(@StaticTextResource.Consortium_ConsortiumOverview_ChangeAddress)</a>
+                    <a class="govuk-link govuk-link--no-visited-state" href="/consortium/@Model.Id/change-address/@(postalAddress.Country == Country.UKCountryCode ? "uk" : "non-uk")">
+                        @Html.Raw(@StaticTextResource.Consortium_ConsortiumOverview_ChangeAddress)
+                    </a>
                 </dd>
             </div>
 
