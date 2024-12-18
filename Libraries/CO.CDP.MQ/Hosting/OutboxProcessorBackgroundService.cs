@@ -25,6 +25,10 @@ public class OutboxProcessorBackgroundService(
 
         await ExecuteOutboxProcessorAsync();
 
+        using var scope = services.CreateScope();
+        var postgresEventListener = scope.ServiceProvider.GetRequiredService<IEventListenerBackgroundService>();
+        _ = Task.Run(() => postgresEventListener.StartListeningAsync(stoppingToken));
+
         using PeriodicTimer timer = new(configuration.ExecutionInterval);
 
         try

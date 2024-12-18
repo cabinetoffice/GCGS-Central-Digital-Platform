@@ -52,7 +52,7 @@ if (Assembly.GetEntryAssembly().IsRunAs("CO.CDP.EntityVerification"))
     builder.Services
         .AddAwsConfiguration(builder.Configuration)
         .AddAwsSqsService()
-        .AddOutboxSqsPublisher<EntityVerificationContext>()
+        .AddOutboxSqsPublisher<EntityVerificationContext>(builder.Configuration)
         .AddSqsDispatcher(
             EventDeserializer.Deserializer,
             services =>
