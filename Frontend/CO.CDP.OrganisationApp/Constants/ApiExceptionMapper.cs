@@ -33,7 +33,7 @@ public static class ApiExceptionMapper
     {
         return errorCode switch
         {
-            ErrorCodes.ORGANISATION_ALREADY_EXISTS => ErrorMessagesList.DuplicateOgranisationName,
+            ErrorCodes.ORGANISATION_ALREADY_EXISTS => ErrorMessagesList.DuplicateOrganisationName,
             ErrorCodes.EMAIL_ALREADY_EXISTS_WITHIN_ORGANISATION => ErrorMessagesList.DuplicatePersonEmail,
             ErrorCodes.INVITE_EMAIL_ALREADY_EXISTS_FOR_ORGANISATION => ErrorMessagesList.DuplicateInviteEmail,
             ErrorCodes.ARGUMENT_NULL => ErrorMessagesList.PayLoadIssueOrNullAurgument,
