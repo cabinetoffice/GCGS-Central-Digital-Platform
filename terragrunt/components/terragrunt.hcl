@@ -95,7 +95,7 @@ locals {
       fts_azure_frontdoor               = null
       name                              = "integration"
       onelogin_logout_notification_urls = ["https://test-findtender.nqc.com/auth/backchannellogout"]
-      pinned_service_version            = "1.0.13"
+      pinned_service_version            = "1.0.15"
       postgres_instance_type            = "db.t4g.micro"
       private_subnets = [
         "10.${local.cidr_b_integration}.101.0/24",
