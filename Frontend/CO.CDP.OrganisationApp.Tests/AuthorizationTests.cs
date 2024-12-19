@@ -12,6 +12,7 @@ using System.Net;
 using Amazon.SimpleSystemsManagement;
 using CO.CDP.TestKit.Mvc;
 using Microsoft.AspNetCore.DataProtection.KeyManagement;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
@@ -118,6 +119,11 @@ public class AuthorizationTests
                 services.RemoveAll<IConfigureOptions<KeyManagementOptions>>();
                 services.AddDataProtection().DisableAutomaticKeyGeneration();
             });
+            builder.ConfigureHostConfiguration(c => c.AddInMemoryCollection(
+                [
+                    new KeyValuePair<string, string?>("Features:SharedSessions", "false")
+                ]
+            ));
         });
 
         return factory.CreateClient();
