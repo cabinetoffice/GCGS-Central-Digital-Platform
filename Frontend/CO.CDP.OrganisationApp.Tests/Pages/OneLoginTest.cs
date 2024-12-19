@@ -1,6 +1,7 @@
 using CO.CDP.OrganisationApp.Authentication;
 using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.Pages;
+using CO.CDP.OrganisationApp.WebApiClients;
 using CO.CDP.Person.WebApiClient;
 using FluentAssertions;
 using IdentityModel;
@@ -22,6 +23,7 @@ public class OneLoginTest
     private readonly Mock<ILogoutManager> logoutManagerMock = new();
     private readonly Mock<IOneLoginAuthority> oneLoginAuthorityMock = new();
     private readonly Mock<IAuthenticationService> authService = new();
+    private readonly Mock<IAuthorityClient> authorityClientMock = new();
     private const string urn = "urn:fdc:gov.uk:2022:7wTqYGMFQxgukTSpSI2GodMwe9";
 
     [Fact]
@@ -182,8 +184,23 @@ public class OneLoginTest
 
         var result = await model.OnGetAsync();
 
-        result.Should().BeOfType<RedirectToPageResult>()
-            .Which.PageName.Should().Be("/");
+        result.Should().BeOfType<RedirectResult>()
+            .Which.Url.Should().Be("/");
+    }
+
+    [Fact]
+    public async Task OnGetSignOut_SessionHasUserDetailsUrn_ShouldCallRevokeRefreshToken()
+    {
+        var userUrn = "test_urn";
+
+        sessionMock.Setup(s => s.Get<UserDetails>(Session.UserDetailsKey))
+            .Returns(new UserDetails { UserUrn = userUrn });
+
+        var model = GivenOneLoginModel("sign-out");
+
+        var result = await model.OnGetAsync();
+
+        authorityClientMock.Verify(a => a.RevokeRefreshToken(userUrn), Times.Once);
     }
 
     [Fact]
@@ -270,10 +287,10 @@ public class OneLoginTest
             "TestScheme"));
 
     private readonly AuthenticateResult authResultWithMissingSubjectSuccess = AuthenticateResult.Success(new AuthenticationTicket(
-        new ClaimsPrincipal(new ClaimsIdentity(new[] {
+        new ClaimsPrincipal(new ClaimsIdentity([
             new Claim(JwtClaimTypes.Email, "dummy@test.com"),
             new Claim(JwtClaimTypes.PhoneNumber, "+44 123456789")
-        })),
+        ])),
         "TestScheme"));
 
     private readonly AuthenticateResult authResultFail = AuthenticateResult.Fail(new Exception("Auth failed"));
@@ -301,7 +318,9 @@ public class OneLoginTest
             personClientMock.Object,
             sessionMock.Object,
             logoutManagerMock.Object,
-            oneLoginAuthorityMock.Object, new Mock<ILogger<OneLoginModel>>().Object)
+            oneLoginAuthorityMock.Object,
+            authorityClientMock.Object,
+            new Mock<ILogger<OneLoginModel>>().Object)
         { PageAction = pageAction };
     }
 }

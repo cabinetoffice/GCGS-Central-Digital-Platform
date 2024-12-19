@@ -1,12 +1,14 @@
 using CO.CDP.OrganisationApp.Authentication;
 using CO.CDP.OrganisationApp.Models;
+using Microsoft.Extensions.Caching.Distributed;
 using System.Text.Json.Serialization;
 using static IdentityModel.OidcConstants;
 
 namespace CO.CDP.OrganisationApp.WebApiClients;
 
 public class AuthorityClient(
-    ISession session,
+    IConfiguration config,
+    ICacheService cache,
     ITokenService tokenService,
     IHttpClientFactory httpClientFactory) : IAuthorityClient
 {
@@ -43,15 +45,23 @@ public class AuthorityClient(
     {
         if (userUrn == null) return null;
 
-        var tokens = session.Get<AuthTokens>(Session.UserAuthTokens);
+        var cacheKey = AuthTokensCacheKey(userUrn);
+        var tokens = await cache.Get<AuthTokens>(cacheKey);
 
         if (fetchIfNotAvailable)
         {
             (bool newToken, tokens) = await GetAuthTokens(tokens);
             if (newToken)
             {
-                session.Set(Session.UserAuthTokens, tokens);
+                await cache.Set(cacheKey, tokens, new DistributedCacheEntryOptions
+                {
+                    AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(config.GetValue<double>("SessionTimeoutInMinutes"))
+                });
             }
+        }
+        else
+        {
+            await cache.Remove(cacheKey);
         }
 
         return tokens;
@@ -125,6 +135,8 @@ public class AuthorityClient(
     {
         return httpClientFactory.CreateClient(OrganisationAuthorityHttpClientName);
     }
+
+    private static string AuthTokensCacheKey(string userUrn) => $"UserAuthTokens_{userUrn}";
 
     public class TokenResponse
     {
