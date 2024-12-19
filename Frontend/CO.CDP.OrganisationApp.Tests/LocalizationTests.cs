@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.DataProtection.KeyManagement;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Localization;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
@@ -70,6 +71,11 @@ public class LocalizationTests
                 services.RemoveAll<IConfigureOptions<KeyManagementOptions>>();
                 services.AddDataProtection().DisableAutomaticKeyGeneration();
             });
+            builder.ConfigureHostConfiguration(c => c.AddInMemoryCollection(
+                [
+                    new KeyValuePair<string, string?>("Features:SharedSessions", "false")
+                ]
+            ));
         });
 
         return factory.CreateClient();
