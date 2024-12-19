@@ -1,6 +1,8 @@
 using CO.CDP.MQ.Outbox;
 using CO.CDP.Testcontainers.PostgreSql;
 using FluentAssertions;
+using Microsoft.EntityFrameworkCore;
+using Npgsql;
 
 namespace CO.CDP.MQ.Tests.Outbox;
 
@@ -55,9 +57,58 @@ public class DatabaseOutboxMessageRepositoryTest(PostgreSqlFixture postgreSql) :
         foundMessages[1].Message.Should().Be("Message 2");
     });
 
+    [Fact]
+    public async Task ItSendsOutboxNotificationOnSave()
+    {
+        var repository = CreateDatabaseOutboxMessageRepository(_dbContext);
+
+        await using var connection = new NpgsqlConnection(_dbContext.Database.GetConnectionString());
+        await connection.OpenAsync();
+        var listener = new NotificationListener(connection, "outbox");
+
+        await repository.SaveAsync(new OutboxMessage
+        {
+            Message = "Hello World",
+            Type = "String"
+        });
+
+        await connection.WaitAsync(100);
+        await listener.WaitAsync();
+
+        listener.Notifications.Count.Should().Be(1);
+        listener.Notifications.Should().BeEquivalentTo(["outbox"]);
+    }
+
     private DatabaseOutboxMessageRepository<TestDbContext> CreateDatabaseOutboxMessageRepository(
         TestDbContext dbContext)
     {
         return new DatabaseOutboxMessageRepository<TestDbContext>(dbContext);
+    }
+}
+
+internal class NotificationListener
+{
+    public readonly List<string> Notifications = new();
+    private readonly Task _listener;
+
+    public NotificationListener(NpgsqlConnection connection, string channel)
+    {
+        connection.Notification += (_, e) =>
+        {
+            Notifications.Add(e.Channel);
+        };
+
+        async Task Listener(NpgsqlConnection npgsqlConnection)
+        {
+            await using var listenCommand = new NpgsqlCommand($"LISTEN {channel};", npgsqlConnection);
+            await listenCommand.ExecuteNonQueryAsync();
+        }
+
+        _listener = Listener(connection);
+    }
+
+    public async Task WaitAsync()
+    {
+        await _listener;
     }
 }

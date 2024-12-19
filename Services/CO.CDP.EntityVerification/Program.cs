@@ -1,3 +1,4 @@
+using System.Reflection;
 using CO.CDP.Authentication;
 using CO.CDP.AwsServices;
 using CO.CDP.Configuration.Assembly;
@@ -11,10 +12,9 @@ using CO.CDP.EntityVerification.Persistence;
 using CO.CDP.EntityVerification.Ppon;
 using CO.CDP.EntityVerification.UseCase;
 using CO.CDP.MQ;
-using CO.CDP.MQ.Hosting;
 using CO.CDP.WebApi.Foundation;
 using Microsoft.EntityFrameworkCore;
-using System.Reflection;
+using Npgsql;
 using IdentifierRegistries = CO.CDP.EntityVerification.Model.IdentifierRegistries;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -27,8 +27,9 @@ builder.Services.AddSwaggerGen(o => o.DocumentPponApi(builder.Configuration));
 
 builder.Services.AddHealthChecks();
 builder.Services.AddProblemDetails();
-builder.Services.AddDbContext<EntityVerificationContext>(o =>
-    o.UseNpgsql(ConnectionStringHelper.GetConnectionString(builder.Configuration, "EntityVerificationDatabase")));
+
+builder.Services.AddSingleton(_ => new NpgsqlDataSourceBuilder(ConnectionStringHelper.GetConnectionString(builder.Configuration, "EntityVerificationDatabase")).Build());
+builder.Services.AddDbContext<EntityVerificationContext>((sp, o) => o.UseNpgsql(sp.GetRequiredService<NpgsqlDataSource>()));
 builder.Services.AddScoped<IPponRepository, DatabasePponRepository>();
 
 if (builder.Configuration.GetValue("Features:UuidPponService", true))
@@ -46,15 +47,21 @@ builder.Services.AddScoped<IUseCase<string[], IEnumerable<IdentifierRegistries>>
 
 if (Assembly.GetEntryAssembly().IsRunAs("CO.CDP.EntityVerification"))
 {
-    builder.Services.AddHealthChecks()
-        .AddNpgSql(ConnectionStringHelper.GetConnectionString(builder.Configuration, "EntityVerificationDatabase"));
+    builder.Services.AddHealthChecks().AddNpgSql(sp => sp.GetRequiredService<NpgsqlDataSource>());
 
     builder.Services
         .AddAwsConfiguration(builder.Configuration)
+        .AddLoggingConfiguration(builder.Configuration)
+        .AddAmazonCloudWatchLogsService()
+        .AddCloudWatchSerilog(builder.Configuration)
         .AddAwsSqsService()
-        .AddOutboxSqsPublisher<EntityVerificationContext>()
+        .AddOutboxSqsPublisher<EntityVerificationContext>(
+            builder.Configuration,
+            enableBackgroundServices: Assembly.GetEntryAssembly().IsRunAs("CO.CDP.EntityVerification"),
+            notificationChannel: "entity_verification_outbox")
         .AddSqsDispatcher(
             EventDeserializer.Deserializer,
+            enableBackgroundServices: Assembly.GetEntryAssembly().IsRunAs("CO.CDP.EntityVerification"),
             services =>
             {
                 services.AddScoped<ISubscriber<OrganisationRegistered>, OrganisationRegisteredSubscriber>();
@@ -66,14 +73,6 @@ if (Assembly.GetEntryAssembly().IsRunAs("CO.CDP.EntityVerification"))
                 dispatcher.Subscribe<OrganisationUpdated>(services);
             }
         );
-    builder.Services.AddHostedService<DispatcherBackgroundService>();
-    builder.Services.AddHostedService<OutboxProcessorBackgroundService>();
-
-    builder.Services
-        .AddAwsConfiguration(builder.Configuration)
-        .AddLoggingConfiguration(builder.Configuration)
-        .AddAmazonCloudWatchLogsService()
-        .AddCloudWatchSerilog(builder.Configuration);
 }
 
 builder.Services
