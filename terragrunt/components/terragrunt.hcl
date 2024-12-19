@@ -123,7 +123,7 @@ locals {
       fts_azure_frontdoor               = "nqc-front-door-uksouth.azurefd.net"
       name                              = "production"
       onelogin_logout_notification_urls = ["https://www.private-beta.find-tender.service.gov.uk/auth/backchannellogout"]
-      pinned_service_version            = "1.0.12"
+      pinned_service_version            = "1.0.15"
       postgres_instance_type            = "db.t4g.micro"
       private_subnets = [
         "10.${local.cidr_b_production}.101.0/24",
