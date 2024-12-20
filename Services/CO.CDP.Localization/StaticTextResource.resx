@@ -273,17 +273,17 @@
   <data name="Global_Admin" xml:space="preserve">
     <value>Admin</value>
   </data>
-    <data name="Global_Editor" xml:space="preserve">
-      <value>Editor</value>
+  <data name="Global_Editor" xml:space="preserve">
+    <value>Editor</value>
   </data>
-    <data name="Global_Viewer" xml:space="preserve">
-      <value>Viewer</value>
+  <data name="Global_Viewer" xml:space="preserve">
+    <value>Viewer</value>
   </data>
   <data name="Global_Approve" xml:space="preserve">
     <value>Approve</value>
   </data>
   <data name="Global_Reject" xml:space="preserve">
-      <value>Reject</value>
+    <value>Reject</value>
   </data>
   <data name="Organisation_MyAccount" xml:space="preserve">
     <value>My account</value>
@@ -634,10 +634,10 @@
     <value>Most services we link to are run by different government departments, for example DWP’s Universal Credit online, DVLA’s vehicle tax service, or HMRC’s webchat. These services may set additional cookies and, if so, will have their own cookie policy and banner linking to it.</value>
   </data>
   <data name="User_FirstName_Required_ErrorMessage" xml:space="preserve">
-    <value>Firstname required</value>
+    <value>First name required</value>
   </data>
   <data name="User_LastName_Required_ErrorMessage" xml:space="preserve">
-    <value>Lastname required</value>
+    <value>Last name required</value>
   </data>
   <data name="User_Email_Required_ErrorMessage" xml:space="preserve">
     <value>Email required</value>
@@ -652,7 +652,7 @@
     <value>Are you sure you want to remove [{0}]?</value>
   </data>
   <data name="User_RemoveConfirmation_ConfirmValidation" xml:space="preserve">
-    <value>Select yes to confirm remove user</value>
+    <value>Select yes to confirm removal of user</value>
   </data>
   <data name="User_UserSummary_HasPersonValidation" xml:space="preserve">
     <value>Select yes to add another user</value>
@@ -847,7 +847,7 @@
     <value>Select where {0} is registered as person with significant control</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityCompanyRegisterName_CompaniesHouseOption" xml:space="preserve">
-    <value>People with significant control register on Companies House</value>
+    <value>People with significant control registered on Companies House</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityLawRegister_LegalFormRequiredError" xml:space="preserve">
     <value>Enter legal formation</value>
@@ -880,7 +880,7 @@
     <value>Does {0} have a legal form?</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityLegalFormQuestion_Hint" xml:space="preserve">
-    <value>In the UK, this is a business structure or trading status. For example, limited company or limited liability partnership.</value>
+    <value>Does {0} have a legal form?</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityLegalFormQuestion_LegalFormNameLabel" xml:space="preserve">
     <value>Legal form name</value>
@@ -1670,7 +1670,7 @@
   <data name="OrganisationRegistration_OrganisationAlreadyRegistered_Heading" xml:space="preserve">
     <value>This organisation has already registered</value>
   </data>
-    <data name="OrganisationRegistration_UserConfirm" xml:space="preserve">
+  <data name="OrganisationRegistration_UserConfirm" xml:space="preserve">
     <value>I understand my name and email address will be shared with this organisation</value>
   </data>
   <data name="OrganisationRegistration_OrganisationAlreadyRegistered_Message" xml:space="preserve">
@@ -2829,7 +2829,7 @@
     <value>Select if you have read and agree to the Central Digital Platform service privacy policy</value>
   </data>
   <data name="ProvideFeedbackAndContact_WhatsItToDoWith" xml:space="preserve">
-    <value>What's it to do with</value>
+    <value>What's it to do with?</value>
   </data>
   <data name="ProvideFeedbackAndContact_ChooseAnOption" xml:space="preserve">
     <value>Choose an option</value>
@@ -2960,20 +2960,20 @@
   <data name="UserSummary_ManageUsers_Title" xml:space="preserve">
     <value>Manage users</value>
   </data>
-    <data name="UserSummary_JoinRequests" xml:space="preserve">
-      <value>Join requests</value>
+  <data name="UserSummary_JoinRequests" xml:space="preserve">
+    <value>Join requests</value>
   </data>
   <data name="UserSummary_Approve" xml:space="preserve">
-      <value>Approve</value>
+    <value>Approve</value>
   </data>
   <data name="UserSummary_TotalUsers" xml:space="preserve">
-      <value>Organisation has {0} {1}</value>
+    <value>Organisation has {0} {1}</value>
   </data>
   <data name="UserSummary_User" xml:space="preserve">
-      <value>user</value>
+    <value>user</value>
   </data>
-   <data name="UserSummary_Users" xml:space="preserve">
-      <value>users</value>
+  <data name="UserSummary_Users" xml:space="preserve">
+    <value>users</value>
   </data>
   <data name="UserSummary_InviteExpired" xml:space="preserve">
     <value>Invite expired</value>
@@ -3029,16 +3029,6 @@
   <data name="Users_SendEmail_Button" xml:space="preserve">
     <value>Send email</value>
   </data>
-
-  <data name="Users_SendEmail_Button" xml:space="preserve">
-    <value>Join requests</value>
-  </data>
-
-  <data name="Users_SendEmail_Button" xml:space="preserve">
-    <value>Join requests</value>
-  </data>
-
-
   <data name="ErrorMessageList_DuplicatePersonName" xml:space="preserve">
     <value>A person with this name already exists. Please try again.</value>
   </data>

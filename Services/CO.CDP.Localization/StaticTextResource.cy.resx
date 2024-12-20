@@ -1,17 +1,17 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
-  <!-- 
-    Microsoft ResX Schema 
-    
+  <!--
+    Microsoft ResX Schema
+
     Version 2.0
-    
-    The primary goals of this format is to allow a simple XML format 
-    that is mostly human readable. The generation and parsing of the 
-    various data types are done through the TypeConverter classes 
+
+    The primary goals of this format is to allow a simple XML format
+    that is mostly human readable. The generation and parsing of the
+    various data types are done through the TypeConverter classes
     associated with the data types.
-    
+
     Example:
-    
+
     ... ado.net/XML headers & schema ...
     <resheader name="resmimetype">text/microsoft-resx</resheader>
     <resheader name="version">2.0</resheader>
@@ -26,36 +26,36 @@
         <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
         <comment>This is a comment</comment>
     </data>
-                
-    There are any number of "resheader" rows that contain simple 
+
+    There are any number of "resheader" rows that contain simple
     name/value pairs.
-    
-    Each data row contains a name, and value. The row also contains a 
-    type or mimetype. Type corresponds to a .NET class that support 
-    text/value conversion through the TypeConverter architecture. 
-    Classes that don't support this are serialized and stored with the 
+
+    Each data row contains a name, and value. The row also contains a
+    type or mimetype. Type corresponds to a .NET class that support
+    text/value conversion through the TypeConverter architecture.
+    Classes that don't support this are serialized and stored with the
     mimetype set.
-    
-    The mimetype is used for serialized objects, and tells the 
-    ResXResourceReader how to depersist the object. This is currently not 
+
+    The mimetype is used for serialized objects, and tells the
+    ResXResourceReader how to depersist the object. This is currently not
     extensible. For a given mimetype the value must be set accordingly:
-    
-    Note - application/x-microsoft.net.object.binary.base64 is the format 
-    that the ResXResourceWriter will generate, however the reader can 
+
+    Note - application/x-microsoft.net.object.binary.base64 is the format
+    that the ResXResourceWriter will generate, however the reader can
     read any of the formats listed below.
-    
+
     mimetype: application/x-microsoft.net.object.binary.base64
-    value   : The object must be serialized with 
+    value   : The object must be serialized with
             : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
             : and then encoded with base64 encoding.
-    
+
     mimetype: application/x-microsoft.net.object.soap.base64
-    value   : The object must be serialized with 
+    value   : The object must be serialized with
             : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
             : and then encoded with base64 encoding.
 
     mimetype: application/x-microsoft.net.object.bytearray.base64
-    value   : The object must be serialized into a byte array 
+    value   : The object must be serialized into a byte array
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
@@ -143,5 +143,314 @@
   </data>
   <data name="Global_Continue" xml:space="preserve">
     <value>Parhau</value>
+  </data>
+  <data name="ApiKeyManagement_CreateApiKey_Title" xml:space="preserve">
+    <value>Enwch eich allwedd API</value>
+  </data>
+  <data name="ApiKeyManagement_ManageApiKey_Action_Cancel" xml:space="preserve">
+    <value>Canslo</value>
+  </data>
+  <data name="ApiKeyManagement_ManageApiKey_CreateButton" xml:space="preserve">
+    <value>Creu allwedd API</value>
+  </data>
+  <data name="ApiKeyManagement_ManageApiKey_Description_Editor" xml:space="preserve">
+    <value>Gweld eich allweddi API gweithredol ac wedi'u canslo. Gallwch ganslo unrhyw bryd nad oes eu hangen mwyach.</value>
+  </data>
+  <data name="ApiKeyManagement_ManageApiKey_NoKeysText" xml:space="preserve">
+    <value>Caiff allweddi API y byddwch yn eu creu eu rhestru yma.</value>
+  </data>
+  <data name="ApiKeyManagement_ManageApiKey_TableHeader_DateCancelled" xml:space="preserve">
+    <value>Y dyddiad canslo</value>
+  </data>
+  <data name="ApiKeyManagement_ManageApiKey_TableHeader_DateCreated" xml:space="preserve">
+    <value>Y dyddiad creu</value>
+  </data>
+  <data name="ApiKeyManagement_ManageApiKey_TableHeader_Name" xml:space="preserve">
+    <value>Enw</value>
+  </data>
+  <data name="ApiKeyManagement_ManageApiKey_Title" xml:space="preserve">
+    <value>Rheoli allweddi API</value>
+  </data>
+  <data name="ApiKeyManagement_NewApiKeyDetails_BackToApiKeys" xml:space="preserve">
+    <value>Yn ôl i'ch allweddi API</value>
+  </data>
+  <data name="ApiKeyManagement_NewApiKeyDetails_CopyApiKey" xml:space="preserve">
+    <value>Copïwch yr allwedd API a'i gadw'n ddiogel.</value>
+  </data>
+  <data name="ApiKeyManagement_NewApiKeyDetails_Notice" xml:space="preserve">
+    <value>Dyma'r unig adeg y byddwn yn dangos yr allwedd API i chi. Os byddwch yn ei golli, bydd angen i chi ei ganslo a chreu un newydd.</value>
+  </data>
+  <data name="ApiKeyManagement_NewApiKeyDetails_Title" xml:space="preserve">
+    <value>Allwedd API wedi'i greu</value>
+  </data>
+  <data name="ApiKeyManagement_NewApiKeyDetails_YourApiKey" xml:space="preserve">
+    <value>Eich allwedd API</value>
+  </data>
+  <data name="ApiKeyManagement_RevokeApiKey_CancelButton" xml:space="preserve">
+    <value>Canslo allwedd</value>
+  </data>
+  <data name="ApiKeyManagement_RevokeApiKey_Description1" xml:space="preserve">
+    <value>Bydd canslo'r allwedd API hwn yn golygu na chaiff gwybodaeth ei rhannu mwyach rhwng y gwasanaeth hwn a'r eAnfonwr sy'n ei ddefnyddio.</value>
+  </data>
+  <data name="ApiKeyManagement_RevokeApiKey_Description2" xml:space="preserve">
+    <value>Ni allwch ail-actifadu allwedd API sydd wedi'i ganslo. Bydd angen i chi greu un newydd er mwyn rhannu gwybodaeth eto.</value>
+  </data>
+  <data name="ApiKeyManagement_RevokeApiKey_Title" xml:space="preserve">
+    <value>Canslo allwedd API</value>
+  </data>
+  <data name="Consortium_ConsortiumOverview_AddAnOrganisation_link" xml:space="preserve">
+    <value>Ychwanegu sefydliad</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCompanyRegisterName_CompaniesHouseOption" xml:space="preserve">
+    <value>Mae pobl â rheolaeth sylweddol yn cofrestru yn Nhŷ'r Cwmnïau</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCompanyRegisterName_OtherRegisterNameLabel" xml:space="preserve">
+    <value>Enw'r gofrestr</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityControlCondition_CanAppointOrRemoveDirectorsHint" xml:space="preserve">
+    <value>Mae ganddo'r hawl uniongyrchol neu anuniongyrchol i benodi neu gael gwared ar fwyafrif o fwrdd cyfarwyddwyr y cwmni</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityControlCondition_CanAppointOrRemoveDirectorsLabel" xml:space="preserve">
+    <value>Gall benodi neu gael gwared ar gyfarwyddwyr</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityControlCondition_HasOtherSignificantInfluenceOrControlLabel" xml:space="preserve">
+    <value>Mae ganddo ddylanwad neu reolaeth sylweddol</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityControlCondition_HasVotingRightsHint" xml:space="preserve">
+    <value>Mae'n dal mwy na 25% o'r hawliau pleidleisio yn y cwmni yn uniongyrchol neu'n anuniongyrchol</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityControlCondition_HasVotingRightsLabel" xml:space="preserve">
+    <value>Mae ganddo hawliau pleidleisio</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityControlCondition_NoneApplyLabel" xml:space="preserve">
+    <value>Dim un yn gymwys</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityControlCondition_OwnsSharesHint" xml:space="preserve">
+    <value>Mae'n dal mwy na 25% o gyfranddaliadau'r cwmni yn uniongyrchol neu'n anuniongyrchol</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityControlCondition_OwnsSharesLabel" xml:space="preserve">
+    <value>Mae'n berchen ar gyfranddaliadau</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityDeclaration_PageTitle" xml:space="preserve">
+    <value>Person cysylltiedig</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityIndividualCategory_CategoryOption_PSC" xml:space="preserve">
+    <value>person â rheolaeth sylweddol</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityIndividualCategory_CategoryOption_PSC_Director" xml:space="preserve">
+    <value>cyfarwyddwr neu unigolyn â'r un cyfrifoldebau</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityIndividualCategory_CategoryOption_PSC_Individual" xml:space="preserve">
+    <value>unrhyw unigolyn arall â dylanwad neu reolaeth sylweddol</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityIndividualCategory_Director" xml:space="preserve">
+    <value>Cyfarwyddwr neu unigolyn â'r un cyfrifoldebau</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityIndividualCategory_PSC" xml:space="preserve">
+    <value>Person â rheolaeth sylweddol</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityIndividualCategory_PageTitle" xml:space="preserve">
+    <value>Dewiswch y categori sy'n disgrifio'r ‘person cysylltiedig’ orau</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityIndividualCategory_SelectCategoryError" xml:space="preserve">
+    <value>Dewiswch y categori sy'n disgrifio'r ‘person cysylltiedig’ orau</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityLawRegister_LawEnforcesHint" xml:space="preserve">
+    <value>Er enghraifft, Deddf Cwmnïau 2006.</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityLawRegister_LawEnforcesLabel" xml:space="preserve">
+    <value>Pa gyfraith sy'n gorfodi hyn?</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityLawRegister_LegalFormationLabel" xml:space="preserve">
+    <value>Ffurf gyfreithiol</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityLegalFormQuestion_LegalFormNameLabel" xml:space="preserve">
+    <value>Enw'r ffurf gyfreithiol</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityOrganisationCategory_Option_CompanyTakenOver" xml:space="preserve">
+    <value>cwmni y mae eich sefydliad wedi'i drosfeddiannu</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityOrganisationCategory_Option_Director" xml:space="preserve">
+    <value>cyfarwyddwr neu sefydliad â'r un cyfrifoldebau</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityOrganisationCategory_Option_OrgWithSignificantControl" xml:space="preserve">
+    <value>unrhyw sefydliad arall â dylanwad neu reolaeth sylweddol</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityOrganisationCategory_Option_ParentOrSubCompany" xml:space="preserve">
+    <value>rhiant gwmni neu is-gwmni</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityOrganisationCategory_Option_RegisteredCompany" xml:space="preserve">
+    <value>cwmni cofrestredig</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityOrganisationCategory_Option_RegisteredCompanyOrEquivalent" xml:space="preserve">
+    <value>cwmni cofrestredig neu gwmni cyfatebol</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityOrganisationCategory_PageTitle" xml:space="preserve">
+    <value>Dewiswch y categori sy'n disgrifio'r ‘person cysylltiedig’ orau</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityOrganisationName_EnterNameError" xml:space="preserve">
+    <value>Rhowch enw’r sefydliad</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityOrganisationName_Hint" xml:space="preserve">
+    <value>Enw'r ‘person cysylltiedig’ â rheolaeth neu ddylanwad dros eich sefydliad.</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityOrganisationName_PageTitle" xml:space="preserve">
+    <value>Rhowch enw’r sefydliad</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityOverseasCompanyQuestion_CompanyRegistrationNumberLabel" xml:space="preserve">
+    <value>Rhif cofrestru'r cwmni</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityOverseasCompanyQuestion_Hint" xml:space="preserve">
+    <value>A yw'r ‘person cysylltiedig’ wedi cofrestru â chorff tebyg y tu allan i'r DU sy'n corffori cwmnïau?</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityPersonType_OptionIndividual" xml:space="preserve">
+    <value>Unigolyn</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityPersonType_OptionOrganisation" xml:space="preserve">
+    <value>Sefydliad</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityPersonType_OptionTrustOrTrustee" xml:space="preserve">
+    <value>Ymddiriedolwr neu Ymddiriedolaeth</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityPersonType_PageTitle" xml:space="preserve">
+    <value>Dewiswch yr opsiwn perthnasol</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityPersonType_SelectOptionError" xml:space="preserve">
+    <value>Dewiswch yr opsiwn perthnasol</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityPostalSameAsRegisteredAddress_Hint" xml:space="preserve">
+    <value>Gall y lle y bydd sefydliad yn derbyn post swyddogol fod yn wahanol i'w gyfeiriad cofrestredig. Er enghraifft, swyddfa cangen.</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityPscDetails_FirstNameLabel" xml:space="preserve">
+    <value>Enw cyntaf</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityPscDetails_LastNameLabel" xml:space="preserve">
+    <value>Cyfenw</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityPscDetails_NationalityLabel" xml:space="preserve">
+    <value>Cenedligrwydd</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityRemoveConfirmation_EndDateHint" xml:space="preserve">
+    <value>Er enghraifft, 27 3 2007</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntitySupplierCompanyQuestion_PageTitle" xml:space="preserve">
+    <value>A yw eich sefydliad wedi'i gofrestru â Thŷ'r Cwmnïau?</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntitySupplierHasControl_PageTitle" xml:space="preserve">
+    <value>A oes gan berson neu gwmni arall ddylanwad neu reolaeth dros eich sefydliad?</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedPersonSummary_AddAnotherQuestion" xml:space="preserve">
+    <value>Ychwanegu person cysylltiedig arall?</value>
+  </data>
+  <data name="Supplier_EmailAddress" xml:space="preserve">
+    <value>Cyfeiriad e-bost</value>
+  </data>
+  <data name="Supplier_EmailAddress_Title" xml:space="preserve">
+    <value>Rhowch eich cyfeiriad e-bost</value>
+  </data>
+  <data name="Supplier_Email_Required_ErrorMessage" xml:space="preserve">
+    <value>Rhowch eich cyfeiriad e-bost</value>
+  </data>
+  <data name="Supplier_LegalForm" xml:space="preserve">
+    <value>Ffurf gyfreithiol</value>
+  </data>
+  <data name="Supplier_LegalFormSelectOrganisation_LLP" xml:space="preserve">
+    <value>Partneriaeth Atebolrwydd Cyfyngedig</value>
+  </data>
+  <data name="Supplier_LegalFormSelectOrganisation_LP" xml:space="preserve">
+    <value>Partneriaeth Gyfyngedig</value>
+  </data>
+  <data name="Supplier_LegalFormSelectOrganisation_Other" xml:space="preserve">
+    <value>Arall</value>
+  </data>
+  <data name="Supplier_LegalFormSelectOrganisation_Title" xml:space="preserve">
+    <value>Dewiswch ffurflen gyfreithiol eich sefydliad</value>
+  </data>
+  <data name="Supplier_OperationType_SmallOrMediumSized_Short" xml:space="preserve">
+    <value>Busnes bach neu ganolig</value>
+  </data>
+  <data name="Supplier_OperationType_SupportedEmploymentProvider_Short" xml:space="preserve">
+    <value>Darparwr cyflogaeth â chymorth</value>
+  </data>
+  <data name="Supplier_OrganisationType" xml:space="preserve">
+    <value>Math o sefydliad</value>
+  </data>
+  <data name="Supplier_PostalAddress" xml:space="preserve">
+    <value>Cyfeiriad post</value>
+  </data>
+  <data name="Supplier_RegisteredAddress" xml:space="preserve">
+    <value>Cyfeiriad cofrestredig</value>
+  </data>
+  <data name="Supplier_ReturnToAccountHome" xml:space="preserve">
+    <value>Dychwelyd i hafan y cyfrif</value>
+  </data>
+  <data name="Supplier_SupplierType" xml:space="preserve">
+    <value>Math o gyflenwr</value>
+  </data>
+  <data name="Supplier_VatNumber" xml:space="preserve">
+    <value>Rhif TAW</value>
+  </data>
+  <data name="Supplier_VatQuestion_Title" xml:space="preserve">
+    <value>Ydych chi wedi cofrestru ar gyfer TAW?</value>
+  </data>
+  <data name="Supplier_VatQuestion_VatNumberLabel" xml:space="preserve">
+    <value>Rhif TAW</value>
+  </data>
+  <data name="Supplier_WebsiteAddress" xml:space="preserve">
+    <value>Cyfeiriad gwefan</value>
+  </data>
+  <data name="Supplier_WebsiteAddress_ErrorEnterWebsiteAddress" xml:space="preserve">
+    <value>Rhowch gyfeiriad y wefan</value>
+  </data>
+  <data name="Supplier_WebsiteQuestion_Title" xml:space="preserve">
+    <value>A oes gennych wefan?</value>
+  </data>
+  <data name="Supplier_WebsiteQuestion_WebsiteAddress" xml:space="preserve">
+    <value>Cyfeiriad gwefan</value>
+  </data>
+  <data name="Support_OrganisationApproval_Heading" xml:space="preserve">
+    <value>Manylion y sefydliad</value>
+  </data>
+  <data name="Support_OrganisationApproval_OrganisationAddress_List" xml:space="preserve">
+    <value>Cyfeiriad y sefydliad</value>
+  </data>
+  <data name="Support_OrganisationApproval_OrganisationEmail_List" xml:space="preserve">
+    <value>E-bost y sefydliad</value>
+  </data>
+  <data name="Support_OrganisationApproval_OrganisationName_List" xml:space="preserve">
+    <value>Enw'r sefydliad</value>
+  </data>
+  <data name="Support_Organisations_TableHeader_OrganisationName" xml:space="preserve">
+    <value>Enw'r sefydliad</value>
+  </data>
+  <data name="Support_Organisations_TableHeader_Status" xml:space="preserve">
+    <value>Statws</value>
+  </data>
+  <data name="UserSummary_AddAnotherUser" xml:space="preserve">
+    <value>Ychwanegu defnyddiwr arall?</value>
+  </data>
+  <data name="UserSummary_InviteSent" xml:space="preserve">
+    <value>Gwahoddiad wedi'i anfon</value>
+  </data>
+  <data name="User_RemoveConfirmation_Header" xml:space="preserve">
+    <value>Ydych chi’n siŵr eich bod am ddileu [{0}]?</value>
+  </data>
+  <data name="User_RemoveConfirmation_Title" xml:space="preserve">
+    <value>Ydych chi’n siŵr eich bod am ddileu {0}?</value>
+  </data>
+  <data name="Users_AddUser_Title" xml:space="preserve">
+    <value>Ychwanegu defnyddiwr</value>
+  </data>
+  <data name="Users_CheckYourAnswers_Title" xml:space="preserve">
+    <value>Gwiriwch eich atebion</value>
+  </data>
+  <data name="Users_EmailAddress_Label" xml:space="preserve">
+    <value>Cyfeiriad e-bost</value>
+  </data>
+  <data name="Users_FirstName_Label" xml:space="preserve">
+    <value>Enw cyntaf</value>
+  </data>
+  <data name="Users_LastName_Label" xml:space="preserve">
+    <value>Cyfenw</value>
   </data>
 </root>
