@@ -6,7 +6,7 @@ from xml.etree.ElementTree import parse
 
 def load_csv_to_dict(csv_file):
     nested_dict = {}
-    with open(csv_file, mode="r", encoding="utf-8") as file:
+    with open(csv_file, mode="r", encoding="utf-8-sig") as file:
         reader = csv.DictReader(file)
         for row in reader:
             key = row["Key"]
