@@ -83,10 +83,32 @@ builder.Services.AddSession(options =>
 {
     options.IdleTimeout = TimeSpan.FromMinutes(sessionTimeoutInMinutes);
     options.Cookie.IsEssential = true;
+    options.Cookie.SameSite = SameSiteMode.Strict;
+    options.Cookie.SecurePolicy = builder.Environment.IsDevelopment() ? CookieSecurePolicy.SameAsRequest : CookieSecurePolicy.Always;
 });
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddSingleton<ISession, Session>();
+
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.Cookie.SameSite = SameSiteMode.Strict;
+    options.Cookie.SecurePolicy = builder.Environment.IsDevelopment() ? CookieSecurePolicy.SameAsRequest : CookieSecurePolicy.Always;
+});
+
+builder.Services.AddCookiePolicy(options =>
+{
+    options.MinimumSameSitePolicy = SameSiteMode.Strict;
+    options.HttpOnly = Microsoft.AspNetCore.CookiePolicy.HttpOnlyPolicy.Always;
+    options.Secure = builder.Environment.IsDevelopment() ? CookieSecurePolicy.SameAsRequest : CookieSecurePolicy.Always;
+});
+
+builder.Services.AddAntiforgery(options =>
+{
+    options.Cookie.SecurePolicy = builder.Environment.IsDevelopment() ? CookieSecurePolicy.SameAsRequest : CookieSecurePolicy.Always;
+    options.Cookie.SameSite = SameSiteMode.Strict;
+    options.Cookie.HttpOnly = true;
+});
 
 builder.Services.AddTransient(provider =>
 {
@@ -243,11 +265,11 @@ app.UseForwardedHeaders();
 app.UseMiddleware<ExceptionMiddleware>();
 app.UseMiddleware<CookieAcceptanceMiddleware>();
 
-// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error");
     app.UseHsts();
+    app.UseCookiePolicy();
 }
 
 app.UseRequestLocalization();
