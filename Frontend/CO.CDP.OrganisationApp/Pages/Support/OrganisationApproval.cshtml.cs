@@ -39,7 +39,6 @@ public class OrganisationApprovalModel(
         if (!ModelState.IsValid)
         {
             OrganisationDetails = await organisationClient.GetOrganisationAsync(organisationId);
-
             return Page();
         }
 
