@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.FeatureManagement;
 using System.Net;
 
 namespace CO.CDP.OrganisationApp.Pages;
@@ -22,16 +23,18 @@ public class OneLoginModel(
     ILogoutManager logoutManager,
     IOneLoginAuthority oneLoginAuthority,
     IAuthorityClient authorityClient,
-    ILogger<OneLoginModel> logger) : PageModel
+    ILogger<OneLoginModel> logger,
+    IFeatureManager featureManager,
+    IConfiguration config) : PageModel
 {
     [BindProperty(SupportsGet = true)]
     public required string PageAction { get; set; }
 
-    public async Task<IActionResult> OnGetAsync(string? redirectUri = null)
+    public async Task<IActionResult> OnGetAsync(string? redirectUri = null, string? origin = null)
     {
         return PageAction.ToLower() switch
         {
-            "sign-in" => SignIn(redirectUri),
+            "sign-in" => await SignIn(redirectUri, origin),
             "user-info" => await UserInfo(redirectUri),
             "sign-out" => await SignOut(),
             _ => Redirect("/"),
@@ -68,8 +71,18 @@ public class OneLoginModel(
         return Page();
     }
 
-    private IActionResult SignIn(string? redirectUri = null)
+    private async Task<ChallengeResult> SignIn(string? redirectUri = null, string? origin = null)
     {
+        if (!string.IsNullOrWhiteSpace(origin)
+            && await featureManager.IsEnabledAsync(FeatureFlags.AllowDynamicFtsOrigins))
+        {
+            var allowedOrigins = config["FtsServiceAllowedOrigins"] ?? "";
+            if (allowedOrigins.Split(",", StringSplitOptions.RemoveEmptyEntries).Contains(origin))
+            {
+                session.Set(Session.FtsServiceOrigin, origin);
+            }
+        }
+
         var uri = "/one-login/user-info";
         if (Helper.ValidRelativeUri(redirectUri))
         {
@@ -84,7 +97,7 @@ public class OneLoginModel(
         var userInfo = await httpContextAccessor.HttpContext!.AuthenticateAsync();
         if (!userInfo.Succeeded)
         {
-            return SignIn();
+            return await SignIn(redirectUri);
         }
 
         var urn = userInfo.Principal.FindFirst(JwtClaimTypes.Subject)?.Value;
@@ -93,7 +106,7 @@ public class OneLoginModel(
 
         if (urn == null)
         {
-            return SignIn();
+            return await SignIn(redirectUri);
         }
         await logoutManager.RemoveAsLoggedOut(urn);
 
