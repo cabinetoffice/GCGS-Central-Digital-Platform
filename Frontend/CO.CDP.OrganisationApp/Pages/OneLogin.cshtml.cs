@@ -73,6 +73,7 @@ public class OneLoginModel(
 
     private async Task<ChallengeResult> SignIn(string? redirectUri = null, string? origin = null)
     {
+        session.Remove(Session.FtsServiceOrigin);
         if (!string.IsNullOrWhiteSpace(origin)
             && await featureManager.IsEnabledAsync(FeatureFlags.AllowDynamicFtsOrigins))
         {
