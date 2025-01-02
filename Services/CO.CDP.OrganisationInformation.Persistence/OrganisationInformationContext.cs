@@ -27,6 +27,7 @@ public class OrganisationInformationContext(DbContextOptions<OrganisationInforma
     public DbSet<PersonInvite> PersonInvites { get; set; } = null!;
     public DbSet<OrganisationJoinRequest> OrganisationJoinRequests { get; set; } = null!;
     public DbSet<OutboxMessage> OutboxMessages { get; set; }
+    public DbSet<MouSignatures> MouSignatures { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
