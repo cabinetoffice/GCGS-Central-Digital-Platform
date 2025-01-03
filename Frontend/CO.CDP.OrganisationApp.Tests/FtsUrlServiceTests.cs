@@ -7,16 +7,31 @@ namespace CO.CDP.OrganisationApp.Tests;
 
 public class FtsUrlServiceTests
 {
+    private readonly Mock<ISession> _sessionMock;
     private readonly Mock<IConfiguration> _configurationMock;
     private readonly Mock<ICookiePreferencesService> _cookiePreferencesService;
     private readonly IFtsUrlService _service;
 
     public FtsUrlServiceTests()
     {
+        _sessionMock = new();
         _configurationMock = new Mock<IConfiguration>();
         _cookiePreferencesService = new Mock<ICookiePreferencesService>();
         _configurationMock.Setup(c => c["FtsService"]).Returns("https://example.com/");
-        _service = new FtsUrlService(_configurationMock.Object, _cookiePreferencesService.Object);
+        _service = new FtsUrlService(_configurationMock.Object, _cookiePreferencesService.Object, _sessionMock.Object);
+    }
+
+    [Fact]
+    public void BuildUrl_WhenFtsServiceOriginSessionIsSet_BaseServiceUrlOriginShouldBeSessionValue()
+    {
+        _sessionMock.Setup(s => s.Get<string?>(Session.FtsServiceOrigin)).Returns("https://example1.com/");
+        _configurationMock.Setup(c => c["FtsService"]).Returns("https://example2.com/");
+        var service = new FtsUrlService(_configurationMock.Object, _cookiePreferencesService.Object, _sessionMock.Object);
+        CultureInfo.CurrentUICulture = new CultureInfo("en-GB");
+
+        var result = service.BuildUrl("test-endpoint");
+
+        result.Should().Be("https://example1.com/test-endpoint?language=en_GB&cookies_accepted=unknown");
     }
 
     [Fact]
@@ -24,7 +39,7 @@ public class FtsUrlServiceTests
     {
         _configurationMock.Setup(c => c["FtsService"]).Returns((string?)null);
 
-        Action action = () => new FtsUrlService(_configurationMock.Object, _cookiePreferencesService.Object);
+        Action action = () => new FtsUrlService(_configurationMock.Object, _cookiePreferencesService.Object, _sessionMock.Object);
 
         action.Should().Throw<InvalidOperationException>()
             .WithMessage("FtsService is not configured.");
@@ -34,7 +49,7 @@ public class FtsUrlServiceTests
     public void BuildUrl_ShouldTrimTrailingSlashFromBaseServiceUrl()
     {
         _configurationMock.Setup(c => c["FtsService"]).Returns("https://example.com/");
-        var service = new FtsUrlService(_configurationMock.Object, _cookiePreferencesService.Object);
+        var service = new FtsUrlService(_configurationMock.Object, _cookiePreferencesService.Object, _sessionMock.Object);
         var endpoint = "test-endpoint";
         CultureInfo.CurrentUICulture = new CultureInfo("en-GB");
 

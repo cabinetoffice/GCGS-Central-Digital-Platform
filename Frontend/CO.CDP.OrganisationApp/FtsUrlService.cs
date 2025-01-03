@@ -7,10 +7,14 @@ public class FtsUrlService : IFtsUrlService
 {
     private readonly string _ftsService;
     private readonly ICookiePreferencesService _cookiePreferencesService;
+    private readonly ISession _session;
 
-    public FtsUrlService(IConfiguration configuration, ICookiePreferencesService cookiePreferencesService)
+    public FtsUrlService(IConfiguration configuration, ICookiePreferencesService cookiePreferencesService, ISession session)
     {
-        var ftsService = configuration["FtsService"] ?? throw new InvalidOperationException("FtsService is not configured.");
+        _session = session;
+        var ftsService = _session.Get<string?>(Session.FtsServiceOrigin)
+                            ?? configuration["FtsService"]
+                            ?? throw new InvalidOperationException("FtsService is not configured.");
         _ftsService = ftsService.TrimEnd('/');
         _cookiePreferencesService = cookiePreferencesService;
     }
