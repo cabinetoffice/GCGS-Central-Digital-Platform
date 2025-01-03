@@ -22,7 +22,7 @@ public class DatabaseConnectedEntityRepository(OrganisationInformationContext co
         return await context.ConnectedEntities
             .Include(p => p.Addresses)
             .ThenInclude(p => p.Address)
-            .Where(t => t.SupplierOrganisation.Guid == organisationId)
+            .Where(t => t.SupplierOrganisation.Guid == organisationId && (t.EndDate == null || t.EndDate > DateTime.Today))
             .ToArrayAsync();
     }
 
