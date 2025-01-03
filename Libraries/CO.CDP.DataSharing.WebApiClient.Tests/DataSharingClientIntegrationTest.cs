@@ -24,11 +24,11 @@ public class DataSharingClientIntegrationTest
     [Fact]
     public async Task ItTalksToTheDataSharingApi()
     {
-        IDataSharingClient client = new DataSharingClient("https://localhost", _httpClient);
+        var client = new DataSharingClient("https://localhost", _httpClient);
 
         var shareCode = "HDJ2123F";
 
-        Func<Task> act = async () => { await client.GetSharedDataAsync(shareCode); };
+        Func<Task> act = async () => { await client.GetSharedDataAsync(shareCode, null); };
 
         var exception = await act.Should().ThrowAsync<ApiException<ProblemDetails>>();
 

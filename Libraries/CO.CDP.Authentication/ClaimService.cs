@@ -45,4 +45,9 @@ public class ClaimService(
 
         return organisationPerson.Scopes.Intersect(scopes).Any();
     }
+
+    public string? GetChannel()
+    {
+        return httpContextAccessor.HttpContext?.User?.FindFirst(ClaimType.Channel)?.Value;
+    }
 }
