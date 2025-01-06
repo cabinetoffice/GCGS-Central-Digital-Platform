@@ -22,9 +22,8 @@ public static class EndpointExtensions
         app.MapGet("/share/data/{sharecode}",
             [OrganisationAuthorize([AuthenticationChannel.OrganisationKey, AuthenticationChannel.OneLogin])]
         async (string sharecode,
-                [FromQuery(Name = "organisation-id")] Guid? organisationId,
-                IUseCase<(string, Guid?), SupplierInformation?> useCase)
-            => await useCase.Execute((sharecode, organisationId))
+                IUseCase<string, SupplierInformation?> useCase)
+            => await useCase.Execute(sharecode)
                 .AndThen(supplierInformation => supplierInformation != null ? Results.Ok(supplierInformation) : Results.NotFound()))
             .Produces<SupplierInformation>(StatusCodes.Status200OK, "application/json")
             .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)

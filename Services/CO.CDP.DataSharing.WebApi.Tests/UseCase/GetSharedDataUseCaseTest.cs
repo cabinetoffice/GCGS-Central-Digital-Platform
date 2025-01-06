@@ -1,4 +1,3 @@
-using CO.CDP.Authentication;
 using CO.CDP.DataSharing.WebApi.Model;
 using CO.CDP.DataSharing.WebApi.Tests.AutoMapper;
 using CO.CDP.DataSharing.WebApi.UseCase;
@@ -16,19 +15,18 @@ public class GetSharedDataUseCaseTest : IClassFixture<AutoMapperFixture>
     private readonly Mock<IShareCodeRepository> _shareCodeRepository = new();
     private readonly Mock<IOrganisationRepository> _organisationRepository = new();
     private readonly Mock<IConfiguration> _configuration = new();
-    private readonly Mock<IClaimService> _claimService = new();
     private readonly GetSharedDataUseCase _useCase;
 
     public GetSharedDataUseCaseTest(AutoMapperFixture mapperFixture)
     {
         _useCase = new GetSharedDataUseCase(_shareCodeRepository.Object, _organisationRepository.Object,
-            mapperFixture.Mapper, _configuration.Object, _claimService.Object);
+            mapperFixture.Mapper, _configuration.Object);
     }
 
     [Fact]
     public async Task ThrowsShareCodeNotFoundException_When_NotFound()
     {
-        var response = async () => await _useCase.Execute(("dummy_code", null));
+        var response = async () => await _useCase.Execute(("dummy_code"));
 
         await response.Should().ThrowAsync<ShareCodeNotFoundException>();
     }
@@ -38,40 +36,9 @@ public class GetSharedDataUseCaseTest : IClassFixture<AutoMapperFixture>
     {
         var (shareCode, _, organisationGuid, _) = SetupTestData();
 
-        var response = async () => await _useCase.Execute((shareCode, null));
+        var response = async () => await _useCase.Execute((shareCode));
 
         await response.Should().ThrowAsync<Exception>();
-    }
-
-    [Fact]
-    public async Task ThrowsUserUnauthorizedExceptionException_WhenChannelIsOneLogin_AndOrganisationIsNotInformalConsortium()
-    {
-        var organisationGuid = Guid.NewGuid();
-        var org = EntityFactory.GivenOrganisation(organisationGuid, name: "Test Organisation");
-        org.Type = OrganisationInformation.OrganisationType.Organisation;
-
-        _claimService.Setup(c => c.GetChannel()).Returns(Authentication.Constants.Channel.OneLogin);
-        _organisationRepository.Setup(c => c.Find(organisationGuid)).ReturnsAsync(org);
-
-        var response = async () => await _useCase.Execute(("dummy", organisationGuid));
-
-        await response.Should().ThrowAsync<UserUnauthorizedException>();
-    }
-
-    [Fact]
-    public async Task ReturnsOrganisation_WhenChannelIsOneLogin_AndOrganisationIsInformalConsortium()
-    {
-        var (shareCode, _, organisationGuid, _) = SetupTestData();
-        var org = EntityFactory.GivenOrganisation(organisationGuid, name: "Test Organisation");
-        org.Type = OrganisationInformation.OrganisationType.InformalConsortium;
-
-        _configuration.Setup(c => c["DataSharingApiUrl"]).Returns("https://localhost");
-        _claimService.Setup(c => c.GetChannel()).Returns(Authentication.Constants.Channel.OneLogin);
-        _organisationRepository.Setup(c => c.Find(organisationGuid)).ReturnsAsync(org);
-
-        var response = await _useCase.Execute((shareCode, organisationGuid));
-
-        response.Should().NotBeNull();
     }
 
     [Fact]
@@ -81,7 +48,7 @@ public class GetSharedDataUseCaseTest : IClassFixture<AutoMapperFixture>
 
         _configuration.Setup(c => c["DataSharingApiUrl"]).Returns("https://localhost");
 
-        var result = await _useCase.Execute((shareCode, null));
+        var result = await _useCase.Execute((shareCode));
         result.Should().NotBeNull();
 
         AssertBasicInformation(result, organisationGuid);
