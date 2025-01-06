@@ -25,8 +25,9 @@ builder.Services.AddSwaggerGen(options => { options.DocumentPersonApi(builder.Co
 builder.Services.AddAutoMapper(typeof(WebApiToPersistenceProfile));
 
 var connectionString = ConnectionStringHelper.GetConnectionString(builder.Configuration, "OrganisationInformationDatabase");
-builder.Services.AddHealthChecks().AddNpgSql(connectionString);
-builder.Services.AddDbContext<OrganisationInformationContext>(o => o.UseNpgsql(connectionString));
+builder.Services.AddSingleton(new NpgsqlDataSourceBuilder(connectionString).Build());
+builder.Services.AddHealthChecks().AddNpgSql(sp => sp.GetRequiredService<NpgsqlDataSource>());
+builder.Services.AddDbContext<OrganisationInformationContext>((sp, o) => o.UseNpgsql(sp.GetRequiredService<NpgsqlDataSource>()));
 
 builder.Services.AddScoped<IPersonRepository, DatabasePersonRepository>();
 builder.Services.AddScoped<IPersonInviteRepository, DatabasePersonInviteRepository>();
