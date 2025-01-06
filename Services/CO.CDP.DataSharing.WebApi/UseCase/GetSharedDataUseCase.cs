@@ -2,9 +2,8 @@ using AutoMapper;
 using CO.CDP.DataSharing.WebApi.Model;
 using CO.CDP.OrganisationInformation;
 using CO.CDP.OrganisationInformation.Persistence;
-using SharedConsent = CO.CDP.OrganisationInformation.Persistence.Forms.SharedConsent;
 using FormQuestionType = CO.CDP.OrganisationInformation.Persistence.Forms.FormQuestionType;
-using CO.CDP.Authentication;
+using SharedConsent = CO.CDP.OrganisationInformation.Persistence.Forms.SharedConsent;
 
 namespace CO.CDP.DataSharing.WebApi.UseCase;
 
@@ -12,24 +11,11 @@ public class GetSharedDataUseCase(
     IShareCodeRepository shareCodeRepository,
     IOrganisationRepository organisationRepository,
     IMapper mapper,
-    IConfiguration configuration,
-    IClaimService claimService)
-    : IUseCase<(string, Guid?), SupplierInformation?>
+    IConfiguration configuration)
+    : IUseCase<string, SupplierInformation?>
 {
-    public async Task<SupplierInformation?> Execute((string, Guid?) request)
+    public async Task<SupplierInformation?> Execute(string sharecode)
     {
-        (string sharecode, Guid? organisationId) = request;
-
-        if (organisationId.HasValue && claimService.GetChannel() == Authentication.Constants.Channel.OneLogin)
-        {
-            var org = await organisationRepository.Find(organisationId.Value);
-
-            if (org?.Type != OrganisationInformation.OrganisationType.InformalConsortium)
-            {
-                throw new UserUnauthorizedException();
-            }
-        }
-
         var sharedConsent = await shareCodeRepository.GetByShareCode(sharecode)
                             ?? throw new ShareCodeNotFoundException(Constants.ShareCodeNotFoundExceptionMessage);
 
