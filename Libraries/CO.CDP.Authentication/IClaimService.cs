@@ -1,4 +1,5 @@
 namespace CO.CDP.Authentication;
+
 public interface IClaimService
 {
     string? GetUserUrn();
@@ -8,4 +9,6 @@ public interface IClaimService
     Guid? GetOrganisationId();
 
     Task<bool> HaveAccessToOrganisation(Guid organisationId, string[] scopes, string[]? personScopes = null);
+
+    string? GetChannel();
 }

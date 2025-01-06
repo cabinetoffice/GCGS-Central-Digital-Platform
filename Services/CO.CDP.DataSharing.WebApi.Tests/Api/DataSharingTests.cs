@@ -14,7 +14,7 @@ namespace CO.CDP.DataSharing.WebApi.Tests.Api;
 
 public class DataSharingTests
 {
-    private readonly Mock<IUseCase<string, SupplierInformation?>> _getSharedDataUseCase = new();
+    private readonly Mock<IUseCase<(string, Guid?), SupplierInformation?>> _getSharedDataUseCase = new();
     private readonly Mock<IUseCase<string, SharedDataFile?>> _getSharedDataFileUseCase = new();
     private readonly Mock<IUseCase<ShareRequest, ShareReceipt>> _generateShareCodeUseCase = new();
     private readonly Mock<IUseCase<ShareVerificationRequest, ShareVerificationReceipt>> _getShareCodeVerifyUseCase = new();
@@ -24,15 +24,16 @@ public class DataSharingTests
 
     [Theory]
     [InlineData(OK, Channel.OrganisationKey)]
+    [InlineData(OK, Channel.OneLogin)]
     [InlineData(Forbidden, Channel.ServiceKey)]
-    [InlineData(Forbidden, Channel.OneLogin)]
     [InlineData(Forbidden, "unknown_channel")]
     public async Task GetSharedData_Authorization_ReturnsExpectedStatusCode(
         HttpStatusCode expectedStatusCode, string channel)
     {
         var shareCode = "valid-share-code";
+        (string, Guid?) request = (shareCode, null);
 
-        _getSharedDataUseCase.Setup(uc => uc.Execute(shareCode))
+        _getSharedDataUseCase.Setup(uc => uc.Execute(request))
             .ReturnsAsync(GetSupplierInfo());
 
         var factory = new TestAuthorizationWebApplicationFactory<Program>(
