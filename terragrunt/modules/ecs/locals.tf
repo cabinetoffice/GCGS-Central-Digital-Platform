@@ -45,6 +45,6 @@ locals {
     config.name
   ]
 
-  waf_enabled = contains(["development", "staging"], var.environment)
+  waf_enabled = var.environment != "production"
 
 }
