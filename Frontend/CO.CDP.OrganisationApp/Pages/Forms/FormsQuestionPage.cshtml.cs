@@ -1,4 +1,5 @@
 using CO.CDP.AwsServices;
+using CO.CDP.MQ;
 using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Extensions;
 using CO.CDP.OrganisationApp.Models;
@@ -10,8 +11,15 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace CO.CDP.OrganisationApp.Pages.Forms;
 
+public record ScanFile
+{
+    public string FileName { get; set; }
+    public Guid OrganisationId { get; set; }
+}
+
 [Authorize(Policy = OrgScopeRequirement.Editor)]
 public class FormsQuestionPageModel(
+    IPublisher publisher,
     IFormsEngine formsEngine,
     ITempDataService tempDataService,
     IFileHostManager fileHostManager,
@@ -117,6 +125,9 @@ public class FormsQuestionPageModel(
                 {
                     using var stream = response.Value.formFile.OpenReadStream();
                     await fileHostManager.UploadFile(stream, response.Value.filename, response.Value.contentType);
+
+                    await publisher.Publish(new ScanFile() {  FileName = response.Value.filename, OrganisationId = OrganisationId });
+
                     answer ??= new FormAnswer();
                     answer.TextValue = response.Value.filename;
                 }
