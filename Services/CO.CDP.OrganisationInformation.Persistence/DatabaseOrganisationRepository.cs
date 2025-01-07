@@ -1,4 +1,5 @@
 using CO.CDP.EntityFrameworkCore.DbContext;
+using CO.CDP.OrganisationInformation.Persistence.Forms;
 using Microsoft.EntityFrameworkCore;
 
 namespace CO.CDP.OrganisationInformation.Persistence;
@@ -233,5 +234,14 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
             default:
                 throw cause;
         }
+    }
+
+    public async Task<IEnumerable<MouSignature>> GetMouSignatures(int organisationId)
+    {
+        return await context.MouSignature
+        .Where(x => x.OrganisationId == organisationId)
+        .Include(m=>m.Mou)
+        .Include(p=>p.Person)
+        .ToListAsync();
     }
 }

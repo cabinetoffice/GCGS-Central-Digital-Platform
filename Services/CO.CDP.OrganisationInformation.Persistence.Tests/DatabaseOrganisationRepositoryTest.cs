@@ -1,5 +1,6 @@
 using CO.CDP.Testcontainers.PostgreSql;
 using FluentAssertions;
+using Microsoft.EntityFrameworkCore;
 using static CO.CDP.OrganisationInformation.Persistence.IOrganisationRepository.OrganisationRepositoryException;
 using static CO.CDP.OrganisationInformation.Persistence.Organisation;
 using static CO.CDP.OrganisationInformation.Persistence.Tests.EntityFactory;
@@ -671,6 +672,76 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql)
         result.As<Organisation>().Tenant.Persons.Count.Should().Be(0);
     }
 
+    [Fact]
+    public async Task GetMouSignatures_ShouldReturnEmpty_WhenNoMatch()
+    {
+        using var repository = OrganisationRepository();
+
+        var organisation = GivenOrganisation();
+
+        await using var context = GetDbContext();
+        await context.Organisations.AddAsync(organisation);
+        await context.SaveChangesAsync();
+
+        var result = await repository.GetMouSignatures(organisation.Id);
+
+        result.Should().BeEmpty();
+    }
+
+    [Fact]
+    public async Task GetMouSignatures_ShouldReturnCorrectSignatures()
+    {
+        using var repository = OrganisationRepository();
+
+        var organisation = GivenOrganisation();
+
+        await using var context = GetDbContext();
+        await context.Organisations.AddAsync(organisation);
+        await context.SaveChangesAsync();
+
+        var mou = new Mou { Id = 1, Guid = Guid.NewGuid(), FilePath = "" };
+
+        var person = GivenPerson();
+        organisation.Persons.Add(person);
+
+        context.Mou.Add(mou);
+
+        context.MouSignature.Add(new MouSignature
+        {
+            Id = 1,
+            SignatureGuid = Guid.NewGuid(),
+            OrganisationId = organisation.Id,
+            Organisation = organisation,
+            PersonId = person.Id,
+            Person = person,
+            JobTitle = "Manager",
+            MouId = mou.Id,
+            Mou = mou
+        });
+        context.MouSignature.Add(new MouSignature
+        {
+            Id = 2,
+            SignatureGuid = Guid.NewGuid(),
+            OrganisationId = organisation.Id,
+            Organisation = organisation,
+            PersonId = person.Id,
+            Person = person,
+            JobTitle = "Director",
+            MouId = mou.Id,
+            Mou = mou
+        });
+        context.SaveChanges();
+
+
+        var result = await repository.GetMouSignatures(organisation.Id);
+
+        // Assert
+        result.Should().NotBeNull();
+        result.Should().HaveCount(2);
+        result.First().OrganisationId.Should().Be(organisation.Id);
+        result.First().Mou.Should().NotBeNull();
+        result.First().Person.Should().NotBeNull();
+    }
 
     private DatabaseOrganisationRepository OrganisationRepository()
         => new(GetDbContext());

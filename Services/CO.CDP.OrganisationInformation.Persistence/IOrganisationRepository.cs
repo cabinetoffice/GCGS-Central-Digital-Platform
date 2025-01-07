@@ -1,3 +1,5 @@
+using CO.CDP.OrganisationInformation.Persistence.Forms;
+
 namespace CO.CDP.OrganisationInformation.Persistence;
 
 public interface IOrganisationRepository : IDisposable
@@ -43,4 +45,6 @@ public interface IOrganisationRepository : IDisposable
 
     public Task<bool> IsEmailUniqueWithinOrganisation(Guid organisationId, string email);
     Task<Organisation?> FindIncludingReviewedBy(Guid organisationId);
+
+    public Task<IEnumerable<MouSignature>> GetMouSignatures(int organisationId);
 }

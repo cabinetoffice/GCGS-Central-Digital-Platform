@@ -1,4 +1,3 @@
-﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -29,14 +28,14 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "mou_signatures",
+                name: "mou_signature",
                 columns: table => new
                 {
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    guid = table.Column<Guid>(type: "uuid", nullable: false),
+                    signature_guid = table.Column<Guid>(type: "uuid", nullable: false),
                     organisation_id = table.Column<int>(type: "integer", nullable: false),
-                    persion_id = table.Column<int>(type: "integer", nullable: false),
+                    person_id = table.Column<int>(type: "integer", nullable: false),
                     job_title = table.Column<string>(type: "text", nullable: false),
                     mou_id = table.Column<int>(type: "integer", nullable: false),
                     created_on = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP"),
@@ -44,22 +43,22 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("pk_mou_signatures", x => x.id);
+                    table.PrimaryKey("pk_mou_signature", x => x.id);
                     table.ForeignKey(
-                        name: "fk_mou_signatures_mou_mou_id",
+                        name: "fk_mou_signature_mou_mou_id",
                         column: x => x.mou_id,
                         principalTable: "mou",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "fk_mou_signatures_organisations_organisation_id",
+                        name: "fk_mou_signature_organisations_organisation_id",
                         column: x => x.organisation_id,
                         principalTable: "organisations",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "fk_mou_signatures_persons_persion_id",
-                        column: x => x.persion_id,
+                        name: "fk_mou_signature_persons_person_id",
+                        column: x => x.person_id,
                         principalTable: "persons",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
@@ -72,25 +71,25 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "ix_mou_signatures_guid",
-                table: "mou_signatures",
-                column: "guid",
+                name: "ix_mou_signature_guid",
+                table: "mou_signature",
+                column: "signature_guid",
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "ix_mou_signatures_mou_id",
-                table: "mou_signatures",
+                name: "ix_mou_signature_mou_id",
+                table: "mou_signature",
                 column: "mou_id");
 
             migrationBuilder.CreateIndex(
                 name: "ix_mou_signatures_organisation_id",
-                table: "mou_signatures",
+                table: "mou_signature",
                 column: "organisation_id");
 
             migrationBuilder.CreateIndex(
-                name: "ix_mou_signatures_persion_id",
-                table: "mou_signatures",
-                column: "persion_id");
+                name: "ix_mou_signature_person_id",
+                table: "mou_signature",
+                column: "person_id");
         }
 
         /// <inheritdoc />

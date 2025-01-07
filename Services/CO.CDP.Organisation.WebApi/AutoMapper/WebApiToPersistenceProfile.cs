@@ -2,6 +2,7 @@ using AutoMapper;
 using CO.CDP.Organisation.WebApi.Events;
 using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.OrganisationInformation;
+using CO.CDP.OrganisationInformation.Persistence.Forms;
 using Microsoft.OpenApi.Extensions;
 using Address = CO.CDP.OrganisationInformation.Address;
 using ContactPoint = CO.CDP.OrganisationInformation.ContactPoint;
@@ -152,6 +153,28 @@ public class WebApiToPersistenceProfile : Profile
 
         ConnectedEntityMapping();
         OrganisationEventsMapping();
+        MouSignatureMapping();
+    }
+    private void MouSignatureMapping()
+    {
+        CreateMap<Persistence.MouSignature, Model.MouSignature>()
+          .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.SignatureGuid)) 
+            .ForMember(dest => dest.Mou, opt => opt.MapFrom(src => src.Mou))        
+            .ForMember(dest => dest.Person, opt => opt.MapFrom(src => src.Person))  
+            .ForMember(dest => dest.JobTitle, opt => opt.MapFrom(src => src.JobTitle))
+            .ForMember(dest => dest.SignatureOn, opt => opt.MapFrom(src => src.CreatedOn));
+
+        CreateMap<Persistence.Mou, Model.Mou>()
+            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Guid))
+            .ForMember(dest => dest.FilePath, opt => opt.MapFrom(src => src.FilePath))
+            .ForMember(dest => dest.CreatedOn, opt => opt.MapFrom(src => src.CreatedOn));
+
+        CreateMap<Persistence.Person, Model.Person>()
+            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Guid))
+            .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
+            .ForMember(dest => dest.FirstName, opt => opt.MapFrom(src => src.FirstName))
+            .ForMember(dest => dest.LastName, opt => opt.MapFrom(src => src.LastName))
+            .ForMember(m => m.Scopes, o => o.Ignore());
     }
 
     private void ConnectedEntityMapping()

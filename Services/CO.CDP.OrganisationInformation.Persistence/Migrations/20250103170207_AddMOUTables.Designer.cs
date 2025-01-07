@@ -13,7 +13,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CO.CDP.OrganisationInformation.Persistence.Migrations
 {
     [DbContext(typeof(OrganisationInformationContext))]
-    [Migration("20250102180052_AddMOUTables")]
+    [Migration("20250103170207_AddMOUTables")]
     partial class AddMOUTables
     {
         /// <inheritdoc />
@@ -626,67 +626,6 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                     b.ToTable("form_sections", (string)null);
                 });
 
-            modelBuilder.Entity("CO.CDP.OrganisationInformation.Persistence.Forms.MouSignatures", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTimeOffset>("CreatedOn")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("created_on")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
-
-                    b.Property<Guid>("Guid")
-                        .HasColumnType("uuid")
-                        .HasColumnName("guid");
-
-                    b.Property<string>("JobTitle")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("job_title");
-
-                    b.Property<int>("MouId")
-                        .HasColumnType("integer")
-                        .HasColumnName("mou_id");
-
-                    b.Property<int>("OrganisationId")
-                        .HasColumnType("integer")
-                        .HasColumnName("organisation_id");
-
-                    b.Property<int>("PersionId")
-                        .HasColumnType("integer")
-                        .HasColumnName("persion_id");
-
-                    b.Property<DateTimeOffset>("UpdatedOn")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("updated_on")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
-
-                    b.HasKey("Id")
-                        .HasName("pk_mou_signatures");
-
-                    b.HasIndex("Guid")
-                        .IsUnique()
-                        .HasDatabaseName("ix_mou_signatures_guid");
-
-                    b.HasIndex("MouId")
-                        .HasDatabaseName("ix_mou_signatures_mou_id");
-
-                    b.HasIndex("OrganisationId")
-                        .HasDatabaseName("ix_mou_signatures_organisation_id");
-
-                    b.HasIndex("PersionId")
-                        .HasDatabaseName("ix_mou_signatures_persion_id");
-
-                    b.ToTable("mou_signatures", (string)null);
-                });
-
             modelBuilder.Entity("CO.CDP.OrganisationInformation.Persistence.Forms.SharedConsent", b =>
                 {
                     b.Property<int>("Id")
@@ -791,6 +730,67 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                         .HasDatabaseName("ix_mou_guid");
 
                     b.ToTable("mou", (string)null);
+                });
+
+            modelBuilder.Entity("CO.CDP.OrganisationInformation.Persistence.MouSignature", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTimeOffset>("CreatedOn")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_on")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                    b.Property<string>("JobTitle")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("job_title");
+
+                    b.Property<int>("MouId")
+                        .HasColumnType("integer")
+                        .HasColumnName("mou_id");
+
+                    b.Property<int>("OrganisationId")
+                        .HasColumnType("integer")
+                        .HasColumnName("organisation_id");
+
+                    b.Property<int>("PersonId")
+                        .HasColumnType("integer")
+                        .HasColumnName("person_id");
+
+                    b.Property<Guid>("SignatureGuid")
+                        .HasColumnType("uuid")
+                        .HasColumnName("signature_guid");
+
+                    b.Property<DateTimeOffset>("UpdatedOn")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_on")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                    b.HasKey("Id")
+                        .HasName("pk_mou_signature");
+
+                    b.HasIndex("MouId")
+                        .HasDatabaseName("ix_mou_signature_mou_id");
+
+                    b.HasIndex("OrganisationId")
+                        .HasDatabaseName("ix_mou_signature_organisation_id");
+
+                    b.HasIndex("PersonId")
+                        .HasDatabaseName("ix_mou_signature_person_id");
+
+                    b.HasIndex("SignatureGuid")
+                        .IsUnique()
+                        .HasDatabaseName("ix_mou_signature_signature_guid");
+
+                    b.ToTable("mou_signature", (string)null);
                 });
 
             modelBuilder.Entity("CO.CDP.OrganisationInformation.Persistence.Organisation", b =>
@@ -1505,36 +1505,6 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                     b.Navigation("Form");
                 });
 
-            modelBuilder.Entity("CO.CDP.OrganisationInformation.Persistence.Forms.MouSignatures", b =>
-                {
-                    b.HasOne("CO.CDP.OrganisationInformation.Persistence.Mou", "Mou")
-                        .WithMany()
-                        .HasForeignKey("MouId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_mou_signatures_mou_mou_id");
-
-                    b.HasOne("CO.CDP.OrganisationInformation.Persistence.Organisation", "Organisation")
-                        .WithMany()
-                        .HasForeignKey("OrganisationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_mou_signatures_organisations_organisation_id");
-
-                    b.HasOne("CO.CDP.OrganisationInformation.Persistence.Person", "Person")
-                        .WithMany()
-                        .HasForeignKey("PersionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_mou_signatures_persons_persion_id");
-
-                    b.Navigation("Mou");
-
-                    b.Navigation("Organisation");
-
-                    b.Navigation("Person");
-                });
-
             modelBuilder.Entity("CO.CDP.OrganisationInformation.Persistence.Forms.SharedConsent", b =>
                 {
                     b.HasOne("CO.CDP.OrganisationInformation.Persistence.Forms.Form", "Form")
@@ -1554,6 +1524,36 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                     b.Navigation("Form");
 
                     b.Navigation("Organisation");
+                });
+
+            modelBuilder.Entity("CO.CDP.OrganisationInformation.Persistence.MouSignature", b =>
+                {
+                    b.HasOne("CO.CDP.OrganisationInformation.Persistence.Mou", "Mou")
+                        .WithMany()
+                        .HasForeignKey("MouId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_mou_signature_mou_mou_id");
+
+                    b.HasOne("CO.CDP.OrganisationInformation.Persistence.Organisation", "Organisation")
+                        .WithMany()
+                        .HasForeignKey("OrganisationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_mou_signature_organisations_organisation_id");
+
+                    b.HasOne("CO.CDP.OrganisationInformation.Persistence.Person", "Person")
+                        .WithMany()
+                        .HasForeignKey("PersonId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_mou_signature_persons_person_id");
+
+                    b.Navigation("Mou");
+
+                    b.Navigation("Organisation");
+
+                    b.Navigation("Person");
                 });
 
             modelBuilder.Entity("CO.CDP.OrganisationInformation.Persistence.Organisation", b =>

@@ -927,6 +927,37 @@ public static class EndpointExtensions
 
         return app;
     }
+
+    public static RouteGroupBuilder UseMouEndpoints(this RouteGroupBuilder app)
+    {
+        app.MapGet("/{organisationId}/mou",
+            [OrganisationAuthorize([AuthenticationChannel.OneLogin])]
+        //[OrganisationAuthorize(
+        //    [AuthenticationChannel.OneLogin],
+        //      [Constants.OrganisationPersonScope.Admin, Constants.OrganisationPersonScope.Editor],
+        //      OrganisationIdLocation.Path)]
+        async (Guid organisationId, IUseCase<Guid, IEnumerable<MouSignature>> useCase) =>
+                  await useCase.Execute(organisationId)
+                      .AndThen(mouSignatures => mouSignatures != null ? Results.Ok(mouSignatures) : Results.NotFound()))
+          .Produces<List<Model.MouSignature>>(StatusCodes.Status200OK, "application/json")
+          .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
+          .Produces<ProblemDetails>(StatusCodes.Status404NotFound)
+          .ProducesProblem(StatusCodes.Status422UnprocessableEntity)
+          .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError)
+          .WithOpenApi(operation =>
+          {
+              operation.OperationId = "GetOrganisationMouSignatures";
+              operation.Description = "Get MOU Signatures by Organisation ID.";
+              operation.Summary = "Get MOU Signatures by Organisation ID.";
+              operation.Responses["200"].Description = "MOU Signatures.";
+              operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
+              operation.Responses["404"].Description = "Mou Signatures information not found.";
+              operation.Responses["422"].Description = "Unprocessable entity.";
+              operation.Responses["500"].Description = "Internal server error.";
+              return operation;
+          });
+        return app;
+    }
 }
 
 public static class ApiExtensions
