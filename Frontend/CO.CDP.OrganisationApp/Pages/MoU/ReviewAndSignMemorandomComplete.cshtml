@@ -1,0 +1,31 @@
+@page "/organisation/{id}/review-and-sign-memorandom-complete"
+@model CO.CDP.OrganisationApp.Pages.MoU.ReviewAndSignMemorandomCompleteModel
+@using CO.CDP.Localization
+@{
+    ViewData["Title"] = StaticTextResource.MoU_ReviewAndSignComplete_Title;
+    var backLink = $"/organisation/{@Model.Id}/review-and-sign-memorandom";
+}
+
+@section BeforeContent {
+    <a href="@backLink" class="govuk-back-link">@StaticTextResource.Global_Back</a>
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds govuk-body">
+        <fieldset class="govuk-fieldset">
+            <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                <h1 class="govuk-fieldset__heading">
+                    @ViewData["Title"]
+                </h1>
+            </legend>
+
+            <p class="govuk-body">
+                @StaticTextResource.MoU_ReviewAndSignComplete_Hint
+            </p>
+
+            <div class="govuk-!-margin-top-3">
+                <a class="govuk-link" asp-page="/organisation/{@Model.Id}" asp-route-id="@Model.Id">@StaticTextResource.MoU_ReviewAndSignComplete_Link</a>
+            </div>
+        </fieldset>
+    </div>
+</div>

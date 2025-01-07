@@ -1,17 +1,17 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
-  <!--
-    Microsoft ResX Schema
-
+  <!-- 
+    Microsoft ResX Schema 
+    
     Version 2.0
-
-    The primary goals of this format is to allow a simple XML format
-    that is mostly human readable. The generation and parsing of the
-    various data types are done through the TypeConverter classes
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
     associated with the data types.
-
+    
     Example:
-
+    
     ... ado.net/XML headers & schema ...
     <resheader name="resmimetype">text/microsoft-resx</resheader>
     <resheader name="version">2.0</resheader>
@@ -26,36 +26,36 @@
         <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
         <comment>This is a comment</comment>
     </data>
-
-    There are any number of "resheader" rows that contain simple
+                
+    There are any number of "resheader" rows that contain simple 
     name/value pairs.
-
-    Each data row contains a name, and value. The row also contains a
-    type or mimetype. Type corresponds to a .NET class that support
-    text/value conversion through the TypeConverter architecture.
-    Classes that don't support this are serialized and stored with the
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
     mimetype set.
-
-    The mimetype is used for serialized objects, and tells the
-    ResXResourceReader how to depersist the object. This is currently not
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
     extensible. For a given mimetype the value must be set accordingly:
-
-    Note - application/x-microsoft.net.object.binary.base64 is the format
-    that the ResXResourceWriter will generate, however the reader can
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
     read any of the formats listed below.
-
+    
     mimetype: application/x-microsoft.net.object.binary.base64
-    value   : The object must be serialized with
+    value   : The object must be serialized with 
             : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
             : and then encoded with base64 encoding.
-
+    
     mimetype: application/x-microsoft.net.object.soap.base64
-    value   : The object must be serialized with
+    value   : The object must be serialized with 
             : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
             : and then encoded with base64 encoding.
 
     mimetype: application/x-microsoft.net.object.bytearray.base64
-    value   : The object must be serialized into a byte array
+    value   : The object must be serialized into a byte array 
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
@@ -273,17 +273,17 @@
   <data name="Global_Admin" xml:space="preserve">
     <value>Admin</value>
   </data>
-    <data name="Global_Editor" xml:space="preserve">
-      <value>Editor</value>
+  <data name="Global_Editor" xml:space="preserve">
+    <value>Editor</value>
   </data>
-    <data name="Global_Viewer" xml:space="preserve">
-      <value>Viewer</value>
+  <data name="Global_Viewer" xml:space="preserve">
+    <value>Viewer</value>
   </data>
   <data name="Global_Approve" xml:space="preserve">
     <value>Approve</value>
   </data>
   <data name="Global_Reject" xml:space="preserve">
-      <value>Reject</value>
+    <value>Reject</value>
   </data>
   <data name="Organisation_MyAccount" xml:space="preserve">
     <value>My account</value>
@@ -877,9 +877,6 @@
     <value>Does {0} have a legal form?</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityLegalFormQuestion_Hint" xml:space="preserve">
-    <value>Does {0} have a legal form?</value>
-  </data>
-  <data name="Supplier_ConnectedEntity_ConnectedEntityLegalFormQuestion_Hint" xml:space="preserve">
     <value>In the UK, this is a business structure or trading status. For example, limited company or limited liability partnership.</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityLegalFormQuestion_LegalFormNameLabel" xml:space="preserve">
@@ -968,9 +965,6 @@
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityPscDetails_NationalityRequiredError" xml:space="preserve">
     <value>Enter nationality</value>
-  </data>
-  <data name="Supplier_ConnectedEntity_ConnectedEntityPscDetails_DateOfBirthYearInvalidError" xml:space="preserve">
-    <value>Year must be a valid number</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityRegistrationDateQuestion_DayRequiredError" xml:space="preserve">
     <value>Date of registration must include a day</value>
@@ -1670,7 +1664,7 @@
   <data name="OrganisationRegistration_OrganisationAlreadyRegistered_Heading" xml:space="preserve">
     <value>This organisation has already registered</value>
   </data>
-    <data name="OrganisationRegistration_UserConfirm" xml:space="preserve">
+  <data name="OrganisationRegistration_UserConfirm" xml:space="preserve">
     <value>I understand my name and email address will be shared with this organisation</value>
   </data>
   <data name="OrganisationRegistration_OrganisationAlreadyRegistered_Message" xml:space="preserve">
@@ -2486,9 +2480,6 @@
   <data name="Global_SaveAndExit" xml:space="preserve">
     <value>Save and exit</value>
   </data>
-  <data name="Global_Failure_Heading" xml:space="preserve">
-    <value>Failure</value>
-  </data>
   <data name="Supplier_LegalFormCompanyActQuestion_Title" xml:space="preserve">
     <value>Is your organisation registered on Companies House?</value>
   </data>
@@ -2829,7 +2820,7 @@
     <value>Select if you have read and agree to the Central Digital Platform service privacy policy</value>
   </data>
   <data name="ProvideFeedbackAndContact_WhatsItToDoWith" xml:space="preserve">
-    <value>What's it to do with</value>
+    <value>What's it to do with?</value>
   </data>
   <data name="ProvideFeedbackAndContact_ChooseAnOption" xml:space="preserve">
     <value>Choose an option</value>
@@ -2878,9 +2869,6 @@
   </data>
   <data name="ProvideFeedbackAndContact_YouCanAskAQuestion" xml:space="preserve">
     <value>You can ask a question, report a problem or suggest an improvement to the Find a Tender team.</value>
-  </data>
-  <data name="ProvideFeedbackAndContact_WhatsItToDoWith" xml:space="preserve">
-    <value>What's it to do with?</value>
   </data>
   <data name="ProvideFeedbackAndContact_TheWholeService" xml:space="preserve">
     <value>The whole service</value>
@@ -2960,20 +2948,20 @@
   <data name="UserSummary_ManageUsers_Title" xml:space="preserve">
     <value>Manage users</value>
   </data>
-    <data name="UserSummary_JoinRequests" xml:space="preserve">
-      <value>Join requests</value>
+  <data name="UserSummary_JoinRequests" xml:space="preserve">
+    <value>Join requests</value>
   </data>
   <data name="UserSummary_Approve" xml:space="preserve">
-      <value>Approve</value>
+    <value>Approve</value>
   </data>
   <data name="UserSummary_TotalUsers" xml:space="preserve">
-      <value>Organisation has {0} {1}</value>
+    <value>Organisation has {0} {1}</value>
   </data>
   <data name="UserSummary_User" xml:space="preserve">
-      <value>user</value>
+    <value>user</value>
   </data>
-   <data name="UserSummary_Users" xml:space="preserve">
-      <value>users</value>
+  <data name="UserSummary_Users" xml:space="preserve">
+    <value>users</value>
   </data>
   <data name="UserSummary_InviteExpired" xml:space="preserve">
     <value>Invite expired</value>
@@ -2986,9 +2974,6 @@
   </data>
   <data name="UserSummary_AddAnotherUser" xml:space="preserve">
     <value>Add another user?</value>
-  </data>
-  <data name="UserSummary_Resend" xml:space="preserve">
-    <value>Resend</value>
   </data>
   <data name="Users_FirstName_Label" xml:space="preserve">
     <value>First name</value>
@@ -3027,18 +3012,8 @@
     <value>Check your answers</value>
   </data>
   <data name="Users_SendEmail_Button" xml:space="preserve">
-    <value>Send email</value>
-  </data>
-
-  <data name="Users_SendEmail_Button" xml:space="preserve">
     <value>Join requests</value>
   </data>
-
-  <data name="Users_SendEmail_Button" xml:space="preserve">
-    <value>Join requests</value>
-  </data>
-
-
   <data name="ErrorMessageList_DuplicatePersonName" xml:space="preserve">
     <value>A person with this name already exists. Please try again.</value>
   </data>
@@ -3122,5 +3097,66 @@
   </data>
   <data name="ErrorMessageList_IdentiferNumberAlreadyExists" xml:space="preserve">
     <value>You’ve used this registry number for another organisation. Enter a different registry number.</value>
+  </data>
+  <data name="Global_SignAndContinue" xml:space="preserve">
+    <value>Sign and continue</value>
+  </data>
+  <data name="MoU_ReviewAndSignComplete_Hint" xml:space="preserve">
+    <value>We’ll email a copy of the agreement to you.</value>
+  </data>
+  <data name="MoU_ReviewAndSignComplete_Link" xml:space="preserve">
+    <value>Go back to organisation details</value>
+  </data>
+  <data name="MoU_ReviewAndSignComplete_Title" xml:space="preserve">
+    <value>You've signed the data sharing agreement</value>
+  </data>
+  <data name="MoU_ReviewAndSign_ConfirmStatement" xml:space="preserve">
+    <value>I am authorised to sign the agreement for my organisation on behalf of:</value>
+  </data>
+  <data name="MoU_ReviewAndSign_Confirm_Title" xml:space="preserve">
+    <value>I confirm that I have read and agree to the data sharing agreement</value>
+  </data>
+  <data name="MoU_ReviewAndSign_DownloadPdf_Link" xml:space="preserve">
+    <value>&lt;p&gt;
+&lt;a href="#"&gt;Download the data sharing agreement&lt;/a&gt;&lt;/p&gt;</value>
+  </data>
+  <data name="MoU_ReviewAndSign_Download_Title" xml:space="preserve">
+    <value>Download the agreement</value>
+  </data>
+  <data name="MoU_ReviewAndSign_Hint" xml:space="preserve">
+    <value>The data sharing agreement is a memorandum of understanding (MoU) between the Cabinet Office and contracting authorities as joint data controllers of the personal and sensitive data collected and shared on the Find a Tender service.</value>
+  </data>
+  <data name="MoU_ReviewAndSign_Job_Title" xml:space="preserve">
+    <value>Job title</value>
+  </data>
+  <data name="MoU_ReviewAndSign_Job_Title_ErrorMessage" xml:space="preserve">
+    <value>Enter your job title</value>
+  </data>
+  <data name="MoU_ReviewAndSign_Name" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="MoU_ReviewAndSign_Name_ErrorMessage" xml:space="preserve">
+    <value>Please provide a name</value>
+  </data>
+  <data name="MoU_ReviewAndSign_Options_Title" xml:space="preserve">
+    <value>Sign the agreement</value>
+  </data>
+  <data name="MoU_ReviewAndSign_SelectCheckbox_ErrorMessage" xml:space="preserve">
+    <value>Please tick the checkbox, if you have read and agree to the data sharing agreement</value>
+  </data>
+  <data name="MoU_ReviewAndSign_Title" xml:space="preserve">
+    <value>Sign the data sharing agreement</value>
+  </data>
+  <data name="MoU_ReviewAndSign_Warning" xml:space="preserve">
+    <value>You must sign the MoU before you can use the service. It is a formal agreement between the Cabinet Office and your organisation.</value>
+  </data>
+  <data name="OrganisationOverView_Banner_PendingApproval" xml:space="preserve">
+    <value>we need to approve your organisation. We'll email you, usually within one working day.</value>
+  </data>
+  <data name="OrganisationOverView_Banner_PendingApproval_Hint" xml:space="preserve">
+    <value>Before you can use this service:</value>
+  </data>
+  <data name="OrganisationOverView_Banner_Review_MoU_Link" xml:space="preserve">
+    <value>you must &lt;a href="/organisation/{0}/review-and-sign-memorandom"&gt;read and sign the data sharing agreement&lt;/a&gt;</value>
   </data>
 </root>

@@ -54,6 +54,31 @@
                             <p class="govuk-notification-banner__heading">
                                 @StaticTextResource.Organisation_BuyerRegistrationPendingApproval
                             </p>
+                            <p class="govuk-body">
+                                @StaticTextResource.OrganisationOverView_Banner_PendingApproval_Hint
+                            </p>
+                            
+                            <ul class="govuk-list govuk-list--bullet">
+                                <li>@Html.Raw(string.Format(@StaticTextResource.OrganisationOverView_Banner_Review_MoU_Link, Model.Id))</li>
+                                <li>@StaticTextResource.OrganisationOverView_Banner_PendingApproval</li>
+                            </ul>
+                        </div>
+                    </div>
+                } else
+                {
+                    <div class="govuk-notification-banner" role="region" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
+                        <div class="govuk-notification-banner__header">
+                            <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
+                                @StaticTextResource.Global_Important
+                            </h2>
+                        </div>
+                        <div class="govuk-notification-banner__content">
+                            <p class="govuk-body">
+                                @StaticTextResource.OrganisationOverView_Banner_PendingApproval_Hint
+                            </p>
+                            <ul class="govuk-list govuk-list--bullet">
+                                <li>@Html.Raw(string.Format(@StaticTextResource.OrganisationOverView_Banner_Review_MoU_Link, Model.Id))</li>
+                            </ul>
                         </div>
                     </div>
                 }
