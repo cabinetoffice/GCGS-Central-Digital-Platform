@@ -26,7 +26,7 @@ public class GetSharedDataUseCaseTest : IClassFixture<AutoMapperFixture>
     [Fact]
     public async Task ThrowsShareCodeNotFoundException_When_NotFound()
     {
-        var response = async () => await _useCase.Execute("dummy_code");
+        var response = async () => await _useCase.Execute(("dummy_code"));
 
         await response.Should().ThrowAsync<ShareCodeNotFoundException>();
     }
@@ -36,7 +36,7 @@ public class GetSharedDataUseCaseTest : IClassFixture<AutoMapperFixture>
     {
         var (shareCode, _, organisationGuid, _) = SetupTestData();
 
-        var response = async () => await _useCase.Execute(shareCode);
+        var response = async () => await _useCase.Execute((shareCode));
 
         await response.Should().ThrowAsync<Exception>();
     }
@@ -48,7 +48,7 @@ public class GetSharedDataUseCaseTest : IClassFixture<AutoMapperFixture>
 
         _configuration.Setup(c => c["DataSharingApiUrl"]).Returns("https://localhost");
 
-        var result = await _useCase.Execute(shareCode);
+        var result = await _useCase.Execute((shareCode));
         result.Should().NotBeNull();
 
         AssertBasicInformation(result, organisationGuid);

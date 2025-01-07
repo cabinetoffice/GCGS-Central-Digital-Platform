@@ -24,8 +24,8 @@ public class DataSharingTests
 
     [Theory]
     [InlineData(OK, Channel.OrganisationKey)]
+    [InlineData(OK, Channel.OneLogin)]
     [InlineData(Forbidden, Channel.ServiceKey)]
-    [InlineData(Forbidden, Channel.OneLogin)]
     [InlineData(Forbidden, "unknown_channel")]
     public async Task GetSharedData_Authorization_ReturnsExpectedStatusCode(
         HttpStatusCode expectedStatusCode, string channel)
