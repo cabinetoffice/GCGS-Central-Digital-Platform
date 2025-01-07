@@ -62,6 +62,7 @@ builder.Services.AddDbContext<OrganisationInformationContext>((sp, o) => o.UseNp
 
 builder.Services.AddScoped<IIdentifierService, IdentifierService>();
 builder.Services.AddScoped<IOrganisationRepository, DatabaseOrganisationRepository>();
+builder.Services.AddScoped<IOrganisationPartiesRepository, DatabaseOrganisationPartiesRepository>();
 builder.Services.AddScoped<IConnectedEntityRepository, DatabaseConnectedEntityRepository>();
 builder.Services.AddScoped<IPersonRepository, DatabasePersonRepository>();
 builder.Services.AddScoped<IPersonInviteRepository, DatabasePersonInviteRepository>();
@@ -101,6 +102,7 @@ builder.Services.AddScoped<IUseCase<(Guid, Guid, UpdateJoinRequest), bool>, Upda
 builder.Services.AddScoped<IUseCase<ProvideFeedbackAndContact, bool>, ProvideFeedbackAndContactUseCase>();
 builder.Services.AddScoped<IUseCase<ContactUs, bool>, ContactUsUseCase>();
 builder.Services.AddScoped<IUseCase<Guid, BuyerInformation?>, GetBuyerInformationUseCase>();
+builder.Services.AddScoped<IUseCase<Guid, OrganisationParties?>, GetOrganisationPartiesUseCase>();
 
 builder.Services.AddProblemDetails();
 
@@ -167,6 +169,10 @@ app.MapGroup("/organisations")
 app.MapGroup("/organisations")
     .UseManageApiKeyEndpoints()
     .WithTags("Organisation - Manage Api Keys");
+
+app.MapGroup("/organisations")
+    .UseOrganisationPartiesEndpoints()
+    .WithTags("Organisation - Parties");
 
 app.MapGroup("/feeback")
     .UseFeedbackEndpoints()
