@@ -3,7 +3,6 @@ namespace CO.CDP.OrganisationApp.Pages.Forms.ChoiceProviderStrategies;
 
 public class DefaultChoiceProviderStrategy() : IChoiceProviderStrategy
 {
-    public string AnswerFieldName { get; } = "OptionValue";
     public async Task<Dictionary<string, string>?> Execute(FormQuestionOptions options)
     {
         return await Task.FromResult(options.Choices.ToDictionary(c => c.Title, c => c.Title));

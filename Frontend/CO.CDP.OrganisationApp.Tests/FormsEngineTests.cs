@@ -38,7 +38,7 @@ public class FormsEngineTests
         return (organisationId, formId, sectionId, sessionKey);
     }
 
-    private static WebApiClient.SectionQuestionsResponse CreateApiSectionQuestionsResponse(Guid sectionId, Guid questionId, Guid nextQuestionId, string? choiceProviderStrategy = null)
+    private static WebApiClient.SectionQuestionsResponse CreateApiSectionQuestionsResponse(Guid sectionId, Guid questionId, Guid nextQuestionId, string? choiceProviderStrategy = null, string? answerFieldName = null)
     {
         return new WebApiClient.SectionQuestionsResponse(
             section: new WebApiClient.FormSection(
@@ -71,6 +71,7 @@ public class FormsEngineTests
                         nextQuestionAlternative: null,
                         options: new WebApiClient.FormQuestionOptions(
                             choiceProviderStrategy: choiceProviderStrategy,
+                            answerFieldName: answerFieldName,
                             choices: new List<WebApiClient.FormQuestionChoice>
                             {
                                 new WebApiClient.FormQuestionChoice(
@@ -129,8 +130,7 @@ public class FormsEngineTests
                 Options = new FormQuestionOptions
                 {
                     Choices = options == null ? new Dictionary<string, string>() { { "Option1", "Option1" } } : options,
-                    ChoiceProviderStrategy = choiceProviderStrategy,
-                    ChoiceAnswerFieldName = "OptionValue",
+                    ChoiceProviderStrategy = choiceProviderStrategy
                 }
             }
         }
@@ -291,7 +291,7 @@ public class FormsEngineTests
         var (organisationId, formId, sectionId, sessionKey) = CreateTestGuids();
         var questionId = Guid.NewGuid();
         var nextQuestionId = Guid.NewGuid();
-        var apiResponse = CreateApiSectionQuestionsResponse(sectionId, questionId, nextQuestionId, "ExclusionAppliesToChoiceProviderStrategy");
+        var apiResponse = CreateApiSectionQuestionsResponse(sectionId, questionId, nextQuestionId, "ExclusionAppliesToChoiceProviderStrategy", "JsonValue");
         var expectedResponse = CreateModelSectionQuestionsResponse(sectionId, questionId, nextQuestionId, "ExclusionAppliesToChoiceProviderStrategy");
 
         expectedResponse.Questions[0].Options.Choices = new Dictionary<string, string>() {
@@ -299,7 +299,7 @@ public class FormsEngineTests
             { "{\"id\":\"e4bdd7ef-8200-4257-9892-b16f43d1803e\",\"type\":\"connected-entity\"}", "First name Last name" },
             { "{\"id\":\"4c8dccba-df39-4997-814b-7599ed9b5bed\",\"type\":\"connected-entity\"}", "Connected organisation" } };
 
-        expectedResponse.Questions[0].Options.ChoiceAnswerFieldName = "JsonValue";
+        expectedResponse.Questions[0].Options.AnswerFieldName = "JsonValue";
 
         expectedResponse.Questions[0].Options.Groups = new List<FormQuestionGroup>
         {
