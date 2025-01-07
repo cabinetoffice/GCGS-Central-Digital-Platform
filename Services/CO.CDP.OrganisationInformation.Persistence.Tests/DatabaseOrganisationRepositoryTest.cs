@@ -712,8 +712,9 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql)
             SignatureGuid = Guid.NewGuid(),
             OrganisationId = organisation.Id,
             Organisation = organisation,
-            PersonId = person.Id,
-            Person = person,
+            CreatedById = person.Id,
+            CreatedBy = person,
+            Name="Jo Bloggs",
             JobTitle = "Manager",
             MouId = mou.Id,
             Mou = mou
@@ -724,8 +725,9 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql)
             SignatureGuid = Guid.NewGuid(),
             OrganisationId = organisation.Id,
             Organisation = organisation,
-            PersonId = person.Id,
-            Person = person,
+            CreatedById = person.Id,
+            CreatedBy = person,
+            Name="Steve V",
             JobTitle = "Director",
             MouId = mou.Id,
             Mou = mou
@@ -740,7 +742,7 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql)
         result.Should().HaveCount(2);
         result.First().OrganisationId.Should().Be(organisation.Id);
         result.First().Mou.Should().NotBeNull();
-        result.First().Person.Should().NotBeNull();
+        result.First().CreatedBy.Should().NotBeNull();
     }
 
     private DatabaseOrganisationRepository OrganisationRepository()

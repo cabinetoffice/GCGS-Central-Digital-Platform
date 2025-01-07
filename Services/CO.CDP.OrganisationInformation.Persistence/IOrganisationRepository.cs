@@ -47,4 +47,6 @@ public interface IOrganisationRepository : IDisposable
     Task<Organisation?> FindIncludingReviewedBy(Guid organisationId);
 
     public Task<IEnumerable<MouSignature>> GetMouSignatures(int organisationId);
+
+    public Task<IEnumerable<MouSignature>> GetMouSignatures(int organisationId, Guid mouId);
 }

@@ -16,8 +16,8 @@ namespace CO.CDP.Organisation.WebApi.Tests.UseCase;
 public class GetOrganisationMouSignaturesUseCaseTest(AutoMapperFixture mapperFixture)
     : IClassFixture<AutoMapperFixture>
 {
-    private readonly Mock<IOrganisationRepository> _repository = new();    
-    private GetOrganisationMouSignaturesUseCase _useCase=> new GetOrganisationMouSignaturesUseCase(_repository.Object, mapperFixture.Mapper);
+    private readonly Mock<IOrganisationRepository> _repository = new();
+    private GetOrganisationMouSignaturesUseCase _useCase => new GetOrganisationMouSignaturesUseCase(_repository.Object, mapperFixture.Mapper);
 
     [Fact]
     public async Task Execute_ShouldReturnMappedMouSignatures_WhenOrganisationExists()
@@ -31,8 +31,8 @@ public class GetOrganisationMouSignaturesUseCaseTest(AutoMapperFixture mapperFix
 
         var mouSignatures = new List<Persistence.MouSignature>
         {
-            new Persistence.MouSignature { Id = 1, SignatureGuid = Guid.NewGuid(), JobTitle = "Manager", OrganisationId = organisation.Id, Organisation=organisation, PersonId = person.Id, Person=person, MouId = mou.Id, Mou=mou, CreatedOn = DateTimeOffset.UtcNow, UpdatedOn = DateTimeOffset.UtcNow },
-            new Persistence.MouSignature { Id = 2, SignatureGuid = Guid.NewGuid(), JobTitle = "Director", OrganisationId = organisation.Id, Organisation=organisation, PersonId = person.Id, Person=person, MouId = mou.Id, Mou=mou, CreatedOn = DateTimeOffset.UtcNow, UpdatedOn = DateTimeOffset.UtcNow },
+            new Persistence.MouSignature { Id = 1, SignatureGuid = Guid.NewGuid(),Name="Jo Bloggs", JobTitle = "Manager", OrganisationId = organisation.Id, Organisation=organisation, CreatedById = person.Id, CreatedBy=person, MouId = mou.Id, Mou=mou, CreatedOn = DateTimeOffset.UtcNow, UpdatedOn = DateTimeOffset.UtcNow },
+            new Persistence.MouSignature { Id = 2, SignatureGuid = Guid.NewGuid(), Name="Steve V", JobTitle = "Director", OrganisationId = organisation.Id, Organisation=organisation, CreatedById= person.Id, CreatedBy=person, MouId = mou.Id, Mou=mou, CreatedOn = DateTimeOffset.UtcNow, UpdatedOn = DateTimeOffset.UtcNow },
         };
 
         _repository.Setup(repo => repo.Find(organisation.Guid))
@@ -43,12 +43,14 @@ public class GetOrganisationMouSignaturesUseCaseTest(AutoMapperFixture mapperFix
         var result = await _useCase.Execute(organisation.Guid);
 
         result.Should().SatisfyRespectively(
-            first => {
+            first =>
+            {
                 first.Id.Should().Be(mouSignatures[0].SignatureGuid);
                 first.JobTitle.Should().Be("Manager");
                 first.SignatureOn.Should().BeCloseTo(mouSignatures[0].CreatedOn, TimeSpan.FromSeconds(1));
             },
-            second => {
+            second =>
+            {
                 second.Id.Should().Be(mouSignatures[1].SignatureGuid);
                 second.JobTitle.Should().Be("Director");
                 second.SignatureOn.Should().BeCloseTo(mouSignatures[1].CreatedOn, TimeSpan.FromSeconds(1));
@@ -58,13 +60,13 @@ public class GetOrganisationMouSignaturesUseCaseTest(AutoMapperFixture mapperFix
 
     [Fact]
     public async Task Execute_ShouldThrowUnknownOrganisationException_WhenOrganisationNotFound()
-    {        
+    {
         var organisationId = Guid.NewGuid();
         _repository.Setup(repo => repo.Find(organisationId))
                        .ReturnsAsync((Persistence.Organisation)null!);
-      
+
         var act = async () => await _useCase.Execute(organisationId);
-       
+
         await act.Should().ThrowAsync<UnknownOrganisationException>()
                  .WithMessage($"Unknown organisation {organisationId}.");
     }

@@ -956,6 +956,63 @@ public static class EndpointExtensions
               operation.Responses["500"].Description = "Internal server error.";
               return operation;
           });
+
+        app.MapGet("/{organisationId}/mou/{mouId}",
+            [OrganisationAuthorize([AuthenticationChannel.OneLogin])]
+        //[OrganisationAuthorize(
+        //    [AuthenticationChannel.OneLogin],
+        //      [Constants.OrganisationPersonScope.Admin, Constants.OrganisationPersonScope.Editor],
+        //      OrganisationIdLocation.Path)]
+        async (Guid organisationId, Guid mouId, IUseCase<(Guid, Guid), MouSignature> useCase) =>
+                  await useCase.Execute((organisationId, mouId))
+                      .AndThen(mouSignatures => mouSignatures != null ? Results.Ok(mouSignatures) : Results.NotFound()))
+          .Produces<List<Model.MouSignature>>(StatusCodes.Status200OK, "application/json")
+          .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
+          .Produces<ProblemDetails>(StatusCodes.Status404NotFound)
+          .ProducesProblem(StatusCodes.Status422UnprocessableEntity)
+          .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError)
+          .WithOpenApi(operation =>
+          {
+              operation.OperationId = "GetOrganisationMouSignature";
+              operation.Description = "Get MOU Signature by Organisation ID and Mou ID.";
+              operation.Summary = "Get MOU Signature by Organisation ID and Mou ID.";
+              operation.Responses["200"].Description = "MOU Signature.";
+              operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
+              operation.Responses["404"].Description = "Mou Signature information not found.";
+              operation.Responses["422"].Description = "Unprocessable entity.";
+              operation.Responses["500"].Description = "Internal server error.";
+              return operation;
+          });
+
+        //app.MapPost("/{organisationId}/invites",
+        //   [OrganisationAuthorize(
+        //       [AuthenticationChannel.OneLogin],
+        //       [Constants.OrganisationPersonScope.Admin],
+        //       OrganisationIdLocation.Path)]
+        //async (Guid organisationId, InvitePersonToOrganisation invitePersonToOrganisation, IUseCase<(Guid, InvitePersonToOrganisation), bool> useCase) =>
+
+        //           await useCase.Execute((organisationId, invitePersonToOrganisation))
+        //               .AndThen(Results.Ok)
+        //   )
+        //   .Produces(StatusCodes.Status200OK)
+        //   .ProducesProblem(StatusCodes.Status400BadRequest)
+        //   .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
+        //   .ProducesProblem(StatusCodes.Status404NotFound)
+        //   .ProducesProblem(StatusCodes.Status422UnprocessableEntity)
+        //   .ProducesProblem(StatusCodes.Status500InternalServerError)
+        //   .WithOpenApi(operation =>
+        //   {
+        //       operation.OperationId = "CreatePersonInvite";
+        //       operation.Description = "Create a new person invite.";
+        //       operation.Summary = "Create a new person invite.";
+        //       operation.Responses["200"].Description = "Person invite created successfully.";
+        //       operation.Responses["400"].Description = "Bad request.";
+        //       operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
+        //       operation.Responses["404"].Description = "Organisation not found.";
+        //       operation.Responses["422"].Description = "Unprocessable entity.";
+        //       operation.Responses["500"].Description = "Internal server error.";
+        //       return operation;
+        //   });
         return app;
     }
 }

@@ -240,8 +240,17 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
     {
         return await context.MouSignature
         .Where(x => x.OrganisationId == organisationId)
-        .Include(m=>m.Mou)
-        .Include(p=>p.Person)
+        .Include(m => m.Mou)
+        .Include(p => p.CreatedBy)
+        .ToListAsync();
+    }
+
+    public async Task<IEnumerable<MouSignature>> GetMouSignatures(int organisationId, Guid mouId)
+    {
+        return await context.MouSignature
+        .Where(x => x.OrganisationId == organisationId && x.Mou.Guid == mouId)
+        .Include(m => m.Mou)
+        .Include(p => p.CreatedBy)
         .ToListAsync();
     }
 }

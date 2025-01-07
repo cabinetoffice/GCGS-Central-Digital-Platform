@@ -14,9 +14,11 @@ public class MouSignature : IEntityDate
     public required int OrganisationId { get; set; }
     public required Organisation Organisation { get; set; }
 
-    [ForeignKey(nameof(Person))]
-    public required int PersonId { get; set; }
-    public required Person Person { get; set; }
+    [ForeignKey(nameof(CreatedBy))]
+    public required int CreatedById { get; set; }
+    public required Person CreatedBy { get; set; }
+
+    public required string Name { get; set; }
 
     public required string JobTitle { get; set; }
 

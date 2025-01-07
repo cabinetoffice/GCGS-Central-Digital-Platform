@@ -160,7 +160,7 @@ public class WebApiToPersistenceProfile : Profile
         CreateMap<Persistence.MouSignature, Model.MouSignature>()
           .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.SignatureGuid)) 
             .ForMember(dest => dest.Mou, opt => opt.MapFrom(src => src.Mou))        
-            .ForMember(dest => dest.Person, opt => opt.MapFrom(src => src.Person))  
+            .ForMember(dest => dest.CreatedBy, opt => opt.MapFrom(src => src.CreatedBy))  
             .ForMember(dest => dest.JobTitle, opt => opt.MapFrom(src => src.JobTitle))
             .ForMember(dest => dest.SignatureOn, opt => opt.MapFrom(src => src.CreatedOn));
 
