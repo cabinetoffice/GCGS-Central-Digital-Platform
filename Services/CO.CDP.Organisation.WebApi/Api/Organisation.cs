@@ -963,10 +963,10 @@ public static class EndpointExtensions
         //    [AuthenticationChannel.OneLogin],
         //      [Constants.OrganisationPersonScope.Admin, Constants.OrganisationPersonScope.Editor],
         //      OrganisationIdLocation.Path)]
-        async (Guid organisationId, Guid mouId, IUseCase<(Guid, Guid), MouSignature> useCase) =>
-                  await useCase.Execute((organisationId, mouId))
-                      .AndThen(mouSignatures => mouSignatures != null ? Results.Ok(mouSignatures) : Results.NotFound()))
-          .Produces<List<Model.MouSignature>>(StatusCodes.Status200OK, "application/json")
+        async (Guid organisationId, Guid mouSignatureId, IUseCase<(Guid, Guid), MouSignature> useCase) =>
+                  await useCase.Execute((organisationId, mouSignatureId))
+                      .AndThen(mouSignature => mouSignature != null ? Results.Ok(mouSignature) : Results.NotFound()))
+          .Produces<Model.MouSignature>(StatusCodes.Status200OK, "application/json")
           .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
           .Produces<ProblemDetails>(StatusCodes.Status404NotFound)
           .ProducesProblem(StatusCodes.Status422UnprocessableEntity)

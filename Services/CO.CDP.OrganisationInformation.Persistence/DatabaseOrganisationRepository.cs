@@ -245,12 +245,12 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
         .ToListAsync();
     }
 
-    public async Task<IEnumerable<MouSignature>> GetMouSignatures(int organisationId, Guid mouId)
+    public async Task<MouSignature?> GetMouSignature(int organisationId, Guid mouSignatureId)
     {
         return await context.MouSignature
-        .Where(x => x.OrganisationId == organisationId && x.Mou.Guid == mouId)
+        .Where(x => x.OrganisationId == organisationId && x.Mou.Guid == mouSignatureId)
         .Include(m => m.Mou)
         .Include(p => p.CreatedBy)
-        .ToListAsync();
+        .FirstOrDefaultAsync();
     }
 }

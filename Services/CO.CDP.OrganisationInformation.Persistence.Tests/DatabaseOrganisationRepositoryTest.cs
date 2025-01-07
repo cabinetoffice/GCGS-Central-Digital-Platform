@@ -745,6 +745,110 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql)
         result.First().CreatedBy.Should().NotBeNull();
     }
 
+    [Fact]
+    public async Task GetMouSignature_ShouldReturnEmpty_WhenNoMatch()
+    {
+        using var repository = OrganisationRepository();
+
+        var organisation = GivenOrganisation();
+
+        await using var context = GetDbContext();
+        await context.Organisations.AddAsync(organisation);        
+
+        var mou = new Mou { Id = 1, Guid = Guid.NewGuid(), FilePath = "" };
+
+        var person = GivenPerson();
+        organisation.Persons.Add(person);
+
+        context.Mou.Add(mou);
+
+        context.MouSignature.Add(new MouSignature
+        {
+            Id = 1,
+            SignatureGuid = Guid.NewGuid(),
+            OrganisationId = organisation.Id,
+            Organisation = organisation,
+            CreatedById = person.Id,
+            CreatedBy = person,
+            Name = "Jo Bloggs",
+            JobTitle = "Manager",
+            MouId = mou.Id,
+            Mou = mou
+        });
+        context.MouSignature.Add(new MouSignature
+        {
+            Id = 2,
+            SignatureGuid = Guid.NewGuid(),
+            OrganisationId = organisation.Id,
+            Organisation = organisation,
+            CreatedById = person.Id,
+            CreatedBy = person,
+            Name = "Steve V",
+            JobTitle = "Director",
+            MouId = mou.Id,
+            Mou = mou
+        });
+        context.SaveChanges();
+
+        var result = await repository.GetMouSignature(organisation.Id, Guid.NewGuid());
+
+        result.Should().BeNull();
+    }
+
+    [Fact]
+    public async Task GetMouSignature_ShouldReturnCorrectSignatures()
+    {
+        using var repository = OrganisationRepository();
+
+        var organisation = GivenOrganisation();
+
+        await using var context = GetDbContext();
+        await context.Organisations.AddAsync(organisation);        
+
+        var mou = new Mou { Id = 1, Guid = Guid.NewGuid(), FilePath = "" };
+
+        var person = GivenPerson();
+        organisation.Persons.Add(person);
+
+        context.Mou.Add(mou);
+
+        context.MouSignature.Add(new MouSignature
+        {
+            Id = 1,
+            SignatureGuid = Guid.NewGuid(),
+            OrganisationId = organisation.Id,
+            Organisation = organisation,
+            CreatedById = person.Id,
+            CreatedBy = person,
+            Name = "Jo Bloggs",
+            JobTitle = "Manager",
+            MouId = mou.Id,
+            Mou = mou
+        });
+        context.MouSignature.Add(new MouSignature
+        {
+            Id = 2,
+            SignatureGuid = Guid.NewGuid(),
+            OrganisationId = organisation.Id,
+            Organisation = organisation,
+            CreatedById = person.Id,
+            CreatedBy = person,
+            Name = "Steve V",
+            JobTitle = "Director",
+            MouId = mou.Id,
+            Mou = mou
+        });
+        context.SaveChanges();
+
+
+        var result = await repository.GetMouSignature(organisation.Id, mou.Guid);
+
+
+        result.Should().NotBeNull();        
+        result?.OrganisationId.Should().Be(organisation.Id);
+        result?.MouId.Should().Be(mou.Id);
+    }
+
     private DatabaseOrganisationRepository OrganisationRepository()
         => new(GetDbContext());
 

@@ -5,14 +5,14 @@ using CO.CDP.OrganisationInformation.Persistence;
 
 namespace CO.CDP.Organisation.WebApi.UseCase;
 public class GetOrganisationMouSignatureUseCase(IOrganisationRepository organisationRepository, IMapper mapper)
-    : IUseCase<(Guid organisationId, Guid mouId), Model.MouSignature>
+    : IUseCase<(Guid organisationId, Guid mouSignatureId), Model.MouSignature>
 {
-    public async Task<Model.MouSignature> Execute((Guid organisationId, Guid mouId) command)
+    public async Task<Model.MouSignature> Execute((Guid organisationId, Guid mouSignatureId) command)
     {
         var organisation = await organisationRepository.Find(command.organisationId)
                            ?? throw new UnknownOrganisationException($"Unknown organisation {command.organisationId}.");
 
-           return await organisationRepository.GetMouSignatures(organisation.Id, command.mouId)
+        return await organisationRepository.GetMouSignature(organisation.Id, command.mouSignatureId)
             .AndThen(mapper.Map<Model.MouSignature>);
     }
 }
