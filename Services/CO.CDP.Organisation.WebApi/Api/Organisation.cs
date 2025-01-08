@@ -1047,7 +1047,7 @@ public static class EndpointExtensions
          [AuthenticationChannel.OneLogin],
            [Constants.OrganisationPersonScope.Admin],
            OrganisationIdLocation.Path)]
-        async (IUseCase<MouSignatureLatest> useCase) =>
+        async (IUseCase<Mou> useCase) =>
              await useCase.Execute()
                  .AndThen(mouLatest => mouLatest != null ? Results.Ok(mouLatest) : Results.NotFound()))
      .Produces<Model.MouSignatureLatest>(StatusCodes.Status200OK, "application/json")

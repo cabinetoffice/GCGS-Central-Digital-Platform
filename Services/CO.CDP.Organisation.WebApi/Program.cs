@@ -108,6 +108,7 @@ builder.Services.AddScoped<IUseCase<Guid, IEnumerable<MouSignature>>, GetOrganis
 builder.Services.AddScoped<IUseCase<(Guid, Guid), MouSignature>, GetOrganisationMouSignatureUseCase>();
 builder.Services.AddScoped<IUseCase<Guid, MouSignatureLatest>, GetOrganisationMouSignatureLatestUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, SignMouRequest),bool>, SignOrganisationMouUseCase>();
+builder.Services.AddScoped<IUseCase<CO.CDP.Organisation.WebApi.Model.Mou>, GetLatestMouUseCase>();
 
 builder.Services.AddProblemDetails();
 
