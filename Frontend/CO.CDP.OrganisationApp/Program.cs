@@ -78,13 +78,14 @@ builder.Services
     .AddSharedSessions(builder.Configuration);
 
 var sessionTimeoutInMinutes = builder.Configuration.GetValue<double>("SessionTimeoutInMinutes");
+var cookieSecurePolicy = builder.Environment.IsDevelopment() ? CookieSecurePolicy.SameAsRequest : CookieSecurePolicy.Always;
 
 builder.Services.AddSession(options =>
 {
     options.IdleTimeout = TimeSpan.FromMinutes(sessionTimeoutInMinutes);
     options.Cookie.IsEssential = true;
     options.Cookie.SameSite = SameSiteMode.Strict;
-    options.Cookie.SecurePolicy = builder.Environment.IsDevelopment() ? CookieSecurePolicy.SameAsRequest : CookieSecurePolicy.Always;
+    options.Cookie.SecurePolicy = cookieSecurePolicy;
 });
 
 builder.Services.AddHttpContextAccessor();
@@ -93,19 +94,19 @@ builder.Services.AddSingleton<ISession, Session>();
 builder.Services.ConfigureApplicationCookie(options =>
 {
     options.Cookie.SameSite = SameSiteMode.Strict;
-    options.Cookie.SecurePolicy = builder.Environment.IsDevelopment() ? CookieSecurePolicy.SameAsRequest : CookieSecurePolicy.Always;
+    options.Cookie.SecurePolicy = cookieSecurePolicy;
 });
 
 builder.Services.AddCookiePolicy(options =>
 {
     options.MinimumSameSitePolicy = SameSiteMode.Strict;
     options.HttpOnly = Microsoft.AspNetCore.CookiePolicy.HttpOnlyPolicy.Always;
-    options.Secure = builder.Environment.IsDevelopment() ? CookieSecurePolicy.SameAsRequest : CookieSecurePolicy.Always;
+    options.Secure = cookieSecurePolicy;
 });
 
 builder.Services.AddAntiforgery(options =>
 {
-    options.Cookie.SecurePolicy = builder.Environment.IsDevelopment() ? CookieSecurePolicy.SameAsRequest : CookieSecurePolicy.Always;
+    options.Cookie.SecurePolicy = cookieSecurePolicy;
     options.Cookie.SameSite = SameSiteMode.Strict;
     options.Cookie.HttpOnly = true;
 });
@@ -269,9 +270,9 @@ if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error");
     app.UseHsts();
-    app.UseCookiePolicy();
 }
 
+app.UseCookiePolicy();
 app.UseRequestLocalization();
 app.MapHealthChecks("/health").AllowAnonymous();
 app.UseStaticFiles();
