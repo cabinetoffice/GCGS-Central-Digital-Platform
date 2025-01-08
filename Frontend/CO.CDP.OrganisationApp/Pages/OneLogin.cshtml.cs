@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.FeatureManagement;
 using System.Net;
+using System.Web;
 
 namespace CO.CDP.OrganisationApp.Pages;
 
@@ -73,21 +74,20 @@ public class OneLoginModel(
 
     private async Task<ChallengeResult> SignIn(string? redirectUri = null, string? origin = null)
     {
-        session.Remove(Session.FtsServiceOrigin);
-        if (!string.IsNullOrWhiteSpace(origin)
-            && await featureManager.IsEnabledAsync(FeatureFlags.AllowDynamicFtsOrigins))
-        {
-            var allowedOrigins = config["FtsServiceAllowedOrigins"] ?? "";
-            if (allowedOrigins.Split(",", StringSplitOptions.RemoveEmptyEntries).Contains(origin))
-            {
-                session.Set(Session.FtsServiceOrigin, origin);
-            }
-        }
-
         var uri = "/one-login/user-info";
         if (Helper.ValidRelativeUri(redirectUri))
         {
             uri += $"?redirectUri={WebUtility.UrlEncode(redirectUri)}";
+
+            if (!string.IsNullOrWhiteSpace(origin)
+            && await featureManager.IsEnabledAsync(FeatureFlags.AllowDynamicFtsOrigins))
+            {
+                var allowedOrigins = config["FtsServiceAllowedOrigins"] ?? "";
+                if (allowedOrigins.Split(",", StringSplitOptions.RemoveEmptyEntries).Contains(origin))
+                {
+                    uri += WebUtility.UrlEncode($"?origin={origin}");
+                }
+            }
         }
 
         return Challenge(new AuthenticationProperties { RedirectUri = uri });
@@ -110,6 +110,7 @@ public class OneLoginModel(
             return await SignIn(redirectUri);
         }
         await logoutManager.RemoveAsLoggedOut(urn);
+        SetFtsOrigin(redirectUri);
 
         var ud = new UserDetails { UserUrn = urn, Email = email, Phone = phone };
         session.Set(Session.UserDetailsKey, ud);
@@ -144,6 +145,28 @@ public class OneLoginModel(
         catch (ApiException ex) when (ex.StatusCode == 404)
         {
             return RedirectToPage("PrivacyPolicy", new { RedirectUri = Helper.ValidRelativeUri(redirectUri) ? redirectUri : default });
+        }
+    }
+
+    private void SetFtsOrigin(string? redirectUri)
+    {
+        session.Remove(Session.FtsServiceOrigin);
+
+        try
+        {
+            if (!string.IsNullOrWhiteSpace(redirectUri))
+            {
+                var uri = new Uri("https://example.com" + redirectUri);
+                var origin = HttpUtility.ParseQueryString(uri.Query).Get("origin");
+                if (!string.IsNullOrWhiteSpace(origin))
+                {
+                    session.Set(Session.FtsServiceOrigin, origin);
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            logger.LogWarning("Invalid redirectUri, {Excption}", ex);
         }
     }
 
