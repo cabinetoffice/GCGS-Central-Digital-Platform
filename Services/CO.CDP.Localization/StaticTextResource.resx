@@ -3037,8 +3037,15 @@
   <data name="Users_SendEmail_Button" xml:space="preserve">
     <value>Join requests</value>
   </data>
-
-
+  <data name="OrganisationInviteExpired_Title" xml:space="preserve">
+    <value>Your invite has expired</value>
+  </data>
+  <data name="OrganisationInviteExpired_Body" xml:space="preserve">
+    <value>You may have a newer invitation or need to request to join again.</value>
+  </data>
+  <data name="OrganisationInviteExpired_Link" xml:space="preserve">
+    <value>Go to my account</value>
+  </data>
   <data name="ErrorMessageList_DuplicatePersonName" xml:space="preserve">
     <value>A person with this name already exists. Please try again.</value>
   </data>
