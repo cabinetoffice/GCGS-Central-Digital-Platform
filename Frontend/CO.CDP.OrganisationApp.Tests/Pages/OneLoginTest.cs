@@ -54,7 +54,7 @@ public class OneLoginTest
     }
 
     [Fact]
-    public async Task OnGetSignIn_WhenOriginIsNotNull_ShouldSetSessionWithFtsServiceOriginKey()
+    public async Task OnGetSignIn_WhenOriginIsNotNull_ShouldSetCorrectRedirectUri()
     {
         configMock.Setup(c => c["FtsServiceAllowedOrigins"]).Returns("http://example1.com,http://example2.com");
         featureManagerMock.Setup(f => f.IsEnabledAsync(FeatureFlags.AllowDynamicFtsOrigins)).ReturnsAsync(true);
@@ -63,11 +63,12 @@ public class OneLoginTest
 
         var result = await model.OnGetAsync("/org/1", origin: origin);
 
-        sessionMock.Verify(s => s.Set(Session.FtsServiceOrigin, origin), Times.Once);
+        result.As<ChallengeResult>().Properties!.RedirectUri.Should()
+            .Be("/one-login/user-info?redirectUri=%2Forg%2F1%3Forigin%3Dhttp%253a%252f%252fexample1.com");
     }
 
     [Fact]
-    public async Task OnGetSignIn_WhenOriginIsNotListedInConfiguration_ShouldNotSetSessionWithFtsServiceOriginKey()
+    public async Task OnGetSignIn_WhenOriginIsNotListedInConfiguration_ShouldSetCorrectRedirectUri()
     {
         configMock.Setup(c => c["FtsServiceAllowedOrigins"]).Returns("http://example1.com,http://example2.com");
         featureManagerMock.Setup(f => f.IsEnabledAsync(FeatureFlags.AllowDynamicFtsOrigins)).ReturnsAsync(true);
@@ -76,7 +77,8 @@ public class OneLoginTest
 
         var result = await model.OnGetAsync("/org/1", origin: origin);
 
-        sessionMock.Verify(s => s.Set(Session.FtsServiceOrigin, origin), Times.Never);
+        result.As<ChallengeResult>().Properties!.RedirectUri.Should()
+            .Be("/one-login/user-info?redirectUri=%2Forg%2F1");
     }
 
     [Fact]
