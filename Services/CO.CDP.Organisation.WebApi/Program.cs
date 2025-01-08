@@ -183,7 +183,7 @@ app.MapGroup("/feeback")
     .UseFeedbackEndpoints()
     .WithTags("Feedback - provide feedback");
 
-app.MapGroup("/mou")
+app.MapGroup("/organisations")
     .UseMouEndpoints()
     .WithTags("Organisation - MOUs");
 
