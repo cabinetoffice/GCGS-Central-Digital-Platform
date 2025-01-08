@@ -184,8 +184,13 @@ app.MapGroup("/feeback")
     .WithTags("Feedback - provide feedback");
 
 app.MapGroup("/organisations")
-    .UseMouEndpoints()
+    .UseOrganisationMouEndpoints()
     .WithTags("Organisation - MOUs");
+
+app.MapGroup("/mou")
+    .UseMouEndpoints()
+    .WithTags("Mou");
+
 
 app.Run();
 public abstract partial class Program;

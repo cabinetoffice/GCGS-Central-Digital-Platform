@@ -928,7 +928,7 @@ public static class EndpointExtensions
         return app;
     }
 
-    public static RouteGroupBuilder UseMouEndpoints(this RouteGroupBuilder app)
+    public static RouteGroupBuilder UseOrganisationMouEndpoints(this RouteGroupBuilder app)
     {
         app.MapGet("/{organisationId}/mou",
         [OrganisationAuthorize(
@@ -1037,6 +1037,36 @@ public static class EndpointExtensions
                operation.Responses["500"].Description = "Internal server error.";
                return operation;
            });
+        return app;
+    }
+
+    public static RouteGroupBuilder UseMouEndpoints(this RouteGroupBuilder app)
+    {
+        app.MapGet("/latest",
+   [OrganisationAuthorize(
+         [AuthenticationChannel.OneLogin],
+           [Constants.OrganisationPersonScope.Admin],
+           OrganisationIdLocation.Path)]
+        async (IUseCase<MouSignatureLatest> useCase) =>
+             await useCase.Execute()
+                 .AndThen(mouLatest => mouLatest != null ? Results.Ok(mouLatest) : Results.NotFound()))
+     .Produces<Model.MouSignatureLatest>(StatusCodes.Status200OK, "application/json")
+     .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
+     .Produces<ProblemDetails>(StatusCodes.Status404NotFound)
+     .ProducesProblem(StatusCodes.Status422UnprocessableEntity)
+     .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError)
+     .WithOpenApi(operation =>
+     {
+         operation.OperationId = "GetLatestMou";
+         operation.Description = "Get Latest MOU.";
+         operation.Summary = "Get Latest MOU to sign.";
+         operation.Responses["200"].Description = "Latest MOU.";
+         operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
+         operation.Responses["404"].Description = "Latest Mou information not found.";
+         operation.Responses["422"].Description = "Unprocessable entity.";
+         operation.Responses["500"].Description = "Internal server error.";
+         return operation;
+     });
         return app;
     }
 
