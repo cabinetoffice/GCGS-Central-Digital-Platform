@@ -462,7 +462,7 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql)
     }
 
     private async Task GetConnectedOrganisations(DateTimeOffset? endDate = null, bool connectedPersonsShouldBeEmpty = false)
-    { 
+    {
         using var repository = OrganisationRepository();
 
         var supplierOrganisation = GivenOrganisation();
@@ -774,12 +774,13 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql)
         await context.Organisations.AddAsync(organisation);
         await context.SaveChangesAsync();
 
-        var mou = new Mou { Id = 1, Guid = Guid.NewGuid(), FilePath = "" };
+        var mou = new Mou { Guid = Guid.NewGuid(), FilePath = "" };
+        context.Mou.Add(mou);
 
         var person = GivenPerson();
         organisation.Persons.Add(person);
 
-        context.Mou.Add(mou);
+        context.SaveChanges();
 
         context.MouSignature.Add(new MouSignature
         {
@@ -789,7 +790,7 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql)
             Organisation = organisation,
             CreatedById = person.Id,
             CreatedBy = person,
-            Name="Jo Bloggs",
+            Name = "Jo Bloggs",
             JobTitle = "Manager",
             MouId = mou.Id,
             Mou = mou
@@ -802,7 +803,7 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql)
             Organisation = organisation,
             CreatedById = person.Id,
             CreatedBy = person,
-            Name="Steve V",
+            Name = "Steve V",
             JobTitle = "Director",
             MouId = mou.Id,
             Mou = mou
@@ -828,18 +829,19 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql)
         var organisation = GivenOrganisation();
 
         await using var context = GetDbContext();
-        await context.Organisations.AddAsync(organisation);        
+        await context.Organisations.AddAsync(organisation);
 
-        var mou = new Mou { Id = 1, Guid = Guid.NewGuid(), FilePath = "" };
+        var mou = new Mou { Guid = Guid.NewGuid(), FilePath = "" };
+        context.Mou.Add(mou);
 
         var person = GivenPerson();
         organisation.Persons.Add(person);
 
-        context.Mou.Add(mou);
+        context.SaveChanges();
 
         context.MouSignature.Add(new MouSignature
         {
-            Id = 1,
+            Id = 3,
             SignatureGuid = Guid.NewGuid(),
             OrganisationId = organisation.Id,
             Organisation = organisation,
@@ -852,7 +854,7 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql)
         });
         context.MouSignature.Add(new MouSignature
         {
-            Id = 2,
+            Id = 4,
             SignatureGuid = Guid.NewGuid(),
             OrganisationId = organisation.Id,
             Organisation = organisation,
@@ -873,24 +875,27 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql)
     [Fact]
     public async Task GetMouSignature_ShouldReturnCorrectSignatures()
     {
+        var mousignatureGuid1 = Guid.NewGuid();
+        var mousignatureGuid2 = Guid.NewGuid();
         using var repository = OrganisationRepository();
 
         var organisation = GivenOrganisation();
 
         await using var context = GetDbContext();
-        await context.Organisations.AddAsync(organisation);        
+        await context.Organisations.AddAsync(organisation);
 
-        var mou = new Mou { Id = 1, Guid = Guid.NewGuid(), FilePath = "" };
+        var mou = new Mou { Guid = Guid.NewGuid(), FilePath = "" };
+        context.Mou.Add(mou);
 
         var person = GivenPerson();
         organisation.Persons.Add(person);
 
-        context.Mou.Add(mou);
+        context.SaveChanges();
 
         context.MouSignature.Add(new MouSignature
         {
-            Id = 1,
-            SignatureGuid = Guid.NewGuid(),
+            Id = 5,
+            SignatureGuid = mousignatureGuid1,
             OrganisationId = organisation.Id,
             Organisation = organisation,
             CreatedById = person.Id,
@@ -902,8 +907,8 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql)
         });
         context.MouSignature.Add(new MouSignature
         {
-            Id = 2,
-            SignatureGuid = Guid.NewGuid(),
+            Id = 6,
+            SignatureGuid = mousignatureGuid2,
             OrganisationId = organisation.Id,
             Organisation = organisation,
             CreatedById = person.Id,
@@ -916,12 +921,12 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql)
         context.SaveChanges();
 
 
-        var result = await repository.GetMouSignature(organisation.Id, mou.Guid);
+        var result = await repository.GetMouSignature(organisation.Id, mousignatureGuid1);
 
 
-        result.Should().NotBeNull();        
+        result.Should().NotBeNull();
         result?.OrganisationId.Should().Be(organisation.Id);
-        result?.MouId.Should().Be(mou.Id);
+        result?.SignatureGuid.Should().Be(mousignatureGuid1);
     }
 
     private DatabaseOrganisationRepository OrganisationRepository()
