@@ -35,4 +35,10 @@
     <ItemGroup>
       <Folder Include="wwwroot\mou-pdfs\" />
     </ItemGroup>
+
+    <ItemGroup>
+      <Content Update="wwwroot\mou-pdfs\mou-pdf-template.pdf">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+    </ItemGroup>
 </Project>
