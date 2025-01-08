@@ -248,9 +248,15 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
     public async Task<MouSignature?> GetMouSignature(int organisationId, Guid mouSignatureId)
     {
         return await context.MouSignature
-        .Where(x => x.OrganisationId == organisationId && x.Mou.Guid == mouSignatureId)
+        .Where(x => x.OrganisationId == organisationId && x.SignatureGuid == mouSignatureId)
         .Include(m => m.Mou)
         .Include(p => p.CreatedBy)
+        .FirstOrDefaultAsync();
+    }
+    public async Task<Mou?> GetLatestMou()
+    {
+        return await context.Mou
+            .OrderByDescending(m => m.CreatedOn)
         .FirstOrDefaultAsync();
     }
 }

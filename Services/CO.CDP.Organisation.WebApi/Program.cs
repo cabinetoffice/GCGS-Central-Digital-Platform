@@ -103,6 +103,7 @@ builder.Services.AddScoped<IUseCase<ContactUs, bool>, ContactUsUseCase>();
 builder.Services.AddScoped<IUseCase<Guid, BuyerInformation?>, GetBuyerInformationUseCase>();
 builder.Services.AddScoped<IUseCase<Guid, IEnumerable<MouSignature>>, GetOrganisationMouSignaturesUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, Guid), MouSignature>, GetOrganisationMouSignatureUseCase>();
+builder.Services.AddScoped<IUseCase<Guid, MouSignatureLatest>, GetOrganisationMouSignatureLatestUseCase>();
 
 builder.Services.AddProblemDetails();
 

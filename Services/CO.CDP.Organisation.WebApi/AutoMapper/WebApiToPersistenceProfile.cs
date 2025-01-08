@@ -164,6 +164,13 @@ public class WebApiToPersistenceProfile : Profile
             .ForMember(dest => dest.JobTitle, opt => opt.MapFrom(src => src.JobTitle))
             .ForMember(dest => dest.SignatureOn, opt => opt.MapFrom(src => src.CreatedOn));
 
+        CreateMap<Persistence.MouSignature, Model.MouSignatureLatest>()
+          .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.SignatureGuid))
+            .ForMember(dest => dest.Mou, opt => opt.MapFrom(src => src.Mou))
+            .ForMember(dest => dest.CreatedBy, opt => opt.MapFrom(src => src.CreatedBy))
+            .ForMember(dest => dest.JobTitle, opt => opt.MapFrom(src => src.JobTitle))
+            .ForMember(dest => dest.SignatureOn, opt => opt.MapFrom(src => src.CreatedOn));
+
         CreateMap<Persistence.Mou, Model.Mou>()
             .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Guid))
             .ForMember(dest => dest.FilePath, opt => opt.MapFrom(src => src.FilePath))
@@ -175,6 +182,8 @@ public class WebApiToPersistenceProfile : Profile
             .ForMember(dest => dest.FirstName, opt => opt.MapFrom(src => src.FirstName))
             .ForMember(dest => dest.LastName, opt => opt.MapFrom(src => src.LastName))
             .ForMember(m => m.Scopes, o => o.Ignore());
+
+        
     }
 
     private void ConnectedEntityMapping()

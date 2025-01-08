@@ -984,11 +984,39 @@ public static class EndpointExtensions
               return operation;
           });
 
-        //app.MapPost("/{organisationId}/invites",
-        //   [OrganisationAuthorize(
-        //       [AuthenticationChannel.OneLogin],
-        //       [Constants.OrganisationPersonScope.Admin],
-        //       OrganisationIdLocation.Path)]
+        app.MapGet("/{organisationId}/mou/latest",
+          [OrganisationAuthorize([AuthenticationChannel.OneLogin])]
+        //[OrganisationAuthorize(
+        //    [AuthenticationChannel.OneLogin],
+        //      [Constants.OrganisationPersonScope.Admin, Constants.OrganisationPersonScope.Editor],
+        //      OrganisationIdLocation.Path)]
+        async (Guid organisationId, IUseCase<Guid,  MouSignatureLatest> useCase) =>
+                await useCase.Execute(organisationId)
+                    .AndThen(mouSignatureLatest => mouSignatureLatest != null ? Results.Ok(mouSignatureLatest) : Results.NotFound()))
+        .Produces<Model.MouSignatureLatest>(StatusCodes.Status200OK, "application/json")
+        .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
+        .Produces<ProblemDetails>(StatusCodes.Status404NotFound)
+        .ProducesProblem(StatusCodes.Status422UnprocessableEntity)
+        .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError)
+        .WithOpenApi(operation =>
+        {
+            operation.OperationId = "GetOrganisationLatestMouSignature";
+            operation.Description = "Get Latest MOU Signature by Organisation ID and Mou ID.";
+            operation.Summary = "Get Latest MOU Signature by Organisation ID and Mou ID.";
+            operation.Responses["200"].Description = "Latest MOU Signature.";
+            operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
+            operation.Responses["404"].Description = "Latest Mou Signature information not found.";
+            operation.Responses["422"].Description = "Unprocessable entity.";
+            operation.Responses["500"].Description = "Internal server error.";
+            return operation;
+        });
+
+        //app.MapPost("/{organisationId}/mou",
+        //     [OrganisationAuthorize([AuthenticationChannel.OneLogin])]
+        ////[OrganisationAuthorize(
+        ////    [AuthenticationChannel.OneLogin],
+        ////      [Constants.OrganisationPersonScope.Admin, Constants.OrganisationPersonScope.Editor],
+        ////      OrganisationIdLocation.Path)]
         //async (Guid organisationId, InvitePersonToOrganisation invitePersonToOrganisation, IUseCase<(Guid, InvitePersonToOrganisation), bool> useCase) =>
 
         //           await useCase.Execute((organisationId, invitePersonToOrganisation))

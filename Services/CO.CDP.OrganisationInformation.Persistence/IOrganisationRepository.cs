@@ -49,4 +49,6 @@ public interface IOrganisationRepository : IDisposable
     public Task<IEnumerable<MouSignature>> GetMouSignatures(int organisationId);
 
     public Task<MouSignature?> GetMouSignature(int organisationId, Guid mouSignatureId);
+
+    public Task<Mou?> GetLatestMou();
 }
