@@ -64,7 +64,7 @@ public class OneLoginTest
         var result = await model.OnGetAsync("/org/1", origin: origin);
 
         result.As<ChallengeResult>().Properties!.RedirectUri.Should()
-            .Be("/one-login/user-info?redirectUri=%2Forg%2F1%3Forigin%3Dhttp%3A%2F%2Fexample1.com");
+            .Be("/one-login/user-info?redirectUri=%2Forg%2F1%3Forigin%3Dhttp%253a%252f%252fexample1.com");
     }
 
     [Fact]
