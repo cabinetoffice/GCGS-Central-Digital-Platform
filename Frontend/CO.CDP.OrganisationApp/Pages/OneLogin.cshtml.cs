@@ -75,19 +75,23 @@ public class OneLoginModel(
     private async Task<ChallengeResult> SignIn(string? redirectUri = null, string? origin = null)
     {
         var uri = "/one-login/user-info";
+
         if (Helper.ValidRelativeUri(redirectUri))
         {
-            uri += $"?redirectUri={WebUtility.UrlEncode(redirectUri)}";
+            var uriBuilder = new UriBuilder("https://example.com" + redirectUri);
 
-            if (!string.IsNullOrWhiteSpace(origin)
-            && await featureManager.IsEnabledAsync(FeatureFlags.AllowDynamicFtsOrigins))
+            if (!string.IsNullOrWhiteSpace(origin) && await featureManager.IsEnabledAsync(FeatureFlags.AllowDynamicFtsOrigins))
             {
                 var allowedOrigins = config["FtsServiceAllowedOrigins"] ?? "";
                 if (allowedOrigins.Split(",", StringSplitOptions.RemoveEmptyEntries).Contains(origin))
                 {
-                    uri += WebUtility.UrlEncode($"?origin={origin}");
+                    var query = HttpUtility.ParseQueryString(uriBuilder.Query);
+                    query["origin"] = origin;
+                    uriBuilder.Query = query.ToString();
                 }
             }
+
+            uri += $"?redirectUri={WebUtility.UrlEncode(uriBuilder.Uri.PathAndQuery)}";
         }
 
         return Challenge(new AuthenticationProperties { RedirectUri = uri });
