@@ -931,11 +931,10 @@ public static class EndpointExtensions
     public static RouteGroupBuilder UseMouEndpoints(this RouteGroupBuilder app)
     {
         app.MapGet("/{organisationId}/mou",
-            [OrganisationAuthorize([AuthenticationChannel.OneLogin])]
-        //[OrganisationAuthorize(
-        //    [AuthenticationChannel.OneLogin],
-        //      [Constants.OrganisationPersonScope.Admin, Constants.OrganisationPersonScope.Editor],
-        //      OrganisationIdLocation.Path)]
+        [OrganisationAuthorize(
+            [AuthenticationChannel.OneLogin],
+              [Constants.OrganisationPersonScope.Admin],
+              OrganisationIdLocation.Path)]
         async (Guid organisationId, IUseCase<Guid, IEnumerable<MouSignature>> useCase) =>
                   await useCase.Execute(organisationId)
                       .AndThen(mouSignatures => mouSignatures != null ? Results.Ok(mouSignatures) : Results.NotFound()))
@@ -958,11 +957,10 @@ public static class EndpointExtensions
           });
 
         app.MapGet("/{organisationId}/mou/{mouId}",
-            [OrganisationAuthorize([AuthenticationChannel.OneLogin])]
-        //[OrganisationAuthorize(
-        //    [AuthenticationChannel.OneLogin],
-        //      [Constants.OrganisationPersonScope.Admin, Constants.OrganisationPersonScope.Editor],
-        //      OrganisationIdLocation.Path)]
+        [OrganisationAuthorize(
+            [AuthenticationChannel.OneLogin],
+              [Constants.OrganisationPersonScope.Admin],
+              OrganisationIdLocation.Path)]
         async (Guid organisationId, Guid mouSignatureId, IUseCase<(Guid, Guid), MouSignature> useCase) =>
                   await useCase.Execute((organisationId, mouSignatureId))
                       .AndThen(mouSignature => mouSignature != null ? Results.Ok(mouSignature) : Results.NotFound()))
@@ -985,11 +983,10 @@ public static class EndpointExtensions
           });
 
         app.MapGet("/{organisationId}/mou/latest",
-          [OrganisationAuthorize([AuthenticationChannel.OneLogin])]
-        //[OrganisationAuthorize(
-        //    [AuthenticationChannel.OneLogin],
-        //      [Constants.OrganisationPersonScope.Admin, Constants.OrganisationPersonScope.Editor],
-        //      OrganisationIdLocation.Path)]
+      [OrganisationAuthorize(
+            [AuthenticationChannel.OneLogin],
+              [Constants.OrganisationPersonScope.Admin],
+              OrganisationIdLocation.Path)]
         async (Guid organisationId, IUseCase<Guid,  MouSignatureLatest> useCase) =>
                 await useCase.Execute(organisationId)
                     .AndThen(mouSignatureLatest => mouSignatureLatest != null ? Results.Ok(mouSignatureLatest) : Results.NotFound()))
@@ -1012,11 +1009,10 @@ public static class EndpointExtensions
         });
 
         app.MapPost("/{organisationId}/mou",
-             [OrganisationAuthorize([AuthenticationChannel.OneLogin])]
-        //[OrganisationAuthorize(
-        //    [AuthenticationChannel.OneLogin],
-        //      [Constants.OrganisationPersonScope.Admin, Constants.OrganisationPersonScope.Editor],
-        //      OrganisationIdLocation.Path)]
+      [OrganisationAuthorize(
+            [AuthenticationChannel.OneLogin],
+              [Constants.OrganisationPersonScope.Admin],
+              OrganisationIdLocation.Path)]
         async (Guid organisationId, SignMouRequest signMou, IUseCase<(Guid, SignMouRequest), bool> useCase) =>
 
                    await useCase.Execute((organisationId, signMou))
