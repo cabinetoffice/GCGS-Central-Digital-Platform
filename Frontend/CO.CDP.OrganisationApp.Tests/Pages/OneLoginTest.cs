@@ -1,4 +1,5 @@
 using CO.CDP.OrganisationApp.Authentication;
+using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.Pages;
 using CO.CDP.OrganisationApp.WebApiClients;
@@ -9,7 +10,9 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.FeatureManagement;
 using Moq;
 using System.Security.Claims;
 
@@ -24,6 +27,8 @@ public class OneLoginTest
     private readonly Mock<IOneLoginAuthority> oneLoginAuthorityMock = new();
     private readonly Mock<IAuthenticationService> authService = new();
     private readonly Mock<IAuthorityClient> authorityClientMock = new();
+    private readonly Mock<IFeatureManager> featureManagerMock = new();
+    private readonly Mock<IConfiguration> configMock = new();
     private const string urn = "urn:fdc:gov.uk:2022:7wTqYGMFQxgukTSpSI2GodMwe9";
 
     [Fact]
@@ -46,6 +51,47 @@ public class OneLoginTest
 
         result.Should().BeOfType<ChallengeResult>()
             .Which.Properties!.RedirectUri.Should().Be("/one-login/user-info?redirectUri=%2Forg%2F1");
+    }
+
+    [Fact]
+    public async Task OnGetSignIn_WhenOriginIsNotNull_ShouldSetCorrectRedirectUri()
+    {
+        configMock.Setup(c => c["FtsServiceAllowedOrigins"]).Returns("http://example1.com,http://example2.com");
+        featureManagerMock.Setup(f => f.IsEnabledAsync(FeatureFlags.AllowDynamicFtsOrigins)).ReturnsAsync(true);
+        var origin = "http://example1.com";
+        var model = GivenOneLoginModel("sign-in");
+
+        var result = await model.OnGetAsync("/org/1", origin: origin);
+
+        result.As<ChallengeResult>().Properties!.RedirectUri.Should()
+            .Be("/one-login/user-info?redirectUri=%2Forg%2F1%3Forigin%3Dhttp%253a%252f%252fexample1.com");
+    }
+
+    [Fact]
+    public async Task OnGetSignIn_WhenOriginIsNotListedInConfiguration_ShouldSetCorrectRedirectUri()
+    {
+        configMock.Setup(c => c["FtsServiceAllowedOrigins"]).Returns("http://example1.com,http://example2.com");
+        featureManagerMock.Setup(f => f.IsEnabledAsync(FeatureFlags.AllowDynamicFtsOrigins)).ReturnsAsync(true);
+        var origin = "http://example3.com";
+        var model = GivenOneLoginModel("sign-in");
+
+        var result = await model.OnGetAsync("/org/1", origin: origin);
+
+        result.As<ChallengeResult>().Properties!.RedirectUri.Should()
+            .Be("/one-login/user-info?redirectUri=%2Forg%2F1");
+    }
+
+    [Fact]
+    public async Task OnGetSignIn_WhenAllowDynamicFtsOriginsFeatureIsDisabled_ShouldNotSetSessionWithFtsServiceOriginKey()
+    {
+        configMock.Setup(c => c["FtsServiceAllowedOrigins"]).Returns("http://example1.com,http://example2.com");
+        featureManagerMock.Setup(f => f.IsEnabledAsync(FeatureFlags.AllowDynamicFtsOrigins)).ReturnsAsync(false);
+
+        var model = GivenOneLoginModel("sign-in");
+
+        var result = await model.OnGetAsync("/org/1", origin: "http://example1.com");
+
+        sessionMock.Verify(s => s.Set(Session.FtsServiceOrigin, "origin"), Times.Never);
     }
 
     [Fact]
@@ -320,7 +366,9 @@ public class OneLoginTest
             logoutManagerMock.Object,
             oneLoginAuthorityMock.Object,
             authorityClientMock.Object,
-            new Mock<ILogger<OneLoginModel>>().Object)
+            new Mock<ILogger<OneLoginModel>>().Object,
+            featureManagerMock.Object,
+            configMock.Object)
         { PageAction = pageAction };
     }
 }

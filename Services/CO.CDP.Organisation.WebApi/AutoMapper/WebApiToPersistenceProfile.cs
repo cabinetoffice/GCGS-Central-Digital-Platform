@@ -153,6 +153,19 @@ public class WebApiToPersistenceProfile : Profile
 
         ConnectedEntityMapping();
         OrganisationEventsMapping();
+        OrganisationPartiesMapping();
+    }
+
+    private void OrganisationPartiesMapping()
+    {
+        CreateMap<Persistence.OrganisationParty, OrganisationParty>()
+            .ForMember(m => m.Name, o => o.MapFrom(m => m.ChildOrganisation!.Name))
+            .ForMember(m => m.Id, o => o.MapFrom(m => m.ChildOrganisation!.Guid))
+            .ForMember(m => m.ShareCode, o => o.MapFrom(m => m.SharedConsent));
+
+        CreateMap<Persistence.Forms.SharedConsent, OrganisationPartyShareCode>()
+            .ForMember(m => m.Value, o => o.MapFrom(m => m.ShareCode))
+            .ForMember(m => m.SubmittedAt, o => o.MapFrom(m => m.SubmittedAt));
         MouSignatureMapping();
     }
     private void MouSignatureMapping()
@@ -344,7 +357,8 @@ public class WebApiToPersistenceProfile : Profile
                 {
                     return ReviewStatus.Rejected;
                 }
-            } else
+            }
+            else
             {
                 return ReviewStatus.Approved;
             }

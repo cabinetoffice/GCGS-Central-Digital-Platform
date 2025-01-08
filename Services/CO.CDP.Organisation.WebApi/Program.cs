@@ -57,11 +57,13 @@ if (Assembly.GetEntryAssembly().IsRunAs("CO.CDP.Organisation.WebApi"))
 }
 
 var connectionString = ConnectionStringHelper.GetConnectionString(builder.Configuration, "OrganisationInformationDatabase");
-builder.Services.AddHealthChecks().AddNpgSql(connectionString);
-builder.Services.AddDbContext<OrganisationInformationContext>(o => o.UseNpgsql(connectionString));
+builder.Services.AddSingleton(new NpgsqlDataSourceBuilder(connectionString).MapEnums().Build());
+builder.Services.AddHealthChecks().AddNpgSql(sp => sp.GetRequiredService<NpgsqlDataSource>());
+builder.Services.AddDbContext<OrganisationInformationContext>((sp, o) => o.UseNpgsql(sp.GetRequiredService<NpgsqlDataSource>()));
 
 builder.Services.AddScoped<IIdentifierService, IdentifierService>();
 builder.Services.AddScoped<IOrganisationRepository, DatabaseOrganisationRepository>();
+builder.Services.AddScoped<IOrganisationPartiesRepository, DatabaseOrganisationPartiesRepository>();
 builder.Services.AddScoped<IConnectedEntityRepository, DatabaseConnectedEntityRepository>();
 builder.Services.AddScoped<IPersonRepository, DatabasePersonRepository>();
 builder.Services.AddScoped<IPersonInviteRepository, DatabasePersonInviteRepository>();
@@ -101,6 +103,7 @@ builder.Services.AddScoped<IUseCase<(Guid, Guid, UpdateJoinRequest), bool>, Upda
 builder.Services.AddScoped<IUseCase<ProvideFeedbackAndContact, bool>, ProvideFeedbackAndContactUseCase>();
 builder.Services.AddScoped<IUseCase<ContactUs, bool>, ContactUsUseCase>();
 builder.Services.AddScoped<IUseCase<Guid, BuyerInformation?>, GetBuyerInformationUseCase>();
+builder.Services.AddScoped<IUseCase<Guid, OrganisationParties?>, GetOrganisationPartiesUseCase>();
 builder.Services.AddScoped<IUseCase<Guid, IEnumerable<MouSignature>>, GetOrganisationMouSignaturesUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, Guid), MouSignature>, GetOrganisationMouSignatureUseCase>();
 builder.Services.AddScoped<IUseCase<Guid, MouSignatureLatest>, GetOrganisationMouSignatureLatestUseCase>();
@@ -171,6 +174,10 @@ app.MapGroup("/organisations")
 app.MapGroup("/organisations")
     .UseManageApiKeyEndpoints()
     .WithTags("Organisation - Manage Api Keys");
+
+app.MapGroup("/organisations")
+    .UseOrganisationPartiesEndpoints()
+    .WithTags("Organisation - Parties");
 
 app.MapGroup("/feeback")
     .UseFeedbackEndpoints()

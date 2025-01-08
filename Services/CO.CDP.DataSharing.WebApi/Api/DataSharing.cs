@@ -20,10 +20,11 @@ public static class EndpointExtensions
     public static void UseDataSharingEndpoints(this WebApplication app)
     {
         app.MapGet("/share/data/{sharecode}",
-            [OrganisationAuthorize([AuthenticationChannel.OrganisationKey])]
+            [OrganisationAuthorize([AuthenticationChannel.OrganisationKey, AuthenticationChannel.OneLogin])]
         async (string sharecode,
-            IUseCase<string, SupplierInformation?> useCase) => await useCase.Execute(sharecode)
-             .AndThen(supplierInformation => supplierInformation != null ? Results.Ok(supplierInformation) : Results.NotFound()))
+                IUseCase<string, SupplierInformation?> useCase)
+            => await useCase.Execute(sharecode)
+                .AndThen(supplierInformation => supplierInformation != null ? Results.Ok(supplierInformation) : Results.NotFound()))
             .Produces<SupplierInformation>(StatusCodes.Status200OK, "application/json")
             .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
             .Produces<ProblemDetails>(StatusCodes.Status404NotFound)

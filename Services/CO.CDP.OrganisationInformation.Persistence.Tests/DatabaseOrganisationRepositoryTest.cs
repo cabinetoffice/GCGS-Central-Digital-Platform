@@ -378,10 +378,28 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql)
     [Fact]
     public async Task GetConnectedIndividualTrusts_WhenConnectedEntitiesExist_ReturnsConnectedEntities()
     {
+        await GetConnectedIndividualTrusts();
+    }
+
+    [Fact]
+    public async Task GetConnectedIndividualTrusts_WhenConnectedEntitiesExistAndFutureEndDate_ReturnsConnectedEntities()
+    {
+        await GetConnectedIndividualTrusts(endDate: DateTimeOffset.UtcNow.AddDays(1));
+    }
+
+    [Fact]
+    public async Task GetConnectedIndividualTrusts_WhenConnectedEntitiesExistAndEndDateInPast_ReturnsNoConnectedEntities()
+    {
+        await GetConnectedIndividualTrusts(endDate: DateTimeOffset.UtcNow.AddDays(-1), connectedPersonsShouldBeEmpty: true);
+    }
+
+    private async Task GetConnectedIndividualTrusts(DateTimeOffset? endDate = null, bool connectedPersonsShouldBeEmpty = false)
+    {
         using var repository = OrganisationRepository();
 
         var supplierOrganisation = GivenOrganisation();
         var connectedEntity = GivenConnectedIndividualTrust(supplierOrganisation);
+        connectedEntity.EndDate = endDate;
 
         await using var context = GetDbContext();
         await context.Organisations.AddAsync(supplierOrganisation);
@@ -390,15 +408,22 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql)
 
         var result = await repository.GetConnectedIndividualTrusts(supplierOrganisation.Id);
 
-        result.Should().NotBeEmpty();
-        result.Should().HaveCount(1);
+        if (connectedPersonsShouldBeEmpty)
+        {
+            result.Should().BeEmpty();
+        }
+        else
+        {
+            result.Should().NotBeEmpty();
+            result.Should().HaveCount(1);
 
-        var individualTrust = result.First().IndividualOrTrust;
-        individualTrust.Should().BeEquivalentTo(connectedEntity.IndividualOrTrust, options =>
-            options
-                .Using<DateTimeOffset>(ctx => ctx.Subject.Should().BeCloseTo(ctx.Expectation, TimeSpan.FromMilliseconds(100)))
-                .WhenTypeIs<DateTimeOffset>()
-        );
+            var individualTrust = result.First().IndividualOrTrust;
+            individualTrust.Should().BeEquivalentTo(connectedEntity.IndividualOrTrust, options =>
+                options
+                    .Using<DateTimeOffset>(ctx => ctx.Subject.Should().BeCloseTo(ctx.Expectation, TimeSpan.FromMilliseconds(100)))
+                    .WhenTypeIs<DateTimeOffset>()
+            );
+        }
     }
 
     [Fact]
@@ -421,10 +446,28 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql)
     [Fact]
     public async Task GetConnectedOrganisations_WhenConnectedEntitiesExist_ReturnsConnectedEntities()
     {
+        await GetConnectedOrganisations();
+    }
+
+    [Fact]
+    public async Task GetConnectedOrganisations_WhenConnectedEntitiesExistAndFutureEndDate_ReturnsConnectedEntities()
+    {
+        await GetConnectedOrganisations(endDate: DateTimeOffset.UtcNow.AddDays(1));
+    }
+
+    [Fact]
+    public async Task GetConnectedOrganisations_WhenConnectedEntitiesExistAndEndDateInPast_ReturnsNoConnectedEntities()
+    {
+        await GetConnectedOrganisations(endDate: DateTimeOffset.UtcNow.AddDays(-1), connectedPersonsShouldBeEmpty: true);
+    }
+
+    private async Task GetConnectedOrganisations(DateTimeOffset? endDate = null, bool connectedPersonsShouldBeEmpty = false)
+    { 
         using var repository = OrganisationRepository();
 
         var supplierOrganisation = GivenOrganisation();
         var connectedEntity = GivenConnectedOrganisation(supplierOrganisation);
+        connectedEntity.EndDate = endDate;
 
         await using var context = GetDbContext();
         await context.Organisations.AddAsync(supplierOrganisation);
@@ -433,15 +476,22 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql)
 
         var result = await repository.GetConnectedOrganisations(supplierOrganisation.Id);
 
-        result.Should().NotBeEmpty();
-        result.Should().HaveCount(1);
+        if (connectedPersonsShouldBeEmpty)
+        {
+            result.Should().BeEmpty();
+        }
+        else
+        {
+            result.Should().NotBeEmpty();
+            result.Should().HaveCount(1);
 
-        var organisation = result.First().Organisation;
-        organisation.Should().BeEquivalentTo(connectedEntity.Organisation, options =>
-            options
-                .Using<DateTimeOffset>(ctx => ctx.Subject.Should().BeCloseTo(ctx.Expectation, TimeSpan.FromMilliseconds(100)))
-                .WhenTypeIs<DateTimeOffset>()
-        );
+            var organisation = result.First().Organisation;
+            organisation.Should().BeEquivalentTo(connectedEntity.Organisation, options =>
+                options
+                    .Using<DateTimeOffset>(ctx => ctx.Subject.Should().BeCloseTo(ctx.Expectation, TimeSpan.FromMilliseconds(100)))
+                    .WhenTypeIs<DateTimeOffset>()
+            );
+        }
     }
 
     [Fact]
@@ -464,10 +514,28 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql)
     [Fact]
     public async Task GetConnectedTrustsOrTrustees_WhenConnectedEntitiesExist_ReturnsConnectedEntities()
     {
+        await GetConnectedTrustsOrTrustees();
+    }
+
+    [Fact]
+    public async Task GetConnectedTrustsOrTrustees_WhenConnectedEntitiesExistAndFutureEndDate_ReturnsConnectedEntities()
+    {
+        await GetConnectedTrustsOrTrustees(endDate: DateTimeOffset.UtcNow.AddDays(1));
+    }
+
+    [Fact]
+    public async Task GetConnectedTrustsOrTrustees_WhenConnectedEntitiesExistAndEndDateInPast_ReturnsNoConnectedEntities()
+    {
+        await GetConnectedTrustsOrTrustees(endDate: DateTimeOffset.UtcNow.AddDays(-1), connectedPersonsShouldBeEmpty: true);
+    }
+
+    private async Task GetConnectedTrustsOrTrustees(DateTimeOffset? endDate = null, bool connectedPersonsShouldBeEmpty = false)
+    {
         using var repository = OrganisationRepository();
 
         var supplierOrganisation = GivenOrganisation();
         var connectedEntity = GivenConnectedTrustsOrTrustees(supplierOrganisation);
+        connectedEntity.EndDate = endDate;
 
         using var context = GetDbContext();
         await context.Organisations.AddAsync(supplierOrganisation);
@@ -476,16 +544,23 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql)
 
         var result = await repository.GetConnectedTrustsOrTrustees(supplierOrganisation.Id);
 
-        result.Should().NotBeEmpty();
-        result.Should().HaveCount(1);
-        result.Should().Contain(x => x.EntityType == ConnectedEntity.ConnectedEntityType.TrustOrTrustee);
+        if (connectedPersonsShouldBeEmpty)
+        {
+            result.Should().BeEmpty();
+        }
+        else
+        {
+            result.Should().NotBeEmpty();
+            result.Should().HaveCount(1);
+            result.Should().Contain(x => x.EntityType == ConnectedEntity.ConnectedEntityType.TrustOrTrustee);
 
-        var organisation = result.First().Organisation;
-        organisation.Should().BeEquivalentTo(connectedEntity.Organisation, options =>
-            options
-                .Using<DateTimeOffset>(ctx => ctx.Subject.Should().BeCloseTo(ctx.Expectation, TimeSpan.FromMilliseconds(100)))
-                .WhenTypeIs<DateTimeOffset>()
-        );
+            var organisation = result.First().Organisation;
+            organisation.Should().BeEquivalentTo(connectedEntity.Organisation, options =>
+                options
+                    .Using<DateTimeOffset>(ctx => ctx.Subject.Should().BeCloseTo(ctx.Expectation, TimeSpan.FromMilliseconds(100)))
+                    .WhenTypeIs<DateTimeOffset>()
+            );
+        }
     }
 
     [Fact]
