@@ -23,7 +23,7 @@ public class GetOrganisationMouSignatureLatestUseCase(IOrganisationRepository or
         var latestSignature = mouSignatures.OrderByDescending(m => m.CreatedOn).First();
 
         var latestMou = await organisationRepository.GetLatestMou()
-            ?? throw new InvalidOperationException($"No MOU found.");
+            ?? throw new UnknownMouException($"No MOU found.");
 
 
         var mouSignatureLatestModel = mapper.Map<Model.MouSignatureLatest>(latestSignature);
