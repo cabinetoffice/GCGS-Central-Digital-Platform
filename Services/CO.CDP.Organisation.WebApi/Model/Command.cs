@@ -400,6 +400,15 @@ public record CreateOrganisationJoinRequest
     public Guid PersonId { get; init; }
 }
 
+public record SignMouRequest
+{
+    public Guid OrganisationId { get; set; }
+    public Guid MouId { get; set; }
+    public Guid CreatedById { get; set; }
+    public string Name{ get; set; }
+    public string JobTitle{ get; set; }
+}
+
 public static class MappingExtensions
 {
     public static Identifier AsView(this OrganisationIdentifier command) =>

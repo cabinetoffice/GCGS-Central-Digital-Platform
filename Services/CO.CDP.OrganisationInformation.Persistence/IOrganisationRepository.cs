@@ -9,6 +9,8 @@ public interface IOrganisationRepository : IDisposable
 
     public void SaveOrganisationPerson(OrganisationPerson organisationPerson);
 
+    public void SaveOrganisationMou(MouSignature mouSignature);
+
     public Task<Organisation?> Find(Guid organisationId);
     public Task<Organisation?> FindIncludingPersons(Guid organisationId);
     public Task<Organisation?> FindIncludingTenant(Guid organisationId);
@@ -51,4 +53,6 @@ public interface IOrganisationRepository : IDisposable
     public Task<MouSignature?> GetMouSignature(int organisationId, Guid mouSignatureId);
 
     public Task<Mou?> GetLatestMou();
+
+    public Task<Mou?> GetMou(Guid mouId);
 }

@@ -13,14 +13,14 @@ using Person = CO.CDP.OrganisationInformation.Persistence.Person;
 
 namespace CO.CDP.Organisation.WebApi.Tests.UseCase;
 
-public class GetOrganisationMouSignatureLatestUseCaseTest(AutoMapperFixture mapperFixture)
-    : IClassFixture<AutoMapperFixture>
+public class SignOrganisationMouUseCaseTest
 {
-    private readonly Mock<IOrganisationRepository> _repository = new();
-    private GetOrganisationMouSignatureLatestUseCase _useCase => new GetOrganisationMouSignatureLatestUseCase(_repository.Object, mapperFixture.Mapper);
+    private readonly Mock<IOrganisationRepository> _organisationRepository = new();
+    private readonly Mock<IPersonRepository> _personRepository = new();
+    private SignOrganisationMouUseCase _useCase => new SignOrganisationMouUseCase(_organisationRepository.Object, _personRepository.Object);
 
     [Fact]
-    public async Task Execute_ShouldReturnLatestMouSignature_WhenValidData()
+    public async Task Execute_ShouldReturnTrue_WhenValidInputs()
     {
         var organisation = FakeOrganisation(true);
 
@@ -29,82 +29,121 @@ public class GetOrganisationMouSignatureLatestUseCaseTest(AutoMapperFixture mapp
         var person = FakePerson();
         organisation.Persons.Add(person);
 
-        var mouSignatures = new List<Persistence.MouSignature>
+        var signMouRequest = new SignMouRequest
         {
-            new Persistence.MouSignature { Id = 1, SignatureGuid = Guid.NewGuid(),Name="Jo Bloggs", JobTitle = "Manager", OrganisationId = organisation.Id, Organisation=organisation, CreatedById = person.Id, CreatedBy=person, MouId = mou.Id, Mou=mou, CreatedOn = DateTimeOffset.UtcNow, UpdatedOn = DateTimeOffset.UtcNow },
-            new Persistence.MouSignature { Id = 2, SignatureGuid = Guid.NewGuid(), Name="Steve V", JobTitle = "Director", OrganisationId = organisation.Id, Organisation=organisation, CreatedById= person.Id, CreatedBy=person, MouId = mou.Id, Mou=mou, CreatedOn = DateTimeOffset.UtcNow, UpdatedOn = DateTimeOffset.UtcNow },
+            MouId = mou.Guid,
+            Name = "John Doe",
+            JobTitle = "CEO",
+            CreatedById = person.Guid
         };
 
-        _repository.Setup(repo => repo.Find(organisation.Guid)).ReturnsAsync(organisation);
-        _repository.Setup(repo => repo.GetMouSignatures(organisation.Id)).ReturnsAsync(mouSignatures);
-        _repository.Setup(repo => repo.GetLatestMou()).ReturnsAsync(mou);
+        _organisationRepository
+            .Setup(repo => repo.Find(organisation.Guid))
+            .ReturnsAsync(organisation);
 
+        _personRepository
+            .Setup(repo => repo.Find(person.Guid))
+            .ReturnsAsync(person);
 
-        var result = await _useCase.Execute(organisation.Guid);
+        _organisationRepository
+            .Setup(repo => repo.GetMou(mou.Guid))
+            .ReturnsAsync(mou);
 
-        result.Should().NotBeNull();
-        result.Id.Should().Be(mouSignatures[1].SignatureGuid);
-        result.IsLatest.Should().BeTrue();
+        _organisationRepository
+            .Setup(repo => repo.SaveOrganisationMou(It.IsAny<Persistence.MouSignature>()))
+            .Verifiable();
+
+        var result = await _useCase.Execute((organisation.Guid, signMouRequest));
+
+        result.Should().BeTrue();
+        _organisationRepository.Verify(repo => repo.SaveOrganisationMou(It.IsAny<Persistence.MouSignature>()), Times.Once);
     }
 
     [Fact]
     public async Task Execute_ShouldThrowUnknownOrganisationException_WhenOrganisationNotFound()
     {
         var organisationId = Guid.NewGuid();
-        var mouSignatureId = Guid.NewGuid();
-        _repository.Setup(repo => repo.Find(organisationId))
+        var signMouRequest = new SignMouRequest
+        {
+            MouId = Guid.NewGuid(),
+            Name = "John Doe",
+            JobTitle = "CEO",
+            CreatedById = Guid.NewGuid()
+        };
+        _organisationRepository.Setup(repo => repo.Find(organisationId))
                        .ReturnsAsync((Persistence.Organisation)null!);
 
-        var act = async () => await _useCase.Execute(organisationId);
+        var act = async () => await _useCase.Execute((organisationId,signMouRequest));
 
         await act.Should().ThrowAsync<UnknownOrganisationException>()
                  .WithMessage($"Unknown organisation {organisationId}.");
     }
 
     [Fact]
-    public async Task Execute_ShouldThrowInvalidOperationException_WhenNoMouSignaturesFound()
+    public async Task Execute_ShouldThrowUnknownPersonException_WhenPersonNotFound()
     {
         var organisation = FakeOrganisation(true);
-        var mouSignatureId = Guid.NewGuid();
+
         var mou = new Mou { Id = 1, Guid = Guid.NewGuid(), FilePath = "" };
 
         var person = FakePerson();
         organisation.Persons.Add(person);
 
-        _repository.Setup(repo => repo.Find(organisation.Guid)).ReturnsAsync(organisation);
-        _repository.Setup(repo => repo.GetMouSignatures(organisation.Id)).ReturnsAsync(new List<MouSignature>());
-        _repository.Setup(repo => repo.GetLatestMou()).ReturnsAsync(mou);
+        var signMouRequest = new SignMouRequest
+        {
+            MouId = mou.Guid,
+            Name = "John Doe",
+            JobTitle = "CEO",
+            CreatedById = person.Guid
+        };
 
-        Func<Task> act = async () => await _useCase.Execute(organisation.Guid);
+        _organisationRepository
+            .Setup(repo => repo.Find(organisation.Guid))
+            .ReturnsAsync(organisation);
 
-        await act.Should().ThrowAsync<InvalidOperationException>()
-            .WithMessage($"No MOU signatures found for organisation {organisation.Guid}.");
+        _personRepository
+            .Setup(repo => repo.Find(person.Guid))
+            .ReturnsAsync((Person)null!);
+   
+        Func<Task> act = async () => await _useCase.Execute((organisation.Guid, signMouRequest));
+     
+        await act.Should().ThrowAsync<UnknownPersonException>()
+            .WithMessage($"Unknown person {person.Guid}.");
     }
 
     [Fact]
-    public async Task Execute_ShouldThrowInvalidOperationException_WhenNoMouFound()
+    public async Task Execute_ShouldThrowUnknownMouException_WhenMouNotFound()
     {
         var organisation = FakeOrganisation(true);
-        var mouSignatureId = Guid.NewGuid();
+
         var mou = new Mou { Id = 1, Guid = Guid.NewGuid(), FilePath = "" };
 
         var person = FakePerson();
         organisation.Persons.Add(person);
 
-        var mouSignatures = new List<Persistence.MouSignature>
+        var signMouRequest = new SignMouRequest
         {
-            new Persistence.MouSignature { Id = 1, SignatureGuid = Guid.NewGuid(),Name="Jo Bloggs", JobTitle = "Manager", OrganisationId = organisation.Id, Organisation=organisation, CreatedById = person.Id, CreatedBy=person, MouId = mou.Id, Mou=mou, CreatedOn = DateTimeOffset.UtcNow, UpdatedOn = DateTimeOffset.UtcNow },
-            new Persistence.MouSignature { Id = 2, SignatureGuid = Guid.NewGuid(), Name="Steve V", JobTitle = "Director", OrganisationId = organisation.Id, Organisation=organisation, CreatedById= person.Id, CreatedBy=person, MouId = mou.Id, Mou=mou, CreatedOn = DateTimeOffset.UtcNow, UpdatedOn = DateTimeOffset.UtcNow },
+            MouId = mou.Guid,
+            Name = "John Doe",
+            JobTitle = "CEO",
+            CreatedById = person.Guid
         };
+        _organisationRepository
+             .Setup(repo => repo.Find(organisation.Guid))
+             .ReturnsAsync(organisation);
 
-        _repository.Setup(repo => repo.Find(organisation.Guid)).ReturnsAsync(organisation);
-        _repository.Setup(repo => repo.GetMouSignatures(organisation.Id)).ReturnsAsync(mouSignatures);
-        _repository.Setup(repo => repo.GetLatestMou()).ReturnsAsync((Mou)null!);
+        _personRepository
+            .Setup(repo => repo.Find(person.Guid))
+            .ReturnsAsync(person);
 
-        Func<Task> act = async () => await _useCase.Execute(organisation.Guid);
-        
-        await act.Should().ThrowAsync<InvalidOperationException>()
-            .WithMessage("No MOU found.");
+        _organisationRepository
+            .Setup(repo => repo.GetMou(mou.Guid))
+            .ReturnsAsync((Mou)null!);
+       
+        Func<Task> act = async () => await _useCase.Execute((organisation.Guid, signMouRequest));
+      
+        await act.Should().ThrowAsync<UnknownMouException>()
+            .WithMessage($"Unknown Mou {mou.Guid}.");
     }
 
     public static Person FakePerson(

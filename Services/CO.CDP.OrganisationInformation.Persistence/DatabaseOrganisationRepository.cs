@@ -217,6 +217,12 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
         context.SaveChanges();
     }
 
+    public void SaveOrganisationMou(MouSignature mouSignature)
+    {
+        context.MouSignature.Update(mouSignature);
+        context.SaveChanges();
+    }
+
     private static void HandleDbUpdateException(Organisation organisation, DbUpdateException cause)
     {
         switch (cause.InnerException)
@@ -257,6 +263,13 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
     {
         return await context.Mou
             .OrderByDescending(m => m.CreatedOn)
+        .FirstOrDefaultAsync();
+    }
+
+    public async Task<Mou?> GetMou(Guid mouId)
+    {
+        return await context.Mou
+                .Where(m => m.Guid == mouId)
         .FirstOrDefaultAsync();
     }
 }

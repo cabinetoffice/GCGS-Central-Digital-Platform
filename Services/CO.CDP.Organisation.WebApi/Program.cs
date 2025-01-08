@@ -104,6 +104,7 @@ builder.Services.AddScoped<IUseCase<Guid, BuyerInformation?>, GetBuyerInformatio
 builder.Services.AddScoped<IUseCase<Guid, IEnumerable<MouSignature>>, GetOrganisationMouSignaturesUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, Guid), MouSignature>, GetOrganisationMouSignatureUseCase>();
 builder.Services.AddScoped<IUseCase<Guid, MouSignatureLatest>, GetOrganisationMouSignatureLatestUseCase>();
+builder.Services.AddScoped<IUseCase<(Guid, SignMouRequest),bool>, SignOrganisationMouUseCase>();
 
 builder.Services.AddProblemDetails();
 
