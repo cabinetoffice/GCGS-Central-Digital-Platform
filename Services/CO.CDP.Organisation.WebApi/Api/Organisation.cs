@@ -396,7 +396,7 @@ public static class EndpointExtensions
                     [Constants.OrganisationPersonScope.Admin, Constants.OrganisationPersonScope.Editor, Constants.OrganisationPersonScope.Viewer],
                     OrganisationIdLocation.Path,
                     [Constants.PersonScope.SupportAdmin])]
-                async (Guid organisationId, IUseCase<Guid, BuyerInformation?> useCase) =>
+        async (Guid organisationId, IUseCase<Guid, BuyerInformation?> useCase) =>
                     await useCase.Execute(organisationId)
                         .AndThen(buyer => buyer != null ? Results.Ok(buyer) : Results.NotFound()))
             .Produces<BuyerInformation>(StatusCodes.Status200OK, "application/json")
@@ -921,6 +921,38 @@ public static class EndpointExtensions
                 operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
                 operation.Responses["404"].Description = "Authentication failed.";
                 operation.Responses["422"].Description = "Unprocessable entity.";
+                operation.Responses["500"].Description = "Internal server error.";
+                return operation;
+            });
+
+        return app;
+    }
+
+    public static RouteGroupBuilder UseOrganisationPartiesEndpoints(this RouteGroupBuilder app)
+    {
+        app.MapGet("/{organisationId}/parties",
+            [OrganisationAuthorize(
+                [AuthenticationChannel.OneLogin],
+                [Constants.OrganisationPersonScope.Admin, Constants.OrganisationPersonScope.Editor, Constants.OrganisationPersonScope.Responder, Constants.OrganisationPersonScope.Viewer],
+                OrganisationIdLocation.Path)]
+        async (Guid organisationId, IUseCase<Guid, OrganisationParties?> useCase) =>
+                await useCase.Execute(organisationId)
+                   .AndThen(parties => parties == null ? Results.NotFound() : Results.Ok(parties))
+            )
+            .Produces<OrganisationParties>(StatusCodes.Status200OK, "application/json")
+            .ProducesProblem(StatusCodes.Status500InternalServerError)
+            .ProducesProblem(StatusCodes.Status400BadRequest)
+            .ProducesProblem(StatusCodes.Status401Unauthorized)
+            .ProducesProblem(StatusCodes.Status404NotFound)
+            .WithOpenApi(operation =>
+            {
+                operation.OperationId = "GetOrganisationParties";
+                operation.Description = "Get organisation parties";
+                operation.Summary = "Get organisation parties";
+                operation.Responses["200"].Description = "Organisation parties.";
+                operation.Responses["400"].Description = "Bad request.";
+                operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
+                operation.Responses["404"].Description = "Organisation parties not found.";
                 operation.Responses["500"].Description = "Internal server error.";
                 return operation;
             });
