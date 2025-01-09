@@ -83,16 +83,18 @@ dependency service_ecs {
 dependency service_database {
   config_path = "../../service/database"
   mock_outputs = {
-    entity_verification_address               = "mock"
-    entity_verification_connection_secret_arn = "mock"
-    entity_verification_credentials_arn       = "mock"
-    entity_verification_kms_arn               = "mock"
-    entity_verification_name                  = "mock"
-    sirsi_address                             = "mock"
-    sirsi_connection_secret_arn               = "mock"
-    sirsi_credentials_arn                     = "mock"
-    sirsi_kms_arn                             = "mock"
-    sirsi_name                                = "mock"
+    entity_verification_address                 = "mock"
+    entity_verification_cluster_address         = "mock"
+    entity_verification_cluster_credentials_arn = "mock"
+    entity_verification_cluster_name            = "mock"
+    entity_verification_credentials_arn         = "mock"
+    entity_verification_name                    = "mock"
+    sirsi_address                               = "mock"
+    sirsi_cluster_address                       = "mock"
+    sirsi_cluster_credentials_arn               = "mock"
+    sirsi_cluster_name                          = "mock"
+    sirsi_credentials_arn                       = "mock"
+    sirsi_name                                  = "mock"
   }
 }
 
@@ -141,11 +143,15 @@ inputs = {
 
   db_entity_verification_address         = dependency.service_database.outputs.entity_verification_address
   db_entity_verification_credentials_arn = dependency.service_database.outputs.entity_verification_credentials_arn
-  db_entity_verification_kms_arn         = dependency.service_database.outputs.entity_verification_kms_arn
   db_entity_verification_name            = dependency.service_database.outputs.entity_verification_name
+  db_ev_cluster_address                  = dependency.service_database.outputs.entity_verification_cluster_address
+  db_ev_cluster_credentials_arn          = dependency.service_database.outputs.entity_verification_cluster_credentials_arn
+  db_ev_cluster_name                     = dependency.service_database.outputs.entity_verification_cluster_name
   db_sirsi_address                       = dependency.service_database.outputs.sirsi_address
+  db_sirsi_cluster_address               = dependency.service_database.outputs.sirsi_cluster_address
+  db_sirsi_cluster_credentials_arn       = dependency.service_database.outputs.sirsi_cluster_credentials_arn
+  db_sirsi_cluster_name                  = dependency.service_database.outputs.sirsi_cluster_name
   db_sirsi_credentials_arn               = dependency.service_database.outputs.sirsi_credentials_arn
-  db_sirsi_kms_arn                       = dependency.service_database.outputs.sirsi_kms_arn
   db_sirsi_name                          = dependency.service_database.outputs.sirsi_name
 
   redis_primary_endpoint = dependency.service_cache.outputs.primary_endpoint_address
