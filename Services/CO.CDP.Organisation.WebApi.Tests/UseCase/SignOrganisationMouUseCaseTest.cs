@@ -30,7 +30,7 @@ public class SignOrganisationMouUseCaseTest
         organisation.Persons.Add(person);
 
         var signMouRequest = new SignMouRequest
-        {
+        {           
             MouId = mou.Guid,
             Name = "John Doe",
             JobTitle = "CEO",
@@ -64,7 +64,7 @@ public class SignOrganisationMouUseCaseTest
     {
         var organisationId = Guid.NewGuid();
         var signMouRequest = new SignMouRequest
-        {
+        {          
             MouId = Guid.NewGuid(),
             Name = "John Doe",
             JobTitle = "CEO",
@@ -73,7 +73,7 @@ public class SignOrganisationMouUseCaseTest
         _organisationRepository.Setup(repo => repo.Find(organisationId))
                        .ReturnsAsync((Persistence.Organisation)null!);
 
-        var act = async () => await _useCase.Execute((organisationId,signMouRequest));
+        var act = async () => await _useCase.Execute((organisationId, signMouRequest));
 
         await act.Should().ThrowAsync<UnknownOrganisationException>()
                  .WithMessage($"Unknown organisation {organisationId}.");
@@ -90,7 +90,7 @@ public class SignOrganisationMouUseCaseTest
         organisation.Persons.Add(person);
 
         var signMouRequest = new SignMouRequest
-        {
+        {        
             MouId = mou.Guid,
             Name = "John Doe",
             JobTitle = "CEO",
@@ -104,9 +104,9 @@ public class SignOrganisationMouUseCaseTest
         _personRepository
             .Setup(repo => repo.Find(person.Guid))
             .ReturnsAsync((Person)null!);
-   
+
         Func<Task> act = async () => await _useCase.Execute((organisation.Guid, signMouRequest));
-     
+
         await act.Should().ThrowAsync<UnknownPersonException>()
             .WithMessage($"Unknown person {person.Guid}.");
     }
@@ -123,6 +123,7 @@ public class SignOrganisationMouUseCaseTest
 
         var signMouRequest = new SignMouRequest
         {
+            OrganisationId = organisation.Guid,
             MouId = mou.Guid,
             Name = "John Doe",
             JobTitle = "CEO",
@@ -139,9 +140,9 @@ public class SignOrganisationMouUseCaseTest
         _organisationRepository
             .Setup(repo => repo.GetMou(mou.Guid))
             .ReturnsAsync((Mou)null!);
-       
+
         Func<Task> act = async () => await _useCase.Execute((organisation.Guid, signMouRequest));
-      
+
         await act.Should().ThrowAsync<UnknownMouException>()
             .WithMessage($"Unknown Mou {mou.Guid}.");
     }

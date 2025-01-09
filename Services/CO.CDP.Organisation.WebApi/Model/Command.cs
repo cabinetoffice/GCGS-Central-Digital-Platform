@@ -401,8 +401,7 @@ public record CreateOrganisationJoinRequest
 }
 
 public record SignMouRequest
-{
-    public required Guid OrganisationId { get; set; }
+{ 
     public required Guid MouId { get; set; }
     public required Guid CreatedById { get; set; }
     public required string Name{ get; set; }
