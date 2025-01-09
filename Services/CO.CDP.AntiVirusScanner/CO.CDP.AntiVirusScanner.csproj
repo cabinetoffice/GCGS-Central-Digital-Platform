@@ -19,10 +19,4 @@
         <ProjectReference Include="..\..\Libraries\CO.CDP.WebApi.Foundation\CO.CDP.WebApi.Foundation.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <None Update="TestIds.txt">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
-    </ItemGroup>
-
 </Project>
