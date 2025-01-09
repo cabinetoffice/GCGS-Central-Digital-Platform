@@ -384,10 +384,14 @@ public record OrganisationSearchQuery
 {
     public string Name { get; }
     public PartyRole? Role { get; }
-    public OrganisationSearchQuery(string name, PartyRole? role = null)
+    public OrganisationSearchQuery(string name, string? role = null)
     {
         Name = name;
-        Role = role;
+
+        if (role != null)
+        {
+            Role = (PartyRole)Enum.Parse(typeof(PartyRole), role, true);
+        }
     }
 }
 

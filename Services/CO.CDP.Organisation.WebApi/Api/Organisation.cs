@@ -289,7 +289,7 @@ public static class EndpointExtensions
 
         app.MapGet("/search",
             [OrganisationAuthorize([AuthenticationChannel.OneLogin, AuthenticationChannel.ServiceKey])]
-        async ([FromQuery] string name, [FromQuery] PartyRole? role, [FromServices] IUseCase<OrganisationSearchQuery, IEnumerable<Model.Organisation>> useCase) =>
+        async ([FromQuery] string name, [FromQuery] string? role, [FromServices] IUseCase<OrganisationSearchQuery, IEnumerable<Model.Organisation>> useCase) =>
                  await useCase.Execute(new OrganisationSearchQuery(name, role))
                     .AndThen(organisations => organisations.Count() != 0 ? Results.Ok(organisations) : Results.NotFound()))
          .Produces<IEnumerable<Model.Organisation>>(StatusCodes.Status200OK, "application/json")
