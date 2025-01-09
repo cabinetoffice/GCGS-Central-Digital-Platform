@@ -1045,8 +1045,8 @@ public static class EndpointExtensions
         app.MapGet("/latest",
        [OrganisationAuthorize(
          [AuthenticationChannel.OneLogin]
-       //  ,[Constants.OrganisationPersonScope.Admin],
-       //  OrganisationIdLocation.Path
+         , [Constants.OrganisationPersonScope.Admin],
+         OrganisationIdLocation.Path
        )]
         async (IUseCase<Mou> useCase) =>
              await useCase.Execute()
@@ -1072,8 +1072,8 @@ public static class EndpointExtensions
         app.MapGet("/{mouId}",
        [OrganisationAuthorize(
           [AuthenticationChannel.OneLogin]
-       //  ,[Constants.OrganisationPersonScope.Admin],
-       //  OrganisationIdLocation.Path
+         , [Constants.OrganisationPersonScope.Admin],
+         OrganisationIdLocation.Path
        )]
         async (Guid mouId, IUseCase<Guid, Mou> useCase) =>
           await useCase.Execute(mouId)
