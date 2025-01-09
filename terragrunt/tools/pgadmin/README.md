@@ -14,22 +14,30 @@ export PINNED_PGADMIN_VERSION=8.12.0
 
 ```shell
 docker build --build-arg PGADMIN_VERSION=${PINNED_PGADMIN_VERSION} -t cabinetoffice/cdp-pgadmin:${PINNED_PGADMIN_VERSION} .
+```
 
-## If need local testing ...
-# docker run \
-#  -e DB_SIRSI_ADDRESS='sirsi-address' \
-#  -e DB_SIRSI_NAME='sirsi-db' \
-#  -e DB_SIRSI_USERNAME='sirsi-username' \
-#  -e DB_ENTITY_VERIFICATION_ADDRESS='ev-address' \
-#  -e DB_ENTITY_VERIFICATION_NAME='ev-db' \
-#  -e DB_ENTITY_VERIFICATION_USERNAME='ev-username' \
-#  -e PGADMIN_DATABASE_USERNAME='test-user' \
-#  -e PGADMIN_DATABASE_HOST='pgadmin-address' \
-#  -e PGADMIN_DATABASE_NAME='pgadmin-db' \
-#  -e PGADMIN_DEFAULT_EMAIL='admin@example.com' \
-#  -e PGADMIN_DEFAULT_PASSWORD='admin' \
-#  -e SUPPORT_USERNAMES='ali.bahman, reza.nakhjavani' \
-#  cabinetoffice/cdp-pgadmin:${PINNED_PGADMIN_VERSION}
+If need local testing ...
+```shell
+ docker run \
+  -e DB_ENTITY_VERIFICATION_ADDRESS='ev-address' \
+  -e DB_ENTITY_VERIFICATION_CLUSTER_ADDRESS='ev-address' \
+  -e DB_ENTITY_VERIFICATION_CLUSTER_NAME='ev-db' \
+  -e DB_ENTITY_VERIFICATION_CLUSTER_USERNAME='ev-username' \
+  -e DB_ENTITY_VERIFICATION_NAME='ev-db' \
+  -e DB_ENTITY_VERIFICATION_USERNAME='ev-username' \
+  -e DB_SIRSI_ADDRESS='sirsi-address' \
+  -e DB_SIRSI_CLUSTER_ADDRESS='sirsi-address' \
+  -e DB_SIRSI_CLUSTER_NAME='sirsi-db' \
+  -e DB_SIRSI_CLUSTER_USERNAME='sirsi-username' \
+  -e DB_SIRSI_NAME='sirsi-db' \
+  -e DB_SIRSI_USERNAME='sirsi-username' \
+  -e PGADMIN_DATABASE_HOST='pgadmin-address' \
+  -e PGADMIN_DATABASE_NAME='pgadmin-db' \
+  -e PGADMIN_DATABASE_USERNAME='test-user' \
+  -e PGADMIN_DEFAULT_EMAIL='admin@example.com' \
+  -e PGADMIN_DEFAULT_PASSWORD='admin' \
+  -e SUPPORT_USERNAMES='ali.bahman, reza.nakhjavani' \
+  cabinetoffice/cdp-pgadmin:${PINNED_PGADMIN_VERSION}
 ```
 
 ## Deploy
