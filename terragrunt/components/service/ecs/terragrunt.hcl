@@ -92,6 +92,15 @@ dependency service_database {
     sirsi_kms_arn                       = "mock"
     sirsi_name                          = "mock"
 
+    entity_verification_cluster_address                = "mock"
+    entity_verification_cluster_credentials_arn        = "mock"
+    entity_verification_cluster_credentials_kms_key_id = "mock"
+    entity_verification_cluster_name                   = "mock"
+    sirsi_cluster_address                              = "mock"
+    sirsi_cluster_credentials_arn                      = "mock"
+    sirsi_cluster_credentials_kms_key_id               = "mock"
+    sirsi_cluster_name                                 = "mock"
+
   }
 }
 
@@ -164,7 +173,15 @@ inputs = {
   db_entity_verification_credentials_arn = dependency.service_database.outputs.entity_verification_credentials_arn
   db_entity_verification_kms_arn         = dependency.service_database.outputs.entity_verification_kms_arn
   db_entity_verification_name            = dependency.service_database.outputs.entity_verification_name
+  db_ev_cluster_address                   = dependency.service_database.outputs.entity_verification_cluster_address
+  db_ev_cluster_credentials_arn           = dependency.service_database.outputs.entity_verification_cluster_credentials_arn
+  db_ev_cluster_credentials_kms_key_id    = dependency.service_database.outputs.entity_verification_cluster_credentials_kms_key_id
+  db_ev_cluster_name                      = dependency.service_database.outputs.entity_verification_cluster_name
   db_sirsi_address                       = dependency.service_database.outputs.sirsi_address
+  db_sirsi_cluster_address                = dependency.service_database.outputs.sirsi_cluster_address
+  db_sirsi_cluster_credentials_arn        = dependency.service_database.outputs.sirsi_cluster_credentials_arn
+  db_sirsi_cluster_credentials_kms_key_id = dependency.service_database.outputs.sirsi_cluster_credentials_kms_key_id
+  db_sirsi_cluster_name                   = dependency.service_database.outputs.sirsi_cluster_name
   db_sirsi_credentials_arn               = dependency.service_database.outputs.sirsi_credentials_arn
   db_sirsi_kms_arn                       = dependency.service_database.outputs.sirsi_kms_arn
   db_sirsi_name                          = dependency.service_database.outputs.sirsi_name
