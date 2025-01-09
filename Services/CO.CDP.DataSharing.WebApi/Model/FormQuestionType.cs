@@ -13,5 +13,6 @@ public enum FormQuestionType
     DateTimeRange,
     Date,
     Url,
-    FileUpload
+    FileUpload,
+    OptionJson
 }

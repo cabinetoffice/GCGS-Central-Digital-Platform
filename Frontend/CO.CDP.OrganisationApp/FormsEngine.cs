@@ -64,7 +64,7 @@ public class FormsEngine(
                                 Value = c.Value
                             }).ToList()
                         }).ToList(),
-                        ChoiceAnswerFieldName = choiceProviderStrategy.AnswerFieldName
+                        AnswerFieldName = q.Options.AnswerFieldName
                     }
                 };
             }))).ToList()
