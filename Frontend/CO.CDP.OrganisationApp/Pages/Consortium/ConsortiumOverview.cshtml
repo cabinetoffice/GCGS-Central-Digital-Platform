@@ -1,6 +1,7 @@
 @page "/consortium/{id}/overview"
 @using CO.CDP.OrganisationApp.Constants
 @using CO.CDP.OrganisationApp.WebApiClients
+@using CO.CDP.OrganisationApp.Extensions
 @using CO.CDP.Localization
 
 @inject IUserInfoService userInfoService
@@ -15,6 +16,7 @@
     var ppon = (organisationDetails.Identifier.Scheme == OrganisationSchemeType.Other
                         ? StaticTextResource.Consortium_ConsortiumOverview_Ppon_Status_Pending
                         : organisationDetails.Identifier.Id);
+    var parties = Model.Parties!.Parties;
 }
 
 <div class="govuk-grid-row">
@@ -73,11 +75,26 @@
         </dl>
 
         <h2 class="govuk-heading-m">@StaticTextResource.Consortium_ConsortiumOverview_Heading2</h2>
-
+        <dl class="govuk-summary-list ">
+            @foreach (var p in parties)
+            {
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">@p.Name</dt>
+                        <dd class="govuk-summary-list__value">
+                              <p class="govuk-body">@p.ShareCode.Value
+                                <span class="govuk-hint govuk-!-display-block">Share code created on @p.ShareCode.SubmittedAt.ToFormattedString()</span>
+                          </p>
+                        </dd>
+                        <dd class="govuk-summary-list__actions">
+                          <a class="govuk-link govuk-link--no-visited-state" href="#">Change<span class="govuk-visually-hidden"> organisation sharecode</span></a>
+                        </dd>
+                    </div>
+            }
+        </dl>
         <p>@StaticTextResource.Consortium_ConsortiumOverview_Paragraph1</p>
 
         <div class="govuk-body">
-            <a class="govuk-button govuk-button--secondary" href="#">@StaticTextResource.Consortium_ConsortiumOverview_AddAnOrganisation_link</a>
+            <a class="govuk-button govuk-button--secondary" href="/consortium/@Model.Id/enter-sharecode">@StaticTextResource.Consortium_ConsortiumOverview_AddAnOrganisation_link</a>
         </div>
 
         <hr class="govuk-section-break govuk-section-break--l">
