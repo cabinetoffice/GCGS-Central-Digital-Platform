@@ -122,8 +122,7 @@ public class SignOrganisationMouUseCaseTest
         organisation.Persons.Add(person);
 
         var signMouRequest = new SignMouRequest
-        {
-            OrganisationId = organisation.Guid,
+        {           
             MouId = mou.Guid,
             Name = "John Doe",
             JobTitle = "CEO",
