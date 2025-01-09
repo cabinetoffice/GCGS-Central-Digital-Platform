@@ -11,55 +11,57 @@ using Person = CO.CDP.OrganisationInformation.Persistence.Person;
 
 namespace CO.CDP.Organisation.WebApi.Tests.UseCase;
 
-public class GetLatestMouUseCaseTest(AutoMapperFixture mapperFixture)
+public class GetMouUseCaseTest(AutoMapperFixture mapperFixture)
     : IClassFixture<AutoMapperFixture>
 {
     private readonly Mock<IOrganisationRepository> _organisationRepository = new();
-    private GetLatestMouUseCase _useCase => new GetLatestMouUseCase(_organisationRepository.Object, mapperFixture.Mapper);
+    private GetMouUseCase _useCase => new GetMouUseCase(_organisationRepository.Object, mapperFixture.Mapper);
 
     [Fact]
     public async Task Execute_ShouldReturnMappedMou_WhenLatestMouExists()
-    {   
-        var latestMouEntity = new Persistence.Mou
+    {
+        var mouId = Guid.NewGuid();
+        var mouEntity = new Persistence.Mou
         {
             Id = 1,
-            Guid = Guid.NewGuid(),
+            Guid = mouId,
             FilePath = "/path/to/mou.pdf",
             CreatedOn = DateTimeOffset.UtcNow,
             UpdatedOn = DateTimeOffset.UtcNow
         };
 
-        var mappedMou = new CO.CDP.Organisation.WebApi.Model.Mou
+        var mappedMou = new Model.Mou
         {
-            Id = latestMouEntity.Guid,
-            FilePath = latestMouEntity.FilePath,
-            CreatedOn = latestMouEntity.CreatedOn
+            Id = mouId,
+            FilePath = mouEntity.FilePath,
+            CreatedOn = mouEntity.CreatedOn
         };
 
         _organisationRepository
-            .Setup(repo => repo.GetLatestMou())
-            .ReturnsAsync(latestMouEntity);    
+            .Setup(repo => repo.GetMou(mouId))
+            .ReturnsAsync(mouEntity);    
 
-        var result = await _useCase.Execute();
-        
+        var result = await _useCase.Execute(mouId);
+
         result.Should().BeEquivalentTo(mappedMou);
 
-        _organisationRepository.Verify(repo => repo.GetLatestMou(), Times.Once);
+        _organisationRepository.Verify(repo => repo.GetMou(mouId), Times.Once);
     }
 
     [Fact]
     public async Task Execute_ShouldThrowUnknownMouException_WhenLatestMouIsNull()
     {
+        var mouId = Guid.NewGuid();
         _organisationRepository
-            .Setup(repo => repo.GetLatestMou())
+            .Setup(repo => repo.GetMou(mouId))
             .ReturnsAsync((Persistence.Mou)null!);
 
-        Func<Task> act = async () => await _useCase.Execute();
+        Func<Task> act = async () => await _useCase.Execute(mouId);
 
         await act.Should().ThrowAsync<UnknownMouException>()
             .WithMessage("No MOU found.");
 
-        _organisationRepository.Verify(repo => repo.GetLatestMou(), Times.Once);
+        _organisationRepository.Verify(repo => repo.GetMou(mouId), Times.Once);
     }
 
     public static Person FakePerson(

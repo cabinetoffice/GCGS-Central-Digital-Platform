@@ -987,7 +987,7 @@ public static class EndpointExtensions
             [AuthenticationChannel.OneLogin],
               [Constants.OrganisationPersonScope.Admin],
               OrganisationIdLocation.Path)]
-        async (Guid organisationId, IUseCase<Guid,  MouSignatureLatest> useCase) =>
+        async (Guid organisationId, IUseCase<Guid, MouSignatureLatest> useCase) =>
                 await useCase.Execute(organisationId)
                     .AndThen(mouSignatureLatest => mouSignatureLatest != null ? Results.Ok(mouSignatureLatest) : Results.NotFound()))
         .Produces<Model.MouSignatureLatest>(StatusCodes.Status200OK, "application/json")
@@ -1043,10 +1043,11 @@ public static class EndpointExtensions
     public static RouteGroupBuilder UseMouEndpoints(this RouteGroupBuilder app)
     {
         app.MapGet("/latest",
-   [OrganisationAuthorize(
-         [AuthenticationChannel.OneLogin],
-           [Constants.OrganisationPersonScope.Admin],
-           OrganisationIdLocation.Path)]
+       [OrganisationAuthorize(
+         [AuthenticationChannel.OneLogin]
+       //  ,[Constants.OrganisationPersonScope.Admin],
+       //  OrganisationIdLocation.Path
+       )]
         async (IUseCase<Mou> useCase) =>
              await useCase.Execute()
                  .AndThen(mouLatest => mouLatest != null ? Results.Ok(mouLatest) : Results.NotFound()))
@@ -1067,6 +1068,34 @@ public static class EndpointExtensions
          operation.Responses["500"].Description = "Internal server error.";
          return operation;
      });
+
+        app.MapGet("/{mouId}",
+       [OrganisationAuthorize(
+          [AuthenticationChannel.OneLogin]
+       //  ,[Constants.OrganisationPersonScope.Admin],
+       //  OrganisationIdLocation.Path
+       )]
+        async (Guid mouId, IUseCase<Guid, Mou> useCase) =>
+          await useCase.Execute(mouId)
+              .AndThen(mou => mou != null ? Results.Ok(mou) : Results.NotFound()))
+      .Produces<Model.MouSignatureLatest>(StatusCodes.Status200OK, "application/json")
+      .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
+      .Produces<ProblemDetails>(StatusCodes.Status404NotFound)
+      .ProducesProblem(StatusCodes.Status422UnprocessableEntity)
+      .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError)
+      .WithOpenApi(operation =>
+      {
+          operation.OperationId = "GetMou";
+          operation.Description = "Get MOU byId.";
+          operation.Summary = "Get MOU by ID.";
+          operation.Responses["200"].Description = "MOU by Id.";
+          operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
+          operation.Responses["404"].Description = "Mou information not found.";
+          operation.Responses["422"].Description = "Unprocessable entity.";
+          operation.Responses["500"].Description = "Internal server error.";
+          return operation;
+      });
+
         return app;
     }
 
