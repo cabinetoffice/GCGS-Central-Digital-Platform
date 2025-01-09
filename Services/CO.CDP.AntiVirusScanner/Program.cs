@@ -11,6 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 if (Assembly.GetEntryAssembly().IsRunAs("CO.CDP.AntiVirusScanner"))
 {
+    builder.Services.AddHttpClient();
     builder.Services.AddScoped<IScanner, Scanner>();
     builder.Services.AddHealthChecks();
     builder.Services
@@ -40,7 +41,6 @@ if (Assembly.GetEntryAssembly().IsRunAs("CO.CDP.AntiVirusScanner"))
 
 var app = builder.Build();
 
-app.UseErrorHandler(ErrorCodes.Exception4xxMap);
 if (!app.Environment.IsDevelopment())
 {
     app.UseHsts();
@@ -52,11 +52,3 @@ app.MapHealthChecks("/health").AllowAnonymous();
 app.Run();
 
 public abstract partial class Program;
-
-public static class ErrorCodes
-{
-    public static readonly Dictionary<Type, (int, string)> Exception4xxMap = new()
-    {
-        { typeof(BadHttpRequestException), (StatusCodes.Status422UnprocessableEntity, "UNPROCESSABLE_ENTITY") }
-    };
-}

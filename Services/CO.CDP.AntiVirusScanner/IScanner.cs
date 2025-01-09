@@ -2,5 +2,5 @@ namespace CO.CDP.AntiVirusScanner;
 
 public interface IScanner
 {
-    void Scan(ScanFile fileName);
+    Task Scan(ScanFile fileName);
 }

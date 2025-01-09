@@ -77,6 +77,7 @@ COPY --link Services/CO.CDP.EntityVerification/CO.CDP.EntityVerification.csproj 
 COPY --link Services/CO.CDP.EntityVerification.Tests/CO.CDP.EntityVerification.Tests.csproj Services/CO.CDP.EntityVerification.Tests/
 COPY --link Services/CO.CDP.Localization/CO.CDP.Localization.csproj Services/CO.CDP.Localization/
 COPY --link Services/CO.CDP.AntiVirusScanner/CO.CDP.AntiVirusScanner.csproj Services/CO.CDP.AntiVirusScanner/
+COPY --link Services/CO.CDP.AntiVirusScanner.Tests/CO.CDP.AntiVirusScanner.Tests.csproj Services/CO.CDP.AntiVirusScanner.Tests/
 COPY --link GCGS-Central-Digital-Platform.sln .
 RUN dotnet restore "GCGS-Central-Digital-Platform.sln"
 

@@ -8,6 +8,6 @@ public class ScanFileSubscriber(IScanner scanner)
 {
     public async Task Handle(ScanFile @event)
     {
-        scanner.Scan(@event);
+        await scanner.Scan(@event);
     }
 }
