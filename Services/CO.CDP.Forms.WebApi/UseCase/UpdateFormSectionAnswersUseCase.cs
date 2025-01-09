@@ -9,8 +9,7 @@ namespace CO.CDP.Forms.WebApi.UseCase;
 public class UpdateFormSectionAnswersUseCase(
     IFormRepository formRepository,
     IOrganisationRepository organisationRepository,
-    IMapper mapper,
-    IFileHostManager fileHostManager)
+    IMapper mapper)
     : IUseCase<(Guid formId, Guid sectionId, Guid answerSetId, Guid organisationId, UpdateFormSectionAnswers updateFormSectionAnswers), bool>
 {
     public async Task<bool> Execute((Guid formId, Guid sectionId, Guid answerSetId, Guid organisationId, UpdateFormSectionAnswers updateFormSectionAnswers) input)
