@@ -28,7 +28,7 @@ public class DataSharingClientIntegrationTest
 
         var shareCode = "HDJ2123F";
 
-        Func<Task> act = async () => { await client.GetSharedDataAsync(shareCode, null); };
+        Func<Task> act = async () => { await client.GetSharedDataAsync(shareCode); };
 
         var exception = await act.Should().ThrowAsync<ApiException<ProblemDetails>>();
 

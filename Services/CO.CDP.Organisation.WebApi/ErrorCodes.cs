@@ -36,6 +36,7 @@ public static class ErrorCodes
         { typeof(MissingOrganisationRegisteredAddress), (StatusCodes.Status400BadRequest, "ORGANISATION_MISSING_REGISTERED_ADDRESS") },
         { typeof(MissingAdditionalIdentifiers), (StatusCodes.Status400BadRequest, "ORGANISATION_MISSING_ADDITIONAL_IDENTIFIERS") },
         { typeof(MissingIdentifierNumber), (StatusCodes.Status400BadRequest, "ORGANISATION_MISSING_IDENTIFIER_NUMBER") },
-        { typeof(IdentiferNumberAlreadyExists), (StatusCodes.Status400BadRequest, "ORGANISATION_IDENTIFIER_NUMBER_ALREADY_EXISTS") }
+        { typeof(IdentiferNumberAlreadyExists), (StatusCodes.Status400BadRequest, "ORGANISATION_IDENTIFIER_NUMBER_ALREADY_EXISTS") },
+        { typeof(UnknownMouException), (StatusCodes.Status404NotFound, "MOU_DOES_NOT_EXIST") },
     };
 }

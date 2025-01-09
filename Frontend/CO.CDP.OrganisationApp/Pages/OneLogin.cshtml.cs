@@ -9,7 +9,9 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.FeatureManagement;
 using System.Net;
+using System.Web;
 
 namespace CO.CDP.OrganisationApp.Pages;
 
@@ -22,16 +24,18 @@ public class OneLoginModel(
     ILogoutManager logoutManager,
     IOneLoginAuthority oneLoginAuthority,
     IAuthorityClient authorityClient,
-    ILogger<OneLoginModel> logger) : PageModel
+    ILogger<OneLoginModel> logger,
+    IFeatureManager featureManager,
+    IConfiguration config) : PageModel
 {
     [BindProperty(SupportsGet = true)]
     public required string PageAction { get; set; }
 
-    public async Task<IActionResult> OnGetAsync(string? redirectUri = null)
+    public async Task<IActionResult> OnGetAsync(string? redirectUri = null, string? origin = null)
     {
         return PageAction.ToLower() switch
         {
-            "sign-in" => SignIn(redirectUri),
+            "sign-in" => await SignIn(redirectUri, origin),
             "user-info" => await UserInfo(redirectUri),
             "sign-out" => await SignOut(),
             _ => Redirect("/"),
@@ -68,12 +72,26 @@ public class OneLoginModel(
         return Page();
     }
 
-    private IActionResult SignIn(string? redirectUri = null)
+    private async Task<ChallengeResult> SignIn(string? redirectUri = null, string? origin = null)
     {
         var uri = "/one-login/user-info";
+
         if (Helper.ValidRelativeUri(redirectUri))
         {
-            uri += $"?redirectUri={WebUtility.UrlEncode(redirectUri)}";
+            var uriBuilder = new UriBuilder("https://example.com" + redirectUri);
+
+            if (!string.IsNullOrWhiteSpace(origin) && await featureManager.IsEnabledAsync(FeatureFlags.AllowDynamicFtsOrigins))
+            {
+                var allowedOrigins = config["FtsServiceAllowedOrigins"] ?? "";
+                if (allowedOrigins.Split(",", StringSplitOptions.RemoveEmptyEntries).Contains(origin))
+                {
+                    var query = HttpUtility.ParseQueryString(uriBuilder.Query);
+                    query["origin"] = origin;
+                    uriBuilder.Query = query.ToString();
+                }
+            }
+
+            uri += $"?redirectUri={WebUtility.UrlEncode(uriBuilder.Uri.PathAndQuery)}";
         }
 
         return Challenge(new AuthenticationProperties { RedirectUri = uri });
@@ -84,7 +102,7 @@ public class OneLoginModel(
         var userInfo = await httpContextAccessor.HttpContext!.AuthenticateAsync();
         if (!userInfo.Succeeded)
         {
-            return SignIn();
+            return await SignIn(redirectUri);
         }
 
         var urn = userInfo.Principal.FindFirst(JwtClaimTypes.Subject)?.Value;
@@ -93,9 +111,10 @@ public class OneLoginModel(
 
         if (urn == null)
         {
-            return SignIn();
+            return await SignIn(redirectUri);
         }
         await logoutManager.RemoveAsLoggedOut(urn);
+        SetFtsOrigin(redirectUri);
 
         var ud = new UserDetails { UserUrn = urn, Email = email, Phone = phone };
         session.Set(Session.UserDetailsKey, ud);
@@ -130,6 +149,28 @@ public class OneLoginModel(
         catch (ApiException ex) when (ex.StatusCode == 404)
         {
             return RedirectToPage("PrivacyPolicy", new { RedirectUri = Helper.ValidRelativeUri(redirectUri) ? redirectUri : default });
+        }
+    }
+
+    private void SetFtsOrigin(string? redirectUri)
+    {
+        session.Remove(Session.FtsServiceOrigin);
+
+        try
+        {
+            if (!string.IsNullOrWhiteSpace(redirectUri))
+            {
+                var uri = new Uri("https://example.com" + redirectUri);
+                var origin = HttpUtility.ParseQueryString(uri.Query).Get("origin");
+                if (!string.IsNullOrWhiteSpace(origin))
+                {
+                    session.Set(Session.FtsServiceOrigin, origin);
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            logger.LogWarning("Invalid redirectUri, {Excption}", ex);
         }
     }
 

@@ -15,7 +15,7 @@ public class OrganisationApprovalModel(
 
     [BindProperty]
     [Required(ErrorMessageResourceName = nameof(StaticTextResource.Support_OrganisationApproval_ValidationErrorMessage), ErrorMessageResourceType = typeof(StaticTextResource))]
-    public bool Approval { get; set; }
+    public bool? Approval { get; set; }
 
     [BindProperty]
     [RequiredIf(nameof(Approval), false, ErrorMessageResourceName = nameof(StaticTextResource.Support_OrganisationApproval_ErrorMessage), ErrorMessageResourceType = typeof(StaticTextResource))]
@@ -45,7 +45,7 @@ public class OrganisationApprovalModel(
         if (UserDetails.PersonId != null)
         {
             SupportOrganisationInfo orgInfo = new SupportOrganisationInfo(
-                approved: Approval,
+                approved: Approval ?? false,
                 comment: Comments ?? "",
                 reviewedById: UserDetails.PersonId.Value
             );

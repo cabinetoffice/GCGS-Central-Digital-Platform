@@ -14,7 +14,7 @@ namespace CO.CDP.DataSharing.WebApi.Tests.Api;
 
 public class DataSharingTests
 {
-    private readonly Mock<IUseCase<(string, Guid?), SupplierInformation?>> _getSharedDataUseCase = new();
+    private readonly Mock<IUseCase<string, SupplierInformation?>> _getSharedDataUseCase = new();
     private readonly Mock<IUseCase<string, SharedDataFile?>> _getSharedDataFileUseCase = new();
     private readonly Mock<IUseCase<ShareRequest, ShareReceipt>> _generateShareCodeUseCase = new();
     private readonly Mock<IUseCase<ShareVerificationRequest, ShareVerificationReceipt>> _getShareCodeVerifyUseCase = new();
@@ -31,9 +31,8 @@ public class DataSharingTests
         HttpStatusCode expectedStatusCode, string channel)
     {
         var shareCode = "valid-share-code";
-        (string, Guid?) request = (shareCode, null);
 
-        _getSharedDataUseCase.Setup(uc => uc.Execute(request))
+        _getSharedDataUseCase.Setup(uc => uc.Execute(shareCode))
             .ReturnsAsync(GetSupplierInfo());
 
         var factory = new TestAuthorizationWebApplicationFactory<Program>(

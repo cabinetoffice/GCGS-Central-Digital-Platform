@@ -21,7 +21,7 @@ public class FormElementSingleChoiceModel : FormElementModel, IValidatableObject
         {
             FormAnswer formAnswer;
 
-            switch (Options.ChoiceAnswerFieldName)
+            switch (Options.AnswerFieldName)
             {
                 case nameof(FormAnswer.OptionValue):
                     formAnswer = new FormAnswer { OptionValue = SelectedOption };
@@ -30,7 +30,7 @@ public class FormElementSingleChoiceModel : FormElementModel, IValidatableObject
                     formAnswer = new FormAnswer { JsonValue = SelectedOption };
                     break;
                 default:
-                    throw new InvalidOperationException($"Unsupported field: {Options.ChoiceAnswerFieldName}");
+                    throw new InvalidOperationException($"Unsupported field: {Options.AnswerFieldName}");
             }
 
             return formAnswer;
@@ -44,7 +44,7 @@ public class FormElementSingleChoiceModel : FormElementModel, IValidatableObject
     {
         string? value;
 
-        switch (Options?.ChoiceAnswerFieldName)
+        switch (Options?.AnswerFieldName)
         {
             case nameof(FormAnswer.OptionValue):
                 value = answer?.OptionValue;
@@ -73,7 +73,7 @@ public class FormElementSingleChoiceModel : FormElementModel, IValidatableObject
 
                 break;
             default:
-                throw new InvalidOperationException($"Unsupported field: {Options?.ChoiceAnswerFieldName}");
+                throw new InvalidOperationException($"Unsupported field: {Options?.AnswerFieldName}");
         }
     }
 

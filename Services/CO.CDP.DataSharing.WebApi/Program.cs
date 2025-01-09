@@ -46,8 +46,9 @@ builder.Services.AddTransient(typeof(LocalizedPropertyResolver<,>));
 builder.Services.AddAutoMapper(typeof(DataSharingProfile));
 
 var connectionString = ConnectionStringHelper.GetConnectionString(builder.Configuration, "OrganisationInformationDatabase");
-builder.Services.AddHealthChecks().AddNpgSql(connectionString);
-builder.Services.AddDbContext<OrganisationInformationContext>(o => o.UseNpgsql(connectionString));
+builder.Services.AddSingleton(new NpgsqlDataSourceBuilder(connectionString).MapEnums().Build());
+builder.Services.AddHealthChecks().AddNpgSql(sp => sp.GetRequiredService<NpgsqlDataSource>());
+builder.Services.AddDbContext<OrganisationInformationContext>((sp, o) => o.UseNpgsql(sp.GetRequiredService<NpgsqlDataSource>()));
 
 builder.Services.AddScoped<IDataService, DataService>();
 builder.Services.AddScoped<IPdfGenerator, PdfGenerator>();
@@ -61,7 +62,7 @@ builder.Services.AddScoped<IUseCase<ShareRequest, ShareReceipt>, GenerateShareCo
 builder.Services.AddScoped<IUseCase<Guid, List<SharedConsent>?>, GetShareCodesUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, string), SharedConsentDetails?>, GetShareCodeDetailsUseCase>();
 builder.Services.AddScoped<IUseCase<ShareVerificationRequest, ShareVerificationReceipt>, GetShareCodeVerifyUseCase>();
-builder.Services.AddScoped<IUseCase<(string, Guid?), SupplierInformation?>, GetSharedDataUseCase>();
+builder.Services.AddScoped<IUseCase<string, SupplierInformation?>, GetSharedDataUseCase>();
 builder.Services.AddScoped<IUseCase<string, SharedDataFile?>, GetSharedDataFileUseCase>();
 builder.Services.AddScoped<IUseCase<(string, string), string?>, GetSharedDataDocumentDownloadUrlUseCase>();
 builder.Services.AddProblemDetails();
