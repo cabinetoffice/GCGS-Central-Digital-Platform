@@ -111,8 +111,6 @@ dependency service_queue {
     entity_verification_queue_url = "mock"
     organisation_queue_arn        = "mock"
     organisation_queue_url        = "mock"
-    av_scanner_queue_arn          = "mock"
-    av_scanner_queue_url          = "mock"
   }
 }
 
@@ -179,6 +177,4 @@ inputs = {
   queue_entity_verification_queue_url = dependency.service_queue.outputs.entity_verification_queue_url
   queue_organisation_queue_arn        = dependency.service_queue.outputs.organisation_queue_arn
   queue_organisation_queue_url        = dependency.service_queue.outputs.organisation_queue_url
-  queue_av_scanner_queue_arn          = dependency.service_queue.outputs.av_scanner_queue_arn
-  queue_av_scanner_queue_url          = dependency.service_queue.outputs.av_scanner_queue_url
 }
