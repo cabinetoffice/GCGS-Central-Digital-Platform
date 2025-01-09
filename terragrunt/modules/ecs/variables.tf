@@ -128,6 +128,16 @@ variable "queue_organisation_queue_url" {
   type        = string
 }
 
+variable "queue_av_scanner_queue_arn" {
+  description = "ARN of the AV scanner SQS queue"
+  type        = string
+}
+
+variable "queue_av_scanner_queue_url" {
+  description = "URL of the AV scanner outbound SQS queue"
+  type        = string
+}
+
 variable "redis_auth_token_arn" {
   description = "The ARN of the Secrets Manager secret storing the Redis authentication token."
   type        = string
