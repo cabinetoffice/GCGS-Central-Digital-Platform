@@ -149,8 +149,14 @@ public class CustomFormQuestionTypeResolver : IValueResolver<Persistence.FormQue
             case Persistence.FormQuestionType.SingleChoice:
             case Persistence.FormQuestionType.GroupedSingleChoice:
             case Persistence.FormQuestionType.MultipleChoice:
-                return FormQuestionType.Option;
-
+                if(source.Options.AnswerFieldName == "JsonValue")
+                {
+                    return FormQuestionType.OptionJson;
+                } else
+                {
+                    return FormQuestionType.Option;
+                }
+                
             case Persistence.FormQuestionType.Date:
                 return FormQuestionType.Date;
 

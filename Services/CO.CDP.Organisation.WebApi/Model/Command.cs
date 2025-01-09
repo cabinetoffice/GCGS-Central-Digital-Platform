@@ -401,12 +401,11 @@ public record CreateOrganisationJoinRequest
 }
 
 public record SignMouRequest
-{
-    public Guid OrganisationId { get; set; }
-    public Guid MouId { get; set; }
-    public Guid CreatedById { get; set; }
-    public string Name{ get; set; }
-    public string JobTitle{ get; set; }
+{ 
+    public required Guid MouId { get; set; }
+    public required Guid CreatedById { get; set; }
+    public required string Name{ get; set; }
+    public required string JobTitle{ get; set; }
 }
 
 public static class MappingExtensions
