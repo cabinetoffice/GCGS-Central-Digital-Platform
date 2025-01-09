@@ -380,6 +380,17 @@ public record OrganisationQuery
     }
 }
 
+public record OrganisationSearchQuery
+{
+    public string Name { get; }
+    public PartyRole? Role { get; }
+    public OrganisationSearchQuery(string name, PartyRole? role = null)
+    {
+        Name = name;
+        Role = role;
+    }
+}
+
 public record RegisterAuthenticationKey
 {
     public required string Name { get; set; }

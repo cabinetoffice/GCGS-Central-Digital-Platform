@@ -64,6 +64,15 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
             .AsSingleQuery()
             .FirstOrDefaultAsync(t => t.Name == name);
     }
+
+    public async Task<IEnumerable<Organisation>> SearchByName(string name, PartyRole? role)
+    {
+        return await context.Organisations
+            .AsSingleQuery()
+            .Where(t => t.Name.StartsWith(name) && (!role.HasValue || t.Roles.Contains(role.Value)))
+            .ToListAsync();
+    }
+
     public async Task<IEnumerable<OrganisationPerson>> FindOrganisationPersons(Guid organisationId)
     {
         return await context.Set<OrganisationPerson>()
