@@ -60,3 +60,4 @@ public class DuplicateInviteEmailForOrganisationException(string message, Except
 public class PersonAlreadyAddedToOrganisationException(string message, Exception? cause = null) : Exception(message, cause);
 public class PersonAlreadyInvitedToOrganisationException(string message, Exception? cause = null) : Exception(message, cause);
 public class UnknownOrganisationJoinRequestException(string message, Exception? cause = null) : Exception(message, cause);
+public class OrganisationShareCodeInvalid(string shareCode) : Exception($"Invalid organisation share code: {shareCode}");
