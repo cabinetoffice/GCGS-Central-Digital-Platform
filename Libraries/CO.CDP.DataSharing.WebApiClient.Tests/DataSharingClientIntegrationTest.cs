@@ -24,7 +24,7 @@ public class DataSharingClientIntegrationTest
     [Fact]
     public async Task ItTalksToTheDataSharingApi()
     {
-        IDataSharingClient client = new DataSharingClient("https://localhost", _httpClient);
+        var client = new DataSharingClient("https://localhost", _httpClient);
 
         var shareCode = "HDJ2123F";
 

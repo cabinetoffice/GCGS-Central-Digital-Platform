@@ -15,6 +15,7 @@ using CO.CDP.MQ.Hosting;
 using CO.CDP.WebApi.Foundation;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
+using Npgsql;
 using IdentifierRegistries = CO.CDP.EntityVerification.Model.IdentifierRegistries;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -27,18 +28,11 @@ builder.Services.AddSwaggerGen(o => o.DocumentPponApi(builder.Configuration));
 
 builder.Services.AddHealthChecks();
 builder.Services.AddProblemDetails();
-builder.Services.AddDbContext<EntityVerificationContext>(o =>
-    o.UseNpgsql(ConnectionStringHelper.GetConnectionString(builder.Configuration, "EntityVerificationDatabase")));
-builder.Services.AddScoped<IPponRepository, DatabasePponRepository>();
 
-if (builder.Configuration.GetValue("Features:UuidPponService", true))
-{
-    builder.Services.AddScoped<IPponService, UuidPponService>();
-}
-else
-{
-    builder.Services.AddScoped<IPponService, PponService>();
-}
+builder.Services.AddSingleton(_ => new NpgsqlDataSourceBuilder(ConnectionStringHelper.GetConnectionString(builder.Configuration, "EntityVerificationDatabase")).Build());
+builder.Services.AddDbContext<EntityVerificationContext>((sp, o) => o.UseNpgsql(sp.GetRequiredService<NpgsqlDataSource>()));
+builder.Services.AddScoped<IPponRepository, DatabasePponRepository>();
+builder.Services.AddScoped<IPponService, PponService>();
 
 builder.Services.AddScoped<IUseCase<LookupIdentifierQuery, IEnumerable<CO.CDP.EntityVerification.Model.Identifier>>, LookupIdentifierUseCase>();
 builder.Services.AddScoped<IUseCase<string, IEnumerable<IdentifierRegistries>>, GetIdentifierRegistriesUseCase>();
@@ -46,8 +40,7 @@ builder.Services.AddScoped<IUseCase<string[], IEnumerable<IdentifierRegistries>>
 
 if (Assembly.GetEntryAssembly().IsRunAs("CO.CDP.EntityVerification"))
 {
-    builder.Services.AddHealthChecks()
-        .AddNpgSql(ConnectionStringHelper.GetConnectionString(builder.Configuration, "EntityVerificationDatabase"));
+    builder.Services.AddHealthChecks().AddNpgSql(sp => sp.GetRequiredService<NpgsqlDataSource>());
 
     builder.Services
         .AddAwsConfiguration(builder.Configuration)

@@ -1,6 +1,8 @@
 using CO.CDP.OrganisationApp.Authentication;
+using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.Pages;
+using CO.CDP.OrganisationApp.WebApiClients;
 using CO.CDP.Person.WebApiClient;
 using FluentAssertions;
 using IdentityModel;
@@ -8,7 +10,9 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.FeatureManagement;
 using Moq;
 using System.Security.Claims;
 
@@ -22,6 +26,9 @@ public class OneLoginTest
     private readonly Mock<ILogoutManager> logoutManagerMock = new();
     private readonly Mock<IOneLoginAuthority> oneLoginAuthorityMock = new();
     private readonly Mock<IAuthenticationService> authService = new();
+    private readonly Mock<IAuthorityClient> authorityClientMock = new();
+    private readonly Mock<IFeatureManager> featureManagerMock = new();
+    private readonly Mock<IConfiguration> configMock = new();
     private const string urn = "urn:fdc:gov.uk:2022:7wTqYGMFQxgukTSpSI2GodMwe9";
 
     [Fact]
@@ -44,6 +51,47 @@ public class OneLoginTest
 
         result.Should().BeOfType<ChallengeResult>()
             .Which.Properties!.RedirectUri.Should().Be("/one-login/user-info?redirectUri=%2Forg%2F1");
+    }
+
+    [Fact]
+    public async Task OnGetSignIn_WhenOriginIsNotNull_ShouldSetCorrectRedirectUri()
+    {
+        configMock.Setup(c => c["FtsServiceAllowedOrigins"]).Returns("http://example1.com,http://example2.com");
+        featureManagerMock.Setup(f => f.IsEnabledAsync(FeatureFlags.AllowDynamicFtsOrigins)).ReturnsAsync(true);
+        var origin = "http://example1.com";
+        var model = GivenOneLoginModel("sign-in");
+
+        var result = await model.OnGetAsync("/org/1", origin: origin);
+
+        result.As<ChallengeResult>().Properties!.RedirectUri.Should()
+            .Be("/one-login/user-info?redirectUri=%2Forg%2F1%3Forigin%3Dhttp%253a%252f%252fexample1.com");
+    }
+
+    [Fact]
+    public async Task OnGetSignIn_WhenOriginIsNotListedInConfiguration_ShouldSetCorrectRedirectUri()
+    {
+        configMock.Setup(c => c["FtsServiceAllowedOrigins"]).Returns("http://example1.com,http://example2.com");
+        featureManagerMock.Setup(f => f.IsEnabledAsync(FeatureFlags.AllowDynamicFtsOrigins)).ReturnsAsync(true);
+        var origin = "http://example3.com";
+        var model = GivenOneLoginModel("sign-in");
+
+        var result = await model.OnGetAsync("/org/1", origin: origin);
+
+        result.As<ChallengeResult>().Properties!.RedirectUri.Should()
+            .Be("/one-login/user-info?redirectUri=%2Forg%2F1");
+    }
+
+    [Fact]
+    public async Task OnGetSignIn_WhenAllowDynamicFtsOriginsFeatureIsDisabled_ShouldNotSetSessionWithFtsServiceOriginKey()
+    {
+        configMock.Setup(c => c["FtsServiceAllowedOrigins"]).Returns("http://example1.com,http://example2.com");
+        featureManagerMock.Setup(f => f.IsEnabledAsync(FeatureFlags.AllowDynamicFtsOrigins)).ReturnsAsync(false);
+
+        var model = GivenOneLoginModel("sign-in");
+
+        var result = await model.OnGetAsync("/org/1", origin: "http://example1.com");
+
+        sessionMock.Verify(s => s.Set(Session.FtsServiceOrigin, "origin"), Times.Never);
     }
 
     [Fact]
@@ -182,8 +230,23 @@ public class OneLoginTest
 
         var result = await model.OnGetAsync();
 
-        result.Should().BeOfType<RedirectToPageResult>()
-            .Which.PageName.Should().Be("/");
+        result.Should().BeOfType<RedirectResult>()
+            .Which.Url.Should().Be("/");
+    }
+
+    [Fact]
+    public async Task OnGetSignOut_SessionHasUserDetailsUrn_ShouldCallRevokeRefreshToken()
+    {
+        var userUrn = "test_urn";
+
+        sessionMock.Setup(s => s.Get<UserDetails>(Session.UserDetailsKey))
+            .Returns(new UserDetails { UserUrn = userUrn });
+
+        var model = GivenOneLoginModel("sign-out");
+
+        var result = await model.OnGetAsync();
+
+        authorityClientMock.Verify(a => a.RevokeRefreshToken(userUrn), Times.Once);
     }
 
     [Fact]
@@ -270,10 +333,10 @@ public class OneLoginTest
             "TestScheme"));
 
     private readonly AuthenticateResult authResultWithMissingSubjectSuccess = AuthenticateResult.Success(new AuthenticationTicket(
-        new ClaimsPrincipal(new ClaimsIdentity(new[] {
+        new ClaimsPrincipal(new ClaimsIdentity([
             new Claim(JwtClaimTypes.Email, "dummy@test.com"),
             new Claim(JwtClaimTypes.PhoneNumber, "+44 123456789")
-        })),
+        ])),
         "TestScheme"));
 
     private readonly AuthenticateResult authResultFail = AuthenticateResult.Fail(new Exception("Auth failed"));
@@ -301,7 +364,11 @@ public class OneLoginTest
             personClientMock.Object,
             sessionMock.Object,
             logoutManagerMock.Object,
-            oneLoginAuthorityMock.Object, new Mock<ILogger<OneLoginModel>>().Object)
+            oneLoginAuthorityMock.Object,
+            authorityClientMock.Object,
+            new Mock<ILogger<OneLoginModel>>().Object,
+            featureManagerMock.Object,
+            configMock.Object)
         { PageAction = pageAction };
     }
 }

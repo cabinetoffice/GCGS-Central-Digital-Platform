@@ -1,12 +1,14 @@
 @page "/organisation/{id}/users/{userId}/remove"
+@using CO.CDP.Localization
 @model CO.CDP.OrganisationApp.Pages.Users.UserRemoveConfirmationModel
 @{
-    ViewData["Title"] = $"Are you sure you want to remove {Model.UserFullName}?";
+    ViewData["Title"] = string.Format(StaticTextResource.User_RemoveConfirmation_Title, Model.UserFullName);
+
     var hasError = ((TagBuilder)Html.ValidationMessageFor(m => m.ConfirmRemove)).HasInnerHtml;;
 }
 
 @section BeforeContent {
-    <a href="/organisation/@Model.Id/users/user-summary" class="govuk-back-link">Back</a>
+    <a href="/organisation/@Model.Id/users/user-summary" class="govuk-back-link">@StaticTextResource.Global_Back</a>
 }
 
     <div class="govuk-grid-row">
@@ -17,7 +19,7 @@
                     <div class="govuk-form-group @(hasError ? "govuk-form-group--error" : "")" @(hasError ? Html.Raw(@"aria-describedby=""confirm-remove-error""") : "")>
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                             <h1 class="govuk-fieldset__heading">
-                                Are you sure you want to remove <br/>[@Model.UserFullName]?
+                                @(string.Format(StaticTextResource.User_RemoveConfirmation_Header, Model.UserFullName))
                             </h1>
                         </legend>
 
@@ -26,7 +28,7 @@
                         @if (hasError)
                         {
                             <p id="confirm-remove-error" class="govuk-error-message">
-                                <span class="govuk-visually-hidden">Error:</span>
+                                <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span>
                                 @Html.ValidationMessageFor(m => m.ConfirmRemove)
                             </p>
                         }
@@ -35,19 +37,19 @@
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input" id="conditional-YES" name="ConfirmRemove" type="radio"
                                        value="true" @(Model.ConfirmRemove == true ? "checked" : "")>
-                                <label class="govuk-label govuk-radios__label" for="conditional-YES">Yes</label>
+                                <label class="govuk-label govuk-radios__label" for="conditional-YES">@StaticTextResource.Global_Yes</label>
                             </div>
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input" id="conditional-NO" name="ConfirmRemove" type="radio"
                                        value="false" @(Model.ConfirmRemove == false ? "checked" : "")>
-                                <label class="govuk-label govuk-radios__label" for="conditional-NO">No</label>
+                                <label class="govuk-label govuk-radios__label" for="conditional-NO">@StaticTextResource.Global_No</label>
                             </div>
                         </div>
                     </div>
                 </fieldset>
 
                 <govuk-button class="govuk-!-margin-top-6">
-                    Continue
+                    @StaticTextResource.Global_Continue
                 </govuk-button>
             </form>
         </div>

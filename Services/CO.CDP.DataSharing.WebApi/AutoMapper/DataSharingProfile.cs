@@ -140,23 +140,38 @@ public class CustomFormQuestionTypeResolver : IValueResolver<Persistence.FormQue
             case Persistence.FormQuestionType.YesOrNo:
             case Persistence.FormQuestionType.CheckBox:
                 return FormQuestionType.Boolean;
+
             case Persistence.FormQuestionType.Text:
             case Persistence.FormQuestionType.Address:
+            case Persistence.FormQuestionType.MultiLine:
                 return FormQuestionType.Text;
+
             case Persistence.FormQuestionType.SingleChoice:
+            case Persistence.FormQuestionType.GroupedSingleChoice:
             case Persistence.FormQuestionType.MultipleChoice:
-                return FormQuestionType.Option;
+                if(source.Options.AnswerFieldName == "JsonValue")
+                {
+                    return FormQuestionType.OptionJson;
+                } else
+                {
+                    return FormQuestionType.Option;
+                }
+                
             case Persistence.FormQuestionType.Date:
                 return FormQuestionType.Date;
+
             case Persistence.FormQuestionType.Url:
                 return FormQuestionType.Url;
+
+            case Persistence.FormQuestionType.FileUpload:
+                return FormQuestionType.FileUpload;
+
             case Persistence.FormQuestionType.NoInput:
             case Persistence.FormQuestionType.CheckYourAnswers:
                 return FormQuestionType.None;
-            case Persistence.FormQuestionType.FileUpload:
-                return FormQuestionType.FileUpload;
+
             default:
-                return FormQuestionType.None;
+                throw new InvalidOperationException($"Unhandled FormQuestionType: {source.Type}");
         }
     }
 }

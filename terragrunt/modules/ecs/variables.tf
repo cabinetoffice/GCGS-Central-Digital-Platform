@@ -28,6 +28,11 @@ variable "db_entity_verification_name" {
   type        = string
 }
 
+variable "db_ev_cluster_credentials_kms_key_id" {
+  description = "Key ID of the KMS used to encrypt Entity Verification secrets"
+  type        = string
+}
+
 variable "db_postgres_sg_id" {
   description = "Postgres DB security group ID"
   type        = string
@@ -35,6 +40,11 @@ variable "db_postgres_sg_id" {
 
 variable "db_sirsi_address" {
   description = "Sirsi DB address"
+  type        = string
+}
+
+variable "db_sirsi_cluster_credentials_kms_key_id" {
+  description = "Key ID of the KMS used to encrypt Sirsi secrets"
   type        = string
 }
 
@@ -147,7 +157,6 @@ variable "redis_sg_id" {
   description = "ElastiCache Redis security group ID"
   type        = string
 }
-
 
 variable "role_cloudwatch_events_name" {
   description = "Name of the IAM role used by CloudWatch Events"

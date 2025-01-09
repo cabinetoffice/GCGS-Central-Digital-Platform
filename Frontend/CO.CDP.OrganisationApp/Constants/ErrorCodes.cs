@@ -9,6 +9,8 @@ public static class ErrorCodes
 
     public const string PERSON_DOES_NOT_EXIST = "PERSON_DOES_NOT_EXIST";
 
+    public const string MOU_DOES_NOT_EXIST = "MOU_DOES_NOT_EXIST";
+
     public const string UNPROCESSABLE_ENTITY = "UNPROCESSABLE_ENTITY";
 
     public const string GENERIC_ERROR = "GENERIC_ERROR";

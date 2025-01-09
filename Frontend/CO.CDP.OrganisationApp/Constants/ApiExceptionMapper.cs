@@ -33,12 +33,13 @@ public static class ApiExceptionMapper
     {
         return errorCode switch
         {
-            ErrorCodes.ORGANISATION_ALREADY_EXISTS => ErrorMessagesList.DuplicateOgranisationName,
+            ErrorCodes.ORGANISATION_ALREADY_EXISTS => ErrorMessagesList.DuplicateOrganisationName,
             ErrorCodes.EMAIL_ALREADY_EXISTS_WITHIN_ORGANISATION => ErrorMessagesList.DuplicatePersonEmail,
             ErrorCodes.INVITE_EMAIL_ALREADY_EXISTS_FOR_ORGANISATION => ErrorMessagesList.DuplicateInviteEmail,
             ErrorCodes.ARGUMENT_NULL => ErrorMessagesList.PayLoadIssueOrNullAurgument,
             ErrorCodes.INVALID_OPERATION => ErrorMessagesList.OrganisationCreationFailed,
             ErrorCodes.PERSON_DOES_NOT_EXIST => ErrorMessagesList.PersonNotFound,
+            ErrorCodes.MOU_DOES_NOT_EXIST=> ErrorMessagesList.MouNotFound,
             ErrorCodes.UNPROCESSABLE_ENTITY => ErrorMessagesList.UnprocessableEntity,
             ErrorCodes.UNKNOWN_ORGANISATION => ErrorMessagesList.UnknownOrganisation,
             ErrorCodes.BUYER_INFO_NOT_EXISTS => ErrorMessagesList.BuyerInfoNotExists,

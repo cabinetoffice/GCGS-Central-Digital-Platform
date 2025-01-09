@@ -48,8 +48,12 @@ data "aws_secretsmanager_secret_version" "govuknotify_support_admin_email" {
   secret_id = "${local.name_prefix}-govuknotify-support-admin-email"
 }
 
-data "aws_secretsmanager_secret" "one_login" {
+data "aws_secretsmanager_secret" "one_login_credentials" {
   name = "${local.name_prefix}-one-login-credentials"
+}
+
+data "aws_secretsmanager_secret" "one_login_forward_logout_notification_api_key" {
+  name = "${local.name_prefix}-one-login-forward-logout-notification-api-key"
 }
 
 data "aws_iam_policy_document" "ecs_task_access_secrets" {
@@ -61,8 +65,9 @@ data "aws_iam_policy_document" "ecs_task_access_secrets" {
       "secretsmanager:GetSecretValue"
     ]
     resources = [
+      "arn:aws:secretsmanager:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:secret:${local.name_prefix}-*",
       "arn:aws:secretsmanager:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:secret:rds!*",
-      "arn:aws:secretsmanager:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:secret:${local.name_prefix}-*"
+      "arn:aws:secretsmanager:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:secret:rds-*"
     ]
   }
   statement {
@@ -73,8 +78,10 @@ data "aws_iam_policy_document" "ecs_task_access_secrets" {
       "kms:Decrypt"
     ]
     resources = [
+      var.db_entity_verification_kms_arn,
+      var.db_ev_cluster_credentials_kms_key_id,
+      var.db_sirsi_cluster_credentials_kms_key_id,
       var.db_sirsi_kms_arn,
-      var.db_entity_verification_kms_arn
     ]
   }
 }

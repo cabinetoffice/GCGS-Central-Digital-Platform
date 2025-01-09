@@ -103,6 +103,29 @@ public class ClaimServiceTests
         result.Should().BeTrue();
     }
 
+    [Fact]
+    public void GetChannel_ShouldReturnUrn_WhenUserHasChannelClaim()
+    {
+        var channel = "onelogin";
+        var httpContextAccessor = GivenHttpContextWith([new(ClaimType.Channel, channel)]);
+
+        var claimService = new ClaimService(httpContextAccessor.Object, mockOrgRepo.Object);
+
+        var result = claimService.GetChannel();
+        result.Should().Be(channel);
+    }
+
+    [Fact]
+    public void GetChannel_ShouldReturnNull_WhenUserHasNoChannelClaim()
+    {
+        var httpContextAccessor = GivenHttpContextWith([]);
+
+        var claimService = new ClaimService(httpContextAccessor.Object, mockOrgRepo.Object);
+        var result = claimService.GetChannel();
+
+        result.Should().BeNull();
+    }
+
     private static Mock<IHttpContextAccessor> GivenHttpContextWith(List<Claim> claims)
     {
         var identity = new ClaimsIdentity(claims, "TestAuthType");

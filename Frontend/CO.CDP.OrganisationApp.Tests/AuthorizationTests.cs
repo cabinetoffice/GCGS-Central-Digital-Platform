@@ -12,6 +12,7 @@ using System.Net;
 using Amazon.SimpleSystemsManagement;
 using CO.CDP.TestKit.Mvc;
 using Microsoft.AspNetCore.DataProtection.KeyManagement;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
@@ -118,6 +119,11 @@ public class AuthorizationTests
                 services.RemoveAll<IConfigureOptions<KeyManagementOptions>>();
                 services.AddDataProtection().DisableAutomaticKeyGeneration();
             });
+            builder.ConfigureHostConfiguration(c => c.AddInMemoryCollection(
+                [
+                    new KeyValuePair<string, string?>("Features:SharedSessions", "false")
+                ]
+            ));
         });
 
         return factory.CreateClient();
@@ -126,7 +132,7 @@ public class AuthorizationTests
     public static IEnumerable<object[]> TestCases()
     {
         yield return new object[] { $"/organisation/{OrganisationId}/users/user-summary", new[] { "Organisation has 2 users" } };
-        yield return new object[] { $"/organisation/{OrganisationId}/users/{PersonInviteGuid}/change-role?handler=personInvite", new[] { "Person invite Last name", "Select a role" } };
+        yield return new object[] { $"/organisation/{OrganisationId}/users/{PersonInviteGuid}/change-role?handler=personInvite", new[] { "Person invite Last name", "Select user role" } };
     }
 
     [Theory]

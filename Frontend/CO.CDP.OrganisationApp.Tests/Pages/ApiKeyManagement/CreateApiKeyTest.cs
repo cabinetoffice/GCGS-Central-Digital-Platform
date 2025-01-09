@@ -76,8 +76,13 @@ public class CreateApiKeyTest
         result.Should().BeOfType<PageResult>();
     }
 
+    public static IEnumerable<object[]> Get_OnPost_AddsModelError_TestData()
+    {
+        yield return new object[] { ErrorCodes.APIKEY_NAME_ALREADY_EXISTS, ErrorMessagesList.DuplicateApiKeyName, StatusCodes.Status400BadRequest };
+    }
+
     [Theory]
-    [InlineData(ErrorCodes.APIKEY_NAME_ALREADY_EXISTS, ErrorMessagesList.DuplicateApiKeyName, StatusCodes.Status400BadRequest)]
+    [MemberData(nameof(Get_OnPost_AddsModelError_TestData))]
     public async Task OnPost_AddsModelError(string errorCode, string expectedErrorMessage, int statusCode)
     {
         var problemDetails = new ProblemDetails(

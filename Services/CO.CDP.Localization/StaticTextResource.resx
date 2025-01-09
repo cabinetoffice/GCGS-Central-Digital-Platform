@@ -270,6 +270,21 @@
   <data name="Global_Continue" xml:space="preserve">
     <value>Continue</value>
   </data>
+  <data name="Global_Admin" xml:space="preserve">
+    <value>Admin</value>
+  </data>
+  <data name="Global_Editor" xml:space="preserve">
+    <value>Editor</value>
+  </data>
+  <data name="Global_Viewer" xml:space="preserve">
+    <value>Viewer</value>
+  </data>
+  <data name="Global_Approve" xml:space="preserve">
+    <value>Approve</value>
+  </data>
+  <data name="Global_Reject" xml:space="preserve">
+    <value>Reject</value>
+  </data>
   <data name="Organisation_MyAccount" xml:space="preserve">
     <value>My account</value>
   </data>
@@ -630,6 +645,18 @@
   <data name="User_Role_Required_ErrorMessage" xml:space="preserve">
     <value>Role required</value>
   </data>
+  <data name="User_RemoveConfirmation_Title" xml:space="preserve">
+    <value>Are you sure you want to remove {0}?</value>
+  </data>
+  <data name="User_RemoveConfirmation_Header" xml:space="preserve">
+    <value>Are you sure you want to remove [{0}]?</value>
+  </data>
+  <data name="User_RemoveConfirmation_ConfirmValidation" xml:space="preserve">
+    <value>Select yes to confirm remove user</value>
+  </data>
+  <data name="User_UserSummary_HasPersonValidation" xml:space="preserve">
+    <value>Select yes to add another user</value>
+  </data>
   <data name="Supplier_ConnectedEntity_Address_EnterRegisteredAddress_Heading" xml:space="preserve">
     <value>Enter {0}'s registered address</value>
   </data>
@@ -888,6 +915,9 @@
   <data name="Supplier_ConnectedEntity_ConnectedEntityPostalSameAsRegisteredAddress_Hint" xml:space="preserve">
     <value>The place where an organisation receives official post can be different from its registered address. For example, a branch office.</value>
   </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityPscDetails_Heading" xml:space="preserve">
+    <value>Enter the person with significant control's details</value>
+  </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityPscDetails_FirstNameLabel" xml:space="preserve">
     <value>First name</value>
   </data>
@@ -923,6 +953,12 @@
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityPscDetails_DateOfBirthYearInvalidError" xml:space="preserve">
     <value>Year must be a valid number</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityPscDetails_DateOfBirthRealDateInvalidError" xml:space="preserve">
+    <value>Date of birth must be a real date</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityPscDetails_DateOfBirthInPastInvalidError" xml:space="preserve">
+    <value>Date of birth must be today or in the past</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityPscDetails_NationalityLabel" xml:space="preserve">
     <value>Nationality</value>
@@ -1130,6 +1166,9 @@
   </data>
   <data name="OrganisationRegistration_OrganisationType_Supplier_Hint" xml:space="preserve">
     <value>An organisation or sole trader who searches for tenders and submits bids to supply goods, works, services or utilities</value>
+  </data>
+  <data name="OrganisationRegistration_OrganisationType_BuyerOrSupplierValidation" xml:space="preserve">
+    <value>Select 'buyer' or 'supplier'</value>
   </data>
   <data name="OrganisationRegistration_CompanyHouseNumberQuestion_Heading" xml:space="preserve">
     <value>Does your organisation have a Companies House number?</value>
@@ -1528,7 +1567,7 @@
     <value>We cannot find your company number on Companies House. If it’s correct, continue and enter your details manually.</value>
   </data>
   <data name="OrganisationRegistration_CompanyHouseNumberQuestion_CompanyAlreadyRegistered_NotificationBanner" xml:space="preserve">
-    <value>An organisation with this company number already exists. Change the company number or &lt;a class="govuk-notification-banner__link" href="/registration/{0}/join-organisation"&gt;request to join {1}.&lt;/a&gt;</value>
+    <value>An organisation with this company number already exists. Change the company number or &lt;a class="govuk-notification-banner__link" href="/registration/{organisationIdentifier}/join-organisation"&gt;request to join {organisationName}.&lt;/a&gt;</value>
   </data>
   <data name="OrganisationRegistration_CompanyHouseNumberQuestion_ValidationErrorMessage" xml:space="preserve">
     <value>Select 'yes' or 'no'</value>
@@ -1625,7 +1664,7 @@
   <data name="OrganisationRegistration_OrganisationAlreadyRegistered_Heading" xml:space="preserve">
     <value>This organisation has already registered</value>
   </data>
-    <data name="OrganisationRegistration_UserConfirm" xml:space="preserve">
+  <data name="OrganisationRegistration_UserConfirm" xml:space="preserve">
     <value>I understand my name and email address will be shared with this organisation</value>
   </data>
   <data name="OrganisationRegistration_OrganisationAlreadyRegistered_Message" xml:space="preserve">
@@ -2441,9 +2480,6 @@
   <data name="Global_SaveAndExit" xml:space="preserve">
     <value>Save and exit</value>
   </data>
-  <data name="Global_Failure_Heading" xml:space="preserve">
-    <value>Failure</value>
-  </data>
   <data name="Supplier_LegalFormCompanyActQuestion_Title" xml:space="preserve">
     <value>Is your organisation registered on Companies House?</value>
   </data>
@@ -2784,7 +2820,7 @@
     <value>Select if you have read and agree to the Central Digital Platform service privacy policy</value>
   </data>
   <data name="ProvideFeedbackAndContact_WhatsItToDoWith" xml:space="preserve">
-    <value>What's it to do with</value>
+    <value>What's it to do with?</value>
   </data>
   <data name="ProvideFeedbackAndContact_ChooseAnOption" xml:space="preserve">
     <value>Choose an option</value>
@@ -2819,9 +2855,6 @@
   <data name="Global_EmailAddress" xml:space="preserve">
     <value>Email address</value>
   </data>
-
-
-
   <data name="ProvideFeedbackAndContact_ProvideFindATenderFeedback" xml:space="preserve">
     <value>Provide Find a Tender Feedback</value>
   </data>
@@ -2836,9 +2869,6 @@
   </data>
   <data name="ProvideFeedbackAndContact_YouCanAskAQuestion" xml:space="preserve">
     <value>You can ask a question, report a problem or suggest an improvement to the Find a Tender team.</value>
-  </data>
-  <data name="ProvideFeedbackAndContact_WhatsItToDoWith" xml:space="preserve">
-    <value>What's it to do with?</value>
   </data>
   <data name="ProvideFeedbackAndContact_TheWholeService" xml:space="preserve">
     <value>The whole service</value>
@@ -2872,5 +2902,203 @@
   </data>
   <data name="Consortium_ConsortiumChangeEmail_Heading" xml:space="preserve">
     <value>Enter an email address for the consortium</value>
+  </data>
+  <data name="OrganisationSchemeType_CompaniesHouse" xml:space="preserve">
+    <value>Companies House Number</value>
+  </data>
+  <data name="OrganisationSchemeType_CharityCommissionEnglandWales" xml:space="preserve">
+    <value>Charity Commission for England &amp; Wales Number</value>
+  </data>
+  <data name="OrganisationSchemeType_ScottishCharityRegulator" xml:space="preserve">
+    <value>Scottish Charity Regulator</value>
+  </data>
+  <data name="OrganisationSchemeType_CharityCommissionNorthernIreland" xml:space="preserve">
+    <value>Charity Commission for Northern Ireland Number</value>
+  </data>
+  <data name="OrganisationSchemeType_MutualsPublicRegister" xml:space="preserve">
+    <value>Mutuals Public Register Number</value>
+  </data>
+  <data name="OrganisationSchemeType_GuernseyRegistry" xml:space="preserve">
+    <value>Guernsey Registry Number</value>
+  </data>
+  <data name="OrganisationSchemeType_JerseyFinancialServicesCommission" xml:space="preserve">
+    <value>Jersey Financial Services Commission Registry Number</value>
+  </data>
+  <data name="OrganisationSchemeType_IsleOfManCompaniesRegistry" xml:space="preserve">
+    <value>Isle of Man Companies Registry Number</value>
+  </data>
+  <data name="OrganisationSchemeType_NHSOrganisationsRegistry" xml:space="preserve">
+    <value>National Health Service Organisations Registry Number</value>
+  </data>
+  <data name="OrganisationSchemeType_UKRegisterOfLearningProviders" xml:space="preserve">
+    <value>UK Register of Learning Provider Number</value>
+  </data>
+  <data name="OrganisationSchemeType_VAT" xml:space="preserve">
+    <value>VAT number</value>
+  </data>
+  <data name="OrganisationSchemeType_OtherNone" xml:space="preserve">
+    <value>Other / None</value>
+  </data>
+  <data name="OrganisationSchemeType_Other" xml:space="preserve">
+    <value>Other</value>
+  </data>
+  <data name="OrganisationSchemeType_Ppon" xml:space="preserve">
+    <value>Ppon</value>
+  </data>
+  <data name="UserSummary_ManageUsers_Title" xml:space="preserve">
+    <value>Manage users</value>
+  </data>
+  <data name="UserSummary_JoinRequests" xml:space="preserve">
+    <value>Join requests</value>
+  </data>
+  <data name="UserSummary_Approve" xml:space="preserve">
+    <value>Approve</value>
+  </data>
+  <data name="UserSummary_TotalUsers" xml:space="preserve">
+    <value>Organisation has {0} {1}</value>
+  </data>
+  <data name="UserSummary_User" xml:space="preserve">
+    <value>user</value>
+  </data>
+  <data name="UserSummary_Users" xml:space="preserve">
+    <value>users</value>
+  </data>
+  <data name="UserSummary_InviteExpired" xml:space="preserve">
+    <value>Invite expired</value>
+  </data>
+  <data name="UserSummary_InviteSent" xml:space="preserve">
+    <value>Invite sent</value>
+  </data>
+  <data name="UserSummary_Resend" xml:space="preserve">
+    <value>Resend</value>
+  </data>
+  <data name="UserSummary_AddAnotherUser" xml:space="preserve">
+    <value>Add another user?</value>
+  </data>
+  <data name="Users_FirstName_Label" xml:space="preserve">
+    <value>First name</value>
+  </data>
+  <data name="Users_LastName_Label" xml:space="preserve">
+    <value>Last name</value>
+  </data>
+  <data name="Users_FirstName_Validation" xml:space="preserve">
+    <value>Enter your first name</value>
+  </data>
+  <data name="Users_LastName_Validation" xml:space="preserve">
+    <value>Enter your last name</value>
+  </data>
+  <data name="Users_AddUser_Title" xml:space="preserve">
+    <value>Add a user</value>
+  </data>
+  <data name="Users_EmailAddress_Label" xml:space="preserve">
+    <value>Email address</value>
+  </data>
+  <data name="Users_UserRole_Label" xml:space="preserve">
+    <value>Select user role</value>
+  </data>
+  <data name="Users_UserRole_Hint" xml:space="preserve">
+    <value>Select the one that applies</value>
+  </data>
+  <data name="Users_UserRoleAdmin_Hint" xml:space="preserve">
+    <value>Can do anything, including add, remove and edit users</value>
+  </data>
+  <data name="Users_UserRoleEditor_Hint" xml:space="preserve">
+    <value>Can view, add and edit organisation information, view supplier information and create API keys</value>
+  </data>
+  <data name="Users_UserRoleViewer_Hint" xml:space="preserve">
+    <value>Can view organisation and supplier information</value>
+  </data>
+  <data name="Users_CheckYourAnswers_Title" xml:space="preserve">
+    <value>Check your answers</value>
+  </data>
+  <data name="Users_SendEmail_Button" xml:space="preserve">
+    <value>Join requests</value>
+  </data>
+  <data name="ErrorMessageList_DuplicatePersonName" xml:space="preserve">
+    <value>A person with this name already exists. Please try again.</value>
+  </data>
+  <data name="ErrorMessageList_DuplicatePersonEmail" xml:space="preserve">
+    <value>A user with this email address already exists for your organisation.</value>
+  </data>
+  <data name="ErrorMessageList_DuplicateInviteEmail" xml:space="preserve">
+    <value>A user with this email address has already been invited to your organisation.</value>
+  </data>
+  <data name="ErrorMessageList_PersonNotFound" xml:space="preserve">
+    <value>The requested person was not found.</value>
+  </data>
+  <data name="ErrorMessageList_PersonCreationFailed" xml:space="preserve">
+    <value>Adding a person failed, have you provided the correct person details.</value>
+  </data>
+  <data name="ErrorMessageList_OrganisationCreationFailed" xml:space="preserve">
+    <value>Organisation creation failed, have you provided the correct organisation details.</value>
+  </data>
+  <data name="ErrorMessageList_OrganisationNotFound" xml:space="preserve">
+    <value>The requested organisation was not found.</value>
+  </data>
+  <data name="ErrorMessageList_DuplicateOrganisationName" xml:space="preserve">
+    <value>An organisation with this name already exists. Please try again.</value>
+  </data>
+  <data name="ErrorMessageList_PayLoadIssueOrNullAurgument" xml:space="preserve">
+    <value>Please make sure all the required information has been provided correctly.</value>
+  </data>
+  <data name="ErrorMessageList_UnprocessableEntity" xml:space="preserve">
+    <value>An unprocessable entity found. Please try again with valid data.</value>
+  </data>
+  <data name="ErrorMessageList_UnexpectedError" xml:space="preserve">
+    <value>An unexpected error occurred. Please try again with valid data.</value>
+  </data>
+  <data name="ErrorMessageList_UnknownOrganisation" xml:space="preserve">
+    <value>The requested organisation was not found.</value>
+  </data>
+  <data name="ErrorMessageList_BuyerInfoNotExists" xml:space="preserve">
+    <value>The buyer information for requested organisation not exist.</value>
+  </data>
+  <data name="ErrorMessageList_UnknownBuyerInformationUpdateType" xml:space="preserve">
+    <value>The requested buyer information update type is unknown.</value>
+  </data>
+  <data name="ErrorMessageList_DuplicateApiKeyName" xml:space="preserve">
+    <value>An API key with this name already exists. Please try again.</value>
+  </data>
+  <data name="ErrorMessageList_AlreadyMemberOfOrganisation" xml:space="preserve">
+    <value>You are either already a member of this organisation or have already requested to join.</value>
+  </data>
+  <data name="ErrorMessageList_OrganisationInvalidInput" xml:space="preserve">
+    <value>Invalid Input.</value>
+  </data>
+  <data name="ErrorMessageList_MissingOrganisationName" xml:space="preserve">
+    <value>Missing organisation name.</value>
+  </data>
+  <data name="ErrorMessageList_MissingRoles" xml:space="preserve">
+    <value>Missing roles.</value>
+  </data>
+  <data name="ErrorMessageList_MissingContactPoint" xml:space="preserve">
+    <value>Missing contact point.</value>
+  </data>
+  <data name="ErrorMessageList_NoPrimaryIdentifier" xml:space="preserve">
+    <value>There are no identifiers remaining that can be set as the primary.</value>
+  </data>
+  <data name="ErrorMessageList_MissingOrganisationEmail" xml:space="preserve">
+    <value>Missing organisation email.</value>
+  </data>
+  <data name="ErrorMessageList_OrganisationEmailDoesNotExist" xml:space="preserve">
+    <value>Organisation email does not exists.</value>
+  </data>
+  <data name="ErrorMessageList_MissingOrganisationAddress" xml:space="preserve">
+    <value>Missing organisation address.</value>
+  </data>
+  <data name="ErrorMessageList_MissingOrganisationRegisteredAddress" xml:space="preserve">
+    <value>Missing Organisation registered address.</value>
+  </data>
+  <data name="ErrorMessageList_MissingAdditionalIdentifiers" xml:space="preserve">
+    <value>Missing additional identifiers.</value>
+  </data>
+  <data name="ErrorMessageList_MissingIdentifierNumber" xml:space="preserve">
+    <value>Missing identifier number.</value>
+  </data>
+  <data name="ErrorMessageList_IdentiferNumberAlreadyExists" xml:space="preserve">
+    <value>You’ve used this registry number for another organisation. Enter a different registry number.</value>
+  </data>
+  <data name="ErrorMessageList_MouNotFound" xml:space="preserve">
+    <value>Mou not found</value>
   </data>
 </root>

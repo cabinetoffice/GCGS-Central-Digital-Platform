@@ -24,6 +24,21 @@ variable "db_entity_verification_port" {
   default     = 5432
 }
 
+variable "db_ev_cluster_address" {
+  description = "Entity Verification database endpoint address"
+  type        = string
+}
+
+variable "db_ev_cluster_credentials_arn" {
+  description = "Entity Verification database secret ARN"
+  type        = string
+}
+
+variable "db_ev_cluster_name" {
+  description = "Entity Verification database name"
+  type        = string
+}
+
 variable "db_postgres_sg_id" {
   description = "Postgres DB security group ID"
   type        = string
@@ -31,6 +46,21 @@ variable "db_postgres_sg_id" {
 
 variable "db_sirsi_address" {
   description = "Sirsi database endpoint address"
+  type        = string
+}
+
+variable "db_sirsi_cluster_address" {
+  description = "Sirsi database endpoint address"
+  type        = string
+}
+
+variable "db_sirsi_cluster_credentials_arn" {
+  description = "Sirsi database secret ARN"
+  type        = string
+}
+
+variable "db_sirsi_cluster_name" {
+  description = "Sirsi database name"
   type        = string
 }
 

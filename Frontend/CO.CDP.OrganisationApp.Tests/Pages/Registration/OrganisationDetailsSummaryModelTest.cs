@@ -180,15 +180,21 @@ public class OrganisationDetailsSummaryModelTest
         result.Should().BeOfType<PageResult>();
     }
 
+    public static IEnumerable<object[]> Get_OnPost_AddsModelError_TestData()
+    {
+        yield return new object[] { ErrorCodes.ORGANISATION_ALREADY_EXISTS, ErrorMessagesList.DuplicateOrganisationName, StatusCodes.Status400BadRequest };
+        yield return new object[] { ErrorCodes.ARGUMENT_NULL, ErrorMessagesList.PayLoadIssueOrNullAurgument, StatusCodes.Status400BadRequest };
+        yield return new object[] { ErrorCodes.INVALID_OPERATION, ErrorMessagesList.OrganisationCreationFailed, StatusCodes.Status400BadRequest };
+        yield return new object[] { ErrorCodes.PERSON_DOES_NOT_EXIST, ErrorMessagesList.PersonNotFound, StatusCodes.Status404NotFound };
+        yield return new object[] { ErrorCodes.UNPROCESSABLE_ENTITY, ErrorMessagesList.UnprocessableEntity, StatusCodes.Status422UnprocessableEntity };
+        yield return new object[] { ErrorCodes.UNKNOWN_ORGANISATION, ErrorMessagesList.UnknownOrganisation, StatusCodes.Status404NotFound };
+        yield return new object[] { ErrorCodes.BUYER_INFO_NOT_EXISTS, ErrorMessagesList.BuyerInfoNotExists, StatusCodes.Status404NotFound };
+        yield return new object[] { ErrorCodes.UNKNOWN_BUYER_INFORMATION_UPDATE_TYPE, ErrorMessagesList.UnknownBuyerInformationUpdateType, StatusCodes.Status400BadRequest };
+        yield return new object[] { ErrorCodes.MOU_DOES_NOT_EXIST, ErrorMessagesList.MouNotFound, StatusCodes.Status404NotFound };
+    }
+
     [Theory]
-    [InlineData(ErrorCodes.ORGANISATION_ALREADY_EXISTS, ErrorMessagesList.DuplicateOgranisationName, StatusCodes.Status400BadRequest)]
-    [InlineData(ErrorCodes.ARGUMENT_NULL, ErrorMessagesList.PayLoadIssueOrNullAurgument, StatusCodes.Status400BadRequest)]
-    [InlineData(ErrorCodes.INVALID_OPERATION, ErrorMessagesList.OrganisationCreationFailed, StatusCodes.Status400BadRequest)]
-    [InlineData(ErrorCodes.PERSON_DOES_NOT_EXIST, ErrorMessagesList.PersonNotFound, StatusCodes.Status404NotFound)]
-    [InlineData(ErrorCodes.UNPROCESSABLE_ENTITY, ErrorMessagesList.UnprocessableEntity, StatusCodes.Status422UnprocessableEntity)]
-    [InlineData(ErrorCodes.UNKNOWN_ORGANISATION, ErrorMessagesList.UnknownOrganisation, StatusCodes.Status404NotFound)]
-    [InlineData(ErrorCodes.BUYER_INFO_NOT_EXISTS, ErrorMessagesList.BuyerInfoNotExists, StatusCodes.Status404NotFound)]
-    [InlineData(ErrorCodes.UNKNOWN_BUYER_INFORMATION_UPDATE_TYPE, ErrorMessagesList.UnknownBuyerInformationUpdateType, StatusCodes.Status400BadRequest)]
+    [MemberData(nameof(Get_OnPost_AddsModelError_TestData))]
     public async Task OnPost_AddsModelError(string errorCode, string expectedErrorMessage, int statusCode)
     {
         var problemDetails = GivenProblemDetails(code: errorCode, statusCode: statusCode);
