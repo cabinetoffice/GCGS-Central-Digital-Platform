@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using CO.CDP.OrganisationInformation.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -12,9 +13,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CO.CDP.OrganisationInformation.Persistence.Migrations
 {
     [DbContext(typeof(OrganisationInformationContext))]
-    partial class OrganisationInformationContextModelSnapshot : ModelSnapshot
+    [Migration("20250103170207_AddMOUTables")]
+    partial class AddMOUTables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -26,7 +29,6 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
             NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "connected_organisation_category", new[] { "registered_company", "director_or_the_same_responsibilities", "parent_or_subsidiary_company", "a_company_your_organisation_has_taken_over", "any_other_organisation_with_significant_influence_or_control" });
             NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "connected_person_type", new[] { "individual", "trust_or_trustee" });
             NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "control_condition", new[] { "none", "owns_shares", "has_voting_rights", "can_appoint_or_remove_directors", "has_other_significant_influence_or_control" });
-            NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "organisation_relationship", new[] { "consortium" });
             NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "organisation_type", new[] { "organisation", "informal_consortium" });
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
@@ -739,10 +741,6 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("CreatedById")
-                        .HasColumnType("integer")
-                        .HasColumnName("created_by_id");
-
                     b.Property<DateTimeOffset>("CreatedOn")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
@@ -758,14 +756,13 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("mou_id");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("name");
-
                     b.Property<int>("OrganisationId")
                         .HasColumnType("integer")
                         .HasColumnName("organisation_id");
+
+                    b.Property<int>("PersonId")
+                        .HasColumnType("integer")
+                        .HasColumnName("person_id");
 
                     b.Property<Guid>("SignatureGuid")
                         .HasColumnType("uuid")
@@ -780,14 +777,14 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                     b.HasKey("Id")
                         .HasName("pk_mou_signature");
 
-                    b.HasIndex("CreatedById")
-                        .HasDatabaseName("ix_mou_signature_created_by_id");
-
                     b.HasIndex("MouId")
                         .HasDatabaseName("ix_mou_signature_mou_id");
 
                     b.HasIndex("OrganisationId")
                         .HasDatabaseName("ix_mou_signature_organisation_id");
+
+                    b.HasIndex("PersonId")
+                        .HasDatabaseName("ix_mou_signature_person_id");
 
                     b.HasIndex("SignatureGuid")
                         .IsUnique()
@@ -939,58 +936,6 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                         .HasDatabaseName("ix_organisation_join_requests_reviewed_by_id");
 
                     b.ToTable("organisation_join_requests", (string)null);
-                });
-
-            modelBuilder.Entity("CO.CDP.OrganisationInformation.Persistence.OrganisationParty", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("ChildOrganisationId")
-                        .HasColumnType("integer")
-                        .HasColumnName("child_organisation_id");
-
-                    b.Property<DateTimeOffset>("CreatedOn")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("created_on")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
-
-                    b.Property<OrganisationRelationship>("OrganisationRelationship")
-                        .HasColumnType("organisation_relationship")
-                        .HasColumnName("organisation_relationship");
-
-                    b.Property<int>("ParentOrganisationId")
-                        .HasColumnType("integer")
-                        .HasColumnName("parent_organisation_id");
-
-                    b.Property<int?>("SharedConsentId")
-                        .HasColumnType("integer")
-                        .HasColumnName("shared_consent_id");
-
-                    b.Property<DateTimeOffset>("UpdatedOn")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("updated_on")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
-
-                    b.HasKey("Id")
-                        .HasName("pk_organisation_parties");
-
-                    b.HasIndex("ChildOrganisationId")
-                        .HasDatabaseName("ix_organisation_parties_child_organisation_id");
-
-                    b.HasIndex("ParentOrganisationId")
-                        .HasDatabaseName("ix_organisation_parties_parent_organisation_id");
-
-                    b.HasIndex("SharedConsentId")
-                        .HasDatabaseName("ix_organisation_parties_shared_consent_id");
-
-                    b.ToTable("organisation_parties", (string)null);
                 });
 
             modelBuilder.Entity("CO.CDP.OrganisationInformation.Persistence.OrganisationPerson", b =>
@@ -1583,13 +1528,6 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
 
             modelBuilder.Entity("CO.CDP.OrganisationInformation.Persistence.MouSignature", b =>
                 {
-                    b.HasOne("CO.CDP.OrganisationInformation.Persistence.Person", "CreatedBy")
-                        .WithMany()
-                        .HasForeignKey("CreatedById")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_mou_signature_persons_created_by_id");
-
                     b.HasOne("CO.CDP.OrganisationInformation.Persistence.Mou", "Mou")
                         .WithMany()
                         .HasForeignKey("MouId")
@@ -1604,11 +1542,18 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                         .IsRequired()
                         .HasConstraintName("fk_mou_signature_organisations_organisation_id");
 
-                    b.Navigation("CreatedBy");
+                    b.HasOne("CO.CDP.OrganisationInformation.Persistence.Person", "Person")
+                        .WithMany()
+                        .HasForeignKey("PersonId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_mou_signature_persons_person_id");
 
                     b.Navigation("Mou");
 
                     b.Navigation("Organisation");
+
+                    b.Navigation("Person");
                 });
 
             modelBuilder.Entity("CO.CDP.OrganisationInformation.Persistence.Organisation", b =>
@@ -1984,34 +1929,6 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                     b.Navigation("Person");
 
                     b.Navigation("ReviewedBy");
-                });
-
-            modelBuilder.Entity("CO.CDP.OrganisationInformation.Persistence.OrganisationParty", b =>
-                {
-                    b.HasOne("CO.CDP.OrganisationInformation.Persistence.Organisation", "ChildOrganisation")
-                        .WithMany()
-                        .HasForeignKey("ChildOrganisationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_organisation_parties_organisations_child_organisation_id");
-
-                    b.HasOne("CO.CDP.OrganisationInformation.Persistence.Organisation", "ParentOrganisation")
-                        .WithMany()
-                        .HasForeignKey("ParentOrganisationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_organisation_parties_organisations_parent_organisation_id");
-
-                    b.HasOne("CO.CDP.OrganisationInformation.Persistence.Forms.SharedConsent", "SharedConsent")
-                        .WithMany()
-                        .HasForeignKey("SharedConsentId")
-                        .HasConstraintName("fk_organisation_parties_shared_consents_shared_consent_id");
-
-                    b.Navigation("ChildOrganisation");
-
-                    b.Navigation("ParentOrganisation");
-
-                    b.Navigation("SharedConsent");
                 });
 
             modelBuilder.Entity("CO.CDP.OrganisationInformation.Persistence.OrganisationPerson", b =>
