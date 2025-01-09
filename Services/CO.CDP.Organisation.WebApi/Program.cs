@@ -21,6 +21,7 @@ using Npgsql;
 using System.Reflection;
 using ConnectedEntity = CO.CDP.Organisation.WebApi.Model.ConnectedEntity;
 using ConnectedEntityLookup = CO.CDP.Organisation.WebApi.Model.ConnectedEntityLookup;
+using MouSignature = CO.CDP.Organisation.WebApi.Model.MouSignature;
 using Organisation = CO.CDP.Organisation.WebApi.Model.Organisation;
 using OrganisationJoinRequest = CO.CDP.Organisation.WebApi.Model.OrganisationJoinRequest;
 using Person = CO.CDP.Organisation.WebApi.Model.Person;
@@ -103,6 +104,10 @@ builder.Services.AddScoped<IUseCase<ProvideFeedbackAndContact, bool>, ProvideFee
 builder.Services.AddScoped<IUseCase<ContactUs, bool>, ContactUsUseCase>();
 builder.Services.AddScoped<IUseCase<Guid, BuyerInformation?>, GetBuyerInformationUseCase>();
 builder.Services.AddScoped<IUseCase<Guid, OrganisationParties?>, GetOrganisationPartiesUseCase>();
+builder.Services.AddScoped<IUseCase<Guid, IEnumerable<MouSignature>>, GetOrganisationMouSignaturesUseCase>();
+builder.Services.AddScoped<IUseCase<(Guid, Guid), MouSignature>, GetOrganisationMouSignatureUseCase>();
+builder.Services.AddScoped<IUseCase<Guid, MouSignatureLatest>, GetOrganisationMouSignatureLatestUseCase>();
+builder.Services.AddScoped<IUseCase<(Guid, SignMouRequest),bool>, SignOrganisationMouUseCase>();
 
 builder.Services.AddProblemDetails();
 
@@ -177,6 +182,10 @@ app.MapGroup("/organisations")
 app.MapGroup("/feeback")
     .UseFeedbackEndpoints()
     .WithTags("Feedback - provide feedback");
+
+app.MapGroup("/organisations")
+    .UseMouEndpoints()
+    .WithTags("Organisation - MOUs");
 
 app.Run();
 public abstract partial class Program;

@@ -8,6 +8,8 @@ public static class ErrorMessagesList
     public static readonly string DuplicatePersonEmail = StaticTextResource.ErrorMessageList_DuplicatePersonEmail;
     public static readonly string DuplicateInviteEmail = StaticTextResource.ErrorMessageList_DuplicateInviteEmail;
     public static readonly string PersonNotFound = StaticTextResource.ErrorMessageList_PersonNotFound;
+    public static readonly string MouNotFound = StaticTextResource.ErrorMessageList_MouNotFound;
+    
     public static readonly string PersonCreationFailed = StaticTextResource.ErrorMessageList_PersonCreationFailed;
 
     public static readonly string OrganisationCreationFailed = StaticTextResource.ErrorMessageList_OrganisationCreationFailed;

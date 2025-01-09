@@ -1,4 +1,5 @@
 using CO.CDP.EntityFrameworkCore.DbContext;
+using CO.CDP.OrganisationInformation.Persistence.Forms;
 using Microsoft.EntityFrameworkCore;
 
 namespace CO.CDP.OrganisationInformation.Persistence;
@@ -219,6 +220,12 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
         context.SaveChanges();
     }
 
+    public void SaveOrganisationMou(MouSignature mouSignature)
+    {
+        context.MouSignature.Update(mouSignature);
+        context.SaveChanges();
+    }
+
     private static void HandleDbUpdateException(Organisation organisation, DbUpdateException cause)
     {
         switch (cause.InnerException)
@@ -236,5 +243,36 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
             default:
                 throw cause;
         }
+    }
+
+    public async Task<IEnumerable<MouSignature>> GetMouSignatures(int organisationId)
+    {
+        return await context.MouSignature
+        .Where(x => x.OrganisationId == organisationId)
+        .Include(m => m.Mou)
+        .Include(p => p.CreatedBy)
+        .ToListAsync();
+    }
+
+    public async Task<MouSignature?> GetMouSignature(int organisationId, Guid mouSignatureId)
+    {
+        return await context.MouSignature
+        .Where(x => x.OrganisationId == organisationId && x.SignatureGuid == mouSignatureId)
+        .Include(m => m.Mou)
+        .Include(p => p.CreatedBy)
+        .FirstOrDefaultAsync();
+    }
+    public async Task<Mou?> GetLatestMou()
+    {
+        return await context.Mou
+            .OrderByDescending(m => m.CreatedOn)
+        .FirstOrDefaultAsync();
+    }
+
+    public async Task<Mou?> GetMou(Guid mouId)
+    {
+        return await context.Mou
+                .Where(m => m.Guid == mouId)
+        .FirstOrDefaultAsync();
     }
 }

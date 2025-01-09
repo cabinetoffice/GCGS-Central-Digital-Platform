@@ -28,6 +28,8 @@ public class OrganisationInformationContext(DbContextOptions<OrganisationInforma
     public DbSet<OrganisationJoinRequest> OrganisationJoinRequests { get; set; } = null!;
     public DbSet<OutboxMessage> OutboxMessages { get; set; }
     public DbSet<OrganisationParty> OrganisationParties { get; set; } = null!;
+    public DbSet<MouSignature> MouSignature { get; set; } = null!;
+    public DbSet<Mou> Mou { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
