@@ -1,14 +1,9 @@
 using CO.CDP.AwsServices;
-using Microsoft.Extensions.Configuration;
 
 namespace CO.CDP.AntiVirusScanner;
 
-public interface IScanner
-{
-    void Scan(ScanFile fileName);
-}
-
-public class Scanner(IFileHostManager fileHostManager, IConfiguration configuration) : IScanner
+public class Scanner(IFileHostManager fileHostManager, IConfiguration configuration,
+    ILogger<Scanner> logger) : IScanner
 {
     public async void Scan(ScanFile fileToScan)
     {
@@ -28,25 +23,23 @@ public class Scanner(IFileHostManager fileHostManager, IConfiguration configurat
                     var response = httpClient.PostAsync(calmAvUrl, content).Result;
                     if (response.IsSuccessStatusCode)
                     {
-                        // TODO: log filename and org id
-
                         var responseContent = response.Content.ReadAsStringAsync().Result;
-                        Console.WriteLine(responseContent);
-
                         await fileHostManager.CopyToPermanentBucket(fileToScan.FileName);
+
+                        logger.LogInformation("File scanned successfully: File name: {fileName} OrganisationId: {orgId}", fileToScan.FileName, fileToScan.OrganisationId);
                     }
                     else
                     {
                         await fileHostManager.RemoveFromStagingBucket(fileToScan.FileName);
 
-                        Console.WriteLine("File request did not complete: " + response.StatusCode);
+                        logger.LogInformation("File scan failed: {fileName} {orgId}", fileToScan.FileName, fileToScan.OrganisationId);
                     }
                 }
             }
         }
         catch (Exception ex)
         {
-            Console.WriteLine(ex.Message);
+            logger.LogError(ex, ex.Message);
         }
     }
 
@@ -58,5 +51,4 @@ public class Scanner(IFileHostManager fileHostManager, IConfiguration configurat
             return memoryStream.ToArray();
         }
     }
-
 }

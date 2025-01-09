@@ -94,18 +94,6 @@ builder.Services.AddScoped<IPublisher, SqsPublisher>(serviceProvider =>
     return publisher;
 });
 
-//builder.Services.AddScoped<IDispatcher, SqsDispatcher>(serviceProvider =>
-//{
-//    var dispatcher = new SqsDispatcher(
-//        serviceProvider.GetRequiredService<IAmazonSQS>(),
-//        serviceProvider.GetRequiredService<IOptions<AwsConfiguration>>(),
-//        serviceProvider.GetRequiredService<Deserializer>(),
-//        serviceProvider.GetRequiredService<ILogger<SqsDispatcher>>());
-//    return dispatcher;
-//});
-
-//builder.Services.AddHostedService<DispatcherBackgroundService>();
-
 var sessionTimeoutInMinutes = builder.Configuration.GetValue<double>("SessionTimeoutInMinutes");
 
 builder.Services.AddSession(options =>

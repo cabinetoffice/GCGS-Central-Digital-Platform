@@ -49,22 +49,6 @@ if (!app.Environment.IsDevelopment())
 app.UseStatusCodePages();
 app.MapHealthChecks("/health").AllowAnonymous();
 
-//var scan = new Scanner();
-//scan.Scan();
-
-// call ClamAV with existing prod bucket file to scan
-
-// if clean, move to prod bucket
-
-// see if data share works when zero file exists, for case when file is virus
-
-// check AV updates
-
-// add logging. add to Grafana
-
-// 
-
-
 app.Run();
 
 public abstract partial class Program;
