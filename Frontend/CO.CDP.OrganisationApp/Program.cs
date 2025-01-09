@@ -84,7 +84,7 @@ builder.Services.AddSession(options =>
 {
     options.IdleTimeout = TimeSpan.FromMinutes(sessionTimeoutInMinutes);
     options.Cookie.IsEssential = true;
-    options.Cookie.SameSite = SameSiteMode.Strict;
+    options.Cookie.SameSite = SameSiteMode.Lax;
     options.Cookie.SecurePolicy = cookieSecurePolicy;
 });
 
@@ -93,13 +93,13 @@ builder.Services.AddSingleton<ISession, Session>();
 
 builder.Services.ConfigureApplicationCookie(options =>
 {
-    options.Cookie.SameSite = SameSiteMode.Strict;
+    options.Cookie.SameSite = SameSiteMode.Lax;
     options.Cookie.SecurePolicy = cookieSecurePolicy;
 });
 
 builder.Services.AddCookiePolicy(options =>
 {
-    options.MinimumSameSitePolicy = SameSiteMode.Strict;
+    options.MinimumSameSitePolicy = SameSiteMode.Lax;
     options.HttpOnly = Microsoft.AspNetCore.CookiePolicy.HttpOnlyPolicy.Always;
     options.Secure = cookieSecurePolicy;
 });
@@ -107,7 +107,7 @@ builder.Services.AddCookiePolicy(options =>
 builder.Services.AddAntiforgery(options =>
 {
     options.Cookie.SecurePolicy = cookieSecurePolicy;
-    options.Cookie.SameSite = SameSiteMode.Strict;
+    options.Cookie.SameSite = SameSiteMode.Lax;
     options.Cookie.HttpOnly = true;
 });
 
@@ -237,6 +237,14 @@ builder.Services.AddAuthentication(options =>
     options.UsePkce = false;
     options.EventsType = typeof(OidcEvents);
     options.ClaimActions.MapAll();
+
+    options.CorrelationCookie.SameSite = SameSiteMode.Lax;
+    options.CorrelationCookie.SecurePolicy = cookieSecurePolicy;
+    options.CorrelationCookie.HttpOnly = true;
+
+    options.NonceCookie.SameSite = SameSiteMode.Lax;
+    options.NonceCookie.SecurePolicy = cookieSecurePolicy;
+    options.NonceCookie.HttpOnly = true;
 });
 
 builder.Services.AddSingleton<IAuthorizationPolicyProvider, CustomAuthorizationPolicyProvider>();
