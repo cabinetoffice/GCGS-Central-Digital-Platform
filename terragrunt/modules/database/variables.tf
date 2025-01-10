@@ -1,3 +1,15 @@
+variable "aurora_postgres_engine_version" {
+  description = "DB engine version"
+  type        = string
+  default     = "16.6"
+}
+
+variable "aurora_postgres_instance_type" {
+  description = "RDS instance type for individual environments"
+  type        = string
+  default     = "db.r5.large"
+}
+
 variable "db_postgres_sg_id" {
   description = "Postgres DB security group ID"
   type        = string

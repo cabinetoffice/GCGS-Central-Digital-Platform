@@ -2,6 +2,7 @@ namespace CO.CDP.Organisation.WebApi.Model;
 
 public class UnknownOrganisationException(string message, Exception? cause = null) : Exception(message, cause);
 public class UnknownPersonException(string message, Exception? cause = null) : Exception(message, cause);
+public class UnknownMouException(string message, Exception? cause = null) : Exception(message, cause);
 public class UnknownInvitedPersonException(string message, Exception? cause = null) : Exception(message, cause);
 public class EmptyPersonRoleException(string message, Exception? cause = null) : Exception(message, cause);
 
@@ -60,3 +61,4 @@ public class DuplicateInviteEmailForOrganisationException(string message, Except
 public class PersonAlreadyAddedToOrganisationException(string message, Exception? cause = null) : Exception(message, cause);
 public class PersonAlreadyInvitedToOrganisationException(string message, Exception? cause = null) : Exception(message, cause);
 public class UnknownOrganisationJoinRequestException(string message, Exception? cause = null) : Exception(message, cause);
+public class OrganisationShareCodeInvalid(string shareCode) : Exception($"Invalid organisation share code: {shareCode}");

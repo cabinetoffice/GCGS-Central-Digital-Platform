@@ -190,6 +190,7 @@ public class OrganisationDetailsSummaryModelTest
         yield return new object[] { ErrorCodes.UNKNOWN_ORGANISATION, ErrorMessagesList.UnknownOrganisation, StatusCodes.Status404NotFound };
         yield return new object[] { ErrorCodes.BUYER_INFO_NOT_EXISTS, ErrorMessagesList.BuyerInfoNotExists, StatusCodes.Status404NotFound };
         yield return new object[] { ErrorCodes.UNKNOWN_BUYER_INFORMATION_UPDATE_TYPE, ErrorMessagesList.UnknownBuyerInformationUpdateType, StatusCodes.Status400BadRequest };
+        yield return new object[] { ErrorCodes.MOU_DOES_NOT_EXIST, ErrorMessagesList.MouNotFound, StatusCodes.Status404NotFound };
     }
 
     [Theory]

@@ -144,3 +144,24 @@ public enum ConnectedOrganisationCategory
     ACompanyYourOrganisationHasTakenOver,
     AnyOtherOrganisationWithSignificantInfluenceOrControl,
 }
+
+public record OrganisationParties
+{
+    public IEnumerable<OrganisationParty> Parties { get; set; } = [];
+}
+
+public record OrganisationParty
+{
+    public required string Name { get; set; }
+
+    public required Guid Id { get; set; }
+
+    public OrganisationPartyShareCode? ShareCode { get; set; }
+}
+
+public record OrganisationPartyShareCode
+{
+    public required string Value { get; set; }
+
+    public required DateTimeOffset SubmittedAt { get; set; }
+}
