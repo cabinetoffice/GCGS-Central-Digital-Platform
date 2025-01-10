@@ -16,7 +16,6 @@ using CO.CDP.OrganisationInformation;
 using CO.CDP.OrganisationInformation.Persistence;
 using CO.CDP.WebApi.Foundation;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Npgsql;
 using System.Reflection;
 using ConnectedEntity = CO.CDP.Organisation.WebApi.Model.ConnectedEntity;
@@ -69,6 +68,8 @@ builder.Services.AddScoped<IPersonRepository, DatabasePersonRepository>();
 builder.Services.AddScoped<IPersonInviteRepository, DatabasePersonInviteRepository>();
 builder.Services.AddScoped<IAuthenticationKeyRepository, DatabaseAuthenticationKeyRepository>();
 builder.Services.AddScoped<IOrganisationJoinRequestRepository, DatabaseOrganisationJoinRequestRepository>();
+builder.Services.AddScoped<IShareCodeRepository, DatabaseShareCodeRepository>();
+
 builder.Services.AddScoped<IUseCase<AssignOrganisationIdentifier, bool>, AssignIdentifierUseCase>();
 builder.Services.AddScoped<IUseCase<RegisterOrganisation, Organisation>, RegisterOrganisationUseCase>();
 builder.Services.AddScoped<IUseCase<Guid, Organisation?>, GetOrganisationUseCase>();
@@ -93,7 +94,6 @@ builder.Services.AddScoped<IUseCase<(Guid, Guid, UpdatePersonToOrganisation), bo
 builder.Services.AddScoped<IUseCase<Guid, IEnumerable<PersonInviteModel>>, GetPersonInvitesUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, Guid), bool>, RemovePersonInviteFromOrganisationUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, SupportUpdateOrganisation), bool>, SupportUpdateOrganisationUseCase>();
-builder.Services.AddGovUKNotifyApiClient(builder.Configuration);
 builder.Services.AddScoped<IUseCase<Guid, IEnumerable<CO.CDP.Organisation.WebApi.Model.AuthenticationKey>>, GetAuthenticationKeyUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, RegisterAuthenticationKey), bool>, RegisterAuthenticationKeyUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, string), bool>, RevokeAuthenticationKeyUseCase>();
@@ -108,7 +108,9 @@ builder.Services.AddScoped<IUseCase<Guid, IEnumerable<MouSignature>>, GetOrganis
 builder.Services.AddScoped<IUseCase<(Guid, Guid), MouSignature>, GetOrganisationMouSignatureUseCase>();
 builder.Services.AddScoped<IUseCase<Guid, MouSignatureLatest>, GetOrganisationMouSignatureLatestUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, SignMouRequest),bool>, SignOrganisationMouUseCase>();
+builder.Services.AddScoped<IUseCase<(Guid, AddOrganisationParty), bool>, AddOrganisationPartyUseCase>();
 
+builder.Services.AddGovUKNotifyApiClient(builder.Configuration);
 builder.Services.AddProblemDetails();
 
 builder.Services.AddJwtBearerAndApiKeyAuthentication(builder.Configuration, builder.Environment);
