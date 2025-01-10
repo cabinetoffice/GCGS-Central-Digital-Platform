@@ -70,6 +70,7 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
         return await context.Organisations
             .AsSingleQuery()
             .Where(t => t.Name.StartsWith(name) && (!role.HasValue || t.Roles.Contains(role.Value)))
+            .Where(t => t.PendingRoles.Count == 0)
             .ToListAsync();
     }
 
