@@ -38,5 +38,6 @@ public static class ErrorCodes
         { typeof(MissingIdentifierNumber), (StatusCodes.Status400BadRequest, "ORGANISATION_MISSING_IDENTIFIER_NUMBER") },
         { typeof(IdentiferNumberAlreadyExists), (StatusCodes.Status400BadRequest, "ORGANISATION_IDENTIFIER_NUMBER_ALREADY_EXISTS") },
         { typeof(UnknownMouException), (StatusCodes.Status404NotFound, "MOU_DOES_NOT_EXIST") },
+        { typeof(OrganisationShareCodeInvalid), (StatusCodes.Status400BadRequest, "ORGANISATION_SHARE_CODE_INVALID") }
     };
 }

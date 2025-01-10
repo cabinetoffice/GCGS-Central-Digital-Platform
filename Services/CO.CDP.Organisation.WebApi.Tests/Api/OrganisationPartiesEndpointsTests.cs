@@ -5,6 +5,7 @@ using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using System.Net;
+using System.Net.Http.Json;
 using static CO.CDP.Authentication.Constants;
 using static System.Net.HttpStatusCode;
 
@@ -13,6 +14,7 @@ namespace CO.CDP.Organisation.WebApi.Tests.Api;
 public class OrganisationPartiesEndpointsTests
 {
     private readonly Mock<IUseCase<Guid, OrganisationParties?>> _getOrganisationPartiesUseCase = new();
+    private readonly Mock<IUseCase<(Guid, AddOrganisationParty), bool>> _addOrganisationPartyUseCase = new();
 
     [Theory]
     [InlineData(OK, Channel.OneLogin, OrganisationPersonScope.Admin)]
@@ -35,6 +37,38 @@ public class OrganisationPartiesEndpointsTests
             services => services.AddScoped(_ => _getOrganisationPartiesUseCase.Object));
 
         var response = await factory.CreateClient().GetAsync($"/organisations/{organisationId}/parties");
+
+        response.StatusCode.Should().Be(expectedStatusCode);
+    }
+
+    [Theory]
+    [InlineData(NoContent, Channel.OneLogin, OrganisationPersonScope.Admin)]
+    [InlineData(NoContent, Channel.OneLogin, OrganisationPersonScope.Editor)]
+    [InlineData(Forbidden, Channel.OneLogin, OrganisationPersonScope.Responder)]
+    [InlineData(Forbidden, Channel.OneLogin, OrganisationPersonScope.Viewer)]
+    [InlineData(Forbidden, Channel.ServiceKey)]
+    [InlineData(Forbidden, Channel.OrganisationKey)]
+    [InlineData(Forbidden, "unknown_channel")]
+    public async Task AddOrganisationParty_Authorization_ReturnsExpectedStatusCode(
+        HttpStatusCode expectedStatusCode, string channel, string? scope = null)
+    {
+        var organisationId = Guid.NewGuid();
+        var organisationParty = new AddOrganisationParty
+        {
+            OrganisationPartyId = Guid.NewGuid(),
+            OrganisationRelationship = OrganisationRelationship.Consortium,
+            ShareCode = "Test"
+        };
+        var command = (organisationId, organisationParty);
+
+        _addOrganisationPartyUseCase.Setup(uc => uc.Execute(command))
+            .ReturnsAsync(true);
+
+        var factory = new TestAuthorizationWebApplicationFactory<Program>(
+            channel, organisationId, scope,
+            services => services.AddScoped(_ => _addOrganisationPartyUseCase.Object));
+
+        var response = await factory.CreateClient().PostAsJsonAsync($"/organisations/{organisationId}/add-party", organisationParty);
 
         response.StatusCode.Should().Be(expectedStatusCode);
     }

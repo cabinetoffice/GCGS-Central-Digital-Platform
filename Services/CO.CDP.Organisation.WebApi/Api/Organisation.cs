@@ -928,7 +928,7 @@ public static class EndpointExtensions
         return app;
     }
 
-    public static RouteGroupBuilder UseMouEndpoints(this RouteGroupBuilder app)
+    public static RouteGroupBuilder UseOrganisationMouEndpoints(this RouteGroupBuilder app)
     {
         app.MapGet("/{organisationId}/mou",
         [OrganisationAuthorize(
@@ -987,7 +987,7 @@ public static class EndpointExtensions
             [AuthenticationChannel.OneLogin],
               [Constants.OrganisationPersonScope.Admin],
               OrganisationIdLocation.Path)]
-        async (Guid organisationId, IUseCase<Guid,  MouSignatureLatest> useCase) =>
+        async (Guid organisationId, IUseCase<Guid, MouSignatureLatest> useCase) =>
                 await useCase.Execute(organisationId)
                     .AndThen(mouSignatureLatest => mouSignatureLatest != null ? Results.Ok(mouSignatureLatest) : Results.NotFound()))
         .Produces<Model.MouSignatureLatest>(StatusCodes.Status200OK, "application/json")
@@ -1040,6 +1040,65 @@ public static class EndpointExtensions
         return app;
     }
 
+    public static RouteGroupBuilder UseMouEndpoints(this RouteGroupBuilder app)
+    {
+        app.MapGet("/latest",
+       [OrganisationAuthorize(
+         [AuthenticationChannel.OneLogin]
+         , [Constants.OrganisationPersonScope.Admin],
+         OrganisationIdLocation.Path
+       )]
+        async (IUseCase<Mou> useCase) =>
+             await useCase.Execute()
+                 .AndThen(mouLatest => mouLatest != null ? Results.Ok(mouLatest) : Results.NotFound()))
+     .Produces<Model.MouSignatureLatest>(StatusCodes.Status200OK, "application/json")
+     .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
+     .Produces<ProblemDetails>(StatusCodes.Status404NotFound)
+     .ProducesProblem(StatusCodes.Status422UnprocessableEntity)
+     .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError)
+     .WithOpenApi(operation =>
+     {
+         operation.OperationId = "GetLatestMou";
+         operation.Description = "Get Latest MOU.";
+         operation.Summary = "Get Latest MOU to sign.";
+         operation.Responses["200"].Description = "Latest MOU.";
+         operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
+         operation.Responses["404"].Description = "Latest Mou information not found.";
+         operation.Responses["422"].Description = "Unprocessable entity.";
+         operation.Responses["500"].Description = "Internal server error.";
+         return operation;
+     });
+
+        app.MapGet("/{mouId}",
+       [OrganisationAuthorize(
+          [AuthenticationChannel.OneLogin]
+         , [Constants.OrganisationPersonScope.Admin],
+         OrganisationIdLocation.Path
+       )]
+        async (Guid mouId, IUseCase<Guid, Mou> useCase) =>
+          await useCase.Execute(mouId)
+              .AndThen(mou => mou != null ? Results.Ok(mou) : Results.NotFound()))
+      .Produces<Model.MouSignatureLatest>(StatusCodes.Status200OK, "application/json")
+      .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
+      .Produces<ProblemDetails>(StatusCodes.Status404NotFound)
+      .ProducesProblem(StatusCodes.Status422UnprocessableEntity)
+      .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError)
+      .WithOpenApi(operation =>
+      {
+          operation.OperationId = "GetMou";
+          operation.Description = "Get MOU byId.";
+          operation.Summary = "Get MOU by ID.";
+          operation.Responses["200"].Description = "MOU by Id.";
+          operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
+          operation.Responses["404"].Description = "Mou information not found.";
+          operation.Responses["422"].Description = "Unprocessable entity.";
+          operation.Responses["500"].Description = "Internal server error.";
+          return operation;
+      });
+
+        return app;
+    }
+
     public static RouteGroupBuilder UseOrganisationPartiesEndpoints(this RouteGroupBuilder app)
     {
         app.MapGet("/{organisationId}/parties",
@@ -1062,6 +1121,33 @@ public static class EndpointExtensions
                 operation.Description = "Get organisation parties";
                 operation.Summary = "Get organisation parties";
                 operation.Responses["200"].Description = "Organisation parties.";
+                operation.Responses["400"].Description = "Bad request.";
+                operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
+                operation.Responses["404"].Description = "Organisation parties not found.";
+                operation.Responses["500"].Description = "Internal server error.";
+                return operation;
+            });
+
+        app.MapPost("/{organisationId}/add-party",
+            [OrganisationAuthorize(
+                [AuthenticationChannel.OneLogin],
+                [Constants.OrganisationPersonScope.Admin, Constants.OrganisationPersonScope.Editor],
+                OrganisationIdLocation.Path)]
+        async (Guid organisationId, AddOrganisationParty organisationParty, IUseCase<(Guid, AddOrganisationParty), bool> useCase) =>
+                await useCase.Execute((organisationId, organisationParty))
+                   .AndThen(_ => Results.NoContent())
+            )
+            .Produces(StatusCodes.Status204NoContent)
+            .ProducesProblem(StatusCodes.Status500InternalServerError)
+            .ProducesProblem(StatusCodes.Status400BadRequest)
+            .ProducesProblem(StatusCodes.Status401Unauthorized)
+            .ProducesProblem(StatusCodes.Status404NotFound)
+            .WithOpenApi(operation =>
+            {
+                operation.OperationId = "AddOrganisationParty";
+                operation.Description = "Add organisation party";
+                operation.Summary = "Add organisation party";
+                operation.Responses["204"].Description = "Organisation party added successfully.";
                 operation.Responses["400"].Description = "Bad request.";
                 operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
                 operation.Responses["404"].Description = "Organisation parties not found.";
