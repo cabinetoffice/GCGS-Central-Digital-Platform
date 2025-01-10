@@ -1,14 +1,12 @@
+using CO.CDP.DataSharing.WebApiClient;
 using CO.CDP.Localization;
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Constants;
-using CO.CDP.OrganisationApp.Models;
-using CO.CDP.OrganisationApp.WebApiClients;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.FeatureManagement.Mvc;
 using System.ComponentModel.DataAnnotations;
 using OrganisationWebApiClient = CO.CDP.Organisation.WebApiClient;
-using CO.CDP.DataSharing.WebApiClient;
 
 namespace CO.CDP.OrganisationApp.Pages.Consortium;
 
@@ -78,11 +76,6 @@ public class ConsortiumEnterSharecodeModel(
             DataSharingApiExceptionMapper.MapApiExceptions(aex, ModelState);
             return Page();
         }
-
-        //Verify share code
-        //if valid proceed to next step
-        //else show error message
-        
     }
 }
 
