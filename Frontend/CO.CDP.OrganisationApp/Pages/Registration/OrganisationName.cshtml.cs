@@ -71,7 +71,7 @@ public class OrganisationNameModel(ISession session, ICharityCommissionApi chari
         }
         else
         {
-            return RedirectToPage("OrganisationEmail");
+            return RedirectToPage("OrganisationNameSearch");
         }
     }
 }
