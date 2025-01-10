@@ -2,16 +2,19 @@ locals {
 
   aspcore_environment = "Aws${title(var.environment)}"
 
-  aurora_cluster_enabled = contains(var.environment, ["staging"])
+  aurora_cluster_enabled = contains(["staging"], var.environment)
 
-  db_sirsi_address  = var.db_sirsi_address
-  db_sirsi_name     = var.db_sirsi_name
-  db_sirsi_password = "${var.db_sirsi_credentials_arn}:password::"
-  db_sirsi_username = "${var.db_sirsi_credentials_arn}:username::"
-  db_ev_address  = var.db_entity_verification_address
-  db_ev_name     = var.db_entity_verification_name
-  db_ev_password = "${var.db_entity_verification_credentials_arn}:password::"
-  db_ev_username = "${var.db_entity_verification_credentials_arn}:username::"
+  db_sirsi_secret_arn = local.aurora_cluster_enabled ? var.db_sirsi_cluster_credentials_arn : var.db_sirsi_credentials_arn
+  db_ev_secret_arn    = local.aurora_cluster_enabled ? var.db_ev_cluster_credentials_arn : var.db_entity_verification_credentials_arn
+
+  db_sirsi_address  = local.aurora_cluster_enabled ? var.db_sirsi_cluster_address : var.db_sirsi_address
+  db_sirsi_name     = local.aurora_cluster_enabled ? var.db_sirsi_cluster_name : var.db_sirsi_name
+  db_sirsi_password = "${local.db_sirsi_secret_arn}:password::"
+  db_sirsi_username = "${local.db_sirsi_secret_arn}:username::"
+  db_ev_address     = local.aurora_cluster_enabled ? var.db_ev_cluster_address : var.db_entity_verification_address
+  db_ev_name        = local.aurora_cluster_enabled ? var.db_ev_cluster_name : var.db_entity_verification_name
+  db_ev_password    = "${local.db_ev_secret_arn}:password::"
+  db_ev_username    = "${local.db_ev_secret_arn}:username::"
 
   ecr_urls = {
     for task in local.tasks : task => "${local.orchestrator_account_id}.dkr.ecr.eu-west-2.amazonaws.com/cdp-${task}"
@@ -36,7 +39,7 @@ locals {
 
   service_version = var.pinned_service_version == null ? data.aws_ssm_parameter.orchestrator_service_version.value : var.pinned_service_version
 
-  shared_sessions_enabled = var.environment == "development" ? true : false
+  shared_sessions_enabled    = var.environment == "development" ? true : false
   ssm_data_protection_prefix = "${local.name_prefix}-ec-sessions"
 
   migrations = ["organisation-information-migrations", "entity-verification-migrations"]
