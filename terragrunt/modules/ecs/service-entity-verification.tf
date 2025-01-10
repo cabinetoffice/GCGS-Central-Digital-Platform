@@ -7,10 +7,10 @@ module "ecs_service_entity_verification" {
       aspcore_environment                 = local.aspcore_environment
       container_port                      = var.service_configs.entity_verification.port
       cpu                                 = var.service_configs.entity_verification.cpu
-      ev_db_address                       = var.db_entity_verification_address
-      ev_db_name                          = var.db_entity_verification_name
-      ev_db_password                      = "${var.db_entity_verification_credentials_arn}:username::"
-      ev_db_username                      = "${var.db_entity_verification_credentials_arn}:password::"
+      db_address                          = local.db_ev_address
+      db_name                             = local.db_ev_name
+      db_password                         = local.db_ev_password
+      db_username                         = local.db_ev_username
       host_port                           = var.service_configs.entity_verification.port
       image                               = local.ecr_urls[var.service_configs.entity_verification.name]
       lg_name                             = aws_cloudwatch_log_group.tasks[var.service_configs.entity_verification.name].name
