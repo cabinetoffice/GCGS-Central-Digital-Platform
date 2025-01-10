@@ -5,10 +5,9 @@ using CO.CDP.OrganisationApp.WebApiClients;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using OrganisationApiException = CO.CDP.Organisation.WebApiClient.ApiException;
 using DevolvedRegulation = CO.CDP.OrganisationApp.Constants.DevolvedRegulation;
+using OrganisationApiException = CO.CDP.Organisation.WebApiClient.ApiException;
 using OrganisationWebApiClient = CO.CDP.Organisation.WebApiClient;
-using EntityVerificationApiException = CO.CDP.EntityVerificationClient.ApiException;
 
 namespace CO.CDP.OrganisationApp.Pages.Organisation;
 
@@ -27,6 +26,8 @@ public class OrganisationOverviewModel(IOrganisationClient organisationClient, I
     [BindProperty(SupportsGet = true)]
     public Guid Id { get; set; }
 
+    public bool HasBuyerSignedMou { get; set; } = true;
+
     public async Task<IActionResult> OnGet()
     {
         try
@@ -42,6 +43,14 @@ public class OrganisationOverviewModel(IOrganisationClient organisationClient, I
                 var devolvedRegulations = BuyerInformation.DevolvedRegulations;
 
                 Regulations = devolvedRegulations.AsDevolvedRegulationList();
+
+                var mouDetails = await organisationClient.GetOrganisationLatestMouSignatureAsync(OrganisationDetails.Id);
+
+                if ((mouDetails != null && mouDetails.IsLatest == false) || mouDetails == null)
+                {
+                    HasBuyerSignedMou = false;
+                }
+
             }
 
             if (OrganisationDetails.Details.PendingRoles.Count > 0)
