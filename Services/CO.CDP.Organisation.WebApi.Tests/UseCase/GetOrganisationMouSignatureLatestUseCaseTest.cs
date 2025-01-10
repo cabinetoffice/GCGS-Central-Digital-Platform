@@ -77,7 +77,7 @@ public class GetOrganisationMouSignatureLatestUseCaseTest(AutoMapperFixture mapp
 
         Func<Task> act = async () => await _useCase.Execute(organisation.Guid);
 
-        await act.Should().ThrowAsync<InvalidOperationException>()
+        await act.Should().ThrowAsync<UnknownMouException>()
             .WithMessage($"No MOU signatures found for organisation {organisation.Guid}.");
     }
 

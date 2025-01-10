@@ -17,7 +17,7 @@ public class GetOrganisationMouSignatureLatestUseCase(IOrganisationRepository or
 
         if (mouSignatures == null || !mouSignatures.Any())
         {
-            throw new InvalidOperationException($"No MOU signatures found for organisation {organisationId}.");
+            throw new UnknownMouException($"No MOU signatures found for organisation {organisationId}.");
         }
 
         var latestSignature = mouSignatures.OrderByDescending(m => m.CreatedOn).First();
