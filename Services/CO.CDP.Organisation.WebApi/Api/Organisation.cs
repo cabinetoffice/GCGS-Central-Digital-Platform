@@ -1069,6 +1069,33 @@ public static class EndpointExtensions
                 return operation;
             });
 
+        app.MapPost("/{organisationId}/add-party",
+            [OrganisationAuthorize(
+                [AuthenticationChannel.OneLogin],
+                [Constants.OrganisationPersonScope.Admin, Constants.OrganisationPersonScope.Editor],
+                OrganisationIdLocation.Path)]
+        async (Guid organisationId, AddOrganisationParty organisationParty, IUseCase<(Guid, AddOrganisationParty), bool> useCase) =>
+                await useCase.Execute((organisationId, organisationParty))
+                   .AndThen(_ => Results.NoContent())
+            )
+            .Produces(StatusCodes.Status204NoContent)
+            .ProducesProblem(StatusCodes.Status500InternalServerError)
+            .ProducesProblem(StatusCodes.Status400BadRequest)
+            .ProducesProblem(StatusCodes.Status401Unauthorized)
+            .ProducesProblem(StatusCodes.Status404NotFound)
+            .WithOpenApi(operation =>
+            {
+                operation.OperationId = "AddOrganisationParty";
+                operation.Description = "Add organisation party";
+                operation.Summary = "Add organisation party";
+                operation.Responses["204"].Description = "Organisation party added successfully.";
+                operation.Responses["400"].Description = "Bad request.";
+                operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
+                operation.Responses["404"].Description = "Organisation parties not found.";
+                operation.Responses["500"].Description = "Internal server error.";
+                return operation;
+            });
+
         return app;
     }
 }

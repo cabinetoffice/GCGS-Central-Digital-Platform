@@ -13,7 +13,6 @@ public class GetOrganisationPartiesUseCaseTests(AutoMapperFixture mapperFixture)
     private readonly Mock<IOrganisationPartiesRepository> _orgPartiesRepoMock = new();
     private GetOrganisationPartiesUseCase UseCase => new(_orgPartiesRepoMock.Object, mapperFixture.Mapper);
 
-
     [Fact]
     public async Task Execute_ShouldReturnNull_WhenNoPartiesFound()
     {
@@ -41,7 +40,7 @@ public class GetOrganisationPartiesUseCaseTests(AutoMapperFixture mapperFixture)
                     ParentOrganisationId = parentOrg.Id,
                     ChildOrganisationId = childOrg1.Id,
                     ChildOrganisation =childOrg1,
-                    OrganisationRelationship = OrganisationRelationship.Consortium,
+                    OrganisationRelationship = Persistence.OrganisationRelationship.Consortium,
                 },
 
             new() {
@@ -49,7 +48,7 @@ public class GetOrganisationPartiesUseCaseTests(AutoMapperFixture mapperFixture)
                     ParentOrganisationId = parentOrg.Id,
                     ChildOrganisationId = childOrg2.Id,
                     ChildOrganisation = childOrg2,
-                    OrganisationRelationship = OrganisationRelationship.Consortium,
+                    OrganisationRelationship = Persistence.OrganisationRelationship.Consortium,
                 },
         };
 
@@ -63,7 +62,7 @@ public class GetOrganisationPartiesUseCaseTests(AutoMapperFixture mapperFixture)
         _orgPartiesRepoMock.Verify(repo => repo.Find(organisationId), Times.Once);
     }
 
-    private Persistence.Organisation GivenOrganisation(Guid guid) =>
+    private static Persistence.Organisation GivenOrganisation(Guid guid) =>
         new()
         {
             Guid = guid,
