@@ -21,6 +21,7 @@ public class CustomFormQuestionTypeResolverTests
     [InlineData(OrganisationInformation.Persistence.Forms.FormQuestionType.FileUpload, FormQuestionType.FileUpload)]
     [InlineData(OrganisationInformation.Persistence.Forms.FormQuestionType.Address, FormQuestionType.Text)]
     [InlineData(OrganisationInformation.Persistence.Forms.FormQuestionType.SingleChoice, FormQuestionType.Option)]
+    [InlineData(OrganisationInformation.Persistence.Forms.FormQuestionType.SingleChoice, FormQuestionType.OptionJson, "JsonValue")]
     [InlineData(OrganisationInformation.Persistence.Forms.FormQuestionType.MultipleChoice, FormQuestionType.Option)]
     [InlineData(OrganisationInformation.Persistence.Forms.FormQuestionType.GroupedSingleChoice, FormQuestionType.Option)]
     [InlineData(OrganisationInformation.Persistence.Forms.FormQuestionType.Date, FormQuestionType.Date)]
@@ -29,9 +30,10 @@ public class CustomFormQuestionTypeResolverTests
     [InlineData(OrganisationInformation.Persistence.Forms.FormQuestionType.CheckYourAnswers, FormQuestionType.None)]
     public void Resolve_ReturnsExpectedFormQuestionType(
         OrganisationInformation.Persistence.Forms.FormQuestionType sourceType,
-        FormQuestionType expectedType)
+        FormQuestionType expectedType,
+        string? answerFieldName = null)
     {
-        OrganisationInformation.Persistence.Forms.FormQuestion sourceQuestion = GivenQuestion(sourceType);
+        OrganisationInformation.Persistence.Forms.FormQuestion sourceQuestion = GivenQuestion(sourceType, answerFieldName);
 
         var result = _resolver.Resolve(sourceQuestion, null!, default, null!);
 
@@ -49,7 +51,7 @@ public class CustomFormQuestionTypeResolverTests
         }
     }
 
-    private static OrganisationInformation.Persistence.Forms.FormQuestion GivenQuestion(OrganisationInformation.Persistence.Forms.FormQuestionType type)
+    private static OrganisationInformation.Persistence.Forms.FormQuestion GivenQuestion(OrganisationInformation.Persistence.Forms.FormQuestionType type, string? answerFieldName = null)
     {
         return new OrganisationInformation.Persistence.Forms.FormQuestion {
             Type = type,
@@ -61,10 +63,12 @@ public class CustomFormQuestionTypeResolverTests
             IsRequired = false,
             CreatedOn = DateTime.Now,
             Name = null!,
-            Options = null!,
+            Options = new () {
+                AnswerFieldName = answerFieldName
+            },
             Section = null!,
             SortOrder = 1,
-            Title = null!
+            Title = null!,
         };
     }
 }

@@ -400,6 +400,14 @@ public record CreateOrganisationJoinRequest
     public Guid PersonId { get; init; }
 }
 
+public record SignMouRequest
+{ 
+    public required Guid MouId { get; set; }
+    public required Guid CreatedById { get; set; }
+    public required string Name{ get; set; }
+    public required string JobTitle{ get; set; }
+}
+
 public static class MappingExtensions
 {
     public static Identifier AsView(this OrganisationIdentifier command) =>
@@ -437,4 +445,19 @@ public static class MappingExtensions
             Telephone = command.Telephone,
             Url = command.Url != null ? new Uri(command.Url) : null
         } : new ContactPoint();
+}
+
+public record AddOrganisationParty
+{
+    public required Guid OrganisationPartyId { get; init; }
+
+    public required OrganisationRelationship OrganisationRelationship { get; init; }
+
+    public string? ShareCode { get; init; }
+}
+
+[JsonConverter(typeof(JsonStringEnumConverter))]
+public enum OrganisationRelationship
+{
+    Consortium
 }

@@ -5,8 +5,6 @@ using System.Text.Json;
 
 public class ExclusionAppliesToChoiceProviderStrategy(IUserInfoService userInfoService, IOrganisationClient organisationClient) : IChoiceProviderStrategy
 {
-    public string AnswerFieldName { get; } = "JsonValue";
-
     public async Task<Dictionary<string, string>?> Execute(FormQuestionOptions options)
     {
         var jsonSerializerOptions = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };

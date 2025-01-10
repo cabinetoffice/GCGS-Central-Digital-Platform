@@ -45,6 +45,7 @@ public record FormQuestionOptions
 {
     public ICollection<FormQuestionChoice>? Choices { get; set; } = null;
     public string? ChoiceProviderStrategy { get; set; } = null;
+    public string? AnswerFieldName { get; set; } = null;
     public ICollection<FormQuestionGroup>? Groups { get; set; } = null;
 }
 
