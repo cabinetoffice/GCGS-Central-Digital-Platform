@@ -415,6 +415,16 @@
           },
           {
             "selected": false,
+            "text": "AV Scanner App",
+            "value": "/ecs/av-scanner-app"
+          },
+          {
+            "selected": false,
+            "text": "ClamAV Rest",
+            "value": "/ecs/clamav-rest"
+          },
+          {
+            "selected": false,
             "text": "Data Sharing",
             "value": "/ecs/data-sharing"
           },
@@ -449,7 +459,7 @@
             "value": "/ecs/tenant"
           }
         ],
-        "query": "Authority : /ecs/authority, Data Sharing : /ecs/data-sharing, Entity Verification : /ecs/entity-verification, Forms : /ecs/forms, Organisation : /ecs/organisation, Organisation App : /ecs/organisation-app, Person : /ecs/person, Tenant : /ecs/tenant",
+        "query":, "Authority : /ecs/authority, AV Scanner App : /ecs/av-scanner-app, Data Sharing : /ecs/data-sharing, Entity Verification : /ecs/entity-verification, Forms : /ecs/forms, Organisation : /ecs/organisation, Organisation App : /ecs/organisation-app, Person : /ecs/person, Tenant : /ecs/tenant",
         "queryValue": "",
         "skipUrlSync": false,
         "type": "custom"
