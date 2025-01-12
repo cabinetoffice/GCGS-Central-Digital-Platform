@@ -1,11 +1,11 @@
 output "av_scanner_queue_arn" {
   description = "ARN of the av-scanner SQS queue"
-  value       = module.entity_verification_queue.queue_arn
+  value       = module.av_scanner_queue.queue_arn
 }
 
 output "av_scanner_queue_url" {
   description = "URL of the av-scanner SQS queue"
-  value       = module.entity_verification_queue.queue_url
+  value       = module.av_scanner_queue.queue_url
 }
 
 
