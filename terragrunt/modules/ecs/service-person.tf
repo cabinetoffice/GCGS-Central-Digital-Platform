@@ -7,6 +7,10 @@ module "ecs_service_person" {
       aspcore_environment = local.aspcore_environment
       container_port      = var.service_configs.person.port
       cpu                 = var.service_configs.person.cpu
+      db_address          = local.db_sirsi_address
+      db_name             = local.db_sirsi_name
+      db_password         = local.db_sirsi_password
+      db_username         = local.db_sirsi_username
       host_port           = var.service_configs.person.port
       image               = local.ecr_urls[var.service_configs.person.name]
       lg_name             = aws_cloudwatch_log_group.tasks[var.service_configs.person.name].name
@@ -14,10 +18,6 @@ module "ecs_service_person" {
       lg_region           = data.aws_region.current.name
       memory              = var.service_configs.person.memory
       name                = var.service_configs.person.name
-      oi_db_address       = var.db_sirsi_address
-      oi_db_name          = var.db_sirsi_name
-      oi_db_password      = "${var.db_sirsi_credentials_arn}:username::"
-      oi_db_username      = "${var.db_sirsi_credentials_arn}:password::"
       public_domain       = var.public_domain
       service_version     = local.service_version
       vpc_cidr            = var.vpc_cider

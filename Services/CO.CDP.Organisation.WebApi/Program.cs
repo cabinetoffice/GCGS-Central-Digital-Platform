@@ -109,6 +109,8 @@ builder.Services.AddScoped<IUseCase<(Guid, Guid), MouSignature>, GetOrganisation
 builder.Services.AddScoped<IUseCase<Guid, MouSignatureLatest>, GetOrganisationMouSignatureLatestUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, SignMouRequest),bool>, SignOrganisationMouUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, AddOrganisationParty), bool>, AddOrganisationPartyUseCase>();
+builder.Services.AddScoped<IUseCase<CO.CDP.Organisation.WebApi.Model.Mou>, GetLatestMouUseCase>();
+builder.Services.AddScoped<IUseCase<Guid, CO.CDP.Organisation.WebApi.Model.Mou>, GetMouUseCase>();
 
 builder.Services.AddGovUKNotifyApiClient(builder.Configuration);
 builder.Services.AddProblemDetails();
@@ -186,8 +188,13 @@ app.MapGroup("/feeback")
     .WithTags("Feedback - provide feedback");
 
 app.MapGroup("/organisations")
-    .UseMouEndpoints()
+    .UseOrganisationMouEndpoints()
     .WithTags("Organisation - MOUs");
+
+app.MapGroup("/mou")
+    .UseMouEndpoints()
+    .WithTags("Mou");
+
 
 app.Run();
 public abstract partial class Program;
