@@ -32,13 +32,13 @@ public class ReviewAndSignMemorandomModel(IOrganisationClient organisationClient
     public OrganisationWebApiClient.Organisation? OrganisationDetails { get; set; }
     public Guid? SignedInPersonId { get; set; }
 
-    public Mou? mouSignatureLatest { get; set; }
+    public Mou? MouLatest { get; set; }
 
     public async Task<IActionResult> OnGet()
     {
         try
         {
-            mouSignatureLatest = await organisationClient.GetLatestMouAsync();
+            MouLatest = await organisationClient.GetLatestMouAsync();
 
             return Page();
         }
@@ -54,20 +54,21 @@ public class ReviewAndSignMemorandomModel(IOrganisationClient organisationClient
         {
             return Page();
         }
-
-        SignedInPersonId = UserDetails.PersonId;
-
-        if (mouSignatureLatest != null && SignTheAgreement)
+        try
         {
-            var signMouRequest = new SignMouRequest
-            (
-                createdById: (Guid)SignedInPersonId!,
-                jobTitle: JobTitleValue,
-                mouId: mouSignatureLatest.Id,
-                name: Name
-            );
-            try
+            SignedInPersonId = UserDetails.PersonId;
+
+            MouLatest = await organisationClient.GetLatestMouAsync();
+
+            if (MouLatest != null && SignTheAgreement)
             {
+                var signMouRequest = new SignMouRequest
+                (
+                    createdById: (Guid)SignedInPersonId!,
+                    jobTitle: JobTitleValue,
+                    mouId: MouLatest.Id,
+                    name: Name
+                );
                 OrganisationDetails = await organisationClient.GetOrganisationAsync(Id);
 
                 if (OrganisationDetails != null)
@@ -76,14 +77,14 @@ public class ReviewAndSignMemorandomModel(IOrganisationClient organisationClient
                 }
 
             }
-            catch
+            else
             {
-                return Redirect("/page-not-found");
+                return Page();
             }
         }
-        else
+        catch
         {
-            return Page();
+            return Redirect("/page-not-found");
         }
 
         return RedirectToPage("ReviewAndSignMemorandomComplete", new { Id });
