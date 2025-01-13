@@ -36,7 +36,7 @@ public class SupplierToBuyerOrganisationTypeModel(ITempDataService tempDataServi
 
         BuyerOrganisationType = state.BuyerOrganisationType;
 
-        if (!string.IsNullOrEmpty(BuyerOrganisationType) && !BuyerTypeLabels.Labels.Keys.Contains(BuyerOrganisationType))
+        if (!string.IsNullOrEmpty(BuyerOrganisationType) && !BuyerTypes.Keys.Contains(BuyerOrganisationType))
         {
             OtherValue = BuyerOrganisationType;
             BuyerOrganisationType = "Other";
@@ -63,6 +63,14 @@ public class SupplierToBuyerOrganisationTypeModel(ITempDataService tempDataServi
             return RedirectToPage("SupplierToBuyerDevolvedRegulation", new { Id });
         }
     }
+
+    public static Dictionary<string, string> BuyerTypes => new()
+    {
+        { "CentralGovernment", StaticTextResource.SupplierToBuyer_OrganisationType_CentralGovernment},
+        { "RegionalAndLocalGovernment", StaticTextResource.SupplierToBuyer_OrganisationType_RegionalAndLocalGovernment},
+        { "PublicUndertaking", StaticTextResource.SupplierToBuyer_OrganisationType_PublicUndertaking},
+        { "PrivateUtility", StaticTextResource.SupplierToBuyer_OrganisationType_PrivateUtility}
+    };
 
     private void SupplierToBuyerStateUpdate()
     {

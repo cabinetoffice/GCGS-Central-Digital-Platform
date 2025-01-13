@@ -2776,6 +2776,18 @@
   <data name="SupplierToBuyer_OrganisationType_BuyerTypeOthers" xml:space="preserve">
     <value>Others</value>
   </data>
+  <data name="SupplierToBuyer_OrganisationType_CentralGovernment" xml:space="preserve">
+    <value>Central government, public authority: UK, Scottish, Welsh and Northern Irish Executive</value>
+  </data>
+  <data name="SupplierToBuyer_OrganisationType_PrivateUtility" xml:space="preserve">
+    <value>Private utility</value>
+  </data>
+  <data name="SupplierToBuyer_OrganisationType_PublicUndertaking" xml:space="preserve">
+    <value>Public undertaking</value>
+  </data>
+  <data name="SupplierToBuyer_OrganisationType_RegionalAndLocalGovernment" xml:space="preserve">
+    <value>Regional and local government, public authority: UK, Scottish, Welsh and Northern Irish</value>
+  </data>
   <data name="Organisation_MyConsortium" xml:space="preserve">
     <value>Consortiums for joint bids ({0})</value>
   </data>
