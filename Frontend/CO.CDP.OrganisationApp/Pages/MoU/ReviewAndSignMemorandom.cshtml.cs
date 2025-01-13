@@ -32,13 +32,13 @@ public class ReviewAndSignMemorandomModel(IOrganisationClient organisationClient
     public OrganisationWebApiClient.Organisation? OrganisationDetails { get; set; }
     public Guid? SignedInPersonId { get; set; }
 
-    public Mou mouSignatureLatest { get; set; }
+    public Mou MouLatest { get; set; }
 
     public async Task<IActionResult> OnGet()
     {
         try
         {
-            mouSignatureLatest = await organisationClient.GetLatestMouAsync();
+            MouLatest = await organisationClient.GetLatestMouAsync();
 
             return Page();
         }
@@ -54,25 +54,26 @@ public class ReviewAndSignMemorandomModel(IOrganisationClient organisationClient
         {
             return Page();
         }
+        try
+        {
+            SignedInPersonId = UserDetails.PersonId;
 
-        SignedInPersonId = UserDetails.PersonId;
+            MouLatest = await organisationClient.GetLatestMouAsync();
 
-        var signMouRequest = new SignMouRequest
+            var signMouRequest = new SignMouRequest
         (
             createdById: (Guid)SignedInPersonId!,
             jobTitle: JobTitleValue,
-            mouId: mouSignatureLatest.Id,
+            mouId: MouLatest.Id,
             name: Name
         );
-        try
-        {
+
             OrganisationDetails = await organisationClient.GetOrganisationAsync(Id);
 
             if (OrganisationDetails != null)
             {
                 await organisationClient.SignOrganisationMouAsync(OrganisationDetails.Id, signMouRequest);
             }
-
         }
         catch
         {
