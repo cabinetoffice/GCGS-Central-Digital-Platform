@@ -3122,6 +3122,6 @@
     <value>Request to join</value>
   </data>
   <data name="OrganisationRegistration_SearchOrganisationName_ExactMatchAlreadyExists" xml:space="preserve">
-    <value>The organisation you entered is already registered. Request to join the registered organisation or &lt;a href="/registration/organisation-name\"&gt;change the name&lt;/a&gt;.</value>
+    <value>The organisation you entered is already registered. Request to join the registered organisation or &lt;a href="/registration/organisation-name\"&gt;enter a different name&lt;/a&gt;.</value>
   </data>
 </root>
