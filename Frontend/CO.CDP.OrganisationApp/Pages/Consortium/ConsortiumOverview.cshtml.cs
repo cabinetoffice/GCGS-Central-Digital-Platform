@@ -55,9 +55,4 @@ public class ConsortiumOverviewModel(
             return Redirect("/page-not-found");
         }
     }
-
-    public IActionResult OnPost()
-    {
-        return RedirectToPage("#");
-    }
 }

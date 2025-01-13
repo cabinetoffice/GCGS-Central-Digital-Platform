@@ -31,6 +31,11 @@ public class ConsortiumEnterSharecodeModel(
             var consortium = await organisationClient.GetOrganisationAsync(Id);
             if (consortium == null) return Redirect("/page-not-found");
 
+            var sc = tempDataService.Get<ConsortiumSharecode>(ConsortiumSharecode.TempDataKey);
+            if (sc != null)
+            {
+                EnterSharecode = sc.Sharecode;
+            }
             ConsortiumName = consortium.Name;
 
             return Page();
