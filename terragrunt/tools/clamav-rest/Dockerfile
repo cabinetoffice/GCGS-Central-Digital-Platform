@@ -1,0 +1,1 @@
+FROM ajilaag/clamav-rest:latest

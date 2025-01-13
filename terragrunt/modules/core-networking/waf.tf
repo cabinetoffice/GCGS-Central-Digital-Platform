@@ -96,7 +96,7 @@ resource "aws_wafv2_web_acl_logging_configuration" "this" {
   logging_filter {
     default_behavior = "KEEP"
     filter {
-      behavior = "DROP"
+      behavior    = "DROP"
       requirement = "MEETS_ALL"
       condition {
         action_condition {
