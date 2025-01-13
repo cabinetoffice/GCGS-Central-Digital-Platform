@@ -14,7 +14,7 @@ public class ReviewAndSignMemorandomModel(IOrganisationClient organisationClient
     [BindProperty]
     [DisplayName(nameof(StaticTextResource.MoU_ReviewAndSign_Confirm_Title))]
     [Required(ErrorMessageResourceName = nameof(StaticTextResource.MoU_ReviewAndSign_SelectCheckbox_ErrorMessage), ErrorMessageResourceType = typeof(StaticTextResource))]
-    public bool? SignTheAgreement { get; set; }
+    public bool SignTheAgreement { get; set; }
 
     [BindProperty(SupportsGet = true)]
     public Guid Id { get; set; }
@@ -32,7 +32,7 @@ public class ReviewAndSignMemorandomModel(IOrganisationClient organisationClient
     public OrganisationWebApiClient.Organisation? OrganisationDetails { get; set; }
     public Guid? SignedInPersonId { get; set; }
 
-    public Mou mouSignatureLatest { get; set; }
+    public Mou? mouSignatureLatest { get; set; }
 
     public async Task<IActionResult> OnGet()
     {
@@ -57,26 +57,33 @@ public class ReviewAndSignMemorandomModel(IOrganisationClient organisationClient
 
         SignedInPersonId = UserDetails.PersonId;
 
-        var signMouRequest = new SignMouRequest
-        (
-            createdById: (Guid)SignedInPersonId!,
-            jobTitle: JobTitleValue,
-            mouId: mouSignatureLatest.Id,
-            name: Name
-        );
-        try
+        if (mouSignatureLatest != null && SignTheAgreement)
         {
-            OrganisationDetails = await organisationClient.GetOrganisationAsync(Id);
-
-            if (OrganisationDetails != null)
+            var signMouRequest = new SignMouRequest
+            (
+                createdById: (Guid)SignedInPersonId!,
+                jobTitle: JobTitleValue,
+                mouId: mouSignatureLatest.Id,
+                name: Name
+            );
+            try
             {
-                await organisationClient.SignOrganisationMouAsync(OrganisationDetails.Id, signMouRequest);
-            }
+                OrganisationDetails = await organisationClient.GetOrganisationAsync(Id);
 
+                if (OrganisationDetails != null)
+                {
+                    await organisationClient.SignOrganisationMouAsync(OrganisationDetails.Id, signMouRequest);
+                }
+
+            }
+            catch
+            {
+                return Redirect("/page-not-found");
+            }
         }
-        catch
+        else
         {
-            return Redirect("/page-not-found");
+            return Page();
         }
 
         return RedirectToPage("ReviewAndSignMemorandomComplete", new { Id });
