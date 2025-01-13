@@ -290,6 +290,7 @@ app.UseMiddleware<ContentSecurityPolicyMiddleware>();   // Note: This middleware
 app.UseForwardedHeaders();
 app.UseMiddleware<ExceptionMiddleware>();
 app.UseMiddleware<CookieAcceptanceMiddleware>();
+app.UseMiddleware<CacheControlMiddleware>();
 
 if (!app.Environment.IsDevelopment())
 {

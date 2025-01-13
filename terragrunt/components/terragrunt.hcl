@@ -167,6 +167,11 @@ locals {
       desired_count = local.desired_count_non_production
       memory        = 512
     }
+    av_scanner_app = {
+      cpu           = 256
+      desired_count = local.desired_count_non_production
+      memory        = 512
+    }
     data_sharing = {
       cpu           = 256
       desired_count = local.desired_count_non_production
@@ -218,6 +223,11 @@ locals {
     authority = {
       cpu           = 256
       desired_count = local.desired_count_production
+      memory        = 512
+    }
+    av_scanner_app = {
+      cpu           = 256
+      desired_count = local.desired_count_non_production
       memory        = 512
     }
     data_sharing = {
@@ -273,6 +283,11 @@ locals {
     authority = {
       cpu           = 256
       desired_count = local.desired_count_development
+      memory        = 512
+    }
+    av_scanner_app = {
+      cpu           = 256
+      desired_count = local.desired_count_non_production
       memory        = 512
     }
     data_sharing = {
@@ -334,6 +349,11 @@ locals {
       port      = 8092
       port_host = 8092
     }
+    av_scanner_app = {
+      name      = "av-scanner-app"
+      port      = 8095
+      port_host = 8095
+    }
     data_sharing = {
       name      = "data-sharing"
       port      = 8088
@@ -392,6 +412,13 @@ locals {
   }
 
   tools_configs = {
+    clamav_rest = {
+      cpu       = 1024
+      memory    = 3072
+      name      = "clamav-rest"
+      port      = 9000
+      port_host = 9000
+    }
     grafana = {
       cpu       = 256
       memory    = 512

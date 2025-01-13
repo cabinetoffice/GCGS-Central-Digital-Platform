@@ -1,3 +1,4 @@
+using CO.CDP.MQ.Outbox;
 using CO.CDP.Testcontainers.PostgreSql;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,6 +11,8 @@ internal static class PostgreSqlFixtureExtensions
         var context = new TestDbContext(postgreSql.DbContextOptions<TestDbContext>());
         context.Database.EnsureCreated();
         context.SaveChanges();
+        context.Database.ExecuteSqlRaw(Migrations.NotificationFunction());
+        context.Database.ExecuteSqlRaw(Migrations.NotificationTrigger(table: "OutboxMessages"));
         return context;
     }
 
