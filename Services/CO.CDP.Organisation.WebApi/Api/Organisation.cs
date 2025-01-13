@@ -1051,7 +1051,7 @@ public static class EndpointExtensions
         async (IUseCase<Mou> useCase) =>
              await useCase.Execute()
                  .AndThen(mouLatest => mouLatest != null ? Results.Ok(mouLatest) : Results.NotFound()))
-     .Produces<Model.MouSignatureLatest>(StatusCodes.Status200OK, "application/json")
+     .Produces<Mou>(StatusCodes.Status200OK, "application/json")
      .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
      .Produces<ProblemDetails>(StatusCodes.Status404NotFound)
      .ProducesProblem(StatusCodes.Status422UnprocessableEntity)
@@ -1078,7 +1078,7 @@ public static class EndpointExtensions
         async (Guid mouId, IUseCase<Guid, Mou> useCase) =>
           await useCase.Execute(mouId)
               .AndThen(mou => mou != null ? Results.Ok(mou) : Results.NotFound()))
-      .Produces<Model.MouSignatureLatest>(StatusCodes.Status200OK, "application/json")
+      .Produces<Mou>(StatusCodes.Status200OK, "application/json")
       .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
       .Produces<ProblemDetails>(StatusCodes.Status404NotFound)
       .ProducesProblem(StatusCodes.Status422UnprocessableEntity)
