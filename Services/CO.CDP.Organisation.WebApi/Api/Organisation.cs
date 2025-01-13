@@ -290,10 +290,10 @@ public static class EndpointExtensions
 
         app.MapGet("/search",
             [OrganisationAuthorize([AuthenticationChannel.OneLogin, AuthenticationChannel.ServiceKey])]
-        async ([FromQuery] string name, [FromQuery] string? role, [FromQuery] int limit, [FromServices] IUseCase<OrganisationSearchQuery, IEnumerable<Model.Organisation>> useCase) =>
+        async ([FromQuery] string name, [FromQuery] string? role, [FromQuery] int limit, [FromServices] IUseCase<OrganisationSearchQuery, IEnumerable<Model.OrganisationSearchResult>> useCase) =>
                  await useCase.Execute(new OrganisationSearchQuery(name, limit, role))
-                    .AndThen(organisations => organisations.Count() != 0 ? Results.Ok(organisations) : Results.NotFound()))
-         .Produces<IEnumerable<Model.Organisation>>(StatusCodes.Status200OK, "application/json")
+                    .AndThen(results => results.Count() != 0 ? Results.Ok(results) : Results.NotFound()))
+         .Produces<IEnumerable<Model.OrganisationSearchResult>>(StatusCodes.Status200OK, "application/json")
          .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
          .Produces<ProblemDetails>(StatusCodes.Status404NotFound)
          .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError)
