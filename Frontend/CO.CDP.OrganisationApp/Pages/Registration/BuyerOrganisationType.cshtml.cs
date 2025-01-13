@@ -1,6 +1,5 @@
 using CO.CDP.Localization;
 using CO.CDP.Mvc.Validation;
-using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel;
@@ -28,7 +27,7 @@ public class BuyerOrganisationTypeModel(ISession session) : RegistrationStepMode
     public IActionResult OnGet()
     {
         BuyerOrganisationType = RegistrationDetails.BuyerOrganisationType;
-        if (!string.IsNullOrEmpty(BuyerOrganisationType) && !BuyerTypeLabels.Labels.Keys.Contains(BuyerOrganisationType))
+        if (!string.IsNullOrEmpty(BuyerOrganisationType) && !BuyerTypes.Keys.Contains(BuyerOrganisationType))
         {
             OtherValue = BuyerOrganisationType;
             BuyerOrganisationType = "Other";
@@ -55,5 +54,14 @@ public class BuyerOrganisationTypeModel(ISession session) : RegistrationStepMode
         {
             return RedirectToPage("BuyerDevolvedRegulation");
         }
+
     }
+
+    public static Dictionary<string, string> BuyerTypes => new()
+    {
+        { "CentralGovernment", StaticTextResource.OrganisationRegistration_BuyerOrganisationType_CentralGovernment_Label},
+        { "RegionalAndLocalGovernment", StaticTextResource.OrganisationRegistration_BuyerOrganisationType_RegionalAndLocalGovernment_Label},
+        { "PublicUndertaking", StaticTextResource.OrganisationRegistration_BuyerOrganisationType_PublicUndertaking_Label},
+        { "PrivateUtility", StaticTextResource.OrganisationRegistration_BuyerOrganisationType_PrivateUtility_Label}
+    };
 }

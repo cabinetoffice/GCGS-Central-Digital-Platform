@@ -2,7 +2,6 @@
 @attribute [RazorCompiledItemMetadata("RouteTemplate", RegistrationStepModel.BuyerOrganisationTypePage)]
 @model BuyerOrganisationTypeModel
 @using CO.CDP.Localization
-@using CO.CDP.OrganisationApp.Constants
 
 @{
     ViewData["Title"] = @StaticTextResource.OrganisationRegistration_BuyerOrganisationType_Heading;
@@ -57,7 +56,7 @@
                                        type="radio" value="CentralGovernment"
                                        aria-describedby="ca-type-item-hint" @IsSelected("CentralGovernment")>
                                 <label class="govuk-label govuk-radios__label" for="ca-type">
-                                    @BuyerTypeLabels.Labels["CentralGovernment"]
+                                    @BuyerOrganisationTypeModel.BuyerTypes["CentralGovernment"]
                                 </label>
                                 <div id="ca-type-item-hint" class="govuk-hint govuk-radios__hint">
                                     @Html.Raw(StaticTextResource.OrganisationRegistration_BuyerOrganisationType_CentralGovernment_Hint)
@@ -69,7 +68,7 @@
                                        type="radio" value="RegionalAndLocalGovernment"
                                        aria-describedby="ca-type-2-item-hint" @IsSelected("RegionalAndLocalGovernment")>
                                 <label class="govuk-label govuk-radios__label" for="ca-type-2">
-                                @BuyerTypeLabels.Labels["RegionalAndLocalGovernment"]
+                                    @BuyerOrganisationTypeModel.BuyerTypes["RegionalAndLocalGovernment"]
                                 </label>
                                 <div id="ca-type-2-item-hint" class="govuk-hint govuk-radios__hint">
                                     @Html.Raw(StaticTextResource.OrganisationRegistration_BuyerOrganisationType_RegionalAndLocalGovernment_Hint)
@@ -80,7 +79,7 @@
                                 <input class="govuk-radios__input" id="ca-type-3" name="BuyerOrganisationType"
                                        type="radio" value="PublicUndertaking" aria-describedby="ca-type-3-item-hint" @IsSelected("PublicUndertaking")>
                                 <label class="govuk-label govuk-radios__label" for="ca-type-3">
-                                    @BuyerTypeLabels.Labels["PublicUndertaking"]
+                                    @BuyerOrganisationTypeModel.BuyerTypes["PublicUndertaking"]
                                 </label>
                                 <div id="ca-type-3-item-hint" class="govuk-hint govuk-radios__hint">
                                     @Html.Raw(StaticTextResource.OrganisationRegistration_BuyerOrganisationType_PublicUndertaking_Hint)
@@ -90,7 +89,7 @@
                                 <input class="govuk-radios__input" id="ca-type-4" name="BuyerOrganisationType"
                                        type="radio" value="PrivateUtility" aria-describedby="ca-type-4-item-hint" @IsSelected("PrivateUtility")>
                                 <label class="govuk-label govuk-radios__label" for="ca-type-4">
-                                    @BuyerTypeLabels.Labels["PrivateUtility"]
+                                    @BuyerOrganisationTypeModel.BuyerTypes["PrivateUtility"]
                                 </label>
                                 <div id="ca-type-4-item-hint" class="govuk-hint govuk-radios__hint">
                                     @Html.Raw(StaticTextResource.OrganisationRegistration_BuyerOrganisationType_PrivateUtility_Hint)

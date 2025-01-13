@@ -110,9 +110,9 @@
                                 Organisation type
                             </dt>
                             <dd class="govuk-summary-list__value">
-                            @if (BuyerTypeLabels.Labels.Keys.Contains(details.BuyerOrganisationType!))
+                                @if (BuyerOrganisationTypeModel.BuyerTypes.Keys.Contains(details.BuyerOrganisationType!))
                                 {
-                                    @(BuyerTypeLabels.Labels[details.BuyerOrganisationType!])
+                                    @(BuyerOrganisationTypeModel.BuyerTypes[details.BuyerOrganisationType!])
                                 }
                                 else
                                 {
