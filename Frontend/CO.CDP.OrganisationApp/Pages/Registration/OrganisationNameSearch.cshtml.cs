@@ -16,13 +16,13 @@ public class OrganisationNameSearchModel(ISession session, IOrganisationClient o
     [BindProperty]
     [DisplayName(nameof(StaticTextResource.OrganisationRegistration_SearchOrganisationName_Heading))]
     [Required(ErrorMessageResourceName = nameof(StaticTextResource.Global_PleaseSelect), ErrorMessageResourceType = typeof(StaticTextResource))]
-    public required string OrganisationId { get; set; }
+    public required string OrganisationIdentifier { get; set; }
 
     public string? OrganisationName { get; set; }
 
     [BindProperty]
     public bool? RedirectToSummary { get; set; }
-    public required List<(CO.CDP.Organisation.WebApiClient.Organisation Organisation, BuyerInformation BuyerInfo)> OrganisationsWithBuyerInfo { get; set; }
+    public required ICollection<OrganisationSearchResult> MatchingOrganisations { get; set; }
 
     public async Task<IActionResult> OnGet()
     {
@@ -47,15 +47,7 @@ public class OrganisationNameSearchModel(ISession session, IOrganisationClient o
     private async Task FindMatchingOrgs(IOrganisationClient organisationClient)
     {
         OrganisationName = RegistrationDetails.OrganisationName;
-        
-        var matchingOrganisations = await organisationClient.SearchOrganisationAsync(RegistrationDetails.OrganisationName, Constants.OrganisationType.Buyer.ToString(), 10);
-
-        OrganisationsWithBuyerInfo = (await Task.WhenAll(
-            matchingOrganisations.Select(async organisation =>
-            {
-                var buyerInfo = await organisationClient.GetOrganisationBuyerInformationAsync(organisation.Id);
-                return (organisation, buyerInfo);
-            }))).ToList();
+        MatchingOrganisations = await organisationClient.SearchOrganisationAsync(RegistrationDetails.OrganisationName, Constants.OrganisationType.Buyer.ToString(), 10);
     }
 
     public async Task<IActionResult> OnPost()
@@ -74,15 +66,9 @@ public class OrganisationNameSearchModel(ISession session, IOrganisationClient o
             return Page();
         }
 
-        if (!string.IsNullOrEmpty(OrganisationId) && OrganisationId != "None" && Guid.TryParse(OrganisationId, out var organisationId))
+        if (!string.IsNullOrEmpty(OrganisationIdentifier) && OrganisationIdentifier != "None")
         {
-            var organisation = await organisationClient.GetOrganisationAsync(organisationId);
-
-            if (organisation != null)
-            {
-                var identifier = $"{organisation.Identifier.Scheme}:{organisation.Identifier.Id}";
-                return Redirect($"/registration/{identifier}/join-organisation");
-            }
+            return Redirect($"/registration/{Uri.EscapeDataString(OrganisationIdentifier)}/join-organisation");
         }
 
         if (RedirectToSummary == true)

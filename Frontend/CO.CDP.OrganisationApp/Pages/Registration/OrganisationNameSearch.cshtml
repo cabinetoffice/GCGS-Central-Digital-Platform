@@ -5,8 +5,8 @@
 @using CO.CDP.OrganisationApp.Constants
 
 @{
-    ViewData["Title"] = Html.DisplayNameFor(m => m.OrganisationId);
-    var organisationIdHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.OrganisationId)).HasInnerHtml;
+    ViewData["Title"] = Html.DisplayNameFor(m => m.OrganisationIdentifier);
+    var organisationIdentifierHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.OrganisationIdentifier)).HasInnerHtml;
 
     var backLink = RegistrationStepModel.OrganisationNamePage;
     if (Request.Query.ContainsKey("frm-summary"))
@@ -32,7 +32,7 @@
                 <input type="hidden" name="RedirectToSummary" value="true" />
             }
 
-            <div class="govuk-form-group @(organisationIdHasError ? "govuk-form-group--error" : "")">
+            <div class="govuk-form-group @(organisationIdentifierHasError ? "govuk-form-group--error" : "")">
                 <fieldset class="govuk-fieldset">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                         <h1 class="govuk-fieldset__heading">
@@ -40,10 +40,10 @@
                         </h1>
                     </legend>
 
-                    @if (organisationIdHasError)
+                    @if (organisationIdentifierHasError)
                     {
                         <p id="organisationType-error" class="govuk-error-message">
-                        <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span> @Html.ValidationMessageFor(m => m.OrganisationId)
+                            <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span> @Html.ValidationMessageFor(m => m.OrganisationIdentifier)
                         </p>
                     }
 
@@ -51,14 +51,14 @@
                         @{
                             var index = 0;
                         }
-                        @foreach (var (org, buyerInfo) in Model.OrganisationsWithBuyerInfo) {
+                        @foreach (var orgSearchResult in Model.MatchingOrganisations) {
                             <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="@Html.NameFor(m => m.OrganisationId)-@index" name="@Html.NameFor(m => m.OrganisationId)" type="radio" value="@org.Id" aria-describedby="@Html.NameFor(m => m.OrganisationId)-@index-hint">
-                                <label class="govuk-label govuk-radios__label" for="@Html.NameFor(m => m.OrganisationId)-@index">
-                                        @org.Name
+                                <input class="govuk-radios__input" id="@Html.NameFor(m => m.OrganisationIdentifier)-@index" name="@Html.NameFor(m => m.OrganisationIdentifier)" type="radio" value="@orgSearchResult.Identifier.Scheme:@orgSearchResult.Identifier.Id" aria-describedby="@Html.NameFor(m => m.OrganisationIdentifier)-@index-hint">
+                                <label class="govuk-label govuk-radios__label" for="@Html.NameFor(m => m.OrganisationIdentifier)-@index">
+                                        @orgSearchResult.Name
                                 </label>
-                                <div id="@Html.NameFor(m => m.OrganisationId)-@index-hint" class="govuk-hint govuk-radios__hint">
-                                    @BuyerTypeLabels.Labels[buyerInfo.BuyerType]
+                                <div id="@Html.NameFor(m => m.OrganisationIdentifier)-@index-hint" class="govuk-hint govuk-radios__hint">
+                                    @BuyerTypeLabels.Labels[orgSearchResult.BuyerInformation.BuyerType]
                                 </div>
                             </div>
 
@@ -66,7 +66,7 @@
                         }
 
                         <div class="govuk-radios__item">
-                            <input class="govuk-radios__input" id="none-of-these" name="@Html.NameFor(m => m.OrganisationId)" type="radio" value="None" aria-describedby="none-of-these-hint">
+                            <input class="govuk-radios__input" id="none-of-these" name="@Html.NameFor(m => m.OrganisationIdentifier)" type="radio" value="None" aria-describedby="none-of-these-hint">
                             <label class="govuk-label govuk-radios__label" for="none-of-these">
                                 None
                             </label>
