@@ -38,6 +38,17 @@ public class ReviewAndSignMemorandomModel(IOrganisationClient organisationClient
         {
             OrganisationDetails = await organisationClient.GetOrganisationAsync(Id);
 
+            var signMouRequest = new SignMouRequest()
+            {
+                CreatedById = Id,
+                JobTitle = JobTitleValue,
+                Name = Name,
+                MouId = new Guid()
+            };
+
+            var signedMou = await organisationClient.SignOrganisationMouAsync(Id, signMouRequest);
+
+
             return Page();
         }
         catch (OrganisationApiException ex) when (ex.StatusCode == 404)
