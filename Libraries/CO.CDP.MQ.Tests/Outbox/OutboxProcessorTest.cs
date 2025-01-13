@@ -1,4 +1,5 @@
 using CO.CDP.MQ.Outbox;
+using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Moq;
 
@@ -27,6 +28,25 @@ public class OutboxProcessorTest
 
         _publisher.Verify(p => p.Publish(messages.ElementAt(0)), Times.Once);
         _publisher.Verify(p => p.Publish(messages.ElementAt(1)), Times.Once);
+    }
+
+    [Fact]
+    public async Task ItReturnsTheNumberOfProcessedMessages()
+    {
+        var messages = new List<OutboxMessage>
+        {
+            GivenOutboxMessage(type: "Greeting", message: "{\"Message\":\"Hello World\"}", published: false),
+            GivenOutboxMessage(type: "Greeting", message: "{\"Message\":\"How do you do?\"}", published: false),
+            GivenOutboxMessage(type: "Greeting", message: "{\"Message\":\"Good bye\"}", published: false),
+        };
+
+        _outbox.Setup(m => m.FindOldest(10)).ReturnsAsync(messages);
+
+        var processor = new OutboxProcessor(_publisher.Object, _outbox.Object, _logger);
+
+        var result = await processor.ExecuteAsync(count: 10);
+
+        result.Should().Be(3);
     }
 
     [Fact]
