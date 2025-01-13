@@ -15,7 +15,7 @@ public class OrganisationNameSearchModel(ISession session, IOrganisationClient o
 
     [BindProperty]
     [DisplayName(nameof(StaticTextResource.OrganisationRegistration_SearchOrganisationName_Heading))]
-    [Required(ErrorMessageResourceName = nameof(StaticTextResource.OrganisationRegistration_EnterOrganisationName_Heading), ErrorMessageResourceType = typeof(StaticTextResource))]
+    [Required(ErrorMessageResourceName = nameof(StaticTextResource.Global_PleaseSelect), ErrorMessageResourceType = typeof(StaticTextResource))]
     public required string OrganisationId { get; set; }
 
     public string? OrganisationName { get; set; }
@@ -26,24 +26,15 @@ public class OrganisationNameSearchModel(ISession session, IOrganisationClient o
 
     public async Task<IActionResult> OnGet()
     {
-        if(RegistrationDetails.OrganisationType != Constants.OrganisationType.Buyer
+        if (RegistrationDetails.OrganisationType != Constants.OrganisationType.Buyer
             || RegistrationDetails.OrganisationName?.Length < 3)
         {
             return RedirectToPage("OrganisationEmail");
         }
 
-        OrganisationName = RegistrationDetails.OrganisationName;
-
         try
         {
-            var matchingOrganisations = await organisationClient.SearchOrganisationAsync(RegistrationDetails.OrganisationName, Constants.OrganisationType.Buyer.ToString(), 10);
-
-            OrganisationsWithBuyerInfo = (await Task.WhenAll(
-                matchingOrganisations.Select(async organisation =>
-                {
-                    var buyerInfo = await organisationClient.GetOrganisationBuyerInformationAsync(organisation.Id);
-                    return (organisation, buyerInfo);
-                }))).ToList();
+            await FindMatchingOrgs(organisationClient);
         }
         catch (ApiException ex) when (ex.StatusCode == 404)
         {
@@ -53,8 +44,31 @@ public class OrganisationNameSearchModel(ISession session, IOrganisationClient o
         return Page();
     }
 
+    private async Task FindMatchingOrgs(IOrganisationClient organisationClient)
+    {
+        OrganisationName = RegistrationDetails.OrganisationName;
+        
+        var matchingOrganisations = await organisationClient.SearchOrganisationAsync(RegistrationDetails.OrganisationName, Constants.OrganisationType.Buyer.ToString(), 10);
+
+        OrganisationsWithBuyerInfo = (await Task.WhenAll(
+            matchingOrganisations.Select(async organisation =>
+            {
+                var buyerInfo = await organisationClient.GetOrganisationBuyerInformationAsync(organisation.Id);
+                return (organisation, buyerInfo);
+            }))).ToList();
+    }
+
     public async Task<IActionResult> OnPost()
     {
+        try
+        {
+            await FindMatchingOrgs(organisationClient);
+        }
+        catch (ApiException ex) when (ex.StatusCode == 404)
+        {
+            return RedirectToPage("OrganisationEmail");
+        }
+
         if (!ModelState.IsValid)
         {
             return Page();
