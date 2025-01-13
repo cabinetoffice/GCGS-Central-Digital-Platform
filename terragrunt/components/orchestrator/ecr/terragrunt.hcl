@@ -24,5 +24,6 @@ locals {
 inputs = {
   account_ids     = local.global_vars.locals.account_ids
   service_configs = local.global_vars.locals.service_configs
+  tools_configs   = local.global_vars.locals.tools_configs
   tags            = local.tags
 }

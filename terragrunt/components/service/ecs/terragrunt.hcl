@@ -116,6 +116,8 @@ dependency service_cache {
 dependency service_queue {
   config_path = "../../service/queue"
   mock_outputs = {
+    av_scanner_queue_arn          = "mock"
+    av_scanner_queue_url          = "mock"
     entity_verification_queue_arn = "mock"
     entity_verification_queue_url = "mock"
     organisation_queue_arn        = "mock"
@@ -169,29 +171,31 @@ inputs = {
   user_pool_client_id = dependency.service_auth.outputs.organisation_app_user_pool_client_id
   user_pool_domain    = dependency.service_auth.outputs.user_pool_domain
 
-  db_entity_verification_address         = dependency.service_database.outputs.entity_verification_address
-  db_entity_verification_credentials_arn = dependency.service_database.outputs.entity_verification_credentials_arn
-  db_entity_verification_kms_arn         = dependency.service_database.outputs.entity_verification_kms_arn
-  db_entity_verification_name            = dependency.service_database.outputs.entity_verification_name
+  db_entity_verification_address          = dependency.service_database.outputs.entity_verification_address
+  db_entity_verification_credentials_arn  = dependency.service_database.outputs.entity_verification_credentials_arn
+  db_entity_verification_kms_arn          = dependency.service_database.outputs.entity_verification_kms_arn
+  db_entity_verification_name             = dependency.service_database.outputs.entity_verification_name
   db_ev_cluster_address                   = dependency.service_database.outputs.entity_verification_cluster_address
   db_ev_cluster_credentials_arn           = dependency.service_database.outputs.entity_verification_cluster_credentials_arn
   db_ev_cluster_credentials_kms_key_id    = dependency.service_database.outputs.entity_verification_cluster_credentials_kms_key_id
   db_ev_cluster_name                      = dependency.service_database.outputs.entity_verification_cluster_name
-  db_sirsi_address                       = dependency.service_database.outputs.sirsi_address
+  db_sirsi_address                        = dependency.service_database.outputs.sirsi_address
   db_sirsi_cluster_address                = dependency.service_database.outputs.sirsi_cluster_address
   db_sirsi_cluster_credentials_arn        = dependency.service_database.outputs.sirsi_cluster_credentials_arn
   db_sirsi_cluster_credentials_kms_key_id = dependency.service_database.outputs.sirsi_cluster_credentials_kms_key_id
   db_sirsi_cluster_name                   = dependency.service_database.outputs.sirsi_cluster_name
-  db_sirsi_credentials_arn               = dependency.service_database.outputs.sirsi_credentials_arn
-  db_sirsi_kms_arn                       = dependency.service_database.outputs.sirsi_kms_arn
-  db_sirsi_name                          = dependency.service_database.outputs.sirsi_name
+  db_sirsi_credentials_arn                = dependency.service_database.outputs.sirsi_credentials_arn
+  db_sirsi_kms_arn                        = dependency.service_database.outputs.sirsi_kms_arn
+  db_sirsi_name                           = dependency.service_database.outputs.sirsi_name
 
   redis_primary_endpoint = dependency.service_cache.outputs.primary_endpoint_address
   redis_auth_token_arn   = dependency.service_cache.outputs.redis_auth_token_arn
   redis_port             = dependency.service_cache.outputs.port
 
-  queue_entity_verification_queue_arn = dependency.service_queue.outputs.entity_verification_queue_arn
-  queue_entity_verification_queue_url = dependency.service_queue.outputs.entity_verification_queue_url
-  queue_organisation_queue_arn        = dependency.service_queue.outputs.organisation_queue_arn
-  queue_organisation_queue_url        = dependency.service_queue.outputs.organisation_queue_url
+  queue_av_scanner_arn          = dependency.service_queue.outputs.av_scanner_queue_arn
+  queue_av_scanner_url          = dependency.service_queue.outputs.av_scanner_queue_url
+  queue_entity_verification_arn = dependency.service_queue.outputs.entity_verification_queue_arn
+  queue_entity_verification_url = dependency.service_queue.outputs.entity_verification_queue_url
+  queue_organisation_arn        = dependency.service_queue.outputs.organisation_queue_arn
+  queue_organisation_url        = dependency.service_queue.outputs.organisation_queue_url
 }

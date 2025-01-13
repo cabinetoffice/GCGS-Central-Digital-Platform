@@ -112,6 +112,7 @@ inputs = {
   account_ids        = local.global_vars.locals.account_ids
   healthcheck_config = local.global_vars.locals.tools_configs.healthcheck
   pgadmin_config     = local.global_vars.locals.tools_configs.pgadmin
+  tools_configs      = local.global_vars.locals.tools_configs
   tags               = local.tags
 
   role_ecs_task_arn       = dependency.core_iam.outputs.ecs_task_arn
