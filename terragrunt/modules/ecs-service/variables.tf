@@ -6,8 +6,8 @@ variable "add_security_group_roles" {
 
 variable "allowed_unauthenticated_paths" {
   description = "List of paths allowed access to protected services, bypassing Cognito authentication."
-  type = list(string)
-  default = []
+  type        = list(string)
+  default     = []
 }
 
 variable "cluster_id" {
@@ -100,7 +100,7 @@ variable "name" {
 
 variable "private_subnet_ids" {
   description = "List of private subnet IDs"
-  type = list(string)
+  type        = list(string)
 }
 
 variable "product" {
@@ -129,7 +129,7 @@ variable "role_ecs_task_exec_arn" {
 
 variable "tags" {
   description = "Tags to apply to all resources in this module"
-  type = map(string)
+  type        = map(string)
 }
 
 variable "unhealthy_threshold" {

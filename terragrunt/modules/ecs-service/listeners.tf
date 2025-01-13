@@ -9,7 +9,7 @@ resource "aws_lb_target_group" "this" {
   vpc_id               = var.vpc_id
 
   stickiness {
-    type = "lb_cookie"
+    type    = "lb_cookie"
     enabled = false
   }
 
