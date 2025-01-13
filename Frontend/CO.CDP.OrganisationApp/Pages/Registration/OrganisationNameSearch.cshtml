@@ -6,7 +6,7 @@
 
 @{
     ViewData["Title"] = Html.DisplayNameFor(m => m.OrganisationId);
-    var organisationNameHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.OrganisationId)).HasInnerHtml;
+    var organisationIdHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.OrganisationId)).HasInnerHtml;
 
     var backLink = RegistrationStepModel.OrganisationNamePage;
     if (Request.Query.ContainsKey("frm-summary"))
@@ -32,7 +32,7 @@
                 <input type="hidden" name="RedirectToSummary" value="true" />
             }
 
-            <div class="govuk-form-group @(organisationNameHasError ? "govuk-form-group--error" : "")">
+            <div class="govuk-form-group @(organisationIdHasError ? "govuk-form-group--error" : "")">
                 <fieldset class="govuk-fieldset">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                         <h1 class="govuk-fieldset__heading">
@@ -40,7 +40,7 @@
                         </h1>
                     </legend>
 
-                @if (organisationNameHasError)
+                    @if (organisationIdHasError)
                     {
                         <p id="organisationType-error" class="govuk-error-message">
                         <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span> @Html.ValidationMessageFor(m => m.OrganisationId)
