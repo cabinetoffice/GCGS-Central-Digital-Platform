@@ -12,6 +12,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Npgsql;
 
 namespace CO.CDP.AwsServices;
 
@@ -73,8 +74,12 @@ public static class Extensions
             .AddAWSService<IAmazonSQS>();
     }
 
-    public static IServiceCollection AddOutboxSqsPublisher<TDbContext>(this IServiceCollection services)
-        where TDbContext : DbContext, IOutboxMessageDbContext
+    public static IServiceCollection AddOutboxSqsPublisher<TDbContext>(
+        this IServiceCollection services,
+        ConfigurationManager configuration,
+        bool enableBackgroundServices,
+        string notificationChannel
+    ) where TDbContext : DbContext, IOutboxMessageDbContext
     {
         services.AddScoped<IOutboxMessageRepository, DatabaseOutboxMessageRepository<TDbContext>>();
 
@@ -93,11 +98,34 @@ public static class Extensions
                 s.GetRequiredService<ILogger<OutboxProcessor>>()
             )
         );
+
+        if (configuration.GetValue("Features:OutboxListener", false))
+        {
+            services.AddScoped<IOutboxProcessorListener>(s => new OutboxProcessorListener(
+                s.GetRequiredService<NpgsqlDataSource>(),
+                s.GetRequiredService<IOutboxProcessor>(),
+                s.GetRequiredService<ILogger<OutboxProcessorListener>>(),
+                channel: notificationChannel
+            ));
+            if (enableBackgroundServices)
+            {
+                services.AddHostedService<OutboxProcessorListenerBackgroundService>();
+            }
+        }
+        else
+        {
+            if (enableBackgroundServices)
+            {
+                services.AddHostedService<OutboxProcessorBackgroundService>();
+            }
+        }
+
         return services;
     }
 
     public static IServiceCollection AddSqsDispatcher(this IServiceCollection services,
         Deserializer deserializer,
+        bool enableBackgroundServices,
         Action<IServiceCollection> addSubscribers,
         Action<IServiceProvider, IDispatcher> registerSubscribers)
     {
@@ -115,6 +143,10 @@ public static class Extensions
             registerSubscribers(serviceProvider, dispatcher);
             return dispatcher;
         });
+        if (enableBackgroundServices)
+        {
+            services.AddHostedService<DispatcherBackgroundService>();
+        }
         return services;
     }
 
