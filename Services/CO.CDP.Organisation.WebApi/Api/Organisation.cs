@@ -1010,9 +1010,10 @@ public static class EndpointExtensions
 
         app.MapPost("/{organisationId}/mou",
       [OrganisationAuthorize(
-            [AuthenticationChannel.OneLogin],
-              [Constants.OrganisationPersonScope.Admin],
-              OrganisationIdLocation.Path)]
+            [AuthenticationChannel.OneLogin]
+//              ,[Constants.OrganisationPersonScope.Admin],
+//              OrganisationIdLocation.Path
+              )]
         async (Guid organisationId, SignMouRequest signMou, IUseCase<(Guid, SignMouRequest), bool> useCase) =>
 
                    await useCase.Execute((organisationId, signMou))
@@ -1045,8 +1046,8 @@ public static class EndpointExtensions
         app.MapGet("/latest",
        [OrganisationAuthorize(
          [AuthenticationChannel.OneLogin]
-         , [Constants.OrganisationPersonScope.Admin],
-         OrganisationIdLocation.Path
+         //, [Constants.OrganisationPersonScope.Admin],
+         //OrganisationIdLocation.Path
        )]
         async (IUseCase<Mou> useCase) =>
              await useCase.Execute()
