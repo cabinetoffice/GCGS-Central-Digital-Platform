@@ -27,8 +27,7 @@ public class WebApiToPersistenceProfile : Profile
 
         CreateMap<Persistence.Organisation, Model.OrganisationSearchResult>()
             .ForMember(m => m.Id, o => o.MapFrom(m => m.Guid))
-            .ForMember(m => m.Identifier, o => o.MapFrom(m => m.Identifiers.FirstOrDefault(i => i.Primary)))
-            .ForMember(m => m.BuyerInformation, o => o.MapFrom(m => m.BuyerInfo));
+            .ForMember(m => m.Identifier, o => o.MapFrom(m => m.Identifiers.FirstOrDefault(i => i.Primary)));
 
         CreateMap<Persistence.Organisation, Review>()
             .ForMember(m => m.ApprovedOn, o => o.MapFrom(m => m.ApprovedOn))

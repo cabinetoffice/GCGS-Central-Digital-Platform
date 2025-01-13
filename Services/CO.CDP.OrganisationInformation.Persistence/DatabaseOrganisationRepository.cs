@@ -71,7 +71,6 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
         var query = context.Organisations
             .Include(p => p.Addresses)
             .ThenInclude(p => p.Address)
-            .Include(p => p.BuyerInfo)
             .AsSingleQuery()
             .Where(t => t.Name.ToLower().StartsWith(name.ToLower()) && (!role.HasValue || t.Roles.Contains(role.Value)))
             .Where(t => t.PendingRoles.Count == 0);

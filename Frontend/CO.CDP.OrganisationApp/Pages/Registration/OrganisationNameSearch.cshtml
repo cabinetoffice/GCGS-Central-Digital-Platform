@@ -5,7 +5,7 @@
 @using CO.CDP.OrganisationApp.Constants
 
 @{
-    ViewData["Title"] = Html.DisplayNameFor(m => m.OrganisationIdentifier);
+    ViewData["Title"] = Model.MatchingOrganisations.Count() == 1 ? StaticTextResource.OrganisationRegistration_SearchOrganisationName_Heading_Singular : StaticTextResource.OrganisationRegistration_SearchOrganisationName_Heading_Plural;
     var organisationIdentifierHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.OrganisationIdentifier)).HasInnerHtml;
 
     var backLink = RegistrationStepModel.OrganisationNamePage;
@@ -47,34 +47,39 @@
                         </p>
                     }
 
+                    <p class="govuk-body">@string.Format(Model.MatchingOrganisations.Count() == 1 ? StaticTextResource.OrganisationRegistration_SearchOrganisationName_ResultCount_Singular : StaticTextResource.OrganisationRegistration_SearchOrganisationName_ResultCount_Plural, Model.MatchingOrganisations.Count())</p>
+                    <p class="govuk-body">@StaticTextResource.OrganisationRegistration_SearchOrganisationName_Hint</p>
+                                    
+
                     <div class="govuk-radios" data-module="govuk-radios">
+
+                        <h2 class="govuk-heading-s">
+                            @StaticTextResource.OrganisationRegistration_SearchOrganisationName_Register
+                        </h2>
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="none-of-these" name="@Html.NameFor(m => m.OrganisationIdentifier)" type="radio" value="None">
+                            <label class="govuk-label govuk-radios__label" for="none-of-these">
+                                [@Model.OrganisationName]
+                            </label>
+                        </div>
+
                         @{
                             var index = 0;
                         }
+                        <h2 class="govuk-heading-s govuk-!-margin-top-5">
+                            @StaticTextResource.OrganisationRegistration_SearchOrganisationName_RequestToJoin
+                        </h2>
                         @foreach (var orgSearchResult in Model.MatchingOrganisations) {
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input" id="@Html.NameFor(m => m.OrganisationIdentifier)-@index" name="@Html.NameFor(m => m.OrganisationIdentifier)" type="radio" value="@orgSearchResult.Identifier.Scheme:@orgSearchResult.Identifier.Id" aria-describedby="@Html.NameFor(m => m.OrganisationIdentifier)-@index-hint">
                                 <label class="govuk-label govuk-radios__label" for="@Html.NameFor(m => m.OrganisationIdentifier)-@index">
                                         @orgSearchResult.Name
                                 </label>
-                                <div id="@Html.NameFor(m => m.OrganisationIdentifier)-@index-hint" class="govuk-hint govuk-radios__hint">
-                                    @BuyerTypeLabels.Labels[orgSearchResult.BuyerInformation.BuyerType]
-                                </div>
                             </div>
 
                             index++;
                         }
-
-                        <div class="govuk-radios__item">
-                            <input class="govuk-radios__input" id="none-of-these" name="@Html.NameFor(m => m.OrganisationIdentifier)" type="radio" value="None" aria-describedby="none-of-these-hint">
-                            <label class="govuk-label govuk-radios__label" for="none-of-these">
-                                None
-                            </label>
-                            <div id="none-of-these-hint" class="govuk-hint govuk-radios__hint">
-                                Continue with [@Model.OrganisationName]
-                            </div>
-                        </div>
-                </div>
+                    </div>
                 </fieldset>
             </div>
 

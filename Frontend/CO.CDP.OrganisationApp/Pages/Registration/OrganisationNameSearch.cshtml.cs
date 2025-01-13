@@ -9,12 +9,11 @@ using System.ComponentModel.DataAnnotations;
 namespace CO.CDP.OrganisationApp.Pages.Registration;
 
 [ValidateRegistrationStep]
-public class OrganisationNameSearchModel(ISession session, IOrganisationClient organisationClient) : RegistrationStepModel(session)
+public class OrganisationNameSearchModel(ISession session, IOrganisationClient organisationClient, IFlashMessageService flashMessageService) : RegistrationStepModel(session)
 {
     public override string CurrentPage => OrganisationNameSearchPage;
 
     [BindProperty]
-    [DisplayName(nameof(StaticTextResource.OrganisationRegistration_SearchOrganisationName_Heading))]
     [Required(ErrorMessageResourceName = nameof(StaticTextResource.Global_PleaseSelect), ErrorMessageResourceType = typeof(StaticTextResource))]
     public required string OrganisationIdentifier { get; set; }
 
@@ -39,6 +38,17 @@ public class OrganisationNameSearchModel(ISession session, IOrganisationClient o
         catch (ApiException ex) when (ex.StatusCode == 404)
         {
             return RedirectToPage("OrganisationEmail");
+        }
+
+        var firstOrgResult = MatchingOrganisations.First();
+        if (MatchingOrganisations.Count() == 1 && firstOrgResult.Name.ToLower() == OrganisationName?.ToLower())
+        {
+            flashMessageService.SetFlashMessage(
+                FlashMessageType.Important,
+                heading: StaticTextResource.OrganisationRegistration_SearchOrganisationName_ExactMatchAlreadyExists
+            );
+
+            return Redirect($"/registration/{Uri.EscapeDataString(firstOrgResult.Identifier.Scheme + ":" + firstOrgResult.Identifier.Id)}/join-organisation");
         }
 
         return Page();
