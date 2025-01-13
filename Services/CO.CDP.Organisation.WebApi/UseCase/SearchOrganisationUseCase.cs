@@ -9,7 +9,7 @@ public class SearchOrganisationUseCase(IOrganisationRepository organisationRepos
 {
     public async Task<IEnumerable<Model.Organisation>> Execute(OrganisationSearchQuery query)
     {
-        return await organisationRepository.SearchByName(query.Name, query.Role)
+        return await organisationRepository.SearchByName(query.Name, query.Role, query.Limit)
             .AndThen(organisations => organisations.Select(mapper.Map<Model.Organisation>));        
     }
 }

@@ -1,6 +1,7 @@
 @page "/organisation/{id}/supplier-to-buyer-organisation-type"
 @model CO.CDP.OrganisationApp.Pages.Organisation.SupplierToBuyerOrganisationTypeModel
 @using CO.CDP.Localization
+@using CO.CDP.OrganisationApp.Constants
 @{
     ViewData["Title"] = StaticTextResource.SupplierToBuyer_OrganisationType_Title;
     var organisationTypeHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.BuyerOrganisationType)).HasInnerHtml;
@@ -53,7 +54,7 @@
                                    type="radio" value="CentralGovernment"
                                    aria-describedby="ca-type-item-hint" @IsSelected("CentralGovernment")>
                             <label class="govuk-label govuk-radios__label" for="@nameof(Model.BuyerOrganisationType)">
-                                @SupplierToBuyerOrganisationTypeModel.BuyerTypes["CentralGovernment"]
+                                @BuyerTypeLabels.Labels["CentralGovernment"]
                             </label>
                             <div id="ca-type-item-hint" class="govuk-hint govuk-radios__hint">
                                 @StaticTextResource.SupplierToBuyer_OrganisationType_CentralGovernment_Title:
@@ -71,7 +72,7 @@
                                    type="radio" value="RegionalAndLocalGovernment"
                                    aria-describedby="ca-type-2-item-hint" @IsSelected("RegionalAndLocalGovernment")>
                             <label class="govuk-label govuk-radios__label" for="@nameof(Model.BuyerOrganisationType)-1">
-                                @SupplierToBuyerOrganisationTypeModel.BuyerTypes["RegionalAndLocalGovernment"]
+                                @BuyerTypeLabels.Labels["RegionalAndLocalGovernment"]
                             </label>
                             <div id="ca-type-2-item-hint" class="govuk-hint govuk-radios__hint">
                                 @StaticTextResource.SupplierToBuyer_OrganisationType_RegionalAndLocalGovernment_Title:
@@ -90,7 +91,7 @@
                             <input class="govuk-radios__input" id="@nameof(Model.BuyerOrganisationType)-2" name="BuyerOrganisationType"
                                    type="radio" value="PublicUndertaking" aria-describedby="ca-type-3-item-hint" @IsSelected("PublicUndertaking")>
                             <label class="govuk-label govuk-radios__label" for="@nameof(Model.BuyerOrganisationType)-2">
-                                @SupplierToBuyerOrganisationTypeModel.BuyerTypes["PublicUndertaking"]
+                                @BuyerTypeLabels.Labels["PublicUndertaking"]
                             </label>
                             <div id="ca-type-3-item-hint" class="govuk-hint govuk-radios__hint">
                                 @StaticTextResource.SupplierToBuyer_OrganisationType_PublicUndertakingAuthority
@@ -100,7 +101,7 @@
                             <input class="govuk-radios__input" id="@nameof(Model.BuyerOrganisationType)-3" name="BuyerOrganisationType"
                                    type="radio" value="PrivateUtility" aria-describedby="ca-type-4-item-hint" @IsSelected("PrivateUtility")>
                             <label class="govuk-label govuk-radios__label" for="@nameof(Model.BuyerOrganisationType)-3">
-                                @SupplierToBuyerOrganisationTypeModel.BuyerTypes["PrivateUtility"]
+                                @BuyerTypeLabels.Labels["PrivateUtility"]
                             </label>
                             <div id="ca-type-4-item-hint" class="govuk-hint govuk-radios__hint">
                                 @StaticTextResource.SupplierToBuyer_OrganisationType_PrivateUtility_Hint
