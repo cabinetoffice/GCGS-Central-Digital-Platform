@@ -4,7 +4,6 @@ using CO.CDP.OrganisationApp.Pages.Consortium;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.Extensions.Localization;
 using Moq;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages.Consortium;

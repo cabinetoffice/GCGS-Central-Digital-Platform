@@ -56,16 +56,28 @@ public class ConsortiumEnterSharecodeModel(
         try
         {
             var shareCode = await dataSharingClient.GetSharedDataAsync(EnterSharecode);
+            OrganisationParties? parties;
+            try
+            {
+                parties = await organisationClient.GetOrganisationPartiesAsync(Id);
+            }
+            catch (CO.CDP.Organisation.WebApiClient.ApiException ex) when (ex.StatusCode == 404)
+            {
+                parties = null;
+            }            
 
-            var parties = await organisationClient.GetOrganisationPartiesAsync(Id);
-
-            if (parties.Parties.Where(p => p.ShareCode.Value == EnterSharecode).Any())
+            if (parties != null && parties.Parties.Where(p => p.ShareCode.Value == EnterSharecode).Any())
             {
                 ModelState.AddModelError(nameof(EnterSharecode), string.Format(StaticTextResource.Consortium_ConsortiumEnterSharecode_SharecodeAlreadyExists, shareCode.Name));
                 return Page();
             }
 
-            var sc = new ConsortiumSharecode { Sharecode = EnterSharecode, SharecodeOrganisationName = shareCode.Name };
+            var sc = new ConsortiumSharecode
+            {
+                Sharecode = EnterSharecode,
+                SharecodeOrganisationName = shareCode.Name,
+                OrganisationPartyId = shareCode.Id
+            };
 
             tempDataService.Put(ConsortiumSharecode.TempDataKey, sc);
 
@@ -84,4 +96,5 @@ public class ConsortiumSharecode
     public const string TempDataKey = "ConsortiumSharecodeTempData";
     public string? Sharecode { get; set; }
     public string? SharecodeOrganisationName { get; set; }
+    public Guid? OrganisationPartyId { get; set; }
 }

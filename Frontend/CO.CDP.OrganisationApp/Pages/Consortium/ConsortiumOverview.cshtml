@@ -16,7 +16,8 @@
     var ppon = (organisationDetails.Identifier.Scheme == OrganisationSchemeType.Other
                         ? StaticTextResource.Consortium_ConsortiumOverview_Ppon_Status_Pending
                         : organisationDetails.Identifier.Id);
-    var parties = Model.Parties!.Parties;
+
+    var parties = (Model.Parties != null ? Model.Parties.Parties : new List<CO.CDP.Organisation.WebApiClient.OrganisationParty>());    
 }
 
 <div class="govuk-grid-row">
@@ -51,7 +52,7 @@
                     <p class="govuk-body">@postalAddress.Locality</p>
                     @if (!string.IsNullOrWhiteSpace(postalAddress.Region))
                     {
-                        <p class="govuk-body">@postalAddress.Region</p>
+                            <p class="govuk-body">@postalAddress.Region</p>
                     }
                     <p class="govuk-body">@postalAddress.PostalCode</p>
                     <p class="govuk-body">@postalAddress.CountryName</p>
@@ -78,17 +79,17 @@
         <dl class="govuk-summary-list ">
             @foreach (var p in parties)
             {
-                    <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">@p.Name</dt>
-                        <dd class="govuk-summary-list__value">
-                              <p class="govuk-body">@p.ShareCode.Value
-                                <span class="govuk-hint govuk-!-display-block">Share code created on @p.ShareCode.SubmittedAt.ToFormattedString()</span>
-                          </p>
-                        </dd>
-                        <dd class="govuk-summary-list__actions">
-                          <a class="govuk-link govuk-link--no-visited-state" href="#">Change<span class="govuk-visually-hidden"> organisation sharecode</span></a>
-                        </dd>
-                    </div>
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">@p.Name</dt>
+                            <dd class="govuk-summary-list__value">
+                                  <p class="govuk-body">@p.ShareCode.Value
+                                    <span class="govuk-hint govuk-!-display-block">Share code created on @p.ShareCode.SubmittedAt.ToFormattedString()</span>
+                              </p>
+                            </dd>
+                            <dd class="govuk-summary-list__actions">
+                              <a class="govuk-link govuk-link--no-visited-state" href="#">Change<span class="govuk-visually-hidden"> organisation sharecode</span></a>
+                            </dd>
+                        </div>
             }
         </dl>
         <p>@StaticTextResource.Consortium_ConsortiumOverview_Paragraph1</p>

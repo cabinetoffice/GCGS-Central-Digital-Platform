@@ -1,14 +1,10 @@
 using CO.CDP.DataSharing.WebApiClient;
 using CO.CDP.Localization;
-using CO.CDP.Mvc.Validation;
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Constants;
-using CO.CDP.OrganisationApp.Models;
-using CO.CDP.OrganisationApp.WebApiClients;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.FeatureManagement.Mvc;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using OrganisationWebApiClient = CO.CDP.Organisation.WebApiClient;
 
@@ -17,7 +13,6 @@ namespace CO.CDP.OrganisationApp.Pages.Consortium;
 [FeatureGate(FeatureFlags.Consortium)]
 public class ConsortiumConfirmSupplierModel(
     IOrganisationClient organisationClient,
-    IDataSharingClient dataSharingClient,
     ITempDataService tempDataService) : PageModel
 {
     [BindProperty]
@@ -72,21 +67,28 @@ public class ConsortiumConfirmSupplierModel(
 
         try
         {
-            //var cp = new OrganisationWebApiClient.OrganisationContactPoint(
-            //        name: organisation.ContactPoint.Name,
-            //        email: EmailAddress,
-            //        telephone: organisation.ContactPoint.Telephone,
-            //        url: organisation.ContactPoint.Url?.ToString());
-
-            //await organisationClient.UpdateOrganisationEmail(Id, cp);
-
-            var csc = tempDataService.PeekOrDefault<ConsortiumSharecode>(ConsortiumSharecode.TempDataKey);
-            if (csc == null)
+            if (ConfirmSupplier == true)
             {
-                ModelState.AddModelError(string.Empty, ErrorMessagesList.PayLoadIssueOrNullAurgument);
-                return Page();
+                var csc = tempDataService.PeekOrDefault<ConsortiumSharecode>(ConsortiumSharecode.TempDataKey);
+
+                if (csc == null)
+                {
+                    ModelState.AddModelError(string.Empty, ErrorMessagesList.PayLoadIssueOrNullAurgument);
+                    return Page();
+                }
+
+                await organisationClient.AddOrganisationPartyAsync(Id, new AddOrganisationParty
+                (
+                    organisationPartyId: csc.OrganisationPartyId!.Value,
+                    organisationRelationship: OrganisationRelationship.Consortium,
+                    shareCode: csc.Sharecode
+                ));
             }
-            //Save to database
+            else
+            {
+                tempDataService.Remove(ConsortiumSharecode.TempDataKey);
+            }
+            
         }
         catch (CO.CDP.Organisation.WebApiClient.ApiException ex) when (ex.StatusCode == 404)
         {

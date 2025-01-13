@@ -28,15 +28,23 @@ public class ConsortiumOverviewModel(
         {
             OrganisationDetails = await organisationClient.GetOrganisationAsync(Id);
 
-            Parties = await organisationClient.GetOrganisationPartiesAsync(Id);
+            try
+            {
+                Parties = await organisationClient.GetOrganisationPartiesAsync(Id);
+            }
+            catch (ApiException ex) when (ex.StatusCode == 404)
+            {
+                Parties = null;
+            }
 
             var sc = tempDataService.Get<ConsortiumSharecode>(ConsortiumSharecode.TempDataKey);
 
             if (sc != null)
             {
-                flashMessageService.SetFlashMessage(
-                FlashMessageType.Success,
-                heading: string.Format(StaticTextResource.Consortium_ConsortiumOverview_Success_Heading, sc.SharecodeOrganisationName)
+                flashMessageService.SetFlashMessage
+                (
+                    FlashMessageType.Success,
+                    heading: string.Format(StaticTextResource.Consortium_ConsortiumOverview_Success_Heading, sc.SharecodeOrganisationName)
                 );
             }
 
