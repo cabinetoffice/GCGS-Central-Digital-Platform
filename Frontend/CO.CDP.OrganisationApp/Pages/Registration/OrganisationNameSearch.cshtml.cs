@@ -15,13 +15,13 @@ public class OrganisationNameSearchModel(ISession session, IOrganisationClient o
 
     [BindProperty]
     [Required(ErrorMessageResourceName = nameof(StaticTextResource.Global_PleaseSelect), ErrorMessageResourceType = typeof(StaticTextResource))]
-    public required string OrganisationIdentifier { get; set; }
+    public string? OrganisationIdentifier { get; set; }
 
     public string? OrganisationName { get; set; }
 
     [BindProperty]
     public bool? RedirectToSummary { get; set; }
-    public required ICollection<OrganisationSearchResult> MatchingOrganisations { get; set; }
+    public ICollection<OrganisationSearchResult>? MatchingOrganisations { get; set; }
 
     public async Task<IActionResult> OnGet()
     {
@@ -33,28 +33,31 @@ public class OrganisationNameSearchModel(ISession session, IOrganisationClient o
 
         try
         {
-            await FindMatchingOrgs(organisationClient);
+            await FindMatchingOrgs();
         }
         catch (ApiException ex) when (ex.StatusCode == 404)
         {
             return RedirectToPage("OrganisationEmail");
         }
 
-        var firstOrgResult = MatchingOrganisations.First();
-        if (MatchingOrganisations.Count() == 1 && firstOrgResult.Name.ToLower() == OrganisationName?.ToLower())
+        if (MatchingOrganisations != null)
         {
-            flashMessageService.SetFlashMessage(
-                FlashMessageType.Important,
-                heading: StaticTextResource.OrganisationRegistration_SearchOrganisationName_ExactMatchAlreadyExists
-            );
+            var firstOrgResult = MatchingOrganisations.First();
+            if (MatchingOrganisations.Count() == 1 && firstOrgResult.Name.ToLower() == OrganisationName?.ToLower())
+            {
+                flashMessageService.SetFlashMessage(
+                    FlashMessageType.Important,
+                    heading: StaticTextResource.OrganisationRegistration_SearchOrganisationName_ExactMatchAlreadyExists
+                );
 
-            return Redirect($"/registration/{Uri.EscapeDataString(firstOrgResult.Identifier.Scheme + ":" + firstOrgResult.Identifier.Id)}/join-organisation");
+                return Redirect($"/registration/{Uri.EscapeDataString(firstOrgResult.Identifier.Scheme + ":" + firstOrgResult.Identifier.Id)}/join-organisation");
+            }
         }
 
         return Page();
     }
 
-    private async Task FindMatchingOrgs(IOrganisationClient organisationClient)
+    private async Task FindMatchingOrgs()
     {
         OrganisationName = RegistrationDetails.OrganisationName;
         MatchingOrganisations = await organisationClient.SearchOrganisationAsync(RegistrationDetails.OrganisationName, Constants.OrganisationType.Buyer.ToString(), 10);
@@ -64,7 +67,7 @@ public class OrganisationNameSearchModel(ISession session, IOrganisationClient o
     {
         try
         {
-            await FindMatchingOrgs(organisationClient);
+            await FindMatchingOrgs();
         }
         catch (ApiException ex) when (ex.StatusCode == 404)
         {
