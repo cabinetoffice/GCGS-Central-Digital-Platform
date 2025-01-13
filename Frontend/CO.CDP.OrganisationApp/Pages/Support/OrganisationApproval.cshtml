@@ -5,6 +5,7 @@
 
 @{
     var organisationDetails = Model.OrganisationDetails!;
+    var adminUser = Model.AdminUser!;
     var registeredAddress = organisationDetails.Addresses.FirstOrDefault(a => a.Type == CO.CDP.Organisation.WebApiClient.AddressType.Registered);
     var approvalHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Approval)).HasInnerHtml;
     var commentHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Comments)).HasInnerHtml;
@@ -62,6 +63,15 @@
                     </dt>
                     <dd class="govuk-summary-list__value">
                         <p class="govuk-body">@organisationDetails.ContactPoint.Email</p>
+                    </dd>
+                </div>
+
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        @StaticTextResource.Support_OrganisationApproval_AdminEmail_List
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        <p class="govuk-body">@adminUser.Email</p>
                     </dd>
                 </div>
 

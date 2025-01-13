@@ -13,6 +13,8 @@ public class OrganisationApprovalModel(
 {
     public OrganisationWebApiClient.Organisation? OrganisationDetails { get; set; }
 
+    public OrganisationWebApiClient.Person? AdminUser { get; set; }
+
     [BindProperty]
     [Required(ErrorMessageResourceName = nameof(StaticTextResource.Support_OrganisationApproval_ValidationErrorMessage), ErrorMessageResourceType = typeof(StaticTextResource))]
     public bool? Approval { get; set; }
@@ -26,6 +28,11 @@ public class OrganisationApprovalModel(
         try
         {
             OrganisationDetails = await organisationClient.GetOrganisationAsync(organisationId);
+
+            var persons = await organisationClient.GetOrganisationPersonsAsync(organisationId);
+
+            AdminUser = persons.FirstOrDefault(p => p.Scopes.Contains("ADMIN"));
+
             return Page();
         }
         catch (ApiException ex) when (ex.StatusCode == 404)
