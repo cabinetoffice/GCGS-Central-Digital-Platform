@@ -44,13 +44,7 @@ public class OrganisationOverviewModel(IOrganisationClient organisationClient, I
 
                 Regulations = devolvedRegulations.AsDevolvedRegulationList();
 
-                var mouDetails = await organisationClient.GetOrganisationLatestMouSignatureAsync(OrganisationDetails.Id);
-
-                if ((mouDetails != null && mouDetails.IsLatest == false) || mouDetails == null)
-                {
-                    HasBuyerSignedMou = false;
-                }
-
+                HasBuyerSignedMou = await CheckBuyerMouSignature(OrganisationDetails.Id);
             }
 
             if (OrganisationDetails.Details.PendingRoles.Count > 0)
@@ -86,6 +80,20 @@ public class OrganisationOverviewModel(IOrganisationClient organisationClient, I
         catch
         {
             return new List<IdentifierRegistries>();
+        }
+    }
+
+    private async Task<bool> CheckBuyerMouSignature(Guid organisationId)
+    {
+        try
+        {
+            var mouDetails = await organisationClient.GetOrganisationLatestMouSignatureAsync(organisationId);
+            return mouDetails != null && mouDetails.IsLatest;
+        }
+        catch (OrganisationApiException ex) when (ex.StatusCode == 404)
+        {
+            // Handle "No MOU signature found" scenario
+            return false;
         }
     }
 }
