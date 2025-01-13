@@ -384,7 +384,8 @@ public record OrganisationSearchQuery
 {
     public string Name { get; }
     public PartyRole? Role { get; }
-    public OrganisationSearchQuery(string name, string? role = null)
+    public int? Limit { get; }
+    public OrganisationSearchQuery(string name, int? limit, string? role = null)
     {
         Name = name;
 
@@ -392,6 +393,8 @@ public record OrganisationSearchQuery
         {
             Role = (PartyRole)Enum.Parse(typeof(PartyRole), role, true);
         }
+
+        Limit = limit;
     }
 }
 

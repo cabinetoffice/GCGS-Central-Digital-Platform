@@ -2,6 +2,7 @@
 @attribute [RazorCompiledItemMetadata("RouteTemplate", RegistrationStepModel.OrganisationNameSearchPage)]
 @model CO.CDP.OrganisationApp.Pages.Registration.OrganisationNameSearchModel
 @using CO.CDP.Localization
+@using CO.CDP.OrganisationApp.Constants
 
 @{
     ViewData["Title"] = Html.DisplayNameFor(m => m.OrganisationId);
@@ -21,54 +22,66 @@
     </a>
 }
 
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
-            <partial name="_ErrorSummary" model="@ModelState" />
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <partial name="_ErrorSummary" model="@ModelState" />
 
-            <form method="post">
-                @if (Request.Query.ContainsKey("frm-summary"))
-                {
-                    <input type="hidden" name="RedirectToSummary" value="true" />
-                }
+        <form method="post">
+            @if (Request.Query.ContainsKey("frm-summary"))
+            {
+                <input type="hidden" name="RedirectToSummary" value="true" />
+            }
 
-                <div class="govuk-form-group @(organisationNameHasError ? "govuk-form-group--error" : "")">
-                    <fieldset class="govuk-fieldset">
-                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                            <h1 class="govuk-fieldset__heading">
-                                @ViewData["Title"]
-                            </h1>
-                        </legend>
+            <div class="govuk-form-group @(organisationNameHasError ? "govuk-form-group--error" : "")">
+                <fieldset class="govuk-fieldset">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                        <h1 class="govuk-fieldset__heading">
+                            @ViewData["Title"]
+                        </h1>
+                    </legend>
 
-                    @if (organisationNameHasError)
-                        {
-                            <p id="organisationType-error" class="govuk-error-message">
-                            <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span> @Html.ValidationMessageFor(m => m.OrganisationId)
-                            </p>
+                @if (organisationNameHasError)
+                    {
+                        <p id="organisationType-error" class="govuk-error-message">
+                        <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span> @Html.ValidationMessageFor(m => m.OrganisationId)
+                        </p>
+                    }
+
+                    <div class="govuk-radios" data-module="govuk-radios">
+                        @{
+                            var index = 0;
                         }
-
-                        <div class="govuk-radios" data-module="govuk-radios">
-                            @{
-                                var index = 0;
-                            }
-                            @foreach (var org in Model.MatchingOrganisations) {
-                                <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="@Html.NameFor(m => m.OrganisationId)-@index" name="@Html.NameFor(m => m.OrganisationId)"
-                                       type="radio" value="@org.Id">
+                        @foreach (var (org, buyerInfo) in Model.OrganisationsWithBuyerInfo) {
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input" id="@Html.NameFor(m => m.OrganisationId)-@index" name="@Html.NameFor(m => m.OrganisationId)" type="radio" value="@org.Id" aria-describedby="@Html.NameFor(m => m.OrganisationId)-@index-hint">
                                 <label class="govuk-label govuk-radios__label" for="@Html.NameFor(m => m.OrganisationId)-@index">
                                         @org.Name
-                                    </label>
+                                </label>
+                                <div id="@Html.NameFor(m => m.OrganisationId)-@index-hint" class="govuk-hint govuk-radios__hint">
+                                    @BuyerTypeLabels.Labels[buyerInfo.BuyerType]
                                 </div>
+                            </div>
 
-                                index ++;
-                            }
+                            index++;
+                        }
+
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="none-of-these" name="@Html.NameFor(m => m.OrganisationId)" type="radio" value="None" aria-describedby="none-of-these-hint">
+                            <label class="govuk-label govuk-radios__label" for="none-of-these">
+                                None
+                            </label>
+                            <div id="none-of-these-hint" class="govuk-hint govuk-radios__hint">
+                                Continue with [@Model.OrganisationName]
+                            </div>
                         </div>
-                    </fieldset>
                 </div>
+                </fieldset>
+            </div>
 
-                <govuk-button>
-                    @StaticTextResource.Global_Continue
-                </govuk-button>
+            <govuk-button>
+                @StaticTextResource.Global_Continue
+            </govuk-button>
 
-            </form>
-        </div>
+        </form>
     </div>
+</div>

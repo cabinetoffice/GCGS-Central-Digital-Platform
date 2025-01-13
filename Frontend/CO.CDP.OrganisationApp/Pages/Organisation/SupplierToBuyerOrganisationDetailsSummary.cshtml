@@ -36,9 +36,9 @@
                             @StaticTextResource.SupplierToBuyer_OrganisationSummary_OrganisationType
                         </dt>
                         <dd class="govuk-summary-list__value">
-                            @if (SupplierToBuyerOrganisationTypeModel.BuyerTypes.Keys.Contains(details.BuyerOrganisationType!))
+                            @if (BuyerTypeLabels.Labels.Keys.Contains(details.BuyerOrganisationType!))
                             {
-                                @(SupplierToBuyerOrganisationTypeModel.BuyerTypes[details.BuyerOrganisationType!])
+                                @(BuyerTypeLabels.Labels[details.BuyerOrganisationType!])
                             }
                             else
                             {
