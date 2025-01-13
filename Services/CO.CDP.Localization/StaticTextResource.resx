@@ -3088,7 +3088,28 @@
   <data name="ErrorMessageList_MouNotFound" xml:space="preserve">
     <value>Mou not found</value>
   </data>
-  <data name="OrganisationRegistration_SearchOrganisationName_Heading" xml:space="preserve">
-    <value>Select the organisation that best matches what you're trying to add</value>
+  <data name="OrganisationRegistration_SearchOrganisationName_Heading_Singular" xml:space="preserve">
+    <value>Match found</value>
+  </data>
+  <data name="OrganisationRegistration_SearchOrganisationName_Heading_Plural" xml:space="preserve">
+    <value>Matches found</value>
+  </data>
+  <data name="OrganisationRegistration_SearchOrganisationName_ResultCount_Singular" xml:space="preserve">
+    <value>{0} registered organisation found that matches the name you entered.</value>
+  </data>
+  <data name="OrganisationRegistration_SearchOrganisationName_ResultCount_Plural" xml:space="preserve">
+    <value>{0} registered organisations found that match the name you entered.</value>
+  </data>
+  <data name="OrganisationRegistration_SearchOrganisationName_Hint" xml:space="preserve">
+    <value>Register the name you entered or request to join an already registered organisation.</value>
+  </data>
+  <data name="OrganisationRegistration_SearchOrganisationName_Register" xml:space="preserve">
+    <value>Register</value>
+  </data>
+  <data name="OrganisationRegistration_SearchOrganisationName_RequestToJoin" xml:space="preserve">
+    <value>Request to join</value>
+  </data>
+  <data name="OrganisationRegistration_SearchOrganisationName_ExactMatchAlreadyExists" xml:space="preserve">
+    <value>The organisation you entered is already registered. Request to join the registered organisation or &lt;a href="/registration/organisation-name\"&gt;change the name&lt;/a&gt;.</value>
   </data>
 </root>

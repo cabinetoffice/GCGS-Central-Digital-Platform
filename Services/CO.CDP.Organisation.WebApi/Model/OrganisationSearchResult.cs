@@ -20,5 +20,4 @@ public record OrganisationSearchResult
 
     /// <example>["supplier"]</example>
     public required List<PartyRole> Roles { get; init; }
-    public BuyerInformation? BuyerInformation { get; init; }
 }
