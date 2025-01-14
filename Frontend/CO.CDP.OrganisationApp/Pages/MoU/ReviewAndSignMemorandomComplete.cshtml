@@ -11,17 +11,14 @@
 }
 
 <div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds govuk-body">
-        <fieldset class="govuk-fieldset">
-            <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                <h1 class="govuk-fieldset__heading">
-                    @ViewData["Title"]
-                </h1>
-            </legend>
-
-            <div class="govuk-!-margin-top-3">
-                <a href="/organisation/@Model.Id">@StaticTextResource.MoU_ReviewAndSignComplete_Link</a> @StaticTextResource.MoU_ReviewAndSignComplete_Hint
-            </div>
-        </fieldset>
+    <div class="govuk-grid-column-two-thirds">
+        
+        <h1 class="govuk-heading-l">
+            @ViewData["Title"]
+        </h1>
+        <p class="govuk-body">
+            <a href="/organisation/@Model.Id">@StaticTextResource.MoU_ReviewAndSignComplete_Link</a> @StaticTextResource.MoU_ReviewAndSignComplete_Hint
+        </p>
+        
     </div>
 </div>
