@@ -14,7 +14,7 @@ public class ReviewAndSignMemorandomModel(IOrganisationClient organisationClient
     [BindProperty]
     [DisplayName(nameof(StaticTextResource.MoU_ReviewAndSign_Confirm_Title))]
     [Required(ErrorMessageResourceName = nameof(StaticTextResource.MoU_ReviewAndSign_SelectCheckbox_ErrorMessage), ErrorMessageResourceType = typeof(StaticTextResource))]
-    public bool? SignTheAgreement { get; set; }
+    public bool SignTheAgreement { get; set; }
 
     [BindProperty(SupportsGet = true)]
     public Guid Id { get; set; }
@@ -34,18 +34,8 @@ public class ReviewAndSignMemorandomModel(IOrganisationClient organisationClient
 
     public Mou? MouLatest { get; set; }
 
-    public async Task<IActionResult> OnGet()
+    public void OnGet()
     {
-        try
-        {
-            MouLatest = await organisationClient.GetLatestMouAsync();
-
-            return Page();
-        }
-        catch (OrganisationApiException ex) when (ex.StatusCode == 404)
-        {
-            return Redirect("/page-not-found");
-        }
     }
 
     public async Task<IActionResult> OnPost()
@@ -58,28 +48,76 @@ public class ReviewAndSignMemorandomModel(IOrganisationClient organisationClient
         {
             SignedInPersonId = UserDetails.PersonId;
 
-            MouLatest = await organisationClient.GetLatestMouAsync();
-
-            var signMouRequest = new SignMouRequest
-            (
-                createdById: (Guid)SignedInPersonId!,
-                jobTitle: JobTitleValue,
-                mouId: MouLatest.Id,
-                name: Name
-            );
-
-            OrganisationDetails = await organisationClient.GetOrganisationAsync(Id);
-
-            if (OrganisationDetails != null)
+            if (await TryFetchLatestMou())
             {
-                await organisationClient.SignOrganisationMouAsync(OrganisationDetails.Id, signMouRequest);
+                if (SignTheAgreement)
+                {
+                    var signMouRequest = new SignMouRequest
+                    (
+                        createdById: (Guid)SignedInPersonId!,
+                        jobTitle: JobTitleValue,
+                        mouId: MouLatest!.Id,
+                        name: Name
+                    );
+
+                    OrganisationDetails = await organisationClient.GetOrganisationAsync(Id);
+
+                    if (OrganisationDetails != null)
+                    {
+                        await organisationClient.SignOrganisationMouAsync(OrganisationDetails.Id, signMouRequest);
+                    }
+                }
+                else
+                {
+                    return Page();
+                }
             }
         }
         catch
         {
-            return Redirect("/page-not-found");
+            return RedirectToPage("/page-not-found");
         }
 
         return RedirectToPage("ReviewAndSignMemorandomComplete", new { Id });
     }
+
+    public async Task<IActionResult> OnGetDownload()
+    {
+        if (await TryFetchLatestMou() && !string.IsNullOrEmpty(MouLatest?.FilePath))
+        {
+            var relativePath = MouLatest.FilePath.TrimStart('\\', '/');
+            var absolutePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", relativePath);
+
+            if (!System.IO.File.Exists(absolutePath))
+            {
+                // If the file does not exist, redirect to the "page not found"
+                return RedirectToPage("/page-not-found");
+            }
+
+            // Serve the file
+            var contentType = "application/pdf";
+            var fileName = Path.GetFileName(absolutePath);
+            var fileStream = new FileStream(absolutePath, FileMode.Open, FileAccess.Read);
+
+            return File(fileStream, contentType, fileName);
+        }
+
+        // Redirect to "page not found" if the MOU is not fetched or the file path is invalid
+        return RedirectToPage("/page-not-found");
+    }
+
+    private async Task<bool> TryFetchLatestMou()
+    {
+        try
+        {
+            MouLatest = await organisationClient.GetLatestMouAsync();
+            return true;
+        }
+        catch (OrganisationApiException ex) when (ex.StatusCode == 404)
+        {
+            MouLatest = null;
+            return false;
+        }
+    }
+
 }

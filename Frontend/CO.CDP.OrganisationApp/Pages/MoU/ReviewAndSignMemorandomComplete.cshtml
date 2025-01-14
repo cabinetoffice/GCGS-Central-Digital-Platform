@@ -3,7 +3,7 @@
 @using CO.CDP.Localization
 @{
     ViewData["Title"] = StaticTextResource.MoU_ReviewAndSignComplete_Title;
-    var backLink = $"/organisation/{@Model.Id}/review-and-sign-memorandom";
+    var backLink = $"/organisation/{@Model.Id}";
 }
 
 @section BeforeContent {
@@ -19,12 +19,8 @@
                 </h1>
             </legend>
 
-            <p class="govuk-body">
-                @StaticTextResource.MoU_ReviewAndSignComplete_Hint
-            </p>
-
             <div class="govuk-!-margin-top-3">
-                <a class="govuk-link" asp-page="/organisation/{@Model.Id}" asp-route-id="@Model.Id">@StaticTextResource.MoU_ReviewAndSignComplete_Link</a>
+                <a href="/organisation/@Model.Id">@StaticTextResource.MoU_ReviewAndSignComplete_Link</a> @StaticTextResource.MoU_ReviewAndSignComplete_Hint
             </div>
         </fieldset>
     </div>

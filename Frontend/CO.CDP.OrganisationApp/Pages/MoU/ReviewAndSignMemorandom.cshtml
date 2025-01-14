@@ -42,9 +42,10 @@
                     <h2 class="govuk-heading-m">
                         @StaticTextResource.MoU_ReviewAndSign_Download_Title
                     </h2>
-
-                    @Html.Raw(StaticTextResource.MoU_ReviewAndSign_DownloadPdf_Link)
-
+                    <p>
+                        <a href="?handler=Download">@StaticTextResource.MoU_ReviewAndSign_DownloadPdf_Link</a>
+                    </p>
+                    
                     <h2 class="govuk-heading-m">
                         @StaticTextResource.MoU_ReviewAndSign_Options_Title
                     </h2>
@@ -52,14 +53,14 @@
                     <div class="govuk-body">
                         <div class="govuk-checkboxes" data-module="govuk-checkboxes">
                             <div class="govuk-checkboxes__item">
-                                <input class="govuk-checkboxes__input" id="@nameof(Model.SignTheAgreement)" name="@nameof(Model.SignTheAgreement)" type="checkbox" value="@(Model.SignTheAgreement == true ? "true" :"false")">
+                                <input class="govuk-checkboxes__input" id="@nameof(Model.SignTheAgreement)" name="@nameof(Model.SignTheAgreement)" type="checkbox" value="true" @(Model.SignTheAgreement == true ? "checked" : "") @(signTheAgreementHasError ? Html.Raw(@"aria-describedby=""checkbox-error""") : null)>
                                 <label class="govuk-label govuk-checkboxes__label" for="@nameof(Model.SignTheAgreement)">
                                     @Html.DisplayNameFor(m => m.SignTheAgreement)
                                 </label>
                             </div>
                         </div>
                     </div>
-                    
+
                     <p class="govuk-body">
                         @Html.Raw(@StaticTextResource.MoU_ReviewAndSign_ConfirmStatement)
                     </p>

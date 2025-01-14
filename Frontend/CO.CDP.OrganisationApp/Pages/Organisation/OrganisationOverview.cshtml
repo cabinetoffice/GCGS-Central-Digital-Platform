@@ -42,8 +42,7 @@
                         </div>
                     </div>
                 }
-                else if (Model.BuyerInformation != null
-                    && (Model.Review.Status == CDP.Organisation.WebApiClient.ReviewStatus.Pending || Model.HasBuyerSignedMou == false))
+                else if (organisationDetails.IsPendingBuyer() || (organisationDetails.IsBuyer() && Model.HasBuyerSignedMou == false))
                 {
                     <div class="govuk-notification-banner" role="region" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
                         <div class="govuk-notification-banner__header">
@@ -63,7 +62,8 @@
                                 @if(Model.HasBuyerSignedMou == false){
                                     <li>@Html.Raw(string.Format(@StaticTextResource.OrganisationOverView_Banner_Review_MoU_Link, Model.Id))</li>
                                 }
-                                @if (Model.Review.Status == CDP.Organisation.WebApiClient.ReviewStatus.Pending){
+                                @if (organisationDetails.IsPendingBuyer())
+                                {
                                     <li>@StaticTextResource.OrganisationOverView_Banner_PendingApproval</li>
                                 }
                             </ul>
@@ -215,6 +215,23 @@
                                 </dd>
                             </div>
                         }
+
+                        @if (Model.HasBuyerSignedMou)
+                        {
+                            <div class="govuk-summary-list__row">
+                                <dt class="govuk-summary-list__key">
+                                    @StaticTextResource.MoU_DataSharingAgreement_Title
+                                </dt>
+                                <dd class="govuk-summary-list__value">
+                                    <p class="govuk-body">
+                                        @if (Model.MouLatest != null)
+                                        {
+                                          @Model.MouSignedOnDate;
+                                        }
+                                    </p>
+                                </dd>
+                            </div>
+                        }
                     }
                 </dl>
 
@@ -227,7 +244,7 @@
                     <div class="govuk-section-break govuk-section-break--visible govuk-section-break--m"></div>
                 }
 
-                @if (organisationDetails.IsBuyer())
+                @if (organisationDetails.IsBuyer() && Model.HasBuyerSignedMou)
                 {
                     <h3 class="govuk-heading-s govuk-!-margin-bottom-3">
                         <a class="govuk-link" href="/organisation/@RouteData.Values["id"]/manage-api-keys">@(isViewer ? StaticTextResource.Organisation_ViewApiKeys : StaticTextResource.Organisation_ManageApiKeys) @(organisationDetails.IsTenderer() ? StaticTextResource.Organisation_ApiKeysForBuyers : "")</a>

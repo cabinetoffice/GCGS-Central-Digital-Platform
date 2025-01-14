@@ -8,7 +8,7 @@ namespace CO.CDP.OrganisationApp.Tests.Pages;
 
 public class OrganisationOverviewTest
 {
-    private readonly Mock<IOrganisationClient> _organisationClientMock;    
+    private readonly Mock<IOrganisationClient> _organisationClientMock;
     private readonly Mock<EntityVerificationClient.IPponClient> _pponClient = new();
     private readonly OrganisationOverviewModel _model;
 
@@ -63,6 +63,80 @@ public class OrganisationOverviewTest
 
         result.Should().BeOfType<RedirectResult>()
             .Which.Url.Should().Be("/page-not-found");
+    }
+
+    [Fact]
+    public async Task OnGet_WithBuyerSignedMou_SetsMouSignedOnDate()
+    {
+        var organisationId = Guid.NewGuid();
+
+        var person = new CO.CDP.Organisation.WebApiClient.Person(
+            id: Guid.NewGuid(),
+            firstName: "John",
+            lastName: "Doe",
+            email: "john.doe@example.com",
+            scopes: new List<string> { "Scope1" }
+        );
+
+        var mou = new CO.CDP.Organisation.WebApiClient.Mou(
+            id: Guid.NewGuid(),
+            filePath: @"\mou-pdfs\mou-pdf-template.pdf",
+            createdOn: new DateTimeOffset(2025, 1, 14, 0, 0, 0, TimeSpan.Zero)
+        );
+
+        var mouSignatureLatest = new MouSignatureLatest(
+            createdBy: person,
+            id: Guid.NewGuid(),
+            isLatest: true,
+            jobTitle: "Manager",
+            mou: mou,
+            name: $"{person.FirstName} {person.LastName}",
+            signatureOn: new DateTimeOffset(2025, 1, 14, 0, 0, 0, TimeSpan.Zero)
+        );
+
+        _model.Id = organisationId;
+
+        _organisationClientMock.Setup(o => o.GetOrganisationAsync(organisationId))
+            .ReturnsAsync(GivenOrganisationClientModel(organisationId, new List<PartyRole> { PartyRole.Buyer }));
+
+        _organisationClientMock.Setup(o => o.GetOrganisationBuyerInformationAsync(organisationId))
+            .ReturnsAsync(new BuyerInformation("RegionalAndLocalGovernment", new List<DevolvedRegulation>()));
+
+        _organisationClientMock.Setup(o => o.GetOrganisationLatestMouSignatureAsync(organisationId))
+            .ReturnsAsync(mouSignatureLatest);
+
+        _organisationClientMock.Setup(o => o.GetLatestMouAsync())
+            .ReturnsAsync(mou);
+
+        await _model.OnGet();
+
+        _model.HasBuyerSignedMou.Should().BeTrue();
+
+        _model.MouSignedOnDate.Should().Be($"Signed on 14 January 2025");
+    }
+
+    [Fact]
+    public async Task OnGet_WithNoBuyerSignedMou_SetsHasBuyerSignedMouToFalse()
+    {
+        var id = Guid.NewGuid();
+
+        _model.Id = id;
+
+        _organisationClientMock.Setup(o => o.GetOrganisationAsync(id))
+            .ReturnsAsync(GivenOrganisationClientModel(id, new List<PartyRole> { PartyRole.Buyer }));
+
+        _organisationClientMock.Setup(o => o.GetOrganisationBuyerInformationAsync(id))
+            .ReturnsAsync(new BuyerInformation("RegionalAndLocalGovernment", new List<DevolvedRegulation>()));
+
+        _organisationClientMock.Setup(o => o.GetOrganisationReviewsAsync(id))
+            .ReturnsAsync(new List<Review> { new Review(null, null, null, ReviewStatus.Pending) });
+
+        _organisationClientMock.Setup(o => o.GetOrganisationLatestMouSignatureAsync(id))
+            .ThrowsAsync(new ApiException("Not found", 404, "", null, null));
+
+        await _model.OnGet();
+
+        _model.HasBuyerSignedMou.Should().BeFalse();
     }
 
     private static CO.CDP.Organisation.WebApiClient.Organisation GivenOrganisationClientModel(Guid? id, ICollection<PartyRole>? pendingRoles = null)
