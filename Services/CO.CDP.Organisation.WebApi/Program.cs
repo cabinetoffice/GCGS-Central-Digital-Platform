@@ -1,3 +1,4 @@
+using System.Reflection;
 using CO.CDP.Authentication;
 using CO.CDP.AwsServices;
 using CO.CDP.Configuration.Assembly;
@@ -5,7 +6,6 @@ using CO.CDP.Configuration.ForwardedHeaders;
 using CO.CDP.Configuration.Helpers;
 using CO.CDP.GovUKNotify;
 using CO.CDP.MQ;
-using CO.CDP.MQ.Hosting;
 using CO.CDP.Organisation.WebApi;
 using CO.CDP.Organisation.WebApi.Api;
 using CO.CDP.Organisation.WebApi.AutoMapper;
@@ -17,7 +17,6 @@ using CO.CDP.OrganisationInformation.Persistence;
 using CO.CDP.WebApi.Foundation;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
-using System.Reflection;
 using ConnectedEntity = CO.CDP.Organisation.WebApi.Model.ConnectedEntity;
 using ConnectedEntityLookup = CO.CDP.Organisation.WebApi.Model.ConnectedEntityLookup;
 using MouSignature = CO.CDP.Organisation.WebApi.Model.MouSignature;
@@ -33,27 +32,6 @@ builder.ConfigureForwardedHeaders();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options => { options.DocumentOrganisationApi(builder.Configuration); });
 builder.Services.AddAutoMapper(typeof(WebApiToPersistenceProfile));
-
-builder.Services
-    .AddAwsConfiguration(builder.Configuration)
-    .AddAwsSqsService()
-    .AddOutboxSqsPublisher<OrganisationInformationContext>()
-    .AddSqsDispatcher(
-        EventDeserializer.Deserializer,
-        (services) =>
-        {
-            services.AddScoped<ISubscriber<PponGenerated>, PponGeneratedSubscriber>();
-        },
-        (services, dispatcher) =>
-        {
-            dispatcher.Subscribe<PponGenerated>(services);
-        }
-    );
-if (Assembly.GetEntryAssembly().IsRunAs("CO.CDP.Organisation.WebApi"))
-{
-    builder.Services.AddHostedService<DispatcherBackgroundService>();
-    builder.Services.AddHostedService<OutboxProcessorBackgroundService>();
-}
 
 var connectionString = ConnectionStringHelper.GetConnectionString(builder.Configuration, "OrganisationInformationDatabase");
 builder.Services.AddSingleton(new NpgsqlDataSourceBuilder(connectionString).MapEnums().Build());
@@ -109,12 +87,28 @@ builder.Services.AddScoped<IUseCase<(Guid, Guid), MouSignature>, GetOrganisation
 builder.Services.AddScoped<IUseCase<Guid, MouSignatureLatest>, GetOrganisationMouSignatureLatestUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, SignMouRequest),bool>, SignOrganisationMouUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, AddOrganisationParty), bool>, AddOrganisationPartyUseCase>();
+builder.Services.AddScoped<IUseCase<CO.CDP.Organisation.WebApi.Model.Mou>, GetLatestMouUseCase>();
+builder.Services.AddScoped<IUseCase<Guid, CO.CDP.Organisation.WebApi.Model.Mou>, GetMouUseCase>();
 
 builder.Services.AddGovUKNotifyApiClient(builder.Configuration);
 builder.Services.AddProblemDetails();
 
 builder.Services.AddJwtBearerAndApiKeyAuthentication(builder.Configuration, builder.Environment);
 builder.Services.AddOrganisationAuthorization();
+
+builder.Services
+    .AddAwsConfiguration(builder.Configuration)
+    .AddAwsSqsService()
+    .AddOutboxSqsPublisher<OrganisationInformationContext>(
+        builder.Configuration,
+        enableBackgroundServices: Assembly.GetEntryAssembly().IsRunAs("CO.CDP.Organisation.WebApi"),
+        notificationChannel: "organisation_information_outbox")
+    .AddSqsDispatcher(
+        EventDeserializer.Deserializer,
+        enableBackgroundServices: Assembly.GetEntryAssembly().IsRunAs("CO.CDP.Organisation.WebApi"),
+        (services) => { services.AddScoped<ISubscriber<PponGenerated>, PponGeneratedSubscriber>(); },
+        (services, dispatcher) => { dispatcher.Subscribe<PponGenerated>(services); }
+    );
 
 if (Assembly.GetEntryAssembly().IsRunAs("CO.CDP.Organisation.WebApi"))
 {
@@ -186,8 +180,13 @@ app.MapGroup("/feeback")
     .WithTags("Feedback - provide feedback");
 
 app.MapGroup("/organisations")
-    .UseMouEndpoints()
+    .UseOrganisationMouEndpoints()
     .WithTags("Organisation - MOUs");
+
+app.MapGroup("/mou")
+    .UseMouEndpoints()
+    .WithTags("Mou");
+
 
 app.Run();
 public abstract partial class Program;

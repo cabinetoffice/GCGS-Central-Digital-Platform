@@ -6,13 +6,13 @@ data "aws_region" "current" {}
 data "aws_iam_policy_document" "waf_manage_logs" {
   version = "2012-10-17"
   statement {
-    sid = "AllowWAFManageLogs"
+    sid    = "AllowWAFManageLogs"
     effect = "Allow"
     principals {
       identifiers = ["delivery.logs.amazonaws.com"]
       type        = "Service"
     }
-    actions   = [
+    actions = [
       "logs:CreateLogStream",
       "logs:PutLogEvents"
     ]

@@ -28,8 +28,23 @@ variable "db_entity_verification_name" {
   type        = string
 }
 
+variable "db_ev_cluster_address" {
+  description = "Entity Verification DB address"
+  type        = string
+}
+
+variable "db_ev_cluster_credentials_arn" {
+  description = "ARN of the secret holding Entity Verification DB credentials"
+  type        = string
+}
+
 variable "db_ev_cluster_credentials_kms_key_id" {
   description = "Key ID of the KMS used to encrypt Entity Verification secrets"
+  type        = string
+}
+
+variable "db_ev_cluster_name" {
+  description = "Entity Verification DB name"
   type        = string
 }
 
@@ -43,8 +58,23 @@ variable "db_sirsi_address" {
   type        = string
 }
 
+variable "db_sirsi_cluster_address" {
+  description = "Sirsi DB address"
+  type        = string
+}
+
+variable "db_sirsi_cluster_credentials_arn" {
+  description = "ARN of the secret holding Sirsi DB credentials"
+  type        = string
+}
+
 variable "db_sirsi_cluster_credentials_kms_key_id" {
   description = "Key ID of the KMS used to encrypt Sirsi secrets"
+  type        = string
+}
+
+variable "db_sirsi_cluster_name" {
+  description = "Sirsi DB name"
   type        = string
 }
 
@@ -118,22 +148,32 @@ variable "public_subnet_ids" {
   type        = list(string)
 }
 
-variable "queue_entity_verification_queue_arn" {
+variable "queue_av_scanner_arn" {
+  description = "ARN of the AV Scanner's SQS queue"
+  type        = string
+}
+
+variable "queue_av_scanner_url" {
+  description = "ARN of the AV Scanner's SQS queue"
+  type        = string
+}
+
+variable "queue_entity_verification_arn" {
   description = "ARN of the Entity Verification's SQS queue"
   type        = string
 }
 
-variable "queue_entity_verification_queue_url" {
+variable "queue_entity_verification_url" {
   description = "URL of the Entity Verification's SQS queue"
   type        = string
 }
 
-variable "queue_organisation_queue_arn" {
+variable "queue_organisation_arn" {
   description = "ARN of the Organisation's SQS queue"
   type        = string
 }
 
-variable "queue_organisation_queue_url" {
+variable "queue_organisation_url" {
   description = "URL of the Organisation's outbound SQS queue"
   type        = string
 }
