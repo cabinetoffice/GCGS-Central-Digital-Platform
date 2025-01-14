@@ -17,13 +17,11 @@ public class UpdateFormSectionAnswersUseCaseTest(AutoMapperFixture mapperFixture
 {
     private readonly Mock<IFormRepository> _repository = new();
     private readonly Mock<IOrganisationRepository> _organisationRepository = new();
-    private readonly Mock<IFileHostManager> _fileHostManager = new();
 
     private UpdateFormSectionAnswersUseCase UseCase => new(
         _repository.Object,
         _organisationRepository.Object,
-        mapperFixture.Mapper,
-        _fileHostManager.Object
+        mapperFixture.Mapper
     );
 
 

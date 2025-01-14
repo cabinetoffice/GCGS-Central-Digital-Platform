@@ -9,8 +9,7 @@ namespace CO.CDP.Forms.WebApi.UseCase;
 public class UpdateFormSectionAnswersUseCase(
     IFormRepository formRepository,
     IOrganisationRepository organisationRepository,
-    IMapper mapper,
-    IFileHostManager fileHostManager)
+    IMapper mapper)
     : IUseCase<(Guid formId, Guid sectionId, Guid answerSetId, Guid organisationId, UpdateFormSectionAnswers updateFormSectionAnswers), bool>
 {
     public async Task<bool> Execute((Guid formId, Guid sectionId, Guid answerSetId, Guid organisationId, UpdateFormSectionAnswers updateFormSectionAnswers) input)
@@ -74,31 +73,7 @@ public class UpdateFormSectionAnswersUseCase(
         var answerSet = sharedConsent.AnswerSets.FirstOrDefault(a => a.Guid == answerSetId)
             ?? await CreateAnswerSet(answerSetId, sharedConsent, section, furtherQuestionsExempted);
 
-        await UploadFileIfRequired(answers, questionDictionary, answerSet);
-
         answerSet.Answers = MapAnswers(answers, questionDictionary, answerSet.Answers);
-    }
-
-    private async Task UploadFileIfRequired(
-        List<FormAnswer> answers,
-        Dictionary<Guid, Persistence.FormQuestion> questionDictionary,
-        Persistence.FormAnswerSet? existingAnswerSet)
-    {
-        var fileUploadAnswers = answers.Where(a => questionDictionary[a.QuestionId].Type == Persistence.FormQuestionType.FileUpload);
-
-        foreach (var fileUploadAnswer in fileUploadAnswers)
-        {
-            var newFilename = fileUploadAnswer.TextValue;
-            var existingFilename = existingAnswerSet?.Answers?.FirstOrDefault(a => a.Guid == fileUploadAnswer.Id)?.TextValue;
-
-            if (newFilename != existingFilename)
-            {
-                if (!string.IsNullOrWhiteSpace(newFilename))
-                {
-                    await fileHostManager.CopyToPermanentBucket(newFilename);
-                }
-            }
-        }
     }
 
     private static void ValidateQuestions(List<FormAnswer> answers, Dictionary<Guid, Persistence.FormQuestion> questionDictionary)

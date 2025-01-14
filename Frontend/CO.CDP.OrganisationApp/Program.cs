@@ -27,6 +27,13 @@ using static IdentityModel.OidcConstants;
 using static System.Net.Mime.MediaTypeNames;
 using ISession = CO.CDP.OrganisationApp.ISession;
 using Microsoft.FeatureManagement;
+using CO.CDP.MQ.Hosting;
+using Amazon.SQS;
+using CO.CDP.AwsServices.Sqs;
+using CO.CDP.MQ;
+using Microsoft.Extensions.Options;
+using Microsoft.Extensions.DependencyInjection;
+using System;
 
 const string FormsHttpClientName = "FormsHttpClient";
 const string TenantHttpClientName = "TenantHttpClient";
@@ -72,10 +79,20 @@ builder.ConfigureForwardedHeaders();
 builder.Services
     .AddAwsConfiguration(builder.Configuration)
     .AddAwsS3Service()
+    .AddAwsSqsService()
     .AddLoggingConfiguration(builder.Configuration)
     .AddAmazonCloudWatchLogsService()
     .AddCloudWatchSerilog(builder.Configuration)
     .AddSharedSessions(builder.Configuration);
+
+builder.Services.AddScoped<IPublisher, SqsPublisher>(serviceProvider =>
+{
+    var publisher = new SqsPublisher(
+        serviceProvider.GetRequiredService<IAmazonSQS>(),
+        serviceProvider.GetRequiredService<IOptions<AwsConfiguration>>(),
+        serviceProvider.GetRequiredService<ILogger<SqsPublisher>>());
+    return publisher;
+});
 
 var sessionTimeoutInMinutes = builder.Configuration.GetValue<double>("SessionTimeoutInMinutes");
 var cookieSecurePolicy = builder.Environment.IsDevelopment() ? CookieSecurePolicy.SameAsRequest : CookieSecurePolicy.Always;
