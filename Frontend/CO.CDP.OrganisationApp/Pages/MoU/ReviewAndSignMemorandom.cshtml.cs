@@ -32,7 +32,7 @@ public class ReviewAndSignMemorandomModel(IOrganisationClient organisationClient
     public OrganisationWebApiClient.Organisation? OrganisationDetails { get; set; }
     public Guid? SignedInPersonId { get; set; }
 
-    public Mou MouLatest { get; set; }
+    public Mou? MouLatest { get; set; }
 
     public async Task<IActionResult> OnGet()
     {
@@ -61,12 +61,12 @@ public class ReviewAndSignMemorandomModel(IOrganisationClient organisationClient
             MouLatest = await organisationClient.GetLatestMouAsync();
 
             var signMouRequest = new SignMouRequest
-        (
-            createdById: (Guid)SignedInPersonId!,
-            jobTitle: JobTitleValue,
-            mouId: MouLatest.Id,
-            name: Name
-        );
+            (
+                createdById: (Guid)SignedInPersonId!,
+                jobTitle: JobTitleValue,
+                mouId: MouLatest.Id,
+                name: Name
+            );
 
             OrganisationDetails = await organisationClient.GetOrganisationAsync(Id);
 
