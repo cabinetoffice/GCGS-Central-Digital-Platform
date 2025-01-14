@@ -75,7 +75,7 @@ public class ReviewAndSignMemorandomModel(IOrganisationClient organisationClient
         }
         catch
         {
-            return Redirect("/page-not-found");
+            return RedirectToPage("/page-not-found");
         }
 
         return RedirectToPage("ReviewAndSignMemorandomComplete", new { Id });
@@ -83,26 +83,27 @@ public class ReviewAndSignMemorandomModel(IOrganisationClient organisationClient
 
     public async Task<IActionResult> OnGetDownload()
     {
-        if (await TryFetchLatestMou())
+        if (await TryFetchLatestMou() && !string.IsNullOrEmpty(MouLatest?.FilePath))
         {
-            if (!string.IsNullOrEmpty(MouLatest!.FilePath))
+            var relativePath = MouLatest.FilePath.TrimStart('\\', '/');
+            var absolutePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", relativePath);
+
+            if (!System.IO.File.Exists(absolutePath))
             {
-                var relativePath = MouLatest.FilePath.TrimStart('\\', '/');
-                var absolutePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", relativePath);
-
-                if (System.IO.File.Exists(absolutePath))
-                {
-                    var contentType = "application/pdf";
-                    var fileName = Path.GetFileName(absolutePath);
-
-                    var fileStream = new FileStream(absolutePath, FileMode.Open, FileAccess.Read);
-
-                    return File(fileStream, contentType, fileName);
-                }
+                // If the file does not exist, redirect to the "page not found"
+                return RedirectToPage("/page-not-found");
             }
+
+            // Serve the file
+            var contentType = "application/pdf";
+            var fileName = Path.GetFileName(absolutePath);
+            var fileStream = new FileStream(absolutePath, FileMode.Open, FileAccess.Read);
+
+            return File(fileStream, contentType, fileName);
         }
 
-        return Redirect("/page-not-found");
+        // Redirect to "page not found" if the MOU is not fetched or the file path is invalid
+        return RedirectToPage("/page-not-found");
     }
 
     private async Task<bool> TryFetchLatestMou()

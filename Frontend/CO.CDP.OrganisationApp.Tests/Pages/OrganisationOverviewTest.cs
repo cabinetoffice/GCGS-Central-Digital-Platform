@@ -78,7 +78,7 @@ public class OrganisationOverviewTest
             scopes: new List<string> { "Scope1" }
         );
 
-        var mou = new Mou(
+        var mou = new CO.CDP.Organisation.WebApiClient.Mou(
             id: Guid.NewGuid(),
             filePath: @"\mou-pdfs\mou-pdf-template.pdf",
             createdOn: new DateTimeOffset(2025, 1, 14, 0, 0, 0, TimeSpan.Zero)
