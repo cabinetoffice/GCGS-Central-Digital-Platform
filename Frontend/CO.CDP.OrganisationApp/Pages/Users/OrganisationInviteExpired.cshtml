@@ -1,0 +1,21 @@
+@page "/organisation-invite-expired"
+@model OrganisationInviteExpiredModel
+@using CO.CDP.Localization
+
+@{
+    ViewData["Title"] = StaticTextResource.OrganisationInviteExpired_Title;
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+        <h1 class="govuk-heading-l">
+            @ViewData["Title"]
+        </h1>
+        <p class="govuk-body">
+            @StaticTextResource.OrganisationInviteExpired_Body
+        </p>
+        <p class="govuk-body">
+            <a href="/organisation-selection">@StaticTextResource.OrganisationInviteExpired_Link</a>
+        </p>
+    </div>
+</div>
