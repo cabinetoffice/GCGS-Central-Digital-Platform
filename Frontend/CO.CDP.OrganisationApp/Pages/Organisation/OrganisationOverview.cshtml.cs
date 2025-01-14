@@ -50,6 +50,7 @@ public class OrganisationOverviewModel(IOrganisationClient organisationClient, I
                 Regulations = devolvedRegulations.AsDevolvedRegulationList();
 
                 HasBuyerSignedMou = await CheckBuyerMouSignature(OrganisationDetails.Id);
+
                 if (HasBuyerSignedMou)
                 {
                     MouLatest = await organisationClient.GetLatestMouAsync();

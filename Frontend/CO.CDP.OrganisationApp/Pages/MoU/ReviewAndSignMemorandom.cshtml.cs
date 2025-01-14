@@ -48,28 +48,29 @@ public class ReviewAndSignMemorandomModel(IOrganisationClient organisationClient
         {
             SignedInPersonId = UserDetails.PersonId;
 
-            MouLatest = await CheckLatestMou() ? await organisationClient.GetLatestMouAsync() : null;
-
-            if (MouLatest != null && SignTheAgreement)
+            if (await TryFetchLatestMou())
             {
-                var signMouRequest = new SignMouRequest
-                (
-                    createdById: (Guid)SignedInPersonId!,
-                    jobTitle: JobTitleValue,
-                    mouId: MouLatest.Id,
-                    name: Name
-                );
-                OrganisationDetails = await organisationClient.GetOrganisationAsync(Id);
-
-                if (OrganisationDetails != null)
+                if (SignTheAgreement)
                 {
-                    await organisationClient.SignOrganisationMouAsync(OrganisationDetails.Id, signMouRequest);
-                }
+                    var signMouRequest = new SignMouRequest
+                    (
+                        createdById: (Guid)SignedInPersonId!,
+                        jobTitle: JobTitleValue,
+                        mouId: MouLatest!.Id,
+                        name: Name
+                    );
 
-            }
-            else
-            {
-                return Page();
+                    OrganisationDetails = await organisationClient.GetOrganisationAsync(Id);
+
+                    if (OrganisationDetails != null)
+                    {
+                        await organisationClient.SignOrganisationMouAsync(OrganisationDetails.Id, signMouRequest);
+                    }
+                }
+                else
+                {
+                    return Page();
+                }
             }
         }
         catch
@@ -82,31 +83,29 @@ public class ReviewAndSignMemorandomModel(IOrganisationClient organisationClient
 
     public async Task<IActionResult> OnGetDownload()
     {
-
-        MouLatest = await CheckLatestMou() ? await organisationClient.GetLatestMouAsync() : null;
-
-        if (MouLatest == null || string.IsNullOrEmpty(MouLatest.FilePath))
+        if (await TryFetchLatestMou())
         {
-            return Redirect("/page-not-found");
+            if (!string.IsNullOrEmpty(MouLatest!.FilePath))
+            {
+                var relativePath = MouLatest.FilePath.TrimStart('\\', '/');
+                var absolutePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", relativePath);
+
+                if (System.IO.File.Exists(absolutePath))
+                {
+                    var contentType = "application/pdf";
+                    var fileName = Path.GetFileName(absolutePath);
+
+                    var fileStream = new FileStream(absolutePath, FileMode.Open, FileAccess.Read);
+
+                    return File(fileStream, contentType, fileName);
+                }
+            }
         }
 
-        var relativePath = MouLatest.FilePath.TrimStart('\\', '/');
-        var absolutePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", relativePath);
-
-        if (!System.IO.File.Exists(absolutePath))
-        {
-            return Redirect("/page-not-found");
-        }
-
-        var contentType = "application/pdf";
-        var fileName = Path.GetFileName(absolutePath);
-
-        var fileStream = new FileStream(absolutePath, FileMode.Open, FileAccess.Read);
-
-        return File(fileStream, contentType, fileName);
+        return Redirect("/page-not-found");
     }
 
-    private async Task<bool> CheckLatestMou()
+    private async Task<bool> TryFetchLatestMou()
     {
         try
         {
@@ -115,6 +114,7 @@ public class ReviewAndSignMemorandomModel(IOrganisationClient organisationClient
         }
         catch (OrganisationApiException ex) when (ex.StatusCode == 404)
         {
+            MouLatest = null;
             return false;
         }
     }
