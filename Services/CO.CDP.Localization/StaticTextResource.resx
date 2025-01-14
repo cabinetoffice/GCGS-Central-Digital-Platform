@@ -148,7 +148,7 @@
     <value>Important</value>
   </data>
   <data name="Organisation_BuyerRegistrationPendingApproval" xml:space="preserve">
-    <value>Buyer registration pending approval.</value>
+    <value>Buyer registration pending</value>
   </data>
   <data name="Organisation_OrganisationDetails" xml:space="preserve">
     <value>Organisation details</value>
@@ -3141,13 +3141,13 @@
     <value>Please provide a name</value>
   </data>
   <data name="MoU_ReviewAndSign_Options_Title" xml:space="preserve">
-    <value>Sign the agreement</value>
+    <value>Confirm you have read and agree</value>
   </data>
   <data name="MoU_ReviewAndSign_SelectCheckbox_ErrorMessage" xml:space="preserve">
     <value>Please tick the checkbox, if you have read and agree to the data sharing agreement</value>
   </data>
   <data name="MoU_ReviewAndSign_Title" xml:space="preserve">
-    <value>Sign the data sharing agreement</value>
+    <value>Read and agree to the data sharing agreement</value>
   </data>
   <data name="MoU_ReviewAndSign_Warning" xml:space="preserve">
     <value>You must sign the MoU before you can use the service. It is a formal agreement between the Cabinet Office and your organisation.</value>
@@ -3159,12 +3159,12 @@
     <value>Before you can use this service:</value>
   </data>
   <data name="OrganisationOverView_Banner_Review_MoU_Link" xml:space="preserve">
-    <value>you must &lt;a href="/organisation/{0}/review-and-sign-memorandom"&gt;read and sign the data sharing agreement&lt;/a&gt;</value>
+    <value>you must &lt;a href="/organisation/{0}/review-and-sign-memorandom"&gt;read and agree the data sharing agreement&lt;/a&gt;</value>
   </data>
   <data name="MoU_DataSharingAgreement_Title" xml:space="preserve">
-    <value>Signed data sharing agreement</value>
+    <value>Data sharing agreement</value>
   </data>
   <data name="MoU_SignedOn" xml:space="preserve">
-    <value>Signed on {0}</value>
+    <value>Agreed on {0}</value>
   </data>
 </root>
