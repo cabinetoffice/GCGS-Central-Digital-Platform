@@ -11,14 +11,21 @@ public static class ElastiCacheExtensions
     {
         if (configuration.GetValue<bool>("Features:SharedSessions"))
         {
-            Console.WriteLine("SharedSession is enabled.");
-            services.AddElastiCacheService();
+            try
+            {
+                services.AddElastiCacheService();
+                Console.WriteLine("SharedSession is enabled.");
+
+                return services;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("SharedSession failed to start with: " + ex.Message);
+            }
         }
-        else
-        {
-            Console.WriteLine("SharedSession is disabled.");
-            services.AddDistributedMemoryCache();
-        }
+
+        services.AddDistributedMemoryCache();
+        Console.WriteLine("SharedSession is disabled.");
 
         return services;
     }
