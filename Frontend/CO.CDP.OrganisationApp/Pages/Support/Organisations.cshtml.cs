@@ -14,16 +14,37 @@ public class OrganisationsModel(
 
     public string? Type { get; set; }
 
+    public int TotalOrganisations { get; set; }
+
+    public int CurrentPage { get; set; }
+
+    public int TotalPages { get; set; }
+
+    public int PageSize { get; set; }
+
     public IList<OrganisationExtended> Organisations { get; set; } = [];
 
-    public async Task<IActionResult> OnGet(string type)
+    public async Task<IActionResult> OnGet(string type, int pageNumber = 50)
     {
-        Type = type;        
+        var pageSize = 2;
+
+        Type = type;
         Title = (Type == "buyer"
                 ? StaticTextResource.Support_Organisations_BuyerOrganisations_Title
                 : StaticTextResource.Support_Organisations_SupplierOrganisations_Title);
 
-        Organisations = (await organisationClient.GetAllOrganisationsAsync(Type, 1000, 0)).ToList();
+        var skip = (pageNumber - 1) * pageSize;
+
+        CurrentPage = pageNumber;
+
+        Organisations = (await organisationClient.GetAllOrganisationsAsync(Type, pageNumber, skip)).ToList();
+
+        // TotalOrganisations = await organisationClient.GetTotalOrganisationsCountAsync(Type);
+
+        TotalOrganisations = 100;
+
+        // TotalPages = (int)Math.Ceiling((double)TotalOrganisations / PageSize);
+        TotalPages = TotalOrganisations / pageSize;
 
         return Page();
     }
