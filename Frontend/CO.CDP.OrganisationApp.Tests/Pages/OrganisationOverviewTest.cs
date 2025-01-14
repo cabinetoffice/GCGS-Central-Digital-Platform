@@ -112,7 +112,7 @@ public class OrganisationOverviewTest
 
         _model.HasBuyerSignedMou.Should().BeTrue();
 
-        _model.MouSignedOnDate.Should().Be($"Signed on 14 January 2025");
+        _model.MouSignedOnDate.Should().Be($"Agreed on 14 January 2025");
     }
 
     [Fact]
