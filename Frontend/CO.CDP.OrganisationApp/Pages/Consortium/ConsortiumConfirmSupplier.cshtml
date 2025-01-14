@@ -42,17 +42,17 @@
                         }
 
                         <div class="govuk-radios__item">
-                            <input class="govuk-radios__input" id="controlledBy" name="ConfirmSupplier" type="radio"
-                                    value="true" aria-controls="conditional-vat-yes" aria-expanded="false" @(Model.ConfirmSupplier == true ? "checked" : "")>
-                            <label class="govuk-label govuk-radios__label" for="controlledBy">
+                            <input class="govuk-radios__input" id="@nameof(Model.ConfirmSupplier)" name="@nameof(Model.ConfirmSupplier)" type="radio"
+                                    value="true" @(Model.ConfirmSupplier == true ? "checked" : "")>
+                            <label class="govuk-label govuk-radios__label" for="@nameof(Model.ConfirmSupplier)">
                                         @StaticTextResource.Global_Yes
                             </label>
                         </div>
 
                         <div class="govuk-radios__item">
-                            <input class="govuk-radios__input" id="controlledBy-2" name="ConfirmSupplier" type="radio" value="false"
+                            <input class="govuk-radios__input" id="@nameof(Model.ConfirmSupplier)-1" name="@nameof(Model.ConfirmSupplier)" type="radio" value="false"
                                     @(Model.ConfirmSupplier == false ? "checked" : "")>
-                            <label class="govuk-label govuk-radios__label" for="controlledBy-2">@StaticTextResource.Global_No</label>
+                            <label class="govuk-label govuk-radios__label" for="@nameof(Model.ConfirmSupplier)-1">@StaticTextResource.Global_No</label>
                         </div>
 
                     </div>
