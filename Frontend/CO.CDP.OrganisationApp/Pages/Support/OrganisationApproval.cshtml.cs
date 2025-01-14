@@ -31,7 +31,7 @@ public class OrganisationApprovalModel(
 
             var persons = await organisationClient.GetOrganisationPersonsAsync(organisationId);
 
-            AdminUser = persons.FirstOrDefault(p => p.Scopes.Contains("ADMIN"));
+            AdminUser = persons.FirstOrDefault(p => p.Scopes.Contains(OrganisationPersonScopes.Admin));
 
             return Page();
         }
