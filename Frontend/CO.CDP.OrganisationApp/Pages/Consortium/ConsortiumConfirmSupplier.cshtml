@@ -17,7 +17,7 @@
         <partial name="_ErrorSummary" model="@Model.ModelState" />
         <form class="form" method="post" novalidate>
             <div class="govuk-form-group @(confirmSupplierHasError ? "govuk-form-group--error": "")">
-                <fieldset class="govuk-fieldset">
+                <fieldset class="govuk-fieldset" @(confirmSupplierHasError? Html.Raw("aria-describedby=\"confirm-supplier-error\"") : "")>
 
                     @if (Request.Query.ContainsKey("frm-summary"))
                     {
@@ -36,7 +36,7 @@
                     <div class="govuk-radios" data-module="govuk-radios">
                         @if (confirmSupplierHasError)
                         {
-                            <p id="devolved-error" class="govuk-error-message">
+                            <p id="confirm-supplier-error" class="govuk-error-message">
                                 <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span> @Html.ValidationMessageFor(m => m.ConfirmSupplier)
                             </p>
                         }
