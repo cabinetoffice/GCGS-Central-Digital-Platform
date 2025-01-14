@@ -3105,7 +3105,7 @@
     <value>Sign and continue</value>
   </data>
   <data name="MoU_ReviewAndSignComplete_Hint" xml:space="preserve">
-    <value>We’ll email a copy of the agreement to you.</value>
+    <value>to view the agreement.</value>
   </data>
   <data name="MoU_ReviewAndSignComplete_Link" xml:space="preserve">
     <value>Go back to organisation details</value>

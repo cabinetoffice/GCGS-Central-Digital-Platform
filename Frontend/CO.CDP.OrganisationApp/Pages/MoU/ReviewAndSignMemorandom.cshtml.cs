@@ -34,18 +34,8 @@ public class ReviewAndSignMemorandomModel(IOrganisationClient organisationClient
 
     public Mou? MouLatest { get; set; }
 
-    public async Task<IActionResult> OnGet()
+    public void OnGet()
     {
-        try
-        {
-            MouLatest = await organisationClient.GetLatestMouAsync();
-
-            return Page();
-        }
-        catch (OrganisationApiException ex) when (ex.StatusCode == 404)
-        {
-            return Redirect("/page-not-found");
-        }
     }
 
     public async Task<IActionResult> OnPost()
@@ -58,7 +48,7 @@ public class ReviewAndSignMemorandomModel(IOrganisationClient organisationClient
         {
             SignedInPersonId = UserDetails.PersonId;
 
-            MouLatest = await organisationClient.GetLatestMouAsync();
+            MouLatest = await CheckLatestMou() ? await organisationClient.GetLatestMouAsync() : null;
 
             if (MouLatest != null && SignTheAgreement)
             {
@@ -92,7 +82,8 @@ public class ReviewAndSignMemorandomModel(IOrganisationClient organisationClient
 
     public async Task<IActionResult> OnGetDownload()
     {
-        MouLatest = await organisationClient.GetLatestMouAsync();
+
+        MouLatest = await CheckLatestMou() ? await organisationClient.GetLatestMouAsync() : null;
 
         if (MouLatest == null || string.IsNullOrEmpty(MouLatest.FilePath))
         {
@@ -114,4 +105,18 @@ public class ReviewAndSignMemorandomModel(IOrganisationClient organisationClient
 
         return File(fileStream, contentType, fileName);
     }
+
+    private async Task<bool> CheckLatestMou()
+    {
+        try
+        {
+            MouLatest = await organisationClient.GetLatestMouAsync();
+            return true;
+        }
+        catch (OrganisationApiException ex) when (ex.StatusCode == 404)
+        {
+            return false;
+        }
+    }
+
 }
