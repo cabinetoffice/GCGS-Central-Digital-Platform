@@ -2,6 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using CO.CDP.Localization;
 using CO.CDP.Mvc.Validation;
 using CO.CDP.Organisation.WebApiClient;
+using CO.CDP.OrganisationApp.Constants;
 using Microsoft.AspNetCore.Mvc;
 using OrganisationWebApiClient = CO.CDP.Organisation.WebApiClient;
 
@@ -31,7 +32,7 @@ public class OrganisationApprovalModel(
 
             var persons = await organisationClient.GetOrganisationPersonsAsync(organisationId);
 
-            AdminUser = persons.FirstOrDefault(p => p.Scopes.Contains("ADMIN"));
+            AdminUser = persons.FirstOrDefault(p => p.Scopes.Contains(OrganisationPersonScopes.Admin));
 
             return Page();
         }
