@@ -3165,6 +3165,6 @@
     <value>Signed data sharing agreement</value>
   </data>
   <data name="MoU_SignedOn" xml:space="preserve">
-    <value>Signed on</value>
+    <value>Signed on {0}</value>
   </data>
 </root>

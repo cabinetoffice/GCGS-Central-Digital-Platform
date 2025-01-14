@@ -31,7 +31,7 @@ public class OrganisationOverviewModel(IOrganisationClient organisationClient, I
 
     public Mou? MouLatest { get; set; }
 
-    public string MouSignedOnDate { get; set; }
+    public string MouSignedOnDate { get; set; } = "";
 
     public async Task<IActionResult> OnGet()
     {
@@ -56,7 +56,7 @@ public class OrganisationOverviewModel(IOrganisationClient organisationClient, I
                     MouLatest = await organisationClient.GetLatestMouAsync();
                     if (MouLatest != null)
                     {
-                        MouSignedOnDate = $"{StaticTextResource.MoU_SignedOn} {MouLatest?.CreatedOn.ToString("dd MMMM yyyy")}";
+                        MouSignedOnDate = string.Format(@StaticTextResource.MoU_SignedOn, MouLatest?.CreatedOn.ToString("dd MMMM yyyy"));
                     }
 
                 }
@@ -64,7 +64,8 @@ public class OrganisationOverviewModel(IOrganisationClient organisationClient, I
 
             if (OrganisationDetails.Details.PendingRoles.Count > 0)
             {
-                Review = (await organisationClient.GetOrganisationReviewsAsync(Id)).FirstOrDefault();
+                var reviews = await organisationClient.GetOrganisationReviewsAsync(Id) ?? new List<Review>();
+                Review = reviews.FirstOrDefault();
             }
             return Page();
         }
