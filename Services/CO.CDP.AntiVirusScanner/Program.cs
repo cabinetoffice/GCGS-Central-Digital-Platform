@@ -20,6 +20,7 @@ if (Assembly.GetEntryAssembly().IsRunAs("CO.CDP.AntiVirusScanner"))
         .AddAwsS3Service()
         .AddSqsDispatcher(
             EventDeserializer.Deserializer,
+            enableBackgroundServices: Assembly.GetEntryAssembly().IsRunAs("CO.CDP.AntiVirusScanner"),
             services =>
             {
                 services.AddScoped<ISubscriber<ScanFile>, ScanFileSubscriber>();
