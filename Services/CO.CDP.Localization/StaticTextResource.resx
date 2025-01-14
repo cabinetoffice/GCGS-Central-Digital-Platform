@@ -1939,6 +1939,9 @@
   <data name="Support_OrganisationApproval_OrganisationEmail_List" xml:space="preserve">
     <value>Organisation email</value>
   </data>
+  <data name="Support_OrganisationApproval_AdminEmail_List" xml:space="preserve">
+    <value>Admin email</value>
+  </data>
   <data name="Support_OrganisationApproval_OrganisationAddress_List" xml:space="preserve">
     <value>Organisation address</value>
   </data>
