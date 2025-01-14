@@ -160,6 +160,7 @@ locals {
 
   desired_count_non_production = 1
   desired_count_production     = 1
+  frontend_desired_count_non_production = 4
 
   service_configs_scaling_non_production = {
     authority = {
@@ -199,7 +200,7 @@ locals {
     }
     organisation_app = {
       cpu           = 256
-      desired_count = local.desired_count_non_production
+      desired_count = local.frontend_desired_count_non_production
       memory        = 512
     }
     organisation_information_migrations = {
@@ -257,7 +258,7 @@ locals {
     }
     organisation_app = {
       cpu           = 256
-      desired_count = local.desired_count_production
+      desired_count = local.frontend_desired_count_non_production
       memory        = 512
     }
     organisation_information_migrations = {
@@ -317,7 +318,7 @@ locals {
     }
     organisation_app = {
       cpu           = 256
-      desired_count = local.desired_count_development
+      desired_count = local.frontend_desired_count_non_production
       memory        = 512
     }
     organisation_information_migrations = {
