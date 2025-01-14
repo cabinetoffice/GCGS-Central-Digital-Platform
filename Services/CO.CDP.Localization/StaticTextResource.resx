@@ -3120,8 +3120,7 @@
     <value>I confirm that I have read and agree to the data sharing agreement</value>
   </data>
   <data name="MoU_ReviewAndSign_DownloadPdf_Link" xml:space="preserve">
-    <value>&lt;p&gt;
-&lt;a href="#"&gt;Download the data sharing agreement&lt;/a&gt;&lt;/p&gt;</value>
+    <value>Download the data sharing agreement</value>
   </data>
   <data name="MoU_ReviewAndSign_Download_Title" xml:space="preserve">
     <value>Download the agreement</value>
@@ -3161,5 +3160,11 @@
   </data>
   <data name="OrganisationOverView_Banner_Review_MoU_Link" xml:space="preserve">
     <value>you must &lt;a href="/organisation/{0}/review-and-sign-memorandom"&gt;read and sign the data sharing agreement&lt;/a&gt;</value>
+  </data>
+  <data name="MoU_DataSharingAgreement_Title" xml:space="preserve">
+    <value>Signed data sharing agreement</value>
+  </data>
+  <data name="MoU_SignedOn" xml:space="preserve">
+    <value>Signed on</value>
   </data>
 </root>

@@ -89,4 +89,29 @@ public class ReviewAndSignMemorandomModel(IOrganisationClient organisationClient
 
         return RedirectToPage("ReviewAndSignMemorandomComplete", new { Id });
     }
+
+    public async Task<IActionResult> OnGetDownload()
+    {
+        MouLatest = await organisationClient.GetLatestMouAsync();
+
+        if (MouLatest == null || string.IsNullOrEmpty(MouLatest.FilePath))
+        {
+            return Redirect("/page-not-found");
+        }
+
+        var relativePath = MouLatest.FilePath.TrimStart('\\', '/');
+        var absolutePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", relativePath);
+
+        if (!System.IO.File.Exists(absolutePath))
+        {
+            return Redirect("/page-not-found");
+        }
+
+        var contentType = "application/pdf";
+        var fileName = Path.GetFileName(absolutePath);
+
+        var fileStream = new FileStream(absolutePath, FileMode.Open, FileAccess.Read);
+
+        return File(fileStream, contentType, fileName);
+    }
 }

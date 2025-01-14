@@ -1,4 +1,5 @@
 using CO.CDP.EntityVerificationClient;
+using CO.CDP.Localization;
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.WebApiClients;
@@ -28,6 +29,10 @@ public class OrganisationOverviewModel(IOrganisationClient organisationClient, I
 
     public bool HasBuyerSignedMou { get; set; } = true;
 
+    public Mou? MouLatest { get; set; }
+
+    public string MouSignedOnDate { get; set; }
+
     public async Task<IActionResult> OnGet()
     {
         try
@@ -45,6 +50,15 @@ public class OrganisationOverviewModel(IOrganisationClient organisationClient, I
                 Regulations = devolvedRegulations.AsDevolvedRegulationList();
 
                 HasBuyerSignedMou = await CheckBuyerMouSignature(OrganisationDetails.Id);
+                if (HasBuyerSignedMou)
+                {
+                    MouLatest = await organisationClient.GetLatestMouAsync();
+                    if (MouLatest != null)
+                    {
+                        MouSignedOnDate = $"{StaticTextResource.MoU_SignedOn} {MouLatest?.CreatedOn.ToString("dd MMMM yyyy")}";
+                    }
+
+                }
             }
 
             if (OrganisationDetails.Details.PendingRoles.Count > 0)
