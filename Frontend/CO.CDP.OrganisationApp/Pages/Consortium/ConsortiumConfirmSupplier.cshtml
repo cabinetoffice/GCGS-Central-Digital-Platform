@@ -24,14 +24,15 @@
                     <input type="hidden" name="RedirectToSummary" value="true" />
                     }
 
-                    <h1 class="govuk-label-wrapper">
-                        <span class="govuk-caption-l">
-                            @Model.ConsortiumName
-                        </span>
-                        <label class="govuk-label govuk-label--l" for="@nameof(Model.ConfirmSupplier)">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                        <h1 class="govuk-fieldset__heading">
+                            <span class="govuk-caption-l">
+                                @Model.ConsortiumName
+                            </span>
+                            
                             @ViewData["Title"]
-                        </label>
-                    </h1>
+                        </h1>
+                    </legend>
 
                     <div class="govuk-radios" data-module="govuk-radios">
                         @if (confirmSupplierHasError)
