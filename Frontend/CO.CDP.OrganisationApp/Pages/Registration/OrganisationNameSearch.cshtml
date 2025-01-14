@@ -5,7 +5,7 @@
 @using CO.CDP.OrganisationApp.Constants
 
 @{
-    ViewData["Title"] = Model.MatchingOrganisations.Count() == 1 ? StaticTextResource.OrganisationRegistration_SearchOrganisationName_Heading_Singular : StaticTextResource.OrganisationRegistration_SearchOrganisationName_Heading_Plural;
+    ViewData["Title"] = Model.MatchingOrganisations?.Count() == 1 ? StaticTextResource.OrganisationRegistration_SearchOrganisationName_Heading_Singular : StaticTextResource.OrganisationRegistration_SearchOrganisationName_Heading_Plural;
     var organisationIdentifierHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.OrganisationIdentifier)).HasInnerHtml;
 
     var backLink = RegistrationStepModel.OrganisationNamePage;
