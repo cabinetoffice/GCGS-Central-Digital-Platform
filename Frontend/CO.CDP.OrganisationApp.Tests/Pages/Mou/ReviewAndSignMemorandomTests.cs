@@ -91,7 +91,7 @@ public class ReviewAndSignMemorandomTests
             .Setup(c => c.GetLatestMouAsync())
             .ReturnsAsync(mockMou);
 
-        var absolutePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "mou-pdfs", "mou-pdf-template.pdf");
+        var absolutePath = Path.Combine(Directory.GetCurrentDirectory(), "mou-pdfs", "mou-pdf-template.pdf");
         if (System.IO.File.Exists(absolutePath))
         {
             File.Delete(absolutePath);

@@ -86,7 +86,7 @@ public class ReviewAndSignMemorandomModel(IOrganisationClient organisationClient
         if (await TryFetchLatestMou() && !string.IsNullOrEmpty(MouLatest?.FilePath))
         {
             var relativePath = MouLatest.FilePath.TrimStart('\\', '/');
-            var absolutePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", relativePath);
+            var absolutePath = Path.Combine(Directory.GetCurrentDirectory(), relativePath);
 
             if (!System.IO.File.Exists(absolutePath))
             {
