@@ -60,6 +60,23 @@ public class ClaimOrganisationInviteModelTests
     }
 
     [Fact]
+    public async Task OnGet_ShouldRedirectToOrganisationInviteExpired_WhenPersonInviteExpired()
+    {
+        var personInviteId = Guid.NewGuid();
+        var problemDetails = new ProblemDetails("", "", null, "", "")
+        {
+            AdditionalProperties = { { "code", "PERSON_INVITE_EXPIRED" } }
+        };
+        personClientMock.Setup(pc => pc.ClaimPersonInviteAsync(PersonId, new ClaimPersonInvite(personInviteId)))
+            .ThrowsAsync(new ApiException<ProblemDetails>("Person invite expired", 400, "", null, problemDetails, null));
+
+        var result = await model.OnGet(personInviteId);
+
+        result.Should().BeOfType<RedirectToPageResult>()
+            .Which.PageName.Should().Be("OrganisationInviteExpired");
+    }
+
+    [Fact]
     public async Task OnGet_ShouldThrowForOtherApiErrors()
     {
         var personInviteId = Guid.NewGuid();

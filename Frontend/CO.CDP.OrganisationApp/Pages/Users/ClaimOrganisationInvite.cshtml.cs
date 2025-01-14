@@ -13,9 +13,24 @@ public class ClaimOrganisationInviteModel(
     {
         var person = await personClient.LookupPersonAsync(UserDetails.UserUrn);
 
-        await ClaimPersonInvite(person.Id, personInviteId);
+        try
+        {
+            await ClaimPersonInvite(person.Id, personInviteId);
 
-        return RedirectToPage("../Organisation/OrganisationSelection");
+            return RedirectToPage("../Organisation/OrganisationSelection");
+        }
+        catch (ApiException<ProblemDetails> e)
+        {
+            var errorCode = e.Result.AdditionalProperties.TryGetValue("code", out var code) && code is string codeString ? codeString : default;
+
+            switch (errorCode)
+            {
+                case ErrorCodes.PERSON_INVITE_EXPIRED:
+                    return RedirectToPage("OrganisationInviteExpired");
+                default:
+                    throw;
+            }
+        }
     }
 
     private async Task ClaimPersonInvite(Guid personId, Guid personInviteId)
