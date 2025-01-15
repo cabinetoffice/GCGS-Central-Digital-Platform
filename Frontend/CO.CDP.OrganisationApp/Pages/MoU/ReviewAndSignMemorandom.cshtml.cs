@@ -105,7 +105,7 @@ public class ReviewAndSignMemorandomModel(IOrganisationClient organisationClient
 
                 return File(fileStream, contentType, fileName);
             }
-            catch (Exception ex)
+            catch
             {
                 return RedirectToPage("/page-not-found");
             }
