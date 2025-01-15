@@ -100,7 +100,7 @@ public class SupplierOperationQuestionTest
 
         isValid.Should().BeFalse();
         validationResults.Should().ContainSingle();
-        validationResults[0].ErrorMessage.Should().Be("You cannot select 'My organisation is none of the above' along with other options.");
+        validationResults[0].ErrorMessage.Should().Be("You cannot select 'None apply' along with other options.");
     }
     [Fact]
     public async Task OnPost_OrganisationNotFound_ReturnsRedirectToPageNotFound()
