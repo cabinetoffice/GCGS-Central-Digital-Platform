@@ -87,8 +87,9 @@ public class ReviewAndSignMemorandomModel(IOrganisationClient organisationClient
         {
             var absolutePath = Path.Combine(
                 Directory.GetCurrentDirectory(),
-                "mou-pdfs",
-                Path.GetFileName("mou-pdf-template.pdf")
+                MouLatest.FilePath
+                    .TrimStart('\\')
+                    .Replace("\\", Path.DirectorySeparatorChar.ToString())
             );
 
             if (!System.IO.File.Exists(absolutePath))
