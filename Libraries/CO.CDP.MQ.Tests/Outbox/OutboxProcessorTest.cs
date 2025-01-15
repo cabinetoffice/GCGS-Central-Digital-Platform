@@ -61,6 +61,57 @@ public class OutboxProcessorTest
         _outbox.Messages.Should().Contain(m => m.Id == 2 && m.Published == true);
     }
 
+    [Fact]
+    public async Task ItOnlyProcessesOneRequestAtATime()
+    {
+        var messages = new List<OutboxMessage>
+        {
+            GivenOutboxMessage(type: "Greeting", message: "{\"Message\":\"Hello World\"}", published: false),
+            GivenOutboxMessage(type: "Greeting", message: "{\"Message\":\"Good bye\"}", published: false)
+        };
+        await GivenMessagesInOutbox(messages);
+
+        var processor = new OutboxProcessor(_publisher.Object, _outbox, _logger);
+
+        _publisher.Setup(p => p.Publish(messages.ElementAt(0))).Returns(Task.Delay(2));
+
+        var task1 = processor.ExecuteAsync(count: 10);
+        var task2 = processor.ExecuteAsync(count: 10);
+
+        await task1;
+        await task2;
+
+        _publisher.Verify(p => p.Publish(messages.ElementAt(0)), Times.Once);
+        _publisher.Verify(p => p.Publish(messages.ElementAt(1)), Times.Once);
+    }
+
+    [Fact]
+    public async Task ItDoesNotPublishMessagesIfItFailsToAcquireLockInTime()
+    {
+        var messages = new List<OutboxMessage>
+        {
+            GivenOutboxMessage(type: "Greeting", message: "{\"Message\":\"Hello World\"}", published: false),
+            GivenOutboxMessage(type: "Greeting", message: "{\"Message\":\"Good bye\"}", published: false)
+        };
+        await GivenMessagesInOutbox(messages);
+
+        var processor = new OutboxProcessor(_publisher.Object, _outbox, TimeSpan.FromMilliseconds(2), _logger);
+
+        _publisher.Setup(p => p.Publish(messages.ElementAt(0))).Returns(Task.Delay(5));
+
+        var task1 = processor.ExecuteAsync(count: 10);
+        var task2 = processor.ExecuteAsync(count: 10);
+
+        var result1 = await task1;
+        var result2 = await task2;
+
+        _publisher.Verify(p => p.Publish(messages.ElementAt(0)), Times.Once);
+        _publisher.Verify(p => p.Publish(messages.ElementAt(1)), Times.Once);
+
+        result1.Should().Be(2);
+        result2.Should().Be(0);
+    }
+
     private static OutboxMessage GivenOutboxMessage(
         int id = default,
         string type = "Greeting",
