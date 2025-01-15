@@ -8,7 +8,7 @@ namespace CO.CDP.MQ.Tests.Outbox;
 public class OutboxProcessorTest
 {
     private readonly Mock<IPublisher> _publisher = new();
-    private readonly Mock<IOutboxMessageRepository> _outbox = new();
+    private readonly InMemoryOutboxMessageRepository _outbox = new();
     private readonly ILogger<OutboxProcessor> _logger = LoggerFactory.Create(_ => { }).CreateLogger<OutboxProcessor>();
 
     [Fact]
@@ -19,10 +19,9 @@ public class OutboxProcessorTest
             GivenOutboxMessage(type: "Greeting", message: "{\"Message\":\"Hello World\"}", published: false),
             GivenOutboxMessage(type: "Greeting", message: "{\"Message\":\"Good bye\"}", published: false)
         };
+        await GivenMessagesInOutbox(messages);
 
-        _outbox.Setup(m => m.FindOldest(10)).ReturnsAsync(messages);
-
-        var processor = new OutboxProcessor(_publisher.Object, _outbox.Object, _logger);
+        var processor = new OutboxProcessor(_publisher.Object, _outbox, _logger);
 
         await processor.ExecuteAsync(count: 10);
 
@@ -33,16 +32,13 @@ public class OutboxProcessorTest
     [Fact]
     public async Task ItReturnsTheNumberOfProcessedMessages()
     {
-        var messages = new List<OutboxMessage>
-        {
+        await GivenMessagesInOutbox([
             GivenOutboxMessage(type: "Greeting", message: "{\"Message\":\"Hello World\"}", published: false),
             GivenOutboxMessage(type: "Greeting", message: "{\"Message\":\"How do you do?\"}", published: false),
-            GivenOutboxMessage(type: "Greeting", message: "{\"Message\":\"Good bye\"}", published: false),
-        };
+            GivenOutboxMessage(type: "Greeting", message: "{\"Message\":\"Good bye\"}", published: false)
+        ]);
 
-        _outbox.Setup(m => m.FindOldest(10)).ReturnsAsync(messages);
-
-        var processor = new OutboxProcessor(_publisher.Object, _outbox.Object, _logger);
+        var processor = new OutboxProcessor(_publisher.Object, _outbox, _logger);
 
         var result = await processor.ExecuteAsync(count: 10);
 
@@ -52,22 +48,17 @@ public class OutboxProcessorTest
     [Fact]
     public async Task ItMarksPublishedMessagesAsPublished()
     {
-        var messages = new List<OutboxMessage>
-        {
+        await GivenMessagesInOutbox([
             GivenOutboxMessage(id: 1, message: "{\"Message\":\"Hello World\"}", published: false),
             GivenOutboxMessage(id: 2, message: "{\"Message\":\"Good bye\"}", published: false)
-        };
+        ]);
 
-        _outbox.Setup(m => m.FindOldest(10)).ReturnsAsync(messages);
-
-        var processor = new OutboxProcessor(_publisher.Object, _outbox.Object, _logger);
+        var processor = new OutboxProcessor(_publisher.Object, _outbox, _logger);
 
         await processor.ExecuteAsync(count: 10);
 
-        _outbox.Verify(o => o.SaveAsync(It.Is<OutboxMessage>(
-            m => m.Id == 1 && m.Published == true)), Times.Once);
-        _outbox.Verify(o => o.SaveAsync(It.Is<OutboxMessage>(
-            m => m.Id == 2 && m.Published == true)), Times.Once);
+        _outbox.Messages.Should().Contain(m => m.Id == 1 && m.Published == true);
+        _outbox.Messages.Should().Contain(m => m.Id == 2 && m.Published == true);
     }
 
     private static OutboxMessage GivenOutboxMessage(
@@ -84,4 +75,28 @@ public class OutboxProcessorTest
         CreatedOn = DateTimeOffset.UtcNow,
         UpdatedOn = DateTimeOffset.UtcNow
     };
+
+    private async Task GivenMessagesInOutbox(List<OutboxMessage> messages)
+    {
+        foreach (var message in messages)
+        {
+            await _outbox.SaveAsync(message);
+        }
+    }
+}
+
+internal class InMemoryOutboxMessageRepository : IOutboxMessageRepository
+{
+    public readonly List<OutboxMessage> Messages = new();
+
+    public Task SaveAsync(OutboxMessage message)
+    {
+        Messages.Add(message);
+        return Task.CompletedTask;
+    }
+
+    public Task<List<OutboxMessage>> FindOldest(int count = 10)
+    {
+        return Task.FromResult(Messages.FindAll(m => m.Published == false).Take(count).ToList());
+    }
 }
