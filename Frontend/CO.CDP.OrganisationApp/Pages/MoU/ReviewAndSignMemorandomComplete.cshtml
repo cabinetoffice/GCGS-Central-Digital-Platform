@@ -17,7 +17,7 @@
             @ViewData["Title"]
         </h1>
         <p class="govuk-body">
-            <a href="/organisation/@Model.Id">@StaticTextResource.MoU_ReviewAndSignComplete_Link</a> @StaticTextResource.MoU_ReviewAndSignComplete_Hint
+            @Html.Raw(string.Format(@StaticTextResource.MoU_ReviewAndSignComplete_Link, Model.Id))
         </p>
         
     </div>

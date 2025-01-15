@@ -3104,11 +3104,8 @@
   <data name="Global_SignAndContinue" xml:space="preserve">
     <value>Sign and continue</value>
   </data>
-  <data name="MoU_ReviewAndSignComplete_Hint" xml:space="preserve">
-    <value>to view the agreement.</value>
-  </data>
   <data name="MoU_ReviewAndSignComplete_Link" xml:space="preserve">
-    <value>Go back to organisation details</value>
+    <value>&lt;a href="/organisation/{0}"&gt;Go back to organisation details&lt;/a&gt; to view the agreement.</value>
   </data>
   <data name="MoU_ReviewAndSignComplete_Title" xml:space="preserve">
     <value>You've signed the data sharing agreement</value>
