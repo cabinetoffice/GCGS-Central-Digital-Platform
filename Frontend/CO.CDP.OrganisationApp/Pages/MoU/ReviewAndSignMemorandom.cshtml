@@ -53,7 +53,7 @@
                     <div class="govuk-body">
                         <div class="govuk-checkboxes" data-module="govuk-checkboxes">
                             <div class="govuk-checkboxes__item">
-                                <input class="govuk-checkboxes__input" id="@nameof(Model.SignTheAgreement)" name="@nameof(Model.SignTheAgreement)" type="checkbox" value="true" @(Model.SignTheAgreement == true ? "checked" : "") @(signTheAgreementHasError ? Html.Raw(@"aria-describedby=""checkbox-error""") : null)>
+                                <input class="govuk-checkboxes__input" id="@nameof(Model.SignTheAgreement)" name="@nameof(Model.SignTheAgreement)" type="checkbox" value="true" @(Model.SignTheAgreement == true ? "checked" : "") @(signTheAgreementHasError ? Html.Raw(@"aria-describedby=""sign-the-agreement-error""") : null)>
                                 <label class="govuk-label govuk-checkboxes__label" for="@nameof(Model.SignTheAgreement)">
                                     @Html.DisplayNameFor(m => m.SignTheAgreement)
                                 </label>
