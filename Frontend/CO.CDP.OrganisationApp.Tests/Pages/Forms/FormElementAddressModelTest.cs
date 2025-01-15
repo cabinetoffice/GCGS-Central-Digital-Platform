@@ -17,7 +17,7 @@ public class FormElementAddressModelTest
     }
 
     [Theory]
-    [InlineData("non-uk", "Postal or Zip code")]
+    [InlineData("non-uk", "Postal or ZIP Code")]
     [InlineData("uk", "Postcode")]
     public void PostcodeLabel_ShouldReturnCorrectLabel(string ukOrNonUk, string expectedLabel)
     {
@@ -116,10 +116,10 @@ public class FormElementAddressModelTest
         var context = new ValidationContext(model);
         Validator.TryValidateObject(model, context, results, true);
 
-        results.Should().ContainSingle(r => r.ErrorMessage == "Enter your address line 1" && r.MemberNames.Contains(nameof(model.AddressLine1)));
-        results.Should().ContainSingle(r => r.ErrorMessage == "Enter your town or city" && r.MemberNames.Contains(nameof(model.TownOrCity)));
-        results.Should().ContainSingle(r => r.ErrorMessage == "Enter your postcode" && r.MemberNames.Contains(nameof(model.Postcode)));
-        results.Should().ContainSingle(r => r.ErrorMessage == "Enter your country" && r.MemberNames.Contains(nameof(model.Country)));
+        results.Should().ContainSingle(r => r.ErrorMessage == "Enter address line 1" && r.MemberNames.Contains(nameof(model.AddressLine1)));
+        results.Should().ContainSingle(r => r.ErrorMessage == "Enter town or city" && r.MemberNames.Contains(nameof(model.TownOrCity)));
+        results.Should().ContainSingle(r => r.ErrorMessage == "Enter postcode" && r.MemberNames.Contains(nameof(model.Postcode)));
+        results.Should().ContainSingle(r => r.ErrorMessage == "Enter country" && r.MemberNames.Contains(nameof(model.Country)));
     }
 
     [Fact]

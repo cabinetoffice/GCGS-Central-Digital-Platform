@@ -110,7 +110,7 @@ public class FormElementTextInputModelTest
     }
 
     [Theory]
-    [InlineData("invalid-email", "Enter an email address in the correct format, like name@example.com.")]
+    [InlineData("invalid-email", "Enter an email address in the correct format, like name@example.com")]
     [InlineData("valid.email@example.com", null)]
     public void Validate_EmailValidation_ReturnsExpectedResults(string? email, string? expectedErrorMessage)
     {
@@ -133,10 +133,10 @@ public class FormElementTextInputModelTest
     }
 
     [Theory]
-    [InlineData(true, null, "Email Address", null, "Enter an email address in the correct format, like name@example.com.")]
-    [InlineData(true, null, "Email Address", "invalid-email", "Enter an email address in the correct format, like name@example.com.")]
+    [InlineData(true, null, "Email Address", null, "Enter an email address in the correct format, like name@example.com")]
+    [InlineData(true, null, "Email Address", "invalid-email", "Enter an email address in the correct format, like name@example.com")]
     [InlineData(true, null, "Email Address", "valid.email@example.com", null)]
-    [InlineData(false, true, "Email Address", "somevalue", "Enter an email address in the correct format, like name@example.com.")]
+    [InlineData(false, true, "Email Address", "somevalue", "Enter an email address in the correct format, like name@example.com")]
     [InlineData(false, false, "Email Address", null, null)]
     [InlineData(false, true, "Name", "invalid-email", null)]
     public void Validate_EmailFieldValidationBasedOnHeading_ReturnsExpectedResults(bool isRequired, bool? hasValue, string heading, string? textInput, string? expectedErrorMessage)
