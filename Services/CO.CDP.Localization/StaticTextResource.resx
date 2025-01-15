@@ -877,7 +877,7 @@
     <value>Does {0} have a legal form?</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityLegalFormQuestion_Hint" xml:space="preserve">
-    <value>Does {0} have a legal form?</value>
+    <value>In the UK, this is a business structure or trading status. For example, limited company or limited liability partnership.</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityLegalFormQuestion_LegalFormNameLabel" xml:space="preserve">
     <value>Legal form name</value>
@@ -1585,7 +1585,7 @@
     <value>Wales</value>
   </data>
   <data name="OrganisationRegistration_BuyerSelectDevolvedRegulation_Hint" xml:space="preserve">
-    <value>Read the &lt;a href="https://www.gov.uk/government/publications/procurement-act-2023-guidance-documents-plan-phase/guidance-devolved-contracting-authorities-html#:~:text=Procurement%20is%20largely%20a%20devolved,are%20conducted%20and%20contracts%20managed." target="_blank"&gt;devolved contracting authorities guidance (opens in new tab)&lt;/a&gt;</value>
+    <value>Select all that apply</value>
   </data>
   <data name="OrganisationRegistration_BuyerOrganisationType_CentralGovernment_Label" xml:space="preserve">
     <value>Central government - UK or devolved administrations</value>
