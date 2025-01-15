@@ -47,7 +47,7 @@
                         </p>
                     }
 
-                    <p class="govuk-body">@string.Format(Model.MatchingOrganisations.Count() == 1 ? StaticTextResource.OrganisationRegistration_SearchOrganisationName_ResultCount_Singular : StaticTextResource.OrganisationRegistration_SearchOrganisationName_ResultCount_Plural, Model.MatchingOrganisations.Count())</p>
+                    <p class="govuk-body">@string.Format(Model.MatchingOrganisations?.Count() == 1 ? StaticTextResource.OrganisationRegistration_SearchOrganisationName_ResultCount_Singular : StaticTextResource.OrganisationRegistration_SearchOrganisationName_ResultCount_Plural, Model.MatchingOrganisations?.Count())</p>
                     <p class="govuk-body">@StaticTextResource.OrganisationRegistration_SearchOrganisationName_Hint</p>
                                     
 
@@ -69,15 +69,17 @@
                         <h2 class="govuk-heading-s govuk-!-margin-top-5">
                             @StaticTextResource.OrganisationRegistration_SearchOrganisationName_RequestToJoin
                         </h2>
-                        @foreach (var orgSearchResult in Model.MatchingOrganisations) {
-                            <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="@Html.NameFor(m => m.OrganisationIdentifier)-@index" name="@Html.NameFor(m => m.OrganisationIdentifier)" type="radio" value="@orgSearchResult.Identifier.Scheme:@orgSearchResult.Identifier.Id" aria-describedby="@Html.NameFor(m => m.OrganisationIdentifier)-@index-hint">
-                                <label class="govuk-label govuk-radios__label" for="@Html.NameFor(m => m.OrganisationIdentifier)-@index">
-                                        @orgSearchResult.Name
-                                </label>
-                            </div>
+                        @if(Model.MatchingOrganisations != null) {
+                            foreach (var orgSearchResult in Model.MatchingOrganisations) {
+                                <div class="govuk-radios__item">
+                                    <input class="govuk-radios__input" id="@Html.NameFor(m => m.OrganisationIdentifier)-@index" name="@Html.NameFor(m => m.OrganisationIdentifier)" type="radio" value="@orgSearchResult.Identifier.Scheme:@orgSearchResult.Identifier.Id" aria-describedby="@Html.NameFor(m => m.OrganisationIdentifier)-@index-hint">
+                                    <label class="govuk-label govuk-radios__label" for="@Html.NameFor(m => m.OrganisationIdentifier)-@index">
+                                            @orgSearchResult.Name
+                                    </label>
+                                </div>
 
-                            index++;
+                                index++;
+                            }
                         }
                     </div>
                 </fieldset>
