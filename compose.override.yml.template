@@ -27,7 +27,7 @@ services:
       replicas: 1
   redis:
     ports:
-      - "${CDP_REDIS_POST:-6379}:6379"
+      - "${CDP_REDIS_PORT:-6379}:6379"
   localstack:
     ports:
       - "4566:4566"
