@@ -217,6 +217,17 @@ variable "tags" {
   type        = map(string)
 }
 
+variable "tools_configs" {
+  description = "Map of tools and their attributes"
+  type = map(object({
+    cpu       = number
+    memory    = number
+    name      = string
+    port      = number
+    port_host = number
+  }))
+}
+
 variable "user_pool_arn_healthcheck" {
   default = null
   type    = string

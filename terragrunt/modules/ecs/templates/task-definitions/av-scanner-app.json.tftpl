@@ -1,0 +1,39 @@
+[
+  {
+    "name": "${name}",
+    "image": "${image}:${service_version}",
+    "cpu": ${cpu},
+    "memory": ${memory},
+    "portMappings": [
+      {
+        "containerPort": ${container_port},
+        "hostPort": ${host_port},
+        "protocol": "tcp"
+      }
+    ],
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+        "awslogs-group": "${lg_name}",
+        "awslogs-region": "${lg_region}",
+        "awslogs-stream-prefix": "${lg_prefix}"
+      }
+    },
+    "environment": [
+        {"name": "ASPNETCORE_ENVIRONMENT", "value": "${aspcore_environment}"},
+        {"name": "ASPNETCORE_HTTP_PORTS", "value": "${host_port}"},
+        {"name": "Aws__Buckets__PermanentBucket", "value": "${s3_permanent_bucket}"},
+        {"name": "Aws__Buckets__StagingBucket", "value": "${s3_staging_bucket}"},
+        {"name": "Aws__CloudWatch__LogGroup", "value": "${lg_name}"},
+        {"name": "Aws__CloudWatch__LogStream", "value": "${lg_prefix}-serilog"},
+        {"name": "Aws__SqsDispatcher__QueueUrl", "value": "${queue_av_scanner_url}"},
+        {"name": "ClamAvScanUrl", "value": "https://clamav-rest.${public_domain}/scan"},
+        {"name": "ForwardedHeaders__KnownNetwork", "value": "${vpc_cidr}"}
+    ],
+    "secrets": [
+    ],
+    "volumesFrom": [],
+    "mountPoints": [],
+    "essential": true
+  }
+]

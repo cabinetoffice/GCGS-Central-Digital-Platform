@@ -1,6 +1,7 @@
 using Amazon.S3;
 using Amazon.S3.Model;
 using Amazon.S3.Transfer;
+using Microsoft.AspNetCore.Components.Web;
 using Microsoft.Extensions.Options;
 
 namespace CO.CDP.AwsServices.S3;
@@ -41,6 +42,19 @@ public class AwsFileManager(
                  InputStream = fileStream,
                  ContentType = contentType
              });
+
+            var permanentBucket = awsConfig.Buckets?.PermanentBucket;
+
+            using (MemoryStream memoryStream = new MemoryStream())
+            {
+                await s3Client.PutObjectAsync(
+                new PutObjectRequest
+                {
+                    BucketName = permanentBucket,
+                    Key = filename,
+                    InputStream = memoryStream
+                });
+            }
         }
         else
         {
@@ -56,6 +70,15 @@ public class AwsFileManager(
             //fileUploadRequest.UploadProgressEvent += (s, e) => Console.WriteLine("{0}/{1}", e.TransferredBytes, e.TotalBytes);
             await transferUtility.UploadAsync(fileUploadRequest);
         }
+    }
+
+    public async Task<Stream> DownloadStagingFile(string filename)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(filename);
+        var stagingBucketName = awsConfig.Buckets?.StagingBucket
+            ?? throw new Exception($"Missing Aws configuration '{nameof(awsConfig.Buckets.StagingBucket)}' key.");
+
+        return await s3Client.GetObjectStreamAsync(stagingBucketName, filename, new Dictionary<string, object>());
     }
 
     public async Task<Stream> DownloadFile(string filename)
@@ -113,6 +136,21 @@ public class AwsFileManager(
 
         var permanentBucket = awsConfig.Buckets?.PermanentBucket
             ?? throw new Exception($"Missing Aws configuration '{nameof(awsConfig.Buckets.PermanentBucket)}' key.");
+
+        await s3Client.DeleteObjectAsync(
+                new DeleteObjectRequest
+                {
+                    BucketName = permanentBucket,
+                    Key = filename
+                });
+    }
+
+    public async Task RemoveFromStagingBucket(string filename)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(filename);
+
+        var permanentBucket = awsConfig.Buckets?.StagingBucket
+            ?? throw new Exception($"Missing Aws configuration '{nameof(awsConfig.Buckets.StagingBucket)}' key.");
 
         await s3Client.DeleteObjectAsync(
                 new DeleteObjectRequest

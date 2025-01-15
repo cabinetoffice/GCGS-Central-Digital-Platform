@@ -148,22 +148,32 @@ variable "public_subnet_ids" {
   type        = list(string)
 }
 
-variable "queue_entity_verification_queue_arn" {
+variable "queue_av_scanner_arn" {
+  description = "ARN of the AV Scanner's SQS queue"
+  type        = string
+}
+
+variable "queue_av_scanner_url" {
+  description = "ARN of the AV Scanner's SQS queue"
+  type        = string
+}
+
+variable "queue_entity_verification_arn" {
   description = "ARN of the Entity Verification's SQS queue"
   type        = string
 }
 
-variable "queue_entity_verification_queue_url" {
+variable "queue_entity_verification_url" {
   description = "URL of the Entity Verification's SQS queue"
   type        = string
 }
 
-variable "queue_organisation_queue_arn" {
+variable "queue_organisation_arn" {
   description = "ARN of the Organisation's SQS queue"
   type        = string
 }
 
-variable "queue_organisation_queue_url" {
+variable "queue_organisation_url" {
   description = "URL of the Organisation's outbound SQS queue"
   type        = string
 }

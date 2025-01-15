@@ -635,7 +635,8 @@ public static class EndpointExtensions
             [OrganisationAuthorize(
                 [AuthenticationChannel.OneLogin],
                 [Constants.OrganisationPersonScope.Admin],
-                OrganisationIdLocation.Path)]
+                OrganisationIdLocation.Path,
+                [Constants.PersonScope.SupportAdmin])]
         async (Guid organisationId, IUseCase<Guid, IEnumerable<Person>> useCase) =>
                     await useCase.Execute(organisationId)
                         .AndThen(persons => persons != null ? Results.Ok(persons) : Results.NotFound()))

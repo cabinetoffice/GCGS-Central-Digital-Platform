@@ -1,4 +1,5 @@
 using CO.CDP.AwsServices;
+using CO.CDP.MQ;
 using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.Pages.Forms;
 using CO.CDP.OrganisationApp.Pages.Forms.ChoiceProviderStrategies;
@@ -17,6 +18,7 @@ public class FormsQuestionPageModelTest
     private readonly Mock<IFileHostManager> _fileHostManagerMock;
     private readonly FormsQuestionPageModel _pageModel;
     private readonly Guid TextQuestionId = Guid.NewGuid();
+    private readonly Mock<IPublisher> _publisherMock;
 
     public FormsQuestionPageModelTest()
     {
@@ -31,11 +33,12 @@ public class FormsQuestionPageModelTest
             .ReturnsAsync(form);
         _tempDataServiceMock = new Mock<ITempDataService>();
         _fileHostManagerMock = new Mock<IFileHostManager>();
+        _publisherMock = new Mock<IPublisher>();
         _choiceProviderServiceMock = new Mock<IChoiceProviderService>();
         _tempDataServiceMock.Setup(t => t.PeekOrDefault<FormQuestionAnswerState>(It.IsAny<string>()))
             .Returns(new FormQuestionAnswerState());
         _tempDataServiceMock.Setup(t => t.Remove(It.IsAny<string>()));
-        _pageModel = new FormsQuestionPageModel(_formsEngineMock.Object, _tempDataServiceMock.Object, _fileHostManagerMock.Object, _choiceProviderServiceMock.Object);
+        _pageModel = new FormsQuestionPageModel(_publisherMock.Object, _formsEngineMock.Object, _tempDataServiceMock.Object, _fileHostManagerMock.Object, _choiceProviderServiceMock.Object);
 
         _pageModel.OrganisationId = Guid.NewGuid();
         _pageModel.FormId = Guid.NewGuid();
