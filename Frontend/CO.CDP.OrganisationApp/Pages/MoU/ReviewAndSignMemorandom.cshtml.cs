@@ -85,21 +85,30 @@ public class ReviewAndSignMemorandomModel(IOrganisationClient organisationClient
     {
         if (await TryFetchLatestMou() && !string.IsNullOrEmpty(MouLatest?.FilePath))
         {
-            var relativePath = MouLatest.FilePath.TrimStart('\\', '/');
-            var absolutePath = Path.Combine(Directory.GetCurrentDirectory(), relativePath);
+            var absolutePath = Path.Combine(
+                Directory.GetCurrentDirectory(),
+                "mou-pdfs",
+                Path.GetFileName("mou-pdf-template.pdf")
+            );
 
             if (!System.IO.File.Exists(absolutePath))
             {
-                // If the file does not exist, redirect to the "page not found"
                 return RedirectToPage("/page-not-found");
             }
 
-            // Serve the file
-            var contentType = "application/pdf";
-            var fileName = Path.GetFileName(absolutePath);
-            var fileStream = new FileStream(absolutePath, FileMode.Open, FileAccess.Read);
+            try
+            {
+                var contentType = "application/pdf";
+                var fileName = Path.GetFileName(absolutePath);
 
-            return File(fileStream, contentType, fileName);
+                var fileStream = new FileStream(absolutePath, FileMode.Open, FileAccess.Read, FileShare.Read);
+
+                return File(fileStream, contentType, fileName);
+            }
+            catch (Exception ex)
+            {
+                return RedirectToPage("/page-not-found");
+            }
         }
 
         // Redirect to "page not found" if the MOU is not fetched or the file path is invalid
