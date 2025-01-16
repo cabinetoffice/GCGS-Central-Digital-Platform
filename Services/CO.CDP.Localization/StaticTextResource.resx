@@ -148,7 +148,7 @@
     <value>Important</value>
   </data>
   <data name="Organisation_BuyerRegistrationPendingApproval" xml:space="preserve">
-    <value>Buyer registration pending approval.</value>
+    <value>Buyer registration pending</value>
   </data>
   <data name="Organisation_OrganisationDetails" xml:space="preserve">
     <value>Organisation details</value>
@@ -3123,5 +3123,68 @@
   </data>
   <data name="OrganisationRegistration_SearchOrganisationName_ExactMatchAlreadyExists" xml:space="preserve">
     <value>The organisation you entered is already registered. Request to join the registered organisation or &lt;a href="/registration/organisation-name\"&gt;enter a different name&lt;/a&gt;.</value>
+  </data>
+  <data name="Global_SignAndContinue" xml:space="preserve">
+    <value>Sign and continue</value>
+  </data>
+  <data name="MoU_ReviewAndSignComplete_Link" xml:space="preserve">
+    <value>&lt;a href="/organisation/{0}"&gt;Go back to organisation details&lt;/a&gt; to view the agreement.</value>
+  </data>
+  <data name="MoU_ReviewAndSignComplete_Title" xml:space="preserve">
+    <value>You've signed the data sharing agreement</value>
+  </data>
+  <data name="MoU_ReviewAndSign_ConfirmStatement" xml:space="preserve">
+    <value>I am authorised to sign the agreement for my organisation on behalf of:</value>
+  </data>
+  <data name="MoU_ReviewAndSign_Confirm_Title" xml:space="preserve">
+    <value>I confirm that I have read and agree to the data sharing agreement</value>
+  </data>
+  <data name="MoU_ReviewAndSign_DownloadPdf_Link" xml:space="preserve">
+    <value>Download the data sharing agreement</value>
+  </data>
+  <data name="MoU_ReviewAndSign_Download_Title" xml:space="preserve">
+    <value>Download the agreement</value>
+  </data>
+  <data name="MoU_ReviewAndSign_Hint" xml:space="preserve">
+    <value>The data sharing agreement is a memorandum of understanding (MoU) between the Cabinet Office and contracting authorities as joint data controllers of the personal and sensitive data collected and shared on the Find a Tender service.</value>
+  </data>
+  <data name="MoU_ReviewAndSign_Job_Title" xml:space="preserve">
+    <value>Job title</value>
+  </data>
+  <data name="MoU_ReviewAndSign_Job_Title_ErrorMessage" xml:space="preserve">
+    <value>Enter your job title</value>
+  </data>
+  <data name="MoU_ReviewAndSign_Name" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="MoU_ReviewAndSign_Name_ErrorMessage" xml:space="preserve">
+    <value>Please provide a name</value>
+  </data>
+  <data name="MoU_ReviewAndSign_Options_Title" xml:space="preserve">
+    <value>Confirm you have read and agree</value>
+  </data>
+  <data name="MoU_ReviewAndSign_SelectCheckbox_ErrorMessage" xml:space="preserve">
+    <value>Please tick the checkbox, if you have read and agree to the data sharing agreement</value>
+  </data>
+  <data name="MoU_ReviewAndSign_Title" xml:space="preserve">
+    <value>Read and agree to the data sharing agreement</value>
+  </data>
+  <data name="MoU_ReviewAndSign_Warning" xml:space="preserve">
+    <value>You must sign the MoU before you can use the service. It is a formal agreement between the Cabinet Office and your organisation.</value>
+  </data>
+  <data name="OrganisationOverView_Banner_PendingApproval" xml:space="preserve">
+    <value>we need to approve your organisation. We'll email you, usually within one working day.</value>
+  </data>
+  <data name="OrganisationOverView_Banner_PendingApproval_Hint" xml:space="preserve">
+    <value>Before you can use this service:</value>
+  </data>
+  <data name="OrganisationOverView_Banner_Review_MoU_Link" xml:space="preserve">
+    <value>you must &lt;a href="/organisation/{0}/review-and-sign-memorandom"&gt;read and agree the data sharing agreement&lt;/a&gt;</value>
+  </data>
+  <data name="MoU_DataSharingAgreement_Title" xml:space="preserve">
+    <value>Data sharing agreement</value>
+  </data>
+  <data name="MoU_SignedOn" xml:space="preserve">
+    <value>Agreed on {0}</value>
   </data>
 </root>

@@ -1,0 +1,104 @@
+@page "/organisation/{id}/review-and-sign-memorandom"
+@model CO.CDP.OrganisationApp.Pages.MoU.ReviewAndSignMemorandomModel
+@using CO.CDP.Localization
+
+@{
+    ViewData["Title"] = StaticTextResource.MoU_ReviewAndSign_Title;
+    var signTheAgreementHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.SignTheAgreement)).HasInnerHtml;
+    var nameValueHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Name)).HasInnerHtml;
+    var jobTitleValueHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.JobTitleValue)).HasInnerHtml;
+
+    var backLink = $"/organisation/{@Model.Id}";
+}
+
+@section BeforeContent {
+    <a href="@backLink" class="govuk-back-link">@StaticTextResource.Global_Back</a>
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds govuk-body">
+        <partial name="_ErrorSummary" model="@ModelState" />
+        <form method="post">
+            <div class="govuk-form-group @(signTheAgreementHasError ? "govuk-form-group--error" : "")">
+                <fieldset class="govuk-fieldset" aria-describedby="sign-the-agreement-hint @(signTheAgreementHasError ? "sign-the-agreement-error" : "")">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                        <h1 class="govuk-fieldset__heading">
+                            @ViewData["Title"]
+                        </h1>
+                    </legend>
+
+                    @if (signTheAgreementHasError)
+                    {
+                        <p id="sign-the-agreement-error" class="govuk-error-message">
+                            <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span> @Html.ValidationMessageFor(m => m.SignTheAgreement)
+                        </p>
+                    }
+                    <p>
+                        @StaticTextResource.MoU_ReviewAndSign_Hint
+                    </p>
+                    <p>
+                        @StaticTextResource.MoU_ReviewAndSign_Warning
+                    </p>
+                    <h2 class="govuk-heading-m">
+                        @StaticTextResource.MoU_ReviewAndSign_Download_Title
+                    </h2>
+                    <p>
+                        <a href="?handler=Download">@StaticTextResource.MoU_ReviewAndSign_DownloadPdf_Link</a>
+                    </p>
+                    
+                    <h2 class="govuk-heading-m">
+                        @StaticTextResource.MoU_ReviewAndSign_Options_Title
+                    </h2>
+
+                    <div class="govuk-body">
+                        <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+                            <div class="govuk-checkboxes__item">
+                                <input class="govuk-checkboxes__input" id="@nameof(Model.SignTheAgreement)" name="@nameof(Model.SignTheAgreement)" type="checkbox" value="true" @(Model.SignTheAgreement == true ? "checked" : "") @(signTheAgreementHasError ? Html.Raw(@"aria-describedby=""sign-the-agreement-error""") : null)>
+                                <label class="govuk-label govuk-checkboxes__label" for="@nameof(Model.SignTheAgreement)">
+                                    @Html.DisplayNameFor(m => m.SignTheAgreement)
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <p class="govuk-body">
+                        @Html.Raw(@StaticTextResource.MoU_ReviewAndSign_ConfirmStatement)
+                    </p>
+                    <div class="govuk-form-group @(nameValueHasError ? "govuk-form-group--error" : "")">
+                        @if (nameValueHasError)
+                        {
+                            <p id="name-error" class="govuk-error-message">
+                                <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span>
+                                @Html.ValidationMessageFor(m => m.Name)
+                            </p>
+                        }
+                        <label class="govuk-label" for="@nameof(Model.Name)">@StaticTextResource.MoU_ReviewAndSign_Name</label>
+                        <input class="govuk-input govuk-!-width-one-half @(nameValueHasError ? "govuk-input--error" : "")" id="@nameof(Model.Name)"
+                                value="@Model.Name" name="@nameof(Model.Name)" type="text" autocomplete="off"
+                                spellcheck="false" @(nameValueHasError ? "aria-describedby=name-error" : "")>
+                    </div>
+
+                    
+                    <div class="govuk-form-group @(jobTitleValueHasError ? "govuk-form-group--error" : "")">
+                        @if (jobTitleValueHasError)
+                        {
+                            <p id="job-title-error" class="govuk-error-message">
+                                <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span>
+                                @Html.ValidationMessageFor(m => m.JobTitleValue)
+                            </p>
+                        }
+                        <label class="govuk-label" for="@nameof(Model.Name)">@StaticTextResource.MoU_ReviewAndSign_Job_Title</label>
+                        <input class="govuk-input govuk-!-width-one-half @(jobTitleValueHasError ? "govuk-input--error" : "")" id="@nameof(Model.JobTitleValue)"
+                                value="@Model.JobTitleValue" name="@nameof(Model.JobTitleValue)" type="text"
+                                spellcheck="false" @(jobTitleValueHasError ? "aria-describedby=job-title-error" : "")>
+                    </div>
+                    
+
+                </fieldset>
+            </div>
+            <govuk-button>
+                @StaticTextResource.Global_SaveAndContinue
+            </govuk-button>
+        </form>
+    </div>
+</div>
