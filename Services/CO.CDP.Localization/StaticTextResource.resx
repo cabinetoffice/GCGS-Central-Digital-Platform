@@ -388,13 +388,7 @@
     <value>Close this window</value>
   </data>
   <data name="Supplementary_PrivacyNotice_Title" xml:space="preserve">
-    <value>Privacy notice: how we use your data</value>
-  </data>
-  <data name="Supplementary_PrivacyNotice_Intro" xml:space="preserve">
-    <value>GOV.UK Digital Service Platform is provided by &lt;a href="https://www.gov.uk/government/organisations/government-digital-service" class="govuk-link"&gt;Government Digital Service&lt;/a&gt; (GDS), which is part of the Cabinet Office. The data controller for GDS is the Cabinet Office. A data controller determines how and why personal data can be processed.</value>
-  </data>
-  <data name="Supplementary_PrivacyNotice_ReadMore" xml:space="preserve">
-    <value>Read the &lt;a href="https://ico.org.uk/ESDWebPages/Entry/Z7414053" class="govuk-link"&gt;Cabinet Office’s entry in the Data Protection Public Register&lt;/a&gt; for more information.</value>
+    <value>Privacy notice</value>
   </data>
   <data name="Supplementary_PageNotFound_Title" xml:space="preserve">
     <value>Page not found</value>
