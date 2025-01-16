@@ -12,8 +12,7 @@
         <div class="govuk-grid-column-three-quarters">
 
             <h1 class="govuk-heading-xl">@ViewData["Title"]</h1>
-            <p class="govuk-body">@Html.Raw(@StaticTextResource.Supplementary_PrivacyNotice_Intro)</p>
-            <p class="govuk-body">@Html.Raw(@StaticTextResource.Supplementary_PrivacyNotice_ReadMore)</p>
 
+            <markdown file-name="PrivacyNotice.en.md"/>
         </div>
     </div>
