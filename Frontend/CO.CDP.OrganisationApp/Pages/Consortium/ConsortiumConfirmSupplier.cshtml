@@ -1,0 +1,65 @@
+@page "/consortium/{id}/confirm-supplier"
+@model ConsortiumConfirmSupplierModel
+@using CO.CDP.Localization
+
+@{
+    ViewData["Title"] = Model.Heading;
+    var confirmSupplierHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.ConfirmSupplier)).HasInnerHtml;
+    var backLink = $"/consortium/{Model.Id}/enter-sharecode";
+}
+
+@section BeforeContent {
+    <a href="@backLink" class="govuk-back-link">@StaticTextResource.Global_Back</a>
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <partial name="_ErrorSummary" model="@Model.ModelState" />
+        <form class="form" method="post" novalidate>
+            <div class="govuk-form-group @(confirmSupplierHasError ? "govuk-form-group--error": "")">
+                <fieldset class="govuk-fieldset" @(confirmSupplierHasError? Html.Raw("aria-describedby=\"confirm-supplier-error\"") : "")>
+
+                    @if (Request.Query.ContainsKey("frm-summary"))
+                    {
+                    <input type="hidden" name="RedirectToSummary" value="true" />
+                    }
+
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                        <h1 class="govuk-fieldset__heading">
+                            <span class="govuk-caption-l">
+                                @Model.ConsortiumName
+                            </span>
+                            
+                            @ViewData["Title"]
+                        </h1>
+                    </legend>
+
+                    <div class="govuk-radios" data-module="govuk-radios">
+                        @if (confirmSupplierHasError)
+                        {
+                            <p id="confirm-supplier-error" class="govuk-error-message">
+                                <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span> @Html.ValidationMessageFor(m => m.ConfirmSupplier)
+                            </p>
+                        }
+
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="@nameof(Model.ConfirmSupplier)" name="@nameof(Model.ConfirmSupplier)" type="radio"
+                                    value="true" @(Model.ConfirmSupplier == true ? "checked" : "")>
+                            <label class="govuk-label govuk-radios__label" for="@nameof(Model.ConfirmSupplier)">
+                                        @StaticTextResource.Global_Yes
+                            </label>
+                        </div>
+
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="@nameof(Model.ConfirmSupplier)-1" name="@nameof(Model.ConfirmSupplier)" type="radio" value="false"
+                                    @(Model.ConfirmSupplier == false ? "checked" : "")>
+                            <label class="govuk-label govuk-radios__label" for="@nameof(Model.ConfirmSupplier)-1">@StaticTextResource.Global_No</label>
+                        </div>
+
+                    </div>
+                </fieldset>
+            </div>
+            <govuk-button>@StaticTextResource.Global_Save</govuk-button>
+        </form>
+    </div>
+</div>
