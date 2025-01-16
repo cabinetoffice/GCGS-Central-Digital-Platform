@@ -52,7 +52,7 @@
                 <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
                 <strong class="govuk-warning-text__text">
                     <span class="govuk-visually-hidden">Warning</span>
-                    This is a test website. Visit the main <a href="https://www.find-tender.service.gov.uk/" class="govuk-link break-word">Find a Tender</a> service to view UK public sector contract opportunities and awarded contracts.
+                    This site is for buyers to set up an organisation before the updated service is launched on 24 February. To view notices visit the main Find a Tender service.
                 </strong>
             </div>
         </div>
@@ -95,17 +95,17 @@
                                     {
                                         if (organisationId != null)
                                         {
-                                            <li class="govuk-header__navigation-item">
+                                            <!--<li class="govuk-header__navigation-item">
                                                 <a class="govuk-header__link" href="@FtsUrlService.BuildUrl("/login", organisationId, "/Search/Results")">
                                                     @StaticTextResource.Header_Search
                                                 </a>
-                                            </li>
+                                            </li>-->
 
-                                            <li class="govuk-header__navigation-item">
+                                            <!--<li class="govuk-header__navigation-item">
                                                 <a class="govuk-header__link" href="@FtsUrlService.BuildUrl("/login", organisationId, "/dashboard")">
                                                     @StaticTextResource.Header_MyNotices
                                                 </a>
-                                            </li>
+                                            </li>-->
                                         }
 
                                         <li class="govuk-header__navigation-item">
@@ -180,21 +180,21 @@
                         <li class="govuk-footer__inline-list-item">
                             <a class="govuk-footer__link" target="_blank" href="/contact-us" )">@StaticTextResource.Footer_ContactUs</a>
                         </li>
-                        <li class="govuk-footer__inline-list-item">
+                        <!--<li class="govuk-footer__inline-list-item">
                             <a class="govuk-footer__link" href="@FtsUrlService.BuildUrl("/login", organisationId, "/Home/AccessibilityStatement")">@StaticTextResource.Footer_AccessibilityStatement</a>                            
-                        </li>
-                        <li class="govuk-footer__inline-list-item">
+                        </li>-->
+                        <!--<li class="govuk-footer__inline-list-item">
                             <a class="govuk-footer__link" href="@FtsUrlService.BuildUrl("/login", organisationId, "/Home/TermsAndConditions")">@StaticTextResource.Footer_TermsAndConditions</a>                            
-                        </li>
+                        </li>-->
                         <li class="govuk-footer__inline-list-item">
                             <a class="govuk-footer__link" href="https://www.gov.uk/government/publications/crown-commercial-service-privacy-notice/crown-commercial-service-privacy-notice">@StaticTextResource.Footer_PrivacyNotice</a>
                         </li>
                         <li class="govuk-footer__inline-list-item">
                             <a class="govuk-footer__link" href="/cookies">@StaticTextResource.Footer_Cookies</a>
                         </li>
-                        <li class="govuk-footer__inline-list-item">
+                        <!--<li class="govuk-footer__inline-list-item">
                             <a class="govuk-footer__link" href="@FtsUrlService.BuildUrl("/login", organisationId, "/Developer/Documentation")">@StaticTextResource.Footer_DataAndAPI</a>                            
-                        </li>
+                        </li>-->
                     </ul>
                     <svg aria-hidden="true"
                          focusable="false"

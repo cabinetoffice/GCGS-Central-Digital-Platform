@@ -10,7 +10,9 @@ using CO.CDP.Swashbuckle.SwaggerGen;
 using CO.CDP.WebApi.Foundation;
 using DotSwashbuckle.AspNetCore.SwaggerGen;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
+using System.Collections.Generic;
 using System.Reflection;
 using Address = CO.CDP.OrganisationInformation.Address;
 using ConnectedEntity = CO.CDP.Organisation.WebApi.Model.ConnectedEntity;
@@ -121,7 +123,7 @@ public static class EndpointExtensions
                 operation.Summary = "Get a organisation reviews by ID.";
                 operation.Responses["200"].Description = "Organisation reviews.";
                 operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
-                operation.Responses["404"].Description = "Organisation not found.";
+                operation.Responses["404"].Description = "Organisation reviews not found.";
                 operation.Responses["500"].Description = "Internal server error.";
                 return operation;
             });
@@ -283,6 +285,31 @@ public static class EndpointExtensions
              operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
              operation.Responses["404"].Description = "Organisation not found.";
              operation.Responses["500"].Description = "Internal server error.";
+             return operation;
+         });
+
+        app.MapGet("/search",
+            [OrganisationAuthorize([AuthenticationChannel.OneLogin, AuthenticationChannel.ServiceKey])]
+        async ([FromQuery] string name, [FromQuery] string? role, [FromQuery] int limit, [FromServices] IUseCase<OrganisationSearchQuery, IEnumerable<Model.OrganisationSearchResult>> useCase) =>
+                 await useCase.Execute(new OrganisationSearchQuery(name, limit, role))
+                    .AndThen(results => results.Count() != 0 ? Results.Ok(results) : Results.NotFound()))
+         .Produces<IEnumerable<Model.OrganisationSearchResult>>(StatusCodes.Status200OK, "application/json")
+         .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
+         .Produces<ProblemDetails>(StatusCodes.Status404NotFound)
+         .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError)
+         .Produces<ProblemDetails>(StatusCodes.Status400BadRequest)
+         .WithOpenApi(operation =>
+         {
+             operation.OperationId = "SearchOrganisation";
+             operation.Description = "Find organisations by partial matches on name.";
+             operation.Summary = "Find organisations by partial matches on name.";
+             operation.Tags = new List<OpenApiTag> { new() { Name = "Organisation - Lookup" } };
+             operation.Responses["200"].Description = "Matching organisations.";
+             operation.Responses["400"].Description = "Bad request.";
+             operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
+             operation.Responses["404"].Description = "No organisations found.";
+             operation.Responses["500"].Description = "Internal server error.";
+
              return operation;
          });
 
