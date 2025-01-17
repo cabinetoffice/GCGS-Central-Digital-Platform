@@ -15,6 +15,7 @@ public class OrganisationMouEndpointsTests
     private readonly Mock<IUseCase<Guid, MouSignatureLatest>> _getOrganisationMouSignatureLatestUseCase = new();
 
     [Theory]
+    [InlineData(OK, Channel.OneLogin, null, PersonScope.SupportAdmin)]
     [InlineData(OK, Channel.OneLogin, OrganisationPersonScope.Admin)]
     [InlineData(OK, Channel.OneLogin, OrganisationPersonScope.Editor)]
     [InlineData(OK, Channel.OneLogin, OrganisationPersonScope.Responder)]
@@ -22,8 +23,8 @@ public class OrganisationMouEndpointsTests
     [InlineData(Forbidden, Channel.ServiceKey)]
     [InlineData(Forbidden, Channel.OrganisationKey)]
     [InlineData(Forbidden, "unknown_channel")]
-    public async Task UpdateBuyerInformation_Authorization_ReturnsExpectedStatusCode(
-        HttpStatusCode expectedStatusCode, string channel, string? scope = null)
+    public async Task GetOrganisationLatestMouSignature_Authorization_ReturnsExpectedStatusCode(
+        HttpStatusCode expectedStatusCode, string channel, string? organisationPersonScope = null, string? personScope = null)
     {
         var organisationId = Guid.NewGuid();
 
@@ -40,8 +41,11 @@ public class OrganisationMouEndpointsTests
             });
 
         var factory = new TestAuthorizationWebApplicationFactory<Program>(
-            channel, organisationId, scope,
-            services => services.AddScoped(_ => _getOrganisationMouSignatureLatestUseCase.Object));
+            channel,
+            organisationId,
+            organisationPersonScope,
+            services => services.AddScoped(_ => _getOrganisationMouSignatureLatestUseCase.Object),
+            assignedPersonScopes: personScope);
 
         var response = await factory.CreateClient().GetAsync($"/organisations/{organisationId}/mou/latest");
 
