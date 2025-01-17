@@ -44,6 +44,11 @@ const string EvHttpClient = "EvHttpClient";
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.AddServerHeader = false; 
+});
+
 builder.Services.Configure<RequestLocalizationOptions>(options =>
 {
     var supportedCultures = new[] { new CultureInfo("en-GB"), new CultureInfo("cy") };
