@@ -10,9 +10,7 @@ using CO.CDP.Swashbuckle.SwaggerGen;
 using CO.CDP.WebApi.Foundation;
 using DotSwashbuckle.AspNetCore.SwaggerGen;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
-using System.Collections.Generic;
 using System.Reflection;
 using Address = CO.CDP.OrganisationInformation.Address;
 using ConnectedEntity = CO.CDP.Organisation.WebApi.Model.ConnectedEntity;
@@ -1013,7 +1011,7 @@ public static class EndpointExtensions
         app.MapGet("/{organisationId}/mou/latest",
       [OrganisationAuthorize(
             [AuthenticationChannel.OneLogin],
-              [Constants.OrganisationPersonScope.Admin],
+              [Constants.OrganisationPersonScope.Admin, Constants.OrganisationPersonScope.Responder, Constants.OrganisationPersonScope.Editor, Constants.OrganisationPersonScope.Viewer],
               OrganisationIdLocation.Path)]
         async (Guid organisationId, IUseCase<Guid, MouSignatureLatest> useCase) =>
                 await useCase.Execute(organisationId)
