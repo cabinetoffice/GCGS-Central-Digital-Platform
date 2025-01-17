@@ -1,7 +1,6 @@
 using Markdig;
-using Markdig.Parsers;
-using Markdig.Syntax;
 using Microsoft.AspNetCore.Razor.TagHelpers;
+using System.Text.RegularExpressions;
 
 namespace CO.CDP.OrganisationApp.TagHelpers;
 
@@ -14,7 +13,6 @@ public class MarkdownTagHelper : TagHelper
     {
         _env = env;
     }
-
     public string? FileName { get; set; }
 
     public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
@@ -43,23 +41,17 @@ public class MarkdownTagHelper : TagHelper
 
         var htmlContent = Markdown.ToHtml(markdownContent);
 
-        output.Content.SetHtmlContent(htmlContent);
-    }
-}
+        htmlContent = Regex.Replace(htmlContent, @"<p([^>]*)>", "<p $1 class=\"govuk-body\">");
+        htmlContent = Regex.Replace(htmlContent, @"<h1([^>]*)>", "<h1 $1 class=\"govuk-heading-xl\">");
+        htmlContent = Regex.Replace(htmlContent, @"<h2([^>]*)>", "<h2 $1 class=\"govuk-heading-l\">");
+        htmlContent = Regex.Replace(htmlContent, @"<h3([^>]*)>", "<h3 $1 class=\"govuk-heading-m\">");
+        htmlContent = Regex.Replace(htmlContent, @"<h4([^>]*)>", "<h4 $1 class=\"govuk-heading-s\">");
+        htmlContent = Regex.Replace(htmlContent, @"<h5([^>]*)>", "<h5 $1 class=\"govuk-heading-s\">");
+        htmlContent = Regex.Replace(htmlContent, @"<h6([^>]*)>", "<h6 $1 class=\"govuk-heading-s\">");
+        htmlContent = Regex.Replace(htmlContent, @"<a([^>]*)>", "<a $1 class=\"govuk-link\">");
+        htmlContent = Regex.Replace(htmlContent, @"<ul([^>]*)>", "<ul $1 class=\"govuk-list govuk-list--bullet\">");
+        htmlContent = Regex.Replace(htmlContent, @"<ol([^>]*)>", "<ol $1 class=\"govuk-list govuk-list--number\">");
 
-public class AddClassToBlockProcessor : Markdig.Parsers.BlockParser
-{
-    public override void Process(BlockProcessor processor)
-    {
-        if (processor.Block is HeadingBlock heading)
-        {
-            // Add class to headings
-            heading.Attributes.AddClass("my-heading-class");
-        }
-        else if (processor.Block is ParagraphBlock paragraph)
-        {
-            // Add class to paragraphs
-            paragraph.Attributes.AddClass("my-paragraph-class");
-        }
+        output.Content.SetHtmlContent(htmlContent);
     }
 }
