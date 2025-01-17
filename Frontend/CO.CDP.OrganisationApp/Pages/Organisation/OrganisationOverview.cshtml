@@ -271,7 +271,7 @@
                     <div class="govuk-section-break govuk-section-break--visible govuk-section-break--m"></div>
                 }
 
-                @if (organisationDetails.IsBuyer() && Model.HasBuyerSignedMou)
+                @if (organisationDetails.IsBuyer())
                 {
                     <h3 class="govuk-heading-s govuk-!-margin-bottom-3">
                         <a class="govuk-link" href="/organisation/@RouteData.Values["id"]/manage-api-keys">@(isViewer ? StaticTextResource.Organisation_ViewApiKeys : StaticTextResource.Organisation_ManageApiKeys) @(organisationDetails.IsTenderer() ? StaticTextResource.Organisation_ApiKeysForBuyers : "")</a>
