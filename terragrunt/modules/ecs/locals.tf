@@ -59,6 +59,6 @@ locals {
     config.name
   ]
 
-  waf_enabled = var.environment != "production"
+  waf_enabled = true
 
 }
