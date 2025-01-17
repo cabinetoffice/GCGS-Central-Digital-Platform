@@ -1,9 +1,12 @@
 using CO.CDP.AwsServices;
 using CO.CDP.MQ;
+using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Extensions;
 using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.Pages.Forms.ChoiceProviderStrategies;
+using IdentityModel;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -11,19 +14,15 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace CO.CDP.OrganisationApp.Pages.Forms;
 
-public record ScanFile
-{
-    public string FileName { get; set; } = string.Empty;
-    public Guid OrganisationId { get; set; }
-}
-
 [Authorize(Policy = OrgScopeRequirement.Editor)]
 public class FormsQuestionPageModel(
     IPublisher publisher,
     IFormsEngine formsEngine,
     ITempDataService tempDataService,
     IFileHostManager fileHostManager,
-    IChoiceProviderService choiceProviderService) : PageModel
+    IChoiceProviderService choiceProviderService,
+    IOrganisationClient organisationClient, 
+    IUserInfoService userInfoService) : PageModel
 {
     [BindProperty(SupportsGet = true)]
     public Guid OrganisationId { get; set; }
@@ -126,7 +125,18 @@ public class FormsQuestionPageModel(
                     using var stream = response.Value.formFile.OpenReadStream();
                     await fileHostManager.UploadFile(stream, response.Value.filename, response.Value.contentType);
 
-                    await publisher.Publish(new ScanFile() {  FileName = response.Value.filename, OrganisationId = OrganisationId });
+                    var userInfo = await userInfoService.GetUserInfo();
+                    var organisation = await organisationClient.GetOrganisationAsync(OrganisationId);
+
+                    await publisher.Publish(new ScanFile() {
+                        QueueFileName = response.Value.filename,
+                        UploadedFileName = FileUploadModel!.UploadedFile!.FileName,
+                        OrganisationId = OrganisationId,
+                        OrganisationEmailAddress = organisation.ContactPoint.Email,
+                        UserEmailAddress = userInfo.Email,
+                        OrganisationName = organisation.Name,
+                        FullName = userInfo.Name
+                    }); 
 
                     answer ??= new FormAnswer();
                     answer.TextValue = response.Value.filename;
