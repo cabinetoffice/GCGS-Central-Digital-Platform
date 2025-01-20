@@ -25,6 +25,9 @@ public static class ElastiCacheExtensions
             catch (Exception ex)
             {
                 logger.Error(ex, "SharedSession failed to start.");
+
+                // @TODO: remove this line once trigger for sticky sessions is added - see DP-1084 for details
+                throw new Exception("SharedSession failed to start.", ex);
             }
         }
 
