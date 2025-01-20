@@ -21,6 +21,18 @@ output "private_subnets_cidr_blocks" {
   value       = aws_subnet.private.*.cidr_block
 }
 
+output "production_private_beta_domain" {
+  value = var.is_production ? "${local.production_subdomain}.${aws_route53_zone.production_private_beta[0].name}" : aws_route53_zone.public.name
+}
+
+output "production_private_beta_hosted_zone_fqdn" {
+  value = try(aws_route53_zone.production_private_beta[0].name, null)
+}
+
+output "production_private_beta_hosted_zone_id" {
+  value = try(aws_route53_zone.production_private_beta[0].id, null)
+}
+
 output "public_domain" {
   value = var.is_production ? "${local.production_subdomain}.${aws_route53_zone.public.name}" : aws_route53_zone.public.name
 }

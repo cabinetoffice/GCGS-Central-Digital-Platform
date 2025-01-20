@@ -4,8 +4,8 @@ variable "fts_azure_frontdoor" {
   default     = null
 }
 
-variable "public_hosted_zone_id" {
-  description = "ID of the public hosted zone"
+variable "hosted_zone_id" {
+  description = "ID of the hosted zone to deploy to"
   type        = string
 }
 
