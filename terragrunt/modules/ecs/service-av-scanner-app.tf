@@ -16,6 +16,8 @@ module "ecs_service_av_scanner_app" {
       name                     = var.service_configs.av_scanner_app.name
       public_domain            = var.public_domain
       queue_av_scanner_url     = var.queue_av_scanner_url
+      s3_permanent_bucket      = module.s3_bucket_permanent.bucket
+      s3_staging_bucket        = module.s3_bucket_staging.bucket
       service_version          = local.service_version
       uuid_ppon_service_enable = false
       vpc_cidr                 = var.vpc_cider

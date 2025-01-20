@@ -42,7 +42,7 @@
                         </div>
                     </div>
                 }
-                else if (Model.Review.Status == CDP.Organisation.WebApiClient.ReviewStatus.Pending)
+                else if (organisationDetails.IsPendingBuyer() || (organisationDetails.IsBuyer() && Model.HasBuyerSignedMou == false))
                 {
                     <div class="govuk-notification-banner" role="region" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
                         <div class="govuk-notification-banner__header">
@@ -54,6 +54,19 @@
                             <p class="govuk-notification-banner__heading">
                                 @StaticTextResource.Organisation_BuyerRegistrationPendingApproval
                             </p>
+                            <p class="govuk-body">
+                                @StaticTextResource.OrganisationOverView_Banner_PendingApproval_Hint
+                            </p>
+                            
+                            <ul class="govuk-list govuk-list--bullet">
+                                @if(Model.HasBuyerSignedMou == false){
+                                    <li>@Html.Raw(string.Format(@StaticTextResource.OrganisationOverView_Banner_Review_MoU_Link, Model.Id))</li>
+                                }
+                                @if (organisationDetails.IsPendingBuyer())
+                                {
+                                    <li>@StaticTextResource.OrganisationOverView_Banner_PendingApproval</li>
+                                }
+                            </ul>
                         </div>
                     </div>
                 }
@@ -197,6 +210,23 @@
                                             {
                                                 @regulation.Description()<br/>
                                             }
+                                        }
+                                    </p>
+                                </dd>
+                            </div>
+                        }
+
+                        @if (Model.HasBuyerSignedMou)
+                        {
+                            <div class="govuk-summary-list__row">
+                                <dt class="govuk-summary-list__key">
+                                    @StaticTextResource.MoU_DataSharingAgreement_Title
+                                </dt>
+                                <dd class="govuk-summary-list__value">
+                                    <p class="govuk-body">
+                                        @if (Model.MouLatest != null)
+                                        {
+                                          @Model.MouSignedOnDate;
                                         }
                                     </p>
                                 </dd>

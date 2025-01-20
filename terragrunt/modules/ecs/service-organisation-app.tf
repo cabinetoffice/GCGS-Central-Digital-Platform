@@ -50,6 +50,7 @@ module "ecs_service_organisation_app" {
       onelogin_logout_notification_urls   = join(",", var.onelogin_logout_notification_urls)
       onelogin_private_key                = local.one_loging.credential_locations.private_key
       public_domain                       = var.public_domain
+      queue_av_scanner_url                = var.queue_av_scanner_url
       redis_auth_token_arn                = var.redis_auth_token_arn
       redis_port                          = var.redis_port
       redis_primary_endpoint_address      = var.redis_primary_endpoint
@@ -81,8 +82,8 @@ module "ecs_service_organisation_app" {
   role_ecs_task_exec_arn        = var.role_ecs_task_exec_arn
   tags                          = var.tags
   allowed_unauthenticated_paths = ["/one-login/back-channel-sign-out", "/assets/*", "/css/*", "/manifest.json"]
-  user_pool_arn                 = var.is_production ? null : var.user_pool_arn
-  user_pool_client_id           = var.is_production ? null : var.user_pool_client_id
-  user_pool_domain              = var.is_production ? null : var.user_pool_domain
+  user_pool_arn                 = var.environment == "integration" ? null : var.user_pool_arn
+  user_pool_client_id           = var.environment == "integration" ? null : var.user_pool_client_id
+  user_pool_domain              = var.environment == "integration" ? null : var.user_pool_domain
   vpc_id                        = var.vpc_id
 }

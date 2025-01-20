@@ -91,7 +91,7 @@ public class FormElementFileUploadModelTest
         var validationResults = _model.Validate(new ValidationContext(_model)).ToList();
 
         validationResults.Should().ContainSingle();
-        validationResults.First().ErrorMessage.Should().Be("No file selected.");
+        validationResults.First().ErrorMessage.Should().Be("Select a file");
     }
 
     [Fact]
@@ -108,7 +108,7 @@ public class FormElementFileUploadModelTest
         var validationResults = _model.Validate(new ValidationContext(_model)).ToList();
 
         validationResults.Should().ContainSingle();
-        validationResults.First().ErrorMessage.Should().Be("The file size must not exceed 25MB.");
+        validationResults.First().ErrorMessage.Should().Be("The file must be smaller than 25MB.");
     }
 
     [Fact]
@@ -125,7 +125,7 @@ public class FormElementFileUploadModelTest
         var validationResults = _model.Validate(new ValidationContext(_model)).ToList();
 
         validationResults.Should().ContainSingle();
-        validationResults.First().ErrorMessage.Should().Be("Please upload a file which has one of the following extensions: .jpg, .jpeg, .png, .pdf, .txt, .xls, .xlsx, .csv, .docx, .doc");
+        validationResults.First().ErrorMessage.Should().Be("The file must be a .jpg, .jpeg, .png, .pdf, .txt, .xls, .xlsx, .csv, .docx, .doc");
     }
 
     [Fact]
@@ -143,7 +143,7 @@ public class FormElementFileUploadModelTest
         var validationResults = _model.Validate(new ValidationContext(_model)).ToList();
 
         validationResults.Should().ContainSingle();
-        validationResults.First().ErrorMessage.Should().Be("Please upload a file which has one of the following extensions: .jpg, .jpeg, .png, .pdf, .txt, .xls, .xlsx, .csv, .docx, .doc");
+        validationResults.First().ErrorMessage.Should().Be("The file must be a .jpg, .jpeg, .png, .pdf, .txt, .xls, .xlsx, .csv, .docx, .doc");
     }
 
     [Fact]

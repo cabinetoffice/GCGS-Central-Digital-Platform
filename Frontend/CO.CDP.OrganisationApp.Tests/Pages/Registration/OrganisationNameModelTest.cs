@@ -190,7 +190,7 @@ public class OrganisationNameModelTest
     }
 
     [Fact]
-    public void OnPost_WhenValidModel_ShouldRedirectToOrganisationEmailPage()
+    public void OnPost_WhenValidModel_ShouldRedirectToOrganisationNameSearchPage()
     {
         var model = GivenOrganisationNameModel();
 
@@ -200,7 +200,7 @@ public class OrganisationNameModelTest
         var actionResult = model.OnPost();
 
         actionResult.Should().BeOfType<RedirectToPageResult>()
-            .Which.PageName.Should().Be("OrganisationEmail");
+            .Which.PageName.Should().Be("OrganisationNameSearch");
     }
 
     [Fact]

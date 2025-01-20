@@ -23,6 +23,7 @@ public class OrganisationEndpointsTests
     private readonly Mock<IUseCase<(Guid, UpdateOrganisation), bool>> _updatesOrganisationUseCase = new();
     private readonly Mock<IUseCase<(Guid, OrganisationJoinRequestStatus?), IEnumerable<JoinRequestLookUp>>> _getOrganisationJoinRequestsUseCase = new();
     private readonly Mock<IUseCase<(Guid, Guid, UpdateJoinRequest), bool>> _updateJoinRequestUseCase = new();
+    private readonly Mock<IUseCase<OrganisationSearchQuery, IEnumerable<OrganisationSearchResult>>> _searchOrganisationUseCase = new();
 
     public OrganisationEndpointsTests()
     {
@@ -300,6 +301,57 @@ public class OrganisationEndpointsTests
         var response = await factory.CreateClient().GetAsync($"/organisations/{organisationId}/reviews");
 
         response.StatusCode.Should().Be(NotFound);
+    }
+
+    [Theory]
+    [InlineData(OK, Channel.OneLogin, OrganisationPersonScope.Admin)]
+    [InlineData(OK, Channel.OneLogin, OrganisationPersonScope.Editor)]
+    [InlineData(OK, Channel.OneLogin, OrganisationPersonScope.Viewer)]
+    [InlineData(OK, Channel.OneLogin, OrganisationPersonScope.Responder)]
+    [InlineData(OK, Channel.ServiceKey)]
+    [InlineData(Forbidden, Channel.OrganisationKey)]
+    [InlineData(Forbidden, "unknown_channel")]
+    public async Task GetOrganisationSearch_Authorization_ReturnsExpectedStatusCode(
+        HttpStatusCode expectedStatusCode, string channel, string? scope = null)
+    {
+        var organisationId = Guid.NewGuid();
+
+        var searchResults = new List<OrganisationSearchResult>
+        {
+            new OrganisationSearchResult
+            {
+                Id = Guid.NewGuid(),
+                Identifier = new Identifier
+                {
+                    Scheme = "scheme",
+                    Id = "123",
+                    LegalName = "legal name"
+                },
+                Name = "Org name",
+                Roles = new List<PartyRole>
+                {
+                    PartyRole.Buyer
+                },
+                Type = OrganisationType.Organisation
+            }
+        };
+
+        _searchOrganisationUseCase.Setup(uc => uc.Execute(It.IsAny<OrganisationSearchQuery>()))
+            .ReturnsAsync(searchResults);
+
+        var factory = new TestAuthorizationWebApplicationFactory<Program>(
+            channel, organisationId, scope,
+            services => services.AddScoped(_ => _searchOrganisationUseCase.Object));
+
+        var response = await factory.CreateClient().GetAsync($"/organisation/search?name=asd&limit=10");
+
+        response.StatusCode.Should().Be(expectedStatusCode);
+
+        if (expectedStatusCode != Forbidden)
+        {
+            var results = await response.Content.ReadFromJsonAsync<List<OrganisationSearchResult>>();
+            results.Should().BeEquivalentTo(searchResults, options => options.ComparingByMembers<OrganisationSearchResult>());
+        }
     }
 
     public static Model.Organisation GivenOrganisation(Guid organisationId)

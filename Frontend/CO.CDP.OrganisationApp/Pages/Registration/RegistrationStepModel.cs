@@ -11,6 +11,7 @@ public abstract class RegistrationStepModel : LoggedInUserAwareModel
     public const string OrganisationInternationalIdentificationCountryPage = "/registration/organisation-identification-country";
     public const string OrganisationInternationalIdentifierPage = "/registration/organisation-international-identification";
     public const string OrganisationNamePage = "/registration/organisation-name";
+    public const string OrganisationNameSearchPage = "/registration/organisation-name-search";
     public const string OrganisationEmailPage = "/registration/organisation-email";
     public const string OrganisationAddressPage = "/registration/organisation-registered-address/uk";
     public const string OrganisationNonUKAddressPage = "/registration/organisation-registered-address/non-uk";
@@ -40,6 +41,7 @@ public abstract class RegistrationStepModel : LoggedInUserAwareModel
             OrganisationInternationalIdentificationCountryPage => ValidType(),
             OrganisationInternationalIdentifierPage => ValidType() && ValidCountry(),
             OrganisationNamePage => ValidType() && ValidIdentifier(),
+            OrganisationNameSearchPage => ValidType() && ValidIdentifier(),
             OrganisationEmailPage => ValidType() && ValidIdentifier() && ValidName(),
             OrganisationAddressPage or OrganisationNonUKAddressPage => ValidType() && ValidIdentifier() && ValidName() && ValidEmail(),
             BuyerOrganisationTypePage => ValidType(OrganisationType.Buyer) && ValidIdentifier() && ValidName() && ValidEmail() && ValidAddress(),

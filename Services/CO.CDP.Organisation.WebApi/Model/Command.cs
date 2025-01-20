@@ -385,6 +385,24 @@ public record OrganisationQuery
     }
 }
 
+public record OrganisationSearchQuery
+{
+    public string Name { get; }
+    public PartyRole? Role { get; }
+    public int? Limit { get; }
+    public OrganisationSearchQuery(string name, int? limit, string? role = null)
+    {
+        Name = name;
+
+        if (role != null)
+        {
+            Role = (PartyRole)Enum.Parse(typeof(PartyRole), role, true);
+        }
+
+        Limit = limit;
+    }
+}
+
 public record RegisterAuthenticationKey
 {
     public required string Name { get; set; }
