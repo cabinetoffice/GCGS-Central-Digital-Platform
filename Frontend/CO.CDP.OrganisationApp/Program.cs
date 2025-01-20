@@ -27,13 +27,10 @@ using static IdentityModel.OidcConstants;
 using static System.Net.Mime.MediaTypeNames;
 using ISession = CO.CDP.OrganisationApp.ISession;
 using Microsoft.FeatureManagement;
-using CO.CDP.MQ.Hosting;
 using Amazon.SQS;
 using CO.CDP.AwsServices.Sqs;
 using CO.CDP.MQ;
 using Microsoft.Extensions.Options;
-using Microsoft.Extensions.DependencyInjection;
-using System;
 
 const string FormsHttpClientName = "FormsHttpClient";
 const string TenantHttpClientName = "TenantHttpClient";
