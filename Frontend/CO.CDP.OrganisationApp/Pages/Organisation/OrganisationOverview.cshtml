@@ -16,6 +16,7 @@
     var registeredAddress = organisationDetails.Addresses.FirstOrDefault(a => a.Type == CO.CDP.Organisation.WebApiClient.AddressType.Registered);
     bool isViewer = await userInfoService.IsViewer();
     ViewData["Title"] = organisationDetails.Name;
+}
 
 @section BeforeContent {
     <a class="govuk-back-link" href="/organisation-selection">@StaticTextResource.Global_Back</a>
