@@ -72,15 +72,27 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
             .Include(p => p.Addresses)
             .ThenInclude(p => p.Address)
             .AsSingleQuery()
-            .Where(t => t.Name.ToLower().StartsWith(name.ToLower()) && (!role.HasValue || t.Roles.Contains(role.Value)))
-            .Where(t => t.PendingRoles.Count == 0);
+            .Where(t => t.PendingRoles.Count == 0)
+            .Select(t => new
+            {
+                Organisation = t,
+                SimilarityScore = EF.Functions.TrigramsSimilarity(t.Name, name)
+            })
+            .Where(t => t.SimilarityScore > 0.3);
 
-        if(limit.HasValue)
+        if (role.HasValue)
         {
-            query.Take(limit.Value);
+            query = query.Where(t => t.Organisation.Roles.Contains(role.Value));
         }
 
-        return await query.ToListAsync();
+        if (limit.HasValue)
+        {
+            query = query.Take(limit.Value);
+        }
+
+        query.OrderByDescending(t => t.SimilarityScore);
+
+        return await query.Select(t => t.Organisation).ToListAsync();
     }
 
     public async Task<IEnumerable<OrganisationPerson>> FindOrganisationPersons(Guid organisationId)
