@@ -41,9 +41,33 @@ public static class EndpointExtensions
             .WithOpenApi(operation =>
             {
                 operation.OperationId = "GetAllOrganisations";
-                operation.Description = "Get a list of all organisations.";
+                operation.Description = "Get a list of all organisations of a certain type (buyer/supplier).";
                 operation.Summary = "Get a list of all organisations.";
                 operation.Responses["200"].Description = "A list of organisations.";
+                operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
+                operation.Responses["500"].Description = "Internal server error.";
+                return operation;
+            });
+
+        app.MapGet("/organisations/count",
+                [OrganisationAuthorize([AuthenticationChannel.OneLogin], personScopes: [Constants.PersonScope.SupportAdmin])]
+                async ([FromQuery] string type, IUseCase<OrganisationTypeQuery, int> useCase) =>
+                {
+                    return await useCase.Execute(new OrganisationTypeQuery
+                        {
+                            Type = type
+                        })
+                        .AndThen(count => Results.Ok(count));
+                })
+            .Produces<int>(StatusCodes.Status200OK, "application/json")
+            .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
+            .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError)
+            .WithOpenApi(operation =>
+            {
+                operation.OperationId = "GetOrganisationsTotalCount";
+                operation.Description = "Get a total count of all the organisations of a certain type (buyer/supplier).";
+                operation.Summary = "Get a total count of all the organisations.";
+                operation.Responses["200"].Description = "A number of organisations.";
                 operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
                 operation.Responses["500"].Description = "Internal server error.";
                 return operation;

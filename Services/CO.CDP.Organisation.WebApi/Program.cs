@@ -47,7 +47,6 @@ builder.Services.AddScoped<IPersonInviteRepository, DatabasePersonInviteReposito
 builder.Services.AddScoped<IAuthenticationKeyRepository, DatabaseAuthenticationKeyRepository>();
 builder.Services.AddScoped<IOrganisationJoinRequestRepository, DatabaseOrganisationJoinRequestRepository>();
 builder.Services.AddScoped<IShareCodeRepository, DatabaseShareCodeRepository>();
-
 builder.Services.AddScoped<IUseCase<AssignOrganisationIdentifier, bool>, AssignIdentifierUseCase>();
 builder.Services.AddScoped<IUseCase<RegisterOrganisation, Organisation>, RegisterOrganisationUseCase>();
 builder.Services.AddScoped<IUseCase<Guid, Organisation?>, GetOrganisationUseCase>();
@@ -55,6 +54,7 @@ builder.Services.AddScoped<IUseCase<Guid, IEnumerable<Review>>, GetReviewsUseCas
 builder.Services.AddScoped<IUseCase<Organisation?>, GetMyOrganisationUseCase>();
 builder.Services.AddScoped<IUseCase<OrganisationQuery, Organisation?>, LookupOrganisationUseCase>();
 builder.Services.AddScoped<IUseCase<PaginatedOrganisationQuery, IEnumerable<OrganisationExtended>>, GetOrganisationsUseCase>();
+builder.Services.AddScoped<IUseCase<OrganisationTypeQuery, int>, GetOrganisationsTotalUseCase>();
 builder.Services.AddScoped<IUseCase<Guid, SupplierInformation?>, GetSupplierInformationUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, Guid), ConnectedEntity?>, GetConnectedEntityUseCase>();
 builder.Services.AddScoped<IUseCase<Guid, IEnumerable<ConnectedEntityLookup>>, GetConnectedEntitiesUseCase>();

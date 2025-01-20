@@ -22,29 +22,30 @@ public class OrganisationsModel(
 
     public int PageSize { get; set; }
 
+    public string PageUrl { get; set; }
+
     public IList<OrganisationExtended> Organisations { get; set; } = [];
 
-    public async Task<IActionResult> OnGet(string type, int pageNumber = 50)
+    public async Task<IActionResult> OnGet(string type, int pageNumber = 1)
     {
-        var pageSize = 2;
+        PageSize = 2;
 
         Type = type;
         Title = (Type == "buyer"
                 ? StaticTextResource.Support_Organisations_BuyerOrganisations_Title
                 : StaticTextResource.Support_Organisations_SupplierOrganisations_Title);
 
-        var skip = (pageNumber - 1) * pageSize;
+        var skip = (pageNumber - 1) * PageSize;
 
         CurrentPage = pageNumber;
 
-        Organisations = (await organisationClient.GetAllOrganisationsAsync(Type, pageNumber, skip)).ToList();
+        Organisations = (await organisationClient.GetAllOrganisationsAsync(Type, PageSize, skip)).ToList();
 
-        // TotalOrganisations = await organisationClient.GetTotalOrganisationsCountAsync(Type);
+        TotalOrganisations = await organisationClient.GetOrganisationsTotalCountAsync(type);
 
-        TotalOrganisations = 100;
+        TotalPages = (int)Math.Ceiling((double)TotalOrganisations / PageSize);
 
-        // TotalPages = (int)Math.Ceiling((double)TotalOrganisations / PageSize);
-        TotalPages = TotalOrganisations / pageSize;
+        PageUrl = $"/support/organisations/{Type}";
 
         return Page();
     }

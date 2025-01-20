@@ -129,6 +129,50 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
         return await result.AsSingleQuery().ToListAsync();
     }
 
+    public async Task<IList<Organisation>> GetPaginated(string type, int limit, int skip)
+    {
+        IQueryable<Organisation> result = context.Organisations
+            .Include(o => o.ReviewedBy)
+            .Include(o => o.Identifiers)
+            .Include(o => o.BuyerInfo)
+            .Include(o => o.SupplierInfo)
+            .Include(o => o.Addresses)
+            .ThenInclude(p => p.Address);
+
+        switch (type)
+        {
+            case "buyer":
+                result = result.Where(o => o.Roles.Contains(PartyRole.Buyer) || o.PendingRoles.Contains(PartyRole.Buyer));
+                break;
+            case "supplier":
+                result = result.Where(o => o.Roles.Contains(PartyRole.Tenderer));
+                break;
+        }
+
+        return await result
+            .AsSingleQuery()
+            .Skip(skip)
+            .Take(limit)
+            .ToListAsync();
+    }
+
+    public async Task<int> GetTotalCount(string? type)
+    {
+        IQueryable<Organisation> result = context.Organisations;
+
+        switch (type)
+        {
+            case "buyer":
+                result = result.Where(o => o.Roles.Contains(PartyRole.Buyer) || o.PendingRoles.Contains(PartyRole.Buyer));
+                break;
+            case "supplier":
+                result = result.Where(o => o.Roles.Contains(PartyRole.Tenderer));
+                break;
+        }
+
+        return await result.CountAsync();
+    }
+
     public async Task<IList<ConnectedEntity>> GetConnectedIndividualTrusts(int organisationId)
     {
         var result = context.ConnectedEntities

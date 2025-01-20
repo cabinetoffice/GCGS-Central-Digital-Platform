@@ -29,6 +29,10 @@ public interface IOrganisationRepository : IDisposable
 
     public Task<IList<Organisation>> Get(string? type);
 
+    public Task<IList<Organisation>> GetPaginated(string type, int limit, int skip);
+
+    public Task<int> GetTotalCount(string? type);
+
     public class OrganisationRepositoryException(string message, Exception? cause = null) : Exception(message, cause)
     {
         public class DuplicateOrganisationException(string message, Exception? cause = null)

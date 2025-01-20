@@ -285,6 +285,15 @@
   <data name="Global_Reject" xml:space="preserve">
     <value>Reject</value>
   </data>
+  <data name="Global_Next" xml:space="preserve">
+    <value>Next</value>
+  </data>
+  <data name="Global_Previous" xml:space="preserve">
+    <value>Previous</value>
+  </data>
+  <data name="Global_Reject" xml:space="preserve">
+    <value>Reject</value>
+  </data>
   <data name="Organisation_MyAccount" xml:space="preserve">
     <value>My account</value>
   </data>

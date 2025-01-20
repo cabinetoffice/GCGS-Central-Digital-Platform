@@ -334,9 +334,14 @@ public record SupportOrganisationInfo
 
 public record PaginatedOrganisationQuery
 {
-    public string? Type { get; init; }
-    public int? Limit { get; init; }
-    public int? Skip { get; init; }
+    public string Type { get; init; }
+    public int Limit { get; init; }
+    public int Skip { get; init; }
+}
+
+public record OrganisationTypeQuery
+{
+    public string Type { get; init; }
 }
 
 public record OrganisationQuery
@@ -401,7 +406,7 @@ public record CreateOrganisationJoinRequest
 }
 
 public record SignMouRequest
-{ 
+{
     public required Guid MouId { get; set; }
     public required Guid CreatedById { get; set; }
     public required string Name{ get; set; }
