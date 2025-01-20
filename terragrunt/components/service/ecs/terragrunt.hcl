@@ -41,8 +41,10 @@ dependency core_networking {
   mock_outputs = {
     private_subnet_ids                     = "mock"
     private_subnets_cidr_blocks            = "mock"
-    production_private_beta_domain         = "mock" # @todo (ABN) DP-1069 Switch back to `public_domain` once domain is propagated
-    production_private_beta_hosted_zone_id = "mock" # @todo (ABN) DP-1069 Switch back to `public_hosted_zone_id` once domain is propagated
+    public_domain                          = "mock"
+    public_public_hosted_zone_iddomain     = "mock"
+    production_private_beta_domain         = "mock" # @todo (ABN) DP-1069 Remove once domain is propagated
+    production_private_beta_hosted_zone_id = "mock" # @todo (ABN) DP-1069 Remove once domain is propagated
     public_subnet_ids                      = "mock"
     public_subnets_cidr_blocks             = "mock"
     vpc_id                                 = "mock"
