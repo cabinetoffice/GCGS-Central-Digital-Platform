@@ -135,7 +135,7 @@ locals {
         "10.${local.cidr_b_production}.2.0/24",
         "10.${local.cidr_b_production}.3.0/24"
       ]
-      top_level_domain = "private-beta.find-tender.service.gov.uk"
+      top_level_domain = "find-tender.service.gov.uk"
 
       externals_cidr_block      = "integration account feature" # To be deprecated after FTS Migration
       externals_private_subnets = "integration account feature" # To be deprecated after FTS Migration

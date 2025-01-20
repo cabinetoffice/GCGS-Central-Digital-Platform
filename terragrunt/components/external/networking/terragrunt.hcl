@@ -24,7 +24,7 @@ locals {
 dependency core_networking {
   config_path = "../../core/networking"
   mock_outputs = {
-    public_hosted_zone_id = "mock"
+    production_private_beta_hosted_zone_id = "mock"
   }
 }
 
@@ -32,5 +32,5 @@ inputs = {
   fts_azure_frontdoor = local.global_vars.locals.fts_azure_frontdoor
   tags                = local.tags
 
-  public_hosted_zone_id = dependency.core_networking.outputs.public_hosted_zone_id
+  hosted_zone_id = dependency.core_networking.outputs.production_private_beta_hosted_zone_id
 }
