@@ -1011,8 +1011,9 @@ public static class EndpointExtensions
         app.MapGet("/{organisationId}/mou/latest",
       [OrganisationAuthorize(
             [AuthenticationChannel.OneLogin],
-              [Constants.OrganisationPersonScope.Admin, Constants.OrganisationPersonScope.Responder, Constants.OrganisationPersonScope.Editor, Constants.OrganisationPersonScope.Viewer],
-              OrganisationIdLocation.Path)]
+            [Constants.OrganisationPersonScope.Admin, Constants.OrganisationPersonScope.Responder, Constants.OrganisationPersonScope.Editor, Constants.OrganisationPersonScope.Viewer],
+            OrganisationIdLocation.Path,
+            [Constants.PersonScope.SupportAdmin])]
         async (Guid organisationId, IUseCase<Guid, MouSignatureLatest> useCase) =>
                 await useCase.Execute(organisationId)
                     .AndThen(mouSignatureLatest => mouSignatureLatest != null ? Results.Ok(mouSignatureLatest) : Results.NotFound()))
