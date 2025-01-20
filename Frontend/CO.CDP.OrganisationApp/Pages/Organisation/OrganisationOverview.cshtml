@@ -16,6 +16,36 @@
     var registeredAddress = organisationDetails.Addresses.FirstOrDefault(a => a.Type == CO.CDP.Organisation.WebApiClient.AddressType.Registered);
     bool isViewer = await userInfoService.IsViewer();
     ViewData["Title"] = organisationDetails.Name;
+
+    void RenderNotificationBanner(string title, string heading, string body, List<string>? bulletPoints = null)
+    {
+        <div class="govuk-notification-banner" role="region" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
+            <div class="govuk-notification-banner__header">
+                <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
+                    @title
+                </h2>
+            </div>
+            <div class="govuk-notification-banner__content">
+                <p class="govuk-notification-banner__heading">
+                    @heading
+                </p>
+                <p class="govuk-body">@body</p>
+                @if (bulletPoints != null && bulletPoints.Any())
+                {
+                    <ul class="govuk-list govuk-list--bullet">
+                        @foreach (var point in bulletPoints)
+                        {
+                            <li>@Html.Raw(point)</li>
+                        }
+                    </ul>
+                }
+            </div>
+        </div>
+    }
+
+    var bulletPoints = new List<string>();
+    var showSignedMouBanner = organisationDetails.IsBuyer() && Model.HasBuyerSignedMou == false;
+
 }
 
 @section BeforeContent {
@@ -25,78 +55,48 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
 
-            @if (Model.Review != null) {
-
+            @if (Model.Review != null)
+            {
                 if (Model.Review.Status == CDP.Organisation.WebApiClient.ReviewStatus.Rejected)
                 {
-                    <div class="govuk-notification-banner" role="region" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
-                        <div class="govuk-notification-banner__header">
-                            <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
-                                @StaticTextResource.Organisation_RegistrationNotApproved
-                            </h2>
-                        </div>
-                        <div class="govuk-notification-banner__content">
-                            <p class="govuk-notification-banner__heading">
-                                @StaticTextResource.Organisation_WeCouldNotApproveYourRequest
-                            </p>
-                            <p class="govuk-body">@Model.Review.Comment</p>
-                        </div>
-                    </div>
+                    RenderNotificationBanner(
+                        title: StaticTextResource.Organisation_RegistrationNotApproved,
+                        heading: StaticTextResource.Organisation_WeCouldNotApproveYourRequest,
+                        body: Model.Review.Comment
+                    );
                 }
-                else if (organisationDetails.IsPendingBuyer() || (organisationDetails.IsBuyer() && Model.HasBuyerSignedMou == false))
+            else if (organisationDetails.IsPendingBuyer() || showSignedMouBanner)
                 {
-                    <div class="govuk-notification-banner" role="region" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
-                        <div class="govuk-notification-banner__header">
-                            <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
-                                @StaticTextResource.Global_Important
-                            </h2>
-                        </div>
-                        <div class="govuk-notification-banner__content">
-                            <p class="govuk-notification-banner__heading">
-                                @StaticTextResource.Organisation_BuyerRegistrationPendingApproval
-                            </p>
-                            <p class="govuk-body">
-                                @StaticTextResource.OrganisationOverView_Banner_PendingApproval_Hint
-                            </p>
-                            
-                            <ul class="govuk-list govuk-list--bullet">
-                                @if(Model.HasBuyerSignedMou == false){
-                                    <li>@Html.Raw(string.Format(@StaticTextResource.OrganisationOverView_Banner_Review_MoU_Link, Model.Id))</li>
-                                }
-                                @if (organisationDetails.IsPendingBuyer())
-                                {
-                                    <li>@StaticTextResource.OrganisationOverView_Banner_PendingApproval</li>
-                                }
-                            </ul>
-                        </div>
-                    </div>
-                }
-            } else {
+                    if (!Model.HasBuyerSignedMou)
+                    {
+                        bulletPoints.Add(string.Format(StaticTextResource.OrganisationOverView_Banner_Review_MoU_Link, Model.Id));
+                    }
+                    if (organisationDetails.IsPendingBuyer())
+                    {
+                        bulletPoints.Add(StaticTextResource.OrganisationOverView_Banner_PendingApproval);
+                    }
 
-                if ((organisationDetails.IsBuyer() && Model.HasBuyerSignedMou == false))
+                    RenderNotificationBanner(
+                        title: StaticTextResource.Global_Important,
+                        heading: StaticTextResource.Organisation_BuyerRegistrationPendingApproval,
+                        body: StaticTextResource.OrganisationOverView_Banner_PendingApproval_Hint,
+                        bulletPoints: bulletPoints
+                    );
+                }
+            }
+        else if (showSignedMouBanner)
+            {
+                if (!Model.HasBuyerSignedMou)
                 {
-                    <div class="govuk-notification-banner" role="region" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
-                        <div class="govuk-notification-banner__header">
-                            <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
-                                @StaticTextResource.Global_Important
-                            </h2>
-                        </div>
-                        <div class="govuk-notification-banner__content">
-                            <p class="govuk-notification-banner__heading">
-                                @StaticTextResource.Organisation_BuyerRegistrationPendingApproval
-                            </p>
-                            <p class="govuk-body">
-                                @StaticTextResource.OrganisationOverView_Banner_PendingApproval_Hint
-                            </p>
-                            <ul class="govuk-list govuk-list--bullet">
-                                @if (Model.HasBuyerSignedMou == false)
-                                {
-                                    <li>@Html.Raw(string.Format(@StaticTextResource.OrganisationOverView_Banner_Review_MoU_Link, Model.Id))</li>
-                                }                            
-                            </ul>
-                        </div>
-                    </div>
-                }   
+                    bulletPoints.Add(string.Format(StaticTextResource.OrganisationOverView_Banner_Review_MoU_Link, Model.Id));
+                }
+
+                RenderNotificationBanner(
+                    title: StaticTextResource.Global_Important,
+                    heading: StaticTextResource.Organisation_BuyerRegistrationPendingApproval,
+                    body: StaticTextResource.OrganisationOverView_Banner_PendingApproval_Hint,
+                    bulletPoints: bulletPoints
+                );
             }
 
             <fieldset class="govuk-fieldset">
