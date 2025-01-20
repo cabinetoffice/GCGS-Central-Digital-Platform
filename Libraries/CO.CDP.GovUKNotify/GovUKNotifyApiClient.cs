@@ -1,5 +1,7 @@
 using CO.CDP.GovUKNotify.Models;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -17,20 +19,23 @@ public class GovUKNotifyApiClient : IGovUKNotifyApiClient
     };
 
     private readonly HttpClient client;
+    private readonly IAuthentication authentication;
 
     public GovUKNotifyApiClient(
         IHttpClientFactory httpClientFactory,
-        IAuthentication authentication,
+        IAuthentication auth,
         ILogger<GovUKNotifyApiClient> logger)
     {
         _logger = logger;
         client = httpClientFactory.CreateClient(GovUKNotifyHttpClientName);
         client.BaseAddress = new Uri("https://api.notifications.service.gov.uk");
-        client.DefaultRequestHeaders.Authorization = authentication.GetAuthenticationHeader();
+        authentication = auth;
     }
 
     public async Task<EmailNotificationResponse?> SendEmail(EmailNotificationRequest request)
     {
+        client.DefaultRequestHeaders.Authorization = authentication.GetAuthenticationHeader();
+
         var res = await client.PostAsJsonAsync("/v2/notifications/email", request, jsonSerializerOptions);
         try
         {
