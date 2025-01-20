@@ -59,6 +59,6 @@ locals {
     config.name
   ]
 
-  waf_enabled = true
+  waf_enabled = var.environment != "integration"
 
 }
