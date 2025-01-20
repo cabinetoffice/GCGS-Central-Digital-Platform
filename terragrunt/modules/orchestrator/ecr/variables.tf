@@ -28,6 +28,10 @@ variable "service_configs" {
   }))
 }
 
+variable "tags" {
+  description = "Tags to apply to all resources in this module"
+  type        = map(string)
+}
 
 variable "tools_configs" {
   description = "Map of tools and their attributes"
@@ -38,9 +42,4 @@ variable "tools_configs" {
     port      = number
     port_host = number
   }))
-}
-
-variable "tags" {
-  description = "Tags to apply to all resources in this module"
-  type        = map(string)
 }
