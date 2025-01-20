@@ -7,9 +7,9 @@ namespace CO.CDP.OrganisationApp.Tests.TagHelpers;
 public class GovukButtonTagHelperTests
 {
     [Fact]
-    public void GovukButtonTagHelper_ShouldRenderButtonWithDefaults()
+    public async Task GovukButtonTagHelper_ShouldRenderButtonWithDefaults()
     {
-        var result = CallTagHelper("govuk-button", "Click me", [], new GovukButtonTagHelper());
+        var result = await CallTagHelper("govuk-button", "Click me", [], new GovukButtonTagHelper());
 
         result.Should()
             .Be(
@@ -17,9 +17,9 @@ public class GovukButtonTagHelperTests
     }
 
     [Fact]
-    public void GovukButtonTagHelper_ShouldRenderButton_WhenCustomClassIsSet()
+    public async Task GovukButtonTagHelper_ShouldRenderButton_WhenCustomClassIsSet()
     {
-        var result = CallTagHelper("govuk-button", "Click me", [], new GovukButtonTagHelper
+        var result = await CallTagHelper("govuk-button", "Click me", [], new GovukButtonTagHelper
         {
             Class = "custom-class"
         });
@@ -30,9 +30,9 @@ public class GovukButtonTagHelperTests
     }
 
     [Fact]
-    public void GovukButtonTagHelper_ShouldRenderButton_WhenMultipleCustomClassesAreSet()
+    public async Task GovukButtonTagHelper_ShouldRenderButton_WhenMultipleCustomClassesAreSet()
     {
-        var result = CallTagHelper("govuk-button", "Click me", [], new GovukButtonTagHelper
+        var result = await CallTagHelper("govuk-button", "Click me", [], new GovukButtonTagHelper
         {
             Class = "custom-class another-class many-classes"
         });
@@ -43,9 +43,9 @@ public class GovukButtonTagHelperTests
     }
 
     [Fact]
-    public void GovukButtonTagHelper_ShouldRenderButton_WhenTypeIsSet()
+    public async Task GovukButtonTagHelper_ShouldRenderButton_WhenTypeIsSet()
     {
-        var result = CallTagHelper("govuk-button", "Click me", [], new GovukButtonTagHelper
+        var result = await CallTagHelper("govuk-button", "Click me", [], new GovukButtonTagHelper
         {
             Type = "button"
         });
@@ -56,9 +56,9 @@ public class GovukButtonTagHelperTests
     }
 
     [Fact]
-    public void GovukButtonTagHelper_ShouldRenderButton_WhenDoubleClickIsSetToFalse()
+    public async Task GovukButtonTagHelper_ShouldRenderButton_WhenDoubleClickIsSetToFalse()
     {
-        var result = CallTagHelper("govuk-button", "Click me", [], new GovukButtonTagHelper
+        var result = await CallTagHelper("govuk-button", "Click me", [], new GovukButtonTagHelper
         {
             PreventDoubleClick = false
         });

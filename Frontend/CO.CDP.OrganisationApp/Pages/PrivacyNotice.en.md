@@ -178,7 +178,7 @@ Water Lane
 Wilmslow   
 Cheshire   
 SK9 5AF   
-[icocasework@ico.org.uk](mailto:icocasework@ico.org.uk)
+[icocasework@ico.org.uk](mailto:icocasework@ico.org.uk)  
 Telephone: 0303 123 1113   
  
 
