@@ -12,9 +12,10 @@
 @model OrganisationOverviewModel
 
 @{
-    var organisationDetails = Model.OrganisationDetails!;
+    var organisationDetails = Model.OrganisationDetails!;    
     var registeredAddress = organisationDetails.Addresses.FirstOrDefault(a => a.Type == CO.CDP.Organisation.WebApiClient.AddressType.Registered);
     bool isViewer = await userInfoService.IsViewer();
+    bool isAdmin = await userInfoService.IsAdmin();
     ViewData["Title"] = organisationDetails.Name;
 }
 
@@ -41,7 +42,7 @@
                     </div>
                 </div>
             }
-            else if (organisationDetails.IsPendingBuyer() || (organisationDetails.IsBuyer() && Model.HasBuyerSignedMou == false))
+            else if (organisationDetails.IsPendingBuyer() || (organisationDetails.IsBuyer() && Model.HasBuyerSignedMou == false && isAdmin))
             {
                 <div class="govuk-notification-banner" role="region" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
                     <div class="govuk-notification-banner__header">

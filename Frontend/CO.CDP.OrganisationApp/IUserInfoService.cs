@@ -7,6 +7,7 @@ public interface IUserInfoService
     public Task<UserInfo> GetUserInfo();
     public Guid? GetOrganisationId();
     public Task<bool> IsViewer();
+    public Task<bool> IsAdmin();
     public Task<bool> HasOrganisations();
 }
 
