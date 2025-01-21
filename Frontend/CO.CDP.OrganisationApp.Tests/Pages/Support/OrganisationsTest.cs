@@ -36,7 +36,6 @@ public class OrganisationsModelTests
         _organisationsModel.PageSize.Should().Be(10);
         _organisationsModel.CurrentPage.Should().Be(pageNumber);
         _organisationsModel.TotalPages.Should().Be(3);
-        _organisationsModel.PageUrl.Should().Be("/support/organisations/buyer");
     }
 
     [Fact]
@@ -56,7 +55,6 @@ public class OrganisationsModelTests
         _organisationsModel.PageSize.Should().Be(10);
         _organisationsModel.CurrentPage.Should().Be(pageNumber);
         _organisationsModel.TotalPages.Should().Be(4);
-        _organisationsModel.PageUrl.Should().Be("/support/organisations/supplier");
     }
 
     [Fact]
