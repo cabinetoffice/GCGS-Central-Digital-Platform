@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Options;
 using Microsoft.FeatureManagement;
 using System.Net;
 using System.Web;
@@ -26,7 +27,8 @@ public class OneLoginModel(
     IAuthorityClient authorityClient,
     ILogger<OneLoginModel> logger,
     IFeatureManager featureManager,
-    IConfiguration config) : PageModel
+    IConfiguration config,
+    IOptionsMonitor<OpenIdConnectOptions> optionsMonitor) : PageModel
 {
     [BindProperty(SupportsGet = true)]
     public required string PageAction { get; set; }
@@ -99,6 +101,8 @@ public class OneLoginModel(
 
     private async Task<IActionResult> UserInfo(string? redirectUri = null)
     {
+        await RetrieveUserInfo();
+
         var userInfo = await httpContextAccessor.HttpContext!.AuthenticateAsync();
         if (!userInfo.Succeeded)
         {
@@ -190,5 +194,46 @@ public class OneLoginModel(
         return SignOut(new AuthenticationProperties { RedirectUri = "/" },
                 CookieAuthenticationDefaults.AuthenticationScheme,
                 OpenIdConnectDefaults.AuthenticationScheme);
+    }
+
+    private async Task RetrieveUserInfo()
+    {
+        var userInfoEndpoint = "";
+        try
+        {
+            var accessToken = await httpContextAccessor.HttpContext!.GetTokenAsync("access_token");
+
+            if (!string.IsNullOrEmpty(accessToken))
+            {
+                var oidcOptions = optionsMonitor.Get(OpenIdConnectDefaults.AuthenticationScheme);
+                if (oidcOptions == null)
+                {
+                    logger.LogWarning("RetrieveUserInfo - openIdConnectOptions is null.");
+                    return;
+                }
+
+                userInfoEndpoint = $"{oidcOptions.Authority}/userinfo";
+
+                var requestMessage = new HttpRequestMessage(HttpMethod.Get, userInfoEndpoint);
+                requestMessage.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", accessToken);
+                requestMessage.Version = oidcOptions.Backchannel.DefaultRequestVersion;
+
+                var responseMessage = await oidcOptions.Backchannel.SendAsync(requestMessage);
+                responseMessage.EnsureSuccessStatusCode();
+                var userInfoResponse = await responseMessage.Content.ReadAsStringAsync();
+
+                var user = System.Text.Json.JsonDocument.Parse(userInfoResponse);
+
+                logger.LogInformation($"RetrieveUserInfo - User Sub - {user.RootElement.GetProperty("sub")}");
+            }
+            else
+            {
+                logger.LogWarning("RetrieveUserInfo - No access_token found, you must sign in first.");
+            }
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "RetrieveUserInfo Failed {userInfoEndpoint}", userInfoEndpoint);
+        }
     }
 }
