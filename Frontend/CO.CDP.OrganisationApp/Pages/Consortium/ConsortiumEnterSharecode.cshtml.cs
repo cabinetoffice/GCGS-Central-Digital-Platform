@@ -71,7 +71,7 @@ public class ConsortiumEnterSharecodeModel(
                 parties = null;
             }            
 
-            if (parties != null && parties.Parties.Where(p => p.ShareCode.Value == EnterSharecode).Any())
+            if (parties != null && parties.Parties.Where(p => p.Id == shareCode.Id).Any())
             {
                 ModelState.AddModelError(nameof(EnterSharecode), string.Format(StaticTextResource.Consortium_ConsortiumEnterSharecode_SharecodeAlreadyExists, shareCode.Name));
                 return Page();
