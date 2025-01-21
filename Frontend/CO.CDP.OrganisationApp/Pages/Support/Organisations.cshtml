@@ -10,25 +10,27 @@
     ViewData["ContainerClasses"] = "app-width-container--wide";
 }
 
-<h1 class="govuk-heading-l">@ViewData["Title"] - @(Model.Type)</h1>
+<h1 class="govuk-heading-l">@ViewData["Title"]</h1>
 
 <ul class="govuk-tabs__list">
     <li class="govuk-tabs__list-item @(Model.Type == "buyer" ? "govuk-tabs__list-item--selected" : "")">
         <a class="govuk-tabs__tab" href="/support/organisations/buyer">
-            Buyer organisations
+            @StaticTextResource.Support_Organisations_BuyerOrganisations_Title
         </a>
     </li>
     <li class="govuk-tabs__list-item @(Model.Type == "supplier" ? "govuk-tabs__list-item--selected" : "")">
         <a class="govuk-tabs__tab" href="/support/organisations/supplier">
-            Supplier organisations
+            @StaticTextResource.Support_Organisations_SupplierOrganisations_Title
         </a>
     </li>
 </ul>
 
 <br/>
 
-<h2 class="govuk-heading-m">There are @(Model.TotalOrganisations)
-    @(Model.Type)@(Model.TotalOrganisations == 0 || Model.TotalOrganisations > 1 ? "s" : "")</h2>
+<h2 class="govuk-heading-m">
+    @StaticTextResource.Support_OrganisationApproval_there_are @(Model.TotalOrganisations)
+    @(Model.Type == "buyer" ? @StaticTextResource.Support_OrganisationApproval_buyers : @StaticTextResource.Support_OrganisationApproval_suppliers)
+</h2>
 
 <table class="govuk-table">
     <thead class="govuk-table__head">
