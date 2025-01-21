@@ -9,7 +9,7 @@ namespace CO.CDP.OrganisationApp.Tests.TagHelpers;
 public class ContentSecurityPolicyNonceTagHelperTests
 {
     [Fact]
-    public void ContentSecurityPolicyNonceTagHelper_ShouldAddNonceAttribute_WhenNonceExistsInHttpContext()
+    public async Task ContentSecurityPolicyNonceTagHelper_ShouldAddNonceAttribute_WhenNonceExistsInHttpContext()
     {
         const string expectedNonce = "test-nonce";
         var httpContext = new DefaultHttpContext();
@@ -20,7 +20,7 @@ public class ContentSecurityPolicyNonceTagHelperTests
 
         var tagHelper = new ContentSecurityPolicyNonceTagHelper(httpContextAccessorMock.Object);
 
-        var result = CallTagHelper(
+        var result = await CallTagHelper(
             "script",
             "console.log('test');",
             new TagHelperAttributeList { { "nonce-csp", null } },
@@ -32,7 +32,7 @@ public class ContentSecurityPolicyNonceTagHelperTests
     }
 
     [Fact]
-    public void ContentSecurityPolicyNonceTagHelper_ShouldNotAddNonceAttribute_WhenNonceDoesNotExistInHttpContext()
+    public async Task ContentSecurityPolicyNonceTagHelper_ShouldNotAddNonceAttribute_WhenNonceDoesNotExistInHttpContext()
     {
         var httpContext = new DefaultHttpContext();
 
@@ -41,7 +41,7 @@ public class ContentSecurityPolicyNonceTagHelperTests
 
         var tagHelper = new ContentSecurityPolicyNonceTagHelper(httpContextAccessorMock.Object);
 
-        var result = CallTagHelper(
+        var result = await CallTagHelper(
             "script",
             "console.log('test');",
             new TagHelperAttributeList { { "nonce-csp", null } },
@@ -53,14 +53,14 @@ public class ContentSecurityPolicyNonceTagHelperTests
     }
 
     [Fact]
-    public void ContentSecurityPolicyNonceTagHelper_ShouldHandleNullHttpContextGracefully()
+    public async Task ContentSecurityPolicyNonceTagHelper_ShouldHandleNullHttpContextGracefully()
     {
         var httpContextAccessorMock = new Mock<IHttpContextAccessor>();
         httpContextAccessorMock.Setup(accessor => accessor.HttpContext).Returns((HttpContext)null!);
 
         var tagHelper = new ContentSecurityPolicyNonceTagHelper(httpContextAccessorMock.Object);
 
-        var result = CallTagHelper(
+        var result = await CallTagHelper(
             "script",
             "console.log('test');",
             new TagHelperAttributeList { { "nonce-csp", null } },

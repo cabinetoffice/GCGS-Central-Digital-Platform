@@ -88,6 +88,37 @@ public class OrganisationNameSearchModelTests
     }
 
     [Fact]
+    public async Task OnGet_WhenApiReturnsExactMatchSomewhereInResults_ShouldRedirectToJoinOrganisationWithFlashMessage()
+    {
+        RegistrationDetails registrationDetails = GivenRegistrationDetails("Test org", Constants.OrganisationType.Buyer);
+        _sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(registrationDetails);
+
+        var nonMatchingOrganisation1 = GivenOrganisationSearchResult("Something", "scheme", "124");
+        var nonMatchingOrganisation2 = GivenOrganisationSearchResult("Another thing", "scheme", "125");
+        var matchingOrganisation = GivenOrganisationSearchResult("Test org", "scheme", "123");
+
+        _organisationClientMock
+            .Setup(client => client.SearchOrganisationAsync("Test org", "Buyer", 10))
+            .ReturnsAsync(new List<OrganisationSearchResult> { nonMatchingOrganisation1, nonMatchingOrganisation2, matchingOrganisation });
+
+        var model = GivenOrganisationNameSearchModel();
+        var result = await model.OnGet();
+
+        _flashMessageServiceMock.Verify(service =>
+            service.SetFlashMessage(
+                FlashMessageType.Important,
+                StaticTextResource.OrganisationRegistration_SearchOrganisationName_ExactMatchAlreadyExists,
+                null,
+                null,
+                null,
+                null
+            ), Times.Once);
+
+        result.Should().BeOfType<RedirectResult>()
+            .Which.Url.Should().Be("/registration/scheme%3A123/join-organisation");
+    }
+
+    [Fact]
     public async Task OnGet_WhenApiReturnsMultipleResults_ShouldReturnPage()
     {
         RegistrationDetails registrationDetails = GivenRegistrationDetails("Test org", Constants.OrganisationType.Buyer);
