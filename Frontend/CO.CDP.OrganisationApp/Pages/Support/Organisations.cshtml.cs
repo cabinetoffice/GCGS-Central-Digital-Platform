@@ -22,14 +22,11 @@ public class OrganisationsModel(
 
     public int PageSize { get; set; }
 
-    public required string PageUrl { get; set; }
-
     public IList<OrganisationExtended> Organisations { get; set; } = [];
 
     public async Task<IActionResult> OnGet(string type, int pageNumber = 1)
     {
         PageSize = 10;
-        PageUrl = $"/support/organisations/{Type}";
 
         Type = type;
 

@@ -341,7 +341,7 @@ public record PaginatedOrganisationQuery
 
 public record OrganisationTypeQuery
 {
-    public string Type { get; init; }
+    public required string Type { get; init; }
 }
 
 public record OrganisationQuery
