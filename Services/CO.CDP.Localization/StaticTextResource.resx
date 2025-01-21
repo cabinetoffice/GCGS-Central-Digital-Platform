@@ -388,13 +388,7 @@
     <value>Close this window</value>
   </data>
   <data name="Supplementary_PrivacyNotice_Title" xml:space="preserve">
-    <value>Privacy notice: how we use your data</value>
-  </data>
-  <data name="Supplementary_PrivacyNotice_Intro" xml:space="preserve">
-    <value>GOV.UK Digital Service Platform is provided by &lt;a href="https://www.gov.uk/government/organisations/government-digital-service" class="govuk-link"&gt;Government Digital Service&lt;/a&gt; (GDS), which is part of the Cabinet Office. The data controller for GDS is the Cabinet Office. A data controller determines how and why personal data can be processed.</value>
-  </data>
-  <data name="Supplementary_PrivacyNotice_ReadMore" xml:space="preserve">
-    <value>Read the &lt;a href="https://ico.org.uk/ESDWebPages/Entry/Z7414053" class="govuk-link"&gt;Cabinet Office’s entry in the Data Protection Public Register&lt;/a&gt; for more information.</value>
+    <value>Privacy notice</value>
   </data>
   <data name="Supplementary_PageNotFound_Title" xml:space="preserve">
     <value>Page not found</value>
@@ -2801,10 +2795,10 @@
     <value>You’ve set your cookie preferences.</value>
   </data>
   <data name="PrivacyPolicy_Title" xml:space="preserve">
-    <value>Agree to privacy policy before continuing</value>
+    <value>Agree to the privacy notice</value>
   </data>
   <data name="PrivacyPolicy_YesIHaveReadAndAgreePrivacyPolicy" xml:space="preserve">
-    <value>Yes, I have read and agree to the Central Digital Platform service privacy policy</value>
+    <value>I have read and agree to the privacy notice</value>
   </data>
   <data name="PrivacyPolicy_SelectReadAndAgreeToPrivacyPolicy" xml:space="preserve">
     <value>Select if you have read and agree to the Central Digital Platform service privacy policy</value>
@@ -2830,14 +2824,14 @@
   <data name="ProvideFeedbackAndContact_EnterEmailAddress" xml:space="preserve">
     <value>Enter an email address</value>
   </data>
+  <data name="PrivacyPolicy_Intro" xml:space="preserve">
+    <value>The privacy notice explains how we process your data, how we use it and who it's shared with.</value>
+  </data>
+  <data name="PrivacyPolicy_BeforeYouContinue" xml:space="preserve">
+    <value>Before you continue, you must read and agree to the &lt;a class="govuk-link" target="_blank" href="/privacy-notice"&gt;privacy notice (opens in new tab)&lt;/a&gt;.</value>
+  </data>
   <data name="ProvideFeedbackAndContact_EnterAName" xml:space="preserve">
     <value>Enter a name</value>
-  </data>
-  <data name="PrivacyPolicy_Notice_BeforeLink" xml:space="preserve">
-    <value>Before you can continue, you need to read and agree to the </value>
-  </data>
-  <data name="PrivacyPolicy_Notice_Link" xml:space="preserve">
-    <value>Central Digital Platform service privacy policy (opens in new tab)</value>
   </data>
   <data name="Global_SendMessage" xml:space="preserve">
     <value>Send message</value>
