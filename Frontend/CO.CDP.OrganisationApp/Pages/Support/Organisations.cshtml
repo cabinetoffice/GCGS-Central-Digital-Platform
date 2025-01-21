@@ -28,8 +28,7 @@
 <br/>
 
 <h2 class="govuk-heading-m">
-    @StaticTextResource.Support_OrganisationApproval_there_are @(Model.TotalOrganisations)
-    @(Model.Type == "buyer" ? @StaticTextResource.Support_OrganisationApproval_buyers : @StaticTextResource.Support_OrganisationApproval_suppliers)
+    @(string.Format(StaticTextResource.Support_OrganisationApproval_OrganisationsCountHeading, Model.TotalOrganisations))
 </h2>
 
 <table class="govuk-table">

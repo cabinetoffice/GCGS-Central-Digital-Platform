@@ -334,7 +334,7 @@ public record SupportOrganisationInfo
 
 public record PaginatedOrganisationQuery
 {
-    public string Type { get; init; }
+    public string? Type { get; init; }
     public int Limit { get; init; }
     public int Skip { get; init; }
 }

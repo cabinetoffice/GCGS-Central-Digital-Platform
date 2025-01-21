@@ -1919,6 +1919,9 @@
   <data name="Support_Organisations_SupplierOrganisations_Title" xml:space="preserve">
     <value>Supplier organisations</value>
   </data>
+  <data name="Support_OrganisationApproval_OrganisationsCountHeading" xml:space="preserve">
+    <value>There are {0} organisations</value>
+  </data>
   <data name="Support_OrganisationApproval_Heading" xml:space="preserve">
     <value>Organisation details</value>
   </data>
