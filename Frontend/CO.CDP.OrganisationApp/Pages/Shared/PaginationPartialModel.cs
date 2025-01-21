@@ -5,19 +5,16 @@ namespace CO.CDP.OrganisationApp.Pages.Shared
     public class PaginationPartialModel
     {
         [Required]
-        public int CurrentPage { get; set; }
+        public required int CurrentPage { get; set; }
 
         [Required]
-        public int TotalItems { get; set; }
+        public required int TotalItems { get; set; }
 
         [Required]
-        public int PageSize { get; set; }
+        public required int PageSize { get; set; }
 
         [Required]
-        public string OrganisationType { get; set; } = "buyer";
-
-        [Required]
-        public string Url { get; set; }
+        public required string Url { get; set; }
 
         public int TotalPages => (int)Math.Ceiling((double)TotalItems / PageSize);
 

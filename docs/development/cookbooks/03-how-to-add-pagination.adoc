@@ -1,18 +1,15 @@
-# CO.CO.CDP.OrganisationInformation.OrganisationApp
-
-## TagHelpers
-
-### Pagination
+= How to add pagination
 
 The `Pagination` partial view is used to display pagination controls for lists of items in the application. It provides navigation links for moving between pages and handles pagination logic internally.
 
-#### How to Use
+== How to Use
 
 To include the pagination partial view in your Razor page, use the `Html.PartialAsync` method to pass the required parameters.
 
-#### Example Usage
+=== Example Usage
 
-```razor
+[source]
+----
 @await Html.PartialAsync("_Pagination", new PaginationPartialModel
 {
     CurrentPage = Model.CurrentPage,
@@ -20,9 +17,9 @@ To include the pagination partial view in your Razor page, use the `Html.Partial
     PageSize = Model.PageSize,
     Url = "/support/organisations"
 })
-```
+----
 
-#### Parameters
+==== Parameters
 
 The `PaginationPartialModel` requires the following parameters:
 
@@ -31,23 +28,24 @@ The `PaginationPartialModel` requires the following parameters:
 - `PageSize` *(int)*: The number of items displayed per page.
 - `Url` *(string)*: The base URL to be used for pagination links.
 
-#### Pagination Logic
+=== Pagination Logic
 
 The `PaginationPartialModel` calculates the total number of pages automatically based on the `TotalItems` and `PageSize` values. It generates page URLs dynamically using the provided `Url` parameter.
 
-#### Example Output
+=== Example Output
 
-```
+[source]
+----
 < Previous  1  2  3  ...  10  Next >
-```
+----
 
-#### File Locations
+=== File Locations
 
 Ensure the following files are present in the project:
 
 - **Partial View:** `Pages/Shared/_Pagination.cshtml`
 - **Model:** `Pages/Shared/PaginationPartialModel.cs`
 
-#### Styling
+=== Styling
 
 The pagination component follows GOV.UK design standards and is styled using the `govuk-pagination` class to ensure consistency across the application.

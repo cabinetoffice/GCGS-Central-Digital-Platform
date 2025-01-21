@@ -22,13 +22,15 @@ public class OrganisationsModel(
 
     public int PageSize { get; set; }
 
-    public string PageUrl { get; set; }
+    public required string PageUrl { get; set; }
 
     public IList<OrganisationExtended> Organisations { get; set; } = [];
 
     public async Task<IActionResult> OnGet(string type, int pageNumber = 1)
     {
-        PageSize = 2;
+        PageUrl = $"/support/organisations/{Type}";
+
+        PageSize = 10;
 
         Type = type;
         Title = (Type == "buyer"
@@ -44,8 +46,6 @@ public class OrganisationsModel(
         TotalOrganisations = await organisationClient.GetOrganisationsTotalCountAsync(type);
 
         TotalPages = (int)Math.Ceiling((double)TotalOrganisations / PageSize);
-
-        PageUrl = $"/support/organisations/{Type}";
 
         return Page();
     }
