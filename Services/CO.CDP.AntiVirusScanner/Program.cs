@@ -5,7 +5,7 @@ using CO.CDP.MQ.Hosting;
 using CO.CDP.MQ;
 using System.Reflection;
 using CO.CDP.Configuration.Assembly;
-using CO.CDP.GovUKNotify;
+using CO.CDP.WebApi.Foundation;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -37,10 +37,8 @@ if (Assembly.GetEntryAssembly().IsRunAs("CO.CDP.AntiVirusScanner"))
     .AddAwsConfiguration(builder.Configuration)
     .AddLoggingConfiguration(builder.Configuration)
     .AddAmazonCloudWatchLogsService()
-    .AddCloudWatchSerilog(builder.Configuration)
-    .AddGovUKNotifyApiClient(builder.Configuration);
+    .AddCloudWatchSerilog(builder.Configuration);
 }
-
 
 var app = builder.Build();
 

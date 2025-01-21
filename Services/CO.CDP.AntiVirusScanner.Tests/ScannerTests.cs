@@ -1,6 +1,4 @@
 using CO.CDP.AwsServices;
-using CO.CDP.GovUKNotify;
-using CO.CDP.GovUKNotify.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -16,7 +14,6 @@ public class ScannerTests
     private readonly Mock<ILogger<Scanner>> _loggerMock;
     private readonly Scanner _scanner;
     private readonly Mock<HttpMessageHandler> _httpMessageHandlerMock;
-    private readonly Mock<IGovUKNotifyApiClient> _govUKNotifyApiClient;
 
     public ScannerTests()
     {
@@ -24,20 +21,18 @@ public class ScannerTests
         _configurationMock = new Mock<IConfiguration>();
         _loggerMock = new Mock<ILogger<Scanner>>();
         _httpMessageHandlerMock = new Mock<HttpMessageHandler>();
-        _govUKNotifyApiClient = new Mock<IGovUKNotifyApiClient>();
         _scanner = new Scanner(_fileHostManagerMock.Object,
             _configurationMock.Object,
             _loggerMock.Object,
-            _govUKNotifyApiClient.Object,
             new HttpClient(_httpMessageHandlerMock.Object));
     }
 
     [Fact]
     public async Task Scan_IfFileScannedAndClean_CopyFileToPermanentBucket()
     {
-        ScanFile fileToScan = GetScanFile();
+        var fileToScan = new ScanFile { FileName = "testfile.txt", OrganisationId = Guid.NewGuid() };
         var fileStream = new MemoryStream();
-        _fileHostManagerMock.Setup(m => m.DownloadStagingFile(fileToScan.QueueFileName)).ReturnsAsync(fileStream);
+        _fileHostManagerMock.Setup(m => m.DownloadStagingFile(fileToScan.FileName)).ReturnsAsync(fileStream);
         _configurationMock.Setup(c => c["ClamAvScanUrl"]).Returns("http://clamav-rest:9000/scan");
 
         _httpMessageHandlerMock
@@ -54,19 +49,16 @@ public class ScannerTests
 
         await _scanner.Scan(fileToScan);
 
-        _fileHostManagerMock.Verify(m => m.CopyToPermanentBucket(fileToScan.QueueFileName, /* deleteInSource */ true), Times.Once);
-        _govUKNotifyApiClient.Verify(c => c.SendEmail(It.IsAny<EmailNotificationRequest>()), Times.Never);
+        _fileHostManagerMock.Verify(m => m.CopyToPermanentBucket(fileToScan.FileName, true), Times.Once);
     }
 
     [Fact]
     public async Task Scan_IfFileScannedAndNotClean_RemoveFromStagingBuckett()
     {
-        var fileToScan = GetScanFile();
+        var fileToScan = new ScanFile { FileName = "testfile.txt", OrganisationId = Guid.NewGuid() };
         var fileStream = new MemoryStream();
-        _fileHostManagerMock.Setup(m => m.DownloadStagingFile(fileToScan.QueueFileName)).ReturnsAsync(fileStream);
+        _fileHostManagerMock.Setup(m => m.DownloadStagingFile(fileToScan.FileName)).ReturnsAsync(fileStream);
         _configurationMock.Setup(c => c["ClamAvScanUrl"]).Returns("http://clamav-rest:9000/scan");
-        _configurationMock.Setup(c => c["GOVUKNotify:FileContainedVirusEmailTemplateId"]).Returns("00000000-0000-0000-0000-000000000000");
-        _configurationMock.Setup(c => c["OrganisationAppUrl"]).Returns("http://localhost:8090");
 
         _httpMessageHandlerMock
             .Protected()
@@ -82,19 +74,6 @@ public class ScannerTests
 
         await _scanner.Scan(fileToScan);
 
-        _fileHostManagerMock.Verify(m => m.CopyToPermanentBucket(fileToScan.QueueFileName, It.IsAny<bool>()), Times.Never);
-        _fileHostManagerMock.Verify(m => m.RemoveFromStagingBucket(fileToScan.QueueFileName), Times.Once);
-        _govUKNotifyApiClient.Verify(c => c.SendEmail(It.IsAny<EmailNotificationRequest>()), Times.Exactly(2));
-    }
-
-    private static ScanFile GetScanFile()
-    {
-        return new ScanFile { FullName = "John Smith",
-            OrganisationEmailAddress = "admin@acme.org",
-            OrganisationName = "Acme Org",
-            UserEmailAddress = "john.smith@acme.org",
-            UploadedFileName = "testfile.txt",
-            QueueFileName = "testfile_20250120112720805.txt",
-            OrganisationId = Guid.NewGuid() };
+        _fileHostManagerMock.Verify(m => m.RemoveFromStagingBucket(fileToScan.FileName), Times.Once);
     }
 }

@@ -87,7 +87,6 @@ services:
   av-scanner:
     environment:
       ASPNETCORE_ENVIRONMENT: Development
-      GOVUKNotify__ApiKey: ""
     deploy:
       replicas: 1
   clamav-rest:
