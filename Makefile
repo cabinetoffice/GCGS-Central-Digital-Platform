@@ -47,8 +47,9 @@ verify-up: compose.override.yml ## Verify if all Docker containers have run
 			exit 0; \
 		fi; \
 	done; \
-	echo "Services did not become healthy in time"; \
-	exit 1
+	echo "Services did not become healthy in time";
+	@docker compose ps -a --format json | jq --exit-status 'select(.ExitCode != 0 or (.Health != "healthy" and .Health != ""))'
+	@exit 1
 .PHONY: verify-up
 
 
