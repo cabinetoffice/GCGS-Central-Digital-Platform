@@ -7,9 +7,10 @@
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
         <UserSecretsId>87df2f7f-b5fc-40f8-9de8-090619a77a58</UserSecretsId>
     </PropertyGroup>
-  
+
     <ItemGroup>
       <PackageReference Include="Flurl.Http" Version="4.0.2" />
+      <PackageReference Include="Markdig" Version="0.40.0" />
       <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="8.0.8" />
       <PackageReference Include="IdentityModel" Version="7.0.0" />
       <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="8.0.8" />
@@ -34,8 +35,15 @@
     </ItemGroup>
 
     <ItemGroup>
-      <None Update="mou-pdfs\mou-pdf-template.pdf">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
+        <None Update="mou-pdfs\mou-pdf-template.pdf">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Update="**/PrivacyNotice*.md">
+            <DependentUpon>PrivacyNotice.cshtml</DependentUpon>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
     </ItemGroup>
 </Project>

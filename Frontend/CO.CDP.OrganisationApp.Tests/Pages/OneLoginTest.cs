@@ -7,11 +7,13 @@ using CO.CDP.Person.WebApiClient;
 using FluentAssertions;
 using IdentityModel;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Microsoft.FeatureManagement;
 using Moq;
 using System.Security.Claims;
@@ -359,6 +361,8 @@ public class OneLoginTest
         personClientMock.Setup(t => t.LookupPersonAsync(It.IsAny<string>()))
             .ThrowsAsync(new ApiException("", 404, "", default, null));
 
+        Mock<IOptionsMonitor<OpenIdConnectOptions>> optionsMonitorMock = new();
+
         return new OneLoginModel(
             httpContextAccessorMock.Object,
             personClientMock.Object,
@@ -368,7 +372,8 @@ public class OneLoginTest
             authorityClientMock.Object,
             new Mock<ILogger<OneLoginModel>>().Object,
             featureManagerMock.Object,
-            configMock.Object)
+            configMock.Object,
+            optionsMonitorMock.Object)
         { PageAction = pageAction };
     }
 }

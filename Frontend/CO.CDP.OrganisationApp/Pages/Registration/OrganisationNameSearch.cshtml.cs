@@ -42,15 +42,15 @@ public class OrganisationNameSearchModel(ISession session, IOrganisationClient o
 
         if (MatchingOrganisations != null)
         {
-            var firstOrgResult = MatchingOrganisations.First();
-            if (MatchingOrganisations.Count() == 1 && firstOrgResult.Name.ToLower() == OrganisationName?.ToLower())
+            var exactMatch = MatchingOrganisations.FirstOrDefault(o => o.Name.ToLower() == OrganisationName?.ToLower());
+            if (exactMatch != null)
             {
                 flashMessageService.SetFlashMessage(
                     FlashMessageType.Important,
                     heading: StaticTextResource.OrganisationRegistration_SearchOrganisationName_ExactMatchAlreadyExists
                 );
 
-                return Redirect($"/registration/{Uri.EscapeDataString(firstOrgResult.Identifier.Scheme + ":" + firstOrgResult.Identifier.Id)}/join-organisation");
+                return Redirect($"/registration/{Uri.EscapeDataString(exactMatch.Identifier.Scheme + ":" + exactMatch.Identifier.Id)}/join-organisation");
             }
         }
 
