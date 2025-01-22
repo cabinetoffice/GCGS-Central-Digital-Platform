@@ -7,6 +7,7 @@ module "ecs_service_av_scanner_app" {
       aspcore_environment      = local.aspcore_environment
       container_port           = var.service_configs.av_scanner_app.port
       cpu                      = var.service_configs.av_scanner_app.cpu
+      govuknotify_apikey       = data.aws_secretsmanager_secret_version.govuknotify_apikey.arn
       host_port                = var.service_configs.av_scanner_app.port
       image                    = local.ecr_urls[var.service_configs.av_scanner_app.name]
       lg_name                  = aws_cloudwatch_log_group.tasks[var.service_configs.av_scanner_app.name].name

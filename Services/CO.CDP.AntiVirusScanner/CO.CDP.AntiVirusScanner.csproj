@@ -8,6 +8,7 @@
         <InvariantGlobalization>true</InvariantGlobalization>
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
         <NoWarn>$(NoWarn);1591</NoWarn>
+        <UserSecretsId>ebee0190-6625-4815-9b23-cad4c5a29d30</UserSecretsId>
     </PropertyGroup>
 
     <ItemGroup>
@@ -15,6 +16,7 @@
         <PackageReference Include="Amazon.Sqs" Version="0.33.0" />
         <ProjectReference Include="..\..\Libraries\CO.CDP.AwsServices\CO.CDP.AwsServices.csproj" />
         <ProjectReference Include="..\..\Libraries\CO.CDP.Configuration\CO.CDP.Configuration.csproj" />
+        <ProjectReference Include="..\..\Libraries\CO.CDP.GovUKNotify\CO.CDP.GovUKNotify.csproj" />
         <ProjectReference Include="..\..\Libraries\CO.CDP.MQ\CO.CDP.MQ.csproj" />
         <ProjectReference Include="..\..\Libraries\CO.CDP.WebApi.Foundation\CO.CDP.WebApi.Foundation.csproj" />
     </ItemGroup>
