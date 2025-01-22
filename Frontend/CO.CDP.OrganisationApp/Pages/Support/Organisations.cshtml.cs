@@ -12,7 +12,7 @@ public class OrganisationsModel(
 {
     public string? Title { get; set; }
 
-    public string? Role { get; set; }
+    public string? Type { get; set; }
 
     public int TotalOrganisations { get; set; }
 
@@ -24,13 +24,13 @@ public class OrganisationsModel(
 
     public IList<OrganisationExtended> Organisations { get; set; } = [];
 
-    public async Task<IActionResult> OnGet(string role, int pageNumber = 1)
+    public async Task<IActionResult> OnGet(string type, int pageNumber = 1)
     {
         PageSize = 10;
 
-        Role = role;
+        Type = type;
 
-        Title = (Role == "buyer"
+        Title = (Type == "buyer"
                 ? StaticTextResource.Support_Organisations_BuyerOrganisations_Title
                 : StaticTextResource.Support_Organisations_SupplierOrganisations_Title);
 
@@ -38,9 +38,20 @@ public class OrganisationsModel(
 
         CurrentPage = pageNumber;
 
-        Organisations = (await organisationClient.GetAllOrganisationsAsync(Role, PageSize, skip)).ToList();
+        switch(Type)
+        {
+            case "supplier":
+                Organisations = (await organisationClient.GetAllOrganisationsAsync("tenderer", null, PageSize, skip)).ToList();
+                TotalOrganisations = await organisationClient.GetOrganisationsTotalCountAsync("tenderer", null);
 
-        TotalOrganisations = await organisationClient.GetOrganisationsTotalCountAsync(role);
+                break;
+
+            case "buyer":
+                Organisations = (await organisationClient.GetAllOrganisationsAsync("buyer", "buyer", PageSize, skip)).ToList();
+                TotalOrganisations = await organisationClient.GetOrganisationsTotalCountAsync("buyer", "buyer");
+
+                break;
+        }
 
         TotalPages = (int)Math.Ceiling((double)TotalOrganisations / PageSize);
 

@@ -1,4 +1,4 @@
-@page "/support/organisations/{role}"
+@page "/support/organisations/{type}"
 @using CO.CDP.OrganisationApp.Constants
 @using CO.CDP.Localization
 @using CO.CDP.OrganisationApp.Pages.Shared
@@ -13,13 +13,13 @@
 <h1 class="govuk-heading-l">@ViewData["Title"]</h1>
 
 <ul class="govuk-tabs__list">
-    <li class="govuk-tabs__list-item @(Model.Role == "buyer" ? "govuk-tabs__list-item--selected" : "")">
+    <li class="govuk-tabs__list-item @(Model.Type == "buyer" ? "govuk-tabs__list-item--selected" : "")">
         <a class="govuk-tabs__tab" href="/support/organisations/buyer">
             @StaticTextResource.Support_Organisations_BuyerOrganisations_Title
         </a>
     </li>
-    <li class="govuk-tabs__list-item @(Model.Role == "tenderer" ? "govuk-tabs__list-item--selected" : "")">
-        <a class="govuk-tabs__tab" href="/support/organisations/tenderer">
+    <li class="govuk-tabs__list-item @(Model.Type == "supplier" ? "govuk-tabs__list-item--selected" : "")">
+        <a class="govuk-tabs__tab" href="/support/organisations/supplier">
             @StaticTextResource.Support_Organisations_SupplierOrganisations_Title
         </a>
     </li>
@@ -38,7 +38,7 @@
         <th scope="col" colspan="1" class="govuk-table__header">@StaticTextResource.Support_Organisations_TableHeader_Identifier</th>
         <th scope="col" colspan="1" class="govuk-table__header">@StaticTextResource.Support_Organisations_TableHeader_OrgEmail</th>
         @{
-            if (Model.Role == "buyer")
+            if (Model.Type == "buyer")
             {
                 <th scope="col" colspan="1" class="govuk-table__header">@StaticTextResource.Support_Organisations_TableHeader_Status</th>
                 <th scope="col" colspan="1" class="govuk-table__header">@StaticTextResource.Support_Organisations_TableHeader_DateApproved</th>
@@ -71,7 +71,7 @@
                     @org.ContactPoint.Email
                 </td>
                 @{
-                    if (Model.Role == "buyer")
+                    if (Model.Type == "buyer")
                     {
                         var approval = org.Details?.Approval;
 
@@ -122,5 +122,5 @@
     CurrentPage = Model.CurrentPage,
     TotalItems = Model.TotalOrganisations,
     PageSize = Model.PageSize,
-    Url = string.Format("/support/organisations/{0}", Model.Role)
+    Url = string.Format("/support/organisations/{0}", Model.Type)
     })

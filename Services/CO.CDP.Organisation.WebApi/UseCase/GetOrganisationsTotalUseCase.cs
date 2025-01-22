@@ -9,6 +9,6 @@ public class GetOrganisationsTotalUseCase(IOrganisationRepository organisationRe
 {
     public async Task<int> Execute(OrganisationTypeQuery command)
     {
-        return await organisationRepository.GetTotalCount(command.Role);
+        return await organisationRepository.GetTotalCount(command.Role, command.PendingRole);
     }
 }

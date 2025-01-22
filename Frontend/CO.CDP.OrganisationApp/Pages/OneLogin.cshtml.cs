@@ -141,7 +141,7 @@ public class OneLoginModel(
 
             if (person.Scopes.Contains(PersonScopes.SupportAdmin))
             {
-                return RedirectToPage("Support/Organisations", new Dictionary<string, string> { { "role", "buyer" } });
+                return RedirectToPage("Support/Organisations", new Dictionary<string, string> { { "type", "buyer" } });
             }
 
             return RedirectToPage("Organisation/OrganisationSelection");

@@ -9,7 +9,7 @@ public class GetOrganisationsUseCase(IOrganisationRepository organisationReposit
 {
     public async Task<IEnumerable<OrganisationExtended>> Execute(PaginatedOrganisationQuery command)
     {
-        return await organisationRepository.GetPaginated(command.Role, command.Limit, command.Skip)
+        return await organisationRepository.GetPaginated(command.Role, command.PendingRole, command.Limit, command.Skip)
             .AndThen(mapper.Map<IEnumerable<OrganisationExtended>>);
     }
 }
