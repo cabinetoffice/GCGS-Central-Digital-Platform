@@ -334,14 +334,14 @@ public record SupportOrganisationInfo
 
 public record PaginatedOrganisationQuery
 {
-    public string? Type { get; init; }
+    public PartyRole Role { get; init; }
     public int Limit { get; init; }
     public int Skip { get; init; }
 }
 
 public record OrganisationTypeQuery
 {
-    public required string Type { get; init; }
+    public required PartyRole Role { get; init; }
 }
 
 public record OrganisationQuery

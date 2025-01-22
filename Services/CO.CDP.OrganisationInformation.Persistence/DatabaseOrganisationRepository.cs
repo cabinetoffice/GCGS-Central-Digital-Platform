@@ -160,7 +160,7 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
         return await result.AsSingleQuery().ToListAsync();
     }
 
-    public async Task<IList<Organisation>> GetPaginated(string type, int limit, int skip)
+    public async Task<IList<Organisation>> GetPaginated(PartyRole role, int limit, int skip)
     {
         IQueryable<Organisation> result = context.Organisations
             .Include(o => o.ReviewedBy)
@@ -170,12 +170,12 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
             .Include(o => o.Addresses)
             .ThenInclude(p => p.Address);
 
-        switch (type)
+        switch (role)
         {
-            case "buyer":
+            case PartyRole.Buyer:
                 result = result.Where(o => o.Roles.Contains(PartyRole.Buyer) || o.PendingRoles.Contains(PartyRole.Buyer));
                 break;
-            case "supplier":
+            default:
                 result = result.Where(o => o.Roles.Contains(PartyRole.Tenderer));
                 break;
         }
@@ -187,16 +187,16 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
             .ToListAsync();
     }
 
-    public async Task<int> GetTotalCount(string? type)
+    public async Task<int> GetTotalCount(PartyRole role)
     {
         IQueryable<Organisation> result = context.Organisations;
 
-        switch (type)
+        switch (role)
         {
-            case "buyer":
+            case PartyRole.Buyer:
                 result = result.Where(o => o.Roles.Contains(PartyRole.Buyer) || o.PendingRoles.Contains(PartyRole.Buyer));
                 break;
-            case "supplier":
+            default:
                 result = result.Where(o => o.Roles.Contains(PartyRole.Tenderer));
                 break;
         }

@@ -25,11 +25,11 @@ public static class EndpointExtensions
     {
         app.MapGet("/organisations",
             [OrganisationAuthorize([AuthenticationChannel.OneLogin], personScopes: [Constants.PersonScope.SupportAdmin])]
-        async ([FromQuery] string type, [FromQuery] int limit, [FromQuery] int skip, IUseCase<PaginatedOrganisationQuery, IEnumerable<OrganisationExtended>> useCase) =>
+        async ([FromQuery] string role, [FromQuery] int limit, [FromQuery] int skip, IUseCase<PaginatedOrganisationQuery, IEnumerable<OrganisationExtended>> useCase) =>
                 {
                     return await useCase.Execute(new PaginatedOrganisationQuery
                     {
-                        Type = type,
+                        Role = (PartyRole)Enum.Parse(typeof(PartyRole), role, true),
                         Limit = limit,
                         Skip = skip
                     })
@@ -51,11 +51,11 @@ public static class EndpointExtensions
 
         app.MapGet("/organisations/count",
                 [OrganisationAuthorize([AuthenticationChannel.OneLogin], personScopes: [Constants.PersonScope.SupportAdmin])]
-                async ([FromQuery] string type, IUseCase<OrganisationTypeQuery, int> useCase) =>
+                async ([FromQuery] string role, IUseCase<OrganisationTypeQuery, int> useCase) =>
                 {
                     return await useCase.Execute(new OrganisationTypeQuery
                         {
-                            Type = type
+                            Role = (PartyRole)Enum.Parse(typeof(PartyRole), role, true)
                         })
                         .AndThen(count => Results.Ok(count));
                 })
