@@ -67,14 +67,15 @@ public class ConsortiumEnterSharecodeModelTests
     [Fact]
     public async Task OnPost_ShouldReturnPage_WhenSharecodeAlreadyExists()
     {
+        var supplierInfo = GetSupplierInfo();        
         var parties = new OrganisationParties(new List<OrganisationParty>
         {
-            new OrganisationParty(Guid.NewGuid(), "Consortium 1", new OrganisationPartyShareCode(DateTimeOffset.Now, "EXISTING_CODE"))
+            new OrganisationParty(supplierInfo.Id, "Consortium 1", new OrganisationPartyShareCode(DateTimeOffset.Now, "EXISTING_CODE"))
         });
 
         _dataSharingClientMock
             .Setup(client => client.GetSharedDataAsync(It.IsAny<string>()))
-            .ReturnsAsync(GetSupplierInfo());
+            .ReturnsAsync(supplierInfo);
 
         _organisationClientMock
             .Setup(client => client.GetOrganisationPartiesAsync(It.IsAny<Guid>()))
