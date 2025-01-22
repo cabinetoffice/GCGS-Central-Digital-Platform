@@ -17,7 +17,7 @@
     </ItemGroup>
     <ItemGroup>
         <OpenApiReference Include="$(MSBuildProjectDirectory)/../../Services/CO.CDP.DataSharing.WebApi/OpenAPI/CO.CDP.DataSharing.WebApi.json" Namespace="CO.CDP.DataSharing.WebApiClient" ClassName="DataSharingClient">
-            <Options>/GenerateClientInterfaces:true /ClassStyle:Record /GenerateNativeRecords:true</Options>
+            <Options>/GenerateClientInterfaces:true /ClassStyle:Record /GenerateNativeRecords:true /GenerateNullableReferenceTypes:true</Options>
         </OpenApiReference>
     </ItemGroup>
 </Project>
