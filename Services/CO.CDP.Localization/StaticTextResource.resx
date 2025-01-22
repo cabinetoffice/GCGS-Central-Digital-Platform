@@ -1952,15 +1952,6 @@
   <data name="Support_OrganisationApproval_ValidationErrorMessage" xml:space="preserve">
     <value>Select an option</value>
   </data>
-  <data name="Support_OrganisationApproval_there_are" xml:space="preserve">
-    <value>There are</value>
-  </data>
-  <data name="Support_OrganisationApproval_buyers" xml:space="preserve">
-    <value>buyers</value>
-  </data>
-  <data name="Support_OrganisationApproval_suppliers" xml:space="preserve">
-    <value>suppliers</value>
-  </data>
   <data name="Exclusions_AddExclusionDeclaration_Title" xml:space="preserve">
     <value>Add any mandatory and discretionary exclusions</value>
   </data>

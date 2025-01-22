@@ -62,13 +62,13 @@ public class GetOrganisationsUseCaseTests
             }
         ];
 
-        _organisationRepositoryMock.Setup(repo => repo.GetPaginated(command.Role, command.Role, command.Limit, command.Skip)).ReturnsAsync(organisations);
+        _organisationRepositoryMock.Setup(repo => repo.GetPaginated(command.Role, command.PendingRole, command.Limit, command.Skip)).ReturnsAsync(organisations);
         _mapperMock.Setup(m => m.Map<IEnumerable<OrganisationExtended>>(organisations)).Returns(mappedOrganisations);
 
         var result = await _useCase.Execute(command);
 
         result.Should().BeEquivalentTo(mappedOrganisations);
-        _organisationRepositoryMock.Verify(repo => repo.GetPaginated(command.Role, command.Role, command.Limit, command.Skip), Times.Once);
+        _organisationRepositoryMock.Verify(repo => repo.GetPaginated(command.Role, command.PendingRole, command.Limit, command.Skip), Times.Once);
         _mapperMock.Verify(m => m.Map<IEnumerable<OrganisationExtended>>(organisations), Times.Once);
     }
 
@@ -79,13 +79,13 @@ public class GetOrganisationsUseCaseTests
         var organisations = new List<CO.CDP.OrganisationInformation.Persistence.Organisation>();
         var mappedOrganisations = new List<OrganisationExtended>();
 
-        _organisationRepositoryMock.Setup(repo => repo.GetPaginated(command.Role, command.Role, command.Limit, command.Skip)).ReturnsAsync(organisations);
+        _organisationRepositoryMock.Setup(repo => repo.GetPaginated(command.Role, command.PendingRole, command.Limit, command.Skip)).ReturnsAsync(organisations);
         _mapperMock.Setup(m => m.Map<IEnumerable<OrganisationExtended>>(organisations)).Returns(mappedOrganisations);
 
         var result = await _useCase.Execute(command);
 
         result.Should().BeEmpty();
-        _organisationRepositoryMock.Verify(repo => repo.GetPaginated(command.Role, command.Role, command.Limit, command.Skip), Times.Once);
+        _organisationRepositoryMock.Verify(repo => repo.GetPaginated(command.Role, command.PendingRole, command.Limit, command.Skip), Times.Once);
         _mapperMock.Verify(m => m.Map<IEnumerable<OrganisationExtended>>(organisations), Times.Once);
     }
 }
