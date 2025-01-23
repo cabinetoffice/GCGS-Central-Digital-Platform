@@ -40,4 +40,6 @@ public static class ErrorMessagesList
     public static readonly string MissingAdditionalIdentifiers = StaticTextResource.ErrorMessageList_MissingAdditionalIdentifiers;
     public static readonly string MissingIdentifierNumber = StaticTextResource.ErrorMessageList_MissingIdentifierNumber;
     public static readonly string IdentiferNumberAlreadyExists = StaticTextResource.ErrorMessageList_IdentiferNumberAlreadyExists;
+
+    public static readonly string SharecodeNotFound = StaticTextResource.ErrorMessageList_SharecodeNotFound;
 }

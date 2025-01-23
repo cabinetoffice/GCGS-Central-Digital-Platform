@@ -35,8 +35,23 @@ up: compose.override.yml ## Start Docker containers
 .PHONY: up
 
 verify-up: compose.override.yml ## Verify if all Docker containers have run
-	@docker compose ps -a --format json | jq --exit-status 'select(.ExitCode != 0 or (.Health != "healthy" and .Health != ""))' && exit 1 || echo "All services up"
+	@timeout=60; \
+	interval=5; \
+	while [ $$timeout -gt 0 ]; do \
+		if docker compose ps -a --format json | jq --exit-status 'select(.ExitCode != 0 or (.Health != "healthy" and .Health != ""))' > /dev/null; then \
+			echo "Waiting for services to be healthy..."; \
+			sleep $$interval; \
+			timeout=$$(($$timeout - $$interval)); \
+		else \
+			echo "All services up"; \
+			exit 0; \
+		fi; \
+	done; \
+	echo "Services did not become healthy in time"; \
+	docker compose ps -a --format json | jq --exit-status 'select(.ExitCode != 0 or (.Health != "healthy" and .Health != ""))'; \
+	exit 1;
 .PHONY: verify-up
+
 
 down: ## Destroy Docker containers
 	@docker compose down

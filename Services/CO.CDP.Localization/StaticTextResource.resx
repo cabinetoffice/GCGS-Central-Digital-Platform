@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -148,7 +148,7 @@
     <value>Important</value>
   </data>
   <data name="Organisation_BuyerRegistrationPendingApproval" xml:space="preserve">
-    <value>Buyer registration pending approval.</value>
+    <value>Buyer registration pending</value>
   </data>
   <data name="Organisation_OrganisationDetails" xml:space="preserve">
     <value>Organisation details</value>
@@ -178,7 +178,7 @@
     <value>Organisation email</value>
   </data>
   <data name="Organisation_ChangeEmail" xml:space="preserve">
-    <value>Change&lt;span class="govuk-visually-hidden"&gt; the organisation email</value>
+    <value>Change&lt;span class="govuk-visually-hidden"&gt; the organisation email&lt;/span&gt;</value>
   </data>
   <data name="Organisation_OrganisationAddress" xml:space="preserve">
     <value>Organisation address</value>
@@ -196,10 +196,10 @@
     <value>Manage API keys</value>
   </data>
   <data name="Organisation_ApiKeysForBuyers" xml:space="preserve">
-    <value> (for Buyers)</value>
+    <value> (for buyers)</value>
   </data>
   <data name="Organisation_RegistrationNotApproved" xml:space="preserve">
-    <value>Registration Not Approved</value>
+    <value>Registration not approved</value>
   </data>
   <data name="Organisation_WeCouldNotApproveYourRequest" xml:space="preserve">
     <value>We could not approve your request because:</value>
@@ -220,7 +220,7 @@
     <value>If you also supply goods, works, services or utilities to the public sector.</value>
   </data>
   <data name="Organisation_GetProcurementGuidance" xml:space="preserve">
-    <value>Get procurement guidance on the</value>
+    <value>For tools to guide you through the end-to-end commercial lifecycle use the</value>
   </data>
   <data name="Organisation_ProcurementPathwayService" xml:space="preserve">
     <value>Procurement Pathway service (opens in new tab)</value>
@@ -388,13 +388,7 @@
     <value>Close this window</value>
   </data>
   <data name="Supplementary_PrivacyNotice_Title" xml:space="preserve">
-    <value>Privacy notice: how we use your data</value>
-  </data>
-  <data name="Supplementary_PrivacyNotice_Intro" xml:space="preserve">
-    <value>GOV.UK Digital Service Platform is provided by &lt;a href="https://www.gov.uk/government/organisations/government-digital-service" class="govuk-link"&gt;Government Digital Service&lt;/a&gt; (GDS), which is part of the Cabinet Office. The data controller for GDS is the Cabinet Office. A data controller determines how and why personal data can be processed.</value>
-  </data>
-  <data name="Supplementary_PrivacyNotice_ReadMore" xml:space="preserve">
-    <value>Read the &lt;a href="https://ico.org.uk/ESDWebPages/Entry/Z7414053" class="govuk-link"&gt;Cabinet Office’s entry in the Data Protection Public Register&lt;/a&gt; for more information.</value>
+    <value>Privacy notice</value>
   </data>
   <data name="Supplementary_PageNotFound_Title" xml:space="preserve">
     <value>Page not found</value>
@@ -475,7 +469,7 @@
     <value>Organisation</value>
   </data>
   <data name="Supplementary_ContactUs_Organisation_ErrorMessage" xml:space="preserve">
-    <value>Enter your Organisation</value>
+    <value>Enter your organisation</value>
   </data>
   <data name="Supplementary_ContactUs_Message" xml:space="preserve">
     <value>Message</value>
@@ -634,10 +628,10 @@
     <value>Most services we link to are run by different government departments, for example DWP’s Universal Credit online, DVLA’s vehicle tax service, or HMRC’s webchat. These services may set additional cookies and, if so, will have their own cookie policy and banner linking to it.</value>
   </data>
   <data name="User_FirstName_Required_ErrorMessage" xml:space="preserve">
-    <value>Firstname required</value>
+    <value>First name required</value>
   </data>
   <data name="User_LastName_Required_ErrorMessage" xml:space="preserve">
-    <value>Lastname required</value>
+    <value>Last name required</value>
   </data>
   <data name="User_Email_Required_ErrorMessage" xml:space="preserve">
     <value>Email required</value>
@@ -652,7 +646,7 @@
     <value>Are you sure you want to remove [{0}]?</value>
   </data>
   <data name="User_RemoveConfirmation_ConfirmValidation" xml:space="preserve">
-    <value>Select yes to confirm remove user</value>
+    <value>Select yes to confirm removal of user</value>
   </data>
   <data name="User_UserSummary_HasPersonValidation" xml:space="preserve">
     <value>Select yes to add another user</value>
@@ -673,28 +667,28 @@
     <value>Check your answers</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswers_PSCDetails" xml:space="preserve">
-    <value>PSC details:</value>
+    <value>PSC details</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswers_DoB" xml:space="preserve">
-    <value>DoB:</value>
+    <value>Date of birth</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswers_DirectorResidency" xml:space="preserve">
-    <value>Director's residency:</value>
+    <value>Director's residency</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswers_RegisteredAddress" xml:space="preserve">
-    <value>Registered address:</value>
+    <value>Registered address</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswers_PostalAddress" xml:space="preserve">
-    <value>Postal address:</value>
+    <value>Postal address</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswers_ControlConditions" xml:space="preserve">
-    <value>Conditions of control:</value>
+    <value>Conditions of control</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswers_RegisteredAsPSC" xml:space="preserve">
-    <value>Registered as PSC:</value>
+    <value>Registered as PSC</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswers_RegisterName" xml:space="preserve">
-    <value>Register name:</value>
+    <value>Register name</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswers_OnDate" xml:space="preserve">
     <value>On {0}</value>
@@ -706,22 +700,22 @@
     <value>Check your answers</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_CompanyName" xml:space="preserve">
-    <value>Company name:</value>
+    <value>Company name</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_RegisteredAddress" xml:space="preserve">
-    <value>Registered address:</value>
+    <value>Registered address</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_PostalAddress" xml:space="preserve">
-    <value>Postal address:</value>
+    <value>Postal address</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_LegalFormAndLaw" xml:space="preserve">
-    <value>Legal form and law:</value>
+    <value>Legal form and law</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_LegalForm" xml:space="preserve">
-    <value>Legal form:</value>
+    <value>Legal form</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_EnforcedBy" xml:space="preserve">
-    <value>Enforced by:</value>
+    <value>Enforced by</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_CompaniesHouseRegistered" xml:space="preserve">
     <value>Companies House registered:</value>
@@ -730,22 +724,22 @@
     <value>Company House no. {0}</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_OverseasEquivalent" xml:space="preserve">
-    <value>Registered with overseas equivalent:</value>
+    <value>Registered with overseas equivalent</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_ControlConditions" xml:space="preserve">
-    <value>Conditions of control:</value>
+    <value>Conditions of control</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_RegisteredDate" xml:space="preserve">
-    <value>Registered date:</value>
+    <value>Registered date</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_OnDate" xml:space="preserve">
     <value>On {0}</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_InsolvencyDate" xml:space="preserve">
-    <value>Insolvency date:</value>
+    <value>Insolvency date</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_RegisterName" xml:space="preserve">
-    <value>Register name:</value>
+    <value>Register name</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityCompanyInsolvencyDate_Hint" xml:space="preserve">
     <value>The date it stopped trading under its own name.&lt;br&gt;&lt;br&gt;For example, 27 03 2007</value>
@@ -847,7 +841,7 @@
     <value>Select where {0} is registered as person with significant control</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityCompanyRegisterName_CompaniesHouseOption" xml:space="preserve">
-    <value>People with significant control register on Companies House</value>
+    <value>People with significant control registered on Companies House</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityLawRegister_LegalFormRequiredError" xml:space="preserve">
     <value>Enter legal formation</value>
@@ -868,7 +862,7 @@
     <value>When it was set up and registered, what structure was used. Also called trading status. For example, a limited company or limited liability partnership.</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityLawRegister_LawEnforcesHint" xml:space="preserve">
-    <value>For example, Companies Act 2006.</value>
+    <value>For example, Companies Act 2006</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityLegalFormQuestion_LegalFormNameRequiredError" xml:space="preserve">
     <value>Enter the legal form name</value>
@@ -1168,7 +1162,7 @@
     <value>An organisation or sole trader who searches for tenders and submits bids to supply goods, works, services or utilities</value>
   </data>
   <data name="OrganisationRegistration_OrganisationType_BuyerOrSupplierValidation" xml:space="preserve">
-    <value>Select 'buyer' or 'supplier'</value>
+    <value>Select buyer or supplier</value>
   </data>
   <data name="OrganisationRegistration_CompanyHouseNumberQuestion_Heading" xml:space="preserve">
     <value>Does your organisation have a Companies House number?</value>
@@ -1336,25 +1330,25 @@
     <value>Enter your organisation's registered non-UK address</value>
   </data>
   <data name="OrganisationRegistration_Address_NonUk_Hint" xml:space="preserve">
-    <value>The address recorded on public records or within the public domain.</value>
+    <value>The address recorded on public records or within the public domain</value>
   </data>
   <data name="Shared_Address_NonUk_Link" xml:space="preserve">
     <value>Enter a non-UK address</value>
   </data>
   <data name="OrganisationRegistration_BuyerDevolvedRegulation_Heading" xml:space="preserve">
-    <value>Do devolved regulations apply to your organisation?</value>
+    <value>Do devolved nation regulations apply to your organisation?</value>
   </data>
   <data name="OrganisationRegistration_BuyerDevolvedRegulation_ValidationErrorMessage" xml:space="preserve">
-    <value>Select 'yes' or 'no'</value>
+    <value>Select yes or no</value>
   </data>
   <data name="OrganisationRegistration_BuyerOrganisationType_Heading" xml:space="preserve">
-    <value>Select the organisation type</value>
+    <value>Select your buyer organisation type </value>
   </data>
   <data name="OrganisationRegistration_BuyerOrganisationType_ValidationErrorMessage" xml:space="preserve">
-    <value>Select the organisation type</value>
+    <value>Select your buyer organisation type</value>
   </data>
   <data name="OrganisationRegistration_BuyerSelectDevolvedRegulation_Heading" xml:space="preserve">
-    <value>Which devolved regulations apply?</value>
+    <value>Select which devolved nation regulations apply</value>
   </data>
   <data name="OrganisationRegistration_BuyerSelectDevolvedRegulation_ValidationErrorMessage" xml:space="preserve">
     <value>Select a devolved region</value>
@@ -1372,28 +1366,28 @@
     <value>Is your organisation on any of these registries?</value>
   </data>
   <data name="Organisation_OrganisationIdentification_CH_Label" xml:space="preserve">
-    <value>Company House Number</value>
+    <value>Companies House</value>
   </data>
   <data name="Organisation_OrganisationIdentification_CH_ErrorMessage" xml:space="preserve">
-    <value>Enter the Company House number.</value>
+    <value>Enter the Companies House number</value>
   </data>
   <data name="Organisation_OrganisationIdentification_GB_CHC_Label" xml:space="preserve">
-    <value>Charity Commission for England &amp; Wales</value>
+    <value>Charity Commission (England and Wales)</value>
   </data>
   <data name="Organisation_OrganisationIdentification_GB_CHC_Number_Label" xml:space="preserve">
-    <value>Charity Commission for England &amp; Wales Number</value>
+    <value>Charity Commission (England and Wales) number</value>
   </data>
   <data name="Organisation_OrganisationIdentification_GB_CHC_Number_ErrorMessage" xml:space="preserve">
-    <value>Enter the Charity Commission for England &amp; Wales number.</value>
+    <value>Enter the Charity Commission (England and Wales) number</value>
   </data>
   <data name="Organisation_OrganisationIdentification_GB_SC_Label" xml:space="preserve">
-    <value>Scottish Charity Regulator</value>
+    <value>Scottish Charity Register</value>
   </data>
   <data name="Organisation_OrganisationIdentification_GB_SC_Number_Label" xml:space="preserve">
-    <value>Scottish Charity Regulator Number</value>
+    <value>Scottish Charity Register Number</value>
   </data>
   <data name="Organisation_OrganisationIdentification_GB_SC_Number_ErrorMessage" xml:space="preserve">
-    <value>Enter the Scottish Charity Regulator number.</value>
+    <value>Enter the Scottish Charity Register number</value>
   </data>
   <data name="Organisation_OrganisationIdentification_GB_NIC_Label" xml:space="preserve">
     <value>Charity Commission for Northern Ireland</value>
@@ -1402,16 +1396,16 @@
     <value>Charity Commission for Northern Ireland Number</value>
   </data>
   <data name="Organisation_OrganisationIdentification_GB_NIC_Number_ErrorMessage" xml:space="preserve">
-    <value>Enter the Charity Commission for Northern Ireland number.</value>
+    <value>Enter the Charity Commission for Northern Ireland number</value>
   </data>
   <data name="Organisation_OrganisationIdentification_GB_MPR_Label" xml:space="preserve">
     <value>Mutuals Public Register</value>
   </data>
   <data name="Organisation_OrganisationIdentification_GB_MPR_Number_Label" xml:space="preserve">
-    <value>Mutuals Public Register Number</value>
+    <value>Mutuals Public Register number</value>
   </data>
   <data name="Organisation_OrganisationIdentification_GB_MPR_Number_ErrorMessage" xml:space="preserve">
-    <value>Enter the Mutuals Public Register number.</value>
+    <value>Enter the Mutuals Public Register number</value>
   </data>
   <data name="Organisation_OrganisationIdentification_GG_RCE_Label" xml:space="preserve">
     <value>Guernsey Registry</value>
@@ -1429,7 +1423,7 @@
     <value>Jersey Financial Services Commission Registry Number</value>
   </data>
   <data name="Organisation_OrganisationIdentification_JE_FSC_Number_ErrorMessage" xml:space="preserve">
-    <value>Enter the Jersey Financial Services Commission Registry number.</value>
+    <value>Enter the Jersey Financial Services Commission Registry number</value>
   </data>
   <data name="Organisation_OrganisationIdentification_IM_CR_Label" xml:space="preserve">
     <value>Isle of Man Companies Registry</value>
@@ -1438,22 +1432,22 @@
     <value>Isle of Man Companies Registry Number</value>
   </data>
   <data name="Organisation_OrganisationIdentification_IM_CR_Number_ErrorMessage" xml:space="preserve">
-    <value>Enter Isle of Man Companies Registry number.</value>
+    <value>Enter Isle of Man Companies Registry number</value>
   </data>
   <data name="Organisation_OrganisationIdentification_GB_NHS_Label" xml:space="preserve">
-    <value>NHS Organisation Data Service (ODS)</value>
+    <value>NHS Organisation Data Service</value>
   </data>
   <data name="Organisation_OrganisationIdentification_GB_NHS_Number_Label" xml:space="preserve">
-    <value>NHS Organisation Data Service (ODS) Number</value>
+    <value>NHS Organisation Data Service Number</value>
   </data>
   <data name="Organisation_OrganisationIdentification_GB_NHS_Number_ErrorMessage" xml:space="preserve">
-    <value>Enter the NHS Organisation Data Service number.</value>
+    <value>Enter the NHS Organisation Data Service number</value>
   </data>
   <data name="Organisation_OrganisationIdentification_GB_UKPRN_Label" xml:space="preserve">
     <value>UK Register of Learning Providers</value>
   </data>
   <data name="Organisation_OrganisationIdentification_GB_UKPRN_Number_Label" xml:space="preserve">
-    <value>UK Register of Learning Providers (GB-UKPRN)</value>
+    <value>UK Register of Learning Providers (UKPRN number)</value>
   </data>
   <data name="Organisation_OrganisationIdentification_GB_UKPRN_Number_ErrorMessage" xml:space="preserve">
     <value>Enter the UK Register of Learning Providers number.</value>
@@ -1570,7 +1564,7 @@
     <value>An organisation with this company number already exists. Change the company number or &lt;a class="govuk-notification-banner__link" href="/registration/{organisationIdentifier}/join-organisation"&gt;request to join {organisationName}.&lt;/a&gt;</value>
   </data>
   <data name="OrganisationRegistration_CompanyHouseNumberQuestion_ValidationErrorMessage" xml:space="preserve">
-    <value>Select 'yes' or 'no'</value>
+    <value>Select yes or no</value>
   </data>
   <data name="OrganisationRegistration_CompanyHouseNumberQuestion_ErrorMessage" xml:space="preserve">
     <value>Enter a company number</value>
@@ -1588,10 +1582,10 @@
     <value>Select all that apply</value>
   </data>
   <data name="OrganisationRegistration_BuyerOrganisationType_CentralGovernment_Label" xml:space="preserve">
-    <value>Central government, public authority: UK, Scottish, Welsh and Northern Irish Executive</value>
+    <value>Central government - UK or devolved administrations</value>
   </data>
   <data name="OrganisationRegistration_BuyerOrganisationType_RegionalAndLocalGovernment_Label" xml:space="preserve">
-    <value>Regional and local government, public authority: UK, Scottish, Welsh and Northern Irish</value>
+    <value>Regional and local public authority - UK or devolved administrations</value>
   </data>
   <data name="OrganisationRegistration_BuyerOrganisationType_PublicUndertaking_Label" xml:space="preserve">
     <value>Public undertaking</value>
@@ -1600,30 +1594,16 @@
     <value>Private utility</value>
   </data>
   <data name="OrganisationRegistration_BuyerOrganisationType_CentralGovernment_Hint" xml:space="preserve">
-    <value>Includes arm's-length bodies:
-&lt;ul&gt;
-    &lt;li&gt;executive agencies (EA)&lt;/li&gt;
-    &lt;li&gt;non-departmental public bodies (NDPB)&lt;/li&gt;
-    &lt;li&gt;non-ministerial departments (NMD)&lt;/li&gt;
-    &lt;li&gt;Trading Funds&lt;/li&gt;
-&lt;/ul&gt;</value>
+    <value>Public authorities including arm's-length bodies and trading funds</value>
   </data>
   <data name="OrganisationRegistration_BuyerOrganisationType_RegionalAndLocalGovernment_Hint" xml:space="preserve">
-    <value>Includes:
-&lt;ul&gt;
-    &lt;li&gt;unitary authorities&lt;/li&gt;
-    &lt;li&gt;county, district, borough and parish councils&lt;/li&gt;
-    &lt;li&gt;the Greater London Authority&lt;/li&gt;
-    &lt;li&gt;charities&lt;/li&gt;
-    &lt;li&gt;housing associations&lt;/li&gt;
-    &lt;li&gt;blue light organisations - ambulance, police, and other emergency services&lt;/li&gt;
-&lt;/ul&gt;</value>
+    <value>Includes councils, charities, educational institutions, housing associations and blue light organisations</value>
   </data>
   <data name="OrganisationRegistration_BuyerOrganisationType_PublicUndertaking_Hint" xml:space="preserve">
-    <value>Unlike a public authority, organisations that operate commercially and provide utility activities to the public. For example, Transport for Wales.</value>
+    <value>A commercial organisation subject to public oversight, providing utilities to the public. For example, transport networks operating commercially.</value>
   </data>
   <data name="OrganisationRegistration_BuyerOrganisationType_PrivateUtility_Hint" xml:space="preserve">
-    <value>For example, private companies that have been granted a special or exclusive right to provide utility activities to the public. Such as National Grid or British Gas.</value>
+    <value>A private company with a special or exclusive right to provide utilities to the public. For example, private companies supplying electricity.</value>
   </data>
   <data name="OrganisationRegistration_BuyerOrganisationType_Other_Label" xml:space="preserve">
     <value>Other</value>
@@ -1763,7 +1743,7 @@
     <value>Upload a file</value>
   </data>
   <data name="Forms_FormElementFileUpload_DocumentsHint" xml:space="preserve">
-    <value>You can upload most file types including: PDF, scans, mobile phone photos, Word, Excel and PowerPoint, multimedia and ZIP files that are smaller than 25MB.</value>
+    <value>We accept most image and file formats that are smaller than 25MB.</value>
   </data>
   <data name="Forms_FormElementFileUpload_UploadedFileText" xml:space="preserve">
     <value>Uploaded file: {0}</value>
@@ -1808,19 +1788,19 @@
     <value>Date must be today or in the past</value>
   </data>
   <data name="Forms_FormElementFileUpload_NoFileSelectedError" xml:space="preserve">
-    <value>No file selected.</value>
+    <value>Select a file</value>
   </data>
   <data name="Forms_FormElementFileUpload_FileSizeExceededError" xml:space="preserve">
-    <value>The file size must not exceed {0}MB.</value>
+    <value>The file must be smaller than {0}MB.</value>
   </data>
   <data name="Forms_FormElementFileUpload_InvalidFileExtensionError" xml:space="preserve">
-    <value>Please upload a file which has one of the following extensions: {0}</value>
+    <value>The file must be a {0}</value>
   </data>
   <data name="Forms_FormElementMultiLineInput_AllInformationRequiredError" xml:space="preserve">
     <value>All information is required on this page</value>
   </data>
   <data name="Forms_FormElementTextInput_InvalidEmailError" xml:space="preserve">
-    <value>Enter an email address in the correct format, like name@example.com.</value>
+    <value>Enter an email address in the correct format, like name@example.com</value>
   </data>
   <data name="Forms_FormElementTextInput_EnterValueError" xml:space="preserve">
     <value>Enter a value</value>
@@ -1829,7 +1809,7 @@
     <value>Enter a website address</value>
   </data>
   <data name="Forms_FormElementUrlInput_InvalidWebsiteAddressError" xml:space="preserve">
-    <value>Website address must be in the correct format, like www.companyname.com</value>
+    <value>Enter a website address in the correct format, like www.companyname.com</value>
   </data>
   <data name="Forms_FormElementAddress_AddressLine1_Label" xml:space="preserve">
     <value>Address line 1</value>
@@ -1844,22 +1824,22 @@
     <value>Postcode</value>
   </data>
   <data name="Forms_FormElementAddress_PostalOrZipCode_Label" xml:space="preserve">
-    <value>Postal or Zip code</value>
+    <value>Postal or ZIP Code</value>
   </data>
   <data name="Forms_FormElementAddress_AddressLine1_RequiredError" xml:space="preserve">
-    <value>Enter your address line 1</value>
+    <value>Enter address line 1</value>
   </data>
   <data name="Forms_FormElementAddress_TownOrCity_RequiredError" xml:space="preserve">
-    <value>Enter your town or city</value>
+    <value>Enter town or city</value>
   </data>
   <data name="Forms_FormElementAddress_Postcode_RequiredError" xml:space="preserve">
-    <value>Enter your postcode</value>
+    <value>Enter postcode</value>
   </data>
   <data name="Forms_FormElementAddress_PostalOrZipCode_RequiredError" xml:space="preserve">
-    <value>Enter your postal or zip code</value>
+    <value>Enter postal or ZIP Code</value>
   </data>
   <data name="Forms_FormElementAddress_Country_RequiredError" xml:space="preserve">
-    <value>Enter your country</value>
+    <value>Enter country</value>
   </data>
   <data name="Forms_FormElementAddress_InvalidCountryError" xml:space="preserve">
     <value>Invalid country name '{0}'</value>
@@ -1931,13 +1911,16 @@
     <value>Organisation name</value>
   </data>
   <data name="Support_OrganisationApproval_OrganisationIdentifier_List" xml:space="preserve">
-    <value>Organisation identifier</value>
+    <value>Organisation identifiers</value>
   </data>
   <data name="Support_OrganisationApproval_PponGenerationPending_List" xml:space="preserve">
     <value>PPON generation pending</value>
   </data>
   <data name="Support_OrganisationApproval_OrganisationEmail_List" xml:space="preserve">
     <value>Organisation email</value>
+  </data>
+  <data name="Support_OrganisationApproval_AdminEmail_List" xml:space="preserve">
+    <value>Admin email</value>
   </data>
   <data name="Support_OrganisationApproval_OrganisationAddress_List" xml:space="preserve">
     <value>Organisation address</value>
@@ -2069,7 +2052,7 @@
     <value>N/A</value>
   </data>
   <data name="Global_NotApplicableLong" xml:space="preserve">
-    <value>Not Applicable</value>
+    <value>Not applicable</value>
   </data>
   <data name="PdfGenerator_AdditionalIdentifiers" xml:space="preserve">
     <value>Additional identifiers</value>
@@ -2105,7 +2088,7 @@
     <value>Supplier type</value>
   </data>
   <data name="PdfGenerator_BasicInformation_Title" xml:space="preserve">
-    <value>Basic Information</value>
+    <value>Basic information</value>
   </data>
   <data name="PdfGenerator_BasicInformation_VATNumber" xml:space="preserve">
     <value>VAT number</value>
@@ -2129,7 +2112,7 @@
     <value>Organisation</value>
   </data>
   <data name="PdfGenerator_ConnectedEntityType_TrustTrustee" xml:space="preserve">
-    <value>Trust or Trustee</value>
+    <value>Trust or trustee</value>
   </data>
   <data name="PdfGenerator_ConnectedOrganisationCategory_DirectorSameResponsibilities" xml:space="preserve">
     <value>Director or individual with the same responsibilities</value>
@@ -2147,13 +2130,13 @@
     <value>A company your organisation has taken over</value>
   </data>
   <data name="PdfGenerator_ConnectedOrganisationInformation_Title" xml:space="preserve">
-    <value>Connected Organisation Information</value>
+    <value>Connected organisation information</value>
   </data>
   <data name="PdfGenerator_ConnectedPerson_Category" xml:space="preserve">
     <value>Category</value>
   </data>
   <data name="PdfGenerator_ConnectedPersonInformation_Title" xml:space="preserve">
-    <value>Connected Person Information</value>
+    <value>Connected person information</value>
   </data>
   <data name="PdfGenerator_ConnectedPerson_Type" xml:space="preserve">
     <value>Type</value>
@@ -2162,10 +2145,10 @@
     <value>Individual</value>
   </data>
   <data name="PdfGenerator_ConnectedPersonType_TrustTrustee" xml:space="preserve">
-    <value>Trust or Trustee</value>
+    <value>Trust or trustee</value>
   </data>
   <data name="PdfGenerator_ConnectedPerson_CompanyHouseNumber" xml:space="preserve">
-    <value>Company house number</value>
+    <value>Companies House number</value>
   </data>
   <data name="PdfGenerator_ConnectedPerson_Country" xml:space="preserve">
     <value>Country</value>
@@ -2237,7 +2220,7 @@
     <value>Identifier id</value>
   </data>
   <data name="PdfGenerator_IndividualTrustInformation_Title" xml:space="preserve">
-    <value>Individual Trust Information</value>
+    <value>Individual trust Information</value>
   </data>
   <data name="PdfGenerator_LegalName" xml:space="preserve">
     <value>Legal name</value>
@@ -2249,40 +2232,40 @@
     <value>No connected person information available.</value>
   </data>
   <data name="PdfGenerator_OrganisationSchemeTitle_CharityCommission" xml:space="preserve">
-    <value>Charity Commission for England &amp; Wales Number</value>
+    <value>Charity Commission (England and Wales) number</value>
   </data>
   <data name="PdfGenerator_OrganisationSchemeTitle_CompaniesHouseNumber" xml:space="preserve">
-    <value>Companies House Number</value>
+    <value>Companies House number</value>
   </data>
   <data name="PdfGenerator_OrganisationSchemeTitle_GuernseyRegistry" xml:space="preserve">
-    <value>Guernsey Registry Number</value>
+    <value>Guernsey Registry number</value>
   </data>
   <data name="PdfGenerator_OrganisationSchemeTitle_IsleOfManCompaniesRegistry" xml:space="preserve">
-    <value>Isle of Man Companies Registry Number</value>
+    <value>Isle of Man Companies Registry number</value>
   </data>
   <data name="PdfGenerator_OrganisationSchemeTitle_JerseyFinancialServices" xml:space="preserve">
-    <value>Jersey Financial Services Commission Registry Number</value>
+    <value>Jersey Financial Services Commission Registry number</value>
   </data>
   <data name="PdfGenerator_OrganisationSchemeTitle_LearningProviderRegistry" xml:space="preserve">
-    <value>UK Register of Learning Provider Number</value>
+    <value>UK Register of Learning Provider number</value>
   </data>
   <data name="PdfGenerator_OrganisationSchemeTitle_MutualsPublicRegister" xml:space="preserve">
-    <value>Mutuals Public Register Number</value>
+    <value>Mutuals Public Register number</value>
   </data>
   <data name="PdfGenerator_OrganisationSchemeTitle_NHSRegistry" xml:space="preserve">
-    <value>National Health Service Organisations Registry Number</value>
+    <value>National Health Service Organisations Registry number</value>
   </data>
   <data name="PdfGenerator_OrganisationSchemeTitle_NorthernIrelandCharityCommission" xml:space="preserve">
-    <value>Charity Commission for Northern Ireland Number</value>
+    <value>Charity Commission for Northern Ireland number</value>
   </data>
   <data name="PdfGenerator_OrganisationSchemeTitle_Other" xml:space="preserve">
     <value>Other / None</value>
   </data>
   <data name="PdfGenerator_OrganisationSchemeTitle_Ppon" xml:space="preserve">
-    <value>Ppon</value>
+    <value>PPON</value>
   </data>
   <data name="PdfGenerator_OrganisationSchemeTitle_ScottishCharityRegulator" xml:space="preserve">
-    <value>Scottish Charity Regulator</value>
+    <value>Scottish Charity Register</value>
   </data>
   <data name="PdfGenerator_OrganisationSchemeTitle_Unknown" xml:space="preserve">
     <value>Unknown</value>
@@ -2297,7 +2280,7 @@
     <value>Scheme</value>
   </data>
   <data name="PdfGenerator_SupplierInformation_Title" xml:space="preserve">
-    <value>Supplier Information</value>
+    <value>Supplier information</value>
   </data>
   <data name="PdfGenerator_UnknownCategory" xml:space="preserve">
     <value>Unknown category</value>
@@ -2397,13 +2380,13 @@
     <value>Return to account home</value>
   </data>
   <data name="Supplier_WhatTypeOfSupplier" xml:space="preserve">
-    <value>What type of supplier are you?</value>
+    <value>Select which best describes your organisation as a supplier</value>
   </data>
   <data name="Supplier_Organisation" xml:space="preserve">
-    <value>Organisation - for example, a company</value>
+    <value>Organisation - Includes registered companies with employees. For example, limited companies, partnerships, public limited companies, charities and financial mutuals.</value>
   </data>
   <data name="Supplier_Individual" xml:space="preserve">
-    <value>Individual - for example, a sole trader</value>
+    <value>Individual - Includes people running their own business. For example, sole traders.</value>
   </data>
   <data name="Supplier_VatQuestion_Title" xml:space="preserve">
     <value>Are you registered for VAT?</value>
@@ -2454,22 +2437,22 @@
     <value>Enter your organisation's postal address</value>
   </data>
   <data name="Supplier_OperationQuestion_Title" xml:space="preserve">
-    <value>How does your organisation operate?</value>
+    <value>Which best describes your organisation?</value>
   </data>
   <data name="Supplier_OperationQuestion_Hint" xml:space="preserve">
-    <value>Select all that apply.</value>
+    <value>Select all that apply</value>
   </data>
   <data name="Supplier_OperationQuestion_SmallAndMediumSized_Description" xml:space="preserve">
     <value>Small and medium-sized enterprises are defined by having:</value>
   </data>
   <data name="Supplier_OperationQuestion_SmallAndMediumSized_Details" xml:space="preserve">
-    <value>(a) fewer than 250 staff, and &lt;br&gt;&lt;br&gt;(b) a turnover of an amount less than or equal to £44 million, or a balance sheet total of an amount less than or equal to £38 million</value>
+    <value>Fewer than 250 staff and a turnover of £44 million or less or a balance sheet total of £38 million or less</value>
   </data>
   <data name="Supplier_OperationQuestion_SupportedEmploymentProvider_Description" xml:space="preserve">
     <value>Supported employment providers are defined by having:</value>
   </data>
   <data name="Supplier_OperationQuestion_SupportedEmploymentProvider_Details" xml:space="preserve">
-    <value>Wholly or partly provided employment, or employment related support, to disabled or disadvantaged individuals where:&lt;br&gt;&lt;br&gt;(a) disabled or disadvantaged individuals represent at least 30 per cent of the workforce of the organisation,&lt;br&gt;&lt;br&gt;(b) if a particular part of the organisation is to perform the contract, disabled or disadvantaged individuals represent at least 30 per cent of the workforce of that part of the organisation, or&lt;br&gt;&lt;br&gt;(c) if more than one organisation is to perform the contract, disabled or disadvantaged individuals represent at least 30 per cent of the combined workforce of—&lt;br&gt;&lt;br&gt;(i) those organisations,&lt;br&gt;&lt;br&gt;(ii) where a particular part of each organisation is to perform the contract, those parts, or&lt;br&gt;&lt;br&gt;(iii) where a combination of organisations and parts is to perform the contract, those organisations and parts.</value>
+    <value>Providing employment, or employment related support, to disabled or disadvantaged individuals that represent at least 30 per cent of the workforce</value>
   </data>
   <data name="Supplier_OperationQuestion_PublicService_Description" xml:space="preserve">
     <value>Public service mutuals are defined by having:</value>
@@ -2490,7 +2473,7 @@
     <value>What is the equivalent date your company registered under the Companies Act 2006?</value>
   </data>
   <data name="Supplier_LegalFormFormationDate_Hint" xml:space="preserve">
-    <value>For example, 27 3 2007.</value>
+    <value>For example, 27 3 2007</value>
   </data>
   <data name="Supplier_LegalFormFormationDate_Month" xml:space="preserve">
     <value>Month</value>
@@ -2535,7 +2518,7 @@
     <value>Please enter the law under which your organisation is registered</value>
   </data>
   <data name="Supplier_LegalFormOtherOrganisation_PleaseSelect" xml:space="preserve">
-    <value>Please select your organisation's registered legal form</value>
+    <value>Select your organisation's registered legal form</value>
   </data>
   <data name="Supplier_LegalFormSelectOrganisation_Hint" xml:space="preserve">
     <value>When it was set up and registered, what structure was used.</value>
@@ -2556,22 +2539,23 @@
     <value>Other</value>
   </data>
   <data name="Supplier_OperationQuestion_SelectOption" xml:space="preserve">
-    <value>Select at least one option to proceed.</value>
+    <value>Select an option</value>
   </data>
   <data name="Supplier_OperationType_SmallOrMediumSized" xml:space="preserve">
-    <value>As a small or medium-sized enterprise</value>
+    <value>Small or medium-sized enterprise (SME)
+</value>
   </data>
   <data name="Supplier_OperationType_NonGovernmental" xml:space="preserve">
-    <value>As a non-governmental organisation that is value-driven and which principally reinvests its surpluses to further social, environmental or cultural objectives</value>
+    <value>Non-governmental organisation that is value-driven and which principally reinvests its surpluses to further social, environmental or cultural objectives</value>
   </data>
   <data name="Supplier_OperationType_SupportedEmploymentProvider" xml:space="preserve">
-    <value>As a supported employment provider</value>
+    <value>Supported employment provider</value>
   </data>
   <data name="Supplier_OperationType_PublicService" xml:space="preserve">
-    <value>As a public service mutual</value>
+    <value>Public service mutual</value>
   </data>
   <data name="Supplier_OperationType_None" xml:space="preserve">
-    <value>My organisation is none of the above</value>
+    <value>None apply</value>
   </data>
   <data name="Supplier_OperationType_SmallOrMediumSized_Short" xml:space="preserve">
     <value>Small or medium-sized enterprise</value>
@@ -2589,7 +2573,7 @@
     <value>My organisation is not defined</value>
   </data>
   <data name="Supplier_OperationType_ValidationError" xml:space="preserve">
-    <value>You cannot select 'My organisation is none of the above' along with other options.</value>
+    <value>You cannot select 'None apply' along with other options.</value>
   </data>
   <data name="Organisation_CreateNewConsortium" xml:space="preserve">
     <value>Create a new consortium</value>
@@ -2646,13 +2630,13 @@
     <value>Select your organisation's registry</value>
   </data>
   <data name="OrganisationRegistration_InternationalIdentifier_Type_Heading" xml:space="preserve">
-    <value>Organisation Type</value>
+    <value>Organisation type</value>
   </data>
   <data name="OrganisationRegistration_InternationalIdentifier_Type_Required_ErrorMessage" xml:space="preserve">
     <value>Select an option</value>
   </data>
   <data name="OrganisationRegistration_InternationalIdentifier_RegistrationNumber_Heading" xml:space="preserve">
-    <value>Registration Number</value>
+    <value>Registration number</value>
   </data>
   <data name="OrganisationRegistration_InternationalIdentifier_RegistrationNumber_Required_ErrorMessage" xml:space="preserve">
     <value>Enter the number</value>
@@ -2664,7 +2648,7 @@
     <value>Select one then enter the registration number</value>
   </data>
   <data name="OrganisationRegistration_InternationalIdentifier_None" xml:space="preserve">
-    <value>You cannot add another identifier for this country. </value>
+    <value>You cannot add another identifier for this country.</value>
   </data>
   <data name="OrganisationRegistration_InternationalIdentifier_None_Back" xml:space="preserve">
     <value>Back to organisation details</value>
@@ -2673,7 +2657,7 @@
     <value>Select all that apply. Then enter the registration number.</value>
   </data>
   <data name="SupplierToBuyer_DevolvedRegulation_ErrorMessage" xml:space="preserve">
-    <value>Select 'yes' or 'no'</value>
+    <value>Select yes or no</value>
   </data>
   <data name="SupplierToBuyer_DevolvedRegulation_Title" xml:space="preserve">
     <value>Do devolved regulations apply to your organisation?</value>
@@ -2748,7 +2732,7 @@
     <value>Select the organisation type</value>
   </data>
   <data name="SupplierToBuyer_OrganisationType_TradingFunds" xml:space="preserve">
-    <value>Trading Funds</value>
+    <value>trading funds</value>
   </data>
   <data name="SupplierToBuyer_OrganisationType_UnitaryAuthorities" xml:space="preserve">
     <value>unitary authorities</value>
@@ -2772,13 +2756,13 @@
     <value>Wales</value>
   </data>
   <data name="SupplierToBuyer_OrganisationSummary_ChangeDevolvedRegions" xml:space="preserve">
-    <value>Change&lt;span class="govuk-visually-hidden"&gt; the devolved regions</value>
+    <value>Change&lt;span class="govuk-visually-hidden"&gt; devolved regions&lt;/span&gt;</value>
   </data>
   <data name="SupplierToBuyer_OrganisationSummary_ChangeDevolvedRegulations" xml:space="preserve">
-    <value>Change&lt;span class="govuk-visually-hidden"&gt; the devolved regulations</value>
+    <value>Change&lt;span class="govuk-visually-hidden"&gt; devolved regulations&lt;/span&gt;</value>
   </data>
   <data name="SupplierToBuyer_OrganisationSummary_ChangeOrganisationType" xml:space="preserve">
-    <value>Change&lt;span class="govuk-visually-hidden"&gt; the organisation type&lt;/span&gt;</value>
+    <value>Change&lt;span class="govuk-visually-hidden"&gt; organisation type&lt;/span&gt;</value>
   </data>
   <data name="SupplierToBuyer_OrganisationType_BuyerType" xml:space="preserve">
     <value>BuyerOrganisationType</value>
@@ -2811,10 +2795,10 @@
     <value>You’ve set your cookie preferences.</value>
   </data>
   <data name="PrivacyPolicy_Title" xml:space="preserve">
-    <value>Agree to privacy policy before continuing</value>
+    <value>Agree to the privacy notice</value>
   </data>
   <data name="PrivacyPolicy_YesIHaveReadAndAgreePrivacyPolicy" xml:space="preserve">
-    <value>Yes, I have read and agree to the Central Digital Platform service privacy policy</value>
+    <value>I have read and agree to the privacy notice</value>
   </data>
   <data name="PrivacyPolicy_SelectReadAndAgreeToPrivacyPolicy" xml:space="preserve">
     <value>Select if you have read and agree to the Central Digital Platform service privacy policy</value>
@@ -2826,7 +2810,7 @@
     <value>Choose an option</value>
   </data>
   <data name="ProvideFeedbackAndContact_SpecificPage" xml:space="preserve">
-    <value>Specific Page</value>
+    <value>Specific page</value>
   </data>
   <data name="ProvideFeedbackAndContact_UrlOfPageRequired" xml:space="preserve">
     <value>URL of specific page is required</value>
@@ -2838,16 +2822,16 @@
     <value>The message field cannot be empty</value>
   </data>
   <data name="ProvideFeedbackAndContact_EnterEmailAddress" xml:space="preserve">
-    <value>Enter an Email address</value>
+    <value>Enter an email address</value>
+  </data>
+  <data name="PrivacyPolicy_Intro" xml:space="preserve">
+    <value>The privacy notice explains how we process your data, how we use it and who it's shared with.</value>
+  </data>
+  <data name="PrivacyPolicy_BeforeYouContinue" xml:space="preserve">
+    <value>Before you continue, you must read and agree to the &lt;a class="govuk-link" target="_blank" href="/privacy-notice"&gt;privacy notice (opens in new tab)&lt;/a&gt;.</value>
   </data>
   <data name="ProvideFeedbackAndContact_EnterAName" xml:space="preserve">
     <value>Enter a name</value>
-  </data>
-  <data name="PrivacyPolicy_Notice_BeforeLink" xml:space="preserve">
-    <value>Before you can continue, you need to read and agree to the </value>
-  </data>
-  <data name="PrivacyPolicy_Notice_Link" xml:space="preserve">
-    <value>Central Digital Platform service privacy policy (opens in new tab)</value>
   </data>
   <data name="Global_SendMessage" xml:space="preserve">
     <value>Send message</value>
@@ -2889,7 +2873,7 @@
     <value>Do not include personal or financial information like your National Insurance number or credit card details</value>
   </data>
   <data name="ProvideFeedbackAndContact_YouCanEnterUpTo10000Characters" xml:space="preserve">
-    <value>You can enter up to 10000 characters</value>
+    <value>You can enter up to 10,000 characters</value>
   </data>
   <data name="ProvideFeedbackAndContact_GiveUsYourDetailsIfYouWantAReply" xml:space="preserve">
     <value>Give us your details if you want a reply (optional)</value>
@@ -2904,13 +2888,13 @@
     <value>Enter an email address for the consortium</value>
   </data>
   <data name="OrganisationSchemeType_CompaniesHouse" xml:space="preserve">
-    <value>Companies House Number</value>
+    <value>Companies House number</value>
   </data>
   <data name="OrganisationSchemeType_CharityCommissionEnglandWales" xml:space="preserve">
     <value>Charity Commission for England &amp; Wales Number</value>
   </data>
   <data name="OrganisationSchemeType_ScottishCharityRegulator" xml:space="preserve">
-    <value>Scottish Charity Regulator</value>
+    <value>Scottish Charity Register</value>
   </data>
   <data name="OrganisationSchemeType_CharityCommissionNorthernIreland" xml:space="preserve">
     <value>Charity Commission for Northern Ireland Number</value>
@@ -2943,7 +2927,7 @@
     <value>Other</value>
   </data>
   <data name="OrganisationSchemeType_Ppon" xml:space="preserve">
-    <value>Ppon</value>
+    <value>PPON</value>
   </data>
   <data name="UserSummary_ManageUsers_Title" xml:space="preserve">
     <value>Manage users</value>
@@ -3012,7 +2996,16 @@
     <value>Check your answers</value>
   </data>
   <data name="Users_SendEmail_Button" xml:space="preserve">
-    <value>Join requests</value>
+    <value>Send email</value>
+  </data>
+  <data name="OrganisationInviteExpired_Title" xml:space="preserve">
+    <value>Your invite has expired</value>
+  </data>
+  <data name="OrganisationInviteExpired_Body" xml:space="preserve">
+    <value>You may have a newer invitation or need to request to join again.</value>
+  </data>
+  <data name="OrganisationInviteExpired_Link" xml:space="preserve">
+    <value>Go to my account</value>
   </data>
   <data name="ErrorMessageList_DuplicatePersonName" xml:space="preserve">
     <value>A person with this name already exists. Please try again.</value>
@@ -3098,7 +3091,139 @@
   <data name="ErrorMessageList_IdentiferNumberAlreadyExists" xml:space="preserve">
     <value>You’ve used this registry number for another organisation. Enter a different registry number.</value>
   </data>
+  <data name="Consortium_ConsortiumEnterSharecode_Heading" xml:space="preserve">
+    <value>Enter a share code</value>
+  </data>
+  <data name="Consortium_ConsortiumEnterSharecode_EnterSharecodeError" xml:space="preserve">
+    <value>Enter a shareode</value>
+  </data>
+  <data name="Consortium_ConsortiumEnterSharecode_Hint" xml:space="preserve">
+    <value>Must be the organisation's most recent share code</value>
+  </data>
+  <data name="Consortium_ConsortiumConfirmSupplier_Heading" xml:space="preserve">
+    <value>Add {0} to the consortium?</value>
+  </data>
+  <data name="Consortium_ConsortiumEnterSharecode_InValidSharecodeError" xml:space="preserve">
+    <value>Invalid sharecode</value>
+  </data>
+  <data name="ErrorMessageList_SharecodeNotFound" xml:space="preserve">
+    <value>Sharecode not found</value>
+  </data>
+  <data name="Consortium_ConsortiumOverview_Success_Heading" xml:space="preserve">
+    <value>{0} has been added to this consortium.</value>
+  </data>
+  <data name="Consortium_ConsortiumEnterSharecode_SharecodeAlreadyExists" xml:space="preserve">
+    <value>{0} organisation is already part of the consortium.</value>
+  </data>
   <data name="ErrorMessageList_MouNotFound" xml:space="preserve">
     <value>Mou not found</value>
+  </data>
+  <data name="OrganisationRegistration_SearchOrganisationName_Heading_Singular" xml:space="preserve">
+    <value>Match found</value>
+  </data>
+  <data name="OrganisationRegistration_SearchOrganisationName_Heading_Plural" xml:space="preserve">
+    <value>Matches found</value>
+  </data>
+  <data name="OrganisationRegistration_SearchOrganisationName_ResultCount_Singular" xml:space="preserve">
+    <value>{0} registered organisation found that matches the name you entered.</value>
+  </data>
+  <data name="OrganisationRegistration_SearchOrganisationName_ResultCount_Plural" xml:space="preserve">
+    <value>{0} registered organisations found that match the name you entered.</value>
+  </data>
+  <data name="OrganisationRegistration_SearchOrganisationName_Hint" xml:space="preserve">
+    <value>Register the name you entered or request to join an already registered organisation.</value>
+  </data>
+  <data name="OrganisationRegistration_SearchOrganisationName_Register" xml:space="preserve">
+    <value>Register</value>
+  </data>
+  <data name="OrganisationRegistration_SearchOrganisationName_RequestToJoin" xml:space="preserve">
+    <value>Request to join</value>
+  </data>
+  <data name="OrganisationRegistration_SearchOrganisationName_ExactMatchAlreadyExists" xml:space="preserve">
+    <value>The organisation you entered is already registered. Request to join the registered organisation or &lt;a href="/registration/organisation-name\"&gt;enter a different name&lt;/a&gt;.</value>
+  </data>
+  <data name="Global_SignAndContinue" xml:space="preserve">
+    <value>Sign and continue</value>
+  </data>
+  <data name="MoU_ReviewAndSignComplete_Link" xml:space="preserve">
+    <value>&lt;a href="/organisation/{0}"&gt;Go back to organisation details&lt;/a&gt; to view the agreement.</value>
+  </data>
+  <data name="MoU_ReviewAndSignComplete_Title" xml:space="preserve">
+    <value>You've signed the data sharing agreement</value>
+  </data>
+  <data name="MoU_ReviewAndSign_ConfirmStatement" xml:space="preserve">
+    <value>Enter the name and job title of the person that authorised the signing of the agreement:</value>
+  </data>
+  <data name="MoU_ReviewAndSign_Confirm_Title" xml:space="preserve">
+    <value>I confirm that I have read and agree to the data sharing agreement</value>
+  </data>
+  <data name="MoU_ReviewAndSign_DownloadPdf_Link" xml:space="preserve">
+    <value>Download the data sharing agreement</value>
+  </data>
+  <data name="MoU_ReviewAndSign_Download_Title" xml:space="preserve">
+    <value>Download the agreement</value>
+  </data>
+  <data name="MoU_ReviewAndSign_Hint" xml:space="preserve">
+    <value>&lt;p&gt;The data sharing agreement is a memorandum of understanding (MOU) about data shared on the Find a Tender service (FTS) and the joint responsibilities of:
+&lt;/p&gt;
+            &lt;ul class="govuk-list govuk-list--bullet"&gt;
+            &lt;li&gt;the Cabinet Office&lt;/li&gt;
+            &lt;li&gt;contracting authorities taking part in public procurement&lt;/li&gt;
+            &lt;/ul&gt;
+&lt;p&gt; The MOU explains the: &lt;/p&gt;
+            &lt;ul class="govuk-list govuk-list--bullet"&gt;
+            &lt;li&gt;personal and sensitive data collected on FTS&lt;/li&gt;
+            &lt;li&gt;role and responsibilities of the Cabinet Office&lt;/li&gt;
+            &lt;li&gt;role and responsibilities of the contracting authority&lt;/li&gt;
+            &lt;/ul&gt;
+</value>
+  </data>
+  <data name="MoU_ReviewAndSign_Job_Title" xml:space="preserve">
+    <value>Job title</value>
+  </data>
+  <data name="MoU_ReviewAndSign_Job_Title_ErrorMessage" xml:space="preserve">
+    <value>Enter your job title</value>
+  </data>
+  <data name="MoU_ReviewAndSign_Name" xml:space="preserve">
+    <value>Full name</value>
+  </data>
+  <data name="MoU_ReviewAndSign_Name_ErrorMessage" xml:space="preserve">
+    <value>Please provide a name</value>
+  </data>
+  <data name="MoU_ReviewAndSign_Options_Title" xml:space="preserve">
+    <value>Confirm you have read and agree to the MOU</value>
+  </data>
+  <data name="MoU_ReviewAndSign_SelectCheckbox_ErrorMessage" xml:space="preserve">
+    <value>Please tick the checkbox, if you have read and agree to the data sharing agreement</value>
+  </data>
+  <data name="MoU_ReviewAndSign_Title" xml:space="preserve">
+    <value>Read and agree to the data sharing agreement</value>
+  </data>
+  <data name="MoU_ReviewAndSign_Warning" xml:space="preserve">
+    <value>You should sign the MOU before you get any supplier information from FTS.</value>
+  </data>
+  <data name="OrganisationOverView_Banner_PendingApproval" xml:space="preserve">
+    <value>we need to approve your organisation. We'll email you, usually within one working day.</value>
+  </data>
+  <data name="OrganisationOverView_Banner_PendingApproval_Hint" xml:space="preserve">
+    <value>Before you can use this service:</value>
+  </data>
+  <data name="OrganisationOverView_Banner_Review_MoU_Link" xml:space="preserve">
+    <value>you must &lt;a href="/organisation/{0}/review-and-sign-memorandom"&gt;read and agree the data sharing agreement&lt;/a&gt;</value>
+  </data>
+  <data name="MoU_DataSharingAgreement_Title" xml:space="preserve">
+    <value>Data sharing agreement</value>
+  </data>
+  <data name="MoU_SignedOn" xml:space="preserve">
+    <value>Agreed on {0}</value>
+  </data>
+  <data name="MoU_ReviewAndSign_Download_Hint" xml:space="preserve">
+    <value>Download and share the document within your organisation. When ready, return to this page to confirm that your organisation understands its responsibilities as a joint data controller.</value>
+  </data>
+  <data name="MoU_ReviewAndSign_Options_Hint" xml:space="preserve">
+    <value>By ticking the box you are 'signing' the data sharing agreement on behalf of your organisation. The details you provide will be saved and dated as proof of agreement with the MOU.&lt;br&gt;&lt;br&gt;You'll be able to view the document and signing information from your organisation details page.</value>
+  </data>
+  <data name="MoU_SignAndContinue" xml:space="preserve">
+    <value>Sign and continue</value>
   </data>
 </root>

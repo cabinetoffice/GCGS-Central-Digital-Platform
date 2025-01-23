@@ -18,7 +18,7 @@ variable "product" {
 }
 
 variable "service_configs" {
-  description = "Map of services to their ports"
+  description = "Map of services and their attributes"
   type = map(object({
     cpu       = number
     memory    = number
@@ -31,4 +31,15 @@ variable "service_configs" {
 variable "tags" {
   description = "Tags to apply to all resources in this module"
   type        = map(string)
+}
+
+variable "tools_configs" {
+  description = "Map of tools and their attributes"
+  type = map(object({
+    cpu       = number
+    memory    = number
+    name      = string
+    port      = number
+    port_host = number
+  }))
 }

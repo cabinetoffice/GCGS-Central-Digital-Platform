@@ -1,14 +1,14 @@
 using CO.CDP.EntityVerificationClient;
+using CO.CDP.Localization;
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.WebApiClients;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using OrganisationApiException = CO.CDP.Organisation.WebApiClient.ApiException;
 using DevolvedRegulation = CO.CDP.OrganisationApp.Constants.DevolvedRegulation;
+using OrganisationApiException = CO.CDP.Organisation.WebApiClient.ApiException;
 using OrganisationWebApiClient = CO.CDP.Organisation.WebApiClient;
-using EntityVerificationApiException = CO.CDP.EntityVerificationClient.ApiException;
 
 namespace CO.CDP.OrganisationApp.Pages.Organisation;
 
@@ -27,6 +27,12 @@ public class OrganisationOverviewModel(IOrganisationClient organisationClient, I
     [BindProperty(SupportsGet = true)]
     public Guid Id { get; set; }
 
+    public bool HasBuyerSignedMou { get; set; } = true;
+
+    public Mou? MouLatest { get; set; }
+
+    public string MouSignedOnDate { get; set; } = "";
+
     public async Task<IActionResult> OnGet()
     {
         try
@@ -42,11 +48,24 @@ public class OrganisationOverviewModel(IOrganisationClient organisationClient, I
                 var devolvedRegulations = BuyerInformation.DevolvedRegulations;
 
                 Regulations = devolvedRegulations.AsDevolvedRegulationList();
+
+                HasBuyerSignedMou = await CheckBuyerMouSignature(OrganisationDetails.Id);
+
+                if (HasBuyerSignedMou)
+                {
+                    MouLatest = await organisationClient.GetLatestMouAsync();
+                    if (MouLatest != null)
+                    {
+                        MouSignedOnDate = string.Format(@StaticTextResource.MoU_SignedOn, MouLatest?.CreatedOn.ToString("dd MMMM yyyy"));
+                    }
+
+                }
             }
 
             if (OrganisationDetails.Details.PendingRoles.Count > 0)
             {
-                Review = (await organisationClient.GetOrganisationReviewsAsync(Id)).FirstOrDefault();
+                var reviews = await organisationClient.GetOrganisationReviewsAsync(Id) ?? new List<Review>();
+                Review = reviews.FirstOrDefault();
             }
             return Page();
         }
@@ -77,6 +96,20 @@ public class OrganisationOverviewModel(IOrganisationClient organisationClient, I
         catch
         {
             return new List<IdentifierRegistries>();
+        }
+    }
+
+    private async Task<bool> CheckBuyerMouSignature(Guid organisationId)
+    {
+        try
+        {
+            var mouDetails = await organisationClient.GetOrganisationLatestMouSignatureAsync(organisationId);
+            return mouDetails != null && mouDetails.IsLatest;
+        }
+        catch (OrganisationApiException ex) when (ex.StatusCode == 404)
+        {
+            // Handle "No MOU signature found" scenario
+            return false;
         }
     }
 }

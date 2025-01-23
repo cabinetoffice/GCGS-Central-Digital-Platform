@@ -4,20 +4,53 @@ namespace CO.CDP.MQ.Outbox;
 
 public interface IOutboxProcessor
 {
-    Task ExecuteAsync(int count);
+    Task<int> ExecuteAsync(int count);
 }
 
-public class OutboxProcessor(IPublisher publisher, IOutboxMessageRepository outbox, ILogger<OutboxProcessor> logger)
+public class OutboxProcessor(
+    IPublisher publisher,
+    IOutboxMessageRepository outbox,
+    TimeSpan lockTimeout,
+    ILogger<OutboxProcessor> logger)
     : IOutboxProcessor
 {
-    public async Task ExecuteAsync(int count)
+    private readonly SemaphoreSlim _semaphore = new(1, 1);
+
+    public OutboxProcessor(IPublisher publisher, IOutboxMessageRepository outbox, ILogger<OutboxProcessor> logger) :
+        this(publisher, outbox, TimeSpan.FromSeconds(1), logger)
     {
-        logger.LogDebug("Executing the outbox processor");
+    }
+
+    public async Task<int> ExecuteAsync(int count)
+    {
+        logger.LogDebug("Outbox processor waiting for the lock...");
+        if (!await _semaphore.WaitAsync(lockTimeout))
+        {
+            logger.LogDebug("Outbox processor failed to acquire the lock");
+            return 0;
+        }
+
+        try
+        {
+            logger.LogDebug("Executing the outbox processor");
+            return await PublishMessages(count);
+        }
+        finally
+        {
+            logger.LogDebug("Stopping the outbox processor");
+            _semaphore.Release();
+        }
+    }
+
+    private async Task<int> PublishMessages(int count)
+    {
         var messages = await FetchMessages(count);
         foreach (var outboxMessage in messages)
         {
             await PublishMessage(outboxMessage);
         }
+
+        return messages.Count;
     }
 
     private async Task<List<OutboxMessage>> FetchMessages(int count)

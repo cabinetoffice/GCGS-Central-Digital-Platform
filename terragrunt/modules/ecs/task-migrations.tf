@@ -14,10 +14,10 @@ module "ecs_migration_tasks" {
       lg_region           = data.aws_region.current.name
       memory              = each.value.memory
       name                = each.value.name
-      db_address          = each.value.name == "entity-verification-migrations" ? var.db_entity_verification_address : var.db_sirsi_address
-      db_name             = each.value.name == "entity-verification-migrations" ? var.db_entity_verification_name : var.db_sirsi_name
-      db_password         = each.value.name == "entity-verification-migrations" ? "${var.db_entity_verification_credentials_arn}:username::" : "${var.db_sirsi_credentials_arn}:username::"
-      db_username         = each.value.name == "entity-verification-migrations" ? "${var.db_entity_verification_credentials_arn}:password::" : "${var.db_sirsi_credentials_arn}:password::"
+      db_address          = each.value.name == "entity-verification-migrations" ? local.db_ev_address : local.db_sirsi_address
+      db_name             = each.value.name == "entity-verification-migrations" ? local.db_ev_name : local.db_sirsi_name
+      db_password         = each.value.name == "entity-verification-migrations" ? local.db_ev_password : local.db_sirsi_password
+      db_username         = each.value.name == "entity-verification-migrations" ? local.db_ev_username : local.db_sirsi_username
       public_domain       = var.public_domain
       service_version     = local.service_version
     }

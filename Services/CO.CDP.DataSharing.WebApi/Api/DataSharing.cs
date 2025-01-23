@@ -195,5 +195,6 @@ public static class ApiExtensions
         options.OperationFilter<ProblemDetailsOperationFilter>(ErrorCodes.Exception4xxMap.HttpStatusCodeErrorMap());
         options.ConfigureBearerSecurity();
         options.ConfigureApiKeySecurity();
+        options.UseAllOfToExtendReferenceSchemas();
     }
 }

@@ -12,9 +12,10 @@
 @model OrganisationOverviewModel
 
 @{
-    var organisationDetails = Model.OrganisationDetails!;
+    var organisationDetails = Model.OrganisationDetails!;    
     var registeredAddress = organisationDetails.Addresses.FirstOrDefault(a => a.Type == CO.CDP.Organisation.WebApiClient.AddressType.Registered);
     bool isViewer = await userInfoService.IsViewer();
+    bool isAdmin = await userInfoService.IsAdmin();
     ViewData["Title"] = organisationDetails.Name;
 }
 
@@ -22,245 +23,278 @@
     <a class="govuk-back-link" href="/organisation-selection">@StaticTextResource.Global_Back</a>
 }
 
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
 
-            @if (Model.Review != null) {
-                if (Model.Review.Status == CDP.Organisation.WebApiClient.ReviewStatus.Rejected)
+            @if (Model.Review != null && Model.Review.Status == CDP.Organisation.WebApiClient.ReviewStatus.Rejected)
+            {
+                <div class="govuk-notification-banner" role="region" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
+                    <div class="govuk-notification-banner__header">
+                        <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
+                            @StaticTextResource.Organisation_RegistrationNotApproved
+                        </h2>
+                    </div>
+                    <div class="govuk-notification-banner__content">
+                        <p class="govuk-notification-banner__heading">
+                            @StaticTextResource.Organisation_WeCouldNotApproveYourRequest
+                        </p>
+                        <p class="govuk-body">@Model.Review.Comment</p>
+                    </div>
+                </div>
+            }
+            else if (organisationDetails.IsPendingBuyer() || (organisationDetails.IsBuyer() && Model.HasBuyerSignedMou == false && isAdmin))
+            {
+                <div class="govuk-notification-banner" role="region" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
+                    <div class="govuk-notification-banner__header">
+                        <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
+                            @StaticTextResource.Global_Important
+                        </h2>
+                    </div>
+                    <div class="govuk-notification-banner__content">
+                        <p class="govuk-notification-banner__heading">
+                            @StaticTextResource.Organisation_BuyerRegistrationPendingApproval
+                        </p>
+                        <p class="govuk-body">
+                            @StaticTextResource.OrganisationOverView_Banner_PendingApproval_Hint
+                        </p>
+
+                        <ul class="govuk-list govuk-list--bullet">
+                            @if (Model.HasBuyerSignedMou == false)
+                            {
+                                <authorize scope="@OrgScopeRequirement.Admin">
+                                    <li>@Html.Raw(string.Format(@StaticTextResource.OrganisationOverView_Banner_Review_MoU_Link, Model.Id))</li>
+                                </authorize>
+                            }
+                            @if (organisationDetails.IsPendingBuyer())
+                            {
+                                <li>@StaticTextResource.OrganisationOverView_Banner_PendingApproval</li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+            }       
+
+        <fieldset class="govuk-fieldset">
+            <h1 class="govuk-heading-l">
+                <span class="govuk-label--l">@ViewData["Title"]</span>
+            </h1>
+            <h2 class="govuk-heading-m">@StaticTextResource.Organisation_OrganisationDetails</h2>
+            <dl class="govuk-summary-list govuk-!-margin-bottom-4">
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        @StaticTextResource.Organisation_OrganisationName
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        <p class="govuk-body">@organisationDetails.Name</p>
+                    </dd>
+                    <authorize scope="@OrgScopeRequirement.Editor">
+                        <dd class="govuk-summary-list__actions">
+                            <a class="govuk-link govuk-link--no-visited-state" href="/organisation/@Model.Id/name">@Html.Raw(@StaticTextResource.Organisation_ChangeName)</a>
+                        </dd>
+                    </authorize>
+                </div>
+
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        @StaticTextResource.Organisation_OrganisationIdentifier
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        <ul class="govuk-list govuk-list--bullet">
+                            <li>
+                                @if (@organisationDetails.Identifier.Id == null)
+                                {
+                                    <text>@StaticTextResource.Organisation_PponGenerationPending</text>
+                                }
+                                else
+                                {
+                                    @organisationDetails.Identifier.Scheme.SchemeDescription(Model.IdentifierRegistriesDetails)
+                                    <br />
+                                    @organisationDetails.Identifier.Id
+                                }
+                            </li>
+                            @foreach (var aidentifier in organisationDetails.AdditionalIdentifiersToShow())
+                            {
+                                <li>
+                                    @aidentifier.Scheme.SchemeDescription(Model.IdentifierRegistriesDetails)
+                                    <br />
+                                    @aidentifier.Id
+                                </li>
+                            }
+                        </ul>
+                    </dd>
+                    <authorize scope="@OrgScopeRequirement.Editor">
+                        <dd class="govuk-summary-list__actions">
+                            <a class="govuk-link govuk-link--no-visited-state" href="/organisation/@Model.Id/identifiers">@Html.Raw(StaticTextResource.Organisation_AddAddress)</a>
+                        </dd>
+                    </authorize>
+                </div>
+
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        @StaticTextResource.Organisation_OrganisationEmail
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        <p class="govuk-body">@organisationDetails.ContactPoint.Email</p>
+                    </dd>
+                    <authorize scope="@OrgScopeRequirement.Editor">
+                        <dd class="govuk-summary-list__actions">
+                            <a class="govuk-link govuk-link--no-visited-state" href="/organisation/@Model.Id/email">@Html.Raw(StaticTextResource.Organisation_ChangeEmail)</a>
+                        </dd>
+                    </authorize>
+                </div>
+
+                @if (registeredAddress != null)
                 {
-                    <div class="govuk-notification-banner" role="region" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
-                        <div class="govuk-notification-banner__header">
-                            <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
-                                @StaticTextResource.Organisation_RegistrationNotApproved
-                            </h2>
-                        </div>
-                        <div class="govuk-notification-banner__content">
-                            <p class="govuk-notification-banner__heading">
-                                @StaticTextResource.Organisation_WeCouldNotApproveYourRequest
-                            </p>
-                            <p class="govuk-body">@Model.Review.Comment</p>
-                        </div>
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            @StaticTextResource.Organisation_OrganisationAddress
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            <p class="govuk-body">@registeredAddress.StreetAddress</p>
+                            <p class="govuk-body">@registeredAddress.Locality</p>
+                            @if (!string.IsNullOrWhiteSpace(registeredAddress.Region))
+                            {
+                                <p class="govuk-body">@registeredAddress.Region</p>
+                            }
+                            <p class="govuk-body">@registeredAddress.PostalCode</p>
+                            <p class="govuk-body">@registeredAddress.CountryName</p>
+                        </dd>
+                        <authorize scope="@OrgScopeRequirement.Editor">
+                            <dd class="govuk-summary-list__actions">
+                                <a class="govuk-link govuk-link--no-visited-state" href="/organisation/@Model.Id/address/@(registeredAddress.Country == Country.UKCountryCode ? "uk" : "non-uk")?frm-overview">@Html.Raw(StaticTextResource.Organisation_ChangeAddress)</a>
+                            </dd>
+                        </authorize>
                     </div>
                 }
-                else if (Model.Review.Status == CDP.Organisation.WebApiClient.ReviewStatus.Pending)
+
+                @if (Model.BuyerInformation != null)
                 {
-                    <div class="govuk-notification-banner" role="region" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
-                        <div class="govuk-notification-banner__header">
-                            <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
-                                @StaticTextResource.Global_Important
-                            </h2>
-                        </div>
-                        <div class="govuk-notification-banner__content">
-                            <p class="govuk-notification-banner__heading">
-                                @StaticTextResource.Organisation_BuyerRegistrationPendingApproval
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            @StaticTextResource.Organisation_BuyerType
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            <p class="govuk-body">
+                                @if (BuyerOrganisationTypeModel.BuyerTypes.Keys.Contains(Model.BuyerInformation.BuyerType!))
+                                {
+                                    @(BuyerOrganisationTypeModel.BuyerTypes[Model.BuyerInformation.BuyerType!])
+                                }
+                                else
+                                {
+                                    @(Model.BuyerInformation.BuyerType)
+                                }
                             </p>
-                        </div>
+                        </dd>
                     </div>
+
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            @StaticTextResource.Organisation_DevolvedRegulations
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            <p class="govuk-body">
+                                @(Model.BuyerInformation.DevolvedRegulations.Count > 0 ? StaticTextResource.Global_Yes : StaticTextResource.Global_No)
+                            </p>
+                        </dd>
+                    </div>
+
+                    @if (Model.BuyerInformation.DevolvedRegulations.Count > 0)
+                    {
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">
+                                @StaticTextResource.Organisation_DevolvedRegions
+                            </dt>
+                            <dd class="govuk-summary-list__value">
+                                <p class="govuk-body">
+                                    @if (Model.Regulations != null)
+                                    {
+                                        foreach (var regulation in Model.Regulations)
+                                        {
+                                            @regulation.Description()
+
+                                            <br />
+                                        }
+                                    }
+                                </p>
+                            </dd>
+                        </div>
+                    }
+
+                    @if (Model.HasBuyerSignedMou)
+                    {
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">
+                                @StaticTextResource.MoU_DataSharingAgreement_Title
+                            </dt>
+                            <dd class="govuk-summary-list__value">
+                                <p class="govuk-body">
+                                    @if (Model.MouLatest != null)
+                                    {
+                                        @Model.MouSignedOnDate;
+                                    }
+                                </p>
+                            </dd>
+                        </div>
+                    }
                 }
+            </dl>
+
+            @if (organisationDetails.IsTenderer())
+            {
+                <h3 class="govuk-heading-s govuk-!-margin-bottom-3">
+                    <a class="govuk-link" href="/organisation/@RouteData.Values["id"]/supplier-information">@StaticTextResource.Organisation_CompleteSupplierInformation</a>
+                </h3>
+                <p class="govuk-body">@StaticTextResource.Organisation_CompleteAndShareSupplierInformation</p>
+                <div class="govuk-section-break govuk-section-break--visible govuk-section-break--m"></div>
             }
 
-            <fieldset class="govuk-fieldset">
-                <h1 class="govuk-heading-l">
-                    <span class="govuk-label--l">@ViewData["Title"]</span>
-                </h1>
-                <h2 class="govuk-heading-m">@StaticTextResource.Organisation_OrganisationDetails</h2>
-                <dl class="govuk-summary-list govuk-!-margin-bottom-4">
-                    <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">
-                            @StaticTextResource.Organisation_OrganisationName
-                        </dt>
-                        <dd class="govuk-summary-list__value">
-                            <p class="govuk-body">@organisationDetails.Name</p>
-                        </dd>
-                        <authorize scope="@OrgScopeRequirement.Editor">
-                            <dd class="govuk-summary-list__actions">
-                                <a class="govuk-link govuk-link--no-visited-state" href="/organisation/@Model.Id/name">@Html.Raw(@StaticTextResource.Organisation_ChangeName)</a>
-                            </dd>
-                        </authorize>
-                    </div>
+            @if (organisationDetails.IsBuyer())
+            {
+                <h3 class="govuk-heading-s govuk-!-margin-bottom-3">
+                    <a class="govuk-link" href="/organisation/@RouteData.Values["id"]/manage-api-keys">@(isViewer ? StaticTextResource.Organisation_ViewApiKeys : StaticTextResource.Organisation_ManageApiKeys) @(organisationDetails.IsTenderer() ? StaticTextResource.Organisation_ApiKeysForBuyers : "")</a>
+                </h3>
 
-                    <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">
-                            @StaticTextResource.Organisation_OrganisationIdentifier
-                        </dt>
-                        <dd class="govuk-summary-list__value">
-                            <ul class="govuk-list govuk-list--bullet">
-                                <li>
-                                    @if (@organisationDetails.Identifier.Id == null)
-                                    {
-                                        <text>@StaticTextResource.Organisation_PponGenerationPending</text>
-                                    }
-                                    else
-                                    {
-                                        @organisationDetails.Identifier.Scheme.SchemeDescription(Model.IdentifierRegistriesDetails)
-                                        <br />
-                                        @organisationDetails.Identifier.Id
-                                    }
-                                </li>
-                                @foreach (var aidentifier in organisationDetails.AdditionalIdentifiersToShow())
-                                {
-                                    <li>
-                                    @aidentifier.Scheme.SchemeDescription(Model.IdentifierRegistriesDetails)
-                                        <br />
-                                        @aidentifier.Id
-                                    </li>
-                                }
-                            </ul>
-                        </dd>
-                        <authorize scope="@OrgScopeRequirement.Editor">
-                            <dd class="govuk-summary-list__actions">
-                                <a class="govuk-link govuk-link--no-visited-state" href="/organisation/@Model.Id/identifiers">@Html.Raw(StaticTextResource.Organisation_AddAddress)</a>
-                            </dd>
-                        </authorize>
-                    </div>
+                <p class="govuk-body">@StaticTextResource.Organisation_CreateApiKey</p>
 
-                    <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">
-                            @StaticTextResource.Organisation_OrganisationEmail
-                        </dt>
-                        <dd class="govuk-summary-list__value">
-                            <p class="govuk-body">@organisationDetails.ContactPoint.Email</p>
-                        </dd>
-                        <authorize scope="@OrgScopeRequirement.Editor">
-                            <dd class="govuk-summary-list__actions">
-                                <a class="govuk-link govuk-link--no-visited-state" href="/organisation/@Model.Id/email">@Html.Raw(StaticTextResource.Organisation_ChangeEmail)</a>
-                            </dd>
-                        </authorize>
-                    </div>
+                <div class="govuk-section-break govuk-section-break--visible govuk-section-break--m"></div>
+            }
 
-                    @if (registeredAddress != null)
-                    {
-                        <div class="govuk-summary-list__row">
-                            <dt class="govuk-summary-list__key">
-                                @StaticTextResource.Organisation_OrganisationAddress
-                            </dt>
-                            <dd class="govuk-summary-list__value">
-                                <p class="govuk-body">@registeredAddress.StreetAddress</p>
-                                <p class="govuk-body">@registeredAddress.Locality</p>
-                                @if (!string.IsNullOrWhiteSpace(registeredAddress.Region))
-                                {
-                                    <p class="govuk-body">@registeredAddress.Region</p>
-                                }
-                                <p class="govuk-body">@registeredAddress.PostalCode</p>
-                                <p class="govuk-body">@registeredAddress.CountryName</p>
-                            </dd>
-                            <authorize scope="@OrgScopeRequirement.Editor">
-                                <dd class="govuk-summary-list__actions">
-                                    <a class="govuk-link govuk-link--no-visited-state" href="/organisation/@Model.Id/address/@(registeredAddress.Country == Country.UKCountryCode ? "uk" : "non-uk")?frm-overview">@Html.Raw(StaticTextResource.Organisation_ChangeAddress)</a>
-                                </dd>
-                            </authorize>
-                        </div>
-                    }
+            <authorize scope="@OrgScopeRequirement.Admin">
+                <h3 class="govuk-heading-s govuk-!-margin-bottom-3">
+                    <a class="govuk-link" href="/organisation/@RouteData.Values["id"]/users/user-summary">@StaticTextResource.Organisation_ManageUsers</a>
+                </h3>
+                <p class="govuk-body">@StaticTextResource.Organisation_ViewAddRemoveUsers</p>
+                <div class="govuk-section-break govuk-section-break--visible govuk-section-break--m"></div>
+            </authorize>
 
-                    @if (Model.BuyerInformation != null)
-                    {
-                        <div class="govuk-summary-list__row">
-                            <dt class="govuk-summary-list__key">
-                                @StaticTextResource.Organisation_BuyerType
-                            </dt>
-                            <dd class="govuk-summary-list__value">
-                                <p class="govuk-body">
-                                    @if (BuyerOrganisationTypeModel.BuyerTypes.Keys.Contains(Model.BuyerInformation.BuyerType!))
-                                    {
-                                        @(BuyerOrganisationTypeModel.BuyerTypes[Model.BuyerInformation.BuyerType!])
-                                    }
-                                    else
-                                    {
-                                        @(Model.BuyerInformation.BuyerType)
-                                    }
-                                </p>
-                            </dd>
-                        </div>
-
-                        <div class="govuk-summary-list__row">
-                            <dt class="govuk-summary-list__key">
-                                @StaticTextResource.Organisation_DevolvedRegulations
-                            </dt>
-                            <dd class="govuk-summary-list__value">
-                                <p class="govuk-body">
-                                    @(Model.BuyerInformation.DevolvedRegulations.Count > 0 ? StaticTextResource.Global_Yes : StaticTextResource.Global_No)
-                                </p>
-                            </dd>
-                        </div>
-
-                        @if (Model.BuyerInformation.DevolvedRegulations.Count > 0)
-                        {
-                            <div class="govuk-summary-list__row">
-                                <dt class="govuk-summary-list__key">
-                                    @StaticTextResource.Organisation_DevolvedRegions
-                                </dt>
-                                <dd class="govuk-summary-list__value">
-                                    <p class="govuk-body">
-                                        @if (Model.Regulations != null)
-                                        {
-                                            foreach (var regulation in Model.Regulations)
-                                            {
-                                                @regulation.Description()<br/>
-                                            }
-                                        }
-                                    </p>
-                                </dd>
-                            </div>
-                        }
-                    }
-                </dl>
-
-                @if (organisationDetails.IsTenderer())
-                {
-                    <h3 class="govuk-heading-s govuk-!-margin-bottom-3">
-                        <a class="govuk-link" href="/organisation/@RouteData.Values["id"]/supplier-information">@StaticTextResource.Organisation_CompleteSupplierInformation</a>
-                    </h3>
-                    <p class="govuk-body">@StaticTextResource.Organisation_CompleteAndShareSupplierInformation</p>
-                    <div class="govuk-section-break govuk-section-break--visible govuk-section-break--m"></div>
-                }
-
-                @if (organisationDetails.IsBuyer())
-                {
-                    <h3 class="govuk-heading-s govuk-!-margin-bottom-3">
-                        <a class="govuk-link" href="/organisation/@RouteData.Values["id"]/manage-api-keys">@(isViewer ? StaticTextResource.Organisation_ViewApiKeys : StaticTextResource.Organisation_ManageApiKeys) @(organisationDetails.IsTenderer() ? StaticTextResource.Organisation_ApiKeysForBuyers : "")</a>
-                    </h3>
-
-                    <p class="govuk-body">@StaticTextResource.Organisation_CreateApiKey</p>
-
-                    <div class="govuk-section-break govuk-section-break--visible govuk-section-break--m"></div>
-                }
-
+            @if ((organisationDetails.IsPendingBuyer() || organisationDetails.IsBuyer()) && !organisationDetails.IsTenderer())
+            {
                 <authorize scope="@OrgScopeRequirement.Admin">
                     <h3 class="govuk-heading-s govuk-!-margin-bottom-3">
-                        <a class="govuk-link" href="/organisation/@RouteData.Values["id"]/users/user-summary">@StaticTextResource.Organisation_ManageUsers</a>
+                        <a class="govuk-link" asp-page="./OrganisationRegisterBuyerAsSupplier" asp-route-id="@Model.Id">@StaticTextResource.Organisation_RegisterAsSupplier</a>
                     </h3>
-                    <p class="govuk-body">@StaticTextResource.Organisation_ViewAddRemoveUsers</p>
+                    <p class="govuk-body">@StaticTextResource.Organisation_SupplyGoodsServices</p>
                     <div class="govuk-section-break govuk-section-break--visible govuk-section-break--m"></div>
                 </authorize>
+            }
 
-                @if ((organisationDetails.IsPendingBuyer() || organisationDetails.IsBuyer()) && !organisationDetails.IsTenderer())
+            @if (organisationDetails.IsBuyer())
+            {
+                <p class="govuk-body govuk-!-margin-top-6">
+                    @StaticTextResource.Organisation_GetProcurementGuidance <a rel="noreferrer noopener" target="_blank" class="govuk-link" href="https://www.procurementpathway.civilservice.gov.uk/">@StaticTextResource.Organisation_ProcurementPathwayService</a>
+                </p>
+            }
+
+            <authorize scope="@OrgScopeRequirement.Admin">
+                @if (organisationDetails.IsTenderer() && !(organisationDetails.IsPendingBuyer() || organisationDetails.IsBuyer()))
                 {
-                    <authorize scope="@OrgScopeRequirement.Admin">
-                        <h3 class="govuk-heading-s govuk-!-margin-bottom-3">
-                            <a class="govuk-link" asp-page="./OrganisationRegisterBuyerAsSupplier" asp-route-id="@Model.Id">@StaticTextResource.Organisation_RegisterAsSupplier</a>
-                        </h3>
-                        <p class="govuk-body">@StaticTextResource.Organisation_SupplyGoodsServices</p>
-                        <div class="govuk-section-break govuk-section-break--visible govuk-section-break--m"></div>
-                    </authorize>
+                    <h3 class="govuk-heading-s govuk-!-margin-bottom-3">
+                        <a class="govuk-link" asp-page="./OrganisationRegisterSupplierAsBuyer" asp-route-id="@Model.Id">Register as a buyer</a>
+                    </h3>
+                    <p class="govuk-body">If you also buy public sector goods, works, services or utilities.</p>
+                    <div class="govuk-section-break govuk-section-break--visible govuk-section-break--m"></div>
                 }
-
-                @if (organisationDetails.IsBuyer())
-                {
-                    <p class="govuk-body govuk-!-margin-top-6">
-                        @StaticTextResource.Organisation_GetProcurementGuidance <a rel="noreferrer noopener" target="_blank" class="govuk-link" href="https://www.procurementpathway.civilservice.gov.uk/">@StaticTextResource.Organisation_ProcurementPathwayService</a>
-                    </p>
-                }
-
-                <authorize scope="@OrgScopeRequirement.Admin">
-                    @if (organisationDetails.IsTenderer() && !(organisationDetails.IsPendingBuyer() || organisationDetails.IsBuyer()))
-                    {
-                        <h3 class="govuk-heading-s govuk-!-margin-bottom-3">
-                            <a class="govuk-link" asp-page="./OrganisationRegisterSupplierAsBuyer" asp-route-id="@Model.Id">Register as a buyer</a>
-                        </h3>
-                        <p class="govuk-body">If you also buy public sector goods, works, services or utilities.</p>
-                        <div class="govuk-section-break govuk-section-break--visible govuk-section-break--m"></div>
-                    }
-                </authorize>
-            </fieldset>
-        </div>
+            </authorize>
+        </fieldset>
     </div>
+</div>

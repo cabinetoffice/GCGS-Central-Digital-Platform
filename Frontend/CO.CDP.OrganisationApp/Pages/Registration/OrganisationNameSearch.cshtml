@@ -1,0 +1,94 @@
+@page
+@attribute [RazorCompiledItemMetadata("RouteTemplate", RegistrationStepModel.OrganisationNameSearchPage)]
+@model CO.CDP.OrganisationApp.Pages.Registration.OrganisationNameSearchModel
+@using CO.CDP.Localization
+@using CO.CDP.OrganisationApp.Constants
+
+@{
+    ViewData["Title"] = Model.MatchingOrganisations?.Count() == 1 ? StaticTextResource.OrganisationRegistration_SearchOrganisationName_Heading_Singular : StaticTextResource.OrganisationRegistration_SearchOrganisationName_Heading_Plural;
+    var organisationIdentifierHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.OrganisationIdentifier)).HasInnerHtml;
+
+    var backLink = RegistrationStepModel.OrganisationNamePage;
+    if (Request.Query.ContainsKey("frm-summary"))
+    {
+        backLink = RegistrationStepModel.OrganisationSummaryPage;
+        Model.RedirectToSummary = true;
+    }
+}
+
+@section BeforeContent {
+    <a href="@backLink" class="govuk-back-link">
+        @StaticTextResource.Global_Back
+    </a>
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <partial name="_ErrorSummary" model="@ModelState" />
+
+        <form method="post">
+            @if (Request.Query.ContainsKey("frm-summary"))
+            {
+                <input type="hidden" name="RedirectToSummary" value="true" />
+            }
+
+            <div class="govuk-form-group @(organisationIdentifierHasError ? "govuk-form-group--error" : "")">
+                <fieldset class="govuk-fieldset">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                        <h1 class="govuk-fieldset__heading">
+                            @ViewData["Title"]
+                        </h1>
+                    </legend>
+
+                    @if (organisationIdentifierHasError)
+                    {
+                        <p id="organisationType-error" class="govuk-error-message">
+                            <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span> @Html.ValidationMessageFor(m => m.OrganisationIdentifier)
+                        </p>
+                    }
+
+                    <p class="govuk-body">@string.Format(Model.MatchingOrganisations?.Count() == 1 ? StaticTextResource.OrganisationRegistration_SearchOrganisationName_ResultCount_Singular : StaticTextResource.OrganisationRegistration_SearchOrganisationName_ResultCount_Plural, Model.MatchingOrganisations?.Count())</p>
+                    <p class="govuk-body">@StaticTextResource.OrganisationRegistration_SearchOrganisationName_Hint</p>
+                                    
+
+                    <div class="govuk-radios" data-module="govuk-radios">
+
+                        <h2 class="govuk-heading-s">
+                            @StaticTextResource.OrganisationRegistration_SearchOrganisationName_Register
+                        </h2>
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="none-of-these" name="@Html.NameFor(m => m.OrganisationIdentifier)" type="radio" value="None">
+                            <label class="govuk-label govuk-radios__label" for="none-of-these">
+                                [@Model.OrganisationName]
+                            </label>
+                        </div>
+
+                        @{
+                            var index = 0;
+                        }
+                        <h2 class="govuk-heading-s govuk-!-margin-top-5">
+                            @StaticTextResource.OrganisationRegistration_SearchOrganisationName_RequestToJoin
+                        </h2>
+                        @if(Model.MatchingOrganisations != null) {
+                            foreach (var orgSearchResult in Model.MatchingOrganisations) {
+                                <div class="govuk-radios__item">
+                                    <input class="govuk-radios__input" id="@Html.NameFor(m => m.OrganisationIdentifier)-@index" name="@Html.NameFor(m => m.OrganisationIdentifier)" type="radio" value="@orgSearchResult.Identifier.Scheme:@orgSearchResult.Identifier.Id" aria-describedby="@Html.NameFor(m => m.OrganisationIdentifier)-@index-hint">
+                                    <label class="govuk-label govuk-radios__label" for="@Html.NameFor(m => m.OrganisationIdentifier)-@index">
+                                            @orgSearchResult.Name
+                                    </label>
+                                </div>
+
+                                index++;
+                            }
+                        }
+                    </div>
+                </fieldset>
+            </div>
+
+            <govuk-button>
+                @StaticTextResource.Global_Continue
+            </govuk-button>
+
+        </form>
+    </div>
+</div>

@@ -39,14 +39,16 @@ dependency core_iam {
 dependency core_networking {
   config_path = "../../core/networking"
   mock_outputs = {
-    private_subnet_ids          = "mock"
-    private_subnets_cidr_blocks = "mock"
-    public_domain               = "mock"
-    public_hosted_zone_id       = "mock"
-    public_subnet_ids           = "mock"
-    public_subnets_cidr_blocks  = "mock"
-    vpc_id                      = "mock"
-    waf_acl_arn                 = "mock"
+    private_subnet_ids                     = "mock"
+    private_subnets_cidr_blocks            = "mock"
+    public_domain                          = "mock"
+    public_public_hosted_zone_iddomain     = "mock"
+    production_private_beta_domain         = "mock" # @todo (ABN) DP-1069 Remove once domain is propagated
+    production_private_beta_hosted_zone_id = "mock" # @todo (ABN) DP-1069 Remove once domain is propagated
+    public_subnet_ids                      = "mock"
+    public_subnets_cidr_blocks             = "mock"
+    vpc_id                                 = "mock"
+    waf_acl_arn                            = "mock"
   }
 }
 
@@ -116,6 +118,8 @@ dependency service_cache {
 dependency service_queue {
   config_path = "../../service/queue"
   mock_outputs = {
+    av_scanner_queue_arn          = "mock"
+    av_scanner_queue_url          = "mock"
     entity_verification_queue_arn = "mock"
     entity_verification_queue_url = "mock"
     organisation_queue_arn        = "mock"
@@ -146,8 +150,8 @@ inputs = {
 
   private_subnet_ids          = dependency.core_networking.outputs.private_subnet_ids
   private_subnets_cidr_blocks = dependency.core_networking.outputs.private_subnets_cidr_blocks
-  public_domain               = dependency.core_networking.outputs.public_domain
-  public_hosted_zone_id       = dependency.core_networking.outputs.public_hosted_zone_id
+  public_domain               = local.global_vars.locals.is_production ? dependency.core_networking.outputs.production_private_beta_domain : dependency.core_networking.outputs.public_domain                 # @todo (ABN) DP-1069 Remove condition once domain is propagated
+  public_hosted_zone_id       = local.global_vars.locals.is_production ? dependency.core_networking.outputs.production_private_beta_hosted_zone_id : dependency.core_networking.outputs.public_hosted_zone_id # @todo (ABN) DP-1069 Remove condition once domain is propagated
   public_subnet_ids           = dependency.core_networking.outputs.public_subnet_ids
   public_subnets_cidr_blocks  = dependency.core_networking.outputs.public_subnets_cidr_blocks
   vpc_id                      = dependency.core_networking.outputs.vpc_id
@@ -169,29 +173,31 @@ inputs = {
   user_pool_client_id = dependency.service_auth.outputs.organisation_app_user_pool_client_id
   user_pool_domain    = dependency.service_auth.outputs.user_pool_domain
 
-  db_entity_verification_address         = dependency.service_database.outputs.entity_verification_address
-  db_entity_verification_credentials_arn = dependency.service_database.outputs.entity_verification_credentials_arn
-  db_entity_verification_kms_arn         = dependency.service_database.outputs.entity_verification_kms_arn
-  db_entity_verification_name            = dependency.service_database.outputs.entity_verification_name
+  db_entity_verification_address          = dependency.service_database.outputs.entity_verification_address
+  db_entity_verification_credentials_arn  = dependency.service_database.outputs.entity_verification_credentials_arn
+  db_entity_verification_kms_arn          = dependency.service_database.outputs.entity_verification_kms_arn
+  db_entity_verification_name             = dependency.service_database.outputs.entity_verification_name
   db_ev_cluster_address                   = dependency.service_database.outputs.entity_verification_cluster_address
   db_ev_cluster_credentials_arn           = dependency.service_database.outputs.entity_verification_cluster_credentials_arn
   db_ev_cluster_credentials_kms_key_id    = dependency.service_database.outputs.entity_verification_cluster_credentials_kms_key_id
   db_ev_cluster_name                      = dependency.service_database.outputs.entity_verification_cluster_name
-  db_sirsi_address                       = dependency.service_database.outputs.sirsi_address
+  db_sirsi_address                        = dependency.service_database.outputs.sirsi_address
   db_sirsi_cluster_address                = dependency.service_database.outputs.sirsi_cluster_address
   db_sirsi_cluster_credentials_arn        = dependency.service_database.outputs.sirsi_cluster_credentials_arn
   db_sirsi_cluster_credentials_kms_key_id = dependency.service_database.outputs.sirsi_cluster_credentials_kms_key_id
   db_sirsi_cluster_name                   = dependency.service_database.outputs.sirsi_cluster_name
-  db_sirsi_credentials_arn               = dependency.service_database.outputs.sirsi_credentials_arn
-  db_sirsi_kms_arn                       = dependency.service_database.outputs.sirsi_kms_arn
-  db_sirsi_name                          = dependency.service_database.outputs.sirsi_name
+  db_sirsi_credentials_arn                = dependency.service_database.outputs.sirsi_credentials_arn
+  db_sirsi_kms_arn                        = dependency.service_database.outputs.sirsi_kms_arn
+  db_sirsi_name                           = dependency.service_database.outputs.sirsi_name
 
   redis_primary_endpoint = dependency.service_cache.outputs.primary_endpoint_address
   redis_auth_token_arn   = dependency.service_cache.outputs.redis_auth_token_arn
   redis_port             = dependency.service_cache.outputs.port
 
-  queue_entity_verification_queue_arn = dependency.service_queue.outputs.entity_verification_queue_arn
-  queue_entity_verification_queue_url = dependency.service_queue.outputs.entity_verification_queue_url
-  queue_organisation_queue_arn        = dependency.service_queue.outputs.organisation_queue_arn
-  queue_organisation_queue_url        = dependency.service_queue.outputs.organisation_queue_url
+  queue_av_scanner_arn          = dependency.service_queue.outputs.av_scanner_queue_arn
+  queue_av_scanner_url          = dependency.service_queue.outputs.av_scanner_queue_url
+  queue_entity_verification_arn = dependency.service_queue.outputs.entity_verification_queue_arn
+  queue_entity_verification_url = dependency.service_queue.outputs.entity_verification_queue_url
+  queue_organisation_arn        = dependency.service_queue.outputs.organisation_queue_arn
+  queue_organisation_url        = dependency.service_queue.outputs.organisation_queue_url
 }

@@ -4,4 +4,5 @@ locals {
   orchestrator_account_id = var.account_ids["orchestrator"]
 
   production_subdomain = "supplier-information"
+
 }

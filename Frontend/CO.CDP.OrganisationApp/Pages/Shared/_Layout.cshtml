@@ -2,12 +2,15 @@
 @using CO.CDP.OrganisationApp.Constants
 @using Microsoft.AspNetCore.Mvc.Localization
 @using CO.CDP.Localization
+@using Microsoft.FeatureManagement
+@addTagHelper *, Microsoft.FeatureManagement.AspNetCore
 
 @inject Microsoft.Extensions.Configuration.IConfiguration config
 @inject IUserInfoService userInfoService
 @inject ICookiePreferencesService cookiePreferencesService;
 @inject IHtmlLocalizer<StaticTextResource> Localizer
 @inject IFtsUrlService FtsUrlService
+@inject IFeatureManager featureManager;
 
 <!DOCTYPE html>
 <html lang="@System.Globalization.CultureInfo.CurrentUICulture.Name" class="govuk-template">
@@ -52,7 +55,7 @@
                 <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
                 <strong class="govuk-warning-text__text">
                     <span class="govuk-visually-hidden">Warning</span>
-                    This is a test website. Visit the main <a href="https://www.find-tender.service.gov.uk/" class="govuk-link break-word">Find a Tender</a> service to view UK public sector contract opportunities and awarded contracts.
+                    This site is for buyers to set up an organisation before the updated service is launched on 24 February. To view notices visit the main Find a Tender service.
                 </strong>
             </div>
         </div>
@@ -81,9 +84,18 @@
                         <partial name="Shared/_LanguageSwitcher" />
                     </div>
                     <div class="app-header-layout__column">
-                        <a href="@homeLink" class="govuk-header__link govuk-header__service-name">
-                            @StaticTextResource.Header_ServiceName
-                        </a>
+                        @if (await featureManager.IsEnabledAsync(FeatureFlags.AllowFtsRedirectLinks))
+                        {
+                            <a href="@homeLink" class="govuk-header__link govuk-header__service-name">
+                                @StaticTextResource.Header_ServiceName
+                            </a>
+                        }
+                        else
+                        {
+                            <span class="govuk-header__service-name">
+                                @StaticTextResource.Header_ServiceName
+                            </span>
+                        }
                         <nav aria-label="@StaticTextResource.Header_Menu" class="govuk-header__navigation">
                             <button type="button" class="govuk-header__menu-button govuk-js-header-toggle" aria-controls="navigation" hidden>
                                 @StaticTextResource.Header_Menu
@@ -95,17 +107,19 @@
                                     {
                                         if (organisationId != null)
                                         {
-                                            <li class="govuk-header__navigation-item">
-                                                <a class="govuk-header__link" href="@FtsUrlService.BuildUrl("/login", organisationId, "/Search/Results")">
-                                                    @StaticTextResource.Header_Search
-                                                </a>
-                                            </li>
+                                            <feature name="@FeatureFlags.AllowFtsRedirectLinks">
+                                                <li class="govuk-header__navigation-item">
+                                                    <a class="govuk-header__link" href="@FtsUrlService.BuildUrl("/login", organisationId, "/Search/Results")">
+                                                        @StaticTextResource.Header_Search
+                                                    </a>
+                                                </li>
 
-                                            <li class="govuk-header__navigation-item">
-                                                <a class="govuk-header__link" href="@FtsUrlService.BuildUrl("/login", organisationId, "/dashboard")">
-                                                    @StaticTextResource.Header_MyNotices
-                                                </a>
-                                            </li>
+                                                <li class="govuk-header__navigation-item">
+                                                    <a class="govuk-header__link" href="@FtsUrlService.BuildUrl("/login", organisationId, "/dashboard")">
+                                                        @StaticTextResource.Header_MyNotices
+                                                    </a>
+                                                </li>
+                                            </feature>
                                         }
 
                                         <li class="govuk-header__navigation-item">
@@ -180,21 +194,27 @@
                         <li class="govuk-footer__inline-list-item">
                             <a class="govuk-footer__link" target="_blank" href="/contact-us" )">@StaticTextResource.Footer_ContactUs</a>
                         </li>
+
+                        <feature name="@FeatureFlags.AllowFtsRedirectLinks">
+                            <li class="govuk-footer__inline-list-item">
+                                <a class="govuk-footer__link" href="@FtsUrlService.BuildUrl("/login", organisationId, "/Home/AccessibilityStatement")">@StaticTextResource.Footer_AccessibilityStatement</a>
+                            </li>
+                            <li class="govuk-footer__inline-list-item">
+                                <a class="govuk-footer__link" href="@FtsUrlService.BuildUrl("/login", organisationId, "/Home/TermsAndConditions")">@StaticTextResource.Footer_TermsAndConditions</a>
+                            </li>
+                        </feature>
                         <li class="govuk-footer__inline-list-item">
-                            <a class="govuk-footer__link" href="@FtsUrlService.BuildUrl("/Home/AccessibilityStatement")">@StaticTextResource.Footer_AccessibilityStatement</a>
-                        </li>
-                        <li class="govuk-footer__inline-list-item">
-                            <a class="govuk-footer__link" href="@FtsUrlService.BuildUrl("/Home/TermsAndConditions")">@StaticTextResource.Footer_TermsAndConditions</a>
-                        </li>
-                        <li class="govuk-footer__inline-list-item">
-                            <a class="govuk-footer__link" href="https://www.gov.uk/government/publications/crown-commercial-service-privacy-notice/crown-commercial-service-privacy-notice">@StaticTextResource.Footer_PrivacyNotice</a>
+                            <a class="govuk-footer__link" href="/privacy-notice">@StaticTextResource.Footer_PrivacyNotice</a>
                         </li>
                         <li class="govuk-footer__inline-list-item">
                             <a class="govuk-footer__link" href="/cookies">@StaticTextResource.Footer_Cookies</a>
                         </li>
-                        <li class="govuk-footer__inline-list-item">
-                            <a class="govuk-footer__link" href="@FtsUrlService.BuildUrl("/Developer/Documentation")">@StaticTextResource.Footer_DataAndAPI</a>
-                        </li>
+
+                        <feature name="@FeatureFlags.AllowFtsRedirectLinks">
+                            <li class="govuk-footer__inline-list-item">
+                                <a class="govuk-footer__link" href="@FtsUrlService.BuildUrl("/login", organisationId, "/Developer/Documentation")">@StaticTextResource.Footer_DataAndAPI</a>
+                            </li>
+                        </feature>
                     </ul>
                     <svg aria-hidden="true"
                          focusable="false"

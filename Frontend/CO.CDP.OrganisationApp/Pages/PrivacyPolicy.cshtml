@@ -19,7 +19,10 @@
                             </h1>
                         </legend>
                         <p>
-                            @StaticTextResource.PrivacyPolicy_Notice_BeforeLink<a class="govuk-link" target="_blank" href="/privacy-notice">@StaticTextResource.PrivacyPolicy_Notice_Link</a>.
+                            @StaticTextResource.PrivacyPolicy_Intro
+                        </p>
+                        <p>
+                            @Html.Raw(StaticTextResource.PrivacyPolicy_BeforeYouContinue)
                         </p>
 
                         @if (agreetoPrivacyPolicyHasError)

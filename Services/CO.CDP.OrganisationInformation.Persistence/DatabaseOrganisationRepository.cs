@@ -1,6 +1,7 @@
 using CO.CDP.EntityFrameworkCore.DbContext;
 using CO.CDP.OrganisationInformation.Persistence.Forms;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace CO.CDP.OrganisationInformation.Persistence;
 
@@ -64,6 +65,36 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
             .AsSingleQuery()
             .FirstOrDefaultAsync(t => t.Name == name);
     }
+
+    public async Task<IEnumerable<Organisation>> SearchByName(string name, PartyRole? role, int? limit)
+    {
+        var query = context.Organisations
+            .Include(p => p.Addresses)
+            .ThenInclude(p => p.Address)
+            .AsSingleQuery()
+            .Where(t => t.PendingRoles.Count == 0)
+            .Select(t => new
+            {
+                Organisation = t,
+                SimilarityScore = EF.Functions.TrigramsSimilarity(t.Name, name)
+            })
+            .Where(t => t.SimilarityScore > 0.3);
+
+        if (role.HasValue)
+        {
+            query = query.Where(t => t.Organisation.Roles.Contains(role.Value));
+        }
+
+        if (limit.HasValue)
+        {
+            query = query.Take(limit.Value);
+        }
+
+        query.OrderByDescending(t => t.SimilarityScore);
+
+        return await query.Select(t => t.Organisation).ToListAsync();
+    }
+
     public async Task<IEnumerable<OrganisationPerson>> FindOrganisationPersons(Guid organisationId)
     {
         return await context.Set<OrganisationPerson>()

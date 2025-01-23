@@ -71,7 +71,7 @@ locals {
       fts_azure_frontdoor               = null
       name                              = "staging"
       onelogin_logout_notification_urls = ["https://sirsi-integration-findtender.nqc.com/auth/backchannellogout"]
-      pinned_service_version            = "1.0.15"
+      pinned_service_version            = "1.0.23"
       postgres_instance_type            = "db.t4g.micro"
       private_subnets = [
         "10.${local.cidr_b_staging}.101.0/24",
@@ -95,7 +95,7 @@ locals {
       fts_azure_frontdoor               = null
       name                              = "integration"
       onelogin_logout_notification_urls = ["https://test-findtender.nqc.com/auth/backchannellogout"]
-      pinned_service_version            = "1.0.17"
+      pinned_service_version            = "1.0.22"
       postgres_instance_type            = "db.t4g.micro"
       private_subnets = [
         "10.${local.cidr_b_integration}.101.0/24",
@@ -123,7 +123,7 @@ locals {
       fts_azure_frontdoor               = "nqc-front-door-uksouth.azurefd.net"
       name                              = "production"
       onelogin_logout_notification_urls = ["https://www.private-beta.find-tender.service.gov.uk/auth/backchannellogout"]
-      pinned_service_version            = "1.0.15"
+      pinned_service_version            = "1.0.22"
       postgres_instance_type            = "db.t4g.micro"
       private_subnets = [
         "10.${local.cidr_b_production}.101.0/24",
@@ -135,7 +135,7 @@ locals {
         "10.${local.cidr_b_production}.2.0/24",
         "10.${local.cidr_b_production}.3.0/24"
       ]
-      top_level_domain = "private-beta.find-tender.service.gov.uk"
+      top_level_domain = "find-tender.service.gov.uk"
 
       externals_cidr_block      = "integration account feature" # To be deprecated after FTS Migration
       externals_private_subnets = "integration account feature" # To be deprecated after FTS Migration
@@ -160,9 +160,15 @@ locals {
 
   desired_count_non_production = 1
   desired_count_production     = 1
+  frontend_desired_count_non_production = 4
 
   service_configs_scaling_non_production = {
     authority = {
+      cpu           = 256
+      desired_count = local.desired_count_non_production
+      memory        = 512
+    }
+    av_scanner_app = {
       cpu           = 256
       desired_count = local.desired_count_non_production
       memory        = 512
@@ -194,7 +200,7 @@ locals {
     }
     organisation_app = {
       cpu           = 256
-      desired_count = local.desired_count_non_production
+      desired_count = local.frontend_desired_count_non_production
       memory        = 512
     }
     organisation_information_migrations = {
@@ -220,6 +226,11 @@ locals {
       desired_count = local.desired_count_production
       memory        = 512
     }
+    av_scanner_app = {
+      cpu           = 256
+      desired_count = local.desired_count_non_production
+      memory        = 512
+    }
     data_sharing = {
       cpu           = 256
       desired_count = local.desired_count_production
@@ -247,7 +258,7 @@ locals {
     }
     organisation_app = {
       cpu           = 256
-      desired_count = local.desired_count_production
+      desired_count = local.frontend_desired_count_non_production
       memory        = 512
     }
     organisation_information_migrations = {
@@ -275,6 +286,11 @@ locals {
       desired_count = local.desired_count_development
       memory        = 512
     }
+    av_scanner_app = {
+      cpu           = 256
+      desired_count = local.desired_count_non_production
+      memory        = 512
+    }
     data_sharing = {
       cpu           = 256
       desired_count = local.desired_count_development
@@ -302,7 +318,7 @@ locals {
     }
     organisation_app = {
       cpu           = 256
-      desired_count = local.desired_count_development
+      desired_count = local.frontend_desired_count_non_production
       memory        = 512
     }
     organisation_information_migrations = {
@@ -333,6 +349,11 @@ locals {
       name      = "authority"
       port      = 8092
       port_host = 8092
+    }
+    av_scanner_app = {
+      name      = "av-scanner-app"
+      port      = 8095
+      port_host = 8095
     }
     data_sharing = {
       name      = "data-sharing"
@@ -392,6 +413,13 @@ locals {
   }
 
   tools_configs = {
+    clamav_rest = {
+      cpu       = 1024
+      memory    = 3072
+      name      = "clamav-rest"
+      port      = 9000
+      port_host = 9000
+    }
     grafana = {
       cpu       = 256
       memory    = 512

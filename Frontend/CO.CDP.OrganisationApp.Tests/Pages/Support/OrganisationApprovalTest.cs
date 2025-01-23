@@ -45,14 +45,38 @@ public class OrganisationApprovalModelTests
             details: new Details(approval: null, pendingRoles: [])
         );
 
+        var expectedPersons = new List<CDP.Organisation.WebApiClient.Person>
+        {
+            new CDP.Organisation.WebApiClient.Person(
+                id: Guid.NewGuid(),
+                firstName: "Admin",
+                lastName: "User",
+                email: "admin.user@example.com",
+                scopes: new List<string> { "ADMIN", "RESPONDER" }
+            ),
+            new CDP.Organisation.WebApiClient.Person(
+                id: Guid.NewGuid(),
+                firstName: "Regular",
+                lastName: "User",
+                email: "regular.user@example.com",
+                scopes: new List<string> { "EDITOR" }
+            )
+        };
+
         _mockOrganisationClient
             .Setup(client => client.GetOrganisationAsync(organisationId))
             .ReturnsAsync(expectedOrganisation);
+
+        _mockOrganisationClient
+            .Setup(client => client.GetOrganisationPersonsAsync(organisationId))
+            .ReturnsAsync(expectedPersons);
 
         var result = await _organisationApprovalModel.OnGet(organisationId);
 
         result.Should().BeOfType<PageResult>();
         _organisationApprovalModel.OrganisationDetails.Should().BeEquivalentTo(expectedOrganisation);
+        _organisationApprovalModel.AdminUser.Should().NotBeNull();
+        _organisationApprovalModel.AdminUser.Should().BeEquivalentTo(expectedPersons.First(p => p.Scopes.Contains("ADMIN")));
     }
 
     [Fact]
