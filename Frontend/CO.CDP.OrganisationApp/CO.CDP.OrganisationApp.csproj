@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+<Project Sdk="Microsoft.NET.Sdk.Web">
 
     <PropertyGroup>
         <TargetFramework>net8.0</TargetFramework>
@@ -35,7 +35,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <None Update="mou-pdfs\mou-pdf-template.pdf">
+        <None Update="mou-pdfs\version-1.pdf">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
     </ItemGroup>
