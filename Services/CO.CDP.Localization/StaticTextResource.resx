@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <root>
-  <!--
-    Microsoft ResX Schema
-
+  <!-- 
+    Microsoft ResX Schema 
+    
     Version 2.0
-
-    The primary goals of this format is to allow a simple XML format
-    that is mostly human readable. The generation and parsing of the
-    various data types are done through the TypeConverter classes
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
     associated with the data types.
-
+    
     Example:
-
+    
     ... ado.net/XML headers & schema ...
     <resheader name="resmimetype">text/microsoft-resx</resheader>
     <resheader name="version">2.0</resheader>
@@ -26,36 +26,36 @@
         <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
         <comment>This is a comment</comment>
     </data>
-
-    There are any number of "resheader" rows that contain simple
+                
+    There are any number of "resheader" rows that contain simple 
     name/value pairs.
-
-    Each data row contains a name, and value. The row also contains a
-    type or mimetype. Type corresponds to a .NET class that support
-    text/value conversion through the TypeConverter architecture.
-    Classes that don't support this are serialized and stored with the
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
     mimetype set.
-
-    The mimetype is used for serialized objects, and tells the
-    ResXResourceReader how to depersist the object. This is currently not
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
     extensible. For a given mimetype the value must be set accordingly:
-
-    Note - application/x-microsoft.net.object.binary.base64 is the format
-    that the ResXResourceWriter will generate, however the reader can
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
     read any of the formats listed below.
-
+    
     mimetype: application/x-microsoft.net.object.binary.base64
-    value   : The object must be serialized with
+    value   : The object must be serialized with 
             : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
             : and then encoded with base64 encoding.
-
+    
     mimetype: application/x-microsoft.net.object.soap.base64
-    value   : The object must be serialized with
+    value   : The object must be serialized with 
             : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
             : and then encoded with base64 encoding.
 
     mimetype: application/x-microsoft.net.object.bytearray.base64
-    value   : The object must be serialized into a byte array
+    value   : The object must be serialized into a byte array 
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
@@ -3152,7 +3152,7 @@
     <value>You've signed the data sharing agreement</value>
   </data>
   <data name="MoU_ReviewAndSign_ConfirmStatement" xml:space="preserve">
-    <value>I am authorised to sign the agreement for my organisation on behalf of:</value>
+    <value>Enter the name and job title of the person that authorised the signing of the agreement:</value>
   </data>
   <data name="MoU_ReviewAndSign_Confirm_Title" xml:space="preserve">
     <value>I confirm that I have read and agree to the data sharing agreement</value>
@@ -3164,7 +3164,19 @@
     <value>Download the agreement</value>
   </data>
   <data name="MoU_ReviewAndSign_Hint" xml:space="preserve">
-    <value>The data sharing agreement is a memorandum of understanding (MoU) between the Cabinet Office and contracting authorities as joint data controllers of the personal and sensitive data collected and shared on the Find a Tender service.</value>
+    <value>&lt;p&gt;The data sharing agreement is a memorandum of understanding (MOU) about data shared on the Find a Tender service (FTS) and the joint responsibilities of:
+&lt;/p&gt;
+            &lt;ul class="govuk-list govuk-list--bullet"&gt;
+            &lt;li&gt;the Cabinet Office&lt;/li&gt;
+            &lt;li&gt;contracting authorities taking part in public procurement&lt;/li&gt;
+            &lt;/ul&gt;
+&lt;p&gt; The MOU explains the: &lt;/p&gt;
+            &lt;ul class="govuk-list govuk-list--bullet"&gt;
+            &lt;li&gt;personal and sensitive data collected on FTS&lt;/li&gt;
+            &lt;li&gt;role and responsibilities of the Cabinet Office&lt;/li&gt;
+            &lt;li&gt;role and responsibilities of the contracting authority&lt;/li&gt;
+            &lt;/ul&gt;
+</value>
   </data>
   <data name="MoU_ReviewAndSign_Job_Title" xml:space="preserve">
     <value>Job title</value>
@@ -3173,13 +3185,13 @@
     <value>Enter your job title</value>
   </data>
   <data name="MoU_ReviewAndSign_Name" xml:space="preserve">
-    <value>Name</value>
+    <value>Full name</value>
   </data>
   <data name="MoU_ReviewAndSign_Name_ErrorMessage" xml:space="preserve">
     <value>Please provide a name</value>
   </data>
   <data name="MoU_ReviewAndSign_Options_Title" xml:space="preserve">
-    <value>Confirm you have read and agree</value>
+    <value>Confirm you have read and agree to the MOU</value>
   </data>
   <data name="MoU_ReviewAndSign_SelectCheckbox_ErrorMessage" xml:space="preserve">
     <value>Please tick the checkbox, if you have read and agree to the data sharing agreement</value>
@@ -3188,7 +3200,7 @@
     <value>Read and agree to the data sharing agreement</value>
   </data>
   <data name="MoU_ReviewAndSign_Warning" xml:space="preserve">
-    <value>You must sign the MoU before you can use the service. It is a formal agreement between the Cabinet Office and your organisation.</value>
+    <value>You should sign the MOU before you get any supplier information from FTS.</value>
   </data>
   <data name="OrganisationOverView_Banner_PendingApproval" xml:space="preserve">
     <value>we need to approve your organisation. We'll email you, usually within one working day.</value>
@@ -3204,5 +3216,14 @@
   </data>
   <data name="MoU_SignedOn" xml:space="preserve">
     <value>Agreed on {0}</value>
+  </data>
+  <data name="MoU_ReviewAndSign_Download_Hint" xml:space="preserve">
+    <value>Download and share the document within your organisation. When ready, return to this page to confirm that your organisation understands its responsibilities as a joint data controller.</value>
+  </data>
+  <data name="MoU_ReviewAndSign_Options_Hint" xml:space="preserve">
+    <value>By ticking the box you are 'signing' the data sharing agreement on behalf of your organisation. The details you provide will be saved and dated as proof of agreement with the MOU.&lt;br&gt;&lt;br&gt;You'll be able to view the document and signing information from your organisation details page.</value>
+  </data>
+  <data name="MoU_SignAndContinue" xml:space="preserve">
+    <value>Sign and continue</value>
   </data>
 </root>
