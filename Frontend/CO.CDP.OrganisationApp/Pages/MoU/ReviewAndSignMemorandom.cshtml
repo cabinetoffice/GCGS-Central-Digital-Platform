@@ -33,9 +33,7 @@
                             <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span> @Html.ValidationMessageFor(m => m.SignTheAgreement)
                         </p>
                     }
-                    <p>
-                        @Html.Raw(@StaticTextResource.MoU_ReviewAndSign_Hint)
-                    </p>
+                    @Html.Raw(@StaticTextResource.MoU_ReviewAndSign_Hint)
                     <h2 class="govuk-heading-m">
                         @StaticTextResource.MoU_ReviewAndSign_Download_Title
                     </h2>

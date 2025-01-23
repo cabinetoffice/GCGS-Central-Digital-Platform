@@ -3171,7 +3171,7 @@
             &lt;li&gt;contracting authorities taking part in public procurement&lt;/li&gt;
             &lt;/ul&gt;
 &lt;p&gt; The MOU explains the: &lt;/p&gt;
-            &lt;ul&gt;
+            &lt;ul class="govuk-list govuk-list--bullet"&gt;
             &lt;li&gt;personal and sensitive data collected on FTS&lt;/li&gt;
             &lt;li&gt;role and responsibilities of the Cabinet Office&lt;/li&gt;
             &lt;li&gt;role and responsibilities of the contracting authority&lt;/li&gt;
