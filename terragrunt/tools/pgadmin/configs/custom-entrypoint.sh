@@ -68,9 +68,9 @@ configure_servers_json() {
 
     id=10
     for username in $(echo "$SUPPORT_USERNAMES" | tr ',' ' '); do
-      add_server_to_json "$id" "$username@cdp-sirsi" "Production Support" "$DB_SIRSI_ADDRESS" 5432 "$DB_SIRSI_NAME" "$username"
+      add_server_to_json "$id" "$username@cdp-sirsi" "Production Support" "$DB_SIRSI_CLUSTER_ADDRESS" 5432 "$DB_SIRSI_CLUSTER_NAME" "$username"
       id=$((id + 1))
-      add_server_to_json "$id" "$username@cdp-entity-verification" "Production Support" "$DB_ENTITY_VERIFICATION_ADDRESS" 5432 "$DB_ENTITY_VERIFICATION_NAME" "$username"
+      add_server_to_json "$id" "$username@cdp-entity-verification" "Production Support" "$DB_ENTITY_VERIFICATION_CLUSTER_ADDRESS" 5432 "$DB_ENTITY_VERIFICATION_CLUSTER_NAME" "$username"
       id=$((id + 1))
     done
   fi
