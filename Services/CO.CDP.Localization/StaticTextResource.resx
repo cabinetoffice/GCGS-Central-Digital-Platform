@@ -285,6 +285,15 @@
   <data name="Global_Reject" xml:space="preserve">
     <value>Reject</value>
   </data>
+  <data name="Global_Next" xml:space="preserve">
+    <value>Next</value>
+  </data>
+  <data name="Global_Previous" xml:space="preserve">
+    <value>Previous</value>
+  </data>
+  <data name="Global_Reject" xml:space="preserve">
+    <value>Reject</value>
+  </data>
   <data name="Organisation_MyAccount" xml:space="preserve">
     <value>My account</value>
   </data>
@@ -1903,6 +1912,9 @@
   </data>
   <data name="Support_Organisations_SupplierOrganisations_Title" xml:space="preserve">
     <value>Supplier organisations</value>
+  </data>
+  <data name="Support_OrganisationApproval_OrganisationsCountHeading" xml:space="preserve">
+    <value>There are {0} organisations</value>
   </data>
   <data name="Support_OrganisationApproval_Heading" xml:space="preserve">
     <value>Organisation details</value>

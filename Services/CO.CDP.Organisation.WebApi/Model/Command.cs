@@ -334,9 +334,45 @@ public record SupportOrganisationInfo
 
 public record PaginatedOrganisationQuery
 {
-    public string? Type { get; init; }
-    public int? Limit { get; init; }
-    public int? Skip { get; init; }
+    public PartyRole? Role { get; }
+    public PartyRole? PendingRole { get; }
+    public int Limit { get; }
+    public int Skip { get; }
+
+    public PaginatedOrganisationQuery(int limit, int skip, string? role = null, string? pendingRole = null)
+    {
+        Limit = limit;
+        Skip = skip;
+
+        if (role != null)
+        {
+            Role = (PartyRole)Enum.Parse(typeof(PartyRole), role, true);
+        }
+
+        if (pendingRole != null)
+        {
+            PendingRole = (PartyRole)Enum.Parse(typeof(PartyRole), pendingRole, true);
+        }
+    }
+}
+
+public record OrganisationTypeQuery
+{
+    public PartyRole? Role { get; }
+    public PartyRole? PendingRole { get; }
+
+    public OrganisationTypeQuery(string? role = null, string? pendingRole = null)
+    {
+        if (role != null)
+        {
+            Role = (PartyRole)Enum.Parse(typeof(PartyRole), role, true);
+        }
+
+        if (pendingRole != null)
+        {
+            PendingRole = (PartyRole)Enum.Parse(typeof(PartyRole), pendingRole, true);
+        }
+    }
 }
 
 public record OrganisationQuery
@@ -419,7 +455,7 @@ public record CreateOrganisationJoinRequest
 }
 
 public record SignMouRequest
-{ 
+{
     public required Guid MouId { get; set; }
     public required Guid CreatedById { get; set; }
     public required string Name{ get; set; }
