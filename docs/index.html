@@ -1546,7 +1546,89 @@ return string.Format(count &gt; 1 ? StaticTextResource.Supplier_SupplierInformat
 <p>The script has been designed to retain the same order of keys as is in the original XML files, so the git diff <em>should</em> be minimal and only show the actual changes.</p>
 </div>
 <div class="paragraph">
-<p>The next time Visual Studio&#8217;s resource explorer touches the file, it may make whitespace changes, particularly around the area of the comment in the XML. If necessary these can be hidden when viewing the diff by using the <code>git diff -w</code> flag.</p>
+<p>The next time Visual Studio&#8217;s resource explorer touches the file, it may make whitespace changes, particularly around the area of the comment in the XML. If necessary these can be hidden when viewing the diff by using the <code>git diff -w</code> flag.
+= How to add pagination</p>
+</div>
+<div class="paragraph">
+<p>The <code>Pagination</code> partial view is used to display pagination controls for lists of items in the application. It provides navigation links for moving between pages and handles pagination logic internally.</p>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_how_to_use">How to Use</h5>
+<div class="paragraph">
+<p>To include the pagination partial view in your Razor page, use the <code>Html.PartialAsync</code> method to pass the required parameters.</p>
+</div>
+<div class="sect5">
+<h6 id="_example_usage">Example Usage</h6>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code>@await Html.PartialAsync("_Pagination", new PaginationPartialModel
+{
+    CurrentPage = Model.CurrentPage,
+    TotalItems = Model.TotalOrganisations,
+    PageSize = Model.PageSize,
+    Url = "/support/organisations"
+})</code></pre>
+</div>
+</div>
+<div class="sect6">
+<h7 id="_parameters">Parameters</h7>
+<div class="paragraph">
+<p>The <code>PaginationPartialModel</code> requires the following parameters:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>CurrentPage</code> <strong>(int)</strong>: The current page number.</p>
+</li>
+<li>
+<p><code>TotalItems</code> <strong>(int)</strong>: The total number of items available.</p>
+</li>
+<li>
+<p><code>PageSize</code> <strong>(int)</strong>: The number of items displayed per page.</p>
+</li>
+<li>
+<p><code>Url</code> <strong>(string)</strong>: The base URL to be used for pagination links.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect5">
+<h6 id="_pagination_logic">Pagination Logic</h6>
+<div class="paragraph">
+<p>The <code>PaginationPartialModel</code> calculates the total number of pages automatically based on the <code>TotalItems</code> and <code>PageSize</code> values. It generates page URLs dynamically using the provided <code>Url</code> parameter.</p>
+</div>
+</div>
+<div class="sect5">
+<h6 id="_example_output">Example Output</h6>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code>&lt; Previous  1  2  3  ...  10  Next &gt;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect5">
+<h6 id="_file_locations">File Locations</h6>
+<div class="paragraph">
+<p>Ensure the following files are present in the project:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Partial View:</strong> <code>Pages/Shared/_Pagination.cshtml</code></p>
+</li>
+<li>
+<p><strong>Model:</strong> <code>Pages/Shared/PaginationPartialModel.cs</code></p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect5">
+<h6 id="_styling">Styling</h6>
+<div class="paragraph">
+<p>The pagination component follows GOV.UK design standards and is styled using the <code>govuk-pagination</code> class to ensure consistency across the application.</p>
 </div>
 </div>
 </div>
@@ -2832,7 +2914,7 @@ is live we can monitor the number of concurrent users and re-evaluate the soluti
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2025-01-23 09:48:19 UTC
+Last updated 2025-01-23 11:07:32 UTC
 </div>
 </div>
 </body>
