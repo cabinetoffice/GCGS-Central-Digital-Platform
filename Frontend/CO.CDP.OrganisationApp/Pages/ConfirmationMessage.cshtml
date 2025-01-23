@@ -15,7 +15,13 @@
                 </h1>
             </div>
 
-            <p class="govuk-body"><a href="#" onclick="self.close()">@StaticTextResource.Supplementary_CloseThisWindow</a></p>
-
+            <p class="govuk-body"><a class="govuk-link" href="/organisation-selection" id="close-window">@StaticTextResource.Supplementary_CloseThisWindow</a></p>
         </div>
     </div>
+
+    <script nonce-csp>
+        document.getElementById("close-window").addEventListener("click", function (e) {
+            e.preventDefault();
+            window.self.close();
+        });
+    </script>
