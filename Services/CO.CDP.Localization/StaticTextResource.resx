@@ -3166,13 +3166,16 @@
   <data name="MoU_ReviewAndSign_Hint" xml:space="preserve">
     <value>&lt;p&gt;The data sharing agreement is a memorandum of understanding (MOU) about data shared on the Find a Tender service (FTS) and the joint responsibilities of:
 &lt;/p&gt;
+            &lt;ul class="govuk-list govuk-list--bullet"&gt;
             &lt;li&gt;the Cabinet Office&lt;/li&gt;
             &lt;li&gt;contracting authorities taking part in public procurement&lt;/li&gt;
+            &lt;/ul&gt;
 &lt;p&gt; The MOU explains the: &lt;/p&gt;
-
+            &lt;ul&gt;
             &lt;li&gt;personal and sensitive data collected on FTS&lt;/li&gt;
             &lt;li&gt;role and responsibilities of the Cabinet Office&lt;/li&gt;
             &lt;li&gt;role and responsibilities of the contracting authority&lt;/li&gt;
+            &lt;/ul&gt;
 </value>
   </data>
   <data name="MoU_ReviewAndSign_Job_Title" xml:space="preserve">
