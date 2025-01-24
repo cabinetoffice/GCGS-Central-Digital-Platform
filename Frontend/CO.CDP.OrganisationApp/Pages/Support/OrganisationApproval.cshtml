@@ -34,7 +34,7 @@
                     <dd class="govuk-summary-list__value">
                         <p class="govuk-body">@organisationDetails.Name</p>
 
-                        @if (Model.MatchingOrganisations.Count > 0) {
+                        @if (Model.MatchingOrganisations?.Count > 0) {
                             <div class="govuk-form-group govuk-form-group--error">
                                 <p id="duplicate-org-error" class="govuk-error-message">
                                     @StaticTextResource.Support_OrganisationApproval_PotentialDuplicatesFound
