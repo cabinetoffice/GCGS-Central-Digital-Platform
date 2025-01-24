@@ -1,14 +1,12 @@
 using CO.CDP.OrganisationApp.Authentication;
 using CO.CDP.OrganisationApp.Models;
-using Microsoft.Extensions.Caching.Distributed;
 using System.Text.Json.Serialization;
 using static IdentityModel.OidcConstants;
 
 namespace CO.CDP.OrganisationApp.WebApiClients;
 
 public class AuthorityClient(
-    IConfiguration config,
-    ICacheService cache,
+    ISession session,
     ITokenService tokenService,
     IHttpClientFactory httpClientFactory) : IAuthorityClient
 {
@@ -45,23 +43,19 @@ public class AuthorityClient(
     {
         if (userUrn == null) return null;
 
-        var cacheKey = AuthTokensCacheKey(userUrn);
-        var tokens = await cache.Get<AuthTokens>(cacheKey);
+        var tokens = session.Get<AuthTokens>(Session.UserAuthTokens);
 
         if (fetchIfNotAvailable)
         {
             (bool newToken, tokens) = await GetAuthTokens(tokens);
             if (newToken)
             {
-                await cache.Set(cacheKey, tokens, new DistributedCacheEntryOptions
-                {
-                    AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(config.GetValue<double>("SessionTimeoutInMinutes"))
-                });
+                session.Set(Session.UserAuthTokens, tokens);
             }
         }
         else
         {
-            await cache.Remove(cacheKey);
+            session.Remove(Session.UserAuthTokens);
         }
 
         return tokens;
@@ -70,6 +64,19 @@ public class AuthorityClient(
     private async Task<(bool newToken, AuthTokens tokens)> GetAuthTokens(AuthTokens? tokens)
     {
         var newToken = false;
+
+        if (tokens == null)
+        {
+            var expiresAtString = await tokenService.GetTokenAsync("expires_at");
+            if (!string.IsNullOrEmpty(expiresAtString)
+                && DateTimeOffset.TryParse(expiresAtString, out var expiresAtDateTimeOffset))
+            {
+                if (expiresAtDateTimeOffset.ToLocalTime() < DateTimeOffset.Now)
+                {
+                    throw new Exception("One login token is expired and can not be used to generate access token from Authority service.");
+                }
+            }
+        }
 
         if (tokens == null || tokens.RefreshTokenExpiry < DateTime.Now)
         {
@@ -135,8 +142,6 @@ public class AuthorityClient(
     {
         return httpClientFactory.CreateClient(OrganisationAuthorityHttpClientName);
     }
-
-    private static string AuthTokensCacheKey(string userUrn) => $"UserAuthTokens_{userUrn}";
 
     public class TokenResponse
     {

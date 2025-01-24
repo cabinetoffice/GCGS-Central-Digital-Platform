@@ -2,6 +2,8 @@ using CO.CDP.OrganisationApp.Pages.Shared;
 using FluentAssertions;
 using System.ComponentModel.DataAnnotations;
 
+namespace CO.CDP.OrganisationApp.Tests.Pages.Shared;
+
 public class PaginationPartialModelTests
 {
     [Fact]
