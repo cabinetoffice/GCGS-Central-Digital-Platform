@@ -163,6 +163,9 @@
                         <div class="govuk-radios__item">
                             <input class="govuk-radios__input" id="Other" name="OrganisationScheme" type="radio" value="Other" @(Model.OrganisationScheme == "Other" ? "checked" : "")>
                             @Html.LabelFor(m => m.Other, new { @class = "govuk-label govuk-radios__label", @for = "Other" })
+                            <div id="OrganisationSchemeHint" class="govuk-hint govuk-checkboxes__hint">
+                                @StaticTextResource.Organisation_OrganisationIdentification_Other_Hint
+                            </div>
                         </div>
                     </div>
                 </fieldset>
