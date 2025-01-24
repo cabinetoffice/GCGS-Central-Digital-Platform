@@ -1,5 +1,4 @@
 using CO.CDP.OrganisationApp.Authentication;
-using CO.CDP.OrganisationApp.WebApiClients;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
@@ -12,12 +11,11 @@ public class CookieEventsTests
 {
     private readonly Mock<IAuthenticationService> _authenticationService = new();
     private readonly Mock<ILogoutManager> _logoutManagerMock = new();
-    private readonly Mock<IAuthorityClient> _authorityClientMock = new();
     private readonly CookieEvents _cookieEvents;
 
     public CookieEventsTests()
     {
-        _cookieEvents = new CookieEvents(_logoutManagerMock.Object, _authorityClientMock.Object);
+        _cookieEvents = new CookieEvents(_logoutManagerMock.Object);
     }
 
     [Fact]
@@ -51,7 +49,6 @@ public class CookieEventsTests
         await _cookieEvents.ValidatePrincipal(context);
 
         _logoutManagerMock.Verify(m => m.HasLoggedOut(urn), Times.Once);
-        _authorityClientMock.Verify(m => m.RevokeRefreshToken(urn), Times.Never);
     }
 
     [Fact]
@@ -65,7 +62,6 @@ public class CookieEventsTests
 
         _logoutManagerMock.Verify(m => m.HasLoggedOut(urn), Times.Once);
         _logoutManagerMock.Verify(m => m.RemoveAsLoggedOut(urn), Times.Once);
-        _authorityClientMock.Verify(m => m.RevokeRefreshToken(urn), Times.Once);
         _authenticationService.Verify(m => m.SignOutAsync(It.IsAny<HttpContext>(), It.IsAny<string>(), It.IsAny<AuthenticationProperties>()), Times.Once);
     }
 
