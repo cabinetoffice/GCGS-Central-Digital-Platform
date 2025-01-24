@@ -65,7 +65,7 @@ public class ShareCodesListViewTests
 
         _dataSharingApiClientMock
             .Setup(x => x.GetShareCodeListAsync(organisationId))
-            .ThrowsAsync(new WebApiClient.ApiException("Not Found", 404, "Not Found", null, null));
+            .ThrowsAsync(new WebApiClient.ApiException("Not Found", 404, "Not Found", null!, null));
 
         var result = await _pageModel.OnGet();
 
@@ -137,7 +137,7 @@ public class ShareCodesListViewTests
 
         _dataSharingApiClientMock
             .Setup(x => x.GetSharedDataFileAsync(shareCode))
-            .ReturnsAsync((WebApiClient.FileResponse?)null);
+            .ReturnsAsync((WebApiClient.FileResponse?)null!);
 
         var result = await _pageModel.OnGetDownload(shareCode);
 

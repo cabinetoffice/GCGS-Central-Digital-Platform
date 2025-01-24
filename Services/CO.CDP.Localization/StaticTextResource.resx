@@ -3235,4 +3235,7 @@
   <data name="MoU_SignAndContinue" xml:space="preserve">
     <value>Sign and continue</value>
   </data>
+  <data name="Consortium_ConsortiumEnterSharecode_InvalidCode" xml:space="preserve">
+    <value>Share code not found.</value>
+  </data>
 </root>

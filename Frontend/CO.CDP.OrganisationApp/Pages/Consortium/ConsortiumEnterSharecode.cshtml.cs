@@ -60,7 +60,14 @@ public class ConsortiumEnterSharecodeModel(
 
         try
         {
-            var shareCode = await dataSharingClient.GetSharedDataAsync(EnterSharecode);
+            var shareCode = await dataSharingClient.GetSharedDataAsync(EnterSharecode!);
+
+            if (shareCode == null)
+            {
+                ModelState.AddModelError(nameof(EnterSharecode), StaticTextResource.Consortium_ConsortiumEnterSharecode_InvalidCode);
+                return Page();
+            }
+
             OrganisationParties? parties;
             try
             {
@@ -69,7 +76,7 @@ public class ConsortiumEnterSharecodeModel(
             catch (CO.CDP.Organisation.WebApiClient.ApiException ex) when (ex.StatusCode == 404)
             {
                 parties = null;
-            }            
+            }
 
             if (parties != null && parties.Parties.Where(p => p.Id == shareCode.Id).Any())
             {

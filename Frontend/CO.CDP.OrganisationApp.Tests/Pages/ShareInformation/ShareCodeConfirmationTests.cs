@@ -80,7 +80,7 @@ public class ShareCodeConfirmationTests
 
         _dataSharingApiClientMock
             .Setup(x => x.GetSharedDataFileAsync(shareCode))
-            .ReturnsAsync((WebApiClient.FileResponse?)null);
+            .ReturnsAsync((WebApiClient.FileResponse?)null!);
 
         var result = await _pageModel.OnGetDownload();
 
