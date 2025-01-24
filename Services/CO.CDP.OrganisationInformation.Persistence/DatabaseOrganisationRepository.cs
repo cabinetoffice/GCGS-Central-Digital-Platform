@@ -160,6 +160,39 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
         return await result.AsSingleQuery().ToListAsync();
     }
 
+    public async Task<IList<Organisation>> GetPaginated(PartyRole? role, PartyRole? pendingRole, int limit, int skip)
+    {
+        IQueryable<Organisation> result = context.Organisations
+            .Include(o => o.ReviewedBy)
+            .Include(o => o.Identifiers)
+            .Include(o => o.BuyerInfo)
+            .Include(o => o.SupplierInfo)
+            .Include(o => o.Addresses)
+            .ThenInclude(p => p.Address)
+            .OrderBy(o => o.Name)
+            .Where(o =>
+                (pendingRole.HasValue && o.PendingRoles.Contains(pendingRole.Value)) ||
+                (role.HasValue && o.Roles.Contains(role.Value))
+            );
+
+        return await result
+            .AsSingleQuery()
+            .Skip(skip)
+            .Take(limit)
+            .ToListAsync();
+    }
+
+    public async Task<int> GetTotalCount(PartyRole? role, PartyRole? pendingRole)
+    {
+        IQueryable<Organisation> result = context.Organisations
+            .Where(o =>
+                (pendingRole.HasValue && o.PendingRoles.Contains(pendingRole.Value)) ||
+                (role.HasValue && o.Roles.Contains(role.Value))
+            );
+
+        return await result.CountAsync();
+    }
+
     public async Task<IList<ConnectedEntity>> GetConnectedIndividualTrusts(int organisationId)
     {
         var result = context.ConnectedEntities

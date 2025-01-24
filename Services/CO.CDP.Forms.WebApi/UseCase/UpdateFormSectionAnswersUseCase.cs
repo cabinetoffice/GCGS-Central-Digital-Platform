@@ -1,5 +1,4 @@
 using AutoMapper;
-using CO.CDP.AwsServices;
 using CO.CDP.Forms.WebApi.Model;
 using CO.CDP.OrganisationInformation.Persistence;
 using Persistence = CO.CDP.OrganisationInformation.Persistence.Forms;
@@ -28,10 +27,32 @@ public class UpdateFormSectionAnswersUseCase(
         var (updatedSharedConsent, mappedAnswerSetId, updatedAnswers) =
             MapSharedConsent(sharedConsent, answerSetId, updateFormSectionAnswers.Answers ?? []);
 
-        await UpdateOrAddAnswers(mappedAnswerSetId, updatedAnswers, section, updatedSharedConsent, updateFormSectionAnswers.FurtherQuestionsExempted);
+        UpdateOrAddAnswers(mappedAnswerSetId, updatedAnswers, section, updatedSharedConsent, updateFormSectionAnswers.FurtherQuestionsExempted);
+        UpdateAnswerSets(updatedSharedConsent);
         await formRepository.SaveSharedConsentAsync(updatedSharedConsent);
-
         return true;
+    }
+
+    private static void UpdateAnswerSets(Persistence.SharedConsent updatedSharedConsent)
+    {
+        foreach (var answerSets in updatedSharedConsent.AnswerSets.GroupBy(s => s.SectionId))
+        {
+            var activeAnswerSets = answerSets.Where(a => !a.Deleted);
+
+            var answerSetsWithFurtherQuestionsExempted =
+                activeAnswerSets.Where(a => a.FurtherQuestionsExempted == true);
+
+            var answerSetsWithoutFurtherQuestionsExemptedCount =
+                activeAnswerSets.Count(a => a.FurtherQuestionsExempted == false);
+
+            if (answerSetsWithoutFurtherQuestionsExemptedCount > 0 && answerSetsWithFurtherQuestionsExempted.Any())
+            {
+                foreach (var answetSetWithFurtherQuestionsExempted in answerSetsWithFurtherQuestionsExempted)
+                {
+                    answetSetWithFurtherQuestionsExempted.Deleted = true;
+                }
+            }
+        }
     }
 
     private static (Persistence.SharedConsent, Guid, List<FormAnswer>) MapSharedConsent(
@@ -59,7 +80,7 @@ public class UpdateFormSectionAnswersUseCase(
         );
     }
 
-    private async Task UpdateOrAddAnswers(
+    private void UpdateOrAddAnswers(
         Guid answerSetId,
         List<FormAnswer> answers,
         Persistence.FormSection section,
@@ -71,7 +92,7 @@ public class UpdateFormSectionAnswersUseCase(
         ValidateQuestions(answers, questionDictionary);
 
         var answerSet = sharedConsent.AnswerSets.FirstOrDefault(a => a.Guid == answerSetId)
-            ?? await CreateAnswerSet(answerSetId, sharedConsent, section, furtherQuestionsExempted);
+            ?? CreateAnswerSet(answerSetId, sharedConsent, section, furtherQuestionsExempted);
 
         answerSet.Answers = MapAnswers(answers, questionDictionary, answerSet.Answers);
     }
@@ -170,30 +191,12 @@ public class UpdateFormSectionAnswersUseCase(
         };
     }
 
-    private async Task<Persistence.FormAnswerSet> CreateAnswerSet(
+    private static Persistence.FormAnswerSet CreateAnswerSet(
         Guid answerSetId,
         Persistence.SharedConsent sharedConsent,
         Persistence.FormSection section,
         bool furtherQuestionsExempted)
     {
-        var currentAnswers = await formRepository.GetFormAnswerSetsFromCurrentSharedConsentAsync(section.Guid, sharedConsent.Organisation.Guid);
-
-        if (currentAnswers != null)
-        {
-            var existingFurtherQuestionsExemptedAnswer = currentAnswers.FirstOrDefault(x => x.Deleted == false && x.FurtherQuestionsExempted == true);
-
-            if (existingFurtherQuestionsExemptedAnswer != null)
-            {
-                if (furtherQuestionsExempted == true)
-                {
-                    return existingFurtherQuestionsExemptedAnswer;
-                }
-                else
-                {
-                    existingFurtherQuestionsExemptedAnswer.Deleted = true;
-                }
-            }
-        }
         var answerSet = new Persistence.FormAnswerSet
         {
             Guid = answerSetId,

@@ -10,13 +10,14 @@ locals {
   ] : []
   waf_raw_ip_set_json = try(jsondecode(data.aws_secretsmanager_secret_version.waf_allowed_ips.secret_string), [])
 
-  waf_rule_sets_priority = {
-    AWSManagedRulesAmazonIpReputationList : 3
-    AWSManagedRulesAnonymousIpList : 4
+  waf_rule_sets_priority_blockers = {
+    AWSManagedRulesAmazonIpReputationList : 4
     AWSManagedRulesKnownBadInputsRuleSet : 2
-    # AWSManagedRulesBotControlRuleSet : 6
-    # AWSManagedRulesCommonRuleSet : 1
-    AWSManagedRulesSQLiRuleSet : 5
+    AWSManagedRulesSQLiRuleSet : 6
+  }
+
+  waf_rule_sets_priority_observers = {
+    AWSManagedRulesAnonymousIpList : 8
   }
 
 }
