@@ -409,7 +409,7 @@
     <value>There is a problem</value>
   </data>
   <data name="Supplementary_Index_UnableToAuthenticate" xml:space="preserve">
-    <value>Unable to authenticate user, Try again</value>
+    <value>Unable to authenticate user. Try again</value>
   </data>
   <data name="Supplementary_Index_Intro" xml:space="preserve">
     <value>The Central Digital Platform (CDP) service is for both procurement professionals and suppliers in the UK's public and utilities sectors.</value>
