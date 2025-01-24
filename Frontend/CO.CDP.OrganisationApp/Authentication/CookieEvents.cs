@@ -1,12 +1,9 @@
-using CO.CDP.OrganisationApp.WebApiClients;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace CO.CDP.OrganisationApp.Authentication;
 
-public class CookieEvents(
-    ILogoutManager logoutManager,
-    IAuthorityClient authorityClient) : CookieAuthenticationEvents
+public class CookieEvents(ILogoutManager logoutManager) : CookieAuthenticationEvents
 {
     public override async Task ValidatePrincipal(CookieValidatePrincipalContext context)
     {
@@ -23,7 +20,6 @@ public class CookieEvents(
         }
 
         await logoutManager.RemoveAsLoggedOut(urn);
-        await authorityClient.RevokeRefreshToken(urn);
 
         context.RejectPrincipal();
         await context.HttpContext.SignOutAsync();
