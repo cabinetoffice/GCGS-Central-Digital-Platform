@@ -1,4 +1,3 @@
-using CO.CDP.AwsServices;
 using CO.CDP.Forms.WebApi.Model;
 using CO.CDP.Forms.WebApi.Tests.AutoMapper;
 using CO.CDP.Forms.WebApi.UseCase;
@@ -459,6 +458,45 @@ public class UpdateFormSectionAnswersUseCaseTest(AutoMapperFixture mapperFixture
             sc.AnswerSets.First().Answers.ElementAt(5).OptionValue == "Option-1" &&
             sc.AnswerSets.First().Answers.ElementAt(6).AddressValue != null &&
             sc.AnswerSets.First().Answers.ElementAt(7).JsonValue == "{\"json\": true}"
+        )));
+    }
+
+    [Fact]
+    public async Task Execute_ShouldMarkExistingAnswerSetToDelete_WhenSameSectionTypeAnswerSetWithoutFurtherQuestionsExemptedIsAdded()
+    {
+        var organisation = GivenOrganisationExists(organisationId: Guid.NewGuid());
+        var section = GivenFormSectionExists(sectionId: Guid.NewGuid());
+        var sharedConsent = GivenSharedConsent(organisation, section.Form, state: Submitted);
+        var answerSetOld = GivenAnswerSet(sharedConsent: sharedConsent, section: section, answers: [], furtherQuestionsExempted: true);
+        answerSetOld.Id = 1;
+
+        _repository.Setup(r => r.GetSharedConsentWithAnswersAsync(section.Form.Guid, organisation.Guid))
+            .ReturnsAsync(sharedConsent);
+
+        var question = GivenFormQuestion(section: section, type: Text);
+
+        var updateFormSectionAnswers = new UpdateFormSectionAnswers
+        {
+            Answers = [new() { Id = Guid.NewGuid(), QuestionId = question.Guid, TextValue = "My new answer" },]
+        };
+
+        var command = (
+            formId: section.Form.Guid,
+            sectionId: section.Guid,
+            answerSetId: Guid.NewGuid(),
+            organisationId: organisation.Guid,
+            updateFormSectionAnswers);
+
+        await UseCase.Execute(command);
+
+        _repository.Verify(r => r.SaveSharedConsentAsync(It.Is<Persistence.SharedConsent>(sc =>
+            sc.Guid != sharedConsent.Guid &&
+            sc.SubmissionState == Draft &&
+            sc.AnswerSets.Count == 2 &&
+            sc.AnswerSets.First().Id == 0 &&
+            sc.AnswerSets.First().FurtherQuestionsExempted == true &&
+            sc.AnswerSets.First().Deleted == true &&
+            sc.AnswerSets.ElementAt(1).Answers.ElementAt(0).TextValue == "My new answer"
         )));
     }
 

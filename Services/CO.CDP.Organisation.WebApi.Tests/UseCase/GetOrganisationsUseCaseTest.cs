@@ -24,7 +24,7 @@ public class GetOrganisationsUseCaseTests
     [Fact]
     public async Task Execute_WithValidCommand_ReturnsMappedOrganisations()
     {
-        var command = new PaginatedOrganisationQuery { Type = "buyer" };
+        var command = new PaginatedOrganisationQuery(limit: 10, skip: 0, "buyer", "buyer");
         List<CO.CDP.OrganisationInformation.Persistence.Organisation> organisations =
         [
             new() {
@@ -62,30 +62,30 @@ public class GetOrganisationsUseCaseTests
             }
         ];
 
-        _organisationRepositoryMock.Setup(repo => repo.Get(command.Type)).ReturnsAsync(organisations);
+        _organisationRepositoryMock.Setup(repo => repo.GetPaginated(command.Role, command.PendingRole, command.Limit, command.Skip)).ReturnsAsync(organisations);
         _mapperMock.Setup(m => m.Map<IEnumerable<OrganisationExtended>>(organisations)).Returns(mappedOrganisations);
 
         var result = await _useCase.Execute(command);
 
         result.Should().BeEquivalentTo(mappedOrganisations);
-        _organisationRepositoryMock.Verify(repo => repo.Get(command.Type), Times.Once);
+        _organisationRepositoryMock.Verify(repo => repo.GetPaginated(command.Role, command.PendingRole, command.Limit, command.Skip), Times.Once);
         _mapperMock.Verify(m => m.Map<IEnumerable<OrganisationExtended>>(organisations), Times.Once);
     }
 
     [Fact]
     public async Task Execute_WhenNoOrganisationsExist_ReturnsEmptyList()
     {
-        var command = new PaginatedOrganisationQuery { Type = "buyer" };
+        var command = new PaginatedOrganisationQuery (limit: 10, skip: 0, "buyer", "buyer");
         var organisations = new List<CO.CDP.OrganisationInformation.Persistence.Organisation>();
         var mappedOrganisations = new List<OrganisationExtended>();
 
-        _organisationRepositoryMock.Setup(repo => repo.Get(command.Type)).ReturnsAsync(organisations);
+        _organisationRepositoryMock.Setup(repo => repo.GetPaginated(command.Role, command.PendingRole, command.Limit, command.Skip)).ReturnsAsync(organisations);
         _mapperMock.Setup(m => m.Map<IEnumerable<OrganisationExtended>>(organisations)).Returns(mappedOrganisations);
 
         var result = await _useCase.Execute(command);
 
         result.Should().BeEmpty();
-        _organisationRepositoryMock.Verify(repo => repo.Get(command.Type), Times.Once);
+        _organisationRepositoryMock.Verify(repo => repo.GetPaginated(command.Role, command.PendingRole, command.Limit, command.Skip), Times.Once);
         _mapperMock.Verify(m => m.Map<IEnumerable<OrganisationExtended>>(organisations), Times.Once);
     }
 }

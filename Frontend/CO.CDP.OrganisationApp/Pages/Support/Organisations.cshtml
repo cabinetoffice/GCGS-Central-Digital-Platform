@@ -1,6 +1,8 @@
 @page "/support/organisations/{type}"
 @using CO.CDP.OrganisationApp.Constants
 @using CO.CDP.Localization
+@using CO.CDP.OrganisationApp.Pages.Shared
+@using Microsoft.AspNetCore.Mvc.TagHelpers
 @model OrganisationsModel
 
 @{
@@ -8,101 +10,117 @@
     ViewData["ContainerClasses"] = "app-width-container--wide";
 }
 
+<h1 class="govuk-heading-l">@ViewData["Title"]</h1>
+
+<ul class="govuk-tabs__list">
+    <li class="govuk-tabs__list-item @(Model.Type == "buyer" ? "govuk-tabs__list-item--selected" : "")">
+        <a class="govuk-tabs__tab" href="/support/organisations/buyer">
+            @StaticTextResource.Support_Organisations_BuyerOrganisations_Title
+        </a>
+    </li>
+    <li class="govuk-tabs__list-item @(Model.Type == "supplier" ? "govuk-tabs__list-item--selected" : "")">
+        <a class="govuk-tabs__tab" href="/support/organisations/supplier">
+            @StaticTextResource.Support_Organisations_SupplierOrganisations_Title
+        </a>
+    </li>
+</ul>
+
+<br/>
+
+<h2 class="govuk-heading-m">
+    @(string.Format(StaticTextResource.Support_OrganisationApproval_OrganisationsCountHeading, Model.TotalOrganisations))
+</h2>
+
 <table class="govuk-table">
-    <caption class="govuk-table__caption govuk-table__caption--m">@ViewData["Title"]</caption>
     <thead class="govuk-table__head">
-        <tr class="govuk-table__row">
-            <th scope="col" colspan="1" class="govuk-table__header">@StaticTextResource.Support_Organisations_TableHeader_OrganisationName</th>
-            <th scope="col" colspan="1" class="govuk-table__header">@StaticTextResource.Support_Organisations_TableHeader_Identifier</th>
-            <th scope="col" colspan="1" class="govuk-table__header">@StaticTextResource.Support_Organisations_TableHeader_OrgEmail</th>
-            @{
-                if (Model.Type == "buyer")
-                {
-                    <th scope="col" colspan="1" class="govuk-table__header">@StaticTextResource.Support_Organisations_TableHeader_Status</th>
-                    <th scope="col" colspan="1" class="govuk-table__header">@StaticTextResource.Support_Organisations_TableHeader_DateApproved</th>
-                    <th scope="col" colspan="1" class="govuk-table__header">@StaticTextResource.Support_Organisations_TableHeader_LastReviewedBy</th>
-                    <th scope="col" colspan="1" class="govuk-table__header">@StaticTextResource.Support_Organisations_TableHeader_Comments</th>
-                    <th scope="col" colspan="1" class="govuk-table__header"></th>
-                }
-            }
-        </tr>
-    </thead>
-    <tbody class="govuk-table__body">
+    <tr class="govuk-table__row">
+        <th scope="col" colspan="1" class="govuk-table__header">@StaticTextResource.Support_Organisations_TableHeader_OrganisationName</th>
+        <th scope="col" colspan="1" class="govuk-table__header">@StaticTextResource.Support_Organisations_TableHeader_Identifier</th>
+        <th scope="col" colspan="1" class="govuk-table__header">@StaticTextResource.Support_Organisations_TableHeader_OrgEmail</th>
         @{
-            foreach (var org in Model.Organisations)
+            if (Model.Type == "buyer")
             {
-                <tr class="govuk-table__row">
-                    <th scope="row" class="govuk-table__header">
-                        <a asp-page="/Organisation/OrganisationOverview" asp-route-id="@org.Id">
-                            @org.Name
-                        </a>
-                    </th>
-                    <td class="govuk-table__cell">
-                        <ul class="govuk-list">
-                            @{
-                                foreach (var i in OrganisationsModel.CombineIdentifiers(@org.Identifier, @org.AdditionalIdentifiers))
-                                {
-                                    <li>@i.Scheme.SchemeDescription(): @i.Id</li>
-                                }
-                            }
-                        </ul>
-                    </td>
-                    <td class="govuk-table__cell">
-                        @org.ContactPoint.Email
-                    </td>
-                    @{
-                        if (Model.Type == "buyer")
-                        {
-                            var approval = org.Details?.Approval;
-
-                            <td class="govuk-table__cell">
-                                @{
-                                    if (approval?.ApprovedOn == null)
-                                    {
-                                        <span>@StaticTextResource.Support_Organisations_Status_Pending</span>
-                                    }
-                                    else
-                                    {
-                                        <span>@StaticTextResource.Support_Organisations_Status_Approved</span>
-                                    }
-                                }
-                            </td>
-                            <td class="govuk-table__cell">
-                                @(approval?.ApprovedOn == null ? "N/A" : approval?.ApprovedOn)
-                            </td>
-                            <td class="govuk-table__cell">
-                                @(approval?.ReviewedBy?.Name ?? "N/A")
-                            </td>
-                            <td class="govuk-table__cell">
-                                @(approval?.Comment ?? "N/A")
-                            </td>
-                            <td class="govuk-table__cell">
-                                @{
-                                    if (@org.Details?.Approval?.ApprovedOn == null)
-                                    {
-                                        <a class="govuk-link" href="/support/organisation/@org.Id/approval">@StaticTextResource.Support_Organisations_Review_Link</a>
-                                    }
-                                    else
-                                    {
-                                        <span>@StaticTextResource.Support_Organisations_Status_Approved</span>
-                                    }
-                                }
-
-                            </td>
-                        }
-                    }
-                </tr>
+                <th scope="col" colspan="1" class="govuk-table__header">@StaticTextResource.Support_Organisations_TableHeader_Status</th>
+                <th scope="col" colspan="1" class="govuk-table__header">@StaticTextResource.Support_Organisations_TableHeader_DateApproved</th>
+                <th scope="col" colspan="1" class="govuk-table__header">@StaticTextResource.Support_Organisations_TableHeader_LastReviewedBy</th>
+                <th scope="col" colspan="1" class="govuk-table__header">@StaticTextResource.Support_Organisations_TableHeader_Comments</th>
+                <th scope="col" colspan="1" class="govuk-table__header"></th>
             }
         }
+    </tr>
+    </thead>
+    <tbody class="govuk-table__body">
+    @{
+        foreach (var org in Model.Organisations)
+        {
+            <tr class="govuk-table__row">
+                <th scope="row" class="govuk-table__header">
+                    <a asp-page="/Organisation/OrganisationOverview" asp-route-id="@org.Id">
+                        @org.Name
+                    </a>
+                    <ul class="govuk-list">
+                        @{
+                            foreach (var i in OrganisationsModel.CombineIdentifiers(@org.Identifier, @org.AdditionalIdentifiers))
+                            {
+                                <li>@i.Scheme.SchemeDescription(): @i.Id</li>
+                            }
+                        }
+                    </ul>
+                </th>
+                <td class="govuk-table__cell">
+                    @org.ContactPoint.Email
+                </td>
+                @{
+                    if (Model.Type == "buyer")
+                    {
+                        var approval = org.Details?.Approval;
+
+                        <td class="govuk-table__cell">
+                            @{
+                                if (approval?.ApprovedOn == null)
+                                {
+                                    <span>@StaticTextResource.Support_Organisations_Status_Pending</span>
+                                }
+                                else
+                                {
+                                    <span>@StaticTextResource.Support_Organisations_Status_Approved</span>
+                                }
+                            }
+                        </td>
+                        <td class="govuk-table__cell">
+                            @(approval?.ApprovedOn == null ? "N/A" : approval?.ApprovedOn)
+                        </td>
+                        <td class="govuk-table__cell">
+                            @(approval?.ReviewedBy?.Name ?? "N/A")
+                        </td>
+                        <td class="govuk-table__cell">
+                            @(approval?.Comment ?? "N/A")
+                        </td>
+                        <td class="govuk-table__cell">
+                            @{
+                                if (@org.Details?.Approval?.ApprovedOn == null)
+                                {
+                                    <a class="govuk-link" href="/support/organisation/@org.Id/approval">@StaticTextResource.Support_Organisations_Review_Link</a>
+                                }
+                                else
+                                {
+                                    <span>@StaticTextResource.Support_Organisations_Status_Approved</span>
+                                }
+                            }
+
+                        </td>
+                    }
+                }
+            </tr>
+        }
+    }
     </tbody>
 </table>
-@{
-    if (Model.Type == "buyer")
-    {
-        <a class="govuk-link" href="/support/organisations/supplier">@StaticTextResource.Support_Organisations_SupplierOrganisations_Link</a>
-    }
-    else
-    {
-        <a class="govuk-link" href="/support/organisations/buyer">@StaticTextResource.Support_Organisations_BuyerOrganisations_Link</a>
-    }
-}
+
+@await Html.PartialAsync("_Pagination", new PaginationPartialModel
+{
+    CurrentPage = Model.CurrentPage,
+    TotalItems = Model.TotalOrganisations,
+    PageSize = Model.PageSize,
+    Url = string.Format("/support/organisations/{0}", Model.Type)
+    })
