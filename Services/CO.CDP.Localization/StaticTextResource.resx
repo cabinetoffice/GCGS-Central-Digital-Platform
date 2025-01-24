@@ -291,9 +291,6 @@
   <data name="Global_Previous" xml:space="preserve">
     <value>Previous</value>
   </data>
-  <data name="Global_Reject" xml:space="preserve">
-    <value>Reject</value>
-  </data>
   <data name="Organisation_MyAccount" xml:space="preserve">
     <value>My account</value>
   </data>
@@ -366,6 +363,9 @@
   <data name="Header_SignIn" xml:space="preserve">
     <value>Sign in</value>
   </data>
+  <data name="Footer_AboutUs" xml:space="preserve">
+    <value />
+  </data>
   <data name="Footer_ContactUs" xml:space="preserve">
     <value>Contact us</value>
   </data>
@@ -412,7 +412,7 @@
     <value>There is a problem</value>
   </data>
   <data name="Supplementary_Index_UnableToAuthenticate" xml:space="preserve">
-    <value>Unable to authenticate user, please retry</value>
+    <value>Unable to authenticate user, Try again</value>
   </data>
   <data name="Supplementary_Index_Intro" xml:space="preserve">
     <value>The Central Digital Platform (CDP) service is for both procurement professionals and suppliers in the UK's public and utilities sectors.</value>
@@ -832,7 +832,7 @@
     <value>Select a country</value>
   </data>
   <data name="Global_PleaseSelect" xml:space="preserve">
-    <value>Please select</value>
+    <value>Select an option</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityCompanyRegisterName_SelectIfRegisteredError" xml:space="preserve">
     <value>Select where registered</value>
@@ -2413,13 +2413,13 @@
     <value>Do you have a website?</value>
   </data>
   <data name="Global_SelectAnOption" xml:space="preserve">
-    <value>Please select an option</value>
+    <value>Select an option</value>
   </data>
   <data name="Supplier_VatQuestion_BelongsToAnotherOrganisation_Error" xml:space="preserve">
     <value>This VAT number belongs to another organisation. Enter a different VAT number.</value>
   </data>
   <data name="Supplier_VatNumber_Error" xml:space="preserve">
-    <value>Please enter the VAT number.</value>
+    <value>Enter the VAT number.</value>
   </data>
   <data name="Supplier_WebsiteQuestion_WebsiteAddress" xml:space="preserve">
     <value>Website address</value>
@@ -2524,7 +2524,7 @@
     <value>Error:</value>
   </data>
   <data name="Supplier_LegalFormLawRegistered_ErrorMessage" xml:space="preserve">
-    <value>Please enter the law under which your organisation is registered</value>
+    <value>Enter the law under which your organisation is registered</value>
   </data>
   <data name="Supplier_LegalFormOtherOrganisation_PleaseSelect" xml:space="preserve">
     <value>Select your organisation's registered legal form</value>
@@ -3017,7 +3017,7 @@
     <value>Go to my account</value>
   </data>
   <data name="ErrorMessageList_DuplicatePersonName" xml:space="preserve">
-    <value>A person with this name already exists. Please try again.</value>
+    <value>A person with this name already exists. Try again.</value>
   </data>
   <data name="ErrorMessageList_DuplicatePersonEmail" xml:space="preserve">
     <value>A user with this email address already exists for your organisation.</value>
@@ -3038,16 +3038,16 @@
     <value>The requested organisation was not found.</value>
   </data>
   <data name="ErrorMessageList_DuplicateOrganisationName" xml:space="preserve">
-    <value>An organisation with this name already exists. Please try again.</value>
+    <value>An organisation with this name already exists. Try again.</value>
   </data>
   <data name="ErrorMessageList_PayLoadIssueOrNullAurgument" xml:space="preserve">
-    <value>Please make sure all the required information has been provided correctly.</value>
+    <value>Enter all the required information correctly.</value>
   </data>
   <data name="ErrorMessageList_UnprocessableEntity" xml:space="preserve">
-    <value>An unprocessable entity found. Please try again with valid data.</value>
+    <value>An unprocessable entity found. Try again.</value>
   </data>
   <data name="ErrorMessageList_UnexpectedError" xml:space="preserve">
-    <value>An unexpected error occurred. Please try again with valid data.</value>
+    <value>An unexpected error occurred. Try again.</value>
   </data>
   <data name="ErrorMessageList_UnknownOrganisation" xml:space="preserve">
     <value>The requested organisation was not found.</value>
@@ -3059,7 +3059,7 @@
     <value>The requested buyer information update type is unknown.</value>
   </data>
   <data name="ErrorMessageList_DuplicateApiKeyName" xml:space="preserve">
-    <value>An API key with this name already exists. Please try again.</value>
+    <value>An API key with this name already exists. Try again.</value>
   </data>
   <data name="ErrorMessageList_AlreadyMemberOfOrganisation" xml:space="preserve">
     <value>You are either already a member of this organisation or have already requested to join.</value>
@@ -3197,13 +3197,13 @@
     <value>Full name</value>
   </data>
   <data name="MoU_ReviewAndSign_Name_ErrorMessage" xml:space="preserve">
-    <value>Please provide a name</value>
+    <value>Provide a name</value>
   </data>
   <data name="MoU_ReviewAndSign_Options_Title" xml:space="preserve">
     <value>Confirm you have read and agree to the MOU</value>
   </data>
   <data name="MoU_ReviewAndSign_SelectCheckbox_ErrorMessage" xml:space="preserve">
-    <value>Please tick the checkbox, if you have read and agree to the data sharing agreement</value>
+    <value>Tick the checkbox, if you have read and agree to the data sharing agreement</value>
   </data>
   <data name="MoU_ReviewAndSign_Title" xml:space="preserve">
     <value>Read and agree to the data sharing agreement</value>
