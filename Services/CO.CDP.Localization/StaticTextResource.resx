@@ -363,9 +363,6 @@
   <data name="Header_SignIn" xml:space="preserve">
     <value>Sign in</value>
   </data>
-  <data name="Footer_AboutUs" xml:space="preserve">
-    <value />
-  </data>
   <data name="Footer_ContactUs" xml:space="preserve">
     <value>Contact us</value>
   </data>
