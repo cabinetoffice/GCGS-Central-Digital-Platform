@@ -15,7 +15,7 @@ public class OrganisationRegisteredSubscriber(
     {
         Persistence.Ppon newPpon = new()
         {
-            IdentifierId = pponService.GeneratePponId(),
+            IdentifierId = pponService.GeneratePponId(@event.Type),
             Name = @event.Name,
             OrganisationId = @event.Id,
             Identifiers = Identifier.GetPersistenceIdentifiers(@event.AllIdentifiers())
