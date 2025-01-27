@@ -137,10 +137,7 @@
                                     <div id="conditional-GG-RCE-hint" class="govuk-hint">@StaticTextResource.Organisation_OrganisationIdentification_GG_RCE_Hint</div>
                                     @Html.ValidationMessageFor(m => m.GuernseyRegistryNumber, "", new { @class = "govuk-error-message", @id = "GuernseyRegistryNumber-error" })
                                     @Html.TextBoxFor(m => m.GuernseyRegistryNumber, new { @class = "govuk-input " + (guernseyRegistryNumberHasError ? "govuk-input--error" : ""), @id = "GuernseyRegistryNumber", @type = "text", spellcheck = "false", autocomplete = "off" })
-                                </div>
-                                <div id="conditional-GG-RCE-hint" class="govuk-hint govuk-radios__hint">
-                                    @StaticTextResource.Organisation_OrganisationIdentification_GG_RCE_Hint
-                                </div>
+                                </div>                                
                             </div>
                         }
 
