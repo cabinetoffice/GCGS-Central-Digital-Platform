@@ -60,15 +60,10 @@ public class ConsortiumEnterSharecodeModel(
 
         try
         {
-            var shareCode = await dataSharingClient.GetSharedDataAsync(EnterSharecode!);
-
-            if (shareCode == null)
-            {
-                ModelState.AddModelError(nameof(EnterSharecode), StaticTextResource.Consortium_ConsortiumEnterSharecode_InvalidCode);
-                return Page();
-            }
+            DataSharing.WebApiClient.SupplierInformation shareCode = await dataSharingClient.GetSharedDataAsync(EnterSharecode!);
 
             OrganisationParties? parties;
+
             try
             {
                 parties = await organisationClient.GetOrganisationPartiesAsync(Id);
