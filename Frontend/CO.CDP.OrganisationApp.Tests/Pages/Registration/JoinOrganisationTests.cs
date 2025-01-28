@@ -33,7 +33,7 @@ public class JoinOrganisationModelTests
             .Returns(new UserDetails() { UserUrn = "testUserUrn", PersonId = _personId });
 
         _joinOrganisationModel = new JoinOrganisationModel(_organisationClientMock.Object, _sessionMock.Object, flashMessageServiceMock.Object);
-        _organisation = new CO.CDP.Organisation.WebApiClient.Organisation(null, null, null, null, _organisationId, null, "Test Org", [], OrganisationWebApiClient.OrganisationType.Organisation);
+        _organisation = new CO.CDP.Organisation.WebApiClient.Organisation(null, null, null, null, null, _organisationId, null, "Test Org", [], OrganisationWebApiClient.OrganisationType.Organisation);
     }
 
     [Fact]

@@ -19,7 +19,7 @@ public class JoinOrganisationSuccessModelTests
     {
         _organisationClientMock = new Mock<IOrganisationClient>();
         _joinOrganisationSuccessModel = new JoinOrganisationSuccessModel(_organisationClientMock.Object);
-        _organisation = new CO.CDP.Organisation.WebApiClient.Organisation(null, null, null, null, _organisationId, null, "Test Org", [], OrganisationType.Organisation);
+        _organisation = new CO.CDP.Organisation.WebApiClient.Organisation(null, null, null, null, null, _organisationId, null, "Test Org", [], OrganisationType.Organisation);
     }
 
     [Fact]

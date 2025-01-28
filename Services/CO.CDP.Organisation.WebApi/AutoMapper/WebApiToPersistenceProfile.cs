@@ -1,9 +1,11 @@
+using Amazon.Auth.AccessControlPolicy;
 using AutoMapper;
 using CO.CDP.Organisation.WebApi.Events;
 using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.OrganisationInformation;
 using CO.CDP.OrganisationInformation.Persistence.Forms;
 using Microsoft.OpenApi.Extensions;
+using System.Linq;
 using Address = CO.CDP.OrganisationInformation.Address;
 using ContactPoint = CO.CDP.OrganisationInformation.ContactPoint;
 using Identifier = CO.CDP.OrganisationInformation.Identifier;
@@ -20,9 +22,26 @@ public class WebApiToPersistenceProfile : Profile
             .ForMember(m => m.Identifier, o => o.MapFrom(m => m.Identifiers.FirstOrDefault(i => i.Primary)))
             .ForMember(m => m.AdditionalIdentifiers, o => o.MapFrom(m => m.Identifiers.Where(i => !i.Primary)))
             .ForMember(m => m.ContactPoint, o => o.MapFrom(m => m.ContactPoints.FirstOrDefault() ?? new Persistence.Organisation.ContactPoint()))
+            .ForMember(m => m.BuyerInformation, o => o.MapFrom(m => m.BuyerInfo))
             .ForMember(m => m.Details, o => o.MapFrom(m => new Details
             {
-                PendingRoles = m.PendingRoles
+                PendingRoles = m.PendingRoles,
+
+                Scale = (m.SupplierInfo != null && m.SupplierInfo.OperationTypes != null && m.SupplierInfo.OperationTypes.Contains(OperationType.SmallOrMediumSized))
+                ? "small"
+                : ((m.SupplierInfo == null || (m.SupplierInfo.OperationTypes == null || m.SupplierInfo.OperationTypes.Count == 0)) ? null : "large"),
+
+                Vcse = (m.SupplierInfo != null && m.SupplierInfo.OperationTypes != null && m.SupplierInfo.OperationTypes!.Count > 0)
+                ? m.SupplierInfo.OperationTypes.Contains(OperationType.NonGovernmental)
+                : (bool?)null,
+
+                ShelteredWorkshop = (m.SupplierInfo != null && (m.SupplierInfo.OperationTypes != null && m.SupplierInfo.OperationTypes!.Count > 0))
+                ? m.SupplierInfo.OperationTypes.Contains(OperationType.SupportedEmploymentProvider)
+                : (bool?)null,
+
+                PublicServiceMissionOrganization = (m.SupplierInfo != null && m.SupplierInfo.OperationTypes != null && m.SupplierInfo.OperationTypes!.Count > 0)
+                ? m.SupplierInfo.OperationTypes.Contains(OperationType.PublicService)
+                : (bool?)null
             }));
 
         CreateMap<Persistence.Organisation, Model.OrganisationSearchResult>()
@@ -171,7 +190,7 @@ public class WebApiToPersistenceProfile : Profile
         CreateMap<Persistence.Forms.SharedConsent, OrganisationPartyShareCode>()
             .ForMember(m => m.Value, o => o.MapFrom(m => m.ShareCode))
             .ForMember(m => m.SubmittedAt, o => o.MapFrom(m => m.SubmittedAt));
-        
+
     }
     private void MouSignatureMapping()
     {

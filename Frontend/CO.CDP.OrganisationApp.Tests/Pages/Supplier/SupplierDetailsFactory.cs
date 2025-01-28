@@ -45,7 +45,7 @@ public static class SupplierDetailsFactory
             name: "Test Org",
             type: OrganisationType.Organisation,
             roles: [PartyRole.Supplier],
-            details: new Details(approval: null, pendingRoles: [])
+            details: new Details(approval: null, pendingRoles: [], null, null, null, null), buyerInformation: null
         );
     }
 }

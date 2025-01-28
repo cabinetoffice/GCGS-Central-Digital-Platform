@@ -158,12 +158,13 @@ public class OrganisationInternationalIdentificationModelTest
                additionalIdentifiers: additionalIdentifiers,
                addresses: null,
                contactPoint: null,
-               details: new Details(approval: null, pendingRoles: []),
+               details: new Details(approval: null, pendingRoles: [],null,null,null,null),
                id: _organisationId,
                identifier: identifier,
                name: "Test Org",
                roles: new List<PartyRole>(),
-               type: OrganisationType.Organisation);
+               type: OrganisationType.Organisation,
+               buyerInformation:null);
     }
     private IList<ValidationResult> ValidateModel(object model)
     {

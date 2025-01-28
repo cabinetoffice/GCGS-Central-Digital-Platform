@@ -144,7 +144,7 @@ public class CompanyHouseNumberQuestionTests
 
     private static CDP.Organisation.WebApiClient.Organisation GivenOrganisation()
     {
-        return new CO.CDP.Organisation.WebApiClient.Organisation(null, null, null, null, new Guid(), null, "Test Org", [], CDP.Organisation.WebApiClient.OrganisationType.Organisation);
+        return new CO.CDP.Organisation.WebApiClient.Organisation(null, null, null, null, null, new Guid(), null, "Test Org", [], CDP.Organisation.WebApiClient.OrganisationType.Organisation);
     }
 
     [Fact]

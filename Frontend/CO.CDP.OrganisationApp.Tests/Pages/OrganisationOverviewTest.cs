@@ -153,6 +153,6 @@ public class OrganisationOverviewTest
             details: new Details(
                 approval: null,
                 pendingRoles: pendingRoles != null ? pendingRoles : []
-            ));
+            , null, null, null, null), buyerInformation: null);
     }
 }

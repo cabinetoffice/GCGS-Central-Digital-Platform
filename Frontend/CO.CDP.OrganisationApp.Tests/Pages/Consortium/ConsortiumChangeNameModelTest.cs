@@ -98,6 +98,6 @@ public class ConsortiumChangeNameModelTest
 
     private static CO.CDP.Organisation.WebApiClient.Organisation GivenOrganisationClientModel(Guid? id)
     {
-        return new CO.CDP.Organisation.WebApiClient.Organisation(additionalIdentifiers: null, addresses: null, contactPoint: null, id: id ?? Guid.NewGuid(), identifier: null, name: "Test Org", type: OrganisationType.Organisation, roles: [], details: new Details(approval: null, pendingRoles: []));
+        return new CO.CDP.Organisation.WebApiClient.Organisation(additionalIdentifiers: null, addresses: null, contactPoint: null, id: id ?? Guid.NewGuid(), identifier: null, name: "Test Org", type: OrganisationType.Organisation, roles: [], details: new Details(approval: null, pendingRoles: [], null, null, null, null), buyerInformation: null);
     }
 }

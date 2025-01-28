@@ -117,8 +117,9 @@ public class ReviewAndSignMemorandomTests
             roles: [],
             details: new Details(
                 approval: null,
-                pendingRoles: pendingRoles ?? []
-            ));
+                pendingRoles: pendingRoles ?? [],
+                 null, null, null, null),
+            buyerInformation: null);
     }
 
 }

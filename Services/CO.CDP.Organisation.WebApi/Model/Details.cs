@@ -6,6 +6,10 @@ public record Details
 {
     public Approval? Approval { get; init; }
     public List<PartyRole> PendingRoles { get; init; } = [];
+    public string? Scale { get; set; }
+    public bool? Vcse { get; set; }
+    public bool? ShelteredWorkshop { get; set; }
+    public bool? PublicServiceMissionOrganization { get; set; }
 }
 
 public record Approval
