@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!--
     Microsoft ResX Schema
@@ -317,10 +317,7 @@
   </data>
   <data name="Exclusions_AddExclusionDeclaration_Title" xml:space="preserve">
     <value>Ychwanegu unrhyw eithriadau gorfodol a dewisol</value>
-  </data>
-  <data name="Footer_AboutUs" xml:space="preserve">
-    <value>Amdanom ni</value>
-  </data>
+  </data>  
   <data name="Footer_AccessibilityStatement" xml:space="preserve">
     <value>Datganiad hygyrchedd</value>
   </data>
