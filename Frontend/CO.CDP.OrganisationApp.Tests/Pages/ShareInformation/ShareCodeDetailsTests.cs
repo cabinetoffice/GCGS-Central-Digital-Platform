@@ -105,6 +105,19 @@ public class ShareCodeDetailsTests
     }
 
     [Fact]
+    public async Task OnGetDownload_ShouldRedirectToPageNotFound_WhenPdfResponseIsNull()
+    {
+        var shareCode = "HDJ2123F";
+
+        _dataSharingApiClientMock.Setup(x => x.GetSharedDataFileAsync(shareCode))
+            .ThrowsAsync(new WebApiClient.ApiException("Not Found", 404, "", _headers, null));
+
+        var result = await _pageModel.OnGetDownload(shareCode);
+
+        result.Should().BeOfType<RedirectResult>().Which.Url.Should().Be("/page-not-found");
+    }
+
+    [Fact]
     public async Task OnGetDownload_ShouldRedirectToPageNotFound_WhenShareCodeIsEmpty()
     {
         var result = await _pageModel.OnGetDownload("");
