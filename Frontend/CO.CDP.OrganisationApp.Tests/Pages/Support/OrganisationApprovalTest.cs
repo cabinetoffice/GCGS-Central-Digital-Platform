@@ -142,4 +142,112 @@ public class OrganisationApprovalModelTests
             r.Organisation.Comment == "Rejected"
         )), Times.Once);
     }
+
+    [Fact]
+    public async Task OnGet_WhenSearchOrganisationReturnsMatchingOrganisations_ShouldPopulateMatchingOrganisations()
+    {
+        var organisationId = Guid.NewGuid();
+        var expectedOrganisation = new CDP.Organisation.WebApiClient.Organisation(
+            additionalIdentifiers: new List<Identifier>(),
+            addresses: new List<Address>(),
+            contactPoint: null,
+            id: organisationId,
+            identifier: new Identifier(
+                scheme: "test-scheme",
+                id: "test-id",
+                legalName: "Test Organisation",
+                uri: new Uri("https://example.com")
+            ),
+            name: "Test Organisation",
+            type: OrganisationType.Organisation,
+            roles: new List<PartyRole>(),
+            details: new Details(approval: null, pendingRoles: [])
+        );
+
+        var expectedMatchingOrganisations = new List<OrganisationSearchResult>
+        {
+            new OrganisationSearchResult(
+                id: Guid.NewGuid(),
+                name: "Matching Organisation 1",
+                identifier: new Identifier(
+                    scheme: "test-scheme",
+                    id: "test-id-1",
+                    legalName: "Matching Organisation 1",
+                    uri: new Uri("https://example.com/1")
+                ),
+                roles: new List<PartyRole> { PartyRole.Buyer },
+                type: OrganisationType.Organisation
+            ),
+            new OrganisationSearchResult(
+                id: Guid.NewGuid(),
+                name: "Matching Organisation 2",
+                identifier: new Identifier(
+                    scheme: "test-scheme",
+                    id: "test-id-2",
+                    legalName: "Matching Organisation 2",
+                    uri: new Uri("https://example.com/2")
+                ),
+                roles: new List<PartyRole> { PartyRole.Buyer },
+                type: OrganisationType.Organisation
+            )
+        };
+
+        _mockOrganisationClient
+            .Setup(client => client.GetOrganisationAsync(organisationId))
+            .ReturnsAsync(expectedOrganisation);
+
+        _mockOrganisationClient
+            .Setup(client => client.GetOrganisationPersonsAsync(organisationId))
+            .ReturnsAsync(new List<CDP.Organisation.WebApiClient.Person>());
+
+        _mockOrganisationClient
+            .Setup(client => client.SearchOrganisationAsync(expectedOrganisation.Name, "buyer", 3))
+            .ReturnsAsync(expectedMatchingOrganisations);
+
+        var result = await _organisationApprovalModel.OnGet(organisationId);
+
+        result.Should().BeOfType<PageResult>();
+        _organisationApprovalModel.MatchingOrganisations.Should().NotBeNull();
+        _organisationApprovalModel.MatchingOrganisations.Should().BeEquivalentTo(expectedMatchingOrganisations);
+    }
+
+    [Fact]
+    public async Task OnGet_WhenSearchOrganisationThrows404_ShouldSetMatchingOrganisationsToEmptyList()
+    {
+        var organisationId = Guid.NewGuid();
+        var expectedOrganisation = new CDP.Organisation.WebApiClient.Organisation(
+            additionalIdentifiers: new List<Identifier>(),
+            addresses: new List<Address>(),
+            contactPoint: null,
+            id: organisationId,
+            identifier: new Identifier(
+                scheme: "test-scheme",
+                id: "test-id",
+                legalName: "Test Organisation",
+                uri: new Uri("https://example.com")
+            ),
+            name: "Test Organisation",
+            type: OrganisationType.Organisation,
+            roles: new List<PartyRole>(),
+            details: new Details(approval: null, pendingRoles: [])
+        );
+
+        _mockOrganisationClient
+            .Setup(client => client.GetOrganisationAsync(organisationId))
+            .ReturnsAsync(expectedOrganisation);
+
+        _mockOrganisationClient
+            .Setup(client => client.GetOrganisationPersonsAsync(organisationId))
+            .ReturnsAsync(new List<CDP.Organisation.WebApiClient.Person>());
+
+        _mockOrganisationClient
+            .Setup(client => client.SearchOrganisationAsync(expectedOrganisation.Name, "buyer", 3))
+            .ThrowsAsync(new ApiException("Not Found", 404, "", default, null));
+
+        var result = await _organisationApprovalModel.OnGet(organisationId);
+
+        result.Should().BeOfType<PageResult>();
+        _organisationApprovalModel.MatchingOrganisations.Should().NotBeNull();
+        _organisationApprovalModel.MatchingOrganisations.Should().BeEmpty();
+    }
 }
