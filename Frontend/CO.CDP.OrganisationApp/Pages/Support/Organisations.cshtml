@@ -66,8 +66,8 @@
                 </th>
                 <td class="govuk-table__cell">
                     <ul class="govuk-list">
-                        <li>Admin: @(org.AdminPerson?.Email ?? "N/A")</li>
-                        <li>Org: @org.ContactPoint.Email</li>
+                        <li>@StaticTextResource.Support_Organisations_TableHeader_AdminEmail: @(org.AdminPerson?.Email ?? "N/A")</li>
+                        <li>@StaticTextResource.Support_Organisations_TableHeader_OrgEmail: @org.ContactPoint.Email</li>
                     </ul>
                 </td>
                 @{
