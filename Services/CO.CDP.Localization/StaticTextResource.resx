@@ -3237,8 +3237,5 @@
   </data>
   <data name="Consortium_ConsortiumEnterSharecode_InvalidCode" xml:space="preserve">
     <value>Share code not found.</value>
-  </data>
-  <data name="Footer_AboutUs" xml:space="preserve">
-    <value>Amdanom ni</value>
-  </data>
+  </data>  
 </root>
