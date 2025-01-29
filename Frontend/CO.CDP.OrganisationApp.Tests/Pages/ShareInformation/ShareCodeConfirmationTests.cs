@@ -10,6 +10,7 @@ public class ShareCodeConfirmationTests
 {
     private readonly Mock<WebApiClient.IDataSharingClient> _dataSharingApiClientMock;
     private readonly ShareCodeConfirmationModel _pageModel;
+    private readonly Dictionary<string, IEnumerable<string>> _headers = [];
 
     public ShareCodeConfirmationTests()
     {
@@ -80,7 +81,7 @@ public class ShareCodeConfirmationTests
 
         _dataSharingApiClientMock
             .Setup(x => x.GetSharedDataFileAsync(shareCode))
-            .ReturnsAsync((WebApiClient.FileResponse?)null);
+            .ThrowsAsync(new WebApiClient.ApiException("Not Found", 404, "", _headers, null));
 
         var result = await _pageModel.OnGetDownload();
 
