@@ -30,17 +30,19 @@ public class ShareCodeConfirmationModel(IDataSharingClient dataSharingClient) : 
             return Redirect("/page-not-found");
         }
 
-        var fileResponse = await dataSharingClient.GetSharedDataFileAsync(ShareCode);
+        try
+        {
+            FileResponse fileResponse = await dataSharingClient.GetSharedDataFileAsync(ShareCode);
 
-        if (fileResponse == null)
+            var contentDisposition = fileResponse.Headers["Content-Disposition"].FirstOrDefault();
+            var filename = string.IsNullOrWhiteSpace(contentDisposition) ? $"{ShareCode}.pdf" : new ContentDisposition(contentDisposition).FileName;
+            var contentType = fileResponse.Headers["Content-Type"].FirstOrDefault() ?? Application.Pdf;
+
+            return File(fileResponse.Stream, contentType, filename);
+        }
+        catch (ApiException<DataSharing.WebApiClient.ProblemDetails> aex) when (aex.StatusCode == 404)
         {
             return Redirect("/page-not-found");
         }
-
-        var contentDisposition = fileResponse.Headers["Content-Disposition"].FirstOrDefault();
-        var filename = string.IsNullOrWhiteSpace(contentDisposition) ? $"{ShareCode}.pdf" : new ContentDisposition(contentDisposition).FileName;
-        var contentType = fileResponse.Headers["Content-Type"].FirstOrDefault() ?? Application.Pdf;
-
-        return File(fileResponse.Stream, contentType, filename);
     }
 }

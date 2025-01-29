@@ -10,6 +10,7 @@ public class ShareCodeDetailsTests
 {
     private readonly Mock<WebApiClient.IDataSharingClient> _dataSharingApiClientMock;
     private readonly ShareCodeDetailsModel _pageModel;
+    private readonly Dictionary<string, IEnumerable<string>> _headers = [];
 
     public ShareCodeDetailsTests()
     {
@@ -55,7 +56,7 @@ public class ShareCodeDetailsTests
         _pageModel.OrganisationId = organisationId;
 
         _dataSharingApiClientMock.Setup(x => x.GetShareCodeDetailsAsync(organisationId, shareCode))
-            .ThrowsAsync(new WebApiClient.ApiException("Not Found", 404, "", null, null));
+            .ThrowsAsync(new WebApiClient.ApiException("Not Found", 404, "", _headers, null));
 
         var result = await _pageModel.OnGet(shareCode);
         result.Should().BeOfType<RedirectResult>().Which.Url.Should().Be("/page-not-found");
@@ -70,7 +71,7 @@ public class ShareCodeDetailsTests
         _pageModel.OrganisationId = organisationId;
 
         _dataSharingApiClientMock.Setup(x => x.GetShareCodeDetailsAsync(organisationId, shareCode))
-            .ThrowsAsync(new WebApiClient.ApiException("Internal Server Error", 500, "", null, null));
+            .ThrowsAsync(new WebApiClient.ApiException("Internal Server Error", 500, "", _headers, null));
 
         Func<Task> act = async () => await _pageModel.OnGet(shareCode);
         await act.Should().ThrowAsync<WebApiClient.ApiException>()
@@ -109,7 +110,7 @@ public class ShareCodeDetailsTests
         var shareCode = "HDJ2123F";
 
         _dataSharingApiClientMock.Setup(x => x.GetSharedDataFileAsync(shareCode))
-            .ReturnsAsync((WebApiClient.FileResponse?)null);
+            .ThrowsAsync(new WebApiClient.ApiException("Not Found", 404, "", _headers, null));
 
         var result = await _pageModel.OnGetDownload(shareCode);
 
