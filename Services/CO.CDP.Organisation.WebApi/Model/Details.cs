@@ -10,6 +10,7 @@ public record Details
     public bool? Vcse { get; set; }
     public bool? ShelteredWorkshop { get; set; }
     public bool? PublicServiceMissionOrganization { get; set; }
+    public BuyerInformation? BuyerInformation { get; init; }
 }
 
 public record Approval

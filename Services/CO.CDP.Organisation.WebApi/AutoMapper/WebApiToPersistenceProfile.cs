@@ -22,10 +22,11 @@ public class WebApiToPersistenceProfile : Profile
             .ForMember(m => m.Identifier, o => o.MapFrom(m => m.Identifiers.FirstOrDefault(i => i.Primary)))
             .ForMember(m => m.AdditionalIdentifiers, o => o.MapFrom(m => m.Identifiers.Where(i => !i.Primary)))
             .ForMember(m => m.ContactPoint, o => o.MapFrom(m => m.ContactPoints.FirstOrDefault() ?? new Persistence.Organisation.ContactPoint()))
-            .ForMember(m => m.BuyerInformation, o => o.MapFrom(m => m.BuyerInfo))
             .ForMember(m => m.Details, o => o.MapFrom(m => new Details
             {
                 PendingRoles = m.PendingRoles,
+                BuyerInformation = m.BuyerInfo != null
+                                    ? new BuyerInformation { BuyerType = m.BuyerInfo.BuyerType, DevolvedRegulations = m.BuyerInfo.DevolvedRegulations } : null,
 
                 Scale = (m.SupplierInfo != null && m.SupplierInfo.OperationTypes != null && m.SupplierInfo.OperationTypes.Contains(OperationType.SmallOrMediumSized))
                 ? "small"

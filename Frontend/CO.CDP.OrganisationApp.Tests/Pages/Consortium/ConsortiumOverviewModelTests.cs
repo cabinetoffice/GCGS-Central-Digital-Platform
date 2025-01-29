@@ -108,9 +108,9 @@ public class ConsortiumOverviewModelTests
             string.Format(StaticTextResource.Consortium_ConsortiumOverview_Success_Heading, sharecode.SharecodeOrganisationName),
             null, null, null, null), Times.Once);
     }
-    
+
     private static CO.CDP.Organisation.WebApiClient.Organisation GivenOrganisationClientModel()
     {
-        return new CO.CDP.Organisation.WebApiClient.Organisation(additionalIdentifiers: null, addresses: null, contactPoint: null, id: _consortiumId, identifier: null, name: "Test Consortium", type: CDP.Organisation.WebApiClient.OrganisationType.InformalConsortium, roles: [], details: new CO.CDP.Organisation.WebApiClient.Details(approval: null, pendingRoles: [], null, null, null, null), buyerInformation: null);
+        return new CO.CDP.Organisation.WebApiClient.Organisation(additionalIdentifiers: null, addresses: null, contactPoint: null, id: _consortiumId, identifier: null, name: "Test Consortium", type: CDP.Organisation.WebApiClient.OrganisationType.InformalConsortium, roles: [], details: new CO.CDP.Organisation.WebApiClient.Details(approval: null, null, pendingRoles: [], null, null, null, null));
     }
 }

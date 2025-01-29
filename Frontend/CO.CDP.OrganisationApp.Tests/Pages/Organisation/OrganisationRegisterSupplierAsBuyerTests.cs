@@ -94,7 +94,7 @@ public class OrganisationRegisterSupplierAsBuyerTests
                 identifier: null!,
                 name: "Org name",
                 type: CDP.Organisation.WebApiClient.OrganisationType.Organisation,
-                roles: roles ?? [],
-                buyerInformation:null);
+                roles: roles ?? []
+                );
     }
 }

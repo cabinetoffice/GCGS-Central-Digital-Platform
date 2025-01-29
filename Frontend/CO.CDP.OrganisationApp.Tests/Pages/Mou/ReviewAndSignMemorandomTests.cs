@@ -1,3 +1,4 @@
+using Castle.Components.DictionaryAdapter;
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.Pages.MoU;
@@ -117,9 +118,10 @@ public class ReviewAndSignMemorandomTests
             roles: [],
             details: new Details(
                 approval: null,
+                null,
                 pendingRoles: pendingRoles ?? [],
-                 null, null, null, null),
-            buyerInformation: null);
+                 null, null, null, null)
+           );
     }
 
 }

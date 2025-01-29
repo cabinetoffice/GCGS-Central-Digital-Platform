@@ -151,8 +151,8 @@ public class OrganisationOverviewTest
             type: OrganisationType.Organisation,
             roles: [],
             details: new Details(
-                approval: null,
+                approval: null,null,
                 pendingRoles: pendingRoles != null ? pendingRoles : []
-            , null, null, null, null), buyerInformation: null);
+            , null, null, null, null));
     }
 }

@@ -138,13 +138,13 @@ public class OrganisationInternationalIdentificationTests
                   additionalIdentifiers: null,
                   addresses: null,
                   contactPoint: null,
-                  details: new Details(approval: null, pendingRoles: [], null, null, null, null),
+                  details: new Details(approval: null, null, pendingRoles: [], null, null, null, null),
                   id: _organisationId,
                   identifier: null,
                   name: "Test Org",
                   roles: new List<PartyRole>(),
-                  type: OrganisationType.Organisation,
-                  buyerInformation: null);
+                  type: OrganisationType.Organisation
+                  );
     }
 }
 

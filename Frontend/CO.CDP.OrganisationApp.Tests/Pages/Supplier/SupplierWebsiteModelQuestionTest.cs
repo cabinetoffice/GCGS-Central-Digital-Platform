@@ -137,6 +137,6 @@ public class SupplierWebsiteModelQuestionTest
             name: "Test Org",
             type: OrganisationType.Organisation,
             roles: [PartyRole.Supplier],
-            details: new Details(approval: null, pendingRoles: [], null, null, null, null), buyerInformation: null
+            details: new Details(approval: null, null, pendingRoles: [], null, null, null, null)
         );
 }

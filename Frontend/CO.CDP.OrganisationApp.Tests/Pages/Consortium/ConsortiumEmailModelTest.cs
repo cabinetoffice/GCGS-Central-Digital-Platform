@@ -79,7 +79,7 @@ public class ConsortiumEmailModelTest
         var results = ModelValidationHelper.Validate(model, validationContext);
 
         results.Any(c => c.MemberNames.Contains("EmailAddress")).Should().BeTrue();
-        
+
         results.Where(c => c.MemberNames.Contains("EmailAddress")).First()
             .ErrorMessage.Should().Be(StaticTextResource.Global_Email_Invalid_ErrorMessage);
     }
@@ -95,7 +95,7 @@ public class ConsortiumEmailModelTest
         results.Any(c => c.MemberNames.Contains("EmailAddress")).Should().BeFalse();
     }
 
-    
+
 
     [Fact]
     public void OnGet_ValidSession_ReturnsConsortiumDetails()
@@ -193,7 +193,7 @@ public class ConsortiumEmailModelTest
             .Which.PageName.Should().Be("ConsortiumOverview");
     }
 
-    private ConsortiumDetails DummyConsortiumDetails(string consortiumName = "Consortium 1",        
+    private ConsortiumDetails DummyConsortiumDetails(string consortiumName = "Consortium 1",
         string consortiumEmailAddress = "test@example.com")
     {
         var consortiumDetails = new ConsortiumDetails
@@ -213,7 +213,7 @@ public class ConsortiumEmailModelTest
     }
     private static CO.CDP.Organisation.WebApiClient.Organisation GivenOrganisationClientModel()
     {
-        return new CO.CDP.Organisation.WebApiClient.Organisation(additionalIdentifiers: null, addresses: null, contactPoint: null, id: _consortiumId, identifier: null, name: "Test Org", type: CDP.Organisation.WebApiClient.OrganisationType.InformalConsortium, roles: [], details: new Details(approval: null, pendingRoles: [], null, null, null, null), buyerInformation: null);
+        return new CO.CDP.Organisation.WebApiClient.Organisation(additionalIdentifiers: null, addresses: null, contactPoint: null, id: _consortiumId, identifier: null, name: "Test Org", type: CDP.Organisation.WebApiClient.OrganisationType.InformalConsortium, roles: [], details: new Details(approval: null, null, pendingRoles: [], null, null, null, null));
     }
     private ConsortiumEmailModel GivenConsortiumEmailDetailModel()
     {
