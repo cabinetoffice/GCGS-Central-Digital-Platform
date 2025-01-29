@@ -222,24 +222,24 @@ locals {
 
   service_configs_scaling_production = {
     authority = {
-      cpu           = 256
+      cpu           = 1024
       desired_count = local.desired_count_production
-      memory        = 512
+      memory        = 3072
     }
     av_scanner_app = {
-      cpu           = 256
+      cpu           = 1024
       desired_count = local.desired_count_non_production
-      memory        = 512
+      memory        = 3072
     }
     data_sharing = {
-      cpu           = 256
+      cpu           = 1024
       desired_count = local.desired_count_production
-      memory        = 512
+      memory        = 3072
     }
     entity_verification = {
-      cpu           = 256
+      cpu           = 1024
       desired_count = local.desired_count_production
-      memory        = 512
+      memory        = 3072
     }
     entity_verification_migrations = {
       cpu           = 256
@@ -247,19 +247,19 @@ locals {
       memory        = 512
     }
     forms = {
-      cpu           = 256
+      cpu           = 1024
       desired_count = local.desired_count_production
-      memory        = 512
+      memory        = 3072
     }
     organisation = {
-      cpu           = 256
+      cpu           = 1024
       desired_count = local.desired_count_production
-      memory        = 512
+      memory        = 3072
     }
     organisation_app = {
-      cpu           = 256
+      cpu           = 1024
       desired_count = local.frontend_desired_count_non_production
-      memory        = 512
+      memory        = 3072
     }
     organisation_information_migrations = {
       cpu           = 256
@@ -267,14 +267,14 @@ locals {
       memory        = 512
     }
     person = {
-      cpu           = 256
+      cpu           = 1024
       desired_count = local.desired_count_production
-      memory        = 512
+      memory        = 3072
     }
     tenant = {
-      cpu           = 256
+      cpu           = 1024
       desired_count = local.desired_count_production
-      memory        = 512
+      memory        = 3072
     }
   }
 
