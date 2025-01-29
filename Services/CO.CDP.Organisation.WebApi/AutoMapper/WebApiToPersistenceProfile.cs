@@ -1,11 +1,8 @@
-using Amazon.Auth.AccessControlPolicy;
 using AutoMapper;
 using CO.CDP.Organisation.WebApi.Events;
 using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.OrganisationInformation;
-using CO.CDP.OrganisationInformation.Persistence.Forms;
 using Microsoft.OpenApi.Extensions;
-using System.Linq;
 using Address = CO.CDP.OrganisationInformation.Address;
 using ContactPoint = CO.CDP.OrganisationInformation.ContactPoint;
 using Identifier = CO.CDP.OrganisationInformation.Identifier;
