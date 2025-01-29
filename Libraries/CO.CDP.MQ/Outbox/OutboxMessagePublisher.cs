@@ -1,11 +1,21 @@
 using System.Text.Json;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using static CO.CDP.MQ.Hosting.OutboxProcessorBackgroundService;
 
 namespace CO.CDP.MQ.Outbox;
 
 public delegate string Serializer(object message);
 
 public delegate string TypeMapper(object type);
+
+public record SqsPublisherConfiguration
+{
+    public required string QueueUrl { get; init; }
+    public required string? MessageGroupId { get; init; }
+    public OutboxProcessorConfiguration? Outbox { get; init; }
+}
+
 
 public class OutboxMessagePublisher(
     IOutboxMessageRepository messages,
@@ -29,7 +39,9 @@ public class OutboxMessagePublisher(
         await messages.SaveAsync(new OutboxMessage
         {
             Type = messageType,
-            Message = serialized
+            Message = serialized,
+            QueueUrl = "",
+            MessageGroupId = "",
         });
     }
 

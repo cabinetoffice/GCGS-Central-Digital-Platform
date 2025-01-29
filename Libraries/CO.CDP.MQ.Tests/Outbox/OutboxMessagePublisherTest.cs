@@ -27,7 +27,9 @@ public class OutboxMessagePublisherTest
             new OutboxMessage
             {
                 Type = "TestMessage",
-                Message = """{"Id":13,"Name":"Hello, database."}"""
+                Message = """{"Id":13,"Name":"Hello, database."}""",
+                QueueUrl = "",
+                MessageGroupId = ""
             }
         );
     }

@@ -24,7 +24,9 @@ public class OutboxMessageSerializerFactoryTest
         var serialized = serializer(new OutboxMessage
         {
             Message = "{\"Content\":\"Message 2\"}",
-            Type = "TestMessage"
+            Type = "TestMessage",
+            QueueUrl = "test-queue",
+            MessageGroupId = "test-messages"
         });
 
         serialized.Should().Be("{\"Content\":\"Message 2\"}");
