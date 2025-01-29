@@ -138,6 +138,6 @@ public class SupplierEmailAddressTest
             name: "Test Org",
             type: OrganisationType.Organisation,
             roles: [PartyRole.Supplier],
-            details: new Details(approval: null, null, pendingRoles: [], null, null, null, null)
+            details: new Details(approval: null, buyerInformation: null, pendingRoles: [], publicServiceMissionOrganization: null, scale: null, shelteredWorkshop: null, vcse: null)
         );
 }

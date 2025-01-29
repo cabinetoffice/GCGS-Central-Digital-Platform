@@ -116,11 +116,7 @@ public class ReviewAndSignMemorandomTests
             name: "Test Org",
             type: OrganisationType.Organisation,
             roles: [],
-            details: new Details(
-                approval: null,
-                null,
-                pendingRoles: pendingRoles ?? [],
-                 null, null, null, null)
+            details: new Details(approval: null, buyerInformation: null, pendingRoles: [], publicServiceMissionOrganization: null, scale: null, shelteredWorkshop: null, vcse: null)
            );
     }
 

@@ -171,7 +171,7 @@ public class ConsortiumChangeAddressModelTest
                 type: AddressType.Postal),
         ];
 
-        return new CO.CDP.Organisation.WebApiClient.Organisation(additionalIdentifiers: null, addresses: addresses, contactPoint: null, id: id ?? Guid.NewGuid(), identifier: null, name: null, type: OrganisationType.Organisation, roles: [], details: new Details(approval: null,null, pendingRoles: [], null, null, null, null));
+        return new CO.CDP.Organisation.WebApiClient.Organisation(additionalIdentifiers: null, addresses: addresses, contactPoint: null, id: id ?? Guid.NewGuid(), identifier: null, name: null, type: OrganisationType.Organisation, roles: [], details: new Details(approval: null, buyerInformation: null, pendingRoles: [], publicServiceMissionOrganization: null, scale: null, shelteredWorkshop: null, vcse: null));
     }
 
     private ConsortiumChangeAddressModel GivenOrganisationAddressModel()

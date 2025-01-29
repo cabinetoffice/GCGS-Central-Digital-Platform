@@ -110,6 +110,6 @@ public class OrganisationIdentificationModelTest
                     )
                 };
 
-        return new WebApiClientOrganisation(additionalIdentifiers: additionalIdentifiers, addresses: null, contactPoint: null, id: id ?? Guid.NewGuid(), identifier: identifier, name: "Test Org", type: OrganisationType.Organisation, roles: [], details: new Details(approval: null,null, pendingRoles: [], null, null, null, null));
+        return new WebApiClientOrganisation(additionalIdentifiers: additionalIdentifiers, addresses: null, contactPoint: null, id: id ?? Guid.NewGuid(), identifier: identifier, name: "Test Org", type: OrganisationType.Organisation, roles: [], details: new Details(approval: null, buyerInformation: null, pendingRoles: [], publicServiceMissionOrganization: null, scale: null, shelteredWorkshop: null, vcse: null));
     }
 }

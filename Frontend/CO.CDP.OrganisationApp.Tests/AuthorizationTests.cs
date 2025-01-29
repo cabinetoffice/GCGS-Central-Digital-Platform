@@ -85,7 +85,7 @@ public class AuthorizationTests
                     name: "Org name",
                     type: Organisation.WebApiClient.OrganisationType.Organisation,
                     roles: [Organisation.WebApiClient.PartyRole.Supplier, Organisation.WebApiClient.PartyRole.Tenderer],
-                    details: new Details(approval: null,null, pendingRoles: [], null, null, null, null)
+                    details: new Details(approval: null, buyerInformation: null, pendingRoles: [], publicServiceMissionOrganization: null, scale: null, shelteredWorkshop: null, vcse: null)
                 )
             );
 
