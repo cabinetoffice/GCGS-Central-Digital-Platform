@@ -32,15 +32,15 @@ public class WebApiToPersistenceProfile : Profile
                 ? "small"
                 : ((m.SupplierInfo == null || (m.SupplierInfo.OperationTypes == null || m.SupplierInfo.OperationTypes.Count == 0)) ? null : "large"),
 
-                Vcse = (m.SupplierInfo != null && m.SupplierInfo.OperationTypes != null && m.SupplierInfo.OperationTypes!.Count > 0)
+                Vcse = (m.SupplierInfo != null && m.SupplierInfo.OperationTypes != null && m.SupplierInfo.OperationTypes.Count > 0)
                 ? m.SupplierInfo.OperationTypes.Contains(OperationType.NonGovernmental)
                 : (bool?)null,
 
-                ShelteredWorkshop = (m.SupplierInfo != null && (m.SupplierInfo.OperationTypes != null && m.SupplierInfo.OperationTypes!.Count > 0))
+                ShelteredWorkshop = (m.SupplierInfo != null && (m.SupplierInfo.OperationTypes != null && m.SupplierInfo.OperationTypes.Count > 0))
                 ? m.SupplierInfo.OperationTypes.Contains(OperationType.SupportedEmploymentProvider)
                 : (bool?)null,
 
-                PublicServiceMissionOrganization = (m.SupplierInfo != null && m.SupplierInfo.OperationTypes != null && m.SupplierInfo.OperationTypes!.Count > 0)
+                PublicServiceMissionOrganization = (m.SupplierInfo != null && m.SupplierInfo.OperationTypes != null && m.SupplierInfo.OperationTypes.Count > 0)
                 ? m.SupplierInfo.OperationTypes.Contains(OperationType.PublicService)
                 : (bool?)null
             }));
