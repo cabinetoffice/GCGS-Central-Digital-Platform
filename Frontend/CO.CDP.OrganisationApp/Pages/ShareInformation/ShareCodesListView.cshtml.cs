@@ -60,9 +60,13 @@ public class ShareCodesListViewModel(
             return Redirect("/page-not-found");
         }
 
-        var fileResponse = await dataSharingClient.GetSharedDataFileAsync(shareCode);
+        FileResponse fileResponse;
 
-        if (fileResponse == null)
+        try
+        {
+            fileResponse = await dataSharingClient.GetSharedDataFileAsync(shareCode);
+        }
+        catch (DataSharing.WebApiClient.ApiException ex) when (ex.StatusCode == 404)
         {
             return Redirect("/page-not-found");
         }

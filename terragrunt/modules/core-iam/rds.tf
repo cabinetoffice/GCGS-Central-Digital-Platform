@@ -8,3 +8,9 @@ resource "aws_iam_role_policy_attachment" "rds_monitoring_role_attachment" {
   role       = aws_iam_role.rds_cloudwatch_role.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonRDSEnhancedMonitoringRole"
 }
+
+resource "aws_iam_role" "rds_backup" {
+  name = "${local.name_prefix}-rds-backup"
+
+  assume_role_policy = data.aws_iam_policy_document.rds_cloudwatch_assume.json
+}
