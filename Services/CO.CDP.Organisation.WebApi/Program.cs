@@ -97,7 +97,8 @@ builder.Services.AddProblemDetails();
 builder.Services.AddJwtBearerAndApiKeyAuthentication(builder.Configuration, builder.Environment);
 builder.Services.AddOrganisationAuthorization();
 
-if (Assembly.GetEntryAssembly().IsRunAs("CO.CDP.Organisation.WebApi"))
+if ((Assembly.GetEntryAssembly().IsRunAs("CO.CDP.Organisation.WebApi")) ||
+    (Assembly.GetEntryAssembly().IsRunAs("testhost")))
 {
     builder.Services
         .AddAwsConfiguration(builder.Configuration)
