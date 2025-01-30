@@ -63,29 +63,28 @@ public class DatabaseFormRepository(OrganisationInformationContext context) : IF
             .FirstOrDefaultAsync(s => s.Form.Guid == formId && s.Guid == sectionId);
     }
 
-    public async Task SaveSharedConsentAsync(SharedConsent sharedConsent,
-        OrganisationType? organisationType = OrganisationType.Organisation)
+    public async Task SaveSharedConsentAsync(SharedConsent sharedConsent)
     {
         context.Update(sharedConsent);
+        await context.SaveChangesAsync();
+    }
 
-        if (organisationType == OrganisationType.InformalConsortium)
-        {
-            var parties = await context.OrganisationParties
+    public async Task SaveSharedConsentConsortiumAsync(SharedConsent sharedConsent)
+    {
+        var parties = await context.OrganisationParties
                                 .Where(x => x.ParentOrganisationId == sharedConsent.OrganisationId)
                                 .AsNoTracking()
                                 .ToListAsync();
 
-            foreach (var party in parties)
+        foreach (var party in parties)
+        {
+            if (party.SharedConsentId.HasValue)
             {
-                if (party.SharedConsentId.HasValue)
+                context.Add(new SharedConsentConsortium
                 {
-                    context.Add(new SharedConsentConsortium
-                    {
-                        ParentSharedConsentId = sharedConsent.Id,
-                        ParentSharedConsent = sharedConsent,
-                        ChildSharedConsentId = party.SharedConsentId.Value
-                    });
-                }
+                    ParentSharedConsentId = sharedConsent.Id,
+                    ChildSharedConsentId = party.SharedConsentId.Value
+                });
             }
         }
 
