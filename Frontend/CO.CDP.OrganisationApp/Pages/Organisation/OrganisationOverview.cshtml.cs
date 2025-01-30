@@ -27,9 +27,7 @@ public class OrganisationOverviewModel(IOrganisationClient organisationClient, I
     [BindProperty(SupportsGet = true)]
     public Guid Id { get; set; }
 
-    public bool HasBuyerSignedMou { get; set; } = true;
-
-    public Mou? MouLatest { get; set; }
+    public bool HasBuyerSignedMou { get; set; } = false;
 
     public string MouSignedOnDate { get; set; } = "";
 
@@ -49,16 +47,12 @@ public class OrganisationOverviewModel(IOrganisationClient organisationClient, I
 
                 Regulations = devolvedRegulations.AsDevolvedRegulationList();
 
-                HasBuyerSignedMou = await CheckBuyerMouSignature(OrganisationDetails.Id);
+                var mouSignatureLatest = await GetBuyerMouSignature(OrganisationDetails.Id);
 
-                if (HasBuyerSignedMou)
+                if (mouSignatureLatest != null && mouSignatureLatest.IsLatest)
                 {
-                    MouLatest = await organisationClient.GetLatestMouAsync();
-                    if (MouLatest != null)
-                    {
-                        MouSignedOnDate = string.Format(@StaticTextResource.MoU_SignedOn, MouLatest?.CreatedOn.ToString("dd MMMM yyyy"));
-                    }
-
+                    HasBuyerSignedMou = true;
+                    MouSignedOnDate = string.Format(@StaticTextResource.MoU_SignedOn, mouSignatureLatest.SignatureOn.ToString("dd MMMM yyyy"));
                 }
             }
 
@@ -99,17 +93,21 @@ public class OrganisationOverviewModel(IOrganisationClient organisationClient, I
         }
     }
 
-    private async Task<bool> CheckBuyerMouSignature(Guid organisationId)
+    private async Task<MouSignatureLatest?> GetBuyerMouSignature(Guid organisationId)
     {
         try
         {
-            var mouDetails = await organisationClient.GetOrganisationLatestMouSignatureAsync(organisationId);
-            return mouDetails != null && mouDetails.IsLatest;
+            var mouSignature = await organisationClient.GetOrganisationLatestMouSignatureAsync(organisationId);
+            if(mouSignature != null && mouSignature.IsLatest)
+            {
+                return mouSignature;
+            }
         }
         catch (OrganisationApiException ex) when (ex.StatusCode == 404)
         {
-            // Handle "No MOU signature found" scenario
-            return false;
+
         }
+
+        return null;
     }
 }
