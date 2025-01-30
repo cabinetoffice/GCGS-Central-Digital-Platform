@@ -82,6 +82,15 @@ public static class Extensions
         string notificationChannel
     ) where TDbContext : DbContext, IOutboxMessageDbContext
     {
+        var awsSection = configuration.GetSection("Aws");
+        var awsConfig = awsSection.Get<AwsConfiguration>()
+                        ?? throw new Exception("Aws environment configuration missing.");
+
+        if ((string.IsNullOrEmpty(awsConfig?.SqsPublisher?.QueueUrl)) || (string.IsNullOrEmpty(awsConfig?.SqsPublisher?.MessageGroupId)))
+        {
+            throw new ArgumentNullException(nameof(awsConfig), "SqsPublisher QueueUrl / MessageGroupId is missing.");
+        }
+
         services.AddScoped<IOutboxMessageRepository, DatabaseOutboxMessageRepository<TDbContext>>();
         services.AddKeyedScoped<IPublisher, SqsPublisher>("SqsPublisher");
         services.AddScoped<IPublisher, OutboxMessagePublisher>();
@@ -104,13 +113,6 @@ public static class Extensions
 
         services.AddScoped<IOutboxProcessor>(s =>
         {
-            var awsConfig = s.GetRequiredService<IOptions<AwsConfiguration>>().Value.SqsPublisher;
-
-            if ((string.IsNullOrEmpty(awsConfig?.QueueUrl)) || (string.IsNullOrEmpty(awsConfig?.MessageGroupId)))
-            {
-                throw new ArgumentNullException(nameof(awsConfig), "SqsPublisher QueueUrl / MessageGroupId is missing.");
-            }
-
             return new OutboxProcessor(
                 s.GetRequiredKeyedService<IPublisher>("SqsPublisher"),
                 s.GetRequiredService<IOutboxMessageRepository>(),
