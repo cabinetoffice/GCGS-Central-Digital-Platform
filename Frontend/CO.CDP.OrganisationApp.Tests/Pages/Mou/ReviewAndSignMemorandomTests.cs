@@ -1,3 +1,4 @@
+using Castle.Components.DictionaryAdapter;
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.Pages.MoU;
@@ -115,10 +116,8 @@ public class ReviewAndSignMemorandomTests
             name: "Test Org",
             type: OrganisationType.Organisation,
             roles: [],
-            details: new Details(
-                approval: null,
-                pendingRoles: pendingRoles ?? []
-            ));
+            details: new Details(approval: null, buyerInformation: null, pendingRoles: pendingRoles ?? [], publicServiceMissionOrganization: null, scale: null, shelteredWorkshop: null, vcse: null)
+           );
     }
 
 }

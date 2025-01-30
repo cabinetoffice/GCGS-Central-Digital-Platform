@@ -42,7 +42,7 @@ public class OrganisationApprovalModelTests
             name: "Test Organisation",
             type: OrganisationType.Organisation,
             roles: new List<PartyRole>(),
-            details: new Details(approval: null, pendingRoles: [])
+            details: new Details(approval: null, buyerInformation: null, pendingRoles: [], publicServiceMissionOrganization: null, scale: null, shelteredWorkshop: null, vcse: null)
         );
 
         var expectedPersons = new List<CDP.Organisation.WebApiClient.Person>
@@ -161,7 +161,7 @@ public class OrganisationApprovalModelTests
             name: "Test Organisation",
             type: OrganisationType.Organisation,
             roles: new List<PartyRole>(),
-            details: new Details(approval: null, pendingRoles: [])
+            details: new Details(approval: null, buyerInformation: null, pendingRoles: [], publicServiceMissionOrganization: null, scale: null, shelteredWorkshop: null, vcse: null)
         );
 
         var expectedMatchingOrganisations = new List<OrganisationSearchResult>
@@ -229,7 +229,7 @@ public class OrganisationApprovalModelTests
             name: "Test Organisation",
             type: OrganisationType.Organisation,
             roles: new List<PartyRole>(),
-            details: new Details(approval: null, pendingRoles: [])
+            details: new Details(approval: null, buyerInformation: null, pendingRoles: [], publicServiceMissionOrganization: null, scale: null, shelteredWorkshop: null, vcse: null)
         );
 
         _mockOrganisationClient
