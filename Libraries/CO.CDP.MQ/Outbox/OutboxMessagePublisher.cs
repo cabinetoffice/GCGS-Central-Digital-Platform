@@ -2,6 +2,7 @@ using System.Text.Json;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using static CO.CDP.MQ.Hosting.OutboxProcessorBackgroundService;
+using static CO.CDP.MQ.Outbox.OutboxMessagePublisher;
 
 namespace CO.CDP.MQ.Outbox;
 
@@ -9,24 +10,26 @@ public delegate string Serializer(object message);
 
 public delegate string TypeMapper(object type);
 
-public record SqsPublisherConfiguration
-{
-    public required string QueueUrl { get; init; }
-    public required string? MessageGroupId { get; init; }
-    public OutboxProcessorConfiguration? Outbox { get; init; }
-}
-
-
 public class OutboxMessagePublisher(
     IOutboxMessageRepository messages,
     Serializer serializer,
     TypeMapper typeMapper,
+    OutboxMessagePublisherConfiguration configuration,
     ILogger<OutboxMessagePublisher> logger
 ) : IPublisher
 {
-    public OutboxMessagePublisher(IOutboxMessageRepository messages, ILogger<OutboxMessagePublisher> logger)
-        : this(messages, o => JsonSerializer.Serialize(o), type => type.GetType().Name, logger)
+    public OutboxMessagePublisher(
+        IOutboxMessageRepository messages,
+        OutboxMessagePublisherConfiguration configuration,
+        ILogger<OutboxMessagePublisher> logger)
+        : this(messages, o => JsonSerializer.Serialize(o), type => type.GetType().Name, configuration, logger)
     {
+    }
+
+    public record OutboxMessagePublisherConfiguration
+    {
+        public string QueueUrl { get; init; } = "";
+        public string MessageGroupId { get; init; } = "";
     }
 
     public async Task Publish<TM>(TM message) where TM : notnull
@@ -40,8 +43,8 @@ public class OutboxMessagePublisher(
         {
             Type = messageType,
             Message = serialized,
-            QueueUrl = "",
-            MessageGroupId = "",
+            QueueUrl = configuration.QueueUrl,
+            MessageGroupId = configuration.MessageGroupId
         });
     }
 

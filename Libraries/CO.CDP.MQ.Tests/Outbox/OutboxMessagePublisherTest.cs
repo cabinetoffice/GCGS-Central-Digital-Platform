@@ -9,10 +9,16 @@ namespace CO.CDP.MQ.Tests.Outbox;
 public class OutboxMessagePublisherTest
 {
     private readonly Mock<IOutboxMessageRepository> _repository = new();
+    private readonly OutboxMessagePublisher.OutboxMessagePublisherConfiguration _defaultConfiguration = new()
+    {
+        QueueUrl = "queue://",
+        MessageGroupId = "group-a"
+    };
     private OutboxMessagePublisher Publisher => new(
         _repository.Object,
         o => JsonSerializer.Serialize(o),
         o => o.GetType().Name,
+        _defaultConfiguration,
         LoggerFactory.Create(_ => { }).CreateLogger<OutboxMessagePublisher>()
     );
 
@@ -28,8 +34,8 @@ public class OutboxMessagePublisherTest
             {
                 Type = "TestMessage",
                 Message = """{"Id":13,"Name":"Hello, database."}""",
-                QueueUrl = "",
-                MessageGroupId = ""
+                QueueUrl = _defaultConfiguration.QueueUrl,
+                MessageGroupId = _defaultConfiguration.MessageGroupId
             }
         );
     }

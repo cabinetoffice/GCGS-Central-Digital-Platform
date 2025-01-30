@@ -90,6 +90,15 @@ public static class Extensions
             s.GetRequiredService<IOptions<AwsConfiguration>>().Value.SqsPublisher?.Outbox ??
             new OutboxProcessorBackgroundService.OutboxProcessorConfiguration()
         );
+        services.AddSingleton<OutboxMessagePublisher.OutboxMessagePublisherConfiguration>(s =>
+        {
+            var awsConfig = s.GetRequiredService<IOptions<AwsConfiguration>>().Value.SqsPublisher;
+            return new OutboxMessagePublisher.OutboxMessagePublisherConfiguration
+            {
+                QueueUrl = awsConfig?.QueueUrl ?? "",
+                MessageGroupId = awsConfig?.MessageGroupId ?? ""
+            };
+        });
 
         services.AddScoped<IOutboxProcessor>(s =>
             new OutboxProcessor(
