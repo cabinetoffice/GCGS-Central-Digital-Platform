@@ -13,7 +13,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CO.CDP.OrganisationInformation.Persistence.Migrations
 {
     [DbContext(typeof(OrganisationInformationContext))]
-    [Migration("20250130154401_SharedConsentConsortium")]
+    [Migration("20250130172655_SharedConsentConsortium")]
     partial class SharedConsentConsortium
     {
         /// <inheritdoc />
@@ -728,8 +728,9 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                     b.HasIndex("ChildSharedConsentId")
                         .HasDatabaseName("ix_shared_consent_consortiums_child_shared_consent_id");
 
-                    b.HasIndex("ParentSharedConsentId")
-                        .HasDatabaseName("ix_shared_consent_consortiums_parent_shared_consent_id");
+                    b.HasIndex("ParentSharedConsentId", "ChildSharedConsentId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_shared_consent_consortiums_parent_shared_consent_id_child_s");
 
                     b.ToTable("shared_consent_consortiums", (string)null);
                 });

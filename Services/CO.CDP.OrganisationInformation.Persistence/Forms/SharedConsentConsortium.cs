@@ -1,8 +1,10 @@
 using CO.CDP.EntityFrameworkCore.Timestamps;
+using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CO.CDP.OrganisationInformation.Persistence.Forms;
 
+[Index(nameof(ParentSharedConsentId), nameof(ChildSharedConsentId), IsUnique = true)]
 public class SharedConsentConsortium : IEntityDate
 {
     public int Id { get; set; }

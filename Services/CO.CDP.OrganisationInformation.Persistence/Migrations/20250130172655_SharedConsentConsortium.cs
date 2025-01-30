@@ -46,9 +46,10 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                 column: "child_shared_consent_id");
 
             migrationBuilder.CreateIndex(
-                name: "ix_shared_consent_consortiums_parent_shared_consent_id",
+                name: "ix_shared_consent_consortiums_parent_shared_consent_id_child_s",
                 table: "shared_consent_consortiums",
-                column: "parent_shared_consent_id");
+                columns: new[] { "parent_shared_consent_id", "child_shared_consent_id" },
+                unique: true);
         }
 
         /// <inheritdoc />

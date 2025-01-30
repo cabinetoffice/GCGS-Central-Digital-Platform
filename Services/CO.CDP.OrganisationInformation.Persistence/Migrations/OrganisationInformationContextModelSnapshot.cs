@@ -725,8 +725,9 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                     b.HasIndex("ChildSharedConsentId")
                         .HasDatabaseName("ix_shared_consent_consortiums_child_shared_consent_id");
 
-                    b.HasIndex("ParentSharedConsentId")
-                        .HasDatabaseName("ix_shared_consent_consortiums_parent_shared_consent_id");
+                    b.HasIndex("ParentSharedConsentId", "ChildSharedConsentId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_shared_consent_consortiums_parent_shared_consent_id_child_s");
 
                     b.ToTable("shared_consent_consortiums", (string)null);
                 });
