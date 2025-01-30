@@ -1244,7 +1244,7 @@
             "value": "tenant"
           }
         ],
-        "query": "data-sharing, entity-verification, forms, organisation, organisation-app, organisation-information-migrations, person, tenant",
+        "query": "authority, av-scanner-app, data-sharing, entity-verification, forms, organisation, organisation-app, person, tenant",
         "queryValue": "",
         "skipUrlSync": false,
         "type": "custom"

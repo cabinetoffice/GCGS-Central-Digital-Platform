@@ -385,7 +385,7 @@
     <value>Support links</value>
   </data>
   <data name="Supplementary_Title" xml:space="preserve">
-    <value>Thank you for contacting GOV.UK</value>
+    <value>Thank you for contacting Find a Tender</value>
   </data>
   <data name="Supplementary_CloseThisWindow" xml:space="preserve">
     <value>Close this window</value>
@@ -646,7 +646,7 @@
     <value>Are you sure you want to remove {0}?</value>
   </data>
   <data name="User_RemoveConfirmation_Header" xml:space="preserve">
-    <value>Are you sure you want to remove [{0}]?</value>
+    <value>Are you sure you want to remove {0}?</value>
   </data>
   <data name="User_RemoveConfirmation_ConfirmValidation" xml:space="preserve">
     <value>Select yes to confirm removal of user</value>
@@ -3237,5 +3237,8 @@
   </data>
   <data name="MoU_SignAndContinue" xml:space="preserve">
     <value>Sign and continue</value>
+  </data>
+  <data name="Consortium_ConsortiumEnterSharecode_InvalidCode" xml:space="preserve">
+    <value>Share code not found.</value>
   </data>
 </root>

@@ -1194,10 +1194,7 @@
     <value>Ffurf gyfreithiol</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityLegalFormQuestion_Heading" xml:space="preserve">
-    <value>A oes gan [y sefydliad] ffurf gyfreithiol?</value>
-  </data>
-  <data name="Supplier_ConnectedEntity_ConnectedEntityLegalFormQuestion_Hint" xml:space="preserve">
-    <value>A oes gan [y sefydliad] ffurf gyfreithiol?</value>
+    <value>A oes gan {0} ffurf gyfreithiol?</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityLegalFormQuestion_LegalFormNameLabel" xml:space="preserve">
     <value>Enw'r ffurf gyfreithiol</value>
@@ -1491,7 +1488,7 @@
     <value>Gwahoddiad wedi'i anfon</value>
   </data>
   <data name="User_RemoveConfirmation_Header" xml:space="preserve">
-    <value>Ydych chi’n siŵr eich bod am ddileu [{0}]?</value>
+    <value>Ydych chi’n siŵr eich bod am ddileu {0}?</value>
   </data>
   <data name="User_RemoveConfirmation_Title" xml:space="preserve">
     <value>Ydych chi’n siŵr eich bod am ddileu {0}?</value>

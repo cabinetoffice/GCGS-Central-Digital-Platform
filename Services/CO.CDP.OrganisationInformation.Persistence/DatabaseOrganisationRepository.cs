@@ -15,10 +15,12 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
     public async Task<Organisation?> Find(Guid organisationId)
     {
         return await context.Organisations
-            .Include(p => p.Addresses)
-            .ThenInclude(p => p.Address)
-            .AsSingleQuery()
-            .FirstOrDefaultAsync(t => t.Guid == organisationId);
+              .Include(b => b.BuyerInfo)
+              .Include(s => s.SupplierInfo)
+             .Include(p => p.Addresses)
+             .ThenInclude(p => p.Address)
+             .AsSingleQuery()
+             .FirstOrDefaultAsync(t => t.Guid == organisationId);
     }
 
     public async Task<Organisation?> FindIncludingPersons(Guid organisationId)

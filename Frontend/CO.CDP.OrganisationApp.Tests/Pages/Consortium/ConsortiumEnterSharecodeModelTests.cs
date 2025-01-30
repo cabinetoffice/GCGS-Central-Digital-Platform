@@ -67,7 +67,7 @@ public class ConsortiumEnterSharecodeModelTests
     [Fact]
     public async Task OnPost_ShouldReturnPage_WhenSharecodeAlreadyExists()
     {
-        var supplierInfo = GetSupplierInfo();        
+        var supplierInfo = GetSupplierInfo();
         var parties = new OrganisationParties(new List<OrganisationParty>
         {
             new OrganisationParty(supplierInfo.Id, "Consortium 1", new OrganisationPartyShareCode(DateTimeOffset.Now, "EXISTING_CODE"))
@@ -114,7 +114,7 @@ public class ConsortiumEnterSharecodeModelTests
 
     private static CO.CDP.Organisation.WebApiClient.Organisation GivenOrganisationClientModel()
     {
-        return new CO.CDP.Organisation.WebApiClient.Organisation(additionalIdentifiers: null, addresses: null, contactPoint: null, id: _consortiumId, identifier: null, name: "Test Consortium", type: CDP.Organisation.WebApiClient.OrganisationType.InformalConsortium, roles: [], details: new CO.CDP.Organisation.WebApiClient.Details(approval: null, pendingRoles: []));
+        return new CO.CDP.Organisation.WebApiClient.Organisation(additionalIdentifiers: null, addresses: null, contactPoint: null, id: _consortiumId, identifier: null, name: "Test Consortium", type: CDP.Organisation.WebApiClient.OrganisationType.InformalConsortium, roles: [], details: new CO.CDP.Organisation.WebApiClient.Details(approval: null, buyerInformation: null, pendingRoles: [], publicServiceMissionOrganization: null, scale: null, shelteredWorkshop: null, vcse: null));
     }
 
     private static DataSharing.WebApiClient.SupplierInformation GetSupplierInfo()
