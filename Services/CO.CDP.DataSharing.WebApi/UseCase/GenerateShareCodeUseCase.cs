@@ -29,7 +29,7 @@ public class GenerateShareCodeUseCase(
         result.SubmittedAt = DateTime.UtcNow;
         result.SubmissionState = SubmissionState.Submitted;
 
-        await formRepository.SaveSharedConsentAsync(result);
+        await formRepository.SaveSharedConsentAsync(result, org.Type);
 
         return mapper.Map<OrganisationInformation.Persistence.Forms.SharedConsent, ShareReceipt>(result);
     }

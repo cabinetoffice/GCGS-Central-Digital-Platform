@@ -5,7 +5,8 @@ namespace CO.CDP.OrganisationInformation.Persistence;
 public interface IFormRepository : IDisposable
 {
     Task<IEnumerable<FormSectionSummary>> GetFormSummaryAsync(Guid formId, Guid organisationId);
-    Task SaveSharedConsentAsync(SharedConsent sharedConsent);
+    Task SaveSharedConsentAsync(SharedConsent sharedConsent,
+        OrganisationType? organisationType = OrganisationType.Organisation);
     Task<FormSection?> GetSectionAsync(Guid formId, Guid sectionId);
     Task<SharedConsent?> GetSharedConsentWithAnswersAsync(Guid formId, Guid organisationId);
 
