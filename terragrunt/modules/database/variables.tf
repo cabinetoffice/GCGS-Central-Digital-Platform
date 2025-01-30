@@ -49,6 +49,11 @@ variable "product" {
   })
 }
 
+variable "role_rds_backup_arn" {
+  description = "The ARN for the IAM role that permits users to access to S3 buckets holding dump files."
+  type        = string
+}
+
 variable "role_rds_cloudwatch_arn" {
   description = "The ARN for the IAM role that permits RDS to send data to CloudWatch. Required in production accounts where enhanced monitoring is enabled"
   type        = string
