@@ -308,7 +308,8 @@ public class RegisterOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
             AdditionalIdentifiers = command.AdditionalIdentifiers.AsEventValue(),
             Addresses = command.Addresses.AsEventValue(),
             ContactPoint = command.ContactPoint.AsEventValue(),
-            Roles = command.Roles.AsEventValue()
+            Roles = command.Roles.AsEventValue(),
+            Type = OrganisationType.Organisation
         });
     }
 
