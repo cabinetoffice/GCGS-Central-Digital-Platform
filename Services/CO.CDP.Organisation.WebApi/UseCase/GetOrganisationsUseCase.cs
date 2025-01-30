@@ -21,7 +21,7 @@ public class GetOrganisationsUseCase(IOrganisationRepository organisationReposit
                 .Select(op => op.Person)
                 .FirstOrDefault();
 
-            var adminPersonWeb = mapper.Map<Person>(adminPerson);
+            var adminPersonWeb = adminPerson != null ? mapper.Map<Person>(adminPerson) : null;
 
             return mapper.Map<OrganisationExtended>(org) with { AdminPerson = adminPersonWeb };
         });

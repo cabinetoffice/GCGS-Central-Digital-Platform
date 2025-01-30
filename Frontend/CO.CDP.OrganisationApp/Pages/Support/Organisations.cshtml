@@ -40,7 +40,7 @@
             if (Model.Type == "buyer")
             {
                 <th scope="col" colspan="1" class="govuk-table__header">@StaticTextResource.Support_Organisations_TableHeader_Status</th>
-                <th scope="col" colspan="1" class="govuk-table__header">@StaticTextResource.Support_Organisations_TableHeader_Comments</th>
+                <th scope="col" colspan="2" class="govuk-table__header">@StaticTextResource.Support_Organisations_TableHeader_Comments</th>
                 <th scope="col" colspan="1" class="govuk-table__header"></th>
             }
         }
@@ -90,7 +90,25 @@
                             }
                         </td>
                         <td class="govuk-table__cell">
-                            @(approval?.Comment ?? "N/A")
+                            @{
+                                if (approval?.Comment?.Length > 0)
+                                {
+                                    <details class="govuk-details">
+                                        <summary class="govuk-details__summary">
+                                            <span class="govuk-details__summary-text">
+                                                @StaticTextResource.Support_Organisations_TableHeader_Comments
+                                            </span>
+                                        </summary>
+                                        <div class="govuk-details__text">
+                                            @approval?.Comment
+                                        </div>
+                                    </details>
+                                }
+                                else
+                                {
+                                    <span>N/A</span>
+                                }
+                            }
                         </td>
                         <td class="govuk-table__cell">
                             @{
