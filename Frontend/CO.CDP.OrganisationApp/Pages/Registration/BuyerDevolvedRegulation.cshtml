@@ -21,45 +21,49 @@
     </a>
 }
 
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds govuk-body">
-            <partial name="_ErrorSummary" model="@ModelState" />
-            <form method="post">               
-                <div class="govuk-form-group @(devolvedHasError ? "govuk-form-group--error" : "")">
-                    <fieldset class="govuk-fieldset">
-                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                            <h1 class="govuk-fieldset__heading">
-                                @ViewData["Title"]
-                            </h1>
-                        </legend>
-                        @if (devolvedHasError)
-                        {
-                            <p id="devolved-error" class="govuk-error-message">
-                                <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span> @Html.ValidationMessageFor(m => m.Devolved)
-                            </p>
-                        }
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds govuk-body">
+        <partial name="_ErrorSummary" model="@ModelState" />
+        <form method="post">
+            <div class="govuk-form-group @(devolvedHasError ? "govuk-form-group--error" : "")">
+                <fieldset class="govuk-fieldset">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                        <h1 class="govuk-fieldset__heading">
+                            @ViewData["Title"]
+                        </h1>
+                    </legend>
+                    <div id="organisationidentification-hint" class="govuk-hint">
+                        @StaticTextResource.OrganisationRegistration_BuyerDevolvedRegulation_Hint
+                    </div>
 
-                        <div class="govuk-radios" data-module="govuk-radios">
-                            <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="devolved-yes" name="Devolved" type="radio" value="true" @(Model.Devolved == true ? "checked" : "")>
-                                <label class="govuk-label govuk-radios__label" for="devolved-yes">
-                                    @StaticTextResource.Global_Yes
-                                </label>
-                            </div>
-                            <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="devolved-na" name="Devolved" type="radio" value="false" @(Model.Devolved == false ? "checked" : "")>
-                                <label class="govuk-label govuk-radios__label" for="devolved-na">
-                                    @StaticTextResource.Global_No
-                                </label>
-                            </div>
+                    @if (devolvedHasError)
+                    {
+                        <p id="devolved-error" class="govuk-error-message">
+                            <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span> @Html.ValidationMessageFor(m => m.Devolved)
+                        </p>
+                    }
+
+                    <div class="govuk-radios" data-module="govuk-radios">
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="devolved-yes" name="Devolved" type="radio" value="true" @(Model.Devolved == true ? "checked" : "")>
+                            <label class="govuk-label govuk-radios__label" for="devolved-yes">
+                                @StaticTextResource.Global_Yes
+                            </label>
                         </div>
-                    </fieldset>
-                </div>
-                <a href="/registration/buyer-select-devolved-regulations">
-                    <govuk-button>
-                        @StaticTextResource.Global_Continue
-                    </govuk-button>
-                </a>
-            </form>
-        </div>
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="devolved-na" name="Devolved" type="radio" value="false" @(Model.Devolved == false ? "checked" : "")>
+                            <label class="govuk-label govuk-radios__label" for="devolved-na">
+                                @StaticTextResource.Global_No
+                            </label>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+            <a href="/registration/buyer-select-devolved-regulations">
+                <govuk-button>
+                    @StaticTextResource.Global_Continue
+                </govuk-button>
+            </a>
+        </form>
     </div>
+</div>
