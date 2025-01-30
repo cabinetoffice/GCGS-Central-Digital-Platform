@@ -963,7 +963,7 @@
     <value>Yn wahanol i awdurdod cyhoeddus, sefydliadau sy'n gweithredu'n fasnachol ac yn darparu gweithgareddau cyfleustodau i'r cyhoedd. Er enghraifft, Trafnidiaeth Cymru.</value>
   </data>
   <data name="SupplierToBuyer_OrganisationType_RegionalAndLocalGovernment" xml:space="preserve">
-    <value>Llywodraeth ranbarthol a lleol, awdurdod cyhoeddus: y DU, Cymru, yr Alban a Gogledd Iwerddon</value>
+    <value>Llywodraeth ranbarthol a lleol, awdurdod cyhoeddus (is-ganolog): y DU, Cymru, yr Alban a Gogledd Iwerddon</value>
   </data>
   <data name="SupplierToBuyer_OrganisationType_RegionalAndLocalGovernment_Title" xml:space="preserve">
     <value>Mae'n cynnwys:</value>
