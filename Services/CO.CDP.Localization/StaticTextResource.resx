@@ -1934,6 +1934,9 @@
   <data name="Support_OrganisationApproval_Radio_Heading" xml:space="preserve">
     <value>Approve the request?</value>
   </data>
+  <data name="Support_OrganisationApproval_AlreadyApproved_FlashMessage" xml:space="preserve">
+    <value>{organisationName} has already been approved</value>
+  </data>
   <data name="Support_OrganisationApproval_ErrorMessage" xml:space="preserve">
     <value>Tell the user why you could not approve</value>
   </data>
