@@ -1,3 +1,5 @@
+using CO.CDP.OrganisationInformation;
+
 namespace CO.CDP.Organisation.WebApi.Events;
 
 public record OrganisationRegistered
@@ -17,4 +19,6 @@ public record OrganisationRegistered
     public required ContactPoint ContactPoint { get; init; }
 
     public required List<string> Roles { get; init; }
+
+    public required OrganisationType Type { get; init; }
 }

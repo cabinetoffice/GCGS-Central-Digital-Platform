@@ -24,22 +24,34 @@ public class OrganisationApprovalModel(
     [RequiredIf(nameof(Approval), false, ErrorMessageResourceName = nameof(StaticTextResource.Support_OrganisationApproval_ErrorMessage), ErrorMessageResourceType = typeof(StaticTextResource))]
     public string? Comments { get; set; }
 
+    public ICollection<OrganisationSearchResult>? MatchingOrganisations { get; set; }
+
     public async Task<IActionResult> OnGet(Guid organisationId)
     {
         try
         {
             OrganisationDetails = await organisationClient.GetOrganisationAsync(organisationId);
-
-            var persons = await organisationClient.GetOrganisationPersonsAsync(organisationId);
-
-            AdminUser = persons.FirstOrDefault(p => p.Scopes.Contains(OrganisationPersonScopes.Admin));
-
-            return Page();
         }
         catch (ApiException ex) when (ex.StatusCode == 404)
         {
             return Redirect("/page-not-found");
         }
+
+        var persons = await organisationClient.GetOrganisationPersonsAsync(organisationId);
+
+        AdminUser = persons.FirstOrDefault(p => p.Scopes.Contains(OrganisationPersonScopes.Admin));
+
+        try
+        {
+            MatchingOrganisations =
+                await organisationClient.SearchOrganisationAsync(OrganisationDetails.Name, "buyer", 3);
+        }
+        catch (ApiException ex) when (ex.StatusCode == 404)
+        {
+            MatchingOrganisations = [];
+        }
+
+        return Page();
     }
 
     public async Task<IActionResult> OnPost(Guid organisationId)

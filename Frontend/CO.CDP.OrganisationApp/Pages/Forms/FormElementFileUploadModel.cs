@@ -9,7 +9,7 @@ namespace CO.CDP.OrganisationApp.Pages.Forms;
 
 public class FormElementFileUploadModel : FormElementModel, IValidatableObject
 {
-    private const int AllowedMaxFileSizeMB = 25;
+    public const int AllowedMaxFileSizeMB = 25;
     private readonly string[] AllowedExtensions = [".jpg", ".jpeg", ".png", ".pdf", ".txt", ".xls", ".xlsx", ".csv", ".docx", ".doc"];
 
     [BindProperty]

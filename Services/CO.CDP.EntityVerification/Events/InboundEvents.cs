@@ -1,3 +1,5 @@
+using CO.CDP.OrganisationInformation;
+
 namespace CO.CDP.EntityVerification.Events;
 
 public interface IEvent;
@@ -17,6 +19,8 @@ public record OrganisationRegistered : IEvent
     public IEnumerable<Identifier> AllIdentifiers() => AdditionalIdentifiers.Prepend(Identifier);
 
     public required List<string> Roles { get; init; }
+
+    public required OrganisationType Type { get; init; }
 }
 
 public record OrganisationUpdated : IEvent

@@ -71,7 +71,7 @@ locals {
       fts_azure_frontdoor               = null
       name                              = "staging"
       onelogin_logout_notification_urls = ["https://sirsi-integration-findtender.nqc.com/auth/backchannellogout"]
-      pinned_service_version            = "1.0.24"
+      pinned_service_version            = "1.0.29"
       postgres_instance_type            = "db.t4g.micro"
       private_subnets = [
         "10.${local.cidr_b_staging}.101.0/24",
@@ -95,7 +95,7 @@ locals {
       fts_azure_frontdoor               = null
       name                              = "integration"
       onelogin_logout_notification_urls = ["https://test-findtender.nqc.com/auth/backchannellogout"]
-      pinned_service_version            = "1.0.24"
+      pinned_service_version            = "1.0.29"
       postgres_instance_type            = "db.t4g.micro"
       private_subnets = [
         "10.${local.cidr_b_integration}.101.0/24",
@@ -123,7 +123,7 @@ locals {
       fts_azure_frontdoor               = "nqc-front-door-uksouth.azurefd.net"
       name                              = "production"
       onelogin_logout_notification_urls = ["https://www.private-beta.find-tender.service.gov.uk/auth/backchannellogout"]
-      pinned_service_version            = "1.0.24"
+      pinned_service_version            = "1.0.29"
       postgres_instance_type            = "db.t4g.micro"
       private_subnets = [
         "10.${local.cidr_b_production}.101.0/24",
@@ -222,24 +222,24 @@ locals {
 
   service_configs_scaling_production = {
     authority = {
-      cpu           = 256
+      cpu           = 1024
       desired_count = local.desired_count_production
-      memory        = 512
+      memory        = 3072
     }
     av_scanner_app = {
-      cpu           = 256
+      cpu           = 1024
       desired_count = local.desired_count_non_production
-      memory        = 512
+      memory        = 3072
     }
     data_sharing = {
-      cpu           = 256
+      cpu           = 1024
       desired_count = local.desired_count_production
-      memory        = 512
+      memory        = 3072
     }
     entity_verification = {
-      cpu           = 256
+      cpu           = 1024
       desired_count = local.desired_count_production
-      memory        = 512
+      memory        = 3072
     }
     entity_verification_migrations = {
       cpu           = 256
@@ -247,19 +247,19 @@ locals {
       memory        = 512
     }
     forms = {
-      cpu           = 256
+      cpu           = 1024
       desired_count = local.desired_count_production
-      memory        = 512
+      memory        = 3072
     }
     organisation = {
-      cpu           = 256
+      cpu           = 1024
       desired_count = local.desired_count_production
-      memory        = 512
+      memory        = 3072
     }
     organisation_app = {
-      cpu           = 256
+      cpu           = 1024
       desired_count = local.frontend_desired_count_non_production
-      memory        = 512
+      memory        = 3072
     }
     organisation_information_migrations = {
       cpu           = 256
@@ -267,14 +267,14 @@ locals {
       memory        = 512
     }
     person = {
-      cpu           = 256
+      cpu           = 1024
       desired_count = local.desired_count_production
-      memory        = 512
+      memory        = 3072
     }
     tenant = {
-      cpu           = 256
+      cpu           = 1024
       desired_count = local.desired_count_production
-      memory        = 512
+      memory        = 3072
     }
   }
 

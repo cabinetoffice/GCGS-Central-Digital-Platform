@@ -69,6 +69,28 @@ public class DatabaseFormRepository(OrganisationInformationContext context) : IF
         await context.SaveChangesAsync();
     }
 
+    public async Task SaveSharedConsentConsortiumAsync(SharedConsent sharedConsent)
+    {
+        var parties = await context.OrganisationParties
+                                .Where(x => x.ParentOrganisationId == sharedConsent.OrganisationId)
+                                .AsNoTracking()
+                                .ToListAsync();
+
+        foreach (var party in parties)
+        {
+            if (party.SharedConsentId.HasValue)
+            {
+                context.Add(new SharedConsentConsortium
+                {
+                    ParentSharedConsentId = sharedConsent.Id,
+                    ChildSharedConsentId = party.SharedConsentId.Value
+                });
+            }
+        }
+
+        await context.SaveChangesAsync();
+    }
+
     public async Task<SharedConsent?> GetSharedConsentWithAnswersAsync(Guid formId, Guid organisationId)
     {
         return await context.Set<SharedConsent>()

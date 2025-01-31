@@ -1,17 +1,21 @@
+using Amazon.SQS;
 using CO.CDP.AwsServices;
+using CO.CDP.AwsServices.Sqs;
 using CO.CDP.Configuration.ForwardedHeaders;
 using CO.CDP.DataSharing.WebApiClient;
 using CO.CDP.EntityVerificationClient;
 using CO.CDP.Forms.WebApiClient;
 using CO.CDP.Localization;
+using CO.CDP.MQ;
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp;
 using CO.CDP.OrganisationApp.Authentication;
 using CO.CDP.OrganisationApp.Authorization;
 using CO.CDP.OrganisationApp.Pages;
+using CO.CDP.OrganisationApp.Pages.Forms;
 using CO.CDP.OrganisationApp.Pages.Forms.ChoiceProviderStrategies;
-using CO.CDP.OrganisationApp.ThirdPartyApiClients.CompaniesHouse;
 using CO.CDP.OrganisationApp.ThirdPartyApiClients.CharityCommission;
+using CO.CDP.OrganisationApp.ThirdPartyApiClients.CompaniesHouse;
 using CO.CDP.OrganisationApp.WebApiClients;
 using CO.CDP.Person.WebApiClient;
 using CO.CDP.Tenant.WebApiClient;
@@ -19,18 +23,16 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.Extensions.Options;
+using Microsoft.FeatureManagement;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using System.Globalization;
 using static IdentityModel.OidcConstants;
 using static System.Net.Mime.MediaTypeNames;
 using ISession = CO.CDP.OrganisationApp.ISession;
-using Microsoft.FeatureManagement;
-using Amazon.SQS;
-using CO.CDP.AwsServices.Sqs;
-using CO.CDP.MQ;
-using Microsoft.Extensions.Options;
 
 const string FormsHttpClientName = "FormsHttpClient";
 const string TenantHttpClientName = "TenantHttpClient";
@@ -59,6 +61,11 @@ builder.Services.Configure<RequestLocalizationOptions>(options =>
         new CustomQueryStringCultureProvider(),
         new CookieRequestCultureProvider()
     };
+});
+
+builder.Services.Configure<FormOptions>(options =>
+{
+    options.MultipartBodyLengthLimit = (FormElementFileUploadModel.AllowedMaxFileSizeMB * 2) * 1024 * 1024; 
 });
 
 builder.Services.AddFeatureManagement(builder.Configuration.GetSection("Features"));
@@ -308,6 +315,8 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseSession();
 app.UseMiddleware<AuthenticatedSessionAwareMiddleware>();
+app.UseMiddleware<FileUploadMiddleware>();
+
 app.UseAuthorization();
 app.MapRazorPages();
 

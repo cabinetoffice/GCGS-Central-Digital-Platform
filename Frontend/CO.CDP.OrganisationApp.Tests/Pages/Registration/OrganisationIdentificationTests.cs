@@ -441,7 +441,7 @@ public class OrganisationIdentificationModelTests
 
     private static OrganisationWebApiClient.Organisation GivenOrganisationClientModel()
     {
-        return new OrganisationWebApiClient.Organisation(additionalIdentifiers: null, addresses: null, contactPoint: null, id: _organisationId, identifier: null, name: "Test Org", type: OrganisationWebApiClient.OrganisationType.Organisation, roles: [], details: new Details(approval: null, pendingRoles: []));
+        return new OrganisationWebApiClient.Organisation(additionalIdentifiers: null, addresses: null, contactPoint: null, id: _organisationId, identifier: null, name: "Test Org", type: OrganisationWebApiClient.OrganisationType.Organisation, roles: [], details: new Details(approval: null, buyerInformation: null, pendingRoles: [], publicServiceMissionOrganization: null, scale: null, shelteredWorkshop: null, vcse: null));
     }
 
     private static ICollection<EntityVerificationClient.Identifier> GivenEntityVerificationIdentifiers()

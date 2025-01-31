@@ -35,9 +35,9 @@ dependency core_iam {
 dependency core_networking {
   config_path = "../../core/networking"
   mock_outputs = {
-    production_private_beta_hosted_zone_id = "mock"
-    production_private_beta_domain         = "mock"
     private_subnet_ids                     = "mock"
+    production_private_beta_domain         = "mock" # @todo (ABN) DP-1069 Remove once domain is propagated
+    production_private_beta_hosted_zone_id = "mock" # @todo (ABN) DP-1069 Remove once domain is propagated
     public_domain                          = "mock"
     public_hosted_zone_id                  = "mock"
     vpc_id                                 = "mock"

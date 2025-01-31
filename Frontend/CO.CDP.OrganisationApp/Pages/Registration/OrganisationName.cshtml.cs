@@ -62,7 +62,7 @@ public class OrganisationNameModel(ISession session, ICharityCommissionApi chari
             return Page();
         }
 
-        RegistrationDetails.OrganisationName = OrganisationName;
+        RegistrationDetails.OrganisationName = OrganisationName?.Trim();
         SessionContext.Set(Session.RegistrationDetailsKey, RegistrationDetails);
 
         if (RedirectToSummary == true)

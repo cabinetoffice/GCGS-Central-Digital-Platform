@@ -223,7 +223,7 @@ public class SupplierVatModelQuestionTest
 
     private static CO.CDP.Organisation.WebApiClient.Organisation GivenOrganisationClientModel()
     {
-        return new CO.CDP.Organisation.WebApiClient.Organisation(additionalIdentifiers: null, addresses: null, contactPoint: null, id: _organisationId, identifier: null, name: "Test Org", type: OrganisationType.Organisation, roles: [], details: new Details(approval: null, pendingRoles: []));
+        return new CO.CDP.Organisation.WebApiClient.Organisation(additionalIdentifiers: null, addresses: null, contactPoint: null, id: _organisationId, identifier: null, name: "Test Org", type: OrganisationType.Organisation, roles: [], details: new Details(approval: null, buyerInformation: null, pendingRoles: [], publicServiceMissionOrganization: null, scale: null, shelteredWorkshop: null, vcse: null));
     }
 
     private static ICollection<EntityVerificationClient.Identifier> GivenEntityVerificationIdentifiers()
