@@ -30,7 +30,8 @@ public static class EventsFactories
                     Uri = null
                 }
             ],
-            Roles = ["supplier"]
+            Roles = ["supplier"],
+            Type = OrganisationInformation.OrganisationType.Organisation
         };
     }
 

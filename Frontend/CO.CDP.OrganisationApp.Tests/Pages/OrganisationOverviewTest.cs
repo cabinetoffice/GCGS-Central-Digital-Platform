@@ -81,7 +81,7 @@ public class OrganisationOverviewTest
         var mou = new CO.CDP.Organisation.WebApiClient.Mou(
             id: Guid.NewGuid(),
             filePath: @"\mou-pdfs\mou-pdf-template.pdf",
-            createdOn: new DateTimeOffset(2025, 1, 14, 0, 0, 0, TimeSpan.Zero)
+            createdOn: new DateTimeOffset(2025, 1, 13, 0, 0, 0, TimeSpan.Zero)
         );
 
         var mouSignatureLatest = new MouSignatureLatest(
@@ -91,7 +91,7 @@ public class OrganisationOverviewTest
             jobTitle: "Manager",
             mou: mou,
             name: $"{person.FirstName} {person.LastName}",
-            signatureOn: new DateTimeOffset(2025, 1, 14, 0, 0, 0, TimeSpan.Zero)
+            signatureOn: new DateTimeOffset(2025, 1, 15, 0, 0, 0, TimeSpan.Zero)
         );
 
         _model.Id = organisationId;
@@ -112,7 +112,7 @@ public class OrganisationOverviewTest
 
         _model.HasBuyerSignedMou.Should().BeTrue();
 
-        _model.MouSignedOnDate.Should().Be($"Agreed on 14 January 2025");
+        _model.MouSignedOnDate.Should().Be($"Agreed on 15 January 2025");
     }
 
     [Fact]

@@ -70,6 +70,14 @@ output "notification_step_function_name" {
   value = aws_iam_role.notification_step_function.name
 }
 
+output "rds_backup_arn" {
+  value = aws_iam_role.rds_backup.arn
+}
+
+output "rds_backup_name" {
+  value = aws_iam_role.rds_backup.name
+}
+
 output "rds_cloudwatch_arn" {
   value = aws_iam_role.rds_cloudwatch_role.arn
 }

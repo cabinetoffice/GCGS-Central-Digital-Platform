@@ -17,7 +17,7 @@ public class OrganisationRegisteredSubscriberTests
         var publisher = new Mock<IPublisher>();
         var generatedPpon = "92be415e5985421087bc8fee8c97d338";
 
-        pponService.Setup(x => x.GeneratePponId()).Returns(generatedPpon);
+        pponService.Setup(x => x.GeneratePponId(OrganisationInformation.OrganisationType.Organisation)).Returns(generatedPpon);
 
         var handler = new OrganisationRegisteredSubscriber(pponService.Object, pponRepository.Object, publisher.Object);
         var orgId = Guid.NewGuid();
