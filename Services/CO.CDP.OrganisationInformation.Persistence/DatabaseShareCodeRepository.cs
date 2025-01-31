@@ -133,9 +133,16 @@ public class DatabaseShareCodeRepository(OrganisationInformationContext context)
         return false; //Scenario-4: if scenario-4 is not passed
     }
 
+    public async Task<IEnumerable<string>> GetConsortiumOrganisationsShareCode(string shareCode)
+    {
+        return await context.SharedConsentConsortiums
+                .Where(x => x.ParentSharedConsent!.ShareCode == shareCode)
+                .Select(s => s.ChildSharedConsent!.ShareCode!)
+                .ToListAsync();
+    }
+
     public void Dispose()
     {
         context.Dispose();
     }
-
 }

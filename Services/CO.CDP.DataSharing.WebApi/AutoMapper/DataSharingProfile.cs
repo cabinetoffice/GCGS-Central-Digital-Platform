@@ -31,6 +31,7 @@ public class DataSharingProfile : Profile
         CreateMap<Persistence.SharedConsent, SupplierInformation>()
             .ForMember(m => m.Id, o => o.MapFrom(m => m.Organisation.Guid))
             .ForMember(m => m.Name, o => o.MapFrom(m => m.Organisation.Name))
+            .ForMember(m => m.Type, o => o.MapFrom(m => m.Organisation.Type))
             .ForMember(m => m.Identifier,
                 o => o.MapFrom(m => m.Organisation.Identifiers.FirstOrDefault(x => x.Primary)))
             .ForMember(m => m.AdditionalIdentifiers,
@@ -47,9 +48,7 @@ public class DataSharingProfile : Profile
             .ForMember(m => m.AssociatedPersons,
                 o => o.MapFrom((_, _, _, context) => context.Items["AssociatedPersons"]))
             .ForMember(m => m.AdditionalEntities,
-                o => o.MapFrom((_, _, _, context) => context.Items["AdditionalEntities"]))
-            .ForMember(m => m.AdditionalParties,
-                o => o.MapFrom((_, _, _, context) => context.Items["AdditionalParties"]));
+                o => o.MapFrom((_, _, _, context) => context.Items["AdditionalEntities"]));
 
         Uri? tempResult;
         CreateMap<Organisation.Identifier, OrganisationInformation.Identifier>()
@@ -92,7 +91,8 @@ public class DataSharingProfile : Profile
         CreateMap<Persistence.FormAnswerSet, FormAnswerSet>()
             .ForMember(m => m.Id, o => o.MapFrom(m => m.Guid))
             .ForMember(m => m.SectionName, o => o.MapFrom<LocalizedPropertyResolver<Persistence.FormAnswerSet, FormAnswerSet>, string>(m => m.Section.Title))
-            .ForMember(m => m.Answers, o => o.MapFrom(m => m.Answers.Where(x => x.Question.Type != Persistence.FormQuestionType.NoInput && x.Question.Type != Persistence.FormQuestionType.CheckYourAnswers)));
+            .ForMember(m => m.Answers, o => o.MapFrom(m => m.Answers.Where(x => x.Question.Type != Persistence.FormQuestionType.NoInput && x.Question.Type != Persistence.FormQuestionType.CheckYourAnswers)))
+            .ForMember(m => m.OrganisationId, o => o.Ignore());
 
         CreateMap<Persistence.FormAnswer, FormAnswer>()
             .ForMember(m => m.QuestionName, o => o.MapFrom(m => m.Question.Name))
@@ -114,7 +114,8 @@ public class DataSharingProfile : Profile
             .ForMember(m => m.IsRequired, o => o.MapFrom(m => m.IsRequired))
             .ForMember(m => m.SectionName, o => o.MapFrom<LocalizedPropertyResolver<Persistence.FormQuestion, FormQuestion>, string>(m => m.Section.Title))
             .ForMember(m => m.Options, o => o.MapFrom(m => m.Options.Choices))
-            .ForMember(m => m.SortOrder, o => o.MapFrom(m => m.SortOrder));
+            .ForMember(m => m.SortOrder, o => o.MapFrom(m => m.SortOrder))
+            .ForMember(m => m.OrganisationId, o => o.Ignore());
 
         CreateMap<Persistence.FormQuestionChoice, FormQuestionOption>()
             .ForMember(m => m.Id, o => o.MapFrom(m => m.Id))
