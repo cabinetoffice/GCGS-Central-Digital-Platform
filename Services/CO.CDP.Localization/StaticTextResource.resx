@@ -1588,7 +1588,7 @@
     <value>Central government - UK or devolved administrations</value>
   </data>
   <data name="OrganisationRegistration_BuyerOrganisationType_RegionalAndLocalGovernment_Label" xml:space="preserve">
-    <value>Regional and local public authority - UK or devolved administrations</value>
+    <value>Regional and local public authority (sub-central) - UK or devolved administrations</value>
   </data>
   <data name="OrganisationRegistration_BuyerOrganisationType_PublicUndertaking_Label" xml:space="preserve">
     <value>Public undertaking</value>
