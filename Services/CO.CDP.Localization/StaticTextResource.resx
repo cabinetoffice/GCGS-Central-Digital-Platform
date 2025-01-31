@@ -325,7 +325,7 @@
     <value>an organisation or sole trader who searches for tenders and submits bids to supply goods, works, services or utilities</value>
   </data>
   <data name="Organisation_RegisterAnOrganisation" xml:space="preserve">
-    <value>Register an organisation</value>
+    <value>Start now</value>
   </data>
   <data name="Organisation_AfterYouveRegistered" xml:space="preserve">
     <value>After you've registered</value>
