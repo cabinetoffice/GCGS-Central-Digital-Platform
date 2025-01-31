@@ -324,6 +324,9 @@
   <data name="Organisation_OrganisationOrSoleTrader" xml:space="preserve">
     <value>an organisation or sole trader who searches for tenders and submits bids to supply goods, works, services or utilities</value>
   </data>
+  <data name="Organisation_RequestToJoin"xml:space="preserve">
+    <value>Or request to join an existing organisation. You’ll need the identity number the organisation is registered with.</value>
+  </data>
   <data name="Organisation_RegisterAnOrganisation" xml:space="preserve">
     <value>Start now</value>
   </data>
@@ -1150,7 +1153,7 @@
     <value>Trustee or trust</value>
   </data>
   <data name="OrganisationRegistration_OrganisationType_Heading" xml:space="preserve">
-    <value>What do you want to register your organisation as?</value>
+    <value>Register a new organisation or request to join an existing one</value>
   </data>
   <data name="OrganisationRegistration_OrganisationType_Buyer" xml:space="preserve">
     <value>Buyer</value>
