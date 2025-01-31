@@ -1,6 +1,8 @@
+using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Pages.ShareInformation;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moq;
 using WebApiClient = CO.CDP.DataSharing.WebApiClient;
 
@@ -9,13 +11,15 @@ namespace CO.CDP.OrganisationApp.Tests.Pages.ShareInformation;
 public class ShareCodeConfirmationTests
 {
     private readonly Mock<WebApiClient.IDataSharingClient> _dataSharingApiClientMock;
+    private readonly Mock<OrganisationClient> _organisationClientMock;
     private readonly ShareCodeConfirmationModel _pageModel;
     private readonly Dictionary<string, IEnumerable<string>> _headers = [];
 
     public ShareCodeConfirmationTests()
     {
         _dataSharingApiClientMock = new Mock<WebApiClient.IDataSharingClient>();
-        _pageModel = new ShareCodeConfirmationModel(_dataSharingApiClientMock.Object);
+        _organisationClientMock = new Mock<OrganisationClient>("https://whatever", new HttpClient());
+        _pageModel = new ShareCodeConfirmationModel(_dataSharingApiClientMock.Object, _organisationClientMock.Object);
     }
 
     [Fact]
@@ -24,7 +28,8 @@ public class ShareCodeConfirmationTests
         var organisationId = Guid.NewGuid();
         var formId = Guid.NewGuid();
         var sectionId = Guid.NewGuid();
-        var shareCode = "HDJ2123F";
+        var shareCode = "HDJ2123F";        
+
         _pageModel.OrganisationId = organisationId;
         _pageModel.FormId = formId;
         _pageModel.SectionId = sectionId;
@@ -50,12 +55,16 @@ public class ShareCodeConfirmationTests
         var responseMock = new Mock<IDisposable>();
         var stream = new MemoryStream(pdfBytes);
         var fileResponseMock = new WebApiClient.FileResponse(200, headers, stream, clientMock.Object, responseMock.Object);
+        var organisation = GivenOrganisationClientModel();
 
         _dataSharingApiClientMock
             .Setup(x => x.GetSharedDataFileAsync(shareCode))
             .ReturnsAsync(fileResponseMock);
 
+        _organisationClientMock.Setup(x => x.GetOrganisationAsync(organisation.Id)).ReturnsAsync(organisation);
+
         _pageModel.ShareCode = shareCode;
+        _pageModel.OrganisationId = organisation.Id;
 
         var result = await _pageModel.OnGetDownload();
 
@@ -86,5 +95,9 @@ public class ShareCodeConfirmationTests
         var result = await _pageModel.OnGetDownload();
 
         result.Should().BeOfType<RedirectResult>().Which.Url.Should().Be("/page-not-found");
+    }
+    private static CO.CDP.Organisation.WebApiClient.Organisation GivenOrganisationClientModel()
+    {
+        return new CO.CDP.Organisation.WebApiClient.Organisation(additionalIdentifiers: null, addresses: null, contactPoint: null, id: Guid.NewGuid(), identifier: null, name: "Test Consortium", type: CDP.Organisation.WebApiClient.OrganisationType.InformalConsortium, roles: [], details: new CO.CDP.Organisation.WebApiClient.Details(approval: null, buyerInformation: null, pendingRoles: [], publicServiceMissionOrganization: null, scale: null, shelteredWorkshop: null, vcse: null));
     }
 }

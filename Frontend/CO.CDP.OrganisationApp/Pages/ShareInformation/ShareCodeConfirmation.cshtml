@@ -4,6 +4,11 @@
 @{
     ViewData["Title"] = StaticTextResource.ShareYourInformation_ShareCodeCreated;
     var backUrl = $"/organisation/{Model.OrganisationId}/forms/{Model.FormId}/sections/{Model.SectionId}/share-codes-list-view";
+    var organisationDetailUrl = $"/organisation/{Model.OrganisationId}/supplier-information";
+    if (Model.IsInformalConsortium)
+    {
+        organisationDetailUrl = $"/consortium/{Model.OrganisationId}/overview";
+    }
 }
 
 @section BeforeContent {
@@ -24,5 +29,5 @@
             @Html.Raw(string.Format(StaticTextResource.ShareYourInformation_ShareCodeCreatedFooterBody1, Model.ShareCode))
         </p>
         <p class="govuk-body">@StaticTextResource.ShareYourInformation_ShareCodeCreatedFooterBody2</p>
-        <p class="govuk-body"><a href="/organisation/@Model.OrganisationId/supplier-information">@StaticTextResource.ShareYourInformation_BackOrganisationDetails</a></p>
+        <p class="govuk-body"><a href="@organisationDetailUrl">@StaticTextResource.ShareYourInformation_BackOrganisationDetails</a></p>
     </div>

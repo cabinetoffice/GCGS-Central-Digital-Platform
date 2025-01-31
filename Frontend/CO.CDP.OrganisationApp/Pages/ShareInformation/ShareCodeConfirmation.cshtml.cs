@@ -1,4 +1,5 @@
 using CO.CDP.DataSharing.WebApiClient;
+using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Constants;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -9,7 +10,9 @@ using static System.Net.Mime.MediaTypeNames;
 namespace CO.CDP.OrganisationApp.Pages.ShareInformation;
 
 [Authorize(Policy = OrgScopeRequirement.Editor)]
-public class ShareCodeConfirmationModel(IDataSharingClient dataSharingClient) : PageModel
+public class ShareCodeConfirmationModel(
+    IDataSharingClient dataSharingClient,
+    IOrganisationClient organisationClient) : PageModel
 {
     [BindProperty(SupportsGet = true)]
     public Guid OrganisationId { get; set; }
@@ -23,6 +26,8 @@ public class ShareCodeConfirmationModel(IDataSharingClient dataSharingClient) : 
     [BindProperty(SupportsGet = true)]
     public string? ShareCode { get; set; }
 
+    public bool IsInformalConsortium { get; set; }
+
     public async Task<IActionResult> OnGetDownload()
     {
         if (string.IsNullOrEmpty(ShareCode))
@@ -33,6 +38,8 @@ public class ShareCodeConfirmationModel(IDataSharingClient dataSharingClient) : 
         try
         {
             FileResponse fileResponse = await dataSharingClient.GetSharedDataFileAsync(ShareCode);
+            var organisationDetails = await organisationClient.GetOrganisationAsync(OrganisationId);
+            IsInformalConsortium = (organisationDetails.Type == CDP.Organisation.WebApiClient.OrganisationType.InformalConsortium);
 
             var contentDisposition = fileResponse.Headers["Content-Disposition"].FirstOrDefault();
             var filename = string.IsNullOrWhiteSpace(contentDisposition) ? $"{ShareCode}.pdf" : new ContentDisposition(contentDisposition).FileName;
@@ -40,7 +47,9 @@ public class ShareCodeConfirmationModel(IDataSharingClient dataSharingClient) : 
 
             return File(fileResponse.Stream, contentType, filename);
         }
-        catch (ApiException<DataSharing.WebApiClient.ProblemDetails> aex) when (aex.StatusCode == 404)
+        catch (Exception ex)
+         when ((ex is CO.CDP.Organisation.WebApiClient.ApiException oex && oex.StatusCode == 404)
+            || (ex is DataSharing.WebApiClient.ApiException wex && wex.StatusCode == 404))
         {
             return Redirect("/page-not-found");
         }
