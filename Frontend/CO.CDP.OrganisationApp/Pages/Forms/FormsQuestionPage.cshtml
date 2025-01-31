@@ -5,7 +5,9 @@
 
 @{
     var isCheckYourAnswersPage = Model.CurrentFormQuestionType == Models.FormQuestionType.CheckYourAnswers;
-    var backUrl = $"/organisation/{Model.OrganisationId}/supplier-information";
+    var backUrl = Model.IsInformalConsortium ?
+            $"/consortium/{Model.OrganisationId}/overview"
+            : $"/organisation/{Model.OrganisationId}/supplier-information";
     var fromCheckAnswerPage = Model.RedirectFromCheckYourAnswerPage == true;
 
     if (Request.Query["UkOrNonUk"] == "non-uk")
