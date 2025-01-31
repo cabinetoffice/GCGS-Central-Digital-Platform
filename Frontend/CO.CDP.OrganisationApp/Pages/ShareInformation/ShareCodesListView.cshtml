@@ -6,9 +6,15 @@
 @using CO.CDP.OrganisationApp.TagHelpers
 
 @{
-    ViewData["Title"] = StaticTextResource.ShareYourInformation_Title;
+    var title = StaticTextResource.ShareYourInformation_Title;
     var createShareCodeLink = $"/organisation/{Model.OrganisationId}/forms/{Model.FormId}/sections/{Model.SectionId}";
     var backUrl = $"/organisation/{Model.OrganisationId}/supplier-information";
+    if (Model.IsInformalConsortium)
+    {
+        title = StaticTextResource.ConsortiumShareMyInformation_Title;
+        backUrl = $"/consortium/{Model.OrganisationId}/overview";
+    }
+    ViewData["Title"] = StaticTextResource.ConsortiumShareMyInformation_Title;
 }
 
 @section BeforeContent {
@@ -17,20 +23,23 @@
     </a>
 }
 
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
 
-            <div class="govuk-form-group">
-                <h1 class="govuk-heading-l">
-                    @ViewData["Title"]
-                </h1>
+        <div class="govuk-form-group">
+            <h1 class="govuk-heading-l">
+                @ViewData["Title"]
+            </h1>
 
+            @if (!Model.IsInformalConsortium)
+            {
                 <details class="govuk-details">
                     <summary class="govuk-details__summary">
                         <span class="govuk-details__summary-text">
                             @StaticTextResource.ShareYourInformation_HowItWorksSummary
                         </span>
                     </summary>
+
                     <div class="govuk-details__text">
                         <p>@StaticTextResource.ShareYourInformation_HowItWorksParagraph1</p>
                         <p>@StaticTextResource.ShareYourInformation_HowItWorksParagraph2</p>
@@ -40,46 +49,54 @@
                 </details>
 
                 <p class="govuk-body">@StaticTextResource.ShareYourInformation_Instructions</p>
+            }
+            else
+            {
+                <p class="govuk-body">@StaticTextResource.ConsortiumShareMyInformation_HowItWorksParagraph1</p>
+                <p class="govuk-body">@StaticTextResource.ConsortiumShareMyInformation_HowItWorksParagraph2</p>
+                <p class="govuk-body">@StaticTextResource.ConsortiumShareMyInformation_HowItWorksParagraph3</p>
+            }
 
-                <authorize scope="@OrgScopeRequirement.Editor">
-                    @if (await Model.MandatorySectionsCompleted())
-                    {
-                        <a href="@createShareCodeLink" role="button" draggable="false" class="govuk-button" data-module="govuk-button">
-                            @StaticTextResource.ShareYourInformation_CreateShareCodeButton
-                        </a>
-                    }
-                </authorize>
 
-                @if (Model.SharedConsentDetailsList != null && Model.SharedConsentDetailsList.Count > 0)
+            <authorize scope="@OrgScopeRequirement.Editor">
+                @if (Model.IsInformalConsortium == true || await Model.MandatorySectionsCompleted())
                 {
-                    <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
-                    <div class="govuk-radios govuk-!-margin-top-6">
-                        <table class="govuk-table">
-                            <caption class="govuk-table__caption govuk-table__caption--m">@StaticTextResource.ShareYourInformation_TableCaption</caption>
-                            <thead class="govuk-table__head">
+                    <a href="@createShareCodeLink" role="button" draggable="false" class="govuk-button" data-module="govuk-button">
+                        @StaticTextResource.ShareYourInformation_CreateShareCodeButton
+                    </a>
+                }
+            </authorize>
+
+            @if (Model.SharedConsentDetailsList != null && Model.SharedConsentDetailsList.Count > 0)
+            {
+                <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+                <div class="govuk-radios govuk-!-margin-top-6">
+                    <table class="govuk-table">
+                        <caption class="govuk-table__caption govuk-table__caption--m">@StaticTextResource.ShareYourInformation_TableCaption</caption>
+                        <thead class="govuk-table__head">
                             <tr class="govuk-table__row">
                                 <th scope="col" class="govuk-table__header">@StaticTextResource.ShareYourInformation_TableHeaderShareCodes</th>
                                 <th scope="col" class="govuk-table__header">@StaticTextResource.ShareYourInformation_TableHeaderCreatedOn</th>
                                 <th scope="col" class="govuk-table__header">@StaticTextResource.ShareYourInformation_TableHeaderFiles</th>
                             </tr>
-                            </thead>
-                            <tbody class="govuk-table__body">
-                                @foreach (var details in Model.SharedConsentDetailsList)
-                                {
-                                    <tr class="govuk-table__row">
-                                        <th scope="row" class="govuk-table__header">
-                                            <a class="govuk-link govuk-link--no-visited-state" href="/organisation/@Model.OrganisationId/forms/@Model.FormId/sections/@Model.SectionId/share-code-details/@details.ShareCode">@details.ShareCode</a>
-                                        </th>
-                                        <td class="govuk-table__cell">
-                                            @(details.SubmittedAt.ToFormattedString())
-                                        </td>
-                                        <td class="govuk-table__cell"><a class="govuk-link govuk-link--no-visited-state" href="?handler=download&shareCode=@details.ShareCode">@StaticTextResource.Global_Download</a></td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
-                    </div>
-                }
-            </div>
+                        </thead>
+                        <tbody class="govuk-table__body">
+                            @foreach (var details in Model.SharedConsentDetailsList)
+                            {
+                                <tr class="govuk-table__row">
+                                    <th scope="row" class="govuk-table__header">
+                                        <a class="govuk-link govuk-link--no-visited-state" href="/organisation/@Model.OrganisationId/forms/@Model.FormId/sections/@Model.SectionId/share-code-details/@details.ShareCode">@details.ShareCode</a>
+                                    </th>
+                                    <td class="govuk-table__cell">
+                                        @(details.SubmittedAt.ToFormattedString())
+                                    </td>
+                                    <td class="govuk-table__cell"><a class="govuk-link govuk-link--no-visited-state" href="?handler=download&shareCode=@details.ShareCode">@StaticTextResource.Global_Download</a></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
         </div>
     </div>
+</div>

@@ -1,3 +1,4 @@
+using CO.CDP.Forms.WebApiClient;
 using CO.CDP.Localization;
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Pages.Consortium;
@@ -12,13 +13,18 @@ public class ConsortiumOverviewModelTests
 {
     private readonly Mock<ITempDataService> _tempDataServiceMock = new();
     private readonly Mock<IFlashMessageService> _flashMessageServiceMock = new();
-    private readonly Mock<IOrganisationClient> _organisationClientMock = new();
+    private readonly Mock<OrganisationClient> _organisationClientMock;
     private static readonly Guid _consortiumId = Guid.NewGuid();
     private readonly ConsortiumOverviewModel _pageModel;
+    private readonly Mock<FormsClient> _formsClientMock = new();
     public ConsortiumOverviewModelTests()
     {
+        _formsClientMock = new Mock<FormsClient>("https://whatever", new HttpClient());
+        _organisationClientMock = new Mock<OrganisationClient>("https://whatever", new HttpClient());
+
         _pageModel = new ConsortiumOverviewModel(
             _organisationClientMock.Object,
+            _formsClientMock.Object,
             _flashMessageServiceMock.Object,
             _tempDataServiceMock.Object
         )
@@ -30,7 +36,9 @@ public class ConsortiumOverviewModelTests
     [Fact]
     public async Task OnGet_ReturnsPage_WhenOrganisationExists()
     {
+        var sectionId = Guid.NewGuid();
         var organisation = GivenOrganisationClientModel();
+        var formSectionsResponse = new FormSectionResponse(new List<FormSectionSummary>() { new FormSectionSummary(true, 3, false, sectionId, "section name", FormSectionType.Standard) });
         var parties = new OrganisationParties(new List<OrganisationParty>
         {
             new OrganisationParty(Guid.NewGuid(), "Consortium 1", new OrganisationPartyShareCode(DateTimeOffset.Now, "EXISTING_CODE"))
@@ -41,6 +49,9 @@ public class ConsortiumOverviewModelTests
         _organisationClientMock.Setup(x => x.GetOrganisationAsync(_pageModel.Id)).ReturnsAsync(organisation);
         _organisationClientMock.Setup(x => x.GetOrganisationPartiesAsync(_pageModel.Id)).ReturnsAsync(parties);
         _tempDataServiceMock.Setup(x => x.Get<ConsortiumSharecode>(ConsortiumSharecode.TempDataKey)).Returns(sharecode);
+        _formsClientMock.Setup(f => f.GetFormSectionsAsync(It.IsAny<Guid>(), organisation.Id)).ReturnsAsync(formSectionsResponse);
+
+        //_pageModel.FormSections = formSectionsResponse.FormSections;
 
         var result = await _pageModel.OnGet();
 
@@ -62,7 +73,7 @@ public class ConsortiumOverviewModelTests
             .ReturnsAsync(organisation);
 
         _organisationClientMock.Setup(x => x.GetOrganisationPartiesAsync(_pageModel.Id))
-            .ThrowsAsync(new ApiException("Not Found", 404, null, null, null));
+            .ThrowsAsync(new CDP.Organisation.WebApiClient.ApiException("Not Found", 404, null, null, null));
 
         var result = await _pageModel.OnGet();
 
@@ -75,7 +86,7 @@ public class ConsortiumOverviewModelTests
     public async Task OnGet_RedirectsToPageNotFound_WhenOrganisationNotFound()
     {
         _organisationClientMock.Setup(x => x.GetOrganisationAsync(_pageModel.Id))
-            .ThrowsAsync(new ApiException("Not Found", 404, null, null, null));
+            .ThrowsAsync(new CO.CDP.Organisation.WebApiClient.ApiException("Not Found", 404, null, null, null));
 
         var result = await _pageModel.OnGet();
 
