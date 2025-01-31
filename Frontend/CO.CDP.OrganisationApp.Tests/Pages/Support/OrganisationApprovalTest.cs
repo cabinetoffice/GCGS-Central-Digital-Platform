@@ -298,7 +298,7 @@ public class OrganisationApprovalModelTests
             .Setup(x => x.GetOrganisationReviewsAsync(expectedOrganisation.Id))
             .ReturnsAsync(new List<Review>
             {
-                new(null, null, null, ReviewStatus.Rejected)
+                new(DateTime.Now, "comment", new ReviewedBy(Guid.NewGuid(), "name"), ReviewStatus.Rejected)
             });
 
         var result = await _organisationApprovalModel.OnGet(expectedOrganisation.Id);
