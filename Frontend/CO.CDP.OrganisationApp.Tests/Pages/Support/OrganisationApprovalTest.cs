@@ -240,9 +240,9 @@ public class OrganisationApprovalModelTests
 
         var result = await _organisationApprovalModel.OnGet(expectedOrganisation.Id) as RedirectToPageResult;
 
-        Assert.NotNull(result);
-        Assert.Equal("Organisations", result.PageName);
-        Assert.Equal("buyer", result.RouteValues?["type"]);
+        result.Should().NotBeNull();
+        result?.PageName.Should().Be("Organisations");
+        result?.RouteValues?["type"].Should().Be("buyer");
 
         _mockFlashMessageService.Verify(x => x.SetFlashMessage(
             FlashMessageType.Important,
