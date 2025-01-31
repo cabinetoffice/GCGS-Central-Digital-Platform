@@ -35,7 +35,7 @@ public class GetOrganisationsUseCaseTests
             FirstName = "John",
             LastName = "Doe",
             Guid = guid,
-            Email = null
+            Email = null!
         };
 
         var adminPersonWeb = new Model.Person
@@ -101,7 +101,7 @@ public class GetOrganisationsUseCaseTests
 
         result.Should().BeEquivalentTo(mappedOrganisations, options => options.Including(o => o.AdminPerson));
         _organisationRepositoryMock.Verify(repo => repo.GetPaginated(command.Role, command.PendingRole, command.Limit, command.Skip), Times.Once);
-        // _mapperMock.Verify(m => m.Map<CO.CDP.Organisation.WebApi.Model.Person>(adminPerson), Times.Once);
+        _mapperMock.Verify(m => m.Map<CO.CDP.Organisation.WebApi.Model.Person>(adminPerson), Times.Once);
     }
 
 
