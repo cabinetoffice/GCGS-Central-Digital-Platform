@@ -324,7 +324,7 @@
   <data name="Organisation_OrganisationOrSoleTrader" xml:space="preserve">
     <value>an organisation or sole trader who searches for tenders and submits bids to supply goods, works, services or utilities</value>
   </data>
-  <data name="Organisation_RequestToJoin"xml:space="preserve">
+  <data name="Organisation_RequestToJoin" xml:space="preserve">
     <value>Or request to join an existing organisation. You’ll need the identity number the organisation is registered with.</value>
   </data>
   <data name="Organisation_RegisterAnOrganisation" xml:space="preserve">
