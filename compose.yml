@@ -385,6 +385,58 @@ services:
       localstack:
         condition: "service_healthy"
 
+  outbox-processor-organisation:
+    container_name: co-cdp-outbox-processor-organisation
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: final-outbox-processor
+    image: 'cabinetoffice/cdp-outbox-processor:${IMAGE_VERSION:-latest}'
+    healthcheck:
+      test: ["CMD-SHELL", "curl --fail --silent --write-out '{\"status\":%{http_code}}' --output /dev/null http://127.0.0.1:8080/health"]
+      start_period: 10s
+      interval: 10s
+      timeout: 10s
+      retries: 3
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      Aws__Credentials__AccessKeyId: test
+      Aws__Credentials__SecretAccessKey: test
+      Aws__ServiceURL: "http://localstack:4566"
+      Aws__SqsPublisher__QueueUrl: "http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/av-scanner.fifo"
+      CloudWatch__LogGroup": "/ecs/outbox-processor-organisation"
+    depends_on:
+      localstack:
+        condition: "service_healthy"
+      db:
+        condition: "service_healthy"
+
+  outbox-processor-entity-verification:
+    container_name: co-cdp-outbox-processor-entity-verification
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: final-outbox-processor
+    image: 'cabinetoffice/cdp-outbox-processor:${IMAGE_VERSION:-latest}'
+    healthcheck:
+      test: ["CMD-SHELL", "curl --fail --silent --write-out '{\"status\":%{http_code}}' --output /dev/null http://127.0.0.1:8080/health"]
+      start_period: 10s
+      interval: 10s
+      timeout: 10s
+      retries: 3
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      Aws__Credentials__AccessKeyId: test
+      Aws__Credentials__SecretAccessKey: test
+      Aws__ServiceURL: "http://localstack:4566"
+      Aws__SqsPublisher__QueueUrl: "http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/av-scanner.fifo"
+      CloudWatch__LogGroup": "/ecs/outbox-processor-entity-verification"
+    depends_on:
+      localstack:
+        condition: "service_healthy"
+      db:
+        condition: "service_healthy"
+
 volumes:
   clamav:
   run-clamav:
