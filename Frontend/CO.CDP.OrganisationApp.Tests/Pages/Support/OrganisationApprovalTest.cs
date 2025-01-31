@@ -13,12 +13,14 @@ public class OrganisationApprovalModelTests
 {
     private readonly Guid _personId;
     private readonly Mock<IOrganisationClient> _mockOrganisationClient;
+    private readonly Mock<IFlashMessageService> _mockFlashMessageService;
     private readonly OrganisationApprovalModel _organisationApprovalModel;
 
     public OrganisationApprovalModelTests()
     {
         _personId = new Guid();
-        _mockOrganisationClient = new Mock<IOrganisationClient>();
+        _mockOrganisationClient = new();
+        _mockFlashMessageService = new();
         Mock<ISession> mockSession = new();
         mockSession.Setup(s => s.Get<UserDetails>(Session.UserDetailsKey))
             .Returns(new UserDetails
@@ -26,7 +28,7 @@ public class OrganisationApprovalModelTests
                 PersonId = _personId,
                 UserUrn = "Something"
             });
-        _organisationApprovalModel = new OrganisationApprovalModel(_mockOrganisationClient.Object, mockSession.Object);
+        _organisationApprovalModel = new OrganisationApprovalModel(_mockOrganisationClient.Object, mockSession.Object, _mockFlashMessageService.Object);
     }
 
     [Fact]
@@ -70,6 +72,10 @@ public class OrganisationApprovalModelTests
         _mockOrganisationClient
             .Setup(client => client.GetOrganisationPersonsAsync(organisationId))
             .ReturnsAsync(expectedPersons);
+
+        _mockOrganisationClient
+            .Setup(x => x.GetOrganisationReviewsAsync(organisationId))
+            .ThrowsAsync(new ApiException("Not Found", 404, "", default, null));
 
         var result = await _organisationApprovalModel.OnGet(organisationId);
 
@@ -204,6 +210,10 @@ public class OrganisationApprovalModelTests
             .Setup(client => client.SearchOrganisationAsync(expectedOrganisation.Name, "buyer", 3))
             .ReturnsAsync(expectedMatchingOrganisations);
 
+        _mockOrganisationClient
+            .Setup(x => x.GetOrganisationReviewsAsync(organisationId))
+            .ThrowsAsync(new ApiException("Not Found", 404, "", default, null));
+
         var result = await _organisationApprovalModel.OnGet(organisationId);
 
         result.Should().BeOfType<PageResult>();
@@ -244,10 +254,188 @@ public class OrganisationApprovalModelTests
             .Setup(client => client.SearchOrganisationAsync(expectedOrganisation.Name, "buyer", 3))
             .ThrowsAsync(new ApiException("Not Found", 404, "", default, null));
 
+        _mockOrganisationClient
+            .Setup(x => x.GetOrganisationReviewsAsync(organisationId))
+            .ThrowsAsync(new ApiException("Not Found", 404, "", default, null));
+
         var result = await _organisationApprovalModel.OnGet(organisationId);
 
         result.Should().BeOfType<PageResult>();
         _organisationApprovalModel.MatchingOrganisations.Should().NotBeNull();
         _organisationApprovalModel.MatchingOrganisations.Should().BeEmpty();
+    }
+
+    [Fact]
+    public async Task OnGetAsync_WhenApprovedReviewExists_ShouldRedirectAndSetFlashMessage()
+    {
+        var organisationId = Guid.NewGuid();
+        var expectedOrganisation = new CDP.Organisation.WebApiClient.Organisation(
+            additionalIdentifiers: new List<Identifier>(),
+            addresses: new List<Address>(),
+            contactPoint: null,
+            id: organisationId,
+            identifier: new Identifier(
+                scheme: "test-scheme",
+                id: "test-id",
+                legalName: "Test Organisation",
+                uri: new Uri("https://example.com")
+            ),
+            name: "Test Organisation",
+            type: OrganisationType.Organisation,
+            roles: new List<PartyRole>(),
+            details: new Details(approval: null, pendingRoles: [])
+        );
+
+        _mockOrganisationClient
+            .Setup(client => client.GetOrganisationAsync(organisationId))
+            .ReturnsAsync(expectedOrganisation);
+
+        _mockOrganisationClient
+            .Setup(x => x.GetOrganisationReviewsAsync(organisationId))
+            .ReturnsAsync(new List<Review>
+            {
+                new(DateTime.Now, "comment", new ReviewedBy(Guid.NewGuid(), "name"), ReviewStatus.Approved)
+            });
+
+        var result = await _organisationApprovalModel.OnGet(organisationId) as RedirectToPageResult;
+
+        Assert.NotNull(result);
+        Assert.Equal("Organisations", result.PageName);
+        Assert.Equal("buyer", result.RouteValues?["type"]);
+
+        _mockFlashMessageService.Verify(x => x.SetFlashMessage(
+            FlashMessageType.Important,
+            "{organisationName} has already been approved",
+            null,
+            null,
+            null,
+            It.Is<Dictionary<string, string>>(d => d["organisationName"] == expectedOrganisation.Name)
+        ), Times.Once);
+    }
+
+    [Fact]
+    public async Task OnGetAsync_WhenReviewStatusIsPending_ShouldNotRedirect()
+    {
+        var organisationId = Guid.NewGuid();
+        var expectedOrganisation = new CDP.Organisation.WebApiClient.Organisation(
+            additionalIdentifiers: new List<Identifier>(),
+            addresses: new List<Address>(),
+            contactPoint: null,
+            id: organisationId,
+            identifier: new Identifier(
+                scheme: "test-scheme",
+                id: "test-id",
+                legalName: "Test Organisation",
+                uri: new Uri("https://example.com")
+            ),
+            name: "Test Organisation",
+            type: OrganisationType.Organisation,
+            roles: new List<PartyRole>(),
+            details: new Details(approval: null, pendingRoles: [])
+        );
+
+        _mockOrganisationClient
+            .Setup(client => client.GetOrganisationAsync(organisationId))
+            .ReturnsAsync(expectedOrganisation);
+
+        _mockOrganisationClient
+            .Setup(client => client.GetOrganisationPersonsAsync(organisationId))
+            .ReturnsAsync(new List<CDP.Organisation.WebApiClient.Person>());
+
+        _mockOrganisationClient
+            .Setup(x => x.GetOrganisationReviewsAsync(organisationId))
+            .ReturnsAsync(new List<Review>
+            {
+                new(null, null, null, ReviewStatus.Pending)
+            });
+
+        var result = await _organisationApprovalModel.OnGet(organisationId);
+
+        result.Should().BeOfType<PageResult>();
+
+        _mockFlashMessageService.VerifyNoOtherCalls();
+    }
+
+    [Fact]
+    public async Task OnGetAsync_WhenReviewStatusIsRejected_ShouldNotRedirect()
+    {
+        var organisationId = Guid.NewGuid();
+        var expectedOrganisation = new CDP.Organisation.WebApiClient.Organisation(
+            additionalIdentifiers: new List<Identifier>(),
+            addresses: new List<Address>(),
+            contactPoint: null,
+            id: organisationId,
+            identifier: new Identifier(
+                scheme: "test-scheme",
+                id: "test-id",
+                legalName: "Test Organisation",
+                uri: new Uri("https://example.com")
+            ),
+            name: "Test Organisation",
+            type: OrganisationType.Organisation,
+            roles: new List<PartyRole>(),
+            details: new Details(approval: null, pendingRoles: [])
+        );
+
+        _mockOrganisationClient
+            .Setup(client => client.GetOrganisationAsync(organisationId))
+            .ReturnsAsync(expectedOrganisation);
+
+        _mockOrganisationClient
+            .Setup(client => client.GetOrganisationPersonsAsync(organisationId))
+            .ReturnsAsync(new List<CDP.Organisation.WebApiClient.Person>());
+
+        _mockOrganisationClient
+            .Setup(x => x.GetOrganisationReviewsAsync(organisationId))
+            .ReturnsAsync(new List<Review>
+            {
+                new(null, null, null, ReviewStatus.Rejected)
+            });
+
+        var result = await _organisationApprovalModel.OnGet(organisationId);
+
+        result.Should().BeOfType<PageResult>();
+
+        _mockFlashMessageService.VerifyNoOtherCalls();
+    }
+
+    [Fact]
+    public async Task OnGetAsync_WhenNoReviewFound_ShouldNotRedirect()
+    {
+        var organisationId = Guid.NewGuid();
+        var expectedOrganisation = new CDP.Organisation.WebApiClient.Organisation(
+            additionalIdentifiers: new List<Identifier>(),
+            addresses: new List<Address>(),
+            contactPoint: null,
+            id: organisationId,
+            identifier: new Identifier(
+                scheme: "test-scheme",
+                id: "test-id",
+                legalName: "Test Organisation",
+                uri: new Uri("https://example.com")
+            ),
+            name: "Test Organisation",
+            type: OrganisationType.Organisation,
+            roles: new List<PartyRole>(),
+            details: new Details(approval: null, pendingRoles: [])
+        );
+
+        _mockOrganisationClient
+            .Setup(client => client.GetOrganisationAsync(organisationId))
+            .ReturnsAsync(expectedOrganisation);
+
+        _mockOrganisationClient
+            .Setup(x => x.GetOrganisationReviewsAsync(organisationId))
+            .ThrowsAsync(new ApiException("Not Found", 404, "", default, null));
+
+        _mockOrganisationClient
+            .Setup(client => client.GetOrganisationPersonsAsync(organisationId))
+            .ReturnsAsync(new List<CDP.Organisation.WebApiClient.Person>());
+
+        var result = await _organisationApprovalModel.OnGet(organisationId);
+
+        result.Should().BeOfType<PageResult>();
+
+        _mockFlashMessageService.VerifyNoOtherCalls();
     }
 }
