@@ -331,7 +331,7 @@ public class PdfGenerator(IHtmlLocalizer<FormsEngineResource> localizer) : IPdfG
     {
         if ((label.Contains('?') && label.Contains(':')) || label.Contains(':'))
         {
-            label = label.TrimEnd(' ');
+            label = label.TrimEnd(':');
         }
 
         container.Row(row =>
