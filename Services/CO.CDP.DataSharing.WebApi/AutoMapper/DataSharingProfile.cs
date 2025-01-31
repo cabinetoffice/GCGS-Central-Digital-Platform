@@ -48,7 +48,8 @@ public class DataSharingProfile : Profile
             .ForMember(m => m.AssociatedPersons,
                 o => o.MapFrom((_, _, _, context) => context.Items["AssociatedPersons"]))
             .ForMember(m => m.AdditionalEntities,
-                o => o.MapFrom((_, _, _, context) => context.Items["AdditionalEntities"]));
+                o => o.MapFrom((_, _, _, context) => context.Items["AdditionalEntities"]))
+            .ForMember(m => m.AdditionalParties, o => o.Ignore());
 
         Uri? tempResult;
         CreateMap<Organisation.Identifier, OrganisationInformation.Identifier>()
