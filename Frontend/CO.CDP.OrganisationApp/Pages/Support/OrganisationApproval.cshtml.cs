@@ -46,7 +46,7 @@ public class OrganisationApprovalModel(
             {
                 flashMessageService.SetFlashMessage(
                     FlashMessageType.Important,
-                    heading: "{organisationName} has already been approved",
+                    heading: StaticTextResource.Support_OrganisationApproval_AlreadyApproved_FlashMessage,
                     htmlParameters: new() { ["organisationName"] = OrganisationDetails.Name }
                 );
 
