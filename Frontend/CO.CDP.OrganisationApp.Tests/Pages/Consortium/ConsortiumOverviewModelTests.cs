@@ -33,12 +33,13 @@ public class ConsortiumOverviewModelTests
         };
     }
 
+
     [Fact]
     public async Task OnGet_ReturnsPage_WhenOrganisationExists()
     {
-        var sectionId = Guid.NewGuid();
         var organisation = GivenOrganisationClientModel();
-        var formSectionsResponse = new FormSectionResponse(new List<FormSectionSummary>() { new FormSectionSummary(true, 3, false, sectionId, "section name", FormSectionType.Standard) });
+        var formSectionsResponse = GivenFormSectionResponse();
+
         var parties = new OrganisationParties(new List<OrganisationParty>
         {
             new OrganisationParty(Guid.NewGuid(), "Consortium 1", new OrganisationPartyShareCode(DateTimeOffset.Now, "EXISTING_CODE"))
@@ -49,9 +50,7 @@ public class ConsortiumOverviewModelTests
         _organisationClientMock.Setup(x => x.GetOrganisationAsync(_pageModel.Id)).ReturnsAsync(organisation);
         _organisationClientMock.Setup(x => x.GetOrganisationPartiesAsync(_pageModel.Id)).ReturnsAsync(parties);
         _tempDataServiceMock.Setup(x => x.Get<ConsortiumSharecode>(ConsortiumSharecode.TempDataKey)).Returns(sharecode);
-        _formsClientMock.Setup(f => f.GetFormSectionsAsync(It.IsAny<Guid>(), organisation.Id)).ReturnsAsync(formSectionsResponse);
-
-        //_pageModel.FormSections = formSectionsResponse.FormSections;
+        _formsClientMock.Setup(f => f.GetFormSectionsAsync(It.IsAny<Guid>(), _pageModel.Id)).ReturnsAsync(formSectionsResponse);
 
         var result = await _pageModel.OnGet();
 
@@ -68,12 +67,14 @@ public class ConsortiumOverviewModelTests
     public async Task OnGet_ReturnsPage_WhenPartiesNotFound()
     {
         var organisation = GivenOrganisationClientModel();
+        var formSectionsResponse = GivenFormSectionResponse();
 
         _organisationClientMock.Setup(x => x.GetOrganisationAsync(_pageModel.Id))
             .ReturnsAsync(organisation);
 
         _organisationClientMock.Setup(x => x.GetOrganisationPartiesAsync(_pageModel.Id))
             .ThrowsAsync(new CDP.Organisation.WebApiClient.ApiException("Not Found", 404, null, null, null));
+        _formsClientMock.Setup(f => f.GetFormSectionsAsync(It.IsAny<Guid>(), _pageModel.Id)).ReturnsAsync(formSectionsResponse);
 
         var result = await _pageModel.OnGet();
 
@@ -97,6 +98,7 @@ public class ConsortiumOverviewModelTests
     public async Task OnGet_SetsFlashMessage_WhenSharecodeExists()
     {
         var organisation = GivenOrganisationClientModel();
+        var formSectionsResponse = GivenFormSectionResponse();
         var parties = new OrganisationParties(new List<OrganisationParty>
         {
             new OrganisationParty(Guid.NewGuid(), "Consortium 1", new OrganisationPartyShareCode(DateTimeOffset.Now, "EXISTING_CODE"))
@@ -108,6 +110,7 @@ public class ConsortiumOverviewModelTests
 
         _organisationClientMock.Setup(x => x.GetOrganisationPartiesAsync(_pageModel.Id))
             .ReturnsAsync(parties);
+        _formsClientMock.Setup(f => f.GetFormSectionsAsync(It.IsAny<Guid>(), _pageModel.Id)).ReturnsAsync(formSectionsResponse);
 
         _tempDataServiceMock.Setup(x => x.Get<ConsortiumSharecode>(ConsortiumSharecode.TempDataKey)).Returns(sharecode);
 
@@ -118,6 +121,11 @@ public class ConsortiumOverviewModelTests
             FlashMessageType.Success,
             string.Format(StaticTextResource.Consortium_ConsortiumOverview_Success_Heading, sharecode.SharecodeOrganisationName),
             null, null, null, null), Times.Once);
+    }
+
+    private static FormSectionResponse GivenFormSectionResponse()
+    {
+        return new FormSectionResponse(new List<FormSectionSummary>() { new FormSectionSummary(true, 3, false, Guid.NewGuid(), "section name", FormSectionType.Standard) });
     }
 
     private static CO.CDP.Organisation.WebApiClient.Organisation GivenOrganisationClientModel()
