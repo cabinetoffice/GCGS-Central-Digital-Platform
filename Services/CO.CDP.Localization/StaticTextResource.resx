@@ -3238,8 +3238,8 @@
   <data name="Consortium_ConsortiumEnterSharecode_InvalidCode" xml:space="preserve">
     <value>Share code not found.</value>
   </data>
-</root>
   <data name="PdfGenerator_OrganisationDetails_Title" xml:space="preserve">
     <value>Organisation Details</value>
   </data>
 </root>
+  
