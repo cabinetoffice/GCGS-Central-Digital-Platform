@@ -28,6 +28,14 @@ public class ShareCodeConfirmationModel(
 
     public bool IsInformalConsortium { get; set; }
 
+    public async Task<IActionResult> OnGet()
+    {
+        var organisationDetails = await organisationClient.GetOrganisationAsync(OrganisationId);
+        IsInformalConsortium = (organisationDetails?.Type == CDP.Organisation.WebApiClient.OrganisationType.InformalConsortium);
+
+        return Page();
+    }
+
     public async Task<IActionResult> OnGetDownload()
     {
         if (string.IsNullOrEmpty(ShareCode))
@@ -38,8 +46,6 @@ public class ShareCodeConfirmationModel(
         try
         {
             FileResponse fileResponse = await dataSharingClient.GetSharedDataFileAsync(ShareCode);
-            var organisationDetails = await organisationClient.GetOrganisationAsync(OrganisationId);
-            IsInformalConsortium = (organisationDetails.Type == CDP.Organisation.WebApiClient.OrganisationType.InformalConsortium);
 
             var contentDisposition = fileResponse.Headers["Content-Disposition"].FirstOrDefault();
             var filename = string.IsNullOrWhiteSpace(contentDisposition) ? $"{ShareCode}.pdf" : new ContentDisposition(contentDisposition).FileName;
