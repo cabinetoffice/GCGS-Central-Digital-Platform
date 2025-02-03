@@ -40,7 +40,7 @@
                         </h1>
                     </legend>
 
-                   <div id="organisationidentification-hint" class="govuk-hint">
+                    <div id="organisationidentification-hint" class="govuk-hint">
                         @StaticTextResource.Organisation_OrganisationIdentification_Multiple_Hint
                     </div>
 
@@ -134,12 +134,10 @@
                             <div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-GG-RCE">
                                 <div class="govuk-form-group @(guernseyRegistryNumberHasError ? "govuk-form-group--error" : "")">
                                     @Html.LabelFor(m => m.GuernseyRegistryNumber, new { @class = "govuk-label", @for = Model.GuernseyRegistryNumber })
+                                    <div id="conditional-GG-RCE-hint" class="govuk-hint">@StaticTextResource.Organisation_OrganisationIdentification_GG_RCE_Hint</div>
                                     @Html.ValidationMessageFor(m => m.GuernseyRegistryNumber, "", new { @class = "govuk-error-message", @id = "GuernseyRegistryNumber-error" })
                                     @Html.TextBoxFor(m => m.GuernseyRegistryNumber, new { @class = "govuk-input " + (guernseyRegistryNumberHasError ? "govuk-input--error" : ""), @id = "GuernseyRegistryNumber", @type = "text", spellcheck = "false", autocomplete = "off" })
-                                </div>
-                                <div id="conditional-GG-RCE-hint" class="govuk-hint govuk-radios__hint">
-                                    @StaticTextResource.Organisation_OrganisationIdentification_GG_RCE_Hint
-                                </div>
+                                </div>                                
                             </div>
                         }
 
