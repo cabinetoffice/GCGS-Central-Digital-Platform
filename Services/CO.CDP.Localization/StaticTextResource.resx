@@ -1375,22 +1375,22 @@
     <value>Enter the Companies House number</value>
   </data>
   <data name="Organisation_OrganisationIdentification_GB_CHC_Label" xml:space="preserve">
-    <value>Charity Commission (England and Wales)</value>
+    <value>Charity Commission for England and Wales</value>
   </data>
   <data name="Organisation_OrganisationIdentification_GB_CHC_Number_Label" xml:space="preserve">
-    <value>Charity Commission (England and Wales) number</value>
+    <value>Charity Commission for England and Wales number</value>
   </data>
   <data name="Organisation_OrganisationIdentification_GB_CHC_Number_ErrorMessage" xml:space="preserve">
-    <value>Enter the Charity Commission (England and Wales) number</value>
+    <value>Enter the Charity Commission for England and Wales number</value>
   </data>
   <data name="Organisation_OrganisationIdentification_GB_SC_Label" xml:space="preserve">
-    <value>Scottish Charity Register</value>
+    <value>Scottish Charity Regulator</value>
   </data>
   <data name="Organisation_OrganisationIdentification_GB_SC_Number_Label" xml:space="preserve">
-    <value>Scottish Charity Register Number</value>
+    <value>Scottish Charity Regulator Number</value>
   </data>
   <data name="Organisation_OrganisationIdentification_GB_SC_Number_ErrorMessage" xml:space="preserve">
-    <value>Enter the Scottish Charity Register number</value>
+    <value>Enter the Scottish Charity Regulator number</value>
   </data>
   <data name="Organisation_OrganisationIdentification_GB_NIC_Label" xml:space="preserve">
     <value>Charity Commission for Northern Ireland</value>
@@ -1438,19 +1438,19 @@
     <value>Enter Isle of Man Companies Registry number</value>
   </data>
   <data name="Organisation_OrganisationIdentification_GB_NHS_Label" xml:space="preserve">
-    <value>NHS Organisation Data Service</value>
+    <value>NHS Organisation Data Service (ODS)</value>
   </data>
   <data name="Organisation_OrganisationIdentification_GB_NHS_Number_Label" xml:space="preserve">
-    <value>NHS Organisation Data Service Number</value>
+    <value>NHS Organisation Data Service (ODS) Number</value>
   </data>
   <data name="Organisation_OrganisationIdentification_GB_NHS_Number_ErrorMessage" xml:space="preserve">
-    <value>Enter the NHS Organisation Data Service number</value>
+    <value>Enter the NHS Organisation Data Service (ODS) number</value>
   </data>
   <data name="Organisation_OrganisationIdentification_GB_UKPRN_Label" xml:space="preserve">
     <value>UK Register of Learning Providers</value>
   </data>
   <data name="Organisation_OrganisationIdentification_GB_UKPRN_Number_Label" xml:space="preserve">
-    <value>UK Register of Learning Providers (UKPRN number)</value>
+    <value>UK Provider Reference Number (UKPRN)</value>
   </data>
   <data name="Organisation_OrganisationIdentification_GB_UKPRN_Number_ErrorMessage" xml:space="preserve">
     <value>Enter the UK Register of Learning Providers number.</value>
@@ -2241,7 +2241,7 @@
     <value>No connected person information available.</value>
   </data>
   <data name="PdfGenerator_OrganisationSchemeTitle_CharityCommission" xml:space="preserve">
-    <value>Charity Commission (England and Wales) number</value>
+    <value>Charity Commission for England and Wales number</value>
   </data>
   <data name="PdfGenerator_OrganisationSchemeTitle_CompaniesHouseNumber" xml:space="preserve">
     <value>Companies House number</value>
@@ -2274,7 +2274,7 @@
     <value>PPON</value>
   </data>
   <data name="PdfGenerator_OrganisationSchemeTitle_ScottishCharityRegulator" xml:space="preserve">
-    <value>Scottish Charity Register</value>
+    <value>Scottish Charity Regulator</value>
   </data>
   <data name="PdfGenerator_OrganisationSchemeTitle_Unknown" xml:space="preserve">
     <value>Unknown</value>
@@ -2903,7 +2903,7 @@
     <value>Charity Commission for England &amp; Wales Number</value>
   </data>
   <data name="OrganisationSchemeType_ScottishCharityRegulator" xml:space="preserve">
-    <value>Scottish Charity Register</value>
+    <value>Scottish Charity Regulator</value>
   </data>
   <data name="OrganisationSchemeType_CharityCommissionNorthernIreland" xml:space="preserve">
     <value>Charity Commission for Northern Ireland Number</value>
