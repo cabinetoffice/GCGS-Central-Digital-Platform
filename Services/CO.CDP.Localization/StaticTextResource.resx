@@ -1916,9 +1916,6 @@
   <data name="Support_OrganisationApproval_OrganisationName_List" xml:space="preserve">
     <value>Organisation name</value>
   </data>
-  <data name="Support_OrganisationApproval_PotentialDuplicatesFound" xml:space="preserve">
-    <value>Potential duplicates found</value>
-  </data>
   <data name="Support_OrganisationApproval_OrganisationIdentifier_List" xml:space="preserve">
     <value>Organisation identifiers</value>
   </data>
@@ -3240,5 +3237,11 @@
   </data>  
   <data name="OrganisationRegistration_BuyerDevolvedRegulation_Hint" xml:space="preserve">
     <value>A contracting authority operating in a devolved nation may be subject to devolved regulations. For example, Northern Ireland, Scotland or Wales.</value>
+  </data>
+  <data name="Support_OrganisationApproval_PotentialDuplicatesFound" xml:space="preserve">
+    <value>Potential duplicates found</value>
+  </data>
+  <data name="OrganisationRegistration_BuyerOrganisationType_Hint" xml:space="preserve">
+    <value>Decide on your organisation type, as defined in the &lt;a href="https://www.gov.uk/government/publications/procurement-act-2023-guidance-documents-plan-phase/guidance-contracting-authority-definition-html" target="_blank"&gt;contracting authority definition guidance (opens in new tab). &lt;/a&gt;</value>
   </data>
 </root>
