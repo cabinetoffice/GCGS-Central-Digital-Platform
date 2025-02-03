@@ -133,7 +133,7 @@ locals {
         "https://truk-prod.nqc.com/auth/backchannellogout",
         "https://wallsm.nqc.com/auth/backchannellogout",
       ]
-      pinned_service_version            = "1.0.29"
+      pinned_service_version            = "1.0.30"
       postgres_instance_type            = "db.t4g.micro"
       private_subnets = [
         "10.${local.cidr_b_integration}.101.0/24",
@@ -162,7 +162,7 @@ locals {
       fts_service_allowed_origins       = []
       name                              = "production"
       onelogin_logout_notification_urls = ["https://www.private-beta.find-tender.service.gov.uk/auth/backchannellogout"]
-      pinned_service_version            = "1.0.29"
+      pinned_service_version            = "1.0.30"
       postgres_instance_type            = "db.t4g.micro"
       private_subnets = [
         "10.${local.cidr_b_production}.101.0/24",
