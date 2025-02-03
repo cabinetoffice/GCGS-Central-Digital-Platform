@@ -15,11 +15,8 @@ public class GenerateShareCodeUseCase(
 {
     public async Task<ShareReceipt> Execute(ShareRequest shareRequest)
     {
-        var org = await organisationRepository.Find(shareRequest.OrganisationId);
-        if (org == null)
-        {
-            throw new InvalidOrganisationRequestedException("Invalid Organisation requested.");
-        }
+        var org = await organisationRepository.Find(shareRequest.OrganisationId)
+            ?? throw new InvalidOrganisationRequestedException("Invalid Organisation requested.");
 
         var result = await shareCodeRepository.GetSharedConsentDraftAsync(shareRequest.FormId, shareRequest.OrganisationId)
             ?? throw new ShareCodeNotFoundException(Constants.ShareCodeNotFoundExceptionMessage);
@@ -30,6 +27,10 @@ public class GenerateShareCodeUseCase(
         result.SubmissionState = SubmissionState.Submitted;
 
         await formRepository.SaveSharedConsentAsync(result);
+        if (org.Type == OrganisationInformation.OrganisationType.InformalConsortium)
+        {
+            await formRepository.SaveSharedConsentConsortiumAsync(result);
+        }
 
         return mapper.Map<OrganisationInformation.Persistence.Forms.SharedConsent, ShareReceipt>(result);
     }
