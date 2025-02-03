@@ -1459,7 +1459,7 @@
     <value>None apply</value>
   </data>
   <data name="Organisation_OrganisationIdentification_Other_Hint" xml:space="preserve">
-    <value>You'll get a public procurement organisation number (PPON) as an identifier</value>
+    <value>You'll be assigned a public procurement organisation number (PPON)</value>
   </data>
   <data name="Organisation_OrganisationIdentification_GG_RCE_Hint" xml:space="preserve">
     <value>Include prefix, if applicable. For example, GY.</value>
@@ -1588,7 +1588,7 @@
     <value>Central government - UK or devolved administrations</value>
   </data>
   <data name="OrganisationRegistration_BuyerOrganisationType_RegionalAndLocalGovernment_Label" xml:space="preserve">
-    <value>Regional and local public authority - UK or devolved administrations</value>
+    <value>Regional and local public authority (sub-central) - UK or devolved administrations</value>
   </data>
   <data name="OrganisationRegistration_BuyerOrganisationType_PublicUndertaking_Label" xml:space="preserve">
     <value>Public undertaking</value>
@@ -3241,6 +3241,9 @@
   <data name="OrganisationRegistration_BuyerDevolvedRegulation_Hint" xml:space="preserve">
     <value>A contracting authority operating in a devolved nation may be subject to devolved regulations. For example, Northern Ireland, Scotland or Wales.</value>
   </data>
+  <data name="OrganisationRegistration_BuyerOrganisationType_Hint" xml:space="preserve">
+    <value>Decide on your organisation type, as defined in the &lt;a href="https://www.gov.uk/government/publications/procurement-act-2023-guidance-documents-plan-phase/guidance-contracting-authority-definition-html" target="_blank"&gt;contracting authority definition guidance (opens in new tab). &lt;/a&gt;</value>
+  </data>
   <data name="Supplementary_CookieDetails_TableRow_FT_Auth" xml:space="preserve">
     <value>Provides Find a Tender with your account details once you’ve signed in</value>
   </data>
@@ -3267,8 +3270,5 @@
   </data>
   <data name="Supplementary_CookieDetails_TableRow_FT_BANNER_CLOSE" xml:space="preserve">
     <value>Prevents user research banner from appearing if close button is used</value>
-  </data>
-  <data name="OrganisationRegistration_BuyerOrganisationType_Hint" xml:space="preserve">
-    <value>Decide on your organisation type, as defined in the &lt;a href="https://www.gov.uk/government/publications/procurement-act-2023-guidance-documents-plan-phase/guidance-contracting-authority-definition-html" target="_blank"&gt;contracting authority definition guidance (opens in new tab). &lt;/a&gt;</value>
   </data>
 </root>
