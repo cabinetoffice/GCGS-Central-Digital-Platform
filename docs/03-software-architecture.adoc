@@ -98,3 +98,92 @@ image::diagrams/structurizr-1-CDP-8-DataSharingApi-Components.svg[Data sharing s
 
 .Entity verification service components
 image::diagrams/structurizr-1-CDP-9-EntityVerification-Components.svg[Entity verification service components]
+
+== Logging
+
+The applications log via Serilog, routed to AWS CloudWatch. See `Libraries\CO.CDP.AwsServices\CloudWatchExtensions.cs`
+
+See also https://github.com/serilog/serilog-formatting-compact
+
+Log messages have the following properties, delivered as a JSON payload:
+
+_(Note that not all properties are listed here - not all log messages contain all properties, but these are some common ones.)_
+
+*@t*
+Timestamp that the log entry was recorded
+
+Example:
+`2025-02-03T13:56:30.1964115Z`
+
+*@m*
+Message from the application
+
+Example:
+`Executed endpoint '\"/Organisation/OrganisationSelection\"'`
+
+or
+
+"Failed to call Companies House API.",
+
+*@i*
+Event ID. Not something we use at the moment but could be considered in future.
+
+Example:
+`99874f2b`
+
+*@tr*
+Trace ID - a unique identifier for an end to end operation within the service. Stays the same across all services handling the request.
+
+Example:
+`4d0370e686fd28253bdc1f22ea878049`
+
+*@sp*
+Span ID - a unique identifier for operations within an individual application. Works in concert with Trace ID above.
+
+Example:
+`b52b7ecfe8fcd1b5`
+
+*@x*
+Exception details
+
+Example:
+
+```
+"@x": "CDP_COMPANIES_HOUSE_API_ERROR: Inner exception: CO.CDP.OrganisationApp.Logging.CdpExceptionLogging: Failed to call Companies House API for company number: S2.\n ---> Flurl.Http.FlurlHttpException: Call failed with status code 500 (Internal Server Error): GET https://api.company-information.service.gov.uk/company/S2/registered-office-address\n   at Flurl.Http.FlurlClient.HandleExceptionAsync(FlurlCall call, Exception ex, CancellationToken token)\n   at Flurl.Http.FlurlClient.SendAsync(IFlurlRequest request, HttpCompletionOption completionOption, CancellationToken cancellationToken)\n   at Flurl.Http.FlurlClient.SendAsync(IFlurlRequest request, HttpCompletionOption completionOption, CancellationToken cancellationToken)\n   at Flurl.Http.ResponseExtensions.ReceiveJson[T](Task`1 response)\n   at CO.CDP.OrganisationApp.ThirdPartyApiClients.CompaniesHouse.CompaniesHouseApi.GetRegisteredAddress(String companyNumber) in /src/Frontend/CO.CDP.OrganisationApp/ThirdPartyApiClients/CompaniesHouse/CompaniesHouseApi.cs:line 21\n   --- End of inner exception stack trace ---"
+```
+
+*EndpointName*
+Identifies the endpoint which was called. In Razor pages this would be the PageName. Does not match the URL - see `RequestPath` below.
+
+Example:
+`/Organisation/OrganisationSelection`
+
+*SourceContext*
+Name of the class which generated the log entry
+
+Example:
+`Microsoft.AspNetCore.Routing.EndpointMiddleware`
+
+*RequestId*
+Uniquely identifies an http request. Restricted to the current application (As opposed to Trace ID above)
+
+Example:
+`0HNA4932U79QL:00000004`
+
+*RequestPath*
+The URL that is being requested.
+
+Example:
+`/organisation-selection`
+
+*ConnectionId*
+Uniquely identifies the http connection.
+
+Example:
+`0HNA4932U79QL`
+
+*Version*
+The version of the running application. Corresponds to the Git tag.
+
+Example:
+`1.0.30`
