@@ -1582,7 +1582,7 @@
     <value>Wales</value>
   </data>
   <data name="OrganisationRegistration_BuyerSelectDevolvedRegulation_Hint" xml:space="preserve">
-    <value>Select all that apply</value>
+    <value>Read the &lt;a href="https://www.gov.uk/government/publications/procurement-act-2023-guidance-documents-plan-phase/guidance-devolved-contracting-authorities-html#:~:text=Procurement%20is%20largely%20a%20devolved,are%20conducted%20and%20contracts%20managed." target="_blank"&gt;devolved contracting authorities guidance (opens in new tab). &lt;/a&gt;</value>
   </data>
   <data name="OrganisationRegistration_BuyerOrganisationType_CentralGovernment_Label" xml:space="preserve">
     <value>Central government - UK or devolved administrations</value>
@@ -3234,6 +3234,9 @@
   </data>
   <data name="Consortium_ConsortiumEnterSharecode_InvalidCode" xml:space="preserve">
     <value>Share code not found.</value>
+  </data>  
+  <data name="OrganisationRegistration_BuyerDevolvedRegulation_Hint" xml:space="preserve">
+    <value>A contracting authority operating in a devolved nation may be subject to devolved regulations. For example, Northern Ireland, Scotland or Wales.</value>
   </data>
   <data name="Support_OrganisationApproval_PotentialDuplicatesFound" xml:space="preserve">
     <value>Potential duplicates found</value>
