@@ -111,35 +111,35 @@ public static class Extensions
             };
         });
 
-        services.AddScoped<IOutboxProcessor>(s =>
-        {
-            return new OutboxProcessor(
-                s.GetRequiredKeyedService<IPublisher>("SqsPublisher"),
-                s.GetRequiredService<IOutboxMessageRepository>(),
-                s.GetRequiredService<ILogger<OutboxProcessor>>()
-            );
-        });
+        //services.AddScoped<IOutboxProcessor>(s =>
+        //{
+        //    return new OutboxProcessor(
+        //        s.GetRequiredKeyedService<IPublisher>("SqsPublisher"),
+        //        s.GetRequiredService<IOutboxMessageRepository>(),
+        //        s.GetRequiredService<ILogger<OutboxProcessor>>()
+        //    );
+        //});
 
-        if (configuration.GetValue("Features:OutboxListener", false))
-        {
-            services.AddScoped<IOutboxProcessorListener>(s => new OutboxProcessorListener(
-                s.GetRequiredService<NpgsqlDataSource>(),
-                s.GetRequiredService<IOutboxProcessor>(),
-                s.GetRequiredService<ILogger<OutboxProcessorListener>>(),
-                channel: notificationChannel
-            ));
-            if (enableBackgroundServices)
-            {
-                services.AddHostedService<OutboxProcessorListenerBackgroundService>();
-            }
-        }
-        else
-        {
-            if (enableBackgroundServices)
-            {
-                services.AddHostedService<OutboxProcessorBackgroundService>();
-            }
-        }
+        //if (configuration.GetValue("Features:OutboxListener", false))
+        //{
+        //    services.AddScoped<IOutboxProcessorListener>(s => new OutboxProcessorListener(
+        //        s.GetRequiredService<NpgsqlDataSource>(),
+        //        s.GetRequiredService<IOutboxProcessor>(),
+        //        s.GetRequiredService<ILogger<OutboxProcessorListener>>(),
+        //        channel: notificationChannel
+        //    ));
+        //    if (enableBackgroundServices)
+        //    {
+        //        services.AddHostedService<OutboxProcessorListenerBackgroundService>();
+        //    }
+        //}
+        //else
+        //{
+        //    if (enableBackgroundServices)
+        //    {
+        //        services.AddHostedService<OutboxProcessorBackgroundService>();
+        //    }
+        //}
 
         return services;
     }

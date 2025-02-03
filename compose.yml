@@ -109,11 +109,11 @@ services:
           condition: service_healthy
       environment:
         ASPNETCORE_ENVIRONMENT: Production
-        EntityVerificationDatabase__Host: 'db'
-        EntityVerificationDatabase__Server: 'db'
-        EntityVerificationDatabase__Database: 'cdp'
-        EntityVerificationDatabase__Username: 'cdp_user'
-        EntityVerificationDatabase__Password: 'cdp123'
+        OutboxDatabase__Host: 'db'
+        OutboxDatabase__Server: 'db'
+        OutboxDatabase__Database: 'cdp'
+        OutboxDatabase__Username: 'cdp_user'
+        OutboxDatabase__Password: 'cdp123'
         Organisation__Authority: '${Organisation__Authority:-http://gateway:${CDP_AUTHORITY_PORT:-8092}}'
 
   organisation-app:
@@ -337,10 +337,10 @@ services:
       Aws__ServiceURL: "http://localstack:4566"
       Aws__SqsDispatcher__QueueUrl: "http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/organisation.fifo"
       Aws__SqsPublisher__QueueUrl: "http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/entity-verification.fifo"
-      EntityVerificationDatabase__Server: 'db'
-      EntityVerificationDatabase__Database: 'cdp'
-      EntityVerificationDatabase__Username: 'cdp_user'
-      EntityVerificationDatabase__Password: 'cdp123'
+      OutboxDatabase__Server: 'db'
+      OutboxDatabase__Database: 'cdp'
+      OutboxDatabase__Username: 'cdp_user'
+      OutboxDatabase__Password: 'cdp123'
       Organisation__Authority: '${Organisation__Authority:-http://gateway:${CDP_AUTHORITY_PORT:-8092}}'
 
   clamav-rest:
@@ -380,7 +380,6 @@ services:
       Aws__Credentials__AccessKeyId: test
       Aws__Credentials__SecretAccessKey: test
       Aws__ServiceURL: "http://localstack:4566"
-      Aws__SqsPublisher__QueueUrl: "http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/av-scanner.fifo"
     depends_on:
       localstack:
         condition: "service_healthy"
@@ -403,8 +402,13 @@ services:
       Aws__Credentials__AccessKeyId: test
       Aws__Credentials__SecretAccessKey: test
       Aws__ServiceURL: "http://localstack:4566"
-      Aws__SqsPublisher__QueueUrl: "http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/av-scanner.fifo"
       CloudWatch__LogGroup": "/ecs/outbox-processor-organisation"
+      DbContext: OrganisationInformationContext
+      Channel: organisation_information_outbox
+      OutboxDatabase__Server: 'db'
+      OutboxDatabase__Database: 'cdp'
+      OutboxDatabase__Username: 'cdp_user'
+      OutboxDatabase__Password: 'cdp123'
     depends_on:
       localstack:
         condition: "service_healthy"
@@ -431,6 +435,12 @@ services:
       Aws__ServiceURL: "http://localstack:4566"
       Aws__SqsPublisher__QueueUrl: "http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/av-scanner.fifo"
       CloudWatch__LogGroup": "/ecs/outbox-processor-entity-verification"
+      DbContext: EntityVerificationContext
+      Channel: entity_verification_outbox
+      OutboxDatabase__Server: 'db'
+      OutboxDatabase__Database: 'cdp'
+      OutboxDatabase__Username: 'cdp_user'
+      OutboxDatabase__Password: 'cdp123'
     depends_on:
       localstack:
         condition: "service_healthy"

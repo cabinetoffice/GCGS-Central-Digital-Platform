@@ -1,6 +1,9 @@
 using CO.CDP.AwsServices;
+using CO.CDP.AwsServices.Sqs;
 using CO.CDP.Configuration.Helpers;
 using CO.CDP.EntityVerification.Persistence;
+
+//using CO.CDP.EntityVerification.Persistence;
 using CO.CDP.MQ;
 using CO.CDP.MQ.Hosting;
 using CO.CDP.MQ.Outbox;
@@ -25,43 +28,49 @@ if (builder.Configuration["channel"] == null)
     throw new ArgumentException("Missing channel configuration");
 }
 
-// TODO:
-// 1. connect to database
-// 2. Resend existing messages when published is false
-// 3. Remove OutboxProcessorListenerBackgroundService from other services
-// 4. config for other dbs in compose / override
-// 5. unit tests
-// 6.
+if (builder.Configuration["DbContext"] == null)
+{
+    throw new ArgumentException("Missing DbContext configuration");
+}
 
-var connectionString = ConnectionStringHelper.GetConnectionString(builder.Configuration, "OutboxDatabase");
-builder.Services.AddSingleton(new NpgsqlDataSourceBuilder(connectionString).MapEnums().Build());
-//builder.Services.AddHealthChecks().AddNpgSql(sp => sp.GetRequiredService<NpgsqlDataSource>());
+builder.Services.AddSingleton(_ => new NpgsqlDataSourceBuilder(ConnectionStringHelper.GetConnectionString(builder.Configuration, "OutboxDatabase")).Build());
+builder.Services.AddHealthChecks().AddNpgSql(sp => sp.GetRequiredService<NpgsqlDataSource>());
 
-// EntityVerificationContext needs to be new context??
-builder.Services.AddScoped<IOutboxMessageRepository, DatabaseOutboxMessageRepository<EntityVerificationContext>>();
-builder.Services.AddScoped<IPublisher, OutboxMessagePublisher>();
+var context = builder.Configuration.GetValue<string>("DbContext");
+if (context == "OrganisationInformationContext")
+{
+    builder.Services.AddDbContext<OrganisationInformationContext>((sp, o) => o.UseNpgsql(sp.GetRequiredService<NpgsqlDataSource>()));
+    builder.Services.AddScoped<IOutboxMessageRepository, DatabaseOutboxMessageRepository<OrganisationInformationContext>>();
+}
+else
+{
+    builder.Services.AddDbContext<EntityVerificationContext>((sp, o) => o.UseNpgsql(sp.GetRequiredService<NpgsqlDataSource>()));
+    builder.Services.AddScoped<IOutboxMessageRepository, DatabaseOutboxMessageRepository<EntityVerificationContext>>();
+}
+
+builder.Services.AddSingleton<OutboxProcessorBackgroundService.OutboxProcessorConfiguration>(s =>
+         s.GetRequiredService<IOptions<AwsConfiguration>>().Value.SqsPublisher?.Outbox ??
+         new OutboxProcessorBackgroundService.OutboxProcessorConfiguration()
+     );
+builder.Services.AddKeyedScoped<IOutboxPublisher, SqsOutboxPublisher>("SqsOutboxPublisher");
 builder.Services.AddScoped<IOutboxProcessor>(s =>
 {
     return new OutboxProcessor(
-        s.GetRequiredKeyedService<IPublisher>("SqsPublisher"),
+        s.GetRequiredKeyedService<IOutboxPublisher>("SqsOutboxPublisher"),
         s.GetRequiredService<IOutboxMessageRepository>(),
         s.GetRequiredService<ILogger<OutboxProcessor>>()
     );
 });
 
-//builder.Services.AddScoped<IOutboxProcessorListener>(s => new OutboxProcessorListener(
-//    s.GetRequiredService<NpgsqlDataSource>(),
-//    s.GetRequiredService<IOutboxProcessor>(),
-//    s.GetRequiredService<ILogger<OutboxProcessorListener>>(),
-//    channel: builder.Configuration["channel"]!
-//));
 
-//builder.Services.AddSingleton<OutboxProcessorBackgroundService.OutboxProcessorConfiguration>(s =>
-//         s.GetRequiredService<IOptions<AwsConfiguration>>().Value.SqsPublisher?.Outbox ??
-//         new OutboxProcessorBackgroundService.OutboxProcessorConfiguration()
-//     );
+builder.Services.AddScoped<IOutboxProcessorListener>(s => new OutboxProcessorListener(
+    s.GetRequiredService<NpgsqlDataSource>(),
+    s.GetRequiredService<IOutboxProcessor>(),
+    s.GetRequiredService<ILogger<OutboxProcessorListener>>(),
+    channel: builder.Configuration["channel"]!
+));
+builder.Services.AddHostedService<OutboxProcessorListenerBackgroundService>();
 
-//builder.Services.AddHostedService<OutboxProcessorListenerBackgroundService>();
 
 var app = builder.Build();
 
