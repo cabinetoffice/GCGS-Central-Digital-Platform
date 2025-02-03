@@ -911,7 +911,7 @@
   <data name="SupplierToBuyer_OrganisationType_CentralGovernment" xml:space="preserve">
     <value>Llywodraeth ganolog, awdurdod cyhoeddus: Y DU, Cymru, yr Alban a Gweithrediaeth Gogledd Iwerddon</value>
   </data>
-  <data name="SupplierToBuyer_OrganisationType_CentralGovernment_Title" xml:space="preserve">
+  <data name="SupplierToBuyer_OrganisationType_CentralGovernment_Hint" xml:space="preserve">
     <value>Mae'n cynnwys cyrff hyd braich:</value>
   </data>
   <data name="SupplierToBuyer_OrganisationType_Charities" xml:space="preserve">

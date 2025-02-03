@@ -2686,8 +2686,8 @@
   <data name="SupplierToBuyer_OrganisationType_BlueLightOrganisations" xml:space="preserve">
     <value>blue light organisations - ambulance, police, and other emergency services</value>
   </data>
-  <data name="SupplierToBuyer_OrganisationType_CentralGovernment_Title" xml:space="preserve">
-    <value>Includes arm's-length bodies:</value>
+  <data name="SupplierToBuyer_OrganisationType_CentralGovernment_Hint" xml:space="preserve">
+    <value>Public authorities including arm's-length bodies and trading funds</value>
   </data>
   <data name="SupplierToBuyer_OrganisationType_Charities" xml:space="preserve">
     <value>charities</value>
@@ -2711,7 +2711,7 @@
     <value>the Greater London Authority</value>
   </data>
   <data name="SupplierToBuyer_OrganisationType_Hint" xml:space="preserve">
-    <value>Select the type of organisation that best describes your organisation's role.</value>
+    <value>Decide on your organisation type, as defined in the &lt;a href="https://www.gov.uk/government/publications/procurement-act-2023-guidance-documents-plan-phase/guidance-contracting-authority-definition-html" target="_blank"&gt;contracting authority definition guidance (opens in new tab). &lt;/a&gt;</value>
   </data>
   <data name="SupplierToBuyer_OrganisationType_HousingAssociations" xml:space="preserve">
     <value>housing associations</value>
@@ -2726,16 +2726,16 @@
     <value>Other</value>
   </data>
   <data name="SupplierToBuyer_OrganisationType_PrivateUtility_Hint" xml:space="preserve">
-    <value>For example, private companies that have been granted a special or exclusive right to provide utility activities to the public. Such as National Grid or British Gas.</value>
+    <value>A private company with a special or exclusive right to provide utilities to the public. For example, private companies supplying electricity.</value>
   </data>
-  <data name="SupplierToBuyer_OrganisationType_PublicUndertakingAuthority" xml:space="preserve">
-    <value>Unlike a public authority, organisations that operate commercially and provide utility activities to the public. For example, Transport for Wales.</value>
+  <data name="SupplierToBuyer_OrganisationType_PublicUndertakingAuthority_Hint" xml:space="preserve">
+    <value>A commercial organisation subject to public oversight, providing utilities to the public. For example, transport networks operating commercially.</value>
   </data>
-  <data name="SupplierToBuyer_OrganisationType_RegionalAndLocalGovernment_Title" xml:space="preserve">
-    <value>Includes:</value>
+  <data name="SupplierToBuyer_OrganisationType_RegionalAndLocalGovernment_Hint" xml:space="preserve">
+    <value>Includes councils, charities, educational institutions, housing associations and blue light organisations.</value>
   </data>
   <data name="SupplierToBuyer_OrganisationType_Title" xml:space="preserve">
-    <value>Select the organisation type</value>
+    <value>Select your buyer organisation type </value>
   </data>
   <data name="SupplierToBuyer_OrganisationType_TradingFunds" xml:space="preserve">
     <value>trading funds</value>
@@ -2777,7 +2777,7 @@
     <value>Others</value>
   </data>
   <data name="SupplierToBuyer_OrganisationType_CentralGovernment" xml:space="preserve">
-    <value>Central government, public authority: UK, Scottish, Welsh and Northern Irish Executive</value>
+    <value>Central government - UK or devolved administrations</value>
   </data>
   <data name="SupplierToBuyer_OrganisationType_PrivateUtility" xml:space="preserve">
     <value>Private utility</value>
@@ -2786,7 +2786,7 @@
     <value>Public undertaking</value>
   </data>
   <data name="SupplierToBuyer_OrganisationType_RegionalAndLocalGovernment" xml:space="preserve">
-    <value>Regional and local government, public authority: UK, Scottish, Welsh and Northern Irish</value>
+    <value>Regional and local public authority (sub-central) - UK or devolved administrations</value>
   </data>
   <data name="Organisation_MyConsortium" xml:space="preserve">
     <value>Consortiums for joint bids ({0})</value>

@@ -45,7 +45,7 @@
                         </p>
                     }
                     <div id="organisationType-hint" class="govuk-hint">
-                        @StaticTextResource.SupplierToBuyer_OrganisationType_Hint
+                         <p class="govuk-body">@Html.Raw(@StaticTextResource.SupplierToBuyer_OrganisationType_Hint)</p>
                     </div>
                     <div class="govuk-radios" data-module="govuk-radios">
                         <div class="govuk-radios__item">
@@ -56,14 +56,8 @@
                                 @SupplierToBuyerOrganisationTypeModel.BuyerTypes["CentralGovernment"]
                             </label>
                             <div id="ca-type-item-hint" class="govuk-hint govuk-radios__hint">
-                                @StaticTextResource.SupplierToBuyer_OrganisationType_CentralGovernment_Title:
-                                <ul>
-                                    <li>@StaticTextResource.SupplierToBuyer_OrganisationType_ExecutiveAgencies</li>
-                                    <li>@StaticTextResource.SupplierToBuyer_OrganisationType_NonDepartmentalPublicBodies</li>
-                                    <li>@StaticTextResource.SupplierToBuyer_OrganisationType_NonMinisterialDepartments</li>
-                                    <li>@StaticTextResource.SupplierToBuyer_OrganisationType_TradingFunds</li>
-                                </ul>
-                            </div>
+                                @Html.Raw(@StaticTextResource.SupplierToBuyer_OrganisationType_CentralGovernment_Hint)
+                            </div>                           
                         </div>
 
                         <div class="govuk-radios__item">
@@ -74,16 +68,8 @@
                                 @SupplierToBuyerOrganisationTypeModel.BuyerTypes["RegionalAndLocalGovernment"]
                             </label>
                             <div id="ca-type-2-item-hint" class="govuk-hint govuk-radios__hint">
-                                @StaticTextResource.SupplierToBuyer_OrganisationType_RegionalAndLocalGovernment_Title:
-                                <ul>
-                                    <li>@StaticTextResource.SupplierToBuyer_OrganisationType_UnitaryAuthorities</li>
-                                    <li>@StaticTextResource.SupplierToBuyer_OrganisationType_CountyDistrictBoroughParishCouncils</li>
-                                    <li>@StaticTextResource.SupplierToBuyer_OrganisationType_GreaterLondonAuthority</li>
-                                    <li>@StaticTextResource.SupplierToBuyer_OrganisationType_Charities</li>
-                                    <li>@StaticTextResource.SupplierToBuyer_OrganisationType_HousingAssociations</li>
-                                    <li>@StaticTextResource.SupplierToBuyer_OrganisationType_BlueLightOrganisations</li>
-                                </ul>
-                            </div>
+                                @Html.Raw(StaticTextResource.SupplierToBuyer_OrganisationType_RegionalAndLocalGovernment_Hint)
+                            </div>                            
                         </div>
 
                         <div class="govuk-radios__item">
@@ -93,7 +79,7 @@
                                 @SupplierToBuyerOrganisationTypeModel.BuyerTypes["PublicUndertaking"]
                             </label>
                             <div id="ca-type-3-item-hint" class="govuk-hint govuk-radios__hint">
-                                @StaticTextResource.SupplierToBuyer_OrganisationType_PublicUndertakingAuthority
+                                @StaticTextResource.SupplierToBuyer_OrganisationType_PublicUndertakingAuthority_Hint
                             </div>
                         </div>
                         <div class="govuk-radios__item">
