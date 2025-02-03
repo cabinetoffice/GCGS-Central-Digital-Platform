@@ -12,18 +12,40 @@
 
 <h1 class="govuk-heading-l">@ViewData["Title"]</h1>
 
-<ul class="govuk-tabs__list">
-    <li class="govuk-tabs__list-item @(Model.Type == "buyer" ? "govuk-tabs__list-item--selected" : "")">
-        <a class="govuk-tabs__tab" href="/support/organisations/buyer">
-            @StaticTextResource.Support_Organisations_BuyerOrganisations_Title
-        </a>
-    </li>
-    <li class="govuk-tabs__list-item @(Model.Type == "supplier" ? "govuk-tabs__list-item--selected" : "")">
-        <a class="govuk-tabs__tab" href="/support/organisations/supplier">
-            @StaticTextResource.Support_Organisations_SupplierOrganisations_Title
-        </a>
-    </li>
-</ul>
+<div class="govuk-tabs" data-module="govuk-tabs" data-govuk-tabs-init="">
+    <h2 class="govuk-tabs__title">
+        Contents
+    </h2>
+    <ul class="govuk-tabs__list" role="tablist">
+        <li class="govuk-tabs__list-item @(Model.Type == "buyer" ? "govuk-tabs__list-item--selected" : "")" role="presentation">
+            <a class="govuk-tabs__tab" href="/support/organisations/buyer">
+                @StaticTextResource.Support_Organisations_BuyerOrganisations_Title
+            </a>
+        </li>
+        <li class="govuk-tabs__list-item @(Model.Type == "supplier" ? "govuk-tabs__list-item--selected" : "")" role="presentation">
+            <a class="govuk-tabs__tab" href="/support/organisations/supplier">
+                @StaticTextResource.Support_Organisations_SupplierOrganisations_Title
+            </a>
+        </li>
+    </ul>
+</div>
+
+<div class="govuk-grid-row govuk-!-margin-bottom-5">
+    <form method="post">
+        <div class="govuk-grid-column-one-half govuk-!-margin-bottom-3">
+            <label class="govuk-label" for="organisation-search-input">
+                Search buyer organisation
+            </label>
+            <input class="govuk-input" id="organisation-search-input" name="OrganisationSearchInput" type="text">
+        </div>
+
+        <div class="govuk-grid-column-full">
+            <button type="submit" class="govuk-button" data-module="govuk-button" data-govuk-button-init="">
+                Filter
+            </button>
+        </div>
+    </form>
+</div>
 
 <br/>
 
