@@ -593,6 +593,7 @@ pre.rouge .gs {
 <li><a href="#_entity_verification">Entity verification</a></li>
 </ul>
 </li>
+<li><a href="#_logging">Logging</a></li>
 </ul>
 </li>
 <li><a href="#_development">Development</a>
@@ -832,6 +833,127 @@ This turned out not be be practical due to their short-lived nature.</p>
 </div>
 <div class="title">Figure 12. Entity verification service components</div>
 </div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_logging">Logging</h3>
+<div class="paragraph">
+<p>The applications log via Serilog, routed to AWS CloudWatch. See <code>Libraries\CO.CDP.AwsServices\CloudWatchExtensions.cs</code></p>
+</div>
+<div class="paragraph">
+<p>See also <a href="https://github.com/serilog/serilog-formatting-compact" class="bare">https://github.com/serilog/serilog-formatting-compact</a></p>
+</div>
+<div class="paragraph">
+<p>Log messages have the following properties, delivered as a JSON payload:</p>
+</div>
+<div class="paragraph">
+<p><em>(Note that not all properties are listed here - not all log messages contain all properties, but these are some common ones.)</em></p>
+</div>
+<div class="paragraph">
+<p><strong>@t</strong>
+Timestamp that the log entry was recorded</p>
+</div>
+<div class="paragraph">
+<p>Example:
+<code>2025-02-03T13:56:30.1964115Z</code></p>
+</div>
+<div class="paragraph">
+<p><strong>@m</strong>
+Message from the application</p>
+</div>
+<div class="paragraph">
+<p>Example:
+<code>Executed endpoint '\"/Organisation/OrganisationSelection\"'</code></p>
+</div>
+<div class="paragraph">
+<p>or</p>
+</div>
+<div class="paragraph">
+<p>"Failed to call Companies House API.",</p>
+</div>
+<div class="paragraph">
+<p><strong>@i</strong>
+Event ID. Not something we use at the moment but could be considered in future.</p>
+</div>
+<div class="paragraph">
+<p>Example:
+<code>99874f2b</code></p>
+</div>
+<div class="paragraph">
+<p><strong>@tr</strong>
+Trace ID - a unique identifier for an end to end operation within the service. Stays the same across all services handling the request.</p>
+</div>
+<div class="paragraph">
+<p>Example:
+<code>4d0370e686fd28253bdc1f22ea878049</code></p>
+</div>
+<div class="paragraph">
+<p><strong>@sp</strong>
+Span ID - a unique identifier for operations within an individual application. Works in concert with Trace ID above.</p>
+</div>
+<div class="paragraph">
+<p>Example:
+<code>b52b7ecfe8fcd1b5</code></p>
+</div>
+<div class="paragraph">
+<p><strong>@x</strong>
+Exception details</p>
+</div>
+<div class="paragraph">
+<p>Example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code>"@x": "CDP_COMPANIES_HOUSE_API_ERROR: Inner exception: CO.CDP.OrganisationApp.Logging.CdpExceptionLogging: Failed to call Companies House API for company number: S2.\n ---&gt; Flurl.Http.FlurlHttpException: Call failed with status code 500 (Internal Server Error): GET https://api.company-information.service.gov.uk/company/S2/registered-office-address\n   at Flurl.Http.FlurlClient.HandleExceptionAsync(FlurlCall call, Exception ex, CancellationToken token)\n   at Flurl.Http.FlurlClient.SendAsync(IFlurlRequest request, HttpCompletionOption completionOption, CancellationToken cancellationToken)\n   at Flurl.Http.FlurlClient.SendAsync(IFlurlRequest request, HttpCompletionOption completionOption, CancellationToken cancellationToken)\n   at Flurl.Http.ResponseExtensions.ReceiveJson[T](Task`1 response)\n   at CO.CDP.OrganisationApp.ThirdPartyApiClients.CompaniesHouse.CompaniesHouseApi.GetRegisteredAddress(String companyNumber) in /src/Frontend/CO.CDP.OrganisationApp/ThirdPartyApiClients/CompaniesHouse/CompaniesHouseApi.cs:line 21\n   --- End of inner exception stack trace ---"</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>EndpointName</strong>
+Identifies the endpoint which was called. In Razor pages this would be the PageName. Does not match the URL - see <code>RequestPath</code> below.</p>
+</div>
+<div class="paragraph">
+<p>Example:
+<code>/Organisation/OrganisationSelection</code></p>
+</div>
+<div class="paragraph">
+<p><strong>SourceContext</strong>
+Name of the class which generated the log entry</p>
+</div>
+<div class="paragraph">
+<p>Example:
+<code>Microsoft.AspNetCore.Routing.EndpointMiddleware</code></p>
+</div>
+<div class="paragraph">
+<p><strong>RequestId</strong>
+Uniquely identifies an http request. Restricted to the current application (As opposed to Trace ID above)</p>
+</div>
+<div class="paragraph">
+<p>Example:
+<code>0HNA4932U79QL:00000004</code></p>
+</div>
+<div class="paragraph">
+<p><strong>RequestPath</strong>
+The URL that is being requested.</p>
+</div>
+<div class="paragraph">
+<p>Example:
+<code>/organisation-selection</code></p>
+</div>
+<div class="paragraph">
+<p><strong>ConnectionId</strong>
+Uniquely identifies the http connection.</p>
+</div>
+<div class="paragraph">
+<p>Example:
+<code>0HNA4932U79QL</code></p>
+</div>
+<div class="paragraph">
+<p><strong>Version</strong>
+The version of the running application. Corresponds to the Git tag.</p>
+</div>
+<div class="paragraph">
+<p>Example:
+<code>1.0.30</code></p>
 </div>
 </div>
 </div>
@@ -2914,7 +3036,7 @@ is live we can monitor the number of concurrent users and re-evaluate the soluti
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2025-02-03 15:32:13 UTC
+Last updated 2025-02-03 16:21:39 UTC
 </div>
 </div>
 </body>
