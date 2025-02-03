@@ -33,6 +33,7 @@ module "ecs_service_organisation_app" {
       companies_house_user                = "${data.aws_secretsmanager_secret.companies_house.arn}:User::"
       container_port                      = var.service_configs.organisation_app.port
       cpu                                 = var.service_configs.organisation_app.cpu
+      fts_service_allowed_origins         = join(",", var.fts_service_allowed_origins)
       fts_service_url_arn                 = data.aws_secretsmanager_secret_version.fts_service_url.arn
       host_port                           = var.service_configs.organisation_app.port
       image                               = local.ecr_urls[var.service_configs.organisation_app.name]
