@@ -1,8 +1,9 @@
-using CO.CDP.EntityVerification.Events;
+using CO.CDP.EntityVerification.Persistence;
 using FluentAssertions;
-using static CO.CDP.EntityVerification.Tests.Ppon.PponFactories;
+using static CO.CDP.EntityVerification.Events.Identifier;
+using static CO.CDP.EntityVerification.Persistence.Tests.PponFactories;
 
-namespace CO.CDP.EntityVerification.Tests.Persistence;
+namespace CO.CDP.EntityVerification.Tests.Events;
 
 public class IdentifierTests
 {
@@ -10,7 +11,7 @@ public class IdentifierTests
     public void GetPersistenceIdentifiers_ReturnsCorrectCollectionSize()
     {
         // Arrange
-        var evIds = new List<Identifier>
+        var evIds = new List<CO.CDP.EntityVerification.Events.Identifier>
         {
             new()
             {
@@ -25,7 +26,7 @@ public class IdentifierTests
         var newPpon = GivenPpon(pponId: "b69ffded365449f6aa4c340f5997fd2e");
 
         // Act
-        var result = EntityVerification.Persistence.Identifier.GetPersistenceIdentifiers(evIds);
+        var result = GetPersistenceIdentifiers(evIds);
 
         // Assert
         result.Should().HaveCount(2);
@@ -35,7 +36,7 @@ public class IdentifierTests
     public void GetPersistenceIdentifiers_MapsPropertiesCorrectly()
     {
         // Arrange
-        var evIds = new List<Identifier>
+        var evIds = new List<CO.CDP.EntityVerification.Events.Identifier>
         {
             new()
             {
@@ -45,7 +46,7 @@ public class IdentifierTests
         var newPpon = GivenPpon(pponId: "b69ffded365449f6aa4c340f5997fd2e");
 
         // Act
-        var result = EntityVerification.Persistence.Identifier.GetPersistenceIdentifiers(evIds);
+        var result = GetPersistenceIdentifiers(evIds);
 
         // Assert
         result.Should().ContainSingle(i =>

@@ -140,6 +140,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.AntiVirusScanner", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.AntiVirusScanner.Tests", "Services\CO.CDP.AntiVirusScanner.Tests\CO.CDP.AntiVirusScanner.Tests.csproj", "{1DC44537-F25E-461F-BF43-7C267F839CC4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.EntityVerification.Persistence", "Services\CO.CDP.EntityVerification.Persistence\CO.CDP.EntityVerification.Persistence.csproj", "{38B0A1E3-5437-43AB-B062-9E9FD43E9821}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.EntityVerification.Persistence.Tests", "Services\CO.CDP.EntityVerification.Persistence.Tests\CO.CDP.EntityVerification.Persistence.Tests.csproj", "{433EEAB9-9206-4CC5-A518-4FE26282CF23}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -378,6 +382,14 @@ Global
 		{1DC44537-F25E-461F-BF43-7C267F839CC4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1DC44537-F25E-461F-BF43-7C267F839CC4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1DC44537-F25E-461F-BF43-7C267F839CC4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{38B0A1E3-5437-43AB-B062-9E9FD43E9821}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{38B0A1E3-5437-43AB-B062-9E9FD43E9821}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{38B0A1E3-5437-43AB-B062-9E9FD43E9821}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{38B0A1E3-5437-43AB-B062-9E9FD43E9821}.Release|Any CPU.Build.0 = Release|Any CPU
+		{433EEAB9-9206-4CC5-A518-4FE26282CF23}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{433EEAB9-9206-4CC5-A518-4FE26282CF23}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{433EEAB9-9206-4CC5-A518-4FE26282CF23}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{433EEAB9-9206-4CC5-A518-4FE26282CF23}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

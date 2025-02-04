@@ -1,6 +1,6 @@
 using System.Text.Json;
 using CO.CDP.EntityFrameworkCore.Timestamps;
-using CO.CDP.EntityVerification.EntityFramework;
+using CO.CDP.EntityVerification.Persistence.EntityFrameworkCore;
 using CO.CDP.MQ.Outbox;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
