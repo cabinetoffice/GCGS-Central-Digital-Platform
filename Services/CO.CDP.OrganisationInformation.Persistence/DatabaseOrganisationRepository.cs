@@ -68,7 +68,7 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
             .FirstOrDefaultAsync(t => t.Name == name);
     }
 
-    public async Task<IEnumerable<Organisation>> SearchByName(string name, PartyRole? role, int? limit)
+    public async Task<IEnumerable<Organisation>> SearchByName(string name, PartyRole? role, int? limit, double threshold = 0.3)
     {
         var query = context.Organisations
             .Include(p => p.Addresses)
@@ -80,7 +80,7 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
                 Organisation = t,
                 SimilarityScore = EF.Functions.TrigramsSimilarity(t.Name, name)
             })
-            .Where(t => t.SimilarityScore > 0.3);
+            .Where(t => t.SimilarityScore > threshold);
 
         if (role.HasValue)
         {
