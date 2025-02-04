@@ -909,10 +909,10 @@
     <value>sefydliadau golau glas – gwasanaethau ambiwlans, yr heddlu a gwasanaethau brys eraill</value>
   </data>
   <data name="SupplierToBuyer_OrganisationType_CentralGovernment" xml:space="preserve">
-    <value>Llywodraeth ganolog, awdurdod cyhoeddus: Y DU, Cymru, yr Alban a Gweithrediaeth Gogledd Iwerddon</value>
+    <value></value>
   </data>
   <data name="SupplierToBuyer_OrganisationType_CentralGovernment_Hint" xml:space="preserve">
-    <value>Mae'n cynnwys cyrff hyd braich:</value>
+    <value></value>
   </data>
   <data name="SupplierToBuyer_OrganisationType_Charities" xml:space="preserve">
     <value>elusennau</value>
@@ -951,7 +951,7 @@
     <value>Cyfleustod preifat</value>
   </data>
   <data name="SupplierToBuyer_OrganisationType_PrivateUtility_Hint" xml:space="preserve">
-    <value>Er enghraifft, cwmnïau preifat sydd wedi cael hawl arbennig neu unigryw i ddarparu gweithgareddau cyfleustodau i'r cyhoedd. Fel y Grid Cenedlaethol neu British Gas.</value>
+    <value></value>
   </data>
   <data name="SupplierToBuyer_OrganisationType_PublicUndertaking" xml:space="preserve">
     <value>Ymgymeriad cyhoeddus</value>
@@ -960,13 +960,13 @@
     <value>Yn wahanol i awdurdod cyhoeddus, sefydliadau sy'n gweithredu'n fasnachol ac yn darparu gweithgareddau cyfleustodau i'r cyhoedd. Er enghraifft, Trafnidiaeth Cymru.</value>
   </data>
   <data name="SupplierToBuyer_OrganisationType_RegionalAndLocalGovernment" xml:space="preserve">
-    <value>Llywodraeth ranbarthol a lleol, awdurdod cyhoeddus (is-ganolog): y DU, Cymru, yr Alban a Gogledd Iwerddon</value>
+    <value></value>
   </data>
   <data name="SupplierToBuyer_OrganisationType_RegionalAndLocalGovernment_Title" xml:space="preserve">
     <value>Mae'n cynnwys:</value>
   </data>
   <data name="SupplierToBuyer_OrganisationType_Title" xml:space="preserve">
-    <value>Dewiswch y math o sefydliad</value>
+    <value></value>
   </data>
   <data name="SupplierToBuyer_OrganisationType_TradingFunds" xml:space="preserve">
     <value>cronfeydd masnachu</value>
@@ -1504,5 +1504,14 @@
   </data>
   <data name="Users_LastName_Label" xml:space="preserve">
     <value>Cyfenw</value>
+  </data>
+  <data name="SupplierToBuyer_OrganisationType_Hint" xml:space="preserve">
+  <value></value>
+  </data>
+    <data name="SupplierToBuyer_OrganisationType_RegionalAndLocalGovernment_Hint" xml:space="preserve">
+    <value></value>
+  </data>
+    <data name="SupplierToBuyer_OrganisationType_PublicUndertakingAuthority_Hint" xml:space="preserve">
+    <value></value>
   </data>
 </root>
