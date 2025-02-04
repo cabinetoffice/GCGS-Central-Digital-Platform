@@ -1,14 +1,14 @@
-namespace CO.CDP.EntityVerification.Tests.Ppon;
+namespace CO.CDP.EntityVerification.Persistence.Tests;
 
 public class PponFactories
 {
-    public static EntityVerification.Persistence.Ppon GivenPpon(
+    public static Ppon GivenPpon(
         string? pponId = null,
         string? name = null
     )
     {
         var identifierId = pponId ?? Guid.NewGuid().ToString().Replace("-", "");
-        return new EntityVerification.Persistence.Ppon
+        return new Ppon
         {
             IdentifierId = identifierId,
             Name = name ?? $"PPON {identifierId}",
@@ -16,13 +16,13 @@ public class PponFactories
         };
     }
 
-    public static EntityVerification.Persistence.Ppon GivenPponWithIdentifier(string? pponId = null)
+    public static Ppon GivenPponWithIdentifier(string? pponId = null)
     {
         var ppon = GivenPpon(pponId);
 
         ppon.Identifiers =
         [
-            new EntityVerification.Persistence.Identifier() {
+            new Identifier() {
                 LegalName  = "Acme Ltd",
                 Scheme = "GB-COH",
                 IdentifierId = "CO-1234567" },
