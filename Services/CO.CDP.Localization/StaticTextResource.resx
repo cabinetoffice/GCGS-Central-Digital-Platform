@@ -556,10 +556,10 @@
     <value>This cookie is used with Google Analytics. This cookie allows Google to track unique users via a client identifier that is randomly generated</value>
   </data>
   <data name="Supplementary_CookieDetails_TableRow_GAT" xml:space="preserve">
-    <value>This cookie is used with Google Analytics. It limits the number of requests for non-authenticated users, preventing a flood of data all at once and ensuring a steady and manageable flow for accurate analytics tracking.</value>
+    <value>This cookie is used with Google Analytics. It is used to reduce the number of page view requests.</value>
   </data>
   <data name="Supplementary_CookieDetails_TableRow_GID" xml:space="preserve">
-    <value>This cookie is used with Google Analytics. It is used to track sessions, evaluate engagement and to view insights and overall traffic trends. It measures engagement time and engaged sessions.</value>
+    <value>This cookie is used with Google Analytics. It helps us count how many people visit the service by telling us if you’ve visited before.</value>
   </data>
   <data name="Supplementary_CookieDetails_TableRow_Antiforgery" xml:space="preserve">
     <value>This cookie keeps the service secure, preventing cross-site forgery requests.</value>
@@ -3247,9 +3247,6 @@
   <data name="Supplementary_CookieDetails_TableRow_FT_Auth" xml:space="preserve">
     <value>Provides Find a Tender with your account details once you’ve signed in</value>
   </data>
-  <data name="Supplementary_CookieDetails_TableRow_SIRSI_FT_AUTH" xml:space="preserve">
-    <value>Provides Find a Tender with your account details once you’ve signed in</value>
-  </data>
   <data name="Supplementary_CookieDetails_TableRow_FT_PAGE_TIMEOUT" xml:space="preserve">
     <value>Saves the date/time of the user’s last activity on the site</value>
   </data>
@@ -3270,5 +3267,20 @@
   </data>
   <data name="Supplementary_CookieDetails_TableRow_FT_BANNER_CLOSE" xml:space="preserve">
     <value>Prevents user research banner from appearing if close button is used</value>
+  </data>
+  <data name="Supplementary_CookieDetails_TableRow_SIRSI_FT_AUTH" xml:space="preserve">
+    <value>Provides Find a Tender with your account details once you’ve signed in</value>
+  </data>
+  <data name="Supplementary_CookieDetails_ListItem5" xml:space="preserve">
+    <value>The following Contentsquare cookies are also set to measure website use:</value>
+  </data>
+  <data name="Supplementary_CookieDetails_TableRow_CS_ID" xml:space="preserve">
+    <value>This cookie contains the Contentsquare's user identifier</value>
+  </data>
+  <data name="Supplementary_CookieDetails_TableRow_CS_S" xml:space="preserve">
+    <value>This cookie contains the number of page views within the running session for the Contentsquare solution</value>
+  </data>
+  <data name="Supplementary_CookieDetails_TableRow_CS_C" xml:space="preserve">
+    <value>Used by Contentsquare to save the user consent status for data collection</value>
   </data>
 </root>
