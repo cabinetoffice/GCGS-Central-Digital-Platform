@@ -2,8 +2,6 @@ using CO.CDP.AwsServices;
 using CO.CDP.AwsServices.Sqs;
 using CO.CDP.Configuration.Helpers;
 using CO.CDP.EntityVerification.Persistence;
-
-//using CO.CDP.EntityVerification.Persistence;
 using CO.CDP.MQ;
 using CO.CDP.MQ.Hosting;
 using CO.CDP.MQ.Outbox;

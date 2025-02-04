@@ -138,11 +138,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.WebApi.Foundation.Te
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.AntiVirusScanner", "Services\CO.CDP.AntiVirusScanner\CO.CDP.AntiVirusScanner.csproj", "{D8F902FD-49C2-4CC7-89A0-D1FEC0C6BC57}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.AntiVirusScanner.Tests", "Services\CO.CDP.AntiVirusScanner.Tests\CO.CDP.AntiVirusScanner.Tests.csproj", "{1DC44537-F25E-461F-BF43-7C267F839CC4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.AntiVirusScanner.Tests", "Services\CO.CDP.AntiVirusScanner.Tests\CO.CDP.AntiVirusScanner.Tests.csproj", "{1DC44537-F25E-461F-BF43-7C267F839CC4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.EntityVerification.Persistence", "Services\CO.CDP.EntityVerification.Persistence\CO.CDP.EntityVerification.Persistence.csproj", "{38B0A1E3-5437-43AB-B062-9E9FD43E9821}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.EntityVerification.Persistence", "Services\CO.CDP.EntityVerification.Persistence\CO.CDP.EntityVerification.Persistence.csproj", "{38B0A1E3-5437-43AB-B062-9E9FD43E9821}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.EntityVerification.Persistence.Tests", "Services\CO.CDP.EntityVerification.Persistence.Tests\CO.CDP.EntityVerification.Persistence.Tests.csproj", "{433EEAB9-9206-4CC5-A518-4FE26282CF23}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.EntityVerification.Persistence.Tests", "Services\CO.CDP.EntityVerification.Persistence.Tests\CO.CDP.EntityVerification.Persistence.Tests.csproj", "{433EEAB9-9206-4CC5-A518-4FE26282CF23}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.OutboxProcessor", "Services\CO.CDP.OutboxProcessor\CO.CDP.OutboxProcessor.csproj", "{1A2007DF-5794-4DC9-B770-488905A8587E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.OutboxProcessor.Tests", "Services\CO.CDP.OutboxProcessor.Tests\CO.CDP.OutboxProcessor.Tests.csproj", "{043D1AC2-FAA6-43C2-9AF2-B79D6A64B500}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -390,6 +394,14 @@ Global
 		{433EEAB9-9206-4CC5-A518-4FE26282CF23}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{433EEAB9-9206-4CC5-A518-4FE26282CF23}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{433EEAB9-9206-4CC5-A518-4FE26282CF23}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1A2007DF-5794-4DC9-B770-488905A8587E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1A2007DF-5794-4DC9-B770-488905A8587E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1A2007DF-5794-4DC9-B770-488905A8587E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1A2007DF-5794-4DC9-B770-488905A8587E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{043D1AC2-FAA6-43C2-9AF2-B79D6A64B500}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{043D1AC2-FAA6-43C2-9AF2-B79D6A64B500}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{043D1AC2-FAA6-43C2-9AF2-B79D6A64B500}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{043D1AC2-FAA6-43C2-9AF2-B79D6A64B500}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
