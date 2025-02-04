@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace CO.CDP.EntityVerification.Migrations
+namespace CO.CDP.EntityVerification.Persistence.Migrations
 {
     /// <inheritdoc />
     public partial class AddStartsOnEndsOn : Migration

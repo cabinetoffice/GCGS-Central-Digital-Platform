@@ -1,6 +1,7 @@
 using CO.CDP.EntityVerification.Events;
 using CO.CDP.EntityVerification.Persistence;
 using CO.CDP.MQ;
+using static CO.CDP.EntityVerification.Events.Identifier;
 
 namespace CO.CDP.EntityVerification.Ppon;
 
@@ -36,7 +37,7 @@ public class OrganisationUpdatedSubscriber(
                     .Where(pi => !pponToUpdate.Identifiers.Any(i => i.IdentifierId == pi.Id && i.Scheme == pi.Scheme))
                     .Where(pi => pi.Scheme != IdentifierSchemes.Ppon)
                     .ToList();
-                var identifiersToPersist = Persistence.Identifier.GetPersistenceIdentifiers(newEventIdentifiers);
+                var identifiersToPersist = GetPersistenceIdentifiers(newEventIdentifiers);
 
                 foreach (var identifier in identifiersToPersist)
                 {

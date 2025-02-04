@@ -1,12 +1,11 @@
-using CO.CDP.EntityVerification.Persistence;
 using CO.CDP.Testcontainers.PostgreSql;
 using Microsoft.EntityFrameworkCore;
 
-namespace CO.CDP.EntityVerification.Tests.Persistence;
+namespace CO.CDP.EntityVerification.Persistence.Tests;
 
-internal static class PostgreSqlFixtureExtensions
+public static class PostgreSqlFixtureExtensions
 {
-    internal static EntityVerificationContext EntityVerificationContext(this PostgreSqlFixture postgreSql)
+    public static EntityVerificationContext EntityVerificationContext(this PostgreSqlFixture postgreSql)
     {
         var context = new EntityVerificationContext(postgreSql.DbContextOptions<EntityVerificationContext>());
         context.Database.Migrate();
