@@ -25,7 +25,7 @@ resource "aws_iam_role" "service_deployer_step_function" {
 }
 
 resource "aws_iam_role" "cloudwatch_events" {
-  name               = "${local.name_prefix}-cloudwatch_events"
+  name               = "${local.name_prefix}-cloudwatch-events"
   assume_role_policy = data.aws_iam_policy_document.events_assume.json
 
   tags = var.tags

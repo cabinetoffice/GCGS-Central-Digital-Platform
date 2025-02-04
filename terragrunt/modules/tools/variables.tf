@@ -90,6 +90,11 @@ variable "ecs_cluster_id" {
   type        = string
 }
 
+variable "ecs_cluster_name" {
+  description = "ECS Cluster Name"
+  type        = string
+}
+
 variable "ecs_listener_arn" {
   description = "ECS Application Loadbalancer Listener ARN"
   type        = string
@@ -176,6 +181,11 @@ variable "redis_primary_endpoint" {
   type        = string
 }
 
+variable "role_cloudwatch_events_name" {
+  description = "Name of the IAM role used by CloudWatch Events"
+  type        = string
+}
+
 variable "role_ecs_task_arn" {
   description = "Task IAM role ARN"
   type        = string
@@ -195,6 +205,16 @@ variable "role_rds_cloudwatch_arn" {
   description = "The ARN for the IAM role that permits RDS to send data to CloudWatch. Required in production accounts where enhanced monitoring is enabled"
   type        = string
   default     = ""
+}
+
+variable "role_service_deployer_step_function_arn" {
+  description = "ARN of the IAM role used by the Service Deployer Step Function"
+  type        = string
+}
+
+variable "role_service_deployer_step_function_name" {
+  description = "Name of the IAM role used by the Service Deployer Step Function"
+  type        = string
 }
 
 variable "role_terraform_arn" {
