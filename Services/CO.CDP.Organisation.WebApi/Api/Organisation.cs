@@ -304,8 +304,8 @@ public static class EndpointExtensions
 
         app.MapGet("/search",
             [OrganisationAuthorize([AuthenticationChannel.OneLogin, AuthenticationChannel.ServiceKey])]
-        async ([FromQuery] string name, [FromQuery] string? role, [FromQuery] int limit, [FromServices] IUseCase<OrganisationSearchQuery, IEnumerable<Model.OrganisationSearchResult>> useCase) =>
-                 await useCase.Execute(new OrganisationSearchQuery(name, limit, role))
+        async ([FromQuery] string name, [FromQuery] string? role, [FromQuery] int limit, [FromServices] IUseCase<OrganisationSearchQuery, IEnumerable<Model.OrganisationSearchResult>> useCase, [FromQuery] double? threshold = 0.3) =>
+                 await useCase.Execute(new OrganisationSearchQuery(name, limit, threshold, role))
                     .AndThen(results => results.Count() != 0 ? Results.Ok(results) : Results.NotFound()))
          .Produces<IEnumerable<Model.OrganisationSearchResult>>(StatusCodes.Status200OK, "application/json")
          .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
@@ -323,6 +323,24 @@ public static class EndpointExtensions
              operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
              operation.Responses["404"].Description = "No organisations found.";
              operation.Responses["500"].Description = "Internal server error.";
+
+             foreach (var parameter in operation.Parameters)
+             {
+                 if (parameter.Name == "threshold")
+                 {
+                     parameter.Description = "The word similarity threshold value for fuzzy searching - Value can be from 0 to 1";
+                 }
+
+                 if (parameter.Name == "role")
+                 {
+                     parameter.Description = "Restrict results by role - tenderer or buyer";
+                 }
+
+                 if (parameter.Name == "limit")
+                 {
+                     parameter.Description = "Number of results to return";
+                 }
+             }
 
              return operation;
          });
