@@ -26,8 +26,8 @@ public class OrganisationsModelTests
         int pageNumber = 1;
         int totalOrganisations = 25;
         var organisations = new List<OrganisationExtended>();
-        _mockOrganisationClient.Setup(client => client.GetAllOrganisationsAsync(type, type, 10, 0)).ReturnsAsync(organisations);
-        _mockOrganisationClient.Setup(client => client.GetOrganisationsTotalCountAsync(type, type)).ReturnsAsync(totalOrganisations);
+        _mockOrganisationClient.Setup(client => client.GetAllOrganisationsAsync(type, type, null, 10, 0)).ReturnsAsync(organisations);
+        _mockOrganisationClient.Setup(client => client.GetOrganisationsTotalCountAsync(type, type, null)).ReturnsAsync(totalOrganisations);
 
         var result = await _organisationsModel.OnGet(type, pageNumber);
 
@@ -46,8 +46,9 @@ public class OrganisationsModelTests
         int pageNumber = 2;
         int totalOrganisations = 35;
         var organisations = new List<OrganisationExtended>();
-        _mockOrganisationClient.Setup(client => client.GetAllOrganisationsAsync(role, null, 10, 10)).ReturnsAsync(organisations);
-        _mockOrganisationClient.Setup(client => client.GetOrganisationsTotalCountAsync(role, null)).ReturnsAsync(totalOrganisations);
+        _organisationsModel.OrganisationSearchInput = null;
+        _mockOrganisationClient.Setup(client => client.GetAllOrganisationsAsync(role, role, null, 10, 10)).ReturnsAsync(organisations);
+        _mockOrganisationClient.Setup(client => client.GetOrganisationsTotalCountAsync(role, role, null)).ReturnsAsync(totalOrganisations);
 
         var result = await _organisationsModel.OnGet(type, pageNumber);
 

@@ -26,8 +26,7 @@ public class OrganisationsModel(
 
     public IList<OrganisationExtended> Organisations { get; set; } = [];
 
-    [BindProperty]
-    public string? OrganisationSearchInput { get; set; }
+    [BindProperty] public string? OrganisationSearchInput { get; set; } = null;
 
     public async Task<IActionResult> OnGet(string type, int pageNumber = 1)
     {
