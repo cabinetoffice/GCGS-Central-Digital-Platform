@@ -199,12 +199,7 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
 
         if (searchText != null)
         {
-            result.Select(t => new
-                {
-                    Organisation = t,
-                    SimilarityScore = EF.Functions.TrigramsSimilarity(t.Name, searchText)
-                })
-                .Where(t => t.SimilarityScore > 0.3);
+            result = result.Where(o => EF.Functions.TrigramsSimilarity(o.Name, searchText) > 0.3);
         }
 
         return await result.CountAsync();
