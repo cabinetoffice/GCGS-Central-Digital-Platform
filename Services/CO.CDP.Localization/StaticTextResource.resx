@@ -1459,7 +1459,7 @@
     <value>None apply</value>
   </data>
   <data name="Organisation_OrganisationIdentification_Other_Hint" xml:space="preserve">
-    <value>You'll get a public procurement organisation number (PPON) as an identifier</value>
+    <value>You'll be assigned a public procurement organisation number (PPON)</value>
   </data>
   <data name="Organisation_OrganisationIdentification_GG_RCE_Hint" xml:space="preserve">
     <value>Include prefix, if applicable. For example, GY.</value>
