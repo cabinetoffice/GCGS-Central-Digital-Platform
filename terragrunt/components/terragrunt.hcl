@@ -269,7 +269,7 @@ locals {
     }
     av_scanner_app = {
       cpu           = 1024
-      desired_count = local.desired_count_non_production
+      desired_count = local.desired_count_production
       memory        = 3072
     }
     data_sharing = {
@@ -320,7 +320,7 @@ locals {
   }
 
   # @TODO (ABN) Remove me
-  desired_count_development    = 1
+  desired_count_development    = 4
   service_configs_scaling_development = {
     authority = {
       cpu           = 256
@@ -329,7 +329,7 @@ locals {
     }
     av_scanner_app = {
       cpu           = 256
-      desired_count = local.desired_count_non_production
+      desired_count = local.desired_count_development
       memory        = 512
     }
     data_sharing = {
