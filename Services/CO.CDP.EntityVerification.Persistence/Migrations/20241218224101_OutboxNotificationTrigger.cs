@@ -3,7 +3,7 @@ using static CO.CDP.MQ.Outbox.Migrations;
 
 #nullable disable
 
-namespace CO.CDP.EntityVerification.Migrations
+namespace CO.CDP.EntityVerification.Persistence.Migrations
 {
     /// <inheritdoc />
     public partial class OutboxNotificationTrigger : Migration

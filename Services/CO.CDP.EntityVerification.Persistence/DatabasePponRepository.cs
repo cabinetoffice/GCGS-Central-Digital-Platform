@@ -1,5 +1,4 @@
 using CO.CDP.EntityFrameworkCore.DbContext;
-using CO.CDP.EntityVerification.Events;
 using Microsoft.EntityFrameworkCore;
 using static CO.CDP.EntityVerification.Persistence.IPponRepository.PponRepositoryException;
 
@@ -49,7 +48,7 @@ public class DatabasePponRepository(EntityVerificationContext context) : IPponRe
 
         return ppons.FirstOrDefault(p =>
                 p.Identifiers.Any(i => i.IdentifierId == id && i.Scheme == scheme) ||
-                (scheme == IdentifierSchemes.Ppon && p.IdentifierId == id));
+                (scheme == "GB-PPON" && p.IdentifierId == id));
     }
 
     public async Task<IEnumerable<IdentifierRegistries>> GetIdentifierRegistriesAsync(string countryCode)
@@ -59,10 +58,10 @@ public class DatabasePponRepository(EntityVerificationContext context) : IPponRe
 
     public async Task<IEnumerable<IdentifierRegistries>> GetIdentifierRegistriesNameAsync(string[] schemeCodes)
     {
-        var upperCaseSchemeCodes = schemeCodes.Select(x => x.ToUpper()).ToArray(); 
+        var upperCaseSchemeCodes = schemeCodes.Select(x => x.ToUpper()).ToArray();
 
         return await context.IdentifierRegistries
-            .Where(q => upperCaseSchemeCodes.Contains(q.Scheme.ToUpper())) 
+            .Where(q => upperCaseSchemeCodes.Contains(q.Scheme.ToUpper()))
             .ToListAsync();
     }
 

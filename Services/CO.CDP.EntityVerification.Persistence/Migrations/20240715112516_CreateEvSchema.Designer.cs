@@ -8,7 +8,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace CO.CDP.EntityVerification.Migrations
+namespace CO.CDP.EntityVerification.Persistence.Migrations
 {
     [DbContext(typeof(EntityVerificationContext))]
     [Migration("20240715112516_CreateEvSchema")]

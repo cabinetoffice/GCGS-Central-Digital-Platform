@@ -9,11 +9,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace CO.CDP.EntityVerification.Migrations
+namespace CO.CDP.EntityVerification.Persistence.Migrations
 {
     [DbContext(typeof(EntityVerificationContext))]
-    [Migration("20241119163516_IdentifierRegistries")]
-    partial class IdentifierRegistries
+    [Migration("20241217224101_OutboxNotificationTrigger")]
+    partial class OutboxNotificationTrigger
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

@@ -41,6 +41,7 @@ locals {
       account_id                        = 471112892058
       canary_schedule_expression        = "rate(30 minutes)" # "cron(15 7,11,15 ? * MON-FRI)" # UTC+0
       fts_azure_frontdoor               = null
+      fts_service_allowed_origins       = []
       name                              = "dev"
       onelogin_logout_notification_urls = [
         "https://test-findtender.nqc.com/auth/backchannellogout",
@@ -69,9 +70,10 @@ locals {
       account_id                        = 905418042182
       canary_schedule_expression        = "rate(30 minutes)"
       fts_azure_frontdoor               = null
+      fts_service_allowed_origins       = []
       name                              = "staging"
       onelogin_logout_notification_urls = ["https://sirsi-integration-findtender.nqc.com/auth/backchannellogout"]
-      pinned_service_version            = "1.0.29"
+      pinned_service_version            = "1.0.31"
       postgres_instance_type            = "db.t4g.micro"
       private_subnets = [
         "10.${local.cidr_b_staging}.101.0/24",
@@ -93,9 +95,46 @@ locals {
       account_id                        = 767397666448
       canary_schedule_expression        = "rate(30 minutes)"
       fts_azure_frontdoor               = null
+      fts_service_allowed_origins       = [
+        "https://akmalnazir.nqc.com",
+        "https://andrewtaberner.nqc.com",
+        "https://anudeepjami.nqc.com",
+        "https://davidchiu.nqc.com",
+        "https://humaarif.nqc.com",
+        "https://kaichan2.nqc.com",
+        "https://kaylemwood.nqc.com",
+        "https://martamajewska.nqc.com",
+        "https://nadeemshafi2.nqc.com",
+        "https://stanvolcere.nqc.com",
+        "https://test-findtender.nqc.com",
+        "https://truk-alpha.nqc.com",
+        "https://truk-performance.nqc.com",
+        "https://truk-prod.nqc.com",
+        "https://wallsm.nqc.com",
+        "https://www-integration.find-tender.service.gov.uk",
+        "https://www-preview.find-tender.service.gov.uk",
+        "https://www-tpp-preview.find-tender.service.gov.uk",
+        "https://www-tpp.find-tender.service.gov.uk",
+      ]
       name                              = "integration"
-      onelogin_logout_notification_urls = ["https://test-findtender.nqc.com/auth/backchannellogout"]
-      pinned_service_version            = "1.0.29"
+      onelogin_logout_notification_urls = [
+        "https://akmalnazir.nqc.com/auth/backchannellogout",
+        "https://andrewtaberner.nqc.com/auth/backchannellogout",
+        "https://anudeepjami.nqc.com/auth/backchannellogout",
+        "https://davidchiu.nqc.com/auth/backchannellogout",
+        "https://humaarif.nqc.com/auth/backchannellogout",
+        "https://kaichan2.nqc.com/auth/backchannellogout",
+        "https://kaylemwood.nqc.com/auth/backchannellogout",
+        "https://martamajewska.nqc.com/auth/backchannellogout",
+        "https://nadeemshafi2.nqc.com/auth/backchannellogout",
+        "https://stanvolcere.nqc.com/auth/backchannellogout",
+        "https://truk-alpha.nqc.com/auth/backchannellogout",
+        "https://truk-performance.nqc.com/auth/backchannellogout",
+        "https://truk-prod.nqc.com/auth/backchannellogout",
+        "https://wallsm.nqc.com/auth/backchannellogout",
+        "https://www-tpp-preview.find-tender.service.gov.uk/auth/backchannellogout",
+      ]
+      pinned_service_version            = "1.0.30"
       postgres_instance_type            = "db.t4g.micro"
       private_subnets = [
         "10.${local.cidr_b_integration}.101.0/24",
@@ -121,9 +160,10 @@ locals {
       account_id                        = 471112843276
       canary_schedule_expression        = "rate(15 minutes)"
       fts_azure_frontdoor               = "nqc-front-door-uksouth.azurefd.net"
+      fts_service_allowed_origins       = []
       name                              = "production"
       onelogin_logout_notification_urls = ["https://www.private-beta.find-tender.service.gov.uk/auth/backchannellogout"]
-      pinned_service_version            = "1.0.29"
+      pinned_service_version            = "1.0.30"
       postgres_instance_type            = "db.t4g.micro"
       private_subnets = [
         "10.${local.cidr_b_production}.101.0/24",
@@ -143,6 +183,7 @@ locals {
   }
 
   fts_azure_frontdoor               = try(local.environments[local.environment].fts_azure_frontdoor, null)
+  fts_service_allowed_origins       = try(local.environments[local.environment].fts_service_allowed_origins, null)
   onelogin_logout_notification_urls = try(local.environments[local.environment].onelogin_logout_notification_urls, null)
   pinned_service_version            = try(local.environments[local.environment].pinned_service_version, null)
 

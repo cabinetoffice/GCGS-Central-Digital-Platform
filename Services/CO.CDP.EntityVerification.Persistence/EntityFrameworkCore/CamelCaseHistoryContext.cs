@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Migrations.Internal;
 
-namespace CO.CDP.EntityVerification.EntityFramework;
+namespace CO.CDP.EntityVerification.Persistence.EntityFrameworkCore;
 
 /// <a href="https://github.com/efcore/EFCore.NamingConventions/issues/1">Keep history columns CamelCased</a>
 // Remove this class at the time we squash migrations.

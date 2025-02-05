@@ -103,6 +103,11 @@ variable "environment" {
   type        = string
 }
 
+variable "fts_service_allowed_origins" {
+  description = "A list of allowed URLs"
+  type        = list(string)
+}
+
 variable "is_production" {
   description = "Indicates whether the target account is configured with production-level settings"
   type        = bool

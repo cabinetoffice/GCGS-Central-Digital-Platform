@@ -1,12 +1,9 @@
-using CO.CDP.EntityVerification.Persistence;
 using CO.CDP.Testcontainers.PostgreSql;
 using FluentAssertions;
-using Microsoft.EntityFrameworkCore;
-using Moq;
 using static CO.CDP.EntityVerification.Persistence.IPponRepository.PponRepositoryException;
-using static CO.CDP.EntityVerification.Tests.Ppon.PponFactories;
+using static CO.CDP.EntityVerification.Persistence.Tests.PponFactories;
 
-namespace CO.CDP.EntityVerification.Tests.Persistence;
+namespace CO.CDP.EntityVerification.Persistence.Tests;
 
 public class DatabasePponRepositoryTest(PostgreSqlFixture postgreSql) : IClassFixture<PostgreSqlFixture>
 {
@@ -21,8 +18,8 @@ public class DatabasePponRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
         var found = await repository.FindPponByPponIdAsync(ppon.IdentifierId);
 
         found.Should().NotBeNull();
-        found.As<EntityVerification.Persistence.Ppon>().Id.Should().BePositive();
-        found.As<EntityVerification.Persistence.Ppon>().IdentifierId.Should().Be(ppon.IdentifierId);
+        found.As<Ppon>().Id.Should().BePositive();
+        found.As<Ppon>().IdentifierId.Should().Be(ppon.IdentifierId);
     }
 
     [Fact]
@@ -45,8 +42,8 @@ public class DatabasePponRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
         var found = await repository.FindPponByIdentifierAsync(identifier.Scheme, identifier.IdentifierId);
 
         found.Should().NotBeNull();
-        found.As<EntityVerification.Persistence.Ppon>().Identifiers.Should().ContainSingle();
-        found.As<EntityVerification.Persistence.Ppon>().Identifiers.First().IdentifierId.Should().Be("GB123123123");
+        found.As<Ppon>().Identifiers.Should().ContainSingle();
+        found.As<Ppon>().Identifiers.First().IdentifierId.Should().Be("GB123123123");
     }
 
     [Fact]
@@ -57,7 +54,7 @@ public class DatabasePponRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
 
         var identifierRegistries = new List<IdentifierRegistries>
         {
-            new IdentifierRegistries
+            new()
             {
                 CountryCode = "US",
                 Scheme = "Scheme1",
@@ -65,7 +62,7 @@ public class DatabasePponRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
                 CreatedOn = DateTimeOffset.UtcNow,
                 UpdatedOn = DateTimeOffset.UtcNow
             },
-            new IdentifierRegistries
+            new()
             {
                 CountryCode = "US",
                 Scheme = "Scheme2",
@@ -171,7 +168,7 @@ public class DatabasePponRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
         var foundPpon = await repository.FindPponByPponIdAsync(ppon.IdentifierId);
 
         foundPpon.Should().NotBeNull();
-        foundPpon.As<EntityVerification.Persistence.Ppon>().Name.Should().Be("Updated name");
+        foundPpon.As<Ppon>().Name.Should().Be("Updated name");
     }
 
     [Fact]
