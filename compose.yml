@@ -203,7 +203,7 @@ services:
       Aws__ServiceURL: "http://localstack:4566"
 
   organisation:
-    container_name: co-cdp-organisation
+    # container_name: co-cdp-organisation
     build:
       context: .
       dockerfile: Dockerfile
