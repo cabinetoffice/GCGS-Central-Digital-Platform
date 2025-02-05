@@ -12,6 +12,8 @@ public class OrganisationsModel(
 {
     public string? Title { get; set; }
 
+    public string? SearchTitle { get; set; }
+
     public string? Type { get; set; }
 
     public int TotalOrganisations { get; set; }
@@ -52,9 +54,16 @@ public class OrganisationsModel(
 
         Type = type;
 
-        Title = (Type == "buyer"
-            ? StaticTextResource.Support_Organisations_BuyerOrganisations_Title
-            : StaticTextResource.Support_Organisations_SupplierOrganisations_Title);
+        if (Type == "buyer")
+        {
+            Title = StaticTextResource.Support_Organisations_BuyerOrganisations_Title;
+            SearchTitle = StaticTextResource.Support_Organisations_SearchTitleBuyer;
+        }
+        else
+        {
+            Title = StaticTextResource.Support_Organisations_SupplierOrganisations_Title;
+            SearchTitle = StaticTextResource.Support_Organisations_SearchTitleSupplier;
+        }
 
         Skip = (pageNumber - 1) * PageSize;
 
