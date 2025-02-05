@@ -109,11 +109,11 @@ services:
           condition: service_healthy
       environment:
         ASPNETCORE_ENVIRONMENT: Production
-        OutboxDatabase__Host: 'db'
-        OutboxDatabase__Server: 'db'
-        OutboxDatabase__Database: 'cdp'
-        OutboxDatabase__Username: 'cdp_user'
-        OutboxDatabase__Password: 'cdp123'
+        EntityVerificationDatabase__Host: 'db'
+        EntityVerificationDatabase__Server: 'db'
+        EntityVerificationDatabase__Database: 'cdp'
+        EntityVerificationDatabase__Username: 'cdp_user'
+        EntityVerificationDatabase__Password: 'cdp123'
         Organisation__Authority: '${Organisation__Authority:-http://gateway:${CDP_AUTHORITY_PORT:-8092}}'
 
   organisation-app:
@@ -337,10 +337,10 @@ services:
       Aws__ServiceURL: "http://localstack:4566"
       Aws__SqsDispatcher__QueueUrl: "http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/organisation.fifo"
       Aws__SqsPublisher__QueueUrl: "http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/entity-verification.fifo"
-      OutboxDatabase__Server: 'db'
-      OutboxDatabase__Database: 'cdp'
-      OutboxDatabase__Username: 'cdp_user'
-      OutboxDatabase__Password: 'cdp123'
+      EntityVerificationDatabase__Server: 'db'
+      EntityVerificationDatabase__Database: 'cdp'
+      EntityVerificationDatabase__Username: 'cdp_user'
+      EntityVerificationDatabase__Password: 'cdp123'
       Organisation__Authority: '${Organisation__Authority:-http://gateway:${CDP_AUTHORITY_PORT:-8092}}'
 
   clamav-rest:
