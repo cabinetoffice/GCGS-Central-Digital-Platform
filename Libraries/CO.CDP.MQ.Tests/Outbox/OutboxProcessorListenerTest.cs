@@ -110,7 +110,9 @@ public class OutboxProcessorListenerTest(PostgreSqlFixture postgreSql) : IClassF
         {
             Type = type,
             Message = message,
-            Published = published
+            Published = published,
+            QueueUrl = "test-queue",
+            MessageGroupId = "test-messages"
         };
     }
 
