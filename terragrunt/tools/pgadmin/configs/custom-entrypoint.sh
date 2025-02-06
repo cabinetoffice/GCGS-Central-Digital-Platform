@@ -99,7 +99,7 @@ write_local_config() {
 }
 
 echo "#### Configuring pgAdmin... ####"
-clear_all_servers # Use only to force a fresh start
+# clear_all_servers # Use only to force a fresh start
 configure_servers_json
 write_local_config
 unlock_pgadmin

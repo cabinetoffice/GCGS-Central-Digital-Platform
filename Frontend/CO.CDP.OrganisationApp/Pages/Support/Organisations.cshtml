@@ -35,15 +35,12 @@
     <thead class="govuk-table__head">
     <tr class="govuk-table__row">
         <th scope="col" colspan="1" class="govuk-table__header">@StaticTextResource.Support_Organisations_TableHeader_OrganisationName</th>
-        <th scope="col" colspan="1" class="govuk-table__header">@StaticTextResource.Support_Organisations_TableHeader_Identifier</th>
-        <th scope="col" colspan="1" class="govuk-table__header">@StaticTextResource.Support_Organisations_TableHeader_OrgEmail</th>
+        <th scope="col" colspan="1" class="govuk-table__header">Emails</th>
         @{
             if (Model.Type == "buyer")
             {
                 <th scope="col" colspan="1" class="govuk-table__header">@StaticTextResource.Support_Organisations_TableHeader_Status</th>
-                <th scope="col" colspan="1" class="govuk-table__header">@StaticTextResource.Support_Organisations_TableHeader_DateApproved</th>
-                <th scope="col" colspan="1" class="govuk-table__header">@StaticTextResource.Support_Organisations_TableHeader_LastReviewedBy</th>
-                <th scope="col" colspan="1" class="govuk-table__header">@StaticTextResource.Support_Organisations_TableHeader_Comments</th>
+                <th scope="col" colspan="2" class="govuk-table__header">@StaticTextResource.Support_Organisations_TableHeader_Comments</th>
                 <th scope="col" colspan="1" class="govuk-table__header"></th>
             }
         }
@@ -68,7 +65,10 @@
                     </ul>
                 </th>
                 <td class="govuk-table__cell">
-                    @org.ContactPoint.Email
+                    <ul class="govuk-list">
+                        <li>@StaticTextResource.Support_Organisations_TableHeader_AdminEmail: @(org.AdminPerson?.Email ?? "N/A")</li>
+                        <li>@StaticTextResource.Support_Organisations_TableHeader_OrgEmail: @org.ContactPoint.Email</li>
+                    </ul>
                 </td>
                 @{
                     if (Model.Type == "buyer")
@@ -83,18 +83,32 @@
                                 }
                                 else
                                 {
-                                    <span>@StaticTextResource.Support_Organisations_Status_Approved</span>
+                                    <span>@StaticTextResource.Support_Organisations_Status_Approved</span><br/>
+                                    <span>@(approval?.ApprovedOn == null ? "N/A" : approval?.ApprovedOn)</span><br/>
+                                    <span>@(approval?.ReviewedBy?.Name ?? "N/A")</span>
                                 }
                             }
                         </td>
                         <td class="govuk-table__cell">
-                            @(approval?.ApprovedOn == null ? "N/A" : approval?.ApprovedOn)
-                        </td>
-                        <td class="govuk-table__cell">
-                            @(approval?.ReviewedBy?.Name ?? "N/A")
-                        </td>
-                        <td class="govuk-table__cell">
-                            @(approval?.Comment ?? "N/A")
+                            @{
+                                if (approval?.Comment?.Length > 0)
+                                {
+                                    <details class="govuk-details">
+                                        <summary class="govuk-details__summary">
+                                            <span class="govuk-details__summary-text">
+                                                @StaticTextResource.Support_Organisations_TableHeader_Comments
+                                            </span>
+                                        </summary>
+                                        <div class="govuk-details__text">
+                                            @approval?.Comment
+                                        </div>
+                                    </details>
+                                }
+                                else
+                                {
+                                    <span>N/A</span>
+                                }
+                            }
                         </td>
                         <td class="govuk-table__cell">
                             @{

@@ -19,7 +19,9 @@ public class DatabaseOutboxMessageRepositoryTest(PostgreSqlFixture postgreSql) :
         {
             Message = "Hello World",
             Type = "String",
-            Published = false
+            Published = false,
+            QueueUrl = "test-queue",
+            MessageGroupId = "test-messages"
         };
         await repository.SaveAsync(message);
 
@@ -40,10 +42,10 @@ public class DatabaseOutboxMessageRepositoryTest(PostgreSqlFixture postgreSql) :
 
         List<OutboxMessage> messages =
         [
-            new OutboxMessage { Message = "Message 0", Type = "String", Published = true },
-            new OutboxMessage { Message = "Message 1", Type = "String", Published = false },
-            new OutboxMessage { Message = "Message 2", Type = "String", Published = false },
-            new OutboxMessage { Message = "Message 3", Type = "String", Published = false }
+            new OutboxMessage { Message = "Message 0", Type = "String", Published = true, QueueUrl = "test-queue", MessageGroupId = "test-messages" },
+            new OutboxMessage { Message = "Message 1", Type = "String", Published = false, QueueUrl = "test-queue", MessageGroupId = "test-messages" },
+            new OutboxMessage { Message = "Message 2", Type = "String", Published = false, QueueUrl = "test-queue", MessageGroupId = "test-messages" },
+            new OutboxMessage { Message = "Message 3", Type = "String", Published = false, QueueUrl = "test-queue", MessageGroupId = "test-messages" }
         ];
         foreach (var message in messages)
         {
@@ -69,7 +71,9 @@ public class DatabaseOutboxMessageRepositoryTest(PostgreSqlFixture postgreSql) :
         await repository.SaveAsync(new OutboxMessage
         {
             Message = "Hello World",
-            Type = "String"
+            Type = "String",
+            QueueUrl = "test-queue",
+            MessageGroupId = "test-messages"
         });
 
         await connection.WaitAsync(100);

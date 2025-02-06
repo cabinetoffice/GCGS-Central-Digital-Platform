@@ -1872,7 +1872,10 @@
     <value>Identifier/s</value>
   </data>
   <data name="Support_Organisations_TableHeader_OrgEmail" xml:space="preserve">
-    <value>Org email</value>
+    <value>Org</value>
+  </data>
+  <data name="Support_Organisations_TableHeader_AdminEmail" xml:space="preserve">
+    <value>Admin</value>
   </data>
   <data name="Support_Organisations_TableHeader_Status" xml:space="preserve">
     <value>Status</value>

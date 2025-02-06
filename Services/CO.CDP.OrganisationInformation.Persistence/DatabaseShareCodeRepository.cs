@@ -51,6 +51,7 @@ public class DatabaseShareCodeRepository(OrganisationInformationContext context)
             .Include(sc => sc.Form)
                 .ThenInclude(f => f.Sections)
                     .ThenInclude(s => s.Questions.OrderBy(q => q.SortOrder))
+            .AsSplitQuery()
             .FirstOrDefaultAsync();
     }
 
@@ -137,5 +138,4 @@ public class DatabaseShareCodeRepository(OrganisationInformationContext context)
     {
         context.Dispose();
     }
-
 }
