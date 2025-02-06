@@ -203,7 +203,7 @@ services:
       Aws__ServiceURL: "http://localstack:4566"
 
   organisation:
-    # container_name: co-cdp-organisation
+    container_name: co-cdp-organisation
     build:
       context: .
       dockerfile: Dockerfile
@@ -232,6 +232,7 @@ services:
       OrganisationInformationDatabase__Username: 'cdp_user'
       OrganisationInformationDatabase__Password: 'cdp123'
       Organisation__Authority: '${Organisation__Authority:-http://gateway:${CDP_AUTHORITY_PORT:-8092}}'
+      Feature__DisableOutboxProcessorBackgroundService: true
 
   person:
     container_name: co-cdp-person
@@ -342,7 +343,7 @@ services:
       EntityVerificationDatabase__Username: 'cdp_user'
       EntityVerificationDatabase__Password: 'cdp123'
       Organisation__Authority: '${Organisation__Authority:-http://gateway:${CDP_AUTHORITY_PORT:-8092}}'
-
+      Feature__DisableOutboxProcessorBackgroundService: true
   clamav-rest:
     mem_reservation: "2G"
     mem_limit: "3G"
