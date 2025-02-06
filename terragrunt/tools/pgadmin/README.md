@@ -7,7 +7,7 @@ Feel free to use any convenient AWS profiler instead.
 ## Pin version
 
 ```shell
-export PINNED_PGADMIN_VERSION=8.12.0
+export PINNED_PGADMIN_VERSION=8.14.0
 ```
 
 ## Build

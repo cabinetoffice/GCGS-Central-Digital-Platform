@@ -73,7 +73,7 @@ locals {
       fts_service_allowed_origins       = []
       name                              = "staging"
       onelogin_logout_notification_urls = ["https://sirsi-integration-findtender.nqc.com/auth/backchannellogout"]
-      pinned_service_version            = "1.0.30"
+      pinned_service_version            = "1.0.31"
       postgres_instance_type            = "db.t4g.micro"
       private_subnets = [
         "10.${local.cidr_b_staging}.101.0/24",
@@ -132,6 +132,7 @@ locals {
         "https://truk-performance.nqc.com/auth/backchannellogout",
         "https://truk-prod.nqc.com/auth/backchannellogout",
         "https://wallsm.nqc.com/auth/backchannellogout",
+        "https://www-tpp-preview.find-tender.service.gov.uk/auth/backchannellogout",
       ]
       pinned_service_version            = "1.0.30"
       postgres_instance_type            = "db.t4g.micro"
@@ -268,7 +269,7 @@ locals {
     }
     av_scanner_app = {
       cpu           = 1024
-      desired_count = local.desired_count_non_production
+      desired_count = local.desired_count_production
       memory        = 3072
     }
     data_sharing = {
@@ -319,7 +320,7 @@ locals {
   }
 
   # @TODO (ABN) Remove me
-  desired_count_development    = 1
+  desired_count_development    = 4
   service_configs_scaling_development = {
     authority = {
       cpu           = 256
@@ -328,7 +329,7 @@ locals {
     }
     av_scanner_app = {
       cpu           = 256
-      desired_count = local.desired_count_non_production
+      desired_count = local.desired_count_development
       memory        = 512
     }
     data_sharing = {
