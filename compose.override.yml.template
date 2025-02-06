@@ -96,7 +96,7 @@ services:
       - "9443:9443"
     deploy:
       replicas: 1
-    outbox-processor-organisation:
+  outbox-processor-organisation:
     environment:
       ASPNETCORE_ENVIRONMENT: Development
     deploy:
