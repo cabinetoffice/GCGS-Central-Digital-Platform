@@ -113,17 +113,7 @@ public class DataSharingProfile : Profile
             .ForMember(m => m.Text, o => o.MapFrom<LocalizedPropertyResolver<Persistence.FormQuestion, FormQuestion>, string>(m => m.Description ?? string.Empty))
             .ForMember(m => m.IsRequired, o => o.MapFrom(m => m.IsRequired))
             .ForMember(m => m.SectionName, o => o.MapFrom<LocalizedPropertyResolver<Persistence.FormQuestion, FormQuestion>, string>(m => m.Section.Title))
-            .ForMember(m => m.Options, o => o.MapFrom<FormQuestionOptionsResolver>())
-
-            //.ForMember(dest => dest.Options, opt => opt.MapFrom(src =>
-            //            src.Type == Persistence.FormQuestionType.GroupedSingleChoice && src.Options.Groups != null
-            //                            ? src.Options.Groups
-            //                                .SelectMany(g => g.Choices ?? new List<Persistence.FormQuestionGroupChoice>())
-            //                                .Select(gc => new FormQuestionOption { Id = Guid.NewGuid(), Value = gc.Value ?? string.Empty }).ToList()
-            //                            : (src.Options != null && src.Options.Choices != null)
-            //                                    ? src.Options.Choices.Select(c => new FormQuestionOption { Id = c.Id, Value = c.Title != null ? c.Title : string.Empty }).ToList()
-            //                                    : new List<FormQuestionOption>()))
-
+            .ForMember(m => m.Options, o => o.MapFrom<FormQuestionOptionsResolver>())          
             .ForMember(m => m.SortOrder, o => o.MapFrom(m => m.SortOrder));
 
         CreateMap<Persistence.FormQuestionChoice, FormQuestionOption>()
