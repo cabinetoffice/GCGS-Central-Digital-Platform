@@ -81,7 +81,6 @@ COPY --link Services/CO.CDP.Localization/CO.CDP.Localization.csproj Services/CO.
 COPY --link Services/CO.CDP.AntiVirusScanner/CO.CDP.AntiVirusScanner.csproj Services/CO.CDP.AntiVirusScanner/
 COPY --link Services/CO.CDP.AntiVirusScanner.Tests/CO.CDP.AntiVirusScanner.Tests.csproj Services/CO.CDP.AntiVirusScanner.Tests/
 COPY --link Services/CO.CDP.OutboxProcessor/CO.CDP.OutboxProcessor.csproj Services/CO.CDP.OutboxProcessor/
-COPY --link Services/CO.CDP.OutboxProcessor.Tests/CO.CDP.OutboxProcessor.Tests.csproj Services/CO.CDP.OutboxProcessor.Tests/
 
 COPY --link GCGS-Central-Digital-Platform.sln .
 RUN dotnet restore "GCGS-Central-Digital-Platform.sln"
