@@ -106,14 +106,24 @@ public class DataSharingProfile : Profile
             .ForMember(m => m.JsonValue, o => o.MapFrom<JsonValueResolver>())
             .ForMember(m => m.DocumentUri, o => o.Ignore());
 
-        CreateMap<Persistence.FormQuestion, FormQuestion>()
+        _ = CreateMap<Persistence.FormQuestion, FormQuestion>()
             .ForMember(m => m.Type, o => o.MapFrom<CustomFormQuestionTypeResolver>())
             .ForMember(m => m.Title, o => o.MapFrom<LocalizedPropertyResolver<Persistence.FormQuestion, FormQuestion>, string>(m => m.Title))
             .ForMember(m => m.Name, o => o.MapFrom(m => m.Name))
             .ForMember(m => m.Text, o => o.MapFrom<LocalizedPropertyResolver<Persistence.FormQuestion, FormQuestion>, string>(m => m.Description ?? string.Empty))
             .ForMember(m => m.IsRequired, o => o.MapFrom(m => m.IsRequired))
             .ForMember(m => m.SectionName, o => o.MapFrom<LocalizedPropertyResolver<Persistence.FormQuestion, FormQuestion>, string>(m => m.Section.Title))
-            .ForMember(m => m.Options, o => o.MapFrom(m => m.Options.Choices))
+            .ForMember(m => m.Options, o => o.MapFrom<FormQuestionOptionsResolver>())
+
+            //.ForMember(dest => dest.Options, opt => opt.MapFrom(src =>
+            //            src.Type == Persistence.FormQuestionType.GroupedSingleChoice && src.Options.Groups != null
+            //                            ? src.Options.Groups
+            //                                .SelectMany(g => g.Choices ?? new List<Persistence.FormQuestionGroupChoice>())
+            //                                .Select(gc => new FormQuestionOption { Id = Guid.NewGuid(), Value = gc.Value ?? string.Empty }).ToList()
+            //                            : (src.Options != null && src.Options.Choices != null)
+            //                                    ? src.Options.Choices.Select(c => new FormQuestionOption { Id = c.Id, Value = c.Title != null ? c.Title : string.Empty }).ToList()
+            //                                    : new List<FormQuestionOption>()))
+
             .ForMember(m => m.SortOrder, o => o.MapFrom(m => m.SortOrder));
 
         CreateMap<Persistence.FormQuestionChoice, FormQuestionOption>()
@@ -149,14 +159,15 @@ public class CustomFormQuestionTypeResolver : IValueResolver<Persistence.FormQue
             case Persistence.FormQuestionType.SingleChoice:
             case Persistence.FormQuestionType.GroupedSingleChoice:
             case Persistence.FormQuestionType.MultipleChoice:
-                if(source.Options.AnswerFieldName == "JsonValue")
+                if (source.Options.AnswerFieldName == "JsonValue")
                 {
                     return FormQuestionType.OptionJson;
-                } else
+                }
+                else
                 {
                     return FormQuestionType.Option;
                 }
-                
+
             case Persistence.FormQuestionType.Date:
                 return FormQuestionType.Date;
 
@@ -221,5 +232,40 @@ public class JsonValueResolver : IValueResolver<Persistence.FormAnswer, FormAnsw
         }
 
         return JsonSerializer.Deserialize<Dictionary<string, object>>(source.JsonValue);
+    }
+}
+
+public class FormQuestionOptionsResolver : IValueResolver<Persistence.FormQuestion, FormQuestion, List<FormQuestionOption>>
+{
+
+    public List<FormQuestionOption> Resolve(Persistence.FormQuestion src, FormQuestion destination, List<FormQuestionOption> destMember, ResolutionContext context)
+    {
+        if (src.Options == null)
+            return new List<FormQuestionOption>();
+
+        if (src.Type == Persistence.FormQuestionType.GroupedSingleChoice && src.Options.Groups != null)
+        {
+            return src.Options.Groups
+                .SelectMany(g => g.Choices ?? new List<Persistence.FormQuestionGroupChoice>())
+                .Select(gc => new FormQuestionOption
+                {
+                    Id = Guid.NewGuid(),
+                    Value = gc.Value ?? string.Empty
+                })
+                .ToList();
+        }
+
+        if (src.Options.Choices != null)
+        {
+            return src.Options.Choices
+                .Select(c => new FormQuestionOption
+                {
+                    Id = c.Id,
+                    Value = c.Title ?? string.Empty
+                })
+                .ToList();
+        }
+
+        return new List<FormQuestionOption>();
     }
 }
