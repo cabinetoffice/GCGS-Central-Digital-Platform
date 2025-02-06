@@ -113,7 +113,7 @@ public class DataSharingProfile : Profile
             .ForMember(m => m.Text, o => o.MapFrom<LocalizedPropertyResolver<Persistence.FormQuestion, FormQuestion>, string>(m => m.Description ?? string.Empty))
             .ForMember(m => m.IsRequired, o => o.MapFrom(m => m.IsRequired))
             .ForMember(m => m.SectionName, o => o.MapFrom<LocalizedPropertyResolver<Persistence.FormQuestion, FormQuestion>, string>(m => m.Section.Title))
-            .ForMember(m => m.Options, o => o.MapFrom<FormQuestionOptionsResolver>())          
+            .ForMember(m => m.Options, o => o.MapFrom<FormQuestionOptionsResolver>())
             .ForMember(m => m.SortOrder, o => o.MapFrom(m => m.SortOrder));
 
         CreateMap<Persistence.FormQuestionChoice, FormQuestionOption>()
@@ -227,7 +227,6 @@ public class JsonValueResolver : IValueResolver<Persistence.FormAnswer, FormAnsw
 
 public class FormQuestionOptionsResolver : IValueResolver<Persistence.FormQuestion, FormQuestion, List<FormQuestionOption>>
 {
-
     public List<FormQuestionOption> Resolve(Persistence.FormQuestion src, FormQuestion destination, List<FormQuestionOption> destMember, ResolutionContext context)
     {
         if (src.Options == null)
@@ -239,7 +238,7 @@ public class FormQuestionOptionsResolver : IValueResolver<Persistence.FormQuesti
                 .SelectMany(g => g.Choices ?? new List<Persistence.FormQuestionGroupChoice>())
                 .Select(gc => new FormQuestionOption
                 {
-                    Id = Guid.NewGuid(),
+                    Id = gc.Id ?? Guid.NewGuid(),
                     Value = gc.Value ?? string.Empty
                 })
                 .ToList();
