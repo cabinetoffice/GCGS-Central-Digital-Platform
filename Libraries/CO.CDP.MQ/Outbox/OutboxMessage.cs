@@ -10,4 +10,6 @@ public class OutboxMessage : IEntityDate
     public bool Published { get; set; }
     public DateTimeOffset CreatedOn { get; set; }
     public DateTimeOffset UpdatedOn { get; set; }
+    public required string QueueUrl { get; set; }
+    public string? MessageGroupId { get; set; }
 }
