@@ -88,6 +88,12 @@ variable "is_frontend_app" {
   default     = false
 }
 
+variable "listener_name" {
+  description = "Optional custom listener name if the service name exceeds the 32-character limit. The name will be prefixed with 'cdp-'."
+  type        = string
+  default     = null
+}
+
 variable "memory" {
   description = "Amount (in MiB) of memory used by the tas"
   type        = number
