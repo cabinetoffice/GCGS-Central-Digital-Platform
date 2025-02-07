@@ -251,12 +251,12 @@ locals {
     }
     outbox_processor_entity_verification = {
       cpu           = 256
-      desired_count = local.desired_count_non_production
+      desired_count = 1
       memory        = 512
     }
     outbox_processor_organisation = {
       cpu           = 256
-      desired_count = local.desired_count_non_production
+      desired_count = 1
       memory        = 512
     }
     person = {
@@ -319,12 +319,12 @@ locals {
     }
     outbox_processor_entity_verification = {
       cpu           = 256
-      desired_count = local.desired_count_production
+      desired_count = 1
       memory        = 512
     }
     outbox_processor_organisation = {
       cpu           = 256
-      desired_count = local.desired_count_production
+      desired_count = 1
       memory        = 512
     }
     person = {
@@ -389,12 +389,12 @@ locals {
     }
     outbox_processor_entity_verification = {
       cpu           = 256
-      desired_count = local.desired_count_development
+      desired_count = 1
       memory        = 512
     }
     outbox_processor_organisation = {
       cpu           = 256
-      desired_count = local.desired_count_development
+      desired_count = 1
       memory        = 512
     }
     person = {
@@ -462,7 +462,7 @@ locals {
       port_host = null
     }
     outbox_processor_entity_verification = {
-      name      = "outbox-entity-verification"
+      name      = "outbox-processor-entity-verification"
       port      = 9096
       port_host = 9096
     }
