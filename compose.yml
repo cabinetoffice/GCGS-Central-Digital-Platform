@@ -232,7 +232,7 @@ services:
       OrganisationInformationDatabase__Username: 'cdp_user'
       OrganisationInformationDatabase__Password: 'cdp123'
       Organisation__Authority: '${Organisation__Authority:-http://gateway:${CDP_AUTHORITY_PORT:-8092}}'
-      Feature__DisableOutboxProcessorBackgroundService: true
+      Feature__OutboxProcessorBackgroundService: false
 
   person:
     container_name: co-cdp-person
@@ -343,7 +343,7 @@ services:
       EntityVerificationDatabase__Username: 'cdp_user'
       EntityVerificationDatabase__Password: 'cdp123'
       Organisation__Authority: '${Organisation__Authority:-http://gateway:${CDP_AUTHORITY_PORT:-8092}}'
-      Feature__DisableOutboxProcessorBackgroundService: true
+      Feature__OutboxProcessorBackgroundService: false
   clamav-rest:
     mem_reservation: "2G"
     mem_limit: "3G"

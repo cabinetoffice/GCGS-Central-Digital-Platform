@@ -111,7 +111,7 @@ public static class Extensions
             };
         });
 
-        if (!configuration.GetValue("Features:DisableOutboxProcessorBackgroundService", false))
+        if (!configuration.GetValue("Features:OutboxProcessorBackgroundService", false))
         {
             services.AddKeyedScoped<IOutboxPublisher, SqsOutboxPublisher>("SqsOutboxPublisher");
             services.AddScoped<IOutboxProcessor>(s =>
