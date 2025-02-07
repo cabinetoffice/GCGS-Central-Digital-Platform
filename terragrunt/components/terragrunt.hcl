@@ -249,6 +249,16 @@ locals {
       desired_count = local.desired_count_non_production
       memory        = 512
     }
+    outbox_processor_entity_verification = {
+      cpu           = 256
+      desired_count = 1
+      memory        = 512
+    }
+    outbox_processor_organisation = {
+      cpu           = 256
+      desired_count = 1
+      memory        = 512
+    }
     person = {
       cpu           = 256
       desired_count = local.desired_count_non_production
@@ -305,6 +315,16 @@ locals {
     organisation_information_migrations = {
       cpu           = 256
       desired_count = local.desired_count_production
+      memory        = 512
+    }
+    outbox_processor_entity_verification = {
+      cpu           = 256
+      desired_count = 1
+      memory        = 512
+    }
+    outbox_processor_organisation = {
+      cpu           = 256
+      desired_count = 1
       memory        = 512
     }
     person = {
@@ -365,6 +385,16 @@ locals {
     organisation_information_migrations = {
       cpu           = 256
       desired_count = local.desired_count_development
+      memory        = 512
+    }
+    outbox_processor_entity_verification = {
+      cpu           = 256
+      desired_count = 1
+      memory        = 512
+    }
+    outbox_processor_organisation = {
+      cpu           = 256
+      desired_count = 1
       memory        = 512
     }
     person = {
@@ -430,6 +460,16 @@ locals {
       name      = "organisation-information-migrations"
       port      = 9090
       port_host = null
+    }
+    outbox_processor_entity_verification = {
+      name      = "outbox-processor-entity-verification"
+      port      = 9096
+      port_host = 9096
+    }
+    outbox_processor_organisation = {
+      name      = "outbox-processor-organisation"
+      port      = 9098
+      port_host = 9098
     }
     person = {
       name      = "person"
