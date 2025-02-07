@@ -106,7 +106,7 @@ public class DataSharingProfile : Profile
             .ForMember(m => m.JsonValue, o => o.MapFrom<JsonValueResolver>())
             .ForMember(m => m.DocumentUri, o => o.Ignore());
 
-        _ = CreateMap<Persistence.FormQuestion, FormQuestion>()
+        CreateMap<Persistence.FormQuestion, FormQuestion>()
             .ForMember(m => m.Type, o => o.MapFrom<CustomFormQuestionTypeResolver>())
             .ForMember(m => m.Title, o => o.MapFrom<LocalizedPropertyResolver<Persistence.FormQuestion, FormQuestion>, string>(m => m.Title))
             .ForMember(m => m.Name, o => o.MapFrom(m => m.Name))
