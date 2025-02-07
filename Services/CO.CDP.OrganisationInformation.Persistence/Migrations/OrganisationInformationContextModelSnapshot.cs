@@ -50,9 +50,18 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                         .HasColumnType("text")
                         .HasColumnName("message");
 
+                    b.Property<string>("MessageGroupId")
+                        .HasColumnType("text")
+                        .HasColumnName("message_group_id");
+
                     b.Property<bool>("Published")
                         .HasColumnType("boolean")
                         .HasColumnName("published");
+
+                    b.Property<string>("QueueUrl")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("queue_url");
 
                     b.Property<string>("Type")
                         .IsRequired()
