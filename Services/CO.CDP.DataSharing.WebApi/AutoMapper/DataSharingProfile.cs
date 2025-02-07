@@ -239,7 +239,7 @@ public class FormQuestionOptionsResolver : IValueResolver<Persistence.FormQuesti
                 .Select(gc => new FormQuestionOption
                 {
                     Id = gc.Id ?? Guid.NewGuid(),
-                    Value = gc.Value ?? string.Empty
+                    Value = gc.Title ?? string.Empty
                 })
                 .ToList();
         }
