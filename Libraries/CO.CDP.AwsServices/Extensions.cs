@@ -1,3 +1,4 @@
+using Amazon;
 using Amazon.Extensions.NETCore.Setup;
 using Amazon.Runtime;
 using Amazon.S3;
@@ -81,8 +82,16 @@ public static class Extensions
         string notificationChannel
     ) where TDbContext : DbContext, IOutboxMessageDbContext
     {
-        services.AddScoped<IOutboxMessageRepository, DatabaseOutboxMessageRepository<TDbContext>>();
+        var awsSection = configuration.GetSection("Aws");
+        var awsConfig = awsSection.Get<AwsConfiguration>()
+                        ?? throw new Exception("Aws environment configuration missing.");
 
+        if ((string.IsNullOrEmpty(awsConfig?.SqsPublisher?.QueueUrl)) || (string.IsNullOrEmpty(awsConfig?.SqsPublisher?.MessageGroupId)))
+        {
+            throw new ArgumentNullException(nameof(awsConfig), "SqsPublisher QueueUrl / MessageGroupId is missing.");
+        }
+
+        services.AddScoped<IOutboxMessageRepository, DatabaseOutboxMessageRepository<TDbContext>>();
         services.AddKeyedScoped<IPublisher, SqsPublisher>("SqsPublisher");
         services.AddScoped<IPublisher, OutboxMessagePublisher>();
 
@@ -91,13 +100,25 @@ public static class Extensions
             new OutboxProcessorBackgroundService.OutboxProcessorConfiguration()
         );
 
+        services.AddSingleton<OutboxMessagePublisher.OutboxMessagePublisherConfiguration>(s =>
+        {
+            var awsConfig = s.GetRequiredService<IOptions<AwsConfiguration>>().Value.SqsPublisher;
+
+            return new OutboxMessagePublisher.OutboxMessagePublisherConfiguration
+            {
+                QueueUrl = awsConfig?.QueueUrl ?? "",
+                MessageGroupId = awsConfig?.MessageGroupId ?? ""
+            };
+        });
+
         services.AddScoped<IOutboxProcessor>(s =>
-            new OutboxProcessor(
+        {
+            return new OutboxProcessor(
                 s.GetRequiredKeyedService<IPublisher>("SqsPublisher"),
                 s.GetRequiredService<IOutboxMessageRepository>(),
                 s.GetRequiredService<ILogger<OutboxProcessor>>()
-            )
-        );
+            );
+        });
 
         if (configuration.GetValue("Features:OutboxListener", false))
         {

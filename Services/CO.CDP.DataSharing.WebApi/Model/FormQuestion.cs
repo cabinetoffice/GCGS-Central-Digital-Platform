@@ -19,7 +19,7 @@ public record FormQuestion
     /// <example>"Steel"</example>
     public required string SectionName { get; init; }
 
-    public List<FormQuestionOption>? Options { get; init; }
+    public List<FormQuestionOption> Options { get; init; } = new();
 
     public required int SortOrder { get; set; }
 

@@ -17,6 +17,8 @@ public record OrganisationExtended
 
     public List<Address> Addresses { get; init; } = [];
 
+    public Person? AdminPerson { get; init; }
+
     public required ContactPoint ContactPoint { get; init; }
 
     /// <example>["supplier"]</example>

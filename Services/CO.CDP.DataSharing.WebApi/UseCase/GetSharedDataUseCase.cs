@@ -108,10 +108,11 @@ public class GetSharedDataUseCase(
         return new Details
         {
             LegalForm = legalForm != null ? mapper.Map<LegalForm>(legalForm) : null,
-            Scale = operationTypes.Contains(OperationType.SmallOrMediumSized) ? "small" : "large",
-            Vcse = operationTypes.Contains(OperationType.NonGovernmental),
-            ShelteredWorkshop = operationTypes.Contains(OperationType.SupportedEmploymentProvider),
-            PublicServiceMissionOrganization = operationTypes.Contains(OperationType.PublicService)
+            Scale = (operationTypes != null && operationTypes.Contains(OperationType.SmallOrMediumSized)) ? "small"
+                : ((operationTypes == null || operationTypes.Count == 0) ? null : "large"),
+            Vcse = (operationTypes != null && operationTypes.Count > 0) ? operationTypes.Contains(OperationType.NonGovernmental) : (bool?)null,
+            ShelteredWorkshop = (operationTypes != null && operationTypes.Count > 0) ? operationTypes.Contains(OperationType.SupportedEmploymentProvider) : (bool?)null,
+            PublicServiceMissionOrganization = (operationTypes != null && operationTypes.Count > 0) ? operationTypes.Contains(OperationType.PublicService) : (bool?)null
         };
     }
 

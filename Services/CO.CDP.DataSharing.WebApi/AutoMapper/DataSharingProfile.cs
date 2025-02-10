@@ -114,10 +114,9 @@ public class DataSharingProfile : Profile
             .ForMember(m => m.Text, o => o.MapFrom<LocalizedPropertyResolver<Persistence.FormQuestion, FormQuestion>, string>(m => m.Description ?? string.Empty))
             .ForMember(m => m.IsRequired, o => o.MapFrom(m => m.IsRequired))
             .ForMember(m => m.SectionName, o => o.MapFrom<LocalizedPropertyResolver<Persistence.FormQuestion, FormQuestion>, string>(m => m.Section.Title))
-            .ForMember(m => m.Options, o => o.MapFrom(m => m.Options.Choices))
+            .ForMember(m => m.Options, o => o.MapFrom<FormQuestionOptionsResolver>())
             .ForMember(m => m.SortOrder, o => o.MapFrom(m => m.SortOrder))
             .ForMember(m => m.OrganisationId, o => o.Ignore());
-
         CreateMap<Persistence.FormQuestionChoice, FormQuestionOption>()
             .ForMember(m => m.Id, o => o.MapFrom(m => m.Id))
             .ForMember(m => m.Value, o => o.MapFrom<LocalizedPropertyResolver<Persistence.FormQuestionChoice, FormQuestionOption>, string>(m => m.Title));
@@ -151,14 +150,15 @@ public class CustomFormQuestionTypeResolver : IValueResolver<Persistence.FormQue
             case Persistence.FormQuestionType.SingleChoice:
             case Persistence.FormQuestionType.GroupedSingleChoice:
             case Persistence.FormQuestionType.MultipleChoice:
-                if(source.Options.AnswerFieldName == "JsonValue")
+                if (source.Options.AnswerFieldName == "JsonValue")
                 {
                     return FormQuestionType.OptionJson;
-                } else
+                }
+                else
                 {
                     return FormQuestionType.Option;
                 }
-                
+
             case Persistence.FormQuestionType.Date:
                 return FormQuestionType.Date;
 
@@ -223,5 +223,39 @@ public class JsonValueResolver : IValueResolver<Persistence.FormAnswer, FormAnsw
         }
 
         return JsonSerializer.Deserialize<Dictionary<string, object>>(source.JsonValue);
+    }
+}
+
+public class FormQuestionOptionsResolver : IValueResolver<Persistence.FormQuestion, FormQuestion, List<FormQuestionOption>>
+{
+    public List<FormQuestionOption> Resolve(Persistence.FormQuestion src, FormQuestion destination, List<FormQuestionOption> destMember, ResolutionContext context)
+    {
+        if (src.Options == null)
+            return new List<FormQuestionOption>();
+
+        if (src.Type == Persistence.FormQuestionType.GroupedSingleChoice && src.Options.Groups != null)
+        {
+            return src.Options.Groups
+                .SelectMany(g => g.Choices ?? new List<Persistence.FormQuestionGroupChoice>())
+                .Select(gc => new FormQuestionOption
+                {
+                    Id = gc.Id ?? Guid.NewGuid(),
+                    Value = gc.Title ?? string.Empty
+                })
+                .ToList();
+        }
+
+        if (src.Options.Choices != null)
+        {
+            return src.Options.Choices
+                .Select(c => new FormQuestionOption
+                {
+                    Id = c.Id,
+                    Value = c.Title ?? string.Empty
+                })
+                .ToList();
+        }
+
+        return new List<FormQuestionOption>();
     }
 }

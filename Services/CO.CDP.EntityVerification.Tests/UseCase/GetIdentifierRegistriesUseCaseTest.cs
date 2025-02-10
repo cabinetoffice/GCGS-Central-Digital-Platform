@@ -1,17 +1,10 @@
 using CO.CDP.EntityVerification.Persistence;
-using CO.CDP.EntityVerification.Tests.Persistence;
 using CO.CDP.EntityVerification.UseCase;
-using CO.CDP.OrganisationInformation.Persistence;
-using CO.CDP.Testcontainers.PostgreSql;
 using FluentAssertions;
 using Moq;
-using static CO.CDP.EntityVerification.UseCase.GetIdentifierRegistriesUseCase;
 using static CO.CDP.EntityVerification.UseCase.GetIdentifierRegistriesUseCase.GetIdentifierRegistriesException;
 
 namespace CO.CDP.EntityVerification.Tests.UseCase;
-
-using Moq;
-using Xunit;
 
 public class GetIdentifierRegistriesUseCaseTest
 {
@@ -32,7 +25,7 @@ public class GetIdentifierRegistriesUseCaseTest
 
         Func<Task> action = async () => await _useCase.Execute(countryCode!);
 
-        await action.Should().ThrowAsync<GetIdentifierRegistriesException.InvalidInputException>()
+        await action.Should().ThrowAsync<InvalidInputException>()
             .WithMessage("Country code cannot be null or empty.");
     }
 
@@ -85,5 +78,5 @@ public class GetIdentifierRegistriesUseCaseTest
 
 
         await Assert.ThrowsAsync<NotFoundException>(() => _useCase.Execute(countryCode));
-    }   
+    }
 }
