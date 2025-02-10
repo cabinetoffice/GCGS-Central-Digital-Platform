@@ -244,6 +244,14 @@ public class FormQuestionOptionsResolver : IValueResolver<Persistence.FormQuesti
                 .ToList();
         }
 
+        if (!string.IsNullOrEmpty(src.Options.ChoiceProviderStrategy))
+        {
+            return new List<FormQuestionOption>
+            {
+                new FormQuestionOption { Id = Guid.NewGuid(), Value = "Dynamic" }
+            };
+        }
+
         if (src.Options.Choices != null)
         {
             return src.Options.Choices
