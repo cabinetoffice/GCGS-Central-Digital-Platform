@@ -36,7 +36,7 @@ data "aws_iam_policy_document" "step_function_manage_tools_services" {
   statement {
     actions = ["ecs:RunTask"]
     resources = [
-      for task in local.auto_redeploy_tools_tasks :
+      for task in local.executable_tasks_by_step_functions :
       "arn:aws:ecs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:task-definition/*${task}:*"
     ]
     sid = "MangeECSTask"
