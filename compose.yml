@@ -403,6 +403,8 @@ services:
       Aws__Credentials__AccessKeyId: test
       Aws__Credentials__SecretAccessKey: test
       Aws__ServiceURL: "http://localstack:4566"
+      Aws__SqsPublisher__QueueUrl: "http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/entity-verification.fifo"
+      Aws__SqsPublisher__MessageGroupId": "EntityVerification"
       CloudWatch__LogGroup": "/ecs/outbox-processor-organisation"
       DbContext: OrganisationInformationContext
       Channel: organisation_information_outbox
@@ -434,7 +436,8 @@ services:
       Aws__Credentials__AccessKeyId: test
       Aws__Credentials__SecretAccessKey: test
       Aws__ServiceURL: "http://localstack:4566"
-      Aws__SqsPublisher__QueueUrl: "http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/av-scanner.fifo"
+      Aws__SqsPublisher__QueueUrl: "http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/organisation.fifo"
+      Aws__SqsPublisher__MessageGroupId": "Organisation"
       CloudWatch__LogGroup": "/ecs/outbox-processor-entity-verification"
       DbContext: EntityVerificationContext
       Channel: entity_verification_outbox

@@ -36,7 +36,7 @@ public class SqsPublisher(
     {
         if (configuration.Value.SqsPublisher == null)
         {
-            throw new ArgumentNullException(nameof(configuration), "AqsPublisher configuration is missing.");
+            throw new ArgumentNullException(nameof(configuration), "SqsPublisher configuration is missing.");
         }
 
         return configuration.Value.SqsPublisher;

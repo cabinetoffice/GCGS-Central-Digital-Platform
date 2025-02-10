@@ -123,25 +123,9 @@ public static class Extensions
                 );
             });
 
-            if (configuration.GetValue("Features:OutboxListener", false))
+            if (enableBackgroundServices)
             {
-                services.AddScoped<IOutboxProcessorListener>(s => new OutboxProcessorListener(
-                    s.GetRequiredService<NpgsqlDataSource>(),
-                    s.GetRequiredService<IOutboxProcessor>(),
-                    s.GetRequiredService<ILogger<OutboxProcessorListener>>(),
-                    channel: notificationChannel
-                ));
-                if (enableBackgroundServices)
-                {
-                    services.AddHostedService<OutboxProcessorListenerBackgroundService>();
-                }
-            }
-            else
-            {
-                if (enableBackgroundServices)
-                {
-                    services.AddHostedService<OutboxProcessorBackgroundService>();
-                }
+                services.AddHostedService<OutboxProcessorBackgroundService>();
             }
         }
 
