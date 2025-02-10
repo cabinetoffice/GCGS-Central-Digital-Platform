@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!--
     Microsoft ResX Schema
@@ -317,7 +317,7 @@
   </data>
   <data name="Exclusions_AddExclusionDeclaration_Title" xml:space="preserve">
     <value>Ychwanegu unrhyw eithriadau gorfodol a dewisol</value>
-  </data> 
+  </data>
   <data name="Footer_AccessibilityStatement" xml:space="preserve">
     <value>Datganiad hygyrchedd</value>
   </data>
@@ -864,7 +864,7 @@
     <value>Beth fydd yn digwydd nesaf?</value>
   </data>
   <data name="Supplementary_CookieDetails_BannerInfo" xml:space="preserve">
-    <value> </value>
+    <value>Mae’n bosibl y byddwch yn gweld baneri wrth ddefnyddio Canfod Tendr yn gofyn i chi ddewis eich dewisiadau cwcis. Byddwn yn gosod cwcis fel bod eich cyfrifiadur yn gwybod eich bod wedi gweld negeseuon o'r fath ac nad oes angen eu dangos eto, ac er mwyn storio eich gosodiadau. </value>
   </data>
   <data name="Supplementary_CookieDetails_ListItem1" xml:space="preserve">
     <value>sut y gwnaethoch gyrraedd y wefan</value>
@@ -907,7 +907,7 @@
   </data>
   <data name="SupplierToBuyer_OrganisationType_BlueLightOrganisations" xml:space="preserve">
     <value>sefydliadau golau glas – gwasanaethau ambiwlans, yr heddlu a gwasanaethau brys eraill</value>
-  </data>  
+  </data>
   <data name="SupplierToBuyer_OrganisationType_Charities" xml:space="preserve">
     <value>elusennau</value>
   </data>
@@ -943,16 +943,16 @@
   </data>
   <data name="SupplierToBuyer_OrganisationType_PrivateUtility" xml:space="preserve">
     <value>Cyfleustod preifat</value>
-  </data> 
+  </data>
   <data name="SupplierToBuyer_OrganisationType_PublicUndertaking" xml:space="preserve">
     <value>Ymgymeriad cyhoeddus</value>
   </data>
   <data name="SupplierToBuyer_OrganisationType_PublicUndertakingAuthority" xml:space="preserve">
     <value>Yn wahanol i awdurdod cyhoeddus, sefydliadau sy'n gweithredu'n fasnachol ac yn darparu gweithgareddau cyfleustodau i'r cyhoedd. Er enghraifft, Trafnidiaeth Cymru.</value>
-  </data> 
+  </data>
   <data name="SupplierToBuyer_OrganisationType_RegionalAndLocalGovernment_Title" xml:space="preserve">
     <value>Mae'n cynnwys:</value>
-  </data>  
+  </data>
   <data name="SupplierToBuyer_OrganisationType_TradingFunds" xml:space="preserve">
     <value>cronfeydd masnachu</value>
   </data>
@@ -1489,5 +1489,1554 @@
   </data>
   <data name="Users_LastName_Label" xml:space="preserve">
     <value>Cyfenw</value>
+  </data>
+  <data name="ApiKeyManagement_CreateApiKey_Hint" xml:space="preserve">
+    <value>Er diogelwch, dim ond unwaith y byddwn yn dangos yr allwedd API i chi ar y dudalen cadarnhau. Ychwanegwch enw er mwyn gallu cyfeirio ato. Er enghraifft enw'r eAnfonwr y mae ar ei gyfer.</value>
+  </data>
+  <data name="ApiKeyManagement_CreateApiKey_ValidationError" xml:space="preserve">
+    <value>Rhowch enw'r allwedd API.</value>
+  </data>
+  <data name="ApiKeyManagement_ManageApiKey_Description" xml:space="preserve">
+    <value>Gweld eich allweddi API gweithredol ac wedi'u canslo.</value>
+  </data>
+  <data name="ApiKeyManagement_ManageApiKey_Status_Cancelled" xml:space="preserve">
+    <value>Wedi'u canslo</value>
+  </data>
+  <data name="ApiKeyManagement_ManageApiKey_TableHeader_Actions" xml:space="preserve">
+    <value>Gweithredoedd</value>
+  </data>
+  <data name="ApiKeyManagement_ManageApiKey_YouHaveKeys_Plural" xml:space="preserve">
+    <value>Mae gennych {0} allwedd API</value>
+  </data>
+  <data name="ApiKeyManagement_ManageApiKey_YouHaveKeys_Singular" xml:space="preserve">
+    <value>Mae gennych {0} allwedd API</value>
+  </data>
+  <data name="ApiKeyManagement_NewApiKeyDetails_CopyButton" xml:space="preserve">
+    <value>Copïo'r allwedd API i'r clipfwrdd</value>
+  </data>
+  <data name="Consortium_ConsortiumAddress_Heading" xml:space="preserve">
+    <value>Rhowch gyfeiriad post ar gyfer y consortiwm</value>
+  </data>
+  <data name="Consortium_ConsortiumAddress_NonUk_Heading" xml:space="preserve">
+    <value>Rhowch gyfeiriad post ar gyfer y consortiwm</value>
+  </data>
+  <data name="Consortium_ConsortiumChangeEmail_Heading" xml:space="preserve">
+    <value>Rhowch gyfeiriad e-bost ar gyfer y consortiwm</value>
+  </data>
+  <data name="Consortium_ConsortiumEmail_Heading" xml:space="preserve">
+    <value>Rhowch gyfeiriad e-bost ar gyfer y consortiwm</value>
+  </data>
+  <data name="Consortium_ConsortiumEmail_Required_ErrorMessage" xml:space="preserve">
+    <value>Rhowch gyfeiriad e-bost eich consortiwm</value>
+  </data>
+  <data name="Consortium_ConsortiumName_EnterNameError" xml:space="preserve">
+    <value>Rhowch enw eich consortiwm</value>
+  </data>
+  <data name="Consortium_ConsortiumName_Heading" xml:space="preserve">
+    <value>Enw eich consortiwm</value>
+  </data>
+  <data name="Consortium_ConsortiumName_Hint" xml:space="preserve">
+    <value>Gallwch newid hwn yn nes ymlaen os bydd angen</value>
+  </data>
+  <data name="Consortium_ConsortiumOverview_BackToMyAccount_link" xml:space="preserve">
+    <value>Yn ôl i fy nghyfrif</value>
+  </data>
+  <data name="Consortium_ConsortiumOverview_ChangeEmailaddress" xml:space="preserve">
+    <value>Newid&lt;span class="govuk-visually-hidden"&gt;cyfeiriad e-bost y consortiwm&lt;/span&gt;</value>
+  </data>
+  <data name="Consortium_ConsortiumOverview_ChangeName" xml:space="preserve">
+    <value>Newid&lt;span class="govuk-visually-hidden"&gt;enw'r consortiwm&lt;/span&gt;</value>
+  </data>
+  <data name="Consortium_ConsortiumOverview_CreateSharecode_list" xml:space="preserve">
+    <value>Datgan a chreu cod rhannu</value>
+  </data>
+  <data name="Consortium_ConsortiumOverview_Heading" xml:space="preserve">
+    <value>Manylion y consortiwm</value>
+  </data>
+  <data name="Consortium_ConsortiumOverview_Heading2" xml:space="preserve">
+    <value>Sefydliadau yn y consortiwm hwn</value>
+  </data>
+  <data name="Consortium_ConsortiumOverview_Heading3" xml:space="preserve">
+    <value>Rhannwch wybodaeth gyfunol am eich cyflenwyr</value>
+  </data>
+  <data name="Consortium_ConsortiumOverview_Paragraph1" xml:space="preserve">
+    <value>I ychwanegu sefydliad, bydd angen ei god rhannu diweddaraf</value>
+  </data>
+  <data name="Consortium_ConsortiumOverview_Ppon_Status_Pending" xml:space="preserve">
+    <value>PPON yn yr arfaeth</value>
+  </data>
+  <data name="Consortium_ConsortiumOverview_status_list" xml:space="preserve">
+    <value>Ni ellir dechrau eto</value>
+  </data>
+  <data name="Consortium_ConsortiumStart_Heading" xml:space="preserve">
+    <value>Creu consortiwm</value>
+  </data>
+  <data name="Consortium_ConsortiumStart_Paragraph1" xml:space="preserve">
+    <value>Gall dau gyflenwr neu fwy sydd am gyflwyno cynnig ar y cyd greu consortiwm. Gallwch ychwanegu cynifer o gyflenwyr ag sydd ei angen.</value>
+  </data>
+  <data name="Consortium_ConsortiumStart_Paragraph2" xml:space="preserve">
+    <value>Fel y sefydliad sy'n creu'r consortiwm, bydd angen i chi roi: </value>
+  </data>
+  <data name="Consortium_ConsortiumStart_Paragraph2_list" xml:space="preserve">
+    <value>&lt;li&gt;enw consortiwm&lt;/li&gt;
+&lt;li&gt;cyfeiriad&lt;/li&gt;
+&lt;li&gt;cyfeiriad e-bost&lt;/li&gt;
+&lt;li&gt;eich cod rhannu diweddaraf&lt;/li&gt;
+&lt;li&gt;codau rhannu diweddaraf pob un o'r cyflenwyr eraill&lt;/li&gt;</value>
+  </data>
+  <data name="Consortium_ConsortiumStart_Paragraph3" xml:space="preserve">
+    <value>Mae'n rhaid bod unrhyw gyflenwr rydych am ei ychwanegu at y consortiwm wedi cwblhau ei wybodaeth am y cyflenwr ac wedi creu cod rhannu.</value>
+  </data>
+  <data name="Consortium_ConsortiumStart_Paragraph4" xml:space="preserve">
+    <value>Pan fyddwch wedi ychwanegu pob cyflenwr, byddwch yn creu cod rhannu ar gyfer y wybodaeth gyfunol am eich cyflenwyr. </value>
+  </data>
+  <data name="Cookies_ChooseCookiePreferences" xml:space="preserve">
+    <value>Dewiswch a ydych yn derbyn cwcis sy'n mesur eich defnydd o'r wefan</value>
+  </data>
+  <data name="Cookies_SetCookiePreferences" xml:space="preserve">
+    <value>Rydych wedi gosod eich dewisiadau cwcis.</value>
+  </data>
+  <data name="ErrorMessageList_AlreadyMemberOfOrganisation" xml:space="preserve">
+    <value>Rydych naill ai'n aelod o'r sefydliad hwn yn barod neu eisoes wedi gwneud cais i ymuno.</value>
+  </data>
+  <data name="ErrorMessageList_BuyerInfoNotExists" xml:space="preserve">
+    <value>Nid yw'r wybodaeth am y prynwr ar gyfer y sefydliad dan sylw yn bodoli.</value>
+  </data>
+  <data name="ErrorMessageList_DuplicateApiKeyName" xml:space="preserve">
+    <value>Mae allwedd API sydd â'r enw hwn eisoes yn bodoli. Rhowch gynnig arall arni.</value>
+  </data>
+  <data name="ErrorMessageList_DuplicateInviteEmail" xml:space="preserve">
+    <value>Mae defnyddiwr sydd â'r cyfeiriad e-bost hwn eisoes wedi'i wahodd i ymuno â'ch sefydliad.</value>
+  </data>
+  <data name="ErrorMessageList_DuplicateOrganisationName" xml:space="preserve">
+    <value>Mae sefydliad sydd â'r enw hwn eisoes yn bodoli. Rhowch gynnig arall arni.</value>
+  </data>
+  <data name="ErrorMessageList_DuplicatePersonEmail" xml:space="preserve">
+    <value>Mae defnyddiwr sydd â'r cyfeiriad e-bost hwn eisoes yn bodoli ar gyfer eich sefydliad.</value>
+  </data>
+  <data name="ErrorMessageList_DuplicatePersonName" xml:space="preserve">
+    <value>Mae person sydd â'r enw hwn eisoes yn bodoli. Rhowch gynnig arall arni.</value>
+  </data>
+  <data name="ErrorMessageList_IdentiferNumberAlreadyExists" xml:space="preserve">
+    <value>Rydych wedi defnyddio'r rhif cofrestrfa hwn ar gyfer sefydliad arall. Rhowch rif cofrestrfa gwahanol.</value>
+  </data>
+  <data name="ErrorMessageList_MissingAdditionalIdentifiers" xml:space="preserve">
+    <value>Mae'r dynodyddion ychwanegol ar goll.</value>
+  </data>
+  <data name="ErrorMessageList_MissingContactPoint" xml:space="preserve">
+    <value>Mae'r pwynt cyswllt ar goll.</value>
+  </data>
+  <data name="ErrorMessageList_MissingIdentifierNumber" xml:space="preserve">
+    <value>Mae rhif y dynodydd ar goll.</value>
+  </data>
+  <data name="ErrorMessageList_MissingOrganisationAddress" xml:space="preserve">
+    <value>Mae cyfeiriad y sefydliad ar goll.</value>
+  </data>
+  <data name="ErrorMessageList_MissingOrganisationEmail" xml:space="preserve">
+    <value>Mae e-bost y sefydliad ar goll.</value>
+  </data>
+  <data name="ErrorMessageList_MissingOrganisationName" xml:space="preserve">
+    <value>Mae enw'r sefydliad ar goll.</value>
+  </data>
+  <data name="ErrorMessageList_MissingOrganisationRegisteredAddress" xml:space="preserve">
+    <value>Mae cyfeiriad cofrestredig y sefydliad ar goll.</value>
+  </data>
+  <data name="ErrorMessageList_MissingRoles" xml:space="preserve">
+    <value>Mae rolau ar goll.</value>
+  </data>
+  <data name="ErrorMessageList_MouNotFound" xml:space="preserve">
+    <value>Heb ddod o hyd i'r Memorandwm Cyd-ddealltwriaeth</value>
+  </data>
+  <data name="ErrorMessageList_NoPrimaryIdentifier" xml:space="preserve">
+    <value>Nid oes unrhyw ddynodyddion yn weddill y gellir eu gosod fel y prif ddynodydd.</value>
+  </data>
+  <data name="ErrorMessageList_OrganisationCreationFailed" xml:space="preserve">
+    <value>Ni lwyddwyd i greu sefydliad. A ydych wedi rhoi'r manylion cywir ar gyfer y sefydliad.</value>
+  </data>
+  <data name="ErrorMessageList_OrganisationEmailDoesNotExist" xml:space="preserve">
+    <value>Nid yw cyfeiriad e-bost y sefydliad yn bodoli.</value>
+  </data>
+  <data name="ErrorMessageList_OrganisationInvalidInput" xml:space="preserve">
+    <value>Mewnbwn annilys.</value>
+  </data>
+  <data name="ErrorMessageList_OrganisationNotFound" xml:space="preserve">
+    <value>Ni lwyddwyd i ddod o hyd i'r sefydliad dan sylw.</value>
+  </data>
+  <data name="ErrorMessageList_PayLoadIssueOrNullAurgument" xml:space="preserve">
+    <value>Gwnewch yn si?r bod yr holl wybodaeth ofynnol wedi'i rhoi'n gywir.</value>
+  </data>
+  <data name="ErrorMessageList_PersonCreationFailed" xml:space="preserve">
+    <value>Ni lwyddwyd i ychwanegu person. A ydych wedi rhoi'r manylion cywir ar gyfer y person.</value>
+  </data>
+  <data name="ErrorMessageList_PersonNotFound" xml:space="preserve">
+    <value>Ni lwyddwyd i ddod o hyd i'r person dan sylw.</value>
+  </data>
+  <data name="ErrorMessageList_UnexpectedError" xml:space="preserve">
+    <value>Bu gwall annisgwyl. Rhowch gynnig arall arni gan ddefnyddio data dilys.</value>
+  </data>
+  <data name="ErrorMessageList_UnknownBuyerInformationUpdateType" xml:space="preserve">
+    <value>Mae'r math o ddiweddariad y gofynnwyd amdano i'r wybodaeth am y prynwr yn anhysbys.</value>
+  </data>
+  <data name="ErrorMessageList_UnknownOrganisation" xml:space="preserve">
+    <value>Ni lwyddwyd i ddod o hyd i'r sefydliad dan sylw.</value>
+  </data>
+  <data name="ErrorMessageList_UnprocessableEntity" xml:space="preserve">
+    <value>Daethpwyd o hyd i endid na ellir ei brosesu. Rhowch gynnig arall arni gan ddefnyddio data dilys.</value>
+  </data>
+  <data name="Footer_SupportLinks" xml:space="preserve">
+    <value>Dolenni cymorth</value>
+  </data>
+  <data name="Forms_AnswerSetSummary_BackToSupplierInformation" xml:space="preserve">
+    <value>Yn ôl i'r wybodaeth am y cyflenwr</value>
+  </data>
+  <data name="Forms_CheckYourAnswers_Change" xml:space="preserve">
+    <value>Newid&lt;span class="govuk-visually-hidden"&gt; y {0}&lt;/span&gt;</value>
+  </data>
+  <data name="Forms_DeclarationSection_ConfirmAndGetShareCode" xml:space="preserve">
+    <value>Cadarnhau a chael cod rhannu</value>
+  </data>
+  <data name="Forms_FormElementAddress_InvalidCountryError" xml:space="preserve">
+    <value>Enw gwlad annilys '{0}'</value>
+  </data>
+  <data name="Forms_FormElementCheckBoxInput_DeclarationRequiredError" xml:space="preserve">
+    <value>Mae'n rhaid i chi gytuno â'r datganiadau er mwyn parhau.</value>
+  </data>
+  <data name="Forms_FormElementDateInput_ExampleHint" xml:space="preserve">
+    <value>Er enghraifft, 27 3 2007</value>
+  </data>
+  <data name="Forms_FormElementFileUpload_DocumentsHint" xml:space="preserve">
+    <value>Rydym yn derbyn y rhan fwyaf o fformatau ffeil a delwedd sy'n llai na 25MB.</value>
+  </data>
+  <data name="Forms_FormElementFileUpload_FileSizeExceededError" xml:space="preserve">
+    <value>Mae'n rhaid i'r ffeil fod yn llai na {0}MB.</value>
+  </data>
+  <data name="Forms_FormElementFileUpload_InvalidFileExtensionError" xml:space="preserve">
+    <value>Mae'n rhaid i'r ffeil fod yn {0}</value>
+  </data>
+  <data name="Forms_FormElementFileUpload_NoFileSelectedError" xml:space="preserve">
+    <value>Dewis ffeil</value>
+  </data>
+  <data name="Forms_FormElementFileUpload_UploadFileLabel" xml:space="preserve">
+    <value>Lanlwytho ffeil</value>
+  </data>
+  <data name="Forms_FormElementFileUpload_UploadedFileText" xml:space="preserve">
+    <value>Ffeil wedi'i lanlwytho: {0}</value>
+  </data>
+  <data name="Forms_FormElementMultiLineInput_AllInformationRequiredError" xml:space="preserve">
+    <value>Mae angen yr holl wybodaeth ar y dudalen hon</value>
+  </data>
+  <data name="Forms_FormElementMultiLineInput_CharacterCountError" xml:space="preserve">
+    <value>Rhowch 10,000 o nodau neu lai</value>
+  </data>
+  <data name="Forms_FormElementMultiLineInput_CharacterCountMessage" xml:space="preserve">
+    <value>Gallwch roi hyd at 10,000 o nodau</value>
+  </data>
+  <data name="Forms_FormElementTextInput_EnterValueError" xml:space="preserve">
+    <value>Rhowch werth</value>
+  </data>
+  <data name="Forms_FormElementTextInput_InvalidEmailError" xml:space="preserve">
+    <value>Rhowch gyfeiriad e-bost yn y fformat cywir, fel enw@enghraifft.com</value>
+  </data>
+  <data name="Forms_FormElementUrlInput_EnterWebsiteAddressError" xml:space="preserve">
+    <value>Rhowch gyfeiriad gwefan</value>
+  </data>
+  <data name="Forms_FormElementUrlInput_InvalidWebsiteAddressError" xml:space="preserve">
+    <value>Rhowch gyfeiriad gwefan yn y fformat cywir, fel www.enwcwmni.com</value>
+  </data>
+  <data name="Global_Approve" xml:space="preserve">
+    <value>Cymeradwyo</value>
+  </data>
+  <data name="Global_Back" xml:space="preserve">
+    <value>Yn ôl</value>
+  </data>
+  <data name="Global_DateInput_DateInFutureError" xml:space="preserve">
+    <value>Mae'n rhaid i’r dyddiad fod heddiw neu yn y gorffennol</value>
+  </data>
+  <data name="Global_DateInput_DateInvalidError" xml:space="preserve">
+    <value>Mae'n rhaid i'r dyddiad fod yn ddyddiad go iawn</value>
+  </data>
+  <data name="Global_DateInput_DayInvalidError" xml:space="preserve">
+    <value>Mae'n rhaid i'r diwrnod fod yn rhif dilys</value>
+  </data>
+  <data name="Global_DateInput_DayRequiredError" xml:space="preserve">
+    <value>Mae'n rhaid i'r dyddiad gynnwys diwrnod</value>
+  </data>
+  <data name="Global_DateInput_MonthInvalidError" xml:space="preserve">
+    <value>Mae'n rhaid i'r mis fod yn rhif dilys</value>
+  </data>
+  <data name="Global_DateInput_MonthRequiredError" xml:space="preserve">
+    <value>Mae'n rhaid i'r dyddiad gynnwys mis</value>
+  </data>
+  <data name="Global_DateInput_YearInvalidError" xml:space="preserve">
+    <value>Mae'n rhaid i'r flwyddyn fod yn rhif dilys</value>
+  </data>
+  <data name="Global_DateInput_YearRequiredError" xml:space="preserve">
+    <value>Mae'n rhaid i'r dyddiad gynnwys blwyddyn</value>
+  </data>
+  <data name="Global_Download" xml:space="preserve">
+    <value>Lawrlwytho</value>
+  </data>
+  <data name="Global_Email_Invalid_ErrorMessage" xml:space="preserve">
+    <value>Rhowch gyfeiriad e-bost yn y fformat cywir, fel enw@enghraifft.com</value>
+  </data>
+  <data name="Global_Error" xml:space="preserve">
+    <value>Gwall</value>
+  </data>
+  <data name="Global_ErrorSummary_Heading" xml:space="preserve">
+    <value>Mae problem wedi codi</value>
+  </data>
+  <data name="Global_GoBackToMyAccount" xml:space="preserve">
+    <value>Yn ôl i fy nghyfrif</value>
+  </data>
+  <data name="Global_Important" xml:space="preserve">
+    <value>Pwysig</value>
+  </data>
+  <data name="Global_NotApplicable" xml:space="preserve">
+    <value>Dd/G</value>
+  </data>
+  <data name="Global_NotApplicableLong" xml:space="preserve">
+    <value>Ddim yn gymwys</value>
+  </data>
+  <data name="Global_PleaseSelect" xml:space="preserve">
+    <value>Dewiswch</value>
+  </data>
+  <data name="Global_RadioField_SelectOptionError" xml:space="preserve">
+    <value>Dewiswch opsiwn</value>
+  </data>
+  <data name="Global_RadioField__InvalidOptionError" xml:space="preserve">
+    <value>Opsiwn annilys wedi'i ddewis</value>
+  </data>
+  <data name="Global_SaveAndContinue" xml:space="preserve">
+    <value>Cadw a pharhau</value>
+  </data>
+  <data name="Global_SaveAndExit" xml:space="preserve">
+    <value>Cadw a gadael</value>
+  </data>
+  <data name="Global_SelectAnOption" xml:space="preserve">
+    <value>Dewiswch opsiwn</value>
+  </data>
+  <data name="Global_SendMessage" xml:space="preserve">
+    <value>Anfon neges</value>
+  </data>
+  <data name="Global_Submit" xml:space="preserve">
+    <value>Cyflwyno</value>
+  </data>
+  <data name="Header_MyAccount" xml:space="preserve">
+    <value>Fy nghyfrif</value>
+  </data>
+  <data name="Header_Support" xml:space="preserve">
+    <value>Cymorth</value>
+  </data>
+  <data name="OrganisationInviteExpired_Body" xml:space="preserve">
+    <value>Efallai fod gennych wahoddiad mwy diweddar neu fod angen i chi wneud cais i ymuno eto.</value>
+  </data>
+  <data name="OrganisationInviteExpired_Link" xml:space="preserve">
+    <value>Mynd i fy nghyfrif</value>
+  </data>
+  <data name="OrganisationInviteExpired_Title" xml:space="preserve">
+    <value>Mae eich gwahoddiad wedi dod i ben</value>
+  </data>
+  <data name="OrganisationRegistration_Address_Buyer_Hint" xml:space="preserve">
+    <value>Y prif gyfeiriad lle mae'r sefydliad yn gweithredu. Er enghraifft, pencadlys.</value>
+  </data>
+  <data name="OrganisationRegistration_Address_NonUk_Heading" xml:space="preserve">
+    <value>Rhowch gyfeiriad cofrestredig eich sefydliad y tu allan i'r DU</value>
+  </data>
+  <data name="OrganisationRegistration_BuyerDevolvedRegulation_Heading" xml:space="preserve">
+    <value>A yw rheoliadau datganoledig yn gymwys i'ch sefydliad?</value>
+  </data>
+  <data name="OrganisationRegistration_BuyerOrganisationType_CentralGovernment_Hint" xml:space="preserve">
+    <value>Awdurdodau cyhoeddus gan gynnwys cyrff hyd braich a chronfeydd masnachu</value>
+  </data>
+  <data name="OrganisationRegistration_BuyerOrganisationType_CentralGovernment_Label" xml:space="preserve">
+    <value>Llywodraeth ganolog – gweinyddiaeth y DU neu weinyddiaeth ddatganoledig</value>
+  </data>
+  <data name="OrganisationRegistration_BuyerOrganisationType_Heading" xml:space="preserve">
+    <value>Dewiswch eich math o sefydliad prynu</value>
+  </data>
+  <data name="OrganisationRegistration_BuyerOrganisationType_OtherEnterType_Label" xml:space="preserve">
+    <value>Rhowch y math</value>
+  </data>
+  <data name="OrganisationRegistration_BuyerOrganisationType_Other_Hint" xml:space="preserve">
+    <value>Er enghraifft, awdurdod nad yw'n contractio yn sefydlu marchnad ddynamig ar gyfer cyfleustodau.</value>
+  </data>
+  <data name="OrganisationRegistration_BuyerOrganisationType_PrivateUtility_Hint" xml:space="preserve">
+    <value>Cwmni preifat â hawl arbennig neu unigryw i ddarparu cyfleustodau i'r cyhoedd. Er enghraifft, cwmnïau preifat sy'n cyflenwi trydan. </value>
+  </data>
+  <data name="OrganisationRegistration_BuyerOrganisationType_PublicUndertaking_Hint" xml:space="preserve">
+    <value>Sefydliad masnachol a oruchwylir gan y cyhoedd, sy'n darparu cyfleustodau i'r cyhoedd. Er enghraifft, rhwydweithiau trafnidiaeth sy'n gweithredu'n fasnachol. </value>
+  </data>
+  <data name="OrganisationRegistration_BuyerOrganisationType_RegionalAndLocalGovernment_Hint" xml:space="preserve">
+    <value>Yn cynnwys cynghorau, elusennau, sefydliadau addysg, cymdeithasau tai a sefydliadau golau glas. </value>
+  </data>
+  <data name="OrganisationRegistration_BuyerOrganisationType_RegionalAndLocalGovernment_Label" xml:space="preserve">
+    <value>Awdurdod cyhoeddus rhanbarthol a lleol – gweinyddiaeth y DU neu weinyddiaeth ddatganoledig</value>
+  </data>
+  <data name="OrganisationRegistration_BuyerOrganisationType_ValidationErrorMessage" xml:space="preserve">
+    <value>Dewiswch eich math o sefydliad prynu</value>
+  </data>
+  <data name="OrganisationRegistration_BuyerSelectDevolvedRegulation_Heading" xml:space="preserve">
+    <value>Dewiswch pa reoliadau datganoledig sy'n gymwys</value>
+  </data>
+  <data name="OrganisationRegistration_BuyerSelectDevolvedRegulation_Hint" xml:space="preserve">
+    <value>Dewiswch bob un sy'n berthnasol</value>
+  </data>
+  <data name="OrganisationRegistration_CompanyHouseNumberQuestion_CompanyAlreadyRegistered_NotificationBanner" xml:space="preserve">
+    <value>Mae sefydliad sydd â'r rhif cwmni hwn eisoes yn bodoli. Newid rhif y cwmni neu &lt;a class="govuk-notification-banner__link" href="/registration/{organisationIdentifier}/join-organisation"&gt;wneud cais i ymuno â {organisationName}.&lt;/a&gt;</value>
+  </data>
+  <data name="OrganisationRegistration_EnterOrganisationEmail_Hint" xml:space="preserve">
+    <value>Lle y bo'n bosibl, defnyddiwch fewnflwch a rennir y gall aelodau eraill y tîm gael mynediad iddo</value>
+  </data>
+  <data name="OrganisationRegistration_InternationalIdentifier_Country_Heading" xml:space="preserve">
+    <value>Dewiswch ble mae eich sefydliad wedi'i gofrestru</value>
+  </data>
+  <data name="OrganisationRegistration_InternationalIdentifier_Country_Required_ErrorMessage" xml:space="preserve">
+    <value>Dewiswch wlad</value>
+  </data>
+  <data name="OrganisationRegistration_InternationalIdentifier_Heading" xml:space="preserve">
+    <value>Dewiswch gofrestrfa eich sefydliad</value>
+  </data>
+  <data name="OrganisationRegistration_InternationalIdentifier_None" xml:space="preserve">
+    <value>Ni allwch ychwanegu dynodydd arall ar gyfer y wlad hon.</value>
+  </data>
+  <data name="OrganisationRegistration_InternationalIdentifier_RegistrationNumber_Required_ErrorMessage" xml:space="preserve">
+    <value>Rhowch y rhif</value>
+  </data>
+  <data name="OrganisationRegistration_InternationalIdentifier_Select_Indentifier" xml:space="preserve">
+    <value>Dewiswch un wedyn rhowch y rhif cofrestru</value>
+  </data>
+  <data name="OrganisationRegistration_InternationalIdentifier_Type_Required_ErrorMessage" xml:space="preserve">
+    <value>Dewiswch opsiwn</value>
+  </data>
+  <data name="OrganisationRegistration_JoinOrganisationSuccess_Heading" xml:space="preserve">
+    <value>Mae eich cais i ymuno â {0} wedi'i anfon</value>
+  </data>
+  <data name="OrganisationRegistration_JoinOrganisationSuccess_Message" xml:space="preserve">
+    <value>Byddwch yn cael e-bost am eich cais.</value>
+  </data>
+  <data name="OrganisationRegistration_JoinOrganisation_AlreadyMemberOfOrganisation" xml:space="preserve">
+    <value>Rydych eisoes yn aelod o'r sefydliad hwn. &lt;a class="govuk-notification-banner__link" href="/organisation-selection"&gt;Yn ôl i fy nghyfrif&lt;/a&gt;</value>
+  </data>
+  <data name="OrganisationRegistration_JoinOrganisation_ConfirmValidationErrorMessage" xml:space="preserve">
+    <value>Dewiswch eich bod yn deall y bydd eich enw a'ch cyfeiriad e-bost yn cael eu rhannu</value>
+  </data>
+  <data name="OrganisationRegistration_JoinOrganisation_Heading" xml:space="preserve">
+    <value>Anfon cais i ymuno â {0}?</value>
+  </data>
+  <data name="OrganisationRegistration_JoinOrganisation_PendingMemberOfOrganisation" xml:space="preserve">
+    <value>Rydych eisoes wedi gwneud cais i ymuno â'r sefydliad hwn. Mae eich cais yn aros i gael ei gymeradwyo. &lt;a class="govuk-notification-banner__link" href="/organisation-selection"&gt;Yn ôl i fy nghyfrif&lt;/a&gt;</value>
+  </data>
+  <data name="OrganisationRegistration_UserConfirm" xml:space="preserve">
+    <value>Rwy'n deall y bydd fy enw a'm cyfeiriad e-bost yn cael eu rhannu â'r sefydliad hwn</value>
+  </data>
+  <data name="OrganisationSchemeType_CharityCommissionEnglandWales" xml:space="preserve">
+    <value>Rhif Comisiwn Elusennau Cymru a Lloegr</value>
+  </data>
+  <data name="OrganisationSchemeType_CharityCommissionNorthernIreland" xml:space="preserve">
+    <value>Rhif Comisiwn Elusennau Gogledd Iwerddon</value>
+  </data>
+  <data name="OrganisationSchemeType_GuernseyRegistry" xml:space="preserve">
+    <value>Rhif Cofrestrfa Guernsey</value>
+  </data>
+  <data name="OrganisationSchemeType_IsleOfManCompaniesRegistry" xml:space="preserve">
+    <value>Rhif Cofrestrfa Cwmnïau Ynys Manaw</value>
+  </data>
+  <data name="OrganisationSchemeType_JerseyFinancialServicesCommission" xml:space="preserve">
+    <value>Rhif Cofrestrfa Comisiwn Gwasanaethau Ariannol Jersey</value>
+  </data>
+  <data name="OrganisationSchemeType_MutualsPublicRegister" xml:space="preserve">
+    <value>Rhif Cofrestr Gyhoeddus y Cwmnïau Cydfuddiannol</value>
+  </data>
+  <data name="OrganisationSchemeType_NHSOrganisationsRegistry" xml:space="preserve">
+    <value>Rhif Cofrestrfa Sefydliadau'r Gwasanaeth Iechyd Gwladol</value>
+  </data>
+  <data name="OrganisationSchemeType_OtherNone" xml:space="preserve">
+    <value>Arall / Dim</value>
+  </data>
+  <data name="OrganisationSchemeType_Ppon" xml:space="preserve">
+    <value>PPON</value>
+  </data>
+  <data name="OrganisationSchemeType_UKRegisterOfLearningProviders" xml:space="preserve">
+    <value>Rhif Cofrestr Darparwyr Dysgu'r DU</value>
+  </data>
+  <data name="Organisation_AddAddress" xml:space="preserve">
+    <value>Ychwanegu&lt;span class="govuk-visually-hidden"&gt; cyfeiriad&lt;/span&gt;</value>
+  </data>
+  <data name="Organisation_AfterYouveRegistered" xml:space="preserve">
+    <value>Ar ôl i chi gofrestru</value>
+  </data>
+  <data name="Organisation_ApiKeysForBuyers" xml:space="preserve">
+    <value> (prynwyr)</value>
+  </data>
+  <data name="Organisation_BuyerRegistrationPendingApproval" xml:space="preserve">
+    <value>Cofrestriad prynwr yn aros i gael ei gymeradwyo.</value>
+  </data>
+  <data name="Organisation_ChangeSignInDetails" xml:space="preserve">
+    <value>Gallwch &lt;a class="govuk-link govuk-link--no-visited-state" href="{0}" target="_blank"&gt;newid eich manylion mewngofnodi yn eich GOV.UK One Login&lt;/a&gt;.</value>
+  </data>
+  <data name="Organisation_CompleteAndShareSupplierInformation" xml:space="preserve">
+    <value>Bydd angen i chi gwblhau a rhannu eich gwybodaeth am y cyflenwr er mwyn cynnig am gaffaeliadau.</value>
+  </data>
+  <data name="Organisation_CompleteSupplierInformation" xml:space="preserve">
+    <value>Cwblhewch y wybodaeth am y cyflenwr</value>
+  </data>
+  <data name="Organisation_ConsortiumName" xml:space="preserve">
+    <value>Enw'r consortiwm</value>
+  </data>
+  <data name="Organisation_CreateApiKey" xml:space="preserve">
+    <value>Crëwch allwedd API a'i rannu â'r e-Anfonwr rydych yn ei ddefnyddio i gyhoeddi hysbysiadau caffael.</value>
+  </data>
+  <data name="Organisation_CreateNewConsortium" xml:space="preserve">
+    <value>Creu consortiwm newydd</value>
+  </data>
+  <data name="Organisation_EnterOrganisationName_Buyer_Hint" xml:space="preserve">
+    <value>Os ydych yn adran, asiantaeth neu gorff cyhoeddus ar restr sefydliadau GOV.UK &lt;a class="govuk-link" target="_blank" href="https://www.gov.uk/government/organisations"&gt; (bydd yn agor mewn tab newydd)&lt;/a&gt;, defnyddiwch yr union enw a ddangosir. Fel arall, defnyddiwch eich enw swyddogol llawn. Er enghraifft, Cyllid a Thollau EF nid CThEF. </value>
+  </data>
+  <data name="Organisation_GetProcurementGuidance" xml:space="preserve">
+    <value>Am adnoddau i'ch tywys drwy'r cylch bywyd masnachol o'r dechrau i'r diwedd, defnyddiwch </value>
+  </data>
+  <data name="Organisation_IfYouNeedTo" xml:space="preserve">
+    <value>Os bydd angen, gallwch wneud y canlynol:</value>
+  </data>
+  <data name="Organisation_ManageUsers" xml:space="preserve">
+    <value>Rheoli defnyddwyr</value>
+  </data>
+  <data name="Organisation_MyAccount" xml:space="preserve">
+    <value>Fy nghyfrif</value>
+  </data>
+  <data name="Organisation_MyConsortium" xml:space="preserve">
+    <value>Consortia ar gyfer cynigion ar y cyd ({0})</value>
+  </data>
+  <data name="Organisation_MyOrganisations" xml:space="preserve">
+    <value>Fy sefydliadau</value>
+  </data>
+  <data name="Organisation_NotApproved" xml:space="preserve">
+    <value>Heb ei gymeradwyo</value>
+  </data>
+  <data name="Organisation_OrganisationIdentification_ErrorMessage" xml:space="preserve">
+    <value>Dewiswch y sefydliad ar unrhyw un o'r cofrestrfeydd hyn</value>
+  </data>
+  <data name="Organisation_OrganisationIdentification_GB_CHC_Number_ErrorMessage" xml:space="preserve">
+    <value>Rhowch rif Comisiwn Elusennau Cymru a Lloegr</value>
+  </data>
+  <data name="Organisation_OrganisationIdentification_GB_CHC_Number_Label" xml:space="preserve">
+    <value>Rhif Comisiwn Elusennau Cymru a Lloegr</value>
+  </data>
+  <data name="Organisation_OrganisationIdentification_GB_MPR_Number_ErrorMessage" xml:space="preserve">
+    <value>Rhowch rif Cofrestr Gyhoeddus y Cwmnïau Cydfuddiannol</value>
+  </data>
+  <data name="Organisation_OrganisationIdentification_GB_MPR_Number_Label" xml:space="preserve">
+    <value>Rhif Cofrestr Gyhoeddus y Cwmnïau Cydfuddiannol</value>
+  </data>
+  <data name="Organisation_OrganisationIdentification_GB_NHS_Number_ErrorMessage" xml:space="preserve">
+    <value>Rhowch rif Gwasanaeth Data Sefydliad y GIG</value>
+  </data>
+  <data name="Organisation_OrganisationIdentification_GB_NHS_Number_Label" xml:space="preserve">
+    <value>Rhif Gwasanaeth Data Sefydliad y GIG</value>
+  </data>
+  <data name="Organisation_OrganisationIdentification_GB_NIC_Number_ErrorMessage" xml:space="preserve">
+    <value>Rhowch rif Comisiwn Elusennau Gogledd Iwerddon</value>
+  </data>
+  <data name="Organisation_OrganisationIdentification_GB_NIC_Number_Label" xml:space="preserve">
+    <value>Rhif Comisiwn Elusennau Gogledd Iwerddon</value>
+  </data>
+  <data name="Organisation_OrganisationIdentification_GB_SC_Number_ErrorMessage" xml:space="preserve">
+    <value>Rhowch rif Rheoleiddiwr Elusennau'r Alban</value>
+  </data>
+  <data name="Organisation_OrganisationIdentification_GB_SC_Number_Label" xml:space="preserve">
+    <value>Rhif Rheoleiddiwr Elusennau'r Alban</value>
+  </data>
+  <data name="Organisation_OrganisationIdentification_GB_UKPRN_Number_ErrorMessage" xml:space="preserve">
+    <value>Rhowch rif Cofrestr Darparwyr Dysgu'r DU.</value>
+  </data>
+  <data name="Organisation_OrganisationIdentification_GB_UKPRN_Number_Label" xml:space="preserve">
+    <value>Cofrestr Darparwyr Dysgu'r DU (GB-UKPRN)</value>
+  </data>
+  <data name="Organisation_OrganisationIdentification_GG_RCE_Number_ErrorMessage" xml:space="preserve">
+    <value>Rhowch rif Cofrestrfa Guernsey.</value>
+  </data>
+  <data name="Organisation_OrganisationIdentification_GG_RCE_Number_Label" xml:space="preserve">
+    <value>Rhif Cofrestrfa Guernsey</value>
+  </data>
+  <data name="Organisation_OrganisationIdentification_Heading" xml:space="preserve">
+    <value>A yw eich sefydliad ar unrhyw un o'r cofrestrfeydd hyn?</value>
+  </data>
+  <data name="Organisation_OrganisationIdentification_Hint" xml:space="preserve">
+    <value>Dewiswch un opsiwn. Yna rhowch y rhif cofrestru.</value>
+  </data>
+  <data name="Organisation_OrganisationIdentification_IM_CR_Number_ErrorMessage" xml:space="preserve">
+    <value>Rhowch rif Cofrestrfa Cwmnïau Ynys Manaw</value>
+  </data>
+  <data name="Organisation_OrganisationIdentification_IM_CR_Number_Label" xml:space="preserve">
+    <value>Rhif Cofrestrfa Cwmnïau Ynys Manaw</value>
+  </data>
+  <data name="Organisation_OrganisationIdentification_JE_FSC_Number_ErrorMessage" xml:space="preserve">
+    <value>Rhowch rif Cofrestrfa Comisiwn Gwasanaethau Ariannol Jersey</value>
+  </data>
+  <data name="Organisation_OrganisationIdentification_JE_FSC_Number_Label" xml:space="preserve">
+    <value>Rhif Cofrestrfa Comisiwn Gwasanaethau Ariannol Jersey</value>
+  </data>
+  <data name="Organisation_OrganisationIdentification_Multiple_Hint" xml:space="preserve">
+    <value>Dewiswch bob un sy'n berthnasol. Yna rhowch y rhif cofrestru.</value>
+  </data>
+  <data name="Organisation_OrganisationIdentification_Number_ErrorMessage" xml:space="preserve">
+    <value>Rhowch y rhif</value>
+  </data>
+  <data name="Organisation_OrganisationIdentification_ODS_Code_ErrorMessage" xml:space="preserve">
+    <value>Rhowch y cod</value>
+  </data>
+  <data name="Organisation_OrganisationIdentification_Other_Hint" xml:space="preserve">
+    <value>Byddwch yn cael rhif sefydliad caffael cyhoeddus (PPON) fel dynodydd</value>
+  </data>
+  <data name="Organisation_PponGenerationPending" xml:space="preserve">
+    <value>PPON yn yr arfaeth.</value>
+  </data>
+  <data name="Organisation_ProcurementPathwayService" xml:space="preserve">
+    <value>Gwasanaeth Llwybr Caffael (bydd yn agor mewn tab newydd)</value>
+  </data>
+  <data name="Organisation_RegisterAnOrganisation" xml:space="preserve">
+    <value>Cofrestru sefydliad</value>
+  </data>
+  <data name="Organisation_RegisterAsOtherRole" xml:space="preserve">
+    <value>cofrestru fel y rôl arall, os ydych yn brynwr ac yn gyflenwr</value>
+  </data>
+  <data name="Organisation_RegisterAsSupplier" xml:space="preserve">
+    <value>Cofrestru fel cyflenwr</value>
+  </data>
+  <data name="Organisation_RegisterOrganisation" xml:space="preserve">
+    <value>Dylech gofrestru sefydliad os ydych yn:</value>
+  </data>
+  <data name="Organisation_RegistrationNotApproved" xml:space="preserve">
+    <value>Nid yw'r cais i gofrestru wedi'i gymeradwyo</value>
+  </data>
+  <data name="Organisation_SignInDetails" xml:space="preserve">
+    <value>Manylion mewngofnodi</value>
+  </data>
+  <data name="Organisation_SupplyGoodsServices" xml:space="preserve">
+    <value>Os ydych hefyd yn cyflenwi nwyddau, gwaith, gwasanaethau neu gyfleustodau i'r sector cyhoeddus. </value>
+  </data>
+  <data name="Organisation_ViewAddRemoveUsers" xml:space="preserve">
+    <value>Gweld, ychwanegu neu ddileu defnyddwyr. </value>
+  </data>
+  <data name="Organisation_ViewApiKeys" xml:space="preserve">
+    <value>Gweld allweddi API</value>
+  </data>
+  <data name="Organisation_WeCouldNotApproveYourRequest" xml:space="preserve">
+    <value>Ni allem gymeradwyo eich cais oherwydd:</value>
+  </data>
+  <data name="PdfGenerator_AdditionalIdentifiers" xml:space="preserve">
+    <value>Dynodyddion ychwanegol</value>
+  </data>
+  <data name="PdfGenerator_BasicInformation_LawRegistered" xml:space="preserve">
+    <value>Cyfraith a gofrestrwyd</value>
+  </data>
+  <data name="PdfGenerator_BasicInformation_RegistrationDate" xml:space="preserve">
+    <value>Dyddiad cofrestru</value>
+  </data>
+  <data name="PdfGenerator_ConnectedOrganisationInformation_Title" xml:space="preserve">
+    <value>Gwybodaeth am sefydliad cysylltiedig</value>
+  </data>
+  <data name="PdfGenerator_ConnectedPersonInformation_Title" xml:space="preserve">
+    <value>Gwybodaeth am berson cysylltiedig</value>
+  </data>
+  <data name="PdfGenerator_ConnectedPerson_LawRegistered" xml:space="preserve">
+    <value>Cyfraith a gofrestrwyd</value>
+  </data>
+  <data name="PdfGenerator_ConnectedPerson_Locality" xml:space="preserve">
+    <value>Ardal leol</value>
+  </data>
+  <data name="PdfGenerator_ConnectedPerson_RegisteredLegalForm" xml:space="preserve">
+    <value>Ffurf gyfreithiol gofrestredig</value>
+  </data>
+  <data name="PdfGenerator_ConnectedPerson_ResidentCountry" xml:space="preserve">
+    <value>Gwlad breswyl</value>
+  </data>
+  <data name="PdfGenerator_ConnectedPerson_StreetAddress" xml:space="preserve">
+    <value>Cyfeiriad stryd</value>
+  </data>
+  <data name="PdfGenerator_Footer_GeneratedOn" xml:space="preserve">
+    <value>Cynhyrchwyd ar</value>
+  </data>
+  <data name="PdfGenerator_IdentifierId" xml:space="preserve">
+    <value>Dynodydd</value>
+  </data>
+  <data name="PdfGenerator_IndividualTrustInformation_Title" xml:space="preserve">
+    <value>Gwybodaeth am ymddiriedolaeth unigol</value>
+  </data>
+  <data name="PdfGenerator_LegalName" xml:space="preserve">
+    <value>Enw cyfreithiol</value>
+  </data>
+  <data name="PdfGenerator_NoAdditionalIdentifiersAvailableMsg" xml:space="preserve">
+    <value>Nid oes unrhyw ddynodyddion ychwanegol ar gael.</value>
+  </data>
+  <data name="PdfGenerator_NoConnectedPersonInformationAvailableMsg" xml:space="preserve">
+    <value>Nid oes unrhyw wybodaeth am berson cysylltiedig ar gael.</value>
+  </data>
+  <data name="PdfGenerator_OrganisationSchemeTitle_CharityCommission" xml:space="preserve">
+    <value>Rhif Comisiwn Elusennau Cymru a Lloegr</value>
+  </data>
+  <data name="PdfGenerator_OrganisationSchemeTitle_GuernseyRegistry" xml:space="preserve">
+    <value>Rhif Cofrestrfa Guernsey</value>
+  </data>
+  <data name="PdfGenerator_OrganisationSchemeTitle_IsleOfManCompaniesRegistry" xml:space="preserve">
+    <value>Rhif Cofrestrfa Cwmnïau Ynys Manaw</value>
+  </data>
+  <data name="PdfGenerator_OrganisationSchemeTitle_JerseyFinancialServices" xml:space="preserve">
+    <value>Rhif Cofrestrfa Comisiwn Gwasanaethau Ariannol Jersey</value>
+  </data>
+  <data name="PdfGenerator_OrganisationSchemeTitle_LearningProviderRegistry" xml:space="preserve">
+    <value>Rhif Cofrestr Darparwyr Dysgu'r DU</value>
+  </data>
+  <data name="PdfGenerator_OrganisationSchemeTitle_MutualsPublicRegister" xml:space="preserve">
+    <value>Rhif Cofrestr Gyhoeddus y Cwmnïau Cydfuddiannol</value>
+  </data>
+  <data name="PdfGenerator_OrganisationSchemeTitle_NHSRegistry" xml:space="preserve">
+    <value>Rhif Cofrestrfa Sefydliadau'r Gwasanaeth Iechyd Gwladol</value>
+  </data>
+  <data name="PdfGenerator_OrganisationSchemeTitle_NorthernIrelandCharityCommission" xml:space="preserve">
+    <value>Rhif Comisiwn Elusennau Gogledd Iwerddon</value>
+  </data>
+  <data name="PdfGenerator_OrganisationSchemeTitle_Other" xml:space="preserve">
+    <value>Arall / Dim</value>
+  </data>
+  <data name="PdfGenerator_OrganisationSchemeTitle_Ppon" xml:space="preserve">
+    <value>PPON</value>
+  </data>
+  <data name="PdfGenerator_OrganisationSchemeTitle_Unknown" xml:space="preserve">
+    <value>Anhysbys</value>
+  </data>
+  <data name="PdfGenerator_Organisation_ControlConditions" xml:space="preserve">
+    <value>Amodau rheoli</value>
+  </data>
+  <data name="PdfGenerator_Scheme" xml:space="preserve">
+    <value>Cynllun</value>
+  </data>
+  <data name="PdfGenerator_UnknownCategory" xml:space="preserve">
+    <value>Categori anhysbys</value>
+  </data>
+  <data name="PdfGenerator_UnknownControlCondition" xml:space="preserve">
+    <value>Amod rheoli anhysbys</value>
+  </data>
+  <data name="PdfGenerator_UnknownPersonType" xml:space="preserve">
+    <value>Math o berson anhysbys</value>
+  </data>
+  <data name="PdfGenerator_Uri" xml:space="preserve">
+    <value>Uri</value>
+  </data>
+  <data name="PrivacyPolicy_Notice_BeforeLink" xml:space="preserve">
+    <value>Cyn y gallwch barhau, mae angen i chi ddarllen </value>
+  </data>
+  <data name="PrivacyPolicy_Notice_Link" xml:space="preserve">
+    <value>polisi preifatrwydd gwasanaeth y Llwyfan Digidol Canolog a chytuno iddo (bydd yn agor mewn tab newydd)</value>
+  </data>
+  <data name="PrivacyPolicy_SelectReadAndAgreeToPrivacyPolicy" xml:space="preserve">
+    <value>Dewiswch os ydych wedi darllen polisi preifatrwydd y gwasanaeth Llwyfan Digidol Canolog ac yn cytuno iddo</value>
+  </data>
+  <data name="PrivacyPolicy_Title" xml:space="preserve">
+    <value>Rhaid i chi gytuno i'r polisi preifatrwydd cyn parhau</value>
+  </data>
+  <data name="PrivacyPolicy_YesIHaveReadAndAgreePrivacyPolicy" xml:space="preserve">
+    <value>Rwyf wedi darllen polisi preifatrwydd gwasanaeth y Llwyfan Digidol Canolog ac rwy'n cytuno iddo</value>
+  </data>
+  <data name="ProvideFeedbackAndContact_ASpecificPage" xml:space="preserve">
+    <value>Tudalen benodol</value>
+  </data>
+  <data name="ProvideFeedbackAndContact_ChooseAnOption" xml:space="preserve">
+    <value>Dewiswch opsiwn</value>
+  </data>
+  <data name="ProvideFeedbackAndContact_DoNotIncludePersonalOrFinancialInformation" xml:space="preserve">
+    <value>Peidiwch â chynnwys gwybodaeth bersonol nac ariannol, er enghraifft eich rhif Yswiriant Gwladol neu fanylion eich cerdyn credyd</value>
+  </data>
+  <data name="ProvideFeedbackAndContact_EnterAName" xml:space="preserve">
+    <value>Rhowch enw</value>
+  </data>
+  <data name="ProvideFeedbackAndContact_EnterEmailAddress" xml:space="preserve">
+    <value>Rhowch gyfeiriad e-bost</value>
+  </data>
+  <data name="ProvideFeedbackAndContact_EnterUrlOrNameOfPage" xml:space="preserve">
+    <value>Rhowch URL neu enw'r dudalen</value>
+  </data>
+  <data name="ProvideFeedbackAndContact_EnterYourFeedback" xml:space="preserve">
+    <value>Rhowch eich adborth</value>
+  </data>
+  <data name="ProvideFeedbackAndContact_GiveUsYourDetailsIfYouWantAReply" xml:space="preserve">
+    <value>Rhowch eich manylion os hoffech gael ymateb (dewisol)</value>
+  </data>
+  <data name="ProvideFeedbackAndContact_MessageFieldCannotBeEmpty" xml:space="preserve">
+    <value>Ni all y parth neges fod yn wag</value>
+  </data>
+  <data name="ProvideFeedbackAndContact_ProvideFindATenderFeedback" xml:space="preserve">
+    <value>Rhoi Adborth ar Canfod Tendr</value>
+  </data>
+  <data name="ProvideFeedbackAndContact_SpecificPage" xml:space="preserve">
+    <value>Tudalen benodol</value>
+  </data>
+  <data name="ProvideFeedbackAndContact_TheWholeService" xml:space="preserve">
+    <value>Y gwasanaeth cyfan</value>
+  </data>
+  <data name="ProvideFeedbackAndContact_ThisFormIsToRaiseIssues" xml:space="preserve">
+    <value>Diben y ffurflen hon yw eich galluogi i godi materion neu wneud cais am gymorth mewn perthynas â gwefan Canfod Tendr.</value>
+  </data>
+  <data name="ProvideFeedbackAndContact_UrlOfPageRequired" xml:space="preserve">
+    <value>Mae angen URL y dudalen benodol</value>
+  </data>
+  <data name="ProvideFeedbackAndContact_UseThisFormToAskAQuestion" xml:space="preserve">
+    <value>Defnyddiwch y ffurflen hon i ofyn cwestiwn, rhoi gwybod am broblem neu awgrymu gwelliant i dîm gwasanaeth Canfod Tendr. </value>
+  </data>
+  <data name="ProvideFeedbackAndContact_WellOnlyUseThisToReplyToYourMessage" xml:space="preserve">
+    <value>Dim ond er mwyn ymateb i'ch neges y byddwn yn defnyddio'r ffurflen hon</value>
+  </data>
+  <data name="ProvideFeedbackAndContact_WhatAreTheDetails" xml:space="preserve">
+    <value>Beth yw'r manylion?</value>
+  </data>
+  <data name="ProvideFeedbackAndContact_WhatsItToDoWith" xml:space="preserve">
+    <value>At beth y mae'n cyfeirio?</value>
+  </data>
+  <data name="ProvideFeedbackAndContact_YouCanAskAQuestion" xml:space="preserve">
+    <value>Gallwch ofyn cwestiwn, rhoi gwybod am broblem neu awgrymu gwelliant i dîm Canfod Tendr. </value>
+  </data>
+  <data name="ProvideFeedbackAndContact_YouCanEnterUpTo10000Characters" xml:space="preserve">
+    <value>Gallwch roi hyd at 10,000 o nodau</value>
+  </data>
+  <data name="ShareYourInformation_CreateShareCodeButton" xml:space="preserve">
+    <value>Creu cod rhannu</value>
+  </data>
+  <data name="ShareYourInformation_CreatedOn" xml:space="preserve">
+    <value>Crëwyd ar</value>
+  </data>
+  <data name="ShareYourInformation_HowItWorksParagraph1" xml:space="preserve">
+    <value>Er mwyn rhannu eich gwybodaeth am y cyflenwr â phrynwyr, bydd angen i chi greu ffeil a chod rhannu, a datgan bod y wybodaeth yn gywir. </value>
+  </data>
+  <data name="ShareYourInformation_HowItWorksParagraph2" xml:space="preserve">
+    <value>Bydd hyn yn cadw copi o'r wybodaeth am y cyflenwr y gwnaethoch ei rhoi ar gyfer eich sefydliad, unigolion cysylltiedig, gwaharddiadau a gwybodaeth ariannol. </value>
+  </data>
+  <data name="ShareYourInformation_HowItWorksParagraph3" xml:space="preserve">
+    <value>Pan fyddwch yn gwneud cynnig am gaffaeliad, bydd yr awdurdod contractio yn rhoi gwybod i chi sut i ddarparu'r ffeil neu god rhannu. </value>
+  </data>
+  <data name="ShareYourInformation_HowItWorksParagraph4" xml:space="preserve">
+    <value>Os bydd eich gwybodaeth am y cyflenwr yn newid, gallwch ei diweddaru a chreu ffeil neu god rhannu newydd er mwyn rhannu'r wybodaeth newydd. </value>
+  </data>
+  <data name="ShareYourInformation_HowItWorksSummary" xml:space="preserve">
+    <value>Sut mae'n gweithio</value>
+  </data>
+  <data name="ShareYourInformation_Instructions" xml:space="preserve">
+    <value>Dylech greu cod rhannu pan fyddwch wedi cwblhau pob adran. Gofynnir i chi am y cod rhannu hwn os byddwch yn gwneud cais am dendr.</value>
+  </data>
+  <data name="ShareYourInformation_ShareCode" xml:space="preserve">
+    <value>Cod rhannu</value>
+  </data>
+  <data name="ShareYourInformation_ShareCodeCreated" xml:space="preserve">
+    <value>Cod rhannu wedi'i greu</value>
+  </data>
+  <data name="ShareYourInformation_ShareCodeCreatedFooterBody1" xml:space="preserve">
+    <value>Gallwch gadw eich cod rhannu a &lt;a href="?handler=download&amp;shareCode={0}"&gt;lawrlwytho'r ffeil wybodaeth am y cyflenwr&lt;/a&gt; neu ddychwelyd pan fydd eu hangen arnoch. </value>
+  </data>
+  <data name="ShareYourInformation_ShareCodeCreatedFooterBody2" xml:space="preserve">
+    <value>Os bydd eich gwybodaeth am y cyflenwr yn newid, gallwch ei diweddaru a chreu ffeil neu god rhannu newydd er mwyn rhannu'r wybodaeth newydd.</value>
+  </data>
+  <data name="ShareYourInformation_TableCaption" xml:space="preserve">
+    <value>Eich codau rhannu a ffeiliau gwybodaeth am y cyflenwr</value>
+  </data>
+  <data name="ShareYourInformation_TableHeaderCreatedOn" xml:space="preserve">
+    <value>Crëwyd ar</value>
+  </data>
+  <data name="ShareYourInformation_TableHeaderShareCodes" xml:space="preserve">
+    <value>Codau rhannu</value>
+  </data>
+  <data name="ShareYourInformation_Title" xml:space="preserve">
+    <value>Rhannu eich gwybodaeth am y cyflenwr</value>
+  </data>
+  <data name="ShareYourInformation_YourShareCode" xml:space="preserve">
+    <value>Eich cod rhannu</value>
+  </data>
+  <data name="Shared_Address_AddressLine1_ErrorMessage" xml:space="preserve">
+    <value>Rhowch linell 1 y cyfeiriad, sef yr adeilad a'r stryd fel arfer. </value>
+  </data>
+  <data name="Shared_Address_ValidationErrorMessage" xml:space="preserve">
+    <value>Enw gwlad annilys</value>
+  </data>
+  <data name="Supplementary_CloseThisWindow" xml:space="preserve">
+    <value>Cau'r ffenestr hwn</value>
+  </data>
+  <data name="Supplementary_ContactUs_CharsAvailable" xml:space="preserve">
+    <value>Mae 10,000 o nodau ar gael i chi </value>
+  </data>
+  <data name="Supplementary_ContactUs_Failure_Description" xml:space="preserve">
+    <value>Nid oedd modd anfon eich neges. Rhowch gynnig arall arni neu dewch yn ôl yn nes ymlaen</value>
+  </data>
+  <data name="Supplementary_ContactUs_Failure_Heading" xml:space="preserve">
+    <value>Mae problem gyda'r gwasanaeth</value>
+  </data>
+  <data name="Supplementary_ContactUs_Failure_Title" xml:space="preserve">
+    <value>Methwyd ag anfon</value>
+  </data>
+  <data name="Supplementary_ContactUs_Message_ErrorMessage" xml:space="preserve">
+    <value>Rhowch eich neges</value>
+  </data>
+  <data name="Supplementary_ContactUs_Message_ValidationErrorMessage" xml:space="preserve">
+    <value>Mae'n rhaid i'r neges fod rhwng 10 a 10,000 a nodau</value>
+  </data>
+  <data name="Supplementary_ContactUs_Name_ErrorMessage" xml:space="preserve">
+    <value>Rhowch eich enw</value>
+  </data>
+  <data name="Supplementary_ContactUs_Send" xml:space="preserve">
+    <value>Anfon</value>
+  </data>
+  <data name="Supplementary_ContactUs_SupportTeam" xml:space="preserve">
+    <value>Bydd ein tîm cymorth yn cysylltu â chi drwy e-bost, rhwng 9am a 5pm o ddydd Llun i ddydd Gwener, ac eithrio gwyliau banc. </value>
+  </data>
+  <data name="Supplementary_CookieDetails_BannerMessages" xml:space="preserve">
+    <value>Negeseuon baner a dewisiadau</value>
+  </data>
+  <data name="Supplementary_CookieDetails_ChangeSettings" xml:space="preserve">
+    <value>Newid eich gosodiadau</value>
+  </data>
+  <data name="Supplementary_CookieDetails_ChangeSettingsInfo" xml:space="preserve">
+    <value>Gallwch &lt;a href="/cookies"&gt;newid pa gwcis rydych yn hapus i ni eu defnyddio&lt;/a&gt;.</value>
+  </data>
+  <data name="Supplementary_CookieDetails_GoogleAnalytics" xml:space="preserve">
+    <value>Rydym yn defnyddio meddalwedd Google Analytics (Universal Analytics) i gasglu gwybodaeth ddienw yngl?n â sut rydych yn defnyddio Canfod Tendr. Rydym yn gwneud hyn er mwyn helpu i wneud yn si?r bod y wefan yn diwallu anghenion ei defnyddwyr a'n helpu i wneud gwelliannau iddi.</value>
+  </data>
+  <data name="Supplementary_CookieDetails_GoogleAnalyticsInfo" xml:space="preserve">
+    <value>Mae Google Analytics yn storio gwybodaeth am y canlynol:</value>
+  </data>
+  <data name="Supplementary_CookieDetails_Intro" xml:space="preserve">
+    <value>Mae Canfod Tendr yn rhoi ffeiliau bach (neu ‘cwcis’) ar eich cyfrifiadur er mwyn casglu gwybodaeth yngl?n â sut rydych yn pori'r wefan. Rhagor o wybodaeth am y cwcis rydym yn eu defnyddio, beth yw eu diben a phryd y byddant yn dod i ben.</value>
+  </data>
+  <data name="Supplementary_CookieDetails_KeepingSignedIn" xml:space="preserve">
+    <value>Eich cadw wedi'ch mewngofnodi</value>
+  </data>
+  <data name="Supplementary_CookieDetails_ListItem2" xml:space="preserve">
+    <value>y tudalennau rydych yn ymweld â nhw ar GOV.UK a faint o amser rydych yn ei dreulio arnynt</value>
+  </data>
+  <data name="Supplementary_CookieDetails_ListItem4" xml:space="preserve">
+    <value>Mae Google Analytics yn gosod y cwcis canlynol.</value>
+  </data>
+  <data name="Supplementary_CookieDetails_SignedInInfo" xml:space="preserve">
+    <value>Pan fyddwch yn mewngofnodi i’r gwasanaeth, byddwn yn gosod cwcis er mwyn gwneud yn si?r eich bod wedi'ch mewngofnodi drwy gydol y cyfnod y byddwch yn defnyddio’r wefan. Nid yw'r cwcis hyn yn storio eich data personol a byddant yn cael eu dileu pan fyddwch yn cau eich porwr. </value>
+  </data>
+  <data name="Supplementary_CookieDetails_TableHeader_Expires" xml:space="preserve">
+    <value>Y dod i ben</value>
+  </data>
+  <data name="Supplementary_CookieDetails_TableHeader_Purpose" xml:space="preserve">
+    <value>Diben</value>
+  </data>
+  <data name="Supplementary_CookieDetails_TableRow_Antiforgery" xml:space="preserve">
+    <value>Mae'r cwci hwn yn cadw'r gwasanaeth yn ddiogel, drwy atal ceisiadau wedi'u ffugio ar draws gwefannau. </value>
+  </data>
+  <data name="Supplementary_CookieDetails_TableRow_Cookies" xml:space="preserve">
+    <value>Mae'n storio manylion y defnyddiwr sydd wedi'i ddilysu ar y pryd.</value>
+  </data>
+  <data name="Supplementary_CookieDetails_TableRow_Culture" xml:space="preserve">
+    <value>Mae'n storio'r gofynion iaith a ddewiswyd ar y pryd.</value>
+  </data>
+  <data name="Supplementary_CookieDetails_TableRow_GA" xml:space="preserve">
+    <value>Defnyddir y cwci hwn gyda Google Universal Analytics. Mae’r cwci hwn yn galluogi Google i ddilyn trywydd defnyddwyr unigryw drwy  ddynodydd cleient a gaiff ei greu ar hap</value>
+  </data>
+  <data name="Supplementary_CookieDetails_TableRow_GAT" xml:space="preserve">
+    <value>Defnyddir y cwci hwn gyda Google Universal Analytics. Defnyddir y cwci hwn i fonitro a dilyn ymddygiad ymwelwyr ar y wefan yn ddienw</value>
+  </data>
+  <data name="Supplementary_CookieDetails_TableRow_GID" xml:space="preserve">
+    <value>Defnyddir y cwci hwn gyda Google Universal Analytics. Defnyddir y cwci hwn  i grwpio ymddygiad defnyddwyr</value>
+  </data>
+  <data name="Supplementary_CookieDetails_TableRow_Preferences" xml:space="preserve">
+    <value>Mae'n storio dewisiadau derbyn/gwrthod y cwci.</value>
+  </data>
+  <data name="Supplementary_CookieDetails_Title" xml:space="preserve">
+    <value>Manylion am gwcis ar Canfod Tendr</value>
+  </data>
+  <data name="Supplementary_CookieDetails_WebsiteUse" xml:space="preserve">
+    <value>Cwcis sy'n mesur y defnydd o'r wefan</value>
+  </data>
+  <data name="Supplementary_Cookies_DoNotUseCookies" xml:space="preserve">
+    <value>Peidiwch â defnyddio cwcis sy'n mesur fy nefnydd o'r wefan</value>
+  </data>
+  <data name="Supplementary_Cookies_FindOutMore" xml:space="preserve">
+    <value>Rhagor o wybodaeth am gwcis ar Canfod Tendr</value>
+  </data>
+  <data name="Supplementary_Cookies_GoogleAnalytics" xml:space="preserve">
+    <value>Rydym yn defnyddio Google Analytics i fesur sut rydych yn defnyddio'r wefan er mwyn i ni allu ei gwella yn seiliedig ar anghenion defnyddwyr. Nid ydym yn caniatáu i Google ddefnyddio na rhannu'r data yngl?n â sut rydych yn defnyddio'r wefan hon.</value>
+  </data>
+  <data name="Supplementary_Cookies_GoogleAnalyticsInfo" xml:space="preserve">
+    <value>Mae Google Analytics yn gosod cwcis sy'n storio gwybodaeth ddienw yngl?n â:</value>
+  </data>
+  <data name="Supplementary_Cookies_GovServices" xml:space="preserve">
+    <value>Gwasanaethau'r Llywodraeth</value>
+  </data>
+  <data name="Supplementary_Cookies_GovServices_Info" xml:space="preserve">
+    <value>Mae'r rhan fwyaf o’r gwasanaethau rydym yn cynnwys dolenni iddynt yn cael eu rhedeg gan adrannau gwahanol o'r llywodraeth, er enghraifft gwasanaeth Credyd Cynhwysol ar-lein yr Adran Gwaith a Phensiynau, gwasanaeth treth cerbyd DVLA, neu wasanaeth gwe-sgwrsio CThEF. Mae’n bosibl y bydd y gwasanaethau hyn yn gosod cwcis ychwanegol ac, os felly, bydd ganddynt eu polisi cwcis eu hunain a baner yn cynnwys dolen iddo.</value>
+  </data>
+  <data name="Supplementary_Cookies_Intro1" xml:space="preserve">
+    <value>Ffeiliau sy'n cael eu cadw ar eich ffôn, llechen neu gyfrifiadur pan fyddwch yn ymweld â gwefan yw cwcis. </value>
+  </data>
+  <data name="Supplementary_Cookies_Intro2" xml:space="preserve">
+    <value>Rydym yn defnyddio cwcis i storio gwybodaeth yngl?n â sut rydych yn defnyddio gwefan Canfod Tendr, er enghraifft y tudalennau rydych yn ymweld â nhw. </value>
+  </data>
+  <data name="Supplementary_Cookies_ListItem1" xml:space="preserve">
+    <value>sut y gwnaethoch gyrraedd y safle</value>
+  </data>
+  <data name="Supplementary_Cookies_ListItem2" xml:space="preserve">
+    <value>y tudalennau rydych yn ymweld â nhw ar wefan Canfod Tendr a faint o amser rydych yn ei dreulio ar bob tudalen</value>
+  </data>
+  <data name="Supplementary_Cookies_ListItem3" xml:space="preserve">
+    <value>yr hyn rydych yn clicio arno wrth ymweld â'r wefan</value>
+  </data>
+  <data name="Supplementary_Cookies_SaveChanges" xml:space="preserve">
+    <value>Cadw’r newidiadau</value>
+  </data>
+  <data name="Supplementary_Cookies_Settings" xml:space="preserve">
+    <value>Gosodiadau cwcis</value>
+  </data>
+  <data name="Supplementary_Cookies_Settings_Intro" xml:space="preserve">
+    <value>Rydym yn defnyddio dau fath o gwci. Gallwch ddewis pa fathau rydych yn hapus i ni eu defnyddio, heblaw'r rhai sy'n hanfodol. </value>
+  </data>
+  <data name="Supplementary_Cookies_StrictlyNecessary" xml:space="preserve">
+    <value>Cwcis cwbl angenrheidiol</value>
+  </data>
+  <data name="Supplementary_Cookies_StrictlyNecessary_Info1" xml:space="preserve">
+    <value>Mae’r cwcis hanfodol hyn yn gwneud pethau fel cofio pan fyddwch wedi'ch mewngofnodi, ym mha iaith rydych am weld y wefan, a’r hysbysiadau rydych wedi’u gweld fel na fyddwn yn eu dangos i chi eto.</value>
+  </data>
+  <data name="Supplementary_Cookies_StrictlyNecessary_Info2" xml:space="preserve">
+    <value>Bydd angen i'r rhain gael eu caniatáu bob amser.</value>
+  </data>
+  <data name="Supplementary_Cookies_Title" xml:space="preserve">
+    <value>Cwcis ar Canfod Tendr</value>
+  </data>
+  <data name="Supplementary_Cookies_UseCookies" xml:space="preserve">
+    <value>Defnyddiwch gwcis sy'n mesur fy nefnydd o'r wefan</value>
+  </data>
+  <data name="Supplementary_Cookies_WebsiteUse" xml:space="preserve">
+    <value>Cwcis sy'n mesur y defnydd o'r wefan</value>
+  </data>
+  <data name="Supplementary_Error_Title" xml:space="preserve">
+    <value>Mae'n ddrwg gennym, mae problem gyda'r wefan. </value>
+  </data>
+  <data name="Supplementary_Error_TryAgain" xml:space="preserve">
+    <value>Rhowch gynnig arall arni yn nes ymlaen.</value>
+  </data>
+  <data name="Supplementary_Index_AlreadyRegistered" xml:space="preserve">
+    <value>Os yw eich sefydliad eisoes wedi'i gofrestru</value>
+  </data>
+  <data name="Supplementary_Index_ContractingAuthority" xml:space="preserve">
+    <value>awdurdod contractio sy'n gweithio ym maes caffael sy'n prynu nwyddau, gwaith a gwasanaethau, yn eu cyflenwi, neu'r ddau</value>
+  </data>
+  <data name="Supplementary_Index_CreateLogin" xml:space="preserve">
+    <value>Bydd angen i chi &lt;a class="govuk-link govuk-link--no-visited-state" id="one-login-anchor" href="/one-login/sign-in"&gt;greu cyfrif GOV.UK One Login neu fewngofnodi.&lt;/a&gt;</value>
+  </data>
+  <data name="Supplementary_Index_Intro" xml:space="preserve">
+    <value>Mae gwasanaeth y Llwyfan Digidol Canolog wedi'i anelu at weithwyr proffesiynol ym maes caffael a chyflenwyr yn sector cyhoeddus a sector cyfleustodau'r DU.</value>
+  </data>
+  <data name="Supplementary_Index_Organisation" xml:space="preserve">
+    <value>sefydliad neu unig fasnachwr sy'n gwneud cais am gontractau i gyflenwi nwyddau, gwaith a gwasanaethau </value>
+  </data>
+  <data name="Supplementary_Index_Problem" xml:space="preserve">
+    <value>Mae problem wedi codi</value>
+  </data>
+  <data name="Supplementary_Index_SignIn" xml:space="preserve">
+    <value>Gallwch &lt;a class="govuk-link govuk-link--no-visited-state" href="/one-login/sign-in"&gt;fewngofnodi i'ch cyfrif.&lt;/a&gt;</value>
+  </data>
+  <data name="Supplementary_Index_Title" xml:space="preserve">
+    <value>Cofrestrwch eich manylion fel prynwr neu gyflenwr caffaeliadau</value>
+  </data>
+  <data name="Supplementary_Index_UnableToAuthenticate" xml:space="preserve">
+    <value>Nid oes modd dilysu'r defnyddiwr, rhowch gynnig arall arni </value>
+  </data>
+  <data name="Supplementary_Index_UseService" xml:space="preserve">
+    <value>Defnyddiwch y gwasanaeth os ydych:</value>
+  </data>
+  <data name="Supplementary_PageNotFound_PastedAddress" xml:space="preserve">
+    <value>Os gwnaethoch ludo’r cyfeiriad gwe, gwnewch yn si?r eich bod wedi copïo’r cyfeiriad cyfan.</value>
+  </data>
+  <data name="Supplementary_PageNotFound_Title" xml:space="preserve">
+    <value>Heb ddod o hyd i’r dudalen</value>
+  </data>
+  <data name="Supplementary_PageNotFound_TypedAddress" xml:space="preserve">
+    <value>Os gwnaethoch deipio’r cyfeiriad gwe, gwnewch yn si?r ei fod yn gywir.</value>
+  </data>
+  <data name="Supplementary_PrivacyNotice_Intro" xml:space="preserve">
+    <value>Darperir Llwyfan Digidol Canolog GOV.UK gan &lt;a href="https://www.gov.uk/government/organisations/government-digital-service" class="govuk-link"&gt;Wasanaeth Digidol y Llyworaeth&lt;/a&gt; (GDS), sy'n rhan o Swyddfa'r Cabinet. Y rheolydd data ar gyfer GDS yw Swyddfa'r Cabinet. Rheolydd data sy'n penderfynu sut a pham y gellir prosesu data personol. </value>
+  </data>
+  <data name="Supplementary_PrivacyNotice_ReadMore" xml:space="preserve">
+    <value>Darllenwch &lt;a href="https://ico.org.uk/ESDWebPages/Entry/Z7414053" class="govuk-link"&gt;gofnod Swyddfa'r Cabinet ar y Gofrestr Diogelu Data Gyhoeddus&lt;/a&gt; am ragor o wybodaeth. </value>
+  </data>
+  <data name="Supplementary_PrivacyNotice_Title" xml:space="preserve">
+    <value>Hysbysiad preifatrwydd: sut rydym yn defnyddio eich data</value>
+  </data>
+  <data name="Supplementary_Title" xml:space="preserve">
+    <value>Diolch am gysylltu â GOV.UK</value>
+  </data>
+  <data name="SupplierInformationStatus_StepStatus_InProcess" xml:space="preserve">
+    <value>Yn mynd rhagddo</value>
+  </data>
+  <data name="SupplierToBuyer_OrganisationSummary_BuyerDetails" xml:space="preserve">
+    <value>Manylion y prynwr</value>
+  </data>
+  <data name="SupplierToBuyer_OrganisationType_BuyerType" xml:space="preserve">
+    <value>Math o Sefydliad Prynu</value>
+  </data>
+  <data name="SupplierToBuyer_OrganisationType_BuyerTypeOthers" xml:space="preserve">
+    <value>Eraill</value>
+  </data>
+  <data name="SupplierToBuyer_OrganisationType_Hint" xml:space="preserve">
+    <value>Dewiswch y math o sefydliad sy'n disgrifio rôl eich sefydliad orau.</value>
+  </data>
+  <data name="Supplier_BasicInformation_Title" xml:space="preserve">
+    <value>Rheoli gwybodaeth sylfaenol {0}</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_Address_EnterAddress_Heading" xml:space="preserve">
+    <value>Rhowch gyfeiriad {0}</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_Address_EnterPostalAddress_Heading" xml:space="preserve">
+    <value>Rhowch gyfeiriad post {0}</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_Address_EnterRegisteredAddress_Heading" xml:space="preserve">
+    <value>Rhowch gyfeiriad cofrestredig {0}</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_ChangeCompanyName" xml:space="preserve">
+    <value>Newid&lt;span class="govuk-visually-hidden"&gt; enw'r cwmni&lt;/span&gt;</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_ChangeControlConditions" xml:space="preserve">
+    <value>Newid&lt;span class="govuk-visually-hidden"&gt; yr amodau rheoli&lt;/span&gt;</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_ChangeEnforcedBy" xml:space="preserve">
+    <value>Newid&lt;span class="govuk-visually-hidden"&gt; y gyfraith "gorfodir gan"&lt;/span&gt;</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_ChangeInsolvencyDate" xml:space="preserve">
+    <value>Newid&lt;span class="govuk-visually-hidden"&gt; dyddiad yr ansolfedd&lt;/span&gt;</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_ChangeLegalForm" xml:space="preserve">
+    <value>Newid&lt;span class="govuk-visually-hidden"&gt;y ffurf gyfreithiol &lt;/span&gt;</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_ChangeLegalFormAndLaw" xml:space="preserve">
+    <value>Newid&lt;span class="govuk-visually-hidden"&gt; y ffurf gyfreithiol a'r gyfraith&lt;/span&gt;</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_ChangeOverseasEquivalent" xml:space="preserve">
+    <value>Newid&lt;span class="govuk-visually-hidden"&gt; y corff tramor cyfatebol y cofrestrwyd ag ef&lt;/span&gt;</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_ChangePostalAddress" xml:space="preserve">
+    <value>Newid&lt;span class="govuk-visually-hidden"&gt; y cyfeiriad post&lt;/span&gt;</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_ChangeRegisterName" xml:space="preserve">
+    <value>Newid&lt;span class="govuk-visually-hidden"&gt; yr enw cofrestredig&lt;/span&gt;</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_ChangeRegisteredAddress" xml:space="preserve">
+    <value>Newid&lt;span class="govuk-visually-hidden"&gt;y cyfeiriad cofrestredig&lt;/span&gt;</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_ChangeRegisteredDate" xml:space="preserve">
+    <value>Newid&lt;span class="govuk-visually-hidden"&gt; y dyddiad cofrestru&lt;/span&gt;</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_CompaniesHouseRegistered" xml:space="preserve">
+    <value>Wedi'i gofrestru â Th?'r Cwmnïau:</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_CompanyName" xml:space="preserve">
+    <value>Enw'r cwmni</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_InsolvencyDate" xml:space="preserve">
+    <value>Dyddiad yr ansolfedd</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_OnDate" xml:space="preserve">
+    <value>Ar {0}</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswers_ChangeControlConditions" xml:space="preserve">
+    <value>Newid&lt;span class="govuk-visually-hidden"&gt; yr amodau rheoli&lt;/span&gt;</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswers_ChangeDirectorResidency" xml:space="preserve">
+    <value>Newid&lt;span class="govuk-visually-hidden"&gt; preswylfa'r cyfarwyddwr&lt;/span&gt;</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswers_ChangePSCDetails" xml:space="preserve">
+    <value>Newid&lt;span class="govuk-visually-hidden"&gt; manylion y person â rheolaeth sylweddol&lt;/span&gt;</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswers_ChangePostalAddress" xml:space="preserve">
+    <value>Newid&lt;span class="govuk-visually-hidden"&gt; y cyfeiriad post&lt;/span&gt;</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswers_ChangeRegisterName" xml:space="preserve">
+    <value>Newid&lt;span class="govuk-visually-hidden"&gt; yr enw cofrestredig&lt;/span&gt;</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswers_ChangeRegisteredAddress" xml:space="preserve">
+    <value>Newid&lt;span class="govuk-visually-hidden"&gt;y cyfeiriad cofrestredig&lt;/span&gt;</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswers_ChangeRegisteredAsPSC" xml:space="preserve">
+    <value>Newid&lt;span class="govuk-visually-hidden"&gt; dyddiad cofrestru'r person â rheolaeth sylweddol&lt;/span&gt;</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswers_DirectorResidency" xml:space="preserve">
+    <value>Preswylfa'r cyfarwyddwr</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswers_DoB" xml:space="preserve">
+    <value>Dyddiad geni</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswers_OnDate" xml:space="preserve">
+    <value>Ar {0}</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswers_PSCDetails" xml:space="preserve">
+    <value>Manylion y Person â Rheolaeth Sylweddol</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCompanyInsolvencyDate_DateInFuture" xml:space="preserve">
+    <value>Mae'n rhaid i ddyddiad yr ansolfedd fod heddiw neu yn y gorffennol</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCompanyInsolvencyDate_DayInvalidError" xml:space="preserve">
+    <value>Mae'n rhaid i'r diwrnod fod yn rhif dilys</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCompanyInsolvencyDate_DayRequiredError" xml:space="preserve">
+    <value>Mae'n rhaid i ddyddiad yr ansolfedd gynnwys diwrnod</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCompanyInsolvencyDate_InvalidDate" xml:space="preserve">
+    <value>Mae'n rhaid i ddyddiad yr ansolfedd fod yn ddyddiad go iawn</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCompanyInsolvencyDate_MonthInvalidError" xml:space="preserve">
+    <value>Mae'n rhaid i'r mis fod yn rhif dilys</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCompanyInsolvencyDate_MonthRequiredError" xml:space="preserve">
+    <value>Mae'n rhaid i ddyddiad yr ansolfedd gynnwys mis</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCompanyInsolvencyDate_YearInvalidError" xml:space="preserve">
+    <value>Mae'n rhaid i'r flwyddyn fod yn rhif dilys</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCompanyInsolvencyDate_YearRequiredError" xml:space="preserve">
+    <value>Mae'n rhaid i ddyddiad yr ansolfedd gynnwys blwyddyn</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCompanyRegisterName_SelectIfRegisteredError" xml:space="preserve">
+    <value>Dewiswch ble mae wedi'i gofrestru</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCompanyRegistrationDate_DateInvalidError" xml:space="preserve">
+    <value>Mae'n rhaid i'r dyddiad cofrestru fod yn ddyddiad go iawn</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCompanyRegistrationDate_DayInvalidError" xml:space="preserve">
+    <value>Mae'n rhaid i'r diwrnod fod yn rhif dilys</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCompanyRegistrationDate_DayRequiredError" xml:space="preserve">
+    <value>Mae'n rhaid i'r dyddiad cofrestru gynnwys diwrnod</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCompanyRegistrationDate_MonthInvalidError" xml:space="preserve">
+    <value>Mae'n rhaid i'r mis fod yn rhif dilys</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCompanyRegistrationDate_MonthRequiredError" xml:space="preserve">
+    <value>Mae'n rhaid i'r dyddiad cofrestru gynnwys mis</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCompanyRegistrationDate_YearInvalidError" xml:space="preserve">
+    <value>Mae'n rhaid i'r flwyddyn fod yn rhif dilys</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCompanyRegistrationDate_YearRequiredError" xml:space="preserve">
+    <value>Mae'n rhaid i'r dyddiad cofrestru gynnwys blwyddyn</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityDeclaration_Paragraph2" xml:space="preserve">
+    <value>Mae'n cynnwys &lt;a href="https://www.gov.uk/guidance/people-with-significant-control-pscs" target="_blank"&gt;pobl â rheolaeth sylweddol (bydd yn agor mewn tab newydd)&lt;/a&gt; ac unrhyw unigolyn neu gwmni arall ar wahân i chi sydd â buddiant datganadwy yn eich sefydliad.</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityDeclaration_Paragraph3" xml:space="preserve">
+    <value>Er enghraifft, cyfarwyddwr, ymddiriedolaeth, cyfranddaliwr o bwys neu riant gwmni neu is-gwmni.</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityDirectorResidency_SelectCountryError" xml:space="preserve">
+    <value>Dewiswch wlad</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityLawEnforce_Hint" xml:space="preserve">
+    <value>Yn y DU, Deddf Cwmnïau 2006 sy'n gorfodi ffurf gyfreithiol cwmnïau cyfyngedig. </value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityOverseasCompanyQuestion_CompanyRegistrationNumberRequiredError" xml:space="preserve">
+    <value>Rhowch rif cofrestru'r cwmni dramor</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityPscDetails_DateOfBirthDayInvalidError" xml:space="preserve">
+    <value>Mae'n rhaid i'r diwrnod fod yn rhif dilys</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityPscDetails_DateOfBirthDayRequiredError" xml:space="preserve">
+    <value>Mae'n rhaid i'r dyddiad geni gynnwys diwrnod</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityPscDetails_DateOfBirthInPastInvalidError" xml:space="preserve">
+    <value>Mae'n rhaid i'r dyddiad geni fod heddiw neu yn y gorffennol</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityPscDetails_DateOfBirthLabel" xml:space="preserve">
+    <value>Dyddiad geni</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityPscDetails_DateOfBirthMonthInvalidError" xml:space="preserve">
+    <value>Mae'n rhaid i'r mis fod yn rhif dilys</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityPscDetails_DateOfBirthMonthRequiredError" xml:space="preserve">
+    <value>Mae'n rhaid i'r dyddiad geni gynnwys mis</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityPscDetails_DateOfBirthRealDateInvalidError" xml:space="preserve">
+    <value>Mae'n rhaid i'r dyddiad geni fod yn ddyddiad go iawn</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityPscDetails_DateOfBirthYearInvalidError" xml:space="preserve">
+    <value>Mae'n rhaid i'r flwyddyn fod yn rhif dilys</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityPscDetails_DateOfBirthYearRequiredError" xml:space="preserve">
+    <value>Mae'n rhaid i'r dyddiad geni gynnwys blwyddyn</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityPscDetails_Heading" xml:space="preserve">
+    <value>Rhowch fanylion y person â rheolaeth sylweddol</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityRegistrationDateQuestion_DateInFutureError" xml:space="preserve">
+    <value>Mae'n rhaid i'r dyddiad cofrestru fod heddiw neu yn y gorffennol</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityRegistrationDateQuestion_DateInvalidError" xml:space="preserve">
+    <value>Mae'n rhaid i'r dyddiad cofrestru fod yn ddyddiad go iawn</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityRegistrationDateQuestion_DayInvalidError" xml:space="preserve">
+    <value>Mae'n rhaid i'r diwrnod fod yn rhif dilys</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityRegistrationDateQuestion_DayRequiredError" xml:space="preserve">
+    <value>Mae'n rhaid i'r dyddiad cofrestru gynnwys diwrnod</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityRegistrationDateQuestion_MonthInvalidError" xml:space="preserve">
+    <value>Mae'n rhaid i'r mis fod yn rhif dilys</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityRegistrationDateQuestion_MonthRequiredError" xml:space="preserve">
+    <value>Mae'n rhaid i'r dyddiad cofrestru gynnwys mis</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityRegistrationDateQuestion_YearInvalidError" xml:space="preserve">
+    <value>Mae'n rhaid i'r flwyddyn fod yn rhif dilys</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityRegistrationDateQuestion_YearRequiredError" xml:space="preserve">
+    <value>Mae'n rhaid i'r dyddiad cofrestru gynnwys blwyddyn</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityRemoveConfirmation_ConfirmRemoveError" xml:space="preserve">
+    <value>Dewiswch ? i gadarnhau eich bod am ddileu'r person cysylltiedig</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityRemoveConfirmation_DateInvalidError" xml:space="preserve">
+    <value>Mae'n rhaid i'r dyddiad dileu fod yn ddyddiad go iawn</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityRemoveConfirmation_DayInvalidError" xml:space="preserve">
+    <value>Mae'n rhaid i'r diwrnod fod yn rhif dilys</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityRemoveConfirmation_DayRequiredError" xml:space="preserve">
+    <value>Mae'n rhaid i'r dyddiad dileu gynnwys diwrnod</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityRemoveConfirmation_EndDateLabel" xml:space="preserve">
+    <value>Ar ba ddyddiad y rhoddodd y person cysylltiedig y gorau i fod yn gysylltiedig â'ch sefydliad?</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityRemoveConfirmation_MonthInvalidError" xml:space="preserve">
+    <value>Mae'n rhaid i'r mis fod yn rhif dilys</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityRemoveConfirmation_MonthRequiredError" xml:space="preserve">
+    <value>Mae'n rhaid i'r dyddiad dileu gynnwys mis</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityRemoveConfirmation_YearInvalidError" xml:space="preserve">
+    <value>Mae'n rhaid i'r flwyddyn fod yn rhif dilys</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityRemoveConfirmation_YearRequiredError" xml:space="preserve">
+    <value>Mae'n rhaid i'r dyddiad dileu gynnwys blwyddyn</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntitySupplierCompanyQuestion_Hint" xml:space="preserve">
+    <value>A yw'r sefydliad cyflenwi wedi'i gofrestru â Th?'r Cwmnïau fel sy'n ofynnol gan Ddeddf Cwmnïau 2006? Rydym eisoes wedi gofyn hyn i chi, ond a fyddech cystal ag ailgadarnhau.</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedPersonSummary_AddAnotherConnectedPersonError" xml:space="preserve">
+    <value>Dewiswch ? i ychwanegu person cysylltiedig arall</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedPersonSummary_BackToSupplierInformation" xml:space="preserve">
+    <value>Yn ôl i'r wybodaeth am y cyflenwr</value>
+  </data>
+  <data name="Supplier_EmailAddress_Hint" xml:space="preserve">
+    <value>Dylai hwn fod yn fewnflwch a rennir, a reolir gan eich tîm, nid eich cyfeiriad e-bost personol. Bydd hyn yn cael ei nodi ar hysbysiadau. </value>
+  </data>
+  <data name="Supplier_InformationHint" xml:space="preserve">
+    <value>Mae angen gwybodaeth arnom yn seiliedig ar ba fath o gyflenwr ydych chi.</value>
+  </data>
+  <data name="Supplier_LegalFormCompanyActQuestion_Title" xml:space="preserve">
+    <value>A yw eich sefydliad wedi'i gofrestru â Th?'r Cwmnïau?</value>
+  </data>
+  <data name="Supplier_LegalFormFormationDate_DayErrorMessage" xml:space="preserve">
+    <value>Mae'n rhaid i'r dyddiad cofrestru gynnwys diwrnod</value>
+  </data>
+  <data name="Supplier_LegalFormFormationDate_DayInvalidErrorMessage" xml:space="preserve">
+    <value>Mae'n rhaid i'r diwrnod fod yn rhif dilys</value>
+  </data>
+  <data name="Supplier_LegalFormFormationDate_FutureDateErrorMessage" xml:space="preserve">
+    <value>Mae'n rhaid i'r dyddiad cofrestru fod heddiw neu yn y gorffennol</value>
+  </data>
+  <data name="Supplier_LegalFormFormationDate_InvalidDateErrorMessage" xml:space="preserve">
+    <value>Mae'n rhaid i'r dyddiad cofrestru fod yn ddyddiad go iawn</value>
+  </data>
+  <data name="Supplier_LegalFormFormationDate_MonthErrorMessage" xml:space="preserve">
+    <value>Mae'n rhaid i'r dyddiad cofrestru gynnwys mis</value>
+  </data>
+  <data name="Supplier_LegalFormFormationDate_MonthInvalidErrorMessage" xml:space="preserve">
+    <value>Mae'n rhaid i'r mis fod yn rhif dilys</value>
+  </data>
+  <data name="Supplier_LegalFormFormationDate_Title" xml:space="preserve">
+    <value>Beth yw'r dyddiad cyfatebol y gwnaeth eich cwmni gofrestru o dan Ddeddf Cwmnïau 2006?</value>
+  </data>
+  <data name="Supplier_LegalFormFormationDate_YearErrorMessage" xml:space="preserve">
+    <value>Mae'n rhaid i'r dyddiad cofrestru gynnwys blwyddyn</value>
+  </data>
+  <data name="Supplier_LegalFormFormationDate_YearInvalidErrorMessage" xml:space="preserve">
+    <value>Mae'n rhaid i'r flwyddyn fod yn rhif dilys</value>
+  </data>
+  <data name="Supplier_LegalFormLawRegistered_Error" xml:space="preserve">
+    <value>Gwall:</value>
+  </data>
+  <data name="Supplier_LegalFormLawRegistered_ErrorMessage" xml:space="preserve">
+    <value>Nodwch o dan ba gyfraith y mae eich sefydliad wedi'i gofrestru</value>
+  </data>
+  <data name="Supplier_LegalFormLawRegistered_Hint" xml:space="preserve">
+    <value>Er enghraifft, Deddf Cwmnïau 2006.</value>
+  </data>
+  <data name="Supplier_LegalFormLawRegistered_Title" xml:space="preserve">
+    <value>Nodwch o dan ba gyfraith y mae eich sefydliad wedi'i gofrestru</value>
+  </data>
+  <data name="Supplier_LegalFormOtherOrganisation_PleaseSelect" xml:space="preserve">
+    <value>Dewiswch ffurf gyfreithiol gofrestredig eich sefydliad</value>
+  </data>
+  <data name="Supplier_OperationQuestion_PublicService_Description" xml:space="preserve">
+    <value>Diffinnir cwmnïau cydfuddiannol gwasanaeth cyhoeddus ar y sail eu bod:</value>
+  </data>
+  <data name="Supplier_OperationQuestion_PublicService_Details" xml:space="preserve">
+    <value>Wedi gadael y sector cyhoeddus yn flaenorol ond yn parhau i ddarparu gwasanaethau cyhoeddus.</value>
+  </data>
+  <data name="Supplier_OperationQuestion_SelectOption" xml:space="preserve">
+    <value>Dewiswch opsiwn</value>
+  </data>
+  <data name="Supplier_OperationQuestion_SmallAndMediumSized_Description" xml:space="preserve">
+    <value>Diffinnir busnesau bach a chanolig ar y sail eu bod:</value>
+  </data>
+  <data name="Supplier_OperationQuestion_SupportedEmploymentProvider_Description" xml:space="preserve">
+    <value>Diffinnir darparwyr cyflogaeth â chymorth ar y sail eu bod:</value>
+  </data>
+  <data name="Supplier_OperationType_None_Short" xml:space="preserve">
+    <value>Nid yw fy sefydliad wedi'i ddiffinio</value>
+  </data>
+  <data name="Supplier_OperationType_ValidationError" xml:space="preserve">
+    <value>Ni allwch ddewis 'Dim un yn berthnasol' ynghyd ag opsiynau eraill.</value>
+  </data>
+  <data name="Supplier_SupplierInformationSummary_FormRecordCount_Singular" xml:space="preserve">
+    <value>{0} cofnod</value>
+  </data>
+  <data name="Supplier_SupplierInformationSummary_FormsFurtherQuestionExempt" xml:space="preserve">
+    <value>Ddim yn Gymwys</value>
+  </data>
+  <data name="Supplier_VatNumber_Error" xml:space="preserve">
+    <value>Rhowch y rhif TAW.</value>
+  </data>
+  <data name="Supplier_VatQuestion_BelongsToAnotherOrganisation_Error" xml:space="preserve">
+    <value>Mae'r rhif TAW hwn yn perthyn i sefydliad arall. Rhowch rif TAW gwahanol.</value>
+  </data>
+  <data name="Supplier_VatQuestion_No" xml:space="preserve">
+    <value>Rhif</value>
+  </data>
+  <data name="Supplier_VatQuestion_VatNumberHint" xml:space="preserve">
+    <value>Mae'r rhif hwn i'w weld ar eich tystysgrif cofrestru TAW.</value>
+  </data>
+  <data name="Supplier_WebsiteQuestion_ErrorInvalidUrl" xml:space="preserve">
+    <value>Rhaid i gyfeiriad y wefan fod yn y fformat cywir, fel https://www.enwcwmni.com</value>
+  </data>
+  <data name="Supplier_WebsiteQuestion_ErrorSelectOption" xml:space="preserve">
+    <value>Dewiswch opsiwn</value>
+  </data>
+  <data name="Support_OrganisationApproval_AdminEmail_List" xml:space="preserve">
+    <value>E-bost gweinyddwr</value>
+  </data>
+  <data name="Support_OrganisationApproval_ErrorMessage" xml:space="preserve">
+    <value>Dywedwch wrth y defnyddiwr pam na allech ei gymeradwyo</value>
+  </data>
+  <data name="Support_OrganisationApproval_ErrorMessage_Hint" xml:space="preserve">
+    <value>Er enghraifft, Mae angen i chi newid y cyfeiriad e-bost. Nid yw enw'r parth yn y cyfeiriad e-bost y gwnaethoch ei roi i ni ar gyfer y sefydliad yn cyfateb i enw'r sefydliad rydych am ei gofrestru. </value>
+  </data>
+  <data name="Support_OrganisationApproval_PponGenerationPending_List" xml:space="preserve">
+    <value>PPON yn yr arfaeth</value>
+  </data>
+  <data name="Support_OrganisationApproval_Radio_Heading" xml:space="preserve">
+    <value>Cymeradwyo'r cais?</value>
+  </data>
+  <data name="Support_OrganisationApproval_ValidationErrorMessage" xml:space="preserve">
+    <value>Dewiswch opsiwn</value>
+  </data>
+  <data name="Support_Organisations_BuyerOrganisations_Link" xml:space="preserve">
+    <value>Sefydliadau prynu</value>
+  </data>
+  <data name="Support_Organisations_BuyerOrganisations_Title" xml:space="preserve">
+    <value>Sefydliadau prynu</value>
+  </data>
+  <data name="Support_Organisations_Review_Link" xml:space="preserve">
+    <value>Adolygu</value>
+  </data>
+  <data name="Support_Organisations_Status_Approved" xml:space="preserve">
+    <value>Cymeradwywyd</value>
+  </data>
+  <data name="Support_Organisations_Status_Pending" xml:space="preserve">
+    <value>Yn yr Arfaeth</value>
+  </data>
+  <data name="Support_Organisations_SupplierOrganisations_Link" xml:space="preserve">
+    <value>Sefydliadau cyflenwi</value>
+  </data>
+  <data name="Support_Organisations_SupplierOrganisations_Title" xml:space="preserve">
+    <value>Sefydliadau cyflenwi</value>
+  </data>
+  <data name="Support_Organisations_TableHeader_Comments" xml:space="preserve">
+    <value>Sylwadau</value>
+  </data>
+  <data name="Support_Organisations_TableHeader_DateApproved" xml:space="preserve">
+    <value>Dyddiad cymeradwyo</value>
+  </data>
+  <data name="Support_Organisations_TableHeader_Identifier" xml:space="preserve">
+    <value>Dynodydd(ion)</value>
+  </data>
+  <data name="Support_Organisations_TableHeader_LastReviewedBy" xml:space="preserve">
+    <value>Adolygwyd ddiwethaf gan</value>
+  </data>
+  <data name="Support_Organisations_TableHeader_OrgEmail" xml:space="preserve">
+    <value>E-bost y sefydliad</value>
+  </data>
+  <data name="UserSummary_Approve" xml:space="preserve">
+    <value>Cymeradwyo</value>
+  </data>
+  <data name="UserSummary_InviteExpired" xml:space="preserve">
+    <value>Gwahoddiad wedi dod i ben</value>
+  </data>
+  <data name="UserSummary_JoinRequests" xml:space="preserve">
+    <value>Ceisiadau i ymuno</value>
+  </data>
+  <data name="UserSummary_ManageUsers_Title" xml:space="preserve">
+    <value>Rheoli defnyddwyr</value>
+  </data>
+  <data name="UserSummary_Resend" xml:space="preserve">
+    <value>Ailanfon</value>
+  </data>
+  <data name="UserSummary_TotalUsers" xml:space="preserve">
+    <value>Mae gan y sefydliad {0} {1}</value>
+  </data>
+  <data name="UserSummary_User" xml:space="preserve">
+    <value>defnyddiwr</value>
+  </data>
+  <data name="UserSummary_Users" xml:space="preserve">
+    <value>o ddefnyddwyr</value>
+  </data>
+  <data name="User_Email_Required_ErrorMessage" xml:space="preserve">
+    <value>Mae angen cyfeiriad e-bost</value>
+  </data>
+  <data name="User_FirstName_Required_ErrorMessage" xml:space="preserve">
+    <value>Mae angen enw cyntaf</value>
+  </data>
+  <data name="User_LastName_Required_ErrorMessage" xml:space="preserve">
+    <value>Mae angen cyfenw</value>
+  </data>
+  <data name="User_RemoveConfirmation_ConfirmValidation" xml:space="preserve">
+    <value>Dewiswch ? i gadarnhau eich bod am ddileu'r defnyddiwr</value>
+  </data>
+  <data name="User_Role_Required_ErrorMessage" xml:space="preserve">
+    <value>Mae angen rôl</value>
+  </data>
+  <data name="User_UserSummary_HasPersonValidation" xml:space="preserve">
+    <value>Dewiswch ? i ychwanegu defnyddiwr arall</value>
+  </data>
+  <data name="Users_FirstName_Validation" xml:space="preserve">
+    <value>Rhowch eich enw cyntaf</value>
+  </data>
+  <data name="Users_LastName_Validation" xml:space="preserve">
+    <value>Rhowch eich cyfenw</value>
+  </data>
+  <data name="Users_SendEmail_Button" xml:space="preserve">
+    <value>Anfon e-bost</value>
+  </data>
+  <data name="Users_UserRoleAdmin_Hint" xml:space="preserve">
+    <value>Yn gallu gwneud unrhyw beth, gan gynnwys ychwanegu, dileu a golygu defnyddwyr</value>
+  </data>
+  <data name="Users_UserRoleEditor_Hint" xml:space="preserve">
+    <value>Yn gallu gweld, ychwanegu a golygu gwybodaeth am y sefydliad, gweld gwybodaeth am y cyflenwr a chreu allweddi API</value>
+  </data>
+  <data name="Users_UserRoleViewer_Hint" xml:space="preserve">
+    <value>Yn gallu gweld gwybodaeth am y sefydliad a'r cyflenwyr</value>
+  </data>
+  <data name="Users_UserRole_Hint" xml:space="preserve">
+    <value>Dewiswch yr un sy'n berthnasol</value>
+  </data>
+  <data name="Users_UserRole_Label" xml:space="preserve">
+    <value>Dewiswch rôl y defnyddiwr</value>
   </data>
 </root>

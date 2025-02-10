@@ -1,17 +1,17 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
-  <!-- 
-    Microsoft ResX Schema 
-    
+  <!--
+    Microsoft ResX Schema
+
     Version 2.0
-    
-    The primary goals of this format is to allow a simple XML format 
-    that is mostly human readable. The generation and parsing of the 
-    various data types are done through the TypeConverter classes 
+
+    The primary goals of this format is to allow a simple XML format
+    that is mostly human readable. The generation and parsing of the
+    various data types are done through the TypeConverter classes
     associated with the data types.
-    
+
     Example:
-    
+
     ... ado.net/XML headers & schema ...
     <resheader name="resmimetype">text/microsoft-resx</resheader>
     <resheader name="version">2.0</resheader>
@@ -26,36 +26,36 @@
         <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
         <comment>This is a comment</comment>
     </data>
-                
-    There are any number of "resheader" rows that contain simple 
+
+    There are any number of "resheader" rows that contain simple
     name/value pairs.
-    
-    Each data row contains a name, and value. The row also contains a 
-    type or mimetype. Type corresponds to a .NET class that support 
-    text/value conversion through the TypeConverter architecture. 
-    Classes that don't support this are serialized and stored with the 
+
+    Each data row contains a name, and value. The row also contains a
+    type or mimetype. Type corresponds to a .NET class that support
+    text/value conversion through the TypeConverter architecture.
+    Classes that don't support this are serialized and stored with the
     mimetype set.
-    
-    The mimetype is used for serialized objects, and tells the 
-    ResXResourceReader how to depersist the object. This is currently not 
+
+    The mimetype is used for serialized objects, and tells the
+    ResXResourceReader how to depersist the object. This is currently not
     extensible. For a given mimetype the value must be set accordingly:
-    
-    Note - application/x-microsoft.net.object.binary.base64 is the format 
-    that the ResXResourceWriter will generate, however the reader can 
+
+    Note - application/x-microsoft.net.object.binary.base64 is the format
+    that the ResXResourceWriter will generate, however the reader can
     read any of the formats listed below.
-    
+
     mimetype: application/x-microsoft.net.object.binary.base64
-    value   : The object must be serialized with 
+    value   : The object must be serialized with
             : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
             : and then encoded with base64 encoding.
-    
+
     mimetype: application/x-microsoft.net.object.soap.base64
-    value   : The object must be serialized with 
+    value   : The object must be serialized with
             : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
             : and then encoded with base64 encoding.
 
     mimetype: application/x-microsoft.net.object.bytearray.base64
-    value   : The object must be serialized into a byte array 
+    value   : The object must be serialized into a byte array
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
@@ -148,7 +148,7 @@
     <value>Important</value>
   </data>
   <data name="Organisation_BuyerRegistrationPendingApproval" xml:space="preserve">
-    <value>Buyer registration pending</value>
+    <value>Buyer registration pending approval.</value>
   </data>
   <data name="Organisation_OrganisationDetails" xml:space="preserve">
     <value>Organisation details</value>
@@ -385,13 +385,13 @@
     <value>Support links</value>
   </data>
   <data name="Supplementary_Title" xml:space="preserve">
-    <value>Thank you for contacting Find a Tender</value>
+    <value>Thank you for contacting GOV.UK</value>
   </data>
   <data name="Supplementary_CloseThisWindow" xml:space="preserve">
     <value>Close this window</value>
   </data>
   <data name="Supplementary_PrivacyNotice_Title" xml:space="preserve">
-    <value>Privacy notice</value>
+    <value>Privacy notice: how we use your data</value>
   </data>
   <data name="Supplementary_PageNotFound_Title" xml:space="preserve">
     <value>Page not found</value>
@@ -409,7 +409,7 @@
     <value>There is a problem</value>
   </data>
   <data name="Supplementary_Index_UnableToAuthenticate" xml:space="preserve">
-    <value>Unable to authenticate user. Try again</value>
+    <value>Unable to authenticate user, please retry</value>
   </data>
   <data name="Supplementary_Index_Intro" xml:space="preserve">
     <value>The Central Digital Platform (CDP) service is for both procurement professionals and suppliers in the UK's public and utilities sectors.</value>
@@ -502,7 +502,7 @@
     <value>Cookies that measure website use</value>
   </data>
   <data name="Supplementary_CookieDetails_GoogleAnalytics" xml:space="preserve">
-    <value>We use Google Analytics software to collect anonymised information about how you use Find a Tender. We do this to help make sure the site is meeting the needs of its users and to help us make improvements to the site.</value>
+    <value>We use Google Analytics software (Universal Analytics) to collect anonymised information about how you use Find a Tender. We do this to help make sure the site is meeting the needs of its users and to help us make improvements to the site.</value>
   </data>
   <data name="Supplementary_CookieDetails_NoGoogleShare" xml:space="preserve">
     <value>We do not allow Google to use or share the data about how you use this site.</value>
@@ -532,7 +532,7 @@
     <value>When you sign in to the service, we’ll set cookies to keep you signed in as you use the site. These cookies do not store your personal data and are deleted when you close your browser.</value>
   </data>
   <data name="Supplementary_CookieDetails_BannerMessages" xml:space="preserve">
-    <value>Cookies that remember your settings</value>
+    <value>Banner messages and preferences</value>
   </data>
   <data name="Supplementary_CookieDetails_BannerInfo" xml:space="preserve">
     <value>You may see banners when you visit Find a Tender inviting you to select your cookie preferences. We’ll set cookies so that your computer knows you’ve seen such messages and not to show them again, and also to store your settings.</value>
@@ -553,13 +553,13 @@
     <value>Expires</value>
   </data>
   <data name="Supplementary_CookieDetails_TableRow_GA" xml:space="preserve">
-    <value>This cookie is used with Google Analytics. This cookie allows Google to track unique users via a client identifier that is randomly generated</value>
+    <value>This cookie is used with Google Universal Analytics. This cookie allows Google to track unique users via a client identifier that is randomly generated</value>
   </data>
   <data name="Supplementary_CookieDetails_TableRow_GAT" xml:space="preserve">
-    <value>This cookie is used with Google Analytics. It is used to reduce the number of page view requests.</value>
+    <value>This cookie is used with Google Universal Analytics. This cookie is used to monitor and track visitors’ behaviour on the site anonymously</value>
   </data>
   <data name="Supplementary_CookieDetails_TableRow_GID" xml:space="preserve">
-    <value>This cookie is used with Google Analytics. It helps us count how many people visit the service by telling us if you’ve visited before.</value>
+    <value>This cookie is used with Google Universal Analytics. This cookie is used to group the user behaviour</value>
   </data>
   <data name="Supplementary_CookieDetails_TableRow_Antiforgery" xml:space="preserve">
     <value>This cookie keeps the service secure, preventing cross-site forgery requests.</value>
@@ -829,7 +829,7 @@
     <value>Select a country</value>
   </data>
   <data name="Global_PleaseSelect" xml:space="preserve">
-    <value>Select an option</value>
+    <value>Please select</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityCompanyRegisterName_SelectIfRegisteredError" xml:space="preserve">
     <value>Select where registered</value>
@@ -1444,13 +1444,13 @@
     <value>NHS Organisation Data Service (ODS) Number</value>
   </data>
   <data name="Organisation_OrganisationIdentification_GB_NHS_Number_ErrorMessage" xml:space="preserve">
-    <value>Enter the NHS Organisation Data Service (ODS) number</value>
+    <value>Enter the NHS Organisation Data Service number</value>
   </data>
   <data name="Organisation_OrganisationIdentification_GB_UKPRN_Label" xml:space="preserve">
     <value>UK Register of Learning Providers</value>
   </data>
   <data name="Organisation_OrganisationIdentification_GB_UKPRN_Number_Label" xml:space="preserve">
-    <value>UK Provider Reference Number (UKPRN)</value>
+    <value>UK Register of Learning Providers (GB-UKPRN)</value>
   </data>
   <data name="Organisation_OrganisationIdentification_GB_UKPRN_Number_ErrorMessage" xml:space="preserve">
     <value>Enter the UK Register of Learning Providers number.</value>
@@ -1459,7 +1459,7 @@
     <value>None apply</value>
   </data>
   <data name="Organisation_OrganisationIdentification_Other_Hint" xml:space="preserve">
-    <value>You'll be assigned a public procurement organisation number (PPON)</value>
+    <value>You'll get a public procurement organisation number (PPON) as an identifier</value>
   </data>
   <data name="Organisation_OrganisationIdentification_GG_RCE_Hint" xml:space="preserve">
     <value>Include prefix, if applicable. For example, GY.</value>
@@ -1582,13 +1582,13 @@
     <value>Wales</value>
   </data>
   <data name="OrganisationRegistration_BuyerSelectDevolvedRegulation_Hint" xml:space="preserve">
-    <value>Read the &lt;a href="https://www.gov.uk/government/publications/procurement-act-2023-guidance-documents-plan-phase/guidance-devolved-contracting-authorities-html#:~:text=Procurement%20is%20largely%20a%20devolved,are%20conducted%20and%20contracts%20managed." target="_blank"&gt;devolved contracting authorities guidance (opens in new tab). &lt;/a&gt;</value>
+    <value>Select all that apply</value>
   </data>
   <data name="OrganisationRegistration_BuyerOrganisationType_CentralGovernment_Label" xml:space="preserve">
     <value>Central government - UK or devolved administrations</value>
   </data>
   <data name="OrganisationRegistration_BuyerOrganisationType_RegionalAndLocalGovernment_Label" xml:space="preserve">
-    <value>Regional and local public authority (sub-central) - UK or devolved administrations</value>
+    <value>Regional and local public authority - UK or devolved administrations</value>
   </data>
   <data name="OrganisationRegistration_BuyerOrganisationType_PublicUndertaking_Label" xml:space="preserve">
     <value>Public undertaking</value>
@@ -1872,7 +1872,7 @@
     <value>Identifier/s</value>
   </data>
   <data name="Support_Organisations_TableHeader_OrgEmail" xml:space="preserve">
-    <value>Org</value>
+    <value>Org email</value>
   </data>
   <data name="Support_Organisations_TableHeader_AdminEmail" xml:space="preserve">
     <value>Admin</value>
@@ -2419,13 +2419,13 @@
     <value>Do you have a website?</value>
   </data>
   <data name="Global_SelectAnOption" xml:space="preserve">
-    <value>Select an option</value>
+    <value>Please select an option</value>
   </data>
   <data name="Supplier_VatQuestion_BelongsToAnotherOrganisation_Error" xml:space="preserve">
     <value>This VAT number belongs to another organisation. Enter a different VAT number.</value>
   </data>
   <data name="Supplier_VatNumber_Error" xml:space="preserve">
-    <value>Enter the VAT number.</value>
+    <value>Please enter the VAT number.</value>
   </data>
   <data name="Supplier_WebsiteQuestion_WebsiteAddress" xml:space="preserve">
     <value>Website address</value>
@@ -2530,7 +2530,7 @@
     <value>Error:</value>
   </data>
   <data name="Supplier_LegalFormLawRegistered_ErrorMessage" xml:space="preserve">
-    <value>Enter the law under which your organisation is registered</value>
+    <value>Please enter the law under which your organisation is registered</value>
   </data>
   <data name="Supplier_LegalFormOtherOrganisation_PleaseSelect" xml:space="preserve">
     <value>Select your organisation's registered legal form</value>
@@ -2720,7 +2720,7 @@
     <value>the Greater London Authority</value>
   </data>
   <data name="SupplierToBuyer_OrganisationType_Hint" xml:space="preserve">
-    <value>Decide on your organisation type, as defined in the &lt;a href="https://www.gov.uk/government/publications/procurement-act-2023-guidance-documents-plan-phase/guidance-contracting-authority-definition-html" target="_blank"&gt;contracting authority definition guidance (opens in new tab). &lt;/a&gt;</value>
+    <value>Select the type of organisation that best describes your organisation's role.</value>
   </data>
   <data name="SupplierToBuyer_OrganisationType_HousingAssociations" xml:space="preserve">
     <value>housing associations</value>
@@ -2810,10 +2810,10 @@
     <value>You’ve set your cookie preferences.</value>
   </data>
   <data name="PrivacyPolicy_Title" xml:space="preserve">
-    <value>Agree to the privacy notice</value>
+    <value>Agree to privacy policy before continuing</value>
   </data>
   <data name="PrivacyPolicy_YesIHaveReadAndAgreePrivacyPolicy" xml:space="preserve">
-    <value>I have read and agree to the privacy notice</value>
+    <value>Yes, I have read and agree to the Central Digital Platform service privacy policy</value>
   </data>
   <data name="PrivacyPolicy_SelectReadAndAgreeToPrivacyPolicy" xml:space="preserve">
     <value>Select if you have read and agree to the Central Digital Platform service privacy policy</value>
@@ -3023,7 +3023,7 @@
     <value>Go to my account</value>
   </data>
   <data name="ErrorMessageList_DuplicatePersonName" xml:space="preserve">
-    <value>A person with this name already exists. Try again.</value>
+    <value>A person with this name already exists. Please try again.</value>
   </data>
   <data name="ErrorMessageList_DuplicatePersonEmail" xml:space="preserve">
     <value>A user with this email address already exists for your organisation.</value>
@@ -3044,16 +3044,16 @@
     <value>The requested organisation was not found.</value>
   </data>
   <data name="ErrorMessageList_DuplicateOrganisationName" xml:space="preserve">
-    <value>An organisation with this name already exists. Try again.</value>
+    <value>An organisation with this name already exists. Please try again.</value>
   </data>
   <data name="ErrorMessageList_PayLoadIssueOrNullAurgument" xml:space="preserve">
-    <value>Enter all the required information correctly.</value>
+    <value>Please make sure all the required information has been provided correctly.</value>
   </data>
   <data name="ErrorMessageList_UnprocessableEntity" xml:space="preserve">
-    <value>An unprocessable entity found. Try again.</value>
+    <value>An unprocessable entity found. Please try again with valid data.</value>
   </data>
   <data name="ErrorMessageList_UnexpectedError" xml:space="preserve">
-    <value>An unexpected error occurred. Try again.</value>
+    <value>An unexpected error occurred. Please try again with valid data.</value>
   </data>
   <data name="ErrorMessageList_UnknownOrganisation" xml:space="preserve">
     <value>The requested organisation was not found.</value>
@@ -3065,7 +3065,7 @@
     <value>The requested buyer information update type is unknown.</value>
   </data>
   <data name="ErrorMessageList_DuplicateApiKeyName" xml:space="preserve">
-    <value>An API key with this name already exists. Try again.</value>
+    <value>An API key with this name already exists. Please try again.</value>
   </data>
   <data name="ErrorMessageList_AlreadyMemberOfOrganisation" xml:space="preserve">
     <value>You are either already a member of this organisation or have already requested to join.</value>
@@ -3300,5 +3300,17 @@
   </data>
   <data name="ConsortiumShareMyInformation_Title" xml:space="preserve">
     <value>Share your consortium information</value>
+  </data>
+  <data name="PrivacyPolicy_Notice_BeforeLink" xml:space="preserve">
+    <value>Before you can continue, you need to read and agree to the </value>
+  </data>
+  <data name="PrivacyPolicy_Notice_Link" xml:space="preserve">
+    <value>Central Digital Platform service privacy policy (opens in new tab)</value>
+  </data>
+  <data name="Supplementary_PrivacyNotice_Intro" xml:space="preserve">
+    <value>GOV.UK Digital Service Platform is provided by &lt;a href="https://www.gov.uk/government/organisations/government-digital-service" class="govuk-link"&gt;Government Digital Service&lt;/a&gt; (GDS), which is part of the Cabinet Office. The data controller for GDS is the Cabinet Office. A data controller determines how and why personal data can be processed.</value>
+  </data>
+  <data name="Supplementary_PrivacyNotice_ReadMore" xml:space="preserve">
+    <value>Read the &lt;a href="https://ico.org.uk/ESDWebPages/Entry/Z7414053" class="govuk-link"&gt;Cabinet Office’s entry in the Data Protection Public Register&lt;/a&gt; for more information.</value>
   </data>
 </root>
