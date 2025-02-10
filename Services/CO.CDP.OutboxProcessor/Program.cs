@@ -50,11 +50,11 @@ builder.Services.AddSingleton<OutboxProcessorBackgroundService.OutboxProcessorCo
          s.GetRequiredService<IOptions<AwsConfiguration>>().Value.SqsPublisher?.Outbox ??
          new OutboxProcessorBackgroundService.OutboxProcessorConfiguration()
      );
-builder.Services.AddKeyedScoped<IOutboxPublisher, SqsOutboxPublisher>("SqsOutboxPublisher");
+builder.Services.AddKeyedScoped<IPublisher, SqsPublisher>("SqsPublisher");
 builder.Services.AddScoped<IOutboxProcessor>(s =>
 {
     return new OutboxProcessor(
-        s.GetRequiredKeyedService<IOutboxPublisher>("SqsOutboxPublisher"),
+        s.GetRequiredKeyedService<IPublisher>("SqsPublisher"),
         s.GetRequiredService<IOutboxMessageRepository>(),
         s.GetRequiredService<ILogger<OutboxProcessor>>()
     );

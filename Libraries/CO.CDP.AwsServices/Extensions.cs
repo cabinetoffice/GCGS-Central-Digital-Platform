@@ -113,11 +113,11 @@ public static class Extensions
 
         if (!configuration.GetValue("Features:OutboxProcessorBackgroundService", false))
         {
-            services.AddKeyedScoped<IOutboxPublisher, SqsOutboxPublisher>("SqsOutboxPublisher");
+            services.AddKeyedScoped<IPublisher, SqsPublisher>("SqsPublisher");
             services.AddScoped<IOutboxProcessor>(s =>
             {
                 return new OutboxProcessor(
-                    s.GetRequiredKeyedService<IOutboxPublisher>("SqsOutboxPublisher"),
+                    s.GetRequiredKeyedService<IPublisher>("SqsPublisher"),
                     s.GetRequiredService<IOutboxMessageRepository>(),
                     s.GetRequiredService<ILogger<OutboxProcessor>>()
                 );

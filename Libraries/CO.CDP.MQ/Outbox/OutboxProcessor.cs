@@ -8,7 +8,7 @@ public interface IOutboxProcessor
 }
 
 public class OutboxProcessor(
-    IOutboxPublisher publisher,
+    IPublisher publisher,
     IOutboxMessageRepository outbox,
     TimeSpan lockTimeout,
     ILogger<OutboxProcessor> logger)
@@ -16,7 +16,7 @@ public class OutboxProcessor(
 {
     private readonly SemaphoreSlim _semaphore = new(1, 1);
 
-    public OutboxProcessor(IOutboxPublisher publisher, IOutboxMessageRepository outbox, ILogger<OutboxProcessor> logger) :
+    public OutboxProcessor(IPublisher publisher, IOutboxMessageRepository outbox, ILogger<OutboxProcessor> logger) :
         this(publisher, outbox, TimeSpan.FromSeconds(1), logger)
     {
     }
