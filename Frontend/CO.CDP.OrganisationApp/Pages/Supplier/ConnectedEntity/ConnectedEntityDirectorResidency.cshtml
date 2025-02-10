@@ -39,7 +39,7 @@
                 }
                 <select asp-for="DirectorLocation" class="govuk-select govuk-!-width-two-thirds @(nationalityHasError ? "govuk-select--error" : "")">
                     <option value="">@StaticTextResource.Global_PleaseSelect</option>
-                    @foreach (var cnt in Constants.Country.NonUKCountries)
+                    @foreach (var cnt in Constants.Country.GetAllCountries())
                     {
                         <option value="@cnt.Key">@cnt.Value</option>
                     }
