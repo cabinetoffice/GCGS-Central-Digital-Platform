@@ -1602,20 +1602,11 @@
   <data name="ErrorMessageList_BuyerInfoNotExists" xml:space="preserve">
     <value>Nid yw'r wybodaeth am y prynwr ar gyfer y sefydliad dan sylw yn bodoli.</value>
   </data>
-  <data name="ErrorMessageList_DuplicateApiKeyName" xml:space="preserve">
-    <value>Mae allwedd API sydd â'r enw hwn eisoes yn bodoli. Rhowch gynnig arall arni.</value>
-  </data>
   <data name="ErrorMessageList_DuplicateInviteEmail" xml:space="preserve">
     <value>Mae defnyddiwr sydd â'r cyfeiriad e-bost hwn eisoes wedi'i wahodd i ymuno â'ch sefydliad.</value>
   </data>
-  <data name="ErrorMessageList_DuplicateOrganisationName" xml:space="preserve">
-    <value>Mae sefydliad sydd â'r enw hwn eisoes yn bodoli. Rhowch gynnig arall arni.</value>
-  </data>
   <data name="ErrorMessageList_DuplicatePersonEmail" xml:space="preserve">
     <value>Mae defnyddiwr sydd â'r cyfeiriad e-bost hwn eisoes yn bodoli ar gyfer eich sefydliad.</value>
-  </data>
-  <data name="ErrorMessageList_DuplicatePersonName" xml:space="preserve">
-    <value>Mae person sydd â'r enw hwn eisoes yn bodoli. Rhowch gynnig arall arni.</value>
   </data>
   <data name="ErrorMessageList_IdentiferNumberAlreadyExists" xml:space="preserve">
     <value>Rydych wedi defnyddio'r rhif cofrestrfa hwn ar gyfer sefydliad arall. Rhowch rif cofrestrfa gwahanol.</value>
@@ -1662,26 +1653,17 @@
   <data name="ErrorMessageList_OrganisationNotFound" xml:space="preserve">
     <value>Ni lwyddwyd i ddod o hyd i'r sefydliad dan sylw.</value>
   </data>
-  <data name="ErrorMessageList_PayLoadIssueOrNullAurgument" xml:space="preserve">
-    <value>Gwnewch yn si?r bod yr holl wybodaeth ofynnol wedi'i rhoi'n gywir.</value>
-  </data>
   <data name="ErrorMessageList_PersonCreationFailed" xml:space="preserve">
     <value>Ni lwyddwyd i ychwanegu person. A ydych wedi rhoi'r manylion cywir ar gyfer y person.</value>
   </data>
   <data name="ErrorMessageList_PersonNotFound" xml:space="preserve">
     <value>Ni lwyddwyd i ddod o hyd i'r person dan sylw.</value>
   </data>
-  <data name="ErrorMessageList_UnexpectedError" xml:space="preserve">
-    <value>Bu gwall annisgwyl. Rhowch gynnig arall arni gan ddefnyddio data dilys.</value>
-  </data>
   <data name="ErrorMessageList_UnknownBuyerInformationUpdateType" xml:space="preserve">
     <value>Mae'r math o ddiweddariad y gofynnwyd amdano i'r wybodaeth am y prynwr yn anhysbys.</value>
   </data>
   <data name="ErrorMessageList_UnknownOrganisation" xml:space="preserve">
     <value>Ni lwyddwyd i ddod o hyd i'r sefydliad dan sylw.</value>
-  </data>
-  <data name="ErrorMessageList_UnprocessableEntity" xml:space="preserve">
-    <value>Daethpwyd o hyd i endid na ellir ei brosesu. Rhowch gynnig arall arni gan ddefnyddio data dilys.</value>
   </data>
   <data name="Footer_SupportLinks" xml:space="preserve">
     <value>Dolenni cymorth</value>
@@ -1797,9 +1779,6 @@
   <data name="Global_NotApplicableLong" xml:space="preserve">
     <value>Ddim yn gymwys</value>
   </data>
-  <data name="Global_PleaseSelect" xml:space="preserve">
-    <value>Dewiswch</value>
-  </data>
   <data name="Global_RadioField_SelectOptionError" xml:space="preserve">
     <value>Dewiswch opsiwn</value>
   </data>
@@ -1811,9 +1790,6 @@
   </data>
   <data name="Global_SaveAndExit" xml:space="preserve">
     <value>Cadw a gadael</value>
-  </data>
-  <data name="Global_SelectAnOption" xml:space="preserve">
-    <value>Dewiswch opsiwn</value>
   </data>
   <data name="Global_SendMessage" xml:space="preserve">
     <value>Anfon neges</value>
@@ -1869,17 +1845,11 @@
   <data name="OrganisationRegistration_BuyerOrganisationType_RegionalAndLocalGovernment_Hint" xml:space="preserve">
     <value>Yn cynnwys cynghorau, elusennau, sefydliadau addysg, cymdeithasau tai a sefydliadau golau glas. </value>
   </data>
-  <data name="OrganisationRegistration_BuyerOrganisationType_RegionalAndLocalGovernment_Label" xml:space="preserve">
-    <value>Awdurdod cyhoeddus rhanbarthol a lleol – gweinyddiaeth y DU neu weinyddiaeth ddatganoledig</value>
-  </data>
   <data name="OrganisationRegistration_BuyerOrganisationType_ValidationErrorMessage" xml:space="preserve">
     <value>Dewiswch eich math o sefydliad prynu</value>
   </data>
   <data name="OrganisationRegistration_BuyerSelectDevolvedRegulation_Heading" xml:space="preserve">
     <value>Dewiswch pa reoliadau datganoledig sy'n gymwys</value>
-  </data>
-  <data name="OrganisationRegistration_BuyerSelectDevolvedRegulation_Hint" xml:space="preserve">
-    <value>Dewiswch bob un sy'n berthnasol</value>
   </data>
   <data name="OrganisationRegistration_CompanyHouseNumberQuestion_CompanyAlreadyRegistered_NotificationBanner" xml:space="preserve">
     <value>Mae sefydliad sydd â'r rhif cwmni hwn eisoes yn bodoli. Newid rhif y cwmni neu &lt;a class="govuk-notification-banner__link" href="/registration/{organisationIdentifier}/join-organisation"&gt;wneud cais i ymuno â {organisationName}.&lt;/a&gt;</value>
@@ -1968,9 +1938,6 @@
   <data name="Organisation_ApiKeysForBuyers" xml:space="preserve">
     <value> (prynwyr)</value>
   </data>
-  <data name="Organisation_BuyerRegistrationPendingApproval" xml:space="preserve">
-    <value>Cofrestriad prynwr yn aros i gael ei gymeradwyo.</value>
-  </data>
   <data name="Organisation_ChangeSignInDetails" xml:space="preserve">
     <value>Gallwch &lt;a class="govuk-link govuk-link--no-visited-state" href="{0}" target="_blank"&gt;newid eich manylion mewngofnodi yn eich GOV.UK One Login&lt;/a&gt;.</value>
   </data>
@@ -2028,9 +1995,6 @@
   <data name="Organisation_OrganisationIdentification_GB_MPR_Number_Label" xml:space="preserve">
     <value>Rhif Cofrestr Gyhoeddus y Cwmnïau Cydfuddiannol</value>
   </data>
-  <data name="Organisation_OrganisationIdentification_GB_NHS_Number_ErrorMessage" xml:space="preserve">
-    <value>Rhowch rif Gwasanaeth Data Sefydliad y GIG</value>
-  </data>
   <data name="Organisation_OrganisationIdentification_GB_NHS_Number_Label" xml:space="preserve">
     <value>Rhif Gwasanaeth Data Sefydliad y GIG</value>
   </data>
@@ -2048,9 +2012,6 @@
   </data>
   <data name="Organisation_OrganisationIdentification_GB_UKPRN_Number_ErrorMessage" xml:space="preserve">
     <value>Rhowch rif Cofrestr Darparwyr Dysgu'r DU.</value>
-  </data>
-  <data name="Organisation_OrganisationIdentification_GB_UKPRN_Number_Label" xml:space="preserve">
-    <value>Cofrestr Darparwyr Dysgu'r DU (GB-UKPRN)</value>
   </data>
   <data name="Organisation_OrganisationIdentification_GG_RCE_Number_ErrorMessage" xml:space="preserve">
     <value>Rhowch rif Cofrestrfa Guernsey.</value>
@@ -2084,9 +2045,6 @@
   </data>
   <data name="Organisation_OrganisationIdentification_ODS_Code_ErrorMessage" xml:space="preserve">
     <value>Rhowch y cod</value>
-  </data>
-  <data name="Organisation_OrganisationIdentification_Other_Hint" xml:space="preserve">
-    <value>Byddwch yn cael rhif sefydliad caffael cyhoeddus (PPON) fel dynodydd</value>
   </data>
   <data name="Organisation_PponGenerationPending" xml:space="preserve">
     <value>PPON yn yr arfaeth.</value>
@@ -2223,20 +2181,8 @@
   <data name="PdfGenerator_Uri" xml:space="preserve">
     <value>Uri</value>
   </data>
-  <data name="PrivacyPolicy_Notice_BeforeLink" xml:space="preserve">
-    <value>Cyn y gallwch barhau, mae angen i chi ddarllen </value>
-  </data>
-  <data name="PrivacyPolicy_Notice_Link" xml:space="preserve">
-    <value>polisi preifatrwydd gwasanaeth y Llwyfan Digidol Canolog a chytuno iddo (bydd yn agor mewn tab newydd)</value>
-  </data>
   <data name="PrivacyPolicy_SelectReadAndAgreeToPrivacyPolicy" xml:space="preserve">
     <value>Dewiswch os ydych wedi darllen polisi preifatrwydd y gwasanaeth Llwyfan Digidol Canolog ac yn cytuno iddo</value>
-  </data>
-  <data name="PrivacyPolicy_Title" xml:space="preserve">
-    <value>Rhaid i chi gytuno i'r polisi preifatrwydd cyn parhau</value>
-  </data>
-  <data name="PrivacyPolicy_YesIHaveReadAndAgreePrivacyPolicy" xml:space="preserve">
-    <value>Rwyf wedi darllen polisi preifatrwydd gwasanaeth y Llwyfan Digidol Canolog ac rwy'n cytuno iddo</value>
   </data>
   <data name="ProvideFeedbackAndContact_ASpecificPage" xml:space="preserve">
     <value>Tudalen benodol</value>
@@ -2385,17 +2331,11 @@
   <data name="Supplementary_ContactUs_SupportTeam" xml:space="preserve">
     <value>Bydd ein tîm cymorth yn cysylltu â chi drwy e-bost, rhwng 9am a 5pm o ddydd Llun i ddydd Gwener, ac eithrio gwyliau banc. </value>
   </data>
-  <data name="Supplementary_CookieDetails_BannerMessages" xml:space="preserve">
-    <value>Negeseuon baner a dewisiadau</value>
-  </data>
   <data name="Supplementary_CookieDetails_ChangeSettings" xml:space="preserve">
     <value>Newid eich gosodiadau</value>
   </data>
   <data name="Supplementary_CookieDetails_ChangeSettingsInfo" xml:space="preserve">
     <value>Gallwch &lt;a href="/cookies"&gt;newid pa gwcis rydych yn hapus i ni eu defnyddio&lt;/a&gt;.</value>
-  </data>
-  <data name="Supplementary_CookieDetails_GoogleAnalytics" xml:space="preserve">
-    <value>Rydym yn defnyddio meddalwedd Google Analytics (Universal Analytics) i gasglu gwybodaeth ddienw yngl?n â sut rydych yn defnyddio Canfod Tendr. Rydym yn gwneud hyn er mwyn helpu i wneud yn si?r bod y wefan yn diwallu anghenion ei defnyddwyr a'n helpu i wneud gwelliannau iddi.</value>
   </data>
   <data name="Supplementary_CookieDetails_GoogleAnalyticsInfo" xml:space="preserve">
     <value>Mae Google Analytics yn storio gwybodaeth am y canlynol:</value>
@@ -2429,15 +2369,6 @@
   </data>
   <data name="Supplementary_CookieDetails_TableRow_Culture" xml:space="preserve">
     <value>Mae'n storio'r gofynion iaith a ddewiswyd ar y pryd.</value>
-  </data>
-  <data name="Supplementary_CookieDetails_TableRow_GA" xml:space="preserve">
-    <value>Defnyddir y cwci hwn gyda Google Universal Analytics. Mae’r cwci hwn yn galluogi Google i ddilyn trywydd defnyddwyr unigryw drwy  ddynodydd cleient a gaiff ei greu ar hap</value>
-  </data>
-  <data name="Supplementary_CookieDetails_TableRow_GAT" xml:space="preserve">
-    <value>Defnyddir y cwci hwn gyda Google Universal Analytics. Defnyddir y cwci hwn i fonitro a dilyn ymddygiad ymwelwyr ar y wefan yn ddienw</value>
-  </data>
-  <data name="Supplementary_CookieDetails_TableRow_GID" xml:space="preserve">
-    <value>Defnyddir y cwci hwn gyda Google Universal Analytics. Defnyddir y cwci hwn  i grwpio ymddygiad defnyddwyr</value>
   </data>
   <data name="Supplementary_CookieDetails_TableRow_Preferences" xml:space="preserve">
     <value>Mae'n storio dewisiadau derbyn/gwrthod y cwci.</value>
@@ -2538,9 +2469,6 @@
   <data name="Supplementary_Index_Title" xml:space="preserve">
     <value>Cofrestrwch eich manylion fel prynwr neu gyflenwr caffaeliadau</value>
   </data>
-  <data name="Supplementary_Index_UnableToAuthenticate" xml:space="preserve">
-    <value>Nid oes modd dilysu'r defnyddiwr, rhowch gynnig arall arni </value>
-  </data>
   <data name="Supplementary_Index_UseService" xml:space="preserve">
     <value>Defnyddiwch y gwasanaeth os ydych:</value>
   </data>
@@ -2553,18 +2481,6 @@
   <data name="Supplementary_PageNotFound_TypedAddress" xml:space="preserve">
     <value>Os gwnaethoch deipio’r cyfeiriad gwe, gwnewch yn si?r ei fod yn gywir.</value>
   </data>
-  <data name="Supplementary_PrivacyNotice_Intro" xml:space="preserve">
-    <value>Darperir Llwyfan Digidol Canolog GOV.UK gan &lt;a href="https://www.gov.uk/government/organisations/government-digital-service" class="govuk-link"&gt;Wasanaeth Digidol y Llyworaeth&lt;/a&gt; (GDS), sy'n rhan o Swyddfa'r Cabinet. Y rheolydd data ar gyfer GDS yw Swyddfa'r Cabinet. Rheolydd data sy'n penderfynu sut a pham y gellir prosesu data personol. </value>
-  </data>
-  <data name="Supplementary_PrivacyNotice_ReadMore" xml:space="preserve">
-    <value>Darllenwch &lt;a href="https://ico.org.uk/ESDWebPages/Entry/Z7414053" class="govuk-link"&gt;gofnod Swyddfa'r Cabinet ar y Gofrestr Diogelu Data Gyhoeddus&lt;/a&gt; am ragor o wybodaeth. </value>
-  </data>
-  <data name="Supplementary_PrivacyNotice_Title" xml:space="preserve">
-    <value>Hysbysiad preifatrwydd: sut rydym yn defnyddio eich data</value>
-  </data>
-  <data name="Supplementary_Title" xml:space="preserve">
-    <value>Diolch am gysylltu â GOV.UK</value>
-  </data>
   <data name="SupplierInformationStatus_StepStatus_InProcess" xml:space="preserve">
     <value>Yn mynd rhagddo</value>
   </data>
@@ -2576,9 +2492,6 @@
   </data>
   <data name="SupplierToBuyer_OrganisationType_BuyerTypeOthers" xml:space="preserve">
     <value>Eraill</value>
-  </data>
-  <data name="SupplierToBuyer_OrganisationType_Hint" xml:space="preserve">
-    <value>Dewiswch y math o sefydliad sy'n disgrifio rôl eich sefydliad orau.</value>
   </data>
   <data name="Supplier_BasicInformation_Title" xml:space="preserve">
     <value>Rheoli gwybodaeth sylfaenol {0}</value>
@@ -2862,9 +2775,6 @@
   <data name="Supplier_LegalFormLawRegistered_Error" xml:space="preserve">
     <value>Gwall:</value>
   </data>
-  <data name="Supplier_LegalFormLawRegistered_ErrorMessage" xml:space="preserve">
-    <value>Nodwch o dan ba gyfraith y mae eich sefydliad wedi'i gofrestru</value>
-  </data>
   <data name="Supplier_LegalFormLawRegistered_Hint" xml:space="preserve">
     <value>Er enghraifft, Deddf Cwmnïau 2006.</value>
   </data>
@@ -2900,9 +2810,6 @@
   </data>
   <data name="Supplier_SupplierInformationSummary_FormsFurtherQuestionExempt" xml:space="preserve">
     <value>Ddim yn Gymwys</value>
-  </data>
-  <data name="Supplier_VatNumber_Error" xml:space="preserve">
-    <value>Rhowch y rhif TAW.</value>
   </data>
   <data name="Supplier_VatQuestion_BelongsToAnotherOrganisation_Error" xml:space="preserve">
     <value>Mae'r rhif TAW hwn yn perthyn i sefydliad arall. Rhowch rif TAW gwahanol.</value>
@@ -2969,9 +2876,6 @@
   </data>
   <data name="Support_Organisations_TableHeader_LastReviewedBy" xml:space="preserve">
     <value>Adolygwyd ddiwethaf gan</value>
-  </data>
-  <data name="Support_Organisations_TableHeader_OrgEmail" xml:space="preserve">
-    <value>E-bost y sefydliad</value>
   </data>
   <data name="UserSummary_Approve" xml:space="preserve">
     <value>Cymeradwyo</value>
