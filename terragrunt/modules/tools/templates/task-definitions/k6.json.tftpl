@@ -13,14 +13,7 @@
         "awslogs-stream-prefix": "${lg_prefix}"
       }
     },
-    "Command": [
-      "run", "/scripts/organisation-lookup.js",
-      "--env", "AUTH_TOKEN=$AUTH_TOKEN",
-      "--env", "DURATION=$DURATION",
-      "--env", "MAX_VUS=$MAX_VUS",
-      "--env", "RPS=$RPS",
-      "--env", "TARGET_DOMAIN=$TARGET_DOMAIN"
-    ],
+    "Command": ["run", "/scripts/organisation-lookup.js"],
     "environment": [
         {"name": "AUTH_TOKEN", "value": "${auth_token}"},
         {"name": "DURATION", "value": "${duration}"},

@@ -1,15 +1,25 @@
 import http from 'k6/http';
-import {check, sleep} from 'k6';
+import { check, sleep } from 'k6';
 
-// Load test configuration from environment variables
-// If an environment variable isn't set, it will use the fallback default.
-const DEFAULT_DOMAIN = 'staging.supplier.information.findatender.codatt.net'
-const AUTH_TOKEN = __ENV.AUTH_TOKEN;                            // Auth token (no default, must be provided)
-const DURATION = __ENV.DURATION || '30s';                       // Total test duration (default 30s)
-const MAX_VUS = parseInt(__ENV.MAX_VUS) || 50;          	    // Max VUs to allow if needed (default 50)
-const RPS = parseInt(__ENV.RPS) || 10;                  	    // Requests per second (default 10)
-const TARGET_DOMAIN = __ENV.TARGET_DOMAIN || DEFAULT_DOMAIN;    // Target domain
-const VUS = parseInt(__ENV.VUS) || 10;                  	    // Pre-allocated VUs for the scenario (default 10)
+// Default values
+const DEFAULT_DOMAIN = 'staging.supplier.information.findatender.codatt.net';
+
+// Load environment variables & ensure defaults work properly
+const AUTH_TOKEN = __ENV.AUTH_TOKEN || '';  // Must be explicitly provided
+const DURATION = __ENV.DURATION && __ENV.DURATION.trim() !== '' ? __ENV.DURATION : '30s';
+const MAX_VUS = parseInt(__ENV.MAX_VUS, 10) || 50;
+const RPS = parseInt(__ENV.RPS, 10) || 10;
+const TARGET_DOMAIN = __ENV.TARGET_DOMAIN && __ENV.TARGET_DOMAIN.trim() !== '' ? __ENV.TARGET_DOMAIN : DEFAULT_DOMAIN;
+const VUS = parseInt(__ENV.VUS, 10) || 10;
+
+// Log environment variables for debugging
+console.debug(`Using Environment Variables:`);
+console.debug(`  - TARGET_DOMAIN: ${TARGET_DOMAIN}`);
+console.debug(`  - AUTH_TOKEN: ${AUTH_TOKEN ? 'Provided' : 'Missing'}`);
+console.debug(`  - DURATION: ${DURATION}`);
+console.debug(`  - MAX_VUS: ${MAX_VUS}`);
+console.debug(`  - RPS: ${RPS}`);
+console.debug(`  - VUS: ${VUS}`);
 
 export const options = {
     scenarios: {
@@ -25,10 +35,16 @@ export const options = {
 };
 
 export default function () {
-    // Endpoint
+    // Construct the URL safely
     const url = `https://organisation.${TARGET_DOMAIN}/organisation/lookup?name=test123`;
 
-    // Request headers
+    // Ensure token exists before sending
+    if (!AUTH_TOKEN) {
+        console.error("AUTH_TOKEN is missing! Test will fail.");
+        return;
+    }
+
+    // Request Headers
     const params = {
         headers: {
             accept: 'application/json',
