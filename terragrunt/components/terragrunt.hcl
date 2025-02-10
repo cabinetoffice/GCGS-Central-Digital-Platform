@@ -515,6 +515,13 @@ locals {
       port      = 3030
       port_host = 3030
     }
+    k6 = {
+      cpu       = 1024
+      memory    = 3072
+      name      = "k6"
+      port      = 4040
+      port_host = null
+    }
     pgadmin = {
       cpu       = 256
       memory    = 512

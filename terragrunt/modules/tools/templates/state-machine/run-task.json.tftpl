@@ -1,0 +1,35 @@
+{
+  "Comment": "Trigger performance test by running ${task} task",
+  "StartAt": "ECS RunTask",
+  "States": {
+    "ECS RunTask": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::ecs:runTask.sync",
+      "Parameters": {
+        "Cluster": "${cluster}",
+        "LaunchType": "FARGATE",
+        "NetworkConfiguration": {
+            "AwsvpcConfiguration" :{
+                "SecurityGroups": [ "${security_groups}" ],
+                "Subnets": [ "${subnet}" ]
+            }
+        },
+        "TaskDefinition": "${task_definition}",
+        "Overrides": {
+          "ContainerOverrides": [
+            {
+              "Name": "${task}",
+              "Environment": [
+                {
+                  "Name": "AUTH_TOKEN",
+                  "Value.$": "$.auth_token"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "End": true
+    }
+  }
+}
