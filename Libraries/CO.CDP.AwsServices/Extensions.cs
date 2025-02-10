@@ -111,30 +111,18 @@ public static class Extensions
             };
         });
 
-        services.AddScoped<IOutboxProcessor>(s =>
+        if (!configuration.GetValue("Features:OutboxProcessorBackgroundService", false))
         {
-            return new OutboxProcessor(
-                s.GetRequiredKeyedService<IPublisher>("SqsPublisher"),
-                s.GetRequiredService<IOutboxMessageRepository>(),
-                s.GetRequiredService<ILogger<OutboxProcessor>>()
-            );
-        });
-
-        if (configuration.GetValue("Features:OutboxListener", false))
-        {
-            services.AddScoped<IOutboxProcessorListener>(s => new OutboxProcessorListener(
-                s.GetRequiredService<NpgsqlDataSource>(),
-                s.GetRequiredService<IOutboxProcessor>(),
-                s.GetRequiredService<ILogger<OutboxProcessorListener>>(),
-                channel: notificationChannel
-            ));
-            if (enableBackgroundServices)
+            services.AddKeyedScoped<IPublisher, SqsPublisher>("SqsPublisher");
+            services.AddScoped<IOutboxProcessor>(s =>
             {
-                services.AddHostedService<OutboxProcessorListenerBackgroundService>();
-            }
-        }
-        else
-        {
+                return new OutboxProcessor(
+                    s.GetRequiredKeyedService<IPublisher>("SqsPublisher"),
+                    s.GetRequiredService<IOutboxMessageRepository>(),
+                    s.GetRequiredService<ILogger<OutboxProcessor>>()
+                );
+            });
+
             if (enableBackgroundServices)
             {
                 services.AddHostedService<OutboxProcessorBackgroundService>();
