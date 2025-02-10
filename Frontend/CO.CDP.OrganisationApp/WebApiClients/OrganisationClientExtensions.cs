@@ -198,7 +198,6 @@ internal static class OrganisationClientExtensions
     internal static async Task<bool> ContactUs(this IOrganisationClient organisationClient,
         ContactUs contactUs)
         => await organisationClient.ContactUsAsync(contactUs);
-
 }
 
 public class ComposedOrganisation

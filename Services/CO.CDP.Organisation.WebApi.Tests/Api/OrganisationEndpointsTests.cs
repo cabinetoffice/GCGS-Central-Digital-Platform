@@ -354,6 +354,44 @@ public class OrganisationEndpointsTests
         }
     }
 
+    [Fact]
+    public async Task GetOrganisationSearch_ReturnsBadRequest_WhenThresholdIsBelowZero()
+    {
+        var organisationId = Guid.NewGuid();
+
+        var searchResults = new List<OrganisationSearchResult>{};
+
+        _searchOrganisationUseCase.Setup(uc => uc.Execute(It.IsAny<OrganisationSearchQuery>()))
+            .ReturnsAsync(searchResults);
+
+        var factory = new TestAuthorizationWebApplicationFactory<Program>(
+            Channel.OneLogin, organisationId, OrganisationPersonScope.Viewer,
+            services => services.AddScoped(_ => _searchOrganisationUseCase.Object));
+
+        var response = await factory.CreateClient().GetAsync($"/organisation/search?name=asd&limit=10&threshold=-1");
+
+        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+    }
+
+    [Fact]
+    public async Task GetOrganisationSearch_ReturnsBadRequest_WhenThresholdIsAboveOne()
+    {
+        var organisationId = Guid.NewGuid();
+
+        var searchResults = new List<OrganisationSearchResult> { };
+
+        _searchOrganisationUseCase.Setup(uc => uc.Execute(It.IsAny<OrganisationSearchQuery>()))
+            .ReturnsAsync(searchResults);
+
+        var factory = new TestAuthorizationWebApplicationFactory<Program>(
+            Channel.OneLogin, organisationId, OrganisationPersonScope.Viewer,
+            services => services.AddScoped(_ => _searchOrganisationUseCase.Object));
+
+        var response = await factory.CreateClient().GetAsync($"/organisation/search?name=asd&limit=10&threshold=2");
+
+        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+    }
+
     public static Model.Organisation GivenOrganisation(Guid organisationId)
     {
         var command = GivenRegisterOrganisationCommand();
