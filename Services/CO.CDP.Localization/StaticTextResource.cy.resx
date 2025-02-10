@@ -2700,9 +2700,6 @@
   <data name="Supplier_ConnectedEntity_ConnectedEntityRegistrationDateQuestion_YearRequiredError" xml:space="preserve">
     <value>Mae'n rhaid i'r dyddiad cofrestru gynnwys blwyddyn</value>
   </data>
-  <data name="Supplier_ConnectedEntity_ConnectedEntityRemoveConfirmation_ConfirmRemoveError" xml:space="preserve">
-    <value>Dewiswch ? i gadarnhau eich bod am ddileu'r person cysylltiedig</value>
-  </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityRemoveConfirmation_DateInvalidError" xml:space="preserve">
     <value>Mae'n rhaid i'r dyddiad dileu fod yn ddyddiad go iawn</value>
   </data>
@@ -2729,9 +2726,6 @@
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntitySupplierCompanyQuestion_Hint" xml:space="preserve">
     <value>A yw'r sefydliad cyflenwi wedi'i gofrestru â Th?'r Cwmnïau fel sy'n ofynnol gan Ddeddf Cwmnïau 2006? Rydym eisoes wedi gofyn hyn i chi, ond a fyddech cystal ag ailgadarnhau.</value>
-  </data>
-  <data name="Supplier_ConnectedEntity_ConnectedPersonSummary_AddAnotherConnectedPersonError" xml:space="preserve">
-    <value>Dewiswch ? i ychwanegu person cysylltiedig arall</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedPersonSummary_BackToSupplierInformation" xml:space="preserve">
     <value>Yn ôl i'r wybodaeth am y cyflenwr</value>
@@ -2910,14 +2904,8 @@
   <data name="User_LastName_Required_ErrorMessage" xml:space="preserve">
     <value>Mae angen cyfenw</value>
   </data>
-  <data name="User_RemoveConfirmation_ConfirmValidation" xml:space="preserve">
-    <value>Dewiswch ? i gadarnhau eich bod am ddileu'r defnyddiwr</value>
-  </data>
   <data name="User_Role_Required_ErrorMessage" xml:space="preserve">
     <value>Mae angen rôl</value>
-  </data>
-  <data name="User_UserSummary_HasPersonValidation" xml:space="preserve">
-    <value>Dewiswch ? i ychwanegu defnyddiwr arall</value>
   </data>
   <data name="Users_FirstName_Validation" xml:space="preserve">
     <value>Rhowch eich enw cyntaf</value>
