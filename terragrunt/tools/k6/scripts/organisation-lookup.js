@@ -3,7 +3,7 @@ import { check, sleep } from 'k6';
 import { textSummary } from 'https://jslib.k6.io/k6-summary/0.0.1/index.js';
 
 // Default values
-const DEFAULT_DOMAIN = 'staging.supplier.information.findatender.codatt.net';
+const DEFAULT_DOMAIN = 'dev.supplier.information.findatender.codatt.net';
 
 // Load environment variables & ensure defaults work properly
 const TRACE_ID = __ENV.TRACE_ID || `k6-${new Date().toISOString().replace(/[-:.TZ]/g, '')}-${Math.floor(Math.random() * 10000)}`;
