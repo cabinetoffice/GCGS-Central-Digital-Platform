@@ -182,7 +182,8 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
 
         if (!string.IsNullOrWhiteSpace(searchText))
         {
-            result = result.Where(o => EF.Functions.TrigramsSimilarity(o.Name, searchText) > 0.3);
+            result = result.Where(o => o.Name.Contains(searchText) ||
+                                       EF.Functions.TrigramsSimilarity(o.Name, searchText) > 0.3);
         }
 
         return await result
@@ -202,7 +203,8 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
 
         if (searchText != null)
         {
-            result = result.Where(o => EF.Functions.TrigramsSimilarity(o.Name, searchText) > 0.3);
+            result = result.Where(o => o.Name.Contains(searchText) ||
+                                       EF.Functions.TrigramsSimilarity(o.Name, searchText) > 0.3);
         }
 
         return await result.CountAsync();
