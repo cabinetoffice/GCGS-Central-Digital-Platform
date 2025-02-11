@@ -2814,6 +2814,9 @@
   <data name="Supplier_WebsiteQuestion_ErrorSelectOption" xml:space="preserve">
     <value>Dewiswch opsiwn</value>
   </data>
+  <data name="Support_OrganisationApproval_AdminEmail_List" xml:space="preserve">
+    <value>E-bost gweinyddwr</value>
+  </data>
   <data name="Support_OrganisationApproval_ErrorMessage" xml:space="preserve">
     <value>Dywedwch wrth y defnyddiwr pam na allech ei gymeradwyo</value>
   </data>
