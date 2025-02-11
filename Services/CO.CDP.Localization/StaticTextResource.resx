@@ -3289,4 +3289,13 @@
   <data name="Supplementary_CookieDetails_TableRow_CS_C" xml:space="preserve">
     <value>Used by Contentsquare to save the user consent status for data collection</value>
   </data>
+  <data name="SupplierToBuyer_OrganisationType_PublicUndertakingAuthority" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SupplierToBuyer_OrganisationType_RegionalAndLocalGovernment_Title" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Organisation_ChangeBuyerType" xml:space="preserve">
+    <value>Change</value>
+  </data>
 </root>
