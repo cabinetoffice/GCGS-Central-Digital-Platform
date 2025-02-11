@@ -947,12 +947,6 @@
   <data name="SupplierToBuyer_OrganisationType_PublicUndertaking" xml:space="preserve">
     <value>Ymgymeriad cyhoeddus</value>
   </data>
-  <data name="SupplierToBuyer_OrganisationType_PublicUndertakingAuthority" xml:space="preserve">
-    <value>Yn wahanol i awdurdod cyhoeddus, sefydliadau sy'n gweithredu'n fasnachol ac yn darparu gweithgareddau cyfleustodau i'r cyhoedd. Er enghraifft, Trafnidiaeth Cymru.</value>
-  </data>
-  <data name="SupplierToBuyer_OrganisationType_RegionalAndLocalGovernment_Title" xml:space="preserve">
-    <value>Mae'n cynnwys:</value>
-  </data>
   <data name="SupplierToBuyer_OrganisationType_TradingFunds" xml:space="preserve">
     <value>cronfeydd masnachu</value>
   </data>
@@ -2819,9 +2813,6 @@
   </data>
   <data name="Supplier_WebsiteQuestion_ErrorSelectOption" xml:space="preserve">
     <value>Dewiswch opsiwn</value>
-  </data>
-  <data name="Support_OrganisationApproval_AdminEmail_List" xml:space="preserve">
-    <value>E-bost gweinyddwr</value>
   </data>
   <data name="Support_OrganisationApproval_ErrorMessage" xml:space="preserve">
     <value>Dywedwch wrth y defnyddiwr pam na allech ei gymeradwyo</value>
