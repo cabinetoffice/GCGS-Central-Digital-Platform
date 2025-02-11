@@ -49,3 +49,14 @@ docker push ${ACCOUNT_ID}.dkr.ecr.eu-west-2.amazonaws.com/cdp-k6:latest
 ave aws ecs update-service --cluster cdp-sirsi --service k6 --force-new-deployment | jq -r '.'
 
 ```
+
+```json
+{
+  "auth_token": "your-dynamic-OTP-here16",
+  "duration": "10s",
+  "k6_out": "statsd",
+  "max_vus": 100,
+  "rps": 15,
+  "target_domain": "dev.supplier.information.findatender.codatt.net",
+}
+```
