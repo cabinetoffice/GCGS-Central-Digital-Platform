@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Exclusions_SectionTitle" xml:space="preserve">
-    <value>Eithriadau</value>
+    <value>Gwaharddiadau</value>
   </data>
   <data name="ShareMyInformation_SectionTitle" xml:space="preserve">
     <value>Rhannu fy ngwybodaeth</value>
@@ -131,5 +131,332 @@
   </data>
   <data name="FinancialInformation_SectionTitle" xml:space="preserve">
     <value>Gwybodaeth ariannol</value>
+  </data>
+  <data name="Exclusions_02_Caption" xml:space="preserve">
+    <value>&lt;legend class="govuk-fieldset__legend"&gt;Rhowch y dyddiad y daeth yr amgylchiadau i ben&lt;/legend&gt;&lt;div class="govuk-hint"&gt;Er enghraifft, 27 3 2007&lt;/div&gt;</value>
+  </data>
+  <data name="Exclusions_02_Description" xml:space="preserve">
+    <value>&lt;div id="isEventEnded-hint" class="govuk-hint"&gt;Er enghraifft, yn dilyn penderfyniad gan y llys am gamymddwyn amgylcheddol, rhoddodd eich sefydliad neu'r unigolyn cysylltiedig y gorau i niweidio'r amgylchedd&gt;</value>
+  </data>
+  <data name="Exclusions_02_SummaryTitle" xml:space="preserve">
+    <value>Dyddiad y daeth yr amgylchiadau i ben</value>
+  </data>
+  <data name="Exclusions_02_Title" xml:space="preserve">
+    <value>A yw'r amgylchiadau a arweiniodd at y gwaharddiad wedi dod i ben?</value>
+  </data>
+  <data name="Exclusions_03_Caption" xml:space="preserve">
+    <value>Lanlwythwch ffeil. Gallwch lanlwytho'r rhan fwyaf o fathau o ffeiliau, gan gynnwys: PDF, sganiau, lluniau ffôn symudol, Word, Excel a PowerPoint, a ffeiliau ZIP ac amlgyfrwng sy'n llai na 25MB.</value>
+  </data>
+  <data name="Exclusions_03_Description" xml:space="preserve">
+    <value>&lt;div id="documents-hint" class="govuk-hint"&gt;Penderfyniad gan awdurdod cyhoeddus a oedd yn sail i'r drosedd. Er enghraifft, dogfennaeth gan yr heddlu, CThEF neu'r llys.&lt;/div&gt;</value>
+  </data>
+  <data name="Exclusions_03_SummaryTitle" xml:space="preserve">
+    <value>Dogfen ategol</value>
+  </data>
+  <data name="Exclusions_03_Title" xml:space="preserve">
+    <value>A oes gennych ddogfen ategol i'w lanlwytho?</value>
+  </data>
+  <data name="Exclusions_04_Description" xml:space="preserve">
+    <value>&lt;div class="govuk-hint"&gt;&lt;p class="govuk-body"&gt;Mae'n rhaid i chi ddweud wrthym beth rydych chi neu'r unigolyn a oedd yn rhan o'r digwyddiad:&lt;/p&gt;&lt;ul class="govuk-list govuk-list--bullet"&gt;&lt;li&gt;wedi'i wneud i brofi ei fod wedi cael ei gymryd o ddifrif – er enghraifft, talu dirwy neu iawndal&lt;/li&gt;&lt;li&gt;wedi'i wneud i atal yr amgylchiadau a'i hachosodd rhag digwydd eto – er enghraifft, cymryd camau fel newid staff neu reolwyr neu roi gweithdrefnau neu hyfforddiant ar waith&lt;/li&gt;&lt;li&gt;yn ei wneud i fonitro'r camau a gymerwyd – er enghraifft, cyfarfodydd rheolaidd&lt;/li&gt;&lt;/ul&gt;&lt;/div&gt;</value>
+  </data>
+  <data name="Exclusions_04_SummaryTitle" xml:space="preserve">
+    <value>Gwaharddiad yn cael ei reoli</value>
+  </data>
+  <data name="Exclusions_04_Title" xml:space="preserve">
+    <value>Sut mae'r gwaharddiad yn cael ei reoli</value>
+  </data>
+  <data name="Exclusions_05_Description" xml:space="preserve">
+    <value>&lt;div class="govuk-hint"&gt;Rhowch eich esboniad o'r digwyddiad. Er enghraifft, unrhyw wybodaeth gefndir y gallwch ei rhoi am yr hyn a ddigwyddodd neu'r hyn a achosodd y gwaharddiad.&lt;/div&gt;</value>
+  </data>
+  <data name="Exclusions_05_SummaryTitle" xml:space="preserve">
+    <value>Y gwaharddiad yn fanwl</value>
+  </data>
+  <data name="Exclusions_05_Title" xml:space="preserve">
+    <value>Disgrifiwch y gwaharddiad yn fanylach</value>
+  </data>
+  <data name="Exclusions_06_Description" xml:space="preserve">
+    <value>&lt;div class="govuk-hint"&gt;Ble y gall yr awdurdod contractio gysylltu â rhywun am y gwaharddiad&lt;/div&gt;</value>
+  </data>
+  <data name="Exclusions_06_SummaryTitle" xml:space="preserve">
+    <value>E-bost cyswllt</value>
+  </data>
+  <data name="Exclusions_06_Title" xml:space="preserve">
+    <value>Rhowch gyfeiriad e-bost</value>
+  </data>
+  <data name="Exclusions_07_SummaryTitle" xml:space="preserve">
+    <value>Gwaharddiad yn y DU</value>
+  </data>
+  <data name="Exclusions_07_Title" xml:space="preserve">
+    <value>A ddigwyddodd y gwaharddiad yn y DU?</value>
+  </data>
+  <data name="Exclusions_08_Description" xml:space="preserve">
+    <value>&lt;div class="govuk-hint"&gt;&lt;p&gt;Dewiswch un gwaharddiad yn unig. Gallwch ychwanegu un arall ar y diwedd os bydd angen.&lt;/p&gt;&lt;p&gt;Os digwyddodd y gwaharddiad hwn y tu allan i'r DU, dewiswch y drosedd gyfatebol yn y DU ar gyfer ble y digwyddodd.&lt;/p&gt;&lt;/div&gt;</value>
+  </data>
+  <data name="Exclusions_08_Options_Groups_01_Caption" xml:space="preserve">
+    <value>Gwaharddiadau gorfodol</value>
+  </data>
+  <data name="Exclusions_08_Options_Groups_01_Choices_01_Title" xml:space="preserve">
+    <value>Addasiadau ar gyfer trefniadau treth sy'n gamdriniol</value>
+  </data>
+  <data name="Exclusions_08_Options_Groups_01_Choices_02_Title" xml:space="preserve">
+    <value>Achosion o dorri cyfraith cystadleuaeth</value>
+  </data>
+  <data name="Exclusions_08_Options_Groups_01_Choices_03_Title" xml:space="preserve">
+    <value>Methiant mewn perthynas â threfniadau treth hysbysadwy</value>
+  </data>
+  <data name="Exclusions_08_Options_Groups_01_Choices_04_Title" xml:space="preserve">
+    <value>Methiant i gydymffurfio ag ymchwiliad</value>
+  </data>
+  <data name="Exclusions_08_Options_Groups_01_Choices_05_Title" xml:space="preserve">
+    <value>CThEF yn canfod ymarfer camdriniol wrth arfer ei bwerau mewn perthynas â TAW</value>
+  </data>
+  <data name="Exclusions_08_Options_Groups_01_Choices_06_Title" xml:space="preserve">
+    <value>Cosbau ar gyfer trafodion sy'n gysylltiedig â thwyll TAW ac osgoi talu treth neu doll</value>
+  </data>
+  <data name="Exclusions_08_Options_Groups_01_Choices_07_Title" xml:space="preserve">
+    <value>Cosbau sy'n daladwy am wallau mewn dogfennaeth treth a methiant i hysbysu, a TAW a thollau</value>
+  </data>
+  <data name="Exclusions_08_Options_Groups_01_Hint" xml:space="preserve">
+    <value>Fel y nodir yn &lt;a target=\"_blank\" href=\"https://www.legislation.gov.uk/ukpga/2023/54/schedule/6\"&gt;atodlen 6 i Ddeddf Caffael 2023 (bydd yn agor mewn tab newydd).&lt;/a&gt;</value>
+  </data>
+  <data name="Exclusions_08_Options_Groups_01_Name" xml:space="preserve">
+    <value>Cosbau a digwyddiadau eraill</value>
+  </data>
+  <data name="Exclusions_08_Options_Groups_02_Caption" xml:space="preserve">
+    <value>Gwaharddiadau gorfodol</value>
+  </data>
+  <data name="Exclusions_08_Options_Groups_02_Choices_01_Title" xml:space="preserve">
+    <value>Troseddau ategol – helpu, annog neu gynorthwyo trosedd</value>
+  </data>
+  <data name="Exclusions_08_Options_Groups_02_Choices_02_Title" xml:space="preserve">
+    <value>Troseddau cartel</value>
+  </data>
+  <data name="Exclusions_08_Options_Groups_02_Choices_03_Title" xml:space="preserve">
+    <value>Dynladdiad neu laddiad corfforaethol</value>
+  </data>
+  <data name="Exclusions_08_Options_Groups_02_Choices_04_Title" xml:space="preserve">
+    <value>Troseddau marchnad lafur, caethwasiaeth a masnachu pobl</value>
+  </data>
+  <data name="Exclusions_08_Options_Groups_02_Choices_05_Title" xml:space="preserve">
+    <value>Troseddau cyfundrefnol</value>
+  </data>
+  <data name="Exclusions_08_Options_Groups_02_Choices_06_Title" xml:space="preserve">
+    <value>Troseddau treth</value>
+  </data>
+  <data name="Exclusions_08_Options_Groups_02_Choices_07_Title" xml:space="preserve">
+    <value>Terfysgaeth a throseddau â chysylltiad terfysgol</value>
+  </data>
+  <data name="Exclusions_08_Options_Groups_02_Choices_08_Title" xml:space="preserve">
+    <value>Lladrad, twyll a llwgrwobrwyaeth</value>
+  </data>
+  <data name="Exclusions_08_Options_Groups_02_Hint" xml:space="preserve">
+    <value>Fel y nodir yn &lt;a target=\"_blank\" href=\"https://www.legislation.gov.uk/ukpga/2023/54/schedule/6\"&gt;atodlen 6 i Ddeddf Caffael 2023 (bydd yn agor mewn tab newydd).&lt;/a&gt;</value>
+  </data>
+  <data name="Exclusions_08_Options_Groups_02_Name" xml:space="preserve">
+    <value>Euogfarnau</value>
+  </data>
+  <data name="Exclusions_08_Options_Groups_03_Caption" xml:space="preserve">
+    <value>Gwaharddiadau dewisol</value>
+  </data>
+  <data name="Exclusions_08_Options_Groups_03_Choices_01_Title" xml:space="preserve">
+    <value>Gweithredu'n amhriodol ym maes caffael</value>
+  </data>
+  <data name="Exclusions_08_Options_Groups_03_Choices_02_Title" xml:space="preserve">
+    <value>Torri contract a pherfformiad gwael</value>
+  </data>
+  <data name="Exclusions_08_Options_Groups_03_Choices_03_Title" xml:space="preserve">
+    <value>Camymddwyn amgylcheddol</value>
+  </data>
+  <data name="Exclusions_08_Options_Groups_03_Choices_04_Title" xml:space="preserve">
+    <value>Achos o dorri Deddf Cystadleuaeth 1998, o dan waharddiad Pennod II</value>
+  </data>
+  <data name="Exclusions_08_Options_Groups_03_Choices_05_Title" xml:space="preserve">
+    <value>Ansolfedd neu fethdalu</value>
+  </data>
+  <data name="Exclusions_08_Options_Groups_03_Choices_06_Title" xml:space="preserve">
+    <value>Camymddwyn yn y farchnad lafur</value>
+  </data>
+  <data name="Exclusions_08_Options_Groups_03_Choices_07_Title" xml:space="preserve">
+    <value>Achosion posibl o dorri cystadleuaeth a chyfraith cystadleuaeth</value>
+  </data>
+  <data name="Exclusions_08_Options_Groups_03_Choices_08_Title" xml:space="preserve">
+    <value>Camymddwyn proffesiynol</value>
+  </data>
+  <data name="Exclusions_08_Options_Groups_03_Choices_09_Title" xml:space="preserve">
+    <value>Atal neu beidio â pharhau â busnes neu ran sylweddol ohono</value>
+  </data>
+  <data name="Exclusions_08_Options_Groups_03_Hint" xml:space="preserve">
+    <value>Fel y nodir yn &lt;a target=\"_blank\" href=\"https://www.legislation.gov.uk/ukpga/2023/54/schedule/7\"&gt;atodlen 7 i Ddeddf Caffael 2023 (bydd yn agor mewn tab newydd).&lt;/a&gt;</value>
+  </data>
+  <data name="Exclusions_08_Options_Groups_03_Name" xml:space="preserve">
+    <value>Gwaharddiadau dewisol</value>
+  </data>
+  <data name="Exclusions_08_SummaryTitle" xml:space="preserve">
+    <value>Gwaharddiad yn gymwys</value>
+  </data>
+  <data name="Exclusions_08_Title" xml:space="preserve">
+    <value>Dewiswch pa waharddiad sy'n gymwys</value>
+  </data>
+  <data name="Exclusions_09_Description" xml:space="preserve">
+    <value>&lt;div class="govuk-inset-text govuk-!-margin-top-0"&gt;Os yw'n gymwys i rywun nad yw wedi'i restru, rhaid i chi i fynd yn ôl i'r adran ‘Ychwanegu person cysylltiedig’ i'w ychwanegu.&lt;/div&gt;</value>
+  </data>
+  <data name="Exclusions_09_SummaryTitle" xml:space="preserve">
+    <value>Mae'r gwaharddiad yn gymwys i</value>
+  </data>
+  <data name="Exclusions_09_Title" xml:space="preserve">
+    <value>Dewiswch pwy y mae'r gwaharddiad yn gymwys iddo</value>
+  </data>
+  <data name="Exclusions_10_Caption" xml:space="preserve">
+    <value>Cyfeiriad gwefan</value>
+  </data>
+  <data name="Exclusions_10_Description" xml:space="preserve">
+    <value>&lt;div class="govuk-hint"&gt;Er enghraifft, canlyniad penderfyniad gan y llys am euogfarn neu ddigwyddiad arall&lt;/div&gt;</value>
+  </data>
+  <data name="Exclusions_10_SummaryTitle" xml:space="preserve">
+    <value>Cofnodwyd ar wefan</value>
+  </data>
+  <data name="Exclusions_10_Title" xml:space="preserve">
+    <value>A gafodd y penderfyniad ei gofnodi ar wefan awdurdod cyhoeddus?</value>
+  </data>
+  <data name="Exclusions_Configuration_AddAnotherAnswerLabel" xml:space="preserve">
+    <value>Ychwanegu gwaharddiad arall?</value>
+  </data>
+  <data name="Exclusions_Configuration_FurtherQuestionsExemptedHeading" xml:space="preserve">
+    <value>A oes gennych unrhyw waharddiadau i'w hychwanegu ar gyfer eich sefydliad neu unigolyn cysylltiedig?</value>
+  </data>
+  <data name="Exclusions_Configuration_PluralSummaryHeadingFormat" xml:space="preserve">
+    <value>Rydych wedi ychwanegu {0} gwaharddiad</value>
+  </data>
+  <data name="Exclusions_Configuration_RemoveConfirmationHeading" xml:space="preserve">
+    <value>Ydych chi’n si?r eich bod am ddileu’r gwaharddiad hwn?</value>
+  </data>
+  <data name="Exclusions_Configuration_SingularSummaryHeading" xml:space="preserve">
+    <value>Rydych wedi ychwanegu 1 gwaharddiad</value>
+  </data>
+  <data name="FinancialInformation_01_SummaryTitle" xml:space="preserve">
+    <value>Dyddiad diwedd y flwyddyn ariannol</value>
+  </data>
+  <data name="FinancialInformation_01_Title" xml:space="preserve">
+    <value>Beth yw dyddiad diwedd y flwyddyn ariannol ar gyfer y wybodaeth a lanlwythwyd gennych?</value>
+  </data>
+  <data name="FinancialInformation_02_Description" xml:space="preserve">
+    <value>&lt;p class="govuk-body"&gt;Lanlwythwch eich dwy flwyddyn ariannol ddiweddaraf. Os nad oes gennych ddwy, lanlwythwch eich blwyddyn ariannol ddiweddaraf.&lt;/p&gt;</value>
+  </data>
+  <data name="FinancialInformation_02_SummaryTitle" xml:space="preserve">
+    <value>Dogfen wedi'i lanlwytho</value>
+  </data>
+  <data name="FinancialInformation_02_Title" xml:space="preserve">
+    <value>Lanlwytho eich cyfrifon</value>
+  </data>
+  <data name="FinancialInformation_03_SummaryTitle" xml:space="preserve">
+    <value>Cyfrifon archwiliedig</value>
+  </data>
+  <data name="FinancialInformation_03_Title" xml:space="preserve">
+    <value>Ble y cafodd eich cyfrifon eu harchwilio?</value>
+  </data>
+  <data name="FinancialInformation_04_Description" xml:space="preserve">
+    <value>&lt;p class="govuk-body"&gt;Bydd angen i chi lanlwytho cyfrifon neu gyfriflenni ar gyfer eich dwy flwyddyn ariannol ddiweddaraf.&lt;/p&gt;&lt;p class="govuk-body"&gt;Os nad oes gennych ddwy flwyddyn, gallwch lanlwytho eich blwyddyn ariannol ddiweddaraf.&lt;/p&gt;&lt;p class="govuk-body"&gt;Bydd angen i chi roi dyddiad diwedd y flwyddyn ariannol ar gyfer y wybodaeth a lanlwythwyd gennych.&lt;/p&gt;</value>
+  </data>
+  <data name="FinancialInformation_04_Title" xml:space="preserve">
+    <value>Y wybodaeth ariannol y bydd ei hangen arnoch</value>
+  </data>
+  <data name="FinancialInformation_Configuration_AddAnotherAnswerLabel" xml:space="preserve">
+    <value>Ychwanegu ffeil arall?</value>
+  </data>
+  <data name="FinancialInformation_Configuration_PluralSummaryHeadingFormat" xml:space="preserve">
+    <value>Rydych wedi ychwanegu {0} ffeil</value>
+  </data>
+  <data name="FinancialInformation_Configuration_RemoveConfirmationHeading" xml:space="preserve">
+    <value>Ydych chi’n si?r eich bod am ddileu’r ffeil hon?</value>
+  </data>
+  <data name="FinancialInformation_Configuration_SingularSummaryHeading" xml:space="preserve">
+    <value>Rydych wedi ychwanegu 1 ffeil</value>
+  </data>
+  <data name="Global_CheckYourAnswers" xml:space="preserve">
+    <value>Gwiriwch eich atebion</value>
+  </data>
+  <data name="Qualifications_01_Description" xml:space="preserve">
+    <value>&lt;div class="govuk-hint"&gt;Rhowch un cymhwyster ar y tro. Gallwch ychwanegu un arall ar y diwedd os bydd angen. Er enghraifft, ISO 45001 Rheoli Iechyd a Diogelwch.&lt;/div&gt;</value>
+  </data>
+  <data name="Qualifications_01_SummaryTitle" xml:space="preserve">
+    <value>Enw'r cymhwyster</value>
+  </data>
+  <data name="Qualifications_01_Title" xml:space="preserve">
+    <value>Rhowch enw’r cymhwyster</value>
+  </data>
+  <data name="Qualifications_02_Description" xml:space="preserve">
+    <value>&lt;div class="govuk-hint"&gt;Rhowch enw'r person neu gorff. Er enghraifft, ISO, Constructionline neu Gynllun Sicrwydd y Tractor Coch.&lt;/div&gt;</value>
+  </data>
+  <data name="Qualifications_02_SummaryTitle" xml:space="preserve">
+    <value>Dyfarnwyd gan</value>
+  </data>
+  <data name="Qualifications_02_Title" xml:space="preserve">
+    <value>Pwy a ddyfarnodd y cymhwyster?</value>
+  </data>
+  <data name="Qualifications_03_SummaryTitle" xml:space="preserve">
+    <value>Y dyddiad dyfarnu</value>
+  </data>
+  <data name="Qualifications_03_Title" xml:space="preserve">
+    <value>Pa ddyddiad y dyfarnwyd y cymhwyster?</value>
+  </data>
+  <data name="Qualifications_Configuration_AddAnotherAnswerLabel" xml:space="preserve">
+    <value>Ychwanegu cymhwyster arall?</value>
+  </data>
+  <data name="Qualifications_Configuration_FurtherQuestionsExemptedHeading" xml:space="preserve">
+    <value>Hoffech chi ychwanegu unrhyw gymwysterau perthnasol?</value>
+  </data>
+  <data name="Qualifications_Configuration_FurtherQuestionsExemptedHint" xml:space="preserve">
+    <value>Cymwysterau cyffredinol ar gyfer busnes a masnach yw'r rhain, nid caffael yn benodol. Drwy eu hychwanegu, byddwch yn rhoi tystiolaeth o'ch addasrwydd i awdurdodau contractio ac yn cefnogi unrhyw gynigion y byddwch yn eu cyflwyno. Er enghraifft, ardystiad ISO. </value>
+  </data>
+  <data name="Qualifications_Configuration_PluralSummaryHeadingFormat" xml:space="preserve">
+    <value>Rydych wedi ychwanegu {0} cymhwyster</value>
+  </data>
+  <data name="Qualifications_Configuration_RemoveConfirmationHeading" xml:space="preserve">
+    <value>Ydych chi’n si?r eich bod am ddileu’r cymhwyster hwn?</value>
+  </data>
+  <data name="Qualifications_Configuration_SingularSummaryHeading" xml:space="preserve">
+    <value>Rydych wedi ychwanegu 1 cymhwyster</value>
+  </data>
+  <data name="TradeAssurance_01_Description" xml:space="preserve">
+    <value>&lt;div class="govuk-hint"&gt;Rhowch enw'r person neu gorff. Gallwch ychwanegu un arall ar y diwedd os bydd angen. Er enghraifft, Cynllun Sicrwydd y Tractor Coch, QMS Assurance.&lt;/div&gt;</value>
+  </data>
+  <data name="TradeAssurance_01_SummaryTitle" xml:space="preserve">
+    <value>Dyfarnwyd gan</value>
+  </data>
+  <data name="TradeAssurance_01_Title" xml:space="preserve">
+    <value>Pwy a ddyfarnodd y sicrwydd masnach?</value>
+  </data>
+  <data name="TradeAssurance_02_Caption" xml:space="preserve">
+    <value>Rhif cyfeirnod sicrwydd masnach</value>
+  </data>
+  <data name="TradeAssurance_02_SummaryTitle" xml:space="preserve">
+    <value>Cyfeirnod</value>
+  </data>
+  <data name="TradeAssurance_02_Title" xml:space="preserve">
+    <value>Ydych chi'n gwybod y rhif cyfeirnod?</value>
+  </data>
+  <data name="TradeAssurance_03_SummaryTitle" xml:space="preserve">
+    <value>Y dyddiad dyfarnu</value>
+  </data>
+  <data name="TradeAssurance_03_Title" xml:space="preserve">
+    <value>Ar ba ddyddiad y dyfarnwyd y sicrwydd masnach?</value>
+  </data>
+  <data name="TradeAssurances_Configuration_AddAnotherAnswerLabel" xml:space="preserve">
+    <value>Ychwanegu sicrwydd masnach arall?</value>
+  </data>
+  <data name="TradeAssurances_Configuration_FurtherQuestionsExemptedHeading" xml:space="preserve">
+    <value>Hoffech chi ychwanegu unrhyw sicrwydd masnach?</value>
+  </data>
+  <data name="TradeAssurances_Configuration_FurtherQuestionsExemptedHint" xml:space="preserve">
+    <value>Sicrwydd masnach ar gyfer busnes a masnach yw'r rhain, nid caffael yn benodol. Drwy eu hychwanegu, byddwch yn rhoi hyder i awdurdodau contractio ac yn cefnogi unrhyw gynigion y byddwch yn eu cyflwyno. Er enghraifft, mae Cynllun Sicrwydd y Tractor Coch yn cwmpasu diogelwch bwyd, olrhain, lles anifeiliaid a diogelwch amgylcheddol.</value>
+  </data>
+  <data name="TradeAssurances_Configuration_PluralSummaryHeadingFormat" xml:space="preserve">
+    <value>Rydych wedi ychwanegu {0} sicrwydd masnach</value>
+  </data>
+  <data name="TradeAssurances_Configuration_RemoveConfirmationHeading" xml:space="preserve">
+    <value>Ydych chi’n si?r eich bod am ddileu’r sicrwydd masnach hwn?</value>
+  </data>
+  <data name="TradeAssurances_Configuration_SingularSummaryHeading" xml:space="preserve">
+    <value>Rydych wedi ychwanegu 1 sicrwydd masnach</value>
   </data>
 </root>

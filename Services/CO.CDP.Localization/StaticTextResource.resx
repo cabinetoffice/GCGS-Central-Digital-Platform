@@ -3289,4 +3289,16 @@
   <data name="Supplementary_CookieDetails_TableRow_CS_C" xml:space="preserve">
     <value>Used by Contentsquare to save the user consent status for data collection</value>
   </data>
+  <data name="ConsortiumShareMyInformation_HowItWorksParagraph1" xml:space="preserve">
+    <value>To share the combined supplier information of the consortium with buyers you need to create a share code and file, and declare that all the information is correct.</value>
+  </data>
+  <data name="ConsortiumShareMyInformation_HowItWorksParagraph2" xml:space="preserve">
+    <value>When you submit a bid for a procurement, the contracting authority will let you know how to give them the share code or file.</value>
+  </data>
+  <data name="ConsortiumShareMyInformation_HowItWorksParagraph3" xml:space="preserve">
+    <value>If any of the supplier information for any organisation in the consortium changes, you can update its share code on the consortium details page and then create a new combined share code and file to share the new information.</value>
+  </data>
+  <data name="ConsortiumShareMyInformation_Title" xml:space="preserve">
+    <value>Share your consortium information</value>
+  </data>
 </root>

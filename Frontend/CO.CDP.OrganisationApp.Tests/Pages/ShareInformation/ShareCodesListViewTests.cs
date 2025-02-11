@@ -15,6 +15,7 @@ public class ShareCodesListViewTests
     private readonly Mock<OrganisationClient> _organisationClientMock;
     private readonly ShareCodesListViewModel _pageModel;
     Dictionary<string, IEnumerable<string>> _headers = [];
+    private static readonly Guid _organisationId = Guid.NewGuid();
 
     public ShareCodesListViewTests()
     {
@@ -26,12 +27,12 @@ public class ShareCodesListViewTests
 
     [Fact]
     public async Task OnGetAsync_ShouldReturnPageResult_WhenShareCodesAreLoadedSuccessfully()
-    {
-        var organisationId = Guid.NewGuid();
+    {        
         var formId = Guid.NewGuid();
         var sectionId = Guid.NewGuid();
+        var organisation = GivenOrganisationClientModel();
 
-        _pageModel.OrganisationId = organisationId;
+        _pageModel.OrganisationId = _organisationId;
         _pageModel.FormId = formId;
         _pageModel.SectionId = sectionId;
 
@@ -41,8 +42,10 @@ public class ShareCodesListViewTests
             new WebApiClient.SharedConsent("ADJ2353F", DateTimeOffset.UtcNow.AddDays(-1))
         };
 
+        _organisationClientMock.Setup(x => x.GetOrganisationAsync(_organisationId)).ReturnsAsync(organisation);
+
         _dataSharingApiClientMock
-            .Setup(x => x.GetShareCodeListAsync(organisationId))
+            .Setup(x => x.GetShareCodeListAsync(_organisationId))
             .ReturnsAsync(sharedCodes);
 
         var result = await _pageModel.OnGet();
@@ -75,18 +78,20 @@ public class ShareCodesListViewTests
 
     [Fact]
     public async Task OnGetAsync_ShouldHandleEmptySharedConsentDetailsList()
-    {
-        var organisationId = Guid.NewGuid();
+    {   
         var formId = Guid.NewGuid();
         var sectionId = Guid.NewGuid();
+        var organisation = GivenOrganisationClientModel();
 
-        _pageModel.OrganisationId = organisationId;
+        _pageModel.OrganisationId = _organisationId;
         _pageModel.FormId = formId;
         _pageModel.SectionId = sectionId;
 
         _dataSharingApiClientMock
-            .Setup(x => x.GetShareCodeListAsync(organisationId))
+            .Setup(x => x.GetShareCodeListAsync(_organisationId))
             .ReturnsAsync(new List<WebApiClient.SharedConsent>());
+
+        _organisationClientMock.Setup(x => x.GetOrganisationAsync(_organisationId)).ReturnsAsync(organisation);
 
         var result = await _pageModel.OnGet();
 
@@ -278,5 +283,9 @@ public class ShareCodesListViewTests
             .ReturnsAsync(new FormSectionResponse(new List<FormSectionSummary>() { new FormSectionSummary(true, 0, true, sectionId, "section name", FormSectionType.Standard) }));
 
         (await _pageModel.MandatorySectionsCompleted()).Should().Be(true);
+    }
+    private static CO.CDP.Organisation.WebApiClient.Organisation GivenOrganisationClientModel()
+    {
+        return new CO.CDP.Organisation.WebApiClient.Organisation(additionalIdentifiers: null, addresses: null, contactPoint: null, id: _organisationId, identifier: null, name: "Test Consortium", type: CDP.Organisation.WebApiClient.OrganisationType.InformalConsortium, roles: [], details: new CO.CDP.Organisation.WebApiClient.Details(approval: null, buyerInformation: null, pendingRoles: [], publicServiceMissionOrganization: null, scale: null, shelteredWorkshop: null, vcse: null));
     }
 }
