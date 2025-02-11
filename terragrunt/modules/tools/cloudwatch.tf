@@ -10,6 +10,11 @@ resource "aws_cloudwatch_log_group" "healthcheck" {
   tags              = var.tags
 }
 
+resource "aws_cloudwatch_log_group" "k6" {
+  name              = "/ecs/k6"
+  retention_in_days = var.environment == "production" ? 0 : 90
+  tags              = var.tags
+}
 
 resource "aws_cloudwatch_log_group" "pgadmin" {
   name              = "/ecs/pgadmin"

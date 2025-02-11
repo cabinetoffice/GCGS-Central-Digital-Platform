@@ -5,8 +5,6 @@ using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Extensions;
 using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.Pages.Forms.ChoiceProviderStrategies;
-using IdentityModel;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -21,7 +19,7 @@ public class FormsQuestionPageModel(
     ITempDataService tempDataService,
     IFileHostManager fileHostManager,
     IChoiceProviderService choiceProviderService,
-    IOrganisationClient organisationClient, 
+    IOrganisationClient organisationClient,
     IUserInfoService userInfoService) : PageModel
 {
     [BindProperty(SupportsGet = true)]
@@ -75,6 +73,8 @@ public class FormsQuestionPageModel(
 
     private string FormQuestionAnswerStateKey => $"Form_{OrganisationId}_{FormId}_{SectionId}_Answers";
 
+    public bool IsInformalConsortium { get; set; }
+
     public async Task<IActionResult> OnGetAsync()
     {
         var previousUnansweredQuestionId = await ValidateIfNeedRedirect();
@@ -89,6 +89,11 @@ public class FormsQuestionPageModel(
             return Redirect("/page-not-found");
         }
 
+        var organisation = await organisationClient.GetOrganisationAsync(OrganisationId);
+        if (organisation != null)
+        {
+            IsInformalConsortium = organisation.Type == CDP.Organisation.WebApiClient.OrganisationType.InformalConsortium;
+        }
 
         return Page();
     }
@@ -112,6 +117,11 @@ public class FormsQuestionPageModel(
             ModelState.Clear();
             if (!TryValidateModel(PartialViewModel))
             {
+                var organisation = await organisationClient.GetOrganisationAsync(OrganisationId);
+                if (organisation != null)
+                {
+                    IsInformalConsortium = organisation.Type == CDP.Organisation.WebApiClient.OrganisationType.InformalConsortium;
+                }
                 return Page();
             }
 
@@ -128,7 +138,8 @@ public class FormsQuestionPageModel(
                     var userInfo = await userInfoService.GetUserInfo();
                     var organisation = await organisationClient.GetOrganisationAsync(OrganisationId);
 
-                    await publisher.Publish(new ScanFile() {
+                    await publisher.Publish(new ScanFile()
+                    {
                         QueueFileName = response.Value.filename,
                         UploadedFileName = FileUploadModel!.UploadedFile!.FileName,
                         OrganisationId = OrganisationId,
@@ -136,7 +147,7 @@ public class FormsQuestionPageModel(
                         UserEmailAddress = userInfo.Email,
                         OrganisationName = organisation.Name,
                         FullName = userInfo.Name
-                    }); 
+                    });
 
                     answer ??= new FormAnswer();
                     answer.TextValue = response.Value.filename;

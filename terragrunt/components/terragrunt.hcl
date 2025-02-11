@@ -73,7 +73,7 @@ locals {
       fts_service_allowed_origins       = []
       name                              = "staging"
       onelogin_logout_notification_urls = ["https://sirsi-integration-findtender.nqc.com/auth/backchannellogout"]
-      pinned_service_version            = "1.0.31"
+      pinned_service_version            = "1.0.32"
       postgres_instance_type            = "db.t4g.micro"
       private_subnets = [
         "10.${local.cidr_b_staging}.101.0/24",
@@ -514,6 +514,13 @@ locals {
       name      = "healthcheck"
       port      = 3030
       port_host = 3030
+    }
+    k6 = {
+      cpu       = 1024
+      memory    = 3072
+      name      = "k6"
+      port      = 4040
+      port_host = null
     }
     pgadmin = {
       cpu       = 256

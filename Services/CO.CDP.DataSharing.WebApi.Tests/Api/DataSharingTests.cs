@@ -197,6 +197,7 @@ public class DataSharingTests
         {
             Id = Guid.NewGuid(),
             Name = "si",
+            Type = OrganisationInformation.OrganisationType.Organisation,
             AssociatedPersons = [],
             AdditionalParties = [],
             AdditionalEntities = [],

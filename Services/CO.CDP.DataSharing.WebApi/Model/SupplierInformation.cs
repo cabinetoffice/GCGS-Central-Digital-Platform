@@ -10,10 +10,12 @@ public record SupplierInformation
 {
     /// <example>"47e6a363-11c0-4cf4-bce6-dea03034e4bb"</example>
     [Required] public required Guid Id { get; init; }
+    /// <example>"47e6a363-11c0-4cf4-bce6-dea03034e4bb"</example>
+    [Required] public required OrganisationType Type { get; init; }
     /// <example>"Acme Corporation"</example>
     [Required(AllowEmptyStrings = true)] public required string Name { get; init; }
     [Required] public required List<AssociatedPerson> AssociatedPersons { get; init; } = [];
-    [Required] public required List<OrganisationReference> AdditionalParties { get; init; } = [];
+    [Required] public required List<OrganisationReference> AdditionalParties { get; set; } = [];
     [Required] public required List<OrganisationReference> AdditionalEntities { get; init; } = [];
     [Required] public required OrganisationInformation.Identifier Identifier { get; init; }
     [Required] public required List<OrganisationInformation.Identifier> AdditionalIdentifiers { get; init; } = [];
