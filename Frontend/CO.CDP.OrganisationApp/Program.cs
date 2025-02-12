@@ -11,6 +11,7 @@ using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp;
 using CO.CDP.OrganisationApp.Authentication;
 using CO.CDP.OrganisationApp.Authorization;
+using CO.CDP.OrganisationApp.Middleware;
 using CO.CDP.OrganisationApp.Pages;
 using CO.CDP.OrganisationApp.Pages.Forms;
 using CO.CDP.OrganisationApp.Pages.Forms.ChoiceProviderStrategies;
@@ -45,7 +46,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.WebHost.ConfigureKestrel(options =>
 {
-    options.AddServerHeader = false; 
+    options.AddServerHeader = false;
 });
 
 builder.Services.Configure<RequestLocalizationOptions>(options =>
@@ -65,7 +66,7 @@ builder.Services.Configure<RequestLocalizationOptions>(options =>
 
 builder.Services.Configure<FormOptions>(options =>
 {
-    options.MultipartBodyLengthLimit = (FormElementFileUploadModel.AllowedMaxFileSizeMB * 2) * 1024 * 1024; 
+    options.MultipartBodyLengthLimit = (FormElementFileUploadModel.AllowedMaxFileSizeMB * 2) * 1024 * 1024;
 });
 
 builder.Services.AddFeatureManagement(builder.Configuration.GetSection("Features"));
@@ -279,6 +280,7 @@ builder.Services.AddSingleton<IAuthorizationMiddlewareResultHandler, CustomAutho
 builder.Services.AddAuthorization();
 
 builder.Services.AddScoped<CookieAcceptanceMiddleware>();
+//builder.Services.AddScoped<DisplayLogoutMessageMiddleware>();
 builder.Services.AddScoped<ICookiePreferencesService, CookiePreferencesService>();
 builder.Services.AddScoped<IFlashMessageService, FlashMessageService>();
 
@@ -300,6 +302,7 @@ app.UseForwardedHeaders();
 app.UseMiddleware<ExceptionMiddleware>();
 app.UseMiddleware<CookieAcceptanceMiddleware>();
 app.UseMiddleware<CacheControlMiddleware>();
+app.UseMiddleware<DisplayLogoutMessageMiddleware>();
 
 if (!app.Environment.IsDevelopment())
 {
