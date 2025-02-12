@@ -1,7 +1,7 @@
 using CO.CDP.GovUKNotify.Models;
-using Microsoft.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -12,6 +12,8 @@ public class GovUKNotifyApiClient : IGovUKNotifyApiClient
 {
     public const string GovUKNotifyHttpClientName = "GovUKNotifyHttpClient";
     private readonly ILogger<GovUKNotifyApiClient> _logger;
+    private readonly IConfiguration _configuration;
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
     private static readonly JsonSerializerOptions jsonSerializerOptions = new()
     {
@@ -24,16 +26,31 @@ public class GovUKNotifyApiClient : IGovUKNotifyApiClient
     public GovUKNotifyApiClient(
         IHttpClientFactory httpClientFactory,
         IAuthentication auth,
-        ILogger<GovUKNotifyApiClient> logger)
+        ILogger<GovUKNotifyApiClient> logger,
+        IConfiguration configuration,
+        IHttpContextAccessor httpContextAccessor)
     {
         _logger = logger;
         client = httpClientFactory.CreateClient(GovUKNotifyHttpClientName);
         client.BaseAddress = new Uri("https://api.notifications.service.gov.uk");
         authentication = auth;
+        _configuration = configuration;
+        _httpContextAccessor = httpContextAccessor;
     }
 
     public async Task<EmailNotificationResponse?> SendEmail(EmailNotificationRequest request)
     {
+
+        if (_configuration.GetValue("Features:EnableNotifyHeaderBypass", true))
+        {
+            if (_httpContextAccessor.HttpContext.Request.Headers.TryGetValue("BypassNotify", out var bypassHeader) == true &&
+            bool.TryParse(bypassHeader, out var isBypassRequired) && isBypassRequired)
+            {
+                _logger.LogInformation("BypassNotify header detected. Skipping notification.");
+                return null;
+            }
+        }
+
         client.DefaultRequestHeaders.Authorization = authentication.GetAuthenticationHeader();
 
         var res = await client.PostAsJsonAsync("/v2/notifications/email", request, jsonSerializerOptions);
