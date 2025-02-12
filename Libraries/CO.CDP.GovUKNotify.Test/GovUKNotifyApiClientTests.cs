@@ -18,7 +18,7 @@ public class GovUKNotifyApiClientTests
     private readonly Mock<HttpMessageHandler> _mockHttpMessageHandler;
     private readonly GovUKNotifyApiClient _govUKNotifyApiClient;
     private readonly Mock<ILogger<GovUKNotifyApiClient>> _logger;
-    private readonly Mock<IConfiguration> _configuration;
+    private readonly IConfiguration _configuration;
     private readonly Mock<IHttpContextAccessor> _httpContextAccessor;
     public GovUKNotifyApiClientTests()
     {
@@ -27,7 +27,6 @@ public class GovUKNotifyApiClientTests
         _mockHttpMessageHandler = new Mock<HttpMessageHandler>();
         _logger = new Mock<ILogger<GovUKNotifyApiClient>>();
         _httpContextAccessor = new Mock<IHttpContextAccessor>();
-        _configuration = new Mock<IConfiguration>();
 
         var client = new HttpClient(_mockHttpMessageHandler.Object)
         {
@@ -43,10 +42,17 @@ public class GovUKNotifyApiClientTests
         _mockHttpClientFactory.Setup(h => h.CreateClient(It.IsAny<string>()))
         .Returns(client);
 
+        _configuration = new ConfigurationBuilder()
+            .AddInMemoryCollection([
+                new("Features:EnableNotifyHeaderBypass", "false"),
+            ])
+            .Build();
+
+
         var mockHttpContext = new DefaultHttpContext();
         _httpContextAccessor.Setup(_ => _.HttpContext).Returns(mockHttpContext);
 
-        _govUKNotifyApiClient = new GovUKNotifyApiClient(_mockHttpClientFactory.Object, _mockAuthentication.Object, _logger.Object, _configuration.Object, _httpContextAccessor.Object);
+        _govUKNotifyApiClient = new GovUKNotifyApiClient(_mockHttpClientFactory.Object, _mockAuthentication.Object, _logger.Object, _configuration, _httpContextAccessor.Object);
     }
 
     [Fact]
