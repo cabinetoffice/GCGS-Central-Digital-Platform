@@ -18,14 +18,18 @@ docker build -t cabinetoffice/cdp-k6 .
 Use the following command to execute a K6 test script (e.g., organisation-lookup.js) against the development environment:
 
 ```shell
+export my_authority_access_token="<copy-hear>"
+```
+```shell
 docker run --rm \
-  -e AUTH_TOKEN="<your_real_OTP_here>" \
-  -e DURATION=10s \
-  -e MAX_VUS=100 \
-  -e RPS=15 \
+  -e AUTH_TOKEN="${my_authority_access_token}" \
+  -e DURATION=5s \
+  -e ENDPOINTS="getOrgs,postOrgs" \
+  -e MAX_VUS=5 \
+  -e RPS=1 \
   -e TARGET_DOMAIN="dev.supplier.information.findatender.codatt.net" \
-  -e VUS=20 \
-  cabinetoffice/cdp-k6 run /scripts/organisation-lookup.js
+  -e VUS=1 \
+  cabinetoffice/cdp-k6 run /scripts/main.js
 
 ```
 
@@ -53,10 +57,11 @@ ave aws ecs update-service --cluster cdp-sirsi --service k6 --force-new-deployme
 ```json
 {
   "auth_token": "your-dynamic-OTP-here16",
+  "endpoints": "getOrgs, postOrgs",
   "duration": "10s",
-  "k6_out": "statsd",
   "max_vus": 100,
   "rps": 15,
   "target_domain": "dev.supplier.information.findatender.codatt.net",
+  "vus": 2
 }
 ```

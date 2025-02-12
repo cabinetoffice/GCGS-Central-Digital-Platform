@@ -18,13 +18,17 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 5,
+  "id": 17,
   "links": [],
   "panels": [
     {
       "datasource": {
         "type": "cloudwatch",
         "uid": "CLOUDWATCH"
+      },
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
       },
       "gridPos": {
         "h": 5,
@@ -35,14 +39,16 @@
       "id": 1,
       "options": {
         "dedupStrategy": "none",
+        "enableInfiniteScrolling": true,
         "enableLogDetails": true,
         "prettifyLogMessage": false,
         "showCommonLabels": false,
         "showLabels": false,
         "showTime": true,
-        "sortOrder": "Descending",
+        "sortOrder": "Ascending",
         "wrapLogMessage": true
       },
+      "pluginVersion": "11.5.1",
       "targets": [
         {
           "datasource": {
@@ -50,7 +56,7 @@
             "uid": "CLOUDWATCH"
           },
           "dimensions": {},
-          "expression": "fields @timestamp, @message\n| parse @message \"level=* msg=\\\"*\\\"\" as log_level, log_message, more\n| filter log_level like \"err\"\n| sort @timestamp desc\n| limit 10",
+          "expression": "fields @timestamp, @message\n| parse @message \"level=* msg=\\\"*\\\"\" as log_level, log_message, more\n| filter log_level like \"err\"\n| sort @timestamp asc",
           "id": "",
           "label": "",
           "logGroups": [
@@ -82,6 +88,10 @@
         "type": "cloudwatch",
         "uid": "CLOUDWATCH"
       },
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
       "gridPos": {
         "h": 7,
         "w": 24,
@@ -91,14 +101,16 @@
       "id": 3,
       "options": {
         "dedupStrategy": "none",
+        "enableInfiniteScrolling": true,
         "enableLogDetails": true,
         "prettifyLogMessage": false,
         "showCommonLabels": false,
         "showLabels": false,
         "showTime": true,
-        "sortOrder": "Descending",
+        "sortOrder": "Ascending",
         "wrapLogMessage": true
       },
+      "pluginVersion": "11.5.1",
       "targets": [
         {
           "datasource": {
@@ -106,7 +118,7 @@
             "uid": "CLOUDWATCH"
           },
           "dimensions": {},
-          "expression": "fields @timestamp, @message\n| parse @message \"level=* msg=\\\"*\\\"\" as log_level, log_message, more\n| filter log_level like \"warn\"\n| sort @timestamp desc\n| limit 10",
+          "expression": "fields @timestamp, @message\n| parse @message \"level=* msg=\\\"*\\\"\" as log_level, log_message, more\n| filter log_level like \"warn\"\n| sort @timestamp asc",
           "id": "",
           "label": "",
           "logGroups": [
@@ -138,6 +150,10 @@
         "type": "cloudwatch",
         "uid": "CLOUDWATCH"
       },
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
       "gridPos": {
         "h": 17,
         "w": 24,
@@ -147,14 +163,16 @@
       "id": 2,
       "options": {
         "dedupStrategy": "none",
+        "enableInfiniteScrolling": true,
         "enableLogDetails": true,
         "prettifyLogMessage": false,
         "showCommonLabels": false,
         "showLabels": false,
         "showTime": true,
-        "sortOrder": "Descending",
+        "sortOrder": "Ascending",
         "wrapLogMessage": true
       },
+      "pluginVersion": "11.5.1",
       "targets": [
         {
           "datasource": {
@@ -162,7 +180,7 @@
             "uid": "CLOUDWATCH"
           },
           "dimensions": {},
-          "expression": "fields @timestamp, @message \n| sort @timestamp desc",
+          "expression": "fields @timestamp, @message \n| sort @timestamp asc",
           "id": "",
           "label": "",
           "logGroups": [
@@ -190,7 +208,8 @@
       "type": "logs"
     }
   ],
-  "schemaVersion": 39,
+  "preload": false,
+  "schemaVersion": 40,
   "tags": [],
   "templating": {
     "list": []
