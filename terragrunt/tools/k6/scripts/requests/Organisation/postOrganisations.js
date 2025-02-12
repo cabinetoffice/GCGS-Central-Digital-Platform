@@ -51,27 +51,30 @@ export function postOrganisations({ token, domain }) {
     roles: ['buyer'],
   });
 
-  // Construct the URL (adjust as needed)
+  // Construct the URL
   const url = `https://organisation.${domain}/organisations`;
 
-  // Build headers without object spread
-  const headers = {
-    'Content-Type': 'application/json',
-    Accept: 'application/json',
+  // Build headers + tagging
+  const params = {
+    tags: { name: 'postOrganisations' }, // <-- Tag for request metrics
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+    },
   };
   if (token) {
-    headers['Authorization'] = `Bearer ${token}`;
+    params.headers.Authorization = `Bearer ${token}`;
   }
 
-  const params = { headers };
-
-  // Make the POST request
+  // Make the POST request with the name tag
   const res = http.post(url, payload, params);
 
-  // Expect 201 Created
-  check(res, {
-    'POST status is 201': (r) => r.status === 201,
-  });
+  // Tag the check with the same name
+  check(
+    res,
+    { 'POST status is 201': (r) => r.status === 201 },
+    { name: 'postOrganisations' } // <-- Tag for pass/fail stats
+  );
 
   return res;
 }

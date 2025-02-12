@@ -16,9 +16,11 @@ const TRACE_ID = __ENV.TRACE_ID || `k6-${new Date().toISOString().replace(/[-:.T
 const VUS = parseInt(__ENV.VUS || 10, 10);
 
 // ===== SCENARIO FUNCTION =====
-// This single function calls whichever endpoints are listed in ENDPOINTS.
 export function scenarioRouter() {
-  const endpoints = ENDPOINTS_STR.split(',').map((x) => x.trim()).filter(Boolean);
+  const endpoints = ENDPOINTS_STR
+      .split(',')
+      .map((x) => x.trim())
+      .filter(Boolean);
 
   for (const ep of endpoints) {
     const fn = endpointRegistry[ep];
@@ -27,11 +29,14 @@ export function scenarioRouter() {
       continue;
     }
 
-    // Call the endpoint function with domain/token
-    fn({
+    // Each endpoint function *should* return the HTTP response object.
+    const res = fn({
       domain: TARGET_DOMAIN,
       token: AUTH_TOKEN,
     });
+
+    // Now we can log or store the status code
+    console.log(`Endpoint "${ep}" responded with status: ${res && res.status}`);
   }
 }
 
@@ -45,8 +50,7 @@ export const options = {
       duration: DURATION,
       preAllocatedVUs: VUS,
       maxVUs: MAX_VUS,
-      // Use a string reference to the named export "scenarioRouter"
-      exec: 'scenarioRouter',
+      exec: 'scenarioRouter', // string reference
     },
   },
 };
@@ -78,6 +82,6 @@ export function handleSummary(data) {
   console.log(summaryWithTraceId);
   return {
     "stdout": textSummary(data, { indent: " ", enableColors: true }),
-  //   "k6-results.json": JSON.stringify(summaryWithTraceId, null, 2),
+    //   "k6-results.json": JSON.stringify(summaryWithTraceId, null, 2),
   };
 }
