@@ -80,7 +80,7 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
                 Organisation = t,
                 SimilarityScore = EF.Functions.TrigramsSimilarity(t.Name, name)
             })
-            .Where(t => t.SimilarityScore > threshold);
+            .Where(t => t.SimilarityScore >= threshold);
 
         if (role.HasValue)
         {
