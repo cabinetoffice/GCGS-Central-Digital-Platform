@@ -41,7 +41,7 @@ public class GovUKNotifyApiClient : IGovUKNotifyApiClient
     public async Task<EmailNotificationResponse?> SendEmail(EmailNotificationRequest request)
     {
 
-        if (_configuration.GetValue("Features:EnableNotifyHeaderBypass", true))
+        if (_configuration.GetSection("Features:EnableNotifyHeaderBypass").Exists() && _configuration.GetValue("Features:EnableNotifyHeaderBypass", true))
         {
             if (_httpContextAccessor.HttpContext.Request.Headers.TryGetValue("BypassNotify", out var bypassHeader) == true &&
             bool.TryParse(bypassHeader, out var isBypassRequired) && isBypassRequired)
