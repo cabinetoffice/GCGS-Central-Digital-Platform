@@ -139,10 +139,10 @@
     <value>Date of financial year end</value>
   </data>
   <data name="FinancialInformation_02_Title" xml:space="preserve">
-    <value>Upload your accounts</value>
+    <value>Upload your organisation's accounts or financial statements</value>
   </data>
   <data name="FinancialInformation_02_Description" xml:space="preserve">
-    <value>&lt;p class="govuk-body"&gt;Upload your most recent 2 financial years. If you do not have 2, upload your most recent financial year.&lt;/p&gt;</value>
+    <value>&lt;p class="govuk-body"&gt;Your most recent two financial years, or your most recent financial year if you do not have two years.&lt;/p&gt;&lt;p class="govuk-body"&gt;If you do not have a full year of accounts, upload a statement showing your organisation's financial standing.&lt;/p&gt;</value>
   </data>
   <data name="FinancialInformation_02_SummaryTitle" xml:space="preserve">
     <value>Document uploaded</value>
@@ -154,10 +154,10 @@
     <value>Audited accounts</value>
   </data>
   <data name="FinancialInformation_04_Title" xml:space="preserve">
-    <value>The financial information you will need</value>
+    <value>The financial information you'll need</value>
   </data>
   <data name="FinancialInformation_04_Description" xml:space="preserve">
-    <value>&lt;p class="govuk-body"&gt;You will need to upload accounts or statements for your 2 most recent financial years.&lt;/p&gt;&lt;p class="govuk-body"&gt;If you do not have 2 years, you can upload your most recent financial year.&lt;/p&gt;&lt;p class="govuk-body"&gt;You will need to enter the financial year end date for the information you upload.&lt;/p&gt;</value>
+    <value>&lt;p class="govuk-body"&gt;You'll need to upload accounts or statements for your organisation's most recent two financial years, or your most recent financial year if you do not have two years.&lt;/p&gt;&lt;p class="govuk-body"&gt;If you do not have a full year of accounts, you can upload a statement showing your organisation's financial standing.&lt;/p&gt;&lt;p class="govuk-body"&gt;You'll need to enter the financial year end date for the information you upload.&lt;/p&gt;</value>
   </data>
   <data name="FinancialInformation_Configuration_AddAnotherAnswerLabel" xml:space="preserve">
     <value>Add another file?</value>
