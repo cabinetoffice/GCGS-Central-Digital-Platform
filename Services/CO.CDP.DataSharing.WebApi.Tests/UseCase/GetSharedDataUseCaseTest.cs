@@ -95,6 +95,9 @@ public class GetSharedDataUseCaseTest : IClassFixture<AutoMapperFixture>
         result.SupplierInformationData.Questions.Where(a => a.OrganisationId == organisationGuid).Should().HaveCountGreaterThan(1);
         result.SupplierInformationData.Questions.Where(a => a.OrganisationId == organisationGuid1).Should().HaveCountGreaterThan(1);
         result.SupplierInformationData.Questions.Where(a => a.OrganisationId == organisationGuid2).Should().HaveCountGreaterThan(1);
+
+        result.AdditionalParties.First().ShareCode!.Value.Should().Be(subSharecode1);
+        result.AdditionalParties.Last().ShareCode!.Value.Should().Be(subSharecode2);
     }
 
     private (string shareCode, int organisationId, Guid organisationGuid, Guid formId) SetupTestData(
