@@ -17,6 +17,7 @@ module "ecs_k6_tasks" {
       name          = var.tools_configs.k6.name
       target_domain = var.public_domain
       rps           = 15
+      vus           = 2
     }
   )
 
