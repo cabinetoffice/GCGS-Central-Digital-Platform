@@ -34,7 +34,7 @@ public class TokenServiceTest
     }
 
     [Fact]
-    public async Task CreateToken_WhenTenantLookup_ShouldReturnValidToken()
+    public async Task CreateToken_ShouldReturnValidToken()
     {
         GenerateTempKeys(out var rsaPrivateKey, out var resPublicParams);
         _configServiceMock.Setup(c => c.GetAuthorityConfiguration())
