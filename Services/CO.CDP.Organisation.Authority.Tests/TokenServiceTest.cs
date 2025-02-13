@@ -1,5 +1,4 @@
 using CO.CDP.Organisation.Authority.Model;
-using CO.CDP.Organisation.Authority.Tests.AutoMapper;
 using CO.CDP.OrganisationInformation.Persistence;
 using FluentAssertions;
 using IdentityModel;
@@ -8,15 +7,12 @@ using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.IdentityModel.Tokens;
 using Moq;
 using System.IdentityModel.Tokens.Jwt;
-using System.IO.Compression;
 using System.Security.Claims;
 using System.Security.Cryptography;
-using System.Text;
-using System.Text.Json;
 
 namespace CO.CDP.Organisation.Authority.Tests;
 
-public class TokenServiceTest : IClassFixture<AutoMapperFixture>
+public class TokenServiceTest
 {
     private readonly string _issuer = "https://issuer.com";
     private readonly string _oneLoginIssuer = "https://onelogin-authority.com";
@@ -25,29 +21,24 @@ public class TokenServiceTest : IClassFixture<AutoMapperFixture>
     private readonly Mock<ILogger<TokenService>> _loggerMock = new();
     private readonly Mock<IConfigurationService> _configServiceMock = new();
     private readonly Mock<IPersonRepository> _personRepositoryMock = new();
-    private readonly Mock<ITenantRepository> _tenantRepositoryMock = new();
     private readonly Mock<IAuthorityRepository> _authorityRepositoryMock = new();
     private readonly TokenService _tokenService;
 
-    public TokenServiceTest(AutoMapperFixture mapperFixture)
+    public TokenServiceTest()
     {
         _tokenService = new TokenService(
             _loggerMock.Object,
             _configServiceMock.Object,
-             mapperFixture.Mapper,
              _personRepositoryMock.Object,
-            _tenantRepositoryMock.Object,
             _authorityRepositoryMock.Object);
     }
 
     [Fact]
-    public async Task CreateToken_WhenNoTenantLookup_ShouldReturnValidTokenResponseWithoutTenantLookupInfo()
+    public async Task CreateToken_WhenTenantLookup_ShouldReturnValidToken()
     {
         GenerateTempKeys(out var rsaPrivateKey, out var resPublicParams);
         _configServiceMock.Setup(c => c.GetAuthorityConfiguration())
             .Returns(new AuthorityConfiguration { Issuer = _issuer, RsaPrivateKey = rsaPrivateKey, RsaPublicParams = resPublicParams });
-
-        _tenantRepositoryMock.Setup(t => t.LookupTenant(_userUrn)).ReturnsAsync((TenantLookup?)null);
 
         var result = await _tokenService.CreateToken(_userUrn);
 
@@ -60,59 +51,6 @@ public class TokenServiceTest : IClassFixture<AutoMapperFixture>
 
         var claims = GetClaims(result.AccessToken);
         claims.FirstOrDefault(c => c.Type == "sub")?.Value.Should().Be(_userUrn);
-        claims.FirstOrDefault(c => c.Type == "ten")?.Value.Should().BeNull();
-    }
-
-    [Fact]
-    public async Task CreateToken_WhenTenantLookup_ShouldReturnValidTokenResponseWithTenantLookupInfo()
-    {
-        GenerateTempKeys(out var rsaPrivateKey, out var resPublicParams);
-        _configServiceMock.Setup(c => c.GetAuthorityConfiguration())
-            .Returns(new AuthorityConfiguration { Issuer = _issuer, RsaPrivateKey = rsaPrivateKey, RsaPublicParams = resPublicParams });
-
-        _tenantRepositoryMock.Setup(t => t.LookupTenant(_userUrn))
-            .ReturnsAsync(GetTenantLookup());
-
-        var result = await _tokenService.CreateToken(_userUrn);
-
-        result.Should().NotBeNull();
-        result.TokenType.Should().Be(OidcConstants.TokenResponse.BearerTokenType);
-        result.AccessToken.Should().NotBeNullOrWhiteSpace();
-        result.ExpiresIn.Should().Be(3600);
-        result.RefreshToken.Should().NotBeNullOrWhiteSpace();
-        result.RefreshTokenExpiresIn.Should().Be(86400d);
-
-        var claims = GetClaims(result.AccessToken);
-        claims.FirstOrDefault(c => c.Type == "sub")?.Value.Should().Be(_userUrn);
-        claims.FirstOrDefault(c => c.Type == "ten")?.Value.Should().NotBeNull();
-    }
-
-    [Fact]
-    public async Task CreateToken_WhenTenantLookupWithMoreThanTenOrganisation_ShouldReturnValidTokenResponseWithTenOrganisation()
-    {
-        GenerateTempKeys(out var rsaPrivateKey, out var resPublicParams);
-        _configServiceMock.Setup(c => c.GetAuthorityConfiguration())
-            .Returns(new AuthorityConfiguration { Issuer = _issuer, RsaPrivateKey = rsaPrivateKey, RsaPublicParams = resPublicParams });
-
-        _tenantRepositoryMock.Setup(t => t.LookupTenant(_userUrn))
-            .ReturnsAsync(GetTenantLookup(6, 4));
-
-        var result = await _tokenService.CreateToken(_userUrn);
-
-        result.Should().NotBeNull();
-        result.TokenType.Should().Be(OidcConstants.TokenResponse.BearerTokenType);
-        result.AccessToken.Should().NotBeNullOrWhiteSpace();
-        result.ExpiresIn.Should().Be(3600);
-        result.RefreshToken.Should().NotBeNullOrWhiteSpace();
-        result.RefreshTokenExpiresIn.Should().Be(86400d);
-
-        var claims = GetClaims(result.AccessToken);
-        claims.FirstOrDefault(c => c.Type == "sub")?.Value.Should().Be(_userUrn);
-
-        var tenant = claims.FirstOrDefault(c => c.Type == "ten")?.Value;
-        tenant.Should().NotBeNull();
-        var lookup = JsonSerializer.Deserialize<TenantLookup>(Encoding.UTF8.GetString(Decompress(Convert.FromBase64String(tenant!))));
-        lookup!.Tenants.SelectMany(t => t.Organisations).Count().Should().Be(10);
     }
 
     [Fact]
@@ -234,51 +172,6 @@ public class TokenServiceTest : IClassFixture<AutoMapperFixture>
         mockOpenIdConfig.SetupGet(config => config.Issuer).Returns(_oneLoginIssuer);
         mockOpenIdConfig.SetupGet(config => config.SigningKeys).Returns(signingKeys);
         return mockOpenIdConfig;
-    }
-
-    private TenantLookup GetTenantLookup(int numberOfTenant = 1, int numberOfOrgsPerTenant = 1)
-    {
-        var tenantLookup = new TenantLookup
-        {
-            User = new TenantLookup.PersonUser
-            {
-                Email = "test@test.com",
-                Name = "Test person",
-                Urn = _userUrn,
-                Scopes = ["SUPPORTADMIN"]
-            },
-            Tenants = Enumerable.Range(0, numberOfTenant).Select(x =>
-                new TenantLookup.Tenant
-                {
-                    Id = Guid.NewGuid(),
-                    Name = $"Test Tenant{x}",
-                    Organisations = Enumerable.Range(0, numberOfOrgsPerTenant).Select(y =>
-                    new TenantLookup.Organisation
-                    {
-                        Id = Guid.NewGuid(),
-                        Name = $"Test Org{x}{y}",
-                        Type = OrganisationInformation.OrganisationType.Organisation,
-                        Roles = [OrganisationInformation.PartyRole.Buyer],
-                        PendingRoles = [],
-                        Scopes = ["Admin"]
-                    }).ToList()
-                }).ToList()
-        };
-
-        return tenantLookup;
-    }
-
-    private static byte[] Decompress(byte[] compressedData)
-    {
-        using var uncompressedStream = new MemoryStream();
-
-        using (var compressedStream = new MemoryStream(compressedData))
-        using (var gzipStream = new GZipStream(compressedStream, CompressionMode.Decompress, false))
-        {
-            gzipStream.CopyTo(uncompressedStream);
-        }
-
-        return uncompressedStream.ToArray();
     }
 
     private static IEnumerable<Claim> GetClaims(string token)
