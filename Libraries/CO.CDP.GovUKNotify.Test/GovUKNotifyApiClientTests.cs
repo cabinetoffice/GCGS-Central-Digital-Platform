@@ -19,14 +19,12 @@ public class GovUKNotifyApiClientTests
     private readonly GovUKNotifyApiClient _govUKNotifyApiClient;
     private readonly Mock<ILogger<GovUKNotifyApiClient>> _logger;
     private readonly IConfiguration _configuration;
-    private readonly Mock<IHttpContextAccessor> _httpContextAccessor;
     public GovUKNotifyApiClientTests()
     {
         _mockHttpClientFactory = new Mock<IHttpClientFactory>();
         _mockAuthentication = new Mock<IAuthentication>();
         _mockHttpMessageHandler = new Mock<HttpMessageHandler>();
         _logger = new Mock<ILogger<GovUKNotifyApiClient>>();
-        _httpContextAccessor = new Mock<IHttpContextAccessor>();
 
         var client = new HttpClient(_mockHttpMessageHandler.Object)
         {
@@ -44,15 +42,11 @@ public class GovUKNotifyApiClientTests
 
         _configuration = new ConfigurationBuilder()
             .AddInMemoryCollection([
-                new("Features:EnableNotifyHeaderBypass", "false"),
+                new("Features:SendNotifyEmails", "true"),
             ])
             .Build();
 
-
-        var mockHttpContext = new DefaultHttpContext();
-        _httpContextAccessor.Setup(_ => _.HttpContext).Returns(mockHttpContext);
-
-        _govUKNotifyApiClient = new GovUKNotifyApiClient(_mockHttpClientFactory.Object, _mockAuthentication.Object, _logger.Object, _configuration, _httpContextAccessor.Object);
+        _govUKNotifyApiClient = new GovUKNotifyApiClient(_mockHttpClientFactory.Object, _mockAuthentication.Object, _logger.Object, _configuration);
     }
 
     [Fact]
@@ -137,7 +131,7 @@ public class GovUKNotifyApiClientTests
     }
 
     [Fact]
-    public async Task SendEmail_WithBypassEnabled_DoesNotSend()
+    public async Task SendEmail_SendNotifyEmailsDisabled_DoesNotSend()
     {
         var templateId = Guid.NewGuid();
         var responseId = Guid.NewGuid();
@@ -163,7 +157,7 @@ public class GovUKNotifyApiClientTests
 
         var configurationWithNotifyHeaderEnabled = new ConfigurationBuilder()
             .AddInMemoryCollection([
-                new("Features:EnableNotifyHeaderBypass", "true"),
+                new("Features:SendNotifyEmails", "false"),
             ])
             .Build();
 
@@ -174,12 +168,7 @@ public class GovUKNotifyApiClientTests
                 ItExpr.IsAny<CancellationToken>())
             .ReturnsAsync(httpResponseMessage);
 
-        var httpContextAccessor = new Mock<IHttpContextAccessor>();
-        var mockHttpContext = new DefaultHttpContext();
-        mockHttpContext.Request.Headers["BypassNotify"] = "true";
-        _httpContextAccessor.Setup(_ => _.HttpContext).Returns(mockHttpContext);
-
-        var govUKNotifyApiClient = new GovUKNotifyApiClient(_mockHttpClientFactory.Object, _mockAuthentication.Object, _logger.Object, configurationWithNotifyHeaderEnabled, _httpContextAccessor.Object);
+        var govUKNotifyApiClient = new GovUKNotifyApiClient(_mockHttpClientFactory.Object, _mockAuthentication.Object, _logger.Object, configurationWithNotifyHeaderEnabled);
 
         var response = await govUKNotifyApiClient.SendEmail(emailNotificationRequest);
 

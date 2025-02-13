@@ -13,7 +13,6 @@ public class GovUKNotifyApiClient : IGovUKNotifyApiClient
     public const string GovUKNotifyHttpClientName = "GovUKNotifyHttpClient";
     private readonly ILogger<GovUKNotifyApiClient> _logger;
     private readonly IConfiguration _configuration;
-    private readonly IHttpContextAccessor _httpContextAccessor;
 
     private static readonly JsonSerializerOptions jsonSerializerOptions = new()
     {
@@ -27,28 +26,22 @@ public class GovUKNotifyApiClient : IGovUKNotifyApiClient
         IHttpClientFactory httpClientFactory,
         IAuthentication auth,
         ILogger<GovUKNotifyApiClient> logger,
-        IConfiguration configuration,
-        IHttpContextAccessor httpContextAccessor)
+        IConfiguration configuration)
     {
         _logger = logger;
         client = httpClientFactory.CreateClient(GovUKNotifyHttpClientName);
         client.BaseAddress = new Uri("https://api.notifications.service.gov.uk");
         authentication = auth;
         _configuration = configuration;
-        _httpContextAccessor = httpContextAccessor;
     }
 
     public async Task<EmailNotificationResponse?> SendEmail(EmailNotificationRequest request)
     {
 
-        if (_configuration.GetValue("Features:EnableNotifyHeaderBypass", false))
+        if (!_configuration.GetValue("Features:SendNotifyEmails", true))
         {
-            if (_httpContextAccessor.HttpContext.Request.Headers.TryGetValue("BypassNotify", out var bypassHeader) == true &&
-            bool.TryParse(bypassHeader, out var isBypassRequired) && isBypassRequired)
-            {
-                _logger.LogInformation("BypassNotify header detected. Skipping notification.");
-                return null;
-            }
+            _logger.LogInformation("Bypassing Notify API call");
+            return null;
         }
 
         client.DefaultRequestHeaders.Authorization = authentication.GetAuthenticationHeader();
