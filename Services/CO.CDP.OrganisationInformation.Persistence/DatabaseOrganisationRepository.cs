@@ -87,7 +87,7 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
             query = query.Where(t => t.Organisation.Roles.Contains(role.Value));
         }
 
-        query.OrderByDescending(t => t.SimilarityScore);
+        query = query.OrderByDescending(t => t.SimilarityScore);
 
         if (limit.HasValue)
         {
