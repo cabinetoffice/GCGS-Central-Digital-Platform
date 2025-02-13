@@ -1551,6 +1551,9 @@
   <data name="ShareYourInformation_ShareCodeCreatedFooterBody1" xml:space="preserve">
     <value>You can save your share code and &lt;a href="?handler=download&amp;shareCode={0}"&gt;download your supplier information file&lt;/a&gt; or come back and get them when needed.</value>
   </data>
+  <data name="ShareYourInformation_ConsortiumShareCodeCreatedFooterBody1" xml:space="preserve">
+    <value>You can save your share code and &lt;a href="?handler=download&amp;shareCode={0}"&gt;download your combined supplier information file&lt;/a&gt; or come back and get them when needed.</value>
+  </data>
   <data name="ShareYourInformation_ShareCodeCreatedFooterBody2" xml:space="preserve">
     <value>If your supplier information changes, you can update it and create a new share code and file to share the new information.</value>
   </data>
