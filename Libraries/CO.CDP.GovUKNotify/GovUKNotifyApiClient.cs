@@ -1,5 +1,4 @@
 using CO.CDP.GovUKNotify.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System.Net.Http.Json;
