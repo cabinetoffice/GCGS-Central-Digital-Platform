@@ -275,9 +275,20 @@ WORKDIR /app
 COPY --from=publish-antivirus-app /app/publish .
 ENTRYPOINT ["dotnet", "CO.CDP.AntiVirusScanner.dll"]
 
-FROM base AS final-outbox-processor
+FROM base AS final-outbox-processor-organisation
 ARG VERSION
 ENV VERSION=${VERSION}
+ENV DbContext=OrganisationInformationContext
+ENV Channel=organisation_information_outbox
+WORKDIR /app
+COPY --from=publish-outbox-processor /app/publish .
+ENTRYPOINT ["dotnet", "CO.CDP.OutboxProcessor.dll"]
+
+FROM base AS final-outbox-processor-entity-verification
+ARG VERSION
+ENV VERSION=${VERSION}
+ENV DbContext=EntityVerificationContext
+ENV Channel=entity_verification_outbox
 WORKDIR /app
 COPY --from=publish-outbox-processor /app/publish .
 ENTRYPOINT ["dotnet", "CO.CDP.OutboxProcessor.dll"]

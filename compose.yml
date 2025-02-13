@@ -390,8 +390,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-      target: final-outbox-processor
-    image: 'cabinetoffice/cdp-outbox-processor:${IMAGE_VERSION:-latest}'
+      target: final-outbox-processor-organisation
+    image: 'cabinetoffice/cdp-outbox-processor-organisation:${IMAGE_VERSION:-latest}'
     healthcheck:
       test: ["CMD-SHELL", "curl --fail --silent --write-out '{\"status\":%{http_code}}' --output /dev/null http://127.0.0.1:8080/health"]
       start_period: 10s
@@ -406,8 +406,6 @@ services:
       Aws__SqsPublisher__QueueUrl: "http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/entity-verification.fifo"
       Aws__SqsPublisher__MessageGroupId": "EntityVerification"
       CloudWatch__LogGroup": "/ecs/outbox-processor-organisation"
-      DbContext: OrganisationInformationContext
-      Channel: organisation_information_outbox
       OutboxDatabase__Server: 'db'
       OutboxDatabase__Database: 'cdp'
       OutboxDatabase__Username: 'cdp_user'
@@ -423,8 +421,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-      target: final-outbox-processor
-    image: 'cabinetoffice/cdp-outbox-processor:${IMAGE_VERSION:-latest}'
+      target: final-outbox-processor-entity-verification
+    image: 'cabinetoffice/cdp-outbox-processor-entity-verification:${IMAGE_VERSION:-latest}'
     healthcheck:
       test: ["CMD-SHELL", "curl --fail --silent --write-out '{\"status\":%{http_code}}' --output /dev/null http://127.0.0.1:8080/health"]
       start_period: 10s
@@ -439,8 +437,6 @@ services:
       Aws__SqsPublisher__QueueUrl: "http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/organisation.fifo"
       Aws__SqsPublisher__MessageGroupId": "Organisation"
       CloudWatch__LogGroup": "/ecs/outbox-processor-entity-verification"
-      DbContext: EntityVerificationContext
-      Channel: entity_verification_outbox
       OutboxDatabase__Server: 'db'
       OutboxDatabase__Database: 'cdp'
       OutboxDatabase__Username: 'cdp_user'
