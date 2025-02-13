@@ -5,9 +5,12 @@
     ViewData["Title"] = StaticTextResource.ShareYourInformation_ShareCodeCreated;
     var backUrl = $"/organisation/{Model.OrganisationId}/forms/{Model.FormId}/sections/{Model.SectionId}/share-codes-list-view";
     var organisationDetailUrl = $"/organisation/{Model.OrganisationId}/supplier-information";
+    var footerbody1 = StaticTextResource.ShareYourInformation_ShareCodeCreatedFooterBody1;
+
     if (Model.IsInformalConsortium)
     {
         organisationDetailUrl = $"/consortium/{Model.OrganisationId}/overview";
+        footerbody1 = StaticTextResource.ShareYourInformation_ConsortiumShareCodeCreatedFooterBody1;
     }
 }
 
@@ -26,7 +29,7 @@
         </div>
 
         <p class="govuk-body">
-            @Html.Raw(string.Format(StaticTextResource.ShareYourInformation_ShareCodeCreatedFooterBody1, Model.ShareCode))
+            @Html.Raw(string.Format(footerbody1, Model.ShareCode))
         </p>
         <p class="govuk-body">@StaticTextResource.ShareYourInformation_ShareCodeCreatedFooterBody2</p>
         <p class="govuk-body"><a href="@organisationDetailUrl">@StaticTextResource.ShareYourInformation_BackOrganisationDetails</a></p>
