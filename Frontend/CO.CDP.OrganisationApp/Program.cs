@@ -280,7 +280,6 @@ builder.Services.AddSingleton<IAuthorizationMiddlewareResultHandler, CustomAutho
 builder.Services.AddAuthorization();
 
 builder.Services.AddScoped<CookieAcceptanceMiddleware>();
-//builder.Services.AddScoped<DisplayLogoutMessageMiddleware>();
 builder.Services.AddScoped<ICookiePreferencesService, CookiePreferencesService>();
 builder.Services.AddScoped<IFlashMessageService, FlashMessageService>();
 
