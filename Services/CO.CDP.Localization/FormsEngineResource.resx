@@ -187,7 +187,7 @@
     <value>Who awarded the qualification?</value>
   </data>
   <data name="Qualifications_02_Description" xml:space="preserve">
-    <value>&lt;div class="govuk-hint"&gt;Enter the name of the person or body. For example, ISO, Constructionline or Red Tractor Assurance.&lt;/div&gt;</value>
+    <value>&lt;div class="govuk-hint"&gt;Enter the name of the person or body. For example, ISO or Constructionline.&lt;/div&gt;</value>
   </data>
   <data name="Qualifications_03_SummaryTitle" xml:space="preserve">
     <value>Date awarded</value>
