@@ -254,6 +254,38 @@ public class DatabaseShareCodeRepositoryTest(PostgreSqlFixture postgreSql)
         foundConsent.Should().Be(true);
     }
 
+    [Fact]
+    public async Task GetConsortiumOrganisationsShareCode_WhenConsortium_ReturnsChildOrganisationsShareCodeList()
+    {
+        var consortiumSharedConsent = GivenSharedConsent();
+        consortiumSharedConsent.ShareCode = "consortium-sharecode";
+        consortiumSharedConsent.SubmissionState = SubmissionState.Submitted;
+        consortiumSharedConsent.SubmittedAt = DateTime.UtcNow;
+
+        var consortiumOrgSharedConsent = GivenSharedConsent();
+        consortiumOrgSharedConsent.ShareCode = "child-sharecode";
+        consortiumOrgSharedConsent.SubmissionState = SubmissionState.Submitted;
+        consortiumOrgSharedConsent.SubmittedAt = DateTime.UtcNow;
+
+        await using var context = GetDbContext();
+        await context.SharedConsents.AddAsync(consortiumSharedConsent);
+        await context.SharedConsents.AddAsync(consortiumOrgSharedConsent);
+        await context.SharedConsentConsortiums.AddAsync(new SharedConsentConsortium
+        {
+            ParentSharedConsentId = consortiumSharedConsent.Id,
+            ParentSharedConsent = consortiumSharedConsent,
+            ChildSharedConsentId = consortiumOrgSharedConsent.Id,
+            ChildSharedConsent = consortiumOrgSharedConsent
+        });
+        await context.SaveChangesAsync();
+
+        using var repository = ShareCodeRepository();
+        var shareCodeList = await repository.GetConsortiumOrganisationsShareCode("consortium-sharecode");
+
+        shareCodeList.Should().HaveCount(1);
+        shareCodeList.First().As<string>().Should().Be("child-sharecode");
+    }
+
     private static SharedConsent GivenSharedConsent(
         Form? form = null,
         Organisation? organisation = null)

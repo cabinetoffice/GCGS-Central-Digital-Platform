@@ -180,7 +180,7 @@ public class OrganisationApprovalModelTests
             .ReturnsAsync(new List<CDP.Organisation.WebApiClient.Person>());
 
         _mockOrganisationClient
-            .Setup(client => client.SearchOrganisationAsync(expectedOrganisation.Name, "buyer", 3))
+            .Setup(client => client.SearchOrganisationAsync(expectedOrganisation.Name, "buyer", 3, 0.3))
             .ReturnsAsync(expectedMatchingOrganisations);
 
         _mockOrganisationClient
@@ -208,7 +208,7 @@ public class OrganisationApprovalModelTests
             .ReturnsAsync(new List<CDP.Organisation.WebApiClient.Person>());
 
         _mockOrganisationClient
-            .Setup(client => client.SearchOrganisationAsync(expectedOrganisation.Name, "buyer", 3))
+            .Setup(client => client.SearchOrganisationAsync(expectedOrganisation.Name, "buyer", 3, 0.3))
             .ThrowsAsync(new ApiException("Not Found", 404, "", default, null));
 
         _mockOrganisationClient

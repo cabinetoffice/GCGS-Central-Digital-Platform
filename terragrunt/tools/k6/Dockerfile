@@ -1,3 +1,3 @@
-FROM grafana/k6:master-with-browser
+FROM grafana/k6:latest
 
 COPY ./scripts /scripts/
