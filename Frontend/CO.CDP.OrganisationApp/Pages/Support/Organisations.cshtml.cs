@@ -50,7 +50,7 @@ public class OrganisationsModel(
 
     private void InitModel(string type, int pageNumber)
     {
-        PageSize = 10;
+        PageSize = 50;
 
         Type = type;
 
