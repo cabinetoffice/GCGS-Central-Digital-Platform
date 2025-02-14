@@ -11,8 +11,6 @@ module "ecs_service_outbox_processor_organisation" {
       db_name                         = local.db_sirsi_name
       db_password                     = local.db_sirsi_password
       db_username                     = local.db_sirsi_username
-      govuknotify_apikey              = data.aws_secretsmanager_secret_version.govuknotify_apikey.arn
-      govuknotify_support_admin_email = data.aws_secretsmanager_secret_version.govuknotify_support_admin_email.arn
       host_port                       = var.service_configs.outbox_processor_organisation.port
       image                           = local.ecr_urls[var.service_configs.outbox_processor_organisation.name]
       lg_name                         = aws_cloudwatch_log_group.tasks[var.service_configs.outbox_processor_organisation.name].name
@@ -20,9 +18,7 @@ module "ecs_service_outbox_processor_organisation" {
       lg_region                       = data.aws_region.current.name
       memory                          = var.service_configs.outbox_processor_organisation.memory
       name                            = var.service_configs.outbox_processor_organisation.name
-      public_domain                   = var.public_domain
       queue_entity_verification_url   = var.queue_entity_verification_url
-      queue_organisation_url          = var.queue_organisation_url
       service_version                 = local.service_version
       vpc_cidr                        = var.vpc_cider
     }

@@ -18,11 +18,8 @@ module "ecs_service_outbox_processor_entity_verification" {
       lg_region                     = data.aws_region.current.name
       memory                        = var.service_configs.outbox_processor_entity_verification.memory
       name                          = var.service_configs.outbox_processor_entity_verification.name
-      public_domain                 = var.public_domain
-      queue_entity_verification_url = var.queue_entity_verification_url
       queue_organisation_url        = var.queue_organisation_url
       service_version               = local.service_version
-      uuid_ppon_service_enable      = false
       vpc_cidr                      = var.vpc_cider
     }
   )
