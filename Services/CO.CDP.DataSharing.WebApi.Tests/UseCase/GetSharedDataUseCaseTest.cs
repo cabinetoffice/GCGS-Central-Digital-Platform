@@ -138,6 +138,23 @@ public class GetSharedDataUseCaseTest : IClassFixture<AutoMapperFixture>
         _organisationRepository.Setup(repo => repo.GetOperationTypes(organisationId))
                                .ReturnsAsync(mockOperationTypes);
 
+        SetupConnectedEntityData(
+            sharedConsent,
+            organisationGuid,
+            mockAdditionalEntities.First().Guid,
+            mockIndividuals.First().Guid,
+            mockTrustOrTrustees.First().Guid);
+
+        return (shareCode, organisationId, organisationGuid, formId);
+    }
+
+    private static void SetupConnectedEntityData(
+        OrganisationInformation.Persistence.Forms.SharedConsent sharedConsent,
+        Guid organisationGuid,
+        Guid connectedOrganisationGuid,
+        Guid connectedIndividualGuid,
+        Guid connectedTrusteeGuid)
+    {
         var section = sharedConsent.Form.Sections.First();
         var question = new OrganisationInformation.Persistence.Forms.FormQuestion
         {
@@ -178,7 +195,7 @@ public class GetSharedDataUseCaseTest : IClassFixture<AutoMapperFixture>
             Question = question,
             FormAnswerSetId = answerSet.Id,
             FormAnswerSet = answerSet,
-            JsonValue = $"{{\"id\": \"{mockIndividuals.First().Guid}\", \"type\": \"connected-entity\"}}"
+            JsonValue = $"{{\"id\": \"{connectedOrganisationGuid}\", \"type\": \"connected-entity\"}}"
         });
 
         answerSet.Answers.Add(new OrganisationInformation.Persistence.Forms.FormAnswer
@@ -188,7 +205,7 @@ public class GetSharedDataUseCaseTest : IClassFixture<AutoMapperFixture>
             Question = question,
             FormAnswerSetId = answerSet.Id,
             FormAnswerSet = answerSet,
-            JsonValue = $"{{\"id\": \"{mockTrustOrTrustees.First().Guid}\", \"type\": \"connected-entity\"}}"
+            JsonValue = $"{{\"id\": \"{connectedIndividualGuid}\", \"type\": \"connected-entity\"}}"
         });
 
         answerSet.Answers.Add(new OrganisationInformation.Persistence.Forms.FormAnswer
@@ -198,10 +215,8 @@ public class GetSharedDataUseCaseTest : IClassFixture<AutoMapperFixture>
             Question = question,
             FormAnswerSetId = answerSet.Id,
             FormAnswerSet = answerSet,
-            JsonValue = $"{{\"id\": \"{mockAdditionalEntities.First().Guid}\", \"type\": \"connected-entity\"}}"
+            JsonValue = $"{{\"id\": \"{connectedTrusteeGuid}\", \"type\": \"connected-entity\"}}"
         });
-
-        return (shareCode, organisationId, organisationGuid, formId);
     }
 
     private static void AssertBasicInformation(SupplierInformation? result, Guid organisationGuid)
