@@ -247,7 +247,7 @@ public static class EntityFactory
     public static ConnectedEntity GivenConnectedOrganisation(
                Organisation supplierOrganisation,
                string name = "Test Connected Organisation",
-               ConnectedOrganisationCategory category = ConnectedOrganisationCategory.RegisteredCompany,
+               ConnectedEntity.ConnectedOrganisationCategory category = ConnectedEntity.ConnectedOrganisationCategory.RegisteredCompany,
                Guid? organisationId = null
            )
     {
@@ -285,7 +285,7 @@ public static class EntityFactory
             FirstName = firstName,
             LastName = lastName,
             Category = category,
-            ConnectedType = ConnectedPersonType.Individual,
+            ConnectedType = ConnectedEntity.ConnectedPersonType.Individual,
             CreatedOn = DateTimeOffset.UtcNow,
             UpdatedOn = DateTimeOffset.UtcNow
         };
@@ -314,7 +314,7 @@ public static class EntityFactory
             FirstName = firstName,
             LastName = lastName,
             Category = category,
-            ConnectedType = ConnectedPersonType.TrustOrTrustee,
+            ConnectedType = ConnectedEntity.ConnectedPersonType.TrustOrTrustee,
             CreatedOn = DateTimeOffset.UtcNow,
             UpdatedOn = DateTimeOffset.UtcNow
         };
