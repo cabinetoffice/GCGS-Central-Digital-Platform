@@ -4,5 +4,5 @@ namespace CO.CDP.DataSharing.WebApi;
 
 public interface IPdfGenerator
 {
-    Stream GenerateBasicInformationPdf(SharedSupplierInformation supplierInformation);
+    Stream GenerateBasicInformationPdf(IEnumerable<SharedSupplierInformation> supplierInformationList);
 }

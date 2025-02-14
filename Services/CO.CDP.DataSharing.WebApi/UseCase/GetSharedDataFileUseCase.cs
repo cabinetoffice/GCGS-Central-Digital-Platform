@@ -2,6 +2,7 @@ using CO.CDP.Authentication;
 using CO.CDP.AwsServices;
 using CO.CDP.DataSharing.WebApi.DataService;
 using CO.CDP.DataSharing.WebApi.Model;
+using CO.CDP.OrganisationInformation.Persistence;
 using System.IO.Compression;
 using System.Net.Mime;
 using static CO.CDP.Authentication.Constants;
@@ -12,13 +13,29 @@ public class GetSharedDataFileUseCase(
     IPdfGenerator pdfGenerator,
     IDataService dataService,
     IClaimService claimService,
-    IFileHostManager fileHostManager)
+    IFileHostManager fileHostManager,
+    IShareCodeRepository shareCodeRepository)
     : IUseCase<string, SharedDataFile?>
 {
     public async Task<SharedDataFile?> Execute(string sharecode)
     {
+        List<SharedSupplierInformation> combineSahredData = [];
+
         var sharedSupplierInfo = await dataService.GetSharedSupplierInformationAsync(sharecode);
-        if (sharedSupplierInfo == null) return null;
+        if (sharedSupplierInfo == null)
+            return null;
+
+        combineSahredData.Add(sharedSupplierInfo);
+
+        if (sharedSupplierInfo.OrganisationType == OrganisationInformation.OrganisationType.InformalConsortium)
+        {
+            var shareCodes = await shareCodeRepository.GetConsortiumOrganisationsShareCode(sharecode);
+
+            foreach (var shareCode in shareCodes)
+            {
+                combineSahredData.Add(await dataService.GetSharedSupplierInformationAsync(shareCode));
+            }
+        }
 
         if (!await claimService.HaveAccessToOrganisation(
             sharedSupplierInfo.OrganisationId,
@@ -28,13 +45,15 @@ public class GetSharedDataFileUseCase(
             throw new UserUnauthorizedException();
         }
 
-        var pdfStream = pdfGenerator.GenerateBasicInformationPdf(sharedSupplierInfo);
+        var pdfStream = pdfGenerator.GenerateBasicInformationPdf(combineSahredData);
 
         var fileName = $"{sharecode}.pdf";
         var contentType = MediaTypeNames.Application.Pdf;
         byte[] content = [];
 
-        if (sharedSupplierInfo.AttachedDocuments.Count > 0)
+        var allAttachedDocuments = combineSahredData.SelectMany(docs => docs.AttachedDocuments);
+
+        if (allAttachedDocuments.Any())
         {
             using var memoryStream = new MemoryStream();
             using (var archive = new ZipArchive(memoryStream, ZipArchiveMode.Create, true))

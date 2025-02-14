@@ -201,4 +201,47 @@ public static class DataSharingFactory
             )
         ];
     }
+
+    public static Model.SupplierInformation CreateMockSupplierInformation()
+    {
+        return new Model.SupplierInformation
+        {
+            Id = Guid.NewGuid(),
+            Type = OrganisationType.Organisation,
+            Name = "Mock Consortium Organisation",
+            AssociatedPersons = [],
+            AdditionalParties = [],
+            AdditionalEntities = [],
+            Identifier = new OrganisationInformation.Identifier
+            {
+                Id = "ORG123456",
+                Scheme = "UK-CH",
+                LegalName = "Mock Organisation"
+            },
+            AdditionalIdentifiers = [],
+            Address = new OrganisationInformation.Address
+            {
+                StreetAddress = "123 Consortium St",
+                Locality = "Mock City",
+                PostalCode = "12345",
+                CountryName = "Mock Country",
+                Country = "MC",
+                Type = AddressType.Postal
+            },
+            ContactPoint = new OrganisationInformation.ContactPoint
+            {
+                Name = "Mock Contact",
+                Email = "mock@example.com",
+                Telephone = "123456789",
+            },
+            Roles = [PartyRole.Tenderer],
+            Details = new Details(),
+            SupplierInformationData = new SupplierInformationData
+            {
+                AnswerSets = [],
+                Form = null!,
+                Questions = []
+            }
+        };
+    }
 }

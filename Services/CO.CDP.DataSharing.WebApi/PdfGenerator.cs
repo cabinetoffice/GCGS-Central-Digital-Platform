@@ -10,12 +10,9 @@ namespace CO.CDP.DataSharing.WebApi;
 
 public class PdfGenerator(IHtmlLocalizer<FormsEngineResource> localizer) : IPdfGenerator
 {
-    public Stream GenerateBasicInformationPdf(SharedSupplierInformation supplierInformation)
+    public Stream GenerateBasicInformationPdf(IEnumerable<SharedSupplierInformation> supplierInformationList)
     {
         QuestPDF.Settings.License = LicenseType.Community;
-        var basicInformation = supplierInformation.BasicInformation;
-        var connectedPersonInformation = supplierInformation.ConnectedPersonInformation;
-        var additionalIdentifiers = supplierInformation.AdditionalIdentifiers;
 
         var document = Document.Create(container =>
         {
@@ -25,15 +22,31 @@ public class PdfGenerator(IHtmlLocalizer<FormsEngineResource> localizer) : IPdfG
                 page.Margin(1, Unit.Centimetre);
                 page.DefaultTextStyle(x => x.FontSize(10).FontFamily("DejaVu Sans"));
 
-
-                page.Header().Text(StaticTextResource.PdfGenerator_SupplierInformation_Title).FontSize(14).Bold().AlignCenter();
+                page.Header().Text(StaticTextResource.PdfGenerator_SupplierInformation_Title)
+                    .FontSize(14).Bold().AlignCenter();
 
                 page.Content().Column(col =>
                 {
-                    AddBasicInformationSection(col, basicInformation);
-                    AddAdditionalIdentifiersSection(col, additionalIdentifiers);
-                    AddConnectedPersonInformationSection(col, connectedPersonInformation);
-                    AddFormSections(col, supplierInformation.FormAnswerSetForPdfs);
+                    foreach (var supplierInformation in supplierInformationList)
+                    {
+                        var basicInformation = supplierInformation.BasicInformation;
+                        var connectedPersonInformation = supplierInformation.ConnectedPersonInformation;
+                        var additionalIdentifiers = supplierInformation.AdditionalIdentifiers;
+
+                        if (basicInformation != null)
+                        {
+                            AddBasicInformationSection(col, basicInformation);
+                        }
+
+                        AddAdditionalIdentifiersSection(col, additionalIdentifiers);
+                        AddConnectedPersonInformationSection(col, connectedPersonInformation);
+                        AddFormSections(col, supplierInformation.FormAnswerSetForPdfs);
+
+                        if (supplierInformation != supplierInformationList.Last())
+                        {
+                            col.Item().PageBreak();
+                        }
+                    }
                 });
 
                 page.Footer().AlignRight().Text(x =>

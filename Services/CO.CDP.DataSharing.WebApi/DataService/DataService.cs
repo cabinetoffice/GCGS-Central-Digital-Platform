@@ -8,6 +8,7 @@ using Address = CO.CDP.OrganisationInformation.Address;
 using ConnectedIndividualTrust = CO.CDP.DataSharing.WebApi.Model.ConnectedIndividualTrust;
 using ConnectedOrganisation = CO.CDP.DataSharing.WebApi.Model.ConnectedOrganisation;
 using FormQuestionType = CO.CDP.OrganisationInformation.Persistence.Forms.FormQuestionType;
+using PersistenceSharedConsent = CO.CDP.OrganisationInformation.Persistence.Forms.SharedConsent;
 
 namespace CO.CDP.DataSharing.WebApi.DataService;
 
@@ -20,15 +21,19 @@ public class DataService(IShareCodeRepository shareCodeRepository, IConnectedEnt
         var allFormSectionsExceptDeclaractions = sharedConsent.AnswerSets.Where(a =>
             a.Section.Type != OrganisationInformation.Persistence.Forms.FormSectionType.Declaration);
         var connectedEntities = await connectedEntityRepository.FindByOrganisation(sharedConsent.Organisation.Guid);
+        var sharedConsentDetails = await shareCodeRepository.GetShareCodeDetailsAsync(sharedConsent.Organisation.Guid, shareCode);
+        var vetConsortiumOrganisationsShareCode = await shareCodeRepository.GetConsortiumOrganisationsShareCode(shareCode);
 
         return new SharedSupplierInformation
         {
             OrganisationId = sharedConsent.Organisation.Guid,
+            OrganisationType = sharedConsent.Organisation.Type,
             BasicInformation = MapToBasicInformation(sharedConsent.Organisation),
             ConnectedPersonInformation = MapToConnectedPersonInformation(connectedEntities),
             FormAnswerSetForPdfs = MapFormAnswerSetsForPdf(allFormSectionsExceptDeclaractions),
             AttachedDocuments = MapAttachedDocuments(sharedConsent),
-            AdditionalIdentifiers = MapAdditionalIdentifiersForPdf(sharedConsent.Organisation.Identifiers)
+            AdditionalIdentifiers = MapAdditionalIdentifiersForPdf(sharedConsent.Organisation.Identifiers),
+            ConsortiumInformation = MapToConsortiumInformation(sharedConsent)
         };
     }
 
@@ -114,8 +119,11 @@ public class DataService(IShareCodeRepository shareCodeRepository, IConnectedEnt
         return pdfAnswerSets;
     }
 
-    public static BasicInformation MapToBasicInformation(Organisation organisation)
+    public static BasicInformation? MapToBasicInformation(Organisation organisation)
     {
+        if (organisation.Type == OrganisationType.InformalConsortium)
+            return null;
+
         var supplierInfo = organisation.SupplierInfo
             ?? throw new SupplierInformationNotFoundException("Supplier information not found.");
 
@@ -273,6 +281,56 @@ public class DataService(IShareCodeRepository shareCodeRepository, IConnectedEnt
             }
         }
         return attachedDocuments;
+    }
+
+    public static SupplierInformation MapToConsortiumInformation(PersistenceSharedConsent sharedConsent)
+    {
+        var organisation = sharedConsent.Organisation;
+
+        return new SupplierInformation
+        {
+            Id = organisation.Guid,
+            Type = organisation.Type,
+            Name = organisation.Name,
+            AssociatedPersons = [],
+            AdditionalParties = [],
+            AdditionalEntities = [],
+            Identifier = new OrganisationInformation.Identifier
+            {
+                Scheme = organisation.Identifiers.FirstOrDefault()?.Scheme ?? string.Empty,
+                LegalName = organisation.Identifiers.FirstOrDefault()?.LegalName ?? organisation.Name,
+            },
+            AdditionalIdentifiers = organisation.Identifiers
+                .Select(id => new OrganisationInformation.Identifier
+                {
+                    Scheme = id.Scheme,
+                    LegalName = id.LegalName,
+                })
+                .ToList(),
+            Address = new Address
+            {
+                StreetAddress = organisation.Addresses.FirstOrDefault()?.Address.StreetAddress ?? string.Empty,
+                Locality = organisation.Addresses.FirstOrDefault()?.Address.Locality ?? string.Empty,
+                PostalCode = organisation.Addresses.FirstOrDefault()?.Address.PostalCode ?? string.Empty,
+                CountryName = organisation.Addresses.FirstOrDefault()?.Address.CountryName ?? string.Empty,
+                Country = organisation.Addresses.FirstOrDefault()?.Address.Country ?? string.Empty,
+                Type = AddressType.Postal
+            },
+            ContactPoint = new ContactPoint
+            {
+                Name = organisation.ContactPoints.FirstOrDefault()?.Name ?? string.Empty,
+                Email = organisation.ContactPoints.FirstOrDefault()?.Email ?? string.Empty,
+                Telephone = organisation.ContactPoints.FirstOrDefault()?.Telephone ?? string.Empty,
+            },
+            Roles = organisation.Roles.ToList(),
+            Details = new Details(),  // Ignored, but providing a default object to prevent errors
+            SupplierInformationData = new SupplierInformationData
+            {
+                AnswerSets = [],
+                Form = null!,
+                Questions = []
+            }
+        };
     }
 
     private static string GetTitleFromValue(string value)

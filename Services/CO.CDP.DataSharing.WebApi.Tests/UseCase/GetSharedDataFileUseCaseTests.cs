@@ -3,6 +3,7 @@ using CO.CDP.AwsServices;
 using CO.CDP.DataSharing.WebApi.DataService;
 using CO.CDP.DataSharing.WebApi.Model;
 using CO.CDP.DataSharing.WebApi.UseCase;
+using CO.CDP.OrganisationInformation.Persistence;
 using FluentAssertions;
 using Moq;
 using static CO.CDP.Authentication.Constants;
@@ -15,9 +16,14 @@ public class GetSharedDataFileUseCaseTests
     private readonly Mock<IPdfGenerator> _pdfGenerator = new();
     private readonly Mock<IClaimService> _claimService = new();
     private readonly Mock<IFileHostManager> _fileHostManager = new();
+    private readonly Mock<IShareCodeRepository> _shareCodeRepository = new();
     private string[] requiredClaims = [OrganisationPersonScope.Admin, OrganisationPersonScope.Editor, OrganisationPersonScope.Viewer];
 
-    private GetSharedDataFileUseCase UseCase => new(_pdfGenerator.Object, _dataService.Object, _claimService.Object, _fileHostManager.Object);
+    private GetSharedDataFileUseCase UseCase => new(_pdfGenerator.Object,
+        _dataService.Object,
+        _claimService.Object,
+        _fileHostManager.Object,
+        _shareCodeRepository.Object);
 
     [Fact]
     public async Task Execute_ShouldCallDataServiceAndPdfGenerator_WhenShareCodeExists()
@@ -32,7 +38,9 @@ public class GetSharedDataFileUseCaseTests
             ConnectedPersonInformation = DataSharingFactory.CreateMockConnectedPersonInformation(),
             FormAnswerSetForPdfs = DataSharingFactory.CreateMockFormAnswerSetForPdfs(),
             AttachedDocuments = [],
-            AdditionalIdentifiers = []
+            AdditionalIdentifiers = [],
+            OrganisationType = null,
+            ConsortiumInformation = DataSharingFactory.CreateMockSupplierInformation()
         };
 
         var pdfBytes = new byte[] { 1, 2, 3 };
@@ -40,7 +48,7 @@ public class GetSharedDataFileUseCaseTests
         _dataService.Setup(service => service.GetSharedSupplierInformationAsync(sharecode))
             .ReturnsAsync(sharedSupplierInformation);
 
-        _pdfGenerator.Setup(generator => generator.GenerateBasicInformationPdf(sharedSupplierInformation))
+        _pdfGenerator.Setup(generator => generator.GenerateBasicInformationPdf((IEnumerable<SharedSupplierInformation>)sharedSupplierInformation))
             .Returns(new MemoryStream(pdfBytes));
         _claimService.Setup(cs => cs.HaveAccessToOrganisation(organisationId, requiredClaims, It.IsAny<string[]?>()))
             .ReturnsAsync(true);
@@ -68,7 +76,9 @@ public class GetSharedDataFileUseCaseTests
                 ConnectedPersonInformation = DataSharingFactory.CreateMockConnectedPersonInformation(),
                 FormAnswerSetForPdfs = DataSharingFactory.CreateMockFormAnswerSetForPdfs(),
                 AttachedDocuments = [],
-                AdditionalIdentifiers = []
+                AdditionalIdentifiers = [],
+                OrganisationType = null,
+                ConsortiumInformation = DataSharingFactory.CreateMockSupplierInformation()
             });
 
         _claimService.Setup(cs => cs.HaveAccessToOrganisation(organisationId, invalidscope, null))
@@ -93,7 +103,9 @@ public class GetSharedDataFileUseCaseTests
             ConnectedPersonInformation = DataSharingFactory.CreateMockConnectedPersonInformation(),
             FormAnswerSetForPdfs = DataSharingFactory.CreateMockFormAnswerSetForPdfs(),
             AttachedDocuments = [],
-            AdditionalIdentifiers = []
+            AdditionalIdentifiers = [],
+            OrganisationType = null,
+            ConsortiumInformation = DataSharingFactory.CreateMockSupplierInformation()
         };
 
         _dataService.Setup(service => service.GetSharedSupplierInformationAsync(sharecode))
@@ -102,6 +114,6 @@ public class GetSharedDataFileUseCaseTests
         var result = await _dataService.Object.GetSharedSupplierInformationAsync(sharecode);
 
         result.Should().NotBeNull();
-        result.BasicInformation.OrganisationName.Should().Be(expectedOrganisationName);
+        result.BasicInformation?.OrganisationName.Should().Be(expectedOrganisationName);
     }
 }

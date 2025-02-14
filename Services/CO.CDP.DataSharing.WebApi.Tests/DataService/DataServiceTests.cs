@@ -41,7 +41,7 @@ public class DataServiceTests
         var result = await DataService.GetSharedSupplierInformationAsync(shareCode);
 
         result.Should().NotBeNull();
-        result.BasicInformation.SupplierType.Should().Be(sharedConsent.Organisation.SupplierInfo?.SupplierType);
+        result.BasicInformation?.SupplierType.Should().Be(sharedConsent.Organisation.SupplierInfo?.SupplierType);
     }
 
     [Fact]
@@ -83,14 +83,14 @@ public class DataServiceTests
 
         var result = await DataService.GetSharedSupplierInformationAsync("ABC-123");
 
-        result.BasicInformation.SupplierType.Should().Be(organisation.SupplierInfo?.SupplierType);
-        result.BasicInformation.RegisteredAddress.Should().NotBeNull();
-        result.BasicInformation.PostalAddress.Should().NotBeNull();
-        result.BasicInformation.VatNumber.Should()
+        result.BasicInformation?.SupplierType.Should().Be(organisation.SupplierInfo?.SupplierType);
+        result.BasicInformation?.RegisteredAddress.Should().NotBeNull();
+        result.BasicInformation?.PostalAddress.Should().NotBeNull();
+        result.BasicInformation?.VatNumber.Should()
             .Be(organisation.Identifiers.FirstOrDefault(i => i.Scheme == "VAT")?.IdentifierId);
-        result.BasicInformation.WebsiteAddress.Should().Be(organisation.ContactPoints.FirstOrDefault()?.Url);
-        result.BasicInformation.EmailAddress.Should().Be(organisation.ContactPoints.FirstOrDefault()?.Email);
-        result.BasicInformation.LegalForm.Should().NotBeNull();
+        result.BasicInformation?.WebsiteAddress.Should().Be(organisation.ContactPoints.FirstOrDefault()?.Url);
+        result.BasicInformation?.EmailAddress.Should().Be(organisation.ContactPoints.FirstOrDefault()?.Email);
+        result.BasicInformation?.LegalForm.Should().NotBeNull();
     }
 
     [Fact]

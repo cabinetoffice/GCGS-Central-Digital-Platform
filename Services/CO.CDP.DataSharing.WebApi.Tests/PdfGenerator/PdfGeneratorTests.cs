@@ -31,14 +31,16 @@ public class PdfGeneratorTests
         var supplierInformation = new Model.SharedSupplierInformation
         {
             OrganisationId = Guid.NewGuid(),
+            OrganisationType = OrganisationInformation.OrganisationType.Organisation,
             BasicInformation = DataSharingFactory.CreateMockBasicInformation(),
             ConnectedPersonInformation = DataSharingFactory.CreateMockConnectedPersonInformation(),
             FormAnswerSetForPdfs = DataSharingFactory.CreateMockFormAnswerSetForPdfs(),
             AttachedDocuments = [],
-            AdditionalIdentifiers = []
+            AdditionalIdentifiers = [],
+            ConsortiumInformation = DataSharingFactory.CreateMockSupplierInformation()
         };
 
-        var pdfBytes = _pdfGenerator.GenerateBasicInformationPdf(supplierInformation);
+        var pdfBytes = _pdfGenerator.GenerateBasicInformationPdf((IEnumerable<Model.SharedSupplierInformation>)supplierInformation);
 
         pdfBytes.Should().NotBeNull();
         pdfBytes.Length.Should().BeGreaterThan(0);
