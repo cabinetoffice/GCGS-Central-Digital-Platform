@@ -68,7 +68,7 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
             .FirstOrDefaultAsync(t => t.Name == name);
     }
 
-    public async Task<IEnumerable<Organisation>> SearchByName(string name, PartyRole? role, int? limit)
+    public async Task<IEnumerable<Organisation>> SearchByName(string name, PartyRole? role, int? limit, double threshold = 0.3)
     {
         var query = context.Organisations
             .Include(p => p.Addresses)
@@ -80,19 +80,19 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
                 Organisation = t,
                 SimilarityScore = EF.Functions.TrigramsSimilarity(t.Name, name)
             })
-            .Where(t => t.SimilarityScore > 0.3);
+            .Where(t => t.SimilarityScore >= threshold);
 
         if (role.HasValue)
         {
             query = query.Where(t => t.Organisation.Roles.Contains(role.Value));
         }
 
+        query = query.OrderByDescending(t => t.SimilarityScore);
+
         if (limit.HasValue)
         {
             query = query.Take(limit.Value);
         }
-
-        query.OrderByDescending(t => t.SimilarityScore);
 
         return await query.Select(t => t.Organisation).ToListAsync();
     }
@@ -169,6 +169,9 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
             .Include(o => o.Identifiers)
             .Include(o => o.BuyerInfo)
             .Include(o => o.SupplierInfo)
+            .Include(o => o.Persons)
+            .ThenInclude(p => p.PersonOrganisations)
+            .Include(o => o.Addresses)
             .Include(o => o.Addresses)
             .ThenInclude(p => p.Address)
             .OrderBy(o => o.Name)

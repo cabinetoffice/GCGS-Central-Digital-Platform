@@ -31,7 +31,9 @@ public class SqsPublisherTest : PublisherContractTest, IClassFixture<LocalStackF
         await publisher.Publish(new OutboxMessage
         {
             Type = "TestMessage",
-            Message = "{\"Id\":13,\"Name\":\"Hello!\"}"
+            Message = "{\"Id\":13,\"Name\":\"Hello!\"}",
+            QueueUrl = TestQueue,
+            MessageGroupId = "test-messages"
         });
 
         var message = await waitForOneMessage<TestMessage>();

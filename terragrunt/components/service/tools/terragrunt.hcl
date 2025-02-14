@@ -23,6 +23,7 @@ locals {
 dependency core_iam {
   config_path = "../../core/iam"
   mock_outputs = {
+    cloudwatch_events_arn               = "mock"
     cloudwatch_events_name              = "mock"
     ecs_task_arn                        = "mock"
     ecs_task_exec_arn                   = "mock"
@@ -120,6 +121,7 @@ inputs = {
   tools_configs      = local.global_vars.locals.tools_configs
   tags               = local.tags
 
+  role_cloudwatch_events_arn               = dependency.core_iam.outputs.cloudwatch_events_arn
   role_cloudwatch_events_name              = dependency.core_iam.outputs.cloudwatch_events_name
   role_ecs_task_arn                        = dependency.core_iam.outputs.ecs_task_arn
   role_ecs_task_exec_arn                   = dependency.core_iam.outputs.ecs_task_exec_arn

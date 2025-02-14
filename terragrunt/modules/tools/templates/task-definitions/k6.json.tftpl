@@ -1,0 +1,31 @@
+[
+  {
+    "name": "${name}",
+    "image": "${image}",
+    "cpu": ${cpu},
+    "memory": ${memory},
+    "portMappings": [],
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+        "awslogs-group": "${lg_name}",
+        "awslogs-region": "${lg_region}",
+        "awslogs-stream-prefix": "${lg_prefix}"
+      }
+    },
+    "Command": ["run", "/scripts/main.js"],
+    "environment": [
+        {"name": "AUTH_TOKEN", "value": "${auth_token}"},
+        {"name": "DURATION", "value": "${duration}"},
+        {"name": "ENDPOINTS", "value": "${endpoints}"},
+        {"name": "MAX_VUS", "value": "${max_vus}"},
+        {"name": "RPS", "value": "${rps}"},
+        {"name": "TARGET_DOMAIN", "value": "${target_domain}"},
+        {"name": "VUS", "value": "${vus}"}
+    ],
+    "secrets": [],
+    "volumesFrom": [],
+    "mountPoints": [],
+    "essential": true
+  }
+]

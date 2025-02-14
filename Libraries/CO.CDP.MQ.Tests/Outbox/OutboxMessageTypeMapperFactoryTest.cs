@@ -23,7 +23,9 @@ public class OutboxMessageTypeMapperFactoryTest
         var typeName = typeMapper(new OutboxMessage
         {
             Message = "{\"Content\":\"Message 3\"}",
-            Type = "PreDefinedTestMessage"
+            Type = "PreDefinedTestMessage",
+            QueueUrl = "test-queue",
+            MessageGroupId = "test-messages"
         });
 
 

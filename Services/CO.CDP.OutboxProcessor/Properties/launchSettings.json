@@ -1,0 +1,37 @@
+{
+  "$schema": "http://json.schemastore.org/launchsettings.json",
+  "profiles": {
+    "http-for-docker": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "applicationUrl": "http://localhost:58097",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    },
+    "http-organisation": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "applicationUrl": "http://localhost:8097",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "Channel": "organisation_information_outbox",
+        "DbContext": "OrganisationInformationContext",
+        "Aws_SqsDispatcher_QueueUrl": "http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/entity-verification.fifo",
+        "Aws_SqsDispatcher_MessageGroupId": "EntityVerification"
+      }
+    },
+    "http-entity-verification": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "applicationUrl": "http://localhost:8097",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "Channel": "entity_verification_outbox",
+        "DbContext": "EntityVerificationContext",
+        "Aws_SqsDispatcher_QueueUrl": "http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/organisation.fifo",
+        "Aws_SqsDispatcher_MessageGroupId": "Organisation"
+      }
+    }
+  }
+}
