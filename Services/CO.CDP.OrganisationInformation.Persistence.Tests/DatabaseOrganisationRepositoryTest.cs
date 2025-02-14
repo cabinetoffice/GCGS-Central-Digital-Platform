@@ -955,6 +955,111 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql)
         result.Should().Contain(organisations[5]);
     }
 
+    [Fact]
+    public async Task GetPaginated_WhenNoOrganisationsExist_ReturnsEmptyList()
+    {
+        using var repository = OrganisationRepository();
+
+        await using var context = GetDbContext();
+        context.Organisations.RemoveRange(context.Organisations);
+        await context.SaveChangesAsync();
+
+        var result = await repository.GetPaginated(PartyRole.Buyer, PartyRole.Buyer, null, 10, 0);
+
+        result.Should().BeEmpty();
+    }
+
+    [Fact]
+    public async Task GetPaginated_WhenOrganisationsExist_ReturnsPaginatedResults()
+    {
+        using var repository = OrganisationRepository();
+
+        var organisation1 = GivenOrganisation(name: "Alpha Corp", roles: [PartyRole.Buyer]);
+        var organisation2 = GivenOrganisation(name: "Beta Ltd", roles: [PartyRole.Buyer]);
+        var organisation3 = GivenOrganisation(name: "Gamma LLC", roles: [PartyRole.Buyer]);
+
+        await using var context = GetDbContext();
+        context.Organisations.RemoveRange(context.Organisations);
+        await context.Organisations.AddRangeAsync(organisation1, organisation2, organisation3);
+        await context.SaveChangesAsync();
+
+        var result = await repository.GetPaginated(PartyRole.Buyer, PartyRole.Buyer, null, 2, 0);
+
+        result.Should().HaveCount(2);
+        result.First().Name.Should().Be("Alpha Corp");
+    }
+
+    [Fact]
+    public async Task GetPaginated_WithSearchText_ReturnsMatchingResults()
+    {
+        using var repository = OrganisationRepository();
+
+        var organisation1 = GivenOrganisation(name: "Acme Ltd", roles: [PartyRole.Buyer]);
+        var organisation2 = GivenOrganisation(name: "Beta Solutions", roles: [PartyRole.Buyer]);
+
+        await using var context = GetDbContext();
+        context.Organisations.RemoveRange(context.Organisations);
+        context.Tenants.RemoveRange(context.Tenants);
+        await context.Organisations.AddRangeAsync(organisation1, organisation2);
+        await context.SaveChangesAsync();
+
+        var result = await repository.GetPaginated(PartyRole.Buyer, PartyRole.Buyer, "Acme", 10, 0);
+
+        result.Should().HaveCount(1);
+        result.First().Name.Should().Be("Acme Ltd");
+    }
+
+    [Fact]
+    public async Task GetTotalCount_WhenNoOrganisationsExist_ReturnsZero()
+    {
+        using var repository = OrganisationRepository();
+        await using var context = GetDbContext();
+        context.Organisations.RemoveRange(context.Organisations);
+        await context.SaveChangesAsync();
+
+        var count = await repository.GetTotalCount(PartyRole.Buyer, PartyRole.Buyer, null);
+
+        count.Should().Be(0);
+    }
+
+    [Fact]
+    public async Task GetTotalCount_WhenOrganisationsExist_ReturnsCorrectCount()
+    {
+        using var repository = OrganisationRepository();
+
+        var organisation1 = GivenOrganisation(name: "Acme Ltd", roles: [PartyRole.Buyer]);
+        var organisation2 = GivenOrganisation(name: "Beta Solutions", roles: [PartyRole.Buyer]);
+
+        await using var context = GetDbContext();
+        context.Organisations.RemoveRange(context.Organisations);
+        await context.Organisations.AddRangeAsync(organisation1, organisation2);
+        await context.SaveChangesAsync();
+
+        var count = await repository.GetTotalCount(PartyRole.Buyer, PartyRole.Buyer, null);
+
+        count.Should().Be(2);
+    }
+
+    [Fact]
+    public async Task GetTotalCount_WithSearchText_ReturnsFilteredCount()
+    {
+        using var repository = OrganisationRepository();
+
+        var organisation1 = GivenOrganisation(name: "Acme Ltd", roles: [PartyRole.Buyer]);
+        var organisation2 = GivenOrganisation(name: "Beta Solutions", roles: [PartyRole.Buyer]);
+
+        await using var context = GetDbContext();
+        context.Organisations.RemoveRange(context.Organisations);
+        context.Tenants.RemoveRange(context.Tenants);
+        await context.Organisations.AddRangeAsync(organisation1, organisation2);
+        await context.SaveChangesAsync();
+
+        var count = await repository.GetTotalCount(PartyRole.Buyer, PartyRole.Buyer, "Acme");
+
+        count.Should().Be(1);
+    }
+
+
     private DatabaseOrganisationRepository OrganisationRepository()
         => new(GetDbContext());
 

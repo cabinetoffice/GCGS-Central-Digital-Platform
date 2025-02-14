@@ -24,16 +24,16 @@ public class OrganisationsModelTests
     {
         string type = "buyer";
         int pageNumber = 1;
-        int totalOrganisations = 25;
+        int totalOrganisations = 120;
         var organisations = new List<OrganisationExtended>();
-        _mockOrganisationClient.Setup(client => client.GetAllOrganisationsAsync(type, type, 10, 0)).ReturnsAsync(organisations);
-        _mockOrganisationClient.Setup(client => client.GetOrganisationsTotalCountAsync(type, type)).ReturnsAsync(totalOrganisations);
+        _mockOrganisationClient.Setup(client => client.GetAllOrganisationsAsync(type, type, null, 50, 0)).ReturnsAsync(organisations);
+        _mockOrganisationClient.Setup(client => client.GetOrganisationsTotalCountAsync(type, type, null)).ReturnsAsync(totalOrganisations);
 
         var result = await _organisationsModel.OnGet(type, pageNumber);
 
         result.Should().BeOfType<PageResult>();
         _organisationsModel.Title.Should().Be("Buyer organisations");
-        _organisationsModel.PageSize.Should().Be(10);
+        _organisationsModel.PageSize.Should().Be(50);
         _organisationsModel.CurrentPage.Should().Be(pageNumber);
         _organisationsModel.TotalPages.Should().Be(3);
     }
@@ -44,16 +44,17 @@ public class OrganisationsModelTests
         string type = "supplier";
         string role = "tenderer";
         int pageNumber = 2;
-        int totalOrganisations = 35;
+        int totalOrganisations = 200;
         var organisations = new List<OrganisationExtended>();
-        _mockOrganisationClient.Setup(client => client.GetAllOrganisationsAsync(role, null, 10, 10)).ReturnsAsync(organisations);
-        _mockOrganisationClient.Setup(client => client.GetOrganisationsTotalCountAsync(role, null)).ReturnsAsync(totalOrganisations);
+        _organisationsModel.OrganisationSearchInput = null;
+        _mockOrganisationClient.Setup(client => client.GetAllOrganisationsAsync(role, role, null, 50, 50)).ReturnsAsync(organisations);
+        _mockOrganisationClient.Setup(client => client.GetOrganisationsTotalCountAsync(role, role, null)).ReturnsAsync(totalOrganisations);
 
         var result = await _organisationsModel.OnGet(type, pageNumber);
 
         result.Should().BeOfType<PageResult>();
         _organisationsModel.Title.Should().Be("Supplier organisations");
-        _organisationsModel.PageSize.Should().Be(10);
+        _organisationsModel.PageSize.Should().Be(50);
         _organisationsModel.CurrentPage.Should().Be(pageNumber);
         _organisationsModel.TotalPages.Should().Be(4);
     }
