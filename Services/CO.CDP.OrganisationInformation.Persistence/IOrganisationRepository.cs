@@ -23,6 +23,8 @@ public interface IOrganisationRepository : IDisposable
 
     public Task<Organisation?> FindByName(string name);
 
+    public Task<Organisation?> FindBySharecode(string sharecode);
+
     public Task<IEnumerable<Organisation>> FindByUserUrn(string userUrn);
 
     public Task<Organisation?> FindByIdentifier(string scheme, string identifierId);

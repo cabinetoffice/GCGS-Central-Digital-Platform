@@ -52,7 +52,20 @@ public class DatabaseShareCodeRepository(OrganisationInformationContext context)
                 .ThenInclude(f => f.Sections)
                     .ThenInclude(s => s.Questions.OrderBy(q => q.SortOrder))
             .AsSplitQuery()
+            .AsNoTracking()
             .FirstOrDefaultAsync();
+    }
+
+    public async Task<IList<FormAnswerSet>> GetAnswerSetsBySharecode(string sharecode)
+    {
+        return await context.FormAnswerSets
+            .Where(fas => !fas.Deleted && fas.Section.Type != FormSectionType.Declaration && fas.SharedConsent.ShareCode == sharecode)
+            .Include(sa => sa.Answers)
+                .ThenInclude(a => a.Question)
+                    .ThenInclude(x => x.Section)
+            .AsSingleQuery()
+            .AsNoTracking()
+            .ToListAsync();
     }
 
     public async Task<SharedConsentDetails?> GetShareCodeDetailsAsync(Guid organisationId, string shareCode)

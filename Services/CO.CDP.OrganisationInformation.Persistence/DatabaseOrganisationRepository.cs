@@ -68,7 +68,17 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
             .FirstOrDefaultAsync(t => t.Name == name);
     }
 
-    public async Task<IEnumerable<Organisation>> SearchByName(string name, PartyRole? role, int? limit, double threshold = 0.3)
+    public async Task<Organisation?> FindBySharecode(string sharecode)
+    {
+        return await context.SharedConsents
+            .Where(x => x.ShareCode == sharecode)
+            .Select(x => x.Organisation)
+            .AsSingleQuery()
+            .AsNoTracking()
+            .FirstOrDefaultAsync();
+    }
+
+    public async Task<IEnumerable<Organisation>> SearchByName(string name, PartyRole? role, int? limit)
     {
         var query = context.Organisations
             .Include(p => p.Addresses)
