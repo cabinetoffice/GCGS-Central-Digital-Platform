@@ -3301,13 +3301,4 @@
   <data name="ConsortiumShareMyInformation_Title" xml:space="preserve">
     <value>Share your consortium information</value>
   </data>
-  <data name="SupplierToBuyer_OrganisationType_PublicUndertakingAuthority" xml:space="preserve">
-    <value />
-  </data>
-  <data name="SupplierToBuyer_OrganisationType_RegionalAndLocalGovernment_Title" xml:space="preserve">
-    <value />
-  </data>
-  <data name="Organisation_ChangeBuyerType" xml:space="preserve">
-    <value>Change</value>
-  </data>
 </root>

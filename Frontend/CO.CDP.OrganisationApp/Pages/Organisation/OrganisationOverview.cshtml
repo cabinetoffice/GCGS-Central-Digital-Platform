@@ -187,7 +187,7 @@
                         </dd>
                         <authorize scope="@OrgScopeRequirement.Editor">
                             <dd class="govuk-summary-list__actions">
-                                <a class="govuk-link govuk-link--no-visited-state" href="/organisation/@Model.Id/buyerorganisationtype">@Html.Raw(StaticTextResource.Organisation_ChangeBuyerType)</a>
+                                <a class="govuk-link govuk-link--no-visited-state" href="/organisation/@Model.Id/buyerorganisationtype">@StaticTextResource.Global_Change</a>
                             </dd>
                         </authorize>
                     </div>
@@ -235,8 +235,7 @@
                                 <p class="govuk-body">
                                     @if (Model.MouSignedOnDate != null)
                                     {
-                                        @Model.MouSignedOnDate
-                                        ;
+                                        @Model.MouSignedOnDate;
                                     }
                                 </p>
                             </dd>
