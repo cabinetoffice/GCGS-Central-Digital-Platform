@@ -1,5 +1,6 @@
 using Moq;
 using Microsoft.AspNetCore.Http;
+using CO.CDP.OrganisationApp.Middleware;
 
 namespace CO.CDP.OrganisationApp.Tests;
 

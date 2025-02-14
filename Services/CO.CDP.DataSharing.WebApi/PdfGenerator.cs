@@ -101,8 +101,8 @@ public class PdfGenerator(IHtmlLocalizer<FormsEngineResource> localizer) : IPdfG
         if (!string.IsNullOrEmpty(basicInformation.EmailAddress))
             col.Item().Element(container => AddTwoColumnRow(container, StaticTextResource.PdfGenerator_BasicInformation_EmailAddress, basicInformation.EmailAddress));
 
-        if (!string.IsNullOrEmpty(basicInformation.OrganisationType.ToString()))
-            col.Item().Element(container => AddTwoColumnRow(container, StaticTextResource.PdfGenerator_BasicInformation_OrganisationType, basicInformation.OrganisationType.ToString()));
+        if (!string.IsNullOrEmpty(basicInformation.Role))
+            col.Item().Element(container => AddTwoColumnRow(container, StaticTextResource.PdfGenerator_BasicInformation_OrganisationType, basicInformation.Role));
 
         if (basicInformation.LegalForm != null)
         {

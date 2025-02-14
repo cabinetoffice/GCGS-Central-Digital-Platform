@@ -132,7 +132,8 @@ public class ConsortiumEnterSharecodeModelTests
             contactPoint: null!,
             roles: [],
             details: null!,
-            supplierInformationData: null!
+            supplierInformationData: null!,
+            type: DataSharing.WebApiClient.OrganisationType.Organisation
         );
     }
 }

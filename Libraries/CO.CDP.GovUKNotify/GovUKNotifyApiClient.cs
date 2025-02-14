@@ -1,7 +1,6 @@
 using CO.CDP.GovUKNotify.Models;
-using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -12,6 +11,7 @@ public class GovUKNotifyApiClient : IGovUKNotifyApiClient
 {
     public const string GovUKNotifyHttpClientName = "GovUKNotifyHttpClient";
     private readonly ILogger<GovUKNotifyApiClient> _logger;
+    private readonly IConfiguration _configuration;
 
     private static readonly JsonSerializerOptions jsonSerializerOptions = new()
     {
@@ -24,16 +24,25 @@ public class GovUKNotifyApiClient : IGovUKNotifyApiClient
     public GovUKNotifyApiClient(
         IHttpClientFactory httpClientFactory,
         IAuthentication auth,
-        ILogger<GovUKNotifyApiClient> logger)
+        ILogger<GovUKNotifyApiClient> logger,
+        IConfiguration configuration)
     {
         _logger = logger;
         client = httpClientFactory.CreateClient(GovUKNotifyHttpClientName);
         client.BaseAddress = new Uri("https://api.notifications.service.gov.uk");
         authentication = auth;
+        _configuration = configuration;
     }
 
     public async Task<EmailNotificationResponse?> SendEmail(EmailNotificationRequest request)
     {
+
+        if (!_configuration.GetValue("Features:SendNotifyEmails", true))
+        {
+            _logger.LogInformation("Bypassing Notify API call");
+            return null;
+        }
+
         client.DefaultRequestHeaders.Authorization = authentication.GetAuthenticationHeader();
 
         var res = await client.PostAsJsonAsync("/v2/notifications/email", request, jsonSerializerOptions);

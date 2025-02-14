@@ -7,7 +7,6 @@ public static class Constants
         public const string Channel = "channel";
         public const string Subject = "sub";
         public const string Roles = "roles";
-        public const string TenantLookup = "ten";
         public const string OrganisationId = "org";
         public const string ApiKeyScope = "scope";
     }
