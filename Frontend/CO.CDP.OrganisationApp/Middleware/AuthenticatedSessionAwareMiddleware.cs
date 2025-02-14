@@ -1,7 +1,7 @@
 using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.Pages;
 
-namespace CO.CDP.OrganisationApp;
+namespace CO.CDP.OrganisationApp.Middleware;
 
 public class AuthenticatedSessionAwareMiddleware(RequestDelegate next, ISession session)
 {

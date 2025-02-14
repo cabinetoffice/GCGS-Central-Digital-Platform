@@ -8,6 +8,7 @@ module "ecs_k6_tasks" {
       auth_token    = "<To Be Pass At RunTime>"
       cpu           = var.tools_configs.k6.cpu
       duration      = "10s"
+      endpoints     =  "getOrgs, postOrgs",
       image         = "${local.orchestrator_account_id}.dkr.ecr.${data.aws_region.current.name}.amazonaws.com/cdp-${var.tools_configs.k6.name}:latest"
       lg_name       = aws_cloudwatch_log_group.k6.name
       lg_prefix     = "tools"
@@ -17,6 +18,7 @@ module "ecs_k6_tasks" {
       name          = var.tools_configs.k6.name
       target_domain = var.public_domain
       rps           = 15
+      vus           = 2
     }
   )
 
