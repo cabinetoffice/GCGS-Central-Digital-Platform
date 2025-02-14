@@ -243,7 +243,7 @@ public class ConnectedEntityCheckAnswersOrganisationTest
             companyHouseNumber: "",
             endDate: null,
             entityType: state.ConnectedEntityType!.Value.AsApiClientConnectedEntityType(),
-            hasCompnayHouseNumber: state.HasCompaniesHouseNumber!.Value,
+            hasCompanyHouseNumber: state.HasCompaniesHouseNumber!.Value,
             individualOrTrust: connectedIndividualTrust,
             organisation: connectedOrganisation,
             overseasCompanyNumber: "",

@@ -40,7 +40,7 @@ public record OrganisationReferenceDetails
     public IEnumerable<Address> Addresses { get; set; } = [];
     public DateTimeOffset? RegisteredDate { get; set; }
     public string? RegistrationAuthority { get; set; } // RegisterName
-    public bool HasCompnayHouseNumber { get; set; }
+    public bool HasCompanyHouseNumber { get; set; }
     public string? CompanyHouseNumber { get; set; }
     public string? OverseasCompanyNumber { get; set; }
     public DateTimeOffset? StartDate { get; set; }

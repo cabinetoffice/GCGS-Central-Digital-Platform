@@ -257,7 +257,7 @@ public class GetSharedDataUseCaseTest : IClassFixture<AutoMapperFixture>
         individual.Details.ConnectedType.Should().Be(ConnectedPersonType.Individual);
         individual.Details.RegisteredDate.Should().Be(DateTime.Today.ToDateTimeOffset());
         individual.Details.RegistrationAuthority.Should().Be("Approved By Trade Association");
-        individual.Details.HasCompnayHouseNumber.Should().Be(true);
+        individual.Details.HasCompanyHouseNumber.Should().Be(true);
         individual.Details.CompanyHouseNumber.Should().Be("TestOrg123");
         individual.Details.OverseasCompanyNumber.Should().Be("Oversears123");
         individual.Details.StartDate.Should().Be(DateTime.Today.AddDays(30).ToDateTimeOffset());
@@ -301,7 +301,7 @@ public class GetSharedDataUseCaseTest : IClassFixture<AutoMapperFixture>
 
         org.Details.RegisteredDate.Should().Be(DateTime.Today.ToDateTimeOffset());
         org.Details.RegistrationAuthority.Should().Be("Gov Authority of UK");
-        org.Details.HasCompnayHouseNumber.Should().Be(true);
+        org.Details.HasCompanyHouseNumber.Should().Be(true);
         org.Details.CompanyHouseNumber.Should().Be("TestOrg456");
         org.Details.OverseasCompanyNumber.Should().Be("Oversears456");
         org.Details.StartDate.Should().Be(DateTime.Today.AddMonths(10).ToDateTimeOffset());
