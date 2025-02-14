@@ -1,6 +1,5 @@
 using CO.CDP.DataSharing.WebApi.Model;
 using CO.CDP.Localization;
-using CO.CDP.OrganisationInformation;
 using CO.CDP.OrganisationInformation.Persistence;
 using Microsoft.AspNetCore.Mvc.Localization;
 using static CO.CDP.OrganisationInformation.Persistence.ConnectedEntity;
@@ -121,7 +120,7 @@ public class DataService(IShareCodeRepository shareCodeRepository, IConnectedEnt
 
         var registeredAddress = supplierInfo.CompletedRegAddress
             ? organisation.Addresses
-                .Where(a => a.Type == AddressType.Registered)
+                .Where(a => a.Type == OrganisationInformation.AddressType.Registered)
                 .Select(a => new Address
                 {
                     StreetAddress = a.Address.StreetAddress,
@@ -129,14 +128,14 @@ public class DataService(IShareCodeRepository shareCodeRepository, IConnectedEnt
                     PostalCode = a.Address.PostalCode,
                     CountryName = a.Address.CountryName,
                     Country = a.Address.Country,
-                    Type = AddressType.Registered
+                    Type = OrganisationInformation.AddressType.Registered
                 })
                 .FirstOrDefault()
             : null;
 
         var postalAddress = supplierInfo.CompletedPostalAddress
             ? organisation.Addresses
-                .Where(a => a.Type == AddressType.Postal)
+                .Where(a => a.Type == OrganisationInformation.AddressType.Postal)
                 .Select(a => new Address
                 {
                     StreetAddress = a.Address.StreetAddress,
@@ -144,7 +143,7 @@ public class DataService(IShareCodeRepository shareCodeRepository, IConnectedEnt
                     PostalCode = a.Address.PostalCode,
                     CountryName = a.Address.CountryName,
                     Country = a.Address.Country,
-                    Type = AddressType.Postal
+                    Type = OrganisationInformation.AddressType.Postal
                 })
                 .FirstOrDefault()
             : null;
@@ -179,7 +178,7 @@ public class DataService(IShareCodeRepository shareCodeRepository, IConnectedEnt
             VatNumber = vatNumber,
             WebsiteAddress = websiteAddress,
             EmailAddress = emailAddress,
-            Role = organisation.Roles.Contains(PartyRole.Tenderer) ? "Supplier" : "Buyer",
+            Role = organisation.Roles.Contains(OrganisationInformation.PartyRole.Tenderer) ? "Supplier" : "Buyer",
             LegalForm = legalForm,
             OrganisationName = organisation.Name
         };

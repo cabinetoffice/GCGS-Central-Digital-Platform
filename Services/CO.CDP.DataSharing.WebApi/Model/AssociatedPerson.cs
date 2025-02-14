@@ -15,4 +15,27 @@ public record AssociatedPerson
     /// <example>"https://cdp.cabinetoffice.gov.uk/persons/c16f9f7b-3f10-42db-86f8-93607b034a4c"</example>
     public Uri? Uri { get; init; }
     [Required] public required List<PartyRole> Roles { get; init; }
+
+    public required AssociatedPersonDetails Details { get; set; }
+}
+
+public record AssociatedPersonDetails
+{
+    public required string FirstName { get; set; }
+    public required string LastName { get; set; }
+    public DateTimeOffset? DateOfBirth { get; set; }
+    public string? Nationality { get; set; }
+    public string? ResidentCountry { get; set; }
+    public IEnumerable<ControlCondition> ControlCondition { get; set; } = [];
+    public ConnectedPersonType ConnectedType { get; set; }
+
+
+    public IEnumerable<Address> Addresses { get; set; } = [];
+    public DateTimeOffset? RegisteredDate { get; set; }
+    public string? RegistrationAuthority { get; set; }
+    public bool HasCompnayHouseNumber { get; set; }
+    public string? CompanyHouseNumber { get; set; }
+    public string? OverseasCompanyNumber { get; set; }
+    public DateTimeOffset? StartDate { get; set; }
+    public DateTimeOffset? EndDate { get; set; }
 }

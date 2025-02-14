@@ -178,7 +178,7 @@ public static class DataSharingFactory
                 "Doe",
                 "British",
                 DateTimeOffset.Now.AddYears(-30),
-                ConnectedPersonType.Individual,
+                ConnectedEntity.ConnectedPersonType.Individual,
                 ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForIndiv,
                 "UK",
                 new List<ConnectedAddress>
@@ -197,7 +197,7 @@ public static class DataSharingFactory
                 null,
                 null,
                 ConnectedEntity.ConnectedEntityType.Individual,
-                ConnectedOrganisationCategory.RegisteredCompany
+                ConnectedEntity.ConnectedOrganisationCategory.RegisteredCompany
             )
         ];
     }

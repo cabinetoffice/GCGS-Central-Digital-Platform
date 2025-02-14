@@ -202,6 +202,7 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
     {
         var result = context.ConnectedEntities
             .Include(x => x.IndividualOrTrust)
+            .Include(x => x.Addresses).ThenInclude(x => x.Address)
             .Where(x => x.IndividualOrTrust != null && x.EntityType == ConnectedEntity.ConnectedEntityType.Individual)
             .Where(x => x.EndDate == null || x.EndDate > DateTime.Today)
             .Where(x => x.SupplierOrganisation != null && x.SupplierOrganisation.Id == organisationId);
@@ -213,6 +214,7 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
     {
         var result = context.ConnectedEntities
             .Include(x => x.Organisation)
+            .Include(x => x.Addresses).ThenInclude(x => x.Address)
             .Where(x => x.Organisation != null && x.EntityType == ConnectedEntity.ConnectedEntityType.Organisation)
             .Where(x => x.EndDate == null || x.EndDate > DateTime.Today)
             .Where(x => x.SupplierOrganisation != null && x.SupplierOrganisation.Id == organisationId);
@@ -224,6 +226,7 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
     {
         var result = context.ConnectedEntities
             .Include(x => x.IndividualOrTrust)
+            .Include(x => x.Addresses).ThenInclude(x => x.Address)
             .Where(x => x.IndividualOrTrust != null && x.EntityType == ConnectedEntity.ConnectedEntityType.TrustOrTrustee)
             .Where(x => x.EndDate == null || x.EndDate > DateTime.Today)
             .Where(x => x.SupplierOrganisation != null && x.SupplierOrganisation.Id == organisationId);

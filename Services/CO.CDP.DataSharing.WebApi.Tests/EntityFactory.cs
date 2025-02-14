@@ -2,6 +2,7 @@ using CO.CDP.DataSharing.WebApi.Model;
 using CO.CDP.OrganisationInformation;
 using CO.CDP.OrganisationInformation.Persistence;
 using CO.CDP.OrganisationInformation.Persistence.Forms;
+using FluentAssertions.Common;
 using static CO.CDP.OrganisationInformation.Persistence.ConnectedEntity;
 using static CO.CDP.OrganisationInformation.Persistence.Organisation;
 using ConnectedEntityType = CO.CDP.OrganisationInformation.Persistence.ConnectedEntity.ConnectedEntityType;
@@ -74,7 +75,7 @@ internal static class EntityFactory
                             Name = "Name",
                             Options = null!,
                             Type = PersistenceForms.FormQuestionType.Text
-                        }
+                        },
                     },
                     AllowsMultipleAnswerSets = false,
                     CheckFurtherQuestionsExempted = false,
@@ -127,7 +128,7 @@ internal static class EntityFactory
             {
                 new ConnectedEntity
                 {
-                    Guid = Guid.NewGuid(),
+                    Guid = new Guid("8f127354-9777-44d3-93dd-a7437e0cc552"),
                     EntityType = ConnectedEntityType.Individual,
                     IndividualOrTrust = new ConnectedEntity.ConnectedIndividualTrust
                     {
@@ -135,12 +136,38 @@ internal static class EntityFactory
                         FirstName = "John",
                         LastName = "Doe",
                         Category = ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForIndiv,
+                        ConnectedType = ConnectedEntity.ConnectedPersonType.Individual,
+                        ControlCondition  = [
+                            ConnectedEntity.ControlCondition.HasOtherSignificantInfluenceOrControl,
+                            ConnectedEntity.ControlCondition.HasVotingRights
+                            ],
+                        DateOfBirth = DateTime.Today.AddYears(30),
+                        Nationality = "British",
+                        ResidentCountry = "United Kingdom",
                         CreatedOn = DateTimeOffset.UtcNow,
                         UpdatedOn = DateTimeOffset.UtcNow
                     },
                     SupplierOrganisation = GivenOrganisation(),
                     CreatedOn = DateTimeOffset.UtcNow,
-                    UpdatedOn = DateTimeOffset.UtcNow
+                    UpdatedOn = DateTimeOffset.UtcNow,
+                    HasCompnayHouseNumber = true,
+                    CompanyHouseNumber = "TestOrg123",
+                    OverseasCompanyNumber = "Oversears123",
+                    RegisteredDate = DateTime.Today.ToDateTimeOffset(),
+                    RegisterName = "Approved By Trade Association",
+                    StartDate = DateTime.Today.AddDays(30).ToDateTimeOffset(),
+                    EndDate = DateTime.Today.AddDays(5).ToDateTimeOffset(),
+                    Addresses = [ new ConnectedEntityAddress {
+                        Type = AddressType.Registered,
+                        Address = new OrganisationInformation.Persistence.Address{
+                            StreetAddress = "1234 Default St",
+                            Locality = "Default City",
+                            Region = "Default Region",
+                            PostalCode = "EX1 1EX",
+                            CountryName = "Example Country",
+                            Country = "EX"
+                        }
+                    }]
                 }
             };
 
@@ -153,19 +180,45 @@ internal static class EntityFactory
             {
                 new ConnectedEntity
                 {
-                    Guid = Guid.NewGuid(),
+                    Guid = new Guid("57b1895f-11bb-4cd4-ae38-82f38a70237b"),
                     EntityType = ConnectedEntityType.Organisation,
                     Organisation = new ConnectedEntity.ConnectedOrganisation
                     {
                         Id = 1,
                         Name = "Acme Group Ltd",
                         Category = ConnectedOrganisationCategory.RegisteredCompany,
+                        ControlCondition  = [
+                            ConnectedEntity.ControlCondition.CanAppointOrRemoveDirectors,
+                            ConnectedEntity.ControlCondition.HasVotingRights,
+                            ConnectedEntity.ControlCondition.OwnsShares,
+                            ],
+                        InsolvencyDate = DateTime.Today,
+                        LawRegistered = "Trade Law 2024",
+                        RegisteredLegalForm = "Trade Association",
                         CreatedOn = DateTimeOffset.UtcNow,
                         UpdatedOn = DateTimeOffset.UtcNow
                     },
                     SupplierOrganisation = GivenOrganisation(),
                     CreatedOn = DateTimeOffset.UtcNow,
-                    UpdatedOn = DateTimeOffset.UtcNow
+                    UpdatedOn = DateTimeOffset.UtcNow,
+                    HasCompnayHouseNumber = true,
+                    CompanyHouseNumber = "TestOrg456",
+                    OverseasCompanyNumber = "Oversears456",
+                    RegisteredDate = DateTime.Today.ToDateTimeOffset(),
+                    RegisterName = "Gov Authority of UK",
+                    StartDate = DateTime.Today.AddMonths(10).ToDateTimeOffset(),
+                    EndDate = DateTime.Today.AddMonths(5).ToDateTimeOffset(),
+                    Addresses = [ new ConnectedEntityAddress {
+                        Type = AddressType.Postal,
+                        Address = new OrganisationInformation.Persistence.Address{
+                            StreetAddress = "1234 New St",
+                            Locality = "New City",
+                            Region = "New Region",
+                            PostalCode = "SF1 1EX",
+                            CountryName = "New Country",
+                            Country = "NW"
+                        }
+                    }]
                 }
             };
 
@@ -178,7 +231,7 @@ internal static class EntityFactory
             {
                 new ConnectedEntity
                 {
-                    Guid = Guid.NewGuid(),
+                    Guid = new Guid("d3d35f4b-953a-4620-8771-fd245d55dd92"),
                     EntityType = ConnectedEntityType.TrustOrTrustee,
                     IndividualOrTrust = new ConnectedEntity.ConnectedIndividualTrust
                     {
@@ -186,6 +239,7 @@ internal static class EntityFactory
                         FirstName = "John",
                         LastName = "Smith",
                         Category = ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForTrust,
+                        ConnectedType = ConnectedEntity.ConnectedPersonType.TrustOrTrustee,
                         CreatedOn = DateTimeOffset.UtcNow,
                         UpdatedOn = DateTimeOffset.UtcNow
                     },

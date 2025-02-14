@@ -2,6 +2,8 @@ using AutoMapper;
 using CO.CDP.DataSharing.WebApi.Model;
 using CO.CDP.OrganisationInformation;
 using CO.CDP.OrganisationInformation.Persistence;
+using static CO.CDP.OrganisationInformation.Persistence.ConnectedEntity;
+using Address = CO.CDP.OrganisationInformation.Address;
 using FormQuestionType = CO.CDP.OrganisationInformation.Persistence.Forms.FormQuestionType;
 using SharedConsent = CO.CDP.OrganisationInformation.Persistence.Forms.SharedConsent;
 
@@ -127,7 +129,25 @@ public class GetSharedDataUseCase(
             Name = string.Format($"{x.IndividualOrTrust?.FirstName} {x.IndividualOrTrust?.LastName}"),
             Relationship = x.IndividualOrTrust?.Category.ToString() ?? string.Empty,
             Uri = null,
-            Roles = x.SupplierOrganisation.Roles
+            Roles = x.SupplierOrganisation.Roles,
+            Details = new AssociatedPersonDetails
+            {
+                FirstName = x.IndividualOrTrust?.FirstName ?? string.Empty,
+                LastName = x.IndividualOrTrust?.LastName ?? string.Empty,
+                DateOfBirth = x.IndividualOrTrust?.DateOfBirth,
+                Nationality = x.IndividualOrTrust?.Nationality,
+                ResidentCountry = x.IndividualOrTrust?.ResidentCountry,
+                ControlCondition = mapper.Map<IEnumerable<OrganisationInformation.ControlCondition>>(x.IndividualOrTrust?.ControlCondition),
+                ConnectedType = mapper.Map<OrganisationInformation.ConnectedPersonType>(x.IndividualOrTrust?.ConnectedType),
+                Addresses = ToAddress(x.Addresses),
+                RegisteredDate = x.RegisteredDate,
+                RegistrationAuthority = x.RegisterName,
+                HasCompnayHouseNumber = x.HasCompnayHouseNumber,
+                CompanyHouseNumber = x.CompanyHouseNumber,
+                OverseasCompanyNumber = x.OverseasCompanyNumber,
+                StartDate = x.StartDate,
+                EndDate = x.EndDate
+            }
         }).ToList();
     }
 
@@ -140,7 +160,35 @@ public class GetSharedDataUseCase(
             Id = x.Guid,
             Name = x.Organisation?.Name ?? string.Empty,
             Roles = [],
-            Uri = null
+            Uri = null,
+            Details = new OrganisationReferenceDetails
+            {
+                Category = mapper.Map<OrganisationInformation.ConnectedOrganisationCategory>(x.Organisation?.Category),
+                InsolvencyDate = x.Organisation?.InsolvencyDate,
+                RegisteredLegalForm = x.Organisation?.RegisteredLegalForm,
+                LawRegistered = x.Organisation?.LawRegistered,
+                ControlCondition = mapper.Map<IEnumerable<OrganisationInformation.ControlCondition>>(x.Organisation?.ControlCondition),
+                Addresses = ToAddress(x.Addresses),
+                RegisteredDate = x.RegisteredDate,
+                RegistrationAuthority = x.RegisterName,
+                HasCompnayHouseNumber = x.HasCompnayHouseNumber,
+                CompanyHouseNumber = x.CompanyHouseNumber,
+                OverseasCompanyNumber = x.OverseasCompanyNumber,
+                StartDate = x.StartDate,
+                EndDate = x.EndDate
+            }
         }).ToList();
     }
+
+    private static IEnumerable<Address> ToAddress(ICollection<ConnectedEntityAddress> addresses)
+        => addresses.Select(a => new Address
+        {
+            StreetAddress = a.Address.StreetAddress,
+            Locality = a.Address.Locality,
+            Region = a.Address.Region,
+            CountryName = a.Address.CountryName,
+            Country = a.Address.Country,
+            PostalCode = a.Address.PostalCode,
+            Type = a.Type
+        });
 }
