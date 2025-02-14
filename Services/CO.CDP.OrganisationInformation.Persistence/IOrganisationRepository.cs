@@ -61,5 +61,6 @@ public interface IOrganisationRepository : IDisposable
     public Task<Mou?> GetLatestMou();
 
     public Task<Mou?> GetMou(Guid mouId);
+
     Task<IEnumerable<Organisation>> SearchByName(string name, PartyRole? role, int? limit, double threshold);
 }
