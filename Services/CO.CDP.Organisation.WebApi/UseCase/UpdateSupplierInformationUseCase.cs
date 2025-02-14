@@ -29,7 +29,7 @@ public class UpdateSupplierInformationUseCase(IOrganisationRepository organisati
                     throw new InvalidUpdateSupplierInformationCommand("Missing supplier type.");
                 }
                 organisation.SupplierInfo.SupplierType = updateObject.SupplierType;
-                if (organisation.SupplierInfo.SupplierType == SupplierType.Individual)
+                if (updateObject.SupplierType == SupplierType.Individual)
                 {
                     organisation.SupplierInfo.OperationTypes = [];
                     organisation.SupplierInfo.LegalForm = null;
