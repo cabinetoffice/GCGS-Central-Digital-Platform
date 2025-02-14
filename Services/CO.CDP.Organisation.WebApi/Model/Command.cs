@@ -439,6 +439,42 @@ public record OrganisationSearchQuery
     }
 }
 
+public record OrganisationsByOrganisationEmailQuery
+{
+    public string Email { get; }
+    public PartyRole? Role { get; }
+    public int? Limit { get; }
+    public OrganisationsByOrganisationEmailQuery(string email, int? limit, string? role = null)
+    {
+        Email = email;
+
+        if (role != null)
+        {
+            Role = (PartyRole)Enum.Parse(typeof(PartyRole), role, true);
+        }
+
+        Limit = limit;
+    }
+}
+
+public record OrganisationsByAdminEmailQuery
+{
+    public string Email { get; }
+    public PartyRole? Role { get; }
+    public int? Limit { get; }
+    public OrganisationsByAdminEmailQuery(string email, int? limit, string? role = null)
+    {
+        Email = email;
+
+        if (role != null)
+        {
+            Role = (PartyRole)Enum.Parse(typeof(PartyRole), role, true);
+        }
+
+        Limit = limit;
+    }
+}
+
 public record RegisterAuthenticationKey
 {
     public required string Name { get; set; }
