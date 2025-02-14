@@ -304,28 +304,58 @@ public static class EndpointExtensions
 
         app.MapGet("/search",
             [OrganisationAuthorize([AuthenticationChannel.OneLogin, AuthenticationChannel.ServiceKey])]
-        async ([FromQuery] string name, [FromQuery] string? role, [FromQuery] int limit, [FromServices] IUseCase<OrganisationSearchQuery, IEnumerable<Model.OrganisationSearchResult>> useCase) =>
-                 await useCase.Execute(new OrganisationSearchQuery(name, limit, role))
-                    .AndThen(results => results.Count() != 0 ? Results.Ok(results) : Results.NotFound()))
-         .Produces<IEnumerable<Model.OrganisationSearchResult>>(StatusCodes.Status200OK, "application/json")
-         .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
-         .Produces<ProblemDetails>(StatusCodes.Status404NotFound)
-         .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError)
-         .Produces<ProblemDetails>(StatusCodes.Status400BadRequest)
-         .WithOpenApi(operation =>
-         {
-             operation.OperationId = "SearchOrganisation";
-             operation.Description = "Find organisations by partial matches on name.";
-             operation.Summary = "Find organisations by partial matches on name.";
-             operation.Tags = new List<OpenApiTag> { new() { Name = "Organisation - Lookup" } };
-             operation.Responses["200"].Description = "Matching organisations.";
-             operation.Responses["400"].Description = "Bad request.";
-             operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
-             operation.Responses["404"].Description = "No organisations found.";
-             operation.Responses["500"].Description = "Internal server error.";
+            async ([FromQuery] string name, [FromQuery] string? role, [FromQuery] int limit, [FromServices] IUseCase<OrganisationSearchQuery, IEnumerable<Model.OrganisationSearchResult>> useCase, [FromQuery] double? threshold = 0.3) =>
+            {
+                if (threshold is < 0 or > 1)
+                {
+                    return Results.BadRequest(new ProblemDetails
+                    {
+                        Title = "Invalid threshold value",
+                        Detail = "Threshold must be between 0 and 1.",
+                        Status = StatusCodes.Status400BadRequest
+                    });
+                }
 
-             return operation;
-         });
+                return await useCase.Execute(new OrganisationSearchQuery(name, limit, threshold, role))
+                    .AndThen(results => results.Count() != 0 ? Results.Ok(results) : Results.NotFound());
+            })
+            .Produces<IEnumerable<Model.OrganisationSearchResult>>(StatusCodes.Status200OK, "application/json")
+            .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
+            .Produces<ProblemDetails>(StatusCodes.Status404NotFound)
+            .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError)
+            .Produces<ProblemDetails>(StatusCodes.Status400BadRequest)
+            .WithOpenApi(operation =>
+            {
+                operation.OperationId = "SearchOrganisation";
+                operation.Description = "Find organisations by partial matches on name.";
+                operation.Summary = "Find organisations by partial matches on name.";
+                operation.Tags = new List<OpenApiTag> { new() { Name = "Organisation - Lookup" } };
+                operation.Responses["200"].Description = "Matching organisations.";
+                operation.Responses["400"].Description = "Bad request.";
+                operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
+                operation.Responses["404"].Description = "No organisations found.";
+                operation.Responses["500"].Description = "Internal server error.";
+
+                foreach (var parameter in operation.Parameters)
+                {
+                    if (parameter.Name == "threshold")
+                    {
+                        parameter.Description = "The word similarity threshold value for fuzzy searching - Value can be from 0 to 1";
+                    }
+
+                    if (parameter.Name == "role")
+                    {
+                        parameter.Description = "Restrict results by role - tenderer or buyer";
+                    }
+
+                    if (parameter.Name == "limit")
+                    {
+                        parameter.Description = "Number of results to return";
+                    }
+                }
+
+                return operation;
+            });
 
         return app;
     }

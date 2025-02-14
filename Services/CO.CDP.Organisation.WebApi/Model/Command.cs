@@ -426,7 +426,8 @@ public record OrganisationSearchQuery
     public string Name { get; }
     public PartyRole? Role { get; }
     public int? Limit { get; }
-    public OrganisationSearchQuery(string name, int? limit, string? role = null)
+    public double Threshold { get; }
+    public OrganisationSearchQuery(string name, int? limit, double? threshold, string? role = null)
     {
         Name = name;
 
@@ -436,6 +437,11 @@ public record OrganisationSearchQuery
         }
 
         Limit = limit;
+
+        if (threshold.HasValue)
+        {
+            Threshold = threshold.Value;
+        }
     }
 }
 

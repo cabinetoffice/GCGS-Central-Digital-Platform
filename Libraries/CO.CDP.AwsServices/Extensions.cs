@@ -1,4 +1,3 @@
-using Amazon;
 using Amazon.Extensions.NETCore.Setup;
 using Amazon.Runtime;
 using Amazon.S3;
@@ -75,6 +74,46 @@ public static class Extensions
             .AddAWSService<IAmazonSQS>();
     }
 
+    public static IServiceCollection AddOutboxSqsPublisher<TDbContext>(this IServiceCollection services, IConfiguration configuration)
+        where TDbContext : DbContext, IOutboxMessageDbContext
+    {
+        var context = configuration.GetValue<string>("DbContext");
+        if (context == "OrganisationInformationContext")
+        {
+            services.AddDbContext<TDbContext>((sp, o) => o.UseNpgsql(sp.GetRequiredService<NpgsqlDataSource>()));
+            services.AddScoped<IOutboxMessageRepository, DatabaseOutboxMessageRepository<TDbContext>>();
+        }
+        else
+        {
+            services.AddDbContext<TDbContext>((sp, o) => o.UseNpgsql(sp.GetRequiredService<NpgsqlDataSource>()));
+            services.AddScoped<IOutboxMessageRepository, DatabaseOutboxMessageRepository<TDbContext>>();
+        }
+
+        services.AddSingleton<OutboxProcessorBackgroundService.OutboxProcessorConfiguration>(s =>
+                 s.GetRequiredService<IOptions<AwsConfiguration>>().Value.SqsPublisher?.Outbox ??
+                 new OutboxProcessorBackgroundService.OutboxProcessorConfiguration()
+             );
+        services.AddKeyedScoped<IPublisher, SqsPublisher>("SqsPublisher");
+        services.AddScoped<IOutboxProcessor>(s =>
+        {
+            return new OutboxProcessor(
+                s.GetRequiredKeyedService<IPublisher>("SqsPublisher"),
+                s.GetRequiredService<IOutboxMessageRepository>(),
+                s.GetRequiredService<ILogger<OutboxProcessor>>()
+            );
+        });
+
+        services.AddScoped<IOutboxProcessorListener>(s => new OutboxProcessorListener(
+            s.GetRequiredService<NpgsqlDataSource>(),
+            s.GetRequiredService<IOutboxProcessor>(),
+            s.GetRequiredService<ILogger<OutboxProcessorListener>>(),
+            channel: configuration["channel"]!
+        ));
+        services.AddHostedService<OutboxProcessorListenerBackgroundService>();
+
+        return services;
+    }
+
     public static IServiceCollection AddOutboxSqsPublisher<TDbContext>(
         this IServiceCollection services,
         ConfigurationManager configuration,
@@ -111,30 +150,18 @@ public static class Extensions
             };
         });
 
-        services.AddScoped<IOutboxProcessor>(s =>
+        if (!configuration.GetValue("Features:OutboxProcessorBackgroundService", false))
         {
-            return new OutboxProcessor(
-                s.GetRequiredKeyedService<IPublisher>("SqsPublisher"),
-                s.GetRequiredService<IOutboxMessageRepository>(),
-                s.GetRequiredService<ILogger<OutboxProcessor>>()
-            );
-        });
-
-        if (configuration.GetValue("Features:OutboxListener", false))
-        {
-            services.AddScoped<IOutboxProcessorListener>(s => new OutboxProcessorListener(
-                s.GetRequiredService<NpgsqlDataSource>(),
-                s.GetRequiredService<IOutboxProcessor>(),
-                s.GetRequiredService<ILogger<OutboxProcessorListener>>(),
-                channel: notificationChannel
-            ));
-            if (enableBackgroundServices)
+            services.AddKeyedScoped<IPublisher, SqsPublisher>("SqsPublisher");
+            services.AddScoped<IOutboxProcessor>(s =>
             {
-                services.AddHostedService<OutboxProcessorListenerBackgroundService>();
-            }
-        }
-        else
-        {
+                return new OutboxProcessor(
+                    s.GetRequiredKeyedService<IPublisher>("SqsPublisher"),
+                    s.GetRequiredService<IOutboxMessageRepository>(),
+                    s.GetRequiredService<ILogger<OutboxProcessor>>()
+                );
+            });
+
             if (enableBackgroundServices)
             {
                 services.AddHostedService<OutboxProcessorBackgroundService>();

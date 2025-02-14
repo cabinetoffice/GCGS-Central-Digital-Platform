@@ -1,0 +1,21 @@
+@page "/logged-out-page"
+@model LoggedOutModel
+
+@using CO.CDP.Localization
+@using Microsoft.AspNetCore.Mvc.Localization
+
+@{
+    ViewData["Title"] = StaticTextResource.Supplementary_LoggedOut_Title;
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-xl">@StaticTextResource.Supplementary_LoggedOut_Title</h1>
+        <p class="govuk-body">
+            @StaticTextResource.Supplementary_LoggedOut_Paragraph1
+        </p>
+        <form method="post">
+            <govuk-button>@StaticTextResource.Global_Signin</govuk-button>
+        </form>
+    </div>
+</div>

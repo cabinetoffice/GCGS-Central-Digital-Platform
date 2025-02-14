@@ -1,9 +1,3 @@
-variable "add_security_group_roles" {
-  default     = true
-  description = "Whether attache SG rules to enable communication between the LB and ECS service. "
-  type        = bool
-}
-
 variable "allowed_unauthenticated_paths" {
   description = "List of paths allowed access to protected services, bypassing Cognito authentication."
   type        = list(string)
@@ -86,6 +80,18 @@ variable "is_frontend_app" {
   description = "Whether it is an API or the Frontend service, to link the domain alias to"
   type        = bool
   default     = false
+}
+
+variable "is_standalone_task" {
+  description = "Whether it require a service or its standalone Task"
+  type        = bool
+  default     = false
+}
+
+variable "listener_name" {
+  description = "Optional custom listener name if the service name exceeds the 32-character limit. The name will be prefixed with 'cdp-'."
+  type        = string
+  default     = null
 }
 
 variable "memory" {
