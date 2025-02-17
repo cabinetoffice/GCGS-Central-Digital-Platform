@@ -18,6 +18,10 @@ output "ecs_listener_arn" {
   value = aws_lb_listener.ecs.arn
 }
 
+output "service_configuration" {
+  value = local.service_configs
+}
+
 output "service_version_global" {
   value = nonsensitive(local.orchestrator_service_version)
 }
