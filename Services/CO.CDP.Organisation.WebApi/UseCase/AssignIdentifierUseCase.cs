@@ -1,10 +1,12 @@
+using CO.CDP.AwsServices.Sqs;
 using CO.CDP.Functional;
 using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.OrganisationInformation.Persistence;
 
 namespace CO.CDP.Organisation.WebApi.UseCase;
 
-public class AssignIdentifierUseCase(IOrganisationRepository organisations, IIdentifierService identifierService)
+public class AssignIdentifierUseCase(IOrganisationRepository organisations, IIdentifierService identifierService,
+    ILogger<AssignIdentifierUseCase> logger)
     : IUseCase<AssignOrganisationIdentifier, bool>
 {
     public class IdentifierSchemes
@@ -34,13 +36,27 @@ public class AssignIdentifierUseCase(IOrganisationRepository organisations, IIde
 
     public async Task<bool> Execute(AssignOrganisationIdentifier command)
     {
-        await FindOrganisation(command)
-            .AndThen(o => AssignIdentifier(command, o))
-            .AndThen(o =>
-            {
-                organisations.Save(o);
-                return o;
-            });
+        logger.LogInformation("Assigning identifier for OrganisationId: {OrganisationId} IdentifierId: {IdentifierId}",
+            command.OrganisationId,
+            command.Identifier.Id);
+
+        try
+        {
+            await FindOrganisation(command)
+                .AndThen(o => AssignIdentifier(command, o))
+                .AndThen(o =>
+                {
+                    organisations.Save(o);
+                    return o;
+                });
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Failed to assign identifier for OrganisationId: {OrganisationId} IdentifierId: {IdentifierId}",
+                command.OrganisationId,
+                command.Identifier.Id);
+            throw;
+        }
 
         return true;
     }
