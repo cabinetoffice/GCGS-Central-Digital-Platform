@@ -72,7 +72,7 @@ locals {
       fts_azure_frontdoor               = null
       fts_service_allowed_origins       = []
       name                              = "staging"
-      onelogin_logout_notification_urls = ["https://sirsi-integration-findtender.nqc.com/auth/backchannellogout"]
+      onelogin_logout_notification_urls = ["https://www-staging.find-tender.service.gov.uk/auth/backchannellogout"]
       pinned_service_version            = "1.0.37-32ac3b8b"
       postgres_instance_type            = "db.t4g.micro"
       private_subnets = [
