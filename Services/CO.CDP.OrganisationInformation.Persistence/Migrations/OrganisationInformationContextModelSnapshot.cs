@@ -50,9 +50,18 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                         .HasColumnType("text")
                         .HasColumnName("message");
 
+                    b.Property<string>("MessageGroupId")
+                        .HasColumnType("text")
+                        .HasColumnName("message_group_id");
+
                     b.Property<bool>("Published")
                         .HasColumnType("boolean")
                         .HasColumnName("published");
+
+                    b.Property<string>("QueueUrl")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("queue_url");
 
                     b.Property<string>("Type")
                         .IsRequired()
@@ -688,6 +697,48 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                         .HasDatabaseName("ix_shared_consents_organisation_id");
 
                     b.ToTable("shared_consents", (string)null);
+                });
+
+            modelBuilder.Entity("CO.CDP.OrganisationInformation.Persistence.Forms.SharedConsentConsortium", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ChildSharedConsentId")
+                        .HasColumnType("integer")
+                        .HasColumnName("child_shared_consent_id");
+
+                    b.Property<DateTimeOffset>("CreatedOn")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_on")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                    b.Property<int>("ParentSharedConsentId")
+                        .HasColumnType("integer")
+                        .HasColumnName("parent_shared_consent_id");
+
+                    b.Property<DateTimeOffset>("UpdatedOn")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_on")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                    b.HasKey("Id")
+                        .HasName("pk_shared_consent_consortiums");
+
+                    b.HasIndex("ChildSharedConsentId")
+                        .HasDatabaseName("ix_shared_consent_consortiums_child_shared_consent_id");
+
+                    b.HasIndex("ParentSharedConsentId", "ChildSharedConsentId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_shared_consent_consortiums_parent_shared_consent_id_child_s");
+
+                    b.ToTable("shared_consent_consortiums", (string)null);
                 });
 
             modelBuilder.Entity("CO.CDP.OrganisationInformation.Persistence.Mou", b =>
@@ -1579,6 +1630,27 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                     b.Navigation("Form");
 
                     b.Navigation("Organisation");
+                });
+
+            modelBuilder.Entity("CO.CDP.OrganisationInformation.Persistence.Forms.SharedConsentConsortium", b =>
+                {
+                    b.HasOne("CO.CDP.OrganisationInformation.Persistence.Forms.SharedConsent", "ChildSharedConsent")
+                        .WithMany()
+                        .HasForeignKey("ChildSharedConsentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_shared_consent_consortiums_shared_consents_child_shared_con");
+
+                    b.HasOne("CO.CDP.OrganisationInformation.Persistence.Forms.SharedConsent", "ParentSharedConsent")
+                        .WithMany()
+                        .HasForeignKey("ParentSharedConsentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_shared_consent_consortiums_shared_consents_parent_shared_co");
+
+                    b.Navigation("ChildSharedConsent");
+
+                    b.Navigation("ParentSharedConsent");
                 });
 
             modelBuilder.Entity("CO.CDP.OrganisationInformation.Persistence.MouSignature", b =>

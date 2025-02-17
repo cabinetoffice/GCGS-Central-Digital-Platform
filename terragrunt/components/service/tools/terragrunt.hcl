@@ -23,22 +23,28 @@ locals {
 dependency core_iam {
   config_path = "../../core/iam"
   mock_outputs = {
-    ecs_task_arn       = "mock"
-    ecs_task_exec_arn  = "mock"
-    ecs_task_exec_name = "mock"
-    ecs_task_name      = "mock"
-    rds_cloudwatch_arn = "mock"
-    terraform_arn      = "mock"
+    cloudwatch_events_arn               = "mock"
+    cloudwatch_events_name              = "mock"
+    ecs_task_arn                        = "mock"
+    ecs_task_exec_arn                   = "mock"
+    ecs_task_exec_name                  = "mock"
+    ecs_task_name                       = "mock"
+    rds_cloudwatch_arn                  = "mock"
+    service_deployer_step_function_arn  = "mock"
+    service_deployer_step_function_name = "mock"
+    terraform_arn                       = "mock"
   }
 }
 
 dependency core_networking {
   config_path = "../../core/networking"
   mock_outputs = {
-    private_subnet_ids    = "mock"
-    public_domain         = "mock"
-    public_hosted_zone_id = "mock"
-    vpc_id                = "mock"
+    private_subnet_ids                     = "mock"
+    production_private_beta_domain         = "mock" # @todo (ABN) DP-1069 Remove once domain is propagated
+    production_private_beta_hosted_zone_id = "mock" # @todo (ABN) DP-1069 Remove once domain is propagated
+    public_domain                          = "mock"
+    public_hosted_zone_id                  = "mock"
+    vpc_id                                 = "mock"
   }
 }
 
@@ -74,9 +80,9 @@ dependency service_cache {
 dependency service_ecs {
   config_path = "../../service/ecs"
   mock_outputs = {
-    ecs_cluster_id  = "mock"
-    ecs_cluster_id  = "mock"
-    ecs_lb_dns_name = "mock"
+    ecs_cluster_id   = "mock"
+    ecs_cluster_name = "mock"
+    ecs_lb_dns_name  = "mock"
   }
 }
 
@@ -115,16 +121,20 @@ inputs = {
   tools_configs      = local.global_vars.locals.tools_configs
   tags               = local.tags
 
-  role_ecs_task_arn       = dependency.core_iam.outputs.ecs_task_arn
-  role_ecs_task_name      = dependency.core_iam.outputs.ecs_task_name
-  role_ecs_task_exec_arn  = dependency.core_iam.outputs.ecs_task_exec_arn
-  role_ecs_task_exec_name = dependency.core_iam.outputs.ecs_task_exec_name
-  role_rds_cloudwatch_arn = dependency.core_iam.outputs.rds_cloudwatch_arn
-  role_terraform_arn      = dependency.core_iam.outputs.terraform_arn
+  role_cloudwatch_events_arn               = dependency.core_iam.outputs.cloudwatch_events_arn
+  role_cloudwatch_events_name              = dependency.core_iam.outputs.cloudwatch_events_name
+  role_ecs_task_arn                        = dependency.core_iam.outputs.ecs_task_arn
+  role_ecs_task_exec_arn                   = dependency.core_iam.outputs.ecs_task_exec_arn
+  role_ecs_task_exec_name                  = dependency.core_iam.outputs.ecs_task_exec_name
+  role_ecs_task_name                       = dependency.core_iam.outputs.ecs_task_name
+  role_rds_cloudwatch_arn                  = dependency.core_iam.outputs.rds_cloudwatch_arn
+  role_service_deployer_step_function_arn  = dependency.core_iam.outputs.service_deployer_step_function_arn
+  role_service_deployer_step_function_name = dependency.core_iam.outputs.service_deployer_step_function_name
+  role_terraform_arn                       = dependency.core_iam.outputs.terraform_arn
 
   private_subnet_ids    = dependency.core_networking.outputs.private_subnet_ids
-  public_domain         = dependency.core_networking.outputs.public_domain
-  public_hosted_zone_id = dependency.core_networking.outputs.public_hosted_zone_id
+  public_domain         = local.global_vars.locals.is_production ? dependency.core_networking.outputs.production_private_beta_domain : dependency.core_networking.outputs.public_domain                 # @todo (ABN) DP-1069 Remove condition once domain is propagated
+  public_hosted_zone_id = local.global_vars.locals.is_production ? dependency.core_networking.outputs.production_private_beta_hosted_zone_id : dependency.core_networking.outputs.public_hosted_zone_id # @todo (ABN) DP-1069 Remove condition once domain is propagated
   vpc_id                = dependency.core_networking.outputs.vpc_id
 
   db_postgres_sg_id = dependency.core_security_groups.outputs.db_postgres_sg_id
@@ -139,6 +149,7 @@ inputs = {
   user_pool_domain_pgadmin        = dependency.service_auth.outputs.user_pool_domain
 
   ecs_cluster_id   = dependency.service_ecs.outputs.ecs_cluster_id
+  ecs_cluster_name = dependency.service_ecs.outputs.ecs_cluster_name
   ecs_lb_dns_name  = dependency.service_ecs.outputs.ecs_lb_dns_name
   ecs_listener_arn = dependency.service_ecs.outputs.ecs_listener_arn
 

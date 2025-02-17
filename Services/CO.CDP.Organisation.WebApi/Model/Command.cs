@@ -334,9 +334,50 @@ public record SupportOrganisationInfo
 
 public record PaginatedOrganisationQuery
 {
-    public string? Type { get; init; }
-    public int? Limit { get; init; }
-    public int? Skip { get; init; }
+    public PartyRole? Role { get; }
+    public PartyRole? PendingRole { get; }
+    public int Limit { get; }
+    public int Skip { get; }
+    public string? SearchText { get; }
+
+    public PaginatedOrganisationQuery(int limit, int skip, string? role = null, string? pendingRole = null, string? searchText = null)
+    {
+        Limit = limit;
+        Skip = skip;
+        SearchText = searchText;
+
+        if (role != null)
+        {
+            Role = (PartyRole)Enum.Parse(typeof(PartyRole), role, true);
+        }
+
+        if (pendingRole != null)
+        {
+            PendingRole = (PartyRole)Enum.Parse(typeof(PartyRole), pendingRole, true);
+        }
+    }
+}
+
+public record OrganisationTypeQuery
+{
+    public PartyRole? Role { get; }
+    public PartyRole? PendingRole { get; }
+    public string? SearchText { get; }
+
+    public OrganisationTypeQuery(string? role = null, string? pendingRole = null, string? searchText = null)
+    {
+        if (role != null)
+        {
+            Role = (PartyRole)Enum.Parse(typeof(PartyRole), role, true);
+        }
+
+        if (pendingRole != null)
+        {
+            PendingRole = (PartyRole)Enum.Parse(typeof(PartyRole), pendingRole, true);
+        }
+
+        SearchText = searchText;
+    }
 }
 
 public record OrganisationQuery
@@ -385,7 +426,8 @@ public record OrganisationSearchQuery
     public string Name { get; }
     public PartyRole? Role { get; }
     public int? Limit { get; }
-    public OrganisationSearchQuery(string name, int? limit, string? role = null)
+    public double Threshold { get; }
+    public OrganisationSearchQuery(string name, int? limit, double? threshold, string? role = null)
     {
         Name = name;
 
@@ -395,6 +437,11 @@ public record OrganisationSearchQuery
         }
 
         Limit = limit;
+
+        if (threshold.HasValue)
+        {
+            Threshold = threshold.Value;
+        }
     }
 }
 
@@ -419,7 +466,7 @@ public record CreateOrganisationJoinRequest
 }
 
 public record SignMouRequest
-{ 
+{
     public required Guid MouId { get; set; }
     public required Guid CreatedById { get; set; }
     public required string Name{ get; set; }

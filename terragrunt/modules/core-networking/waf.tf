@@ -37,13 +37,38 @@ resource "aws_wafv2_web_acl" "this" {
   }
 
   dynamic "rule" {
-    for_each = local.waf_rule_sets_priority
+    for_each = local.waf_rule_sets_priority_blockers
     content {
       name     = "${local.name_prefix}-${rule.key}"
       priority = rule.value
 
       override_action {
         none {}
+      }
+
+      statement {
+        managed_rule_group_statement {
+          name        = rule.key
+          vendor_name = "AWS"
+        }
+      }
+
+      visibility_config {
+        cloudwatch_metrics_enabled = true
+        metric_name                = "${local.name_prefix}-${rule.key}"
+        sampled_requests_enabled   = true
+      }
+    }
+  }
+
+  dynamic "rule" {
+    for_each = local.waf_rule_sets_priority_observers
+    content {
+      name     = "${local.name_prefix}-${rule.key}"
+      priority = rule.value
+
+      override_action {
+        count {}
       }
 
       statement {
@@ -93,16 +118,4 @@ resource "aws_wafv2_web_acl_logging_configuration" "this" {
   log_destination_configs = [aws_cloudwatch_log_group.waf.arn]
   resource_arn            = aws_wafv2_web_acl.this[0].arn
 
-  logging_filter {
-    default_behavior = "KEEP"
-    filter {
-      behavior    = "DROP"
-      requirement = "MEETS_ALL"
-      condition {
-        action_condition {
-          action = "ALLOW"
-        }
-      }
-    }
-  }
 }

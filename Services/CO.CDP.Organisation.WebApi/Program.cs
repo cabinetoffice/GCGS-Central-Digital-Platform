@@ -47,7 +47,6 @@ builder.Services.AddScoped<IPersonInviteRepository, DatabasePersonInviteReposito
 builder.Services.AddScoped<IAuthenticationKeyRepository, DatabaseAuthenticationKeyRepository>();
 builder.Services.AddScoped<IOrganisationJoinRequestRepository, DatabaseOrganisationJoinRequestRepository>();
 builder.Services.AddScoped<IShareCodeRepository, DatabaseShareCodeRepository>();
-
 builder.Services.AddScoped<IUseCase<AssignOrganisationIdentifier, bool>, AssignIdentifierUseCase>();
 builder.Services.AddScoped<IUseCase<RegisterOrganisation, Organisation>, RegisterOrganisationUseCase>();
 builder.Services.AddScoped<IUseCase<Guid, Organisation?>, GetOrganisationUseCase>();
@@ -56,6 +55,7 @@ builder.Services.AddScoped<IUseCase<Organisation?>, GetMyOrganisationUseCase>();
 builder.Services.AddScoped<IUseCase<OrganisationQuery, Organisation?>, LookupOrganisationUseCase>();
 builder.Services.AddScoped<IUseCase<OrganisationSearchQuery, IEnumerable<OrganisationSearchResult>>, SearchOrganisationUseCase>();
 builder.Services.AddScoped<IUseCase<PaginatedOrganisationQuery, IEnumerable<OrganisationExtended>>, GetOrganisationsUseCase>();
+builder.Services.AddScoped<IUseCase<OrganisationTypeQuery, int>, GetOrganisationsTotalUseCase>();
 builder.Services.AddScoped<IUseCase<Guid, SupplierInformation?>, GetSupplierInformationUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, Guid), ConnectedEntity?>, GetConnectedEntityUseCase>();
 builder.Services.AddScoped<IUseCase<Guid, IEnumerable<ConnectedEntityLookup>>, GetConnectedEntitiesUseCase>();
@@ -97,27 +97,25 @@ builder.Services.AddProblemDetails();
 builder.Services.AddJwtBearerAndApiKeyAuthentication(builder.Configuration, builder.Environment);
 builder.Services.AddOrganisationAuthorization();
 
-builder.Services
-    .AddAwsConfiguration(builder.Configuration)
-    .AddAwsSqsService()
-    .AddOutboxSqsPublisher<OrganisationInformationContext>(
-        builder.Configuration,
-        enableBackgroundServices: Assembly.GetEntryAssembly().IsRunAs("CO.CDP.Organisation.WebApi"),
-        notificationChannel: "organisation_information_outbox")
-    .AddSqsDispatcher(
-        EventDeserializer.Deserializer,
-        enableBackgroundServices: Assembly.GetEntryAssembly().IsRunAs("CO.CDP.Organisation.WebApi"),
-        (services) => { services.AddScoped<ISubscriber<PponGenerated>, PponGeneratedSubscriber>(); },
-        (services, dispatcher) => { dispatcher.Subscribe<PponGenerated>(services); }
-    );
-
-if (Assembly.GetEntryAssembly().IsRunAs("CO.CDP.Organisation.WebApi"))
+if ((Assembly.GetEntryAssembly().IsRunAs("CO.CDP.Organisation.WebApi")) ||
+    (Assembly.GetEntryAssembly().IsRunAs("testhost")))
 {
     builder.Services
         .AddAwsConfiguration(builder.Configuration)
         .AddLoggingConfiguration(builder.Configuration)
         .AddAmazonCloudWatchLogsService()
-        .AddCloudWatchSerilog(builder.Configuration);
+        .AddCloudWatchSerilog(builder.Configuration)
+        .AddAwsSqsService()
+        .AddOutboxSqsPublisher<OrganisationInformationContext>(
+            builder.Configuration,
+            enableBackgroundServices: Assembly.GetEntryAssembly().IsRunAs("CO.CDP.Organisation.WebApi"),
+            notificationChannel: "organisation_information_outbox")
+        .AddSqsDispatcher(
+            EventDeserializer.Deserializer,
+            enableBackgroundServices: Assembly.GetEntryAssembly().IsRunAs("CO.CDP.Organisation.WebApi"),
+            (services) => { services.AddScoped<ISubscriber<PponGenerated>, PponGeneratedSubscriber>(); },
+            (services, dispatcher) => { dispatcher.Subscribe<PponGenerated>(services); }
+        );
 }
 
 var app = builder.Build();

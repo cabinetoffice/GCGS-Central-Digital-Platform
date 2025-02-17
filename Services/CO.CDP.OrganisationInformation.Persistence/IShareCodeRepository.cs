@@ -10,4 +10,5 @@ public interface IShareCodeRepository : IDisposable
     Task<SharedConsent?> GetByShareCode(string sharecode);
     Task<SharedConsentDetails?> GetShareCodeDetailsAsync(Guid organisationId, string shareCode);
     Task<bool?> GetShareCodeVerifyAsync(string formVersionId, string shareCode);
+    Task<IEnumerable<string>> GetConsortiumOrganisationsShareCode(string shareCode);
 }

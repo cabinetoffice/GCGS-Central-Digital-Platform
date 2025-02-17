@@ -106,9 +106,10 @@
                         <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-GG-RCE">
                             <div class="govuk-form-group @(guernseyRegistryNumberHasError ? "govuk-form-group--error" : "")">
                                 @Html.LabelFor(m => m.GuernseyRegistryNumber, new { @class = "govuk-label", @for = Model.GuernseyRegistryNumber })
+                                <div id="conditional-GG-RCE-hint" class="govuk-hint">@StaticTextResource.Organisation_OrganisationIdentification_GG_RCE_Hint</div>
                                 @Html.ValidationMessageFor(m => m.GuernseyRegistryNumber, "", new { @class = "govuk-error-message", @id = "GuernseyRegistryNumber-error" })
                                 @Html.TextBoxFor(m => m.GuernseyRegistryNumber, new { @class = "govuk-input " + (guernseyRegistryNumberHasError ? "govuk-input--error" : ""), @id = "GuernseyRegistryNumber", @type = "text", spellcheck = "false", autocomplete = "off" })
-                            </div>
+                            </div>                           
                         </div>
 
                         <div class="govuk-radios__item">
@@ -163,6 +164,9 @@
                         <div class="govuk-radios__item">
                             <input class="govuk-radios__input" id="Other" name="OrganisationScheme" type="radio" value="Other" @(Model.OrganisationScheme == "Other" ? "checked" : "")>
                             @Html.LabelFor(m => m.Other, new { @class = "govuk-label govuk-radios__label", @for = "Other" })
+                            <div id="OrganisationSchemeHint" class="govuk-hint govuk-checkboxes__hint">
+                                @StaticTextResource.Organisation_OrganisationIdentification_Other_Hint
+                            </div>
                         </div>
                     </div>
                 </fieldset>

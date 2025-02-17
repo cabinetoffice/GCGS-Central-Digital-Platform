@@ -73,11 +73,15 @@ COPY --link Services/CO.CDP.Forms.WebApi/CO.CDP.Forms.WebApi.csproj Services/CO.
 COPY --link Services/CO.CDP.Forms.WebApi.Tests/CO.CDP.Forms.WebApi.Tests.csproj Services/CO.CDP.Forms.WebApi.Tests/
 COPY --link Services/CO.CDP.Organisation.Authority/CO.CDP.Organisation.Authority.csproj Services/CO.CDP.Organisation.Authority/
 COPY --link Services/CO.CDP.Organisation.Authority.Tests/CO.CDP.Organisation.Authority.Tests.csproj Services/CO.CDP.Organisation.Authority.Tests/
+COPY --link Services/CO.CDP.EntityVerification.Persistence/CO.CDP.EntityVerification.Persistence.csproj Services/CO.CDP.EntityVerification.Persistence/
+COPY --link Services/CO.CDP.EntityVerification.Persistence.Tests/CO.CDP.EntityVerification.Persistence.Tests.csproj Services/CO.CDP.EntityVerification.Persistence.Tests/
 COPY --link Services/CO.CDP.EntityVerification/CO.CDP.EntityVerification.csproj Services/CO.CDP.EntityVerification/
 COPY --link Services/CO.CDP.EntityVerification.Tests/CO.CDP.EntityVerification.Tests.csproj Services/CO.CDP.EntityVerification.Tests/
 COPY --link Services/CO.CDP.Localization/CO.CDP.Localization.csproj Services/CO.CDP.Localization/
 COPY --link Services/CO.CDP.AntiVirusScanner/CO.CDP.AntiVirusScanner.csproj Services/CO.CDP.AntiVirusScanner/
 COPY --link Services/CO.CDP.AntiVirusScanner.Tests/CO.CDP.AntiVirusScanner.Tests.csproj Services/CO.CDP.AntiVirusScanner.Tests/
+COPY --link Services/CO.CDP.OutboxProcessor/CO.CDP.OutboxProcessor.csproj Services/CO.CDP.OutboxProcessor/
+
 COPY --link GCGS-Central-Digital-Platform.sln .
 RUN dotnet restore "GCGS-Central-Digital-Platform.sln"
 
@@ -132,6 +136,10 @@ ARG BUILD_CONFIGURATION
 WORKDIR /src/Services/CO.CDP.AntiVirusScanner
 RUN dotnet build -c $BUILD_CONFIGURATION -o /app/build
 
+FROM build AS build-outbox-processor
+ARG BUILD_CONFIGURATION
+WORKDIR /src/Services/CO.CDP.OutboxProcessor
+RUN dotnet build -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS build-organisation-app
 ARG BUILD_CONFIGURATION
@@ -174,6 +182,10 @@ FROM build-antivirus-app AS publish-antivirus-app
 ARG BUILD_CONFIGURATION
 RUN dotnet publish "CO.CDP.AntiVirusScanner.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
+FROM build-outbox-processor AS publish-outbox-processor
+ARG BUILD_CONFIGURATION
+RUN dotnet publish "CO.CDP.OutboxProcessor.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+
 FROM build-tenant AS build-migrations-organisation-information
 WORKDIR /src
 COPY .config/dotnet-tools.json .config/
@@ -184,7 +196,7 @@ FROM build-entity-verification AS build-migrations-entity-verification
 WORKDIR /src
 COPY .config/dotnet-tools.json .config/
 RUN dotnet tool restore
-RUN dotnet ef migrations bundle -p /src/Services/CO.CDP.EntityVerification --self-contained -o /app/migrations/efbundle
+RUN dotnet ef migrations bundle -p /src/Services/CO.CDP.EntityVerification.Persistence -s /src/Services/CO.CDP.EntityVerification --self-contained -o /app/migrations/efbundle
 
 FROM base AS migrations-organisation-information
 ARG VERSION
@@ -262,3 +274,21 @@ ENV VERSION=${VERSION}
 WORKDIR /app
 COPY --from=publish-antivirus-app /app/publish .
 ENTRYPOINT ["dotnet", "CO.CDP.AntiVirusScanner.dll"]
+
+FROM base AS final-outbox-processor-organisation
+ARG VERSION
+ENV VERSION=${VERSION}
+ENV DbContext=OrganisationInformationContext
+ENV Channel=organisation_information_outbox
+WORKDIR /app
+COPY --from=publish-outbox-processor /app/publish .
+ENTRYPOINT ["dotnet", "CO.CDP.OutboxProcessor.dll"]
+
+FROM base AS final-outbox-processor-entity-verification
+ARG VERSION
+ENV VERSION=${VERSION}
+ENV DbContext=EntityVerificationContext
+ENV Channel=entity_verification_outbox
+WORKDIR /app
+COPY --from=publish-outbox-processor /app/publish .
+ENTRYPOINT ["dotnet", "CO.CDP.OutboxProcessor.dll"]

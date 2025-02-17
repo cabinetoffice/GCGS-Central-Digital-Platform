@@ -28,9 +28,11 @@
         {"name": "Aws__CloudWatch__LogStream", "value": "${lg_prefix}-serilog"},
         {"name": "Aws__SqsDispatcher__QueueUrl", "value": "${queue_av_scanner_url}"},
         {"name": "ClamAvScanUrl", "value": "https://clamav-rest.${public_domain}/scan"},
-        {"name": "ForwardedHeaders__KnownNetwork", "value": "${vpc_cidr}"}
+        {"name": "ForwardedHeaders__KnownNetwork", "value": "${vpc_cidr}"},
+        {"name": "OrganisationAppUrl", "value": "https://${public_domain}/organisation/"}
     ],
     "secrets": [
+        {"name": "GOVUKNotify__ApiKey", "valueFrom": "${govuknotify_apikey}"}
     ],
     "volumesFrom": [],
     "mountPoints": [],

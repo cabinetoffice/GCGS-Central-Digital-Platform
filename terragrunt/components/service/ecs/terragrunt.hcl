@@ -130,6 +130,7 @@ dependency service_queue {
 inputs = {
 
   account_ids                       = local.global_vars.locals.account_ids
+  fts_service_allowed_origins       = local.global_vars.locals.fts_service_allowed_origins
   onelogin_logout_notification_urls = local.global_vars.locals.onelogin_logout_notification_urls
   pinned_service_version            = local.global_vars.locals.pinned_service_version
   service_configs                   = local.global_vars.locals.service_configs

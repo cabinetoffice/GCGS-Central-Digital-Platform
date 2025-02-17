@@ -30,11 +30,15 @@ public class ShareCodesListViewModel(
     [BindProperty]
     public List<SharedConsentDetails>? SharedConsentDetailsList { get; set; }
 
+    public bool IsInformalConsortium { get; set; }
+
     public async Task<IActionResult> OnGet()
     {
         try
         {
             var sharedCodesList = await dataSharingClient.GetShareCodeListAsync(OrganisationId);
+            var organisationDetails = await organisationClient.GetOrganisationAsync(OrganisationId);
+            IsInformalConsortium = (organisationDetails.Type == CDP.Organisation.WebApiClient.OrganisationType.InformalConsortium);
 
             SharedConsentDetailsList = new List<SharedConsentDetails>();
 
@@ -60,9 +64,13 @@ public class ShareCodesListViewModel(
             return Redirect("/page-not-found");
         }
 
-        var fileResponse = await dataSharingClient.GetSharedDataFileAsync(shareCode);
+        FileResponse fileResponse;
 
-        if (fileResponse == null)
+        try
+        {
+            fileResponse = await dataSharingClient.GetSharedDataFileAsync(shareCode);
+        }
+        catch (DataSharing.WebApiClient.ApiException ex) when (ex.StatusCode == 404)
         {
             return Redirect("/page-not-found");
         }

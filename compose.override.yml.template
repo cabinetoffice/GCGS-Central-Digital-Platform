@@ -87,11 +87,22 @@ services:
   av-scanner:
     environment:
       ASPNETCORE_ENVIRONMENT: Development
+      GOVUKNotify__ApiKey: ""
     deploy:
       replicas: 1
   clamav-rest:
     ports:
       - "9000:9000"
       - "9443:9443"
+    deploy:
+      replicas: 1
+  outbox-processor-organisation:
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+    deploy:
+      replicas: 1
+  outbox-processor-entity-verification:
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
     deploy:
       replicas: 1

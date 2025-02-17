@@ -27,52 +27,52 @@
     </a>
 }
 
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds govuk-body">
-            <partial name="_ErrorSummary" model="@ModelState" />
-            <form method="post">
-                <div class="govuk-form-group @(regulationsHasError ? "govuk-form-group--error" : "")">
-                    <fieldset class="govuk-fieldset">
-                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                            <h1 class="govuk-fieldset__heading">
-                                @ViewData["Title"]
-                            </h1>
-                        </legend>
-                        <div id="waste-hint" class="govuk-hint">
-                            @StaticTextResource.OrganisationRegistration_BuyerSelectDevolvedRegulation_Hint
-                        </div>
-                        @if (regulationsHasError)
-                        {
-                            <p id="devolved-error" class="govuk-error-message">
-                                <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span> @Html.ValidationMessageFor(m => m.Regulations)
-                            </p>
-                        }
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds govuk-body">
+        <partial name="_ErrorSummary" model="@ModelState" />
+        <form method="post">
+            <div class="govuk-form-group @(regulationsHasError ? "govuk-form-group--error" : "")">
+                <fieldset class="govuk-fieldset">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                        <h1 class="govuk-fieldset__heading">
+                            @ViewData["Title"]
+                        </h1>
+                    </legend>
+                    <div id="buyerselectdevolvedregulation-hint" class="govuk-body">
+                        @Html.Raw(@StaticTextResource.OrganisationRegistration_BuyerSelectDevolvedRegulation_Hint)
+                    </div>
+                    @if (regulationsHasError)
+                    {
+                        <p id="devolved-error" class="govuk-error-message">
+                            <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span> @Html.ValidationMessageFor(m => m.Regulations)
+                        </p>
+                    }
 
-                        <div class="govuk-checkboxes" data-module="govuk-checkboxes">
-                            <div class="govuk-checkboxes__item">
-                                <input class="govuk-checkboxes__input" id="chkni" name="Regulations" type="checkbox" value="@DevolvedRegulation.NorthernIreland" @IsSelected(DevolvedRegulation.NorthernIreland)>
-                                <label class="govuk-label govuk-checkboxes__label" for="chkni">
-                                    @StaticTextResource.OrganisationRegistration_BuyerSelectDevolvedRegulation_NI_Label
-                                </label>
-                            </div>
-                            <div class="govuk-checkboxes__item">
-                                <input class="govuk-checkboxes__input" id="chkscotland" name="Regulations" type="checkbox" value="@DevolvedRegulation.Scotland" @IsSelected(DevolvedRegulation.Scotland)>
-                                <label class="govuk-label govuk-checkboxes__label" for="chkscotland">
-                                    @StaticTextResource.OrganisationRegistration_BuyerSelectDevolvedRegulation_Scotland_Label
-                                </label>
-                            </div>
-                            <div class="govuk-checkboxes__item">
-                                <input class="govuk-checkboxes__input" id="chkwales" name="Regulations" type="checkbox" value="@DevolvedRegulation.Wales" @IsSelected(DevolvedRegulation.Wales)>
-                                <label class="govuk-label govuk-checkboxes__label" for="chkwales">
-                                    @StaticTextResource.OrganisationRegistration_BuyerSelectDevolvedRegulation_Wales_Label
-                                </label>
-                            </div>
+                    <div class="govuk-radios" data-module="govuk-radios">
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="radni" name="Regulations" type="radio" value="@DevolvedRegulation.NorthernIreland" @IsSelected(DevolvedRegulation.NorthernIreland)>
+                            <label class="govuk-label govuk-radios__label" for="radni">
+                                @StaticTextResource.OrganisationRegistration_BuyerSelectDevolvedRegulation_NI_Label
+                            </label>
                         </div>
-                    </fieldset>
-                </div>
-                <govuk-button>
-                    @StaticTextResource.Global_Continue
-                </govuk-button>
-            </form>
-        </div>
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="radscotland" name="Regulations" type="radio" value="@DevolvedRegulation.Scotland" @IsSelected(DevolvedRegulation.Scotland)>
+                            <label class="govuk-label govuk-radios__label" for="radscotland">
+                                @StaticTextResource.OrganisationRegistration_BuyerSelectDevolvedRegulation_Scotland_Label
+                            </label>
+                        </div>
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="radwales" name="Regulations" type="radio" value="@DevolvedRegulation.Wales" @IsSelected(DevolvedRegulation.Wales)>
+                            <label class="govuk-label govuk-radios__label" for="radwales">
+                                @StaticTextResource.OrganisationRegistration_BuyerSelectDevolvedRegulation_Wales_Label
+                            </label>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+            <govuk-button>
+                @StaticTextResource.Global_Continue
+            </govuk-button>
+        </form>
     </div>
+</div>

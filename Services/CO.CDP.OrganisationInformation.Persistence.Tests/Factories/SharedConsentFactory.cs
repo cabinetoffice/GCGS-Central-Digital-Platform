@@ -117,7 +117,8 @@ public static class SharedConsentFactory
         FormSection? section = null,
         List<FormAnswer>? answers = null,
         Guid? answerSetId = null,
-        bool deleted = false
+        bool deleted = false,
+        bool furtherQuestionsExempted = false
     )
     {
         var theSection = section ?? GivenFormSection();
@@ -130,7 +131,7 @@ public static class SharedConsentFactory
             Section = theSection,
             Answers = answers ?? [],
             Deleted = deleted,
-            FurtherQuestionsExempted = false
+            FurtherQuestionsExempted = furtherQuestionsExempted
         };
         sharedConsent.AnswerSets.Add(existingAnswerSet);
         answers?.ForEach(a => a.FormAnswerSet = existingAnswerSet);

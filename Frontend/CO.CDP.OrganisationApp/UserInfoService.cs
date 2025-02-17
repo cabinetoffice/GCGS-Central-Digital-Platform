@@ -22,7 +22,14 @@ public class UserInfoService(IHttpContextAccessor httpContextAccessor, ITenantCl
 
         return organisationUserScopes.Contains(OrganisationPersonScopes.Viewer) || (organisationUserScopes.Count == 0 && userScopes.Contains(PersonScopes.SupportAdmin));
     }
+    public async Task<bool> IsAdmin()
+    {
+        var userInfo = await GetUserInfo();
+        var userScopes = userInfo.Scopes;
+        var organisationUserScopes = userInfo.OrganisationScopes(GetOrganisationId());
 
+        return organisationUserScopes.Contains(OrganisationPersonScopes.Admin);
+    }
     public async Task<bool> HasOrganisations()
     {
         try

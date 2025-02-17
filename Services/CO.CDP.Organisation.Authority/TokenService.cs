@@ -1,25 +1,18 @@
-using AutoMapper;
-using CO.CDP.Functional;
 using CO.CDP.OrganisationInformation.Persistence;
 using IdentityModel;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
-using System.IO.Compression;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
-using System.Text.Json;
-using static CO.CDP.OrganisationInformation.Persistence.ITenantRepository;
 
 namespace CO.CDP.Organisation.Authority;
 
 public class TokenService(
     ILogger<TokenService> logger,
     IConfigurationService configService,
-    IMapper mapper,
     IPersonRepository personRepository,
-    ITenantRepository tenantRepository,
     IAuthorityRepository authorityRepository) : ITokenService
 {
     public async Task<Model.TokenResponse> CreateToken(string urn)
@@ -121,13 +114,6 @@ public class TokenService(
         var person = await personRepository.FindByUrn(urn);
         claims.Add(new Claim(JwtClaimTypes.Roles, string.Join(",", person?.Scopes ?? [])));
 
-        var tenantLookup = await GetTenant(urn);
-        if (tenantLookup != null)
-        {
-            var compressedTenant = Convert.ToBase64String(Compress(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(tenantLookup))));
-            claims.Add(new Claim("ten", compressedTenant));
-        }
-
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity(claims),
@@ -157,49 +143,6 @@ public class TokenService(
         });
 
         return $"{password}:{Convert.ToBase64String(salt)}";
-    }
-
-    private async Task<OrganisationInformation.TenantLookup?> GetTenant(string urn)
-    {
-        OrganisationInformation.TenantLookup? tenantLookup;
-        try
-        {
-            tenantLookup = await tenantRepository.LookupTenant(urn)
-                                        .AndThen(mapper.Map<OrganisationInformation.TenantLookup>);
-        }
-        catch (TenantRepositoryException.TenantNotFoundException)
-        {
-            return null;
-        }
-
-        if (tenantLookup == null) return null;
-
-        var numberOfOrgsToKeep = 10;
-        foreach (var tenant in tenantLookup.Tenants)
-        {
-            var tenantOrgCount = tenant.Organisations.Count;
-            var numberOfOrgsToAdd = tenantOrgCount > numberOfOrgsToKeep ? numberOfOrgsToKeep : tenantOrgCount;
-
-            if (numberOfOrgsToAdd < tenantOrgCount)
-            {
-                tenant.Organisations.RemoveRange(numberOfOrgsToAdd, tenantOrgCount - numberOfOrgsToAdd);
-            }
-
-            numberOfOrgsToKeep -= numberOfOrgsToAdd;
-        }
-
-        return tenantLookup;
-    }
-
-    private static byte[] Compress(byte[] data)
-    {
-        using var compressedStream = new MemoryStream();
-        using (var gzipStream = new GZipStream(compressedStream, CompressionLevel.Optimal, false))
-        {
-            gzipStream.Write(data);
-        }
-
-        return compressedStream.ToArray();
     }
 
     private static string GenerateHash(string password, byte[] salt)

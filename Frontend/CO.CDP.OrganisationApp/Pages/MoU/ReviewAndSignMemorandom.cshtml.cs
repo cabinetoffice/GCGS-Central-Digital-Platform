@@ -92,14 +92,14 @@ public class ReviewAndSignMemorandomModel(IOrganisationClient organisationClient
             );
 
             if (!System.IO.File.Exists(absolutePath))
-            {
+            {               
                 return RedirectToPage("/page-not-found");
             }
 
             try
             {
                 var contentType = "application/pdf";
-                var fileName = Path.GetFileName(absolutePath);
+                var fileName = "fts-joint-controller-agreement.pdf";
 
                 var fileStream = new FileStream(absolutePath, FileMode.Open, FileAccess.Read, FileShare.Read);
 

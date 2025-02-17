@@ -1,20 +1,24 @@
+using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Pages.ShareInformation;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using WebApiClient = CO.CDP.DataSharing.WebApiClient;
 
-
 namespace CO.CDP.OrganisationApp.Tests.Pages.ShareInformation;
+
 public class ShareCodeConfirmationTests
 {
     private readonly Mock<WebApiClient.IDataSharingClient> _dataSharingApiClientMock;
+    private readonly Mock<OrganisationClient> _organisationClientMock;
     private readonly ShareCodeConfirmationModel _pageModel;
+    private readonly Dictionary<string, IEnumerable<string>> _headers = [];
 
     public ShareCodeConfirmationTests()
     {
         _dataSharingApiClientMock = new Mock<WebApiClient.IDataSharingClient>();
-        _pageModel = new ShareCodeConfirmationModel(_dataSharingApiClientMock.Object);
+        _organisationClientMock = new Mock<OrganisationClient>("https://whatever", new HttpClient());
+        _pageModel = new ShareCodeConfirmationModel(_dataSharingApiClientMock.Object, _organisationClientMock.Object);
     }
 
     [Fact]
@@ -24,6 +28,7 @@ public class ShareCodeConfirmationTests
         var formId = Guid.NewGuid();
         var sectionId = Guid.NewGuid();
         var shareCode = "HDJ2123F";
+
         _pageModel.OrganisationId = organisationId;
         _pageModel.FormId = formId;
         _pageModel.SectionId = sectionId;
@@ -80,7 +85,7 @@ public class ShareCodeConfirmationTests
 
         _dataSharingApiClientMock
             .Setup(x => x.GetSharedDataFileAsync(shareCode))
-            .ReturnsAsync((WebApiClient.FileResponse?)null);
+            .ThrowsAsync(new WebApiClient.ApiException("Not Found", 404, "", _headers, null));
 
         var result = await _pageModel.OnGetDownload();
 
