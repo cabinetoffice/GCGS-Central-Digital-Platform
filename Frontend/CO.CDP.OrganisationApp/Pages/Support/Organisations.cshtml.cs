@@ -34,7 +34,7 @@ public class OrganisationsModel(
     {
         InitModel(type, pageNumber);
 
-        OrganisationSearchInput = HttpContext.Session.GetString("OrganisationSearchInput");
+        OrganisationSearchInput = session.Get<string>("OrganisationSearchInput");
 
         await GetResults();
 
@@ -47,11 +47,11 @@ public class OrganisationsModel(
 
         if (!string.IsNullOrWhiteSpace(OrganisationSearchInput))
         {
-            HttpContext.Session.SetString("OrganisationSearchInput", OrganisationSearchInput);
+            session.Set("OrganisationSearchInput", OrganisationSearchInput);
         }
         else
         {
-            HttpContext.Session.Remove("OrganisationSearchInput"); // Clear when input is empty
+            session.Remove("OrganisationSearchInput"); // Clear when input is empty
         }
 
         await GetResults();
