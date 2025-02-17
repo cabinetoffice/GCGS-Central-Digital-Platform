@@ -32,7 +32,7 @@ public class SqsPublisherTest : PublisherContractTest, IClassFixture<LocalStackF
         {
             Type = "TestMessage",
             Message = "{\"Id\":13,\"Name\":\"Hello!\"}",
-            QueueUrl = "test-queue",
+            QueueUrl = TestQueue,
             MessageGroupId = "test-messages"
         });
 

@@ -1,0 +1,59 @@
+{
+  "Comment": "Trigger performance test by running ${task} task",
+  "StartAt": "ECS RunTask",
+  "States": {
+    "ECS RunTask": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::ecs:runTask.sync",
+      "Parameters": {
+        "Cluster": "${cluster}",
+        "LaunchType": "FARGATE",
+        "NetworkConfiguration": {
+            "AwsvpcConfiguration" :{
+                "SecurityGroups": [ "${security_groups}" ],
+                "Subnets": [ "${subnet}" ]
+            }
+        },
+        "TaskDefinition": "${task_definition}",
+        "Overrides": {
+          "ContainerOverrides": [
+            {
+              "Name": "${task}",
+              "Environment": [
+                {
+                  "Name": "AUTH_TOKEN",
+                  "Value.$": "$.auth_token"
+                },
+                {
+                  "Name": "DURATION",
+                  "Value.$": "$.duration"
+                },
+                {
+                  "Name": "ENDPOINTS",
+                  "Value.$": "$.endpoints"
+                },
+                {
+                  "Name": "MAX_VUS",
+                  "Value.$": "$.max_vus"
+                },
+                {
+                  "Name": "RPS",
+                  "Value.$": "$.rps"
+                },
+                {
+                  "Name": "TARGET_DOMAIN",
+                  "Value.$": "$.target_domain"
+                },
+                {
+                  "Name": "VUS",
+                  "Value.$": "$.vus"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "End": true
+    }
+  }
+}

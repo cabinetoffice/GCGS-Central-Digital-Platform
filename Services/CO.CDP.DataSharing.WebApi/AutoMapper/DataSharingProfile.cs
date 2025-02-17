@@ -1,7 +1,9 @@
 using AutoMapper;
 using CO.CDP.DataSharing.WebApi.Model;
+using CO.CDP.Localization;
 using CO.CDP.OrganisationInformation;
 using CO.CDP.OrganisationInformation.Persistence;
+using Microsoft.AspNetCore.Mvc.Localization;
 using System.Text.Json;
 using Address = CO.CDP.OrganisationInformation.Address;
 using Persistence = CO.CDP.OrganisationInformation.Persistence.Forms;
@@ -31,6 +33,7 @@ public class DataSharingProfile : Profile
         CreateMap<Persistence.SharedConsent, SupplierInformation>()
             .ForMember(m => m.Id, o => o.MapFrom(m => m.Organisation.Guid))
             .ForMember(m => m.Name, o => o.MapFrom(m => m.Organisation.Name))
+            .ForMember(m => m.Type, o => o.MapFrom(m => m.Organisation.Type))
             .ForMember(m => m.Identifier,
                 o => o.MapFrom(m => m.Organisation.Identifiers.FirstOrDefault(x => x.Primary)))
             .ForMember(m => m.AdditionalIdentifiers,
@@ -48,8 +51,7 @@ public class DataSharingProfile : Profile
                 o => o.MapFrom((_, _, _, context) => context.Items["AssociatedPersons"]))
             .ForMember(m => m.AdditionalEntities,
                 o => o.MapFrom((_, _, _, context) => context.Items["AdditionalEntities"]))
-            .ForMember(m => m.AdditionalParties,
-                o => o.MapFrom((_, _, _, context) => context.Items["AdditionalParties"]));
+            .ForMember(m => m.AdditionalParties, o => o.Ignore());
 
         Uri? tempResult;
         CreateMap<Organisation.Identifier, OrganisationInformation.Identifier>()
@@ -92,7 +94,8 @@ public class DataSharingProfile : Profile
         CreateMap<Persistence.FormAnswerSet, FormAnswerSet>()
             .ForMember(m => m.Id, o => o.MapFrom(m => m.Guid))
             .ForMember(m => m.SectionName, o => o.MapFrom<LocalizedPropertyResolver<Persistence.FormAnswerSet, FormAnswerSet>, string>(m => m.Section.Title))
-            .ForMember(m => m.Answers, o => o.MapFrom(m => m.Answers.Where(x => x.Question.Type != Persistence.FormQuestionType.NoInput && x.Question.Type != Persistence.FormQuestionType.CheckYourAnswers)));
+            .ForMember(m => m.Answers, o => o.MapFrom(m => m.Answers.Where(x => x.Question.Type != Persistence.FormQuestionType.NoInput && x.Question.Type != Persistence.FormQuestionType.CheckYourAnswers)))
+            .ForMember(m => m.OrganisationId, o => o.Ignore());
 
         CreateMap<Persistence.FormAnswer, FormAnswer>()
             .ForMember(m => m.QuestionName, o => o.MapFrom(m => m.Question.Name))
@@ -113,9 +116,9 @@ public class DataSharingProfile : Profile
             .ForMember(m => m.Text, o => o.MapFrom<LocalizedPropertyResolver<Persistence.FormQuestion, FormQuestion>, string>(m => m.Description ?? string.Empty))
             .ForMember(m => m.IsRequired, o => o.MapFrom(m => m.IsRequired))
             .ForMember(m => m.SectionName, o => o.MapFrom<LocalizedPropertyResolver<Persistence.FormQuestion, FormQuestion>, string>(m => m.Section.Title))
-            .ForMember(m => m.Options, o => o.MapFrom(m => m.Options.Choices))
-            .ForMember(m => m.SortOrder, o => o.MapFrom(m => m.SortOrder));
-
+            .ForMember(m => m.Options, o => o.MapFrom<FormQuestionOptionsResolver>())
+            .ForMember(m => m.SortOrder, o => o.MapFrom(m => m.SortOrder))
+            .ForMember(m => m.OrganisationId, o => o.Ignore());
         CreateMap<Persistence.FormQuestionChoice, FormQuestionOption>()
             .ForMember(m => m.Id, o => o.MapFrom(m => m.Id))
             .ForMember(m => m.Value, o => o.MapFrom<LocalizedPropertyResolver<Persistence.FormQuestionChoice, FormQuestionOption>, string>(m => m.Title));
@@ -149,14 +152,15 @@ public class CustomFormQuestionTypeResolver : IValueResolver<Persistence.FormQue
             case Persistence.FormQuestionType.SingleChoice:
             case Persistence.FormQuestionType.GroupedSingleChoice:
             case Persistence.FormQuestionType.MultipleChoice:
-                if(source.Options.AnswerFieldName == "JsonValue")
+                if (source.Options.AnswerFieldName == "JsonValue")
                 {
                     return FormQuestionType.OptionJson;
-                } else
+                }
+                else
                 {
                     return FormQuestionType.Option;
                 }
-                
+
             case Persistence.FormQuestionType.Date:
                 return FormQuestionType.Date;
 
@@ -221,5 +225,53 @@ public class JsonValueResolver : IValueResolver<Persistence.FormAnswer, FormAnsw
         }
 
         return JsonSerializer.Deserialize<Dictionary<string, object>>(source.JsonValue);
+    }
+}
+
+public class FormQuestionOptionsResolver : IValueResolver<Persistence.FormQuestion, FormQuestion, List<FormQuestionOption>>
+{
+    private readonly IHtmlLocalizer<FormsEngineResource> _localizer;
+
+    public FormQuestionOptionsResolver(IHtmlLocalizer<FormsEngineResource> localizer)
+    {
+        _localizer = localizer;
+    }
+
+    public List<FormQuestionOption> Resolve(Persistence.FormQuestion src, FormQuestion destination, List<FormQuestionOption> destMember, ResolutionContext context)
+    {
+        if (src.Options == null)
+            return new List<FormQuestionOption>();
+
+        if (src.Type == Persistence.FormQuestionType.GroupedSingleChoice && src.Options.Groups != null)
+        {
+            return src.Options.Groups
+                .SelectMany(g => g.Choices ?? new List<Persistence.FormQuestionGroupChoice>())
+                .Select(gc => new FormQuestionOption {
+                    Id = gc.Id,
+                    Value = _localizer[gc.Title].Value
+                })
+                .ToList();
+        }
+
+        if (!string.IsNullOrEmpty(src.Options.ChoiceProviderStrategy))
+        {
+            return new List<FormQuestionOption>
+            {
+                new FormQuestionOption { Id = Guid.NewGuid(), Value = "Dynamic" }
+            };
+        }
+
+        if (src.Options.Choices != null)
+        {
+            return src.Options.Choices
+                .Select(c => new FormQuestionOption
+                {
+                    Id = c.Id,
+                    Value = _localizer[c.Title].Value
+                })
+                .ToList();
+        }
+
+        return new List<FormQuestionOption>();
     }
 }

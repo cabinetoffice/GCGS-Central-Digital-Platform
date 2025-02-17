@@ -142,7 +142,7 @@ public static class DataSharingFactory
             VatNumber = "VAT123456",
             WebsiteAddress = "http://example.com",
             EmailAddress = "test@example.com",
-            OrganisationType = Model.OrganisationType.Supplier,
+            Role = "Supplier",
             LegalForm = new BasicLegalForm
             {
                 RegisteredLegalForm = "Private Limited",

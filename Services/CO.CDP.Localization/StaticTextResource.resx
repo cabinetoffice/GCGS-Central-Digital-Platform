@@ -1378,85 +1378,85 @@
     <value>Enter the Companies House number</value>
   </data>
   <data name="Organisation_OrganisationIdentification_GB_CHC_Label" xml:space="preserve">
-    <value>Charity Commission for England and Wales</value>
+    <value>Charity Commission (England and Wales)</value>
   </data>
   <data name="Organisation_OrganisationIdentification_GB_CHC_Number_Label" xml:space="preserve">
-    <value>Charity Commission for England and Wales number</value>
+    <value>Charity Commission (England and Wales)</value>
   </data>
   <data name="Organisation_OrganisationIdentification_GB_CHC_Number_ErrorMessage" xml:space="preserve">
-    <value>Enter the Charity Commission for England and Wales number</value>
+    <value>Enter the charity number</value>
   </data>
   <data name="Organisation_OrganisationIdentification_GB_SC_Label" xml:space="preserve">
-    <value>Scottish Charity Regulator</value>
+    <value>Scottish Charity Register</value>
   </data>
   <data name="Organisation_OrganisationIdentification_GB_SC_Number_Label" xml:space="preserve">
-    <value>Scottish Charity Regulator Number</value>
+    <value>Scottish Charity Register</value>
   </data>
   <data name="Organisation_OrganisationIdentification_GB_SC_Number_ErrorMessage" xml:space="preserve">
-    <value>Enter the Scottish Charity Regulator number</value>
+    <value>Enter the charity number</value>
   </data>
   <data name="Organisation_OrganisationIdentification_GB_NIC_Label" xml:space="preserve">
     <value>Charity Commission for Northern Ireland</value>
   </data>
   <data name="Organisation_OrganisationIdentification_GB_NIC_Number_Label" xml:space="preserve">
-    <value>Charity Commission for Northern Ireland Number</value>
+    <value>Charity Commission for Northern Ireland</value>
   </data>
   <data name="Organisation_OrganisationIdentification_GB_NIC_Number_ErrorMessage" xml:space="preserve">
-    <value>Enter the Charity Commission for Northern Ireland number</value>
+    <value>Enter the charity number</value>
   </data>
   <data name="Organisation_OrganisationIdentification_GB_MPR_Label" xml:space="preserve">
     <value>Mutuals Public Register</value>
   </data>
   <data name="Organisation_OrganisationIdentification_GB_MPR_Number_Label" xml:space="preserve">
-    <value>Mutuals Public Register number</value>
+    <value>Mutuals Public Register</value>
   </data>
   <data name="Organisation_OrganisationIdentification_GB_MPR_Number_ErrorMessage" xml:space="preserve">
-    <value>Enter the Mutuals Public Register number</value>
+    <value>Enter the registration number</value>
   </data>
   <data name="Organisation_OrganisationIdentification_GG_RCE_Label" xml:space="preserve">
     <value>Guernsey Registry</value>
   </data>
   <data name="Organisation_OrganisationIdentification_GG_RCE_Number_Label" xml:space="preserve">
-    <value>Guernsey Registry Number</value>
+    <value>Guernsey Registry</value>
   </data>
   <data name="Organisation_OrganisationIdentification_GG_RCE_Number_ErrorMessage" xml:space="preserve">
-    <value>Enter the Guernsey Registry number.</value>
+    <value>Enter the entity number</value>
   </data>
   <data name="Organisation_OrganisationIdentification_JE_FSC_Label" xml:space="preserve">
     <value>Jersey Financial Services Commission Registry</value>
   </data>
   <data name="Organisation_OrganisationIdentification_JE_FSC_Number_Label" xml:space="preserve">
-    <value>Jersey Financial Services Commission Registry Number</value>
+    <value>Jersey Financial Services Commission Registry</value>
   </data>
   <data name="Organisation_OrganisationIdentification_JE_FSC_Number_ErrorMessage" xml:space="preserve">
-    <value>Enter the Jersey Financial Services Commission Registry number</value>
+    <value>Enter the registration number</value>
   </data>
   <data name="Organisation_OrganisationIdentification_IM_CR_Label" xml:space="preserve">
     <value>Isle of Man Companies Registry</value>
   </data>
   <data name="Organisation_OrganisationIdentification_IM_CR_Number_Label" xml:space="preserve">
-    <value>Isle of Man Companies Registry Number</value>
+    <value>Isle of Man Companies Registry</value>
   </data>
   <data name="Organisation_OrganisationIdentification_IM_CR_Number_ErrorMessage" xml:space="preserve">
-    <value>Enter Isle of Man Companies Registry number</value>
+    <value>Enter the company number</value>
   </data>
   <data name="Organisation_OrganisationIdentification_GB_NHS_Label" xml:space="preserve">
-    <value>NHS Organisation Data Service (ODS)</value>
+    <value>NHS Organisation Data Service</value>
   </data>
   <data name="Organisation_OrganisationIdentification_GB_NHS_Number_Label" xml:space="preserve">
-    <value>NHS Organisation Data Service (ODS) Number</value>
+    <value>NHS Organisation Data Service</value>
   </data>
   <data name="Organisation_OrganisationIdentification_GB_NHS_Number_ErrorMessage" xml:space="preserve">
-    <value>Enter the NHS Organisation Data Service (ODS) number</value>
+    <value>Enter the ODS code</value>
   </data>
   <data name="Organisation_OrganisationIdentification_GB_UKPRN_Label" xml:space="preserve">
-    <value>UK Register of Learning Providers</value>
+    <value>UK Register of Learning Providers (UKPRN number)</value>
   </data>
   <data name="Organisation_OrganisationIdentification_GB_UKPRN_Number_Label" xml:space="preserve">
-    <value>UK Provider Reference Number (UKPRN)</value>
+    <value>UK Register of Learning Providers (UKPRN number)</value>
   </data>
   <data name="Organisation_OrganisationIdentification_GB_UKPRN_Number_ErrorMessage" xml:space="preserve">
-    <value>Enter the UK Register of Learning Providers number.</value>
+    <value>Enter the UK Provider Reference Number (UKPRN)</value>
   </data>
   <data name="Organisation_OrganisationIdentification_Other_Label" xml:space="preserve">
     <value>None apply</value>
@@ -1474,13 +1474,13 @@
     <value>Registration number</value>
   </data>
   <data name="Organisation_OrganisationIdentification_Number_ErrorMessage" xml:space="preserve">
-    <value>Enter the number</value>
+    <value>Enter the registration number</value>
   </data>
   <data name="Organisation_OrganisationIdentification_Hint" xml:space="preserve">
     <value>Select one option. Then enter the registration number.</value>
   </data>
   <data name="Organisation_OrganisationIdentification_ErrorMessage" xml:space="preserve">
-    <value>Select the organisation on any of these registries</value>
+    <value>Select a registry</value>
   </data>
   <data name="Organisation_OrganisationIdentification_Charity_Number_Label" xml:space="preserve">
     <value>Charity number</value>
@@ -1492,7 +1492,7 @@
     <value>ODS code</value>
   </data>
   <data name="Organisation_OrganisationIdentification_ODS_Code_ErrorMessage" xml:space="preserve">
-    <value>Enter the code</value>
+    <value>Enter the ODS code</value>
   </data>
   <data name="Organisation_BuyerType" xml:space="preserve">
     <value>Organisation type</value>
@@ -1554,11 +1554,17 @@
   <data name="ShareYourInformation_ShareCodeCreatedFooterBody1" xml:space="preserve">
     <value>You can save your share code and &lt;a href="?handler=download&amp;shareCode={0}"&gt;download your supplier information file&lt;/a&gt; or come back and get them when needed.</value>
   </data>
+  <data name="ShareYourInformation_ConsortiumShareCodeCreatedFooterBody1" xml:space="preserve">
+    <value>You can save your share code and &lt;a href="?handler=download&amp;shareCode={0}"&gt;download your combined supplier information file&lt;/a&gt; or come back and get them when needed.</value>
+  </data>
   <data name="ShareYourInformation_ShareCodeCreatedFooterBody2" xml:space="preserve">
     <value>If your supplier information changes, you can update it and create a new share code and file to share the new information.</value>
   </data>
   <data name="ShareYourInformation_BackOrganisationDetails" xml:space="preserve">
     <value>Back to organisation details</value>
+  </data>
+  <data name="ShareYourInformation_BackConsortiumDetails" xml:space="preserve">
+    <value>Back to consortium details</value>
   </data>
   <data name="OrganisationRegistration_CompanyHouseNumberQuestion_Hint" xml:space="preserve">
     <value>You can &lt;a href="https://find-and-update.company-information.service.gov.uk/" target="_blank"&gt;find your company number on Companies House (opens in a new tab)&lt;/a&gt;. It is an 8 digit or 2 letter and 6 digit number. For example, 12345678 or SC123456.</value>
@@ -2259,40 +2265,40 @@
     <value>No connected person information available.</value>
   </data>
   <data name="PdfGenerator_OrganisationSchemeTitle_CharityCommission" xml:space="preserve">
-    <value>Charity Commission for England and Wales number</value>
+    <value>Charity Commission (England and Wales)</value>
   </data>
   <data name="PdfGenerator_OrganisationSchemeTitle_CompaniesHouseNumber" xml:space="preserve">
     <value>Companies House number</value>
   </data>
   <data name="PdfGenerator_OrganisationSchemeTitle_GuernseyRegistry" xml:space="preserve">
-    <value>Guernsey Registry number</value>
+    <value>Guernsey Registry</value>
   </data>
   <data name="PdfGenerator_OrganisationSchemeTitle_IsleOfManCompaniesRegistry" xml:space="preserve">
-    <value>Isle of Man Companies Registry number</value>
+    <value>Isle of Man Companies Registry</value>
   </data>
   <data name="PdfGenerator_OrganisationSchemeTitle_JerseyFinancialServices" xml:space="preserve">
-    <value>Jersey Financial Services Commission Registry number</value>
+    <value>Jersey Financial Services Commission Registry</value>
   </data>
   <data name="PdfGenerator_OrganisationSchemeTitle_LearningProviderRegistry" xml:space="preserve">
-    <value>UK Register of Learning Provider number</value>
+    <value>UK Register of Learning Provider (UKPRN number)</value>
   </data>
   <data name="PdfGenerator_OrganisationSchemeTitle_MutualsPublicRegister" xml:space="preserve">
-    <value>Mutuals Public Register number</value>
+    <value>Mutuals Public Register</value>
   </data>
   <data name="PdfGenerator_OrganisationSchemeTitle_NHSRegistry" xml:space="preserve">
-    <value>National Health Service Organisations Registry number</value>
+    <value>NHS Organisations Data Service</value>
   </data>
   <data name="PdfGenerator_OrganisationSchemeTitle_NorthernIrelandCharityCommission" xml:space="preserve">
-    <value>Charity Commission for Northern Ireland number</value>
+    <value>Charity Commission for Northern Ireland</value>
   </data>
   <data name="PdfGenerator_OrganisationSchemeTitle_Other" xml:space="preserve">
     <value>Other / None</value>
   </data>
   <data name="PdfGenerator_OrganisationSchemeTitle_Ppon" xml:space="preserve">
-    <value>PPON</value>
+    <value>Public procurement organisation number (PPON)</value>
   </data>
   <data name="PdfGenerator_OrganisationSchemeTitle_ScottishCharityRegulator" xml:space="preserve">
-    <value>Scottish Charity Regulator</value>
+    <value>Scottish Charity Register</value>
   </data>
   <data name="PdfGenerator_OrganisationSchemeTitle_Unknown" xml:space="preserve">
     <value>Unknown</value>
@@ -2918,31 +2924,31 @@
     <value>Companies House number</value>
   </data>
   <data name="OrganisationSchemeType_CharityCommissionEnglandWales" xml:space="preserve">
-    <value>Charity Commission for England &amp; Wales Number</value>
+    <value>Charity Commission (England and Wales)</value>
   </data>
   <data name="OrganisationSchemeType_ScottishCharityRegulator" xml:space="preserve">
-    <value>Scottish Charity Regulator</value>
+    <value>Scottish Charity Register</value>
   </data>
   <data name="OrganisationSchemeType_CharityCommissionNorthernIreland" xml:space="preserve">
-    <value>Charity Commission for Northern Ireland Number</value>
+    <value>Charity Commission for Northern Ireland</value>
   </data>
   <data name="OrganisationSchemeType_MutualsPublicRegister" xml:space="preserve">
-    <value>Mutuals Public Register Number</value>
+    <value>Mutuals Public Register</value>
   </data>
   <data name="OrganisationSchemeType_GuernseyRegistry" xml:space="preserve">
-    <value>Guernsey Registry Number</value>
+    <value>Guernsey Registry</value>
   </data>
   <data name="OrganisationSchemeType_JerseyFinancialServicesCommission" xml:space="preserve">
-    <value>Jersey Financial Services Commission Registry Number</value>
+    <value>Jersey Financial Services Commission Registry</value>
   </data>
   <data name="OrganisationSchemeType_IsleOfManCompaniesRegistry" xml:space="preserve">
-    <value>Isle of Man Companies Registry Number</value>
+    <value>Isle of Man Companies Registry</value>
   </data>
   <data name="OrganisationSchemeType_NHSOrganisationsRegistry" xml:space="preserve">
-    <value>National Health Service Organisations Registry Number</value>
+    <value>NHS Organisations Data Service</value>
   </data>
   <data name="OrganisationSchemeType_UKRegisterOfLearningProviders" xml:space="preserve">
-    <value>UK Register of Learning Provider Number</value>
+    <value>UK Register of Learning Providers (UKPRN number)</value>
   </data>
   <data name="OrganisationSchemeType_VAT" xml:space="preserve">
     <value>VAT number</value>
@@ -2954,7 +2960,7 @@
     <value>Other</value>
   </data>
   <data name="OrganisationSchemeType_Ppon" xml:space="preserve">
-    <value>PPON</value>
+    <value>Public procurement organisation number (PPON)</value>
   </data>
   <data name="UserSummary_ManageUsers_Title" xml:space="preserve">
     <value>Manage users</value>
@@ -3300,5 +3306,41 @@
   </data>
   <data name="Supplementary_CookieDetails_TableRow_CS_C" xml:space="preserve">
     <value>Used by Contentsquare to save the user consent status for data collection</value>
+  </data>
+  <data name="ConsortiumShareMyInformation_HowItWorksParagraph1" xml:space="preserve">
+    <value>To share the combined supplier information of the consortium with buyers you need to create a share code and file, and declare that all the information is correct.</value>
+  </data>
+  <data name="ConsortiumShareMyInformation_HowItWorksParagraph2" xml:space="preserve">
+    <value>When you submit a bid for a procurement, the contracting authority will let you know how to give them the share code or file.</value>
+  </data>
+  <data name="ConsortiumShareMyInformation_HowItWorksParagraph3" xml:space="preserve">
+    <value>If any of the supplier information for any organisation in the consortium changes, you can update its share code on the consortium details page and then create a new combined share code and file to share the new information.</value>
+  </data>
+  <data name="ConsortiumShareMyInformation_Title" xml:space="preserve">
+    <value>Share your consortium information</value>
+  </data>
+  <data name="Supplementary_LoggedOut_Title" xml:space="preserve">
+    <value>For your security, we signed you out</value>
+  </data>
+  <data name="Supplementary_LoggedOut_Paragraph1" xml:space="preserve">
+    <value>We did not save your answers.</value>
+  </data>
+  <data name="Global_Signin" xml:space="preserve">
+    <value>Sign in</value>
+  </data>
+  <data name="Global_Warning" xml:space="preserve">
+    <value>Warning</value>
+  </data>
+  <data name="Header_Contact" xml:space="preserve">
+    <value>&lt;a class="govuk-link" target="_blank" href="/provide-feedback-and-contact/?context=feedback"&gt;Contact the Find a Tender team (opens in new tab)&lt;/a&gt; if you have feedback, questions or suggestions.</value>
+  </data>
+  <data name="Footer_OGL" xml:space="preserve">
+    <value>All content is available under the &lt;a class="govuk-footer__link" href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/" rel="license"&gt;Open Government Licence v3.0&lt;/a&gt;, except where otherwise stated</value>
+  </data>
+  <data name="Footer_Copyright" xml:space="preserve">
+    <value>Crown copyright</value>
+  </data>
+  <data name="Footer_TED" xml:space="preserve">
+    <value>Notices are based on TED XML schema. © European Union</value>
   </data>
 </root>

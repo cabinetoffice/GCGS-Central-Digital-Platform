@@ -1,6 +1,5 @@
 using CO.CDP.Testcontainers.PostgreSql;
 using FluentAssertions;
-using Microsoft.EntityFrameworkCore;
 using static CO.CDP.OrganisationInformation.Persistence.IOrganisationRepository.OrganisationRepositoryException;
 using static CO.CDP.OrganisationInformation.Persistence.Organisation;
 using static CO.CDP.OrganisationInformation.Persistence.Tests.EntityFactory;
@@ -927,6 +926,33 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql)
         result.Should().NotBeNull();
         result?.OrganisationId.Should().Be(organisation.Id);
         result?.SignatureGuid.Should().Be(mousignatureGuid1);
+    }
+
+    [Fact]
+    public async Task SearchByName_ShouldReturnMostSimilarResults_WhenMoreResultsFoundThanFetchBatchSize()
+    {
+        using var repository = OrganisationRepository();
+        await using var context = GetDbContext();
+
+        var organisations = new List<Organisation>
+        {
+            GivenOrganisation(name: "Organisation 1"),
+            GivenOrganisation(name: "Organisation 2"),
+            GivenOrganisation(name: "Organisation 3"),
+            GivenOrganisation(name: "Organisation 4"),
+            GivenOrganisation(name: "Organisation 5"),
+            GivenOrganisation(name: "Organisation 6")
+        };
+
+        context.Organisations.AddRange(organisations);
+        context.SaveChanges();
+
+
+        var result = await repository.SearchByName("Organisation 6", null, 5, 0.5);
+
+
+        result.Should().NotBeNull();
+        result.Should().Contain(organisations[5]);
     }
 
     [Fact]

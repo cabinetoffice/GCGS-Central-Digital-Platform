@@ -73,7 +73,7 @@ locals {
       fts_service_allowed_origins       = []
       name                              = "staging"
       onelogin_logout_notification_urls = ["https://sirsi-integration-findtender.nqc.com/auth/backchannellogout"]
-      pinned_service_version            = "1.0.31"
+      pinned_service_version            = "1.0.37-32ac3b8b"
       postgres_instance_type            = "db.t4g.micro"
       private_subnets = [
         "10.${local.cidr_b_staging}.101.0/24",
@@ -134,7 +134,7 @@ locals {
         "https://wallsm.nqc.com/auth/backchannellogout",
         "https://www-tpp-preview.find-tender.service.gov.uk/auth/backchannellogout",
       ]
-      pinned_service_version            = "1.0.30"
+      pinned_service_version            = "1.0.36"
       postgres_instance_type            = "db.t4g.micro"
       private_subnets = [
         "10.${local.cidr_b_integration}.101.0/24",
@@ -163,7 +163,7 @@ locals {
       fts_service_allowed_origins       = []
       name                              = "production"
       onelogin_logout_notification_urls = ["https://www.private-beta.find-tender.service.gov.uk/auth/backchannellogout"]
-      pinned_service_version            = "1.0.30"
+      pinned_service_version            = "1.0.36"
       postgres_instance_type            = "db.t4g.micro"
       private_subnets = [
         "10.${local.cidr_b_production}.101.0/24",
@@ -249,6 +249,16 @@ locals {
       desired_count = local.desired_count_non_production
       memory        = 512
     }
+    outbox_processor_entity_verification = {
+      cpu           = 256
+      desired_count = 1
+      memory        = 512
+    }
+    outbox_processor_organisation = {
+      cpu           = 256
+      desired_count = 1
+      memory        = 512
+    }
     person = {
       cpu           = 256
       desired_count = local.desired_count_non_production
@@ -305,6 +315,16 @@ locals {
     organisation_information_migrations = {
       cpu           = 256
       desired_count = local.desired_count_production
+      memory        = 512
+    }
+    outbox_processor_entity_verification = {
+      cpu           = 256
+      desired_count = 1
+      memory        = 512
+    }
+    outbox_processor_organisation = {
+      cpu           = 256
+      desired_count = 1
       memory        = 512
     }
     person = {
@@ -365,6 +385,16 @@ locals {
     organisation_information_migrations = {
       cpu           = 256
       desired_count = local.desired_count_development
+      memory        = 512
+    }
+    outbox_processor_entity_verification = {
+      cpu           = 256
+      desired_count = 1
+      memory        = 512
+    }
+    outbox_processor_organisation = {
+      cpu           = 256
+      desired_count = 1
       memory        = 512
     }
     person = {
@@ -431,6 +461,16 @@ locals {
       port      = 9090
       port_host = null
     }
+    outbox_processor_entity_verification = {
+      name      = "outbox-processor-entity-verification"
+      port      = 9096
+      port_host = 9096
+    }
+    outbox_processor_organisation = {
+      name      = "outbox-processor-organisation"
+      port      = 9098
+      port_host = 9098
+    }
     person = {
       name      = "person"
       port      = 8084
@@ -474,6 +514,13 @@ locals {
       name      = "healthcheck"
       port      = 3030
       port_host = 3030
+    }
+    k6 = {
+      cpu       = 1024
+      memory    = 3072
+      name      = "k6"
+      port      = 4040
+      port_host = null
     }
     pgadmin = {
       cpu       = 256
