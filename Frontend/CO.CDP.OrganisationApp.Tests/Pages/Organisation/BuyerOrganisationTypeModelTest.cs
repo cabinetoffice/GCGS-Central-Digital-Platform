@@ -69,7 +69,7 @@ public class BuyerOrganisationTypeModelTest
     {
         _organisationClientMock
             .Setup(client => client.GetOrganisationBuyerInformationAsync(_testOrganisationId))
-            .ReturnsAsync((BuyerInformation?)null);
+            .ThrowsAsync(new CDP.Organisation.WebApiClient.ApiException("Not Found", 404, null, null, null));
 
         var result = await _model.OnGet();
 
@@ -92,7 +92,7 @@ public class BuyerOrganisationTypeModelTest
     {
         _organisationClientMock
             .Setup(client => client.GetOrganisationBuyerInformationAsync(_testOrganisationId))
-            .ReturnsAsync((BuyerInformation?)null);       
+            .ThrowsAsync(new CDP.Organisation.WebApiClient.ApiException("Not Found", 404, null, null, null));
 
         var result = await _model.OnPost();
 

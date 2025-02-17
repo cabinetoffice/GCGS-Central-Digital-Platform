@@ -33,7 +33,6 @@ public class BuyerOrganisationTypeModel(IOrganisationClient organisationClient) 
         try
         {
             var buyerInformation = await organisationClient.GetOrganisationBuyerInformationAsync(Id);
-            if (buyerInformation == null) return Redirect("/page-not-found");
 
             BuyerOrganisationType = buyerInformation.BuyerType;
             if (!string.IsNullOrEmpty(BuyerOrganisationType) && !BuyerTypes.Keys.Contains(BuyerOrganisationType))
@@ -57,11 +56,9 @@ public class BuyerOrganisationTypeModel(IOrganisationClient organisationClient) 
             return Page();
         }
 
-        var buyerInformation = await organisationClient.GetOrganisationBuyerInformationAsync(Id);
-        if (buyerInformation == null) return Redirect("/page-not-found");
-
         try
         {
+            var buyerInformation = await organisationClient.GetOrganisationBuyerInformationAsync(Id);
             var buyerOrganisationType = (BuyerOrganisationType == "Other" ? OtherValue : BuyerOrganisationType);
 
             await organisationClient.UpdateBuyerOrganisationType(Id, buyerOrganisationType: buyerOrganisationType!);
