@@ -139,7 +139,7 @@ public class UpdateSupplierInformationUseCaseTests : IClassFixture<AutoMapperFix
     }
 
     [Fact]
-    public async Task Execute_ShouldResetFields_WhenSupplierTypeIsNotIndividual()
+    public async Task Execute_ShouldResetFields_WhenSupplierTypeIsChangedFromOrganisationToIndividual()
     {
         var organisation = new Persistence.Organisation
         {
@@ -150,7 +150,7 @@ public class UpdateSupplierInformationUseCaseTests : IClassFixture<AutoMapperFix
             ContactPoints = [new Persistence.Organisation.ContactPoint { Email = "test@test.com" }],
             SupplierInfo = new Persistence.Organisation.SupplierInformation
             {
-                SupplierType = SupplierType.Individual,  // Initially set to Individual
+                SupplierType = SupplierType.Organisation,  // Initially set to Organisation
                 OperationTypes = new List<OperationType> { OperationType.SmallOrMediumSized },
                 LegalForm = new Persistence.Organisation.LegalForm
                 {
@@ -167,7 +167,7 @@ public class UpdateSupplierInformationUseCaseTests : IClassFixture<AutoMapperFix
         var updateInfo = new UpdateSupplierInformation
         {
             Type = SupplierInformationUpdateType.SupplierType,
-            SupplierInformation = new SupplierInfo { SupplierType = SupplierType.Organisation }
+            SupplierInformation = new SupplierInfo { SupplierType = SupplierType.Individual }
         };
 
         _organisationRepositoryMock.Setup(repo => repo.Find(_organisationId)).ReturnsAsync(organisation);
@@ -177,12 +177,13 @@ public class UpdateSupplierInformationUseCaseTests : IClassFixture<AutoMapperFix
 
         
         organisation.SupplierInfo.Should().NotBeNull();
-        organisation.SupplierInfo.SupplierType.Should().Be(SupplierType.Organisation);
-        
-        organisation.SupplierInfo.OperationTypes.Should().NotBeNull();
-        organisation.SupplierInfo.LegalForm.Should().NotBeNull();
-        organisation.SupplierInfo.CompletedLegalForm.Should().BeTrue();
-        organisation.SupplierInfo.CompletedOperationType.Should().BeTrue();
+        organisation.SupplierInfo.SupplierType.Should().Be(SupplierType.Individual);
+
+        // These had values before, but after the update operation they should be cleared out
+        organisation.SupplierInfo.OperationTypes.Should().BeEmpty();
+        organisation.SupplierInfo.LegalForm.Should().BeNull();
+        organisation.SupplierInfo.CompletedLegalForm.Should().BeFalse();
+        organisation.SupplierInfo.CompletedOperationType.Should().BeFalse();
 
         result.Should().BeTrue();
         _organisationRepositoryMock.Verify(repo => repo.Save(organisation), Times.Once);
