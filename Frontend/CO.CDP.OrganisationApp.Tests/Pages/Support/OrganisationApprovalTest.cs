@@ -171,13 +171,15 @@ public class OrganisationApprovalModelTests
             )
         };
 
+        var expectedPersons = GivenOrganisationPersons();
+
         _mockOrganisationClient
             .Setup(client => client.GetOrganisationAsync(expectedOrganisation.Id))
             .ReturnsAsync(expectedOrganisation);
 
         _mockOrganisationClient
             .Setup(client => client.GetOrganisationPersonsAsync(expectedOrganisation.Id))
-            .ReturnsAsync(new List<CDP.Organisation.WebApiClient.Person>());
+            .ReturnsAsync(expectedPersons);
 
         _mockOrganisationClient
             .Setup(client => client.SearchOrganisationAsync(expectedOrganisation.Name, "buyer", 3, 0.3))
@@ -203,9 +205,11 @@ public class OrganisationApprovalModelTests
             .Setup(client => client.GetOrganisationAsync(expectedOrganisation.Id))
             .ReturnsAsync(expectedOrganisation);
 
+        var expectedPersons = GivenOrganisationPersons();
+
         _mockOrganisationClient
             .Setup(client => client.GetOrganisationPersonsAsync(expectedOrganisation.Id))
-            .ReturnsAsync(new List<CDP.Organisation.WebApiClient.Person>());
+            .ReturnsAsync(expectedPersons);
 
         _mockOrganisationClient
             .Setup(client => client.SearchOrganisationAsync(expectedOrganisation.Name, "buyer", 3, 0.3))
@@ -263,9 +267,11 @@ public class OrganisationApprovalModelTests
             .Setup(client => client.GetOrganisationAsync(expectedOrganisation.Id))
             .ReturnsAsync(expectedOrganisation);
 
+        var expectedPersons = GivenOrganisationPersons();
+
         _mockOrganisationClient
             .Setup(client => client.GetOrganisationPersonsAsync(expectedOrganisation.Id))
-            .ReturnsAsync(new List<CDP.Organisation.WebApiClient.Person>());
+            .ReturnsAsync(expectedPersons);
 
         _mockOrganisationClient
             .Setup(x => x.GetOrganisationReviewsAsync(expectedOrganisation.Id))
@@ -290,9 +296,11 @@ public class OrganisationApprovalModelTests
             .Setup(client => client.GetOrganisationAsync(expectedOrganisation.Id))
             .ReturnsAsync(expectedOrganisation);
 
+        var expectedPersons = GivenOrganisationPersons();
+
         _mockOrganisationClient
             .Setup(client => client.GetOrganisationPersonsAsync(expectedOrganisation.Id))
-            .ReturnsAsync(new List<CDP.Organisation.WebApiClient.Person>());
+            .ReturnsAsync(expectedPersons);
 
         _mockOrganisationClient
             .Setup(x => x.GetOrganisationReviewsAsync(expectedOrganisation.Id))
@@ -321,9 +329,11 @@ public class OrganisationApprovalModelTests
             .Setup(x => x.GetOrganisationReviewsAsync(expectedOrganisation.Id))
             .ThrowsAsync(new ApiException("Not Found", 404, "", default, null));
 
+        var expectedPersons = GivenOrganisationPersons();
+
         _mockOrganisationClient
             .Setup(client => client.GetOrganisationPersonsAsync(expectedOrganisation.Id))
-            .ReturnsAsync(new List<CDP.Organisation.WebApiClient.Person>());
+            .ReturnsAsync(expectedPersons);
 
         var result = await _organisationApprovalModel.OnGet(expectedOrganisation.Id);
 
@@ -337,7 +347,12 @@ public class OrganisationApprovalModelTests
         return new CDP.Organisation.WebApiClient.Organisation(
                     additionalIdentifiers: new List<Identifier>(),
                     addresses: new List<Address>(),
-                    contactPoint: null,
+                    contactPoint: new ContactPoint(
+                        email: "john@smith.com",
+                        name: null,
+                        telephone: null,
+                        url: null
+                        ),
                     id: Guid.NewGuid(),
                     identifier: null,
                     name: "Test Organisation",
@@ -345,5 +360,26 @@ public class OrganisationApprovalModelTests
                     roles: new List<PartyRole>(),
                     details: new Details(approval: null, buyerInformation: null, pendingRoles: [], publicServiceMissionOrganization: null, scale: null, shelteredWorkshop: null, vcse: null)
                 );
+    }
+
+    private static List<CDP.Organisation.WebApiClient.Person> GivenOrganisationPersons()
+    {
+        return new List<CDP.Organisation.WebApiClient.Person>
+        {
+            new CDP.Organisation.WebApiClient.Person(
+                id: Guid.NewGuid(),
+                firstName: "Admin",
+                lastName: "User",
+                email: "admin.user@example.com",
+                scopes: new List<string> { "ADMIN", "RESPONDER" }
+            ),
+            new CDP.Organisation.WebApiClient.Person(
+                id: Guid.NewGuid(),
+                firstName: "Regular",
+                lastName: "User",
+                email: "regular.user@example.com",
+                scopes: new List<string> { "EDITOR" }
+            )
+        };
     }
 }
