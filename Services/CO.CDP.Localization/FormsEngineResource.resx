@@ -459,4 +459,19 @@
   <data name="TradeAssurance_02_Caption" xml:space="preserve">
     <value>Trade assurance reference number</value>
   </data>
+  <data name="Share_My_Information_Consortium_SectionTitle" xml:space="preserve">
+    <value>Share my information consortium</value>
+  </data>
+  <data name="Global_Enter_Your_Postal_Address" xml:space="preserve">
+    <value>Enter your postal address</value>
+  </data>
+  <data name="Global_Enter_Your_Email_Address" xml:space="preserve">
+    <value>Enter your email address</value>
+  </data>
+  <data name="Global_Enter_Your_Job_Title" xml:space="preserve">
+    <value>Enter your job title</value>
+  </data>
+  <data name="Global_Enter_Your_Name" xml:space="preserve">
+    <value>Enter your name</value>
+  </data>
 </root>
