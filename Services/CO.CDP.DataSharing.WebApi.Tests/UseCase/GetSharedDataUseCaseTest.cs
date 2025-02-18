@@ -64,9 +64,45 @@ public class GetSharedDataUseCaseTest : IClassFixture<AutoMapperFixture>
         AssertSupplierInformationData(result?.SupplierInformationData);
     }
 
-    private (string shareCode, int organisationId, Guid organisationGuid, Guid formId) SetupTestData()
+    [Fact]
+    public async Task Execute_ShouldAddConsortiumOrganisationSharedConsent_WhenOrganisationIsInformalConsortium()
     {
-        string shareCode = "valid-sharecode";
+        _configuration.Setup(c => c["DataSharingApiUrl"]).Returns("https://localhost");
+
+        var consortiumShareCode = "consortium-sharecode";
+        var subSharecode1 = "sub-sharecode-1";
+        var subSharecode2 = "sub-sharecode-2";
+        var consortiumOrgsShareCodes = new List<string> { "sub-sharecode-1", "sub-sharecode-2" };
+
+        (string _, int organisationId, Guid organisationGuid, Guid formId) = SetupTestData(consortiumShareCode, true);
+        (string _, int organisationId1, Guid organisationGuid1, Guid formId1) = SetupTestData(subSharecode1);
+        (string _, int organisationId2, Guid organisationGuid2, Guid formId2) = SetupTestData(subSharecode2);
+
+        _shareCodeRepository.Setup(repo => repo.GetConsortiumOrganisationsShareCode(consortiumShareCode))
+            .ReturnsAsync(consortiumOrgsShareCodes);
+
+        var result = await _useCase.Execute(consortiumShareCode);
+
+        result.Should().NotBeNull();
+        result!.SupplierInformationData.AnswerSets.Should().NotBeEmpty();
+        result.SupplierInformationData.Questions.Should().NotBeEmpty();
+        result.AdditionalParties.Should().HaveCount(2);
+
+        result.SupplierInformationData.AnswerSets.Where(a => a.OrganisationId == organisationGuid).Should().HaveCountGreaterThan(1);
+        result.SupplierInformationData.AnswerSets.Where(a => a.OrganisationId == organisationGuid1).Should().HaveCountGreaterThan(1);
+        result.SupplierInformationData.AnswerSets.Where(a => a.OrganisationId == organisationGuid2).Should().HaveCountGreaterThan(1);
+
+        result.SupplierInformationData.Questions.Where(a => a.OrganisationId == organisationGuid).Should().HaveCountGreaterThan(1);
+        result.SupplierInformationData.Questions.Where(a => a.OrganisationId == organisationGuid1).Should().HaveCountGreaterThan(1);
+        result.SupplierInformationData.Questions.Where(a => a.OrganisationId == organisationGuid2).Should().HaveCountGreaterThan(1);
+
+        result.AdditionalParties.First().ShareCode!.Value.Should().Be(subSharecode1);
+        result.AdditionalParties.Last().ShareCode!.Value.Should().Be(subSharecode2);
+    }
+
+    private (string shareCode, int organisationId, Guid organisationGuid, Guid formId) SetupTestData(
+        string shareCode = "valid-sharecode", bool isConsortium = false)
+    {
         int organisationId = 1;
         Guid organisationGuid = Guid.NewGuid();
         Guid formId = Guid.NewGuid();
@@ -75,6 +111,7 @@ public class GetSharedDataUseCaseTest : IClassFixture<AutoMapperFixture>
 
         var sharedConsent = EntityFactory.GetSharedConsent(organisationId, organisationGuid, formId);
         sharedConsent.ShareCode = shareCode;
+        if (isConsortium) sharedConsent.Organisation.Type = OrganisationType.InformalConsortium;
 
         _shareCodeRepository.Setup(repo => repo.GetByShareCode(shareCode)).ReturnsAsync(sharedConsent);
 

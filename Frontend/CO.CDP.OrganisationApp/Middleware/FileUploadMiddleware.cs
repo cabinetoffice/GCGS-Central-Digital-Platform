@@ -1,7 +1,7 @@
 using CO.CDP.OrganisationApp.Pages.Forms;
 using System.Net;
 
-namespace CO.CDP.OrganisationApp;
+namespace CO.CDP.OrganisationApp.Middleware;
 
 public class FileUploadMiddleware(RequestDelegate next)
 {
@@ -12,7 +12,7 @@ public class FileUploadMiddleware(RequestDelegate next)
         string contentType = context.Request.ContentType ?? string.Empty;
         bool isMultipartFormData = contentType.Contains("multipart/form-data;");
 
-        if ((context.Response.StatusCode == (int)HttpStatusCode.BadRequest) && (isMultipartFormData))
+        if (context.Response.StatusCode == (int)HttpStatusCode.BadRequest && isMultipartFormData)
         {
             await WriteAsync(context);
         }

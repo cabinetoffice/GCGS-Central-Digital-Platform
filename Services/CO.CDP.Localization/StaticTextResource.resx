@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <root>
-  <!-- 
-    Microsoft ResX Schema 
-    
+  <!--
+    Microsoft ResX Schema
+
     Version 2.0
-    
-    The primary goals of this format is to allow a simple XML format 
-    that is mostly human readable. The generation and parsing of the 
-    various data types are done through the TypeConverter classes 
+
+    The primary goals of this format is to allow a simple XML format
+    that is mostly human readable. The generation and parsing of the
+    various data types are done through the TypeConverter classes
     associated with the data types.
-    
+
     Example:
-    
+
     ... ado.net/XML headers & schema ...
     <resheader name="resmimetype">text/microsoft-resx</resheader>
     <resheader name="version">2.0</resheader>
@@ -26,36 +26,36 @@
         <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
         <comment>This is a comment</comment>
     </data>
-                
-    There are any number of "resheader" rows that contain simple 
+
+    There are any number of "resheader" rows that contain simple
     name/value pairs.
-    
-    Each data row contains a name, and value. The row also contains a 
-    type or mimetype. Type corresponds to a .NET class that support 
-    text/value conversion through the TypeConverter architecture. 
-    Classes that don't support this are serialized and stored with the 
+
+    Each data row contains a name, and value. The row also contains a
+    type or mimetype. Type corresponds to a .NET class that support
+    text/value conversion through the TypeConverter architecture.
+    Classes that don't support this are serialized and stored with the
     mimetype set.
-    
-    The mimetype is used for serialized objects, and tells the 
-    ResXResourceReader how to depersist the object. This is currently not 
+
+    The mimetype is used for serialized objects, and tells the
+    ResXResourceReader how to depersist the object. This is currently not
     extensible. For a given mimetype the value must be set accordingly:
-    
-    Note - application/x-microsoft.net.object.binary.base64 is the format 
-    that the ResXResourceWriter will generate, however the reader can 
+
+    Note - application/x-microsoft.net.object.binary.base64 is the format
+    that the ResXResourceWriter will generate, however the reader can
     read any of the formats listed below.
-    
+
     mimetype: application/x-microsoft.net.object.binary.base64
-    value   : The object must be serialized with 
+    value   : The object must be serialized with
             : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
             : and then encoded with base64 encoding.
-    
+
     mimetype: application/x-microsoft.net.object.soap.base64
-    value   : The object must be serialized with 
+    value   : The object must be serialized with
             : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
             : and then encoded with base64 encoding.
 
     mimetype: application/x-microsoft.net.object.bytearray.base64
-    value   : The object must be serialized into a byte array 
+    value   : The object must be serialized into a byte array
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
@@ -698,6 +698,9 @@
   </data>
   <data name="Global_Submit" xml:space="preserve">
     <value>Submit</value>
+  </data>
+  <data name="Global_Filter" xml:space="preserve">
+    <value>Filter</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_PageTitle" xml:space="preserve">
     <value>Check your answers</value>
@@ -1551,11 +1554,17 @@
   <data name="ShareYourInformation_ShareCodeCreatedFooterBody1" xml:space="preserve">
     <value>You can save your share code and &lt;a href="?handler=download&amp;shareCode={0}"&gt;download your supplier information file&lt;/a&gt; or come back and get them when needed.</value>
   </data>
+  <data name="ShareYourInformation_ConsortiumShareCodeCreatedFooterBody1" xml:space="preserve">
+    <value>You can save your share code and &lt;a href="?handler=download&amp;shareCode={0}"&gt;download your combined supplier information file&lt;/a&gt; or come back and get them when needed.</value>
+  </data>
   <data name="ShareYourInformation_ShareCodeCreatedFooterBody2" xml:space="preserve">
     <value>If your supplier information changes, you can update it and create a new share code and file to share the new information.</value>
   </data>
   <data name="ShareYourInformation_BackOrganisationDetails" xml:space="preserve">
     <value>Back to organisation details</value>
+  </data>
+  <data name="ShareYourInformation_BackConsortiumDetails" xml:space="preserve">
+    <value>Back to consortium details</value>
   </data>
   <data name="OrganisationRegistration_CompanyHouseNumberQuestion_Hint" xml:space="preserve">
     <value>You can &lt;a href="https://find-and-update.company-information.service.gov.uk/" target="_blank"&gt;find your company number on Companies House (opens in a new tab)&lt;/a&gt;. It is an 8 digit or 2 letter and 6 digit number. For example, 12345678 or SC123456.</value>
@@ -1909,6 +1918,12 @@
   </data>
   <data name="Support_Organisations_SupplierOrganisations_Title" xml:space="preserve">
     <value>Supplier organisations</value>
+  </data>
+  <data name="Support_Organisations_SearchTitleBuyer" xml:space="preserve">
+    <value>Search buyer organisation</value>
+  </data>
+  <data name="Support_Organisations_SearchTitleSupplier" xml:space="preserve">
+    <value>Search supplier organisation</value>
   </data>
   <data name="Support_OrganisationApproval_OrganisationsCountHeading" xml:space="preserve">
     <value>There are {0} organisations</value>
@@ -3300,5 +3315,29 @@
   </data>
   <data name="ConsortiumShareMyInformation_Title" xml:space="preserve">
     <value>Share your consortium information</value>
+  </data>
+  <data name="Supplementary_LoggedOut_Title" xml:space="preserve">
+    <value>For your security, we signed you out</value>
+  </data>
+  <data name="Supplementary_LoggedOut_Paragraph1" xml:space="preserve">
+    <value>We did not save your answers.</value>
+  </data>
+  <data name="Global_Signin" xml:space="preserve">
+    <value>Sign in</value>
+  </data>
+  <data name="Global_Warning" xml:space="preserve">
+    <value>Warning</value>
+  </data>
+  <data name="Header_Contact" xml:space="preserve">
+    <value>&lt;a class="govuk-link" target="_blank" href="/provide-feedback-and-contact/?context=feedback"&gt;Contact the Find a Tender team (opens in new tab)&lt;/a&gt; if you have feedback, questions or suggestions.</value>
+  </data>
+  <data name="Footer_OGL" xml:space="preserve">
+    <value>All content is available under the &lt;a class="govuk-footer__link" href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/" rel="license"&gt;Open Government Licence v3.0&lt;/a&gt;, except where otherwise stated</value>
+  </data>
+  <data name="Footer_Copyright" xml:space="preserve">
+    <value>Crown copyright</value>
+  </data>
+  <data name="Footer_TED" xml:space="preserve">
+    <value>Notices are based on TED XML schema. © European Union</value>
   </data>
 </root>

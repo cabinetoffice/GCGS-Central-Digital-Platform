@@ -1230,8 +1230,13 @@
           },
           {
             "selected": false,
-            "text": "organisation-information-migrations",
-            "value": "organisation-information-migrations"
+            "text": "outbox-processor-entity-verification",
+            "value": "outbox-processor-entity-verification"
+          },
+          {
+            "selected": false,
+            "text": "outbox-processor-organisation",
+            "value": "outbox-processor-organisation"
           },
           {
             "selected": false,
@@ -1244,7 +1249,7 @@
             "value": "tenant"
           }
         ],
-        "query": "authority, av-scanner-app, data-sharing, entity-verification, forms, organisation, organisation-app, person, tenant",
+        "query": "authority, av-scanner-app, data-sharing, entity-verification, forms, organisation, organisation-app, outbox-processor-entity-verification, outbox-processor-entity-verification, person, tenant",
         "queryValue": "",
         "skipUrlSync": false,
         "type": "custom"

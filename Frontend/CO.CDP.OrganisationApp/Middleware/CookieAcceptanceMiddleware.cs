@@ -1,4 +1,4 @@
-namespace CO.CDP.OrganisationApp;
+namespace CO.CDP.OrganisationApp.Middleware;
 
 public class CookieAcceptanceMiddleware(ICookiePreferencesService cookiePreferencesService) : IMiddleware
 {

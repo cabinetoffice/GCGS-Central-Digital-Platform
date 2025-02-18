@@ -34,6 +34,7 @@ public class AutoMapperFixture
         services.AddSingleton<IHtmlLocalizer<FormsEngineResource>>(localizerMock.Object);
         services.AddTransient(typeof(NullableLocalizedPropertyResolver<,>));
         services.AddTransient(typeof(LocalizedPropertyResolver<,>));
+        services.AddTransient(typeof(FormQuestionOptionsResolver));
 
         var serviceProvider = services.BuildServiceProvider();
 
