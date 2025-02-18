@@ -229,7 +229,7 @@ locals {
 
   resource_defaults = {
     development = { cpu = 256,  memory = 512  }
-    staging     = { cpu = 4096, memory = 4096 }
+    staging     = { cpu = 4096, memory = 8192 }
     integration = { cpu = 512,  memory = 1024 }
     production  = { cpu = 1024, memory = 3072 }
   }
