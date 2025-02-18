@@ -11,8 +11,6 @@ public class OrganisationsModel(
     ISession session)
     : LoggedInUserAwareModel(session)
 {
-    private readonly ISession _session = session;
-
     public string? Title { get; set; }
 
     public string? SearchTitle { get; set; }
@@ -37,7 +35,7 @@ public class OrganisationsModel(
     {
         InitModel(type, pageNumber);
 
-        OrganisationSearchInput = _session.Get<string>("OrganisationSearchInput");
+        OrganisationSearchInput = SessionContext.Get<string>("OrganisationSearchInput");
 
         await GetResults();
 
@@ -50,11 +48,11 @@ public class OrganisationsModel(
 
         if (!string.IsNullOrWhiteSpace(OrganisationSearchInput))
         {
-            _session.Set("OrganisationSearchInput", OrganisationSearchInput);
+            SessionContext.Set("OrganisationSearchInput", OrganisationSearchInput);
         }
         else
         {
-            _session.Remove("OrganisationSearchInput"); // Clear when input is empty
+            SessionContext.Remove("OrganisationSearchInput"); // Clear when input is empty
         }
 
         await GetResults();
