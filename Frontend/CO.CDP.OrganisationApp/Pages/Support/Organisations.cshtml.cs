@@ -8,8 +8,11 @@ namespace CO.CDP.OrganisationApp.Pages.Support;
 [Authorize(Policy = PersonScopeRequirement.SupportAdmin)]
 public class OrganisationsModel(
     IOrganisationClient organisationClient,
-    ISession session) : LoggedInUserAwareModel(session)
+    ISession session)
+    : LoggedInUserAwareModel(session)
 {
+    private readonly ISession _session = session;
+
     public string? Title { get; set; }
 
     public string? SearchTitle { get; set; }
@@ -34,7 +37,7 @@ public class OrganisationsModel(
     {
         InitModel(type, pageNumber);
 
-        OrganisationSearchInput = session.Get<string>("OrganisationSearchInput");
+        OrganisationSearchInput = _session.Get<string>("OrganisationSearchInput");
 
         await GetResults();
 
@@ -47,11 +50,11 @@ public class OrganisationsModel(
 
         if (!string.IsNullOrWhiteSpace(OrganisationSearchInput))
         {
-            session.Set("OrganisationSearchInput", OrganisationSearchInput);
+            _session.Set("OrganisationSearchInput", OrganisationSearchInput);
         }
         else
         {
-            session.Remove("OrganisationSearchInput"); // Clear when input is empty
+            _session.Remove("OrganisationSearchInput"); // Clear when input is empty
         }
 
         await GetResults();
