@@ -12,7 +12,7 @@
 @model OrganisationOverviewModel
 
 @{
-    var organisationDetails = Model.OrganisationDetails!;    
+    var organisationDetails = Model.OrganisationDetails!;
     var registeredAddress = organisationDetails.Addresses.FirstOrDefault(a => a.Type == CO.CDP.Organisation.WebApiClient.AddressType.Registered);
     bool isViewer = await userInfoService.IsViewer();
     bool isAdmin = await userInfoService.IsAdmin();
@@ -26,53 +26,53 @@
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
 
-            @if (Model.Review != null && Model.Review.Status == CDP.Organisation.WebApiClient.ReviewStatus.Rejected)
-            {
-                <div class="govuk-notification-banner" role="region" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
-                    <div class="govuk-notification-banner__header">
-                        <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
-                            @StaticTextResource.Organisation_RegistrationNotApproved
-                        </h2>
-                    </div>
-                    <div class="govuk-notification-banner__content">
-                        <p class="govuk-notification-banner__heading">
-                            @StaticTextResource.Organisation_WeCouldNotApproveYourRequest
-                        </p>
-                        <p class="govuk-body">@Model.Review.Comment</p>
-                    </div>
+        @if (Model.Review != null && Model.Review.Status == CDP.Organisation.WebApiClient.ReviewStatus.Rejected)
+        {
+            <div class="govuk-notification-banner" role="region" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
+                <div class="govuk-notification-banner__header">
+                    <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
+                        @StaticTextResource.Organisation_RegistrationNotApproved
+                    </h2>
                 </div>
-            }
-            else if (organisationDetails.IsPendingBuyer() || (organisationDetails.IsBuyer() && Model.HasBuyerSignedMou == false && isAdmin))
-            {
-                <div class="govuk-notification-banner" role="region" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
-                    <div class="govuk-notification-banner__header">
-                        <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
-                            @StaticTextResource.Global_Important
-                        </h2>
-                    </div>
-                    <div class="govuk-notification-banner__content">
-                        <p class="govuk-notification-banner__heading">
-                            @StaticTextResource.Organisation_BuyerRegistrationPendingApproval
-                        </p>
-                        <p class="govuk-body">
-                            @StaticTextResource.OrganisationOverView_Banner_PendingApproval_Hint
-                        </p>
+                <div class="govuk-notification-banner__content">
+                    <p class="govuk-notification-banner__heading">
+                        @StaticTextResource.Organisation_WeCouldNotApproveYourRequest
+                    </p>
+                    <p class="govuk-body">@Model.Review.Comment</p>
+                </div>
+            </div>
+        }
+        else if (organisationDetails.IsPendingBuyer() || (organisationDetails.IsBuyer() && Model.HasBuyerSignedMou == false && isAdmin))
+        {
+            <div class="govuk-notification-banner" role="region" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
+                <div class="govuk-notification-banner__header">
+                    <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
+                        @StaticTextResource.Global_Important
+                    </h2>
+                </div>
+                <div class="govuk-notification-banner__content">
+                    <p class="govuk-notification-banner__heading">
+                        @StaticTextResource.Organisation_BuyerRegistrationPendingApproval
+                    </p>
+                    <p class="govuk-body">
+                        @StaticTextResource.OrganisationOverView_Banner_PendingApproval_Hint
+                    </p>
 
-                        <ul class="govuk-list govuk-list--bullet">
-                            @if (Model.HasBuyerSignedMou == false)
-                            {
-                                <authorize scope="@OrgScopeRequirement.Admin">
-                                    <li>@Html.Raw(string.Format(@StaticTextResource.OrganisationOverView_Banner_Review_MoU_Link, Model.Id))</li>
-                                </authorize>
-                            }
-                            @if (organisationDetails.IsPendingBuyer())
-                            {
-                                <li>@StaticTextResource.OrganisationOverView_Banner_PendingApproval</li>
-                            }
-                        </ul>
-                    </div>
+                    <ul class="govuk-list govuk-list--bullet">
+                        @if (Model.HasBuyerSignedMou == false)
+                        {
+                            <authorize scope="@OrgScopeRequirement.Admin">
+                                <li>@Html.Raw(string.Format(@StaticTextResource.OrganisationOverView_Banner_Review_MoU_Link, Model.Id))</li>
+                            </authorize>
+                        }
+                        @if (organisationDetails.IsPendingBuyer())
+                        {
+                            <li>@StaticTextResource.OrganisationOverView_Banner_PendingApproval</li>
+                        }
+                    </ul>
                 </div>
-            }       
+            </div>
+        }
 
         <fieldset class="govuk-fieldset">
             <h1 class="govuk-heading-l">
@@ -185,6 +185,11 @@
                                 }
                             </p>
                         </dd>
+                        <authorize scope="@OrgScopeRequirement.Editor">
+                            <dd class="govuk-summary-list__actions">
+                                <a class="govuk-link govuk-link--no-visited-state" href="/organisation/@Model.Id/buyer-organisation-type">@StaticTextResource.Global_Change</a>
+                            </dd>
+                        </authorize>
                     </div>
 
                     <div class="govuk-summary-list__row">
