@@ -13,20 +13,15 @@
         "awslogs-stream-prefix": "${lg_prefix}"
       }
     },
-    "Command": [
-      "run", "/scripts/organisation-lookup.js",
-      "--env", "AUTH_TOKEN=$AUTH_TOKEN",
-      "--env", "DURATION=$DURATION",
-      "--env", "MAX_VUS=$MAX_VUS",
-      "--env", "RPS=$RPS",
-      "--env", "TARGET_DOMAIN=$TARGET_DOMAIN"
-    ],
+    "Command": ["run", "/scripts/main.js"],
     "environment": [
         {"name": "AUTH_TOKEN", "value": "${auth_token}"},
         {"name": "DURATION", "value": "${duration}"},
+        {"name": "ENDPOINTS", "value": "${endpoints}"},
         {"name": "MAX_VUS", "value": "${max_vus}"},
         {"name": "RPS", "value": "${rps}"},
-        {"name": "TARGET_DOMAIN", "value": "${target_domain}"}
+        {"name": "TARGET_DOMAIN", "value": "${target_domain}"},
+        {"name": "VUS", "value": "${vus}"}
     ],
     "secrets": [],
     "volumesFrom": [],

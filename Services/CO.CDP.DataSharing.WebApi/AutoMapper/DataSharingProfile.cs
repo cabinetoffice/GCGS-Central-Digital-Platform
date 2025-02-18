@@ -1,7 +1,9 @@
 using AutoMapper;
 using CO.CDP.DataSharing.WebApi.Model;
+using CO.CDP.Localization;
 using CO.CDP.OrganisationInformation;
 using CO.CDP.OrganisationInformation.Persistence;
+using Microsoft.AspNetCore.Mvc.Localization;
 using System.Text.Json;
 using Address = CO.CDP.OrganisationInformation.Address;
 using Persistence = CO.CDP.OrganisationInformation.Persistence.Forms;
@@ -228,6 +230,13 @@ public class JsonValueResolver : IValueResolver<Persistence.FormAnswer, FormAnsw
 
 public class FormQuestionOptionsResolver : IValueResolver<Persistence.FormQuestion, FormQuestion, List<FormQuestionOption>>
 {
+    private readonly IHtmlLocalizer<FormsEngineResource> _localizer;
+
+    public FormQuestionOptionsResolver(IHtmlLocalizer<FormsEngineResource> localizer)
+    {
+        _localizer = localizer;
+    }
+
     public List<FormQuestionOption> Resolve(Persistence.FormQuestion src, FormQuestion destination, List<FormQuestionOption> destMember, ResolutionContext context)
     {
         if (src.Options == null)
@@ -237,12 +246,19 @@ public class FormQuestionOptionsResolver : IValueResolver<Persistence.FormQuesti
         {
             return src.Options.Groups
                 .SelectMany(g => g.Choices ?? new List<Persistence.FormQuestionGroupChoice>())
-                .Select(gc => new FormQuestionOption
-                {
-                    Id = gc.Id ?? Guid.NewGuid(),
-                    Value = gc.Title ?? string.Empty
+                .Select(gc => new FormQuestionOption {
+                    Id = gc.Id,
+                    Value = _localizer[gc.Title].Value
                 })
                 .ToList();
+        }
+
+        if (!string.IsNullOrEmpty(src.Options.ChoiceProviderStrategy))
+        {
+            return new List<FormQuestionOption>
+            {
+                new FormQuestionOption { Id = Guid.NewGuid(), Value = "Dynamic" }
+            };
         }
 
         if (src.Options.Choices != null)
@@ -251,7 +267,7 @@ public class FormQuestionOptionsResolver : IValueResolver<Persistence.FormQuesti
                 .Select(c => new FormQuestionOption
                 {
                     Id = c.Id,
-                    Value = c.Title ?? string.Empty
+                    Value = _localizer[c.Title].Value
                 })
                 .ToList();
         }
