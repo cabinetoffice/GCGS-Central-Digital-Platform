@@ -73,7 +73,7 @@ locals {
       fts_service_allowed_origins       = []
       name                              = "staging"
       onelogin_logout_notification_urls = ["https://www-staging.find-tender.service.gov.uk/auth/backchannellogout"]
-      pinned_service_version            = "1.0.37-32ac3b8b"
+      pinned_service_version            = "1.0.38"
       postgres_instance_type            = "db.t4g.micro"
       private_subnets = [
         "10.${local.cidr_b_staging}.101.0/24",
@@ -134,7 +134,7 @@ locals {
         "https://wallsm.nqc.com/auth/backchannellogout",
         "https://www-tpp-preview.find-tender.service.gov.uk/auth/backchannellogout",
       ]
-      pinned_service_version            = "1.0.36"
+      pinned_service_version            = "1.0.38"
       postgres_instance_type            = "db.t4g.micro"
       private_subnets = [
         "10.${local.cidr_b_integration}.101.0/24",
