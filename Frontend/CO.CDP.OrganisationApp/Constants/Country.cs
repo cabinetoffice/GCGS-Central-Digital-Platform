@@ -193,7 +193,7 @@ public static class Country
             {"TV", "Tuvalu"},
             {"UG", "Uganda"},
             {"UA", "Ukraine"},
-            {"AE", "United Arab Emirates"},            
+            {"AE", "United Arab Emirates"},
             {"US", "United States"},
             {"UY", "Uruguay"},
             {"UZ", "Uzbekistan"},
@@ -206,7 +206,6 @@ public static class Country
             {"ZW", "Zimbabwe"}
         };
 
-    // https://www.gov.uk/government/publications/open-standards-for-government/country-codes
     public static Dictionary<string, string> UKCountries =
         new()
         {
@@ -215,4 +214,11 @@ public static class Country
             {"GB-SCT", "Scotland"},
             {"GB-WLS", "Wales"}
         };
+
+    public static Dictionary<string, string> GetAllCountries()
+    {
+        return NonUKCountries.Concat(UKCountries)
+            .OrderBy(pair => pair.Value)
+            .ToDictionary(pair => pair.Key, pair => pair.Value);
+    }
 }

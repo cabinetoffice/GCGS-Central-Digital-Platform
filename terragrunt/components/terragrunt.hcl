@@ -50,6 +50,7 @@ locals {
       ]
       pinned_service_version            = null
       postgres_instance_type            = "db.t4g.micro"
+      postgres_aurora_instance_type     = "db.r5.large"
       private_subnets = [
         "10.${local.cidr_b_development}.101.0/24",
         "10.${local.cidr_b_development}.102.0/24",
@@ -72,9 +73,10 @@ locals {
       fts_azure_frontdoor               = null
       fts_service_allowed_origins       = []
       name                              = "staging"
-      onelogin_logout_notification_urls = ["https://sirsi-integration-findtender.nqc.com/auth/backchannellogout"]
-      pinned_service_version            = "1.0.37-32ac3b8b"
+      onelogin_logout_notification_urls = ["https://www-staging.find-tender.service.gov.uk/auth/backchannellogout"]
+      pinned_service_version            = "1.0.38"
       postgres_instance_type            = "db.t4g.micro"
+      postgres_aurora_instance_type     = "db.r5.8xlarge"
       private_subnets = [
         "10.${local.cidr_b_staging}.101.0/24",
         "10.${local.cidr_b_staging}.102.0/24",
@@ -134,8 +136,9 @@ locals {
         "https://wallsm.nqc.com/auth/backchannellogout",
         "https://www-tpp-preview.find-tender.service.gov.uk/auth/backchannellogout",
       ]
-      pinned_service_version            = "1.0.36"
+      pinned_service_version            = "1.0.38"
       postgres_instance_type            = "db.t4g.micro"
+      postgres_aurora_instance_type     = "db.r5.large"
       private_subnets = [
         "10.${local.cidr_b_integration}.101.0/24",
         "10.${local.cidr_b_integration}.102.0/24",
@@ -165,6 +168,7 @@ locals {
       onelogin_logout_notification_urls = ["https://www.private-beta.find-tender.service.gov.uk/auth/backchannellogout"]
       pinned_service_version            = "1.0.36"
       postgres_instance_type            = "db.t4g.micro"
+      postgres_aurora_instance_type     = "db.r5.large"
       private_subnets = [
         "10.${local.cidr_b_production}.101.0/24",
         "10.${local.cidr_b_production}.102.0/24",
@@ -182,6 +186,7 @@ locals {
     }
   }
 
+  aurora_postgres_instance_type     = try(local.environments[local.environment].postgres_aurora_instance_type, null)
   fts_azure_frontdoor               = try(local.environments[local.environment].fts_azure_frontdoor, null)
   fts_service_allowed_origins       = try(local.environments[local.environment].fts_service_allowed_origins, null)
   onelogin_logout_notification_urls = try(local.environments[local.environment].onelogin_logout_notification_urls, null)
@@ -199,292 +204,63 @@ locals {
     mysql_access_allowed_ip_ranges = ["0.0.0.0/0"]
   }
 
-  desired_count_non_production = 1
-  desired_count_production     = 1
-  frontend_desired_count_non_production = 4
-
-  service_configs_scaling_non_production = {
-    authority = {
-      cpu           = 256
-      desired_count = local.desired_count_non_production
-      memory        = 512
-    }
-    av_scanner_app = {
-      cpu           = 256
-      desired_count = local.desired_count_non_production
-      memory        = 512
-    }
-    data_sharing = {
-      cpu           = 256
-      desired_count = local.desired_count_non_production
-      memory        = 512
-    }
-    entity_verification = {
-      cpu           = 256
-      desired_count = local.desired_count_non_production
-      memory        = 512
-    }
-    entity_verification_migrations = {
-      cpu           = 256
-      desired_count = local.desired_count_non_production
-      memory        = 512
-    }
-    forms = {
-      cpu           = 256
-      desired_count = local.desired_count_non_production
-      memory        = 512
-    }
-    organisation = {
-      cpu           = 256
-      desired_count = local.desired_count_non_production
-      memory        = 512
-    }
-    organisation_app = {
-      cpu           = 256
-      desired_count = local.frontend_desired_count_non_production
-      memory        = 512
-    }
-    organisation_information_migrations = {
-      cpu           = 256
-      desired_count = local.desired_count_non_production
-      memory        = 512
-    }
-    outbox_processor_entity_verification = {
-      cpu           = 256
-      desired_count = 1
-      memory        = 512
-    }
-    outbox_processor_organisation = {
-      cpu           = 256
-      desired_count = 1
-      memory        = 512
-    }
-    person = {
-      cpu           = 256
-      desired_count = local.desired_count_non_production
-      memory        = 512
-    }
-    tenant = {
-      cpu           = 256
-      desired_count = local.desired_count_non_production
-      memory        = 512
-    }
+  service_configs_base = {
+    authority                            = {}
+    av_scanner_app                       = {}
+    data_sharing                         = {}
+    entity_verification                  = {}
+    entity_verification_migrations       = { cpu = 256,  memory = 512}
+    forms                                = {}
+    organisation                         = {}
+    organisation_app                     = {}
+    organisation_information_migrations  = { cpu = 256,  memory = 512}
+    outbox_processor_entity_verification = { desired_count = 1 }
+    outbox_processor_organisation        = { desired_count = 1 }
+    person                               = {}
+    tenant                               = {}
   }
 
-  service_configs_scaling_production = {
-    authority = {
-      cpu           = 1024
-      desired_count = local.desired_count_production
-      memory        = 3072
-    }
-    av_scanner_app = {
-      cpu           = 1024
-      desired_count = local.desired_count_production
-      memory        = 3072
-    }
-    data_sharing = {
-      cpu           = 1024
-      desired_count = local.desired_count_production
-      memory        = 3072
-    }
-    entity_verification = {
-      cpu           = 1024
-      desired_count = local.desired_count_production
-      memory        = 3072
-    }
-    entity_verification_migrations = {
-      cpu           = 256
-      desired_count = local.desired_count_production
-      memory        = 512
-    }
-    forms = {
-      cpu           = 1024
-      desired_count = local.desired_count_production
-      memory        = 3072
-    }
-    organisation = {
-      cpu           = 1024
-      desired_count = local.desired_count_production
-      memory        = 3072
-    }
-    organisation_app = {
-      cpu           = 1024
-      desired_count = local.frontend_desired_count_non_production
-      memory        = 3072
-    }
-    organisation_information_migrations = {
-      cpu           = 256
-      desired_count = local.desired_count_production
-      memory        = 512
-    }
-    outbox_processor_entity_verification = {
-      cpu           = 256
-      desired_count = 1
-      memory        = 512
-    }
-    outbox_processor_organisation = {
-      cpu           = 256
-      desired_count = 1
-      memory        = 512
-    }
-    person = {
-      cpu           = 1024
-      desired_count = local.desired_count_production
-      memory        = 3072
-    }
-    tenant = {
-      cpu           = 1024
-      desired_count = local.desired_count_production
-      memory        = 3072
-    }
+  desired_counts = {
+    development = 2
+    staging     = 9
+    integration = 1
+    production  = 1
   }
 
-  # @TODO (ABN) Remove me
-  desired_count_development    = 4
-  service_configs_scaling_development = {
-    authority = {
-      cpu           = 256
-      desired_count = local.desired_count_development
-      memory        = 512
-    }
-    av_scanner_app = {
-      cpu           = 256
-      desired_count = local.desired_count_development
-      memory        = 512
-    }
-    data_sharing = {
-      cpu           = 256
-      desired_count = local.desired_count_development
-      memory        = 512
-    }
-    entity_verification = {
-      cpu           = 256
-      desired_count = local.desired_count_development
-      memory        = 512
-    }
-    entity_verification_migrations = {
-      cpu           = 256
-      desired_count = local.desired_count_development
-      memory        = 512
-    }
-    forms = {
-      cpu           = 256
-      desired_count = local.desired_count_development
-      memory        = 512
-    }
-    organisation = {
-      cpu           = 256
-      desired_count = local.desired_count_development
-      memory        = 512
-    }
-    organisation_app = {
-      cpu           = 256
-      desired_count = local.frontend_desired_count_non_production
-      memory        = 512
-    }
-    organisation_information_migrations = {
-      cpu           = 256
-      desired_count = local.desired_count_development
-      memory        = 512
-    }
-    outbox_processor_entity_verification = {
-      cpu           = 256
-      desired_count = 1
-      memory        = 512
-    }
-    outbox_processor_organisation = {
-      cpu           = 256
-      desired_count = 1
-      memory        = 512
-    }
-    person = {
-      cpu           = 256
-      desired_count = local.desired_count_development
-      memory        = 512
-    }
-    tenant = {
-      cpu           = 256
-      desired_count = local.desired_count_development
-      memory        = 512
-    }
+  resource_defaults = {
+    development = { cpu = 256,  memory = 512  }
+    staging     = { cpu = 4096, memory = 8192 }
+    integration = { cpu = 512,  memory = 1024 }
+    production  = { cpu = 1024, memory = 3072 }
   }
 
   service_configs_scaling = {
-    development = local.service_configs_scaling_development
-    staging     = local.service_configs_scaling_non_production
-    integration = local.service_configs_scaling_non_production
+    for service, config in local.service_configs_base :
+    service => merge(
+      local.resource_defaults[local.environment],
+      { desired_count = local.desired_counts[local.environment] },
+      config
+    )
   }
 
   service_configs_common = {
-    authority = {
-      name      = "authority"
-      port      = 8092
-      port_host = 8092
-    }
-    av_scanner_app = {
-      name      = "av-scanner-app"
-      port      = 8095
-      port_host = 8095
-    }
-    data_sharing = {
-      name      = "data-sharing"
-      port      = 8088
-      port_host = 8088
-    }
-    entity_verification = {
-      name      = "entity-verification"
-      port      = 8094
-      port_host = 8094
-    }
-    entity_verification_migrations = {
-      name      = "entity-verification-migrations"
-      port      = 9191
-      port_host = null
-    }
-    forms = {
-      name      = "forms"
-      port      = 8086
-      port_host = 8086
-    }
-    organisation = {
-      name      = "organisation"
-      port      = 8082
-      port_host = 8082
-    }
-    organisation_app = {
-      name      = "organisation-app"
-      port      = 8090
-      port_host = 80
-    }
-    organisation_information_migrations = {
-      name      = "organisation-information-migrations"
-      port      = 9090
-      port_host = null
-    }
-    outbox_processor_entity_verification = {
-      name      = "outbox-processor-entity-verification"
-      port      = 9096
-      port_host = 9096
-    }
-    outbox_processor_organisation = {
-      name      = "outbox-processor-organisation"
-      port      = 9098
-      port_host = 9098
-    }
-    person = {
-      name      = "person"
-      port      = 8084
-      port_host = 8084
-    }
-    tenant = {
-      name      = "tenant"
-      port      = 8080
-      port_host = 8080
-    }
+    authority =                            { port = 8092, port_host = 8092, name = "authority"}
+    av_scanner_app =                       { port = 8095, port_host = 8095, name = "av-scanner-app"}
+    data_sharing =                         { port = 8088, port_host = 8088, name = "data-sharing"}
+    entity_verification =                  { port = 8094, port_host = 8094, name = "entity-verification"}
+    entity_verification_migrations =       { port = 9191, port_host = null, name = "entity-verification-migrations"}
+    forms =                                { port = 8086, port_host = 8086, name = "forms"}
+    organisation =                         { port = 8082, port_host = 8082, name = "organisation"}
+    organisation_app =                     { port = 8090, port_host = 80  , name = "organisation-app"}
+    organisation_information_migrations =  { port = 9090, port_host = null, name = "organisation-information-migrations"}
+    outbox_processor_entity_verification = { port = 9096, port_host = 9096, name = "outbox-processor-entity-verification"}
+    outbox_processor_organisation =        { port = 9098, port_host = 9098, name = "outbox-processor-organisation"}
+    person =                               { port = 8084, port_host = 8084, name = "person" }
+    tenant =                               { port = 8080, port_host = 8080, name = "tenant" }
   }
 
   service_configs = {
-    for key, value in try(local.service_configs_scaling[local.environment], local.service_configs_scaling_production) :
+    for key, value in local.service_configs_scaling :
     key => merge(value, local.service_configs_common[key])
   }
 
@@ -502,8 +278,8 @@ locals {
       port_host = 9000
     }
     grafana = {
-      cpu       = 256
-      memory    = 512
+      cpu       = 1024
+      memory    = 3072
       name      = "grafana"
       port      = 3000
       port_host = 3000

@@ -7,7 +7,11 @@ public class DisplayLogoutMessageMiddleware(RequestDelegate next)
 {
     public async Task InvokeAsync(HttpContext context)
     {
-        if (context.Request.Cookies.ContainsKey(".AspNetCore.Cookies"))
+        // If the request is not for the sign-in page, and the user is authenticated, and the cookie is expired,
+        // then sign out the user and redirect to the logged-out page.
+        if (context.Request.Path.StartsWithSegments("/signin-oidc", StringComparison.OrdinalIgnoreCase) == false
+            && context.Request.Path.StartsWithSegments("/one-login", StringComparison.OrdinalIgnoreCase) == false
+            && context.Request.Cookies.ContainsKey(".AspNetCore.Cookies"))
         {
             var authResult = await context.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
