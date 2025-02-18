@@ -33,6 +33,7 @@ module "cluster_sirsi" {
   monitoring_role_arn          = local.is_production ? var.role_rds_cloudwatch_arn : ""
   performance_insights_enabled = local.is_production
   instance_type                = var.aurora_postgres_instance_type
+  db_parameters_instance       = { "max_connections": 10000 }
   private_subnet_ids           = var.private_subnet_ids
   role_terraform_arn           = var.role_terraform_arn
   tags                         = var.tags
