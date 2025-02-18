@@ -192,7 +192,6 @@ locals {
   onelogin_logout_notification_urls = try(local.environments[local.environment].onelogin_logout_notification_urls, null)
   pinned_service_version            = try(local.environments[local.environment].pinned_service_version, null)
 
-
   product = {
     name               = "CDP SIRSI"
     resource_name      = "cdp-sirsi"
