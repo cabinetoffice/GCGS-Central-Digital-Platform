@@ -149,9 +149,7 @@ public class OrganisationsModelTests
     public async Task OnPost_SavesSearchInput_ToSession()
     {
         string inputValue = "searched term";
-
         string type = "buyer";
-        int pageNumber = 1;
         int totalOrganisations = 120;
         var organisations = new List<OrganisationExtended>();
         _mockOrganisationClient.Setup(client => client.GetAllOrganisationsAsync(type, type, It.IsAny<string>(), 50, 0)).ReturnsAsync(organisations);
@@ -168,7 +166,6 @@ public class OrganisationsModelTests
     public async Task OnPost_ClearsSearchInput_FromSession_WhenEmpty()
     {
         string type = "buyer";
-        int pageNumber = 1;
         int totalOrganisations = 120;
         var organisations = new List<OrganisationExtended>();
         _mockOrganisationClient.Setup(client => client.GetAllOrganisationsAsync(type, type, It.IsAny<string>(), 50, 0)).ReturnsAsync(organisations);
