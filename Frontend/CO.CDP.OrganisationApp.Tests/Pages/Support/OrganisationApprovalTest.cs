@@ -362,6 +362,155 @@ public class OrganisationApprovalModelTests
                 );
     }
 
+    [Fact]
+    public async Task OnGet_WhenFindOrganisationsByOrganisationEmailReturnsResults_ShouldPopulateMatchingOrganisationsByOrgEmail()
+    {
+        var expectedOrganisation = GivenOrganisation();
+        var expectedMatchingOrganisationsByOrgEmail = GivenMatchingOrganisations();
+
+        _mockOrganisationClient
+            .Setup(client => client.GetOrganisationAsync(expectedOrganisation.Id))
+            .ReturnsAsync(expectedOrganisation);
+
+        var expectedPersons = GivenOrganisationPersons();
+        _mockOrganisationClient
+            .Setup(client => client.GetOrganisationPersonsAsync(expectedOrganisation.Id))
+            .ReturnsAsync(expectedPersons);
+
+        _mockOrganisationClient
+            .Setup(client => client.FindOrganisationsByOrganisationEmailAsync(expectedOrganisation.ContactPoint.Email, "buyer", 10))
+            .ReturnsAsync(expectedMatchingOrganisationsByOrgEmail);
+
+        _mockOrganisationClient
+            .Setup(x => x.GetOrganisationReviewsAsync(expectedOrganisation.Id))
+            .ThrowsAsync(new ApiException("Not Found", 404, "", default, null));
+
+        var result = await _organisationApprovalModel.OnGet(expectedOrganisation.Id);
+
+        result.Should().BeOfType<PageResult>();
+        _organisationApprovalModel.MatchingOrganisationsByOrgEmail.Should().NotBeNull();
+        _organisationApprovalModel.MatchingOrganisationsByOrgEmail.Should().BeEquivalentTo(expectedMatchingOrganisationsByOrgEmail);
+    }
+
+    [Fact]
+    public async Task OnGet_WhenFindOrganisationsByOrganisationEmailThrows404_ShouldSetMatchingOrganisationsByOrgEmailToEmptyList()
+    {
+        var expectedOrganisation = GivenOrganisation();
+
+        _mockOrganisationClient
+            .Setup(client => client.GetOrganisationAsync(expectedOrganisation.Id))
+            .ReturnsAsync(expectedOrganisation);
+
+        var expectedPersons = GivenOrganisationPersons();
+        _mockOrganisationClient
+            .Setup(client => client.GetOrganisationPersonsAsync(expectedOrganisation.Id))
+            .ReturnsAsync(expectedPersons);
+
+        _mockOrganisationClient
+            .Setup(client => client.FindOrganisationsByOrganisationEmailAsync(expectedOrganisation.ContactPoint.Email, "buyer", 10))
+            .ThrowsAsync(new ApiException("Not Found", 404, "", default, null));
+
+        _mockOrganisationClient
+            .Setup(x => x.GetOrganisationReviewsAsync(expectedOrganisation.Id))
+            .ThrowsAsync(new ApiException("Not Found", 404, "", default, null));
+
+        var result = await _organisationApprovalModel.OnGet(expectedOrganisation.Id);
+
+        result.Should().BeOfType<PageResult>();
+        _organisationApprovalModel.MatchingOrganisationsByOrgEmail.Should().NotBeNull();
+        _organisationApprovalModel.MatchingOrganisationsByOrgEmail.Should().BeEmpty();
+    }
+
+    [Fact]
+    public async Task OnGet_WhenFindOrganisationsByAdminEmailReturnsResults_ShouldPopulateMatchingOrganisationsByAdminEmail()
+    {
+        var expectedOrganisation = GivenOrganisation();
+        var expectedPersons = GivenOrganisationPersons();
+        var expectedMatchingOrganisationsByAdminEmail = GivenMatchingOrganisations();
+
+        _mockOrganisationClient
+            .Setup(client => client.GetOrganisationAsync(expectedOrganisation.Id))
+            .ReturnsAsync(expectedOrganisation);
+
+        _mockOrganisationClient
+            .Setup(client => client.GetOrganisationPersonsAsync(expectedOrganisation.Id))
+            .ReturnsAsync(expectedPersons);
+
+        _mockOrganisationClient
+            .Setup(client => client.FindOrganisationsByAdminEmailAsync(expectedPersons.First().Email, "buyer", 10))
+            .ReturnsAsync(expectedMatchingOrganisationsByAdminEmail);
+
+        _mockOrganisationClient
+            .Setup(x => x.GetOrganisationReviewsAsync(expectedOrganisation.Id))
+            .ThrowsAsync(new ApiException("Not Found", 404, "", default, null));
+
+        var result = await _organisationApprovalModel.OnGet(expectedOrganisation.Id);
+
+        result.Should().BeOfType<PageResult>();
+        _organisationApprovalModel.MatchingOrganisationsByAdminEmail.Should().NotBeNull();
+        _organisationApprovalModel.MatchingOrganisationsByAdminEmail.Should().BeEquivalentTo(expectedMatchingOrganisationsByAdminEmail);
+    }
+
+    [Fact]
+    public async Task OnGet_WhenFindOrganisationsByAdminEmailThrows404_ShouldSetMatchingOrganisationsByAdminEmailToEmptyList()
+    {
+        var expectedOrganisation = GivenOrganisation();
+        var expectedPersons = GivenOrganisationPersons();
+
+        _mockOrganisationClient
+            .Setup(client => client.GetOrganisationAsync(expectedOrganisation.Id))
+            .ReturnsAsync(expectedOrganisation);
+
+        _mockOrganisationClient
+            .Setup(client => client.GetOrganisationPersonsAsync(expectedOrganisation.Id))
+            .ReturnsAsync(expectedPersons);
+
+        _mockOrganisationClient
+            .Setup(client => client.FindOrganisationsByAdminEmailAsync(expectedPersons.First().Email, "buyer", 10))
+            .ThrowsAsync(new ApiException("Not Found", 404, "", default, null));
+
+        _mockOrganisationClient
+            .Setup(x => x.GetOrganisationReviewsAsync(expectedOrganisation.Id))
+            .ThrowsAsync(new ApiException("Not Found", 404, "", default, null));
+
+        var result = await _organisationApprovalModel.OnGet(expectedOrganisation.Id);
+
+        result.Should().BeOfType<PageResult>();
+        _organisationApprovalModel.MatchingOrganisationsByAdminEmail.Should().NotBeNull();
+        _organisationApprovalModel.MatchingOrganisationsByAdminEmail.Should().BeEmpty();
+    }
+
+    private static List<OrganisationSearchResult> GivenMatchingOrganisations()
+    {
+        return new List<OrganisationSearchResult>
+        {
+            new OrganisationSearchResult(
+                id: Guid.NewGuid(),
+                name: "Matching Organisation 1",
+                identifier: new Identifier(
+                    scheme: "test-scheme",
+                    id: "test-id-1",
+                    legalName: "Matching Organisation 1",
+                    uri: new Uri("https://example.com/1")
+                ),
+                roles: new List<PartyRole> { PartyRole.Buyer },
+                type: OrganisationType.Organisation
+            ),
+            new OrganisationSearchResult(
+                id: Guid.NewGuid(),
+                name: "Matching Organisation 2",
+                identifier: new Identifier(
+                    scheme: "test-scheme",
+                    id: "test-id-2",
+                    legalName: "Matching Organisation 2",
+                    uri: new Uri("https://example.com/2")
+                ),
+                roles: new List<PartyRole> { PartyRole.Buyer },
+                type: OrganisationType.Organisation
+            )
+        };
+    }
+
     private static List<CDP.Organisation.WebApiClient.Person> GivenOrganisationPersons()
     {
         return new List<CDP.Organisation.WebApiClient.Person>
