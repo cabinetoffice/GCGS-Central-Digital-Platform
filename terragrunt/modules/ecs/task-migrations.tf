@@ -30,6 +30,7 @@ module "ecs_migration_tasks" {
   ecs_listener_arn       = aws_lb_listener.ecs.arn
   ecs_service_base_sg_id = var.ecs_sg_id
   family                 = "db"
+  is_standalone_task     = true
   memory                 = each.value.memory
   name                   = each.value.name
   private_subnet_ids     = var.private_subnet_ids

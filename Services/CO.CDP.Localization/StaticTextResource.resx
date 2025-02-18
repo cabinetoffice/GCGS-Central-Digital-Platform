@@ -502,7 +502,7 @@
     <value>Cookies that measure website use</value>
   </data>
   <data name="Supplementary_CookieDetails_GoogleAnalytics" xml:space="preserve">
-    <value>We use Google Analytics software (Universal Analytics) to collect anonymised information about how you use Find a Tender. We do this to help make sure the site is meeting the needs of its users and to help us make improvements to the site.</value>
+    <value>We use Google Analytics software to collect anonymised information about how you use Find a Tender. We do this to help make sure the site is meeting the needs of its users and to help us make improvements to the site.</value>
   </data>
   <data name="Supplementary_CookieDetails_NoGoogleShare" xml:space="preserve">
     <value>We do not allow Google to use or share the data about how you use this site.</value>
@@ -532,7 +532,7 @@
     <value>When you sign in to the service, we’ll set cookies to keep you signed in as you use the site. These cookies do not store your personal data and are deleted when you close your browser.</value>
   </data>
   <data name="Supplementary_CookieDetails_BannerMessages" xml:space="preserve">
-    <value>Banner messages and preferences</value>
+    <value>Cookies that remember your settings</value>
   </data>
   <data name="Supplementary_CookieDetails_BannerInfo" xml:space="preserve">
     <value>You may see banners when you visit Find a Tender inviting you to select your cookie preferences. We’ll set cookies so that your computer knows you’ve seen such messages and not to show them again, and also to store your settings.</value>
@@ -553,13 +553,13 @@
     <value>Expires</value>
   </data>
   <data name="Supplementary_CookieDetails_TableRow_GA" xml:space="preserve">
-    <value>This cookie is used with Google Universal Analytics. This cookie allows Google to track unique users via a client identifier that is randomly generated</value>
+    <value>This cookie is used with Google Analytics. This cookie allows Google to track unique users via a client identifier that is randomly generated</value>
   </data>
   <data name="Supplementary_CookieDetails_TableRow_GAT" xml:space="preserve">
-    <value>This cookie is used with Google Universal Analytics. This cookie is used to monitor and track visitors’ behaviour on the site anonymously</value>
+    <value>This cookie is used with Google Analytics. It is used to reduce the number of page view requests.</value>
   </data>
   <data name="Supplementary_CookieDetails_TableRow_GID" xml:space="preserve">
-    <value>This cookie is used with Google Universal Analytics. This cookie is used to group the user behaviour</value>
+    <value>This cookie is used with Google Analytics. It helps us count how many people visit the service by telling us if you’ve visited before.</value>
   </data>
   <data name="Supplementary_CookieDetails_TableRow_Antiforgery" xml:space="preserve">
     <value>This cookie keeps the service secure, preventing cross-site forgery requests.</value>
@@ -698,6 +698,9 @@
   </data>
   <data name="Global_Submit" xml:space="preserve">
     <value>Submit</value>
+  </data>
+  <data name="Global_Filter" xml:space="preserve">
+    <value>Filter</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_PageTitle" xml:space="preserve">
     <value>Check your answers</value>
@@ -1378,88 +1381,88 @@
     <value>Charity Commission (England and Wales)</value>
   </data>
   <data name="Organisation_OrganisationIdentification_GB_CHC_Number_Label" xml:space="preserve">
-    <value>Charity Commission (England and Wales) number</value>
+    <value>Charity Commission (England and Wales)</value>
   </data>
   <data name="Organisation_OrganisationIdentification_GB_CHC_Number_ErrorMessage" xml:space="preserve">
-    <value>Enter the Charity Commission (England and Wales) number</value>
+    <value>Enter the charity number</value>
   </data>
   <data name="Organisation_OrganisationIdentification_GB_SC_Label" xml:space="preserve">
     <value>Scottish Charity Register</value>
   </data>
   <data name="Organisation_OrganisationIdentification_GB_SC_Number_Label" xml:space="preserve">
-    <value>Scottish Charity Register Number</value>
+    <value>Scottish Charity Register</value>
   </data>
   <data name="Organisation_OrganisationIdentification_GB_SC_Number_ErrorMessage" xml:space="preserve">
-    <value>Enter the Scottish Charity Register number</value>
+    <value>Enter the charity number</value>
   </data>
   <data name="Organisation_OrganisationIdentification_GB_NIC_Label" xml:space="preserve">
     <value>Charity Commission for Northern Ireland</value>
   </data>
   <data name="Organisation_OrganisationIdentification_GB_NIC_Number_Label" xml:space="preserve">
-    <value>Charity Commission for Northern Ireland Number</value>
+    <value>Charity Commission for Northern Ireland</value>
   </data>
   <data name="Organisation_OrganisationIdentification_GB_NIC_Number_ErrorMessage" xml:space="preserve">
-    <value>Enter the Charity Commission for Northern Ireland number</value>
+    <value>Enter the charity number</value>
   </data>
   <data name="Organisation_OrganisationIdentification_GB_MPR_Label" xml:space="preserve">
     <value>Mutuals Public Register</value>
   </data>
   <data name="Organisation_OrganisationIdentification_GB_MPR_Number_Label" xml:space="preserve">
-    <value>Mutuals Public Register number</value>
+    <value>Mutuals Public Register</value>
   </data>
   <data name="Organisation_OrganisationIdentification_GB_MPR_Number_ErrorMessage" xml:space="preserve">
-    <value>Enter the Mutuals Public Register number</value>
+    <value>Enter the registration number</value>
   </data>
   <data name="Organisation_OrganisationIdentification_GG_RCE_Label" xml:space="preserve">
     <value>Guernsey Registry</value>
   </data>
   <data name="Organisation_OrganisationIdentification_GG_RCE_Number_Label" xml:space="preserve">
-    <value>Guernsey Registry Number</value>
+    <value>Guernsey Registry</value>
   </data>
   <data name="Organisation_OrganisationIdentification_GG_RCE_Number_ErrorMessage" xml:space="preserve">
-    <value>Enter the Guernsey Registry number.</value>
+    <value>Enter the entity number</value>
   </data>
   <data name="Organisation_OrganisationIdentification_JE_FSC_Label" xml:space="preserve">
     <value>Jersey Financial Services Commission Registry</value>
   </data>
   <data name="Organisation_OrganisationIdentification_JE_FSC_Number_Label" xml:space="preserve">
-    <value>Jersey Financial Services Commission Registry Number</value>
+    <value>Jersey Financial Services Commission Registry</value>
   </data>
   <data name="Organisation_OrganisationIdentification_JE_FSC_Number_ErrorMessage" xml:space="preserve">
-    <value>Enter the Jersey Financial Services Commission Registry number</value>
+    <value>Enter the registration number</value>
   </data>
   <data name="Organisation_OrganisationIdentification_IM_CR_Label" xml:space="preserve">
     <value>Isle of Man Companies Registry</value>
   </data>
   <data name="Organisation_OrganisationIdentification_IM_CR_Number_Label" xml:space="preserve">
-    <value>Isle of Man Companies Registry Number</value>
+    <value>Isle of Man Companies Registry</value>
   </data>
   <data name="Organisation_OrganisationIdentification_IM_CR_Number_ErrorMessage" xml:space="preserve">
-    <value>Enter Isle of Man Companies Registry number</value>
+    <value>Enter the company number</value>
   </data>
   <data name="Organisation_OrganisationIdentification_GB_NHS_Label" xml:space="preserve">
     <value>NHS Organisation Data Service</value>
   </data>
   <data name="Organisation_OrganisationIdentification_GB_NHS_Number_Label" xml:space="preserve">
-    <value>NHS Organisation Data Service Number</value>
+    <value>NHS Organisation Data Service</value>
   </data>
   <data name="Organisation_OrganisationIdentification_GB_NHS_Number_ErrorMessage" xml:space="preserve">
-    <value>Enter the NHS Organisation Data Service number</value>
+    <value>Enter the ODS code</value>
   </data>
   <data name="Organisation_OrganisationIdentification_GB_UKPRN_Label" xml:space="preserve">
-    <value>UK Register of Learning Providers</value>
+    <value>UK Register of Learning Providers (UKPRN number)</value>
   </data>
   <data name="Organisation_OrganisationIdentification_GB_UKPRN_Number_Label" xml:space="preserve">
     <value>UK Register of Learning Providers (UKPRN number)</value>
   </data>
   <data name="Organisation_OrganisationIdentification_GB_UKPRN_Number_ErrorMessage" xml:space="preserve">
-    <value>Enter the UK Register of Learning Providers number.</value>
+    <value>Enter the UK Provider Reference Number (UKPRN)</value>
   </data>
   <data name="Organisation_OrganisationIdentification_Other_Label" xml:space="preserve">
     <value>None apply</value>
   </data>
   <data name="Organisation_OrganisationIdentification_Other_Hint" xml:space="preserve">
-    <value>You'll get a public procurement organisation number (PPON) as an identifier</value>
+    <value>You'll be assigned a public procurement organisation number (PPON)</value>
   </data>
   <data name="Organisation_OrganisationIdentification_GG_RCE_Hint" xml:space="preserve">
     <value>Include prefix, if applicable. For example, GY.</value>
@@ -1471,13 +1474,13 @@
     <value>Registration number</value>
   </data>
   <data name="Organisation_OrganisationIdentification_Number_ErrorMessage" xml:space="preserve">
-    <value>Enter the number</value>
+    <value>Enter the registration number</value>
   </data>
   <data name="Organisation_OrganisationIdentification_Hint" xml:space="preserve">
     <value>Select one option. Then enter the registration number.</value>
   </data>
   <data name="Organisation_OrganisationIdentification_ErrorMessage" xml:space="preserve">
-    <value>Select the organisation on any of these registries</value>
+    <value>Select a registry</value>
   </data>
   <data name="Organisation_OrganisationIdentification_Charity_Number_Label" xml:space="preserve">
     <value>Charity number</value>
@@ -1489,7 +1492,7 @@
     <value>ODS code</value>
   </data>
   <data name="Organisation_OrganisationIdentification_ODS_Code_ErrorMessage" xml:space="preserve">
-    <value>Enter the code</value>
+    <value>Enter the ODS code</value>
   </data>
   <data name="Organisation_BuyerType" xml:space="preserve">
     <value>Organisation type</value>
@@ -1551,11 +1554,17 @@
   <data name="ShareYourInformation_ShareCodeCreatedFooterBody1" xml:space="preserve">
     <value>You can save your share code and &lt;a href="?handler=download&amp;shareCode={0}"&gt;download your supplier information file&lt;/a&gt; or come back and get them when needed.</value>
   </data>
+  <data name="ShareYourInformation_ConsortiumShareCodeCreatedFooterBody1" xml:space="preserve">
+    <value>You can save your share code and &lt;a href="?handler=download&amp;shareCode={0}"&gt;download your combined supplier information file&lt;/a&gt; or come back and get them when needed.</value>
+  </data>
   <data name="ShareYourInformation_ShareCodeCreatedFooterBody2" xml:space="preserve">
     <value>If your supplier information changes, you can update it and create a new share code and file to share the new information.</value>
   </data>
   <data name="ShareYourInformation_BackOrganisationDetails" xml:space="preserve">
     <value>Back to organisation details</value>
+  </data>
+  <data name="ShareYourInformation_BackConsortiumDetails" xml:space="preserve">
+    <value>Back to consortium details</value>
   </data>
   <data name="OrganisationRegistration_CompanyHouseNumberQuestion_Hint" xml:space="preserve">
     <value>You can &lt;a href="https://find-and-update.company-information.service.gov.uk/" target="_blank"&gt;find your company number on Companies House (opens in a new tab)&lt;/a&gt;. It is an 8 digit or 2 letter and 6 digit number. For example, 12345678 or SC123456.</value>
@@ -1582,7 +1591,7 @@
     <value>Wales</value>
   </data>
   <data name="OrganisationRegistration_BuyerSelectDevolvedRegulation_Hint" xml:space="preserve">
-    <value>Select all that apply</value>
+    <value>Read the &lt;a href="https://www.gov.uk/government/publications/procurement-act-2023-guidance-documents-plan-phase/guidance-devolved-contracting-authorities-html#:~:text=Procurement%20is%20largely%20a%20devolved,are%20conducted%20and%20contracts%20managed." target="_blank"&gt;devolved contracting authorities guidance (opens in new tab). &lt;/a&gt;</value>
   </data>
   <data name="OrganisationRegistration_BuyerOrganisationType_CentralGovernment_Label" xml:space="preserve">
     <value>Central government - UK or devolved administrations</value>
@@ -1872,7 +1881,10 @@
     <value>Identifier/s</value>
   </data>
   <data name="Support_Organisations_TableHeader_OrgEmail" xml:space="preserve">
-    <value>Org email</value>
+    <value>Org</value>
+  </data>
+  <data name="Support_Organisations_TableHeader_AdminEmail" xml:space="preserve">
+    <value>Admin</value>
   </data>
   <data name="Support_Organisations_TableHeader_Status" xml:space="preserve">
     <value>Status</value>
@@ -1907,6 +1919,12 @@
   <data name="Support_Organisations_SupplierOrganisations_Title" xml:space="preserve">
     <value>Supplier organisations</value>
   </data>
+  <data name="Support_Organisations_SearchTitleBuyer" xml:space="preserve">
+    <value>Search buyer organisation</value>
+  </data>
+  <data name="Support_Organisations_SearchTitleSupplier" xml:space="preserve">
+    <value>Search supplier organisation</value>
+  </data>
   <data name="Support_OrganisationApproval_OrganisationsCountHeading" xml:space="preserve">
     <value>There are {0} organisations</value>
   </data>
@@ -1936,6 +1954,9 @@
   </data>
   <data name="Support_OrganisationApproval_Radio_Heading" xml:space="preserve">
     <value>Approve the request?</value>
+  </data>
+  <data name="Support_OrganisationApproval_AlreadyApproved_FlashMessage" xml:space="preserve">
+    <value>{organisationName} has already been approved</value>
   </data>
   <data name="Support_OrganisationApproval_ErrorMessage" xml:space="preserve">
     <value>Tell the user why you could not approve</value>
@@ -2241,37 +2262,37 @@
     <value>No connected person information available.</value>
   </data>
   <data name="PdfGenerator_OrganisationSchemeTitle_CharityCommission" xml:space="preserve">
-    <value>Charity Commission (England and Wales) number</value>
+    <value>Charity Commission (England and Wales)</value>
   </data>
   <data name="PdfGenerator_OrganisationSchemeTitle_CompaniesHouseNumber" xml:space="preserve">
     <value>Companies House number</value>
   </data>
   <data name="PdfGenerator_OrganisationSchemeTitle_GuernseyRegistry" xml:space="preserve">
-    <value>Guernsey Registry number</value>
+    <value>Guernsey Registry</value>
   </data>
   <data name="PdfGenerator_OrganisationSchemeTitle_IsleOfManCompaniesRegistry" xml:space="preserve">
-    <value>Isle of Man Companies Registry number</value>
+    <value>Isle of Man Companies Registry</value>
   </data>
   <data name="PdfGenerator_OrganisationSchemeTitle_JerseyFinancialServices" xml:space="preserve">
-    <value>Jersey Financial Services Commission Registry number</value>
+    <value>Jersey Financial Services Commission Registry</value>
   </data>
   <data name="PdfGenerator_OrganisationSchemeTitle_LearningProviderRegistry" xml:space="preserve">
-    <value>UK Register of Learning Provider number</value>
+    <value>UK Register of Learning Provider (UKPRN number)</value>
   </data>
   <data name="PdfGenerator_OrganisationSchemeTitle_MutualsPublicRegister" xml:space="preserve">
-    <value>Mutuals Public Register number</value>
+    <value>Mutuals Public Register</value>
   </data>
   <data name="PdfGenerator_OrganisationSchemeTitle_NHSRegistry" xml:space="preserve">
-    <value>National Health Service Organisations Registry number</value>
+    <value>NHS Organisations Data Service</value>
   </data>
   <data name="PdfGenerator_OrganisationSchemeTitle_NorthernIrelandCharityCommission" xml:space="preserve">
-    <value>Charity Commission for Northern Ireland number</value>
+    <value>Charity Commission for Northern Ireland</value>
   </data>
   <data name="PdfGenerator_OrganisationSchemeTitle_Other" xml:space="preserve">
     <value>Other / None</value>
   </data>
   <data name="PdfGenerator_OrganisationSchemeTitle_Ppon" xml:space="preserve">
-    <value>PPON</value>
+    <value>Public procurement organisation number (PPON)</value>
   </data>
   <data name="PdfGenerator_OrganisationSchemeTitle_ScottishCharityRegulator" xml:space="preserve">
     <value>Scottish Charity Register</value>
@@ -2689,8 +2710,8 @@
   <data name="SupplierToBuyer_OrganisationType_BlueLightOrganisations" xml:space="preserve">
     <value>blue light organisations - ambulance, police, and other emergency services</value>
   </data>
-  <data name="SupplierToBuyer_OrganisationType_CentralGovernment_Title" xml:space="preserve">
-    <value>Includes arm's-length bodies:</value>
+  <data name="SupplierToBuyer_OrganisationType_CentralGovernment_Hint" xml:space="preserve">
+    <value>Public authorities including arm's-length bodies and trading funds</value>
   </data>
   <data name="SupplierToBuyer_OrganisationType_Charities" xml:space="preserve">
     <value>charities</value>
@@ -2714,7 +2735,7 @@
     <value>the Greater London Authority</value>
   </data>
   <data name="SupplierToBuyer_OrganisationType_Hint" xml:space="preserve">
-    <value>Select the type of organisation that best describes your organisation's role.</value>
+    <value>Decide on your organisation type, as defined in the &lt;a href="https://www.gov.uk/government/publications/procurement-act-2023-guidance-documents-plan-phase/guidance-contracting-authority-definition-html" target="_blank"&gt;contracting authority definition guidance (opens in new tab). &lt;/a&gt;</value>
   </data>
   <data name="SupplierToBuyer_OrganisationType_HousingAssociations" xml:space="preserve">
     <value>housing associations</value>
@@ -2729,16 +2750,16 @@
     <value>Other</value>
   </data>
   <data name="SupplierToBuyer_OrganisationType_PrivateUtility_Hint" xml:space="preserve">
-    <value>For example, private companies that have been granted a special or exclusive right to provide utility activities to the public. Such as National Grid or British Gas.</value>
+    <value>A private company with a special or exclusive right to provide utilities to the public. For example, private companies supplying electricity.</value>
   </data>
-  <data name="SupplierToBuyer_OrganisationType_PublicUndertakingAuthority" xml:space="preserve">
-    <value>Unlike a public authority, organisations that operate commercially and provide utility activities to the public. For example, Transport for Wales.</value>
+  <data name="SupplierToBuyer_OrganisationType_PublicUndertakingAuthority_Hint" xml:space="preserve">
+    <value>A commercial organisation subject to public oversight, providing utilities to the public. For example, transport networks operating commercially.</value>
   </data>
-  <data name="SupplierToBuyer_OrganisationType_RegionalAndLocalGovernment_Title" xml:space="preserve">
-    <value>Includes:</value>
+  <data name="SupplierToBuyer_OrganisationType_RegionalAndLocalGovernment_Hint" xml:space="preserve">
+    <value>Includes councils, charities, educational institutions, housing associations and blue light organisations.</value>
   </data>
   <data name="SupplierToBuyer_OrganisationType_Title" xml:space="preserve">
-    <value>Select the organisation type</value>
+    <value>Select your buyer organisation type </value>
   </data>
   <data name="SupplierToBuyer_OrganisationType_TradingFunds" xml:space="preserve">
     <value>trading funds</value>
@@ -2780,7 +2801,7 @@
     <value>Others</value>
   </data>
   <data name="SupplierToBuyer_OrganisationType_CentralGovernment" xml:space="preserve">
-    <value>Central government, public authority: UK, Scottish, Welsh and Northern Irish Executive</value>
+    <value>Central government - UK or devolved administrations</value>
   </data>
   <data name="SupplierToBuyer_OrganisationType_PrivateUtility" xml:space="preserve">
     <value>Private utility</value>
@@ -2789,7 +2810,7 @@
     <value>Public undertaking</value>
   </data>
   <data name="SupplierToBuyer_OrganisationType_RegionalAndLocalGovernment" xml:space="preserve">
-    <value>Regional and local government, public authority: UK, Scottish, Welsh and Northern Irish</value>
+    <value>Regional and local public authority (sub-central) - UK or devolved administrations</value>
   </data>
   <data name="Organisation_MyConsortium" xml:space="preserve">
     <value>Consortiums for joint bids ({0})</value>
@@ -2900,31 +2921,31 @@
     <value>Companies House number</value>
   </data>
   <data name="OrganisationSchemeType_CharityCommissionEnglandWales" xml:space="preserve">
-    <value>Charity Commission for England &amp; Wales Number</value>
+    <value>Charity Commission (England and Wales)</value>
   </data>
   <data name="OrganisationSchemeType_ScottishCharityRegulator" xml:space="preserve">
     <value>Scottish Charity Register</value>
   </data>
   <data name="OrganisationSchemeType_CharityCommissionNorthernIreland" xml:space="preserve">
-    <value>Charity Commission for Northern Ireland Number</value>
+    <value>Charity Commission for Northern Ireland</value>
   </data>
   <data name="OrganisationSchemeType_MutualsPublicRegister" xml:space="preserve">
-    <value>Mutuals Public Register Number</value>
+    <value>Mutuals Public Register</value>
   </data>
   <data name="OrganisationSchemeType_GuernseyRegistry" xml:space="preserve">
-    <value>Guernsey Registry Number</value>
+    <value>Guernsey Registry</value>
   </data>
   <data name="OrganisationSchemeType_JerseyFinancialServicesCommission" xml:space="preserve">
-    <value>Jersey Financial Services Commission Registry Number</value>
+    <value>Jersey Financial Services Commission Registry</value>
   </data>
   <data name="OrganisationSchemeType_IsleOfManCompaniesRegistry" xml:space="preserve">
-    <value>Isle of Man Companies Registry Number</value>
+    <value>Isle of Man Companies Registry</value>
   </data>
   <data name="OrganisationSchemeType_NHSOrganisationsRegistry" xml:space="preserve">
-    <value>National Health Service Organisations Registry Number</value>
+    <value>NHS Organisations Data Service</value>
   </data>
   <data name="OrganisationSchemeType_UKRegisterOfLearningProviders" xml:space="preserve">
-    <value>UK Register of Learning Provider Number</value>
+    <value>UK Register of Learning Providers (UKPRN number)</value>
   </data>
   <data name="OrganisationSchemeType_VAT" xml:space="preserve">
     <value>VAT number</value>
@@ -2936,7 +2957,7 @@
     <value>Other</value>
   </data>
   <data name="OrganisationSchemeType_Ppon" xml:space="preserve">
-    <value>PPON</value>
+    <value>Public procurement organisation number (PPON)</value>
   </data>
   <data name="UserSummary_ManageUsers_Title" xml:space="preserve">
     <value>Manage users</value>
@@ -3238,8 +3259,88 @@
   <data name="Consortium_ConsortiumEnterSharecode_InvalidCode" xml:space="preserve">
     <value>Share code not found.</value>
   </data>
+  <data name="OrganisationRegistration_BuyerDevolvedRegulation_Hint" xml:space="preserve">
+    <value>A contracting authority operating in a devolved nation may be subject to devolved regulations. For example, Northern Ireland, Scotland or Wales.</value>
+  </data>
+  <data name="OrganisationRegistration_BuyerOrganisationType_Hint" xml:space="preserve">
+    <value>Decide on your organisation type, as defined in the &lt;a href="https://www.gov.uk/government/publications/procurement-act-2023-guidance-documents-plan-phase/guidance-contracting-authority-definition-html" target="_blank"&gt;contracting authority definition guidance (opens in new tab). &lt;/a&gt;</value>
+  </data>
+  <data name="Supplementary_CookieDetails_TableRow_FT_Auth" xml:space="preserve">
+    <value>Provides Find a Tender with your account details once you’ve signed in</value>
+  </data>
+  <data name="Supplementary_CookieDetails_TableRow_FT_PAGE_TIMEOUT" xml:space="preserve">
+    <value>Saves the date/time of the user’s last activity on the site</value>
+  </data>
+  <data name="Supplementary_CookieDetails_TableRow_FT_PAGE_LASTPOLL" xml:space="preserve">
+    <value>Saves the date/time of the last check to see if the user should remain signed in to the site</value>
+  </data>
+  <data name="Supplementary_CookieDetails_TableRow_FT_PAGE_ACTIVE" xml:space="preserve">
+    <value>Saves the outcome of the last check to see if the user should remain signed in to the site</value>
+  </data>
+  <data name="Supplementary_CookieDetails_TableRow_FT_COOKIES_PREFERENCES_SET" xml:space="preserve">
+    <value>Lets us know that you’ve saved your cookie consent settings</value>
+  </data>
+  <data name="Supplementary_CookieDetails_TableRow_FT_LANGUAGE" xml:space="preserve">
+    <value>Saves your preferred language for use of the site if not English</value>
+  </data>
+  <data name="Supplementary_CookieDetails_TableRow_FT_USER_RESEARCH" xml:space="preserve">
+    <value>Prevents user research banner from appearing if user has submitted form</value>
+  </data>
+  <data name="Supplementary_CookieDetails_TableRow_FT_BANNER_CLOSE" xml:space="preserve">
+    <value>Prevents user research banner from appearing if close button is used</value>
+  </data>
+  <data name="Supplementary_CookieDetails_TableRow_SIRSI_FT_AUTH" xml:space="preserve">
+    <value>Provides Find a Tender with your account details once you’ve signed in</value>
+  </data>
+  <data name="Supplementary_CookieDetails_ListItem5" xml:space="preserve">
+    <value>The following Contentsquare cookies are also set to measure website use:</value>
+  </data>
+  <data name="Supplementary_CookieDetails_TableRow_CS_ID" xml:space="preserve">
+    <value>This cookie contains the Contentsquare's user identifier</value>
+  </data>
+  <data name="Supplementary_CookieDetails_TableRow_CS_S" xml:space="preserve">
+    <value>This cookie contains the number of page views within the running session for the Contentsquare solution</value>
+  </data>
+  <data name="Supplementary_CookieDetails_TableRow_CS_C" xml:space="preserve">
+    <value>Used by Contentsquare to save the user consent status for data collection</value>
+  </data>
+  <data name="ConsortiumShareMyInformation_HowItWorksParagraph1" xml:space="preserve">
+    <value>To share the combined supplier information of the consortium with buyers you need to create a share code and file, and declare that all the information is correct.</value>
+  </data>
+  <data name="ConsortiumShareMyInformation_HowItWorksParagraph2" xml:space="preserve">
+    <value>When you submit a bid for a procurement, the contracting authority will let you know how to give them the share code or file.</value>
+  </data>
+  <data name="ConsortiumShareMyInformation_HowItWorksParagraph3" xml:space="preserve">
+    <value>If any of the supplier information for any organisation in the consortium changes, you can update its share code on the consortium details page and then create a new combined share code and file to share the new information.</value>
+  </data>
+  <data name="ConsortiumShareMyInformation_Title" xml:space="preserve">
+    <value>Share your consortium information</value>
+  </data>
+  <data name="Supplementary_LoggedOut_Title" xml:space="preserve">
+    <value>For your security, we signed you out</value>
+  </data>
+  <data name="Supplementary_LoggedOut_Paragraph1" xml:space="preserve">
+    <value>We did not save your answers.</value>
+  </data>
+  <data name="Global_Signin" xml:space="preserve">
+    <value>Sign in</value>
+  </data>
+  <data name="Global_Warning" xml:space="preserve">
+    <value>Warning</value>
+  </data>
+  <data name="Header_Contact" xml:space="preserve">
+    <value>&lt;a class="govuk-link" target="_blank" href="/provide-feedback-and-contact/?context=feedback"&gt;Contact the Find a Tender team (opens in new tab)&lt;/a&gt; if you have feedback, questions or suggestions.</value>
+  </data>
+  <data name="Footer_OGL" xml:space="preserve">
+    <value>All content is available under the &lt;a class="govuk-footer__link" href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/" rel="license"&gt;Open Government Licence v3.0&lt;/a&gt;, except where otherwise stated</value>
+  </data>
+  <data name="Footer_Copyright" xml:space="preserve">
+    <value>Crown copyright</value>
+  </data>
+  <data name="Footer_TED" xml:space="preserve">
+    <value>Notices are based on TED XML schema. © European Union</value>
+  </data>
   <data name="PdfGenerator_OrganisationDetails_Title" xml:space="preserve">
     <value>Organisation Details</value>
   </data>
 </root>
-  

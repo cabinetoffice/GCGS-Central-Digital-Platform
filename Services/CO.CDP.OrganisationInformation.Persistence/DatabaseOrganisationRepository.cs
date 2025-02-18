@@ -68,7 +68,7 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
             .FirstOrDefaultAsync(t => t.Name == name);
     }
 
-    public async Task<IEnumerable<Organisation>> SearchByName(string name, PartyRole? role, int? limit)
+    public async Task<IEnumerable<Organisation>> SearchByName(string name, PartyRole? role, int? limit, double threshold = 0.3)
     {
         var query = context.Organisations
             .Include(p => p.Addresses)
@@ -80,19 +80,19 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
                 Organisation = t,
                 SimilarityScore = EF.Functions.TrigramsSimilarity(t.Name, name)
             })
-            .Where(t => t.SimilarityScore > 0.3);
+            .Where(t => t.SimilarityScore >= threshold);
 
         if (role.HasValue)
         {
             query = query.Where(t => t.Organisation.Roles.Contains(role.Value));
         }
 
+        query = query.OrderByDescending(t => t.SimilarityScore);
+
         if (limit.HasValue)
         {
             query = query.Take(limit.Value);
         }
-
-        query.OrderByDescending(t => t.SimilarityScore);
 
         return await query.Select(t => t.Organisation).ToListAsync();
     }
@@ -162,13 +162,16 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
         return await result.AsSingleQuery().ToListAsync();
     }
 
-    public async Task<IList<Organisation>> GetPaginated(PartyRole? role, PartyRole? pendingRole, int limit, int skip)
+    public async Task<IList<Organisation>> GetPaginated(PartyRole? role, PartyRole? pendingRole, string? searchText, int limit, int skip)
     {
         IQueryable<Organisation> result = context.Organisations
             .Include(o => o.ReviewedBy)
             .Include(o => o.Identifiers)
             .Include(o => o.BuyerInfo)
             .Include(o => o.SupplierInfo)
+            .Include(o => o.Persons)
+            .ThenInclude(p => p.PersonOrganisations)
+            .Include(o => o.Addresses)
             .Include(o => o.Addresses)
             .ThenInclude(p => p.Address)
             .OrderBy(o => o.Name)
@@ -177,6 +180,12 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
                 (role.HasValue && o.Roles.Contains(role.Value))
             );
 
+        if (!string.IsNullOrWhiteSpace(searchText))
+        {
+            result = result.Where(o => o.Name.Contains(searchText) ||
+                                       EF.Functions.TrigramsSimilarity(o.Name, searchText) > 0.3);
+        }
+
         return await result
             .AsSingleQuery()
             .Skip(skip)
@@ -184,13 +193,19 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
             .ToListAsync();
     }
 
-    public async Task<int> GetTotalCount(PartyRole? role, PartyRole? pendingRole)
+    public async Task<int> GetTotalCount(PartyRole? role, PartyRole? pendingRole, string? searchText)
     {
         IQueryable<Organisation> result = context.Organisations
             .Where(o =>
                 (pendingRole.HasValue && o.PendingRoles.Contains(pendingRole.Value)) ||
                 (role.HasValue && o.Roles.Contains(role.Value))
             );
+
+        if (searchText != null)
+        {
+            result = result.Where(o => o.Name.Contains(searchText) ||
+                                       EF.Functions.TrigramsSimilarity(o.Name, searchText) > 0.3);
+        }
 
         return await result.CountAsync();
     }

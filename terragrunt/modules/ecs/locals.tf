@@ -51,6 +51,8 @@ locals {
     config.name => config if contains(local.migrations, config.name)
   }
 
+  outbox_processors_desire_count = 1 # won't be scalable.
+
   service_configs = {
     for name, config in var.service_configs :
     config.name => config if !contains(local.migrations, config.name)

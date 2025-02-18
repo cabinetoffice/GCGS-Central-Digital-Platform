@@ -97,27 +97,25 @@ builder.Services.AddProblemDetails();
 builder.Services.AddJwtBearerAndApiKeyAuthentication(builder.Configuration, builder.Environment);
 builder.Services.AddOrganisationAuthorization();
 
-builder.Services
-    .AddAwsConfiguration(builder.Configuration)
-    .AddAwsSqsService()
-    .AddOutboxSqsPublisher<OrganisationInformationContext>(
-        builder.Configuration,
-        enableBackgroundServices: Assembly.GetEntryAssembly().IsRunAs("CO.CDP.Organisation.WebApi"),
-        notificationChannel: "organisation_information_outbox")
-    .AddSqsDispatcher(
-        EventDeserializer.Deserializer,
-        enableBackgroundServices: Assembly.GetEntryAssembly().IsRunAs("CO.CDP.Organisation.WebApi"),
-        (services) => { services.AddScoped<ISubscriber<PponGenerated>, PponGeneratedSubscriber>(); },
-        (services, dispatcher) => { dispatcher.Subscribe<PponGenerated>(services); }
-    );
-
-if (Assembly.GetEntryAssembly().IsRunAs("CO.CDP.Organisation.WebApi"))
+if ((Assembly.GetEntryAssembly().IsRunAs("CO.CDP.Organisation.WebApi")) ||
+    (Assembly.GetEntryAssembly().IsRunAs("testhost")))
 {
     builder.Services
         .AddAwsConfiguration(builder.Configuration)
         .AddLoggingConfiguration(builder.Configuration)
         .AddAmazonCloudWatchLogsService()
-        .AddCloudWatchSerilog(builder.Configuration);
+        .AddCloudWatchSerilog(builder.Configuration)
+        .AddAwsSqsService()
+        .AddOutboxSqsPublisher<OrganisationInformationContext>(
+            builder.Configuration,
+            enableBackgroundServices: Assembly.GetEntryAssembly().IsRunAs("CO.CDP.Organisation.WebApi"),
+            notificationChannel: "organisation_information_outbox")
+        .AddSqsDispatcher(
+            EventDeserializer.Deserializer,
+            enableBackgroundServices: Assembly.GetEntryAssembly().IsRunAs("CO.CDP.Organisation.WebApi"),
+            (services) => { services.AddScoped<ISubscriber<PponGenerated>, PponGeneratedSubscriber>(); },
+            (services, dispatcher) => { dispatcher.Subscribe<PponGenerated>(services); }
+        );
 }
 
 var app = builder.Build();

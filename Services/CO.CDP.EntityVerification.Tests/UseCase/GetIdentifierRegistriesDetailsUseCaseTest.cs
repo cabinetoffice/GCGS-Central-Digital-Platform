@@ -1,17 +1,9 @@
 using CO.CDP.EntityVerification.Persistence;
-using CO.CDP.EntityVerification.Tests.Persistence;
 using CO.CDP.EntityVerification.UseCase;
-using CO.CDP.OrganisationInformation.Persistence;
-using CO.CDP.Testcontainers.PostgreSql;
 using FluentAssertions;
 using Moq;
-using static CO.CDP.EntityVerification.UseCase.GetIdentifierRegistriesUseCase;
-using static CO.CDP.EntityVerification.UseCase.GetIdentifierRegistriesUseCase.GetIdentifierRegistriesException;
 
 namespace CO.CDP.EntityVerification.Tests.UseCase;
-
-using Moq;
-using Xunit;
 
 public class GetIdentifierRegistriesDetailsUseCaseTest
 {
@@ -27,7 +19,7 @@ public class GetIdentifierRegistriesDetailsUseCaseTest
 
     [Fact]
     public async Task Execute_ShouldReturnIdentifiers_WhenRepositoryReturnsData()
-    {        
+    {
         var schemecodes = new string[] { "scheme1", "scheme2" };
         var rawIdentifiers = new[]
         {
@@ -72,9 +64,9 @@ public class GetIdentifierRegistriesDetailsUseCaseTest
         var schemecodes = new string[] { "scheme1", "scheme2" };
         _repository
             .Setup(repo => repo.GetIdentifierRegistriesNameAsync(schemecodes))
-            .ThrowsAsync(new System.Exception("Database error"));
+            .ThrowsAsync(new Exception("Database error"));
 
-        await Assert.ThrowsAsync<System.Exception>(() => _useCase.Execute(schemecodes));
+        await Assert.ThrowsAsync<Exception>(() => _useCase.Execute(schemecodes));
     }
 
 }

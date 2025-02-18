@@ -18,4 +18,23 @@ public record Identifier
 
     /// <example>"https://cdp.cabinetoffice.gov.uk/organisations/5a360be7-e1d3-4214-9f72-0e1d6b57b85d"</example>
     public Uri? Uri { get; init; }
+
+    public static ICollection<CO.CDP.EntityVerification.Persistence.Identifier> GetPersistenceIdentifiers(
+        IEnumerable<Identifier> evIds)
+    {
+        List<CO.CDP.EntityVerification.Persistence.Identifier> ids = [];
+
+        foreach (var e in evIds)
+        {
+            ids.Add(new CO.CDP.EntityVerification.Persistence.Identifier
+            {
+                IdentifierId = e.Id,
+                LegalName = e.LegalName,
+                Scheme = e.Scheme,
+                Uri = e.Uri
+            });
+        }
+
+        return ids;
+    }
 }

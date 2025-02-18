@@ -171,10 +171,6 @@ public class DataService(IShareCodeRepository shareCodeRepository, IConnectedEnt
             }
             : null;
 
-        var organisationType = organisation.Roles.Contains(PartyRole.Tenderer)
-            ? Model.OrganisationType.Supplier
-            : Model.OrganisationType.Buyer;
-
         return new BasicInformation
         {
             SupplierType = supplierInfo.SupplierType,
@@ -183,7 +179,7 @@ public class DataService(IShareCodeRepository shareCodeRepository, IConnectedEnt
             VatNumber = vatNumber,
             WebsiteAddress = websiteAddress,
             EmailAddress = emailAddress,
-            OrganisationType = organisationType,
+            Role = organisation.Roles.Contains(PartyRole.Tenderer) ? "Supplier" : "Buyer",
             LegalForm = legalForm,
             OrganisationName = organisation.Name
         };

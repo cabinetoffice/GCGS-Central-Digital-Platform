@@ -338,11 +338,13 @@ public record PaginatedOrganisationQuery
     public PartyRole? PendingRole { get; }
     public int Limit { get; }
     public int Skip { get; }
+    public string? SearchText { get; }
 
-    public PaginatedOrganisationQuery(int limit, int skip, string? role = null, string? pendingRole = null)
+    public PaginatedOrganisationQuery(int limit, int skip, string? role = null, string? pendingRole = null, string? searchText = null)
     {
         Limit = limit;
         Skip = skip;
+        SearchText = searchText;
 
         if (role != null)
         {
@@ -360,8 +362,9 @@ public record OrganisationTypeQuery
 {
     public PartyRole? Role { get; }
     public PartyRole? PendingRole { get; }
+    public string? SearchText { get; }
 
-    public OrganisationTypeQuery(string? role = null, string? pendingRole = null)
+    public OrganisationTypeQuery(string? role = null, string? pendingRole = null, string? searchText = null)
     {
         if (role != null)
         {
@@ -372,6 +375,8 @@ public record OrganisationTypeQuery
         {
             PendingRole = (PartyRole)Enum.Parse(typeof(PartyRole), pendingRole, true);
         }
+
+        SearchText = searchText;
     }
 }
 
@@ -421,7 +426,8 @@ public record OrganisationSearchQuery
     public string Name { get; }
     public PartyRole? Role { get; }
     public int? Limit { get; }
-    public OrganisationSearchQuery(string name, int? limit, string? role = null)
+    public double Threshold { get; }
+    public OrganisationSearchQuery(string name, int? limit, double? threshold, string? role = null)
     {
         Name = name;
 
@@ -431,6 +437,11 @@ public record OrganisationSearchQuery
         }
 
         Limit = limit;
+
+        if (threshold.HasValue)
+        {
+            Threshold = threshold.Value;
+        }
     }
 }
 

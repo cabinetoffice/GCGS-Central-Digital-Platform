@@ -15,4 +15,14 @@ public record OrganisationReference
     [Required] public required List<PartyRole> Roles { get; init; }
     /// <example>"https://cdp.cabinetoffice.gov.uk/organisations/f4596cdd-12e5-4f25-9db1-4312474e516f"</example>
     public Uri? Uri { get; init; }
+    public OrganisationReferenceShareCode? ShareCode { get; set; }
+}
+
+public record OrganisationReferenceShareCode
+{
+    /// <example>"QTnhQbHM"</example>
+    public required string Value { get; set; }
+
+    /// <example>"2025-01-30T17:41:37.109Z"</example>
+    public required DateTimeOffset SubmittedAt { get; set; }
 }

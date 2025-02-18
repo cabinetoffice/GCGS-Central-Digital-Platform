@@ -124,7 +124,9 @@ public class OutboxProcessorTest
         Message = message,
         Published = published,
         CreatedOn = DateTimeOffset.UtcNow,
-        UpdatedOn = DateTimeOffset.UtcNow
+        UpdatedOn = DateTimeOffset.UtcNow,
+        QueueUrl = "test-queue",
+        MessageGroupId = "test-messages"
     };
 
     private async Task GivenMessagesInOutbox(List<OutboxMessage> messages)

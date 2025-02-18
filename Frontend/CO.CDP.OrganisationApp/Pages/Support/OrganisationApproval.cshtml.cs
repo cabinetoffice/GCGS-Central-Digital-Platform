@@ -10,7 +10,8 @@ namespace CO.CDP.OrganisationApp.Pages.Support;
 
 public class OrganisationApprovalModel(
     IOrganisationClient organisationClient,
-    ISession session) : LoggedInUserAwareModel(session)
+    ISession session,
+    IFlashMessageService flashMessageService) : LoggedInUserAwareModel(session)
 {
     public OrganisationWebApiClient.Organisation? OrganisationDetails { get; set; }
 
@@ -37,6 +38,26 @@ public class OrganisationApprovalModel(
             return Redirect("/page-not-found");
         }
 
+        try
+        {
+            var organisationReviews = await organisationClient.GetOrganisationReviewsAsync(organisationId);
+
+            if (organisationReviews.Any(x => x.Status == ReviewStatus.Approved))
+            {
+                flashMessageService.SetFlashMessage(
+                    FlashMessageType.Important,
+                    heading: StaticTextResource.Support_OrganisationApproval_AlreadyApproved_FlashMessage,
+                    htmlParameters: new() { ["organisationName"] = OrganisationDetails.Name }
+                );
+
+                return RedirectToPage("Organisations", new { type = "buyer" });
+            }
+        }
+        catch (ApiException ex) when (ex.StatusCode == 404)
+        {
+            // If there's no reviews, we just carry on
+        }
+
         var persons = await organisationClient.GetOrganisationPersonsAsync(organisationId);
 
         AdminUser = persons.FirstOrDefault(p => p.Scopes.Contains(OrganisationPersonScopes.Admin));
@@ -44,7 +65,7 @@ public class OrganisationApprovalModel(
         try
         {
             MatchingOrganisations =
-                await organisationClient.SearchOrganisationAsync(OrganisationDetails.Name, "buyer", 3);
+                await organisationClient.SearchOrganisationAsync(OrganisationDetails.Name, "buyer", 3, 0.3);
         }
         catch (ApiException ex) when (ex.StatusCode == 404)
         {

@@ -1,0 +1,16 @@
+{
+  "Comment": "Force a deployment on ${service} service",
+  "StartAt": "UpdateService",
+  "States": {
+    "UpdateService": {
+      "Type": "Task",
+      "End": true,
+      "Parameters": {
+        "Cluster": "${cluster}",
+        "Service": "${service}",
+        "ForceNewDeployment": true
+      },
+      "Resource": "arn:aws:states:::aws-sdk:ecs:updateService"
+    }
+  }
+}

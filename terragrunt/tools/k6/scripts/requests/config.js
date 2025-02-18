@@ -1,0 +1,10 @@
+export const ORG_GUID = 'b1d62e28-52de-4769-92fb-5db76ee7993b';
+export const CONNECT_ENTITY_ID = '1e2abbef-4bd6-40b4-bb26-726604845fd1';
+export const SHARE_CODE = 'fHPFNwqw';
+export const PERSON_ID = '390934b0-6ab1-4553-be4b-b87e47eb5f7e';
+export const INVITE_ID = '59d120cb-7d18-4724-b656-87ff610925bb';
+export const REVIEWED_BY_ID = '390934b0-6ab1-4553-be4b-b87e47eb5f7e';
+export const FORM_ID       = '0618b13e-eaf2-46e3-a7d2-6f2c44be7022';
+export const SECTION_ID    = '13511cb1-9ed4-4d72-ba9e-05b4a0be880c';
+export const ANSWER_GUID   = 'b1d62e28-52de-4769-92fb-5db76ee7993b';
+export const ORGANISATION_ID = 'b1d62e28-52de-4769-92fb-5db76ee7993b';
