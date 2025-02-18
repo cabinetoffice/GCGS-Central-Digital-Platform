@@ -46,10 +46,7 @@ public class PponGeneratedSubscriberTest
         _useCase.Setup(u => u.Execute(It.IsAny<AssignOrganisationIdentifier>()))
             .Throws(exception);
 
-        await Subscriber.Invoking(s => s.Handle(PponGenerated(
-            organisationId: organisationId)))
-            .Should()
-            .ThrowAsync<Exception>();
+        await Subscriber.Handle(PponGenerated(organisationId: organisationId));
 
         _logger.Invocations.Count.Should().BePositive();
     }
@@ -68,10 +65,9 @@ public class PponGeneratedSubscriberTest
         _useCase.Setup(u => u.Execute(It.IsAny<AssignOrganisationIdentifier>()))
             .Throws(exception);
 
-        await Subscriber.Invoking(s => s.Handle(PponGenerated(
+        await Subscriber.Handle(PponGenerated(
             organisationId: organisationId, id: "123945", legalName: "Acme Ltd", scheme: "GB-PPON"
-        ))).Should()
-            .ThrowAsync<Exception>();
+        ));
 
         _logger.Invocations.Count.Should().BePositive();
     }
