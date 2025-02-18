@@ -1,6 +1,8 @@
+using Amazon.Runtime.Internal.Util;
 using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.Organisation.WebApi.UseCase;
 using FluentAssertions;
+using Microsoft.Extensions.Logging;
 using Moq;
 using static CO.CDP.Organisation.WebApi.UseCase.AssignIdentifierUseCase.AssignIdentifierException;
 using Persistence = CO.CDP.OrganisationInformation.Persistence;
@@ -11,7 +13,9 @@ public class AssignIdentifierUseCaseTest
 {
     private readonly Mock<Persistence.IOrganisationRepository> _organisations = new();
     private readonly Mock<IIdentifierService> _identifierService = new();
-    private AssignIdentifierUseCase UseCase => new(_organisations.Object, _identifierService.Object);
+    private readonly Mock<ILogger<AssignIdentifierUseCase>> _Logger = new();
+
+    private AssignIdentifierUseCase UseCase => new(_organisations.Object, _identifierService.Object, _Logger.Object);
 
     [Fact]
     public async Task ItThrowsAnExceptionIfOrganisationIsNotFound()

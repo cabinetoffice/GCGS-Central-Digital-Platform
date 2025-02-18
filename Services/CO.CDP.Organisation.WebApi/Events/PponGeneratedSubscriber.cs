@@ -19,10 +19,12 @@ public class PponGeneratedSubscriber(
         catch (OrganisationNotFoundException cause)
         {
             logger.LogError(cause.Message, cause);
+            throw;
         }
         catch (IdentifierAlreadyAssigned cause)
         {
             logger.LogError(cause.Message, cause);
+            throw;
         }
     }
 
