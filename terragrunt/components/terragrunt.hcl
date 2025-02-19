@@ -221,17 +221,19 @@ locals {
   }
 
   desired_counts = {
-    development = 2
-    staging     = 9
-    integration = 1
-    production  = 1
+    development  = 2
+    staging      = 9
+    integration  = 1
+    orchestrator = 0
+    production   = 1
   }
 
   resource_defaults = {
-    development = { cpu = 256,  memory = 512  }
-    staging     = { cpu = 4096, memory = 8192 }
-    integration = { cpu = 512,  memory = 1024 }
-    production  = { cpu = 1024, memory = 3072 }
+    development  = { cpu = 256,  memory = 512  }
+    staging      = { cpu = 4096, memory = 8192 }
+    integration  = { cpu = 512,  memory = 1024 }
+    orchestrator = { cpu = 256,  memory = 512  }
+    production   = { cpu = 1024, memory = 3072 }
   }
 
   service_configs_scaling = {
