@@ -87,7 +87,7 @@ public class OrganisationApprovalModel(
 
         try
         {
-            MatchingOrganisationsByAdminEmail = await organisationClient.FindOrganisationsByAdminEmailAsync(AdminUser.Email, "buyer", 10);
+            MatchingOrganisationsByAdminEmail = await organisationClient.FindOrganisationsByAdminEmailAsync(AdminUser?.Email, "buyer", 10);
         }
         catch (ApiException ex) when (ex.StatusCode == 404)
         {
