@@ -124,7 +124,7 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
     {
         var organisations = await context.Organisations
             .Include(o => o.Persons)
-            .ThenInclude(p => p.PersonOrganisations) // Ensure we retrieve PersonOrganisations
+            .ThenInclude(p => p.PersonOrganisations)
             .Include(o => o.Addresses)
             .ThenInclude(oa => oa.Address)
             .AsSingleQuery()
@@ -134,7 +134,6 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
 
         var filteredOrganisations = organisations
             .Where(o => o.Persons.Any(p =>
-                p.Email == email &&
                 p.PersonOrganisations.Any(po => po.Scopes.Contains(OrganisationPersonScopes.Admin))
             ));
 
