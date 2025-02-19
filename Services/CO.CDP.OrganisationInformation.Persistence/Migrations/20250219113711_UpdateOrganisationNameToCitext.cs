@@ -13,8 +13,8 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
             migrationBuilder.Sql("CREATE EXTENSION IF NOT EXISTS citext;");
 
             migrationBuilder.AlterColumn<string>(
-                name: "Name",
-                table: "Organisations",
+                name: "name",
+                table: "organisations",
                 type: "citext",
                 nullable: false);
         }
@@ -23,8 +23,8 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AlterColumn<string>(
-                name: "Name",
-                table: "Organisations",
+                name: "name",
+                table: "organisations",
                 type: "text",
                 nullable: false);
 
