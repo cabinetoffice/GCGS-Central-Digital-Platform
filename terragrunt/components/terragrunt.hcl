@@ -31,6 +31,7 @@ locals {
         "10.${local.cidr_b_orchestrator}.2.0/24",
         "10.${local.cidr_b_orchestrator}.3.0/24"
       ]
+      redis_node_type  = "cache.t2.micro"
       top_level_domain = "findatender.codatt.net"
 
       externals_cidr_block      = "integration account feature" # To be deprecated after FTS Migration
@@ -61,6 +62,7 @@ locals {
         "10.${local.cidr_b_development}.2.0/24",
         "10.${local.cidr_b_development}.3.0/24"
       ]
+      redis_node_type  = "cache.t3.small"
       top_level_domain = "findatender.codatt.net"
 
       externals_cidr_block      = "integration account feature" # To be deprecated after FTS Migration
@@ -76,7 +78,7 @@ locals {
       onelogin_logout_notification_urls = ["https://www-staging.find-tender.service.gov.uk/auth/backchannellogout"]
       pinned_service_version            = "1.0.39"
       postgres_instance_type            = "db.t4g.micro"
-      postgres_aurora_instance_type     = "db.r5.8xlarge"
+      postgres_aurora_instance_type     = "db.r5.12xlarge"
       private_subnets = [
         "10.${local.cidr_b_staging}.101.0/24",
         "10.${local.cidr_b_staging}.102.0/24",
@@ -87,6 +89,7 @@ locals {
         "10.${local.cidr_b_staging}.2.0/24",
         "10.${local.cidr_b_staging}.3.0/24"
       ]
+      redis_node_type  = "cache.t3.medium"
       top_level_domain = "findatender.codatt.net"
 
       externals_cidr_block      = "integration account feature" # To be deprecated after FTS Migration
@@ -149,6 +152,7 @@ locals {
         "10.${local.cidr_b_integration}.2.0/24",
         "10.${local.cidr_b_integration}.3.0/24"
       ]
+      redis_node_type  = "cache.t3.medium"
       top_level_domain = "findatender.codatt.net"
 
       externals_cidr_block      = "10.${local.cidr_b_external_integration}.0.0/16"
@@ -168,7 +172,7 @@ locals {
       onelogin_logout_notification_urls = ["https://www.private-beta.find-tender.service.gov.uk/auth/backchannellogout"]
       pinned_service_version            = "1.0.39"
       postgres_instance_type            = "db.t4g.micro"
-      postgres_aurora_instance_type     = "db.r5.large"
+      postgres_aurora_instance_type     = "db.r5.12xlarge"
       private_subnets = [
         "10.${local.cidr_b_production}.101.0/24",
         "10.${local.cidr_b_production}.102.0/24",
@@ -179,6 +183,7 @@ locals {
         "10.${local.cidr_b_production}.2.0/24",
         "10.${local.cidr_b_production}.3.0/24"
       ]
+      redis_node_type  = "cache.r5.12xlarge"
       top_level_domain = "supplier-information.find-tender.service.gov.uk"
 
       externals_cidr_block      = "integration account feature" # To be deprecated after FTS Migration
@@ -191,6 +196,7 @@ locals {
   fts_service_allowed_origins       = try(local.environments[local.environment].fts_service_allowed_origins, null)
   onelogin_logout_notification_urls = try(local.environments[local.environment].onelogin_logout_notification_urls, null)
   pinned_service_version            = try(local.environments[local.environment].pinned_service_version, null)
+  redis_node_type                   = try(local.environments[local.environment].redis_node_type, null)
 
   product = {
     name               = "CDP SIRSI"
@@ -221,19 +227,19 @@ locals {
   }
 
   desired_counts = {
-    development  = 2
-    staging      = 9
-    integration  = 1
     orchestrator = 0
-    production   = 1
+    development  = 2
+    integration  = 2
+    staging      = 9
+    production   = 9
   }
 
   resource_defaults = {
     development  = { cpu = 256,  memory = 512  }
-    staging      = { cpu = 4096, memory = 8192 }
-    integration  = { cpu = 512,  memory = 1024 }
     orchestrator = { cpu = 256,  memory = 512  }
-    production   = { cpu = 1024, memory = 3072 }
+    integration  = { cpu = 512,  memory = 1024 }
+    staging      = { cpu = 4096, memory = 8192 }
+    production   = { cpu = 4096, memory = 8192 }
   }
 
   service_configs_scaling = {

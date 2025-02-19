@@ -44,5 +44,8 @@ module "ecs_service_organisation" {
   role_ecs_task_arn      = var.role_ecs_task_arn
   role_ecs_task_exec_arn = var.role_ecs_task_exec_arn
   tags                   = var.tags
+  unhealthy_threshold    = 10  # @todo (ABN) go-live this must come out, hopefully before monday!
+  healthcheck_interval   = 120 # @todo (ABN) go-live this must come out, hopefully before monday!
+  healthcheck_timeout    = 10  # @todo (ABN) go-live this must come out, hopefully before monday!
   vpc_id                 = var.vpc_id
 }
