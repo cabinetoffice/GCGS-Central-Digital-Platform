@@ -127,16 +127,16 @@
     <value>Completed</value>
   </data>
   <data name="Supplier_SupplierInformationSummary_Heading" xml:space="preserve">
-    <value>Supplier information</value>
+    <value>Complete your supplier information</value>
   </data>
   <data name="Global_BackToOrganisationDetails" xml:space="preserve">
     <value>Back to organisation details</value>
   </data>
   <data name="ConnectedPersons_SectionTitle" xml:space="preserve">
-    <value>Connected persons</value>
+    <value>People connected to your organisation</value>
   </data>
   <data name="BasicInformation_SectionTitle" xml:space="preserve">
-    <value>Basic information</value>
+    <value>Your organisation</value>
   </data>
   <data name="Global_Back" xml:space="preserve">
     <value>Back</value>
@@ -2169,7 +2169,7 @@
     <value>Supplier type</value>
   </data>
   <data name="PdfGenerator_BasicInformation_Title" xml:space="preserve">
-    <value>Basic information</value>
+    <value>Your organisation</value>
   </data>
   <data name="PdfGenerator_BasicInformation_VATNumber" xml:space="preserve">
     <value>VAT number</value>
