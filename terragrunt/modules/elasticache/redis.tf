@@ -6,7 +6,7 @@ resource "aws_elasticache_replication_group" "this" {
   engine                      = var.engine
   engine_version              = var.engine_version
   multi_az_enabled            = true
-  node_type                   = "cache.t3.medium"
+  node_type                   = var.node_type
   num_cache_clusters          = 3
   parameter_group_name        = aws_elasticache_parameter_group.this.name
   port                        = var.port

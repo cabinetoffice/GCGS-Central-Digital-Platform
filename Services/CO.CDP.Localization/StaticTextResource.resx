@@ -1664,6 +1664,30 @@
 &lt;p class="govuk-body"&gt;If you know the person who registered the organisation, they can invite you to join. Or you can request to join below.&lt;/p&gt;
 &lt;a class="govuk-button" href="/registration/{0}/join-organisation"&gt;Request to Join&lt;/a&gt;</value>
   </data>
+  <data name="OrganisationRegistration_Details_Title" xml:space="preserve">
+    <value>Check your answers</value>
+  </data>
+  <data name="OrganisationRegistration_Change_Identifier" xml:space="preserve">
+    <value>Change&lt;span class="govuk-visually-hidden"&gt; organisation identifier&lt;/span&gt;</value>
+  </data>
+  <data name="OrganisationRegistration_Details_Change_Name" xml:space="preserve">
+    <value>Change&lt;span class="govuk-visually-hidden"&gt; the organisation name&lt;/span&gt;</value>
+  </data>
+  <data name="OrganisationRegistration_Details_Change_Email" xml:space="preserve">
+    <value>Change&lt;span class="govuk-visually-hidden"&gt; the email address&lt;/span&gt;</value>
+  </data>
+  <data name="OrganisationRegistration_Details_Change_Address" xml:space="preserve">
+    <value>Change&lt;span class="govuk-visually-hidden"&gt; the registered address&lt;/span&gt;</value>
+  </data>
+  <data name="OrganisationRegistration_Details_Change_Organisation_Type" xml:space="preserve">
+    <value>Change&lt;span class="govuk-visually-hidden"&gt; the organisation type&lt;/span&gt;</value>
+  </data>
+  <data name="OrganisationRegistration_Details_Change_Devolved_Regulations" xml:space="preserve">
+    <value>Change&lt;span class="govuk-visually-hidden"&gt; the devolved regulations&lt;/span&gt;</value>
+  </data>
+  <data name="OrganisationRegistration_Details_Change_Devolved_Regions" xml:space="preserve">
+    <value>Change&lt;span class="govuk-visually-hidden"&gt; the devolved regions&lt;/span&gt;</value>
+  </data>
   <data name="ApiKeyManagement_RevokeApiKey_Title" xml:space="preserve">
     <value>Cancel API key</value>
   </data>

@@ -48,6 +48,7 @@ resource "aws_rds_cluster_instance" "this" {
   monitoring_role_arn          = var.monitoring_role_arn
   performance_insights_enabled = var.performance_insights_enabled
   publicly_accessible          = var.publicly_accessible
+  apply_immediately            = true
 
   tags = merge(
     var.tags,
