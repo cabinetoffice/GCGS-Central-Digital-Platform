@@ -1,3 +1,4 @@
+using CO.CDP.DataSharing.WebApi.Model;
 using CO.CDP.Localization;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.Localization;
@@ -28,17 +29,23 @@ public class PdfGeneratorTests
     [Fact]
     public void GenerateBasicInformationPdf_ShouldGeneratePdfWithAllInformation()
     {
-        var supplierInformation = new Model.SharedSupplierInformation
+        List<SharedSupplierInformation> data = [];
+        Dictionary<String, DateTimeOffset?> shareCodes = new();
+
+        data.Add( new Model.SharedSupplierInformation
         {
             OrganisationId = Guid.NewGuid(),
+            OrganisationType = OrganisationInformation.OrganisationType.Organisation,
             BasicInformation = DataSharingFactory.CreateMockBasicInformation(),
             ConnectedPersonInformation = DataSharingFactory.CreateMockConnectedPersonInformation(),
             FormAnswerSetForPdfs = DataSharingFactory.CreateMockFormAnswerSetForPdfs(),
             AttachedDocuments = [],
-            AdditionalIdentifiers = []
-        };
+            AdditionalIdentifiers = [],
+            Sharecode = "valid-sharecode",
+            SharecodeSubmittedAt = DateTimeOffset.UtcNow
+        });
 
-        var pdfBytes = _pdfGenerator.GenerateBasicInformationPdf(supplierInformation);
+        var pdfBytes = _pdfGenerator.GenerateBasicInformationPdf(data, shareCodes);
 
         pdfBytes.Should().NotBeNull();
         pdfBytes.Length.Should().BeGreaterThan(0);

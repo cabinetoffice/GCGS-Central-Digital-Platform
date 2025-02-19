@@ -41,12 +41,12 @@ public class DataServiceTests
         var result = await DataService.GetSharedSupplierInformationAsync(shareCode);
 
         result.Should().NotBeNull();
-        result.BasicInformation.SupplierType.Should().Be(sharedConsent.Organisation.SupplierInfo?.SupplierType);
+        result.BasicInformation?.SupplierType.Should().Be(sharedConsent.Organisation.SupplierInfo?.SupplierType);
     }
 
     [Fact]
     public async Task
-        GetSharedSupplierInformationAsync_ShouldThrowSupplierInformationNotFoundException_WhenSupplierInfoIsNull()
+        GetSharedSupplierInformationAsync_ShouldPopulateBasicInformationOrgName_WhenSupplierInfoIsNull()
     {
         var shareCode = "ABC-123";
         var sharedConsent = CreateSharedConsent(shareCode: shareCode);
@@ -54,10 +54,11 @@ public class DataServiceTests
 
         _shareCodeRepository.Setup(r => r.GetByShareCode(shareCode)).ReturnsAsync(sharedConsent);
 
-        Func<Task> act = async () => await DataService.GetSharedSupplierInformationAsync(shareCode);
+        var result = await DataService.GetSharedSupplierInformationAsync(shareCode);
 
-        await act.Should().ThrowAsync<SupplierInformationNotFoundException>()
-            .WithMessage("Supplier information not found.");
+        result.Should().NotBeNull();
+        result.BasicInformation.Should().NotBeNull();
+        result.BasicInformation!.OrganisationName.Should().NotBeEmpty();
     }
 
     [Fact]
@@ -83,7 +84,7 @@ public class DataServiceTests
 
         var result = await DataService.GetSharedSupplierInformationAsync("ABC-123");
 
-        result.BasicInformation.SupplierType.Should().Be(organisation.SupplierInfo?.SupplierType);
+        result.BasicInformation!.SupplierType.Should().Be(organisation.SupplierInfo?.SupplierType);
         result.BasicInformation.RegisteredAddress.Should().NotBeNull();
         result.BasicInformation.PostalAddress.Should().NotBeNull();
         result.BasicInformation.VatNumber.Should()

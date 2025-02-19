@@ -1,3 +1,4 @@
+using Amazon.S3.Encryption;
 using CO.CDP.DataSharing.WebApi.Model;
 using CO.CDP.Localization;
 using CO.CDP.OrganisationInformation;
@@ -24,11 +25,14 @@ public class DataService(IShareCodeRepository shareCodeRepository, IConnectedEnt
         return new SharedSupplierInformation
         {
             OrganisationId = sharedConsent.Organisation.Guid,
+            OrganisationType = sharedConsent.Organisation.Type,
             BasicInformation = MapToBasicInformation(sharedConsent.Organisation),
             ConnectedPersonInformation = MapToConnectedPersonInformation(connectedEntities),
             FormAnswerSetForPdfs = MapFormAnswerSetsForPdf(allFormSectionsExceptDeclaractions),
             AttachedDocuments = MapAttachedDocuments(sharedConsent),
-            AdditionalIdentifiers = MapAdditionalIdentifiersForPdf(sharedConsent.Organisation.Identifiers)
+            AdditionalIdentifiers = MapAdditionalIdentifiersForPdf(sharedConsent.Organisation.Identifiers),
+            Sharecode = shareCode,
+            SharecodeSubmittedAt = sharedConsent.SubmittedAt
         };
     }
 
@@ -116,8 +120,25 @@ public class DataService(IShareCodeRepository shareCodeRepository, IConnectedEnt
 
     public static BasicInformation MapToBasicInformation(Organisation organisation)
     {
-        var supplierInfo = organisation.SupplierInfo
-            ?? throw new SupplierInformationNotFoundException("Supplier information not found.");
+        if (organisation.SupplierInfo == null)
+        {
+            return new BasicInformation
+            {   
+                PostalAddress = new Address
+                {
+                    StreetAddress = organisation.Addresses.FirstOrDefault()?.Address.StreetAddress ?? string.Empty,
+                    Locality = organisation.Addresses.FirstOrDefault()?.Address.Locality ?? string.Empty,
+                    PostalCode = organisation.Addresses.FirstOrDefault()?.Address.PostalCode ?? string.Empty,
+                    CountryName = organisation.Addresses.FirstOrDefault()?.Address.CountryName ?? string.Empty,
+                    Country = organisation.Addresses.FirstOrDefault()?.Address.Country ?? string.Empty,
+                    Type = AddressType.Postal
+                },
+                EmailAddress = organisation.ContactPoints.FirstOrDefault()?.Email ?? string.Empty,                
+                OrganisationName = organisation.Name
+            };
+        }
+
+        var supplierInfo = organisation.SupplierInfo;
 
         var registeredAddress = supplierInfo.CompletedRegAddress
             ? organisation.Addresses
