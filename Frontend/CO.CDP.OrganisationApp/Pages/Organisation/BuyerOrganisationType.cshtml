@@ -94,6 +94,9 @@
                             <label class="govuk-label govuk-radios__label" for="ca-type-5">
                                 @StaticTextResource.OrganisationRegistration_BuyerOrganisationType_Other_Label
                             </label>
+                             <div id="ca-type-5-item-hint" class="govuk-hint govuk-radios__hint">
+                                @StaticTextResource.OrganisationRegistration_BuyerOrganisationType_Other_Hint
+                             </div>
                         </div>
 
                         <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-ca-type-5">
@@ -102,10 +105,6 @@
                                     @StaticTextResource.OrganisationRegistration_BuyerOrganisationType_OtherEnterType_Label
                                 </label>
                                 @Html.ValidationMessageFor(m => m.OtherValue, "", new { @class = "govuk-error-message", @id = "other-buyer-type-error" })
-
-                                <div id="ca-type-5-item-hint" class="govuk-hint">
-                                    @StaticTextResource.OrganisationRegistration_BuyerOrganisationType_Other_Hint
-                                </div>
 
                                 <input autocomplete="off" class="govuk-input @(otherHasError ? "govuk-input--error" : "")"
                                        id="OtherValue" name="OtherValue" type="text" value="@(Model.BuyerOrganisationType == "Other" ? Model.OtherValue : "")">
