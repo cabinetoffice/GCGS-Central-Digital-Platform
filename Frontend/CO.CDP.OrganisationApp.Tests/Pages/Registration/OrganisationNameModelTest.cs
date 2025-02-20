@@ -149,7 +149,7 @@ public class OrganisationNameModelTest
 
         _companiesHouseMock.Setup(ch => ch.GetProfile(registrationDetails.OrganisationIdentificationNumber!))
             .ReturnsAsync(profile);
-        
+
         await model.OnGet();
 
         model.OrganisationName.Should().Be(registrationDetails.OrganisationName);
@@ -216,6 +216,22 @@ public class OrganisationNameModelTest
 
         actionResult.Should().BeOfType<RedirectToPageResult>()
             .Which.PageName.Should().Be("OrganisationDetailsSummary");
+    }
+
+    [Fact]
+    public void OnPost_WhenOrganisationNameContainsExtraSpaces_ShouldHaveRemovedThemForRegistrationDetailsInSession()
+    {
+        var model = GivenOrganisationNameModel();
+        model.OrganisationName = "  Test   Organisation   Name  ";
+
+        RegistrationDetails registrationDetails = DummyRegistrationDetails();
+        _sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(registrationDetails);
+
+        model.OnPost();
+
+        _sessionMock.Verify(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey), Times.Once);
+        _sessionMock.Verify(s => s.Set(Session.RegistrationDetailsKey, It.IsAny<RegistrationDetails>()), Times.Once);
+        model.RegistrationDetails.OrganisationName.Should().Be("Test Organisation Name");
     }
 
     private RegistrationDetails DummyRegistrationDetails(string organisationName = "TestOrg", string scheme = "")
