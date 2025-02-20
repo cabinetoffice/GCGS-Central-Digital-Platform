@@ -64,7 +64,7 @@ public class OrganisationInformationContext(DbContextOptions<OrganisationInforma
             });
         });
 
-            modelBuilder.Entity<Organisation>(entity =>
+        modelBuilder.Entity<Organisation>(entity =>
         {
             entity.HasKey(e => e.Id);
 
