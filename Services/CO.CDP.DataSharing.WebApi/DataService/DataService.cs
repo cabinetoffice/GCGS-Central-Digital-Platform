@@ -1,4 +1,3 @@
-using Amazon.S3.Encryption;
 using CO.CDP.DataSharing.WebApi.Model;
 using CO.CDP.Localization;
 using CO.CDP.OrganisationInformation;
