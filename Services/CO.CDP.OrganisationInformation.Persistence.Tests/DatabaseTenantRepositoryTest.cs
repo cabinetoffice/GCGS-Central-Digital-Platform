@@ -53,6 +53,21 @@ public class DatabaseTenantRepositoryTest(PostgreSqlFixture postgreSql)
     }
 
     [Fact]
+    public void ItRejectsTwoTenantsWithTheSameNameCaseInsensitive()
+    {
+        using var repository = TenantRepository();
+
+        var tenant1 = GivenTenant(guid: Guid.NewGuid(), name: "Fred");
+        var tenant2 = GivenTenant(guid: Guid.NewGuid(), name: "FreD");
+
+        repository.Save(tenant1);
+
+        repository.Invoking(r => r.Save(tenant2))
+            .Should().Throw<ITenantRepository.TenantRepositoryException.DuplicateTenantException>()
+            .WithMessage($"Tenant with name `Fred` already exists.");
+    }
+
+    [Fact]
     public void ItRejectsTwoTenantsWithTheSameGuid()
     {
         using var repository = TenantRepository();
