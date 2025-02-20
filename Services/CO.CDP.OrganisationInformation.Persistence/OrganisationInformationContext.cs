@@ -64,18 +64,9 @@ public class OrganisationInformationContext(DbContextOptions<OrganisationInforma
             });
         });
 
-        modelBuilder.Entity<Tenant>(entity =>
-        {
-            entity.Property(e => e.Name)
-                .HasColumnType("citext");
-        });
-
             modelBuilder.Entity<Organisation>(entity =>
         {
             entity.HasKey(e => e.Id);
-
-            entity.Property(e => e.Name)
-                .HasColumnType("citext");
 
             entity.OwnsMany(e => e.Identifiers, a =>
             {
