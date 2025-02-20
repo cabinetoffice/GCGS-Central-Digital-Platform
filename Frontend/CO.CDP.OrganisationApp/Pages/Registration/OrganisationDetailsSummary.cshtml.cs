@@ -1,4 +1,5 @@
 using CO.CDP.EntityVerificationClient;
+using CO.CDP.Localization;
 using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.WebApiClients;
@@ -11,7 +12,8 @@ namespace CO.CDP.OrganisationApp.Pages.Registration;
 public class OrganisationDetailsSummaryModel(
     ISession session,
     OrganisationWebApiClient.IOrganisationClient organisationClient,
-    IPponClient pponClient) : RegistrationStepModel(session)
+    IPponClient pponClient,
+    IFlashMessageService flashMessageService) : RegistrationStepModel(session)
 {
     public override string CurrentPage => OrganisationSummaryPage;
 
@@ -66,10 +68,37 @@ public class OrganisationDetailsSummaryModel(
         }
         catch (OrganisationWebApiClient.ApiException<OrganisationWebApiClient.ProblemDetails> aex)
         {
-            ApiExceptionMapper.MapApiExceptions(aex, ModelState);
+            var errorcode = ExtractErrorCode(aex);
+
+            if (errorcode == ErrorCodes.ORGANISATION_ALREADY_EXISTS)
+            {
+                var organisations = await organisationClient.SearchOrganisationAsync(RegistrationDetails.OrganisationName, null, 10,0.3);
+                if (organisations.Any())
+                {
+                    var organisationIdentifier = $"GB-COH:{organisations.First().Identifier.Id}";
+                    flashMessageService.SetFlashMessage(
+                            FlashMessageType.Important,
+                            heading: StaticTextResource.OrganisationRegistration_CompanyHouseNumberQuestion_CompanyAlreadyRegistered_NotificationBanner,
+                            urlParameters: new() { ["organisationIdentifier"] = organisationIdentifier },
+                            htmlParameters: new() { ["organisationName"] = organisations.First().Name }
+                        );
+                }
+            }
+            else
+            {
+                ApiExceptionMapper.MapApiExceptions(aex, ModelState);
+            }
+
         }
 
         return null;
+    }
+
+    private static string? ExtractErrorCode(CO.CDP.Organisation.WebApiClient.ApiException<CO.CDP.Organisation.WebApiClient.ProblemDetails> aex)
+    {
+        return aex.Result.AdditionalProperties.TryGetValue("code", out var code) && code is string codeString
+            ? codeString
+            : null;
     }
 
     private static OrganisationWebApiClient.NewOrganisation? NewOrganisationPayload(UserDetails user, RegistrationDetails details)
