@@ -109,7 +109,7 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql)
     [Fact]
     public void ItRejectsTwoOrganisationsWithTheSameName()
     {
-        using var repository = OrganisationRepository();
+        var repository = OrganisationRepository();
 
         var organisation1 =
             GivenOrganisation(guid: Guid.NewGuid(), name: "TheOrganisation", tenant: GivenTenant(name: "T1"));
@@ -126,52 +126,52 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql)
     [Fact]
     public void ItRejectsTwoOrganisationsWithTheSameNameRegardlessOfCasing()
     {
-        using var repository = OrganisationRepository();
+        var repository = OrganisationRepository();
 
         var organisation1 =
-            GivenOrganisation(guid: Guid.NewGuid(), name: "TheOrganisation", tenant: GivenTenant(name: "T1"));
+            GivenOrganisation(guid: Guid.NewGuid(), name: "AnotherOrganisation", tenant: GivenTenant(name: "T3"));
         var organisation2 =
-            GivenOrganisation(guid: Guid.NewGuid(), name: "THEORGANISATION", tenant: GivenTenant(name: "T2"));
+            GivenOrganisation(guid: Guid.NewGuid(), name: "ANOTHERORGANISATION", tenant: GivenTenant(name: "T4"));
 
         repository.Save(organisation1);
 
         repository.Invoking(r => r.Save(organisation2))
             .Should().Throw<DuplicateOrganisationException>()
-            .WithMessage($"Organisation with name `TheOrganisation` already exists.");
+            .WithMessage($"Organisation with name `AnotherOrganisation` already exists.");
     }
 
     [Fact]
     public void ItRejectsTwoOrganisationsWithTheSameNameWhenCreatingTenant()
     {
-        using var repository = OrganisationRepository();
+        var repository = OrganisationRepository();
 
         var organisation1 =
-            GivenOrganisation(guid: Guid.NewGuid(), name: "Acme LTD", tenant: GivenTenant(name: "Acme LTD"));
+            GivenOrganisation(guid: Guid.NewGuid(), name: "Another Test Org LTD", tenant: GivenTenant(name: "Another Test Org LTD"));
         var organisation2 =
-            GivenOrganisation(guid: Guid.NewGuid(), name: "Acme LTD", tenant: GivenTenant(name: "Acme LTD"));
+            GivenOrganisation(guid: Guid.NewGuid(), name: "Another Test Org LTD", tenant: GivenTenant(name: "Another Test Org LTD"));
 
         repository.Save(organisation1);
 
         repository.Invoking(r => r.Save(organisation2))
             .Should().Throw<DuplicateOrganisationException>()
-            .WithMessage($"Organisation with name `Acme LTD` already exists.");
+            .WithMessage($"Organisation with name `Another Test Org LTD` already exists.");
     }
 
     [Fact]
     public void ItRejectsTwoOrganisationsWithTheSameNameWhenCreatingTenantRegardlessOfCasing()
     {
-        using var repository = OrganisationRepository();
+        var repository = OrganisationRepository();
 
         var organisation1 =
-            GivenOrganisation(guid: Guid.NewGuid(), name: "Acme LTD", tenant: GivenTenant(name: "Acme LTD"));
+            GivenOrganisation(guid: Guid.NewGuid(), name: "Test Org LTD", tenant: GivenTenant(name: "Test Org LTD"));
         var organisation2 =
-            GivenOrganisation(guid: Guid.NewGuid(), name: "ACME LTD", tenant: GivenTenant(name: "ACME LTD"));
+            GivenOrganisation(guid: Guid.NewGuid(), name: "TEST ORG LTD", tenant: GivenTenant(name: "TEST ORG LTD"));
 
         repository.Save(organisation1);
 
         repository.Invoking(r => r.Save(organisation2))
             .Should().Throw<DuplicateOrganisationException>()
-            .WithMessage($"Organisation with name `Acme LTD` already exists.");
+            .WithMessage($"Organisation with name `Test Org LTD` already exists.");
     }
 
     [Fact]
