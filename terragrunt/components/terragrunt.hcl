@@ -139,7 +139,7 @@ locals {
         "https://wallsm.nqc.com/auth/backchannellogout",
         "https://www-tpp-preview.find-tender.service.gov.uk/auth/backchannellogout",
       ]
-      pinned_service_version            = "1.0.39"
+      pinned_service_version            = "1.0.40"
       postgres_instance_type            = "db.t4g.micro"
       postgres_aurora_instance_type     = "db.r5.large"
       private_subnets = [
@@ -170,7 +170,7 @@ locals {
       fts_service_allowed_origins       = []
       name                              = "production"
       onelogin_logout_notification_urls = ["https://www.private-beta.find-tender.service.gov.uk/auth/backchannellogout"]
-      pinned_service_version            = "1.0.39"
+      pinned_service_version            = "1.0.40"
       postgres_instance_type            = "db.t4g.micro"
       postgres_aurora_instance_type     = "db.r5.12xlarge"
       private_subnets = [
