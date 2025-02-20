@@ -39,7 +39,7 @@ public class PdfGenerator(IHtmlLocalizer<FormsEngineResource> localizer) : IPdfG
                         var basicInformation = supplierInformation.BasicInformation;
                         if (basicInformation != null) AddBasicInformationSection(col, basicInformation, supplierInformation.OrganisationType);
 
-                        if (shareCodes.Any())
+                        if (shareCodes.Any() && supplierInformation.OrganisationType == OrganisationType.InformalConsortium)
                         {
                             AddShareCodesInformationSection(col, shareCodes);
                         }
@@ -48,7 +48,10 @@ public class PdfGenerator(IHtmlLocalizer<FormsEngineResource> localizer) : IPdfG
                         var additionalIdentifiers = supplierInformation.AdditionalIdentifiers;
 
                         AddAdditionalIdentifiersSection(col, additionalIdentifiers);
-                        if(supplierInformation.OrganisationType != OrganisationType.InformalConsortium) AddConnectedPersonInformationSection(col, connectedPersonInformation);
+
+                        if(supplierInformation.OrganisationType != OrganisationType.InformalConsortium)
+                            AddConnectedPersonInformationSection(col, connectedPersonInformation);
+
                         AddFormSections(col, supplierInformation.FormAnswerSetForPdfs);
 
                         if (supplierInformation != supplierInformations.Last())
@@ -93,6 +96,8 @@ public class PdfGenerator(IHtmlLocalizer<FormsEngineResource> localizer) : IPdfG
 
             col.Item().Element(container => AddTwoColumnRow(container, StaticTextResource.PdfGenerator_ConsortiumSharecodeInformation_Organisation + i, item.Key.ToString()));
             col.Item().Element(container => AddTwoColumnRow(container, StaticTextResource.PdfGenerator_ConsortiumSharecodeInformation_Sharecode, submittedAt));
+            col.Item().PaddingBottom(10);
+            i++;
         }
 
         col.Item().PaddingBottom(10);
