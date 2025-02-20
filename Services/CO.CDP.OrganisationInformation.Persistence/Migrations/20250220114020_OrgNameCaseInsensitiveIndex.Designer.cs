@@ -13,8 +13,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CO.CDP.OrganisationInformation.Persistence.Migrations
 {
     [DbContext(typeof(OrganisationInformationContext))]
-    [Migration("20250219154607_TenantNameCitext")]
-    partial class TenantNameCitext
+    [Migration("20250220114020_OrgNameCaseInsensitiveIndex")]
+    partial class OrgNameCaseInsensitiveIndex
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
