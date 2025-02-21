@@ -134,7 +134,7 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
 
         var filteredOrganisations = organisations
             .Where(o => o.Persons.Any(p =>
-                p.PersonOrganisations.Any(po => po.Scopes.Contains(OrganisationPersonScopes.Admin))
+                p.PersonOrganisations.Any(po => po.Scopes.Contains(OrganisationPersonScopes.Admin) && o.Id == po.OrganisationId)
             ));
 
         if (role.HasValue)
