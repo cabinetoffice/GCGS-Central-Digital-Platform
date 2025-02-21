@@ -53,6 +53,11 @@ public class OrganisationNameModel(ISession session, ICharityCommissionApi chari
         }
     }
 
+    private static string RemoveExtraInnerSpaces(string organisationName)
+    {
+        return string.Join(" ", organisationName.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries));
+    }
+
     public IActionResult OnPost()
     {
         HasCompaniesHouseNumber = RegistrationDetails.OrganisationHasCompaniesHouseNumber ?? false;
@@ -61,6 +66,8 @@ public class OrganisationNameModel(ISession session, ICharityCommissionApi chari
         {
             return Page();
         }
+
+        OrganisationName = RemoveExtraInnerSpaces(OrganisationName!);
 
         RegistrationDetails.OrganisationName = OrganisationName?.Trim();
         SessionContext.Set(Session.RegistrationDetailsKey, RegistrationDetails);
