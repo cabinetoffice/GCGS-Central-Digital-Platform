@@ -81,6 +81,24 @@
                 </dt>
                 <dd class="govuk-summary-list__value">
                     <p class="govuk-body">@organisationDetails.ContactPoint.Email</p>
+
+                    @if (Model.MatchingOrganisationsByOrgEmail?.Count > 0) {
+                    <div class="govuk-form-group govuk-form-group--error">
+                        <p id="duplicate-org-error" class="govuk-error-message">
+                            @StaticTextResource.Support_OrganisationApproval_DomainFound
+                        </p>
+                        <ul class="govuk-list govuk-list--bullet">
+                            @foreach (var matchingOrg in Model.MatchingOrganisationsByOrgEmail)
+                            {
+                            <li>
+                                <a href="/organisation/@matchingOrg.Id" target="_blank">
+                                    @matchingOrg.Name
+                                </a>
+                            </li>
+                            }
+                        </ul>
+                    </div>
+                    }
                 </dd>
             </div>
 
@@ -92,6 +110,24 @@
                         </dt>
                         <dd class="govuk-summary-list__value">
                             <p class="govuk-body">@adminUser.Email</p>
+
+                            @if (Model.MatchingOrganisationsByAdminEmail?.Count > 0) {
+                            <div class="govuk-form-group govuk-form-group--error">
+                                <p id="duplicate-org-error" class="govuk-error-message">
+                                    @StaticTextResource.Support_OrganisationApproval_DomainFound
+                                </p>
+                                <ul class="govuk-list govuk-list--bullet">
+                                    @foreach (var matchingOrg in Model.MatchingOrganisationsByAdminEmail)
+                                    {
+                                    <li>
+                                        <a href="/organisation/@matchingOrg.Id" target="_blank">
+                                            @matchingOrg.Name
+                                        </a>
+                                    </li>
+                                    }
+                                </ul>
+                            </div>
+                            }
                         </dd>
                     </div>
                 }
