@@ -1,3 +1,4 @@
+using CO.CDP.Localization;
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
@@ -18,6 +19,7 @@ public class OrganisationDetailsSummaryModelTest
     private readonly Mock<ISession> sessionMock;
     private readonly Mock<IOrganisationClient> organisationClientMock;
     private readonly Mock<EntityVerificationClient.IPponClient> pponClient;
+    private readonly Mock<IFlashMessageService> _flashMessageServiceMock;
     private static readonly Guid _organisationId = Guid.NewGuid();
 
     public OrganisationDetailsSummaryModelTest()
@@ -27,6 +29,7 @@ public class OrganisationDetailsSummaryModelTest
             .Returns(new UserDetails { UserUrn = "urn:test" });
         organisationClientMock = new Mock<IOrganisationClient>();
         pponClient = new Mock<EntityVerificationClient.IPponClient>();
+        _flashMessageServiceMock = new Mock<IFlashMessageService>();
     }
 
     [Fact]
@@ -182,7 +185,6 @@ public class OrganisationDetailsSummaryModelTest
 
     public static IEnumerable<object[]> Get_OnPost_AddsModelError_TestData()
     {
-        yield return new object[] { ErrorCodes.ORGANISATION_ALREADY_EXISTS, ErrorMessagesList.DuplicateOrganisationName, StatusCodes.Status400BadRequest };
         yield return new object[] { ErrorCodes.ARGUMENT_NULL, ErrorMessagesList.PayLoadIssueOrNullAurgument, StatusCodes.Status400BadRequest };
         yield return new object[] { ErrorCodes.INVALID_OPERATION, ErrorMessagesList.OrganisationCreationFailed, StatusCodes.Status400BadRequest };
         yield return new object[] { ErrorCodes.PERSON_DOES_NOT_EXIST, ErrorMessagesList.PersonNotFound, StatusCodes.Status404NotFound };
@@ -214,6 +216,46 @@ public class OrganisationDetailsSummaryModelTest
             .Should().Contain(e => e.ErrorMessage == expectedErrorMessage);
     }
 
+    [Fact]
+    public async Task OnPost_WhenOrganisationAlreadyExists_ShouldShowNotificationBanner()
+    {        
+        var model = GivenOrganisationDetailModel();
+
+        var problemDetails = GivenProblemDetails(code: ErrorCodes.ORGANISATION_ALREADY_EXISTS, statusCode: StatusCodes.Status400BadRequest);
+        var aex = GivenApiException(statusCode: StatusCodes.Status400BadRequest, problemDetails: problemDetails);
+
+        sessionMock.Setup(s => s.Get<UserDetails>(Session.UserDetailsKey))
+            .Returns(new UserDetails { UserUrn = "test", PersonId = Guid.NewGuid() });
+
+        organisationClientMock.Setup(o => o.CreateOrganisationAsync(It.IsAny<NewOrganisation>()))
+            .ThrowsAsync(aex);
+        var matchingOrganisation = GivenOrganisationSearchResult("TestOrg", "TestType", "123");
+
+        organisationClientMock
+            .Setup(client => client.SearchOrganisationAsync("TestOrg", null, 10, 0.3))
+            .ReturnsAsync(new List<OrganisationSearchResult> { matchingOrganisation });
+
+        var result = await model.OnPost();
+
+        Dictionary<string, string> urlParameters = new() { ["organisationIdentifier"] = "GB-COH:123" };
+        Dictionary<string, string> htmlParameters = new() { ["organisationName"] = "TestOrg" };
+
+        var heading = StaticTextResource.OrganisationRegistration_CompanyHouseNumberQuestion_CompanyAlreadyRegistered_NotificationBanner;
+
+        _flashMessageServiceMock.Verify(api => api.SetFlashMessage(
+            FlashMessageType.Important,
+            heading,
+            null,
+            null,
+            It.Is<Dictionary<string, string>>(d => d["organisationIdentifier"] == "GB-COH:123"),
+            It.Is<Dictionary<string, string>>(d => d["organisationName"] == "TestOrg")
+        ),
+        Times.Once);
+
+
+        result.Should().BeOfType<PageResult>();
+    }
+
 
     private RegistrationDetails DummyRegistrationDetails()
     {
@@ -227,7 +269,16 @@ public class OrganisationDetailsSummaryModelTest
 
         return registrationDetails;
     }
-
+    private static OrganisationSearchResult GivenOrganisationSearchResult(string name, string identifierScheme = "scheme", string idenfifierId = "123")
+    {
+        return new OrganisationSearchResult(
+                    Guid.NewGuid(),
+                    new Identifier(idenfifierId, "legal name", identifierScheme, new Uri("http://whatever")),
+                    name,
+                    new List<PartyRole>() { PartyRole.Buyer },
+                    CO.CDP.Organisation.WebApiClient.OrganisationType.Organisation
+                );
+    }
     private static CO.CDP.Organisation.WebApiClient.Organisation GivenOrganisationClientModel()
     {
         return new CO.CDP.Organisation.WebApiClient.Organisation(additionalIdentifiers: null, addresses: null, contactPoint: null, id: _organisationId, identifier: null, name: "Test Org", type: CDP.Organisation.WebApiClient.OrganisationType.Organisation, roles: [], details: new Details(approval: null, buyerInformation: null, pendingRoles: [], publicServiceMissionOrganization: null, scale: null, shelteredWorkshop: null, vcse: null));
@@ -240,6 +291,6 @@ public class OrganisationDetailsSummaryModelTest
         sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey))
             .Returns(registrationDetails);
 
-        return new OrganisationDetailsSummaryModel(sessionMock.Object, organisationClientMock.Object, pponClient.Object);
+        return new OrganisationDetailsSummaryModel(sessionMock.Object, organisationClientMock.Object, pponClient.Object, _flashMessageServiceMock.Object);
     }
 }
