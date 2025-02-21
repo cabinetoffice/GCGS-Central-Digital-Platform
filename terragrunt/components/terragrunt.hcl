@@ -141,6 +141,7 @@ locals {
         "https://truk-prod.nqc.com/auth/backchannellogout",
         "https://wallsm.nqc.com/auth/backchannellogout",
         "https://www-tpp-preview.find-tender.service.gov.uk/auth/backchannellogout",
+        "https://www-tpp.find-tender.service.gov.uk/auth/backchannellogout",
       ]
       pinned_service_version            = "1.0.40"
       postgres_instance_type            = "db.t4g.micro"
