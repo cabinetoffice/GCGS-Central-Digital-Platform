@@ -10,12 +10,9 @@ namespace CO.CDP.DataSharing.WebApi;
 
 public class PdfGenerator(IHtmlLocalizer<FormsEngineResource> localizer) : IPdfGenerator
 {
-    public Stream GenerateBasicInformationPdf(SharedSupplierInformation supplierInformation)
+    public Stream GenerateBasicInformationPdf(List<SharedSupplierInformation> supplierInformations, Dictionary<String, DateTimeOffset?> shareCodes)
     {
         QuestPDF.Settings.License = LicenseType.Community;
-        var basicInformation = supplierInformation.BasicInformation;
-        var connectedPersonInformation = supplierInformation.ConnectedPersonInformation;
-        var additionalIdentifiers = supplierInformation.AdditionalIdentifiers;
 
         var document = Document.Create(container =>
         {
@@ -25,15 +22,43 @@ public class PdfGenerator(IHtmlLocalizer<FormsEngineResource> localizer) : IPdfG
                 page.Margin(1, Unit.Centimetre);
                 page.DefaultTextStyle(x => x.FontSize(10).FontFamily("DejaVu Sans"));
 
+                if (supplierInformations.Any())
+                {
+                    var headerText = (supplierInformations.First().OrganisationType == OrganisationType.InformalConsortium)
+                                        ? StaticTextResource.PdfGenerator_ConsortiumInformation_Title
+                                        : StaticTextResource.PdfGenerator_SupplierInformation_Title;
+                    page.Header().Text(headerText).FontSize(14).Bold().AlignCenter();
+                }
 
-                page.Header().Text(StaticTextResource.PdfGenerator_SupplierInformation_Title).FontSize(14).Bold().AlignCenter();
 
                 page.Content().Column(col =>
                 {
-                    AddBasicInformationSection(col, basicInformation);
-                    AddAdditionalIdentifiersSection(col, additionalIdentifiers);
-                    AddConnectedPersonInformationSection(col, connectedPersonInformation);
-                    AddFormSections(col, supplierInformation.FormAnswerSetForPdfs);
+                    foreach (var supplierInformation in supplierInformations)
+                    {
+
+                        var basicInformation = supplierInformation.BasicInformation;
+                        if (basicInformation != null) AddBasicInformationSection(col, basicInformation, supplierInformation.OrganisationType);
+
+                        if (shareCodes.Any() && supplierInformation.OrganisationType == OrganisationType.InformalConsortium)
+                        {
+                            AddShareCodesInformationSection(col, shareCodes);
+                        }
+
+                        var connectedPersonInformation = supplierInformation.ConnectedPersonInformation;
+                        var additionalIdentifiers = supplierInformation.AdditionalIdentifiers;
+
+                        AddAdditionalIdentifiersSection(col, additionalIdentifiers);
+
+                        if(supplierInformation.OrganisationType != OrganisationType.InformalConsortium)
+                            AddConnectedPersonInformationSection(col, connectedPersonInformation);
+
+                        AddFormSections(col, supplierInformation.FormAnswerSetForPdfs);
+
+                        if (supplierInformation != supplierInformations.Last())
+                        {
+                            col.Item().PageBreak();
+                        }
+                    }
                 });
 
                 page.Footer().AlignRight().Text(x =>
@@ -48,6 +73,36 @@ public class PdfGenerator(IHtmlLocalizer<FormsEngineResource> localizer) : IPdfG
         var stream = new MemoryStream();
         document.GeneratePdf(stream);
         return stream;
+    }
+
+    private void AddShareCodesInformationSection(ColumnDescriptor col, Dictionary<String, DateTimeOffset?> shareCodes)
+    {
+        var title = StaticTextResource.PdfGenerator_ConsortiumSharecodeInformation_Title;
+
+        col.Item().Text(title).Bold().FontSize(12);
+        col.Item().PaddingBottom(10);
+        col.Item().LineHorizontal(1);
+
+        var i = 1;
+        var submittedAt = string.Empty;
+
+        foreach (var item in shareCodes)
+        {
+            submittedAt = string.Empty;
+            if (item.Value != null && item.Value.HasValue)
+            {
+                submittedAt = item.Value.Value.ToString("dd MMMM yyyy");
+            }
+
+            col.Item().Element(container => AddTwoColumnRow(container, StaticTextResource.PdfGenerator_ConsortiumSharecodeInformation_Organisation + i, item.Key.ToString()));
+            col.Item().Element(container => AddTwoColumnRow(container, StaticTextResource.PdfGenerator_ConsortiumSharecodeInformation_Sharecode, submittedAt));
+            col.Item().PaddingBottom(10);
+            i++;
+        }
+
+        col.Item().PaddingBottom(10);
+        col.Item().LineHorizontal(1);
+        col.Item().PaddingBottom(10);
     }
 
     private void AddFormSections(ColumnDescriptor col, IEnumerable<FormAnswerSetForPdf> formAnswerSet)
@@ -78,13 +133,23 @@ public class PdfGenerator(IHtmlLocalizer<FormsEngineResource> localizer) : IPdfG
         }
     }
 
-    private void AddBasicInformationSection(ColumnDescriptor col, BasicInformation basicInformation)
+    private void AddBasicInformationSection(ColumnDescriptor col, BasicInformation basicInformation, OrganisationType organisationType)
     {
-        col.Item().Text(StaticTextResource.PdfGenerator_OrganisationDetails_Title).Bold().FontSize(12);
+
+        var organisationName = StaticTextResource.PdfGenerator_BasicInformation_OrganisationName;
+        var title = StaticTextResource.PdfGenerator_OrganisationDetails_Title;
+
+        if (organisationType == OrganisationType.InformalConsortium)
+        {
+            organisationName = StaticTextResource.PdfGenerator_BasicInformation_ConsortiumName;
+            title = StaticTextResource.PdfGenerator_ConsortiumDetails_Title;
+        }
+
+        col.Item().Text(title).Bold().FontSize(12);
         col.Item().PaddingBottom(10);
 
         if (!string.IsNullOrEmpty(basicInformation.OrganisationName?.ToString()))
-            col.Item().Element(container => AddTwoColumnRow(container, StaticTextResource.PdfGenerator_BasicInformation_OrganisationName, basicInformation.OrganisationName?.ToString()));
+            col.Item().Element(container => AddTwoColumnRow(container, organisationName, basicInformation.OrganisationName?.ToString()));
 
         if (!string.IsNullOrEmpty(basicInformation.SupplierType?.ToString()))
             col.Item().Element(container => AddTwoColumnRow(container, StaticTextResource.PdfGenerator_BasicInformation_Suppliertype, basicInformation.SupplierType?.ToString()));

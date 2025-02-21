@@ -1,7 +1,10 @@
+using Amazon.Runtime.Internal.Transform;
 using CO.CDP.Authentication;
 using CO.CDP.AwsServices;
 using CO.CDP.DataSharing.WebApi.DataService;
 using CO.CDP.DataSharing.WebApi.Model;
+using CO.CDP.OrganisationInformation.Persistence;
+using System.Collections.Generic;
 using System.IO.Compression;
 using System.Net.Mime;
 using static CO.CDP.Authentication.Constants;
@@ -12,13 +15,30 @@ public class GetSharedDataFileUseCase(
     IPdfGenerator pdfGenerator,
     IDataService dataService,
     IClaimService claimService,
-    IFileHostManager fileHostManager)
+    IFileHostManager fileHostManager,
+    IShareCodeRepository shareCodeRepository)
     : IUseCase<string, SharedDataFile?>
 {
     public async Task<SharedDataFile?> Execute(string sharecode)
     {
+        List<SharedSupplierInformation> data = [];
+        Dictionary<String, DateTimeOffset?> shareCodeList = [] ;
+
         var sharedSupplierInfo = await dataService.GetSharedSupplierInformationAsync(sharecode);
         if (sharedSupplierInfo == null) return null;
+
+        data.Add(sharedSupplierInfo);
+        if (sharedSupplierInfo.OrganisationType == OrganisationInformation.OrganisationType.InformalConsortium)
+        {
+            var shareCodes = await shareCodeRepository.GetConsortiumOrganisationsShareCode(sharecode);
+            
+            foreach (var sc in shareCodes)
+            {
+                var scdetails = await dataService.GetSharedSupplierInformationAsync(sc);
+                data.Add(scdetails);
+                shareCodeList.Add(scdetails.Sharecode, scdetails.SharecodeSubmittedAt);
+            }
+        }
 
         if (!await claimService.HaveAccessToOrganisation(
             sharedSupplierInfo.OrganisationId,
@@ -28,13 +48,15 @@ public class GetSharedDataFileUseCase(
             throw new UserUnauthorizedException();
         }
 
-        var pdfStream = pdfGenerator.GenerateBasicInformationPdf(sharedSupplierInfo);
+        var pdfStream = pdfGenerator.GenerateBasicInformationPdf(data, shareCodeList);
 
         var fileName = $"{sharecode}.pdf";
         var contentType = MediaTypeNames.Application.Pdf;
         byte[] content = [];
 
-        if (sharedSupplierInfo.AttachedDocuments.Count > 0)
+        var docs = data.SelectMany(x => x.AttachedDocuments);
+
+        if (docs.Any())
         {
             using var memoryStream = new MemoryStream();
             using (var archive = new ZipArchive(memoryStream, ZipArchiveMode.Create, true))
@@ -46,7 +68,7 @@ public class GetSharedDataFileUseCase(
                     await pdfStream.CopyToAsync(pdfEntryStream);
                 }
 
-                foreach (var attachedDocument in sharedSupplierInfo.AttachedDocuments)
+                foreach (var attachedDocument in docs)
                 {
                     var fileInArchive = archive.CreateEntry(attachedDocument, CompressionLevel.Optimal);
                     using (var entryStream = fileInArchive.Open())
