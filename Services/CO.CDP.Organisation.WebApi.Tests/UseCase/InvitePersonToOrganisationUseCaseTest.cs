@@ -71,7 +71,7 @@ public class InvitePersonToOrganisationUseCaseTest
 
         _organisationRepository.Verify(repo => repo.Find(organisationId), Times.Once);
         _organisationRepository.Verify(repo => repo.IsEmailUniqueWithinOrganisation(organisationId, invitePersonData.Email), Times.Once);
-        _personsInviteRepository.Verify(repo => repo.Save(It.IsAny<PersonInvite>()), Times.Once);
+        _personsInviteRepository.Verify(repo => repo.SaveNewInvite(It.IsAny<PersonInvite>(), It.IsAny<IEnumerable<PersonInvite>>()), Times.Once);
         _mockGovUKNotifyApiClient.Verify(client => client.SendEmail(It.IsAny<EmailNotificationRequest>()), Times.Once);
     }
 
@@ -146,7 +146,7 @@ public class InvitePersonToOrganisationUseCaseTest
         result.Should().BeTrue();
         _organisationRepository.Verify(repo => repo.Find(organisationId), Times.Once);
         _organisationRepository.Verify(repo => repo.IsEmailUniqueWithinOrganisation(organisationId, invitePersonData.Email), Times.Once);
-        _personsInviteRepository.Verify(repo => repo.Save(It.IsAny<PersonInvite>()), Times.Once);
+        _personsInviteRepository.Verify(repo => repo.SaveNewInvite(It.IsAny<PersonInvite>(), It.IsAny<IEnumerable<PersonInvite>>()), Times.Once);
         _mockGovUKNotifyApiClient.Verify(client => client.SendEmail(It.IsAny<EmailNotificationRequest>()), Times.Once);
     }
 
@@ -200,7 +200,10 @@ public async Task Execute_ValidInviteWithSameEmailForOrganisation_ExpiresExistin
 
     existingInvite.ExpiresOn.Should().NotBeNull();
 
-    _personsInviteRepository.Verify(repo => repo.Save(It.Is<PersonInvite>(pi => pi.Email == invitePersonData.Email && pi.Guid != existingInviteGuid)), Times.Once);
+    _personsInviteRepository.Verify(repo => repo.SaveNewInvite(
+            It.Is<PersonInvite>(pi => pi.Email == invitePersonData.Email && pi.Guid != existingInviteGuid),
+            It.IsAny<IEnumerable<PersonInvite>>()),
+        Times.Once);
     _mockGovUKNotifyApiClient.Verify(client => client.SendEmail(It.IsAny<EmailNotificationRequest>()), Times.Once);
 }
 
