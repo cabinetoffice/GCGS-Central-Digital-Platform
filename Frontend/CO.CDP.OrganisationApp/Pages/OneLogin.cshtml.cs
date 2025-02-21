@@ -26,8 +26,7 @@ public class OneLoginModel(
     IAuthorityClient authorityClient,
     ILogger<OneLoginModel> logger,
     IFeatureManager featureManager,
-    IConfiguration config,
-    IFtsUrlService ftsUrlService) : PageModel
+    IConfiguration config) : PageModel
 {
     [BindProperty(SupportsGet = true)]
     public required string PageAction { get; set; }
@@ -183,8 +182,7 @@ public class OneLoginModel(
 
         session.Clear();
 
-        var redirectUri = await featureManager.IsEnabledAsync(FeatureFlags.AllowFtsRedirectLinks) ?
-            ftsUrlService.BuildUrl("/user/signedout") : "/";
+        var redirectUri = "/user/signedout";
 
         if (httpContextAccessor.HttpContext?.User?.Identity?.IsAuthenticated != true)
         {

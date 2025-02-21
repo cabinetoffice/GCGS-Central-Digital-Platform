@@ -29,7 +29,6 @@ public class OneLoginTest
     private readonly Mock<IAuthorityClient> authorityClientMock = new();
     private readonly Mock<IFeatureManager> featureManagerMock = new();
     private readonly Mock<IConfiguration> configMock = new();
-    private readonly Mock<IFtsUrlService> ftsUrlServiceMock = new();
     private const string urn = "urn:fdc:gov.uk:2022:7wTqYGMFQxgukTSpSI2GodMwe9";
 
     [Fact]
@@ -225,19 +224,6 @@ public class OneLoginTest
     }
 
     [Fact]
-    public async Task OnGetSignOut_UserIsNotAuthenticated_ShouldReturnToIndex()
-    {
-        var model = GivenOneLoginModel("sign-out");
-        featureManagerMock.Setup(f => f.IsEnabledAsync(FeatureFlags.AllowFtsRedirectLinks))
-            .ReturnsAsync(false);
-
-        var result = await model.OnGetAsync();
-
-        result.Should().BeOfType<RedirectResult>()
-            .Which.Url.Should().Be("/");
-    }
-
-    [Fact]
     public async Task OnGetSignOut_SessionHasUserDetailsUrn_ShouldCallRevokeRefreshToken()
     {
         var userUrn = "test_urn";
@@ -265,25 +251,7 @@ public class OneLoginTest
         var result = await model.OnGetAsync();
 
         result.Should().BeOfType<SignOutResult>()
-            .Which.Properties!.RedirectUri.Should().Be("/");
-    }
-
-    [Fact]
-    public async Task OnGetSignOut_UserIsAuthenticatedAndFtsRedirectEnabled_ShouldRedirectToFtsSignoutPage()
-    {
-        var model = GivenOneLoginModel("sign-out");
-        var ftsSignedOutPage = "https://fts-domain/user/signedout";
-        httpContextAccessorMock.Setup(x => x.HttpContext!.User!.Identity!.IsAuthenticated)
-           .Returns(true);
-        featureManagerMock.Setup(f => f.IsEnabledAsync(FeatureFlags.AllowFtsRedirectLinks))
-            .ReturnsAsync(true);
-        ftsUrlServiceMock.Setup(f => f.BuildUrl("/user/signedout", null, null))
-            .Returns(ftsSignedOutPage);
-
-        var result = await model.OnGetAsync();
-
-        result.Should().BeOfType<SignOutResult>()
-            .Which.Properties!.RedirectUri.Should().Be(ftsSignedOutPage);
+            .Which.Properties!.RedirectUri.Should().Be("/user/signedout");
     }
 
     [Fact]
@@ -391,8 +359,7 @@ public class OneLoginTest
             authorityClientMock.Object,
             new Mock<ILogger<OneLoginModel>>().Object,
             featureManagerMock.Object,
-            configMock.Object,
-            ftsUrlServiceMock.Object)
+            configMock.Object)
         { PageAction = pageAction };
     }
 }
