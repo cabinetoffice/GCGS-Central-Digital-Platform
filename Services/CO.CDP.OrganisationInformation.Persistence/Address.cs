@@ -8,7 +8,7 @@ public class Address : IEntityDate
     public required string StreetAddress { get; set; }
     public required string Locality { get; set; }
     public string? Region { get; set; }
-    public required string PostalCode { get; set; }
+    public string? PostalCode { get; set; }
     public required string CountryName { get; set; }
     public required string Country { get; set; }
     public DateTimeOffset CreatedOn { get; set; }

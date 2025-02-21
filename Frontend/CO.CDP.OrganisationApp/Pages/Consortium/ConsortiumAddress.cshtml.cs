@@ -51,7 +51,7 @@ public class ConsortiumAddressModel(ISession session) : ConsortiumStepModel(sess
         {            
             AddressLine1 = Address.AddressLine1 ?? "",
             TownOrCity = Address.TownOrCity ?? "",
-            Postcode = Address.Postcode ?? "",
+            Postcode = Address.Postcode,
             CountryName = Address.CountryName ?? "",
             Country = Address.Country ?? ""
         };

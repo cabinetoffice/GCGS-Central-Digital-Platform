@@ -6,7 +6,7 @@ public class Address
 
     public required string TownOrCity { get; set; }
 
-    public required string Postcode { get; set; }
+    public required string? Postcode { get; set; }
 
     public required string CountryName { get; set; }
 

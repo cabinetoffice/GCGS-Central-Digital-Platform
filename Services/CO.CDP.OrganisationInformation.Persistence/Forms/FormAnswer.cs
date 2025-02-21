@@ -60,7 +60,7 @@ public class FormAddress
     public required string StreetAddress { get; init; }
     public required string Locality { get; init; }
     public string? Region { get; init; }
-    public required string PostalCode { get; init; }
+    public string? PostalCode { get; init; }
     public required string CountryName { get; init; }
     public required string Country { get; init; }
 }

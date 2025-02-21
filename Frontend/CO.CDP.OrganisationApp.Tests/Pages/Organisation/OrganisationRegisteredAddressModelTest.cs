@@ -94,6 +94,17 @@ public class OrganisationRegisteredAddressModelTest
     }
 
     [Fact]
+    public void WhenPostcodeIsEmptyButNonUkAddress_ShouldNotRaisePostcodeValidationError()
+    {
+        var model = GivenOrganisationAddressModel();
+        model.Address.UkOrNonUk = "non-uk";
+
+        var results = ModelValidationHelper.Validate(model.Address);
+
+        results.Any(c => c.MemberNames.Contains("Postcode")).Should().BeFalse();
+    }
+
+    [Fact]
     public void WhenCountryIsNotEmpty_ShouldNotRaiseCountryValidationError()
     {
         var model = GivenOrganisationAddressModel();

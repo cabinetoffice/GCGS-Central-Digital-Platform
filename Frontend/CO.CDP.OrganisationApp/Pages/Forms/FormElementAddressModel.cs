@@ -1,8 +1,7 @@
+using CO.CDP.Localization;
 using CO.CDP.OrganisationApp.Models;
 using Microsoft.AspNetCore.Mvc;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using CO.CDP.Localization;
 
 namespace CO.CDP.OrganisationApp.Pages.Forms;
 
@@ -51,7 +50,7 @@ public class FormElementAddressModel : FormElementModel, IValidatableObject
                 {
                     AddressLine1 = AddressLine1,
                     TownOrCity = TownOrCity!,
-                    Postcode = Postcode!,
+                    Postcode = Postcode,
                     CountryName = CountryName!,
                     Country = Country!,
                 }
@@ -85,11 +84,9 @@ public class FormElementAddressModel : FormElementModel, IValidatableObject
                 yield return new ValidationResult(StaticTextResource.Forms_FormElementAddress_TownOrCity_RequiredError, [nameof(TownOrCity)]);
             }
 
-            if (string.IsNullOrWhiteSpace(Postcode))
+            if (!IsNonUkAddress && string.IsNullOrWhiteSpace(Postcode))
             {
-                yield return new ValidationResult(IsNonUkAddress
-                    ? StaticTextResource.Forms_FormElementAddress_PostalOrZipCode_RequiredError
-                    : StaticTextResource.Forms_FormElementAddress_Postcode_RequiredError, [nameof(Postcode)]);
+                yield return new ValidationResult(StaticTextResource.Forms_FormElementAddress_Postcode_RequiredError, [nameof(Postcode)]);
             }
 
             if (string.IsNullOrWhiteSpace(Country))
