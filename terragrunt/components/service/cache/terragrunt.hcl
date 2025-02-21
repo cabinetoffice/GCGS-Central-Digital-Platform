@@ -44,7 +44,8 @@ dependency core_security_groups {
 }
 
 inputs = {
-  tags = local.tags
+  node_type = local.global_vars.locals.redis_node_type
+  tags      = local.tags
 
   private_subnet_ids          = dependency.core_networking.outputs.private_subnet_ids
   private_subnets_cidr_blocks = dependency.core_networking.outputs.private_subnets_cidr_blocks

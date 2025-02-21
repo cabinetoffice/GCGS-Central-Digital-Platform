@@ -2,9 +2,10 @@
 @attribute [RazorCompiledItemMetadata("RouteTemplate", RegistrationStepModel.OrganisationSummaryPage)]
 @using CO.CDP.OrganisationApp.Constants
 @model CO.CDP.OrganisationApp.Pages.Registration.OrganisationDetailsSummaryModel
+@using CO.CDP.Localization
 
 @{
-    ViewData["Title"] = "Check your answers";
+    ViewData["Title"] = @StaticTextResource.OrganisationRegistration_Details_Title;
     var details = Model.RegistrationDetails!;
 
     var backLink = RegistrationStepModel.OrganisationAddressPage;
@@ -24,7 +25,7 @@
 
 @section BeforeContent {
     <a href="@backLink" class="govuk-back-link">
-        Back
+        @StaticTextResource.Global_Back
     </a>
 }
 
@@ -34,11 +35,12 @@
             <h1 class="govuk-heading-l">
                 @ViewData["Title"]
             </h1>
-            <fieldset class="govuk-fieldset">
+
+        <fieldset class="govuk-fieldset">
                 <dl class="govuk-summary-list">
                     <div class="govuk-summary-list__row">
                         <dt class="govuk-summary-list__key">
-                            Organisation identifier
+                            @StaticTextResource.Organisation_OrganisationIdentifier
                         </dt>
                         <dd class="govuk-summary-list__value">
                         @details.OrganisationScheme.SchemeDescription(Model.IdentifierRegistriesDetails)
@@ -50,36 +52,36 @@
                         </dd>
                         <dd class="govuk-summary-list__actions">
                             <a class="govuk-link" href="/registration/has-companies-house-number?frm-summary">
-                                Change<span class="govuk-visually-hidden"> organisation identifier</span>
+                                @Html.Raw(@StaticTextResource.OrganisationRegistration_Change_Identifier)
                             </a>
                         </dd>
                     </div>
                     <div class="govuk-summary-list__row">
                         <dt class="govuk-summary-list__key">
-                            Organisation name
+                            @StaticTextResource.Organisation_OrganisationName
                         </dt>
                         <dd class="govuk-summary-list__value">
                             @details.OrganisationName
                         </dd>
                         <dd class="govuk-summary-list__actions">
-                            <a class="govuk-link" href="/registration/organisation-name?frm-summary">Change<span class="govuk-visually-hidden"> the organisation name</span></a>
+                            <a class="govuk-link" href="/registration/organisation-name?frm-summary">@Html.Raw(@StaticTextResource.OrganisationRegistration_Details_Change_Name)</a>
                         </dd>
                     </div>
                     <div class="govuk-summary-list__row">
                         <dt class="govuk-summary-list__key">
-                            Email address
+                            @StaticTextResource.Supplier_EmailAddress
                         </dt>
                         <dd class="govuk-summary-list__value">
                             @details.OrganisationEmailAddress
                         </dd>
                         <dd class="govuk-summary-list__actions">
-                            <a class="govuk-link" href="/registration/organisation-email?frm-summary">Change<span class="govuk-visually-hidden"> the email address</span></a>
+                            <a class="govuk-link" href="/registration/organisation-email?frm-summary">@Html.Raw(@StaticTextResource.OrganisationRegistration_Details_Change_Email)</a>
                         </dd>
                     </div>
 
                     <div class="govuk-summary-list__row">
                         <dt class="govuk-summary-list__key">
-                            Registered address
+                            @StaticTextResource.Supplier_RegisteredAddress
                         </dt>
                         <dd class="govuk-summary-list__value">
                             <p class="govuk-body">@details.OrganisationAddressLine1</p>
@@ -97,8 +99,8 @@
                         </dd>
                         <dd class="govuk-summary-list__actions">
                             <a class="govuk-link"
-                               href="/registration/organisation-registered-address/@(details.OrganisationCountryCode == Country.UKCountryCode ? "uk" : "non-uk")?frm-summary">
-                                Change<span class="govuk-visually-hidden"> the registered address</span>
+                                href="/registration/organisation-registered-address/@(details.OrganisationCountryCode == Country.UKCountryCode ? "uk" : "non-uk")?frm-summary">
+                                @Html.Raw(@StaticTextResource.OrganisationRegistration_Details_Change_Address)
                             </a>
                         </dd>
                     </div>
@@ -107,7 +109,7 @@
 
                         <div class="govuk-summary-list__row">
                             <dt class="govuk-summary-list__key">
-                                Organisation type
+                                @StaticTextResource.Supplier_OrganisationType
                             </dt>
                             <dd class="govuk-summary-list__value">
                                 @if (BuyerOrganisationTypeModel.BuyerTypes.Keys.Contains(details.BuyerOrganisationType!))
@@ -120,26 +122,26 @@
                                 }
                             </dd>
                             <dd class="govuk-summary-list__actions">
-                                <a class="govuk-link govuk-link--no-visited-state" href="@RegistrationStepModel.BuyerOrganisationTypePage?frm-summary">Change<span class="govuk-visually-hidden"> the organisation type</span></a>
+                                <a class="govuk-link govuk-link--no-visited-state" href="@RegistrationStepModel.BuyerOrganisationTypePage?frm-summary">@Html.Raw(@StaticTextResource.OrganisationRegistration_Details_Change_Organisation_Type)</a>
                             </dd>
                         </div>
 
                         <div class="govuk-summary-list__row">
                             <dt class="govuk-summary-list__key">
-                                Devolved regulations
+                                @StaticTextResource.Organisation_DevolvedRegulations
                             </dt>
                             <dd class="govuk-summary-list__value">
-                                @(details.Devolved == true ? "Yes" : "No")
+                                @(details.Devolved == true ? @StaticTextResource.Global_Yes : @StaticTextResource.Global_No)
                             </dd>
                             <dd class="govuk-summary-list__actions">
-                                <a class="govuk-link govuk-link--no-visited-state" href="@RegistrationStepModel.BuyerDevolvedRegulationPage?frm-summary">Change<span class="govuk-visually-hidden"> the devolved regulations</span></a>
+                                <a class="govuk-link govuk-link--no-visited-state" href="@RegistrationStepModel.BuyerDevolvedRegulationPage?frm-summary">@Html.Raw(@StaticTextResource.OrganisationRegistration_Details_Change_Devolved_Regulations)</a>
                             </dd>
                         </div>
                         @if (details.Devolved == true)
                         {
                             <div class="govuk-summary-list__row">
                                 <dt class="govuk-summary-list__key">
-                                    Devolved regions
+                                    @StaticTextResource.Organisation_DevolvedRegions
                                 </dt>
                                 <dd class="govuk-summary-list__value">
                                     @foreach (var regulation in details.Regulations)
@@ -148,7 +150,7 @@
                                     }
                                 </dd>
                                 <dd class="govuk-summary-list__actions">
-                                    <a class="govuk-link govuk-link--no-visited-state" href="@RegistrationStepModel.BuyerSelectDevolvedRegulationPage?frm-summary">Change<span class="govuk-visually-hidden"> the devolved regions</span></a>
+                                    <a class="govuk-link govuk-link--no-visited-state" href="@RegistrationStepModel.BuyerSelectDevolvedRegulationPage?frm-summary">@Html.Raw(@StaticTextResource.OrganisationRegistration_Details_Change_Devolved_Regions)</a>
                                 </dd>
                             </div>
                         }
@@ -157,7 +159,7 @@
             </fieldset>
             <form method="post">
                 <govuk-button>
-                    Save
+                    @StaticTextResource.Global_Save
                 </govuk-button>
             </form>
         </div>
