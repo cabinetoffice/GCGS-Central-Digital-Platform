@@ -67,7 +67,7 @@ public class OrganisationNameModel(ISession session, ICharityCommissionApi chari
             return Page();
         }
 
-        OrganisationName = RemoveExtraInnerSpaces(OrganisationName ?? "");
+        OrganisationName = RemoveExtraInnerSpaces(OrganisationName!);
 
         RegistrationDetails.OrganisationName = OrganisationName?.Trim();
         SessionContext.Set(Session.RegistrationDetailsKey, RegistrationDetails);
