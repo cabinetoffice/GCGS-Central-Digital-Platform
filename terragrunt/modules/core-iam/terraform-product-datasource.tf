@@ -182,9 +182,11 @@ data "aws_iam_policy_document" "terraform_product" {
   statement {
     actions = [
       "elasticloadbalancing:AddTags",
+      "elasticloadbalancing:AddListenerCertificates",
       "elasticloadbalancing:Create*",
       "elasticloadbalancing:Delete*",
       "elasticloadbalancing:Describe*",
+      "elasticloadbalancing:RemoveListenerCertificates",
       "elasticloadbalancing:Modify*",
       "elasticloadbalancing:SetRulePriorities",
       "elasticloadbalancing:SetWebACL",

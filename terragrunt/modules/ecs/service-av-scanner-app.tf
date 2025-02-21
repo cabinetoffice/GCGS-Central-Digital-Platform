@@ -15,7 +15,7 @@ module "ecs_service_av_scanner_app" {
       lg_region                = data.aws_region.current.name
       memory                   = var.service_configs.av_scanner_app.memory
       name                     = var.service_configs.av_scanner_app.name
-      public_domain            = var.public_domain
+      public_domain            = var.public_beta_domain
       queue_av_scanner_url     = var.queue_av_scanner_url
       s3_permanent_bucket      = module.s3_bucket_permanent.bucket
       s3_staging_bucket        = module.s3_bucket_staging.bucket
@@ -38,7 +38,7 @@ module "ecs_service_av_scanner_app" {
   name                   = var.service_configs.av_scanner_app.name
   private_subnet_ids     = var.private_subnet_ids
   product                = var.product
-  public_domain          = var.public_domain
+  public_domain          = var.public_beta_domain
   role_ecs_task_arn      = var.role_ecs_task_arn
   role_ecs_task_exec_arn = var.role_ecs_task_exec_arn
   tags                   = var.tags

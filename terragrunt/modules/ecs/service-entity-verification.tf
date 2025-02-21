@@ -18,7 +18,7 @@ module "ecs_service_entity_verification" {
       lg_region                     = data.aws_region.current.name
       memory                        = var.service_configs.entity_verification.memory
       name                          = var.service_configs.entity_verification.name
-      public_domain                 = var.public_domain
+      public_domain                 = var.public_beta_domain
       queue_entity_verification_url = var.queue_entity_verification_url
       queue_organisation_url        = var.queue_organisation_url
       service_version               = local.service_version
@@ -40,7 +40,7 @@ module "ecs_service_entity_verification" {
   name                   = var.service_configs.entity_verification.name
   private_subnet_ids     = var.private_subnet_ids
   product                = var.product
-  public_domain          = var.public_domain
+  public_domain          = var.public_beta_domain
   role_ecs_task_arn      = var.role_ecs_task_arn
   role_ecs_task_exec_arn = var.role_ecs_task_exec_arn
   tags                   = var.tags

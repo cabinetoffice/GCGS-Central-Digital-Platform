@@ -18,7 +18,7 @@ module "ecs_service_data_sharing" {
       lg_region           = data.aws_region.current.name
       memory              = var.service_configs.data_sharing.memory
       name                = var.service_configs.data_sharing.name
-      public_domain       = var.public_domain
+      public_domain       = var.public_beta_domain
       s3_permanent_bucket = module.s3_bucket_permanent.bucket
       s3_staging_bucket   = module.s3_bucket_staging.bucket
       service_version     = local.service_version
@@ -39,7 +39,7 @@ module "ecs_service_data_sharing" {
   name                   = var.service_configs.data_sharing.name
   private_subnet_ids     = var.private_subnet_ids
   product                = var.product
-  public_domain          = var.public_domain
+  public_domain          = var.public_beta_domain
   role_ecs_task_arn      = var.role_ecs_task_arn
   role_ecs_task_exec_arn = var.role_ecs_task_exec_arn
   tags                   = var.tags

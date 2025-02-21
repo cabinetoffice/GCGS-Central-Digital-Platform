@@ -34,7 +34,7 @@ output "production_private_beta_hosted_zone_id" {
 }
 
 output "public_domain" {
-  value = var.is_production ? "${local.production_subdomain}.${aws_route53_zone.public.name}" : aws_route53_zone.public.name
+  value = aws_route53_zone.public.name
 }
 
 output "public_hosted_zone_fqdn" {

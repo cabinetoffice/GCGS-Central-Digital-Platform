@@ -50,7 +50,7 @@ module "ecs_service_organisation_app" {
       onelogin_fln_api_key_arn            = data.aws_secretsmanager_secret.one_login_forward_logout_notification_api_key.arn
       onelogin_logout_notification_urls   = join(",", var.onelogin_logout_notification_urls)
       onelogin_private_key                = local.one_loging.credential_locations.private_key
-      public_domain                       = var.public_domain
+      public_domain                       = var.public_beta_domain
       queue_av_scanner_url                = var.queue_av_scanner_url
       redis_auth_token_arn                = var.redis_auth_token_arn
       redis_port                          = var.redis_port
@@ -78,7 +78,7 @@ module "ecs_service_organisation_app" {
   name                          = var.service_configs.organisation_app.name
   private_subnet_ids            = var.private_subnet_ids
   product                       = var.product
-  public_domain                 = var.public_domain
+  public_domain                 = var.public_beta_domain
   role_ecs_task_arn             = var.role_ecs_task_arn
   role_ecs_task_exec_arn        = var.role_ecs_task_exec_arn
   tags                          = var.tags

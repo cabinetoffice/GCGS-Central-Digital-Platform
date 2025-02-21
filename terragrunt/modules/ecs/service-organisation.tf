@@ -20,7 +20,7 @@ module "ecs_service_organisation" {
       lg_region                       = data.aws_region.current.name
       memory                          = var.service_configs.organisation.memory
       name                            = var.service_configs.organisation.name
-      public_domain                   = var.public_domain
+      public_domain                   = var.public_beta_domain
       queue_entity_verification_url   = var.queue_entity_verification_url
       queue_organisation_url          = var.queue_organisation_url
       service_version                 = local.service_version
@@ -40,7 +40,7 @@ module "ecs_service_organisation" {
   name                   = var.service_configs.organisation.name
   private_subnet_ids     = var.private_subnet_ids
   product                = var.product
-  public_domain          = var.public_domain
+  public_domain          = var.public_beta_domain
   role_ecs_task_arn      = var.role_ecs_task_arn
   role_ecs_task_exec_arn = var.role_ecs_task_exec_arn
   tags                   = var.tags

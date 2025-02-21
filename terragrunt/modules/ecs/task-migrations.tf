@@ -18,7 +18,7 @@ module "ecs_migration_tasks" {
       db_name             = each.value.name == "entity-verification-migrations" ? local.db_ev_name : local.db_sirsi_name
       db_password         = each.value.name == "entity-verification-migrations" ? local.db_ev_password : local.db_sirsi_password
       db_username         = each.value.name == "entity-verification-migrations" ? local.db_ev_username : local.db_sirsi_username
-      public_domain       = var.public_domain
+      public_domain       = var.public_beta_domain
       service_version     = local.service_version
     }
   )
@@ -35,7 +35,7 @@ module "ecs_migration_tasks" {
   name                   = each.value.name
   private_subnet_ids     = var.private_subnet_ids
   product                = var.product
-  public_domain          = var.public_domain
+  public_domain          = var.public_beta_domain
   role_ecs_task_arn      = var.role_ecs_task_arn
   role_ecs_task_exec_arn = var.role_ecs_task_exec_arn
   tags                   = var.tags

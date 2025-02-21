@@ -151,12 +151,14 @@ inputs = {
 
   private_subnet_ids          = dependency.core_networking.outputs.private_subnet_ids
   private_subnets_cidr_blocks = dependency.core_networking.outputs.private_subnets_cidr_blocks
-  public_domain               = local.global_vars.locals.is_production ? dependency.core_networking.outputs.production_private_beta_domain : dependency.core_networking.outputs.public_domain                 # @todo (ABN) DP-1069 Remove condition once domain is propagated
-  public_hosted_zone_id       = local.global_vars.locals.is_production ? dependency.core_networking.outputs.production_private_beta_hosted_zone_id : dependency.core_networking.outputs.public_hosted_zone_id # @todo (ABN) DP-1069 Remove condition once domain is propagated
+  public_beta_domain          = dependency.core_networking.outputs.production_private_beta_domain         # @todo (ABN) DP-1069 Remove condition once domain is propagated
+  public_beta_hosted_zone_id  = dependency.core_networking.outputs.production_private_beta_hosted_zone_id # @todo (ABN) DP-1069 Remove condition once domain is propagated
+  public_domain               = dependency.core_networking.outputs.public_domain
+  public_hosted_zone_id       = dependency.core_networking.outputs.public_hosted_zone_id
   public_subnet_ids           = dependency.core_networking.outputs.public_subnet_ids
   public_subnets_cidr_blocks  = dependency.core_networking.outputs.public_subnets_cidr_blocks
-  vpc_id                      = dependency.core_networking.outputs.vpc_id
   vpc_cider                   = dependency.core_networking.outputs.vpc_cider
+  vpc_id                      = dependency.core_networking.outputs.vpc_id
   waf_acl_arn                 = dependency.core_networking.outputs.waf_acl_arn
 
 

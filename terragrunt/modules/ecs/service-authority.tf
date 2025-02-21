@@ -22,7 +22,7 @@ module "ecs_service_authority" {
       onelogin_authority    = local.one_loging.credential_locations.authority
       onelogin_client_id    = local.one_loging.credential_locations.client_id
       onelogin_private_key  = local.one_loging.credential_locations.private_key
-      public_domain         = var.public_domain
+      public_domain         = var.public_beta_domain
       service_version       = local.service_version
       vpc_cidr              = var.vpc_cider
     }
@@ -41,7 +41,7 @@ module "ecs_service_authority" {
   name                   = var.service_configs.authority.name
   private_subnet_ids     = var.private_subnet_ids
   product                = var.product
-  public_domain          = var.public_domain
+  public_domain          = var.public_beta_domain
   role_ecs_task_arn      = var.role_ecs_task_arn
   role_ecs_task_exec_arn = var.role_ecs_task_exec_arn
   tags                   = var.tags

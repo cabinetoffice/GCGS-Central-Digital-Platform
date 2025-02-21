@@ -138,6 +138,18 @@ variable "product" {
   })
 }
 
+# @todo (ABN) DP-1069 Remove condition once domain is propagated
+variable "public_beta_domain" {
+  description = "The fully qualified domain name (FQDN) that may differ from the main delegated domain specified by 'public_hosted_zone_fqdn'. This domain represents the public-facing endpoint."
+  type        = string
+}
+
+# @todo (ABN) DP-1069 Remove condition once domain is propagated
+variable "public_beta_hosted_zone_id" {
+  description = "The fully qualified domain name (FQDN) that may differ from the main delegated domain specified by 'public_hosted_zone_fqdn'. This domain represents the public-facing endpoint."
+  type        = string
+}
+
 variable "public_domain" {
   description = "The fully qualified domain name (FQDN) that may differ from the main delegated domain specified by 'public_hosted_zone_fqdn'. This domain represents the public-facing endpoint."
   type        = string

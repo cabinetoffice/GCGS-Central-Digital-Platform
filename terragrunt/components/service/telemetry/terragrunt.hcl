@@ -70,10 +70,14 @@ inputs = {
   role_ecs_task_exec_arn = dependency.core_iam.outputs.ecs_task_exec_arn
   role_telemetry_arn     = dependency.core_iam.outputs.telemetry_arn
 
-  private_subnet_ids    = dependency.core_networking.outputs.private_subnet_ids
-  public_domain         = local.global_vars.locals.is_production ? dependency.core_networking.outputs.production_private_beta_domain : dependency.core_networking.outputs.public_domain                 # @todo (ABN) DP-1069 Remove condition once domain is propagated
-  public_hosted_zone_id = local.global_vars.locals.is_production ? dependency.core_networking.outputs.production_private_beta_hosted_zone_id : dependency.core_networking.outputs.public_hosted_zone_id # @todo (ABN) DP-1069 Remove condition once domain is propagated
-  vpc_id                = dependency.core_networking.outputs.vpc_id
+  private_subnet_ids         = dependency.core_networking.outputs.private_subnet_ids
+  # public_domain         = local.global_vars.locals.is_production ? dependency.core_networking.outputs.production_private_beta_domain : dependency.core_networking.outputs.public_domain                 # @todo (ABN) DP-1069 Remove condition once domain is propagated
+  # public_hosted_zone_id = local.global_vars.locals.is_production ? dependency.core_networking.outputs.production_private_beta_hosted_zone_id : dependency.core_networking.outputs.public_hosted_zone_id
+  # public_beta_domain         = dependency.core_networking.outputs.production_private_beta_domain         # @todo (ABN) DP-1069 Remove condition once domain is propagated
+  # public_beta_hosted_zone_id = dependency.core_networking.outputs.production_private_beta_hosted_zone_id # @todo (ABN) DP-1069 Remove condition once domain is propagated
+  public_domain              = dependency.core_networking.outputs.public_domain
+  public_hosted_zone_id      = dependency.core_networking.outputs.public_hosted_zone_id
+  vpc_id                     = dependency.core_networking.outputs.vpc_id
 
   ecs_alb_sg_id = dependency.core_security_groups.outputs.alb_sg_id
   ecs_sg_id     = dependency.core_security_groups.outputs.ecs_sg_id

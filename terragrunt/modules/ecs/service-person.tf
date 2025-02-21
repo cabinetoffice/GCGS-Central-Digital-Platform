@@ -18,7 +18,7 @@ module "ecs_service_person" {
       lg_region           = data.aws_region.current.name
       memory              = var.service_configs.person.memory
       name                = var.service_configs.person.name
-      public_domain       = var.public_domain
+      public_domain       = var.public_beta_domain
       service_version     = local.service_version
       vpc_cidr            = var.vpc_cider
     }
@@ -37,7 +37,7 @@ module "ecs_service_person" {
   name                   = var.service_configs.person.name
   private_subnet_ids     = var.private_subnet_ids
   product                = var.product
-  public_domain          = var.public_domain
+  public_domain          = var.public_beta_domain
   role_ecs_task_arn      = var.role_ecs_task_arn
   role_ecs_task_exec_arn = var.role_ecs_task_exec_arn
   tags                   = var.tags
