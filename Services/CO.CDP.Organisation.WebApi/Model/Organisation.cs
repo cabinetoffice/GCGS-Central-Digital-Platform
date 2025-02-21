@@ -58,7 +58,7 @@ public record ConnectedEntity
 {
     public Guid Id { get; set; }
     public required ConnectedEntityType EntityType { get; set; }
-    public bool HasCompnayHouseNumber { get; set; }
+    public bool HasCompanyHouseNumber { get; set; }
     public string? CompanyHouseNumber { get; set; }
     public string? OverseasCompanyNumber { get; set; }
 

@@ -1,4 +1,3 @@
-using CO.CDP.OrganisationInformation;
 using static CO.CDP.OrganisationInformation.Persistence.ConnectedEntity;
 
 namespace CO.CDP.DataSharing.WebApi.Model;
@@ -18,7 +17,7 @@ public record ConnectedPersonInformation
     string? CompanyHouseNumber,
     ConnectedIndividualTrust? IndividualTrust,
     ConnectedOrganisation? Organisation,
-    OrganisationInformation.Persistence.ConnectedEntity.ConnectedEntityType EntityType,
+    ConnectedEntityType EntityType,
     ConnectedOrganisationCategory ConnectedOrganisationCategoryType
 );
 
@@ -53,5 +52,5 @@ public record ConnectedAddress
     string Region,
     string PostalCode,
     string CountryName,
-    AddressType Type
+    OrganisationInformation.AddressType Type
 );

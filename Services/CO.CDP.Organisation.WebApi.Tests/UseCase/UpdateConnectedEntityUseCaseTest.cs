@@ -69,7 +69,7 @@ public class UpdateConnectedEntityUseCaseTests
             SupplierOrganisation = organisation,
             Addresses = new List<Persistence.ConnectedEntity.ConnectedEntityAddress>(),
             Id = 1,
-            HasCompnayHouseNumber = true,
+            HasCompanyHouseNumber = true,
             CreatedOn = DateTimeOffset.UtcNow,
             UpdatedOn = DateTimeOffset.UtcNow,
         };
