@@ -97,6 +97,7 @@ public class OrganisationNameModelTest
     public void OnPost_WhenValidModel_ShouldSetRegistrationDetailsInSession()
     {
         var model = GivenOrganisationNameModel();
+        model.OrganisationName = "Org name";
 
         RegistrationDetails registrationDetails = DummyRegistrationDetails();
 
@@ -193,6 +194,7 @@ public class OrganisationNameModelTest
     public void OnPost_WhenValidModel_ShouldRedirectToOrganisationNameSearchPage()
     {
         var model = GivenOrganisationNameModel();
+        model.OrganisationName = "Org name";
 
         RegistrationDetails registrationDetails = DummyRegistrationDetails();
         _sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(registrationDetails);
@@ -208,6 +210,7 @@ public class OrganisationNameModelTest
     {
         var model = GivenOrganisationNameModel();
         model.RedirectToSummary = true;
+        model.OrganisationName = "Org name";
 
         RegistrationDetails registrationDetails = DummyRegistrationDetails();
         _sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(registrationDetails);
