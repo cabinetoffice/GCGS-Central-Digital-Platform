@@ -37,7 +37,7 @@ resource "aws_lb_listener" "ecs" {
 
     fixed_response {
       content_type = "text/plain"
-      message_body = "Fixed response from ${var.environment} environment"
+      message_body = var.is_production ? "The service is currently transitioning to its live domain. Please revisit on Monday, 25th February for updates.": "Fixed response from ${var.environment} environment" # @todo (ABN) DP-1069 Adjust once live
       status_code  = "200"
     }
   }

@@ -21,6 +21,14 @@ output "private_subnets_cidr_blocks" {
   value       = aws_subnet.private.*.cidr_block
 }
 
+output "private_beta_domain" {
+  value = try(aws_route53_zone.production_private_beta[0].name, null)
+}
+
+output "private_beta_hosted_zone_id" {
+  value = try(aws_route53_zone.production_private_beta[0].id, null)
+}
+
 output "public_domain" {
   value = aws_route53_zone.public.name
 }
