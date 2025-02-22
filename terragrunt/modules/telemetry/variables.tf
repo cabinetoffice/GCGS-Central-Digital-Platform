@@ -3,6 +3,11 @@ variable "account_ids" {
   type        = map(string)
 }
 
+variable "ecs_alb_dns_name" {
+  description = "DNS to the load balancer in front of ECS services"
+  type        = string
+}
+
 variable "ecs_alb_sg_id" {
   description = "Application load-balancer security group ID"
   type        = string
@@ -10,11 +15,6 @@ variable "ecs_alb_sg_id" {
 
 variable "ecs_cluster_id" {
   description = "ECS Cluster ID"
-  type        = string
-}
-
-variable "ecs_alb_dns_name" {
-  description = "DNS to the load balancer in front of ECS services"
   type        = string
 }
 
