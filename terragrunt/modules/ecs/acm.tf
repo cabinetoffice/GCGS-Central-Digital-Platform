@@ -53,13 +53,13 @@ resource "aws_acm_certificate_validation" "private_beta" {
 }
 
 resource "aws_route53_record" "private_beta" {
-  for_each = {
+  for_each = var.is_production ? {
     for dvo in aws_acm_certificate.private_beta[0].domain_validation_options : dvo.domain_name => {
       name   = dvo.resource_record_name
       record = dvo.resource_record_value
       type   = dvo.resource_record_type
     }
-  }
+  } : {}
   allow_overwrite = true
   name            = each.value.name
   records         = [each.value.record]
