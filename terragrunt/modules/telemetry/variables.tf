@@ -13,6 +13,11 @@ variable "ecs_cluster_id" {
   type        = string
 }
 
+variable "ecs_alb_dns_name" {
+  description = "DNS to the load balancer in front of ECS services"
+  type        = string
+}
+
 variable "ecs_listener_arn" {
   description = "ECS Application Loadbalancer Listener ARN"
   type        = string

@@ -302,11 +302,6 @@ variable "vpce_s3_prefix_list_id" {
   type        = string
 }
 
-variable "vpce_s3_sg_id" {
-  description = "Security group ID of the S3 VPC endpoint"
-  type        = string
-}
-
 variable "vpce_secretsmanager_sg_id" {
   description = "Security group ID of the Secrets Manager VPC endpoint"
   type        = string

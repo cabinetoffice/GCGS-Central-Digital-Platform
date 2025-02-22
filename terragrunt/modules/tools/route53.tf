@@ -1,26 +1,26 @@
 resource "aws_route53_record" "clamav_rest_to_entrypoint_alias" {
   zone_id = var.public_hosted_zone_id
-  name    = var.environment == "production" ? "${var.tools_configs.clamav_rest.name}.${local.production_subdomain}" : var.tools_configs.clamav_rest.name
+  name    = var.tools_configs.clamav_rest.name
   type    = "CNAME"
   ttl     = 60
 
-  records = [var.public_domain]
+  records = [var.ecs_alb_dns_name]
 }
 
 resource "aws_route53_record" "healthcheck_to_entrypoint_alias" {
   zone_id = var.public_hosted_zone_id
-  name    = var.environment == "production" ? "${var.healthcheck_config.name}.${local.production_subdomain}" : var.healthcheck_config.name
+  name    = var.healthcheck_config.name
   type    = "CNAME"
   ttl     = 60
 
-  records = [var.public_domain]
+  records = [var.ecs_alb_dns_name]
 }
 
 resource "aws_route53_record" "pgadmin_to_entrypoint_alias" {
   zone_id = var.public_hosted_zone_id
-  name    = var.environment == "production" ? "${var.pgadmin_config.name}.${local.production_subdomain}" : var.pgadmin_config.name
+  name    = var.pgadmin_config.name
   type    = "CNAME"
   ttl     = 60
 
-  records = [var.public_domain]
+  records = [var.ecs_alb_dns_name]
 }
