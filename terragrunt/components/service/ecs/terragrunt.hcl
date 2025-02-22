@@ -39,16 +39,14 @@ dependency core_iam {
 dependency core_networking {
   config_path = "../../core/networking"
   mock_outputs = {
-    private_subnet_ids                     = "mock"
-    private_subnets_cidr_blocks            = "mock"
-    public_domain                          = "mock"
-    public_public_hosted_zone_iddomain     = "mock"
-    production_private_beta_domain         = "mock" # @todo (ABN) DP-1069 Remove once domain is propagated
-    production_private_beta_hosted_zone_id = "mock" # @todo (ABN) DP-1069 Remove once domain is propagated
-    public_subnet_ids                      = "mock"
-    public_subnets_cidr_blocks             = "mock"
-    vpc_id                                 = "mock"
-    waf_acl_arn                            = "mock"
+    private_subnet_ids           = "mock"
+    private_subnets_cidr_blocks  = "mock"
+    public_domain                = "mock"
+    public_hosted_zone_id        = "mock"
+    public_subnet_ids            = "mock"
+    public_subnets_cidr_blocks   = "mock"
+    vpc_id                       = "mock"
+    waf_acl_arn                  = "mock"
   }
 }
 
@@ -61,7 +59,6 @@ dependency core_security_groups {
     elasticache_redis_sg_id   = "mock"
     vpce_ecr_api_sg_id        = "mock"
     vpce_ecr_dkr_sg_id        = "mock"
-    vpce_s3_sg_id             = "mock"
     vpce_secretsmanager_sg_id = "mock"
   }
 }
@@ -151,8 +148,8 @@ inputs = {
 
   private_subnet_ids          = dependency.core_networking.outputs.private_subnet_ids
   private_subnets_cidr_blocks = dependency.core_networking.outputs.private_subnets_cidr_blocks
-  public_domain               = local.global_vars.locals.is_production ? dependency.core_networking.outputs.production_private_beta_domain : dependency.core_networking.outputs.public_domain                 # @todo (ABN) DP-1069 Remove condition once domain is propagated
-  public_hosted_zone_id       = local.global_vars.locals.is_production ? dependency.core_networking.outputs.production_private_beta_hosted_zone_id : dependency.core_networking.outputs.public_hosted_zone_id # @todo (ABN) DP-1069 Remove condition once domain is propagated
+  public_domain               = dependency.core_networking.outputs.public_domain
+  public_hosted_zone_id       = dependency.core_networking.outputs.public_hosted_zone_id
   public_subnet_ids           = dependency.core_networking.outputs.public_subnet_ids
   public_subnets_cidr_blocks  = dependency.core_networking.outputs.public_subnets_cidr_blocks
   vpc_id                      = dependency.core_networking.outputs.vpc_id
@@ -167,7 +164,6 @@ inputs = {
   vpce_ecr_api_sg_id        = dependency.core_security_groups.outputs.vpce_ecr_api_sg_id
   vpce_ecr_dkr_sg_id        = dependency.core_security_groups.outputs.vpce_ecr_dkr_sg_id
   vpce_logs_sg_id           = dependency.core_security_groups.outputs.vpce_logs_sg_id
-  vpce_s3_sg_id             = dependency.core_security_groups.outputs.vpce_s3_sg_id
   vpce_secretsmanager_sg_id = dependency.core_security_groups.outputs.vpce_secretsmanager_sg_id
 
   user_pool_arn       = dependency.service_auth.outputs.organisation_app_user_pool_arn

@@ -18,16 +18,788 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 32,
+  "id": 33,
   "links": [],
   "panels": [
+    {
+      "datasource": {
+        "default": true,
+        "type": "cloudwatch",
+        "uid": "CLOUDWATCH"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "left",
+            "cellOptions": {
+              "type": "gauge"
+            },
+            "filterable": false,
+            "inspect": false
+          },
+          "fieldMinMax": false,
+          "mappings": [],
+          "max": 400,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "yellow",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 100
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Status"
+            },
+            "properties": [
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "auto"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 10,
+        "x": 0,
+        "y": 0
+      },
+      "id": 13,
+      "maxPerRow": 12,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "enablePagination": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "frameIndex": 0,
+        "showHeader": true
+      },
+      "pluginVersion": "11.5.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "cloudwatch",
+            "uid": "CLOUDWATCH"
+          },
+          "dimensions": {},
+          "expression": "fields concat( @log, \" [ \", StatusCode, \" ]\") as Status\n| filter ispresent(StatusCode)\n| filter StatusCode >= 400 and StatusCode < 500\n\n",
+          "id": "",
+          "label": "",
+          "logGroups": [
+            {
+              "arn": "$ecs_log_groups",
+              "name": "$ecs_log_groups"
+            },
+            {
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/authority:*",
+              "name": "/ecs/authority"
+            },
+            {
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/av-scanner-app:*",
+              "name": "/ecs/av-scanner-app"
+            },
+            {
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/clamav-rest:*",
+              "name": "/ecs/clamav-rest"
+            },
+            {
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/data-sharing:*",
+              "name": "/ecs/data-sharing"
+            },
+            {
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/entity-verification:*",
+              "name": "/ecs/entity-verification"
+            },
+            {
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/entity-verification-migrations:*",
+              "name": "/ecs/entity-verification-migrations"
+            },
+            {
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/forms:*",
+              "name": "/ecs/forms"
+            },
+            {
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/organisation:*",
+              "name": "/ecs/organisation"
+            },
+            {
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/organisation-app:*",
+              "name": "/ecs/organisation-app"
+            },
+            {
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/organisation-information-migrations:*",
+              "name": "/ecs/organisation-information-migrations"
+            },
+            {
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/outbox-processor-entity-verification:*",
+              "name": "/ecs/outbox-processor-entity-verification"
+            },
+            {
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/outbox-processor-organisation:*",
+              "name": "/ecs/outbox-processor-organisation"
+            },
+            {
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/person:*",
+              "name": "/ecs/person"
+            },
+            {
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/tenant:*",
+              "name": "/ecs/tenant"
+            }
+          ],
+          "matchExact": true,
+          "metricEditorMode": 0,
+          "metricName": "",
+          "metricQueryType": 0,
+          "namespace": "",
+          "period": "",
+          "queryMode": "Logs",
+          "refId": "A",
+          "region": "default",
+          "sqlExpression": "",
+          "statistic": "Average",
+          "statsGroups": []
+        }
+      ],
+      "title": "Services 4XX counts",
+      "transformations": [
+        {
+          "id": "formatString",
+          "options": {
+            "outputFormat": "Substring",
+            "stringField": "Status",
+            "substringStart": 18
+          }
+        },
+        {
+          "id": "concatenate",
+          "options": {
+            "frameNameLabel": "frame",
+            "frameNameMode": "label"
+          }
+        },
+        {
+          "id": "groupBy",
+          "options": {
+            "fields": {
+              "GRAFANA_CLOUDWATCH_ACCOUNT_ID:/ecs/entity-verification @log": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "GRAFANA_CLOUDWATCH_ACCOUNT_ID:/ecs/entity-verification StatusCode": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "GRAFANA_CLOUDWATCH_ACCOUNT_ID:/ecs/entity-verification __log__grafana_internal__": {
+                "aggregations": [
+                  "count"
+                ],
+                "operation": "groupby"
+              },
+              "GRAFANA_CLOUDWATCH_ACCOUNT_ID:/ecs/entity-verification __logstream__grafana_internal__": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "GRAFANA_CLOUDWATCH_ACCOUNT_ID:/ecs/organisation @log": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "GRAFANA_CLOUDWATCH_ACCOUNT_ID:/ecs/organisation StatusCode": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "GRAFANA_CLOUDWATCH_ACCOUNT_ID:/ecs/organisation __log__grafana_internal__": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "GRAFANA_CLOUDWATCH_ACCOUNT_ID:/ecs/organisation __logstream__grafana_internal__": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "GRAFANA_CLOUDWATCH_ACCOUNT_ID:/ecs/organisation-app @log": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "GRAFANA_CLOUDWATCH_ACCOUNT_ID:/ecs/organisation-app StatusCode": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "GRAFANA_CLOUDWATCH_ACCOUNT_ID:/ecs/organisation-app __log__grafana_internal__": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "GRAFANA_CLOUDWATCH_ACCOUNT_ID:/ecs/organisation-app __logstream__grafana_internal__": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "@log": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "Service Status": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "Status": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "StatusCode": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "Time": {
+                "aggregations": [
+                  "count"
+                ],
+                "operation": "aggregate"
+              }
+            }
+          }
+        },
+        {
+          "id": "formatString",
+          "options": {
+            "outputFormat": "Upper Case",
+            "stringField": "Status"
+          }
+        },
+        {
+          "id": "sortBy",
+          "options": {
+            "fields": {},
+            "sort": [
+              {
+                "desc": true,
+                "field": "Time (count)"
+              }
+            ]
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "cloudwatch",
+        "uid": "CLOUDWATCH"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "right",
+            "cellOptions": {
+              "type": "color-text"
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 4,
+        "x": 10,
+        "y": 0
+      },
+      "id": 15,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": false
+      },
+      "pluginVersion": "11.5.2",
+      "targets": [
+        {
+          "dimensions": {},
+          "expression": "fields concat( @log, \" [ \", Version, \" ]\") as ServiceVersion\n| filter ispresent(Version)",
+          "id": "",
+          "label": "",
+          "logGroups": [
+            {
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/authority:*",
+              "name": "/ecs/authority"
+            },
+            {
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/av-scanner-app:*",
+              "name": "/ecs/av-scanner-app"
+            },
+            {
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/data-sharing:*",
+              "name": "/ecs/data-sharing"
+            },
+            {
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/entity-verification:*",
+              "name": "/ecs/entity-verification"
+            },
+            {
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/entity-verification-migrations:*",
+              "name": "/ecs/entity-verification-migrations"
+            },
+            {
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/forms:*",
+              "name": "/ecs/forms"
+            },
+            {
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/organisation:*",
+              "name": "/ecs/organisation"
+            },
+            {
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/organisation-app:*",
+              "name": "/ecs/organisation-app"
+            },
+            {
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/organisation-information-migrations:*",
+              "name": "/ecs/organisation-information-migrations"
+            },
+            {
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/outbox-processor-organisation:*",
+              "name": "/ecs/outbox-processor-organisation"
+            },
+            {
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/outbox-processor-entity-verification:*",
+              "name": "/ecs/outbox-processor-entity-verification"
+            },
+            {
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/person:*",
+              "name": "/ecs/person"
+            },
+            {
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/tenant:*",
+              "name": "/ecs/tenant"
+            }
+          ],
+          "matchExact": true,
+          "metricEditorMode": 0,
+          "metricName": "",
+          "metricQueryType": 0,
+          "namespace": "",
+          "period": "",
+          "queryLanguage": "CWLI",
+          "queryMode": "Logs",
+          "refId": "A",
+          "region": "default",
+          "sqlExpression": "",
+          "statistic": "Average",
+          "statsGroups": []
+        }
+      ],
+      "title": "Service Version",
+      "transformations": [
+        {
+          "id": "groupBy",
+          "options": {
+            "fields": {
+              "ServiceVersion": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "Time": {
+                "aggregations": [
+                  "lastNotNull"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "id": "formatString",
+          "options": {
+            "outputFormat": "Substring",
+            "stringField": "ServiceVersion",
+            "substringStart": 18
+          }
+        },
+        {
+          "id": "sortBy",
+          "options": {
+            "fields": {},
+            "sort": [
+              {
+                "field": "ServiceVersion"
+              }
+            ]
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "default": true,
+        "type": "cloudwatch",
+        "uid": "CLOUDWATCH"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "left",
+            "cellOptions": {
+              "type": "gauge"
+            },
+            "filterable": false,
+            "inspect": false
+          },
+          "fieldMinMax": false,
+          "mappings": [],
+          "max": 400,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "orange",
+                "value": null
+              },
+              {
+                "color": "dark-red",
+                "value": 100
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Status"
+            },
+            "properties": [
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "auto"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 10,
+        "x": 14,
+        "y": 0
+      },
+      "id": 14,
+      "maxPerRow": 12,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "enablePagination": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "frameIndex": 0,
+        "showHeader": true
+      },
+      "pluginVersion": "11.5.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "cloudwatch",
+            "uid": "CLOUDWATCH"
+          },
+          "dimensions": {},
+          "expression": "fields concat( @log, \" [ \", StatusCode, \" ]\") as Status\n| filter ispresent(StatusCode)\n| filter StatusCode >= 500\n\n",
+          "id": "",
+          "label": "",
+          "logGroups": [
+            {
+              "arn": "$ecs_log_groups",
+              "name": "$ecs_log_groups"
+            },
+            {
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/authority:*",
+              "name": "/ecs/authority"
+            },
+            {
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/av-scanner-app:*",
+              "name": "/ecs/av-scanner-app"
+            },
+            {
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/clamav-rest:*",
+              "name": "/ecs/clamav-rest"
+            },
+            {
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/data-sharing:*",
+              "name": "/ecs/data-sharing"
+            },
+            {
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/entity-verification:*",
+              "name": "/ecs/entity-verification"
+            },
+            {
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/entity-verification-migrations:*",
+              "name": "/ecs/entity-verification-migrations"
+            },
+            {
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/forms:*",
+              "name": "/ecs/forms"
+            },
+            {
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/organisation:*",
+              "name": "/ecs/organisation"
+            },
+            {
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/organisation-app:*",
+              "name": "/ecs/organisation-app"
+            },
+            {
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/organisation-information-migrations:*",
+              "name": "/ecs/organisation-information-migrations"
+            },
+            {
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/outbox-processor-entity-verification:*",
+              "name": "/ecs/outbox-processor-entity-verification"
+            },
+            {
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/outbox-processor-organisation:*",
+              "name": "/ecs/outbox-processor-organisation"
+            },
+            {
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/person:*",
+              "name": "/ecs/person"
+            },
+            {
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/tenant:*",
+              "name": "/ecs/tenant"
+            }
+          ],
+          "matchExact": true,
+          "metricEditorMode": 0,
+          "metricName": "",
+          "metricQueryType": 0,
+          "namespace": "",
+          "period": "",
+          "queryMode": "Logs",
+          "refId": "A",
+          "region": "default",
+          "sqlExpression": "",
+          "statistic": "Average",
+          "statsGroups": []
+        }
+      ],
+      "title": "Services 5XX counts",
+      "transformations": [
+        {
+          "id": "formatString",
+          "options": {
+            "outputFormat": "Substring",
+            "stringField": "Status",
+            "substringStart": 18
+          }
+        },
+        {
+          "id": "concatenate",
+          "options": {
+            "frameNameLabel": "frame",
+            "frameNameMode": "label"
+          }
+        },
+        {
+          "id": "groupBy",
+          "options": {
+            "fields": {
+              "GRAFANA_CLOUDWATCH_ACCOUNT_ID:/ecs/entity-verification @log": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "GRAFANA_CLOUDWATCH_ACCOUNT_ID:/ecs/entity-verification StatusCode": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "GRAFANA_CLOUDWATCH_ACCOUNT_ID:/ecs/entity-verification __log__grafana_internal__": {
+                "aggregations": [
+                  "count"
+                ],
+                "operation": "groupby"
+              },
+              "GRAFANA_CLOUDWATCH_ACCOUNT_ID:/ecs/entity-verification __logstream__grafana_internal__": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "GRAFANA_CLOUDWATCH_ACCOUNT_ID:/ecs/organisation @log": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "GRAFANA_CLOUDWATCH_ACCOUNT_ID:/ecs/organisation StatusCode": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "GRAFANA_CLOUDWATCH_ACCOUNT_ID:/ecs/organisation __log__grafana_internal__": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "GRAFANA_CLOUDWATCH_ACCOUNT_ID:/ecs/organisation __logstream__grafana_internal__": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "GRAFANA_CLOUDWATCH_ACCOUNT_ID:/ecs/organisation-app @log": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "GRAFANA_CLOUDWATCH_ACCOUNT_ID:/ecs/organisation-app StatusCode": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "GRAFANA_CLOUDWATCH_ACCOUNT_ID:/ecs/organisation-app __log__grafana_internal__": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "GRAFANA_CLOUDWATCH_ACCOUNT_ID:/ecs/organisation-app __logstream__grafana_internal__": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "@log": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "Service Status": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "Status": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "StatusCode": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "Time": {
+                "aggregations": [
+                  "count"
+                ],
+                "operation": "aggregate"
+              }
+            }
+          }
+        },
+        {
+          "id": "formatString",
+          "options": {
+            "outputFormat": "Upper Case",
+            "stringField": "Status"
+          }
+        },
+        {
+          "id": "sortBy",
+          "options": {
+            "fields": {},
+            "sort": [
+              {
+                "desc": true,
+                "field": "Time (count)"
+              }
+            ]
+          }
+        }
+      ],
+      "type": "table"
+    },
     {
       "collapsed": false,
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 0
+        "y": 5
       },
       "id": 8,
       "panels": [],
@@ -144,10 +916,10 @@
         ]
       },
       "gridPos": {
-        "h": 8,
+        "h": 6,
         "w": 24,
         "x": 0,
-        "y": 1
+        "y": 6
       },
       "id": 10,
       "options": {
@@ -168,7 +940,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "11.5.1",
+      "pluginVersion": "11.5.2",
       "targets": [
         {
           "datasource": {
@@ -568,10 +1340,10 @@
         ]
       },
       "gridPos": {
-        "h": 8,
+        "h": 6,
         "w": 24,
         "x": 0,
-        "y": 9
+        "y": 12
       },
       "id": 11,
       "options": {
@@ -592,7 +1364,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "11.5.1",
+      "pluginVersion": "11.5.2",
       "targets": [
         {
           "datasource": {
@@ -904,7 +1676,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 17
+        "y": 18
       },
       "id": 6,
       "panels": [],
@@ -963,12 +1735,12 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "text",
+                "color": "blue",
                 "value": null
               },
               {
                 "color": "super-light-green",
-                "value": 2
+                "value": 5
               },
               {
                 "color": "light-green",
@@ -979,8 +1751,8 @@
                 "value": 20
               },
               {
-                "color": "semi-dark-green",
-                "value": 30
+                "color": "yellow",
+                "value": 40
               },
               {
                 "color": "orange",
@@ -997,10 +1769,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 7,
-        "w": 24,
+        "h": 10,
+        "w": 12,
         "x": 0,
-        "y": 18
+        "y": 19
       },
       "id": 7,
       "options": {
@@ -1022,7 +1794,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "11.5.1",
+      "pluginVersion": "11.5.2",
       "targets": [
         {
           "datasource": {
@@ -1129,24 +1901,24 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "text",
+                "color": "blue",
                 "value": null
               },
               {
                 "color": "super-light-green",
-                "value": 2
+                "value": 5
               },
               {
                 "color": "light-green",
                 "value": 10
               },
               {
-                "color": "green",
+                "color": "dark-green",
                 "value": 20
               },
               {
-                "color": "semi-dark-green",
-                "value": 30
+                "color": "yellow",
+                "value": 40
               },
               {
                 "color": "orange",
@@ -1154,7 +1926,7 @@
               },
               {
                 "color": "dark-red",
-                "value": 90
+                "value": 80
               }
             ]
           },
@@ -1163,10 +1935,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 7,
-        "w": 24,
-        "x": 0,
-        "y": 25
+        "h": 10,
+        "w": 12,
+        "x": 12,
+        "y": 19
       },
       "id": 9,
       "options": {
@@ -1188,7 +1960,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "11.5.1",
+      "pluginVersion": "11.5.2",
       "targets": [
         {
           "datasource": {
@@ -1380,7 +2152,7 @@
         "h": 8,
         "w": 24,
         "x": 0,
-        "y": 32
+        "y": 29
       },
       "id": 12,
       "links": [
@@ -1409,7 +2181,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "11.5.1",
+      "pluginVersion": "11.5.2",
       "targets": [
         {
           "datasource": {
@@ -1423,13 +2195,13 @@
           "logGroups": [
             {
               "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
-              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/forms:*",
-              "name": "/ecs/forms"
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/authority:*",
+              "name": "/ecs/authority"
             },
             {
               "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
-              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/entity-verification:*",
-              "name": "/ecs/entity-verification"
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/av-scanner-app:*",
+              "name": "/ecs/av-scanner-app"
             },
             {
               "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
@@ -1443,13 +2215,18 @@
             },
             {
               "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
-              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/av-scanner-app:*",
-              "name": "/ecs/av-scanner-app"
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/entity-verification:*",
+              "name": "/ecs/entity-verification"
             },
             {
               "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
-              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/authority:*",
-              "name": "/ecs/authority"
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/entity-verification-migrations:*",
+              "name": "/ecs/entity-verification-migrations"
+            },
+            {
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/forms:*",
+              "name": "/ecs/forms"
             },
             {
               "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
@@ -1460,6 +2237,11 @@
               "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
               "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/organisation-app:*",
               "name": "/ecs/organisation-app"
+            },
+            {
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/organisation-information-migrations:*",
+              "name": "/ecs/organisation-information-migrations"
             },
             {
               "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
@@ -1480,215 +2262,6 @@
               "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
               "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/tenant:*",
               "name": "/ecs/tenant"
-            },
-            {
-              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
-              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/etc/entity-verification:*",
-              "name": "/etc/entity-verification"
-            }
-          ],
-          "matchExact": true,
-          "metricEditorMode": 0,
-          "metricName": "",
-          "metricQueryType": 0,
-          "namespace": "",
-          "period": "",
-          "queryMode": "Logs",
-          "refId": "A",
-          "region": "default",
-          "sqlExpression": "",
-          "statistic": "Average",
-          "statsGroups": [
-            "bin(1m)",
-            "StatusCode"
-          ]
-        }
-      ],
-      "title": "All Services Response Codes",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "default": true,
-        "type": "cloudwatch",
-        "uid": "CLOUDWATCH"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "barWidthFactor": 0.6,
-            "drawStyle": "line",
-            "fillOpacity": 40,
-            "gradientMode": "opacity",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "smooth",
-            "lineWidth": 1,
-            "pointSize": 4,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "always",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "fieldMinMax": false,
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          }
-        },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byRegexp",
-              "options": "/Hits/"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "mode": "fixed"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byRegexp",
-              "options": "/2\\d{2}\\sHits/"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "green",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byRegexp",
-              "options": "/3\\d{2}\\sHits/"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "yellow",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byRegexp",
-              "options": "/4\\d{2}\\sHits/"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "orange",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byRegexp",
-              "options": "/5\\d{2}\\sHits/"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "red",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          }
-        ]
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 24,
-        "x": 0,
-        "y": 40
-      },
-      "id": 13,
-      "links": [
-        {
-          "title": "Service Logs",
-          "url": "d/service-logs/service-logs?${log_groups:queryparam}&${status_code:queryparam}&${__url_time_range}"
-        }
-      ],
-      "options": {
-        "legend": {
-          "calcs": [
-            "count",
-            "sum",
-            "mean"
-          ],
-          "displayMode": "table",
-          "placement": "right",
-          "showLegend": true,
-          "sortBy": "Total",
-          "sortDesc": true,
-          "width": 400
-        },
-        "tooltip": {
-          "hideZeros": false,
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "11.5.1",
-      "targets": [
-        {
-          "datasource": {
-            "type": "cloudwatch",
-            "uid": "CLOUDWATCH"
-          },
-          "dimensions": {},
-          "expression": "fields @timestamp, StatusCode\n| filter ispresent(StatusCode)\n| filter StatusCode >= 400\n| stats count() as Hits by bin(1m), StatusCode\n",
-          "id": "",
-          "label": "",
-          "logGroups": [
-            {
-              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
-              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/forms:*",
-              "name": "/ecs/forms"
             }
           ],
           "matchExact": true,
@@ -1717,12 +2290,270 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 48
+        "y": 37
       },
       "id": 2,
       "panels": [],
       "title": "RDS",
       "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "cloudwatch",
+        "uid": "CLOUDWATCH"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 3,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 50
+              },
+              {
+                "color": "yellow",
+                "value": 1000
+              },
+              {
+                "color": "orange",
+                "value": 5000
+              },
+              {
+                "color": "dark-red",
+                "value": 10000
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 24,
+        "x": 0,
+        "y": 38
+      },
+      "id": 1,
+      "options": {
+        "legend": {
+          "calcs": [
+            "min",
+            "mean",
+            "max"
+          ],
+          "displayMode": "list",
+          "placement": "right",
+          "showLegend": true,
+          "width": 400
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "11.5.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "cloudwatch",
+            "uid": "CLOUDWATCH"
+          },
+          "dimensions": {
+            "DBClusterIdentifier": "cdp-sirsi-cluster"
+          },
+          "expression": "",
+          "id": "",
+          "label": "SIRSI",
+          "logGroups": [],
+          "matchExact": true,
+          "metricEditorMode": 0,
+          "metricName": "DatabaseConnections",
+          "metricQueryType": 0,
+          "namespace": "AWS/RDS",
+          "period": "",
+          "queryLanguage": "CWLI",
+          "queryMode": "Metrics",
+          "refId": "A",
+          "region": "default",
+          "sqlExpression": "",
+          "statistic": "Maximum"
+        },
+        {
+          "datasource": {
+            "type": "cloudwatch",
+            "uid": "CLOUDWATCH"
+          },
+          "dimensions": {
+            "DBInstanceIdentifier": "cdp-sirsi-cluster-0"
+          },
+          "expression": "",
+          "hide": false,
+          "id": "",
+          "label": "SIRSI 0",
+          "logGroups": [],
+          "matchExact": true,
+          "metricEditorMode": 0,
+          "metricName": "DatabaseConnections",
+          "metricQueryType": 0,
+          "namespace": "AWS/RDS",
+          "period": "",
+          "queryLanguage": "CWLI",
+          "queryMode": "Metrics",
+          "refId": "C",
+          "region": "default",
+          "sqlExpression": "",
+          "statistic": "Maximum"
+        },
+        {
+          "datasource": {
+            "type": "cloudwatch",
+            "uid": "CLOUDWATCH"
+          },
+          "dimensions": {
+            "DBInstanceIdentifier": "cdp-sirsi"
+          },
+          "expression": "",
+          "hide": false,
+          "id": "",
+          "label": "SIRSI 1",
+          "logGroups": [],
+          "matchExact": true,
+          "metricEditorMode": 0,
+          "metricName": "DatabaseConnections",
+          "metricQueryType": 0,
+          "namespace": "AWS/RDS",
+          "period": "",
+          "queryLanguage": "CWLI",
+          "queryMode": "Metrics",
+          "refId": "D",
+          "region": "default",
+          "sqlExpression": "",
+          "statistic": "Maximum"
+        },
+        {
+          "datasource": {
+            "type": "cloudwatch",
+            "uid": "CLOUDWATCH"
+          },
+          "dimensions": {
+            "DBClusterIdentifier": "cdp-sirsi-ev-cluster"
+          },
+          "expression": "",
+          "hide": false,
+          "id": "",
+          "label": "EV",
+          "logGroups": [],
+          "matchExact": true,
+          "metricEditorMode": 0,
+          "metricName": "DatabaseConnections",
+          "metricQueryType": 0,
+          "namespace": "AWS/RDS",
+          "period": "",
+          "queryLanguage": "CWLI",
+          "queryMode": "Metrics",
+          "refId": "B",
+          "region": "default",
+          "sqlExpression": "",
+          "statistic": "Maximum"
+        },
+        {
+          "datasource": {
+            "type": "cloudwatch",
+            "uid": "CLOUDWATCH"
+          },
+          "dimensions": {
+            "DBInstanceIdentifier": "cdp-sirsi-ev-cluster-0"
+          },
+          "expression": "",
+          "hide": false,
+          "id": "",
+          "label": "EV 0",
+          "logGroups": [],
+          "matchExact": true,
+          "metricEditorMode": 0,
+          "metricName": "DatabaseConnections",
+          "metricQueryType": 0,
+          "namespace": "AWS/RDS",
+          "period": "",
+          "queryLanguage": "CWLI",
+          "queryMode": "Metrics",
+          "refId": "E",
+          "region": "default",
+          "sqlExpression": "",
+          "statistic": "Maximum"
+        },
+        {
+          "datasource": {
+            "type": "cloudwatch",
+            "uid": "CLOUDWATCH"
+          },
+          "dimensions": {
+            "DBInstanceIdentifier": "cdp-sirsi-ev-cluster-1"
+          },
+          "expression": "",
+          "hide": false,
+          "id": "",
+          "label": "EV 1",
+          "logGroups": [],
+          "matchExact": true,
+          "metricEditorMode": 0,
+          "metricName": "DatabaseConnections",
+          "metricQueryType": 0,
+          "namespace": "AWS/RDS",
+          "period": "",
+          "queryLanguage": "CWLI",
+          "queryMode": "Metrics",
+          "refId": "F",
+          "region": "default",
+          "sqlExpression": "",
+          "statistic": "Maximum"
+        }
+      ],
+      "title": "Connections",
+      "type": "timeseries"
     },
     {
       "datasource": {
@@ -1790,9 +2621,9 @@
         "h": 7,
         "w": 24,
         "x": 0,
-        "y": 49
+        "y": 45
       },
-      "id": 1,
+      "id": 16,
       "options": {
         "legend": {
           "calcs": [
@@ -1811,7 +2642,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "11.5.1",
+      "pluginVersion": "11.5.2",
       "targets": [
         {
           "datasource": {
@@ -1933,7 +2764,7 @@
         "h": 7,
         "w": 24,
         "x": 0,
-        "y": 56
+        "y": 52
       },
       "id": 3,
       "options": {
@@ -1953,7 +2784,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "11.5.1",
+      "pluginVersion": "11.5.2",
       "targets": [
         {
           "datasource": {
@@ -2075,7 +2906,7 @@
         "h": 7,
         "w": 24,
         "x": 0,
-        "y": 63
+        "y": 59
       },
       "id": 4,
       "options": {
@@ -2095,7 +2926,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "11.5.1",
+      "pluginVersion": "11.5.2",
       "targets": [
         {
           "datasource": {
@@ -2210,16 +3041,38 @@
   "schemaVersion": 40,
   "tags": [],
   "templating": {
-    "list": []
+    "list": [
+      {
+        "current": {
+          "text": "/ecs/authority",
+          "value": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/authority:*"
+        },
+        "definition": "",
+        "hide": 2,
+        "label": "ecs_log_groups",
+        "name": "ecs_log_groups",
+        "options": [],
+        "query": {
+          "logGroupPrefix": "/ecs",
+          "queryType": "logGroups",
+          "refId": "CloudWatchVariableQueryEditor-VariableQuery",
+          "region": "default"
+        },
+        "refresh": 1,
+        "regex": "",
+        "sort": 1,
+        "type": "query"
+      }
+    ]
   },
   "time": {
-    "from": "now-6h",
+    "from": "now-1h",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "browser",
-  "title": "System Performance",
-  "uid": "system-performance",
-  "version": 1,
+  "title": "System Performance Copy",
+  "uid": "bedqvo8fmjawwd",
+  "version": 2,
   "weekStart": ""
 }

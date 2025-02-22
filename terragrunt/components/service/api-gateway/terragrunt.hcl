@@ -32,8 +32,6 @@ dependency core_iam {
 dependency core_networking {
   config_path = "../../core/networking"
   mock_outputs = {
-    production_private_beta_hosted_zone_fqdn = "mock" # @todo (ABN) DP-1069 Remove once domain is propagated
-    production_private_beta_hosted_zone_id   = "mock" # @todo (ABN) DP-1069 Remove once domain is propagated
     public_hosted_zone_fqdn = "mock"
     public_hosted_zone_id   = "mock"
   }
@@ -56,8 +54,8 @@ inputs = {
   role_api_gateway_deployer_step_function_arn  = dependency.core_iam.outputs.api_gateway_deployer_step_function_arn
   role_api_gateway_deployer_step_function_name = dependency.core_iam.outputs.api_gateway_deployer_step_function_name
 
-  public_hosted_zone_fqdn = local.global_vars.locals.is_production ? dependency.core_networking.outputs.production_private_beta_hosted_zone_fqdn : dependency.core_networking.outputs.public_hosted_zone_fqdn # @todo (ABN) DP-1069 Remove condition once domain is propagated
-  public_hosted_zone_id   = local.global_vars.locals.is_production ? dependency.core_networking.outputs.production_private_beta_hosted_zone_id : dependency.core_networking.outputs.public_hosted_zone_id     # @todo (ABN) DP-1069 Remove condition once domain is propagated
+  public_hosted_zone_fqdn = dependency.core_networking.outputs.public_hosted_zone_fqdn
+  public_hosted_zone_id   = dependency.core_networking.outputs.public_hosted_zone_id
 
   certificate_arn = dependency.service_ecs.outputs.certificate_arn
 }

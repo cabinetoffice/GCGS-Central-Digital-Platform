@@ -100,6 +100,11 @@ variable "ecs_listener_arn" {
   type        = string
 }
 
+variable "ecs_alb_dns_name" {
+  description = "DNS to the load balancer in front of ECS services"
+  type        = string
+}
+
 variable "ecs_sg_id" {
   description = "ECS security group ID"
   type        = string

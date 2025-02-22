@@ -4,7 +4,7 @@ locals {
 
   aurora_cluster_enabled = contains(["development", "staging", "production"], var.environment)
 
-  cognito_enabled = contains(["development", "staging"], var.environment)
+  cognito_enabled = contains(["development", "staging", "production"], var.environment)
 
   db_sirsi_secret_arn = local.aurora_cluster_enabled ? var.db_sirsi_cluster_credentials_arn : var.db_sirsi_credentials_arn
   db_ev_secret_arn    = local.aurora_cluster_enabled ? var.db_ev_cluster_credentials_arn : var.db_entity_verification_credentials_arn
@@ -36,8 +36,6 @@ locals {
   orchestrator_account_id = var.account_ids["orchestrator"]
 
   orchestrator_service_version = data.aws_ssm_parameter.orchestrator_service_version.value
-
-  production_subdomain = "supplier-information"
 
   service_version = var.pinned_service_version == null ? data.aws_ssm_parameter.orchestrator_service_version.value : var.pinned_service_version
 

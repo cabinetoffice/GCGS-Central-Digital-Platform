@@ -10,7 +10,7 @@ output "ecs_cluster_name" {
   value = aws_ecs_cluster.this.name
 }
 
-output "ecs_lb_dns_name" {
+output "ecs_alb_dns_name" {
   value = aws_lb.ecs.dns_name
 }
 
