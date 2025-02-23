@@ -2,6 +2,14 @@ output "nat_gateway_id" {
   value = aws_nat_gateway.this.id
 }
 
+output "private_beta_domain" {
+  value = try(aws_route53_zone.production_private_beta[0].name, null)
+}
+
+output "private_beta_hosted_zone_id" {
+  value = try(aws_route53_zone.production_private_beta[0].id, null)
+}
+
 output "private_route_table_ids" {
   value = aws_route_table.private.*.id
 }
@@ -19,14 +27,6 @@ output "private_subnet_ids" {
 output "private_subnets_cidr_blocks" {
   description = "VPC private subnet CIDR blocks"
   value       = aws_subnet.private.*.cidr_block
-}
-
-output "private_beta_domain" {
-  value = try(aws_route53_zone.production_private_beta[0].name, null)
-}
-
-output "private_beta_hosted_zone_id" {
-  value = try(aws_route53_zone.production_private_beta[0].id, null)
 }
 
 output "public_domain" {
