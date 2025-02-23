@@ -3,9 +3,12 @@
 
 @using CO.CDP.Localization
 @using Microsoft.AspNetCore.Mvc.Localization
+@using System.Globalization
 
 @{
     ViewData["Title"] = StaticTextResource.Supplementary_PrivacyNotice_Title;
+    var culture = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
+    var markdownFile = culture == "cy" ? "PrivacyNotice.cy.md" : "PrivacyNotice.en.md";
 }
 
 <div class="govuk-grid-row">
@@ -13,6 +16,6 @@
 
         <h1 class="govuk-heading-xl">@ViewData["Title"]</h1>
 
-        <markdown file-name="PrivacyNotice.en.md"/>
+        <markdown file-name="@markdownFile" />
     </div>
 </div>
