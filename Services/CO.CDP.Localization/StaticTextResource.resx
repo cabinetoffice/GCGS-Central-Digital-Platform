@@ -2842,15 +2842,6 @@
   <data name="Cookies_SetCookiePreferences" xml:space="preserve">
     <value>You’ve set your cookie preferences.</value>
   </data>
-  <data name="PrivacyPolicy_Title" xml:space="preserve">
-    <value>Agree to the privacy notice</value>
-  </data>
-  <data name="PrivacyPolicy_YesIHaveReadAndAgreePrivacyPolicy" xml:space="preserve">
-    <value>I have read and agree to the privacy notice</value>
-  </data>
-  <data name="PrivacyPolicy_SelectReadAndAgreeToPrivacyPolicy" xml:space="preserve">
-    <value>Select if you have read and agree to the Central Digital Platform service privacy policy</value>
-  </data>
   <data name="ProvideFeedbackAndContact_WhatsItToDoWith" xml:space="preserve">
     <value>What's it to do with?</value>
   </data>
@@ -2871,6 +2862,15 @@
   </data>
   <data name="ProvideFeedbackAndContact_EnterEmailAddress" xml:space="preserve">
     <value>Enter an email address</value>
+  </data>
+  <data name="PrivacyPolicy_Title" xml:space="preserve">
+    <value>Agree to the privacy notice</value>
+  </data>
+  <data name="PrivacyPolicy_YesIHaveReadAndAgreePrivacyPolicy" xml:space="preserve">
+    <value>I have read and agree to the privacy notice</value>
+  </data>
+  <data name="PrivacyPolicy_SelectReadAndAgreeToPrivacyPolicy" xml:space="preserve">
+    <value>Select if you have read and agree to the Central Digital Platform service privacy policy</value>
   </data>
   <data name="PrivacyPolicy_Intro" xml:space="preserve">
     <value>The privacy notice explains how we process your data, how we use it and who it's shared with.</value>
