@@ -2175,6 +2175,18 @@
   <data name="PdfGenerator_Uri" xml:space="preserve">
     <value>Uri</value>
   </data>
+  <data name="PrivacyPolicy_Title" xml:space="preserve">
+    <value>Cytuno i'r hysbysiad preifatrwydd</value>
+  </data>
+  <data name="PrivacyPolicy_YesIHaveReadAndAgreePrivacyPolicy" xml:space="preserve">
+    <value>Rwyf wedi darllen ac yn cytuno i'r hysbysiad preifatrwydd</value>
+  </data>
+  <data name="PrivacyPolicy_Intro" xml:space="preserve">
+    <value>Mae'r hysbysiad preifatrwydd yn esbonio sut rydym yn prosesu eich data, sut rydym yn ei ddefnyddio a gyda phwy y mae'n cael ei rannu.</value>
+  </data>
+  <data name="PrivacyPolicy_BeforeYouContinue" xml:space="preserve">
+    <value>Cyn i chi barhau, rhaid i chi ddarllen a chytuno i'r &lt;a class="govuk-link" target="_blank" href="/privacy-notice"&gt;Hysbysiad Preifatrwydd (yn agor mewn tab newydd)&lt;/a&gt;.</value>
+  </data>
   <data name="PrivacyPolicy_SelectReadAndAgreeToPrivacyPolicy" xml:space="preserve">
     <value>Dewiswch os ydych wedi darllen polisi preifatrwydd y gwasanaeth Llwyfan Digidol Canolog ac yn cytuno iddo</value>
   </data>
