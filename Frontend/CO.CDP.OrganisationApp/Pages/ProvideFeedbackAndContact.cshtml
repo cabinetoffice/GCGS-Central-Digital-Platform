@@ -89,7 +89,7 @@
                         @Html.ValidationMessageFor(m => m.Details, "", new { @class = "govuk-error-message", @id = "Details-error" })
                         <textarea class="govuk-textarea govuk-js-character-count" id="@nameof(Model.Details)" aria-describedby="@nameof(Model.Details)-hint @nameof(Model.Details)-info @(detailsHasError ? "Details-error" : "")" name="@nameof(Model.Details)" rows="5">@Model.Details</textarea>
                         <div id="@nameof(Model.Details)-info" class="govuk-hint govuk-character-count__message">
-                            @StaticTextResource.ProvideFeedbackAndContact_YouCanEnterUpTo10000Characters
+                        @string.Format(StaticTextResource.GovukFrontend_CharacterCount_CharactersAvailable, "10,000")
                         </div>
                     </div>
                 </div>
