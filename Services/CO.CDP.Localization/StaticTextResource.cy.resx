@@ -1487,6 +1487,9 @@
   <data name="Users_LastName_Label" xml:space="preserve">
     <value>Cyfenw</value>
   </data>
+  <data name="Registration_EnterName_Title" xml:space="preserve">
+    <value>Rhowch eich enw</value>
+  </data>
   <data name="ApiKeyManagement_CreateApiKey_Hint" xml:space="preserve">
     <value>Er diogelwch, dim ond unwaith y byddwn yn dangos yr allwedd API i chi ar y dudalen cadarnhau. Ychwanegwch enw er mwyn gallu cyfeirio ato. Er enghraifft enw'r eAnfonwr y mae ar ei gyfer.</value>
   </data>
