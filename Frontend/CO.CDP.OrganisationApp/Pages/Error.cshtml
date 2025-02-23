@@ -11,6 +11,8 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <h1 class="govuk-heading-l">@ViewData["Title"]</h1>
-            <p class="govuk-body">@StaticTextResource.Supplementary_Error_TryAgain</p>                                
+            <p class="govuk-body">@StaticTextResource.Supplementary_Error_TryAgain</p>
+            <p class="govuk-body">@StaticTextResource.Supplementary_Error_NotSaved</p>
+            <p class="govuk-body">@Html.Raw(string.Format(StaticTextResource.Supplementary_Error_ContactSupport, Model.TraceId))</p>
         </div>
     </div>

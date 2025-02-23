@@ -438,6 +438,12 @@
   <data name="Supplementary_Error_TryAgain" xml:space="preserve">
     <value>Try again later.</value>
   </data>
+  <data name="Supplementary_Error_NotSaved" xml:space="preserve">
+    <value>If you were completing a question and hadn’t clicked the ‘save’ button, we will not have saved your answers.</value>
+  </data>
+  <data name="Supplementary_Error_ContactSupport" xml:space="preserve">
+    <value>&lt;a href="/provide-feedback-and-contact/?context=feedback"&gt;Contact service support&lt;/a&gt; with the reference {0} to report the problem.</value>
+  </data>
   <data name="Supplementary_ContactUs_Title" xml:space="preserve">
     <value>Message sent</value>
   </data>
