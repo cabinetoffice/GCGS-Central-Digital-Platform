@@ -3120,6 +3120,12 @@
   <data name="OrganisationOverView_Banner_Review_MoU_Link" xml:space="preserve">
     <value>mae’n rhaid i chi &lt;a href="/organisation/{0}/review-and-sign-memorandom"&gt;ddarllen a chytuno i’r cytundeb rhannu data&lt;/a&gt;</value>
   </data>
+  <data name="OrganisationOverview_RegisterAsBuyer_Link" xml:space="preserve">
+    <value>Cofrestru fel prynwr</value>
+  </data>
+  <data name="OrganisationOverview_RegisterAsBuyer_Text" xml:space="preserve">
+    <value>Os ydych hefyd yn prynu nwyddau, gwaith, gwasanaethau neu gyfleustodau sector cyhoeddus.</value>
+  </data>
   <data name="OrganisationRegistration_BuyerDevolvedRegulation_Hint" xml:space="preserve">
     <value>Gall awdurdod contractio sy’n gweithredu mewn gwlad ddatganoledig fod yn ddarostyngedig i reoliadau datganoledig. Er enghraifft, Gogledd Iwerddon, Yr Alban neu Gymru.</value>
   </data>
