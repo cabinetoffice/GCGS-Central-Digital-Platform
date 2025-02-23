@@ -463,6 +463,15 @@
     <value>Rhowch eich cyfeiriad e-bost</value>
   </data>
   <data name="Global_Enter_Your_Name" xml:space="preserve">
-    <value>Enter your name</value>
+    <value>Rhowch eich enw</value>
+  </data>
+  <data name="Global_Enter_Your_Job_Title" xml:space="preserve">
+    <value>Rhowch eich teitl swydd</value>
+  </data>
+  <data name="Global_Enter_Your_Postal_Address" xml:space="preserve">
+    <value>Rhowch eich cyfeiriad post</value>
+  </data>
+  <data name="Share_My_Information_Consortium_SectionTitle" xml:space="preserve">
+    <value>Rhannwch fy ngwybodaeth consortiwm</value>
   </data>
 </root>
