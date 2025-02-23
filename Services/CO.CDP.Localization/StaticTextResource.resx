@@ -3259,6 +3259,12 @@
   <data name="OrganisationOverView_Banner_Review_MoU_Link" xml:space="preserve">
     <value>you must &lt;a href="/organisation/{0}/review-and-sign-memorandom"&gt;read and agree the data sharing agreement&lt;/a&gt;</value>
   </data>
+  <data name="OrganisationOverview_RegisterAsBuyer_Link" xml:space="preserve">
+    <value>Register as a buyer</value>
+  </data>
+  <data name="OrganisationOverview_RegisterAsBuyer_Text" xml:space="preserve">
+    <value>If you also buy public sector goods, works, services or utilities.</value>
+  </data>
   <data name="MoU_DataSharingAgreement_Title" xml:space="preserve">
     <value>Data sharing agreement</value>
   </data>
