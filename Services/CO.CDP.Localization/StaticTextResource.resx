@@ -3010,6 +3010,9 @@
   <data name="Users_LastName_Label" xml:space="preserve">
     <value>Last name</value>
   </data>
+  <data name="Registration_EnterName_Title" xml:space="preserve">
+    <value>Enter your name</value>
+  </data>
   <data name="Users_FirstName_Validation" xml:space="preserve">
     <value>Enter your first name</value>
   </data>

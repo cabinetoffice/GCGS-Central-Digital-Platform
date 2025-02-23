@@ -1,8 +1,10 @@
 @page "/your-details"
 @model YourDetailsModel
 
+@using CO.CDP.Localization
+
 @{
-    ViewData["Title"] = "Enter your name";
+    ViewData["Title"] = StaticTextResource.Registration_EnterName_Title;
     var firstNameHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.FirstName)).HasInnerHtml;
     var lastNameHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.LastName)).HasInnerHtml;
 }
@@ -51,7 +53,7 @@
                 </fieldset>
 
                 <govuk-button>
-                    Continue
+                    @StaticTextResource.Global_Continue
                 </govuk-button>
             </form>
         </div>
