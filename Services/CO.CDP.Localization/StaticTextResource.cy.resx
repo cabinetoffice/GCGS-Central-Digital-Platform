@@ -432,6 +432,9 @@
   <data name="Header_SignOut" xml:space="preserve">
     <value>Allgofnodi</value>
   </data>
+  <data name="Header_Contact" xml:space="preserve">
+    <value>&lt;a class="govuk-link" target="_blank" href="/provide-feedback-and-contact/?context=feedback"&gt;Cysylltwch â'r tîm Canfod Tendr (yn agor mewn tab newydd)&lt;/a&gt; os oes gennych adborth, cwestiynau neu awgrymiadau.</value>
+  </data>
   <data name="OrganisationRegistration_Address_Buyer_Heading" xml:space="preserve">
     <value>Rhowch gyfeiriad eich sefydliad</value>
   </data>
@@ -1704,9 +1707,6 @@
   <data name="Forms_FormElementMultiLineInput_CharacterCountError" xml:space="preserve">
     <value>Rhowch 10,000 o nodau neu lai</value>
   </data>
-  <data name="Forms_FormElementMultiLineInput_CharacterCountMessage" xml:space="preserve">
-    <value>Gallwch roi hyd at 10,000 o nodau</value>
-  </data>
   <data name="Forms_FormElementTextInput_EnterValueError" xml:space="preserve">
     <value>Rhowch werth</value>
   </data>
@@ -2235,9 +2235,6 @@
   <data name="ProvideFeedbackAndContact_YouCanAskAQuestion" xml:space="preserve">
     <value>Gallwch ofyn cwestiwn, rhoi gwybod am broblem neu awgrymu gwelliant i dîm Canfod Tendr. </value>
   </data>
-  <data name="ProvideFeedbackAndContact_YouCanEnterUpTo10000Characters" xml:space="preserve">
-    <value>Gallwch roi hyd at 10,000 o nodau</value>
-  </data>
   <data name="ShareYourInformation_CreateShareCodeButton" xml:space="preserve">
     <value>Creu cod rhannu</value>
   </data>
@@ -2297,9 +2294,6 @@
   </data>
   <data name="Supplementary_CloseThisWindow" xml:space="preserve">
     <value>Cau'r ffenestr hwn</value>
-  </data>
-  <data name="Supplementary_ContactUs_CharsAvailable" xml:space="preserve">
-    <value>Mae 10,000 o nodau ar gael i chi </value>
   </data>
   <data name="Supplementary_ContactUs_Failure_Description" xml:space="preserve">
     <value>Nid oedd modd anfon eich neges. Rhowch gynnig arall arni neu dewch yn ôl yn nes ymlaen</value>
@@ -2924,5 +2918,23 @@
   </data>
   <data name="Users_UserRole_Label" xml:space="preserve">
     <value>Dewiswch rôl y defnyddiwr</value>
+  </data>
+  <data name="GovukFrontend_CharacterCount_CharactersAvailable" xml:space="preserve">
+    <value>Gallwch roi hyd at {0} o nodau</value>
+  </data>
+  <data name="GovukFrontend_CharacterCount_CharactersUnderLimit_One" xml:space="preserve">
+    <value>Mae gennych %{count} cymeriad yn weddill</value>
+  </data>
+  <data name="GovukFrontend_CharacterCount_CharactersUnderLimit_Other" xml:space="preserve">
+    <value>Mae gennych gymeriadau %{count} yn weddill</value>
+  </data>
+  <data name="GovukFrontend_CharacterCount_CharactersOverLimit_One" xml:space="preserve">
+    <value>Mae gennych %{count} cymeriad gormod</value>
+  </data>
+  <data name="GovukFrontend_CharacterCount_CharactersOverLimit_Other" xml:space="preserve">
+    <value>Mae gennych %{count} cymeriadau gormod</value>
+  </data>
+  <data name="GovukFrontend_CharacterCount_CharactersAtLimit" xml:space="preserve">
+    <value>Mae gennych 0 nod yn weddill</value>
   </data>
 </root>
