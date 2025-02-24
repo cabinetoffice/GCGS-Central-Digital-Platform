@@ -44,6 +44,11 @@ variable "grafana_config" {
   })
 }
 
+variable "is_production" {
+  description = "Indicates whether the target account is configured with production-level settings"
+  type        = bool
+}
+
 variable "private_subnet_ids" {
   description = "List of private subnet IDs"
   type        = list(string)
@@ -102,6 +107,21 @@ variable "service_configs" {
 variable "tags" {
   description = "Tags to apply to all resources in this module"
   type        = map(string)
+}
+
+variable "user_pool_arn_grafana" {
+  default = null
+  type    = string
+}
+
+variable "user_pool_client_id_grafana" {
+  default = null
+  type    = string
+}
+
+variable "user_pool_domain_grafana" {
+  default = null
+  type    = string
 }
 
 variable "vpc_id" {
