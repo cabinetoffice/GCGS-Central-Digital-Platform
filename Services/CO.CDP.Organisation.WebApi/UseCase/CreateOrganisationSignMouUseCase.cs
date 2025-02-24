@@ -64,6 +64,14 @@ public class SignOrganisationMouUseCase(
 
         var requestLink = new Uri(new Uri(baseAppUrl), $"/mou-pdfs/{mouSignature.Mou.FilePath}").ToString();
 
+        var emailRecipients = new List<string> { mouSignature.CreatedBy.Email };
+
+        var orgContactEmail = organisation.ContactPoints?.FirstOrDefault()?.Email;
+        if (orgContactEmail != null)
+        {
+            emailRecipients.Add(orgContactEmail);
+        }
+
         var emailRequest = new EmailNotificationRequest
         {
             EmailAddress = mouSignature.CreatedBy.Email,
@@ -80,7 +88,11 @@ public class SignOrganisationMouUseCase(
 
         try
         {
-            await govUKNotifyApiClient.SendEmail(emailRequest);
+            foreach (var er in emailRecipients)
+            {
+                emailRequest.EmailAddress = er;
+                await govUKNotifyApiClient.SendEmail(emailRequest);
+            }            
         }
         catch
         {

@@ -80,7 +80,7 @@ public class SignOrganisationMouUseCaseTest
 
         result.Should().BeTrue();
         _organisationRepository.Verify(repo => repo.SaveOrganisationMou(It.IsAny<Persistence.MouSignature>()), Times.Once);
-        _notifyApiClient.Verify(g => g.SendEmail(It.IsAny<EmailNotificationRequest>()), Times.Once);
+        _notifyApiClient.Verify(g => g.SendEmail(It.IsAny<EmailNotificationRequest>()), Times.AtLeastOnce);
     }
 
     [Fact]
