@@ -54,7 +54,7 @@ builder.Services.AddScoped<IUseCase<Guid, IEnumerable<Review>>, GetReviewsUseCas
 builder.Services.AddScoped<IUseCase<Organisation?>, GetMyOrganisationUseCase>();
 builder.Services.AddScoped<IUseCase<OrganisationQuery, Organisation?>, LookupOrganisationUseCase>();
 builder.Services.AddScoped<IUseCase<OrganisationSearchQuery, IEnumerable<OrganisationSearchResult>>, SearchOrganisationUseCase>();
-builder.Services.AddScoped<IUseCase<PaginatedOrganisationQuery, IEnumerable<OrganisationExtended>>, GetOrganisationsUseCase>();
+builder.Services.AddScoped<IUseCase<PaginatedOrganisationQuery, IEnumerable<OrganisationDto>>, GetOrganisationsUseCase>();
 builder.Services.AddScoped<IUseCase<OrganisationTypeQuery, int>, GetOrganisationsTotalUseCase>();
 builder.Services.AddScoped<IUseCase<Guid, SupplierInformation?>, GetSupplierInformationUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, Guid), ConnectedEntity?>, GetConnectedEntityUseCase>();

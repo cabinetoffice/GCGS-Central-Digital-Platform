@@ -193,7 +193,7 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
             .ToListAsync();
     }
 
-    public async Task<IList<OrganisationDto>> GetPaginatedRaw(PartyRole? role, PartyRole? pendingRole, string? searchText, int limit, int skip)
+    public async Task<IList<OrganisationRawDto>> GetPaginatedRaw(PartyRole? role, PartyRole? pendingRole, string? searchText, int limit, int skip)
     {
         var sql = @"
             SELECT
@@ -232,35 +232,7 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
 
         var rawResults = await context.Database.SqlQueryRaw<OrganisationRawDto>(sql, parameters).ToListAsync();
 
-        return rawResults.Select(o => new OrganisationDto
-        {
-            Id = o.Id,
-            Guid = o.Guid,
-            Name = o.Name,
-            Roles = o.Roles?.Split(", ").Select(r => Enum.Parse<PartyRole>(r)).ToList() ?? new List<PartyRole>(),
-            PendingRoles = o.PendingRoles?.Split(", ").Select(r => Enum.Parse<PartyRole>(r)).ToList() ?? new List<PartyRole>(),
-            ApprovedOn = o.ApprovedOn,
-            ReviewComment = o.ReviewComment,
-            ReviewedByFirstName = o.ReviewedByFirstName,
-            ReviewedByLastName = o.ReviewedByLastName,
-            Identifiers = o.Identifiers?.Split(", ").ToList() ?? new List<string>(),
-            ContactPoints = o.ContactPoints?.Split(", ").ToList() ?? new List<string>()
-        }).ToList();
-    }
-
-    public class OrganisationDto
-    {
-        public int Id { get; set; }
-        public Guid Guid { get; set; }
-        public string Name { get; set; }
-        public List<PartyRole> Roles { get; set; } = new();
-        public List<PartyRole> PendingRoles { get; set; } = new();
-        public DateTimeOffset? ApprovedOn { get; set; }
-        public string? ReviewComment { get; set; }
-        public string? ReviewedByFirstName { get; set; }
-        public string? ReviewedByLastName { get; set; }
-        public List<string> Identifiers { get; set; } = new();
-        public List<string> ContactPoints { get; set; } = new();
+        return rawResults;
     }
 
     public class OrganisationRawDto
@@ -275,7 +247,6 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
         public string? ReviewedByFirstName { get; set; }
         public string? ReviewedByLastName { get; set; }
         public string? Identifiers { get; set; }
-        public string? Addresses { get; set; }
         public string? ContactPoints { get; set; }
     }
 
