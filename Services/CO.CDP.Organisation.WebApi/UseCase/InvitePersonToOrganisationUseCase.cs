@@ -33,11 +33,10 @@ public class InvitePersonToOrganisationUseCase(
             throw new DuplicateEmailWithinOrganisationException($"A user with this email address already exists for your organisation.");
         }
 
-        await ExpireExistingPersonInvites(command.organisationId, command.invitePersonData.Email);
+        var existingInvites = await ExpireExistingPersonInvites(command.organisationId, command.invitePersonData.Email);
+        var newInvite = CreatePersonInvite(command.invitePersonData, organisation);
 
-        var personInvite = CreatePersonInvite(command.invitePersonData, organisation);
-
-        personInviteRepository.Save(personInvite);
+        await personInviteRepository.SaveNewInvite(newInvite, existingInvites);
 
         var baseAppUrl = configuration.GetValue<string>("OrganisationAppUrl")
                             ?? throw new Exception("Missing configuration key: OrganisationAppUrl");
@@ -46,16 +45,16 @@ public class InvitePersonToOrganisationUseCase(
                             ?? throw new Exception("Missing configuration key: GOVUKNotify:PersonInviteEmailTemplateId.");
 
         Uri baseUri = new Uri(baseAppUrl);
-        Uri inviteLink = new Uri(baseUri, $"organisation-invite/{personInvite.Guid}");
+        Uri inviteLink = new Uri(baseUri, $"organisation-invite/{newInvite.Guid}");
 
         var emailRequest = new EmailNotificationRequest
         {
-            EmailAddress = personInvite.Email,
+            EmailAddress = newInvite.Email,
             TemplateId = templateId,
             Personalisation = new Dictionary<string, string> {
                                         { "org_name", organisation.Name},
-                                        { "first_name", personInvite.FirstName},
-                                        { "last_name", personInvite.LastName},
+                                        { "first_name", newInvite.FirstName},
+                                        { "last_name", newInvite.LastName},
                                         { "invite_link", inviteLink.ToString()} }
         };
 
@@ -64,7 +63,7 @@ public class InvitePersonToOrganisationUseCase(
         return true;
     }
 
-    private async Task ExpireExistingPersonInvites(Guid organisationId, string email)
+    private async Task<IEnumerable<PersonInvite>> ExpireExistingPersonInvites(Guid organisationId, string email)
     {
         var existingPersonInvites = await personInviteRepository.FindPersonInviteByEmail(organisationId, email);
 
@@ -73,9 +72,10 @@ public class InvitePersonToOrganisationUseCase(
             if (personInvite.ExpiresOn == null)
             {
                 personInvite.ExpiresOn = DateTimeOffset.UtcNow;
-                personInviteRepository.Save(personInvite);
             }
         }
+
+        return existingPersonInvites;
     }
 
     private PersonInvite CreatePersonInvite(

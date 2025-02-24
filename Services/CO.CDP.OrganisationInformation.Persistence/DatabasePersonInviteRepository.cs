@@ -1,4 +1,6 @@
+using CO.CDP.EntityFrameworkCore.DbContext;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace CO.CDP.OrganisationInformation.Persistence;
 
@@ -61,6 +63,30 @@ public class DatabasePersonInviteRepository(OrganisationInformationContext conte
         catch (DbUpdateException cause)
         {
             HandleDbUpdateException(personInvite, cause);
+        }
+    }
+
+    public async Task SaveNewInvite(PersonInvite personInvite,
+        IEnumerable<PersonInvite> expiredExistingInvites)
+    {
+        using (var txn = await context.Database.BeginTransactionAsync())
+        {
+            try
+            {
+                foreach (var expiredInvite in expiredExistingInvites)
+                {
+                    context.Update(expiredInvite);
+                }
+
+                context.Update(personInvite);
+                context.SaveChanges();
+                await txn.CommitAsync();
+            }
+            catch (DbUpdateException cause)
+            {
+                await txn.RollbackAsync();
+                HandleDbUpdateException(personInvite, cause);
+            }
         }
     }
 

@@ -1,5 +1,6 @@
 using CO.CDP.Testcontainers.PostgreSql;
 using FluentAssertions;
+using System.Collections.Generic;
 using static CO.CDP.OrganisationInformation.Persistence.Tests.EntityFactory;
 
 namespace CO.CDP.OrganisationInformation.Persistence.Tests;
@@ -25,6 +26,33 @@ public class DatabasePersonInviteRepositoryTest(PostgreSqlFixture postgreSql)
         found.As<PersonInvite>().Id.Should().BePositive();
         found.As<PersonInvite>().Organisation.Should().Be(organisation);
         found.As<PersonInvite>().InviteSentOn.Should().BeCloseTo(invite.InviteSentOn, precision: TimeSpan.FromSeconds(1));
+    }
+
+    [Fact]
+    public async Task ItFindsNewInviteAndUpdatesExpiredInvite()
+    {
+        using var repository = PersonInviteRepository();
+
+        var tenant = GivenTenant();
+        var organisation = GivenOrganisation();
+        var invite = GivenPersonInvite(guid: Guid.NewGuid(), tenant: tenant, organisation: organisation);
+        var expiredInvite = GivenPersonInvite(guid: Guid.NewGuid(), tenant: tenant, organisation: organisation);
+
+        expiredInvite.ExpiresOn = DateTimeOffset.UtcNow;
+
+        List<PersonInvite> expiredInvites = [expiredInvite];
+
+        await repository.SaveNewInvite(invite, expiredInvites);
+
+        var newInviteFound = await repository.Find(invite.Guid);
+
+        newInviteFound.Should().Be(invite);
+        newInviteFound.As<PersonInvite>().Id.Should().BePositive();
+        newInviteFound.As<PersonInvite>().Organisation.Should().Be(organisation);
+        newInviteFound.As<PersonInvite>().InviteSentOn.Should().BeCloseTo(invite.InviteSentOn, precision: TimeSpan.FromSeconds(1));
+
+        var expiredInviteFound = await repository.Find(expiredInvites[0].Guid);
+        expiredInviteFound.As<PersonInvite>().ExpiresOn.Should().Be(expiredInvite.ExpiresOn);
     }
 
     [Fact]
