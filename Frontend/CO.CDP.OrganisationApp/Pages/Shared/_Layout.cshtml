@@ -229,7 +229,22 @@
     <script type="module" src="/js/govuk-frontend-5.7.1.min.js"></script>
     <script nonce-csp type="module">
         import { initAll } from '/js/govuk-frontend-5.7.1.min.js'
-        initAll()
+        // See https://frontend.design-system.service.gov.uk/configure-components/#configure-all-components-using-the-initall-function
+        initAll({
+            characterCount: {
+                i18n: {
+                    charactersUnderLimit: {
+                        one: '@StaticTextResource.GovukFrontend_CharacterCount_CharactersUnderLimit_One',
+                        other: '@StaticTextResource.GovukFrontend_CharacterCount_CharactersUnderLimit_Other'
+                    },
+                    charactersAtLimit: '@StaticTextResource.GovukFrontend_CharacterCount_CharactersAtLimit',
+                    charactersOverLimit: {
+                        one: '@StaticTextResource.GovukFrontend_CharacterCount_CharactersOverLimit_One',
+                        other: '@StaticTextResource.GovukFrontend_CharacterCount_CharactersOverLimit_Other'
+                    },
+                }
+            }
+        })
     </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>

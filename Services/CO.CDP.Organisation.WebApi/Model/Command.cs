@@ -107,7 +107,7 @@ public record OrganisationAddress
     public string? Region { get; init; }
 
     /// <example>"CH43 7UR"</example>
-    public required string PostalCode { get; init; }
+    public string? PostalCode { get; init; }
 
     /// <example>"United Kingdom"</example>
     public required string CountryName { get; init; }

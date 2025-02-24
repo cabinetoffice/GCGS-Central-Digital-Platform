@@ -142,7 +142,7 @@ public class UpdateFormSectionAnswersUseCase(
         static bool AreSameAddress(Persistence.FormAddress? a, FormAddress? b) =>
             (a == null && b == null) || (a != null && b != null
                                                    && $"{a.StreetAddress}{a.Locality}{a.Region ?? ""}{a.PostalCode}{a.Country}"
-                                                       .Equals($"{b.StreetAddress}{b.Locality}{b.Region ?? ""}{b.PostalCode}{b.Country}"));
+                                                       .Equals($"{b.StreetAddress}{b.Locality}{b.Region ?? ""}{b.PostalCode ?? ""}{b.Country}"));
 
         if (existingAnswer.BoolValue != answer.BoolValue)
             existingAnswer.BoolValue = answer.BoolValue;

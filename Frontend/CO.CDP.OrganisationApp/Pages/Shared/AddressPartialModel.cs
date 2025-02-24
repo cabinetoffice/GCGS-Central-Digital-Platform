@@ -69,12 +69,9 @@ public class AddressPartialModel : IValidatableObject
         {
             var address = (AddressPartialModel)validationContext.ObjectInstance;
 
-            if (string.IsNullOrWhiteSpace(address.Postcode))
+            if (!address.IsNonUkAddress && string.IsNullOrWhiteSpace(address.Postcode))
             {
-                return new ValidationResult(
-                            address.IsNonUkAddress
-                                ? StaticTextResource.Shared_Address_Postcode_NonUk_ErrorMessage
-                                : StaticTextResource.Shared_Address_Postcode_ErrorMessage);
+                return new ValidationResult(StaticTextResource.Shared_Address_Postcode_ErrorMessage);
             }
 
             return ValidationResult.Success;
