@@ -173,7 +173,6 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
             .Include(o => o.Persons)
             .ThenInclude(p => p.PersonOrganisations)
             .Include(o => o.Addresses)
-            .Include(o => o.Addresses)
             .ThenInclude(p => p.Address)
             .OrderBy(o => o.Name)
             .Where(o =>
@@ -194,7 +193,7 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
             .ToListAsync();
     }
 
-    public async Task<IList<Organisation>> GetPaginatedRaw(PartyRole? role, PartyRole? pendingRole, string? searchText, int limit, int skip)
+    public async Task<IList<OrganisationDto>> GetPaginatedRaw(PartyRole? role, PartyRole? pendingRole, string? searchText, int limit, int skip)
     {
         var sql = @"
             SELECT
@@ -208,13 +207,11 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
                 reviewed_by.first_name AS reviewed_by_first_name,
                 reviewed_by.last_name AS reviewed_by_last_name,
                 COALESCE(STRING_AGG(i.scheme || ':' || i.identifier_id, ', '), '') AS identifiers,
-                COALESCE(STRING_AGG(cp.email, ', '), '') AS contact_points,
-                COALESCE(STRING_AGG(a.street, ', '), '') AS addresses
+                COALESCE(STRING_AGG(cp.email, ', '), '') AS contact_points
             FROM organisations o
             LEFT JOIN organisation_person op ON op.organisation_id = o.id
             LEFT JOIN persons p ON p.id = op.person_id AND op.scopes @> '[""ADMIN""]'::jsonb
             LEFT JOIN identifiers i ON i.organisation_id = o.id
-            LEFT JOIN addresses a ON a.organisation_id = o.id
             LEFT JOIN contact_points cp ON cp.organisation_id = o.id
             LEFT JOIN persons reviewed_by ON reviewed_by.id = o.reviewed_by_id
             WHERE (:role IS NULL OR :role = ANY(o.roles))
@@ -247,7 +244,6 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
             ReviewedByFirstName = o.ReviewedByFirstName,
             ReviewedByLastName = o.ReviewedByLastName,
             Identifiers = o.Identifiers?.Split(", ").ToList() ?? new List<string>(),
-            Addresses = o.Addresses?.Split(", ").ToList() ?? new List<string>(),
             ContactPoints = o.ContactPoints?.Split(", ").ToList() ?? new List<string>()
         }).ToList();
     }
@@ -264,7 +260,6 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
         public string? ReviewedByFirstName { get; set; }
         public string? ReviewedByLastName { get; set; }
         public List<string> Identifiers { get; set; } = new();
-        public List<string> Addresses { get; set; } = new();
         public List<string> ContactPoints { get; set; } = new();
     }
 
@@ -273,15 +268,15 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
         public int Id { get; set; }
         public Guid Guid { get; set; }
         public string Name { get; set; }
-        public string? Roles { get; set; } // Stored as a comma-separated string, converted later
-        public string? PendingRoles { get; set; } // Same as above
+        public string? Roles { get; set; }
+        public string? PendingRoles { get; set; }
         public DateTimeOffset? ApprovedOn { get; set; }
         public string? ReviewComment { get; set; }
         public string? ReviewedByFirstName { get; set; }
         public string? ReviewedByLastName { get; set; }
-        public string? Identifiers { get; set; } // Comma-separated list of identifiers
-        public string? Addresses { get; set; } // Comma-separated list of addresses
-        public string? ContactPoints { get; set; } // Comma-separated list of contact points
+        public string? Identifiers { get; set; }
+        public string? Addresses { get; set; }
+        public string? ContactPoints { get; set; }
     }
 
     public async Task<int> GetTotalCount(PartyRole? role, PartyRole? pendingRole, string? searchText)
