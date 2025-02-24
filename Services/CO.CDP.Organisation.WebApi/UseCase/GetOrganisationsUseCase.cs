@@ -1,29 +1,30 @@
 using AutoMapper;
-using CO.CDP.Authentication;
-using CO.CDP.Functional;
 using CO.CDP.Organisation.WebApi.Model;
+using CO.CDP.OrganisationInformation;
 using CO.CDP.OrganisationInformation.Persistence;
-using Person = CO.CDP.Organisation.WebApi.Model.Person;
 
 namespace CO.CDP.Organisation.WebApi.UseCase;
-public class GetOrganisationsUseCase(IOrganisationRepository organisationRepository, IMapper mapper)
-    : IUseCase<PaginatedOrganisationQuery, IEnumerable<OrganisationExtended>>
+public class GetOrganisationsUseCase(IOrganisationRepository organisationRepository)
+    : IUseCase<PaginatedOrganisationQuery, IEnumerable<OrganisationDto>>
 {
-    public async Task<IEnumerable<OrganisationExtended>> Execute(PaginatedOrganisationQuery command)
+    public async Task<IEnumerable<OrganisationDto>> Execute(PaginatedOrganisationQuery command)
     {
         var organisations = await organisationRepository
-            .GetPaginated(command.Role, command.PendingRole, command.SearchText, command.Limit, command.Skip);
+            .GetPaginatedRaw(command.Role, command.PendingRole, command.SearchText, command.Limit, command.Skip);
 
-        return organisations.Select(org =>
+        return organisations.Select(o => new OrganisationDto()
         {
-            var adminPerson = org.OrganisationPersons
-                .Where(op => op.Scopes.Contains(Constants.OrganisationPersonScope.Admin))
-                .Select(op => op.Person)
-                .FirstOrDefault();
-
-            var adminPersonWeb = adminPerson != null ? mapper.Map<Person>(adminPerson) : null;
-
-            return mapper.Map<OrganisationExtended>(org) with { AdminPerson = adminPersonWeb };
-        });
+            Id = o.Id,
+            Guid = o.Guid,
+            Name = o.Name,
+            Roles = o.Roles?.Split(", ").Select(r => Enum.Parse<PartyRole>(r)).ToList() ?? new List<PartyRole>(),
+            PendingRoles = o.PendingRoles?.Split(", ").Select(r => Enum.Parse<PartyRole>(r)).ToList() ?? new List<PartyRole>(),
+            ApprovedOn = o.ApprovedOn,
+            ReviewComment = o.ReviewComment,
+            ReviewedByFirstName = o.ReviewedByFirstName,
+            ReviewedByLastName = o.ReviewedByLastName,
+            Identifiers = o.Identifiers?.Split(", ").ToList() ?? new List<string>(),
+            ContactPoints = o.ContactPoints?.Split(", ").ToList() ?? new List<string>()
+        }).ToList();
     }
 }

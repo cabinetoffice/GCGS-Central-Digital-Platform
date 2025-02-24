@@ -2,6 +2,7 @@ using CO.CDP.EntityFrameworkCore.DbContext;
 using CO.CDP.OrganisationInformation.Persistence.Forms;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using Npgsql;
 
 namespace CO.CDP.OrganisationInformation.Persistence;
 
@@ -172,7 +173,6 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
             .Include(o => o.Persons)
             .ThenInclude(p => p.PersonOrganisations)
             .Include(o => o.Addresses)
-            .Include(o => o.Addresses)
             .ThenInclude(p => p.Address)
             .OrderBy(o => o.Name)
             .Where(o =>
@@ -191,6 +191,63 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
             .Skip(skip)
             .Take(limit)
             .ToListAsync();
+    }
+
+    public async Task<IList<OrganisationRawDto>> GetPaginatedRaw(PartyRole? role, PartyRole? pendingRole, string? searchText, int limit, int skip)
+    {
+        var sql = @"
+            SELECT
+                o.id,
+                o.guid,
+                o.name,
+                o.roles,
+                o.pending_roles,
+                o.approved_on,
+                o.review_comment,
+                reviewed_by.first_name AS reviewed_by_first_name,
+                reviewed_by.last_name AS reviewed_by_last_name,
+                COALESCE(STRING_AGG(i.scheme || ':' || i.identifier_id, ', '), '') AS identifiers,
+                COALESCE(STRING_AGG(cp.email, ', '), '') AS contact_points
+            FROM organisations o
+            LEFT JOIN organisation_person op ON op.organisation_id = o.id
+            LEFT JOIN persons p ON p.id = op.person_id AND op.scopes @> '[""ADMIN""]'::jsonb
+            LEFT JOIN identifiers i ON i.organisation_id = o.id
+            LEFT JOIN contact_points cp ON cp.organisation_id = o.id
+            LEFT JOIN persons reviewed_by ON reviewed_by.id = o.reviewed_by_id
+            WHERE (:role IS NULL OR :role = ANY(o.roles))
+              OR (:pendingRole IS NULL OR :pendingRole = ANY(o.pending_roles))
+              AND (:searchText IS NULL OR o.name ILIKE '%' || :searchText || '%')
+            GROUP BY o.id, o.guid, o.name, o.roles, o.pending_roles, o.approved_on, o.review_comment, reviewed_by.first_name, reviewed_by.last_name
+            ORDER BY o.name ASC
+            LIMIT :limit OFFSET :skip;";
+
+        var parameters = new[]
+        {
+            new NpgsqlParameter("role", role.HasValue ? role.Value.ToString() : (object)DBNull.Value),
+            new NpgsqlParameter("pendingRole", pendingRole.HasValue ? pendingRole.Value.ToString() : (object)DBNull.Value),
+            new NpgsqlParameter("searchText", string.IsNullOrWhiteSpace(searchText) ? (object)DBNull.Value : searchText),
+            new NpgsqlParameter("limit", limit),
+            new NpgsqlParameter("skip", skip)
+        };
+
+        var rawResults = await context.Database.SqlQueryRaw<OrganisationRawDto>(sql, parameters).ToListAsync();
+
+        return rawResults;
+    }
+
+    public class OrganisationRawDto
+    {
+        public int Id { get; set; }
+        public Guid Guid { get; set; }
+        public string Name { get; set; }
+        public string? Roles { get; set; }
+        public string? PendingRoles { get; set; }
+        public DateTimeOffset? ApprovedOn { get; set; }
+        public string? ReviewComment { get; set; }
+        public string? ReviewedByFirstName { get; set; }
+        public string? ReviewedByLastName { get; set; }
+        public string? Identifiers { get; set; }
+        public string? ContactPoints { get; set; }
     }
 
     public async Task<int> GetTotalCount(PartyRole? role, PartyRole? pendingRole, string? searchText)
