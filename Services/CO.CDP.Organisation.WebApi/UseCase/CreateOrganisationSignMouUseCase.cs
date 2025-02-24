@@ -1,13 +1,16 @@
-using AutoMapper;
+using CO.CDP.GovUKNotify;
+using CO.CDP.GovUKNotify.Models;
 using CO.CDP.Organisation.WebApi.Model;
-using CO.CDP.OrganisationInformation.Persistence;
 using Persistence = CO.CDP.OrganisationInformation.Persistence;
 
 namespace CO.CDP.Organisation.WebApi.UseCase;
 
 public class SignOrganisationMouUseCase(
     Persistence.IOrganisationRepository organisationRepository,
-    Persistence.IPersonRepository personRepository
+    Persistence.IPersonRepository personRepository,
+    IGovUKNotifyApiClient govUKNotifyApiClient,
+    IConfiguration configuration,
+    ILogger<SignOrganisationMouUseCase> logger
     )
     : IUseCase<(Guid organisationId, SignMouRequest signMouRequest), bool>
 {
@@ -38,6 +41,51 @@ public class SignOrganisationMouUseCase(
 
         organisationRepository.SaveOrganisationMou(mouSignature);
 
+        await NotifyCopyOfMoURequest(mouSignature, organisation);
+
         return await Task.FromResult(true);
+    }
+
+    private async Task NotifyCopyOfMoURequest(Persistence.MouSignature mouSignature, Persistence.Organisation organisation)
+    {
+        var baseAppUrl = configuration.GetValue<string>("OrganisationAppUrl") ?? "";
+        var templateId = configuration.GetValue<string>("GOVUKNotify:MouDataSharingAgreementEmailTemplateId") ?? "";
+
+        var missingConfigs = new List<string>();
+
+        if (string.IsNullOrEmpty(baseAppUrl)) missingConfigs.Add("OrganisationAppUrl");
+        if (string.IsNullOrEmpty(templateId)) missingConfigs.Add("GOVUKNotify:MouDataSharingAgreementEmailTemplateId");
+
+        if (missingConfigs.Count != 0)
+        {
+            logger.LogError(new Exception("Unable to send MoU email"), $"Missing configuration keys: {string.Join(", ", missingConfigs)}. Unable to send MoU email to user.");
+            return;
+        }
+
+        var requestLink = new Uri(new Uri(baseAppUrl), $"/mou-pdfs/{mouSignature.Mou.FilePath}").ToString();
+
+        var emailRequest = new EmailNotificationRequest
+        {
+            EmailAddress = mouSignature.CreatedBy.Email,
+            TemplateId = templateId,
+            Personalisation = new Dictionary<string, string>
+                {   { "link", requestLink },
+                    { "first_name", mouSignature.CreatedBy.FirstName },
+                    { "last_name", mouSignature.CreatedBy.LastName },
+                    { "job_title", mouSignature.JobTitle },
+                    { "date", mouSignature.CreatedOn.ToString("dd MMM yyyy") },
+                    { "time", mouSignature.CreatedOn.ToString("HH:mm") }
+                }
+        };
+
+        try
+        {
+            await govUKNotifyApiClient.SendEmail(emailRequest);
+        }
+        catch
+        {
+            return;
+        }
+
     }
 }
