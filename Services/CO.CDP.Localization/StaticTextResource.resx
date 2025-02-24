@@ -438,6 +438,12 @@
   <data name="Supplementary_Error_TryAgain" xml:space="preserve">
     <value>Try again later.</value>
   </data>
+  <data name="Supplementary_Error_NotSaved" xml:space="preserve">
+    <value>If you were completing a question and hadn’t clicked the ‘save’ button, we will not have saved your answers.</value>
+  </data>
+  <data name="Supplementary_Error_ContactSupport" xml:space="preserve">
+    <value>&lt;a href="/provide-feedback-and-contact/?context=feedback"&gt;Contact service support&lt;/a&gt; with the reference {0} to report the problem.</value>
+  </data>
   <data name="Supplementary_ContactUs_Title" xml:space="preserve">
     <value>Message sent</value>
   </data>
@@ -1615,13 +1621,13 @@
     <value>A private company with a special or exclusive right to provide utilities to the public. For example, private companies supplying electricity.</value>
   </data>
   <data name="OrganisationRegistration_BuyerOrganisationType_Other_Label" xml:space="preserve">
-    <value>Other</value>
+    <value>Other - only applies to non-contracting authorities establishing a dynamic market</value>
   </data>
   <data name="OrganisationRegistration_BuyerOrganisationType_Other_Hint" xml:space="preserve">
-    <value>For example, the establishment of a utilities dynamic market by a non-contracting authority.</value>
+    <value>Does not apply to local authority subsidiaries or limited companies connected to a public authority</value>
   </data>
   <data name="OrganisationRegistration_BuyerOrganisationType_OtherEnterType_Label" xml:space="preserve">
-    <value>Enter type</value>
+    <value>Enter buyer organisation type</value>
   </data>
   <data name="OrganisationRegistration_JoinOrganisationSuccess_Heading" xml:space="preserve">
     <value>Your request to join {0} has been sent</value>
@@ -2753,7 +2759,7 @@
     <value>the Greater London Authority</value>
   </data>
   <data name="SupplierToBuyer_OrganisationType_Hint" xml:space="preserve">
-    <value>Decide on your organisation type, as defined in the &lt;a href="https://www.gov.uk/government/publications/procurement-act-2023-guidance-documents-plan-phase/guidance-contracting-authority-definition-html" target="_blank"&gt;contracting authority definition guidance (opens in new tab). &lt;/a&gt;</value>
+    <value>Decide on your organisation type, as defined in the &lt;a href="https://www.gov.uk/government/publications/procurement-act-2023-guidance-documents-plan-phase/guidance-contracting-authority-definition-html" target="_blank"&gt;contracting authority definition guidance (opens in new tab) &lt;/a&gt;</value>
   </data>
   <data name="SupplierToBuyer_OrganisationType_HousingAssociations" xml:space="preserve">
     <value>housing associations</value>
