@@ -118,7 +118,7 @@ public abstract class RegistrationStepModel : LoggedInUserAwareModel
     {
         if (RegistrationDetails.OrganisationAddressLine1 == null
             || RegistrationDetails.OrganisationCityOrTown == null
-            || RegistrationDetails.OrganisationPostcode == null
+            || (RegistrationDetails.OrganisationCountryCode == Country.UKCountryCode && RegistrationDetails.OrganisationPostcode == null)
             || RegistrationDetails.OrganisationCountryCode == null)
         {
             ToRedirectPageUrl = OrganisationAddressPage;
