@@ -1,3 +1,12 @@
+output "grafana_user_pool_arn" {
+  value = aws_cognito_user_pool.auth.arn
+}
+
+output "grafana_user_pool_client_id" {
+  value = aws_cognito_user_pool_client.grafana.id
+}
+
+
 output "healthcheck_user_pool_arn" {
   value = aws_cognito_user_pool.auth.arn
 }
