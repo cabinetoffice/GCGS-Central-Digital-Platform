@@ -187,7 +187,7 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
         }
 
         return await result
-            .AsSingleQuery()
+            .AsSplitQuery()
             .Skip(skip)
             .Take(limit)
             .ToListAsync();
