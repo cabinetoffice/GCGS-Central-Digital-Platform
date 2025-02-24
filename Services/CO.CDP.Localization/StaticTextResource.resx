@@ -1961,6 +1961,9 @@
   <data name="Support_OrganisationApproval_PotentialDuplicatesFound" xml:space="preserve">
     <value>Potential duplicates found</value>
   </data>
+  <data name="Support_OrganisationApproval_DomainFound" xml:space="preserve">
+    <value>Domain found in the database</value>
+  </data>
   <data name="Support_OrganisationApproval_OrganisationIdentifier_List" xml:space="preserve">
     <value>Organisation identifiers</value>
   </data>
