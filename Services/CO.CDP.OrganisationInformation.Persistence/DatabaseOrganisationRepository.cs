@@ -3,6 +3,7 @@ using CO.CDP.OrganisationInformation.Persistence.Forms;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using Npgsql;
+using NpgsqlTypes;
 
 namespace CO.CDP.OrganisationInformation.Persistence;
 
@@ -214,20 +215,24 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
             LEFT JOIN identifiers i ON i.organisation_id = o.id
             LEFT JOIN contact_points cp ON cp.organisation_id = o.id
             LEFT JOIN persons reviewed_by ON reviewed_by.id = o.reviewed_by_id
-            WHERE (:role IS NULL OR :role = ANY(o.roles))
-              OR (:pendingRole IS NULL OR :pendingRole = ANY(o.pending_roles))
+            WHERE
+                ((:role IS NULL OR :role = ANY(o.roles))
+              OR (:pendingRole IS NULL OR :pendingRole = ANY(o.pending_roles)))
               AND (:searchText IS NULL OR o.name ILIKE '%' || :searchText || '%')
             GROUP BY o.id, o.guid, o.name, o.roles, o.pending_roles, o.approved_on, o.review_comment, reviewed_by.first_name, reviewed_by.last_name
             ORDER BY o.name ASC
             LIMIT :limit OFFSET :skip;";
 
+        var roleValue = role.HasValue ? (int)role.Value : (object)DBNull.Value;
+        var pendingRoleValue = pendingRole.HasValue ? (int)pendingRole.Value : (object)DBNull.Value;
+
         var parameters = new[]
         {
-            new NpgsqlParameter("role", role.HasValue ? role.Value.ToString() : (object)DBNull.Value),
-            new NpgsqlParameter("pendingRole", pendingRole.HasValue ? pendingRole.Value.ToString() : (object)DBNull.Value),
-            new NpgsqlParameter("searchText", string.IsNullOrWhiteSpace(searchText) ? (object)DBNull.Value : searchText),
-            new NpgsqlParameter("limit", limit),
-            new NpgsqlParameter("skip", skip)
+            new NpgsqlParameter("role", NpgsqlDbType.Integer) { Value = roleValue },
+            new NpgsqlParameter("pendingRole", NpgsqlDbType.Integer) { Value = pendingRoleValue },
+            new NpgsqlParameter("searchText", NpgsqlDbType.Text) { Value = string.IsNullOrWhiteSpace(searchText) ? (object)DBNull.Value : searchText },
+            new NpgsqlParameter("limit", NpgsqlDbType.Integer) { Value = limit },
+            new NpgsqlParameter("skip", NpgsqlDbType.Integer) { Value = skip }
         };
 
         var rawResults = await context.Database.SqlQueryRaw<OrganisationRawDto>(sql, parameters).ToListAsync();
@@ -240,8 +245,8 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
         public int Id { get; set; }
         public Guid Guid { get; set; }
         public string Name { get; set; }
-        public string? Roles { get; set; }
-        public string? PendingRoles { get; set; }
+        public int[]? Roles { get; set; }
+        public int[]? PendingRoles { get; set; }
         public DateTimeOffset? ApprovedOn { get; set; }
         public string? ReviewComment { get; set; }
         public string? ReviewedByFirstName { get; set; }

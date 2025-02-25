@@ -25,12 +25,18 @@ public static class EndpointExtensions
     {
         app.MapGet("/organisations",
             [OrganisationAuthorize([AuthenticationChannel.OneLogin], personScopes: [Constants.PersonScope.SupportAdmin])]
-        async ([FromQuery] string? role, [FromQuery] string? pendingRole, [FromQuery] string? searchText, [FromQuery] int limit, [FromQuery] int skip, IUseCase<PaginatedOrganisationQuery, IEnumerable<OrganisationExtended>> useCase) =>
+        async (
+            [FromQuery] string? role,
+            [FromQuery] string? pendingRole,
+            [FromQuery] string? searchText,
+            [FromQuery] int limit,
+            [FromQuery] int skip,
+            IUseCase<PaginatedOrganisationQuery, IEnumerable<OrganisationDto>> useCase) =>
                 {
                     return await useCase.Execute(new PaginatedOrganisationQuery(limit, skip, role, pendingRole, searchText))
                         .AndThen(organisations => Results.Ok(organisations));
                 })
-            .Produces<List<OrganisationExtended>>(StatusCodes.Status200OK, "application/json")
+            .Produces<List<OrganisationDto>>(StatusCodes.Status200OK, "application/json")
             .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
             .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError)
             .WithOpenApi(operation =>

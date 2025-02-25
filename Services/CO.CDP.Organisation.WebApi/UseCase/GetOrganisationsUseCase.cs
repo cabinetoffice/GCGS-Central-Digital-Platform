@@ -17,8 +17,8 @@ public class GetOrganisationsUseCase(IOrganisationRepository organisationReposit
             Id = o.Id,
             Guid = o.Guid,
             Name = o.Name,
-            Roles = o.Roles?.Split(", ").Select(r => Enum.Parse<PartyRole>(r)).ToList() ?? new List<PartyRole>(),
-            PendingRoles = o.PendingRoles?.Split(", ").Select(r => Enum.Parse<PartyRole>(r)).ToList() ?? new List<PartyRole>(),
+            Roles = o.Roles?.Select(r => (PartyRole)r).ToList() ?? new List<PartyRole>(),
+            PendingRoles = o.PendingRoles?.Select(r => (PartyRole)r).ToList() ?? new List<PartyRole>(),
             ApprovedOn = o.ApprovedOn,
             ReviewComment = o.ReviewComment,
             ReviewedByFirstName = o.ReviewedByFirstName,
@@ -27,4 +27,5 @@ public class GetOrganisationsUseCase(IOrganisationRepository organisationReposit
             ContactPoints = o.ContactPoints?.Split(", ").ToList() ?? new List<string>()
         }).ToList();
     }
+
 }
