@@ -1,4 +1,3 @@
-using CO.CDP.EntityVerificationClient;
 using CO.CDP.Localization;
 using CO.CDP.Mvc.Validation;
 using CO.CDP.Organisation.WebApiClient;
@@ -12,8 +11,7 @@ using System.ComponentModel.DataAnnotations;
 namespace CO.CDP.OrganisationApp.Pages.Supplier;
 
 [Authorize(Policy = OrgScopeRequirement.Editor)]
-public class SupplierVatQuestionModel(IOrganisationClient organisationClient,
-    IPponClient pponClient, IHttpContextAccessor httpContextAccessor) : PageModel
+public class SupplierVatQuestionModel(IOrganisationClient organisationClient) : PageModel
 {
     const string VatSchemeName = "VAT";
 
@@ -46,7 +44,7 @@ public class SupplierVatQuestionModel(IOrganisationClient organisationClient,
                 }
             }
         }
-        catch (CO.CDP.Organisation.WebApiClient.ApiException ex) when (ex.StatusCode == 404)
+        catch (ApiException ex) when (ex.StatusCode == 404)
         {
             return Redirect("/page-not-found");
         }
@@ -67,7 +65,7 @@ public class SupplierVatQuestionModel(IOrganisationClient organisationClient,
         {
             organisation = await organisationClient.GetOrganisationAsync(Id);
         }
-        catch (CO.CDP.Organisation.WebApiClient.ApiException ex) when (ex.StatusCode == 404)
+        catch (ApiException ex) when (ex.StatusCode == 404)
         {
             return Redirect("/page-not-found");
         }
@@ -83,34 +81,8 @@ public class SupplierVatQuestionModel(IOrganisationClient organisationClient,
         {
             if ((existingVatIdentifier?.Id ?? string.Empty) != VatNumber)
             {
-                try
-                {
-                    await LookupOrganisationAsync();
-                    ModelState.AddModelError(nameof(VatNumber), StaticTextResource.Supplier_VatQuestion_BelongsToAnotherOrganisation_Error);
-                    return Page();
-                }
-                catch (Exception orgApiException) when (orgApiException is CO.CDP.Organisation.WebApiClient.ApiException && ((CO.CDP.Organisation.WebApiClient.ApiException)orgApiException).StatusCode == 404)
-                {
-                    try
-                    {
-                        await LookupEntityVerificationAsync();                      
-                    }
-                    catch (Exception evApiException) when (evApiException is EntityVerificationClient.ApiException && ((EntityVerificationClient.ApiException)evApiException).StatusCode == 404)
-                    {
-                        await organisationClient.UpdateSupplierCompletedVat(Id);
-                        await organisationClient.UpdateOrganisationAdditionalIdentifiers(Id, identifiers);
-
-                        return RedirectToPage("SupplierBasicInformation", new { Id });
-                    }
-                    catch
-                    {
-                        return RedirectToPage("/Registration/OrganisationRegistrationUnavailable", SetRoute());
-                    }
-                }
-            }
-            else
-            {
-                return RedirectToPage("SupplierBasicInformation", new { Id });
+                await organisationClient.UpdateSupplierCompletedVat(Id);
+                await organisationClient.UpdateOrganisationAdditionalIdentifiers(Id, identifiers);
             }
         }
         else
@@ -124,28 +96,8 @@ public class SupplierVatQuestionModel(IOrganisationClient organisationClient,
                     new OrganisationIdentifier(string.Empty, organisation.Name, VatSchemeName));
             }
 
-            return RedirectToPage("SupplierBasicInformation", new { Id });
         }
 
-        return RedirectToPage("/Registration/OrganisationAlreadyRegistered", SetRoute());
-    }
-
-    private RouteValueDictionary SetRoute()
-    {
-        return new RouteValueDictionary
-        {
-            { "backLink", httpContextAccessor!.HttpContext!.Request.Path }
-        };
-    }
-
-    private async Task<CO.CDP.Organisation.WebApiClient.Organisation> LookupOrganisationAsync()
-    {
-        return await organisationClient.LookupOrganisationAsync(string.Empty,
-                    $"{VatSchemeName}:{VatNumber}");
-    }
-
-    private async Task<ICollection<EntityVerificationClient.Identifier>> LookupEntityVerificationAsync()
-    {
-        return await pponClient.GetIdentifiersAsync($"{VatSchemeName}:{VatNumber}");
+        return RedirectToPage("SupplierBasicInformation", new { Id });
     }
 }
