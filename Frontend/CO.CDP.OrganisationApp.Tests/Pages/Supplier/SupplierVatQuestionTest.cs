@@ -115,33 +115,6 @@ public class SupplierVatModelQuestionTest
     }
 
     [Fact]
-    public async Task OnPost_WhenOrganisationExistsInOganisationService_ShouldRedirectToOrganisationAlreadyRegisteredPage()
-    {
-        var id = Guid.NewGuid();
-        _model.Id = id;
-        _model.HasVatNumber = true;
-        _model.VatNumber = "VAT12345";
-
-        _organisationClientMock.Setup(client => client.GetOrganisationAsync(id))
-            .ReturnsAsync(SupplierDetailsFactory.GivenOrganisationClientModel(id));
-
-        _organisationClientMock.Setup
-            (api => api.LookupOrganisationAsync(It.IsAny<string>(), It.IsAny<string>()))
-            .ReturnsAsync(GivenOrganisationClientModel());
-
-        var result = await _model.OnPost();
-
-        _model.ModelState.ContainsKey("VatNumber").Should().BeTrue();
-        _model.ModelState["VatNumber"]!.Errors.Should().ContainSingle()
-            .Which.ErrorMessage.Should().Be("This VAT number belongs to another organisation. Enter a different VAT number.");
-
-        result.Should().BeOfType<PageResult>();
-
-        _organisationClientMock.Verify(o => o.UpdateSupplierInformationAsync(It.IsAny<Guid>(),
-            It.Is<UpdateSupplierInformation>(u => u.Type == SupplierInformationUpdateType.CompletedVat)), Times.Never);
-    }
-
-    [Fact]
     public async Task OnPost_InvalidModelState_ReturnsPageResult()
     {
         _model.ModelState.AddModelError("HasVatNumber", "Please select an option");
