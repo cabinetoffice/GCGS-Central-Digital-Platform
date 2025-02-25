@@ -3858,7 +3858,7 @@
             "uid": "CLOUDWATCH"
           },
           "dimensions": {
-            "QueueName": "cdp-sirsi-production-av-scanner.fifo"
+            "QueueName": "CDP_SIRSI_ENVIRONMENT-av-scanner.fifo"
           },
           "expression": "",
           "id": "",
@@ -3883,7 +3883,7 @@
             "uid": "CLOUDWATCH"
           },
           "dimensions": {
-            "QueueName": "cdp-sirsi-production-entity-verification.fifo"
+            "QueueName": "CDP_SIRSI_ENVIRONMENT-entity-verification.fifo"
           },
           "expression": "",
           "hide": false,
@@ -3909,7 +3909,7 @@
             "uid": "CLOUDWATCH"
           },
           "dimensions": {
-            "QueueName": "cdp-sirsi-production-organisation.fifo"
+            "QueueName": "CDP_SIRSI_ENVIRONMENT-organisation.fifo"
           },
           "expression": "",
           "hide": false,
@@ -4024,7 +4024,7 @@
             "uid": "CLOUDWATCH"
           },
           "dimensions": {
-            "QueueName": "cdp-sirsi-production-av-scanner.fifo"
+            "QueueName": "CDP_SIRSI_ENVIRONMENT-av-scanner.fifo"
           },
           "expression": "",
           "id": "",
@@ -4049,7 +4049,7 @@
             "uid": "CLOUDWATCH"
           },
           "dimensions": {
-            "QueueName": "cdp-sirsi-production-entity-verification.fifo"
+            "QueueName": "CDP_SIRSI_ENVIRONMENT-entity-verification.fifo"
           },
           "expression": "",
           "hide": false,
@@ -4075,7 +4075,7 @@
             "uid": "CLOUDWATCH"
           },
           "dimensions": {
-            "QueueName": "cdp-sirsi-production-organisation.fifo"
+            "QueueName": "CDP_SIRSI_ENVIRONMENT-organisation.fifo"
           },
           "expression": "",
           "hide": false,
@@ -4193,7 +4193,7 @@
             "uid": "CLOUDWATCH"
           },
           "dimensions": {
-            "QueueName": "cdp-sirsi-production-av-scanner-deadletter.fifo"
+            "QueueName": "CDP_SIRSI_ENVIRONMENT-av-scanner-deadletter.fifo"
           },
           "expression": "",
           "id": "",
@@ -4218,7 +4218,7 @@
             "uid": "CLOUDWATCH"
           },
           "dimensions": {
-            "QueueName": "cdp-sirsi-production-entity-verification-deadletter.fifo"
+            "QueueName": "CDP_SIRSI_ENVIRONMENT-entity-verification-deadletter.fifo"
           },
           "expression": "",
           "hide": false,
@@ -4244,7 +4244,7 @@
             "uid": "CLOUDWATCH"
           },
           "dimensions": {
-            "QueueName": "cdp-sirsi-production-organisation-deadletter.fifo"
+            "QueueName": "CDP_SIRSI_ENVIRONMENT-organisation-deadletter.fifo"
           },
           "expression": "",
           "hide": false,

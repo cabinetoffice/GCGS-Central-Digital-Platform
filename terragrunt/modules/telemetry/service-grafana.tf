@@ -5,6 +5,7 @@ module "ecs_service_grafana" {
     "${path.module}/templates/task-definitions/grafana.json.tftpl",
     {
       account_id         = data.aws_caller_identity.current.account_id
+      cdp_sirsi_environment = "${local.name_prefix}-${var.environment}"
       container_port     = var.grafana_config.port
       cpu                = var.grafana_config.cpu
       gf_admin_password  = "${aws_secretsmanager_secret.grafana_credentials.arn}:ADMIN_PASSWORD::"
