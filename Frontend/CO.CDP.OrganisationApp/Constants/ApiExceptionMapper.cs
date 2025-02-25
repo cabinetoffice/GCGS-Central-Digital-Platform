@@ -36,7 +36,7 @@ public static class ApiExceptionMapper
             ErrorCodes.ORGANISATION_ALREADY_EXISTS => ErrorMessagesList.DuplicateOrganisationName,
             ErrorCodes.EMAIL_ALREADY_EXISTS_WITHIN_ORGANISATION => ErrorMessagesList.DuplicatePersonEmail,
             ErrorCodes.INVITE_EMAIL_ALREADY_EXISTS_FOR_ORGANISATION => ErrorMessagesList.DuplicateInviteEmail,
-            ErrorCodes.ARGUMENT_NULL => ErrorMessagesList.PayLoadIssueOrNullAurgument,
+            ErrorCodes.ARGUMENT_NULL => ErrorMessagesList.PayLoadIssueOrNullArgument,
             ErrorCodes.INVALID_OPERATION => ErrorMessagesList.OrganisationCreationFailed,
             ErrorCodes.PERSON_DOES_NOT_EXIST => ErrorMessagesList.PersonNotFound,
             ErrorCodes.MOU_DOES_NOT_EXIST=> ErrorMessagesList.MouNotFound,
