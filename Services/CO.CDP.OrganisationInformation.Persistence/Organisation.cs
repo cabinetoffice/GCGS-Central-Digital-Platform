@@ -32,7 +32,6 @@ public class Organisation : IEntityDate
     public string? ReviewComment { get; set; }
 
     [Owned]
-    [Index(nameof(IdentifierId), [nameof(Scheme)], IsUnique = true)]
     public record Identifier : IEntityDate
     {
         public int Id { get; set; }
