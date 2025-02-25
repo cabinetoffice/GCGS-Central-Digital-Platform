@@ -96,7 +96,7 @@ public class ConnectedEntityCheckAnswersIndividualOrTrustModel(
 
                 if (updatePayload == null)
                 {
-                    ModelState.AddModelError(string.Empty, ErrorMessagesList.PayLoadIssueOrNullAurgument);
+                    ModelState.AddModelError(string.Empty, ErrorMessagesList.PayLoadIssueOrNullArgument);
                     return Page();
                 }
 
@@ -108,7 +108,7 @@ public class ConnectedEntityCheckAnswersIndividualOrTrustModel(
 
                 if (payload == null)
                 {
-                    ModelState.AddModelError(string.Empty, ErrorMessagesList.PayLoadIssueOrNullAurgument);
+                    ModelState.AddModelError(string.Empty, ErrorMessagesList.PayLoadIssueOrNullArgument);
                     return Page();
                 }
 
