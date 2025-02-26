@@ -1,5 +1,10 @@
 using CO.CDP.OrganisationInformation.Persistence.Forms;
+using CO.CDP.OrganisationInformation.Persistence.NonEfEntities;
 using Microsoft.EntityFrameworkCore;
+using Npgsql;
+using NpgsqlTypes;
+using System.Data;
+using static CO.CDP.OrganisationInformation.Persistence.ConnectedEntity;
 
 namespace CO.CDP.OrganisationInformation.Persistence;
 
@@ -29,7 +34,7 @@ public class DatabaseShareCodeRepository(OrganisationInformationContext context)
             .FirstOrDefaultAsync(s => s.Form.Guid == formId && s.Organisation.Guid == organisationId);
     }
 
-    public async Task<SharedConsent?> GetByShareCode(string sharecode)
+    public async Task<SharedConsent?> GetByShareCode1(string sharecode)
     {
         return await context.SharedConsents
             .Where(sc => sc.ShareCode == sharecode)
@@ -53,6 +58,318 @@ public class DatabaseShareCodeRepository(OrganisationInformationContext context)
                     .ThenInclude(s => s.Questions.OrderBy(q => q.SortOrder))
             .AsSplitQuery()
             .FirstOrDefaultAsync();
+    }
+
+    public async Task<SharedConsentDS?> GetByShareCode(string shareCode)
+    {
+        SharedConsentDS? sharedConsent = null;
+        List<FormSectionDS> formSections = [];
+        List<FormQuestionDS> formQuestions = [];
+
+        var conn = (NpgsqlConnection)context.Database.GetDbConnection();
+        //using var conn = new NpgsqlConnection("Server=localhost;Database=cdp;Username=cdp_user;Password=cdp123;");
+        await conn.OpenAsync();
+        await using var tran = await conn.BeginTransactionAsync();
+
+        using var command = new NpgsqlCommand("get_shared_consent_details", conn);
+        command.CommandType = CommandType.StoredProcedure;
+
+        command.Parameters.Add(new NpgsqlParameter("p_share_code", shareCode));
+        command.Parameters.Add(new NpgsqlParameter("consent_cursor", NpgsqlDbType.Refcursor) { Direction = ParameterDirection.InputOutput, Value = "consent_cursor" });
+        command.Parameters.Add(new NpgsqlParameter("identifier_cursor", NpgsqlDbType.Refcursor) { Direction = ParameterDirection.InputOutput, Value = "identifier_cursor" });
+        command.Parameters.Add(new NpgsqlParameter("address_cursor", NpgsqlDbType.Refcursor) { Direction = ParameterDirection.InputOutput, Value = "address_cursor" });
+        command.Parameters.Add(new NpgsqlParameter("contact_cursor", NpgsqlDbType.Refcursor) { Direction = ParameterDirection.InputOutput, Value = "contact_cursor" });
+        command.Parameters.Add(new NpgsqlParameter("connected_entities_cursor", NpgsqlDbType.Refcursor) { Direction = ParameterDirection.InputOutput, Value = "connected_entities_cursor" });
+        command.Parameters.Add(new NpgsqlParameter("connected_entities_address_cursor", NpgsqlDbType.Refcursor) { Direction = ParameterDirection.InputOutput, Value = "connected_entities_address_cursor" });
+        command.Parameters.Add(new NpgsqlParameter("form_answer_sets_cursor", NpgsqlDbType.Refcursor) { Direction = ParameterDirection.InputOutput, Value = "form_answer_sets_cursor" });
+        command.Parameters.Add(new NpgsqlParameter("form_question_cursor", NpgsqlDbType.Refcursor) { Direction = ParameterDirection.InputOutput, Value = "form_question_cursor" });
+        command.Parameters.Add(new NpgsqlParameter("form_answer_cursor", NpgsqlDbType.Refcursor) { Direction = ParameterDirection.InputOutput, Value = "form_answer_cursor" });
+
+        await command.ExecuteNonQueryAsync(); // Declare the cursor
+
+        using (var consentCmd = new NpgsqlCommand("FETCH ALL IN consent_cursor", conn))
+        {
+            using var consentReader = await consentCmd.ExecuteReaderAsync();
+
+            while (await consentReader.ReadAsync())
+            {
+                sharedConsent = new SharedConsentDS
+                {
+                    Guid = consentReader.GetGuid("guid"),
+                    SubmittedAt = consentReader.GetFieldValue<DateTimeOffset>("submitted_at"),
+                    SubmissionState = (SubmissionState)consentReader.GetInt32("submission_state"),
+                    ShareCode = consentReader.GetNullableString("share_code"),
+                    Form = new FormDS
+                    {
+                        Name = consentReader.GetString("form_name"),
+                        Version = consentReader.GetString("version"),
+                        IsRequired = consentReader.GetBoolean("is_required"),
+                    },
+                    Organisation = new OrganisationDS
+                    {
+                        Guid = consentReader.GetGuid("organisation_guid"),
+                        Name = consentReader.GetString("organisation_name"),
+                        Type = (OrganisationType)consentReader.GetInt32("type"),
+                        Roles = consentReader.GetFieldValue<int[]>("roles").Select(r => (PartyRole)r).ToList()
+                    }
+                };
+
+                var supplierType = consentReader.GetFieldValue<int?>("supplier_type");
+                if (supplierType.HasValue)
+                {
+                    sharedConsent.Organisation.SupplierInfo = new SupplierInformationDS
+                    {
+                        SupplierType = (SupplierType)supplierType,
+                        OperationTypes = consentReader.GetFieldValue<int[]>("operation_types").Select(r => (OperationType)r).ToList(),
+                        CompletedRegAddress = consentReader.GetBoolean("completed_reg_address"),
+                        CompletedPostalAddress = consentReader.GetBoolean("completed_postal_address"),
+                        CompletedVat = consentReader.GetBoolean("completed_vat"),
+                        CompletedWebsiteAddress = consentReader.GetBoolean("completed_website_address"),
+                        CompletedEmailAddress = consentReader.GetBoolean("completed_email_address"),
+                        CompletedOperationType = consentReader.GetBoolean("completed_operation_type"),
+                        CompletedLegalForm = consentReader.GetBoolean("completed_legal_form"),
+                        CompletedConnectedPerson = consentReader.GetBoolean("completed_connected_person")
+                    };
+
+                    var registeredUnderAct2006 = consentReader.GetFieldValue<bool?>("registered_under_act2006");
+                    if (registeredUnderAct2006.HasValue)
+                    {
+                        sharedConsent.Organisation.SupplierInfo.LegalForm = new LegalFormDS
+                        {
+                            RegisteredUnderAct2006 = registeredUnderAct2006.Value,
+                            RegisteredLegalForm = consentReader.GetString("registered_legal_form"),
+                            LawRegistered = consentReader.GetString("law_registered"),
+                            RegistrationDate = consentReader.GetFieldValue<DateTimeOffset>("registration_date")
+                        };
+                    }
+                }
+            }
+        }
+
+        if (sharedConsent == null) return null;
+
+        using (var identifierCmd = new NpgsqlCommand("FETCH ALL IN identifier_cursor", conn))
+        {
+            using var identifierReader = await identifierCmd.ExecuteReaderAsync();
+
+            while (await identifierReader.ReadAsync())
+            {
+                sharedConsent.Organisation.Identifiers.Add(
+                    new IdentifierDS
+                    {
+                        IdentifierId = identifierReader.GetNullableString("identifier_id"),
+                        Scheme = identifierReader.GetString("scheme"),
+                        LegalName = identifierReader.GetString("legal_name"),
+                        Uri = identifierReader.GetNullableString("uri"),
+                        Primary = identifierReader.GetBoolean("primary")
+                    });
+            }
+        }
+
+        using (var addressCmd = new NpgsqlCommand("FETCH ALL IN address_cursor", conn))
+        {
+            using var addressReader = await addressCmd.ExecuteReaderAsync();
+
+            while (await addressReader.ReadAsync())
+            {
+                sharedConsent.Organisation.Addresses.Add(
+                    new AddressDS
+                    {
+                        StreetAddress = addressReader.GetString("street_address"),
+                        Locality = addressReader.GetString("locality"),
+                        Region = addressReader.GetNullableString("region"),
+                        PostalCode = addressReader.GetNullableString("postal_code"),
+                        CountryName = addressReader.GetString("country_name"),
+                        Country = addressReader.GetString("country"),
+                        Type = (AddressType)addressReader.GetInt32("type")
+                    });
+            }
+        }
+
+        using (var contactCmd = new NpgsqlCommand("FETCH ALL IN contact_cursor", conn))
+        {
+            using var contactReader = await contactCmd.ExecuteReaderAsync();
+
+            while (await contactReader.ReadAsync())
+            {
+                sharedConsent.Organisation.ContactPoints.Add(
+                    new ContactPointDS
+                    {
+                        Name = contactReader.GetNullableString("name"),
+                        Email = contactReader.GetNullableString("email"),
+                        Telephone = contactReader.GetNullableString("telephone"),
+                        Url = contactReader.GetNullableString("url")
+                    });
+            }
+        }
+
+        using (var connectedEntitiesCmd = new NpgsqlCommand("FETCH ALL IN connected_entities_cursor", conn))
+        {
+            using var connectedEntitiesReader = await connectedEntitiesCmd.ExecuteReaderAsync();
+
+            while (await connectedEntitiesReader.ReadAsync())
+            {
+                var connectedEntity = new ConnectedEntityDS
+                {
+                    Id = connectedEntitiesReader.GetInt32("id"),
+                    Guid = connectedEntitiesReader.GetGuid("guid"),
+                    EntityType = (ConnectedEntityType)connectedEntitiesReader.GetInt32("entity_type"),
+                    HasCompnayHouseNumber = connectedEntitiesReader.GetBoolean("has_compnay_house_number"),
+                    CompanyHouseNumber = connectedEntitiesReader.GetNullableString("company_house_number"),
+                    OverseasCompanyNumber = connectedEntitiesReader.GetNullableString("overseas_company_number"),
+                    RegisteredDate = connectedEntitiesReader.GetFieldValue<DateTimeOffset?>("registered_date"),
+                    RegisterName = connectedEntitiesReader.GetNullableString("register_name"),
+                    StartDate = connectedEntitiesReader.GetFieldValue<DateTimeOffset?>("start_date"),
+                    EndDate = connectedEntitiesReader.GetFieldValue<DateTimeOffset?>("end_date")
+                };
+
+                if (connectedEntity.EntityType == ConnectedEntityType.Organisation)
+                {
+                    connectedEntity.Organisation = new ConnectedOrganisationDS
+                    {
+                        Category = (ConnectedOrganisationCategory)connectedEntitiesReader.GetInt32("organisation_category"),
+                        Name = connectedEntitiesReader.GetString("organisation_name"),
+                        InsolvencyDate = connectedEntitiesReader.GetFieldValue<DateTimeOffset?>("insolvency_date"),
+                        RegisteredLegalForm = connectedEntitiesReader.GetNullableString("registered_legal_form"),
+                        LawRegistered = connectedEntitiesReader.GetNullableString("law_registered"),
+                        ControlCondition = connectedEntitiesReader.GetFieldValue<int[]>("organisation_control_condition").Select(r => (ControlCondition)r).ToList()
+                    };
+                }
+                else
+                {
+                    connectedEntity.IndividualOrTrust = new ConnectedIndividualTrustDS
+                    {
+                        Category = (ConnectedEntityIndividualAndTrustCategoryType)connectedEntitiesReader.GetInt32("individual_and_trust_category"),
+                        FirstName = connectedEntitiesReader.GetString("first_name"),
+                        LastName = connectedEntitiesReader.GetString("last_name"),
+                        DateOfBirth = connectedEntitiesReader.GetFieldValue<DateTimeOffset?>("date_of_birth"),
+                        Nationality = connectedEntitiesReader.GetNullableString("nationality"),
+                        ControlCondition = connectedEntitiesReader.GetFieldValue<int[]>("individual_and_trust_control_condition").Select(r => (ControlCondition)r).ToList(),
+                        ConnectedType = (ConnectedPersonType)connectedEntitiesReader.GetInt32("connected_person_type"),
+                        ResidentCountry = connectedEntitiesReader.GetNullableString("resident_country")
+                    };
+                }
+
+                sharedConsent.Organisation.ConnectedEntities.Add(connectedEntity);
+            }
+        }
+
+        using (var connectedEntitiesAddressCmd = new NpgsqlCommand("FETCH ALL IN connected_entities_address_cursor", conn))
+        {
+            using var connectedEntitiesAddressReader = await connectedEntitiesAddressCmd.ExecuteReaderAsync();
+
+            while (await connectedEntitiesAddressReader.ReadAsync())
+            {
+                var connectedEntityId = connectedEntitiesAddressReader.GetInt32("id");
+
+                sharedConsent.Organisation.ConnectedEntities
+                    .First(ce => ce.Id == connectedEntityId)
+                    .Addresses.Add(new AddressDS
+                    {
+                        StreetAddress = connectedEntitiesAddressReader.GetString("street_address"),
+                        Locality = connectedEntitiesAddressReader.GetString("locality"),
+                        Region = connectedEntitiesAddressReader.GetNullableString("region"),
+                        PostalCode = connectedEntitiesAddressReader.GetNullableString("postal_code"),
+                        CountryName = connectedEntitiesAddressReader.GetString("country_name"),
+                        Country = connectedEntitiesAddressReader.GetString("country"),
+                        Type = (AddressType)connectedEntitiesAddressReader.GetInt32("type")
+                    });
+            }
+        }
+
+        using (var formAnswerSetCmd = new NpgsqlCommand("FETCH ALL IN form_answer_sets_cursor", conn))
+        {
+            using var formAnswerSetReader = await formAnswerSetCmd.ExecuteReaderAsync();
+
+            while (await formAnswerSetReader.ReadAsync())
+            {
+                var formSectionId = formAnswerSetReader.GetInt32("id");
+                var section = formSections.FirstOrDefault(fs => fs.Id == formSectionId);
+
+                if (section == null)
+                {
+                    section = new FormSectionDS
+                    {
+                        Id = formSectionId,
+                        Title = formAnswerSetReader.GetString("title"),
+                        Type = (FormSectionType)formAnswerSetReader.GetInt32("type")
+                    };
+                    formSections.Add(section);
+                }
+
+                sharedConsent.AnswerSets.Add(
+                    new FormAnswerSetDS
+                    {
+                        Id = formAnswerSetReader.GetInt32("form_answer_set_id"),
+                        Guid = formAnswerSetReader.GetGuid("form_answer_set_guid"),
+                        SectionId = formSectionId,
+                        Section = section
+                    });
+            }
+        }
+
+        using (var formQuestionCmd = new NpgsqlCommand("FETCH ALL IN form_question_cursor", conn))
+        {
+            using var formQuestionReader = await formQuestionCmd.ExecuteReaderAsync();
+
+            while (await formQuestionReader.ReadAsync())
+            {
+                var section = formSections.First(fs => fs.Id == formQuestionReader.GetInt32("section_id"));
+                var question = new FormQuestionDS
+                {
+                    Id = formQuestionReader.GetInt32("id"),
+                    Guid = formQuestionReader.GetGuid("guid"),
+                    SortOrder = formQuestionReader.GetInt32("sort_order"),
+                    Type = (FormQuestionType)formQuestionReader.GetInt32("type"),
+                    IsRequired = formQuestionReader.GetBoolean("is_required"),
+                    Name = formQuestionReader.GetString("name"),
+                    Title = formQuestionReader.GetString("title"),
+                    SummaryTitle = formQuestionReader.GetNullableString("summary_title"),
+                    Description = formQuestionReader.GetNullableString("description"),
+                    Options = formQuestionReader.GetJsonObject<FormQuestionOptions>("options") ?? new(),
+                    Section = section
+                };
+                section.Questions.Add(question);
+                formQuestions.Add(question);
+            }
+        }
+
+        using (var formAnswerCmd = new NpgsqlCommand("FETCH ALL IN form_answer_cursor", conn))
+        {
+            using var formAnswerReader = await formAnswerCmd.ExecuteReaderAsync();
+
+            while (await formAnswerReader.ReadAsync())
+            {
+                var formAnswerSetId = formAnswerReader.GetInt32("form_answer_set_id");
+                var questionId = formAnswerReader.GetInt32("question_id");
+                var answerSet = sharedConsent.AnswerSets.First(a => a.Id == formAnswerSetId);
+
+                answerSet.Answers.Add(
+                    new FormAnswerDS
+                    {
+                        FormAnswerSetId = formAnswerSetId,
+                        FormAnswerSet = answerSet,
+                        QuestionId = formAnswerReader.GetInt32("question_id"),
+                        Question = formQuestions.First(fq => fq.Id == questionId),
+                        BoolValue = formAnswerReader.GetFieldValue<bool?>("bool_value"),
+                        NumericValue = formAnswerReader.GetFieldValue<double?>("numeric_value"),
+                        DateValue = formAnswerReader.GetFieldValue<DateTime?>("date_value"),
+                        StartValue = formAnswerReader.GetFieldValue<DateTime?>("start_value"),
+                        EndValue = formAnswerReader.GetFieldValue<DateTime?>("end_value"),
+                        TextValue = formAnswerReader.GetNullableString("text_value"),
+                        OptionValue = formAnswerReader.GetNullableString("option_value"),
+                        JsonValue = formAnswerReader.GetNullableString("json_value"),
+                        AddressValue = formAnswerReader.GetJsonObject<AddressDS>("address_value"),
+                    });
+            }
+        }
+
+        await tran.CommitAsync();
+        await conn.CloseAsync();
+
+        formSections.ForEach(s => s.Questions = [.. s.Questions.OrderBy(q => q.SortOrder)]);
+
+        return sharedConsent;
     }
 
     public async Task<SharedConsentDetails?> GetShareCodeDetailsAsync(Guid organisationId, string shareCode)
