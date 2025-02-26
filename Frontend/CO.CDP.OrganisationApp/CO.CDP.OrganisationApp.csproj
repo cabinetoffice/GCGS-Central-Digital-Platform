@@ -9,7 +9,9 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Content Include="mou-pdfs\version-1.pdf" />
+      <Content Include="mou-pdfs\version-1.pdf">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
     </ItemGroup>
 
     <ItemGroup>
