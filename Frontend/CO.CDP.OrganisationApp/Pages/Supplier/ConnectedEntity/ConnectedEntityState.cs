@@ -53,7 +53,7 @@ public class ConnectedEntityState
     {
         SupplierOrganisationId = supplierOrganisationId;
         ConnectedEntityId = connectedEntity.Id;
-        SupplierHasCompanyHouseNumber = connectedEntity.HasCompnayHouseNumber;
+        SupplierHasCompanyHouseNumber = connectedEntity.HasCompanyHouseNumber;
         ConnectedEntityType = connectedEntity.EntityType.AsConnectedEntityType();
     }
 
