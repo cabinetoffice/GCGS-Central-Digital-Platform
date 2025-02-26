@@ -34,7 +34,7 @@ public class CustomFormQuestionTypeResolverTests
         FormQuestionType expectedType,
         string? answerFieldName = null)
     {
-        FormQuestionDS sourceQuestion = GivenQuestion(sourceType, answerFieldName);
+        FormQuestionNonEf sourceQuestion = GivenQuestion(sourceType, answerFieldName);
 
         var result = _resolver.Resolve(sourceQuestion, null!, default, null!);
 
@@ -52,9 +52,9 @@ public class CustomFormQuestionTypeResolverTests
         }
     }
 
-    private static FormQuestionDS GivenQuestion(OrganisationInformation.Persistence.Forms.FormQuestionType type, string? answerFieldName = null)
+    private static FormQuestionNonEf GivenQuestion(OrganisationInformation.Persistence.Forms.FormQuestionType type, string? answerFieldName = null)
     {
-        return new FormQuestionDS
+        return new FormQuestionNonEf
         {
             Id = 1,
             Type = type,

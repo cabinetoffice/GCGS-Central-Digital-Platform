@@ -8,13 +8,13 @@ namespace CO.CDP.DataSharing.WebApi.Tests;
 
 public static class DataSharingFactory
 {
-    public static SharedConsentDS CreateSharedConsent(
+    public static SharedConsentNonEf CreateSharedConsent(
         string? shareCode = null,
-        OrganisationDS? organisation = null
+        OrganisationNonEf? organisation = null
     )
     {
         var theOrganisation = organisation ?? CreateOrganisation();
-        return new SharedConsentDS
+        return new SharedConsentNonEf
         {
             Guid = Guid.NewGuid(),
             Organisation = theOrganisation,
@@ -26,16 +26,16 @@ public static class DataSharingFactory
         };
     }
 
-    public static OrganisationDS CreateOrganisation(
-        SupplierInformationDS? supplierInformation = null
+    public static OrganisationNonEf CreateOrganisation(
+        SupplierInformationNonEf? supplierInformation = null
     )
     {
-        return new OrganisationDS
+        return new OrganisationNonEf
         {
             Guid = Guid.NewGuid(),
             Name = "Test Organisation",
             Type = OrganisationType.Organisation,
-            Addresses = new List<AddressDS>
+            Addresses = new List<AddressNonEf>
             {
                 new()
                 {
@@ -56,17 +56,17 @@ public static class DataSharingFactory
                     Country = "PC"
                 }
             },
-            ContactPoints = new List<ContactPointDS>
+            ContactPoints = new List<ContactPointNonEf>
             {
-                new ContactPointDS
+                new ContactPointNonEf
                 {
                     Email = "test@example.com",
                     Url = "http://example.com"
                 }
             },
-            Identifiers = new List<IdentifierDS>
+            Identifiers = new List<IdentifierNonEf>
             {
-                new IdentifierDS
+                new IdentifierNonEf
                 {
                     IdentifierId = "VAT123456",
                     Scheme = "VAT",
@@ -75,7 +75,7 @@ public static class DataSharingFactory
                 }
             },
             Roles = [PartyRole.Tenderer],
-            SupplierInfo = supplierInformation ?? new SupplierInformationDS
+            SupplierInfo = supplierInformation ?? new SupplierInformationNonEf
             {
                 SupplierType = SupplierType.Organisation,
                 CompletedRegAddress = true,
@@ -84,7 +84,7 @@ public static class DataSharingFactory
                 CompletedWebsiteAddress = true,
                 CompletedEmailAddress = true,
                 CompletedLegalForm = true,
-                LegalForm = new LegalFormDS
+                LegalForm = new LegalFormNonEf
                 {
                     RegisteredUnderAct2006 = true,
                     RegisteredLegalForm = "Private Limited",

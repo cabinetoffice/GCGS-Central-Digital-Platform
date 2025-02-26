@@ -34,40 +34,13 @@ public class DatabaseShareCodeRepository(OrganisationInformationContext context)
             .FirstOrDefaultAsync(s => s.Form.Guid == formId && s.Organisation.Guid == organisationId);
     }
 
-    public async Task<SharedConsent?> GetByShareCode1(string sharecode)
+    public async Task<SharedConsentNonEf?> GetByShareCode(string shareCode)
     {
-        return await context.SharedConsents
-            .Where(sc => sc.ShareCode == sharecode)
-            .Include(sc => sc.Organisation)
-                .ThenInclude(o => o.Identifiers)
-            .Include(sc => sc.Organisation)
-                .ThenInclude(o => o.ContactPoints)
-            .Include(sc => sc.Organisation)
-                .ThenInclude(o => o.Addresses)
-                    .ThenInclude(p => p.Address)
-            .Include(sc => sc.Organisation)
-                .ThenInclude(o => o.OrganisationPersons)
-                    .ThenInclude(op => op.Person)
-            .Include(sc => sc.AnswerSets.Where(x => !x.Deleted && x.Section.Type != FormSectionType.Declaration))
-                .ThenInclude(sa => sa.Section)
-            .Include(sc => sc.AnswerSets.Where(x => !x.Deleted && x.Section.Type != FormSectionType.Declaration))
-                .ThenInclude(sa => sa.Answers)
-                    .ThenInclude(a => a.Question)
-            .Include(sc => sc.Form)
-                .ThenInclude(f => f.Sections)
-                    .ThenInclude(s => s.Questions.OrderBy(q => q.SortOrder))
-            .AsSplitQuery()
-            .FirstOrDefaultAsync();
-    }
-
-    public async Task<SharedConsentDS?> GetByShareCode(string shareCode)
-    {
-        SharedConsentDS? sharedConsent = null;
-        List<FormSectionDS> formSections = [];
-        List<FormQuestionDS> formQuestions = [];
+        SharedConsentNonEf? sharedConsent = null;
+        List<FormSectionNonEf> formSections = [];
+        List<FormQuestionNonEf> formQuestions = [];
 
         var conn = (NpgsqlConnection)context.Database.GetDbConnection();
-        //using var conn = new NpgsqlConnection("Server=localhost;Database=cdp;Username=cdp_user;Password=cdp123;");
         await conn.OpenAsync();
         await using var tran = await conn.BeginTransactionAsync();
 
@@ -93,19 +66,19 @@ public class DatabaseShareCodeRepository(OrganisationInformationContext context)
 
             while (await consentReader.ReadAsync())
             {
-                sharedConsent = new SharedConsentDS
+                sharedConsent = new SharedConsentNonEf
                 {
                     Guid = consentReader.GetGuid("guid"),
                     SubmittedAt = consentReader.GetFieldValue<DateTimeOffset>("submitted_at"),
                     SubmissionState = (SubmissionState)consentReader.GetInt32("submission_state"),
                     ShareCode = consentReader.GetNullableString("share_code"),
-                    Form = new FormDS
+                    Form = new FormNonEf
                     {
                         Name = consentReader.GetString("form_name"),
                         Version = consentReader.GetString("version"),
                         IsRequired = consentReader.GetBoolean("is_required"),
                     },
-                    Organisation = new OrganisationDS
+                    Organisation = new OrganisationNonEf
                     {
                         Guid = consentReader.GetGuid("organisation_guid"),
                         Name = consentReader.GetString("organisation_name"),
@@ -117,7 +90,7 @@ public class DatabaseShareCodeRepository(OrganisationInformationContext context)
                 var supplierType = consentReader.GetFieldValue<int?>("supplier_type");
                 if (supplierType.HasValue)
                 {
-                    sharedConsent.Organisation.SupplierInfo = new SupplierInformationDS
+                    sharedConsent.Organisation.SupplierInfo = new SupplierInformationNonEf
                     {
                         SupplierType = (SupplierType)supplierType,
                         OperationTypes = consentReader.GetFieldValue<int[]>("operation_types").Select(r => (OperationType)r).ToList(),
@@ -134,7 +107,7 @@ public class DatabaseShareCodeRepository(OrganisationInformationContext context)
                     var registeredUnderAct2006 = consentReader.GetFieldValue<bool?>("registered_under_act2006");
                     if (registeredUnderAct2006.HasValue)
                     {
-                        sharedConsent.Organisation.SupplierInfo.LegalForm = new LegalFormDS
+                        sharedConsent.Organisation.SupplierInfo.LegalForm = new LegalFormNonEf
                         {
                             RegisteredUnderAct2006 = registeredUnderAct2006.Value,
                             RegisteredLegalForm = consentReader.GetString("registered_legal_form"),
@@ -155,7 +128,7 @@ public class DatabaseShareCodeRepository(OrganisationInformationContext context)
             while (await identifierReader.ReadAsync())
             {
                 sharedConsent.Organisation.Identifiers.Add(
-                    new IdentifierDS
+                    new IdentifierNonEf
                     {
                         IdentifierId = identifierReader.GetNullableString("identifier_id"),
                         Scheme = identifierReader.GetString("scheme"),
@@ -173,7 +146,7 @@ public class DatabaseShareCodeRepository(OrganisationInformationContext context)
             while (await addressReader.ReadAsync())
             {
                 sharedConsent.Organisation.Addresses.Add(
-                    new AddressDS
+                    new AddressNonEf
                     {
                         StreetAddress = addressReader.GetString("street_address"),
                         Locality = addressReader.GetString("locality"),
@@ -193,7 +166,7 @@ public class DatabaseShareCodeRepository(OrganisationInformationContext context)
             while (await contactReader.ReadAsync())
             {
                 sharedConsent.Organisation.ContactPoints.Add(
-                    new ContactPointDS
+                    new ContactPointNonEf
                     {
                         Name = contactReader.GetNullableString("name"),
                         Email = contactReader.GetNullableString("email"),
@@ -209,7 +182,7 @@ public class DatabaseShareCodeRepository(OrganisationInformationContext context)
 
             while (await connectedEntitiesReader.ReadAsync())
             {
-                var connectedEntity = new ConnectedEntityDS
+                var connectedEntity = new ConnectedEntityNonEf
                 {
                     Id = connectedEntitiesReader.GetInt32("id"),
                     Guid = connectedEntitiesReader.GetGuid("guid"),
@@ -225,7 +198,7 @@ public class DatabaseShareCodeRepository(OrganisationInformationContext context)
 
                 if (connectedEntity.EntityType == ConnectedEntityType.Organisation)
                 {
-                    connectedEntity.Organisation = new ConnectedOrganisationDS
+                    connectedEntity.Organisation = new ConnectedOrganisationNonEf
                     {
                         Category = (ConnectedOrganisationCategory)connectedEntitiesReader.GetInt32("organisation_category"),
                         Name = connectedEntitiesReader.GetString("organisation_name"),
@@ -237,7 +210,7 @@ public class DatabaseShareCodeRepository(OrganisationInformationContext context)
                 }
                 else
                 {
-                    connectedEntity.IndividualOrTrust = new ConnectedIndividualTrustDS
+                    connectedEntity.IndividualOrTrust = new ConnectedIndividualTrustNonEf
                     {
                         Category = (ConnectedEntityIndividualAndTrustCategoryType)connectedEntitiesReader.GetInt32("individual_and_trust_category"),
                         FirstName = connectedEntitiesReader.GetString("first_name"),
@@ -264,7 +237,7 @@ public class DatabaseShareCodeRepository(OrganisationInformationContext context)
 
                 sharedConsent.Organisation.ConnectedEntities
                     .First(ce => ce.Id == connectedEntityId)
-                    .Addresses.Add(new AddressDS
+                    .Addresses.Add(new AddressNonEf
                     {
                         StreetAddress = connectedEntitiesAddressReader.GetString("street_address"),
                         Locality = connectedEntitiesAddressReader.GetString("locality"),
@@ -288,7 +261,7 @@ public class DatabaseShareCodeRepository(OrganisationInformationContext context)
 
                 if (section == null)
                 {
-                    section = new FormSectionDS
+                    section = new FormSectionNonEf
                     {
                         Id = formSectionId,
                         Title = formAnswerSetReader.GetString("title"),
@@ -298,7 +271,7 @@ public class DatabaseShareCodeRepository(OrganisationInformationContext context)
                 }
 
                 sharedConsent.AnswerSets.Add(
-                    new FormAnswerSetDS
+                    new FormAnswerSetNonEf
                     {
                         Id = formAnswerSetReader.GetInt32("form_answer_set_id"),
                         Guid = formAnswerSetReader.GetGuid("form_answer_set_guid"),
@@ -315,7 +288,7 @@ public class DatabaseShareCodeRepository(OrganisationInformationContext context)
             while (await formQuestionReader.ReadAsync())
             {
                 var section = formSections.First(fs => fs.Id == formQuestionReader.GetInt32("section_id"));
-                var question = new FormQuestionDS
+                var question = new FormQuestionNonEf
                 {
                     Id = formQuestionReader.GetInt32("id"),
                     Guid = formQuestionReader.GetGuid("guid"),
@@ -345,7 +318,7 @@ public class DatabaseShareCodeRepository(OrganisationInformationContext context)
                 var answerSet = sharedConsent.AnswerSets.First(a => a.Id == formAnswerSetId);
 
                 answerSet.Answers.Add(
-                    new FormAnswerDS
+                    new FormAnswerNonEf
                     {
                         FormAnswerSetId = formAnswerSetId,
                         FormAnswerSet = answerSet,
@@ -359,7 +332,7 @@ public class DatabaseShareCodeRepository(OrganisationInformationContext context)
                         TextValue = formAnswerReader.GetNullableString("text_value"),
                         OptionValue = formAnswerReader.GetNullableString("option_value"),
                         JsonValue = formAnswerReader.GetNullableString("json_value"),
-                        AddressValue = formAnswerReader.GetJsonObject<AddressDS>("address_value"),
+                        AddressValue = formAnswerReader.GetJsonObject<AddressNonEf>("address_value"),
                     });
             }
         }

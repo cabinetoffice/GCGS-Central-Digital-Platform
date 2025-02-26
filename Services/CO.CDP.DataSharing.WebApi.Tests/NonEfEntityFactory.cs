@@ -18,84 +18,48 @@ internal static class NonEfEntityFactory
         return _nextQuestionNumber;
     }
 
-    internal static SharedConsentDS GetSharedConsent(Guid organisationGuid, Guid formId)
+    internal static SharedConsentNonEf GetSharedConsent(Guid organisationGuid, Guid formId)
     {
-        var form = new FormDS
+        var form = new FormNonEf
         {
             Name = "Standard Questions",
             Version = "1.0",
-            IsRequired = true,
-            //Sections = new List<FormSectionDS> {
-            //    new FormSectionDS
-            //    {
-            //        Id = 1,
-            //        Guid = Guid.NewGuid(),
-            //        Title = "General Information",
-            //        Type = FormSectionType.Standard,
-            //        FormId = 1,
-            //        Form = new Form { Id = 1, Guid = Guid.NewGuid(), Name = "", Version = "1", Scope = FormScope.SupplierInformation, Sections = new List<FormSection>(), IsRequired = false },
-            //        Questions = new List<FormQuestion>
-            //        {
-            //            new() {
-            //                Caption = null,
-            //                Description = "Localized_String",
-            //                Title = "Localized_String",
-            //                Guid = Guid.NewGuid(),
-            //                NextQuestion = null,
-            //                NextQuestionAlternative = null,
-            //                SortOrder = 1,
-            //                Section = null!,
-            //                IsRequired = false,
-            //                Name = "Name",
-            //                Options = null!,
-            //                Type = PersistenceForms.FormQuestionType.Text
-            //            }
-            //        },
-            //        AllowsMultipleAnswerSets = false,
-            //        CheckFurtherQuestionsExempted = false,
-            //        DisplayOrder = 1,
-            //        Configuration = new FormSectionConfiguration
-            //        { SingularSummaryHeading = "", PluralSummaryHeadingFormat = "", AddAnotherAnswerLabel = "", RemoveConfirmationCaption = "", RemoveConfirmationHeading = "", FurtherQuestionsExemptedHeading = "", FurtherQuestionsExemptedHint = "" },
-            //        CreatedOn = DateTimeOffset.UtcNow,
-            //        UpdatedOn = DateTimeOffset.UtcNow
-            //    }
-            //}
+            IsRequired = true
         };
 
         var organisation = GivenOrganisation(
             guid: organisationGuid,
             name: "Test Organisation",
-            supplierInformation: new SupplierInformationDS()
+            supplierInformation: new SupplierInformationNonEf()
         );
 
-        var sharedConsent = new SharedConsentDS()
+        var sharedConsent = new SharedConsentNonEf()
         {
             Guid = formId,
             Organisation = organisation,
             Form = form,
-            AnswerSets = new List<FormAnswerSetDS> { },
+            AnswerSets = new List<FormAnswerSetNonEf> { },
             SubmissionState = SubmissionState.Draft,
             SubmittedAt = DateTime.UtcNow,
             ShareCode = string.Empty
         };
         foreach (var questionsAndAnswer in GivenQuestionsAndAnswers(sharedConsent, form))
         {
-            //sharedConsent.Form.Sections.Add(questionsAndAnswer.Section);
             sharedConsent.AnswerSets.Add(questionsAndAnswer);
         }
 
         return sharedConsent;
     }
 
-    internal static List<ConnectedEntityDS> GetMockIndividuals()
+    internal static List<ConnectedEntityNonEf> GetMockIndividuals()
     {
-        var mockPersons = new List<ConnectedEntityDS>
+        var mockPersons = new List<ConnectedEntityNonEf>
             {
-                new ConnectedEntityDS
+                new ConnectedEntityNonEf
                 {
                     Guid = Guid.NewGuid(),
                     EntityType = OrganisationInformation.ConnectedEntityType.Individual,
-                    IndividualOrTrust = new ConnectedIndividualTrustDS
+                    IndividualOrTrust = new ConnectedIndividualTrustNonEf
                     {
                         FirstName = "John",
                         LastName = "Doe",
@@ -107,15 +71,15 @@ internal static class NonEfEntityFactory
         return mockPersons;
     }
 
-    internal static List<ConnectedEntityDS> GetMockAdditionalEntities()
+    internal static List<ConnectedEntityNonEf> GetMockAdditionalEntities()
     {
-        var mockEntities = new List<ConnectedEntityDS>
+        var mockEntities = new List<ConnectedEntityNonEf>
             {
-                new ConnectedEntityDS
+                new ConnectedEntityNonEf
                 {
                     Guid = Guid.NewGuid(),
                     EntityType = OrganisationInformation.ConnectedEntityType.Organisation,
-                    Organisation = new ConnectedOrganisationDS
+                    Organisation = new ConnectedOrganisationNonEf
                     {
                         Name = "Acme Group Ltd",
                         Category = ConnectedOrganisationCategory.RegisteredCompany
@@ -126,15 +90,15 @@ internal static class NonEfEntityFactory
         return mockEntities;
     }
 
-    internal static List<ConnectedEntityDS> GetMockTrustsOrTrustees()
+    internal static List<ConnectedEntityNonEf> GetMockTrustsOrTrustees()
     {
-        var mockPersons = new List<ConnectedEntityDS>
+        var mockPersons = new List<ConnectedEntityNonEf>
             {
-                new ConnectedEntityDS
+                new ConnectedEntityNonEf
                 {
                     Guid = Guid.NewGuid(),
                     EntityType = OrganisationInformation.ConnectedEntityType.TrustOrTrustee,
-                    IndividualOrTrust = new ConnectedIndividualTrustDS
+                    IndividualOrTrust = new ConnectedIndividualTrustNonEf
                     {
                         FirstName = "John",
                         LastName = "Smith",
@@ -146,9 +110,9 @@ internal static class NonEfEntityFactory
         return mockPersons;
     }
 
-    internal static LegalFormDS GetLegalForm()
+    internal static LegalFormNonEf GetLegalForm()
     {
-        var mockLegalForm = new LegalFormDS
+        var mockLegalForm = new LegalFormNonEf
         {
             RegisteredUnderAct2006 = false,
             RegisteredLegalForm = "Registered Legal Form 1",
@@ -166,22 +130,22 @@ internal static class NonEfEntityFactory
         return mockOperationType;
     }
 
-    public static OrganisationDS GivenOrganisation(
+    public static OrganisationNonEf GivenOrganisation(
         Guid? guid = null,
         string? name = null,
-        SupplierInformationDS? supplierInformation = null
+        SupplierInformationNonEf? supplierInformation = null
     )
     {
         var theGuid = guid ?? Guid.NewGuid();
         var theName = name ?? $"Organisation {theGuid}";
-        var organisation = new OrganisationDS
+        var organisation = new OrganisationNonEf
         {
             Guid = theGuid,
             Name = theName,
             Type = OrganisationType.Organisation,
 
             Identifiers = [
-                new IdentifierDS
+                new IdentifierNonEf
                 {
                     Primary = true,
                     Scheme = "GB-PPON",
@@ -189,7 +153,7 @@ internal static class NonEfEntityFactory
                     LegalName = "DefaultLegalName",
                     Uri = "https://default.org"
                 },
-                new IdentifierDS
+                new IdentifierNonEf
                 {
                     Primary = false,
                     Scheme = "GB-COH",
@@ -198,7 +162,7 @@ internal static class NonEfEntityFactory
                     Uri = "http://example.com"
                 }
             ],
-            Addresses = [new AddressDS
+            Addresses = [new AddressNonEf
             {
                 Type = AddressType.Registered,
                 StreetAddress = "1234 Default St",
@@ -208,7 +172,7 @@ internal static class NonEfEntityFactory
                 CountryName = "Example Country",
                 Country = "EX"
             }],
-            ContactPoints = [new ContactPointDS
+            ContactPoints = [new ContactPointNonEf
             {
                 Name = "Default Contact",
                 Email = "contact@default.org",
@@ -222,12 +186,12 @@ internal static class NonEfEntityFactory
         return organisation;
     }
 
-    private static FormSectionDS GivenSection(Guid sectionId, FormDS form, FormSectionType? sectionType = null)
+    private static FormSectionNonEf GivenSection(Guid sectionId, FormNonEf form, FormSectionType? sectionType = null)
     {
-        var formSection = new FormSectionDS
+        var formSection = new FormSectionNonEf
         {
             Id = 1,
-            Questions = new List<FormQuestionDS>(),
+            Questions = new List<FormQuestionNonEf>(),
             Title = "Localized_String",
             Type = sectionType ?? FormSectionType.Declaration
         };
@@ -235,23 +199,23 @@ internal static class NonEfEntityFactory
         return formSection;
     }
 
-    public static List<FormAnswerSetDS> GivenQuestionsAndAnswers(
-        SharedConsentDS sharedConsent,
-        FormDS form)
+    public static List<FormAnswerSetNonEf> GivenQuestionsAndAnswers(
+        SharedConsentNonEf sharedConsent,
+        FormNonEf form)
     {
         var section = GivenSection(Guid.NewGuid(), form);
-        var answerSet = new FormAnswerSetDS
+        var answerSet = new FormAnswerSetNonEf
         {
             Id = 1,
             Guid = Guid.NewGuid(),
             SectionId = section.Id,
             Section = section,
-            Answers = new List<FormAnswerDS>()
+            Answers = new List<FormAnswerNonEf>()
         };
 
-        var questions = new List<FormQuestionDS>
+        var questions = new List<FormQuestionNonEf>
                 {
-                    new FormQuestionDS
+                    new FormQuestionNonEf
                     {
                         Id = 1,
                         Guid = Guid.NewGuid(),
@@ -264,7 +228,7 @@ internal static class NonEfEntityFactory
                         Section = section,
                         SortOrder = 1
                     },
-                    new FormQuestionDS
+                    new FormQuestionNonEf
                     {
                         Id = 2,
                         Guid = Guid.NewGuid(),
@@ -277,7 +241,7 @@ internal static class NonEfEntityFactory
                         Section = section,
                         SortOrder = 2
                     },
-                    new FormQuestionDS
+                    new FormQuestionNonEf
                     {
                         Id = 2,
                         Guid  = Guid.NewGuid(),
@@ -290,7 +254,7 @@ internal static class NonEfEntityFactory
                         Section = section,
                         SortOrder = 3
                     },
-                    new FormQuestionDS
+                    new FormQuestionNonEf
                     {
                         Id = 3,
                         Guid  = Guid.NewGuid(),
@@ -303,7 +267,7 @@ internal static class NonEfEntityFactory
                         Section = section,
                         SortOrder = 4
                     },
-                    new FormQuestionDS
+                    new FormQuestionNonEf
                     {
                         Id = 4,
                         Guid  = Guid.NewGuid(),
@@ -316,7 +280,7 @@ internal static class NonEfEntityFactory
                         Section = section,
                         SortOrder = 5
                     },
-                    new FormQuestionDS
+                    new FormQuestionNonEf
                     {
                         Id = 5,
                         Guid  = Guid.NewGuid(),
@@ -334,7 +298,7 @@ internal static class NonEfEntityFactory
 
         var exclusionSection = GivenSection(Guid.NewGuid(), form, FormSectionType.Exclusions);
 
-        var formAnswers = new List<FormAnswerSetDS>
+        var formAnswers = new List<FormAnswerSetNonEf>
             {
                 new() {
                     Id = 1,
@@ -343,7 +307,7 @@ internal static class NonEfEntityFactory
                     Section = exclusionSection,
                     Answers =
                     [
-                        new FormAnswerDS
+                        new FormAnswerNonEf
                         {
                             QuestionId = questions[0].Id,
                             Question = questions[0],
@@ -351,7 +315,7 @@ internal static class NonEfEntityFactory
                             FormAnswerSet = answerSet,
                             BoolValue = true
                         },
-                         new FormAnswerDS
+                         new FormAnswerNonEf
                         {
                             QuestionId = questions[1].Id,
                             Question = questions[1],
@@ -359,7 +323,7 @@ internal static class NonEfEntityFactory
                             FormAnswerSet = answerSet,
                             OptionValue="yes"
                         },
-                        new  FormAnswerDS
+                        new  FormAnswerNonEf
                         {
                             QuestionId = questions[2].Id,
                             Question = questions[2],
@@ -367,7 +331,7 @@ internal static class NonEfEntityFactory
                             FormAnswerSet = answerSet,
                             TextValue="a_dummy_file.pdf"
                         },
-                        new  FormAnswerDS
+                        new  FormAnswerNonEf
                         {
                             QuestionId = questions[3].Id,
                             Question = questions[3],

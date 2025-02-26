@@ -33,7 +33,7 @@ public class DataService(IShareCodeRepository shareCodeRepository, IConnectedEnt
         };
     }
 
-    public IEnumerable<Model.Identifier> MapAdditionalIdentifiersForPdf(IEnumerable<IdentifierDS> identifiers)
+    public IEnumerable<Model.Identifier> MapAdditionalIdentifiersForPdf(IEnumerable<IdentifierNonEf> identifiers)
     {
         return identifiers.Select(identifier => new Model.Identifier
         {
@@ -45,7 +45,7 @@ public class DataService(IShareCodeRepository shareCodeRepository, IConnectedEnt
     }
 
     public IEnumerable<FormAnswerSetForPdf> MapFormAnswerSetsForPdf(
-        IEnumerable<FormAnswerSetDS> answerSets)
+        IEnumerable<FormAnswerSetNonEf> answerSets)
     {
         var pdfAnswerSets = new List<FormAnswerSetForPdf>();
 
@@ -115,7 +115,7 @@ public class DataService(IShareCodeRepository shareCodeRepository, IConnectedEnt
         return pdfAnswerSets;
     }
 
-    public static BasicInformation MapToBasicInformation(OrganisationDS organisation)
+    public static BasicInformation MapToBasicInformation(OrganisationNonEf organisation)
     {
         var supplierInfo = organisation.SupplierInfo
             ?? throw new SupplierInformationNotFoundException("Supplier information not found.");
@@ -260,7 +260,7 @@ public class DataService(IShareCodeRepository shareCodeRepository, IConnectedEnt
         return connectedPersonList;
     }
 
-    private static List<string> MapAttachedDocuments(SharedConsentDS sharedConsent)
+    private static List<string> MapAttachedDocuments(SharedConsentNonEf sharedConsent)
     {
         var attachedDocuments = new List<string>();
         foreach (var answerSet in sharedConsent.AnswerSets)
