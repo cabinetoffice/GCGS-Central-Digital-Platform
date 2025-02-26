@@ -2,7 +2,7 @@ using AutoMapper;
 using CO.CDP.DataSharing.WebApi.Model;
 using CO.CDP.Localization;
 using CO.CDP.OrganisationInformation;
-using CO.CDP.OrganisationInformation.Persistence;
+using CO.CDP.OrganisationInformation.Persistence.NonEfEntities;
 using Microsoft.AspNetCore.Mvc.Localization;
 using System.Text.Json;
 using Address = CO.CDP.OrganisationInformation.Address;
@@ -30,7 +30,7 @@ public class DataSharingProfile : Profile
             .ForMember(m => m.SubmittedAt, o => o.MapFrom(m => m.SubmittedAt))
             .ForMember(m => m.ShareCode, o => o.MapFrom(m => m.ShareCode));
 
-        CreateMap<Persistence.SharedConsent, SupplierInformation>()
+        CreateMap<SharedConsentDS, SupplierInformation>()
             .ForMember(m => m.Id, o => o.MapFrom(m => m.Organisation.Guid))
             .ForMember(m => m.Name, o => o.MapFrom(m => m.Organisation.Name))
             .ForMember(m => m.Type, o => o.MapFrom(m => m.Organisation.Type))
@@ -54,34 +54,34 @@ public class DataSharingProfile : Profile
             .ForMember(m => m.AdditionalParties, o => o.Ignore());
 
         Uri? tempResult;
-        CreateMap<Organisation.Identifier, OrganisationInformation.Identifier>()
+        CreateMap<IdentifierDS, OrganisationInformation.Identifier>()
             .ForMember(m => m.Scheme, o => o.MapFrom(m => m.Scheme))
             .ForMember(m => m.Id, o => o.MapFrom(m => m.IdentifierId))
             .ForMember(m => m.LegalName, o => o.MapFrom(m => m.LegalName))
             .ForMember(m => m.Uri, o => o.MapFrom(m => Uri.TryCreate(m.Uri, UriKind.Absolute, out tempResult) ? tempResult : null));
 
-        CreateMap<Organisation.OrganisationAddress, Address>()
-            .ForMember(m => m.StreetAddress, o => o.MapFrom(m => m.Address.StreetAddress))
-            .ForMember(m => m.Locality, o => o.MapFrom(m => m.Address.Locality))
-            .ForMember(m => m.Region, o => o.MapFrom(m => m.Address.Region))
-            .ForMember(m => m.PostalCode, o => o.MapFrom(m => m.Address.PostalCode))
-            .ForMember(m => m.CountryName, o => o.MapFrom(m => m.Address.CountryName))
-            .ForMember(m => m.Country, o => o.MapFrom(m => m.Address.Country))
+        CreateMap<AddressDS, Address>()
+            .ForMember(m => m.StreetAddress, o => o.MapFrom(m => m.StreetAddress))
+            .ForMember(m => m.Locality, o => o.MapFrom(m => m.Locality))
+            .ForMember(m => m.Region, o => o.MapFrom(m => m.Region))
+            .ForMember(m => m.PostalCode, o => o.MapFrom(m => m.PostalCode))
+            .ForMember(m => m.CountryName, o => o.MapFrom(m => m.CountryName))
+            .ForMember(m => m.Country, o => o.MapFrom(m => m.Country))
             .ForMember(m => m.Type, o => o.MapFrom(m => m.Type));
 
-        CreateMap<Organisation.ContactPoint, ContactPoint>()
+        CreateMap<ContactPointDS, ContactPoint>()
             .ForMember(m => m.Name, o => o.MapFrom(m => m.Name))
             .ForMember(m => m.Email, o => o.MapFrom(m => m.Email))
             .ForMember(m => m.Telephone, o => o.MapFrom(m => m.Telephone))
             .ForMember(m => m.Url, o => o.MapFrom(m => !string.IsNullOrWhiteSpace(m.Url) ? new Uri(m.Url) : default));
 
-        CreateMap<Persistence.SharedConsent, SupplierInformationData>()
+        CreateMap<SharedConsentDS, SupplierInformationData>()
             .ForMember(m => m.Form, o => o.MapFrom(m => m))
             .ForMember(m => m.AnswerSets, o => o.MapFrom(m => m.AnswerSets))
             .ForMember(m => m.Questions,
                 o => o.MapFrom(m => m.AnswerSets.SelectMany(a => a.Section.Questions.Where(x => x.Type != Persistence.FormQuestionType.NoInput && x.Type != Persistence.FormQuestionType.CheckYourAnswers)).DistinctBy(q => q.Id)));
 
-        CreateMap<Persistence.SharedConsent, Form>()
+        CreateMap<SharedConsentDS, Form>()
             .ForMember(m => m.Name, o => o.MapFrom(m => m.Form.Name))
             .ForMember(m => m.SubmissionState, o => o.MapFrom(m => m.SubmissionState.ToString()))
             .ForMember(m => m.SubmittedAt, o => o.MapFrom(m => m.SubmittedAt))
@@ -91,13 +91,13 @@ public class DataSharingProfile : Profile
             .ForMember(m => m.IsRequired, o => o.MapFrom(m => m.Form.IsRequired))
             .ForMember(m => m.ShareCode, o => o.MapFrom(m => m.ShareCode));
 
-        CreateMap<Persistence.FormAnswerSet, FormAnswerSet>()
+        CreateMap<FormAnswerSetDS, FormAnswerSet>()
             .ForMember(m => m.Id, o => o.MapFrom(m => m.Guid))
-            .ForMember(m => m.SectionName, o => o.MapFrom<LocalizedPropertyResolver<Persistence.FormAnswerSet, FormAnswerSet>, string>(m => m.Section.Title))
+            .ForMember(m => m.SectionName, o => o.MapFrom<LocalizedPropertyResolver<FormAnswerSetDS, FormAnswerSet>, string>(m => m.Section.Title))
             .ForMember(m => m.Answers, o => o.MapFrom(m => m.Answers.Where(x => x.Question.Type != Persistence.FormQuestionType.NoInput && x.Question.Type != Persistence.FormQuestionType.CheckYourAnswers)))
             .ForMember(m => m.OrganisationId, o => o.Ignore());
 
-        CreateMap<Persistence.FormAnswer, FormAnswer>()
+        CreateMap<FormAnswerDS, FormAnswer>()
             .ForMember(m => m.QuestionName, o => o.MapFrom(m => m.Question.Name))
             .ForMember(m => m.BoolValue, o => o.MapFrom(m => m.BoolValue))
             .ForMember(m => m.NumericValue, o => o.MapFrom(m => m.NumericValue))
@@ -109,13 +109,13 @@ public class DataSharingProfile : Profile
             .ForMember(m => m.JsonValue, o => o.MapFrom<JsonValueResolver>())
             .ForMember(m => m.DocumentUri, o => o.Ignore());
 
-        CreateMap<Persistence.FormQuestion, FormQuestion>()
+        CreateMap<FormQuestionDS, FormQuestion>()
             .ForMember(m => m.Type, o => o.MapFrom<CustomFormQuestionTypeResolver>())
-            .ForMember(m => m.Title, o => o.MapFrom<LocalizedPropertyResolver<Persistence.FormQuestion, FormQuestion>, string>(m => m.Title))
+            .ForMember(m => m.Title, o => o.MapFrom<LocalizedPropertyResolver<FormQuestionDS, FormQuestion>, string>(m => m.Title))
             .ForMember(m => m.Name, o => o.MapFrom(m => m.Name))
-            .ForMember(m => m.Text, o => o.MapFrom<LocalizedPropertyResolver<Persistence.FormQuestion, FormQuestion>, string>(m => m.Description ?? string.Empty))
+            .ForMember(m => m.Text, o => o.MapFrom<LocalizedPropertyResolver<FormQuestionDS, FormQuestion>, string>(m => m.Description ?? string.Empty))
             .ForMember(m => m.IsRequired, o => o.MapFrom(m => m.IsRequired))
-            .ForMember(m => m.SectionName, o => o.MapFrom<LocalizedPropertyResolver<Persistence.FormQuestion, FormQuestion>, string>(m => m.Section.Title))
+            .ForMember(m => m.SectionName, o => o.MapFrom<LocalizedPropertyResolver<FormQuestionDS, FormQuestion>, string>(m => m.Section.Title))
             .ForMember(m => m.Options, o => o.MapFrom<FormQuestionOptionsResolver>())
             .ForMember(m => m.SortOrder, o => o.MapFrom(m => m.SortOrder))
             .ForMember(m => m.OrganisationId, o => o.Ignore());
@@ -123,7 +123,7 @@ public class DataSharingProfile : Profile
             .ForMember(m => m.Id, o => o.MapFrom(m => m.Id))
             .ForMember(m => m.Value, o => o.MapFrom<LocalizedPropertyResolver<Persistence.FormQuestionChoice, FormQuestionOption>, string>(m => m.Title));
 
-        CreateMap<Organisation.LegalForm, LegalForm>()
+        CreateMap<LegalFormDS, LegalForm>()
             .ForMember(m => m.LawRegistered, o => o.MapFrom(m => m.LawRegistered))
             .ForMember(m => m.RegistrationDate, o => o.MapFrom(m => m.RegistrationDate.ToString("yyyy-MM-dd")))
             .ForMember(m => m.RegisteredLegalForm, o => o.MapFrom(m => m.RegisteredLegalForm))
@@ -133,9 +133,9 @@ public class DataSharingProfile : Profile
     private DateOnly? ToDateOnly(DateTime? dateTime) => dateTime.HasValue ? DateOnly.FromDateTime(dateTime.Value) : null;
 }
 
-public class CustomFormQuestionTypeResolver : IValueResolver<Persistence.FormQuestion, FormQuestion, FormQuestionType>
+public class CustomFormQuestionTypeResolver : IValueResolver<FormQuestionDS, FormQuestion, FormQuestionType>
 {
-    public FormQuestionType Resolve(Persistence.FormQuestion source,
+    public FormQuestionType Resolve(FormQuestionDS source,
         FormQuestion destination, FormQuestionType destMemb, ResolutionContext context)
     {
         switch (source.Type)
@@ -215,9 +215,9 @@ public class CustomResolver : IValueResolver<Persistence.SharedConsentQuestionAn
     }
 }
 
-public class JsonValueResolver : IValueResolver<Persistence.FormAnswer, FormAnswer, Dictionary<string, object>?>
+public class JsonValueResolver : IValueResolver<FormAnswerDS, FormAnswer, Dictionary<string, object>?>
 {
-    public Dictionary<string, object>? Resolve(Persistence.FormAnswer source, FormAnswer destination, Dictionary<string, object>? destMember, ResolutionContext context)
+    public Dictionary<string, object>? Resolve(FormAnswerDS source, FormAnswer destination, Dictionary<string, object>? destMember, ResolutionContext context)
     {
         if (string.IsNullOrEmpty(source.JsonValue))
         {
@@ -228,7 +228,7 @@ public class JsonValueResolver : IValueResolver<Persistence.FormAnswer, FormAnsw
     }
 }
 
-public class FormQuestionOptionsResolver : IValueResolver<Persistence.FormQuestion, FormQuestion, List<FormQuestionOption>>
+public class FormQuestionOptionsResolver : IValueResolver<FormQuestionDS, FormQuestion, List<FormQuestionOption>>
 {
     private readonly IHtmlLocalizer<FormsEngineResource> _localizer;
 
@@ -237,7 +237,7 @@ public class FormQuestionOptionsResolver : IValueResolver<Persistence.FormQuesti
         _localizer = localizer;
     }
 
-    public List<FormQuestionOption> Resolve(Persistence.FormQuestion src, FormQuestion destination, List<FormQuestionOption> destMember, ResolutionContext context)
+    public List<FormQuestionOption> Resolve(FormQuestionDS src, FormQuestion destination, List<FormQuestionOption> destMember, ResolutionContext context)
     {
         if (src.Options == null)
             return new List<FormQuestionOption>();

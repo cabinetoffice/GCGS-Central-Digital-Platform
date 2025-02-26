@@ -1,6 +1,7 @@
 using FluentAssertions;
 using CO.CDP.DataSharing.WebApi.AutoMapper;
 using CO.CDP.DataSharing.WebApi.Model;
+using CO.CDP.OrganisationInformation.Persistence.NonEfEntities;
 
 namespace CO.CDP.DataSharing.WebApi.Tests.AutoMapper;
 
@@ -33,7 +34,7 @@ public class CustomFormQuestionTypeResolverTests
         FormQuestionType expectedType,
         string? answerFieldName = null)
     {
-        OrganisationInformation.Persistence.Forms.FormQuestion sourceQuestion = GivenQuestion(sourceType, answerFieldName);
+        FormQuestionDS sourceQuestion = GivenQuestion(sourceType, answerFieldName);
 
         var result = _resolver.Resolve(sourceQuestion, null!, default, null!);
 
@@ -45,25 +46,24 @@ public class CustomFormQuestionTypeResolverTests
     {
         foreach (OrganisationInformation.Persistence.Forms.FormQuestionType formQuestionType in Enum.GetValues(typeof(OrganisationInformation.Persistence.Forms.FormQuestionType)))
         {
-            OrganisationInformation.Persistence.Forms.FormQuestion sourceQuestion = GivenQuestion(formQuestionType);
+            var sourceQuestion = GivenQuestion(formQuestionType);
             Action act = () => _resolver.Resolve(sourceQuestion, null!, default, null!);
             act.Should().NotThrow();
         }
     }
 
-    private static OrganisationInformation.Persistence.Forms.FormQuestion GivenQuestion(OrganisationInformation.Persistence.Forms.FormQuestionType type, string? answerFieldName = null)
+    private static FormQuestionDS GivenQuestion(OrganisationInformation.Persistence.Forms.FormQuestionType type, string? answerFieldName = null)
     {
-        return new OrganisationInformation.Persistence.Forms.FormQuestion {
+        return new FormQuestionDS
+        {
+            Id = 1,
             Type = type,
             Guid = Guid.NewGuid(),
-            NextQuestion = null,
-            NextQuestionAlternative = null,
-            Caption = null,
             Description = null,
             IsRequired = false,
-            CreatedOn = DateTime.Now,
             Name = null!,
-            Options = new () {
+            Options = new()
+            {
                 AnswerFieldName = answerFieldName
             },
             Section = null!,

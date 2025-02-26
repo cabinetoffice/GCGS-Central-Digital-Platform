@@ -2,6 +2,7 @@ using CO.CDP.DataSharing.WebApi.Model;
 using CO.CDP.Localization;
 using CO.CDP.OrganisationInformation;
 using CO.CDP.OrganisationInformation.Persistence;
+using CO.CDP.OrganisationInformation.Persistence.NonEfEntities;
 using Microsoft.AspNetCore.Mvc.Localization;
 using static CO.CDP.OrganisationInformation.Persistence.ConnectedEntity;
 using Address = CO.CDP.OrganisationInformation.Address;
@@ -32,7 +33,7 @@ public class DataService(IShareCodeRepository shareCodeRepository, IConnectedEnt
         };
     }
 
-    public IEnumerable<Model.Identifier> MapAdditionalIdentifiersForPdf(IEnumerable<Organisation.Identifier> identifiers)
+    public IEnumerable<Model.Identifier> MapAdditionalIdentifiersForPdf(IEnumerable<IdentifierDS> identifiers)
     {
         return identifiers.Select(identifier => new Model.Identifier
         {
@@ -44,7 +45,7 @@ public class DataService(IShareCodeRepository shareCodeRepository, IConnectedEnt
     }
 
     public IEnumerable<FormAnswerSetForPdf> MapFormAnswerSetsForPdf(
-        IEnumerable<OrganisationInformation.Persistence.Forms.FormAnswerSet> answerSets)
+        IEnumerable<FormAnswerSetDS> answerSets)
     {
         var pdfAnswerSets = new List<FormAnswerSetForPdf>();
 
@@ -114,7 +115,7 @@ public class DataService(IShareCodeRepository shareCodeRepository, IConnectedEnt
         return pdfAnswerSets;
     }
 
-    public static BasicInformation MapToBasicInformation(Organisation organisation)
+    public static BasicInformation MapToBasicInformation(OrganisationDS organisation)
     {
         var supplierInfo = organisation.SupplierInfo
             ?? throw new SupplierInformationNotFoundException("Supplier information not found.");
@@ -124,11 +125,11 @@ public class DataService(IShareCodeRepository shareCodeRepository, IConnectedEnt
                 .Where(a => a.Type == AddressType.Registered)
                 .Select(a => new Address
                 {
-                    StreetAddress = a.Address.StreetAddress,
-                    Locality = a.Address.Locality,
-                    PostalCode = a.Address.PostalCode,
-                    CountryName = a.Address.CountryName,
-                    Country = a.Address.Country,
+                    StreetAddress = a.StreetAddress,
+                    Locality = a.Locality,
+                    PostalCode = a.PostalCode ?? "",
+                    CountryName = a.CountryName,
+                    Country = a.Country,
                     Type = AddressType.Registered
                 })
                 .FirstOrDefault()
@@ -139,11 +140,11 @@ public class DataService(IShareCodeRepository shareCodeRepository, IConnectedEnt
                 .Where(a => a.Type == AddressType.Postal)
                 .Select(a => new Address
                 {
-                    StreetAddress = a.Address.StreetAddress,
-                    Locality = a.Address.Locality,
-                    PostalCode = a.Address.PostalCode,
-                    CountryName = a.Address.CountryName,
-                    Country = a.Address.Country,
+                    StreetAddress = a.StreetAddress,
+                    Locality = a.Locality,
+                    PostalCode = a.PostalCode,
+                    CountryName = a.CountryName,
+                    Country = a.Country,
                     Type = AddressType.Postal
                 })
                 .FirstOrDefault()
@@ -259,7 +260,7 @@ public class DataService(IShareCodeRepository shareCodeRepository, IConnectedEnt
         return connectedPersonList;
     }
 
-    private static List<string> MapAttachedDocuments(OrganisationInformation.Persistence.Forms.SharedConsent sharedConsent)
+    private static List<string> MapAttachedDocuments(SharedConsentDS sharedConsent)
     {
         var attachedDocuments = new List<string>();
         foreach (var answerSet in sharedConsent.AnswerSets)
