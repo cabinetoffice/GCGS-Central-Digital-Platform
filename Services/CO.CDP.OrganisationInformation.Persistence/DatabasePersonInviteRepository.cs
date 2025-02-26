@@ -69,10 +69,10 @@ public class DatabasePersonInviteRepository(OrganisationInformationContext conte
         switch (cause.InnerException)
         {
             case { } e when e.Message.Contains("_persons_email"):
-                throw new IPersonRepository.PersonRepositoryException.DuplicatePersonException(
+                throw new IPersonRepository.PersonRepositoryException.DuplicateEmailException(
                     $"Person invite with email `{personInvite.Email}` already exists.", cause);
             case { } e when e.Message.Contains("_persons_guid"):
-                throw new IPersonRepository.PersonRepositoryException.DuplicatePersonException(
+                throw new IPersonRepository.PersonRepositoryException.DuplicateGuidException(
                     $"Person invite with guid `{personInvite.Guid}` already exists.", cause);
             default:
                 throw cause;

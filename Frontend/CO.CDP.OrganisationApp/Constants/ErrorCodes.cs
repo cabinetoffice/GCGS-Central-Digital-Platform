@@ -5,7 +5,8 @@ public static class ErrorCodes
     public const string ORGANISATION_ALREADY_EXISTS = "ORGANISATION_ALREADY_EXISTS";
     public const string INVALID_OPERATION = "INVALID_OPERATION";
     public const string ARGUMENT_NULL = "ARGUMENT_NULL";
-    public const string PERSON_ALREADY_EXISTS = "PERSON_ALREADY_EXISTS";
+    public const string PERSON_GUID_ALREADY_EXISTS = "PERSON_GUID_ALREADY_EXISTS";
+    public const string PERSON_EMAIL_ALREADY_EXISTS = "PERSON_EMAIL_ALREADY_EXISTS";
 
     public const string PERSON_DOES_NOT_EXIST = "PERSON_DOES_NOT_EXIST";
 

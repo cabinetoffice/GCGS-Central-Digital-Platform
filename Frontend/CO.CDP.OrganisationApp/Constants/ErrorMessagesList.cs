@@ -6,6 +6,7 @@ public static class ErrorMessagesList
 {
     public static readonly string DuplicatePersonName = StaticTextResource.ErrorMessageList_DuplicatePersonName;
     public static readonly string DuplicatePersonEmail = StaticTextResource.ErrorMessageList_DuplicatePersonEmail;
+    public static readonly string FirstAccessDuplicatePersonEmail = StaticTextResource.ErrorMessageList_FirstAccessDuplicatePersonEmail;
     public static readonly string DuplicateInviteEmail = StaticTextResource.ErrorMessageList_DuplicateInviteEmail;
     public static readonly string PersonNotFound = StaticTextResource.ErrorMessageList_PersonNotFound;
     public static readonly string MouNotFound = StaticTextResource.ErrorMessageList_MouNotFound;
@@ -16,7 +17,7 @@ public static class ErrorMessagesList
     public static readonly string OrganisationNotFound = StaticTextResource.ErrorMessageList_OrganisationNotFound;
     public static readonly string DuplicateOrganisationName = StaticTextResource.ErrorMessageList_DuplicateOrganisationName;
 
-    public static readonly string PayLoadIssueOrNullAurgument = StaticTextResource.ErrorMessageList_PayLoadIssueOrNullAurgument;
+    public static readonly string PayLoadIssueOrNullArgument = StaticTextResource.ErrorMessageList_PayLoadIssueOrNullArgument;
 
     public static readonly string UnprocessableEntity = StaticTextResource.ErrorMessageList_UnprocessableEntity;
     public static readonly string UnexpectedError = StaticTextResource.ErrorMessageList_UnexpectedError;

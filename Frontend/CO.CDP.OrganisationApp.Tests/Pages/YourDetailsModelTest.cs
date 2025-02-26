@@ -211,9 +211,9 @@ public class YourDetailsModelTest
     }
 
     [Fact]
-    public async Task OnPost_DuplicatePersonName_AddsModelError()
+    public async Task OnPost_DuplicatePersonEmail_AddsSystemError()
     {
-        var problemDetails = GivenProblemDetails(statusCode: 400, code: ErrorCodes.PERSON_ALREADY_EXISTS);
+        var problemDetails = GivenProblemDetails(statusCode: 400, code: ErrorCodes.PERSON_EMAIL_ALREADY_EXISTS);
         var aex = GivenApiException(statusCode: 400, problemDetails: problemDetails);
 
         sessionMock.Setup(s => s.Get<UserDetails>(Session.UserDetailsKey))
@@ -222,11 +222,16 @@ public class YourDetailsModelTest
         personClientMock.Setup(o => o.CreatePersonAsync(It.IsAny<NewPerson>()))
             .ThrowsAsync(aex);
 
+        var httpContextMock = new Mock<HttpContext>();
+        httpContextMock.Setup(c => c.TraceIdentifier).Returns("trace-123");
+
         var model = GivenYourDetailsModel();
 
+        model.PageContext.HttpContext = httpContextMock.Object;
+
         await model.OnPost();
-        model.ModelState[string.Empty].As<ModelStateEntry>().Errors
-          .Should().Contain(e => e.ErrorMessage == ErrorMessagesList.DuplicatePersonName);
+
+        model.SystemError?.ToString().Should().Be(string.Format(ErrorMessagesList.FirstAccessDuplicatePersonEmail, "trace-123"));
     }
 
     [Fact]
@@ -245,7 +250,7 @@ public class YourDetailsModelTest
 
         await model.OnPost();
         model.ModelState[string.Empty].As<ModelStateEntry>().Errors
-         .Should().Contain(e => e.ErrorMessage == ErrorMessagesList.PayLoadIssueOrNullAurgument);
+         .Should().Contain(e => e.ErrorMessage == ErrorMessagesList.PayLoadIssueOrNullArgument);
     }
 
     [Fact]

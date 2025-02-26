@@ -3100,6 +3100,9 @@
   <data name="ErrorMessageList_DuplicatePersonEmail" xml:space="preserve">
     <value>A user with this email address already exists for your organisation.</value>
   </data>
+  <data name="ErrorMessageList_FirstAccessDuplicatePersonEmail" xml:space="preserve">
+    <value>We're trying to fix a problem with your sign in.&lt;br&gt;&lt;a class="govuk-notification-banner__link" href="/provide-feedback-and-contact/?context=feedback"&gt;Contact service support&lt;/a&gt; with the reference {0} for more information.</value>
+  </data>
   <data name="ErrorMessageList_DuplicateInviteEmail" xml:space="preserve">
     <value>A user with this email address has already been invited to your organisation.</value>
   </data>
@@ -3118,7 +3121,7 @@
   <data name="ErrorMessageList_DuplicateOrganisationName" xml:space="preserve">
     <value>An organisation with this name already exists. Try again.</value>
   </data>
-  <data name="ErrorMessageList_PayLoadIssueOrNullAurgument" xml:space="preserve">
+  <data name="ErrorMessageList_PayLoadIssueOrNullArgument" xml:space="preserve">
     <value>Enter all the required information correctly.</value>
   </data>
   <data name="ErrorMessageList_UnprocessableEntity" xml:space="preserve">

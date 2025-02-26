@@ -47,7 +47,7 @@ public class DatabasePersonRepositoryTest(PostgreSqlFixture postgreSql)
         repository.Save(Person1);
 
         repository.Invoking(r => r.Save(Person2))
-            .Should().Throw<IPersonRepository.PersonRepositoryException.DuplicatePersonException>()
+            .Should().Throw<IPersonRepository.PersonRepositoryException.DuplicateEmailException>()
             .WithMessage($"Person with email `{email}` already exists.");
     }
 
@@ -63,7 +63,7 @@ public class DatabasePersonRepositoryTest(PostgreSqlFixture postgreSql)
         repository.Save(Person1);
 
         repository.Invoking((r) => r.Save(Person2))
-            .Should().Throw<IPersonRepository.PersonRepositoryException.DuplicatePersonException>()
+            .Should().Throw<IPersonRepository.PersonRepositoryException.DuplicateGuidException>()
             .WithMessage($"Person with guid `{guid}` already exists.");
     }
 
