@@ -60,14 +60,11 @@ public class MoUSummaryModelTests
     [Fact]
     public async Task OnPost_WhenFileDoesNotExist_ShouldRedirectToPageNotFound()
     {
-        var mockOrganisation = GivenOrganisationClientModel(_orgId);        
-
-        var person = new CDP.Organisation.WebApiClient.Person("test@email.com", "first_name", Guid.NewGuid(), "last_name", ["ADMIN", "SUPPORTADMIN"]);
-        var mou = new CDP.Organisation.WebApiClient.Mou(DateTimeOffset.Now, "fts-joint-controller-agreement.pdf", _mouId);
-        var mouSignature = new MouSignatureLatest(person, _mouSignatureId, true, "Tester", mou, "Test User", DateTimeOffset.Now);
+        var mockOrganisation = GivenOrganisationClientModel(_orgId);
+        var mouSignature = LatestMouSignature();
 
         var absolutePath = Path.Combine(Directory.GetCurrentDirectory(), "mou-pdfs", "mou-pdf-template.pdf");
-        if (System.IO.File.Exists(absolutePath))
+        if (File.Exists(absolutePath))
         {
             File.Delete(absolutePath);
         }
