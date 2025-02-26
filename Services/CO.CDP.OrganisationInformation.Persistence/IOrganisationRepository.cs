@@ -29,9 +29,9 @@ public interface IOrganisationRepository : IDisposable
 
     public Task<IList<Organisation>> Get(string? type);
 
-    public Task<IList<Organisation>> GetPaginated(PartyRole? role, PartyRole? pendingRole, int limit, int skip);
+    public Task<IList<Organisation>> GetPaginated(PartyRole? role, PartyRole? pendingRole, string? searchText, int limit, int skip);
 
-    public Task<int> GetTotalCount(PartyRole? role, PartyRole? pendingRole);
+    public Task<int> GetTotalCount(PartyRole? role, PartyRole? pendingRole, string? searchText);
 
     public class OrganisationRepositoryException(string message, Exception? cause = null) : Exception(message, cause)
     {
@@ -60,4 +60,8 @@ public interface IOrganisationRepository : IDisposable
 
     public Task<Mou?> GetMou(Guid mouId);
     Task<IEnumerable<Organisation>> SearchByName(string name, PartyRole? role, int? limit, double threshold);
+
+    public Task<IEnumerable<Organisation>> FindByAdminEmail(string email, PartyRole? role, int? limit);
+
+    public Task<IEnumerable<Organisation>> FindByOrganisationEmail(string email, PartyRole? role, int? limit);
 }

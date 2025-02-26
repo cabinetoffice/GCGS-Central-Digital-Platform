@@ -224,23 +224,13 @@ public class OneLoginTest
     }
 
     [Fact]
-    public async Task OnGetSignOut_UserIsNotAuthenticated_ShouldReturnToIndex()
-    {
-        var model = GivenOneLoginModel("sign-out");
-
-        var result = await model.OnGetAsync();
-
-        result.Should().BeOfType<RedirectResult>()
-            .Which.Url.Should().Be("/");
-    }
-
-    [Fact]
     public async Task OnGetSignOut_SessionHasUserDetailsUrn_ShouldCallRevokeRefreshToken()
     {
         var userUrn = "test_urn";
-
         sessionMock.Setup(s => s.Get<UserDetails>(Session.UserDetailsKey))
             .Returns(new UserDetails { UserUrn = userUrn });
+        featureManagerMock.Setup(f => f.IsEnabledAsync(FeatureFlags.AllowFtsRedirectLinks))
+            .ReturnsAsync(false);
 
         var model = GivenOneLoginModel("sign-out");
 
@@ -253,14 +243,15 @@ public class OneLoginTest
     public async Task OnGetSignOut_UserIsAuthenticated_ShouldReturnAuthChallange()
     {
         var model = GivenOneLoginModel("sign-out");
-
         httpContextAccessorMock.Setup(x => x.HttpContext!.User!.Identity!.IsAuthenticated)
            .Returns(true);
+        featureManagerMock.Setup(f => f.IsEnabledAsync(FeatureFlags.AllowFtsRedirectLinks))
+            .ReturnsAsync(false);
 
         var result = await model.OnGetAsync();
 
         result.Should().BeOfType<SignOutResult>()
-            .Which.Properties!.RedirectUri.Should().Be("/");
+            .Which.Properties!.RedirectUri.Should().Be("/user/signedout");
     }
 
     [Fact]

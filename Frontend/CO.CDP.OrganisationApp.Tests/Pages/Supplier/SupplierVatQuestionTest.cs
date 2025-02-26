@@ -1,8 +1,6 @@
-using CO.CDP.EntityVerificationClient;
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Pages.Supplier;
 using FluentAssertions;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moq;
@@ -12,24 +10,16 @@ namespace CO.CDP.OrganisationApp.Tests.Pages.Supplier;
 public class SupplierVatModelQuestionTest
 {
     private readonly Mock<IOrganisationClient> _organisationClientMock;
-    private readonly Mock<IPponClient> _pponClientMock;
     private static readonly Guid _organisationId = Guid.NewGuid();
     private readonly SupplierVatQuestionModel _model;
 
     public SupplierVatModelQuestionTest()
     {
-        var httpContext = new DefaultHttpContext();
-        var contextAccessor = new Mock<IHttpContextAccessor>();
-        contextAccessor.Setup(_ => _.HttpContext).Returns(httpContext);
-
         _organisationClientMock = new Mock<IOrganisationClient>();
-        _pponClientMock = new Mock<IPponClient>();
-        _model = new SupplierVatQuestionModel(_organisationClientMock.Object, _pponClientMock.Object, contextAccessor.Object);
+        _model = new SupplierVatQuestionModel(_organisationClientMock.Object);
 
         _organisationClientMock.Setup(api => api.LookupOrganisationAsync(It.IsAny<string>(), It.IsAny<string>()))
                     .ThrowsAsync(new CO.CDP.Organisation.WebApiClient.ApiException("Organisation does not exist", 404, "", null, null));
-        _pponClientMock.Setup(api => api.GetIdentifiersAsync(It.IsAny<string>()))
-            .ThrowsAsync(new EntityVerificationClient.ApiException("Organisation does not exist", 404, "", null, null));
     }
 
     [Fact]
@@ -125,78 +115,6 @@ public class SupplierVatModelQuestionTest
     }
 
     [Fact]
-    public async Task OnPost_WhenOrganisationExistsInOganisationService_ShouldRedirectToOrganisationAlreadyRegisteredPage()
-    {
-        var id = Guid.NewGuid();
-        _model.Id = id;
-        _model.HasVatNumber = true;
-        _model.VatNumber = "VAT12345";
-
-        _organisationClientMock.Setup(client => client.GetOrganisationAsync(id))
-            .ReturnsAsync(SupplierDetailsFactory.GivenOrganisationClientModel(id));
-
-        _organisationClientMock.Setup
-            (api => api.LookupOrganisationAsync(It.IsAny<string>(), It.IsAny<string>()))
-            .ReturnsAsync(GivenOrganisationClientModel());
-
-        var result = await _model.OnPost();
-
-        _model.ModelState.ContainsKey("VatNumber").Should().BeTrue();
-        _model.ModelState["VatNumber"]!.Errors.Should().ContainSingle()
-            .Which.ErrorMessage.Should().Be("This VAT number belongs to another organisation. Enter a different VAT number.");
-
-        result.Should().BeOfType<PageResult>();
-
-        _organisationClientMock.Verify(o => o.UpdateSupplierInformationAsync(It.IsAny<Guid>(),
-            It.Is<UpdateSupplierInformation>(u => u.Type == SupplierInformationUpdateType.CompletedVat)), Times.Never);
-    }
-
-    [Fact]
-    public async Task OnPost_WhenIdentifierExistsInEntityVerificationService_ShouldRedirectToOrganisationAlreadyRegisteredPage()
-    {
-        var id = Guid.NewGuid();
-        _model.Id = id;
-        _model.HasVatNumber = true;
-        _model.VatNumber = "VAT12345";
-
-        _organisationClientMock.Setup(client => client.GetOrganisationAsync(id))
-            .ReturnsAsync(SupplierDetailsFactory.GivenOrganisationClientModel(id));
-
-        _pponClientMock.Setup
-            (api => api.GetIdentifiersAsync(It.IsAny<string>()))
-            .ReturnsAsync(GivenEntityVerificationIdentifiers());
-
-        var result = await _model.OnPost();
-        result.Should().BeOfType<RedirectToPageResult>();
-        (result as RedirectToPageResult)?.PageName.Should().Be("/Registration/OrganisationAlreadyRegistered");
-
-        _organisationClientMock.Verify(o => o.UpdateSupplierInformationAsync(It.IsAny<Guid>(),
-            It.Is<UpdateSupplierInformation>(u => u.Type == SupplierInformationUpdateType.CompletedVat)), Times.Never);
-    }
-
-    [Fact]
-    public async Task OnPost_WhenEntityVerificationServiceOffLine_ShouldRedirectToOrganisationServiceUnavailablePage()
-    {
-        var id = Guid.NewGuid();
-        _model.Id = id;
-        _model.HasVatNumber = true;
-        _model.VatNumber = "VAT12345";
-
-        _organisationClientMock.Setup(client => client.GetOrganisationAsync(id))
-            .ReturnsAsync(SupplierDetailsFactory.GivenOrganisationClientModel(id));
-
-        _pponClientMock.Setup(api => api.GetIdentifiersAsync(It.IsAny<string>()))
-            .ThrowsAsync(new Exception("Entity Verification service offline."));
-
-        var result = await _model.OnPost();
-        result.Should().BeOfType<RedirectToPageResult>();
-        (result as RedirectToPageResult)?.PageName.Should().Be("/Registration/OrganisationRegistrationUnavailable");
-
-        _organisationClientMock.Verify(o => o.UpdateSupplierInformationAsync(It.IsAny<Guid>(),
-            It.Is<UpdateSupplierInformation>(u => u.Type == SupplierInformationUpdateType.CompletedVat)), Times.Never);
-    }
-
-    [Fact]
     public async Task OnPost_InvalidModelState_ReturnsPageResult()
     {
         _model.ModelState.AddModelError("HasVatNumber", "Please select an option");
@@ -224,11 +142,5 @@ public class SupplierVatModelQuestionTest
     private static CO.CDP.Organisation.WebApiClient.Organisation GivenOrganisationClientModel()
     {
         return new CO.CDP.Organisation.WebApiClient.Organisation(additionalIdentifiers: null, addresses: null, contactPoint: null, id: _organisationId, identifier: null, name: "Test Org", type: OrganisationType.Organisation, roles: [], details: new Details(approval: null, buyerInformation: null, pendingRoles: [], publicServiceMissionOrganization: null, scale: null, shelteredWorkshop: null, vcse: null));
-    }
-
-    private static ICollection<EntityVerificationClient.Identifier> GivenEntityVerificationIdentifiers()
-    {
-        return new List<EntityVerificationClient.Identifier>() {
-            new EntityVerificationClient.Identifier("12345", "Acme Ltd", "VAT", new Uri("http://acme.org")) };
     }
 }

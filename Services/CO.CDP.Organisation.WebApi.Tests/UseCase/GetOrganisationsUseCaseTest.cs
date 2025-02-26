@@ -88,7 +88,7 @@ public class GetOrganisationsUseCaseTests
         ];
 
         _organisationRepositoryMock
-            .Setup(repo => repo.GetPaginated(command.Role, command.PendingRole, command.Limit, command.Skip))
+            .Setup(repo => repo.GetPaginated(command.Role, command.PendingRole, command.SearchText, command.Limit, command.Skip))
             .ReturnsAsync(organisations);
 
         _mapperMock.Setup(m => m.Map<Model.Person>(adminPerson))
@@ -100,7 +100,7 @@ public class GetOrganisationsUseCaseTests
         var result = await _useCase.Execute(command);
 
         result.Should().BeEquivalentTo(mappedOrganisations, options => options.Including(o => o.AdminPerson));
-        _organisationRepositoryMock.Verify(repo => repo.GetPaginated(command.Role, command.PendingRole, command.Limit, command.Skip), Times.Once);
+        _organisationRepositoryMock.Verify(repo => repo.GetPaginated(command.Role, command.PendingRole, command.SearchText, command.Limit, command.Skip), Times.Once);
         _mapperMock.Verify(m => m.Map<CO.CDP.Organisation.WebApi.Model.Person>(adminPerson), Times.Once);
     }
 
@@ -112,12 +112,12 @@ public class GetOrganisationsUseCaseTests
         var organisations = new List<CO.CDP.OrganisationInformation.Persistence.Organisation>();
 
         _organisationRepositoryMock
-            .Setup(repo => repo.GetPaginated(command.Role, command.PendingRole, command.Limit, command.Skip))
+            .Setup(repo => repo.GetPaginated(command.Role, command.PendingRole, command.SearchText, command.Limit, command.Skip))
             .ReturnsAsync(organisations);
 
         var result = await _useCase.Execute(command);
 
         result.Should().BeEmpty();
-        _organisationRepositoryMock.Verify(repo => repo.GetPaginated(command.Role, command.PendingRole, command.Limit, command.Skip), Times.Once);
+        _organisationRepositoryMock.Verify(repo => repo.GetPaginated(command.Role, command.PendingRole, command.SearchText, command.Limit, command.Skip), Times.Once);
     }
 }

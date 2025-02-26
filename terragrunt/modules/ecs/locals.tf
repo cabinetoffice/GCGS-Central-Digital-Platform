@@ -37,8 +37,6 @@ locals {
 
   orchestrator_service_version = data.aws_ssm_parameter.orchestrator_service_version.value
 
-  production_subdomain = "supplier-information"
-
   service_version = var.pinned_service_version == null ? data.aws_ssm_parameter.orchestrator_service_version.value : var.pinned_service_version
 
   shared_sessions_enabled    = true
@@ -51,7 +49,7 @@ locals {
     config.name => config if contains(local.migrations, config.name)
   }
 
-  outbox_processors_desire_count = 0 # halt while in development. 1 # won't be scalable.
+  outbox_processors_desire_count = 1 # won't be scalable.
 
   service_configs = {
     for name, config in var.service_configs :

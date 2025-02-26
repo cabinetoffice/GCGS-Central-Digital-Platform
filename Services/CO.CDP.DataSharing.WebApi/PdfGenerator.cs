@@ -39,6 +39,7 @@ public class PdfGenerator(IHtmlLocalizer<FormsEngineResource> localizer) : IPdfG
                 page.Footer().AlignRight().Text(x =>
                 {
                     x.Span(StaticTextResource.PdfGenerator_Footer_GeneratedOn);
+                    x.Span(" ");
                     x.Span(DateTime.Now.ToString("dd MMMM yyyy")).Bold();
                 });
             });
@@ -51,12 +52,14 @@ public class PdfGenerator(IHtmlLocalizer<FormsEngineResource> localizer) : IPdfG
 
     private void AddFormSections(ColumnDescriptor col, IEnumerable<FormAnswerSetForPdf> formAnswerSet)
     {
-        var groupedSections = formAnswerSet.GroupBy(s => s.SectionName).OrderBy(g => g.Key);
+        var groupedSections = formAnswerSet.GroupBy(s => s.SectionName);
 
         foreach (var group in groupedSections)
         {
             col.Item().Text(localizer[group.Key].Value).Bold().FontSize(12);
             col.Item().PaddingBottom(10);
+            col.Item().LineHorizontal(1);
+
 
             foreach (var answerSet in group)
             {
@@ -77,14 +80,14 @@ public class PdfGenerator(IHtmlLocalizer<FormsEngineResource> localizer) : IPdfG
 
     private void AddBasicInformationSection(ColumnDescriptor col, BasicInformation basicInformation)
     {
-        col.Item().Text(StaticTextResource.PdfGenerator_BasicInformation_Title).Bold().FontSize(12);
+        col.Item().Text(StaticTextResource.PdfGenerator_OrganisationDetails_Title).Bold().FontSize(12);
         col.Item().PaddingBottom(10);
-
-        if (!string.IsNullOrEmpty(basicInformation.SupplierType?.ToString()))
-            col.Item().Element(container => AddTwoColumnRow(container, StaticTextResource.PdfGenerator_BasicInformation_Suppliertype, basicInformation.SupplierType?.ToString()));
 
         if (!string.IsNullOrEmpty(basicInformation.OrganisationName?.ToString()))
             col.Item().Element(container => AddTwoColumnRow(container, StaticTextResource.PdfGenerator_BasicInformation_OrganisationName, basicInformation.OrganisationName?.ToString()));
+
+        if (!string.IsNullOrEmpty(basicInformation.SupplierType?.ToString()))
+            col.Item().Element(container => AddTwoColumnRow(container, StaticTextResource.PdfGenerator_BasicInformation_Suppliertype, basicInformation.SupplierType?.ToString()));
 
         if (basicInformation.RegisteredAddress != null)
             col.Item().Element(container => AddTwoColumnRow(container, StaticTextResource.PdfGenerator_BasicInformation_RegisteredAddress, FormatAddress(basicInformation.RegisteredAddress)));
@@ -108,13 +111,15 @@ public class PdfGenerator(IHtmlLocalizer<FormsEngineResource> localizer) : IPdfG
         {
             col.Item().Element(container =>
             {
-                AddTwoColumnRow(container, StaticTextResource.PdfGenerator_BasicInformation_LegalForm,
-                    $"{StaticTextResource.PdfGenerator_BasicInformation_RegisteredLegalForm}: {basicInformation.LegalForm.RegisteredLegalForm}\n" +
-                    $"{StaticTextResource.PdfGenerator_BasicInformation_LawRegistered}: {basicInformation.LegalForm.LawRegistered}\n" +
-                    $"{StaticTextResource.PdfGenerator_BasicInformation_RegistrationDate}: {basicInformation.LegalForm.RegistrationDate:dd MMMM yyyy}");
+                container.Column(column =>
+                {
+                    column.Item().Element(item => AddTwoColumnRow(item, StaticTextResource.PdfGenerator_BasicInformation_RegisteredLegalForm, basicInformation.LegalForm.RegisteredLegalForm));
+                    column.Item().Element(item => AddTwoColumnRow(item, StaticTextResource.PdfGenerator_BasicInformation_LawRegistered, basicInformation.LegalForm.LawRegistered));
+                    column.Item().Element(item => AddTwoColumnRow(item, StaticTextResource.PdfGenerator_BasicInformation_RegistrationDate, $"{basicInformation.LegalForm.RegistrationDate:dd MMMM yyyy}"));
+                });
             });
         }
-
+        col.Item().PaddingBottom(10);
         col.Item().LineHorizontal(1);
         col.Item().PaddingBottom(10);
     }
@@ -186,26 +191,14 @@ public class PdfGenerator(IHtmlLocalizer<FormsEngineResource> localizer) : IPdfG
 
                 if (registeredAddress != null)
                 {
-                    col.Item().Element(container =>
-                    {
-                        AddTwoColumnRow(container, StaticTextResource.PdfGenerator_ConnectedPerson_RegisteredAddress,
-                            $"{StaticTextResource.PdfGenerator_ConnectedPerson_StreetAddress}: {registeredAddress.StreetAddress}\n" +
-                            $"{StaticTextResource.PdfGenerator_ConnectedPerson_Locality}: {registeredAddress.Locality}\n" +
-                            $"{StaticTextResource.PdfGenerator_ConnectedPerson_Postcode}: {registeredAddress.PostalCode}\n" +
-                            $"{StaticTextResource.PdfGenerator_ConnectedPerson_Country}: {registeredAddress.CountryName}");
-                    });
+                    col.Item().Element(container => AddTwoColumnRow(container, StaticTextResource.PdfGenerator_ConnectedPerson_RegisteredAddress,
+                        FormatAddress(mapAddressDetails(registeredAddress))));
                 }
 
                 if (postalAddress != null)
                 {
-                    col.Item().Element(container =>
-                    {
-                        AddTwoColumnRow(container, StaticTextResource.PdfGenerator_ConnectedPerson_PostalAddress,
-                            $"{StaticTextResource.PdfGenerator_ConnectedPerson_StreetAddress}: {postalAddress.StreetAddress}\n" +
-                            $"{StaticTextResource.PdfGenerator_ConnectedPerson_Locality}: {postalAddress.Locality}\n" +
-                            $"{StaticTextResource.PdfGenerator_ConnectedPerson_Postcode}: {postalAddress.PostalCode}\n" +
-                            $"{StaticTextResource.PdfGenerator_ConnectedPerson_Country}: {postalAddress.CountryName}");
-                    });
+                    col.Item().Element(container => AddTwoColumnRow(container, StaticTextResource.PdfGenerator_ConnectedPerson_PostalAddress,
+                        FormatAddress(mapAddressDetails(postalAddress))));
                 }
 
                 if (person.Organisation != null)
@@ -277,7 +270,7 @@ public class PdfGenerator(IHtmlLocalizer<FormsEngineResource> localizer) : IPdfG
                         });
                     }
                 }
-
+                col.Item().PaddingBottom(10);
             }
         }
         else
@@ -287,6 +280,24 @@ public class PdfGenerator(IHtmlLocalizer<FormsEngineResource> localizer) : IPdfG
 
         col.Item().LineHorizontal(1);
         col.Item().PaddingBottom(10);
+    }
+
+    private Address? mapAddressDetails(ConnectedAddress? address)
+    {
+        if (address != null)
+        {
+            return new Address
+            {
+                StreetAddress = address.StreetAddress,
+                Region = address.Region,
+                PostalCode = address.PostalCode,
+                CountryName = address.CountryName,
+                Country = address.CountryName,
+                Locality = address.Locality,
+                Type = address.Type == AddressType.Registered ? AddressType.Registered : AddressType.Postal
+            };
+        }
+        return null;
     }
 
     private void AddAdditionalIdentifiersSection(ColumnDescriptor col, IEnumerable<Model.Identifier> additionalIdentifiers)
@@ -300,18 +311,12 @@ public class PdfGenerator(IHtmlLocalizer<FormsEngineResource> localizer) : IPdfG
             {
                 col.Item().LineHorizontal(1);
 
-
-                if (!string.IsNullOrEmpty(identifier.Id))
-                    col.Item().Element(container => AddTwoColumnRow(container, StaticTextResource.PdfGenerator_IdentifierId, identifier.Id));
-
                 if (!string.IsNullOrEmpty(identifier.Scheme))
                     col.Item().Element(container => AddTwoColumnRow(container, StaticTextResource.PdfGenerator_Scheme, GetOrganisationSchemeTitle(identifier.Scheme)));
 
-                if (!string.IsNullOrEmpty(identifier.Scheme))
-                    col.Item().Element(container => AddTwoColumnRow(container, StaticTextResource.PdfGenerator_LegalName, identifier.LegalName));
-
-                if (!string.IsNullOrEmpty(identifier.Scheme))
-                    col.Item().Element(container => AddTwoColumnRow(container, StaticTextResource.PdfGenerator_Uri, identifier.Uri));
+                if (!string.IsNullOrEmpty(identifier.Id))
+                    col.Item().Element(container => AddTwoColumnRow(container, StaticTextResource.PdfGenerator_IdentifierId, identifier.Id));
+                col.Item().PaddingBottom(10);
             }
         }
         else
@@ -324,7 +329,7 @@ public class PdfGenerator(IHtmlLocalizer<FormsEngineResource> localizer) : IPdfG
 
     private void AddTwoColumnRow(IContainer container, string label, string? value)
     {
-        if (label.Contains('?') && label.Contains(':'))
+        if ((label.Contains('?') && label.Contains(':')) || label.Contains(':'))
         {
             label = label.TrimEnd(':');
         }
@@ -341,7 +346,8 @@ public class PdfGenerator(IHtmlLocalizer<FormsEngineResource> localizer) : IPdfG
         if (address == null)
             return StaticTextResource.Global_NotApplicable;
 
-        return $"{address.StreetAddress}, {address.Locality}, {address.PostalCode}, {address.CountryName}";
+        var country = address.CountryName == "United Kingdom" ? "UK" : address.CountryName;
+        return $"{address.StreetAddress}, {address.Locality}, {address.PostalCode}, {country}";
     }
 
     private string GetFriendlyCategoryText(OrganisationInformation.Persistence.ConnectedEntity.ConnectedEntityIndividualAndTrustCategoryType category)

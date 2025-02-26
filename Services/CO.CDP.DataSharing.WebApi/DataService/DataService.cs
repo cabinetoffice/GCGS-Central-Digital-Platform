@@ -60,7 +60,7 @@ public class DataService(IShareCodeRepository shareCodeRepository, IConnectedEnt
 
             foreach (var answer in answerSet.Answers)
             {
-                var title = localizer[answer.Question.Title].Value;
+                var title = localizer[answer.Question.SummaryTitle ?? answer.Question.Title].Value;
                 switch (answer.Question.Type)
                 {
                     case FormQuestionType.YesOrNo:

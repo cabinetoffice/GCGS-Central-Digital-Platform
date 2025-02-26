@@ -37,7 +37,7 @@ resource "aws_lb_listener" "ecs" {
 
     fixed_response {
       content_type = "text/plain"
-      message_body = "Fixed response from ${var.environment} environment"
+      message_body = var.is_production ? "..." : "Fixed response from ${var.environment} environment"
       status_code  = "200"
     }
   }
@@ -57,6 +57,28 @@ resource "aws_lb_listener" "ecs_http" {
       port        = "443"
     }
     type = "redirect"
+  }
+
+}
+
+resource "aws_lb_listener_rule" "redirect_private_beta_to_live" {
+  count = var.is_production ? 1 : 0
+
+  listener_arn = aws_lb_listener.ecs.arn
+  priority     = 8000
+
+  condition {
+    host_header {
+      values = ["supplier-information.${var.private_beta_domain}"]
+    }
+  }
+
+  action {
+    type = "redirect"
+    redirect {
+      status_code = "HTTP_301"
+      host        = var.public_domain
+    }
   }
 
 }

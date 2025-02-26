@@ -1,3 +1,4 @@
+using CO.CDP.OrganisationInformation.Persistence.Constants;
 using CO.CDP.Testcontainers.PostgreSql;
 using FluentAssertions;
 using static CO.CDP.OrganisationInformation.Persistence.IOrganisationRepository.OrganisationRepositoryException;
@@ -109,7 +110,7 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql)
     [Fact]
     public void ItRejectsTwoOrganisationsWithTheSameName()
     {
-        using var repository = OrganisationRepository();
+        var repository = OrganisationRepository();
 
         var organisation1 =
             GivenOrganisation(guid: Guid.NewGuid(), name: "TheOrganisation", tenant: GivenTenant(name: "T1"));
@@ -124,20 +125,54 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql)
     }
 
     [Fact]
-    public void ItRejectsTwoOrganisationsWithTheSameNameWhenCreatingTenant()
+    public void ItRejectsTwoOrganisationsWithTheSameNameRegardlessOfCasing()
     {
-        using var repository = OrganisationRepository();
+        var repository = OrganisationRepository();
 
         var organisation1 =
-            GivenOrganisation(guid: Guid.NewGuid(), name: "Acme LTD", tenant: GivenTenant(name: "Acme LTD"));
+            GivenOrganisation(guid: Guid.NewGuid(), name: "AnotherOrganisation", tenant: GivenTenant(name: "T3"));
         var organisation2 =
-            GivenOrganisation(guid: Guid.NewGuid(), name: "Acme LTD", tenant: GivenTenant(name: "Acme LTD"));
+            GivenOrganisation(guid: Guid.NewGuid(), name: "ANOTHERORGANISATION", tenant: GivenTenant(name: "T4"));
 
         repository.Save(organisation1);
 
         repository.Invoking(r => r.Save(organisation2))
             .Should().Throw<DuplicateOrganisationException>()
-            .WithMessage($"Organisation with name `Acme LTD` already exists.");
+            .WithMessage($"Organisation with name `AnotherOrganisation` already exists.");
+    }
+
+    [Fact]
+    public void ItRejectsTwoOrganisationsWithTheSameNameWhenCreatingTenant()
+    {
+        var repository = OrganisationRepository();
+
+        var organisation1 =
+            GivenOrganisation(guid: Guid.NewGuid(), name: "Another Test Org LTD", tenant: GivenTenant(name: "Another Test Org LTD"));
+        var organisation2 =
+            GivenOrganisation(guid: Guid.NewGuid(), name: "Another Test Org LTD", tenant: GivenTenant(name: "Another Test Org LTD"));
+
+        repository.Save(organisation1);
+
+        repository.Invoking(r => r.Save(organisation2))
+            .Should().Throw<DuplicateOrganisationException>()
+            .WithMessage($"Organisation with name `Another Test Org LTD` already exists.");
+    }
+
+    [Fact]
+    public void ItRejectsTwoOrganisationsWithTheSameNameWhenCreatingTenantRegardlessOfCasing()
+    {
+        var repository = OrganisationRepository();
+
+        var organisation1 =
+            GivenOrganisation(guid: Guid.NewGuid(), name: "Test Org LTD", tenant: GivenTenant(name: "Test Org LTD"));
+        var organisation2 =
+            GivenOrganisation(guid: Guid.NewGuid(), name: "TEST ORG LTD", tenant: GivenTenant(name: "TEST ORG LTD"));
+
+        repository.Save(organisation1);
+
+        repository.Invoking(r => r.Save(organisation2))
+            .Should().Throw<DuplicateOrganisationException>()
+            .WithMessage($"Organisation with name `Test Org LTD` already exists.");
     }
 
     [Fact]
@@ -954,6 +989,275 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql)
         result.Should().NotBeNull();
         result.Should().Contain(organisations[5]);
     }
+
+    [Fact]
+    public async Task GetPaginated_WhenNoOrganisationsExist_ReturnsEmptyList()
+    {
+        using var repository = OrganisationRepository();
+
+        await using var context = GetDbContext();
+        context.Organisations.RemoveRange(context.Organisations);
+        await context.SaveChangesAsync();
+
+        var result = await repository.GetPaginated(PartyRole.Buyer, PartyRole.Buyer, null, 10, 0);
+
+        result.Should().BeEmpty();
+    }
+
+    [Fact]
+    public async Task GetPaginated_WhenOrganisationsExist_ReturnsPaginatedResults()
+    {
+        using var repository = OrganisationRepository();
+
+        var organisation1 = GivenOrganisation(name: "Alpha Corp", roles: [PartyRole.Buyer]);
+        var organisation2 = GivenOrganisation(name: "Beta Ltd", roles: [PartyRole.Buyer]);
+        var organisation3 = GivenOrganisation(name: "Gamma LLC", roles: [PartyRole.Buyer]);
+
+        await using var context = GetDbContext();
+        context.Organisations.RemoveRange(context.Organisations);
+        await context.Organisations.AddRangeAsync(organisation1, organisation2, organisation3);
+        await context.SaveChangesAsync();
+
+        var result = await repository.GetPaginated(PartyRole.Buyer, PartyRole.Buyer, null, 2, 0);
+
+        result.Should().HaveCount(2);
+        result.First().Name.Should().Be("Alpha Corp");
+    }
+
+    [Fact]
+    public async Task GetPaginated_WithSearchText_ReturnsMatchingResults()
+    {
+        using var repository = OrganisationRepository();
+
+        var organisation1 = GivenOrganisation(name: "Acme Ltd", roles: [PartyRole.Buyer]);
+        var organisation2 = GivenOrganisation(name: "Beta Solutions", roles: [PartyRole.Buyer]);
+
+        await using var context = GetDbContext();
+        context.Organisations.RemoveRange(context.Organisations);
+        context.Tenants.RemoveRange(context.Tenants);
+        await context.Organisations.AddRangeAsync(organisation1, organisation2);
+        await context.SaveChangesAsync();
+
+        var result = await repository.GetPaginated(PartyRole.Buyer, PartyRole.Buyer, "Acme", 10, 0);
+
+        result.Should().HaveCount(1);
+        result.First().Name.Should().Be("Acme Ltd");
+    }
+
+    [Fact]
+    public async Task GetTotalCount_WhenNoOrganisationsExist_ReturnsZero()
+    {
+        using var repository = OrganisationRepository();
+        await using var context = GetDbContext();
+        context.Organisations.RemoveRange(context.Organisations);
+        await context.SaveChangesAsync();
+
+        var count = await repository.GetTotalCount(PartyRole.Buyer, PartyRole.Buyer, null);
+
+        count.Should().Be(0);
+    }
+
+    [Fact]
+    public async Task GetTotalCount_WhenOrganisationsExist_ReturnsCorrectCount()
+    {
+        using var repository = OrganisationRepository();
+
+        var organisation1 = GivenOrganisation(name: "Acme Ltd", roles: [PartyRole.Buyer]);
+        var organisation2 = GivenOrganisation(name: "Beta Solutions", roles: [PartyRole.Buyer]);
+
+        await using var context = GetDbContext();
+        context.Organisations.RemoveRange(context.Organisations);
+        await context.Organisations.AddRangeAsync(organisation1, organisation2);
+        await context.SaveChangesAsync();
+
+        var count = await repository.GetTotalCount(PartyRole.Buyer, PartyRole.Buyer, null);
+
+        count.Should().Be(2);
+    }
+
+    [Fact]
+    public async Task GetTotalCount_WithSearchText_ReturnsFilteredCount()
+    {
+        using var repository = OrganisationRepository();
+
+        var organisation1 = GivenOrganisation(name: "Acme Ltd", roles: [PartyRole.Buyer]);
+        var organisation2 = GivenOrganisation(name: "Beta Solutions", roles: [PartyRole.Buyer]);
+
+        await using var context = GetDbContext();
+        context.Organisations.RemoveRange(context.Organisations);
+        context.Tenants.RemoveRange(context.Tenants);
+        await context.Organisations.AddRangeAsync(organisation1, organisation2);
+        await context.SaveChangesAsync();
+
+        var count = await repository.GetTotalCount(PartyRole.Buyer, PartyRole.Buyer, "Acme");
+
+        count.Should().Be(1);
+    }
+
+    [Fact]
+    public async Task FindByOrganisationEmail_WhenMatchingOrganisationsExist_ShouldReturnResults()
+    {
+        using var repository = OrganisationRepository();
+        await using var context = GetDbContext();
+
+        var email = "contact@example.com";
+
+        var organisation1 = GivenOrganisation();
+        organisation1.ContactPoints = [new Organisation.ContactPoint { Email = email }];
+
+        var organisation2 = GivenOrganisation();
+        organisation2.ContactPoints = [new Organisation.ContactPoint { Email = email }];
+
+        await context.Organisations.AddRangeAsync(organisation1, organisation2);
+        await context.SaveChangesAsync();
+
+        var result = await repository.FindByOrganisationEmail(email, null, null);
+
+        result.Should().HaveCount(2);
+        result.Should().ContainEquivalentOf(organisation1);
+        result.Should().ContainEquivalentOf(organisation2);
+    }
+
+    [Fact]
+    public async Task FindByOrganisationEmail_WhenNoMatchingOrganisationsExist_ShouldReturnEmpty()
+    {
+        using var repository = OrganisationRepository();
+        await using var context = GetDbContext();
+
+        var email = "nomatch@example.com";
+
+        var result = await repository.FindByOrganisationEmail(email, null, null);
+
+        result.Should().BeEmpty();
+    }
+
+    [Fact]
+    public async Task FindByOrganisationEmail_WithRoleFilter_ShouldReturnMatchingOrganisations()
+    {
+        using var repository = OrganisationRepository();
+        await using var context = GetDbContext();
+
+        var email = "buyer@example.com";
+        var roleWeWant = PartyRole.Buyer;
+        var roleWeDontWant = PartyRole.Supplier;
+
+        var organisation1 = GivenOrganisation(roles: [roleWeWant]);
+        organisation1.ContactPoints = [new Organisation.ContactPoint { Email = email }];
+        organisation1.Roles.Add(roleWeWant);
+
+        var organisation2 = GivenOrganisation(roles: [roleWeDontWant]);
+        organisation2.ContactPoints = [new Organisation.ContactPoint { Email = email }];
+
+        await context.Organisations.AddRangeAsync(organisation1, organisation2);
+        await context.SaveChangesAsync();
+
+        var result = await repository.FindByOrganisationEmail(email, roleWeWant, null);
+
+        result.Should().HaveCount(1);
+        result.Should().ContainEquivalentOf(organisation1);
+        result.Should().NotContain(organisation2);
+    }
+
+    [Fact]
+    public async Task FindByOrganisationEmail_WithLimit_ShouldReturnLimitedResults()
+    {
+        using var repository = OrganisationRepository();
+        await using var context = GetDbContext();
+
+        var email = "john@johnson.com";
+
+        var organisation1 = GivenOrganisation();
+        organisation1.ContactPoints = [new Organisation.ContactPoint { Email = email }];
+
+        var organisation2 = GivenOrganisation();
+        organisation2.ContactPoints = [new Organisation.ContactPoint { Email = email }];
+
+        await context.Organisations.AddRangeAsync(organisation1, organisation2);
+        await context.SaveChangesAsync();
+
+        var result = await repository.FindByOrganisationEmail(email, null, 1);
+
+        result.Should().HaveCount(1);
+    }
+
+    [Fact]
+    public async Task FindByAdminEmail_WhenAdminExists_ShouldReturnMatchingOrganisations()
+    {
+        using var repository = OrganisationRepository();
+        await using var context = GetDbContext();
+
+        var email = "admin@example.com";
+
+        var person = GivenPerson(email: email);
+        var organisation1 = GivenOrganisation(personsWithScope: [(person, [OrganisationPersonScopes.Admin, OrganisationPersonScopes.Editor])]);
+        var organisation2 = GivenOrganisation(personsWithScope: [(person, [OrganisationPersonScopes.Editor])]);
+
+        await context.Organisations.AddRangeAsync(organisation1, organisation2);
+        await context.SaveChangesAsync();
+
+        var result = await repository.FindByAdminEmail(email, null, null);
+
+        result.Should().HaveCount(1);
+        result.Should().ContainEquivalentOf(organisation1);
+    }
+
+    [Fact]
+    public async Task FindByAdminEmail_WhenNoMatchingAdminExists_ShouldReturnEmpty()
+    {
+        using var repository = OrganisationRepository();
+        await using var context = GetDbContext();
+
+        var email = "notadmin@example.com";
+
+        var result = await repository.FindByAdminEmail(email, null, null);
+
+        result.Should().BeEmpty();
+    }
+
+    [Fact]
+    public async Task FindByAdminEmail_WithRoleFilter_ShouldReturnMatchingOrganisations()
+    {
+        using var repository = OrganisationRepository();
+        await using var context = GetDbContext();
+
+        var email = "admin-role@example.com";
+        var roleWeWant = PartyRole.Buyer;
+        var roleWeDontWant = PartyRole.Supplier;
+
+        var person = GivenPerson(email: email);
+        var organisation1 = GivenOrganisation(roles: [roleWeWant], personsWithScope: [(person, [OrganisationPersonScopes.Admin])]);
+        var organisation2 = GivenOrganisation(roles: [roleWeDontWant], personsWithScope: [(person, [OrganisationPersonScopes.Admin])]);
+
+        await context.Organisations.AddRangeAsync(organisation1, organisation2);
+        await context.SaveChangesAsync();
+
+        var result = await repository.FindByAdminEmail(email, roleWeWant, null);
+
+        result.Should().HaveCount(1);
+        result.Should().ContainEquivalentOf(organisation1);
+        result.Should().NotContain(organisation2);
+    }
+
+    [Fact]
+    public async Task FindByAdminEmail_WithLimit_ShouldReturnLimitedResults()
+    {
+        using var repository = OrganisationRepository();
+        await using var context = GetDbContext();
+
+        var email = "admin-limit@example.com";
+
+        var person = GivenPerson(email: email);
+        var organisation1 = GivenOrganisation(personsWithScope: [(person, ["ADMIN"])]);
+        var organisation2 = GivenOrganisation(personsWithScope: [(person, ["ADMIN"])]);
+
+        await context.Organisations.AddRangeAsync(organisation1, organisation2);
+        await context.SaveChangesAsync();
+
+        var result = await repository.FindByAdminEmail(email, null, 1);
+
+        result.Should().HaveCount(1);
+    }
+
 
     private DatabaseOrganisationRepository OrganisationRepository()
         => new(GetDbContext());

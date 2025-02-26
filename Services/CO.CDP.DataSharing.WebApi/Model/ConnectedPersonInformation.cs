@@ -50,7 +50,7 @@ public record ConnectedAddress
     string StreetAddress,
     string Locality,
     string Region,
-    string PostalCode,
+    string? PostalCode,
     string CountryName,
     OrganisationInformation.AddressType Type
 );

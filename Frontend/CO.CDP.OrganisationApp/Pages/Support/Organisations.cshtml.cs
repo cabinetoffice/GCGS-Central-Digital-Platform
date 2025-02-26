@@ -8,9 +8,12 @@ namespace CO.CDP.OrganisationApp.Pages.Support;
 [Authorize(Policy = PersonScopeRequirement.SupportAdmin)]
 public class OrganisationsModel(
     IOrganisationClient organisationClient,
-    ISession session) : LoggedInUserAwareModel(session)
+    ISession session)
+    : LoggedInUserAwareModel(session)
 {
     public string? Title { get; set; }
+
+    public string? SearchTitle { get; set; }
 
     public string? Type { get; set; }
 
@@ -22,41 +25,87 @@ public class OrganisationsModel(
 
     public int PageSize { get; set; }
 
+    public int Skip { get; set; }
+
     public IList<OrganisationExtended> Organisations { get; set; } = [];
+
+    [BindProperty] public string? OrganisationSearchInput { get; set; } = null;
 
     public async Task<IActionResult> OnGet(string type, int pageNumber = 1)
     {
-        PageSize = 10;
+        InitModel(type, pageNumber);
+
+        OrganisationSearchInput = SessionContext.Get<string>("OrganisationSearchInput");
+
+        await GetResults();
+
+        return Page();
+    }
+
+    public async Task<IActionResult> OnPost(string type, int pageNumber = 1)
+    {
+        InitModel(type, pageNumber);
+
+        if (!string.IsNullOrWhiteSpace(OrganisationSearchInput))
+        {
+            SessionContext.Set("OrganisationSearchInput", OrganisationSearchInput);
+        }
+        else
+        {
+            SessionContext.Remove("OrganisationSearchInput"); // Clear when input is empty
+        }
+
+        await GetResults();
+
+        return Page();
+    }
+
+    private void InitModel(string type, int pageNumber)
+    {
+        PageSize = 50;
 
         Type = type;
 
-        Title = (Type == "buyer"
-                ? StaticTextResource.Support_Organisations_BuyerOrganisations_Title
-                : StaticTextResource.Support_Organisations_SupplierOrganisations_Title);
+        if (Type == "buyer")
+        {
+            Title = StaticTextResource.Support_Organisations_BuyerOrganisations_Title;
+            SearchTitle = StaticTextResource.Support_Organisations_SearchTitleBuyer;
+        }
+        else
+        {
+            Title = StaticTextResource.Support_Organisations_SupplierOrganisations_Title;
+            SearchTitle = StaticTextResource.Support_Organisations_SearchTitleSupplier;
+        }
 
-        var skip = (pageNumber - 1) * PageSize;
+        Skip = (pageNumber - 1) * PageSize;
 
         CurrentPage = pageNumber;
+    }
 
-        switch(Type)
+    private async Task GetResults()
+    {
+        switch (Type)
         {
             case "supplier":
-                Organisations = (await organisationClient.GetAllOrganisationsAsync("tenderer", null, PageSize, skip)).ToList();
-                TotalOrganisations = await organisationClient.GetOrganisationsTotalCountAsync("tenderer", null);
-
+                Organisations = (await organisationClient
+                        .GetAllOrganisationsAsync("tenderer", "tenderer", OrganisationSearchInput, PageSize, Skip))
+                    .ToList();
+                TotalOrganisations = await organisationClient
+                    .GetOrganisationsTotalCountAsync("tenderer", "tenderer", OrganisationSearchInput);
                 break;
 
             case "buyer":
-                Organisations = (await organisationClient.GetAllOrganisationsAsync("buyer", "buyer", PageSize, skip)).ToList();
-                TotalOrganisations = await organisationClient.GetOrganisationsTotalCountAsync("buyer", "buyer");
-
+                Organisations = (await organisationClient
+                        .GetAllOrganisationsAsync("buyer", "buyer", OrganisationSearchInput, PageSize, Skip))
+                    .ToList();
+                TotalOrganisations = await organisationClient
+                    .GetOrganisationsTotalCountAsync("buyer", "buyer", OrganisationSearchInput);
                 break;
         }
 
         TotalPages = (int)Math.Ceiling((double)TotalOrganisations / PageSize);
-
-        return Page();
     }
+
 
     public static List<Identifier> CombineIdentifiers(Identifier? identifier, ICollection<Identifier> additionalIdentifiers)
     {

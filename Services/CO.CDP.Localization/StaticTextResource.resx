@@ -373,7 +373,7 @@
     <value>Terms and conditions</value>
   </data>
   <data name="Footer_PrivacyNotice" xml:space="preserve">
-    <value>Privacy notice</value>
+    <value>Privacy</value>
   </data>
   <data name="Footer_DataAndAPI" xml:space="preserve">
     <value>Data and API</value>
@@ -438,6 +438,12 @@
   <data name="Supplementary_Error_TryAgain" xml:space="preserve">
     <value>Try again later.</value>
   </data>
+  <data name="Supplementary_Error_NotSaved" xml:space="preserve">
+    <value>If you were completing a question and hadn’t clicked the ‘save’ button, we will not have saved your answers.</value>
+  </data>
+  <data name="Supplementary_Error_ContactSupport" xml:space="preserve">
+    <value>&lt;a href="/provide-feedback-and-contact/?context=feedback"&gt;Contact service support&lt;/a&gt; with the reference {0} to report the problem.</value>
+  </data>
   <data name="Supplementary_ContactUs_Title" xml:space="preserve">
     <value>Message sent</value>
   </data>
@@ -452,9 +458,6 @@
   </data>
   <data name="Supplementary_ContactUs_Send" xml:space="preserve">
     <value>Send</value>
-  </data>
-  <data name="Supplementary_ContactUs_CharsAvailable" xml:space="preserve">
-    <value>You have 10,000 characters available</value>
   </data>
   <data name="Supplementary_ContactUs_Name" xml:space="preserve">
     <value>Name</value>
@@ -698,6 +701,9 @@
   </data>
   <data name="Global_Submit" xml:space="preserve">
     <value>Submit</value>
+  </data>
+  <data name="Global_Filter" xml:space="preserve">
+    <value>Filter</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_PageTitle" xml:space="preserve">
     <value>Check your answers</value>
@@ -1615,13 +1621,13 @@
     <value>A private company with a special or exclusive right to provide utilities to the public. For example, private companies supplying electricity.</value>
   </data>
   <data name="OrganisationRegistration_BuyerOrganisationType_Other_Label" xml:space="preserve">
-    <value>Other</value>
+    <value>Other - only applies to non-contracting authorities establishing a dynamic market</value>
   </data>
   <data name="OrganisationRegistration_BuyerOrganisationType_Other_Hint" xml:space="preserve">
-    <value>For example, the establishment of a utilities dynamic market by a non-contracting authority.</value>
+    <value>Does not apply to local authority subsidiaries or limited companies connected to a public authority</value>
   </data>
   <data name="OrganisationRegistration_BuyerOrganisationType_OtherEnterType_Label" xml:space="preserve">
-    <value>Enter type</value>
+    <value>Enter buyer organisation type</value>
   </data>
   <data name="OrganisationRegistration_JoinOrganisationSuccess_Heading" xml:space="preserve">
     <value>Your request to join {0} has been sent</value>
@@ -1660,6 +1666,30 @@
     <value>&lt;p class="govuk-body"&gt;The organisation's details are already registered with the service.&lt;/p&gt;
 &lt;p class="govuk-body"&gt;If you know the person who registered the organisation, they can invite you to join. Or you can request to join below.&lt;/p&gt;
 &lt;a class="govuk-button" href="/registration/{0}/join-organisation"&gt;Request to Join&lt;/a&gt;</value>
+  </data>
+  <data name="OrganisationRegistration_Details_Title" xml:space="preserve">
+    <value>Check your answers</value>
+  </data>
+  <data name="OrganisationRegistration_Change_Identifier" xml:space="preserve">
+    <value>Change&lt;span class="govuk-visually-hidden"&gt; organisation identifier&lt;/span&gt;</value>
+  </data>
+  <data name="OrganisationRegistration_Details_Change_Name" xml:space="preserve">
+    <value>Change&lt;span class="govuk-visually-hidden"&gt; the organisation name&lt;/span&gt;</value>
+  </data>
+  <data name="OrganisationRegistration_Details_Change_Email" xml:space="preserve">
+    <value>Change&lt;span class="govuk-visually-hidden"&gt; the email address&lt;/span&gt;</value>
+  </data>
+  <data name="OrganisationRegistration_Details_Change_Address" xml:space="preserve">
+    <value>Change&lt;span class="govuk-visually-hidden"&gt; the registered address&lt;/span&gt;</value>
+  </data>
+  <data name="OrganisationRegistration_Details_Change_Organisation_Type" xml:space="preserve">
+    <value>Change&lt;span class="govuk-visually-hidden"&gt; the organisation type&lt;/span&gt;</value>
+  </data>
+  <data name="OrganisationRegistration_Details_Change_Devolved_Regulations" xml:space="preserve">
+    <value>Change&lt;span class="govuk-visually-hidden"&gt; the devolved regulations&lt;/span&gt;</value>
+  </data>
+  <data name="OrganisationRegistration_Details_Change_Devolved_Regions" xml:space="preserve">
+    <value>Change&lt;span class="govuk-visually-hidden"&gt; the devolved regions&lt;/span&gt;</value>
   </data>
   <data name="ApiKeyManagement_RevokeApiKey_Title" xml:space="preserve">
     <value>Cancel API key</value>
@@ -1759,9 +1789,6 @@
   </data>
   <data name="Forms_FormElementMultiLineInput_CharacterCountError" xml:space="preserve">
     <value>Enter 10,000 characters or fewer</value>
-  </data>
-  <data name="Forms_FormElementMultiLineInput_CharacterCountMessage" xml:space="preserve">
-    <value>You can enter up to 10,000 characters</value>
   </data>
   <data name="Forms_FormElementCheckBoxInput_DeclarationRequiredError" xml:space="preserve">
     <value>You must agree to the declaration statements to proceed.</value>
@@ -1916,6 +1943,12 @@
   <data name="Support_Organisations_SupplierOrganisations_Title" xml:space="preserve">
     <value>Supplier organisations</value>
   </data>
+  <data name="Support_Organisations_SearchTitleBuyer" xml:space="preserve">
+    <value>Search buyer organisation</value>
+  </data>
+  <data name="Support_Organisations_SearchTitleSupplier" xml:space="preserve">
+    <value>Search supplier organisation</value>
+  </data>
   <data name="Support_OrganisationApproval_OrganisationsCountHeading" xml:space="preserve">
     <value>There are {0} organisations</value>
   </data>
@@ -1927,6 +1960,9 @@
   </data>
   <data name="Support_OrganisationApproval_PotentialDuplicatesFound" xml:space="preserve">
     <value>Potential duplicates found</value>
+  </data>
+  <data name="Support_OrganisationApproval_DomainFound" xml:space="preserve">
+    <value>Domain found in the database</value>
   </data>
   <data name="Support_OrganisationApproval_OrganisationIdentifier_List" xml:space="preserve">
     <value>Organisation identifiers</value>
@@ -2076,7 +2112,7 @@
     <value>Not applicable</value>
   </data>
   <data name="PdfGenerator_AdditionalIdentifiers" xml:space="preserve">
-    <value>Additional identifiers</value>
+    <value>Other registries</value>
   </data>
   <data name="PdfGenerator_BasicInformation_EmailAddress" xml:space="preserve">
     <value>Email address</value>
@@ -2157,7 +2193,7 @@
     <value>Category</value>
   </data>
   <data name="PdfGenerator_ConnectedPersonInformation_Title" xml:space="preserve">
-    <value>Connected person information</value>
+    <value>People connected to organisation</value>
   </data>
   <data name="PdfGenerator_ConnectedPerson_Type" xml:space="preserve">
     <value>Type</value>
@@ -2199,7 +2235,7 @@
     <value>Type</value>
   </data>
   <data name="PdfGenerator_ConnectedPerson_OrganisationName" xml:space="preserve">
-    <value>Name</value>
+    <value>Organisation Name</value>
   </data>
   <data name="PdfGenerator_ConnectedPerson_PostalAddress" xml:space="preserve">
     <value>Postal address</value>
@@ -2238,7 +2274,7 @@
     <value>Generated on</value>
   </data>
   <data name="PdfGenerator_IdentifierId" xml:space="preserve">
-    <value>Identifier id</value>
+    <value>Number</value>
   </data>
   <data name="PdfGenerator_IndividualTrustInformation_Title" xml:space="preserve">
     <value>Individual trust Information</value>
@@ -2298,7 +2334,7 @@
     <value>Control conditions</value>
   </data>
   <data name="PdfGenerator_Scheme" xml:space="preserve">
-    <value>Scheme</value>
+    <value>Registry</value>
   </data>
   <data name="PdfGenerator_SupplierInformation_Title" xml:space="preserve">
     <value>Supplier information</value>
@@ -2726,7 +2762,7 @@
     <value>the Greater London Authority</value>
   </data>
   <data name="SupplierToBuyer_OrganisationType_Hint" xml:space="preserve">
-    <value>Decide on your organisation type, as defined in the &lt;a href="https://www.gov.uk/government/publications/procurement-act-2023-guidance-documents-plan-phase/guidance-contracting-authority-definition-html" target="_blank"&gt;contracting authority definition guidance (opens in new tab). &lt;/a&gt;</value>
+    <value>Decide on your organisation type, as defined in the &lt;a href="https://www.gov.uk/government/publications/procurement-act-2023-guidance-documents-plan-phase/guidance-contracting-authority-definition-html" target="_blank"&gt;contracting authority definition guidance (opens in new tab) &lt;/a&gt;</value>
   </data>
   <data name="SupplierToBuyer_OrganisationType_HousingAssociations" xml:space="preserve">
     <value>housing associations</value>
@@ -2815,15 +2851,6 @@
   <data name="Cookies_SetCookiePreferences" xml:space="preserve">
     <value>You’ve set your cookie preferences.</value>
   </data>
-  <data name="PrivacyPolicy_Title" xml:space="preserve">
-    <value>Agree to the privacy notice</value>
-  </data>
-  <data name="PrivacyPolicy_YesIHaveReadAndAgreePrivacyPolicy" xml:space="preserve">
-    <value>I have read and agree to the privacy notice</value>
-  </data>
-  <data name="PrivacyPolicy_SelectReadAndAgreeToPrivacyPolicy" xml:space="preserve">
-    <value>Select if you have read and agree to the Central Digital Platform service privacy policy</value>
-  </data>
   <data name="ProvideFeedbackAndContact_WhatsItToDoWith" xml:space="preserve">
     <value>What's it to do with?</value>
   </data>
@@ -2844,6 +2871,15 @@
   </data>
   <data name="ProvideFeedbackAndContact_EnterEmailAddress" xml:space="preserve">
     <value>Enter an email address</value>
+  </data>
+  <data name="PrivacyPolicy_Title" xml:space="preserve">
+    <value>Agree to the privacy notice</value>
+  </data>
+  <data name="PrivacyPolicy_YesIHaveReadAndAgreePrivacyPolicy" xml:space="preserve">
+    <value>I have read and agree to the privacy notice</value>
+  </data>
+  <data name="PrivacyPolicy_SelectReadAndAgreeToPrivacyPolicy" xml:space="preserve">
+    <value>Select if you have read and agree to the Central Digital Platform service privacy policy</value>
   </data>
   <data name="PrivacyPolicy_Intro" xml:space="preserve">
     <value>The privacy notice explains how we process your data, how we use it and who it's shared with.</value>
@@ -2892,9 +2928,6 @@
   </data>
   <data name="ProvideFeedbackAndContact_DoNotIncludePersonalOrFinancialInformation" xml:space="preserve">
     <value>Do not include personal or financial information like your National Insurance number or credit card details</value>
-  </data>
-  <data name="ProvideFeedbackAndContact_YouCanEnterUpTo10000Characters" xml:space="preserve">
-    <value>You can enter up to 10,000 characters</value>
   </data>
   <data name="ProvideFeedbackAndContact_GiveUsYourDetailsIfYouWantAReply" xml:space="preserve">
     <value>Give us your details if you want a reply (optional)</value>
@@ -2985,6 +3018,9 @@
   </data>
   <data name="Users_LastName_Label" xml:space="preserve">
     <value>Last name</value>
+  </data>
+  <data name="Registration_EnterName_Title" xml:space="preserve">
+    <value>Enter your name</value>
   </data>
   <data name="Users_FirstName_Validation" xml:space="preserve">
     <value>Enter your first name</value>
@@ -3232,6 +3268,12 @@
   <data name="OrganisationOverView_Banner_Review_MoU_Link" xml:space="preserve">
     <value>you must &lt;a href="/organisation/{0}/review-and-sign-memorandom"&gt;read and agree the data sharing agreement&lt;/a&gt;</value>
   </data>
+  <data name="OrganisationOverview_RegisterAsBuyer_Link" xml:space="preserve">
+    <value>Register as a buyer</value>
+  </data>
+  <data name="OrganisationOverview_RegisterAsBuyer_Text" xml:space="preserve">
+    <value>If you also buy public sector goods, works, services or utilities.</value>
+  </data>
   <data name="MoU_DataSharingAgreement_Title" xml:space="preserve">
     <value>Data sharing agreement</value>
   </data>
@@ -3330,5 +3372,35 @@
   </data>
   <data name="Footer_TED" xml:space="preserve">
     <value>Notices are based on TED XML schema. © European Union</value>
+  </data>
+  <data name="PdfGenerator_OrganisationDetails_Title" xml:space="preserve">
+    <value>Organisation Details</value>
+  </data>
+  <data name="Supplementary_SignedOut_Title" xml:space="preserve">
+    <value>You have been signed out</value>
+  </data>
+  <data name="Supplementary_SignedOut_Paragraph1" xml:space="preserve">
+    <value>&lt;a href="/one-login/sign-in" class="govuk-link break-word" aria-label="Sign in"&gt;Sign in&lt;/a&gt; again, or &lt;a href="{0}" class="govuk-link break-word"&gt;browse from the homepage&lt;/a&gt; to find the information you need.</value>
+  </data>
+  <data name="Supplementary_SignedOut_Paragraph2" xml:space="preserve">
+    <value>&lt;a href="/contact-us" class="govuk-link break-word"&gt;Contact us&lt;/a&gt; if you are experiencing problems using Find a Tender.</value>
+  </data>
+  <data name="GovukFrontend_CharacterCount_CharactersAvailable" xml:space="preserve">
+    <value>You can enter up to {0} characters</value>
+  </data>
+  <data name="GovukFrontend_CharacterCount_CharactersUnderLimit_One" xml:space="preserve">
+    <value>You have %{count} character remaining</value>
+  </data>
+  <data name="GovukFrontend_CharacterCount_CharactersUnderLimit_Other" xml:space="preserve">
+    <value>You have %{count} characters remaining</value>
+  </data>
+  <data name="GovukFrontend_CharacterCount_CharactersOverLimit_One" xml:space="preserve">
+    <value>You have %{count} character too many</value>
+  </data>
+  <data name="GovukFrontend_CharacterCount_CharactersOverLimit_Other" xml:space="preserve">
+    <value>You have %{count} characters too many</value>
+  </data>
+  <data name="GovukFrontend_CharacterCount_CharactersAtLimit" xml:space="preserve">
+    <value>You have 0 characters remaining</value>
   </data>
 </root>

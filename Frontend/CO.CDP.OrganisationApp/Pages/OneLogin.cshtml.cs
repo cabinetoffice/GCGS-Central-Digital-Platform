@@ -182,12 +182,14 @@ public class OneLoginModel(
 
         session.Clear();
 
+        var redirectUri = "/user/signedout";
+
         if (httpContextAccessor.HttpContext?.User?.Identity?.IsAuthenticated != true)
         {
-            return Redirect("/");
+            return Redirect(redirectUri);
         }
 
-        return SignOut(new AuthenticationProperties { RedirectUri = "/" },
+        return SignOut(new AuthenticationProperties { RedirectUri = redirectUri },
                 CookieAuthenticationDefaults.AuthenticationScheme,
                 OpenIdConnectDefaults.AuthenticationScheme);
     }

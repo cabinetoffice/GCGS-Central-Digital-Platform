@@ -80,6 +80,11 @@ variable "db_sirsi_port" {
   default     = 5432
 }
 
+variable "ecs_alb_dns_name" {
+  description = "DNS to the load balancer in front of ECS services"
+  type        = string
+}
+
 variable "ecs_alb_sg_id" {
   description = "Application load-balancer security group ID"
   type        = string
