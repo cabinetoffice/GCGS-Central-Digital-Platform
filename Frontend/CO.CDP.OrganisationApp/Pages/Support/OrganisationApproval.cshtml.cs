@@ -27,6 +27,10 @@ public class OrganisationApprovalModel(
 
     public ICollection<OrganisationSearchResult>? MatchingOrganisations { get; set; }
 
+    public ICollection<OrganisationSearchResult>? MatchingOrganisationsByOrgEmail { get; set; }
+
+    public ICollection<OrganisationSearchResult>? MatchingOrganisationsByAdminEmail { get; set; }
+
     public async Task<IActionResult> OnGet(Guid organisationId)
     {
         try
@@ -70,6 +74,24 @@ public class OrganisationApprovalModel(
         catch (ApiException ex) when (ex.StatusCode == 404)
         {
             MatchingOrganisations = [];
+        }
+
+        try
+        {
+            MatchingOrganisationsByOrgEmail = await organisationClient.FindOrganisationsByOrganisationEmailAsync(OrganisationDetails.ContactPoint.Email, "buyer", 10);
+        }
+        catch (ApiException ex) when (ex.StatusCode == 404)
+        {
+            MatchingOrganisationsByOrgEmail = [];
+        }
+
+        try
+        {
+            MatchingOrganisationsByAdminEmail = await organisationClient.FindOrganisationsByAdminEmailAsync(AdminUser?.Email, "buyer", 10);
+        }
+        catch (ApiException ex) when (ex.StatusCode == 404)
+        {
+            MatchingOrganisationsByAdminEmail = [];
         }
 
         return Page();
