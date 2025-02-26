@@ -67,7 +67,7 @@ public class DataServiceTests
         var shareCode = "invalid-sharecode";
 
         _shareCodeRepository.Setup(repo => repo.GetByShareCode(shareCode))
-            .ReturnsAsync((SharedConsentDS?)null);
+            .ReturnsAsync((SharedConsentNonEf?)null);
 
         Func<Task> act = async () => await DataService.GetSharedSupplierInformationAsync(shareCode);
 

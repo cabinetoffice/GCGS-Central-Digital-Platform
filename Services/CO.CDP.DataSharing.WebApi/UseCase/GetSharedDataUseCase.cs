@@ -78,7 +78,7 @@ public class GetSharedDataUseCase(
         }
     }
 
-    private void InsertFileDocumentUri(SharedConsentDS sharedConsent, SupplierInformation supplierInformation, string sharecode)
+    private void InsertFileDocumentUri(SharedConsentNonEf sharedConsent, SupplierInformation supplierInformation, string sharecode)
     {
         var dataSharingApiUrl = configuration["DataSharingApiUrl"]
                     ?? throw new Exception("Missing configuration key: DataSharingApiUrl.");
@@ -99,7 +99,7 @@ public class GetSharedDataUseCase(
         }
     }
 
-    private Details GetDetails(SharedConsentDS sharedConsent)
+    private Details GetDetails(SharedConsentNonEf sharedConsent)
     {
         var legalForm = sharedConsent.Organisation.SupplierInfo?.LegalForm;
         var operationTypes = sharedConsent.Organisation.SupplierInfo?.OperationTypes;
@@ -115,7 +115,7 @@ public class GetSharedDataUseCase(
         };
     }
 
-    private static ICollection<AssociatedPerson> AssociatedPersons(SharedConsentDS sharedConsent)
+    private static ICollection<AssociatedPerson> AssociatedPersons(SharedConsentNonEf sharedConsent)
     {
         return sharedConsent.Organisation.ConnectedEntities
             .Where(ce => ce.EntityType != ConnectedEntityType.Organisation)
@@ -129,7 +129,7 @@ public class GetSharedDataUseCase(
             }).ToList();
     }
 
-    private static ICollection<OrganisationReference> AdditionalEntities(SharedConsentDS sharedConsent)
+    private static ICollection<OrganisationReference> AdditionalEntities(SharedConsentNonEf sharedConsent)
     {
         return sharedConsent.Organisation.ConnectedEntities
             .Where(ce => ce.EntityType == ConnectedEntityType.Organisation).Select(x => new OrganisationReference
