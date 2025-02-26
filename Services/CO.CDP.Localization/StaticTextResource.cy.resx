@@ -1794,6 +1794,36 @@
   <data name="Global_Submit" xml:space="preserve">
     <value>Cyflwyno</value>
   </data>
+  <data name="CookieBanner_Title" xml:space="preserve">
+    <value>Cwcis ar Canfod Tendr</value>
+  </data>
+  <data name="CookieBanner_Paragraph1" xml:space="preserve">
+    <value>Rydym yn defnyddio rhai cwcis hanfodol er mwyn gwneud i'r gwasanaeth hwn weithio.</value>
+  </data>
+  <data name="CookieBanner_Paragraph2" xml:space="preserve">
+    <value>Hoffem hefyd ddefnyddio cwcis dadansoddeg fel y gallwn ddeall sut rydych yn defnyddio'r gwasanaeth a gwneud gwelliannau.</value>
+  </data>
+  <data name="CookieBanner_AcceptButton" xml:space="preserve">
+    <value>Derbyn cwcis dadansoddeg</value>
+  </data>
+  <data name="CookieBanner_RejectButton" xml:space="preserve">
+    <value>Gwrthod cwcis dadansoddeg</value>
+  </data>
+  <data name="CookieBanner_ViewCookies" xml:space="preserve">
+    <value>Gweld y cwcis</value>
+  </data>
+  <data name="CookieBanner_AcceptedStatement" xml:space="preserve">
+    <value>Rydych wedi derbyn cwcis dadansoddeg.</value>
+  </data>
+  <data name="CookieBanner_RejectedStatement" xml:space="preserve">
+    <value>Rydych wedi gwrthod cwcis dadansoddeg.</value>
+  </data>
+  <data name="CookieBanner_ChangeCookieSettings" xml:space="preserve">
+    <value>Gallwch &lt;a class="govuk-link" href="/cookies"&gt;newid eich gosodiadau cwcis&lt;/a&gt; unrhyw bryd.</value>
+  </data>
+  <data name="CookieBanner_HideCookieMessage" xml:space="preserve">
+    <value>Cuddio'r neges hon</value>
+  </data>
   <data name="Header_MyAccount" xml:space="preserve">
     <value>Fy nghyfrif</value>
   </data>
