@@ -58,17 +58,19 @@ public class MoUSummaryModelTests
 
 
     [Fact]
-    public async Task OnPost_ShouldReturnFileStreamResult_WhenFileExists()
+    public async Task OnPost_WhenFileDoesNotExist_ShouldRedirectToPageNotFound()
     {
-        var mockOrganisation = GivenOrganisationClientModel(_orgId);
-        var absolutePath = Path.Combine(Directory.GetCurrentDirectory(), _filePath);
+        var mockOrganisation = GivenOrganisationClientModel(_orgId);        
 
         var person = new CDP.Organisation.WebApiClient.Person("test@email.com", "first_name", Guid.NewGuid(), "last_name", ["ADMIN", "SUPPORTADMIN"]);
         var mou = new CDP.Organisation.WebApiClient.Mou(DateTimeOffset.Now, "fts-joint-controller-agreement.pdf", _mouId);
         var mouSignature = new MouSignatureLatest(person, _mouSignatureId, true, "Tester", mou, "Test User", DateTimeOffset.Now);
 
-        Directory.CreateDirectory(Path.GetDirectoryName(absolutePath)!);
-        await File.WriteAllTextAsync(absolutePath, "Fake PDF Content");
+        var absolutePath = Path.Combine(Directory.GetCurrentDirectory(), "mou-pdfs", "mou-pdf-template.pdf");
+        if (System.IO.File.Exists(absolutePath))
+        {
+            File.Delete(absolutePath);
+        }
 
         _mockOrganisationClient
             .Setup(c => c.GetOrganisationAsync(_orgId))
@@ -80,15 +82,8 @@ public class MoUSummaryModelTests
 
         var result = await _model.OnPost();
 
-        result.Should().BeOfType<FileStreamResult>()
-            .Which.ContentType.Should().Be("application/pdf");
-
-        var fileStreamResult = result as FileStreamResult;
-        fileStreamResult.Should().NotBeNull();
-        fileStreamResult!.FileDownloadName.Should().Be("fts-joint-controller-agreement.pdf");
-        fileStreamResult.FileStream.Should().NotBeNull();
-        await fileStreamResult!.FileStream.DisposeAsync();
-        File.Delete(absolutePath);
+        result.Should().BeOfType<RedirectToPageResult>()
+            .Which.PageName.Should().Be("/page-not-found");
     }
 
     [Fact]
