@@ -81,7 +81,7 @@ locals {
       ]
       pinned_service_version            = "1.0.44"
       postgres_instance_type            = "db.t4g.micro"
-      postgres_aurora_instance_type     = "db.r5.12xlarge"
+      postgres_aurora_instance_type     = "db.r5.large"
       private_subnets = [
         "10.${local.cidr_b_staging}.101.0/24",
         "10.${local.cidr_b_staging}.102.0/24",
@@ -234,7 +234,7 @@ locals {
     orchestrator = 0
     development  = 2
     integration  = 2
-    staging      = 9
+    staging      = 2
     production   = 9
   }
 
@@ -242,7 +242,7 @@ locals {
     development  = { cpu = 256,  memory = 512  }
     orchestrator = { cpu = 256,  memory = 512  }
     integration  = { cpu = 512,  memory = 1024 }
-    staging      = { cpu = 4096, memory = 8192 }
+    staging      = { cpu = 512,  memory = 1024 }
     production   = { cpu = 4096, memory = 8192 }
   }
 
