@@ -73,7 +73,7 @@ public class ConsortiumConfirmSupplierModel(
 
                 if (csc == null)
                 {
-                    ModelState.AddModelError(string.Empty, ErrorMessagesList.PayLoadIssueOrNullAurgument);
+                    ModelState.AddModelError(string.Empty, ErrorMessagesList.PayLoadIssueOrNullArgument);
                     return Page();
                 }
 
