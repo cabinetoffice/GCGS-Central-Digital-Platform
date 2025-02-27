@@ -1,6 +1,9 @@
 using CO.CDP.OrganisationInformation.Persistence;
 using CO.CDP.TestKit.Mvc;
 using FluentAssertions;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Xunit.Abstractions;
 
 namespace CO.CDP.DataSharing.WebApiClient.Tests;
@@ -13,7 +16,7 @@ public class DataSharingClientIntegrationTest
     {
         TestWebApplicationFactory<Program> _factory = new(builder =>
         {
-            builder.ConfigureInMemoryDbContext<OrganisationInformationContext>();
+            builder.ConfigureServices(s => { s.AddDbContext<OrganisationInformationContext>(o => { o.UseInMemoryDatabase("TestDb"); }); });
             builder.ConfigureLogging(testOutputHelper);
             builder.ConfigureFakePolicyEvaluator();
         });

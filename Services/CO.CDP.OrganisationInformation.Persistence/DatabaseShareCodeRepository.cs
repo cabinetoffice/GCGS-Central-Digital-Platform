@@ -344,13 +344,16 @@ public class DatabaseShareCodeRepository(OrganisationInformationContext context)
 
             formSections.ForEach(s => s.Questions = [.. s.Questions.OrderBy(q => q.SortOrder)]);
         }
-        finally
+        catch
         {
             if (tran != null)
             {
                 await tran.RollbackAsync();
             }
-
+            throw;
+        }
+        finally
+        {
             if (conn != null)
             {
                 await conn.DisposeAsync(); // This closes and disposes the connection safely
