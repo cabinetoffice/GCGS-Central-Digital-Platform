@@ -62,7 +62,7 @@ public class SignOrganisationMouUseCase(
             return;
         }
 
-        var requestLink = new Uri(new Uri(baseAppUrl), $"/organisation/{organisation.Guid}/review-and-sign-memorandom?handler=download").ToString();
+        var requestLink = new Uri(new Uri(baseAppUrl), $"/organisation/{organisation.Guid}/review-and-sign-memorandom?handler=download&mouid={mouSignature.SignatureGuid}").ToString();
 
         var emailRecipients = new List<string> { mouSignature.CreatedBy.Email };
 

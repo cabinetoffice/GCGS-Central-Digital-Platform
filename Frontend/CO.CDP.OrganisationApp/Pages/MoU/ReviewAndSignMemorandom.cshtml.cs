@@ -81,38 +81,35 @@ public class ReviewAndSignMemorandomModel(IOrganisationClient organisationClient
         return RedirectToPage("ReviewAndSignMemorandomComplete", new { Id });
     }
 
-    public async Task<IActionResult> OnGetDownload()
+    public async Task<IActionResult> OnGetDownload(string mouid = "")
     {
-        if (await TryFetchLatestMou() && !string.IsNullOrEmpty(MouLatest?.FilePath))
+        try
         {
-            var absolutePath = Path.Combine(
-                Directory.GetCurrentDirectory(),
-                "mou-pdfs",
-                MouLatest.FilePath
-            );
+            var filePath = string.IsNullOrEmpty(mouid)
+                ? (await TryFetchLatestMou() ? MouLatest?.FilePath : null)
+                : (await organisationClient.GetOrganisationMouSignatureAsync(Id, Guid.Parse(mouid))).Mou.FilePath;
+
+            if (string.IsNullOrEmpty(filePath))
+                return RedirectToPage("/page-not-found");
+
+            var absolutePath = Path.Combine(Directory.GetCurrentDirectory(), "mou-pdfs", filePath);
 
             if (!System.IO.File.Exists(absolutePath))
-            {               
                 return RedirectToPage("/page-not-found");
-            }
 
-            try
-            {
-                var contentType = "application/pdf";
-                var fileName = "fts-joint-controller-agreement.pdf";
+            var contentType = "application/pdf";
+            var fileName = "fts-joint-controller-agreement.pdf";
 
-                var fileStream = new FileStream(absolutePath, FileMode.Open, FileAccess.Read, FileShare.Read);
-
-                return File(fileStream, contentType, fileName);
-            }
-            catch
-            {
-                return RedirectToPage("/page-not-found");
-            }
+            return File(new FileStream(absolutePath, FileMode.Open, FileAccess.Read, FileShare.Read), contentType, fileName);
         }
-
-        // Redirect to "page not found" if the MOU is not fetched or the file path is invalid
-        return RedirectToPage("/page-not-found");
+        catch (OrganisationApiException ex) when (ex.StatusCode == 404)
+        {
+            return RedirectToPage("/page-not-found");
+        }
+        catch
+        {
+            return RedirectToPage("/page-not-found");
+        }
     }
 
     private async Task<bool> TryFetchLatestMou()
