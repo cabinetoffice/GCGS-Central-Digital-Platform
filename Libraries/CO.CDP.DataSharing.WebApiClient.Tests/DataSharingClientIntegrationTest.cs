@@ -1,7 +1,6 @@
 using CO.CDP.OrganisationInformation.Persistence;
 using CO.CDP.TestKit.Mvc;
 using FluentAssertions;
-using Microsoft.Extensions.Hosting;
 using Xunit.Abstractions;
 
 namespace CO.CDP.DataSharing.WebApiClient.Tests;
