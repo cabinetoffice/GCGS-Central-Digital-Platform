@@ -12,7 +12,10 @@ public interface IPersonRepository : IDisposable
 
     public class PersonRepositoryException(string message, Exception? cause = null) : Exception(message, cause)
     {
-        public class DuplicatePersonException(string message, Exception? cause = null)
+        public class DuplicateGuidException(string message, Exception? cause = null)
+            : PersonRepositoryException(message, cause);
+
+        public class DuplicateEmailException(string message, Exception? cause = null)
             : PersonRepositoryException(message, cause);
     }
 }

@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!--
     Microsoft ResX Schema
@@ -331,7 +331,7 @@
     <value>Data ac API</value>
   </data>
   <data name="Footer_PrivacyNotice" xml:space="preserve">
-    <value>Hysbysiad preifatrwydd</value>
+    <value>Preifatrwydd</value>
   </data>
   <data name="Footer_TermsAndConditions" xml:space="preserve">
     <value>Telerau ac amodau</value>
@@ -2997,7 +2997,7 @@
   <data name="ErrorMessageList_DuplicatePersonName" xml:space="preserve">
     <value>Mae person gyda’r enw hwn eisoes yn bodoli. Rhowch gynnig arall arni.</value>
   </data>
-  <data name="ErrorMessageList_PayLoadIssueOrNullAurgument" xml:space="preserve">
+  <data name="ErrorMessageList_PayLoadIssueOrNullArgument" xml:space="preserve">
     <value>Rhowch yr holl wybodaeth ofynnol yn gywir.</value>
   </data>
   <data name="ErrorMessageList_SharecodeNotFound" xml:space="preserve">

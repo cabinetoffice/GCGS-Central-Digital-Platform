@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using CO.CDP.Localization;
+using Microsoft.AspNetCore.Html;
 
 namespace CO.CDP.OrganisationApp.Pages;
 
@@ -22,7 +23,7 @@ public class YourDetailsModel(
     [Required(ErrorMessageResourceName = nameof(StaticTextResource.Users_LastName_Validation), ErrorMessageResourceType = typeof(StaticTextResource))]
     public string? LastName { get; set; }
 
-    public string? Error { get; set; }
+    public IHtmlContent? SystemError { get; set; }
 
     public IActionResult OnGet()
     {
@@ -95,14 +96,24 @@ public class YourDetailsModel(
 
         if (!string.IsNullOrEmpty(code))
         {
-            ModelState.AddModelError(string.Empty, code switch
+            var error = code switch
             {
-                ErrorCodes.PERSON_ALREADY_EXISTS => ErrorMessagesList.DuplicatePersonName,
-                ErrorCodes.ARGUMENT_NULL => ErrorMessagesList.PayLoadIssueOrNullAurgument,
+                ErrorCodes.PERSON_GUID_ALREADY_EXISTS => ErrorMessagesList.DuplicatePersonName,
+                ErrorCodes.PERSON_EMAIL_ALREADY_EXISTS => string.Format(ErrorMessagesList.FirstAccessDuplicatePersonEmail, HttpContext.TraceIdentifier),
+                ErrorCodes.ARGUMENT_NULL => ErrorMessagesList.PayLoadIssueOrNullArgument,
                 ErrorCodes.INVALID_OPERATION => ErrorMessagesList.PersonCreationFailed,
                 ErrorCodes.UNPROCESSABLE_ENTITY => ErrorMessagesList.UnprocessableEntity,
                 _ => ErrorMessagesList.UnexpectedError
-            });
+            };
+
+            if (code == ErrorCodes.PERSON_EMAIL_ALREADY_EXISTS)
+            {
+                SystemError = new HtmlString(error);
+            }
+            else
+            {
+                ModelState.AddModelError(string.Empty, error);
+            }
         }
     }
 

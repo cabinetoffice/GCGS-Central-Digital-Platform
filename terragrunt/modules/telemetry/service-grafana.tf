@@ -5,6 +5,7 @@ module "ecs_service_grafana" {
     "${path.module}/templates/task-definitions/grafana.json.tftpl",
     {
       account_id         = data.aws_caller_identity.current.account_id
+      cdp_sirsi_environment = "${local.name_prefix}-${var.environment}"
       container_port     = var.grafana_config.port
       cpu                = var.grafana_config.cpu
       gf_admin_password  = "${aws_secretsmanager_secret.grafana_credentials.arn}:ADMIN_PASSWORD::"
@@ -37,5 +38,8 @@ module "ecs_service_grafana" {
   role_ecs_task_arn      = var.role_ecs_task_arn
   role_ecs_task_exec_arn = var.role_ecs_task_exec_arn
   tags                   = var.tags
+  # user_pool_arn          = var.is_production ? var.user_pool_arn_grafana : null
+  # user_pool_client_id    = var.is_production ? var.user_pool_client_id_grafana : null
+  # user_pool_domain       = var.is_production ? var.user_pool_domain_grafana : null
   vpc_id                 = var.vpc_id
 }
