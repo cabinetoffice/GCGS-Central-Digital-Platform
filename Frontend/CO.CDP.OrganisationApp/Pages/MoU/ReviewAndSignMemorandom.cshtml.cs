@@ -81,13 +81,13 @@ public class ReviewAndSignMemorandomModel(IOrganisationClient organisationClient
         return RedirectToPage("ReviewAndSignMemorandomComplete", new { Id });
     }
 
-    public async Task<IActionResult> OnGetDownload(string mouid = "")
+    public async Task<IActionResult> OnGetDownload(string mouSignatureId = "")
     {
         try
         {
-            var filePath = string.IsNullOrEmpty(mouid)
+            var filePath = string.IsNullOrEmpty(mouSignatureId)
                 ? (await TryFetchLatestMou() ? MouLatest?.FilePath : null)
-                : (await organisationClient.GetOrganisationMouSignatureAsync(Id, Guid.Parse(mouid))).Mou.FilePath;
+                : (await organisationClient.GetOrganisationMouSignatureAsync(Id, Guid.Parse(mouSignatureId))).Mou.FilePath;
 
             if (string.IsNullOrEmpty(filePath))
                 return RedirectToPage("/page-not-found");
