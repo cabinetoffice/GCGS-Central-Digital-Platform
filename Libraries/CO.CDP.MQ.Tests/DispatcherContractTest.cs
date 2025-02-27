@@ -18,12 +18,10 @@ public abstract class DispatcherContractTest
         dispatcher.Subscribe(subscriber1);
         dispatcher.Subscribe(subscriber2);
 
-        var task = dispatcher.ExecuteAsync(tokenSource.Token);
-
         await PublishMessage(new UnexpectedTestMessage(42, "Bye."));
         await PublishMessage(new TestMessage(13, "Hello."));
 
-        await task;
+        await RunDispatcher(dispatcher, tokenSource.Token);
 
         subscriber1.HandledMessages.Should().Equal([new TestMessage(13, "Hello.")]);
         subscriber2.HandledMessages.Should().Equal([new TestMessage(13, "Hello.")]);
@@ -38,11 +36,9 @@ public abstract class DispatcherContractTest
         var dispatcher = await CreateDispatcher();
         dispatcher.Subscribe(subscriber);
 
-        var task = dispatcher.ExecuteAsync(tokenSource.Token);
-
         await PublishMessage(new TestMessage(13, "Hello."));
 
-        await task;
+        await RunDispatcher(dispatcher, tokenSource.Token);
 
         (await CountMessagesInQueue()).Should().Be(0);
     }
@@ -79,13 +75,11 @@ public abstract class DispatcherContractTest
         dispatcher.Subscribe(failingSubscriber);
         dispatcher.Subscribe(lastSubscriber);
 
-        var task = dispatcher.ExecuteAsync(tokenSource.Token);
-
         await PublishMessage(new TestMessage(13, "Hello."));
         await PublishMessage(new TestMessage(14, "Hello."));
         await PublishMessage(new TestMessage(15, "Hello."));
 
-        await task;
+        await RunDispatcher(dispatcher, tokenSource.Token);
 
         subscriber.ReceivedMessages.Should()
             .BeEquivalentTo([
@@ -126,6 +120,17 @@ public abstract class DispatcherContractTest
                 new TestMessage(14, "Hello."),
                 new TestMessage(15, "Hello.")
             ]);
+    }
+
+    private static async Task RunDispatcher(IDispatcher dispatcher, CancellationToken cancellationToken)
+    {
+        await Task.Run(async () =>
+        {
+            while (!cancellationToken.IsCancellationRequested)
+            {
+                await dispatcher.ExecuteAsync(cancellationToken);
+            }
+        }, cancellationToken);
     }
 
     protected abstract Task<IDispatcher> CreateDispatcher(string? queueUrl = null);
