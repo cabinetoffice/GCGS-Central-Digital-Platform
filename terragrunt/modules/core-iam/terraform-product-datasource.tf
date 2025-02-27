@@ -256,4 +256,20 @@ data "aws_iam_policy_document" "terraform_product" {
     sid = "ManageProductWAF"
   }
 
+  statement {
+    actions = [
+      "SNS:CreateTopic",
+      "SNS:TagResource",
+      "SNS:SetTopicAttributes",
+      "SNS:GetTopicAttributes",
+      "SNS:ListTagsForResource",
+      "SNS:DeleteTopic",
+    ]
+    effect = "Allow"
+    resources = [
+      "arn:aws:sns:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:${local.name_prefix}-*",
+    ]
+    sid = "ManageProductSNS"
+  }
+
 }

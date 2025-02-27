@@ -78,9 +78,10 @@ dependency service_cache {
 dependency service_ecs {
   config_path = "../../service/ecs"
   mock_outputs = {
+    ecs_alb_dns_name = "mock"
     ecs_cluster_id   = "mock"
     ecs_cluster_name = "mock"
-    ecs_alb_dns_name  = "mock"
+    ecs_listener_arn = "mock"
   }
 }
 
