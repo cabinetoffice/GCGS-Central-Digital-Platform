@@ -15,6 +15,7 @@ public class ReviewAndSignMemorandomTests
     private readonly ReviewAndSignMemorandomModel _model;
     private readonly UserDetails _userDetails;
     private readonly Guid _userGuid;
+    private readonly Guid _mouId = Guid.NewGuid();
 
     public ReviewAndSignMemorandomTests()
     {
@@ -104,6 +105,32 @@ public class ReviewAndSignMemorandomTests
             .Which.PageName.Should().Be("/page-not-found");
     }
 
+    [Theory]
+    [InlineData("nonexistent.pdf")]
+    [InlineData("")]
+    public async Task OnGetDownload_ShouldRedirectToPageNotFound_WhenInvalidOrMissingFile(string filePath)
+    {
+        var mockMou = new CO.CDP.Organisation.WebApiClient.Mou(DateTimeOffset.UtcNow, filePath, Guid.NewGuid());
+        _organisationClientMock
+            .Setup(c => c.GetMouAsync(_mouId))
+            .ReturnsAsync(mockMou);
+        var result = await _model.OnGetDownload(_mouId.ToString());
+
+        result.Should().BeOfType<RedirectToPageResult>()
+            .Which.PageName.Should().Be("/page-not-found");
+    }
+
+    [Fact]
+    public async Task OnGetDownload_ShouldRedirectToPageNotFound_WhenOrganisationApiExceptionOccurs()
+    {
+        _organisationClientMock.Setup(c => c.GetMouAsync(It.IsAny<Guid>()))
+            .ThrowsAsync(new CO.CDP.Organisation.WebApiClient.ApiException("Not Found", 404, "", default, null));
+
+        var result = await _model.OnGetDownload(_mouId.ToString());
+
+        result.Should().BeOfType<RedirectToPageResult>()
+            .Which.PageName.Should().Be("/page-not-found");
+    }
 
     private static CO.CDP.Organisation.WebApiClient.Organisation GivenOrganisationClientModel(Guid? id, ICollection<PartyRole>? pendingRoles = null)
     {

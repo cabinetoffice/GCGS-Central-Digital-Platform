@@ -9,6 +9,12 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <Content Include="mou-pdfs\version-1.pdf">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+    </ItemGroup>
+
+    <ItemGroup>
       <PackageReference Include="Flurl.Http" Version="4.0.2" />
       <PackageReference Include="Markdig" Version="0.40.0" />
       <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="8.0.8" />
@@ -32,12 +38,6 @@
         <ProjectReference Include="..\..\Libraries\CO.CDP.Mvc.Validation\CO.CDP.Mvc.Validation.csproj" />
         <ProjectReference Include="..\..\Libraries\CO.CDP.Configuration\CO.CDP.Configuration.csproj" />
         <ProjectReference Include="..\..\Services\CO.CDP.Localization\CO.CDP.Localization.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <None Update="mou-pdfs\version-1.pdf">
-            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </None>
     </ItemGroup>
 
     <ItemGroup>
