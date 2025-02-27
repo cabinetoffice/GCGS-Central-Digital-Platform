@@ -341,7 +341,6 @@ public class DatabaseShareCodeRepository(OrganisationInformationContext context)
                 }
             }
 
-
             formSections.ForEach(s => s.Questions = [.. s.Questions.OrderBy(q => q.SortOrder)]);
         }
         catch (InvalidOperationException)
@@ -355,7 +354,7 @@ public class DatabaseShareCodeRepository(OrganisationInformationContext context)
         }
         finally
         {
-            if (conn != null) await conn.DisposeAsync(); // This closes and disposes the connection safely
+            if (conn != null) await conn.CloseAsync();
         }
 
         return sharedConsent;

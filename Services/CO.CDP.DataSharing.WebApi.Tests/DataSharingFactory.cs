@@ -177,7 +177,7 @@ public static class DataSharingFactory
                 "12345",
                 null,
                 null,
-                ConnectedEntity.ConnectedEntityType.Individual,
+                OrganisationInformation.ConnectedEntityType.Individual,
                 ConnectedOrganisationCategory.RegisteredCompany
             )
         ];
