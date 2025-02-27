@@ -7,5 +7,6 @@ locals {
     name => config.name if !contains(local.ecs_service_migrations, config.name)
   }
 
-  ecs_threshold_cup_percent = 10
+  ecs_threshold_cup_percent    = 80
+  ecs_threshold_memory_percent = 80
 }
