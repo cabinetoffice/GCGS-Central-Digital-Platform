@@ -6,17 +6,14 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.Localization;
 using Moq;
 using static CO.CDP.DataSharing.WebApi.Tests.DataSharingFactory;
-using SharedConsent = CO.CDP.OrganisationInformation.Persistence.Forms.SharedConsent;
 
 namespace CO.CDP.DataSharing.WebApi.Tests.DataService;
 
 public class DataServiceTests
 {
     private readonly Mock<IShareCodeRepository> _shareCodeRepository = new();
-    private readonly Mock<IConnectedEntityRepository> _connectedEntityRepository = new();
     private readonly Mock<IHtmlLocalizer<FormsEngineResource>> _localizer = new();
-    private CO.CDP.DataSharing.WebApi.DataService.DataService DataService => new(_shareCodeRepository.Object,
-        _connectedEntityRepository.Object, _localizer.Object);
+    private WebApi.DataService.DataService DataService => new(_shareCodeRepository.Object, _localizer.Object);
 
     public DataServiceTests()
     {
