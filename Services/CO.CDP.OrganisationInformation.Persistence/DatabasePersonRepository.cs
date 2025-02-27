@@ -32,7 +32,24 @@ public class DatabasePersonRepository(OrganisationInformationContext context) : 
     {
         try
         {
-            context.Update(person);
+            var existingPerson = context.Persons
+                .FirstOrDefault(p => p.Email == person.Email);
+
+            if (existingPerson != null)
+            {
+                if (existingPerson.UserUrn != person.UserUrn)
+                {
+                    existingPerson.PreviousUrns.Add(existingPerson.UserUrn);
+                    existingPerson.UserUrn = person.UserUrn;
+                }
+
+                context.Update(existingPerson);
+            }
+            else
+            {
+                context.Add(person);
+            }
+
             context.SaveChanges();
         }
         catch (DbUpdateException cause)
