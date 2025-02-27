@@ -3040,10 +3040,6 @@
   <data name="Users_UserRole_Hint" xml:space="preserve">
     <value>Select the one that applies</value>
   </data>
-
-
-
-
   <data name="Users_UserRoleAdmin_HintTitle" xml:space="preserve">
     <value>What admins can do</value>
   </data>
