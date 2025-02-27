@@ -81,7 +81,8 @@ data "aws_iam_policy_document" "terraform_product" {
     ]
     effect = "Allow"
     resources = [
-      "arn:aws:cloudwatch::${data.aws_caller_identity.current.account_id}:dashboard/${local.name_prefix}-*",
+      "arn:aws:cloudwatch:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:dashboard/${local.name_prefix}-*",
+      "arn:aws:cloudwatch:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:alarm:${local.name_prefix}-*",
       "arn:aws:cloudwatch:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:alarm:canary/*/${local.name_prefix}-*"
     ]
     sid = "ManageProductCloudwatch"
