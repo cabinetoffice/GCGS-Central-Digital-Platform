@@ -1,13 +1,14 @@
-using AutoMapper;
+using CO.CDP.GovUKNotify;
+using CO.CDP.GovUKNotify.Models;
 using CO.CDP.Organisation.WebApi.Model;
-using CO.CDP.Organisation.WebApi.Tests.AutoMapper;
 using CO.CDP.Organisation.WebApi.UseCase;
 using CO.CDP.OrganisationInformation;
 using CO.CDP.OrganisationInformation.Persistence;
 using FluentAssertions;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Moq;
 using Mou = CO.CDP.OrganisationInformation.Persistence.Mou;
-using MouSignature = CO.CDP.OrganisationInformation.Persistence.MouSignature;
 using Persistence = CO.CDP.OrganisationInformation.Persistence;
 using Person = CO.CDP.OrganisationInformation.Persistence.Person;
 
@@ -17,7 +18,29 @@ public class SignOrganisationMouUseCaseTest
 {
     private readonly Mock<IOrganisationRepository> _organisationRepository = new();
     private readonly Mock<IPersonRepository> _personRepository = new();
-    private SignOrganisationMouUseCase _useCase => new SignOrganisationMouUseCase(_organisationRepository.Object, _personRepository.Object);
+    private readonly Mock<IGovUKNotifyApiClient> _notifyApiClient = new();
+    private readonly IConfiguration _mockConfiguration;
+    private readonly Mock<ILogger<SignOrganisationMouUseCase>> _logger = new();
+
+    private SignOrganisationMouUseCase _useCase =>
+        new SignOrganisationMouUseCase(_organisationRepository.Object,
+                                        _personRepository.Object,
+                                        _notifyApiClient.Object,
+                                        _mockConfiguration,
+                                        _logger.Object);
+
+    public SignOrganisationMouUseCaseTest()
+    {
+        var inMemorySettings = new List<KeyValuePair<string, string?>>
+        {
+            new("OrganisationAppUrl", "https://appurl"),
+            new("GOVUKNotify:MouDataSharingAgreementEmailTemplateId", "templateid"),
+        };
+
+        _mockConfiguration = new ConfigurationBuilder()
+            .AddInMemoryCollection(inMemorySettings)
+            .Build();
+    }
 
     [Fact]
     public async Task Execute_ShouldReturnTrue_WhenValidInputs()
@@ -57,6 +80,7 @@ public class SignOrganisationMouUseCaseTest
 
         result.Should().BeTrue();
         _organisationRepository.Verify(repo => repo.SaveOrganisationMou(It.IsAny<Persistence.MouSignature>()), Times.Once);
+        _notifyApiClient.Verify(g => g.SendEmail(It.IsAny<EmailNotificationRequest>()), Times.AtLeastOnce);
     }
 
     [Fact]
