@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
@@ -25,6 +25,7 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                 name: "previous_urns",
                 table: "persons",
                 type: "text[]",
+                defaultValue: new List<string>(),
                 nullable: false);
         }
 
