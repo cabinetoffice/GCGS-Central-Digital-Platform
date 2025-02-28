@@ -95,7 +95,7 @@ internal static class OrganisationClientExtensions
                        type: OrganisationUpdateType.AddAsBuyerRole,
                        organisation: new OrganisationInfo(additionalIdentifiers: null, contactPoint: null, addresses: null,
                            buyerInformation: new BuyerInformation(
-                           buyerType: supplierToBuyerDetails.BuyerOrganisationType == "Other" ? supplierToBuyerDetails.BuyerOrganisationOtherValue : supplierToBuyerDetails.BuyerOrganisationType,
+                           buyerType: supplierToBuyerDetails.BuyerOrganisationType,
                            devolvedRegulations: supplierToBuyerDetails.Regulations.AsApiClientDevolvedRegulationList()), identifierToRemove: null, organisationName: null, roles: null)));
 
 

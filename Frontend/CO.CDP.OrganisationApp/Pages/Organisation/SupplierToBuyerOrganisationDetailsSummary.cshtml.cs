@@ -32,7 +32,6 @@ public class SupplierToBuyerOrganisationDetailsSummaryModel(
         SupplierToBuyerDetailsModel = new SupplierToBuyerDetails
         {
             OrganisationType = state.OrganisationType,
-            BuyerOrganisationOtherValue = state.BuyerOrganisationOtherValue,
             BuyerOrganisationType = state.BuyerOrganisationType,
             Devolved = state.Devolved,
             Regulations = state.Devolved == true ? state.Regulations : [],

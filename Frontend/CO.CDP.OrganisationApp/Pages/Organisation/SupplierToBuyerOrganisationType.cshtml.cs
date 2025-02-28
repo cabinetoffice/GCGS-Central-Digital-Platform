@@ -22,7 +22,7 @@ public class SupplierToBuyerOrganisationTypeModel(ITempDataService tempDataServi
 
     [BindProperty]
     [DisplayName(nameof(StaticTextResource.SupplierToBuyer_OrganisationType_EnterType))]
-    [RequiredIf(nameof(StaticTextResource.SupplierToBuyer_OrganisationType_BuyerType), nameof(StaticTextResource.SupplierToBuyer_OrganisationType_BuyerTypeOthers))]
+    [RequiredIf("BuyerOrganisationType", "Other")]
     public string? OtherValue { get; set; }
 
     [BindProperty]
@@ -38,7 +38,7 @@ public class SupplierToBuyerOrganisationTypeModel(ITempDataService tempDataServi
 
         if (!string.IsNullOrEmpty(BuyerOrganisationType) && !BuyerTypes.Keys.Contains(BuyerOrganisationType))
         {
-            OtherValue = BuyerOrganisationType;
+            OtherValue = state.BuyerOrganisationType;
             BuyerOrganisationType = "Other";
         }
 
@@ -76,13 +76,7 @@ public class SupplierToBuyerOrganisationTypeModel(ITempDataService tempDataServi
     {
         var state = tempDataService.PeekOrDefault<SupplierToBuyerDetails>(SupplierToBuyerStateKey);
 
-
-        state.BuyerOrganisationType = BuyerOrganisationType;
-
-        if (BuyerOrganisationType == "Other")
-        {
-            state.BuyerOrganisationOtherValue = OtherValue;
-        }
+        state.BuyerOrganisationType = (BuyerOrganisationType == "Other" ? OtherValue : BuyerOrganisationType);
 
         tempDataService.Put(SupplierToBuyerStateKey, state);
     }

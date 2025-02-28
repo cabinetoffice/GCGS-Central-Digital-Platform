@@ -49,7 +49,6 @@ public class SupplierToBuyerOrganisationDetailsSummaryTest
         {
             OrganisationType = Constants.OrganisationType.Supplier,
             BuyerOrganisationType = "CentralGovernment",
-            BuyerOrganisationOtherValue = null,
             Devolved = true,
             Regulations = [Constants.DevolvedRegulation.Scotland]
         };
