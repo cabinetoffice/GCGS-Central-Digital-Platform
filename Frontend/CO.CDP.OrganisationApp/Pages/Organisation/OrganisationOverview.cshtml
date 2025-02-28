@@ -235,10 +235,16 @@
                                 <p class="govuk-body">
                                     @if (Model.MouSignedOnDate != null)
                                     {
-                                        @Model.MouSignedOnDate;
+                                        @Model.MouSignedOnDate
+                                        ;
                                     }
                                 </p>
                             </dd>
+                            <authorize scope="@OrgScopeRequirement.Admin">
+                                <dd class="govuk-summary-list__actions">
+                                    <a class="govuk-link govuk-link--no-visited-state" href="/organisation/@Model.Id/mou-summary">@StaticTextResource.Global_View</a>
+                                </dd>
+                            </authorize>
                         </div>
                     }
                 }

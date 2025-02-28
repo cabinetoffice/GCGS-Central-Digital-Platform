@@ -51,6 +51,9 @@ locals {
 
   outbox_processors_desire_count = 1 # won't be scalable.
 
+  send_notify_emails_enabled_accounts = ["development", "integration", "production"]
+  send_notify_emails = contains(local.send_notify_emails_enabled_accounts, var.environment)
+
   service_configs = {
     for name, config in var.service_configs :
     config.name => config if !contains(local.migrations, config.name)

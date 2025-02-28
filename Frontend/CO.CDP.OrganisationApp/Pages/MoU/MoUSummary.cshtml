@@ -1,0 +1,75 @@
+@page "/organisation/{id}/mou-summary"
+@model CO.CDP.OrganisationApp.Pages.MoU.MoUSummaryModel
+@using CO.CDP.Localization
+@{
+    ViewData["Title"] = StaticTextResource.MoU_Summary_Title;
+    var backLink = $"/organisation/{@Model.Id}";
+    var mou = @Model.Mou!;
+}
+
+@section BeforeContent {
+    <a href="@backLink" class="govuk-back-link">@StaticTextResource.Global_Back</a>
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+        <h1 class="govuk-heading-l">
+            @ViewData["Title"]
+        </h1>
+        <dl class="govuk-summary-list">
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    @StaticTextResource.MoU_Summary_TableHeaderCreatedOn
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @mou.SignatureOn.ToString("dd MMMM yyyy") at @mou.SignatureOn.ToString("h:mm tt")                    
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                    &nbsp;
+                </dd>
+            </div>
+
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    @StaticTextResource.MoU_Summary_TableHeaderSignedBy
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @mou.CreatedBy.FirstName @mou.CreatedBy.LastName
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                    &nbsp;
+                </dd>
+            </div>
+
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    @StaticTextResource.MoU_Summary_TableHeaderJobTitle
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @mou.JobTitle
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                    &nbsp;
+                </dd>
+            </div>
+
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    @StaticTextResource.MoU_Summary_TableHeaderEmailAddress
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @mou.CreatedBy.Email
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                    &nbsp;
+                </dd>
+            </div>
+        </dl>
+        <form method="post">
+            <govuk-button>
+                @StaticTextResource.MoU_Summary_DownloadAgreement
+            </govuk-button>
+        </form>
+    </div>
+</div>
