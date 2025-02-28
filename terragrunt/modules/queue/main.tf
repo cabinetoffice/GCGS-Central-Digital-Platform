@@ -17,6 +17,7 @@ module "entity_verification_queue" {
   role_consumer_arn         = [var.role_ecs_task_arn]
   role_publisher_arn        = [var.role_ecs_task_arn]
   tags                      = var.tags
+  visibility_timeout_seconds = 5 * 60
 }
 
 module "organisation_queue" {
@@ -27,4 +28,5 @@ module "organisation_queue" {
   role_consumer_arn         = [var.role_ecs_task_arn]
   role_publisher_arn        = [var.role_ecs_task_arn]
   tags                      = var.tags
+  visibility_timeout_seconds = 5 * 60
 }
