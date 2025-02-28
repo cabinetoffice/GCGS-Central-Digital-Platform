@@ -11,7 +11,7 @@ public class ClaimOrganisationInviteModel(
 {
     public async Task<IActionResult> OnGet(Guid personInviteId)
     {
-        var person = await personClient.LookupPersonAsync(UserDetails.UserUrn);
+        var person = await personClient.LookupPersonAsync(urn: UserDetails.UserUrn, email: null);
 
         try
         {

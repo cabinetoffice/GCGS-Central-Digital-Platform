@@ -123,7 +123,7 @@ public class OneLoginModel(
 
         try
         {
-            person = await personClient.LookupPersonAsync(urn);
+            person = await LookupPerson(ud);
 
             ud = session.Get<UserDetails>(Session.UserDetailsKey);
             if (ud != null)
@@ -149,6 +149,33 @@ public class OneLoginModel(
         catch (ApiException ex) when (ex.StatusCode == 404)
         {
             return RedirectToPage("PrivacyPolicy", new { RedirectUri = Helper.ValidRelativeUri(redirectUri) ? redirectUri : default });
+        }
+    }
+
+    private async Task<Person.WebApiClient.Person> LookupPerson(UserDetails ud)
+    {
+        try {
+            // Look up by URN first
+            return await personClient.LookupPersonAsync(urn: ud.UserUrn, email: null);
+        } catch (ApiException ex) when (ex.StatusCode == 404)
+        {
+            logger.LogInformation("Person not found by URN {URN}, looking up by email.", ud.UserUrn);
+        }
+
+        try
+        {
+            // Look up by email second
+            // If the user has deleted their one login account and recreated, they will come back to us with the same email but a different URN
+            var person = await personClient.LookupPersonAsync(urn: null, email: ud.Email);
+
+            await personClient.UpdatePersonAsync(person.Id, new UpdatedPerson(ud.UserUrn));
+
+            return person;
+        }
+        catch (ApiException ex) when (ex.StatusCode == 404)
+        {
+            logger.LogInformation("Person not found by email.");
+            throw;
         }
     }
 

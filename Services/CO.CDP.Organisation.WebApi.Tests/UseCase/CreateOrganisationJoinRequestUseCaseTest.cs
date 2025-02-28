@@ -47,7 +47,8 @@ public class CreateOrganisationJoinRequestUseCaseTests
             Guid = default,
             FirstName = "John",
             LastName = "Johnson",
-            Email = "john@johnson.com"
+            Email = "john@johnson.com",
+            UserUrn = "urn:abc123"
         };
 
         var inMemorySettings = new List<KeyValuePair<string, string?>>
@@ -228,14 +229,16 @@ public class CreateOrganisationJoinRequestUseCaseTests
                 Email = "admin1@example.com",
                 FirstName = "Admin",
                 LastName = "One",
-                Guid = new Guid()
+                Guid = new Guid(),
+                UserUrn = "urn:abc123"
             },
             new Person
             {
                 Email = "admin2@example.com",
                 FirstName = "Admin",
                 LastName = "Two",
-                Guid = new Guid()
+                Guid = new Guid(),
+                UserUrn = "urn:abc123"
             }
         };
 

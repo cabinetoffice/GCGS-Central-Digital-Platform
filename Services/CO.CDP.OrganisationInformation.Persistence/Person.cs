@@ -14,7 +14,8 @@ public class Person : IEntityDate
     public required string LastName { get; set; }
     public required string Email { get; set; }
     public string? Phone { get; set; }
-    public string? UserUrn { get; set; }
+    public required string UserUrn { get; set; }
+    public List<string> PreviousUrns { get; set; } = [];
     public List<Tenant> Tenants { get; } = [];
     public List<Organisation> Organisations { get; } = [];
     public List<OrganisationPerson> PersonOrganisations { get; init; } = [];

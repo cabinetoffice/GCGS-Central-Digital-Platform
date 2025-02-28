@@ -7,6 +7,7 @@ public interface IPersonRepository : IDisposable
     public Task<Person?> Find(Guid personId);
 
     public Task<Person?> FindByUrn(string urn);
+    public Task<Person?> FindByEmail(string email);
 
     public Task<IEnumerable<Person>> FindByOrganisation(Guid organisationId);
 
