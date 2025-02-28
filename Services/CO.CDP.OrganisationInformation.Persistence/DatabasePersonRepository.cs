@@ -21,7 +21,7 @@ public class DatabasePersonRepository(OrganisationInformationContext context) : 
 
     public async Task<Person?> FindByEmail(string email)
     {
-        return await context.Persons.FirstOrDefaultAsync(t => t.Email == email);
+        return await context.Persons.FirstOrDefaultAsync(t => t.Email.ToLower() == email.ToLower());
     }
 
     public async Task<IEnumerable<Person>> FindByOrganisation(Guid organisationId)
