@@ -79,7 +79,7 @@ locals {
         "https://stanvolcere.nqc.com/auth/backchannellogout",
         "https://www-staging.find-tender.service.gov.uk/auth/backchannellogout",
       ]
-      pinned_service_version            = "2025-02-27-support-admin-performance-poc-attempt-3"
+      pinned_service_version            = "2025-02-28-reduce-scope-of-sqs-dispatcher"
       postgres_instance_type            = "db.t4g.micro"
       postgres_aurora_instance_type     = "db.r5.large"
       private_subnets = [
