@@ -19,6 +19,11 @@ public class DatabasePersonRepository(OrganisationInformationContext context) : 
         return await context.Persons.FirstOrDefaultAsync(t => t.UserUrn == urn);
     }
 
+    public async Task<Person?> FindByEmail(string email)
+    {
+        return await context.Persons.FirstOrDefaultAsync(t => t.Email == email);
+    }
+
     public async Task<IEnumerable<Person>> FindByOrganisation(Guid organisationId)
     {
         var organisation = await context.Organisations
@@ -32,24 +37,7 @@ public class DatabasePersonRepository(OrganisationInformationContext context) : 
     {
         try
         {
-            var existingPerson = context.Persons
-                .FirstOrDefault(p => p.Email == person.Email);
-
-            if (existingPerson != null)
-            {
-                if (existingPerson.UserUrn != person.UserUrn)
-                {
-                    existingPerson.PreviousUrns.Add(existingPerson.UserUrn);
-                    existingPerson.UserUrn = person.UserUrn;
-                }
-
-                context.Update(existingPerson);
-            }
-            else
-            {
-                context.Add(person);
-            }
-
+            context.Update(person);
             context.SaveChanges();
         }
         catch (DbUpdateException cause)
