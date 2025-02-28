@@ -72,15 +72,16 @@ public class OrganisationDetailsSummaryModel(
 
             if (errorcode == ErrorCodes.ORGANISATION_ALREADY_EXISTS)
             {
-                var organisations = await organisationClient.SearchOrganisationAsync(RegistrationDetails.OrganisationName, null, 10,0.3);
-                if (organisations.Any())
+                var organisation = await organisationClient.LookupOrganisationAsync(RegistrationDetails.OrganisationName, "");
+
+                if (organisation != null)
                 {
-                    var organisationIdentifier = $"GB-COH:{organisations.First().Identifier.Id}";
+                    var organisationIdentifier = $"{organisation.Identifier.Scheme}:{organisation.Identifier.Id}";
                     flashMessageService.SetFlashMessage(
                             FlashMessageType.Important,
                             heading: StaticTextResource.OrganisationRegistration_CompanyHouseNumberQuestion_CompanyAlreadyRegistered_NotificationBanner,
                             urlParameters: new() { ["organisationIdentifier"] = organisationIdentifier },
-                            htmlParameters: new() { ["organisationName"] = organisations.First().Name }
+                            htmlParameters: new() { ["organisationName"] = organisation.Name }
                         );
                 }
             }

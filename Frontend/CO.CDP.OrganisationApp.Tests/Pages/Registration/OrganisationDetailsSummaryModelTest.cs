@@ -229,11 +229,12 @@ public class OrganisationDetailsSummaryModelTest
 
         organisationClientMock.Setup(o => o.CreateOrganisationAsync(It.IsAny<NewOrganisation>()))
             .ThrowsAsync(aex);
-        var matchingOrganisation = GivenOrganisationSearchResult("TestOrg", "TestType", "123");
+        
+        var matchingOrganisation = OrganisationSearchResult("TestOrg", "GB-COH", "123");
 
         organisationClientMock
-            .Setup(client => client.SearchOrganisationAsync("TestOrg", null, 10, 0.3))
-            .ReturnsAsync(new List<OrganisationSearchResult> { matchingOrganisation });
+            .Setup(client => client.LookupOrganisationAsync("TestOrg", ""))
+            .ReturnsAsync(matchingOrganisation);
 
         var result = await model.OnPost();
 
@@ -268,20 +269,29 @@ public class OrganisationDetailsSummaryModelTest
         };
 
         return registrationDetails;
-    }
-    private static OrganisationSearchResult GivenOrganisationSearchResult(string name, string identifierScheme = "scheme", string idenfifierId = "123")
+    }   
+
+    private static CO.CDP.Organisation.WebApiClient.Organisation OrganisationSearchResult(string name, string identifierScheme = "scheme", string idenfifierId = "123")
     {
-        return new OrganisationSearchResult(
-                    Guid.NewGuid(),
-                    new Identifier(idenfifierId, "legal name", identifierScheme, new Uri("http://whatever")),
-                    name,
-                    new List<PartyRole>() { PartyRole.Buyer },
-                    CO.CDP.Organisation.WebApiClient.OrganisationType.Organisation
-                );
+        return new CO.CDP.Organisation.WebApiClient.Organisation(additionalIdentifiers: null, addresses: null, contactPoint: null,
+            id: Guid.NewGuid(), identifier: new Identifier(id:idenfifierId, legalName: "legal name", scheme: identifierScheme, uri: new Uri("http://whatever")),
+            name: name,
+            type: CDP.Organisation.WebApiClient.OrganisationType.Organisation, roles: [PartyRole.Buyer],
+            details: new Details(approval: null, buyerInformation: null,
+                                pendingRoles: [], publicServiceMissionOrganization: null, scale: null,
+                                shelteredWorkshop: null, vcse: null));
     }
+
+
     private static CO.CDP.Organisation.WebApiClient.Organisation GivenOrganisationClientModel()
     {
-        return new CO.CDP.Organisation.WebApiClient.Organisation(additionalIdentifiers: null, addresses: null, contactPoint: null, id: _organisationId, identifier: null, name: "Test Org", type: CDP.Organisation.WebApiClient.OrganisationType.Organisation, roles: [], details: new Details(approval: null, buyerInformation: null, pendingRoles: [], publicServiceMissionOrganization: null, scale: null, shelteredWorkshop: null, vcse: null));
+        return new CO.CDP.Organisation.WebApiClient.Organisation(additionalIdentifiers: null, addresses: null, contactPoint: null,
+            id: _organisationId, identifier: null,
+            name: "Test Org",
+            type: CDP.Organisation.WebApiClient.OrganisationType.Organisation, roles: [],
+            details: new Details(approval: null, buyerInformation: null,
+                                pendingRoles: [], publicServiceMissionOrganization: null, scale: null,
+                                shelteredWorkshop: null, vcse: null));
     }
 
     private OrganisationDetailsSummaryModel GivenOrganisationDetailModel()
