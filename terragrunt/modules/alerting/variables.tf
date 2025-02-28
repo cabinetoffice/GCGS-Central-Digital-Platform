@@ -12,6 +12,11 @@ variable "product" {
   })
 }
 
+variable "redis_cluster_node_ids" {
+  description = "List of ElastiCache Redis node IDs"
+  type        = list(string)
+}
+
 variable "service_configs" {
   description = "Map of services to their ports"
   type = map(object({

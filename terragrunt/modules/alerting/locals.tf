@@ -9,4 +9,8 @@ locals {
 
   ecs_threshold_cup_percent    = 80
   ecs_threshold_memory_percent = 80
+
+  redis_threshold_cpu_percent             = 80
+  redis_threshold_database_memory_percent = 80
+  redis_threshold_evictions               = 1000
 }
