@@ -14,8 +14,7 @@ public class GetOrganisationsUseCase(IOrganisationRepository organisationReposit
 
         return organisations.Select(o => new OrganisationDto()
         {
-            Id = o.Id,
-            Guid = o.Guid,
+            Id = o.Guid,
             Name = o.Name,
             Roles = o.Roles?.Select(r => (PartyRole)r).ToList() ?? new List<PartyRole>(),
             PendingRoles = o.PendingRoles?.Select(r => (PartyRole)r).ToList() ?? new List<PartyRole>(),
@@ -24,7 +23,8 @@ public class GetOrganisationsUseCase(IOrganisationRepository organisationReposit
             ReviewedByFirstName = o.ReviewedByFirstName,
             ReviewedByLastName = o.ReviewedByLastName,
             Identifiers = o.Identifiers?.Split(", ").ToList() ?? new List<string>(),
-            ContactPoints = o.ContactPoints?.Split(", ").ToList() ?? new List<string>()
+            ContactPoints = o.ContactPoints?.Split(", ").ToList() ?? new List<string>(),
+            AdminEmail = o.AdminEmail
         }).ToList();
     }
 
