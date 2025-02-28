@@ -12,6 +12,12 @@ variable "product" {
   })
 }
 
+
+variable "rds_cluster_ids" {
+  description = "List of RDS cluster IDs"
+  type        = list(string)
+}
+
 variable "redis_cluster_node_ids" {
   description = "List of ElastiCache Redis node IDs"
   type        = list(string)
@@ -27,6 +33,12 @@ variable "service_configs" {
     port          = number
     port_host     = number
   }))
+}
+
+
+variable "sqs_queue_names" {
+  description = "List of SQS Queue names"
+  type        = list(string)
 }
 
 variable "tags" {

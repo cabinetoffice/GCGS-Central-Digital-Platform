@@ -27,9 +27,27 @@ dependency service_cache {
   }
 }
 
+dependency service_database {
+  config_path = "../../service/database"
+  mock_outputs = {
+    cluster_ids = "mock"
+  }
+}
+
+dependency service_queue {
+  config_path = "../../service/queue"
+  mock_outputs = {
+    queue_names = "mock"
+  }
+}
+
 inputs = {
   service_configs = local.global_vars.locals.service_configs
   tags            = local.tags
 
   redis_cluster_node_ids = dependency.service_cache.outputs.redis_cluster_node_ids
+
+  rds_cluster_ids = dependency.service_database.outputs.cluster_ids
+
+  sqs_queue_names = dependency.service_queue.outputs.queue_names
 }

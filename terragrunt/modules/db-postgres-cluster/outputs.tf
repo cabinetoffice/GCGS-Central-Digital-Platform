@@ -1,3 +1,7 @@
+output "cluster_id" {
+  value = aws_rds_cluster.this.id
+}
+
 output "db_address" {
   value = aws_rds_cluster.this.endpoint
 }

@@ -1,3 +1,7 @@
+output "cluster_ids" {
+  value = [module.cluster_entity_verification.cluster_id, module.cluster_sirsi.cluster_id]
+}
+
 output "entity_verification_address" {
   value = module.rds_entity_verification.db_address
 }
