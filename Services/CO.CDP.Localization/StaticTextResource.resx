@@ -699,6 +699,9 @@
   <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswers_OnDate" xml:space="preserve">
     <value>On {0}</value>
   </data>
+  <data name="Supplier_ConnectedEntity_Remove_Yes_Added_In_Error" xml:space="preserve">
+    <value>Yes, I added them in error</value>
+  </data>
   <data name="Global_Submit" xml:space="preserve">
     <value>Submit</value>
   </data>
@@ -1009,10 +1012,10 @@
     <value>Are you sure you want to remove this connected person?</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityRemoveConfirmation_ConfirmRemoveError" xml:space="preserve">
-    <value>Select yes to confirm removal of the connected person</value>
+    <value>Select Yes / Yes, I added them in error to confirm removal of the connected person</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityRemoveConfirmation_EndDateLabel" xml:space="preserve">
-    <value>When was the connected person no longer associated with your organisation?</value>
+    <value>When did the connected person stop being associated with your organisation?</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityRemoveConfirmation_EndDateHint" xml:space="preserve">
     <value>For example, 27 3 2007</value>

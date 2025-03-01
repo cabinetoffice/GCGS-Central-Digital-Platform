@@ -31,7 +31,7 @@
                     <div class="govuk-radios" data-module="govuk-radios">
                         <div class="govuk-radios__item">
                             <input class="govuk-radios__input" id="conditional-YES" name="ConfirmRemove" type="radio"
-                                    value="true" @(Model.ConfirmRemove == true ? "checked" : "") data-aria-controls="conditional-end-date">
+                                   value="@((int)RemoveConnectedPersonReason.NoLongerConnected)" @(Model.ConfirmRemove == RemoveConnectedPersonReason.NoLongerConnected ? "checked" : "") data-aria-controls="conditional-end-date">
                             <label class="govuk-label govuk-radios__label" for="conditional-YES">@StaticTextResource.Global_Yes</label>
                         </div>
                         <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-end-date">
@@ -99,8 +99,13 @@
                             </div>
                         </div>
                         <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="conditional-YES-Added-In-Error" name="ConfirmRemove" type="radio"
+                                   value="@((int)RemoveConnectedPersonReason.AddedInError)" @(Model.ConfirmRemove == RemoveConnectedPersonReason.AddedInError ? "checked" : "")>
+                            <label class="govuk-label govuk-radios__label" for="conditional-YES-Added-In-Error">@StaticTextResource.Supplier_ConnectedEntity_Remove_Yes_Added_In_Error</label>
+                        </div>
+                        <div class="govuk-radios__item">
                             <input class="govuk-radios__input" id="conditional-NO" name="ConfirmRemove" type="radio"
-                                    value="false" @(Model.ConfirmRemove == false ? "checked" : "")>
+                                   value="@((int)RemoveConnectedPersonReason.NotRemoved)" @(Model.ConfirmRemove == RemoveConnectedPersonReason.NotRemoved ? "checked" : "")>
                             <label class="govuk-label govuk-radios__label" for="conditional-NO">@StaticTextResource.Global_No</label>
                         </div>
                     </div>
