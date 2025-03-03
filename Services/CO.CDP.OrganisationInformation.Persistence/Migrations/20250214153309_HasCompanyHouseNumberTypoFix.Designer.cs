@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using CO.CDP.OrganisationInformation.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -12,9 +13,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CO.CDP.OrganisationInformation.Persistence.Migrations
 {
     [DbContext(typeof(OrganisationInformationContext))]
-    partial class OrganisationInformationContextModelSnapshot : ModelSnapshot
+    [Migration("20250214153309_HasCompanyHouseNumberTypoFix")]
+    partial class HasCompanyHouseNumberTypoFix
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -117,6 +120,7 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                         .HasColumnName("locality");
 
                     b.Property<string>("PostalCode")
+                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("postal_code");
 
@@ -1839,6 +1843,10 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
 
                             b1.HasIndex("OrganisationId")
                                 .HasDatabaseName("ix_identifiers_organisation_id");
+
+                            b1.HasIndex("IdentifierId", "Scheme")
+                                .IsUnique()
+                                .HasDatabaseName("ix_identifiers_identifier_id_scheme");
 
                             b1.ToTable("identifiers", (string)null);
 
