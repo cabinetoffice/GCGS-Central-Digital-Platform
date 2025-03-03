@@ -180,6 +180,25 @@ public class OneLoginTest
     }
 
     [Fact]
+    public async Task OnGetUserInfo_WhenPersonAlreadyRegisteredButReturningWithDifferentUrn_ShouldUpdatePersonRecordWithNewUrn()
+    {
+        var model = GivenOneLoginModel("user-info");
+
+        personClientMock.Setup(t => t.LookupPersonAsync("different urn", null))
+            .ThrowsAsync(new ApiException("Unexpected error", 404, "", default, null));
+
+        personClientMock.Setup(t => t.LookupPersonAsync(null, dummyPerson.Email))
+            .ReturnsAsync(dummyPerson);
+
+        var result = await model.OnGetAsync();
+
+        result.Should().BeOfType<RedirectToPageResult>()
+            .Which.PageName.Should().Be("Organisation/OrganisationSelection");
+
+        personClientMock.Verify(t => t.UpdatePersonAsync(dummyPerson.Id, It.Is<UpdatedPerson>(p => p.UserUrn == urn)), Times.Once);
+    }
+
+    [Fact]
     public async Task OnGetUserInfo_WhenPersonNotRegistered_ShouldRedirectToPrivacyPolicyPage()
     {
         var model = GivenOneLoginModel("user-info");
