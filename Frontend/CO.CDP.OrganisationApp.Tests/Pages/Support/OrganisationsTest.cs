@@ -130,7 +130,7 @@ public class OrganisationsModelTests
         string type = "buyer";
         int pageNumber = 1;
         int totalOrganisations = 120;
-        var organisations = new List<OrganisationExtended>();
+        var organisations = new List<OrganisationDto>();
         _mockOrganisationClient.Setup(client => client.GetAllOrganisationsAsync(type, type, It.IsAny<string>(), 50, 0)).ReturnsAsync(organisations);
         _mockOrganisationClient.Setup(client => client.GetOrganisationsTotalCountAsync(type, type, It.IsAny<string>())).ReturnsAsync(totalOrganisations);
 
@@ -151,7 +151,7 @@ public class OrganisationsModelTests
         string inputValue = "searched term";
         string type = "buyer";
         int totalOrganisations = 120;
-        var organisations = new List<OrganisationExtended>();
+        var organisations = new List<OrganisationDto>();
         _mockOrganisationClient.Setup(client => client.GetAllOrganisationsAsync(type, type, It.IsAny<string>(), 50, 0)).ReturnsAsync(organisations);
         _mockOrganisationClient.Setup(client => client.GetOrganisationsTotalCountAsync(type, type, It.IsAny<string>())).ReturnsAsync(totalOrganisations);
 
@@ -167,7 +167,7 @@ public class OrganisationsModelTests
     {
         string type = "buyer";
         int totalOrganisations = 120;
-        var organisations = new List<OrganisationExtended>();
+        var organisations = new List<OrganisationDto>();
         _mockOrganisationClient.Setup(client => client.GetAllOrganisationsAsync(type, type, It.IsAny<string>(), 50, 0)).ReturnsAsync(organisations);
         _mockOrganisationClient.Setup(client => client.GetOrganisationsTotalCountAsync(type, type, It.IsAny<string>())).ReturnsAsync(totalOrganisations);
 
