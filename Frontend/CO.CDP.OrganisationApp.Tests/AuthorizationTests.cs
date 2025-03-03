@@ -96,7 +96,7 @@ public class AuthorizationTests
                 ]
             );
 
-        PersonClient.Setup(client => client.LookupPersonAsync(It.IsAny<string>())).ReturnsAsync(person);
+        PersonClient.Setup(client => client.LookupPersonAsync(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(person);
 
         Session.Setup(s => s.Get<Models.UserDetails>(OrganisationApp.Session.UserDetailsKey))
             .Returns(new Models.UserDetails() { Email = "a@b.com", UserUrn = "urn", PersonId = person.Id });

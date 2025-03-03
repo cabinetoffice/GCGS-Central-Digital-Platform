@@ -142,7 +142,7 @@ public class OneLoginTest
     {
         var model = GivenOneLoginModel("user-info");
 
-        personClientMock.Setup(t => t.LookupPersonAsync(It.IsAny<string>()))
+        personClientMock.Setup(t => t.LookupPersonAsync(It.IsAny<string>(), It.IsAny<string>()))
             .ReturnsAsync(dummyPerson);
 
         var result = await model.OnGetAsync();
@@ -156,7 +156,7 @@ public class OneLoginTest
     {
         var model = GivenOneLoginModel("user-info");
 
-        personClientMock.Setup(t => t.LookupPersonAsync(It.IsAny<string>()))
+        personClientMock.Setup(t => t.LookupPersonAsync(It.IsAny<string>(), It.IsAny<string>()))
             .ReturnsAsync(dummyPerson);
 
         var result = await model.OnGetAsync("/org/1");
@@ -170,7 +170,7 @@ public class OneLoginTest
     {
         var model = GivenOneLoginModel("user-info");
 
-        personClientMock.Setup(t => t.LookupPersonAsync(It.IsAny<string>()))
+        personClientMock.Setup(t => t.LookupPersonAsync(It.IsAny<string>(), It.IsAny<string>()))
             .ReturnsAsync(dummyPerson);
 
         var result = await model.OnGetAsync("http://test-domain/org/1");
@@ -184,7 +184,7 @@ public class OneLoginTest
     {
         var model = GivenOneLoginModel("user-info");
 
-        personClientMock.Setup(t => t.LookupPersonAsync(It.IsAny<string>()))
+        personClientMock.Setup(t => t.LookupPersonAsync(It.IsAny<string>(), It.IsAny<string>()))
             .ThrowsAsync(new ApiException("Unexpected error", 404, "", default, null));
 
         var result = await model.OnGetAsync();
@@ -198,7 +198,7 @@ public class OneLoginTest
     {
         var model = GivenOneLoginModel("user-info");
 
-        personClientMock.Setup(t => t.LookupPersonAsync(It.IsAny<string>()))
+        personClientMock.Setup(t => t.LookupPersonAsync(It.IsAny<string>(), It.IsAny<string>()))
             .ThrowsAsync(new ApiException("Unexpected error", 404, "", default, null));
 
         var result = await model.OnGetAsync("/org/1");
@@ -213,7 +213,7 @@ public class OneLoginTest
     {
         var model = GivenOneLoginModel("user-info");
 
-        personClientMock.Setup(t => t.LookupPersonAsync(It.IsAny<string>()))
+        personClientMock.Setup(t => t.LookupPersonAsync(It.IsAny<string>(), It.IsAny<string>()))
             .ThrowsAsync(new ApiException("Unexpected error", 404, "", default, null));
 
         var result = await model.OnGetAsync("http://test-domain/org/1");
@@ -347,7 +347,7 @@ public class OneLoginTest
         httpContextAccessorMock.SetupGet(t => t.HttpContext)
             .Returns(new DefaultHttpContext { RequestServices = serviceProvider.Object });
 
-        personClientMock.Setup(t => t.LookupPersonAsync(It.IsAny<string>()))
+        personClientMock.Setup(t => t.LookupPersonAsync(It.IsAny<string>(), It.IsAny<string>()))
             .ThrowsAsync(new ApiException("", 404, "", default, null));
 
         return new OneLoginModel(

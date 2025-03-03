@@ -388,7 +388,8 @@ public class RegisterOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
             Guid = Guid.NewGuid(),
             FirstName = "Bob",
             LastName = "Smith",
-            Email = "contact@example.com"
+            Email = "contact@example.com",
+            UserUrn = userUrn,
         };
 
         _claimService.Setup(p => p.GetUserUrn()).Returns(userUrn);
