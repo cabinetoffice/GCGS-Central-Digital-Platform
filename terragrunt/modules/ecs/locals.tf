@@ -4,7 +4,7 @@ locals {
 
   aurora_cluster_enabled = contains(["development", "staging", "production"], var.environment)
 
-  cognito_enabled = contains(["development", "staging", "production"], var.environment)
+  cognito_enabled = contains(["development", "staging"], var.environment)
 
   db_sirsi_secret_arn = local.aurora_cluster_enabled ? var.db_sirsi_cluster_credentials_arn : var.db_sirsi_credentials_arn
   db_ev_secret_arn    = local.aurora_cluster_enabled ? var.db_ev_cluster_credentials_arn : var.db_entity_verification_credentials_arn
@@ -50,6 +50,9 @@ locals {
   }
 
   outbox_processors_desire_count = 1 # won't be scalable.
+
+  send_notify_emails_enabled_accounts = ["development", "integration", "production"]
+  send_notify_emails                  = contains(local.send_notify_emails_enabled_accounts, var.environment)
 
   service_configs = {
     for name, config in var.service_configs :

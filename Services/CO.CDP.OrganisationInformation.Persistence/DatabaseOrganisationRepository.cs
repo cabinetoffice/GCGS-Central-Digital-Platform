@@ -2,6 +2,7 @@ using CO.CDP.EntityFrameworkCore.DbContext;
 using CO.CDP.OrganisationInformation.Persistence.Forms;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using CO.CDP.OrganisationInformation.Persistence.Constants;
 using Npgsql;
 using NpgsqlTypes;
 
@@ -97,6 +98,58 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
         }
 
         return await query.Select(t => t.Organisation).ToListAsync();
+    }
+
+    public async Task<IEnumerable<Organisation>> FindByOrganisationEmail(string email, PartyRole? role, int? limit)
+    {
+        var query = context.Organisations
+            .Include(o => o.ContactPoints)
+            .Include(o => o.Addresses)
+            .ThenInclude(oa => oa.Address)
+            .AsSingleQuery()
+            .Where(o => o.PendingRoles.Count == 0 && o.ContactPoints.Any(cp => cp.Email == email));
+
+        if (role.HasValue)
+        {
+            query = query.Where(o => o.Roles.Contains(role.Value));
+        }
+
+        if (limit.HasValue)
+        {
+            query = query.Take(limit.Value);
+        }
+
+        return await query.ToListAsync();
+    }
+
+    public async Task<IEnumerable<Organisation>> FindByAdminEmail(string email, PartyRole? role, int? limit)
+    {
+        var organisations = await context.Organisations
+            .Include(o => o.Persons)
+            .ThenInclude(p => p.PersonOrganisations)
+            .Include(o => o.Addresses)
+            .ThenInclude(oa => oa.Address)
+            .AsSingleQuery()
+            .Where(o => o.PendingRoles.Count == 0
+                        && o.Persons.Any(p => p.Email == email))
+            .ToListAsync();
+
+        var filteredOrganisations = organisations
+            .Where(o => o.Persons.Any(p =>
+                p.PersonOrganisations.Any(po => po.Scopes.Contains(OrganisationPersonScopes.Admin) && o.Id == po.OrganisationId)
+            ));
+
+        if (role.HasValue)
+        {
+            filteredOrganisations = filteredOrganisations.Where(o => o.Roles.Contains(role.Value));
+        }
+
+        if (limit.HasValue)
+        {
+            filteredOrganisations = filteredOrganisations.Take(limit.Value);
+        }
+
+        return filteredOrganisations;
     }
 
     public async Task<IEnumerable<OrganisationPerson>> FindOrganisationPersons(Guid organisationId)

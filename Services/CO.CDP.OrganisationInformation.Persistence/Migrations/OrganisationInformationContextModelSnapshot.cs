@@ -117,7 +117,6 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                         .HasColumnName("locality");
 
                     b.Property<string>("PostalCode")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("postal_code");
 
@@ -1840,10 +1839,6 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
 
                             b1.HasIndex("OrganisationId")
                                 .HasDatabaseName("ix_identifiers_organisation_id");
-
-                            b1.HasIndex("IdentifierId", "Scheme")
-                                .IsUnique()
-                                .HasDatabaseName("ix_identifiers_identifier_id_scheme");
 
                             b1.ToTable("identifiers", (string)null);
 

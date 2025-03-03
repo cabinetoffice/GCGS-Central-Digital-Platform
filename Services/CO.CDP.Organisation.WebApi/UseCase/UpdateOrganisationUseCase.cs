@@ -131,7 +131,11 @@ public class UpdateOrganisationUseCase(
 
                 foreach (var identifier in updateObject.AdditionalIdentifiers)
                 {
-                    await ValidateIdentifierIsNotKnownToUs(identifier);
+                    // Exclude "VAT" identifiers, they can be shared between organisations
+                    if (identifier.Scheme != "VAT")
+                    {
+                        await ValidateIdentifierIsNotKnownToUs(identifier);
+                    }
 
                     var existingIdentifier = organisation.Identifiers.FirstOrDefault(i => i.Scheme == identifier.Scheme);
                     if (existingIdentifier != null)

@@ -54,9 +54,9 @@ public class FormElementAddressModelTest
     }
 
     [Theory]
-    [InlineData("non-uk", "India", "IN", "123 Main St", "Springfield", "12345")]
+    [InlineData("non-uk", "India", "IN", "123 Main St", "Springfield", null)]
     [InlineData("uk", "United Kingdom", "GB", "456 Elm St", "London", "67890")]
-    public void SetAnswer_ShouldSetPropertiesCorrectly(string ukOrNonUk, string countryName, string country, string addressLine1, string townOrCity, string postcode)
+    public void SetAnswer_ShouldSetPropertiesCorrectly(string ukOrNonUk, string countryName, string country, string addressLine1, string townOrCity, string? postcode)
     {
         var model = new FormElementAddressModel { UkOrNonUk = ukOrNonUk };
         var answer = new FormAnswer
@@ -116,10 +116,28 @@ public class FormElementAddressModelTest
         var context = new ValidationContext(model);
         Validator.TryValidateObject(model, context, results, true);
 
+        results.Should().HaveCount(4);
         results.Should().ContainSingle(r => r.ErrorMessage == "Enter address line 1" && r.MemberNames.Contains(nameof(model.AddressLine1)));
         results.Should().ContainSingle(r => r.ErrorMessage == "Enter town or city" && r.MemberNames.Contains(nameof(model.TownOrCity)));
         results.Should().ContainSingle(r => r.ErrorMessage == "Enter postcode" && r.MemberNames.Contains(nameof(model.Postcode)));
         results.Should().ContainSingle(r => r.ErrorMessage == "Enter country" && r.MemberNames.Contains(nameof(model.Country)));
+    }
+
+    [Fact]
+    public void Validate_ShouldNotReturnPostcodeValidationErrors_WhenCountryIsNonUK()
+    {
+        var model = new FormElementAddressModel
+        {
+            CurrentFormQuestionType = FormQuestionType.Address,
+            UkOrNonUk = "non-uk",
+            IsRequired = true
+        };
+
+        var results = new List<ValidationResult>();
+        var context = new ValidationContext(model);
+        Validator.TryValidateObject(model, context, results, true);
+
+        results.Should().HaveCount(3);
     }
 
     [Fact]
