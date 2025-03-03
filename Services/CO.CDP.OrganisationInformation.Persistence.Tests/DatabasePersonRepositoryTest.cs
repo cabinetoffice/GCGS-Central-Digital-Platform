@@ -104,6 +104,72 @@ public class DatabasePersonRepositoryTest(PostgreSqlFixture postgreSql)
         found.As<Person>().Organisations.Should().Contain(org => org.Guid == organisation.Guid);
     }
 
+    [Fact]
+    public async Task ItFindsPersonByUrn()
+    {
+        using var repository = PersonRepository();
+
+        var urn = "unique-urn";
+        var person = GivenPerson(guid: Guid.NewGuid(), userUrn: urn);
+        repository.Save(person);
+
+        var found = await repository.FindByUrn(urn);
+
+        found.Should().NotBeNull();
+        found.As<Person>().UserUrn.Should().Be(urn);
+    }
+
+    [Fact]
+    public async Task ItReturnsNullIfUrnNotFound()
+    {
+        using var repository = PersonRepository();
+
+        var found = await repository.FindByUrn("nonexistent-urn");
+
+        found.Should().BeNull();
+    }
+
+    [Fact]
+    public async Task ItFindsPersonByEmail()
+    {
+        using var repository = PersonRepository();
+
+        var email = string.Format("{0}@example.com", Guid.NewGuid());
+        var person = GivenPerson(guid: Guid.NewGuid(), email: email);
+        repository.Save(person);
+
+        var found = await repository.FindByEmail(email);
+
+        found.Should().NotBeNull();
+        found.As<Person>().Email.Should().Be(email);
+    }
+
+    [Fact]
+    public async Task ItFindsPersonByEmailCaseInsensitive()
+    {
+        using var repository = PersonRepository();
+
+        var email = "Test@Example.com";
+        var person = GivenPerson(guid: Guid.NewGuid(), email: email);
+        repository.Save(person);
+
+        var found = await repository.FindByEmail("test@example.com");
+
+        found.Should().NotBeNull();
+        found.As<Person>().Email.Should().Be(email);
+    }
+
+    [Fact]
+    public async Task ItReturnsNullIfEmailNotFound()
+    {
+        using var repository = PersonRepository();
+
+        var found = await repository.FindByEmail("nonexistent@example.com");
+
+        found.Should().BeNull();
+    }
+
+
     private DatabasePersonRepository PersonRepository()
         => new(GetDbContext());
 
