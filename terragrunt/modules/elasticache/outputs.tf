@@ -17,3 +17,10 @@ output "redis_auth_token_arn" {
 output "redis_auth_token_id" {
   value = aws_secretsmanager_secret.redis_auth_token.id
 }
+
+output "redis_cluster_node_ids" {
+  value = [
+    for i in range(1, aws_elasticache_replication_group.this.num_cache_clusters + 1) :
+    "${aws_elasticache_replication_group.this.id}-${format("%03d", i)}"
+  ]
+}
