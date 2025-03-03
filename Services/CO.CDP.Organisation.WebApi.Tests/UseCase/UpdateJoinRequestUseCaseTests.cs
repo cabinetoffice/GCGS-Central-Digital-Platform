@@ -54,7 +54,8 @@ public class UpdateJoinRequestUseCaseTests
             Guid = _reviewedBy,
             FirstName = "test",
             LastName = "ts",
-            Email = "test@ts.com"
+            Email = "test@ts.com",
+            UserUrn = "urn:1234",
         };
 
     }

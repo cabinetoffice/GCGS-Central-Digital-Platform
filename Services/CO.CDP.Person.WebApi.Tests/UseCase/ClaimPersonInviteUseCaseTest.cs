@@ -38,7 +38,8 @@ public class ClaimPersonInviteUseCaseTests
             Guid = _defaultPersonGuid,
             FirstName = null!,
             LastName = null!,
-            Email = "email@email.com"
+            Email = "email@email.com",
+            UserUrn = "urn:1234",
         };
 
         _defaultTenant = new Tenant

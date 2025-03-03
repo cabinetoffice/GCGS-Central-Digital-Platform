@@ -15,7 +15,7 @@ public class LookupPersonUseCaseTest(AutoMapperFixture mapperFixture) : IClassFi
     {
         var urn = "urn:fdc:gov.uk:2022:7wTqYGMFQxgukTSpSI2GodMwe9";
 
-        var found = await UseCase.Execute(urn);
+        var found = await UseCase.Execute(new Model.LookupPerson(urn, null));
 
         found.Should().BeNull();
     }
@@ -38,7 +38,7 @@ public class LookupPersonUseCaseTest(AutoMapperFixture mapperFixture) : IClassFi
 
         _repository.Setup(r => r.FindByUrn(persistencePerson.UserUrn)).ReturnsAsync(persistencePerson);
 
-        var found = await UseCase.Execute("urn:fdc:gov.uk:2022:7wTqYGMFQxgukTSpSI2GodMwe9");
+        var found = await UseCase.Execute(new Model.LookupPerson("urn:fdc:gov.uk:2022:7wTqYGMFQxgukTSpSI2GodMwe9", null));
 
         found.Should().BeEquivalentTo(new Model.Person
         {

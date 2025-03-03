@@ -13,18 +13,18 @@ public class ClaimOrganisationInviteModelTests
     private readonly Mock<IPersonClient> personClientMock;
     private readonly Mock<ISession> sessionMock;
     private readonly ClaimOrganisationInviteModel model;
-    private const string UsreUrn = "urn:test";
+    private const string UserUrn = "urn:test";
     private readonly Guid PersonId = Guid.NewGuid();
 
     public ClaimOrganisationInviteModelTests()
     {
         var person = new Person.WebApiClient.Person("test@test", "F1", PersonId, "L1", new List<string>());
         personClientMock = new Mock<IPersonClient>();
-        personClientMock.Setup(pc => pc.LookupPersonAsync(UsreUrn)).ReturnsAsync(person);
+        personClientMock.Setup(pc => pc.LookupPersonAsync(UserUrn, It.IsAny<string>())).ReturnsAsync(person);
 
         sessionMock = new Mock<ISession>();
         sessionMock.Setup(session => session.Get<UserDetails>(Session.UserDetailsKey))
-            .Returns(new UserDetails { UserUrn = UsreUrn });
+            .Returns(new UserDetails { UserUrn = UserUrn });
 
         model = new ClaimOrganisationInviteModel(personClientMock.Object, sessionMock.Object);
     }
@@ -40,7 +40,7 @@ public class ClaimOrganisationInviteModelTests
 
         result.Should().BeOfType<RedirectToPageResult>()
             .Which.PageName.Should().Be("../Organisation/OrganisationSelection");
-        personClientMock.Verify(pc => pc.LookupPersonAsync(UsreUrn), Times.Once);
+        personClientMock.Verify(pc => pc.LookupPersonAsync(UserUrn, It.IsAny<string>()), Times.Once);
         personClientMock.Verify(pc => pc.ClaimPersonInviteAsync(PersonId, claimPersonInvite), Times.Once);
     }
 

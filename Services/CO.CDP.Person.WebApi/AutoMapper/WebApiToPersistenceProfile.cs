@@ -18,6 +18,7 @@ public class WebApiToPersistenceProfile : Profile
             .ForMember(m => m.PersonOrganisations, o => o.Ignore())
             .ForMember(m => m.Scopes, o => o.Ignore())
             .ForMember(m => m.CreatedOn, o => o.Ignore())
-            .ForMember(m => m.UpdatedOn, o => o.Ignore());
+            .ForMember(m => m.UpdatedOn, o => o.Ignore())
+            .ForMember(m => m.PreviousUrns, o => o.Ignore());
     }
 }
