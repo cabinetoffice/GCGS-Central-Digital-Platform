@@ -25,7 +25,7 @@ public class OrganisationsModelTests
         string type = "buyer";
         int pageNumber = 1;
         int totalOrganisations = 120;
-        var organisations = new List<OrganisationExtended>();
+        var organisations = new List<OrganisationDto>();
         _mockOrganisationClient.Setup(client => client.GetAllOrganisationsAsync(type, type, null, 50, 0)).ReturnsAsync(organisations);
         _mockOrganisationClient.Setup(client => client.GetOrganisationsTotalCountAsync(type, type, null)).ReturnsAsync(totalOrganisations);
 
@@ -45,7 +45,7 @@ public class OrganisationsModelTests
         string role = "tenderer";
         int pageNumber = 2;
         int totalOrganisations = 200;
-        var organisations = new List<OrganisationExtended>();
+        var organisations = new List<OrganisationDto>();
         _organisationsModel.OrganisationSearchInput = null;
         _mockOrganisationClient.Setup(client => client.GetAllOrganisationsAsync(role, role, null, 50, 50)).ReturnsAsync(organisations);
         _mockOrganisationClient.Setup(client => client.GetOrganisationsTotalCountAsync(role, role, null)).ReturnsAsync(totalOrganisations);
