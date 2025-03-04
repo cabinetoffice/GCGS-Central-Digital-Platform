@@ -2,15 +2,15 @@ ARG ASPNET_VERSION=8.0
 ARG BUILD_CONFIGURATION=Release
 ARG NUGET_PACKAGES=/nuget/packages
 
-FROM mcr.microsoft.com/dotnet/aspnet:${ASPNET_VERSION} AS base
+FROM mcr.microsoft.com/dotnet/aspnet:${ASPNET_VERSION}-noble-chiseled-extra AS base
 ARG NUGET_PACKAGES
 ENV NUGET_PACKAGES="${NUGET_PACKAGES}"
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl \
-    fontconfig \
-    fonts-dejavu-core \
-    && fc-cache -fv \
-    && rm -rf /var/lib/apt/lists/*
+# RUN apt-get update && apt-get install -y --no-install-recommends \
+#     curl \
+#     fontconfig \
+#     fonts-dejavu-core \
+#     && fc-cache -fv \
+#     && rm -rf /var/lib/apt/lists/*
 USER $APP_UID
 WORKDIR /app
 EXPOSE 8080
@@ -199,18 +199,20 @@ RUN dotnet tool restore
 RUN dotnet ef migrations bundle -p /src/Services/CO.CDP.EntityVerification.Persistence -s /src/Services/CO.CDP.EntityVerification --self-contained -o /app/migrations/efbundle
 
 FROM base AS migrations-organisation-information
+COPY --from=busybox:uclibc /bin/busybox /bin/busybox
 ARG VERSION
 ENV VERSION=${VERSION}
 WORKDIR /app
 COPY --from=build-migrations-organisation-information /app/migrations/efbundle .
-ENTRYPOINT /app/efbundle --connection "Host=$OrganisationInformationDatabase__Host;Database=$OrganisationInformationDatabase__Database;Username=$OrganisationInformationDatabase__Username;Password=$OrganisationInformationDatabase__Password;"
+ENTRYPOINT ["/bin/busybox", "sh", "-c", "/app/efbundle", "--connection", "Host=$OrganisationInformationDatabase__Host;Database=$OrganisationInformationDatabase__Database;Username=$OrganisationInformationDatabase__Username;Password=$OrganisationInformationDatabase__Password;"]
 
 FROM base AS migrations-entity-verification
+COPY --from=busybox:uclibc /bin/busybox /bin/busybox
 ARG VERSION
 ENV VERSION=${VERSION}
 WORKDIR /app
 COPY --from=build-migrations-entity-verification /app/migrations/efbundle .
-ENTRYPOINT /app/efbundle --connection "Host=$EntityVerificationDatabase__Host;Database=$EntityVerificationDatabase__Database;Username=$EntityVerificationDatabase__Username;Password=$EntityVerificationDatabase__Password;"
+ENTRYPOINT ["/bin/busybox", "sh", "-c", "/app/efbundle", "--connection", "Host=$EntityVerificationDatabase__Host;Database=$EntityVerificationDatabase__Database;Username=$EntityVerificationDatabase__Username;Password=$EntityVerificationDatabase__Password;"]
 
 FROM base AS final-authority
 ARG VERSION
