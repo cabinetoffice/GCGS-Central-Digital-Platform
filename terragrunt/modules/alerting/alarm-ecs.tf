@@ -15,7 +15,7 @@ resource "aws_cloudwatch_metric_alarm" "ecs_service_cpu_high" {
   threshold                 = local.ecs_threshold_cup_percent
 
   dimensions = {
-    ClusterName = local.name_prefix
+    ClusterName = var.ecs_cluster_name
     ServiceName = each.value
   }
 }
@@ -37,7 +37,7 @@ resource "aws_cloudwatch_metric_alarm" "ecs_service_memory_high" {
   threshold                 = local.ecs_threshold_memory_percent
 
   dimensions = {
-    ClusterName = local.name_prefix
+    ClusterName = var.ecs_cluster_name
     ServiceName = each.value
   }
 }
