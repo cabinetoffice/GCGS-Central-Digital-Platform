@@ -50,17 +50,11 @@ public class SqsDispatcher(
         _subscribers.Subscribe(subscriber);
     }
 
-    public Task ExecuteAsync(CancellationToken cancellationToken = default)
+    public async Task ExecuteAsync(CancellationToken cancellationToken = default)
     {
-        return Task.Run(async () =>
-        {
-            logger.LogInformation("Started the SQS message dispatcher");
+        logger.LogInformation("Started the SQS message dispatcher");
 
-            while (!cancellationToken.IsCancellationRequested)
-            {
-                await HandleMessages(cancellationToken);
-            }
-        }, cancellationToken);
+        await HandleMessages(cancellationToken);
     }
 
     private async Task HandleMessages(CancellationToken cancellationToken)

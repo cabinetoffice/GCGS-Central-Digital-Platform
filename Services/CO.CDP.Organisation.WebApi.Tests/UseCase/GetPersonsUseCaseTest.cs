@@ -84,7 +84,8 @@ public class GetPersonsUseCaseTest
                 Guid = default,
                 FirstName = "Bill",
                 LastName = "Billson",
-                Email = "bill@billson.com"
+                Email = "bill@billson.com",
+                UserUrn = "urn:1234",
             },
             new Person
             {
@@ -102,7 +103,8 @@ public class GetPersonsUseCaseTest
                 Guid = default,
                 FirstName = "John",
                 LastName = "Johnson",
-                Email = "john@johnson.com"
+                Email = "john@johnson.com",
+                UserUrn = "urn:1234",
             },
         };
 

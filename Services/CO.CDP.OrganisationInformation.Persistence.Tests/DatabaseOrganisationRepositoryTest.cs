@@ -724,7 +724,8 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql)
                 FirstName = "John",
                 LastName = "Doe",
                 Email = "john.doe@example.com",
-                Guid = Guid.NewGuid()
+                Guid = Guid.NewGuid(),
+                UserUrn = "urn:1234",
             }
         };
         organisation.OrganisationPersons.Add(organisationPerson);

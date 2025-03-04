@@ -90,7 +90,8 @@ public class UpdatePersonToOrganisationUseCaseTest : IClassFixture<AutoMapperFix
            Guid = _personId,
            FirstName = "Test",
            LastName = "Test",
-           Email = "Test@test.com"
+           Email = "Test@test.com",
+           UserUrn = "urn:1234",
        };
 
     private Persistence.OrganisationPerson organisationPerson =>
