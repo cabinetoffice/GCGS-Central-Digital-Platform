@@ -132,3 +132,7 @@ localization-import-from-csv:
 	python3 $(LOCALIZATION_PATH)/scripts/import_csv_to_resx.py $(LOCALIZATION_PATH)/csv-files/StaticTextResource.csv $(LOCALIZATION_PATH)/scripts/template.xml $(LOCALIZATION_PATH)/StaticTextResource.resx $(LOCALIZATION_PATH)/StaticTextResource.cy.resx
 	python3 $(LOCALIZATION_PATH)/scripts/import_csv_to_resx.py $(LOCALIZATION_PATH)/csv-files/FormsEngineResource.csv $(LOCALIZATION_PATH)/scripts/template.xml $(LOCALIZATION_PATH)/FormsEngineResource.resx $(LOCALIZATION_PATH)/FormsEngineResource.cy.resx
 .PHONY: localization-import-from-csv
+
+e2e-test: up ## Build & run e2e tests in Docker
+	@cd E2ETests && docker compose up --build -d
+.PHONY: make-e2e
