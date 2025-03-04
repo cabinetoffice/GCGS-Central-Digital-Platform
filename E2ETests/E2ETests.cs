@@ -17,7 +17,7 @@ namespace E2ETests
             _playwright = await Playwright.CreateAsync();
             _browser = await _playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions
             {
-                Headless = true // Set to true if running in CI/CD
+                Headless = true 
             });
 
             _context = await _browser.NewContextAsync();
@@ -27,16 +27,12 @@ namespace E2ETests
         [Test]
         public async Task VerifyHeadingExists()
         {
-            // Navigate to the webpage
             await _page.GotoAsync("http://host.docker.internal:8090/");
 
-            // Wait for the heading to be visible (ensures the page has loaded)
             await _page.WaitForSelectorAsync("h1.govuk-heading-l");
 
-            // Locate the heading and get its text content
             var headingText = await _page.InnerTextAsync("h1.govuk-heading-l");
 
-            // Assert that the heading contains the expected text
             Assert.That(headingText, Does.Contain("Register your details as a buyer or supplier of procurements"));
         }
 
