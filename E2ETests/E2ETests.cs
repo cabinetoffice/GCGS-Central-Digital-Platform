@@ -17,7 +17,7 @@ namespace E2ETests
             _playwright = await Playwright.CreateAsync();
             _browser = await _playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions
             {
-                Headless = false // Set to true if running in CI/CD
+                Headless = true // Set to true if running in CI/CD
             });
 
             _context = await _browser.NewContextAsync();

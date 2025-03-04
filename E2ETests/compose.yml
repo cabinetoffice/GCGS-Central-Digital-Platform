@@ -2,9 +2,10 @@ version: '3.8'
 
 services:
   e2e-tests:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
     container_name: e2e_tests
     volumes:
       - .:/app
     working_dir: /app
-    command: ["dotnet", "test", "--no-build", "--verbosity", "normal"]
