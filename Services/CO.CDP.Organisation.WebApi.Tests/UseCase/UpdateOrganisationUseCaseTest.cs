@@ -1052,6 +1052,12 @@ public class UpdateOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
 
     private static Persistence.Person GivenPerson()
     {
-        return new Persistence.Person { Guid = new Guid(), FirstName = "First", LastName = "Last", Email = "asd@asd.com" };
+        return new Persistence.Person {
+            Guid = new Guid(),
+            FirstName = "First",
+            LastName = "Last",
+            Email = "asd@asd.com",
+            UserUrn = "urn:1234",
+        };
     }
 }

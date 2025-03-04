@@ -64,7 +64,8 @@ public class SupportUpdateOrganisationUseCaseTests
             Guid = Guid.NewGuid(),
             FirstName = "John",
             LastName = "Johnson",
-            Email = "john@johnson.com"
+            Email = "john@johnson.com",
+            UserUrn = "urn:1234"
         };
     }
 

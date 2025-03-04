@@ -35,7 +35,8 @@ public class GetOrganisationsUseCaseTests
             FirstName = "John",
             LastName = "Doe",
             Guid = guid,
-            Email = null!
+            Email = null!,
+            UserUrn = "urn:1234",
         };
 
         var adminPersonWeb = new Model.Person

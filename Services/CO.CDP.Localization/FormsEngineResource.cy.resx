@@ -466,12 +466,12 @@
     <value>Rhowch eich enw</value>
   </data>
   <data name="Global_Enter_Your_Job_Title" xml:space="preserve">
-    <value>Rhowch eich teitl swydd</value>
+    <value>Rhowch deitl eich swydd</value>
   </data>
   <data name="Global_Enter_Your_Postal_Address" xml:space="preserve">
     <value>Rhowch eich cyfeiriad post</value>
   </data>
   <data name="Share_My_Information_Consortium_SectionTitle" xml:space="preserve">
-    <value>Rhannwch fy ngwybodaeth consortiwm</value>
+    <value>Rhannu fy nghonsortiwm gwybodaeth</value>
   </data>
 </root>

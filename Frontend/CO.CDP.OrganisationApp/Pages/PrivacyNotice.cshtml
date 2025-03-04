@@ -6,11 +6,9 @@
 @using System.Globalization
 
 @{
-    //ViewData["Title"] = StaticTextResource.Supplementary_PrivacyNotice_Title;
-    ViewData["Title"] = "Privacy notice";
+    ViewData["Title"] = StaticTextResource.Supplementary_PrivacyNotice_Title;
     var culture = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
-    //var markdownFile = culture == "cy" ? "PrivacyNotice.cy.md" : "PrivacyNotice.en.md";
-    var markdownFile = "PrivacyNotice.en.md";
+    var markdownFile = culture == "cy" ? "PrivacyNotice.cy.md" : "PrivacyNotice.en.md";
 }
 
 <div class="govuk-grid-row">

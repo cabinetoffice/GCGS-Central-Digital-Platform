@@ -15,7 +15,7 @@ public class LookupPersonUseCaseTest(AutoMapperFixture mapperFixture) : IClassFi
     {
         var urn = "urn:fdc:gov.uk:2022:7wTqYGMFQxgukTSpSI2GodMwe9";
 
-        var found = await UseCase.Execute(urn);
+        var found = await UseCase.Execute(new Model.LookupPerson(urn, null));
 
         found.Should().BeNull();
     }
@@ -38,7 +38,37 @@ public class LookupPersonUseCaseTest(AutoMapperFixture mapperFixture) : IClassFi
 
         _repository.Setup(r => r.FindByUrn(persistencePerson.UserUrn)).ReturnsAsync(persistencePerson);
 
-        var found = await UseCase.Execute("urn:fdc:gov.uk:2022:7wTqYGMFQxgukTSpSI2GodMwe9");
+        var found = await UseCase.Execute(new Model.LookupPerson("urn:fdc:gov.uk:2022:7wTqYGMFQxgukTSpSI2GodMwe9", null));
+
+        found.Should().BeEquivalentTo(new Model.Person
+        {
+            Id = personId,
+            Email = "email@email.com",
+            FirstName = "fn",
+            LastName = "ln",
+            Scopes = scopes
+        }, options => options.ComparingByMembers<Model.Person>());
+    }
+
+    [Fact]
+    public async Task Execute_IfPersonIsFoundByEmail_ReturnsPerson()
+    {
+        var personId = Guid.NewGuid();
+        var scopes = new List<string>();
+        var persistencePerson = new OrganisationInformation.Persistence.Person
+        {
+            Id = 1,
+            Guid = personId,
+            FirstName = "fn",
+            LastName = "ln",
+            Email = "email@email.com",
+            UserUrn = "urn:fdc:gov.uk:2022:7wTqYGMFQxgukTSpSI2GodMwe9",
+            Scopes = scopes
+        };
+
+        _repository.Setup(r => r.FindByEmail(persistencePerson.Email)).ReturnsAsync(persistencePerson);
+
+        var found = await UseCase.Execute(new Model.LookupPerson(null, "email@email.com"));
 
         found.Should().BeEquivalentTo(new Model.Person
         {

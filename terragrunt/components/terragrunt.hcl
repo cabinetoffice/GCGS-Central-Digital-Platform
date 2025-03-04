@@ -79,7 +79,7 @@ locals {
         "https://stanvolcere.nqc.com/auth/backchannellogout",
         "https://www-staging.find-tender.service.gov.uk/auth/backchannellogout",
       ]
-      pinned_service_version            = "1.0.45"
+      pinned_service_version            = "1.0.46"
       postgres_instance_type            = "db.t4g.micro"
       postgres_aurora_instance_type     = "db.r5.large"
       private_subnets = [
@@ -143,7 +143,7 @@ locals {
         "https://www-tpp-preview.find-tender.service.gov.uk/auth/backchannellogout",
         "https://www-tpp.find-tender.service.gov.uk/auth/backchannellogout",
       ]
-      pinned_service_version            = "1.0.45"
+      pinned_service_version            = "1.0.46"
       postgres_instance_type            = "db.t4g.micro"
       postgres_aurora_instance_type     = "db.r5.large"
       private_subnets = [
@@ -174,7 +174,7 @@ locals {
       fts_service_allowed_origins       = []
       name                              = "production"
       onelogin_logout_notification_urls = ["https://www.find-tender.service.gov.uk/auth/backchannellogout"]
-      pinned_service_version            = "1.0.45"
+      pinned_service_version            = "1.0.46"
       postgres_instance_type            = "db.t4g.micro"
       postgres_aurora_instance_type     = "db.r5.12xlarge"
       private_subnets = [

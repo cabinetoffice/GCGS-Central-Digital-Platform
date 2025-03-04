@@ -13,16 +13,6 @@ namespace CO.CDP.Person.WebApi.Api;
 
 public static class EndpointExtensions
 {
-    private static Dictionary<Guid, Model.Person> _persons = Enumerable.Range(1, 5)
-        .Select(_ => Guid.NewGuid())
-        .ToDictionary(index => index, index => new Model.Person
-        {
-            Id = index,
-            FirstName = $"Sussan Tables {index}",
-            LastName = "LN",
-            Email = "sussan@example.com"
-        });
-
     public static void UsePersonEndpoints(this WebApplication app)
     {
         app.MapPost("/persons", async (RegisterPerson command, IUseCase<RegisterPerson, Model.Person> useCase) =>
@@ -93,33 +83,34 @@ public static class EndpointExtensions
                 return operation;
             });
 
-        app.MapPut("/persons/{personId}",
-                (Guid personId, UpdatePerson updatedPerson) =>
-                {
-                    _persons[personId] = new Model.Person
-                    {
-                        Id = personId,
-                        Email = updatedPerson.Email,
-                        FirstName = updatedPerson.FirstName,
-                        LastName = updatedPerson.LastName,
-                    };
-                    return Results.Ok(_persons[personId]);
-                })
-            .Produces<Model.Person>(200, "application/json")
-            .Produces<ProblemDetails>(StatusCodes.Status404NotFound)
-            .Produces<ProblemDetails>(StatusCodes.Status400BadRequest)
+        app.MapPatch("/persons/{personId}",
+            [OrganisationAuthorize([AuthenticationChannel.OneLogin])]
+            async (Guid personId, UpdatePerson updatePerson,
+                IUseCase<(Guid, UpdatePerson), bool> useCase) =>
+                    await useCase.Execute((personId, updatePerson))
+                        .AndThen(_ => Results.NoContent()))
+            .Produces(StatusCodes.Status204NoContent)
+            .ProducesProblem(StatusCodes.Status400BadRequest)
+            .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
+            .ProducesProblem(StatusCodes.Status404NotFound)
+            .ProducesProblem(StatusCodes.Status422UnprocessableEntity)
+            .ProducesProblem(StatusCodes.Status500InternalServerError)
             .WithOpenApi(operation =>
             {
                 operation.OperationId = "UpdatePerson";
-                operation.Description = "[STUB] Update a person [STUB]";
-                operation.Summary = "[STUB] Update a person [STUB]";
-                operation.Responses["200"].Description = "Person updated.";
+                operation.Description = "Update Person.";
+                operation.Summary = "Update Person.";
+                operation.Responses["204"].Description = "Person updated successfully.";
+                operation.Responses["400"].Description = "Bad request.";
+                operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
+                operation.Responses["404"].Description = "Person not found.";
+                operation.Responses["422"].Description = "Unprocessable entity.";
+                operation.Responses["500"].Description = "Internal server error.";
                 return operation;
             });
 
         app.MapDelete("/persons/{personId}", (Guid personId) =>
         {
-            _persons.Remove(personId);
             return Results.NoContent();
         })
             .Produces(204)
@@ -136,9 +127,15 @@ public static class EndpointExtensions
     public static void UsePersonLookupEndpoints(this WebApplication app)
     {
         app.MapGet("/persons/lookup",
-                async ([FromQuery] string urn, IUseCase<string, Model.Person?> useCase) =>
-                await useCase.Execute(urn)
-                    .AndThen(persons => persons != null ? Results.Ok(persons) : Results.NotFound()))
+            async ([FromQuery] string? urn, [FromQuery] string ? email, IUseCase<LookupPerson, Model.Person?> useCase) => {
+                if (string.IsNullOrWhiteSpace(urn) && string.IsNullOrWhiteSpace(email))
+                {
+                    return Results.BadRequest("Either Urn or Email must be provided.");
+                }
+
+                return await useCase.Execute(new LookupPerson(urn, email))
+                    .AndThen(persons => persons != null ? Results.Ok(persons) : Results.NotFound());
+            })
             .Produces<Model.Person>(200, "application/json")
             .Produces<ProblemDetails>(StatusCodes.Status404NotFound)
             .WithOpenApi(operation =>

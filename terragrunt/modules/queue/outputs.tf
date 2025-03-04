@@ -28,3 +28,11 @@ output "organisation_queue_url" {
   description = "URL of the organisation SQS queue"
   value       = module.organisation_queue.queue_url
 }
+
+output "queue_names" {
+  value = concat(
+    module.av_scanner_queue.queue_names,
+    module.entity_verification_queue.queue_names,
+    module.organisation_queue.queue_names,
+  )
+}
