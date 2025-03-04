@@ -28,7 +28,7 @@ namespace E2ETests
         public async Task VerifyHeadingExists()
         {
             // Navigate to the webpage
-            await _page.GotoAsync("http://localhost:8090/");
+            await _page.GotoAsync("http://host.docker.internal:8090/");
 
             // Wait for the heading to be visible (ensures the page has loaded)
             await _page.WaitForSelectorAsync("h1.govuk-heading-l");
