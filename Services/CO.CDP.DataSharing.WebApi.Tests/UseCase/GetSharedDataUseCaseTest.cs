@@ -3,6 +3,7 @@ using CO.CDP.DataSharing.WebApi.Tests.AutoMapper;
 using CO.CDP.DataSharing.WebApi.UseCase;
 using CO.CDP.OrganisationInformation;
 using CO.CDP.OrganisationInformation.Persistence;
+using CO.CDP.OrganisationInformation.Persistence.NonEfEntities;
 using FluentAssertions;
 using Microsoft.Extensions.Configuration;
 using Moq;
@@ -13,13 +14,12 @@ namespace CO.CDP.DataSharing.WebApi.Tests.UseCase;
 public class GetSharedDataUseCaseTest : IClassFixture<AutoMapperFixture>
 {
     private readonly Mock<IShareCodeRepository> _shareCodeRepository = new();
-    private readonly Mock<IOrganisationRepository> _organisationRepository = new();
     private readonly Mock<IConfiguration> _configuration = new();
     private readonly GetSharedDataUseCase _useCase;
 
     public GetSharedDataUseCaseTest(AutoMapperFixture mapperFixture)
     {
-        _useCase = new GetSharedDataUseCase(_shareCodeRepository.Object, _organisationRepository.Object,
+        _useCase = new GetSharedDataUseCase(_shareCodeRepository.Object,
             mapperFixture.Mapper, _configuration.Object);
     }
 
@@ -107,34 +107,29 @@ public class GetSharedDataUseCaseTest : IClassFixture<AutoMapperFixture>
         Guid organisationGuid = Guid.NewGuid();
         Guid formId = Guid.NewGuid();
 
-        var organisation = EntityFactory.GivenOrganisation(organisationGuid, name: "Test Organisation");
-
-        var sharedConsent = EntityFactory.GetSharedConsent(organisationId, organisationGuid, formId);
+        var sharedConsent = NonEfEntityFactory.GetSharedConsent(organisationGuid, formId);
         sharedConsent.ShareCode = shareCode;
         if (isConsortium) sharedConsent.Organisation.Type = OrganisationType.InformalConsortium;
 
         _shareCodeRepository.Setup(repo => repo.GetByShareCode(shareCode)).ReturnsAsync(sharedConsent);
 
-        var mockIndividuals = EntityFactory.GetMockIndividuals();
-        var mockAdditionalEntities = EntityFactory.GetMockAdditionalEntities();
-        var mockTrustOrTrustees = EntityFactory.GetMockTrustsOrTrustees();
-        var mockLegalForm = EntityFactory.GetLegalForm();
-        var mockOperationTypes = EntityFactory.GetOperationTypes();
+        var mockIndividuals = NonEfEntityFactory.GetMockIndividuals();
+        var mockAdditionalEntities = NonEfEntityFactory.GetMockAdditionalEntities();
+        var mockTrustOrTrustees = NonEfEntityFactory.GetMockTrustsOrTrustees();
+        var mockLegalForm = NonEfEntityFactory.GetLegalForm();
+        var mockOperationTypes = NonEfEntityFactory.GetOperationTypes();
 
-        _organisationRepository.Setup(repo => repo.GetConnectedIndividualTrusts(organisationId))
-                               .ReturnsAsync(mockIndividuals);
-
-        _organisationRepository.Setup(repo => repo.GetConnectedOrganisations(organisationId))
-                               .ReturnsAsync(mockAdditionalEntities);
-
-        _organisationRepository.Setup(repo => repo.GetConnectedTrustsOrTrustees(organisationId))
-                                .ReturnsAsync(mockTrustOrTrustees);
-
-        _organisationRepository.Setup(repo => repo.GetLegalForm(organisationId))
-                               .ReturnsAsync(mockLegalForm);
-
-        _organisationRepository.Setup(repo => repo.GetOperationTypes(organisationId))
-                               .ReturnsAsync(mockOperationTypes);
+        if (sharedConsent.Organisation != null)
+        {
+            if (sharedConsent.Organisation.SupplierInfo != null)
+            {
+                sharedConsent.Organisation.SupplierInfo.LegalForm = mockLegalForm;
+                sharedConsent.Organisation.SupplierInfo.OperationTypes = [.. mockOperationTypes];
+            }
+            sharedConsent.Organisation.ConnectedEntities.AddRange(mockIndividuals);
+            sharedConsent.Organisation.ConnectedEntities.AddRange(mockAdditionalEntities);
+            sharedConsent.Organisation.ConnectedEntities.AddRange(mockTrustOrTrustees);
+        }
 
         return (shareCode, organisationId, organisationGuid, formId);
     }
@@ -168,7 +163,7 @@ public class GetSharedDataUseCaseTest : IClassFixture<AutoMapperFixture>
     private void AssertAdditionalEntities(IEnumerable<OrganisationReference>? additionalEntities)
     {
         additionalEntities.Should().NotBeNull();
-        additionalEntities.Should().HaveCount(EntityFactory.GetMockAdditionalEntities().Count);
+        additionalEntities.Should().HaveCount(NonEfEntityFactory.GetMockAdditionalEntities().Count);
     }
 
     private void AssertIdentifier(OrganisationInformation.Identifier? identifier)

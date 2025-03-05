@@ -1,89 +1,72 @@
 using CO.CDP.DataSharing.WebApi.Model;
 using CO.CDP.OrganisationInformation;
 using CO.CDP.OrganisationInformation.Persistence;
+using CO.CDP.OrganisationInformation.Persistence.NonEfEntities;
 using static CO.CDP.OrganisationInformation.Persistence.ConnectedEntity;
-using static CO.CDP.OrganisationInformation.Persistence.Organisation;
-using Address = CO.CDP.OrganisationInformation.Persistence.Address;
-using ContactPoint = CO.CDP.OrganisationInformation.Persistence.Organisation.ContactPoint;
-using Identifier = CO.CDP.OrganisationInformation.Persistence.Organisation.Identifier;
 
 namespace CO.CDP.DataSharing.WebApi.Tests;
 
 public static class DataSharingFactory
 {
-    public static CO.CDP.OrganisationInformation.Persistence.Forms.SharedConsent CreateSharedConsent(
+    public static SharedConsentNonEf CreateSharedConsent(
         string? shareCode = null,
-        Organisation? organisation = null
+        OrganisationNonEf? organisation = null
     )
     {
         var theOrganisation = organisation ?? CreateOrganisation();
-        return new CO.CDP.OrganisationInformation.Persistence.Forms.SharedConsent
+        return new SharedConsentNonEf
         {
-            Id = 1,
             Guid = Guid.NewGuid(),
-            OrganisationId = theOrganisation.Id,
             Organisation = theOrganisation,
-            FormId = 1,
             Form = null!,
             AnswerSets = [],
             SubmissionState = default,
             SubmittedAt = null,
-            FormVersionId = string.Empty,
-            ShareCode = shareCode ?? "valid-sharecode",
-            CreatedOn = DateTimeOffset.UtcNow,
-            UpdatedOn = DateTimeOffset.UtcNow,
+            ShareCode = shareCode ?? "valid-sharecode"
         };
     }
 
-    public static Organisation CreateOrganisation(
-        Organisation.SupplierInformation? supplierInformation = null
+    public static OrganisationNonEf CreateOrganisation(
+        SupplierInformationNonEf? supplierInformation = null
     )
     {
-        return new Organisation
+        return new OrganisationNonEf
         {
-            Id = 1,
             Guid = Guid.NewGuid(),
             Name = "Test Organisation",
-            Type = OrganisationInformation.OrganisationType.Organisation,
-            Tenant = new Tenant { Guid = Guid.NewGuid(), Name = "TestTenant" },
-            Addresses = new List<OrganisationAddress>
+            Type = OrganisationType.Organisation,
+            Addresses = new List<AddressNonEf>
             {
                 new()
                 {
                     Type = AddressType.Registered,
-                    Address = new Address
-                    {
-                        StreetAddress = "123 Test Street",
-                        Locality = "Test Locality",
-                        PostalCode = "12345",
-                        CountryName = "Test Country",
-                        Country = "TC"
-                    }
+                    StreetAddress = "123 Test Street",
+                    Locality = "Test Locality",
+                    PostalCode = "12345",
+                    CountryName = "Test Country",
+                    Country = "TC"
                 },
                 new()
                 {
                     Type = AddressType.Postal,
-                    Address = new Address
-                    {
-                        StreetAddress = "456 Postal Street",
-                        Locality = "Postal Locality",
-                        PostalCode = "67890",
-                        CountryName = "Postal Country",
-                        Country = "PC"
-                    }
+                    StreetAddress = "456 Postal Street",
+                    Locality = "Postal Locality",
+                    PostalCode = "67890",
+                    CountryName = "Postal Country",
+                    Country = "PC"
                 }
             },
-            ContactPoints = new List<ContactPoint>
+            ContactPoints = new List<ContactPointNonEf>
             {
-                new ContactPoint
+                new ContactPointNonEf
                 {
                     Email = "test@example.com",
                     Url = "http://example.com"
                 }
             },
-            Identifiers = new List<Identifier>
+            Identifiers = new List<IdentifierNonEf>
             {
-                new Identifier
+                new IdentifierNonEf
                 {
                     IdentifierId = "VAT123456",
                     Scheme = "VAT",
@@ -92,7 +75,7 @@ public static class DataSharingFactory
                 }
             },
             Roles = [PartyRole.Tenderer],
-            SupplierInfo = supplierInformation ?? new Organisation.SupplierInformation
+            SupplierInfo = supplierInformation ?? new SupplierInformationNonEf
             {
                 SupplierType = SupplierType.Organisation,
                 CompletedRegAddress = true,
@@ -101,16 +84,14 @@ public static class DataSharingFactory
                 CompletedWebsiteAddress = true,
                 CompletedEmailAddress = true,
                 CompletedLegalForm = true,
-                LegalForm = new Organisation.LegalForm
+                LegalForm = new LegalFormNonEf
                 {
                     RegisteredUnderAct2006 = true,
                     RegisteredLegalForm = "Private Limited",
                     LawRegistered = "UK",
                     RegistrationDate = DateTimeOffset.UtcNow.AddYears(-10)
                 }
-            },
-            CreatedOn = DateTimeOffset.UtcNow,
-            UpdatedOn = DateTimeOffset.UtcNow
+            }
         };
     }
 
@@ -196,7 +177,7 @@ public static class DataSharingFactory
                 "12345",
                 null,
                 null,
-                ConnectedEntity.ConnectedEntityType.Individual,
+                OrganisationInformation.ConnectedEntityType.Individual,
                 ConnectedOrganisationCategory.RegisteredCompany
             )
         ];

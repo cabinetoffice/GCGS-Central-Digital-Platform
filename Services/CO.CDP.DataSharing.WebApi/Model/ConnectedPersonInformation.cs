@@ -18,7 +18,7 @@ public record ConnectedPersonInformation
     string? CompanyHouseNumber,
     ConnectedIndividualTrust? IndividualTrust,
     ConnectedOrganisation? Organisation,
-    OrganisationInformation.Persistence.ConnectedEntity.ConnectedEntityType EntityType,
+    OrganisationInformation.ConnectedEntityType EntityType,
     ConnectedOrganisationCategory ConnectedOrganisationCategoryType
 );
 
@@ -42,8 +42,7 @@ public record ConnectedOrganisation
     List<string> ControlConditions,
     DateTimeOffset? InsolvencyDate,
     string? CompanyHouseNumber,
-    string? OverseasCompanyNumber,
-    Guid? OrganisationId
+    string? OverseasCompanyNumber
 );
 
 public record ConnectedAddress
