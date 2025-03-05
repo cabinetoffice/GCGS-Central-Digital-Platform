@@ -113,8 +113,8 @@ public class OrganisationInternationalIdentificationModel(ISession session,
             }
         }
 
-        if (OrganisationName != null)
-        {
+        if (OrganisationName != null && orgId != null)
+        {            
             SessionContext.Set(Session.JoinOrganisationRequest,
                         new JoinOrganisationRequestState { OrganisationId = orgId, OrganisationName = OrganisationName }
                         );
@@ -122,7 +122,7 @@ public class OrganisationInternationalIdentificationModel(ISession session,
             flashMessageService.SetFlashMessage(
                 FlashMessageType.Important,
                 heading: StaticTextResource.OrganisationRegistration_CompanyHouseNumberQuestion_CompanyAlreadyRegistered_NotificationBanner,
-                urlParameters: new() { ["organisationIdentifier"] = orgId.ToString() ?? ""},
+                urlParameters: new() { ["organisationIdentifier"] = orgId.Value.ToString() },
                 htmlParameters: new() { ["organisationName"] = OrganisationName }
             );
         }
