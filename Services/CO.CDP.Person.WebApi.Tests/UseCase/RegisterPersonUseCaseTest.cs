@@ -20,7 +20,8 @@ public class RegisterPersonUseCaseTest(AutoMapperFixture mapperFixture) : IClass
         {
             FirstName = "ThePerson",
             LastName = "lastname",
-            Email = "jon@email.com"
+            Email = "jon@email.com",
+            UserUrn = "urn:1234",
         };
 
         var createdPerson = await UseCase.Execute(command);
@@ -45,6 +46,7 @@ public class RegisterPersonUseCaseTest(AutoMapperFixture mapperFixture) : IClass
             FirstName = "ThePerson",
             LastName = "lastname",
             Email = "jon@email.com",
+            UserUrn = "urn:1234",
         });
 
         _repository.Verify(r => r.Save(It.Is<OrganisationInformation.Persistence.Person>(o =>

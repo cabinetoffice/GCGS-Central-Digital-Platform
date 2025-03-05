@@ -1,3 +1,18 @@
+variable "ecs_alb_arn_suffix" {
+  description = "ALB's ARN suffix to address target service metrics"
+  type        = string
+}
+
+variable "ecs_cluster_name" {
+  description = "ECS Cluster name"
+  type        = string
+}
+
+variable "ecs_services_target_group_arn_suffix_map" {
+  description = "Target groups ARN suffix mapped to the service names to address service metrics"
+  type        = map(string)
+}
+
 variable "environment" {
   description = "The environment we are provisioning"
   type        = string
