@@ -30,6 +30,8 @@ public class ChangeUserRoleModel(
 
     public string? UserFullName;
 
+    public ICollection<PartyRole> OrganisationRoles = [];
+
     public async Task<IActionResult> OnGetPerson()
     {
         var organisationPerson = await GetOrganisationPerson(organisationClient);
@@ -38,6 +40,9 @@ public class ChangeUserRoleModel(
         {
             return Redirect("/page-not-found");
         }
+
+        var organisation = await organisationClient.GetOrganisationAsync(Id);
+        OrganisationRoles = organisation.Roles;
 
         UserFullName = organisationPerson.FirstName + " " + organisationPerson.LastName;
         IsAdmin = organisationPerson.Scopes.Contains(OrganisationPersonScopes.Admin);
@@ -97,6 +102,9 @@ public class ChangeUserRoleModel(
         {
             return Redirect("/page-not-found");
         }
+
+        var organisation = await organisationClient.GetOrganisationAsync(Id);
+        OrganisationRoles = organisation.Roles;
 
         UserFullName = personInvite.FirstName + " " + personInvite.LastName;
         IsAdmin = personInvite.Scopes.Contains(OrganisationPersonScopes.Admin);

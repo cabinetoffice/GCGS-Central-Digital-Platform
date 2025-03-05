@@ -2,6 +2,7 @@
 @model CO.CDP.OrganisationApp.Pages.Users.AddUserModel
 @using CO.CDP.OrganisationApp.Constants
 @using CO.CDP.Localization
+@using CO.CDP.Organisation.WebApiClient
 
 @{
     ViewData["Title"] = StaticTextResource.Users_AddUser_Title;
@@ -20,156 +21,219 @@
     <a href="/organisation/{@Model.Id}/users/user-summary" class="govuk-back-link">@StaticTextResource.Global_Back</a>
 }
 
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
-            <partial name="_ErrorSummary" model="@Model.ModelState" />
-        </div>
-        <div class="govuk-grid-column-full">
-            <h1 class="govuk-heading-l">
-                @ViewData["Title"]
-            </h1>
-            <form class="form" method="post">
-                <div class="govuk-form-group @(firstNameHasError ? "govuk-form-group--error" : "")">
-                    <label class="govuk-label" for="@nameof(Model.FirstName)">
-                        @StaticTextResource.Users_FirstName_Label
-                    </label>
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <partial name="_ErrorSummary" model="@Model.ModelState"/>
+    </div>
+    <div class="govuk-grid-column-full">
+        <h1 class="govuk-heading-l">
+            @ViewData["Title"]
+        </h1>
+        <form class="form" method="post">
+            <div class="govuk-form-group @(firstNameHasError ? "govuk-form-group--error" : "")">
+                <label class="govuk-label" for="@nameof(Model.FirstName)">
+                    @StaticTextResource.Users_FirstName_Label
+                </label>
 
-                    @if (firstNameHasError)
-                    {
+                @if (firstNameHasError)
+                {
                     <p id="first-name-error" class="govuk-error-message">
                         <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span>
                         @Html.ValidationMessageFor(m => m.FirstName)
                     </p>
-                    }
-                    <input class="govuk-input govuk-input--width-20 @(firstNameHasError ? "govuk-input--error" : "")" id="@nameof(Model.FirstName)"
-                            value="@Model.FirstName" name="@nameof(Model.FirstName)" type="text"
-                            spellcheck="false" @(firstNameHasError ? "aria-describedby=first-name-error" : "")>
-                </div>
+                }
+                <input class="govuk-input govuk-input--width-20 @(firstNameHasError ? "govuk-input--error" : "")" id="@nameof(Model.FirstName)"
+                       value="@Model.FirstName" name="@nameof(Model.FirstName)" type="text"
+                       spellcheck="false" @(firstNameHasError ? "aria-describedby=first-name-error" : "")>
+            </div>
 
-                <div class="govuk-form-group @(lastNameHasError ? "govuk-form-group--error" : "")">
-                    <label class="govuk-label" for="@nameof(Model.LastName)">
-                        @StaticTextResource.Users_LastName_Label
-                    </label>
+            <div class="govuk-form-group @(lastNameHasError ? "govuk-form-group--error" : "")">
+                <label class="govuk-label" for="@nameof(Model.LastName)">
+                    @StaticTextResource.Users_LastName_Label
+                </label>
 
-                    @if (lastNameHasError)
+                @if (lastNameHasError)
+                {
+                    <p id="last-name-error" class="govuk-error-message">
+                        <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span>
+                        @Html.ValidationMessageFor(m => m.LastName)
+                    </p>
+                }
+                <input class="govuk-input govuk-input--width-20 @(lastNameHasError ? "govuk-input--error" : "")" id="@nameof(Model.LastName)"
+                       value="@Model.LastName" name="@nameof(Model.LastName)" type="text"
+                       spellcheck="false" @(lastNameHasError ? "aria-describedby=last-name-error" : "")>
+            </div>
+
+            <div class="govuk-form-group @(emailHasError ? "govuk-form-group--error" : "")">
+                <label class="govuk-label" for="@nameof(Model.Email)">
+                    @StaticTextResource.Users_EmailAddress_Label
+                </label>
+
+                @if (emailHasError)
+                {
+                    <p id="email-error" class="govuk-error-message">
+                        <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span>
+                        @Html.ValidationMessageFor(m => m.Email)
+                    </p>
+                }
+                <input class="govuk-input govuk-input--width-20 @(emailHasError ? "govuk-input--error" : "")" id="@nameof(Model.Email)"
+                       value="@Model.Email" name="@nameof(Model.Email)" type="text"
+                       spellcheck="false" @(emailHasError ? "aria-describedby=email-error" : "")>
+            </div>
+
+            <div class="govuk-form-group @(roleHasError ? "govuk-form-group--error" : "")">
+                <fieldset class="govuk-fieldset" aria-describedby="role-hint @(roleHasError ? "role-error" : "")">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                        @StaticTextResource.Users_UserRole_Label
+                    </legend>
+                    @if (roleHasError)
                     {
-                        <p id="last-name-error" class="govuk-error-message">
+                        <p id="role-error" class="govuk-error-message">
                             <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span>
-                            @Html.ValidationMessageFor(m => m.LastName)
+                            @Html.ValidationMessageFor(m => m.Role)
                         </p>
                     }
-                    <input class="govuk-input govuk-input--width-20 @(lastNameHasError ? "govuk-input--error" : "")" id="@nameof(Model.LastName)"
-                            value="@Model.LastName" name="@nameof(Model.LastName)" type="text"
-                            spellcheck="false" @(lastNameHasError ? "aria-describedby=last-name-error" : "")>
-                </div>
-
-                <div class="govuk-form-group @(emailHasError ? "govuk-form-group--error" : "")">
-                    <label class="govuk-label" for="@nameof(Model.Email)">
-                        @StaticTextResource.Users_EmailAddress_Label
-                    </label>
-
-                    @if (emailHasError)
-                    {
-                        <p id="email-error" class="govuk-error-message">
-                            <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span>
-                            @Html.ValidationMessageFor(m => m.Email)
-                        </p>
-                    }
-                    <input class="govuk-input govuk-input--width-20 @(emailHasError ? "govuk-input--error" : "")" id="@nameof(Model.Email)"
-                            value="@Model.Email" name="@nameof(Model.Email)" type="text"
-                            spellcheck="false" @(emailHasError ? "aria-describedby=email-error" : "")>
-                </div>
-
-                <div class="govuk-form-group @(roleHasError ? "govuk-form-group--error" : "")">
-                    <fieldset class="govuk-fieldset" aria-describedby="role-hint @(roleHasError ? "role-error" : "")">
-                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
-                            @StaticTextResource.Users_UserRole_Label
-                        </legend>
-                        @if (roleHasError)
-                        {
-                            <p id="role-error" class="govuk-error-message">
-                                <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span>
-                                @Html.ValidationMessageFor(m => m.Role)
-                            </p>
-                        }
-                        <div id="role-hint" class="govuk-hint">
-                            @StaticTextResource.Users_UserRole_Hint
-                        </div>
-                        <div class="govuk-radios" data-module="govuk-radios">
-                            <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="@nameof(Model.Role)" name="role" type="radio" value="@OrganisationPersonScopes.Admin" aria-describedby="role-admin-hint" @IsSelected(Model.Role == OrganisationPersonScopes.Admin)>
-                                <label class="govuk-label govuk-radios__label" for="@nameof(Model.Role)">
-                                    @StaticTextResource.Global_Admin
-                                </label>
-                                <div id="role-admin-hint" class="govuk-hint govuk-radios__hint">
-                                    <details class="govuk-details govuk-!-margin-bottom-0">
-                                        <summary class="govuk-details__summary">
-                                          <span class="govuk-details__summary-text">
+                    <div id="role-hint" class="govuk-hint">
+                        @StaticTextResource.Users_UserRole_Hint
+                    </div>
+                    <div class="govuk-radios" data-module="govuk-radios">
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="@nameof(Model.Role)" name="role" type="radio" value="@OrganisationPersonScopes.Admin" aria-describedby="role-admin-hint" @IsSelected(Model.Role == OrganisationPersonScopes.Admin)>
+                            <label class="govuk-label govuk-radios__label" for="@nameof(Model.Role)">
+                                @StaticTextResource.Global_Admin
+                            </label>
+                            <div id="role-admin-hint" class="govuk-hint govuk-radios__hint">
+                                <details class="govuk-details govuk-!-margin-bottom-0">
+                                    <summary class="govuk-details__summary">
+                                        <span class="govuk-details__summary-text">
                                             @StaticTextResource.Users_UserRoleAdmin_HintTitle
-                                          </span>
-                                        </summary>
-                                        <div class="govuk-details__text">
+                                        </span>
+                                    </summary>
+                                    <div class="govuk-details__text">
+                                        @if (@Model.OrganisationRoles.Contains(PartyRole.Buyer) && @Model.OrganisationRoles.Contains(PartyRole.Tenderer))
+                                        {
                                             <ul class="govuk-list govuk-list--bullet">
-                                                <li>@StaticTextResource.Users_UserRoleAdmin_Hint1</li>
-                                                <li>@StaticTextResource.Users_UserRoleAdmin_Hint2</li>
-                                                <li>@StaticTextResource.Users_UserRoleAdmin_Hint3</li>
-                                                <li>@StaticTextResource.Users_UserRoleAdmin_Hint4</li>
-                                                <li>@StaticTextResource.Users_UserRoleAdmin_Hint5</li>
+                                                <li>@StaticTextResource.Users_UserRoleAdmin_BuyerSupplierHint1</li>
+                                                <li>@StaticTextResource.Users_UserRoleAdmin_BuyerSupplierHint2</li>
+                                                <li>@StaticTextResource.Users_UserRoleAdmin_BuyerSupplierHint3</li>
+                                                <li>@StaticTextResource.Users_UserRoleAdmin_BuyerSupplierHint4</li>
+                                                <li>@StaticTextResource.Users_UserRoleAdmin_BuyerSupplierHint5</li>
+                                                <li>@StaticTextResource.Users_UserRoleAdmin_BuyerSupplierHint6</li>
+                                                <li>@StaticTextResource.Users_UserRoleAdmin_BuyerSupplierHint7</li>
                                             </ul>
-                                        </div>
-                                    </details>
-                                </div>
-                            </div>
+                                        } else if (@Model.OrganisationRoles.Contains(PartyRole.Buyer) && ! @Model.OrganisationRoles.Contains(PartyRole.Tenderer))
+                                        {
+                                            <ul class="govuk-list govuk-list--bullet">
 
-                            <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="@nameof(Model.Role)-1" name="role" type="radio" value="@OrganisationPersonScopes.Editor" aria-describedby="role-editor-hint" @IsSelected(Model.Role == OrganisationPersonScopes.Editor)>
-                                <label class="govuk-label govuk-radios__label" for="@nameof(Model.Role)-1">
-                                    @StaticTextResource.Global_Editor
-                                </label>
-                                <div id="role-editor-hint" class="govuk-hint govuk-radios__hint">
-                                    <details class="govuk-details govuk-!-margin-bottom-0">
-                                        <summary class="govuk-details__summary">
-                                          <span class="govuk-details__summary-text">
-                                            @StaticTextResource.Users_UserRoleEditor_HintTitle
-                                          </span>
-                                        </summary>
-                                        <div class="govuk-details__text">
-                                            <ul class="govuk-list govuk-list--bullet">
-                                                <li>@StaticTextResource.Users_UserRoleEditor_Hint1</li>
-                                                <li>@StaticTextResource.Users_UserRoleEditor_Hint2</li>
-                                                <li>@StaticTextResource.Users_UserRoleEditor_Hint3</li>
+                                                <li>@StaticTextResource.Users_UserRoleAdmin_BuyerHint1</li>
+                                                <li>@StaticTextResource.Users_UserRoleAdmin_BuyerHint2</li>
+                                                <li>@StaticTextResource.Users_UserRoleAdmin_BuyerHint3</li>
+                                                <li>@StaticTextResource.Users_UserRoleAdmin_BuyerHint4</li>
+                                                <li>@StaticTextResource.Users_UserRoleAdmin_BuyerHint5</li>
                                             </ul>
-                                        </div>
-                                    </details>
-                                </div>
-                            </div>
-
-                            <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="@nameof(Model.Role)-2" name="role" type="radio" value="@OrganisationPersonScopes.Viewer" aria-describedby="role-viewer-hint" @IsSelected(Model.Role == OrganisationPersonScopes.Viewer)>
-                                <label class="govuk-label govuk-radios__label" for="@nameof(Model.Role)-2">
-                                    @StaticTextResource.Global_Viewer
-                                </label>
-                                <div id="role-viewer-hint" class="govuk-hint govuk-radios__hint">
-                                    <details class="govuk-details">
-                                        <summary class="govuk-details__summary">
-                                          <span class="govuk-details__summary-text">
-                                            @StaticTextResource.Users_UserRoleViewer_HintTitle
-                                          </span>
-                                        </summary>
-                                        <div class="govuk-details__text">
+                                        }
+                                        else
+                                        {
                                             <ul class="govuk-list govuk-list--bullet">
-                                                <li>@StaticTextResource.Users_UserRoleViewer_Hint1</li>
-                                                <li>@StaticTextResource.Users_UserRoleViewer_Hint2</li>
+                                                <li>@StaticTextResource.Users_UserRoleAdmin_SupplierHint1</li>
+                                                <li>@StaticTextResource.Users_UserRoleAdmin_SupplierHint2</li>
+                                                <li>@StaticTextResource.Users_UserRoleAdmin_SupplierHint3</li>
+                                                <li>@StaticTextResource.Users_UserRoleAdmin_SupplierHint4</li>
                                             </ul>
-                                        </div>
-                                    </details>
-                                </div>
+                                        }
+                                    </div>
+                                </details>
                             </div>
                         </div>
-                    </fieldset>
-                </div>
 
-                <govuk-button class="govuk-!-margin-top-6">@StaticTextResource.Global_Continue</govuk-button>
-            </form>
-        </div>
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="@nameof(Model.Role)-1" name="role" type="radio" value="@OrganisationPersonScopes.Editor" aria-describedby="role-editor-hint" @IsSelected(Model.Role == OrganisationPersonScopes.Editor)>
+                            <label class="govuk-label govuk-radios__label" for="@nameof(Model.Role)-1">
+                                @StaticTextResource.Global_Editor
+                            </label>
+                            <div id="role-editor-hint" class="govuk-hint govuk-radios__hint">
+                                <details class="govuk-details govuk-!-margin-bottom-0">
+                                    <summary class="govuk-details__summary">
+                                        <span class="govuk-details__summary-text">
+                                            @StaticTextResource.Users_UserRoleEditor_HintTitle
+                                        </span>
+                                    </summary>
+                                    <div class="govuk-details__text">
+                                        @if (@Model.OrganisationRoles.Contains(PartyRole.Buyer) && @Model.OrganisationRoles.Contains(PartyRole.Tenderer))
+                                        {
+                                        <ul class="govuk-list govuk-list--bullet">
+                                            <li>@StaticTextResource.Users_UserRoleEditor_BuyerSupplierHint1</li>
+                                            <li>@StaticTextResource.Users_UserRoleEditor_BuyerSupplierHint2</li>
+                                            <li>@StaticTextResource.Users_UserRoleEditor_BuyerSupplierHint3</li>
+                                            <li>@StaticTextResource.Users_UserRoleEditor_BuyerSupplierHint4</li>
+                                            <li>@StaticTextResource.Users_UserRoleEditor_BuyerSupplierHint5</li>
+                                        </ul>
+                                        } else if (@Model.OrganisationRoles.Contains(PartyRole.Buyer) && ! @Model.OrganisationRoles.Contains(PartyRole.Tenderer))
+                                        {
+                                        <ul class="govuk-list govuk-list--bullet">
+
+                                            <li>@StaticTextResource.Users_UserRoleEditor_BuyerHint1</li>
+                                            <li>@StaticTextResource.Users_UserRoleEditor_BuyerHint2</li>
+                                            <li>@StaticTextResource.Users_UserRoleEditor_BuyerHint3</li>
+                                        </ul>
+                                        }
+                                        else
+                                        {
+                                        <ul class="govuk-list govuk-list--bullet">
+                                            <li>@StaticTextResource.Users_UserRoleEditor_SupplierHint1</li>
+                                            <li>@StaticTextResource.Users_UserRoleEditor_SupplierHint2</li>
+                                            <li>@StaticTextResource.Users_UserRoleEditor_SupplierHint3</li>
+                                        </ul>
+                                        }
+                                    </div>
+                                </details>
+                            </div>
+                        </div>
+
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="@nameof(Model.Role)-2" name="role" type="radio" value="@OrganisationPersonScopes.Viewer" aria-describedby="role-viewer-hint" @IsSelected(Model.Role == OrganisationPersonScopes.Viewer)>
+                            <label class="govuk-label govuk-radios__label" for="@nameof(Model.Role)-2">
+                                @StaticTextResource.Global_Viewer
+                            </label>
+                            <div id="role-viewer-hint" class="govuk-hint govuk-radios__hint">
+                                <details class="govuk-details">
+                                    <summary class="govuk-details__summary">
+                                        <span class="govuk-details__summary-text">
+                                            @StaticTextResource.Users_UserRoleViewer_HintTitle
+                                        </span>
+                                    </summary>
+                                    <div class="govuk-details__text">
+                                        @if (@Model.OrganisationRoles.Contains(PartyRole.Buyer) && @Model.OrganisationRoles.Contains(PartyRole.Tenderer))
+                                        {
+                                        <ul class="govuk-list govuk-list--bullet">
+                                            <li>@StaticTextResource.Users_UserRoleViewer_BuyerSupplierHint1</li>
+                                            <li>@StaticTextResource.Users_UserRoleViewer_BuyerSupplierHint2</li>
+                                            <li>@StaticTextResource.Users_UserRoleViewer_BuyerSupplierHint3</li>
+                                        </ul>
+                                        } else if (@Model.OrganisationRoles.Contains(PartyRole.Buyer) && ! @Model.OrganisationRoles.Contains(PartyRole.Tenderer))
+                                        {
+                                        <ul class="govuk-list govuk-list--bullet">
+
+                                            <li>@StaticTextResource.Users_UserRoleViewer_BuyerHint1</li>
+                                            <li>@StaticTextResource.Users_UserRoleViewer_BuyerHint2</li>
+                                        </ul>
+                                        }
+                                        else
+                                        {
+                                        <ul class="govuk-list govuk-list--bullet">
+                                            <li>@StaticTextResource.Users_UserRoleViewer_SupplierHint1</li>
+                                            <li>@StaticTextResource.Users_UserRoleViewer_SupplierHint2</li>
+                                        </ul>
+                                        }
+                                    </div>
+                                </details>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+
+            <govuk-button class="govuk-!-margin-top-6">@StaticTextResource.Global_Continue</govuk-button>
+        </form>
     </div>
+</div>
