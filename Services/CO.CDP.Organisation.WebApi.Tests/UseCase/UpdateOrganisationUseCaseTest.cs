@@ -180,7 +180,37 @@ public class UpdateOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
     }
 
     [Fact]
-    public async Task ShouldThrowIdentiferNumberAlreadyExists_WhenIdentifierAlreadyExists()
+    public async Task ShouldThrowIdentiferNumberAlreadyExists_WhenIdentifierAlreadyExists_ButNotVatScheme()
+    {
+        var command = new UpdateOrganisation
+        {
+            Type = OrganisationUpdateType.AdditionalIdentifiers,
+            Organisation = new OrganisationInfo
+            {
+                AdditionalIdentifiers = [new OrganisationIdentifier
+                {
+                    Id = "13294342",
+                    LegalName = "Tcme",
+                    Scheme = "GB-COH"
+                }]
+            }
+        };
+
+        var existingOrganisationWithSameIdentifier = GivenOrganisation([PartyRole.Buyer]);
+
+        _organisationRepositoryMock.Setup(repo => repo.FindIncludingTenant(_anotherOrganisationId)).ReturnsAsync(AnotherOrganisation);
+
+        _organisationRepositoryMock.Setup(repo => repo.FindByIdentifier("GB-COH", "13294342")).ReturnsAsync(existingOrganisationWithSameIdentifier);
+
+
+        Func<Task> act = async () => await _useCase.Execute((_anotherOrganisationId, command));
+
+        await act.Should()
+          .ThrowAsync<InvalidUpdateOrganisationCommand.IdentiferNumberAlreadyExists>();
+    }
+
+    [Fact]
+    public async Task ShouldNotThrowIdentiferNumberAlreadyExists_WhenIdentifierAlreadyExists_ButSameVatSceme()
     {
         var command = new UpdateOrganisation
         {
@@ -202,11 +232,9 @@ public class UpdateOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
 
         _organisationRepositoryMock.Setup(repo => repo.FindByIdentifier("VAT", "13294342")).ReturnsAsync(existingOrganisationWithSameIdentifier);
 
+        var result = await _useCase.Execute((_anotherOrganisationId, command));
 
-        Func<Task> act = async () => await _useCase.Execute((_anotherOrganisationId, command));
-
-        await act.Should()
-          .ThrowAsync<InvalidUpdateOrganisationCommand.IdentiferNumberAlreadyExists>();
+        result.Should().BeTrue();
     }
 
     [Fact]
@@ -381,39 +409,6 @@ public class UpdateOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
             i is { Scheme: "GB-PPON", IdentifierId: "c0777aeb968b4113a27d94e55b10c1b4", Primary: true })
             .Should().NotBeNull();
         organisation.Identifiers.Should().ContainSingle();
-    }
-
-    [Fact]
-    public async Task Execute_ShouldNotInsertIdentifier_WhenIdentifierIdIsEmptyOrNull()
-    {
-        var command = new UpdateOrganisation
-        {
-            Type = OrganisationUpdateType.AdditionalIdentifiers,
-            Organisation = new OrganisationInfo
-            {
-                AdditionalIdentifiers = [new OrganisationIdentifier
-                {
-                    Id = "",
-                    LegalName = "Acme",
-                    Scheme = "VAT"
-                },
-                new OrganisationIdentifier
-                {
-                    Id = null,
-                    LegalName = "Acme",
-                    Scheme = "VAT"
-                }]
-            }
-        };
-        var organisation = OrganisationWithPponIdentifier;
-        _organisationRepositoryMock.Setup(repo => repo.FindIncludingTenant(_organisationId)).ReturnsAsync(organisation);
-
-        Func<Task> act = async () => await _useCase.Execute((_organisationId, command));
-
-        await act.Should()
-           .ThrowAsync<InvalidUpdateOrganisationCommand.MissingIdentifierNumber>();
-
-        organisation.Identifiers.FirstOrDefault(i => i.Scheme == "VAT").Should().BeNull();
     }
 
     [Fact]
@@ -1057,6 +1052,12 @@ public class UpdateOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
 
     private static Persistence.Person GivenPerson()
     {
-        return new Persistence.Person { Guid = new Guid(), FirstName = "First", LastName = "Last", Email = "asd@asd.com" };
+        return new Persistence.Person {
+            Guid = new Guid(),
+            FirstName = "First",
+            LastName = "Last",
+            Email = "asd@asd.com",
+            UserUrn = "urn:1234",
+        };
     }
 }

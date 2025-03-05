@@ -1,3 +1,4 @@
+using CO.CDP.OrganisationInformation.Persistence.Constants;
 using CO.CDP.Testcontainers.PostgreSql;
 using FluentAssertions;
 using static CO.CDP.OrganisationInformation.Persistence.IOrganisationRepository.OrganisationRepositoryException;
@@ -723,7 +724,8 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql)
                 FirstName = "John",
                 LastName = "Doe",
                 Email = "john.doe@example.com",
-                Guid = Guid.NewGuid()
+                Guid = Guid.NewGuid(),
+                UserUrn = "urn:1234",
             }
         };
         organisation.OrganisationPersons.Add(organisationPerson);
@@ -1091,6 +1093,170 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql)
         var count = await repository.GetTotalCount(PartyRole.Buyer, PartyRole.Buyer, "Acme");
 
         count.Should().Be(1);
+    }
+
+    [Fact]
+    public async Task FindByOrganisationEmail_WhenMatchingOrganisationsExist_ShouldReturnResults()
+    {
+        using var repository = OrganisationRepository();
+        await using var context = GetDbContext();
+
+        var email = "contact@example.com";
+
+        var organisation1 = GivenOrganisation();
+        organisation1.ContactPoints = [new Organisation.ContactPoint { Email = email }];
+
+        var organisation2 = GivenOrganisation();
+        organisation2.ContactPoints = [new Organisation.ContactPoint { Email = email }];
+
+        await context.Organisations.AddRangeAsync(organisation1, organisation2);
+        await context.SaveChangesAsync();
+
+        var result = await repository.FindByOrganisationEmail(email, null, null);
+
+        result.Should().HaveCount(2);
+        result.Should().ContainEquivalentOf(organisation1);
+        result.Should().ContainEquivalentOf(organisation2);
+    }
+
+    [Fact]
+    public async Task FindByOrganisationEmail_WhenNoMatchingOrganisationsExist_ShouldReturnEmpty()
+    {
+        using var repository = OrganisationRepository();
+        await using var context = GetDbContext();
+
+        var email = "nomatch@example.com";
+
+        var result = await repository.FindByOrganisationEmail(email, null, null);
+
+        result.Should().BeEmpty();
+    }
+
+    [Fact]
+    public async Task FindByOrganisationEmail_WithRoleFilter_ShouldReturnMatchingOrganisations()
+    {
+        using var repository = OrganisationRepository();
+        await using var context = GetDbContext();
+
+        var email = "buyer@example.com";
+        var roleWeWant = PartyRole.Buyer;
+        var roleWeDontWant = PartyRole.Supplier;
+
+        var organisation1 = GivenOrganisation(roles: [roleWeWant]);
+        organisation1.ContactPoints = [new Organisation.ContactPoint { Email = email }];
+        organisation1.Roles.Add(roleWeWant);
+
+        var organisation2 = GivenOrganisation(roles: [roleWeDontWant]);
+        organisation2.ContactPoints = [new Organisation.ContactPoint { Email = email }];
+
+        await context.Organisations.AddRangeAsync(organisation1, organisation2);
+        await context.SaveChangesAsync();
+
+        var result = await repository.FindByOrganisationEmail(email, roleWeWant, null);
+
+        result.Should().HaveCount(1);
+        result.Should().ContainEquivalentOf(organisation1);
+        result.Should().NotContain(organisation2);
+    }
+
+    [Fact]
+    public async Task FindByOrganisationEmail_WithLimit_ShouldReturnLimitedResults()
+    {
+        using var repository = OrganisationRepository();
+        await using var context = GetDbContext();
+
+        var email = "john@johnson.com";
+
+        var organisation1 = GivenOrganisation();
+        organisation1.ContactPoints = [new Organisation.ContactPoint { Email = email }];
+
+        var organisation2 = GivenOrganisation();
+        organisation2.ContactPoints = [new Organisation.ContactPoint { Email = email }];
+
+        await context.Organisations.AddRangeAsync(organisation1, organisation2);
+        await context.SaveChangesAsync();
+
+        var result = await repository.FindByOrganisationEmail(email, null, 1);
+
+        result.Should().HaveCount(1);
+    }
+
+    [Fact]
+    public async Task FindByAdminEmail_WhenAdminExists_ShouldReturnMatchingOrganisations()
+    {
+        using var repository = OrganisationRepository();
+        await using var context = GetDbContext();
+
+        var email = "admin@example.com";
+
+        var person = GivenPerson(email: email);
+        var organisation1 = GivenOrganisation(personsWithScope: [(person, [OrganisationPersonScopes.Admin, OrganisationPersonScopes.Editor])]);
+        var organisation2 = GivenOrganisation(personsWithScope: [(person, [OrganisationPersonScopes.Editor])]);
+
+        await context.Organisations.AddRangeAsync(organisation1, organisation2);
+        await context.SaveChangesAsync();
+
+        var result = await repository.FindByAdminEmail(email, null, null);
+
+        result.Should().HaveCount(1);
+        result.Should().ContainEquivalentOf(organisation1);
+    }
+
+    [Fact]
+    public async Task FindByAdminEmail_WhenNoMatchingAdminExists_ShouldReturnEmpty()
+    {
+        using var repository = OrganisationRepository();
+        await using var context = GetDbContext();
+
+        var email = "notadmin@example.com";
+
+        var result = await repository.FindByAdminEmail(email, null, null);
+
+        result.Should().BeEmpty();
+    }
+
+    [Fact]
+    public async Task FindByAdminEmail_WithRoleFilter_ShouldReturnMatchingOrganisations()
+    {
+        using var repository = OrganisationRepository();
+        await using var context = GetDbContext();
+
+        var email = "admin-role@example.com";
+        var roleWeWant = PartyRole.Buyer;
+        var roleWeDontWant = PartyRole.Supplier;
+
+        var person = GivenPerson(email: email);
+        var organisation1 = GivenOrganisation(roles: [roleWeWant], personsWithScope: [(person, [OrganisationPersonScopes.Admin])]);
+        var organisation2 = GivenOrganisation(roles: [roleWeDontWant], personsWithScope: [(person, [OrganisationPersonScopes.Admin])]);
+
+        await context.Organisations.AddRangeAsync(organisation1, organisation2);
+        await context.SaveChangesAsync();
+
+        var result = await repository.FindByAdminEmail(email, roleWeWant, null);
+
+        result.Should().HaveCount(1);
+        result.Should().ContainEquivalentOf(organisation1);
+        result.Should().NotContain(organisation2);
+    }
+
+    [Fact]
+    public async Task FindByAdminEmail_WithLimit_ShouldReturnLimitedResults()
+    {
+        using var repository = OrganisationRepository();
+        await using var context = GetDbContext();
+
+        var email = "admin-limit@example.com";
+
+        var person = GivenPerson(email: email);
+        var organisation1 = GivenOrganisation(personsWithScope: [(person, ["ADMIN"])]);
+        var organisation2 = GivenOrganisation(personsWithScope: [(person, ["ADMIN"])]);
+
+        await context.Organisations.AddRangeAsync(organisation1, organisation2);
+        await context.SaveChangesAsync();
+
+        var result = await repository.FindByAdminEmail(email, null, 1);
+
+        result.Should().HaveCount(1);
     }
 
 

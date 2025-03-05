@@ -357,6 +357,56 @@ public static class EndpointExtensions
                 return operation;
             });
 
+        app.MapGet("/find/by-organisation-email",
+                [OrganisationAuthorize([AuthenticationChannel.OneLogin, AuthenticationChannel.ServiceKey])]
+                async ([FromQuery] string email, [FromQuery] string? role, [FromQuery] int limit, [FromServices] IUseCase<OrganisationsByOrganisationEmailQuery, IEnumerable<Model.OrganisationSearchResult>> useCase) =>
+                await useCase.Execute(new OrganisationsByOrganisationEmailQuery(email, limit, role))
+                    .AndThen(results => results.Count() != 0 ? Results.Ok(results) : Results.NotFound()))
+            .Produces<IEnumerable<Model.OrganisationSearchResult>>(StatusCodes.Status200OK, "application/json")
+            .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
+            .Produces<ProblemDetails>(StatusCodes.Status404NotFound)
+            .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError)
+            .Produces<ProblemDetails>(StatusCodes.Status400BadRequest)
+            .WithOpenApi(operation =>
+            {
+                operation.OperationId = "FindOrganisationsByOrganisationEmail";
+                operation.Description = "Find organisations by matching organisation email";
+                operation.Summary = "Find organisations by matching organisation email";
+                operation.Tags = new List<OpenApiTag> { new() { Name = "Organisation - Lookup" } };
+                operation.Responses["200"].Description = "Matching organisations.";
+                operation.Responses["400"].Description = "Bad request.";
+                operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
+                operation.Responses["404"].Description = "No organisations found.";
+                operation.Responses["500"].Description = "Internal server error.";
+
+                return operation;
+            });
+
+        app.MapGet("/find/by-admin-email",
+                [OrganisationAuthorize([AuthenticationChannel.OneLogin, AuthenticationChannel.ServiceKey])]
+                async ([FromQuery] string email, [FromQuery] string? role, [FromQuery] int limit, [FromServices] IUseCase<OrganisationsByAdminEmailQuery, IEnumerable<Model.OrganisationSearchResult>> useCase) =>
+                await useCase.Execute(new OrganisationsByAdminEmailQuery(email, limit, role))
+                    .AndThen(results => results.Count() != 0 ? Results.Ok(results) : Results.NotFound()))
+            .Produces<IEnumerable<Model.OrganisationSearchResult>>(StatusCodes.Status200OK, "application/json")
+            .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
+            .Produces<ProblemDetails>(StatusCodes.Status404NotFound)
+            .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError)
+            .Produces<ProblemDetails>(StatusCodes.Status400BadRequest)
+            .WithOpenApi(operation =>
+            {
+                operation.OperationId = "FindOrganisationsByAdminEmail";
+                operation.Description = "Find organisations by matching admin email";
+                operation.Summary = "Find organisations by matching admin email";
+                operation.Tags = new List<OpenApiTag> { new() { Name = "Organisation - Lookup" } };
+                operation.Responses["200"].Description = "Matching organisations.";
+                operation.Responses["400"].Description = "Bad request.";
+                operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
+                operation.Responses["404"].Description = "No organisations found.";
+                operation.Responses["500"].Description = "Internal server error.";
+
+                return operation;
+            });
+
         return app;
     }
 
@@ -1028,11 +1078,9 @@ public static class EndpointExtensions
               return operation;
           });
 
-        app.MapGet("/{organisationId}/mou/{mouId}",
+        app.MapGet("/{organisationId}/mou/{mouSignatureId}",
         [OrganisationAuthorize(
-            [AuthenticationChannel.OneLogin],
-              [Constants.OrganisationPersonScope.Admin],
-              OrganisationIdLocation.Path)]
+            [AuthenticationChannel.OneLogin])]
         async (Guid organisationId, Guid mouSignatureId, IUseCase<(Guid, Guid), MouSignature> useCase) =>
                   await useCase.Execute((organisationId, mouSignatureId))
                       .AndThen(mouSignature => mouSignature != null ? Results.Ok(mouSignature) : Results.NotFound()))

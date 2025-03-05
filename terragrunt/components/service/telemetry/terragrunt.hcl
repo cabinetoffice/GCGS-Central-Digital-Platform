@@ -33,12 +33,10 @@ dependency core_iam {
 dependency core_networking {
   config_path = "../../core/networking"
   mock_outputs = {
-    private_subnet_ids                     = "mock"
-    production_private_beta_domain         = "mock" # @todo (ABN) DP-1069 Remove once domain is propagated
-    production_private_beta_hosted_zone_id = "mock" # @todo (ABN) DP-1069 Remove once domain is propagated
-    public_domain                          = "mock"
-    public_hosted_zone_id                  = "mock"
-    vpc_id                                 = "mock"
+    private_subnet_ids    = "mock"
+    public_domain         = "mock"
+    public_hosted_zone_id = "mock"
+    vpc_id                = "mock"
   }
 }
 
@@ -50,12 +48,21 @@ dependency core_security_groups {
   }
 }
 
+dependency service_auth {
+  config_path = "../../service/auth"
+  mock_outputs = {
+    grafana_user_pool_arn       = "mock"
+    grafana_user_pool_client_id = "mock"
+    user_pool_domain            = "mock"
+  }
+}
+
 dependency service_ecs {
   config_path = "../../service/ecs"
   mock_outputs = {
-    ecs_cluster_id  = "mock"
-    ecs_cluster_id  = "mock"
-    ecs_lb_dns_name = "mock"
+    ecs_cluster_id   = "mock"
+    ecs_cluster_id   = "mock"
+    ecs_alb_dns_name = "mock"
   }
 }
 
@@ -71,14 +78,18 @@ inputs = {
   role_telemetry_arn     = dependency.core_iam.outputs.telemetry_arn
 
   private_subnet_ids    = dependency.core_networking.outputs.private_subnet_ids
-  public_domain         = local.global_vars.locals.is_production ? dependency.core_networking.outputs.production_private_beta_domain : dependency.core_networking.outputs.public_domain                 # @todo (ABN) DP-1069 Remove condition once domain is propagated
-  public_hosted_zone_id = local.global_vars.locals.is_production ? dependency.core_networking.outputs.production_private_beta_hosted_zone_id : dependency.core_networking.outputs.public_hosted_zone_id # @todo (ABN) DP-1069 Remove condition once domain is propagated
+  public_domain         = dependency.core_networking.outputs.public_domain
+  public_hosted_zone_id = dependency.core_networking.outputs.public_hosted_zone_id
   vpc_id                = dependency.core_networking.outputs.vpc_id
 
   ecs_alb_sg_id = dependency.core_security_groups.outputs.alb_sg_id
   ecs_sg_id     = dependency.core_security_groups.outputs.ecs_sg_id
 
+  user_pool_arn_grafana       = dependency.service_auth.outputs.grafana_user_pool_arn
+  user_pool_client_id_grafana = dependency.service_auth.outputs.grafana_user_pool_client_id
+  user_pool_domain_grafana    = dependency.service_auth.outputs.user_pool_domain
+
   ecs_cluster_id   = dependency.service_ecs.outputs.ecs_cluster_id
-  ecs_lb_dns_name  = dependency.service_ecs.outputs.ecs_lb_dns_name
+  ecs_alb_dns_name = dependency.service_ecs.outputs.ecs_alb_dns_name
   ecs_listener_arn = dependency.service_ecs.outputs.ecs_listener_arn
 }

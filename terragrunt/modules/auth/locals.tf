@@ -3,6 +3,8 @@ locals {
   auth_domain             = "${local.name_prefix}-${var.environment}"
   organisation_app_domain = "${local.name_prefix}-${var.environment}-organisatino-app"
   organisation_app_url    = "https://${var.public_domain}"
+  grafana_domain          = "${local.name_prefix}-${var.environment}-grafana"
+  grafana_url             = "https://grafana.${var.public_domain}"
   healthcheck_domain      = "${local.name_prefix}-${var.environment}-healthcheck"
   healthcheck_url         = "https://healthcheck.${var.public_domain}"
   pgadmin_domain          = "${local.name_prefix}-${var.environment}-pgadmin"

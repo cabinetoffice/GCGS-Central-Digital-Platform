@@ -29,7 +29,6 @@ public class OneLoginTest
     private readonly Mock<IAuthorityClient> authorityClientMock = new();
     private readonly Mock<IFeatureManager> featureManagerMock = new();
     private readonly Mock<IConfiguration> configMock = new();
-    private readonly Mock<IFtsUrlService> ftsUrlServiceMock = new();
     private const string urn = "urn:fdc:gov.uk:2022:7wTqYGMFQxgukTSpSI2GodMwe9";
 
     [Fact]
@@ -143,7 +142,7 @@ public class OneLoginTest
     {
         var model = GivenOneLoginModel("user-info");
 
-        personClientMock.Setup(t => t.LookupPersonAsync(It.IsAny<string>()))
+        personClientMock.Setup(t => t.LookupPersonAsync(It.IsAny<string>(), It.IsAny<string>()))
             .ReturnsAsync(dummyPerson);
 
         var result = await model.OnGetAsync();
@@ -157,7 +156,7 @@ public class OneLoginTest
     {
         var model = GivenOneLoginModel("user-info");
 
-        personClientMock.Setup(t => t.LookupPersonAsync(It.IsAny<string>()))
+        personClientMock.Setup(t => t.LookupPersonAsync(It.IsAny<string>(), It.IsAny<string>()))
             .ReturnsAsync(dummyPerson);
 
         var result = await model.OnGetAsync("/org/1");
@@ -171,7 +170,7 @@ public class OneLoginTest
     {
         var model = GivenOneLoginModel("user-info");
 
-        personClientMock.Setup(t => t.LookupPersonAsync(It.IsAny<string>()))
+        personClientMock.Setup(t => t.LookupPersonAsync(It.IsAny<string>(), It.IsAny<string>()))
             .ReturnsAsync(dummyPerson);
 
         var result = await model.OnGetAsync("http://test-domain/org/1");
@@ -181,11 +180,30 @@ public class OneLoginTest
     }
 
     [Fact]
+    public async Task OnGetUserInfo_WhenPersonAlreadyRegisteredButReturningWithDifferentUrn_ShouldUpdatePersonRecordWithNewUrn()
+    {
+        var model = GivenOneLoginModel("user-info");
+
+        personClientMock.Setup(t => t.LookupPersonAsync("different urn", null))
+            .ThrowsAsync(new ApiException("Unexpected error", 404, "", default, null));
+
+        personClientMock.Setup(t => t.LookupPersonAsync(null, dummyPerson.Email))
+            .ReturnsAsync(dummyPerson);
+
+        var result = await model.OnGetAsync();
+
+        result.Should().BeOfType<RedirectToPageResult>()
+            .Which.PageName.Should().Be("Organisation/OrganisationSelection");
+
+        personClientMock.Verify(t => t.UpdatePersonAsync(dummyPerson.Id, It.Is<UpdatedPerson>(p => p.UserUrn == urn)), Times.Once);
+    }
+
+    [Fact]
     public async Task OnGetUserInfo_WhenPersonNotRegistered_ShouldRedirectToPrivacyPolicyPage()
     {
         var model = GivenOneLoginModel("user-info");
 
-        personClientMock.Setup(t => t.LookupPersonAsync(It.IsAny<string>()))
+        personClientMock.Setup(t => t.LookupPersonAsync(It.IsAny<string>(), It.IsAny<string>()))
             .ThrowsAsync(new ApiException("Unexpected error", 404, "", default, null));
 
         var result = await model.OnGetAsync();
@@ -199,7 +217,7 @@ public class OneLoginTest
     {
         var model = GivenOneLoginModel("user-info");
 
-        personClientMock.Setup(t => t.LookupPersonAsync(It.IsAny<string>()))
+        personClientMock.Setup(t => t.LookupPersonAsync(It.IsAny<string>(), It.IsAny<string>()))
             .ThrowsAsync(new ApiException("Unexpected error", 404, "", default, null));
 
         var result = await model.OnGetAsync("/org/1");
@@ -214,7 +232,7 @@ public class OneLoginTest
     {
         var model = GivenOneLoginModel("user-info");
 
-        personClientMock.Setup(t => t.LookupPersonAsync(It.IsAny<string>()))
+        personClientMock.Setup(t => t.LookupPersonAsync(It.IsAny<string>(), It.IsAny<string>()))
             .ThrowsAsync(new ApiException("Unexpected error", 404, "", default, null));
 
         var result = await model.OnGetAsync("http://test-domain/org/1");
@@ -222,19 +240,6 @@ public class OneLoginTest
         var redirectToPageResult = result.Should().BeOfType<RedirectToPageResult>();
         redirectToPageResult.Which.PageName.Should().Be("PrivacyPolicy");
         redirectToPageResult.Which.RouteValues.Should().BeEquivalentTo(new Dictionary<string, string?> { { "RedirectUri", default } });
-    }
-
-    [Fact]
-    public async Task OnGetSignOut_UserIsNotAuthenticated_ShouldReturnToIndex()
-    {
-        var model = GivenOneLoginModel("sign-out");
-        featureManagerMock.Setup(f => f.IsEnabledAsync(FeatureFlags.AllowFtsRedirectLinks))
-            .ReturnsAsync(false);
-
-        var result = await model.OnGetAsync();
-
-        result.Should().BeOfType<RedirectResult>()
-            .Which.Url.Should().Be("/");
     }
 
     [Fact]
@@ -265,25 +270,7 @@ public class OneLoginTest
         var result = await model.OnGetAsync();
 
         result.Should().BeOfType<SignOutResult>()
-            .Which.Properties!.RedirectUri.Should().Be("/");
-    }
-
-    [Fact]
-    public async Task OnGetSignOut_UserIsAuthenticatedAndFtsRedirectEnabled_ShouldRedirectToFtsSignoutPage()
-    {
-        var model = GivenOneLoginModel("sign-out");
-        var ftsSignedOutPage = "https://fts-domain/user/signedout";
-        httpContextAccessorMock.Setup(x => x.HttpContext!.User!.Identity!.IsAuthenticated)
-           .Returns(true);
-        featureManagerMock.Setup(f => f.IsEnabledAsync(FeatureFlags.AllowFtsRedirectLinks))
-            .ReturnsAsync(true);
-        ftsUrlServiceMock.Setup(f => f.BuildUrl("/user/signedout", null, null))
-            .Returns(ftsSignedOutPage);
-
-        var result = await model.OnGetAsync();
-
-        result.Should().BeOfType<SignOutResult>()
-            .Which.Properties!.RedirectUri.Should().Be(ftsSignedOutPage);
+            .Which.Properties!.RedirectUri.Should().Be("/user/signedout");
     }
 
     [Fact]
@@ -379,7 +366,7 @@ public class OneLoginTest
         httpContextAccessorMock.SetupGet(t => t.HttpContext)
             .Returns(new DefaultHttpContext { RequestServices = serviceProvider.Object });
 
-        personClientMock.Setup(t => t.LookupPersonAsync(It.IsAny<string>()))
+        personClientMock.Setup(t => t.LookupPersonAsync(It.IsAny<string>(), It.IsAny<string>()))
             .ThrowsAsync(new ApiException("", 404, "", default, null));
 
         return new OneLoginModel(
@@ -391,8 +378,7 @@ public class OneLoginTest
             authorityClientMock.Object,
             new Mock<ILogger<OneLoginModel>>().Object,
             featureManagerMock.Object,
-            configMock.Object,
-            ftsUrlServiceMock.Object)
+            configMock.Object)
         { PageAction = pageAction };
     }
 }

@@ -124,6 +124,18 @@ variable "pinned_service_version" {
   default     = null
 }
 
+variable "private_beta_domain" {
+  description = "Optional fully qualified domain name (FQDN) of private-beta domain"
+  type        = string
+  default     = null
+}
+
+variable "private_beta_hosted_zone_id" {
+  description = "Optional Private Beta Domain's Hosted Zone ID"
+  type        = string
+  default     = null
+}
+
 variable "private_subnet_ids" {
   description = "List of private subnet IDs"
   type        = list(string)
@@ -139,7 +151,7 @@ variable "product" {
 }
 
 variable "public_domain" {
-  description = "The fully qualified domain name (FQDN) that may differ from the main delegated domain specified by 'public_hosted_zone_fqdn'. This domain represents the public-facing endpoint."
+  description = "The public fully qualified domain name (FQDN)"
   type        = string
 }
 
@@ -299,11 +311,6 @@ variable "vpce_logs_sg_id" {
 
 variable "vpce_s3_prefix_list_id" {
   description = "Prefix list ids or S3 VPC endpoint"
-  type        = string
-}
-
-variable "vpce_s3_sg_id" {
-  description = "Security group ID of the S3 VPC endpoint"
   type        = string
 }
 

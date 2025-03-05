@@ -235,10 +235,16 @@
                                 <p class="govuk-body">
                                     @if (Model.MouSignedOnDate != null)
                                     {
-                                        @Model.MouSignedOnDate;
+                                        @Model.MouSignedOnDate
+                                        ;
                                     }
                                 </p>
                             </dd>
+                            <authorize scope="@OrgScopeRequirement.Admin">
+                                <dd class="govuk-summary-list__actions">
+                                    <a class="govuk-link govuk-link--no-visited-state" href="/organisation/@Model.Id/mou-summary">@StaticTextResource.Global_View</a>
+                                </dd>
+                            </authorize>
                         </div>
                     }
                 }
@@ -294,9 +300,9 @@
                 @if (organisationDetails.IsTenderer() && !(organisationDetails.IsPendingBuyer() || organisationDetails.IsBuyer()))
                 {
                     <h3 class="govuk-heading-s govuk-!-margin-bottom-3">
-                        <a class="govuk-link" asp-page="./OrganisationRegisterSupplierAsBuyer" asp-route-id="@Model.Id">Register as a buyer</a>
+                        <a class="govuk-link" asp-page="./OrganisationRegisterSupplierAsBuyer" asp-route-id="@Model.Id">@StaticTextResource.OrganisationOverview_RegisterAsBuyer_Link</a>
                     </h3>
-                    <p class="govuk-body">If you also buy public sector goods, works, services or utilities.</p>
+                    <p class="govuk-body">@StaticTextResource.OrganisationOverview_RegisterAsBuyer_Text</p>
                     <div class="govuk-section-break govuk-section-break--visible govuk-section-break--m"></div>
                 }
             </authorize>

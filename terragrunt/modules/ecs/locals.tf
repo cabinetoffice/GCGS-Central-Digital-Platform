@@ -37,8 +37,6 @@ locals {
 
   orchestrator_service_version = data.aws_ssm_parameter.orchestrator_service_version.value
 
-  production_subdomain = "supplier-information"
-
   service_version = var.pinned_service_version == null ? data.aws_ssm_parameter.orchestrator_service_version.value : var.pinned_service_version
 
   shared_sessions_enabled    = true
@@ -52,6 +50,9 @@ locals {
   }
 
   outbox_processors_desire_count = 1 # won't be scalable.
+
+  send_notify_emails_enabled_accounts = ["development", "integration", "production"]
+  send_notify_emails                  = contains(local.send_notify_emails_enabled_accounts, var.environment)
 
   service_configs = {
     for name, config in var.service_configs :

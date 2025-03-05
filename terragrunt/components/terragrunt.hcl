@@ -75,10 +75,13 @@ locals {
       fts_azure_frontdoor               = null
       fts_service_allowed_origins       = []
       name                              = "staging"
-      onelogin_logout_notification_urls = ["https://www-staging.find-tender.service.gov.uk/auth/backchannellogout"]
-      pinned_service_version            = "1.0.40"
+      onelogin_logout_notification_urls = [
+        "https://stanvolcere.nqc.com/auth/backchannellogout",
+        "https://www-staging.find-tender.service.gov.uk/auth/backchannellogout",
+      ]
+      pinned_service_version            = "1.0.47"
       postgres_instance_type            = "db.t4g.micro"
-      postgres_aurora_instance_type     = "db.r5.12xlarge"
+      postgres_aurora_instance_type     = "db.r5.large"
       private_subnets = [
         "10.${local.cidr_b_staging}.101.0/24",
         "10.${local.cidr_b_staging}.102.0/24",
@@ -138,8 +141,9 @@ locals {
         "https://truk-prod.nqc.com/auth/backchannellogout",
         "https://wallsm.nqc.com/auth/backchannellogout",
         "https://www-tpp-preview.find-tender.service.gov.uk/auth/backchannellogout",
+        "https://www-tpp.find-tender.service.gov.uk/auth/backchannellogout",
       ]
-      pinned_service_version            = "1.0.40"
+      pinned_service_version            = "1.0.46"
       postgres_instance_type            = "db.t4g.micro"
       postgres_aurora_instance_type     = "db.r5.large"
       private_subnets = [
@@ -169,8 +173,8 @@ locals {
       fts_azure_frontdoor               = "nqc-front-door-uksouth.azurefd.net"
       fts_service_allowed_origins       = []
       name                              = "production"
-      onelogin_logout_notification_urls = ["https://www.private-beta.find-tender.service.gov.uk/auth/backchannellogout"]
-      pinned_service_version            = "1.0.40"
+      onelogin_logout_notification_urls = ["https://www.find-tender.service.gov.uk/auth/backchannellogout"]
+      pinned_service_version            = "1.0.46"
       postgres_instance_type            = "db.t4g.micro"
       postgres_aurora_instance_type     = "db.r5.12xlarge"
       private_subnets = [
@@ -230,7 +234,7 @@ locals {
     orchestrator = 0
     development  = 2
     integration  = 2
-    staging      = 9
+    staging      = 2
     production   = 9
   }
 
@@ -238,7 +242,7 @@ locals {
     development  = { cpu = 256,  memory = 512  }
     orchestrator = { cpu = 256,  memory = 512  }
     integration  = { cpu = 512,  memory = 1024 }
-    staging      = { cpu = 4096, memory = 8192 }
+    staging      = { cpu = 512,  memory = 1024 }
     production   = { cpu = 4096, memory = 8192 }
   }
 

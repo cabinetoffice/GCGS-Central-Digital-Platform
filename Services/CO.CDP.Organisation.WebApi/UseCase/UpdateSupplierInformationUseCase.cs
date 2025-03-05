@@ -29,6 +29,13 @@ public class UpdateSupplierInformationUseCase(IOrganisationRepository organisati
                     throw new InvalidUpdateSupplierInformationCommand("Missing supplier type.");
                 }
                 organisation.SupplierInfo.SupplierType = updateObject.SupplierType;
+                if (updateObject.SupplierType == SupplierType.Individual)
+                {
+                    organisation.SupplierInfo.OperationTypes = [];
+                    organisation.SupplierInfo.LegalForm = null;
+                    organisation.SupplierInfo.CompletedLegalForm = false;
+                    organisation.SupplierInfo.CompletedOperationType = false;
+                }
                 break;
 
             case SupplierInformationUpdateType.CompletedWebsiteAddress:

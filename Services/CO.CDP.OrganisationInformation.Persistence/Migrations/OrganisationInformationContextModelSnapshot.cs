@@ -117,7 +117,6 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                         .HasColumnName("locality");
 
                     b.Property<string>("PostalCode")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("postal_code");
 
@@ -1118,6 +1117,11 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                         .HasColumnType("text")
                         .HasColumnName("phone");
 
+                    b.Property<List<string>>("PreviousUrns")
+                        .IsRequired()
+                        .HasColumnType("text[]")
+                        .HasColumnName("previous_urns");
+
                     b.Property<List<string>>("Scopes")
                         .IsRequired()
                         .HasColumnType("text[]")
@@ -1130,6 +1134,7 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                         .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                     b.Property<string>("UserUrn")
+                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("user_urn");
 
@@ -1840,10 +1845,6 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
 
                             b1.HasIndex("OrganisationId")
                                 .HasDatabaseName("ix_identifiers_organisation_id");
-
-                            b1.HasIndex("IdentifierId", "Scheme")
-                                .IsUnique()
-                                .HasDatabaseName("ix_identifiers_identifier_id_scheme");
 
                             b1.ToTable("identifiers", (string)null);
 

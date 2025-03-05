@@ -8,7 +8,8 @@ namespace CO.CDP.OrganisationApp.Pages.Support;
 [Authorize(Policy = PersonScopeRequirement.SupportAdmin)]
 public class OrganisationsModel(
     IOrganisationClient organisationClient,
-    ISession session) : LoggedInUserAwareModel(session)
+    ISession session)
+    : LoggedInUserAwareModel(session)
 {
     public string? Title { get; set; }
 
@@ -34,6 +35,8 @@ public class OrganisationsModel(
     {
         InitModel(type, pageNumber);
 
+        OrganisationSearchInput = SessionContext.Get<string>("OrganisationSearchInput");
+
         await GetResults();
 
         return Page();
@@ -42,6 +45,15 @@ public class OrganisationsModel(
     public async Task<IActionResult> OnPost(string type, int pageNumber = 1)
     {
         InitModel(type, pageNumber);
+
+        if (!string.IsNullOrWhiteSpace(OrganisationSearchInput))
+        {
+            SessionContext.Set("OrganisationSearchInput", OrganisationSearchInput);
+        }
+        else
+        {
+            SessionContext.Remove("OrganisationSearchInput"); // Clear when input is empty
+        }
 
         await GetResults();
 

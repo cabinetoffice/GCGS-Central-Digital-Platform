@@ -63,6 +63,12 @@ public class ReviewStatusResolverTests
 
     private static OrganisationInformation.Persistence.Person GivenPerson()
     {
-        return new OrganisationInformation.Persistence.Person { Guid = new Guid(), Email = "asd@asd.com", FirstName = "First name", LastName = "Last name" };
+        return new OrganisationInformation.Persistence.Person {
+            Guid = new Guid(),
+            Email = "asd@asd.com",
+            FirstName = "First name",
+            LastName = "Last name",
+            UserUrn = "urn:1234"
+        };
     }
 }

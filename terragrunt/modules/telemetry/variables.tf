@@ -3,6 +3,11 @@ variable "account_ids" {
   type        = map(string)
 }
 
+variable "ecs_alb_dns_name" {
+  description = "DNS to the load balancer in front of ECS services"
+  type        = string
+}
+
 variable "ecs_alb_sg_id" {
   description = "Application load-balancer security group ID"
   type        = string
@@ -37,6 +42,11 @@ variable "grafana_config" {
     port      = number
     port_host = number
   })
+}
+
+variable "is_production" {
+  description = "Indicates whether the target account is configured with production-level settings"
+  type        = bool
 }
 
 variable "private_subnet_ids" {
@@ -97,6 +107,21 @@ variable "service_configs" {
 variable "tags" {
   description = "Tags to apply to all resources in this module"
   type        = map(string)
+}
+
+variable "user_pool_arn_grafana" {
+  default = null
+  type    = string
+}
+
+variable "user_pool_client_id_grafana" {
+  default = null
+  type    = string
+}
+
+variable "user_pool_domain_grafana" {
+  default = null
+  type    = string
 }
 
 variable "vpc_id" {

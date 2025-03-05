@@ -82,6 +82,7 @@ data "aws_iam_policy_document" "terraform_product" {
     effect = "Allow"
     resources = [
       "arn:aws:cloudwatch::${data.aws_caller_identity.current.account_id}:dashboard/${local.name_prefix}-*",
+      "arn:aws:cloudwatch:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:alarm:${local.name_prefix}-*",
       "arn:aws:cloudwatch:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:alarm:canary/*/${local.name_prefix}-*"
     ]
     sid = "ManageProductCloudwatch"
@@ -182,9 +183,11 @@ data "aws_iam_policy_document" "terraform_product" {
   statement {
     actions = [
       "elasticloadbalancing:AddTags",
+      "elasticloadbalancing:AddListenerCertificates",
       "elasticloadbalancing:Create*",
       "elasticloadbalancing:Delete*",
       "elasticloadbalancing:Describe*",
+      "elasticloadbalancing:RemoveListenerCertificates",
       "elasticloadbalancing:Modify*",
       "elasticloadbalancing:SetRulePriorities",
       "elasticloadbalancing:SetWebACL",
@@ -252,6 +255,22 @@ data "aws_iam_policy_document" "terraform_product" {
       "arn:aws:wafv2:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:regional/ipset/${local.name_prefix}-*/*",
     ]
     sid = "ManageProductWAF"
+  }
+
+  statement {
+    actions = [
+      "SNS:CreateTopic",
+      "SNS:TagResource",
+      "SNS:SetTopicAttributes",
+      "SNS:GetTopicAttributes",
+      "SNS:ListTagsForResource",
+      "SNS:DeleteTopic",
+    ]
+    effect = "Allow"
+    resources = [
+      "arn:aws:sns:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:${local.name_prefix}-*",
+    ]
+    sid = "ManageProductSNS"
   }
 
 }

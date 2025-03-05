@@ -82,7 +82,14 @@ public class RemovePersonFromOrganisationUseCaseTest
     private static Person GivenPerson()
     {
         return new Person
-            { Id = 1, Guid = Guid.NewGuid(), FirstName = "Tom", LastName = "Smith", Email = "js@biz.com" };
+        {
+            Id = 1,
+            Guid = Guid.NewGuid(),
+            FirstName = "Tom",
+            LastName = "Smith",
+            Email = "js@biz.com",
+            UserUrn = "urn:1234"
+        };
     }
 
     private static OrganisationInformation.Persistence.Organisation GivenOrganisation(

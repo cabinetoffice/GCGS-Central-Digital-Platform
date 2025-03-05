@@ -12,19 +12,15 @@ public class DispatcherBackgroundServiceTest
     private readonly TestServiceProvider _serviceProvider = new();
 
     [Fact]
-    public void ItExecutesTheQueueDispatcher()
+    public async Task ItExecutesTheQueueDispatcher()
     {
         _serviceProvider.Services.Add(typeof(IDispatcher), _dispatcher.Object);
         _serviceProvider.Services.Add(typeof(IServiceScopeFactory), new TestServiceScopeFactory(_serviceProvider));
 
         var backgroundService = new DispatcherBackgroundService(_serviceProvider);
-        var cancellationToken = CancellationToken.None;
-        var task = Task.CompletedTask;
-        _dispatcher.Setup(d => d.ExecuteAsync(cancellationToken))
-            .Returns(task);
 
-        var result = backgroundService.StartAsync(cancellationToken);
+        await backgroundService.StartAsync(CancellationToken.None);
 
-        result.Should().Be(task);
+        _dispatcher.Verify(d => d.ExecuteAsync(It.IsAny<CancellationToken>()), Times.AtLeastOnce);
     }
 }

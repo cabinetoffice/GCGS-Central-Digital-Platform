@@ -58,7 +58,7 @@ public class OrganisationDetailsSummaryModel(
 
         if (payload == null)
         {
-            ModelState.AddModelError(string.Empty, ErrorMessagesList.PayLoadIssueOrNullAurgument);
+            ModelState.AddModelError(string.Empty, ErrorMessagesList.PayLoadIssueOrNullArgument);
             return null;
         }
 

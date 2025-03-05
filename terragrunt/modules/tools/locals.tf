@@ -3,8 +3,6 @@ locals {
 
   orchestrator_account_id = var.account_ids["orchestrator"]
 
-  production_subdomain = "supplier-information"
-
   auto_redeploy_tools_service_configs = {
     for name, config in var.tools_configs :
     config.name => config if !contains(["clamav-rest", "grafana", "healthcheck", "k6"], config.name)
