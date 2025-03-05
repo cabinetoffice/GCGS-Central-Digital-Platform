@@ -79,7 +79,7 @@ locals {
         "https://stanvolcere.nqc.com/auth/backchannellogout",
         "https://www-staging.find-tender.service.gov.uk/auth/backchannellogout",
       ]
-      pinned_service_version            = "2025-03-05-dp-1217-share-code-endpoint-optimisation"
+      pinned_service_version            = "1.0.47"
       postgres_instance_type            = "db.t4g.micro"
       postgres_aurora_instance_type     = "db.r5.large"
       private_subnets = [
