@@ -9,6 +9,8 @@ locals {
 
   ecs_threshold_cup_percent    = 80
   ecs_threshold_memory_percent = 80
+  ecs_threshold_4xx            = 8
+  ecs_threshold_5xx            = 0
 
   rds_threshold_cup_percent         = 80
   rds_threshold_freeable_storage_gb = 2.4
