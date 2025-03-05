@@ -66,7 +66,7 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
             .Include(p => p.Addresses)
             .ThenInclude(p => p.Address)
             .AsSingleQuery()
-            .FirstOrDefaultAsync(t => t.Name == name);
+            .FirstOrDefaultAsync(t => t.Name.ToLower() == name.ToLower());
     }
 
     public async Task<IEnumerable<Organisation>> SearchByName(string name, PartyRole? role, int? limit, double threshold = 0.3)

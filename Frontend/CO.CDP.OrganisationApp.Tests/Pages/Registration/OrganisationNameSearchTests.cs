@@ -88,6 +88,35 @@ public class OrganisationNameSearchModelTests
     }
 
     [Fact]
+    public async Task OnGet_WhenLookupApiReturnsSingleExactMatch_ShouldRedirectToJoinOrganisationWithFlashMessage()
+    {
+        RegistrationDetails registrationDetails = GivenRegistrationDetails("Test org", Constants.OrganisationType.Buyer);
+        _sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(registrationDetails);
+
+        var matchingOrganisation = GivenOrganisationSearchResult("Test org", "scheme", "123");
+
+        _organisationClientMock
+            .Setup(client => client.LookupOrganisationAsync("Test org", String.Empty))
+            .ReturnsAsync(GivenOrganisation());
+
+        var model = GivenOrganisationNameSearchModel();
+        var result = await model.OnGet();
+
+        _flashMessageServiceMock.Verify(service =>
+            service.SetFlashMessage(
+                FlashMessageType.Important,
+                StaticTextResource.OrganisationRegistration_SearchOrganisationName_ExactMatchAlreadyExists,
+                null,
+                null,
+                null,
+                null
+            ), Times.Once);
+
+        result.Should().BeOfType<RedirectResult>()
+            .Which.Url.Should().Be("/registration/scheme%3A123/join-organisation");
+    }
+
+    [Fact]
     public async Task OnGet_WhenApiReturnsExactMatchSomewhereInResults_ShouldRedirectToJoinOrganisationWithFlashMessage()
     {
         RegistrationDetails registrationDetails = GivenRegistrationDetails("Test org", Constants.OrganisationType.Buyer);
@@ -231,5 +260,20 @@ public class OrganisationNameSearchModelTests
                     new List<PartyRole>() { PartyRole.Buyer },
                     OrganisationType.Organisation
                 );
+    }
+
+    private static CO.CDP.Organisation.WebApiClient.Organisation GivenOrganisation()
+    {
+        return new CO.CDP.Organisation.WebApiClient.Organisation(
+                  additionalIdentifiers: null,
+                  addresses: null,
+                  contactPoint: null,
+                  details: new Details(approval: null, buyerInformation: null, pendingRoles: [], publicServiceMissionOrganization: null, scale: null, shelteredWorkshop: null, vcse: null),
+                  id: Guid.NewGuid(),
+                  identifier: new Identifier("123", "Acme", "scheme", new Uri("http://www.acme.org")),
+                  name: "Test Org",
+                  roles: new List<PartyRole>(),
+                  type: OrganisationType.Organisation
+                  );
     }
 }
