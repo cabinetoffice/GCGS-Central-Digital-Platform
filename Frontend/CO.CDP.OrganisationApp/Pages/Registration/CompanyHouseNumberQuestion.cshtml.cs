@@ -62,8 +62,7 @@ public class CompanyHouseNumberQuestionModel(ISession session,
 
                 OrganisationName = organisation?.Name;
                 if (organisation != null)
-                {
-                    var organisationIdentifier = $"{organisation.Id}";
+                {                    
                     SessionContext.Set(Session.JoinOrganisationRequest,
                         new JoinOrganisationRequestState { OrganisationId = organisation.Id, OrganisationName = organisation.Name }
                         );
@@ -71,7 +70,7 @@ public class CompanyHouseNumberQuestionModel(ISession session,
                     flashMessageService.SetFlashMessage(
                         FlashMessageType.Important,
                         heading: StaticTextResource.OrganisationRegistration_CompanyHouseNumberQuestion_CompanyAlreadyRegistered_NotificationBanner,
-                        urlParameters: new() { ["organisationIdentifier"] = organisationIdentifier },
+                        urlParameters: new() { ["organisationIdentifier"] = organisation.Id.ToString() },
                         htmlParameters: new() { ["organisationName"] = organisation.Name }
                     );
                 }

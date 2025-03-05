@@ -75,15 +75,14 @@ public class OrganisationDetailsSummaryModel(
                 var organisation = await organisationClient.LookupOrganisationAsync(RegistrationDetails.OrganisationName, "");
 
                 if (organisation != null)
-                {
-                    var organisationIdentifier = $"{organisation.Id}";
+                {                    
                     SessionContext.Set(Session.JoinOrganisationRequest,
                         new JoinOrganisationRequestState { OrganisationId = organisation.Id, OrganisationName = organisation.Name }
                         );
                     flashMessageService.SetFlashMessage(
                             FlashMessageType.Important,
                             heading: StaticTextResource.OrganisationRegistration_CompanyHouseNumberQuestion_CompanyAlreadyRegistered_NotificationBanner,
-                            urlParameters: new() { ["organisationIdentifier"] = organisationIdentifier },
+                            urlParameters: new() { ["organisationIdentifier"] = organisation.Id.ToString() },
                             htmlParameters: new() { ["organisationName"] = organisation.Name }
                         );
                 }
