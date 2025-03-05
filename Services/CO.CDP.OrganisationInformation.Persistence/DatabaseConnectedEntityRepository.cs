@@ -35,7 +35,7 @@ public class DatabaseConnectedEntityRepository(OrganisationInformationContext co
             {
                 Name = t.EntityType == ConnectedEntity.ConnectedEntityType.Organisation
                     ? (t.Organisation == null ? "" : t.Organisation.Name)
-                    : (t.IndividualOrTrust == null ? "" : t.IndividualOrTrust.FirstName),
+                    : (t.IndividualOrTrust == null ? "" : $"{t.IndividualOrTrust.FirstName} {t.IndividualOrTrust.LastName}"),
                 EntityId = t.Guid,
                 EntityType = t.EntityType,
             })
