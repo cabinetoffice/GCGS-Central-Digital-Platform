@@ -86,7 +86,9 @@ jobs:
         env:
           IMAGE_VERSION: ${{ steps.version.outputs.version }}
       - name: Verify services
-        run: make verify-up
+        run: |
+          docker logs co-cdp-tenant -f
+          make verify-up
         env:
           IMAGE_VERSION: ${{ steps.version.outputs.version }}
       - name: Test migrations
