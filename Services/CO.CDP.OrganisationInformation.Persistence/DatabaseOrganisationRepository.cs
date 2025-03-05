@@ -217,37 +217,7 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
         return await result.AsSingleQuery().ToListAsync();
     }
 
-    public async Task<IList<Organisation>> GetPaginated(PartyRole? role, PartyRole? pendingRole, string? searchText, int limit, int skip)
-    {
-        IQueryable<Organisation> result = context.Organisations
-            .Include(o => o.ReviewedBy)
-            .Include(o => o.Identifiers)
-            .Include(o => o.BuyerInfo)
-            .Include(o => o.SupplierInfo)
-            .Include(o => o.Persons)
-            .ThenInclude(p => p.PersonOrganisations)
-            .Include(o => o.Addresses)
-            .ThenInclude(p => p.Address)
-            .OrderBy(o => o.Name)
-            .Where(o =>
-                (pendingRole.HasValue && o.PendingRoles.Contains(pendingRole.Value)) ||
-                (role.HasValue && o.Roles.Contains(role.Value))
-            );
-
-        if (!string.IsNullOrWhiteSpace(searchText))
-        {
-            result = result.Where(o => o.Name.Contains(searchText) ||
-                                       EF.Functions.TrigramsSimilarity(o.Name, searchText) > 0.3);
-        }
-
-        return await result
-            .AsSplitQuery()
-            .Skip(skip)
-            .Take(limit)
-            .ToListAsync();
-    }
-
-    public async Task<IList<OrganisationRawDto>> GetPaginatedRaw(PartyRole? role, PartyRole? pendingRole, string? searchText, int limit, int skip)
+    public async Task<IList<OrganisationRawDto>> GetPaginated(PartyRole? role, PartyRole? pendingRole, string? searchText, int limit, int skip)
     {
         var sql = @"
             SELECT

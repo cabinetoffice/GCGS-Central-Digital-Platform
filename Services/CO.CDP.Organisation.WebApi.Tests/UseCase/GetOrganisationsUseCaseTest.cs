@@ -64,13 +64,13 @@ public class GetOrganisationsUseCaseTests
         ];
 
         _organisationRepositoryMock
-            .Setup(repo => repo.GetPaginatedRaw(command.Role, command.PendingRole, command.SearchText, command.Limit, command.Skip))
+            .Setup(repo => repo.GetPaginated(command.Role, command.PendingRole, command.SearchText, command.Limit, command.Skip))
             .ReturnsAsync(organisations);
 
         var result = await _useCase.Execute(command);
 
         result.Should().BeEquivalentTo(OrganisationDtos);
-        _organisationRepositoryMock.Verify(repo => repo.GetPaginatedRaw(command.Role, command.PendingRole, command.SearchText, command.Limit, command.Skip), Times.Once);
+        _organisationRepositoryMock.Verify(repo => repo.GetPaginated(command.Role, command.PendingRole, command.SearchText, command.Limit, command.Skip), Times.Once);
     }
 
 
@@ -81,12 +81,12 @@ public class GetOrganisationsUseCaseTests
         var organisations = new List<DatabaseOrganisationRepository.OrganisationRawDto>();
 
         _organisationRepositoryMock
-            .Setup(repo => repo.GetPaginatedRaw(command.Role, command.PendingRole, command.SearchText, command.Limit, command.Skip))
+            .Setup(repo => repo.GetPaginated(command.Role, command.PendingRole, command.SearchText, command.Limit, command.Skip))
             .ReturnsAsync(organisations);
 
         var result = await _useCase.Execute(command);
 
         result.Should().BeEmpty();
-        _organisationRepositoryMock.Verify(repo => repo.GetPaginatedRaw(command.Role, command.PendingRole, command.SearchText, command.Limit, command.Skip), Times.Once);
+        _organisationRepositoryMock.Verify(repo => repo.GetPaginated(command.Role, command.PendingRole, command.SearchText, command.Limit, command.Skip), Times.Once);
     }
 }

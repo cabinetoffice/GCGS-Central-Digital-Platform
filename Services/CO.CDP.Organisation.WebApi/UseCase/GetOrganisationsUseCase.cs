@@ -10,7 +10,7 @@ public class GetOrganisationsUseCase(IOrganisationRepository organisationReposit
     public async Task<IEnumerable<OrganisationDto>> Execute(PaginatedOrganisationQuery command)
     {
         var organisations = await organisationRepository
-            .GetPaginatedRaw(command.Role, command.PendingRole, command.SearchText, command.Limit, command.Skip);
+            .GetPaginated(command.Role, command.PendingRole, command.SearchText, command.Limit, command.Skip);
 
         return organisations.Select(o => new OrganisationDto()
         {

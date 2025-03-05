@@ -29,9 +29,7 @@ public interface IOrganisationRepository : IDisposable
 
     public Task<IList<Organisation>> Get(string? type);
 
-    public Task<IList<Organisation>> GetPaginated(PartyRole? role, PartyRole? pendingRole, string? searchText, int limit, int skip);
-
-    public Task<IList<DatabaseOrganisationRepository.OrganisationRawDto>> GetPaginatedRaw(PartyRole? role, PartyRole? pendingRole, string? searchText, int limit, int skip);
+    public Task<IList<DatabaseOrganisationRepository.OrganisationRawDto>> GetPaginated(PartyRole? role, PartyRole? pendingRole, string? searchText, int limit, int skip);
 
     public Task<int> GetTotalCount(PartyRole? role, PartyRole? pendingRole, string? searchText);
 
