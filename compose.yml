@@ -126,12 +126,12 @@ services:
     depends_on:
       redis:
         condition: service_healthy
-    healthcheck:
-      test: ["CMD-SHELL", "curl --fail --silent --write-out '{\"status\":%{http_code}}' --output /dev/null http://127.0.0.1:8080/health"]
-      start_period: 10s
-      interval: 10s
-      timeout: 10s
-      retries: 3
+    # healthcheck:
+    #   test: ["CMD-SHELL", "curl --fail --silent --write-out '{\"status\":%{http_code}}' --output /dev/null http://127.0.0.1:8080/health"]
+    #   start_period: 10s
+    #   interval: 10s
+    #   timeout: 10s
+    #   retries: 3
     environment:
       ASPNETCORE_ENVIRONMENT: Production
       Aws__Buckets__PermanentBucket: cdp-permanent-bucket.s3
@@ -160,12 +160,12 @@ services:
       dockerfile: Dockerfile
       target: final-authority
     image: 'cabinetoffice/cdp-authority:${IMAGE_VERSION:-latest}'
-    healthcheck:
-      test: ["CMD-SHELL", "curl --fail --silent --write-out '{\"status\":%{http_code}}' --output /dev/null http://127.0.0.1:8080/health"]
-      start_period: 10s
-      interval: 10s
-      timeout: 10s
-      retries: 3
+    # healthcheck:
+    #   test: ["CMD-SHELL", "curl --fail --silent --write-out '{\"status\":%{http_code}}' --output /dev/null http://127.0.0.1:8080/health"]
+    #   start_period: 10s
+    #   interval: 10s
+    #   timeout: 10s
+    #   retries: 3
     depends_on:
       - db
     environment:
@@ -183,12 +183,12 @@ services:
       dockerfile: Dockerfile
       target: final-tenant
     image: 'cabinetoffice/cdp-tenant:${IMAGE_VERSION:-latest}'
-    healthcheck:
-      test: ["CMD-SHELL", "curl --fail --silent --write-out '{\"status\":%{http_code}}' --output /dev/null http://127.0.0.1:8080/health"]
-      start_period: 10s
-      interval: 10s
-      timeout: 10s
-      retries: 3
+    # healthcheck:
+    #   test: ["CMD-SHELL", "curl --fail --silent --write-out '{\"status\":%{http_code}}' --output /dev/null http://127.0.0.1:8080/health"]
+    #   start_period: 10s
+    #   interval: 10s
+    #   timeout: 10s
+    #   retries: 3
     depends_on:
       - db
     environment:
@@ -209,12 +209,12 @@ services:
       dockerfile: Dockerfile
       target: final-organisation
     image: 'cabinetoffice/cdp-organisation:${IMAGE_VERSION:-latest}'
-    healthcheck:
-      test: ["CMD-SHELL", "curl --fail --silent --write-out '{\"status\":%{http_code}}' --output /dev/null http://127.0.0.1:8080/health"]
-      start_period: 10s
-      interval: 10s
-      timeout: 10s
-      retries: 3
+    # healthcheck:
+    #   test: ["CMD-SHELL", "curl --fail --silent --write-out '{\"status\":%{http_code}}' --output /dev/null http://127.0.0.1:8080/health"]
+    #   start_period: 10s
+    #   interval: 10s
+    #   timeout: 10s
+    #   retries: 3
     depends_on:
       db:
         condition: "service_healthy"
@@ -241,12 +241,12 @@ services:
       dockerfile: Dockerfile
       target: final-person
     image: 'cabinetoffice/cdp-person:${IMAGE_VERSION:-latest}'
-    healthcheck:
-      test: ["CMD-SHELL", "curl --fail --silent --write-out '{\"status\":%{http_code}}' --output /dev/null http://127.0.0.1:8080/health"]
-      start_period: 10s
-      interval: 10s
-      timeout: 10s
-      retries: 3
+    # healthcheck:
+    #   test: ["CMD-SHELL", "curl --fail --silent --write-out '{\"status\":%{http_code}}' --output /dev/null http://127.0.0.1:8080/health"]
+    #   start_period: 10s
+    #   interval: 10s
+    #   timeout: 10s
+    #   retries: 3
     depends_on:
       - db
     environment:
@@ -264,12 +264,12 @@ services:
       dockerfile: Dockerfile
       target: final-forms
     image: 'cabinetoffice/cdp-forms:${IMAGE_VERSION:-latest}'
-    healthcheck:
-      test: ["CMD-SHELL", "curl --fail --silent --write-out '{\"status\":%{http_code}}' --output /dev/null http://127.0.0.1:8080/health"]
-      start_period: 10s
-      interval: 10s
-      timeout: 10s
-      retries: 3
+    # healthcheck:
+    #   test: ["CMD-SHELL", "curl --fail --silent --write-out '{\"status\":%{http_code}}' --output /dev/null http://127.0.0.1:8080/health"]
+    #   start_period: 10s
+    #   interval: 10s
+    #   timeout: 10s
+    #   retries: 3
     depends_on:
       - db
     environment:
@@ -292,12 +292,12 @@ services:
       dockerfile: Dockerfile
       target: final-data-sharing
     image: 'cabinetoffice/cdp-data-sharing:${IMAGE_VERSION:-latest}'
-    healthcheck:
-      test: ["CMD-SHELL", "curl --fail --silent --write-out '{\"status\":%{http_code}}' --output /dev/null http://127.0.0.1:8080/health"]
-      start_period: 10s
-      interval: 10s
-      timeout: 10s
-      retries: 3
+    # healthcheck:
+    #   test: ["CMD-SHELL", "curl --fail --silent --write-out '{\"status\":%{http_code}}' --output /dev/null http://127.0.0.1:8080/health"]
+    #   start_period: 10s
+    #   interval: 10s
+    #   timeout: 10s
+    #   retries: 3
     depends_on:
       - db
     environment:
@@ -320,12 +320,12 @@ services:
       dockerfile: Dockerfile
       target: final-entity-verification
     image: 'cabinetoffice/cdp-entity-verification:${IMAGE_VERSION:-latest}'
-    healthcheck:
-      test: ["CMD-SHELL", "curl --fail --silent --write-out '{\"status\":%{http_code}}' --output /dev/null http://127.0.0.1:8080/health"]
-      start_period: 10s
-      interval: 10s
-      timeout: 10s
-      retries: 3
+    # healthcheck:
+    #   test: ["CMD-SHELL", "curl --fail --silent --write-out '{\"status\":%{http_code}}' --output /dev/null http://127.0.0.1:8080/health"]
+    #   start_period: 10s
+    #   interval: 10s
+    #   timeout: 10s
+    #   retries: 3
     depends_on:
       db:
         condition: "service_healthy"
@@ -369,12 +369,12 @@ services:
       dockerfile: Dockerfile
       target: final-antivirus-app
     image: 'cabinetoffice/cdp-av-scanner-app:${IMAGE_VERSION:-latest}'
-    healthcheck:
-      test: ["CMD-SHELL", "curl --fail --silent --write-out '{\"status\":%{http_code}}' --output /dev/null http://127.0.0.1:8080/health"]
-      start_period: 10s
-      interval: 10s
-      timeout: 10s
-      retries: 3
+    # healthcheck:
+    #   test: ["CMD-SHELL", "curl --fail --silent --write-out '{\"status\":%{http_code}}' --output /dev/null http://127.0.0.1:8080/health"]
+    #   start_period: 10s
+    #   interval: 10s
+    #   timeout: 10s
+    #   retries: 3
     environment:
       ASPNETCORE_ENVIRONMENT: Production
       ClamAvScanUrl: 'http://clamav-rest:9000/scan'
@@ -392,12 +392,12 @@ services:
       dockerfile: Dockerfile
       target: final-outbox-processor-organisation
     image: 'cabinetoffice/cdp-outbox-processor-organisation:${IMAGE_VERSION:-latest}'
-    healthcheck:
-      test: ["CMD-SHELL", "curl --fail --silent --write-out '{\"status\":%{http_code}}' --output /dev/null http://127.0.0.1:8080/health"]
-      start_period: 10s
-      interval: 10s
-      timeout: 10s
-      retries: 3
+    # healthcheck:
+    #   test: ["CMD-SHELL", "curl --fail --silent --write-out '{\"status\":%{http_code}}' --output /dev/null http://127.0.0.1:8080/health"]
+    #   start_period: 10s
+    #   interval: 10s
+    #   timeout: 10s
+    #   retries: 3
     environment:
       ASPNETCORE_ENVIRONMENT: Production
       Aws__Credentials__AccessKeyId: test
@@ -423,12 +423,12 @@ services:
       dockerfile: Dockerfile
       target: final-outbox-processor-entity-verification
     image: 'cabinetoffice/cdp-outbox-processor-entity-verification:${IMAGE_VERSION:-latest}'
-    healthcheck:
-      test: ["CMD-SHELL", "curl --fail --silent --write-out '{\"status\":%{http_code}}' --output /dev/null http://127.0.0.1:8080/health"]
-      start_period: 10s
-      interval: 10s
-      timeout: 10s
-      retries: 3
+    # healthcheck:
+    #   test: ["CMD-SHELL", "curl --fail --silent --write-out '{\"status\":%{http_code}}' --output /dev/null http://127.0.0.1:8080/health"]
+    #   start_period: 10s
+    #   interval: 10s
+    #   timeout: 10s
+    #   retries: 3
     environment:
       ASPNETCORE_ENVIRONMENT: Production
       Aws__Credentials__AccessKeyId: test
