@@ -1,3 +1,4 @@
+using System.Collections.ObjectModel;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
@@ -6,13 +7,15 @@ using CO.CDP.OrganisationApp.Constants;
 using Microsoft.AspNetCore.Authorization;
 using CO.CDP.Mvc.Validation;
 using CO.CDP.Localization;
+using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Models;
 
 namespace CO.CDP.OrganisationApp.Pages.Users;
 
 [Authorize(Policy = OrgScopeRequirement.Admin)]
 public class AddUserModel(
-    ISession session) : PageModel
+    ISession session,
+    IOrganisationClient organisationClient) : PageModel
 {
     [BindProperty(SupportsGet = true)]
     public Guid Id { get; set; }
@@ -43,9 +46,14 @@ public class AddUserModel(
 
     public PersonInviteState? PersonInviteStateData;
 
-    public IActionResult OnGet()
+    public ICollection<PartyRole>? OrganisationRoles;
+
+    public async Task<IActionResult> OnGet()
     {
         PersonInviteStateData = session.Get<PersonInviteState>(PersonInviteState.TempDataKey) ?? null;
+
+        var organisation = await organisationClient.GetOrganisationAsync(Id);
+        OrganisationRoles = organisation.Roles;
 
         if (PersonInviteStateData != null)
         {
