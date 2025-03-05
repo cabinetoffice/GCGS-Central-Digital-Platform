@@ -1,11 +1,9 @@
 using CO.CDP.Localization;
 using CO.CDP.Mvc.Validation;
 using CO.CDP.Organisation.WebApiClient;
-using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.ThirdPartyApiClients.CompaniesHouse;
 using Microsoft.AspNetCore.Mvc;
-using System.Net;
 using System.ComponentModel.DataAnnotations;
 
 namespace CO.CDP.OrganisationApp.Pages.Registration;
@@ -65,10 +63,15 @@ public class CompanyHouseNumberQuestionModel(ISession session,
                 OrganisationName = organisation?.Name;
                 if (organisation != null)
                 {
+                    var organisationIdentifier = $"{organisation.Id}";
+                    SessionContext.Set(Session.JoinOrganisationRequest,
+                        new JoinOrganisationRequestState { OrganisationId = organisation.Id, OrganisationName = organisation.Name }
+                        );
+
                     flashMessageService.SetFlashMessage(
                         FlashMessageType.Important,
                         heading: StaticTextResource.OrganisationRegistration_CompanyHouseNumberQuestion_CompanyAlreadyRegistered_NotificationBanner,
-                        urlParameters: new() { ["organisationIdentifier"] = OrganisationIdentifier },
+                        urlParameters: new() { ["organisationIdentifier"] = organisationIdentifier },
                         htmlParameters: new() { ["organisationName"] = organisation.Name }
                     );
                 }

@@ -76,7 +76,10 @@ public class OrganisationDetailsSummaryModel(
 
                 if (organisation != null)
                 {
-                    var organisationIdentifier = $"{organisation.Identifier.Scheme}:{organisation.Identifier.Id}";
+                    var organisationIdentifier = $"{organisation.Id}";
+                    session.Set(Session.JoinOrganisationRequest,
+                        new JoinOrganisationRequestState { OrganisationId = organisation.Id, OrganisationName = organisation.Name }
+                        );
                     flashMessageService.SetFlashMessage(
                             FlashMessageType.Important,
                             heading: StaticTextResource.OrganisationRegistration_CompanyHouseNumberQuestion_CompanyAlreadyRegistered_NotificationBanner,
@@ -89,7 +92,6 @@ public class OrganisationDetailsSummaryModel(
             {
                 ApiExceptionMapper.MapApiExceptions(aex, ModelState);
             }
-
         }
 
         return null;

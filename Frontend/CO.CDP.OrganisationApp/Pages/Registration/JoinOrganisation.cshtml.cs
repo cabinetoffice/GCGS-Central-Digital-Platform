@@ -23,11 +23,22 @@ public class JoinOrganisationModel(
     [RequiredIf(nameof(UserWantsToJoin), true, ErrorMessageResourceName = nameof(StaticTextResource.OrganisationRegistration_JoinOrganisation_ConfirmValidationErrorMessage), ErrorMessageResourceType = typeof(StaticTextResource))]
     public string? UserConfirmation { get; set; }
 
-    public async Task<IActionResult> OnGet(string identifier)
+    [BindProperty(SupportsGet = true)]
+    public Guid Id { get; set; }
+
+    public async Task<IActionResult> OnGet()
     {
         try
         {
-            OrganisationDetails = await organisationClient.LookupOrganisationAsync(string.Empty, $"{identifier}");
+            var jor = session.Get<JoinOrganisationRequestState>(Session.JoinOrganisationRequest);
+
+            if (jor == null || jor.OrganisationId != Id)
+            {
+                return Redirect("/page-not-found");
+            }            
+
+            OrganisationDetails = await organisationClient.LookupOrganisationAsync(jor.OrganisationName, "");
+
             return Page();
         }
         catch (ApiException ex) when (ex.StatusCode == 404)
@@ -36,9 +47,16 @@ public class JoinOrganisationModel(
         }
     }
 
-    public async Task<IActionResult> OnPost(string identifier)
+    public async Task<IActionResult> OnPost()
     {
-        OrganisationDetails = await organisationClient.LookupOrganisationAsync(string.Empty, $"{identifier}");
+        var jor = session.Get<JoinOrganisationRequestState>(Session.JoinOrganisationRequest);
+
+        if (jor == null || jor.OrganisationId != Id)
+        {
+            return Redirect("/page-not-found");
+        }
+
+        OrganisationDetails = await organisationClient.LookupOrganisationAsync(jor.OrganisationName, "");
 
         if (!ModelState.IsValid)
         {
@@ -51,10 +69,9 @@ public class JoinOrganisationModel(
             {
                 try
                 {
-                    var joinRequestStatus = await organisationClient.CreateJoinRequestAsync(OrganisationDetails.Id,
-                        new CreateOrganisationJoinRequest(
-                            personId: UserDetails.PersonId.Value
-                        ));
+                    var joinRequestStatus = await organisationClient.CreateJoinRequestAsync(
+                        OrganisationDetails.Id,
+                        new CreateOrganisationJoinRequest(personId: UserDetails.PersonId.Value));
 
                     if (joinRequestStatus != null)
                     {
@@ -68,7 +85,7 @@ public class JoinOrganisationModel(
                             return Page();
                         }
 
-                        return Redirect("/registration/" + identifier + "/join-organisation/success");
+                        return Redirect("/registration/" + Id + "/join-organisation/success");
                     }
                 }
                 catch (ApiException<OrganisationWebApiClient.ProblemDetails>)

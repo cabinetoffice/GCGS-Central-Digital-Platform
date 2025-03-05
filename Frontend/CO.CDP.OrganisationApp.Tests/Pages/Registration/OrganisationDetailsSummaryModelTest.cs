@@ -238,8 +238,8 @@ public class OrganisationDetailsSummaryModelTest
 
         var result = await model.OnPost();
 
-        Dictionary<string, string> urlParameters = new() { ["organisationIdentifier"] = "GB-COH:123" };
-        Dictionary<string, string> htmlParameters = new() { ["organisationName"] = "TestOrg" };
+        Dictionary<string, string> urlParameters = new() { ["organisationIdentifier"] = matchingOrganisation.Id.ToString() };
+        Dictionary<string, string> htmlParameters = new() { ["organisationName"] = matchingOrganisation.Name };
 
         var heading = StaticTextResource.OrganisationRegistration_CompanyHouseNumberQuestion_CompanyAlreadyRegistered_NotificationBanner;
 
@@ -248,8 +248,8 @@ public class OrganisationDetailsSummaryModelTest
             heading,
             null,
             null,
-            It.Is<Dictionary<string, string>>(d => d["organisationIdentifier"] == "GB-COH:123"),
-            It.Is<Dictionary<string, string>>(d => d["organisationName"] == "TestOrg")
+            It.Is<Dictionary<string, string>>(d => d["organisationIdentifier"] == matchingOrganisation.Id.ToString()),
+            It.Is<Dictionary<string, string>>(d => d["organisationName"] == matchingOrganisation.Name)
         ),
         Times.Once);
 
