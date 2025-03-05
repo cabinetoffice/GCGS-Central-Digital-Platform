@@ -77,7 +77,7 @@ public class OrganisationDetailsSummaryModel(
                 if (organisation != null)
                 {
                     var organisationIdentifier = $"{organisation.Id}";
-                    session.Set(Session.JoinOrganisationRequest,
+                    SessionContext.Set(Session.JoinOrganisationRequest,
                         new JoinOrganisationRequestState { OrganisationId = organisation.Id, OrganisationName = organisation.Name }
                         );
                     flashMessageService.SetFlashMessage(

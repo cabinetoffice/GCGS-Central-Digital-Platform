@@ -30,7 +30,7 @@ public class JoinOrganisationModel(
     {
         try
         {
-            var jor = session.Get<JoinOrganisationRequestState>(Session.JoinOrganisationRequest);
+            var jor = SessionContext.Get<JoinOrganisationRequestState>(Session.JoinOrganisationRequest);
 
             if (jor == null || jor.OrganisationId != Id)
             {
@@ -49,7 +49,7 @@ public class JoinOrganisationModel(
 
     public async Task<IActionResult> OnPost()
     {
-        var jor = session.Get<JoinOrganisationRequestState>(Session.JoinOrganisationRequest);
+        var jor = SessionContext.Get<JoinOrganisationRequestState>(Session.JoinOrganisationRequest);
 
         if (jor == null || jor.OrganisationId != Id)
         {
