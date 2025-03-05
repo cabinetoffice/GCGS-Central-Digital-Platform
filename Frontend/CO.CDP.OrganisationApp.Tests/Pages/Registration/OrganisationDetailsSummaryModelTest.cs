@@ -184,8 +184,8 @@ public class OrganisationDetailsSummaryModelTest
     }
 
     public static IEnumerable<object[]> Get_OnPost_AddsModelError_TestData()
-    {
-        yield return new object[] { ErrorCodes.ARGUMENT_NULL, ErrorMessagesList.PayLoadIssueOrNullAurgument, StatusCodes.Status400BadRequest };
+    {        
+        yield return new object[] { ErrorCodes.ARGUMENT_NULL, ErrorMessagesList.PayLoadIssueOrNullArgument, StatusCodes.Status400BadRequest };
         yield return new object[] { ErrorCodes.INVALID_OPERATION, ErrorMessagesList.OrganisationCreationFailed, StatusCodes.Status400BadRequest };
         yield return new object[] { ErrorCodes.PERSON_DOES_NOT_EXIST, ErrorMessagesList.PersonNotFound, StatusCodes.Status404NotFound };
         yield return new object[] { ErrorCodes.UNPROCESSABLE_ENTITY, ErrorMessagesList.UnprocessableEntity, StatusCodes.Status422UnprocessableEntity };
