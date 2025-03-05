@@ -18,6 +18,7 @@ public class CompanyHouseNumberQuestionTests
     private readonly Mock<IFlashMessageService> flashMessageServiceMock;
     private readonly Mock<ICompaniesHouseApi> companiesHouseApiMock;
     private readonly Mock<IOrganisationClient> organisationClientMock;
+    private static readonly Guid _organisationId = Guid.NewGuid();
 
     public CompanyHouseNumberQuestionTests()
     {
@@ -123,7 +124,7 @@ public class CompanyHouseNumberQuestionTests
 
         var result = await model.OnPost();
 
-        Dictionary<string, string> urlParameters = new() { ["organisationIdentifier"] = model.OrganisationIdentifier };
+        Dictionary<string, string> urlParameters = new() { ["organisationIdentifier"] = _organisationId.ToString() };
         Dictionary<string, string> htmlParameters = new() { ["organisationName"] = model.OrganisationName };
 
         var heading = StaticTextResource.OrganisationRegistration_CompanyHouseNumberQuestion_CompanyAlreadyRegistered_NotificationBanner;
@@ -133,7 +134,7 @@ public class CompanyHouseNumberQuestionTests
             heading,
             null,
             null,
-            It.Is<Dictionary<string, string>>(d => d["organisationIdentifier"] == model.OrganisationIdentifier),
+            It.Is<Dictionary<string, string>>(d => d["organisationIdentifier"] == _organisationId.ToString()),
             It.Is<Dictionary<string, string>>(d => d["organisationName"] == model.OrganisationName)
         ),
         Times.Once);
@@ -144,7 +145,7 @@ public class CompanyHouseNumberQuestionTests
 
     private static CDP.Organisation.WebApiClient.Organisation GivenOrganisation()
     {
-        return new CO.CDP.Organisation.WebApiClient.Organisation(null, null, null, null, new Guid(), null, "Test Org", [], CDP.Organisation.WebApiClient.OrganisationType.Organisation);
+        return new CO.CDP.Organisation.WebApiClient.Organisation(null, null, null, null, _organisationId, null, "Test Org", [], CDP.Organisation.WebApiClient.OrganisationType.Organisation);
     }
 
     [Fact]
