@@ -3,6 +3,7 @@ using CO.CDP.OrganisationInformation.Persistence.Forms;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using CO.CDP.OrganisationInformation.Persistence.Constants;
+using CO.CDP.OrganisationInformation.Persistence.NonEfEntities;
 using Npgsql;
 using NpgsqlTypes;
 
@@ -262,22 +263,6 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
         var rawResults = await context.Database.SqlQueryRaw<OrganisationRawDto>(sql, parameters).ToListAsync();
 
         return rawResults;
-    }
-
-    public class OrganisationRawDto
-    {
-        public int Id { get; set; }
-        public Guid Guid { get; set; }
-        public string? Name { get; set; }
-        public int[]? Roles { get; set; }
-        public int[]? PendingRoles { get; set; }
-        public DateTimeOffset? ApprovedOn { get; set; }
-        public string? ReviewComment { get; set; }
-        public string? ReviewedByFirstName { get; set; }
-        public string? ReviewedByLastName { get; set; }
-        public string? Identifiers { get; set; }
-        public string? ContactPoints { get; set; }
-        public string? AdminEmail { get; set; }
     }
 
     public async Task<int> GetTotalCount(PartyRole? role, PartyRole? pendingRole, string? searchText)

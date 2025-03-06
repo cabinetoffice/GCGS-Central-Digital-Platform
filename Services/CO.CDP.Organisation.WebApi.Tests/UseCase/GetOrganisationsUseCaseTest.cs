@@ -6,6 +6,7 @@ using CO.CDP.OrganisationInformation.Persistence;
 using CO.CDP.Organisation.WebApi.UseCase;
 using CO.CDP.OrganisationInformation;
 using CO.CDP.Authentication;
+using CO.CDP.OrganisationInformation.Persistence.NonEfEntities;
 
 namespace CO.CDP.Organisation.WebApi.Tests.UseCase;
 
@@ -32,9 +33,9 @@ public class GetOrganisationsUseCaseTests
         var identifierString = "GB-PPON:0001d4b3-e511-4382-9be4-36c1bb5a3411";
         var orgEmail = "organisation@email.com";
 
-        var organisations = new List<DatabaseOrganisationRepository.OrganisationRawDto>
+        var organisations = new List<OrganisationRawDto>
         {
-            new DatabaseOrganisationRepository.OrganisationRawDto
+            new OrganisationRawDto
             {
                 Id = 1,
                 Guid = organisationGuid,
@@ -78,7 +79,7 @@ public class GetOrganisationsUseCaseTests
     public async Task Execute_WhenNoOrganisationsExist_ReturnsEmptyList()
     {
         var command = new PaginatedOrganisationQuery(limit: 10, skip: 0, "buyer", "buyer");
-        var organisations = new List<DatabaseOrganisationRepository.OrganisationRawDto>();
+        var organisations = new List<OrganisationRawDto>();
 
         _organisationRepositoryMock
             .Setup(repo => repo.GetPaginated(command.Role, command.PendingRole, command.SearchText, command.Limit, command.Skip))
