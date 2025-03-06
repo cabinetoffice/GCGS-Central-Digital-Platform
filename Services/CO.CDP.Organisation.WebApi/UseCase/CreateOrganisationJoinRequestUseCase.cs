@@ -7,7 +7,6 @@ using AutoMapper;
 using CO.CDP.Authentication;
 using CO.CDP.GovUKNotify;
 using CO.CDP.GovUKNotify.Models;
-using CO.CDP.OrganisationInformation.Persistence;
 
 namespace CO.CDP.Organisation.WebApi.UseCase;
 

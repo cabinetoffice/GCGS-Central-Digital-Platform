@@ -8,7 +8,6 @@ using CO.CDP.Organisation.WebApi.Tests.AutoMapper;
 using CO.CDP.Organisation.WebApi.Tests.UseCase.Extensions;
 using CO.CDP.Organisation.WebApi.UseCase;
 using CO.CDP.OrganisationInformation;
-using CO.CDP.OrganisationInformation.Persistence;
 using FluentAssertions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -20,8 +19,8 @@ namespace CO.CDP.Organisation.WebApi.Tests.UseCase;
 public class RegisterOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
 {
     private readonly Mock<IIdentifierService> _identifierService = new();
-    private readonly Mock<IOrganisationRepository> _repository = new();
-    private readonly Mock<IPersonRepository> _persons = new();
+    private readonly Mock<Persistence.IOrganisationRepository> _repository = new();
+    private readonly Mock<Persistence.IPersonRepository> _persons = new();
     private readonly Mock<IPublisher> _publisher = new();
     private readonly Mock<IGovUKNotifyApiClient> _notifyApiClient = new();
     private readonly IConfiguration _mockConfiguration;
@@ -157,7 +156,7 @@ public class RegisterOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
         persistanceOrganisation.Should().NotBeNull();
         persistanceOrganisation.As<Persistence.Organisation>().Identifiers.Should().HaveCount(2);
         persistanceOrganisation.As<Persistence.Organisation>().Identifiers.First()
-            .Should().BeEquivalentTo(new Persistence.Organisation.Identifier
+            .Should().BeEquivalentTo(new Persistence.Identifier
             {
                 Primary = true,
                 Scheme = "ISO9001",
@@ -167,7 +166,7 @@ public class RegisterOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
 
 
         persistanceOrganisation.As<Persistence.Organisation>().ContactPoints.First()
-            .Should().BeEquivalentTo(new Persistence.Organisation.ContactPoint
+            .Should().BeEquivalentTo(new Persistence.ContactPoint
             {
                 Name = "Contact Name",
                 Email = "contact@example.org",
@@ -176,7 +175,7 @@ public class RegisterOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
             });
 
         persistanceOrganisation.As<Persistence.Organisation>().Identifiers.Last()
-            .Should().BeEquivalentTo(new Persistence.Organisation.Identifier
+            .Should().BeEquivalentTo(new Persistence.Identifier
             {
                 Primary = false,
                 Scheme = "ISO14001",
@@ -186,7 +185,7 @@ public class RegisterOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
 
         persistanceOrganisation.As<Persistence.Organisation>().Addresses.Should().HaveCount(1);
         persistanceOrganisation.As<Persistence.Organisation>().Addresses.First()
-            .Should().BeEquivalentTo(new Persistence.Organisation.OrganisationAddress
+            .Should().BeEquivalentTo(new Persistence.OrganisationAddress
             {
                 Type = AddressType.Registered,
                 Address = new Persistence.Address

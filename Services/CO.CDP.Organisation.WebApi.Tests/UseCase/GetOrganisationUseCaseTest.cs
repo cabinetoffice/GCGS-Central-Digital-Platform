@@ -39,7 +39,7 @@ public class GetOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IClas
                 Guid = Guid.NewGuid(),
                 Name = "Tenant 101"
             },
-            Identifiers = [new OrganisationInformation.Persistence.Organisation.Identifier
+            Identifiers = [new OrganisationInformation.Persistence.Identifier
             {
                 Primary = true,
                 IdentifierId = "123456",
@@ -47,7 +47,7 @@ public class GetOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IClas
                 LegalName = "Legal Name",
                 Uri = "https://example.com"
             },
-                new OrganisationInformation.Persistence.Organisation.Identifier
+                new OrganisationInformation.Persistence.Identifier
                 {
                     Primary = false,
                     IdentifierId = "123456",
@@ -55,7 +55,7 @@ public class GetOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IClas
                     LegalName = "Another Legal Name",
                     Uri = "https://another-example.com"
                 }],
-            Addresses = {new OrganisationInformation.Persistence.Organisation.OrganisationAddress
+            Addresses = {new OrganisationInformation.Persistence.OrganisationAddress
             {
                 Type = AddressType.Registered,
                 Address = new Address
@@ -68,7 +68,7 @@ public class GetOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IClas
                     Region = ""
                 }
             }},
-            ContactPoints = [new OrganisationInformation.Persistence.Organisation.ContactPoint
+            ContactPoints = [new OrganisationInformation.Persistence.ContactPoint
             {
                 Name = "Contact Name",
                 Email = "contact@test.org",
@@ -87,7 +87,7 @@ public class GetOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IClas
             Id = organisationId,
             Name = "Test Organisation",
             Type = OrganisationType.Organisation,
-            Identifier = new Identifier
+            Identifier = new OrganisationInformation.Identifier
             {
                 Id = "123456",
                 Scheme = "Scheme1",
@@ -114,7 +114,7 @@ public class GetOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IClas
                 Country = "AB",
                 Region = ""
             }],
-            ContactPoint = new ContactPoint
+            ContactPoint = new OrganisationInformation.ContactPoint
             {
                 Name = "Contact Name",
                 Email = "contact@test.org",

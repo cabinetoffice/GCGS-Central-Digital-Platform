@@ -3,15 +3,15 @@ using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.Organisation.WebApi.Tests.AutoMapper;
 using CO.CDP.Organisation.WebApi.UseCase;
 using CO.CDP.OrganisationInformation;
-using CO.CDP.OrganisationInformation.Persistence;
 using FluentAssertions;
 using Moq;
 using Address = CO.CDP.OrganisationInformation.Persistence.Address;
+using Persistence = CO.CDP.OrganisationInformation.Persistence;
 
 namespace CO.CDP.Organisation.WebApi.Tests.UseCase;
 public class GetMyOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IClassFixture<AutoMapperFixture>
 {
-    private readonly Mock<IOrganisationRepository> _repository = new();
+    private readonly Mock<Persistence.IOrganisationRepository> _repository = new();
     private readonly Mock<IClaimService> _claimService = new();
     private GetMyOrganisationUseCase UseCase => new(_repository.Object, mapperFixture.Mapper, _claimService.Object);
 
@@ -34,14 +34,14 @@ public class GetMyOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : ICl
             Guid = organisationGuid,
             Name = "Test Organisation",
             Type = OrganisationType.Organisation,
-            Tenant = new Tenant
+            Tenant = new Persistence.Tenant
             {
                 Id = 101,
                 Guid = Guid.NewGuid(),
                 Name = "Tenant 101"
             },
             Identifiers = [
-                new OrganisationInformation.Persistence.Organisation.Identifier
+                new OrganisationInformation.Persistence.Identifier
                 {
                     Primary = true,
                     IdentifierId = "123456",
@@ -49,7 +49,7 @@ public class GetMyOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : ICl
                     LegalName = "Legal Name",
                     Uri = "https://example.com"
                 },
-                new OrganisationInformation.Persistence.Organisation.Identifier
+                new OrganisationInformation.Persistence.Identifier
                 {
                     Primary = false,
                     IdentifierId = "123456",
@@ -57,7 +57,7 @@ public class GetMyOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : ICl
                     LegalName = "Another Legal Name",
                     Uri = "https://another-example.com"
                 }],
-            Addresses = {new OrganisationInformation.Persistence.Organisation.OrganisationAddress
+            Addresses = {new OrganisationInformation.Persistence.OrganisationAddress
             {
                 Type = AddressType.Registered,
                 Address = new Address
@@ -70,7 +70,7 @@ public class GetMyOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : ICl
                     Region = ""
                 }
             }},
-            ContactPoints = [new OrganisationInformation.Persistence.Organisation.ContactPoint
+            ContactPoints = [new OrganisationInformation.Persistence.ContactPoint
             {
                 Name = "Contact Name",
                 Email = "contact@test.org",

@@ -147,12 +147,12 @@ public class UpdateSupplierInformationUseCaseTests : IClassFixture<AutoMapperFix
             Name = "Test",
             Type = OrganisationType.Organisation,
             Tenant = It.IsAny<Tenant>(),
-            ContactPoints = [new Persistence.Organisation.ContactPoint { Email = "test@test.com" }],
-            SupplierInfo = new Persistence.Organisation.SupplierInformation
+            ContactPoints = [new Persistence.ContactPoint { Email = "test@test.com" }],
+            SupplierInfo = new Persistence.SupplierInformation
             {
                 SupplierType = SupplierType.Organisation,  // Initially set to Organisation
                 OperationTypes = new List<OperationType> { OperationType.SmallOrMediumSized },
-                LegalForm = new Persistence.Organisation.LegalForm
+                LegalForm = new Persistence.LegalForm
                 {
                     RegisteredUnderAct2006 = true,
                     RegisteredLegalForm = "Private Limited",
@@ -213,7 +213,7 @@ public class UpdateSupplierInformationUseCaseTests : IClassFixture<AutoMapperFix
             Name = "Test",
             Type = OrganisationType.Organisation,
             Tenant = It.IsAny<Tenant>(),
-            ContactPoints = [new Persistence.Organisation.ContactPoint { Email = "test@test.com" }],
-            SupplierInfo = new Persistence.Organisation.SupplierInformation()
+            ContactPoints = [new Persistence.ContactPoint { Email = "test@test.com" }],
+            SupplierInfo = new Persistence.SupplierInformation()
         };
 }

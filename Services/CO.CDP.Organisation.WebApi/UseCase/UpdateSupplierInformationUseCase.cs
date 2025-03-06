@@ -1,12 +1,11 @@
 using AutoMapper;
 using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.OrganisationInformation;
-using CO.CDP.OrganisationInformation.Persistence;
-using PersistenceOrganisation = CO.CDP.OrganisationInformation.Persistence.Organisation;
+using Persistence = CO.CDP.OrganisationInformation.Persistence;
 
 namespace CO.CDP.Organisation.WebApi.UseCase;
 
-public class UpdateSupplierInformationUseCase(IOrganisationRepository organisationRepository, IMapper mapper)
+public class UpdateSupplierInformationUseCase(Persistence.IOrganisationRepository organisationRepository, IMapper mapper)
             : IUseCase<(Guid organisationId, UpdateSupplierInformation updateSupplierInformation), bool>
 {
     public async Task<bool> Execute((Guid organisationId, UpdateSupplierInformation updateSupplierInformation) command)
@@ -51,7 +50,7 @@ public class UpdateSupplierInformationUseCase(IOrganisationRepository organisati
                 {
                     throw new InvalidUpdateSupplierInformationCommand("Missing legal form.");
                 }
-                organisation.SupplierInfo.LegalForm = mapper.Map<PersistenceOrganisation.LegalForm>(updateObject.LegalForm);
+                organisation.SupplierInfo.LegalForm = mapper.Map<Persistence.LegalForm>(updateObject.LegalForm);
                 organisation.SupplierInfo.CompletedLegalForm = true;
                 break;
 

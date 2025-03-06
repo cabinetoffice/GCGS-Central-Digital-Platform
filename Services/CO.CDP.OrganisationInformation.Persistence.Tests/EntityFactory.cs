@@ -1,5 +1,4 @@
 using static CO.CDP.OrganisationInformation.Persistence.ConnectedEntity;
-using static CO.CDP.OrganisationInformation.Persistence.Organisation;
 
 namespace CO.CDP.OrganisationInformation.Persistence.Tests;
 
@@ -95,9 +94,9 @@ public static class EntityFactory
     public static Organisation GivenOrganisation(Guid? guid = null,
         Tenant? tenant = null,
         string? name = null,
-        List<Organisation.Identifier>? identifiers = null,
+        List<Persistence.Identifier>? identifiers = null,
         List<OrganisationAddress>? addresses = null,
-        Organisation.ContactPoint? contactPoint = null,
+        Persistence.ContactPoint? contactPoint = null,
         List<PartyRole>? roles = null,
         List<PartyRole>? pendingRoles = null,
         List<(Person, List<string>)>? personsWithScope = null,
@@ -117,7 +116,7 @@ public static class EntityFactory
 
             Identifiers = identifiers ??
             [
-                new Organisation.Identifier
+                new Persistence.Identifier
                 {
                     Primary = true,
                     Scheme = "GB-PPON",
@@ -125,7 +124,7 @@ public static class EntityFactory
                     LegalName = "DefaultLegalName",
                     Uri = "https://default.org"
                 },
-                new Organisation.Identifier
+                new Persistence.Identifier
                 {
                     Primary = false,
                     Scheme = "GB-COH",
@@ -134,7 +133,7 @@ public static class EntityFactory
                     Uri = "http://example.com"
                 }
             ],
-            Addresses = addresses ?? [new OrganisationAddress
+            Addresses = addresses ?? [new Persistence.OrganisationAddress
             {
                 Type = AddressType.Registered,
                 Address = new Address
@@ -147,7 +146,7 @@ public static class EntityFactory
                     Country = "AB"
                 }
             }],
-            ContactPoints = contactPoint == null ? [new Organisation.ContactPoint
+            ContactPoints = contactPoint == null ? [new Persistence.ContactPoint
             {
                 Name = "Default Contact",
                 Email = "contact@default.org",
@@ -177,7 +176,7 @@ public static class EntityFactory
         return organisation;
     }
 
-    public static Organisation.BuyerInformation GivenBuyerInformation(
+    public static Persistence.BuyerInformation GivenBuyerInformation(
         string? type = null
     ) => new()
     {
@@ -218,7 +217,7 @@ public static class EntityFactory
             }
         };
 
-    public static Organisation.Identifier GivenIdentifier(
+    public static Persistence.Identifier GivenIdentifier(
         string scheme = "GB-COH",
         string identifierId = "cee5ca59-b1ae-40e3-807a-adf8370799be",
         string legalName = "Acme LTD",

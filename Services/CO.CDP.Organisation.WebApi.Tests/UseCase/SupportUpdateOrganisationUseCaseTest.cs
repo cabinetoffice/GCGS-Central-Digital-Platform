@@ -55,7 +55,7 @@ public class SupportUpdateOrganisationUseCaseTests
             Tenant = null!,
             Name = null!,
             Type = OrganisationType.Organisation,
-            ContactPoints = [new Persistence.Organisation.ContactPoint { Email = "org-email@test.com" }]
+            ContactPoints = [new Persistence.ContactPoint { Email = "org-email@test.com" }]
         };
 
         _person = new Persistence.Person

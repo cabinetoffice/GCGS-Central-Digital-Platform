@@ -3,12 +3,12 @@ using CO.CDP.OrganisationInformation;
 using CO.CDP.OrganisationInformation.Persistence;
 using CO.CDP.OrganisationInformation.Persistence.Forms;
 using static CO.CDP.OrganisationInformation.Persistence.ConnectedEntity;
-using static CO.CDP.OrganisationInformation.Persistence.Organisation;
 using ConnectedEntityType = CO.CDP.OrganisationInformation.Persistence.ConnectedEntity.ConnectedEntityType;
 using ConnectedOrganisationCategory = CO.CDP.OrganisationInformation.Persistence.ConnectedEntity.ConnectedOrganisationCategory;
 using Form = CO.CDP.OrganisationInformation.Persistence.Forms.Form;
 using FormQuestion = CO.CDP.OrganisationInformation.Persistence.Forms.FormQuestion;
 using PersistenceForms = CO.CDP.OrganisationInformation.Persistence.Forms;
+using Persistence = CO.CDP.OrganisationInformation.Persistence;
 
 namespace CO.CDP.DataSharing.WebApi.Tests;
 
@@ -198,9 +198,9 @@ internal static class EntityFactory
         return mockPersons;
     }
 
-    internal static Organisation.LegalForm GetLegalForm()
+    internal static Persistence.LegalForm GetLegalForm()
     {
-        var mockLegalForm = new Organisation.LegalForm
+        var mockLegalForm = new Persistence.LegalForm
         {
             RegisteredUnderAct2006 = false,
             RegisteredLegalForm = "Registered Legal Form 1",
@@ -222,13 +222,13 @@ internal static class EntityFactory
         Guid? guid = null,
         Tenant? tenant = null,
         string? name = null,
-        List<Organisation.Identifier>? identifiers = null,
+        List<Persistence.Identifier>? identifiers = null,
         List<OrganisationAddress>? addresses = null,
-        Organisation.ContactPoint? contactPoint = null,
+        Persistence.ContactPoint? contactPoint = null,
         List<PartyRole>? roles = null,
         List<(Person, List<string>)>? personsWithScope = null,
         BuyerInformation? buyerInformation = null,
-        Organisation.SupplierInformation? supplierInformation = null
+        Persistence.SupplierInformation? supplierInformation = null
     )
     {
         var theGuid = guid ?? Guid.NewGuid();
@@ -242,7 +242,7 @@ internal static class EntityFactory
 
             Identifiers = identifiers ??
             [
-                new Organisation.Identifier
+                new Persistence.Identifier
                 {
                     Primary = true,
                     Scheme = "GB-PPON",
@@ -250,7 +250,7 @@ internal static class EntityFactory
                     LegalName = "DefaultLegalName",
                     Uri = "https://default.org"
                 },
-                new Organisation.Identifier
+                new Persistence.Identifier
                 {
                     Primary = false,
                     Scheme = "GB-COH",
@@ -272,7 +272,7 @@ internal static class EntityFactory
                     Country = "EX"
                 }
             }],
-            ContactPoints = contactPoint == null ? [new Organisation.ContactPoint
+            ContactPoints = contactPoint == null ? [new Persistence.ContactPoint
             {
                 Name = "Default Contact",
                 Email = "contact@default.org",

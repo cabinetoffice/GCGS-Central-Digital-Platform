@@ -5,7 +5,6 @@ using CO.CDP.OrganisationInformation;
 using CO.CDP.OrganisationInformation.Persistence;
 using Moq;
 using FluentAssertions;
-using Microsoft.OpenApi.Services;
 
 namespace CO.CDP.Organisation.WebApi.Tests.UseCase;
 
@@ -36,7 +35,7 @@ public class SearchOrganisationUseCaseTests : IClassFixture<AutoMapperFixture>
                 Roles = new List<PartyRole>() {
                     PartyRole.Buyer
                 },
-                Identifiers = new List<OrganisationInformation.Persistence.Organisation.Identifier>() {
+                Identifiers = new List<OrganisationInformation.Persistence.Identifier>() {
                     new() {
                         Primary = true,
                         Scheme = "scheme",
@@ -53,7 +52,7 @@ public class SearchOrganisationUseCaseTests : IClassFixture<AutoMapperFixture>
                 Roles = new List<PartyRole>() {
                     PartyRole.Buyer
                 },
-                Identifiers = new List<OrganisationInformation.Persistence.Organisation.Identifier>() {
+                Identifiers = new List<OrganisationInformation.Persistence.Identifier>() {
                     new() {
                         Primary = true,
                         Scheme = "scheme",
@@ -69,7 +68,7 @@ public class SearchOrganisationUseCaseTests : IClassFixture<AutoMapperFixture>
             new OrganisationSearchResult
             {
                 Id = organisations[0].Guid,
-                Identifier = new Identifier
+                Identifier = new OrganisationInformation.Identifier
                 {
                     Scheme = "scheme",
                     Id = "123",
@@ -85,7 +84,7 @@ public class SearchOrganisationUseCaseTests : IClassFixture<AutoMapperFixture>
             new OrganisationSearchResult
             {
                 Id = organisations[1].Guid,
-                Identifier = new Identifier
+                Identifier = new OrganisationInformation.Identifier
                 {
                     Scheme = "scheme",
                     Id = "123",

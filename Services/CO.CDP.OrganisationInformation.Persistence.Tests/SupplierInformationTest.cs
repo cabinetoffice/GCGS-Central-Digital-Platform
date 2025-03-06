@@ -15,7 +15,7 @@ public class SupplierInformationTest
 
         organisation.UpdateSupplierInformation();
 
-        organisation.SupplierInfo.Should().BeEquivalentTo(new Organisation.SupplierInformation
+        organisation.SupplierInfo.Should().BeEquivalentTo(new SupplierInformation
         {
             CompletedRegAddress = false,
             CompletedPostalAddress = false,
@@ -49,7 +49,7 @@ public class SupplierInformationTest
 
         organisation.UpdateSupplierInformation();
 
-        organisation.SupplierInfo.As<Organisation.SupplierInformation>()
+        organisation.SupplierInfo.As<SupplierInformation>()
             .SupplierType.Should().Be(SupplierType.Individual);
     }
 
@@ -63,7 +63,7 @@ public class SupplierInformationTest
 
         organisation.UpdateSupplierInformation();
 
-        organisation.SupplierInfo.As<Organisation.SupplierInformation>()
+        organisation.SupplierInfo.As<SupplierInformation>()
             .CompletedRegAddress.Should().BeTrue();
     }
 
@@ -77,7 +77,7 @@ public class SupplierInformationTest
 
         organisation.UpdateSupplierInformation();
 
-        organisation.SupplierInfo.As<Organisation.SupplierInformation>()
+        organisation.SupplierInfo.As<SupplierInformation>()
             .CompletedPostalAddress.Should().BeTrue();
     }
 
@@ -91,7 +91,7 @@ public class SupplierInformationTest
 
         organisation.UpdateSupplierInformation();
 
-        organisation.SupplierInfo.As<Organisation.SupplierInformation>()
+        organisation.SupplierInfo.As<SupplierInformation>()
             .CompletedVat.Should().BeTrue();
     }
 
@@ -107,7 +107,7 @@ public class SupplierInformationTest
 
         organisation.UpdateSupplierInformation();
 
-        organisation.SupplierInfo.As<Organisation.SupplierInformation>()
+        organisation.SupplierInfo.As<SupplierInformation>()
             .CompletedLegalForm.Should().BeTrue();
     }
 
@@ -123,7 +123,7 @@ public class SupplierInformationTest
 
         organisation.UpdateSupplierInformation();
 
-        organisation.SupplierInfo.As<Organisation.SupplierInformation>()
+        organisation.SupplierInfo.As<SupplierInformation>()
             .CompletedRegAddress.Should().BeTrue();
     }
 
@@ -138,7 +138,7 @@ public class SupplierInformationTest
 
         organisation.UpdateSupplierInformation();
 
-        organisation.SupplierInfo.As<Organisation.SupplierInformation>()
+        organisation.SupplierInfo.As<SupplierInformation>()
             .CompletedPostalAddress.Should().BeTrue();
     }
 
@@ -153,7 +153,7 @@ public class SupplierInformationTest
 
         organisation.UpdateSupplierInformation();
 
-        organisation.SupplierInfo.As<Organisation.SupplierInformation>()
+        organisation.SupplierInfo.As<SupplierInformation>()
             .CompletedVat.Should().BeTrue();
     }
 
@@ -167,7 +167,7 @@ public class SupplierInformationTest
 
         organisation.UpdateSupplierInformation();
 
-        organisation.SupplierInfo.As<Organisation.SupplierInformation>()
+        organisation.SupplierInfo.As<SupplierInformation>()
             .CompletedLegalForm.Should().BeTrue();
     }
 }

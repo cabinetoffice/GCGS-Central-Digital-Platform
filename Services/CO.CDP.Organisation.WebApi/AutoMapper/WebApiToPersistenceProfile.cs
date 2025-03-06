@@ -18,7 +18,7 @@ public class WebApiToPersistenceProfile : Profile
             .ForMember(m => m.Id, o => o.MapFrom(m => m.Guid))
             .ForMember(m => m.Identifier, o => o.MapFrom(m => m.Identifiers.FirstOrDefault(i => i.Primary)))
             .ForMember(m => m.AdditionalIdentifiers, o => o.MapFrom(m => m.Identifiers.Where(i => !i.Primary)))
-            .ForMember(m => m.ContactPoint, o => o.MapFrom(m => m.ContactPoints.FirstOrDefault() ?? new Persistence.Organisation.ContactPoint()))
+            .ForMember(m => m.ContactPoint, o => o.MapFrom(m => m.ContactPoints.FirstOrDefault() ?? new Persistence.ContactPoint()))
             .ForMember(m => m.Details, o => o.MapFrom(m => new Details
             {
                 PendingRoles = m.PendingRoles,
@@ -62,7 +62,7 @@ public class WebApiToPersistenceProfile : Profile
             .ForMember(m => m.Id, o => o.MapFrom(m => m.Guid))
             .ForMember(m => m.Identifier, o => o.MapFrom(m => m.Identifiers.FirstOrDefault(i => i.Primary)))
             .ForMember(m => m.AdditionalIdentifiers, o => o.MapFrom(m => m.Identifiers.Where(i => !i.Primary)))
-            .ForMember(m => m.ContactPoint, o => o.MapFrom(m => m.ContactPoints.FirstOrDefault() ?? new Persistence.Organisation.ContactPoint()))
+            .ForMember(m => m.ContactPoint, o => o.MapFrom(m => m.ContactPoints.FirstOrDefault() ?? new Persistence.ContactPoint()))
             .ForMember(m => m.AdminPerson, o => o.Ignore())
             .ForMember(m => m.Details, o => o.MapFrom(m => new Details
             {
@@ -78,7 +78,10 @@ public class WebApiToPersistenceProfile : Profile
                 }
             }));
 
-        CreateMap<OrganisationIdentifier, Persistence.Organisation.Identifier>()
+        CreateMap<OrganisationIdentifier, Persistence.Identifier>()
+            .ForMember(m => m.Id, o => o.Ignore())
+            .ForMember(m => m.OrganisationId, o => o.Ignore())
+            .ForMember(m => m.Organisation, o => o.Ignore())
             .ForMember(m => m.Id, o => o.Ignore())
             .ForMember(m => m.Primary, o => o.Ignore())
             .ForMember(m => m.Uri, o => o.Ignore())
@@ -89,8 +92,10 @@ public class WebApiToPersistenceProfile : Profile
             .ForMember(m => m.Id, o => o.MapFrom(m => m.IdentifierId));
 
         Uri? tempResult;
-        CreateMap<Identifier, Persistence.Organisation.Identifier>()
+        CreateMap<Identifier, Persistence.Identifier>()
             .ForMember(m => m.Id, o => o.Ignore())
+            .ForMember(m => m.OrganisationId, o => o.Ignore())
+            .ForMember(m => m.Organisation, o => o.Ignore())
             .ForMember(m => m.Primary, o => o.Ignore())
             .ForMember(m => m.CreatedOn, o => o.Ignore())
             .ForMember(m => m.UpdatedOn, o => o.Ignore())
@@ -102,12 +107,14 @@ public class WebApiToPersistenceProfile : Profile
         CreateMap<OrganisationAddress, Persistence.Address>(MemberList.Source)
             .ForSourceMember(m => m.Type, o => o.DoNotValidate());
 
-        CreateMap<OrganisationAddress, Persistence.Organisation.OrganisationAddress>()
+        CreateMap<OrganisationAddress, Persistence.OrganisationAddress>()
             .ForMember(m => m.Id, o => o.Ignore())
+            .ForMember(m => m.OrganisationId, o => o.Ignore())
+            .ForMember(m => m.Organisation, o => o.Ignore())
             .ForMember(m => m.Type, o => o.MapFrom(m => m.Type))
             .ForMember(m => m.Address, o => o.MapFrom(m => m));
 
-        CreateMap<Persistence.Organisation.OrganisationAddress, Address>()
+        CreateMap<Persistence.OrganisationAddress, Address>()
             .ForMember(m => m.Type, o => o.MapFrom(m => m.Type))
             .ForMember(m => m.StreetAddress, o => o.MapFrom(m => m.Address.StreetAddress))
             .ForMember(m => m.Locality, o => o.MapFrom(m => m.Address.Locality))
@@ -116,14 +123,18 @@ public class WebApiToPersistenceProfile : Profile
             .ForMember(m => m.CountryName, o => o.MapFrom(m => m.Address.CountryName))
             .ForMember(m => m.Country, o => o.MapFrom(m => m.Address.Country));
 
-        CreateMap<OrganisationContactPoint, Persistence.Organisation.ContactPoint>()
+        CreateMap<OrganisationContactPoint, Persistence.ContactPoint>()
             .ForMember(m => m.Id, o => o.Ignore())
+            .ForMember(m => m.OrganisationId, o => o.Ignore())
+            .ForMember(m => m.Organisation, o => o.Ignore())
             .ForMember(m => m.CreatedOn, o => o.Ignore())
             .ForMember(m => m.UpdatedOn, o => o.Ignore())
             .ReverseMap();
 
-        CreateMap<ContactPoint, Persistence.Organisation.ContactPoint>()
+        CreateMap<ContactPoint, Persistence.ContactPoint>()
             .ForMember(m => m.Id, o => o.Ignore())
+            .ForMember(m => m.OrganisationId, o => o.Ignore())
+            .ForMember(m => m.Organisation, o => o.Ignore())
             .ForMember(m => m.CreatedOn, o => o.Ignore())
             .ForMember(m => m.UpdatedOn, o => o.Ignore())
             .ReverseMap();
@@ -147,12 +158,12 @@ public class WebApiToPersistenceProfile : Profile
             .ForMember(m => m.ApprovedOn, o => o.Ignore())
             .ForMember(m => m.ReviewedById, o => o.Ignore());
 
-        CreateMap<Persistence.Organisation.SupplierInformation, SupplierInformation>()
+        CreateMap<Persistence.SupplierInformation, SupplierInformation>()
             .ForMember(m => m.OrganisationName, o => o.Ignore());
 
-        CreateMap<Persistence.Organisation.BuyerInformation, BuyerInformation>();
+        CreateMap<Persistence.BuyerInformation, BuyerInformation>();
 
-        CreateMap<LegalForm, Persistence.Organisation.LegalForm>()
+        CreateMap<LegalForm, Persistence.LegalForm>()
             .ForMember(m => m.CreatedOn, o => o.Ignore())
             .ForMember(m => m.UpdatedOn, o => o.Ignore())
             .ReverseMap();
@@ -313,7 +324,7 @@ public class WebApiToPersistenceProfile : Profile
             .ForMember(m => m.Id, o => o.MapFrom(m => m.Guid))
             .ForMember(m => m.Identifier, o => o.MapFrom(m => m.Identifiers.FirstOrDefault(i => i.Primary)))
             .ForMember(m => m.AdditionalIdentifiers, o => o.MapFrom(m => m.Identifiers.Where(i => !i.Primary)))
-            .ForMember(m => m.ContactPoint, o => o.MapFrom(m => m.ContactPoints.FirstOrDefault() ?? new Persistence.Organisation.ContactPoint()))
+            .ForMember(m => m.ContactPoint, o => o.MapFrom(m => m.ContactPoints.FirstOrDefault() ?? new Persistence.ContactPoint()))
             .ForMember(m => m.Addresses, o => o.MapFrom(m => m.Addresses))
             .ForMember(m => m.Type, o => o.MapFrom(m => m.Type))
             .ForMember(m => m.Roles, o => o.MapFrom(m => m.Roles.Select(r => r.AsCode())));
@@ -321,10 +332,10 @@ public class WebApiToPersistenceProfile : Profile
             .ForMember(m => m.Id, o => o.MapFrom(m => m.Guid))
             .ForMember(m => m.Identifier, o => o.MapFrom(m => m.Identifiers.FirstOrDefault(i => i.Primary)))
             .ForMember(m => m.AdditionalIdentifiers, o => o.MapFrom(m => m.Identifiers.Where(i => !i.Primary)))
-            .ForMember(m => m.ContactPoint, o => o.MapFrom(m => m.ContactPoints.FirstOrDefault() ?? new Persistence.Organisation.ContactPoint()))
+            .ForMember(m => m.ContactPoint, o => o.MapFrom(m => m.ContactPoints.FirstOrDefault() ?? new Persistence.ContactPoint()))
             .ForMember(m => m.Addresses, o => o.MapFrom(m => m.Addresses))
             .ForMember(m => m.Roles, o => o.MapFrom(m => m.Roles.Select(r => r.AsCode())));
-        CreateMap<Persistence.Organisation.OrganisationAddress, Events.Address>()
+        CreateMap<Persistence.OrganisationAddress, Events.Address>()
             .ForMember(m => m.Type, o => o.MapFrom(m => m.Type.GetDisplayName()))
             .ForMember(m => m.StreetAddress, o => o.MapFrom(m => m.Address.StreetAddress))
             .ForMember(m => m.Locality, o => o.MapFrom(m => m.Address.Locality))
@@ -332,23 +343,23 @@ public class WebApiToPersistenceProfile : Profile
             .ForMember(m => m.PostalCode, o => o.MapFrom(m => m.Address.PostalCode))
             .ForMember(m => m.CountryName, o => o.MapFrom(m => m.Address.CountryName))
             .ForMember(m => m.Country, o => o.MapFrom(m => m.Address.Country));
-        CreateMap<Persistence.Organisation.Identifier, Events.Identifier>()
+        CreateMap<Persistence.Identifier, Events.Identifier>()
             .ForMember(m => m.Id, o => o.MapFrom(m => m.IdentifierId));
-        CreateMap<Persistence.Organisation.ContactPoint, Events.ContactPoint>();
+        CreateMap<Persistence.ContactPoint, Events.ContactPoint>();
     }
 
     public class IdentifiersResolver : IValueResolver<RegisterOrganisation, Persistence.Organisation,
-        IList<Persistence.Organisation.Identifier>>
+        IList<Persistence.Identifier>>
     {
-        public IList<Persistence.Organisation.Identifier> Resolve(
+        public IList<Persistence.Identifier> Resolve(
             RegisterOrganisation source, Persistence.Organisation destination,
-            IList<Persistence.Organisation.Identifier> destMember,
+            IList<Persistence.Identifier> destMember,
             ResolutionContext context)
         {
-            var pi = context.Mapper.Map<Persistence.Organisation.Identifier>(source.Identifier);
+            var pi = context.Mapper.Map<Persistence.Identifier>(source.Identifier);
             pi.Primary = true;
 
-            var ai = context.Mapper.Map<List<Persistence.Organisation.Identifier>>(source.AdditionalIdentifiers);
+            var ai = context.Mapper.Map<List<Persistence.Identifier>>(source.AdditionalIdentifiers);
             ai.ForEach(i => i.Primary = false);
 
             return [pi, .. ai];

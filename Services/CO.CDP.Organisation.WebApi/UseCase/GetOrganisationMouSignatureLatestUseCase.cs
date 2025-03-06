@@ -1,5 +1,4 @@
 using AutoMapper;
-using CO.CDP.Functional;
 using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.OrganisationInformation.Persistence;
 

@@ -77,7 +77,7 @@ public class UpdateBuyerInformationUseCaseTests
         var updateBuyerInformation = new UpdateBuyerInformation
         {
             Type = (BuyerInformationUpdateType)999, // Unknown type
-            BuyerInformation = new BuyerInformation
+            BuyerInformation = new Model.BuyerInformation
             {
                 BuyerType = "NewType",
                 DevolvedRegulations = [DevolvedRegulation.NorthernIreland]
@@ -101,7 +101,7 @@ public class UpdateBuyerInformationUseCaseTests
         var updateBuyerInformation = new UpdateBuyerInformation
         {
             Type = BuyerInformationUpdateType.BuyerOrganisationType,
-            BuyerInformation = new BuyerInformation
+            BuyerInformation = new Model.BuyerInformation
             {
                 BuyerType = null,
                 DevolvedRegulations = [DevolvedRegulation.NorthernIreland]
@@ -124,7 +124,7 @@ public class UpdateBuyerInformationUseCaseTests
         return new UpdateBuyerInformation
         {
             Type = BuyerInformationUpdateType.BuyerOrganisationType,
-            BuyerInformation = new BuyerInformation
+            BuyerInformation = new Model.BuyerInformation
             {
                 BuyerType = "NewType",
                 DevolvedRegulations = [DevolvedRegulation.NorthernIreland]
@@ -136,12 +136,12 @@ public class UpdateBuyerInformationUseCaseTests
     {
         return new OrganisationInformation.Persistence.Organisation
         {
-            ContactPoints = [new OrganisationInformation.Persistence.Organisation.ContactPoint { Email = "test@test.com" }],
+            ContactPoints = [new OrganisationInformation.Persistence.ContactPoint { Email = "test@test.com" }],
             Guid = _organisationId,
             Name = "Test",
             Type = OrganisationType.Organisation,
             Tenant = It.IsAny<Tenant>(),
-            BuyerInfo = new OrganisationInformation.Persistence.Organisation.BuyerInformation
+            BuyerInfo = new OrganisationInformation.Persistence.BuyerInformation
             { BuyerType = "NewType", DevolvedRegulations = [DevolvedRegulation.NorthernIreland] },
         };
     }
