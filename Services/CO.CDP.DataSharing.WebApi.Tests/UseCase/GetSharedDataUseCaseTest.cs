@@ -2,8 +2,6 @@ using CO.CDP.DataSharing.WebApi.Model;
 using CO.CDP.DataSharing.WebApi.Tests.AutoMapper;
 using CO.CDP.DataSharing.WebApi.UseCase;
 using CO.CDP.OrganisationInformation;
-using CO.CDP.OrganisationInformation.Persistence;
-using CO.CDP.OrganisationInformation.Persistence.NonEfEntities;
 using FluentAssertions;
 using Microsoft.Extensions.Configuration;
 using Moq;
@@ -13,7 +11,7 @@ namespace CO.CDP.DataSharing.WebApi.Tests.UseCase;
 
 public class GetSharedDataUseCaseTest : IClassFixture<AutoMapperFixture>
 {
-    private readonly Mock<IShareCodeRepository> _shareCodeRepository = new();
+    private readonly Mock<OrganisationInformation.Persistence.IShareCodeRepository> _shareCodeRepository = new();
     private readonly Mock<IConfiguration> _configuration = new();
     private readonly GetSharedDataUseCase _useCase;
 

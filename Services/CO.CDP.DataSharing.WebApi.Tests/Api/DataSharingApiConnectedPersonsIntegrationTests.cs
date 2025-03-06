@@ -9,6 +9,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using System.Data;
 using Xunit.Abstractions;
+using ContactPoint = CO.CDP.OrganisationInformation.Persistence.ContactPoint;
+using Identifier = CO.CDP.OrganisationInformation.Persistence.Identifier;
 using ShareRequest = CO.CDP.DataSharing.WebApiClient.ShareRequest;
 namespace CO.CDP.DataSharing.WebApi.Tests.Api;
 
@@ -159,9 +161,9 @@ public class DataSharingApiConnectedPersonsIntegrationTests: IClassFixture<Organ
                 Guid = Guid.NewGuid(),
                 Name = "Test org",
             },
-            Identifiers = new List<Organisation.Identifier>
+            Identifiers = new List<Identifier>
             {
-                new Organisation.Identifier
+                new Identifier
                 {
                     IdentifierId = "1234567",
                     Scheme = "Whatever",
@@ -169,9 +171,9 @@ public class DataSharingApiConnectedPersonsIntegrationTests: IClassFixture<Organ
                     Primary = true
                 }
             },
-            Addresses = new List<Organisation.OrganisationAddress>
+            Addresses = new List<OrganisationAddress>
             {
-                new Organisation.OrganisationAddress
+                new OrganisationAddress
                 {
                     Type = OrganisationInformation.AddressType.Registered,
                     Address = new OrganisationInformation.Persistence.Address
@@ -185,9 +187,9 @@ public class DataSharingApiConnectedPersonsIntegrationTests: IClassFixture<Organ
                     }
                 }
             },
-            ContactPoints = new List<Organisation.ContactPoint>
+            ContactPoints = new List<ContactPoint>
             {
-                new Organisation.ContactPoint
+                new ContactPoint
                 {
                     Name = "Main Contact",
                     Email = "foo@bar.com"

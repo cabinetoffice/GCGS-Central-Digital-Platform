@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Xunit.Abstractions;
+using ContactPoint = CO.CDP.OrganisationInformation.Persistence.ContactPoint;
+using Identifier = CO.CDP.OrganisationInformation.Persistence.Identifier;
 using ShareRequest = CO.CDP.DataSharing.WebApiClient.ShareRequest;
 namespace CO.CDP.DataSharing.WebApi.Tests.Api;
 
@@ -73,7 +75,7 @@ public class DataSharingApiSnapshottingIntegrationTests : IClassFixture<Organisa
         // Setup
         ClearDatabase();
         Organisation organisation = CreateOrganisation("Test org");
-        organisation.SupplierInfo = new Organisation.SupplierInformation
+        organisation.SupplierInfo = new OrganisationInformation.Persistence.SupplierInformation
         {
             SupplierType = OrganisationInformation.SupplierType.Organisation,
             OperationTypes = new List<OrganisationInformation.OperationType> { OrganisationInformation.OperationType.NonGovernmental },
@@ -170,7 +172,7 @@ public class DataSharingApiSnapshottingIntegrationTests : IClassFixture<Organisa
         var createShareCodeResponse1 = await _client.CreateSharedDataAsync(new ShareRequest(supplierInformationFormId, organisation.Guid));
 
         // Update data
-        organisation.Identifiers.Add(new Organisation.Identifier
+        organisation.Identifiers.Add(new Identifier
         {
             IdentifierId = "7654321",
             Scheme = "Something else",
@@ -490,9 +492,9 @@ public class DataSharingApiSnapshottingIntegrationTests : IClassFixture<Organisa
                 Guid = Guid.NewGuid(),
                 Name = orgName,
             },
-            Identifiers = new List<Organisation.Identifier>
+            Identifiers = new List<Identifier>
             {
-                new Organisation.Identifier
+                new Identifier
                 {
                     IdentifierId = "1234567",
                     Scheme = "Whatever",
@@ -501,9 +503,9 @@ public class DataSharingApiSnapshottingIntegrationTests : IClassFixture<Organisa
                     Uri = "http://whatever.com/1234567"
                 }
             },
-            Addresses = new List<Organisation.OrganisationAddress>
+            Addresses = new List<OrganisationAddress>
             {
-                new Organisation.OrganisationAddress
+                new OrganisationAddress
                 {
                     Type = OrganisationInformation.AddressType.Registered,
                     Address = new OrganisationInformation.Persistence.Address
@@ -517,9 +519,9 @@ public class DataSharingApiSnapshottingIntegrationTests : IClassFixture<Organisa
                     }
                 }
             },
-            ContactPoints = new List<Organisation.ContactPoint>
+            ContactPoints = new List<ContactPoint>
             {
-                new Organisation.ContactPoint
+                new ContactPoint
                 {
                     Name = "Main Contact",
                     Email = "foo@bar.com",

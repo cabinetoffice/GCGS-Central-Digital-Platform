@@ -52,7 +52,7 @@ public class AssignIdentifierUseCaseTest
         });
 
         _organisations.Verify(r => r.Save(It.Is<Persistence.Organisation>(o =>
-            o.Guid == organisation.Guid && o.Identifiers.Contains(new Persistence.Organisation.Identifier
+            o.Guid == organisation.Guid && o.Identifiers.Contains(new Persistence.Identifier
             {
                 Primary = true,
                 Scheme = "GB-PPON",
@@ -70,7 +70,7 @@ public class AssignIdentifierUseCaseTest
     {
         var organisation = GivenOrganisationExist(
             organisationId: Guid.NewGuid(),
-            identifiers: [  new Persistence.Organisation.Identifier {
+            identifiers: [  new Persistence.Identifier {
                 LegalName = "Acme Ltd",
                 Primary = true,
                 Scheme = "Other"
@@ -89,13 +89,13 @@ public class AssignIdentifierUseCaseTest
         });
 
         _organisations.Verify(r => r.Save(It.Is<Persistence.Organisation>(o =>
-         o.Guid == organisation.Guid && o.Identifiers.Contains(new Persistence.Organisation.Identifier
+         o.Guid == organisation.Guid && o.Identifiers.Contains(new Persistence.Identifier
          {
              Primary = true,
              Scheme = "GB-PPON",
              IdentifierId = "c0777aeb968b4113a27d94e55b10c1b4",
              LegalName = "Acme Ltd"
-         }) && o.Identifiers.Contains(new Persistence.Organisation.Identifier
+         }) && o.Identifiers.Contains(new Persistence.Identifier
          {
              LegalName = "Acme Ltd",
              Primary = false,
@@ -112,7 +112,7 @@ public class AssignIdentifierUseCaseTest
     {
         var organisation = GivenOrganisationExist(
             organisationId: Guid.NewGuid(),
-            identifiers: [  new Persistence.Organisation.Identifier {
+            identifiers: [  new Persistence.Identifier {
                 IdentifierId = "c0777aeb968b4113a27d94e55b10c1b4",
                 Scheme = AssignIdentifierUseCase.IdentifierSchemes.Ppon,
                 Primary = true,
@@ -132,13 +132,13 @@ public class AssignIdentifierUseCaseTest
         });
 
         _organisations.Verify(r => r.Save(It.Is<Persistence.Organisation>(o =>
-         o.Guid == organisation.Guid && o.Identifiers.Contains(new Persistence.Organisation.Identifier
+         o.Guid == organisation.Guid && o.Identifiers.Contains(new Persistence.Identifier
          {
              Primary = false,
              Scheme = AssignIdentifierUseCase.IdentifierSchemes.Ppon,
              IdentifierId = "c0777aeb968b4113a27d94e55b10c1b4",
              LegalName = "Acme Ltd"
-         }) && o.Identifiers.Contains(new Persistence.Organisation.Identifier
+         }) && o.Identifiers.Contains(new Persistence.Identifier
          {
              IdentifierId = "0123456789",
              Scheme = AssignIdentifierUseCase.IdentifierSchemes.CompaniesHouse,
@@ -169,7 +169,7 @@ public class AssignIdentifierUseCaseTest
         });
 
         _organisations.Verify(r => r.Save(It.Is<Persistence.Organisation>(o =>
-         o.Guid == organisation.Guid && o.Identifiers.Contains(new Persistence.Organisation.Identifier
+         o.Guid == organisation.Guid && o.Identifiers.Contains(new Persistence.Identifier
          {
              Primary = true,
              Scheme = "Other",
@@ -188,7 +188,7 @@ public class AssignIdentifierUseCaseTest
             organisationId: Guid.NewGuid(),
             identifiers:
             [
-                new Persistence.Organisation.Identifier
+                new Persistence.Identifier
                 {
                     Primary = true,
                     Scheme = "GB-COH",
@@ -209,7 +209,7 @@ public class AssignIdentifierUseCaseTest
         });
 
         _organisations.Verify(r => r.Save(It.Is<Persistence.Organisation>(o =>
-            o.Guid == organisation.Guid && o.Identifiers.Contains(new Persistence.Organisation.Identifier
+            o.Guid == organisation.Guid && o.Identifiers.Contains(new Persistence.Identifier
             {
                 Primary = false,
                 Scheme = "GB-PPON",
@@ -229,7 +229,7 @@ public class AssignIdentifierUseCaseTest
             organisationId: Guid.NewGuid(),
             identifiers:
             [
-                new Persistence.Organisation.Identifier
+                new Persistence.Identifier
                 {
                     Primary = true,
                     Scheme = "FR-COH",
@@ -250,7 +250,7 @@ public class AssignIdentifierUseCaseTest
         });
 
         _organisations.Verify(r => r.Save(It.Is<Persistence.Organisation>(o =>
-            o.Guid == organisation.Guid && o.Identifiers.Contains(new Persistence.Organisation.Identifier
+            o.Guid == organisation.Guid && o.Identifiers.Contains(new Persistence.Identifier
             {
                 Primary = true,
                 Scheme = "GB-PPON",
@@ -272,14 +272,14 @@ public class AssignIdentifierUseCaseTest
             organisationId: Guid.NewGuid(),
             identifiers:
             [
-                new Persistence.Organisation.Identifier
+                new Persistence.Identifier
                 {
                     Primary = false,
                     Scheme = "FR-COH",
                     IdentifierId = "944432342",
                     LegalName = "France Acme Ltd"
                 },
-                new Persistence.Organisation.Identifier
+                new Persistence.Identifier
                 {
                     Primary = true,
                     Scheme = "GB-PPON",
@@ -300,7 +300,7 @@ public class AssignIdentifierUseCaseTest
         });
 
         _organisations.Verify(r => r.Save(It.Is<Persistence.Organisation>(o =>
-            o.Guid == organisation.Guid && o.Identifiers.Contains(new Persistence.Organisation.Identifier
+            o.Guid == organisation.Guid && o.Identifiers.Contains(new Persistence.Identifier
             {
                 Primary = true,
                 Scheme = "GB-COH",
@@ -322,14 +322,14 @@ public class AssignIdentifierUseCaseTest
             organisationId: Guid.NewGuid(),
             identifiers:
             [
-                new Persistence.Organisation.Identifier
+                new Persistence.Identifier
                 {
                     Primary = primary,
                     Scheme = scheme,
                     IdentifierId = identifierId,
                     LegalName = legalName
                 },
-                 new Persistence.Organisation.Identifier
+                 new Persistence.Identifier
                 {
                     Primary = true,
                     Scheme = "GB-PPON",
@@ -350,7 +350,7 @@ public class AssignIdentifierUseCaseTest
         });
 
         _organisations.Verify(r => r.Save(It.Is<Persistence.Organisation>(o =>
-            o.Guid == organisation.Guid && o.Identifiers.Contains(new Persistence.Organisation.Identifier
+            o.Guid == organisation.Guid && o.Identifiers.Contains(new Persistence.Identifier
             {
                 Primary = false,
                 Scheme = "FR-CPR",
@@ -370,7 +370,7 @@ public class AssignIdentifierUseCaseTest
             organisationId: Guid.NewGuid(),
             identifiers:
             [
-                new Persistence.Organisation.Identifier
+                new Persistence.Identifier
                 {
                     Primary = true,
                     Scheme = "FR-CDH",
@@ -391,7 +391,7 @@ public class AssignIdentifierUseCaseTest
             organisationId: Guid.NewGuid(),
             identifiers:
             [
-                new Persistence.Organisation.Identifier
+                new Persistence.Identifier
                 {
                     Primary = true,
                     Scheme = "GB-PPON",
@@ -414,7 +414,7 @@ public class AssignIdentifierUseCaseTest
 
     private Persistence.Organisation GivenOrganisationExist(
         Guid organisationId,
-        List<Persistence.Organisation.Identifier>? identifiers = null)
+        List<Persistence.Identifier>? identifiers = null)
     {
         var organisation = new Persistence.Organisation
         {
@@ -423,7 +423,7 @@ public class AssignIdentifierUseCaseTest
             Guid = organisationId,
             Identifiers = identifiers ?? [],
             Addresses = [],
-            SupplierInfo = new Persistence.Organisation.SupplierInformation(),
+            SupplierInfo = new Persistence.SupplierInformation(),
             Tenant = new Persistence.Tenant
             {
                 Guid = Guid.Parse("68a9d5a1-4330-49c9-be64-7d5a8e8ae18d"),
