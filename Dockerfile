@@ -2,6 +2,7 @@ ARG ASPNET_VERSION=8.0
 ARG BUILD_CONFIGURATION=Release
 ARG NUGET_PACKAGES=/nuget/packages
 
+# Distroless image used for apps has no package manager so we install these packages here
 FROM mcr.microsoft.com/dotnet/aspnet:${ASPNET_VERSION} AS packages
 RUN apt-get update && apt-get install -y --no-install-recommends \
     netcat-openbsd \
@@ -10,6 +11,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && fc-cache -fv \
     && rm -rf /var/lib/apt/lists/*
 
+# Distroless "chiseled" image from MS with absolutely minimal packages, no shell, no package manager
+# Packages we require can be copied from the packages image above
 FROM mcr.microsoft.com/dotnet/aspnet:${ASPNET_VERSION}-noble-chiseled-extra AS base
 ARG NUGET_PACKAGES
 ENV NUGET_PACKAGES="${NUGET_PACKAGES}"
