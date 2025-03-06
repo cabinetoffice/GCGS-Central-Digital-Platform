@@ -148,8 +148,6 @@ jobs:
           fail-build: false
           severity-cutoff: critical
           output-format: sarif
-      - name: Inspect action SARIF report
-        run: cat ${{ steps.scan.outputs.sarif }}
       - name: Upload Image Vulnerability Reports
         uses: github/codeql-action/upload-sarif@v3
         with:
