@@ -419,9 +419,9 @@ public class DatabaseShareCodeRepositoryTest(PostgreSqlFixture postgreSql)
             Name = "New Corporation " + Guid.NewGuid().ToString(),
             Type = OrganisationType.Organisation,
             Tenant = GivenTenant(),
-            Identifiers = new List<Organisation.Identifier>
+            Identifiers = new List<Persistence.Identifier>
         {
-            new Organisation.Identifier
+            new Persistence.Identifier
             {
                 IdentifierId = Guid.NewGuid().ToString(),
                 Scheme = "GB-PPON",
@@ -430,16 +430,16 @@ public class DatabaseShareCodeRepositoryTest(PostgreSqlFixture postgreSql)
                 Primary = true
             }
         },
-            ContactPoints = new List<Organisation.ContactPoint>
+            ContactPoints = new List<Persistence.ContactPoint>
         {
-            new Organisation.ContactPoint
+            new Persistence.ContactPoint
             {
                 Name = "Procurement Team",
                 Email = "info@example.com",
                 Telephone = "+441234567890"
             }
         },
-            Addresses = new List<Organisation.OrganisationAddress>
+            Addresses = new List<Persistence.OrganisationAddress>
         {
             new()
             {

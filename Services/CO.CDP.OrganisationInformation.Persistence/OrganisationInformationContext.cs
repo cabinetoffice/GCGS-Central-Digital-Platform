@@ -71,56 +71,25 @@ public class OrganisationInformationContext(DbContextOptions<OrganisationInforma
             });
         });
 
+        modelBuilder.Entity<Identifier>().ToTable("identifiers");
+        modelBuilder.Entity<ContactPoint>().ToTable("contact_points");
+        modelBuilder.Entity<SupplierInformation>(a =>
+        {
+            a.OwnsOne(x => x.LegalForm, y =>
+            {
+                y.Property(z => z.CreatedOn).HasTimestampDefault();
+                y.Property(z => z.UpdatedOn).HasTimestampDefault();
+                y.ToTable("legal_forms");
+            });
+        });
+        modelBuilder.Entity<OrganisationAddress>(a =>
+        {
+            a.HasKey(e => e.Id).HasName("pk_organisation_address");
+        });
+
         modelBuilder.Entity<Organisation>(entity =>
         {
             entity.HasKey(e => e.Id);
-
-            entity.OwnsMany(e => e.Identifiers, a =>
-            {
-                a.HasKey(e => e.Id);
-                a.Property(ai => ai.Primary);
-                a.Property(ai => ai.IdentifierId);
-                a.Property(ai => ai.Scheme);
-                a.Property(ai => ai.LegalName);
-                a.Property(ai => ai.Uri);
-                a.Property(ai => ai.CreatedOn).HasTimestampDefault();
-                a.Property(ai => ai.UpdatedOn).HasTimestampDefault();
-                a.ToTable("identifiers");
-            });
-
-            entity.OwnsMany(e => e.ContactPoints, a =>
-            {
-                a.HasKey(e => e.Id);
-                a.Property(ai => ai.Name);
-                a.Property(ai => ai.Email);
-                a.Property(ai => ai.Telephone);
-                a.Property(ai => ai.Url);
-                a.Property(ai => ai.CreatedOn).HasTimestampDefault();
-                a.Property(ai => ai.UpdatedOn).HasTimestampDefault();
-                a.ToTable("contact_points");
-            });
-
-            entity.OwnsOne(e => e.SupplierInfo, a =>
-            {
-                a.Property(z => z.CreatedOn).HasTimestampDefault();
-                a.Property(z => z.UpdatedOn).HasTimestampDefault();
-                a.ToTable("supplier_information");
-
-                a.OwnsOne(x => x.LegalForm, y =>
-                {
-                    y.Property(z => z.CreatedOn).HasTimestampDefault();
-                    y.Property(z => z.UpdatedOn).HasTimestampDefault();
-                    y.ToTable("legal_forms");
-                });
-            });
-
-            entity.OwnsOne(e => e.BuyerInfo, a =>
-            {
-                a.Property(z => z.CreatedOn).HasTimestampDefault();
-                a.Property(z => z.UpdatedOn).HasTimestampDefault();
-                a.ToTable("buyer_information");
-            });
-
             entity.HasOne(e => e.ReviewedBy);
 
             entity
@@ -133,11 +102,6 @@ public class OrganisationInformationContext(DbContextOptions<OrganisationInforma
                     j.Property(op => op.CreatedOn).HasTimestampDefault();
                     j.Property(op => op.UpdatedOn).HasTimestampDefault();
                 });
-
-            entity.OwnsMany(e => e.Addresses, a =>
-            {
-                a.HasKey(e => e.Id);
-            });
         });
 
         modelBuilder.Entity<Address>()

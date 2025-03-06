@@ -23,6 +23,7 @@ using MouSignature = CO.CDP.Organisation.WebApi.Model.MouSignature;
 using Organisation = CO.CDP.Organisation.WebApi.Model.Organisation;
 using OrganisationJoinRequest = CO.CDP.Organisation.WebApi.Model.OrganisationJoinRequest;
 using Person = CO.CDP.Organisation.WebApi.Model.Person;
+using SupplierInformation = CO.CDP.Organisation.WebApi.Model.SupplierInformation;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.ConfigureForwardedHeaders();
@@ -83,7 +84,7 @@ builder.Services.AddScoped<IUseCase<(Guid, OrganisationJoinRequestStatus?), IEnu
 builder.Services.AddScoped<IUseCase<(Guid, Guid, UpdateJoinRequest), bool>, UpdateJoinRequestUseCase>();
 builder.Services.AddScoped<IUseCase<ProvideFeedbackAndContact, bool>, ProvideFeedbackAndContactUseCase>();
 builder.Services.AddScoped<IUseCase<ContactUs, bool>, ContactUsUseCase>();
-builder.Services.AddScoped<IUseCase<Guid, BuyerInformation?>, GetBuyerInformationUseCase>();
+builder.Services.AddScoped<IUseCase<Guid, CO.CDP.Organisation.WebApi.Model.BuyerInformation?>, GetBuyerInformationUseCase>();
 builder.Services.AddScoped<IUseCase<Guid, OrganisationParties?>, GetOrganisationPartiesUseCase>();
 builder.Services.AddScoped<IUseCase<Guid, IEnumerable<MouSignature>>, GetOrganisationMouSignaturesUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, Guid), MouSignature>, GetOrganisationMouSignatureUseCase>();

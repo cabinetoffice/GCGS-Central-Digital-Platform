@@ -99,7 +99,7 @@ public class RevokeAuthenticationKeyUseCaseTest()
             Name = "TheOrganisation",
             Guid = organisationId,
             Type = OrganisationType.Organisation,
-            Addresses = [new Persistence.Organisation.OrganisationAddress
+            Addresses = [new Persistence.OrganisationAddress
             {
                 Type = AddressType.Registered,
                 Address = new Persistence.Address
@@ -113,7 +113,7 @@ public class RevokeAuthenticationKeyUseCaseTest()
                 }
             }],
             Tenant = It.IsAny<Tenant>(),
-            SupplierInfo = new Persistence.Organisation.SupplierInformation()
+            SupplierInfo = new Persistence.SupplierInformation()
         };
 
         _organisationRepo.Setup(repo => repo.Find(organisationId))
