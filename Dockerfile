@@ -2,15 +2,22 @@ ARG ASPNET_VERSION=8.0
 ARG BUILD_CONFIGURATION=Release
 ARG NUGET_PACKAGES=/nuget/packages
 
+FROM mcr.microsoft.com/dotnet/aspnet:${ASPNET_VERSION} AS packages
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    netcat-openbsd \
+    fontconfig \
+    fonts-dejavu-core \
+    && fc-cache -fv \
+    && rm -rf /var/lib/apt/lists/*
+
 FROM mcr.microsoft.com/dotnet/aspnet:${ASPNET_VERSION}-noble-chiseled-extra AS base
 ARG NUGET_PACKAGES
 ENV NUGET_PACKAGES="${NUGET_PACKAGES}"
-# RUN apt-get update && apt-get install -y --no-install-recommends \
-#     curl \
-#     fontconfig \
-#     fonts-dejavu-core \
-#     && fc-cache -fv \
-#     && rm -rf /var/lib/apt/lists/*
+COPY --from=packages /usr/bin/nc /usr/bin/nc
+COPY --from=packages /lib/x86_64-linux-gnu/libbsd.so.0 /lib/x86_64-linux-gnu/libbsd.so.0
+COPY --from=packages /lib/x86_64-linux-gnu/libmd.so.0 /lib/x86_64-linux-gnu/libmd.so.0
+COPY --from=packages /usr/bin/fc-cache /usr/bin/fc-cache
+COPY --from=packages /usr/share/fonts/truetype/dejavu /usr/share/fonts/truetype/dejavu
 USER $APP_UID
 WORKDIR /app
 EXPOSE 8080

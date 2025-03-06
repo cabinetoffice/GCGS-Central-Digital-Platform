@@ -35,7 +35,7 @@ up: compose.override.yml ## Start Docker containers
 .PHONY: up
 
 verify-up: compose.override.yml ## Verify if all Docker containers have run
-	@timeout=120; \
+	@timeout=60; \
 	interval=5; \
 	while [ $$timeout -gt 0 ]; do \
 		if docker compose ps -a --format json | jq --exit-status 'select(.ExitCode != 0 or (.Health != "healthy" and .Health != ""))' > /dev/null; then \
