@@ -35,12 +35,16 @@ public class Scanner(IFileHostManager fileHostManager,
                 else
                 {
                     if (response.StatusCode == System.Net.HttpStatusCode.NotAcceptable)
+                    {
                         logger.LogInformation("File scan failed - virus is found: {fileName} {orgId}", fileToScan.QueueFileName, fileToScan.OrganisationId);
-                    else
-                        logger.LogError("File scan failed: {fileName} {orgId}", fileToScan.QueueFileName, fileToScan.OrganisationId);
 
-                    await SendEmail(fileToScan.UserEmailAddress, fileToScan);
-                    await SendEmail(fileToScan.OrganisationEmailAddress, fileToScan);
+                        await SendEmail(fileToScan.UserEmailAddress, fileToScan);
+                        await SendEmail(fileToScan.OrganisationEmailAddress, fileToScan);
+                    }
+                    else
+                    {
+                        logger.LogError("File scan failed: {fileName} {orgId}", fileToScan.QueueFileName, fileToScan.OrganisationId);
+                    }                    
 
                     await fileHostManager.RemoveFromStagingBucket(fileToScan.QueueFileName);
                 }

@@ -85,7 +85,7 @@ public class ScannerTests
 
         _fileHostManagerMock.Verify(m => m.CopyToPermanentBucket(fileToScan.QueueFileName, It.IsAny<bool>()), Times.Never);
         _fileHostManagerMock.Verify(m => m.RemoveFromStagingBucket(fileToScan.QueueFileName), Times.Once);
-        _govUKNotifyApiClient.Verify(c => c.SendEmail(It.IsAny<EmailNotificationRequest>()), Times.Exactly(2));
+        _govUKNotifyApiClient.Verify(c => c.SendEmail(It.IsAny<EmailNotificationRequest>()), Times.Never);
         _loggerMock.VerifyLog(LogLevel.Error, "File scan failed", Times.AtLeastOnce());
     }
 
