@@ -27,7 +27,11 @@ namespace E2ETests
         [Test]
         public async Task VerifyHeadingExists()
         {
-            await _page.GotoAsync("http://host.docker.internal:8090/");
+            string dockerHost = System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Linux)
+                ? "http://172.17.0.1:8090/"
+                : "http://host.docker.internal:8090/";
+
+            await _page.GotoAsync(dockerHost);
 
             await _page.WaitForSelectorAsync("h1.govuk-heading-l");
 
