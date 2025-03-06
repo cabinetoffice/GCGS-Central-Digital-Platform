@@ -1,21 +1,19 @@
 using CO.CDP.DataSharing.WebApi.Model;
 using CO.CDP.Localization;
 using CO.CDP.OrganisationInformation.Persistence;
+using CO.CDP.OrganisationInformation.Persistence.NonEfEntities;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.Localization;
 using Moq;
 using static CO.CDP.DataSharing.WebApi.Tests.DataSharingFactory;
-using SharedConsent = CO.CDP.OrganisationInformation.Persistence.Forms.SharedConsent;
 
 namespace CO.CDP.DataSharing.WebApi.Tests.DataService;
 
 public class DataServiceTests
 {
     private readonly Mock<IShareCodeRepository> _shareCodeRepository = new();
-    private readonly Mock<IConnectedEntityRepository> _connectedEntityRepository = new();
     private readonly Mock<IHtmlLocalizer<FormsEngineResource>> _localizer = new();
-    private CO.CDP.DataSharing.WebApi.DataService.DataService DataService => new(_shareCodeRepository.Object,
-        _connectedEntityRepository.Object, _localizer.Object);
+    private WebApi.DataService.DataService DataService => new(_shareCodeRepository.Object, _localizer.Object);
 
     public DataServiceTests()
     {
@@ -66,7 +64,7 @@ public class DataServiceTests
         var shareCode = "invalid-sharecode";
 
         _shareCodeRepository.Setup(repo => repo.GetByShareCode(shareCode))
-            .ReturnsAsync((SharedConsent?)null);
+            .ReturnsAsync((SharedConsentNonEf?)null);
 
         Func<Task> act = async () => await DataService.GetSharedSupplierInformationAsync(shareCode);
 
@@ -97,7 +95,7 @@ public class DataServiceTests
     public async Task ShouldMapFormAnswerSetsForPdf()
     {
         var org = CreateOrganisation();
-        var sharedConsent = EntityFactory.GetSharedConsent(org.Id, org.Guid, Guid.NewGuid());
+        var sharedConsent = NonEfEntityFactory.GetSharedConsent(org.Guid, Guid.NewGuid());
         sharedConsent.Organisation = org;
 
         _shareCodeRepository.Setup(r => r.GetByShareCode("ABC-123")).ReturnsAsync(sharedConsent);

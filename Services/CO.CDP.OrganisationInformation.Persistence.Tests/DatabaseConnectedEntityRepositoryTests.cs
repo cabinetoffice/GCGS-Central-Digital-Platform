@@ -100,7 +100,7 @@ public class DatabaseConnectedEntityRepositoryTests(PostgreSqlFixture postgreSql
         // Assert
         result.Should().HaveCount(2);
         result.Should().ContainSingle(x => x!.Name == "CHN_111");
-        result.Should().ContainSingle(x => x!.Name == "First Name");
+        result.Should().ContainSingle(x => x!.Name == "First Name Last Name");
     }
 
     private DatabaseConnectedEntityRepository ConnectedEntityRepository()
