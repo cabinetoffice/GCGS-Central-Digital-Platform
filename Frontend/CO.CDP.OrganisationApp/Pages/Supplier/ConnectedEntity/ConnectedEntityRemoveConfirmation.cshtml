@@ -29,11 +29,16 @@
                         </h1>
                     </legend>
                     <div class="govuk-radios" data-module="govuk-radios">
+                        <div id="individualOrOrg-hint" class="govuk-hint">
+                            @StaticTextResource.Supplier_ConnectedEntity_Hint
+                        </div>
+
                         <div class="govuk-radios__item">
                             <input class="govuk-radios__input" id="conditional-YES" name="ConfirmRemove" type="radio"
                                    value="@((int)RemoveConnectedPersonReason.NoLongerConnected)" @(Model.ConfirmRemove == RemoveConnectedPersonReason.NoLongerConnected ? "checked" : "") data-aria-controls="conditional-end-date">
-                            <label class="govuk-label govuk-radios__label" for="conditional-YES">@StaticTextResource.Global_Yes</label>
+                            <label class="govuk-label govuk-radios__label" for="conditional-YES">@StaticTextResource.Supplier_ConnectedEntity_Remove_Yes_No_Longer_Connected</label>
                         </div>
+
                         <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-end-date">
                             <div class="govuk-form-group">
                                 <label class="govuk-label" for="end-date">

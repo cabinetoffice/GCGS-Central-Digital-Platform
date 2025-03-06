@@ -699,6 +699,12 @@
   <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswers_OnDate" xml:space="preserve">
     <value>On {0}</value>
   </data>
+  <data name="Supplier_ConnectedEntity_Remove_Yes_No_Longer_Connected" xml:space="preserve">
+    <value>Yes, they are no longer connected</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_Hint" xml:space="preserve">
+    <value>You will need to create a new share code and file to share the new information</value>
+  </data>
   <data name="Supplier_ConnectedEntity_Remove_Yes_Added_In_Error" xml:space="preserve">
     <value>Yes, I added them in error</value>
   </data>
