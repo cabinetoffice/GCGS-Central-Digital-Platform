@@ -70,17 +70,21 @@ public class AddUserModelTests
     }
 
     [Fact]
-    public void OnPost_ShouldReturnPageResult_WhenModelStateIsInvalid()
+    public async Task OnPost_ShouldReturnPageResult_WhenModelStateIsInvalid()
     {
         _addUserModel.ModelState.AddModelError("FirstName", "Required");
 
-        var result = _addUserModel.OnPost();
+        _mockOrganisationClient
+            .Setup(c => c.GetOrganisationAsync(_addUserModel.Id))
+            .ReturnsAsync(OrganisationClientModel(_addUserModel.Id));
+
+        var result = await _addUserModel.OnPost();
 
         Assert.IsType<PageResult>(result);
     }
 
     [Fact]
-    public void OnPost_ShouldUpdateSessionAndRedirect_WhenModelStateIsValid()
+    public async Task OnPost_ShouldUpdateSessionAndRedirect_WhenModelStateIsValid()
     {
         _addUserModel.FirstName = "John";
         _addUserModel.LastName = "Johnson";
@@ -90,7 +94,7 @@ public class AddUserModelTests
         var initialState = new PersonInviteState();
         _mockSession.Setup(s => s.Get<PersonInviteState>(PersonInviteState.TempDataKey)).Returns(initialState);
 
-        var result = _addUserModel.OnPost();
+        var result = await _addUserModel.OnPost();
 
         _mockSession.Verify(s => s.Set(PersonInviteState.TempDataKey, It.Is<PersonInviteState>(state =>
             state.Scopes != null &&

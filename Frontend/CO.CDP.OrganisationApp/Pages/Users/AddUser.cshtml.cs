@@ -63,10 +63,13 @@ public class AddUserModel(
         return Page();
     }
 
-    public IActionResult OnPost()
+    public async Task<IActionResult> OnPost()
     {
         if (!ModelState.IsValid)
         {
+            var organisation = await organisationClient.GetOrganisationAsync(Id);
+            OrganisationRoles = organisation.Roles;
+
             return Page();
         }
 
