@@ -3064,15 +3064,129 @@
   <data name="Users_UserRole_Hint" xml:space="preserve">
     <value>Select the one that applies</value>
   </data>
-  <data name="Users_UserRoleAdmin_Hint" xml:space="preserve">
-    <value>Can do anything, including add, remove and edit users</value>
+  <data name="Users_UserRoleAdmin_HintTitle" xml:space="preserve">
+    <value>What admins can do</value>
   </data>
-  <data name="Users_UserRoleEditor_Hint" xml:space="preserve">
-    <value>Can view, add and edit organisation information, view supplier information and create API keys</value>
+  <data name="Users_UserRoleEditor_HintTitle" xml:space="preserve">
+    <value>What editors can do</value>
   </data>
-  <data name="Users_UserRoleViewer_Hint" xml:space="preserve">
-    <value>Can view organisation and supplier information</value>
+  <data name="Users_UserRoleViewer_HintTitle" xml:space="preserve">
+    <value>What viewers can do</value>
   </data>
+
+  <data name="Users_UserRoleAdmin_BuyerHint1" xml:space="preserve">
+    <value>add, remove and edit users</value>
+  </data>
+  <data name="Users_UserRoleAdmin_BuyerHint2" xml:space="preserve">
+    <value>create and cancel API keys</value>
+  </data>
+  <data name="Users_UserRoleAdmin_BuyerHint3" xml:space="preserve">
+    <value>create, edit and publish notices</value>
+  </data>
+  <data name="Users_UserRoleAdmin_BuyerHint4" xml:space="preserve">
+    <value>view, add and edit organisation information</value>
+  </data>
+  <data name="Users_UserRoleAdmin_BuyerHint5" xml:space="preserve">
+    <value>view, download and agree to the data sharing agreement</value>
+  </data>
+  <data name="Users_UserRoleEditor_BuyerHint1" xml:space="preserve">
+    <value>create and cancel API keys</value>
+  </data>
+  <data name="Users_UserRoleEditor_BuyerHint2" xml:space="preserve">
+    <value>create, edit and publish notices</value>
+  </data>
+  <data name="Users_UserRoleEditor_BuyerHint3" xml:space="preserve">
+    <value>view, add and edit organisation information</value>
+  </data>
+  <data name="Users_UserRoleViewer_BuyerHint1" xml:space="preserve">
+    <value>create, edit and publish notices</value>
+  </data>
+  <data name="Users_UserRoleViewer_BuyerHint2" xml:space="preserve">
+    <value>view organisation information</value>
+  </data>
+  <data name="Users_UserRoleAdmin_SupplierHint1" xml:space="preserve">
+    <value>add, remove and edit users</value>
+  </data>
+  <data name="Users_UserRoleAdmin_SupplierHint2" xml:space="preserve">
+    <value>create share codes</value>
+  </data>
+  <data name="Users_UserRoleAdmin_SupplierHint3" xml:space="preserve">
+    <value>view, add and edit organisation information</value>
+  </data>
+  <data name="Users_UserRoleAdmin_SupplierHint4" xml:space="preserve">
+    <value>view, add and edit supplier information</value>
+  </data>
+  <data name="Users_UserRoleEditor_SupplierHint1" xml:space="preserve">
+    <value>create share codes</value>
+  </data>
+  <data name="Users_UserRoleEditor_SupplierHint2" xml:space="preserve">
+    <value>view, add and edit organisation information</value>
+  </data>
+  <data name="Users_UserRoleEditor_SupplierHint3" xml:space="preserve">
+    <value>view, add and edit supplier information</value>
+  </data>
+  <data name="Users_UserRoleViewer_SupplierHint1" xml:space="preserve">
+    <value>view organisation information</value>
+  </data>
+  <data name="Users_UserRoleViewer_SupplierHint2" xml:space="preserve">
+    <value>view supplier information</value>
+  </data>
+
+  <data name="Users_UserRoleAdmin_BuyerSupplierHint1" xml:space="preserve">
+    <value>add, remove and edit users</value>
+  </data>
+  <data name="Users_UserRoleAdmin_BuyerSupplierHint2" xml:space="preserve">
+    <value>create and cancel API keys</value>
+  </data>
+  <data name="Users_UserRoleAdmin_BuyerSupplierHint3" xml:space="preserve">
+    <value>create, edit and publish notices</value>
+  </data>
+  <data name="Users_UserRoleAdmin_BuyerSupplierHint4" xml:space="preserve">
+    <value>create share codes</value>
+  </data>
+  <data name="Users_UserRoleAdmin_BuyerSupplierHint5" xml:space="preserve">
+    <value>view, add and edit organisation information</value>
+  </data>
+  <data name="Users_UserRoleAdmin_BuyerSupplierHint6" xml:space="preserve">
+    <value>view, add and edit supplier information</value>
+  </data>
+  <data name="Users_UserRoleAdmin_BuyerSupplierHint7" xml:space="preserve">
+    <value>view, download and agree to the data sharing agreement</value>
+  </data>
+
+
+
+
+  <data name="Users_UserRoleEditor_BuyerSupplierHint1" xml:space="preserve">
+    <value>create and cancel API keys</value>
+  </data>
+  <data name="Users_UserRoleEditor_BuyerSupplierHint2" xml:space="preserve">
+    <value>create, edit and publish notices</value>
+  </data>
+  <data name="Users_UserRoleEditor_BuyerSupplierHint3" xml:space="preserve">
+    <value>create share codes</value>
+  </data>
+  <data name="Users_UserRoleEditor_BuyerSupplierHint4" xml:space="preserve">
+    <value>view, add and edit organisation information</value>
+  </data>
+  <data name="Users_UserRoleEditor_BuyerSupplierHint5" xml:space="preserve">
+    <value>view, add and edit supplier information</value>
+  </data>
+
+  <data name="Users_UserRoleViewer_BuyerSupplierHint1" xml:space="preserve">
+    <value>create, edit and publish notices</value>
+  </data>
+  <data name="Users_UserRoleViewer_BuyerSupplierHint2" xml:space="preserve">
+    <value>view organisation information</value>
+  </data>
+  <data name="Users_UserRoleViewer_BuyerSupplierHint3" xml:space="preserve">
+    <value>view supplier information</value>
+  </data>
+
+
+
+
+
   <data name="Users_CheckYourAnswers_Title" xml:space="preserve">
     <value>Check your answers</value>
   </data>
