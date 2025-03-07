@@ -89,6 +89,8 @@ public class AddUserModel(
 
         PersonInviteStateData = UpdateScopes(PersonInviteStateData);
 
+        AssertPersonNotAlreadyInvited(PersonInviteStateData);
+
         session.Set(PersonInviteState.TempDataKey, PersonInviteStateData);
 
         return RedirectToPage("UserCheckAnswers", new { Id });
@@ -172,5 +174,10 @@ public class AddUserModel(
                 Role = OrganisationPersonScopes.Viewer;
             }
         }
+    }
+
+    private void AssertPersonNotAlreadyInvited(PersonInviteState PersonInviteStateData)
+    {
+        
     }
 }
