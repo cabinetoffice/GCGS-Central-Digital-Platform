@@ -377,13 +377,13 @@ public class PdfGenerator(IHtmlLocalizer<FormsEngineResource> localizer) : IPdfG
         };
     }
 
-    private string GetFriendlyEntityTypeText(OrganisationInformation.Persistence.ConnectedEntity.ConnectedEntityType entityType)
+    private string GetFriendlyEntityTypeText(ConnectedEntityType entityType)
     {
         return entityType switch
         {
-            OrganisationInformation.Persistence.ConnectedEntity.ConnectedEntityType.Organisation => StaticTextResource.PdfGenerator_ConnectedEntityType_Organisation,
-            OrganisationInformation.Persistence.ConnectedEntity.ConnectedEntityType.Individual => StaticTextResource.PdfGenerator_ConnectedEntityType_Individual,
-            OrganisationInformation.Persistence.ConnectedEntity.ConnectedEntityType.TrustOrTrustee => StaticTextResource.PdfGenerator_ConnectedEntityType_TrustTrustee,
+            ConnectedEntityType.Organisation => StaticTextResource.PdfGenerator_ConnectedEntityType_Organisation,
+            ConnectedEntityType.Individual => StaticTextResource.PdfGenerator_ConnectedEntityType_Individual,
+            ConnectedEntityType.TrustOrTrustee => StaticTextResource.PdfGenerator_ConnectedEntityType_TrustTrustee,
             _ => StaticTextResource.PdfGenerator_UnknownCategory
         };
     }

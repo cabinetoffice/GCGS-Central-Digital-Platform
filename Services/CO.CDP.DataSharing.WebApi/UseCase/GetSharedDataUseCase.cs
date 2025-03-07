@@ -2,14 +2,13 @@ using AutoMapper;
 using CO.CDP.DataSharing.WebApi.Model;
 using CO.CDP.OrganisationInformation;
 using CO.CDP.OrganisationInformation.Persistence;
+using CO.CDP.OrganisationInformation.Persistence.NonEfEntities;
 using FormQuestionType = CO.CDP.OrganisationInformation.Persistence.Forms.FormQuestionType;
-using SharedConsent = CO.CDP.OrganisationInformation.Persistence.Forms.SharedConsent;
 
 namespace CO.CDP.DataSharing.WebApi.UseCase;
 
 public class GetSharedDataUseCase(
     IShareCodeRepository shareCodeRepository,
-    IOrganisationRepository organisationRepository,
     IMapper mapper,
     IConfiguration configuration)
     : IUseCase<string, SupplierInformation?>
@@ -20,9 +19,9 @@ public class GetSharedDataUseCase(
                             ?? throw new ShareCodeNotFoundException(Constants.ShareCodeNotFoundExceptionMessage);
 
         var org = sharedConsent.Organisation;
-        var associatedPersons = await AssociatedPersons(sharedConsent);
-        var additionalEntities = await AdditionalEntities(sharedConsent);
-        var details = await GetDetails(sharedConsent);
+        var associatedPersons = AssociatedPersons(sharedConsent);
+        var additionalEntities = AdditionalEntities(sharedConsent);
+        var details = GetDetails(sharedConsent);
 
         var supplierInformation = mapper.Map<SupplierInformation>(sharedConsent, opts =>
         {
@@ -79,12 +78,12 @@ public class GetSharedDataUseCase(
         }
     }
 
-    private void InsertFileDocumentUri(SharedConsent sharedConsent, SupplierInformation supplierInformation, string sharecode)
+    private void InsertFileDocumentUri(SharedConsentNonEf sharedConsent, SupplierInformation supplierInformation, string sharecode)
     {
         var dataSharingApiUrl = configuration["DataSharingApiUrl"]
                     ?? throw new Exception("Missing configuration key: DataSharingApiUrl.");
 
-        var questions = sharedConsent.Form.Sections.SelectMany(s => s.Questions);
+        var questions = sharedConsent.AnswerSets.SelectMany(s => s.Section.Questions);
 
         foreach (var answerSet in supplierInformation.SupplierInformationData.AnswerSets)
         {
@@ -100,10 +99,10 @@ public class GetSharedDataUseCase(
         }
     }
 
-    private async Task<Details> GetDetails(SharedConsent sharedConsent)
+    private Details GetDetails(SharedConsentNonEf sharedConsent)
     {
-        var legalForm = await organisationRepository.GetLegalForm(sharedConsent.OrganisationId);
-        var operationTypes = await organisationRepository.GetOperationTypes(sharedConsent.OrganisationId);
+        var legalForm = sharedConsent.Organisation.SupplierInfo?.LegalForm;
+        var operationTypes = sharedConsent.Organisation.SupplierInfo?.OperationTypes;
 
         return new Details
         {
@@ -116,31 +115,29 @@ public class GetSharedDataUseCase(
         };
     }
 
-    private async Task<ICollection<AssociatedPerson>> AssociatedPersons(SharedConsent sharedConsent)
+    private static ICollection<AssociatedPerson> AssociatedPersons(SharedConsentNonEf sharedConsent)
     {
-        var individuals = await organisationRepository.GetConnectedIndividualTrusts(sharedConsent.OrganisationId);
-        var trustsOrTrustees = await organisationRepository.GetConnectedTrustsOrTrustees(sharedConsent.OrganisationId);
-
-        return individuals.Union(trustsOrTrustees).Select(x => new AssociatedPerson
-        {
-            Id = x.Guid,
-            Name = string.Format($"{x.IndividualOrTrust?.FirstName} {x.IndividualOrTrust?.LastName}"),
-            Relationship = x.IndividualOrTrust?.Category.ToString() ?? string.Empty,
-            Uri = null,
-            Roles = x.SupplierOrganisation.Roles
-        }).ToList();
+        return sharedConsent.Organisation.ConnectedEntities
+            .Where(ce => ce.EntityType != ConnectedEntityType.Organisation)
+            .Select(x => new AssociatedPerson
+            {
+                Id = x.Guid,
+                Name = string.Format($"{x.IndividualOrTrust?.FirstName} {x.IndividualOrTrust?.LastName}"),
+                Relationship = x.IndividualOrTrust?.Category.ToString() ?? string.Empty,
+                Uri = null,
+                Roles = sharedConsent.Organisation.Roles
+            }).ToList();
     }
 
-    private async Task<ICollection<OrganisationReference>> AdditionalEntities(SharedConsent sharedConsent)
+    private static ICollection<OrganisationReference> AdditionalEntities(SharedConsentNonEf sharedConsent)
     {
-        var additionalEntities = await organisationRepository.GetConnectedOrganisations(sharedConsent.OrganisationId);
-
-        return additionalEntities.Select(x => new OrganisationReference
-        {
-            Id = x.Guid,
-            Name = x.Organisation?.Name ?? string.Empty,
-            Roles = [],
-            Uri = null
-        }).ToList();
+        return sharedConsent.Organisation.ConnectedEntities
+            .Where(ce => ce.EntityType == ConnectedEntityType.Organisation).Select(x => new OrganisationReference
+            {
+                Id = x.Guid,
+                Name = x.Organisation?.Name ?? string.Empty,
+                Roles = [],
+                Uri = null
+            }).ToList();
     }
 }

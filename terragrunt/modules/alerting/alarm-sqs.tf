@@ -6,7 +6,6 @@ resource "aws_cloudwatch_metric_alarm" "sqs_queue_depth" {
   alarm_name                = "${local.name_prefix}-${var.environment}-sqs-queue-depth-${each.key}"
   comparison_operator       = "GreaterThanThreshold"
   evaluation_periods        = 2
-  insufficient_data_actions = [aws_sns_topic.alerts_topic.arn]
   metric_name               = "ApproximateNumberOfMessagesVisible"
   namespace                 = "AWS/SQS"
   ok_actions                = [aws_sns_topic.alerts_topic.arn]
@@ -28,7 +27,6 @@ resource "aws_cloudwatch_metric_alarm" "sqs_message_age" {
   alarm_name                = "${local.name_prefix}-${var.environment}-sqs-message-age-${each.key}"
   comparison_operator       = "GreaterThanThreshold"
   evaluation_periods        = 2
-  insufficient_data_actions = [aws_sns_topic.alerts_topic.arn]
   metric_name               = "ApproximateAgeOfOldestMessage"
   namespace                 = "AWS/SQS"
   ok_actions                = [aws_sns_topic.alerts_topic.arn]
