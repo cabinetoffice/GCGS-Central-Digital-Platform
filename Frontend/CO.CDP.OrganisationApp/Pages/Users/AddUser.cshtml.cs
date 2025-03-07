@@ -75,7 +75,7 @@ public class AddUserModel(
         // Person invite already exists
         if (personInvites.Any(invite => invite.Email.ToLower() == PersonInviteStateData.Email?.ToLower()))
         {
-            ModelState.AddModelError("PersonInviteAlreadyExists", "Person Invite already exists");
+            ModelState.AddModelError("PersonInviteAlreadyExists", StaticTextResource.ErrorMessageList_DuplicatePersonEmail);
 
             return Page();
         }
