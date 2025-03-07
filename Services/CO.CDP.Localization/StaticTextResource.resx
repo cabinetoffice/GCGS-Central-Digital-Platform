@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!--
     Microsoft ResX Schema
@@ -2827,11 +2827,11 @@
   <data name="SupplierToBuyer_SelectDevolvedRegulation_Scotland" xml:space="preserve">
     <value>Scotland</value>
   </data>
-  <data name="SupplierToBuyer_SelectDevolvedRegulation_SelectAllThatApply" xml:space="preserve">
-    <value>Select all that apply</value>
+  <data name="SupplierToBuyer_SelectDevolvedRegulation_Hint" xml:space="preserve">
+    <value>Read the &lt;a href="https://www.gov.uk/government/publications/procurement-act-2023-guidance-documents-plan-phase/guidance-devolved-contracting-authorities-html#:~:text=Procurement%20is%20largely%20a%20devolved,are%20conducted%20and%20contracts%20managed." target="_blank"&gt;devolved contracting authorities guidance (opens in new tab). &lt;/a&gt;</value>
   </data>
   <data name="SupplierToBuyer_SelectDevolvedRegulation_Title" xml:space="preserve">
-    <value>Which devolved regulations apply?</value>
+    <value>Select which devolved nation regulations apply</value>
   </data>
   <data name="SupplierToBuyer_SelectDevolvedRegulation_Wales" xml:space="preserve">
     <value>Wales</value>
