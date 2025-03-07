@@ -6,13 +6,15 @@ using CO.CDP.OrganisationApp.Constants;
 using Microsoft.AspNetCore.Authorization;
 using CO.CDP.Mvc.Validation;
 using CO.CDP.Localization;
+using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Models;
 
 namespace CO.CDP.OrganisationApp.Pages.Users;
 
 [Authorize(Policy = OrgScopeRequirement.Admin)]
 public class AddUserModel(
-    ISession session) : PageModel
+    ISession session,
+    IOrganisationClient organisationClient) : PageModel
 {
     [BindProperty(SupportsGet = true)]
     public Guid Id { get; set; }
@@ -55,7 +57,7 @@ public class AddUserModel(
         return Page();
     }
 
-    public IActionResult OnPost()
+    public async Task<IActionResult> OnPost()
     {
         if (!ModelState.IsValid)
         {
@@ -68,7 +70,15 @@ public class AddUserModel(
 
         PersonInviteStateData = UpdateScopes(PersonInviteStateData);
 
-        AssertPersonNotAlreadyInvited(PersonInviteStateData);
+        var personInvites = await organisationClient.GetOrganisationPersonInvitesAsync(Id);
+
+        // Person invite already exists
+        if (personInvites.Any(invite => invite.Email.ToLower() == PersonInviteStateData.Email?.ToLower()))
+        {
+            ModelState.AddModelError("PersonInviteAlreadyExists", "Person Invite already exists");
+
+            return Page();
+        }
 
         session.Set(PersonInviteState.TempDataKey, PersonInviteStateData);
 
@@ -153,10 +163,5 @@ public class AddUserModel(
                 Role = OrganisationPersonScopes.Viewer;
             }
         }
-    }
-
-    private void AssertPersonNotAlreadyInvited(PersonInviteState PersonInviteStateData)
-    {
-        
     }
 }
