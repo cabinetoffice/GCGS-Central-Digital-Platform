@@ -29,7 +29,7 @@
                             </h1>
                         </legend>
                         <div id="regulations-hint" class="govuk-hint">
-                            @StaticTextResource.SupplierToBuyer_SelectDevolvedRegulation_SelectAllThatApply
+                            @Html.Raw(@StaticTextResource.SupplierToBuyer_SelectDevolvedRegulation_Hint)
                         </div>
                         @if (regulationsHasError)
                         {
