@@ -46,7 +46,7 @@ public class AddUserModel(
 
     public PersonInviteState? PersonInviteStateData;
 
-    public ICollection<PartyRole>? OrganisationRoles;
+    public ICollection<PartyRole> OrganisationRoles = [];
 
     public async Task<IActionResult> OnGet()
     {
