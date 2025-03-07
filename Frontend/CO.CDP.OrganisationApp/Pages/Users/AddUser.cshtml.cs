@@ -1,3 +1,4 @@
+using System.Collections.ObjectModel;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
@@ -45,9 +46,14 @@ public class AddUserModel(
 
     public PersonInviteState? PersonInviteStateData;
 
-    public IActionResult OnGet()
+    public ICollection<PartyRole> OrganisationRoles = [];
+
+    public async Task<IActionResult> OnGet()
     {
         PersonInviteStateData = session.Get<PersonInviteState>(PersonInviteState.TempDataKey) ?? null;
+
+        var organisation = await organisationClient.GetOrganisationAsync(Id);
+        OrganisationRoles = organisation.Roles;
 
         if (PersonInviteStateData != null)
         {
@@ -61,6 +67,9 @@ public class AddUserModel(
     {
         if (!ModelState.IsValid)
         {
+            var organisation = await organisationClient.GetOrganisationAsync(Id);
+            OrganisationRoles = organisation.Roles;
+
             return Page();
         }
 
