@@ -89,7 +89,15 @@ public class AddUserModel(
 
         PersonInviteStateData = UpdateScopes(PersonInviteStateData);
 
-        AssertPersonNotAlreadyInvited(PersonInviteStateData);
+        var personInvites = await organisationClient.GetOrganisationPersonInvitesAsync(Id);
+
+        // Person invite already exists
+        if (personInvites.Any(invite => invite.Email.ToLower() == PersonInviteStateData.Email?.ToLower()))
+        {
+            ModelState.AddModelError("PersonInviteAlreadyExists", "Person Invite already exists");
+
+            return Page();
+        }
 
         session.Set(PersonInviteState.TempDataKey, PersonInviteStateData);
 
@@ -174,10 +182,5 @@ public class AddUserModel(
                 Role = OrganisationPersonScopes.Viewer;
             }
         }
-    }
-
-    private void AssertPersonNotAlreadyInvited(PersonInviteState PersonInviteStateData)
-    {
-        
     }
 }
