@@ -10,8 +10,8 @@ namespace CO.CDP.DataSharing.WebApi.Tests.AutoMapper
     using Moq;
     using CO.CDP.Localization;
     using CO.CDP.DataSharing.WebApi.AutoMapper;
-    using CO.CDP.OrganisationInformation.Persistence.Forms;             // for FormQuestionChoice, FormQuestionOptions, etc.
-    using CO.CDP.OrganisationInformation.Persistence.NonEfEntities;     // for FormQuestionNonEf, FormSectionNonEf, etc.
+    using CO.CDP.OrganisationInformation.Persistence.Forms;            
+    using CO.CDP.OrganisationInformation.Persistence.NonEfEntities;     
 
     public class FormQuestionOptionsResolverTests
     {
