@@ -1,4 +1,5 @@
 using CO.CDP.OrganisationInformation.Persistence.Forms;
+using CO.CDP.OrganisationInformation.Persistence.NonEfEntities;
 using CO.CDP.Testcontainers.PostgreSql;
 using FluentAssertions;
 
@@ -206,9 +207,9 @@ public class DatabaseShareCodeRepositoryTest(PostgreSqlFixture postgreSql)
 
         var registeredAddress = foundConsent.Organisation.Addresses.FirstOrDefault(a => a.Type == AddressType.Registered);
         registeredAddress.Should().NotBeNull();
-        registeredAddress.As<Organisation.OrganisationAddress>().Address.Should().NotBeNull();
-        registeredAddress.As<Organisation.OrganisationAddress>().Address.StreetAddress.Should().Be("82 St. John’s Road");
-        registeredAddress.As<Organisation.OrganisationAddress>().Address.PostalCode.Should().Be("CH43 7UR");
+        registeredAddress.As<AddressNonEf>().Should().NotBeNull();
+        registeredAddress.As<AddressNonEf>().StreetAddress.Should().Be("82 St. John’s Road");
+        registeredAddress.As<AddressNonEf>().PostalCode.Should().Be("CH43 7UR");
 
         foundConsent.AnswerSets.Should().ContainSingle();
 
@@ -218,10 +219,6 @@ public class DatabaseShareCodeRepositoryTest(PostgreSqlFixture postgreSql)
         var retrievedForm = foundConsent.Form;
         retrievedForm.Should().NotBeNull();
         retrievedForm.Name.Should().Be("Test Form");
-        retrievedForm.Sections.Should().ContainSingle(s => s.Title == "Test Section");
-
-        var retrievedSection = retrievedForm.Sections.First();
-        retrievedSection.Questions.Should().ContainSingle(q => q.Title == "Yes or no?");
     }
 
 

@@ -13,4 +13,6 @@ public interface IPersonInviteRepository : IDisposable
     Task<IEnumerable<PersonInvite>> FindPersonInviteByEmail(Guid organisationId, string email);
 
     void Save(PersonInvite personInvite);
+
+    Task SaveNewInvite(PersonInvite personInvite, IEnumerable<PersonInvite> expiredExistingInvites);
 }

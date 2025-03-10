@@ -2,6 +2,7 @@
 @model CO.CDP.OrganisationApp.Pages.Users.ChangeUserRoleModel
 @using CO.CDP.OrganisationApp.Constants
 @using CO.CDP.Localization
+@using CO.CDP.Organisation.WebApiClient
 
 @{
     ViewData["Title"] = Model.UserFullName;
@@ -47,8 +48,47 @@
                                 <label class="govuk-label govuk-radios__label" for="@nameof(Model.Role)">
                                     @StaticTextResource.Global_Admin
                                 </label>
-                                <div id="role-editor-hint" class="govuk-hint govuk-radios__hint">
-                                    @StaticTextResource.Users_UserRoleAdmin_Hint
+                                <div id="role-admin-hint" class="govuk-hint govuk-radios__hint">
+                                    <details class="govuk-details govuk-!-margin-bottom-0">
+                                        <summary class="govuk-details__summary">
+                                          <span class="govuk-details__summary-text">
+                                            @StaticTextResource.Users_UserRoleAdmin_HintTitle
+                                          </span>
+                                        </summary>
+                                        <div class="govuk-details__text">
+                                            @if (@Model.OrganisationRoles.Contains(PartyRole.Buyer) && @Model.OrganisationRoles.Contains(PartyRole.Tenderer))
+                                            {
+                                            <ul class="govuk-list govuk-list--bullet">
+                                                <li>@StaticTextResource.Users_UserRoleAdmin_BuyerSupplierHint1</li>
+                                                <li>@StaticTextResource.Users_UserRoleAdmin_BuyerSupplierHint2</li>
+                                                <li>@StaticTextResource.Users_UserRoleAdmin_BuyerSupplierHint3</li>
+                                                <li>@StaticTextResource.Users_UserRoleAdmin_BuyerSupplierHint4</li>
+                                                <li>@StaticTextResource.Users_UserRoleAdmin_BuyerSupplierHint5</li>
+                                                <li>@StaticTextResource.Users_UserRoleAdmin_BuyerSupplierHint6</li>
+                                                <li>@StaticTextResource.Users_UserRoleAdmin_BuyerSupplierHint7</li>
+                                            </ul>
+                                            } else if (@Model.OrganisationRoles.Contains(PartyRole.Buyer) && ! @Model.OrganisationRoles.Contains(PartyRole.Tenderer))
+                                            {
+                                            <ul class="govuk-list govuk-list--bullet">
+
+                                                <li>@StaticTextResource.Users_UserRoleAdmin_BuyerHint1</li>
+                                                <li>@StaticTextResource.Users_UserRoleAdmin_BuyerHint2</li>
+                                                <li>@StaticTextResource.Users_UserRoleAdmin_BuyerHint3</li>
+                                                <li>@StaticTextResource.Users_UserRoleAdmin_BuyerHint4</li>
+                                                <li>@StaticTextResource.Users_UserRoleAdmin_BuyerHint5</li>
+                                            </ul>
+                                            }
+                                            else
+                                            {
+                                            <ul class="govuk-list govuk-list--bullet">
+                                                <li>@StaticTextResource.Users_UserRoleAdmin_SupplierHint1</li>
+                                                <li>@StaticTextResource.Users_UserRoleAdmin_SupplierHint2</li>
+                                                <li>@StaticTextResource.Users_UserRoleAdmin_SupplierHint3</li>
+                                                <li>@StaticTextResource.Users_UserRoleAdmin_SupplierHint4</li>
+                                            </ul>
+                                            }
+                                        </div>
+                                    </details>
                                 </div>
                             </div>
 
@@ -58,7 +98,41 @@
                                     @StaticTextResource.Global_Editor
                                 </label>
                                 <div id="role-editor-hint" class="govuk-hint govuk-radios__hint">
-                                    @StaticTextResource.Users_UserRoleEditor_Hint
+                                    <details class="govuk-details govuk-!-margin-bottom-0">
+                                        <summary class="govuk-details__summary">
+                                          <span class="govuk-details__summary-text">
+                                            @StaticTextResource.Users_UserRoleEditor_HintTitle
+                                          </span>
+                                        </summary>
+                                        <div class="govuk-details__text">
+                                            @if (@Model.OrganisationRoles.Contains(PartyRole.Buyer) && @Model.OrganisationRoles.Contains(PartyRole.Tenderer))
+                                            {
+                                            <ul class="govuk-list govuk-list--bullet">
+                                                <li>@StaticTextResource.Users_UserRoleEditor_BuyerSupplierHint1</li>
+                                                <li>@StaticTextResource.Users_UserRoleEditor_BuyerSupplierHint2</li>
+                                                <li>@StaticTextResource.Users_UserRoleEditor_BuyerSupplierHint3</li>
+                                                <li>@StaticTextResource.Users_UserRoleEditor_BuyerSupplierHint4</li>
+                                                <li>@StaticTextResource.Users_UserRoleEditor_BuyerSupplierHint5</li>
+                                            </ul>
+                                            } else if (@Model.OrganisationRoles.Contains(PartyRole.Buyer) && ! @Model.OrganisationRoles.Contains(PartyRole.Tenderer))
+                                            {
+                                            <ul class="govuk-list govuk-list--bullet">
+
+                                                <li>@StaticTextResource.Users_UserRoleEditor_BuyerHint1</li>
+                                                <li>@StaticTextResource.Users_UserRoleEditor_BuyerHint2</li>
+                                                <li>@StaticTextResource.Users_UserRoleEditor_BuyerHint3</li>
+                                            </ul>
+                                            }
+                                            else
+                                            {
+                                            <ul class="govuk-list govuk-list--bullet">
+                                                <li>@StaticTextResource.Users_UserRoleEditor_SupplierHint1</li>
+                                                <li>@StaticTextResource.Users_UserRoleEditor_SupplierHint2</li>
+                                                <li>@StaticTextResource.Users_UserRoleEditor_SupplierHint3</li>
+                                            </ul>
+                                            }
+                                        </div>
+                                    </details>
                                 </div>
                             </div>
 
@@ -68,7 +142,37 @@
                                     @StaticTextResource.Global_Viewer
                                 </label>
                                 <div id="role-viewer-hint" class="govuk-hint govuk-radios__hint">
-                                    @StaticTextResource.Users_UserRoleViewer_Hint
+                                    <details class="govuk-details">
+                                        <summary class="govuk-details__summary">
+                                          <span class="govuk-details__summary-text">
+                                            @StaticTextResource.Users_UserRoleViewer_HintTitle
+                                          </span>
+                                        </summary>
+                                        <div class="govuk-details__text">
+                                            @if (@Model.OrganisationRoles.Contains(PartyRole.Buyer) && @Model.OrganisationRoles.Contains(PartyRole.Tenderer))
+                                            {
+                                            <ul class="govuk-list govuk-list--bullet">
+                                                <li>@StaticTextResource.Users_UserRoleViewer_BuyerSupplierHint1</li>
+                                                <li>@StaticTextResource.Users_UserRoleViewer_BuyerSupplierHint2</li>
+                                                <li>@StaticTextResource.Users_UserRoleViewer_BuyerSupplierHint3</li>
+                                            </ul>
+                                            } else if (@Model.OrganisationRoles.Contains(PartyRole.Buyer) && ! @Model.OrganisationRoles.Contains(PartyRole.Tenderer))
+                                            {
+                                            <ul class="govuk-list govuk-list--bullet">
+
+                                                <li>@StaticTextResource.Users_UserRoleViewer_BuyerHint1</li>
+                                                <li>@StaticTextResource.Users_UserRoleViewer_BuyerHint2</li>
+                                            </ul>
+                                            }
+                                            else
+                                            {
+                                            <ul class="govuk-list govuk-list--bullet">
+                                                <li>@StaticTextResource.Users_UserRoleViewer_SupplierHint1</li>
+                                                <li>@StaticTextResource.Users_UserRoleViewer_SupplierHint2</li>
+                                            </ul>
+                                            }
+                                        </div>
+                                    </details>
                                 </div>
                             </div>
                         </div>
