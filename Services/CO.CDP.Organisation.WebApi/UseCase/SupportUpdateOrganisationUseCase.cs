@@ -2,6 +2,7 @@ using CO.CDP.GovUKNotify.Models;
 using CO.CDP.GovUKNotify;
 using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.OrganisationInformation.Persistence;
+using CO.CDP.OrganisationInformation;
 
 namespace CO.CDP.Organisation.WebApi.UseCase;
 public class SupportUpdateOrganisationUseCase(
@@ -18,14 +19,13 @@ public class SupportUpdateOrganisationUseCase(
         var sendApprovalEmail = false;
         var sendRejectionEmail = false;
 
+        var personId = command.supportUpdateOrganisation.Organisation.ReviewedById;
+
+        var person = await personRepository.Find(personId) ?? throw new UnknownPersonException($"Unknown person {personId}.");
+
         switch (command.supportUpdateOrganisation.Type)
         {
             case SupportOrganisationUpdateType.Review:
-
-                var personId = command.supportUpdateOrganisation.Organisation.ReviewedById;
-
-                var person = await personRepository.Find(personId) ?? throw new UnknownPersonException($"Unknown person {personId}.");
-
                 if (command.supportUpdateOrganisation.Organisation.Approved == true)
                 {
                     organisation.ApprovedOn = DateTimeOffset.UtcNow;
@@ -42,6 +42,30 @@ public class SupportUpdateOrganisationUseCase(
                 organisation.ReviewComment = command.supportUpdateOrganisation.Organisation.Comment;
 
                 break;
+
+            case SupportOrganisationUpdateType.ConvertPendingBuyerToSupplier:
+                if (!organisation.PendingRoles.Contains(PartyRole.Buyer) || organisation.Roles.Contains(PartyRole.Buyer))
+                {
+                    throw new InvalidSupportUpdateOrganisationCommand("Organisation must be a pending buyer.");
+                }
+
+                if (!organisation.Roles.Contains(PartyRole.Tenderer))
+                {
+                    organisation.Roles.Add(PartyRole.Tenderer);
+                }
+
+                organisation.PendingRoles.Remove(PartyRole.Buyer);                
+
+                organisation.BuyerInfo = null;
+
+                await organisationRepository.RemoveMouSignatures(organisation.Id);
+
+                organisation.ReviewComment = command.supportUpdateOrganisation.Organisation.Comment;
+                organisation.ReviewedBy = person;
+                organisation.ApprovedOn = DateTimeOffset.UtcNow;
+
+                break;
+
             default:
                 throw new InvalidSupportUpdateOrganisationCommand("Unknown support update organisation command type.");
         }

@@ -176,12 +176,12 @@
                     }
                     <div class="govuk-radios" data-module="govuk-radios">
                         <div class="govuk-radios__item">
-                            <input class="govuk-radios__input" id="@nameof(Model.Approval)" name="@nameof(Model.Approval)" type="radio" value="true" @(Model.Approval == true ? "checked" : "")>
+                            <input class="govuk-radios__input" id="@nameof(Model.Approval)" name="@nameof(Model.Approval)" type="radio" value="@ApprovalStates.Approve" @(Model.Approval == ApprovalStates.Approve ? "checked" : "")>
                             <label class="govuk-label govuk-radios__label" for="@nameof(Model.Approval)">@StaticTextResource.Global_Yes</label>
                         </div>
                         <div class="govuk-radios__item">
-                            <input class="govuk-radios__input" id="@nameof(Model.Approval)-1" name="@nameof(Model.Approval)" type="radio" value="false" data-aria-controls="conditional-comment" @(Model.Approval == false ? "checked" : "")>
-                            <label class="govuk-label govuk-radios__label" for="@nameof(Model.Approval)-1">@StaticTextResource.Global_No</label>
+                            <input class="govuk-radios__input" id="@nameof(Model.Approval)-1" name="@nameof(Model.Approval)" type="radio" value="@ApprovalStates.Reject" data-aria-controls="conditional-comment" @(Model.Approval == ApprovalStates.Reject ? "checked" : "")>
+                            <label class="govuk-label govuk-radios__label" for="@nameof(Model.Approval)-1">@StaticTextResource.Support_OrganisationApproval_InformationIsNotCorrect</label>
                         </div>
 
                         <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-comment">
@@ -202,6 +202,26 @@
                                 <textarea class="govuk-textarea" id="@nameof(Model.Comments)" name="@nameof(Model.Comments)" rows="3" maxlength="10000" aria-describedby="comments-hint @(commentHasError ? "comments-error" : "")"></textarea>
                             </div>
                         </div>
+
+                        @if (Model.OrganisationDetails != null && Model.OrganisationDetails.Details.PendingRoles.Contains(CDP.Organisation.WebApiClient.PartyRole.Buyer))
+                        {
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input" id="@nameof(Model.Approval)-2" name="@nameof(Model.Approval)" type="radio" value="@ApprovalStates.ConvertToSupplier" data-aria-controls="conditional-convert-supplier" @(Model.Approval == ApprovalStates.ConvertToSupplier ? "checked" : "")>
+                                <label class="govuk-label govuk-radios__label" for="@nameof(Model.Approval)-2">@(Model.OrganisationDetails.Roles.Contains(CDP.Organisation.WebApiClient.PartyRole.Tenderer) ? StaticTextResource.Support_OrganisationApproval_NotABuyer : @StaticTextResource.Support_OrganisationApproval_NotABuyerConvertToSupplier)</label>
+                            </div>
+
+                            @if (!Model.OrganisationDetails.Roles.Contains(CDP.Organisation.WebApiClient.PartyRole.Tenderer)) {
+                                <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-convert-supplier">
+                                    <div class="govuk-warning-text">
+                                        <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+                                        <strong class="govuk-warning-text__text">
+                                            <span class="govuk-visually-hidden">@StaticTextResource.Global_Warning</span>
+                                            @StaticTextResource.Support_OrganisationApproval_NotABuyerConvertToSupplier_Warning
+                                        </strong>
+                                    </div>
+                                </div>
+                            }
+                        }
                     </div>
                 </fieldset>
             </div>

@@ -94,7 +94,7 @@ public class OrganisationApprovalModelTests
     public async Task OnPost_WhenBuyerIsApproved_ShouldRedirectToOrganisationsPage()
     {
         var organisationId = Guid.NewGuid();
-        _organisationApprovalModel.Approval = true;
+        _organisationApprovalModel.Approval = ApprovalStates.Approve;
 
         _mockOrganisationClient
             .Setup(client => client.SupportUpdateOrganisationAsync(It.IsAny<Guid>(), It.IsAny<SupportUpdateOrganisation>()))
@@ -117,7 +117,7 @@ public class OrganisationApprovalModelTests
     public async Task OnPost_WhenBuyerIsRejected_ShouldRedirectToOrganisationsPage()
     {
         var organisationId = Guid.NewGuid();
-        _organisationApprovalModel.Approval = false;
+        _organisationApprovalModel.Approval = ApprovalStates.Reject;
         _organisationApprovalModel.Comments = "Rejected";
 
         _mockOrganisationClient
