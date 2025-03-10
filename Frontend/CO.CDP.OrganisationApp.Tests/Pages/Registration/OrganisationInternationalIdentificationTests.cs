@@ -112,6 +112,7 @@ public class OrganisationInternationalIdentificationTests
         var model = CreateModel();
         model.Identifier = "ABC:123";
         model.OrganisationName = "Test Organisation";
+        model.OrganisationScheme = "ABC";
 
         _organisationClientMock
             .Setup(o => o.LookupOrganisationAsync(It.IsAny<string>(), It.IsAny<string>()))

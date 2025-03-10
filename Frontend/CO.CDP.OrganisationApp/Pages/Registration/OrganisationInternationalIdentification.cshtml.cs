@@ -40,7 +40,8 @@ public class OrganisationInternationalIdentificationModel(ISession session,
     public string? Identifier { get; set; }
 
     public string? OrganisationName;
-    
+    public Guid? OrganisationId { get; set; }
+
     public async Task OnGet()
     {
         Country = RegistrationDetails.OrganisationIdentificationCountry;
@@ -82,13 +83,26 @@ public class OrganisationInternationalIdentificationModel(ISession session,
         }
 
         Identifier = $"{RegistrationDetails.OrganisationScheme}:{RegistrationDetails.OrganisationIdentificationNumber}";
-        Guid? orgId = null;
+
+        if (OrganisationScheme != null && OrganisationScheme.Contains("Other"))
+        {
+            SessionContext.Set(Session.RegistrationDetailsKey, RegistrationDetails);
+            if (RedirectToSummary == true)
+            {
+                return RedirectToPage("OrganisationDetailsSummary");
+            }
+            else
+            {
+                return RedirectToPage("OrganisationName", new { InternationalIdentifier = true });
+            }
+        }
+
         try
         {
             SessionContext.Set(Session.RegistrationDetailsKey, RegistrationDetails);
-            var organisation = await organisationClient.LookupOrganisationAsync(RegistrationDetails.OrganisationName, "");
+            var organisation = await LookupOrganisationAsync();
             OrganisationName = organisation?.Name;
-            orgId = organisation?.Id;
+            OrganisationId = organisation?.Id;
         }
         catch (Exception orgApiException) when (orgApiException is CO.CDP.Organisation.WebApiClient.ApiException && ((CO.CDP.Organisation.WebApiClient.ApiException)orgApiException).StatusCode == 404)
         {
@@ -113,25 +127,34 @@ public class OrganisationInternationalIdentificationModel(ISession session,
             }
         }
 
-        if (OrganisationName != null && orgId != null)
-        {            
+        if (OrganisationName != null && OrganisationId != null)
+        {
             SessionContext.Set(Session.JoinOrganisationRequest,
-                        new JoinOrganisationRequestState { OrganisationId = orgId, OrganisationName = OrganisationName }
+                        new JoinOrganisationRequestState { OrganisationId = OrganisationId, OrganisationName = OrganisationName }
                         );
 
             flashMessageService.SetFlashMessage(
                 FlashMessageType.Important,
                 heading: StaticTextResource.OrganisationRegistration_CompanyHouseNumberQuestion_CompanyAlreadyRegistered_NotificationBanner,
-                urlParameters: new() { ["organisationIdentifier"] = orgId.Value.ToString() },
+                urlParameters: new() { ["organisationIdentifier"] = OrganisationId.Value.ToString() },
                 htmlParameters: new() { ["organisationName"] = OrganisationName }
             );
         }
 
         return Page();
+
+    }
+    private async Task<CO.CDP.Organisation.WebApiClient.Organisation> LookupOrganisationAsync()
+    {
+        return await organisationClient.LookupOrganisationAsync(string.Empty, Identifier);
     }
 
     private async Task<ICollection<EntityVerificationClient.Identifier>> LookupEntityVerificationAsync()
     {
-        return await pponClient.GetIdentifiersAsync(Identifier);
+        var result = await pponClient.GetIdentifiersAsync(Identifier);
+
+        OrganisationId = result.First().OrganisationId;
+
+        return result;
     }
 }
