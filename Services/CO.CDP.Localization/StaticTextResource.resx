@@ -2117,7 +2117,7 @@
     <value>Admin</value>
   </data>
   <data name="Support_Organisations_TableHeader_Status" xml:space="preserve">
-    <value>Status</value>
+    <value>Approval details</value>
   </data>
   <data name="Support_Organisations_TableHeader_DateApproved" xml:space="preserve">
     <value>Date Approved</value>
@@ -2197,6 +2197,18 @@
   <data name="Support_OrganisationApproval_ErrorMessage_Hint" xml:space="preserve">
     <value>For example, ‘You need to change the email address. The domain name in the organisation email address you gave us does not match the organisation name you want to register’.</value>
   </data>
+  <data name="Support_OrganisationApproval_NotABuyer" xml:space="preserve">
+    <value>No, they are not a buyer</value>
+  </data>
+  <data name="Support_OrganisationApproval_NotABuyerConvertToSupplier" xml:space="preserve">
+    <value>No, they are not a buyer. Make them a supplier</value>
+  </data>
+  <data name="Support_OrganisationApproval_NotABuyerConvertToSupplier_Warning" xml:space="preserve">
+    <value>You should only convert to a supplier once you have spoken to the organisation and they have agreed to be converted.</value>
+  </data>
+  <data name="Support_OrganisationApproval_InformationIsNotCorrect" xml:space="preserve">
+    <value>No, information is not correct</value>
+  </data>  
   <data name="Supplementary_CookieDetails_TableRow_Preferences" xml:space="preserve">
     <value>Stores the cookies accept / reject preference.</value>
   </data>

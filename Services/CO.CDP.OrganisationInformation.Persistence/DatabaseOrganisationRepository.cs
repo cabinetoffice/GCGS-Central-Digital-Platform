@@ -328,31 +328,38 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
     public async Task<IEnumerable<MouSignature>> GetMouSignatures(int organisationId)
     {
         return await context.MouSignature
-        .Where(x => x.OrganisationId == organisationId)
-        .Include(m => m.Mou)
-        .Include(p => p.CreatedBy)
-        .ToListAsync();
+            .Where(x => x.OrganisationId == organisationId)
+            .Include(m => m.Mou)
+            .Include(p => p.CreatedBy)
+            .ToListAsync();
     }
 
     public async Task<MouSignature?> GetMouSignature(int organisationId, Guid mouSignatureId)
     {
         return await context.MouSignature
-        .Where(x => x.OrganisationId == organisationId && x.SignatureGuid == mouSignatureId)
-        .Include(m => m.Mou)
-        .Include(p => p.CreatedBy)
-        .FirstOrDefaultAsync();
+            .Where(x => x.OrganisationId == organisationId && x.SignatureGuid == mouSignatureId)
+            .Include(m => m.Mou)
+            .Include(p => p.CreatedBy)
+            .FirstOrDefaultAsync();
     }
     public async Task<Mou?> GetLatestMou()
     {
         return await context.Mou
             .OrderByDescending(m => m.CreatedOn)
-        .FirstOrDefaultAsync();
+            .FirstOrDefaultAsync();
     }
 
     public async Task<Mou?> GetMou(Guid mouId)
     {
         return await context.Mou
-                .Where(m => m.Guid == mouId)
-        .FirstOrDefaultAsync();
+            .Where(m => m.Guid == mouId)
+            .FirstOrDefaultAsync();
+    }
+
+    public async Task RemoveMouSignatures(int organisationId)
+    {
+        await context.MouSignature
+            .Where(m => m.OrganisationId == organisationId)
+            .ExecuteDeleteAsync();
     }
 }
