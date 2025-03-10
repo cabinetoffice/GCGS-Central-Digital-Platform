@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!--
     Microsoft ResX Schema
@@ -3442,11 +3442,11 @@
   <data name="MoU_Summary_Title" xml:space="preserve">
     <value>Your data sharing agreement</value>
   </data>
-  <data name="MoU_Summary_TableHeaderCreatedOn" xml:space="preserve">
-    <value>Created on</value>
+  <data name="MoU_Summary_TableHeaderAgreedOn" xml:space="preserve">
+    <value>Agreed on</value>
   </data>
-  <data name="MoU_Summary_TableHeaderSignedBy" xml:space="preserve">
-    <value>Signed by</value>
+  <data name="MoU_Summary_TableHeaderAuthorisedBy" xml:space="preserve">
+    <value>Authorised by</value>
   </data>
   <data name="MoU_Summary_TableHeaderJobTitle" xml:space="preserve">
     <value>Job title</value>
@@ -3456,5 +3456,8 @@
   </data>
   <data name="MoU_Summary_DownloadAgreement" xml:space="preserve">
     <value>Download agreement</value>
+  </data>
+  <data name="MoU_Summary_TableHeaderSubmittedBy" xml:space="preserve">
+    <value>Submitted by</value>
   </data>
 </root>
