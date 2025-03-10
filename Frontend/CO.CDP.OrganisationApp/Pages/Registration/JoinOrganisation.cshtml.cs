@@ -98,6 +98,11 @@ public class JoinOrganisationModel(
                     SessionContext.Remove(Session.RegistrationDetailsKey);
                 }
             }
+            else
+            {
+                SessionContext.Remove(Session.JoinOrganisationRequest);
+                SessionContext.Remove(Session.RegistrationDetailsKey);
+            }
 
             return Redirect("/organisation-selection");
         }
