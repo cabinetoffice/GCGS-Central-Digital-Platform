@@ -94,6 +94,10 @@ public class AddUserModelTests
         var initialState = new PersonInviteState();
         _mockSession.Setup(s => s.Get<PersonInviteState>(PersonInviteState.TempDataKey)).Returns(initialState);
 
+        _mockOrganisationClient
+            .Setup(c => c.GetOrganisationPersonInvitesAsync(_addUserModel.Id))
+            .ReturnsAsync([]);
+
         var result = await _addUserModel.OnPost();
 
         _mockSession.Verify(s => s.Set(PersonInviteState.TempDataKey, It.Is<PersonInviteState>(state =>
@@ -107,6 +111,36 @@ public class AddUserModelTests
         var redirectResult = Assert.IsType<RedirectToPageResult>(result);
         Assert.Equal("UserCheckAnswers", redirectResult.PageName);
         Assert.Equal(_addUserModel.Id, redirectResult.RouteValues?["Id"]);
+    }
+
+    [Fact]
+    public async Task OnPost_ShouldReturnPageResultWithError_WhenPersonInviteAlreadyExists()
+    {
+        _addUserModel.FirstName = "John";
+        _addUserModel.LastName = "Johnson";
+        _addUserModel.Email = "john@johnson.com";
+        _addUserModel.Role = OrganisationPersonScopes.Editor;
+
+        var existingInvite = new PersonInviteModel(
+            email: "john@johnson.com",
+            expiresOn: DateTimeOffset.UtcNow.AddDays(7),
+            firstName: "John",
+            id: Guid.NewGuid(),
+            lastName: "Johnson",
+            scopes: new List<string> { OrganisationPersonScopes.Editor }
+        );
+
+        _mockSession.Setup(s => s.Get<PersonInviteState>(PersonInviteState.TempDataKey))
+            .Returns(new PersonInviteState());
+
+        _mockOrganisationClient
+            .Setup(c => c.GetOrganisationPersonInvitesAsync(_addUserModel.Id))
+            .ReturnsAsync(new List<PersonInviteModel> { existingInvite });
+
+        var result = await _addUserModel.OnPost();
+
+        Assert.IsType<PageResult>(result);
+        Assert.True(_addUserModel.ModelState.ContainsKey("PersonInviteAlreadyExists"));
     }
 
     [Fact]
