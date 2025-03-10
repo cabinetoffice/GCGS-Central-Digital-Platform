@@ -64,4 +64,5 @@ public interface IOrganisationRepository : IDisposable
     public Task<IEnumerable<Organisation>> FindByAdminEmail(string email, PartyRole? role, int? limit);
 
     public Task<IEnumerable<Organisation>> FindByOrganisationEmail(string email, PartyRole? role, int? limit);
+    Task RemoveMouSignatures(int organisationId);
 }

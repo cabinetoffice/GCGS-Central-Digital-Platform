@@ -56,10 +56,11 @@
         <th scope="col" colspan="1" class="govuk-table__header">@StaticTextResource.Support_Organisations_TableHeader_OrganisationName</th>
         <th scope="col" colspan="1" class="govuk-table__header">Emails</th>
         @{
+            <th scope="col" colspan="1" class="govuk-table__header">@StaticTextResource.Support_Organisations_TableHeader_Status</th>
+            <th scope="col" colspan="2" class="govuk-table__header">@StaticTextResource.Support_Organisations_TableHeader_Comments</th>
+
             if (Model.Type == "buyer")
             {
-                <th scope="col" colspan="1" class="govuk-table__header">@StaticTextResource.Support_Organisations_TableHeader_Status</th>
-                <th scope="col" colspan="2" class="govuk-table__header">@StaticTextResource.Support_Organisations_TableHeader_Comments</th>
                 <th scope="col" colspan="1" class="govuk-table__header"></th>
             }
         }
@@ -90,45 +91,53 @@
                     </ul>
                 </td>
                 @{
-                    if (Model.Type == "buyer")
-                    {
-                        var approval = org.Details?.Approval;
+                    var approval = org.Details?.Approval;
 
+                    if (approval != null)
+                    {
                         <td class="govuk-table__cell">
                             @{
-                                if (approval?.ApprovedOn == null)
+                                if (Model.Type == "buyer" && approval?.ApprovedOn == null)
                                 {
                                     <span>@StaticTextResource.Support_Organisations_Status_Pending</span>
                                 }
                                 else
                                 {
-                                    <span>@StaticTextResource.Support_Organisations_Status_Approved</span><br/>
+                                    if(Model.Type == "buyer") {
+                                        <span>@StaticTextResource.Support_Organisations_Status_Approved</span><br/>
+                                    }
+
                                     <span>@(approval?.ApprovedOn == null ? "N/A" : approval?.ApprovedOn)</span><br/>
                                     <span>@(approval?.ReviewedBy?.Name ?? "N/A")</span>
                                 }
                             }
                         </td>
-                        <td class="govuk-table__cell">
-                            @{
-                                if (approval?.Comment?.Length > 0)
-                                {
-                                    <details class="govuk-details">
-                                        <summary class="govuk-details__summary">
-                                            <span class="govuk-details__summary-text">
-                                                @StaticTextResource.Support_Organisations_TableHeader_Comments
-                                            </span>
-                                        </summary>
-                                        <div class="govuk-details__text">
-                                            @approval?.Comment
-                                        </div>
-                                    </details>
-                                }
-                                else
-                                {
-                                    <span>N/A</span>
-                                }
+                    }
+
+                    <td class="govuk-table__cell">
+                        @{
+                            if (approval?.Comment?.Length > 0)
+                            {
+                                <details class="govuk-details">
+                                    <summary class="govuk-details__summary">
+                                        <span class="govuk-details__summary-text">
+                                            @StaticTextResource.Support_Organisations_TableHeader_Comments
+                                        </span>
+                                    </summary>
+                                    <div class="govuk-details__text">
+                                        @approval?.Comment
+                                    </div>
+                                </details>
                             }
-                        </td>
+                            else
+                            {
+                                <span>N/A</span>
+                            }
+                        }
+                    </td>
+
+                    if (Model.Type == "buyer")
+                    {
                         <td class="govuk-table__cell">
                             @{
                                 if (@org.Details?.Approval?.ApprovedOn == null)
