@@ -319,7 +319,8 @@ public record UpdateJoinRequest
 [JsonConverter(typeof(JsonStringEnumConverter))]
 public enum SupportOrganisationUpdateType
 {
-    Review
+    Review,
+    ConvertPendingBuyerToSupplier,
 }
 
 public record SupportUpdateOrganisation
@@ -332,7 +333,7 @@ public record SupportUpdateOrganisation
 public record SupportOrganisationInfo
 {
     public required Guid ReviewedById { get; init; }
-    public required Boolean Approved { get; init; }
+    public Boolean? Approved { get; init; }
     public string? Comment { get; init; }
 }
 
