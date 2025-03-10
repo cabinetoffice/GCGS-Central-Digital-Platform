@@ -53,7 +53,17 @@ public class AddUserModel(
         PersonInviteStateData = session.Get<PersonInviteState>(PersonInviteState.TempDataKey) ?? null;
 
         var organisation = await organisationClient.GetOrganisationAsync(Id);
-        OrganisationRoles = organisation.Roles;
+
+        OrganisationRoles = new List<PartyRole>(organisation.Roles);
+
+        // Add only the roles from PendingRoles that are not already in OrganisationRoles
+        foreach (var role in organisation.PendingRoles)
+        {
+            if (!OrganisationRoles.Contains(role))
+            {
+                OrganisationRoles.Add(role);
+            }
+        }
 
         if (PersonInviteStateData != null)
         {
