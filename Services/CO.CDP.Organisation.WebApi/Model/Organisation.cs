@@ -27,8 +27,6 @@ public record Organisation
     /// <example>["supplier"]</example>
     public required List<PartyRole> Roles { get; init; }
 
-    public required List<PartyRole> PendingRoles { get; init; }
-
     public required Details Details { get; init; }
 }
 

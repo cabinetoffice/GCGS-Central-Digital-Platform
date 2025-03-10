@@ -57,7 +57,7 @@ public class AddUserModel(
         OrganisationRoles = new List<PartyRole>(organisation.Roles);
 
         // Add only the roles from PendingRoles that are not already in OrganisationRoles
-        foreach (var role in organisation.PendingRoles)
+        foreach (var role in organisation.Details.PendingRoles)
         {
             if (!OrganisationRoles.Contains(role))
             {
