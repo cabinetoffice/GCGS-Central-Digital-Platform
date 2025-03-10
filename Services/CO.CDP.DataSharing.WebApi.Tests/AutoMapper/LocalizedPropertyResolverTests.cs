@@ -35,7 +35,7 @@ namespace CO.CDP.DataSharing.WebApi.Tests.AutoMapper
                 Name = "Q1",
                 Title = "Title1",
                 Description = "Desc1",
-                Options = null!, // Testing null scenario if your domain allows it
+                Options = null!, 
                 Section = new FormSectionNonEf
                 {
                     Id = 10,
@@ -118,7 +118,6 @@ namespace CO.CDP.DataSharing.WebApi.Tests.AutoMapper
                     GroupName = "",
                     Hint = new FormQuestionChoiceHint
                     {
-                        // Fill in whichever fields your domain requires
                         Title = "",
                         Description = ""
                     }
@@ -173,8 +172,7 @@ namespace CO.CDP.DataSharing.WebApi.Tests.AutoMapper
                 Description = "Desc4",
                 Options = new FormQuestionOptions
                 {
-                    // no ChoiceProviderStrategy
-                    // no Choices
+                   
                 },
                 Section = new FormSectionNonEf
                 {
