@@ -81,7 +81,6 @@ public class AddUserModel(
 
         var personInvites = await organisationClient.GetOrganisationPersonInvitesAsync(Id);
 
-        // Person invite already exists
         if (personInvites.Any(invite => invite.Email.ToLower() == PersonInviteStateData.Email?.ToLower()))
         {
             ModelState.AddModelError("PersonInviteAlreadyExists", StaticTextResource.ErrorMessageList_DuplicatePersonEmail);
