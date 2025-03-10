@@ -5,6 +5,7 @@ using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using OrganisationType = CO.CDP.Organisation.WebApiClient.OrganisationType;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages.Users;
 
@@ -38,6 +39,10 @@ public class ChangePersonUserRoleTests
         _mockOrganisationClient
             .Setup(s => s.GetOrganisationPersonsAsync(mockPerson.Id))
             .ReturnsAsync(new List<CO.CDP.Organisation.WebApiClient.Person>() { mockPerson });
+
+        _mockOrganisationClient
+            .Setup(c => c.GetOrganisationAsync(_changeUserRoleModel.Id))
+            .ReturnsAsync(OrganisationClientModel(_changeUserRoleModel.Id));
 
         var result = await _changeUserRoleModel.OnGetPerson();
 
@@ -131,4 +136,17 @@ public class ChangePersonUserRoleTests
                                             Times.Once
                                         );
     }
+
+    private static CO.CDP.Organisation.WebApiClient.Organisation OrganisationClientModel(Guid id) =>
+        new(
+            additionalIdentifiers: [new Identifier(id: "FakeId", legalName: "FakeOrg", scheme: "VAT", uri: null)],
+            addresses: null,
+            contactPoint: new ContactPoint(email: "test@test.com", name: null, telephone: null, url: new Uri("https://xyz.com")),
+            id: id,
+            identifier: null,
+            name: "Test Org",
+            type: OrganisationType.Organisation,
+            roles: [PartyRole.Supplier],
+            details: new Details(approval: null, buyerInformation: null, pendingRoles: [], publicServiceMissionOrganization: null, scale: null, shelteredWorkshop: null, vcse: null)
+        );
 }

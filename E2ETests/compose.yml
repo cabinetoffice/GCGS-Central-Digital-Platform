@@ -1,0 +1,9 @@
+services:
+  e2e-tests:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: e2e_tests
+    volumes:
+      - .:/app
+    working_dir: /app

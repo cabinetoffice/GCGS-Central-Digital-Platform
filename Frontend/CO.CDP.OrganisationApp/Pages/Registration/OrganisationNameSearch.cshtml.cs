@@ -60,7 +60,23 @@ public class OrganisationNameSearchModel(ISession session, IOrganisationClient o
     private async Task FindMatchingOrgs()
     {
         OrganisationName = RegistrationDetails.OrganisationName;
-        MatchingOrganisations = await organisationClient.SearchOrganisationAsync(RegistrationDetails.OrganisationName, Constants.OrganisationType.Buyer.ToString(), 10, 0.3);
+
+        var existingOrg = await organisationClient.LookupOrganisationAsync(RegistrationDetails.OrganisationName, string.Empty);
+
+        if (existingOrg != null)
+        {
+            var orgSearchResult = new OrganisationSearchResult(existingOrg.Id,
+                existingOrg.Identifier,
+                existingOrg.Name,
+                existingOrg.Roles,
+                existingOrg.Type);
+
+            MatchingOrganisations = [orgSearchResult];
+        }
+        else
+        {
+            MatchingOrganisations = await organisationClient.SearchOrganisationAsync(RegistrationDetails.OrganisationName, Constants.OrganisationType.Buyer.ToString(), 10, 0.3);
+        }
     }
 
     public async Task<IActionResult> OnPost()

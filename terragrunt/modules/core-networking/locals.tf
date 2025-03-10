@@ -13,10 +13,10 @@ locals {
   waf_rule_sets_priority_blockers = {
     AWSManagedRulesAmazonIpReputationList : 4
     AWSManagedRulesKnownBadInputsRuleSet : 2
-    AWSManagedRulesSQLiRuleSet : 6
   }
 
   waf_rule_sets_priority_observers = {
+    AWSManagedRulesSQLiRuleSet : 6
     AWSManagedRulesAnonymousIpList : 8
   }
 
