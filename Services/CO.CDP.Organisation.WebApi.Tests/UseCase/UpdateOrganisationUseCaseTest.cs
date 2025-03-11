@@ -690,7 +690,7 @@ public class UpdateOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
         organisation.Roles.Distinct().Should().BeEquivalentTo(new[] { PartyRole.Tenderer });
 
         organisation.ReviewComment.Should().BeNullOrEmpty();
-        organisation.ReviewedBy.Should().BeNull();
+        organisation.ReviewedById.Should().BeNull();
         organisation.ApprovedOn.Should().BeNull();
 
         _notifyClient.Verify(n => n.SendEmail(It.IsAny<EmailNotificationRequest>()), Times.Once);
