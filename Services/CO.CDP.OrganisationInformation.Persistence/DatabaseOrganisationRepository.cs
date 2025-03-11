@@ -231,8 +231,8 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
                 o.review_comment,
                 reviewed_by.first_name AS reviewed_by_first_name,
                 reviewed_by.last_name AS reviewed_by_last_name,
-                COALESCE(STRING_AGG(i.scheme || ':' || i.identifier_id, ', '), '') AS identifiers,
-                COALESCE(STRING_AGG(cp.email, ', '), '') AS contact_points,
+                COALESCE(STRING_AGG(DISTINCT i.scheme || ':' || i.identifier_id, ', '), '') AS identifiers,
+                COALESCE(STRING_AGG(DISTINCT cp.email, ', '), '') AS contact_points,
                 p.email as admin_email
             FROM organisations o
             LEFT JOIN organisation_person op ON op.organisation_id = o.id
