@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!--
     Microsoft ResX Schema
@@ -2035,6 +2035,9 @@
   </data>
   <data name="Support_OrganisationApproval_NotABuyerConvertToSupplier_Warning" xml:space="preserve">
     <value>You should only convert to a supplier once you have spoken to the organisation and they have agreed to be converted.</value>
+  </data>
+  <data name="Support_OrganisationApproval_ConvertPendingBuyerToSupplier_FlashMessage" xml:space="preserve">
+    <value>Organisation changed from pending buyer to supplier</value>
   </data>
   <data name="Support_OrganisationApproval_InformationIsNotCorrect" xml:space="preserve">
     <value>No, information is not correct</value>
