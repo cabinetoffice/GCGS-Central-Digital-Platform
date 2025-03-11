@@ -331,7 +331,7 @@ public record SupportUpdateOrganisation
 public record SupportOrganisationInfo
 {
     public required Guid ReviewedById { get; init; }
-    public Boolean? Approved { get; init; }
+    public required Boolean Approved { get; init; }
     public string? Comment { get; init; }
 }
 
