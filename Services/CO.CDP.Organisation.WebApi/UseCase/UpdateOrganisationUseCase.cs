@@ -56,7 +56,7 @@ public class UpdateOrganisationUseCase(
 
                 organisation.ApprovedOn = null;
                 organisation.ReviewComment = null;
-                organisation.ReviewedBy = null;
+                organisation.ReviewedById = null;
 
                 organisation.BuyerInfo = new Persistence.BuyerInformation
                 {
