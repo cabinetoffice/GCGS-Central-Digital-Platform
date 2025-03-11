@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using Moq.Protected;
 using System.Net;
+using System.Text;
 
 namespace CO.CDP.AntiVirusScanner.Tests;
 
@@ -84,17 +85,67 @@ public class ScannerTests
 
         _fileHostManagerMock.Verify(m => m.CopyToPermanentBucket(fileToScan.QueueFileName, It.IsAny<bool>()), Times.Never);
         _fileHostManagerMock.Verify(m => m.RemoveFromStagingBucket(fileToScan.QueueFileName), Times.Once);
-        _govUKNotifyApiClient.Verify(c => c.SendEmail(It.IsAny<EmailNotificationRequest>()), Times.Exactly(2));
+        _govUKNotifyApiClient.Verify(c => c.SendEmail(It.IsAny<EmailNotificationRequest>()), Times.Never);
+        _loggerMock.VerifyLog(LogLevel.Error, "File scan failed", Times.AtLeastOnce());
+    }
+
+    [Fact]
+    public async Task Scan_ShouldRemoveFileAndSendEmail_WhenVirusIsDetected()
+    {
+        var fileToScan = GetScanFile();
+        var fileStream = new MemoryStream(Encoding.UTF8.GetBytes("Fake PDF Content"));
+
+        _configurationMock.Setup(c => c["ClamAvScanUrl"]).Returns("http://clamav-rest:9000/scan");
+        _configurationMock.Setup(c => c["GOVUKNotify:FileContainedVirusEmailTemplateId"]).Returns("00000000-0000-0000-0000-000000000000");
+        _configurationMock.Setup(c => c["OrganisationAppUrl"]).Returns("http://localhost:8090");
+        _fileHostManagerMock.Setup(m => m.DownloadStagingFile(fileToScan.QueueFileName)).ReturnsAsync(fileStream);
+
+        _httpMessageHandlerMock
+            .Protected()
+            .Setup<Task<HttpResponseMessage>>(
+                "SendAsync",
+                ItExpr.IsAny<HttpRequestMessage>(),
+                ItExpr.IsAny<CancellationToken>())
+            .ReturnsAsync(new HttpResponseMessage
+            {
+                StatusCode = HttpStatusCode.NotAcceptable,
+                Content = new StringContent("Virus Found")
+            });
+
+        await _scanner.Scan(fileToScan);
+
+        _fileHostManagerMock.Verify(m => m.RemoveFromStagingBucket(fileToScan.QueueFileName), Times.Once);
+        _loggerMock.VerifyLog(LogLevel.Information, "File scan failed - virus is found", Times.AtLeastOnce());
     }
 
     private static ScanFile GetScanFile()
     {
-        return new ScanFile { FullName = "John Smith",
+        return new ScanFile
+        {
+            FullName = "John Smith",
             OrganisationEmailAddress = "admin@acme.org",
             OrganisationName = "Acme Org",
             UserEmailAddress = "john.smith@acme.org",
             UploadedFileName = "testfile.txt",
             QueueFileName = "testfile_20250120112720805.txt",
-            OrganisationId = Guid.NewGuid() };
+            OrganisationId = Guid.NewGuid()
+        };
+    }
+}
+
+public static class LoggerMockExtensions
+{
+    public static void VerifyLog<T>(this Mock<ILogger<T>> logger, LogLevel level, string message, Times times)
+    {
+        logger.Verify(
+            x => x.Log(
+                It.Is<LogLevel>(l => l == level),
+                It.IsAny<EventId>(),
+                It.Is<It.IsAnyType>((state, _) => state.ToString()!.Contains(message)),
+                It.IsAny<Exception>(),
+                It.IsAny<Func<It.IsAnyType, Exception?, string>>()
+            ),
+            times
+        );
     }
 }

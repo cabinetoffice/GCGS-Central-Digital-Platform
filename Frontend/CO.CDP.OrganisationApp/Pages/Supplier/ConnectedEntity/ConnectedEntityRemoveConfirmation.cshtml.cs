@@ -9,9 +9,17 @@ using CO.CDP.Localization;
 
 namespace CO.CDP.OrganisationApp.Pages.Supplier.ConnectedEntity;
 
+public enum RemoveConnectedPersonReason
+{
+    None,
+    NoLongerConnected,
+    AddedInError,
+    NotRemoved
+}
+
 [Authorize(Policy = OrgScopeRequirement.Editor)]
 public class ConnectedEntityRemoveConfirmationModel(
-IOrganisationClient organisationClient) : PageModel
+    IOrganisationClient organisationClient) : PageModel
 {
     [BindProperty(SupportsGet = true)]
     public Guid Id { get; set; }
@@ -21,20 +29,20 @@ IOrganisationClient organisationClient) : PageModel
 
     [BindProperty]
     [Required(ErrorMessageResourceName = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityRemoveConfirmation_ConfirmRemoveError), ErrorMessageResourceType = typeof(StaticTextResource))]
-    public bool? ConfirmRemove { get; set; }
+    public RemoveConnectedPersonReason ConfirmRemove { get; set; }
 
     [BindProperty]
-    [RequiredIf("ConfirmRemove", true, ErrorMessageResourceName = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityRemoveConfirmation_DayRequiredError), ErrorMessageResourceType = typeof(StaticTextResource))]
+    [RequiredIf("ConfirmRemove", RemoveConnectedPersonReason.NoLongerConnected, ErrorMessageResourceName = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityRemoveConfirmation_DayRequiredError), ErrorMessageResourceType = typeof(StaticTextResource))]
     [RegularExpression(RegExPatterns.Day, ErrorMessageResourceName = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityRemoveConfirmation_DayInvalidError), ErrorMessageResourceType = typeof(StaticTextResource))]
     public string? EndDay { get; set; }
 
     [BindProperty]
-    [RequiredIf("ConfirmRemove", true, ErrorMessageResourceName = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityRemoveConfirmation_MonthRequiredError), ErrorMessageResourceType = typeof(StaticTextResource))]
+    [RequiredIf("ConfirmRemove", RemoveConnectedPersonReason.NoLongerConnected, ErrorMessageResourceName = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityRemoveConfirmation_MonthRequiredError), ErrorMessageResourceType = typeof(StaticTextResource))]
     [RegularExpression(RegExPatterns.Month, ErrorMessageResourceName = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityRemoveConfirmation_MonthInvalidError), ErrorMessageResourceType = typeof(StaticTextResource))]
     public string? EndMonth { get; set; }
 
     [BindProperty]
-    [RequiredIf("ConfirmRemove", true, ErrorMessageResourceName = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityRemoveConfirmation_YearRequiredError), ErrorMessageResourceType = typeof(StaticTextResource))]
+    [RequiredIf("ConfirmRemove", RemoveConnectedPersonReason.NoLongerConnected, ErrorMessageResourceName = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityRemoveConfirmation_YearRequiredError), ErrorMessageResourceType = typeof(StaticTextResource))]
     [RegularExpression(RegExPatterns.Year, ErrorMessageResourceName = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityRemoveConfirmation_YearInvalidError), ErrorMessageResourceType = typeof(StaticTextResource))]
     public string? EndYear { get; set; }
 
@@ -57,7 +65,7 @@ IOrganisationClient organisationClient) : PageModel
             return Page();
         }
 
-        if (ConfirmRemove == true)
+        if (ConfirmRemove == RemoveConnectedPersonReason.NoLongerConnected)
         {
             var ce = await GetConnectedEntity(organisationClient);
             if (ce == null)
@@ -72,6 +80,10 @@ IOrganisationClient organisationClient) : PageModel
             }
             endDate = endDate.AddHours(23).AddMinutes(59).AddSeconds(59).ToUniversalTime();
             await organisationClient.DeleteConnectedEntityAsync(Id, ConnectedPersonId, new DeleteConnectedEntity(endDate));
+        }
+        else if (ConfirmRemove == RemoveConnectedPersonReason.AddedInError)
+        {
+            await organisationClient.DeleteConnectedEntityAsync(Id, ConnectedPersonId, new DeleteConnectedEntity(DateTime.Now.ToUniversalTime()));
         }
 
         return RedirectToPage("ConnectedPersonSummary", new { Id });

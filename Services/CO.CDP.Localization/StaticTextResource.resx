@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!--
     Microsoft ResX Schema
@@ -723,6 +723,15 @@
   <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswers_OnDate" xml:space="preserve">
     <value>On {0}</value>
   </data>
+  <data name="Supplier_ConnectedEntity_Remove_Yes_No_Longer_Connected" xml:space="preserve">
+    <value>Yes, they are no longer connected</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_Hint" xml:space="preserve">
+    <value>You will need to create a new share code and file to share the new information</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_Remove_Yes_Added_In_Error" xml:space="preserve">
+    <value>Yes, I added them in error</value>
+  </data>
   <data name="Global_Submit" xml:space="preserve">
     <value>Submit</value>
   </data>
@@ -1033,10 +1042,10 @@
     <value>Are you sure you want to remove this connected person?</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityRemoveConfirmation_ConfirmRemoveError" xml:space="preserve">
-    <value>Select yes to confirm removal of the connected person</value>
+    <value>Select Yes / Yes, I added them in error to confirm removal of the connected person</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityRemoveConfirmation_EndDateLabel" xml:space="preserve">
-    <value>When was the connected person no longer associated with your organisation?</value>
+    <value>When did the connected person stop being associated with your organisation?</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityRemoveConfirmation_EndDateHint" xml:space="preserve">
     <value>For example, 27 3 2007</value>
@@ -2827,11 +2836,11 @@
   <data name="SupplierToBuyer_SelectDevolvedRegulation_Scotland" xml:space="preserve">
     <value>Scotland</value>
   </data>
-  <data name="SupplierToBuyer_SelectDevolvedRegulation_SelectAllThatApply" xml:space="preserve">
-    <value>Select all that apply</value>
+  <data name="SupplierToBuyer_SelectDevolvedRegulation_Hint" xml:space="preserve">
+    <value>Read the &lt;a href="https://www.gov.uk/government/publications/procurement-act-2023-guidance-documents-plan-phase/guidance-devolved-contracting-authorities-html#:~:text=Procurement%20is%20largely%20a%20devolved,are%20conducted%20and%20contracts%20managed." target="_blank"&gt;devolved contracting authorities guidance (opens in new tab). &lt;/a&gt;</value>
   </data>
   <data name="SupplierToBuyer_SelectDevolvedRegulation_Title" xml:space="preserve">
-    <value>Which devolved regulations apply?</value>
+    <value>Select which devolved nation regulations apply</value>
   </data>
   <data name="SupplierToBuyer_SelectDevolvedRegulation_Wales" xml:space="preserve">
     <value>Wales</value>
