@@ -143,14 +143,18 @@ public class OrganisationApprovalModelTests
     [Fact]
     public async Task OnPost_WhenBuyerIsConvertedToSupplier_ShouldConvertToSupplierAndRedirectToOrganisationsPage()
     {
-        var organisationId = Guid.NewGuid();
+        var organisation = GivenOrganisation();
         _organisationApprovalModel.Approval = ApprovalStates.ConvertToSupplier;
 
         _mockOrganisationClient
             .Setup(client => client.SupportUpdateOrganisationAsync(It.IsAny<Guid>(), It.IsAny<SupportUpdateOrganisation>()))
             .ReturnsAsync(true);
 
-        var result = await _organisationApprovalModel.OnPost(organisationId);
+        _mockOrganisationClient
+            .Setup(client => client.GetOrganisationAsync(organisation.Id))
+            .ReturnsAsync(organisation);
+
+        var result = await _organisationApprovalModel.OnPost(organisation.Id);
 
         result.Should().BeOfType<RedirectToPageResult>();
         var redirectToPageResult = result as RedirectToPageResult;
