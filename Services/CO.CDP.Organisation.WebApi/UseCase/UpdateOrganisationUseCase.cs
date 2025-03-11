@@ -54,7 +54,11 @@ public class UpdateOrganisationUseCase(
                     throw new InvalidUpdateOrganisationCommand.MissingBuyerInformation();
                 }
 
-                organisation.BuyerInfo = new OrganisationInformation.Persistence.BuyerInformation
+                organisation.ApprovedOn = null;
+                organisation.ReviewComment = null;
+                organisation.ReviewedBy = null;
+
+                organisation.BuyerInfo = new Persistence.BuyerInformation
                 {
                     BuyerType = updateObject.BuyerInformation.BuyerType,
                     DevolvedRegulations = updateObject.BuyerInformation.DevolvedRegulations,
