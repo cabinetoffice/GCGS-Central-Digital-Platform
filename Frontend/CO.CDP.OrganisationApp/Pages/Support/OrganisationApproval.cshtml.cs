@@ -99,9 +99,10 @@ public class OrganisationApprovalModel(
 
     public async Task<IActionResult> OnPost(Guid organisationId)
     {
+        OrganisationDetails = await organisationClient.GetOrganisationAsync(organisationId);
+
         if (!ModelState.IsValid)
-        {
-            OrganisationDetails = await organisationClient.GetOrganisationAsync(organisationId);
+        {            
             return Page();
         }
 
@@ -119,6 +120,12 @@ public class OrganisationApprovalModel(
                         ),
                         SupportOrganisationUpdateType.ConvertPendingBuyerToSupplier
                     ));
+
+                    flashMessageService.SetFlashMessage(
+                        FlashMessageType.Success,
+                        heading: StaticTextResource.Support_OrganisationApproval_ConvertPendingBuyerToSupplier_FlashMessage,
+                        htmlParameters: new() { ["organisationName"] = OrganisationDetails.Name }
+                    );
 
                     break;
                 default:
