@@ -95,12 +95,7 @@ public class OrganisationNameSearchModel(ISession session, IOrganisationClient o
         if (!ModelState.IsValid)
         {
             return Page();
-        }
-
-        if (!string.IsNullOrEmpty(OrganisationIdentifier) && OrganisationIdentifier != "None")
-        {
-            return Redirect($"/registration/{Uri.EscapeDataString(OrganisationIdentifier)}/join-organisation");
-        }
+        }        
 
         if (RedirectToSummary == true)
         {

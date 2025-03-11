@@ -172,19 +172,6 @@ public class OrganisationNameSearchModelTests
         model.MatchingOrganisations.Should().HaveCount(2);
     }
 
-
-    [Fact]
-    public async Task OnPost_WhenOrganisationIdentifierIsValid_ShouldRedirectToJoinOrganisation()
-    {
-        var model = GivenOrganisationNameSearchModel();
-        model.OrganisationIdentifier = "scheme:123";
-
-        var result = await model.OnPost();
-
-        result.Should().BeOfType<RedirectResult>()
-            .Which.Url.Should().Be("/registration/scheme%3A123/join-organisation");
-    }
-
     [Fact]
     public async Task OnPost_WhenRedirectToSummaryIsTrue_ShouldRedirectToOrganisationDetailsSummary()
     {
