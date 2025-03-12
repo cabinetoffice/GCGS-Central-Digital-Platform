@@ -268,7 +268,7 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
         var result = context.ConnectedEntities
             .Include(x => x.IndividualOrTrust)
             .Where(x => x.IndividualOrTrust != null && x.EntityType == ConnectedEntity.ConnectedEntityType.Individual)
-            .Where(x => x.EndDate == null || x.EndDate > DateTime.UtcNow)
+            .Where(x => x.EndDate == null || x.EndDate > DateTime.Today)
             .Where(x => x.SupplierOrganisation != null && x.SupplierOrganisation.Id == organisationId);
 
         return await result.AsSingleQuery().ToListAsync();
@@ -279,7 +279,7 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
         var result = context.ConnectedEntities
             .Include(x => x.Organisation)
             .Where(x => x.Organisation != null && x.EntityType == ConnectedEntity.ConnectedEntityType.Organisation)
-            .Where(x => x.EndDate == null || x.EndDate > DateTime.UtcNow)
+            .Where(x => x.EndDate == null || x.EndDate > DateTime.Today)
             .Where(x => x.SupplierOrganisation != null && x.SupplierOrganisation.Id == organisationId);
 
         return await result.AsSingleQuery().ToListAsync();
@@ -290,7 +290,7 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
         var result = context.ConnectedEntities
             .Include(x => x.IndividualOrTrust)
             .Where(x => x.IndividualOrTrust != null && x.EntityType == ConnectedEntity.ConnectedEntityType.TrustOrTrustee)
-            .Where(x => x.EndDate == null || x.EndDate > DateTime.UtcNow)
+            .Where(x => x.EndDate == null || x.EndDate > DateTime.Today)
             .Where(x => x.SupplierOrganisation != null && x.SupplierOrganisation.Id == organisationId);
 
         return await result.AsSingleQuery().ToListAsync();
