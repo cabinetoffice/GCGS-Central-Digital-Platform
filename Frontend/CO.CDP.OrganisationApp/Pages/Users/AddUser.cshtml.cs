@@ -48,6 +48,8 @@ public class AddUserModel(
 
     public ICollection<PartyRole> OrganisationRoles = [];
 
+    public ICollection<JoinRequestLookUp> PendingJoinRequests = [];
+
     public async Task<IActionResult> OnGet()
     {
         PersonInviteStateData = session.Get<PersonInviteState>(PersonInviteState.TempDataKey) ?? null;
@@ -88,6 +90,16 @@ public class AddUserModel(
         PersonInviteStateData = UpdateFields(PersonInviteStateData);
 
         PersonInviteStateData = UpdateScopes(PersonInviteStateData);
+
+        var pendingJoinRequests = await organisationClient.GetOrganisationJoinRequestsAsync(Id, OrganisationJoinRequestStatus.Pending);
+
+        if (pendingJoinRequests.Any(joinRequest =>
+                joinRequest.Person.Email.ToLower() == PersonInviteStateData.Email?.ToLower()))
+        {
+            PendingJoinRequests = pendingJoinRequests;
+
+            return Page();
+        }
 
         session.Set(PersonInviteState.TempDataKey, PersonInviteStateData);
 
