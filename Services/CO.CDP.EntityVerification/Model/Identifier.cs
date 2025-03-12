@@ -13,4 +13,6 @@ public record Identifier
 
     /// <example>"https://cdp.cabinetoffice.gov.uk/organisations/5a360be7-e1d3-4214-9f72-0e1d6b57b85d"</example>
     public Uri? Uri { get; init; }
+
+    public Guid? OrganisationId { get; init; }
 }

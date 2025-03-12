@@ -1,25 +1,38 @@
 using CO.CDP.Organisation.WebApiClient;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using OrganisationWebApiClient = CO.CDP.Organisation.WebApiClient;
 
 namespace CO.CDP.OrganisationApp.Pages.Registration;
 
-public class JoinOrganisationSuccessModel(
-    IOrganisationClient organisationClient) : PageModel
+public class JoinOrganisationSuccessModel(ISession session) : PageModel
 {
-    public OrganisationWebApiClient.Organisation? OrganisationDetails { get; set; }
+    public string? OrganisationName { get; set; }
 
-    public async Task<IActionResult> OnGet(string identifier)
+    [BindProperty(SupportsGet = true)]
+    public Guid Id { get; set; }
+
+    public IActionResult OnGet()
     {
         try
         {
-            OrganisationDetails = await organisationClient.LookupOrganisationAsync(string.Empty, $"{identifier}");
+            var jor = session.Get<JoinOrganisationRequestState>(Session.JoinOrganisationRequest);
+
+            if (jor == null || jor.OrganisationId != Id)
+            {
+                return Redirect("/organisation-selection");
+            }
+
+            OrganisationName = jor.OrganisationName;
+
             return Page();
         }
         catch (ApiException ex) when (ex.StatusCode == 404)
         {
             return Redirect("/page-not-found");
+        }
+        finally
+        {
+            session.Remove(Session.JoinOrganisationRequest);
         }
     }
 }

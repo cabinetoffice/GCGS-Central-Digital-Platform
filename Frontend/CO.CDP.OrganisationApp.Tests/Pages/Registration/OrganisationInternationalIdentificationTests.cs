@@ -1,11 +1,11 @@
-using Moq;
+using CO.CDP.EntityVerificationClient;
+using CO.CDP.Localization;
+using CO.CDP.Organisation.WebApiClient;
+using CO.CDP.OrganisationApp.Pages.Registration;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using CO.CDP.OrganisationApp.Pages.Registration;
-using CO.CDP.EntityVerificationClient;
-using CO.CDP.Organisation.WebApiClient;
-using CO.CDP.Localization;
+using Moq;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages.Registration;
 
@@ -112,6 +112,7 @@ public class OrganisationInternationalIdentificationTests
         var model = CreateModel();
         model.Identifier = "ABC:123";
         model.OrganisationName = "Test Organisation";
+        model.OrganisationScheme = "ABC";
 
         _organisationClientMock
             .Setup(o => o.LookupOrganisationAsync(It.IsAny<string>(), It.IsAny<string>()))
@@ -124,7 +125,7 @@ public class OrganisationInternationalIdentificationTests
             StaticTextResource.OrganisationRegistration_CompanyHouseNumberQuestion_CompanyAlreadyRegistered_NotificationBanner,
             null,
             null,
-            It.Is<Dictionary<string, string>>(d => d["organisationIdentifier"] == model.Identifier),
+            It.Is<Dictionary<string, string>>(d => d["organisationIdentifier"] == _organisationId.ToString()),
             It.Is<Dictionary<string, string>>(d => d["organisationName"] == model.OrganisationName)
         ),
         Times.Once);

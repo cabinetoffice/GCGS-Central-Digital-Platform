@@ -2,12 +2,10 @@ using CO.CDP.EntityVerificationClient;
 using CO.CDP.Localization;
 using CO.CDP.Mvc.Validation;
 using CO.CDP.Organisation.WebApiClient;
-using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Net;
 
 namespace CO.CDP.OrganisationApp.Pages.Registration;
 
@@ -116,6 +114,8 @@ public class OrganisationIdentificationModel(ISession session,
 
     public string? OrganisationName;
 
+    public Guid? OrganisationId { get; set; }
+
     public void OnGet()
     {
         OrganisationScheme = RegistrationDetails.OrganisationScheme;
@@ -182,11 +182,18 @@ public class OrganisationIdentificationModel(ISession session,
 
         Identifier = $"{OrganisationScheme}:{RegistrationDetails.OrganisationIdentificationNumber}";
 
+        if (RegistrationDetails.OrganisationScheme == "Other")
+        {
+            SessionContext.Set(Session.RegistrationDetailsKey, RegistrationDetails);
+            return RedirectToPage(RedirectToSummary == true ? "OrganisationDetailsSummary" : "OrganisationName");
+        }
+
         try
         {
             SessionContext.Set(Session.RegistrationDetailsKey, RegistrationDetails);
             var organisation = await LookupOrganisationAsync();
             OrganisationName = organisation?.Name;
+            OrganisationId = organisation?.Id;
         }
         catch (Exception orgApiException) when (orgApiException is CO.CDP.Organisation.WebApiClient.ApiException && ((CO.CDP.Organisation.WebApiClient.ApiException)orgApiException).StatusCode == 404)
         {
@@ -196,14 +203,7 @@ public class OrganisationIdentificationModel(ISession session,
             }
             catch (Exception evApiException) when (evApiException is EntityVerificationClient.ApiException eve && eve.StatusCode == 404)
             {
-                if (RedirectToSummary == true)
-                {
-                    return RedirectToPage("OrganisationDetailsSummary");
-                }
-                else
-                {
-                    return RedirectToPage("OrganisationName");
-                }
+                return RedirectToPage(RedirectToSummary == true ? "OrganisationDetailsSummary" : "OrganisationName");
             }
             catch
             {
@@ -211,17 +211,22 @@ public class OrganisationIdentificationModel(ISession session,
             }
         }
 
-        if (OrganisationName != null)
+        if (OrganisationName != null && OrganisationId != null)
         {
+            SessionContext.Set(Session.JoinOrganisationRequest,
+                    new JoinOrganisationRequestState { OrganisationId = OrganisationId, OrganisationName = OrganisationName }
+                    );
+
             flashMessageService.SetFlashMessage(
                 FlashMessageType.Important,
                 heading: "An organisation with this registration number already exists. Change the registration number or <a class='govuk-notification-banner__link' href='/registration/{identifier}/join-organisation'>request to join {organisationName}.</a>",
-                urlParameters: new() { ["identifier"] = Identifier },
+                urlParameters: new() { ["identifier"] = OrganisationId.Value.ToString() },
                 htmlParameters: new() { ["organisationName"] = OrganisationName }
             );
         }
 
         return Page();
+
     }
 
     private async Task<CO.CDP.Organisation.WebApiClient.Organisation> LookupOrganisationAsync()
@@ -231,6 +236,10 @@ public class OrganisationIdentificationModel(ISession session,
 
     private async Task<ICollection<EntityVerificationClient.Identifier>> LookupEntityVerificationAsync()
     {
-        return await pponClient.GetIdentifiersAsync(Identifier);
+        var result = await pponClient.GetIdentifiersAsync(Identifier);
+
+        OrganisationId = result.First().OrganisationId;
+
+        return result;
     }
 }
