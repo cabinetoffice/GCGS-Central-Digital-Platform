@@ -110,6 +110,33 @@ public class AddUserModelTests
     }
 
     [Fact]
+    public async Task OnPost_ShouldReturnPageResult_WhenPendingJoinRequestExists()
+    {
+        _addUserModel.FirstName = "John";
+        _addUserModel.LastName = "Johnson";
+        _addUserModel.Email = "john@johnson.com";
+        _addUserModel.Role = OrganisationPersonScopes.Editor;
+
+        var person = new CDP.Organisation.WebApiClient.Person(id: Guid.NewGuid(), email: _addUserModel.Email,
+            scopes: [_addUserModel.Role], firstName: _addUserModel.FirstName, lastName: _addUserModel.LastName);
+
+        var pendingJoinRequest = new JoinRequestLookUp(id: Guid.NewGuid(), person: person, OrganisationJoinRequestStatus.Pending);
+
+        _mockSession.Setup(s => s.Get<PersonInviteState>(PersonInviteState.TempDataKey))
+            .Returns(new PersonInviteState());
+
+        _mockOrganisationClient
+            .Setup(c => c.GetOrganisationJoinRequestsAsync(_addUserModel.Id, OrganisationJoinRequestStatus.Pending))
+            .ReturnsAsync(new List<JoinRequestLookUp> { pendingJoinRequest });
+
+        var result = await _addUserModel.OnPost();
+
+        Assert.IsType<PageResult>(result);
+        Assert.Single(_addUserModel.PendingJoinRequests);
+        Assert.Equal("john@johnson.com", _addUserModel.PendingJoinRequests.First().Person.Email);
+    }
+
+    [Fact]
     public void UpdateFields_ShouldUpdateAllFields_WhenFieldsAreNotEmpty()
     {
         _addUserModel.FirstName = "John";
