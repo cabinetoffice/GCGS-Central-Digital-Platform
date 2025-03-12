@@ -29,12 +29,12 @@ build-docker: ## Build Docker images
 	@docker compose build --build-arg VERSION=$(VERSION)
 .PHONY: build-docker
 
-up: compose.override.yml ## Start Docker containers
+up: render-compose-override ## Start Docker containers
 	@docker compose up -d
 	@docker compose ps
 .PHONY: up
 
-verify-up: compose.override.yml ## Verify if all Docker containers have run
+verify-up: render-compose-override ## Verify if all Docker containers have run
 	@timeout=60; \
 	interval=5; \
 	while [ $$timeout -gt 0 ]; do \
@@ -65,16 +65,16 @@ ps: ## Show Docker container status
 	@docker compose ps
 .PHONY: ps
 
-db: compose.override.yml ## Start DB and DB migration services
+db: render-compose-override ## Start DB and DB migration services
 	@docker compose up -d db
 	@docker compose up organisation-information-migrations entity-verification-migrations --abort-on-container-failure
 .PHONY: db
 
-localstack: compose.override.yml ## Start the localstack service for AWS services available locally
+localstack: render-compose-override ## Start the localstack service for AWS services available locally
 	@docker compose up -d localstack
 .PHONY: localstack
 
-redis: compose.override.yml ## Start the redis service
+redis: render-compose-override ## Start the redis service
 	@docker compose up -d redis
 .PHONY: redis
 
@@ -87,9 +87,6 @@ OpenAPI: build ## Create OpenAPI folder and copy relevant files in
 	cp ./Services/CO.CDP.Person.WebApi/OpenAPI/CO.CDP.Person.WebApi.json $(OPENAPI_DIR)/Person.json
 	cp ./Services/CO.CDP.Forms.WebApi/OpenAPI/CO.CDP.Forms.WebApi.json $(OPENAPI_DIR)/Forms.json
 	cp ./Services/CO.CDP.EntityVerification/OpenAPI/CO.CDP.EntityVerification.json $(OPENAPI_DIR)/EntityVerification.json
-
-compose.override.yml:
-	cp compose.override.yml.template compose.override.yml
 
 generate-authority-keys: ## Generate authority's private key and store in ./terragrunt/secrets/ folder
 	openssl genpkey -algorithm RSA -out ./terragrunt/secrets/authority-private-key.pem -pkeyopt rsa_keygen_bits:2048
@@ -133,6 +130,12 @@ localization-import-from-csv:
 	python3 $(LOCALIZATION_PATH)/scripts/import_csv_to_resx.py $(LOCALIZATION_PATH)/csv-files/FormsEngineResource.csv $(LOCALIZATION_PATH)/scripts/template.xml $(LOCALIZATION_PATH)/FormsEngineResource.resx $(LOCALIZATION_PATH)/FormsEngineResource.cy.resx
 .PHONY: localization-import-from-csv
 
+render-compose-override: ## Render compose override from template and inject secrets (WIP)
+	cp compose.override.yml.template compose.override.yml
+	docker compose ls
+.PHONY: render-compose-override
+
 e2e-test: up ## Build & run e2e tests in Docker
-	@cd E2ETests && docker compose up --build -d
+	docker network ls
+	@cd E2ETests && docker compose up --build
 .PHONY: make-e2e
