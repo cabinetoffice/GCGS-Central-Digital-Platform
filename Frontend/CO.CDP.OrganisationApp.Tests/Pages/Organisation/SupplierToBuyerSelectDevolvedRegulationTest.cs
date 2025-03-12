@@ -1,4 +1,4 @@
-using CO.CDP.OrganisationApp.Constants;
+using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.Pages.Organisation;
 using FluentAssertions;
@@ -9,76 +9,147 @@ using Moq;
 namespace CO.CDP.OrganisationApp.Tests.Pages.Organisation;
 public class SupplierToBuyerSelectDevolvedRegulationTest
 {
-    private readonly Mock<ITempDataService> tempDataServiceMock;
+    private readonly Mock<IOrganisationClient> _organisationClientMock;
+    private readonly Mock<ITempDataService> _tempDataServiceMock;
     private readonly SupplierToBuyerSelectDevolvedRegulationModel _model;
-    private readonly Guid orgGuid = Guid.NewGuid();
+    private static readonly Guid _orgGuid = Guid.NewGuid();
 
     public SupplierToBuyerSelectDevolvedRegulationTest()
     {
-        tempDataServiceMock = new Mock<ITempDataService>();
-        _model = new SupplierToBuyerSelectDevolvedRegulationModel(tempDataServiceMock.Object)
+        _tempDataServiceMock = new Mock<ITempDataService>();
+        _organisationClientMock = new Mock<IOrganisationClient>();
+        _model = new SupplierToBuyerSelectDevolvedRegulationModel(_organisationClientMock.Object, _tempDataServiceMock.Object)
         {
-            Id = orgGuid,
-            Regulations = new List<DevolvedRegulation>()
+            Id = _orgGuid,
+            Regulations = new List<Constants.DevolvedRegulation>()
         };
     }
 
-    [Fact]
-    public void OnGet_ShouldLoadRegulationsFromTempData()
+    [Theory]
+    [InlineData(new[] { PartyRole.Buyer }, new PartyRole[] { })]  // Organisation is a Buyer
+    [InlineData(new PartyRole[] { }, new[] { PartyRole.Buyer })]  // Organisation is a Pending Buyer    
+    public async Task OnGetAsync_ShouldSetRegulations_WhenOrganisationIsBuyer(PartyRole[]? partyRoles, PartyRole[]? pendingRoles)
     {
-        var state = new SupplierToBuyerDetails
-        {
-            Regulations = new List<DevolvedRegulation> { DevolvedRegulation.Scotland, DevolvedRegulation.Wales }
-        };
-        tempDataServiceMock
-            .Setup(t => t.PeekOrDefault<SupplierToBuyerDetails>(It.IsAny<string>()))
-            .Returns(state);
+        _organisationClientMock.Setup(c => c.GetOrganisationAsync(It.IsAny<Guid>()))
+            .ReturnsAsync(GivenOrganisationClientModel(partyRoles, pendingRoles));
 
-        var result = _model.OnGet();
+        var result = await _model.OnGetAsync();
 
         result.Should().BeOfType<PageResult>();
-        _model.Regulations.Should().BeEquivalentTo(new List<DevolvedRegulation> { DevolvedRegulation.Scotland, DevolvedRegulation.Wales });
+        _model.Regulations.Should().NotBeNull().And.HaveCount(1);
+    }
+
+    [Theory]
+    [InlineData(new[] { PartyRole.Supplier }, new PartyRole[] { })]
+    [InlineData(new PartyRole[] { }, new PartyRole[] { })]
+    public async Task OnGetAsync_ShouldPopulateRegulations_FromTempData_WhenOrganisationIsNotBuyer(PartyRole[]? partyRoles, PartyRole[]? pendingRoles)
+    {
+        var expectedRegulations = new List<Constants.DevolvedRegulation> { Constants.DevolvedRegulation.Wales };
+        var tempDataState = new SupplierToBuyerDetails { Regulations = expectedRegulations };
+
+        var organisation = GivenOrganisationClientModel(partyRoles, pendingRoles);
+        _organisationClientMock.Setup(c => c.GetOrganisationAsync(It.IsAny<Guid>()))
+            .ReturnsAsync(organisation);
+
+        _tempDataServiceMock.Setup(x => x.PeekOrDefault<SupplierToBuyerDetails>($"Supplier_To_Buyer_{organisation.Id}_Answers")).Returns(tempDataState);
+
+        _model.Id = organisation.Id;
+
+        var result = await _model.OnGetAsync();
+
+        result.Should().BeOfType<PageResult>();
+        _model.Regulations.Should().BeEquivalentTo(expectedRegulations);
+        _tempDataServiceMock.Verify(t => t.PeekOrDefault<SupplierToBuyerDetails>($"Supplier_To_Buyer_{organisation.Id}_Answers"), Times.Once);
     }
 
     [Fact]
-    public void OnGet_ShouldSetRegulationsToEmpty_WhenStateIsNotAvailable()
+    public async Task OnPost_ShouldReturnPage_WhenModelStateIsInvalid()
     {
-        tempDataServiceMock
+        _model.ModelState.AddModelError("Regulations", "Required");
+
+        var result = await _model.OnPostAsync();
+
+        result.Should().BeOfType<PageResult>();
+    }
+
+    [Fact]
+    public async Task OnGet_ShouldSetRegulationsToEmpty_WhenStateIsNotAvailable()
+    {
+        var organisation = GivenOrganisationClientModel([], []);
+        _organisationClientMock.Setup(c => c.GetOrganisationAsync(It.IsAny<Guid>()))
+            .ReturnsAsync(organisation);
+
+        _tempDataServiceMock
          .Setup(td => td.PeekOrDefault<SupplierToBuyerDetails>(It.IsAny<string>()))
          .Returns(new SupplierToBuyerDetails());
 
-        var result = _model.OnGet();
+        var result = await _model.OnGetAsync();
 
         result.Should().BeOfType<PageResult>();
         _model.Regulations.Should().BeEmpty();
     }
 
     [Fact]
-    public void OnPost_ShouldUpdateStateAndRedirectToSummary()
+    public async Task OnPostAsync_ShouldUpdateBuyerRegulations_WhenOrganisationIsBuyer()
     {
-        _model.Regulations = new List<DevolvedRegulation> { DevolvedRegulation.Scotland };
+        var organisation = GivenOrganisationClientModel([PartyRole.Buyer], []);
+        _model.Id = organisation.Id;
+        _model.Regulations = new List<Constants.DevolvedRegulation> { Constants.DevolvedRegulation.Scotland };
 
-        var state = new SupplierToBuyerDetails();
-        tempDataServiceMock
-            .Setup(t => t.PeekOrDefault<SupplierToBuyerDetails>(It.IsAny<string>()))
-            .Returns(state);
+        _organisationClientMock.Setup(x => x.GetOrganisationAsync(organisation.Id)).ReturnsAsync(organisation);
 
-        var result = _model.OnPost();
+        var result = await _model.OnPostAsync();
 
-        tempDataServiceMock.Verify(t => t.Put(It.IsAny<string>(), It.Is<SupplierToBuyerDetails>(s => s.Regulations.SequenceEqual(new List<DevolvedRegulation> { DevolvedRegulation.Scotland }))), Times.Once);
+        _organisationClientMock.Verify(o => o.UpdateBuyerInformationAsync(
+                                                organisation.Id,
+                                                It.Is<UpdateBuyerInformation>(u => u.Type == BuyerInformationUpdateType.DevolvedRegulation))
+        , Times.Once);
 
-        var redirectResult = result.Should().BeOfType<RedirectToPageResult>().Subject;
-        redirectResult.PageName.Should().Be("SupplierToBuyerOrganisationDetailsSummary");
-        redirectResult.RouteValues.Should().ContainKey("Id").WhoseValue.Should().Be(orgGuid);
+        result.Should().BeOfType<RedirectToPageResult>()
+            .Which.PageName.Should().Be("OrganisationOverview");
     }
 
     [Fact]
-    public void OnPost_ShouldReturnPage_WhenModelStateIsInvalid()
+    public async Task OnPostAsync_ShouldUpdateTempData_WhenOrganisationIsNotBuyer()
     {
-        _model.ModelState.AddModelError("Regulations", "Required");
+        var organisation = GivenOrganisationClientModel([], [PartyRole.Supplier]);
+        var tempDataState = new SupplierToBuyerDetails();
 
-        var result = _model.OnPost();
+        _model.Id = organisation.Id;
+        _model.Regulations = new List<Constants.DevolvedRegulation> { Constants.DevolvedRegulation.Scotland };
 
-        result.Should().BeOfType<PageResult>();
+        _organisationClientMock.Setup(x => x.GetOrganisationAsync(organisation.Id))
+            .ReturnsAsync(organisation);
+        _tempDataServiceMock.Setup(x => x.PeekOrDefault<SupplierToBuyerDetails>($"Supplier_To_Buyer_{organisation.Id}_Answers"))
+            .Returns(tempDataState);
+
+        var result = await _model.OnPostAsync();
+
+        _tempDataServiceMock.Verify(x => x.Put($"Supplier_To_Buyer_{organisation.Id}_Answers", It.Is<SupplierToBuyerDetails>(s => s.Regulations == _model.Regulations)), Times.Once);
+        var redirectResult = result.Should().BeOfType<RedirectToPageResult>().Subject;
+        redirectResult.PageName.Should().Be("SupplierToBuyerOrganisationDetailsSummary");
+        redirectResult.RouteValues.Should().ContainKey("Id").WhoseValue.Should().Be(organisation.Id);
+    }
+
+    private static CO.CDP.Organisation.WebApiClient.Organisation GivenOrganisationClientModel(PartyRole[]? partyRoles = null, PartyRole[]? pendingRoles = null)
+    {
+        return new CO.CDP.Organisation.WebApiClient.Organisation(
+            additionalIdentifiers: null,
+            addresses: null, contactPoint: null,
+            id: _orgGuid,
+            identifier: null,
+            name: "Test Org",
+            type: CDP.Organisation.WebApiClient.OrganisationType.Organisation,
+            roles: partyRoles,
+            details: new Details(
+                approval: null,
+                buyerInformation: new BuyerInformation(
+                    buyerType: "Buyer Type",
+                    devolvedRegulations: [CDP.Organisation.WebApiClient.DevolvedRegulation.Wales]),
+                pendingRoles: pendingRoles,
+                publicServiceMissionOrganization: null,
+                scale: null,
+                shelteredWorkshop: null,
+                vcse: null));
     }
 }
