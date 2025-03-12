@@ -75,32 +75,32 @@
                     </dd>
                 </div>
 
-            <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                    @StaticTextResource.Support_OrganisationApproval_OrganisationEmail_List
-                </dt>
-                <dd class="govuk-summary-list__value">
-                    <p class="govuk-body">@organisationDetails.ContactPoint.Email</p>
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        @StaticTextResource.Support_OrganisationApproval_OrganisationEmail_List
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        <p class="govuk-body">@organisationDetails.ContactPoint.Email</p>
 
-                    @if (Model.MatchingOrganisationsByOrgEmail?.Count > 0) {
-                    <div class="govuk-form-group govuk-form-group--error">
-                        <p id="duplicate-org-error" class="govuk-error-message">
-                            @StaticTextResource.Support_OrganisationApproval_DomainFound
-                        </p>
-                        <ul class="govuk-list govuk-list--bullet">
-                            @foreach (var matchingOrg in Model.MatchingOrganisationsByOrgEmail)
-                            {
-                            <li>
-                                <a href="/organisation/@matchingOrg.Id" target="_blank">
-                                    @matchingOrg.Name
-                                </a>
-                            </li>
-                            }
-                        </ul>
-                    </div>
-                    }
-                </dd>
-            </div>
+                        @if (Model.MatchingOrganisationsByOrgEmail?.Count > 0) {
+                            <div class="govuk-form-group govuk-form-group--error">
+                                <p id="duplicate-org-error" class="govuk-error-message">
+                                    @StaticTextResource.Support_OrganisationApproval_DomainFound
+                                </p>
+                                <ul class="govuk-list govuk-list--bullet">
+                                    @foreach (var matchingOrg in Model.MatchingOrganisationsByOrgEmail)
+                                    {
+                                        <li>
+                                            <a href="/organisation/@matchingOrg.Id" target="_blank">
+                                                @matchingOrg.Name
+                                            </a>
+                                        </li>
+                                    }
+                                </ul>
+                            </div>
+                        }
+                    </dd>
+                </div>
 
                 @if (adminUser != null)
                 {
@@ -112,21 +112,21 @@
                             <p class="govuk-body">@adminUser.Email</p>
 
                             @if (Model.MatchingOrganisationsByAdminEmail?.Count > 0) {
-                            <div class="govuk-form-group govuk-form-group--error">
-                                <p id="duplicate-org-error" class="govuk-error-message">
-                                    @StaticTextResource.Support_OrganisationApproval_DomainFound
-                                </p>
-                                <ul class="govuk-list govuk-list--bullet">
-                                    @foreach (var matchingOrg in Model.MatchingOrganisationsByAdminEmail)
-                                    {
-                                    <li>
-                                        <a href="/organisation/@matchingOrg.Id" target="_blank">
-                                            @matchingOrg.Name
-                                        </a>
-                                    </li>
-                                    }
-                                </ul>
-                            </div>
+                                <div class="govuk-form-group govuk-form-group--error">
+                                    <p id="duplicate-org-error" class="govuk-error-message">
+                                        @StaticTextResource.Support_OrganisationApproval_DomainFound
+                                    </p>
+                                    <ul class="govuk-list govuk-list--bullet">
+                                        @foreach (var matchingOrg in Model.MatchingOrganisationsByAdminEmail)
+                                        {
+                                            <li>
+                                                <a href="/organisation/@matchingOrg.Id" target="_blank">
+                                                    @matchingOrg.Name
+                                                </a>
+                                            </li>
+                                        }
+                                    </ul>
+                                </div>
                             }
                         </dd>
                     </div>
@@ -173,12 +173,12 @@
                     }
                     <div class="govuk-radios" data-module="govuk-radios">
                         <div class="govuk-radios__item">
-                            <input class="govuk-radios__input" id="@nameof(Model.Approval)" name="@nameof(Model.Approval)" type="radio" value="true" @(Model.Approval == true ? "checked" : "")>
+                            <input class="govuk-radios__input" id="@nameof(Model.Approval)" name="@nameof(Model.Approval)" type="radio" value="@ApprovalStates.Approve" @(Model.Approval == ApprovalStates.Approve ? "checked" : "")>
                             <label class="govuk-label govuk-radios__label" for="@nameof(Model.Approval)">@StaticTextResource.Global_Yes</label>
                         </div>
                         <div class="govuk-radios__item">
-                            <input class="govuk-radios__input" id="@nameof(Model.Approval)-1" name="@nameof(Model.Approval)" type="radio" value="false" data-aria-controls="conditional-comment" @(Model.Approval == false ? "checked" : "")>
-                            <label class="govuk-label govuk-radios__label" for="@nameof(Model.Approval)-1">@StaticTextResource.Global_No</label>
+                            <input class="govuk-radios__input" id="@nameof(Model.Approval)-1" name="@nameof(Model.Approval)" type="radio" value="@ApprovalStates.Reject" data-aria-controls="conditional-comment" @(Model.Approval == ApprovalStates.Reject ? "checked" : "")>
+                            <label class="govuk-label govuk-radios__label" for="@nameof(Model.Approval)-1">@StaticTextResource.Support_OrganisationApproval_InformationIsNotCorrect</label>
                         </div>
 
                         <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-comment">
@@ -199,6 +199,26 @@
                                 <textarea class="govuk-textarea" id="@nameof(Model.Comments)" name="@nameof(Model.Comments)" rows="3" maxlength="10000" aria-describedby="comments-hint @(commentHasError ? "comments-error" : "")"></textarea>
                             </div>
                         </div>
+
+                        @if (Model.OrganisationDetails != null && Model.OrganisationDetails.Details.PendingRoles.Contains(CDP.Organisation.WebApiClient.PartyRole.Buyer))
+                        {
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input" id="@nameof(Model.Approval)-2" name="@nameof(Model.Approval)" type="radio" value="@ApprovalStates.ConvertToSupplier" data-aria-controls="conditional-convert-supplier" @(Model.Approval == ApprovalStates.ConvertToSupplier ? "checked" : "")>
+                                <label class="govuk-label govuk-radios__label" for="@nameof(Model.Approval)-2">@(Model.OrganisationDetails.Roles.Contains(CDP.Organisation.WebApiClient.PartyRole.Tenderer) ? StaticTextResource.Support_OrganisationApproval_NotABuyer : @StaticTextResource.Support_OrganisationApproval_NotABuyerConvertToSupplier)</label>
+                            </div>
+
+                            @if (!Model.OrganisationDetails.Roles.Contains(CDP.Organisation.WebApiClient.PartyRole.Tenderer)) {
+                                <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-convert-supplier">
+                                    <div class="govuk-warning-text">
+                                        <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+                                        <strong class="govuk-warning-text__text">
+                                            <span class="govuk-visually-hidden">@StaticTextResource.Global_Warning</span>
+                                            @StaticTextResource.Support_OrganisationApproval_NotABuyerConvertToSupplier_Warning
+                                        </strong>
+                                    </div>
+                                </div>
+                            }
+                        }
                     </div>
                 </fieldset>
             </div>
