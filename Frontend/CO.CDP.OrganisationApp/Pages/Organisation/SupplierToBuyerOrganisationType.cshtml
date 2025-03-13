@@ -10,7 +10,7 @@
 
     if (Request.Query.ContainsKey("frm-summary"))
     {
-        backLink = $"/organisation/{@Model.Id}/supplier-to-buyer-organisation-details-summary";
+        backLink = $"/organisation/{@Model.Id}/buyer/supplier-to-buyer-organisation-details-summary";
         Model.RedirectToSummary = true;
     }
 
