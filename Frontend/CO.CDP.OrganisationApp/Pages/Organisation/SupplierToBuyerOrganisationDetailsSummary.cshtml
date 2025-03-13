@@ -1,4 +1,4 @@
-@page "/organisation/{id}/supplier-to-buyer-organisation-details-summary"
+@page "/organisation/{id}/buyer/supplier-to-buyer-organisation-details-summary"
 @using CO.CDP.OrganisationApp.Constants
 @model CO.CDP.OrganisationApp.Pages.Organisation.SupplierToBuyerOrganisationDetailsSummaryModel
 @using CO.CDP.Localization
@@ -8,13 +8,13 @@
 
     var supplierToBuyerOrganisationTypePage = $"/organisation/{@Model.Id}/supplier-to-buyer-organisation-type";
     var supplierToBuyerDevolvedRegulationsPage = $"/organisation/{@Model.Id}/supplier-to-buyer-devolved-regulation";
-    var supplierToBuyerSelectDevolvedRegulationsPage = $"/organisation/{@Model.Id}/supplier-to-buyer-select-devolved-regulation";
+    var supplierToBuyerSelectDevolvedRegulationsPage = $"/organisation/{@Model.Id}/buyer/select-devolved-regulation";
 
     var backLink = $"/organisation/{@Model.Id}/supplier-to-buyer-devolved-regulation";
 
     if (details.Devolved == true)
     {
-        backLink = $"/organisation/{@Model.Id}/supplier-to-buyer-select-devolved-regulation";
+        backLink = $"/organisation/{@Model.Id}/buyer/select-devolved-regulation";
     }
 }
 @section BeforeContent {
