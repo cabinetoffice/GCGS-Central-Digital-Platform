@@ -1,3 +1,4 @@
+using CO.CDP.Localization;
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Pages.Organisation;
 using FluentAssertions;
@@ -22,6 +23,19 @@ public class OrganisationIdentificationModelTest
         {
             Id = Guid.NewGuid(),
         };
+    }
+
+    [Theory]
+    [InlineData("1234")]
+    [InlineData("0123456789ABCD")]
+    public async Task Validate_WhenInvalidCompanyHouseNumber_ShouldReturnPageWithModelStateError(string? companyNumber)
+    {
+        _pageModel.CompanyHouseNumber = companyNumber;
+        
+        var results = ModelValidationHelper.Validate(_pageModel);
+
+        results.Where(c => c.MemberNames.Contains("CompanyHouseNumber")).First()
+            .ErrorMessage.Should().Be(nameof(StaticTextResource.CompaniesHouse_Number_Error));
     }
 
     [Fact]
