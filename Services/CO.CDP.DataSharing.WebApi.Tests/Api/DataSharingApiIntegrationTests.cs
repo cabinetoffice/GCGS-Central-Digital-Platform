@@ -15,6 +15,7 @@ public class DataSharingApiIntegrationTests: IClassFixture<OrganisationInformati
     private readonly HttpClient _httpClient;
     private readonly OrganisationInformationPostgreSqlFixture _postgreSql;
     private readonly OrganisationInformationContext _context;
+    private readonly IDataSharingClient _client;
 
     public DataSharingApiIntegrationTests(ITestOutputHelper testOutputHelper, OrganisationInformationPostgreSqlFixture postgreSql)
     {
@@ -33,66 +34,76 @@ public class DataSharingApiIntegrationTests: IClassFixture<OrganisationInformati
         _httpClient = _factory.CreateClient();
         _postgreSql = postgreSql;
         _context = _postgreSql.OrganisationInformationContext();
+        _client = new DataSharingClient("https://localhost", _httpClient);
     }
 
     [Fact]
     public async Task DataSharingClient_Returns200_WhenShareCodeExists()
     {
-        var organisationId = Guid.NewGuid();
         ClearDatabase();
-        (Organisation organisation, OrganisationInformation.Persistence.Forms.Form form) = SeedBaseData(organisationId);
+        (Organisation organisation, OrganisationInformation.Persistence.Forms.Form form) = SeedBaseData();
         SeedShareCode("ABC123", organisation, form);
 
-        IDataSharingClient client = new DataSharingClient("https://localhost", _httpClient);
-
-        var response = await client.GetSharedDataAsync("ABC123");
-        response.Id.Should().Be(organisationId);
+        var response = await _client.GetSharedDataAsync("ABC123");
+        response.Id.Should().Be(organisation.Guid);
     }
 
     [Fact]
     public async Task DataSharingClient_Returns404_WhenShareCodeDoesNotExist()
     {
-        var organisationId = Guid.NewGuid();
         ClearDatabase();
-        (Organisation organisation, OrganisationInformation.Persistence.Forms.Form form) = SeedBaseData(organisationId);
+        (Organisation organisation, OrganisationInformation.Persistence.Forms.Form form) = SeedBaseData();
         SeedShareCode("ABC123", organisation, form);
 
-        IDataSharingClient client = new DataSharingClient("https://localhost", _httpClient);
-
-        Func<Task> act = async () => await client.GetSharedDataAsync("ABC456");
+        Func<Task> act = async () => await _client.GetSharedDataAsync("ABC456");
 
         var exception = await act.Should().ThrowAsync<ApiException<ProblemDetails>>();
         exception.Which.StatusCode.Should().Be(404);
         exception.Which.Result.Detail.Should().Contain("Share code not found");
     }
 
-    //[Theory]
-    //[InlineData("2022-01-01T10:30:00", "2022-01-01T10:30:00", "2022-01-01T10:30:00")]
-    //public async Task DataSharingClient_ReturnsConnectedPersonsAppropriately_DependentUponStartAndEndDates(string scCreationDate, string cpStartDate, string cpEndDate)
-    //{
-    //    DateTime shareCodeCreationDate = DateTime.Parse(scCreationDate);
-    //    DateTime connectedPersonStartDate = DateTime.Parse(cpStartDate);
-    //    DateTime connectedPersonEndDate = DateTime.Parse(cpEndDate);
+    [Theory]
+    [InlineData("2022-01-01T10:00:00", "2022-01-01T09:00:00", null)]    // connected person created before share code
+    [InlineData("2022-01-01T10:00:00", "2022-01-01T09:00:00", "2022-01-01T11:00:00")] // connected person created before and ended after share code
+    public async Task DataSharingClient_ReturnsConnectedPersons_IfDatesIntersect(string scCreationDate, string cpCreationDate, string? cpEndDate)
+    {
+        DateTime shareCodeCreationDate = DateTime.Parse(scCreationDate);
+        DateTime connectedPersonCreationDate = DateTime.Parse(cpCreationDate);
+        DateTime? connectedPersonEndDate = cpEndDate != null ? DateTime.Parse(cpEndDate) : null;
 
-    //    var organisationId = Guid.NewGuid();
+        ClearDatabase();
+        (Organisation organisation, OrganisationInformation.Persistence.Forms.Form form) = SeedBaseData();
+        SeedConnectedPersons(organisation, connectedPersonCreationDate, connectedPersonEndDate);
+        SeedShareCode("ABC123", organisation, form, shareCodeCreationDate);
+       
+        var response = await _client.GetSharedDataAsync("ABC123");
+        response.AssociatedPersons.Should().HaveCount(1);
+        response.AssociatedPersons.First().Name.Should().Be("John Doe");
+    }
 
-    //    ClearDatabase();
-    //    (Organisation organisation, OrganisationInformation.Persistence.Forms.Form form) = SeedBaseData(organisationId);
+    [Theory]
+    [InlineData("2022-01-01T10:00:00", "2022-01-01T11:00:00", null)]    // connected person created after share code
+    [InlineData("2022-01-01T10:00:00", "2022-01-01T09:00:00", "2022-01-01T09:30:00")]   // connected person created and ended before share code
+    public async Task DataSharingClient_DoesNotReturnConnectedPersons_IfDatesDontIntersect(string scCreationDate, string cpCreationDate, string? cpEndDate)
+    {
+        DateTime shareCodeCreationDate = DateTime.Parse(scCreationDate);
+        DateTime connectedPersonCreationDate = DateTime.Parse(cpCreationDate);
+        DateTime? connectedPersonEndDate = cpEndDate != null ? DateTime.Parse(cpEndDate) : null;
 
-    //    //SeedConnectedPersons();
-    //    SeedShareCode("ABC123", organisation, form);
+        ClearDatabase();
+        (Organisation organisation, OrganisationInformation.Persistence.Forms.Form form) = SeedBaseData();
+        SeedConnectedPersons(organisation, connectedPersonCreationDate, connectedPersonEndDate);
+        SeedShareCode("ABC123", organisation, form, shareCodeCreationDate);
 
-    //    IDataSharingClient client = new DataSharingClient("https://localhost", _httpClient);
+        var response = await _client.GetSharedDataAsync("ABC123");
+        response.AssociatedPersons.Should().HaveCount(0);
+    }
 
-    //    var response = await client.GetSharedDataAsync("ABC123");
-    //    response.Id.Should().Be(organisationId);
-    //}
-
-    private (Organisation, OrganisationInformation.Persistence.Forms.Form) SeedBaseData(Guid organisationId)
+    private (Organisation, OrganisationInformation.Persistence.Forms.Form) SeedBaseData()
     {
         var organisation = new Organisation
         {
-            Guid = organisationId,
+            Guid = Guid.NewGuid(),
             Name = "Test org",
             Type = OrganisationInformation.OrganisationType.Organisation,
             Tenant = new Tenant
@@ -155,7 +166,7 @@ public class DataSharingApiIntegrationTests: IClassFixture<OrganisationInformati
         return (organisation, form);
     }
 
-    private void SeedShareCode(string shareCode, OrganisationInformation.Persistence.Organisation organisation, OrganisationInformation.Persistence.Forms.Form form)
+    private void SeedShareCode(string shareCode, Organisation organisation, OrganisationInformation.Persistence.Forms.Form form, DateTime? shareCodeCreationDate = null)
     {
         _context.SharedConsents.Add(new OrganisationInformation.Persistence.Forms.SharedConsent
         {
@@ -167,7 +178,28 @@ public class DataSharingApiIntegrationTests: IClassFixture<OrganisationInformati
             FormVersionId = "1",
             SubmissionState = SubmissionState.Submitted,
             ShareCode = shareCode,
-            SubmittedAt = DateTimeOffset.Now,
+            SubmittedAt = shareCodeCreationDate ?? DateTimeOffset.Now,
+        });
+
+        _context.SaveChanges();
+    }
+
+    private void SeedConnectedPersons(Organisation organisation, DateTime connectedPersonCreationDate, DateTime? connectedPersonEndDate)
+    {
+        _context.ConnectedEntities.Add(new ConnectedEntity
+        {
+            Guid = new Guid(),
+            EntityType = ConnectedEntity.ConnectedEntityType.Individual,
+            SupplierOrganisation = organisation,
+            CreatedOn = connectedPersonCreationDate,
+            EndDate = connectedPersonEndDate,
+            IndividualOrTrust = new ConnectedEntity.ConnectedIndividualTrust
+            {
+                Category = ConnectedEntity.ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForIndiv,
+                FirstName = "John",
+                LastName = "Doe",
+                DateOfBirth = new DateTime(1980, 1, 1),
+            }
         });
 
         _context.SaveChanges();
