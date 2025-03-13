@@ -94,6 +94,10 @@ public class AddUserModelTests
         var initialState = new PersonInviteState();
         _mockSession.Setup(s => s.Get<PersonInviteState>(PersonInviteState.TempDataKey)).Returns(initialState);
 
+        _mockOrganisationClient
+            .Setup(c => c.GetOrganisationJoinRequestsAsync(_addUserModel.Id, OrganisationJoinRequestStatus.Pending))
+            .ReturnsAsync([]);
+
         var result = await _addUserModel.OnPost();
 
         _mockSession.Verify(s => s.Set(PersonInviteState.TempDataKey, It.Is<PersonInviteState>(state =>
