@@ -5,6 +5,7 @@ using CO.CDP.OrganisationApp.Pages.Users;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using CO.CDP.OrganisationApp.Constants;
 using OrganisationType = CO.CDP.Organisation.WebApiClient.OrganisationType;
+using FluentAssertions;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages.Users;
 
@@ -42,12 +43,12 @@ public class AddUserModelTests
 
         var result = await _addUserModel.OnGet();
 
-        Assert.Equal("John", _addUserModel.FirstName);
-        Assert.Equal("Johnson", _addUserModel.LastName);
-        Assert.Equal("john@johnson.com", _addUserModel.Email);
-        Assert.True(_addUserModel.IsAdmin);
-        Assert.Equal(OrganisationPersonScopes.Editor, _addUserModel.Role);
-        Assert.IsType<PageResult>(result);
+        _addUserModel.FirstName.Should().Be("John");
+        _addUserModel.LastName.Should().Be("Johnson");
+        _addUserModel.Email.Should().Be("john@johnson.com");
+        _addUserModel.IsAdmin.Should().BeTrue();
+        _addUserModel.Role.Should().Be(OrganisationPersonScopes.Editor);
+        result.Should().BeOfType<PageResult>();
     }
 
     [Fact]
@@ -61,12 +62,12 @@ public class AddUserModelTests
 
         var result = await _addUserModel.OnGet();
 
-        Assert.Null(_addUserModel.FirstName);
-        Assert.Null(_addUserModel.LastName);
-        Assert.Null(_addUserModel.Email);
-        Assert.Null(_addUserModel.IsAdmin);
-        Assert.Null(_addUserModel.Role);
-        Assert.IsType<PageResult>(result);
+        _addUserModel.FirstName.Should().BeNull();
+        _addUserModel.LastName.Should().BeNull();
+        _addUserModel.Email.Should().BeNull();
+        _addUserModel.IsAdmin.Should().BeNull();
+        _addUserModel.Role.Should().BeNull();
+        result.Should().BeOfType<PageResult>();
     }
 
     [Fact]
@@ -80,7 +81,7 @@ public class AddUserModelTests
 
         var result = await _addUserModel.OnPost();
 
-        Assert.IsType<PageResult>(result);
+        result.Should().BeOfType<PageResult>();
     }
 
     [Fact]
@@ -108,9 +109,10 @@ public class AddUserModelTests
             state.Scopes.Contains(OrganisationPersonScopes.Editor)
         )), Times.Once);
 
-        var redirectResult = Assert.IsType<RedirectToPageResult>(result);
-        Assert.Equal("UserCheckAnswers", redirectResult.PageName);
-        Assert.Equal(_addUserModel.Id, redirectResult.RouteValues?["Id"]);
+        result.Should().BeOfType<RedirectToPageResult>()
+            .Which.PageName.Should().Be("UserCheckAnswers");
+
+        ((RedirectToPageResult)result).RouteValues?["Id"].Should().Be(_addUserModel.Id);
     }
 
     [Fact]
@@ -135,9 +137,8 @@ public class AddUserModelTests
 
         var result = await _addUserModel.OnPost();
 
-        Assert.IsType<PageResult>(result);
-        Assert.Single(_addUserModel.PendingJoinRequests);
-        Assert.Equal("john@johnson.com", _addUserModel.PendingJoinRequests.First().Person.Email);
+        result.Should().BeOfType<PageResult>();
+        _addUserModel.PendingJoinRequests.Should().ContainSingle().Which.Person.Email.Should().Be("john@johnson.com");
     }
 
     [Fact]
@@ -148,12 +149,11 @@ public class AddUserModelTests
         _addUserModel.Email = "john@johnson.com";
 
         var initialState = new PersonInviteState();
-
         var updatedState = _addUserModel.UpdateFields(initialState);
 
-        Assert.Equal("John", updatedState.FirstName);
-        Assert.Equal("Johnson", updatedState.LastName);
-        Assert.Equal("john@johnson.com", updatedState.Email);
+        updatedState.FirstName.Should().Be("John");
+        updatedState.LastName.Should().Be("Johnson");
+        updatedState.Email.Should().Be("john@johnson.com");
     }
 
     [Theory]
@@ -171,7 +171,7 @@ public class AddUserModelTests
 
         var updatedState = _addUserModel.UpdateScopes(initialState);
 
-        Assert.Contains(organisationPersonScope, updatedState.Scopes ?? []);
+        updatedState.Scopes.Should().Contain(organisationPersonScope);
     }
 
     [Fact]
@@ -187,11 +187,11 @@ public class AddUserModelTests
 
         _addUserModel.InitModel(state);
 
-        Assert.Equal("John", _addUserModel.FirstName);
-        Assert.Equal("Johnson", _addUserModel.LastName);
-        Assert.Equal("john@johnson.com", _addUserModel.Email);
-        Assert.True(_addUserModel.IsAdmin);
-        Assert.Equal(OrganisationPersonScopes.Editor, _addUserModel.Role);
+        _addUserModel.FirstName.Should().Be("John");
+        _addUserModel.LastName.Should().Be("Johnson");
+        _addUserModel.Email.Should().Be("john@johnson.com");
+        _addUserModel.IsAdmin.Should().BeTrue();
+        _addUserModel.Role.Should().Be(OrganisationPersonScopes.Editor);
     }
 
     private static CO.CDP.Organisation.WebApiClient.Organisation OrganisationClientModel(Guid id) =>
