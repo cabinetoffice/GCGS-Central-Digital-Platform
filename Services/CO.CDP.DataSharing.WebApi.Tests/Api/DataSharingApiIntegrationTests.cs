@@ -63,10 +63,10 @@ public class DataSharingApiIntegrationTests: IClassFixture<OrganisationInformati
     }
 
     [Theory]
-    [InlineData("2022-01-01T10:00:00", "2022-01-01T09:00:00", null)]    // connected person created before share code
-    [InlineData("2022-01-01T10:00:00", "2022-01-01T09:00:00", "2022-01-01T11:00:00")] // connected person created before and ended after share code
-    [InlineData("2022-01-01T10:00:00", "2022-01-01T11:00:00", "2022-01-01T12:00:00")]    // connected person created and ended after share code
-    public async Task DataSharingClient_ReturnsConnectedPersons_IfDatesIntersect(string scCreationDate, string cpCreationDate, string? cpEndDate)
+    [InlineData("2022-01-01T10:00:00", "2022-01-01T09:00:00", null)]    // connected individual created before share code
+    [InlineData("2022-01-01T10:00:00", "2022-01-01T09:00:00", "2022-01-01T11:00:00")] // connected individual created before and ended after share code
+    [InlineData("2022-01-01T10:00:00", "2022-01-01T11:00:00", "2022-01-01T12:00:00")]    // connected individual created and ended after share code
+    public async Task DataSharingClient_ReturnsConnectedIndividual_IfDatesIntersect(string scCreationDate, string cpCreationDate, string? cpEndDate)
     {
         DateTime shareCodeCreationDate = DateTime.Parse(scCreationDate);
         DateTime connectedPersonCreationDate = DateTime.Parse(cpCreationDate);
@@ -74,7 +74,7 @@ public class DataSharingApiIntegrationTests: IClassFixture<OrganisationInformati
 
         ClearDatabase();
         (Organisation organisation, OrganisationInformation.Persistence.Forms.Form form) = SeedBaseData();
-        SeedConnectedPersons(organisation, connectedPersonCreationDate, connectedPersonEndDate);
+        SeedConnectedEntities(organisation, connectedPersonCreationDate, connectedPersonEndDate, ConnectedEntity.ConnectedEntityType.Individual);
         SeedShareCode("ABC123", organisation, form, shareCodeCreationDate);
        
         var response = await _client.GetSharedDataAsync("ABC123");
@@ -83,10 +83,10 @@ public class DataSharingApiIntegrationTests: IClassFixture<OrganisationInformati
     }
 
     [Theory]
-    [InlineData("2022-01-01T10:00:00", "2022-01-01T11:00:00", null)]    // connected person created after share code
-    [InlineData("2022-01-01T10:00:00", "2022-01-01T09:00:00", "2022-01-01T09:30:00")]   // connected person created and ended before share code
-    [InlineData("2022-01-01T10:00:00", "2022-01-01T11:00:00", "2022-01-01T12:00:00")]    // connected person created and ended after share code
-    public async Task DataSharingClient_DoesNotReturnConnectedPersons_IfDatesDontIntersect(string scCreationDate, string cpCreationDate, string? cpEndDate)
+    [InlineData("2022-01-01T10:00:00", "2022-01-01T11:00:00", null)]    // connected individual created after share code
+    [InlineData("2022-01-01T10:00:00", "2022-01-01T09:00:00", "2022-01-01T09:30:00")]   // connected individual created and ended before share code
+    [InlineData("2022-01-01T10:00:00", "2022-01-01T11:00:00", "2022-01-01T12:00:00")]    // connected individual created and ended after share code
+    public async Task DataSharingClient_DoesNotReturnConnectedIndividual_IfDatesDontIntersect(string scCreationDate, string cpCreationDate, string? cpEndDate)
     {
         DateTime shareCodeCreationDate = DateTime.Parse(scCreationDate);
         DateTime connectedPersonCreationDate = DateTime.Parse(cpCreationDate);
@@ -94,11 +94,50 @@ public class DataSharingApiIntegrationTests: IClassFixture<OrganisationInformati
 
         ClearDatabase();
         (Organisation organisation, OrganisationInformation.Persistence.Forms.Form form) = SeedBaseData();
-        SeedConnectedPersons(organisation, connectedPersonCreationDate, connectedPersonEndDate);
+        SeedConnectedEntities(organisation, connectedPersonCreationDate, connectedPersonEndDate, ConnectedEntity.ConnectedEntityType.Individual);
         SeedShareCode("ABC123", organisation, form, shareCodeCreationDate);
 
         var response = await _client.GetSharedDataAsync("ABC123");
         response.AssociatedPersons.Should().HaveCount(0);
+    }
+
+    [Theory]
+    [InlineData("2022-01-01T10:00:00", "2022-01-01T09:00:00", null)]    // connected org created before share code
+    [InlineData("2022-01-01T10:00:00", "2022-01-01T09:00:00", "2022-01-01T11:00:00")] // connected org created before and ended after share code
+    [InlineData("2022-01-01T10:00:00", "2022-01-01T11:00:00", "2022-01-01T12:00:00")]    // connected org created and ended after share code
+    public async Task DataSharingClient_ReturnsConnectedOrgs_IfDatesIntersect(string scCreationDate, string cpCreationDate, string? cpEndDate)
+    {
+        DateTime shareCodeCreationDate = DateTime.Parse(scCreationDate);
+        DateTime connectedPersonCreationDate = DateTime.Parse(cpCreationDate);
+        DateTime? connectedPersonEndDate = cpEndDate != null ? DateTime.Parse(cpEndDate) : null;
+
+        ClearDatabase();
+        (Organisation organisation, OrganisationInformation.Persistence.Forms.Form form) = SeedBaseData();
+        SeedConnectedEntities(organisation, connectedPersonCreationDate, connectedPersonEndDate, ConnectedEntity.ConnectedEntityType.Organisation);
+        SeedShareCode("ABC123", organisation, form, shareCodeCreationDate);
+
+        var response = await _client.GetSharedDataAsync("ABC123");
+        response.AdditionalEntities.Should().HaveCount(1);
+        response.AdditionalEntities.First().Name.Should().Be("Test org");
+    }
+
+    [Theory]
+    [InlineData("2022-01-01T10:00:00", "2022-01-01T11:00:00", null)]    // connected org created after share code
+    [InlineData("2022-01-01T10:00:00", "2022-01-01T09:00:00", "2022-01-01T09:30:00")]   // connected org created and ended before share code
+    [InlineData("2022-01-01T10:00:00", "2022-01-01T11:00:00", "2022-01-01T12:00:00")]    // connected org created and ended after share code
+    public async Task DataSharingClient_DoesNotReturnConnectedOrgs_IfDatesDontIntersect(string scCreationDate, string cpCreationDate, string? cpEndDate)
+    {
+        DateTime shareCodeCreationDate = DateTime.Parse(scCreationDate);
+        DateTime connectedPersonCreationDate = DateTime.Parse(cpCreationDate);
+        DateTime? connectedPersonEndDate = cpEndDate != null ? DateTime.Parse(cpEndDate) : null;
+
+        ClearDatabase();
+        (Organisation organisation, OrganisationInformation.Persistence.Forms.Form form) = SeedBaseData();
+        SeedConnectedEntities(organisation, connectedPersonCreationDate, connectedPersonEndDate, ConnectedEntity.ConnectedEntityType.Organisation);
+        SeedShareCode("ABC123", organisation, form, shareCodeCreationDate);
+
+        var response = await _client.GetSharedDataAsync("ABC123");
+        response.AdditionalEntities.Should().HaveCount(0);
     }
 
     private (Organisation, OrganisationInformation.Persistence.Forms.Form) SeedBaseData()
@@ -186,23 +225,40 @@ public class DataSharingApiIntegrationTests: IClassFixture<OrganisationInformati
         _context.SaveChanges();
     }
 
-    private void SeedConnectedPersons(Organisation organisation, DateTime connectedPersonCreationDate, DateTime? connectedPersonEndDate)
+    private void SeedConnectedEntities(Organisation organisation, DateTime connectedPersonCreationDate, DateTime? connectedPersonEndDate, ConnectedEntity.ConnectedEntityType type)
     {
-        _context.ConnectedEntities.Add(new ConnectedEntity
+        var entity = new ConnectedEntity
         {
             Guid = new Guid(),
-            EntityType = ConnectedEntity.ConnectedEntityType.Individual,
+            EntityType = type,
             SupplierOrganisation = organisation,
             CreatedOn = connectedPersonCreationDate,
             EndDate = connectedPersonEndDate,
-            IndividualOrTrust = new ConnectedEntity.ConnectedIndividualTrust
-            {
-                Category = ConnectedEntity.ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForIndiv,
-                FirstName = "John",
-                LastName = "Doe",
-                DateOfBirth = new DateTime(1980, 1, 1),
-            }
-        });
+        };
+
+        switch(type)
+        {
+            case ConnectedEntity.ConnectedEntityType.Individual:
+                entity.IndividualOrTrust = new ConnectedEntity.ConnectedIndividualTrust
+                {
+                    Category = ConnectedEntity.ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForIndiv,
+                    FirstName = "John",
+                    LastName = "Doe",
+                    DateOfBirth = new DateTime(1980, 1, 1),
+                };
+
+            break;
+
+            case ConnectedEntity.ConnectedEntityType.Organisation:
+                entity.Organisation = new ConnectedEntity.ConnectedOrganisation
+                {
+                    Name = "Test org",
+                    Category = ConnectedEntity.ConnectedOrganisationCategory.RegisteredCompany,
+                };
+                break;
+        }
+
+        _context.ConnectedEntities.Add(entity);
 
         _context.SaveChanges();
     }
