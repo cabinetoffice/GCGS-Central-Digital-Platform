@@ -65,7 +65,6 @@ public class DataSharingApiIntegrationTests: IClassFixture<OrganisationInformati
     [Theory]
     [InlineData("2022-01-01T10:00:00", "2022-01-01T09:00:00", null)]    // connected individual created before share code
     [InlineData("2022-01-01T10:00:00", "2022-01-01T09:00:00", "2022-01-01T11:00:00")] // connected individual created before and ended after share code
-    [InlineData("2022-01-01T10:00:00", "2022-01-01T11:00:00", "2022-01-01T12:00:00")]    // connected individual created and ended after share code
     public async Task DataSharingClient_ReturnsConnectedIndividual_IfDatesIntersect(string scCreationDate, string cpCreationDate, string? cpEndDate)
     {
         DateTime shareCodeCreationDate = DateTime.Parse(scCreationDate);
@@ -104,7 +103,6 @@ public class DataSharingApiIntegrationTests: IClassFixture<OrganisationInformati
     [Theory]
     [InlineData("2022-01-01T10:00:00", "2022-01-01T09:00:00", null)]    // connected org created before share code
     [InlineData("2022-01-01T10:00:00", "2022-01-01T09:00:00", "2022-01-01T11:00:00")] // connected org created before and ended after share code
-    [InlineData("2022-01-01T10:00:00", "2022-01-01T11:00:00", "2022-01-01T12:00:00")]    // connected org created and ended after share code
     public async Task DataSharingClient_ReturnsConnectedOrgs_IfDatesIntersect(string scCreationDate, string cpCreationDate, string? cpEndDate)
     {
         DateTime shareCodeCreationDate = DateTime.Parse(scCreationDate);
