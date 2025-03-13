@@ -17,7 +17,7 @@
     bool isViewer = await userInfoService.IsViewer();
     bool isAdmin = await userInfoService.IsAdmin();
     var supplierToBuyerDevolvedRegulationsPage = $"/organisation/{@Model.Id}/supplier-to-buyer-devolved-regulation";
-    var supplierToBuyerSelectDevolvedRegulationsPage = $"/organisation/{@Model.Id}/supplier-to-buyer-select-devolved-regulation";
+    var supplierToBuyerSelectDevolvedRegulationsPage = $"/organisation/{@Model.Id}/buyer/select-devolved-regulation";
     ViewData["Title"] = organisationDetails.Name;
 }
 
