@@ -3574,4 +3574,7 @@
   <data name="MoU_Summary_TableHeaderSubmittedBy" xml:space="preserve">
     <value>Submitted by</value>
   </data>
+  <data name="CompaniesHouse_Number_Error" xml:space="preserve">
+    <value>Company number must be 8 digits or 2 letters and 6 digits</value>
+  </data>
 </root>
