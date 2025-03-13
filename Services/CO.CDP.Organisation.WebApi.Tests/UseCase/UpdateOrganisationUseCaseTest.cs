@@ -912,14 +912,14 @@ public class UpdateOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
             Type = OrganisationInformation.OrganisationType.Organisation,
             Tenant = It.IsAny<Persistence.Tenant>(),
             Identifiers = [
-                new Persistence.Organisation.Identifier
+                new Persistence.Identifier
                 {
                     Scheme = "Other",
                     LegalName = "Acme Ltd",
                     Primary = true
                 }
             ],
-            ContactPoints = [new Persistence.Organisation.ContactPoint { Email = "test@test.com" }]
+            ContactPoints = [new Persistence.ContactPoint { Email = "test@test.com" }]
         };
 
     private Persistence.Organisation OrganisationWithPponIdentifier =>
@@ -930,7 +930,7 @@ public class UpdateOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
             Type = OrganisationType.Organisation,
             Tenant = It.IsAny<Persistence.Tenant>(),
             Identifiers = [
-                new Persistence.Organisation.Identifier
+                new Persistence.Identifier
                 {
                     Scheme = "GB-PPON",
                     LegalName = "Acme Ltd",
@@ -938,7 +938,7 @@ public class UpdateOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
                     IdentifierId = "c0777aeb968b4113a27d94e55b10c1b4"
                 }
             ],
-            ContactPoints = [new Persistence.Organisation.ContactPoint { Email = "test@test.com" }]
+            ContactPoints = [new Persistence.ContactPoint { Email = "test@test.com" }]
         };
 
     private Persistence.Organisation GivenOrganisation(List<PartyRole>? roles = null, List<PartyRole>? pendingRoles = null, Persistence.Person? reviewedBy = null, string? reviewComment = null)
@@ -954,7 +954,7 @@ public class UpdateOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
                 Name = "Test1"
             },
             Identifiers = [
-                new Persistence.Organisation.Identifier
+                new Persistence.Identifier
                 {
                     Scheme = "VAT",
                     IdentifierId = "93294342",
@@ -962,8 +962,8 @@ public class UpdateOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
                     Primary = true
                 }
             ],
-            ContactPoints = [new Persistence.Organisation.ContactPoint { Email = "test@test.com" }],
-            Addresses = {new OrganisationInformation.Persistence.Organisation.OrganisationAddress
+            ContactPoints = [new Persistence.ContactPoint { Email = "test@test.com" }],
+            Addresses = {new OrganisationInformation.Persistence.OrganisationAddress
             {
                 Type  = OrganisationInformation.AddressType.Registered,
                 Address = new Address
@@ -990,7 +990,7 @@ public class UpdateOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
          Type = OrganisationType.Organisation,
          Tenant = It.IsAny<Persistence.Tenant>(),
          Identifiers = [
-                  new Persistence.Organisation.Identifier
+                  new Persistence.Identifier
                 {
                     Scheme = "GB-MPR",
                     IdentifierId = "5656",
@@ -998,8 +998,8 @@ public class UpdateOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
                     Primary = true
                 }
          ],
-         ContactPoints = [new Persistence.Organisation.ContactPoint { Email = "test2@test.com" }],
-         Addresses = {new OrganisationInformation.Persistence.Organisation.OrganisationAddress
+         ContactPoints = [new Persistence.ContactPoint { Email = "test2@test.com" }],
+         Addresses = {new OrganisationInformation.Persistence.OrganisationAddress
             {
                 Type  = OrganisationInformation.AddressType.Registered,
                 Address = new Address
@@ -1022,14 +1022,14 @@ public class UpdateOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
             Type = OrganisationType.Organisation,
             Tenant = It.IsAny<Persistence.Tenant>(),
             Identifiers = [
-                new Persistence.Organisation.Identifier
+                new Persistence.Identifier
                     {
                         Scheme = "VAT",
                         IdentifierId = "93294342",
                         LegalName = "Acme Ltd",
                         Primary = true
                     },
-                new Persistence.Organisation.Identifier
+                new Persistence.Identifier
                 {
                     Scheme = "GB-PPON",
                     LegalName = "Acme Ltd",
@@ -1037,7 +1037,7 @@ public class UpdateOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
                     IdentifierId = "c0777aeb968b4113a27d94e55b10c1b4"
                 }
             ],
-            ContactPoints = [new Persistence.Organisation.ContactPoint { Email = "test@test.com" }]
+            ContactPoints = [new Persistence.ContactPoint { Email = "test@test.com" }]
         };
 
     private static Func<Persistence.Organisation, Task> AnyOnSave()

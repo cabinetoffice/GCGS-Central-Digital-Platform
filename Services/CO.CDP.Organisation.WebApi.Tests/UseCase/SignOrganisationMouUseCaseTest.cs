@@ -228,7 +228,7 @@ public class SignOrganisationMouUseCaseTest
             },
             ContactPoints =
             [
-                new Persistence.Organisation.ContactPoint
+                new Persistence.ContactPoint
                 {
                     Email = "contact@test.org"
                 }
@@ -241,7 +241,7 @@ public class SignOrganisationMouUseCaseTest
             var devolvedRegulations = new List<DevolvedRegulation>();
             devolvedRegulations.Add(DevolvedRegulation.NorthernIreland);
 
-            org.BuyerInfo = new Persistence.Organisation.BuyerInformation
+            org.BuyerInfo = new Persistence.BuyerInformation
             {
                 BuyerType = "FakeBuyerType",
                 DevolvedRegulations = devolvedRegulations,

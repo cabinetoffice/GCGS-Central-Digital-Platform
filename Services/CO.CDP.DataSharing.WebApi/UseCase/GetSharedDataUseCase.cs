@@ -1,14 +1,13 @@
 using AutoMapper;
 using CO.CDP.DataSharing.WebApi.Model;
 using CO.CDP.OrganisationInformation;
-using CO.CDP.OrganisationInformation.Persistence;
 using CO.CDP.OrganisationInformation.Persistence.NonEfEntities;
 using FormQuestionType = CO.CDP.OrganisationInformation.Persistence.Forms.FormQuestionType;
 
 namespace CO.CDP.DataSharing.WebApi.UseCase;
 
 public class GetSharedDataUseCase(
-    IShareCodeRepository shareCodeRepository,
+    CO.CDP.OrganisationInformation.Persistence.IShareCodeRepository shareCodeRepository,
     IMapper mapper,
     IConfiguration configuration)
     : IUseCase<string, SupplierInformation?>

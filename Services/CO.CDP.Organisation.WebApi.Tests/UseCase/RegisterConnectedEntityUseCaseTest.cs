@@ -87,7 +87,7 @@ public class RegisterConnectedEntityUseCaseTest(AutoMapperFixture mapperFixture)
             Name = "TheOrganisation",
             Guid = organisationId,
             Type = OrganisationType.Organisation,
-            Addresses = [new Persistence.Organisation.OrganisationAddress
+            Addresses = [new Persistence.OrganisationAddress
             {
                 Type = AddressType.Registered,
                 Address = new Persistence.Address
@@ -101,7 +101,7 @@ public class RegisterConnectedEntityUseCaseTest(AutoMapperFixture mapperFixture)
                 }
             }],
             Tenant = It.IsAny<Tenant>(),
-            SupplierInfo = new Persistence.Organisation.SupplierInformation()
+            SupplierInfo = new Persistence.SupplierInformation()
         };
 
         _organisationRepo.Setup(repo => repo.Find(organisationId))

@@ -1,5 +1,3 @@
-using CO.CDP.OrganisationInformation.Persistence.Forms;
-
 namespace CO.CDP.OrganisationInformation.Persistence;
 
 public interface IOrganisationRepository : IDisposable
@@ -23,11 +21,7 @@ public interface IOrganisationRepository : IDisposable
 
     public Task<Organisation?> FindByName(string name);
 
-    public Task<IEnumerable<Organisation>> FindByUserUrn(string userUrn);
-
     public Task<Organisation?> FindByIdentifier(string scheme, string identifierId);
-
-    public Task<IList<Organisation>> Get(string? type);
 
     public Task<IList<Organisation>> GetPaginated(PartyRole? role, PartyRole? pendingRole, string? searchText, int limit, int skip);
 
@@ -38,16 +32,6 @@ public interface IOrganisationRepository : IDisposable
         public class DuplicateOrganisationException(string message, Exception? cause = null)
             : OrganisationRepositoryException(message, cause);
     }
-
-    public Task<IList<ConnectedEntity>> GetConnectedIndividualTrusts(int organisationId);
-
-    public Task<IList<ConnectedEntity>> GetConnectedOrganisations(int organisationId);
-
-    public Task<IList<ConnectedEntity>> GetConnectedTrustsOrTrustees(int organisationId);
-
-    public Task<Organisation.LegalForm?> GetLegalForm(int organisationId);
-
-    public Task<IList<OperationType>> GetOperationTypes(int organisationId);
 
     public Task<bool> IsEmailUniqueWithinOrganisation(Guid organisationId, string email);
     Task<Organisation?> FindIncludingReviewedBy(Guid organisationId);

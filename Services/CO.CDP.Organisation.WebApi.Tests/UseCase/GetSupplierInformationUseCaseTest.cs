@@ -1,7 +1,6 @@
 using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.Organisation.WebApi.Tests.AutoMapper;
 using CO.CDP.Organisation.WebApi.UseCase;
-using CO.CDP.OrganisationInformation.Persistence;
 using FluentAssertions;
 using Moq;
 using Persistence = CO.CDP.OrganisationInformation.Persistence;
@@ -11,7 +10,7 @@ namespace CO.CDP.Organisation.WebApi.Tests.UseCase;
 public class GetSupplierInformationUseCaseTest(AutoMapperFixture mapperFixture)
     : IClassFixture<AutoMapperFixture>
 {
-    private readonly Mock<IOrganisationRepository> _repository = new();
+    private readonly Mock<Persistence.IOrganisationRepository> _repository = new();
     private GetSupplierInformationUseCase UseCase => new(_repository.Object, mapperFixture.Mapper);
 
     [Fact]
@@ -62,17 +61,17 @@ public class GetSupplierInformationUseCaseTest(AutoMapperFixture mapperFixture)
             Guid = Guid.NewGuid(),
             Name = "FakeOrg",
             Type = OrganisationInformation.OrganisationType.Organisation,
-            Tenant = new Tenant
+            Tenant = new Persistence.Tenant
             {
                 Guid = Guid.NewGuid(),
                 Name = "Tenant 101"
             },
-            ContactPoints = [new Persistence.Organisation.ContactPoint { Email = "contact@test.org" }]
+            ContactPoints = [new Persistence.ContactPoint { Email = "contact@test.org" }]
         };
 
         if (withSupplierInfo == true)
         {
-            org.SupplierInfo = new Persistence.Organisation.SupplierInformation { CompletedRegAddress = true };
+            org.SupplierInfo = new Persistence.SupplierInformation { CompletedRegAddress = true };
         }
 
         return org;

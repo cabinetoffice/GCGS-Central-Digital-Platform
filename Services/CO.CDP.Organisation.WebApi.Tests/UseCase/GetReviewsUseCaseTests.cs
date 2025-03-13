@@ -1,6 +1,5 @@
 using Moq;
 using FluentAssertions;
-using AutoMapper;
 using CO.CDP.Organisation.WebApi.UseCase;
 using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.OrganisationInformation.Persistence;

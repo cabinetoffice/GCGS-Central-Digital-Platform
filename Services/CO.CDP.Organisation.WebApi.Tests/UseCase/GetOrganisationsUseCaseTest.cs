@@ -65,9 +65,9 @@ public class GetOrganisationsUseCaseTests
                 Type = OrganisationType.Organisation,
                 Tenant = null!, // Ensure Tenant is initialized if required
                 OrganisationPersons = organisationPersons, // Ensure OrganisationPersons is not null
-                Identifiers = new List<CO.CDP.OrganisationInformation.Persistence.Organisation.Identifier>(),
-                Addresses = new List<CO.CDP.OrganisationInformation.Persistence.Organisation.OrganisationAddress>(),
-                ContactPoints = new List<CO.CDP.OrganisationInformation.Persistence.Organisation.ContactPoint>(),
+                Identifiers = new List<CO.CDP.OrganisationInformation.Persistence.Identifier>(),
+                Addresses = new List<CO.CDP.OrganisationInformation.Persistence.OrganisationAddress>(),
+                ContactPoints = new List<CO.CDP.OrganisationInformation.Persistence.ContactPoint>(),
                 Roles = new List<PartyRole>(),
                 PendingRoles = new List<PartyRole>()
             }

@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using CO.CDP.EntityFrameworkCore.Timestamps;
 using Microsoft.EntityFrameworkCore;
 
@@ -31,78 +32,6 @@ public class Organisation : IEntityDate
     [MaxLength(10000)]
     public string? ReviewComment { get; set; }
 
-    [Owned]
-    public record Identifier : IEntityDate
-    {
-        public int Id { get; set; }
-        public string? IdentifierId { get; set; }
-        public required string Scheme { get; set; }
-        public required string LegalName { get; set; }
-        public string? Uri { get; set; }
-        public required bool Primary { get; set; }
-        public DateTimeOffset CreatedOn { get; set; }
-        public DateTimeOffset UpdatedOn { get; set; }
-    }
-
-    [Owned]
-    public record OrganisationAddress
-    {
-        public int Id { get; set; }
-        public required AddressType Type { get; set; }
-        public required Address Address { get; set; }
-    }
-
-    [Owned]
-    public record ContactPoint : IEntityDate
-    {
-        public int Id { get; set; }
-        public string? Name { get; set; }
-        public string? Email { get; set; }
-        public string? Telephone { get; set; }
-        public string? Url { get; set; }
-        public DateTimeOffset CreatedOn { get; set; }
-        public DateTimeOffset UpdatedOn { get; set; }
-    }
-
-    [Owned]
-    public record SupplierInformation : IEntityDate
-    {
-        public SupplierType? SupplierType { get; set; }
-        public List<OperationType> OperationTypes { get; set; } = [];
-        public bool CompletedRegAddress { get; set; }
-        public bool CompletedPostalAddress { get; set; }
-        public bool CompletedVat { get; set; }
-        public bool CompletedWebsiteAddress { get; set; }
-        public bool CompletedEmailAddress { get; set; }
-        public bool CompletedOperationType { get; set; }
-        public bool CompletedLegalForm { get; set; }
-        public bool CompletedConnectedPerson { get; set; }
-        public LegalForm? LegalForm { get; set; }
-        public DateTimeOffset CreatedOn { get; set; }
-        public DateTimeOffset UpdatedOn { get; set; }
-    }
-
-    [Owned]
-    public record BuyerInformation : IEntityDate
-    {
-        public int OrganisationId { get; set; }
-        public string? BuyerType { get; set; }
-        public List<DevolvedRegulation> DevolvedRegulations { get; set; } = [];
-        public DateTimeOffset CreatedOn { get; set; }
-        public DateTimeOffset UpdatedOn { get; set; }
-    }
-
-    [Owned]
-    public record LegalForm : IEntityDate
-    {
-        public required bool RegisteredUnderAct2006 { get; set; }
-        public required string RegisteredLegalForm { get; set; }
-        public required string LawRegistered { get; set; }
-        public required DateTimeOffset RegistrationDate { get; set; }
-        public DateTimeOffset CreatedOn { get; set; }
-        public DateTimeOffset UpdatedOn { get; set; }
-    }
-
     public void UpdateBuyerInformation()
     {
         if (!Roles.Contains(PartyRole.Buyer) && !PendingRoles.Contains(PartyRole.Buyer))
@@ -110,7 +39,7 @@ public class Organisation : IEntityDate
             return;
         }
 
-        BuyerInfo ??= new BuyerInformation();
+        BuyerInfo ??= new BuyerInformation { Id = Id };
     }
 
     public void UpdateSupplierInformation()
@@ -120,7 +49,7 @@ public class Organisation : IEntityDate
             return;
         }
 
-        SupplierInfo ??= new SupplierInformation();
+        SupplierInfo ??= new SupplierInformation { Id = Id };
         SupplierInfo.CompletedRegAddress =
             Addresses.Any(a => a.Type == AddressType.Registered) || SupplierInfo.CompletedRegAddress;
         SupplierInfo.CompletedPostalAddress =
@@ -130,4 +59,95 @@ public class Organisation : IEntityDate
         SupplierInfo.CompletedEmailAddress =
             !string.IsNullOrWhiteSpace(ContactPoints.FirstOrDefault()?.Email) || SupplierInfo.CompletedEmailAddress;
     }
+}
+
+public record Identifier : IEntityDate
+{
+    [Key]
+    public int Id { get; set; }
+
+    [ForeignKey(nameof(Organisation))]
+    public int OrganisationId { get; set; }
+    public Organisation? Organisation { get; set; }
+
+    public string? IdentifierId { get; set; }
+    public required string Scheme { get; set; }
+    public required string LegalName { get; set; }
+    public string? Uri { get; set; }
+    public required bool Primary { get; set; }
+    public DateTimeOffset CreatedOn { get; set; }
+    public DateTimeOffset UpdatedOn { get; set; }
+}
+
+public record OrganisationAddress
+{
+    [Key]
+    public int Id { get; set; }
+
+    [ForeignKey(nameof(Organisation))]
+    public int OrganisationId { get; set; }
+    public Organisation? Organisation { get; set; }
+    public required AddressType Type { get; set; }
+    public required Address Address { get; set; }
+}
+
+public record ContactPoint : IEntityDate
+{
+    [Key]
+    public int Id { get; set; }
+
+    [ForeignKey(nameof(Organisation))]
+    public int OrganisationId { get; set; }
+    public Organisation? Organisation { get; set; }
+    public string? Name { get; set; }
+    public string? Email { get; set; }
+    public string? Telephone { get; set; }
+    public string? Url { get; set; }
+    public DateTimeOffset CreatedOn { get; set; }
+    public DateTimeOffset UpdatedOn { get; set; }
+}
+
+public record SupplierInformation : IEntityDate
+{
+    [Key]
+    [ForeignKey(nameof(Organisation))]
+    public int Id { get; set; }
+    public Organisation? Organisation { get; set; }
+    public SupplierType? SupplierType { get; set; }
+    public List<OperationType> OperationTypes { get; set; } = [];
+    public bool CompletedRegAddress { get; set; }
+    public bool CompletedPostalAddress { get; set; }
+    public bool CompletedVat { get; set; }
+    public bool CompletedWebsiteAddress { get; set; }
+    public bool CompletedEmailAddress { get; set; }
+    public bool CompletedOperationType { get; set; }
+    public bool CompletedLegalForm { get; set; }
+    public bool CompletedConnectedPerson { get; set; }
+    public LegalForm? LegalForm { get; set; }
+    public DateTimeOffset CreatedOn { get; set; }
+    public DateTimeOffset UpdatedOn { get; set; }
+
+}
+
+public record BuyerInformation : IEntityDate
+{
+    [Key]
+    [ForeignKey(nameof(Organisation))]
+    public int Id { get; set; }
+    public Organisation? Organisation { get; set; }
+    public string? BuyerType { get; set; }
+    public List<DevolvedRegulation> DevolvedRegulations { get; set; } = [];
+    public DateTimeOffset CreatedOn { get; set; }
+    public DateTimeOffset UpdatedOn { get; set; }
+}
+
+[Owned]
+public record LegalForm : IEntityDate
+{
+    public required bool RegisteredUnderAct2006 { get; set; }
+    public required string RegisteredLegalForm { get; set; }
+    public required string LawRegistered { get; set; }
+    public required DateTimeOffset RegistrationDate { get; set; }
+    public DateTimeOffset CreatedOn { get; set; }
+    public DateTimeOffset UpdatedOn { get; set; }
 }
