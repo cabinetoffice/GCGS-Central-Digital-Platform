@@ -8,13 +8,13 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Xunit.Abstractions;
-
 namespace CO.CDP.DataSharing.WebApi.Tests.Api;
 
 public class DataSharingApiIntegrationTests: IClassFixture<OrganisationInformationPostgreSqlFixture>
 {
     private readonly HttpClient _httpClient;
     private readonly OrganisationInformationPostgreSqlFixture _postgreSql;
+    private readonly OrganisationInformationContext _context;
 
     public DataSharingApiIntegrationTests(ITestOutputHelper testOutputHelper, OrganisationInformationPostgreSqlFixture postgreSql)
     {
@@ -32,13 +32,16 @@ public class DataSharingApiIntegrationTests: IClassFixture<OrganisationInformati
 
         _httpClient = _factory.CreateClient();
         _postgreSql = postgreSql;
+        _context = _postgreSql.OrganisationInformationContext();
     }
 
     [Fact]
     public async Task DataSharingClient_Returns200_WhenShareCodeExists()
     {
         var organisationId = Guid.NewGuid();
-        SeedData(organisationId, "ABC123");
+        ClearDatabase();
+        (Organisation organisation, OrganisationInformation.Persistence.Forms.Form form) = SeedBaseData(organisationId);
+        SeedShareCode("ABC123", organisation, form);
 
         IDataSharingClient client = new DataSharingClient("https://localhost", _httpClient);
 
@@ -50,7 +53,9 @@ public class DataSharingApiIntegrationTests: IClassFixture<OrganisationInformati
     public async Task DataSharingClient_Returns404_WhenShareCodeDoesNotExist()
     {
         var organisationId = Guid.NewGuid();
-        SeedData(organisationId, "ABC123");
+        ClearDatabase();
+        (Organisation organisation, OrganisationInformation.Persistence.Forms.Form form) = SeedBaseData(organisationId);
+        SeedShareCode("ABC123", organisation, form);
 
         IDataSharingClient client = new DataSharingClient("https://localhost", _httpClient);
 
@@ -61,108 +66,116 @@ public class DataSharingApiIntegrationTests: IClassFixture<OrganisationInformati
         exception.Which.Result.Detail.Should().Contain("Share code not found");
     }
 
-    private void SeedData(Guid organisationId, string shareCode)
+    //[Theory]
+    //[InlineData("2022-01-01T10:30:00", "2022-01-01T10:30:00", "2022-01-01T10:30:00")]
+    //public async Task DataSharingClient_ReturnsConnectedPersonsAppropriately_DependentUponStartAndEndDates(string scCreationDate, string cpStartDate, string cpEndDate)
+    //{
+    //    DateTime shareCodeCreationDate = DateTime.Parse(scCreationDate);
+    //    DateTime connectedPersonStartDate = DateTime.Parse(cpStartDate);
+    //    DateTime connectedPersonEndDate = DateTime.Parse(cpEndDate);
+
+    //    var organisationId = Guid.NewGuid();
+
+    //    ClearDatabase();
+    //    (Organisation organisation, OrganisationInformation.Persistence.Forms.Form form) = SeedBaseData(organisationId);
+
+    //    //SeedConnectedPersons();
+    //    SeedShareCode("ABC123", organisation, form);
+
+    //    IDataSharingClient client = new DataSharingClient("https://localhost", _httpClient);
+
+    //    var response = await client.GetSharedDataAsync("ABC123");
+    //    response.Id.Should().Be(organisationId);
+    //}
+
+    private (Organisation, OrganisationInformation.Persistence.Forms.Form) SeedBaseData(Guid organisationId)
     {
-        ClearDatabase();
-
-        using (var context = _postgreSql.OrganisationInformationContext())
+        var organisation = new Organisation
         {
-            var organisation = new Organisation
-            {
-                Guid = organisationId,
-                Name = "Test org",
-                Type = OrganisationInformation.OrganisationType.Organisation,
-                Tenant = new Tenant
-                {
-                    Guid = Guid.NewGuid(),
-                    Name = "Test org",
-                },
-                Identifiers = new List<Organisation.Identifier>
-                {
-                    new Organisation.Identifier
-                    {
-                        IdentifierId = "1234567",
-                        Scheme = "Whatever",
-                        LegalName = "New Org Legal Name",
-                        Primary = true
-                    }
-                },
-                Addresses = new List<Organisation.OrganisationAddress>
-                {
-                    new Organisation.OrganisationAddress
-                    {
-                        Type = OrganisationInformation.AddressType.Registered,
-                        Address = new OrganisationInformation.Persistence.Address
-                        {
-                            StreetAddress = "1234 New St",
-                            Locality = "New City",
-                            Region = "W.Yorkshire",
-                            PostalCode = "123456",
-                            CountryName = "Newland",
-                            Country = "GB"
-                        }
-                    }
-                },
-                ContactPoints = new List<Organisation.ContactPoint>
-                {
-                    new Organisation.ContactPoint
-                    {
-                        Name = "Main Contact",
-                        Email = "foo@bar.com"
-                    }
-                }
-            };
-
-            context.Organisations.Add(organisation);
-            context.SaveChanges();
-
-            var form = new OrganisationInformation.Persistence.Forms.Form
+            Guid = organisationId,
+            Name = "Test org",
+            Type = OrganisationInformation.OrganisationType.Organisation,
+            Tenant = new Tenant
             {
                 Guid = Guid.NewGuid(),
-                Name = "Test form",
-                Version = "1",
-                IsRequired = true,
-                Scope = FormScope.SupplierInformation,
-                Sections = []
-            };
-
-            context.Forms.Add(form);
-            context.SaveChanges();
-
-            context.SharedConsents.Add(new OrganisationInformation.Persistence.Forms.SharedConsent
+                Name = "Test org",
+            },
+            Identifiers = new List<Organisation.Identifier>
             {
-                Guid = new Guid(),
-                OrganisationId = organisation.Id,
-                Organisation = organisation,
-                FormId = 1,
-                Form = form,
-                FormVersionId = "1",
-                SubmissionState = SubmissionState.Submitted,
-                ShareCode = "ABC123",
-                SubmittedAt = DateTimeOffset.Now,
-            });
+                new Organisation.Identifier
+                {
+                    IdentifierId = "1234567",
+                    Scheme = "Whatever",
+                    LegalName = "New Org Legal Name",
+                    Primary = true
+                }
+            },
+            Addresses = new List<Organisation.OrganisationAddress>
+            {
+                new Organisation.OrganisationAddress
+                {
+                    Type = OrganisationInformation.AddressType.Registered,
+                    Address = new OrganisationInformation.Persistence.Address
+                    {
+                        StreetAddress = "1234 New St",
+                        Locality = "New City",
+                        Region = "W.Yorkshire",
+                        PostalCode = "123456",
+                        CountryName = "Newland",
+                        Country = "GB"
+                    }
+                }
+            },
+            ContactPoints = new List<Organisation.ContactPoint>
+            {
+                new Organisation.ContactPoint
+                {
+                    Name = "Main Contact",
+                    Email = "foo@bar.com"
+                }
+            }
+        };
 
-            context.SaveChanges();
-        }
+        _context.Organisations.Add(organisation);
+        _context.SaveChanges();
+
+        var form = new OrganisationInformation.Persistence.Forms.Form
+        {
+            Guid = Guid.NewGuid(),
+            Name = "Test form",
+            Version = "1",
+            IsRequired = true,
+            Scope = FormScope.SupplierInformation,
+            Sections = []
+        };
+
+        _context.Forms.Add(form);
+        _context.SaveChanges();
+
+        return (organisation, form);
+    }
+
+    private void SeedShareCode(string shareCode, OrganisationInformation.Persistence.Organisation organisation, OrganisationInformation.Persistence.Forms.Form form)
+    {
+        _context.SharedConsents.Add(new OrganisationInformation.Persistence.Forms.SharedConsent
+        {
+            Guid = new Guid(),
+            OrganisationId = organisation.Id,
+            Organisation = organisation,
+            FormId = 1,
+            Form = form,
+            FormVersionId = "1",
+            SubmissionState = SubmissionState.Submitted,
+            ShareCode = shareCode,
+            SubmittedAt = DateTimeOffset.Now,
+        });
+
+        _context.SaveChanges();
     }
 
     private void ClearDatabase()
     {
-        using var context = _postgreSql.OrganisationInformationContext();
-        context.Database.ExecuteSqlRaw(@"
-        DO $$ 
-        DECLARE 
-            tables TEXT;
-        BEGIN 
-            SELECT string_agg(format('TRUNCATE TABLE ""%I"" CASCADE', tablename), '; ') 
-            INTO tables
-            FROM pg_tables 
-            WHERE schemaname = 'public'
-            AND tablename <> '__EFMigrationsHistory';
-
-            EXECUTE tables;
-        END $$;
-    ");
-        context.SaveChanges();
+        _context.Database.ExecuteSqlRaw(@"TRUNCATE TABLE ""organisations"" CASCADE;");
+        _context.Database.ExecuteSqlRaw(@"TRUNCATE TABLE ""tenants"" CASCADE;");
     }
 }
