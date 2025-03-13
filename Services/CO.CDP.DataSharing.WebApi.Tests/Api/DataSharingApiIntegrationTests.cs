@@ -4,6 +4,7 @@ using CO.CDP.OrganisationInformation.Persistence.Forms;
 using CO.CDP.OrganisationInformation.Persistence.Tests;
 using CO.CDP.TestKit.Mvc;
 using FluentAssertions;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Xunit.Abstractions;
@@ -34,9 +35,36 @@ public class DataSharingApiIntegrationTests: IClassFixture<OrganisationInformati
     }
 
     [Fact]
-    public async Task TempGetShareCodesWorking()
+    public async Task DataSharingClient_Returns200_WhenShareCodeExists()
     {
         var organisationId = Guid.NewGuid();
+        SeedData(organisationId, "ABC123");
+
+        IDataSharingClient client = new DataSharingClient("https://localhost", _httpClient);
+
+        var response = await client.GetSharedDataAsync("ABC123");
+        response.Id.Should().Be(organisationId);
+    }
+
+    [Fact]
+    public async Task DataSharingClient_Returns404_WhenShareCodeDoesNotExist()
+    {
+        var organisationId = Guid.NewGuid();
+        SeedData(organisationId, "ABC123");
+
+        IDataSharingClient client = new DataSharingClient("https://localhost", _httpClient);
+
+        Func<Task> act = async () => await client.GetSharedDataAsync("ABC456");
+
+        var exception = await act.Should().ThrowAsync<ApiException<ProblemDetails>>();
+        exception.Which.StatusCode.Should().Be(404);
+        exception.Which.Result.Detail.Should().Contain("Share code not found");
+    }
+
+    private void SeedData(Guid organisationId, string shareCode)
+    {
+        ClearDatabase();
+
         using (var context = _postgreSql.OrganisationInformationContext())
         {
             var organisation = new Organisation
@@ -103,7 +131,7 @@ public class DataSharingApiIntegrationTests: IClassFixture<OrganisationInformati
 
             context.SharedConsents.Add(new OrganisationInformation.Persistence.Forms.SharedConsent
             {
-                Guid =  new Guid(),
+                Guid = new Guid(),
                 OrganisationId = organisation.Id,
                 Organisation = organisation,
                 FormId = 1,
@@ -116,17 +144,25 @@ public class DataSharingApiIntegrationTests: IClassFixture<OrganisationInformati
 
             context.SaveChanges();
         }
+    }
 
-        IDataSharingClient client = new DataSharingClient("https://localhost", _httpClient);
+    private void ClearDatabase()
+    {
+        using var context = _postgreSql.OrganisationInformationContext();
+        context.Database.ExecuteSqlRaw(@"
+        DO $$ 
+        DECLARE 
+            tables TEXT;
+        BEGIN 
+            SELECT string_agg(format('TRUNCATE TABLE ""%I"" CASCADE', tablename), '; ') 
+            INTO tables
+            FROM pg_tables 
+            WHERE schemaname = 'public'
+            AND tablename <> '__EFMigrationsHistory';
 
-        var response = await client.GetSharedDataAsync("ABC123");
-        response.Id.Should().Be(organisationId);
+            EXECUTE tables;
+        END $$;
+    ");
+        context.SaveChanges();
     }
 }
-
-
-//Func<Task> act = async () => await client.GetSharedDataAsync("ABC123");
-
-//var exception = await act.Should().ThrowAsync<ApiException<ProblemDetails>>();
-//exception.Which.StatusCode.Should().Be(404);
-//exception.Which.Result.Detail.Should().Contain("Share code not found");
