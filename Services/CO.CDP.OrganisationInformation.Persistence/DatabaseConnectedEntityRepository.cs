@@ -1,4 +1,7 @@
+using CO.CDP.OrganisationInformation.Persistence.Forms;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json.Linq;
+using System.Runtime.CompilerServices;
 
 namespace CO.CDP.OrganisationInformation.Persistence;
 
@@ -24,6 +27,35 @@ public class DatabaseConnectedEntityRepository(OrganisationInformationContext co
             .ThenInclude(p => p.Address)
             .Where(t => t.SupplierOrganisation.Guid == organisationId && (t.EndDate == null || t.EndDate > DateTime.Today))
             .ToArrayAsync();
+    }
+
+    public Task<bool> IsConnectedEntityUsedInExclusionAsync(Guid organisationId, Guid connectedEntityId)
+    {
+        var activeOrganisationExclusions = (from fas in context.FormAnswerSets
+                                            join fs in context.Set<FormSection>() on fas.SectionId equals fs.Id
+                                            join sc in context.SharedConsents on fs.FormId equals sc.FormId
+                                            join fa in context.Set<FormAnswer>() on fas.Id equals fa.FormAnswerSetId
+                                            where !fas.Deleted &&
+                                             fs.Type == FormSectionType.Exclusions &&
+                                             fa.JsonValue != null &&
+                                             sc.Organisation.Guid == organisationId
+                                            select new { sc.FormId, fas.SectionId, SharedConsentId = sc.Id, fa.JsonValue })
+                                            .Distinct().ToList();
+
+        foreach (var fas in activeOrganisationExclusions)
+        {
+            if (!string.IsNullOrEmpty(fas.JsonValue))
+            {
+                dynamic json = JObject.Parse(fas.JsonValue);
+
+                if (json.id == connectedEntityId)
+                {
+                    return Task.FromResult(true);
+                }
+            }
+        }
+
+        return Task.FromResult(false);
     }
 
     public async Task<IEnumerable<ConnectedEntityLookup?>> GetSummary(Guid organisationId)

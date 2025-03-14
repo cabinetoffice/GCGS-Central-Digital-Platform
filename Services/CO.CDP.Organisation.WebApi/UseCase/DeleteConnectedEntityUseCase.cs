@@ -14,6 +14,14 @@ public class DeleteConnectedEntityUseCase(IOrganisationRepository organisationRe
         var connectedEntity = await connectedEntityRepository.Find(command.organisationId, command.connectedEntityId)
             ?? throw new UnknownConnectedEntityException($"Unknown connected entity {command.connectedEntityId}.");
 
+        var isConnectedPersonInUse = await connectedEntityRepository.IsConnectedEntityUsedInExclusionAsync(
+            command.organisationId, command.connectedEntityId);
+
+        if (isConnectedPersonInUse)
+        {
+            throw new CannotDeleteConnectedEntityException($"Connected entity {command.connectedEntityId} in organisation {command.organisationId} used in active exclusion.");
+        }
+
         connectedEntity.EndDate = command.deleteConnectedEntity.EndDate;
 
         await connectedEntityRepository.Save(connectedEntity);
