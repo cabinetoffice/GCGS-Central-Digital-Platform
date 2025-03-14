@@ -10,7 +10,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Xunit.Abstractions;
 namespace CO.CDP.DataSharing.WebApi.Tests.Api;
 
-public class DataSharingApiIntegrationTests: IClassFixture<OrganisationInformationPostgreSqlFixture>
+public class DataSharingApiConnectedPersonsIntegrationTests: IClassFixture<OrganisationInformationPostgreSqlFixture>
 {
     private readonly HttpClient _httpClient;
     private readonly OrganisationInformationPostgreSqlFixture _postgreSql;
@@ -18,7 +18,7 @@ public class DataSharingApiIntegrationTests: IClassFixture<OrganisationInformati
     private readonly IDataSharingClient _client;
     private readonly Guid supplierInformationFormId = new("0618b13e-eaf2-46e3-a7d2-6f2c44be7022");
 
-    public DataSharingApiIntegrationTests(ITestOutputHelper testOutputHelper, OrganisationInformationPostgreSqlFixture postgreSql)
+    public DataSharingApiConnectedPersonsIntegrationTests(ITestOutputHelper testOutputHelper, OrganisationInformationPostgreSqlFixture postgreSql)
     {
         TestWebApplicationFactory<Program> _factory = new(builder =>
         {
