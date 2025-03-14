@@ -30,8 +30,10 @@ build-docker: ## Build Docker images
 .PHONY: build-docker
 
 up: render-compose-override ## Start Docker containers
+	@docker compose ls
 	@docker compose up -d
 	@docker compose ps
+	@docker network list
 .PHONY: up
 
 verify-up: render-compose-override ## Verify if all Docker containers have run
@@ -131,8 +133,18 @@ localization-import-from-csv:
 .PHONY: localization-import-from-csv
 
 render-compose-override: ## Render compose override from template and inject secrets (WIP)
-	cp compose.override.yml.template compose.override.yml
-	docker compose ls
+	@if [ ! -f compose.override.yml ]; then \
+		cp compose.override.yml.template compose.override.yml; \
+		echo "compose.override.yml created from template."; \
+	else \
+		echo "compose.override.yml already exists. Skipping."; \
+	fi
+.PHONY: render-compose-override
+
+render-compose-override-force: ## Force overwrite compose override from template
+	@cp compose.override.yml.template compose.override.yml
+	@echo "compose.override.yml has been overwritten from template."
+.PHONY: render-compose-override-force
 
 e2e-test: up ## Build & run e2e tests in Docker
 	docker network ls
