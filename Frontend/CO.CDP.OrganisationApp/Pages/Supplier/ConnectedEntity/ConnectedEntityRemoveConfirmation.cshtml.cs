@@ -81,23 +81,20 @@ public class ConnectedEntityRemoveConfirmationModel(
                     ModelState.AddModelError(nameof(EndDate), StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityRemoveConfirmation_DateInvalidError);
                     return Page();
                 }
-                endDate = endDate.AddHours(23).AddMinutes(59).AddSeconds(59).ToUniversalTime();
 
+                if (endDate >= DateTime.Today)
+                {
+                    ModelState.AddModelError(nameof(EndDate), StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityRemoveConfirmation_DateNotInPastError);
+                    return Page();
+                }
+
+                endDate = endDate.AddHours(23).AddMinutes(59).AddSeconds(59).ToUniversalTime();
                 await organisationClient.DeleteConnectedEntityAsync(Id, ConnectedPersonId, new DeleteConnectedEntity(endDate));
             }
             else if (ConfirmRemove == RemoveConnectedPersonReason.AddedInError)
             {
                 await organisationClient.DeleteConnectedEntityAsync(Id, ConnectedPersonId, new DeleteConnectedEntity(DateTime.Now.ToUniversalTime()));
             }
-
-            if (endDate >= DateTime.Today)
-            {
-                ModelState.AddModelError(nameof(EndDate), StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityRemoveConfirmation_DateNotInPastError);
-                return Page();
-            }
-
-            endDate = endDate.AddHours(23).AddMinutes(59).AddSeconds(59).ToUniversalTime();
-            await organisationClient.DeleteConnectedEntityAsync(Id, ConnectedPersonId, new DeleteConnectedEntity(endDate));
         }
         catch (ApiException<ProblemDetails> aex)
         {
