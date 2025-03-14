@@ -26,9 +26,34 @@
         <partial name="_ErrorSummary" model="@Model.ModelState"/>
     </div>
     <div class="govuk-grid-column-full">
+
         <h1 class="govuk-heading-l">
             @ViewData["Title"]
         </h1>
+
+        @{
+            foreach (var request in Model.PendingJoinRequests)
+            {
+                <div class="govuk-notification-banner" role="region" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
+                    <div class="govuk-notification-banner__header">
+                        <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
+                            @StaticTextResource.Global_Important
+                        </h2>
+                    </div>
+                    <div class="govuk-notification-banner__content">
+                        <p class="govuk-notification-banner__heading">
+                            @string.Format(@StaticTextResource.Users_UserRoleAdmin_RequestToJoinNotification, @request.Person.FirstName, @request.Person.LastName)
+                        </p>
+                        <p>
+                            <a class="govuk-link govuk-!-font-size-19" href="/organisation/@Model.Id/users/user-summary">
+                                Approve or reject the request
+                            </a>
+                        </p>
+                    </div>
+                </div>
+            }
+        }
+
         <form class="form" method="post">
             <div class="govuk-form-group @(firstNameHasError ? "govuk-form-group--error" : "")">
                 <label class="govuk-label" for="@nameof(Model.FirstName)">
