@@ -10,5 +10,5 @@ services:
 
 networks:
   default:
-    name: cdp-sirsi-network
+    name: cdp-sirsi
     driver: bridge
