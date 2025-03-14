@@ -133,7 +133,6 @@ localization-import-from-csv:
 render-compose-override: ## Render compose override from template and inject secrets (WIP)
 	cp compose.override.yml.template compose.override.yml
 	docker compose ls
-.PHONY: render-compose-override
 
 e2e-test: up ## Build & run e2e tests in Docker
 	docker network ls
