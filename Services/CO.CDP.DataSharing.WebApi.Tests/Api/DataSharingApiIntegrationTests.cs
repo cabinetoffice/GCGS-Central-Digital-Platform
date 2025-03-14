@@ -16,6 +16,7 @@ public class DataSharingApiIntegrationTests: IClassFixture<OrganisationInformati
     private readonly OrganisationInformationPostgreSqlFixture _postgreSql;
     private readonly OrganisationInformationContext _context;
     private readonly IDataSharingClient _client;
+    private readonly Guid supplierInformationFormId = new("0618b13e-eaf2-46e3-a7d2-6f2c44be7022");
 
     public DataSharingApiIntegrationTests(ITestOutputHelper testOutputHelper, OrganisationInformationPostgreSqlFixture postgreSql)
     {
@@ -41,8 +42,8 @@ public class DataSharingApiIntegrationTests: IClassFixture<OrganisationInformati
     public async Task DataSharingClient_Returns200_WhenShareCodeExists()
     {
         ClearDatabase();
-        (Organisation organisation, OrganisationInformation.Persistence.Forms.Form form) = SeedBaseData();
-        SeedShareCode("ABC123", organisation, form);
+        Organisation organisation = SeedBaseData();
+        SeedShareCode("ABC123", organisation);
 
         var response = await _client.GetSharedDataAsync("ABC123");
         response.Id.Should().Be(organisation.Guid);
@@ -52,8 +53,8 @@ public class DataSharingApiIntegrationTests: IClassFixture<OrganisationInformati
     public async Task DataSharingClient_Returns404_WhenShareCodeDoesNotExist()
     {
         ClearDatabase();
-        (Organisation organisation, OrganisationInformation.Persistence.Forms.Form form) = SeedBaseData();
-        SeedShareCode("ABC123", organisation, form);
+        Organisation organisation = SeedBaseData();
+        SeedShareCode("ABC123", organisation);
 
         Func<Task> act = async () => await _client.GetSharedDataAsync("ABC456");
 
@@ -72,9 +73,9 @@ public class DataSharingApiIntegrationTests: IClassFixture<OrganisationInformati
         DateTime? connectedPersonEndDate = cpEndDate != null ? DateTime.Parse(cpEndDate) : null;
 
         ClearDatabase();
-        (Organisation organisation, OrganisationInformation.Persistence.Forms.Form form) = SeedBaseData();
+        Organisation organisation = SeedBaseData();
         SeedConnectedEntities(organisation, connectedPersonCreationDate, connectedPersonEndDate, ConnectedEntity.ConnectedEntityType.Individual);
-        SeedShareCode("ABC123", organisation, form, shareCodeCreationDate);
+        SeedShareCode("ABC123", organisation, shareCodeCreationDate);
        
         var response = await _client.GetSharedDataAsync("ABC123");
         response.AssociatedPersons.Should().HaveCount(1);
@@ -92,9 +93,9 @@ public class DataSharingApiIntegrationTests: IClassFixture<OrganisationInformati
         DateTime? connectedPersonEndDate = cpEndDate != null ? DateTime.Parse(cpEndDate) : null;
 
         ClearDatabase();
-        (Organisation organisation, OrganisationInformation.Persistence.Forms.Form form) = SeedBaseData();
+        Organisation organisation = SeedBaseData();
         SeedConnectedEntities(organisation, connectedPersonCreationDate, connectedPersonEndDate, ConnectedEntity.ConnectedEntityType.Individual);
-        SeedShareCode("ABC123", organisation, form, shareCodeCreationDate);
+        SeedShareCode("ABC123", organisation, shareCodeCreationDate);
 
         var response = await _client.GetSharedDataAsync("ABC123");
         response.AssociatedPersons.Should().HaveCount(0);
@@ -110,9 +111,9 @@ public class DataSharingApiIntegrationTests: IClassFixture<OrganisationInformati
         DateTime? connectedPersonEndDate = cpEndDate != null ? DateTime.Parse(cpEndDate) : null;
 
         ClearDatabase();
-        (Organisation organisation, OrganisationInformation.Persistence.Forms.Form form) = SeedBaseData();
+        Organisation organisation = SeedBaseData();
         SeedConnectedEntities(organisation, connectedPersonCreationDate, connectedPersonEndDate, ConnectedEntity.ConnectedEntityType.Organisation);
-        SeedShareCode("ABC123", organisation, form, shareCodeCreationDate);
+        SeedShareCode("ABC123", organisation, shareCodeCreationDate);
 
         var response = await _client.GetSharedDataAsync("ABC123");
         response.AdditionalEntities.Should().HaveCount(1);
@@ -130,15 +131,15 @@ public class DataSharingApiIntegrationTests: IClassFixture<OrganisationInformati
         DateTime? connectedPersonEndDate = cpEndDate != null ? DateTime.Parse(cpEndDate) : null;
 
         ClearDatabase();
-        (Organisation organisation, OrganisationInformation.Persistence.Forms.Form form) = SeedBaseData();
+        Organisation organisation = SeedBaseData();
         SeedConnectedEntities(organisation, connectedPersonCreationDate, connectedPersonEndDate, ConnectedEntity.ConnectedEntityType.Organisation);
-        SeedShareCode("ABC123", organisation, form, shareCodeCreationDate);
+        SeedShareCode("ABC123", organisation, shareCodeCreationDate);
 
         var response = await _client.GetSharedDataAsync("ABC123");
         response.AdditionalEntities.Should().HaveCount(0);
     }
 
-    private (Organisation, OrganisationInformation.Persistence.Forms.Form) SeedBaseData()
+    private Organisation SeedBaseData()
     {
         var organisation = new Organisation
         {
@@ -189,24 +190,13 @@ public class DataSharingApiIntegrationTests: IClassFixture<OrganisationInformati
         _context.Organisations.Add(organisation);
         _context.SaveChanges();
 
-        var form = new OrganisationInformation.Persistence.Forms.Form
-        {
-            Guid = Guid.NewGuid(),
-            Name = "Test form",
-            Version = "1",
-            IsRequired = true,
-            Scope = FormScope.SupplierInformation,
-            Sections = []
-        };
-
-        _context.Forms.Add(form);
-        _context.SaveChanges();
-
-        return (organisation, form);
+        return organisation;
     }
 
-    private void SeedShareCode(string shareCode, Organisation organisation, OrganisationInformation.Persistence.Forms.Form form, DateTime? shareCodeCreationDate = null)
+    private void SeedShareCode(string shareCode, Organisation organisation, DateTime? shareCodeCreationDate = null)
     {
+        var form = _context.Forms.Where(f => f.Guid == supplierInformationFormId).First();
+
         _context.SharedConsents.Add(new OrganisationInformation.Persistence.Forms.SharedConsent
         {
             Guid = new Guid(),
