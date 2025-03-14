@@ -259,6 +259,9 @@ public class DataSharingApiIntegrationTests: IClassFixture<OrganisationInformati
         _context.ConnectedEntities.Add(entity);
 
         _context.SaveChanges();
+
+        entity.CreatedOn = connectedPersonCreationDate;
+        _context.SaveChanges();
     }
 
     private void ClearDatabase()
