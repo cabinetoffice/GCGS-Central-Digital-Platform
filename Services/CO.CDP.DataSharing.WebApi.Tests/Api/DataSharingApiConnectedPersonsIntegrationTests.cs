@@ -43,8 +43,8 @@ public class DataSharingApiConnectedPersonsIntegrationTests: IClassFixture<Organ
     public async Task DataSharingClient_Returns200_WhenShareCodeExists()
     {
         ClearDatabase();
-        Organisation organisation = SeedBaseData();
-        SeedShareCode(organisation);
+        Organisation organisation = CreateOrganisation();
+        CreateSharedConsent(organisation);
         var createShareCodeResponse = await _client.CreateSharedDataAsync(new ShareRequest(supplierInformationFormId, organisation.Guid));
 
         var response = await _client.GetSharedDataAsync(createShareCodeResponse.ShareCode);
@@ -55,8 +55,8 @@ public class DataSharingApiConnectedPersonsIntegrationTests: IClassFixture<Organ
     public async Task DataSharingClient_Returns404_WhenShareCodeDoesNotExist()
     {
         ClearDatabase();
-        Organisation organisation = SeedBaseData();
-        SeedShareCode(organisation);
+        Organisation organisation = CreateOrganisation();
+        CreateSharedConsent(organisation);
         var createShareCodeResponse = await _client.CreateSharedDataAsync(new ShareRequest(supplierInformationFormId, organisation.Guid));
 
         Func<Task> act = async () => await _client.GetSharedDataAsync("ABC456");
@@ -75,9 +75,9 @@ public class DataSharingApiConnectedPersonsIntegrationTests: IClassFixture<Organ
         DateTime? connectedPersonEndDate = cpEndDateOffset != null ? DateTime.Now.AddHours(cpEndDateOffset.Value) : null;
 
         ClearDatabase();
-        Organisation organisation = SeedBaseData();
-        SeedShareCode(organisation);
-        SeedConnectedEntities(organisation, connectedPersonCreationDate, connectedPersonEndDate, ConnectedEntity.ConnectedEntityType.Individual);
+        Organisation organisation = CreateOrganisation();
+        CreateSharedConsent(organisation);
+        CreateConnectedEntities(organisation, connectedPersonCreationDate, connectedPersonEndDate, ConnectedEntity.ConnectedEntityType.Individual);
         var createShareCodeResponse = await _client.CreateSharedDataAsync(new ShareRequest(supplierInformationFormId, organisation.Guid));
 
         var response = await _client.GetSharedDataAsync(createShareCodeResponse.ShareCode);
@@ -95,9 +95,9 @@ public class DataSharingApiConnectedPersonsIntegrationTests: IClassFixture<Organ
         DateTime? connectedPersonEndDate = cpEndDateOffset != null ? DateTime.Now.AddHours(cpEndDateOffset.Value) : null;
 
         ClearDatabase();
-        Organisation organisation = SeedBaseData();
-        SeedShareCode(organisation);
-        SeedConnectedEntities(organisation, connectedPersonCreationDate, connectedPersonEndDate, ConnectedEntity.ConnectedEntityType.Individual);
+        Organisation organisation = CreateOrganisation();
+        CreateSharedConsent(organisation);
+        CreateConnectedEntities(organisation, connectedPersonCreationDate, connectedPersonEndDate, ConnectedEntity.ConnectedEntityType.Individual);
         var createShareCodeResponse = await _client.CreateSharedDataAsync(new ShareRequest(supplierInformationFormId, organisation.Guid));
 
         var response = await _client.GetSharedDataAsync(createShareCodeResponse.ShareCode);
@@ -113,9 +113,9 @@ public class DataSharingApiConnectedPersonsIntegrationTests: IClassFixture<Organ
         DateTime? connectedPersonEndDate = cpEndDateOffset != null ? DateTime.Now.AddHours(cpEndDateOffset.Value) : null;
 
         ClearDatabase();
-        Organisation organisation = SeedBaseData();
-        SeedShareCode(organisation);
-        SeedConnectedEntities(organisation, connectedPersonCreationDate, connectedPersonEndDate, ConnectedEntity.ConnectedEntityType.Organisation);
+        Organisation organisation = CreateOrganisation();
+        CreateSharedConsent(organisation);
+        CreateConnectedEntities(organisation, connectedPersonCreationDate, connectedPersonEndDate, ConnectedEntity.ConnectedEntityType.Organisation);
         var createShareCodeResponse = await _client.CreateSharedDataAsync(new ShareRequest(supplierInformationFormId, organisation.Guid));
 
         var response = await _client.GetSharedDataAsync(createShareCodeResponse.ShareCode);
@@ -133,16 +133,16 @@ public class DataSharingApiConnectedPersonsIntegrationTests: IClassFixture<Organ
         DateTime? connectedPersonEndDate = cpEndDateOffset != null ? DateTime.Now.AddHours(cpEndDateOffset.Value) : null;
 
         ClearDatabase();
-        Organisation organisation = SeedBaseData();
-        SeedShareCode(organisation);
-        SeedConnectedEntities(organisation, connectedPersonCreationDate, connectedPersonEndDate, ConnectedEntity.ConnectedEntityType.Organisation);
+        Organisation organisation = CreateOrganisation();
+        CreateSharedConsent(organisation);
+        CreateConnectedEntities(organisation, connectedPersonCreationDate, connectedPersonEndDate, ConnectedEntity.ConnectedEntityType.Organisation);
         var createShareCodeResponse = await _client.CreateSharedDataAsync(new ShareRequest(supplierInformationFormId, organisation.Guid));
 
         var response = await _client.GetSharedDataAsync(createShareCodeResponse.ShareCode);
         response.AdditionalEntities.Should().HaveCount(0);
     }
 
-    private Organisation SeedBaseData()
+    private Organisation CreateOrganisation()
     {
         var organisation = new Organisation
         {
@@ -160,7 +160,7 @@ public class DataSharingApiConnectedPersonsIntegrationTests: IClassFixture<Organ
                 {
                     IdentifierId = "1234567",
                     Scheme = "Whatever",
-                    LegalName = "New Org Legal Name",
+                    LegalName = "Org Legal Name",
                     Primary = true
                 }
             },
@@ -196,7 +196,7 @@ public class DataSharingApiConnectedPersonsIntegrationTests: IClassFixture<Organ
         return organisation;
     }
 
-    private void SeedShareCode(Organisation organisation)
+    private void CreateSharedConsent(Organisation organisation)
     {
         var form = _context.Forms.Where(f => f.Guid == supplierInformationFormId).First();
 
@@ -215,7 +215,7 @@ public class DataSharingApiConnectedPersonsIntegrationTests: IClassFixture<Organ
         _context.SaveChanges();
     }
 
-    private void SeedConnectedEntities(Organisation organisation, DateTime connectedPersonCreationDate, DateTime? connectedPersonEndDate, ConnectedEntity.ConnectedEntityType type)
+    private void CreateConnectedEntities(Organisation organisation, DateTime connectedPersonCreationDate, DateTime? connectedPersonEndDate, ConnectedEntity.ConnectedEntityType type)
     {
         var entity = new ConnectedEntity
         {
