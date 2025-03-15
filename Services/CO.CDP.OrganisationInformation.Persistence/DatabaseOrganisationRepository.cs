@@ -3,6 +3,9 @@ using CO.CDP.OrganisationInformation.Persistence.Forms;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using CO.CDP.OrganisationInformation.Persistence.Constants;
+using CO.CDP.OrganisationInformation.Persistence.NonEfEntities;
+using Npgsql;
+using NpgsqlTypes;
 
 namespace CO.CDP.OrganisationInformation.Persistence;
 
@@ -215,35 +218,51 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
         return await result.AsSingleQuery().ToListAsync();
     }
 
-    public async Task<IList<Organisation>> GetPaginated(PartyRole? role, PartyRole? pendingRole, string? searchText, int limit, int skip)
+    public async Task<IList<OrganisationRawDto>> GetPaginated(PartyRole? role, PartyRole? pendingRole, string? searchText, int limit, int skip)
     {
-        IQueryable<Organisation> result = context.Organisations
-            .Include(o => o.ReviewedBy)
-            .Include(o => o.Identifiers)
-            .Include(o => o.BuyerInfo)
-            .Include(o => o.SupplierInfo)
-            .Include(o => o.Persons)
-            .ThenInclude(p => p.PersonOrganisations)
-            .Include(o => o.Addresses)
-            .Include(o => o.Addresses)
-            .ThenInclude(p => p.Address)
-            .OrderBy(o => o.Name)
-            .Where(o =>
-                (pendingRole.HasValue && o.PendingRoles.Contains(pendingRole.Value)) ||
-                (role.HasValue && o.Roles.Contains(role.Value))
-            );
+        var sql = @"
+            SELECT
+                o.id,
+                o.guid,
+                o.name,
+                o.roles,
+                o.pending_roles,
+                o.approved_on,
+                o.review_comment,
+                reviewed_by.first_name AS reviewed_by_first_name,
+                reviewed_by.last_name AS reviewed_by_last_name,
+                COALESCE(STRING_AGG(DISTINCT i.scheme || ':' || i.identifier_id, ', '), '') AS identifiers,
+                COALESCE(STRING_AGG(DISTINCT cp.email, ', '), '') AS contact_points,
+                p.email as admin_email
+            FROM organisations o
+            LEFT JOIN organisation_person op ON op.organisation_id = o.id
+            LEFT JOIN persons p ON p.id = op.person_id AND op.scopes @> '[""ADMIN""]'::jsonb
+            LEFT JOIN identifiers i ON i.organisation_id = o.id
+            LEFT JOIN contact_points cp ON cp.organisation_id = o.id
+            LEFT JOIN persons reviewed_by ON reviewed_by.id = o.reviewed_by_id
+            WHERE
+                ((:role IS NULL OR :role = ANY(o.roles))
+              OR (:pendingRole IS NULL OR :pendingRole = ANY(o.pending_roles)))
+              AND (:searchText IS NULL OR o.name ILIKE '%' || :searchText || '%')
+            GROUP BY o.id, o.guid, o.name, o.roles, o.pending_roles, o.approved_on, o.review_comment, reviewed_by.first_name, reviewed_by.last_name, admin_email
+            ORDER BY o.name ASC
+            LIMIT :limit OFFSET :skip;";
 
-        if (!string.IsNullOrWhiteSpace(searchText))
+        var roleValue = role.HasValue ? (int)role.Value : (object)DBNull.Value;
+        var pendingRoleValue = pendingRole.HasValue ? (int)pendingRole.Value : (object)DBNull.Value;
+
+        var parameters = new[]
         {
-            result = result.Where(o => o.Name.Contains(searchText) ||
-                                       EF.Functions.TrigramsSimilarity(o.Name, searchText) > 0.3);
-        }
+            new NpgsqlParameter("role", NpgsqlDbType.Integer) { Value = roleValue },
+            new NpgsqlParameter("pendingRole", NpgsqlDbType.Integer) { Value = pendingRoleValue },
+            new NpgsqlParameter("searchText", NpgsqlDbType.Text) { Value = string.IsNullOrWhiteSpace(searchText) ? (object)DBNull.Value : searchText },
+            new NpgsqlParameter("limit", NpgsqlDbType.Integer) { Value = limit },
+            new NpgsqlParameter("skip", NpgsqlDbType.Integer) { Value = skip }
+        };
 
-        return await result
-            .AsSplitQuery()
-            .Skip(skip)
-            .Take(limit)
-            .ToListAsync();
+        var rawResults = await context.Database.SqlQueryRaw<OrganisationRawDto>(sql, parameters).ToListAsync();
+
+        return rawResults;
     }
 
     public async Task<int> GetTotalCount(PartyRole? role, PartyRole? pendingRole, string? searchText)

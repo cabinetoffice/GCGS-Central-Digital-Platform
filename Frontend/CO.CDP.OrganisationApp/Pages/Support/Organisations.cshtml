@@ -76,41 +76,44 @@
                     </a>
                     <ul class="govuk-list">
                         @{
-                            foreach (var i in OrganisationsModel.CombineIdentifiers(@org.Identifier, @org.AdditionalIdentifiers))
+                            foreach (var i in @org.Identifiers)
                             {
-                                <li>@i.Scheme.SchemeDescription(): @i.Id</li>
+                                <li>@i</li>
                             }
                         }
                     </ul>
                 </th>
                 <td class="govuk-table__cell">
                     <ul class="govuk-list">
-                        <li>@StaticTextResource.Support_Organisations_TableHeader_AdminEmail: @(org.AdminPerson?.Email ?? "N/A")</li>
-                        <li>@StaticTextResource.Support_Organisations_TableHeader_OrgEmail: @org.ContactPoint.Email</li>
+                        @{
+                            foreach (var i in @org.ContactPoints)
+                            {
+                                <li>@StaticTextResource.Support_Organisations_TableHeader_OrgEmail: @i</li>
+                            }
+                        }
+                        <li>@StaticTextResource.Support_Organisations_TableHeader_AdminEmail: @org.AdminEmail</li>
                     </ul>
                 </td>
                 @{
                     if (Model.Type == "buyer")
                     {
-                        var approval = org.Details?.Approval;
-
                         <td class="govuk-table__cell">
                             @{
-                                if (approval?.ApprovedOn == null)
+                                if (org.ApprovedOn == null)
                                 {
                                     <span>@StaticTextResource.Support_Organisations_Status_Pending</span>
                                 }
                                 else
                                 {
                                     <span>@StaticTextResource.Support_Organisations_Status_Approved</span><br/>
-                                    <span>@(approval?.ApprovedOn == null ? "N/A" : approval?.ApprovedOn)</span><br/>
-                                    <span>@(approval?.ReviewedBy?.Name ?? "N/A")</span>
+                                    <span>@(org.ApprovedOn == null ? "N/A" : org.ApprovedOn)</span><br/>
+                                    <span>@(org.ReviewedByFirstName != null ? org.ReviewedByFirstName + "" + org.ReviewedByLastName : "N/A")</span>
                                 }
                             }
                         </td>
                         <td class="govuk-table__cell">
                             @{
-                                if (approval?.Comment?.Length > 0)
+                                if (org.ReviewComment?.Length > 0)
                                 {
                                     <details class="govuk-details">
                                         <summary class="govuk-details__summary">
@@ -119,7 +122,7 @@
                                             </span>
                                         </summary>
                                         <div class="govuk-details__text">
-                                            @approval?.Comment
+                                            @org.ReviewComment
                                         </div>
                                     </details>
                                 }
@@ -131,7 +134,7 @@
                         </td>
                         <td class="govuk-table__cell">
                             @{
-                                if (@org.Details?.Approval?.ApprovedOn == null)
+                                if (@org.ApprovedOn == null)
                                 {
                                     <a class="govuk-link" href="/support/organisation/@org.Id/approval">@StaticTextResource.Support_Organisations_Review_Link</a>
                                 }
