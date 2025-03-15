@@ -361,8 +361,6 @@ public class DataSharingApiSnapshottingIntegrationTests : IClassFixture<Organisa
 
         // Update data
         connectedEntity.Organisation!.Name = "Updated org name";
-        connectedEntity.Organisation!.Category = ConnectedEntity.ConnectedOrganisationCategory.ACompanyYourOrganisationHasTakenOver;
-
         _context.SaveChanges();
 
         // Create second share code
@@ -383,7 +381,33 @@ public class DataSharingApiSnapshottingIntegrationTests : IClassFixture<Organisa
     [Fact]
     public async Task DataSharingClientReturnsCorrectConnectedEntityIndividual_WhenChangingDataBetweenShareCodeCreation()
     {
+        // Setup
+        ClearDatabase();
+        Organisation organisation = CreateOrganisation("Test org");
+        ConnectedEntity connectedEntity = CreateConnectedEntity(organisation, ConnectedEntity.ConnectedEntityType.Individual);
 
+        // Create first share code
+        CreateSharedConsent(organisation);
+        var createShareCodeResponse1 = await _client.CreateSharedDataAsync(new ShareRequest(supplierInformationFormId, organisation.Guid));
+
+        // Update data
+        connectedEntity.IndividualOrTrust!.FirstName = "Updated first name";
+        connectedEntity.IndividualOrTrust!.LastName = "Updated last name";
+        _context.SaveChanges();
+
+        // Create second share code
+        CreateSharedConsent(organisation);
+        var createShareCodeResponse2 = await _client.CreateSharedDataAsync(new ShareRequest(supplierInformationFormId, organisation.Guid));
+
+        // Verify original data in first share code
+        var shareData1 = await _client.GetSharedDataAsync(createShareCodeResponse1.ShareCode);
+        shareData1.AssociatedPersons.Should().HaveCount(1);
+        shareData1.AssociatedPersons.First().Name.Should().Be("John Doe");
+
+        // Verify updated data in second share code
+        var shareData2 = await _client.GetSharedDataAsync(createShareCodeResponse2.ShareCode);
+        shareData2.AssociatedPersons.Should().HaveCount(1);
+        shareData2.AssociatedPersons.First().Name.Should().Be("Updated first name Updated last name");
     }
 
     private Organisation CreateOrganisation(string orgName)
