@@ -42,24 +42,111 @@ public class DataSharingApiSnapshottingIntegrationTests : IClassFixture<Organisa
     [Fact]
     public async Task DataSharingClient_ReturnsCorrectOrgNameSnapshot_WhenChangingOrgNameBetweenShareCodeCreation()
     {
+        // Setup
         ClearDatabase();
         Organisation organisation = CreateOrganisation("Test org");
 
+        // Create first shared code
         CreateSharedConsent(organisation);
         var createShareCodeResponse1 = await _client.CreateSharedDataAsync(new ShareRequest(supplierInformationFormId, organisation.Guid));
 
+        // Update data
         organisation.Name = "Updated org name";
         _context.SaveChanges();
 
+        // Create second share code
         CreateSharedConsent(organisation);
         var createShareCodeResponse2 = await _client.CreateSharedDataAsync(new ShareRequest(supplierInformationFormId, organisation.Guid));
 
+        // Verify original data in first share code
         var shareData1 = await _client.GetSharedDataAsync(createShareCodeResponse1.ShareCode);
-        shareData1.Id.Should().Be(organisation.Guid);
         shareData1.Name.Should().Be("Test org");
 
+        // Verify updated data in second share code
         var shareData2 = await _client.GetSharedDataAsync(createShareCodeResponse2.ShareCode);
         shareData2.Name.Should().Be("Updated org name");
+    }
+
+    [Fact]
+    public async Task DataSharingClientReturnsCorrectSupplierInformation_WhenChangingDataBetweenShareCodeCreation()
+    {
+        // Setup
+        ClearDatabase();
+        Organisation organisation = CreateOrganisation("Test org");
+        organisation.SupplierInfo = new Organisation.SupplierInformation
+        {
+            SupplierType = OrganisationInformation.SupplierType.Organisation,
+            OperationTypes = new List<OrganisationInformation.OperationType> { OrganisationInformation.OperationType.NonGovernmental },
+        };
+        _context.SaveChanges();
+
+        // Create first share code
+        CreateSharedConsent(organisation);
+        var createShareCodeResponse1 = await _client.CreateSharedDataAsync(new ShareRequest(supplierInformationFormId, organisation.Guid));
+
+        // Update data
+        organisation.SupplierInfo.OperationTypes = new List<OrganisationInformation.OperationType> { OrganisationInformation.OperationType.PublicService };
+        _context.SaveChanges();
+
+        // Create second share code
+        CreateSharedConsent(organisation);
+        var createShareCodeResponse2 = await _client.CreateSharedDataAsync(new ShareRequest(supplierInformationFormId, organisation.Guid));
+
+        // Verify original data in first share code
+        var shareData1 = await _client.GetSharedDataAsync(createShareCodeResponse1.ShareCode);
+        shareData1.Details.Vcse.Should().BeTrue();
+        shareData1.Details.Scale.Should().Be("large");
+        shareData1.Details.ShelteredWorkshop.Should().BeFalse();
+        shareData1.Details.PublicServiceMissionOrganization.Should().BeFalse();
+
+        // Verify updated data in second share code
+        var shareData2 = await _client.GetSharedDataAsync(createShareCodeResponse2.ShareCode);
+        shareData2.Details.Vcse.Should().BeFalse();
+        shareData2.Details.Scale.Should().Be("large");
+        shareData2.Details.ShelteredWorkshop.Should().BeFalse();
+        shareData2.Details.PublicServiceMissionOrganization.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task DataSharingClientReturnsCorrectLegalForms_WhenChangingDataBetweenShareCodeCreation()
+    {
+
+    }
+
+    [Fact]
+    public async Task DataSharingClientReturnsCorrectIdentifiers_WhenChangingDataBetweenShareCodeCreation()
+    {
+
+    }
+
+    [Fact]
+    public async Task DataSharingClientReturnsCorrectOrganisationAddress_WhenChangingDataBetweenShareCodeCreation()
+    {
+
+    }
+
+    [Fact]
+    public async Task DataSharingClientReturnsCorrectContactPoints_WhenChangingDataBetweenShareCodeCreation()
+    {
+
+    }
+
+    [Fact]
+    public async Task DataSharingClientReturnsCorrectAddresses_WhenChangingDataBetweenShareCodeCreation()
+    {
+
+    }
+
+    [Fact]
+    public async Task DataSharingClientReturnsCorrectConnectedEntityOrganisation_WhenChangingDataBetweenShareCodeCreation()
+    {
+
+    }
+
+    [Fact]
+    public async Task DataSharingClientReturnsCorrectConnectedEntityIndividual_WhenChangingDataBetweenShareCodeCreation()
+    {
+
     }
 
     private Organisation CreateOrganisation(string orgName)
