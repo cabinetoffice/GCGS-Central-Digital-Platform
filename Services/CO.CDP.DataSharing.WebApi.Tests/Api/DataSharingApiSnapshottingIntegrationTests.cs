@@ -110,7 +110,52 @@ public class DataSharingApiSnapshottingIntegrationTests : IClassFixture<Organisa
     [Fact]
     public async Task DataSharingClientReturnsCorrectLegalForms_WhenChangingDataBetweenShareCodeCreation()
     {
+        // Setup
+        ClearDatabase();
+        Organisation organisation = CreateOrganisation("Test org");
+        organisation.SupplierInfo = new()
+        {
+            SupplierType = OrganisationInformation.SupplierType.Organisation,
+            LegalForm = new()
+            {
+                LawRegistered = "Law",
+                RegisteredLegalForm = "Registered legal form",
+                RegisteredUnderAct2006 = true,
+                RegistrationDate = DateTime.Parse("2025-03-14")
+            }
+        };
+        _context.SaveChanges();
 
+        // Create first shared code
+        CreateSharedConsent(organisation);
+        var createShareCodeResponse1 = await _client.CreateSharedDataAsync(new ShareRequest(supplierInformationFormId, organisation.Guid));
+
+        // Update data
+        organisation.SupplierInfo.LegalForm.LawRegistered = "Updated law";
+        organisation.SupplierInfo.LegalForm.RegisteredLegalForm = "Updated registered legal form";
+        organisation.SupplierInfo.LegalForm.RegisteredUnderAct2006 = false;
+        organisation.SupplierInfo.LegalForm.RegistrationDate = DateTime.Parse("2025-03-15");
+        _context.SaveChanges();
+
+        // Create second share code
+        CreateSharedConsent(organisation);
+        var createShareCodeResponse2 = await _client.CreateSharedDataAsync(new ShareRequest(supplierInformationFormId, organisation.Guid));
+
+        // Verify original data in first share code
+        var shareData1 = await _client.GetSharedDataAsync(createShareCodeResponse1.ShareCode);
+        shareData1.Details.LegalForm.Should().NotBeNull();
+        shareData1.Details.LegalForm!.LawRegistered.Should().Be("Law");
+        shareData1.Details.LegalForm.RegisteredLegalForm.Should().Be("Registered legal form");
+        shareData1.Details.LegalForm.RegisteredUnderAct2006.Should().BeTrue();
+        shareData1.Details.LegalForm.RegistrationDate.Should().Be("2025-03-14");
+
+        // Verify updated data in second share code
+        var shareData2 = await _client.GetSharedDataAsync(createShareCodeResponse2.ShareCode);
+        shareData2.Details.LegalForm.Should().NotBeNull();
+        shareData2.Details.LegalForm!.LawRegistered.Should().Be("Updated law");
+        shareData2.Details.LegalForm.RegisteredLegalForm.Should().Be("Updated registered legal form");
+        shareData2.Details.LegalForm.RegisteredUnderAct2006.Should().BeFalse();
+        shareData2.Details.LegalForm.RegistrationDate.Should().Be("2025-03-15");
     }
 
     [Fact]
