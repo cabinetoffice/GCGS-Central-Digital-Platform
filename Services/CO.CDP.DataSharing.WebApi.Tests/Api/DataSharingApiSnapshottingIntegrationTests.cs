@@ -161,7 +161,49 @@ public class DataSharingApiSnapshottingIntegrationTests : IClassFixture<Organisa
     [Fact]
     public async Task DataSharingClientReturnsCorrectIdentifiers_WhenChangingDataBetweenShareCodeCreation()
     {
+        // Setup
+        ClearDatabase();
+        Organisation organisation = CreateOrganisation("Test org");
 
+        // Create first shared code
+        CreateSharedConsent(organisation);
+        var createShareCodeResponse1 = await _client.CreateSharedDataAsync(new ShareRequest(supplierInformationFormId, organisation.Guid));
+
+        // Update data
+        organisation.Identifiers.Add(new Organisation.Identifier
+        {
+            IdentifierId = "7654321",
+            Scheme = "Something else",
+            LegalName = "Different org legal name",
+            Primary = false,
+            Uri = "http://something.com/7654321"
+        });
+        _context.SaveChanges();
+
+        // Create second share code
+        CreateSharedConsent(organisation);
+        var createShareCodeResponse2 = await _client.CreateSharedDataAsync(new ShareRequest(supplierInformationFormId, organisation.Guid));
+
+        // Verify original data in first share code
+        var shareData1 = await _client.GetSharedDataAsync(createShareCodeResponse1.ShareCode);
+        shareData1.Identifier.LegalName.Should().Be("Org legal name");
+        shareData1.Identifier.Id.Should().Be("1234567");
+        shareData1.Identifier.Scheme.Should().Be("Whatever");
+        shareData1.Identifier.Uri.Should().Be("http://whatever.com/1234567");
+
+        shareData1.AdditionalIdentifiers.Should().HaveCount(0);
+
+        // Verify updated data in second share code
+        var shareData2 = await _client.GetSharedDataAsync(createShareCodeResponse2.ShareCode);
+        shareData2.Identifier.LegalName.Should().Be("Org legal name");
+        shareData2.Identifier.Id.Should().Be("1234567");
+        shareData2.Identifier.Scheme.Should().Be("Whatever");
+
+        shareData2.AdditionalIdentifiers.Should().HaveCount(1);
+        shareData2.AdditionalIdentifiers.First().LegalName.Should().Be("Different org legal name");
+        shareData2.AdditionalIdentifiers.First().Id.Should().Be("7654321");
+        shareData2.AdditionalIdentifiers.First().Scheme.Should().Be("Something else");
+        shareData2.AdditionalIdentifiers.First().Uri.Should().Be("http://something.com/7654321");
     }
 
     [Fact]
@@ -212,8 +254,9 @@ public class DataSharingApiSnapshottingIntegrationTests : IClassFixture<Organisa
                 {
                     IdentifierId = "1234567",
                     Scheme = "Whatever",
-                    LegalName = "Org Legal Name",
-                    Primary = true
+                    LegalName = "Org legal name",
+                    Primary = true,
+                    Uri = "http://whatever.com/1234567"
                 }
             },
             Addresses = new List<Organisation.OrganisationAddress>
@@ -271,5 +314,6 @@ public class DataSharingApiSnapshottingIntegrationTests : IClassFixture<Organisa
     {
         _context.Database.ExecuteSqlRaw(@"TRUNCATE TABLE ""organisations"" CASCADE;");
         _context.Database.ExecuteSqlRaw(@"TRUNCATE TABLE ""tenants"" CASCADE;");
+        _context.Database.ExecuteSqlRaw(@"TRUNCATE TABLE ""identifiers"" CASCADE;");
     }
 }
