@@ -350,7 +350,34 @@ public class DataSharingApiSnapshottingIntegrationTests : IClassFixture<Organisa
     [Fact]
     public async Task DataSharingClientReturnsCorrectConnectedEntityOrganisation_WhenChangingDataBetweenShareCodeCreation()
     {
+        // Setup
+        ClearDatabase();
+        Organisation organisation = CreateOrganisation("Test org");
+        ConnectedEntity connectedEntity = CreateConnectedEntity(organisation, ConnectedEntity.ConnectedEntityType.Organisation);
 
+        // Create first share code
+        CreateSharedConsent(organisation);
+        var createShareCodeResponse1 = await _client.CreateSharedDataAsync(new ShareRequest(supplierInformationFormId, organisation.Guid));
+
+        // Update data
+        connectedEntity.Organisation!.Name = "Updated org name";
+        connectedEntity.Organisation!.Category = ConnectedEntity.ConnectedOrganisationCategory.ACompanyYourOrganisationHasTakenOver;
+
+        _context.SaveChanges();
+
+        // Create second share code
+        CreateSharedConsent(organisation);
+        var createShareCodeResponse2 = await _client.CreateSharedDataAsync(new ShareRequest(supplierInformationFormId, organisation.Guid));
+
+        // Verify original data in first share code
+        var shareData1 = await _client.GetSharedDataAsync(createShareCodeResponse1.ShareCode);
+        shareData1.AdditionalEntities.Should().HaveCount(1);
+        shareData1.AdditionalEntities.First().Name.Should().Be("Test org");
+
+        // Verify updated data in second share code
+        var shareData2 = await _client.GetSharedDataAsync(createShareCodeResponse2.ShareCode);
+        shareData2.AdditionalEntities.Should().HaveCount(1);
+        shareData2.AdditionalEntities.First().Name.Should().Be("Updated org name");
     }
 
     [Fact]
@@ -414,6 +441,49 @@ public class DataSharingApiSnapshottingIntegrationTests : IClassFixture<Organisa
         _context.SaveChanges();
 
         return organisation;
+    }
+
+    private ConnectedEntity CreateConnectedEntity(Organisation organisation, ConnectedEntity.ConnectedEntityType type)
+    {
+        var entity = new ConnectedEntity
+        {
+            Guid = new Guid(),
+            EntityType = type,
+            SupplierOrganisation = organisation,
+            CreatedOn = DateTime.Now,
+            EndDate = null,
+        };
+
+        switch (type)
+        {
+            case ConnectedEntity.ConnectedEntityType.Individual:
+                entity.IndividualOrTrust = new ConnectedEntity.ConnectedIndividualTrust
+                {
+                    Category = ConnectedEntity.ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForIndiv,
+                    FirstName = "John",
+                    LastName = "Doe",
+                    DateOfBirth = new DateTime(1980, 1, 1),
+                };
+
+                break;
+
+            case ConnectedEntity.ConnectedEntityType.Organisation:
+                entity.Organisation = new ConnectedEntity.ConnectedOrganisation
+                {
+                    Name = "Test org",
+                    Category = ConnectedEntity.ConnectedOrganisationCategory.RegisteredCompany,
+                };
+                break;
+        }
+
+        _context.ConnectedEntities.Add(entity);
+
+        _context.SaveChanges();
+
+        entity.CreatedOn = DateTime.Now;
+        _context.SaveChanges();
+
+        return entity;
     }
 
     private void CreateSharedConsent(Organisation organisation)
