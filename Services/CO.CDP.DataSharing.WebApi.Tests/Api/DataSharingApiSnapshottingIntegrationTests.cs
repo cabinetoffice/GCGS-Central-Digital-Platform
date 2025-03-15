@@ -46,7 +46,7 @@ public class DataSharingApiSnapshottingIntegrationTests : IClassFixture<Organisa
         ClearDatabase();
         Organisation organisation = CreateOrganisation("Test org");
 
-        // Create first shared code
+        // Create first share code
         CreateSharedConsent(organisation);
         var createShareCodeResponse1 = await _client.CreateSharedDataAsync(new ShareRequest(supplierInformationFormId, organisation.Guid));
 
@@ -126,7 +126,7 @@ public class DataSharingApiSnapshottingIntegrationTests : IClassFixture<Organisa
         };
         _context.SaveChanges();
 
-        // Create first shared code
+        // Create first share code
         CreateSharedConsent(organisation);
         var createShareCodeResponse1 = await _client.CreateSharedDataAsync(new ShareRequest(supplierInformationFormId, organisation.Guid));
 
@@ -165,7 +165,7 @@ public class DataSharingApiSnapshottingIntegrationTests : IClassFixture<Organisa
         ClearDatabase();
         Organisation organisation = CreateOrganisation("Test org");
 
-        // Create first shared code
+        // Create first share code
         CreateSharedConsent(organisation);
         var createShareCodeResponse1 = await _client.CreateSharedDataAsync(new ShareRequest(supplierInformationFormId, organisation.Guid));
 
@@ -206,14 +206,112 @@ public class DataSharingApiSnapshottingIntegrationTests : IClassFixture<Organisa
         shareData2.AdditionalIdentifiers.First().Uri.Should().Be("http://something.com/7654321");
     }
 
+    //[Fact]
+    //public async Task DataSharingClientReturnsCorrectOrganisationAddresses_WhenChangingDataBetweenShareCodeCreation()
+    //{
+    //    // This test is primarily about the organisation_address table - i.e. adding a second (postal) address to the organisation
+    //    // Because the address is not returned in the response, this test is not currently possible
+
+    //    // Setup
+    //    ClearDatabase();
+    //    Organisation organisation = CreateOrganisation("Test org");
+
+    //    // Create first share code
+    //    CreateSharedConsent(organisation);
+    //    var createShareCodeResponse1 = await _client.CreateSharedDataAsync(new ShareRequest(supplierInformationFormId, organisation.Guid));
+
+    //    // Update data
+    //    organisation.Addresses.Add(new() {
+    //        Type = OrganisationInformation.AddressType.Postal,
+    //        Address = new() {
+    //            StreetAddress = "456 Somewhere postal",
+    //            Locality = "Postal locality",
+    //            Region = "Postal region",
+    //            PostalCode = "PL1 1LP",
+    //            CountryName = "Postal country name",
+    //            Country = "FR"
+    //        }
+    //    });
+
+    //    _context.SaveChanges();
+
+    //    // Create second share code
+    //    CreateSharedConsent(organisation);
+    //    var createShareCodeResponse2 = await _client.CreateSharedDataAsync(new ShareRequest(supplierInformationFormId, organisation.Guid));
+
+    //    // Verify original data in first share code
+    //    var shareData1 = await _client.GetSharedDataAsync(createShareCodeResponse1.ShareCode);
+
+    //    // TODO: Would need to verify here that the postal address did not appear.
+    //    // This is not currently possible as the address is not returned in the response.
+
+    //    shareData1.Address.StreetAddress.Should().Be("1234 New St");
+    //    shareData1.Address.Locality.Should().Be("New City");
+    //    shareData1.Address.Region.Should().Be("W.Yorkshire");
+    //    shareData1.Address.PostalCode.Should().Be("123456");
+    //    shareData1.Address.CountryName.Should().Be("Newland");
+    //    shareData1.Address.Country.Should().Be("GB");
+
+    //    // Verify updated data in second share code
+    //    var shareData2 = await _client.GetSharedDataAsync(createShareCodeResponse2.ShareCode);
+    //    shareData2.Address.StreetAddress.Should().Be("456 Somewhere else ");
+    //    shareData2.Address.Locality.Should().Be("Updated locality");
+    //    shareData2.Address.Region.Should().Be("Updated region");
+    //    shareData2.Address.PostalCode.Should().Be("PL1 1LP");
+    //    shareData2.Address.CountryName.Should().Be("Updated country name");
+    //    shareData2.Address.Country.Should().Be("FR");
+
+    //    // TODO: Would need to verify here that the postal address appears.
+    //    // This is not currently possible as the address is not returned in the response.
+    //}
+
     [Fact]
-    public async Task DataSharingClientReturnsCorrectOrganisationAddress_WhenChangingDataBetweenShareCodeCreation()
+    public async Task DataSharingClientReturnsCorrectContactPoints_WhenChangingDataBetweenShareCodeCreation()
     {
         // Setup
         ClearDatabase();
         Organisation organisation = CreateOrganisation("Test org");
 
-        // Create first shared code
+        // Create first share code
+        CreateSharedConsent(organisation);
+        var createShareCodeResponse1 = await _client.CreateSharedDataAsync(new ShareRequest(supplierInformationFormId, organisation.Guid));
+
+        // Update data
+        organisation.ContactPoints.First().Name = "Updated contact name";
+        organisation.ContactPoints.First().Email = "something@else.com";
+        organisation.ContactPoints.First().Url = "http://www.something.com";
+        organisation.ContactPoints.First().Telephone = "9876543210";
+        _context.SaveChanges();
+
+        // Create second share code
+        CreateSharedConsent(organisation);
+        var createShareCodeResponse2 = await _client.CreateSharedDataAsync(new ShareRequest(supplierInformationFormId, organisation.Guid));
+
+        // Verify original data in first share code
+        var shareData1 = await _client.GetSharedDataAsync(createShareCodeResponse1.ShareCode);
+        shareData1.ContactPoint.Name.Should().Be("Main Contact");
+        shareData1.ContactPoint.Email.Should().Be("foo@bar.com");
+        shareData1.ContactPoint.Url.Should().Be("http://www.bar.com");
+        shareData1.ContactPoint.Telephone.Should().Be("0123456789");
+
+        // Verify updated data in second share code
+        var shareData2 = await _client.GetSharedDataAsync(createShareCodeResponse2.ShareCode);
+        shareData2.ContactPoint.Name.Should().Be("Updated contact name");
+        shareData2.ContactPoint.Email.Should().Be("something@else.com");
+        shareData2.ContactPoint.Url.Should().Be("http://www.something.com");
+        shareData2.ContactPoint.Telephone.Should().Be("9876543210");
+    }
+
+    [Fact]
+    public async Task DataSharingClientReturnsCorrectAddress_WhenChangingDataBetweenShareCodeCreation()
+    {
+        // This test is primarily about the addresses table - i.e. editing the main organisation address
+
+        // Setup
+        ClearDatabase();
+        Organisation organisation = CreateOrganisation("Test org");
+
+        // Create first share code
         CreateSharedConsent(organisation);
         var createShareCodeResponse1 = await _client.CreateSharedDataAsync(new ShareRequest(supplierInformationFormId, organisation.Guid));
 
@@ -247,49 +345,6 @@ public class DataSharingApiSnapshottingIntegrationTests : IClassFixture<Organisa
         shareData2.Address.PostalCode.Should().Be("PL1 1LP");
         shareData2.Address.CountryName.Should().Be("Updated country name");
         shareData2.Address.Country.Should().Be("FR");
-    }
-
-    [Fact]
-    public async Task DataSharingClientReturnsCorrectContactPoints_WhenChangingDataBetweenShareCodeCreation()
-    {
-        // Setup
-        ClearDatabase();
-        Organisation organisation = CreateOrganisation("Test org");
-
-        // Create first shared code
-        CreateSharedConsent(organisation);
-        var createShareCodeResponse1 = await _client.CreateSharedDataAsync(new ShareRequest(supplierInformationFormId, organisation.Guid));
-
-        // Update data
-        organisation.ContactPoints.First().Name = "Updated contact name";
-        organisation.ContactPoints.First().Email = "something@else.com";
-        organisation.ContactPoints.First().Url = "http://www.something.com";
-        organisation.ContactPoints.First().Telephone = "9876543210";
-        _context.SaveChanges();
-
-        // Create second share code
-        CreateSharedConsent(organisation);
-        var createShareCodeResponse2 = await _client.CreateSharedDataAsync(new ShareRequest(supplierInformationFormId, organisation.Guid));
-
-        // Verify original data in first share code
-        var shareData1 = await _client.GetSharedDataAsync(createShareCodeResponse1.ShareCode);
-        shareData1.ContactPoint.Name.Should().Be("Main Contact");
-        shareData1.ContactPoint.Email.Should().Be("foo@bar.com");
-        shareData1.ContactPoint.Url.Should().Be("http://www.bar.com");
-        shareData1.ContactPoint.Telephone.Should().Be("0123456789");
-
-        // Verify updated data in second share code
-        var shareData2 = await _client.GetSharedDataAsync(createShareCodeResponse2.ShareCode);
-        shareData2.ContactPoint.Name.Should().Be("Updated contact name");
-        shareData2.ContactPoint.Email.Should().Be("something@else.com");
-        shareData2.ContactPoint.Url.Should().Be("http://www.something.com");
-        shareData2.ContactPoint.Telephone.Should().Be("9876543210");
-    }
-
-    [Fact]
-    public async Task DataSharingClientReturnsCorrectAddresses_WhenChangingDataBetweenShareCodeCreation()
-    {
-
     }
 
     [Fact]
