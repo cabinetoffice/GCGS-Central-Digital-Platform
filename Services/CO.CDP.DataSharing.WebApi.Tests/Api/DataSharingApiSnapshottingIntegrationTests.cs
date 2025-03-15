@@ -252,7 +252,38 @@ public class DataSharingApiSnapshottingIntegrationTests : IClassFixture<Organisa
     [Fact]
     public async Task DataSharingClientReturnsCorrectContactPoints_WhenChangingDataBetweenShareCodeCreation()
     {
+        // Setup
+        ClearDatabase();
+        Organisation organisation = CreateOrganisation("Test org");
 
+        // Create first shared code
+        CreateSharedConsent(organisation);
+        var createShareCodeResponse1 = await _client.CreateSharedDataAsync(new ShareRequest(supplierInformationFormId, organisation.Guid));
+
+        // Update data
+        organisation.ContactPoints.First().Name = "Updated contact name";
+        organisation.ContactPoints.First().Email = "something@else.com";
+        organisation.ContactPoints.First().Url = "http://www.something.com";
+        organisation.ContactPoints.First().Telephone = "9876543210";
+        _context.SaveChanges();
+
+        // Create second share code
+        CreateSharedConsent(organisation);
+        var createShareCodeResponse2 = await _client.CreateSharedDataAsync(new ShareRequest(supplierInformationFormId, organisation.Guid));
+
+        // Verify original data in first share code
+        var shareData1 = await _client.GetSharedDataAsync(createShareCodeResponse1.ShareCode);
+        shareData1.ContactPoint.Name.Should().Be("Main Contact");
+        shareData1.ContactPoint.Email.Should().Be("foo@bar.com");
+        shareData1.ContactPoint.Url.Should().Be("http://www.bar.com");
+        shareData1.ContactPoint.Telephone.Should().Be("0123456789");
+
+        // Verify updated data in second share code
+        var shareData2 = await _client.GetSharedDataAsync(createShareCodeResponse2.ShareCode);
+        shareData2.ContactPoint.Name.Should().Be("Updated contact name");
+        shareData2.ContactPoint.Email.Should().Be("something@else.com");
+        shareData2.ContactPoint.Url.Should().Be("http://www.something.com");
+        shareData2.ContactPoint.Telephone.Should().Be("9876543210");
     }
 
     [Fact]
@@ -317,7 +348,9 @@ public class DataSharingApiSnapshottingIntegrationTests : IClassFixture<Organisa
                 new Organisation.ContactPoint
                 {
                     Name = "Main Contact",
-                    Email = "foo@bar.com"
+                    Email = "foo@bar.com",
+                    Url = "http://www.bar.com",
+                    Telephone = "0123456789"
                 }
             }
         };
