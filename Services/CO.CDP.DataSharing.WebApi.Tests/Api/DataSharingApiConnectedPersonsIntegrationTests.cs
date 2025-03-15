@@ -202,7 +202,7 @@ public class DataSharingApiConnectedPersonsIntegrationTests: IClassFixture<Organ
 
         _context.SharedConsents.Add(new OrganisationInformation.Persistence.Forms.SharedConsent
         {
-            Guid = new Guid(),
+            Guid = Guid.NewGuid(),
             OrganisationId = organisation.Id,
             Organisation = organisation,
             FormId = 1,
@@ -219,7 +219,7 @@ public class DataSharingApiConnectedPersonsIntegrationTests: IClassFixture<Organ
     {
         var entity = new ConnectedEntity
         {
-            Guid = new Guid(),
+            Guid = Guid.NewGuid(),
             EntityType = type,
             SupplierOrganisation = organisation,
             CreatedOn = connectedPersonCreationDate,

@@ -353,7 +353,7 @@ public class DataSharingApiSnapshottingIntegrationTests : IClassFixture<Organisa
         // Setup
         ClearDatabase();
         Organisation organisation = CreateOrganisation("Test org");
-        ConnectedEntity connectedEntity = CreateConnectedEntity(organisation, ConnectedEntity.ConnectedEntityType.Organisation);
+        ConnectedEntity connectedEntity = CreateConnectedEntity(organisation, ConnectedEntity.ConnectedEntityType.Organisation, DateTime.Now.AddDays(-1), null);
 
         // Create first share code
         CreateSharedConsent(organisation);
@@ -384,7 +384,7 @@ public class DataSharingApiSnapshottingIntegrationTests : IClassFixture<Organisa
         // Setup
         ClearDatabase();
         Organisation organisation = CreateOrganisation("Test org");
-        ConnectedEntity connectedEntity = CreateConnectedEntity(organisation, ConnectedEntity.ConnectedEntityType.Individual);
+        ConnectedEntity connectedEntity = CreateConnectedEntity(organisation, ConnectedEntity.ConnectedEntityType.Individual, DateTime.Now.AddDays(-1), null);
 
         // Create first share code
         CreateSharedConsent(organisation);
@@ -408,6 +408,71 @@ public class DataSharingApiSnapshottingIntegrationTests : IClassFixture<Organisa
         var shareData2 = await _client.GetSharedDataAsync(createShareCodeResponse2.ShareCode);
         shareData2.AssociatedPersons.Should().HaveCount(1);
         shareData2.AssociatedPersons.First().Name.Should().Be("Updated first name Updated last name");
+    }
+
+    [Fact]
+    public async Task DataSharingClientReturnsCorrectConnectedIndividuals_WhenAddingExtraBetweenShareCodeCreation()
+    {
+        // Some overlap here with the DataSharingApiConnectedPersonsIntegrationTests, but slightly different pattern in the tests so still has value
+
+        // Setup
+        ClearDatabase();
+        Organisation organisation = CreateOrganisation("Test org");
+        ConnectedEntity connectedEntity = CreateConnectedEntity(organisation, ConnectedEntity.ConnectedEntityType.Individual, DateTime.Now.AddHours(-1), null);
+
+        // Create first share code
+        CreateSharedConsent(organisation);
+        var createShareCodeResponse1 = await _client.CreateSharedDataAsync(new ShareRequest(supplierInformationFormId, organisation.Guid));
+
+        // Update data
+        ConnectedEntity connectedEntity2 = CreateConnectedEntity(organisation, ConnectedEntity.ConnectedEntityType.Individual, DateTime.Now, null, "Bob", "Bobbington");
+
+        // Create second share code
+        CreateSharedConsent(organisation);
+        var createShareCodeResponse2 = await _client.CreateSharedDataAsync(new ShareRequest(supplierInformationFormId, organisation.Guid));
+
+        // Verify original data in first share code
+        var shareData1 = await _client.GetSharedDataAsync(createShareCodeResponse1.ShareCode);
+        shareData1.AssociatedPersons.Should().HaveCount(1);
+        shareData1.AssociatedPersons.First().Name.Should().Be("John Doe");
+
+        // Verify updated data in second share code
+        var shareData2 = await _client.GetSharedDataAsync(createShareCodeResponse2.ShareCode);
+        shareData2.AssociatedPersons.Should().HaveCount(2);
+        shareData2.AssociatedPersons.First().Name.Should().Be("John Doe");
+        shareData2.AssociatedPersons.Last().Name.Should().Be("Bob Bobbington");
+    }
+
+    [Fact]
+    public async Task DataSharingClientReturnsCorrectConnectedIndividuals_WhenEndDatingOneBetweenShareCodeCreation()
+    {
+        // Setup
+        ClearDatabase();
+        Organisation organisation = CreateOrganisation("Test org");
+        ConnectedEntity connectedEntity = CreateConnectedEntity(organisation, ConnectedEntity.ConnectedEntityType.Individual, DateTime.Now.AddDays(-2), null);
+
+        // Create first share code
+        CreateSharedConsent(organisation);
+        var createShareCodeResponse1 = await _client.CreateSharedDataAsync(new ShareRequest(supplierInformationFormId, organisation.Guid));
+
+        // Update data
+        connectedEntity.EndDate = DateTime.Now.AddDays(-1);
+        _context.SaveChanges();        
+        ConnectedEntity connectedEntity2 = CreateConnectedEntity(organisation, ConnectedEntity.ConnectedEntityType.Individual, DateTime.Now, null, "Bob", "Bobbington");
+
+        // Create second share code
+        CreateSharedConsent(organisation);
+        var createShareCodeResponse2 = await _client.CreateSharedDataAsync(new ShareRequest(supplierInformationFormId, organisation.Guid));
+
+        // Verify original data in first share code
+        var shareData1 = await _client.GetSharedDataAsync(createShareCodeResponse1.ShareCode);
+        shareData1.AssociatedPersons.Should().HaveCount(1);
+        shareData1.AssociatedPersons.First().Name.Should().Be("John Doe");
+
+        // Verify updated data in second share code
+        var shareData2 = await _client.GetSharedDataAsync(createShareCodeResponse2.ShareCode);
+        shareData2.AssociatedPersons.Should().HaveCount(1);
+        shareData2.AssociatedPersons.First().Name.Should().Be("Bob Bobbington");
     }
 
     private Organisation CreateOrganisation(string orgName)
@@ -467,15 +532,15 @@ public class DataSharingApiSnapshottingIntegrationTests : IClassFixture<Organisa
         return organisation;
     }
 
-    private ConnectedEntity CreateConnectedEntity(Organisation organisation, ConnectedEntity.ConnectedEntityType type)
+    private ConnectedEntity CreateConnectedEntity(Organisation organisation, ConnectedEntity.ConnectedEntityType type, DateTime connectedPersonCreationDate, DateTime? connectedPersonEndDate, string? firstName = null, string? LastName = null)
     {
         var entity = new ConnectedEntity
         {
-            Guid = new Guid(),
+            Guid = Guid.NewGuid(),
             EntityType = type,
             SupplierOrganisation = organisation,
-            CreatedOn = DateTime.Now,
-            EndDate = null,
+            CreatedOn = connectedPersonCreationDate,
+            EndDate = connectedPersonEndDate,
         };
 
         switch (type)
@@ -484,8 +549,8 @@ public class DataSharingApiSnapshottingIntegrationTests : IClassFixture<Organisa
                 entity.IndividualOrTrust = new ConnectedEntity.ConnectedIndividualTrust
                 {
                     Category = ConnectedEntity.ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForIndiv,
-                    FirstName = "John",
-                    LastName = "Doe",
+                    FirstName = firstName ?? "John",
+                    LastName = LastName ?? "Doe",
                     DateOfBirth = new DateTime(1980, 1, 1),
                 };
 
@@ -504,7 +569,7 @@ public class DataSharingApiSnapshottingIntegrationTests : IClassFixture<Organisa
 
         _context.SaveChanges();
 
-        entity.CreatedOn = DateTime.Now;
+        entity.CreatedOn = connectedPersonCreationDate;
         _context.SaveChanges();
 
         return entity;
@@ -516,7 +581,7 @@ public class DataSharingApiSnapshottingIntegrationTests : IClassFixture<Organisa
 
         _context.SharedConsents.Add(new OrganisationInformation.Persistence.Forms.SharedConsent
         {
-            Guid = new Guid(),
+            Guid = Guid.NewGuid(),
             OrganisationId = organisation.Id,
             Organisation = organisation,
             FormId = 1,
