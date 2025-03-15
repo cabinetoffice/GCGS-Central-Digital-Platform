@@ -209,7 +209,44 @@ public class DataSharingApiSnapshottingIntegrationTests : IClassFixture<Organisa
     [Fact]
     public async Task DataSharingClientReturnsCorrectOrganisationAddress_WhenChangingDataBetweenShareCodeCreation()
     {
+        // Setup
+        ClearDatabase();
+        Organisation organisation = CreateOrganisation("Test org");
 
+        // Create first shared code
+        CreateSharedConsent(organisation);
+        var createShareCodeResponse1 = await _client.CreateSharedDataAsync(new ShareRequest(supplierInformationFormId, organisation.Guid));
+
+        // Update data
+        organisation.Addresses.First().Address.StreetAddress = "456 Somewhere else ";
+        organisation.Addresses.First().Address.Locality = "Updated locality";
+        organisation.Addresses.First().Address.Region = "Updated region";
+        organisation.Addresses.First().Address.PostalCode = "PL1 1LP";
+        organisation.Addresses.First().Address.CountryName = "Updated country name";
+        organisation.Addresses.First().Address.Country = "FR";
+        _context.SaveChanges();
+
+        // Create second share code
+        CreateSharedConsent(organisation);
+        var createShareCodeResponse2 = await _client.CreateSharedDataAsync(new ShareRequest(supplierInformationFormId, organisation.Guid));
+
+        // Verify original data in first share code
+        var shareData1 = await _client.GetSharedDataAsync(createShareCodeResponse1.ShareCode);
+        shareData1.Address.StreetAddress.Should().Be("1234 New St");
+        shareData1.Address.Locality.Should().Be("New City");
+        shareData1.Address.Region.Should().Be("W.Yorkshire");
+        shareData1.Address.PostalCode.Should().Be("123456");
+        shareData1.Address.CountryName.Should().Be("Newland");
+        shareData1.Address.Country.Should().Be("GB");
+
+        // Verify updated data in second share code
+        var shareData2 = await _client.GetSharedDataAsync(createShareCodeResponse2.ShareCode);
+        shareData2.Address.StreetAddress.Should().Be("456 Somewhere else ");
+        shareData2.Address.Locality.Should().Be("Updated locality");
+        shareData2.Address.Region.Should().Be("Updated region");
+        shareData2.Address.PostalCode.Should().Be("PL1 1LP");
+        shareData2.Address.CountryName.Should().Be("Updated country name");
+        shareData2.Address.Country.Should().Be("FR");
     }
 
     [Fact]
