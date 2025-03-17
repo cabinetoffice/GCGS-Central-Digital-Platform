@@ -77,7 +77,7 @@ public class DatabaseConnectedEntityRepositoryTests(PostgreSqlFixture postgreSql
 
         var result = await repositoryCE.IsConnectedEntityUsedInExclusionAsync(organisation.Guid, connectedEntityId);
 
-        result.Should().BeTrue();
+        result.Item1.Should().BeTrue();
     }
 
     [Fact]
@@ -110,7 +110,7 @@ public class DatabaseConnectedEntityRepositoryTests(PostgreSqlFixture postgreSql
         await repositoryCE.Save(expectedEntity);
         var result = await repositoryCE.IsConnectedEntityUsedInExclusionAsync(organisation.Guid, connectedEntityId);
 
-        result.Should().BeFalse();
+        result.Item1.Should().BeFalse();
     }
 
     [Fact]

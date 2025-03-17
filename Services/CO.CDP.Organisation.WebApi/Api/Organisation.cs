@@ -724,9 +724,10 @@ public static class EndpointExtensions
                 [Constants.OrganisationPersonScope.Admin, Constants.OrganisationPersonScope.Editor],
                 OrganisationIdLocation.Path)]
         async (Guid organisationId, Guid connectedEntityId, [FromBody] DeleteConnectedEntity deleteConnectedEntity,
-                        IUseCase<(Guid, Guid, DeleteConnectedEntity), bool> useCase) =>
+                        IUseCase<(Guid, Guid, DeleteConnectedEntity), DeleteConnectedEntityResult> useCase) =>
                     await useCase.Execute((organisationId, connectedEntityId, deleteConnectedEntity))
                         .AndThen(_ => Results.NoContent()))
+            .Produces<DeleteConnectedEntityResult>(StatusCodes.Status200OK, "application/json")
             .Produces(StatusCodes.Status204NoContent)
             .ProducesProblem(StatusCodes.Status400BadRequest)
             .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)

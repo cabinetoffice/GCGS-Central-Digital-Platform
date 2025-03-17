@@ -29,18 +29,21 @@ public class DatabaseConnectedEntityRepository(OrganisationInformationContext co
             .ToArrayAsync();
     }
 
-    public Task<bool> IsConnectedEntityUsedInExclusionAsync(Guid organisationId, Guid connectedEntityId)
+    public Task<Tuple<bool, Guid, Guid>> IsConnectedEntityUsedInExclusionAsync(Guid organisationId, Guid connectedEntityId)
     {
         var activeOrganisationExclusions = (from fas in context.FormAnswerSets
                                             join fs in context.Set<FormSection>() on fas.SectionId equals fs.Id
+                                            join f in context.Forms on fs.FormId equals f.Id
                                             join sc in context.SharedConsents on fs.FormId equals sc.FormId
+                                            join sc2 in context.SharedConsents on fas.SharedConsentId equals sc2.Id
                                             join fa in context.Set<FormAnswer>() on fas.Id equals fa.FormAnswerSetId
-                                            where !fas.Deleted &&
-                                             fs.Type == FormSectionType.Exclusions &&
-                                             fa.JsonValue != null &&
-                                             sc.Organisation.Guid == organisationId
-                                            select new { sc.FormId, fas.SectionId, SharedConsentId = sc.Id, fa.JsonValue })
-                                            .Distinct().ToList();
+                                            where fas.Deleted == false &&
+                                                fs.Type == FormSectionType.Exclusions &&
+                                                fa.JsonValue != null &&
+                                                sc.Organisation.Guid == organisationId &&
+                                                sc2.ShareCode == null
+                                            select new { FormGuid = f.Guid, SectionGuid = fas.Guid, SharedConsentId = sc.Id, fa.JsonValue, fas.Deleted })
+                                            .ToList();
 
         foreach (var fas in activeOrganisationExclusions)
         {
@@ -50,12 +53,12 @@ public class DatabaseConnectedEntityRepository(OrganisationInformationContext co
 
                 if (json.id == connectedEntityId)
                 {
-                    return Task.FromResult(true);
+                    return Task.FromResult(new Tuple<bool, Guid, Guid>(true, fas.FormGuid, fas.SectionGuid));
                 }
             }
         }
 
-        return Task.FromResult(false);
+        return Task.FromResult(new Tuple<bool, Guid, Guid>(true, Guid.Empty, Guid.Empty));
     }
 
     public async Task<IEnumerable<ConnectedEntityLookup?>> GetSummary(Guid organisationId)

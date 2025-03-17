@@ -20,6 +20,7 @@ public enum RemoveConnectedPersonReason
 
 [Authorize(Policy = OrgScopeRequirement.Editor)]
 public class ConnectedEntityRemoveConfirmationModel(
+    IFlashMessageService flashMessageService,
     IOrganisationClient organisationClient) : PageModel
 {
     [BindProperty(SupportsGet = true)]
@@ -61,48 +62,62 @@ public class ConnectedEntityRemoveConfirmationModel(
 
     public async Task<IActionResult> OnPost()
     {
+        bool result = true;
+
         if (!ModelState.IsValid)
         {
             return Page();
+        } 
+
+        if (ConfirmRemove == RemoveConnectedPersonReason.NoLongerConnected)
+        {
+            var ce = await GetConnectedEntity(organisationClient);
+            if (ce == null)
+                return Redirect("/page-not-found");
+
+            var dateString = $"{EndYear}-{EndMonth!.PadLeft(2, '0')}-{EndDay!.PadLeft(2, '0')}";
+
+            if (!DateTime.TryParse(dateString, out var endDate))
+            {
+                ModelState.AddModelError(nameof(EndDate), StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityRemoveConfirmation_DateInvalidError);
+                return Page();
+            }
+
+            if (endDate >= DateTime.Today)
+            {
+                ModelState.AddModelError(nameof(EndDate), StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityRemoveConfirmation_DateNotInPastError);
+                return Page();
+            }
+
+            endDate = endDate.AddHours(23).AddMinutes(59).AddSeconds(59).ToUniversalTime();
+            result = await DeleteConnectedEntityAsync(new DeleteConnectedEntity(endDate));
+
+        }
+        else if (ConfirmRemove == RemoveConnectedPersonReason.AddedInError)
+        {
+            result = await DeleteConnectedEntityAsync(new DeleteConnectedEntity(DateTime.Now.ToUniversalTime()));
         }
 
-        try
-        {
-            if (ConfirmRemove == RemoveConnectedPersonReason.NoLongerConnected)
-            {
-                var ce = await GetConnectedEntity(organisationClient);
-                if (ce == null)
-                    return Redirect("/page-not-found");
-
-                var dateString = $"{EndYear}-{EndMonth!.PadLeft(2, '0')}-{EndDay!.PadLeft(2, '0')}";
-
-                if (!DateTime.TryParse(dateString, out var endDate))
-                {
-                    ModelState.AddModelError(nameof(EndDate), StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityRemoveConfirmation_DateInvalidError);
-                    return Page();
-                }
-
-                if (endDate >= DateTime.Today)
-                {
-                    ModelState.AddModelError(nameof(EndDate), StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityRemoveConfirmation_DateNotInPastError);
-                    return Page();
-                }
-
-                endDate = endDate.AddHours(23).AddMinutes(59).AddSeconds(59).ToUniversalTime();
-                await organisationClient.DeleteConnectedEntityAsync(Id, ConnectedPersonId, new DeleteConnectedEntity(endDate));
-            }
-            else if (ConfirmRemove == RemoveConnectedPersonReason.AddedInError)
-            {
-                await organisationClient.DeleteConnectedEntityAsync(Id, ConnectedPersonId, new DeleteConnectedEntity(DateTime.Now.ToUniversalTime()));
-            }
-        }
-        catch (ApiException<ProblemDetails> aex)
-        {
-            ApiExceptionMapper.MapApiExceptions(aex, ModelState);
+        if (!result)
+        { 
             return Page();
         }
 
         return RedirectToPage("ConnectedPersonSummary", new { Id });
+    }
+
+    private async Task<bool> DeleteConnectedEntityAsync(DeleteConnectedEntity entity)
+    {
+        DeleteConnectedEntityResult result = await organisationClient.DeleteConnectedEntityAsync(Id, ConnectedPersonId, entity);
+
+        flashMessageService.SetFlashMessage
+        (
+            FlashMessageType.Important,
+            heading: string.Format(StaticTextResource.ErrorMessageList_ConnectedPersons_Cannot_Remove) //,
+            //urlParameters: new() { { "orgId", Id.ToString() }, { "formId", result.FormGuid.ToString() }, { "sectionId", result.SectionGuid.ToString() } }
+        );
+
+        return result.Success;
     }
 
     private async Task<ConnectedEntityLookup?> GetConnectedEntity(IOrganisationClient organisationClient)
@@ -111,6 +126,7 @@ public class ConnectedEntityRemoveConfirmationModel(
         {
             var connectedEntities = await organisationClient.GetConnectedEntitiesAsync(Id);
             var connectedEntity = connectedEntities.FirstOrDefault(ce => ce.EntityId == ConnectedPersonId);
+
             return connectedEntity;
         }
         catch (ApiException ex) when (ex.StatusCode == 404)

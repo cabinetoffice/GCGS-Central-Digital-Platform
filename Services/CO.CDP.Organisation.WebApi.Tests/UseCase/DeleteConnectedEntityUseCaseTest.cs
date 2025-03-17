@@ -32,7 +32,7 @@ public class DeleteConnectedEntityUseCaseTest
         var deleteConnectedEntity = new DeleteConnectedEntity() { EndDate = DateTimeOffset.Now };
 
         _connectedEntityRepository.Setup(repo => repo.IsConnectedEntityUsedInExclusionAsync(_organisationId, _connectedEntityId))
-            .ReturnsAsync(true);
+            .ReturnsAsync(new Tuple<bool, Guid, Guid>(true, Guid.NewGuid(), Guid.NewGuid()));
 
         Func<Task> act = async () => await _useCase.Execute((_organisationId, _connectedEntityId, deleteConnectedEntity));
 
@@ -55,7 +55,7 @@ public class DeleteConnectedEntityUseCaseTest
 
         var result = await _useCase.Execute((_organisationId, _connectedEntityId, deleteConnectedEntity));
 
-        result.Should().BeTrue();
+        result.Success.Should().BeTrue();
         connectedEntity.EndDate.Should().Be(endDate);
         _connectedEntityRepository.Verify(repo => repo.Save(connectedEntity), Times.Once);
     }

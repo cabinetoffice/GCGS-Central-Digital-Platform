@@ -1,3 +1,5 @@
+using Newtonsoft.Json;
+
 namespace CO.CDP.Organisation.WebApi.Model;
 
 public class UnknownOrganisationException(string message, Exception? cause = null) : Exception(message, cause);
@@ -63,4 +65,8 @@ public class PersonAlreadyInvitedToOrganisationException(string message, Excepti
 public class UnknownOrganisationJoinRequestException(string message, Exception? cause = null) : Exception(message, cause);
 public class OrganisationShareCodeInvalid(string shareCode) : Exception($"Invalid organisation share code: {shareCode}");
 
-public class CannotDeleteConnectedEntityException(string message, Exception? cause = null) : Exception(message, cause);
+public class CannotDeleteConnectedEntityException(string message, Exception? cause = null) : Exception(message, cause)
+{
+    public required Guid SectionGuid { get; set; }
+    public required Guid FormGuid { get; set; }
+}

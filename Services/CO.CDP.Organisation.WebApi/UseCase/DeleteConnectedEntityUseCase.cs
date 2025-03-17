@@ -4,9 +4,9 @@ using CO.CDP.OrganisationInformation.Persistence;
 namespace CO.CDP.Organisation.WebApi.UseCase;
 
 public class DeleteConnectedEntityUseCase(IOrganisationRepository organisationRepository, IConnectedEntityRepository connectedEntityRepository)
-            : IUseCase<(Guid organisationId, Guid connectedEntityId, DeleteConnectedEntity deleteConnectedEntity), bool>
+            : IUseCase<(Guid organisationId, Guid connectedEntityId, DeleteConnectedEntity deleteConnectedEntity), DeleteConnectedEntityResult>
 {
-    public async Task<bool> Execute((Guid organisationId, Guid connectedEntityId, DeleteConnectedEntity deleteConnectedEntity) command)
+    public async Task<DeleteConnectedEntityResult> Execute((Guid organisationId, Guid connectedEntityId, DeleteConnectedEntity deleteConnectedEntity) command)
     {
         var organisation = await organisationRepository.Find(command.organisationId)
             ?? throw new UnknownOrganisationException($"Unknown organisation {command.organisationId}.");
@@ -14,18 +14,24 @@ public class DeleteConnectedEntityUseCase(IOrganisationRepository organisationRe
         var connectedEntity = await connectedEntityRepository.Find(command.organisationId, command.connectedEntityId)
             ?? throw new UnknownConnectedEntityException($"Unknown connected entity {command.connectedEntityId}.");
 
+        var result = new DeleteConnectedEntityResult() { Success  = true };
+
         var isConnectedPersonInUse = await connectedEntityRepository.IsConnectedEntityUsedInExclusionAsync(
             command.organisationId, command.connectedEntityId);
 
-        if (isConnectedPersonInUse)
+        if (isConnectedPersonInUse.Item1)
         {
-            throw new CannotDeleteConnectedEntityException($"Connected entity {command.connectedEntityId} in organisation {command.organisationId} used in active exclusion.");
+            result.Success = false;
+            result.FormGuid = isConnectedPersonInUse.Item2;
+            result.SectionGuid = isConnectedPersonInUse.Item3;
+        }
+        else
+        {
+            connectedEntity.EndDate = command.deleteConnectedEntity.EndDate;
+
+            await connectedEntityRepository.Save(connectedEntity);
         }
 
-        connectedEntity.EndDate = command.deleteConnectedEntity.EndDate;
-
-        await connectedEntityRepository.Save(connectedEntity);
-
-        return await Task.FromResult(true);
+        return await Task.FromResult(result);
     }
 }
