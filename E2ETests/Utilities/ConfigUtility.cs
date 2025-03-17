@@ -16,17 +16,17 @@ namespace E2ETests.Utilities
 
 =        public static string GetTestEmail()
         {
-            return Environment.GetEnvironmentVariable("TEST_EMAIL") ?? "onelogin.test.user1@gmail.com";
+            return Environment.GetEnvironmentVariable("TEST_EMAIL") ?? "test";
         }
 
 =        public static string GetTestPassword()
         {
-            return Environment.GetEnvironmentVariable("TEST_PASSWORD") ?? "T3ster1234**";
+            return Environment.GetEnvironmentVariable("TEST_PASSWORD") ?? "test**";
         }
 
 =        public static string GetSecretKey()
         {
-            return Environment.GetEnvironmentVariable("TEST_SECRET_KEY") ?? "SUW6J5JMXY425EFP32DVXGRIY54LNDBS";
+            return Environment.GetEnvironmentVariable("TEST_SECRET_KEY") ?? "test";
         }
     }
 }
