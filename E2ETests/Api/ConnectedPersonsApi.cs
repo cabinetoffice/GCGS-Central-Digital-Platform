@@ -36,11 +36,11 @@ namespace E2ETests.ApiTests
                 throw new Exception($"❌ Organisation ID not found for key: {organisationStorageKey}");
             }
 
-            // Generate unique IDs for the connected person
+            // Generates unique IDs for the connected person
             string connectedPersonId = Guid.NewGuid().ToString();
             string postRequestUrl = $"{ApiBaseUrl}/organisations/{organisationId}/connected-entities";
 
-            // Set dates dynamically, default to current UTC time
+            // Sets dates dynamically, default to current time
             string registeredDateStr = (registeredDate ?? DateTime.UtcNow).ToString("yyyy-MM-ddTHH:mm:ssZ");
             string startDateStr = (startDate ?? DateTime.UtcNow).ToString("yyyy-MM-ddTHH:mm:ssZ");
             string endDateStr = (endDate ?? DateTime.UtcNow.AddYears(1)).ToString("yyyy-MM-ddTHH:mm:ssZ");
@@ -92,7 +92,6 @@ namespace E2ETests.ApiTests
                 DataObject = JsonDocument.Parse(requestBody).RootElement
             });
 
-            // 🔹 Log the raw response before proceeding
             string postResponseBody = await postResponse.TextAsync();
             Console.WriteLine($"✅ Connected Person Created - Raw Response: {postResponseBody}");
 
@@ -141,9 +140,7 @@ namespace E2ETests.ApiTests
             return postResponseBody;
         }
 
-        /// <summary>
         /// Retrieves a connected person ID by its storage key.
-        /// </summary>
         public static string GetConnectedPersonId(string key)
         {
             return StorageUtility.Retrieve(key);

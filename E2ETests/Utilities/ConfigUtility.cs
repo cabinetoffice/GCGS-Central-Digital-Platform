@@ -22,20 +22,20 @@ namespace E2ETests.Utilities
         /// Defaults to "onelogin.test.user1@gmail.com" if not set.
         public static string GetTestEmail()
         {
-            return Environment.GetEnvironmentVariable("TEST_EMAIL") ?? "onelogin.test.user1@gmail.com";
+            return Environment.GetEnvironmentVariable("TEST_EMAIL") ?? "test";
         }
 
         /// Retrieves the test password.
         /// Defaults to "T3ster1234**" if not set.
         public static string GetTestPassword()
         {
-            return Environment.GetEnvironmentVariable("TEST_PASSWORD") ?? "T3ster1234**";
+            return Environment.GetEnvironmentVariable("TEST_PASSWORD") ?? "test**";
         }
 
         /// Retrieves the test secret key for authentication.
         public static string GetSecretKey()
         {
-            return Environment.GetEnvironmentVariable("TEST_SECRET_KEY") ?? "SUW6J5JMXY425EFP32DVXGRIY54LNDBS";
+            return Environment.GetEnvironmentVariable("TEST_SECRET_KEY") ?? "test";
         }
     }
 }

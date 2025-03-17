@@ -12,9 +12,7 @@ namespace E2ETests.ApiTests
         private static readonly string ApiBaseUrl = ConfigUtility.GetOrganisationApiBaseUrl();
         private static readonly string OrganisationsEndpoint = $"{ApiBaseUrl}/organisations";
 
-        /// <summary>
         /// Creates a new organisation and stores its ID under a given key.
-        /// </summary>
         public static async Task<string> CreateOrganisation(string token, string organisationPrefix, string storageKey)
         {
             using var playwright = await Playwright.CreateAsync();
@@ -74,9 +72,7 @@ namespace E2ETests.ApiTests
             return responseBody;
         }
 
-        /// <summary>
         /// Returns an organisation ID by its key.
-        /// </summary>
         public static string GetOrganisationId(string key)
         {
             return StorageUtility.Retrieve(key);
