@@ -124,6 +124,9 @@ public class UpdateOrganisationUseCase(
 
                 break;
             case OrganisationUpdateType.AdditionalIdentifiers:
+
+                // TODO: UPDATE
+
                 if (updateObject.AdditionalIdentifiers == null || !updateObject.AdditionalIdentifiers.Any())
                 {
                     throw new InvalidUpdateOrganisationCommand.MissingAdditionalIdentifiers();
@@ -134,7 +137,7 @@ public class UpdateOrganisationUseCase(
                     // Exclude "VAT" identifiers, they can be shared between organisations
                     if (identifier.Scheme != "VAT")
                     {
-                        await ValidateIdentifierIsNotKnownToUs(identifier);
+                        await ValidateIdentifierNumberNotMissing(identifier);
                     }
 
                     var existingIdentifier = organisation.Identifiers.FirstOrDefault(i => i.Scheme == identifier.Scheme);
@@ -290,18 +293,21 @@ public class UpdateOrganisationUseCase(
         }
     }
 
-    private async Task ValidateIdentifierIsNotKnownToUs(OrganisationIdentifier identifier)
+    private async Task ValidateIdentifierNumberNotMissing(OrganisationIdentifier identifier)
     {
         if (string.IsNullOrWhiteSpace(identifier.Id))
         {
             throw new InvalidUpdateOrganisationCommand.MissingIdentifierNumber();
         }
 
-        var organisationIdentifier = await organisationRepository.FindByIdentifier(identifier.Scheme, identifier.Id);
-        if (organisationIdentifier != null)
-        {
-            throw new InvalidUpdateOrganisationCommand.IdentiferNumberAlreadyExists();
-        }
+        // TODO: Check why this was needed in the first place
+
+        // var organisationIdentifier = await organisationRepository.FindByIdentifier(identifier.Scheme, identifier.Id);
+        //
+        // if (organisationIdentifier != null)
+        // {
+        //     throw new InvalidUpdateOrganisationCommand.IdentiferNumberAlreadyExists();
+        // }
     }
 
     private void RemoveIdentifier(OrganisationInformation.Persistence.Organisation organisation,

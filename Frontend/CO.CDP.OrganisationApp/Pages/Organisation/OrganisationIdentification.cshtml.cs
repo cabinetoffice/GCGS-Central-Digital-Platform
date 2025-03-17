@@ -168,24 +168,32 @@ public class OrganisationIdentificationModel(
 
     public async Task<IActionResult> OnPost()
     {
-        // Ensure OrganisationScheme is valid
-        if (OrganisationScheme == null || !OrganisationScheme.Any())
-        {
-            ModelState.AddModelError(nameof(OrganisationScheme), StaticTextResource.Organisation_OrganisationIdentification_ValidationErrorMessage);
-        }
-
-        if (!ModelState.IsValid)
-        {
+        try {
             var (validate, existingIdentifier) = await ValidateAndGetExistingIdentifiers();
             if (!validate) return Redirect("/page-not-found");
 
             ExistingOrganisationScheme = existingIdentifier.Select(x => x.Scheme).ToList();
 
-            return Page();
-        }
+            foreach (var identifier in existingIdentifier)
+            {
+                SetIdentifierValue(identifier);
+            }
 
-        try
-        {
+            var roleCheck = await authorizationService.AuthorizeAsync(HttpContext.User, PersonScopeRequirement.SupportAdmin);
+
+            IsSupportAdmin = roleCheck.Succeeded;
+
+            // Ensure OrganisationScheme is valid
+            if (OrganisationScheme == null || !OrganisationScheme.Any())
+            {
+                ModelState.AddModelError(nameof(OrganisationScheme), StaticTextResource.Organisation_OrganisationIdentification_ValidationErrorMessage);
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return Page();
+            }
+
             var organisation = await organisationClient.GetOrganisationAsync(Id);
             if (organisation == null) return Redirect("/page-not-found");
 
