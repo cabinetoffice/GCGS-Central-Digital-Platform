@@ -13,7 +13,9 @@ using OrganisationWebApiClient = CO.CDP.Organisation.WebApiClient;
 namespace CO.CDP.OrganisationApp.Pages.Organisation;
 
 [Authorize(Policy = OrgScopeRequirement.Editor)]
-public class OrganisationIdentificationModel(OrganisationWebApiClient.IOrganisationClient organisationClient) : PageModel
+public class OrganisationIdentificationModel(
+    OrganisationWebApiClient.IOrganisationClient organisationClient,
+        IAuthorizationService authorizationService) : PageModel
 {
     [BindProperty]
     [DisplayName("Organisation Type")]
@@ -120,6 +122,8 @@ public class OrganisationIdentificationModel(OrganisationWebApiClient.IOrganisat
     [BindProperty(SupportsGet = true)]
     public Guid Id { get; set; }
 
+    public bool IsSupportAdmin = false;
+
     public async Task<IActionResult> OnGet()
     {
         try
@@ -133,6 +137,10 @@ public class OrganisationIdentificationModel(OrganisationWebApiClient.IOrganisat
             {
                 SetIdentifierValue(identifier);
             }
+
+            var roleCheck = await authorizationService.AuthorizeAsync(HttpContext.User, PersonScopeRequirement.SupportAdmin);
+
+            IsSupportAdmin = roleCheck.Succeeded;
 
             return Page();
         }
@@ -228,34 +236,34 @@ public class OrganisationIdentificationModel(OrganisationWebApiClient.IOrganisat
         switch (identifier.Scheme)
         {
             case "GB-COH":
-                CompanyHouseNumber = identifier.LegalName;
+                CompanyHouseNumber = identifier.Id;
                 break;
             case "GB-CHC":
-                CharityCommissionEnglandWalesNumber = identifier.LegalName;
+                CharityCommissionEnglandWalesNumber = identifier.Id;
                 break;
             case "GB-SC":
-                ScottishCharityRegulatorNumber = identifier.LegalName;
+                ScottishCharityRegulatorNumber = identifier.Id;
                 break;
             case "GB-NIC":
-                CharityCommissionNorthernIrelandNumber = identifier.LegalName;
+                CharityCommissionNorthernIrelandNumber = identifier.Id;
                 break;
             case "GB-MPR":
-                MutualsPublicRegisterNumber = identifier.LegalName;
+                MutualsPublicRegisterNumber = identifier.Id;
                 break;
             case "GG-RCE":
-                GuernseyRegistryNumber = identifier.LegalName;
+                GuernseyRegistryNumber = identifier.Id;
                 break;
             case "JE-FSC":
-                JerseyFinancialServicesCommissionRegistryNumber = identifier.LegalName;
+                JerseyFinancialServicesCommissionRegistryNumber = identifier.Id;
                 break;
             case "IM-CR":
-                IsleofManCompaniesRegistryNumber = identifier.LegalName;
+                IsleofManCompaniesRegistryNumber = identifier.Id;
                 break;
             case "GB-NHS":
-                NationalHealthServiceOrganisationsRegistryNumber = identifier.LegalName;
+                NationalHealthServiceOrganisationsRegistryNumber = identifier.Id;
                 break;
             case "GB-UKPRN":
-                UKLearningProviderReferenceNumber = identifier.LegalName;
+                UKLearningProviderReferenceNumber = identifier.Id;
                 break;
             default:
                 break;
