@@ -7,6 +7,7 @@ using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using System.Data;
 using Xunit.Abstractions;
 using ShareRequest = CO.CDP.DataSharing.WebApiClient.ShareRequest;
 namespace CO.CDP.DataSharing.WebApi.Tests.Api;
@@ -226,7 +227,7 @@ public class DataSharingApiConnectedPersonsIntegrationTests: IClassFixture<Organ
             EndDate = connectedPersonEndDate,
         };
 
-        switch(type)
+        switch (type)
         {
             case ConnectedEntity.ConnectedEntityType.Individual:
                 entity.IndividualOrTrust = new ConnectedEntity.ConnectedIndividualTrust
@@ -237,7 +238,7 @@ public class DataSharingApiConnectedPersonsIntegrationTests: IClassFixture<Organ
                     DateOfBirth = new DateTime(1980, 1, 1),
                 };
 
-            break;
+                break;
 
             case ConnectedEntity.ConnectedEntityType.Organisation:
                 entity.Organisation = new ConnectedEntity.ConnectedOrganisation

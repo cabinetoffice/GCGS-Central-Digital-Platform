@@ -6,6 +6,7 @@ public interface IFormRepository : IDisposable
 {
     Task<IEnumerable<FormSectionSummary>> GetFormSummaryAsync(Guid formId, Guid organisationId);
     Task SaveSharedConsentAsync(SharedConsent sharedConsent);
+    Task SaveSharedConsentWithSnapshotAsync(SharedConsent sharedConsent);
     Task SaveSharedConsentConsortiumAsync(SharedConsent sharedConsent);
 
     Task<FormSection?> GetSectionAsync(Guid formId, Guid sectionId);

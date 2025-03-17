@@ -56,6 +56,7 @@ public static class ApiExceptionMapper
             ErrorCodes.ORGANISATION_MISSING_ADDITIONAL_IDENTIFIERS => ErrorMessagesList.MissingAdditionalIdentifiers,
             ErrorCodes.ORGANISATION_MISSING_IDENTIFIER_NUMBER => ErrorMessagesList.MissingIdentifierNumber,
             ErrorCodes.ORGANISATION_IDENTIFIER_NUMBER_ALREADY_EXISTS => ErrorMessagesList.IdentiferNumberAlreadyExists,
+            ErrorCodes.CONNECTED_ENTITY_IN_USE => ErrorMessagesList.ConnectedPersonsCannotRemove,
             _ => ErrorMessagesList.UnexpectedError
         };
     }
