@@ -100,4 +100,8 @@ app.UseAuthorization();
 app.UseFormsEndpoints();
 app.UseRequestLocalization();
 app.Run();
-public abstract partial class Program;
+
+namespace CO.CDP.Forms.WebApi
+{
+    public abstract partial class Program;
+}

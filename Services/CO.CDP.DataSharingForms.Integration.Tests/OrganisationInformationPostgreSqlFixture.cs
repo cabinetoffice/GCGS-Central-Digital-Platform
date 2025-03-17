@@ -3,7 +3,7 @@ using CO.CDP.Testcontainers.PostgreSql;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
 
-namespace CO.CDP.DataSharing.WebApi.Tests;
+namespace CO.CDP.DataSharingForms.Integration.Tests;
 
 public class OrganisationInformationPostgreSqlFixture : PostgreSqlFixture, IAsyncLifetime
 {

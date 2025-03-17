@@ -1,0 +1,32 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+      
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FluentAssertions" Version="6.12.0" />
+    <PackageReference Include="xunit" Version="2.9.0" />
+    <PackageReference Include="xunit.extensibility.core" Version="2.9.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Libraries\CO.CDP.DataSharing.WebApiClient\CO.CDP.DataSharing.WebApiClient.csproj" />
+    <ProjectReference Include="..\..\Libraries\CO.CDP.Forms.WebApiClient\CO.CDP.Forms.WebApiClient.csproj" />
+    <ProjectReference Include="..\..\TestKit\CO.CDP.Testcontainers.PostgreSql\CO.CDP.Testcontainers.PostgreSql.csproj" />
+    <ProjectReference Include="..\..\TestKit\CO.CDP.TestKit.Mvc\CO.CDP.TestKit.Mvc.csproj" />
+    <ProjectReference Include="..\CO.CDP.DataSharing.WebApi\CO.CDP.DataSharing.WebApi.csproj" />
+    <ProjectReference Include="..\CO.CDP.Forms.WebApi\CO.CDP.Forms.WebApi.csproj" />
+    <ProjectReference Include="..\CO.CDP.OrganisationInformation.Persistence\CO.CDP.OrganisationInformation.Persistence.csproj" />
+  </ItemGroup>
+
+    <ItemGroup>
+        <Using Include="Xunit" />
+    </ItemGroup>
+
+</Project>

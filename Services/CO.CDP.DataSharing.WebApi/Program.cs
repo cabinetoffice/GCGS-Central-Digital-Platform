@@ -110,4 +110,7 @@ app.UseDataSharingEndpoints();
 
 app.Run();
 
-public abstract partial class Program;
+namespace CO.CDP.DataSharing.WebApi
+{
+    public abstract partial class Program;
+}

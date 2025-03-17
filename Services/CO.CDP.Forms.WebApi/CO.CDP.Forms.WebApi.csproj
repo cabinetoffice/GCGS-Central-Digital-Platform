@@ -30,4 +30,8 @@
         <ProjectReference Include="..\CO.CDP.OrganisationInformation.Persistence\CO.CDP.OrganisationInformation.Persistence.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+        <InternalsVisibleTo Include="CO.CDP.DataSharingForms.Integration.Tests" />
+    </ItemGroup>
+
 </Project>

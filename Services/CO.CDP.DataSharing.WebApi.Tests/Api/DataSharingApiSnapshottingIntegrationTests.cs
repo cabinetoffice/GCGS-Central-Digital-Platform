@@ -1,7 +1,6 @@
 using CO.CDP.DataSharing.WebApiClient;
 using CO.CDP.OrganisationInformation.Persistence;
 using CO.CDP.OrganisationInformation.Persistence.Forms;
-using CO.CDP.OrganisationInformation.Persistence.Tests;
 using CO.CDP.TestKit.Mvc;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
@@ -584,13 +583,13 @@ public class DataSharingApiSnapshottingIntegrationTests : IClassFixture<Organisa
             Guid = Guid.NewGuid(),
             OrganisationId = organisation.Id,
             Organisation = organisation,
-            FormId = 1,
+            FormId = form.Id,
             Form = form,
-            FormVersionId = "1",
+            FormVersionId = form.Version,
             SubmissionState = SubmissionState.Draft,
             SubmittedAt = DateTimeOffset.Now,
         });
-
+       
         _context.SaveChanges();
     }
 
