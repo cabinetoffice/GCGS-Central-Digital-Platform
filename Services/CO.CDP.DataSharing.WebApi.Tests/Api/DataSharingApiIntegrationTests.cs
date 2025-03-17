@@ -7,10 +7,12 @@ using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Npgsql;
+using System.Data;
 using Xunit.Abstractions;
 namespace CO.CDP.DataSharing.WebApi.Tests.Api;
 
-public class DataSharingApiIntegrationTests: IClassFixture<OrganisationInformationPostgreSqlFixture>
+public class DataSharingApiIntegrationTests : IClassFixture<OrganisationInformationPostgreSqlFixture>
 {
     private readonly HttpClient _httpClient;
     private readonly OrganisationInformationPostgreSqlFixture _postgreSql;
@@ -43,7 +45,7 @@ public class DataSharingApiIntegrationTests: IClassFixture<OrganisationInformati
     {
         ClearDatabase();
         Organisation organisation = SeedBaseData();
-        SeedShareCode("ABC123", organisation);
+        await SeedShareCode("ABC123", organisation);
 
         var response = await _client.GetSharedDataAsync("ABC123");
         response.Id.Should().Be(organisation.Guid);
@@ -54,7 +56,7 @@ public class DataSharingApiIntegrationTests: IClassFixture<OrganisationInformati
     {
         ClearDatabase();
         Organisation organisation = SeedBaseData();
-        SeedShareCode("ABC123", organisation);
+        await SeedShareCode("ABC123", organisation);
 
         Func<Task> act = async () => await _client.GetSharedDataAsync("ABC456");
 
@@ -75,8 +77,8 @@ public class DataSharingApiIntegrationTests: IClassFixture<OrganisationInformati
         ClearDatabase();
         Organisation organisation = SeedBaseData();
         SeedConnectedEntities(organisation, connectedPersonCreationDate, connectedPersonEndDate, ConnectedEntity.ConnectedEntityType.Individual);
-        SeedShareCode("ABC123", organisation, shareCodeCreationDate);
-       
+        await SeedShareCode("ABC123", organisation, shareCodeCreationDate);
+
         var response = await _client.GetSharedDataAsync("ABC123");
         response.AssociatedPersons.Should().HaveCount(1);
         response.AssociatedPersons.First().Name.Should().Be("John Doe");
@@ -95,7 +97,7 @@ public class DataSharingApiIntegrationTests: IClassFixture<OrganisationInformati
         ClearDatabase();
         Organisation organisation = SeedBaseData();
         SeedConnectedEntities(organisation, connectedPersonCreationDate, connectedPersonEndDate, ConnectedEntity.ConnectedEntityType.Individual);
-        SeedShareCode("ABC123", organisation, shareCodeCreationDate);
+        await SeedShareCode("ABC123", organisation, shareCodeCreationDate);
 
         var response = await _client.GetSharedDataAsync("ABC123");
         response.AssociatedPersons.Should().HaveCount(0);
@@ -113,7 +115,7 @@ public class DataSharingApiIntegrationTests: IClassFixture<OrganisationInformati
         ClearDatabase();
         Organisation organisation = SeedBaseData();
         SeedConnectedEntities(organisation, connectedPersonCreationDate, connectedPersonEndDate, ConnectedEntity.ConnectedEntityType.Organisation);
-        SeedShareCode("ABC123", organisation, shareCodeCreationDate);
+        await SeedShareCode("ABC123", organisation, shareCodeCreationDate);
 
         var response = await _client.GetSharedDataAsync("ABC123");
         response.AdditionalEntities.Should().HaveCount(1);
@@ -133,7 +135,7 @@ public class DataSharingApiIntegrationTests: IClassFixture<OrganisationInformati
         ClearDatabase();
         Organisation organisation = SeedBaseData();
         SeedConnectedEntities(organisation, connectedPersonCreationDate, connectedPersonEndDate, ConnectedEntity.ConnectedEntityType.Organisation);
-        SeedShareCode("ABC123", organisation, shareCodeCreationDate);
+        await SeedShareCode("ABC123", organisation, shareCodeCreationDate);
 
         var response = await _client.GetSharedDataAsync("ABC123");
         response.AdditionalEntities.Should().HaveCount(0);
@@ -193,7 +195,7 @@ public class DataSharingApiIntegrationTests: IClassFixture<OrganisationInformati
         return organisation;
     }
 
-    private void SeedShareCode(string shareCode, Organisation organisation, DateTime? shareCodeCreationDate = null)
+    private async Task SeedShareCode(string shareCode, Organisation organisation, DateTime? shareCodeCreationDate = null)
     {
         var form = _context.Forms.Where(f => f.Guid == supplierInformationFormId).First();
 
@@ -211,6 +213,13 @@ public class DataSharingApiIntegrationTests: IClassFixture<OrganisationInformati
         });
 
         _context.SaveChanges();
+
+        var conn = (NpgsqlConnection)_context.Database.GetDbConnection();
+        if (conn.State != ConnectionState.Open) await conn.OpenAsync();
+        using var command = new NpgsqlCommand("CALL create_shared_consent_snapshot(@p_share_code)", conn);
+        command.Parameters.AddWithValue("p_share_code", shareCode);
+        await command.ExecuteNonQueryAsync();
+        await conn.CloseAsync();
     }
 
     private void SeedConnectedEntities(Organisation organisation, DateTime connectedPersonCreationDate, DateTime? connectedPersonEndDate, ConnectedEntity.ConnectedEntityType type)
@@ -224,7 +233,7 @@ public class DataSharingApiIntegrationTests: IClassFixture<OrganisationInformati
             EndDate = connectedPersonEndDate,
         };
 
-        switch(type)
+        switch (type)
         {
             case ConnectedEntity.ConnectedEntityType.Individual:
                 entity.IndividualOrTrust = new ConnectedEntity.ConnectedIndividualTrust
@@ -235,7 +244,7 @@ public class DataSharingApiIntegrationTests: IClassFixture<OrganisationInformati
                     DateOfBirth = new DateTime(1980, 1, 1),
                 };
 
-            break;
+                break;
 
             case ConnectedEntity.ConnectedEntityType.Organisation:
                 entity.Organisation = new ConnectedEntity.ConnectedOrganisation
