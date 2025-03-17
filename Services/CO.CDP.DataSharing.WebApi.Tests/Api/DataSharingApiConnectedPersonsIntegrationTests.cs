@@ -7,12 +7,12 @@ using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Npgsql;
 using System.Data;
 using Xunit.Abstractions;
+using ShareRequest = CO.CDP.DataSharing.WebApiClient.ShareRequest;
 namespace CO.CDP.DataSharing.WebApi.Tests.Api;
 
-public class DataSharingApiIntegrationTests : IClassFixture<OrganisationInformationPostgreSqlFixture>
+public class DataSharingApiConnectedPersonsIntegrationTests: IClassFixture<OrganisationInformationPostgreSqlFixture>
 {
     private readonly HttpClient _httpClient;
     private readonly OrganisationInformationPostgreSqlFixture _postgreSql;
@@ -20,7 +20,7 @@ public class DataSharingApiIntegrationTests : IClassFixture<OrganisationInformat
     private readonly IDataSharingClient _client;
     private readonly Guid supplierInformationFormId = new("0618b13e-eaf2-46e3-a7d2-6f2c44be7022");
 
-    public DataSharingApiIntegrationTests(ITestOutputHelper testOutputHelper, OrganisationInformationPostgreSqlFixture postgreSql)
+    public DataSharingApiConnectedPersonsIntegrationTests(ITestOutputHelper testOutputHelper, OrganisationInformationPostgreSqlFixture postgreSql)
     {
         TestWebApplicationFactory<Program> _factory = new(builder =>
         {
@@ -44,10 +44,11 @@ public class DataSharingApiIntegrationTests : IClassFixture<OrganisationInformat
     public async Task DataSharingClient_Returns200_WhenShareCodeExists()
     {
         ClearDatabase();
-        Organisation organisation = SeedBaseData();
-        await SeedShareCode("ABC123", organisation);
+        Organisation organisation = CreateOrganisation();
+        CreateSharedConsent(organisation);
+        var createShareCodeResponse = await _client.CreateSharedDataAsync(new ShareRequest(supplierInformationFormId, organisation.Guid));
 
-        var response = await _client.GetSharedDataAsync("ABC123");
+        var response = await _client.GetSharedDataAsync(createShareCodeResponse.ShareCode);
         response.Id.Should().Be(organisation.Guid);
     }
 
@@ -55,8 +56,9 @@ public class DataSharingApiIntegrationTests : IClassFixture<OrganisationInformat
     public async Task DataSharingClient_Returns404_WhenShareCodeDoesNotExist()
     {
         ClearDatabase();
-        Organisation organisation = SeedBaseData();
-        await SeedShareCode("ABC123", organisation);
+        Organisation organisation = CreateOrganisation();
+        CreateSharedConsent(organisation);
+        var createShareCodeResponse = await _client.CreateSharedDataAsync(new ShareRequest(supplierInformationFormId, organisation.Guid));
 
         Func<Task> act = async () => await _client.GetSharedDataAsync("ABC456");
 
@@ -66,82 +68,82 @@ public class DataSharingApiIntegrationTests : IClassFixture<OrganisationInformat
     }
 
     [Theory]
-    [InlineData("2022-01-01T10:00:00", "2022-01-01T09:00:00", null)]    // connected individual created before share code
-    [InlineData("2022-01-01T10:00:00", "2022-01-01T09:00:00", "2022-01-01T11:00:00")] // connected individual created before and ended after share code
-    public async Task DataSharingClient_ReturnsConnectedIndividual_IfDatesIntersect(string scCreationDate, string cpCreationDate, string? cpEndDate)
+    [InlineData(-1, null)]    // connected individual created before share code
+    [InlineData(-1, 1)] // connected individual created before and ended after share code
+    public async Task DataSharingClient_ReturnsConnectedIndividual_IfDatesIntersect(int cpCreationOffset, int? cpEndDateOffset)
     {
-        DateTime shareCodeCreationDate = DateTime.Parse(scCreationDate);
-        DateTime connectedPersonCreationDate = DateTime.Parse(cpCreationDate);
-        DateTime? connectedPersonEndDate = cpEndDate != null ? DateTime.Parse(cpEndDate) : null;
+        DateTime connectedPersonCreationDate = DateTime.Now.AddHours(cpCreationOffset);
+        DateTime? connectedPersonEndDate = cpEndDateOffset != null ? DateTime.Now.AddHours(cpEndDateOffset.Value) : null;
 
         ClearDatabase();
-        Organisation organisation = SeedBaseData();
-        SeedConnectedEntities(organisation, connectedPersonCreationDate, connectedPersonEndDate, ConnectedEntity.ConnectedEntityType.Individual);
-        await SeedShareCode("ABC123", organisation, shareCodeCreationDate);
+        Organisation organisation = CreateOrganisation();
+        CreateSharedConsent(organisation);
+        CreateConnectedEntity(organisation, connectedPersonCreationDate, connectedPersonEndDate, ConnectedEntity.ConnectedEntityType.Individual);
+        var createShareCodeResponse = await _client.CreateSharedDataAsync(new ShareRequest(supplierInformationFormId, organisation.Guid));
 
-        var response = await _client.GetSharedDataAsync("ABC123");
+        var response = await _client.GetSharedDataAsync(createShareCodeResponse.ShareCode);
         response.AssociatedPersons.Should().HaveCount(1);
         response.AssociatedPersons.First().Name.Should().Be("John Doe");
     }
 
     [Theory]
-    [InlineData("2022-01-01T10:00:00", "2022-01-01T11:00:00", null)]    // connected individual created after share code
-    [InlineData("2022-01-01T10:00:00", "2022-01-01T09:00:00", "2022-01-01T09:30:00")]   // connected individual created and ended before share code
-    [InlineData("2022-01-01T10:00:00", "2022-01-01T11:00:00", "2022-01-01T12:00:00")]    // connected individual created and ended after share code
-    public async Task DataSharingClient_DoesNotReturnConnectedIndividual_IfDatesDontIntersect(string scCreationDate, string cpCreationDate, string? cpEndDate)
+    [InlineData(1, null)]    // connected individual created after share code
+    [InlineData(-2, -1)]   // connected individual created and ended before share code
+    [InlineData(1, 2)]    // connected individual created and ended after share code
+    public async Task DataSharingClient_DoesNotReturnConnectedIndividual_IfDatesDontIntersect(int cpCreationOffset, int? cpEndDateOffset)
     {
-        DateTime shareCodeCreationDate = DateTime.Parse(scCreationDate);
-        DateTime connectedPersonCreationDate = DateTime.Parse(cpCreationDate);
-        DateTime? connectedPersonEndDate = cpEndDate != null ? DateTime.Parse(cpEndDate) : null;
+        DateTime connectedPersonCreationDate = DateTime.Now.AddHours(cpCreationOffset);
+        DateTime? connectedPersonEndDate = cpEndDateOffset != null ? DateTime.Now.AddHours(cpEndDateOffset.Value) : null;
 
         ClearDatabase();
-        Organisation organisation = SeedBaseData();
-        SeedConnectedEntities(organisation, connectedPersonCreationDate, connectedPersonEndDate, ConnectedEntity.ConnectedEntityType.Individual);
-        await SeedShareCode("ABC123", organisation, shareCodeCreationDate);
+        Organisation organisation = CreateOrganisation();
+        CreateSharedConsent(organisation);
+        CreateConnectedEntity(organisation, connectedPersonCreationDate, connectedPersonEndDate, ConnectedEntity.ConnectedEntityType.Individual);
+        var createShareCodeResponse = await _client.CreateSharedDataAsync(new ShareRequest(supplierInformationFormId, organisation.Guid));
 
-        var response = await _client.GetSharedDataAsync("ABC123");
+        var response = await _client.GetSharedDataAsync(createShareCodeResponse.ShareCode);
         response.AssociatedPersons.Should().HaveCount(0);
     }
 
     [Theory]
-    [InlineData("2022-01-01T10:00:00", "2022-01-01T09:00:00", null)]    // connected org created before share code
-    [InlineData("2022-01-01T10:00:00", "2022-01-01T09:00:00", "2022-01-01T11:00:00")] // connected org created before and ended after share code
-    public async Task DataSharingClient_ReturnsConnectedOrgs_IfDatesIntersect(string scCreationDate, string cpCreationDate, string? cpEndDate)
+    [InlineData(-1, null)]    // connected individual created before share code
+    [InlineData(-1, 1)] // connected individual created before and ended after share code
+    public async Task DataSharingClient_ReturnsConnectedOrgs_IfDatesIntersect(int cpCreationOffset, int? cpEndDateOffset)
     {
-        DateTime shareCodeCreationDate = DateTime.Parse(scCreationDate);
-        DateTime connectedPersonCreationDate = DateTime.Parse(cpCreationDate);
-        DateTime? connectedPersonEndDate = cpEndDate != null ? DateTime.Parse(cpEndDate) : null;
+        DateTime connectedPersonCreationDate = DateTime.Now.AddHours(cpCreationOffset);
+        DateTime? connectedPersonEndDate = cpEndDateOffset != null ? DateTime.Now.AddHours(cpEndDateOffset.Value) : null;
 
         ClearDatabase();
-        Organisation organisation = SeedBaseData();
-        SeedConnectedEntities(organisation, connectedPersonCreationDate, connectedPersonEndDate, ConnectedEntity.ConnectedEntityType.Organisation);
-        await SeedShareCode("ABC123", organisation, shareCodeCreationDate);
+        Organisation organisation = CreateOrganisation();
+        CreateSharedConsent(organisation);
+        CreateConnectedEntity(organisation, connectedPersonCreationDate, connectedPersonEndDate, ConnectedEntity.ConnectedEntityType.Organisation);
+        var createShareCodeResponse = await _client.CreateSharedDataAsync(new ShareRequest(supplierInformationFormId, organisation.Guid));
 
-        var response = await _client.GetSharedDataAsync("ABC123");
+        var response = await _client.GetSharedDataAsync(createShareCodeResponse.ShareCode);
         response.AdditionalEntities.Should().HaveCount(1);
         response.AdditionalEntities.First().Name.Should().Be("Test org");
     }
 
     [Theory]
-    [InlineData("2022-01-01T10:00:00", "2022-01-01T11:00:00", null)]    // connected org created after share code
-    [InlineData("2022-01-01T10:00:00", "2022-01-01T09:00:00", "2022-01-01T09:30:00")]   // connected org created and ended before share code
-    [InlineData("2022-01-01T10:00:00", "2022-01-01T11:00:00", "2022-01-01T12:00:00")]    // connected org created and ended after share code
-    public async Task DataSharingClient_DoesNotReturnConnectedOrgs_IfDatesDontIntersect(string scCreationDate, string cpCreationDate, string? cpEndDate)
+    [InlineData(1, null)]    // connected individual created after share code
+    [InlineData(-2, -1)]   // connected individual created and ended before share code
+    [InlineData(1, 2)]    // connected individual created and ended after share code
+    public async Task DataSharingClient_DoesNotReturnConnectedOrgs_IfDatesDontIntersect(int cpCreationOffset, int? cpEndDateOffset)
     {
-        DateTime shareCodeCreationDate = DateTime.Parse(scCreationDate);
-        DateTime connectedPersonCreationDate = DateTime.Parse(cpCreationDate);
-        DateTime? connectedPersonEndDate = cpEndDate != null ? DateTime.Parse(cpEndDate) : null;
+        DateTime connectedPersonCreationDate = DateTime.Now.AddHours(cpCreationOffset);
+        DateTime? connectedPersonEndDate = cpEndDateOffset != null ? DateTime.Now.AddHours(cpEndDateOffset.Value) : null;
 
         ClearDatabase();
-        Organisation organisation = SeedBaseData();
-        SeedConnectedEntities(organisation, connectedPersonCreationDate, connectedPersonEndDate, ConnectedEntity.ConnectedEntityType.Organisation);
-        await SeedShareCode("ABC123", organisation, shareCodeCreationDate);
+        Organisation organisation = CreateOrganisation();
+        CreateSharedConsent(organisation);
+        CreateConnectedEntity(organisation, connectedPersonCreationDate, connectedPersonEndDate, ConnectedEntity.ConnectedEntityType.Organisation);
+        var createShareCodeResponse = await _client.CreateSharedDataAsync(new ShareRequest(supplierInformationFormId, organisation.Guid));
 
-        var response = await _client.GetSharedDataAsync("ABC123");
+        var response = await _client.GetSharedDataAsync(createShareCodeResponse.ShareCode);
         response.AdditionalEntities.Should().HaveCount(0);
     }
 
-    private Organisation SeedBaseData()
+    private Organisation CreateOrganisation()
     {
         var organisation = new Organisation
         {
@@ -159,7 +161,7 @@ public class DataSharingApiIntegrationTests : IClassFixture<OrganisationInformat
                 {
                     IdentifierId = "1234567",
                     Scheme = "Whatever",
-                    LegalName = "New Org Legal Name",
+                    LegalName = "Org Legal Name",
                     Primary = true
                 }
             },
@@ -195,38 +197,30 @@ public class DataSharingApiIntegrationTests : IClassFixture<OrganisationInformat
         return organisation;
     }
 
-    private async Task SeedShareCode(string shareCode, Organisation organisation, DateTime? shareCodeCreationDate = null)
+    private void CreateSharedConsent(Organisation organisation)
     {
         var form = _context.Forms.Where(f => f.Guid == supplierInformationFormId).First();
 
         _context.SharedConsents.Add(new OrganisationInformation.Persistence.Forms.SharedConsent
         {
-            Guid = new Guid(),
+            Guid = Guid.NewGuid(),
             OrganisationId = organisation.Id,
             Organisation = organisation,
             FormId = 1,
             Form = form,
             FormVersionId = "1",
-            SubmissionState = SubmissionState.Submitted,
-            ShareCode = shareCode,
-            SubmittedAt = shareCodeCreationDate ?? DateTimeOffset.Now,
+            SubmissionState = SubmissionState.Draft,
+            SubmittedAt = DateTimeOffset.Now,
         });
 
         _context.SaveChanges();
-
-        var conn = (NpgsqlConnection)_context.Database.GetDbConnection();
-        if (conn.State != ConnectionState.Open) await conn.OpenAsync();
-        using var command = new NpgsqlCommand("CALL create_shared_consent_snapshot(@p_share_code)", conn);
-        command.Parameters.AddWithValue("p_share_code", shareCode);
-        await command.ExecuteNonQueryAsync();
-        await conn.CloseAsync();
     }
 
-    private void SeedConnectedEntities(Organisation organisation, DateTime connectedPersonCreationDate, DateTime? connectedPersonEndDate, ConnectedEntity.ConnectedEntityType type)
+    private void CreateConnectedEntity(Organisation organisation, DateTime connectedPersonCreationDate, DateTime? connectedPersonEndDate, ConnectedEntity.ConnectedEntityType type)
     {
         var entity = new ConnectedEntity
         {
-            Guid = new Guid(),
+            Guid = Guid.NewGuid(),
             EntityType = type,
             SupplierOrganisation = organisation,
             CreatedOn = connectedPersonCreationDate,
