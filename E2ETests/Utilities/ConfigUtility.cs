@@ -4,38 +4,29 @@ namespace E2ETests.Utilities
 {
     public static class ConfigUtility
     {
-        /// Retrieves the base URL for the web application.
-        /// Defaults to "http://localhost:8090" if not set.
-        public static string GetBaseUrl()
+=        public static string GetBaseUrl()
         {
             return Environment.GetEnvironmentVariable("TEST_BASE_URL") ?? "http://localhost:8090";
         }
 
-        /// Retrieves the Organisation API base URL.
-        /// Defaults to "http://localhost:8082" if not set.
-        public static string GetOrganisationApiBaseUrl()
+=        public static string GetOrganisationApiBaseUrl()
         {
             return Environment.GetEnvironmentVariable("ORGANISATION_API_BASE_URL") ?? "http://localhost:8082";
         }
 
-        /// Retrieves the test email.
-        /// Defaults to "onelogin.test.user1@gmail.com" if not set.
-        public static string GetTestEmail()
+=        public static string GetTestEmail()
         {
-            return Environment.GetEnvironmentVariable("TEST_EMAIL") ?? "test";
+            return Environment.GetEnvironmentVariable("TEST_EMAIL") ?? "onelogin.test.user1@gmail.com";
         }
 
-        /// Retrieves the test password.
-        /// Defaults to "T3ster1234**" if not set.
-        public static string GetTestPassword()
+=        public static string GetTestPassword()
         {
-            return Environment.GetEnvironmentVariable("TEST_PASSWORD") ?? "test**";
+            return Environment.GetEnvironmentVariable("TEST_PASSWORD") ?? "T3ster1234**";
         }
 
-        /// Retrieves the test secret key for authentication.
-        public static string GetSecretKey()
+=        public static string GetSecretKey()
         {
-            return Environment.GetEnvironmentVariable("TEST_SECRET_KEY") ?? "test";
+            return Environment.GetEnvironmentVariable("TEST_SECRET_KEY") ?? "SUW6J5JMXY425EFP32DVXGRIY54LNDBS";
         }
     }
 }

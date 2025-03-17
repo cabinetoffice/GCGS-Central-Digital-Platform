@@ -26,7 +26,6 @@ namespace E2ETests.Pages
             _baseUrl = ConfigUtility.GetBaseUrl();
         }
 
-        /// Navigates to the Supplier Information page using a stored organisation ID.
         public async Task NavigateTo(string storageKey)
         {
             string organisationId = StorageUtility.Retrieve(storageKey);
@@ -42,56 +41,47 @@ namespace E2ETests.Pages
             await _page.WaitForSelectorAsync(OrganisationNameSelector);
         }
 
-        /// Retrieves the Organisation Name from the page.
         public async Task<string> GetOrganisationName()
         {
             await _page.WaitForSelectorAsync(OrganisationNameSelector);
             return await _page.InnerTextAsync(OrganisationNameSelector);
         }
 
-        /// Clicks the 'Basic Information' link.
         public async Task ClickBasicInformation()
         {
             await _page.ClickAsync(BasicInformationLink);
         }
 
-        /// Clicks the 'Connected Persons' link.
         public async Task ClickConnectedPersons()
         {
             await _page.ClickAsync(ConnectedPersonsLink);
         }
 
-        /// Clicks the 'Qualifications' link.
         public async Task ClickQualifications()
         {
             await _page.ClickAsync(QualificationsLink);
         }
 
-        /// Clicks the 'Trade Assurances' link.
         public async Task ClickTradeAssurances()
         {
             await _page.ClickAsync(TradeAssurancesLink);
         }
 
-        /// Clicks the 'Exclusions' link.
         public async Task ClickExclusions()
         {
             await _page.ClickAsync(ExclusionsLink);
         }
 
-        /// Clicks the 'Financial Information' link.
         public async Task ClickFinancialInformation()
         {
             await _page.ClickAsync(FinancialInformationLink);
         }
 
-        /// Clicks the 'Share My Information' link.
         public async Task ClickShareMyInformation()
         {
             await _page.ClickAsync(ShareMyInformationLink);
         }
 
-        /// Clicks 'Back to Organisation Details' link.
         public async Task ClickBackToOrganisationDetails()
         {
             await _page.ClickAsync(BackToOrganisationDetailsLink);
