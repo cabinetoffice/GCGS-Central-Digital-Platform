@@ -43,4 +43,7 @@ public static class ErrorMessagesList
     public static readonly string IdentiferNumberAlreadyExists = StaticTextResource.ErrorMessageList_IdentiferNumberAlreadyExists;
 
     public static readonly string SharecodeNotFound = StaticTextResource.ErrorMessageList_SharecodeNotFound;
+
+    public static readonly string ConnectedPersonsCannotRemove = StaticTextResource.ErrorMessageList_ConnectedPersons_Cannot_Remove;
+
 }
