@@ -24,9 +24,6 @@ namespace E2ETests.Pages
             _page = page;
         }
 
-        /// <summary>
-        /// Performs login flow including handling OTP and extra steps if necessary.
-        /// </summary>
         public async Task Login(string loginUrl, string email, string password, string secretKey)
         {
             await _page.GotoAsync(loginUrl);
@@ -37,13 +34,11 @@ namespace E2ETests.Pages
             await _page.FillAsync(OneLoginPasswordTextBox, password);
             await _page.ClickAsync(ContinueButton);
 
-            // Wait for OTP input and enter generated OTP
             await _page.WaitForSelectorAsync(OtpInputBox);
             string otpCode = TOTPUtility.GenerateTOTP(secretKey);
             await _page.FillAsync(OtpInputBox, otpCode);
             await _page.ClickAsync(ContinueButton);
 
-            // Check if "My Account" heading exists, if not, complete additional steps
             bool isMyAccountVisible = await _page.Locator(MyAccountHeading).IsVisibleAsync();
 
             if (!isMyAccountVisible)

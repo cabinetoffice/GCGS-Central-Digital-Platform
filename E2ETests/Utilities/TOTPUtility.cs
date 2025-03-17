@@ -10,12 +10,9 @@ namespace E2ETests.Utilities
     {
         public static string GenerateTOTP(string base32Secret)
         {
-            // 1) Decode base32 string to raw bytes
             byte[] secretBytes = Base32Decode(base32Secret);
-            // 2) Each code is valid for 30 seconds
             long timestep = DateTimeOffset.UtcNow.ToUnixTimeSeconds() / 30;
 
-            // 3) Convert that long to an 8-byte array
             byte[] timestepBytes = new byte[8];
             long temp = timestep;
             for (int i = 7; i >= 0; i--)
@@ -24,7 +21,6 @@ namespace E2ETests.Utilities
                 temp >>= 8;
             }
 
-            // 4) Compute HMAC-SHA1
             using (var hmac = new HMACSHA1(secretBytes))
             {
                 byte[] hash = hmac.ComputeHash(timestepBytes);

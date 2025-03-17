@@ -37,14 +37,12 @@ namespace E2ETests.Pages
             await _page.WaitForSelectorAsync(PageTitleSelector);
         }
 
-        /// Retrieves the page title to verify the correct page is loaded.
         public async Task<string> GetPageTitle()
         {
             await _page.WaitForSelectorAsync(PageTitleSelector);
             return await _page.InnerTextAsync(PageTitleSelector);
         }
 
-        /// Selects either "Yes" or "No" for the Companies House Registration question.
         public async Task SelectCompanyRegistrationOption(bool isRegistered)
         {
             string radioSelector = isRegistered ? YesRadioSelector : NoRadioSelector;
@@ -52,13 +50,11 @@ namespace E2ETests.Pages
             Console.WriteLine($"✅ Selected Company Registration Option: {(isRegistered ? "Yes" : "No")}");
         }
 
-        /// Clicks the 'Continue' button.
         public async Task ClickContinue()
         {
             await _page.ClickAsync(ContinueButtonSelector);
         }
 
-        /// Completes the Connected Person Declaration Page.
         public async Task CompletePage(bool isRegistered)
         {
             await SelectCompanyRegistrationOption(isRegistered);

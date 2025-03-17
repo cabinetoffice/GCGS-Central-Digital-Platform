@@ -38,14 +38,12 @@ namespace E2ETests.Pages
             await _page.WaitForSelectorAsync(PageTitleSelector);
         }
 
-        /// Retrieves the page title to verify the correct page is loaded.
         public async Task<string> GetPageTitle()
         {
             await _page.WaitForSelectorAsync(PageTitleSelector);
             return await _page.InnerTextAsync(PageTitleSelector);
         }
 
-        /// Fills in the address fields.
         public async Task FillAddressFields(string addressLine1, string townCity, string postcode)
         {
             await _page.FillAsync(AddressLine1Selector, addressLine1);
@@ -55,7 +53,6 @@ namespace E2ETests.Pages
             Console.WriteLine($"✅ Address Fields Filled: {addressLine1}, {townCity}, {postcode}");
         }
 
-        /// Clicks the 'Continue' button.
         public async Task ClickContinue()
         {
             await _page.ClickAsync(ContinueButtonSelector);

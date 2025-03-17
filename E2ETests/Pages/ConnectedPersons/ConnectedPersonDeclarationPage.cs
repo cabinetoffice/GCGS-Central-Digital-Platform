@@ -36,20 +36,17 @@ namespace E2ETests.Pages
             await _page.WaitForSelectorAsync(PageTitleSelector);
         }
 
-        /// Retrieves the page title to verify the correct page is loaded.
         public async Task<string> GetPageTitle()
         {
             await _page.WaitForSelectorAsync(PageTitleSelector);
             return await _page.InnerTextAsync(PageTitleSelector);
         }
 
-        /// Clicks the 'Continue' button.
         public async Task ClickContinue()
         {
             await _page.ClickAsync(ContinueButtonSelector);
         }
 
-        /// Clicks the 'Back to Supplier Information' link.
         public async Task ClickBackToSupplierInformation()
         {
             await _page.ClickAsync(BackToSupplierInfoSelector);

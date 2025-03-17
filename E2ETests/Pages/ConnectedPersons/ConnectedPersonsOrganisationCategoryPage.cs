@@ -40,14 +40,12 @@ namespace E2ETests.Pages
             await _page.WaitForSelectorAsync(PageTitleSelector);
         }
 
-        /// Retrieves the page title to verify the correct page is loaded.
         public async Task<string> GetPageTitle()
         {
             await _page.WaitForSelectorAsync(PageTitleSelector);
             return await _page.InnerTextAsync(PageTitleSelector);
         }
 
-        /// Selects an organisation category from the available choices.
         public async Task SelectOrganisationCategory(string category)
         {
             string radioSelector = category.ToLower() switch
@@ -64,7 +62,6 @@ namespace E2ETests.Pages
             Console.WriteLine($"✅ Selected Organisation Category: {category}");
         }
 
-        /// Clicks the 'Continue' button.
         public async Task ClickContinue()
         {
             await _page.ClickAsync(ContinueButtonSelector);

@@ -36,21 +36,18 @@ namespace E2ETests.Pages
             await _page.WaitForSelectorAsync(PageTitleSelector);
         }
 
-        /// Retrieves the page title to verify the correct page is loaded.
         public async Task<string> GetPageTitle()
         {
             await _page.WaitForSelectorAsync(PageTitleSelector);
             return await _page.InnerTextAsync(PageTitleSelector);
         }
 
-        /// Enters the organisation's name into the input field.
         public async Task EnterOrganisationName(string organisationName)
         {
             await _page.FillAsync(OrganisationNameInputSelector, organisationName);
             Console.WriteLine($"✅ Entered Organisation Name: {organisationName}");
         }
 
-        /// Clicks the 'Continue' button.
         public async Task ClickContinue()
         {
             await _page.ClickAsync(ContinueButtonSelector);

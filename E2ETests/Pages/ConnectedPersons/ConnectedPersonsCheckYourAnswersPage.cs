@@ -40,49 +40,42 @@ namespace E2ETests.Pages
             await _page.WaitForSelectorAsync(PageTitleSelector);
         }
 
-        /// Retrieves the page title to verify the correct page is loaded.
         public async Task<string> GetPageTitle()
         {
             await _page.WaitForSelectorAsync(PageTitleSelector);
             return await _page.InnerTextAsync(PageTitleSelector);
         }
 
-        /// Clicks on "Change" link for Company Name.
         public async Task ClickChangeCompanyName()
         {
             await _page.ClickAsync(CompanyNameChangeLink);
             Console.WriteLine("✅ Clicked 'Change' for Company Name");
         }
 
-        /// Clicks on "Change" link for Registered Address.
         public async Task ClickChangeRegisteredAddress()
         {
             await _page.ClickAsync(RegisteredAddressChangeLink);
             Console.WriteLine("✅ Clicked 'Change' for Registered Address");
         }
 
-        /// Clicks on "Change" link for Postal Address.
         public async Task ClickChangePostalAddress()
         {
             await _page.ClickAsync(PostalAddressChangeLink);
             Console.WriteLine("✅ Clicked 'Change' for Postal Address");
         }
 
-        /// Clicks on "Change" link for Legal Form.
         public async Task ClickChangeLegalForm()
         {
             await _page.ClickAsync(LegalFormChangeLink);
             Console.WriteLine("✅ Clicked 'Change' for Legal Form");
         }
 
-        /// Clicks on "Change" link for Companies House.
         public async Task ClickChangeCompaniesHouse()
         {
             await _page.ClickAsync(CompaniesHouseChangeLink);
             Console.WriteLine("✅ Clicked 'Change' for Companies House Registration");
         }
 
-        /// Clicks the 'Submit' button.
         public async Task ClickSubmit()
         {
             await _page.ClickAsync(SubmitButtonSelector);

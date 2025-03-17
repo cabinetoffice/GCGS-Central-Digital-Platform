@@ -21,7 +21,6 @@ namespace E2ETests.Pages
             _baseUrl = ConfigUtility.GetBaseUrl(); // Retrieve base URL from ConfigUtility
         }
 
-        /// Navigates to the Connected Persons Postal Address Same Page using stored Organisation ID.
         public async Task NavigateTo(string storageKey)
         {
             string organisationId = StorageUtility.Retrieve(storageKey);
@@ -37,14 +36,12 @@ namespace E2ETests.Pages
             await _page.WaitForSelectorAsync(PageTitleSelector);
         }
 
-        /// Retrieves the page title to verify the correct page is loaded.
         public async Task<string> GetPageTitle()
         {
             await _page.WaitForSelectorAsync(PageTitleSelector);
             return await _page.InnerTextAsync(PageTitleSelector);
         }
 
-        /// Selects Yes or No for postal address question.
         public async Task SelectPostalAddressOption(bool isSame)
         {
             if (isSame)
@@ -59,7 +56,6 @@ namespace E2ETests.Pages
             }
         }
 
-        /// Clicks the 'Continue' button.
         public async Task ClickContinue()
         {
             await _page.ClickAsync(ContinueButtonSelector);

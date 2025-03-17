@@ -38,14 +38,12 @@ namespace E2ETests.Pages
             await _page.WaitForSelectorAsync(PageTitleSelector);
         }
 
-        /// Retrieves the page title to verify the correct page is loaded.
         public async Task<string> GetPageTitle()
         {
             await _page.WaitForSelectorAsync(PageTitleSelector);
             return await _page.InnerTextAsync(PageTitleSelector);
         }
 
-        /// Selects a person type option from the available choices.
         public async Task SelectPersonType(string personType)
         {
             string radioSelector = personType.ToLower() switch
@@ -60,18 +58,17 @@ namespace E2ETests.Pages
             Console.WriteLine($"✅ Selected Person Type: {personType}");
         }
 
-        /// Clicks the 'Continue' button.
         public async Task ClickContinue()
         {
             await _page.ClickAsync(ContinueButtonSelector);
         }
 
-        /// Completes the form by selecting a person type and continuing.
-        public async Task CompletePage(string selection)
+        /// Completes the form by  a person type and continuing.
+        public async Task CompleteForm(string personType)
         {
-            await SelectPersonType(selection);
+            await SelectPersonType(personType);
             await ClickContinue();
-            Console.WriteLine($"✅ Completed Connected Person Type Page with selection: {selection}");
+            Console.WriteLine($"✅ Completed Connected Person Type Page with selection: {personType}");
         }
     }
 }

@@ -37,28 +37,24 @@ namespace E2ETests.Pages
             await _page.WaitForSelectorAsync(PageTitleSelector);
         }
 
-        /// Retrieves the page title to verify the correct page is loaded.
         public async Task<string> GetPageTitle()
         {
             await _page.WaitForSelectorAsync(PageTitleSelector);
             return await _page.InnerTextAsync(PageTitleSelector);
         }
 
-        /// Fills in the Legal Formation field.
         public async Task EnterLegalFormation(string legalFormation)
         {
             await _page.FillAsync(LegalFormationInputSelector, legalFormation);
             Console.WriteLine($"✅ Entered Legal Formation: {legalFormation}");
         }
 
-        /// Fills in the Law Enforcement field.
         public async Task EnterLawEnforcement(string lawEnforcement)
         {
             await _page.FillAsync(LawEnforcementInputSelector, lawEnforcement);
             Console.WriteLine($"✅ Entered Law Enforcement: {lawEnforcement}");
         }
 
-        /// Clicks the 'Continue' button.
         public async Task ClickContinue()
         {
             await _page.ClickAsync(ContinueButtonSelector);

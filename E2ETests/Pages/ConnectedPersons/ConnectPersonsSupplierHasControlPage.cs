@@ -37,14 +37,12 @@ namespace E2ETests.Pages
             await _page.WaitForSelectorAsync(PageTitleSelector);
         }
 
-        /// Retrieves the page title to verify the correct page is loaded.
         public async Task<string> GetPageTitle()
         {
             await _page.WaitForSelectorAsync(PageTitleSelector);
             return await _page.InnerTextAsync(PageTitleSelector);
         }
 
-        /// Selects either "Yes" or "No" for the influence question.
         public async Task SelectInfluenceOption(bool isInfluenced)
         {
             string radioSelector = isInfluenced ? YesRadioSelector : NoRadioSelector;
@@ -52,13 +50,11 @@ namespace E2ETests.Pages
             Console.WriteLine($"✅ Selected Influence Option: {(isInfluenced ? "Yes" : "No")}");
         }
 
-        /// Clicks the 'Continue' button.
         public async Task ClickContinue()
         {
             await _page.ClickAsync(ContinueButtonSelector);
         }
 
-        /// Completes the form by selecting influence option and continuing.
         public async Task CompletePage(bool isInfluenced)
         {
             await SelectInfluenceOption(isInfluenced);
