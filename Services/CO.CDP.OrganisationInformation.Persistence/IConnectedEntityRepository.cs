@@ -1,3 +1,5 @@
+using CO.CDP.OrganisationInformation.Persistence.Migrations;
+
 namespace CO.CDP.OrganisationInformation.Persistence;
 
 public interface IConnectedEntityRepository : IDisposable
@@ -10,6 +12,8 @@ public interface IConnectedEntityRepository : IDisposable
 
     public Task<IEnumerable<ConnectedEntityLookup?>> GetSummary(Guid organisationId);
 
+    public Task<bool> IsConnectedEntityUsedInExclusionAsync(Guid organisationId, Guid connectedEntityId);
+    
     public class ConnectedEntityRepositoryException(string message, Exception? cause = null) : Exception(message, cause)
     {
         public class DuplicateConnectedEntityException(string message, Exception? cause = null)

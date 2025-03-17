@@ -32,6 +32,13 @@ public class OrganisationInformationContext(DbContextOptions<OrganisationInforma
     public DbSet<MouSignature> MouSignature { get; set; } = null!;
     public DbSet<Mou> Mou { get; set; } = null!;
 
+    public DbSet<OrganisationAddressSnapshot> OrganisationAddressSnapshot { get; set; } = null!;
+    public DbSet<IdentifierSnapshot> IdentifierSnapshot { get; set; } = null!;
+    public DbSet<ContactPointSnapshot> ContactPointSnapshot { get; set; } = null!;
+    public DbSet<SupplierInformationSnapshot> SupplierInformationSnapshot { get; set; } = null!;
+    public DbSet<ConnectedEntitySnapshot> ConnectedEntitySnapshot { get; set; } = null!;
+    public DbSet<OrganisationSnapshot> OrganisationSnapshot { get; set; } = null!;
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.HasPostgresEnum<ControlCondition>();
@@ -146,6 +153,25 @@ public class OrganisationInformationContext(DbContextOptions<OrganisationInforma
             .HasMany(p => p.Tenants)
             .WithMany(t => t.Persons)
             .UsingEntity<TenantPerson>();
+
+        modelBuilder.Entity<SupplierInformationSnapshot>(a =>
+        {
+            a.OwnsOne(x => x.LegalFormSnapshot, y => { y.ToTable("legal_forms_snapshot"); });
+        });
+
+        modelBuilder.Entity<ConnectedEntitySnapshot>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.OwnsMany(e => e.Addresses, a => { a.ToTable("connected_entity_address_snapshot"); });
+            entity.OwnsOne(e => e.Organisation, a => { a.ToTable("connected_organisation_snapshot"); });
+            entity.OwnsOne(e => e.IndividualOrTrust, a => { a.ToTable("connected_individual_trust_snapshot"); });
+        });
+
+        modelBuilder.Entity<OrganisationSnapshot>().ToTable("organisations_snapshot");
+        modelBuilder.Entity<AddressSnapshot>().ToTable("addresses_snapshot");
+        modelBuilder.Entity<ContactPointSnapshot>().ToTable("contact_points_snapshot");
+        modelBuilder.Entity<IdentifierSnapshot>().ToTable("identifiers_snapshot");
+        modelBuilder.Entity<ConnectedEntitySnapshot>().ToTable("connected_entities_snapshot");
 
         foreach (var entityType in modelBuilder.Model.GetEntityTypes())
         {

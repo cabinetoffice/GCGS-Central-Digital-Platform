@@ -2,6 +2,9 @@ using CO.CDP.OrganisationInformation.Persistence.Forms;
 using CO.CDP.OrganisationInformation.Persistence.NonEfEntities;
 using CO.CDP.Testcontainers.PostgreSql;
 using FluentAssertions;
+using Microsoft.EntityFrameworkCore;
+using Npgsql;
+using System.Data;
 
 namespace CO.CDP.OrganisationInformation.Persistence.Tests;
 
@@ -194,6 +197,13 @@ public class DatabaseShareCodeRepositoryTest(PostgreSqlFixture postgreSql)
         await using var context = GetDbContext();
         await context.SharedConsents.AddAsync(sharedConsent);
         await context.SaveChangesAsync();
+
+        var conn = (NpgsqlConnection)context.Database.GetDbConnection();
+        if (conn.State != ConnectionState.Open) await conn.OpenAsync();
+        using var command = new NpgsqlCommand("CALL create_shared_consent_snapshot(@p_share_code)", conn);
+        command.Parameters.AddWithValue("p_share_code", shareCode);
+        await command.ExecuteNonQueryAsync();
+        await conn.CloseAsync();
 
         using var repository = ShareCodeRepository();
 
