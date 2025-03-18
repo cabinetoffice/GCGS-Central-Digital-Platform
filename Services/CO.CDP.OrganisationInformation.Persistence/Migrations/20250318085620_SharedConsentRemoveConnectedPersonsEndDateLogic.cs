@@ -26,10 +26,9 @@ CREATE OR REPLACE PROCEDURE get_shared_consent_details(
 LANGUAGE plpgsql
 AS $$
 DECLARE v_shared_consent_id INT;
-DECLARE v_submitted_at TIMESTAMPTZ;
 BEGIN
     SELECT id, submitted_at 
-    INTO v_shared_consent_id, v_submitted_at
+    INTO v_shared_consent_id
     FROM shared_consents
     WHERE share_code = p_share_code;
 
