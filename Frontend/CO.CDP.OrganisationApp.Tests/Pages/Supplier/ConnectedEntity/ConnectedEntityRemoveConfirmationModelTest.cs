@@ -43,7 +43,8 @@ public class ConnectedEntityRemoveConfirmationModelTest
             .ReturnsAsync([new ConnectedEntityLookup (entityId : _model.ConnectedPersonId,
             entityType : ConnectedEntityType.Individual,
             name : "connected",
-            uri : null)]);
+            uri : null,
+            endDate: null)]);
 
         var result = await _model.OnGet();
 
@@ -72,7 +73,8 @@ public class ConnectedEntityRemoveConfirmationModelTest
             .ReturnsAsync([new ConnectedEntityLookup (entityId : _model.ConnectedPersonId,
             entityType : ConnectedEntityType.Individual,
             name : "connected",
-            uri : null)]);
+            uri : null,
+            endDate: null)]);
 
         _organisationClientMock.Setup(c => c.DeleteConnectedEntityAsync(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<DeleteConnectedEntity>()))
             .Returns(Task.CompletedTask);
@@ -95,7 +97,8 @@ public class ConnectedEntityRemoveConfirmationModelTest
             .ReturnsAsync([new ConnectedEntityLookup (entityId : _model.ConnectedPersonId,
             entityType : ConnectedEntityType.Individual,
             name : "connected",
-            uri : null)]);
+            uri : null,
+            endDate: null)]);
 
         var result = await _model.OnPost();
 

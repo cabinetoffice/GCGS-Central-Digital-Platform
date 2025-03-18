@@ -68,7 +68,7 @@ public class ConnectedPersonSummaryTests
     }
 
     private static ICollection<ConnectedEntityLookup> ConnectedEntities = [
-        new ConnectedEntityLookup(EntityId, ConnectedEntityType.Organisation, "Rocky Balboa", new Uri("http://test"))
+        new ConnectedEntityLookup(endDate: null, entityId: EntityId, entityType: ConnectedEntityType.Organisation, name: "Rocky Balboa", uri: new Uri("http://test"))
     ];
 
     private void SetupOrganisationClientMock()

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!--
     Microsoft ResX Schema
@@ -1082,6 +1082,9 @@
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedPersonSummary_AddAnotherConnectedPersonError" xml:space="preserve">
     <value>Select yes to add another connected person</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedPersonSummary_RemovedOn" xml:space="preserve">
+    <value>Removed on {0}</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedPersonSummary_BackToSupplierInformation" xml:space="preserve">
     <value>Back to supplier information</value>
