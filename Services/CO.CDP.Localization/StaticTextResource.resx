@@ -1071,9 +1071,6 @@
   <data name="Supplier_ConnectedEntity_ConnectedEntityRemoveConfirmation_DateInvalidError" xml:space="preserve">
     <value>Date of removal must be a real date</value>
   </data>
-  <data name="Supplier_ConnectedEntity_ConnectedEntityRemoveConfirmation_DateNotInPastError" xml:space="preserve">
-    <value>Date of removal must be in the past</value>
-  </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntitySupplierCompanyQuestion_PageTitle" xml:space="preserve">
     <value>Is your organisation registered with Companies House?</value>
   </data>
