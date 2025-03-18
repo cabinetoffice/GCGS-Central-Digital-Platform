@@ -187,7 +187,7 @@ locals {
         "10.${local.cidr_b_production}.2.0/24",
         "10.${local.cidr_b_production}.3.0/24"
       ]
-      redis_node_type  = "cache.r5.4xlarge"
+      redis_node_type  = "cache.r5.xlarge"
       top_level_domain = "supplier-information.find-tender.service.gov.uk"
 
       externals_cidr_block      = "integration account feature" # To be deprecated after FTS Migration
