@@ -227,7 +227,9 @@ BEGIN
             LEFT JOIN connected_individual_trust_snapshot cit ON cit.id = ce.id
             LEFT JOIN connected_organisation_snapshot AS co ON co.id = ce.id 
         WHERE 
-            ce.shared_consent_id = v_shared_consent_id; 
+            ce.shared_consent_id = v_shared_consent_id
+            AND ce.created_on < v_submitted_at
+            AND (ce.end_date IS NULL OR ce.end_date > v_submitted_at); 
 
     -- Cursor for Connected Entities Address
     OPEN connected_entities_address_cursor FOR 
@@ -239,7 +241,9 @@ BEGIN
             INNER JOIN connected_entity_address_snapshot cea ON cea.connected_entity_snapshot_id = ce.id
             INNER JOIN addresses_snapshot AS a ON a.id = cea.address_id
         WHERE 
-            ce.shared_consent_id = v_shared_consent_id; 
+            ce.shared_consent_id = v_shared_consent_id
+            AND ce.created_on < v_submitted_at
+            AND (ce.end_date IS NULL OR ce.end_date > v_submitted_at); 
 
     -- Cursor for Form Answer Sets
     OPEN form_answer_sets_cursor FOR 
