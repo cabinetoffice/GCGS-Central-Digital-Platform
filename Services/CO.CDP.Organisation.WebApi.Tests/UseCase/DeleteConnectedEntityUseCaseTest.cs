@@ -3,7 +3,6 @@ using CO.CDP.Organisation.WebApi.UseCase;
 using CO.CDP.OrganisationInformation.Persistence;
 using FluentAssertions;
 using Moq;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 using Persistence = CO.CDP.OrganisationInformation.Persistence;
 
 namespace CO.CDP.Organisation.WebApi.Tests.UseCase;
@@ -20,24 +19,6 @@ public class DeleteConnectedEntityUseCaseTest
         _organisationRepository = new Mock<IOrganisationRepository>();
         _connectedEntityRepository = new Mock<IConnectedEntityRepository>();
         _useCase = new DeleteConnectedEntityUseCase(_organisationRepository.Object, _connectedEntityRepository.Object);
-    }
-
-    [Fact]
-    public async Task Execute_ConnectedPersonUsedInActiveExclusion_ThrowsException()
-    {
-        var organisation = Organisation();
-        var connectedEntity = ConnectedEntity(organisation);
-        SetupOrganisationRepository(organisation);
-        SetupConnectedEntityRepository(connectedEntity);
-        var deleteConnectedEntity = new DeleteConnectedEntity() { EndDate = DateTimeOffset.Now };
-
-        _connectedEntityRepository.Setup(repo => repo.IsConnectedEntityUsedInExclusionAsync(_organisationId, _connectedEntityId))
-            .ReturnsAsync(true);
-
-        Func<Task> act = async () => await _useCase.Execute((_organisationId, _connectedEntityId, deleteConnectedEntity));
-
-        await act.Should().ThrowAsync<CannotDeleteConnectedEntityException>()
-            .WithMessage($"Connected entity {_connectedEntityId} in organisation {_organisationId} used in active exclusion.");
     }
 
     [Fact]

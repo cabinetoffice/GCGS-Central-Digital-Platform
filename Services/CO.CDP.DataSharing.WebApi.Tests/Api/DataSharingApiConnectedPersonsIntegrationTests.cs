@@ -90,8 +90,9 @@ public class DataSharingApiConnectedPersonsIntegrationTests: IClassFixture<Organ
     [InlineData(1, null)]    // connected individual created after share code
     [InlineData(-2, -1)]   // connected individual created and ended before share code
     [InlineData(1, 2)]    // connected individual created and ended after share code
-    public async Task DataSharingClient_DoesNotReturnConnectedIndividual_IfDatesDontIntersect(int cpCreationOffset, int? cpEndDateOffset)
+    public async Task DataSharingClient_StillReturnsConnectedIndividual_IfDatesDontIntersect(int cpCreationOffset, int? cpEndDateOffset)
     {
+        // Note: The end_date filtering has been removed from the data sharing api and therefore this test has been inverted to ensure connected entities still return
         DateTime connectedPersonCreationDate = DateTime.Now.AddHours(cpCreationOffset);
         DateTime? connectedPersonEndDate = cpEndDateOffset != null ? DateTime.Now.AddHours(cpEndDateOffset.Value) : null;
 
@@ -102,7 +103,8 @@ public class DataSharingApiConnectedPersonsIntegrationTests: IClassFixture<Organ
         var createShareCodeResponse = await _client.CreateSharedDataAsync(new ShareRequest(supplierInformationFormId, organisation.Guid));
 
         var response = await _client.GetSharedDataAsync(createShareCodeResponse.ShareCode);
-        response.AssociatedPersons.Should().HaveCount(0);
+        response.AssociatedPersons.Should().HaveCount(1);   // John Doe should still be there now that we have removed the end_date filtering from the data sharing api
+        response.AssociatedPersons.First().Name.Should().Be("John Doe");
     }
 
     [Theory]
@@ -128,8 +130,9 @@ public class DataSharingApiConnectedPersonsIntegrationTests: IClassFixture<Organ
     [InlineData(1, null)]    // connected individual created after share code
     [InlineData(-2, -1)]   // connected individual created and ended before share code
     [InlineData(1, 2)]    // connected individual created and ended after share code
-    public async Task DataSharingClient_DoesNotReturnConnectedOrgs_IfDatesDontIntersect(int cpCreationOffset, int? cpEndDateOffset)
+    public async Task DataSharingClient_StillReturnsConnectedOrgs_IfDatesDontIntersect(int cpCreationOffset, int? cpEndDateOffset)
     {
+        // Note: The end_date filtering has been removed from the data sharing api and therefore this test has been inverted to ensure connected entities still return
         DateTime connectedPersonCreationDate = DateTime.Now.AddHours(cpCreationOffset);
         DateTime? connectedPersonEndDate = cpEndDateOffset != null ? DateTime.Now.AddHours(cpEndDateOffset.Value) : null;
 
@@ -140,7 +143,8 @@ public class DataSharingApiConnectedPersonsIntegrationTests: IClassFixture<Organ
         var createShareCodeResponse = await _client.CreateSharedDataAsync(new ShareRequest(supplierInformationFormId, organisation.Guid));
 
         var response = await _client.GetSharedDataAsync(createShareCodeResponse.ShareCode);
-        response.AdditionalEntities.Should().HaveCount(0);
+        response.AdditionalEntities.Should().HaveCount(1); // Test org should still be there now that we have removed the end_date filtering from the data sharing api
+        response.AdditionalEntities.First().Name.Should().Be("Test org");
     }
 
     private Organisation CreateOrganisation()
