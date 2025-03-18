@@ -446,6 +446,8 @@ public class DataSharingApiSnapshottingIntegrationTests : IClassFixture<Organisa
     [Fact]
     public async Task DataSharingClientReturnsCorrectConnectedIndividuals_WhenEndDatingOneBetweenShareCodeCreation()
     {
+        // Note: The end_date filtering has been removed from the data sharing api and therefore this test has been inverted to ensure connected entities still return
+
         // Setup
         ClearDatabase();
         Organisation organisation = CreateOrganisation("Test org");
@@ -471,8 +473,9 @@ public class DataSharingApiSnapshottingIntegrationTests : IClassFixture<Organisa
 
         // Verify updated data in second share code
         var shareData2 = await _client.GetSharedDataAsync(createShareCodeResponse2.ShareCode);
-        shareData2.AssociatedPersons.Should().HaveCount(1);
-        shareData2.AssociatedPersons.First().Name.Should().Be("Bob Bobbington");
+        shareData2.AssociatedPersons.Should().HaveCount(2);
+        shareData2.AssociatedPersons.First().Name.Should().Be("John Doe");  // John Doe should still be there now that we have removed the end_date filtering from the data sharing api
+        shareData2.AssociatedPersons.Last().Name.Should().Be("Bob Bobbington");
     }
 
     private Organisation CreateOrganisation(string orgName)

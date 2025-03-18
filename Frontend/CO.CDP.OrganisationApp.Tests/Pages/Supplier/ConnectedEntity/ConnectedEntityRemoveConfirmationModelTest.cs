@@ -61,28 +61,6 @@ public class ConnectedEntityRemoveConfirmationModelTest
     }
 
     [Fact]
-    public async Task OnPost_ShouldFail_WhenDateIsNotInPast()
-    {
-        _model.ConfirmRemove = RemoveConnectedPersonReason.NoLongerConnected;
-        _model.ConnectedPersonId = Guid.NewGuid();
-        _model.EndDay = "30";
-        _model.EndMonth = "12";
-        _model.EndYear = DateTime.Today.Year.ToString();
-
-        _organisationClientMock.Setup(c => c.GetConnectedEntitiesAsync(It.IsAny<Guid>()))
-            .ReturnsAsync([new ConnectedEntityLookup (entityId : _model.ConnectedPersonId,
-            entityType : ConnectedEntityType.Individual,
-            name : "connected",
-            uri : null)]);
-
-        var result = await _model.OnPost();
-
-        result.Should().BeOfType<PageResult>();
-        _model.ModelState.Should().ContainKey(nameof(_model.EndDate)).WhoseValue!
-            .Errors.Should().Contain(e => e.ErrorMessage == "Date of removal must be in the past");
-    }
-
-    [Fact]
     public async Task OnPost_ShouldCallDeleteConnectedEntityAsync_WhenValid()
     {
         _model.ConfirmRemove = RemoveConnectedPersonReason.AddedInError;
