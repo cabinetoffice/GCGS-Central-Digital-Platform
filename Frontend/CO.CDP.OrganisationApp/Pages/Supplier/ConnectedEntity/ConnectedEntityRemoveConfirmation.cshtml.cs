@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
-using ProblemDetails = CO.CDP.Organisation.WebApiClient.ProblemDetails;
 
 namespace CO.CDP.OrganisationApp.Pages.Supplier.ConnectedEntity;
 
@@ -66,40 +65,32 @@ public class ConnectedEntityRemoveConfirmationModel(
             return Page();
         }
 
-        try
+        if (ConfirmRemove == RemoveConnectedPersonReason.NoLongerConnected)
         {
-            if (ConfirmRemove == RemoveConnectedPersonReason.NoLongerConnected)
+            var ce = await GetConnectedEntity(organisationClient);
+            if (ce == null)
+                return Redirect("/page-not-found");
+
+            var dateString = $"{EndYear}-{EndMonth!.PadLeft(2, '0')}-{EndDay!.PadLeft(2, '0')}";
+
+            if (!DateTime.TryParse(dateString, out var endDate))
             {
-                var ce = await GetConnectedEntity(organisationClient);
-                if (ce == null)
-                    return Redirect("/page-not-found");
-
-                var dateString = $"{EndYear}-{EndMonth!.PadLeft(2, '0')}-{EndDay!.PadLeft(2, '0')}";
-
-                if (!DateTime.TryParse(dateString, out var endDate))
-                {
-                    ModelState.AddModelError(nameof(EndDate), StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityRemoveConfirmation_DateInvalidError);
-                    return Page();
-                }
-
-                if (endDate >= DateTime.Today)
-                {
-                    ModelState.AddModelError(nameof(EndDate), StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityRemoveConfirmation_DateNotInPastError);
-                    return Page();
-                }
-
-                endDate = endDate.AddHours(23).AddMinutes(59).AddSeconds(59).ToUniversalTime();
-                await organisationClient.DeleteConnectedEntityAsync(Id, ConnectedPersonId, new DeleteConnectedEntity(endDate));
+                ModelState.AddModelError(nameof(EndDate), StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityRemoveConfirmation_DateInvalidError);
+                return Page();
             }
-            else if (ConfirmRemove == RemoveConnectedPersonReason.AddedInError)
+
+            if (endDate >= DateTime.Today)
             {
-                await organisationClient.DeleteConnectedEntityAsync(Id, ConnectedPersonId, new DeleteConnectedEntity(DateTime.Now.ToUniversalTime()));
+                ModelState.AddModelError(nameof(EndDate), StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityRemoveConfirmation_DateNotInPastError);
+                return Page();
             }
+
+            endDate = endDate.AddHours(23).AddMinutes(59).AddSeconds(59).ToUniversalTime();
+            await organisationClient.DeleteConnectedEntityAsync(Id, ConnectedPersonId, new DeleteConnectedEntity(endDate));
         }
-        catch (ApiException<ProblemDetails> aex)
+        else if (ConfirmRemove == RemoveConnectedPersonReason.AddedInError)
         {
-            ApiExceptionMapper.MapApiExceptions(aex, ModelState);
-            return Page();
+            await organisationClient.DeleteConnectedEntityAsync(Id, ConnectedPersonId, new DeleteConnectedEntity(DateTime.Now.ToUniversalTime()));
         }
 
         return RedirectToPage("ConnectedPersonSummary", new { Id });

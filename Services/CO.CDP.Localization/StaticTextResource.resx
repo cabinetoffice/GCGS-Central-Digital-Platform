@@ -3214,9 +3214,6 @@
   <data name="OrganisationInviteExpired_Link" xml:space="preserve">
     <value>Go to my account</value>
   </data>
-  <data name="ErrorMessageList_ConnectedPersons_Cannot_Remove" xml:space="preserve">
-    <value>You have an exclusion recorded for this connected person. You must remove the exclusion before you can remove the connected person.</value>
-  </data>
   <data name="ErrorMessageList_DuplicatePersonName" xml:space="preserve">
     <value>A person with this name already exists. Try again.</value>
   </data>
