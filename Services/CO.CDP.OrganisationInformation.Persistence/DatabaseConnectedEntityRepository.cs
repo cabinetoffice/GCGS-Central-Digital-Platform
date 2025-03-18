@@ -28,9 +28,7 @@ public class DatabaseConnectedEntityRepository(OrganisationInformationContext co
 
     public async Task<IEnumerable<ConnectedEntityLookup?>> GetSummary(Guid organisationId)
     {
-        var now = DateTimeOffset.UtcNow;
         return await context.ConnectedEntities
-            .Where(t => t.SupplierOrganisation.Guid == organisationId && (t.EndDate > now || t.EndDate == null))
             .Select(t => new ConnectedEntityLookup
             {
                 Name = t.EntityType == ConnectedEntity.ConnectedEntityType.Organisation
@@ -38,6 +36,7 @@ public class DatabaseConnectedEntityRepository(OrganisationInformationContext co
                     : (t.IndividualOrTrust == null ? "" : $"{t.IndividualOrTrust.FirstName} {t.IndividualOrTrust.LastName}"),
                 EntityId = t.Guid,
                 EntityType = t.EntityType,
+                EndDate = t.EndDate
             })
             .ToArrayAsync();
     }
