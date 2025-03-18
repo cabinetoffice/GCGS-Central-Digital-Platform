@@ -63,7 +63,17 @@ public class ConnectedEntityRemoveConfirmationModelTest
     [Fact]
     public async Task OnPost_ShouldCallDeleteConnectedEntityAsync_WhenValid()
     {
-        _model.ConfirmRemove = RemoveConnectedPersonReason.AddedInError;
+        _model.ConfirmRemove = true;
+        _model.EndDay = "01";
+        _model.EndMonth = "01";
+        _model.EndYear = "2022";
+
+        _organisationClientMock.Setup(c => c.GetConnectedEntitiesAsync(It.IsAny<Guid>()))
+            .ReturnsAsync([new ConnectedEntityLookup (entityId : _model.ConnectedPersonId,
+            entityType : ConnectedEntityType.Individual,
+            name : "connected",
+            uri : null)]);
+
         _organisationClientMock.Setup(c => c.DeleteConnectedEntityAsync(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<DeleteConnectedEntity>()))
             .Returns(Task.CompletedTask);
 
@@ -76,7 +86,16 @@ public class ConnectedEntityRemoveConfirmationModelTest
     [Fact]
     public async Task OnPost_ShouldRedirectToSummaryPage_OnSuccess()
     {
-        _model.ConfirmRemove = RemoveConnectedPersonReason.AddedInError;
+        _model.ConfirmRemove = true;
+        _model.EndDay = "01";
+        _model.EndMonth = "01";
+        _model.EndYear = "2022";
+
+        _organisationClientMock.Setup(c => c.GetConnectedEntitiesAsync(It.IsAny<Guid>()))
+            .ReturnsAsync([new ConnectedEntityLookup (entityId : _model.ConnectedPersonId,
+            entityType : ConnectedEntityType.Individual,
+            name : "connected",
+            uri : null)]);
 
         var result = await _model.OnPost();
 
