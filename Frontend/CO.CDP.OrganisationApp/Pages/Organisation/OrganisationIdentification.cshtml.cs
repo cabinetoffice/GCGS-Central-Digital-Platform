@@ -169,16 +169,6 @@ public class OrganisationIdentificationModel(
     public async Task<IActionResult> OnPost()
     {
         try {
-            var (validate, existingIdentifier) = await ValidateAndGetExistingIdentifiers();
-            if (!validate) return Redirect("/page-not-found");
-
-            ExistingOrganisationScheme = existingIdentifier.Select(x => x.Scheme).ToList();
-
-            foreach (var identifier in existingIdentifier)
-            {
-                SetIdentifierValue(identifier);
-            }
-
             var roleCheck = await authorizationService.AuthorizeAsync(HttpContext.User, PersonScopeRequirement.SupportAdmin);
 
             IsSupportAdmin = roleCheck.Succeeded;
@@ -191,6 +181,16 @@ public class OrganisationIdentificationModel(
 
             if (!ModelState.IsValid)
             {
+                var (validate, existingIdentifier) = await ValidateAndGetExistingIdentifiers();
+                if (!validate) return Redirect("/page-not-found");
+
+                ExistingOrganisationScheme = existingIdentifier.Select(x => x.Scheme).ToList();
+
+                foreach (var identifier in existingIdentifier)
+                {
+                    SetIdentifierValue(identifier);
+                }
+
                 return Page();
             }
 
@@ -205,7 +205,14 @@ public class OrganisationIdentificationModel(
                     scheme: scheme))
                 .ToList();
 
-            await organisationClient.UpdateOrganisationAdditionalIdentifiers(Id, identifiers);
+            if (IsSupportAdmin)
+            {
+                await organisationClient.SupportUpdateOrganisationAdditionalIdentifiers(Id, identifiers);
+            }
+            else
+            {
+                await organisationClient.UpdateOrganisationAdditionalIdentifiers(Id, identifiers);
+            }
 
             return RedirectToPage("OrganisationOverview", new { Id });
         }
