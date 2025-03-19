@@ -17,15 +17,6 @@ public class DatabaseConnectedEntityRepository(OrganisationInformationContext co
             .FirstOrDefaultAsync(t => t.Guid == id && t.SupplierOrganisation.Guid == organisationId);
     }
 
-    public async Task<IEnumerable<ConnectedEntity?>> FindByOrganisation(Guid organisationId)
-    {
-        return await context.ConnectedEntities
-            .Include(p => p.Addresses)
-            .ThenInclude(p => p.Address)
-            .Where(t => t.SupplierOrganisation.Guid == organisationId && (t.EndDate == null || t.EndDate > DateTime.Today))
-            .ToArrayAsync();
-    }
-
     public async Task<IEnumerable<ConnectedEntityLookup?>> GetSummary(Guid organisationId)
     {
         return await context.ConnectedEntities
