@@ -203,9 +203,11 @@
                                 @(Model.BuyerInformation.DevolvedRegulations.Count > 0 ? StaticTextResource.Global_Yes : StaticTextResource.Global_No)
                             </p>
                         </dd>
-                        <dd class="govuk-summary-list__actions">
-                            <a class="govuk-link govuk-link--no-visited-state" href="@supplierToBuyerDevolvedRegulationsPage?frm-summary">@Html.Raw(@StaticTextResource.SupplierToBuyer_OrganisationSummary_ChangeDevolvedRegions)</a>
-                        </dd>
+                        <authorize scope="@OrgScopeRequirement.Editor">
+                            <dd class="govuk-summary-list__actions">
+                                <a class="govuk-link govuk-link--no-visited-state" href="@supplierToBuyerDevolvedRegulationsPage?frm-summary">@Html.Raw(@StaticTextResource.SupplierToBuyer_OrganisationSummary_ChangeDevolvedRegions)</a>
+                            </dd>
+                        </authorize>
                     </div>
 
                     @if (Model.BuyerInformation.DevolvedRegulations.Count > 0)
@@ -218,13 +220,15 @@
                                 <p class="govuk-body">
                                     @if (Model.Regulations != null)
                                     {
-                                        @Html.Raw(string.Join("<br /> ", Model.Regulations.Select(x => x.Description())))                                        
+                                        @Html.Raw(string.Join("<br /> ", Model.Regulations.Select(x => x.Description())))
                                     }
                                 </p>
                             </dd>
-                            <dd class="govuk-summary-list__actions">
-                                <a class="govuk-link govuk-link--no-visited-state" href="@supplierToBuyerSelectDevolvedRegulationsPage?frm-summary">@Html.Raw(@StaticTextResource.SupplierToBuyer_OrganisationSummary_ChangeDevolvedRegions)</a>
-                            </dd>
+                            <authorize scope="@OrgScopeRequirement.Editor">
+                                <dd class="govuk-summary-list__actions">
+                                    <a class="govuk-link govuk-link--no-visited-state" href="@supplierToBuyerSelectDevolvedRegulationsPage?frm-summary">@Html.Raw(@StaticTextResource.SupplierToBuyer_OrganisationSummary_ChangeDevolvedRegions)</a>
+                                </dd>
+                            </authorize>
                         </div>
                     }
 
