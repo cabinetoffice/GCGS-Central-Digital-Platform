@@ -153,6 +153,10 @@ public class OrganisationNameSearchModelTests
         RegistrationDetails registrationDetails = GivenRegistrationDetails("Test org", Constants.OrganisationType.Buyer);
         _sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(registrationDetails);
 
+        _organisationClientMock
+            .Setup(client => client.LookupOrganisationAsync("Test org", String.Empty))
+            .ThrowsAsync(new ApiException(string.Empty, (int)HttpStatusCode.NotFound, string.Empty, null, null));
+
         var matchingOrganisations = new List<OrganisationSearchResult>
         {
             GivenOrganisationSearchResult("Test org 1"),
