@@ -28,7 +28,7 @@ public class OrganisationIdentificationModelTest
     [Theory]
     [InlineData("1234")]
     [InlineData("0123456789ABCD")]
-    public async Task Validate_WhenInvalidCompanyHouseNumber_ShouldReturnPageWithModelStateError(string? companyNumber)
+    public void Validate_WhenInvalidCompanyHouseNumber_ShouldReturnPageWithModelStateError(string? companyNumber)
     {
         _pageModel.CompanyHouseNumber = companyNumber;
         
