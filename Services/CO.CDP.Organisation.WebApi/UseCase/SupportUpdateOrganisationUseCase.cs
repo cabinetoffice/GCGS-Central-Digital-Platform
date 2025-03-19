@@ -77,15 +77,15 @@ public class SupportUpdateOrganisationUseCase(
         var newIdentifiers = supportUpdateOrganisation.Organisation.AdditionalIdentifiers
             ?? throw new InvalidUpdateOrganisationCommand.MissingAdditionalIdentifiers();
 
-        // Remove identifiers that are no longer present in the update request
-        // var removedIdentifiers = organisation.Identifiers
-        //     .Where(existing => !newIdentifiers.Any(newId => newId.Scheme == existing.Scheme))
-        //     .ToList();
-        //
-        // foreach (var removed in removedIdentifiers)
-        // {
-        //     organisation.Identifiers.Remove(removed);
-        // }
+        //Remove identifiers that are no longer present in the update request
+        var removedIdentifiers = organisation.Identifiers
+            .Where(existing => !newIdentifiers.Any(newId => newId.Scheme == existing.Scheme))
+            .ToList();
+
+        foreach (var removed in removedIdentifiers)
+        {
+            organisation.Identifiers.Remove(removed);
+        }
 
         foreach (var identifier in newIdentifiers)
         {
