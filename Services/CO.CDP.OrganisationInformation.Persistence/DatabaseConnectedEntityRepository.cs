@@ -29,6 +29,7 @@ public class DatabaseConnectedEntityRepository(OrganisationInformationContext co
     public async Task<IEnumerable<ConnectedEntityLookup?>> GetSummary(Guid organisationId)
     {
         return await context.ConnectedEntities
+            .Where(t => t.SupplierOrganisation.Guid == organisationId)
             .Select(t => new ConnectedEntityLookup
             {
                 Name = t.EntityType == ConnectedEntity.ConnectedEntityType.Organisation
