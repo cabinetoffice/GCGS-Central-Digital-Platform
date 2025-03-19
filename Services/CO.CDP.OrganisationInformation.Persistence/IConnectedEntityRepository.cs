@@ -6,8 +6,6 @@ public interface IConnectedEntityRepository : IDisposable
 
     public Task<ConnectedEntity?> Find(Guid organisationId, Guid id);
 
-    public Task<IEnumerable<ConnectedEntity?>> FindByOrganisation(Guid organisationId);
-
     public Task<IEnumerable<ConnectedEntityLookup?>> GetSummary(Guid organisationId);
 
     public class ConnectedEntityRepositoryException(string message, Exception? cause = null) : Exception(message, cause)

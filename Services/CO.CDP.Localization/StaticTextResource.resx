@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!--
     Microsoft ResX Schema
@@ -118,25 +118,34 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="SupplierInformationStatus_StepStatus_NotStarted" xml:space="preserve">
-    <value>Not started</value>
+    <value>Not&#160;started</value>
   </data>
   <data name="SupplierInformationStatus_StepStatus_InProcess" xml:space="preserve">
-    <value>In progress</value>
+    <value>In&#160;progress</value>
   </data>
   <data name="SupplierInformationStatus_StepStatus_Completed" xml:space="preserve">
     <value>Completed</value>
   </data>
   <data name="Supplier_SupplierInformationSummary_Heading" xml:space="preserve">
-    <value>Supplier information</value>
+    <value>Complete your supplier information</value>
+  </data>
+  <data name="Supplier_SupplierInformationSummary_Hint" xml:space="preserve">
+    <value>To complete each section, tell us about:</value>
+  </data>
+  <data name="Supplier_SupplierInformationShare_Heading" xml:space="preserve">
+    <value>Share your supplier information</value>
+  </data>
+  <data name="Supplier_SupplierInformationShare_Hint" xml:space="preserve">
+    <value>When you've completed all sections of your supplier information, you can:</value>
   </data>
   <data name="Global_BackToOrganisationDetails" xml:space="preserve">
     <value>Back to organisation details</value>
   </data>
   <data name="ConnectedPersons_SectionTitle" xml:space="preserve">
-    <value>Connected persons</value>
+    <value>People connected to your organisation</value>
   </data>
   <data name="BasicInformation_SectionTitle" xml:space="preserve">
-    <value>Basic information</value>
+    <value>Your organisation</value>
   </data>
   <data name="Global_Back" xml:space="preserve">
     <value>Back</value>
@@ -1082,6 +1091,9 @@
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedPersonSummary_AddAnotherConnectedPersonError" xml:space="preserve">
     <value>Select yes to add another connected person</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedPersonSummary_RemovedOn" xml:space="preserve">
+    <value>Removed on {0}</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedPersonSummary_BackToSupplierInformation" xml:space="preserve">
     <value>Back to supplier information</value>
@@ -2169,7 +2181,7 @@
     <value>Supplier type</value>
   </data>
   <data name="PdfGenerator_BasicInformation_Title" xml:space="preserve">
-    <value>Basic information</value>
+    <value>Your organisation</value>
   </data>
   <data name="PdfGenerator_BasicInformation_VATNumber" xml:space="preserve">
     <value>VAT number</value>

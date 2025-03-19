@@ -44,6 +44,34 @@ public class ConnectedPersonSummaryTests
     }
 
     [Fact]
+    public async Task OnGet_ReturnsPageResult_WithConnectedEntitiesShowingEndDate()
+    {
+        var endDate = DateTimeOffset.Now;
+
+        _mockOrganisationClient.Setup(x => x.GetConnectedEntitiesAsync(_model.Id)).ReturnsAsync([
+            new ConnectedEntityLookup(
+                endDate: endDate,
+                entityId: EntityId,
+                entityType: ConnectedEntityType.Organisation,
+                name: "Rocky Balboa",
+                uri: new Uri("http://test")
+            )
+        ]);
+
+        _sessionMock
+            .Setup(s => s.Get<ConnectedEntityState>(Session.ConnectedPersonKey))
+            .Returns(new ConnectedEntityState());
+
+        var result = await _model.OnGet(true);
+
+        _sessionMock.Verify(s => s.Remove(Session.ConnectedPersonKey), Times.Once);
+
+        result.Should().BeOfType<PageResult>();
+        _model.HasConnectedEntity.Should().BeTrue();
+        _model.ConnectedEntities.First().EndDate.Should().Be(endDate);
+    }
+
+    [Fact]
     public async Task OnGet_ReturnsNotFound_WhenSupplierInfoNotFound()
     {
         _mockOrganisationClient.Setup(x => x.GetConnectedEntitiesAsync(_model.Id))
@@ -68,11 +96,11 @@ public class ConnectedPersonSummaryTests
     }
 
     private static ICollection<ConnectedEntityLookup> ConnectedEntities = [
-        new ConnectedEntityLookup(EntityId, ConnectedEntityType.Organisation, "Rocky Balboa", new Uri("http://test"))
+        new ConnectedEntityLookup(endDate: null, entityId: EntityId, entityType: ConnectedEntityType.Organisation, name: "Rocky Balboa", uri: new Uri("http://test"))
     ];
 
     private void SetupOrganisationClientMock()
     {
-        var connectedEntities = _mockOrganisationClient.Setup(x => x.GetConnectedEntitiesAsync(_model.Id)).ReturnsAsync(ConnectedEntities);
+        _mockOrganisationClient.Setup(x => x.GetConnectedEntitiesAsync(_model.Id)).ReturnsAsync(ConnectedEntities);
     }
 }

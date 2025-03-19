@@ -89,6 +89,15 @@ public class AddUserModel(
 
         PersonInviteStateData = UpdateScopes(PersonInviteStateData);
 
+        var personInvites = await organisationClient.GetOrganisationPersonInvitesAsync(Id);
+
+        if (personInvites.Any(invite => invite.Email.ToLower() == PersonInviteStateData.Email?.ToLower()))
+        {
+            ModelState.AddModelError("PersonInviteAlreadyExists", StaticTextResource.ErrorMessageList_DuplicatePersonEmail);
+
+            return Page();
+        }
+
         session.Set(PersonInviteState.TempDataKey, PersonInviteStateData);
 
         return RedirectToPage("UserCheckAnswers", new { Id });
