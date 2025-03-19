@@ -53,7 +53,17 @@ public class AddUserModel(
         PersonInviteStateData = session.Get<PersonInviteState>(PersonInviteState.TempDataKey) ?? null;
 
         var organisation = await organisationClient.GetOrganisationAsync(Id);
-        OrganisationRoles = organisation.Roles;
+
+        OrganisationRoles = new List<PartyRole>(organisation.Roles);
+
+        // Add only the roles from PendingRoles that are not already in OrganisationRoles
+        foreach (var role in organisation.Details.PendingRoles)
+        {
+            if (!OrganisationRoles.Contains(role))
+            {
+                OrganisationRoles.Add(role);
+            }
+        }
 
         if (PersonInviteStateData != null)
         {
@@ -78,6 +88,15 @@ public class AddUserModel(
         PersonInviteStateData = UpdateFields(PersonInviteStateData);
 
         PersonInviteStateData = UpdateScopes(PersonInviteStateData);
+
+        var personInvites = await organisationClient.GetOrganisationPersonInvitesAsync(Id);
+
+        if (personInvites.Any(invite => invite.Email.ToLower() == PersonInviteStateData.Email?.ToLower()))
+        {
+            ModelState.AddModelError("PersonInviteAlreadyExists", StaticTextResource.ErrorMessageList_DuplicatePersonEmail);
+
+            return Page();
+        }
 
         session.Set(PersonInviteState.TempDataKey, PersonInviteStateData);
 

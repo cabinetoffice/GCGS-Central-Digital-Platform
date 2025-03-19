@@ -1,6 +1,7 @@
 using CO.CDP.GovUKNotify;
 using CO.CDP.GovUKNotify.Models;
 using CO.CDP.Organisation.WebApi.Model;
+using CO.CDP.OrganisationInformation.Persistence;
 using Persistence = CO.CDP.OrganisationInformation.Persistence;
 
 namespace CO.CDP.Organisation.WebApi.UseCase;
@@ -77,12 +78,14 @@ public class SignOrganisationMouUseCase(
             EmailAddress = mouSignature.CreatedBy.Email,
             TemplateId = templateId,
             Personalisation = new Dictionary<string, string>
-                {   { "link", requestLink },
+                {
+                    { "date", mouSignature.CreatedOn.ToString("dd MMM yyyy") },
+                    { "time", mouSignature.CreatedOn.ToString("HH:mm") },
+                    { "authorised by_name", mouSignature.Name },
+                    { "job_title", mouSignature.JobTitle },
                     { "first_name", mouSignature.CreatedBy.FirstName },
                     { "last_name", mouSignature.CreatedBy.LastName },
-                    { "job_title", mouSignature.JobTitle },
-                    { "date", mouSignature.CreatedOn.ToString("dd MMM yyyy") },
-                    { "time", mouSignature.CreatedOn.ToString("HH:mm") }
+                    { "link", requestLink }
                 }
         };
 

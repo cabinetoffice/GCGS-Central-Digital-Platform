@@ -1,5 +1,7 @@
 using CO.CDP.OrganisationInformation.Persistence.Forms;
 using Microsoft.EntityFrameworkCore;
+using Npgsql;
+using System.Data;
 
 namespace CO.CDP.OrganisationInformation.Persistence;
 
@@ -67,6 +69,35 @@ public class DatabaseFormRepository(OrganisationInformationContext context) : IF
     {
         context.Update(sharedConsent);
         await context.SaveChangesAsync();
+    }
+
+    public async Task SaveSharedConsentWithSnapshotAsync(SharedConsent sharedConsent)
+    {
+        using var transaction = await context.Database.BeginTransactionAsync();
+        NpgsqlConnection? conn = null;
+        try
+        {
+            context.Update(sharedConsent);
+            await context.SaveChangesAsync();
+
+            conn = (NpgsqlConnection)context.Database.GetDbConnection();
+            if (conn.State != ConnectionState.Open) await conn.OpenAsync();
+
+            using var command = new NpgsqlCommand("CALL create_shared_consent_snapshot(@p_share_code)", conn);
+            command.Parameters.AddWithValue("p_share_code", sharedConsent.ShareCode!);
+            await command.ExecuteNonQueryAsync();
+
+            await transaction.CommitAsync();
+        }
+        catch
+        {
+            if (transaction != null) await transaction.RollbackAsync();
+            throw;
+        }
+        finally
+        {
+            if (conn != null) await conn.CloseAsync();
+        }
     }
 
     public async Task SaveSharedConsentConsortiumAsync(SharedConsent sharedConsent)

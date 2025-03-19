@@ -51,7 +51,7 @@ locals {
 
   outbox_processors_desire_count = 1 # won't be scalable.
 
-  send_notify_emails_enabled_accounts = ["development", "integration", "production"]
+  send_notify_emails_enabled_accounts = ["development", "staging", "integration", "production"]
   send_notify_emails                  = contains(local.send_notify_emails_enabled_accounts, var.environment)
 
   service_configs = {

@@ -93,6 +93,8 @@ jobs:
         run: make db
         env:
           IMAGE_VERSION: ${{ steps.version.outputs.version }}
+      - name: Run E2E Tests
+        run: make e2e-test
       - name: Stop services
         run: make down
         env:
