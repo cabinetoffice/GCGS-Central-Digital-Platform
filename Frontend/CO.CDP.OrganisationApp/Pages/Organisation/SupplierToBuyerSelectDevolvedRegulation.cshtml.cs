@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace CO.CDP.OrganisationApp.Pages.Organisation;
 
-[Authorize(Policy = OrgScopeRequirement.Admin)]
+[Authorize(Policy = OrgScopeRequirement.Editor)]
 public class SupplierToBuyerSelectDevolvedRegulationModel(
     IOrganisationClient organisationClient,
     ITempDataService tempDataService) : PageModel
