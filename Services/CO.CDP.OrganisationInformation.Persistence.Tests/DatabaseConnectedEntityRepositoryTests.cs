@@ -103,6 +103,57 @@ public class DatabaseConnectedEntityRepositoryTests(PostgreSqlFixture postgreSql
         result.Should().ContainSingle(x => x!.Name == "First Name Last Name");
     }
 
+    [Fact]
+    public async Task GetSummary_ShouldReturnCorrectConnectedEntityLookups_WhenMultipleCreatedAcrossOrgs()
+    {
+        var guid = Guid.NewGuid();
+        using var repositoryCE = ConnectedEntityRepository();
+        using var repositoryOrg = OrganisationRepository();
+        var person = GivenPerson();
+        var organisation = GivenOrganisation(guid: Guid.NewGuid(), personsWithScope: [(person, ["ADMIN"])]);
+        var organisation2 = GivenOrganisation(guid: Guid.NewGuid(), personsWithScope: [(person, ["ADMIN"])]);
+
+        repositoryOrg.Save(organisation);
+        repositoryOrg.Save(organisation2);
+
+        var ce1 = new ConnectedEntity
+        {
+            Guid = guid,
+            EntityType = ConnectedEntity.ConnectedEntityType.Organisation,
+            Organisation = new ConnectedEntity.ConnectedOrganisation
+            {
+                OrganisationId = organisation.Guid,
+                Name = "CHN_111",
+                Category = ConnectedEntity.ConnectedOrganisationCategory.DirectorOrTheSameResponsibilities,
+                RegisteredLegalForm = "Legal Form",
+                LawRegistered = "Law Registered"
+            },
+            SupplierOrganisation = organisation
+        };
+        var ce2 = new ConnectedEntity
+        {
+            Guid = Guid.NewGuid(),
+            EntityType = ConnectedEntity.ConnectedEntityType.TrustOrTrustee,
+            IndividualOrTrust = new ConnectedEntity.ConnectedIndividualTrust
+            {
+                FirstName = "First Name",
+                LastName = "Last Name",
+                Category = ConnectedEntity.ConnectedEntityIndividualAndTrustCategoryType.DirectorOrIndivWithTheSameResponsibilitiesForIndiv,
+                ConnectedType = ConnectedEntity.ConnectedPersonType.Individual
+            },
+            SupplierOrganisation = organisation2
+        };
+
+        await repositoryCE.Save(ce1);
+        await repositoryCE.Save(ce2);
+
+        var result = await repositoryCE.GetSummary(organisation.Guid);
+
+        result.Should().HaveCount(1);
+        result.Should().ContainSingle(x => x!.Name == "CHN_111");
+        result.Should().NotContain(x => x!.Name == "First Name Last Name");
+    }
+
     private DatabaseConnectedEntityRepository ConnectedEntityRepository()
         => new(GetDbContext());
 

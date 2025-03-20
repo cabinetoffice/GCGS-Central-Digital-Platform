@@ -31,6 +31,12 @@
                 <div class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key">
                         @ce.Name
+
+                        @if (ce.EndDate != null)
+                        {
+                            <br />
+                            <span class="govuk-!-font-weight-regular govuk-!-margin-top-1">@string.Format(StaticTextResource.Supplier_ConnectedEntity_ConnectedPersonSummary_RemovedOn, ce.EndDate.Value.ToString("dd MMMM yyyy"))</span>
+                        }                        
                     </dt>
                     <dd class="govuk-summary-list__value"></dd>
                     <authorize scope="@OrgScopeRequirement.Editor">

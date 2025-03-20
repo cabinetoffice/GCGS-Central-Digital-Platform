@@ -257,6 +257,7 @@ public record ConnectedEntityLookup
     public required Guid EntityId { get; init; }
     public required Uri Uri { get; init; }
     public required ConnectedEntityType EntityType { get; init; }
+    public DateTimeOffset? EndDate { get; init; }
 }
 
 public record DeleteConnectedEntity
