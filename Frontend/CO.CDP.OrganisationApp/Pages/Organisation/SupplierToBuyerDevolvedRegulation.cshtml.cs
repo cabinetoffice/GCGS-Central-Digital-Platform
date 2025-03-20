@@ -10,7 +10,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CO.CDP.OrganisationApp.Pages.Organisation;
 
-[Authorize(Policy = OrgScopeRequirement.Admin)]
+[Authorize(Policy = OrgScopeRequirement.Editor)]
 public class SupplierToBuyerDevolvedRegulationModel(IOrganisationClient organisationClient, ITempDataService tempDataService) : PageModel
 {
     [BindProperty]
