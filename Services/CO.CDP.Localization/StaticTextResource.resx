@@ -1552,16 +1552,16 @@
     <value>To share your supplier information with buyers you need to create a share code and file, and declare that the information is correct.</value>
   </data>
   <data name="ShareYourInformation_HowItWorksParagraph2" xml:space="preserve">
-    <value>This saves a copy of the supplier information you provided about your organisation, connected persons, exclusions and financial information.</value>
+    <value>This saves a snapshot of the supplier information you provided about your organisation, connected persons, exclusions and financial information.</value>
   </data>
   <data name="ShareYourInformation_HowItWorksParagraph3" xml:space="preserve">
     <value>When you submit a bid for a procurement, the contracting authority will let you know how to give them the share code or file.</value>
   </data>
   <data name="ShareYourInformation_HowItWorksParagraph4" xml:space="preserve">
-    <value>If your supplier information changes, you can update it and create a new share code and file to share the new information.</value>
+    <value>You can update your supplier information whenever it changes but you must create a new share code and file to share the new information.</value>
   </data>
-  <data name="ShareYourInformation_Instructions" xml:space="preserve">
-    <value>Create a share code once you've completed all sections. You'll be asked for this share code if you apply for a tender.</value>
+  <data name="ShareYourInformation_MandatorySectionsNotComplete" xml:space="preserve">
+    <value>You must complete all sections of your supplier information before you can create a share code.</value>
   </data>
   <data name="ShareYourInformation_CreateShareCodeButton" xml:space="preserve">
     <value>Create a share code</value>
