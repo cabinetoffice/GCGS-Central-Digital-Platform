@@ -96,14 +96,14 @@ public class SupplierToBuyerDevolvedRegulationTest
     {
         _model.Id = _organisationId;
         _model.Devolved = true;
+        _model.RedirectToSummary = true;
         _organisationClientMock.Setup(x => x.GetOrganisationAsync(_organisationId))
             .ReturnsAsync(GivenOrganisationClientModel([PartyRole.Buyer], []));
 
         var result = await _model.OnPostAsync();
 
-        var redirectResult = result.Should().BeOfType<RedirectToPageResult>().Subject;
-        redirectResult.PageName.Should().Be("SupplierToBuyerSelectDevolvedRegulation");
-        redirectResult.RouteValues.Should().ContainKey("Id").WhoseValue.Should().Be(_organisationId);
+        var redirectResult = result.Should().BeOfType<RedirectResult>().Subject;
+        redirectResult.Url.Should().Contain("select-devolved-regulation");        
     }
 
     [Fact]

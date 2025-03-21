@@ -23,6 +23,9 @@ public class SupplierToBuyerDevolvedRegulationModel(IOrganisationClient organisa
     [BindProperty]
     public bool? RedirectToSummary { get; set; }
 
+    [BindProperty]
+    public bool? RedirectToOverview { get; set; }
+
     private string SupplierToBuyerStateKey => $"Supplier_To_Buyer_{Id}_Answers";
 
     public async Task<IActionResult> OnGetAsync()
@@ -58,7 +61,9 @@ public class SupplierToBuyerDevolvedRegulationModel(IOrganisationClient organisa
 
         if (Devolved == true)
         {
-            return RedirectToPage("SupplierToBuyerSelectDevolvedRegulation", new { Id });
+            var querystring = $"{(RedirectToSummary == true ? "?frm-summary" : "")}{(RedirectToOverview == true ? "?frm-overview" : "")}";
+
+            return Redirect($"/organisation/{Id}/buyer/select-devolved-regulation{querystring}");
         }
         else
         {
