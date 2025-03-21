@@ -131,7 +131,7 @@ public class OrganisationIdentificationModel(
             var organisation = await organisationClient.GetOrganisationAsync(Id);
             if (organisation == null) return Redirect("/page-not-found");
 
-            var existingIdentifiers = await GetExistingIdentifiers(organisation);
+            var existingIdentifiers = GetExistingIdentifiers(organisation);
 
             ExistingOrganisationScheme = existingIdentifiers.Select(x => x.Scheme).ToList();
 
@@ -157,7 +157,7 @@ public class OrganisationIdentificationModel(
         }
     }
 
-    private async Task<List<OrganisationWebApiClient.Identifier>> GetExistingIdentifiers(OrganisationWebApiClient.Organisation organisation)
+    private List<OrganisationWebApiClient.Identifier> GetExistingIdentifiers(OrganisationWebApiClient.Organisation organisation)
     {
         var identifiers = organisation.AdditionalIdentifiers;
         identifiers.Add(organisation.Identifier);
@@ -183,7 +183,7 @@ public class OrganisationIdentificationModel(
 
             if (!ModelState.IsValid)
             {
-                var existingIdentifiers = await GetExistingIdentifiers(organisation);
+                var existingIdentifiers = GetExistingIdentifiers(organisation);
 
                 ExistingOrganisationScheme = existingIdentifiers.Select(x => x.Scheme).ToList();
 

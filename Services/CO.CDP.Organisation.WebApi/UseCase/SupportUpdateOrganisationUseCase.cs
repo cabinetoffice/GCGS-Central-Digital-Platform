@@ -31,7 +31,7 @@ public class SupportUpdateOrganisationUseCase(
 
                 var person = await personRepository.Find(personId.Value) ?? throw new UnknownPersonException($"Unknown person {personId}.");
 
-                if (command.supportUpdateOrganisation.Organisation.Approved == true)
+                if (command.supportUpdateOrganisation?.Organisation?.Approved == true)
                 {
                     organisation.ApprovedOn = DateTimeOffset.UtcNow;
                     organisation.PendingRoles.ForEach(r => organisation.Roles.Add(r));
@@ -44,7 +44,7 @@ public class SupportUpdateOrganisationUseCase(
                 }
 
                 organisation.ReviewedBy = person;
-                organisation.ReviewComment = command.supportUpdateOrganisation.Organisation.Comment;
+                organisation.ReviewComment = command.supportUpdateOrganisation?.Organisation?.Comment;
 
                 break;
 
