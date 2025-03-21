@@ -202,6 +202,7 @@ FROM base AS migrations-organisation-information
 ARG VERSION
 ENV VERSION=${VERSION}
 WORKDIR /app
+COPY --from=build-migrations-organisation-information /src/Services/CO.CDP.OrganisationInformation.Persistence/OrganisationInformationDatabaseMigrationConfig /app/OrganisationInformationDatabaseMigrationConfig
 COPY --from=build-migrations-organisation-information /app/migrations/efbundle .
 ENTRYPOINT /app/efbundle --connection "Host=$OrganisationInformationDatabase__Host;Database=$OrganisationInformationDatabase__Database;Username=$OrganisationInformationDatabase__Username;Password=$OrganisationInformationDatabase__Password;"
 
@@ -209,6 +210,7 @@ FROM base AS migrations-entity-verification
 ARG VERSION
 ENV VERSION=${VERSION}
 WORKDIR /app
+COPY --from=build-migrations-entity-verification /src/Services/CO.CDP.EntityVerification.Persistence/EntityVerificationDatabaseMigrationConfig /app/EntityVerificationDatabaseMigrationConfig
 COPY --from=build-migrations-entity-verification /app/migrations/efbundle .
 ENTRYPOINT /app/efbundle --connection "Host=$EntityVerificationDatabase__Host;Database=$EntityVerificationDatabase__Database;Username=$EntityVerificationDatabase__Username;Password=$EntityVerificationDatabase__Password;"
 
