@@ -1,11 +1,11 @@
-using FluentAssertions;
-using Moq;
-using CO.CDP.Organisation.WebApiClient;
-using CO.CDP.OrganisationApp.Pages.Registration;
-using Microsoft.AspNetCore.Mvc;
 using CO.CDP.Localization;
+using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Models;
+using CO.CDP.OrganisationApp.Pages.Registration;
+using FluentAssertions;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Moq;
 using System.Net;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages.Registration;
@@ -15,6 +15,7 @@ public class OrganisationNameSearchModelTests
     private readonly Mock<ISession> _sessionMock;
     private readonly Mock<IOrganisationClient> _organisationClientMock;
     private readonly Mock<IFlashMessageService> _flashMessageServiceMock;
+    private static readonly Guid _givenOrganisationId = Guid.NewGuid();
 
     public OrganisationNameSearchModelTests()
     {
@@ -64,7 +65,7 @@ public class OrganisationNameSearchModelTests
         RegistrationDetails registrationDetails = GivenRegistrationDetails("Test org", Constants.OrganisationType.Buyer);
         _sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(registrationDetails);
 
-        var matchingOrganisation = GivenOrganisationSearchResult("Test org", "scheme", "123");
+        var matchingOrganisation = GivenOrganisationSearchResult("Test org", "scheme", "123", _givenOrganisationId);
 
         _organisationClientMock
             .Setup(client => client.SearchOrganisationAsync("Test org", "Buyer", 10, 0.3))
@@ -84,7 +85,7 @@ public class OrganisationNameSearchModelTests
             ), Times.Once);
 
         result.Should().BeOfType<RedirectResult>()
-            .Which.Url.Should().Be("/registration/scheme%3A123/join-organisation");
+            .Which.Url.Should().Be($"/registration/{_givenOrganisationId.ToString()}/join-organisation");
     }
 
     [Fact]
@@ -113,7 +114,7 @@ public class OrganisationNameSearchModelTests
             ), Times.Once);
 
         result.Should().BeOfType<RedirectResult>()
-            .Which.Url.Should().Be("/registration/scheme%3A123/join-organisation");
+            .Which.Url.Should().Be($"/registration/{_givenOrganisationId.ToString()}/join-organisation");
     }
 
     [Fact]
@@ -124,7 +125,7 @@ public class OrganisationNameSearchModelTests
 
         var nonMatchingOrganisation1 = GivenOrganisationSearchResult("Something", "scheme", "124");
         var nonMatchingOrganisation2 = GivenOrganisationSearchResult("Another thing", "scheme", "125");
-        var matchingOrganisation = GivenOrganisationSearchResult("Test org", "scheme", "123");
+        var matchingOrganisation = GivenOrganisationSearchResult("Test org", "scheme", "123", _givenOrganisationId);
 
         _organisationClientMock
             .Setup(client => client.SearchOrganisationAsync("Test org", "Buyer", 10, 0.3))
@@ -144,7 +145,7 @@ public class OrganisationNameSearchModelTests
             ), Times.Once);
 
         result.Should().BeOfType<RedirectResult>()
-            .Which.Url.Should().Be("/registration/scheme%3A123/join-organisation");
+            .Which.Url.Should().Be($"/registration/{_givenOrganisationId.ToString()}/join-organisation");
     }
 
     [Fact]
@@ -173,19 +174,6 @@ public class OrganisationNameSearchModelTests
 
         result.Should().BeOfType<PageResult>();
         model.MatchingOrganisations.Should().HaveCount(2);
-    }
-
-
-    [Fact]
-    public async Task OnPost_WhenOrganisationIdentifierIsValid_ShouldRedirectToJoinOrganisation()
-    {
-        var model = GivenOrganisationNameSearchModel();
-        model.OrganisationIdentifier = "scheme:123";
-
-        var result = await model.OnPost();
-
-        result.Should().BeOfType<RedirectResult>()
-            .Which.Url.Should().Be("/registration/scheme%3A123/join-organisation");
     }
 
     [Fact]
@@ -255,10 +243,10 @@ public class OrganisationNameSearchModelTests
         return registrationDetails;
     }
 
-    private static OrganisationSearchResult GivenOrganisationSearchResult(string name, string identifierScheme = "scheme", string idenfifierId = "123")
+    private static OrganisationSearchResult GivenOrganisationSearchResult(string name, string identifierScheme = "scheme", string idenfifierId = "123", Guid? organisationId = null)
     {
         return new OrganisationSearchResult(
-                    Guid.NewGuid(),
+                    organisationId ?? Guid.NewGuid(),
                     new Identifier(idenfifierId, "legal name", identifierScheme, new Uri("http://whatever")),
                     name,
                     new List<PartyRole>() { PartyRole.Buyer },
@@ -273,7 +261,7 @@ public class OrganisationNameSearchModelTests
                   addresses: null,
                   contactPoint: null,
                   details: new Details(approval: null, buyerInformation: null, pendingRoles: [], publicServiceMissionOrganization: null, scale: null, shelteredWorkshop: null, vcse: null),
-                  id: Guid.NewGuid(),
+                  id: _givenOrganisationId,
                   identifier: new Identifier("123", "Acme", "scheme", new Uri("http://www.acme.org")),
                   name: "Test Org",
                   roles: new List<PartyRole>(),

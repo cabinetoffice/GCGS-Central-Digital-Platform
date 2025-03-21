@@ -22,7 +22,8 @@ public class LookupIdentifierUseCase(IPponRepository repo) : IUseCase<LookupIden
                     Id = item.IdentifierId,
                     LegalName = item.LegalName,
                     Scheme = item.Scheme,
-                    Uri = item.Uri
+                    Uri = item.Uri,
+                    OrganisationId = ppon.OrganisationId,
                 }).ToList();
 
                 foundIdentifiers.Add(new Model.Identifier { Scheme = IdentifierSchemes.Ppon, Id = ppon.IdentifierId, LegalName = ppon.Name });
