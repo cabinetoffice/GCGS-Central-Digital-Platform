@@ -12,7 +12,6 @@ using OrganisationWebApiClient = CO.CDP.Organisation.WebApiClient;
 
 namespace CO.CDP.OrganisationApp.Pages.Organisation;
 
-[Authorize(Policy = OrgScopeRequirement.Editor)]
 public class OrganisationIdentificationModel(
     OrganisationWebApiClient.IOrganisationClient organisationClient,
         IAuthorizationService authorizationService) : PageModel
@@ -128,6 +127,14 @@ public class OrganisationIdentificationModel(
     {
         try
         {
+            var isEditor = (await authorizationService.AuthorizeAsync(User, OrgScopeRequirement.Editor)).Succeeded;
+            IsSupportAdmin = (await authorizationService.AuthorizeAsync(User, PersonScopeRequirement.SupportAdmin)).Succeeded;
+
+            if (!isEditor && !IsSupportAdmin)
+            {
+                return Forbid();
+            }
+
             var organisation = await organisationClient.GetOrganisationAsync(Id);
             if (organisation == null) return Redirect("/page-not-found");
 
@@ -139,10 +146,6 @@ public class OrganisationIdentificationModel(
             {
                 SetIdentifierValue(identifier);
             }
-
-            var roleCheck = await authorizationService.AuthorizeAsync(HttpContext.User, PersonScopeRequirement.SupportAdmin);
-
-            IsSupportAdmin = roleCheck.Succeeded;
 
             return Page();
         }
@@ -168,12 +171,16 @@ public class OrganisationIdentificationModel(
     public async Task<IActionResult> OnPost()
     {
         try {
-            var roleCheck = await authorizationService.AuthorizeAsync(HttpContext.User, PersonScopeRequirement.SupportAdmin);
+            var isEditor = (await authorizationService.AuthorizeAsync(User, OrgScopeRequirement.Editor)).Succeeded;
+            IsSupportAdmin = (await authorizationService.AuthorizeAsync(User, PersonScopeRequirement.SupportAdmin)).Succeeded;
+
+            if (!isEditor && !IsSupportAdmin)
+            {
+                return Forbid();
+            }
 
             var organisation = await organisationClient.GetOrganisationAsync(Id);
             if (organisation == null) return Redirect("/page-not-found");
-
-            IsSupportAdmin = roleCheck.Succeeded;
 
             // Ensure OrganisationScheme is valid
             if (OrganisationScheme == null || !OrganisationScheme.Any())
