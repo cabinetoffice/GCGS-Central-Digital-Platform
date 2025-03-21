@@ -84,7 +84,7 @@ public class OrganisationInternationalIdentificationModel(ISession session,
 
         Identifier = $"{RegistrationDetails.OrganisationScheme}:{RegistrationDetails.OrganisationIdentificationNumber}";
 
-        if (OrganisationScheme != null && OrganisationScheme.Contains("Other"))
+        if (RegistrationDetails.OrganisationIdentificationNumber == null && OrganisationScheme != null && OrganisationScheme.Contains("Other"))
         {
             SessionContext.Set(Session.RegistrationDetailsKey, RegistrationDetails);
             if (RedirectToSummary == true)

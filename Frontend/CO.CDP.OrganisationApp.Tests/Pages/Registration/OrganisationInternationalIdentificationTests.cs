@@ -133,6 +133,46 @@ public class OrganisationInternationalIdentificationTests
         result.Should().BeOfType<PageResult>();
     }
 
+    [Fact]
+    public async Task OnPost_ShouldSetFlashMessage_WhenInternationalIdentifierExist()
+    {
+        var model = CreateModel();
+        var organisation = new CO.CDP.Organisation.WebApiClient.Organisation(
+                  additionalIdentifiers: null,
+                  addresses: null,
+                  contactPoint: null,
+                  details: new Details(approval: null, buyerInformation: null, pendingRoles: [], publicServiceMissionOrganization: null, scale: null, shelteredWorkshop: null, vcse: null),
+                  id: _organisationId,
+                  identifier: new CDP.Organisation.WebApiClient.Identifier("AL", "Other", "123", null),
+                  name: "Test Org",
+                  roles: new List<PartyRole>(),
+                  type: OrganisationType.Organisation
+                  );
+
+        model.Identifier = "AL:Other";
+        model.RegistrationNumbers["Other"] = null;
+        model.OrganisationName = "Test Organisation";
+        model.OrganisationScheme = "ABC";
+
+        _organisationClientMock
+            .Setup(o => o.LookupOrganisationAsync(It.IsAny<string>(), It.IsAny<string>()))
+            .ReturnsAsync(organisation);
+
+        var result = await model.OnPost();
+
+        _flashMessageServiceMock.Verify(api => api.SetFlashMessage(
+            FlashMessageType.Important,
+            StaticTextResource.OrganisationRegistration_CompanyHouseNumberQuestion_CompanyAlreadyRegistered_NotificationBanner,
+            null,
+            null,
+            It.Is<Dictionary<string, string>>(d => d["organisationIdentifier"] == _organisationId.ToString()),
+            It.Is<Dictionary<string, string>>(d => d["organisationName"] == model.OrganisationName)
+        ),
+        Times.Once);
+
+        result.Should().BeOfType<PageResult>();
+    }
+
     private static CO.CDP.Organisation.WebApiClient.Organisation GivenOrganisationClientModel()
     {
         return new CO.CDP.Organisation.WebApiClient.Organisation(
