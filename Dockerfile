@@ -190,7 +190,7 @@ FROM build-tenant AS build-migrations-organisation-information
 WORKDIR /src
 COPY .config/dotnet-tools.json .config/
 RUN dotnet tool restore
-RUN dotnet ef migrations bundle -p /src/Services/CO.CDP.OrganisationInformation.Persistence -s /src/Services/CO.CDP.Tenant.WebApi --self-contained -o /app/migrations/efbundle
+RUN dotnet ef migrations bundle -p /src/Services/CO.CDP.OrganisationInformation.Persistence -s /src/Services/CO.CDP.OrganisationInformation.Persistence --self-contained -o /app/migrations/efbundle
 
 FROM build-entity-verification AS build-migrations-entity-verification
 WORKDIR /src
