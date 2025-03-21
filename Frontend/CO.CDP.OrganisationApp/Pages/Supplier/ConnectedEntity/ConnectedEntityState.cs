@@ -30,6 +30,7 @@ public class ConnectedEntityState
     public string? Nationality { get; set; }
     public DateTimeOffset? DateOfBirth { get; set; }
     public string? DirectorLocation { get; set; }
+    public DateTimeOffset? EndDate { get; set; }
     public class Address
     {
         public string? AddressLine1 { get; set; }

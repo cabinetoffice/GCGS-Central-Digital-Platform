@@ -58,7 +58,8 @@ public class ConnectedEntityCheckAnswersCommon
             OverseasCompaniesHouseNumber = connectedEntity.OverseasCompanyNumber,
             HasOverseasCompaniesHouseNumber = (connectedEntity.OverseasCompanyNumber == null ? null : (!string.IsNullOrEmpty(connectedEntity.OverseasCompanyNumber))),
             SupplierHasCompanyHouseNumber = connectedEntity.HasCompnayHouseNumber,
-            DirectorLocation = connectedEntity.IndividualOrTrust?.ResidentCountry
+            DirectorLocation = connectedEntity.IndividualOrTrust?.ResidentCountry,
+            EndDate = connectedEntity.EndDate
         };
 
         return state;
