@@ -11,7 +11,7 @@ public class MigrationsDbContextFactory : IDesignTimeDbContextFactory<Organisati
     {
         var configuration = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json", optional: false)
+                .AddJsonFile("OrganisationInformationDatabaseMigrationConfig/appsettings.json", optional: false)
                 .AddEnvironmentVariables()
                 .Build();
 
