@@ -12,8 +12,9 @@ using OrganisationWebApiClient = CO.CDP.Organisation.WebApiClient;
 
 namespace CO.CDP.OrganisationApp.Pages.Organisation;
 
-[Authorize(Policy = OrgScopeRequirement.Editor)]
-public class OrganisationIdentificationModel(OrganisationWebApiClient.IOrganisationClient organisationClient) : PageModel
+public class OrganisationIdentificationModel(
+    OrganisationWebApiClient.IOrganisationClient organisationClient,
+        IAuthorizationService authorizationService) : PageModel
 {
     [BindProperty]
     [DisplayName("Organisation Type")]
@@ -120,16 +121,28 @@ public class OrganisationIdentificationModel(OrganisationWebApiClient.IOrganisat
     [BindProperty(SupportsGet = true)]
     public Guid Id { get; set; }
 
+    public bool IsSupportAdmin = false;
+
     public async Task<IActionResult> OnGet()
     {
         try
         {
-            var (validate, existingIdentifier) = await ValidateAndGetExistingIdentifiers();
-            if (!validate) return Redirect("/page-not-found");
+            var isEditor = (await authorizationService.AuthorizeAsync(User, OrgScopeRequirement.Editor)).Succeeded;
+            IsSupportAdmin = (await authorizationService.AuthorizeAsync(User, PersonScopeRequirement.SupportAdmin)).Succeeded;
 
-            ExistingOrganisationScheme = existingIdentifier.Select(x => x.Scheme).ToList();
+            if (!isEditor && !IsSupportAdmin)
+            {
+                return Forbid();
+            }
 
-            foreach (var identifier in existingIdentifier)
+            var organisation = await organisationClient.GetOrganisationAsync(Id);
+            if (organisation == null) return Redirect("/page-not-found");
+
+            var existingIdentifiers = GetExistingIdentifiers(organisation);
+
+            ExistingOrganisationScheme = existingIdentifiers.Select(x => x.Scheme).ToList();
+
+            foreach (var identifier in existingIdentifiers)
             {
                 SetIdentifierValue(identifier);
             }
@@ -147,40 +160,47 @@ public class OrganisationIdentificationModel(OrganisationWebApiClient.IOrganisat
         }
     }
 
-    private async Task<(bool valid, List<OrganisationWebApiClient.Identifier>)> ValidateAndGetExistingIdentifiers()
+    private List<OrganisationWebApiClient.Identifier> GetExistingIdentifiers(OrganisationWebApiClient.Organisation organisation)
     {
-        var organisation = await organisationClient.GetOrganisationAsync(Id);
-        if (organisation == null) return (false, new());
+        var identifiers = organisation.AdditionalIdentifiers;
+        identifiers.Add(organisation.Identifier);
 
-        var identfiers = organisation.AdditionalIdentifiers;
-        identfiers.Add(organisation.Identifier);
-
-        return (true, identfiers.ToList());
+        return identifiers.ToList();
     }
 
     public async Task<IActionResult> OnPost()
     {
-        // Ensure OrganisationScheme is valid
-        if (OrganisationScheme == null || !OrganisationScheme.Any())
-        {
-            ModelState.AddModelError(nameof(OrganisationScheme), StaticTextResource.Organisation_OrganisationIdentification_ValidationErrorMessage);
-        }
+        try {
+            var isEditor = (await authorizationService.AuthorizeAsync(User, OrgScopeRequirement.Editor)).Succeeded;
+            IsSupportAdmin = (await authorizationService.AuthorizeAsync(User, PersonScopeRequirement.SupportAdmin)).Succeeded;
 
-        if (!ModelState.IsValid)
-        {
-            var (validate, existingIdentifier) = await ValidateAndGetExistingIdentifiers();
-            if (!validate) return Redirect("/page-not-found");
+            if (!isEditor && !IsSupportAdmin)
+            {
+                return Forbid();
+            }
 
-            ExistingOrganisationScheme = existingIdentifier.Select(x => x.Scheme).ToList();
-
-            return Page();
-        }
-
-        try
-        {
             var organisation = await organisationClient.GetOrganisationAsync(Id);
             if (organisation == null) return Redirect("/page-not-found");
 
+            // Ensure OrganisationScheme is valid
+            if (OrganisationScheme == null || !OrganisationScheme.Any())
+            {
+                ModelState.AddModelError(nameof(OrganisationScheme), StaticTextResource.Organisation_OrganisationIdentification_ValidationErrorMessage);
+            }
+
+            if (!ModelState.IsValid)
+            {
+                var existingIdentifiers = GetExistingIdentifiers(organisation);
+
+                ExistingOrganisationScheme = existingIdentifiers.Select(x => x.Scheme).ToList();
+
+                foreach (var identifier in existingIdentifiers)
+                {
+                    SetIdentifierValue(identifier);
+                }
+
+                return Page();
+            }
 
             // Create identifiers for OrganisationScheme
             var identifiers = OrganisationScheme!.Select(scheme => new OrganisationWebApiClient.OrganisationIdentifier(
@@ -189,7 +209,14 @@ public class OrganisationIdentificationModel(OrganisationWebApiClient.IOrganisat
                     scheme: scheme))
                 .ToList();
 
-            await organisationClient.UpdateOrganisationAdditionalIdentifiers(Id, identifiers);
+            if (IsSupportAdmin)
+            {
+                await organisationClient.SupportUpdateOrganisationAdditionalIdentifiers(Id, identifiers);
+            }
+            else
+            {
+                await organisationClient.UpdateOrganisationAdditionalIdentifiers(Id, identifiers);
+            }
 
             return RedirectToPage("OrganisationOverview", new { Id });
         }
@@ -228,34 +255,34 @@ public class OrganisationIdentificationModel(OrganisationWebApiClient.IOrganisat
         switch (identifier.Scheme)
         {
             case "GB-COH":
-                CompanyHouseNumber = identifier.LegalName;
+                CompanyHouseNumber = identifier.Id;
                 break;
             case "GB-CHC":
-                CharityCommissionEnglandWalesNumber = identifier.LegalName;
+                CharityCommissionEnglandWalesNumber = identifier.Id;
                 break;
             case "GB-SC":
-                ScottishCharityRegulatorNumber = identifier.LegalName;
+                ScottishCharityRegulatorNumber = identifier.Id;
                 break;
             case "GB-NIC":
-                CharityCommissionNorthernIrelandNumber = identifier.LegalName;
+                CharityCommissionNorthernIrelandNumber = identifier.Id;
                 break;
             case "GB-MPR":
-                MutualsPublicRegisterNumber = identifier.LegalName;
+                MutualsPublicRegisterNumber = identifier.Id;
                 break;
             case "GG-RCE":
-                GuernseyRegistryNumber = identifier.LegalName;
+                GuernseyRegistryNumber = identifier.Id;
                 break;
             case "JE-FSC":
-                JerseyFinancialServicesCommissionRegistryNumber = identifier.LegalName;
+                JerseyFinancialServicesCommissionRegistryNumber = identifier.Id;
                 break;
             case "IM-CR":
-                IsleofManCompaniesRegistryNumber = identifier.LegalName;
+                IsleofManCompaniesRegistryNumber = identifier.Id;
                 break;
             case "GB-NHS":
-                NationalHealthServiceOrganisationsRegistryNumber = identifier.LegalName;
+                NationalHealthServiceOrganisationsRegistryNumber = identifier.Id;
                 break;
             case "GB-UKPRN":
-                UKLearningProviderReferenceNumber = identifier.LegalName;
+                UKLearningProviderReferenceNumber = identifier.Id;
                 break;
             default:
                 break;

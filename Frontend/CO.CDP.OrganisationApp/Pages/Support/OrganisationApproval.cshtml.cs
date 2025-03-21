@@ -110,7 +110,8 @@ public class OrganisationApprovalModel(
             SupportOrganisationInfo orgInfo = new SupportOrganisationInfo(
                 approved: Approval ?? false,
                 comment: Comments ?? "",
-                reviewedById: UserDetails.PersonId.Value
+                reviewedById: UserDetails.PersonId.Value,
+                additionalIdentifiers: null
             );
 
             await organisationClient.SupportUpdateOrganisationAsync(organisationId, new SupportUpdateOrganisation(
