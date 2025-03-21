@@ -5,9 +5,12 @@
 @{
     ViewData["Title"] = StaticTextResource.SupplierToBuyer_SelectDevolvedRegulation_Title;
     var regulationsHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Regulations)).HasInnerHtml;
+    var fromSummaryPage = Request.Query.ContainsKey("frm-summary");
+    var fromOverviewPage = Request.Query.ContainsKey("frm-overview");
 
-    var backLink = $"/organisation/{@Model.Id}/supplier-to-buyer-devolved-regulation";
-
+    var querystring = $"{(fromSummaryPage ? "?frm-summary" : "")}{(fromOverviewPage ? "?frm-overview" : "")}";
+    var backLink = $"/organisation/{@Model.Id}/supplier-to-buyer-devolved-regulation{querystring}";
+    
     string IsSelected(DevolvedRegulation regulationValue)
     {
         return Model.Regulations.Contains(regulationValue) ? "checked='checked'" : string.Empty;
