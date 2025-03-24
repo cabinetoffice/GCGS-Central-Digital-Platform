@@ -103,6 +103,7 @@
                 if (declarationSection)
                 {
                     redirectLink += "/share-codes-list-view";
+                    continue;   // Temporarily hide share code link
                 }
                 else if (exclusionsSection && (section.AnswerSetCount == 0 || section.AnswerSetWithFurtherQuestionExemptedExists) && !isViewer)
                 {
