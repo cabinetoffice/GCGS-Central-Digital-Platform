@@ -171,8 +171,8 @@ public class OrganisationIdentificationModel(
     public async Task<IActionResult> OnPost()
     {
         try {
-            var isEditor = (await authorizationService.AuthorizeAsync(User, OrgScopeRequirement.Editor)).Succeeded;
-            IsSupportAdmin = (await authorizationService.AuthorizeAsync(User, PersonScopeRequirement.SupportAdmin)).Succeeded;
+            var isEditor = (await authorizationService.AuthorizeAsync(User, null, OrgScopeRequirement.Editor)).Succeeded;
+            IsSupportAdmin = (await authorizationService.AuthorizeAsync(User, null, PersonScopeRequirement.SupportAdmin)).Succeeded;
 
             if (!isEditor && !IsSupportAdmin)
             {
@@ -230,6 +230,12 @@ public class OrganisationIdentificationModel(
             return Redirect("/page-not-found");
         }
     }
+
+    public virtual async Task<bool> IsEditorAsync() =>
+        (await authorizationService.AuthorizeAsync(User, OrgScopeRequirement.Editor)).Succeeded;
+
+    public virtual async Task<bool> IsSupportAdminAsync() =>
+        (await authorizationService.AuthorizeAsync(User, PersonScopeRequirement.SupportAdmin)).Succeeded;
 
     private string? GetOrganisationIdentificationNumber(string scheme)
     {

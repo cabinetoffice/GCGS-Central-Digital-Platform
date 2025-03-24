@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moq;
 using System.Security.Claims;
+using CO.CDP.OrganisationApp.Constants;
 using Microsoft.AspNetCore.Http;
 using OrganisationType = CO.CDP.Organisation.WebApiClient.OrganisationType;
 using WebApiClientOrganisation = CO.CDP.Organisation.WebApiClient.Organisation;
@@ -80,10 +81,17 @@ public class OrganisationIdentificationModelTest
 
         _authorizationServiceMock
             .Setup(auth => auth.AuthorizeAsync(
-                It.IsAny<ClaimsPrincipal>(),
-                It.IsAny<object>(),
-                It.IsAny<string>()))
+                fakeUser,
+                null,
+                PersonScopeRequirement.SupportAdmin))
             .ReturnsAsync(AuthorizationResult.Failed());
+
+        _authorizationServiceMock
+            .Setup(auth => auth.AuthorizeAsync(
+                fakeUser,
+                null,
+                OrgScopeRequirement.Editor))
+            .ReturnsAsync(AuthorizationResult.Success());
 
         var result = await _pageModel.OnGet();
 
@@ -156,8 +164,15 @@ public class OrganisationIdentificationModelTest
         _authorizationServiceMock
             .Setup(auth => auth.AuthorizeAsync(
                 It.IsAny<ClaimsPrincipal>(),
-                It.IsAny<object>(),
-                It.IsAny<string>()))
+                null,
+                OrgScopeRequirement.Editor))
+            .ReturnsAsync(AuthorizationResult.Success());
+
+        _authorizationServiceMock
+            .Setup(auth => auth.AuthorizeAsync(
+                It.IsAny<ClaimsPrincipal>(),
+                null,
+                PersonScopeRequirement.SupportAdmin))
             .ReturnsAsync(AuthorizationResult.Failed());
 
         _organisationClientMock
