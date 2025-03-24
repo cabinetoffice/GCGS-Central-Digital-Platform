@@ -44,9 +44,26 @@
 
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds govuk-body">
+            <div class="govuk-notification-banner" role="region" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
+                <div class="govuk-notification-banner__header">
+                    <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
+                        @StaticTextResource.Global_Important
+                    </h2>
+                </div>
+                <div class="govuk-notification-banner__content">
+                    <p class="govuk-notification-banner__heading">
+                        Share code creation unavailable
+                    </p>
+                    <p>
+                        You will not be able to create a share code between 25 March at 10pm and 26th March at 3am.
+                    </p>
+                </div>
+            </div>
+
             <h1 class="govuk-heading-l">
                 @ViewData["Title"]
             </h1>
+
             <h2 class="govuk-heading-m">@StaticTextResource.Supplier_SupplierInformationSummary_Heading</h2>
             <dl class="govuk-summary-list">
                 <div class="govuk-summary-list__row">
