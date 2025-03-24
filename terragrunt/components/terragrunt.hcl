@@ -219,11 +219,11 @@ locals {
     av_scanner_app                       = {}
     data_sharing                         = {}
     entity_verification                  = {}
-    entity_verification_migrations       = { cpu = 256,  memory = 512}
+    entity_verification_migrations       = {}
     forms                                = {}
     organisation                         = {}
     organisation_app                     = {}
-    organisation_information_migrations  = { cpu = 256,  memory = 512}
+    organisation_information_migrations  = {}
     outbox_processor_entity_verification = { desired_count = 1 }
     outbox_processor_organisation        = { desired_count = 1 }
     person                               = {}
