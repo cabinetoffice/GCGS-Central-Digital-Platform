@@ -2183,6 +2183,9 @@
   <data name="PdfGenerator_BasicInformation_RegistrationDate" xml:space="preserve">
     <value>Registration date</value>
   </data>
+  <data name="PdfGenerator_ConnectedOrganisationInformation_RegistrationDate" xml:space="preserve">
+    <value>Registration date</value>
+  </data>
   <data name="PdfGenerator_BasicInformation_Suppliertype" xml:space="preserve">
     <value>Supplier type</value>
   </data>
@@ -2380,6 +2383,27 @@
   </data>
   <data name="PdfGenerator_SupplierInformation_Title" xml:space="preserve">
     <value>Supplier information</value>
+  </data>
+  <data name="PdfGenerator_Supplier_OperationType" xml:space="preserve">
+    <value>Supplier operation type</value>
+  </data>
+  <data name="PdfGenerator_Supplier_OperationType_SmallOrMediumSized_Short" xml:space="preserve">
+    <value>Small or medium-sized enterprise</value>
+  </data>
+  <data name="PdfGenerator_Supplier_OperationType_NonGovernmental_Short" xml:space="preserve">
+    <value>Non-governmental organisation</value>
+  </data>
+  <data name="PdfGenerator_Supplier_OperationType_SupportedEmploymentProvider_Short" xml:space="preserve">
+    <value>Supported employment provider</value>
+  </data>
+  <data name="PdfGenerator_Supplier_OperationType_PublicService_Short" xml:space="preserve">
+    <value>Public service mutual</value>
+  </data>
+  <data name="PdfGenerator_Supplier_OperationType_None_Short" xml:space="preserve">
+    <value>My organisation is not defined</value>
+  </data>
+  <data name="PdfGenerator_Supplier_OperationType_Unknown_Short" xml:space="preserve">
+    <value>Unknown supplier opration type</value>
   </data>
   <data name="PdfGenerator_UnknownCategory" xml:space="preserve">
     <value>Unknown category</value>
@@ -3129,7 +3153,6 @@
   <data name="Users_UserRoleViewer_HintTitle" xml:space="preserve">
     <value>What viewers can do</value>
   </data>
-
   <data name="Users_UserRoleAdmin_BuyerHint1" xml:space="preserve">
     <value>add, remove and edit users</value>
   </data>
@@ -3187,7 +3210,6 @@
   <data name="Users_UserRoleViewer_SupplierHint2" xml:space="preserve">
     <value>view supplier information</value>
   </data>
-
   <data name="Users_UserRoleAdmin_BuyerSupplierHint1" xml:space="preserve">
     <value>add, remove and edit users</value>
   </data>
@@ -3227,7 +3249,6 @@
   <data name="Users_UserRoleEditor_BuyerSupplierHint5" xml:space="preserve">
     <value>view, add and edit supplier information</value>
   </data>
-
   <data name="Users_UserRoleViewer_BuyerSupplierHint1" xml:space="preserve">
     <value>create, edit and publish notices</value>
   </data>
@@ -3237,11 +3258,6 @@
   <data name="Users_UserRoleViewer_BuyerSupplierHint3" xml:space="preserve">
     <value>view supplier information</value>
   </data>
-
-
-
-
-
   <data name="Users_CheckYourAnswers_Title" xml:space="preserve">
     <value>Check your answers</value>
   </data>

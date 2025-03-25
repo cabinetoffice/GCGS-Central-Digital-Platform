@@ -2112,6 +2112,9 @@
   <data name="PdfGenerator_BasicInformation_RegistrationDate" xml:space="preserve">
     <value>Dyddiad cofrestru</value>
   </data>
+  <data name="PdfGenerator_ConnectedOrganisationInformation_RegistrationDate" xml:space="preserve">
+    <value>Dyddiad cofrestru</value>
+  </data>
   <data name="PdfGenerator_ConnectedOrganisationInformation_Title" xml:space="preserve">
     <value>Gwybodaeth am sefydliad cysylltiedig</value>
   </data>
@@ -2189,7 +2192,19 @@
   </data>
   <data name="PdfGenerator_Scheme" xml:space="preserve">
     <value>Cofrestrfa</value>
+  </data>  
+  <data name="PdfGenerator_Supplier_OperationType_SmallOrMediumSized_Short" xml:space="preserve">
+    <value>Busnes bach neu ganolig</value>
   </data>
+  <data name="PdfGenerator_Supplier_OperationType_NonGovernmental_Short" xml:space="preserve">
+    <value>Corff anllywodraethol</value>
+  </data>
+  <data name="PdfGenerator_Supplier_OperationType_SupportedEmploymentProvider_Short" xml:space="preserve">
+    <value>Darparwr cyflogaeth â chymorth</value>
+  </data>
+  <data name="PdfGenerator_Supplier_OperationType_PublicService_Short" xml:space="preserve">
+    <value>Cwmni gwasanaeth cyhoeddus cydfuddiannol</value>
+  </data>  
   <data name="PdfGenerator_UnknownCategory" xml:space="preserve">
     <value>Categori anhysbys</value>
   </data>
