@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!--
     Microsoft ResX Schema
@@ -439,7 +439,7 @@
     <value>Rhowch gyfeiriad eich sefydliad</value>
   </data>
   <data name="OrganisationRegistration_Address_NonUk_Hint" xml:space="preserve">
-    <value>Y cyfeiriad sydd wedi'i gofnodi ar gofnodion cyhoeddus neu sydd wedi'i gyhoeddi</value>
+    <value></value>
   </data>
   <data name="OrganisationRegistration_Address_Supplier_Heading" xml:space="preserve">
     <value>Rhowch gyfeiriad cofrestredig eich sefydliad</value>
@@ -1305,12 +1305,15 @@
     <value>Cyfeiriad e-bost</value>
   </data>
   <data name="Supplier_EmailAddress_Title" xml:space="preserve">
-    <value>Rhowch eich cyfeiriad e-bost</value>
+    <value></value>
   </data>
   <data name="Supplier_Email_Required_ErrorMessage" xml:space="preserve">
     <value>Rhowch eich cyfeiriad e-bost</value>
   </data>
   <data name="Supplier_Individual" xml:space="preserve">
+    <value>Unigolyn</value>
+  </data>
+  <data name="Supplier_Individual_Hint" xml:space="preserve">
     <value>Unigolyn - Mae'n cynnwys pobl sy'n rhedeg eu busnes eu hunain. Er enghraifft, unig fasnachwyr.</value>
   </data>
   <data name="Supplier_LegalForm" xml:space="preserve">
@@ -1359,10 +1362,13 @@
     <value>Beth sy'n disgrifio eich sefydliad orau?</value>
   </data>
   <data name="Supplier_OperationType_NonGovernmental" xml:space="preserve">
-    <value>Corff anllywodraethol sy'n cael ei yrru gan werth ac sy'n ail-fuddsoddi er mwyn datblygu amcanion cymdeithasol, amgylcheddol neu ddiwylliannol</value>
+    <value></value>
+  </data>
+  <data name="Supplier_OperationType_NonGovernmental_Hint" xml:space="preserve">
+    <value></value>
   </data>
   <data name="Supplier_OperationType_NonGovernmental_Short" xml:space="preserve">
-    <value>Corff anllywodraethol</value>
+    <value></value>
   </data>
   <data name="Supplier_OperationType_None" xml:space="preserve">
     <value>Dim un yn gymwys</value>
@@ -1370,11 +1376,17 @@
   <data name="Supplier_OperationType_PublicService" xml:space="preserve">
     <value>Cwmni gwasanaeth cyhoeddus cydfuddiannol</value>
   </data>
+  <data name="Supplier_OperationType_PublicService_Hint" xml:space="preserve">
+    <value></value>
+  </data>
   <data name="Supplier_OperationType_PublicService_Short" xml:space="preserve">
     <value>Cwmni gwasanaeth cyhoeddus cydfuddiannol</value>
   </data>
   <data name="Supplier_OperationType_SmallOrMediumSized" xml:space="preserve">
     <value>Busnes bach neu ganolig</value>
+  </data>
+  <data name="Supplier_OperationType_SmallOrMediumSized_Hint" xml:space="preserve">
+    <value></value>
   </data>
   <data name="Supplier_OperationType_SmallOrMediumSized_Short" xml:space="preserve">
     <value>Busnes bach neu ganolig</value>
@@ -1382,11 +1394,17 @@
   <data name="Supplier_OperationType_SupportedEmploymentProvider" xml:space="preserve">
     <value>Darparwr cyflogaeth â chymorth</value>
   </data>
+  <data name="Supplier_OperationType_SupportedEmploymentProvider_Hint" xml:space="preserve">
+    <value></value>
+  </data>
   <data name="Supplier_OperationType_SupportedEmploymentProvider_Short" xml:space="preserve">
     <value>Darparwr cyflogaeth â chymorth</value>
   </data>
   <data name="Supplier_Organisation" xml:space="preserve">
-    <value>Sefydliad - Mae'n cynnwys cwmnïau cofrestredig sydd â chyflogeion. Er enghraifft, cwmnïau cyfyngedig, partneriaethau, cwmnïau cyfyngedig cyhoeddus, elusennau a chwmnïau cydfuddiannol ariannol.</value>
+    <value>Sefydliad</value>
+  </data>
+  <data name="Supplier_Organisation_Hint" xml:space="preserve">
+    <value>Mae'n cynnwys cwmnïau cofrestredig sydd â chyflogeion. Er enghraifft, cwmnïau cyfyngedig, partneriaethau, cwmnïau cyfyngedig cyhoeddus, elusennau a chwmnïau cydfuddiannol ariannol.</value>
   </data>
   <data name="Supplier_OrganisationType" xml:space="preserve">
     <value>Math o sefydliad</value>
@@ -1398,7 +1416,7 @@
     <value>Cyfeiriad cofrestredig</value>
   </data>
   <data name="Supplier_ReturnToAccountHome" xml:space="preserve">
-    <value>Dychwelyd i hafan y cyfrif</value>
+    <value></value>
   </data>
   <data name="Supplier_SupplierInformationSummary_ConnectedPersonCount_None" xml:space="preserve">
     <value>Dim berson cysylltiedig</value>
@@ -1419,7 +1437,7 @@
     <value>Rhif TAW</value>
   </data>
   <data name="Supplier_VatQuestion_Title" xml:space="preserve">
-    <value>Ydych chi wedi cofrestru ar gyfer TAW?</value>
+    <value></value>
   </data>
   <data name="Supplier_VatQuestion_VatNumberLabel" xml:space="preserve">
     <value>Rhif TAW</value>
@@ -1431,7 +1449,7 @@
     <value>Rhowch gyfeiriad y wefan</value>
   </data>
   <data name="Supplier_WebsiteQuestion_Title" xml:space="preserve">
-    <value>A oes gennych wefan?</value>
+    <value></value>
   </data>
   <data name="Supplier_WebsiteQuestion_WebsiteAddress" xml:space="preserve">
     <value>Cyfeiriad gwefan</value>
@@ -2527,7 +2545,7 @@
     <value>Eraill</value>
   </data>
   <data name="Supplier_BasicInformation_Title" xml:space="preserve">
-    <value>Rheoli gwybodaeth sylfaenol {0}</value>
+    <value></value>
   </data>
   <data name="Supplier_ConnectedEntity_Address_EnterAddress_Heading" xml:space="preserve">
     <value>Rhowch gyfeiriad {0}</value>
@@ -2764,7 +2782,7 @@
     <value>Yn ôl i'r wybodaeth am y cyflenwr</value>
   </data>
   <data name="Supplier_EmailAddress_Hint" xml:space="preserve">
-    <value>Dylai hwn fod yn fewnflwch a rennir, a reolir gan eich tîm, nid eich cyfeiriad e-bost personol. Bydd hyn yn cael ei nodi ar hysbysiadau. </value>
+    <value></value>
   </data>
   <data name="Supplier_InformationHint" xml:space="preserve">
     <value>Mae angen gwybodaeth arnom yn seiliedig ar ba fath o gyflenwr ydych chi.</value>
@@ -2845,7 +2863,7 @@
     <value>Rhif</value>
   </data>
   <data name="Supplier_VatQuestion_VatNumberHint" xml:space="preserve">
-    <value>Mae'r rhif hwn i'w weld ar eich tystysgrif cofrestru TAW.</value>
+    <value></value>
   </data>
   <data name="Supplier_WebsiteQuestion_ErrorInvalidUrl" xml:space="preserve">
     <value>Rhaid i gyfeiriad y wefan fod yn y fformat cywir, fel https://www.enwcwmni.com</value>
