@@ -57,6 +57,7 @@ public class SupportUpdateOrganisationUseCase(
                 organisation.PendingRoles.Remove(PartyRole.Buyer);                
 
                 organisation.BuyerInfo = null;
+                organisation.SupplierInfo = new();
 
                 await organisationRepository.RemoveMouSignatures(organisation.Id);
 
