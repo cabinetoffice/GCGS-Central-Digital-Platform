@@ -270,7 +270,7 @@
                 <div class="govuk-section-break govuk-section-break--visible govuk-section-break--m"></div>
             }
 
-            <authorize scope="@OrgScopeRequirement.Admin">
+            <authorize scope="@OrgScopeWithSupportAdminBypassRequirement.AdminOrSupportAdmin">
                 <h3 class="govuk-heading-s govuk-!-margin-bottom-3">
                     <a class="govuk-link" href="/organisation/@RouteData.Values["id"]/users/user-summary">@StaticTextResource.Organisation_ManageUsers</a>
                 </h3>

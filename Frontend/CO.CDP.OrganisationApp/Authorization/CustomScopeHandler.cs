@@ -39,6 +39,13 @@ public class CustomScopeHandler(ISession session, IServiceScopeFactory serviceSc
                     return;
                 }
 
+                if (requirement.Scope == OrganisationPersonScopes.AdminOrSupportAdmin &&
+                    (organisationUserScopes.Contains(OrganisationPersonScopes.Admin) || userScopes.Contains(PersonScopes.SupportAdmin)))
+                {
+                    context.Succeed(requirement);
+                    return;
+                }
+
                 // Admin role can do anything within this organisation
                 if (organisationUserScopes.Contains(OrganisationPersonScopes.Admin) &&
                     requirement.Scope != PersonScopes.SupportAdmin)
