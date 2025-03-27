@@ -3,7 +3,8 @@
 @model CO.CDP.OrganisationApp.Pages.Supplier.SupplierWebsiteQuestionModel
 
 @{
-    ViewData["Title"] = @StaticTextResource.Supplier_WebsiteQuestion_Title;
+    ViewData["Title"] = Model.SupplierType == CDP.Organisation.WebApiClient.SupplierType.Organisation ?
+        @StaticTextResource.Supplier_Organisation_WebsiteQuestion_Title : @StaticTextResource.Supplier_Individual_WebsiteQuestion_Title;
     var invalidSelection = ((TagBuilder)Html.ValidationMessageFor(m => m.HasWebsiteAddress)).HasInnerHtml;
     var websiteRegHasError = invalidSelection || ((TagBuilder)Html.ValidationMessageFor(m => m.WebsiteAddress)).HasInnerHtml;
 }

@@ -2445,7 +2445,10 @@
   <data name="Supplier_Add" xml:space="preserve">
     <value>Add</value>
   </data>
-  <data name="Supplier_EmailAddress_Title" xml:space="preserve">
+  <data name="Supplier_Individual_EmailAddress_Title" xml:space="preserve">
+    <value>Enter your email address</value>
+  </data>
+  <data name="Supplier_Organisation_EmailAddress_Title" xml:space="preserve">
     <value>Enter your organisation's email address</value>
   </data>
   <data name="Supplier_EmailAddress_Hint" xml:space="preserve">
@@ -2487,7 +2490,10 @@
   <data name="Supplier_Individual_Hint" xml:space="preserve">
     <value>Includes people running their own business. For example, sole traders.</value>
   </data>
-  <data name="Supplier_VatQuestion_Title" xml:space="preserve">
+  <data name="Supplier_Individual_VatQuestion_Title" xml:space="preserve">
+    <value>Are you registered for VAT?</value>
+  </data>
+  <data name="Supplier_Organisation_VatQuestion_Title" xml:space="preserve">
     <value>Is your organisation registered for VAT?</value>
   </data>
   <data name="Supplier_VatQuestion_No" xml:space="preserve">
@@ -2499,7 +2505,10 @@
   <data name="Supplier_VatQuestion_VatNumberHint" xml:space="preserve">
     <value>You can find it on your VAT registration certificate</value>
   </data>
-  <data name="Supplier_WebsiteQuestion_Title" xml:space="preserve">
+  <data name="Supplier_Individual_WebsiteQuestion_Title" xml:space="preserve">
+    <value>Do you have a website?</value>
+  </data>
+  <data name="Supplier_Organisation_WebsiteQuestion_Title" xml:space="preserve">
     <value>Does your organisation have a website?</value>
   </data>
   <data name="Global_SelectAnOption" xml:space="preserve">
