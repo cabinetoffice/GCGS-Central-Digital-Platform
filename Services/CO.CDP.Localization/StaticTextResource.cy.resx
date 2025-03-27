@@ -1304,8 +1304,8 @@
   <data name="Supplier_EmailAddress" xml:space="preserve">
     <value>Cyfeiriad e-bost</value>
   </data>
-  <data name="Supplier_EmailAddress_Title" xml:space="preserve">
-    <value></value>
+  <data name="Supplier_Individual_EmailAddress_Title" xml:space="preserve">
+    <value>Rhowch eich cyfeiriad e-bost</value>
   </data>
   <data name="Supplier_Email_Required_ErrorMessage" xml:space="preserve">
     <value>Rhowch eich cyfeiriad e-bost</value>
@@ -1436,8 +1436,8 @@
   <data name="Supplier_VatNumber" xml:space="preserve">
     <value>Rhif TAW</value>
   </data>
-  <data name="Supplier_VatQuestion_Title" xml:space="preserve">
-    <value></value>
+  <data name="Supplier_Individual_VatQuestion_Title" xml:space="preserve">
+    <value>Ydych chi wedi cofrestru ar gyfer TAW?</value>
   </data>
   <data name="Supplier_VatQuestion_VatNumberLabel" xml:space="preserve">
     <value>Rhif TAW</value>
@@ -1448,8 +1448,8 @@
   <data name="Supplier_WebsiteAddress_ErrorEnterWebsiteAddress" xml:space="preserve">
     <value>Rhowch gyfeiriad y wefan</value>
   </data>
-  <data name="Supplier_WebsiteQuestion_Title" xml:space="preserve">
-    <value></value>
+  <data name="Supplier_Individual_WebsiteQuestion_Title" xml:space="preserve">
+    <value>A oes gennych wefan?</value>
   </data>
   <data name="Supplier_WebsiteQuestion_WebsiteAddress" xml:space="preserve">
     <value>Cyfeiriad gwefan</value>
