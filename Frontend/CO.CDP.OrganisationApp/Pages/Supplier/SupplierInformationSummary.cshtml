@@ -7,44 +7,8 @@
 
 @{
     ViewData["Title"] = Model.Name;
-    string GetStepStatusDescription(SupplierInformationStatus.StepStatus status)
-    {
-        return status switch
-        {
-            SupplierInformationStatus.StepStatus.NotStarted => StaticTextResource.SupplierInformationStatus_StepStatus_NotStarted,
-            SupplierInformationStatus.StepStatus.InProcess => StaticTextResource.SupplierInformationStatus_StepStatus_InProcess,
-            SupplierInformationStatus.StepStatus.Completed => StaticTextResource.SupplierInformationStatus_StepStatus_Completed,
-            _ => StaticTextResource.SupplierInformationStatus_StepStatus_NotStarted
-        };
-    }
-
-    string GetStepStatusTag(SupplierInformationStatus.StepStatus status)
-    {
-        return status switch
-        {
-            SupplierInformationStatus.StepStatus.NotStarted => "grey",
-            SupplierInformationStatus.StepStatus.InProcess => "blue",
-            SupplierInformationStatus.StepStatus.Completed => "green",
-            _ => "grey"
-        };
-    }
 
     bool isViewer = await userInfoService.IsViewer();
-
-    var basicInformationLink = $"/organisation/{Model.Id}/supplier-information/{((Model.HasSupplierType || isViewer) ? "basic-information" : "individual-or-org")}";
-    var connectedEntityLink = $"/organisation/{Model.Id}/supplier-information/connected-person/{((Model.ConnectedEntities.Count > 0 || isViewer) ? "connected-person-summary" : "declaration")}";
-
-    string NoOfConnectedPersonText()
-    {
-        int count = Model.ConnectedEntities.Count;
-
-        if (count == 0)
-        {
-            return Model.ConnectedPersonStepStatus == SupplierInformationStatus.StepStatus.Completed ? StaticTextResource.Supplier_SupplierInformationSummary_ConnectedPersonCount_None : string.Empty;
-        }
-
-        return string.Format(count > 1 ? StaticTextResource.Supplier_SupplierInformationSummary_ConnectedPersonCount_Plural : StaticTextResource.Supplier_SupplierInformationSummary_ConnectedPersonCount_Singular, count);
-    }
 }
 
 @section BeforeContent {
@@ -61,28 +25,56 @@
 <ul class="govuk-task-list">
     <li class="govuk-task-list__item govuk-task-list__item--with-link">
         <div class="govuk-task-list__name-and-hint">
-            <a class="govuk-link govuk-link--no-visited-state" href="@basicInformationLink" aria-describedby="basic-info-status">
+            <a class="govuk-link govuk-link--no-visited-state" href="@($"/organisation/{Model.Id}/supplier-information/{((Model.HasSupplierType || isViewer) ? "basic-information" : "individual-or-org")}")" aria-describedby="basic-info-status">
                 @StaticTextResource.BasicInformation_SectionTitle
             </a>
         </div>
 
         <div class="govuk-task-list__status" id="basic-info-status">
-            <strong class="govuk-tag govuk-tag--@GetStepStatusTag(Model.BasicInformationStepStatus)">@GetStepStatusDescription(Model.BasicInformationStepStatus)</strong>
+            @{
+                if (Model.BasicInformationStepStatus == SupplierInformationStatus.StepStatus.InProcess)
+                {
+                    <strong class="govuk-tag govuk-tag--light-blue">@StaticTextResource.SupplierInformationStatus_StepStatus_InProcess</strong>
+
+                }
+                else if (Model.BasicInformationStepStatus == SupplierInformationStatus.StepStatus.Completed)
+                {
+                    <strong class="govuk-!-font-weight-regular">@StaticTextResource.SupplierInformationStatus_StepStatus_Completed</strong>
+                }
+                else
+                {
+                    <strong class="govuk-tag govuk-tag--blue">@StaticTextResource.SupplierInformationStatus_StepStatus_NotStarted</strong>
+                }
+            }
         </div>
     </li>
 
     <li class="govuk-task-list__item govuk-task-list__item--with-link">
         <div class="govuk-task-list__name-and-hint">
-            <a class="govuk-link govuk-link--no-visited-state" href="@connectedEntityLink" aria-describedby="connected-persons-hint connected-persons-status">
+            <a class="govuk-link govuk-link--no-visited-state" href="@($"/organisation/{Model.Id}/supplier-information/connected-person/{((Model.ConnectedEntities.Count > 0 || isViewer) ? "connected-person-summary" : "declaration")}")" aria-describedby="connected-persons-status">
                 @StaticTextResource.ConnectedPersons_SectionTitle
             </a>
-
-            <div id="connected-persons-hint" class="govuk-task-list__hint">
-                @NoOfConnectedPersonText()
-            </div>
         </div>
         <div class="govuk-task-list__status" id="connected-persons-status">
-            <strong class="govuk-tag govuk-tag--@GetStepStatusTag(Model.ConnectedPersonStepStatus)">@GetStepStatusDescription(Model.ConnectedPersonStepStatus)</strong>
+            @{
+                if (Model.ConnectedPersonStepStatus == SupplierInformationStatus.StepStatus.InProcess)
+                {
+                    <strong class="govuk-tag govuk-tag--light-blue">
+                        @string.Format(StaticTextResource.Supplier_SupplierInformationSummary_FormRecordCount, Model.ConnectedEntities.Count)
+                    </strong>
+
+                }
+                else if (Model.ConnectedPersonStepStatus == SupplierInformationStatus.StepStatus.Completed)
+                {
+                    <strong class="govuk-!-font-weight-regular">
+                        @string.Format(StaticTextResource.Supplier_SupplierInformationSummary_FormRecordCount, Model.ConnectedEntities.Count)
+                    </strong>
+                }
+                else
+                {
+                    <strong class="govuk-tag govuk-tag--blue">@StaticTextResource.SupplierInformationStatus_StepStatus_NotStarted</strong>
+                }
+            }
         </div>
     </li>
 
@@ -103,28 +95,31 @@
 
         <li class="govuk-task-list__item govuk-task-list__item--with-link">
             <div class="govuk-task-list__name-and-hint">
-                <a class="govuk-link govuk-link--no-visited-state" href="@redirectLink" aria-describedby="form-section-@(section.SectionId)-hint form-section-@(section.SectionId)-status">
+                <a class="govuk-link govuk-link--no-visited-state" href="@redirectLink" aria-describedby="form-section-@(section.SectionId)-status">
                     @(section.SectionName)
                 </a>
-
-                <div id="form-section-@(section.SectionId)-hint" class="govuk-task-list__hint">
-                    @if (section.AnswerSetCount > 0)
-                    {
-                        if (section.AnswerSetWithFurtherQuestionExemptedExists)
-                        {
-                            @StaticTextResource.Supplier_SupplierInformationSummary_FormsFurtherQuestionExempt
-                        }
-                        else
-                        {
-                            @(string.Format(section.AnswerSetCount > 1 ? StaticTextResource.Supplier_SupplierInformationSummary_FormRecordCount_Plural : StaticTextResource.Supplier_SupplierInformationSummary_FormRecordCount_Singular, section.AnswerSetCount))
-                        }
-                    }
-                </div>
             </div>
             <div class="govuk-task-list__status" id="form-section-@(section.SectionId)-status">
-                <strong class="govuk-tag govuk-tag--@(section.AnswerSetCount > 0 ? "green" : "grey")">
-                    @(section.AnswerSetCount > 0 ? StaticTextResource.SupplierInformationStatus_StepStatus_Completed : StaticTextResource.SupplierInformationStatus_StepStatus_NotStarted)
-                </strong>
+                @if (section.AnswerSetWithFurtherQuestionExemptedExists)
+                {
+                    <strong class="govuk-!-font-weight-regular">
+                        @string.Format(StaticTextResource.Supplier_SupplierInformationSummary_FormRecordCount, 0)
+                    </strong>
+                } else
+                {
+                    @if (section.AnswerSetCount > 0)
+                    {
+                        <strong class="govuk-!-font-weight-regular">
+                            @(string.Format(StaticTextResource.Supplier_SupplierInformationSummary_FormRecordCount, section.AnswerSetCount))
+                        </strong>
+                    }
+                    else
+                    {
+                        <strong class="govuk-tag govuk-tag--blue">
+                            @StaticTextResource.SupplierInformationStatus_StepStatus_NotStarted
+                        </strong>
+                    }
+                }
             </div>
         </li>
     }

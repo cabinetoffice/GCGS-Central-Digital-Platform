@@ -1400,18 +1400,6 @@
   <data name="Supplier_ReturnToAccountHome" xml:space="preserve">
     <value>Dychwelyd i hafan y cyfrif</value>
   </data>
-  <data name="Supplier_SupplierInformationSummary_ConnectedPersonCount_None" xml:space="preserve">
-    <value>Dim berson cysylltiedig</value>
-  </data>
-  <data name="Supplier_SupplierInformationSummary_ConnectedPersonCount_Plural" xml:space="preserve">
-    <value>{0} berson cysylltiedig</value>
-  </data>
-  <data name="Supplier_SupplierInformationSummary_ConnectedPersonCount_Singular" xml:space="preserve">
-    <value>{0} berson cysylltiedig</value>
-  </data>
-  <data name="Supplier_SupplierInformationSummary_FormRecordCount_Plural" xml:space="preserve">
-    <value>{0} gofnodion</value>
-  </data>
   <data name="Supplier_SupplierType" xml:space="preserve">
     <value>Math o gyflenwr</value>
   </data>
@@ -2832,11 +2820,8 @@
   <data name="Supplier_OperationType_ValidationError" xml:space="preserve">
     <value>Ni allwch ddewis 'Dim un yn berthnasol' ynghyd ag opsiynau eraill.</value>
   </data>
-  <data name="Supplier_SupplierInformationSummary_FormRecordCount_Singular" xml:space="preserve">
+  <data name="Supplier_SupplierInformationSummary_FormRecordCount" xml:space="preserve">
     <value>{0} cofnod</value>
-  </data>
-  <data name="Supplier_SupplierInformationSummary_FormsFurtherQuestionExempt" xml:space="preserve">
-    <value>Ddim yn Gymwys</value>
   </data>
   <data name="Supplier_VatQuestion_BelongsToAnotherOrganisation_Error" xml:space="preserve">
     <value>Mae'r rhif TAW hwn yn perthyn i sefydliad arall. Rhowch rif TAW gwahanol.</value>
