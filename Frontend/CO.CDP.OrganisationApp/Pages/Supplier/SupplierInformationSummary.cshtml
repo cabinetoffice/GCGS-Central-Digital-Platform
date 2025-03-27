@@ -58,8 +58,8 @@
 </h1>
 <h2 class="govuk-heading-m">@StaticTextResource.Supplier_SupplierInformationSummary_Heading</h2>
 <p class="govuk-body">@StaticTextResource.Supplier_SupplierInformationSummary_Hint</p>
-<div class="govuk-task-list">
-    <div class="govuk-task-list__item govuk-task-list__item--with-link">
+<ul class="govuk-task-list">
+    <li class="govuk-task-list__item govuk-task-list__item--with-link">
         <div class="govuk-task-list__name-and-hint">
             <a class="govuk-link govuk-link--no-visited-state" href="@basicInformationLink" aria-describedby="basic-info-status">
                 @StaticTextResource.BasicInformation_SectionTitle
@@ -69,9 +69,9 @@
         <div class="govuk-task-list__status" id="basic-info-status">
             <strong class="govuk-tag govuk-tag--@GetStepStatusTag(Model.BasicInformationStepStatus)">@GetStepStatusDescription(Model.BasicInformationStepStatus)</strong>
         </div>
-    </div>
+    </li>
 
-    <div class="govuk-task-list__item govuk-task-list__item--with-link">
+    <li class="govuk-task-list__item govuk-task-list__item--with-link">
         <div class="govuk-task-list__name-and-hint">
             <a class="govuk-link govuk-link--no-visited-state" href="@connectedEntityLink" aria-describedby="connected-persons-hint connected-persons-status">
                 @StaticTextResource.ConnectedPersons_SectionTitle
@@ -84,7 +84,7 @@
         <div class="govuk-task-list__status" id="connected-persons-status">
             <strong class="govuk-tag govuk-tag--@GetStepStatusTag(Model.ConnectedPersonStepStatus)">@GetStepStatusDescription(Model.ConnectedPersonStepStatus)</strong>
         </div>
-    </div>
+    </li>
 
     @{
         var formSections = Model.FormSections.Where(section => section.Type != CDP.Forms.WebApiClient.FormSectionType.Declaration).ToList();
@@ -101,7 +101,7 @@
             redirectLink += "/add-exclusion-declaration";
         }
 
-        <div class="govuk-task-list__item govuk-task-list__item--with-link">
+        <li class="govuk-task-list__item govuk-task-list__item--with-link">
             <div class="govuk-task-list__name-and-hint">
                 <a class="govuk-link govuk-link--no-visited-state" href="@redirectLink" aria-describedby="form-section-@(section.SectionId)-hint form-section-@(section.SectionId)-status">
                     @(section.SectionName)
@@ -126,9 +126,9 @@
                     @(section.AnswerSetCount > 0 ? StaticTextResource.SupplierInformationStatus_StepStatus_Completed : StaticTextResource.SupplierInformationStatus_StepStatus_NotStarted)
                 </strong>
             </div>
-        </div>
+        </li>
     }
-</div>
+</ul>
 
 <h2 class="govuk-heading-m">@StaticTextResource.Supplier_SupplierInformationShare_Heading</h2>
 <p class="govuk-body">@StaticTextResource.Supplier_SupplierInformationShare_Hint</p>
