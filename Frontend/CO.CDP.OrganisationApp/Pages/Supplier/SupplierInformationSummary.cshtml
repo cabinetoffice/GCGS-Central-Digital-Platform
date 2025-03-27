@@ -123,7 +123,7 @@
             </div>
             <div class="govuk-task-list__status" id="form-section-@(section.SectionId)-status">
                 <strong class="govuk-tag govuk-tag--@(section.AnswerSetCount > 0 ? "green" : "grey")">
-                    @(section.AnswerSetCount > 0 ? StaticTextResource.SupplierInformationStatus_StepStatus_Completed: StaticTextResource.SupplierInformationStatus_StepStatus_NotStarted)
+                    @(section.AnswerSetCount > 0 ? StaticTextResource.SupplierInformationStatus_StepStatus_Completed : StaticTextResource.SupplierInformationStatus_StepStatus_NotStarted)
                 </strong>
             </div>
         </div>
@@ -141,7 +141,7 @@
             </a>
         </div>
     </div>
-</div>    
+</div>
 
 <div class="govuk-!-margin-top-8">
     <a class="govuk-link" href="/organisation/@Model.Id">@StaticTextResource.Global_BackToOrganisationDetails</a>
