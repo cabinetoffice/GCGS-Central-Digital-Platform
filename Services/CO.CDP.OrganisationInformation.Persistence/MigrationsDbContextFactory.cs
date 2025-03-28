@@ -2,6 +2,7 @@ using CO.CDP.Configuration.Helpers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
+using Npgsql;
 
 namespace CO.CDP.OrganisationInformation.Persistence;
 
@@ -17,8 +18,12 @@ public class MigrationsDbContextFactory : IDesignTimeDbContextFactory<Organisati
 
         var connectionString = ConnectionStringHelper.GetConnectionString(configuration, "OrganisationInformationDatabase");
 
+        var npgsqlDataSourceBuilder = new NpgsqlDataSourceBuilder(connectionString)
+                        .MapEnums()
+                        .Build();
+
         var optionsBuilder = new DbContextOptionsBuilder<OrganisationInformationContext>();
-        optionsBuilder.UseNpgsql(connectionString,
+        optionsBuilder.UseNpgsql(npgsqlDataSourceBuilder,
                                  npgsqlOptions => npgsqlOptions.CommandTimeout(configuration.GetValue<int>("OrganisationInformationDatabase:CommandTimeout")));
 
         return new OrganisationInformationContext(optionsBuilder.Options);
