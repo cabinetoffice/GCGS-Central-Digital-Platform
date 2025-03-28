@@ -33,6 +33,10 @@ public class LegalFormFormationDateModel(
     [RegularExpression(RegExPatterns.Year, ErrorMessageResourceName = nameof(@StaticTextResource.Supplier_LegalFormFormationDate_YearInvalidErrorMessage), ErrorMessageResourceType = typeof(StaticTextResource))]
     public string? Year { get; set; }
 
+    public bool? RegisteredUnderAct2006 { get; set; }
+
+    public string? RegisteredLegalForm { get; set; }
+
     [BindProperty]
     public string? RegistrationDate { get; set; }
 
@@ -48,6 +52,10 @@ public class LegalFormFormationDateModel(
         }
 
         var lf = tempDataService.PeekOrDefault<LegalForm>(LegalForm.TempDataKey);
+
+        RegisteredUnderAct2006 = lf.RegisteredUnderAct2006;
+        RegisteredLegalForm = lf.RegisteredLegalForm;
+
         if (lf.RegistrationDate.HasValue)
         {
             Day = lf.RegistrationDate.Value.Day.ToString();
@@ -81,11 +89,6 @@ public class LegalFormFormationDateModel(
         lf.RegistrationDate = new DateTimeOffset(parsedDate, TimeSpan.FromHours(0));
         tempDataService.Put(LegalForm.TempDataKey, lf);
 
-        if (!Validate(lf))
-        {
-            return RedirectToPage("LegalFormCompanyActQuestion", new { Id });
-        }
-
         var legalform = new CO.CDP.Organisation.WebApiClient.LegalForm
                         (
                             lf.LawRegistered,
@@ -105,12 +108,5 @@ public class LegalFormFormationDateModel(
         }
 
         return RedirectToPage("SupplierBasicInformation", new { Id });
-    }
-
-    private static bool Validate(LegalForm legalForm)
-    {
-        return !string.IsNullOrEmpty(legalForm.LawRegistered)
-            && !string.IsNullOrEmpty(legalForm.RegisteredLegalForm)
-            && legalForm.RegistrationDate.HasValue;
     }
 }

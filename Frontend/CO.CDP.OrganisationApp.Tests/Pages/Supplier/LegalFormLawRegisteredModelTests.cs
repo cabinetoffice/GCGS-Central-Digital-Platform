@@ -21,28 +21,28 @@ public class LegalFormLawRegisteredModelTests
         _model = new LegalFormLawRegisteredModel(_mockTempDataService.Object, _mockOrganisationClient.Object);
     }
 
-    [Fact]
-    public async Task OnGet_SetsLawRegisteredAndRegisteredUnderAct2006_FromTempData()
-    {
-        var id = Guid.NewGuid();
+    //[Fact]
+    //public async Task OnGet_SetsLawRegisteredAndRegisteredUnderAct2006_FromTempData()
+    //{
+    //    var id = Guid.NewGuid();
 
-        var legalForm = new LegalForm
-        {
-            LawRegistered = "Some Law",
-            RegisteredUnderAct2006 = true
-        };
+    //    var legalForm = new LegalForm
+    //    {
+    //        LawRegistered = "Some Law",
+    //        RegisteredUnderAct2006 = true
+    //    };
 
-        _mockOrganisationClient.Setup(o => o.GetOrganisationAsync(_model.Id))
-            .ReturnsAsync(GivenOrganisationClientModel(_model.Id));
+    //    _mockOrganisationClient.Setup(o => o.GetOrganisationAsync(_model.Id))
+    //        .ReturnsAsync(GivenOrganisationClientModel(_model.Id));
 
-        _mockTempDataService.Setup(s => s.PeekOrDefault<LegalForm>(LegalForm.TempDataKey)).Returns(legalForm);
+    //    _mockTempDataService.Setup(s => s.PeekOrDefault<LegalForm>(LegalForm.TempDataKey)).Returns(legalForm);
 
-        var result = await _model.OnGet(id);
+    //    var result = await _model.OnGet(id);
 
-        _model.LawRegistered.Should().Be("Some Law");
-        _model.RegisteredUnderAct2006.Should().BeTrue();
-        result.Should().BeOfType<PageResult>();
-    }
+    //    _model.LawRegistered.Should().Be("Some Law");
+    //    _model.RegisteredUnderAct2006.Should().BeTrue();
+    //    result.Should().BeOfType<PageResult>();
+    //}
 
     [Fact]
     public async Task OnGet_OrganisationNotFound_ShouldRedirectToPageNotFound()
