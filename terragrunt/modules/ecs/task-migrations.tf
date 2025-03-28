@@ -6,13 +6,13 @@ module "ecs_migration_tasks" {
   container_definitions = templatefile(
     "${path.module}/templates/task-definitions/${each.value.name}.json.tftpl",
     {
-      cpu                 = var.service_configs.entity_verification_migrations.cpu
+      cpu                 = var.service_configs.entity_verification_migrations.cpu * 2
       aspcore_environment = local.aspcore_environment
       image               = local.ecr_urls[each.value.name]
       lg_name             = aws_cloudwatch_log_group.tasks[each.value.name].name
       lg_prefix           = "db"
       lg_region           = data.aws_region.current.name
-      memory              = each.value.memory
+      memory              = each.value.memory * 2
       name                = each.value.name
       db_address          = each.value.name == "entity-verification-migrations" ? local.db_ev_address : local.db_sirsi_address
       db_name             = each.value.name == "entity-verification-migrations" ? local.db_ev_name : local.db_sirsi_name
@@ -25,13 +25,13 @@ module "ecs_migration_tasks" {
 
   cluster_id             = aws_ecs_cluster.this.id
   container_port         = each.value.port
-  cpu                    = each.value.cpu
+  cpu                    = each.value.cpu * 2
   ecs_alb_sg_id          = var.alb_sg_id
   ecs_listener_arn       = aws_lb_listener.ecs.arn
   ecs_service_base_sg_id = var.ecs_sg_id
   family                 = "db"
   is_standalone_task     = true
-  memory                 = each.value.memory
+  memory                 = each.value.memory * 2
   name                   = each.value.name
   private_subnet_ids     = var.private_subnet_ids
   product                = var.product
