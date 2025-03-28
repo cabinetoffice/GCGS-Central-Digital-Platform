@@ -19,10 +19,10 @@ public class OrganisationApprovalModel(
 
     [BindProperty]
     [Required(ErrorMessageResourceName = nameof(StaticTextResource.Support_OrganisationApproval_ValidationErrorMessage), ErrorMessageResourceType = typeof(StaticTextResource))]
-    public bool? Approval { get; set; }
+    public ApprovalStates? Approval { get; set; }
 
     [BindProperty]
-    [RequiredIf(nameof(Approval), false, ErrorMessageResourceName = nameof(StaticTextResource.Support_OrganisationApproval_ErrorMessage), ErrorMessageResourceType = typeof(StaticTextResource))]
+    [RequiredIf(nameof(Approval), ApprovalStates.Reject, ErrorMessageResourceName = nameof(StaticTextResource.Support_OrganisationApproval_ErrorMessage), ErrorMessageResourceType = typeof(StaticTextResource))]
     public string? Comments { get; set; }
 
     public ICollection<OrganisationSearchResult>? MatchingOrganisations { get; set; }
@@ -99,24 +99,47 @@ public class OrganisationApprovalModel(
 
     public async Task<IActionResult> OnPost(Guid organisationId)
     {
+        OrganisationDetails = await organisationClient.GetOrganisationAsync(organisationId);
+
         if (!ModelState.IsValid)
-        {
-            OrganisationDetails = await organisationClient.GetOrganisationAsync(organisationId);
+        {            
             return Page();
         }
 
         if (UserDetails.PersonId != null)
         {
-            SupportOrganisationInfo orgInfo = new SupportOrganisationInfo(
-                approved: Approval ?? false,
-                comment: Comments ?? "",
-                reviewedById: UserDetails.PersonId.Value
-            );
 
-            await organisationClient.SupportUpdateOrganisationAsync(organisationId, new SupportUpdateOrganisation(
-                orgInfo,
-                SupportOrganisationUpdateType.Review
-            ));
+            switch(Approval)
+            {
+                case ApprovalStates.ConvertToSupplier:
+                    await organisationClient.SupportUpdateOrganisationAsync(organisationId, new SupportUpdateOrganisation(
+                        new SupportOrganisationInfo(
+                            approved: false,
+                            comment: "Converted from erroneously registered buyer",
+                            reviewedById: UserDetails.PersonId.Value
+                        ),
+                        SupportOrganisationUpdateType.ConvertPendingBuyerToSupplier
+                    ));
+
+                    flashMessageService.SetFlashMessage(
+                        FlashMessageType.Success,
+                        heading: StaticTextResource.Support_OrganisationApproval_ConvertPendingBuyerToSupplier_FlashMessage,
+                        htmlParameters: new() { ["organisationName"] = OrganisationDetails.Name }
+                    );
+
+                    break;
+                default:
+                    await organisationClient.SupportUpdateOrganisationAsync(organisationId, new SupportUpdateOrganisation(
+                            new SupportOrganisationInfo(
+                            approved: Approval == ApprovalStates.Approve,
+                            comment: Comments ?? "",
+                            reviewedById: UserDetails.PersonId.Value
+                        ),
+                        SupportOrganisationUpdateType.Review
+                    ));
+
+                    break;
+            }
         }
         else
         {
@@ -125,4 +148,12 @@ public class OrganisationApprovalModel(
 
         return RedirectToPage("Organisations", new { type = "buyer" });
     }
+}
+
+public enum ApprovalStates
+{
+    None,
+    Approve,
+    Reject,
+    ConvertToSupplier
 }

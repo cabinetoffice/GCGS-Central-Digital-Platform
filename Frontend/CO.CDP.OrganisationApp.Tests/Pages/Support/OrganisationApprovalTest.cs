@@ -94,7 +94,7 @@ public class OrganisationApprovalModelTests
     public async Task OnPost_WhenBuyerIsApproved_ShouldRedirectToOrganisationsPage()
     {
         var organisationId = Guid.NewGuid();
-        _organisationApprovalModel.Approval = true;
+        _organisationApprovalModel.Approval = ApprovalStates.Approve;
 
         _mockOrganisationClient
             .Setup(client => client.SupportUpdateOrganisationAsync(It.IsAny<Guid>(), It.IsAny<SupportUpdateOrganisation>()))
@@ -109,7 +109,8 @@ public class OrganisationApprovalModelTests
 
         _mockOrganisationClient.Verify(client => client.SupportUpdateOrganisationAsync(It.IsAny<Guid>(), It.Is<SupportUpdateOrganisation>(r =>
             r.Organisation.Approved == true &&
-            r.Organisation.ReviewedById == _personId
+            r.Organisation.ReviewedById == _personId &&
+            r.Type == SupportOrganisationUpdateType.Review
         )), Times.Once);
     }
 
@@ -117,7 +118,7 @@ public class OrganisationApprovalModelTests
     public async Task OnPost_WhenBuyerIsRejected_ShouldRedirectToOrganisationsPage()
     {
         var organisationId = Guid.NewGuid();
-        _organisationApprovalModel.Approval = false;
+        _organisationApprovalModel.Approval = ApprovalStates.Reject;
         _organisationApprovalModel.Comments = "Rejected";
 
         _mockOrganisationClient
@@ -134,7 +135,36 @@ public class OrganisationApprovalModelTests
         _mockOrganisationClient.Verify(client => client.SupportUpdateOrganisationAsync(It.IsAny<Guid>(), It.Is<SupportUpdateOrganisation>(r =>
             r.Organisation.Approved == false &&
             r.Organisation.ReviewedById == _personId &&
-            r.Organisation.Comment == "Rejected"
+            r.Organisation.Comment == "Rejected" &&
+            r.Type == SupportOrganisationUpdateType.Review
+        )), Times.Once);
+    }
+
+    [Fact]
+    public async Task OnPost_WhenBuyerIsConvertedToSupplier_ShouldConvertToSupplierAndRedirectToOrganisationsPage()
+    {
+        var organisation = GivenOrganisation();
+        _organisationApprovalModel.Approval = ApprovalStates.ConvertToSupplier;
+
+        _mockOrganisationClient
+            .Setup(client => client.SupportUpdateOrganisationAsync(It.IsAny<Guid>(), It.IsAny<SupportUpdateOrganisation>()))
+            .ReturnsAsync(true);
+
+        _mockOrganisationClient
+            .Setup(client => client.GetOrganisationAsync(organisation.Id))
+            .ReturnsAsync(organisation);
+
+        var result = await _organisationApprovalModel.OnPost(organisation.Id);
+
+        result.Should().BeOfType<RedirectToPageResult>();
+        var redirectToPageResult = result as RedirectToPageResult;
+        redirectToPageResult!.PageName.Should().Be("Organisations");
+        redirectToPageResult.RouteValues.Should().ContainKey("type").WhoseValue.Should().Be("buyer");
+
+        _mockOrganisationClient.Verify(client => client.SupportUpdateOrganisationAsync(It.IsAny<Guid>(), It.Is<SupportUpdateOrganisation>(r =>
+            r.Organisation.Approved == false &&
+            r.Organisation.ReviewedById == _personId &&
+            r.Type == SupportOrganisationUpdateType.ConvertPendingBuyerToSupplier
         )), Times.Once);
     }
 
