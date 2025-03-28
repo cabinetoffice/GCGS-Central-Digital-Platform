@@ -20,7 +20,7 @@
         <dl class="govuk-summary-list">
             <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">
-                    @StaticTextResource.MoU_Summary_TableHeaderCreatedOn
+                    @StaticTextResource.MoU_Summary_TableHeaderAgreedOn
                 </dt>
                 <dd class="govuk-summary-list__value">
                     @mou.SignatureOn.ToString("dd MMMM yyyy") at @mou.SignatureOn.ToString("h:mm tt")                    
@@ -32,10 +32,10 @@
 
             <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">
-                    @StaticTextResource.MoU_Summary_TableHeaderSignedBy
+                    @StaticTextResource.MoU_Summary_TableHeaderAuthorisedBy
                 </dt>
                 <dd class="govuk-summary-list__value">
-                    @mou.CreatedBy.FirstName @mou.CreatedBy.LastName
+                    @mou.Name
                 </dd>
                 <dd class="govuk-summary-list__actions">
                     &nbsp;
@@ -48,6 +48,18 @@
                 </dt>
                 <dd class="govuk-summary-list__value">
                     @mou.JobTitle
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                    &nbsp;
+                </dd>
+            </div>
+
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    @StaticTextResource.MoU_Summary_TableHeaderSubmittedBy
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @mou.CreatedBy.FirstName @mou.CreatedBy.LastName
                 </dd>
                 <dd class="govuk-summary-list__actions">
                     &nbsp;

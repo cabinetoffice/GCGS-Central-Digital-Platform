@@ -7,3 +7,8 @@ services:
     volumes:
       - .:/app
     working_dir: /app
+
+networks:
+  default:
+    name: cdp-sirsi
+    driver: bridge

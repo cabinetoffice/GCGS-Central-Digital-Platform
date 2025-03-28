@@ -159,6 +159,47 @@ public class ConnectedEntityCheckAnswersOrganisationTest
         _mockOrganisationClient.Verify(c => c.UpdateConnectedEntityAsync(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<UpdateConnectedEntity>()), Times.Once());
     }
 
+    [Fact]
+    public async Task OnPost_ShouldUpdateConnectedPersonLeavingEndDateNull_WhenEndDateIsNotSetInState()
+    {
+        var state = DummyConnectedPersonDetails(endDate: null);
+
+        _model.ConnectedEntityId = _entityId;
+
+        _sessionMock.Setup(s => s.Get<ConnectedEntityState>(Session.ConnectedPersonKey))
+            .Returns(state);
+
+        await _model.OnPost();
+
+        _mockOrganisationClient.Verify(c => c.UpdateConnectedEntityAsync(
+            It.IsAny<Guid>(),
+            It.IsAny<Guid>(),
+            It.Is<UpdateConnectedEntity>(
+                ce => ce.EndDate == null
+            )), Times.Once());
+    }
+
+    [Fact]
+    public async Task OnPost_ShouldUpdateConnectedPersonLeavingEndDateSet_WhenEndDateIsSetInState()
+    {
+        var endDate = DateTimeOffset.Now;
+        var state = DummyConnectedPersonDetails(endDate: endDate);
+
+        _model.ConnectedEntityId = _entityId;
+
+        _sessionMock.Setup(s => s.Get<ConnectedEntityState>(Session.ConnectedPersonKey))
+            .Returns(state);
+
+        await _model.OnPost();
+
+        _mockOrganisationClient.Verify(c => c.UpdateConnectedEntityAsync(
+            It.IsAny<Guid>(),
+            It.IsAny<Guid>(),
+            It.Is<UpdateConnectedEntity>(
+                ce => ce.EndDate == endDate
+            )), Times.Once());
+    }
+
     [Theory]
     [InlineData(true, Constants.ConnectedEntityType.Organisation, ConnectedEntityOrganisationCategoryType.RegisteredCompany, "ConnectedPersonSummary", "company-register-name")]
     [InlineData(true, Constants.ConnectedEntityType.Organisation, ConnectedEntityOrganisationCategoryType.DirectorOrTheSameResponsibilities, "ConnectedPersonSummary", "company-question")]
@@ -255,7 +296,7 @@ public class ConnectedEntityCheckAnswersOrganisationTest
         return registerConnectedEntity;
     }
 
-    private ConnectedEntityState DummyConnectedPersonDetails()
+    private ConnectedEntityState DummyConnectedPersonDetails(DateTimeOffset? endDate = null)
     {
         var connectedPersonDetails = new ConnectedEntityState
         {
@@ -270,6 +311,7 @@ public class ConnectedEntityCheckAnswersOrganisationTest
             RegistrationDate = new DateTimeOffset(2011, 7, 15, 0, 0, 0, TimeSpan.FromHours(0)),
             InsolvencyDate = new DateTimeOffset(2010, 6, 11, 0, 0, 0, TimeSpan.FromHours(0)),
             ConnectedEntityOrganisationCategoryType = ConnectedEntityOrganisationCategoryType.RegisteredCompany,
+            EndDate = endDate,
         };
 
         return connectedPersonDetails;

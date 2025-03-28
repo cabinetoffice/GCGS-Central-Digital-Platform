@@ -306,7 +306,7 @@ public class ConnectedEntityCheckAnswersIndividualOrTrustModel(
             id: ConnectedEntityId.ToString(),
             addresses: addresses,
             companyHouseNumber: state.CompaniesHouseNumber,
-            endDate: null,
+            endDate: state.EndDate,
             entityType: state.ConnectedEntityType!.Value.AsApiClientConnectedEntityType(),
             hasCompnayHouseNumber: state.SupplierHasCompanyHouseNumber!.Value,
             individualOrTrust: connectedIndividualTrust,
