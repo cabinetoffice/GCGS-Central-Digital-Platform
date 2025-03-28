@@ -17,20 +17,10 @@ public class DatabaseConnectedEntityRepository(OrganisationInformationContext co
             .FirstOrDefaultAsync(t => t.Guid == id && t.SupplierOrganisation.Guid == organisationId);
     }
 
-    public async Task<IEnumerable<ConnectedEntity?>> FindByOrganisation(Guid organisationId)
-    {
-        return await context.ConnectedEntities
-            .Include(p => p.Addresses)
-            .ThenInclude(p => p.Address)
-            .Where(t => t.SupplierOrganisation.Guid == organisationId && (t.EndDate == null || t.EndDate > DateTime.Today))
-            .ToArrayAsync();
-    }
-
     public async Task<IEnumerable<ConnectedEntityLookup?>> GetSummary(Guid organisationId)
     {
-        var now = DateTimeOffset.UtcNow;
         return await context.ConnectedEntities
-            .Where(t => t.SupplierOrganisation.Guid == organisationId && (t.EndDate > now || t.EndDate == null))
+            .Where(t => t.SupplierOrganisation.Guid == organisationId)
             .Select(t => new ConnectedEntityLookup
             {
                 Name = t.EntityType == ConnectedEntity.ConnectedEntityType.Organisation
@@ -38,6 +28,7 @@ public class DatabaseConnectedEntityRepository(OrganisationInformationContext co
                     : (t.IndividualOrTrust == null ? "" : $"{t.IndividualOrTrust.FirstName} {t.IndividualOrTrust.LastName}"),
                 EntityId = t.Guid,
                 EntityType = t.EntityType,
+                EndDate = t.EndDate
             })
             .ToArrayAsync();
     }

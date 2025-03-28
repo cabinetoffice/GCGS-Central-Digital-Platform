@@ -42,11 +42,9 @@ public class DatabasePponRepository(EntityVerificationContext context) : IPponRe
 
     public async Task<Ppon?> FindPponByIdentifierAsync(string scheme, string id)
     {
-        var ppons = await context.Ppons
+        return await context.Ppons
             .Include(p => p.Identifiers)
-            .ToListAsync();
-
-        return ppons.FirstOrDefault(p =>
+            .FirstOrDefaultAsync(p =>
                 p.Identifiers.Any(i => i.IdentifierId == id && i.Scheme == scheme) ||
                 (scheme == "GB-PPON" && p.IdentifierId == id));
     }

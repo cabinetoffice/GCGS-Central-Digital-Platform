@@ -446,6 +446,11 @@ services:
       db:
         condition: "service_healthy"
 
+networks:
+  default:
+    name: cdp-sirsi
+    driver: bridge
+
 volumes:
   clamav:
   run-clamav:

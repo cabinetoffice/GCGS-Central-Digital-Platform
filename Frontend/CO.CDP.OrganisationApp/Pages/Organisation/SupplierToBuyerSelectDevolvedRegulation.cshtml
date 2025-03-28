@@ -29,7 +29,7 @@
                             </h1>
                         </legend>
                         <div id="regulations-hint" class="govuk-hint">
-                            @StaticTextResource.SupplierToBuyer_SelectDevolvedRegulation_SelectAllThatApply
+                            @Html.Raw(@StaticTextResource.SupplierToBuyer_SelectDevolvedRegulation_Hint)
                         </div>
                         @if (regulationsHasError)
                         {
@@ -37,23 +37,22 @@
                             <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span> @Html.ValidationMessageFor(m => m.Regulations)
                             </p>
                         }
-
-                        <div class="govuk-checkboxes" data-module="govuk-checkboxes">
-                            <div class="govuk-checkboxes__item">
-                            <input class="govuk-checkboxes__input" id="Regulations" name="Regulations" type="checkbox" value="@DevolvedRegulation.NorthernIreland" @IsSelected(DevolvedRegulation.NorthernIreland)>
-                            <label class="govuk-label govuk-checkboxes__label" for="Regulations">
-                                    @StaticTextResource.SupplierToBuyer_SelectDevolvedRegulation_NorthernIreland
+                        <div class="govuk-radios" data-module="govuk-radios">
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input" id="radni" name="Regulations" type="radio" value="@DevolvedRegulation.NorthernIreland" @IsSelected(DevolvedRegulation.NorthernIreland)>
+                                <label class="govuk-label govuk-radios__label" for="radni">
+                                @StaticTextResource.SupplierToBuyer_SelectDevolvedRegulation_NorthernIreland
                                 </label>
                             </div>
-                            <div class="govuk-checkboxes__item">
-                                <input class="govuk-checkboxes__input" id="chkscotland" name="Regulations" type="checkbox" value="@DevolvedRegulation.Scotland" @IsSelected(DevolvedRegulation.Scotland)>
-                                <label class="govuk-label govuk-checkboxes__label" for="chkscotland">
-                                    @StaticTextResource.SupplierToBuyer_SelectDevolvedRegulation_Scotland
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input" id="radscotland" name="Regulations" type="radio" value="@DevolvedRegulation.Scotland" @IsSelected(DevolvedRegulation.Scotland)>
+                                <label class="govuk-label govuk-radios__label" for="radscotland">
+                                @StaticTextResource.SupplierToBuyer_SelectDevolvedRegulation_Scotland
                                 </label>
                             </div>
-                            <div class="govuk-checkboxes__item">
-                                <input class="govuk-checkboxes__input" id="chkwales" name="Regulations" type="checkbox" value="@DevolvedRegulation.Wales" @IsSelected(DevolvedRegulation.Wales)>
-                                <label class="govuk-label govuk-checkboxes__label" for="chkwales">
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input" id="radwales" name="Regulations" type="radio" value="@DevolvedRegulation.Wales" @IsSelected(DevolvedRegulation.Wales)>
+                                <label class="govuk-label govuk-radios__label" for="radwales">
                                 @StaticTextResource.SupplierToBuyer_SelectDevolvedRegulation_Wales
                                 </label>
                             </div>
