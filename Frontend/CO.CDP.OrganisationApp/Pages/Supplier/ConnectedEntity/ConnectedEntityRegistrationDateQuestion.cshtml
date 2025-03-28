@@ -33,10 +33,7 @@
         <partial name="_ErrorSummary" model="@Model.ModelState" />
         <span class="govuk-caption-l">@Model.Caption</span>
         <form class="form" method="post">
-            @if (Request.Query.ContainsKey("frm-chk-answer"))
-            {
-                <input type="hidden" name="RedirectToCheckYourAnswer" value="true" />
-            }
+            
             <div class="govuk-form-group @(selectionError ? "govuk-form-group--error" : "")">
                 <fieldset class="govuk-fieldset">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
