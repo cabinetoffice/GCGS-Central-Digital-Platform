@@ -1,4 +1,3 @@
-using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Pages.Registration;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
@@ -9,43 +8,74 @@ namespace CO.CDP.OrganisationApp.Tests.Pages.Registration;
 
 public class JoinOrganisationSuccessModelTests
 {
-    private readonly Mock<IOrganisationClient> _organisationClientMock;
+    private readonly Mock<ISession> _sessionMock;
     private readonly JoinOrganisationSuccessModel _joinOrganisationSuccessModel;
-    private readonly string _identifier = "GB-COH:123456789";
+    private readonly string _organisationName = "Test Org";
     private readonly Guid _organisationId = Guid.NewGuid();
-    private readonly CO.CDP.Organisation.WebApiClient.Organisation _organisation;
 
     public JoinOrganisationSuccessModelTests()
     {
-        _organisationClientMock = new Mock<IOrganisationClient>();
-        _joinOrganisationSuccessModel = new JoinOrganisationSuccessModel(_organisationClientMock.Object);
-        _organisation = new CO.CDP.Organisation.WebApiClient.Organisation(null, null, null, null, _organisationId, null, "Test Org", [], OrganisationType.Organisation);
+        _sessionMock = new Mock<ISession>();
+        _joinOrganisationSuccessModel = new JoinOrganisationSuccessModel(_sessionMock.Object);
     }
 
     [Fact]
-    public async Task OnGet_ValidOrganisationId_ReturnsPageResult()
+    public void OnGet_ValidOrganisationId_ReturnsPageResult()
     {
-        _organisationClientMock.Setup(client => client.LookupOrganisationAsync(string.Empty, _identifier))
-            .ReturnsAsync(_organisation);
+        JoinOrganisationRequestState? state = GetRequestState();
 
-        var result = await _joinOrganisationSuccessModel.OnGet(_identifier);
+        _sessionMock
+            .Setup(s => s.Get<JoinOrganisationRequestState>(Session.JoinOrganisationRequest))
+            .Returns(state);
 
+        _joinOrganisationSuccessModel.Id = _organisationId;
+
+        var result = _joinOrganisationSuccessModel.OnGet();
+                
         result.Should().BeOfType<PageResult>();
-        _joinOrganisationSuccessModel.OrganisationDetails.Should().Be(_organisation);
-        _organisationClientMock.Verify(client => client.LookupOrganisationAsync(string.Empty, _identifier), Times.Once);
+        _joinOrganisationSuccessModel.OrganisationName.Should().Be(_organisationName);
+        _sessionMock.Verify(s => s.Remove(Session.JoinOrganisationRequest), Times.Once);
     }
-
-    [Fact]
-    public async Task OnGet_OrganisationNotFound_ReturnsRedirectToPageNotFound()
+        [Fact]
+    public void OnGet_WhenSessionRequestDoesNotMatch_ShouldRedirectToOrganisationSelection()
     {
-        _organisationClientMock.Setup(client => client.LookupOrganisationAsync(string.Empty, _identifier))
-            .ThrowsAsync(new ApiException("Not Found", 404, "Not Found", null, null));
+        var organisationId = Guid.NewGuid();
 
-        var result = await _joinOrganisationSuccessModel.OnGet(_identifier);
+        var jor = new JoinOrganisationRequestState { OrganisationId = Guid.NewGuid(), OrganisationName = "Another Org" };
+
+        _sessionMock
+            .Setup(s => s.Get<JoinOrganisationRequestState>(Session.JoinOrganisationRequest))
+            .Returns(jor);
+        _joinOrganisationSuccessModel.Id = organisationId;
+
+        var result = _joinOrganisationSuccessModel.OnGet();
 
         result.Should().BeOfType<RedirectResult>()
-            .Which.Url.Should().Be("/page-not-found");
+            .Which.Url.Should().Be("/organisation-selection");
+        _sessionMock.Verify(s => s.Remove(Session.JoinOrganisationRequest), Times.Once);
+    }
 
-        _organisationClientMock.Verify(client => client.LookupOrganisationAsync(string.Empty, _identifier), Times.Once);
+    [Fact]
+    public void OnGet_WhenSessionRequestIsNull_ShouldRedirectToOrganisationSelection()
+    {
+        _sessionMock
+            .Setup(s => s.Get<JoinOrganisationRequestState>(Session.JoinOrganisationRequest))
+            .Returns((JoinOrganisationRequestState?)null);
+        _joinOrganisationSuccessModel.Id = Guid.NewGuid();
+
+        var result = _joinOrganisationSuccessModel.OnGet();
+
+        result.Should().BeOfType<RedirectResult>()
+            .Which.Url.Should().Be("/organisation-selection");
+        _sessionMock.Verify(s => s.Remove(Session.JoinOrganisationRequest), Times.Once);
+    }
+
+    private JoinOrganisationRequestState GetRequestState()
+    {
+        return new JoinOrganisationRequestState
+        {
+            OrganisationId = _organisationId,
+            OrganisationName = _organisationName
+        };
     }
 }
