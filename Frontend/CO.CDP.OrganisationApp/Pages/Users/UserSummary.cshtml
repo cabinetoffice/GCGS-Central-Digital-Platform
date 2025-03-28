@@ -90,17 +90,19 @@
                             <strong>@p.Email</strong>
                         </dd>
                         <dd class="govuk-summary-list__actions">
-                            <ul class="govuk-summary-list__actions-list">
-                                @if (p.Id != @Model.SignedInPersonId)
-                                {
-                                    <li class="govuk-summary-list__actions-list-item">
-                                        <a class="govuk-link" href="/organisation/@Model.Id/users/@p.Id/change-role?handler=person">@StaticTextResource.Global_Change</a>
-                                    </li>
-                                    <li class="govuk-summary-list__actions-list-item">
-                                        <a class="govuk-link" href="/organisation/@Model.Id/users/@p.Id/remove">@StaticTextResource.Global_Remove</a>
-                                    </li>
-                                }
-                            </ul>
+                            <authorize scope="@OrgScopeRequirement.Admin">
+                                <ul class="govuk-summary-list__actions-list">
+                                    @if (p.Id != @Model.SignedInPersonId)
+                                    {
+                                        <li class="govuk-summary-list__actions-list-item">
+                                            <a class="govuk-link" href="/organisation/@Model.Id/users/@p.Id/change-role?handler=person">@StaticTextResource.Global_Change</a>
+                                        </li>
+                                        <li class="govuk-summary-list__actions-list-item">
+                                            <a class="govuk-link" href="/organisation/@Model.Id/users/@p.Id/remove">@StaticTextResource.Global_Remove</a>
+                                        </li>
+                                    }
+                                </ul>
+                            </authorize>
                         </dd>
                     </div>
                 </dl>
@@ -143,17 +145,19 @@
                             <strong>@p.Email</strong>
                         </dd>
                         <dd class="govuk-summary-list__actions">
-                            <ul class="govuk-summary-list__actions-list">
-                                <li class="govuk-summary-list__actions-list-item">
-                                    <a class="govuk-link" href="/organisation/@Model.Id/users/@p.Id/resend-invite">@StaticTextResource.UserSummary_Resend</a>
-                                </li>
-                                <li class="govuk-summary-list__actions-list-item">
-                                    <a class="govuk-link" href="/organisation/@Model.Id/users/@p.Id/change-role?handler=personInvite">@StaticTextResource.Global_Change</a>
-                                </li>
-                                <li class="govuk-summary-list__actions-list-item">
-                                    <a class="govuk-link" href="/organisation/@Model.Id/users/@p.Id/remove?handler=personInvite">@StaticTextResource.Global_Remove</a>
-                                </li>
-                            </ul>
+                            <authorize scope="@OrgScopeRequirement.Admin">
+                                <ul class="govuk-summary-list__actions-list">
+                                    <li class="govuk-summary-list__actions-list-item">
+                                        <a class="govuk-link" href="/organisation/@Model.Id/users/@p.Id/resend-invite">@StaticTextResource.UserSummary_Resend</a>
+                                    </li>
+                                    <li class="govuk-summary-list__actions-list-item">
+                                        <a class="govuk-link" href="/organisation/@Model.Id/users/@p.Id/change-role?handler=personInvite">@StaticTextResource.Global_Change</a>
+                                    </li>
+                                    <li class="govuk-summary-list__actions-list-item">
+                                        <a class="govuk-link" href="/organisation/@Model.Id/users/@p.Id/remove?handler=personInvite">@StaticTextResource.Global_Remove</a>
+                                    </li>
+                                </ul>
+                            </authorize>
                         </dd>
                     </div>
                 </dl>

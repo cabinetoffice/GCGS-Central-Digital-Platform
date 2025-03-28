@@ -8,7 +8,7 @@ using CO.CDP.Localization;
 
 namespace CO.CDP.OrganisationApp.Pages.Users;
 
-[Authorize(Policy = OrgScopeRequirement.Admin)]
+[Authorize(Policy = OrgScopeWithSupportAdminBypassRequirement.AdminOrSupportAdmin)]
 public class UserSummaryModel(
     IOrganisationClient organisationClient,
     ISession session) : LoggedInUserAwareModel(session)

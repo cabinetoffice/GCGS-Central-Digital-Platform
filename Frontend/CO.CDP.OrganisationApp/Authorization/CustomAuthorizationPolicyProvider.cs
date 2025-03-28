@@ -7,6 +7,7 @@ public class CustomAuthorizationPolicyProvider : IAuthorizationPolicyProvider
 {
     const string ORG_POLICY_PREFIX = "OrgScope_";
     const string POLICY_PREFIX = "PersonScope_";
+    const string BYPASS_POLICY_PREFIX = "OrgScopeSupportAdminBypass_";
     private readonly DefaultAuthorizationPolicyProvider _fallbackPolicyProvider;
 
     public CustomAuthorizationPolicyProvider(IOptions<AuthorizationOptions> options)
@@ -41,6 +42,11 @@ public class CustomAuthorizationPolicyProvider : IAuthorizationPolicyProvider
         if (policyName.StartsWith(POLICY_PREFIX))
         {
             return policyName.Substring(POLICY_PREFIX.Length);
+        }
+
+        if (policyName.StartsWith(BYPASS_POLICY_PREFIX))
+        {
+            return policyName.Substring(BYPASS_POLICY_PREFIX.Length);
         }
 
         return null;
