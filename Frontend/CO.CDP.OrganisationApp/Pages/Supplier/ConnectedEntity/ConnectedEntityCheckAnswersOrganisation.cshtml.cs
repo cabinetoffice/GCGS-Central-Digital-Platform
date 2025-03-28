@@ -210,6 +210,11 @@ public class ConnectedEntityCheckAnswersOrganisationModel(
             addresses.Add(AddAddress(state.PostalAddress, CO.CDP.Organisation.WebApiClient.AddressType.Postal));
         }
 
+        if (state.SupplierHasCompanyHouseNumber!.Value == false)
+        {
+            state.CompaniesHouseNumber = null;
+        }
+
         var updateConnectedEntity = new UpdateConnectedEntity
         (
             id: ConnectedEntityId.ToString(),
