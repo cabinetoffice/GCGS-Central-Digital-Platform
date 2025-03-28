@@ -77,7 +77,10 @@ public class SupplierAddressModelTest
         SetupModelWithUkAddress();
 
         _organisationClientMock.Setup(client => client.GetOrganisationAsync(_model.Id))
-            .ReturnsAsync(SupplierDetailsFactory.GivenOrganisationClientModel(_model.Id));
+            .ReturnsAsync(OrganisationClientModel(_model.Id));
+
+        _organisationClientMock.Setup(client => client.GetOrganisationSupplierInformationAsync(_model.Id))
+            .ReturnsAsync(SupplierInformationClientModel);
 
         _organisationClientMock.Setup(client => client.UpdateOrganisationAsync(_model.Id, It.IsAny<UpdatedOrganisation>()))
             .Returns(Task.CompletedTask);
@@ -91,6 +94,15 @@ public class SupplierAddressModelTest
     [Fact]
     public async Task OnPost_InvalidModelState_ReturnsPageResult()
     {
+        var id = Guid.NewGuid();
+        _model.Id = id;
+
+        _organisationClientMock.Setup(client => client.GetOrganisationAsync(id))
+            .ReturnsAsync(OrganisationClientModel(id));
+
+        _organisationClientMock.Setup(client => client.GetOrganisationSupplierInformationAsync(id))
+            .ReturnsAsync(SupplierInformationClientModel);
+
         _model.ModelState.AddModelError("AddressLine1", "Enter your address line 1");
 
         var result = await _model.OnPost();
@@ -103,7 +115,7 @@ public class SupplierAddressModelTest
     {
         SetupModelWithUkAddress();
 
-        _organisationClientMock.Setup(client => client.GetOrganisationAsync(_model.Id))
+        _organisationClientMock.Setup(client => client.GetOrganisationSupplierInformationAsync(_model.Id))
             .ThrowsAsync(new ApiException("Unexpected error", 404, "", default, null));
 
         var result = await _model.OnPost();
@@ -111,4 +123,31 @@ public class SupplierAddressModelTest
         result.Should().BeOfType<RedirectResult>()
             .Which.Url.Should().Be("/page-not-found");
     }
+
+    private static SupplierInformation SupplierInformationClientModel => new(
+            organisationName: "FakeOrg",
+            supplierType: SupplierType.Organisation,
+            operationTypes: null,
+            completedRegAddress: true,
+            completedPostalAddress: false,
+            completedVat: false,
+            completedWebsiteAddress: false,
+            completedEmailAddress: true,
+            completedOperationType: false,
+            completedLegalForm: false,
+            completedConnectedPerson: false,
+            legalForm: null);
+
+    private static CO.CDP.Organisation.WebApiClient.Organisation OrganisationClientModel(Guid id) =>
+        new(
+            additionalIdentifiers: [new Identifier(id: "FakeId", legalName: "FakeOrg", scheme: "VAT", uri: null)],
+            addresses: null,
+            contactPoint: new ContactPoint(email: "test@test.com", name: null, telephone: null, url: new Uri("https://xyz.com")),
+            id: id,
+            identifier: null,
+            name: "Test Org",
+            type: OrganisationType.Organisation,
+            roles: [PartyRole.Supplier],
+            details: new Details(approval: null, buyerInformation: null, pendingRoles: [], publicServiceMissionOrganization: null, scale: null, shelteredWorkshop: null, vcse: null)
+        );
 }

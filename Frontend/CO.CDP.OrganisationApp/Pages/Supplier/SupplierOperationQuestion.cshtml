@@ -35,81 +35,64 @@
                     </div>
                     @if (operationTypeHasError)
                     {
-                    <p id="organisation-type-error" class="govuk-error-message">
-                        <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span> @Html.ValidationMessageFor(m => m.SelectedOperationTypes)
-                    </p>
+                        <p id="organisation-type-error" class="govuk-error-message">
+                            <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span> @Html.ValidationMessageFor(m => m.SelectedOperationTypes)
+                        </p>
                     }
                     <div class="govuk-checkboxes" data-module="govuk-checkboxes">
                         <div class="govuk-checkboxes__item">
                             <input class="govuk-checkboxes__input" id="chkSmallOrMediumAized"
-                            name="SelectedOperationTypes" type="checkbox" value="@OperationType.SmallOrMediumSized" @IsSelected(OperationType.SmallOrMediumSized) />
+                                   name="SelectedOperationTypes" type="checkbox" value="@OperationType.SmallOrMediumSized" @IsSelected(OperationType.SmallOrMediumSized) />
                             <label class="govuk-label govuk-checkboxes__label" for="chkSmallOrMediumAized">
-                            @OperationType.SmallOrMediumSized.Description()
+                                @OperationType.SmallOrMediumSized.Description()
+                                <div id="sme-hint" class="govuk-hint">
+                                    @StaticTextResource.Supplier_OperationType_SmallOrMediumSized_Hint
+                                </div>
                             </label>
                         </div>
-                        <details class="govuk-details" data-module="govuk-details">
-                            <summary class="govuk-details__summary">
-                                <span class="govuk-details__summary-text">
-                                @StaticTextResource.Supplier_OperationQuestion_SmallAndMediumSized_Description
-                                </span>
-                            </summary>
-                            <div class="govuk-details__text">
-                                @Html.Raw(@StaticTextResource.Supplier_OperationQuestion_SmallAndMediumSized_Details)
-                            </div>
-                        </details>
+                        
                         <div class="govuk-checkboxes__item">
                             <input class="govuk-checkboxes__input" id="chkNonGovernmental"
-                            name="SelectedOperationTypes" type="checkbox" value="@OperationType.NonGovernmental" @IsSelected(OperationType.NonGovernmental) />
+                                   name="SelectedOperationTypes" type="checkbox" value="@OperationType.NonGovernmental" @IsSelected(OperationType.NonGovernmental) />
                             <label class="govuk-label govuk-checkboxes__label" for="chkNonGovernmental">
-                            @OperationType.NonGovernmental.Description()
+                                @OperationType.NonGovernmental.Description()
+                                <div id="social-enterprise-hint" class="govuk-hint">
+                                    @StaticTextResource.Supplier_OperationType_NonGovernmental_Hint
+                                </div>
                             </label>
                         </div>
                         <div class="govuk-checkboxes__item">
                             <input class="govuk-checkboxes__input" id="chkSupportedEmploymentProvider"
-                            name="SelectedOperationTypes" type="checkbox" value="@OperationType.SupportedEmploymentProvider" @IsSelected(OperationType.SupportedEmploymentProvider) />
+                                   name="SelectedOperationTypes" type="checkbox" value="@OperationType.SupportedEmploymentProvider" @IsSelected(OperationType.SupportedEmploymentProvider) />
                             <label class="govuk-label govuk-checkboxes__label" for="chkSupportedEmploymentProvider">
-                            @OperationType.SupportedEmploymentProvider.Description()
+                                @OperationType.SupportedEmploymentProvider.Description()
+                                <div id="supported-employer-hint" class="govuk-hint">
+                                    @StaticTextResource.Supplier_OperationType_SupportedEmploymentProvider_Hint
+                                </div>
                             </label>
-                        </div>
-                        <details class="govuk-details" data-module="govuk-details">
-                            <summary class="govuk-details__summary">
-                                <span class="govuk-details__summary-text">
-                                @StaticTextResource.Supplier_OperationQuestion_SupportedEmploymentProvider_Description
-                                </span>
-                            </summary>
-                            <div class="govuk-details__text">
-                                @Html.Raw(@StaticTextResource.Supplier_OperationQuestion_SupportedEmploymentProvider_Details)
-                            </div>
-                        </details>
+                        </div>                        
                         <div class="govuk-checkboxes__item">
                             <input class="govuk-checkboxes__input" id="chkPublicService"
-                            name="SelectedOperationTypes" type="checkbox" value="@OperationType.PublicService" @IsSelected(OperationType.PublicService) />
+                                   name="SelectedOperationTypes" type="checkbox" value="@OperationType.PublicService" @IsSelected(OperationType.PublicService) />
                             <label class="govuk-label govuk-checkboxes__label" for="chkPublicService">
-                            @OperationType.PublicService.Description()
+                                @OperationType.PublicService.Description()
+                                <div id="supported-employer-hint" class="govuk-hint">
+                                    @StaticTextResource.Supplier_OperationType_PublicService_Hint
+                                </div>
                             </label>
-                        </div>
-                        <details class="govuk-details" data-module="govuk-details">
-                            <summary class="govuk-details__summary">
-                                <span class="govuk-details__summary-text">
-                                @StaticTextResource.Supplier_OperationQuestion_PublicService_Description
-                                </span>
-                            </summary>
-                            <div class="govuk-details__text">
-                                @StaticTextResource.Supplier_OperationQuestion_PublicService_Details
-                            </div>
-                        </details>
+                        </div>                        
                         <div class="govuk-checkboxes__divider">or</div>
                         <div class="govuk-checkboxes__item">
                             <input class="govuk-checkboxes__input" id="chkNoneOfTheAbove"
-                            name="SelectedOperationTypes" type="checkbox" value="@OperationType.None" @IsSelected(OperationType.None)  data-behaviour="exclusive" />
+                                   name="SelectedOperationTypes" type="checkbox" value="@OperationType.None" @IsSelected(OperationType.None) data-behaviour="exclusive" />
                             <label class="govuk-label govuk-checkboxes__label" for="chkNoneOfTheAbove">
-                            @OperationType.None.Description()
+                                @OperationType.None.Description()
                             </label>
                         </div>
                     </div>
                 </fieldset>
             </div>
-            <govuk-button class="govuk-!-margin-top-4">@StaticTextResource.Global_SaveAndExit</govuk-button>
+            <govuk-button class="govuk-!-margin-top-4">@StaticTextResource.Global_Save</govuk-button>
         </form>
     </div>
 </div>

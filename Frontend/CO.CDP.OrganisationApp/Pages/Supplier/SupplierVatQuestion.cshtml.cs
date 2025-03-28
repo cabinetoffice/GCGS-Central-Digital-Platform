@@ -26,11 +26,14 @@ public class SupplierVatQuestionModel(IOrganisationClient organisationClient) : 
     [BindProperty(SupportsGet = true)]
     public Guid Id { get; set; }
 
+    public SupplierType? SupplierType { get; set; }
+
     public async Task<IActionResult> OnGet(Guid id)
     {
         try
         {
             var composed = await organisationClient.GetComposedOrganisation(id);
+            SupplierType = composed.SupplierInfo.SupplierType;
 
             if (composed.SupplierInfo.CompletedVat)
             {
@@ -54,16 +57,18 @@ public class SupplierVatQuestionModel(IOrganisationClient organisationClient) : 
 
     public async Task<IActionResult> OnPost()
     {
-        if (!ModelState.IsValid)
-        {
-            return Page();
-        }
-
         CDP.Organisation.WebApiClient.Organisation? organisation;
 
         try
         {
-            organisation = await organisationClient.GetOrganisationAsync(Id);
+            var composed = await organisationClient.GetComposedOrganisation(Id);
+            SupplierType = composed.SupplierInfo.SupplierType;
+            organisation = composed.Organisation;
+
+            if (!ModelState.IsValid)
+            {
+                return Page();
+            }
         }
         catch (ApiException ex) when (ex.StatusCode == 404)
         {

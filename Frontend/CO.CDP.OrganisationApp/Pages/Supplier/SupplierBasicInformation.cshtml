@@ -7,12 +7,7 @@
 @{
     var details = Model.SupplierInformation!;
 
-    ViewData["Title"] = GetTitle();
-
-    string GetTitle()
-    {
-        return string.Format(StaticTextResource.Supplier_BasicInformation_Title, details.OrganisationName);
-    }
+    ViewData["Title"] = StaticTextResource.Supplier_BasicInformation_Title;
 
     string GetActionString(bool completed) => completed ? StaticTextResource.Global_Change : StaticTextResource.Supplier_Add;
 
@@ -56,92 +51,175 @@
     <a href="." class="govuk-back-link">@StaticTextResource.Global_Back</a>
 }
 
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-full">
-            <h1 class="govuk-heading-l">
-                @ViewData["Title"]
-            </h1>
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+        <h1 class="govuk-heading-l">
+            @ViewData["Title"]
+        </h1>
 
-            <dl class="govuk-summary-list">
-                <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">
-                        @StaticTextResource.Supplier_SupplierType
-                    </dt>
-                    <dd class="govuk-summary-list__value">
-                        @(details.SupplierType == CO.CDP.Organisation.WebApiClient.SupplierType.Organisation ? "Organisation" : "Individual")
+        <dl class="govuk-summary-list">
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    @StaticTextResource.Supplier_SupplierType
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @(details.SupplierType == CO.CDP.Organisation.WebApiClient.SupplierType.Organisation ? "Organisation" : "Individual")
+                </dd>
+                <authorize scope="@OrgScopeRequirement.Editor">
+                    <dd class="govuk-summary-list__actions">
+                        <a class="govuk-link" href="individual-or-org">
+                            @StaticTextResource.Global_Change
+                        </a>
                     </dd>
-                    <authorize scope="@OrgScopeRequirement.Editor">
-                        <dd class="govuk-summary-list__actions">
-                            <a class="govuk-link" href="individual-or-org">
-                                @StaticTextResource.Global_Change
-                            </a>
-                        </dd>
-                    </authorize>
-                </div>
+                </authorize>
+            </div>
 
-                @if (details.SupplierType == CO.CDP.Organisation.WebApiClient.SupplierType.Organisation)
-                {
-                    <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">
-                            @StaticTextResource.Supplier_RegisteredAddress
-                        </dt>
-                        <dd class="govuk-summary-list__value">
-                            @if (details.CompletedRegAddress && Model.RegisteredAddress != null)
-                            {
-                                RenderAddress(Model.RegisteredAddress);
-                            }
-                        </dd>
-                        <authorize scope="@OrgScopeRequirement.Editor">
-                            <dd class="govuk-summary-list__actions">
-                                <a class="govuk-link" href="@(Constants.AddressType.Registered.ToString().ToLower())-address/uk">
-                                    @GetActionString(details.CompletedRegAddress)
-                                </a>
-                            </dd>
-                        </authorize>
-                    </div>
-                }
-
+            @if (details.SupplierType == CO.CDP.Organisation.WebApiClient.SupplierType.Organisation)
+            {
                 <div class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key">
-                        @StaticTextResource.Supplier_PostalAddress
+                        @StaticTextResource.Supplier_RegisteredAddress
                     </dt>
                     <dd class="govuk-summary-list__value">
-                        @if (details.CompletedPostalAddress && Model.PostalAddress != null)
+                        @if (details.CompletedRegAddress && Model.RegisteredAddress != null)
                         {
-                            RenderAddress(Model.PostalAddress);
+                            RenderAddress(Model.RegisteredAddress);
                         }
                     </dd>
                     <authorize scope="@OrgScopeRequirement.Editor">
                         <dd class="govuk-summary-list__actions">
+                            <a class="govuk-link" href="@(Constants.AddressType.Registered.ToString().ToLower())-address/uk">
+                                @GetActionString(details.CompletedRegAddress)
+                            </a>
+                        </dd>
+                    </authorize>
+                </div>
+            }
+
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    @StaticTextResource.Supplier_PostalAddress
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @if (details.CompletedPostalAddress && Model.PostalAddress != null)
+                    {
+                        RenderAddress(Model.PostalAddress);
+                    }
+                </dd>
+                <authorize scope="@OrgScopeRequirement.Editor">
+                    <dd class="govuk-summary-list__actions">
+                        @if (details.SupplierType == CO.CDP.Organisation.WebApiClient.SupplierType.Organisation)
+                        {
                             <a class="govuk-link" href="postal-address-same-as-registered">
                                 @GetActionString(details.CompletedPostalAddress)
                             </a>
-                        </dd>
-                    </authorize>
-                </div>
+                        }
+                        else
+                        {
+                            <a class="govuk-link" href="postal-address/uk">
+                                @GetActionString(details.CompletedPostalAddress)
+                            </a>
+                        }
+                    </dd>
+                </authorize>
+            </div>
 
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    @StaticTextResource.Supplier_VatNumber
+                </dt>
+                <dt class="govuk-summary-list__value">
+                    @if (details.CompletedVat)
+                    {
+                        if (!string.IsNullOrWhiteSpace(Model.VatNumber))
+                        {
+                            @StaticTextResource.Global_Yes
+
+                            <br />
+                            @(Model.VatNumber)
+                        }
+                        else
+                        {
+                            @StaticTextResource.Global_No
+                        }
+                    }
+                </dt>
+                <authorize scope="@OrgScopeRequirement.Editor">
+                    <dd class="govuk-summary-list__actions">
+                        <a class="govuk-link" href="vat-question">
+                            @GetActionString(details.CompletedVat)
+                        </a>
+                    </dd>
+                </authorize>
+            </div>
+
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    @StaticTextResource.Supplier_WebsiteAddress
+                </dt>
+                <dt class="govuk-summary-list__value">
+                    @if (details.CompletedWebsiteAddress)
+                    {
+                        if (!string.IsNullOrWhiteSpace(Model.WebsiteAddress))
+                        {
+                            @StaticTextResource.Global_Yes
+
+                            <br />
+                            @(Model.WebsiteAddress)
+                        }
+                        else
+                        {
+                            @StaticTextResource.Global_No
+                        }
+                    }
+                </dt>
+                <authorize scope="@OrgScopeRequirement.Editor">
+                    <dd class="govuk-summary-list__actions">
+                        <a class="govuk-link" href="website-question">
+                            @GetActionString(details.CompletedWebsiteAddress)<span class="govuk-visually-hidden"> @StaticTextResource.Supplier_Add</span>
+                        </a>
+                    </dd>
+                </authorize>
+            </div>
+
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    @StaticTextResource.Supplier_EmailAddress
+                </dt>
+                <dt class="govuk-summary-list__value">
+                    @if (details.CompletedEmailAddress)
+                    {
+                        if (!string.IsNullOrWhiteSpace(Model.EmailAddress))
+                        {
+                            @(Model.EmailAddress)
+                        }
+                    }
+                </dt>
+                <authorize scope="@OrgScopeRequirement.Editor">
+                    <dd class="govuk-summary-list__actions">
+                        <a class="govuk-link" href="email-address">
+                            @GetActionString(details.CompletedEmailAddress)
+                        </a>
+                    </dd>
+                </authorize>
+            </div>
+
+            @if (details.SupplierType == CO.CDP.Organisation.WebApiClient.SupplierType.Organisation)
+            {
                 <div class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key">
-                        @StaticTextResource.Supplier_VatNumber
+                        @StaticTextResource.Supplier_OrganisationType
                     </dt>
                     <dt class="govuk-summary-list__value">
-                        @if (details.CompletedVat)
+                        @if (details.CompletedOperationType && Model.OperationTypes != null)
                         {
-                            if (!string.IsNullOrWhiteSpace(Model.VatNumber))
-                            {
-                                @StaticTextResource.Global_Yes<br />
-                                @(Model.VatNumber)
-                            }
-                            else
-                            {
-                                @StaticTextResource.Global_No
-                            }
+                            RenderOperationTypes(Model.OperationTypes);
                         }
                     </dt>
                     <authorize scope="@OrgScopeRequirement.Editor">
                         <dd class="govuk-summary-list__actions">
-                            <a class="govuk-link" href="vat-question">
-                                @GetActionString(details.CompletedVat)
+                            <a class="govuk-link" href="operation">
+                                @GetActionString(details.CompletedOperationType)
                             </a>
                         </dd>
                     </authorize>
@@ -149,98 +227,27 @@
 
                 <div class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key">
-                        @StaticTextResource.Supplier_WebsiteAddress
+                        @StaticTextResource.Supplier_LegalForm
                     </dt>
                     <dt class="govuk-summary-list__value">
-                        @if (details.CompletedWebsiteAddress)
+                        @if (details.CompletedLegalForm && Model.SupplierInformation?.LegalForm != null)
                         {
-                            if (!string.IsNullOrWhiteSpace(Model.WebsiteAddress))
-                            {
-                            @StaticTextResource.Global_Yes<br />
-                                @(Model.WebsiteAddress)
-                            }
-                            else
-                            {
-                                @StaticTextResource.Global_No
-                            }
+                            RenderLegalForm(Model.SupplierInformation.LegalForm);
                         }
                     </dt>
                     <authorize scope="@OrgScopeRequirement.Editor">
                         <dd class="govuk-summary-list__actions">
-                            <a class="govuk-link" href="website-question">
-                                @GetActionString(details.CompletedWebsiteAddress)<span class="govuk-visually-hidden"> @StaticTextResource.Supplier_Add</span>
+                            <a class="govuk-link" href="company-act-question">
+                                @GetActionString(details.CompletedLegalForm)
                             </a>
                         </dd>
                     </authorize>
                 </div>
+            }
+        </dl>
 
-                <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">
-                        @StaticTextResource.Supplier_EmailAddress
-                    </dt>
-                    <dt class="govuk-summary-list__value">
-                        @if (details.CompletedEmailAddress)
-                        {
-                            if (!string.IsNullOrWhiteSpace(Model.EmailAddress))
-                            {
-                                @(Model.EmailAddress)
-                            }
-                        }
-                    </dt>
-                    <authorize scope="@OrgScopeRequirement.Editor">
-                        <dd class="govuk-summary-list__actions">
-                            <a class="govuk-link" href="email-address">
-                                @GetActionString(details.CompletedEmailAddress)
-                            </a>
-                        </dd>
-                    </authorize>
-                </div>
-
-                @if (details.SupplierType == CO.CDP.Organisation.WebApiClient.SupplierType.Organisation)
-                {
-                    <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">
-                            @StaticTextResource.Supplier_OrganisationType
-                        </dt>
-                        <dt class="govuk-summary-list__value">
-                            @if (details.CompletedOperationType && Model.OperationTypes != null)
-                            {
-                                RenderOperationTypes(Model.OperationTypes);
-                            }
-                        </dt>
-                        <authorize scope="@OrgScopeRequirement.Editor">
-                            <dd class="govuk-summary-list__actions">
-                                <a class="govuk-link" href="operation">
-                                    @GetActionString(details.CompletedOperationType)
-                                </a>
-                            </dd>
-                        </authorize>
-                    </div>
-
-                    <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">
-                            @StaticTextResource.Supplier_LegalForm
-                        </dt>
-                        <dt class="govuk-summary-list__value">
-                            @if (details.CompletedLegalForm && Model.SupplierInformation?.LegalForm != null)
-                            {
-                                RenderLegalForm(Model.SupplierInformation.LegalForm);
-                            }
-                        </dt>
-                        <authorize scope="@OrgScopeRequirement.Editor">
-                            <dd class="govuk-summary-list__actions">
-                                <a class="govuk-link" href="company-act-question">
-                                    @GetActionString(details.CompletedLegalForm)
-                                </a>
-                            </dd>
-                        </authorize>
-                    </div>
-                }
-            </dl>
-
-            <a href="." role="button"
-               class="govuk-button govuk-button--start govuk-body govuk-!-font-size-19" data-module="govuk-button">
-                @StaticTextResource.Supplier_ReturnToAccountHome
-            </a>
-        </div>
+        <a href="." class="govuk-link">
+            @StaticTextResource.Supplier_ReturnToAccountHome
+        </a>
     </div>
+</div>

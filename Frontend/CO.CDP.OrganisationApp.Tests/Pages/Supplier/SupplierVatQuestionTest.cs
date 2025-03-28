@@ -64,6 +64,9 @@ public class SupplierVatModelQuestionTest
         _organisationClientMock.Setup(client => client.GetOrganisationAsync(id))
             .ReturnsAsync(SupplierDetailsFactory.GivenOrganisationClientModel(id));
 
+        _organisationClientMock.Setup(client => client.GetOrganisationSupplierInformationAsync(id))
+            .ReturnsAsync(SupplierDetailsFactory.CreateSupplierInformationClientModel());
+
         var result = await _model.OnPost();
 
         result.Should().BeOfType<RedirectToPageResult>()
@@ -83,6 +86,9 @@ public class SupplierVatModelQuestionTest
 
         _organisationClientMock.Setup(client => client.GetOrganisationAsync(id))
             .ReturnsAsync(fakeOrg);
+
+        _organisationClientMock.Setup(client => client.GetOrganisationSupplierInformationAsync(id))
+            .ReturnsAsync(SupplierDetailsFactory.CreateSupplierInformationClientModel());
 
         var result = await _model.OnPost();
 
@@ -107,6 +113,9 @@ public class SupplierVatModelQuestionTest
         _organisationClientMock.Setup(client => client.GetOrganisationAsync(id))
             .ReturnsAsync(fakeOrg);
 
+        _organisationClientMock.Setup(client => client.GetOrganisationSupplierInformationAsync(id))
+            .ReturnsAsync(SupplierDetailsFactory.CreateSupplierInformationClientModel());
+
         await _model.OnPost();
 
         _organisationClientMock.Verify(o => o.UpdateOrganisationAsync(It.IsAny<Guid>(), It.IsAny<UpdatedOrganisation>()), Times.Never);
@@ -117,7 +126,15 @@ public class SupplierVatModelQuestionTest
     [Fact]
     public async Task OnPost_InvalidModelState_ReturnsPageResult()
     {
+        var id = Guid.NewGuid();
+        _model.Id = id;
         _model.ModelState.AddModelError("HasVatNumber", "Please select an option");
+
+        _organisationClientMock.Setup(client => client.GetOrganisationSupplierInformationAsync(id))
+            .ReturnsAsync(SupplierDetailsFactory.CreateSupplierInformationClientModel());
+
+        _organisationClientMock.Setup(client => client.GetOrganisationAsync(id))
+            .ReturnsAsync(SupplierDetailsFactory.GivenOrganisationClientModel(id));
 
         var result = await _model.OnPost();
 
@@ -132,15 +149,10 @@ public class SupplierVatModelQuestionTest
         _model.HasVatNumber = false;
 
         _organisationClientMock.Setup(client => client.GetOrganisationAsync(id))
-            .ThrowsAsync(new CO.CDP.Organisation.WebApiClient.ApiException("Unexpected error", 404, "", default, null));
+            .ThrowsAsync(new ApiException("Unexpected error", 404, "", default, null));
 
         var result = await _model.OnPost();
 
         result.Should().BeOfType<RedirectResult>().Which.Url.Should().Be("/page-not-found");
-    }
-
-    private static CO.CDP.Organisation.WebApiClient.Organisation GivenOrganisationClientModel()
-    {
-        return new CO.CDP.Organisation.WebApiClient.Organisation(additionalIdentifiers: null, addresses: null, contactPoint: null, id: _organisationId, identifier: null, name: "Test Org", type: OrganisationType.Organisation, roles: [], details: new Details(approval: null, buyerInformation: null, pendingRoles: [], publicServiceMissionOrganization: null, scale: null, shelteredWorkshop: null, vcse: null));
     }
 }

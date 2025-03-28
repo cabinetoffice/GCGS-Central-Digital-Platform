@@ -23,21 +23,20 @@ public class SupplierEmailAddressModel(IOrganisationClient organisationClient) :
     [BindProperty(SupportsGet = true)]
     public Guid Id { get; set; }
 
-    public async Task<IActionResult> OnGet(Guid id)
+    public SupplierType? SupplierType { get; set; }
+
+    public async Task<IActionResult> OnGet()
     {
         try
         {
-            var getOrganisationTask = organisationClient.GetOrganisationAsync(id);
-            var getSupplierInfoTask = organisationClient.GetOrganisationSupplierInformationAsync(id);
+            var composed = await organisationClient.GetComposedOrganisation(Id);
+            SupplierType = composed.SupplierInfo.SupplierType;
 
-            await Task.WhenAll(getOrganisationTask, getSupplierInfoTask);
-            var organisation = getOrganisationTask.Result;
-
-            if (getSupplierInfoTask.Result.CompletedEmailAddress)
+            if (composed.SupplierInfo.CompletedEmailAddress)
             {
-                if (organisation.ContactPoint.Email != null)
+                if (composed.Organisation.ContactPoint.Email != null)
                 {
-                    EmailAddress = organisation.ContactPoint.Email;
+                    EmailAddress = composed.Organisation.ContactPoint.Email;
                 }
             }
         }
@@ -51,22 +50,24 @@ public class SupplierEmailAddressModel(IOrganisationClient organisationClient) :
 
     public async Task<IActionResult> OnPost()
     {
-        if (!ModelState.IsValid)
-        {
-            return Page();
-        }
 
         try
         {
-            var organisation = await organisationClient.GetOrganisationAsync(Id);
+            var composed = await organisationClient.GetComposedOrganisation(Id);
+            SupplierType = composed.SupplierInfo.SupplierType;
+
+            if (!ModelState.IsValid)
+            {
+                return Page();
+            }
 
             List<Task> tasks = [];
 
             var cp = new OrganisationContactPoint(
-                    name: organisation.ContactPoint.Name,
+                    name: composed.Organisation.ContactPoint.Name,
                     email: EmailAddress,
-                    telephone: organisation.ContactPoint.Telephone,
-                    url: organisation.ContactPoint.Url?.ToString());
+                    telephone: composed.Organisation.ContactPoint.Telephone,
+                    url: composed.Organisation.ContactPoint.Url?.ToString());
 
             tasks.Add(organisationClient.UpdateOrganisationContactPoint(Id, cp));
 

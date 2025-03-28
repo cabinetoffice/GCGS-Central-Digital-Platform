@@ -33,7 +33,8 @@ public class SupplierEmailAddressTest
         _organisationClientMock.Setup(client => client.GetOrganisationAsync(id))
             .ReturnsAsync(OrganisationClientModel(id));
 
-        var result = await _model.OnGet(id);
+        _model.Id = id;
+        var result = await _model.OnGet();
 
         result.Should().BeOfType<PageResult>();
         _model.EmailAddress.Should().Be("test@test.com");
@@ -46,7 +47,8 @@ public class SupplierEmailAddressTest
         _organisationClientMock.Setup(client => client.GetOrganisationSupplierInformationAsync(id))
             .ThrowsAsync(new ApiException("Unexpected error", 404, "", default, null));
 
-        var result = await _model.OnGet(id);
+        _model.Id = id;
+        var result = await _model.OnGet();
 
         result.Should().BeOfType<RedirectResult>()
             .Which.Url.Should().Be("/page-not-found");
@@ -62,6 +64,9 @@ public class SupplierEmailAddressTest
         _organisationClientMock.Setup(client => client.GetOrganisationAsync(id))
             .ReturnsAsync(OrganisationClientModel(id));
 
+        _organisationClientMock.Setup(client => client.GetOrganisationSupplierInformationAsync(id))
+            .ReturnsAsync(SupplierInformationClientModel);
+
         _organisationClientMock.Setup(client => client.UpdateSupplierInformationAsync(id,
             It.IsAny<UpdateSupplierInformation>())).Returns(Task.CompletedTask);
 
@@ -74,6 +79,14 @@ public class SupplierEmailAddressTest
     [Fact]
     public async Task OnPost_InvalidModelState_ReturnsPageResult()
     {
+        var id = Guid.NewGuid();
+        _organisationClientMock.Setup(client => client.GetOrganisationSupplierInformationAsync(id))
+            .ReturnsAsync(SupplierInformationClientModel);
+
+        _organisationClientMock.Setup(client => client.GetOrganisationAsync(id))
+            .ReturnsAsync(OrganisationClientModel(id));
+
+        _model.Id = id;
         _model.ModelState.AddModelError("EmailAddress", "Please enter an email");
 
         var result = await _model.OnPost();
