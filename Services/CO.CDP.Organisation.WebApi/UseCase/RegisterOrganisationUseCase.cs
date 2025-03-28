@@ -87,7 +87,7 @@ public class RegisterOrganisationUseCase(
 
         organisation.Identifiers
             .Where(i => i.Uri == null)
-            .Select(i => i.Uri = identifierService.GetRegistryUri(command.Identifier.Scheme, command.Identifier.Id))
+            .Select(i => i.Uri = identifierService.GetRegistryUri(command.Identifier.Scheme, command.Identifier.Id, organisation.Guid))
             .ToList();
 
         organisation.UpdateBuyerInformation();

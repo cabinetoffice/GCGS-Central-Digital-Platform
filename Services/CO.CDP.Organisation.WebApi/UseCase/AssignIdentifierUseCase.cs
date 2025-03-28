@@ -76,7 +76,7 @@ public class AssignIdentifierUseCase(IOrganisationRepository organisations, IIde
             Scheme = command.Identifier.Scheme,
             LegalName = command.Identifier.LegalName,
             Primary = IsPrimaryIdentifier(organisation, command.Identifier.Scheme),
-            Uri = identifierService.GetRegistryUri(command.Identifier.Scheme, command.Identifier.Id)
+            Uri = identifierService.GetRegistryUri(command.Identifier.Scheme, command.Identifier.Id, organisation.Guid)
         });
 
         return organisation;
