@@ -149,11 +149,11 @@ public static class DataSharingFactory
             ];
     }
 
-    public static List<ConnectedPersonInformation> CreateMockConnectedPersonInformation()
+    public static List<ConnectedEntityInformation> CreateMockConnectedPersonInformation()
     {
         return
         [
-            new ConnectedPersonInformation(
+            new ConnectedEntityInformation(
                 Guid.NewGuid(),
                 "John",
                 "Doe",
@@ -178,7 +178,8 @@ public static class DataSharingFactory
                 null,
                 null,
                 OrganisationInformation.ConnectedEntityType.Individual,
-                ConnectedOrganisationCategory.RegisteredCompany
+                ConnectedOrganisationCategory.RegisteredCompany,
+                DateTimeOffset.Now
             )
         ];
     }

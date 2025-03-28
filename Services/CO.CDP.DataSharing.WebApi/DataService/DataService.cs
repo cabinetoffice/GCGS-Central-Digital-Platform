@@ -4,6 +4,7 @@ using CO.CDP.OrganisationInformation;
 using CO.CDP.OrganisationInformation.Persistence;
 using CO.CDP.OrganisationInformation.Persistence.NonEfEntities;
 using Microsoft.AspNetCore.Mvc.Localization;
+using System.Text.Json;
 using static CO.CDP.OrganisationInformation.Persistence.ConnectedEntity;
 using Address = CO.CDP.OrganisationInformation.Address;
 using ConnectedIndividualTrust = CO.CDP.DataSharing.WebApi.Model.ConnectedIndividualTrust;
@@ -28,7 +29,7 @@ public class DataService(
             OrganisationId = sharedConsent.Organisation.Guid,
             BasicInformation = MapToBasicInformation(sharedConsent.Organisation),
             ConnectedPersonInformation = MapToConnectedPersonInformation(sharedConsent.Organisation.ConnectedEntities),
-            FormAnswerSetForPdfs = MapFormAnswerSetsForPdf(allFormSectionsExceptDeclaractions),
+            FormAnswerSetForPdfs = MapFormAnswerSetsForPdf(allFormSectionsExceptDeclaractions, sharedConsent),
             AttachedDocuments = MapAttachedDocuments(sharedConsent),
             AdditionalIdentifiers = MapAdditionalIdentifiersForPdf(sharedConsent.Organisation.Identifiers)
         };
@@ -46,7 +47,7 @@ public class DataService(
     }
 
     public IEnumerable<FormAnswerSetForPdf> MapFormAnswerSetsForPdf(
-        IEnumerable<FormAnswerSetNonEf> answerSets)
+        IEnumerable<FormAnswerSetNonEf> answerSets, SharedConsentNonEf sharedConsent)
     {
         var pdfAnswerSets = new List<FormAnswerSetForPdf>();
 
@@ -106,6 +107,47 @@ public class DataService(
                         {
                             pdfAnswerSet.QuestionAnswers.Add(new Tuple<string, string>($"{title}:",
                                 GetTitleFromValue(answer.OptionValue ?? "Not specified")));
+                            break;
+                        }
+                    case FormQuestionType.SingleChoice:
+                        {
+                            if (answer.JsonValue != null)
+                            {
+                                var jsonSerializerOptions = new JsonSerializerOptions
+                                {
+                                    PropertyNameCaseInsensitive = true
+                                };
+
+                                ExclusionAppliesToChoiceProviderStrategyAnswer? answerValues = JsonSerializer.Deserialize<ExclusionAppliesToChoiceProviderStrategyAnswer>(answer.JsonValue, jsonSerializerOptions);
+
+                                string singleChoiceValue = "Not specified";
+
+
+                                switch (answerValues?.Type)
+                                {
+                                    case "organisation":
+                                        singleChoiceValue = sharedConsent.Organisation.Name;
+                                        break;
+
+                                    case "connected-entity":
+                                        var connectedEntityDetails = sharedConsent.Organisation.ConnectedEntities
+                                            .First(e => e.Guid == answerValues.Id);
+                                        switch (connectedEntityDetails.EntityType)
+                                        {
+                                            case OrganisationInformation.ConnectedEntityType.TrustOrTrustee:
+                                            case OrganisationInformation.ConnectedEntityType.Individual:
+                                                singleChoiceValue = connectedEntityDetails.IndividualOrTrust?.FirstName + " " + connectedEntityDetails.IndividualOrTrust?.LastName;
+                                                break;
+                                            case OrganisationInformation.ConnectedEntityType.Organisation:
+                                                singleChoiceValue = connectedEntityDetails.Organisation?.Name ?? "Not specified";
+                                                break;
+                                        }
+                                        break;
+                                }
+
+                                pdfAnswerSet.QuestionAnswers.Add(new Tuple<string, string>($"{title}:",
+                                    singleChoiceValue));
+                            }
                             break;
                         }
                 }
@@ -183,13 +225,14 @@ public class DataService(
             EmailAddress = emailAddress,
             Role = organisation.Roles.Contains(PartyRole.Tenderer) ? "Supplier" : "Buyer",
             LegalForm = legalForm,
-            OrganisationName = organisation.Name
+            OrganisationName = organisation.Name,
+            OperationTypes = supplierInfo.OperationTypes
         };
     }
 
-    public static List<ConnectedPersonInformation> MapToConnectedPersonInformation(IEnumerable<ConnectedEntityNonEf?> entities)
+    public static List<ConnectedEntityInformation> MapToConnectedPersonInformation(IEnumerable<ConnectedEntityNonEf?> entities)
     {
-        var connectedPersonList = new List<ConnectedPersonInformation>();
+        var connectedPersonList = new List<ConnectedEntityInformation>();
 
         foreach (var entity in entities)
         {
@@ -237,7 +280,7 @@ public class DataService(
                     address.Type!.Value
                 )).ToList();
 
-                connectedPersonList.Add(new ConnectedPersonInformation(
+                connectedPersonList.Add(new ConnectedEntityInformation(
                     entity.Guid,
                     entity.IndividualOrTrust?.FirstName ?? string.Empty,
                     entity.IndividualOrTrust?.LastName ?? string.Empty,
@@ -252,7 +295,8 @@ public class DataService(
                     individualTrust,
                     organisation,
                     entity.EntityType,
-                    connectedOrganisationCategoryType
+                    connectedOrganisationCategoryType,
+                    entity.RegisteredDate
                 ));
             }
         }
@@ -310,4 +354,10 @@ public class DataService(
             _ => "Unknown"
         };
     }
+}
+
+public class ExclusionAppliesToChoiceProviderStrategyAnswer()
+{
+    required public Guid Id { get; set; }
+    required public string Type { get; set; }
 }
