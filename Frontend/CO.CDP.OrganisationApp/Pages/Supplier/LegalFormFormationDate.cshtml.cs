@@ -33,9 +33,9 @@ public class LegalFormFormationDateModel(
     [RegularExpression(RegExPatterns.Year, ErrorMessageResourceName = nameof(@StaticTextResource.Supplier_LegalFormFormationDate_YearInvalidErrorMessage), ErrorMessageResourceType = typeof(StaticTextResource))]
     public string? Year { get; set; }
 
-    public bool? RegisteredUnderAct2006 { get; set; }
-
     public string? RegisteredLegalForm { get; set; }
+
+    public bool? RegisteredUnderAct2006 { get; set; }
 
     [BindProperty]
     public string? RegistrationDate { get; set; }
@@ -62,11 +62,19 @@ public class LegalFormFormationDateModel(
             Month = lf.RegistrationDate.Value.Month.ToString();
             Year = lf.RegistrationDate.Value.Year.ToString();
         }
+
         return Page();
     }
 
     public async Task<IActionResult> OnPost()
     {
+        var lf = tempDataService.GetOrDefault<LegalForm>(LegalForm.TempDataKey);
+
+        RegisteredLegalForm = lf.RegisteredLegalForm;
+        RegisteredUnderAct2006 = lf.RegisteredUnderAct2006;
+
+        tempDataService.Put(LegalForm.TempDataKey, lf);
+
         if (!ModelState.IsValid)
         {
             return Page();
@@ -85,7 +93,6 @@ public class LegalFormFormationDateModel(
             return Page();
         }
 
-        var lf = tempDataService.GetOrDefault<LegalForm>(LegalForm.TempDataKey);
         lf.RegistrationDate = new DateTimeOffset(parsedDate, TimeSpan.FromHours(0));
         tempDataService.Put(LegalForm.TempDataKey, lf);
 

@@ -73,11 +73,9 @@ public class LegalFormSelectOrganisationModel(
         {
             ta.LawRegistered = "Companies Act 2006";
             redirectPage = "LegalFormFormationDate";
-            ta.RegisteredUnderAct2006 = true;
         }
         else
         {
-            ta.RegisteredUnderAct2006 = false;
             ta.RegisteredLegalForm = OtherLegalForm;
             ta.LawRegistered = (ta.LawRegistered != null && ta.LawRegistered != "Companies Act 2006") ? ta.LawRegistered: null;
             redirectPage = "LegalFormLawRegistered";

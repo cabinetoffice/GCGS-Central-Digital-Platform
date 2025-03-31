@@ -31,14 +31,15 @@
 
     void RenderLegalForm(CO.CDP.Organisation.WebApiClient.LegalForm legalForm)
     {
-        if (legalForm.RegisteredUnderAct2006 == true)
+        @if (LegalFormSelectOrganisationModel.OrganisationLegalForm.ContainsKey(legalForm.RegisteredLegalForm))
         {
             <p class="govuk-body">@LegalFormSelectOrganisationModel.OrganisationLegalForm[legalForm.RegisteredLegalForm]</p>
         }
         else
         {
-            <p class="govuk-body">@legalForm.RegisteredLegalForm</p>
+            <p class="govuk-body"> @legalForm.RegisteredLegalForm</p>
         }
+        
         <p class="govuk-body">@legalForm.LawRegistered</p>
         <p class="govuk-body">@legalForm.RegistrationDate.ToFormattedString()</p>
     }
