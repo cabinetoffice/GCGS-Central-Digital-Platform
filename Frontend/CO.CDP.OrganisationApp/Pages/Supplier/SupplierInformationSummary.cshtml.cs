@@ -13,8 +13,7 @@ namespace CO.CDP.OrganisationApp.Pages.Supplier;
 public class SupplierInformationSummaryModel(
     IOrganisationClient organisationClient,
     IFormsClient formsClient,
-    IDataSharingClient dataSharingClient,
-    IShareCodeMandatoryInformationService shareCodeMandatoryInformationService) : PageModel
+    IDataSharingClient dataSharingClient) : PageModel
 {
     [BindProperty]
     public string? Name { get; set; }
