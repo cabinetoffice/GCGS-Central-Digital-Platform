@@ -438,9 +438,6 @@
   <data name="OrganisationRegistration_Address_Buyer_Heading" xml:space="preserve">
     <value>Rhowch gyfeiriad eich sefydliad</value>
   </data>
-  <data name="OrganisationRegistration_Address_NonUk_Hint" xml:space="preserve">
-    <value></value>
-  </data>
   <data name="OrganisationRegistration_Address_Supplier_Heading" xml:space="preserve">
     <value>Rhowch gyfeiriad cofrestredig eich sefydliad</value>
   </data>
@@ -1361,23 +1358,11 @@
   <data name="Supplier_OperationQuestion_Title" xml:space="preserve">
     <value>Beth sy'n disgrifio eich sefydliad orau?</value>
   </data>
-  <data name="Supplier_OperationType_NonGovernmental" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="Supplier_OperationType_NonGovernmental_Hint" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="Supplier_OperationType_NonGovernmental_Short" xml:space="preserve">
-    <value></value>
-  </data>
   <data name="Supplier_OperationType_None" xml:space="preserve">
     <value>Dim un yn gymwys</value>
   </data>
   <data name="Supplier_OperationType_PublicService" xml:space="preserve">
     <value>Cwmni gwasanaeth cyhoeddus cydfuddiannol</value>
-  </data>
-  <data name="Supplier_OperationType_PublicService_Hint" xml:space="preserve">
-    <value></value>
   </data>
   <data name="Supplier_OperationType_PublicService_Short" xml:space="preserve">
     <value>Cwmni gwasanaeth cyhoeddus cydfuddiannol</value>
@@ -1385,17 +1370,11 @@
   <data name="Supplier_OperationType_SmallOrMediumSized" xml:space="preserve">
     <value>Busnes bach neu ganolig</value>
   </data>
-  <data name="Supplier_OperationType_SmallOrMediumSized_Hint" xml:space="preserve">
-    <value></value>
-  </data>
   <data name="Supplier_OperationType_SmallOrMediumSized_Short" xml:space="preserve">
     <value>Busnes bach neu ganolig</value>
   </data>
   <data name="Supplier_OperationType_SupportedEmploymentProvider" xml:space="preserve">
     <value>Darparwr cyflogaeth â chymorth</value>
-  </data>
-  <data name="Supplier_OperationType_SupportedEmploymentProvider_Hint" xml:space="preserve">
-    <value></value>
   </data>
   <data name="Supplier_OperationType_SupportedEmploymentProvider_Short" xml:space="preserve">
     <value>Darparwr cyflogaeth â chymorth</value>
@@ -1414,9 +1393,6 @@
   </data>
   <data name="Supplier_RegisteredAddress" xml:space="preserve">
     <value>Cyfeiriad cofrestredig</value>
-  </data>
-  <data name="Supplier_ReturnToAccountHome" xml:space="preserve">
-    <value></value>
   </data>
   <data name="Supplier_SupplierInformationSummary_ConnectedPersonCount_None" xml:space="preserve">
     <value>Dim berson cysylltiedig</value>
@@ -2544,9 +2520,6 @@
   <data name="SupplierToBuyer_OrganisationType_BuyerTypeOthers" xml:space="preserve">
     <value>Eraill</value>
   </data>
-  <data name="Supplier_BasicInformation_Title" xml:space="preserve">
-    <value></value>
-  </data>
   <data name="Supplier_ConnectedEntity_Address_EnterAddress_Heading" xml:space="preserve">
     <value>Rhowch gyfeiriad {0}</value>
   </data>
@@ -2781,9 +2754,6 @@
   <data name="Supplier_ConnectedEntity_ConnectedPersonSummary_BackToSupplierInformation" xml:space="preserve">
     <value>Yn ôl i'r wybodaeth am y cyflenwr</value>
   </data>
-  <data name="Supplier_EmailAddress_Hint" xml:space="preserve">
-    <value></value>
-  </data>
   <data name="Supplier_InformationHint" xml:space="preserve">
     <value>Mae angen gwybodaeth arnom yn seiliedig ar ba fath o gyflenwr ydych chi.</value>
   </data>
@@ -2861,9 +2831,6 @@
   </data>
   <data name="Supplier_VatQuestion_No" xml:space="preserve">
     <value>Rhif</value>
-  </data>
-  <data name="Supplier_VatQuestion_VatNumberHint" xml:space="preserve">
-    <value></value>
   </data>
   <data name="Supplier_WebsiteQuestion_ErrorInvalidUrl" xml:space="preserve">
     <value>Rhaid i gyfeiriad y wefan fod yn y fformat cywir, fel https://www.enwcwmni.com</value>

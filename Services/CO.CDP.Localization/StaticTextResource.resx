@@ -1380,6 +1380,9 @@
   <data name="Shared_Address_NonUk_Link" xml:space="preserve">
     <value>Enter a non-UK address</value>
   </data>
+  <data name="Shared_Address_NonUk_SelectCountry" xml:space="preserve">
+    <value>Select country</value>
+  </data>
   <data name="OrganisationRegistration_BuyerDevolvedRegulation_Heading" xml:space="preserve">
     <value>Do devolved nation regulations apply to your organisation?</value>
   </data>
