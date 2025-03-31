@@ -2,15 +2,25 @@ ARG ASPNET_VERSION=8.0
 ARG BUILD_CONFIGURATION=Release
 ARG NUGET_PACKAGES=/nuget/packages
 
-FROM mcr.microsoft.com/dotnet/aspnet:${ASPNET_VERSION} AS base
-ARG NUGET_PACKAGES
-ENV NUGET_PACKAGES="${NUGET_PACKAGES}"
+# Distroless image used for apps has no package manager so we install these packages here
+FROM mcr.microsoft.com/dotnet/aspnet:${ASPNET_VERSION} AS packages
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl \
+    netcat-openbsd \
     fontconfig \
     fonts-dejavu-core \
     && fc-cache -fv \
     && rm -rf /var/lib/apt/lists/*
+
+# Distroless "chiseled" image from MS with absolutely minimal packages, no shell, no package manager
+# Packages we require can be copied from the packages image above
+FROM mcr.microsoft.com/dotnet/aspnet:${ASPNET_VERSION}-noble-chiseled-extra AS base
+ARG NUGET_PACKAGES
+ENV NUGET_PACKAGES="${NUGET_PACKAGES}"
+COPY --from=packages /usr/bin/nc /usr/bin/nc
+COPY --from=packages /lib/x86_64-linux-gnu/libbsd.so.0 /lib/x86_64-linux-gnu/libbsd.so.0
+COPY --from=packages /lib/x86_64-linux-gnu/libmd.so.0 /lib/x86_64-linux-gnu/libmd.so.0
+COPY --from=packages /usr/bin/fc-cache /usr/bin/fc-cache
+COPY --from=packages /usr/share/fonts/truetype/dejavu /usr/share/fonts/truetype/dejavu
 USER $APP_UID
 WORKDIR /app
 EXPOSE 8080
@@ -199,20 +209,22 @@ RUN dotnet tool restore
 RUN dotnet ef migrations bundle -p /src/Services/CO.CDP.EntityVerification.Persistence -s /src/Services/CO.CDP.EntityVerification.Persistence --self-contained -o /app/migrations/efbundle
 
 FROM base AS migrations-organisation-information
+COPY --from=busybox:uclibc /bin/busybox /bin/busybox
 ARG VERSION
 ENV VERSION=${VERSION}
 WORKDIR /app
 COPY --from=build-migrations-organisation-information /src/Services/CO.CDP.OrganisationInformation.Persistence/OrganisationInformationDatabaseMigrationConfig /app/OrganisationInformationDatabaseMigrationConfig
 COPY --from=build-migrations-organisation-information /app/migrations/efbundle .
-ENTRYPOINT /app/efbundle --connection "Host=$OrganisationInformationDatabase__Host;Database=$OrganisationInformationDatabase__Database;Username=$OrganisationInformationDatabase__Username;Password=$OrganisationInformationDatabase__Password;"
+ENTRYPOINT ["/bin/busybox", "sh", "-c", "/app/efbundle", "--connection", "Host=$OrganisationInformationDatabase__Host;Database=$OrganisationInformationDatabase__Database;Username=$OrganisationInformationDatabase__Username;Password=$OrganisationInformationDatabase__Password;"]
 
 FROM base AS migrations-entity-verification
+COPY --from=busybox:uclibc /bin/busybox /bin/busybox
 ARG VERSION
 ENV VERSION=${VERSION}
 WORKDIR /app
 COPY --from=build-migrations-entity-verification /src/Services/CO.CDP.EntityVerification.Persistence/EntityVerificationDatabaseMigrationConfig /app/EntityVerificationDatabaseMigrationConfig
 COPY --from=build-migrations-entity-verification /app/migrations/efbundle .
-ENTRYPOINT /app/efbundle --connection "Host=$EntityVerificationDatabase__Host;Database=$EntityVerificationDatabase__Database;Username=$EntityVerificationDatabase__Username;Password=$EntityVerificationDatabase__Password;"
+ENTRYPOINT ["/bin/busybox", "sh", "-c", "/app/efbundle", "--connection", "Host=$EntityVerificationDatabase__Host;Database=$EntityVerificationDatabase__Database;Username=$EntityVerificationDatabase__Username;Password=$EntityVerificationDatabase__Password;"]
 
 FROM base AS final-authority
 ARG VERSION
