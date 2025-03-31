@@ -288,6 +288,9 @@
   <data name="Supplier_Email_Required_ErrorMessage" xml:space="preserve">
     <value>Enter your email address</value>
   </data>
+  <data name="Supplier_IndividualOrOrg_SupplierType_Required_ErrorMessage" xml:space="preserve">
+    <value>Select the journey you want to take</value>
+  </data>
   <data name="OrganisationRegistration_EnterOrganisationName_Heading" xml:space="preserve">
     <value>Enter your organisation's name</value>
   </data>
