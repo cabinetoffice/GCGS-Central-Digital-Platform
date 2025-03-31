@@ -3,6 +3,7 @@
 @using CO.CDP.OrganisationApp.Pages.Forms
 @using CO.CDP.OrganisationApp.Constants
 @inject IUserInfoService userInfoService
+@inject IShareCodeMandatoryInformationService ShareCodeMandatoryInformationService
 @model CO.CDP.OrganisationApp.Pages.Supplier.SupplierInformationSummaryModel
 
 @{
@@ -129,12 +130,53 @@
 <p class="govuk-body">@StaticTextResource.Supplier_SupplierInformationShare_Hint</p>
 
 <div class="govuk-task-list">
-    <div class="govuk-task-list__item govuk-task-list__item--with-link">
+    @{
+        int shareCodeCount = await Model.GetShareCodesCount();
+        bool mandatorySectionsCompleted = await ShareCodeMandatoryInformationService.MandatorySectionsCompleted(Model.Id);
+    }
+
+    <div class="govuk-task-list__item @(mandatorySectionsCompleted || shareCodeCount > 0 ? "govuk-task-list__item--with-link" : "")">
         <div class="govuk-task-list__name-and-hint">
-            <a class="govuk-link govuk-link--no-visited-state" href="/organisation/@Model.Id/forms/@FormsEngine.OrganisationSupplierInfoFormId/sections/@declarationSection.SectionId/share-codes-list-view" aria-describedby="form-section-@(declarationSection.SectionId)-hint form-section-@(declarationSection.SectionId)-status">
-                @(declarationSection.SectionName)
-            </a>
+            @if (mandatorySectionsCompleted || shareCodeCount > 0)
+            {
+                <a class="govuk-link govuk-link--no-visited-state" href="/organisation/@Model.Id/forms/@FormsEngine.OrganisationSupplierInfoFormId/sections/@declarationSection.SectionId/share-codes-list-view" aria-describedby="share-code-status share-code-hint">
+                    @(declarationSection.SectionName)
+                </a>
+            } else
+            {
+                <text>@(declarationSection.SectionName)</text>
+            }
+
+            @if (!mandatorySectionsCompleted)
+            {
+                if (shareCodeCount > 0)
+                {
+                    <div id="share-code-hint" class="govuk-task-list__hint">
+                        @StaticTextResource.Supplier_SupplierInformationSummary_ShareCodeSectionsIncompleteHint
+                    </div>
+                }
+                else
+                {
+                    <div id="share-code-hint" class="govuk-task-list__hint">
+                        @StaticTextResource.Supplier_SupplierInformationSummary_ShareCodeCannotStartHint
+                    </div>
+                }
+            }
         </div>
+
+        @if (shareCodeCount > 0)
+        {
+            <div class="govuk-task-list__status" id="share-code-status">@string.Format(StaticTextResource.Supplier_SupplierInformationSummary_ShareCodeRecordCount, shareCodeCount)</div>
+        } else {
+            if (mandatorySectionsCompleted) {
+                <div class="govuk-task-list__status" id="share-code-status">
+                    <strong class="govuk-tag govuk-tag--blue">@StaticTextResource.SupplierInformationStatus_StepStatus_NotStarted</strong>
+                </div>
+            }
+            else {
+                <div class="govuk-task-list__status govuk-task-list__status--cannot-start-yet" id="share-code-status">@StaticTextResource.Supplier_SupplierInformationSummary_ShareCodeCannotStart</div>
+            }
+        }
     </div>
 </div>
 

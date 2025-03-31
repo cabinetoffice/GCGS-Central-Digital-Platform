@@ -4,6 +4,7 @@
 @using CO.CDP.OrganisationApp.Constants
 @using CO.CDP.OrganisationApp.Extensions
 @using CO.CDP.OrganisationApp.TagHelpers
+@inject IShareCodeMandatoryInformationService ShareCodeMandatoryInformationService
 
 @{
     var title = StaticTextResource.ShareYourInformation_Title;
@@ -58,7 +59,7 @@
             }
 
             <authorize scope="@OrgScopeRequirement.Editor">
-                @if (Model.IsInformalConsortium == true || await Model.MandatorySectionsCompleted())
+                @if (Model.IsInformalConsortium == true || await ShareCodeMandatoryInformationService.MandatorySectionsCompleted(Model.OrganisationId))
                 {
                     <a href="@createShareCodeLink" role="button" draggable="false" class="govuk-button" data-module="govuk-button">
                         @StaticTextResource.ShareYourInformation_CreateShareCodeButton

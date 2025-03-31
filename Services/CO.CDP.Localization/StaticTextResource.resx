@@ -270,6 +270,18 @@
   <data name="Supplier_SupplierInformationSummary_FormRecordCount" xml:space="preserve">
     <value>{0} added</value>
   </data>
+  <data name="Supplier_SupplierInformationSummary_ShareCodeRecordCount" xml:space="preserve">
+    <value>{0} created</value>
+  </data>
+  <data name="Supplier_SupplierInformationSummary_ShareCodeCannotStart" xml:space="preserve">
+    <value>Cannot start yet</value>
+  </data>
+  <data name="Supplier_SupplierInformationSummary_ShareCodeCannotStartHint" xml:space="preserve">
+    <value>Complete your supplier information to create a share code</value>
+  </data>
+  <data name="Supplier_SupplierInformationSummary_ShareCodeSectionsIncompleteHint" xml:space="preserve">
+    <value>Complete your supplier information to create a new share code</value>
+  </data>
   <data name="Supplier_Email_Required_ErrorMessage" xml:space="preserve">
     <value>Enter your email address</value>
   </data>
