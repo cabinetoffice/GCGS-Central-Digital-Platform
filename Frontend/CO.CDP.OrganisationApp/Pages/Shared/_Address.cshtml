@@ -90,7 +90,7 @@
                     </p>
                 }
                 <select asp-for="Country" class="govuk-select @(countryHasError ? "govuk-select--error" : "")">
-                    <option value="">Select country</option>
+                    <option value="">@StaticTextResource.Shared_Address_NonUk_SelectCountry</option>
                     @foreach (var cnt in Constants.Country.NonUKCountries)
                     {
                         <option value="@cnt.Key">@cnt.Value</option>
