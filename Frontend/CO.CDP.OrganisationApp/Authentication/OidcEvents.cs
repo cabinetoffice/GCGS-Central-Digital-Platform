@@ -1,6 +1,8 @@
 using IdentityModel;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -8,12 +10,13 @@ using System.Security.Cryptography;
 
 namespace CO.CDP.OrganisationApp.Authentication;
 
-public class OidcEvents(IConfiguration configuration) : OpenIdConnectEvents
+public class OidcEvents(
+    IConfiguration configuration,
+    ILogger<OidcEvents> logger,
+    IOptionsMonitor<CookieAuthenticationOptions> cookieAuthOptions) : OpenIdConnectEvents
 {
     public override Task AuthenticationFailed(AuthenticationFailedContext context)
     {
-        var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<OidcEvents>>();
-
         logger.LogError(context.Exception,
             "Oidc Authentication failed.{NewLine}State: {State}{NewLine}Redirect URI: {RedirectUri}{NewLine}Cookies: {Cookies}{NewLine}Query: {Query}",
                 Environment.NewLine,
@@ -28,9 +31,24 @@ public class OidcEvents(IConfiguration configuration) : OpenIdConnectEvents
         return base.AuthenticationFailed(context);
     }
 
-    public override Task RemoteFailure(RemoteFailureContext context)
+    public override async Task RemoteFailure(RemoteFailureContext context)
     {
-        var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<OidcEvents>>();
+        var authCookieName = cookieAuthOptions.Get(CookieAuthenticationDefaults.AuthenticationScheme).Cookie.Name ?? ".AspNetCore.Cookies";
+
+        // Check if authentication cookie exists
+        if (context.HttpContext.Request.Cookies.TryGetValue(authCookieName, out var authCookie) && !string.IsNullOrEmpty(authCookie))
+        {
+            // User likely has an active session, force authentication check
+            var authenticateResult = await context.HttpContext.AuthenticateAsync();
+
+            if (authenticateResult.Succeeded)
+            {
+                // User is already authenticated
+                context.Response.Redirect("/one-login/user-info");
+                context.HandleResponse();
+                return;
+            }
+        }
 
         logger.LogError(context.Failure,
             "Oidc Remote Failure.{NewLine}Redirect URI: {RedirectUri}{NewLine}Cookies: {Cookies}",
@@ -42,7 +60,7 @@ public class OidcEvents(IConfiguration configuration) : OpenIdConnectEvents
         context.Response.Redirect($"/?one-login-error={Uri.EscapeDataString(context.Failure?.Message ?? "Unknown error")}");
         context.HandleResponse();
 
-        return Task.CompletedTask;
+        return;
     }
 
     public override Task RedirectToIdentityProvider(RedirectContext context)
