@@ -17,7 +17,7 @@ public class OrganisationEndpointsTests
 {
     private readonly HttpClient _httpClient;
     private readonly Mock<IUseCase<RegisterOrganisation, Model.Organisation>> _registerOrganisationUseCase = new();
-    private readonly Mock<IUseCase<PaginatedOrganisationQuery, IEnumerable<OrganisationExtended>>> _getOrganisationsUseCase = new();
+    private readonly Mock<IUseCase<PaginatedOrganisationQuery, IEnumerable<OrganisationDto>>> _getOrganisationsUseCase = new();
     private readonly Mock<IUseCase<Guid, Model.Organisation>> _getOrganisationUseCase = new();
     private readonly Mock<IUseCase<Guid, IEnumerable<Review>>> _getReviewsUseCase = new();
     private readonly Mock<IUseCase<(Guid, UpdateOrganisation), bool>> _updatesOrganisationUseCase = new();
