@@ -308,9 +308,9 @@ public class SupportUpdateOrganisationUseCaseTests
             }
         };
 
-        _organisation.Identifiers = new List<Persistence.Organisation.Identifier>
+        _organisation.Identifiers = new List<Persistence.Identifier>
         {
-            new Persistence.Organisation.Identifier
+            new Persistence.Identifier
             {
                 Scheme = "GB-OLD",
                 IdentifierId = "1111",
@@ -357,7 +357,7 @@ public class SupportUpdateOrganisationUseCaseTests
     {
         var yesterday = DateTimeOffset.UtcNow.AddDays(-1);
 
-        var existingIdentifier = new Persistence.Organisation.Identifier
+        var existingIdentifier = new Persistence.Identifier
         {
             Scheme = "GB-COH",
             IdentifierId = "old-id",
@@ -367,7 +367,7 @@ public class SupportUpdateOrganisationUseCaseTests
             Primary = false
         };
 
-        _organisation.Identifiers = new List<Persistence.Organisation.Identifier> { existingIdentifier };
+        _organisation.Identifiers = new List<Persistence.Identifier> { existingIdentifier };
 
         var supportUpdateOrganisation = new SupportUpdateOrganisation
         {

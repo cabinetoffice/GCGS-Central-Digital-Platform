@@ -99,7 +99,7 @@ public class SupportUpdateOrganisationUseCase(
             }
             else
             {
-                var newIdentifier = new OrganisationInformation.Persistence.Organisation.Identifier
+                var newIdentifier = new Identifier
                 {
                     IdentifierId = identifier.Id,
                     Primary = AssignIdentifierUseCase.IsPrimaryIdentifier(organisation, identifier.Scheme),
