@@ -353,7 +353,7 @@ public class DataSharingApiSnapshottingIntegrationTests : IClassFixture<Organisa
         // Setup
         ClearDatabase();
         Organisation organisation = CreateOrganisation("Test org");
-        ConnectedEntity connectedEntity = CreateConnectedEntity(organisation, ConnectedEntity.ConnectedEntityType.Organisation, DateTime.Now.AddDays(-1), null);
+        ConnectedEntity connectedEntity = CreateConnectedEntity(organisation, ConnectedEntity.ConnectedEntityType.Organisation, DateTime.Now.AddDays(-1).ToUniversalTime(), null);
 
         // Create first share code
         CreateSharedConsent(organisation);
@@ -384,7 +384,7 @@ public class DataSharingApiSnapshottingIntegrationTests : IClassFixture<Organisa
         // Setup
         ClearDatabase();
         Organisation organisation = CreateOrganisation("Test org");
-        ConnectedEntity connectedEntity = CreateConnectedEntity(organisation, ConnectedEntity.ConnectedEntityType.Individual, DateTime.Now.AddDays(-1), null);
+        ConnectedEntity connectedEntity = CreateConnectedEntity(organisation, ConnectedEntity.ConnectedEntityType.Individual, DateTime.Now.AddDays(-1).ToUniversalTime(), null);
 
         // Create first share code
         CreateSharedConsent(organisation);
@@ -418,14 +418,14 @@ public class DataSharingApiSnapshottingIntegrationTests : IClassFixture<Organisa
         // Setup
         ClearDatabase();
         Organisation organisation = CreateOrganisation("Test org");
-        ConnectedEntity connectedEntity = CreateConnectedEntity(organisation, ConnectedEntity.ConnectedEntityType.Individual, DateTime.Now.AddHours(-1), null);
+        ConnectedEntity connectedEntity = CreateConnectedEntity(organisation, ConnectedEntity.ConnectedEntityType.Individual, DateTime.Now.AddHours(-1).ToUniversalTime(), null);
 
         // Create first share code
         CreateSharedConsent(organisation);
         var createShareCodeResponse1 = await _client.CreateSharedDataAsync(new ShareRequest(supplierInformationFormId, organisation.Guid));
 
         // Update data
-        ConnectedEntity connectedEntity2 = CreateConnectedEntity(organisation, ConnectedEntity.ConnectedEntityType.Individual, DateTime.Now, null, "Bob", "Bobbington");
+        ConnectedEntity connectedEntity2 = CreateConnectedEntity(organisation, ConnectedEntity.ConnectedEntityType.Individual, DateTime.Now.ToUniversalTime(), null, "Bob", "Bobbington");
 
         // Create second share code
         CreateSharedConsent(organisation);
@@ -451,16 +451,16 @@ public class DataSharingApiSnapshottingIntegrationTests : IClassFixture<Organisa
         // Setup
         ClearDatabase();
         Organisation organisation = CreateOrganisation("Test org");
-        ConnectedEntity connectedEntity = CreateConnectedEntity(organisation, ConnectedEntity.ConnectedEntityType.Individual, DateTime.Now.AddDays(-2), null);
+        ConnectedEntity connectedEntity = CreateConnectedEntity(organisation, ConnectedEntity.ConnectedEntityType.Individual, DateTime.Now.AddDays(-2).ToUniversalTime(), null);
 
         // Create first share code
         CreateSharedConsent(organisation);
         var createShareCodeResponse1 = await _client.CreateSharedDataAsync(new ShareRequest(supplierInformationFormId, organisation.Guid));
 
         // Update data
-        connectedEntity.EndDate = DateTime.Now.AddDays(-1);
+        connectedEntity.EndDate = DateTime.Now.AddDays(-1).ToUniversalTime();
         _context.SaveChanges();        
-        ConnectedEntity connectedEntity2 = CreateConnectedEntity(organisation, ConnectedEntity.ConnectedEntityType.Individual, DateTime.Now, null, "Bob", "Bobbington");
+        ConnectedEntity connectedEntity2 = CreateConnectedEntity(organisation, ConnectedEntity.ConnectedEntityType.Individual, DateTime.Now.ToUniversalTime(), null, "Bob", "Bobbington");
 
         // Create second share code
         CreateSharedConsent(organisation);
@@ -591,7 +591,7 @@ public class DataSharingApiSnapshottingIntegrationTests : IClassFixture<Organisa
             Form = form,
             FormVersionId = "1",
             SubmissionState = SubmissionState.Draft,
-            SubmittedAt = DateTimeOffset.Now,
+            SubmittedAt = DateTimeOffset.Now.ToUniversalTime(),
         });
 
         _context.SaveChanges();

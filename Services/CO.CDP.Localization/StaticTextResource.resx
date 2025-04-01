@@ -3209,10 +3209,9 @@
   <data name="Users_UserRoleAdmin_BuyerSupplierHint7" xml:space="preserve">
     <value>view, download and agree to the data sharing agreement</value>
   </data>
-
-
-
-
+  <data name="Users_UserRoleAdmin_RequestToJoinNotification" xml:space="preserve">
+    <value>You have a request to join from {0} {1}</value>
+  </data>
   <data name="Users_UserRoleEditor_BuyerSupplierHint1" xml:space="preserve">
     <value>create and cancel API keys</value>
   </data>
