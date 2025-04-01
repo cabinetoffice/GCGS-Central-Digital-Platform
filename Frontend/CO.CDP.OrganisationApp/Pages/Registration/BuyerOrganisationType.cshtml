@@ -115,7 +115,7 @@
                                 @Html.ValidationMessageFor(m => m.OtherValue, "", new { @class = "govuk-error-message", @id = "other-buyer-type-error" })
 
                                 <input autocomplete="off" class="govuk-input @(otherHasError ? "govuk-input--error" : "")"
-                                       id="OtherValue" name="OtherValue" type="text" value="@(Model.BuyerOrganisationType == "Other" ? Model.OtherValue : "")">
+                                       id="other-buyer-type" name="OtherValue" type="text" value="@(Model.BuyerOrganisationType == "Other" ? Model.OtherValue : "")">
 
                             </div>
                         </div>
