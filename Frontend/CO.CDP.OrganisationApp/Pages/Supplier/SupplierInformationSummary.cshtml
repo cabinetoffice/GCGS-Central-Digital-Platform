@@ -18,6 +18,17 @@
         };
     }
 
+    string GetStepStatusTag(SupplierInformationStatus.StepStatus status)
+    {
+        return status switch
+        {
+            SupplierInformationStatus.StepStatus.NotStarted => "grey",
+            SupplierInformationStatus.StepStatus.InProcess => "blue",
+            SupplierInformationStatus.StepStatus.Completed => "green",
+            _ => "grey"
+        };
+    }
+
     bool isViewer = await userInfoService.IsViewer();
 
     var basicInformationLink = $"/organisation/{Model.Id}/supplier-information/{((Model.HasSupplierType || isViewer) ? "basic-information" : "individual-or-org")}";
@@ -42,89 +53,96 @@
     </a>
 }
 
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds govuk-body">
-            <h1 class="govuk-heading-l">
-                @ViewData["Title"]
-            </h1>
-            <h2 class="govuk-heading-m">@StaticTextResource.Supplier_SupplierInformationSummary_Heading</h2>
-            <dl class="govuk-summary-list">
-                <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">
-                        <a class="govuk-link govuk-link--no-visited-state" href="@basicInformationLink">@StaticTextResource.BasicInformation_SectionTitle</a>
-                    </dt>
-                    <dd class="govuk-summary-list__value">
+<h1 class="govuk-heading-l">
+    @ViewData["Title"]
+</h1>
+<h2 class="govuk-heading-m">@StaticTextResource.Supplier_SupplierInformationSummary_Heading</h2>
+<p class="govuk-body">@StaticTextResource.Supplier_SupplierInformationSummary_Hint</p>
+<div class="govuk-task-list">
+    <div class="govuk-task-list__item govuk-task-list__item--with-link">
+        <div class="govuk-task-list__name-and-hint">
+            <a class="govuk-link govuk-link--no-visited-state" href="@basicInformationLink" aria-describedby="basic-info-status">
+                @StaticTextResource.BasicInformation_SectionTitle
+            </a>
+        </div>
 
-                    </dd>
-                    <dd class="govuk-summary-list__actions">
-                        <strong class="govuk-tag">@GetStepStatusDescription(Model.BasicInformationStepStatus)</strong>
-                    </dd>
-                </div>
-            </dl>
-
-            <dl class="govuk-summary-list">
-                <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">
-                        <a class="govuk-link govuk-link--no-visited-state" href="@connectedEntityLink">@StaticTextResource.ConnectedPersons_SectionTitle</a>
-                    </dt>
-                    <dd class="govuk-summary-list__value">
-                        @NoOfConnectedPersonText()
-                    </dd>
-                    <dd class="govuk-summary-list__actions">
-                        <strong class="govuk-tag">@GetStepStatusDescription(Model.ConnectedPersonStepStatus)</strong>
-                    </dd>
-                </div>
-
-            </dl>
-
-            @foreach (var section in Model.FormSections)
-            {
-                var declarationSection = section.Type == CDP.Forms.WebApiClient.FormSectionType.Declaration;
-                var exclusionsSection = section.Type == CDP.Forms.WebApiClient.FormSectionType.Exclusions;
-                var redirectLink = $"/organisation/{Model.Id}/forms/{FormsEngine.OrganisationSupplierInfoFormId}/sections/{section.SectionId}";
-
-                if (declarationSection)
-                {
-                    redirectLink += "/share-codes-list-view";
-                }
-                else if (exclusionsSection && (section.AnswerSetCount == 0 || section.AnswerSetWithFurtherQuestionExemptedExists) && !isViewer)
-                {
-                    redirectLink += "/add-exclusion-declaration";
-                }
-
-                <dl class="govuk-summary-list">
-                    <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">
-                            <a class="govuk-link govuk-link--no-visited-state" href="@redirectLink">
-                                @(section.SectionName)
-                            </a>
-                        </dt>
-                        <dd class="govuk-summary-list__value">
-                            @if (!declarationSection && section.AnswerSetCount > 0)
-                            {
-                                if (section.AnswerSetWithFurtherQuestionExemptedExists)
-                                {
-                                    @StaticTextResource.Supplier_SupplierInformationSummary_FormsFurtherQuestionExempt
-                                }
-                                else
-                                {
-                                    @(string.Format(section.AnswerSetCount > 1 ? StaticTextResource.Supplier_SupplierInformationSummary_FormRecordCount_Plural : StaticTextResource.Supplier_SupplierInformationSummary_FormRecordCount_Singular, section.AnswerSetCount))
-                                }
-                            }
-                        </dd>
-                        <dd class="govuk-summary-list__actions">
-                            @if (!declarationSection)
-                            {
-                                <strong class="govuk-tag">@(section.AnswerSetCount > 0 ? StaticTextResource.SupplierInformationStatus_StepStatus_Completed: StaticTextResource.SupplierInformationStatus_StepStatus_NotStarted)</strong>
-                            }
-                        </dd>
-                    </div>
-                </dl>
-            }
-
-            <div class="govuk-!-margin-top-3">
-                <a class="govuk-link" href="/organisation/@Model.Id">@StaticTextResource.Global_BackToOrganisationDetails</a>
-            </div>
-
+        <div class="govuk-task-list__status" id="basic-info-status">
+            <strong class="govuk-tag govuk-tag--@GetStepStatusTag(Model.BasicInformationStepStatus)">@GetStepStatusDescription(Model.BasicInformationStepStatus)</strong>
         </div>
     </div>
+
+    <div class="govuk-task-list__item govuk-task-list__item--with-link">
+        <div class="govuk-task-list__name-and-hint">
+            <a class="govuk-link govuk-link--no-visited-state" href="@connectedEntityLink" aria-describedby="connected-persons-hint connected-persons-status">
+                @StaticTextResource.ConnectedPersons_SectionTitle
+            </a>
+
+            <div id="connected-persons-hint" class="govuk-task-list__hint">
+                @NoOfConnectedPersonText()
+            </div>
+        </div>
+        <div class="govuk-task-list__status" id="connected-persons-status">
+            <strong class="govuk-tag govuk-tag--@GetStepStatusTag(Model.ConnectedPersonStepStatus)">@GetStepStatusDescription(Model.ConnectedPersonStepStatus)</strong>
+        </div>
+    </div>
+
+    @{
+        var formSections = Model.FormSections.Where(section => section.Type != CDP.Forms.WebApiClient.FormSectionType.Declaration).ToList();
+        var declarationSection = Model.FormSections.Where(section => section.Type == CDP.Forms.WebApiClient.FormSectionType.Declaration).First();
+    }
+
+    @foreach (var section in formSections)
+    {
+        var exclusionsSection = section.Type == CDP.Forms.WebApiClient.FormSectionType.Exclusions;
+        var redirectLink = $"/organisation/{Model.Id}/forms/{FormsEngine.OrganisationSupplierInfoFormId}/sections/{section.SectionId}";
+
+        if (exclusionsSection && (section.AnswerSetCount == 0 || section.AnswerSetWithFurtherQuestionExemptedExists) && !isViewer)
+        {
+            redirectLink += "/add-exclusion-declaration";
+        }
+
+        <div class="govuk-task-list__item govuk-task-list__item--with-link">
+            <div class="govuk-task-list__name-and-hint">
+                <a class="govuk-link govuk-link--no-visited-state" href="@redirectLink" aria-describedby="form-section-@(section.SectionId)-hint form-section-@(section.SectionId)-status">
+                    @(section.SectionName)
+                </a>
+
+                <div id="form-section-@(section.SectionId)-hint" class="govuk-task-list__hint">
+                    @if (section.AnswerSetCount > 0)
+                    {
+                        if (section.AnswerSetWithFurtherQuestionExemptedExists)
+                        {
+                            @StaticTextResource.Supplier_SupplierInformationSummary_FormsFurtherQuestionExempt
+                        }
+                        else
+                        {
+                            @(string.Format(section.AnswerSetCount > 1 ? StaticTextResource.Supplier_SupplierInformationSummary_FormRecordCount_Plural : StaticTextResource.Supplier_SupplierInformationSummary_FormRecordCount_Singular, section.AnswerSetCount))
+                        }
+                    }
+                </div>
+            </div>
+            <div class="govuk-task-list__status" id="form-section-@(section.SectionId)-status">
+                <strong class="govuk-tag govuk-tag--@(section.AnswerSetCount > 0 ? "green" : "grey")">
+                    @(section.AnswerSetCount > 0 ? StaticTextResource.SupplierInformationStatus_StepStatus_Completed : StaticTextResource.SupplierInformationStatus_StepStatus_NotStarted)
+                </strong>
+            </div>
+        </div>
+    }
+</div>
+
+<h2 class="govuk-heading-m">@StaticTextResource.Supplier_SupplierInformationShare_Heading</h2>
+<p class="govuk-body">@StaticTextResource.Supplier_SupplierInformationShare_Hint</p>
+
+<div class="govuk-task-list">
+    <div class="govuk-task-list__item govuk-task-list__item--with-link">
+        <div class="govuk-task-list__name-and-hint">
+            <a class="govuk-link govuk-link--no-visited-state" href="/organisation/@Model.Id/forms/@FormsEngine.OrganisationSupplierInfoFormId/sections/@declarationSection.SectionId/share-codes-list-view" aria-describedby="form-section-@(declarationSection.SectionId)-hint form-section-@(declarationSection.SectionId)-status">
+                @(declarationSection.SectionName)
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="govuk-!-margin-top-8">
+    <a class="govuk-link" href="/organisation/@Model.Id">@StaticTextResource.Global_BackToOrganisationDetails</a>
+</div>

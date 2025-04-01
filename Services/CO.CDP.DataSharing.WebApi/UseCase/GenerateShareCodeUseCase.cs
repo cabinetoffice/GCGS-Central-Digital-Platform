@@ -26,7 +26,8 @@ public class GenerateShareCodeUseCase(
         result.SubmittedAt = DateTime.UtcNow;
         result.SubmissionState = SubmissionState.Submitted;
 
-        await formRepository.SaveSharedConsentAsync(result);
+        await formRepository.SaveSharedConsentWithSnapshotAsync(result);
+
         if (org.Type == OrganisationInformation.OrganisationType.InformalConsortium)
         {
             await formRepository.SaveSharedConsentConsortiumAsync(result);

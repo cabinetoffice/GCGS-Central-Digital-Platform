@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!--
     Microsoft ResX Schema
@@ -118,25 +118,34 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="SupplierInformationStatus_StepStatus_NotStarted" xml:space="preserve">
-    <value>Not started</value>
+    <value>Not&#160;started</value>
   </data>
   <data name="SupplierInformationStatus_StepStatus_InProcess" xml:space="preserve">
-    <value>In progress</value>
+    <value>In&#160;progress</value>
   </data>
   <data name="SupplierInformationStatus_StepStatus_Completed" xml:space="preserve">
     <value>Completed</value>
   </data>
   <data name="Supplier_SupplierInformationSummary_Heading" xml:space="preserve">
-    <value>Supplier information</value>
+    <value>Complete your supplier information</value>
+  </data>
+  <data name="Supplier_SupplierInformationSummary_Hint" xml:space="preserve">
+    <value>To complete each section, tell us about:</value>
+  </data>
+  <data name="Supplier_SupplierInformationShare_Heading" xml:space="preserve">
+    <value>Share your supplier information</value>
+  </data>
+  <data name="Supplier_SupplierInformationShare_Hint" xml:space="preserve">
+    <value>When you've completed all sections of your supplier information, you can:</value>
   </data>
   <data name="Global_BackToOrganisationDetails" xml:space="preserve">
     <value>Back to organisation details</value>
   </data>
   <data name="ConnectedPersons_SectionTitle" xml:space="preserve">
-    <value>Connected persons</value>
+    <value>People connected to your organisation</value>
   </data>
   <data name="BasicInformation_SectionTitle" xml:space="preserve">
-    <value>Basic information</value>
+    <value>Your organisation</value>
   </data>
   <data name="Global_Back" xml:space="preserve">
     <value>Back</value>
@@ -723,15 +732,6 @@
   <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswers_OnDate" xml:space="preserve">
     <value>On {0}</value>
   </data>
-  <data name="Supplier_ConnectedEntity_Remove_Yes_No_Longer_Connected" xml:space="preserve">
-    <value>Yes, they are no longer connected</value>
-  </data>
-  <data name="Supplier_ConnectedEntity_Hint" xml:space="preserve">
-    <value>You will need to create a new share code and file to share the new information</value>
-  </data>
-  <data name="Supplier_ConnectedEntity_Remove_Yes_Added_In_Error" xml:space="preserve">
-    <value>Yes, I added them in error</value>
-  </data>
   <data name="Global_Submit" xml:space="preserve">
     <value>Submit</value>
   </data>
@@ -1042,10 +1042,10 @@
     <value>Are you sure you want to remove this connected person?</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityRemoveConfirmation_ConfirmRemoveError" xml:space="preserve">
-    <value>Select Yes / Yes, I added them in error to confirm removal of the connected person</value>
+    <value>Select yes to confirm removal of the connected person</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityRemoveConfirmation_EndDateLabel" xml:space="preserve">
-    <value>When did the connected person stop being associated with your organisation?</value>
+    <value>When was the connected person no longer associated with your organisation?</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityRemoveConfirmation_EndDateHint" xml:space="preserve">
     <value>For example, 27 3 2007</value>
@@ -1071,9 +1071,6 @@
   <data name="Supplier_ConnectedEntity_ConnectedEntityRemoveConfirmation_DateInvalidError" xml:space="preserve">
     <value>Date of removal must be a real date</value>
   </data>
-  <data name="Supplier_ConnectedEntity_ConnectedEntityRemoveConfirmation_DateNotInPastError" xml:space="preserve">
-    <value>Date of removal must be in the past</value>
-  </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntitySupplierCompanyQuestion_PageTitle" xml:space="preserve">
     <value>Is your organisation registered with Companies House?</value>
   </data>
@@ -1094,6 +1091,9 @@
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedPersonSummary_AddAnotherConnectedPersonError" xml:space="preserve">
     <value>Select yes to add another connected person</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedPersonSummary_RemovedOn" xml:space="preserve">
+    <value>Removed on {0}</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedPersonSummary_BackToSupplierInformation" xml:space="preserve">
     <value>Back to supplier information</value>
@@ -2181,7 +2181,7 @@
     <value>Supplier type</value>
   </data>
   <data name="PdfGenerator_BasicInformation_Title" xml:space="preserve">
-    <value>Basic information</value>
+    <value>Your organisation</value>
   </data>
   <data name="PdfGenerator_BasicInformation_VATNumber" xml:space="preserve">
     <value>VAT number</value>

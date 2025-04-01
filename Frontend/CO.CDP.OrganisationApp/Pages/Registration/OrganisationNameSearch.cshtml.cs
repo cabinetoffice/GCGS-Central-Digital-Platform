@@ -31,51 +31,58 @@ public class OrganisationNameSearchModel(ISession session, IOrganisationClient o
             return RedirectToPage("OrganisationEmail");
         }
 
-        try
-        {
-            await FindMatchingOrgs();
-        }
-        catch (ApiException ex) when (ex.StatusCode == 404)
+        MatchingOrganisations = await FindMatchingOrgs();
+
+        if (MatchingOrganisations == null)
         {
             return RedirectToPage("OrganisationEmail");
         }
 
-        if (MatchingOrganisations != null)
+        var exactMatch = MatchingOrganisations.FirstOrDefault(o => o.Name.ToLower() == OrganisationName?.ToLower());
+        if (exactMatch != null)
         {
-            var exactMatch = MatchingOrganisations.FirstOrDefault(o => o.Name.ToLower() == OrganisationName?.ToLower());
-            if (exactMatch != null)
-            {
-                flashMessageService.SetFlashMessage(
-                    FlashMessageType.Important,
-                    heading: StaticTextResource.OrganisationRegistration_SearchOrganisationName_ExactMatchAlreadyExists
-                );
+            flashMessageService.SetFlashMessage(
+                FlashMessageType.Important,
+                heading: StaticTextResource.OrganisationRegistration_SearchOrganisationName_ExactMatchAlreadyExists
+            );
 
-                return Redirect($"/registration/{Uri.EscapeDataString(exactMatch.Identifier.Scheme + ":" + exactMatch.Identifier.Id)}/join-organisation");
-            }
+            return Redirect($"/registration/{Uri.EscapeDataString(exactMatch.Identifier.Scheme + ":" + exactMatch.Identifier.Id)}/join-organisation");
         }
 
         return Page();
     }
 
-    private async Task FindMatchingOrgs()
+    private async Task<ICollection<OrganisationSearchResult>?> FindMatchingOrgs()
     {
         OrganisationName = RegistrationDetails.OrganisationName;
 
-        var existingOrg = await organisationClient.LookupOrganisationAsync(RegistrationDetails.OrganisationName, string.Empty);
-
-        if (existingOrg != null)
+        try
         {
-            var orgSearchResult = new OrganisationSearchResult(existingOrg.Id,
-                existingOrg.Identifier,
-                existingOrg.Name,
-                existingOrg.Roles,
-                existingOrg.Type);
+            var existingOrg = await organisationClient.LookupOrganisationAsync(RegistrationDetails.OrganisationName, string.Empty);
 
-            MatchingOrganisations = [orgSearchResult];
+            if (existingOrg != null)
+            {
+                var orgSearchResult = new OrganisationSearchResult(existingOrg.Id,
+                    existingOrg.Identifier,
+                    existingOrg.Name,
+                    existingOrg.Roles,
+                    existingOrg.Type);
+
+                return [orgSearchResult];
+            }
         }
-        else
+        catch (ApiException ex) when (ex.StatusCode == 404)
         {
-            MatchingOrganisations = await organisationClient.SearchOrganisationAsync(RegistrationDetails.OrganisationName, Constants.OrganisationType.Buyer.ToString(), 10, 0.3);
+            // Carry on - if we haven't found the org via a lookup we will try again via a fuzzy search
+        }
+
+        try
+        {
+            return await organisationClient.SearchOrganisationAsync(RegistrationDetails.OrganisationName, Constants.OrganisationType.Buyer.ToString(), 10, 0.3);
+        }
+        catch (ApiException ex) when (ex.StatusCode == 404)
+        {
+            return null;
         }
     }
 

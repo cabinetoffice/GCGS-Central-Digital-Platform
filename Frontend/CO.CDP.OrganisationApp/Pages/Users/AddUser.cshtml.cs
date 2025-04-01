@@ -97,7 +97,13 @@ public class AddUserModel(
                 joinRequest.Person.Email.ToLower() == PersonInviteStateData.Email?.ToLower()))
         {
             PendingJoinRequests = pendingJoinRequests;
+        }
 
+        var personInvites = await organisationClient.GetOrganisationPersonInvitesAsync(Id);
+
+        if (personInvites.Any(invite => invite.Email.ToLower() == PersonInviteStateData.Email?.ToLower()))
+        {
+            ModelState.AddModelError("PersonInviteAlreadyExists", StaticTextResource.ErrorMessageList_DuplicatePersonEmail);
             return Page();
         }
 
