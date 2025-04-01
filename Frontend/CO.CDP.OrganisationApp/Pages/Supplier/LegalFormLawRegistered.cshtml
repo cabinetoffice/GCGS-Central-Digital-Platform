@@ -23,7 +23,9 @@
             <form class="form" method="post">
                 <div class="govuk-form-group @(lawRegisteredHasError ? "govuk-form-group--error": "")">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                        <h1 class="govuk-heading-l">@ViewData["Title"]</h1>
+                        <h1 class="govuk-heading-l">
+                            <label class="govuk-label govuk-label--l" for="lawRegistered-text">@ViewData["Title"]</label>
+                        </h1>
                     </legend>
                     <div id="lawRegistered-hint" class="govuk-hint govuk-!-margin-bottom-6">
                         @StaticTextResource.Supplier_LegalFormLawRegistered_Hint
