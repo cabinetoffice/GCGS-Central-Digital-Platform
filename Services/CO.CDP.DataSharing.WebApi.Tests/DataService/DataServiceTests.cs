@@ -6,11 +6,6 @@ using CO.CDP.OrganisationInformation.Persistence.NonEfEntities;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.Localization;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Xunit;
 using static CO.CDP.DataSharing.WebApi.Tests.DataSharingFactory;
 
 namespace CO.CDP.DataSharing.WebApi.Tests.DataService
@@ -113,7 +108,7 @@ namespace CO.CDP.DataSharing.WebApi.Tests.DataService
                 .ReturnsAsync(sharedConsent);
 
             var result = await DataService.GetSharedSupplierInformationAsync("ALL-FALSE");
-            result.BasicInformation.RegisteredAddress.Should().BeNull();
+            result.BasicInformation!.RegisteredAddress.Should().BeNull();
             result.BasicInformation.PostalAddress.Should().BeNull();
             result.BasicInformation.VatNumber.Should().BeNull();
             result.BasicInformation.WebsiteAddress.Should().BeNull();
@@ -368,7 +363,7 @@ namespace CO.CDP.DataSharing.WebApi.Tests.DataService
                 .ReturnsAsync(sharedConsent);
 
             var result = await DataService.GetSharedSupplierInformationAsync("BUYER-ONLY");
-            result.BasicInformation.Role.Should().Be("Buyer");
+            result.BasicInformation!.Role.Should().Be("Buyer");
         }
     }
 }
