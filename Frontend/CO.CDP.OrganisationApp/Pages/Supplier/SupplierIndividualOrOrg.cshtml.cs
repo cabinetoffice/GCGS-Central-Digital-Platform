@@ -1,3 +1,4 @@
+using CO.CDP.Localization;
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.WebApiClients;
@@ -12,7 +13,7 @@ namespace CO.CDP.OrganisationApp.Pages.Supplier;
 public class SupplierIndividualOrOrgModel(IOrganisationClient organisationClient) : PageModel
 {
     [BindProperty]
-    [Required(ErrorMessage = "Select the journey you want to take")]
+    [Required(ErrorMessageResourceName = nameof(StaticTextResource.Supplier_IndividualOrOrg_SupplierType_Required_ErrorMessage), ErrorMessageResourceType = typeof(StaticTextResource))]
     public SupplierType? SupplierType { get; set; }
 
     [BindProperty]

@@ -24,12 +24,15 @@ public class SupplierAddressModel(IOrganisationClient organisationClient) : Page
     [BindProperty]
     public AddressPartialModel Address { get; set; } = new();
 
+    public SupplierType? SupplierType { get; set; }
+
     public async Task<IActionResult> OnGet()
     {
         try
         {
-            SetupAddress(true);
             var composed = await organisationClient.GetComposedOrganisation(Id);
+            SupplierType = composed.SupplierInfo.SupplierType;
+            SetupAddress(true);
 
             if ((composed.SupplierInfo.CompletedRegAddress && AddressType == Constants.AddressType.Registered)
                 || (composed.SupplierInfo.CompletedPostalAddress && AddressType == Constants.AddressType.Postal))
@@ -56,13 +59,14 @@ public class SupplierAddressModel(IOrganisationClient organisationClient) : Page
 
     public async Task<IActionResult> OnPost()
     {
-        SetupAddress();
-        if (!ModelState.IsValid)
-            return Page();
-
         try
         {
-            var organisation = await organisationClient.GetOrganisationAsync(Id);
+            var supplierInfo = await organisationClient.GetOrganisationSupplierInformationAsync(Id);
+            SupplierType = supplierInfo.SupplierType;
+
+            SetupAddress(false);
+            if (!ModelState.IsValid)
+                return Page();
 
             ICollection<OrganisationAddress> addresses = [
                             new OrganisationAddress(
@@ -84,13 +88,30 @@ public class SupplierAddressModel(IOrganisationClient organisationClient) : Page
         return RedirectToPage("SupplierBasicInformation", new { Id });
     }
 
-    private void SetupAddress(bool reset = false)
+    private void SetupAddress(bool reset)
     {
         if (reset)
             Address = new AddressPartialModel { UkOrNonUk = UkOrNonUk };
 
         Address.Heading = AddressType == Constants.AddressType.Registered ?
             StaticTextResource.Supplier_Address_EnterRegisteredAddress : StaticTextResource.Supplier_Address_EnterOrganisationPostalAddress;
+        if (AddressType == Constants.AddressType.Registered)
+        {
+            if (Address.IsNonUkAddress)
+            {
+                Address.AddressHint = StaticTextResource.Supplier_Address_EnterOrganisationRegistered_NonUk_Hint;
+            }
+            else
+            {
+                Address.AddressHint = StaticTextResource.Supplier_Address_EnterOrganisationRegistered_Hint;
+            }
+        }
+
+        if (AddressType == Constants.AddressType.Postal && SupplierType == CDP.Organisation.WebApiClient.SupplierType.Individual)
+        {
+            Address.Heading = StaticTextResource.Supplier_Address_EnterIndividualPostalAddress;
+            Address.AddressHint = StaticTextResource.Supplier_Address_EnterIndividualPostalAddress_Hint;
+        }
 
         Address.NonUkAddressLink = $"/organisation/{Id}/supplier-information/{AddressType.ToString().ToLower()}-address/non-uk";
     }

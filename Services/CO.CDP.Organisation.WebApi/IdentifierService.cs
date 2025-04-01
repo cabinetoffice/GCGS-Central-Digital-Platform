@@ -21,7 +21,7 @@ public class IdentifierService(IConfiguration configuration) : IIdentifierServic
         }
     }
 
-    public string? GetRegistryUri(string scheme, string? identifierId)
+    public string? GetRegistryUri(string scheme, string? identifierId, Guid organisationGuid)
     {
         if (identifierId == null || (scheme != "GB-PPON" && !SchemesToEndpointUris.ContainsKey(scheme)))
         {
@@ -32,7 +32,7 @@ public class IdentifierService(IConfiguration configuration) : IIdentifierServic
         {
             var hostUrl = configuration["OrganisationApiUrl"] ?? throw new Exception("Missing configuration key: OrganisationApiUrl.");
 
-            return string.Format("{0}/organisations/{1}", hostUrl, identifierId);
+            return string.Format("{0}/organisations/{1}", hostUrl, organisationGuid);
         }
 
         return string.Format(SchemesToEndpointUris[scheme], identifierId);

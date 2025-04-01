@@ -6,20 +6,19 @@ using CO.CDP.OrganisationInformation.Persistence;
 using CO.CDP.Organisation.WebApi.UseCase;
 using CO.CDP.OrganisationInformation;
 using CO.CDP.Authentication;
+using CO.CDP.OrganisationInformation.Persistence.NonEfEntities;
 
 namespace CO.CDP.Organisation.WebApi.Tests.UseCase;
 
 public class GetOrganisationsUseCaseTests
 {
     private readonly Mock<IOrganisationRepository> _organisationRepositoryMock;
-    private readonly Mock<IMapper> _mapperMock;
     private readonly GetOrganisationsUseCase _useCase;
 
     public GetOrganisationsUseCaseTests()
     {
         _organisationRepositoryMock = new Mock<IOrganisationRepository>();
-        _mapperMock = new Mock<IMapper>();
-        _useCase = new GetOrganisationsUseCase(_organisationRepositoryMock.Object, _mapperMock.Object);
+        _useCase = new GetOrganisationsUseCase(_organisationRepositoryMock.Object);
     }
 
     [Fact]
@@ -27,64 +26,41 @@ public class GetOrganisationsUseCaseTests
     {
         var command = new PaginatedOrganisationQuery(limit: 10, skip: 0, "buyer", "buyer");
 
-        var guid = Guid.NewGuid();
+        var orgName = "Organisation 1";
+        var organisationGuid = Guid.NewGuid();
+        var approvedOn = new DateTimeOffset();
+        var adminEmail = "admin@email.com";
+        var identifierString = "GB-PPON:0001d4b3-e511-4382-9be4-36c1bb5a3411";
+        var orgEmail = "organisation@email.com";
 
-        var adminPerson = new OrganisationInformation.Persistence.Person
+        var organisations = new List<OrganisationRawDto>
         {
-            Id = 1,
-            FirstName = "John",
-            LastName = "Doe",
-            Guid = guid,
-            Email = null!,
-            UserUrn = "urn:1234",
-        };
-
-        var adminPersonWeb = new Model.Person
-        {
-            Id = guid,
-            FirstName = "John",
-            LastName = "Doe",
-            Email = "john@doe.com"
-        };
-
-        var organisationPersons = new List<OrganisationPerson>
-        {
-            new OrganisationPerson
+            new OrganisationRawDto
             {
-                Person = adminPerson,
-                Scopes = new List<string> { Constants.OrganisationPersonScope.Admin }
+                Id = 1,
+                Guid = organisationGuid,
+                Name = orgName,
+                Identifiers = identifierString,
+                ContactPoints = orgEmail,
+                Roles = [],
+                PendingRoles = [],
+                ApprovedOn = approvedOn,
+                AdminEmail = adminEmail,
             }
         };
 
-        var organisations = new List<CO.CDP.OrganisationInformation.Persistence.Organisation>
-        {
-            new CO.CDP.OrganisationInformation.Persistence.Organisation
-            {
-                Guid = Guid.NewGuid(),
-                Name = "Organisation 1",
-                Type = OrganisationType.Organisation,
-                Tenant = null!, // Ensure Tenant is initialized if required
-                OrganisationPersons = organisationPersons, // Ensure OrganisationPersons is not null
-                Identifiers = new List<CO.CDP.OrganisationInformation.Persistence.Organisation.Identifier>(),
-                Addresses = new List<CO.CDP.OrganisationInformation.Persistence.Organisation.OrganisationAddress>(),
-                ContactPoints = new List<CO.CDP.OrganisationInformation.Persistence.Organisation.ContactPoint>(),
-                Roles = new List<PartyRole>(),
-                PendingRoles = new List<PartyRole>()
-            }
-        };
-
-        List<OrganisationExtended> mappedOrganisations =
+        List<OrganisationDto> OrganisationDtos =
         [
-            new OrganisationExtended
+            new OrganisationDto
             {
-                Id = default,
-                Name = "Organisation 1",
-                Type = OrganisationType.Organisation,
-                Identifier = null!,
-                ContactPoint = null!,
+                Id = organisationGuid,
+                Name = orgName,
+                ContactPoints = [orgEmail],
+                ApprovedOn = approvedOn,
                 Roles = new List<PartyRole>(),
-                Details = null!,
-                AdminPerson = adminPersonWeb // Ensure AdminPerson is included
+                PendingRoles = new List<PartyRole>(),
+                AdminEmail = adminEmail,
+                Identifiers = [identifierString]
             }
         ];
 
@@ -92,17 +68,10 @@ public class GetOrganisationsUseCaseTests
             .Setup(repo => repo.GetPaginated(command.Role, command.PendingRole, command.SearchText, command.Limit, command.Skip))
             .ReturnsAsync(organisations);
 
-        _mapperMock.Setup(m => m.Map<Model.Person>(adminPerson))
-            .Returns(adminPersonWeb);
-
-        _mapperMock.Setup(m => m.Map<OrganisationExtended>(organisations[0]))
-            .Returns(mappedOrganisations[0]);
-
         var result = await _useCase.Execute(command);
 
-        result.Should().BeEquivalentTo(mappedOrganisations, options => options.Including(o => o.AdminPerson));
+        result.Should().BeEquivalentTo(OrganisationDtos);
         _organisationRepositoryMock.Verify(repo => repo.GetPaginated(command.Role, command.PendingRole, command.SearchText, command.Limit, command.Skip), Times.Once);
-        _mapperMock.Verify(m => m.Map<CO.CDP.Organisation.WebApi.Model.Person>(adminPerson), Times.Once);
     }
 
 
@@ -110,7 +79,7 @@ public class GetOrganisationsUseCaseTests
     public async Task Execute_WhenNoOrganisationsExist_ReturnsEmptyList()
     {
         var command = new PaginatedOrganisationQuery(limit: 10, skip: 0, "buyer", "buyer");
-        var organisations = new List<CO.CDP.OrganisationInformation.Persistence.Organisation>();
+        var organisations = new List<OrganisationRawDto>();
 
         _organisationRepositoryMock
             .Setup(repo => repo.GetPaginated(command.Role, command.PendingRole, command.SearchText, command.Limit, command.Skip))

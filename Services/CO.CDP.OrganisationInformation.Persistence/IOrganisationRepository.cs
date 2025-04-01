@@ -1,4 +1,5 @@
 using CO.CDP.OrganisationInformation.Persistence.Forms;
+using CO.CDP.OrganisationInformation.Persistence.NonEfEntities;
 
 namespace CO.CDP.OrganisationInformation.Persistence;
 
@@ -29,7 +30,7 @@ public interface IOrganisationRepository : IDisposable
 
     public Task<IList<Organisation>> Get(string? type);
 
-    public Task<IList<Organisation>> GetPaginated(PartyRole? role, PartyRole? pendingRole, string? searchText, int limit, int skip);
+    public Task<IList<OrganisationRawDto>> GetPaginated(PartyRole? role, PartyRole? pendingRole, string? searchText, int limit, int skip);
 
     public Task<int> GetTotalCount(PartyRole? role, PartyRole? pendingRole, string? searchText);
 
