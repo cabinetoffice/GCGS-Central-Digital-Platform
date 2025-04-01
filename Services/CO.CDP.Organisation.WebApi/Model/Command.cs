@@ -1,3 +1,4 @@
+using Amazon.S3.Model;
 using CO.CDP.OrganisationInformation;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
@@ -181,6 +182,8 @@ public record RegisterConnectedEntity
 
     public DateTimeOffset? StartDate { get; init; }
     public DateTimeOffset? EndDate { get; init; }
+
+    public bool Deleted {  set; get; }
 }
 
 public record UpdateConnectedEntity
@@ -200,6 +203,7 @@ public record UpdateConnectedEntity
 
     public DateTimeOffset? StartDate { get; init; }
     public DateTimeOffset? EndDate { get; init; }
+    public bool Deleted { set; get; }
 }
 
 public record CreateConnectedIndividualTrust
@@ -258,11 +262,7 @@ public record ConnectedEntityLookup
     public required Uri Uri { get; init; }
     public required ConnectedEntityType EntityType { get; init; }
     public DateTimeOffset? EndDate { get; init; }
-}
-
-public record DeleteConnectedEntity
-{
-    public required DateTimeOffset EndDate { get; init; }
+    public bool Deleted { get; set; }
 }
 
 public record RemovePersonFromOrganisation

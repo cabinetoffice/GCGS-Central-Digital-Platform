@@ -67,7 +67,7 @@ builder.Services.AddScoped<IUseCase<(Guid, UpdateBuyerInformation), bool>, Updat
 builder.Services.AddScoped<IUseCase<(Guid, UpdateSupplierInformation), bool>, UpdateSupplierInformationUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, RegisterConnectedEntity), bool>, RegisterConnectedEntityUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, Guid, UpdateConnectedEntity), bool>, UpdateConnectedEntityUseCase>();
-builder.Services.AddScoped<IUseCase<(Guid, Guid, DeleteConnectedEntity), bool>, DeleteConnectedEntityUseCase>();
+builder.Services.AddScoped<IUseCase<(Guid, Guid), DeleteConnectedEntityResult>, DeleteConnectedEntityUseCase>();
 builder.Services.AddScoped<IUseCase<Guid, IEnumerable<Person>>, GetPersonsUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, RemovePersonFromOrganisation), bool>, RemovePersonFromOrganisationUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, InvitePersonToOrganisation), bool>, InvitePersonToOrganisationUseCase>();
