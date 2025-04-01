@@ -27,6 +27,7 @@ public class ConnectedEntity : IEntityDate
 
     public DateTimeOffset CreatedOn { get; set; }
     public DateTimeOffset UpdatedOn { get; set; }
+    public bool Deleted { get; set; }
 
 
     [Owned]

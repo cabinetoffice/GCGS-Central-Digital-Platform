@@ -717,6 +717,9 @@
   <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswers_PSCDetails" xml:space="preserve">
     <value>PSC details</value>
   </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswers_DateNoLongerConnected" xml:space="preserve">
+    <value>Date no longer connected</value>
+  </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswers_DoB" xml:space="preserve">
     <value>Date of birth</value>
   </data>
@@ -854,6 +857,12 @@
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityControlCondition_NoneApplyLabel" xml:space="preserve">
     <value>None apply</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_NotConnectedDate_Heading" xml:space="preserve">
+    <value>When did {0} stop being connected to your organisation?</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_NotConnectedDate_Hint" xml:space="preserve">
+    <value>For example, 27 03 2007</value>
   </data>
   <data name="Global_Or" xml:space="preserve">
     <value>or</value>
@@ -1053,33 +1062,6 @@
   <data name="Supplier_ConnectedEntity_ConnectedEntityRemoveConfirmation_ConfirmRemoveError" xml:space="preserve">
     <value>Select yes to confirm removal of the connected person</value>
   </data>
-  <data name="Supplier_ConnectedEntity_ConnectedEntityRemoveConfirmation_EndDateLabel" xml:space="preserve">
-    <value>When was the connected person no longer associated with your organisation?</value>
-  </data>
-  <data name="Supplier_ConnectedEntity_ConnectedEntityRemoveConfirmation_EndDateHint" xml:space="preserve">
-    <value>For example, 27 3 2007</value>
-  </data>
-  <data name="Supplier_ConnectedEntity_ConnectedEntityRemoveConfirmation_DayRequiredError" xml:space="preserve">
-    <value>Date of removal must include a day</value>
-  </data>
-  <data name="Supplier_ConnectedEntity_ConnectedEntityRemoveConfirmation_DayInvalidError" xml:space="preserve">
-    <value>Day must be a valid number</value>
-  </data>
-  <data name="Supplier_ConnectedEntity_ConnectedEntityRemoveConfirmation_MonthRequiredError" xml:space="preserve">
-    <value>Date of removal must include a month</value>
-  </data>
-  <data name="Supplier_ConnectedEntity_ConnectedEntityRemoveConfirmation_MonthInvalidError" xml:space="preserve">
-    <value>Month must be a valid number</value>
-  </data>
-  <data name="Supplier_ConnectedEntity_ConnectedEntityRemoveConfirmation_YearRequiredError" xml:space="preserve">
-    <value>Date of removal must include a year</value>
-  </data>
-  <data name="Supplier_ConnectedEntity_ConnectedEntityRemoveConfirmation_YearInvalidError" xml:space="preserve">
-    <value>Year must be a valid number</value>
-  </data>
-  <data name="Supplier_ConnectedEntity_ConnectedEntityRemoveConfirmation_DateInvalidError" xml:space="preserve">
-    <value>Date of removal must be a real date</value>
-  </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntitySupplierCompanyQuestion_PageTitle" xml:space="preserve">
     <value>Is your organisation registered with Companies House?</value>
   </data>
@@ -1095,14 +1077,14 @@
   <data name="Supplier_ConnectedEntity_ConnectedPersonSummary_PageTitle" xml:space="preserve">
     <value>You have added {0} connected person(s)</value>
   </data>
+  <data name="Supplier_ConnectedEntity_ConnectedPersonSummary_NoLongerConnected" xml:space="preserve">
+    <value>No longer connected</value>
+  </data>
   <data name="Supplier_ConnectedEntity_ConnectedPersonSummary_AddAnotherQuestion" xml:space="preserve">
     <value>Add another connected person?</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedPersonSummary_AddAnotherConnectedPersonError" xml:space="preserve">
     <value>Select yes to add another connected person</value>
-  </data>
-  <data name="Supplier_ConnectedEntity_ConnectedPersonSummary_RemovedOn" xml:space="preserve">
-    <value>Removed on {0}</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedPersonSummary_BackToSupplierInformation" xml:space="preserve">
     <value>Back to supplier information</value>
@@ -1247,6 +1229,12 @@
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswers_ChangeControlConditions" xml:space="preserve">
     <value>Change&lt;span class="govuk-visually-hidden"&gt; the conditions of control&lt;/span&gt;</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswers_AddDateNoLongerConnected" xml:space="preserve">
+    <value>Add&lt;span class="govuk-visually-hidden"&gt; date no longer connected&lt;/span&gt;</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswers_ChangeDateNoLongerConnected" xml:space="preserve">
+    <value>Change&lt;span class="govuk-visually-hidden"&gt; date no longer connected&lt;/span&gt;</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswers_ChangeRegisteredAsPSC" xml:space="preserve">
     <value>Change&lt;span class="govuk-visually-hidden"&gt; the registered as PSC date&lt;/span&gt;</value>
@@ -3374,6 +3362,9 @@
   </data>
   <data name="OrganisationInviteExpired_Link" xml:space="preserve">
     <value>Go to my account</value>
+  </data>
+  <data name="ErrorMessageList_ConnectedPersons_Cannot_Remove" xml:space="preserve">
+    <value>You have an exclusion recorded for this connected person. You must &lt;a class="govuk-notification-banner__link" href="/organisation/{organisationIdentifier}/forms/{formId}/sections/{sectionId}/summary"&gt;remove the exclusion&lt;/a&gt; before you can remove the connected person.</value>
   </data>
   <data name="ErrorMessageList_DuplicatePersonName" xml:space="preserve">
     <value>A person with this name already exists. Try again.</value>

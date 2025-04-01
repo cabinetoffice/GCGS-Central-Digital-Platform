@@ -31,7 +31,7 @@ public class ShareCodeMandatoryInformationServiceTests
 
         _organisationClientMock
             .Setup(c => c.GetConnectedEntitiesAsync(organisationId))
-            .ReturnsAsync(new List<ConnectedEntityLookup>() { new ConnectedEntityLookup(endDate: null, entityId: new Guid(), entityType: ConnectedEntityType.Organisation, name: "connected entity name", uri: new Uri("http://whatever")) });
+            .ReturnsAsync(new List<ConnectedEntityLookup>() { new ConnectedEntityLookup(deleted: false, endDate: null, entityId: new Guid(), entityType: ConnectedEntityType.Organisation, name: "connected entity name", uri: new Uri("http://whatever")) });
 
         _formsClientMock
             .Setup(f => f.GetFormSectionsAsync(It.IsAny<Guid>(), organisationId))
@@ -54,7 +54,7 @@ public class ShareCodeMandatoryInformationServiceTests
 
         _organisationClientMock
             .Setup(c => c.GetConnectedEntitiesAsync(organisationId))
-            .ReturnsAsync(new List<ConnectedEntityLookup>() { new ConnectedEntityLookup(endDate: null, entityId: new Guid(), entityType: ConnectedEntityType.Organisation, name: "connected entity name", uri: new Uri("http://whatever")) });
+            .ReturnsAsync(new List<ConnectedEntityLookup>() { new ConnectedEntityLookup(deleted: false, endDate: null, entityId: new Guid(), entityType: ConnectedEntityType.Organisation, name: "connected entity name", uri: new Uri("http://whatever")) });
 
         _formsClientMock
             .Setup(f => f.GetFormSectionsAsync(It.IsAny<Guid>(), organisationId))
@@ -100,7 +100,7 @@ public class ShareCodeMandatoryInformationServiceTests
 
         _organisationClientMock
             .Setup(c => c.GetConnectedEntitiesAsync(organisationId))
-            .ReturnsAsync(new List<ConnectedEntityLookup>() { new ConnectedEntityLookup(endDate: null, entityId: new Guid(), entityType: ConnectedEntityType.Organisation, name: "connected entity name", uri: new Uri("http://whatever")) });
+            .ReturnsAsync(new List<ConnectedEntityLookup>() { new ConnectedEntityLookup(deleted: false, endDate: null, entityId: new Guid(), entityType: ConnectedEntityType.Organisation, name: "connected entity name", uri: new Uri("http://whatever")) });
 
         _formsClientMock
             .Setup(f => f.GetFormSectionsAsync(It.IsAny<Guid>(), organisationId))
@@ -123,7 +123,7 @@ public class ShareCodeMandatoryInformationServiceTests
 
         _organisationClientMock
             .Setup(c => c.GetConnectedEntitiesAsync(organisationId))
-            .ReturnsAsync(new List<ConnectedEntityLookup>() { new ConnectedEntityLookup(endDate: null, entityId: new Guid(), entityType: ConnectedEntityType.Organisation, name: "connected entity name", uri: new Uri("http://whatever")) });
+            .ReturnsAsync(new List<ConnectedEntityLookup>() { new ConnectedEntityLookup(deleted: false, endDate: null, entityId: new Guid(), entityType: ConnectedEntityType.Organisation, name: "connected entity name", uri: new Uri("http://whatever")) });
 
         _formsClientMock
             .Setup(f => f.GetFormSectionsAsync(It.IsAny<Guid>(), organisationId))
