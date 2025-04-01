@@ -31,32 +31,31 @@
                 @ViewData["Title"]
             </h1>
 
-            @if (!Model.IsInformalConsortium)
+            @if (await Model.MandatorySectionsCompleted())
             {
-                <details class="govuk-details">
-                    <summary class="govuk-details__summary">
-                        <span class="govuk-details__summary-text">
-                            @StaticTextResource.ShareYourInformation_HowItWorksSummary
-                        </span>
-                    </summary>
+                @if (!Model.IsInformalConsortium)
+                {
+                    <p class="govuk-body">@StaticTextResource.ShareYourInformation_HowItWorksParagraph1</p>
+                    <p class="govuk-body">@StaticTextResource.ShareYourInformation_HowItWorksParagraph2</p>
+                    <p class="govuk-body">@StaticTextResource.ShareYourInformation_HowItWorksParagraph3</p>
 
-                    <div class="govuk-details__text">
-                        <p>@StaticTextResource.ShareYourInformation_HowItWorksParagraph1</p>
-                        <p>@StaticTextResource.ShareYourInformation_HowItWorksParagraph2</p>
-                        <p>@StaticTextResource.ShareYourInformation_HowItWorksParagraph3</p>
+                    <div class="govuk-inset-text">
                         <p>@StaticTextResource.ShareYourInformation_HowItWorksParagraph4</p>
                     </div>
-                </details>
-
-                <p class="govuk-body">@StaticTextResource.ShareYourInformation_Instructions</p>
+                }
+                else
+                {
+                    <p class="govuk-body">@StaticTextResource.ConsortiumShareMyInformation_HowItWorksParagraph1</p>
+                    <p class="govuk-body">@StaticTextResource.ConsortiumShareMyInformation_HowItWorksParagraph2</p>
+                    <p class="govuk-body">@StaticTextResource.ConsortiumShareMyInformation_HowItWorksParagraph3</p>
+                }
             }
             else
             {
-                <p class="govuk-body">@StaticTextResource.ConsortiumShareMyInformation_HowItWorksParagraph1</p>
-                <p class="govuk-body">@StaticTextResource.ConsortiumShareMyInformation_HowItWorksParagraph2</p>
-                <p class="govuk-body">@StaticTextResource.ConsortiumShareMyInformation_HowItWorksParagraph3</p>
+                <div class="govuk-inset-text">
+                    <p>@StaticTextResource.ShareYourInformation_MandatorySectionsNotComplete</p>
+                </div>
             }
-
 
             <authorize scope="@OrgScopeRequirement.Editor">
                 @if (Model.IsInformalConsortium == true || await Model.MandatorySectionsCompleted())

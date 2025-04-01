@@ -25,11 +25,15 @@ public class SupplierWebsiteQuestionModel(IOrganisationClient organisationClient
     [BindProperty(SupportsGet = true)]
     public Guid Id { get; set; }
 
+    public SupplierType? SupplierType { get; set; }
+
     public async Task<IActionResult> OnGet(Guid id)
     {
         try
         {
             var composed = await organisationClient.GetComposedOrganisation(id);
+            SupplierType = composed.SupplierInfo.SupplierType;
+
             if (composed.SupplierInfo.CompletedWebsiteAddress)
             {
                 HasWebsiteAddress = false;
@@ -65,14 +69,16 @@ public class SupplierWebsiteQuestionModel(IOrganisationClient organisationClient
             }
         }
 
-        if (!ModelState.IsValid)
-        {
-            return Page();
-        }
-
         try
         {
-            var organisation = await organisationClient.GetOrganisationAsync(Id);
+            var composed = await organisationClient.GetComposedOrganisation(Id);
+            SupplierType = composed.SupplierInfo.SupplierType;
+            var organisation = composed.Organisation;
+
+            if (!ModelState.IsValid)
+            {
+                return Page();
+            }
 
             List<Task> tasks = [];
 

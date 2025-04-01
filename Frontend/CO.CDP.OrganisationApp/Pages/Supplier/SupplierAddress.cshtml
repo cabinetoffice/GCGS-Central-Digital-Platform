@@ -12,7 +12,7 @@
     {
         <a href="/organisation/@Model.Id/supplier-information/@Model.AddressType.ToString().ToLower()-address/uk" class="govuk-back-link">@StaticTextResource.Global_Back</a>
     }
-    else if (Model.AddressType == Constants.AddressType.Postal)
+    else if (Model.AddressType == Constants.AddressType.Postal && Model.SupplierType == CDP.Organisation.WebApiClient.SupplierType.Organisation)
     {
         <a href="/organisation/@Model.Id/supplier-information/postal-address-same-as-registered" class="govuk-back-link">@StaticTextResource.Global_Back</a>
     }

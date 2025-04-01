@@ -65,6 +65,9 @@ public class SupplierWebsiteModelQuestionTest
         _organisationClientMock.Setup(client => client.GetOrganisationAsync(id))
             .ReturnsAsync(OrganisationClientModel(id));
 
+        _organisationClientMock.Setup(client => client.GetOrganisationSupplierInformationAsync(id))
+            .ReturnsAsync(SupplierInformationClientModel);
+
         _organisationClientMock.Setup(client => client.UpdateSupplierInformationAsync(id,
             It.IsAny<UpdateSupplierInformation>())).Returns(Task.CompletedTask);
 
@@ -77,7 +80,16 @@ public class SupplierWebsiteModelQuestionTest
     [Fact]
     public async Task OnPost_InvalidModelState_ReturnsPageResult()
     {
+        var id = Guid.NewGuid();
+        _model.Id = id;
         _model.ModelState.AddModelError("HasWebsiteAddress", "Select an option");
+
+        _organisationClientMock.Setup(client => client.GetOrganisationAsync(id))
+            .ReturnsAsync(OrganisationClientModel(id));
+
+        _organisationClientMock.Setup(client => client.GetOrganisationSupplierInformationAsync(id))
+            .ReturnsAsync(SupplierInformationClientModel);
+
 
         var result = await _model.OnPost();
 
@@ -92,10 +104,15 @@ public class SupplierWebsiteModelQuestionTest
         _model.HasWebsiteAddress = true;
         _model.WebsiteAddress = "https://.invalid-doamain.com/test-page";
 
+        _organisationClientMock.Setup(client => client.GetOrganisationAsync(id))
+            .ReturnsAsync(OrganisationClientModel(id));
+
+        _organisationClientMock.Setup(client => client.GetOrganisationSupplierInformationAsync(id))
+            .ReturnsAsync(SupplierInformationClientModel);
+
         var result = await _model.OnPost();
 
         result.Should().BeOfType<PageResult>();
-        _organisationClientMock.Verify(c => c.GetOrganisationAsync(id), Times.Never);
     }
 
     [Fact]

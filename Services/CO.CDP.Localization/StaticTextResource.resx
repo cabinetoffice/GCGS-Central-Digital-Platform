@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!--
     Microsoft ResX Schema
@@ -287,6 +287,9 @@
   </data>
   <data name="Supplier_Email_Required_ErrorMessage" xml:space="preserve">
     <value>Enter your email address</value>
+  </data>
+  <data name="Supplier_IndividualOrOrg_SupplierType_Required_ErrorMessage" xml:space="preserve">
+    <value>Select the journey you want to take</value>
   </data>
   <data name="OrganisationRegistration_EnterOrganisationName_Heading" xml:space="preserve">
     <value>Enter your organisation's name</value>
@@ -1342,13 +1345,13 @@
     <value>Postcode</value>
   </data>
   <data name="Shared_Address_Postcode_NonUk" xml:space="preserve">
-    <value>Postal or Zip Code</value>
+    <value>Postal or ZIP Code</value>
   </data>
   <data name="Shared_Address_Postcode_ErrorMessage" xml:space="preserve">
     <value>Enter postcode</value>
   </data>
   <data name="Shared_Address_Postcode_NonUk_ErrorMessage" xml:space="preserve">
-    <value>Enter postal or Zip Code</value>
+    <value>Enter postal or ZIP Code</value>
   </data>
   <data name="Shared_Address_Country" xml:space="preserve">
     <value>Country</value>
@@ -1379,6 +1382,9 @@
   </data>
   <data name="Shared_Address_NonUk_Link" xml:space="preserve">
     <value>Enter a non-UK address</value>
+  </data>
+  <data name="Shared_Address_NonUk_SelectCountry" xml:space="preserve">
+    <value>Select country</value>
   </data>
   <data name="OrganisationRegistration_BuyerDevolvedRegulation_Heading" xml:space="preserve">
     <value>Do devolved nation regulations apply to your organisation?</value>
@@ -1552,16 +1558,16 @@
     <value>To share your supplier information with buyers you need to create a share code and file, and declare that the information is correct.</value>
   </data>
   <data name="ShareYourInformation_HowItWorksParagraph2" xml:space="preserve">
-    <value>This saves a copy of the supplier information you provided about your organisation, connected persons, exclusions and financial information.</value>
+    <value>This saves a snapshot of the supplier information you provided about your organisation, connected persons, exclusions and financial information.</value>
   </data>
   <data name="ShareYourInformation_HowItWorksParagraph3" xml:space="preserve">
     <value>When you submit a bid for a procurement, the contracting authority will let you know how to give them the share code or file.</value>
   </data>
   <data name="ShareYourInformation_HowItWorksParagraph4" xml:space="preserve">
-    <value>If your supplier information changes, you can update it and create a new share code and file to share the new information.</value>
+    <value>You can update your supplier information whenever it changes but you must create a new share code and file to share the new information.</value>
   </data>
-  <data name="ShareYourInformation_Instructions" xml:space="preserve">
-    <value>Create a share code once you've completed all sections. You'll be asked for this share code if you apply for a tender.</value>
+  <data name="ShareYourInformation_MandatorySectionsNotComplete" xml:space="preserve">
+    <value>You must complete all sections of your supplier information before you can create a share code.</value>
   </data>
   <data name="ShareYourInformation_CreateShareCodeButton" xml:space="preserve">
     <value>Create a share code</value>
@@ -2445,14 +2451,17 @@
   <data name="Supplier_Add" xml:space="preserve">
     <value>Add</value>
   </data>
-  <data name="Supplier_EmailAddress_Title" xml:space="preserve">
+  <data name="Supplier_Individual_EmailAddress_Title" xml:space="preserve">
     <value>Enter your email address</value>
   </data>
+  <data name="Supplier_Organisation_EmailAddress_Title" xml:space="preserve">
+    <value>Enter your organisation's email address</value>
+  </data>
   <data name="Supplier_EmailAddress_Hint" xml:space="preserve">
-    <value>It should be a shared inbox managed by your team, not your own email address. This will be displayed on notices.</value>
+    <value>Where possible, use a shared inbox that other team members can access</value>
   </data>
   <data name="Supplier_BasicInformation_Title" xml:space="preserve">
-    <value>Manage {0}'s basic information</value>
+    <value>Your organisation details</value>
   </data>
   <data name="Supplier_InformationHint" xml:space="preserve">
     <value>We need information from you based on the type of supplier you are.</value>
@@ -2470,19 +2479,28 @@
     <value>Organisation type</value>
   </data>
   <data name="Supplier_ReturnToAccountHome" xml:space="preserve">
-    <value>Return to account home</value>
+    <value>Back to your supplier information</value>
   </data>
   <data name="Supplier_WhatTypeOfSupplier" xml:space="preserve">
     <value>Select which best describes your organisation as a supplier</value>
   </data>
   <data name="Supplier_Organisation" xml:space="preserve">
-    <value>Organisation - Includes registered companies with employees. For example, limited companies, partnerships, public limited companies, charities and financial mutuals.</value>
+    <value>Organisation</value>
+  </data>
+  <data name="Supplier_Organisation_Hint" xml:space="preserve">
+    <value>Includes registered companies with employees. For example, limited companies, partnerships, public limited companies, charities and financial mutuals.</value>
   </data>
   <data name="Supplier_Individual" xml:space="preserve">
-    <value>Individual - Includes people running their own business. For example, sole traders.</value>
+    <value>Individual</value>
   </data>
-  <data name="Supplier_VatQuestion_Title" xml:space="preserve">
+  <data name="Supplier_Individual_Hint" xml:space="preserve">
+    <value>Includes people running their own business. For example, sole traders.</value>
+  </data>
+  <data name="Supplier_Individual_VatQuestion_Title" xml:space="preserve">
     <value>Are you registered for VAT?</value>
+  </data>
+  <data name="Supplier_Organisation_VatQuestion_Title" xml:space="preserve">
+    <value>Is your organisation registered for VAT?</value>
   </data>
   <data name="Supplier_VatQuestion_No" xml:space="preserve">
     <value>No</value>
@@ -2491,10 +2509,13 @@
     <value>VAT number</value>
   </data>
   <data name="Supplier_VatQuestion_VatNumberHint" xml:space="preserve">
-    <value>You can find it on your VAT registration certificate.</value>
+    <value>You can find it on your VAT registration certificate</value>
   </data>
-  <data name="Supplier_WebsiteQuestion_Title" xml:space="preserve">
+  <data name="Supplier_Individual_WebsiteQuestion_Title" xml:space="preserve">
     <value>Do you have a website?</value>
+  </data>
+  <data name="Supplier_Organisation_WebsiteQuestion_Title" xml:space="preserve">
+    <value>Does your organisation have a website?</value>
   </data>
   <data name="Global_SelectAnOption" xml:space="preserve">
     <value>Select an option</value>
@@ -2528,6 +2549,18 @@
   </data>
   <data name="Supplier_Address_EnterOrganisationPostalAddress" xml:space="preserve">
     <value>Enter your organisation's postal address</value>
+  </data>
+  <data name="Supplier_Address_EnterIndividualPostalAddress" xml:space="preserve">
+    <value>Enter your postal address</value>
+  </data>
+  <data name="Supplier_Address_EnterIndividualPostalAddress_Hint" xml:space="preserve">
+    <value>The place where you receive official work-related post, also known as the 'service address'</value>
+  </data>
+  <data name="Supplier_Address_EnterOrganisationRegistered_Hint" xml:space="preserve">
+    <value>The address registered with Companies House, or the principal address the business conducts its activities. For example, a head office.</value>
+  </data>
+  <data name="Supplier_Address_EnterOrganisationRegistered_NonUk_Hint" xml:space="preserve">
+    <value>The address where the organisation is registered, or the principal address the business conducts its activities. For example, a head office.</value>
   </data>
   <data name="Supplier_OperationQuestion_Title" xml:space="preserve">
     <value>Which best describes your organisation?</value>
@@ -2635,17 +2668,28 @@
     <value>Select an option</value>
   </data>
   <data name="Supplier_OperationType_SmallOrMediumSized" xml:space="preserve">
-    <value>Small or medium-sized enterprise (SME)
-</value>
+    <value>Small or medium-sized enterprise (SME)</value>
+  </data>
+  <data name="Supplier_OperationType_SmallOrMediumSized_Hint" xml:space="preserve">
+    <value>Fewer than 250 staff and a turnover of £44 million or less or a balance sheet total of £38 million or less</value>
   </data>
   <data name="Supplier_OperationType_NonGovernmental" xml:space="preserve">
-    <value>Non-governmental organisation that is value-driven and which principally reinvests its surpluses to further social, environmental or cultural objectives</value>
+    <value>Voluntary, community and social enterprise (VCSE)</value>
+  </data>
+  <data name="Supplier_OperationType_NonGovernmental_Hint" xml:space="preserve">
+    <value>Non-governmental, value-driven and reinvests to further social, environmental or cultural objectives</value>
   </data>
   <data name="Supplier_OperationType_SupportedEmploymentProvider" xml:space="preserve">
     <value>Supported employment provider</value>
   </data>
+  <data name="Supplier_OperationType_SupportedEmploymentProvider_Hint" xml:space="preserve">
+    <value>Providing employment, or employment related support, to disabled or disadvantaged individuals that represent at least 30% of the workforce</value>
+  </data>
   <data name="Supplier_OperationType_PublicService" xml:space="preserve">
     <value>Public service mutual</value>
+  </data>
+  <data name="Supplier_OperationType_PublicService_Hint" xml:space="preserve">
+    <value>Had previously left the public sector, but continuing to deliver public services</value>
   </data>
   <data name="Supplier_OperationType_None" xml:space="preserve">
     <value>None apply</value>
@@ -2654,7 +2698,7 @@
     <value>Small or medium-sized enterprise</value>
   </data>
   <data name="Supplier_OperationType_NonGovernmental_Short" xml:space="preserve">
-    <value>Non-governmental organisation</value>
+    <value>Voluntary, community and social enterprise (VCSE)</value>
   </data>
   <data name="Supplier_OperationType_SupportedEmploymentProvider_Short" xml:space="preserve">
     <value>Supported employment provider</value>
@@ -3165,10 +3209,9 @@
   <data name="Users_UserRoleAdmin_BuyerSupplierHint7" xml:space="preserve">
     <value>view, download and agree to the data sharing agreement</value>
   </data>
-
-
-
-
+  <data name="Users_UserRoleAdmin_RequestToJoinNotification" xml:space="preserve">
+    <value>You have a request to join from {0} {1}</value>
+  </data>
   <data name="Users_UserRoleEditor_BuyerSupplierHint1" xml:space="preserve">
     <value>create and cancel API keys</value>
   </data>

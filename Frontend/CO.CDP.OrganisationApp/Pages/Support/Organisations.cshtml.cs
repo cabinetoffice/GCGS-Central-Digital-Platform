@@ -27,7 +27,7 @@ public class OrganisationsModel(
 
     public int Skip { get; set; }
 
-    public IList<OrganisationExtended> Organisations { get; set; } = [];
+    public IList<OrganisationDto> Organisations { get; set; } = [];
 
     [BindProperty] public string? OrganisationSearchInput { get; set; } = null;
 
