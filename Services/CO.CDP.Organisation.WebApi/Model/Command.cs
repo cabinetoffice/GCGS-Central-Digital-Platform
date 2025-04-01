@@ -260,11 +260,6 @@ public record ConnectedEntityLookup
     public DateTimeOffset? EndDate { get; init; }
 }
 
-public record DeleteConnectedEntity
-{
-    public required DateTimeOffset EndDate { get; init; }
-}
-
 public record RemovePersonFromOrganisation
 {
     public required Guid PersonId { get; set; }

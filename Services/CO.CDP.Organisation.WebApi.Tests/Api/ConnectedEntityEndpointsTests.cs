@@ -17,7 +17,7 @@ public class ConnectedEntityEndpointsTests
     private readonly Mock<IUseCase<(Guid, Guid), ConnectedEntity?>> _getConnectedEntityUseCase = new();
     private readonly Mock<IUseCase<(Guid organisationId, RegisterConnectedEntity updateConnectedEntity), bool>> _registerConnectedEntityUseCase = new();
     private readonly Mock<IUseCase<(Guid, Guid, UpdateConnectedEntity), bool>> _updateConnectedEntityUseCase = new();
-    private readonly Mock<IUseCase<(Guid, Guid, DeleteConnectedEntity), bool>> _deleteConnectedEntityUseCase = new();
+    private readonly Mock<IUseCase<(Guid, Guid), bool>> _deleteConnectedEntityUseCase = new();
 
     [Theory]
     [InlineData(OK, Channel.OneLogin, OrganisationPersonScope.Admin)]
@@ -136,8 +136,7 @@ public class ConnectedEntityEndpointsTests
     {
         var organisationId = Guid.NewGuid();
         var connectedEntityId = Guid.NewGuid();
-        var deleteConnectedEntity = new DeleteConnectedEntity { EndDate = DateTimeOffset.Now };
-        var command = (organisationId, connectedEntityId, deleteConnectedEntity);
+        var command = (organisationId, connectedEntityId);
 
         _deleteConnectedEntityUseCase.Setup(uc => uc.Execute(command)).ReturnsAsync(true);
 
@@ -146,10 +145,7 @@ public class ConnectedEntityEndpointsTests
             services => services.AddScoped(_ => _deleteConnectedEntityUseCase.Object));
 
         var response = await factory.CreateClient().SendAsync(
-            new HttpRequestMessage(HttpMethod.Delete, $"/organisations/{organisationId}/connected-entities/{connectedEntityId}")
-            {
-                Content = JsonContent.Create(deleteConnectedEntity)
-            });
+            new HttpRequestMessage(HttpMethod.Delete, $"/organisations/{organisationId}/connected-entities/{connectedEntityId}"));
 
         response.StatusCode.Should().Be(expectedStatusCode);
     }

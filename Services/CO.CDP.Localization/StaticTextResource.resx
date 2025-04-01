@@ -1047,33 +1047,6 @@
   <data name="Supplier_ConnectedEntity_ConnectedEntityRemoveConfirmation_ConfirmRemoveError" xml:space="preserve">
     <value>Select yes to confirm removal of the connected person</value>
   </data>
-  <data name="Supplier_ConnectedEntity_ConnectedEntityRemoveConfirmation_EndDateLabel" xml:space="preserve">
-    <value>When was the connected person no longer associated with your organisation?</value>
-  </data>
-  <data name="Supplier_ConnectedEntity_ConnectedEntityRemoveConfirmation_EndDateHint" xml:space="preserve">
-    <value>For example, 27 3 2007</value>
-  </data>
-  <data name="Supplier_ConnectedEntity_ConnectedEntityRemoveConfirmation_DayRequiredError" xml:space="preserve">
-    <value>Date of removal must include a day</value>
-  </data>
-  <data name="Supplier_ConnectedEntity_ConnectedEntityRemoveConfirmation_DayInvalidError" xml:space="preserve">
-    <value>Day must be a valid number</value>
-  </data>
-  <data name="Supplier_ConnectedEntity_ConnectedEntityRemoveConfirmation_MonthRequiredError" xml:space="preserve">
-    <value>Date of removal must include a month</value>
-  </data>
-  <data name="Supplier_ConnectedEntity_ConnectedEntityRemoveConfirmation_MonthInvalidError" xml:space="preserve">
-    <value>Month must be a valid number</value>
-  </data>
-  <data name="Supplier_ConnectedEntity_ConnectedEntityRemoveConfirmation_YearRequiredError" xml:space="preserve">
-    <value>Date of removal must include a year</value>
-  </data>
-  <data name="Supplier_ConnectedEntity_ConnectedEntityRemoveConfirmation_YearInvalidError" xml:space="preserve">
-    <value>Year must be a valid number</value>
-  </data>
-  <data name="Supplier_ConnectedEntity_ConnectedEntityRemoveConfirmation_DateInvalidError" xml:space="preserve">
-    <value>Date of removal must be a real date</value>
-  </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntitySupplierCompanyQuestion_PageTitle" xml:space="preserve">
     <value>Is your organisation registered with Companies House?</value>
   </data>
@@ -3256,6 +3229,9 @@
   </data>
   <data name="OrganisationInviteExpired_Link" xml:space="preserve">
     <value>Go to my account</value>
+  </data>
+  <data name="ErrorMessageList_ConnectedPersons_Cannot_Remove" xml:space="preserve">
+    <value>You have an exclusion recorded for this connected person. You must &lt;a class="govuk-notification-banner__link" href="/organisation/{organisationIdentifier}/forms/{formId}/sections/{sectionId}/summary"&gt;remove the exclusion&lt;/a&gt; before you can remove the connected person.</value>
   </data>
   <data name="ErrorMessageList_DuplicatePersonName" xml:space="preserve">
     <value>A person with this name already exists. Try again.</value>
