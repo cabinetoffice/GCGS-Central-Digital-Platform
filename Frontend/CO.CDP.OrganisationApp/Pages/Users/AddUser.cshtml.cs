@@ -97,6 +97,7 @@ public class AddUserModel(
                 joinRequest.Person.Email.ToLower() == PersonInviteStateData.Email?.ToLower()))
         {
             PendingJoinRequests = pendingJoinRequests;
+            return Page();
         }
 
         var personInvites = await organisationClient.GetOrganisationPersonInvitesAsync(Id);

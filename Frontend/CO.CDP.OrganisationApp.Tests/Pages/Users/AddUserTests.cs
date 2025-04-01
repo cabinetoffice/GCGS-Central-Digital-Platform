@@ -139,6 +139,10 @@ public class AddUserModelTests
             .Setup(c => c.GetOrganisationJoinRequestsAsync(_addUserModel.Id, OrganisationJoinRequestStatus.Pending))
             .ReturnsAsync(new List<JoinRequestLookUp> { pendingJoinRequest });
 
+        _mockOrganisationClient
+            .Setup(c => c.GetOrganisationPersonInvitesAsync(_addUserModel.Id))
+            .ReturnsAsync([]);
+
         var result = await _addUserModel.OnPost();
 
         result.Should().BeOfType<PageResult>();
@@ -168,6 +172,10 @@ public class AddUserModelTests
         _mockOrganisationClient
             .Setup(c => c.GetOrganisationPersonInvitesAsync(_addUserModel.Id))
             .ReturnsAsync(new List<PersonInviteModel> { existingInvite });
+
+        _mockOrganisationClient
+            .Setup(c => c.GetOrganisationJoinRequestsAsync(_addUserModel.Id, OrganisationJoinRequestStatus.Pending))
+            .ReturnsAsync([]);
 
         var result = await _addUserModel.OnPost();
 
