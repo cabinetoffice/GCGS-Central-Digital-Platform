@@ -1,14 +1,13 @@
-@page "/registration/{identifier}/join-organisation/success"
+@page "/registration/{id}/join-organisation/success"
 @model JoinOrganisationSuccessModel
 @using CO.CDP.Localization
 
-@{
-    var organisationDetails = Model.OrganisationDetails!;
+@{    
     ViewData["Title"] = GetTitle();
     
     string GetTitle()
     {
-        return string.Format(StaticTextResource.OrganisationRegistration_JoinOrganisationSuccess_Heading, organisationDetails.Name);
+        return string.Format(StaticTextResource.OrganisationRegistration_JoinOrganisationSuccess_Heading, Model.OrganisationName);
     }
 }
 
