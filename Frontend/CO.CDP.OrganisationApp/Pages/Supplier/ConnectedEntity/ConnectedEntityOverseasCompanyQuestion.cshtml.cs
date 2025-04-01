@@ -69,7 +69,7 @@ public class ConnectedEntityOverseasCompanyQuestionModel(ISession session) : Pag
         }
 
         state.HasOverseasCompaniesHouseNumber = HasOverseasCompaniesHouseNumber;
-        state.OverseasCompaniesHouseNumber = OverseasCompaniesHouseNumber;
+        state.OverseasCompaniesHouseNumber = (HasOverseasCompaniesHouseNumber == true ? OverseasCompaniesHouseNumber : string.Empty);
         if (HasOverseasCompaniesHouseNumber == true)
         {
             state.CompaniesHouseNumber = null;
