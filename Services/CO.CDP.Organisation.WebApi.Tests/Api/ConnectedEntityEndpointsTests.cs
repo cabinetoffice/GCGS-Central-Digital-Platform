@@ -17,7 +17,7 @@ public class ConnectedEntityEndpointsTests
     private readonly Mock<IUseCase<(Guid, Guid), ConnectedEntity?>> _getConnectedEntityUseCase = new();
     private readonly Mock<IUseCase<(Guid organisationId, RegisterConnectedEntity updateConnectedEntity), bool>> _registerConnectedEntityUseCase = new();
     private readonly Mock<IUseCase<(Guid, Guid, UpdateConnectedEntity), bool>> _updateConnectedEntityUseCase = new();
-    private readonly Mock<IUseCase<(Guid, Guid, DeleteConnectedEntity), bool>> _deleteConnectedEntityUseCase = new();
+    private readonly Mock<IUseCase<(Guid, Guid), DeleteConnectedEntityResult>> _deleteConnectedEntityUseCase = new();
 
     [Theory]
     [InlineData(OK, Channel.OneLogin, OrganisationPersonScope.Admin)]
@@ -124,8 +124,8 @@ public class ConnectedEntityEndpointsTests
     }
 
     [Theory]
-    [InlineData(NoContent, Channel.OneLogin, OrganisationPersonScope.Admin)]
-    [InlineData(NoContent, Channel.OneLogin, OrganisationPersonScope.Editor)]
+    [InlineData(OK, Channel.OneLogin, OrganisationPersonScope.Admin)]
+    [InlineData(OK, Channel.OneLogin, OrganisationPersonScope.Editor)]
     [InlineData(Forbidden, Channel.OneLogin, OrganisationPersonScope.Viewer)]
     [InlineData(Forbidden, Channel.OneLogin, OrganisationPersonScope.Responder)]
     [InlineData(Forbidden, Channel.ServiceKey)]
@@ -136,21 +136,19 @@ public class ConnectedEntityEndpointsTests
     {
         var organisationId = Guid.NewGuid();
         var connectedEntityId = Guid.NewGuid();
-        var deleteConnectedEntity = new DeleteConnectedEntity { EndDate = DateTimeOffset.Now };
-        var command = (organisationId, connectedEntityId, deleteConnectedEntity);
+        var command = (organisationId, connectedEntityId);
 
-        _deleteConnectedEntityUseCase.Setup(uc => uc.Execute(command)).ReturnsAsync(true);
+        _deleteConnectedEntityUseCase.Setup(uc => uc.Execute(command))
+            .ReturnsAsync(new DeleteConnectedEntityResult() { Success = true, FormGuid = Guid.NewGuid(), SectionGuid = Guid.NewGuid() });
 
         var factory = new TestAuthorizationWebApplicationFactory<Program>(
             channel, organisationId, scope,
-            services => services.AddScoped(_ => _deleteConnectedEntityUseCase.Object));
+            serviceCollection: s => s.AddScoped(_ => _deleteConnectedEntityUseCase.Object));
 
-        var response = await factory.CreateClient().SendAsync(
-            new HttpRequestMessage(HttpMethod.Delete, $"/organisations/{organisationId}/connected-entities/{connectedEntityId}")
-            {
-                Content = JsonContent.Create(deleteConnectedEntity)
-            });
+        var response = await factory
+            .CreateClient()
+            .DeleteAsync($"/organisations/{organisationId}/connected-entities/{connectedEntityId}");
 
-        response.StatusCode.Should().Be(expectedStatusCode);
+       response.StatusCode.Should().Be(expectedStatusCode);
     }
 }

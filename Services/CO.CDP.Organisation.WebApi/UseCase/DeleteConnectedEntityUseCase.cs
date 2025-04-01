@@ -4,9 +4,9 @@ using CO.CDP.OrganisationInformation.Persistence;
 namespace CO.CDP.Organisation.WebApi.UseCase;
 
 public class DeleteConnectedEntityUseCase(IOrganisationRepository organisationRepository, IConnectedEntityRepository connectedEntityRepository)
-            : IUseCase<(Guid organisationId, Guid connectedEntityId, DeleteConnectedEntity deleteConnectedEntity), bool>
+            : IUseCase<(Guid organisationId, Guid connectedEntityId), DeleteConnectedEntityResult>
 {
-    public async Task<bool> Execute((Guid organisationId, Guid connectedEntityId, DeleteConnectedEntity deleteConnectedEntity) command)
+    public async Task<DeleteConnectedEntityResult> Execute((Guid organisationId, Guid connectedEntityId) command)
     {
         var organisation = await organisationRepository.Find(command.organisationId)
             ?? throw new UnknownOrganisationException($"Unknown organisation {command.organisationId}.");
@@ -14,10 +14,24 @@ public class DeleteConnectedEntityUseCase(IOrganisationRepository organisationRe
         var connectedEntity = await connectedEntityRepository.Find(command.organisationId, command.connectedEntityId)
             ?? throw new UnknownConnectedEntityException($"Unknown connected entity {command.connectedEntityId}.");
 
-        connectedEntity.EndDate = command.deleteConnectedEntity.EndDate;
+        var result = new DeleteConnectedEntityResult() { Success = true };
 
-        await connectedEntityRepository.Save(connectedEntity);
+        var isConnectedPersonInUse = await connectedEntityRepository.IsConnectedEntityUsedInExclusionAsync(
+            command.organisationId, command.connectedEntityId);
 
-        return await Task.FromResult(true);
+        if (isConnectedPersonInUse.Item1)
+        {
+            result.Success = false;
+            result.FormGuid = isConnectedPersonInUse.Item2;
+            result.SectionGuid = isConnectedPersonInUse.Item3;
+        }
+        else
+        {
+            connectedEntity.Deleted = true;
+
+            await connectedEntityRepository.Save(connectedEntity);
+        }
+
+        return await Task.FromResult(result);
     }
 }

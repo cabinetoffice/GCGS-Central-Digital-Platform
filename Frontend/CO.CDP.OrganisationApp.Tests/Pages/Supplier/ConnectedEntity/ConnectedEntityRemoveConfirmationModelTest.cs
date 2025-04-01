@@ -11,11 +11,13 @@ public class ConnectedEntityRemoveConfirmationModelTest
 {
     private readonly Mock<IOrganisationClient> _organisationClientMock;
     private readonly ConnectedEntityRemoveConfirmationModel _model;
+    private readonly Mock<IFlashMessageService> flashMessageServiceMock;
 
     public ConnectedEntityRemoveConfirmationModelTest()
     {
+        flashMessageServiceMock = new Mock<IFlashMessageService>();
         _organisationClientMock = new Mock<IOrganisationClient>();
-        _model = new ConnectedEntityRemoveConfirmationModel(_organisationClientMock.Object)
+        _model = new ConnectedEntityRemoveConfirmationModel(flashMessageServiceMock.Object, _organisationClientMock.Object)
         {
             Id = Guid.NewGuid(),
             ConnectedPersonId = Guid.NewGuid()
@@ -44,7 +46,8 @@ public class ConnectedEntityRemoveConfirmationModelTest
             entityType : ConnectedEntityType.Individual,
             name : "connected",
             uri : null,
-            endDate: null)]);
+            endDate: null,
+            deleted: false)]);
 
         var result = await _model.OnGet();
 
@@ -65,43 +68,20 @@ public class ConnectedEntityRemoveConfirmationModelTest
     public async Task OnPost_ShouldCallDeleteConnectedEntityAsync_WhenValid()
     {
         _model.ConfirmRemove = true;
-        _model.EndDay = "01";
-        _model.EndMonth = "01";
-        _model.EndYear = "2022";
-
         _organisationClientMock.Setup(c => c.GetConnectedEntitiesAsync(It.IsAny<Guid>()))
             .ReturnsAsync([new ConnectedEntityLookup (entityId : _model.ConnectedPersonId,
             entityType : ConnectedEntityType.Individual,
             name : "connected",
             uri : null,
-            endDate: null)]);
+            endDate: null,
+            deleted: false)]);
 
-        _organisationClientMock.Setup(c => c.DeleteConnectedEntityAsync(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<DeleteConnectedEntity>()))
-            .Returns(Task.CompletedTask);
-
-        var result = await _model.OnPost();
-
-        _organisationClientMock.Verify(c => c.DeleteConnectedEntityAsync(_model.Id, _model.ConnectedPersonId, It.IsAny<DeleteConnectedEntity>()), Times.Once);
-        result.Should().BeOfType<RedirectToPageResult>();
-    }
-
-    [Fact]
-    public async Task OnPost_ShouldRedirectToSummaryPage_OnSuccess()
-    {
-        _model.ConfirmRemove = true;
-        _model.EndDay = "01";
-        _model.EndMonth = "01";
-        _model.EndYear = "2022";
-
-        _organisationClientMock.Setup(c => c.GetConnectedEntitiesAsync(It.IsAny<Guid>()))
-            .ReturnsAsync([new ConnectedEntityLookup (entityId : _model.ConnectedPersonId,
-            entityType : ConnectedEntityType.Individual,
-            name : "connected",
-            uri : null,
-            endDate: null)]);
+        _organisationClientMock.Setup(c => c.DeleteConnectedEntityAsync(It.IsAny<Guid>(), It.IsAny<Guid>()))
+            .ReturnsAsync(new DeleteConnectedEntityResult(_model.Id, _model.ConnectedPersonId, true));
 
         var result = await _model.OnPost();
 
+        _organisationClientMock.Verify(c => c.DeleteConnectedEntityAsync(_model.Id, _model.ConnectedPersonId), Times.Once);
         result.Should().BeOfType<RedirectToPageResult>()
             .Which.PageName.Should().Be("ConnectedPersonSummary");
     }
