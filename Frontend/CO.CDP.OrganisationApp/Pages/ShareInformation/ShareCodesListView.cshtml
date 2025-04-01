@@ -32,7 +32,7 @@
                 @ViewData["Title"]
             </h1>
 
-            @if (await Model.MandatorySectionsCompleted())
+            @if (await ShareCodeMandatoryInformationService.MandatorySectionsCompleted(Model.OrganisationId))
             {
                 @if (!Model.IsInformalConsortium)
                 {
