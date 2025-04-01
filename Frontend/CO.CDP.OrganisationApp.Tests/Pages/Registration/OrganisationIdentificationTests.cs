@@ -6,7 +6,6 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moq;
-using System.Net;
 using OrganisationWebApiClient = CO.CDP.Organisation.WebApiClient;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages.Registration;
@@ -305,9 +304,10 @@ public class OrganisationIdentificationModelTests
             (api => api.LookupOrganisationAsync(It.IsAny<string>(), It.IsAny<string>()))
             .ReturnsAsync(GivenOrganisationClientModel());
 
+        model.OrganisationId = _organisationId; 
         var result = await model.OnPost();
 
-        Dictionary<string, string> urlParameters = new() { ["identifier"] = model.Identifier! };
+        Dictionary<string, string> urlParameters = new() { ["identifier"] = _organisationId.ToString() };
         Dictionary<string, string> htmlParameters = new() { ["organisationName"] = model.OrganisationName! };
 
         flashMessageServiceMock.Verify(api => api.SetFlashMessage(
@@ -339,9 +339,10 @@ public class OrganisationIdentificationModelTests
             (api => api.GetIdentifiersAsync(It.IsAny<string>()))
             .ReturnsAsync(GivenEntityVerificationIdentifiers());
 
+        model.OrganisationId = _organisationId;
         var result = await model.OnPost();
 
-        Dictionary<string, string> urlParameters = new() { ["identifier"] = model.Identifier! };
+        Dictionary<string, string> urlParameters = new() { ["identifier"] = _organisationId.ToString() };
         Dictionary<string, string> htmlParameters = new() { ["organisationName"] = model.OrganisationName! };
 
         flashMessageServiceMock.Verify(api => api.SetFlashMessage(
@@ -447,7 +448,7 @@ public class OrganisationIdentificationModelTests
     private static ICollection<EntityVerificationClient.Identifier> GivenEntityVerificationIdentifiers()
     {
         return new List<EntityVerificationClient.Identifier>() {
-            new EntityVerificationClient.Identifier("12345", "Acme Ltd", "VAT", new Uri("http://acme.org")) };
+            new EntityVerificationClient.Identifier("12345", "Acme Ltd", _organisationId, "VAT", new Uri("http://acme.org")) };
     }
 
     private void GivenRegistrationIsInProgress()
