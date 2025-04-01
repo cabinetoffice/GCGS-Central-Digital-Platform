@@ -1,3 +1,4 @@
+using System.Collections.ObjectModel;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
@@ -6,13 +7,15 @@ using CO.CDP.OrganisationApp.Constants;
 using Microsoft.AspNetCore.Authorization;
 using CO.CDP.Mvc.Validation;
 using CO.CDP.Localization;
+using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Models;
 
 namespace CO.CDP.OrganisationApp.Pages.Users;
 
 [Authorize(Policy = OrgScopeRequirement.Admin)]
 public class AddUserModel(
-    ISession session) : PageModel
+    ISession session,
+    IOrganisationClient organisationClient) : PageModel
 {
     [BindProperty(SupportsGet = true)]
     public Guid Id { get; set; }
@@ -43,9 +46,24 @@ public class AddUserModel(
 
     public PersonInviteState? PersonInviteStateData;
 
-    public IActionResult OnGet()
+    public ICollection<PartyRole> OrganisationRoles = [];
+
+    public async Task<IActionResult> OnGet()
     {
         PersonInviteStateData = session.Get<PersonInviteState>(PersonInviteState.TempDataKey) ?? null;
+
+        var organisation = await organisationClient.GetOrganisationAsync(Id);
+
+        OrganisationRoles = new List<PartyRole>(organisation.Roles);
+
+        // Add only the roles from PendingRoles that are not already in OrganisationRoles
+        foreach (var role in organisation.Details.PendingRoles)
+        {
+            if (!OrganisationRoles.Contains(role))
+            {
+                OrganisationRoles.Add(role);
+            }
+        }
 
         if (PersonInviteStateData != null)
         {
@@ -55,10 +73,13 @@ public class AddUserModel(
         return Page();
     }
 
-    public IActionResult OnPost()
+    public async Task<IActionResult> OnPost()
     {
         if (!ModelState.IsValid)
         {
+            var organisation = await organisationClient.GetOrganisationAsync(Id);
+            OrganisationRoles = organisation.Roles;
+
             return Page();
         }
 
@@ -67,6 +88,15 @@ public class AddUserModel(
         PersonInviteStateData = UpdateFields(PersonInviteStateData);
 
         PersonInviteStateData = UpdateScopes(PersonInviteStateData);
+
+        var personInvites = await organisationClient.GetOrganisationPersonInvitesAsync(Id);
+
+        if (personInvites.Any(invite => invite.Email.ToLower() == PersonInviteStateData.Email?.ToLower()))
+        {
+            ModelState.AddModelError("PersonInviteAlreadyExists", StaticTextResource.ErrorMessageList_DuplicatePersonEmail);
+
+            return Page();
+        }
 
         session.Set(PersonInviteState.TempDataKey, PersonInviteStateData);
 

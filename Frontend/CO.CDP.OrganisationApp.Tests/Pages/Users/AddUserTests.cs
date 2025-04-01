@@ -1,24 +1,28 @@
+using CO.CDP.Organisation.WebApiClient;
 using Moq;
 using Microsoft.AspNetCore.Mvc;
 using CO.CDP.OrganisationApp.Pages.Users;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using CO.CDP.OrganisationApp.Constants;
+using OrganisationType = CO.CDP.Organisation.WebApiClient.OrganisationType;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages.Users;
 
 public class AddUserModelTests
 {
     private readonly Mock<ISession> _mockSession;
+    private readonly Mock<IOrganisationClient> _mockOrganisationClient;
     private readonly AddUserModel _addUserModel;
 
     public AddUserModelTests()
     {
         _mockSession = new Mock<ISession>();
-        _addUserModel = new AddUserModel(_mockSession.Object);
+        _mockOrganisationClient = new Mock<IOrganisationClient>();
+        _addUserModel = new AddUserModel(_mockSession.Object, _mockOrganisationClient.Object);
     }
 
     [Fact]
-    public void OnGet_ShouldInitializeModel_WhenPersonInviteStateExists()
+    public async Task OnGet_ShouldInitializeModel_WhenPersonInviteStateExists()
     {
         PersonInviteState? personInviteState = new PersonInviteState
         {
@@ -32,7 +36,11 @@ public class AddUserModelTests
             .Setup(s => s.Get<PersonInviteState>(PersonInviteState.TempDataKey))
             .Returns(personInviteState);
 
-        var result = _addUserModel.OnGet();
+        _mockOrganisationClient
+            .Setup(c => c.GetOrganisationAsync(_addUserModel.Id))
+            .ReturnsAsync(OrganisationClientModel(_addUserModel.Id));
+
+        var result = await _addUserModel.OnGet();
 
         Assert.Equal("John", _addUserModel.FirstName);
         Assert.Equal("Johnson", _addUserModel.LastName);
@@ -43,11 +51,15 @@ public class AddUserModelTests
     }
 
     [Fact]
-    public void OnGet_ShouldNotInitializeModel_WhenPersonInviteStateDoesNotExist()
+    public async Task OnGet_ShouldNotInitializeModel_WhenPersonInviteStateDoesNotExist()
     {
         _mockSession.Setup(s => s.Get<PersonInviteState>(PersonInviteState.TempDataKey)).Returns((PersonInviteState)null!);
 
-        var result = _addUserModel.OnGet();
+        _mockOrganisationClient
+            .Setup(c => c.GetOrganisationAsync(_addUserModel.Id))
+            .ReturnsAsync(OrganisationClientModel(_addUserModel.Id));
+
+        var result = await _addUserModel.OnGet();
 
         Assert.Null(_addUserModel.FirstName);
         Assert.Null(_addUserModel.LastName);
@@ -58,17 +70,21 @@ public class AddUserModelTests
     }
 
     [Fact]
-    public void OnPost_ShouldReturnPageResult_WhenModelStateIsInvalid()
+    public async Task OnPost_ShouldReturnPageResult_WhenModelStateIsInvalid()
     {
         _addUserModel.ModelState.AddModelError("FirstName", "Required");
 
-        var result = _addUserModel.OnPost();
+        _mockOrganisationClient
+            .Setup(c => c.GetOrganisationAsync(_addUserModel.Id))
+            .ReturnsAsync(OrganisationClientModel(_addUserModel.Id));
+
+        var result = await _addUserModel.OnPost();
 
         Assert.IsType<PageResult>(result);
     }
 
     [Fact]
-    public void OnPost_ShouldUpdateSessionAndRedirect_WhenModelStateIsValid()
+    public async Task OnPost_ShouldUpdateSessionAndRedirect_WhenModelStateIsValid()
     {
         _addUserModel.FirstName = "John";
         _addUserModel.LastName = "Johnson";
@@ -78,7 +94,11 @@ public class AddUserModelTests
         var initialState = new PersonInviteState();
         _mockSession.Setup(s => s.Get<PersonInviteState>(PersonInviteState.TempDataKey)).Returns(initialState);
 
-        var result = _addUserModel.OnPost();
+        _mockOrganisationClient
+            .Setup(c => c.GetOrganisationPersonInvitesAsync(_addUserModel.Id))
+            .ReturnsAsync([]);
+
+        var result = await _addUserModel.OnPost();
 
         _mockSession.Verify(s => s.Set(PersonInviteState.TempDataKey, It.Is<PersonInviteState>(state =>
             state.Scopes != null &&
@@ -91,6 +111,36 @@ public class AddUserModelTests
         var redirectResult = Assert.IsType<RedirectToPageResult>(result);
         Assert.Equal("UserCheckAnswers", redirectResult.PageName);
         Assert.Equal(_addUserModel.Id, redirectResult.RouteValues?["Id"]);
+    }
+
+    [Fact]
+    public async Task OnPost_ShouldReturnPageResultWithError_WhenPersonInviteAlreadyExists()
+    {
+        _addUserModel.FirstName = "John";
+        _addUserModel.LastName = "Johnson";
+        _addUserModel.Email = "john@johnson.com";
+        _addUserModel.Role = OrganisationPersonScopes.Editor;
+
+        var existingInvite = new PersonInviteModel(
+            email: "john@johnson.com",
+            expiresOn: DateTimeOffset.UtcNow.AddDays(7),
+            firstName: "John",
+            id: Guid.NewGuid(),
+            lastName: "Johnson",
+            scopes: new List<string> { OrganisationPersonScopes.Editor }
+        );
+
+        _mockSession.Setup(s => s.Get<PersonInviteState>(PersonInviteState.TempDataKey))
+            .Returns(new PersonInviteState());
+
+        _mockOrganisationClient
+            .Setup(c => c.GetOrganisationPersonInvitesAsync(_addUserModel.Id))
+            .ReturnsAsync(new List<PersonInviteModel> { existingInvite });
+
+        var result = await _addUserModel.OnPost();
+
+        Assert.IsType<PageResult>(result);
+        Assert.True(_addUserModel.ModelState.ContainsKey("PersonInviteAlreadyExists"));
     }
 
     [Fact]
@@ -146,4 +196,17 @@ public class AddUserModelTests
         Assert.True(_addUserModel.IsAdmin);
         Assert.Equal(OrganisationPersonScopes.Editor, _addUserModel.Role);
     }
+
+    private static CO.CDP.Organisation.WebApiClient.Organisation OrganisationClientModel(Guid id) =>
+        new(
+            additionalIdentifiers: [new Identifier(id: "FakeId", legalName: "FakeOrg", scheme: "VAT", uri: null)],
+            addresses: null,
+            contactPoint: new ContactPoint(email: "test@test.com", name: null, telephone: null, url: new Uri("https://xyz.com")),
+            id: id,
+            identifier: null,
+            name: "Test Org",
+            type: OrganisationType.Organisation,
+            roles: [PartyRole.Supplier],
+            details: new Details(approval: null, buyerInformation: null, pendingRoles: [], publicServiceMissionOrganization: null, scale: null, shelteredWorkshop: null, vcse: null)
+        );
 }

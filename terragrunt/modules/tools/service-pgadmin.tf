@@ -21,7 +21,7 @@ module "ecs_service_pgadmin" {
       db_sirsi_name                           = var.db_sirsi_name
       db_sirsi_username                       = "${var.db_sirsi_credentials_arn}:username::"
       host_port                               = var.pgadmin_config.port
-      image                                   = "${local.orchestrator_account_id}.dkr.ecr.${data.aws_region.current.name}.amazonaws.com/cdp-pgadmin:8.14.0"
+      image                                   = "${local.orchestrator_account_id}.dkr.ecr.${data.aws_region.current.name}.amazonaws.com/cdp-pgadmin:9.1.0"
       lg_name                                 = aws_cloudwatch_log_group.pgadmin.name
       lg_prefix                               = "tools"
       lg_region                               = data.aws_region.current.name

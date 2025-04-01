@@ -118,25 +118,34 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="SupplierInformationStatus_StepStatus_NotStarted" xml:space="preserve">
-    <value>Not started</value>
+    <value>Not&#160;started</value>
   </data>
   <data name="SupplierInformationStatus_StepStatus_InProcess" xml:space="preserve">
-    <value>In progress</value>
+    <value>In&#160;progress</value>
   </data>
   <data name="SupplierInformationStatus_StepStatus_Completed" xml:space="preserve">
     <value>Completed</value>
   </data>
   <data name="Supplier_SupplierInformationSummary_Heading" xml:space="preserve">
-    <value>Supplier information</value>
+    <value>Complete your supplier information</value>
+  </data>
+  <data name="Supplier_SupplierInformationSummary_Hint" xml:space="preserve">
+    <value>To complete each section, tell us about:</value>
+  </data>
+  <data name="Supplier_SupplierInformationShare_Heading" xml:space="preserve">
+    <value>Share your supplier information</value>
+  </data>
+  <data name="Supplier_SupplierInformationShare_Hint" xml:space="preserve">
+    <value>When you've completed all sections of your supplier information, you can:</value>
   </data>
   <data name="Global_BackToOrganisationDetails" xml:space="preserve">
     <value>Back to organisation details</value>
   </data>
   <data name="ConnectedPersons_SectionTitle" xml:space="preserve">
-    <value>Connected persons</value>
+    <value>People connected to your organisation</value>
   </data>
   <data name="BasicInformation_SectionTitle" xml:space="preserve">
-    <value>Basic information</value>
+    <value>Your organisation</value>
   </data>
   <data name="Global_Back" xml:space="preserve">
     <value>Back</value>
@@ -1083,6 +1092,9 @@
   <data name="Supplier_ConnectedEntity_ConnectedPersonSummary_AddAnotherConnectedPersonError" xml:space="preserve">
     <value>Select yes to add another connected person</value>
   </data>
+  <data name="Supplier_ConnectedEntity_ConnectedPersonSummary_RemovedOn" xml:space="preserve">
+    <value>Removed on {0}</value>
+  </data>
   <data name="Supplier_ConnectedEntity_ConnectedPersonSummary_BackToSupplierInformation" xml:space="preserve">
     <value>Back to supplier information</value>
   </data>
@@ -1540,16 +1552,16 @@
     <value>To share your supplier information with buyers you need to create a share code and file, and declare that the information is correct.</value>
   </data>
   <data name="ShareYourInformation_HowItWorksParagraph2" xml:space="preserve">
-    <value>This saves a copy of the supplier information you provided about your organisation, connected persons, exclusions and financial information.</value>
+    <value>This saves a snapshot of the supplier information you provided about your organisation, connected persons, exclusions and financial information.</value>
   </data>
   <data name="ShareYourInformation_HowItWorksParagraph3" xml:space="preserve">
     <value>When you submit a bid for a procurement, the contracting authority will let you know how to give them the share code or file.</value>
   </data>
   <data name="ShareYourInformation_HowItWorksParagraph4" xml:space="preserve">
-    <value>If your supplier information changes, you can update it and create a new share code and file to share the new information.</value>
+    <value>You can update your supplier information whenever it changes but you must create a new share code and file to share the new information.</value>
   </data>
-  <data name="ShareYourInformation_Instructions" xml:space="preserve">
-    <value>Create a share code once you've completed all sections. You'll be asked for this share code if you apply for a tender.</value>
+  <data name="ShareYourInformation_MandatorySectionsNotComplete" xml:space="preserve">
+    <value>You must complete all sections of your supplier information before you can create a share code.</value>
   </data>
   <data name="ShareYourInformation_CreateShareCodeButton" xml:space="preserve">
     <value>Create a share code</value>
@@ -2169,7 +2181,7 @@
     <value>Supplier type</value>
   </data>
   <data name="PdfGenerator_BasicInformation_Title" xml:space="preserve">
-    <value>Basic information</value>
+    <value>Your organisation</value>
   </data>
   <data name="PdfGenerator_BasicInformation_VATNumber" xml:space="preserve">
     <value>VAT number</value>
@@ -2827,11 +2839,11 @@
   <data name="SupplierToBuyer_SelectDevolvedRegulation_Scotland" xml:space="preserve">
     <value>Scotland</value>
   </data>
-  <data name="SupplierToBuyer_SelectDevolvedRegulation_SelectAllThatApply" xml:space="preserve">
-    <value>Select all that apply</value>
+  <data name="SupplierToBuyer_SelectDevolvedRegulation_Hint" xml:space="preserve">
+    <value>Read the &lt;a href="https://www.gov.uk/government/publications/procurement-act-2023-guidance-documents-plan-phase/guidance-devolved-contracting-authorities-html#:~:text=Procurement%20is%20largely%20a%20devolved,are%20conducted%20and%20contracts%20managed." target="_blank"&gt;devolved contracting authorities guidance (opens in new tab). &lt;/a&gt;</value>
   </data>
   <data name="SupplierToBuyer_SelectDevolvedRegulation_Title" xml:space="preserve">
-    <value>Which devolved regulations apply?</value>
+    <value>Select which devolved nation regulations apply</value>
   </data>
   <data name="SupplierToBuyer_SelectDevolvedRegulation_Wales" xml:space="preserve">
     <value>Wales</value>
@@ -3064,15 +3076,129 @@
   <data name="Users_UserRole_Hint" xml:space="preserve">
     <value>Select the one that applies</value>
   </data>
-  <data name="Users_UserRoleAdmin_Hint" xml:space="preserve">
-    <value>Can do anything, including add, remove and edit users</value>
+  <data name="Users_UserRoleAdmin_HintTitle" xml:space="preserve">
+    <value>What admins can do</value>
   </data>
-  <data name="Users_UserRoleEditor_Hint" xml:space="preserve">
-    <value>Can view, add and edit organisation information, view supplier information and create API keys</value>
+  <data name="Users_UserRoleEditor_HintTitle" xml:space="preserve">
+    <value>What editors can do</value>
   </data>
-  <data name="Users_UserRoleViewer_Hint" xml:space="preserve">
-    <value>Can view organisation and supplier information</value>
+  <data name="Users_UserRoleViewer_HintTitle" xml:space="preserve">
+    <value>What viewers can do</value>
   </data>
+
+  <data name="Users_UserRoleAdmin_BuyerHint1" xml:space="preserve">
+    <value>add, remove and edit users</value>
+  </data>
+  <data name="Users_UserRoleAdmin_BuyerHint2" xml:space="preserve">
+    <value>create and cancel API keys</value>
+  </data>
+  <data name="Users_UserRoleAdmin_BuyerHint3" xml:space="preserve">
+    <value>create, edit and publish notices</value>
+  </data>
+  <data name="Users_UserRoleAdmin_BuyerHint4" xml:space="preserve">
+    <value>view, add and edit organisation information</value>
+  </data>
+  <data name="Users_UserRoleAdmin_BuyerHint5" xml:space="preserve">
+    <value>view, download and agree to the data sharing agreement</value>
+  </data>
+  <data name="Users_UserRoleEditor_BuyerHint1" xml:space="preserve">
+    <value>create and cancel API keys</value>
+  </data>
+  <data name="Users_UserRoleEditor_BuyerHint2" xml:space="preserve">
+    <value>create, edit and publish notices</value>
+  </data>
+  <data name="Users_UserRoleEditor_BuyerHint3" xml:space="preserve">
+    <value>view, add and edit organisation information</value>
+  </data>
+  <data name="Users_UserRoleViewer_BuyerHint1" xml:space="preserve">
+    <value>create, edit and publish notices</value>
+  </data>
+  <data name="Users_UserRoleViewer_BuyerHint2" xml:space="preserve">
+    <value>view organisation information</value>
+  </data>
+  <data name="Users_UserRoleAdmin_SupplierHint1" xml:space="preserve">
+    <value>add, remove and edit users</value>
+  </data>
+  <data name="Users_UserRoleAdmin_SupplierHint2" xml:space="preserve">
+    <value>create share codes</value>
+  </data>
+  <data name="Users_UserRoleAdmin_SupplierHint3" xml:space="preserve">
+    <value>view, add and edit organisation information</value>
+  </data>
+  <data name="Users_UserRoleAdmin_SupplierHint4" xml:space="preserve">
+    <value>view, add and edit supplier information</value>
+  </data>
+  <data name="Users_UserRoleEditor_SupplierHint1" xml:space="preserve">
+    <value>create share codes</value>
+  </data>
+  <data name="Users_UserRoleEditor_SupplierHint2" xml:space="preserve">
+    <value>view, add and edit organisation information</value>
+  </data>
+  <data name="Users_UserRoleEditor_SupplierHint3" xml:space="preserve">
+    <value>view, add and edit supplier information</value>
+  </data>
+  <data name="Users_UserRoleViewer_SupplierHint1" xml:space="preserve">
+    <value>view organisation information</value>
+  </data>
+  <data name="Users_UserRoleViewer_SupplierHint2" xml:space="preserve">
+    <value>view supplier information</value>
+  </data>
+
+  <data name="Users_UserRoleAdmin_BuyerSupplierHint1" xml:space="preserve">
+    <value>add, remove and edit users</value>
+  </data>
+  <data name="Users_UserRoleAdmin_BuyerSupplierHint2" xml:space="preserve">
+    <value>create and cancel API keys</value>
+  </data>
+  <data name="Users_UserRoleAdmin_BuyerSupplierHint3" xml:space="preserve">
+    <value>create, edit and publish notices</value>
+  </data>
+  <data name="Users_UserRoleAdmin_BuyerSupplierHint4" xml:space="preserve">
+    <value>create share codes</value>
+  </data>
+  <data name="Users_UserRoleAdmin_BuyerSupplierHint5" xml:space="preserve">
+    <value>view, add and edit organisation information</value>
+  </data>
+  <data name="Users_UserRoleAdmin_BuyerSupplierHint6" xml:space="preserve">
+    <value>view, add and edit supplier information</value>
+  </data>
+  <data name="Users_UserRoleAdmin_BuyerSupplierHint7" xml:space="preserve">
+    <value>view, download and agree to the data sharing agreement</value>
+  </data>
+
+
+
+
+  <data name="Users_UserRoleEditor_BuyerSupplierHint1" xml:space="preserve">
+    <value>create and cancel API keys</value>
+  </data>
+  <data name="Users_UserRoleEditor_BuyerSupplierHint2" xml:space="preserve">
+    <value>create, edit and publish notices</value>
+  </data>
+  <data name="Users_UserRoleEditor_BuyerSupplierHint3" xml:space="preserve">
+    <value>create share codes</value>
+  </data>
+  <data name="Users_UserRoleEditor_BuyerSupplierHint4" xml:space="preserve">
+    <value>view, add and edit organisation information</value>
+  </data>
+  <data name="Users_UserRoleEditor_BuyerSupplierHint5" xml:space="preserve">
+    <value>view, add and edit supplier information</value>
+  </data>
+
+  <data name="Users_UserRoleViewer_BuyerSupplierHint1" xml:space="preserve">
+    <value>create, edit and publish notices</value>
+  </data>
+  <data name="Users_UserRoleViewer_BuyerSupplierHint2" xml:space="preserve">
+    <value>view organisation information</value>
+  </data>
+  <data name="Users_UserRoleViewer_BuyerSupplierHint3" xml:space="preserve">
+    <value>view supplier information</value>
+  </data>
+
+
+
+
+
   <data name="Users_CheckYourAnswers_Title" xml:space="preserve">
     <value>Check your answers</value>
   </data>
@@ -3442,11 +3568,11 @@
   <data name="MoU_Summary_Title" xml:space="preserve">
     <value>Your data sharing agreement</value>
   </data>
-  <data name="MoU_Summary_TableHeaderCreatedOn" xml:space="preserve">
-    <value>Created on</value>
+  <data name="MoU_Summary_TableHeaderAgreedOn" xml:space="preserve">
+    <value>Agreed on</value>
   </data>
-  <data name="MoU_Summary_TableHeaderSignedBy" xml:space="preserve">
-    <value>Signed by</value>
+  <data name="MoU_Summary_TableHeaderAuthorisedBy" xml:space="preserve">
+    <value>Authorised by</value>
   </data>
   <data name="MoU_Summary_TableHeaderJobTitle" xml:space="preserve">
     <value>Job title</value>
@@ -3456,5 +3582,8 @@
   </data>
   <data name="MoU_Summary_DownloadAgreement" xml:space="preserve">
     <value>Download agreement</value>
+  </data>
+  <data name="MoU_Summary_TableHeaderSubmittedBy" xml:space="preserve">
+    <value>Submitted by</value>
   </data>
 </root>

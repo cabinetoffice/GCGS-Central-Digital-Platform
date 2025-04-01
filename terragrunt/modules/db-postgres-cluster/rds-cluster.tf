@@ -12,6 +12,8 @@ resource "aws_rds_cluster" "this" {
   kms_key_id                       = module.storage_encryption_key.key_arn
   manage_master_user_password      = true
   master_username                  = "${replace(var.db_name, "-", "_")}_user"
+  preferred_backup_window          = "00:00-02:00"
+  preferred_maintenance_window     = "mon:03:00-mon:05:00"
   storage_encrypted                = true
 
   vpc_security_group_ids = [var.db_sg_id]
