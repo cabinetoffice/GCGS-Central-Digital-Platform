@@ -36,7 +36,7 @@
 
                         <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-vat-yes">
                             <div class="govuk-form-group @(vatRegHasError ? "govuk-form-group--error" : "")">
-                                <label class="govuk-label" for="vatNumber">
+                                <label class="govuk-label" for="@nameof(Model.VatNumber)">
                                     @StaticTextResource.Supplier_VatQuestion_VatNumberLabel
                                 </label>
                                 <div id="vat-registration-number-hint" class="govuk-hint">
