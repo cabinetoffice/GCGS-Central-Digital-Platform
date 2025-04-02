@@ -1,8 +1,9 @@
 using CO.CDP.EntityFrameworkCore.DbContext;
-using CO.CDP.OrganisationInformation.Persistence.Forms;
-using Microsoft.EntityFrameworkCore;
-using System.Linq;
 using CO.CDP.OrganisationInformation.Persistence.Constants;
+using CO.CDP.OrganisationInformation.Persistence.NonEfEntities;
+using Npgsql;
+using NpgsqlTypes;
+using Microsoft.EntityFrameworkCore;
 
 namespace CO.CDP.OrganisationInformation.Persistence;
 
@@ -16,12 +17,13 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
     public async Task<Organisation?> Find(Guid organisationId)
     {
         return await context.Organisations
-              .Include(b => b.BuyerInfo)
-              .Include(s => s.SupplierInfo)
-             .Include(p => p.Addresses)
-             .ThenInclude(p => p.Address)
-             .AsSingleQuery()
-             .FirstOrDefaultAsync(t => t.Guid == organisationId);
+                .Include(b => b.Identifiers)
+                .Include(b => b.ContactPoints)
+                .Include(b => b.BuyerInfo)
+                .Include(s => s.SupplierInfo)
+                .Include(p => p.Addresses).ThenInclude(p => p.Address)
+                .AsSingleQuery()
+                .FirstOrDefaultAsync(t => t.Guid == organisationId);
     }
 
     public async Task<Organisation?> FindIncludingPersons(Guid organisationId)
@@ -53,25 +55,34 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
     public async Task<Organisation?> FindIncludingTenant(Guid organisationId)
     {
         return await context.Organisations
-            .Include(p => p.Tenant)
-            .Include(p => p.Addresses)
-            .ThenInclude(p => p.Address)
-            .AsSingleQuery()
-            .FirstOrDefaultAsync(t => t.Guid == organisationId);
+                .Include(b => b.Identifiers)
+                .Include(b => b.ContactPoints)
+                .Include(b => b.BuyerInfo)
+                .Include(s => s.SupplierInfo)
+                .Include(p => p.Tenant)
+                .Include(p => p.Addresses)
+                .ThenInclude(p => p.Address)
+                .AsSingleQuery()
+                .FirstOrDefaultAsync(t => t.Guid == organisationId);
     }
 
     public async Task<Organisation?> FindByName(string name)
     {
         return await context.Organisations
-            .Include(p => p.Addresses)
-            .ThenInclude(p => p.Address)
-            .AsSingleQuery()
-            .FirstOrDefaultAsync(t => t.Name.ToLower() == name.ToLower());
+                .Include(b => b.Identifiers)
+                .Include(b => b.ContactPoints)
+                .Include(b => b.BuyerInfo)
+                .Include(s => s.SupplierInfo)
+                .Include(p => p.Addresses)
+                .ThenInclude(p => p.Address)
+                .AsSingleQuery()
+                .FirstOrDefaultAsync(t => t.Name.ToLower() == name.ToLower());
     }
 
     public async Task<IEnumerable<Organisation>> SearchByName(string name, PartyRole? role, int? limit, double threshold = 0.3)
     {
         var query = context.Organisations
+            .Include(b => b.Identifiers)
             .Include(p => p.Addresses)
             .ThenInclude(p => p.Address)
             .AsSingleQuery()
@@ -101,7 +112,7 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
     public async Task<IEnumerable<Organisation>> FindByOrganisationEmail(string email, PartyRole? role, int? limit)
     {
         var query = context.Organisations
-            .Include(o => o.ContactPoints)
+            .Include(b => b.Identifiers)
             .Include(o => o.Addresses)
             .ThenInclude(oa => oa.Address)
             .AsSingleQuery()
@@ -123,6 +134,7 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
     public async Task<IEnumerable<Organisation>> FindByAdminEmail(string email, PartyRole? role, int? limit)
     {
         var organisations = await context.Organisations
+            .Include(b => b.Identifiers)
             .Include(o => o.Persons)
             .ThenInclude(p => p.PersonOrganisations)
             .Include(o => o.Addresses)
@@ -171,79 +183,64 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
             .FirstOrDefaultAsync(o => o.Organisation != null && o.Organisation.Guid == organisationId && o.Person.UserUrn == userUrn);
     }
 
-    public async Task<IEnumerable<Organisation>> FindByUserUrn(string userUrn)
-    {
-        var person = await context.Persons
-            .Include(p => p.Organisations)
-            .ThenInclude(p => p.Addresses)
-            .ThenInclude(p => p.Address)
-            .AsSingleQuery()
-            .FirstOrDefaultAsync(p => p.UserUrn == userUrn);
-        return person?.Organisations ?? [];
-    }
-
     public async Task<Organisation?> FindByIdentifier(string scheme, string identifierId)
     {
         return await context.Organisations
-            .Include(p => p.Identifiers)
-            .Include(p => p.Addresses)
-            .ThenInclude(p => p.Address)
-            .AsSingleQuery()
-            .FirstOrDefaultAsync(o => o.Identifiers.Any(i => i.Scheme == scheme && i.IdentifierId == identifierId));
+                .Include(b => b.Identifiers)
+                .Include(b => b.ContactPoints)
+                .Include(b => b.BuyerInfo)
+                .Include(s => s.SupplierInfo)
+                .Include(p => p.Addresses)
+                .ThenInclude(p => p.Address)
+                .AsSingleQuery()
+                .FirstOrDefaultAsync(o => o.Identifiers.Any(i => i.Scheme == scheme && i.IdentifierId == identifierId));
     }
 
-    public async Task<IList<Organisation>> Get(string? type)
+    public async Task<IList<OrganisationRawDto>> GetPaginated(PartyRole? role, PartyRole? pendingRole, string? searchText, int limit, int skip)
     {
-        IQueryable<Organisation> result = context.Organisations
-            .Include(o => o.ReviewedBy)
-            .Include(o => o.Identifiers)
-            .Include(o => o.BuyerInfo)
-            .Include(o => o.SupplierInfo)
-            .Include(o => o.Addresses)
-            .ThenInclude(p => p.Address);
+        var sql = @"
+            SELECT
+                o.id,
+                o.guid,
+                o.name,
+                o.roles,
+                o.pending_roles,
+                o.approved_on,
+                o.review_comment,
+                reviewed_by.first_name AS reviewed_by_first_name,
+                reviewed_by.last_name AS reviewed_by_last_name,
+                COALESCE(STRING_AGG(DISTINCT i.scheme || ':' || i.identifier_id, ', '), '') AS identifiers,
+                COALESCE(STRING_AGG(DISTINCT cp.email, ', '), '') AS contact_points,
+                p.email as admin_email
+            FROM organisations o
+            LEFT JOIN organisation_person op ON op.organisation_id = o.id
+            LEFT JOIN persons p ON p.id = op.person_id AND op.scopes @> '[""ADMIN""]'::jsonb
+            LEFT JOIN identifiers i ON i.organisation_id = o.id
+            LEFT JOIN contact_points cp ON cp.organisation_id = o.id
+            LEFT JOIN persons reviewed_by ON reviewed_by.id = o.reviewed_by_id
+            WHERE
+                ((:role IS NULL OR :role = ANY(o.roles))
+              OR (:pendingRole IS NULL OR :pendingRole = ANY(o.pending_roles)))
+              AND (:searchText IS NULL OR o.name ILIKE '%' || :searchText || '%')
+            GROUP BY o.id, o.guid, o.name, o.roles, o.pending_roles, o.approved_on, o.review_comment, reviewed_by.first_name, reviewed_by.last_name, admin_email
+            ORDER BY o.name ASC
+            LIMIT :limit OFFSET :skip;";
 
-        switch (type)
+        var roleValue = role.HasValue ? (int)role.Value : (object)DBNull.Value;
+        var pendingRoleValue = pendingRole.HasValue ? (int)pendingRole.Value : (object)DBNull.Value;
+
+        var parameters = new[]
         {
-            case "buyer":
-                result = result.Where(o => o.Roles.Contains(PartyRole.Buyer) || o.PendingRoles.Contains(PartyRole.Buyer));
-                break;
-            case "supplier":
-                result = result.Where(o => o.Roles.Contains(PartyRole.Tenderer));
-                break;
-        }
+            new NpgsqlParameter("role", NpgsqlDbType.Integer) { Value = roleValue },
+            new NpgsqlParameter("pendingRole", NpgsqlDbType.Integer) { Value = pendingRoleValue },
+            new NpgsqlParameter("searchText", NpgsqlDbType.Text) { Value = string.IsNullOrWhiteSpace(searchText) ? (object)DBNull.Value : searchText },
+            new NpgsqlParameter("limit", NpgsqlDbType.Integer) { Value = limit },
+            new NpgsqlParameter("skip", NpgsqlDbType.Integer) { Value = skip }
+        };
 
-        return await result.AsSingleQuery().ToListAsync();
-    }
+        var rawResults = await context.Database.SqlQueryRaw<OrganisationRawDto>(sql, parameters).ToListAsync();
 
-    public async Task<IList<Organisation>> GetPaginated(PartyRole? role, PartyRole? pendingRole, string? searchText, int limit, int skip)
-    {
-        IQueryable<Organisation> result = context.Organisations
-            .Include(o => o.ReviewedBy)
-            .Include(o => o.Identifiers)
-            .Include(o => o.BuyerInfo)
-            .Include(o => o.SupplierInfo)
-            .Include(o => o.Persons)
-            .ThenInclude(p => p.PersonOrganisations)
-            .Include(o => o.Addresses)
-            .Include(o => o.Addresses)
-            .ThenInclude(p => p.Address)
-            .OrderBy(o => o.Name)
-            .Where(o =>
-                (pendingRole.HasValue && o.PendingRoles.Contains(pendingRole.Value)) ||
-                (role.HasValue && o.Roles.Contains(role.Value))
-            );
-
-        if (!string.IsNullOrWhiteSpace(searchText))
-        {
-            result = result.Where(o => o.Name.Contains(searchText) ||
-                                       EF.Functions.TrigramsSimilarity(o.Name, searchText) > 0.3);
-        }
-
-        return await result
-            .AsSplitQuery()
-            .Skip(skip)
-            .Take(limit)
-            .ToListAsync();
+        return rawResults;
     }
 
     public async Task<int> GetTotalCount(PartyRole? role, PartyRole? pendingRole, string? searchText)
@@ -261,62 +258,6 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
         }
 
         return await result.CountAsync();
-    }
-
-    public async Task<IList<ConnectedEntity>> GetConnectedIndividualTrusts(int organisationId)
-    {
-        var result = context.ConnectedEntities
-            .Include(x => x.IndividualOrTrust)
-            .Where(x => x.IndividualOrTrust != null && x.EntityType == ConnectedEntity.ConnectedEntityType.Individual)
-            .Where(x => x.EndDate == null || x.EndDate > DateTime.Today)
-            .Where(x => x.SupplierOrganisation != null && x.SupplierOrganisation.Id == organisationId);
-
-        return await result.AsSingleQuery().ToListAsync();
-    }
-
-    public async Task<IList<ConnectedEntity>> GetConnectedOrganisations(int organisationId)
-    {
-        var result = context.ConnectedEntities
-            .Include(x => x.Organisation)
-            .Where(x => x.Organisation != null && x.EntityType == ConnectedEntity.ConnectedEntityType.Organisation)
-            .Where(x => x.EndDate == null || x.EndDate > DateTime.Today)
-            .Where(x => x.SupplierOrganisation != null && x.SupplierOrganisation.Id == organisationId);
-
-        return await result.AsSingleQuery().ToListAsync();
-    }
-
-    public async Task<IList<ConnectedEntity>> GetConnectedTrustsOrTrustees(int organisationId)
-    {
-        var result = context.ConnectedEntities
-            .Include(x => x.IndividualOrTrust)
-            .Where(x => x.IndividualOrTrust != null && x.EntityType == ConnectedEntity.ConnectedEntityType.TrustOrTrustee)
-            .Where(x => x.EndDate == null || x.EndDate > DateTime.Today)
-            .Where(x => x.SupplierOrganisation != null && x.SupplierOrganisation.Id == organisationId);
-
-        return await result.AsSingleQuery().ToListAsync();
-    }
-
-    public async Task<Organisation.LegalForm?> GetLegalForm(int organisationId)
-    {
-        var organisation = await context.Organisations
-            .Where(x => x.Id == organisationId && x.SupplierInfo != null)
-            .Include(x => x.SupplierInfo)
-                .ThenInclude(x => x != null ? x.LegalForm : null)
-            .AsNoTracking()
-            .FirstOrDefaultAsync();
-
-        return organisation?.SupplierInfo?.LegalForm;
-    }
-
-    public async Task<IList<OperationType>> GetOperationTypes(int organisationId)
-    {
-        var organisation = await context.Organisations
-            .Where(x => x.Id == organisationId)
-            .Include(x => x.SupplierInfo)
-            .AsSingleQuery()
-            .FirstOrDefaultAsync();
-
-        return organisation?.SupplierInfo?.OperationTypes ?? [];
     }
 
     public async Task<bool> IsEmailUniqueWithinOrganisation(Guid organisationId, string email)

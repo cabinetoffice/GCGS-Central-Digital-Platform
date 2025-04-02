@@ -52,10 +52,10 @@ public class GetAuthenticationKeyUseCaseTest(AutoMapperFixture mapperFixture) : 
                 Guid = Guid.NewGuid(),
                 Name = "Tenant 101"
             },
-            ContactPoints = [new OrganisationInformation.Persistence.Organisation.ContactPoint { Email = "contact@test.org" }]
+            ContactPoints = [new OrganisationInformation.Persistence.ContactPoint { Email = "contact@test.org" }]
         };
 
-        org.SupplierInfo = new OrganisationInformation.Persistence.Organisation.SupplierInformation { CompletedRegAddress = true };
+        org.SupplierInfo = new OrganisationInformation.Persistence.SupplierInformation { CompletedRegAddress = true };
 
 
         return org;

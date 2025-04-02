@@ -1,11 +1,11 @@
-using Moq;
+using CO.CDP.EntityVerificationClient;
+using CO.CDP.Localization;
+using CO.CDP.Organisation.WebApiClient;
+using CO.CDP.OrganisationApp.Pages.Registration;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using CO.CDP.OrganisationApp.Pages.Registration;
-using CO.CDP.EntityVerificationClient;
-using CO.CDP.Organisation.WebApiClient;
-using CO.CDP.Localization;
+using Moq;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages.Registration;
 
@@ -112,6 +112,7 @@ public class OrganisationInternationalIdentificationTests
         var model = CreateModel();
         model.Identifier = "ABC:123";
         model.OrganisationName = "Test Organisation";
+        model.OrganisationScheme = "ABC";
 
         _organisationClientMock
             .Setup(o => o.LookupOrganisationAsync(It.IsAny<string>(), It.IsAny<string>()))
@@ -124,7 +125,47 @@ public class OrganisationInternationalIdentificationTests
             StaticTextResource.OrganisationRegistration_CompanyHouseNumberQuestion_CompanyAlreadyRegistered_NotificationBanner,
             null,
             null,
-            It.Is<Dictionary<string, string>>(d => d["organisationIdentifier"] == model.Identifier),
+            It.Is<Dictionary<string, string>>(d => d["organisationIdentifier"] == _organisationId.ToString()),
+            It.Is<Dictionary<string, string>>(d => d["organisationName"] == model.OrganisationName)
+        ),
+        Times.Once);
+
+        result.Should().BeOfType<PageResult>();
+    }
+
+    [Fact]
+    public async Task OnPost_ShouldSetFlashMessage_WhenInternationalIdentifierExist()
+    {
+        var model = CreateModel();
+        var organisation = new CO.CDP.Organisation.WebApiClient.Organisation(
+                  additionalIdentifiers: null,
+                  addresses: null,
+                  contactPoint: null,
+                  details: new Details(approval: null, buyerInformation: null, pendingRoles: [], publicServiceMissionOrganization: null, scale: null, shelteredWorkshop: null, vcse: null),
+                  id: _organisationId,
+                  identifier: new CDP.Organisation.WebApiClient.Identifier("AL", "Other", "123", null),
+                  name: "Test Org",
+                  roles: new List<PartyRole>(),
+                  type: OrganisationType.Organisation
+                  );
+
+        model.Identifier = "AL:Other";
+        model.RegistrationNumbers["Other"] = null;
+        model.OrganisationName = "Test Organisation";
+        model.OrganisationScheme = "ABC";
+
+        _organisationClientMock
+            .Setup(o => o.LookupOrganisationAsync(It.IsAny<string>(), It.IsAny<string>()))
+            .ReturnsAsync(organisation);
+
+        var result = await model.OnPost();
+
+        _flashMessageServiceMock.Verify(api => api.SetFlashMessage(
+            FlashMessageType.Important,
+            StaticTextResource.OrganisationRegistration_CompanyHouseNumberQuestion_CompanyAlreadyRegistered_NotificationBanner,
+            null,
+            null,
+            It.Is<Dictionary<string, string>>(d => d["organisationIdentifier"] == _organisationId.ToString()),
             It.Is<Dictionary<string, string>>(d => d["organisationName"] == model.OrganisationName)
         ),
         Times.Once);

@@ -1,6 +1,5 @@
 using CO.CDP.DataSharing.WebApi.Model;
 using CO.CDP.OrganisationInformation;
-using CO.CDP.OrganisationInformation.Persistence;
 using CO.CDP.OrganisationInformation.Persistence.NonEfEntities;
 using static CO.CDP.OrganisationInformation.Persistence.ConnectedEntity;
 

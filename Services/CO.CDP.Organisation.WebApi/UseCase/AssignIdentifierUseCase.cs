@@ -1,4 +1,3 @@
-using CO.CDP.AwsServices.Sqs;
 using CO.CDP.Functional;
 using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.OrganisationInformation.Persistence;
@@ -70,19 +69,19 @@ public class AssignIdentifierUseCase(IOrganisationRepository organisations, IIde
             throw new AssignIdentifierException.IdentifierAlreadyAssigned(command.OrganisationId, command.Identifier);
         }
 
-        organisation.Identifiers.Add(new OrganisationInformation.Persistence.Organisation.Identifier
+        organisation.Identifiers.Add(new Identifier
         {
             IdentifierId = command.Identifier.Id,
             Scheme = command.Identifier.Scheme,
             LegalName = command.Identifier.LegalName,
             Primary = IsPrimaryIdentifier(organisation, command.Identifier.Scheme),
-            Uri = identifierService.GetRegistryUri(command.Identifier.Scheme, command.Identifier.Id)
+            Uri = identifierService.GetRegistryUri(command.Identifier.Scheme, command.Identifier.Id, organisation.Guid)
         });
 
         return organisation;
     }
 
-    private static void ResetPrimaryIdentifiers(IEnumerable<OrganisationInformation.Persistence.Organisation.Identifier> identifiers)
+    private static void ResetPrimaryIdentifiers(IEnumerable<Identifier> identifiers)
     {
         foreach (var identifier in identifiers.Where(id => id.Primary))
         {

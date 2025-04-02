@@ -1,9 +1,7 @@
 using CO.CDP.Localization;
 using CO.CDP.Organisation.WebApiClient;
-using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
 using Microsoft.AspNetCore.Mvc;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace CO.CDP.OrganisationApp.Pages.Registration;
@@ -46,8 +44,12 @@ public class OrganisationNameSearchModel(ISession session, IOrganisationClient o
                 heading: StaticTextResource.OrganisationRegistration_SearchOrganisationName_ExactMatchAlreadyExists
             );
 
-            return Redirect($"/registration/{Uri.EscapeDataString(exactMatch.Identifier.Scheme + ":" + exactMatch.Identifier.Id)}/join-organisation");
-        }
+                SessionContext.Set(Session.JoinOrganisationRequest,
+                        new JoinOrganisationRequestState { OrganisationId = exactMatch.Id, OrganisationName = OrganisationName }
+                        );
+
+                return Redirect($"/registration/{exactMatch.Id.ToString()}/join-organisation");
+            }        
 
         return Page();
     }
@@ -100,12 +102,7 @@ public class OrganisationNameSearchModel(ISession session, IOrganisationClient o
         if (!ModelState.IsValid)
         {
             return Page();
-        }
-
-        if (!string.IsNullOrEmpty(OrganisationIdentifier) && OrganisationIdentifier != "None")
-        {
-            return Redirect($"/registration/{Uri.EscapeDataString(OrganisationIdentifier)}/join-organisation");
-        }
+        }        
 
         if (RedirectToSummary == true)
         {

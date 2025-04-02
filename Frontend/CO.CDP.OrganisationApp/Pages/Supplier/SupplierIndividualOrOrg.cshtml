@@ -16,55 +16,58 @@
     </a>
 }
 
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
-            <partial name="_ErrorSummary" model="@ModelState" />
-            <form method="post">
-                @if (Request.Query.ContainsKey("frm-summary"))
-                {
-                    <input type="hidden" name="RedirectToSummary" value="true" />
-                }
-                <div class="govuk-form-group @(supplierTypeHasError ? "govuk-form-group--error" : "")">
-                    <fieldset class="govuk-fieldset">
-                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                            <h1 class="govuk-fieldset__heading">
-                                @StaticTextResource.Supplier_WhatTypeOfSupplier
-                            </h1>
-                        </legend>
-                        <div id="individualOrOrg-hint" class="govuk-hint">
-                            @StaticTextResource.Supplier_InformationHint
-                        </div>
-                        @if (supplierTypeHasError)
-                        {
-                            <p id="supplierType-error" class="govuk-error-message">
-                                <span class="govuk-visually-hidden">Error:</span> @Html.ValidationMessageFor(m => m.SupplierType)
-                            </p>
-                        }
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <partial name="_ErrorSummary" model="@ModelState" />
+        <form method="post">
+            @if (Request.Query.ContainsKey("frm-summary"))
+            {
+                <input type="hidden" name="RedirectToSummary" value="true" />
+            }
+            <div class="govuk-form-group @(supplierTypeHasError ? "govuk-form-group--error" : "")">
+                <fieldset class="govuk-fieldset">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                        <h1 class="govuk-fieldset__heading">
+                            @StaticTextResource.Supplier_WhatTypeOfSupplier
+                        </h1>
+                    </legend>
+                    @if (supplierTypeHasError)
+                    {
+                        <p id="supplierType-error" class="govuk-error-message">
+                            <span class="govuk-visually-hidden">Error:</span> @Html.ValidationMessageFor(m => m.SupplierType)
+                        </p>
+                    }
 
-                        <div class="govuk-radios" data-module="govuk-radios">
-                            <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="organisation" name="SupplierType"
-                                       type="radio" value="@SupplierType.Organisation"
-                                       aria-describedby="organisation-hint" @IsSelected(SupplierType.Organisation)>
-                                <label class="govuk-label govuk-radios__label" for="organisation">
-                                    @StaticTextResource.Supplier_Organisation
-                                </label>
-                            </div>
-
-                            <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="individual" name="SupplierType"
-                                       type="radio" value="@SupplierType.Individual"
-                                       aria-describedby="individual-hint" @IsSelected(SupplierType.Individual)>
-                                <label class="govuk-label govuk-radios__label" for="individual">
-                                    @StaticTextResource.Supplier_Individual
-                                </label>
+                    <div class="govuk-radios" data-module="govuk-radios">
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="organisation" name="SupplierType"
+                                   type="radio" value="@SupplierType.Organisation"
+                                   aria-describedby="organisation-hint" @IsSelected(SupplierType.Organisation)>
+                            <label class="govuk-label govuk-radios__label" for="organisation">
+                                @StaticTextResource.Supplier_Organisation
+                            </label>
+                            <div class="govuk-hint govuk-radios__hint">
+                                @StaticTextResource.Supplier_Organisation_Hint
                             </div>
                         </div>
-                    </fieldset>
-                </div>
-                <govuk-button>
-                    @StaticTextResource.Global_Continue
-                </govuk-button>
-            </form>
-        </div>
+
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="individual" name="SupplierType"
+                                   type="radio" value="@SupplierType.Individual"
+                                   aria-describedby="individual-hint" @IsSelected(SupplierType.Individual)>
+                            <label class="govuk-label govuk-radios__label" for="individual">
+                                @StaticTextResource.Supplier_Individual
+                            </label>
+                            <div class="govuk-hint govuk-radios__hint">
+                                @StaticTextResource.Supplier_Individual_Hint
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+            <govuk-button>
+                @StaticTextResource.Global_Continue
+            </govuk-button>
+        </form>
     </div>
+</div>

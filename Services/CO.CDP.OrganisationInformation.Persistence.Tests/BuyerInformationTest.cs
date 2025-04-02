@@ -15,7 +15,7 @@ public class BuyerInformationTest
 
         organisation.UpdateBuyerInformation();
 
-        organisation.BuyerInfo.Should().BeEquivalentTo(new Organisation.BuyerInformation());
+        organisation.BuyerInfo.Should().BeEquivalentTo(new BuyerInformation());
     }
 
     [Fact]
@@ -28,7 +28,7 @@ public class BuyerInformationTest
 
         organisation.UpdateBuyerInformation();
 
-        organisation.BuyerInfo.Should().BeEquivalentTo(new Organisation.BuyerInformation());
+        organisation.BuyerInfo.Should().BeEquivalentTo(new BuyerInformation());
     }
 
     [Fact]
@@ -53,6 +53,6 @@ public class BuyerInformationTest
 
         organisation.UpdateBuyerInformation();
 
-        organisation.BuyerInfo.As<Organisation.BuyerInformation>().BuyerType.Should().Be("Buyer type 1");
+        organisation.BuyerInfo.As<BuyerInformation>().BuyerType.Should().Be("Buyer type 1");
     }
 }
