@@ -1,4 +1,3 @@
-using AutoMapper;
 using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.Organisation.WebApi.Tests.AutoMapper;
 using CO.CDP.Organisation.WebApi.UseCase;
@@ -7,7 +6,6 @@ using CO.CDP.OrganisationInformation.Persistence;
 using FluentAssertions;
 using Moq;
 using Mou = CO.CDP.OrganisationInformation.Persistence.Mou;
-using MouSignature = CO.CDP.OrganisationInformation.Persistence.MouSignature;
 using Persistence = CO.CDP.OrganisationInformation.Persistence;
 using Person = CO.CDP.OrganisationInformation.Persistence.Person;
 
@@ -129,7 +127,7 @@ public class GetOrganisationMouSignaturesUseCaseTest(AutoMapperFixture mapperFix
             },
             ContactPoints =
             [
-                new Persistence.Organisation.ContactPoint
+                new Persistence.ContactPoint
                 {
                     Email = "contact@test.org"
                 }
@@ -142,7 +140,7 @@ public class GetOrganisationMouSignaturesUseCaseTest(AutoMapperFixture mapperFix
             var devolvedRegulations = new List<DevolvedRegulation>();
             devolvedRegulations.Add(DevolvedRegulation.NorthernIreland);
 
-            org.BuyerInfo = new Persistence.Organisation.BuyerInformation
+            org.BuyerInfo = new Persistence.BuyerInformation
             {
                 BuyerType = "FakeBuyerType",
                 DevolvedRegulations = devolvedRegulations,

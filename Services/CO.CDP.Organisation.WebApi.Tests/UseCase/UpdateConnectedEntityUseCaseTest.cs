@@ -49,12 +49,12 @@ public class UpdateConnectedEntityUseCaseTests
                 Guid = Guid.NewGuid(),
                 Name = "Tenant 101"
             },
-            ContactPoints = [new Persistence.Organisation.ContactPoint { Email = "contact@test.org" }]
+            ContactPoints = [new Persistence.ContactPoint { Email = "contact@test.org" }]
         };
 
         if (withSupplierInfo == true)
         {
-            org.SupplierInfo = new Persistence.Organisation.SupplierInformation { CompletedRegAddress = true };
+            org.SupplierInfo = new Persistence.SupplierInformation { CompletedRegAddress = true };
         }
 
         return org;

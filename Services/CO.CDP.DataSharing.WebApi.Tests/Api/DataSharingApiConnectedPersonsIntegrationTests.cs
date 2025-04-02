@@ -9,6 +9,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using System.Data;
 using Xunit.Abstractions;
+using ContactPoint = CO.CDP.OrganisationInformation.Persistence.ContactPoint;
+using Identifier = CO.CDP.OrganisationInformation.Persistence.Identifier;
 using ShareRequest = CO.CDP.DataSharing.WebApiClient.ShareRequest;
 namespace CO.CDP.DataSharing.WebApi.Tests.Api;
 
@@ -72,8 +74,8 @@ public class DataSharingApiConnectedPersonsIntegrationTests: IClassFixture<Organ
     [InlineData(-1, 1)] // connected individual created before and ended after share code
     public async Task DataSharingClient_ReturnsConnectedIndividual_IfDatesIntersect(int cpCreationOffset, int? cpEndDateOffset)
     {
-        DateTime connectedPersonCreationDate = DateTime.Now.AddHours(cpCreationOffset);
-        DateTime? connectedPersonEndDate = cpEndDateOffset != null ? DateTime.Now.AddHours(cpEndDateOffset.Value) : null;
+        DateTime connectedPersonCreationDate = DateTime.Now.AddHours(cpCreationOffset).ToUniversalTime();
+        DateTime? connectedPersonEndDate = cpEndDateOffset != null ? DateTime.Now.AddHours(cpEndDateOffset.Value).ToUniversalTime() : null;
 
         ClearDatabase();
         Organisation organisation = CreateOrganisation();
@@ -93,8 +95,8 @@ public class DataSharingApiConnectedPersonsIntegrationTests: IClassFixture<Organ
     public async Task DataSharingClient_StillReturnsConnectedIndividual_IfDatesDontIntersect(int cpCreationOffset, int? cpEndDateOffset)
     {
         // Note: The end_date filtering has been removed from the data sharing api and therefore this test has been inverted to ensure connected entities still return
-        DateTime connectedPersonCreationDate = DateTime.Now.AddHours(cpCreationOffset);
-        DateTime? connectedPersonEndDate = cpEndDateOffset != null ? DateTime.Now.AddHours(cpEndDateOffset.Value) : null;
+        DateTime connectedPersonCreationDate = DateTime.Now.AddHours(cpCreationOffset).ToUniversalTime();
+        DateTime? connectedPersonEndDate = cpEndDateOffset != null ? DateTime.Now.AddHours(cpEndDateOffset.Value).ToUniversalTime() : null;
 
         ClearDatabase();
         Organisation organisation = CreateOrganisation();
@@ -112,8 +114,8 @@ public class DataSharingApiConnectedPersonsIntegrationTests: IClassFixture<Organ
     [InlineData(-1, 1)] // connected individual created before and ended after share code
     public async Task DataSharingClient_ReturnsConnectedOrgs_IfDatesIntersect(int cpCreationOffset, int? cpEndDateOffset)
     {
-        DateTime connectedPersonCreationDate = DateTime.Now.AddHours(cpCreationOffset);
-        DateTime? connectedPersonEndDate = cpEndDateOffset != null ? DateTime.Now.AddHours(cpEndDateOffset.Value) : null;
+        DateTime connectedPersonCreationDate = DateTime.Now.AddHours(cpCreationOffset).ToUniversalTime();
+        DateTime? connectedPersonEndDate = cpEndDateOffset != null ? DateTime.Now.AddHours(cpEndDateOffset.Value).ToUniversalTime() : null;
 
         ClearDatabase();
         Organisation organisation = CreateOrganisation();
@@ -133,8 +135,8 @@ public class DataSharingApiConnectedPersonsIntegrationTests: IClassFixture<Organ
     public async Task DataSharingClient_StillReturnsConnectedOrgs_IfDatesDontIntersect(int cpCreationOffset, int? cpEndDateOffset)
     {
         // Note: The end_date filtering has been removed from the data sharing api and therefore this test has been inverted to ensure connected entities still return
-        DateTime connectedPersonCreationDate = DateTime.Now.AddHours(cpCreationOffset);
-        DateTime? connectedPersonEndDate = cpEndDateOffset != null ? DateTime.Now.AddHours(cpEndDateOffset.Value) : null;
+        DateTime connectedPersonCreationDate = DateTime.Now.AddHours(cpCreationOffset).ToUniversalTime();
+        DateTime? connectedPersonEndDate = cpEndDateOffset != null ? DateTime.Now.AddHours(cpEndDateOffset.Value).ToUniversalTime() : null;
 
         ClearDatabase();
         Organisation organisation = CreateOrganisation();
@@ -159,9 +161,9 @@ public class DataSharingApiConnectedPersonsIntegrationTests: IClassFixture<Organ
                 Guid = Guid.NewGuid(),
                 Name = "Test org",
             },
-            Identifiers = new List<Organisation.Identifier>
+            Identifiers = new List<Identifier>
             {
-                new Organisation.Identifier
+                new Identifier
                 {
                     IdentifierId = "1234567",
                     Scheme = "Whatever",
@@ -169,9 +171,9 @@ public class DataSharingApiConnectedPersonsIntegrationTests: IClassFixture<Organ
                     Primary = true
                 }
             },
-            Addresses = new List<Organisation.OrganisationAddress>
+            Addresses = new List<OrganisationAddress>
             {
-                new Organisation.OrganisationAddress
+                new OrganisationAddress
                 {
                     Type = OrganisationInformation.AddressType.Registered,
                     Address = new OrganisationInformation.Persistence.Address
@@ -185,9 +187,9 @@ public class DataSharingApiConnectedPersonsIntegrationTests: IClassFixture<Organ
                     }
                 }
             },
-            ContactPoints = new List<Organisation.ContactPoint>
+            ContactPoints = new List<ContactPoint>
             {
-                new Organisation.ContactPoint
+                new ContactPoint
                 {
                     Name = "Main Contact",
                     Email = "foo@bar.com"
@@ -214,7 +216,7 @@ public class DataSharingApiConnectedPersonsIntegrationTests: IClassFixture<Organ
             Form = form,
             FormVersionId = "1",
             SubmissionState = SubmissionState.Draft,
-            SubmittedAt = DateTimeOffset.Now,
+            SubmittedAt = DateTimeOffset.Now.ToUniversalTime(),
         });
 
         _context.SaveChanges();
@@ -239,7 +241,7 @@ public class DataSharingApiConnectedPersonsIntegrationTests: IClassFixture<Organ
                     Category = ConnectedEntity.ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForIndiv,
                     FirstName = "John",
                     LastName = "Doe",
-                    DateOfBirth = new DateTime(1980, 1, 1),
+                    DateOfBirth = new DateTime(1980, 1, 1).ToUniversalTime(),
                 };
 
                 break;

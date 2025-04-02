@@ -16,7 +16,7 @@ internal static class EventMappingExtensions
     };
 
     internal static Events.Identifier AsEventValue(
-        this OrganisationInformation.Persistence.Organisation.Identifier identifier) => new()
+        this OrganisationInformation.Persistence.Identifier identifier) => new()
         {
             Id = identifier.IdentifierId,
             LegalName = identifier.LegalName,
@@ -28,7 +28,7 @@ internal static class EventMappingExtensions
         command?.Select(i => i.AsEventValue()).ToList() ?? [];
 
     internal static List<Events.Identifier> AsEventValue(
-        this IEnumerable<OrganisationInformation.Persistence.Organisation.Identifier>? command)
+        this IEnumerable<OrganisationInformation.Persistence.Identifier>? command)
         => command?.Select(i => i.AsEventValue()).ToList() ?? [];
 
     private static Events.Address AsEventValue(this OrganisationAddress command) => new()
@@ -43,7 +43,7 @@ internal static class EventMappingExtensions
     };
 
     private static Events.Address AsEventValue(
-        this OrganisationInformation.Persistence.Organisation.OrganisationAddress address) => new()
+        this OrganisationInformation.Persistence.OrganisationAddress address) => new()
         {
             Country = address.Address.Country,
             CountryName = address.Address.CountryName,
@@ -58,7 +58,7 @@ internal static class EventMappingExtensions
         command?.Select(a => a.AsEventValue()).ToList() ?? [];
 
     internal static List<Events.Address> AsEventValue(
-        this IEnumerable<OrganisationInformation.Persistence.Organisation.OrganisationAddress>? command)
+        this IEnumerable<OrganisationInformation.Persistence.OrganisationAddress>? command)
         => command?.Select(a => a.AsEventValue()).ToList() ?? [];
 
     internal static Events.ContactPoint AsEventValue(this OrganisationContactPoint? command) => new()
@@ -70,7 +70,7 @@ internal static class EventMappingExtensions
     };
 
     internal static Events.ContactPoint AsEventValue(
-        this OrganisationInformation.Persistence.Organisation.ContactPoint? contact) => new()
+        this OrganisationInformation.Persistence.ContactPoint? contact) => new()
         {
             Email = contact?.Email,
             Name = contact?.Name,

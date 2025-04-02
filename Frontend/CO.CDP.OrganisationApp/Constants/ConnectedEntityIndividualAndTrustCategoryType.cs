@@ -21,7 +21,7 @@ public static class ConnectedEntityIndividualAndTrustCategoryTypeExtensions
             ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForIndividual => WebApiClient.ConnectedIndividualAndTrustCategory.PersonWithSignificantControlForIndividual,
             ConnectedEntityIndividualAndTrustCategoryType.DirectorOrIndividualWithTheSameResponsibilitiesForIndividual => WebApiClient.ConnectedIndividualAndTrustCategory.DirectorOrIndividualWithTheSameResponsibilitiesForIndividual,
             ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndividualWithSignificantInfluenceOrControlForIndividual => WebApiClient.ConnectedIndividualAndTrustCategory.AnyOtherIndividualWithSignificantInfluenceOrControlForIndividual,
-            ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForTrust => WebApiClient.ConnectedIndividualAndTrustCategory.PersonWithSignificantControlForIndividual,
+            ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForTrust => WebApiClient.ConnectedIndividualAndTrustCategory.PersonWithSignificantControlForTrust,
             ConnectedEntityIndividualAndTrustCategoryType.DirectorOrIndividualWithTheSameResponsibilitiesForTrust => WebApiClient.ConnectedIndividualAndTrustCategory.DirectorOrIndividualWithTheSameResponsibilitiesForTrust,
             ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndividualWithSignificantInfluenceOrControlForTrust => WebApiClient.ConnectedIndividualAndTrustCategory.AnyOtherIndividualWithSignificantInfluenceOrControlForTrust,
             _ => WebApiClient.ConnectedIndividualAndTrustCategory.PersonWithSignificantControlForIndividual
@@ -34,7 +34,7 @@ public static class ConnectedEntityIndividualAndTrustCategoryTypeExtensions
             WebApiClient.ConnectedIndividualAndTrustCategory.PersonWithSignificantControlForIndividual => ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForIndividual,
             WebApiClient.ConnectedIndividualAndTrustCategory.DirectorOrIndividualWithTheSameResponsibilitiesForIndividual => ConnectedEntityIndividualAndTrustCategoryType.DirectorOrIndividualWithTheSameResponsibilitiesForIndividual,
             WebApiClient.ConnectedIndividualAndTrustCategory.AnyOtherIndividualWithSignificantInfluenceOrControlForIndividual => ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndividualWithSignificantInfluenceOrControlForIndividual,
-            WebApiClient.ConnectedIndividualAndTrustCategory.PersonWithSignificantControlForTrust => ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForIndividual,
+            WebApiClient.ConnectedIndividualAndTrustCategory.PersonWithSignificantControlForTrust => ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForTrust,
             WebApiClient.ConnectedIndividualAndTrustCategory.DirectorOrIndividualWithTheSameResponsibilitiesForTrust => ConnectedEntityIndividualAndTrustCategoryType.DirectorOrIndividualWithTheSameResponsibilitiesForTrust,
             WebApiClient.ConnectedIndividualAndTrustCategory.AnyOtherIndividualWithSignificantInfluenceOrControlForTrust => ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndividualWithSignificantInfluenceOrControlForTrust,
             _ => ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForIndividual

@@ -2,7 +2,6 @@ using CO.CDP.OrganisationInformation.Persistence.Constants;
 using CO.CDP.Testcontainers.PostgreSql;
 using FluentAssertions;
 using static CO.CDP.OrganisationInformation.Persistence.IOrganisationRepository.OrganisationRepositoryException;
-using static CO.CDP.OrganisationInformation.Persistence.Organisation;
 using static CO.CDP.OrganisationInformation.Persistence.Tests.EntityFactory;
 
 namespace CO.CDP.OrganisationInformation.Persistence.Tests;
@@ -207,7 +206,7 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql)
             Name = initialName,
             Type = OrganisationType.Organisation,
             Tenant = GivenTenant(),
-            Identifiers = [new Organisation.Identifier
+            Identifiers = [new Identifier
             {
                 Primary = true,
                 Scheme = "GB-COH",
@@ -215,7 +214,7 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql)
                 LegalName = "DefaultLegalName",
                 Uri = "http://default.org"
             },
-                new Organisation.Identifier
+                new Identifier
                 {
                     Primary = false,
                     Scheme = "GB-PPON",
@@ -234,7 +233,7 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql)
                     Country = "AB"
                 }
             }},
-            ContactPoints = [new Organisation.ContactPoint
+            ContactPoints = [new ContactPoint
             {
                 Name = "Default Contact",
                 Email = "contact@default.org",
@@ -300,7 +299,7 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql)
             guid: organisationId,
             identifiers:
             [
-            new Organisation.Identifier
+            new Identifier
             {
                 Primary = true,
                 Scheme = "Scheme",
@@ -340,37 +339,6 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql)
     }
 
     [Fact]
-    public async Task FindByUserUrn_WhenNoOrganisationFound_ReturnEmptyList()
-    {
-        using var repository = OrganisationRepository();
-        var userUrn = "urn:fdc:gov.uk:2022:7wTqYGMFQxgukTSpSI2G0dMwe9";
-
-        var found = await repository.FindByUserUrn(userUrn);
-
-        found.Should().BeEmpty();
-    }
-
-    [Fact]
-    public async Task FindByUserUrn_WhenOrganisationsFound_ReturnThatList()
-    {
-        using var repository = OrganisationRepository();
-        var userUrn = "urn:fdc:gov.uk:2022:7wTqYGMFQxgukTSpSI2GodMwe9";
-
-        var person = GivenPerson(userUrn: userUrn);
-
-        var organisation1 = GivenOrganisation(personsWithScope: [(person, ["ADMIN"])]);
-        repository.Save(organisation1);
-
-        var organisation2 = GivenOrganisation(personsWithScope: [(person, ["ADMIN"])]);
-        repository.Save(organisation2);
-
-        var found = await repository.FindByUserUrn(userUrn);
-
-        found.As<IEnumerable<Organisation>>().Should().HaveCount(2);
-        found.As<IEnumerable<Organisation>>().Should().ContainEquivalentOf(organisation1);
-    }
-
-    [Fact]
     public async Task FindIncludingTenant_WhenFound_ReturnsOrganisation()
     {
         using var repository = OrganisationRepository();
@@ -407,288 +375,6 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql)
         found.Should().BeEquivalentTo(organisation, options => options.ComparingByMembers<Organisation>());
         found.As<Organisation>().Id.Should().BePositive();
         found.As<Organisation>().Tenant.Should().Be(tenant);
-    }
-
-    [Fact]
-    public async Task GetConnectedIndividualTrusts_WhenConnectedEntitiesExist_ReturnsConnectedEntities()
-    {
-        await GetConnectedIndividualTrusts();
-    }
-
-    [Fact]
-    public async Task GetConnectedIndividualTrusts_WhenConnectedEntitiesExistAndFutureEndDate_ReturnsConnectedEntities()
-    {
-        await GetConnectedIndividualTrusts(endDate: DateTimeOffset.UtcNow.AddDays(1));
-    }
-
-    [Fact]
-    public async Task GetConnectedIndividualTrusts_WhenConnectedEntitiesExistAndEndDateInPast_ReturnsNoConnectedEntities()
-    {
-        await GetConnectedIndividualTrusts(endDate: DateTimeOffset.UtcNow.AddDays(-1), connectedPersonsShouldBeEmpty: true);
-    }
-
-    private async Task GetConnectedIndividualTrusts(DateTimeOffset? endDate = null, bool connectedPersonsShouldBeEmpty = false)
-    {
-        using var repository = OrganisationRepository();
-
-        var supplierOrganisation = GivenOrganisation();
-        var connectedEntity = GivenConnectedIndividualTrust(supplierOrganisation);
-        connectedEntity.EndDate = endDate;
-
-        await using var context = GetDbContext();
-        await context.Organisations.AddAsync(supplierOrganisation);
-        await context.ConnectedEntities.AddAsync(connectedEntity);
-        await context.SaveChangesAsync();
-
-        var result = await repository.GetConnectedIndividualTrusts(supplierOrganisation.Id);
-
-        if (connectedPersonsShouldBeEmpty)
-        {
-            result.Should().BeEmpty();
-        }
-        else
-        {
-            result.Should().NotBeEmpty();
-            result.Should().HaveCount(1);
-
-            var individualTrust = result.First().IndividualOrTrust;
-            individualTrust.Should().BeEquivalentTo(connectedEntity.IndividualOrTrust, options =>
-                options
-                    .Using<DateTimeOffset>(ctx => ctx.Subject.Should().BeCloseTo(ctx.Expectation, TimeSpan.FromMilliseconds(100)))
-                    .WhenTypeIs<DateTimeOffset>()
-            );
-        }
-    }
-
-    [Fact]
-    public async Task GetConnectedIndividualTrusts_WhenNoConnectedEntitiesExist_ReturnsEmptyList()
-    {
-        using var repository = OrganisationRepository();
-
-        var organisationId = 1;
-        var organisation = GivenOrganisation();
-
-        await using var context = GetDbContext();
-        await context.Organisations.AddAsync(organisation);
-        await context.SaveChangesAsync();
-
-        var result = await repository.GetConnectedIndividualTrusts(organisationId);
-
-        result.Should().BeEmpty();
-    }
-
-    [Fact]
-    public async Task GetConnectedOrganisations_WhenConnectedEntitiesExist_ReturnsConnectedEntities()
-    {
-        await GetConnectedOrganisations();
-    }
-
-    [Fact]
-    public async Task GetConnectedOrganisations_WhenConnectedEntitiesExistAndFutureEndDate_ReturnsConnectedEntities()
-    {
-        await GetConnectedOrganisations(endDate: DateTimeOffset.UtcNow.AddDays(1));
-    }
-
-    [Fact]
-    public async Task GetConnectedOrganisations_WhenConnectedEntitiesExistAndEndDateInPast_ReturnsNoConnectedEntities()
-    {
-        await GetConnectedOrganisations(endDate: DateTimeOffset.UtcNow.AddDays(-1), connectedPersonsShouldBeEmpty: true);
-    }
-
-    private async Task GetConnectedOrganisations(DateTimeOffset? endDate = null, bool connectedPersonsShouldBeEmpty = false)
-    {
-        using var repository = OrganisationRepository();
-
-        var supplierOrganisation = GivenOrganisation();
-        var connectedEntity = GivenConnectedOrganisation(supplierOrganisation);
-        connectedEntity.EndDate = endDate;
-
-        await using var context = GetDbContext();
-        await context.Organisations.AddAsync(supplierOrganisation);
-        await context.ConnectedEntities.AddAsync(connectedEntity);
-        await context.SaveChangesAsync();
-
-        var result = await repository.GetConnectedOrganisations(supplierOrganisation.Id);
-
-        if (connectedPersonsShouldBeEmpty)
-        {
-            result.Should().BeEmpty();
-        }
-        else
-        {
-            result.Should().NotBeEmpty();
-            result.Should().HaveCount(1);
-
-            var organisation = result.First().Organisation;
-            organisation.Should().BeEquivalentTo(connectedEntity.Organisation, options =>
-                options
-                    .Using<DateTimeOffset>(ctx => ctx.Subject.Should().BeCloseTo(ctx.Expectation, TimeSpan.FromMilliseconds(100)))
-                    .WhenTypeIs<DateTimeOffset>()
-            );
-        }
-    }
-
-    [Fact]
-    public async Task GetConnectedOrganisations_WhenNoConnectedEntitiesExist_ReturnsEmptyList()
-    {
-        using var repository = OrganisationRepository();
-
-        var organisationId = 1;
-        var organisation = GivenOrganisation();
-
-        await using var context = GetDbContext();
-        await context.Organisations.AddAsync(organisation);
-        await context.SaveChangesAsync();
-
-        var result = await repository.GetConnectedOrganisations(organisationId);
-
-        result.Should().BeEmpty();
-    }
-
-    [Fact]
-    public async Task GetConnectedTrustsOrTrustees_WhenConnectedEntitiesExist_ReturnsConnectedEntities()
-    {
-        await GetConnectedTrustsOrTrustees();
-    }
-
-    [Fact]
-    public async Task GetConnectedTrustsOrTrustees_WhenConnectedEntitiesExistAndFutureEndDate_ReturnsConnectedEntities()
-    {
-        await GetConnectedTrustsOrTrustees(endDate: DateTimeOffset.UtcNow.AddDays(1));
-    }
-
-    [Fact]
-    public async Task GetConnectedTrustsOrTrustees_WhenConnectedEntitiesExistAndEndDateInPast_ReturnsNoConnectedEntities()
-    {
-        await GetConnectedTrustsOrTrustees(endDate: DateTimeOffset.UtcNow.AddDays(-1), connectedPersonsShouldBeEmpty: true);
-    }
-
-    private async Task GetConnectedTrustsOrTrustees(DateTimeOffset? endDate = null, bool connectedPersonsShouldBeEmpty = false)
-    {
-        using var repository = OrganisationRepository();
-
-        var supplierOrganisation = GivenOrganisation();
-        var connectedEntity = GivenConnectedTrustsOrTrustees(supplierOrganisation);
-        connectedEntity.EndDate = endDate;
-
-        using var context = GetDbContext();
-        await context.Organisations.AddAsync(supplierOrganisation);
-        await context.ConnectedEntities.AddAsync(connectedEntity);
-        await context.SaveChangesAsync();
-
-        var result = await repository.GetConnectedTrustsOrTrustees(supplierOrganisation.Id);
-
-        if (connectedPersonsShouldBeEmpty)
-        {
-            result.Should().BeEmpty();
-        }
-        else
-        {
-            result.Should().NotBeEmpty();
-            result.Should().HaveCount(1);
-            result.Should().Contain(x => x.EntityType == ConnectedEntity.ConnectedEntityType.TrustOrTrustee);
-
-            var organisation = result.First().Organisation;
-            organisation.Should().BeEquivalentTo(connectedEntity.Organisation, options =>
-                options
-                    .Using<DateTimeOffset>(ctx => ctx.Subject.Should().BeCloseTo(ctx.Expectation, TimeSpan.FromMilliseconds(100)))
-                    .WhenTypeIs<DateTimeOffset>()
-            );
-        }
-    }
-
-    [Fact]
-    public async Task GetConnectedTrustsOrTrustees_WhenNoConnectedEntitiesExist_ReturnsEmptyList()
-    {
-        using var repository = OrganisationRepository();
-
-        var organisationId = 1;
-        var organisation = GivenOrganisation();
-
-        using var context = GetDbContext();
-        await context.Organisations.AddAsync(organisation);
-        await context.SaveChangesAsync();
-
-        var result = await repository.GetConnectedTrustsOrTrustees(organisationId);
-
-        result.Should().BeEmpty();
-    }
-
-    [Fact]
-    public async Task GetLegalForm_WhenNoLegalFormExists_ReturnNull()
-    {
-        using var repository = OrganisationRepository();
-
-        var organisation = GivenOrganisation();
-        organisation.SupplierInfo = GivenSupplierInformation();
-        organisation.SupplierInfo.LegalForm = null;
-
-        await using var context = GetDbContext();
-        await context.Organisations.AddAsync(organisation);
-        await context.SaveChangesAsync();
-
-        var result = await repository.GetLegalForm(organisation.Id);
-
-        result.Should().BeNull();
-    }
-
-    [Fact]
-    public async Task GetLegalForm_WhenLegalFormExists_ReturnValidLegalForm()
-    {
-        using var repository = OrganisationRepository();
-
-        var organisation = GivenOrganisation();
-        organisation.SupplierInfo = GivenSupplierInformation();
-        organisation.SupplierInfo.LegalForm = GivenSupplierLegalForm();
-
-        await using var context = GetDbContext();
-        await context.Organisations.AddAsync(organisation);
-        await context.SaveChangesAsync();
-
-        var result = await repository.GetLegalForm(organisation.Id);
-
-        result?.Should().NotBeNull();
-        result?.RegisteredUnderAct2006.Should().Be(true);
-        result?.RegisteredLegalForm.Should().Be("Limited company");
-        result?.LawRegistered.Should().Be("England and Wales");
-        result?.RegistrationDate.Should().Be(DateTimeOffset.Parse("2005-12-02T00:00:00Z"));
-    }
-
-    [Fact]
-    public async Task GetOperationTypes_WhenNoOperationTypeExists_ReturnsNull()
-    {
-        using var repository = OrganisationRepository();
-
-        var organisation = GivenOrganisation();
-        organisation.SupplierInfo = GivenSupplierInformation();
-        organisation.SupplierInfo.OperationTypes = [];
-
-        await using var context = GetDbContext();
-        await context.Organisations.AddAsync(organisation);
-        await context.SaveChangesAsync();
-
-        var result = await repository.GetOperationTypes(organisation.Id);
-
-        result.Should().BeEmpty();
-    }
-
-    [Fact]
-    public async Task GetOperationTypes_WhenOperationTypeExists_ReturnsEmptyList()
-    {
-        using var repository = OrganisationRepository();
-
-        var organisation = GivenOrganisation();
-        organisation.SupplierInfo = GivenSupplierInformation();
-        organisation.SupplierInfo.OperationTypes = [OperationType.SmallOrMediumSized];
-
-        await using var context = GetDbContext();
-        await context.Organisations.AddAsync(organisation);
-        await context.SaveChangesAsync();
-
-        var result = await repository.GetOperationTypes(organisation.Id);
-
-        result.Should().NotBeNull();
-        result.Should().Contain(OperationType.SmallOrMediumSized);
     }
 
     [Fact]
@@ -1104,10 +790,10 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql)
         var email = "contact@example.com";
 
         var organisation1 = GivenOrganisation();
-        organisation1.ContactPoints = [new Organisation.ContactPoint { Email = email }];
+        organisation1.ContactPoints = [new ContactPoint { Email = email }];
 
         var organisation2 = GivenOrganisation();
-        organisation2.ContactPoints = [new Organisation.ContactPoint { Email = email }];
+        organisation2.ContactPoints = [new ContactPoint { Email = email }];
 
         await context.Organisations.AddRangeAsync(organisation1, organisation2);
         await context.SaveChangesAsync();
@@ -1143,11 +829,11 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql)
         var roleWeDontWant = PartyRole.Supplier;
 
         var organisation1 = GivenOrganisation(roles: [roleWeWant]);
-        organisation1.ContactPoints = [new Organisation.ContactPoint { Email = email }];
+        organisation1.ContactPoints = [new ContactPoint { Email = email }];
         organisation1.Roles.Add(roleWeWant);
 
         var organisation2 = GivenOrganisation(roles: [roleWeDontWant]);
-        organisation2.ContactPoints = [new Organisation.ContactPoint { Email = email }];
+        organisation2.ContactPoints = [new ContactPoint { Email = email }];
 
         await context.Organisations.AddRangeAsync(organisation1, organisation2);
         await context.SaveChangesAsync();
@@ -1168,10 +854,10 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql)
         var email = "john@johnson.com";
 
         var organisation1 = GivenOrganisation();
-        organisation1.ContactPoints = [new Organisation.ContactPoint { Email = email }];
+        organisation1.ContactPoints = [new ContactPoint { Email = email }];
 
         var organisation2 = GivenOrganisation();
-        organisation2.ContactPoints = [new Organisation.ContactPoint { Email = email }];
+        organisation2.ContactPoints = [new ContactPoint { Email = email }];
 
         await context.Organisations.AddRangeAsync(organisation1, organisation2);
         await context.SaveChangesAsync();

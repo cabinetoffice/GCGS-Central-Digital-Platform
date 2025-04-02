@@ -63,7 +63,7 @@ builder.Services.AddScoped<IUseCase<ShareRequest, ShareReceipt>, GenerateShareCo
 builder.Services.AddScoped<IUseCase<Guid, List<SharedConsent>?>, GetShareCodesUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, string), SharedConsentDetails?>, GetShareCodeDetailsUseCase>();
 builder.Services.AddScoped<IUseCase<ShareVerificationRequest, ShareVerificationReceipt>, GetShareCodeVerifyUseCase>();
-builder.Services.AddScoped<IUseCase<string, SupplierInformation?>, GetSharedDataUseCase>();
+builder.Services.AddScoped<IUseCase<string, CO.CDP.DataSharing.WebApi.Model.SupplierInformation?>, GetSharedDataUseCase>();
 builder.Services.AddScoped<IUseCase<string, SharedDataFile?>, GetSharedDataFileUseCase>();
 builder.Services.AddScoped<IUseCase<(string, string), string?>, GetSharedDataDocumentDownloadUrlUseCase>();
 builder.Services.AddProblemDetails();

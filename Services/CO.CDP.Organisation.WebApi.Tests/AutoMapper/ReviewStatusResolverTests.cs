@@ -1,4 +1,3 @@
-using AutoMapper;
 using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.OrganisationInformation;
 using FluentAssertions;
