@@ -91,6 +91,8 @@ COPY --link Services/CO.CDP.Localization/CO.CDP.Localization.csproj Services/CO.
 COPY --link Services/CO.CDP.AntiVirusScanner/CO.CDP.AntiVirusScanner.csproj Services/CO.CDP.AntiVirusScanner/
 COPY --link Services/CO.CDP.AntiVirusScanner.Tests/CO.CDP.AntiVirusScanner.Tests.csproj Services/CO.CDP.AntiVirusScanner.Tests/
 COPY --link Services/CO.CDP.OutboxProcessor/CO.CDP.OutboxProcessor.csproj Services/CO.CDP.OutboxProcessor/
+COPY --link Services/CO.CDP.ScheduledWorker/CO.CDP.ScheduledWorker.csproj Services/CO.CDP.ScheduledWorker/
+COPY --link Services/CO.CDP.ScheduledWorker.Tests/CO.CDP.ScheduledWorker.Tests.csproj Services/CO.CDP.ScheduledWorker.Tests/
 
 COPY --link GCGS-Central-Digital-Platform.sln .
 RUN dotnet restore "GCGS-Central-Digital-Platform.sln"
@@ -151,6 +153,11 @@ ARG BUILD_CONFIGURATION
 WORKDIR /src/Services/CO.CDP.OutboxProcessor
 RUN dotnet build -c $BUILD_CONFIGURATION -o /app/build
 
+FROM build AS build-scheduled-worker
+ARG BUILD_CONFIGURATION
+WORKDIR /src/Services/CO.CDP.ScheduledWorker
+RUN dotnet build -c $BUILD_CONFIGURATION -o /app/build
+
 FROM build AS build-organisation-app
 ARG BUILD_CONFIGURATION
 WORKDIR /src/Frontend/CO.CDP.OrganisationApp
@@ -195,6 +202,10 @@ RUN dotnet publish "CO.CDP.AntiVirusScanner.csproj" -c $BUILD_CONFIGURATION -o /
 FROM build-outbox-processor AS publish-outbox-processor
 ARG BUILD_CONFIGURATION
 RUN dotnet publish "CO.CDP.OutboxProcessor.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+
+FROM build-scheduled-worker AS publish-scheduled-worker
+ARG BUILD_CONFIGURATION
+RUN dotnet publish "CO.CDP.ScheduledWorker.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 FROM build-tenant AS build-migrations-organisation-information
 WORKDIR /src
@@ -306,3 +317,10 @@ ENV Channel=entity_verification_outbox
 WORKDIR /app
 COPY --from=publish-outbox-processor /app/publish .
 ENTRYPOINT ["dotnet", "CO.CDP.OutboxProcessor.dll"]
+
+FROM base AS final-scheduled-worker
+ARG VERSION
+ENV VERSION=${VERSION}
+WORKDIR /app
+COPY --from=publish-scheduled-worker /app/publish .
+ENTRYPOINT ["dotnet", "CO.CDP.ScheduledWorker.dll"]
