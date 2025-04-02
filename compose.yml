@@ -20,6 +20,7 @@ services:
       - entity-verification
       - av-scanner
       - clamav-rest
+      - scheduled-worker
     volumes:
       - './docker/gateway/nginx.conf:/etc/nginx/nginx.conf:ro'
       - './docker/gateway/templates:/etc/nginx/templates:ro'
@@ -445,6 +446,20 @@ services:
         condition: "service_healthy"
       db:
         condition: "service_healthy"
+
+  scheduled-worker:
+    container_name: co-cdp-scheduled-worker
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: final-scheduled-worker
+    image: 'cabinetoffice/cdp-scheduled-worker:${IMAGE_VERSION:-latest}'
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      OrganisationInformationDatabase__Server: 'db'
+      OrganisationInformationDatabase__Database: 'cdp'
+      OrganisationInformationDatabase__Username: 'cdp_user'
+      OrganisationInformationDatabase__Password: 'cdp123'
 
 networks:
   default:
