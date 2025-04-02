@@ -90,9 +90,9 @@ public class CompleteMoUReminderServiceTests
             l => l.Log(
                 It.Is<LogLevel>(logLevel => logLevel == LogLevel.Error),
                 It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, t) => v.ToString() == "Failed to send Mou reminder email for: Test Org, email: test2@example.com"),
+                It.Is<It.IsAnyType>((v, t) => v.ToString() == "Failed to send Mou reminder email for: Test Org"),
                 It.IsAny<Exception>(),
-                It.Is<Func<It.IsAnyType, Exception?, string>>((v, t) => true)), Times.Once);
+                It.Is<Func<It.IsAnyType, Exception?, string>>((v, t) => true)), Times.Exactly(2));
     }
 
     [Fact]
