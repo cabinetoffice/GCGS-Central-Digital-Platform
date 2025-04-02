@@ -227,7 +227,7 @@ locals {
     outbox_processor_entity_verification = { desired_count = 1 }
     outbox_processor_organisation        = { desired_count = 1 }
     person                               = {}
-    schedualed_worker                    = { desired_count = 1 }
+    scheduled_worker                     = { desired_count = 1 }
     tenant                               = {}
   }
 
@@ -269,7 +269,7 @@ locals {
     outbox_processor_entity_verification = { port = 9096, port_host = 9096, name = "outbox-processor-entity-verification"}
     outbox_processor_organisation        = { port = 9098, port_host = 9098, name = "outbox-processor-organisation"}
     person                               = { port = 8084, port_host = 8084, name = "person" }
-    schedualed_worker                    = { port = 9094, port_host = 9094, name = "schedualed-worker"}
+    scheduled_worker                     = { port = 9094, port_host = 9094, name = "scheduled-worker"}
     tenant                               = { port = 8080, port_host = 8080, name = "tenant" }
   }
 
