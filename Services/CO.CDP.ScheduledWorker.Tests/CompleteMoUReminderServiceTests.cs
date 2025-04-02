@@ -1,6 +1,7 @@
 using CO.CDP.GovUKNotify;
 using CO.CDP.GovUKNotify.Models;
 using CO.CDP.OrganisationInformation.Persistence;
+using CO.CDP.OrganisationInformation.Persistence.NonEfEntities;
 using FluentAssertions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -23,6 +24,7 @@ public class CompleteMoUReminderServiceTests
 
         var inMemorySettings = new List<KeyValuePair<string, string?>>
         {
+            new("CompleteMoUReminderJob:DaysBetweenEmailReminders", "7"),
             new("GOVUKNotify:MouReminderToSignEmailTemplateId", "test-template-id"),
             new("OrganisationAppUrl", "http://baseurl/"),
         };
@@ -40,12 +42,12 @@ public class CompleteMoUReminderServiceTests
         List<MouReminderOrganisation> organisations =
             [new() { Id = 1, Name = "Org1", Email = "test1@example.com,test2@example.com", Guid = Guid.NewGuid() }];
 
-        _mockMouRepository.Setup(r => r.GetMouReminderOrganisations()).ReturnsAsync(organisations);
+        _mockMouRepository.Setup(r => r.GetMouReminderOrganisations(7)).ReturnsAsync(organisations);
         _mockMouRepository.Setup(r => r.UpsertMouEmailReminder(1)).Returns(Task.CompletedTask);
 
         await _service.ExecuteWorkAsync(CancellationToken.None);
 
-        _mockMouRepository.Verify(r => r.GetMouReminderOrganisations(), Times.Once);
+        _mockMouRepository.Verify(r => r.GetMouReminderOrganisations(7), Times.Once);
         _mockMouRepository.Verify(r => r.UpsertMouEmailReminder(1), Times.Once);
         _mockGovUKNotifyClient.Verify(n => n.SendEmail(It.IsAny<EmailNotificationRequest>()), Times.Exactly(2));
 
@@ -61,7 +63,7 @@ public class CompleteMoUReminderServiceTests
     [Fact]
     public async Task ExecuteWorkAsync_ShouldNotCallNotification_WhenNoRemindersExist()
     {
-        _mockMouRepository.Setup(r => r.GetMouReminderOrganisations())
+        _mockMouRepository.Setup(r => r.GetMouReminderOrganisations(7))
             .ReturnsAsync([]);
 
         await _service.ExecuteWorkAsync(CancellationToken.None);
@@ -76,7 +78,7 @@ public class CompleteMoUReminderServiceTests
         List<MouReminderOrganisation> organisations =
             [new() { Id = 1, Name = "Test Org", Email = "test1@example.com,test2@example.com", Guid = Guid.NewGuid() }];
 
-        _mockMouRepository.Setup(r => r.GetMouReminderOrganisations())
+        _mockMouRepository.Setup(r => r.GetMouReminderOrganisations(7))
             .ReturnsAsync(organisations);
 
         _mockGovUKNotifyClient.Setup(n => n.SendEmail(It.IsAny<EmailNotificationRequest>()))
@@ -88,7 +90,7 @@ public class CompleteMoUReminderServiceTests
             l => l.Log(
                 It.Is<LogLevel>(logLevel => logLevel == LogLevel.Error),
                 It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, t) => v.ToString() == "Failed to send Mou reminder email for: Test Org"),
+                It.Is<It.IsAnyType>((v, t) => v.ToString() == "Failed to send Mou reminder email for: Test Org, email: test2@example.com"),
                 It.IsAny<Exception>(),
                 It.Is<Func<It.IsAnyType, Exception?, string>>((v, t) => true)), Times.Once);
     }
@@ -99,7 +101,7 @@ public class CompleteMoUReminderServiceTests
         List<MouReminderOrganisation> organisations =
             [new() { Id = 1, Name = "Org1", Email = "test1@example.com,test2@example.com", Guid = Guid.NewGuid() }];
 
-        _mockMouRepository.Setup(r => r.GetMouReminderOrganisations()).ReturnsAsync(organisations);
+        _mockMouRepository.Setup(r => r.GetMouReminderOrganisations(7)).ReturnsAsync(organisations);
         _mockMouRepository.Setup(r => r.UpsertMouEmailReminder(1)).Returns(Task.CompletedTask);
 
         EmailNotificationRequest? capturedRequest = null;
@@ -124,13 +126,19 @@ public class CompleteMoUReminderServiceTests
         List<MouReminderOrganisation> organisations =
             [new() { Id = 1, Name = "Org1", Email = "test1@example.com,test2@example.com", Guid = Guid.NewGuid() }];
 
-        _mockMouRepository.Setup(r => r.GetMouReminderOrganisations()).ReturnsAsync(organisations);
+        _mockMouRepository.Setup(r => r.GetMouReminderOrganisations(7)).ReturnsAsync(organisations);
         _mockMouRepository.Setup(r => r.UpsertMouEmailReminder(1)).Returns(Task.CompletedTask);
+
+        var inMemorySettings = new List<KeyValuePair<string, string?>>
+        {
+            new("CompleteMoUReminderJob:DaysBetweenEmailReminders", "7"),
+            new("GOVUKNotify:MouReminderToSignEmailTemplateId", "test-template-id")
+        };
 
         var service = new CompleteMoUReminderService(
             _mockLogger.Object,
             _mockMouRepository.Object,
-            new ConfigurationBuilder().AddInMemoryCollection([new("GOVUKNotify:MouReminderToSignEmailTemplateId", "test-template-id")]).Build(),
+            new ConfigurationBuilder().AddInMemoryCollection(inMemorySettings).Build(),
             _mockGovUKNotifyClient.Object);
 
         Func<Task> act = async () => await service.ExecuteWorkAsync(CancellationToken.None);
@@ -146,13 +154,19 @@ public class CompleteMoUReminderServiceTests
         List<MouReminderOrganisation> organisations =
             [new() { Id = 1, Name = "Org1", Email = "test1@example.com,test2@example.com", Guid = Guid.NewGuid() }];
 
-        _mockMouRepository.Setup(r => r.GetMouReminderOrganisations()).ReturnsAsync(organisations);
+        _mockMouRepository.Setup(r => r.GetMouReminderOrganisations(7)).ReturnsAsync(organisations);
         _mockMouRepository.Setup(r => r.UpsertMouEmailReminder(1)).Returns(Task.CompletedTask);
+
+        var inMemorySettings = new List<KeyValuePair<string, string?>>
+        {
+            new("CompleteMoUReminderJob:DaysBetweenEmailReminders", "7"),
+            new("OrganisationAppUrl", "http://baseurl/"),
+        };
 
         var service = new CompleteMoUReminderService(
             _mockLogger.Object,
             _mockMouRepository.Object,
-            new ConfigurationBuilder().AddInMemoryCollection([new("OrganisationAppUrl", "http://baseurl/")]).Build(),
+            new ConfigurationBuilder().AddInMemoryCollection(inMemorySettings).Build(),
             _mockGovUKNotifyClient.Object);
 
         Func<Task> act = async () => await service.ExecuteWorkAsync(CancellationToken.None);
@@ -160,5 +174,21 @@ public class CompleteMoUReminderServiceTests
         await act.Should()
            .ThrowAsync<Exception>()
            .WithMessage("Missing configuration keys: GOVUKNotify:MouReminderToSignEmailTemplateId.");
+    }
+
+    [Fact]
+    public async Task ExecuteWorkAsync_ShouldThrowError_WhenMDaysBetweenEmailRemindersConfigNotSet()
+    {
+        var service = new CompleteMoUReminderService(
+            _mockLogger.Object,
+            _mockMouRepository.Object,
+            new ConfigurationBuilder().AddInMemoryCollection([]).Build(),
+            _mockGovUKNotifyClient.Object);
+
+        Func<Task> act = async () => await service.ExecuteWorkAsync(CancellationToken.None);
+
+        await act.Should()
+           .ThrowAsync<Exception>()
+           .WithMessage("Missing configuration keys: CompleteMoUReminderJob:DaysBetweenEmailReminders.");
     }
 }

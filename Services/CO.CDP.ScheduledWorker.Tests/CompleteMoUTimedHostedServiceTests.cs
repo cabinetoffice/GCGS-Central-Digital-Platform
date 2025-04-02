@@ -1,4 +1,5 @@
 using FluentAssertions;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -20,7 +21,9 @@ public class CompleteMoUTimedHostedServiceTests
         _mockScopeFactory.Setup(x => x.CreateScope()).Returns(_mockScope.Object);
         _mockScope.Setup(x => x.ServiceProvider).Returns(_mockServiceProvider.Object);
         _mockServiceProvider.Setup(x => x.GetService(typeof(IScopedProcessingService))).Returns(_mockScopedService.Object);
-        _service = new CompleteMoUTimedHostedService(_mockServiceProvider.Object, _mockLogger.Object);
+        _service = new CompleteMoUTimedHostedService(_mockServiceProvider.Object,
+            new ConfigurationBuilder().AddInMemoryCollection([new("CompleteMoUReminderJob:IntervalInSeconds", "3600")]).Build(),
+            _mockLogger.Object);
     }
 
     [Fact]

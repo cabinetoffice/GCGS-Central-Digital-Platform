@@ -1,3 +1,4 @@
+using CO.CDP.OrganisationInformation.Persistence.NonEfEntities;
 using Microsoft.EntityFrameworkCore;
 
 namespace CO.CDP.OrganisationInformation.Persistence;
@@ -5,9 +6,9 @@ namespace CO.CDP.OrganisationInformation.Persistence;
 public class DatabaseMouRepository
     (OrganisationInformationContext context) : IMouRepository
 {
-    public async Task<IEnumerable<MouReminderOrganisation>> GetMouReminderOrganisations()
+    public async Task<IEnumerable<MouReminderOrganisation>> GetMouReminderOrganisations(int daysBetweenReminders)
     {
-        var time7daysAgo = DateTimeOffset.UtcNow.AddDays(-7);
+        var pastTime = DateTimeOffset.UtcNow.AddDays(-1 * daysBetweenReminders);
 
         var query = from o in context.Organisations
                     from cp in o.ContactPoints
@@ -21,7 +22,7 @@ public class DatabaseMouRepository
                     where !context.MouSignature.Any(ms => ms.OrganisationId == o.Id && ms.MouId == latestMouId)
 
                     let lastReminder = context.MouEmailReminders.Where(mer => mer.OrganisationId == o.Id).FirstOrDefault()
-                    where lastReminder == null || lastReminder.ReminderSentOn <= time7daysAgo
+                    where lastReminder == null || lastReminder.ReminderSentOn <= pastTime
 
                     group p by new { o.Id, o.Guid, o.Name, cp.Email } into g
                     select new MouReminderOrganisation
