@@ -11,9 +11,8 @@ namespace CO.CDP.Organisation.WebApi.Tests.UseCase;
 
 public class RegisterConnectedEntityUseCaseTest(AutoMapperFixture mapperFixture) : IClassFixture<AutoMapperFixture>
 {
-    private readonly Mock<Persistence.IOrganisationRepository> _organisationRepo = new();
-    private readonly Mock<Persistence.IPersonRepository> _persons = new();
-    private readonly Mock<Persistence.IConnectedEntityRepository> _connectedEntityRepo = new();
+    private readonly Mock<IOrganisationRepository> _organisationRepo = new();
+    private readonly Mock<IConnectedEntityRepository> _connectedEntityRepo = new();
     private readonly Guid _generatedGuid = Guid.NewGuid();
     private RegisterConnectedEntityUseCase UseCase => new(_connectedEntityRepo.Object, _organisationRepo.Object, mapperFixture.Mapper, () => _generatedGuid);
 
@@ -132,7 +131,7 @@ public class RegisterConnectedEntityUseCaseTest(AutoMapperFixture mapperFixture)
         Persistence.ConnectedEntity entity = new Persistence.ConnectedEntity
         {
             Guid = entityId,
-            EntityType = Persistence.ConnectedEntity.ConnectedEntityType.Organisation,
+            EntityType = OrganisationInformation.ConnectedEntityType.Organisation,
             SupplierOrganisation = GivenOrganisationExist(guid)
         };
 

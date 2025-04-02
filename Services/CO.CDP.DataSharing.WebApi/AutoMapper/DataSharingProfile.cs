@@ -224,7 +224,43 @@ public class JsonValueResolver : IValueResolver<FormAnswerNonEf, FormAnswer, Dic
             return null;
         }
 
-        return JsonSerializer.Deserialize<Dictionary<string, object>>(source.JsonValue);
+        var values = JsonSerializer.Deserialize<Dictionary<string, object>>(source.JsonValue);
+
+        if (values != null && values.TryGetValue("type", out object? type)
+            && source.Question?.Options?.ChoiceProviderStrategy == "ExclusionAppliesToChoiceProviderStrategy")
+        {
+            var newType = type;
+            switch (type.ToString())
+            {
+                case "organisation":
+                    newType = "self";
+                    break;
+
+                case "connected-entity":
+                    var entityId = values["id"].ToString();
+                    if (context.State != null)
+                    {
+                        var associatedPerson = context.Items["AssociatedPersons"] as ICollection<AssociatedPerson>;
+                        if (associatedPerson?.Any(a => a.Id.ToString() == entityId) == true)
+                        {
+                            newType = "associated-persons";
+                        }
+                        else
+                        {
+                            var additionalEntities = context.Items["AdditionalEntities"] as ICollection<OrganisationReference>;
+                            if (additionalEntities?.Any(a => a.Id.ToString() == entityId) == true)
+                            {
+                                newType = "additional-entities";
+                            }
+                        }
+                    }
+                    break;
+            }
+
+            values["type"] = newType;
+        }
+
+        return values;
     }
 }
 

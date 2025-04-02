@@ -27,21 +27,21 @@ public class GetConnectedEntitiesUseCaseTest(AutoMapperFixture mapperFixture) : 
         var eid1 = Guid.NewGuid();
         var eid2 = Guid.NewGuid();
 
-        var persistenceConnectedEntityList = new List<OrganisationInformation.Persistence.ConnectedEntityLookup>
-        {
-            new OrganisationInformation.Persistence.ConnectedEntityLookup
+        List<ConnectedEntityLookup> persistenceConnectedEntityList =
+        [
+            new ConnectedEntityLookup
             {
                 EntityId = eid1,
                 Name = "CHN_123",
-                EntityType = ConnectedEntity.ConnectedEntityType.Organisation
+                EntityType = OrganisationInformation.ConnectedEntityType.Organisation
             },
-            new OrganisationInformation.Persistence.ConnectedEntityLookup
+            new ConnectedEntityLookup
             {
                 EntityId = eid2,
                 Name = "First Name",
-                EntityType = ConnectedEntity.ConnectedEntityType.Organisation
+                EntityType = OrganisationInformation.ConnectedEntityType.Organisation
             }
-        };
+        ];
 
 
         _repository.Setup(r => r.GetSummary(organisationId)).ReturnsAsync(persistenceConnectedEntityList);

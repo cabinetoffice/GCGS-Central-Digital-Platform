@@ -1,8 +1,8 @@
 using CO.CDP.OrganisationInformation;
 using CO.CDP.OrganisationInformation.Persistence.Forms;
 using CO.CDP.OrganisationInformation.Persistence.NonEfEntities;
+using FluentAssertions.Common;
 using static CO.CDP.OrganisationInformation.Persistence.ConnectedEntity;
-using ConnectedOrganisationCategory = CO.CDP.OrganisationInformation.Persistence.ConnectedEntity.ConnectedOrganisationCategory;
 using PersistenceForms = CO.CDP.OrganisationInformation.Persistence.Forms;
 
 namespace CO.CDP.DataSharing.WebApi.Tests;
@@ -57,14 +57,38 @@ internal static class NonEfEntityFactory
             {
                 new ConnectedEntityNonEf
                 {
-                    Guid = Guid.NewGuid(),
-                    EntityType = OrganisationInformation.ConnectedEntityType.Individual,
+                    Guid = new Guid("8f127354-9777-44d3-93dd-a7437e0cc552"),
+                    EntityType = ConnectedEntityType.Individual,
                     IndividualOrTrust = new ConnectedIndividualTrustNonEf
                     {
                         FirstName = "John",
                         LastName = "Doe",
-                        Category = ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForIndiv
-                    }
+                        Category = ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForIndiv,
+                        ConnectedType = ConnectedPersonType.Individual,
+                        ControlCondition  = [
+                            ControlCondition.HasOtherSignificantInfluenceOrControl,
+                            ControlCondition.HasVotingRights
+                            ],
+                        DateOfBirth = DateTime.Today.AddYears(30),
+                        Nationality = "British",
+                        ResidentCountry = "United Kingdom"
+                    },
+                    HasCompanyHouseNumber = true,
+                    CompanyHouseNumber = "TestOrg123",
+                    OverseasCompanyNumber = "Oversears123",
+                    RegisteredDate = DateTime.Today.ToDateTimeOffset(),
+                    RegisterName = "Approved By Trade Association",
+                    StartDate = DateTime.Today.AddDays(30).ToDateTimeOffset(),
+                    EndDate = DateTime.Today.AddDays(5).ToDateTimeOffset(),
+                    Addresses = [ new AddressNonEf {
+                        Type = AddressType.Registered,
+                        StreetAddress = "1234 Default St",
+                        Locality = "Default City",
+                        Region = "Default Region",
+                        PostalCode = "EX1 1EX",
+                        CountryName = "Example Country",
+                        Country = "EX"
+                    }]
                 }
             };
 
@@ -77,13 +101,37 @@ internal static class NonEfEntityFactory
             {
                 new ConnectedEntityNonEf
                 {
-                    Guid = Guid.NewGuid(),
-                    EntityType = OrganisationInformation.ConnectedEntityType.Organisation,
+                    Guid = new Guid("57b1895f-11bb-4cd4-ae38-82f38a70237b"),
+                    EntityType = ConnectedEntityType.Organisation,
                     Organisation = new ConnectedOrganisationNonEf
                     {
                         Name = "Acme Group Ltd",
-                        Category = ConnectedOrganisationCategory.RegisteredCompany
-                    }
+                        Category = ConnectedOrganisationCategory.RegisteredCompany,
+                        ControlCondition  = [
+                            ControlCondition.CanAppointOrRemoveDirectors,
+                            ControlCondition.HasVotingRights,
+                            ControlCondition.OwnsShares,
+                            ],
+                        InsolvencyDate = DateTime.Today,
+                        LawRegistered = "Trade Law 2024",
+                        RegisteredLegalForm = "Trade Association",
+                    },
+                    HasCompanyHouseNumber = true,
+                    CompanyHouseNumber = "TestOrg456",
+                    OverseasCompanyNumber = "Oversears456",
+                    RegisteredDate = DateTime.Today.ToDateTimeOffset(),
+                    RegisterName = "Gov Authority of UK",
+                    StartDate = DateTime.Today.AddMonths(10).ToDateTimeOffset(),
+                    EndDate = DateTime.Today.AddMonths(5).ToDateTimeOffset(),
+                    Addresses = [ new AddressNonEf {
+                        Type = AddressType.Postal,
+                        StreetAddress = "1234 New St",
+                        Locality = "New City",
+                        Region = "New Region",
+                        PostalCode = "SF1 1EX",
+                        CountryName = "New Country",
+                        Country = "NW"
+                    }]
                 }
             };
 
@@ -96,13 +144,14 @@ internal static class NonEfEntityFactory
             {
                 new ConnectedEntityNonEf
                 {
-                    Guid = Guid.NewGuid(),
-                    EntityType = OrganisationInformation.ConnectedEntityType.TrustOrTrustee,
+                    Guid = new Guid("d3d35f4b-953a-4620-8771-fd245d55dd92"),
+                    EntityType = ConnectedEntityType.TrustOrTrustee,
                     IndividualOrTrust = new ConnectedIndividualTrustNonEf
                     {
                         FirstName = "John",
                         LastName = "Smith",
-                        Category = ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForTrust
+                        Category = ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForTrust,
+                        ConnectedType = ConnectedPersonType.TrustOrTrustee,
                     }
                 }
             };
@@ -222,7 +271,7 @@ internal static class NonEfEntityFactory
                         Name = "_Section0" + GetQuestionNumber(),
                         Title = "The financial information you will need.",
                         Description = "You will need to upload accounts or statements for your 2 most recent financial years. If you do not have 2 years, you can upload your most recent financial year. You will need to enter the financial year end date for the information you upload.",
-                        Type = PersistenceForms.FormQuestionType.NoInput,
+                        Type = FormQuestionType.NoInput,
                         IsRequired = true,
                         Options = new FormQuestionOptions(),
                         Section = section,
@@ -235,7 +284,7 @@ internal static class NonEfEntityFactory
                         Name = "_Section0" + GetQuestionNumber(),
                         Title = "Localized_String",
                         Description = "Localized_String",
-                        Type = PersistenceForms.FormQuestionType.YesOrNo,
+                        Type = FormQuestionType.YesOrNo,
                         IsRequired = true,
                         Options = new FormQuestionOptions(),
                         Section = section,
@@ -248,7 +297,7 @@ internal static class NonEfEntityFactory
                         Name = "_Section0" + GetQuestionNumber(),
                         Title = "Upload your accounts",
                         Description = "Upload your most recent 2 financial years. If you do not have 2, upload your most recent financial year.",
-                        Type = PersistenceForms.FormQuestionType.FileUpload,
+                        Type = FormQuestionType.FileUpload,
                         IsRequired = true,
                         Options = new FormQuestionOptions(),
                         Section = section,
@@ -261,7 +310,7 @@ internal static class NonEfEntityFactory
                         Name = "_Section0" + GetQuestionNumber(),
                         Title = "What is the financial year end date for the information you uploaded?",
                         Description = String.Empty,
-                        Type = PersistenceForms.FormQuestionType.Date,
+                        Type = FormQuestionType.Date,
                         IsRequired = true,
                         Options = new FormQuestionOptions(),
                         Section = section,
@@ -273,7 +322,7 @@ internal static class NonEfEntityFactory
                         Guid  = Guid.NewGuid(),
                         Name = "_Section0" + GetQuestionNumber(),
                         Title = "Check your answers",
-                        Type = PersistenceForms.FormQuestionType.CheckYourAnswers,
+                        Type = FormQuestionType.CheckYourAnswers,
                         Description = String.Empty,
                         IsRequired = true,
                         Options = new FormQuestionOptions(),
@@ -287,7 +336,7 @@ internal static class NonEfEntityFactory
                         Name = "_Section0" + GetQuestionNumber(),
                         Title = "Enter your postal address",
                         Description = string.Empty,
-                        Type = PersistenceForms.FormQuestionType.Address,
+                        Type = FormQuestionType.Address,
                         IsRequired = true,
                         Options = new FormQuestionOptions(),
                         Section = section,

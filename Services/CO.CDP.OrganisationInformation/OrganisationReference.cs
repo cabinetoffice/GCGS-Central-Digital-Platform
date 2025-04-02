@@ -16,6 +16,7 @@ public record OrganisationReference
     /// <example>"https://cdp.cabinetoffice.gov.uk/organisations/f4596cdd-12e5-4f25-9db1-4312474e516f"</example>
     public Uri? Uri { get; init; }
     public OrganisationReferenceShareCode? ShareCode { get; set; }
+    public OrganisationReferenceDetails? Details { get; set; }
 }
 
 public record OrganisationReferenceShareCode
@@ -25,4 +26,22 @@ public record OrganisationReferenceShareCode
 
     /// <example>"2025-01-30T17:41:37.109Z"</example>
     public required DateTimeOffset SubmittedAt { get; set; }
+}
+
+public record OrganisationReferenceDetails
+{
+    public required ConnectedOrganisationCategory Category { get; set; }
+    public DateTimeOffset? InsolvencyDate { get; set; }
+    public string? RegisteredLegalForm { get; set; }
+    public string? LawRegistered { get; set; }
+    public IEnumerable<ControlCondition> ControlCondition { get; set; } = [];
+
+    public IEnumerable<Address> Addresses { get; set; } = [];
+    public DateTimeOffset? RegisteredDate { get; set; }
+    public string? RegistrationAuthority { get; set; } // RegisterName
+    public bool HasCompanyHouseNumber { get; set; }
+    public string? CompanyHouseNumber { get; set; }
+    public string? OverseasCompanyNumber { get; set; }
+    public DateTimeOffset? StartDate { get; set; }
+    public DateTimeOffset? EndDate { get; set; }
 }

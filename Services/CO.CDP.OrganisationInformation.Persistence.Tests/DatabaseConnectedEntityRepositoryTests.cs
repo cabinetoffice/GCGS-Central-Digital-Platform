@@ -32,12 +32,12 @@ public class DatabaseConnectedEntityRepositoryTests(PostgreSqlFixture postgreSql
         var expectedEntity = new ConnectedEntity
         {
             Guid = guid,
-            EntityType = ConnectedEntity.ConnectedEntityType.Organisation,
+            EntityType = ConnectedEntityType.Organisation,
             Organisation = new ConnectedEntity.ConnectedOrganisation
             {
                 OrganisationId = orgId,
                 Name = "CHN_111",
-                Category = ConnectedEntity.ConnectedOrganisationCategory.DirectorOrTheSameResponsibilities,
+                Category = ConnectedOrganisationCategory.DirectorOrTheSameResponsibilities,
                 RegisteredLegalForm = "Legal Form",
                 LawRegistered = "Law Registered"
             },
@@ -65,12 +65,12 @@ public class DatabaseConnectedEntityRepositoryTests(PostgreSqlFixture postgreSql
         var ce1 = new ConnectedEntity
         {
             Guid = guid,
-            EntityType = ConnectedEntity.ConnectedEntityType.Organisation,
+            EntityType = ConnectedEntityType.Organisation,
             Organisation = new ConnectedEntity.ConnectedOrganisation
             {
                 OrganisationId = organisationId,
                 Name = "CHN_111",
-                Category = ConnectedEntity.ConnectedOrganisationCategory.DirectorOrTheSameResponsibilities,
+                Category = ConnectedOrganisationCategory.DirectorOrTheSameResponsibilities,
                 RegisteredLegalForm = "Legal Form",
                 LawRegistered = "Law Registered"
             },
@@ -79,13 +79,13 @@ public class DatabaseConnectedEntityRepositoryTests(PostgreSqlFixture postgreSql
         var ce2 = new ConnectedEntity
         {
             Guid = Guid.NewGuid(),
-            EntityType = ConnectedEntity.ConnectedEntityType.TrustOrTrustee,
+            EntityType = ConnectedEntityType.TrustOrTrustee,
             IndividualOrTrust = new ConnectedEntity.ConnectedIndividualTrust
             {
                 FirstName = "First Name",
                 LastName = "Last Name",
                 Category = ConnectedEntity.ConnectedEntityIndividualAndTrustCategoryType.DirectorOrIndivWithTheSameResponsibilitiesForIndiv,
-                ConnectedType = ConnectedEntity.ConnectedPersonType.Individual
+                ConnectedType = ConnectedPersonType.Individual
             },
             SupplierOrganisation = organisation
         };
@@ -119,12 +119,12 @@ public class DatabaseConnectedEntityRepositoryTests(PostgreSqlFixture postgreSql
         var ce1 = new ConnectedEntity
         {
             Guid = guid,
-            EntityType = ConnectedEntity.ConnectedEntityType.Organisation,
+            EntityType = ConnectedEntityType.Organisation,
             Organisation = new ConnectedEntity.ConnectedOrganisation
             {
                 OrganisationId = organisation.Guid,
                 Name = "CHN_111",
-                Category = ConnectedEntity.ConnectedOrganisationCategory.DirectorOrTheSameResponsibilities,
+                Category = ConnectedOrganisationCategory.DirectorOrTheSameResponsibilities,
                 RegisteredLegalForm = "Legal Form",
                 LawRegistered = "Law Registered"
             },
@@ -133,13 +133,13 @@ public class DatabaseConnectedEntityRepositoryTests(PostgreSqlFixture postgreSql
         var ce2 = new ConnectedEntity
         {
             Guid = Guid.NewGuid(),
-            EntityType = ConnectedEntity.ConnectedEntityType.TrustOrTrustee,
+            EntityType = ConnectedEntityType.TrustOrTrustee,
             IndividualOrTrust = new ConnectedEntity.ConnectedIndividualTrust
             {
                 FirstName = "First Name",
                 LastName = "Last Name",
                 Category = ConnectedEntity.ConnectedEntityIndividualAndTrustCategoryType.DirectorOrIndivWithTheSameResponsibilitiesForIndiv,
-                ConnectedType = ConnectedEntity.ConnectedPersonType.Individual
+                ConnectedType = ConnectedPersonType.Individual
             },
             SupplierOrganisation = organisation2
         };

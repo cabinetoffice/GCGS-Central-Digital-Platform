@@ -168,7 +168,7 @@ public record SupplierInfo
 public record RegisterConnectedEntity
 {
     public required ConnectedEntityType EntityType { get; init; }
-    public bool HasCompnayHouseNumber { get; init; }
+    public bool HasCompanyHouseNumber { get; init; }
     public string? CompanyHouseNumber { get; init; }
     public string? OverseasCompanyNumber { get; init; }
 
@@ -187,7 +187,7 @@ public record UpdateConnectedEntity
 {
     public string? Id { get; init; }
     public required ConnectedEntityType EntityType { get; init; }
-    public bool HasCompnayHouseNumber { get; init; }
+    public bool HasCompanyHouseNumber { get; init; }
     public string? CompanyHouseNumber { get; init; }
     public string? OverseasCompanyNumber { get; init; }
 
