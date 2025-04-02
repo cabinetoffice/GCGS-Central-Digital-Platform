@@ -6,11 +6,6 @@ using CO.CDP.OrganisationInformation.Persistence.NonEfEntities;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.Localization;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Xunit;
 using static CO.CDP.DataSharing.WebApi.Tests.DataSharingFactory;
 
 namespace CO.CDP.DataSharing.WebApi.Tests.DataService
@@ -44,11 +39,11 @@ namespace CO.CDP.DataSharing.WebApi.Tests.DataService
             var result = await DataService.GetSharedSupplierInformationAsync(shareCode);
 
             result.Should().NotBeNull();
-            result.BasicInformation.SupplierType.Should().Be(sharedConsent.Organisation.SupplierInfo?.SupplierType);
+            result.BasicInformation?.SupplierType.Should().Be(sharedConsent.Organisation.SupplierInfo?.SupplierType);
         }
 
         [Fact]
-        public async Task GetSharedSupplierInformationAsync_ShouldThrowSupplierInformationNotFoundException_WhenSupplierInfoIsNull()
+        public async Task GetSharedSupplierInformationAsync_ShouldPopulateBasicInformationOrgName_WhenSupplierInfoIsNull()
         {
             var shareCode = "ABC-123";
             var sharedConsent = CreateSharedConsent(shareCode: shareCode);
@@ -56,10 +51,11 @@ namespace CO.CDP.DataSharing.WebApi.Tests.DataService
 
             _shareCodeRepository.Setup(r => r.GetByShareCode(shareCode)).ReturnsAsync(sharedConsent);
 
-            Func<Task> act = async () => await DataService.GetSharedSupplierInformationAsync(shareCode);
+            var result = await DataService.GetSharedSupplierInformationAsync(shareCode);
 
-            await act.Should().ThrowAsync<SupplierInformationNotFoundException>()
-                .WithMessage("Supplier information not found.");
+            result.Should().NotBeNull();
+            result.BasicInformation.Should().NotBeNull();
+            result.BasicInformation!.OrganisationName.Should().NotBeEmpty();
         }
 
         [Fact]
@@ -84,7 +80,7 @@ namespace CO.CDP.DataSharing.WebApi.Tests.DataService
 
             var result = await DataService.GetSharedSupplierInformationAsync("ABC-123");
 
-            result.BasicInformation.SupplierType.Should().Be(organisation.SupplierInfo?.SupplierType);
+            result.BasicInformation!.SupplierType.Should().Be(organisation.SupplierInfo?.SupplierType);
             result.BasicInformation.RegisteredAddress.Should().NotBeNull();
             result.BasicInformation.PostalAddress.Should().NotBeNull();
             result.BasicInformation.VatNumber.Should()
@@ -112,7 +108,7 @@ namespace CO.CDP.DataSharing.WebApi.Tests.DataService
                 .ReturnsAsync(sharedConsent);
 
             var result = await DataService.GetSharedSupplierInformationAsync("ALL-FALSE");
-            result.BasicInformation.RegisteredAddress.Should().BeNull();
+            result.BasicInformation!.RegisteredAddress.Should().BeNull();
             result.BasicInformation.PostalAddress.Should().BeNull();
             result.BasicInformation.VatNumber.Should().BeNull();
             result.BasicInformation.WebsiteAddress.Should().BeNull();
@@ -367,7 +363,7 @@ namespace CO.CDP.DataSharing.WebApi.Tests.DataService
                 .ReturnsAsync(sharedConsent);
 
             var result = await DataService.GetSharedSupplierInformationAsync("BUYER-ONLY");
-            result.BasicInformation.Role.Should().Be("Buyer");
+            result.BasicInformation!.Role.Should().Be("Buyer");
         }
     }
 }

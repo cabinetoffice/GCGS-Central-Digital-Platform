@@ -1,9 +1,11 @@
 using AutoMapper;
 using CO.CDP.Organisation.WebApi.Model;
-using CO.CDP.OrganisationInformation.Persistence;
 
 namespace CO.CDP.Organisation.WebApi.UseCase;
-public class GetBuyerInformationUseCase(IOrganisationRepository organisationRepository, IMapper mapper)
+
+public class GetBuyerInformationUseCase(
+    CO.CDP.OrganisationInformation.Persistence.IOrganisationRepository organisationRepository,
+    IMapper mapper)
     : IUseCase<Guid, BuyerInformation?>
 {
     public async Task<BuyerInformation?> Execute(Guid command)

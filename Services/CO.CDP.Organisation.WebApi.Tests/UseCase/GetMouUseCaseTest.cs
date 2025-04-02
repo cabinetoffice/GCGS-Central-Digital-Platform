@@ -1,4 +1,3 @@
-using AutoMapper;
 using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.Organisation.WebApi.Tests.AutoMapper;
 using CO.CDP.Organisation.WebApi.UseCase;
@@ -122,7 +121,7 @@ public class GetMouUseCaseTest(AutoMapperFixture mapperFixture)
             },
             ContactPoints =
             [
-                new Persistence.Organisation.ContactPoint
+                new Persistence.ContactPoint
                 {
                     Email = "contact@test.org"
                 }
@@ -135,7 +134,7 @@ public class GetMouUseCaseTest(AutoMapperFixture mapperFixture)
             var devolvedRegulations = new List<DevolvedRegulation>();
             devolvedRegulations.Add(DevolvedRegulation.NorthernIreland);
 
-            org.BuyerInfo = new Persistence.Organisation.BuyerInformation
+            org.BuyerInfo = new Persistence.BuyerInformation
             {
                 BuyerType = "FakeBuyerType",
                 DevolvedRegulations = devolvedRegulations,

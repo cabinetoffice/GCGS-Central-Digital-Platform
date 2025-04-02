@@ -54,11 +54,11 @@ public class UpdateOrganisationUseCase(
                     throw new InvalidUpdateOrganisationCommand.MissingBuyerInformation();
                 }
 
-                organisation.BuyerInfo = new OrganisationInformation.Persistence.Organisation.BuyerInformation
+                organisation.BuyerInfo = new OrganisationInformation.Persistence.BuyerInformation
                 {
                     BuyerType = updateObject.BuyerInformation.BuyerType,
                     DevolvedRegulations = updateObject.BuyerInformation.DevolvedRegulations,
-                    OrganisationId = organisation.Id
+                    Id = organisation.Id
                 };
 
                 organisation.PendingRoles.Add(PartyRole.Buyer);
@@ -98,7 +98,7 @@ public class UpdateOrganisationUseCase(
                 }
                 else
                 {
-                    organisation.Addresses.Add(new OrganisationInformation.Persistence.Organisation.OrganisationAddress
+                    organisation.Addresses.Add(new OrganisationInformation.Persistence.OrganisationAddress
                     {
                         Type = newAddress.Type,
                         Address = new Address
@@ -145,7 +145,7 @@ public class UpdateOrganisationUseCase(
                     }
                     else
                     {
-                        organisation.Identifiers.Add(new OrganisationInformation.Persistence.Organisation.Identifier
+                        organisation.Identifiers.Add(new OrganisationInformation.Persistence.Identifier
                         {
                             IdentifierId = identifier.Id,
                             Primary = AssignIdentifierUseCase.IsPrimaryIdentifier(organisation, identifier.Scheme),
@@ -173,7 +173,7 @@ public class UpdateOrganisationUseCase(
                 else
                 {
                     organisation.ContactPoints.Add(
-                        mapper.Map<OrganisationInformation.Persistence.Organisation.ContactPoint>(updateObject.ContactPoint));
+                        mapper.Map<OrganisationInformation.Persistence.ContactPoint>(updateObject.ContactPoint));
                 }
                 break;
 
@@ -196,7 +196,7 @@ public class UpdateOrganisationUseCase(
                     }
                     else
                     {
-                        organisation.Addresses.Add(new OrganisationInformation.Persistence.Organisation.OrganisationAddress
+                        organisation.Addresses.Add(new OrganisationInformation.Persistence.OrganisationAddress
                         {
                             Type = address.Type,
                             Address = new Address
@@ -305,7 +305,7 @@ public class UpdateOrganisationUseCase(
     }
 
     private void RemoveIdentifier(OrganisationInformation.Persistence.Organisation organisation,
-        OrganisationInformation.Persistence.Organisation.Identifier identifierToRemove)
+        OrganisationInformation.Persistence.Identifier identifierToRemove)
     {
         organisation.Identifiers.Remove(identifierToRemove);
 

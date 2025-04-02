@@ -80,8 +80,8 @@ public class UpdatePersonToOrganisationUseCaseTest : IClassFixture<AutoMapperFix
             Name = "Test",
             Type = OrganisationInformation.OrganisationType.Organisation,
             Tenant = It.IsAny<Tenant>(),
-            ContactPoints = [new Persistence.Organisation.ContactPoint { Email = "test@test.com" }],
-            SupplierInfo = new Persistence.Organisation.SupplierInformation()
+            ContactPoints = [new Persistence.ContactPoint { Email = "test@test.com" }],
+            SupplierInfo = new Persistence.SupplierInformation()
         };
 
     private Persistence.Person person =>
