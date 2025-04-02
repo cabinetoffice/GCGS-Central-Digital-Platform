@@ -2,11 +2,16 @@ namespace CO.CDP.ScheduledWorker;
 
 public class CompleteMoUTimedHostedService(
     IServiceProvider services,
+    IConfiguration configuration,
     ILogger<CompleteMoUTimedHostedService> logger) : IHostedService, IDisposable
 {
     private Timer? _timer = null;
     private readonly SemaphoreSlim _semaphore = new(1, 1);
     private readonly CancellationTokenSource _stoppingCts = new();
+
+    private int JobIntervalInSeconds =>
+        configuration.GetValue<int?>("CompleteMoUReminderJob:IntervalInSeconds") ??
+                throw new Exception("Missing configuration keys: CompleteMoUReminderJob:IntervalInSeconds.");
 
     public Task StartAsync(CancellationToken stoppingToken)
     {
@@ -14,7 +19,7 @@ public class CompleteMoUTimedHostedService(
 
         stoppingToken.Register(_stoppingCts.Cancel);
 
-        _timer = new Timer(ExecuteWorkAsync, null, TimeSpan.Zero, TimeSpan.FromHours(1));
+        _timer = new Timer(ExecuteWorkAsync, null, TimeSpan.Zero, TimeSpan.FromSeconds(JobIntervalInSeconds));
 
         return Task.CompletedTask;
     }

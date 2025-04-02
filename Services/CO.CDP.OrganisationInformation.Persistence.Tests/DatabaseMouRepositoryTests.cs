@@ -49,7 +49,7 @@ public class DatabaseMouRepositoryTests(PostgreSqlFixture postgreSql)
         mou1.CreatedOn = DateTime.UtcNow.AddDays(-7);
         await context.SaveChangesAsync();
 
-        var reminders = await repository.GetMouReminderOrganisations();
+        var reminders = await repository.GetMouReminderOrganisations(7);
 
         // Should send reminder for Case 1, 2 & 5
         reminders.Should().HaveCount(3);

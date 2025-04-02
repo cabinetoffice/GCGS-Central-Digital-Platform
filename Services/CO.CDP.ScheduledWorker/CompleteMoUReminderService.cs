@@ -1,6 +1,7 @@
 using CO.CDP.GovUKNotify;
 using CO.CDP.GovUKNotify.Models;
 using CO.CDP.OrganisationInformation.Persistence;
+using CO.CDP.OrganisationInformation.Persistence.NonEfEntities;
 
 namespace CO.CDP.ScheduledWorker;
 
@@ -14,7 +15,7 @@ public class CompleteMoUReminderService(
     {
         logger.LogInformation("Complete MoU Reminder Processing Service started.");
 
-        var reminderList = await mouRepository.GetMouReminderOrganisations();
+        var reminderList = await mouRepository.GetMouReminderOrganisations(DaysBetweenEmailReminders);
 
         foreach (var organisation in reminderList)
         {
@@ -43,19 +44,23 @@ public class CompleteMoUReminderService(
             }
         };
 
-        try
+        foreach (var email in emailRecipients)
         {
-            foreach (var er in emailRecipients)
+            try
             {
-                emailRequest.EmailAddress = er;
+                emailRequest.EmailAddress = email;
                 await govUKNotifyClient.SendEmail(emailRequest);
             }
-        }
-        catch
-        {
-            logger.LogError($"Failed to send Mou reminder email for: {organisation.Name}");
+            catch
+            {
+                logger.LogError($"Failed to send Mou reminder email for: {organisation.Name}, email: {email}");
+            }
         }
     }
+
+    private int DaysBetweenEmailReminders =>
+        configuration.GetValue<int?>("CompleteMoUReminderJob:DaysBetweenEmailReminders") ??
+                throw new Exception("Missing configuration keys: CompleteMoUReminderJob:DaysBetweenEmailReminders.");
 
     private string OrganisationAppUrl =>
         configuration.GetValue<string>("OrganisationAppUrl") ??

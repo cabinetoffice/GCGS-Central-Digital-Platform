@@ -1,4 +1,4 @@
-namespace CO.CDP.OrganisationInformation.Persistence;
+namespace CO.CDP.OrganisationInformation.Persistence.NonEfEntities;
 
 public record MouReminderOrganisation
 {
