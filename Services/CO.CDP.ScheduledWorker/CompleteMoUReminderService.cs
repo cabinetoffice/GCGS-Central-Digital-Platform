@@ -53,7 +53,7 @@ public class CompleteMoUReminderService(
             }
             catch
             {
-                logger.LogError($"Failed to send Mou reminder email for: {organisation.Name}, email: {email}");
+                logger.LogError($"Failed to send Mou reminder email for: {organisation.Name}");
             }
         }
     }
