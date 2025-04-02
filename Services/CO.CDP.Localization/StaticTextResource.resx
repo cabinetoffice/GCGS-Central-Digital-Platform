@@ -862,7 +862,7 @@
     <value>It includes &lt;a href="https://www.gov.uk/guidance/people-with-significant-control-pscs" target="_blank"&gt;people with significant control (opens in new tab)&lt;/a&gt; and any other individual or company other than yourself that has a declarable interest in your organisation.</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityDeclaration_Paragraph3" xml:space="preserve">
-    <value>For example, a director, a trust, a majority shareholder or a parent or subsidiary company.</value>
+    <value>For example, a director, a trustee of a trust, a majority shareholder or a parent or subsidiary company.</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityDirectorResidency_Heading" xml:space="preserve">
     <value>What country does {0} usually live in?</value>
@@ -1177,13 +1177,13 @@
     <value>Enter the overseas company registration number</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityPersonType_PageTitle" xml:space="preserve">
-    <value>Select the relevant option</value>
+    <value>Is the 'connected person' an organisation, individual or trustee?</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityPersonType_Hint" xml:space="preserve">
-    <value>A ‘connected person’ can be an individual, organisation or trustee or trust.</value>
+    <value>A trust cannot be a 'connected person' and should be added as one or more of the trustees who exercise control of the trust</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityPersonType_SelectOptionError" xml:space="preserve">
-    <value>Select the relevant option</value>
+    <value>Select organisation, individual or trustee of a trust</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityPersonType_OptionOrganisation" xml:space="preserve">
     <value>Organisation</value>
@@ -1191,8 +1191,8 @@
   <data name="Supplier_ConnectedEntity_ConnectedEntityPersonType_OptionIndividual" xml:space="preserve">
     <value>Individual</value>
   </data>
-  <data name="Supplier_ConnectedEntity_ConnectedEntityPersonType_OptionTrustOrTrustee" xml:space="preserve">
-    <value>Trustee or trust</value>
+    <data name="Supplier_ConnectedEntity_ConnectedEntityPersonType_OptionTrustOrTrustee" xml:space="preserve">
+    <value>Trustee of a trust</value>
   </data>
   <data name="OrganisationRegistration_OrganisationType_Heading" xml:space="preserve">
     <value>What do you want to register your organisation as?</value>
@@ -2211,7 +2211,7 @@
     <value>Organisation</value>
   </data>
   <data name="PdfGenerator_ConnectedEntityType_TrustTrustee" xml:space="preserve">
-    <value>Trust or trustee</value>
+    <value>Trustee of a trust</value>
   </data>
   <data name="PdfGenerator_ConnectedOrganisationCategory_DirectorSameResponsibilities" xml:space="preserve">
     <value>Director or individual with the same responsibilities</value>
@@ -2244,7 +2244,7 @@
     <value>Individual</value>
   </data>
   <data name="PdfGenerator_ConnectedPersonType_TrustTrustee" xml:space="preserve">
-    <value>Trust or trustee</value>
+    <value>Trustee of a trust</value>
   </data>
   <data name="PdfGenerator_ConnectedPerson_CompanyHouseNumber" xml:space="preserve">
     <value>Companies House number</value>
@@ -2319,7 +2319,7 @@
     <value>Number</value>
   </data>
   <data name="PdfGenerator_IndividualTrustInformation_Title" xml:space="preserve">
-    <value>Individual trust Information</value>
+    <value>Individual trustee information</value>
   </data>
   <data name="PdfGenerator_LegalName" xml:space="preserve">
     <value>Legal name</value>
