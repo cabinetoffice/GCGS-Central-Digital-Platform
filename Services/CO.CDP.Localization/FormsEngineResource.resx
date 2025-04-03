@@ -151,7 +151,7 @@
     <value>Were your accounts audited?</value>
   </data>
   <data name="FinancialInformation_03_Description" xml:space="preserve">
-    <value>&lt;p class="govuk-body"&gt;Auditing requirements are defined in &lt;a href="https://www.legislation.gov.uk/ukpga/2006/46/part/16" target="https://www.legislation.gov.uk/ukpga/2006/46/part/16"&gt;part 16 of the Companies Act 2006 (opens in new tab)&lt;/a&gt; or an overseas equivalent&lt;/p&gt;</value>
+    <value>&lt;p class="govuk-body"&gt;Auditing requirements are defined in &lt;a href="https://www.legislation.gov.uk/ukpga/2006/46/part/16" target="_blank"&gt;part 16 of the Companies Act 2006 (opens in new tab)&lt;/a&gt; or an overseas equivalent&lt;/p&gt;</value>
   </data>
   <data name="FinancialInformation_03_SummaryTitle" xml:space="preserve">
     <value>Audited accounts</value>
