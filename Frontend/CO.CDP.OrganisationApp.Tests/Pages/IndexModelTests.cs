@@ -30,7 +30,7 @@ public class IndexModelTests
             .ReturnsAsync(true);
 
         _mockConfig
-            .Setup(x => x["FtsHomepage"])
+            .Setup(x => x["FtsService"])
             .Returns(expectedUrl);
 
         var result = await _model.OnGetAsync();
@@ -59,7 +59,7 @@ public class IndexModelTests
             .ReturnsAsync(true);
 
         _mockConfig
-            .Setup(x => x["FtsHomepage"])
+            .Setup(x => x["FtsService"])
             .Returns(string.Empty);
 
         var result = await _model.OnGetAsync();
