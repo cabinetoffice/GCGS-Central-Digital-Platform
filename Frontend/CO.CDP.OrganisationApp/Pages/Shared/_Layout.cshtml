@@ -280,6 +280,14 @@
             }
         })
     </script>
+
+    <script nonce-csp type="module">
+        import { initSessionTimeoutWarning } from '/js/session-timeout-warning.js';
+        // TODO: Get times from config
+        // TODO: Only init this if user is actually logged in
+        initSessionTimeoutWarning(1 * 60 * 1000, 0.5 * 60 * 1000);
+    </script>
+
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
