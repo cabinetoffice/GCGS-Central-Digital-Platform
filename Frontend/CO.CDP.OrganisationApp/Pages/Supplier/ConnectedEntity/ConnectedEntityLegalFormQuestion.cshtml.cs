@@ -27,7 +27,7 @@ public class ConnectedEntityLegalFormQuestionModel(ISession session) : PageModel
     public string? Caption { get; set; }
     public string? Heading { get; set; }
     public string? Hint { get; set; }
-    [BindProperty]
+    [BindProperty(SupportsGet = true, Name = "frm-chk-answer")]
     public bool? RedirectToCheckYourAnswer { get; set; }
     public string? BackPageLink { get; set; }
 
@@ -41,7 +41,11 @@ public class ConnectedEntityLegalFormQuestionModel(ISession session) : PageModel
 
         InitModel(state);
 
-        HasLegalForm = selected.HasValue ? selected : state.HasLegalForm;
+        HasLegalForm = selected ?? state.HasLegalForm;
+        if (RedirectToCheckYourAnswer == true && HasLegalForm == null)
+        {
+            HasLegalForm = false;
+        }
         LegalFormName = state.LegalForm;
 
         return Page();
