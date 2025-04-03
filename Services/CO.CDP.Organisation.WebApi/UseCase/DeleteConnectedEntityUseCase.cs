@@ -27,8 +27,7 @@ public class DeleteConnectedEntityUseCase(IOrganisationRepository organisationRe
         }
         else
         {
-            // TODO: set deleted
-            connectedEntity.EndDate = DateTime.Now.ToUniversalTime();
+            connectedEntity.Deleted = true;
 
             await connectedEntityRepository.Save(connectedEntity);
         }

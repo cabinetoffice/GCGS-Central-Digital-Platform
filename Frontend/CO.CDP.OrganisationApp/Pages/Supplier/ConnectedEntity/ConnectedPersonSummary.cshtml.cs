@@ -27,7 +27,10 @@ public class ConnectedPersonSummaryModel(
     {
         try
         {
-            ConnectedEntities = await organisationClient.GetConnectedEntities(Id);
+            ConnectedEntities = (await organisationClient.GetConnectedEntities(Id))
+                .Where(cp => !cp.Deleted)
+                .ToList();
+            
             session.Remove(Session.ConnectedPersonKey);
         }
         catch (ApiException ex) when (ex.StatusCode == 404)

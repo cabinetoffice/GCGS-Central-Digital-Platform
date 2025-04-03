@@ -30,7 +30,8 @@ public class DatabaseConnectedEntityRepository(OrganisationInformationContext co
                     : (t.IndividualOrTrust == null ? "" : $"{t.IndividualOrTrust.FirstName} {t.IndividualOrTrust.LastName}"),
                 EntityId = t.Guid,
                 EntityType = t.EntityType,
-                EndDate = t.EndDate
+                EndDate = t.EndDate,
+                Deleted = t.Deleted
             })
             .ToArrayAsync();
     }
@@ -49,6 +50,7 @@ public class DatabaseConnectedEntityRepository(OrganisationInformationContext co
                                                 sc.ShareCode == null
                                             select new { FormGuid = f.Guid, SectionGuid = fs.Guid, SharedConsentId = sc.Id, fa.JsonValue, fas.Deleted })
                                             .ToList();
+        var connectedEntityInUse = false;
 
         foreach (var fas in activeOrganisationExclusions)
         {
@@ -58,12 +60,12 @@ public class DatabaseConnectedEntityRepository(OrganisationInformationContext co
 
                 if (json.id == connectedEntityId)
                 {
-                    return Task.FromResult(new Tuple<bool, Guid, Guid>(true, fas.FormGuid, fas.SectionGuid));
+                    return Task.FromResult(new Tuple<bool, Guid, Guid>(!connectedEntityInUse, fas.FormGuid, fas.SectionGuid));
                 }
             }
         }
 
-        return Task.FromResult(new Tuple<bool, Guid, Guid>(true, Guid.Empty, Guid.Empty));
+        return Task.FromResult(new Tuple<bool, Guid, Guid>(connectedEntityInUse, Guid.Empty, Guid.Empty));
     }
 
     public async Task Save(ConnectedEntity connectedEntity)

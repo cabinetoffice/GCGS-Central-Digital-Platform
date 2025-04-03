@@ -54,7 +54,8 @@ public class ConnectedPersonSummaryTests
                 entityId: EntityId,
                 entityType: ConnectedEntityType.Organisation,
                 name: "Rocky Balboa",
-                uri: new Uri("http://test")
+                uri: new Uri("http://test"),
+                deleted: false
             )
         ]);
 
@@ -96,7 +97,7 @@ public class ConnectedPersonSummaryTests
     }
 
     private static ICollection<ConnectedEntityLookup> ConnectedEntities = [
-        new ConnectedEntityLookup(endDate: null, entityId: EntityId, entityType: ConnectedEntityType.Organisation, name: "Rocky Balboa", uri: new Uri("http://test"))
+        new ConnectedEntityLookup(endDate: null, entityId: EntityId, entityType: ConnectedEntityType.Organisation, name: "Rocky Balboa", uri: new Uri("http://test"), deleted: false)
     ];
 
     private void SetupOrganisationClientMock()
