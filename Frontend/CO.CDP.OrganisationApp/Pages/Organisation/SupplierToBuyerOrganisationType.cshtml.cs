@@ -21,7 +21,7 @@ public class SupplierToBuyerOrganisationTypeModel(ITempDataService tempDataServi
     public Guid Id { get; set; }
 
     [BindProperty]
-    [DisplayName(nameof(StaticTextResource.SupplierToBuyer_OrganisationType_EnterType))]
+    [DisplayName(nameof(StaticTextResource.OrganisationRegistration_BuyerOrganisationType_OtherEnterType_Label))]
     [RequiredIf("BuyerOrganisationType", "Other")]
     public string? OtherValue { get; set; }
 
