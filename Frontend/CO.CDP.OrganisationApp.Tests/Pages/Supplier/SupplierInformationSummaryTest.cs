@@ -1,3 +1,4 @@
+using CO.CDP.DataSharing.WebApiClient;
 using CO.CDP.Forms.WebApiClient;
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Pages.Supplier;
@@ -11,15 +12,19 @@ public class SupplierInformationSummaryTest
 {
     private readonly Mock<IOrganisationClient> _organisationClientMock;
     private readonly Mock<IFormsClient> _formClient;
+    private readonly Mock<IDataSharingClient> _dataSharingClient;
     private readonly SupplierInformationSummaryModel _model;
 
     public SupplierInformationSummaryTest()
     {
-        _organisationClientMock = new Mock<IOrganisationClient>();
+        _organisationClientMock = new();
         _formClient = new();
         _formClient.Setup(o => o.GetFormSectionsAsync(It.IsAny<Guid>(), It.IsAny<Guid>()))
             .ReturnsAsync(new FormSectionResponse([]));
-        _model = new SupplierInformationSummaryModel(_organisationClientMock.Object, _formClient.Object);
+        _dataSharingClient = new();
+        _dataSharingClient.Setup(DataSharingClient => DataSharingClient.GetShareCodeListAsync(It.IsAny<Guid>()))
+            .ReturnsAsync(new List<SharedConsent>());
+        _model = new SupplierInformationSummaryModel(_organisationClientMock.Object, _formClient.Object, _dataSharingClient.Object);
     }
 
     [Theory]
@@ -40,7 +45,7 @@ public class SupplierInformationSummaryTest
             SupplierInformationStatus.StepStatus expectedStatusSupplier,
             SupplierInformationStatus.StepStatus expectedStatusConnectedPerson)
     {
-        var supplierInformation = new SupplierInformation(
+        var supplierInformation = new CDP.Organisation.WebApiClient.SupplierInformation(
             organisationName: "FakeOrg",
             supplierType: supplierType,
             operationTypes: null,
