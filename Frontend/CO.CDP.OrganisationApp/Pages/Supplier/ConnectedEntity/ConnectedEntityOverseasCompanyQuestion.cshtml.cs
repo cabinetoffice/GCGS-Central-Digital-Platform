@@ -43,6 +43,10 @@ public class ConnectedEntityOverseasCompanyQuestionModel(ISession session) : Pag
         InitModel(state);
 
         HasOverseasCompaniesHouseNumber = selected.HasValue ? selected : state.HasOverseasCompaniesHouseNumber;
+        if (RedirectToCheckYourAnswer == true && HasOverseasCompaniesHouseNumber == null)
+        {
+            HasOverseasCompaniesHouseNumber = false;
+        }
         OverseasCompaniesHouseNumber = state.OverseasCompaniesHouseNumber;
 
         return Page();
