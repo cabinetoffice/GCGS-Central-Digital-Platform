@@ -14,7 +14,7 @@ public class IndexModel(
     {
         if (await featureManager.IsEnabledAsync(FeatureFlags.RedirectToFtsHomepage))
         {
-            var ftsHomepage = config["FtsHomepage"];
+            var ftsHomepage = config["FtsService"];
             if (!string.IsNullOrEmpty(ftsHomepage))
             {
                 return Redirect(ftsHomepage);
