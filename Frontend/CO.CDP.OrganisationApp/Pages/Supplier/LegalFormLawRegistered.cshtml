@@ -6,11 +6,6 @@
     ViewData["Title"] = @StaticTextResource.Supplier_LegalFormLawRegistered_Title;
     var lawRegisteredHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.LawRegistered)).HasInnerHtml;
     var backLink = $"/organisation/{Model.Id}/supplier-information/legal-form-select-org";
-
-    if (Model.RegisteredUnderAct2006 == false)
-    {
-        backLink = $"/organisation/{Model.Id}/supplier-information/legal-form-other-org";
-    }
 }
 
 @section BeforeContent {
@@ -20,26 +15,42 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <partial name="_ErrorSummary" model="@Model.ModelState" />
-            <form class="form" method="post">
-                <div class="govuk-form-group @(lawRegisteredHasError ? "govuk-form-group--error": "")">
-                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                        <h1 class="govuk-heading-l">@ViewData["Title"]</h1>
-                    </legend>
-                    <div id="lawRegistered-hint" class="govuk-hint govuk-!-margin-bottom-6">
-                        @StaticTextResource.Supplier_LegalFormLawRegistered_Hint
-                    </div>
-                    <div class="govuk-radios govuk-!-margin-top-6" data-module="govuk-radios">
-                        @if (lawRegisteredHasError)
-                        {
-                            <p id="law-reg-error" class="govuk-error-message">
-                                <span class="govuk-visually-hidden">@StaticTextResource.Supplier_LegalFormLawRegistered_Error</span> @Html.ValidationMessageFor(m => m.LawRegistered)
-                            </p>
-                        }
-
-                        <div class="govuk-radios__item">
-                            <input class="govuk-input" id="lawRegistered-text" name="@nameof(Model.LawRegistered)" value="@Model.LawRegistered">
+            <form method="post">
+                <div class="govuk-form-group">
+                    <fieldset class="govuk-fieldset">
+                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                            <h1 class="govuk-fieldset__heading">
+                                @ViewData["Title"]
+                            </h1>
+                        </legend>
+                        <div id="legalForm-hint" class="govuk-hint govuk-!-margin-bottom-6">
+                            @StaticTextResource.Supplier_LegalFormLawRegistered_Hint
                         </div>
-                    </div>
+
+                        <div class="govuk-radios" data-module="govuk-radios">
+
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input" id="YES" name="HasLawRegistered" type="radio"
+                                       value="true" data-aria-controls="conditional-YES" @(Model.HasLawRegistered == true ? "checked" : "")>
+                                <label class="govuk-label govuk-radios__label" for="YES">@StaticTextResource.Global_Yes</label>
+                            </div>
+
+                            <div class="govuk-radios__conditional" id="conditional-YES">
+                                <div class="govuk-form-group @(lawRegisteredHasError ? "govuk-form-group--error" : "")">
+                                    <label class="govuk-label" for="LawRegistered">@StaticTextResource.Supplier_LegalFormLawRegistered_Enter_Law</label>
+                                    <input class="govuk-input govuk-!-width-one-half @(lawRegisteredHasError ? "govuk-input--error" : "")"
+                                           id="LawRegistered" name="LawRegistered" type="text" spellcheck="false" autocomplete="off"
+                                           value="@(Model.HasLawRegistered == true ? Model.LawRegistered : "")">
+                                </div>
+                            </div>
+
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input" id="NO" name="HasLawRegistered" type="radio"
+                                       value="false" @(Model.HasLawRegistered == false ? "checked" : "")>
+                                <label class="govuk-label govuk-radios__label" for="NO">@StaticTextResource.Global_No</label>
+                            </div>
+                        </div>
+                    </fieldset>
                 </div>
                 <govuk-button class="govuk-!-margin-top-4">@StaticTextResource.Global_SaveAndContinue</govuk-button>
             </form>

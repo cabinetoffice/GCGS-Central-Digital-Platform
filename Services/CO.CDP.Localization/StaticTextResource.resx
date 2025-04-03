@@ -1923,7 +1923,7 @@
     <value>Invalid country name '{0}'</value>
   </data>
   <data name="Global_SaveAndContinue" xml:space="preserve">
-    <value>Save and continue</value>
+    <value>Continue</value>
   </data>
   <data name="Global_Save" xml:space="preserve">
     <value>Save</value>
@@ -2590,13 +2590,19 @@
     <value>Save and exit</value>
   </data>
   <data name="Supplier_LegalFormCompanyActQuestion_Title" xml:space="preserve">
-    <value>Is your organisation registered on Companies House?</value>
+    <value>Is your organisation registered with Companies House?</value>
   </data>
   <data name="Supplier_LegalFormCompanyActQuestion_Hint" xml:space="preserve">
-    <value>As required by the Companies Act 2006.</value>
+    <value>As required by the Companies Act 2006</value>
   </data>
   <data name="Supplier_LegalFormFormationDate_Title" xml:space="preserve">
-    <value>What is the equivalent date your company registered under the Companies Act 2006?</value>
+    <value>What date was your organisation registered?</value>
+  </data>
+  <data name="Supplier_LegalFormFormationDate_Title_UK_Hint" xml:space="preserve">
+    <value>The incorporation date with &lt;a href="https://www.gov.uk/government/organisations/companies-house" target="_blank"&gt;Companies House (opens in new tab) &lt;/a&gt;</value>
+  </data>
+  <data name="Supplier_LegalFormFormationDate_Title_NonUK_Hint" xml:space="preserve">
+    <value>For non-UK organisations, this is registration with an overseas equivalent to Companies House. If you're unsure, enter the date your organisation started trading.</value>
   </data>
   <data name="Supplier_LegalFormFormationDate_Hint" xml:space="preserve">
     <value>For example, 27 3 2007</value>
@@ -2632,10 +2638,13 @@
     <value>Date of registration must be today or in the past</value>
   </data>
   <data name="Supplier_LegalFormLawRegistered_Title" xml:space="preserve">
-    <value>Enter the law under which your organisation is registered</value>
+    <value>Do you know the law under which your organisation is registered?</value>
   </data>
   <data name="Supplier_LegalFormLawRegistered_Hint" xml:space="preserve">
-    <value>For example, the Companies Act 2006.</value>
+    <value>For example, the most common company law in the UK is the Companies Act 2006</value>
+  </data>
+  <data name="Supplier_LegalFormLawRegistered_Enter_Law" xml:space="preserve">
+    <value>Enter the law</value>
   </data>
   <data name="Supplier_LegalFormLawRegistered_Error" xml:space="preserve">
     <value>Error:</value>
@@ -2646,23 +2655,83 @@
   <data name="Supplier_LegalFormOtherOrganisation_PleaseSelect" xml:space="preserve">
     <value>Select your organisation's registered legal form</value>
   </data>
-  <data name="Supplier_LegalFormSelectOrganisation_Hint" xml:space="preserve">
-    <value>When it was set up and registered, what structure was used.</value>
+  <data name="Supplier_LegalForm_NonUK_Hint" xml:space="preserve">
+    <value>For non-UK organisations, select the equivalent legal structure when it was set up and registered</value>
+  </data>
+  <data name="Supplier_LegalForm_UK_Hint" xml:space="preserve">
+    <value>The legal structure when it was set up and registered with &lt;a href="https://www.gov.uk/government/organisations/companies-house" target="_blank"&gt;Companies House (opens in new tab)&lt;/a&gt;</value>
   </data>
   <data name="Supplier_LegalFormSelectOrganisation_Title" xml:space="preserve">
-    <value>Select your organisation's legal form</value>
+    <value>How was your organisation registered?</value>
   </data>
-  <data name="Supplier_LegalFormSelectOrganisation_LimitedCompany" xml:space="preserve">
-    <value>Limited company</value>
+  <data name="Supplier_LegalFormSelectOrganisation_Partnership" xml:space="preserve">
+    <value>Partnership</value>
+  </data>
+  <data name="Supplier_LegalFormSelectOrganisation_UK_Hint" xml:space="preserve">
+    <value>Registered under the Companies Act 2006</value>
+  </data>
+  <data name="Supplier_LegalFormSelectOrganisation_NonUK_Hint" xml:space="preserve">
+    <value>In the UK, registered under the Companies Act 2006</value>
+  </data>
+  <data name="Supplier_LegalFormSelectOrganisation_LP" xml:space="preserve">
+    <value>Limited Partnership (LP)</value>
   </data>
   <data name="Supplier_LegalFormSelectOrganisation_LLP" xml:space="preserve">
     <value>Limited liability partnership (LLP)</value>
   </data>
-  <data name="Supplier_LegalFormSelectOrganisation_LP" xml:space="preserve">
-    <value>Limited partnership</value>
+  <data name="Supplier_LegalFormSelectOrganisation_LimitedCompany" xml:space="preserve">
+    <value>Private Limited company (Ltd)</value>
+  </data>
+  <data name="Supplier_LegalFormSelectOrganisation_PublicLimitedCompany" xml:space="preserve">
+    <value>Public Limited company (PLC)</value>
+  </data>
+  <data name="Supplier_LegalFormSelectOrganisation_CIC" xml:space="preserve">
+    <value>Community Interest Company (CIC)</value>
+  </data>
+  <data name="Supplier_LegalFormSelectOrganisation_CIC_Hint" xml:space="preserve">
+    <value>Registered under the Companies (Audit, Investigations and Community Enterprise) Act 2004</value>
+  </data>
+  <data name="Supplier_LegalFormSelectOrganisation_CIC_Hint" xml:space="preserve">
+    <value>Registered under the Companies (Audit, Investigations and Community Enterprise) Act 2004</value>
+  </data>
+  <data name="Supplier_LegalFormSelectOrganisation_CIC_NonUK_Hint" xml:space="preserve">
+    <value>In the UK, registered under the Companies (Audit, Investigations and Community Enterprise) Act 2004</value>
+  </data>
+  <data name="Supplier_LegalFormSelectOrganisation_CIO" xml:space="preserve">
+    <value>Charitable Incorporated Organisation (CIO)</value>
+  </data>
+  <data name="Supplier_LegalFormSelectOrganisation_CIO_Hint" xml:space="preserve">
+    <value>Registered under the Companies (Audit, Investigations and Community Enterprise) Act 2004</value>
+  </data>
+  <data name="Supplier_LegalFormSelectOrganisation_CIO_NonUK_Hint" xml:space="preserve">
+    <value>In the UK, registered under the Companies (Audit, Investigations and Community Enterprise) Act 2004</value>
+  </data>
+  <data name="Supplier_LegalFormSelectOrganisation_IndustrialProvidentSoceity" xml:space="preserve">
+    <value>Industrial and Provident Society</value>
+  </data>
+  <data name="Supplier_LegalFormSelectOrganisation_IndustrialProvidentSoceity_Hint" xml:space="preserve">
+    <value>Registered under the Cooperative and Community Benefit Societies Act 2014</value>
+  </data>
+  <data name="Supplier_LegalFormSelectOrganisation_IndustrialProvidentSoceity_NonUK_Hint" xml:space="preserve">
+    <value>In the UK, registered under the Cooperative and Community Benefit Societies Act 2014</value>
+  </data>
+  <data name="Supplier_LegalFormSelectOrganisation_FinancialMutual" xml:space="preserve">
+    <value>Financial Mutual</value>
+  </data>
+  <data name="Supplier_LegalFormSelectOrganisation_FinancialMutual_Hint" xml:space="preserve">
+    <value>Registered under the Building Societies Act 1986</value>
+  </data>
+  <data name="Supplier_LegalFormSelectOrganisation_FinancialMutual_NonUK_Hint" xml:space="preserve">
+    <value>In the UK, registered under the Building Societies Act 1986</value>
   </data>
   <data name="Supplier_LegalFormSelectOrganisation_Other" xml:space="preserve">
     <value>Other</value>
+  </data>
+  <data name="Supplier_LegalFormSelectOrganisation_Other_Label" xml:space="preserve">
+    <value>How was your organisation registered?</value>
+  </data>
+  <data name="Supplier_LegalFormSelectOrganisation_Other_Error" xml:space="preserve">
+    <value>Enter how your organisation was registered</value>
   </data>
   <data name="Supplier_OperationQuestion_SelectOption" xml:space="preserve">
     <value>Select an option</value>

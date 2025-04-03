@@ -1,3 +1,4 @@
+using CO.CDP.Localization;
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Pages.Supplier;
 using FluentAssertions;
@@ -81,7 +82,7 @@ public class LegalFormSelectOrganisationModelTests
     }
 
     [Fact]
-    public void OnPost_UpdatesRegisteredOrgInTempData_AndRedirects()
+    public void OnPost_UpdatesRegisteredOrgToKnownRegisteredLegalForm_AndRedirectsToLegalFormFormationDate()
     {
 
         var id = Guid.NewGuid();
@@ -93,6 +94,26 @@ public class LegalFormSelectOrganisationModelTests
         var result = _model.OnPost();
 
         legalForm.RegisteredLegalForm.Should().Be("LLP");
+        legalForm.LawRegistered.Should().Be("Companies Act 2006");
+        _mockTempDataService.Verify(s => s.Put(LegalForm.TempDataKey, legalForm), Times.Once);
+        result.Should().BeOfType<RedirectToPageResult>().Which.PageName.Should().Be("LegalFormFormationDate");
+    }
+
+    [Fact]
+    public void OnPost_UpdatesRegisteredOrgToUnknownRegisteredLegalForm_AndRedirectsToLegalFormFormationDate()
+    {
+
+        var id = Guid.NewGuid();
+        _model.Id = id;
+        _model.RegisteredOrg = "Other";
+        _model.OtherLegalForm = "Another legal form";
+        var legalForm = new LegalForm();
+        _mockTempDataService.Setup(s => s.PeekOrDefault<LegalForm>(LegalForm.TempDataKey)).Returns(legalForm);
+
+        var result = _model.OnPost();
+
+        legalForm.RegisteredLegalForm.Should().Be("Another legal form");
+        legalForm.LawRegistered.Should().BeNull();
         _mockTempDataService.Verify(s => s.Put(LegalForm.TempDataKey, legalForm), Times.Once);
         result.Should().BeOfType<RedirectToPageResult>().Which.PageName.Should().Be("LegalFormLawRegistered");
     }
@@ -102,9 +123,15 @@ public class LegalFormSelectOrganisationModelTests
     {
         var orgLegalForm = LegalFormSelectOrganisationModel.OrganisationLegalForm;
 
-        orgLegalForm.Should().ContainKey("LimitedCompany").WhoseValue.Should().Be("Limited company");
+        orgLegalForm.Should().ContainKey("Partnership").WhoseValue.Should().Be("Partnership");
+        orgLegalForm.Should().ContainKey("LimitedPartnership").WhoseValue.Should().Be("Limited Partnership (LP)");
         orgLegalForm.Should().ContainKey("LLP").WhoseValue.Should().Be("Limited liability partnership (LLP)");
-        orgLegalForm.Should().ContainKey("LimitedPartnership").WhoseValue.Should().Be("Limited partnership");
+        orgLegalForm.Should().ContainKey("LimitedCompany").WhoseValue.Should().Be("Private Limited company (Ltd)");
+        orgLegalForm.Should().ContainKey("PLC").WhoseValue.Should().Be("Public Limited company (PLC)");
+        orgLegalForm.Should().ContainKey("CIC").WhoseValue.Should().Be("Community Interest Company (CIC)");
+        orgLegalForm.Should().ContainKey("CIO").WhoseValue.Should().Be("Charitable Incorporated Organisation (CIO)");
+        orgLegalForm.Should().ContainKey("IndustrialProvidentSociety").WhoseValue.Should().Be("Industrial and Provident Society");
+        orgLegalForm.Should().ContainKey("FinancialMutual").WhoseValue.Should().Be("Financial Mutual");
         orgLegalForm.Should().ContainKey("Other").WhoseValue.Should().Be("Other");
     }
 

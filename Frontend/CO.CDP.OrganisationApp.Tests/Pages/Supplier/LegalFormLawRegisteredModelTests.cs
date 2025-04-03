@@ -40,7 +40,7 @@ public class LegalFormLawRegisteredModelTests
         var result = await _model.OnGet(id);
 
         _model.LawRegistered.Should().Be("Some Law");
-        _model.RegisteredUnderAct2006.Should().BeTrue();
+        _model.HasLawRegistered.Should().BeTrue();
         result.Should().BeOfType<PageResult>();
     }
 
@@ -71,10 +71,11 @@ public class LegalFormLawRegisteredModelTests
     [Fact]
     public void OnPost_UpdatesLawRegisteredInTempData_AndRedirects()
     {
-
         var id = Guid.NewGuid();
         _model.Id = id;
         _model.LawRegistered = "Some Law";
+        _model.HasLawRegistered = true;
+
         var legalForm = new LegalForm();
         _mockTempDataService.Setup(s => s.PeekOrDefault<LegalForm>(LegalForm.TempDataKey)).Returns(legalForm);
 

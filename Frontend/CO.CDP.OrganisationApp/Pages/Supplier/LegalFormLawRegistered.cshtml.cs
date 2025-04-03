@@ -1,4 +1,5 @@
 using CO.CDP.Localization;
+using CO.CDP.Mvc.Validation;
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Constants;
 using Microsoft.AspNetCore.Authorization;
@@ -13,15 +14,16 @@ public class LegalFormLawRegisteredModel(
     ITempDataService tempDataService,
     IOrganisationClient organisationClient) : PageModel
 {
-    [BindProperty]
-    [Required(ErrorMessageResourceName = nameof(StaticTextResource.Supplier_LegalFormLawRegistered_ErrorMessage), ErrorMessageResourceType = typeof(StaticTextResource))]
-    public string? LawRegistered { get; set; }
-
-    [BindProperty]
-    public bool? RegisteredUnderAct2006 { get; set; }
-
     [BindProperty(SupportsGet = true)]
     public Guid Id { get; set; }
+
+    [BindProperty]
+    [Required(ErrorMessageResourceName = nameof(StaticTextResource.Global_PleaseSelect), ErrorMessageResourceType = typeof(StaticTextResource))]
+    public bool? HasLawRegistered { get; set; }
+
+    [BindProperty]
+    [RequiredIf(nameof(HasLawRegistered), true, ErrorMessage = nameof(StaticTextResource.Supplier_LegalFormLawRegistered_ErrorMessage))]
+    public string? LawRegistered { get; set; }
 
     public async Task<IActionResult> OnGet(Guid id)
     {
@@ -37,7 +39,15 @@ public class LegalFormLawRegisteredModel(
         var lf = tempDataService.PeekOrDefault<LegalForm>(LegalForm.TempDataKey);
 
         LawRegistered = lf.LawRegistered;
-        RegisteredUnderAct2006 = lf.RegisteredUnderAct2006;
+
+        if (LawRegistered == null)
+        {
+            HasLawRegistered = null;
+        }
+        else
+        {
+            HasLawRegistered = (LawRegistered.Length > 0);
+        }
 
         return Page();
     }
@@ -48,6 +58,12 @@ public class LegalFormLawRegisteredModel(
         {
             return Page();
         }
+
+        if (!HasLawRegistered.GetValueOrDefault())
+        {
+            LawRegistered = string.Empty;
+        }
+
         var lf = tempDataService.PeekOrDefault<LegalForm>(LegalForm.TempDataKey);
         lf.LawRegistered = LawRegistered;
         tempDataService.Put(LegalForm.TempDataKey, lf);

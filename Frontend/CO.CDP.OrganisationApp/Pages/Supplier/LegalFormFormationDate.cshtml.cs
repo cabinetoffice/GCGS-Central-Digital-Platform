@@ -33,6 +33,10 @@ public class LegalFormFormationDateModel(
     [RegularExpression(RegExPatterns.Year, ErrorMessageResourceName = nameof(@StaticTextResource.Supplier_LegalFormFormationDate_YearInvalidErrorMessage), ErrorMessageResourceType = typeof(StaticTextResource))]
     public string? Year { get; set; }
 
+    public string? RegisteredLegalForm { get; set; }
+
+    public bool? RegisteredUnderAct2006 { get; set; }
+
     [BindProperty]
     public string? RegistrationDate { get; set; }
 
@@ -48,17 +52,29 @@ public class LegalFormFormationDateModel(
         }
 
         var lf = tempDataService.PeekOrDefault<LegalForm>(LegalForm.TempDataKey);
+
+        RegisteredUnderAct2006 = lf.RegisteredUnderAct2006;
+        RegisteredLegalForm = lf.RegisteredLegalForm;
+
         if (lf.RegistrationDate.HasValue)
         {
             Day = lf.RegistrationDate.Value.Day.ToString();
             Month = lf.RegistrationDate.Value.Month.ToString();
             Year = lf.RegistrationDate.Value.Year.ToString();
         }
+
         return Page();
     }
 
     public async Task<IActionResult> OnPost()
     {
+        var lf = tempDataService.GetOrDefault<LegalForm>(LegalForm.TempDataKey);
+
+        RegisteredLegalForm = lf.RegisteredLegalForm;
+        RegisteredUnderAct2006 = lf.RegisteredUnderAct2006;
+
+        tempDataService.Put(LegalForm.TempDataKey, lf);
+
         if (!ModelState.IsValid)
         {
             return Page();
@@ -77,14 +93,8 @@ public class LegalFormFormationDateModel(
             return Page();
         }
 
-        var lf = tempDataService.GetOrDefault<LegalForm>(LegalForm.TempDataKey);
         lf.RegistrationDate = new DateTimeOffset(parsedDate, TimeSpan.FromHours(0));
         tempDataService.Put(LegalForm.TempDataKey, lf);
-
-        if (!Validate(lf))
-        {
-            return RedirectToPage("LegalFormCompanyActQuestion", new { Id });
-        }
 
         var legalform = new CO.CDP.Organisation.WebApiClient.LegalForm
                         (
@@ -105,12 +115,5 @@ public class LegalFormFormationDateModel(
         }
 
         return RedirectToPage("SupplierBasicInformation", new { Id });
-    }
-
-    private static bool Validate(LegalForm legalForm)
-    {
-        return !string.IsNullOrEmpty(legalForm.LawRegistered)
-            && !string.IsNullOrEmpty(legalForm.RegisteredLegalForm)
-            && legalForm.RegistrationDate.HasValue;
     }
 }
