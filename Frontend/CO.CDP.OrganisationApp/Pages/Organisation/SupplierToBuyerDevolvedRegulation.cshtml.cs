@@ -1,6 +1,8 @@
 using CO.CDP.Localization;
+using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
+using CO.CDP.OrganisationApp.WebApiClients;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -8,8 +10,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CO.CDP.OrganisationApp.Pages.Organisation;
 
-[Authorize(Policy = OrgScopeRequirement.Admin)]
-public class SupplierToBuyerDevolvedRegulationModel(ITempDataService tempDataService) : PageModel
+[Authorize(Policy = OrgScopeRequirement.Editor)]
+public class SupplierToBuyerDevolvedRegulationModel(IOrganisationClient organisationClient, ITempDataService tempDataService) : PageModel
 {
     [BindProperty]
     [Required(ErrorMessageResourceName = nameof(StaticTextResource.SupplierToBuyer_DevolvedRegulation_ErrorMessage), ErrorMessageResourceType = typeof(StaticTextResource))]
@@ -21,32 +23,57 @@ public class SupplierToBuyerDevolvedRegulationModel(ITempDataService tempDataSer
     [BindProperty]
     public bool? RedirectToSummary { get; set; }
 
+    [BindProperty]
+    public bool? RedirectToOverview { get; set; }
+
     private string SupplierToBuyerStateKey => $"Supplier_To_Buyer_{Id}_Answers";
 
-    public IActionResult OnGet()
+    public async Task<IActionResult> OnGetAsync()
     {
-        var state = tempDataService.PeekOrDefault<SupplierToBuyerDetails>(SupplierToBuyerStateKey);
+        var organisationDetails = await organisationClient.GetOrganisationAsync(Id);
 
-        Devolved = state.Devolved;
+        if (organisationDetails.IsBuyer() || organisationDetails.IsPendingBuyer())
+        {
+            Devolved = organisationDetails.Details.BuyerInformation.DevolvedRegulations.Any();
+        }
+        else
+        {
+            var state = tempDataService.PeekOrDefault<SupplierToBuyerDetails>(SupplierToBuyerStateKey);
 
+            Devolved = state.Devolved;
+        }
         return Page();
     }
 
-    public IActionResult OnPost()
+    public async Task<IActionResult> OnPostAsync()
     {
         if (!ModelState.IsValid)
         {
             return Page();
         }
 
-        SupplierToBuyerStateUpdate();
+        var organisationDetails = await organisationClient.GetOrganisationAsync(Id);
+
+        if (!(organisationDetails.IsBuyer() || organisationDetails.IsPendingBuyer()))
+        {
+            SupplierToBuyerStateUpdate();
+        }
 
         if (Devolved == true)
         {
-            return RedirectToPage("SupplierToBuyerSelectDevolvedRegulation", new { Id });
+            var querystring = $"{(RedirectToSummary == true ? "?frm-summary" : "")}{(RedirectToOverview == true ? "?frm-overview" : "")}";
+
+            return Redirect($"/organisation/{Id}/buyer/select-devolved-regulation{querystring}");
         }
         else
         {
+            if (organisationDetails.IsBuyer() || organisationDetails.IsPendingBuyer())
+            {
+                await organisationClient.UpdateBuyerDevolvedRegulations(Id, []);
+
+                return RedirectToPage("OrganisationOverview", new { Id });
+            }
+
             return RedirectToPage("SupplierToBuyerOrganisationDetailsSummary", new { Id });
         }
     }

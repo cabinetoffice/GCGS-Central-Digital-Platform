@@ -227,6 +227,7 @@ locals {
     outbox_processor_entity_verification = { desired_count = 1 }
     outbox_processor_organisation        = { desired_count = 1 }
     person                               = {}
+    scheduled_worker                     = { desired_count = 1 }
     tenant                               = {}
   }
 
@@ -256,19 +257,20 @@ locals {
   }
 
   service_configs_common = {
-    authority =                            { port = 8092, port_host = 8092, name = "authority"}
-    av_scanner_app =                       { port = 8095, port_host = 8095, name = "av-scanner-app"}
-    data_sharing =                         { port = 8088, port_host = 8088, name = "data-sharing"}
-    entity_verification =                  { port = 8094, port_host = 8094, name = "entity-verification"}
-    entity_verification_migrations =       { port = 9191, port_host = null, name = "entity-verification-migrations"}
-    forms =                                { port = 8086, port_host = 8086, name = "forms"}
-    organisation =                         { port = 8082, port_host = 8082, name = "organisation"}
-    organisation_app =                     { port = 8090, port_host = 80  , name = "organisation-app"}
-    organisation_information_migrations =  { port = 9090, port_host = null, name = "organisation-information-migrations"}
+    authority                            = { port = 8092, port_host = 8092, name = "authority"}
+    av_scanner_app                       = { port = 8095, port_host = 8095, name = "av-scanner-app"}
+    data_sharing                         = { port = 8088, port_host = 8088, name = "data-sharing"}
+    entity_verification                  = { port = 8094, port_host = 8094, name = "entity-verification"}
+    entity_verification_migrations       = { port = 9191, port_host = null, name = "entity-verification-migrations"}
+    forms                                = { port = 8086, port_host = 8086, name = "forms"}
+    organisation                         = { port = 8082, port_host = 8082, name = "organisation"}
+    organisation_app                     = { port = 8090, port_host = 80  , name = "organisation-app"}
+    organisation_information_migrations  = { port = 9090, port_host = null, name = "organisation-information-migrations"}
     outbox_processor_entity_verification = { port = 9096, port_host = 9096, name = "outbox-processor-entity-verification"}
-    outbox_processor_organisation =        { port = 9098, port_host = 9098, name = "outbox-processor-organisation"}
-    person =                               { port = 8084, port_host = 8084, name = "person" }
-    tenant =                               { port = 8080, port_host = 8080, name = "tenant" }
+    outbox_processor_organisation        = { port = 9098, port_host = 9098, name = "outbox-processor-organisation"}
+    person                               = { port = 8084, port_host = 8084, name = "person" }
+    scheduled_worker                     = { port = 9094, port_host = 9094, name = "scheduled-worker"}
+    tenant                               = { port = 8080, port_host = 8080, name = "tenant" }
   }
 
   service_configs = {
