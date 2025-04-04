@@ -72,7 +72,7 @@ public class ConnectedEntityLegalFormQuestionModel(ISession session) : PageModel
         }
 
         state.HasLegalForm = HasLegalForm;
-        state.LegalForm = LegalFormName;
+        state.LegalForm = (HasLegalForm == true ? LegalFormName : string.Empty);
         if (state.HasLegalForm == false)
         {
             state.LegalForm = null;
