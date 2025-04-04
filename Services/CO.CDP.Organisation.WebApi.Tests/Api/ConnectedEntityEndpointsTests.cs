@@ -144,8 +144,7 @@ public class ConnectedEntityEndpointsTests
             channel, organisationId, scope,
             services => services.AddScoped(_ => _deleteConnectedEntityUseCase.Object));
 
-        var response = await factory.CreateClient().SendAsync(
-            new HttpRequestMessage(HttpMethod.Delete, $"/organisations/{organisationId}/connected-entities/{connectedEntityId}"));
+        var response = await factory.CreateClient().DeleteAsync($"/organisations/{organisationId}/connected-entities/{connectedEntityId}");
 
         response.StatusCode.Should().Be(expectedStatusCode);
     }

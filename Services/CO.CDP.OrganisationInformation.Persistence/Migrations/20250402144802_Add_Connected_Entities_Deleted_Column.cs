@@ -28,7 +28,7 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
 CREATE OR REPLACE PROCEDURE public.create_shared_consent_snapshot(
 	IN p_share_code text)
 LANGUAGE 'plpgsql'
-AS $BODY$
+AS $$
 
 DECLARE v_shared_consent_id INT;
 DECLARE v_organisation_id INT;
@@ -219,9 +219,7 @@ BEGIN
 	DROP TABLE IF EXISTS temp_connected_entities_address_map;
 	DROP TABLE IF EXISTS temp_inserted_connected_entities_address_data;
 END;
-$BODY$;
-ALTER PROCEDURE public.create_shared_consent_snapshot(text)
-    OWNER TO cdp_user;
+$$;
 ");
 
             migrationBuilder.Sql($@"
@@ -237,7 +235,7 @@ CREATE OR REPLACE PROCEDURE public.get_shared_consent_details(
 	INOUT form_question_cursor refcursor,
 	INOUT form_answer_cursor refcursor)
 LANGUAGE 'plpgsql'
-AS $BODY$
+AS $$
 
 DECLARE v_shared_consent_id INT;
 BEGIN
@@ -352,9 +350,7 @@ BEGIN
         WHERE  
             fas.shared_consent_id = v_shared_consent_id and NOT fas.deleted AND fs.""type"" <> 1;
 END;
-$BODY$;
-ALTER PROCEDURE public.get_shared_consent_details(text, refcursor, refcursor, refcursor, refcursor, refcursor, refcursor, refcursor, refcursor, refcursor)
-    OWNER TO cdp_user;
+$$;
 ");
         }
 
@@ -564,9 +560,7 @@ BEGIN
 	DROP TABLE IF EXISTS temp_connected_entities_address_map;
 	DROP TABLE IF EXISTS temp_inserted_connected_entities_address_data;
 END;
-$BODY$;
-ALTER PROCEDURE public.create_shared_consent_snapshot(text)
-    OWNER TO cdp_user;
+$$;
 ");
 
             migrationBuilder.Sql($@"
@@ -697,9 +691,7 @@ BEGIN
         WHERE  
             fas.shared_consent_id = v_shared_consent_id and NOT fas.deleted AND fs.""type"" <> 1;
 END;
-$BODY$;
-ALTER PROCEDURE public.get_shared_consent_details(text, refcursor, refcursor, refcursor, refcursor, refcursor, refcursor, refcursor, refcursor, refcursor)
-    OWNER TO cdp_user;
+$$;
 ");
         }
     }
