@@ -25,16 +25,16 @@
         <div class="govuk-form-group">
             @foreach (var formAnswerSet in Model.FormAnswerSets)
             {
-                <dl class="govuk-summary-list ros-add-to-a-list">
+                <div class="govuk-summary-list ros-add-to-a-list">
                     <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">
+                        <div class="govuk-summary-list__key">
                             @foreach (var item in formAnswerSet.answers)
                             {
                                 <p class="govuk-!-margin-top-0">@item.Title: <span class="govuk-!-font-weight-regular">@item.Answer</span></p>
                             }
-                        </dt>
+                        </div>
                         <authorize scope="@OrgScopeRequirement.Editor">
-                            <dd class="govuk-summary-list__actions">
+                            <div class="govuk-summary-list__actions">
                                 <ul class="govuk-summary-list__actions-list">
                                     <li class="govuk-summary-list__actions-list-item">
                                         <a class="govuk-link" href="?handler=change&answer-set-id=@formAnswerSet.answerSetId">@StaticTextResource.Global_Change</a>
@@ -43,10 +43,10 @@
                                         <a class="govuk-link" href="/organisation/@Model.OrganisationId/forms/@Model.FormId/sections/@Model.SectionId/answers/@formAnswerSet.answerSetId/remove-confirmation">@StaticTextResource.Global_Remove</a>
                                     </li>
                                 </ul>
-                            </dd>
+                            </div>
                         </authorize>
                     </div>
-                </dl>
+                </div>
             }
 
             <authorize scope="@OrgScopeRequirement.Editor">
