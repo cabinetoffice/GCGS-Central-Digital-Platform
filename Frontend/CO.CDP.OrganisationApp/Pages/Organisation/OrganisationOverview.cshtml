@@ -189,7 +189,9 @@
                         </dd>
                         <authorize scope="@OrgScopeRequirement.Editor">
                             <dd class="govuk-summary-list__actions">
-                                <a class="govuk-link govuk-link--no-visited-state" href="/organisation/@Model.Id/buyer-organisation-type">@StaticTextResource.Global_Change</a>
+                                <a class="govuk-link govuk-link--no-visited-state" href="/organisation/@Model.Id/buyer-organisation-type">
+                                    @StaticTextResource.Global_Change<span class="govuk-visually-hidden"> @StaticTextResource.Organisation_BuyerType</span>
+                                </a>
                             </dd>
                         </authorize>
                     </div>
@@ -249,7 +251,9 @@
                             </dd>
                             <authorize scope="@OrgScopeRequirement.Admin">
                                 <dd class="govuk-summary-list__actions">
-                                    <a class="govuk-link govuk-link--no-visited-state" href="/organisation/@Model.Id/mou-summary">@StaticTextResource.Global_View</a>
+                                    <a class="govuk-link govuk-link--no-visited-state" href="/organisation/@Model.Id/mou-summary">
+                                        @StaticTextResource.Global_View<span class="govuk-visually-hidden"> @StaticTextResource.MoU_DataSharingAgreement_Title</span>
+                                    </a>
                                 </dd>
                             </authorize>
                         </div>
