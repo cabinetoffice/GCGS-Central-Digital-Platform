@@ -69,7 +69,7 @@
                 <authorize scope="@OrgScopeRequirement.Editor">
                     <dd class="govuk-summary-list__actions">
                         <a class="govuk-link" href="individual-or-org">
-                            @StaticTextResource.Global_Change
+                            @StaticTextResource.Global_Change<span class="govuk-visually-hidden"> @StaticTextResource.Supplier_SupplierType</span>
                         </a>
                     </dd>
                 </authorize>
@@ -90,7 +90,7 @@
                     <authorize scope="@OrgScopeRequirement.Editor">
                         <dd class="govuk-summary-list__actions">
                             <a class="govuk-link" href="@(Constants.AddressType.Registered.ToString().ToLower())-address/uk">
-                                @GetActionString(details.CompletedRegAddress)
+                                @GetActionString(details.CompletedRegAddress)<span class="govuk-visually-hidden"> @StaticTextResource.Supplier_RegisteredAddress</span>
                             </a>
                         </dd>
                     </authorize>
@@ -112,13 +112,13 @@
                         @if (details.SupplierType == CO.CDP.Organisation.WebApiClient.SupplierType.Organisation)
                         {
                             <a class="govuk-link" href="postal-address-same-as-registered">
-                                @GetActionString(details.CompletedPostalAddress)
+                                @GetActionString(details.CompletedPostalAddress)<span class="govuk-visually-hidden"> @StaticTextResource.Supplier_PostalAddress</span>
                             </a>
                         }
                         else
                         {
                             <a class="govuk-link" href="postal-address/uk">
-                                @GetActionString(details.CompletedPostalAddress)
+                                @GetActionString(details.CompletedPostalAddress)<span class="govuk-visually-hidden"> @StaticTextResource.Supplier_PostalAddress</span>
                             </a>
                         }
                     </dd>
@@ -148,7 +148,7 @@
                 <authorize scope="@OrgScopeRequirement.Editor">
                     <dd class="govuk-summary-list__actions">
                         <a class="govuk-link" href="vat-question">
-                            @GetActionString(details.CompletedVat)
+                            @GetActionString(details.CompletedVat)<span class="govuk-visually-hidden"> @StaticTextResource.Supplier_VatNumber</span>
                         </a>
                     </dd>
                 </authorize>
@@ -177,7 +177,7 @@
                 <authorize scope="@OrgScopeRequirement.Editor">
                     <dd class="govuk-summary-list__actions">
                         <a class="govuk-link" href="website-question">
-                            @GetActionString(details.CompletedWebsiteAddress)
+                            @GetActionString(details.CompletedWebsiteAddress)<span class="govuk-visually-hidden"> @StaticTextResource.Supplier_WebsiteAddress</span>
                         </a>
                     </dd>
                 </authorize>
@@ -199,7 +199,7 @@
                 <authorize scope="@OrgScopeRequirement.Editor">
                     <dd class="govuk-summary-list__actions">
                         <a class="govuk-link" href="email-address">
-                            @GetActionString(details.CompletedEmailAddress)
+                            @GetActionString(details.CompletedEmailAddress)<span class="govuk-visually-hidden"> @StaticTextResource.Supplier_EmailAddress</span>
                         </a>
                     </dd>
                 </authorize>
@@ -220,7 +220,7 @@
                     <authorize scope="@OrgScopeRequirement.Editor">
                         <dd class="govuk-summary-list__actions">
                             <a class="govuk-link" href="operation">
-                                @GetActionString(details.CompletedOperationType)
+                                @GetActionString(details.CompletedOperationType)<span class="govuk-visually-hidden"> @StaticTextResource.Supplier_OrganisationType</span>
                             </a>
                         </dd>
                     </authorize>
@@ -239,7 +239,7 @@
                     <authorize scope="@OrgScopeRequirement.Editor">
                         <dd class="govuk-summary-list__actions">
                             <a class="govuk-link" href="company-act-question">
-                                @GetActionString(details.CompletedLegalForm)
+                                @GetActionString(details.CompletedLegalForm)<span class="govuk-visually-hidden"> @StaticTextResource.Supplier_LegalForm</span>
                             </a>
                         </dd>
                     </authorize>

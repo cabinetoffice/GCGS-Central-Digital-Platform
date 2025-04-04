@@ -36,17 +36,21 @@
                         {
                             <br />
                             <span class="govuk-!-font-weight-regular govuk-!-margin-top-1">@string.Format(StaticTextResource.Supplier_ConnectedEntity_ConnectedPersonSummary_RemovedOn, ce.EndDate.Value.ToString("dd MMMM yyyy"))</span>
-                        }                        
+                        }
                     </dt>
                     <dd class="govuk-summary-list__value"></dd>
                     <authorize scope="@OrgScopeRequirement.Editor">
                         <dd class="govuk-summary-list__actions">
                             <ul class="govuk-summary-list__actions-list">
                                 <li class="govuk-summary-list__actions-list-item">
-                                    <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/connected-person/@entityTypePage/@ce.EntityId?handler=change">@StaticTextResource.Global_Change</a>
+                                    <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/connected-person/@entityTypePage/@ce.EntityId?handler=change">
+                                        @StaticTextResource.Global_Change<span class="govuk-visually-hidden"> @ce.Name</span>
+                                    </a>
                                 </li>
                                 <li class="govuk-summary-list__actions-list-item">
-                                    <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/connected-person/@ce.EntityId/remove">@StaticTextResource.Global_Remove</a>
+                                    <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/connected-person/@ce.EntityId/remove">
+                                        @StaticTextResource.Global_Remove<span class="govuk-visually-hidden"> @ce.Name</span>
+                                    </a>
                                 </li>
                             </ul>
                         </dd>
