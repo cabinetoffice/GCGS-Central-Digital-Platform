@@ -42,7 +42,11 @@ public class ConnectedEntityOverseasCompanyQuestionModel(ISession session) : Pag
 
         InitModel(state);
 
-        HasOverseasCompaniesHouseNumber = selected.HasValue ? selected : state.HasOverseasCompaniesHouseNumber;
+        HasOverseasCompaniesHouseNumber = selected ?? state.HasOverseasCompaniesHouseNumber;
+        if (RedirectToCheckYourAnswer == true && HasOverseasCompaniesHouseNumber == null)
+        {
+            HasOverseasCompaniesHouseNumber = false;
+        }
         OverseasCompaniesHouseNumber = state.OverseasCompaniesHouseNumber;
 
         return Page();
@@ -69,7 +73,7 @@ public class ConnectedEntityOverseasCompanyQuestionModel(ISession session) : Pag
         }
 
         state.HasOverseasCompaniesHouseNumber = HasOverseasCompaniesHouseNumber;
-        state.OverseasCompaniesHouseNumber = OverseasCompaniesHouseNumber;
+        state.OverseasCompaniesHouseNumber = (HasOverseasCompaniesHouseNumber == true ? OverseasCompaniesHouseNumber : string.Empty);
         if (HasOverseasCompaniesHouseNumber == true)
         {
             state.CompaniesHouseNumber = null;

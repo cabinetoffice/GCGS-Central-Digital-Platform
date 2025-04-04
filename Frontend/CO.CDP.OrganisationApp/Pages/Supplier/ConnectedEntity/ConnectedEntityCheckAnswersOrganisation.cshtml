@@ -149,14 +149,14 @@
                     }
                 }
 
-                @if (details.HasCompaniesHouseNumber.HasValue)
+                @if (Model.ShowCompaniesHouse)
                 {
                     <div class="govuk-summary-list__row">
                         <dt class="govuk-summary-list__key">
                             @StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_CompaniesHouseRegistered
                         </dt>
                         <dd class="govuk-summary-list__value">
-                            @if (details.HasCompaniesHouseNumber == true)
+                            @if (details.HasCompaniesHouseNumber.HasValue && details.HasCompaniesHouseNumber == true)
                             {
                                 @StaticTextResource.Global_Yes
                                 <br />
@@ -175,14 +175,14 @@
                     </div>
                 }
 
-                @if (details.HasOverseasCompaniesHouseNumber.HasValue)
+                @if (Model.ShowOverseasCompanyHouse)
                 {
                     <div class="govuk-summary-list__row">
                         <dt class="govuk-summary-list__key">
                             @StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_OverseasEquivalent
                         </dt>
                         <dd class="govuk-summary-list__value">
-                            @if (details.HasOverseasCompaniesHouseNumber == true)
+                            @if (details.HasOverseasCompaniesHouseNumber.HasValue && details.HasOverseasCompaniesHouseNumber == true)
                             {
                                 @StaticTextResource.Global_Yes
                                 <br />
