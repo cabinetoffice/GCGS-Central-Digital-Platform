@@ -182,6 +182,8 @@ public record RegisterConnectedEntity
 
     public DateTimeOffset? StartDate { get; init; }
     public DateTimeOffset? EndDate { get; init; }
+
+    public bool Deleted {  set; get; }
 }
 
 public record UpdateConnectedEntity
@@ -201,6 +203,7 @@ public record UpdateConnectedEntity
 
     public DateTimeOffset? StartDate { get; init; }
     public DateTimeOffset? EndDate { get; init; }
+    public bool Deleted { set; get; }
 }
 
 public record CreateConnectedIndividualTrust
