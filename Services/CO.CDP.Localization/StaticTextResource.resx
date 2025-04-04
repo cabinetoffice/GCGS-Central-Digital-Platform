@@ -711,6 +711,9 @@
   <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswers_PSCDetails" xml:space="preserve">
     <value>PSC details</value>
   </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswers_DateNoLongerConnected" xml:space="preserve">
+    <value>Date no longer connected</value>
+  </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswers_DoB" xml:space="preserve">
     <value>Date of birth</value>
   </data>
