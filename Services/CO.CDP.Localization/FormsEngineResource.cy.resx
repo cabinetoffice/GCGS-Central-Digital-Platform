@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!--
     Microsoft ResX Schema
@@ -133,7 +133,7 @@
     <value>Gwybodaeth ariannol</value>
   </data>
   <data name="Exclusions_02_Caption" xml:space="preserve">
-    <value>&lt;legend class="govuk-fieldset__legend"&gt;Rhowch y dyddiad y daeth yr amgylchiadau i ben&lt;/legend&gt;&lt;div class="govuk-hint"&gt;Er enghraifft, 27 3 2007&lt;/div&gt;</value>
+    <value>&lt;legend class="govuk-fieldset__legend" id="inner-legend"&gt;Rhowch y dyddiad y daeth yr amgylchiadau i ben&lt;/legend&gt;&lt;div class="govuk-hint"&gt;Er enghraifft, 27 3 2007&lt;/div&gt;</value>
   </data>
   <data name="Exclusions_02_Description" xml:space="preserve">
     <value>&lt;div id="isEventEnded-hint" class="govuk-hint"&gt;Er enghraifft, yn dilyn penderfyniad gan y llys am gamymddwyn amgylcheddol, rhoddodd eich sefydliad neu'r unigolyn cysylltiedig y gorau i niweidio'r amgylchedd&gt;</value>
