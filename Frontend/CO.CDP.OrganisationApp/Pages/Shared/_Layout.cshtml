@@ -35,7 +35,7 @@
     <meta name="description" content="GOV.UK Central Digital Platform" />
     <link rel="manifest" href="/manifest.json" />
     <link rel="stylesheet" href="/css/govuk-frontend-5.7.1.min.css">
-    <link rel="stylesheet" href="/css/site.css">
+    <link rel="stylesheet" href="/css/site.css" asp-append-version="true">
     <title>@ViewData["Title"]@(ViewData.ContainsKey("Title") && !String.IsNullOrEmpty((string?)ViewData["Title"]) ? " - " : "")@StaticTextResource.Header_ServiceName - GOV.UK</title>
 </head>
 
@@ -286,10 +286,12 @@
         <script nonce-csp type="module">
             import { initSessionTimeoutWarning } from '/js/session-timeout-warning.js';
 
-            // TODO: Get times from config
-            // TODO: Add cachebusters to assets
+            @{
+                var timeout = int.Parse(config["SessionTimeoutInMinutes"] ?? "60") * 60 * 1000;
+                var warning = timeout - (5 * 60 * 1000);
+            }
 
-            initSessionTimeoutWarning(1000 * 60 * 1000, 0.01 * 60 * 1000, {
+            initSessionTimeoutWarning(@timeout, @warning, {
                 timeoutDialogHeader: '@StaticTextResource.SessionTimeoutWarningDialog_Header',
                 timeoutDialogLede: '@StaticTextResource.SessionTimeoutWarningDialog_Lede',
                 timeoutDialogText: '@string.Format(StaticTextResource.SessionTimeoutWarningDialog_Text, "5")',
