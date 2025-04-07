@@ -3,6 +3,8 @@ namespace CO.CDP.OrganisationApp.Constants;
 public static class ErrorCodes
 {
     public const string ORGANISATION_ALREADY_EXISTS = "ORGANISATION_ALREADY_EXISTS";
+    public const string IDENTIFIER_ALREADY_EXISTS = "IDENTIFIER_ALREADY_EXISTS";
+    public const string REMOVE_PRIMARY_IDENTIFIER = "REMOVE_PRIMARY_IDENTIFIER";
     public const string INVALID_OPERATION = "INVALID_OPERATION";
     public const string ARGUMENT_NULL = "ARGUMENT_NULL";
     public const string PERSON_GUID_ALREADY_EXISTS = "PERSON_GUID_ALREADY_EXISTS";
