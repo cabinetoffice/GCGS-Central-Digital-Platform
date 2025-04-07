@@ -165,7 +165,7 @@ public class OrganisationIdentificationModel(ISession session,
 
         RegistrationDetails.OrganisationScheme = OrganisationScheme;
 
-        RegistrationDetails.OrganisationIdentificationNumber = OrganisationScheme switch
+        RegistrationDetails.OrganisationIdentificationNumber = (OrganisationScheme switch
         {
             "GB-CHC" => CharityCommissionEnglandWalesNumber,
             "GB-SC" => ScottishCharityRegulatorNumber,
@@ -178,7 +178,7 @@ public class OrganisationIdentificationModel(ISession session,
             "GB-UKPRN" => UKLearningProviderReferenceNumber,
             "Other" => null,
             _ => null,
-        };
+        })?.Trim();
 
         Identifier = $"{OrganisationScheme}:{RegistrationDetails.OrganisationIdentificationNumber}";
 
