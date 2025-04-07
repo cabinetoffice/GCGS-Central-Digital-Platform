@@ -2,6 +2,7 @@ using CO.CDP.GovUKNotify.Models;
 using CO.CDP.GovUKNotify;
 using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.OrganisationInformation.Persistence;
+using Microsoft.VisualBasic;
 
 namespace CO.CDP.Organisation.WebApi.UseCase;
 public class SupportUpdateOrganisationUseCase(
@@ -84,6 +85,11 @@ public class SupportUpdateOrganisationUseCase(
 
         foreach (var removed in removedIdentifiers)
         {
+            if (removed.Primary)
+            {
+                throw new IOrganisationRepository.OrganisationRepositoryException.RemovePrimaryIdentifierException("You cannot remove the primary registration number.");
+            }
+
             organisation.Identifiers.Remove(removed);
         }
 
@@ -93,7 +99,7 @@ public class SupportUpdateOrganisationUseCase(
 
             if (existingIdentifier != null)
             {
-                existingIdentifier.IdentifierId = identifier.Id;
+                existingIdentifier.IdentifierId = Strings.Trim(identifier.Id);
                 existingIdentifier.LegalName = identifier.LegalName;
                 existingIdentifier.UpdatedOn = DateTimeOffset.UtcNow;
             }
@@ -101,7 +107,7 @@ public class SupportUpdateOrganisationUseCase(
             {
                 var newIdentifier = new Identifier
                 {
-                    IdentifierId = identifier.Id,
+                    IdentifierId = Strings.Trim(identifier.Id),
                     Primary = AssignIdentifierUseCase.IsPrimaryIdentifier(organisation, identifier.Scheme),
                     LegalName = identifier.LegalName,
                     Scheme = identifier.Scheme,

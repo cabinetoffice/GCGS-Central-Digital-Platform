@@ -138,14 +138,7 @@ public class OrganisationIdentificationModel(
             var organisation = await organisationClient.GetOrganisationAsync(Id);
             if (organisation == null) return Redirect("/page-not-found");
 
-            var existingIdentifiers = GetExistingIdentifiers(organisation);
-
-            ExistingOrganisationScheme = existingIdentifiers.Select(x => x.Scheme).ToList();
-
-            foreach (var identifier in existingIdentifiers)
-            {
-                SetIdentifierValue(identifier);
-            }
+            initIdentifiers(organisation);
 
             return Page();
         }
@@ -170,44 +163,38 @@ public class OrganisationIdentificationModel(
 
     public async Task<IActionResult> OnPost()
     {
+        var isEditor = (await authorizationService.AuthorizeAsync(User, null, OrgScopeRequirement.Editor)).Succeeded;
+        IsSupportAdmin = (await authorizationService.AuthorizeAsync(User, null, PersonScopeRequirement.SupportAdmin)).Succeeded;
+
+        if (!isEditor && !IsSupportAdmin)
+        {
+            return Forbid();
+        }
+
+        var organisation = await organisationClient.GetOrganisationAsync(Id);
+        if (organisation == null) return Redirect("/page-not-found");
+
+        // Ensure OrganisationScheme is valid
+        if (OrganisationScheme == null || !OrganisationScheme.Any())
+        {
+            ModelState.AddModelError(nameof(OrganisationScheme), StaticTextResource.Organisation_OrganisationIdentification_ValidationErrorMessage);
+        }
+
+        if (!ModelState.IsValid)
+        {
+            initIdentifiers(organisation);
+
+            return Page();
+        }
+
+        // Create identifiers for OrganisationScheme
+        var identifiers = OrganisationScheme!.Select(scheme => new OrganisationWebApiClient.OrganisationIdentifier(
+                id: GetOrganisationIdentificationNumber(scheme),
+                legalName: organisation.Name,
+                scheme: scheme))
+            .ToList();
+
         try {
-            var isEditor = (await authorizationService.AuthorizeAsync(User, null, OrgScopeRequirement.Editor)).Succeeded;
-            IsSupportAdmin = (await authorizationService.AuthorizeAsync(User, null, PersonScopeRequirement.SupportAdmin)).Succeeded;
-
-            if (!isEditor && !IsSupportAdmin)
-            {
-                return Forbid();
-            }
-
-            var organisation = await organisationClient.GetOrganisationAsync(Id);
-            if (organisation == null) return Redirect("/page-not-found");
-
-            // Ensure OrganisationScheme is valid
-            if (OrganisationScheme == null || !OrganisationScheme.Any())
-            {
-                ModelState.AddModelError(nameof(OrganisationScheme), StaticTextResource.Organisation_OrganisationIdentification_ValidationErrorMessage);
-            }
-
-            if (!ModelState.IsValid)
-            {
-                var existingIdentifiers = GetExistingIdentifiers(organisation);
-
-                ExistingOrganisationScheme = existingIdentifiers.Select(x => x.Scheme).ToList();
-
-                foreach (var identifier in existingIdentifiers)
-                {
-                    SetIdentifierValue(identifier);
-                }
-
-                return Page();
-            }
-
-            // Create identifiers for OrganisationScheme
-            var identifiers = OrganisationScheme!.Select(scheme => new OrganisationWebApiClient.OrganisationIdentifier(
-                    id: GetOrganisationIdentificationNumber(scheme),
-                    legalName: organisation.Name,
-                    scheme: scheme))
-                .ToList();
 
             if (IsSupportAdmin)
             {
@@ -223,11 +210,22 @@ public class OrganisationIdentificationModel(
         catch (OrganisationWebApiClient.ApiException<OrganisationWebApiClient.ProblemDetails> aex)
         {
             ApiExceptionMapper.MapApiExceptions(aex, ModelState);
+
+            initIdentifiers(organisation);
+
             return Page();
         }
-        catch (ApiException ex) when (ex.StatusCode == 404)
+    }
+
+    private void initIdentifiers(OrganisationWebApiClient.Organisation organisation)
+    {
+        var existingIdentifiers = GetExistingIdentifiers(organisation);
+
+        ExistingOrganisationScheme = existingIdentifiers.Select(x => x.Scheme).ToList();
+
+        foreach (var identifier in existingIdentifiers)
         {
-            return Redirect("/page-not-found");
+            SetIdentifierValue(identifier);
         }
     }
 
