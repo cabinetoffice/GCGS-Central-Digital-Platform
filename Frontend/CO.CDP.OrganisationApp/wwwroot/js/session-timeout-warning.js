@@ -1,11 +1,13 @@
 class SessionTimeoutWarning {
-    constructor(warningTime, timeoutTime) {
+    constructor(warningTime, timeoutTime, i18n) {
         this.warningTime = warningTime;  
-        this.timeoutTime = timeoutTime;  
+        this.timeoutTime = timeoutTime;
+        this.i18n = i18n;
         this.startTime = Date.now();       
         this.lastTimerCheck = 0;    
         this.timeoutModal = null;
         this.fetchInProgressSince = 0;
+        this.doTick = true;       
         this.createDialog();
         this.addStorageEventListener();
         requestAnimationFrame(this.tick.bind(this)); 
@@ -34,11 +36,10 @@ class SessionTimeoutWarning {
 
         this.fetchInProgressSince = now;
 
-        // TODO: Call real endpoint
-        fetch('/refresh-token', { method: 'POST' })
+        fetch('/session-timeout-keep-alive', { method: 'GET' })
             .then(response => {
                 if (!response.ok) {
-                    console.error('Failed to refresh token');
+                    this.signOut();
                 }
             })
             .catch(error => {
@@ -62,15 +63,17 @@ class SessionTimeoutWarning {
      * The "obvious" solution of using setTimeout would not work in this case
      */
     tick() {
-        const elapsedTime = Date.now() - this.startTime;
-        console.log("tick", elapsedTime, this.warningTime, this.timeoutTime)
+        if (!this.doTick) {
+            return;
+        }
 
-        if (!this.timeoutModal.open && elapsedTime >= this.warningTime) {
+        const elapsedTime = Date.now() - this.startTime;
+
+        if (elapsedTime >= this.warningTime && !this.timeoutModal.open) {
             this.timeoutModal.showModal();
         }
 
         if (elapsedTime >= this.timeoutTime) {
-            // TODO: Stop ticking once this has been called - otherwise if it gets called in a backgrounded tab, you end up with a ridiculous loop
             this.signOut();
         }
 
@@ -79,15 +82,16 @@ class SessionTimeoutWarning {
 
     createDialog() {
         this.timeoutModal = document.createElement('dialog');
-        const minutesLeft = Math.round((this.timeoutTime - this.warningTime) / 60000);
+        this.timeoutModal.classList.add('app-timeout-dialog');
 
-        // TODO: Translations
-        // TODO: Gov styling to match FTS
-        // TODO: Close button
         this.timeoutModal.innerHTML = `
-            <p>Your session will time out soon. You will be signed out of your account if you do not respond in ${minutesLeft} minutes. We do this to keep your information secure.</p>
-            <button id="session-timeout-warning-continue">Continue session</button>
-            <button id="session-timeout-warning-sign-out">Sign out</button>
+            <h2 class="govuk-heading-m app-timeout-dialog__header">${this.i18n.timeoutDialogHeader}</h2>
+            <div class="app-timeout-dialog__inner">
+                <p class="govuk-body"><strong>${this.i18n.timeoutDialogLede}</strong></p>
+                <p class="govuk-body">${this.i18n.timeoutDialogText}</p>
+                <button id="session-timeout-warning-continue" class="govuk-button govuk-!-margin-right-2">${this.i18n.timeoutDialogContinue}</button>
+                <button id="session-timeout-warning-sign-out" class="govuk-button govuk-button--secondary">${this.i18n.timeoutDialogSignOut}</button>
+            </div>
         `;
         document.body.appendChild(this.timeoutModal);
 
@@ -96,13 +100,15 @@ class SessionTimeoutWarning {
     }
 
     signOut() {
-        window.location.href = '/logged-out';
+        this.doTick = false;
+        window.location.href = '/one-login/sign-out?redirectUri=%2Flogged-out';
     }
 }
 
-export function initSessionTimeoutWarning(timeoutTime, warningTime) {
+export function initSessionTimeoutWarning(timeoutTime, warningTime, i18n) {
     const sessionTimeout = new SessionTimeoutWarning(
         warningTime,
-        timeoutTime
+        timeoutTime,
+        i18n
     );
 }
