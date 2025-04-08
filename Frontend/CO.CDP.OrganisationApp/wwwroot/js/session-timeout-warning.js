@@ -1,5 +1,5 @@
 class SessionTimeoutWarning {
-    constructor(warningTime, timeoutTime, i18n) {
+    constructor(warningTime, timeoutTime, isAuthenticated, i18n) {
         this.warningTime = warningTime;  
         this.timeoutTime = timeoutTime;
         this.i18n = i18n;
@@ -7,10 +7,16 @@ class SessionTimeoutWarning {
         this.lastTimerCheck = 0;    
         this.timeoutModal = null;
         this.fetchInProgressSince = 0;
-        this.doTick = true;       
-        this.createDialog();
-        this.addStorageEventListener();
-        requestAnimationFrame(this.tick.bind(this)); 
+
+        if (isAuthenticated) {
+            this.doTick = true;
+            this.createDialog();
+            this.addStorageEventListener();
+            requestAnimationFrame(this.tick.bind(this));
+            this.resetHandler();
+        } else {
+            localStorage.setItem('SessionTimeoutWarning.signedOut', Date.now());
+        }
     }
 
     addStorageEventListener() {
@@ -18,10 +24,14 @@ class SessionTimeoutWarning {
             if (event.key === 'SessionTimeoutWarning.reset') {
                 this.doReset();
             }
+
+            if (event.key === 'SessionTimeoutWarning.signedOut') {
+                this.doSignOut();
+            }
         });
     }
 
-    resetButtonHandler() {
+    resetHandler() {
         localStorage.setItem('SessionTimeoutWarning.reset', Date.now()); // Use localStorage to broadcast across tabs
         this.doReset();
     }
@@ -39,11 +49,11 @@ class SessionTimeoutWarning {
         fetch('/session-timeout-keep-alive', { method: 'GET' })
             .then(response => {
                 if (!response.ok) {
-                    this.signOut();
+                    this.doSignOut();
                 }
             })
             .catch(error => {
-                this.signOut();
+                this.doSignOut();
             })
             .finally(() => this.fetchInProgressSince = 0);
 
@@ -74,7 +84,7 @@ class SessionTimeoutWarning {
         }
 
         if (elapsedTime >= this.timeoutTime) {
-            this.signOut();
+            this.signOutHandler();
         }
 
         requestAnimationFrame(this.tick.bind(this));
@@ -95,20 +105,26 @@ class SessionTimeoutWarning {
         `;
         document.body.appendChild(this.timeoutModal);
 
-        this.timeoutModal.querySelector('#session-timeout-warning-continue').addEventListener('click', this.resetButtonHandler.bind(this));
-        this.timeoutModal.querySelector('#session-timeout-warning-sign-out').addEventListener('click', this.signOut.bind(this));
+        this.timeoutModal.querySelector('#session-timeout-warning-continue').addEventListener('click', this.resetHandler.bind(this));
+        this.timeoutModal.querySelector('#session-timeout-warning-sign-out').addEventListener('click', this.signOutHandler.bind(this));
     }
 
-    signOut() {
+    signOutHandler() {
+        localStorage.setItem('SessionTimeoutWarning.signedOut', Date.now());
+        this.doSignOut();
+    }
+
+    doSignOut() {
         this.doTick = false;
         window.location.href = '/one-login/sign-out?redirectUri=%2Flogged-out';
     }
 }
 
-export function initSessionTimeoutWarning(timeoutTime, warningTime, i18n) {
+export function initSessionTimeoutWarning(timeoutTime, warningTime, isAuthenticated, i18n) {
     const sessionTimeout = new SessionTimeoutWarning(
         warningTime,
         timeoutTime,
+        isAuthenticated,
         i18n
     );
 }
