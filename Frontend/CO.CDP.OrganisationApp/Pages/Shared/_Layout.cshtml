@@ -281,25 +281,22 @@
         })
     </script>
 
-    @if (userInfoService.IsAuthenticated())
-    {
-        <script nonce-csp type="module">
-            import { initSessionTimeoutWarning } from '/js/session-timeout-warning.js';
+    <script nonce-csp type="module">
+        import { initSessionTimeoutWarning } from '/js/session-timeout-warning.js';
 
-            @{
-                var timeout = int.Parse(config["SessionTimeoutInMinutes"] ?? "60") * 60 * 1000;
-                var warning = timeout - (5 * 60 * 1000);
-            }
+        @{
+            var timeout = int.Parse(config["SessionTimeoutInMinutes"] ?? "60") * 60 * 1000;
+            var warning = timeout - (5 * 60 * 1000);
+        }
 
-            initSessionTimeoutWarning(@timeout, @warning, {
-                timeoutDialogHeader: '@StaticTextResource.SessionTimeoutWarningDialog_Header',
-                timeoutDialogLede: '@StaticTextResource.SessionTimeoutWarningDialog_Lede',
-                timeoutDialogText: '@string.Format(StaticTextResource.SessionTimeoutWarningDialog_Text, "5")',
-                timeoutDialogContinue: '@StaticTextResource.SessionTimeoutWarningDialog_Continue',
-                timeoutDialogSignOut: '@StaticTextResource.SessionTimeoutWarningDialog_SignOut'
-            });
-        </script>
-    }
+        initSessionTimeoutWarning(@timeout, @warning, @(userInfoService.IsAuthenticated().ToString().ToLower()), {
+            timeoutDialogHeader: '@StaticTextResource.SessionTimeoutWarningDialog_Header',
+            timeoutDialogLede: '@StaticTextResource.SessionTimeoutWarningDialog_Lede',
+            timeoutDialogText: '@string.Format(StaticTextResource.SessionTimeoutWarningDialog_Text, "5")',
+            timeoutDialogContinue: '@StaticTextResource.SessionTimeoutWarningDialog_Continue',
+            timeoutDialogSignOut: '@StaticTextResource.SessionTimeoutWarningDialog_SignOut'
+        });
+    </script>
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>
