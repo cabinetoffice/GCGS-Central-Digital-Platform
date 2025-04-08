@@ -12,7 +12,7 @@ public class SessionTimeoutDialogKeepAliveModel(ISession session, IUserInfoServi
             return new OkResult();
         } else
         {
-            return new BadRequestResult();
+            return new UnauthorizedResult();
         }
     }
 }
