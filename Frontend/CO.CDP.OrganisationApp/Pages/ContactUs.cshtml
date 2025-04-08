@@ -5,111 +5,112 @@
 @using Microsoft.AspNetCore.Mvc.Localization
 
 @{
-    ViewData["Title"] = StaticTextResource.Supplementary_ContactUs_Title;
+    ViewData["Title"] = StaticTextResource.Supplementary_ContactUs_ContactUs;
     var nameHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Name)).HasInnerHtml;
     var emailAddressHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.EmailAddress)).HasInnerHtml;
     var organisationNameHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.OrganisationName)).HasInnerHtml;
     var messageHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Message)).HasInnerHtml;
 }
 
-    @if (Model.MessageSent == true)
-    {
-        <div class="govuk-grid-row">
-            <div class="govuk-grid-column-two-thirds">
-                  <div class="govuk-panel govuk-panel--confirmation">
-                      <h1 class="govuk-panel__title">
-                          @ViewData["Title"]
-                      </h1>
-                  </div>
-                  <h2 class="govuk-heading-m">@StaticTextResource.Supplementary_ContactUs_WhatHappensNext</h2>
-                  <p class="govuk-body">@StaticTextResource.Supplementary_ContactUs_SupportTeam</p>
-            </div>
-        </div>
-    }
-    else
-    {
-        <div class="govuk-grid-row">
-            <div class="govuk-grid-column-two-thirds">
-                <partial name="_ErrorSummary" model="@ModelState" />
-
-                <h1 class="govuk-heading-l">
-                    @StaticTextResource.Supplementary_ContactUs_ContactUs
+@if (Model.MessageSent == true)
+{
+    ViewData["Title"] = $"{StaticTextResource.Supplementary_ContactUs_ContactUs} - {StaticTextResource.Supplementary_ContactUs_Title}";
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <div class="govuk-panel govuk-panel--confirmation">
+                <h1 class="govuk-panel__title">
+                    @ViewData["Title"]
                 </h1>
-
-                <form method="post" novalidate>
-                    <fieldset class="govuk-fieldset">
-                        <div class="govuk-form-group @(nameHasError ? "govuk-form-group--error" : "")">
-                            <label class="govuk-label" for="@nameof(Model.Name)">
-                                @Html.DisplayNameFor(m => m.Name)
-                            </label>
-                            @if (nameHasError)
-                            {
-                                <p id="name-error" class="govuk-error-message">
-                                    <span class="govuk-visually-hidden">Error:</span>
-                                    @Html.ValidationMessageFor(m => m.Name)
-                                </p>
-                            }
-                            <input class="govuk-input @(nameHasError ? "govuk-input--error" : "")" id="@nameof(Model.Name)"
-                                   value="@Model.Name" name="@nameof(Model.Name)" type="text"
-                                   spellcheck="false" @(nameHasError ? "aria-describedby=name-error" : "")>
-                        </div>
-
-                        <div class="govuk-form-group @(emailAddressHasError ? "govuk-form-group--error" : "")">
-                            <label class="govuk-label" for="@nameof(Model.EmailAddress)">
-                                @Html.DisplayNameFor(m => m.EmailAddress)
-                            </label>
-                            @if (emailAddressHasError)
-                            {
-                                <p id="email-error" class="govuk-error-message">
-                                    <span class="govuk-visually-hidden">Error:</span>
-                                    @Html.ValidationMessageFor(m => m.EmailAddress)
-                                </p>
-                            }
-                            <input class="govuk-input @(emailAddressHasError ? "govuk-input--error" : "")" id="@nameof(Model.EmailAddress)"
-                                   value="@Model.EmailAddress" name="@nameof(Model.EmailAddress)" type="email" autocomplete="email"
-                                   spellcheck="false" @(emailAddressHasError ? "aria-describedby=email-error" : "")>
-                        </div>
-
-                        <div class="govuk-form-group @(organisationNameHasError ? "govuk-form-group--error" : "")">
-                            <label class="govuk-label" for="@nameof(Model.OrganisationName)">
-                                @Html.DisplayNameFor(m => m.OrganisationName)
-                            </label>
-                            @if (organisationNameHasError)
-                            {
-                                <p id="organisation-name-error" class="govuk-error-message">
-                                    <span class="govuk-visually-hidden">Error:</span>
-                                    @Html.ValidationMessageFor(m => m.OrganisationName)
-                                </p>
-                            }
-                            <input class="govuk-input @(nameHasError ? "govuk-input--error" : "")" id="@nameof(Model.OrganisationName)"
-                                   value="@Model.OrganisationName" name="@nameof(Model.OrganisationName)" type="text"
-                                   spellcheck="false" @(nameHasError ? "aria-describedby=organisation-name-error" : "")>
-                        </div>
-
-                        <div class="govuk-form-group govuk-character-count @(messageHasError ? "govuk-form-group--error" : "")" data-module="govuk-character-count" data-maxlength="10000">
-                            <label class="govuk-label" for="@nameof(Model.Message)">
-                                @StaticTextResource.Supplementary_ContactUs_Message
-                            </label>
-                            @if (messageHasError)
-                            {
-                                <p id="message-error" class="govuk-error-message">
-                                    <span class="govuk-visually-hidden">Error:</span>
-                                    @Html.ValidationMessageFor(m => m.Message)
-                                </p>
-                            }
-                            <textarea class="govuk-textarea govuk-js-character-count @(messageHasError ? "govuk-input--error" : "")"
-                                      id="@nameof(Model.Message)" name="@nameof(Model.Message)"
-                                      cols="50" rows="10" @(messageHasError ? "aria-describedby=message-info message-error" : "")>@Model.Message</textarea>
-                            <div id="@nameof(Model.Message)-info" class="govuk-hint govuk-character-count__message">
-                            @string.Format(StaticTextResource.GovukFrontend_CharacterCount_CharactersAvailable, "10,000")
-                            </div>
-                        </div>
-                    </fieldset>
-
-                    <govuk-button>
-                        @StaticTextResource.Supplementary_ContactUs_Send
-                    </govuk-button>
-                </form>
             </div>
+            <h2 class="govuk-heading-m">@StaticTextResource.Supplementary_ContactUs_WhatHappensNext</h2>
+            <p class="govuk-body">@StaticTextResource.Supplementary_ContactUs_SupportTeam</p>
         </div>
-    }
+    </div>
+}
+else
+{
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <partial name="_ErrorSummary" model="@ModelState" />
+
+            <h1 class="govuk-heading-l">
+                @StaticTextResource.Supplementary_ContactUs_ContactUs
+            </h1>
+
+            <form method="post" novalidate>
+                <fieldset class="govuk-fieldset">
+                    <div class="govuk-form-group @(nameHasError ? "govuk-form-group--error" : "")">
+                        <label class="govuk-label" for="@nameof(Model.Name)">
+                            @Html.DisplayNameFor(m => m.Name)
+                        </label>
+                        @if (nameHasError)
+                        {
+                            <p id="name-error" class="govuk-error-message">
+                                <span class="govuk-visually-hidden">Error:</span>
+                                @Html.ValidationMessageFor(m => m.Name)
+                            </p>
+                        }
+                        <input class="govuk-input @(nameHasError ? "govuk-input--error" : "")" id="@nameof(Model.Name)"
+                               value="@Model.Name" name="@nameof(Model.Name)" type="text"
+                               spellcheck="false" @(nameHasError ? "aria-describedby=name-error" : "")>
+                    </div>
+
+                    <div class="govuk-form-group @(emailAddressHasError ? "govuk-form-group--error" : "")">
+                        <label class="govuk-label" for="@nameof(Model.EmailAddress)">
+                            @Html.DisplayNameFor(m => m.EmailAddress)
+                        </label>
+                        @if (emailAddressHasError)
+                        {
+                            <p id="email-error" class="govuk-error-message">
+                                <span class="govuk-visually-hidden">Error:</span>
+                                @Html.ValidationMessageFor(m => m.EmailAddress)
+                            </p>
+                        }
+                        <input class="govuk-input @(emailAddressHasError ? "govuk-input--error" : "")" id="@nameof(Model.EmailAddress)"
+                               value="@Model.EmailAddress" name="@nameof(Model.EmailAddress)" type="email" autocomplete="email"
+                               spellcheck="false" @(emailAddressHasError ? "aria-describedby=email-error" : "")>
+                    </div>
+
+                    <div class="govuk-form-group @(organisationNameHasError ? "govuk-form-group--error" : "")">
+                        <label class="govuk-label" for="@nameof(Model.OrganisationName)">
+                            @Html.DisplayNameFor(m => m.OrganisationName)
+                        </label>
+                        @if (organisationNameHasError)
+                        {
+                            <p id="organisation-name-error" class="govuk-error-message">
+                                <span class="govuk-visually-hidden">Error:</span>
+                                @Html.ValidationMessageFor(m => m.OrganisationName)
+                            </p>
+                        }
+                        <input class="govuk-input @(nameHasError ? "govuk-input--error" : "")" id="@nameof(Model.OrganisationName)"
+                               value="@Model.OrganisationName" name="@nameof(Model.OrganisationName)" type="text"
+                               spellcheck="false" @(nameHasError ? "aria-describedby=organisation-name-error" : "")>
+                    </div>
+
+                    <div class="govuk-form-group govuk-character-count @(messageHasError ? "govuk-form-group--error" : "")" data-module="govuk-character-count" data-maxlength="10000">
+                        <label class="govuk-label" for="@nameof(Model.Message)">
+                            @StaticTextResource.Supplementary_ContactUs_Message
+                        </label>
+                        @if (messageHasError)
+                        {
+                            <p id="message-error" class="govuk-error-message">
+                                <span class="govuk-visually-hidden">Error:</span>
+                                @Html.ValidationMessageFor(m => m.Message)
+                            </p>
+                        }
+                        <textarea class="govuk-textarea govuk-js-character-count @(messageHasError ? "govuk-input--error" : "")"
+                                  id="@nameof(Model.Message)" name="@nameof(Model.Message)"
+                                  cols="50" rows="10" @(messageHasError ? "aria-describedby=message-info message-error" : "")>@Model.Message</textarea>
+                        <div id="@nameof(Model.Message)-info" class="govuk-hint govuk-character-count__message">
+                            @string.Format(StaticTextResource.GovukFrontend_CharacterCount_CharactersAvailable, "10,000")
+                        </div>
+                    </div>
+                </fieldset>
+
+                <govuk-button>
+                    @StaticTextResource.Supplementary_ContactUs_Send
+                </govuk-button>
+            </form>
+        </div>
+    </div>
+}
