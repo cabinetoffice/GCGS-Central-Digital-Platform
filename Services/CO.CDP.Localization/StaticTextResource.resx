@@ -270,23 +270,20 @@
   <data name="Global_Email_Invalid_ErrorMessage" xml:space="preserve">
     <value>Enter an email address in the correct format, like name@example.com</value>
   </data>
-  <data name="Supplier_SupplierInformationSummary_ConnectedPersonCount_Singular" xml:space="preserve">
-    <value>{0} Connected person</value>
+  <data name="Supplier_SupplierInformationSummary_FormRecordCount" xml:space="preserve">
+    <value>{0} added</value>
   </data>
-  <data name="Supplier_SupplierInformationSummary_ConnectedPersonCount_Plural" xml:space="preserve">
-    <value>{0} Connected persons</value>
+  <data name="Supplier_SupplierInformationSummary_ShareCodeRecordCount" xml:space="preserve">
+    <value>{0} created</value>
   </data>
-  <data name="Supplier_SupplierInformationSummary_ConnectedPersonCount_None" xml:space="preserve">
-    <value>No connected persons</value>
+  <data name="Supplier_SupplierInformationSummary_ShareCodeCannotStart" xml:space="preserve">
+    <value>Cannot start yet</value>
   </data>
-  <data name="Supplier_SupplierInformationSummary_FormsFurtherQuestionExempt" xml:space="preserve">
-    <value>Not Applicable</value>
+  <data name="Supplier_SupplierInformationSummary_ShareCodeCannotStartHint" xml:space="preserve">
+    <value>Complete your supplier information to create a share code</value>
   </data>
-  <data name="Supplier_SupplierInformationSummary_FormRecordCount_Singular" xml:space="preserve">
-    <value>{0} record</value>
-  </data>
-  <data name="Supplier_SupplierInformationSummary_FormRecordCount_Plural" xml:space="preserve">
-    <value>{0} records</value>
+  <data name="Supplier_SupplierInformationSummary_ShareCodeSectionsIncompleteHint" xml:space="preserve">
+    <value>Complete your supplier information to create a new share code</value>
   </data>
   <data name="Supplier_Email_Required_ErrorMessage" xml:space="preserve">
     <value>Enter your email address</value>
