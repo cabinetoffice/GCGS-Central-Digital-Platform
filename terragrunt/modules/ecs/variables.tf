@@ -8,23 +8,8 @@ variable "alb_sg_id" {
   type        = string
 }
 
-variable "db_entity_verification_address" {
-  description = "Entity Verification DB address"
-  type        = string
-}
-
-variable "db_entity_verification_credentials_arn" {
-  description = "ARN of the secret holding Entity Verification DB credentials"
-  type        = string
-}
-
 variable "db_entity_verification_kms_arn" {
   description = "ARN of the KMS used to encrypt Entity Verification secrets"
-  type        = string
-}
-
-variable "db_entity_verification_name" {
-  description = "Entity Verification DB name"
   type        = string
 }
 
@@ -53,11 +38,6 @@ variable "db_postgres_sg_id" {
   type        = string
 }
 
-variable "db_sirsi_address" {
-  description = "Sirsi DB address"
-  type        = string
-}
-
 variable "db_sirsi_cluster_address" {
   description = "Sirsi DB address"
   type        = string
@@ -78,18 +58,8 @@ variable "db_sirsi_cluster_name" {
   type        = string
 }
 
-variable "db_sirsi_credentials_arn" {
-  description = "ARN of the secret holding Sirsi DB credentials"
-  type        = string
-}
-
 variable "db_sirsi_kms_arn" {
   description = "ARN of the KMS used to encrypt Sirsi secrets"
-  type        = string
-}
-
-variable "db_sirsi_name" {
-  description = "Sirsi DB name"
   type        = string
 }
 

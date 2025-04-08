@@ -124,11 +124,11 @@
                             {
                                 if (section.AnswerSetWithFurtherQuestionExemptedExists)
                                 {
-                                    @StaticTextResource.Supplier_SupplierInformationSummary_FormsFurtherQuestionExempt
+                                    @StaticTextResource.Global_NotApplicableLong
                                 }
                                 else
                                 {
-                                    @(string.Format(section.AnswerSetCount > 1 ? StaticTextResource.Supplier_SupplierInformationSummary_FormRecordCount_Plural : StaticTextResource.Supplier_SupplierInformationSummary_FormRecordCount_Singular, section.AnswerSetCount))
+                                    @(string.Format(StaticTextResource.Supplier_SupplierInformationSummary_FormRecordCount, section.AnswerSetCount))
                                 }
                             }
                         </dd>
