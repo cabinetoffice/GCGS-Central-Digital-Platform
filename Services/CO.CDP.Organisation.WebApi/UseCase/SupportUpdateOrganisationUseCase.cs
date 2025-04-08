@@ -98,7 +98,7 @@ public class SupportUpdateOrganisationUseCase(
 
             if (existingIdentifier != null)
             {
-                existingIdentifier.IdentifierId = Strings.Trim(identifier.Id);
+                existingIdentifier.IdentifierId = identifier.Id?.Trim();
                 existingIdentifier.LegalName = identifier.LegalName;
                 existingIdentifier.UpdatedOn = DateTimeOffset.UtcNow;
             }
@@ -106,7 +106,7 @@ public class SupportUpdateOrganisationUseCase(
             {
                 var newIdentifier = new Identifier
                 {
-                    IdentifierId = Strings.Trim(identifier.Id),
+                    IdentifierId = identifier.Id?.Trim(),
                     Primary = AssignIdentifierUseCase.IsPrimaryIdentifier(organisation, identifier.Scheme),
                     LegalName = identifier.LegalName,
                     Scheme = identifier.Scheme,
