@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -194,6 +194,9 @@
   </data>
   <data name="Organisation_OrganisationName" xml:space="preserve">
     <value>Organisation name</value>
+  </data>
+  <data name="Organisation_ViewOrganisation" xml:space="preserve">
+    <value>View organisation</value>
   </data>
   <data name="Organisation_ChangeName" xml:space="preserve">
     <value>Change&lt;span class="govuk-visually-hidden"&gt; the organisation name&lt;/span&gt;</value>
@@ -2993,6 +2996,9 @@
   </data>
   <data name="Organisation_ConsortiumName" xml:space="preserve">
     <value>Consortium name</value>
+  </data>
+  <data name="Organisation_ViewConsortium" xml:space="preserve">
+    <value>View consortium</value>
   </data>
   <data name="Cookies_ChooseCookiePreferences" xml:space="preserve">
     <value>Choose whether you accept cookies that measure website use</value>
