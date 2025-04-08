@@ -403,7 +403,7 @@
     <value>Sign in</value>
   </data>
   <data name="Footer_ContactUs" xml:space="preserve">
-    <value>Contact us (opens in new tab)</value>
+    <value>Contact us</value>
   </data>
   <data name="Footer_AccessibilityStatement" xml:space="preserve">
     <value>Accessibility statement</value>
