@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -380,6 +380,9 @@
   </data>
   <data name="Header_ServiceName" xml:space="preserve">
     <value>Find a Tender</value>
+  </data>
+  <data name="Header_SkipToMainContent_Link" xml:space="preserve">
+    <value>Skip to main content</value>
   </data>
   <data name="Header_Search" xml:space="preserve">
     <value>Search</value>
