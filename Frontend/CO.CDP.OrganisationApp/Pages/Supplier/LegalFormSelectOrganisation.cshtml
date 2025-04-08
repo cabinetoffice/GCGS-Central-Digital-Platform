@@ -9,10 +9,12 @@
     {
         return Model.RegisteredOrg == radioValue ? "checked='checked'" : string.Empty;
     }
+
+    var otherHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.OtherLegalForm)).HasInnerHtml;
 }
 
 @section BeforeContent {
-    <a href="/organisation/@Model.Id/supplier-information/company-act-question?selected=true" class="govuk-back-link">@StaticTextResource.Global_Back</a>
+    <a href="/organisation/@Model.Id/supplier-information/company-act-question?selected=@Model.RegisteredUnderAct2006" class="govuk-back-link">@StaticTextResource.Global_Back</a>
 }
 
     <div class="govuk-grid-row">
@@ -26,9 +28,19 @@
                                 @ViewData["Title"]
                             </h1>
                         </legend>
-                        <div id="legalForm-hint" class="govuk-hint govuk-!-margin-bottom-6">
-                            @StaticTextResource.Supplier_LegalFormSelectOrganisation_Hint
-                        </div>
+
+                        @if (Model.RegisteredUnderAct2006.GetValueOrDefault())
+                        {
+                            <div id="legalForm-hint" class="govuk-hint govuk-!-margin-bottom-6">
+                                @Html.Raw(@StaticTextResource.Supplier_LegalForm_UK_Hint)
+                            </div>
+                        }
+                        else
+                        {
+                            <div id="legalForm-hint" class="govuk-hint govuk-!-margin-bottom-6">
+                                @Html.Raw(@StaticTextResource.Supplier_LegalForm_NonUK_Hint)
+                            </div>
+                        }
                         <div class="govuk-radios govuk-!-margin-top-6" data-module="govuk-radios">
                             @if (registeredOrgHasError)
                             {
@@ -38,33 +50,184 @@
                             }
 
                             <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="legalForm-lc" name="RegisteredOrg" type="radio" value="LimitedCompany" @IsSelected("LimitedCompany")>
-                                <label class="govuk-label govuk-radios__label" for="legalForm-lc">
-                                    @LegalFormSelectOrganisationModel.OrganisationLegalForm["LimitedCompany"]
+                            <input class="govuk-radios__input" id="legalForm-p" name="RegisteredOrg" type="radio" value="Partnership" @IsSelected("Partnership")>
+                                <label class="govuk-label govuk-radios__label" for="legalForm-p">
+                                    @LegalFormSelectOrganisationModel.OrganisationLegalForm["Partnership"]
                                 </label>
+
+                                <div id="legalForm-p-hint" class="govuk-hint govuk-radios__hint">
+                                    @if (Model.RegisteredUnderAct2006.GetValueOrDefault())
+                                    {
+                                        @Html.Raw(@StaticTextResource.Supplier_LegalFormSelectOrganisation_UK_Hint)
+                                    }
+                                    else
+                                    {
+                                        @Html.Raw(@StaticTextResource.Supplier_LegalFormSelectOrganisation_NonUK_Hint)
+                                    }
+                                </div>
+                            </div>
+
+                            <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="legalForm-lp" name="RegisteredOrg" type="radio" value="LimitedPartnership" @IsSelected("LimitedPartnership")>
+                                <label class="govuk-label govuk-radios__label" for="legalForm-lp">
+                                    @LegalFormSelectOrganisationModel.OrganisationLegalForm["LimitedPartnership"]
+                                </label>
+
+                                <div id="legalForm-lp-hint" class="govuk-hint govuk-radios__hint">
+                                    @if (Model.RegisteredUnderAct2006.GetValueOrDefault())
+                                    {
+                                        @Html.Raw(@StaticTextResource.Supplier_LegalFormSelectOrganisation_UK_Hint)
+                                    }
+                                    else
+                                    {
+                                        @Html.Raw(@StaticTextResource.Supplier_LegalFormSelectOrganisation_NonUK_Hint)
+                                    }
+                                </div>
                             </div>
 
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input" id="legalForm-llp" name="RegisteredOrg" type="radio" value="LLP" @IsSelected("LLP")>
                                 <label class="govuk-label govuk-radios__label" for="legalForm-llp">
-                                    @LegalFormSelectOrganisationModel.OrganisationLegalForm["LLP"]
+                                @LegalFormSelectOrganisationModel.OrganisationLegalForm["LLP"]
                                 </label>
+
+                                <div id="legalForm-llp-hint" class="govuk-hint govuk-radios__hint">
+                                    @if (Model.RegisteredUnderAct2006.GetValueOrDefault())
+                                    {
+                                        @Html.Raw(@StaticTextResource.Supplier_LegalFormSelectOrganisation_UK_Hint)
+                                    }
+                                    else
+                                    {
+                                        @Html.Raw(@StaticTextResource.Supplier_LegalFormSelectOrganisation_NonUK_Hint)
+                                    }
+                                </div>
                             </div>
 
                             <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="legalForm-lp" name="RegisteredOrg" type="radio" value="LimitedPartnership" @IsSelected("LimitedPartnership")>
-                                <label class="govuk-label govuk-radios__label" for="legalForm-lp">
-                                    @LegalFormSelectOrganisationModel.OrganisationLegalForm["LimitedPartnership"]
+                            <input class="govuk-radios__input" id="legalForm-ltd" name="RegisteredOrg" type="radio" value="LimitedCompany" @IsSelected("LimitedCompany")>
+                                <label class="govuk-label govuk-radios__label" for="legalForm-ltd">
+                                @LegalFormSelectOrganisationModel.OrganisationLegalForm["LimitedCompany"]
                                 </label>
+
+                                <div id="legalForm-ltd-hint" class="govuk-hint govuk-radios__hint">
+                                    @if (Model.RegisteredUnderAct2006.GetValueOrDefault())
+                                    {
+                                        @Html.Raw(@StaticTextResource.Supplier_LegalFormSelectOrganisation_UK_Hint)
+                                    }
+                                    else
+                                    {
+                                        @Html.Raw(@StaticTextResource.Supplier_LegalFormSelectOrganisation_NonUK_Hint)
+                                    }
+                                </div>
                             </div>
 
                             <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="legalForm-other" name="RegisteredOrg" type="radio" value="Other" @IsSelected("Other")>
+                                <input class="govuk-radios__input" id="legalForm-plc" name="RegisteredOrg" type="radio" value="PLC" @IsSelected("PLC")>
+                                <label class="govuk-label govuk-radios__label" for="legalForm-plc">
+                                    @LegalFormSelectOrganisationModel.OrganisationLegalForm["PLC"]
+                                </label>
+
+                                <div id="legalForm-plc-hint" class="govuk-hint govuk-radios__hint">
+                                    @if (Model.RegisteredUnderAct2006.GetValueOrDefault())
+                                    {
+                                        @Html.Raw(@StaticTextResource.Supplier_LegalFormSelectOrganisation_UK_Hint)
+                                    }
+                                    else
+                                    {
+                                        @Html.Raw(@StaticTextResource.Supplier_LegalFormSelectOrganisation_NonUK_Hint)
+                                    }
+                                </div>
+                            </div>
+
+                            <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="legalForm-cic" name="RegisteredOrg" type="radio" value="CIC" @IsSelected("CIC")>
+                                <label class="govuk-label govuk-radios__label" for="legalForm-cic">
+                                @LegalFormSelectOrganisationModel.OrganisationLegalForm["CIC"]
+                                </label>
+
+                                <div id="legalForm-cic-hint" class="govuk-hint govuk-radios__hint">
+                                    @if (Model.RegisteredUnderAct2006.GetValueOrDefault())
+                                    {
+                                        @Html.Raw(@StaticTextResource.Supplier_LegalFormSelectOrganisation_CIC_Hint)
+                                    }
+                                    else
+                                    {
+                                        @Html.Raw(@StaticTextResource.Supplier_LegalFormSelectOrganisation_CIC_NonUK_Hint)
+                                    }
+                                </div>
+                            </div>
+
+                            <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="legalForm-cio" name="RegisteredOrg" type="radio" value="CIO" @IsSelected("CIO")>
+                                <label class="govuk-label govuk-radios__label" for="legalForm-cio">
+                                @LegalFormSelectOrganisationModel.OrganisationLegalForm["CIO"]
+                                </label>
+
+                                <div id="legalForm-cio-hint" class="govuk-hint govuk-radios__hint">
+                                @if (Model.RegisteredUnderAct2006.GetValueOrDefault())
+                                    {
+                                        @Html.Raw(@StaticTextResource.Supplier_LegalFormSelectOrganisation_CIO_Hint)
+                                    }
+                                    else
+                                    {
+                                        @Html.Raw(@StaticTextResource.Supplier_LegalFormSelectOrganisation_CIO_NonUK_Hint)
+                                    }
+                                </div>
+                            </div>
+
+                            <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="legalForm-ips" name="RegisteredOrg" type="radio" value="IndustrialProvidentSociety" @IsSelected("IndustrialProvidentSociety")>
+                                <label class="govuk-label govuk-radios__label" for="legalForm-ips">
+                                @LegalFormSelectOrganisationModel.OrganisationLegalForm["IndustrialProvidentSociety"]
+                                </label>
+
+                                <div id="legalForm-ips-hint" class="govuk-hint govuk-radios__hint">
+                                    @if (Model.RegisteredUnderAct2006.GetValueOrDefault())
+                                    {
+                                        @Html.Raw(@StaticTextResource.Supplier_LegalFormSelectOrganisation_IndustrialProvidentSoceity_Hint)
+                                    }
+                                    else
+                                    {
+                                        @Html.Raw(@StaticTextResource.Supplier_LegalFormSelectOrganisation_IndustrialProvidentSoceity_NonUK_Hint)
+                                    }
+                                </div>
+                            </div>
+
+                            <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="legalForm-fm" name="RegisteredOrg" type="radio" value="FinancialMutual" @IsSelected("FinancialMutual")>
+                                <label class="govuk-label govuk-radios__label" for="legalForm-fm">
+                                @LegalFormSelectOrganisationModel.OrganisationLegalForm["FinancialMutual"]
+                                </label>
+
+                                <div id="legalForm-fm-hint" class="govuk-hint govuk-radios__hint">
+                                    @if (Model.RegisteredUnderAct2006.GetValueOrDefault())
+                                    {
+                                        @Html.Raw(@StaticTextResource.Supplier_LegalFormSelectOrganisation_FinancialMutual_Hint)
+                                    }
+                                    else
+                                    {
+                                        @Html.Raw(@StaticTextResource.Supplier_LegalFormSelectOrganisation_FinancialMutual_NonUK_Hint)
+                                    }
+                                </div>
+                            </div>
+
+                            <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" data-aria-controls="conditional-other" id="legalForm-other" name="RegisteredOrg" type="radio" value="Other" @IsSelected("Other")>
                                 <label class="govuk-label govuk-radios__label" for="legalForm-other">
                                     @LegalFormSelectOrganisationModel.OrganisationLegalForm["Other"]
                                 </label>
                             </div>
-                        </div>
+
+                            <div class="govuk-radios__conditional" id="conditional-other">
+                                <div class="govuk-form-group @(otherHasError ? "govuk-form-group--error" : "")">
+                                    <label class="govuk-label" for="OtherLegalForm">@StaticTextResource.Supplier_LegalFormSelectOrganisation_Other_Label</label>
+                                    <input class="govuk-input govuk-!-width-one-half @(otherHasError ? "govuk-input--error" : "")"
+                                           id="OtherLegalForm" name="OtherLegalForm" type="text" spellcheck="true" autocomplete="off"
+                                           value="@Model.OtherLegalForm">
+                                </div>
+                            </div>
+
+                    </div>
                     </fieldset>
                 </div>
 

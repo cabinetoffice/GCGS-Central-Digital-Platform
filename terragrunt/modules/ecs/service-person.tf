@@ -7,8 +7,8 @@ module "ecs_service_person" {
       aspcore_environment = local.aspcore_environment
       container_port      = var.service_configs.person.port
       cpu                 = var.service_configs.person.cpu
-      db_address          = local.db_sirsi_address
-      db_name             = local.db_sirsi_name
+      db_address          = var.db_sirsi_cluster_address
+      db_name             = var.db_sirsi_cluster_name
       db_password         = local.db_sirsi_password
       db_username         = local.db_sirsi_username
       host_port           = var.service_configs.person.port

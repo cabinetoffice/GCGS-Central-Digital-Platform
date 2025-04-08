@@ -71,6 +71,7 @@ public class LegalFormFormationDateTest
     public async Task OnPost_ShouldReturnPage_WhenDateIsInTheFuture()
     {
         SetFutureDate();
+        SetupTempService();
 
         var result = await _model.OnPost();
 
@@ -87,6 +88,8 @@ public class LegalFormFormationDateTest
         _model.Year = "2023";
         _model.ModelState.AddModelError("Day", "Invalid day");
 
+        SetupTempService();
+
         var result = await _model.OnPost();
 
         result.Should().BeOfType<PageResult>();
@@ -96,6 +99,7 @@ public class LegalFormFormationDateTest
     public async Task OnPost_ShouldReturnPage_WhenDateIsInvalid()
     {
         SetDateFields("31", "2", "2023");
+        SetupTempService();
 
         var result = await _model.OnPost();
 
@@ -111,6 +115,15 @@ public class LegalFormFormationDateTest
     public async Task OnPost_AddsModelError_WhenDateIsInvalid(string day, string month, string year, string expectedError)
     {
         SetDateFields(day, month, year);
+
+        var legalForm = new LegalForm()
+        {
+            LawRegistered = "law",
+            RegisteredLegalForm = "legal form",
+            RegistrationDate = new DateTimeOffset(2023, 6, 15, 0, 0, 0, TimeSpan.FromHours(0)),
+            RegisteredUnderAct2006 = true
+        };
+        _mockTempDataService.Setup(s => s.GetOrDefault<LegalForm>(LegalForm.TempDataKey)).Returns(legalForm);
 
         var result = await _model.OnPost();
 
@@ -138,7 +151,7 @@ public class LegalFormFormationDateTest
         var result = await _model.OnPost();
 
         legalForm.RegistrationDate.Should().Be(validDate);
-        _mockTempDataService.Verify(s => s.Put(LegalForm.TempDataKey, legalForm), Times.Once);
+        _mockTempDataService.Verify(s => s.Put(LegalForm.TempDataKey, legalForm), Times.Exactly(2));
         _mockOrganisationClient.Verify(x => x.UpdateSupplierInformationAsync(_model.Id, It.IsAny<OrganisationWebApiClient.UpdateSupplierInformation>()), Times.Once);
         result.Should().BeOfType<RedirectToPageResult>().Which.PageName.Should().Be("SupplierBasicInformation");
     }
@@ -157,7 +170,7 @@ public class LegalFormFormationDateTest
 
         var result = await _model.OnPost();
 
-        result.Should().BeOfType<RedirectToPageResult>().Which.PageName.Should().Be("LegalFormCompanyActQuestion");
+        result.Should().BeOfType<RedirectResult>().Which.Url.Should().Be("/page-not-found");
     }
 
     [Fact]
@@ -176,7 +189,7 @@ public class LegalFormFormationDateTest
 
         var result = await _model.OnPost();
 
-        _mockTempDataService.Verify(t => t.Put(LegalForm.TempDataKey, It.Is<LegalForm>(ta => ta.RegistrationDate == new DateTimeOffset(2023, 6, 15, 0, 0, 0, TimeSpan.FromHours(0)))), Times.Once);
+        _mockTempDataService.Verify(t => t.Put(LegalForm.TempDataKey, It.Is<LegalForm>(ta => ta.RegistrationDate == new DateTimeOffset(2023, 6, 15, 0, 0, 0, TimeSpan.FromHours(0)))), Times.Exactly(2));
         result.Should().BeOfType<RedirectToPageResult>()
             .Which.PageName.Should().Be("SupplierBasicInformation");
     }
@@ -206,5 +219,17 @@ public class LegalFormFormationDateTest
     private static OrganisationWebApiClient.Organisation GivenOrganisationClientModel(Guid? id)
     {
         return new OrganisationWebApiClient.Organisation(additionalIdentifiers: null, addresses: null, contactPoint: null, id: id ?? Guid.NewGuid(), identifier: null, name: "Test Org", type: OrganisationWebApiClient.OrganisationType.Organisation, roles: [], details: new OrganisationWebApiClient.Details(approval: null, buyerInformation: null, pendingRoles: [], publicServiceMissionOrganization: null, scale: null, shelteredWorkshop: null, vcse: null));
+    }
+
+    private void SetupTempService()
+    {
+        var legalForm = new LegalForm()
+        {
+            LawRegistered = "law",
+            RegisteredLegalForm = "legal form",
+            RegistrationDate = new DateTimeOffset(2023, 6, 15, 0, 0, 0, TimeSpan.FromHours(0)),
+            RegisteredUnderAct2006 = true
+        };
+        _mockTempDataService.Setup(s => s.GetOrDefault<LegalForm>(LegalForm.TempDataKey)).Returns(legalForm);
     }
 }

@@ -7,8 +7,8 @@ module "ecs_service_outbox_processor_entity_verification" {
       aspcore_environment    = local.aspcore_environment
       container_port         = var.service_configs.outbox_processor_entity_verification.port
       cpu                    = var.service_configs.outbox_processor_entity_verification.cpu
-      db_address             = local.db_ev_address
-      db_name                = local.db_ev_name
+      db_address             = var.db_ev_cluster_address
+      db_name                = var.db_ev_cluster_name
       db_password            = local.db_ev_password
       db_username            = local.db_ev_username
       host_port              = var.service_configs.outbox_processor_entity_verification.port

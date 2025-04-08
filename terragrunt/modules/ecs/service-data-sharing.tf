@@ -7,8 +7,8 @@ module "ecs_service_data_sharing" {
       aspcore_environment = local.aspcore_environment
       container_port      = var.service_configs.data_sharing.port
       cpu                 = var.service_configs.data_sharing.cpu
-      db_address          = local.db_sirsi_address
-      db_name             = local.db_sirsi_name
+      db_address          = var.db_sirsi_cluster_address
+      db_name             = var.db_sirsi_cluster_name
       db_password         = local.db_sirsi_password
       db_username         = local.db_sirsi_username
       host_port           = var.service_configs.data_sharing.port
