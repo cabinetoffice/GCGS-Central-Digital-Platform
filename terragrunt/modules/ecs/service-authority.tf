@@ -8,8 +8,8 @@ module "ecs_service_authority" {
       authority_private_key = "${data.aws_secretsmanager_secret.authority_keys.arn}:PRIVATE::"
       container_port        = var.service_configs.authority.port
       cpu                   = var.service_configs.authority.cpu
-      db_address            = local.db_sirsi_address
-      db_name               = local.db_sirsi_name
+      db_address            = var.db_sirsi_cluster_address
+      db_name               = var.db_sirsi_cluster_name
       db_password           = local.db_sirsi_password
       db_username           = local.db_sirsi_username
       host_port             = var.service_configs.authority.port

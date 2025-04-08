@@ -93,7 +93,7 @@ public class LegalFormCompanyActQuestionModelTests
         var result = await _model.OnPost();
 
         _mockTempDataService.Verify(t => t.Put(LegalForm.TempDataKey, It.IsAny<LegalForm>()), Times.Once);
-        result.Should().BeOfType<RedirectToPageResult>().Which.PageName.Should().Be("LegalFormOtherOrganisation");
+        result.Should().BeOfType<RedirectToPageResult>().Which.PageName.Should().Be("LegalFormSelectOrganisation");
     }
 
     [Fact]

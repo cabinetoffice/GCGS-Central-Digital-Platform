@@ -57,7 +57,7 @@
                             </label>
                             <div id="ca-type-item-hint" class="govuk-hint govuk-radios__hint">
                                 @Html.Raw(@StaticTextResource.SupplierToBuyer_OrganisationType_CentralGovernment_Hint)
-                            </div>                           
+                            </div>
                         </div>
 
                         <div class="govuk-radios__item">
@@ -69,7 +69,7 @@
                             </label>
                             <div id="ca-type-2-item-hint" class="govuk-hint govuk-radios__hint">
                                 @Html.Raw(StaticTextResource.SupplierToBuyer_OrganisationType_RegionalAndLocalGovernment_Hint)
-                            </div>                            
+                            </div>
                         </div>
 
                         <div class="govuk-radios__item">
@@ -96,19 +96,19 @@
                             <input class="govuk-radios__input" id="@nameof(Model.BuyerOrganisationType)-4" name="BuyerOrganisationType"
                                    type="radio" value="Other" data-aria-controls="conditional-ca-type-5" @IsSelected("Other")>
                             <label class="govuk-label govuk-radios__label" for="@nameof(Model.BuyerOrganisationType)-4">
-                                @StaticTextResource.SupplierToBuyer_OrganisationType_Other
+                                @StaticTextResource.OrganisationRegistration_BuyerOrganisationType_Other_Label
                             </label>
+                            <div id="ca-type-5-item-hint" class="govuk-hint govuk-radios__hint">
+                                @StaticTextResource.OrganisationRegistration_BuyerOrganisationType_Other_Hint
+                            </div>
                         </div>
 
                         <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-ca-type-5">
                             <div class="govuk-form-group @(otherHasError ? "govuk-form-group--error" : "")">
-                                <label class="govuk-label" for="other-buyer-type">
-                                    @StaticTextResource.SupplierToBuyer_OrganisationType_EnterType
-                                </label>
                                 @Html.ValidationMessageFor(m => m.OtherValue, "", new { @class = "govuk-error-message", @id = "other-buyer-type-error" })
 
-                                <div id="ca-type-5-item-hint" class="govuk-hint">
-                                    @StaticTextResource.SupplierToBuyer_OrganisationType_ConditionalHint
+                                <div id="ca-type-5-item-hint-2">
+                                    @StaticTextResource.OrganisationRegistration_BuyerOrganisationType_OtherEnterType_Label
                                 </div>
 
                                 <input autocomplete="off" class="govuk-input @(otherHasError ? "govuk-input--error" : "")"

@@ -1,7 +1,9 @@
+using CO.CDP.DataSharing.WebApiClient;
 using CO.CDP.Forms.WebApiClient;
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Constants;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
@@ -10,7 +12,8 @@ namespace CO.CDP.OrganisationApp.Pages.Supplier;
 [Authorize(Policy = OrgScopeRequirement.Viewer)]
 public class SupplierInformationSummaryModel(
     IOrganisationClient organisationClient,
-    IFormsClient formsClient) : PageModel
+    IFormsClient formsClient,
+    IDataSharingClient dataSharingClient) : PageModel
 {
     [BindProperty]
     public string? Name { get; set; }
@@ -37,7 +40,7 @@ public class SupplierInformationSummaryModel(
 
     public async Task<IActionResult> OnGet(Guid id)
     {
-        SupplierInformation? supplierInfo;
+        CDP.Organisation.WebApiClient.SupplierInformation? supplierInfo;
         try
         {
             var getSupplierInfoTask = organisationClient.GetOrganisationSupplierInformationAsync(id);
@@ -63,5 +66,10 @@ public class SupplierInformationSummaryModel(
         BasicInformationStepStatus = SupplierInformationStatus.GetBasicInfoStepStatus(supplierInfo);
         ConnectedPersonStepStatus = SupplierInformationStatus.GetConnectedPersonStepStatus(supplierInfo, ConnectedEntities.Count);
         return Page();
+    }
+
+    public async Task<int> GetShareCodesCount()
+    {
+        return (await dataSharingClient.GetShareCodeListAsync(Id)).Count;
     }
 }
