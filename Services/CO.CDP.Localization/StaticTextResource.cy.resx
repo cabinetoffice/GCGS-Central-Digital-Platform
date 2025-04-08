@@ -426,6 +426,9 @@
   <data name="Header_ServiceName" xml:space="preserve">
     <value>Canfod Tendr</value>
   </data>
+  <data name="Header_SkipToMainContent_Link" xml:space="preserve">
+    <value>Neidio i'r prif gynnwys</value>
+  </data>
   <data name="Header_SignIn" xml:space="preserve">
     <value>Mewngofnodi</value>
   </data>
