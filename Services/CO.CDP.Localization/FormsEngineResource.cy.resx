@@ -136,7 +136,7 @@
     <value>&lt;legend class="govuk-fieldset__legend" id="inner-legend"&gt;Rhowch y dyddiad y daeth yr amgylchiadau i ben&lt;/legend&gt;&lt;div class="govuk-hint"&gt;Er enghraifft, 27 3 2007&lt;/div&gt;</value>
   </data>
   <data name="Exclusions_02_Description" xml:space="preserve">
-    <value>&lt;div id="isEventEnded-hint" class="govuk-hint"&gt;Er enghraifft, yn dilyn penderfyniad gan y llys am gamymddwyn amgylcheddol, rhoddodd eich sefydliad neu'r unigolyn cysylltiedig y gorau i niweidio'r amgylchedd&gt;</value>
+    <value>&lt;div id="isEventEnded-hint" class="govuk-hint"&gt;Er enghraifft, yn dilyn penderfyniad gan y llys am gamymddwyn amgylcheddol, rhoddodd eich sefydliad neu'r unigolyn cysylltiedig y gorau i niweidio'r amgylchedd.&lt;/div&gt;</value>
   </data>
   <data name="Exclusions_02_SummaryTitle" xml:space="preserve">
     <value>Dyddiad y daeth yr amgylchiadau i ben</value>
