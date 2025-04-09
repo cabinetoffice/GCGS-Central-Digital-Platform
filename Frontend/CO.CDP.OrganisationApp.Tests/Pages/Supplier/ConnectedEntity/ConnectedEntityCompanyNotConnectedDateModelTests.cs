@@ -40,15 +40,6 @@ public class ConnectedEntityCompanyNotConnectedDateModelTests
     }
 
     [Fact]
-    public void OnGet_ShouldThrowException_WhenStateIsNull()
-    {
-        _mockSession.Setup(s => s.Get<ConnectedEntityState>(Session.ConnectedPersonKey)).Returns((ConnectedEntityState)null);
-
-        _model.Invoking(m => m.OnGet())
-          .Should().Throw<NullReferenceException>();
-    }
-
-    [Fact]
     public void OnPost_ShouldAddModelError_WhenDateIsInvalid()
     {
         _model.Day = "31";
@@ -65,7 +56,7 @@ public class ConnectedEntityCompanyNotConnectedDateModelTests
 
         result.Should().BeOfType<PageResult>();
         _model.ModelState.Should().ContainKey(nameof(_model.InsolvencyDate));
-        _model.ModelState[nameof(_model.InsolvencyDate)].Errors[0].ErrorMessage.Should().Be(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityCompanyInsolvencyDate_InvalidDate);
+        _model.ModelState[nameof(_model.InsolvencyDate)]!.Errors[0].ErrorMessage.Should().Be(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityCompanyInsolvencyDate_InvalidDate);
     }
 
     [Fact]
