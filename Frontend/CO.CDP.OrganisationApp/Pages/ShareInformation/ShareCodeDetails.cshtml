@@ -11,46 +11,47 @@
     <a href="@backUrl" class="govuk-back-link">@StaticTextResource.Global_Back</a>
 }
 
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
-            <div class="govuk-form-group">
-                <span class="govuk-caption-l">@StaticTextResource.ShareYourInformation_ShareCode</span>
-                <h1 class="govuk-heading-l">
-                    @ViewData["Title"]
-                </h1>
-                <dl class="govuk-summary-list">
-                    <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">
-                            @StaticTextResource.ShareYourInformation_CreatedOn
-                        </dt>
-                        <dd class="govuk-summary-list__value">
-                            @Model.SharedConsentDetails?.SubmittedAt.ToFormattedString()
-                        </dd>
-                        <dd class="govuk-summary-list__actions">
-                            &nbsp;
-                        </dd>
-                    </div>
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <div class="govuk-form-group">
+            <span class="govuk-caption-l">@StaticTextResource.ShareYourInformation_ShareCode</span>
+            <h1 class="govuk-heading-l">
+                @ViewData["Title"]
+            </h1>
+            <dl class="govuk-summary-list">
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        @StaticTextResource.ShareYourInformation_CreatedOn
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        @Model.SharedConsentDetails?.SubmittedAt.ToFormattedString()
+                    </dd>
+                    <dd class="govuk-summary-list__actions">
+                        &nbsp;
+                    </dd>
+                </div>
 
-                    @if (Model.SharedConsentDetails?.QuestionAnswers != null)
+                @if (Model.SharedConsentDetails?.QuestionAnswers != null)
+                {
+                    @foreach (var answer in Model.SharedConsentDetails.QuestionAnswers)
                     {
-                        @foreach (var answer in Model.SharedConsentDetails.QuestionAnswers)
+                        if (!string.IsNullOrEmpty(@answer.Title))
                         {
-                            if (!string.IsNullOrEmpty(@answer.Title)){
-                                <div class="govuk-summary-list__row">
-                                    <dt class="govuk-summary-list__key">
-                                        @answer.Title
-                                    </dt>
-                                    <dd class="govuk-summary-list__value">
-                                         @answer.Answer
-                                    </dd>
-                                </div>
-                            }
+                            <div class="govuk-summary-list__row">
+                                <dt class="govuk-summary-list__key">
+                                    @answer.Title
+                                </dt>
+                                <dd class="govuk-summary-list__value">
+                                    @answer.Answer
+                                </dd>
+                            </div>
                         }
                     }
-                </dl>
-                <a href="?handler=download&shareCode/@Model.SharedConsentDetails?.ShareCode" role="button" draggable="false" class="govuk-button" data-module="govuk-button">
-                    @StaticTextResource.Global_Download
-                </a>
-            </div>
+                }
+            </dl>
+            <a href="?handler=download&shareCode/@Model.SharedConsentDetails?.ShareCode" role="button" draggable="false" class="govuk-button" data-module="govuk-button">
+                @StaticTextResource.Global_Download
+            </a>
         </div>
     </div>
+</div>
