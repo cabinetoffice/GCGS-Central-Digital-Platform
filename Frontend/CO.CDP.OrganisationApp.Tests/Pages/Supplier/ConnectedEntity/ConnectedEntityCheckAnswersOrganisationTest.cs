@@ -290,7 +290,8 @@ public class ConnectedEntityCheckAnswersOrganisationTest
             overseasCompanyNumber: "",
             registeredDate: state.RegistrationDate!.Value,
             registerName: state.RegisterName,
-            startDate: null
+            startDate: null,
+            deleted: false
         );
 
         return registerConnectedEntity;

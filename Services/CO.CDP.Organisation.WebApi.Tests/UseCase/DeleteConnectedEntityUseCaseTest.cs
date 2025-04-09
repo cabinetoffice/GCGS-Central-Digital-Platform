@@ -22,23 +22,41 @@ public class DeleteConnectedEntityUseCaseTest
     }
 
     [Fact]
-    public async Task Execute_ValidConnectedEntity_SetsEndDate_ReturnsTrue()
+    public async Task Execute_ValidConnectedEntityNotInUse_SetsDeleted_ReturnsTrue()
     {
         var organisation = Organisation();
         var connectedEntity = ConnectedEntity(organisation);
         SetupOrganisationRepository(organisation);
         SetupConnectedEntityRepository(connectedEntity);
-        var endDate = DateTimeOffset.Now;
-        var deleteConnectedEntity = new DeleteConnectedEntity()
-        {
-            EndDate = endDate
-        };
 
-        var result = await _useCase.Execute((_organisationId, _connectedEntityId, deleteConnectedEntity));
+        _connectedEntityRepository
+            .Setup(ce => ce.IsConnectedEntityUsedInExclusionAsync(_organisationId, _connectedEntityId))
+            .Returns(Task.FromResult(new Tuple<bool, Guid, Guid>(false, Guid.Empty, Guid.Empty)));
 
-        result.Should().BeTrue();
-        connectedEntity.EndDate.Should().Be(endDate);
+        var result = await _useCase.Execute((_organisationId, _connectedEntityId));
+
+        result.Success.Should().BeTrue();
+        connectedEntity.Deleted.Should().BeTrue();
         _connectedEntityRepository.Verify(repo => repo.Save(connectedEntity), Times.Once);
+    }
+
+    [Fact]
+    public async Task Execute_ValidConnectedEntityInUse_SetsDeleted_ReturnsTrue()
+    {
+        var organisation = Organisation();
+        var connectedEntity = ConnectedEntity(organisation);
+        SetupOrganisationRepository(organisation);
+        SetupConnectedEntityRepository(connectedEntity);
+
+        _connectedEntityRepository
+            .Setup(ce => ce.IsConnectedEntityUsedInExclusionAsync(_organisationId, _connectedEntityId))
+            .Returns(Task.FromResult(new Tuple<bool, Guid, Guid>(true, Guid.Empty, Guid.Empty)));
+
+        var result = await _useCase.Execute((_organisationId, _connectedEntityId));
+
+        result.Success.Should().BeFalse();
+        connectedEntity.Deleted.Should().BeFalse();
+        _connectedEntityRepository.Verify(repo => repo.Save(connectedEntity), Times.Never);
     }
 
     [Fact]
@@ -46,9 +64,8 @@ public class DeleteConnectedEntityUseCaseTest
     {
         SetupOrganisationRepository(null);
         SetupConnectedEntityRepository(null);
-        var deleteConnectedEntity = new DeleteConnectedEntity() { EndDate = DateTimeOffset.Now };
-
-        Func<Task> act = async () => await _useCase.Execute((_organisationId, _connectedEntityId, deleteConnectedEntity));
+        
+        Func<Task> act = async () => await _useCase.Execute((_organisationId, _connectedEntityId));
 
         await act.Should().ThrowAsync<UnknownOrganisationException>()
             .WithMessage($"Unknown organisation {_organisationId}.");
@@ -60,9 +77,8 @@ public class DeleteConnectedEntityUseCaseTest
         var organisation = Organisation();
         SetupOrganisationRepository(organisation);
         SetupConnectedEntityRepository(null);
-        var deleteConnectedEntity = new DeleteConnectedEntity() { EndDate = DateTimeOffset.Now };
-
-        Func<Task> act = async () => await _useCase.Execute((_organisationId, _connectedEntityId, deleteConnectedEntity));
+        
+        Func<Task> act = async () => await _useCase.Execute((_organisationId, _connectedEntityId));
 
         await act.Should().ThrowAsync<UnknownConnectedEntityException>()
             .WithMessage($"Unknown connected entity {_connectedEntityId}.");

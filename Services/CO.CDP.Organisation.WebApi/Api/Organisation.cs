@@ -729,11 +729,12 @@ public static class EndpointExtensions
                 [AuthenticationChannel.OneLogin],
                 [Constants.OrganisationPersonScope.Admin, Constants.OrganisationPersonScope.Editor],
                 OrganisationIdLocation.Path)]
-        async (Guid organisationId, Guid connectedEntityId, [FromBody] DeleteConnectedEntity deleteConnectedEntity,
-                        IUseCase<(Guid, Guid, DeleteConnectedEntity), bool> useCase) =>
-                    await useCase.Execute((organisationId, connectedEntityId, deleteConnectedEntity))
-                        .AndThen(_ => Results.NoContent()))
-            .Produces(StatusCodes.Status204NoContent)
+        async (Guid organisationId, Guid connectedEntityId,
+                        IUseCase<(Guid, Guid), DeleteConnectedEntityResult> useCase) =>
+                    await useCase.Execute((organisationId, connectedEntityId))
+                        .AndThen(entity => entity != null ? Results.Ok(entity) : Results.NoContent())
+            )
+            .Produces<DeleteConnectedEntityResult>(StatusCodes.Status200OK, "application/json")
             .ProducesProblem(StatusCodes.Status400BadRequest)
             .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
             .ProducesProblem(StatusCodes.Status404NotFound)
@@ -744,7 +745,6 @@ public static class EndpointExtensions
                 operation.OperationId = "DeleteConnectedEntity";
                 operation.Description = "Delete Connected Entity.";
                 operation.Summary = "Delete Connected Entity.";
-                operation.Responses["204"].Description = "Connected Entity deleted successfully.";
                 operation.Responses["400"].Description = "Bad request.";
                 operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
                 operation.Responses["404"].Description = "Connected Entity not found.";

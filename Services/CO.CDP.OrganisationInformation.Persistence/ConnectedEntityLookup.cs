@@ -7,4 +7,5 @@ public class ConnectedEntityLookup
     public required Guid EntityId { get; init; }
     public required ConnectedEntity.ConnectedEntityType EntityType { get; set; }
     public DateTimeOffset? EndDate { get; init; }
+    public bool Deleted { get; set; }
 }
