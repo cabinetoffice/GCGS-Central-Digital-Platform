@@ -36,11 +36,12 @@ up: render-compose-override ## Start Docker containers
 	@docker network list
 .PHONY: up
 
-verify-up: render-compose-override ## Verify if all Docker containers have run
-	@timeout=180; \
+verify-up: render-compose-override ## Verify if all Docker containers have run. Migration containers are excluded but are checked in the pipeline when "make db" is run
+	@timeout=60; \
 	interval=5; \
 	while [ $$timeout -gt 0 ]; do \
-		if docker compose ps -a --format json | jq --exit-status 'select(.ExitCode != 0 or (.Health != "healthy" and .Health != ""))' > /dev/null; then \
+		if docker compose ps -a --format json \
+			| jq --exit-status 'select(.Name != "organisation-information-migrations" and .Name != "entity-verification-migrations") | select(.ExitCode != 0 or (.Health != "healthy" and .Health != "")) | any' > /dev/null; then \
 			echo "Waiting for services to be healthy..."; \
 			sleep $$interval; \
 			timeout=$$(($$timeout - $$interval)); \
@@ -53,7 +54,6 @@ verify-up: render-compose-override ## Verify if all Docker containers have run
 	docker compose ps -a --format json | jq --exit-status 'select(.ExitCode != 0 or (.Health != "healthy" and .Health != ""))'; \
 	exit 1
 .PHONY: verify-up
-
 
 down: ## Destroy Docker containers
 	@docker compose down
