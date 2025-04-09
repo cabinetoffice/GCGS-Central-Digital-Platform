@@ -1953,6 +1953,9 @@
   <data name="Organisation_AddAddress" xml:space="preserve">
     <value>Ychwanegu&lt;span class="govuk-visually-hidden"&gt; cyfeiriad&lt;/span&gt;</value>
   </data>
+  <data name="Organisation_AddOrganisationIdentifier" xml:space="preserve">
+    <value>Ychwanegu&lt;span class="govuk-visually-hidden"&gt; dynodyddion y sefydliad&lt;/span&gt;</value>
+  </data>
   <data name="Organisation_AfterYouveRegistered" xml:space="preserve">
     <value>Ar ôl i chi gofrestru</value>
   </data>
