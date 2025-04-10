@@ -45,6 +45,8 @@ public class ConnectedPersonSummaryModel(
         {
             ConnectedEntities = (await organisationClient.GetConnectedEntities(Id))
                 .Where(cp => !cp.Deleted)
+                .OrderBy(item => item.EndDate == null ? 0 : 1)
+                .ThenBy(item => item.EndDate)
                 .ToList();
 
             session.Remove(Session.ConnectedPersonKey);
