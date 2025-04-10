@@ -211,7 +211,7 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
                 reviewed_by.last_name AS reviewed_by_last_name,
                 COALESCE(STRING_AGG(DISTINCT i.scheme || ':' || i.identifier_id, ', '), '') AS identifiers,
                 COALESCE(STRING_AGG(DISTINCT cp.email, ', '), '') AS contact_points,
-                p.email as admin_email
+                COALESCE(STRING_AGG(DISTINCT p.email, ', '), '') AS admin_email
             FROM organisations o
             LEFT JOIN organisation_person op ON op.organisation_id = o.id
             LEFT JOIN persons p ON p.id = op.person_id AND op.scopes @> '[""ADMIN""]'::jsonb
@@ -222,7 +222,7 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
                 ((:role IS NULL OR :role = ANY(o.roles))
               OR (:pendingRole IS NULL OR :pendingRole = ANY(o.pending_roles)))
               AND (:searchText IS NULL OR o.name ILIKE '%' || :searchText || '%')
-            GROUP BY o.id, o.guid, o.name, o.roles, o.pending_roles, o.approved_on, o.review_comment, reviewed_by.first_name, reviewed_by.last_name, admin_email
+            GROUP BY o.id, o.guid, o.name, o.roles, o.pending_roles, o.approved_on, o.review_comment, reviewed_by.first_name, reviewed_by.last_name
             ORDER BY o.name ASC
             LIMIT :limit OFFSET :skip;";
 
