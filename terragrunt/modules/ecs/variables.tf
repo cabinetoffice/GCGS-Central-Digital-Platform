@@ -8,11 +8,6 @@ variable "alb_sg_id" {
   type        = string
 }
 
-variable "db_entity_verification_kms_arn" {
-  description = "ARN of the KMS used to encrypt Entity Verification secrets"
-  type        = string
-}
-
 variable "db_ev_cluster_address" {
   description = "Entity Verification DB address"
   type        = string
@@ -55,11 +50,6 @@ variable "db_sirsi_cluster_credentials_kms_key_id" {
 
 variable "db_sirsi_cluster_name" {
   description = "Sirsi DB name"
-  type        = string
-}
-
-variable "db_sirsi_kms_arn" {
-  description = "ARN of the KMS used to encrypt Sirsi secrets"
   type        = string
 }
 
