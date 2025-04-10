@@ -558,6 +558,12 @@ public record AddOrganisationParty
     public string? ShareCode { get; init; }
 }
 
+public record GetAnnouncementQuery
+{
+    public required string Page { get; init; }
+    public required string Scope { get; init; }
+}
+
 [JsonConverter(typeof(JsonStringEnumConverter))]
 public enum OrganisationRelationship
 {
