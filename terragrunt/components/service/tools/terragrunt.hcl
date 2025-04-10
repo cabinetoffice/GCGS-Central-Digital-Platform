@@ -88,18 +88,13 @@ dependency service_ecs {
 dependency service_database {
   config_path = "../../service/database"
   mock_outputs = {
-    entity_verification_address                 = "mock"
     entity_verification_cluster_address         = "mock"
     entity_verification_cluster_credentials_arn = "mock"
     entity_verification_cluster_name            = "mock"
-    entity_verification_credentials_arn         = "mock"
-    entity_verification_name                    = "mock"
-    sirsi_address                               = "mock"
     sirsi_cluster_address                       = "mock"
     sirsi_cluster_credentials_arn               = "mock"
     sirsi_cluster_name                          = "mock"
     sirsi_credentials_arn                       = "mock"
-    sirsi_name                                  = "mock"
   }
 }
 
@@ -152,18 +147,12 @@ inputs = {
   ecs_alb_dns_name = dependency.service_ecs.outputs.ecs_alb_dns_name
   ecs_listener_arn = dependency.service_ecs.outputs.ecs_listener_arn
 
-  db_entity_verification_address         = dependency.service_database.outputs.entity_verification_address
-  db_entity_verification_credentials_arn = dependency.service_database.outputs.entity_verification_credentials_arn
-  db_entity_verification_name            = dependency.service_database.outputs.entity_verification_name
   db_ev_cluster_address                  = dependency.service_database.outputs.entity_verification_cluster_address
   db_ev_cluster_credentials_arn          = dependency.service_database.outputs.entity_verification_cluster_credentials_arn
   db_ev_cluster_name                     = dependency.service_database.outputs.entity_verification_cluster_name
-  db_sirsi_address                       = dependency.service_database.outputs.sirsi_address
   db_sirsi_cluster_address               = dependency.service_database.outputs.sirsi_cluster_address
   db_sirsi_cluster_credentials_arn       = dependency.service_database.outputs.sirsi_cluster_credentials_arn
   db_sirsi_cluster_name                  = dependency.service_database.outputs.sirsi_cluster_name
-  db_sirsi_credentials_arn               = dependency.service_database.outputs.sirsi_credentials_arn
-  db_sirsi_name                          = dependency.service_database.outputs.sirsi_name
 
   redis_primary_endpoint = dependency.service_cache.outputs.primary_endpoint_address
   redis_auth_token_arn   = dependency.service_cache.outputs.redis_auth_token_arn

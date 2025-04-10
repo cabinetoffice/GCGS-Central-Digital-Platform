@@ -3,22 +3,7 @@ variable "account_ids" {
   type        = map(string)
 }
 
-variable "db_entity_verification_address" {
-  description = "Entity Verification database endpoint address"
-  type        = string
-}
-
-variable "db_entity_verification_credentials_arn" {
-  description = "Entity Verification database secret ARN"
-  type        = string
-}
-
-variable "db_entity_verification_name" {
-  description = "Entity Verification database name"
-  type        = string
-}
-
-variable "db_entity_verification_port" {
+variable "db_entity_verification_cluster_port" {
   description = "Entity Verification database port"
   type        = number
   default     = 5432
@@ -44,11 +29,6 @@ variable "db_postgres_sg_id" {
   type        = string
 }
 
-variable "db_sirsi_address" {
-  description = "Sirsi database endpoint address"
-  type        = string
-}
-
 variable "db_sirsi_cluster_address" {
   description = "Sirsi database endpoint address"
   type        = string
@@ -64,17 +44,7 @@ variable "db_sirsi_cluster_name" {
   type        = string
 }
 
-variable "db_sirsi_credentials_arn" {
-  description = "Sirsi database secret ARN"
-  type        = string
-}
-
-variable "db_sirsi_name" {
-  description = "Sirsi database name"
-  type        = string
-}
-
-variable "db_sirsi_port" {
+variable "db_sirsi_cluster_port" {
   description = "Sirsi database port"
   type        = number
   default     = 5432
