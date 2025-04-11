@@ -11,10 +11,9 @@ public class Announcement : IEntityDate
     public required string Title { get; init; }
     public required string Body { get; init; }
 
-    public List<string>? Pages { get; init; }
+    public string? UrlRegex { get; init; }
     public DateTimeOffset? StartDate { get; init; }
     public DateTimeOffset? EndDate { get; init; }
-    public List<string> Scopes { get; set; } = [];
     public DateTimeOffset CreatedOn { get; set; }
     public DateTimeOffset UpdatedOn { get; set; }
 }

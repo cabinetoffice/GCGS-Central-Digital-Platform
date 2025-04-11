@@ -561,7 +561,6 @@ public record AddOrganisationParty
 public record GetAnnouncementQuery
 {
     public required string Page { get; init; }
-    public required string Scope { get; init; }
 }
 
 [JsonConverter(typeof(JsonStringEnumConverter))]

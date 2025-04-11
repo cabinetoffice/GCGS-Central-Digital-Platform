@@ -7,9 +7,14 @@ public class DatabaseAnnouncementRepository(OrganisationInformationContext conte
 
     }
 
-    public Task<Announcement> GetActiveAnnouncementAsync(string page, string scope)
+    public Announcement GetActiveAnnouncementAsync(string page)
     {
-
+        return new Announcement
+        {
+            Title = "Test",
+            Body = "Body",
+            Guid = default
+        };
     }
 
     public void Dispose()

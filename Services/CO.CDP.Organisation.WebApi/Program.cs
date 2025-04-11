@@ -49,6 +49,7 @@ builder.Services.AddScoped<IPersonInviteRepository, DatabasePersonInviteReposito
 builder.Services.AddScoped<IAuthenticationKeyRepository, DatabaseAuthenticationKeyRepository>();
 builder.Services.AddScoped<IOrganisationJoinRequestRepository, DatabaseOrganisationJoinRequestRepository>();
 builder.Services.AddScoped<IShareCodeRepository, DatabaseShareCodeRepository>();
+builder.Services.AddScoped<IAnnouncementRepository, DatabaseAnnouncementRepository>();
 builder.Services.AddScoped<IUseCase<AssignOrganisationIdentifier, bool>, AssignIdentifierUseCase>();
 builder.Services.AddScoped<IUseCase<RegisterOrganisation, Organisation>, RegisterOrganisationUseCase>();
 builder.Services.AddScoped<IUseCase<Guid, Organisation?>, GetOrganisationUseCase>();
@@ -145,6 +146,7 @@ app.MapHealthChecks("/health").AllowAnonymous();
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseOrganisationEndpoints();
+app.UseGlobalEndpoints();
 
 
 app.MapGroup("/support")

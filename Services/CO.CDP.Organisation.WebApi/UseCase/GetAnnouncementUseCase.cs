@@ -9,7 +9,7 @@ public class GetAnnouncementUseCase(IAnnouncementRepository announcementReposito
 {
     public async Task<Announcement> Execute(GetAnnouncementQuery request)
     {
-        var announcement = await announcementRepository.GetActiveAnnouncementAsync(request.Page, request.Scope);
+        var announcement = announcementRepository.GetActiveAnnouncementAsync(request.Page);
         return new Announcement()
         {
             Title = announcement.Title,

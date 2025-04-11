@@ -160,6 +160,7 @@ builder.Services.AddTransient<IFormsEngine, FormsEngine>();
 builder.Services.AddTransient<IDiagnosticPage, DiagnosticPage>();
 builder.Services.AddScoped<IUserInfoService, UserInfoService>();
 builder.Services.AddScoped<IFtsUrlService, FtsUrlService>();
+builder.Services.AddScoped<IAnnouncementService, AnnouncementService>();
 builder.Services.AddScoped<IShareCodeMandatoryInformationService, ShareCodeMandatoryInformationService>();
 
 
