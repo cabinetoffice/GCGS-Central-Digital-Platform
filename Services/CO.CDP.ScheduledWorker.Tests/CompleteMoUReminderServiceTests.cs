@@ -73,7 +73,7 @@ public class CompleteMoUReminderServiceTests
     }
 
     [Fact]
-    public async Task ExecuteWorkAsync_ShouldLogError_WhenEmailFails()
+    public async Task ExecuteWorkAsync_ShouldLogErrorAndDoesNotMarkEmailReminderSent_WhenEmailFails()
     {
         List<MouReminderOrganisation> organisations =
             [new() { Id = 1, Name = "Test Org", Email = "test1@example.com,test2@example.com", Guid = Guid.NewGuid() }];
@@ -93,6 +93,8 @@ public class CompleteMoUReminderServiceTests
                 It.Is<It.IsAnyType>((v, t) => v.ToString() == "Failed to send Mou reminder email for: Test Org"),
                 It.IsAny<Exception>(),
                 It.Is<Func<It.IsAnyType, Exception?, string>>((v, t) => true)), Times.Exactly(2));
+
+        _mockMouRepository.Verify(r => r.UpsertMouEmailReminder(1), Times.Never);
     }
 
     [Fact]
