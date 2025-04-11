@@ -80,7 +80,7 @@ public class DataSharingApiConnectedPersonsIntegrationTests: IClassFixture<Organ
         ClearDatabase();
         Organisation organisation = CreateOrganisation();
         CreateSharedConsent(organisation);
-        CreateConnectedEntity(organisation, connectedPersonCreationDate, connectedPersonEndDate, ConnectedEntity.ConnectedEntityType.Individual);
+        CreateConnectedEntity(organisation, connectedPersonCreationDate, connectedPersonEndDate, OrganisationInformation.ConnectedEntityType.Individual);
         var createShareCodeResponse = await _client.CreateSharedDataAsync(new ShareRequest(supplierInformationFormId, organisation.Guid));
 
         var response = await _client.GetSharedDataAsync(createShareCodeResponse.ShareCode);
@@ -101,7 +101,7 @@ public class DataSharingApiConnectedPersonsIntegrationTests: IClassFixture<Organ
         ClearDatabase();
         Organisation organisation = CreateOrganisation();
         CreateSharedConsent(organisation);
-        CreateConnectedEntity(organisation, connectedPersonCreationDate, connectedPersonEndDate, ConnectedEntity.ConnectedEntityType.Individual);
+        CreateConnectedEntity(organisation, connectedPersonCreationDate, connectedPersonEndDate, OrganisationInformation.ConnectedEntityType.Individual);
         var createShareCodeResponse = await _client.CreateSharedDataAsync(new ShareRequest(supplierInformationFormId, organisation.Guid));
 
         var response = await _client.GetSharedDataAsync(createShareCodeResponse.ShareCode);
@@ -120,7 +120,7 @@ public class DataSharingApiConnectedPersonsIntegrationTests: IClassFixture<Organ
         ClearDatabase();
         Organisation organisation = CreateOrganisation();
         CreateSharedConsent(organisation);
-        CreateConnectedEntity(organisation, connectedPersonCreationDate, connectedPersonEndDate, ConnectedEntity.ConnectedEntityType.Organisation);
+        CreateConnectedEntity(organisation, connectedPersonCreationDate, connectedPersonEndDate, OrganisationInformation.ConnectedEntityType.Organisation);
         var createShareCodeResponse = await _client.CreateSharedDataAsync(new ShareRequest(supplierInformationFormId, organisation.Guid));
 
         var response = await _client.GetSharedDataAsync(createShareCodeResponse.ShareCode);
@@ -141,7 +141,7 @@ public class DataSharingApiConnectedPersonsIntegrationTests: IClassFixture<Organ
         ClearDatabase();
         Organisation organisation = CreateOrganisation();
         CreateSharedConsent(organisation);
-        CreateConnectedEntity(organisation, connectedPersonCreationDate, connectedPersonEndDate, ConnectedEntity.ConnectedEntityType.Organisation);
+        CreateConnectedEntity(organisation, connectedPersonCreationDate, connectedPersonEndDate, OrganisationInformation.ConnectedEntityType.Organisation);
         var createShareCodeResponse = await _client.CreateSharedDataAsync(new ShareRequest(supplierInformationFormId, organisation.Guid));
 
         var response = await _client.GetSharedDataAsync(createShareCodeResponse.ShareCode);
@@ -222,7 +222,8 @@ public class DataSharingApiConnectedPersonsIntegrationTests: IClassFixture<Organ
         _context.SaveChanges();
     }
 
-    private void CreateConnectedEntity(Organisation organisation, DateTime connectedPersonCreationDate, DateTime? connectedPersonEndDate, ConnectedEntity.ConnectedEntityType type)
+    private void CreateConnectedEntity(Organisation organisation, DateTime connectedPersonCreationDate,
+        DateTime? connectedPersonEndDate, OrganisationInformation.ConnectedEntityType type)
     {
         var entity = new ConnectedEntity
         {
@@ -235,7 +236,7 @@ public class DataSharingApiConnectedPersonsIntegrationTests: IClassFixture<Organ
 
         switch (type)
         {
-            case ConnectedEntity.ConnectedEntityType.Individual:
+            case OrganisationInformation.ConnectedEntityType.Individual:
                 entity.IndividualOrTrust = new ConnectedEntity.ConnectedIndividualTrust
                 {
                     Category = ConnectedEntity.ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForIndiv,
@@ -246,11 +247,11 @@ public class DataSharingApiConnectedPersonsIntegrationTests: IClassFixture<Organ
 
                 break;
 
-            case ConnectedEntity.ConnectedEntityType.Organisation:
+            case OrganisationInformation.ConnectedEntityType.Organisation:
                 entity.Organisation = new ConnectedEntity.ConnectedOrganisation
                 {
                     Name = "Test org",
-                    Category = ConnectedEntity.ConnectedOrganisationCategory.RegisteredCompany,
+                    Category = OrganisationInformation.ConnectedOrganisationCategory.RegisteredCompany,
                 };
                 break;
         }

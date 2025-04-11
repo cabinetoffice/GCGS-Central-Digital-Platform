@@ -429,15 +429,15 @@ public class PdfGenerator(IHtmlLocalizer<FormsEngineResource> localizer) : IPdfG
         };
     }
 
-    private string GetFriendlyOrganisationCategoryText(OrganisationInformation.Persistence.ConnectedEntity.ConnectedOrganisationCategory organisationCategory)
+    private string GetFriendlyOrganisationCategoryText(ConnectedOrganisationCategory organisationCategory)
     {
         return organisationCategory switch
         {
-            OrganisationInformation.Persistence.ConnectedEntity.ConnectedOrganisationCategory.RegisteredCompany => StaticTextResource.PdfGenerator_ConnectedOrganisationCategory_RegisteredCompany,
-            OrganisationInformation.Persistence.ConnectedEntity.ConnectedOrganisationCategory.DirectorOrTheSameResponsibilities => StaticTextResource.PdfGenerator_ConnectedOrganisationCategory_DirectorSameResponsibilities,
-            OrganisationInformation.Persistence.ConnectedEntity.ConnectedOrganisationCategory.ParentOrSubsidiaryCompany => StaticTextResource.PdfGenerator_ConnectedOrganisationCategory_ParentSubsidiaryCompany,
-            OrganisationInformation.Persistence.ConnectedEntity.ConnectedOrganisationCategory.ACompanyYourOrganisationHasTakenOver => StaticTextResource.PdfGenerator_ConnectedOrganisationCategory_TakenOverCompany,
-            OrganisationInformation.Persistence.ConnectedEntity.ConnectedOrganisationCategory.AnyOtherOrganisationWithSignificantInfluenceOrControl => StaticTextResource.PdfGenerator_ConnectedOrganisationCategory_OtherOrganisationWithInfluence,
+            ConnectedOrganisationCategory.RegisteredCompany => StaticTextResource.PdfGenerator_ConnectedOrganisationCategory_RegisteredCompany,
+            ConnectedOrganisationCategory.DirectorOrTheSameResponsibilities => StaticTextResource.PdfGenerator_ConnectedOrganisationCategory_DirectorSameResponsibilities,
+            ConnectedOrganisationCategory.ParentOrSubsidiaryCompany => StaticTextResource.PdfGenerator_ConnectedOrganisationCategory_ParentSubsidiaryCompany,
+            ConnectedOrganisationCategory.ACompanyYourOrganisationHasTakenOver => StaticTextResource.PdfGenerator_ConnectedOrganisationCategory_TakenOverCompany,
+            ConnectedOrganisationCategory.AnyOtherOrganisationWithSignificantInfluenceOrControl => StaticTextResource.PdfGenerator_ConnectedOrganisationCategory_OtherOrganisationWithInfluence,
             _ => StaticTextResource.PdfGenerator_UnknownCategory
         };
     }
@@ -453,12 +453,12 @@ public class PdfGenerator(IHtmlLocalizer<FormsEngineResource> localizer) : IPdfG
         };
     }
 
-    private string GetFriendlyPersonTypeText(OrganisationInformation.Persistence.ConnectedEntity.ConnectedPersonType personType)
+    private string GetFriendlyPersonTypeText(ConnectedPersonType personType)
     {
         return personType switch
         {
-            OrganisationInformation.Persistence.ConnectedEntity.ConnectedPersonType.Individual => StaticTextResource.PdfGenerator_ConnectedPersonType_Individual,
-            OrganisationInformation.Persistence.ConnectedEntity.ConnectedPersonType.TrustOrTrustee => StaticTextResource.PdfGenerator_ConnectedPersonType_TrustTrustee,
+            ConnectedPersonType.Individual => StaticTextResource.PdfGenerator_ConnectedPersonType_Individual,
+            ConnectedPersonType.TrustOrTrustee => StaticTextResource.PdfGenerator_ConnectedPersonType_TrustTrustee,
             _ => StaticTextResource.PdfGenerator_UnknownPersonType
         };
     }

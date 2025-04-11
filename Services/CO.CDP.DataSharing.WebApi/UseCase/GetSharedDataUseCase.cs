@@ -117,26 +117,72 @@ public class GetSharedDataUseCase(
     private static ICollection<AssociatedPerson> AssociatedPersons(SharedConsentNonEf sharedConsent)
     {
         return sharedConsent.Organisation.ConnectedEntities
-            .Where(ce => ce.EntityType != ConnectedEntityType.Organisation)
+            .Where(ce => ce.EntityType != ConnectedEntityType.Organisation && ce.IndividualOrTrust != null)
             .Select(x => new AssociatedPerson
             {
                 Id = x.Guid,
-                Name = string.Format($"{x.IndividualOrTrust?.FirstName} {x.IndividualOrTrust?.LastName}"),
-                Relationship = x.IndividualOrTrust?.Category.ToString() ?? string.Empty,
+                Name = string.Format($"{x.IndividualOrTrust!.FirstName} {x.IndividualOrTrust.LastName}"),
+                Relationship = x.IndividualOrTrust.Category.ToString(),
                 Uri = null,
-                Roles = sharedConsent.Organisation.Roles
+                Roles = sharedConsent.Organisation.Roles,
+                Details = new AssociatedPersonDetails
+                {
+                    FirstName = x.IndividualOrTrust.FirstName,
+                    LastName = x.IndividualOrTrust.LastName,
+                    DateOfBirth = x.IndividualOrTrust.DateOfBirth,
+                    Nationality = x.IndividualOrTrust.Nationality,
+                    ResidentCountry = x.IndividualOrTrust.ResidentCountry,
+                    ControlCondition = x.IndividualOrTrust.ControlCondition,
+                    ConnectedType = x.IndividualOrTrust.ConnectedType,
+                    Addresses = ToAddress(x.Addresses),
+                    RegisteredDate = x.RegisteredDate,
+                    RegistrationAuthority = x.RegisterName,
+                    HasCompanyHouseNumber = x.HasCompanyHouseNumber,
+                    CompanyHouseNumber = x.CompanyHouseNumber,
+                    OverseasCompanyNumber = x.OverseasCompanyNumber,
+                    StartDate = x.StartDate,
+                    EndDate = x.EndDate
+                }
             }).ToList();
     }
 
     private static ICollection<OrganisationReference> AdditionalEntities(SharedConsentNonEf sharedConsent)
     {
         return sharedConsent.Organisation.ConnectedEntities
-            .Where(ce => ce.EntityType == ConnectedEntityType.Organisation).Select(x => new OrganisationReference
+            .Where(ce => ce.EntityType == ConnectedEntityType.Organisation && ce.Organisation != null)
+            .Select(x => new OrganisationReference
             {
                 Id = x.Guid,
-                Name = x.Organisation?.Name ?? string.Empty,
+                Name = x.Organisation!.Name,
                 Roles = [],
-                Uri = null
+                Uri = null,
+                Details = new OrganisationReferenceDetails
+                {
+                    Category = x.Organisation.Category,
+                    InsolvencyDate = x.Organisation.InsolvencyDate,
+                    RegisteredLegalForm = x.Organisation.RegisteredLegalForm,
+                    LawRegistered = x.Organisation.LawRegistered,
+                    ControlCondition = x.Organisation.ControlCondition,
+                    Addresses = ToAddress(x.Addresses),
+                    RegisteredDate = x.RegisteredDate,
+                    RegistrationAuthority = x.RegisterName,
+                    HasCompanyHouseNumber = x.HasCompanyHouseNumber,
+                    CompanyHouseNumber = x.CompanyHouseNumber,
+                    OverseasCompanyNumber = x.OverseasCompanyNumber,
+                    StartDate = x.StartDate,
+                    EndDate = x.EndDate
+                }
             }).ToList();
     }
+    private static IEnumerable<Address> ToAddress(ICollection<AddressNonEf> addresses)
+        => addresses.Select(a => new Address
+        {
+            StreetAddress = a.StreetAddress,
+            Locality = a.Locality,
+            Region = a.Region,
+            CountryName = a.CountryName,
+            Country = a.Country,
+            PostalCode = a.PostalCode,
+            Type = a.Type ?? AddressType.Registered
+        });
 }

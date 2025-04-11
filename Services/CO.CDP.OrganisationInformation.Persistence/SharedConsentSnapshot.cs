@@ -117,7 +117,7 @@ public record ConnectedEntitySnapshot
     public int SharedConsentId { get; set; }
     public required Guid Guid { get; set; }
     public required ConnectedEntityType EntityType { get; set; }
-    public bool HasCompnayHouseNumber { get; set; }
+    public bool HasCompanyHouseNumber { get; set; }
     public string? CompanyHouseNumber { get; set; }
     public string? OverseasCompanyNumber { get; set; }
     public ConnectedOrganisationSnapshot? Organisation { get; set; }
