@@ -1,5 +1,6 @@
 @model FormElementDateInputModel
 @using CO.CDP.Localization
+@using System.Text.RegularExpressions
 
 @{
     var dayHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Day)).HasInnerHtml;
@@ -11,27 +12,14 @@
 
     string GetAriaDescribedBy()
     {
-        string ariaDescribedBy = "date-hint";
+        string html = Model.Description!;
+        string pattern = @"id=""([^""]+)""";
+        string ariaDescribedBy = "";
 
-        @if (dayHasError)
+        Match match = Regex.Match(html, pattern);
+        if (match.Success)
         {
-            ariaDescribedBy += " day-error";
-        }
-        @if (monthHasError)
-        {
-            ariaDescribedBy += " month-error";
-        }
-        @if (yearHasError)
-        {
-            ariaDescribedBy += " year-error";
-        }
-        @if (dateStringHasError)
-        {
-            ariaDescribedBy += " date-error";
-        }
-        @if (selectOptionHasError)
-        {
-            ariaDescribedBy += " has-value-error";
+            ariaDescribedBy = match.Groups[1].Value;
         }
 
         return ariaDescribedBy;
