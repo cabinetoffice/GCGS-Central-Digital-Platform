@@ -426,6 +426,9 @@
   <data name="Header_ServiceName" xml:space="preserve">
     <value>Canfod Tendr</value>
   </data>
+  <data name="Header_SkipToMainContent_Link" xml:space="preserve">
+    <value>Neidio i'r prif gynnwys</value>
+  </data>
   <data name="Header_SignIn" xml:space="preserve">
     <value>Mewngofnodi</value>
   </data>
@@ -1955,6 +1958,9 @@
   </data>
   <data name="Organisation_AddAddress" xml:space="preserve">
     <value>Ychwanegu&lt;span class="govuk-visually-hidden"&gt; cyfeiriad&lt;/span&gt;</value>
+  </data>
+  <data name="Organisation_AddOrganisationIdentifier" xml:space="preserve">
+    <value>Ychwanegu&lt;span class="govuk-visually-hidden"&gt; dynodyddion y sefydliad&lt;/span&gt;</value>
   </data>
   <data name="Organisation_AfterYouveRegistered" xml:space="preserve">
     <value>Ar ôl i chi gofrestru</value>
