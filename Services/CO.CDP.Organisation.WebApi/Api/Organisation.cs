@@ -21,6 +21,33 @@ namespace CO.CDP.Organisation.WebApi.Api;
 
 public static class EndpointExtensions
 {
+    public static void UseGlobalEndpoints(this WebApplication app)
+    {
+        app.MapGet("/announcement/latest",
+                [OrganisationAuthorize([AuthenticationChannel.OneLogin])]
+                async (
+                    [FromQuery] string page,
+                    IUseCase<GetAnnouncementQuery, Announcement?> useCase) =>
+                await useCase.Execute(new GetAnnouncementQuery()
+                {
+                    Page = page
+                }).AndThen(announcement => announcement != null ? Results.Ok(announcement) : Results.NotFound()))
+            .Produces<Model.Announcement>(StatusCodes.Status200OK, "application/json")
+            .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
+            .Produces<ProblemDetails>(StatusCodes.Status404NotFound)
+            .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError)
+            .WithOpenApi(operation =>
+            {
+                operation.OperationId = "GetLatestAnnouncement";
+                operation.Description = "Gets the latest announcement";
+                operation.Summary = "Gets the latest announcement";
+                operation.Responses["200"].Description = "Announcement information.";
+                operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
+                operation.Responses["404"].Description = "Organisation not found.";
+                operation.Responses["500"].Description = "Internal server error.";
+                return operation;
+            });
+    }
     public static void UseOrganisationEndpoints(this WebApplication app)
     {
         app.MapGet("/organisations",

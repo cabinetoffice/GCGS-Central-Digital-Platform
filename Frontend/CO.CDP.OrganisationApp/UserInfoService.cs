@@ -6,6 +6,11 @@ namespace CO.CDP.OrganisationApp;
 
 public class UserInfoService(IHttpContextAccessor httpContextAccessor, ITenantClient tenantClient) : IUserInfoService
 {
+    public bool IsAuthenticated()
+    {
+        return httpContextAccessor.HttpContext?.User?.Identity?.IsAuthenticated == true;
+    }
+
     public async Task<UserInfo> GetUserInfo()
     {
         // Role checks and therefore tenant lookup calls may be made multiple times when building a page.
