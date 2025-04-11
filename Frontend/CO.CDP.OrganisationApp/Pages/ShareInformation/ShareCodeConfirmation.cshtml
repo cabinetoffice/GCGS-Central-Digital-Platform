@@ -20,19 +20,19 @@
     <a href="@backUrl" class="govuk-back-link">@StaticTextResource.Global_Back</a>
 }
 
-    <div class="govuk-grid-column-ful-width">
-        <div class="govuk-panel govuk-panel--confirmation">
-            <h1 class="govuk-panel__title">
-                @ViewData["Title"]
-            </h1>
-            <div class="govuk-panel__body">
-                @StaticTextResource.ShareYourInformation_YourShareCode<br><strong>@Model.ShareCode</strong>
-            </div>
+<div class="govuk-grid-column-ful-width">
+    <div class="govuk-panel govuk-panel--confirmation">
+        <h1 class="govuk-panel__title">
+            @ViewData["Title"]
+        </h1>
+        <div class="govuk-panel__body">
+            @StaticTextResource.ShareYourInformation_YourShareCode<br><strong>@Model.ShareCode</strong>
         </div>
-
-        <p class="govuk-body">
-            @Html.Raw(string.Format(footerbody1, Model.ShareCode))
-        </p>
-        <p class="govuk-body">@StaticTextResource.ShareYourInformation_ShareCodeCreatedFooterBody2</p>
-    <p class="govuk-body"><a href="@organisationDetailUrl">@backtodetails</a></p>
     </div>
+
+    <p class="govuk-body">
+        @Html.Raw(string.Format(footerbody1, Model.ShareCode))
+    </p>
+    <p class="govuk-body">@StaticTextResource.ShareYourInformation_ShareCodeCreatedFooterBody2</p>
+    <p class="govuk-body"><a class="govuk-link" href="@organisationDetailUrl">@backtodetails</a></p>
+</div>
