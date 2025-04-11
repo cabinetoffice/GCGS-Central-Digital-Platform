@@ -7,7 +7,7 @@ Feel free to use any convenient AWS profiler instead.
 ## Pin version
 
 ```shell
-export PINNED_PGADMIN_VERSION=9.1.0
+export PINNED_PGADMIN_VERSION=9.2.0
 ```
 
 ## Build
@@ -19,18 +19,12 @@ docker build --build-arg PGADMIN_VERSION=${PINNED_PGADMIN_VERSION} -t cabinetoff
 If need local testing ...
 ```shell
  docker run \
-  -e DB_ENTITY_VERIFICATION_ADDRESS='ev-address' \
   -e DB_ENTITY_VERIFICATION_CLUSTER_ADDRESS='ev-address' \
   -e DB_ENTITY_VERIFICATION_CLUSTER_NAME='ev-db' \
   -e DB_ENTITY_VERIFICATION_CLUSTER_USERNAME='ev-username' \
-  -e DB_ENTITY_VERIFICATION_NAME='ev-db' \
-  -e DB_ENTITY_VERIFICATION_USERNAME='ev-username' \
-  -e DB_SIRSI_ADDRESS='sirsi-address' \
   -e DB_SIRSI_CLUSTER_ADDRESS='sirsi-address' \
   -e DB_SIRSI_CLUSTER_NAME='sirsi-db' \
   -e DB_SIRSI_CLUSTER_USERNAME='sirsi-username' \
-  -e DB_SIRSI_NAME='sirsi-db' \
-  -e DB_SIRSI_USERNAME='sirsi-username' \
   -e PGADMIN_DATABASE_HOST='pgadmin-address' \
   -e PGADMIN_DATABASE_NAME='pgadmin-db' \
   -e PGADMIN_DATABASE_USERNAME='test-user' \
