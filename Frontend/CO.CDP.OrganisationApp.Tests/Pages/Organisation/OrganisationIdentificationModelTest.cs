@@ -4,6 +4,7 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moq;
+using System.Collections.Generic;
 using WebApiClientOrganisation = CO.CDP.Organisation.WebApiClient.Organisation;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages.Organisation;
@@ -95,6 +96,36 @@ public class OrganisationIdentificationModelTest
 
         result.Should().BeOfType<RedirectResult>()
             .Which.Url.Should().Be("/page-not-found");
+    }
+
+    [Fact]
+    public async Task OnPost_ShouldTrimOrganisationIdentifiers_BeforeUpdate()
+    {
+        var id = Guid.NewGuid();
+        _pageModel.Id = id;
+        _pageModel.OrganisationScheme = ["GB-COH", "GB-CHC"];
+        _pageModel.CompanyHouseNumber = " 1234ABCD ";
+        _pageModel.CharityCommissionEnglandWalesNumber = "\t456XYZ\n";
+
+        _organisationClientMock.Setup(x => x.GetOrganisationAsync(It.IsAny<Guid>()))
+            .ReturnsAsync(GivenOrganisationClientModel(id));
+
+        List<OrganisationIdentifier> capturedIdentifiers = [];
+
+        _organisationClientMock
+            .Setup(x => x.UpdateOrganisationAsync(id, It.IsAny<UpdatedOrganisation>()))
+            .Callback<Guid, UpdatedOrganisation>((_, updatedOrganisation) =>
+            {
+                capturedIdentifiers = updatedOrganisation.Organisation.AdditionalIdentifiers.ToList();
+            })
+            .Returns(Task.CompletedTask);
+
+
+        var result = await _pageModel.OnPost();
+
+        capturedIdentifiers.Should().HaveCount(2);
+        capturedIdentifiers[0].Id.Should().Be("1234ABCD");
+        capturedIdentifiers[1].Id.Should().Be("456XYZ");
     }
 
     private static WebApiClientOrganisation GivenOrganisationClientModel(Guid? id)

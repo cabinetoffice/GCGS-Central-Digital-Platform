@@ -184,7 +184,7 @@ public class OrganisationIdentificationModel(OrganisationWebApiClient.IOrganisat
 
             // Create identifiers for OrganisationScheme
             var identifiers = OrganisationScheme!.Select(scheme => new OrganisationWebApiClient.OrganisationIdentifier(
-                    id: GetOrganisationIdentificationNumber(scheme),
+                    id: GetOrganisationIdentificationNumber(scheme)?.Trim(),
                     legalName: organisation.Name,
                     scheme: scheme))
                 .ToList();

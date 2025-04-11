@@ -405,6 +405,34 @@ public class OrganisationIdentificationModelTests
             rd.OrganisationScheme == organisationType &&
             rd.OrganisationIdentificationNumber == identificationNumber)), Times.Once);
     }
+    [Theory]
+    [InlineData("GB-CHC", "ABCDEF", " ABCDEF ")]
+    [InlineData("GB-SC", "GHIJKL", "GHIJKL  ")]
+    [InlineData("GB-NIC", "MNOPQR", "  MNOPQR  ")]
+    [InlineData("GB-MPR", "MPR123", "\tMPR123")]
+    [InlineData("GG-RCE", "GRN123", "GRN123\n")]
+    [InlineData("JE-FSC", "JFSC123", "  JFSC123")]
+    [InlineData("IM-CR", "IMCR123", "IMCR123\t\n")]
+    [InlineData("GB-NHS", "STUVWX", "STUVWX  ")]
+    [InlineData("GB-UKPRN", "PRN1234", "    PRN1234     ")]
+    public async Task OnPost_ShouldTrimOrganisationIdentifiers_BeforeUpdate(string organisationType, string identificationNumber, string input_identifier)
+    {
+        var model = new OrganisationIdentificationModel(sessionMock.Object, organisationClientMock.Object, _pponClientMock.Object, flashMessageServiceMock.Object)
+        {
+            OrganisationScheme = organisationType
+        };
+
+        SetIdentificationNumber(model, organisationType, input_identifier);
+        GivenRegistrationIsInProgress();
+
+        var result = await model.OnPost();
+
+        result.Should().BeOfType<RedirectToPageResult>();
+
+        sessionMock.Verify(s => s.Set(It.IsAny<string>(), It.Is<RegistrationDetails>(rd =>
+            rd.OrganisationScheme == organisationType &&
+            rd.OrganisationIdentificationNumber == identificationNumber)), Times.Once);
+    }
 
     private static void SetIdentificationNumber(OrganisationIdentificationModel model, string organisationType, string identificationNumber)
     {
