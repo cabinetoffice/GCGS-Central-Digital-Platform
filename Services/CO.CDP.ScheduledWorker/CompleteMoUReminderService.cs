@@ -19,17 +19,18 @@ public class CompleteMoUReminderService(
 
         foreach (var organisation in reminderList)
         {
-            await NotifyCompleteMoUReminder(organisation);
-
-            await mouRepository.UpsertMouEmailReminder(organisation.Id);
-
-            logger.LogInformation($"Sent MoU Reminder Email For {organisation.Name}.");
+            var success = await NotifyCompleteMoUReminder(organisation);
+            if (success)
+            {
+                await mouRepository.UpsertMouEmailReminder(organisation.Id);
+                logger.LogInformation($"Sent MoU Reminder Email For {organisation.Name}.");
+            }
         }
 
         logger.LogInformation("Complete MoU Reminder Processing Service finished.");
     }
 
-    private async Task NotifyCompleteMoUReminder(MouReminderOrganisation organisation)
+    private async Task<bool> NotifyCompleteMoUReminder(MouReminderOrganisation organisation)
     {
         var emailRecipients = organisation.Email.Split(",", StringSplitOptions.RemoveEmptyEntries);
 
@@ -44,6 +45,7 @@ public class CompleteMoUReminderService(
             }
         };
 
+        var sendEmailSuccess = true;
         foreach (var email in emailRecipients)
         {
             try
@@ -53,9 +55,12 @@ public class CompleteMoUReminderService(
             }
             catch
             {
+                sendEmailSuccess = false;
                 logger.LogError($"Failed to send Mou reminder email for: {organisation.Name}");
             }
         }
+
+        return sendEmailSuccess;
     }
 
     private int DaysBetweenEmailReminders =>
