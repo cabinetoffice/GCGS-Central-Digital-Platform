@@ -7,8 +7,8 @@ module "ecs_service_scheduled_worker" {
       aspcore_environment           = local.aspcore_environment
       container_port                = var.service_configs.scheduled_worker.port
       cpu                           = var.service_configs.scheduled_worker.cpu
-      db_address                    = local.db_sirsi_address
-      db_name                       = local.db_sirsi_name
+      db_address                    = var.db_sirsi_cluster_address
+      db_name                       = var.db_sirsi_cluster_name
       db_password                   = local.db_sirsi_password
       db_username                   = local.db_sirsi_username
       govuknotify_apikey            = data.aws_secretsmanager_secret_version.govuknotify_apikey.arn
@@ -34,7 +34,6 @@ module "ecs_service_scheduled_worker" {
   ecs_service_base_sg_id = var.ecs_sg_id
   family                 = "app"
   host_port              = var.service_configs.scheduled_worker.port
-  listener_name          = "outbox-processor-org"
   memory                 = var.service_configs.scheduled_worker.memory
   name                   = var.service_configs.scheduled_worker.name
   private_subnet_ids     = var.private_subnet_ids
