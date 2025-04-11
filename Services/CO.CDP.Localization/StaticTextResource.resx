@@ -2336,8 +2336,8 @@
   <data name="PdfGenerator_NoAdditionalIdentifiersAvailableMsg" xml:space="preserve">
     <value>No additional identifiers available.</value>
   </data>
-  <data name="PdfGenerator_NoConnectedPersonInformationAvailableMsg" xml:space="preserve">
-    <value>No connected person information available.</value>
+  <data name="PdfGenerator_NoneApplyMsg" xml:space="preserve">
+    <value>None apply</value>
   </data>
   <data name="PdfGenerator_OrganisationSchemeTitle_CharityCommission" xml:space="preserve">
     <value>Charity Commission (England and Wales)</value>
