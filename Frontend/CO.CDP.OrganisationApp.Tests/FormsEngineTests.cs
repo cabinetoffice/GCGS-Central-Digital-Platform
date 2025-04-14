@@ -47,12 +47,14 @@ public class FormsEngineTests
                 checkFurtherQuestionsExempted: false,
                 configuration: new WebApiClient.FormSectionConfiguration(
                     singularSummaryHeading: null,
-                    pluralSummaryHeadingFormat: null,
+                    pluralSummaryHeadingFormat: null,                    
                     addAnotherAnswerLabel: null,
                     removeConfirmationCaption: null,
                     removeConfirmationHeading: null,
                     furtherQuestionsExemptedHeading: null,
-                    furtherQuestionsExemptedHint: null
+                    furtherQuestionsExemptedHint: null,
+                    pluralSummaryHeadingHintFormat: null,
+                    singularSummaryHeadingHint: null
                 ),
                 id: sectionId,
                 title: "SectionTitle"

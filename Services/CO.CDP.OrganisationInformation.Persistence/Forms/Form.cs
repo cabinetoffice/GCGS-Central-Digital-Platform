@@ -56,8 +56,10 @@ public class FormSection : IEntityDate
 
 public record FormSectionConfiguration
 {
+    public string? SingularSummaryHeadingHint { get; set; }
     public string? SingularSummaryHeading { get; set; }
     public string? PluralSummaryHeadingFormat { get; set; }
+    public string? PluralSummaryHeadingHintFormat { get; set; }
     public string? AddAnotherAnswerLabel { get; set; }
     public string? RemoveConfirmationCaption { get; set; }
     public string? RemoveConfirmationHeading { get; set; }

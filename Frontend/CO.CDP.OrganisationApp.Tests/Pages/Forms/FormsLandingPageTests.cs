@@ -162,7 +162,9 @@ public class FormsLandingPageTests
                     removeConfirmationCaption: null,
                     removeConfirmationHeading: null,
                     furtherQuestionsExemptedHeading: null,
-                    furtherQuestionsExemptedHint: null
+                    furtherQuestionsExemptedHint: null,
+                    pluralSummaryHeadingHintFormat: null,
+                    singularSummaryHeadingHint: null
                 ),
                 id: sectionId,
                 title: "SectionTitle"
