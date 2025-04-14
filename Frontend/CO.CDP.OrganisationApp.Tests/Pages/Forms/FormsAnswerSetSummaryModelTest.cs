@@ -39,7 +39,9 @@ public class FormsAnswerSetSummaryModelTest
                      removeConfirmationHeading: "Test confimration heading",
                      singularSummaryHeading: null,
                      furtherQuestionsExemptedHeading: null,
-                     furtherQuestionsExemptedHint: null
+                     furtherQuestionsExemptedHint: null,
+                     pluralSummaryHeadingHintFormat: null,
+                     singularSummaryHeadingHint: null
                      )),
              questions: [],
              answerSets: [new FormAnswerSet(id: AnswerSetId, answers: [],

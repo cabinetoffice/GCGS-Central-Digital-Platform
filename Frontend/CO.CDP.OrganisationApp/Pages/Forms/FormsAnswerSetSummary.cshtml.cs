@@ -31,7 +31,7 @@ public class FormsAnswerSetSummaryModel(
     public List<(Guid answerSetId, IEnumerable<AnswerSummary> answers)> FormAnswerSets { get; set; } = [];
 
     public string? Heading { get; set; }
-
+    public string? HeadingHint { get; set; }
     public string? AddAnotherAnswerLabel { get; set; }
 
     public bool AllowsMultipleAnswerSets { get; set; }
@@ -162,10 +162,11 @@ public class FormsAnswerSetSummaryModel(
         {
             FormAnswerSets = await GetAnswers(form);
             Heading = form.Section.Configuration.SingularSummaryHeading;
-
+            HeadingHint = form.Section.Configuration.SingularSummaryHeadingHint;
             if (FormAnswerSets.Count != 1 && form.Section.Configuration.PluralSummaryHeadingFormat != null)
             {
                 Heading = string.Format(form.Section.Configuration.PluralSummaryHeadingFormat, FormAnswerSets.Count);
+                HeadingHint = string.Format(form.Section.Configuration.PluralSummaryHeadingHintFormat, FormAnswerSets.Count);
             }
         }
         return true;
