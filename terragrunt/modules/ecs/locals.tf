@@ -43,7 +43,7 @@ locals {
     config.name => config if contains(local.migrations, config.name)
   }
 
-  send_notify_emails_enabled_accounts = ["staging", "integration", "production"]
+  send_notify_emails_enabled_accounts = ["development", "staging", "integration", "production"]
   send_notify_emails                  = contains(local.send_notify_emails_enabled_accounts, var.environment)
 
   service_configs = {
