@@ -14,7 +14,7 @@ public class SupportUpdateOrganisationUseCase(
 {
     public async Task<bool> Execute((Guid organisationId, SupportUpdateOrganisation supportUpdateOrganisation) command)
     {
-        var organisation = await organisationRepository.Find(command.organisationId) ?? throw new UnknownOrganisationException($"Unknown organisation {command.organisationId}.");
+        OrganisationInformation.Persistence.Organisation organisation = await organisationRepository.Find(command.organisationId) ?? throw new UnknownOrganisationException($"Unknown organisation {command.organisationId}.");
         var sendApprovalEmail = false;
         var sendRejectionEmail = false;
 
@@ -22,11 +22,16 @@ public class SupportUpdateOrganisationUseCase(
         {
             case SupportOrganisationUpdateType.Review:
 
-                var personId = command.supportUpdateOrganisation.Organisation.ReviewedById;
+                var personId = command.supportUpdateOrganisation?.Organisation?.ReviewedById ?? null;
 
-                var person = await personRepository.Find(personId) ?? throw new UnknownPersonException($"Unknown person {personId}.");
+                if (personId == null)
+                {
+                    throw new MissingFieldException("Missing ReviewedById");
+                }
 
-                if (command.supportUpdateOrganisation.Organisation.Approved == true)
+                var person = await personRepository.Find(personId.Value) ?? throw new UnknownPersonException($"Unknown person {personId}.");
+
+                if (command.supportUpdateOrganisation?.Organisation?.Approved == true)
                 {
                     organisation.ApprovedOn = DateTimeOffset.UtcNow;
                     organisation.PendingRoles.ForEach(r => organisation.Roles.Add(r));
@@ -39,9 +44,15 @@ public class SupportUpdateOrganisationUseCase(
                 }
 
                 organisation.ReviewedBy = person;
-                organisation.ReviewComment = command.supportUpdateOrganisation.Organisation.Comment;
+                organisation.ReviewComment = command.supportUpdateOrganisation?.Organisation?.Comment;
 
                 break;
+
+            case SupportOrganisationUpdateType.AdditionalIdentifiers:
+
+                HandleAdditionalIdentifiersUpdate(command.supportUpdateOrganisation, organisation);
+                break;
+
             default:
                 throw new InvalidSupportUpdateOrganisationCommand("Unknown support update organisation command type.");
         }
@@ -59,6 +70,53 @@ public class SupportUpdateOrganisationUseCase(
         }
 
         return true;
+    }
+
+    private void HandleAdditionalIdentifiersUpdate(SupportUpdateOrganisation supportUpdateOrganisation, OrganisationInformation.Persistence.Organisation organisation)
+    {
+        var newIdentifiers = supportUpdateOrganisation.Organisation.AdditionalIdentifiers
+            ?? throw new InvalidUpdateOrganisationCommand.MissingAdditionalIdentifiers();
+
+        //Remove identifiers that are no longer present in the update request
+        var removedIdentifiers = organisation.Identifiers
+            .Where(existing => !newIdentifiers.Any(newId => newId.Scheme == existing.Scheme))
+            .ToList();
+
+        foreach (var removed in removedIdentifiers)
+        {
+            if (removed.Primary)
+            {
+                throw new IOrganisationRepository.OrganisationRepositoryException.RemovePrimaryIdentifierException("You cannot remove the primary registration number.");
+            }
+
+            organisation.Identifiers.Remove(removed);
+        }
+
+        foreach (var identifier in newIdentifiers)
+        {
+            var existingIdentifier = organisation.Identifiers.FirstOrDefault(i => i.Scheme == identifier.Scheme);
+
+            if (existingIdentifier != null)
+            {
+                existingIdentifier.IdentifierId = identifier.Id?.Trim();
+                existingIdentifier.LegalName = identifier.LegalName;
+                existingIdentifier.UpdatedOn = DateTimeOffset.UtcNow;
+            }
+            else
+            {
+                var newIdentifier = new Identifier
+                {
+                    IdentifierId = identifier.Id?.Trim(),
+                    Primary = AssignIdentifierUseCase.IsPrimaryIdentifier(organisation, identifier.Scheme),
+                    LegalName = identifier.LegalName,
+                    Scheme = identifier.Scheme,
+                    CreatedOn = DateTimeOffset.UtcNow,
+                    UpdatedOn = DateTimeOffset.UtcNow
+                };
+
+                organisation.Identifiers.Add(newIdentifier);
+            }
+        }
     }
 
     private async Task NotifyBuyerRequest(OrganisationInformation.Persistence.Organisation organisation, string templateKey)
