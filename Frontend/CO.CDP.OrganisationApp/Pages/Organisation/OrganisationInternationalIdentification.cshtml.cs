@@ -1,17 +1,15 @@
-using Microsoft.AspNetCore.Mvc;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-
 using CO.CDP.EntityVerificationClient;
-using CO.CDP.Organisation.WebApiClient;
-using CO.CDP.OrganisationApp.Models;
-using CO.CDP.OrganisationApp.Constants;
-using ApiException = CO.CDP.EntityVerificationClient.ApiException;
 using CO.CDP.Localization;
 using CO.CDP.Mvc.Validation;
-using OrganisationWebApiClient = CO.CDP.Organisation.WebApiClient;
+using CO.CDP.Organisation.WebApiClient;
+using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.WebApiClients;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using ApiException = CO.CDP.EntityVerificationClient.ApiException;
+using OrganisationWebApiClient = CO.CDP.Organisation.WebApiClient;
 
 namespace CO.CDP.OrganisationApp.Pages.Organisation;
 
@@ -88,11 +86,10 @@ public class OrganisationInternationalIdentificationModel(
             if (organisation == null) return Redirect("/page-not-found");
 
             // Create identifiers for OrganisationScheme
-            var identifiers = OrganisationScheme!.Select(scheme => new OrganisationWebApiClient.OrganisationIdentifier(
-                    id: OrganisationIdentificationNumber,
+            List<OrganisationIdentifier> identifiers = [new OrganisationIdentifier(
+                    id: OrganisationIdentificationNumber?.Trim(),
                     legalName: organisation.Name,
-                    scheme: OrganisationScheme))
-                .ToList();
+                    scheme: OrganisationScheme)];
 
             await organisationClient.UpdateOrganisationAdditionalIdentifiers(Id, identifiers);
 
