@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!--
     Microsoft ResX Schema
@@ -425,6 +425,9 @@
   </data>
   <data name="Header_ServiceName" xml:space="preserve">
     <value>Canfod Tendr</value>
+  </data>
+  <data name="Header_SkipToMainContent_Link" xml:space="preserve">
+    <value>Neidio i'r prif gynnwys</value>
   </data>
   <data name="Header_SignIn" xml:space="preserve">
     <value>Mewngofnodi</value>
@@ -1406,6 +1409,9 @@
   <data name="Supplier_SupplierInformationSummary_FormRecordCount_Plural" xml:space="preserve">
     <value>{0} gofnodion</value>
   </data>
+  <data name="Supplier_ReturnToAccountHome" xml:space="preserve">
+    <value>Dychwelyd i hafan y cyfrif</value>
+  </data>
   <data name="Supplier_SupplierType" xml:space="preserve">
     <value>Math o gyflenwr</value>
   </data>
@@ -1952,6 +1958,9 @@
   </data>
   <data name="Organisation_AddAddress" xml:space="preserve">
     <value>Ychwanegu&lt;span class="govuk-visually-hidden"&gt; cyfeiriad&lt;/span&gt;</value>
+  </data>
+  <data name="Organisation_AddOrganisationIdentifier" xml:space="preserve">
+    <value>Ychwanegu&lt;span class="govuk-visually-hidden"&gt; dynodyddion y sefydliad&lt;/span&gt;</value>
   </data>
   <data name="Organisation_AfterYouveRegistered" xml:space="preserve">
     <value>Ar ôl i chi gofrestru</value>
@@ -2820,11 +2829,8 @@
   <data name="Supplier_OperationType_ValidationError" xml:space="preserve">
     <value>Ni allwch ddewis 'Dim un yn berthnasol' ynghyd ag opsiynau eraill.</value>
   </data>
-  <data name="Supplier_SupplierInformationSummary_FormRecordCount_Singular" xml:space="preserve">
+  <data name="Supplier_SupplierInformationSummary_FormRecordCount" xml:space="preserve">
     <value>{0} cofnod</value>
-  </data>
-  <data name="Supplier_SupplierInformationSummary_FormsFurtherQuestionExempt" xml:space="preserve">
-    <value>Ddim yn Gymwys</value>
   </data>
   <data name="Supplier_VatQuestion_BelongsToAnotherOrganisation_Error" xml:space="preserve">
     <value>Mae'r rhif TAW hwn yn perthyn i sefydliad arall. Rhowch rif TAW gwahanol.</value>
