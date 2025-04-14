@@ -36,10 +36,12 @@
             {
                 <input type="hidden" name="RedirectToCheckYourAnswer" value="true" />
             }
-            <fieldset class="govuk-fieldset">
-                <h1 class="govuk-heading-l">
-                    @ViewData["Title"]
-                </h1>
+            <fieldset class="govuk-fieldset" role="group">
+                <legend class="govuk-fieldset__legend govuk-fieldset__legend--l" id="outer-legend">
+                    <h1 class="govuk-fieldset__heading">
+                        @ViewData["Title"]
+                    </h1>
+                </legend>
                 <div class="govuk-form-group">
                     <label class="govuk-label" for="firstName">
                         @StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityPscDetails_FirstNameLabel
@@ -54,8 +56,8 @@
                             </p>
                         }
                         <input class="govuk-input govuk-input--width-20 @(firstNameHasError ? "govuk-input--error" : "")" id="@nameof(Model.FirstName)"
-                                value="@Model.FirstName" name="@nameof(Model.FirstName)" type="text"
-                                spellcheck="false" @(firstNameHasError ? "aria-describedby=first-name-error" : "")>
+                               value="@Model.FirstName" name="@nameof(Model.FirstName)" type="text"
+                               spellcheck="false" @(firstNameHasError ? "aria-describedby=first-name-error" : "")>
                     </div>
                 </div>
 
@@ -73,15 +75,15 @@
                             </p>
                         }
                         <input class="govuk-input govuk-input--width-20 @(lastNameHasError ? "govuk-input--error" : "")" id="@nameof(Model.LastName)"
-                                value="@Model.LastName" name="@nameof(Model.LastName)" type="text"
-                                spellcheck="false" @(lastNameHasError ? "aria-describedby=last-name-error" : "")>
+                               value="@Model.LastName" name="@nameof(Model.LastName)" type="text"
+                               spellcheck="false" @(lastNameHasError ? "aria-describedby=last-name-error" : "")>
                     </div>
                 </div>
                 @if (Model.ShowDobAndNationality == true)
                 {
                     <div class="govuk-form-group">
-                        <fieldset class="govuk-fieldset" role="group" aria-describedby="Hint">
-                            <legend class="govuk-fieldset__legend">
+                        <fieldset class="govuk-fieldset" role="group" aria-describedby="Hint" aria-labelledby="outer-legend inner-legend">
+                            <legend class="govuk-fieldset__legend" id="inner-legend">
                                 @StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityPscDetails_DateOfBirthLabel
                             </legend>
                             <div id="-hint" class="govuk-hint">
@@ -122,7 +124,7 @@
                                             @StaticTextResource.Global_Day
                                         </label>
                                         <input class="govuk-input govuk-date-input__input govuk-input--width-2 @(dayHasError || dateOfBirthHasError ? "govuk-input--error" : "")"
-                                                id="pscDateOfBirthDay" name="Day" type="text" inputmode="numeric" value="@Model.Day">
+                                               id="pscDateOfBirthDay" name="Day" type="text" inputmode="numeric" value="@Model.Day">
                                     </div>
                                 </div>
                                 <div class="govuk-date-input__item">
@@ -131,7 +133,7 @@
                                             @StaticTextResource.Global_Month
                                         </label>
                                         <input class="govuk-input govuk-date-input__input govuk-input--width-2 @(monthHasError || dateOfBirthHasError ? "govuk-input--error" : "")"
-                                                id="pscDateOfBirthMonth" name="Month" type="text" inputmode="numeric" value="@Model.Month">
+                                               id="pscDateOfBirthMonth" name="Month" type="text" inputmode="numeric" value="@Model.Month">
                                     </div>
                                 </div>
                                 <div class="govuk-date-input__item">
@@ -140,7 +142,7 @@
                                             @StaticTextResource.Global_Year
                                         </label>
                                         <input class="govuk-input govuk-date-input__input govuk-input--width-4 @(yearHasError || dateOfBirthHasError ? "govuk-input--error" : "")"
-                                                id="pscDateOfBirthYear" name="Year" type="text" inputmode="numeric" value="@Model.Year">
+                                               id="pscDateOfBirthYear" name="Year" type="text" inputmode="numeric" value="@Model.Year">
                                     </div>
                                 </div>
                             </div>
