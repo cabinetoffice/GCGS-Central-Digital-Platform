@@ -418,7 +418,7 @@
     <value>Rydych wedi ychwanegu 1 cymhwyster</value>
   </data>
   <data name="TradeAssurance_01_Description" xml:space="preserve">
-    <value>&lt;div class="govuk-hint"&gt;Rhowch enw'r person neu gorff. Gallwch ychwanegu un arall ar y diwedd os bydd angen. Er enghraifft, Cynllun Sicrwydd y Tractor Coch, Quality Meat Scotland (QMS) Assurance.&lt;/div&gt;</value>
+    <value>&lt;div class="govuk-hint"&gt;Rhowch enw'r person neu gorff. Gallwch ychwanegu un arall ar y diwedd os bydd angen. Er enghraifft, Cynllun Sicrwydd y Tractor Coch neu Quality Meat Scotland (QMS) Assurance.&lt;/div&gt;</value>
   </data>
   <data name="TradeAssurance_01_SummaryTitle" xml:space="preserve">
     <value>Dyfarnwyd gan</value>
