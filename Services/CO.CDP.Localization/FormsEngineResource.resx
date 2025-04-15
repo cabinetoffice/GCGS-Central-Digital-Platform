@@ -424,7 +424,7 @@
     <value>Who awarded the trade assurance?</value>
   </data>
   <data name="TradeAssurance_01_Description" xml:space="preserve">
-    <value>&lt;div class="govuk-hint"&gt;Enter the name of the person or body. You can add another at the end if you need to. For example, Red Tractor Assurance, Quality Meat Scotland (QMS) Assurance.&lt;/div&gt;</value>
+    <value>&lt;div class="govuk-hint"&gt;Enter the name of the person or body. You can add another at the end if you need to. For example, Red Tractor Assurance or Quality Meat Scotland (QMS) Assurance.&lt;/div&gt;</value>
   </data>
   <data name="TradeAssurance_01_SummaryTitle" xml:space="preserve">
     <value>Awarded by</value>
