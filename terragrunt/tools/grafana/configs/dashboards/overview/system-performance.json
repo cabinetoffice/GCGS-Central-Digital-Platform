@@ -182,6 +182,11 @@
               "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
               "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/tenant:*",
               "name": "/ecs/tenant"
+            },
+            {
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/scheduled-worker:*",
+              "name": "/ecs/scheduled-worker"
             }
           ],
           "matchExact": true,
@@ -659,6 +664,11 @@
               "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
               "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/tenant:*",
               "name": "/ecs/tenant"
+            },
+            {
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/scheduled-worker:*",
+              "name": "/ecs/scheduled-worker"
             }
           ],
           "matchExact": true,
@@ -932,6 +942,8 @@
           "displayMode": "table",
           "placement": "right",
           "showLegend": true,
+          "sortBy": "Mean",
+          "sortDesc": true,
           "width": 400
         },
         "tooltip": {
@@ -1356,6 +1368,8 @@
           "displayMode": "table",
           "placement": "right",
           "showLegend": true,
+          "sortBy": "Mean",
+          "sortDesc": true,
           "width": 400
         },
         "tooltip": {
@@ -1950,7 +1964,7 @@
           "displayMode": "table",
           "placement": "right",
           "showLegend": true,
-          "sortBy": "Last *",
+          "sortBy": "Mean",
           "sortDesc": true,
           "width": 400
         },
@@ -2179,7 +2193,7 @@
           "displayMode": "table",
           "placement": "right",
           "showLegend": true,
-          "sortBy": "Total",
+          "sortBy": "Mean",
           "sortDesc": true,
           "width": 400
         },
@@ -2391,15 +2405,17 @@
             "mean",
             "max"
           ],
-          "displayMode": "list",
+          "displayMode": "table",
           "placement": "right",
           "showLegend": true,
+          "sortBy": "Mean",
+          "sortDesc": true,
           "width": 400
         },
         "tooltip": {
           "hideZeros": false,
           "mode": "single",
-          "sort": "none"
+          "sort": "asc"
         }
       },
       "pluginVersion": "11.5.2",
@@ -2639,9 +2655,11 @@
             "mean",
             "max"
           ],
-          "displayMode": "list",
+          "displayMode": "table",
           "placement": "right",
           "showLegend": true,
+          "sortBy": "Mean",
+          "sortDesc": true,
           "width": 400
         },
         "tooltip": {
@@ -2778,12 +2796,15 @@
       "options": {
         "legend": {
           "calcs": [
+            "min",
             "mean",
-            "lastNotNull"
+            "max"
           ],
-          "displayMode": "list",
+          "displayMode": "table",
           "placement": "right",
           "showLegend": true,
+          "sortBy": "Mean",
+          "sortDesc": true,
           "width": 400
         },
         "tooltip": {
@@ -2920,12 +2941,15 @@
       "options": {
         "legend": {
           "calcs": [
+            "min",
             "mean",
-            "lastNotNull"
+            "max"
           ],
-          "displayMode": "list",
+          "displayMode": "table",
           "placement": "right",
           "showLegend": true,
+          "sortBy": "Mean",
+          "sortDesc": true,
           "width": 400
         },
         "tooltip": {
@@ -3128,12 +3152,15 @@
       "options": {
         "legend": {
           "calcs": [
+            "min",
             "mean",
-            "lastNotNull"
+            "max"
           ],
-          "displayMode": "list",
+          "displayMode": "table",
           "placement": "right",
           "showLegend": true,
+          "sortBy": "Mean",
+          "sortDesc": true,
           "width": 400
         },
         "tooltip": {
@@ -3245,11 +3272,13 @@
         "legend": {
           "calcs": [
             "mean",
-            "lastNotNull"
+            "max"
           ],
-          "displayMode": "list",
+          "displayMode": "table",
           "placement": "right",
           "showLegend": true,
+          "sortBy": "Mean",
+          "sortDesc": true,
           "width": 400
         },
         "tooltip": {
@@ -3361,11 +3390,13 @@
         "legend": {
           "calcs": [
             "mean",
-            "lastNotNull"
+            "max"
           ],
-          "displayMode": "list",
+          "displayMode": "table",
           "placement": "right",
           "showLegend": true,
+          "sortBy": "Mean",
+          "sortDesc": true,
           "width": 400
         },
         "tooltip": {
@@ -3477,11 +3508,13 @@
         "legend": {
           "calcs": [
             "mean",
-            "lastNotNull"
+            "max"
           ],
-          "displayMode": "list",
+          "displayMode": "table",
           "placement": "right",
           "showLegend": true,
+          "sortBy": "Mean",
+          "sortDesc": true,
           "width": 400
         },
         "tooltip": {
@@ -3710,11 +3743,13 @@
         "legend": {
           "calcs": [
             "mean",
-            "lastNotNull"
+            "max"
           ],
-          "displayMode": "list",
+          "displayMode": "table",
           "placement": "right",
           "showLegend": true,
+          "sortBy": "Mean",
+          "sortDesc": true,
           "width": 400
         },
         "tooltip": {
@@ -4306,6 +4341,6 @@
   "timezone": "browser",
   "title": "System Performance",
   "uid": "system-performance",
-  "version": 2,
+  "version": 3,
   "weekStart": ""
 }
