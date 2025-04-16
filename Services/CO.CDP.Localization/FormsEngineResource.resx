@@ -166,10 +166,10 @@
     <value>Add another file?</value>
   </data>
   <data name="FinancialInformation_Configuration_SingularSummaryHeading" xml:space="preserve">
-    <value>Financial information</value>
+    <value>1 added</value>
   </data>
   <data name="FinancialInformation_Configuration_SingularSummaryHeadingHint" xml:space="preserve">
-    <value>1 added</value>
+    <value>Financial information</value>
   </data>
   <data name="FinancialInformation_Configuration_RemoveConfirmationHeading" xml:space="preserve">
     <value>Are you sure you want to remove this file?</value>
