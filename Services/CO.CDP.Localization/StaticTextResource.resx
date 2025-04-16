@@ -3629,6 +3629,12 @@
   <data name="Consortium_ConsortiumEnterSharecode_Hint" xml:space="preserve">
     <value>Must be the organisation's most recent share code</value>
   </data>
+  <data name="Consortium_ConsortiumEnterNewSharecode_Heading" xml:space="preserve">
+    <value>Enter a new sharecode for {0}</value>
+  </data>
+  <data name="Consortium_RemoveFromConsortium_Button" xml:space="preserve">
+    <value>Remove from consortium</value>
+  </data>
   <data name="Consortium_ConsortiumConfirmSupplier_Heading" xml:space="preserve">
     <value>Add {0} to the consortium?</value>
   </data>

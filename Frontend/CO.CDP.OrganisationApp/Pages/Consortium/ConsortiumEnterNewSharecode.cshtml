@@ -1,9 +1,9 @@
-@page "/consortium/{id}/enter-sharecode"
-@model ConsortiumEnterSharecodeModel
+@page "/consortium/{id}/enter-new-sharecode/{partyId}"
+@model ConsortiumEnterNewSharecodeModel
 @using CO.CDP.Localization
 
 @{
-    ViewData["Title"] = StaticTextResource.Consortium_ConsortiumEnterNewSharecode_Heading;
+    ViewData["Title"] = string.Format(StaticTextResource.Consortium_ConsortiumEnterNewSharecode_Heading, Model.PartyOrganisationName);
     var enterSharecodeHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.EnterSharecode)).HasInnerHtml;
 }
 
@@ -39,6 +39,8 @@
                        spellcheck="false" @(enterSharecodeHasError ? "aria-describedby=enter-sharecode-error" : "")>
             </div>
             <govuk-button>@StaticTextResource.Global_Continue</govuk-button>
+
+            <a href="#" class="govuk-button govuk-button--secondary">@StaticTextResource.Consortium_RemoveFromConsortium_Button</a>
         </form>
     </div>
 </div>
