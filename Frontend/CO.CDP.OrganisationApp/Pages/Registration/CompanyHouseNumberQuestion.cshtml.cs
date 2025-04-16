@@ -52,7 +52,7 @@ public class CompanyHouseNumberQuestionModel(ISession session,
         RegistrationDetails.OrganisationHasCompaniesHouseNumber = HasCompaniesHouseNumber;
         if (HasCompaniesHouseNumber ?? false)
         {
-            RegistrationDetails.OrganisationIdentificationNumber = CompaniesHouseNumber;
+            RegistrationDetails.OrganisationIdentificationNumber = CompaniesHouseNumber?.Trim();
             RegistrationDetails.OrganisationScheme = "GB-COH";
             OrganisationIdentifier = $"GB-COH:{RegistrationDetails.OrganisationIdentificationNumber}";
 

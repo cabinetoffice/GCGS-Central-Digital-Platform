@@ -112,4 +112,39 @@ public class ConnectedEntityCheckAnswersCommon
             return false;
         }
     }
+
+    public static bool SetShowCompaniesHouse(ConnectedEntityState state)
+    {
+        if (state.ConnectedEntityType == ConnectedEntityType.Organisation)
+        {
+            return state.ConnectedEntityOrganisationCategoryType == ConnectedEntityOrganisationCategoryType.RegisteredCompany
+                || state.ConnectedEntityOrganisationCategoryType == ConnectedEntityOrganisationCategoryType.DirectorOrTheSameResponsibilities
+                || state.ConnectedEntityOrganisationCategoryType == ConnectedEntityOrganisationCategoryType.ParentOrSubsidiaryCompany
+                || state.ConnectedEntityOrganisationCategoryType == ConnectedEntityOrganisationCategoryType.ACompanyYourOrganisationHasTakenOver
+                || state.ConnectedEntityOrganisationCategoryType == ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    public static bool SetShowOverseasCompanyHouse(ConnectedEntityState state)
+    {
+        bool supplierHasCompanyHouseNumber = state.SupplierHasCompanyHouseNumber ?? false;
+
+        if (state.ConnectedEntityType == ConnectedEntityType.Organisation)
+        {
+            return
+                (!supplierHasCompanyHouseNumber && (state.ConnectedEntityOrganisationCategoryType == ConnectedEntityOrganisationCategoryType.RegisteredCompany))
+                || (!supplierHasCompanyHouseNumber && (state.ConnectedEntityOrganisationCategoryType == ConnectedEntityOrganisationCategoryType.DirectorOrTheSameResponsibilities))
+                || (!supplierHasCompanyHouseNumber && (state.ConnectedEntityOrganisationCategoryType == ConnectedEntityOrganisationCategoryType.ParentOrSubsidiaryCompany))
+                || (!supplierHasCompanyHouseNumber && (state.ConnectedEntityOrganisationCategoryType == ConnectedEntityOrganisationCategoryType.ACompanyYourOrganisationHasTakenOver))
+                || state.ConnectedEntityOrganisationCategoryType == ConnectedEntityOrganisationCategoryType.AnyOtherOrganisationWithSignificantInfluenceOrControl;
+        }
+        else
+        {
+            return false;
+        }
+    }
 }

@@ -9,6 +9,7 @@ using Moq;
 using System.ComponentModel.DataAnnotations;
 using Identifier = CO.CDP.Organisation.WebApiClient.Identifier;
 using WebApiClientOrganisation = CO.CDP.Organisation.WebApiClient;
+
 namespace CO.CDP.OrganisationApp.Tests.Pages.Organisation;
 
 public class OrganisationInternationalIdentificationModelTest
@@ -129,6 +130,35 @@ public class OrganisationInternationalIdentificationModelTest
     }
 
     [Fact]
+    public async Task OnPost_ShouldTrimOrganisationIdentifiers_BeforeUpdate()
+    {
+        var model = CreateModel();
+        model.Id = _organisationId;
+        model.OrganisationScheme = "GB-COH";
+        model.RegistrationNumbers = new Dictionary<string, string?> { { "GB-COH", "   1234ABCD " } };
+
+        _organisationClientMock.Setup(x => x.GetOrganisationAsync(It.IsAny<Guid>()))
+            .ReturnsAsync(GivenOrganisationClientModel());
+
+        List<OrganisationIdentifier> capturedIdentifiers = [];
+
+        _organisationClientMock
+            .Setup(x => x.UpdateOrganisationAsync(model.Id, It.IsAny<UpdatedOrganisation>()))
+            .Callback<Guid, UpdatedOrganisation>((_, updatedOrganisation) =>
+            {
+                capturedIdentifiers = updatedOrganisation.Organisation.AdditionalIdentifiers.ToList();
+            })
+            .Returns(Task.CompletedTask);
+
+
+        var result = await model.OnPost();
+
+        capturedIdentifiers.Should().HaveCount(1);
+        capturedIdentifiers[0].Scheme.Should().Be("GB-COH");
+        capturedIdentifiers[0].Id.Should().Be("1234ABCD");
+    }
+
+    [Fact]
     public void OrganisationScheme_ShouldBeRequired()
     {
         var model = CreateModel();
@@ -166,6 +196,7 @@ public class OrganisationInternationalIdentificationModelTest
                type: OrganisationType.Organisation
                );
     }
+
     private IList<ValidationResult> ValidateModel(object model)
     {
         var validationContext = new ValidationContext(model, serviceProvider: null, items: null);
