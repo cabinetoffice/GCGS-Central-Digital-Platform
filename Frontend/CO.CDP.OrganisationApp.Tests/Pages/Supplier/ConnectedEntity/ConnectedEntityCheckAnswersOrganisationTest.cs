@@ -285,7 +285,6 @@ public class ConnectedEntityCheckAnswersOrganisationTest
             connectedOrganisation,
             "org name",
             null,
-            null,
             null
         );
 

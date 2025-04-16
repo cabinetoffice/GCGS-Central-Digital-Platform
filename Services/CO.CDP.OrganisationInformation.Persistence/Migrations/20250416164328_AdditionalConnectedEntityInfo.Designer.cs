@@ -13,8 +13,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CO.CDP.OrganisationInformation.Persistence.Migrations
 {
     [DbContext(typeof(OrganisationInformationContext))]
-    [Migration("20250402141825_HasCompanyHouseNumberTypoFix")]
-    partial class HasCompanyHouseNumberTypoFix
+    [Migration("20250416164328_AdditionalConnectedEntityInfo")]
+    partial class AdditionalConnectedEntityInfo
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -342,10 +342,6 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("registered_date");
 
-                    b.Property<DateTimeOffset?>("StartDate")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("start_date");
-
                     b.Property<int>("SupplierOrganisationId")
                         .HasColumnType("integer")
                         .HasColumnName("supplier_organisation_id");
@@ -421,10 +417,6 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                     b.Property<int>("SharedConsentId")
                         .HasColumnType("integer")
                         .HasColumnName("shared_consent_id");
-
-                    b.Property<DateTimeOffset?>("StartDate")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("start_date");
 
                     b.Property<DateTimeOffset>("UpdatedOn")
                         .HasColumnType("timestamp with time zone")
@@ -1143,6 +1135,45 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                         .HasDatabaseName("ix_mou_guid");
 
                     b.ToTable("mou", (string)null);
+                });
+
+            modelBuilder.Entity("CO.CDP.OrganisationInformation.Persistence.MouEmailReminder", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTimeOffset>("CreatedOn")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_on")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                    b.Property<int>("OrganisationId")
+                        .HasColumnType("integer")
+                        .HasColumnName("organisation_id");
+
+                    b.Property<DateTimeOffset>("ReminderSentOn")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("reminder_sent_on");
+
+                    b.Property<DateTimeOffset>("UpdatedOn")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_on")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                    b.HasKey("Id")
+                        .HasName("pk_mou_email_reminders");
+
+                    b.HasIndex("OrganisationId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_mou_email_reminders_organisation_id");
+
+                    b.ToTable("mou_email_reminders", (string)null);
                 });
 
             modelBuilder.Entity("CO.CDP.OrganisationInformation.Persistence.MouSignature", b =>
@@ -2491,6 +2522,18 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                         .HasConstraintName("fk_identifiers_snapshot_shared_consents_shared_consent_id");
 
                     b.Navigation("SharedConsent");
+                });
+
+            modelBuilder.Entity("CO.CDP.OrganisationInformation.Persistence.MouEmailReminder", b =>
+                {
+                    b.HasOne("CO.CDP.OrganisationInformation.Persistence.Organisation", "Organisation")
+                        .WithMany()
+                        .HasForeignKey("OrganisationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_mou_email_reminders_organisations_organisation_id");
+
+                    b.Navigation("Organisation");
                 });
 
             modelBuilder.Entity("CO.CDP.OrganisationInformation.Persistence.MouSignature", b =>

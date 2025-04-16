@@ -196,7 +196,6 @@ public class DatabaseShareCodeRepository(OrganisationInformationContext context)
                         OverseasCompanyNumber = connectedEntitiesReader.GetNullableString("overseas_company_number"),
                         RegisteredDate = connectedEntitiesReader.GetFieldValue<DateTimeOffset?>("registered_date"),
                         RegisterName = connectedEntitiesReader.GetNullableString("register_name"),
-                        StartDate = connectedEntitiesReader.GetFieldValue<DateTimeOffset?>("start_date"),
                         EndDate = connectedEntitiesReader.GetFieldValue<DateTimeOffset?>("end_date")
                     };
 

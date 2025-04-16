@@ -85,7 +85,8 @@ public class DataSharingApiConnectedPersonsIntegrationTests: IClassFixture<Organ
 
         var response = await _client.GetSharedDataAsync(createShareCodeResponse.ShareCode);
         response.AssociatedPersons.Should().HaveCount(1);
-        response.AssociatedPersons.First().Name.Should().Be("John Doe");
+        response.AssociatedPersons.First().FirstName.Should().Be("John");
+        response.AssociatedPersons.First().LastName.Should().Be("Doe");
     }
 
     [Theory]
@@ -106,7 +107,8 @@ public class DataSharingApiConnectedPersonsIntegrationTests: IClassFixture<Organ
 
         var response = await _client.GetSharedDataAsync(createShareCodeResponse.ShareCode);
         response.AssociatedPersons.Should().HaveCount(1);   // John Doe should still be there now that we have removed the end_date filtering from the data sharing api
-        response.AssociatedPersons.First().Name.Should().Be("John Doe");
+        response.AssociatedPersons.First().FirstName.Should().Be("John");
+        response.AssociatedPersons.First().LastName.Should().Be("Doe");
     }
 
     [Theory]

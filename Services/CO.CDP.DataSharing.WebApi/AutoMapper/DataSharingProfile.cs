@@ -39,9 +39,9 @@ public class DataSharingProfile : Profile
             .ForMember(m => m.AdditionalIdentifiers,
                 o => o.MapFrom(m => m.Organisation.Identifiers.Where(x => !x.Primary).ToList()))
             .ForMember(m => m.Address,
-                o => o.MapFrom(m =>
-                    m.Organisation.Addresses.FirstOrDefault(x =>
-                        x.Type == AddressType.Registered)))
+                o => o.MapFrom(m => m.Organisation.Addresses.FirstOrDefault(x => x.Type == AddressType.Registered)))
+            .ForMember(m => m.AdditionalAddresses,
+                o => o.MapFrom(m => m.Organisation.Addresses.Where(x => x.Type == AddressType.Postal)))
             .ForMember(m => m.ContactPoint, o => o.MapFrom(m => m.Organisation.ContactPoints.FirstOrDefault()))
             .ForMember(m => m.Roles, o => o.MapFrom(m => m.Organisation.Roles))
             .ForMember(m => m.Details,
@@ -247,7 +247,7 @@ public class JsonValueResolver : IValueResolver<FormAnswerNonEf, FormAnswer, Dic
                         }
                         else
                         {
-                            var additionalEntities = context.Items["AdditionalEntities"] as ICollection<OrganisationReference>;
+                            var additionalEntities = context.Items["AdditionalEntities"] as ICollection<AssociatedEntity>;
                             if (additionalEntities?.Any(a => a.Id.ToString() == entityId) == true)
                             {
                                 newType = "additional-entities";
@@ -282,7 +282,8 @@ public class FormQuestionOptionsResolver : IValueResolver<FormQuestionNonEf, For
         {
             return src.Options.Groups
                 .SelectMany(g => g.Choices ?? new List<Persistence.FormQuestionGroupChoice>())
-                .Select(gc => new FormQuestionOption {
+                .Select(gc => new FormQuestionOption
+                {
                     Id = gc.Id,
                     Value = _localizer[gc.Title].Value
                 })

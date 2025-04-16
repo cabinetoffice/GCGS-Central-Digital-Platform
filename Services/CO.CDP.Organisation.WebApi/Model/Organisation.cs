@@ -69,7 +69,6 @@ public record ConnectedEntity
     public DateTimeOffset? RegisteredDate { get; set; }
     public string? RegisterName { get; set; }
 
-    public DateTimeOffset? StartDate { get; set; }
     public DateTimeOffset? EndDate { get; set; }
 }
 

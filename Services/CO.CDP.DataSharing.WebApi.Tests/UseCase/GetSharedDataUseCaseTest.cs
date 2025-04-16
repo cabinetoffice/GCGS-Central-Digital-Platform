@@ -51,16 +51,17 @@ public class GetSharedDataUseCaseTest : IClassFixture<AutoMapperFixture>
         result.Should().NotBeNull();
 
         AssertBasicInformation(result, organisationGuid);
-        AssertAddress(result?.Address);
-        AssertAssociatedPersons(result?.AssociatedPersons);
-        AssertAdditionalEntities(result?.AdditionalEntities);
-        AssertIdentifier(result?.Identifier);
-        AssertDetails(result?.Details);
-        AssertAdditionalParties(result?.AdditionalParties);
-        AssertAdditionalIdentifiers(result?.AdditionalIdentifiers);
-        AssertContactPoint(result?.ContactPoint);
-        AssertRoles(result?.Roles);
-        AssertSupplierInformationData(result?.SupplierInformationData);
+        AssertAddress(result!.Address);
+        AssertAdditionalAddress(result.AdditionalAddresses);
+        AssertAssociatedPersons(result.AssociatedPersons);
+        AssertAdditionalEntities(result.AdditionalEntities);
+        AssertIdentifier(result.Identifier);
+        AssertDetails(result.Details);
+        AssertAdditionalParties(result.AdditionalParties);
+        AssertAdditionalIdentifiers(result.AdditionalIdentifiers);
+        AssertContactPoint(result.ContactPoint);
+        AssertRoles(result.Roles);
+        AssertSupplierInformationData(result.SupplierInformationData);
     }
 
     [Fact]
@@ -223,33 +224,42 @@ public class GetSharedDataUseCaseTest : IClassFixture<AutoMapperFixture>
         address?.Country.Should().Be("EX");
     }
 
+    private static void AssertAdditionalAddress(List<Address> addresses)
+    {
+        var address = addresses.First();
+        address.Should().NotBeNull();
+        address?.StreetAddress.Should().Be("1234 Default Postal St");
+        address?.Locality.Should().Be("Default City");
+        address?.Region.Should().Be("Default Region");
+        address?.PostalCode.Should().Be("EX1 1EX");
+        address?.CountryName.Should().Be("Example Country");
+        address?.Country.Should().Be("EX");
+    }
+
     private static void AssertAssociatedPersons(IEnumerable<AssociatedPerson>? associatedPersons)
     {
         associatedPersons.Should().NotBeNull();
         associatedPersons.Should().HaveCount(2);
         AssociatedPerson individual = associatedPersons!.First();
 
-        individual.Name.Should().Be("John Doe");
-        individual.Relationship.Should().Be("PersonWithSignificantControlForIndiv");
-        individual.Roles.Should().Contain(PartyRole.Buyer);
-        individual.Details.FirstName.Should().Be("John");
-        individual.Details.LastName.Should().Be("Doe");
-        individual.Details.DateOfBirth.Should().Be(DateTime.Today.AddYears(30));
-        individual.Details.Nationality.Should().Be("British");
-        individual.Details.ResidentCountry.Should().Be("United Kingdom");
-        individual.Details.ControlCondition.Should()
+        individual.Relationship.Should().Be(AssociatedRelationship.PersonWithSignificantControlForIndividual);
+        individual.FirstName.Should().Be("John");
+        individual.LastName.Should().Be("Doe");
+        individual.DateOfBirth.Should().Be(DateTime.Today.AddYears(30));
+        individual.Nationality.Should().Be("British");
+        individual.ResidentCountry.Should().Be("United Kingdom");
+        individual.ControlCondition.Should()
             .ContainInConsecutiveOrder([ControlCondition.HasOtherSignificantInfluenceOrControl, ControlCondition.HasVotingRights]);
-        individual.Details.ConnectedType.Should().Be(ConnectedPersonType.Individual);
-        individual.Details.RegisteredDate.Should().Be(DateTime.Today.ToDateTimeOffset());
-        individual.Details.RegistrationAuthority.Should().Be("Approved By Trade Association");
-        individual.Details.HasCompanyHouseNumber.Should().Be(true);
-        individual.Details.CompanyHouseNumber.Should().Be("TestOrg123");
-        individual.Details.OverseasCompanyNumber.Should().Be("Oversears123");
-        individual.Details.StartDate.Should().Be(DateTime.Today.AddDays(30).ToDateTimeOffset());
-        individual.Details.EndDate.Should().Be(DateTime.Today.AddDays(5).ToDateTimeOffset());
-        individual.Details.Addresses.Should().HaveCount(1);
+        individual.EntityType.Should().Be(ConnectedPersonType.Individual);
+        individual.RegisteredDate.Should().Be(DateTime.Today.ToDateTimeOffset());
+        individual.RegistrationAuthority.Should().Be("Approved By Trade Association");
+        individual.HasCompanyHouseNumber.Should().Be(true);
+        individual.CompanyHouseNumber.Should().Be("TestOrg123");
+        individual.OverseasCompanyNumber.Should().Be("Oversears123");
+        individual.Period.EndDate.Should().Be(DateTime.Today.AddDays(5).ToDateTimeOffset());
+        individual.Addresses.Should().HaveCount(1);
 
-        Address individualAddress = individual.Details.Addresses.First();
+        Address individualAddress = individual.Addresses.First();
         individualAddress.StreetAddress.Should().Be("1234 Default St");
         individualAddress.Locality.Should().Be("Default City");
         individualAddress.Region.Should().Be("Default Region");
@@ -260,40 +270,38 @@ public class GetSharedDataUseCaseTest : IClassFixture<AutoMapperFixture>
 
         AssociatedPerson trustee = associatedPersons!.Last();
 
-        trustee.Name.Should().Be("John Smith");
-        trustee.Relationship.Should().Be("PersonWithSignificantControlForTrust");
-        trustee.Roles.Should().Contain(PartyRole.Buyer);
-        trustee.Details.FirstName.Should().Be("John");
-        trustee.Details.LastName.Should().Be("Smith");
-        trustee.Details.ConnectedType.Should().Be(ConnectedPersonType.TrustOrTrustee);
+        trustee.FirstName.Should().Be("John");
+        trustee.LastName.Should().Be("Smith");
+        trustee.Relationship.Should().Be(AssociatedRelationship.PersonWithSignificantControlForTrust);
+        trustee.FirstName.Should().Be("John");
+        trustee.LastName.Should().Be("Smith");
+        trustee.EntityType.Should().Be(ConnectedPersonType.TrustOrTrustee);
     }
 
-    private static void AssertAdditionalEntities(IEnumerable<OrganisationReference>? additionalEntities)
+    private static void AssertAdditionalEntities(IEnumerable<AssociatedEntity>? additionalEntities)
     {
         additionalEntities.Should().NotBeNull();
         additionalEntities.Should().HaveCount(EntityFactory.GetMockAdditionalEntities().Count);
 
-        OrganisationReference org = additionalEntities!.First();
+        AssociatedEntity org = additionalEntities!.First();
 
         org.Name.Should().Be("Acme Group Ltd");
-        org.Details.Should().NotBeNull();
-        org.Details!.Category.Should().Be(ConnectedOrganisationCategory.RegisteredCompany);
-        org.Details.InsolvencyDate.Should().Be(DateTime.Today);
-        org.Details.RegisteredLegalForm.Should().Be("Trade Association");
-        org.Details.LawRegistered.Should().Be("Trade Law 2024");
-        org.Details.ControlCondition.Should()
+        org.Category.Should().Be(ConnectedOrganisationCategory.RegisteredCompany);
+        org.InsolvencyDate.Should().Be(DateTime.Today);
+        org.RegisteredLegalForm.Should().Be("Trade Association");
+        org.LawRegistered.Should().Be("Trade Law 2024");
+        org.ControlCondition.Should()
             .ContainInConsecutiveOrder([ControlCondition.CanAppointOrRemoveDirectors, ControlCondition.HasVotingRights, ControlCondition.OwnsShares]);
 
-        org.Details.RegisteredDate.Should().Be(DateTime.Today.ToDateTimeOffset());
-        org.Details.RegistrationAuthority.Should().Be("Gov Authority of UK");
-        org.Details.HasCompanyHouseNumber.Should().Be(true);
-        org.Details.CompanyHouseNumber.Should().Be("TestOrg456");
-        org.Details.OverseasCompanyNumber.Should().Be("Oversears456");
-        org.Details.StartDate.Should().Be(DateTime.Today.AddMonths(10).ToDateTimeOffset());
-        org.Details.EndDate.Should().Be(DateTime.Today.AddMonths(5).ToDateTimeOffset());
-        org.Details.Addresses.Should().HaveCount(1);
+        org.RegisteredDate.Should().Be(DateTime.Today.ToDateTimeOffset());
+        org.RegistrationAuthority.Should().Be("Gov Authority of UK");
+        org.HasCompanyHouseNumber.Should().Be(true);
+        org.CompanyHouseNumber.Should().Be("TestOrg456");
+        org.OverseasCompanyNumber.Should().Be("Oversears456");
+        org.Period.EndDate.Should().Be(DateTime.Today.AddMonths(5).ToDateTimeOffset());
+        org.Addresses.Should().HaveCount(1);
 
-        Address orgAddress = org.Details.Addresses.First();
+        Address orgAddress = org.Addresses.First();
         orgAddress.StreetAddress.Should().Be("1234 New St");
         orgAddress.Locality.Should().Be("New City");
         orgAddress.Region.Should().Be("New Region");

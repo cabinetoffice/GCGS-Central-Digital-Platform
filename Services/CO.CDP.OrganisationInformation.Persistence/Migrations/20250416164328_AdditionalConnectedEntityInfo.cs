@@ -1,3 +1,4 @@
+using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
@@ -5,11 +6,19 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace CO.CDP.OrganisationInformation.Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class HasCompanyHouseNumberTypoFix : Migration
+    public partial class AdditionalConnectedEntityInfo : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropColumn(
+                name: "start_date",
+                table: "connected_entities_snapshot");
+
+            migrationBuilder.DropColumn(
+                name: "start_date",
+                table: "connected_entities");
+
             migrationBuilder.RenameColumn(
                 name: "has_compnay_house_number",
                 table: "connected_entities_snapshot",
@@ -21,142 +30,10 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                 newName: "has_company_house_number");
 
             migrationBuilder.Sql($@"
-CREATE OR REPLACE PROCEDURE get_shared_consent_details(
-    IN p_share_code TEXT, 
-    INOUT consent_cursor REFCURSOR, 
-    INOUT identifier_cursor REFCURSOR, 
-    INOUT address_cursor REFCURSOR, 
-    INOUT contact_cursor REFCURSOR, 
-    INOUT connected_entities_cursor REFCURSOR, 
-    INOUT connected_entities_address_cursor REFCURSOR, 
-    INOUT form_answer_sets_cursor REFCURSOR, 
-    INOUT form_question_cursor REFCURSOR, 
-    INOUT form_answer_cursor REFCURSOR
-)
-LANGUAGE plpgsql
-AS $$
-DECLARE v_shared_consent_id INT;
-BEGIN
-    SELECT id, submitted_at 
-    INTO v_shared_consent_id
-    FROM shared_consents
-    WHERE share_code = p_share_code;
-
-    -- Cursor for Shared Consent and Organisation Details
-    OPEN consent_cursor FOR 
-        SELECT 
-            s.""guid"", s.submitted_at, s.submission_state, s.share_code, 
-            f.""name"" AS form_name, f.""version"", f.is_required, 
-            o.""guid"" AS organisation_guid, os.""name"" AS organisation_name, o.""type"", o.roles,
-            s0.supplier_type, s0.operation_types, s0.completed_reg_address, s0.completed_postal_address, 
-            s0.completed_vat, s0.completed_website_address, s0.completed_email_address, s0.completed_operation_type, 
-            s0.completed_legal_form, s0.completed_connected_person,
-			l.registered_under_act2006, l.registered_legal_form, l.law_registered, l.registration_date
-        FROM 
-            shared_consents AS s
-            INNER JOIN forms AS f ON s.form_id = f.id
-            INNER JOIN organisations AS o ON s.organisation_id = o.id
-            INNER JOIN organisations_snapshot AS os ON os.shared_consent_id = s.id
-            LEFT JOIN supplier_information_snapshot AS s0 ON s0.shared_consent_id = s.id
-            LEFT JOIN legal_forms_snapshot AS l ON s0.id = l.id
-        WHERE 
-            s.share_code = p_share_code;
-
-    -- Cursor for Identifiers
-    OPEN identifier_cursor FOR 
-        SELECT identifier_id, scheme, legal_name, uri, ""primary"" 
-       	FROM identifiers_snapshot 
-		WHERE shared_consent_id = v_shared_consent_id;
-
-    -- Cursor for Organisation Addresses
-    OPEN address_cursor FOR 
-        SELECT 
-            oa.""type"", a.street_address, a.locality, 
-            a.region, a.postal_code, a.country_name, a.country
-        FROM 
-            organisation_address_snapshot AS oa 
-            LEFT JOIN addresses_snapshot AS a ON a.id = oa.address_id 
-        WHERE 
-            oa.shared_consent_id = v_shared_consent_id;
-
-    -- Cursor for Contact Points
-    OPEN contact_cursor FOR 
-        SELECT email, name, telephone, url 
-       	FROM contact_points_snapshot 
-       	WHERE shared_consent_id = v_shared_consent_id;
-
-    -- Cursor for Connected Entities
-    OPEN connected_entities_cursor FOR 
-        SELECT
-        	ce.id, ce.""guid"", ce.entity_type, ce.has_company_house_number, ce.company_house_number, 
-        	ce.overseas_company_number, ce.registered_date, ce.register_name, ce.""start_date"", ce.end_date,
-        	cit.category AS individual_and_trust_category, cit.first_name, cit.last_name, cit.date_of_birth, 
-        	cit.nationality, cit.control_condition AS individual_and_trust_control_condition, 
-        	cit.connected_type AS connected_person_type, cit.resident_country,
-        	co.category AS organisation_category, co.name AS organisation_name, co.insolvency_date,
-        	co.registered_legal_form, co.law_registered, co.control_condition AS organisation_control_condition
-    	FROM 
-            connected_entities_snapshot AS ce
-            LEFT JOIN connected_individual_trust_snapshot cit ON cit.id = ce.id
-            LEFT JOIN connected_organisation_snapshot AS co ON co.id = ce.id 
-        WHERE 
-            ce.shared_consent_id = v_shared_consent_id; 
-
-    -- Cursor for Connected Entities Address
-    OPEN connected_entities_address_cursor FOR 
-        SELECT
-        	ce.id, cea.""type"", a.street_address, a.locality, 
-            a.region, a.postal_code, a.country_name, a.country
-    	FROM 
-            connected_entities_snapshot AS ce
-            INNER JOIN connected_entity_address_snapshot cea ON cea.connected_entity_snapshot_id = ce.id
-            INNER JOIN addresses_snapshot AS a ON a.id = cea.address_id
-        WHERE 
-            ce.shared_consent_id = v_shared_consent_id; 
-
-    -- Cursor for Form Answer Sets
-    OPEN form_answer_sets_cursor FOR 
-        SELECT 
-       		fas.id AS form_answer_set_id, fas.""guid"" AS form_answer_set_guid, fs.id, fs.title, fs.""type""
-       	FROM 
-       		form_answer_sets AS fas
-            INNER JOIN form_sections AS fs ON fs.id = fas.section_id
-       	WHERE 
-       		fas.shared_consent_id = v_shared_consent_id and NOT fas.deleted AND fs.""type"" <> 1;
-
-    -- Cursor for Form Question
-    OPEN form_question_cursor FOR 
-        SELECT DISTINCT ON (fq.id)
-			fq.id, fq.""guid"", fq.sort_order, fq.""type"", fq.is_required, fq.""name"", 
-			fq.title, fq.summary_title, fq.""description"", fq.""options"", fq.section_id
-        FROM 
-            form_answer_sets AS fas
-            INNER JOIN form_sections AS fs ON fs.id = fas.section_id
-            INNER JOIN form_questions AS fq ON fq.section_id = fs.id
-        WHERE  
-            fas.shared_consent_id = v_shared_consent_id and NOT fas.deleted AND fs.""type"" <> 1;
-
-    -- Cursor for Form Answer
-    OPEN form_answer_cursor FOR 
-        SELECT 
-			fa.question_id, fa.form_answer_set_id, fa.bool_value, fa.numeric_value, fa.date_value, 
-			fa.start_value, fa.end_value, fa.text_value, fa.option_value, fa.""json_value"", fa.address_value
-        FROM 
-            form_answer_sets AS fas
-            INNER JOIN form_sections AS fs ON fs.id = fas.section_id
-            INNER JOIN form_answers AS fa ON fa.form_answer_set_id = fas.id
-        WHERE  
-            fas.shared_consent_id = v_shared_consent_id and NOT fas.deleted AND fs.""type"" <> 1;
-END;
-$$;
-             ");
-
-            migrationBuilder.Sql($@"
 CREATE OR REPLACE PROCEDURE create_shared_consent_snapshot(
-    IN p_share_code TEXT
-)
-LANGUAGE plpgsql
-AS $$
+	IN p_share_code text)
+LANGUAGE 'plpgsql'
+AS $BODY$
 DECLARE v_shared_consent_id INT;
 DECLARE v_organisation_id INT;
 DECLARE v_inserted_id INT;
@@ -254,10 +131,10 @@ BEGIN
 	WITH inserted_connected_entities_data AS (
 		INSERT INTO connected_entities_snapshot
 			(shared_consent_id, ""guid"", entity_type, has_company_house_number, company_house_number, overseas_company_number, 
-			registered_date, register_name, start_date, end_date, created_on, updated_on, mapping_id)
+			registered_date, register_name, end_date, created_on, updated_on, mapping_id)
 	    SELECT 
 	        v_shared_consent_id, ""guid"", entity_type, has_company_house_number, company_house_number, overseas_company_number, 
-			registered_date, register_name, start_date, end_date, created_on, updated_on, id
+			registered_date, register_name, end_date, created_on, updated_on, id
 	    FROM 
 	        connected_entities
 	    WHERE 
@@ -346,28 +223,23 @@ BEGIN
 	DROP TABLE IF EXISTS temp_connected_entities_address_map;
 	DROP TABLE IF EXISTS temp_inserted_connected_entities_address_data;
 END;
-$$;
-             ");
-        }
+$BODY$;
+");
 
-        /// <inheritdoc />
-        protected override void Down(MigrationBuilder migrationBuilder)
-        {
             migrationBuilder.Sql($@"
 CREATE OR REPLACE PROCEDURE get_shared_consent_details(
-    IN p_share_code TEXT, 
-    INOUT consent_cursor REFCURSOR, 
-    INOUT identifier_cursor REFCURSOR, 
-    INOUT address_cursor REFCURSOR, 
-    INOUT contact_cursor REFCURSOR, 
-    INOUT connected_entities_cursor REFCURSOR, 
-    INOUT connected_entities_address_cursor REFCURSOR, 
-    INOUT form_answer_sets_cursor REFCURSOR, 
-    INOUT form_question_cursor REFCURSOR, 
-    INOUT form_answer_cursor REFCURSOR
-)
-LANGUAGE plpgsql
-AS $$
+	IN p_share_code text,
+	INOUT consent_cursor refcursor,
+	INOUT identifier_cursor refcursor,
+	INOUT address_cursor refcursor,
+	INOUT contact_cursor refcursor,
+	INOUT connected_entities_cursor refcursor,
+	INOUT connected_entities_address_cursor refcursor,
+	INOUT form_answer_sets_cursor refcursor,
+	INOUT form_question_cursor refcursor,
+	INOUT form_answer_cursor refcursor)
+LANGUAGE 'plpgsql'
+AS $BODY$
 DECLARE v_shared_consent_id INT;
 BEGIN
     SELECT id, submitted_at 
@@ -421,8 +293,8 @@ BEGIN
     -- Cursor for Connected Entities
     OPEN connected_entities_cursor FOR 
         SELECT
-        	ce.id, ce.""guid"", ce.entity_type, ce.has_compnay_house_number, ce.company_house_number, 
-        	ce.overseas_company_number, ce.registered_date, ce.register_name, ce.""start_date"", ce.end_date,
+        	ce.id, ce.""guid"", ce.entity_type, ce.has_company_house_number, ce.company_house_number, 
+        	ce.overseas_company_number, ce.registered_date, ce.register_name, ce.end_date,
         	cit.category AS individual_and_trust_category, cit.first_name, cit.last_name, cit.date_of_birth, 
         	cit.nationality, cit.control_condition AS individual_and_trust_control_condition, 
         	cit.connected_type AS connected_person_type, cit.resident_country,
@@ -481,15 +353,40 @@ BEGIN
         WHERE  
             fas.shared_consent_id = v_shared_consent_id and NOT fas.deleted AND fs.""type"" <> 1;
 END;
-$$;
-             ");
+$BODY$;
+");
+        }
+
+        /// <inheritdoc />
+        protected override void Down(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.RenameColumn(
+                name: "has_company_house_number",
+                table: "connected_entities_snapshot",
+                newName: "has_compnay_house_number");
+
+            migrationBuilder.RenameColumn(
+                name: "has_company_house_number",
+                table: "connected_entities",
+                newName: "has_compnay_house_number");
+
+            migrationBuilder.AddColumn<DateTimeOffset>(
+                name: "start_date",
+                table: "connected_entities_snapshot",
+                type: "timestamp with time zone",
+                nullable: true);
+
+            migrationBuilder.AddColumn<DateTimeOffset>(
+                name: "start_date",
+                table: "connected_entities",
+                type: "timestamp with time zone",
+                nullable: true);
 
             migrationBuilder.Sql($@"
 CREATE OR REPLACE PROCEDURE create_shared_consent_snapshot(
-    IN p_share_code TEXT
-)
-LANGUAGE plpgsql
-AS $$
+	IN p_share_code text)
+LANGUAGE 'plpgsql'
+AS $BODY$
 DECLARE v_shared_consent_id INT;
 DECLARE v_organisation_id INT;
 DECLARE v_inserted_id INT;
@@ -679,18 +576,138 @@ BEGIN
 	DROP TABLE IF EXISTS temp_connected_entities_address_map;
 	DROP TABLE IF EXISTS temp_inserted_connected_entities_address_data;
 END;
-$$;
-             ");
+$BODY$;
+");
 
-            migrationBuilder.RenameColumn(
-                name: "has_company_house_number",
-                table: "connected_entities_snapshot",
-                newName: "has_compnay_house_number");
+            migrationBuilder.Sql($@"
+CREATE OR REPLACE PROCEDURE get_shared_consent_details(
+	IN p_share_code text,
+	INOUT consent_cursor refcursor,
+	INOUT identifier_cursor refcursor,
+	INOUT address_cursor refcursor,
+	INOUT contact_cursor refcursor,
+	INOUT connected_entities_cursor refcursor,
+	INOUT connected_entities_address_cursor refcursor,
+	INOUT form_answer_sets_cursor refcursor,
+	INOUT form_question_cursor refcursor,
+	INOUT form_answer_cursor refcursor)
+LANGUAGE 'plpgsql'
+AS $BODY$
+DECLARE v_shared_consent_id INT;
+BEGIN
+    SELECT id, submitted_at 
+    INTO v_shared_consent_id
+    FROM shared_consents
+    WHERE share_code = p_share_code;
 
-            migrationBuilder.RenameColumn(
-                name: "has_company_house_number",
-                table: "connected_entities",
-                newName: "has_compnay_house_number");
+    -- Cursor for Shared Consent and Organisation Details
+    OPEN consent_cursor FOR 
+        SELECT 
+            s.""guid"", s.submitted_at, s.submission_state, s.share_code, 
+            f.""name"" AS form_name, f.""version"", f.is_required, 
+            o.""guid"" AS organisation_guid, os.""name"" AS organisation_name, o.""type"", o.roles,
+            s0.supplier_type, s0.operation_types, s0.completed_reg_address, s0.completed_postal_address, 
+            s0.completed_vat, s0.completed_website_address, s0.completed_email_address, s0.completed_operation_type, 
+            s0.completed_legal_form, s0.completed_connected_person,
+			l.registered_under_act2006, l.registered_legal_form, l.law_registered, l.registration_date
+        FROM 
+            shared_consents AS s
+            INNER JOIN forms AS f ON s.form_id = f.id
+            INNER JOIN organisations AS o ON s.organisation_id = o.id
+            INNER JOIN organisations_snapshot AS os ON os.shared_consent_id = s.id
+            LEFT JOIN supplier_information_snapshot AS s0 ON s0.shared_consent_id = s.id
+            LEFT JOIN legal_forms_snapshot AS l ON s0.id = l.id
+        WHERE 
+            s.share_code = p_share_code;
+
+    -- Cursor for Identifiers
+    OPEN identifier_cursor FOR 
+        SELECT identifier_id, scheme, legal_name, uri, ""primary"" 
+       	FROM identifiers_snapshot 
+		WHERE shared_consent_id = v_shared_consent_id;
+
+    -- Cursor for Organisation Addresses
+    OPEN address_cursor FOR 
+        SELECT 
+            oa.""type"", a.street_address, a.locality, 
+            a.region, a.postal_code, a.country_name, a.country
+        FROM 
+            organisation_address_snapshot AS oa 
+            LEFT JOIN addresses_snapshot AS a ON a.id = oa.address_id 
+        WHERE 
+            oa.shared_consent_id = v_shared_consent_id;
+
+    -- Cursor for Contact Points
+    OPEN contact_cursor FOR 
+        SELECT email, name, telephone, url 
+       	FROM contact_points_snapshot 
+       	WHERE shared_consent_id = v_shared_consent_id;
+
+    -- Cursor for Connected Entities
+    OPEN connected_entities_cursor FOR 
+        SELECT
+        	ce.id, ce.""guid"", ce.entity_type, ce.has_compnay_house_number, ce.company_house_number, 
+        	ce.overseas_company_number, ce.registered_date, ce.register_name, ce.""start_date"", ce.end_date,
+        	cit.category AS individual_and_trust_category, cit.first_name, cit.last_name, cit.date_of_birth, 
+        	cit.nationality, cit.control_condition AS individual_and_trust_control_condition, 
+        	cit.connected_type AS connected_person_type, cit.resident_country,
+        	co.category AS organisation_category, co.name AS organisation_name, co.insolvency_date,
+        	co.registered_legal_form, co.law_registered, co.control_condition AS organisation_control_condition
+    	FROM 
+            connected_entities_snapshot AS ce
+            LEFT JOIN connected_individual_trust_snapshot cit ON cit.id = ce.id
+            LEFT JOIN connected_organisation_snapshot AS co ON co.id = ce.id 
+        WHERE 
+            ce.shared_consent_id = v_shared_consent_id; 
+
+    -- Cursor for Connected Entities Address
+    OPEN connected_entities_address_cursor FOR 
+        SELECT
+        	ce.id, cea.""type"", a.street_address, a.locality, 
+            a.region, a.postal_code, a.country_name, a.country
+    	FROM 
+            connected_entities_snapshot AS ce
+            INNER JOIN connected_entity_address_snapshot cea ON cea.connected_entity_snapshot_id = ce.id
+            INNER JOIN addresses_snapshot AS a ON a.id = cea.address_id
+        WHERE 
+            ce.shared_consent_id = v_shared_consent_id; 
+
+    -- Cursor for Form Answer Sets
+    OPEN form_answer_sets_cursor FOR 
+        SELECT 
+       		fas.id AS form_answer_set_id, fas.""guid"" AS form_answer_set_guid, fs.id, fs.title, fs.""type""
+       	FROM 
+       		form_answer_sets AS fas
+            INNER JOIN form_sections AS fs ON fs.id = fas.section_id
+       	WHERE 
+       		fas.shared_consent_id = v_shared_consent_id and NOT fas.deleted AND fs.""type"" <> 1;
+
+    -- Cursor for Form Question
+    OPEN form_question_cursor FOR 
+        SELECT DISTINCT ON (fq.id)
+			fq.id, fq.""guid"", fq.sort_order, fq.""type"", fq.is_required, fq.""name"", 
+			fq.title, fq.summary_title, fq.""description"", fq.""options"", fq.section_id
+        FROM 
+            form_answer_sets AS fas
+            INNER JOIN form_sections AS fs ON fs.id = fas.section_id
+            INNER JOIN form_questions AS fq ON fq.section_id = fs.id
+        WHERE  
+            fas.shared_consent_id = v_shared_consent_id and NOT fas.deleted AND fs.""type"" <> 1;
+
+    -- Cursor for Form Answer
+    OPEN form_answer_cursor FOR 
+        SELECT 
+			fa.question_id, fa.form_answer_set_id, fa.bool_value, fa.numeric_value, fa.date_value, 
+			fa.start_value, fa.end_value, fa.text_value, fa.option_value, fa.""json_value"", fa.address_value
+        FROM 
+            form_answer_sets AS fas
+            INNER JOIN form_sections AS fs ON fs.id = fas.section_id
+            INNER JOIN form_answers AS fa ON fa.form_answer_set_id = fas.id
+        WHERE  
+            fas.shared_consent_id = v_shared_consent_id and NOT fas.deleted AND fs.""type"" <> 1;
+END;
+$BODY$;
+");
         }
     }
 }

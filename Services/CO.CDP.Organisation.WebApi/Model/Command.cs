@@ -179,7 +179,6 @@ public record RegisterConnectedEntity
     public DateTimeOffset? RegisteredDate { get; init; }
     public string? RegisterName { get; init; }
 
-    public DateTimeOffset? StartDate { get; init; }
     public DateTimeOffset? EndDate { get; init; }
 }
 
@@ -198,7 +197,6 @@ public record UpdateConnectedEntity
     public DateTimeOffset? RegisteredDate { get; init; }
     public string? RegisterName { get; init; }
 
-    public DateTimeOffset? StartDate { get; init; }
     public DateTimeOffset? EndDate { get; init; }
 }
 
@@ -506,8 +504,8 @@ public record SignMouRequest
 {
     public required Guid MouId { get; set; }
     public required Guid CreatedById { get; set; }
-    public required string Name{ get; set; }
-    public required string JobTitle{ get; set; }
+    public required string Name { get; set; }
+    public required string JobTitle { get; set; }
 }
 
 public static class MappingExtensions

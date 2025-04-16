@@ -339,10 +339,6 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("registered_date");
 
-                    b.Property<DateTimeOffset?>("StartDate")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("start_date");
-
                     b.Property<int>("SupplierOrganisationId")
                         .HasColumnType("integer")
                         .HasColumnName("supplier_organisation_id");
@@ -418,10 +414,6 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                     b.Property<int>("SharedConsentId")
                         .HasColumnType("integer")
                         .HasColumnName("shared_consent_id");
-
-                    b.Property<DateTimeOffset?>("StartDate")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("start_date");
 
                     b.Property<DateTimeOffset>("UpdatedOn")
                         .HasColumnType("timestamp with time zone")

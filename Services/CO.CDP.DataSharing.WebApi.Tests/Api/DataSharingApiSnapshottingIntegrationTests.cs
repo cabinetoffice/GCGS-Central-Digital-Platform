@@ -404,12 +404,14 @@ public class DataSharingApiSnapshottingIntegrationTests : IClassFixture<Organisa
         // Verify original data in first share code
         var shareData1 = await _client.GetSharedDataAsync(createShareCodeResponse1.ShareCode);
         shareData1.AssociatedPersons.Should().HaveCount(1);
-        shareData1.AssociatedPersons.First().Name.Should().Be("John Doe");
+        shareData1.AssociatedPersons.First().FirstName.Should().Be("John");
+        shareData1.AssociatedPersons.First().LastName.Should().Be("Doe");
 
         // Verify updated data in second share code
         var shareData2 = await _client.GetSharedDataAsync(createShareCodeResponse2.ShareCode);
         shareData2.AssociatedPersons.Should().HaveCount(1);
-        shareData2.AssociatedPersons.First().Name.Should().Be("Updated first name Updated last name");
+        shareData2.AssociatedPersons.First().FirstName.Should().Be("Updated first name");
+        shareData2.AssociatedPersons.First().LastName.Should().Be("Updated last name");
     }
 
     [Fact]
@@ -436,13 +438,16 @@ public class DataSharingApiSnapshottingIntegrationTests : IClassFixture<Organisa
         // Verify original data in first share code
         var shareData1 = await _client.GetSharedDataAsync(createShareCodeResponse1.ShareCode);
         shareData1.AssociatedPersons.Should().HaveCount(1);
-        shareData1.AssociatedPersons.First().Name.Should().Be("John Doe");
+        shareData1.AssociatedPersons.First().FirstName.Should().Be("John");
+        shareData1.AssociatedPersons.First().LastName.Should().Be("Doe");
 
         // Verify updated data in second share code
         var shareData2 = await _client.GetSharedDataAsync(createShareCodeResponse2.ShareCode);
         shareData2.AssociatedPersons.Should().HaveCount(2);
-        shareData2.AssociatedPersons.First().Name.Should().Be("John Doe");
-        shareData2.AssociatedPersons.Last().Name.Should().Be("Bob Bobbington");
+        shareData2.AssociatedPersons.First().FirstName.Should().Be("John");
+        shareData2.AssociatedPersons.First().LastName.Should().Be("Doe");
+        shareData2.AssociatedPersons.Last().FirstName.Should().Be("Bob");
+        shareData2.AssociatedPersons.Last().LastName.Should().Be("Bobbington");
     }
 
     [Fact]
@@ -471,13 +476,16 @@ public class DataSharingApiSnapshottingIntegrationTests : IClassFixture<Organisa
         // Verify original data in first share code
         var shareData1 = await _client.GetSharedDataAsync(createShareCodeResponse1.ShareCode);
         shareData1.AssociatedPersons.Should().HaveCount(1);
-        shareData1.AssociatedPersons.First().Name.Should().Be("John Doe");
+        shareData1.AssociatedPersons.First().FirstName.Should().Be("John");
+        shareData1.AssociatedPersons.First().LastName.Should().Be("Doe");
 
         // Verify updated data in second share code
         var shareData2 = await _client.GetSharedDataAsync(createShareCodeResponse2.ShareCode);
         shareData2.AssociatedPersons.Should().HaveCount(2);
-        shareData2.AssociatedPersons.First().Name.Should().Be("John Doe");  // John Doe should still be there now that we have removed the end_date filtering from the data sharing api
-        shareData2.AssociatedPersons.Last().Name.Should().Be("Bob Bobbington");
+        shareData2.AssociatedPersons.First().FirstName.Should().Be("John"); // John Doe should still be there now that we have removed the end_date filtering from the data sharing api
+        shareData2.AssociatedPersons.First().LastName.Should().Be("Doe");
+        shareData2.AssociatedPersons.Last().FirstName.Should().Be("Bob");
+        shareData2.AssociatedPersons.Last().LastName.Should().Be("Bobbington");
     }
 
     private Organisation CreateOrganisation(string orgName)

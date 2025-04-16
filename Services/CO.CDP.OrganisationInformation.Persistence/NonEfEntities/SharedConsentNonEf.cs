@@ -41,7 +41,6 @@ public class ConnectedEntityNonEf
     public ICollection<AddressNonEf> Addresses { get; set; } = [];
     public DateTimeOffset? RegisteredDate { get; set; }
     public string? RegisterName { get; set; }
-    public DateTimeOffset? StartDate { get; set; }
     public DateTimeOffset? EndDate { get; set; }
 }
 

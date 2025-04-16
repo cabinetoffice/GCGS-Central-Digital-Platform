@@ -3,7 +3,6 @@ using CO.CDP.OrganisationInformation.Persistence.Forms;
 using CO.CDP.OrganisationInformation.Persistence.NonEfEntities;
 using FluentAssertions.Common;
 using static CO.CDP.OrganisationInformation.Persistence.ConnectedEntity;
-using PersistenceForms = CO.CDP.OrganisationInformation.Persistence.Forms;
 
 namespace CO.CDP.DataSharing.WebApi.Tests;
 
@@ -78,7 +77,6 @@ internal static class NonEfEntityFactory
                     OverseasCompanyNumber = "Oversears123",
                     RegisteredDate = DateTime.Today.ToDateTimeOffset(),
                     RegisterName = "Approved By Trade Association",
-                    StartDate = DateTime.Today.AddDays(30).ToDateTimeOffset(),
                     EndDate = DateTime.Today.AddDays(5).ToDateTimeOffset(),
                     Addresses = [ new AddressNonEf {
                         Type = AddressType.Registered,
@@ -121,7 +119,6 @@ internal static class NonEfEntityFactory
                     OverseasCompanyNumber = "Oversears456",
                     RegisteredDate = DateTime.Today.ToDateTimeOffset(),
                     RegisterName = "Gov Authority of UK",
-                    StartDate = DateTime.Today.AddMonths(10).ToDateTimeOffset(),
                     EndDate = DateTime.Today.AddMonths(5).ToDateTimeOffset(),
                     Addresses = [ new AddressNonEf {
                         Type = AddressType.Postal,
@@ -215,6 +212,16 @@ internal static class NonEfEntityFactory
             {
                 Type = AddressType.Registered,
                 StreetAddress = "1234 Default St",
+                Locality = "Default City",
+                Region = "Default Region",
+                PostalCode = "EX1 1EX",
+                CountryName = "Example Country",
+                Country = "EX"
+            },
+            new AddressNonEf
+            {
+                Type = AddressType.Postal,
+                StreetAddress = "1234 Default Postal St",
                 Locality = "Default City",
                 Region = "Default Region",
                 PostalCode = "EX1 1EX",
