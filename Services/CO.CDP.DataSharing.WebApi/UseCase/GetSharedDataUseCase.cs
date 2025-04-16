@@ -37,7 +37,7 @@ public class GetSharedDataUseCase(
             await AddConsortiumOrganisationSharedConsent(sharecode, supplierInformation);
         }
 
-        InsertFileDocumentUri(sharedConsent, supplierInformation, sharecode);
+        InsertFileDocumentUri(supplierInformation, sharecode);
 
         return supplierInformation;
     }
@@ -77,19 +77,19 @@ public class GetSharedDataUseCase(
         }
     }
 
-    private void InsertFileDocumentUri(SharedConsentNonEf sharedConsent, SupplierInformation supplierInformation, string sharecode)
+    private void InsertFileDocumentUri(SupplierInformation supplierInformation, string sharecode)
     {
         var dataSharingApiUrl = configuration["DataSharingApiUrl"]
                     ?? throw new Exception("Missing configuration key: DataSharingApiUrl.");
 
-        var questions = sharedConsent.AnswerSets.SelectMany(s => s.Section.Questions);
+        var questions = supplierInformation.SupplierInformationData.Questions;
 
         foreach (var answerSet in supplierInformation.SupplierInformationData.AnswerSets)
         {
             foreach (var answer in answerSet.Answers)
             {
                 if (!string.IsNullOrWhiteSpace(answer.TextValue)
-                    && questions.Any(q => q.Type == FormQuestionType.FileUpload && q.Name == answer.QuestionName))
+                    && questions.Any(q => q.Type == Model.FormQuestionType.FileUpload && q.Name == answer.QuestionName))
                 {
                     answer.DocumentUri = new Uri(new Uri(dataSharingApiUrl), $"/share/data/{sharecode}/document/{answer.TextValue}");
                     answer.TextValue = null;
