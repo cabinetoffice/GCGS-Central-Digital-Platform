@@ -95,8 +95,8 @@ builder.Services.AddScoped<IUseCase<(Guid, SignMouRequest),bool>, SignOrganisati
 builder.Services.AddScoped<IUseCase<(Guid, AddOrganisationParty), bool>, AddOrganisationPartyUseCase>();
 builder.Services.AddScoped<IUseCase<CO.CDP.Organisation.WebApi.Model.Mou>, GetLatestMouUseCase>();
 builder.Services.AddScoped<IUseCase<Guid, CO.CDP.Organisation.WebApi.Model.Mou>, GetMouUseCase>();
+builder.Services.AddScoped<IUseCase<(Guid, UpdateOrganisationParty), bool>, UpdateOrganisationPartyUseCase>();
 builder.Services.AddScoped<IUseCase<GetAnnouncementQuery, IEnumerable<Announcement>>, GetAnnouncementsUseCase>();
-
 
 builder.Services.AddGovUKNotifyApiClient(builder.Configuration);
 builder.Services.AddProblemDetails();

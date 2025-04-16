@@ -96,7 +96,22 @@
                 }
             </dl>
         }
-        <p>@StaticTextResource.Consortium_ConsortiumOverview_Paragraph1</p>
+        <dl class="govuk-summary-list ">
+            @foreach (var p in parties)
+            {
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">@p.Name</dt>
+                    <dd class="govuk-summary-list__value">
+                        <p class="govuk-body">@p.ShareCode.Value
+                            <span class="govuk-hint govuk-!-display-block">Share code created on @p.ShareCode.SubmittedAt.ToFormattedString()</span>
+                        </p>
+                    </dd>
+                    <dd class="govuk-summary-list__actions">
+                        <a class="govuk-link govuk-link--no-visited-state" href="/consortium/@Model.Id/enter-new-sharecode/@p.Id">Change<span class="govuk-visually-hidden"> organisation sharecode</span></a>
+                    </dd>
+                </div>
+            }
+        </dl>        <p>@StaticTextResource.Consortium_ConsortiumOverview_Paragraph1</p>
 
         <div class="govuk-body">
             <a class="govuk-button govuk-button--secondary" href="/consortium/@Model.Id/enter-sharecode">@StaticTextResource.Consortium_ConsortiumOverview_AddAnOrganisation_link</a>
