@@ -18,265 +18,15 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 21,
+  "id": 37,
   "links": [],
   "panels": [
     {
       "datasource": {
-        "default": true,
-        "type": "cloudwatch",
-        "uid": "CLOUDWATCH"
-      },
-      "gridPos": {
-        "h": 4,
-        "w": 24,
-        "x": 0,
-        "y": 0
-      },
-      "id": 55,
-      "options": {
-        "code": {
-          "language": "plaintext",
-          "showLineNumbers": false,
-          "showMiniMap": false
-        },
-        "content": "# Request Status Code Hits\n\nBy default, this dashboard has the \"**Status Code**\" filter set to `All except 2xx` and \"**HealthCheck requests**\" set to `Exclude`. \\\nSeeing \"**No data**\" in the panels for different services is the desired state, indicating that no errors or unexpected responses are being logged. This setup helps to focus on identifying issues while disregarding successful requests and health checks, which are expected to be functioning properly.",
-        "mode": "markdown"
-      },
-      "pluginVersion": "11.2.2+security-01",
-      "targets": [
-        {
-          "datasource": {
-            "type": "cloudwatch",
-            "uid": "CLOUDWATCH"
-          },
-          "dimensions": {},
-          "expression": "",
-          "id": "",
-          "label": "",
-          "logGroups": [],
-          "matchExact": true,
-          "metricEditorMode": 0,
-          "metricName": "",
-          "metricQueryType": 0,
-          "namespace": "",
-          "period": "",
-          "queryMode": "Metrics",
-          "refId": "A",
-          "region": "default",
-          "sqlExpression": "",
-          "statistic": "Average"
-        }
-      ],
-      "type": "text"
-    },
-    {
-      "collapsed": false,
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 4
-      },
-      "id": 3,
-      "panels": [],
-      "repeat": "log_groups",
-      "repeatDirection": "h",
-      "title": "$log_groups",
-      "type": "row"
-    },
-    {
-      "datasource": {
-        "default": true,
         "type": "cloudwatch",
         "uid": "CLOUDWATCH"
       },
       "description": "",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            }
-          },
-          "mappings": []
-        },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byRegexp",
-              "options": "/Hits/"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "mode": "fixed"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byRegexp",
-              "options": "/2\\d{2}\\sHits/"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "green",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byRegexp",
-              "options": "/3\\d{2}\\sHits/"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "yellow",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byRegexp",
-              "options": "/4\\d{2}\\sHits/"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "orange",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byRegexp",
-              "options": "/5\\d{2}\\sHits/"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "red",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Hits"
-            },
-            "properties": [
-              {
-                "id": "links",
-                "value": [
-                  {
-                    "title": "Service Logs",
-                    "url": "d/service-logs/service-logs?${log_groups:queryparam}&${status_code:queryparam}&${__url_time_range}"
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      "gridPos": {
-        "h": 7,
-        "w": 3,
-        "x": 0,
-        "y": 5
-      },
-      "id": 4,
-      "links": [
-        {
-          "targetBlank": true,
-          "title": "Service Logs Dashboard",
-          "url": "d/service-logs/service-logs?${log_groups:queryparam}&${status_code:queryparam}&${__url_time_range}"
-        }
-      ],
-      "options": {
-        "displayLabels": [
-          "percent"
-        ],
-        "legend": {
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": false
-        },
-        "pieType": "pie",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "/^Hits$/",
-          "values": true
-        },
-        "tooltip": {
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "11.2.2+security-01",
-      "targets": [
-        {
-          "datasource": {
-            "type": "cloudwatch",
-            "uid": "CLOUDWATCH"
-          },
-          "dimensions": {},
-          "expression": "fields @timestamp, StatusCode\n| filter ispresent(StatusCode) and $status_code\n| filter $healthcheck_requests\n| stats count() as Hits by StatusCode\n| display concat(StatusCode, \" Hits\") as Name, Hits\n\n",
-          "id": "",
-          "label": "",
-          "logGroups": [
-            {
-              "arn": "$log_groups",
-              "name": "$log_groups"
-            }
-          ],
-          "matchExact": true,
-          "metricEditorMode": 0,
-          "metricName": "",
-          "metricQueryType": 0,
-          "namespace": "",
-          "period": "",
-          "queryMode": "Logs",
-          "refId": "A",
-          "region": "default",
-          "sqlExpression": "",
-          "statistic": "Average",
-          "statsGroups": [
-            "StatusCode"
-          ]
-        }
-      ],
-      "type": "piechart"
-    },
-    {
-      "datasource": {
-        "default": true,
-        "type": "cloudwatch",
-        "uid": "CLOUDWATCH"
-      },
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -291,8 +41,8 @@
             "barAlignment": 0,
             "barWidthFactor": 0.6,
             "drawStyle": "line",
-            "fillOpacity": 40,
-            "gradientMode": "opacity",
+            "fillOpacity": 3,
+            "gradientMode": "none",
             "hideFrom": {
               "legend": false,
               "tooltip": false,
@@ -301,11 +51,11 @@
             "insertNulls": false,
             "lineInterpolation": "smooth",
             "lineWidth": 1,
-            "pointSize": 4,
+            "pointSize": 5,
             "scaleDistribution": {
               "type": "linear"
             },
-            "showPoints": "always",
+            "showPoints": "never",
             "spanNulls": false,
             "stacking": {
               "group": "A",
@@ -315,28 +65,34 @@
               "mode": "off"
             }
           },
-          "fieldMinMax": false,
           "mappings": [],
+          "min": 0,
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
                 "color": "green",
                 "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
               }
             ]
-          }
+          },
+          "unit": "none"
         },
         "overrides": [
           {
             "matcher": {
-              "id": "byRegexp",
-              "options": "/Hits/"
+              "id": "byName",
+              "options": "5XX"
             },
             "properties": [
               {
                 "id": "color",
                 "value": {
+                  "fixedColor": "red",
                   "mode": "fixed"
                 }
               }
@@ -344,38 +100,8 @@
           },
           {
             "matcher": {
-              "id": "byRegexp",
-              "options": "/2\\d{2}\\sHits/"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "green",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byRegexp",
-              "options": "/3\\d{2}\\sHits/"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "yellow",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byRegexp",
-              "options": "/4\\d{2}\\sHits/"
+              "id": "byName",
+              "options": "4XX"
             },
             "properties": [
               {
@@ -389,14 +115,14 @@
           },
           {
             "matcher": {
-              "id": "byRegexp",
-              "options": "/5\\d{2}\\sHits/"
+              "id": "byName",
+              "options": "3XX"
             },
             "properties": [
               {
                 "id": "color",
                 "value": {
-                  "fixedColor": "red",
+                  "fixedColor": "yellow",
                   "mode": "fixed"
                 }
               }
@@ -405,72 +131,278 @@
         ]
       },
       "gridPos": {
-        "h": 7,
-        "w": 21,
-        "x": 3,
-        "y": 5
+        "h": 10,
+        "w": 12,
+        "x": 0,
+        "y": 0
       },
-      "id": 26,
-      "links": [
-        {
-          "title": "Service Logs",
-          "url": "d/service-logs/service-logs?${log_groups:queryparam}&${status_code:queryparam}&${__url_time_range}"
-        }
-      ],
+      "id": 41,
       "options": {
         "legend": {
           "calcs": [
-            "sum"
+            "min",
+            "mean",
+            "max"
           ],
           "displayMode": "table",
-          "placement": "right",
+          "placement": "bottom",
           "showLegend": true,
-          "width": 200
+          "sortBy": "Mean",
+          "sortDesc": true
         },
         "tooltip": {
-          "mode": "single",
+          "hideZeros": false,
+          "mode": "multi",
           "sort": "none"
         }
       },
-      "pluginVersion": "11.2.2+security-01",
+      "pluginVersion": "11.5.2",
       "targets": [
         {
           "datasource": {
             "type": "cloudwatch",
             "uid": "CLOUDWATCH"
           },
-          "dimensions": {},
-          "expression": "fields @timestamp, @message, StatusCode\n| filter ispresent(StatusCode) and $status_code\n| filter $healthcheck_requests\n| stats count() as Hits by bin(1m), StatusCode\n",
+          "dimensions": {
+            "LoadBalancer": "$loadbalancer"
+          },
+          "expression": "",
           "id": "",
-          "label": "",
-          "logGroups": [
-            {
-              "arn": "$log_groups",
-              "name": "$log_groups"
-            }
-          ],
+          "label": "Request Count",
+          "logGroups": [],
           "matchExact": true,
           "metricEditorMode": 0,
-          "metricName": "",
+          "metricName": "RequestCount",
           "metricQueryType": 0,
-          "namespace": "",
+          "namespace": "AWS/ApplicationELB",
           "period": "",
-          "queryMode": "Logs",
+          "queryMode": "Metrics",
           "refId": "A",
           "region": "default",
-          "sqlExpression": "",
-          "statistic": "Average",
-          "statsGroups": [
-            "bin(1m)",
-            "StatusCode"
-          ]
+          "sql": {
+            "from": {
+              "property": {
+                "name": "AWS/ApplicationELB",
+                "type": "string"
+              },
+              "type": "property"
+            },
+            "select": {
+              "name": "AVG",
+              "parameters": [
+                {
+                  "name": "HTTPCode_ELB_5XX_Count",
+                  "type": "functionParameter"
+                }
+              ],
+              "type": "function"
+            },
+            "where": {
+              "expressions": [
+                {
+                  "operator": {
+                    "name": "=",
+                    "value": "app/cdp-sirsi/9e67fe66e4a0652c"
+                  },
+                  "property": {
+                    "name": "LoadBalancer",
+                    "type": "string"
+                  },
+                  "type": "operator"
+                }
+              ],
+              "type": "and"
+            }
+          },
+          "sqlExpression": "SELECT AVG(HTTPCode_ELB_5XX_Count) FROM \"AWS/ApplicationELB\" WHERE LoadBalancer = \"$loadbalancer\"",
+          "statistic": "Sum"
+        },
+        {
+          "datasource": {
+            "type": "cloudwatch",
+            "uid": "CLOUDWATCH"
+          },
+          "dimensions": {
+            "LoadBalancer": "$loadbalancer"
+          },
+          "expression": "",
+          "hide": false,
+          "id": "",
+          "label": "5XX",
+          "logGroups": [],
+          "matchExact": true,
+          "metricEditorMode": 0,
+          "metricName": "HTTPCode_ELB_5XX_Count",
+          "metricQueryType": 0,
+          "namespace": "AWS/ApplicationELB",
+          "period": "",
+          "queryMode": "Metrics",
+          "refId": "D",
+          "region": "default",
+          "sql": {
+            "from": {
+              "property": {
+                "name": "AWS/ApplicationELB",
+                "type": "string"
+              },
+              "type": "property"
+            },
+            "select": {
+              "name": "AVG",
+              "parameters": [
+                {
+                  "name": "HTTPCode_ELB_5XX_Count",
+                  "type": "functionParameter"
+                }
+              ],
+              "type": "function"
+            },
+            "where": {
+              "expressions": [
+                {
+                  "operator": {
+                    "name": "=",
+                    "value": "app/cdp-sirsi/9e67fe66e4a0652c"
+                  },
+                  "property": {
+                    "name": "LoadBalancer",
+                    "type": "string"
+                  },
+                  "type": "operator"
+                }
+              ],
+              "type": "and"
+            }
+          },
+          "sqlExpression": "SELECT AVG(HTTPCode_ELB_5XX_Count) FROM \"AWS/ApplicationELB\" WHERE LoadBalancer = \"$loadbalancer\"",
+          "statistic": "Sum"
+        },
+        {
+          "datasource": {
+            "type": "cloudwatch",
+            "uid": "CLOUDWATCH"
+          },
+          "dimensions": {
+            "LoadBalancer": "$loadbalancer"
+          },
+          "expression": "",
+          "hide": false,
+          "id": "",
+          "label": "4XX",
+          "logGroups": [],
+          "matchExact": true,
+          "metricEditorMode": 0,
+          "metricName": "HTTPCode_ELB_4XX_Count",
+          "metricQueryType": 0,
+          "namespace": "AWS/ApplicationELB",
+          "period": "",
+          "queryMode": "Metrics",
+          "refId": "B",
+          "region": "default",
+          "sql": {
+            "from": {
+              "property": {
+                "name": "AWS/ApplicationELB",
+                "type": "string"
+              },
+              "type": "property"
+            },
+            "select": {
+              "name": "AVG",
+              "parameters": [
+                {
+                  "name": "HTTPCode_ELB_5XX_Count",
+                  "type": "functionParameter"
+                }
+              ],
+              "type": "function"
+            },
+            "where": {
+              "expressions": [
+                {
+                  "operator": {
+                    "name": "=",
+                    "value": "app/cdp-sirsi/9e67fe66e4a0652c"
+                  },
+                  "property": {
+                    "name": "LoadBalancer",
+                    "type": "string"
+                  },
+                  "type": "operator"
+                }
+              ],
+              "type": "and"
+            }
+          },
+          "sqlExpression": "SELECT AVG(HTTPCode_ELB_5XX_Count) FROM \"AWS/ApplicationELB\" WHERE LoadBalancer = \"$loadbalancer\"",
+          "statistic": "Sum"
+        },
+        {
+          "datasource": {
+            "type": "cloudwatch",
+            "uid": "CLOUDWATCH"
+          },
+          "dimensions": {
+            "LoadBalancer": "$loadbalancer"
+          },
+          "expression": "",
+          "hide": false,
+          "id": "",
+          "label": "3XX",
+          "logGroups": [],
+          "matchExact": true,
+          "metricEditorMode": 0,
+          "metricName": "HTTPCode_ELB_3XX_Count",
+          "metricQueryType": 0,
+          "namespace": "AWS/ApplicationELB",
+          "period": "",
+          "queryMode": "Metrics",
+          "refId": "C",
+          "region": "default",
+          "sql": {
+            "from": {
+              "property": {
+                "name": "AWS/ApplicationELB",
+                "type": "string"
+              },
+              "type": "property"
+            },
+            "select": {
+              "name": "AVG",
+              "parameters": [
+                {
+                  "name": "HTTPCode_ELB_5XX_Count",
+                  "type": "functionParameter"
+                }
+              ],
+              "type": "function"
+            },
+            "where": {
+              "expressions": [
+                {
+                  "operator": {
+                    "name": "=",
+                    "value": "app/cdp-sirsi/9e67fe66e4a0652c"
+                  },
+                  "property": {
+                    "name": "LoadBalancer",
+                    "type": "string"
+                  },
+                  "type": "operator"
+                }
+              ],
+              "type": "and"
+            }
+          },
+          "sqlExpression": "SELECT AVG(HTTPCode_ELB_5XX_Count) FROM \"AWS/ApplicationELB\" WHERE LoadBalancer = \"$loadbalancer\"",
+          "statistic": "Sum"
         }
       ],
+      "title": "HTTP Request Code Count",
       "type": "timeseries"
     },
     {
       "datasource": {
-        "default": true,
         "type": "cloudwatch",
         "uid": "CLOUDWATCH"
       },
@@ -478,18 +410,43 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "thresholds"
+            "mode": "palette-classic"
           },
           "custom": {
-            "align": "left",
-            "cellOptions": {
-              "type": "auto",
-              "wrapText": false
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 3,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
             },
-            "filterable": true,
-            "inspect": true
+            "insertNulls": false,
+            "lineInterpolation": "smooth",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
           },
           "mappings": [],
+          "min": 0,
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -502,343 +459,868 @@
                 "value": 80
               }
             ]
-          }
+          },
+          "unit": "none"
         },
         "overrides": [
           {
             "matcher": {
               "id": "byName",
-              "options": "Time"
+              "options": "5XX"
             },
             "properties": [
               {
-                "id": "custom.width",
-                "value": 180
+                "id": "color",
+                "value": {
+                  "fixedColor": "red",
+                  "mode": "fixed"
+                }
               }
             ]
           },
           {
             "matcher": {
               "id": "byName",
-              "options": "StatusCode"
+              "options": "4XX"
             },
             "properties": [
               {
-                "id": "custom.width",
-                "value": 120
+                "id": "color",
+                "value": {
+                  "fixedColor": "orange",
+                  "mode": "fixed"
+                }
               }
             ]
           },
           {
             "matcher": {
               "id": "byName",
-              "options": "RequestPath"
+              "options": "Redirect Counts"
             },
             "properties": [
               {
-                "id": "custom.width",
-                "value": 320
+                "id": "color",
+                "value": {
+                  "fixedColor": "blue",
+                  "mode": "fixed"
+                }
               }
             ]
           },
           {
             "matcher": {
               "id": "byName",
-              "options": "Version"
+              "options": "Target 2XX"
             },
             "properties": [
               {
-                "id": "custom.width",
-                "value": 120
+                "id": "color",
+                "value": {
+                  "fixedColor": "green",
+                  "mode": "fixed"
+                }
               }
             ]
           },
           {
             "matcher": {
               "id": "byName",
-              "options": "Status"
+              "options": "Target 5XX"
             },
             "properties": [
               {
-                "id": "custom.width",
-                "value": 90
+                "id": "color",
+                "value": {
+                  "fixedColor": "red",
+                  "mode": "fixed"
+                }
               }
             ]
           },
           {
             "matcher": {
               "id": "byName",
-              "options": "Method"
+              "options": "Target 3XX"
             },
             "properties": [
               {
-                "id": "custom.width",
-                "value": 90
+                "id": "color",
+                "value": {
+                  "fixedColor": "yellow",
+                  "mode": "fixed"
+                }
               }
             ]
           }
         ]
       },
       "gridPos": {
-        "h": 8,
-        "w": 24,
-        "x": 0,
-        "y": 12
+        "h": 10,
+        "w": 12,
+        "x": 12,
+        "y": 0
       },
-      "id": 1,
-      "links": [
-        {
-          "targetBlank": true,
-          "title": "Service Logs",
-          "url": "d/service-logs/service-logs?${log_groups:queryparam}&${status_code:queryparam}&${__url_time_range}"
-        }
-      ],
+      "id": 66,
       "options": {
-        "cellHeight": "sm",
-        "footer": {
-          "countRows": false,
-          "enablePagination": false,
-          "fields": "",
-          "reducer": [
-            "sum"
+        "legend": {
+          "calcs": [
+            "min",
+            "mean",
+            "max"
           ],
-          "show": false
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
+          "sortBy": "Mean",
+          "sortDesc": true
         },
-        "showHeader": true,
-        "sortBy": []
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "multi",
+          "sort": "none"
+        }
       },
-      "pluginVersion": "11.2.2+security-01",
+      "pluginVersion": "11.5.2",
       "targets": [
         {
           "datasource": {
             "type": "cloudwatch",
             "uid": "CLOUDWATCH"
           },
-          "dimensions": {},
-          "expression": "fields @timestamp, StatusCode, RequestPath, @message\n| filter ispresent(StatusCode) and $status_code\n| filter $healthcheck_requests\n| sort @timestamp desc\n",
+          "dimensions": {
+            "LoadBalancer": "$loadbalancer"
+          },
+          "expression": "",
           "hide": false,
           "id": "",
-          "label": "",
-          "logGroups": [
-            {
-              "arn": "$log_groups",
-              "name": "$log_groups"
-            }
-          ],
+          "label": "Redirect Counts",
+          "logGroups": [],
           "matchExact": true,
           "metricEditorMode": 0,
-          "metricName": "",
+          "metricName": "HTTP_Redirect_Count",
           "metricQueryType": 0,
-          "namespace": "",
+          "namespace": "AWS/ApplicationELB",
           "period": "",
-          "queryMode": "Logs",
+          "queryMode": "Metrics",
           "refId": "A",
           "region": "default",
-          "sqlExpression": "",
-          "statistic": "Average",
-          "statsGroups": []
-        }
-      ],
-      "transformations": [
+          "sql": {
+            "from": {
+              "property": {
+                "name": "AWS/ApplicationELB",
+                "type": "string"
+              },
+              "type": "property"
+            },
+            "select": {
+              "name": "AVG",
+              "parameters": [
+                {
+                  "name": "HTTPCode_ELB_5XX_Count",
+                  "type": "functionParameter"
+                }
+              ],
+              "type": "function"
+            },
+            "where": {
+              "expressions": [
+                {
+                  "operator": {
+                    "name": "=",
+                    "value": "app/cdp-sirsi/9e67fe66e4a0652c"
+                  },
+                  "property": {
+                    "name": "LoadBalancer",
+                    "type": "string"
+                  },
+                  "type": "operator"
+                }
+              ],
+              "type": "and"
+            }
+          },
+          "sqlExpression": "SELECT AVG(HTTPCode_ELB_5XX_Count) FROM \"AWS/ApplicationELB\" WHERE LoadBalancer = \"$loadbalancer\"",
+          "statistic": "Sum"
+        },
         {
-          "id": "extractFields",
-          "options": {
-            "format": "json",
-            "jsonPaths": [
-              {
-                "path": "Version"
+          "datasource": {
+            "type": "cloudwatch",
+            "uid": "CLOUDWATCH"
+          },
+          "dimensions": {
+            "LoadBalancer": "$loadbalancer"
+          },
+          "expression": "",
+          "hide": false,
+          "id": "",
+          "label": "Target 2XX",
+          "logGroups": [],
+          "matchExact": true,
+          "metricEditorMode": 0,
+          "metricName": "HTTPCode_Target_2XX_Count",
+          "metricQueryType": 0,
+          "namespace": "AWS/ApplicationELB",
+          "period": "",
+          "queryMode": "Metrics",
+          "refId": "B",
+          "region": "default",
+          "sql": {
+            "from": {
+              "property": {
+                "name": "AWS/ApplicationELB",
+                "type": "string"
               },
-              {
-                "alias": "Status",
-                "path": "StatusCode"
+              "type": "property"
+            },
+            "select": {
+              "name": "AVG",
+              "parameters": [
+                {
+                  "name": "HTTPCode_ELB_5XX_Count",
+                  "type": "functionParameter"
+                }
+              ],
+              "type": "function"
+            },
+            "where": {
+              "expressions": [
+                {
+                  "operator": {
+                    "name": "=",
+                    "value": "app/cdp-sirsi/9e67fe66e4a0652c"
+                  },
+                  "property": {
+                    "name": "LoadBalancer",
+                    "type": "string"
+                  },
+                  "type": "operator"
+                }
+              ],
+              "type": "and"
+            }
+          },
+          "sqlExpression": "SELECT AVG(HTTPCode_ELB_5XX_Count) FROM \"AWS/ApplicationELB\" WHERE LoadBalancer = \"$loadbalancer\"",
+          "statistic": "Sum"
+        },
+        {
+          "datasource": {
+            "type": "cloudwatch",
+            "uid": "CLOUDWATCH"
+          },
+          "dimensions": {
+            "LoadBalancer": "$loadbalancer"
+          },
+          "expression": "",
+          "hide": false,
+          "id": "",
+          "label": "Target 5XX",
+          "logGroups": [],
+          "matchExact": true,
+          "metricEditorMode": 0,
+          "metricName": "HTTPCode_Target_5XX_Count",
+          "metricQueryType": 0,
+          "namespace": "AWS/ApplicationELB",
+          "period": "",
+          "queryMode": "Metrics",
+          "refId": "C",
+          "region": "default",
+          "sql": {
+            "from": {
+              "property": {
+                "name": "AWS/ApplicationELB",
+                "type": "string"
               },
-              {
-                "path": "Method"
+              "type": "property"
+            },
+            "select": {
+              "name": "AVG",
+              "parameters": [
+                {
+                  "name": "HTTPCode_ELB_5XX_Count",
+                  "type": "functionParameter"
+                }
+              ],
+              "type": "function"
+            },
+            "where": {
+              "expressions": [
+                {
+                  "operator": {
+                    "name": "=",
+                    "value": "app/cdp-sirsi/9e67fe66e4a0652c"
+                  },
+                  "property": {
+                    "name": "LoadBalancer",
+                    "type": "string"
+                  },
+                  "type": "operator"
+                }
+              ],
+              "type": "and"
+            }
+          },
+          "sqlExpression": "SELECT AVG(HTTPCode_ELB_5XX_Count) FROM \"AWS/ApplicationELB\" WHERE LoadBalancer = \"$loadbalancer\"",
+          "statistic": "Sum"
+        },
+        {
+          "datasource": {
+            "type": "cloudwatch",
+            "uid": "CLOUDWATCH"
+          },
+          "dimensions": {
+            "LoadBalancer": "$loadbalancer"
+          },
+          "expression": "",
+          "hide": false,
+          "id": "",
+          "label": "Target 4XX",
+          "logGroups": [],
+          "matchExact": true,
+          "metricEditorMode": 0,
+          "metricName": "HTTPCode_Target_4XX_Count",
+          "metricQueryType": 0,
+          "namespace": "AWS/ApplicationELB",
+          "period": "",
+          "queryMode": "Metrics",
+          "refId": "D",
+          "region": "default",
+          "sql": {
+            "from": {
+              "property": {
+                "name": "AWS/ApplicationELB",
+                "type": "string"
               },
-              {
-                "path": "RequestPath"
+              "type": "property"
+            },
+            "select": {
+              "name": "AVG",
+              "parameters": [
+                {
+                  "name": "HTTPCode_ELB_5XX_Count",
+                  "type": "functionParameter"
+                }
+              ],
+              "type": "function"
+            },
+            "where": {
+              "expressions": [
+                {
+                  "operator": {
+                    "name": "=",
+                    "value": "app/cdp-sirsi/9e67fe66e4a0652c"
+                  },
+                  "property": {
+                    "name": "LoadBalancer",
+                    "type": "string"
+                  },
+                  "type": "operator"
+                }
+              ],
+              "type": "and"
+            }
+          },
+          "sqlExpression": "SELECT AVG(HTTPCode_ELB_5XX_Count) FROM \"AWS/ApplicationELB\" WHERE LoadBalancer = \"$loadbalancer\"",
+          "statistic": "Sum"
+        },
+        {
+          "datasource": {
+            "type": "cloudwatch",
+            "uid": "CLOUDWATCH"
+          },
+          "dimensions": {
+            "LoadBalancer": "$loadbalancer"
+          },
+          "expression": "",
+          "hide": false,
+          "id": "",
+          "label": "Target 3XX",
+          "logGroups": [],
+          "matchExact": true,
+          "metricEditorMode": 0,
+          "metricName": "HTTPCode_Target_3XX_Count",
+          "metricQueryType": 0,
+          "namespace": "AWS/ApplicationELB",
+          "period": "",
+          "queryMode": "Metrics",
+          "refId": "E",
+          "region": "default",
+          "sql": {
+            "from": {
+              "property": {
+                "name": "AWS/ApplicationELB",
+                "type": "string"
               },
-              {
-                "path": "@m"
-              }
-            ],
-            "keepTime": true,
-            "replace": true,
-            "source": "@message"
-          }
+              "type": "property"
+            },
+            "select": {
+              "name": "AVG",
+              "parameters": [
+                {
+                  "name": "HTTPCode_ELB_5XX_Count",
+                  "type": "functionParameter"
+                }
+              ],
+              "type": "function"
+            },
+            "where": {
+              "expressions": [
+                {
+                  "operator": {
+                    "name": "=",
+                    "value": "app/cdp-sirsi/9e67fe66e4a0652c"
+                  },
+                  "property": {
+                    "name": "LoadBalancer",
+                    "type": "string"
+                  },
+                  "type": "operator"
+                }
+              ],
+              "type": "and"
+            }
+          },
+          "sqlExpression": "SELECT AVG(HTTPCode_ELB_5XX_Count) FROM \"AWS/ApplicationELB\" WHERE LoadBalancer = \"$loadbalancer\"",
+          "statistic": "Sum"
         }
       ],
-      "type": "table"
+      "title": "HTTP Redirect Code Count",
+      "type": "timeseries"
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 10
+      },
+      "id": 8,
+      "panels": [
+        {
+          "datasource": {
+            "type": "cloudwatch",
+            "uid": "CLOUDWATCH"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "barWidthFactor": 0.6,
+                "drawStyle": "line",
+                "fillOpacity": 3,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "smooth",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "min": 0,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "percent"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 7,
+            "w": 12,
+            "x": 0,
+            "y": 11
+          },
+          "id": 9,
+          "options": {
+            "legend": {
+              "calcs": [
+                "min",
+                "mean",
+                "max"
+              ],
+              "displayMode": "table",
+              "placement": "bottom",
+              "showLegend": true,
+              "sortBy": "Mean",
+              "sortDesc": true
+            },
+            "tooltip": {
+              "hideZeros": false,
+              "mode": "multi",
+              "sort": "none"
+            }
+          },
+          "pluginVersion": "11.5.2",
+          "targets": [
+            {
+              "datasource": {
+                "type": "cloudwatch",
+                "uid": "CLOUDWATCH"
+              },
+              "dimensions": {
+                "ClusterName": "cdp-sirsi",
+                "ServiceName": "$service"
+              },
+              "expression": "",
+              "id": "",
+              "label": "",
+              "logGroups": [],
+              "matchExact": true,
+              "metricEditorMode": 0,
+              "metricName": "CPUUtilization",
+              "metricQueryType": 0,
+              "namespace": "AWS/ECS",
+              "period": "",
+              "queryMode": "Metrics",
+              "refId": "A",
+              "region": "default",
+              "sqlExpression": "",
+              "statistic": "Maximum"
+            },
+            {
+              "datasource": {
+                "type": "cloudwatch",
+                "uid": "CLOUDWATCH"
+              },
+              "dimensions": {
+                "ClusterName": "cdp-sirsi",
+                "ServiceName": "$service"
+              },
+              "expression": "",
+              "hide": false,
+              "id": "",
+              "label": "",
+              "logGroups": [],
+              "matchExact": true,
+              "metricEditorMode": 0,
+              "metricName": "CPUUtilization",
+              "metricQueryType": 0,
+              "namespace": "AWS/ECS",
+              "period": "",
+              "queryMode": "Metrics",
+              "refId": "B",
+              "region": "default",
+              "sqlExpression": "",
+              "statistic": "Minimum"
+            }
+          ],
+          "title": "CPU Utilization [ $service ]",
+          "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "type": "cloudwatch",
+            "uid": "CLOUDWATCH"
+          },
+          "description": "",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "barWidthFactor": 0.6,
+                "drawStyle": "line",
+                "fillOpacity": 3,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "smooth",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "min": 0,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "percent"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 7,
+            "w": 12,
+            "x": 12,
+            "y": 11
+          },
+          "id": 22,
+          "options": {
+            "legend": {
+              "calcs": [
+                "min",
+                "mean",
+                "max"
+              ],
+              "displayMode": "table",
+              "placement": "bottom",
+              "showLegend": true,
+              "sortBy": "Mean",
+              "sortDesc": true
+            },
+            "tooltip": {
+              "hideZeros": false,
+              "mode": "multi",
+              "sort": "none"
+            }
+          },
+          "pluginVersion": "11.5.2",
+          "targets": [
+            {
+              "datasource": {
+                "type": "cloudwatch",
+                "uid": "CLOUDWATCH"
+              },
+              "dimensions": {
+                "ClusterName": "cdp-sirsi",
+                "ServiceName": "$service"
+              },
+              "expression": "",
+              "id": "",
+              "label": "",
+              "logGroups": [],
+              "matchExact": true,
+              "metricEditorMode": 0,
+              "metricName": "MemoryUtilization",
+              "metricQueryType": 0,
+              "namespace": "AWS/ECS",
+              "period": "",
+              "queryMode": "Metrics",
+              "refId": "A",
+              "region": "default",
+              "sqlExpression": "",
+              "statistic": "Maximum"
+            },
+            {
+              "datasource": {
+                "type": "cloudwatch",
+                "uid": "CLOUDWATCH"
+              },
+              "dimensions": {
+                "ClusterName": "cdp-sirsi",
+                "ServiceName": "$service"
+              },
+              "expression": "",
+              "hide": false,
+              "id": "",
+              "label": "",
+              "logGroups": [],
+              "matchExact": true,
+              "metricEditorMode": 0,
+              "metricName": "MemoryUtilization",
+              "metricQueryType": 0,
+              "namespace": "AWS/ECS",
+              "period": "",
+              "queryMode": "Metrics",
+              "refId": "B",
+              "region": "default",
+              "sqlExpression": "",
+              "statistic": "Minimum"
+            }
+          ],
+          "title": "Memory Utilization [ $service ]",
+          "type": "timeseries"
+        }
+      ],
+      "repeat": "service",
+      "title": "$service",
+      "type": "row"
     }
   ],
-  "schemaVersion": 39,
+  "preload": false,
+  "refresh": "",
+  "schemaVersion": 40,
   "tags": [],
   "templating": {
     "list": [
       {
-        "allValue": "",
         "current": {
-          "selected": true,
           "text": [
-            "All"
+            "$__all"
           ],
           "value": [
             "$__all"
           ]
         },
-        "hide": 0,
+        "description": "",
         "includeAll": true,
         "label": "Service",
         "multi": true,
-        "name": "log_groups",
+        "name": "service",
         "options": [
           {
-            "selected": true,
-            "text": "All",
-            "value": "$__all"
+            "selected": false,
+            "text": "authority",
+            "value": "authority"
           },
           {
             "selected": false,
-            "text": "Authority",
-            "value": "/ecs/authority"
+            "text": "av-scanner-app",
+            "value": "av-scanner-app"
           },
           {
             "selected": false,
-            "text": "AV Scanner App",
-            "value": "/ecs/av-scanner-app"
+            "text": "data-sharing",
+            "value": "data-sharing"
           },
           {
             "selected": false,
-            "text": "ClamAV Rest",
-            "value": "/ecs/clamav-rest"
+            "text": "entity-verification",
+            "value": "entity-verification"
           },
           {
             "selected": false,
-            "text": "Data Sharing",
-            "value": "/ecs/data-sharing"
+            "text": "forms",
+            "value": "forms"
           },
           {
             "selected": false,
-            "text": "Entity Verification",
-            "value": "/ecs/entity-verification"
+            "text": "organisation",
+            "value": "organisation"
           },
           {
             "selected": false,
-            "text": "Forms",
-            "value": "/ecs/forms"
+            "text": "organisation-app",
+            "value": "organisation-app"
           },
           {
             "selected": false,
-            "text": "Organisation",
-            "value": "/ecs/organisation"
+            "text": "outbox-processor-entity-verification",
+            "value": "outbox-processor-entity-verification"
           },
           {
             "selected": false,
-            "text": "Organisation App",
-            "value": "/ecs/organisation-app"
+            "text": "outbox-processor-entity-verification",
+            "value": "outbox-processor-entity-verification"
           },
           {
             "selected": false,
-            "text": "Person",
-            "value": "/ecs/person"
+            "text": "outbox-processor-organisation",
+            "value": "outbox-processor-organisation"
           },
           {
             "selected": false,
-            "text": "Tenant",
-            "value": "/ecs/tenant"
+            "text": "person",
+            "value": "person"
+          },
+          {
+            "selected": false,
+            "text": "scheduled-worker",
+            "value": "scheduled-worker"
+          },
+          {
+            "selected": false,
+            "text": "tenant",
+            "value": "tenant"
           }
         ],
-        "query": "Authority : /ecs/authority, AV Scanner App : /ecs/av-scanner-app, Data Sharing : /ecs/data-sharing, Entity Verification : /ecs/entity-verification, Forms : /ecs/forms, Organisation : /ecs/organisation, Organisation App : /ecs/organisation-app, Person : /ecs/person, Tenant : /ecs/tenant",
-        "queryValue": "",
-        "skipUrlSync": false,
+        "query": "authority, av-scanner-app, data-sharing, entity-verification, forms, organisation, organisation-app, outbox-processor-entity-verification, outbox-processor-entity-verification, outbox-processor-organisation, person, scheduled-worker, tenant",
         "type": "custom"
       },
       {
         "current": {
-          "selected": false,
-          "text": "All except 2xx",
-          "value": "StatusCode >= 300 and StatusCode < 600"
+          "text": "app/cdp-sirsi/45421bfbe34bc7a5",
+          "value": "app/cdp-sirsi/45421bfbe34bc7a5"
         },
-        "hide": 0,
-        "includeAll": false,
-        "label": "Status Code",
-        "multi": false,
-        "name": "status_code",
-        "options": [
-          {
-            "selected": false,
-            "text": "All",
-            "value": "StatusCode >= 200 and StatusCode < 600"
-          },
-          {
-            "selected": true,
-            "text": "All except 2xx",
-            "value": "StatusCode >= 300 and StatusCode < 600"
-          },
-          {
-            "selected": false,
-            "text": "2xx",
-            "value": "StatusCode >= 200 and StatusCode < 300"
-          },
-          {
-            "selected": false,
-            "text": "3xx",
-            "value": "StatusCode >= 300 and StatusCode < 400"
-          },
-          {
-            "selected": false,
-            "text": "4xx",
-            "value": "StatusCode >= 400 and StatusCode < 500"
-          },
-          {
-            "selected": false,
-            "text": "5xx",
-            "value": "StatusCode >= 500 and StatusCode < 600"
-          }
-        ],
-        "query": "All : StatusCode >= 200 and StatusCode < 600, All except 2xx : StatusCode >= 300 and StatusCode < 600, 2xx : StatusCode >= 200 and StatusCode < 300, 3xx : StatusCode >= 300 and StatusCode < 400, 4xx : StatusCode >= 400 and StatusCode < 500, 5xx : StatusCode >= 500 and StatusCode < 600",
-        "queryValue": "",
-        "skipUrlSync": false,
-        "type": "custom"
-      },
-      {
-        "current": {
-          "selected": true,
-          "text": "Exclude",
-          "value": "RequestPath != \"/health\""
+        "datasource": {
+          "type": "cloudwatch",
+          "uid": "CLOUDWATCH"
         },
-        "hide": 0,
+        "definition": "",
+        "hide": 2,
         "includeAll": false,
-        "label": "Healthcheck Requests",
-        "multi": false,
-        "name": "healthcheck_requests",
-        "options": [
-          {
-            "selected": true,
-            "text": "Exclude",
-            "value": "RequestPath != \"/health\""
-          },
-          {
-            "selected": false,
-            "text": "Include",
-            "value": "ispresent(@timestamp)"
-          }
-        ],
-        "query": "Exclude : RequestPath != \"/health\", Include : ispresent(@timestamp)",
-        "queryValue": "",
-        "skipUrlSync": false,
-        "type": "custom"
+        "label": "Loadbalancer",
+        "name": "loadbalancer",
+        "options": [],
+        "query": {
+          "dimensionKey": "LoadBalancer",
+          "metricName": "RuleEvaluations",
+          "namespace": "AWS/ApplicationELB",
+          "queryType": "dimensionValues",
+          "refId": "CloudWatchVariableQueryEditor-VariableQuery",
+          "region": "default"
+        },
+        "refresh": 1,
+        "regex": "",
+        "type": "query"
       }
     ]
   },
   "time": {
-    "from": "now-24h",
+    "from": "now-1h",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "browser",
   "title": "Request Status Code Hits",
   "uid": "request-status-code-hits",
-  "version": 3,
+  "version": 4,
   "weekStart": ""
 }
