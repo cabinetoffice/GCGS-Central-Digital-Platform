@@ -175,10 +175,10 @@
     <value>Are you sure you want to remove this file?</value>
   </data>
   <data name="FinancialInformation_Configuration_PluralSummaryHeadingFormat" xml:space="preserve">
-    <value>Financial information</value>
+    <value>{0} added</value>
   </data>
   <data name="FinancialInformation_Configuration_PluralSummaryHeadingHintFormat" xml:space="preserve">
-    <value>{0} added</value>
+    <value>Financial information</value>
   </data>
   <data name="Qualifications_01_SummaryTitle" xml:space="preserve">
     <value>Qualification name</value>
