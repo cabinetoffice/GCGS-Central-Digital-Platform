@@ -3635,6 +3635,12 @@
   <data name="Consortium_RemoveFromConsortium_Button" xml:space="preserve">
     <value>Remove from consortium</value>
   </data>
+  <data name="Consortium_Summary_ShareCodeCreatedOn" xml:space="preserve">
+    <value>Share code created on </value>
+  </data>
+  <data name="Consortium_Summary_Change" xml:space="preserve">
+    <value>Change&lt;span class="govuk-visually-hidden"&gt; organisation sharecode&lt;/span&gt;</value>
+  </data>
   <data name="Consortium_ConsortiumConfirmSupplier_Heading" xml:space="preserve">
     <value>Add {0} to the consortium?</value>
   </data>
