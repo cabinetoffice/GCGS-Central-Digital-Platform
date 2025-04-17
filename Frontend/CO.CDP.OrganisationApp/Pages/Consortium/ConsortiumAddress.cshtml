@@ -5,11 +5,23 @@
 @{
     ViewData["Title"] = Model.Address.Heading;
     var backLink = ConsortiumStepModel.ConsortiumNamePage;
-    
+
     if (Model.Address.IsNonUkAddress)
     {
-        backLink = backLink = $"/consortium/address/uk";
+        backLink = $"/consortium/address/uk";
+        if (Model.RedirectToCheckYourAnswer == true)
+        {
+            backLink += "?frm-chk-answer=true";
+        }
     }
+    else
+    {
+        if (Model.RedirectToCheckYourAnswer == true)
+        {
+            backLink = ConsortiumStepModel.ConsortiumCheckAnswerPage + "?frm-chk-answer=true";
+        }
+    }
+
 }
 
 @section BeforeContent {

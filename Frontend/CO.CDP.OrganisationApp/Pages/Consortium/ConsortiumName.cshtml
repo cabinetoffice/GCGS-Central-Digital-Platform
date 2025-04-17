@@ -1,14 +1,16 @@
-@page "/consortium/consortium-name"
+@page
+@attribute [RazorCompiledItemMetadata("RouteTemplate", ConsortiumStepModel.ConsortiumNamePage)]
 @model ConsortiumNameModel
 @using CO.CDP.Localization
 
 @{
     ViewData["Title"] = StaticTextResource.Consortium_ConsortiumName_Heading;
     var consortiumNameHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.ConsortiumName)).HasInnerHtml;
+    var backLink = Request.Query.ContainsKey("frm-chk-answer") ? ConsortiumStepModel.ConsortiumCheckAnswerPage : "/organisation-selection";
 }
 
 @section BeforeContent {
-    <a href="/organisation-selection" class="govuk-back-link">@StaticTextResource.Global_Back</a>
+    <a href="@backLink" class="govuk-back-link">@StaticTextResource.Global_Back</a>
 }
 
 <div class="govuk-grid-row">
