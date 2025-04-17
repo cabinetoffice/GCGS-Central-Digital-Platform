@@ -103,11 +103,11 @@
                     <dt class="govuk-summary-list__key">@p.Name</dt>
                     <dd class="govuk-summary-list__value">
                         <p class="govuk-body">@p.ShareCode.Value
-                            <span class="govuk-hint govuk-!-display-block">Share code created on @p.ShareCode.SubmittedAt.ToFormattedString()</span>
+                            <span class="govuk-hint govuk-!-display-block">@StaticTextResource.Consortium_Summary_ShareCodeCreatedOn@p.ShareCode.SubmittedAt.ToFormattedString()</span>
                         </p>
                     </dd>
                     <dd class="govuk-summary-list__actions">
-                        <a class="govuk-link govuk-link--no-visited-state" href="/consortium/@Model.Id/enter-new-sharecode/@p.Id">Change<span class="govuk-visually-hidden"> organisation sharecode</span></a>
+                        <a class="govuk-link govuk-link--no-visited-state" href="/consortium/@Model.Id/enter-new-sharecode/@p.Id">@Html.Raw(@StaticTextResource.Consortium_Summary_Change)</a>
                     </dd>
                 </div>
             }
