@@ -134,8 +134,10 @@ public class ConsortiumAddressModelTest
         _sessionMock.Verify(s => s.Set(Session.ConsortiumKey, It.IsAny<ConsortiumDetails>()), Times.Once);
     }
 
-    [Fact]
-    public void OnPost_WhenValidModelAndBuyer_ShouldRedirectToConsortiumEmailPage()
+    [Theory]
+    [InlineData("ConsortiumEmail", false)]
+    [InlineData("ConsortiumCheckAnswer", true)]
+    public void OnPost_WhenValidModelAndBuyer_ShouldRedirectToExpectedPage(string expectedRedirectPage, bool redirectToCheckYourAnswer)
     {
         var consortiumDetails = DummyConsortiumDetails();
 
@@ -143,12 +145,13 @@ public class ConsortiumAddressModelTest
             .Returns(consortiumDetails);
 
         var model = GivenConsortiumAddressModel();
+        model.RedirectToCheckYourAnswer = redirectToCheckYourAnswer;
 
         var actionResult = model.OnPost();
 
         actionResult.Should().BeOfType<RedirectToPageResult>()
-            .Which.PageName.Should().Be("ConsortiumEmail");
-    }
+            .Which.PageName.Should().Be(expectedRedirectPage);
+    }    
 
     [Fact]
     public void OnGet_ValidSession_ReturnsConsortiumDetails()

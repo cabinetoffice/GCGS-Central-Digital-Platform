@@ -46,10 +46,12 @@ public class ConsortiumNameModelTest
         _model.OnPost();
 
         _sessionMock.Verify(s => s.Set(Session.ConsortiumKey, It.Is<ConsortiumDetails>(st => st.ConsortiumName == "consortium_name")), Times.Once);
-    }       
+    }
 
-    [Fact]
-    public void OnPost_ShouldRedirectToConsortiumAddressPage_WhenModelStateIsValid()
+    [Theory]
+    [InlineData("ConsortiumAddress", false)]
+    [InlineData("ConsortiumCheckAnswer", true)]
+    public void OnPost_WhenModelStateIsValid_ShouldRedirectToExpectedPage(string expectedRedirectPage, bool redirectToCheckYourAnswer)
     {
         var state = DummyConsortiumDetails();
 
@@ -59,11 +61,14 @@ public class ConsortiumNameModelTest
             .Setup(s => s.Get<ConsortiumDetails>(Session.ConsortiumKey))
             .Returns(state);
 
+        _model.RedirectToCheckYourAnswer = redirectToCheckYourAnswer;
+
         var result = _model.OnPost();
+        
 
         var redirectToPageResult = result.Should().BeOfType<RedirectToPageResult>().Subject;
 
-        redirectToPageResult.PageName.Should().Be("ConsortiumAddress");
+        redirectToPageResult.PageName.Should().Be(expectedRedirectPage);
     }
 
     private ConsortiumDetails DummyConsortiumDetails()

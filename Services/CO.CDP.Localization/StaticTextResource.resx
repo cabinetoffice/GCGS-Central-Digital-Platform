@@ -2817,6 +2817,21 @@
   <data name="Organisation_CreateNewConsortium" xml:space="preserve">
     <value>Create a new consortium</value>
   </data>
+  <data name="Consortium_ConsortiumOverview_Title" xml:space="preserve">
+    <value>Check answers</value>
+  </data>
+  <data name="Consortium_ConsortiumOverview_Heading" xml:space="preserve">
+    <value>Check your answers</value>
+  </data>
+  <data name="Consortium_CheckAnswer_Name_list" xml:space="preserve">
+    <value>Consortium name</value>
+  </data>
+  <data name="Consortium_CheckAnswer_PostalAddress_list" xml:space="preserve">
+    <value>Postal address</value>
+  </data>
+  <data name="Consortium_CheckAnswer_EmailAddress_list" xml:space="preserve">
+    <value>Email address</value>
+  </data>
   <data name="Consortium_ConsortiumOverview_Heading" xml:space="preserve">
     <value>Consortium details</value>
   </data>
