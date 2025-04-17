@@ -95,10 +95,11 @@ FROM
 ### 2. Update
 
 #### Reset User Password
-To reset a user’s password, replace `username` with the actual username and `new_password` with the desired new password.
+To reset a user’s password, replace `new_password` with the desired new password. 
+Preferably different passwords for each cluster ;)
 
 ```sql
-ALTER USER username WITH PASSWORD 'new_password';
+ALTER USER "firstname.lastname" WITH PASSWORD 'new_password';
 ```
 
 ### 3. Create
