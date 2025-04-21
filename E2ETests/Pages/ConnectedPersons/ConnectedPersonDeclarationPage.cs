@@ -45,6 +45,8 @@ namespace E2ETests.Pages
         public async Task ClickContinue()
         {
             await _page.ClickAsync(ContinueButtonSelector);
+            await _page.ClickAsync(ContinueButtonSelector);
+
         }
 
         public async Task ClickBackToSupplierInformation()

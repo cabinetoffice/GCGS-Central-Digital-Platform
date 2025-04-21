@@ -11,8 +11,8 @@ namespace E2ETests.Pages
 
         // ✅ Page Locators
         private readonly string PageTitleSelector = "h1.govuk-heading-l";
-        private readonly string YesRadioSelector = "input[name='companyRegistered'][value='yes']";
-        private readonly string NoRadioSelector = "input[name='companyRegistered'][value='no']";
+        private readonly string YesRadioSelector = "input[name='HasCompaniesHouseNumber'][value='true']";
+        private readonly string NoRadioSelector = "input[name='HasCompaniesHouseNumber'][value='false']";
         private readonly string ContinueButtonSelector = "button.govuk-button[type='submit']";
 
         public ConnectedPersonsCompanyQuestionPage(IPage page)

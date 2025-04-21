@@ -12,8 +12,8 @@ namespace E2ETests.Pages
         private readonly string ChangeLinkSelector = "a:text('Change')";
         private readonly string RemoveLinkSelector = "a:text('Remove')";
 
-        private readonly string YesRadioSelector = "input[name='addAnotherConnectedPerson'][value='Yes']";
-        private readonly string NoRadioSelector = "input[name='addAnotherConnectedPerson'][value='No']";
+        private readonly string YesRadioSelector = "input[name='HasConnectedEntity'][value='true']";
+        private readonly string NoRadioSelector = "input[name='HasConnectedEntity'][value='false']";
 
         private readonly string ContinueButtonSelector = "button:text('Continue')";
 

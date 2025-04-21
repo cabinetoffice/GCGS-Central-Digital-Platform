@@ -86,5 +86,22 @@ namespace E2ETests.Pages
         {
             await _page.ClickAsync(BackToOrganisationDetailsLink);
         }
+
+        public async Task AssertConnectedPersonsCount(int expectedCount)
+        {
+            string expectedText = $"{expectedCount} Connected person{(expectedCount == 1 ? "" : "s")}";
+            var selector = "//dt[a[contains(text(),'Connected persons')]]/following-sibling::dd[1]";
+
+            await _page.WaitForSelectorAsync(selector);
+            string actualText = await _page.InnerTextAsync(selector);
+
+            if (actualText.Trim() != expectedText)
+            {
+                throw new System.Exception($"❌ Expected '{expectedText}' but found '{actualText}'");
+            }
+
+            Console.WriteLine($"✅ Connected persons count verified: {actualText}");
+        }
+
     }
 }

@@ -4,18 +4,18 @@ using E2ETests.Utilities;
 
 namespace E2ETests.Pages
 {
-    public class ConnectPersonsSupplierHasControlPage
+    public class ConnectedPersonsSupplierHasControlPage
     {
         private readonly IPage _page;
         private readonly string _baseUrl;
 
         // ✅ Page Locators
         private readonly string PageTitleSelector = "h1.govuk-heading-l";
-        private readonly string YesRadioSelector = "input[name='influence'][value='yes']";
-        private readonly string NoRadioSelector = "input[name='influence'][value='no']";
+        private readonly string YesRadioSelector = "input[name='ControlledByPersonOrCompany'][value='true']";
+        private readonly string NoRadioSelector = "input[name='ControlledByPersonOrCompany'][value='false']";
         private readonly string ContinueButtonSelector = "button.govuk-button[type='submit']";
 
-        public ConnectPersonsSupplierHasControlPage(IPage page)
+        public ConnectedPersonsSupplierHasControlPage(IPage page)
         {
             _page = page;
             _baseUrl = ConfigUtility.GetBaseUrl(); // Retrieve base URL from ConfigUtility

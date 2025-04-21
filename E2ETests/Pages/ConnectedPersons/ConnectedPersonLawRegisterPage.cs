@@ -11,8 +11,8 @@ namespace E2ETests.Pages
 
         // ✅ Page Locators
         private readonly string PageTitleSelector = "h1.govuk-heading-l";
-        private readonly string LegalFormationInputSelector = "input[name='legalFormation']";
-        private readonly string LawEnforcementInputSelector = "input[name='lawEnforcement']";
+        private readonly string LegalFormationInputSelector = "input[name='LegalForm']";
+        private readonly string LawEnforcementInputSelector = "input[name='LawRegistered']";
         private readonly string ContinueButtonSelector = "button.govuk-button[type='submit']";
 
         public ConnectedPersonsLawRegisterPage(IPage page)

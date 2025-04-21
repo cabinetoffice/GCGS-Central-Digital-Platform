@@ -11,8 +11,8 @@ namespace E2ETests.Pages
 
         // ✅ Page Locators
         private readonly string PageTitleSelector = "h1.govuk-heading-l";
-        private readonly string YesRadioButtonSelector = "input[name='postalAddressSame'][value='Yes']";
-        private readonly string NoRadioButtonSelector = "input[name='postalAddressSame'][value='No']";
+        private readonly string YesRadioButtonSelector = "input[name='DifferentThanRegisteredAddress'][value='true']";
+        private readonly string NoRadioButtonSelector = "input[name='DifferentThanRegisteredAddress'][value='false']";
         private readonly string ContinueButtonSelector = "button.govuk-button[type='submit']";
 
         public ConnectedPersonsPostalAddressSamePage(IPage page)

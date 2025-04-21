@@ -11,9 +11,9 @@ namespace E2ETests.Pages
 
         // ✅ Page Locators
         private readonly string PageTitleSelector = "h1.govuk-heading-l";
-        private readonly string OrganisationRadioSelector = "input[name='personType'][value='organisation']";
-        private readonly string IndividualRadioSelector = "input[name='personType'][value='individual']";
-        private readonly string TrustRadioSelector = "input[name='personType'][value='trust']";
+        private readonly string OrganisationRadioSelector = "input[name='ConnectedEntityType'][value='Organisation']";
+        private readonly string IndividualRadioSelector = "input[name='ConnectedEntityType'][value='Individual']";
+        private readonly string TrustRadioSelector = "input[name='ConnectedEntityType'][value='Trust']";
         private readonly string ContinueButtonSelector = "button.govuk-button[type='submit']";
 
         public ConnectedPersonPersonTypePage(IPage page)
@@ -64,7 +64,7 @@ namespace E2ETests.Pages
         }
 
         /// Completes the form by  a person type and continuing.
-        public async Task CompleteForm(string personType)
+        public async Task CompletePage(string personType)
         {
             await SelectPersonType(personType);
             await ClickContinue();

@@ -11,9 +11,9 @@ namespace E2ETests.Pages
 
         // ✅ Page Locators
         private readonly string PageTitleSelector = "h1.govuk-heading-l";
-        private readonly string AddressLine1Selector = "input[name='addressLine1']";
-        private readonly string TownCitySelector = "input[name='townCity']";
-        private readonly string PostcodeSelector = "input[name='postcode']";
+        private readonly string AddressLine1Selector = "input[name='AddressLine1']";
+        private readonly string TownCitySelector = "input[name='TownOrCity']";
+        private readonly string PostcodeSelector = "input[name='Postcode']";
         private readonly string ContinueButtonSelector = "button.govuk-button[type='submit']";
 
         public ConnectedPersonsOrganisationRegisteredAddressPage(IPage page)

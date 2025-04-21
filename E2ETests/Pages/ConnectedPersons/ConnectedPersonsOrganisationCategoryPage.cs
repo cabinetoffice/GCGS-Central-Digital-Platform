@@ -11,11 +11,11 @@ namespace E2ETests.Pages
 
         // ✅ Page Locators
         private readonly string PageTitleSelector = "h1.govuk-heading-l";
-        private readonly string RegisteredCompanyRadioSelector = "input[name='organisationCategory'][value='registered-company']";
-        private readonly string DirectorRadioSelector = "input[name='organisationCategory'][value='director']";
-        private readonly string ParentSubsidiaryRadioSelector = "input[name='organisationCategory'][value='parent-subsidiary']";
-        private readonly string TakenOverCompanyRadioSelector = "input[name='organisationCategory'][value='taken-over']";
-        private readonly string OtherInfluenceRadioSelector = "input[name='organisationCategory'][value='other-influence']";
+        private readonly string RegisteredCompanyRadioSelector = "input[name='ConnectedEntityCategory'][value='RegisteredCompany']";
+        private readonly string DirectorRadioSelector = "input[name='ConnectedEntityCategory'][value='DirectorOrTheSameResponsibilities']";
+        private readonly string ParentSubsidiaryRadioSelector = "input[name='ConnectedEntityCategory'][value='ParentOrSubsidiaryCompany']";
+        private readonly string TakenOverCompanyRadioSelector = "input[name='ConnectedEntityCategory'][value='ACompanyYourOrganisationHasTakenOver']";
+        private readonly string OtherInfluenceRadioSelector = "input[name='ConnectedEntityCategory'][value='AnyOtherOrganisationWithSignificantInfluenceOrControl']";
         private readonly string ContinueButtonSelector = "button.govuk-button[type='submit']";
 
         public ConnectedPersonsOrganisationCategoryPage(IPage page)
