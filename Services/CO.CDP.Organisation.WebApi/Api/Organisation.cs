@@ -785,6 +785,32 @@ public static class EndpointExtensions
                 return operation;
             });
 
+        app.MapGet("/{organisationId}/admin-persons",
+            [OrganisationAuthorize(
+                [AuthenticationChannel.OneLogin],
+                [Constants.OrganisationPersonScope.Admin, Constants.OrganisationPersonScope.Editor, Constants.OrganisationPersonScope.Viewer],
+                OrganisationIdLocation.Path)]
+        async (Guid organisationId, IUseCase<Guid, IEnumerable<Person>> useCase) =>
+                    await useCase.Execute(organisationId)
+                        .AndThen(persons => persons != null ? Results.Ok(persons) : Results.NotFound()))
+            .Produces<List<Model.Person>>(StatusCodes.Status200OK, "application/json")
+            .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
+            .Produces<ProblemDetails>(StatusCodes.Status404NotFound)
+            .ProducesProblem(StatusCodes.Status422UnprocessableEntity)
+            .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError)
+            .WithOpenApi(operation =>
+            {
+                operation.OperationId = "GetOrganisationAdminPersons";
+                operation.Description = "Get admin persons by Organisation ID.";
+                operation.Summary = "Get admin persons by Organisation ID.";
+                operation.Responses["200"].Description = "Persons details.";
+                operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
+                operation.Responses["404"].Description = "Persons information not found.";
+                operation.Responses["422"].Description = "Unprocessable entity.";
+                operation.Responses["500"].Description = "Internal server error.";
+                return operation;
+            });
+
         app.MapPatch("/{organisationId}/persons/{personId}",
             [OrganisationAuthorize(
                 [AuthenticationChannel.OneLogin],
