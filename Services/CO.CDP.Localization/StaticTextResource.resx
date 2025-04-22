@@ -3210,6 +3210,18 @@
   <data name="UserSummary_AddAnotherUser" xml:space="preserve">
     <value>Add another user?</value>
   </data>
+  <data name="UserSummary_ViewAdmins_Title" xml:space="preserve">
+    <value>View Admins</value>
+  </data>
+  <data name="UserSummary_ViewAdmins_Supplier" xml:space="preserve">
+    <value>Admins can add, remove and edit users, create share codes and edit supplier information.</value>
+  </data>
+  <data name="UserSummary_ViewAdmins_Buyer" xml:space="preserve">
+    <value>Admins can add, remove and edit users, create and delete APIs, create and edit notices and update organisation information.</value>
+  </data>
+  <data name="UserSummary_ViewAdmins_Both" xml:space="preserve">
+    <value>Admins can add, remove and edit users, create and delete APIs create share codes, create and edit notices and update organisation and supplier information. </value>
+  </data>
   <data name="Users_FirstName_Label" xml:space="preserve">
     <value>First name</value>
   </data>
@@ -3356,6 +3368,10 @@
   </data>
   <data name="Users_SendEmail_Button" xml:space="preserve">
     <value>Send email</value>
+  </data>
+
+  <data name="Users_ViewAdmins_Title" xml:space="preserve">
+    <value>Admin</value>
   </data>
   <data name="OrganisationInviteExpired_Title" xml:space="preserve">
     <value>Your invite has expired</value>

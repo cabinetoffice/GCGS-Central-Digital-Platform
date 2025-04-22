@@ -289,6 +289,28 @@
                 <div class="govuk-section-break govuk-section-break--visible govuk-section-break--m"></div>
             </authorize>
 
+            @if (isViewer)
+            {
+                <h3 class="govuk-heading-s govuk-!-margin-bottom-3">
+                    <a class="govuk-link" href="/organisation/@RouteData.Values["id"]/users/view-admins">@StaticTextResource.UserSummary_ViewAdmins_Title</a>
+                </h3>
+
+                @if (organisationDetails.IsTenderer() && !organisationDetails.IsBuyer())
+                {
+                    <p class="govuk-body">@StaticTextResource.UserSummary_ViewAdmins_Supplier</p>
+                }
+                @if (organisationDetails.IsBuyer() && !organisationDetails.IsTenderer())
+                {
+                    <p class="govuk-body">@StaticTextResource.UserSummary_ViewAdmins_Buyer</p>
+                }
+                @if (organisationDetails.IsBuyer() && organisationDetails.IsTenderer())
+                {
+                    <p class="govuk-body">@StaticTextResource.UserSummary_ViewAdmins_Both</p>
+                }
+
+                <div class="govuk-section-break govuk-section-break--visible govuk-section-break--m"></div>
+            }
+
             @if ((organisationDetails.IsPendingBuyer() || organisationDetails.IsBuyer()) && !organisationDetails.IsTenderer())
             {
                 <authorize scope="@OrgScopeRequirement.Admin">
