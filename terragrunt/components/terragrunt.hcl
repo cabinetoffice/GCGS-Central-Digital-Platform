@@ -176,7 +176,8 @@ locals {
       onelogin_logout_notification_urls = ["https://www.find-tender.service.gov.uk/auth/backchannellogout"]
       pinned_service_version            = "1.0.58"
       postgres_instance_type            = "db.t4g.micro"
-      postgres_aurora_instance_type     = "db.r5.12xlarge"
+      postgres_aurora_instance_type     = "db.r5.8xlarge"
+      postgres_aurora_instance_type_ev  = "db.r5.4xlarge"
       private_subnets = [
         "10.${local.cidr_b_production}.101.0/24",
         "10.${local.cidr_b_production}.102.0/24",
@@ -196,6 +197,7 @@ locals {
   }
 
   aurora_postgres_instance_type     = try(local.environments[local.environment].postgres_aurora_instance_type, null)
+  aurora_postgres_instance_type_ev  = try(local.environments[local.environment].postgres_aurora_instance_type_ev, local.aurora_postgres_instance_type)
   fts_azure_frontdoor               = try(local.environments[local.environment].fts_azure_frontdoor, null)
   fts_service_allowed_origins       = try(local.environments[local.environment].fts_service_allowed_origins, null)
   onelogin_logout_notification_urls = try(local.environments[local.environment].onelogin_logout_notification_urls, null)
