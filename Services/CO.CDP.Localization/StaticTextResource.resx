@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!--
     Microsoft ResX Schema
@@ -2244,7 +2244,7 @@
     <value>Category</value>
   </data>
   <data name="PdfGenerator_ConnectedPersonInformation_Title" xml:space="preserve">
-    <value>People connected to organisation</value>
+    <value>People connected to your organisation</value>
   </data>
   <data name="PdfGenerator_ConnectedPerson_Type" xml:space="preserve">
     <value>Type</value>
