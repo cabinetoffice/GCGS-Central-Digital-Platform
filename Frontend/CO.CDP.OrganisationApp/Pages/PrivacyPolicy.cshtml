@@ -9,6 +9,7 @@
 
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds govuk-body">
+            <partial name="_ErrorSummary" model="@Model.ModelState" />
             <form method="post">
 
                 <div class="govuk-form-group">
@@ -34,7 +35,7 @@
                         }
                         <div class="govuk-checkboxes" data-module="govuk-checkboxes">
                             <div class="govuk-checkboxes__item">
-                                <input class="govuk-checkboxes__input" id="@nameof(Model.AgreeToPrivacy)" name="@nameof(Model.AgreeToPrivacy)" type="checkbox" value="@(Model.AgreeToPrivacy == true ? "true" :"false")">
+                                <input class="govuk-checkboxes__input" id="@nameof(Model.AgreeToPrivacy)" name="@nameof(Model.AgreeToPrivacy)" type="checkbox" value="@(Model.AgreeToPrivacy == true ? "true" : "false")">
                                 <label class="govuk-label govuk-checkboxes__label" for="@nameof(Model.AgreeToPrivacy)">
                                     @Html.DisplayNameFor(m => m.AgreeToPrivacy)
                                 </label>

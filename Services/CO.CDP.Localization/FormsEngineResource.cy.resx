@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!--
     Microsoft ResX Schema
@@ -133,10 +133,10 @@
     <value>Gwybodaeth ariannol</value>
   </data>
   <data name="Exclusions_02_Caption" xml:space="preserve">
-    <value>&lt;legend class="govuk-fieldset__legend"&gt;Rhowch y dyddiad y daeth yr amgylchiadau i ben&lt;/legend&gt;&lt;div class="govuk-hint"&gt;Er enghraifft, 27 3 2007&lt;/div&gt;</value>
+    <value>&lt;legend class="govuk-fieldset__legend" id="inner-legend"&gt;Rhowch y dyddiad y daeth yr amgylchiadau i ben&lt;/legend&gt;&lt;div class="govuk-hint"&gt;Er enghraifft, 27 3 2007&lt;/div&gt;</value>
   </data>
   <data name="Exclusions_02_Description" xml:space="preserve">
-    <value>&lt;div id="isEventEnded-hint" class="govuk-hint"&gt;Er enghraifft, yn dilyn penderfyniad gan y llys am gamymddwyn amgylcheddol, rhoddodd eich sefydliad neu'r unigolyn cysylltiedig y gorau i niweidio'r amgylchedd&gt;</value>
+    <value>&lt;div id="isEventEnded-hint" class="govuk-hint"&gt;Er enghraifft, yn dilyn penderfyniad gan y llys am gamymddwyn amgylcheddol, rhoddodd eich sefydliad neu'r unigolyn cysylltiedig y gorau i niweidio'r amgylchedd.&lt;/div&gt;</value>
   </data>
   <data name="Exclusions_02_SummaryTitle" xml:space="preserve">
     <value>Dyddiad y daeth yr amgylchiadau i ben</value>
@@ -418,7 +418,7 @@
     <value>Rydych wedi ychwanegu 1 cymhwyster</value>
   </data>
   <data name="TradeAssurance_01_Description" xml:space="preserve">
-    <value>&lt;div class="govuk-hint"&gt;Rhowch enw'r person neu gorff. Gallwch ychwanegu un arall ar y diwedd os bydd angen. Er enghraifft, Cynllun Sicrwydd y Tractor Coch, QMS Assurance.&lt;/div&gt;</value>
+    <value>&lt;div class="govuk-hint"&gt;Rhowch enw'r person neu gorff. Gallwch ychwanegu un arall ar y diwedd os bydd angen. Er enghraifft, Cynllun Sicrwydd y Tractor Coch neu Quality Meat Scotland (QMS) Assurance.&lt;/div&gt;</value>
   </data>
   <data name="TradeAssurance_01_SummaryTitle" xml:space="preserve">
     <value>Dyfarnwyd gan</value>

@@ -18,7 +18,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 19,
+  "id": 35,
   "links": [],
   "panels": [
     {
@@ -103,7 +103,7 @@
         "showHeader": true,
         "sortBy": []
       },
-      "pluginVersion": "11.2.2+security-01",
+      "pluginVersion": "11.5.2",
       "targets": [
         {
           "datasource": {
@@ -135,6 +135,7 @@
           "statsGroups": []
         }
       ],
+      "title": "",
       "transformations": [
         {
           "id": "extractFields",
@@ -342,11 +343,12 @@
           "width": 200
         },
         "tooltip": {
+          "hideZeros": false,
           "mode": "single",
           "sort": "none"
         }
       },
-      "pluginVersion": "11.2.2+security-01",
+      "pluginVersion": "11.5.2",
       "targets": [
         {
           "datasource": {
@@ -380,34 +382,30 @@
           ]
         }
       ],
+      "title": "",
       "type": "timeseries"
     }
   ],
-  "schemaVersion": 39,
+  "preload": false,
+  "refresh": "",
+  "schemaVersion": 40,
   "tags": [],
   "templating": {
     "list": [
       {
         "current": {
-          "selected": true,
           "text": [
-            "All"
+            "$__all"
           ],
           "value": [
             "$__all"
           ]
         },
-        "hide": 0,
         "includeAll": true,
         "label": "Service",
         "multi": true,
         "name": "log_groups",
         "options": [
-          {
-            "selected": true,
-            "text": "All",
-            "value": "$__all"
-          },
           {
             "selected": false,
             "text": "Authority",
@@ -417,11 +415,6 @@
             "selected": false,
             "text": "AV Scanner App",
             "value": "/ecs/av-scanner-app"
-          },
-          {
-            "selected": false,
-            "text": "ClamAV Rest",
-            "value": "/ecs/clamav-rest"
           },
           {
             "selected": false,
@@ -450,8 +443,23 @@
           },
           {
             "selected": false,
+            "text": "Outbox Processor Entity Verification",
+            "value": "/ecs/outbox-processor-entity-verification"
+          },
+          {
+            "selected": false,
+            "text": "Outbox Processor Organisation",
+            "value": "/ecs/outbox-processor-organisation"
+          },
+          {
+            "selected": false,
             "text": "Person",
             "value": "/ecs/person"
+          },
+          {
+            "selected": false,
+            "text": "Scheduled Worker",
+            "value": "/ecs/scheduled-worker"
           },
           {
             "selected": false,
@@ -459,30 +467,25 @@
             "value": "/ecs/tenant"
           }
         ],
-        "query": "Authority : /ecs/authority, AV Scanner App : /ecs/av-scanner-app, Data Sharing : /ecs/data-sharing, Entity Verification : /ecs/entity-verification, Forms : /ecs/forms, Organisation : /ecs/organisation, Organisation App : /ecs/organisation-app, Person : /ecs/person, Tenant : /ecs/tenant",
-        "queryValue": "",
-        "skipUrlSync": false,
+        "query": "Authority : /ecs/authority, AV Scanner App : /ecs/av-scanner-app, Data Sharing : /ecs/data-sharing, Entity Verification : /ecs/entity-verification, Forms : /ecs/forms, Organisation : /ecs/organisation, Organisation App : /ecs/organisation-app, Outbox Processor Entity Verification : /ecs/outbox-processor-entity-verification, Outbox Processor Organisation : /ecs/outbox-processor-organisation, Person : /ecs/person, Scheduled Worker : /ecs/scheduled-worker, Tenant : /ecs/tenant",
         "type": "custom"
       },
       {
         "current": {
-          "selected": false,
-          "text": "All",
-          "value": "StatusCode >= 200 and StatusCode < 600"
+          "text": "StatusCode >= 300 and StatusCode < 600",
+          "value": "StatusCode >= 300 and StatusCode < 600"
         },
-        "hide": 0,
         "includeAll": false,
         "label": "Status Code",
-        "multi": false,
         "name": "status_code",
         "options": [
           {
-            "selected": true,
+            "selected": false,
             "text": "All",
             "value": "StatusCode >= 200 and StatusCode < 600"
           },
           {
-            "selected": false,
+            "selected": true,
             "text": "All except 2xx",
             "value": "StatusCode >= 300 and StatusCode < 600"
           },
@@ -508,19 +511,16 @@
           }
         ],
         "query": "All : StatusCode >= 200 and StatusCode < 600, All except 2xx : StatusCode >= 300 and StatusCode < 600, 2xx : StatusCode >= 200 and StatusCode < 300, 3xx : StatusCode >= 300 and StatusCode < 400, 4xx : StatusCode >= 400 and StatusCode < 500, 5xx : StatusCode >= 500 and StatusCode < 600",
-        "skipUrlSync": false,
         "type": "custom"
       },
       {
         "current": {
-          "selected": false,
+          "selected": true,
           "text": "Exclude",
           "value": "RequestPath != \"/health\""
         },
-        "hide": 0,
         "includeAll": false,
         "label": "Healthcheck Requests",
-        "multi": false,
         "name": "healthcheck_requests",
         "options": [
           {
@@ -535,16 +535,13 @@
           }
         ],
         "query": "Exclude : RequestPath != \"/health\", Include : ispresent(@timestamp)",
-        "skipUrlSync": false,
         "type": "custom"
       },
       {
         "current": {
-          "selected": false,
           "text": "",
           "value": ""
         },
-        "hide": 0,
         "label": "Search",
         "name": "search_keyword",
         "options": [
@@ -555,19 +552,18 @@
           }
         ],
         "query": "",
-        "skipUrlSync": false,
         "type": "textbox"
       }
     ]
   },
   "time": {
-    "from": "now-24h",
+    "from": "now-1h",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "browser",
   "title": "Service Logs",
   "uid": "service-logs",
-  "version": 1,
+  "version": 2,
   "weekStart": ""
 }
