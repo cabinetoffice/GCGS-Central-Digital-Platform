@@ -263,6 +263,9 @@ public record ConnectedEntityLookup
     public required ConnectedEntityType EntityType { get; init; }
     public DateTimeOffset? EndDate { get; init; }
     public bool Deleted { get; set; }
+    public bool IsInUse { get; set; }
+    public Guid? FormGuid { get; set; }
+    public Guid? SectionGuid { get; set; }
 }
 
 public record RemovePersonFromOrganisation

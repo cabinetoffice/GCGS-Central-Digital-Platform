@@ -29,10 +29,25 @@ public class ConnectedPersonSummaryModel(
         return await InitPage(selected);
     }
 
-    public async Task<IActionResult> OnGetRemove([FromQuery(Name = "entity-id")] Guid entityId)
+    public async Task<IActionResult> OnGetRemove(
+        [FromQuery(Name = "entity-id")] Guid entityId,
+        [FromQuery(Name = "is-in-use")] bool isInUse,
+        [FromQuery(Name = "form-guid")] Guid? formGuid,
+        [FromQuery(Name = "section-guid")] Guid? sectionGuid)
     {
-        if (!await DeleteConnectedEntityAsync(entityId))
+        if (isInUse)
         {
+            flashMessageService.SetFlashMessage
+               (
+                   FlashMessageType.Important,
+                       heading: StaticTextResource.ErrorMessageList_ConnectedPersons_Cannot_Remove,
+                       urlParameters: new() {
+                            { "organisationIdentifier", Id.ToString() },
+                            { "formId", formGuid.ToString() },
+                            { "sectionId", sectionGuid.ToString() }
+                       }
+               );
+
             return await InitPage(true);
         }
 
@@ -59,27 +74,6 @@ public class ConnectedPersonSummaryModel(
         HasConnectedEntity = selected;
 
         return Page();
-    }
-
-    private async Task<bool> DeleteConnectedEntityAsync(Guid connectedPersonId)
-    {
-        DeleteConnectedEntityResult result = await organisationClient.DeleteConnectedEntityAsync(Id, connectedPersonId);
-
-        if (!result.Success)
-        {
-            flashMessageService.SetFlashMessage
-            (
-                FlashMessageType.Important,
-                    heading: StaticTextResource.ErrorMessageList_ConnectedPersons_Cannot_Remove,
-                    urlParameters: new() {
-                        { "organisationIdentifier", Id.ToString() },
-                        { "formId", result.FormGuid.ToString() },
-                        { "sectionId", result.SectionGuid.ToString() }
-                    }
-            );
-        }
-
-        return result.Success;
     }
 
     public async Task<IActionResult> OnPost()

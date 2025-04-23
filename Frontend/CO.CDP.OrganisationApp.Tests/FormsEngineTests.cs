@@ -320,8 +320,8 @@ public class FormsEngineTests
 
         _organisationClientMock.Setup(c => c.GetConnectedEntitiesAsync(It.IsAny<Guid>()))
             .ReturnsAsync([
-                new ConnectedEntityLookup(endDate: null, entityId: connectedIndividualGuid, entityType: ConnectedEntityType.Individual, name: "Connected person", uri: new Uri("http://whatever"), deleted: false),
-                new ConnectedEntityLookup(endDate: null, entityId: new Guid("4c8dccba-df39-4997-814b-7599ed9b5bed"), entityType: ConnectedEntityType.Organisation, name: "Connected organisation", uri: new Uri("http://whatever"), deleted: false)
+                new ConnectedEntityLookup(endDate: null, entityId: connectedIndividualGuid, entityType: ConnectedEntityType.Individual, name: "Connected person", uri: new Uri("http://whatever"), deleted: false, isInUse: false, formGuid: null, sectionGuid: null),
+                new ConnectedEntityLookup(endDate: null, entityId: new Guid("4c8dccba-df39-4997-814b-7599ed9b5bed"), entityType: ConnectedEntityType.Organisation, name: "Connected organisation", uri: new Uri("http://whatever"), deleted: false, isInUse: false, formGuid: null, sectionGuid: null)
             ]);
         _organisationClientMock.Setup(c => c.GetConnectedEntityAsync(organisationId, connectedIndividualGuid))
             .ReturnsAsync(new ConnectedEntity(
