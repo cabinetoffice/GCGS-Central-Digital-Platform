@@ -225,9 +225,9 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
                 COALESCE(STRING_AGG(DISTINCT i.scheme || ':' || i.identifier_id, ', '), '') AS identifiers,
                 COALESCE(STRING_AGG(DISTINCT cp.email, ', '), '') AS contact_points,
                 COALESCE(STRING_AGG(DISTINCT p.email, ', '), '') AS admin_email,"
-                + (string.IsNullOrWhiteSpace(searchText) ? "0 AS similarity_score, 99999 AS match_position" : @" 
+                + (string.IsNullOrWhiteSpace(searchText) ? "0 AS similarity_score, 0 AS match_position" : @" 
                     similarity(o.name, :searchText) AS similarity_score,
-                    POSITION(LOWER(:searchText) IN LOWER(o.name)) AS match_position") +
+                    NULLIF(POSITION(LOWER(:searchText) IN LOWER(o.name)), 0) AS match_position") +
             @"
             FROM
                 organisations o
