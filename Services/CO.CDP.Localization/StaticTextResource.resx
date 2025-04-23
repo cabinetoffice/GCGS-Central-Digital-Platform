@@ -2247,7 +2247,7 @@
     <value>Category</value>
   </data>
   <data name="PdfGenerator_ConnectedPersonInformation_Title" xml:space="preserve">
-    <value>People connected to organisation</value>
+    <value>People connected to your organisation</value>
   </data>
   <data name="PdfGenerator_ConnectedPerson_Type" xml:space="preserve">
     <value>Type</value>
