@@ -2991,9 +2991,6 @@
   <data name="ConsortiumShareMyInformation_HowItWorksParagraph2" xml:space="preserve">
     <value>Pan fyddwch yn gwneud cynnig am gaffaeliad, bydd yr awdurdod contractio yn rhoi gwybod i chi sut i ddarparu'r ffeil neu god rhannu.</value>
   </data>
-  <data name="ConsortiumShareMyInformation_HowItWorksParagraph3" xml:space="preserve">
-    <value>Os bydd unrhyw ran o'r wybodaeth am y cyflenwr ar gyfer unrhyw sefydliad yn y consortiwm yn newid, gallwch ddiweddaru ei god rhannu ar dudalen manylion y consortiwm ac yna greu cod a ffeil rhannu cyfun newydd i rannu'r wybodaeth newydd. </value>
-  </data>
   <data name="ConsortiumShareMyInformation_Title" xml:space="preserve">
     <value>Rhannwch wybodaeth am eich consortiwm</value>
   </data>
