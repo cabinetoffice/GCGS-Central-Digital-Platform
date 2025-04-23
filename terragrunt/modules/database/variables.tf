@@ -5,7 +5,13 @@ variable "aurora_postgres_engine_version" {
 }
 
 variable "aurora_postgres_instance_type" {
-  description = "RDS instance type for individual environments"
+  description = "Sirsi's (a.k.a Organisation) RDS instance type"
+  type        = string
+  default     = "db.r5.large"
+}
+
+variable "aurora_postgres_instance_type_ev" {
+  description = "Entity Verification's RDS instance type"
   type        = string
   default     = "db.r5.large"
 }

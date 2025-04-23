@@ -23,7 +23,7 @@ public class DataSharingProfile : Profile
 
         CreateMap<Persistence.SharedConsentQuestionAnswer, SharedConsentQuestionAnswer>()
             .ForMember(m => m.QuestionId, o => o.MapFrom(m => m.QuestionId))
-            .ForMember(m => m.Title, o => o.MapFrom(m => m.Title))
+            .ForMember(m => m.Title, o => o.MapFrom<LocalizedPropertyResolver<Persistence.SharedConsentQuestionAnswer, SharedConsentQuestionAnswer>, string>(m => m.Title))
             .ForMember(m => m.Answer, o => o.MapFrom<CustomResolver>());
 
         CreateMap<Persistence.SharedConsentDetails, SharedConsentDetails>()
