@@ -78,10 +78,8 @@ data "aws_iam_policy_document" "ecs_task_access_secrets" {
       "kms:Decrypt"
     ]
     resources = [
-      var.db_entity_verification_kms_arn,
       var.db_ev_cluster_credentials_kms_key_id,
       var.db_sirsi_cluster_credentials_kms_key_id,
-      var.db_sirsi_kms_arn,
     ]
   }
 }

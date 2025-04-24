@@ -32,6 +32,7 @@ public class OrganisationInformationContext(DbContextOptions<OrganisationInforma
     public DbSet<OrganisationParty> OrganisationParties { get; set; } = null!;
     public DbSet<MouSignature> MouSignature { get; set; } = null!;
     public DbSet<Mou> Mou { get; set; } = null!;
+    public DbSet<MouEmailReminder> MouEmailReminders { get; set; } = null!;
 
     public DbSet<OrganisationAddressSnapshot> OrganisationAddressSnapshot { get; set; } = null!;
     public DbSet<IdentifierSnapshot> IdentifierSnapshot { get; set; } = null!;

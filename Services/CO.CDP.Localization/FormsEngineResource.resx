@@ -271,7 +271,7 @@
     <value>&lt;div id="isEventEnded-hint" class="govuk-hint"&gt;For example, a court decision for environmental misconduct led your organisation or the connected person to stop harming the environment.&lt;/div&gt;</value>
   </data>
   <data name="Exclusions_02_Caption" xml:space="preserve">
-    <value>&lt;legend class="govuk-fieldset__legend"&gt;Enter the date the circumstances ended&lt;/legend&gt;&lt;div class="govuk-hint"&gt;For example, 27 3 2007&lt;/div&gt;</value>
+    <value>&lt;legend class="govuk-fieldset__legend" id="inner-legend"&gt;Enter the date the circumstances ended&lt;/legend&gt;&lt;div class="govuk-hint"&gt;For example, 27 3 2007&lt;/div&gt;</value>
   </data>
   <data name="Exclusions_02_SummaryTitle" xml:space="preserve">
     <value>Date circumstances ended</value>
@@ -424,7 +424,7 @@
     <value>Who awarded the trade assurance?</value>
   </data>
   <data name="TradeAssurance_01_Description" xml:space="preserve">
-    <value>&lt;div class="govuk-hint"&gt;Enter the name of the person or body. You can add another at the end if you need to. For example, Red Tractor Assurance, QMS Assurance.&lt;/div&gt;</value>
+    <value>&lt;div class="govuk-hint"&gt;Enter the name of the person or body. You can add another at the end if you need to. For example, Red Tractor Assurance or Quality Meat Scotland (QMS) Assurance.&lt;/div&gt;</value>
   </data>
   <data name="TradeAssurance_01_SummaryTitle" xml:space="preserve">
     <value>Awarded by</value>
@@ -476,5 +476,53 @@
   </data>
   <data name="Global_Enter_Your_Name" xml:space="preserve">
     <value>Enter your name</value>
+  </data>
+  <data name="Global_Declaration" xml:space="preserve">
+    <value>Declaration</value>
+  </data>
+  <data name="Global_Your_Declaration_Details" xml:space="preserve">
+    <value>Your declaration details</value>
+  </data>
+  <data name="ShareMyInformationConsortium_05_Description" xml:space="preserve">
+    <value>&lt;ul class="govuk-list govuk-list--bullet"&gt;&lt;li&gt;I am authorised to make this declaration on behalf of the consortium and declare that to the best of my knowledge the answers submitted and information contained is correct and accurate at the time of declaration.&lt;/li&gt;&lt;br&gt;&lt;li&gt;I declare that, upon request from the Contracting Authority and without delay I will provide the certificates or documentary evidence referred to in this information.&lt;/li&gt;&lt;br&gt;&lt;li&gt;I understand that the information is required as per the regulations of the Procurement Act 2023 and may be used in the selection process to assess my suitability to participate further in this procurement.&lt;/li&gt;&lt;br&gt;&lt;li&gt;I understand that a contracting authority with whom this information is shared may request further clarity or detail on information provided in this submission.&lt;/li&gt;&lt;/ul&gt;</value>
+  </data>
+  <data name="ShareMyInformationConsortium_04_Description" xml:space="preserve">
+    <value>&lt;div id="declarationNameHint" class="govuk-hint"&gt;Your name as the person authorised to declare the supplier information.&lt;/div&gt;</value>
+  </data>
+  <data name="ShareMyInformation_02_Description" xml:space="preserve">
+    <value>&lt;div id="declarationNameEmailHint" class="govuk-hint"&gt;So the contracting authority can contact you.&lt;/div&gt;</value>
+  </data>
+  <data name="ShareMyInformation_04_Description" xml:space="preserve">
+    <value>&lt;div id="declarationNameEmailHint" class="govuk-hint"&gt;Your name as the person authorised to declare the supplier information.&lt;/div&gt;</value>
+  </data>
+  <data name="ShareMyInformation_05_Description" xml:space="preserve">
+    <value>&lt;ul class="govuk-list govuk-list--bullet"&gt;&lt;li class="govuk-!-margin-bottom-4"&gt;I am authorised to make this declaration on behalf of the supplier and declare that to the best of my knowledge the answers submitted and information contained is correct and accurate at the time of declaration.&lt;/li&gt; &lt;li class="govuk-!-margin-bottom-4"&gt;I declare that, upon request from the Contracting Authority and without delay I will provide the certificates or documentary evidence referred to in this information.&lt;/li&gt;&lt;li class="govuk-!-margin-bottom-4"&gt;I understand that the information is required as per the regulations of the Procurement Act 2023 and may be used in the selection process to assess my suitability to participate further in this procurement.&lt;/li&gt;&lt;li class="govuk-!-margin-bottom-4"&gt;I understand that a contracting authority with whom this information is shared may request further clarity or detail on information provided in this submission.&lt;/li&gt;&lt;/ul&gt;</value>
+  </data>
+  <data name="ShareMyInformation_01_Description" xml:space="preserve">
+    <value>&lt;div id="declarationNameEmailHint" class="govuk-hint"&gt;So the contracting authority can contact you.&lt;/div&gt;</value>
+  </data>
+  <data name="ShareMyInformationConsortium_01_SummaryTitle" xml:space="preserve">
+    <value>Postal address</value>
+  </data>
+  <data name="ShareMyInformationConsortium_02_SummaryTitle" xml:space="preserve">
+    <value>Email address</value>
+  </data>
+  <data name="ShareMyInformationConsortium_03_SummaryTitle" xml:space="preserve">
+    <value>Job title</value>
+  </data>
+  <data name="ShareMyInformationConsortium_04_SummaryTitle" xml:space="preserve">
+    <value>Declared by</value>
+  </data>
+  <data name="ShareMyInformation_01_SummaryTitle" xml:space="preserve">
+    <value>Postal address</value>
+  </data>
+  <data name="ShareMyInformation_02_SummaryTitle" xml:space="preserve">
+    <value>Email address</value>
+  </data>
+  <data name="ShareMyInformation_03_SummaryTitle" xml:space="preserve">
+    <value>Job title</value>
+  </data>
+  <data name="ShareMyInformation_04_SummaryTitle" xml:space="preserve">
+    <value>Declared by</value>
   </data>
 </root>

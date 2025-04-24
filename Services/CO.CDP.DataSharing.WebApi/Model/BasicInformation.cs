@@ -13,6 +13,7 @@ public record BasicInformation
     public string? Role { get; init; }
     public BasicLegalForm? LegalForm { get; init; }
     public string? OrganisationName { get; init; }
+    public List<OperationType> OperationTypes { get; init; } = [];
 }
 
 public record BasicLegalForm

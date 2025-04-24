@@ -35,8 +35,8 @@
         <form class="form" method="post">
             
             <div class="govuk-form-group @(selectionError ? "govuk-form-group--error" : "")">
-                <fieldset class="govuk-fieldset">
-                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                <fieldset class="govuk-fieldset" role="group">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l" id="outer-legend">
                         <h1 class="govuk-fieldset__heading">@ViewData["Title"]</h1>
                     </legend>
                     <div id="isRequiredToRegisterAsPSC-hint" class="govuk-hint">
@@ -52,8 +52,8 @@
 
                         <div class="govuk-radios__conditional" id="conditional-YES">
                             <div class="govuk-form-group @(hasError ? "govuk-form-group--error" : "")">
-                                <fieldset class="govuk-fieldset" role="group" aria-describedby="isRequiredToRegisterAsPSCHint">
-                                    <legend class="govuk-fieldset__legend">
+                                <fieldset class="govuk-fieldset" role="group" aria-describedby="isRequiredToRegisterAsPSCHint" aria-labelledby="outer-legend inner-legend">
+                                    <legend class="govuk-fieldset__legend" id="inner-legend">
                                         @StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityRegistrationDateQuestion_DateRegisteredLabel
                                     </legend>
                                     <div id="isRequiredToRegisterAsPSC-hint" class="govuk-hint">
