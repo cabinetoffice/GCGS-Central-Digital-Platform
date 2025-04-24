@@ -70,14 +70,7 @@ public class LegalFormCompanyActQuestionModel(
 
             tempDataService.Put(LegalForm.TempDataKey, lf);
 
-            if (RegisteredOnCompanyHouse == true)
-            {
-                return RedirectToPage("LegalFormSelectOrganisation", new { Id });
-            }
-            else
-            {
-                return RedirectToPage("LegalFormOtherOrganisation", new { Id });
-            }
+            return RedirectToPage("LegalFormSelectOrganisation", new { Id });
         }
         catch (ApiException ex) when (ex.StatusCode == 404)
         {

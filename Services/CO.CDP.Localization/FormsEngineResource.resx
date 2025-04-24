@@ -1,17 +1,17 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
-  <!--
-    Microsoft ResX Schema
-
+  <!-- 
+    Microsoft ResX Schema 
+    
     Version 2.0
-
-    The primary goals of this format is to allow a simple XML format
-    that is mostly human readable. The generation and parsing of the
-    various data types are done through the TypeConverter classes
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
     associated with the data types.
-
+    
     Example:
-
+    
     ... ado.net/XML headers & schema ...
     <resheader name="resmimetype">text/microsoft-resx</resheader>
     <resheader name="version">2.0</resheader>
@@ -26,36 +26,36 @@
         <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
         <comment>This is a comment</comment>
     </data>
-
-    There are any number of "resheader" rows that contain simple
+                
+    There are any number of "resheader" rows that contain simple 
     name/value pairs.
-
-    Each data row contains a name, and value. The row also contains a
-    type or mimetype. Type corresponds to a .NET class that support
-    text/value conversion through the TypeConverter architecture.
-    Classes that don't support this are serialized and stored with the
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
     mimetype set.
-
-    The mimetype is used for serialized objects, and tells the
-    ResXResourceReader how to depersist the object. This is currently not
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
     extensible. For a given mimetype the value must be set accordingly:
-
-    Note - application/x-microsoft.net.object.binary.base64 is the format
-    that the ResXResourceWriter will generate, however the reader can
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
     read any of the formats listed below.
-
+    
     mimetype: application/x-microsoft.net.object.binary.base64
-    value   : The object must be serialized with
+    value   : The object must be serialized with 
             : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
             : and then encoded with base64 encoding.
-
+    
     mimetype: application/x-microsoft.net.object.soap.base64
-    value   : The object must be serialized with
+    value   : The object must be serialized with 
             : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
             : and then encoded with base64 encoding.
 
     mimetype: application/x-microsoft.net.object.bytearray.base64
-    value   : The object must be serialized into a byte array
+    value   : The object must be serialized into a byte array 
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
@@ -149,6 +149,9 @@
   </data>
   <data name="FinancialInformation_03_Title" xml:space="preserve">
     <value>Were your accounts audited?</value>
+  </data>
+  <data name="FinancialInformation_03_Description" xml:space="preserve">
+    <value>&lt;p class="govuk-body"&gt;Auditing requirements are defined in &lt;a href="https://www.legislation.gov.uk/ukpga/2006/46/part/16" target="_blank"&gt;part 16 of the Companies Act 2006 (opens in new tab)&lt;/a&gt; or an overseas equivalent&lt;/p&gt;</value>
   </data>
   <data name="FinancialInformation_03_SummaryTitle" xml:space="preserve">
     <value>Audited accounts</value>
@@ -268,7 +271,7 @@
     <value>&lt;div id="isEventEnded-hint" class="govuk-hint"&gt;For example, a court decision for environmental misconduct led your organisation or the connected person to stop harming the environment.&lt;/div&gt;</value>
   </data>
   <data name="Exclusions_02_Caption" xml:space="preserve">
-    <value>&lt;legend class="govuk-fieldset__legend"&gt;Enter the date the circumstances ended&lt;/legend&gt;&lt;div class="govuk-hint"&gt;For example, 27 3 2007&lt;/div&gt;</value>
+    <value>&lt;legend class="govuk-fieldset__legend" id="inner-legend"&gt;Enter the date the circumstances ended&lt;/legend&gt;&lt;div class="govuk-hint"&gt;For example, 27 3 2007&lt;/div&gt;</value>
   </data>
   <data name="Exclusions_02_SummaryTitle" xml:space="preserve">
     <value>Date circumstances ended</value>
@@ -421,7 +424,7 @@
     <value>Who awarded the trade assurance?</value>
   </data>
   <data name="TradeAssurance_01_Description" xml:space="preserve">
-    <value>&lt;div class="govuk-hint"&gt;Enter the name of the person or body. You can add another at the end if you need to. For example, Red Tractor Assurance, QMS Assurance.&lt;/div&gt;</value>
+    <value>&lt;div class="govuk-hint"&gt;Enter the name of the person or body. You can add another at the end if you need to. For example, Red Tractor Assurance or Quality Meat Scotland (QMS) Assurance.&lt;/div&gt;</value>
   </data>
   <data name="TradeAssurance_01_SummaryTitle" xml:space="preserve">
     <value>Awarded by</value>
@@ -473,5 +476,53 @@
   </data>
   <data name="Global_Enter_Your_Name" xml:space="preserve">
     <value>Enter your name</value>
+  </data>
+  <data name="Global_Declaration" xml:space="preserve">
+    <value>Declaration</value>
+  </data>
+  <data name="Global_Your_Declaration_Details" xml:space="preserve">
+    <value>Your declaration details</value>
+  </data>
+  <data name="ShareMyInformationConsortium_05_Description" xml:space="preserve">
+    <value>&lt;ul class="govuk-list govuk-list--bullet"&gt;&lt;li&gt;I am authorised to make this declaration on behalf of the consortium and declare that to the best of my knowledge the answers submitted and information contained is correct and accurate at the time of declaration.&lt;/li&gt;&lt;br&gt;&lt;li&gt;I declare that, upon request from the Contracting Authority and without delay I will provide the certificates or documentary evidence referred to in this information.&lt;/li&gt;&lt;br&gt;&lt;li&gt;I understand that the information is required as per the regulations of the Procurement Act 2023 and may be used in the selection process to assess my suitability to participate further in this procurement.&lt;/li&gt;&lt;br&gt;&lt;li&gt;I understand that a contracting authority with whom this information is shared may request further clarity or detail on information provided in this submission.&lt;/li&gt;&lt;/ul&gt;</value>
+  </data>
+  <data name="ShareMyInformationConsortium_04_Description" xml:space="preserve">
+    <value>&lt;div id="declarationNameHint" class="govuk-hint"&gt;Your name as the person authorised to declare the supplier information.&lt;/div&gt;</value>
+  </data>
+  <data name="ShareMyInformation_02_Description" xml:space="preserve">
+    <value>&lt;div id="declarationNameEmailHint" class="govuk-hint"&gt;So the contracting authority can contact you.&lt;/div&gt;</value>
+  </data>
+  <data name="ShareMyInformation_04_Description" xml:space="preserve">
+    <value>&lt;div id="declarationNameEmailHint" class="govuk-hint"&gt;Your name as the person authorised to declare the supplier information.&lt;/div&gt;</value>
+  </data>
+  <data name="ShareMyInformation_05_Description" xml:space="preserve">
+    <value>&lt;ul class="govuk-list govuk-list--bullet"&gt;&lt;li class="govuk-!-margin-bottom-4"&gt;I am authorised to make this declaration on behalf of the supplier and declare that to the best of my knowledge the answers submitted and information contained is correct and accurate at the time of declaration.&lt;/li&gt; &lt;li class="govuk-!-margin-bottom-4"&gt;I declare that, upon request from the Contracting Authority and without delay I will provide the certificates or documentary evidence referred to in this information.&lt;/li&gt;&lt;li class="govuk-!-margin-bottom-4"&gt;I understand that the information is required as per the regulations of the Procurement Act 2023 and may be used in the selection process to assess my suitability to participate further in this procurement.&lt;/li&gt;&lt;li class="govuk-!-margin-bottom-4"&gt;I understand that a contracting authority with whom this information is shared may request further clarity or detail on information provided in this submission.&lt;/li&gt;&lt;/ul&gt;</value>
+  </data>
+  <data name="ShareMyInformation_01_Description" xml:space="preserve">
+    <value>&lt;div id="declarationNameEmailHint" class="govuk-hint"&gt;So the contracting authority can contact you.&lt;/div&gt;</value>
+  </data>
+  <data name="ShareMyInformationConsortium_01_SummaryTitle" xml:space="preserve">
+    <value>Postal address</value>
+  </data>
+  <data name="ShareMyInformationConsortium_02_SummaryTitle" xml:space="preserve">
+    <value>Email address</value>
+  </data>
+  <data name="ShareMyInformationConsortium_03_SummaryTitle" xml:space="preserve">
+    <value>Job title</value>
+  </data>
+  <data name="ShareMyInformationConsortium_04_SummaryTitle" xml:space="preserve">
+    <value>Declared by</value>
+  </data>
+  <data name="ShareMyInformation_01_SummaryTitle" xml:space="preserve">
+    <value>Postal address</value>
+  </data>
+  <data name="ShareMyInformation_02_SummaryTitle" xml:space="preserve">
+    <value>Email address</value>
+  </data>
+  <data name="ShareMyInformation_03_SummaryTitle" xml:space="preserve">
+    <value>Job title</value>
+  </data>
+  <data name="ShareMyInformation_04_SummaryTitle" xml:space="preserve">
+    <value>Declared by</value>
   </data>
 </root>

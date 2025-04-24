@@ -41,7 +41,13 @@ public class ConnectedEntityCompanyQuestionModel(ISession session) : PageModel
 
         InitModel(state);
 
-        HasCompaniesHouseNumber = selected.HasValue ? selected : state.HasCompaniesHouseNumber;
+        HasCompaniesHouseNumber = selected ?? state.HasCompaniesHouseNumber;
+
+        if (RedirectToCheckYourAnswer == true && HasCompaniesHouseNumber == null)
+        {
+            HasCompaniesHouseNumber = false;
+        }
+
         CompaniesHouseNumber = state.CompaniesHouseNumber;
 
         return Page();
@@ -68,7 +74,7 @@ public class ConnectedEntityCompanyQuestionModel(ISession session) : PageModel
         }
 
         state.HasCompaniesHouseNumber = HasCompaniesHouseNumber;
-        state.CompaniesHouseNumber = CompaniesHouseNumber;
+        state.CompaniesHouseNumber = (HasCompaniesHouseNumber == true ? CompaniesHouseNumber : string.Empty);
         if (HasCompaniesHouseNumber == true)
         {
             state.OverseasCompaniesHouseNumber = null;

@@ -38,7 +38,7 @@
                         @StaticTextResource.MoU_ReviewAndSign_Download_Title
                     </h2>
                     <p>
-                        <a href="?handler=Download">@StaticTextResource.MoU_ReviewAndSign_DownloadPdf_Link</a>
+                        <a class="govuk-link" href="?handler=Download">@StaticTextResource.MoU_ReviewAndSign_DownloadPdf_Link</a>
                     </p>
 
                     <p>@StaticTextResource.MoU_ReviewAndSign_Download_Hint</p>
@@ -89,7 +89,7 @@
                                 @Html.ValidationMessageFor(m => m.JobTitleValue)
                             </p>
                         }
-                        <label class="govuk-label" for="@nameof(Model.Name)">@StaticTextResource.MoU_ReviewAndSign_Job_Title</label>
+                        <label class="govuk-label" for="@nameof(Model.JobTitleValue)">@StaticTextResource.MoU_ReviewAndSign_Job_Title</label>
                         <input class="govuk-input govuk-!-width-one-half @(jobTitleValueHasError ? "govuk-input--error" : "")" id="@nameof(Model.JobTitleValue)"
                                value="@Model.JobTitleValue" name="@nameof(Model.JobTitleValue)" type="text"
                                spellcheck="false" @(jobTitleValueHasError ? "aria-describedby=job-title-error" : "")>

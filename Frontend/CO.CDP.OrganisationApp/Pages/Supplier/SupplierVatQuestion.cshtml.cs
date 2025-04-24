@@ -77,7 +77,7 @@ public class SupplierVatQuestionModel(IOrganisationClient organisationClient) : 
 
         ICollection<OrganisationIdentifier> identifiers = [
                                 new OrganisationIdentifier(
-                                    id: HasVatNumber == true ? VatNumber : null,
+                                    id: HasVatNumber == true ? VatNumber?.Trim() : null,
                                     legalName: organisation.Name,
                                     scheme: VatSchemeName)];
         var existingVatIdentifier = Helper.GetVatIdentifier(organisation);

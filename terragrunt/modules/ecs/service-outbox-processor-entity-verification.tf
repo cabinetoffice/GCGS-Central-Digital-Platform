@@ -7,8 +7,8 @@ module "ecs_service_outbox_processor_entity_verification" {
       aspcore_environment    = local.aspcore_environment
       container_port         = var.service_configs.outbox_processor_entity_verification.port
       cpu                    = var.service_configs.outbox_processor_entity_verification.cpu
-      db_address             = local.db_ev_address
-      db_name                = local.db_ev_name
+      db_address             = var.db_ev_cluster_address
+      db_name                = var.db_ev_cluster_name
       db_password            = local.db_ev_password
       db_username            = local.db_ev_username
       host_port              = var.service_configs.outbox_processor_entity_verification.port
@@ -27,7 +27,7 @@ module "ecs_service_outbox_processor_entity_verification" {
   cluster_id             = aws_ecs_cluster.this.id
   container_port         = var.service_configs.outbox_processor_entity_verification.port
   cpu                    = var.service_configs.outbox_processor_entity_verification.cpu
-  desired_count          = local.outbox_processors_desire_count
+  desired_count          = var.service_configs.outbox_processor_entity_verification.desired_count
   ecs_alb_sg_id          = var.alb_sg_id
   ecs_listener_arn       = aws_lb_listener.ecs.arn
   ecs_service_base_sg_id = var.ecs_sg_id

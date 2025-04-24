@@ -79,7 +79,7 @@ locals {
         "https://stanvolcere.nqc.com/auth/backchannellogout",
         "https://www-staging.find-tender.service.gov.uk/auth/backchannellogout",
       ]
-      pinned_service_version            = "1.0.55"
+      pinned_service_version            = "1.0.59"
       postgres_instance_type            = "db.t4g.micro"
       postgres_aurora_instance_type     = "db.r5.large"
       private_subnets = [
@@ -143,7 +143,7 @@ locals {
         "https://www-tpp-preview.find-tender.service.gov.uk/auth/backchannellogout",
         "https://www-tpp.find-tender.service.gov.uk/auth/backchannellogout",
       ]
-      pinned_service_version            = "1.0.55"
+      pinned_service_version            = "1.0.59"
       postgres_instance_type            = "db.t4g.micro"
       postgres_aurora_instance_type     = "db.r5.large"
       private_subnets = [
@@ -174,9 +174,10 @@ locals {
       fts_service_allowed_origins       = []
       name                              = "production"
       onelogin_logout_notification_urls = ["https://www.find-tender.service.gov.uk/auth/backchannellogout"]
-      pinned_service_version            = "1.0.55"
+      pinned_service_version            = "1.0.59"
       postgres_instance_type            = "db.t4g.micro"
-      postgres_aurora_instance_type     = "db.r5.12xlarge"
+      postgres_aurora_instance_type     = "db.r5.8xlarge"
+      postgres_aurora_instance_type_ev  = "db.r5.4xlarge"
       private_subnets = [
         "10.${local.cidr_b_production}.101.0/24",
         "10.${local.cidr_b_production}.102.0/24",
@@ -196,6 +197,7 @@ locals {
   }
 
   aurora_postgres_instance_type     = try(local.environments[local.environment].postgres_aurora_instance_type, null)
+  aurora_postgres_instance_type_ev  = try(local.environments[local.environment].postgres_aurora_instance_type_ev, local.aurora_postgres_instance_type)
   fts_azure_frontdoor               = try(local.environments[local.environment].fts_azure_frontdoor, null)
   fts_service_allowed_origins       = try(local.environments[local.environment].fts_service_allowed_origins, null)
   onelogin_logout_notification_urls = try(local.environments[local.environment].onelogin_logout_notification_urls, null)
@@ -227,6 +229,7 @@ locals {
     outbox_processor_entity_verification = { desired_count = 1 }
     outbox_processor_organisation        = { desired_count = 1 }
     person                               = {}
+    scheduled_worker                     = { desired_count = 1 }
     tenant                               = {}
   }
 
@@ -256,19 +259,20 @@ locals {
   }
 
   service_configs_common = {
-    authority =                            { port = 8092, port_host = 8092, name = "authority"}
-    av_scanner_app =                       { port = 8095, port_host = 8095, name = "av-scanner-app"}
-    data_sharing =                         { port = 8088, port_host = 8088, name = "data-sharing"}
-    entity_verification =                  { port = 8094, port_host = 8094, name = "entity-verification"}
-    entity_verification_migrations =       { port = 9191, port_host = null, name = "entity-verification-migrations"}
-    forms =                                { port = 8086, port_host = 8086, name = "forms"}
-    organisation =                         { port = 8082, port_host = 8082, name = "organisation"}
-    organisation_app =                     { port = 8090, port_host = 80  , name = "organisation-app"}
-    organisation_information_migrations =  { port = 9090, port_host = null, name = "organisation-information-migrations"}
+    authority                            = { port = 8092, port_host = 8092, name = "authority"}
+    av_scanner_app                       = { port = 8095, port_host = 8095, name = "av-scanner-app"}
+    data_sharing                         = { port = 8088, port_host = 8088, name = "data-sharing"}
+    entity_verification                  = { port = 8094, port_host = 8094, name = "entity-verification"}
+    entity_verification_migrations       = { port = 9191, port_host = null, name = "entity-verification-migrations"}
+    forms                                = { port = 8086, port_host = 8086, name = "forms"}
+    organisation                         = { port = 8082, port_host = 8082, name = "organisation"}
+    organisation_app                     = { port = 8090, port_host = 80  , name = "organisation-app"}
+    organisation_information_migrations  = { port = 9090, port_host = null, name = "organisation-information-migrations"}
     outbox_processor_entity_verification = { port = 9096, port_host = 9096, name = "outbox-processor-entity-verification"}
-    outbox_processor_organisation =        { port = 9098, port_host = 9098, name = "outbox-processor-organisation"}
-    person =                               { port = 8084, port_host = 8084, name = "person" }
-    tenant =                               { port = 8080, port_host = 8080, name = "tenant" }
+    outbox_processor_organisation        = { port = 9098, port_host = 9098, name = "outbox-processor-organisation"}
+    person                               = { port = 8084, port_host = 8084, name = "person" }
+    scheduled_worker                     = { port = 9094, port_host = 9094, name = "scheduled-worker"}
+    tenant                               = { port = 8080, port_host = 8080, name = "tenant" }
   }
 
   service_configs = {

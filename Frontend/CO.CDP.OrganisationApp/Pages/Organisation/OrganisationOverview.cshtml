@@ -16,6 +16,8 @@
     var registeredAddress = organisationDetails.Addresses.FirstOrDefault(a => a.Type == CO.CDP.Organisation.WebApiClient.AddressType.Registered);
     bool isViewer = await userInfoService.IsViewer();
     bool isAdmin = await userInfoService.IsAdmin();
+    var supplierToBuyerDevolvedRegulationsPage = $"/organisation/{@Model.Id}/supplier-to-buyer-devolved-regulation";
+    var supplierToBuyerSelectDevolvedRegulationsPage = $"/organisation/{@Model.Id}/buyer/select-devolved-regulation";
     ViewData["Title"] = organisationDetails.Name;
 }
 
@@ -35,9 +37,9 @@
                     </h2>
                 </div>
                 <div class="govuk-notification-banner__content">
-                    <p class="govuk-notification-banner__heading">
+                    <h3 class="govuk-notification-banner__heading">
                         @StaticTextResource.Organisation_WeCouldNotApproveYourRequest
-                    </p>
+                    </h3>
                     <p class="govuk-body">@Model.Review.Comment</p>
                 </div>
             </div>
@@ -51,9 +53,9 @@
                     </h2>
                 </div>
                 <div class="govuk-notification-banner__content">
-                    <p class="govuk-notification-banner__heading">
+                    <h3 class="govuk-notification-banner__heading">
                         @StaticTextResource.Organisation_BuyerRegistrationPendingApproval
-                    </p>
+                    </h3>
                     <p class="govuk-body">
                         @StaticTextResource.OrganisationOverView_Banner_PendingApproval_Hint
                     </p>
@@ -124,7 +126,7 @@
                     </dd>
                     <authorize scope="@OrgScopeRequirement.Editor">
                         <dd class="govuk-summary-list__actions">
-                            <a class="govuk-link govuk-link--no-visited-state" href="/organisation/@Model.Id/identifiers">@Html.Raw(StaticTextResource.Organisation_AddAddress)</a>
+                            <a class="govuk-link govuk-link--no-visited-state" href="/organisation/@Model.Id/identifiers">@Html.Raw(StaticTextResource.Organisation_AddOrganisationIdentifier)</a>
                         </dd>
                     </authorize>
                 </div>
@@ -187,7 +189,9 @@
                         </dd>
                         <authorize scope="@OrgScopeRequirement.Editor">
                             <dd class="govuk-summary-list__actions">
-                                <a class="govuk-link govuk-link--no-visited-state" href="/organisation/@Model.Id/buyer-organisation-type">@StaticTextResource.Global_Change</a>
+                                <a class="govuk-link govuk-link--no-visited-state" href="/organisation/@Model.Id/buyer-organisation-type">
+                                    @StaticTextResource.Global_Change<span class="govuk-visually-hidden"> @StaticTextResource.Organisation_BuyerType</span>
+                                </a>
                             </dd>
                         </authorize>
                     </div>
@@ -201,6 +205,11 @@
                                 @(Model.BuyerInformation.DevolvedRegulations.Count > 0 ? StaticTextResource.Global_Yes : StaticTextResource.Global_No)
                             </p>
                         </dd>
+                        <authorize scope="@OrgScopeRequirement.Editor">
+                            <dd class="govuk-summary-list__actions">
+                                <a class="govuk-link govuk-link--no-visited-state" href="@supplierToBuyerDevolvedRegulationsPage?frm-overview">@Html.Raw(@StaticTextResource.SupplierToBuyer_OrganisationSummary_ChangeDevolvedRegulations)</a>
+                            </dd>
+                        </authorize>
                     </div>
 
                     @if (Model.BuyerInformation.DevolvedRegulations.Count > 0)
@@ -213,15 +222,15 @@
                                 <p class="govuk-body">
                                     @if (Model.Regulations != null)
                                     {
-                                        foreach (var regulation in Model.Regulations)
-                                        {
-                                            @regulation.Description()
-
-                                            <br />
-                                        }
+                                        @Html.Raw(string.Join("<br /> ", Model.Regulations.Select(x => x.Description())))
                                     }
                                 </p>
                             </dd>
+                            <authorize scope="@OrgScopeRequirement.Editor">
+                                <dd class="govuk-summary-list__actions">
+                                    <a class="govuk-link govuk-link--no-visited-state" href="@supplierToBuyerSelectDevolvedRegulationsPage?frm-overview">@Html.Raw(@StaticTextResource.SupplierToBuyer_OrganisationSummary_ChangeDevolvedRegions)</a>
+                                </dd>
+                            </authorize>
                         </div>
                     }
 
@@ -242,7 +251,9 @@
                             </dd>
                             <authorize scope="@OrgScopeRequirement.Admin">
                                 <dd class="govuk-summary-list__actions">
-                                    <a class="govuk-link govuk-link--no-visited-state" href="/organisation/@Model.Id/mou-summary">@StaticTextResource.Global_View</a>
+                                    <a class="govuk-link govuk-link--no-visited-state" href="/organisation/@Model.Id/mou-summary">
+                                        @StaticTextResource.Global_View<span class="govuk-visually-hidden"> @StaticTextResource.MoU_DataSharingAgreement_Title</span>
+                                    </a>
                                 </dd>
                             </authorize>
                         </div>

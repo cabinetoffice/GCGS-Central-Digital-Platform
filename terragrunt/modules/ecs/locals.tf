@@ -2,19 +2,13 @@ locals {
 
   aspcore_environment = "Aws${title(var.environment)}"
 
-  aurora_cluster_enabled = contains(["development", "staging", "production"], var.environment)
-
   cognito_enabled = contains(["development", "staging"], var.environment)
 
-  db_sirsi_secret_arn = local.aurora_cluster_enabled ? var.db_sirsi_cluster_credentials_arn : var.db_sirsi_credentials_arn
-  db_ev_secret_arn    = local.aurora_cluster_enabled ? var.db_ev_cluster_credentials_arn : var.db_entity_verification_credentials_arn
+  db_sirsi_secret_arn = var.db_sirsi_cluster_credentials_arn
+  db_ev_secret_arn    = var.db_ev_cluster_credentials_arn
 
-  db_sirsi_address  = local.aurora_cluster_enabled ? var.db_sirsi_cluster_address : var.db_sirsi_address
-  db_sirsi_name     = local.aurora_cluster_enabled ? var.db_sirsi_cluster_name : var.db_sirsi_name
   db_sirsi_password = "${local.db_sirsi_secret_arn}:password::"
   db_sirsi_username = "${local.db_sirsi_secret_arn}:username::"
-  db_ev_address     = local.aurora_cluster_enabled ? var.db_ev_cluster_address : var.db_entity_verification_address
-  db_ev_name        = local.aurora_cluster_enabled ? var.db_ev_cluster_name : var.db_entity_verification_name
   db_ev_password    = "${local.db_ev_secret_arn}:password::"
   db_ev_username    = "${local.db_ev_secret_arn}:username::"
 
@@ -48,8 +42,6 @@ locals {
     for name, config in var.service_configs :
     config.name => config if contains(local.migrations, config.name)
   }
-
-  outbox_processors_desire_count = 1 # won't be scalable.
 
   send_notify_emails_enabled_accounts = ["development", "staging", "integration", "production"]
   send_notify_emails                  = contains(local.send_notify_emails_enabled_accounts, var.environment)
