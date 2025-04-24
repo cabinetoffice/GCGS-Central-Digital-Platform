@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!--
     Microsoft ResX Schema
@@ -3743,5 +3743,8 @@
   </data>
   <data name="PdfGenerator_ConsortiumSharecodeInformation_Sharecode" xml:space="preserve">
     <value>Share code</value>
+  </data>
+  <data name="CompaniesHouse_Number_Error" xml:space="preserve">
+    <value>Company number must be 8 digits or 2 letters and 6 digits</value>
   </data>
 </root>

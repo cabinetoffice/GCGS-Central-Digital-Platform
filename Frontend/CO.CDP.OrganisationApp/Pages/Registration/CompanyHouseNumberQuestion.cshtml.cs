@@ -22,6 +22,7 @@ public class CompanyHouseNumberQuestionModel(ISession session,
 
     [BindProperty]
     [RequiredIf(nameof(HasCompaniesHouseNumber), true, ErrorMessage = nameof(StaticTextResource.OrganisationRegistration_CompanyHouseNumberQuestion_ErrorMessage))]
+    [StringLength(8, MinimumLength = 8, ErrorMessage = nameof(StaticTextResource.CompaniesHouse_Number_Error))]
     public string? CompaniesHouseNumber { get; set; }
 
     [BindProperty]
