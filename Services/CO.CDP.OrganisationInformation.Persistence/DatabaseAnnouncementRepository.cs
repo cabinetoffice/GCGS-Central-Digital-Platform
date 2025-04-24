@@ -19,6 +19,6 @@ public class DatabaseAnnouncementRepository(OrganisationInformationContext conte
 
     public void Dispose()
     {
-        throw new NotImplementedException();
+        context.Dispose();
     }
 }
