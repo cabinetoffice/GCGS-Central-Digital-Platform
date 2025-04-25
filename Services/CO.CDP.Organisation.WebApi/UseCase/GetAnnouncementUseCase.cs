@@ -4,18 +4,19 @@ using Announcement = CO.CDP.Organisation.WebApi.Model.Announcement;
 
 namespace CO.CDP.Organisation.WebApi.UseCase;
 
-public class GetAnnouncementUseCase(IAnnouncementRepository announcementRepository)
-    : IUseCase<GetAnnouncementQuery, Announcement?>
+public class GetAnnouncementsUseCase(IAnnouncementRepository announcementRepository)
+    : IUseCase<GetAnnouncementQuery, IEnumerable<Announcement>>
 {
-    public async Task<Announcement> Execute(GetAnnouncementQuery request)
+    public async Task<IEnumerable<Announcement>> Execute(GetAnnouncementQuery request)
     {
-        var announcement = announcementRepository.GetActiveAnnouncementAsync(request.Page);
-        return new Announcement()
+        var announcements = await announcementRepository.GetActiveAnnouncementsAsync(request.Page);
+
+        return announcements.Select(a => new Announcement
         {
-            Title = announcement.Title,
-            Body = announcement.Body,
-            StartDate = announcement.StartDate,
-            EndDate = announcement.EndDate
-        };
+            Title = a.Title,
+            Body = a.Body,
+            StartDate = a.StartDate,
+            EndDate = a.EndDate
+        });
     }
 }

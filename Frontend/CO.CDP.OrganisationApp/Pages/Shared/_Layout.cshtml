@@ -52,10 +52,14 @@
     @{
         if (userInfoService.IsAuthenticated())
         {
-            var latestAnnouncement = await AnnouncementService.GetLatestAnnouncement(pageName);
-
-            <h1>@latestAnnouncement.Title</h1>
-            <h2>@latestAnnouncement.Body</h2>
+            var latestAnnouncement = await AnnouncementService.GetLatestAnnouncementAsync(pageName);
+            if (latestAnnouncement != null)
+            {
+                <div>
+                    <h1>@latestAnnouncement.Title</h1>
+                    <h2>@latestAnnouncement.Body</h2>
+                </div>
+            }
         }
     }
 

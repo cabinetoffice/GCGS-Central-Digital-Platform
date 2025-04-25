@@ -4,5 +4,5 @@ public interface IAnnouncementRepository : IDisposable
 {
     public void Save(Announcement announcement);
 
-    public Announcement GetActiveAnnouncementAsync(string page);
+    public Task<List<Announcement>> GetActiveAnnouncementsAsync(string page);
 }
