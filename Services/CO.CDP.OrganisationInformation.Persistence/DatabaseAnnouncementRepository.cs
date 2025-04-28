@@ -5,11 +5,6 @@ namespace CO.CDP.OrganisationInformation.Persistence;
 
 public class DatabaseAnnouncementRepository(OrganisationInformationContext context) : IAnnouncementRepository
 {
-    public void Save(Announcement announcement)
-    {
-
-    }
-
     public async Task<List<Announcement>> GetActiveAnnouncementsAsync(string page)
     {
         var now = DateTimeOffset.UtcNow;
