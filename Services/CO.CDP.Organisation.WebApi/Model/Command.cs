@@ -560,7 +560,7 @@ public record AddOrganisationParty
 
 public record GetAnnouncementQuery
 {
-    public required string? Page { get; init; }
+    public required string Page { get; init; }
 }
 
 [JsonConverter(typeof(JsonStringEnumConverter))]
