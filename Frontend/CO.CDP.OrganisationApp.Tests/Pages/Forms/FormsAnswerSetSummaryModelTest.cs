@@ -1,5 +1,6 @@
 using CO.CDP.Forms.WebApiClient;
 using CO.CDP.OrganisationApp.Pages.Forms;
+using CO.CDP.OrganisationApp.Pages.Forms.AnswerSummaryStrategies;
 using CO.CDP.OrganisationApp.Pages.Forms.ChoiceProviderStrategies;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
@@ -16,12 +17,13 @@ public class FormsAnswerSetSummaryModelTest
     private readonly Mock<IChoiceProviderService> _choiceProviderService;
     private readonly FormsAnswerSetSummaryModel _model;
     private readonly Guid AnswerSetId = Guid.NewGuid();
-
+    private readonly Mock<EvaluatorFactory> _mockEvaluatorFactory;
     public FormsAnswerSetSummaryModelTest()
     {
         _tempDataServiceMock = new Mock<ITempDataService>();
         _choiceProviderService = new Mock<IChoiceProviderService>();
         _formsEngineMock = new();
+        _mockEvaluatorFactory = new();
 
         _formsClientMock = new Mock<IFormsClient>();
         _formsClientMock.Setup(client => client.GetFormSectionQuestionsAsync(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid>()))
@@ -41,14 +43,20 @@ public class FormsAnswerSetSummaryModelTest
                      furtherQuestionsExemptedHeading: null,
                      furtherQuestionsExemptedHint: null,
                      pluralSummaryHeadingHintFormat: null,
-                     singularSummaryHeadingHint: null
+                     singularSummaryHeadingHint: null,
+                     summaryRenderFormatter: null
                      )),
              questions: [],
              answerSets: [new FormAnswerSet(id: AnswerSetId, answers: [],
              furtherQuestionsExempted : false)]
              ));
 
-        _model = new FormsAnswerSetSummaryModel(_formsClientMock.Object, _formsEngineMock.Object, _tempDataServiceMock.Object, _choiceProviderService.Object)
+        _model = new FormsAnswerSetSummaryModel(
+            _formsClientMock.Object,
+            _formsEngineMock.Object,
+            _tempDataServiceMock.Object,
+            _choiceProviderService.Object,
+            _mockEvaluatorFactory.Object)
         {
             OrganisationId = Guid.NewGuid(),
             FormId = Guid.NewGuid(),
