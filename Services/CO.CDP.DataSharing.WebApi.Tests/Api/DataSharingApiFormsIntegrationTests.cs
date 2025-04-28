@@ -59,7 +59,7 @@ public class DataSharingApiFormsIntegrationTests : IClassFixture<OrganisationInf
         answer1.DateValue.Should().Be(DateTime.Now.Date);
 
         var answer2 = financialInformationAnswerSet.Answers.First(q => q.QuestionName == "_FinancialInformation02");
-        answer2.DocumentUri?.ToString().Should().EndWith(string.Format("/share/data/{0}/document/a_dummy_file.pdf", createShareCodeResponse.ShareCode));
+        answer2.DocumentUri!.ToString().Should().EndWith(string.Format("/share/data/{0}/document/a_dummy_file.pdf", createShareCodeResponse.ShareCode));
 
         var answer3 = financialInformationAnswerSet.Answers.First(q => q.QuestionName == "_FinancialInformation03");
         answer3.BoolValue.Should().BeTrue();
@@ -95,7 +95,7 @@ public class DataSharingApiFormsIntegrationTests : IClassFixture<OrganisationInf
         answer1.DateValue.Should().Be(DateTime.Now.Date);
 
         var answer2 = financialInformationAnswerSet.Answers.First(q => q.QuestionName == "_FinancialInformation02");
-        answer2.DocumentUri?.ToString().Should().EndWith(string.Format("/share/data/{0}/document/a_dummy_file.pdf", createShareCodeResponseOrganisation1.ShareCode));
+        answer2.DocumentUri!.ToString().Should().EndWith(string.Format("/share/data/{0}/document/a_dummy_file.pdf", createShareCodeResponseOrganisation1.ShareCode));
 
         var answer3 = financialInformationAnswerSet.Answers.First(q => q.QuestionName == "_FinancialInformation03");
         answer3.BoolValue.Should().BeTrue();
