@@ -56,8 +56,8 @@
           "logGroups": [
             {
               "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
-              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/schedule-worker:*",
-              "name": "/ecs/schedule-worker"
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/scheduled-worker:*",
+              "name": "/ecs/scheduled-worker"
             }
           ],
           "matchExact": true,
@@ -112,8 +112,8 @@
           "logGroups": [
             {
               "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
-              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/schedule-worker:*",
-              "name": "/ecs/schedule-worker"
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/scheduled-worker:*",
+              "name": "/ecs/scheduled-worker"
             }
           ],
           "matchExact": true,
@@ -168,8 +168,8 @@
           "logGroups": [
             {
               "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
-              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/schedule-worker:*",
-              "name": "/ecs/schedule-worker"
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/scheduled-worker:*",
+              "name": "/ecs/scheduled-worker"
             }
           ],
           "matchExact": true,
@@ -201,8 +201,8 @@
   },
   "timepicker": {},
   "timezone": "browser",
-  "title": "Schedule Worker",
-  "uid": "schedule-worker",
+  "title": "Scheduled Worker",
+  "uid": "scheduled-worker",
   "version": 1,
   "weekStart": ""
 }
