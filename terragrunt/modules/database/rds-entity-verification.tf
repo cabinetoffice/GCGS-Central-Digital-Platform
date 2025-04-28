@@ -10,7 +10,7 @@ module "cluster_entity_verification" {
   monitoring_interval          = local.is_production ? 30 : 0
   monitoring_role_arn          = local.is_production ? var.role_rds_cloudwatch_arn : ""
   performance_insights_enabled = local.is_production
-  instance_type                = var.aurora_postgres_instance_type
+  instance_type                = var.aurora_postgres_instance_type_ev
   private_subnet_ids           = var.private_subnet_ids
   role_terraform_arn           = var.role_terraform_arn
   tags                         = var.tags

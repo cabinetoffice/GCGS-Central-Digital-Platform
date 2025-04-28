@@ -3,7 +3,7 @@ using static CO.CDP.OrganisationInformation.Persistence.ConnectedEntity;
 
 namespace CO.CDP.DataSharing.WebApi.Model;
 
-public record ConnectedPersonInformation
+public record ConnectedEntityInformation
 (
     Guid PersonId,
     string FirstName,
@@ -19,7 +19,8 @@ public record ConnectedPersonInformation
     ConnectedIndividualTrust? IndividualTrust,
     ConnectedOrganisation? Organisation,
     ConnectedEntityType EntityType,
-    ConnectedOrganisationCategory ConnectedOrganisationCategoryType
+    ConnectedOrganisationCategory ConnectedOrganisationCategoryType,
+    DateTimeOffset? RegistrationDate
 );
 
 public record ConnectedIndividualTrust
