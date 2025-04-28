@@ -271,8 +271,7 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
 
         if (searchText != null)
         {
-            result = result.Where(o => o.Name.Contains(searchText) ||
-                                       EF.Functions.TrigramsSimilarity(o.Name, searchText) > 0.3);
+            result = result.Where(o => o.Name.ToLower().Contains(searchText.ToLower()));
         }
 
         return await result.CountAsync();
