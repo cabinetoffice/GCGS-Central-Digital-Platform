@@ -30,6 +30,7 @@ public class OrganisationIdentificationModel(OrganisationWebApiClient.IOrganisat
     [BindProperty]
     [DisplayName(nameof(StaticTextResource.Organisation_OrganisationIdentification_CH_Label))]
     [RequiredIfContains(nameof(OrganisationScheme), "GB-COH", ErrorMessage = nameof(StaticTextResource.Organisation_OrganisationIdentification_CH_ErrorMessage))]
+    [StringLength(8, MinimumLength = 8, ErrorMessage = nameof(StaticTextResource.CompaniesHouse_Number_Error))]
     public string? CompanyHouseNumber { get; set; }
 
     [BindProperty]

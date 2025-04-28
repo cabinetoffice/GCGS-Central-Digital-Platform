@@ -29,6 +29,22 @@ public class CompanyHouseNumberQuestionTests
     }
 
     [Theory]
+    [InlineData("1234")]
+    [InlineData("0123456789ABCD")]
+    public void Validate_WhenInvalidCompanyHouseNumber_ShouldReturnPageWithModelStateError(string? companyNUmber)
+    {
+        var model = GivenCompaniesHouseQuestionModel();
+
+        model.HasCompaniesHouseNumber = true;
+        model.CompaniesHouseNumber = companyNUmber;
+
+        var results = ModelValidationHelper.Validate(model);
+
+        results.Where(c => c.MemberNames.Contains("CompaniesHouseNumber")).First()
+            .ErrorMessage.Should().Be(nameof(StaticTextResource.CompaniesHouse_Number_Error));
+    }
+
+    [Theory]
     [InlineData(null)]
     [InlineData(false)]
     public async Task OnPost_WhenOptionIsNullOrEmpty_ShouldReturnPageWithModelStateError(bool? hasNumber)
