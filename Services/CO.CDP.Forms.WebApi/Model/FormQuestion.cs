@@ -15,6 +15,7 @@ public record FormQuestion
     public string? Caption { get; init; }
     public string? SummaryTitle { get; set; }
     public required FormQuestionOptions Options { get; init; } = new();
+    public required string Name { get; set; }
 }
 
 [JsonConverter(typeof(JsonStringEnumConverter))]

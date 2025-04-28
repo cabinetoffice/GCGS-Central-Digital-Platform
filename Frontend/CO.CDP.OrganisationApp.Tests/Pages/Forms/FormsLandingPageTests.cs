@@ -164,7 +164,8 @@ public class FormsLandingPageTests
                     furtherQuestionsExemptedHeading: null,
                     furtherQuestionsExemptedHint: null,
                     pluralSummaryHeadingHintFormat: null,
-                    singularSummaryHeadingHint: null
+                    singularSummaryHeadingHint: null,
+                    summaryRenderFormatter: null
                 ),
                 id: sectionId,
                 title: "SectionTitle"
@@ -181,7 +182,8 @@ public class FormsLandingPageTests
                     isRequired: true,
                     nextQuestion: Guid.NewGuid(),
                     nextQuestionAlternative: null,
-                    options: null
+                    options: null,
+                    name: "Question1"
                 )
             ],
             answerSets: []
