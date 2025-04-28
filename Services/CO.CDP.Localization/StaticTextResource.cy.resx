@@ -2160,9 +2160,6 @@
   <data name="PdfGenerator_NoAdditionalIdentifiersAvailableMsg" xml:space="preserve">
     <value>Nid oes unrhyw ddynodyddion ychwanegol ar gael.</value>
   </data>
-  <data name="PdfGenerator_NoConnectedPersonInformationAvailableMsg" xml:space="preserve">
-    <value>Nid oes unrhyw wybodaeth am berson cysylltiedig ar gael.</value>
-  </data>
   <data name="PdfGenerator_OrganisationSchemeTitle_CharityCommission" xml:space="preserve">
     <value>Comisiwn Elusennau (Cymru a Lloegr)</value>
   </data>
