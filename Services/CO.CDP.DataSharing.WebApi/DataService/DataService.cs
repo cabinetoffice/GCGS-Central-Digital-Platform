@@ -350,11 +350,12 @@ public class DataService(
             "infringement_of_competition" => "Infringement of Competition Act 1998, under Chapter II prohibition",
             "insolvency_bankruptcy" => "Insolvency or bankruptcy",
             "labour_market_misconduct" => "Labour market misconduct",
-            "competition_law_infringements" => "Potential competition and competition law infringements",
+            "potential_competition_law_infringements" => "Potential competition and competition law infringements",
             "professional_misconduct" => "Professional misconduct",
             "substantial_part_business" => "Suspension or ceasing to carry on all or a substantial part of a business",
 
             "adjustments_for_tax_arrangements" => "Adjustments for tax arrangements that are abusive",
+            "competition_law_infringements" => "Competition law infringements",
             "defeat_in_respect" => "Defeat in respect of notifiable tax arrangements",
             "failure_to_cooperate" => "Failure to cooperate with an investigation",
             "finding_by_HMRC" => "Finding by HMRC, in exercise of its powers in respect of VAT, of abusive practice",
