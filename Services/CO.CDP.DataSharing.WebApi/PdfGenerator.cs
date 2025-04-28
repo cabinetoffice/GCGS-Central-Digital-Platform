@@ -113,18 +113,25 @@ public class PdfGenerator(IHtmlLocalizer<FormsEngineResource> localizer) : IPdfG
         {
             col.Item().Text(localizer[group.Key].Value).Bold().FontSize(12);
             col.Item().PaddingBottom(10);
-            col.Item().LineHorizontal(1);
-
 
             foreach (var answerSet in group)
             {
                 if (answerSet.QuestionAnswers != null)
                 {
-                    foreach (var qa in answerSet.QuestionAnswers)
+                    if (answerSet.QuestionAnswers.Any())
                     {
-                        col.Item().Element(container => AddTwoColumnRow(container, localizer[qa.Item1].Value, qa.Item2));
+                        col.Item().LineHorizontal(1);
+
+                        foreach (var qa in answerSet.QuestionAnswers)
+                        {
+                            col.Item().Element(container => AddTwoColumnRow(container, localizer[qa.Item1].Value, qa.Item2));
+                        }
                     }
-                    col.Item().PaddingBottom(10);
+                    else
+                    {
+                        col.Item().Text(StaticTextResource.PdfGenerator_NoneApplyMsg);
+                    }
+
                 }
             }
 
@@ -356,7 +363,7 @@ public class PdfGenerator(IHtmlLocalizer<FormsEngineResource> localizer) : IPdfG
         }
         else
         {
-            col.Item().Text(StaticTextResource.PdfGenerator_NoConnectedPersonInformationAvailableMsg);
+            col.Item().Text(StaticTextResource.PdfGenerator_NoneApplyMsg);
         }
 
         col.Item().LineHorizontal(1);
