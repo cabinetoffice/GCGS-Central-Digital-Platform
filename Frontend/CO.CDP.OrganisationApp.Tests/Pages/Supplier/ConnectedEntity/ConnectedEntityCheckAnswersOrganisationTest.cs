@@ -240,62 +240,6 @@ public class ConnectedEntityCheckAnswersOrganisationTest
         _model.BackPageLink.Should().Be(expectedBackPageName);
     }
 
-    private RegisterConnectedEntity DummyPayload()
-    {
-        CreateConnectedOrganisation? connectedOrganisation = null;
-        CreateConnectedIndividualTrust? connectedIndividualTrust = null;
-        var state = DummyConnectedPersonDetails();
-
-        connectedOrganisation = new CreateConnectedOrganisation
-        (
-            category: ConnectedOrganisationCategory.RegisteredCompany,
-            controlCondition: [ControlCondition.OwnsShares, ControlCondition.HasVotingRights],
-            insolvencyDate: state.InsolvencyDate,
-            lawRegistered: "Law_Registered",
-            name: "org name",
-            organisationId: null,
-            registeredLegalForm: "Legal_Form"
-        );
-
-
-        List<Address> addresses =
-        [
-            new Address(
-                countryName: "United Kingdom",
-                country: "GB",
-                locality: "Leeds",
-                postalCode: "LS1 2AE",
-                region: null,
-                streetAddress: "1 street lane",
-                type: OrganisationWebApiClient.AddressType.Registered),
-            new Address(
-                countryName: "United Kingdom",
-                country: "GB",
-                locality: "Leeds",
-                postalCode: "LS1 2AE",
-                region: null,
-                streetAddress: "1 street lane",
-                type: OrganisationWebApiClient.AddressType.Postal),
-        ];
-
-        var registerConnectedEntity = new RegisterConnectedEntity
-        (
-            addresses: addresses,
-            companyHouseNumber: "",
-            endDate: null,
-            entityType: state.ConnectedEntityType!.Value.AsApiClientConnectedEntityType(),
-            hasCompnayHouseNumber: state.HasCompaniesHouseNumber!.Value,
-            individualOrTrust: connectedIndividualTrust,
-            organisation: connectedOrganisation,
-            overseasCompanyNumber: "",
-            registeredDate: state.RegistrationDate!.Value,
-            registerName: state.RegisterName,
-            startDate: null
-        );
-
-        return registerConnectedEntity;
-    }
-
     private ConnectedEntityState DummyConnectedPersonDetails(DateTimeOffset? endDate = null)
     {
         var connectedPersonDetails = new ConnectedEntityState
@@ -340,7 +284,6 @@ public class ConnectedEntityCheckAnswersOrganisationTest
             null,
             connectedOrganisation,
             "org name",
-            null,
             null,
             null
         );

@@ -33,7 +33,7 @@ public class ConnectedEntityNonEf
     public int Id { get; set; }
     public required Guid Guid { get; set; }
     public required ConnectedEntityType EntityType { get; set; }
-    public bool HasCompnayHouseNumber { get; set; }
+    public bool HasCompanyHouseNumber { get; set; }
     public string? CompanyHouseNumber { get; set; }
     public string? OverseasCompanyNumber { get; set; }
     public ConnectedOrganisationNonEf? Organisation { get; set; }
@@ -41,7 +41,6 @@ public class ConnectedEntityNonEf
     public ICollection<AddressNonEf> Addresses { get; set; } = [];
     public DateTimeOffset? RegisteredDate { get; set; }
     public string? RegisterName { get; set; }
-    public DateTimeOffset? StartDate { get; set; }
     public DateTimeOffset? EndDate { get; set; }
 }
 

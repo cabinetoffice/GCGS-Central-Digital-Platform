@@ -117,7 +117,7 @@ public record ConnectedEntitySnapshot
     public int SharedConsentId { get; set; }
     public required Guid Guid { get; set; }
     public required ConnectedEntityType EntityType { get; set; }
-    public bool HasCompnayHouseNumber { get; set; }
+    public bool HasCompanyHouseNumber { get; set; }
     public string? CompanyHouseNumber { get; set; }
     public string? OverseasCompanyNumber { get; set; }
     public ConnectedOrganisationSnapshot? Organisation { get; set; }
@@ -125,7 +125,6 @@ public record ConnectedEntitySnapshot
     public ICollection<ConnectedEntityAddressSnapshot> Addresses { get; set; } = [];
     public DateTimeOffset? RegisteredDate { get; set; }
     public string? RegisterName { get; set; }
-    public DateTimeOffset? StartDate { get; set; }
     public DateTimeOffset? EndDate { get; set; }
     public DateTimeOffset CreatedOn { get; set; }
     public DateTimeOffset UpdatedOn { get; set; }

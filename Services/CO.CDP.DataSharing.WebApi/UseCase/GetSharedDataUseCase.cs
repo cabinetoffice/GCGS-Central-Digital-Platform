@@ -3,6 +3,7 @@ using CO.CDP.DataSharing.WebApi.Model;
 using CO.CDP.OrganisationInformation;
 using CO.CDP.OrganisationInformation.Persistence.NonEfEntities;
 using FormQuestionType = CO.CDP.OrganisationInformation.Persistence.Forms.FormQuestionType;
+using ConnectedEntityIndividualAndTrustCategoryType = CO.CDP.OrganisationInformation.Persistence.ConnectedEntity.ConnectedEntityIndividualAndTrustCategoryType;
 
 namespace CO.CDP.DataSharing.WebApi.UseCase;
 
@@ -117,26 +118,79 @@ public class GetSharedDataUseCase(
     private static ICollection<AssociatedPerson> AssociatedPersons(SharedConsentNonEf sharedConsent)
     {
         return sharedConsent.Organisation.ConnectedEntities
-            .Where(ce => ce.EntityType != ConnectedEntityType.Organisation)
+            .Where(ce => ce.EntityType != ConnectedEntityType.Organisation && ce.IndividualOrTrust != null)
             .Select(x => new AssociatedPerson
             {
                 Id = x.Guid,
-                Name = string.Format($"{x.IndividualOrTrust?.FirstName} {x.IndividualOrTrust?.LastName}"),
-                Relationship = x.IndividualOrTrust?.Category.ToString() ?? string.Empty,
-                Uri = null,
-                Roles = sharedConsent.Organisation.Roles
+                EntityType = x.IndividualOrTrust!.ConnectedType,
+                Relationship = ToAssociatedRelationship(x.IndividualOrTrust!.Category),
+                FirstName = x.IndividualOrTrust.FirstName,
+                LastName = x.IndividualOrTrust.LastName,
+                DateOfBirth = x.IndividualOrTrust.DateOfBirth,
+                Nationality = x.IndividualOrTrust.Nationality,
+                ResidentCountry = x.IndividualOrTrust.ResidentCountry,
+                ControlCondition = x.IndividualOrTrust.ControlCondition,
+                Addresses = ToAddress(x.Addresses),
+                RegistrationAuthority = x.RegisterName,
+                RegisteredDate = x.RegisteredDate,
+                HasCompanyHouseNumber = x.HasCompanyHouseNumber,
+                CompanyHouseNumber = x.CompanyHouseNumber,
+                OverseasCompanyNumber = x.OverseasCompanyNumber,
+                Period = new AssociatedPeriod
+                {
+                    EndDate = x.EndDate
+                }
             }).ToList();
     }
 
-    private static ICollection<OrganisationReference> AdditionalEntities(SharedConsentNonEf sharedConsent)
+    private static AssociatedRelationship ToAssociatedRelationship(ConnectedEntityIndividualAndTrustCategoryType relationship)
+    {
+        return relationship switch
+        {
+            ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForIndiv => AssociatedRelationship.PersonWithSignificantControlForIndividual,
+            ConnectedEntityIndividualAndTrustCategoryType.DirectorOrIndivWithTheSameResponsibilitiesForIndiv => AssociatedRelationship.DirectorOrIndividualWithTheSameResponsibilitiesForIndividual,
+            ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndivWithSignificantInfluenceOrControlForIndiv => AssociatedRelationship.AnyOtherIndividualWithSignificantInfluenceOrControlForIndividual,
+            ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForTrust => AssociatedRelationship.PersonWithSignificantControlForTrust,
+            ConnectedEntityIndividualAndTrustCategoryType.DirectorOrIndivWithTheSameResponsibilitiesForTrust => AssociatedRelationship.DirectorOrIndividualWithTheSameResponsibilitiesForTrust,
+            ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndivWithSignificantInfluenceOrControlForTrust => AssociatedRelationship.AnyOtherIndividualWithSignificantInfluenceOrControlForTrust,
+            _ => throw new Exception($"{nameof(ConnectedEntityIndividualAndTrustCategoryType)} enum to {nameof(AssociatedRelationship)} enum does not exists."),
+        };
+    }
+
+    private static ICollection<AssociatedEntity> AdditionalEntities(SharedConsentNonEf sharedConsent)
     {
         return sharedConsent.Organisation.ConnectedEntities
-            .Where(ce => ce.EntityType == ConnectedEntityType.Organisation).Select(x => new OrganisationReference
+            .Where(ce => ce.EntityType == ConnectedEntityType.Organisation && ce.Organisation != null)
+            .Select(x => new AssociatedEntity
             {
                 Id = x.Guid,
-                Name = x.Organisation?.Name ?? string.Empty,
-                Roles = [],
-                Uri = null
+                Name = x.Organisation!.Name,
+                Category = x.Organisation.Category,
+                InsolvencyDate = x.Organisation.InsolvencyDate,
+                RegisteredLegalForm = x.Organisation.RegisteredLegalForm,
+                LawRegistered = x.Organisation.LawRegistered,
+                ControlCondition = x.Organisation.ControlCondition,
+                Addresses = ToAddress(x.Addresses),
+                RegistrationAuthority = x.RegisterName,
+                RegisteredDate = x.RegisteredDate,
+                HasCompanyHouseNumber = x.HasCompanyHouseNumber,
+                CompanyHouseNumber = x.CompanyHouseNumber,
+                OverseasCompanyNumber = x.OverseasCompanyNumber,
+                Period = new AssociatedPeriod
+                {
+                    EndDate = x.EndDate
+                }
             }).ToList();
     }
+    private static IEnumerable<Address> ToAddress(ICollection<AddressNonEf> addresses)
+        => addresses.Select(a => new Address
+        {
+            StreetAddress = a.StreetAddress,
+            Locality = a.Locality,
+            Region = a.Region,
+            CountryName = a.CountryName,
+            Country = a.Country,
+            PostalCode = a.PostalCode,
+            Type = a.Type ?? AddressType.Registered
+        });
 }
