@@ -47,7 +47,7 @@ public class DataSharingApiFormsIntegrationTests : IClassFixture<OrganisationInf
     public async Task DataSharingClient_ReturnsDocumentUriCorrectly_ForNormalOrganisation()
     {
         ClearDatabase();
-        Organisation organisation = CreateOrganisation();
+        Organisation organisation = CreateOrganisation("Test org");
         var sharedConsent = CreateSharedConsent(organisation);
         CreateFinancialInformation(organisation, sharedConsent);
         var createShareCodeResponse = await _client.CreateSharedDataAsync(new ShareRequest(supplierInformationFormId, organisation.Guid));
@@ -65,23 +65,73 @@ public class DataSharingApiFormsIntegrationTests : IClassFixture<OrganisationInf
         answer3.BoolValue.Should().BeTrue();
     }
 
-    private Organisation CreateOrganisation()
+    [Fact]
+    public async Task DataSharingClient_ReturnsDocumentUriCorrectly_ForConsortium()
+    {
+        ClearDatabase();
+
+        // Create org 1
+        Organisation organisation1 = CreateOrganisation("Test org 1");
+        var sharedConsent1 = CreateSharedConsent(organisation1);
+        CreateFinancialInformation(organisation1, sharedConsent1);
+        var createShareCodeResponseOrganisation1 = await _client.CreateSharedDataAsync(new ShareRequest(supplierInformationFormId, organisation1.Guid));
+
+        // Create org 2
+        Organisation organisation2 = CreateOrganisation("Test org 2");
+        var sharedConsent2 = CreateSharedConsent(organisation2);
+        CreateFinancialInformation(organisation2, sharedConsent1);
+        var createShareCodeResponseOrganisation2 = await _client.CreateSharedDataAsync(new ShareRequest(supplierInformationFormId, organisation2.Guid));
+
+        // Stick them in a consortium
+        Organisation consortium = CreateOrganisation("Consortium", OrganisationInformation.OrganisationType.InformalConsortium);
+        var sharedConsentConsortium = CreateSharedConsent(consortium);
+        AssociateSharedConsentsWithConsortium([sharedConsent1, sharedConsent2], sharedConsentConsortium);
+        var createShareCodeResponseConsortium = await _client.CreateSharedDataAsync(new ShareRequest(supplierInformationFormId, consortium.Guid));
+
+        var response = await _client.GetSharedDataAsync(createShareCodeResponseConsortium.ShareCode);
+        var financialInformationAnswerSet = response.SupplierInformationData.AnswerSets.First();
+
+        var answer1 = financialInformationAnswerSet.Answers.First(q => q.QuestionName == "_FinancialInformation01");
+        answer1.DateValue.Should().Be(DateTime.Now.Date);
+
+        var answer2 = financialInformationAnswerSet.Answers.First(q => q.QuestionName == "_FinancialInformation02");
+        answer2.DocumentUri?.ToString().Should().EndWith(string.Format("/share/data/{0}/document/a_dummy_file.pdf", createShareCodeResponseOrganisation1.ShareCode));
+
+        var answer3 = financialInformationAnswerSet.Answers.First(q => q.QuestionName == "_FinancialInformation03");
+        answer3.BoolValue.Should().BeTrue();
+    }
+
+    private void AssociateSharedConsentsWithConsortium(List<OrganisationInformation.Persistence.Forms.SharedConsent> sharedConsents, OrganisationInformation.Persistence.Forms.SharedConsent sharedConsentConsortium)
+    {
+        foreach (var sharedConsent in sharedConsents)
+        {
+            _context.SharedConsentConsortiums.Add(new()
+            {
+                ChildSharedConsentId = sharedConsent.Id,
+                ParentSharedConsentId = sharedConsentConsortium.Id
+            });
+        }        
+
+        _context.SaveChanges();
+    }
+
+    private Organisation CreateOrganisation(string name, OrganisationInformation.OrganisationType type = OrganisationInformation.OrganisationType.Organisation)
     {
         var organisation = new Organisation
         {
             Guid = Guid.NewGuid(),
-            Name = "Test org",
-            Type = OrganisationInformation.OrganisationType.Organisation,
+            Name = name,
+            Type = type,
             Tenant = new Tenant
             {
                 Guid = Guid.NewGuid(),
-                Name = "Test org",
+                Name = name,
             },
             Identifiers = new List<Identifier>
             {
                 new Identifier
                 {
-                    IdentifierId = "1234567",
+                    IdentifierId = "1234567" + name,
                     Scheme = "Whatever",
                     LegalName = "Org Legal Name",
                     Primary = true
