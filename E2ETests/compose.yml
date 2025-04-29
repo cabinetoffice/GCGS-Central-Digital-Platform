@@ -9,3 +9,9 @@ services:
     volumes:
       - .:/app
     working_dir: /app
+    networks:
+      - cdp-sirsi
+
+networks:
+  cdp-sirsi:
+    external: true
