@@ -25,9 +25,7 @@ public interface IOrganisationRepository : IDisposable
 
     public Task<Organisation?> FindByIdentifier(string scheme, string identifierId);
 
-    public Task<IList<OrganisationRawDto>> GetPaginated(PartyRole? role, PartyRole? pendingRole, string? searchText, int limit, int skip);
-
-    public Task<int> GetTotalCount(PartyRole? role, PartyRole? pendingRole, string? searchText);
+    public Task<Tuple<IList<OrganisationRawDto>, int>> GetPaginated(PartyRole? role, PartyRole? pendingRole, string? searchText, int limit, int skip);
 
     public class OrganisationRepositoryException(string message, Exception? cause = null) : Exception(message, cause)
     {

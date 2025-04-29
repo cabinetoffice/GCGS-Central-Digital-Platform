@@ -59,8 +59,7 @@ builder.Services.AddScoped<IUseCase<OrganisationQuery, Organisation?>, LookupOrg
 builder.Services.AddScoped<IUseCase<OrganisationSearchQuery, IEnumerable<OrganisationSearchResult>>, SearchOrganisationUseCase>();
 builder.Services.AddScoped<IUseCase<OrganisationsByOrganisationEmailQuery, IEnumerable<OrganisationSearchResult>>, FindOrganisationByOrganisationEmailUseCase>();
 builder.Services.AddScoped<IUseCase<OrganisationsByAdminEmailQuery, IEnumerable<OrganisationSearchResult>>, FindOrganisationByAdminEmailUseCase>();
-builder.Services.AddScoped<IUseCase<PaginatedOrganisationQuery, IEnumerable<OrganisationDto>>, GetOrganisationsUseCase>();
-builder.Services.AddScoped<IUseCase<OrganisationTypeQuery, int>, GetOrganisationsTotalUseCase>();
+builder.Services.AddScoped<IUseCase<PaginatedOrganisationQuery, Tuple<IEnumerable<OrganisationDto>, int>>, GetOrganisationsUseCase>();
 builder.Services.AddScoped<IUseCase<Guid, SupplierInformation?>, GetSupplierInformationUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, Guid), ConnectedEntity?>, GetConnectedEntityUseCase>();
 builder.Services.AddScoped<IUseCase<Guid, IEnumerable<ConnectedEntityLookup>>, GetConnectedEntitiesUseCase>();
