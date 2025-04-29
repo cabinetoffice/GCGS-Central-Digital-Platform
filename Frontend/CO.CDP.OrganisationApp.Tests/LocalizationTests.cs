@@ -25,8 +25,6 @@ using UserDetails = CO.CDP.OrganisationApp.Models.UserDetails;
 namespace CO.CDP.OrganisationApp.Tests;
 public class LocalizationTests
 {
-    // private static readonly Mock<OrganisationClient> OrganisationClient = new("https://whatever", new HttpClient());
-
     private HttpClient BuildHttpClient()
     {
         Mock<ISession> session = new();
