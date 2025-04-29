@@ -1,10 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using CO.CDP.Forms.WebApiClient;
 using CO.CDP.OrganisationApp.Pages.Forms.AnswerSummaryStrategies;
 using FluentAssertions;
-using Xunit;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages.Forms.AnswerSummaryStrategies;
 public class EvaluatorTests
