@@ -17,14 +17,16 @@ public class FormsAnswerSetSummaryModelTest
     private readonly Mock<IChoiceProviderService> _choiceProviderService;
     private readonly FormsAnswerSetSummaryModel _model;
     private readonly Guid AnswerSetId = Guid.NewGuid();
-    private readonly Mock<EvaluatorFactory> _mockEvaluatorFactory;
+    private readonly Mock<EvaluatorFactory> _evaluatorFactoryMock;
     public FormsAnswerSetSummaryModelTest()
     {
+        var evaluators = new List<IEvaluator>();
+        _evaluatorFactoryMock = new Mock<EvaluatorFactory>(evaluators);
+
         _tempDataServiceMock = new Mock<ITempDataService>();
         _choiceProviderService = new Mock<IChoiceProviderService>();
         _formsEngineMock = new();
-        _mockEvaluatorFactory = new();
-
+        
         _formsClientMock = new Mock<IFormsClient>();
         _formsClientMock.Setup(client => client.GetFormSectionQuestionsAsync(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid>()))
                         .ReturnsAsync(new SectionQuestionsResponse(
@@ -56,7 +58,7 @@ public class FormsAnswerSetSummaryModelTest
             _formsEngineMock.Object,
             _tempDataServiceMock.Object,
             _choiceProviderService.Object,
-            _mockEvaluatorFactory.Object)
+            _evaluatorFactoryMock.Object)
         {
             OrganisationId = Guid.NewGuid(),
             FormId = Guid.NewGuid(),
