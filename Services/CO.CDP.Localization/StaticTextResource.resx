@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!--
     Microsoft ResX Schema
@@ -2247,7 +2247,7 @@
     <value>Category</value>
   </data>
   <data name="PdfGenerator_ConnectedPersonInformation_Title" xml:space="preserve">
-    <value>People connected to organisation</value>
+    <value>People connected to your organisation</value>
   </data>
   <data name="PdfGenerator_ConnectedPerson_Type" xml:space="preserve">
     <value>Type</value>
@@ -2339,8 +2339,8 @@
   <data name="PdfGenerator_NoAdditionalIdentifiersAvailableMsg" xml:space="preserve">
     <value>No additional identifiers available.</value>
   </data>
-  <data name="PdfGenerator_NoConnectedPersonInformationAvailableMsg" xml:space="preserve">
-    <value>No connected person information available.</value>
+  <data name="PdfGenerator_NoneApplyMsg" xml:space="preserve">
+    <value>None apply</value>
   </data>
   <data name="PdfGenerator_OrganisationSchemeTitle_CharityCommission" xml:space="preserve">
     <value>Charity Commission (England and Wales)</value>
@@ -3743,5 +3743,8 @@
   </data>
   <data name="PdfGenerator_ConsortiumSharecodeInformation_Sharecode" xml:space="preserve">
     <value>Share code</value>
+  </data>
+  <data name="CompaniesHouse_Number_Error" xml:space="preserve">
+    <value>Company number must be 8 digits or 2 letters and 6 digits</value>
   </data>
 </root>
