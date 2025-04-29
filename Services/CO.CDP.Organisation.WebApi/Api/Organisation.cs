@@ -26,7 +26,7 @@ public static class EndpointExtensions
         app.MapGet("/announcements",
             [OrganisationAuthorize([AuthenticationChannel.OneLogin])]
             async (
-                [FromQuery] string? page,
+                [FromQuery] string page,
                 IUseCase<GetAnnouncementQuery, IEnumerable<Announcement>> useCase) =>
             {
                 var results = await useCase.Execute(new GetAnnouncementQuery
