@@ -1,4 +1,4 @@
-﻿using CO.CDP.Forms.WebApiClient;
+using CO.CDP.Forms.WebApiClient;
 
 namespace CO.CDP.OrganisationApp.Pages.Forms.AnswerSummaryStrategies;
 
