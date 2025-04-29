@@ -95,8 +95,6 @@ public class ConsortiumEmailModelTest
         results.Any(c => c.MemberNames.Contains("EmailAddress")).Should().BeFalse();
     }
 
-
-
     [Fact]
     public void OnGet_ValidSession_ReturnsConsortiumDetails()
     {
@@ -111,7 +109,7 @@ public class ConsortiumEmailModelTest
     }
 
     [Fact]
-    public async Task OnPost_WhenInValidModel_ShouldReturnSamePage()
+    public void OnPost_WhenInValidModel_ShouldReturnSamePage()
     {
         var modelState = new ModelStateDictionary();
         modelState.AddModelError("error", "some error");
@@ -122,13 +120,13 @@ public class ConsortiumEmailModelTest
         var model = GivenConsortiumEmailModel();
         model.PageContext = pageContext;
 
-        var actionResult = await model.OnPost();
+        var actionResult = model.OnPost();
 
         actionResult.Should().BeOfType<PageResult>();
     }
 
     [Fact]
-    public async Task OnPost_WhenValidModel_ShouldSetConsortiumDetailsInSession()
+    public void OnPost_WhenValidModel_ShouldSetConsortiumDetailsInSession()
     {
         var model = GivenConsortiumEmailModel();
 
@@ -136,14 +134,14 @@ public class ConsortiumEmailModelTest
 
         _sessionMock.Setup(s => s.Get<ConsortiumDetails>(Session.ConsortiumKey)).Returns(consortiumDetails);
 
-        await model.OnPost();
+        model.OnPost();
 
         _sessionMock.Verify(s => s.Get<ConsortiumDetails>(Session.ConsortiumKey), Times.Once);
         _sessionMock.Verify(s => s.Set(Session.ConsortiumKey, It.IsAny<ConsortiumDetails>()), Times.Once);
     }
 
     [Fact]
-    public async Task OnPost_ValidSession_ShouldRegisterConsortium()
+    public void OnPost_OnSuccess_RedirectsToConsortiumCheckAnswer()
     {
         var dummyConsortiumDetails = DummyConsortiumDetails();
 
@@ -155,42 +153,14 @@ public class ConsortiumEmailModelTest
         _sessionMock.Setup(s => s.Get<UserDetails>(Session.UserDetailsKey))
             .Returns(new UserDetails { UserUrn = "test", PersonId = Guid.NewGuid() });
 
-        _organisationClientMock.Setup(o => o.CreateOrganisationAsync(It.IsAny<NewOrganisation>()))
-            .ReturnsAsync(GivenOrganisationClientModel());
-
         var model = GivenConsortiumEmailDetailModel();
 
         model.EmailAddress = dummyConsortiumDetails.ConsortiumEmail;
 
-        await model.OnPost();
-
-        _organisationClientMock.Verify(o => o.CreateOrganisationAsync(It.IsAny<NewOrganisation>()), Times.Once);
-    }
-
-    [Fact]
-    public async Task OnPost_OnSuccess_RedirectsToOrganisationOverView()
-    {
-        var dummyConsortiumDetails = DummyConsortiumDetails();
-
-        _sessionMock.Setup(s => s.Set(Session.ConsortiumKey, dummyConsortiumDetails));
-
-        _sessionMock.Setup(s => s.Get<ConsortiumDetails>(Session.ConsortiumKey))
-            .Returns(dummyConsortiumDetails);
-
-        _sessionMock.Setup(s => s.Get<UserDetails>(Session.UserDetailsKey))
-            .Returns(new UserDetails { UserUrn = "test", PersonId = Guid.NewGuid() });
-
-        _organisationClientMock.Setup(o => o.CreateOrganisationAsync(It.IsAny<NewOrganisation>()))
-            .ReturnsAsync(GivenOrganisationClientModel());
-
-        var model = GivenConsortiumEmailDetailModel();
-
-        model.EmailAddress = dummyConsortiumDetails.ConsortiumEmail;
-
-        var actionResult = await model.OnPost();
+        var actionResult = model.OnPost();
 
         actionResult.Should().BeOfType<RedirectToPageResult>()
-            .Which.PageName.Should().Be("ConsortiumOverview");
+            .Which.PageName.Should().Be("ConsortiumCheckAnswer");
     }
 
     private ConsortiumDetails DummyConsortiumDetails(string consortiumName = "Consortium 1",
@@ -206,15 +176,11 @@ public class ConsortiumEmailModelTest
         return consortiumDetails;
     }
 
-
     private ConsortiumEmailModel GivenConsortiumEmailModel()
     {
-        return new ConsortiumEmailModel(_sessionMock.Object, _organisationClientMock.Object);
+        return new ConsortiumEmailModel(_sessionMock.Object);
     }
-    private static CO.CDP.Organisation.WebApiClient.Organisation GivenOrganisationClientModel()
-    {
-        return new CO.CDP.Organisation.WebApiClient.Organisation(additionalIdentifiers: null, addresses: null, contactPoint: null, id: _consortiumId, identifier: null, name: "Test Org", type: CDP.Organisation.WebApiClient.OrganisationType.InformalConsortium, roles: [], details: new Details(approval: null, buyerInformation: null, pendingRoles: [], publicServiceMissionOrganization: null, scale: null, shelteredWorkshop: null, vcse: null));
-    }
+    
     private ConsortiumEmailModel GivenConsortiumEmailDetailModel()
     {
         var registrationDetails = DummyConsortiumDetails();
@@ -222,6 +188,6 @@ public class ConsortiumEmailModelTest
         _sessionMock.Setup(s => s.Get<ConsortiumDetails>(Session.ConsortiumKey))
             .Returns(registrationDetails);
 
-        return new ConsortiumEmailModel(_sessionMock.Object, _organisationClientMock.Object);
+        return new ConsortiumEmailModel(_sessionMock.Object);
     }
 }
