@@ -17,7 +17,7 @@
                         ? StaticTextResource.Consortium_ConsortiumOverview_Ppon_Status_Pending
                         : organisationDetails.Identifier.Id);
 
-    var parties = (Model.Parties != null ? Model.Parties.Parties : new List<CO.CDP.Organisation.WebApiClient.OrganisationParty>());    
+    var parties = (Model.Parties != null ? Model.Parties.Parties : new List<CO.CDP.Organisation.WebApiClient.OrganisationParty>());
 }
 
 <div class="govuk-grid-row">
@@ -76,22 +76,26 @@
         </dl>
 
         <h2 class="govuk-heading-m">@StaticTextResource.Consortium_ConsortiumOverview_Heading2</h2>
-        <dl class="govuk-summary-list ">
-            @foreach (var p in parties)
-            {
-                <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">@p.Name</dt>
-                    <dd class="govuk-summary-list__value">
-                        <p class="govuk-body">@p.ShareCode.Value
-                            <span class="govuk-hint govuk-!-display-block">Share code created on @p.ShareCode.SubmittedAt.ToFormattedString()</span>
-                        </p>
-                    </dd>
-                    <dd class="govuk-summary-list__actions">
-                        <a class="govuk-link govuk-link--no-visited-state" href="#">Change<span class="govuk-visually-hidden"> organisation sharecode</span></a>
-                    </dd>
-                </div>
-            }
-        </dl>
+        @if (parties.Count > 0)
+        {
+            <dl class="govuk-summary-list ">
+                @foreach (var p in parties)
+                {
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">@p.Name</dt>
+                        <dd class="govuk-summary-list__value">
+                            <p class="govuk-body">
+                                @p.ShareCode.Value
+                                <span class="govuk-hint govuk-!-display-block">Share code created on @p.ShareCode.SubmittedAt.ToFormattedString()</span>
+                            </p>
+                        </dd>
+                        <dd class="govuk-summary-list__actions">
+                            <a class="govuk-link govuk-link--no-visited-state" href="#">Change<span class="govuk-visually-hidden"> organisation sharecode</span></a>
+                        </dd>
+                    </div>
+                }
+            </dl>
+        }
         <p>@StaticTextResource.Consortium_ConsortiumOverview_Paragraph1</p>
 
         <div class="govuk-body">
@@ -102,68 +106,55 @@
 
         <h2 class="govuk-heading-m">@StaticTextResource.Consortium_ConsortiumOverview_Heading3</h2>
 
-        @if(parties.Any())
+        @if (parties.Count >= 2)
         {
-            @foreach (var section in Model.FormSections)
-            {
-                var declarationSection = section.Type == CDP.Forms.WebApiClient.FormSectionType.Declaration;
-                var redirectLink = $"/organisation/{Model.Id}/forms/{FormsEngine.OrganisationConsortiumFormId}/sections/{section.SectionId}";
+            int shareCodeCount = await Model.GetShareCodesCount();
+            var redirectLink = $"/organisation/{Model.Id}/forms/{FormsEngine.OrganisationConsortiumFormId}/sections/{Model.FormSections.First().SectionId}/share-codes-list-view";
 
-                redirectLink += "/share-codes-list-view";
-
-                <dl class="govuk-summary-list">
-                    <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">
-                            <a class="govuk-link govuk-link--no-visited-state" href="@redirectLink">
-                                @StaticTextResource.Consortium_ConsortiumOverview_CreateSharecode_list
-                                @* @(section.SectionName) *@
-                            </a>
-                        </dt>
-                        <dd class="govuk-summary-list__value">
-                            @if (!declarationSection && section.AnswerSetCount > 0)
-                            {
-                                if (section.AnswerSetWithFurtherQuestionExemptedExists)
-                                {
-                                    @StaticTextResource.Global_NotApplicableLong
-                                }
-                                else
-                                {
-                                    @(string.Format(StaticTextResource.Supplier_SupplierInformationSummary_FormRecordCount, section.AnswerSetCount))
-                                }
-                            }
-                        </dd>
-                        <dd class="govuk-summary-list__actions">
-                            @if (!declarationSection)
-                            {
-                                <strong class="govuk-tag">@(section.AnswerSetCount > 0 ? StaticTextResource.SupplierInformationStatus_StepStatus_Completed : StaticTextResource.SupplierInformationStatus_StepStatus_NotStarted)</strong>
-                            }
-                        </dd>
+            <ul class="govuk-task-list">
+                <li class="govuk-task-list__item govuk-task-list__item--with-link">
+                    <div class="govuk-task-list__name-and-hint">
+                        <a class="govuk-link govuk-link--no-visited-state" href="@redirectLink">
+                            @StaticTextResource.Consortium_ConsortiumOverview_CreateSharecode_list
+                        </a>
                     </div>
-                </dl>
-            }
+
+                    @if (shareCodeCount > 0)
+                    {
+                        <div class="govuk-task-list__status">
+                            @(string.Format(StaticTextResource.Supplier_SupplierInformationSummary_ShareCodeRecordCount, shareCodeCount))
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="govuk-task-list__status">
+                            <strong class="govuk-tag">
+                                @StaticTextResource.Consortium_ConsortiumOverview_CreateSharecode_NotStarted
+                            </strong>
+                        </div>
+                    }
+                </li>
+            </ul>
         }
         else
         {
             <ul class="govuk-task-list">
                 <li class="govuk-task-list__item govuk-task-list__item--with-link">
-                    <div class="govuk-task-list__name-and-hint">                        
+                    <div class="govuk-task-list__name-and-hint">
                         @StaticTextResource.Consortium_ConsortiumOverview_CreateSharecode_list
+                        <div class="govuk-task-list__hint">
+                            @StaticTextResource.Consortium_ConsortiumOverview_CreateSharecode_list_hint
+                        </div>
                     </div>
 
-                    <div class="govuk-task-list__status" id="before-you-start-2-status">
-                        <strong class="govuk-tag govuk-tag--orange">
-                            @StaticTextResource.Consortium_ConsortiumOverview_status_list
-                        </strong>
+                    <div class="govuk-task-list__status govuk-task-list__status--cannot-start-yet">
+                        @StaticTextResource.Consortium_ConsortiumOverview_status_list
                     </div>
                 </li>
             </ul>
         }
 
-        
-
         <hr class="govuk-section-break govuk-section-break--l">
-
-        
 
         <div class="govuk-!-margin-top-3">
             <a class="govuk-link" href="/organisation-selection">@StaticTextResource.Consortium_ConsortiumOverview_BackToMyAccount_link</a>

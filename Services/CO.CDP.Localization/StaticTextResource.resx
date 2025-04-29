@@ -1579,7 +1579,7 @@
     <value>You must complete all sections of your supplier information before you can create a share code.</value>
   </data>
   <data name="ShareYourInformation_CreateShareCodeButton" xml:space="preserve">
-    <value>Create a share code</value>
+    <value>Create share code</value>
   </data>
   <data name="ShareYourInformation_TableCaption" xml:space="preserve">
     <value>Your share codes and supplier information files</value>
@@ -2817,6 +2817,21 @@
   <data name="Organisation_CreateNewConsortium" xml:space="preserve">
     <value>Create a new consortium</value>
   </data>
+  <data name="Consortium_ConsortiumOverview_Title" xml:space="preserve">
+    <value>Check answers</value>
+  </data>
+  <data name="Consortium_ConsortiumOverview_Heading" xml:space="preserve">
+    <value>Check your answers</value>
+  </data>
+  <data name="Consortium_CheckAnswer_Name_list" xml:space="preserve">
+    <value>Consortium name</value>
+  </data>
+  <data name="Consortium_CheckAnswer_PostalAddress_list" xml:space="preserve">
+    <value>Postal address</value>
+  </data>
+  <data name="Consortium_CheckAnswer_EmailAddress_list" xml:space="preserve">
+    <value>Email address</value>
+  </data>
   <data name="Consortium_ConsortiumOverview_Heading" xml:space="preserve">
     <value>Consortium details</value>
   </data>
@@ -2841,8 +2856,14 @@
   <data name="Consortium_ConsortiumOverview_CreateSharecode_list" xml:space="preserve">
     <value>Declare and create a share code</value>
   </data>
+  <data name="Consortium_ConsortiumOverview_CreateSharecode_list_hint" xml:space="preserve">
+    <value>Add 2 or more organisations to your consortium to create a share code</value>
+  </data>
   <data name="Consortium_ConsortiumOverview_status_list" xml:space="preserve">
     <value>Cannot start yet</value>
+  </data>
+  <data name="Consortium_ConsortiumOverview_CreateSharecode_NotStarted" xml:space="preserve">
+    <value>Not started</value>
   </data>
   <data name="Consortium_ConsortiumOverview_ChangeName" xml:space="preserve">
     <value>Change&lt;span class="govuk-visually-hidden"&gt;consortium name&lt;/span&gt;</value>
@@ -3637,7 +3658,7 @@
     <value>When you submit a bid for a procurement, the contracting authority will let you know how to give them the share code or file.</value>
   </data>
   <data name="ConsortiumShareMyInformation_HowItWorksParagraph3" xml:space="preserve">
-    <value>If any of the supplier information for any organisation in the consortium changes, you can update its share code on the consortium details page and then create a new combined share code and file to share the new information.</value>
+    <value>If any of the supplier information for an organisation in the consortium changes, it must create a new share code. &lt;br&gt;&lt;br&gt;You must update its share code and create a new combined share code and file to share the new information.</value>
   </data>
   <data name="ConsortiumShareMyInformation_Title" xml:space="preserve">
     <value>Share your consortium information</value>

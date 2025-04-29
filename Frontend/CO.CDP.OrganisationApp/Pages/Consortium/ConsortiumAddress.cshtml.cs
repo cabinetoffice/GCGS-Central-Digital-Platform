@@ -18,6 +18,9 @@ public class ConsortiumAddressModel(ISession session) : ConsortiumStepModel(sess
 
     [BindProperty]
     public AddressPartialModel Address { get; set; } = new();
+
+    [BindProperty(SupportsGet = true, Name = "frm-chk-answer")]
+    public bool? RedirectToCheckYourAnswer { get; set; }
     public string? ConsortiumName => ConsortiumDetails.ConsortiumName;
 
     public IActionResult OnGet()
@@ -41,14 +44,14 @@ public class ConsortiumAddressModel(ISession session) : ConsortiumStepModel(sess
     public IActionResult OnPost()
     {
         SetupAddress();
-            
+
         if (!ModelState.IsValid)
         {
             return Page();
         }
 
         var address = new Address()
-        {            
+        {
             AddressLine1 = Address.AddressLine1 ?? "",
             TownOrCity = Address.TownOrCity ?? "",
             Postcode = Address.Postcode,
@@ -60,7 +63,7 @@ public class ConsortiumAddressModel(ISession session) : ConsortiumStepModel(sess
 
         SessionContext.Set(Session.ConsortiumKey, ConsortiumDetails);
 
-        return RedirectToPage("ConsortiumEmail");
+        return RedirectToPage(RedirectToCheckYourAnswer == true ? "ConsortiumCheckAnswer" : "ConsortiumEmail");
 
     }
 
@@ -79,6 +82,6 @@ public class ConsortiumAddressModel(ISession session) : ConsortiumStepModel(sess
             Address.AddressHint = string.Empty;
         }
 
-        Address.NonUkAddressLink = $"/consortium/address/non-uk";
+        Address.NonUkAddressLink = $"/consortium/address/non-uk{(RedirectToCheckYourAnswer == true ? "?frm-chk-answer=true" : "")}";
     }
 }

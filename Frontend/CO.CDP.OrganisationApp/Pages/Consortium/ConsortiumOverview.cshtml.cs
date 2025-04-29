@@ -1,3 +1,4 @@
+using CO.CDP.DataSharing.WebApiClient;
 using CO.CDP.Forms.WebApiClient;
 using CO.CDP.Localization;
 using CO.CDP.Organisation.WebApiClient;
@@ -15,7 +16,8 @@ public class ConsortiumOverviewModel(
     IOrganisationClient organisationClient,
     IFormsClient formsClient,
     IFlashMessageService flashMessageService,
-    ITempDataService tempDataService) : PageModel
+    ITempDataService tempDataService,
+    IDataSharingClient dataSharingClient) : PageModel
 {
     public OrganisationWebApiClient.Organisation? OrganisationDetails { get; set; }
 
@@ -63,5 +65,10 @@ public class ConsortiumOverviewModel(
         {
             return Redirect("/page-not-found");
         }
+    }
+
+    public async Task<int> GetShareCodesCount()
+    {
+        return (await dataSharingClient.GetShareCodeListAsync(Id)).Count;
     }
 }

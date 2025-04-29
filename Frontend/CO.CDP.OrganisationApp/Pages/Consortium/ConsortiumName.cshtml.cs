@@ -16,6 +16,8 @@ public class ConsortiumNameModel(ISession session) : ConsortiumStepModel(session
     [Required(ErrorMessageResourceName = nameof(StaticTextResource.Consortium_ConsortiumName_EnterNameError), ErrorMessageResourceType = typeof(StaticTextResource))]
     public string? ConsortiumName { get; set; }
 
+    [BindProperty(SupportsGet = true, Name = "frm-chk-answer")]
+    public bool? RedirectToCheckYourAnswer { get; set; }
     public IActionResult OnGet()
     {   
         ConsortiumName = ConsortiumDetails.ConsortiumName;
@@ -31,6 +33,13 @@ public class ConsortiumNameModel(ISession session) : ConsortiumStepModel(session
 
         SessionContext.Set(Session.ConsortiumKey, ConsortiumDetails);
 
-        return RedirectToPage("ConsortiumAddress", new { UkOrNonUk = "uk" });
+        if (RedirectToCheckYourAnswer == true)
+        {
+            return RedirectToPage("ConsortiumCheckAnswer");
+        }
+        else
+        {
+            return RedirectToPage("ConsortiumAddress", new { UkOrNonUk = "uk" });
+        }
     }
 }

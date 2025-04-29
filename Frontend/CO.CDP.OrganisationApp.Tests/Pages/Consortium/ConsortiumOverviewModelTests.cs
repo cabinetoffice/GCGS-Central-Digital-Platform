@@ -1,3 +1,4 @@
+using CO.CDP.DataSharing.WebApiClient;
 using CO.CDP.Forms.WebApiClient;
 using CO.CDP.Localization;
 using CO.CDP.Organisation.WebApiClient;
@@ -17,6 +18,8 @@ public class ConsortiumOverviewModelTests
     private static readonly Guid _consortiumId = Guid.NewGuid();
     private readonly ConsortiumOverviewModel _pageModel;
     private readonly Mock<FormsClient> _formsClientMock = new();
+    private readonly Mock<IDataSharingClient> _dataSharingClientMock = new();
+
     public ConsortiumOverviewModelTests()
     {
         _formsClientMock = new Mock<FormsClient>("https://whatever", new HttpClient());
@@ -26,7 +29,8 @@ public class ConsortiumOverviewModelTests
             _organisationClientMock.Object,
             _formsClientMock.Object,
             _flashMessageServiceMock.Object,
-            _tempDataServiceMock.Object
+            _tempDataServiceMock.Object,
+            _dataSharingClientMock.Object
         )
         {
             Id = Guid.NewGuid()
