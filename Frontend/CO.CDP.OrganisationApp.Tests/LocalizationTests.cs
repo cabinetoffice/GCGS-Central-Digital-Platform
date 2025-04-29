@@ -1,5 +1,6 @@
 using System.Net;
 using Amazon.SimpleSystemsManagement;
+using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
 using CO.CDP.Tenant.WebApiClient;
@@ -18,11 +19,14 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Moq;
+using PartyRole = CO.CDP.Tenant.WebApiClient.PartyRole;
 using UserDetails = CO.CDP.OrganisationApp.Models.UserDetails;
 
 namespace CO.CDP.OrganisationApp.Tests;
 public class LocalizationTests
 {
+    // private static readonly Mock<OrganisationClient> OrganisationClient = new("https://whatever", new HttpClient());
+
     private HttpClient BuildHttpClient()
     {
         Mock<ISession> session = new();
@@ -53,6 +57,11 @@ public class LocalizationTests
         var tenantClient = new Mock<ITenantClient>();
         tenantClient.Setup(c => c.LookupTenantAsync()).ReturnsAsync(AnyTenantLookup());
 
+        var organisationClient = new Mock<IOrganisationClient>();
+
+        organisationClient.Setup(client => client.GetAnnouncementsAsync(It.IsAny<string>()))
+            .ReturnsAsync(new List<Organisation.WebApiClient.Announcement>());
+
         var factory = new TestWebApplicationFactory<Program>(builder =>
         {
             builder.ConfigureServices(services =>
@@ -60,6 +69,7 @@ public class LocalizationTests
                 services.AddSingleton(session.Object);
                 services.AddSingleton(antiforgery.Object);
                 services.AddSingleton(tenantClient.Object);
+                services.AddSingleton<IOrganisationClient>(organisationClient.Object);
                 services.AddTransient<IAuthenticationSchemeProvider, FakeSchemeProvider>();
                 services.Configure<OpenIdConnectOptions>(OpenIdConnectDefaults.AuthenticationScheme, options =>
                 {
