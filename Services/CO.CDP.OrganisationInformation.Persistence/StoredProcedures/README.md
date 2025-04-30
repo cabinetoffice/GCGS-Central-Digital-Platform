@@ -15,13 +15,15 @@ This allows stored procedure definitions to be kept in .psql files under version
 /// <inheritdoc />
 protected override void Up(MigrationBuilder migrationBuilder)
 {
-    migrationBuilder.Sql(File.ReadAllText("Migrations/StoredProcedures/create_shared_consent_snapshot.psql"));
+    migrationBuilder.Sql(StoredProcedureScriptLoader.Load("get_shared_consent_details.psql"));
+    migrationBuilder.Sql(StoredProcedureScriptLoader.Load("create_shared_consent_snapshot.psql"));
 }
 
 /// <inheritdoc />
 protected override void Down(MigrationBuilder migrationBuilder)
 {
-    migrationBuilder.Sql(File.ReadAllText("Migrations/StoredProcedures/create_shared_consent_snapshot-PREVIOUS.psql"));
+    migrationBuilder.Sql(StoredProcedureScriptLoader.Load("get_shared_consent_details-PREVIOUS.psql"));
+    migrationBuilder.Sql(StoredProcedureScriptLoader.Load("create_shared_consent_snapshot-PREVIOUS.psql"));
 }
 ```
 
