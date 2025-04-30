@@ -2,7 +2,7 @@
 
 This project uses Git-managed stored procedures within migrations to ensure versioned changes to database logic.
 
-EF Core migrations apply SQL files using `migrationBuilder.Sql(File.ReadAllText(...))`.
+EF Core migrations apply SQL files using `migrationBuilder.Sql(StoredProcedureScriptLoader.Load("filename.psql"))`.
 This allows stored procedure definitions to be kept in .psql files under version control.
 
 ## Steps
