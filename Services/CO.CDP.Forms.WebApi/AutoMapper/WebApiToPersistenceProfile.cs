@@ -56,6 +56,8 @@ public class WebApiToPersistenceProfile : Profile
             .ForMember(dest => dest.SummaryRenderFormatter, opt => opt.MapFrom(src => src.SummaryRenderFormatter));
 
         CreateMap<Persistence.SummaryRenderFormatter, Model.SummaryRenderFormatter>()
+            .ForMember(dest => dest.KeyExpression, opt => opt.MapFrom<NullableLocalizedPropertyResolver<Persistence.SummaryRenderFormatter, Model.SummaryRenderFormatter>, string?>(src => src.KeyExpression))
+            .ForMember(dest => dest.ValueExpression, opt => opt.MapFrom<NullableLocalizedPropertyResolver<Persistence.SummaryRenderFormatter, Model.SummaryRenderFormatter>, string?>(src => src.ValueExpression))            
             .ForMember(dest => dest.KeyExpressionOperation, opt => opt.MapFrom(src => (Model.ExpressionOperationType)Enum.Parse(typeof(Model.ExpressionOperationType), src.KeyExpressionOperation)))
             .ForMember(dest => dest.ValueExpressionOperation, opt => opt.MapFrom(src => (Model.ExpressionOperationType)Enum.Parse(typeof(Model.ExpressionOperationType), src.ValueExpressionOperation)));
 

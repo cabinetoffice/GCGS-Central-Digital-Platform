@@ -35,11 +35,13 @@ public class FormatterAnswerSummaryStrategy : IAnswerSummaryStrategy
             };
     }
 
-    private async Task<object[]> ResolveParamsAsync(IEnumerable<string> paramTitles, SectionQuestionsResponse form, FormAnswerSet answerSet)
+    private async Task<object[]> ResolveParamsAsync(IEnumerable<string> paramNames, SectionQuestionsResponse form, FormAnswerSet answerSet)
     {
-        var tasks = paramTitles.Select(async name =>
+        var tasks = paramNames.Select(async name =>
         {
-            var question = form.Questions.First(q => q.Name == name);
+            var question = form.Questions.FirstOrDefault(q => q.Name == name);
+            if (question == null)
+                return name;
             var answer = answerSet.Answers.First(a => a.QuestionId == question.Id);
             return await GetAnswerObject(answer, question);
         });
