@@ -24,4 +24,13 @@
         <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.8" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Update="Migrations\StoredProcedures\create_shared_consent_snapshot.psql">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Migrations\StoredProcedures\get_shared_consent_details.psql">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
 </Project>
