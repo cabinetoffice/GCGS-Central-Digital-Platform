@@ -217,7 +217,7 @@
     <value>Ymysg yr eithriadau dewisol a all eich eithrio mae:</value>
   </data>
   <data name="Exclusions_AddExclusionDeclaration_DiscretionaryExclusionsLinkText" xml:space="preserve">
-    <value>Mae'r eithriadau hyn wedi'u diffinio yn &lt;a class="govuk-link" href="{0}" target="_blank"&gt;atodlen 7 o Ddeddf Caffael 2023 (opens in new tab)&lt;/a&gt;.</value>
+    <value>Mae'r eithriadau hyn wedi'u diffinio yn &lt;a class="govuk-link" href="{0}" target="_blank"&gt;atodlen 7 o Ddeddf Caffael 2023 (bydd yn agor mewn tab newydd)&lt;/a&gt;.</value>
   </data>
   <data name="Exclusions_AddExclusionDeclaration_DiscretionaryExclusions_Exclusion1" xml:space="preserve">
     <value>gweithredu'n amhriodol ym maes caffael</value>
@@ -283,7 +283,7 @@
     <value>Ymysg y cosbau a digwyddiadau eraill a all eich eithrio mae:</value>
   </data>
   <data name="Exclusions_AddExclusionDeclaration_MandatoryExclusionsLinkText" xml:space="preserve">
-    <value>Mae'r eithriadau hyn wedi'u diffinio yn &lt;a class="govuk-link" href="{0}" target="_blank"&gt;atodlen 6 o Ddeddf Caffael 2023 (opens in new tab)&lt;/a&gt;.</value>
+    <value>Mae'r eithriadau hyn wedi'u diffinio yn &lt;a class="govuk-link" href="{0}" target="_blank"&gt;atodlen 6 o Ddeddf Caffael 2023 (bydd yn agor mewn tab newydd)&lt;/a&gt;.</value>
   </data>
   <data name="Exclusions_AddExclusionDeclaration_MandatoryExclusions_Penalty1" xml:space="preserve">
     <value>addasiadau ar gyfer trefniadau treth sy'n gamdriniol</value>
@@ -1095,7 +1095,7 @@
     <value>Pa amodau rheolaeth penodol sydd gan {0}?</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityControlCondition_Hint" xml:space="preserve">
-    <value>Fel y nodir yn &lt;a class="govuk-link" href="https://www.legislation.gov.uk/ukpga/2006/46/schedule/1A/part/1?timeline=false" target="_blank"&gt;rhan 1 atodlen 1a o Ddeddf Cwmnïau 2006 (opens in new tab)&lt;/a&gt;. Dewiswch bob un sy'n berthnasol.</value>
+    <value>Fel y nodir yn &lt;a class="govuk-link" href="https://www.legislation.gov.uk/ukpga/2006/46/schedule/1A/part/1?timeline=false" target="_blank"&gt;rhan 1 atodlen 1a o Ddeddf Cwmnïau 2006 (bydd yn agor mewn tab newydd)&lt;/a&gt;. Dewiswch bob un sy'n berthnasol.</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityControlCondition_NoneApplyLabel" xml:space="preserve">
     <value>Dim un yn gymwys</value>
@@ -1281,7 +1281,7 @@
     <value>A oedd yn ofynnol i chi gofrestru {0} fel person â rheolaeth sylweddol?</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityRegistrationDateQuestion_Hint" xml:space="preserve">
-    <value>Yn y DU, caiff hyn ei ddiffinio gan &lt;a class="govuk-link" href="https://www.legislation.gov.uk/ukpga/2006/46/section/790C" target="_blank"&gt;adran 790C(4) o Ddeddf Cwmnïau 2006 (opens in new tab)&lt;/a&gt;</value>
+    <value>Yn y DU, caiff hyn ei ddiffinio gan &lt;a class="govuk-link" href="https://www.legislation.gov.uk/ukpga/2006/46/section/790C" target="_blank"&gt;adran 790C(4) o Ddeddf Cwmnïau 2006 (bydd yn agor mewn tab newydd)&lt;/a&gt;</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityRemoveConfirmation_EndDateHint" xml:space="preserve">
     <value>Er enghraifft, 27 3 2007</value>
@@ -2990,9 +2990,6 @@
   </data>
   <data name="ConsortiumShareMyInformation_HowItWorksParagraph2" xml:space="preserve">
     <value>Pan fyddwch yn gwneud cynnig am gaffaeliad, bydd yr awdurdod contractio yn rhoi gwybod i chi sut i ddarparu'r ffeil neu god rhannu.</value>
-  </data>
-  <data name="ConsortiumShareMyInformation_HowItWorksParagraph3" xml:space="preserve">
-    <value>Os bydd unrhyw ran o'r wybodaeth am y cyflenwr ar gyfer unrhyw sefydliad yn y consortiwm yn newid, gallwch ddiweddaru ei god rhannu ar dudalen manylion y consortiwm ac yna greu cod a ffeil rhannu cyfun newydd i rannu'r wybodaeth newydd. </value>
   </data>
   <data name="ConsortiumShareMyInformation_Title" xml:space="preserve">
     <value>Rhannwch wybodaeth am eich consortiwm</value>

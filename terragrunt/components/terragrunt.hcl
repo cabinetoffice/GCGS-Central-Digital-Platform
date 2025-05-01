@@ -32,7 +32,7 @@ locals {
         "10.${local.cidr_b_orchestrator}.3.0/24"
       ]
       redis_node_type  = "cache.t2.micro"
-      top_level_domain = "findatender.codatt.net"
+      top_level_domain = "supplier.information.findatender.codatt.net"
 
       externals_cidr_block      = "integration account feature" # To be deprecated after FTS Migration
       externals_private_subnets = "integration account feature" # To be deprecated after FTS Migration
@@ -63,7 +63,7 @@ locals {
         "10.${local.cidr_b_development}.3.0/24"
       ]
       redis_node_type  = "cache.t3.small"
-      top_level_domain = "findatender.codatt.net"
+      top_level_domain = "supplier-information.find-tender.service.gov.uk"
 
       externals_cidr_block      = "integration account feature" # To be deprecated after FTS Migration
       externals_private_subnets = "integration account feature" # To be deprecated after FTS Migration
@@ -93,7 +93,7 @@ locals {
         "10.${local.cidr_b_staging}.3.0/24"
       ]
       redis_node_type  = "cache.t3.medium"
-      top_level_domain = "findatender.codatt.net"
+      top_level_domain = "supplier.information.findatender.codatt.net"
 
       externals_cidr_block      = "integration account feature" # To be deprecated after FTS Migration
       externals_private_subnets = "integration account feature" # To be deprecated after FTS Migration
@@ -143,7 +143,7 @@ locals {
         "https://www-tpp-preview.find-tender.service.gov.uk/auth/backchannellogout",
         "https://www-tpp.find-tender.service.gov.uk/auth/backchannellogout",
       ]
-      pinned_service_version            = "1.0.59"
+      pinned_service_version            = "consortiums-2025-04-28-2"
       postgres_instance_type            = "db.t4g.micro"
       postgres_aurora_instance_type     = "db.r5.large"
       private_subnets = [
@@ -157,7 +157,7 @@ locals {
         "10.${local.cidr_b_integration}.3.0/24"
       ]
       redis_node_type  = "cache.t3.medium"
-      top_level_domain = "findatender.codatt.net"
+      top_level_domain = "supplier.information.findatender.codatt.net"
 
       externals_cidr_block      = "10.${local.cidr_b_external_integration}.0.0/16"
       externals_private_subnets = [
@@ -207,7 +207,7 @@ locals {
   product = {
     name               = "CDP SIRSI"
     resource_name      = "cdp-sirsi"
-    public_hosted_zone = local.environment == "production" ? local.environments[local.environment].top_level_domain : "${local.environments[local.environment].name}.supplier.information.${local.environments[local.environment].top_level_domain}"
+    public_hosted_zone = local.environment == "production" ? local.environments[local.environment].top_level_domain : "${local.environments[local.environment].name}.${local.environments[local.environment].top_level_domain}"
   }
 
   external_product = {

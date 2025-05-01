@@ -225,6 +225,7 @@ ARG VERSION
 ENV VERSION=${VERSION}
 WORKDIR /app
 COPY --from=build-migrations-organisation-information /src/Services/CO.CDP.OrganisationInformation.Persistence/OrganisationInformationDatabaseMigrationConfig /app/OrganisationInformationDatabaseMigrationConfig
+COPY --from=build-migrations-organisation-information /src/Services/CO.CDP.OrganisationInformation.Persistence/StoredProcedures /app/StoredProcedures
 COPY --from=build-migrations-organisation-information /app/migrations/efbundle .
 ENTRYPOINT ["/bin/busybox", "sh", "-c", "/app/efbundle", "--connection", "Host=$OrganisationInformationDatabase__Host;Database=$OrganisationInformationDatabase__Database;Username=$OrganisationInformationDatabase__Username;Password=$OrganisationInformationDatabase__Password;"]
 

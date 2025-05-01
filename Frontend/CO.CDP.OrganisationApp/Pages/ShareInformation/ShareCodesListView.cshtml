@@ -31,11 +31,20 @@
             <h1 class="govuk-heading-l">
                 @ViewData["Title"]
             </h1>
-
-            @if (await ShareCodeMandatoryInformationService.MandatorySectionsCompleted(Model.OrganisationId))
+            @if (Model.IsInformalConsortium)
             {
-                @if (!Model.IsInformalConsortium)
+                <p class="govuk-body">@StaticTextResource.ConsortiumShareMyInformation_HowItWorksParagraph1</p>
+                <p class="govuk-body">@StaticTextResource.ConsortiumShareMyInformation_HowItWorksParagraph2</p>
+
+                <div class="govuk-inset-text">
+                    <p>@Html.Raw(@StaticTextResource.ConsortiumShareMyInformation_HowItWorksParagraph3)</p>
+                </div>
+            }
+            else
+            {
+                @if (await ShareCodeMandatoryInformationService.MandatorySectionsCompleted(Model.OrganisationId))
                 {
+
                     <p class="govuk-body">@StaticTextResource.ShareYourInformation_HowItWorksParagraph1</p>
                     <p class="govuk-body">@StaticTextResource.ShareYourInformation_HowItWorksParagraph2</p>
                     <p class="govuk-body">@StaticTextResource.ShareYourInformation_HowItWorksParagraph3</p>
@@ -43,19 +52,14 @@
                     <div class="govuk-inset-text">
                         <p>@StaticTextResource.ShareYourInformation_HowItWorksParagraph4</p>
                     </div>
+
                 }
                 else
                 {
-                    <p class="govuk-body">@StaticTextResource.ConsortiumShareMyInformation_HowItWorksParagraph1</p>
-                    <p class="govuk-body">@StaticTextResource.ConsortiumShareMyInformation_HowItWorksParagraph2</p>
-                    <p class="govuk-body">@StaticTextResource.ConsortiumShareMyInformation_HowItWorksParagraph3</p>
+                    <div class="govuk-inset-text">
+                        <p>@StaticTextResource.ShareYourInformation_MandatorySectionsNotComplete</p>
+                    </div>
                 }
-            }
-            else
-            {
-                <div class="govuk-inset-text">
-                    <p>@StaticTextResource.ShareYourInformation_MandatorySectionsNotComplete</p>
-                </div>
             }
 
             <authorize scope="@OrgScopeRequirement.Editor">
