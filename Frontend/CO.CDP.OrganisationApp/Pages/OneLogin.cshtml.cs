@@ -94,6 +94,7 @@ public class OneLoginModel(
             uri += $"?redirectUri={WebUtility.UrlEncode(uriBuilder.Uri.PathAndQuery)}";
         }
 
+        session.Remove(Session.UserAuthTokens);
         return Challenge(new AuthenticationProperties { RedirectUri = uri });
     }
 
@@ -154,10 +155,12 @@ public class OneLoginModel(
 
     private async Task<Person.WebApiClient.Person> LookupPerson(UserDetails ud)
     {
-        try {
+        try
+        {
             // Look up by URN first
             return await personClient.LookupPersonAsync(urn: ud.UserUrn, email: null);
-        } catch (ApiException ex) when (ex.StatusCode == 404)
+        }
+        catch (ApiException ex) when (ex.StatusCode == 404)
         {
             logger.LogInformation("Person not found by URN {URN}, looking up by email.", ud.UserUrn);
         }
