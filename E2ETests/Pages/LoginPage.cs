@@ -45,6 +45,8 @@ namespace E2ETests.Pages
             {
                 await _page.ClickAsync(AgreePrivacyNoticeCheckBox);
                 await _page.ClickAsync(ContinueButton);
+                await _page.ClickAsync(AgreePrivacyNoticeCheckBox);
+                await _page.ClickAsync(ContinueButton);
                 await _page.WaitForSelectorAsync(EnterYourNameFirstNameTextBox);
                 await _page.FillAsync(EnterYourNameFirstNameTextBox, "Test");
                 await _page.ClickAsync(ContinueButton);

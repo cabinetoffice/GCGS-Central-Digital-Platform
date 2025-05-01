@@ -89,8 +89,8 @@ namespace E2ETests.Pages
 
         public async Task AssertConnectedPersonsCount(int expectedCount)
         {
-            string expectedText = $"{expectedCount} Connected person{(expectedCount == 1 ? "" : "s")}";
-            var selector = "//dt[a[contains(text(),'Connected persons')]]/following-sibling::dd[1]";
+            string expectedText = $"{expectedCount} added";
+            string selector = "#connected-persons-status strong";
 
             await _page.WaitForSelectorAsync(selector);
             string actualText = await _page.InnerTextAsync(selector);
