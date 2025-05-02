@@ -146,8 +146,8 @@ public class ConnectedEntityQuestionTest
 
     private static List<ConnectedEntityLookup> ConnectedEntities =>
     [
-        new(endDate: It.IsAny<DateTimeOffset>(), entityId: Guid.NewGuid(), entityType: ConnectedEntityType.Organisation, name: "e1", uri: It.IsAny<Uri>()),
-        new(endDate: It.IsAny<DateTimeOffset>(), entityId: Guid.NewGuid(), entityType: ConnectedEntityType.Organisation, name: "e2", uri: It.IsAny<Uri>()),
+        new(endDate: It.IsAny<DateTimeOffset>(), entityId: Guid.NewGuid(), entityType: ConnectedEntityType.Organisation, name: "e1", uri: It.IsAny<Uri>(), deleted: false, isInUse: false, formGuid: null, sectionGuid: null),
+        new(endDate: It.IsAny<DateTimeOffset>(), entityId: Guid.NewGuid(), entityType: ConnectedEntityType.Organisation, name: "e2", uri: It.IsAny<Uri>(), deleted: false, isInUse: false, formGuid: null, sectionGuid: null),
     ];
 
     private static CO.CDP.Organisation.WebApiClient.Organisation OrganisationClientModel(Guid id) =>

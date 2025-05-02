@@ -180,7 +180,8 @@ public class ConnectedEntityCheckAnswersOrganisationModel(
             organisation: connectedOrganisation,
             overseasCompanyNumber: state.OverseasCompaniesHouseNumber,
             registeredDate: (state.RegistrationDate.HasValue ? state.RegistrationDate.Value : null),
-            registerName: state.RegisterName
+            registerName: state.RegisterName,
+            deleted: false
         );
 
         return registerConnectedEntity;
@@ -226,7 +227,8 @@ public class ConnectedEntityCheckAnswersOrganisationModel(
             organisation: connectedOrganisation,
             overseasCompanyNumber: state.OverseasCompaniesHouseNumber,
             registeredDate: (state.RegistrationDate.HasValue ? state.RegistrationDate.Value : null),
-            registerName: state.RegisterName
+            registerName: state.RegisterName,
+            deleted: false
         );
 
         return updateConnectedEntity;

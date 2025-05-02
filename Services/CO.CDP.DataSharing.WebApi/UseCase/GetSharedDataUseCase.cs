@@ -33,17 +33,20 @@ public class GetSharedDataUseCase(
         supplierInformation.SupplierInformationData.AnswerSets.ForEach(answerSet => answerSet.OrganisationId = org.Guid);
         supplierInformation.SupplierInformationData.Questions.ForEach(question => question.OrganisationId = org.Guid);
 
+        var organisationShareCodeMap = new Dictionary<Guid, string>();
+        organisationShareCodeMap[sharedConsent.Organisation.Guid] = sharecode;
+
         if (org.Type == OrganisationType.InformalConsortium)
         {
-            await AddConsortiumOrganisationSharedConsent(sharecode, supplierInformation);
+            await AddConsortiumOrganisationSharedConsent(sharecode, supplierInformation, organisationShareCodeMap);
         }
 
-        InsertFileDocumentUri(sharedConsent, supplierInformation, sharecode);
+        InsertFileDocumentUri(supplierInformation, organisationShareCodeMap);
 
         return supplierInformation;
     }
 
-    private async Task AddConsortiumOrganisationSharedConsent(string parentShareCode, SupplierInformation supplierInformation)
+    private async Task AddConsortiumOrganisationSharedConsent(string parentShareCode, SupplierInformation supplierInformation, Dictionary<Guid, string> organisationShareCodeMap)
     {
         var shareCodes = await shareCodeRepository.GetConsortiumOrganisationsShareCode(parentShareCode);
 
@@ -52,6 +55,8 @@ public class GetSharedDataUseCase(
             var sharedConsent = await shareCodeRepository.GetByShareCode(shareCode)
                                 ?? throw new ShareCodeNotFoundException(Constants.ShareCodeNotFoundExceptionMessage);
             var org = sharedConsent.Organisation;
+
+            organisationShareCodeMap[org.Guid] = shareCode;
 
             var answerSets = mapper.Map<List<FormAnswerSet>>(sharedConsent.AnswerSets);
             answerSets.ForEach(answerSet => answerSet.OrganisationId = org.Guid);
@@ -78,26 +83,33 @@ public class GetSharedDataUseCase(
         }
     }
 
-    private void InsertFileDocumentUri(SharedConsentNonEf sharedConsent, SupplierInformation supplierInformation, string sharecode)
+    private void InsertFileDocumentUri(SupplierInformation supplierInformation, Dictionary<Guid, string> organisationShareCodeMap)
     {
         var dataSharingApiUrl = configuration["DataSharingApiUrl"]
                     ?? throw new Exception("Missing configuration key: DataSharingApiUrl.");
 
-        var questions = sharedConsent.AnswerSets.SelectMany(s => s.Section.Questions);
+        var questions = supplierInformation.SupplierInformationData.Questions;
 
         foreach (var answerSet in supplierInformation.SupplierInformationData.AnswerSets)
         {
             foreach (var answer in answerSet.Answers)
             {
                 if (!string.IsNullOrWhiteSpace(answer.TextValue)
-                    && questions.Any(q => q.Type == FormQuestionType.FileUpload && q.Name == answer.QuestionName))
+                    && questions.Any(q => q.Type == Model.FormQuestionType.FileUpload && q.Name == answer.QuestionName))
                 {
-                    answer.DocumentUri = new Uri(new Uri(dataSharingApiUrl), $"/share/data/{sharecode}/document/{answer.TextValue}");
-                    answer.TextValue = null;
+                    var organisationId = answerSet.OrganisationId;
+                    if (organisationId != null)
+                    {
+                        var shareCode = organisationShareCodeMap[organisationId.Value];
+
+                        answer.DocumentUri = new Uri(new Uri(dataSharingApiUrl), $"/share/data/{shareCode}/document/{answer.TextValue}");
+                        answer.TextValue = null;
+                    }
                 }
             }
         }
     }
+
 
     private Details GetDetails(SharedConsentNonEf sharedConsent)
     {

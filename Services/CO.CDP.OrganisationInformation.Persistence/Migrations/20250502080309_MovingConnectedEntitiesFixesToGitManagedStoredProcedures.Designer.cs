@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using CO.CDP.OrganisationInformation.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -12,9 +13,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CO.CDP.OrganisationInformation.Persistence.Migrations
 {
     [DbContext(typeof(OrganisationInformationContext))]
-    partial class OrganisationInformationContextModelSnapshot : ModelSnapshot
+    [Migration("20250502080309_MovingConnectedEntitiesFixesToGitManagedStoredProcedures")]
+    partial class MovingConnectedEntitiesFixesToGitManagedStoredProcedures
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -327,9 +330,9 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("guid");
 
-                    b.Property<bool>("HasCompanyHouseNumber")
+                    b.Property<bool>("HasCompnayHouseNumber")
                         .HasColumnType("boolean")
-                        .HasColumnName("has_company_house_number");
+                        .HasColumnName("has_compnay_house_number");
 
                     b.Property<string>("OverseasCompanyNumber")
                         .HasColumnType("text")
@@ -342,6 +345,10 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                     b.Property<DateTimeOffset?>("RegisteredDate")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("registered_date");
+
+                    b.Property<DateTimeOffset?>("StartDate")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("start_date");
 
                     b.Property<int>("SupplierOrganisationId")
                         .HasColumnType("integer")
@@ -395,9 +402,9 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("guid");
 
-                    b.Property<bool>("HasCompanyHouseNumber")
+                    b.Property<bool>("HasCompnayHouseNumber")
                         .HasColumnType("boolean")
-                        .HasColumnName("has_company_house_number");
+                        .HasColumnName("has_compnay_house_number");
 
                     b.Property<int>("MappingId")
                         .HasColumnType("integer")
@@ -418,6 +425,10 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                     b.Property<int>("SharedConsentId")
                         .HasColumnType("integer")
                         .HasColumnName("shared_consent_id");
+
+                    b.Property<DateTimeOffset?>("StartDate")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("start_date");
 
                     b.Property<DateTimeOffset>("UpdatedOn")
                         .HasColumnType("timestamp with time zone")

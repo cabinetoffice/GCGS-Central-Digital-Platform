@@ -2,6 +2,7 @@ CREATE OR REPLACE PROCEDURE create_shared_consent_snapshot(
 	IN p_share_code text)
 LANGUAGE 'plpgsql'
 AS $BODY$
+
 DECLARE v_shared_consent_id INT;
 DECLARE v_organisation_id INT;
 DECLARE v_inserted_id INT;
@@ -99,10 +100,10 @@ BEGIN
 	WITH inserted_connected_entities_data AS (
 		INSERT INTO connected_entities_snapshot
 			(shared_consent_id, "guid", entity_type, has_company_house_number, company_house_number, overseas_company_number, 
-			registered_date, register_name, end_date, created_on, updated_on, mapping_id)
+			registered_date, register_name, end_date, created_on, updated_on, mapping_id, deleted)
 	    SELECT 
 	        v_shared_consent_id, "guid", entity_type, has_company_house_number, company_house_number, overseas_company_number, 
-			registered_date, register_name, end_date, created_on, updated_on, id
+			registered_date, register_name, end_date, created_on, updated_on, id, deleted
 	    FROM 
 	        connected_entities
 	    WHERE 

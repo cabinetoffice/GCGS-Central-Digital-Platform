@@ -299,7 +299,7 @@ internal static class NonEfEntityFactory
                     },
                     new FormQuestionNonEf
                     {
-                        Id = 2,
+                        Id = 3,
                         Guid  = Guid.NewGuid(),
                         Name = "_Section0" + GetQuestionNumber(),
                         Title = "Upload your accounts",
@@ -312,7 +312,7 @@ internal static class NonEfEntityFactory
                     },
                     new FormQuestionNonEf
                     {
-                        Id = 3,
+                        Id = 4,
                         Guid  = Guid.NewGuid(),
                         Name = "_Section0" + GetQuestionNumber(),
                         Title = "What is the financial year end date for the information you uploaded?",
@@ -325,7 +325,7 @@ internal static class NonEfEntityFactory
                     },
                     new FormQuestionNonEf
                     {
-                        Id = 4,
+                        Id = 5,
                         Guid  = Guid.NewGuid(),
                         Name = "_Section0" + GetQuestionNumber(),
                         Title = "Check your answers",
@@ -338,7 +338,7 @@ internal static class NonEfEntityFactory
                     },
                     new FormQuestionNonEf
                     {
-                        Id = 5,
+                        Id = 6,
                         Guid  = Guid.NewGuid(),
                         Name = "_Section0" + GetQuestionNumber(),
                         Title = "Enter your postal address",

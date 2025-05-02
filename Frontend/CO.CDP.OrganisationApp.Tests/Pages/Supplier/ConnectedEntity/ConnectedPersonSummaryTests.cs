@@ -12,14 +12,16 @@ public class ConnectedPersonSummaryTests
     private readonly Mock<WebApiClient.IOrganisationClient> _mockOrganisationClient;
     private readonly Mock<ISession> _sessionMock;
     private readonly ConnectedPersonSummaryModel _model;
+    private readonly Mock<IFlashMessageService> flashMessageServiceMock;
 
     private static readonly System.Guid EntityId = new Guid();
 
     public ConnectedPersonSummaryTests()
     {
+        flashMessageServiceMock = new Mock<IFlashMessageService>();
         _mockOrganisationClient = new Mock<WebApiClient.IOrganisationClient>();
         _sessionMock = new Mock<ISession>();
-        _model = new ConnectedPersonSummaryModel(_mockOrganisationClient.Object, _sessionMock.Object)
+        _model = new ConnectedPersonSummaryModel(flashMessageServiceMock.Object, _mockOrganisationClient.Object, _sessionMock.Object)
         {
             Id = Guid.NewGuid()
         };
@@ -54,7 +56,11 @@ public class ConnectedPersonSummaryTests
                 entityId: EntityId,
                 entityType: ConnectedEntityType.Organisation,
                 name: "Rocky Balboa",
-                uri: new Uri("http://test")
+                uri: new Uri("http://test"),
+                deleted: false,
+                isInUse: false,
+                formGuid: null,
+                sectionGuid: null
             )
         ]);
 
@@ -96,7 +102,7 @@ public class ConnectedPersonSummaryTests
     }
 
     private static ICollection<ConnectedEntityLookup> ConnectedEntities = [
-        new ConnectedEntityLookup(endDate: null, entityId: EntityId, entityType: ConnectedEntityType.Organisation, name: "Rocky Balboa", uri: new Uri("http://test"))
+        new ConnectedEntityLookup(endDate: null, entityId: EntityId, entityType: ConnectedEntityType.Organisation, name: "Rocky Balboa", uri: new Uri("http://test"), deleted: false, isInUse: false, formGuid: null, sectionGuid: null)
     ];
 
     private void SetupOrganisationClientMock()
