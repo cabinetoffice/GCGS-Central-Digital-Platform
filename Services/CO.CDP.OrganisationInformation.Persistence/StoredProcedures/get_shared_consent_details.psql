@@ -1,17 +1,17 @@
-CREATE OR REPLACE PROCEDURE get_shared_consent_details(
-    IN p_share_code TEXT, 
-    INOUT consent_cursor REFCURSOR, 
-    INOUT identifier_cursor REFCURSOR, 
-    INOUT address_cursor REFCURSOR, 
-    INOUT contact_cursor REFCURSOR, 
-    INOUT connected_entities_cursor REFCURSOR, 
-    INOUT connected_entities_address_cursor REFCURSOR, 
-    INOUT form_answer_sets_cursor REFCURSOR, 
-    INOUT form_question_cursor REFCURSOR, 
-    INOUT form_answer_cursor REFCURSOR
-)
-LANGUAGE plpgsql
+CREATE OR REPLACE PROCEDURE public.get_shared_consent_details(
+	IN p_share_code text,
+	INOUT consent_cursor refcursor,
+	INOUT identifier_cursor refcursor,
+	INOUT address_cursor refcursor,
+	INOUT contact_cursor refcursor,
+	INOUT connected_entities_cursor refcursor,
+	INOUT connected_entities_address_cursor refcursor,
+	INOUT form_answer_sets_cursor refcursor,
+	INOUT form_question_cursor refcursor,
+	INOUT form_answer_cursor refcursor)
+LANGUAGE 'plpgsql'
 AS $$
+
 DECLARE v_shared_consent_id INT;
 BEGIN
     SELECT id, submitted_at 
@@ -77,7 +77,7 @@ BEGIN
             LEFT JOIN connected_individual_trust_snapshot cit ON cit.id = ce.id
             LEFT JOIN connected_organisation_snapshot AS co ON co.id = ce.id 
         WHERE 
-            ce.shared_consent_id = v_shared_consent_id; 
+            ce.shared_consent_id = v_shared_consent_id and ce.deleted = false;
 
     -- Cursor for Connected Entities Address
     OPEN connected_entities_address_cursor FOR 
@@ -89,7 +89,7 @@ BEGIN
             INNER JOIN connected_entity_address_snapshot cea ON cea.connected_entity_snapshot_id = ce.id
             INNER JOIN addresses_snapshot AS a ON a.id = cea.address_id
         WHERE 
-            ce.shared_consent_id = v_shared_consent_id; 
+            ce.shared_consent_id = v_shared_consent_id and ce.deleted = false;
 
     -- Cursor for Form Answer Sets
     OPEN form_answer_sets_cursor FOR 
