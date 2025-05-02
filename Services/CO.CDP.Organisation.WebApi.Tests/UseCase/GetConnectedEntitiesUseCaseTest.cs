@@ -26,6 +26,8 @@ public class GetConnectedEntitiesUseCaseTest(AutoMapperFixture mapperFixture) : 
         var organisationId = Guid.NewGuid();
         var eid1 = Guid.NewGuid();
         var eid2 = Guid.NewGuid();
+        var formGuid = Guid.NewGuid();
+        var sectionGuid = Guid.NewGuid();
 
         var persistenceConnectedEntityList = new List<OrganisationInformation.Persistence.ConnectedEntityLookup>
         {
@@ -45,6 +47,9 @@ public class GetConnectedEntitiesUseCaseTest(AutoMapperFixture mapperFixture) : 
 
 
         _repository.Setup(r => r.GetSummary(organisationId)).ReturnsAsync(persistenceConnectedEntityList);
+        _repository
+            .Setup(r => r.IsConnectedEntityUsedInExclusionAsync(organisationId, It.IsAny<Guid>()))
+            .ReturnsAsync(Tuple.Create(false, formGuid, sectionGuid));
 
         var found = await UseCase.Execute(organisationId);
 
@@ -55,14 +60,18 @@ public class GetConnectedEntitiesUseCaseTest(AutoMapperFixture mapperFixture) : 
                 EntityId = eid1,
                 Name = "CHN_123",
                 Uri = new Uri($"https://cdp.cabinetoffice.gov.uk/organisations/{organisationId}/connected-entities/{eid1}"),
-                EntityType = Model.ConnectedEntityType.Organisation
+                EntityType = Model.ConnectedEntityType.Organisation,
+                FormGuid = formGuid,
+                SectionGuid = sectionGuid,
             },
             new Model.ConnectedEntityLookup
             {
                 EntityId = eid2,
                 Name = "First Name",
                 Uri = new Uri($"https://cdp.cabinetoffice.gov.uk/organisations/{organisationId}/connected-entities/{eid2}"),
-                EntityType = Model.ConnectedEntityType.Organisation
+                EntityType = Model.ConnectedEntityType.Organisation,
+                FormGuid = formGuid,
+                SectionGuid = sectionGuid,
             }
         };
 

@@ -301,6 +301,9 @@ public class WebApiToPersistenceProfile : Profile
 
         CreateMap<Persistence.ConnectedEntityLookup, ConnectedEntityLookup>()
             .ForMember(m => m.Uri, o => o.MapFrom((src, _, _, context) => new Uri($"https://cdp.cabinetoffice.gov.uk/organisations/{context.Items["OrganisationId"]}/connected-entities/{src.EntityId}")))
+            .ForMember(m => m.IsInUse, o => o.Ignore())
+            .ForMember(m => m.FormGuid, o => o.Ignore())
+            .ForMember(m => m.SectionGuid, o => o.Ignore())
             .ReverseMap();
     }
 
