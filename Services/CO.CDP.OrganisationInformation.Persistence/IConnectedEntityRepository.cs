@@ -8,6 +8,8 @@ public interface IConnectedEntityRepository : IDisposable
 
     public Task<IEnumerable<ConnectedEntityLookup?>> GetSummary(Guid organisationId);
 
+    public Task<Tuple<bool, Guid, Guid>> IsConnectedEntityUsedInExclusionAsync(Guid organisationId, Guid connectedEntityId);
+
     public class ConnectedEntityRepositoryException(string message, Exception? cause = null) : Exception(message, cause)
     {
         public class DuplicateConnectedEntityException(string message, Exception? cause = null)
