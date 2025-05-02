@@ -17,7 +17,7 @@ public class ViewAdminsModel(
 
     public async Task<IActionResult> OnGet()
     {
-        Persons = await organisationClient.GetOrganisationAdminPersonsAsync(Id);
+        Persons = await organisationClient.GetOrganisationPersonsInRoleAsync(Id, OrganisationPersonScopes.Admin);
 
         return Page();
     }

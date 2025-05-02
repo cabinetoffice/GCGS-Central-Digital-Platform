@@ -785,13 +785,13 @@ public static class EndpointExtensions
                 return operation;
             });
 
-        app.MapGet("/{organisationId}/admin-persons",
+        app.MapGet("/{organisationId}/persons-in-role",
             [OrganisationAuthorize(
                 [AuthenticationChannel.OneLogin],
                 [Constants.OrganisationPersonScope.Admin, Constants.OrganisationPersonScope.Editor, Constants.OrganisationPersonScope.Viewer],
                 OrganisationIdLocation.Path)]
-        async (Guid organisationId, IUseCase<Guid, IEnumerable<Person>> useCase) =>
-                    await useCase.Execute(organisationId)
+        async (Guid organisationId, string role, IUseCase<(Guid, string), IEnumerable<Person>> useCase) =>
+                    await useCase.Execute((organisationId, role))
                         .AndThen(persons => persons != null ? Results.Ok(persons) : Results.NotFound()))
             .Produces<List<Model.Person>>(StatusCodes.Status200OK, "application/json")
             .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
@@ -800,9 +800,9 @@ public static class EndpointExtensions
             .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError)
             .WithOpenApi(operation =>
             {
-                operation.OperationId = "GetOrganisationAdminPersons";
-                operation.Description = "Get admin persons by Organisation ID.";
-                operation.Summary = "Get admin persons by Organisation ID.";
+                operation.OperationId = "GetOrganisationPersonsInRole";
+                operation.Description = "Get persons by Organisation ID in a role.";
+                operation.Summary = "Get persons by Organisation ID in a role.";
                 operation.Responses["200"].Description = "Persons details.";
                 operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
                 operation.Responses["404"].Description = "Persons information not found.";
