@@ -10,14 +10,14 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<List<string>>(
+            migrationBuilder.AddColumn<bool>(
                 name: "deleted",
                 table: "connected_entities",
                 type: "boolean",
                 defaultValue: false,
                 nullable: false);
 
-            migrationBuilder.AddColumn<List<string>>(
+            migrationBuilder.AddColumn<bool>(
                 name: "deleted",
                 table: "connected_entities_snapshot",
                 type: "boolean",
