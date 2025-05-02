@@ -35,7 +35,7 @@ public class ConnectedPersonSummaryModel(
         [FromQuery(Name = "form-guid")] Guid? formGuid,
         [FromQuery(Name = "section-guid")] Guid? sectionGuid)
     {
-        if (isInUse)
+        if (isInUse && formGuid != null && sectionGuid != null)
         {
             flashMessageService.SetFlashMessage
                (
@@ -43,8 +43,8 @@ public class ConnectedPersonSummaryModel(
                        heading: StaticTextResource.ErrorMessageList_ConnectedPersons_Cannot_Remove,
                        urlParameters: new() {
                             { "organisationIdentifier", Id.ToString() },
-                            { "formId", formGuid.ToString() },
-                            { "sectionId", sectionGuid.ToString() }
+                            { "formId", formGuid.Value.ToString() },
+                            { "sectionId", sectionGuid.Value.ToString() }
                        }
                );
 
