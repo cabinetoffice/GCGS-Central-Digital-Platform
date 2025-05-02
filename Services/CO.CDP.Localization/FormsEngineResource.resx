@@ -223,7 +223,7 @@
     <value>1 added</value>
   </data>
   <data name="Qualifications_Configuration_SingularSummaryHeadingHint" xml:space="preserve">
-    <value>Qualification</value>
+    <value>Qualifications</value>
   </data>
   <data name="Qualifications_Configuration_RemoveConfirmationHeading" xml:space="preserve">
     <value>Are you sure you want to remove this qualification?</value>
@@ -433,7 +433,7 @@
     <value>1 added</value>
   </data>
   <data name="Exclusions_Configuration_SingularSummaryHeadingHint" xml:space="preserve">
-    <value>Exclusion</value>
+    <value>Exclusions</value>
   </data>
   <data name="Exclusions_Configuration_RemoveConfirmationHeading" xml:space="preserve">
     <value>Are you sure you want to remove this exclusion?</value>
@@ -478,7 +478,7 @@
     <value>1 added</value>
   </data>
   <data name="TradeAssurances_Configuration_SingularSummaryHeadingHint" xml:space="preserve">
-    <value>Trade assurance</value>
+    <value>Trade assurances</value>
   </data>
   <data name="TradeAssurances_Configuration_RemoveConfirmationHeading" xml:space="preserve">
     <value>Are you sure you want to remove this trade assurance?</value>
