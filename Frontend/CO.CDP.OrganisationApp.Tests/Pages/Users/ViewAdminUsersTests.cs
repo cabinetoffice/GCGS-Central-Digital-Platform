@@ -25,7 +25,7 @@ public class ViewAdminsModelTests
         var persons = new List<CO.CDP.Organisation.WebApiClient.Person> { adminPerson };
 
         _mockOrganisationClient
-            .Setup(c => c.GetOrganisationAdminPersonsAsync(_viewAdminsModel.Id))
+            .Setup(c => c.GetOrganisationPersonsInRoleAsync(_viewAdminsModel.Id, "ADMIN"))
             .ReturnsAsync(persons);
 
         var result = await _viewAdminsModel.OnGet();
