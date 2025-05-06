@@ -5,7 +5,7 @@ name: Build
 
 on:
   push:
-    branches: [main]
+    branches: [main,release/data-sharing-api-fixes]
     tags: ['*']
   pull_request:
 

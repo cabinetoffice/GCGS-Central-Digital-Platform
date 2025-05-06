@@ -355,8 +355,7 @@ public class FormsEngineTests
                             ),
                             "123",
                             null,
-                            "register name",
-                            null
+                            "register name"
                         ));
         _organisationClientMock.Setup(c => c.GetOrganisationAsync(organisationId))
             .ReturnsAsync(new Organisation.WebApiClient.Organisation(additionalIdentifiers: [], addresses: [], contactPoint: null, id: organisationId, identifier: null, name: "User's current organisation", type: OrganisationType.Organisation, roles: [], details: new Details(approval: null, buyerInformation: null, pendingRoles: [], publicServiceMissionOrganization: null, scale: null, shelteredWorkshop: null, vcse: null)));

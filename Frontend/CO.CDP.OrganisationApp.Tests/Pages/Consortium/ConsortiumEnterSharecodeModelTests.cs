@@ -129,6 +129,7 @@ public class ConsortiumEnterSharecodeModelTests
             identifier: null!,
             additionalIdentifiers: [],
             address: new DataSharing.WebApiClient.Address("GB", "UK", "very local", "WS1", "", "1 st", DataSharing.WebApiClient.AddressType.Registered),
+            additionalAddresses: [new DataSharing.WebApiClient.Address("GB", "UK", "postal local", "WS1", "", "1 st", DataSharing.WebApiClient.AddressType.Postal)],
             contactPoint: null!,
             roles: [],
             details: null!,
