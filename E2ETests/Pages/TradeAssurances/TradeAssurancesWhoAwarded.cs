@@ -4,7 +4,7 @@ using E2ETests.Utilities;
 
 namespace E2ETests.Pages
 {
-    public class TradeAssurancesYesNoPage
+    public class TradeAssurancesWhoAwardedPage
     {
         private readonly IPage _page;
         private readonly string _baseUrl;
@@ -13,12 +13,11 @@ namespace E2ETests.Pages
 
         // ✅ Page Locators
         private readonly string PageTitleSelector = "h1.govuk-fieldset__heading";
-        private readonly string ContinueButtonSelector = "main >> button.govuk-button[type='submit']";
+        private readonly string ContinueButtonSelector = "button:text('Continue')";
         private readonly string BackToSupplierInfoSelector = "a.govuk-back-link";
-        private readonly string YesRadioSelector = "input[name='Confirm'][value='true']";
-        private readonly string NoRadioSelector = "input[name='Confirm'][value='false']";
+        private readonly string InputSelector = "input[name='TextInput'][type='text']";
 
-        public TradeAssurancesYesNoPage(IPage page)
+        public TradeAssurancesWhoAwardedPage(IPage page)
         {
             _page = page;
             _baseUrl = ConfigUtility.GetBaseUrl(); // Retrieve base URL from ConfigUtility
@@ -33,13 +32,14 @@ namespace E2ETests.Pages
                 throw new System.Exception($"❌ Organisation ID not found for key: {storageKey}");
             }
 
-            // Assume formId and sectionId are fixed
+            // Assume formId, sectionId and questionId are fixed
             string formId = "0618b13e-eaf2-46e3-a7d2-6f2c44be7022";
             string sectionId = "cf08acf8-e2fa-40c8-83e7-50c8671c343f";
+            string questionId = "179d597c-3db2-41de-af9b-c651e64d486d";
 
-            string url = $"{_baseUrl}/organisation/{organisationId}/forms/{formId}/sections/{sectionId}/check-further-questions-exempted";
+            string url = $"{_baseUrl}/organisation/{organisationId}/forms/{formId}/sections/{sectionId}/question/{questionId}";
             await _page.GotoAsync(url);
-            Console.WriteLine($"📌 Navigated to Trade Assurances Yes/No Page: {url}");
+            Console.WriteLine($"📌 Navigated to Trade Assurances Who Awarded Page: {url}");
 
             await _page.WaitForSelectorAsync(PageTitleSelector);
         }
@@ -50,16 +50,15 @@ namespace E2ETests.Pages
             return await _page.InnerTextAsync(PageTitleSelector);
         }
 
-        public async Task SelectOption(bool isYes)
+        public async Task InputWhoAwarded()
         {
-            string radioSelector = isYes ? YesRadioSelector : NoRadioSelector;
-            await _page.CheckAsync(radioSelector);
-            Console.WriteLine($"✅ Selected Option: {(isYes ? "Yes" : "No")}");
+            await _page.FillAsync(InputSelector, "John Johnson");
         }
 
         public async Task ClickContinue()
         {
             await _page.ClickAsync(ContinueButtonSelector);
+
         }
 
         public async Task ClickBackToSupplierInformation()
@@ -67,10 +66,11 @@ namespace E2ETests.Pages
             await _page.ClickAsync(BackToSupplierInfoSelector);
         }
 
-        public async Task CompletePage(bool isYes)
+        public async Task CompletePage()
         {
-            await SelectOption(isYes);
+            await InputWhoAwarded();
             await ClickContinue();
         }
+
     }
 }

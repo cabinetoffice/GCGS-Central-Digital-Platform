@@ -16,7 +16,18 @@ namespace E2ETests.TradeAssurances
             string uniqueOrgName = $"TradeAssurance_ {uniqueOrgId}";
 
             await _tradeAssurancesYesNoPage.NavigateTo("TradeAssurances_Org");
-            await _tradeAssurancesYesNoPage.CompletePage();
+            await _tradeAssurancesYesNoPage.CompletePage(true);
+            await _tradeAssurancesAssurancesWhoAwardedPage.CompletePage();
+            await _tradeAssurancesKnowReferenceNumberPage.CompletePage();
+            await _tradeAssurancesWhenAwardedPage.CompletePage("20", "5", "2007");
+            await _tradeAssurancesCheckYourAnswersPage.CompletePage();
+            await _tradeAssurancesSummaryPage.AssertTradeAssurancesCount(1);
+            await _tradeAssurancesSummaryPage.CompletePage(true);
+            await _tradeAssurancesAssurancesWhoAwardedPage.CompletePage();
+            await _tradeAssurancesKnowReferenceNumberPage.CompletePage();
+            await _tradeAssurancesWhenAwardedPage.CompletePage("28", "3", "2008");
+            await _tradeAssurancesCheckYourAnswersPage.CompletePage();
+            await _tradeAssurancesSummaryPage.AssertTradeAssurancesCount(2);
         }
 
     }

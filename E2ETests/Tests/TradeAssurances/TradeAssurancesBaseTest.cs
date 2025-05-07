@@ -12,6 +12,11 @@ namespace E2ETests.TradeAssurances
 
         // Page Objects
         protected TradeAssurancesYesNoPage _tradeAssurancesYesNoPage;
+        protected TradeAssurancesWhoAwardedPage _tradeAssurancesAssurancesWhoAwardedPage;
+        protected TradeAssurancesKnowReferenceNumberPage _tradeAssurancesKnowReferenceNumberPage;
+        protected TradeAssurancesWhenAwardedPage _tradeAssurancesWhenAwardedPage;
+        protected TradeAssurancesCheckYourAnswersPage _tradeAssurancesCheckYourAnswersPage;
+        protected TradeAssurancesSummaryPage _tradeAssurancesSummaryPage;
 
        [SetUp]
         public async Task SetupTradeAssurancesData()
@@ -26,6 +31,11 @@ namespace E2ETests.TradeAssurances
             Console.WriteLine($"📌 Stored Organisation ID for TradeAssurances Tests: {_organisationId}");
 
             _tradeAssurancesYesNoPage = new TradeAssurancesYesNoPage(_page);
+            _tradeAssurancesAssurancesWhoAwardedPage = new TradeAssurancesWhoAwardedPage(_page);
+            _tradeAssurancesKnowReferenceNumberPage = new TradeAssurancesKnowReferenceNumberPage(_page);
+            _tradeAssurancesWhenAwardedPage = new TradeAssurancesWhenAwardedPage(_page);
+            _tradeAssurancesCheckYourAnswersPage = new TradeAssurancesCheckYourAnswersPage(_page);
+            _tradeAssurancesSummaryPage = new TradeAssurancesSummaryPage(_page);
         }
     }
 }
