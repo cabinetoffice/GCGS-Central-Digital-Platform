@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <TargetFramework>net8.0</TargetFramework>
@@ -13,6 +13,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.4" />
         <PackageReference Include="EFCore.NamingConventions" Version="8.0.3" />
         <ProjectReference Include="..\..\Libraries\CO.CDP.Configuration\CO.CDP.Configuration.csproj" />
@@ -22,6 +23,15 @@
         <ProjectReference Include="..\..\Libraries\CO.CDP.MQ\CO.CDP.MQ.csproj" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.8" />
         <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.8" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Update="StoredProcedures\create_shared_consent_snapshot.psql">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="StoredProcedures\get_shared_consent_details.psql">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
     </ItemGroup>
 
 </Project>

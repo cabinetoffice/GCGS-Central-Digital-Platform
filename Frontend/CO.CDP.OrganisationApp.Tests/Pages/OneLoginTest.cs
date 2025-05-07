@@ -40,6 +40,8 @@ public class OneLoginTest
 
         result.Should().BeOfType<ChallengeResult>()
             .Which.Properties!.RedirectUri.Should().Be("/one-login/user-info");
+
+        sessionMock.Verify(s => s.Remove("UserAuthTokens"), Times.Once);
     }
 
     [Fact]

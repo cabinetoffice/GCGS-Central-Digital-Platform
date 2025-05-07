@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using CO.CDP.OrganisationInformation.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -12,9 +13,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CO.CDP.OrganisationInformation.Persistence.Migrations
 {
     [DbContext(typeof(OrganisationInformationContext))]
-    partial class OrganisationInformationContextModelSnapshot : ModelSnapshot
+    [Migration("20250402144802_Add_Connected_Entities_Deleted_Column")]
+    partial class Add_Connected_Entities_Deleted_Column
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -259,39 +262,6 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                     b.ToTable("authentication_keys", (string)null);
                 });
 
-            modelBuilder.Entity("CO.CDP.OrganisationInformation.Persistence.BuyerInformation", b =>
-                {
-                    b.Property<int>("Id")
-                        .HasColumnType("integer")
-                        .HasColumnName("id");
-
-                    b.Property<string>("BuyerType")
-                        .HasColumnType("text")
-                        .HasColumnName("buyer_type");
-
-                    b.Property<DateTimeOffset>("CreatedOn")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("created_on")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
-
-                    b.Property<int[]>("DevolvedRegulations")
-                        .IsRequired()
-                        .HasColumnType("integer[]")
-                        .HasColumnName("devolved_regulations");
-
-                    b.Property<DateTimeOffset>("UpdatedOn")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("updated_on")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
-
-                    b.HasKey("Id")
-                        .HasName("pk_buyer_information");
-
-                    b.ToTable("buyer_information", (string)null);
-                });
-
             modelBuilder.Entity("CO.CDP.OrganisationInformation.Persistence.ConnectedEntity", b =>
                 {
                     b.Property<int>("Id")
@@ -310,10 +280,6 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_on")
                         .HasDefaultValueSql("CURRENT_TIMESTAMP");
-
-                    b.Property<bool>("Deleted")
-                        .HasColumnType("boolean")
-                        .HasColumnName("deleted");
 
                     b.Property<DateTimeOffset?>("EndDate")
                         .HasColumnType("timestamp with time zone")
@@ -438,56 +404,6 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                         .HasDatabaseName("ix_connected_entities_snapshot_shared_consent_id");
 
                     b.ToTable("connected_entities_snapshot", (string)null);
-                });
-
-            modelBuilder.Entity("CO.CDP.OrganisationInformation.Persistence.ContactPoint", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTimeOffset>("CreatedOn")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("created_on")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
-
-                    b.Property<string>("Email")
-                        .HasColumnType("text")
-                        .HasColumnName("email");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("text")
-                        .HasColumnName("name");
-
-                    b.Property<int>("OrganisationId")
-                        .HasColumnType("integer")
-                        .HasColumnName("organisation_id");
-
-                    b.Property<string>("Telephone")
-                        .HasColumnType("text")
-                        .HasColumnName("telephone");
-
-                    b.Property<DateTimeOffset>("UpdatedOn")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("updated_on")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
-
-                    b.Property<string>("Url")
-                        .HasColumnType("text")
-                        .HasColumnName("url");
-
-                    b.HasKey("Id")
-                        .HasName("pk_contact_points");
-
-                    b.HasIndex("OrganisationId")
-                        .HasDatabaseName("ix_contact_points_organisation_id");
-
-                    b.ToTable("contact_points", (string)null);
                 });
 
             modelBuilder.Entity("CO.CDP.OrganisationInformation.Persistence.ContactPointSnapshot", b =>
@@ -998,62 +914,6 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                     b.ToTable("shared_consent_consortiums", (string)null);
                 });
 
-            modelBuilder.Entity("CO.CDP.OrganisationInformation.Persistence.Identifier", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTimeOffset>("CreatedOn")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("created_on")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
-
-                    b.Property<string>("IdentifierId")
-                        .HasColumnType("text")
-                        .HasColumnName("identifier_id");
-
-                    b.Property<string>("LegalName")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("legal_name");
-
-                    b.Property<int>("OrganisationId")
-                        .HasColumnType("integer")
-                        .HasColumnName("organisation_id");
-
-                    b.Property<bool>("Primary")
-                        .HasColumnType("boolean")
-                        .HasColumnName("primary");
-
-                    b.Property<string>("Scheme")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("scheme");
-
-                    b.Property<DateTimeOffset>("UpdatedOn")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("updated_on")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
-
-                    b.Property<string>("Uri")
-                        .HasColumnType("text")
-                        .HasColumnName("uri");
-
-                    b.HasKey("Id")
-                        .HasName("pk_identifiers");
-
-                    b.HasIndex("OrganisationId")
-                        .HasDatabaseName("ix_identifiers_organisation_id");
-
-                    b.ToTable("identifiers", (string)null);
-                });
-
             modelBuilder.Entity("CO.CDP.OrganisationInformation.Persistence.IdentifierSnapshot", b =>
                 {
                     b.Property<int>("Id")
@@ -1144,45 +1004,6 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                         .HasDatabaseName("ix_mou_guid");
 
                     b.ToTable("mou", (string)null);
-                });
-
-            modelBuilder.Entity("CO.CDP.OrganisationInformation.Persistence.MouEmailReminder", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTimeOffset>("CreatedOn")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("created_on")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
-
-                    b.Property<int>("OrganisationId")
-                        .HasColumnType("integer")
-                        .HasColumnName("organisation_id");
-
-                    b.Property<DateTimeOffset>("ReminderSentOn")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("reminder_sent_on");
-
-                    b.Property<DateTimeOffset>("UpdatedOn")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("updated_on")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
-
-                    b.HasKey("Id")
-                        .HasName("pk_mou_email_reminders");
-
-                    b.HasIndex("OrganisationId")
-                        .IsUnique()
-                        .HasDatabaseName("ix_mou_email_reminders_organisation_id");
-
-                    b.ToTable("mou_email_reminders", (string)null);
                 });
 
             modelBuilder.Entity("CO.CDP.OrganisationInformation.Persistence.MouSignature", b =>
@@ -1332,39 +1153,6 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                     b.ToTable("organisations", (string)null);
                 });
 
-            modelBuilder.Entity("CO.CDP.OrganisationInformation.Persistence.OrganisationAddress", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("AddressId")
-                        .HasColumnType("integer")
-                        .HasColumnName("address_id");
-
-                    b.Property<int>("OrganisationId")
-                        .HasColumnType("integer")
-                        .HasColumnName("organisation_id");
-
-                    b.Property<int>("Type")
-                        .HasColumnType("integer")
-                        .HasColumnName("type");
-
-                    b.HasKey("Id")
-                        .HasName("pk_organisation_address");
-
-                    b.HasIndex("AddressId")
-                        .HasDatabaseName("ix_organisation_address_address_id");
-
-                    b.HasIndex("OrganisationId")
-                        .HasDatabaseName("ix_organisation_address_organisation_id");
-
-                    b.ToTable("organisation_address", (string)null);
-                });
-
             modelBuilder.Entity("CO.CDP.OrganisationInformation.Persistence.OrganisationAddressSnapshot", b =>
                 {
                     b.Property<int>("Id")
@@ -1481,8 +1269,8 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                         .HasColumnName("created_on")
                         .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
-                    b.Property<OrganisationRelationship>("OrganisationRelationship")
-                        .HasColumnType("organisation_relationship")
+                    b.Property<int>("OrganisationRelationship")
+                        .HasColumnType("integer")
                         .HasColumnName("organisation_relationship");
 
                     b.Property<int>("ParentOrganisationId")
@@ -1775,71 +1563,6 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                     b.ToTable("refresh_tokens", (string)null);
                 });
 
-            modelBuilder.Entity("CO.CDP.OrganisationInformation.Persistence.SupplierInformation", b =>
-                {
-                    b.Property<int>("Id")
-                        .HasColumnType("integer")
-                        .HasColumnName("id");
-
-                    b.Property<bool>("CompletedConnectedPerson")
-                        .HasColumnType("boolean")
-                        .HasColumnName("completed_connected_person");
-
-                    b.Property<bool>("CompletedEmailAddress")
-                        .HasColumnType("boolean")
-                        .HasColumnName("completed_email_address");
-
-                    b.Property<bool>("CompletedLegalForm")
-                        .HasColumnType("boolean")
-                        .HasColumnName("completed_legal_form");
-
-                    b.Property<bool>("CompletedOperationType")
-                        .HasColumnType("boolean")
-                        .HasColumnName("completed_operation_type");
-
-                    b.Property<bool>("CompletedPostalAddress")
-                        .HasColumnType("boolean")
-                        .HasColumnName("completed_postal_address");
-
-                    b.Property<bool>("CompletedRegAddress")
-                        .HasColumnType("boolean")
-                        .HasColumnName("completed_reg_address");
-
-                    b.Property<bool>("CompletedVat")
-                        .HasColumnType("boolean")
-                        .HasColumnName("completed_vat");
-
-                    b.Property<bool>("CompletedWebsiteAddress")
-                        .HasColumnType("boolean")
-                        .HasColumnName("completed_website_address");
-
-                    b.Property<DateTimeOffset>("CreatedOn")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("created_on")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
-
-                    b.Property<int[]>("OperationTypes")
-                        .IsRequired()
-                        .HasColumnType("integer[]")
-                        .HasColumnName("operation_types");
-
-                    b.Property<int?>("SupplierType")
-                        .HasColumnType("integer")
-                        .HasColumnName("supplier_type");
-
-                    b.Property<DateTimeOffset>("UpdatedOn")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("updated_on")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
-
-                    b.HasKey("Id")
-                        .HasName("pk_supplier_information");
-
-                    b.ToTable("supplier_information", (string)null);
-                });
-
             modelBuilder.Entity("CO.CDP.OrganisationInformation.Persistence.SupplierInformationSnapshot", b =>
                 {
                     b.Property<int>("Id")
@@ -1980,18 +1703,6 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                         .WithMany()
                         .HasForeignKey("OrganisationId")
                         .HasConstraintName("fk_authentication_keys_organisations_organisation_id");
-
-                    b.Navigation("Organisation");
-                });
-
-            modelBuilder.Entity("CO.CDP.OrganisationInformation.Persistence.BuyerInformation", b =>
-                {
-                    b.HasOne("CO.CDP.OrganisationInformation.Persistence.Organisation", "Organisation")
-                        .WithOne("BuyerInfo")
-                        .HasForeignKey("CO.CDP.OrganisationInformation.Persistence.BuyerInformation", "Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_buyer_information_organisations_id");
 
                     b.Navigation("Organisation");
                 });
@@ -2363,18 +2074,6 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                     b.Navigation("SharedConsent");
                 });
 
-            modelBuilder.Entity("CO.CDP.OrganisationInformation.Persistence.ContactPoint", b =>
-                {
-                    b.HasOne("CO.CDP.OrganisationInformation.Persistence.Organisation", "Organisation")
-                        .WithMany("ContactPoints")
-                        .HasForeignKey("OrganisationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_contact_points_organisations_organisation_id");
-
-                    b.Navigation("Organisation");
-                });
-
             modelBuilder.Entity("CO.CDP.OrganisationInformation.Persistence.ContactPointSnapshot", b =>
                 {
                     b.HasOne("CO.CDP.OrganisationInformation.Persistence.Forms.SharedConsent", "SharedConsent")
@@ -2509,18 +2208,6 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                     b.Navigation("ParentSharedConsent");
                 });
 
-            modelBuilder.Entity("CO.CDP.OrganisationInformation.Persistence.Identifier", b =>
-                {
-                    b.HasOne("CO.CDP.OrganisationInformation.Persistence.Organisation", "Organisation")
-                        .WithMany("Identifiers")
-                        .HasForeignKey("OrganisationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_identifiers_organisations_organisation_id");
-
-                    b.Navigation("Organisation");
-                });
-
             modelBuilder.Entity("CO.CDP.OrganisationInformation.Persistence.IdentifierSnapshot", b =>
                 {
                     b.HasOne("CO.CDP.OrganisationInformation.Persistence.Forms.SharedConsent", "SharedConsent")
@@ -2531,18 +2218,6 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                         .HasConstraintName("fk_identifiers_snapshot_shared_consents_shared_consent_id");
 
                     b.Navigation("SharedConsent");
-                });
-
-            modelBuilder.Entity("CO.CDP.OrganisationInformation.Persistence.MouEmailReminder", b =>
-                {
-                    b.HasOne("CO.CDP.OrganisationInformation.Persistence.Organisation", "Organisation")
-                        .WithMany()
-                        .HasForeignKey("OrganisationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_mou_email_reminders_organisations_organisation_id");
-
-                    b.Navigation("Organisation");
                 });
 
             modelBuilder.Entity("CO.CDP.OrganisationInformation.Persistence.MouSignature", b =>
@@ -2589,30 +2264,333 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                         .IsRequired()
                         .HasConstraintName("fk_organisations_tenants_tenant_id");
 
+                    b.OwnsOne("CO.CDP.OrganisationInformation.Persistence.Organisation+BuyerInformation", "BuyerInfo", b1 =>
+                        {
+                            b1.Property<int>("OrganisationId")
+                                .HasColumnType("integer")
+                                .HasColumnName("id");
+
+                            b1.Property<string>("BuyerType")
+                                .HasColumnType("text")
+                                .HasColumnName("buyer_type");
+
+                            b1.Property<DateTimeOffset>("CreatedOn")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("timestamp with time zone")
+                                .HasColumnName("created_on")
+                                .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                            b1.Property<int[]>("DevolvedRegulations")
+                                .IsRequired()
+                                .HasColumnType("integer[]")
+                                .HasColumnName("devolved_regulations");
+
+                            b1.Property<DateTimeOffset>("UpdatedOn")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("timestamp with time zone")
+                                .HasColumnName("updated_on")
+                                .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                            b1.HasKey("OrganisationId")
+                                .HasName("pk_buyer_information");
+
+                            b1.ToTable("buyer_information", (string)null);
+
+                            b1.WithOwner()
+                                .HasForeignKey("OrganisationId")
+                                .HasConstraintName("fk_buyer_information_organisations_id");
+                        });
+
+                    b.OwnsMany("CO.CDP.OrganisationInformation.Persistence.Organisation+ContactPoint", "ContactPoints", b1 =>
+                        {
+                            b1.Property<int>("Id")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("integer")
+                                .HasColumnName("id");
+
+                            NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b1.Property<int>("Id"));
+
+                            b1.Property<DateTimeOffset>("CreatedOn")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("timestamp with time zone")
+                                .HasColumnName("created_on")
+                                .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                            b1.Property<string>("Email")
+                                .HasColumnType("text")
+                                .HasColumnName("email");
+
+                            b1.Property<string>("Name")
+                                .HasColumnType("text")
+                                .HasColumnName("name");
+
+                            b1.Property<int>("OrganisationId")
+                                .HasColumnType("integer")
+                                .HasColumnName("organisation_id");
+
+                            b1.Property<string>("Telephone")
+                                .HasColumnType("text")
+                                .HasColumnName("telephone");
+
+                            b1.Property<DateTimeOffset>("UpdatedOn")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("timestamp with time zone")
+                                .HasColumnName("updated_on")
+                                .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                            b1.Property<string>("Url")
+                                .HasColumnType("text")
+                                .HasColumnName("url");
+
+                            b1.HasKey("Id")
+                                .HasName("pk_contact_points");
+
+                            b1.HasIndex("OrganisationId")
+                                .HasDatabaseName("ix_contact_points_organisation_id");
+
+                            b1.ToTable("contact_points", (string)null);
+
+                            b1.WithOwner()
+                                .HasForeignKey("OrganisationId")
+                                .HasConstraintName("fk_contact_points_organisations_organisation_id");
+                        });
+
+                    b.OwnsMany("CO.CDP.OrganisationInformation.Persistence.Organisation+Identifier", "Identifiers", b1 =>
+                        {
+                            b1.Property<int>("Id")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("integer")
+                                .HasColumnName("id");
+
+                            NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b1.Property<int>("Id"));
+
+                            b1.Property<DateTimeOffset>("CreatedOn")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("timestamp with time zone")
+                                .HasColumnName("created_on")
+                                .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                            b1.Property<string>("IdentifierId")
+                                .HasColumnType("text")
+                                .HasColumnName("identifier_id");
+
+                            b1.Property<string>("LegalName")
+                                .IsRequired()
+                                .HasColumnType("text")
+                                .HasColumnName("legal_name");
+
+                            b1.Property<int>("OrganisationId")
+                                .HasColumnType("integer")
+                                .HasColumnName("organisation_id");
+
+                            b1.Property<bool>("Primary")
+                                .HasColumnType("boolean")
+                                .HasColumnName("primary");
+
+                            b1.Property<string>("Scheme")
+                                .IsRequired()
+                                .HasColumnType("text")
+                                .HasColumnName("scheme");
+
+                            b1.Property<DateTimeOffset>("UpdatedOn")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("timestamp with time zone")
+                                .HasColumnName("updated_on")
+                                .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                            b1.Property<string>("Uri")
+                                .HasColumnType("text")
+                                .HasColumnName("uri");
+
+                            b1.HasKey("Id")
+                                .HasName("pk_identifiers");
+
+                            b1.HasIndex("OrganisationId")
+                                .HasDatabaseName("ix_identifiers_organisation_id");
+
+                            b1.ToTable("identifiers", (string)null);
+
+                            b1.WithOwner()
+                                .HasForeignKey("OrganisationId")
+                                .HasConstraintName("fk_identifiers_organisations_organisation_id");
+                        });
+
+                    b.OwnsMany("CO.CDP.OrganisationInformation.Persistence.Organisation+OrganisationAddress", "Addresses", b1 =>
+                        {
+                            b1.Property<int>("Id")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("integer")
+                                .HasColumnName("id");
+
+                            NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b1.Property<int>("Id"));
+
+                            b1.Property<int>("AddressId")
+                                .HasColumnType("integer")
+                                .HasColumnName("address_id");
+
+                            b1.Property<int>("OrganisationId")
+                                .HasColumnType("integer")
+                                .HasColumnName("organisation_id");
+
+                            b1.Property<int>("Type")
+                                .HasColumnType("integer")
+                                .HasColumnName("type");
+
+                            b1.HasKey("Id")
+                                .HasName("pk_organisation_address");
+
+                            b1.HasIndex("AddressId")
+                                .HasDatabaseName("ix_organisation_address_address_id");
+
+                            b1.HasIndex("OrganisationId")
+                                .HasDatabaseName("ix_organisation_address_organisation_id");
+
+                            b1.ToTable("organisation_address", (string)null);
+
+                            b1.HasOne("CO.CDP.OrganisationInformation.Persistence.Address", "Address")
+                                .WithMany()
+                                .HasForeignKey("AddressId")
+                                .OnDelete(DeleteBehavior.Cascade)
+                                .IsRequired()
+                                .HasConstraintName("fk_organisation_address_address_address_id");
+
+                            b1.WithOwner()
+                                .HasForeignKey("OrganisationId")
+                                .HasConstraintName("fk_organisation_address_organisations_organisation_id");
+
+                            b1.Navigation("Address");
+                        });
+
+                    b.OwnsOne("CO.CDP.OrganisationInformation.Persistence.Organisation+SupplierInformation", "SupplierInfo", b1 =>
+                        {
+                            b1.Property<int>("OrganisationId")
+                                .HasColumnType("integer")
+                                .HasColumnName("id");
+
+                            b1.Property<bool>("CompletedConnectedPerson")
+                                .HasColumnType("boolean")
+                                .HasColumnName("completed_connected_person");
+
+                            b1.Property<bool>("CompletedEmailAddress")
+                                .HasColumnType("boolean")
+                                .HasColumnName("completed_email_address");
+
+                            b1.Property<bool>("CompletedLegalForm")
+                                .HasColumnType("boolean")
+                                .HasColumnName("completed_legal_form");
+
+                            b1.Property<bool>("CompletedOperationType")
+                                .HasColumnType("boolean")
+                                .HasColumnName("completed_operation_type");
+
+                            b1.Property<bool>("CompletedPostalAddress")
+                                .HasColumnType("boolean")
+                                .HasColumnName("completed_postal_address");
+
+                            b1.Property<bool>("CompletedRegAddress")
+                                .HasColumnType("boolean")
+                                .HasColumnName("completed_reg_address");
+
+                            b1.Property<bool>("CompletedVat")
+                                .HasColumnType("boolean")
+                                .HasColumnName("completed_vat");
+
+                            b1.Property<bool>("CompletedWebsiteAddress")
+                                .HasColumnType("boolean")
+                                .HasColumnName("completed_website_address");
+
+                            b1.Property<DateTimeOffset>("CreatedOn")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("timestamp with time zone")
+                                .HasColumnName("created_on")
+                                .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                            b1.Property<int[]>("OperationTypes")
+                                .IsRequired()
+                                .HasColumnType("integer[]")
+                                .HasColumnName("operation_types");
+
+                            b1.Property<int?>("SupplierType")
+                                .HasColumnType("integer")
+                                .HasColumnName("supplier_type");
+
+                            b1.Property<DateTimeOffset>("UpdatedOn")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("timestamp with time zone")
+                                .HasColumnName("updated_on")
+                                .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                            b1.HasKey("OrganisationId")
+                                .HasName("pk_supplier_information");
+
+                            b1.ToTable("supplier_information", (string)null);
+
+                            b1.WithOwner()
+                                .HasForeignKey("OrganisationId")
+                                .HasConstraintName("fk_supplier_information_organisations_id");
+
+                            b1.OwnsOne("CO.CDP.OrganisationInformation.Persistence.Organisation+LegalForm", "LegalForm", b2 =>
+                                {
+                                    b2.Property<int>("SupplierInformationOrganisationId")
+                                        .HasColumnType("integer")
+                                        .HasColumnName("id");
+
+                                    b2.Property<DateTimeOffset>("CreatedOn")
+                                        .ValueGeneratedOnAdd()
+                                        .HasColumnType("timestamp with time zone")
+                                        .HasColumnName("created_on")
+                                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                                    b2.Property<string>("LawRegistered")
+                                        .IsRequired()
+                                        .HasColumnType("text")
+                                        .HasColumnName("law_registered");
+
+                                    b2.Property<string>("RegisteredLegalForm")
+                                        .IsRequired()
+                                        .HasColumnType("text")
+                                        .HasColumnName("registered_legal_form");
+
+                                    b2.Property<bool>("RegisteredUnderAct2006")
+                                        .HasColumnType("boolean")
+                                        .HasColumnName("registered_under_act2006");
+
+                                    b2.Property<DateTimeOffset>("RegistrationDate")
+                                        .HasColumnType("timestamp with time zone")
+                                        .HasColumnName("registration_date");
+
+                                    b2.Property<DateTimeOffset>("UpdatedOn")
+                                        .ValueGeneratedOnAdd()
+                                        .HasColumnType("timestamp with time zone")
+                                        .HasColumnName("updated_on")
+                                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                                    b2.HasKey("SupplierInformationOrganisationId")
+                                        .HasName("pk_legal_forms");
+
+                                    b2.ToTable("legal_forms", (string)null);
+
+                                    b2.WithOwner()
+                                        .HasForeignKey("SupplierInformationOrganisationId")
+                                        .HasConstraintName("fk_legal_forms_supplier_information_id");
+                                });
+
+                            b1.Navigation("LegalForm");
+                        });
+
+                    b.Navigation("Addresses");
+
+                    b.Navigation("BuyerInfo");
+
+                    b.Navigation("ContactPoints");
+
+                    b.Navigation("Identifiers");
+
                     b.Navigation("ReviewedBy");
 
+                    b.Navigation("SupplierInfo");
+
                     b.Navigation("Tenant");
-                });
-
-            modelBuilder.Entity("CO.CDP.OrganisationInformation.Persistence.OrganisationAddress", b =>
-                {
-                    b.HasOne("CO.CDP.OrganisationInformation.Persistence.Address", "Address")
-                        .WithMany()
-                        .HasForeignKey("AddressId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_organisation_address_address_address_id");
-
-                    b.HasOne("CO.CDP.OrganisationInformation.Persistence.Organisation", "Organisation")
-                        .WithMany("Addresses")
-                        .HasForeignKey("OrganisationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_organisation_address_organisations_organisation_id");
-
-                    b.Navigation("Address");
-
-                    b.Navigation("Organisation");
                 });
 
             modelBuilder.Entity("CO.CDP.OrganisationInformation.Persistence.OrganisationAddressSnapshot", b =>
@@ -2744,66 +2722,6 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                     b.Navigation("Person");
                 });
 
-            modelBuilder.Entity("CO.CDP.OrganisationInformation.Persistence.SupplierInformation", b =>
-                {
-                    b.HasOne("CO.CDP.OrganisationInformation.Persistence.Organisation", "Organisation")
-                        .WithOne("SupplierInfo")
-                        .HasForeignKey("CO.CDP.OrganisationInformation.Persistence.SupplierInformation", "Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_supplier_information_organisations_id");
-
-                    b.OwnsOne("CO.CDP.OrganisationInformation.Persistence.LegalForm", "LegalForm", b1 =>
-                        {
-                            b1.Property<int>("SupplierInformationId")
-                                .HasColumnType("integer")
-                                .HasColumnName("id");
-
-                            b1.Property<DateTimeOffset>("CreatedOn")
-                                .ValueGeneratedOnAdd()
-                                .HasColumnType("timestamp with time zone")
-                                .HasColumnName("created_on")
-                                .HasDefaultValueSql("CURRENT_TIMESTAMP");
-
-                            b1.Property<string>("LawRegistered")
-                                .IsRequired()
-                                .HasColumnType("text")
-                                .HasColumnName("law_registered");
-
-                            b1.Property<string>("RegisteredLegalForm")
-                                .IsRequired()
-                                .HasColumnType("text")
-                                .HasColumnName("registered_legal_form");
-
-                            b1.Property<bool>("RegisteredUnderAct2006")
-                                .HasColumnType("boolean")
-                                .HasColumnName("registered_under_act2006");
-
-                            b1.Property<DateTimeOffset>("RegistrationDate")
-                                .HasColumnType("timestamp with time zone")
-                                .HasColumnName("registration_date");
-
-                            b1.Property<DateTimeOffset>("UpdatedOn")
-                                .ValueGeneratedOnAdd()
-                                .HasColumnType("timestamp with time zone")
-                                .HasColumnName("updated_on")
-                                .HasDefaultValueSql("CURRENT_TIMESTAMP");
-
-                            b1.HasKey("SupplierInformationId")
-                                .HasName("pk_legal_forms");
-
-                            b1.ToTable("legal_forms", (string)null);
-
-                            b1.WithOwner()
-                                .HasForeignKey("SupplierInformationId")
-                                .HasConstraintName("fk_legal_forms_supplier_information_id");
-                        });
-
-                    b.Navigation("LegalForm");
-
-                    b.Navigation("Organisation");
-                });
-
             modelBuilder.Entity("CO.CDP.OrganisationInformation.Persistence.SupplierInformationSnapshot", b =>
                 {
                     b.HasOne("CO.CDP.OrganisationInformation.Persistence.Forms.SharedConsent", "SharedConsent")
@@ -2899,17 +2817,7 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
 
             modelBuilder.Entity("CO.CDP.OrganisationInformation.Persistence.Organisation", b =>
                 {
-                    b.Navigation("Addresses");
-
-                    b.Navigation("BuyerInfo");
-
-                    b.Navigation("ContactPoints");
-
-                    b.Navigation("Identifiers");
-
                     b.Navigation("OrganisationPersons");
-
-                    b.Navigation("SupplierInfo");
                 });
 
             modelBuilder.Entity("CO.CDP.OrganisationInformation.Persistence.Person", b =>

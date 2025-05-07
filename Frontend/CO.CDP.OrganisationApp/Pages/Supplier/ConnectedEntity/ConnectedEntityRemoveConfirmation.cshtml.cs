@@ -11,7 +11,8 @@ namespace CO.CDP.OrganisationApp.Pages.Supplier.ConnectedEntity;
 
 [Authorize(Policy = OrgScopeRequirement.Editor)]
 public class ConnectedEntityRemoveConfirmationModel(
-IOrganisationClient organisationClient) : PageModel
+    IFlashMessageService flashMessageService,
+    IOrganisationClient organisationClient) : PageModel
 {
     [BindProperty(SupportsGet = true)]
     public Guid Id { get; set; }
@@ -22,21 +23,6 @@ IOrganisationClient organisationClient) : PageModel
     [BindProperty]
     [Required(ErrorMessageResourceName = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityRemoveConfirmation_ConfirmRemoveError), ErrorMessageResourceType = typeof(StaticTextResource))]
     public bool? ConfirmRemove { get; set; }
-
-    [BindProperty]
-    [RequiredIf("ConfirmRemove", true, ErrorMessageResourceName = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityRemoveConfirmation_DayRequiredError), ErrorMessageResourceType = typeof(StaticTextResource))]
-    [RegularExpression(RegExPatterns.Day, ErrorMessageResourceName = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityRemoveConfirmation_DayInvalidError), ErrorMessageResourceType = typeof(StaticTextResource))]
-    public string? EndDay { get; set; }
-
-    [BindProperty]
-    [RequiredIf("ConfirmRemove", true, ErrorMessageResourceName = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityRemoveConfirmation_MonthRequiredError), ErrorMessageResourceType = typeof(StaticTextResource))]
-    [RegularExpression(RegExPatterns.Month, ErrorMessageResourceName = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityRemoveConfirmation_MonthInvalidError), ErrorMessageResourceType = typeof(StaticTextResource))]
-    public string? EndMonth { get; set; }
-
-    [BindProperty]
-    [RequiredIf("ConfirmRemove", true, ErrorMessageResourceName = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityRemoveConfirmation_YearRequiredError), ErrorMessageResourceType = typeof(StaticTextResource))]
-    [RegularExpression(RegExPatterns.Year, ErrorMessageResourceName = nameof(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityRemoveConfirmation_YearInvalidError), ErrorMessageResourceType = typeof(StaticTextResource))]
-    public string? EndYear { get; set; }
 
     [BindProperty]
     public string? EndDate { get; set; }
@@ -63,18 +49,34 @@ IOrganisationClient organisationClient) : PageModel
             if (ce == null)
                 return Redirect("/page-not-found");
 
-            var dateString = $"{EndYear}-{EndMonth!.PadLeft(2, '0')}-{EndDay!.PadLeft(2, '0')}";
-
-            if (!DateTime.TryParse(dateString, out var endDate))
+            if (!await DeleteConnectedEntityAsync())
             {
-                ModelState.AddModelError(nameof(EndDate), StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityRemoveConfirmation_DateInvalidError);
                 return Page();
             }
-            endDate = endDate.AddHours(23).AddMinutes(59).AddSeconds(59).ToUniversalTime();
-            await organisationClient.DeleteConnectedEntityAsync(Id, ConnectedPersonId, new DeleteConnectedEntity(endDate));
         }
 
         return RedirectToPage("ConnectedPersonSummary", new { Id });
+    }
+
+    private async Task<bool> DeleteConnectedEntityAsync()
+    {
+        DeleteConnectedEntityResult result = await organisationClient.DeleteConnectedEntityAsync(Id, ConnectedPersonId);
+
+        if (!result.Success)
+        {
+            flashMessageService.SetFlashMessage
+            (
+                FlashMessageType.Important,
+                    heading: StaticTextResource.ErrorMessageList_ConnectedPersons_Cannot_Remove,
+                    urlParameters: new() {
+                        { "organisationIdentifier", Id.ToString() },
+                        { "formId", result.FormGuid.ToString() },
+                        { "sectionId", result.SectionGuid.ToString() }
+                    }
+            );
+        }
+
+        return result.Success;
     }
 
     private async Task<CO.CDP.Organisation.WebApiClient.ConnectedEntityLookup?> GetConnectedEntity(IOrganisationClient organisationClient)
