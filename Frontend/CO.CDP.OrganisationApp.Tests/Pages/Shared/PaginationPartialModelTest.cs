@@ -55,6 +55,22 @@ public class PaginationPartialModelTests
     }
 
     [Fact]
+    public void GetPageUrlWhenUrlAlreadyHaveQuerystring_ReturnsCorrectUrl()
+    {
+        var model = new PaginationPartialModel
+        {
+            TotalItems = 100,
+            PageSize = 10,
+            CurrentPage = 1,
+            Url = "/test?q=hello"
+        };
+
+        var pageUrl = model.GetPageUrl(2);
+
+        pageUrl.Should().Be("/test?q=hello&pageNumber=2&pageSize=10");
+    }
+
+    [Fact]
     public void Model_WithAllRequiredProperties_ShouldPassValidation()
     {
         var model = new PaginationPartialModel
