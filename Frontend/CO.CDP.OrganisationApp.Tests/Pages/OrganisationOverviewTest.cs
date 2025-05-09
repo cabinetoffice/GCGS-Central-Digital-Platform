@@ -139,6 +139,20 @@ public class OrganisationOverviewTest
         _model.HasBuyerSignedMou.Should().BeFalse();
     }
 
+    [Fact]
+    public async Task OnGet_AsBuyer_ShouldDisplayViewAdminsForBuyer()
+    {
+        // UserSummary_ViewAdmins_Buyer
+        var id = Guid.NewGuid();
+        _model.Id = id;
+        _organisationClientMock.Setup(o => o.GetOrganisationAsync(id))
+            .ReturnsAsync(GivenOrganisationClientModel(id));
+
+        var result = await _model.OnGet();
+
+
+    }
+
     private static CO.CDP.Organisation.WebApiClient.Organisation GivenOrganisationClientModel(Guid? id, ICollection<PartyRole>? pendingRoles = null)
     {
         return new CO.CDP.Organisation.WebApiClient.Organisation(
