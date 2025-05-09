@@ -66,6 +66,8 @@ public class AuthorizationTests
                 ]
             );
 
+        OrganisationClient.Setup(client => client.GetAnnouncementsAsync(It.IsAny<string>()))
+            .ReturnsAsync(new List<Organisation.WebApiClient.Announcement>());
 
         OrganisationClient.Setup(client => client.GetOrganisationPersonInvitesAsync(It.IsAny<Guid>()))
             .ReturnsAsync(
