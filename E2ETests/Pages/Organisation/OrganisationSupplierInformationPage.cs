@@ -103,5 +103,20 @@ namespace E2ETests.Pages
             Console.WriteLine($"✅ Connected persons count verified: {actualText}");
         }
 
+        public async Task AssertQualificationCount(int expectedCount)
+        {
+            string expectedText = $"{expectedCount} added";
+            string selector = "#form-section-798cf1c1-40be-4e49-9adb-252219d5599d-status strong";
+
+            await _page.WaitForSelectorAsync(selector);
+            string actualText = await _page.InnerTextAsync(selector);
+
+            if (actualText.Trim() != expectedText)
+            {
+                throw new System.Exception($"❌ Expected '{expectedText}' but found '{actualText}'");
+            }
+
+            Console.WriteLine($"✅ Connected persons count verified: {actualText}");
+        }
     }
 }
