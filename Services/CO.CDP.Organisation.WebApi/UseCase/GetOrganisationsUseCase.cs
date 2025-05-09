@@ -5,14 +5,14 @@ using CO.CDP.OrganisationInformation.Persistence;
 
 namespace CO.CDP.Organisation.WebApi.UseCase;
 public class GetOrganisationsUseCase(IOrganisationRepository organisationRepository)
-    : IUseCase<PaginatedOrganisationQuery, IEnumerable<OrganisationDto>>
+    : IUseCase<PaginatedOrganisationQuery, Tuple<IEnumerable<OrganisationDto>, int>>
 {
-    public async Task<IEnumerable<OrganisationDto>> Execute(PaginatedOrganisationQuery command)
+    public async Task<Tuple<IEnumerable<OrganisationDto>, int>> Execute(PaginatedOrganisationQuery command)
     {
         var organisations = await organisationRepository
             .GetPaginated(command.Role, command.PendingRole, command.SearchText, command.Limit, command.Skip);
 
-        return organisations.Select(o => new OrganisationDto()
+        return new Tuple<IEnumerable<OrganisationDto>, int>(organisations.Item1.Select(o => new OrganisationDto()
         {
             Id = o.Guid,
             Name = o.Name,
@@ -25,7 +25,7 @@ public class GetOrganisationsUseCase(IOrganisationRepository organisationReposit
             Identifiers = o.Identifiers?.Split(", ").ToList() ?? new List<string>(),
             ContactPoints = o.ContactPoints?.Split(", ").ToList() ?? new List<string>(),
             AdminEmail = o.AdminEmail
-        }).ToList();
+        }).ToList(), organisations.Item2);
     }
 
 }
