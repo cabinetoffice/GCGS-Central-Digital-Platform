@@ -177,6 +177,41 @@ public class OrganisationNameSearchModelTests
     }
 
     [Fact]
+    public async Task OnPost_WhenApiReturnsMultipleResultsAndUserSelectsRequestToJoin_ShouldRedirectToJoinOrganisationPage()
+    {
+        RegistrationDetails registrationDetails = GivenRegistrationDetails("Test org", Constants.OrganisationType.Buyer);
+        _sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(registrationDetails);
+
+        _organisationClientMock
+            .Setup(client => client.LookupOrganisationAsync("Test org", String.Empty))
+            .ThrowsAsync(new ApiException(string.Empty, (int)HttpStatusCode.NotFound, string.Empty, null, null));
+
+        var matchingOrganisations = new List<OrganisationSearchResult>
+        {
+            GivenOrganisationSearchResult("Test org 1"),
+            GivenOrganisationSearchResult("Test org 2")
+        };
+
+        _organisationClientMock
+            .Setup(client => client.SearchOrganisationAsync("Test org", "Buyer", 10, 0.3))
+            .ReturnsAsync(matchingOrganisations);
+
+        var model = GivenOrganisationNameSearchModel();
+
+        model.RequestToJoinOrganisationName = "Test org 1";
+        model.OrganisationIdentifier = Guid.NewGuid().ToString();
+
+        var result = await model.OnPost();
+
+        result.Should().BeOfType<RedirectToPageResult>();
+
+        var redirectResult = (RedirectToPageResult)result;
+        redirectResult.PageName.Should().Be("JoinOrganisation");
+        redirectResult.RouteValues.Should().ContainSingle();
+        redirectResult.RouteValues?["id"].Should().Be(model.OrganisationIdentifier.ToString());
+    }
+
+    [Fact]
     public async Task OnPost_WhenRedirectToSummaryIsTrue_ShouldRedirectToOrganisationDetailsSummary()
     {
         var model = GivenOrganisationNameSearchModel();
