@@ -35,7 +35,10 @@ public class FormsAnswerSetRemoveConfirmationModelTest
                      removeConfirmationHeading: "Test confimration heading",
                      singularSummaryHeading: null,
                      furtherQuestionsExemptedHeading: null,
-                     furtherQuestionsExemptedHint: null)),
+                     furtherQuestionsExemptedHint: null,
+                     pluralSummaryHeadingHintFormat: null,
+                     singularSummaryHeadingHint: null,
+                     summaryRenderFormatter:null)),
              questions: [],
              answerSets: [new FormAnswerSet(id: _pageModel.AnswerSetId, answers: [], furtherQuestionsExempted: false)]
              ));

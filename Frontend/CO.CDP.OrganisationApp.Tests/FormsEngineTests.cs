@@ -46,13 +46,16 @@ public class FormsEngineTests
                 allowsMultipleAnswerSets: true,
                 checkFurtherQuestionsExempted: false,
                 configuration: new WebApiClient.FormSectionConfiguration(
-                    singularSummaryHeading: null,
-                    pluralSummaryHeadingFormat: null,
                     addAnotherAnswerLabel: null,
+                    furtherQuestionsExemptedHeading: null,
+                    furtherQuestionsExemptedHint: null,
+                    pluralSummaryHeadingFormat: null,
+                    pluralSummaryHeadingHintFormat: null,
                     removeConfirmationCaption: null,
                     removeConfirmationHeading: null,
-                    furtherQuestionsExemptedHeading: null,
-                    furtherQuestionsExemptedHint: null
+                    singularSummaryHeading: null,
+                    singularSummaryHeadingHint: null,
+                    summaryRenderFormatter: null
                 ),
                 id: sectionId,
                 title: "SectionTitle"
@@ -69,6 +72,7 @@ public class FormsEngineTests
                         isRequired: true,
                         nextQuestion: nextQuestionId,
                         nextQuestionAlternative: null,
+                        name: "Question1",
                         options: new WebApiClient.FormQuestionOptions(
                             choiceProviderStrategy: choiceProviderStrategy,
                             answerFieldName: answerFieldName,

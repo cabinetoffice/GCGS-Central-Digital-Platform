@@ -1,11 +1,11 @@
 using CO.CDP.Forms.WebApiClient;
+using CO.CDP.Localization;
 using CO.CDP.OrganisationApp.Constants;
-using CO.CDP.OrganisationApp.Extensions;
+using CO.CDP.OrganisationApp.Pages.Forms.AnswerSummaryStrategies;
 using CO.CDP.OrganisationApp.Pages.Forms.ChoiceProviderStrategies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using CO.CDP.Localization;
 
 namespace CO.CDP.OrganisationApp.Pages.Forms;
 
@@ -14,7 +14,8 @@ public class FormsAnswerSetSummaryModel(
     IFormsClient formsClient,
     IFormsEngine formsEngine,
     ITempDataService tempDataService,
-    IChoiceProviderService choiceProviderService) : PageModel
+    IChoiceProviderService choiceProviderService,
+    EvaluatorFactory evaluatorFactory) : PageModel
 {
     [BindProperty(SupportsGet = true)]
     public Guid OrganisationId { get; set; }
@@ -31,7 +32,7 @@ public class FormsAnswerSetSummaryModel(
     public List<(Guid answerSetId, IEnumerable<AnswerSummary> answers)> FormAnswerSets { get; set; } = [];
 
     public string? Heading { get; set; }
-
+    public string? HeadingHint { get; set; }
     public string? AddAnotherAnswerLabel { get; set; }
 
     public bool AllowsMultipleAnswerSets { get; set; }
@@ -162,10 +163,11 @@ public class FormsAnswerSetSummaryModel(
         {
             FormAnswerSets = await GetAnswers(form);
             Heading = form.Section.Configuration.SingularSummaryHeading;
-
+            HeadingHint = form.Section.Configuration.SingularSummaryHeadingHint;
             if (FormAnswerSets.Count != 1 && form.Section.Configuration.PluralSummaryHeadingFormat != null)
             {
                 Heading = string.Format(form.Section.Configuration.PluralSummaryHeadingFormat, FormAnswerSets.Count);
+                HeadingHint = string.Format(form.Section.Configuration.PluralSummaryHeadingHintFormat, FormAnswerSets.Count);
             }
         }
         return true;
@@ -173,67 +175,20 @@ public class FormsAnswerSetSummaryModel(
 
     private async Task<List<(Guid answerSetId, IEnumerable<AnswerSummary> answers)>> GetAnswers(SectionQuestionsResponse form)
     {
-        List<(Guid answerSetId, IEnumerable<AnswerSummary> answers)> summaryList = [];
+        var summaryList = new List<(Guid answerSetId, IEnumerable<AnswerSummary> answers)>();
 
         foreach (var answerSet in form.AnswerSets)
         {
-            List<AnswerSummary> answerSummaries = [];
-            foreach (FormAnswer answer in answerSet.Answers)
-            {
-                var question = form.Questions.FirstOrDefault(q => q.Id == answer.QuestionId);
-                if (question != null && question.Type != FormQuestionType.NoInput && question.Type != FormQuestionType.CheckYourAnswers)
-                {
-                    answerSummaries.Add(new AnswerSummary
-                    {
-                        Title = question.SummaryTitle ?? question.Title,
-                        Answer = await GetAnswerString(answer, question)
-                    });
-                }
-            }
+            IAnswerSummaryStrategy strategy = form.Section.Configuration.SummaryRenderFormatter != null
+                ? new FormatterAnswerSummaryStrategy(evaluatorFactory, choiceProviderService)
+                : new DefaultAnswerSummaryStrategy(choiceProviderService);
+
+            var context = new AnswerSummaryContext(strategy);
+            var answerSummaries = await context.GetAnswerSummaries(form, answerSet);
 
             summaryList.Add((answerSet.Id, answerSummaries));
         }
 
         return summaryList;
-    }
-
-    private async Task<string> GetAnswerString(FormAnswer answer, FormQuestion question)
-    {
-        async Task<string> singleChoiceString(FormAnswer a)
-        {
-            var choiceProviderStrategy = choiceProviderService.GetStrategy(question.Options.ChoiceProviderStrategy);
-            return await choiceProviderStrategy.RenderOption(a) ?? "";
-        }
-
-        string boolAnswerString = answer.BoolValue.HasValue == true ? (answer.BoolValue == true ? StaticTextResource.Global_Yes : StaticTextResource.Global_No) : "";
-
-        string answerString = question.Type switch
-        {
-            FormQuestionType.Text => answer.TextValue ?? "",
-            FormQuestionType.FileUpload => answer.TextValue ?? "",
-            FormQuestionType.SingleChoice => await singleChoiceString(answer),
-            FormQuestionType.Date => answer.DateValue.HasValue ? answer.DateValue.Value.ToFormattedString() : "",
-            FormQuestionType.CheckBox => answer.BoolValue.HasValue ? question.Options.Choices?.FirstOrDefault()?.Title ?? "" : "",
-            FormQuestionType.Address => answer.AddressValue != null ? $"{answer.AddressValue.StreetAddress}, {answer.AddressValue.Locality}, {answer.AddressValue.PostalCode}, {answer.AddressValue.CountryName}" : "",
-            FormQuestionType.MultiLine => answer.TextValue ?? "",
-            FormQuestionType.GroupedSingleChoice => GroupedSingleChoiceAnswerString(answer, question),
-            FormQuestionType.Url => answer.TextValue ?? "",
-            _ => ""
-        };
-
-        string[] answers = [boolAnswerString, answerString];
-
-        return string.Join(", ", answers.Where(s => !string.IsNullOrWhiteSpace(s)));
-    }
-
-    private static string GroupedSingleChoiceAnswerString(FormAnswer? answer, FormQuestion question)
-    {
-        if (answer?.OptionValue == null) return "";
-
-        var choices = question.Options.Groups.SelectMany(g => g.Choices);
-
-        var choiceOption = choices.FirstOrDefault(c => c.Value == answer.OptionValue);
-
-        return (choiceOption == null ? answer.OptionValue : choiceOption.Title) ?? "";
     }
 }

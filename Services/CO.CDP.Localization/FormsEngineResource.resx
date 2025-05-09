@@ -135,6 +135,12 @@
   <data name="FinancialInformation_01_Title" xml:space="preserve">
     <value>What is the financial year end date for the information you uploaded?</value>
   </data>
+  <data name="FinancialInformation_SummaryList_Key" xml:space="preserve">
+    <value>{0} == {1} ? Unaudited accounts : Audited accounts</value>
+  </data>
+  <data name="FinancialInformation_SummaryList_Value" xml:space="preserve">
+    <value>Year ending {0:dd MMMM yyyy}</value>
+  </data>
   <data name="FinancialInformation_01_SummaryTitle" xml:space="preserve">
     <value>Date of financial year end</value>
   </data>
@@ -166,13 +172,19 @@
     <value>Add another file?</value>
   </data>
   <data name="FinancialInformation_Configuration_SingularSummaryHeading" xml:space="preserve">
-    <value>You have added 1 file</value>
+    <value>1 added</value>
+  </data>
+  <data name="FinancialInformation_Configuration_SingularSummaryHeadingHint" xml:space="preserve">
+    <value>Financial information</value>
   </data>
   <data name="FinancialInformation_Configuration_RemoveConfirmationHeading" xml:space="preserve">
     <value>Are you sure you want to remove this file?</value>
   </data>
   <data name="FinancialInformation_Configuration_PluralSummaryHeadingFormat" xml:space="preserve">
-    <value>You have added {0} files</value>
+    <value>{0} added</value>
+  </data>
+  <data name="FinancialInformation_Configuration_PluralSummaryHeadingHintFormat" xml:space="preserve">
+    <value>Financial information</value>
   </data>
   <data name="Qualifications_01_SummaryTitle" xml:space="preserve">
     <value>Qualification name</value>
@@ -185,6 +197,9 @@
   </data>
   <data name="Qualifications_02_SummaryTitle" xml:space="preserve">
     <value>Awarded by</value>
+  </data>
+  <data name="Qualifications_02_SummaryValue" xml:space="preserve">
+    <value>Awarded on {0:dd MMMM yyyy}</value>
   </data>
   <data name="Qualifications_02_Title" xml:space="preserve">
     <value>Who awarded the qualification?</value>
@@ -205,13 +220,19 @@
     <value>Add another qualification?</value>
   </data>
   <data name="Qualifications_Configuration_SingularSummaryHeading" xml:space="preserve">
-    <value>You have added 1 qualification</value>
+    <value>1 added</value>
+  </data>
+  <data name="Qualifications_Configuration_SingularSummaryHeadingHint" xml:space="preserve">
+    <value>Qualifications</value>
   </data>
   <data name="Qualifications_Configuration_RemoveConfirmationHeading" xml:space="preserve">
     <value>Are you sure you want to remove this qualification?</value>
   </data>
   <data name="Qualifications_Configuration_PluralSummaryHeadingFormat" xml:space="preserve">
-    <value>You have added {0} qualifications</value>
+    <value>{0} added</value>
+  </data>
+  <data name="Qualifications_Configuration_PluralSummaryHeadingHintFormat" xml:space="preserve">
+    <value>Qualifications</value>
   </data>
   <data name="Qualifications_Configuration_FurtherQuestionsExemptedHint" xml:space="preserve">
     <value>These are general qualifications for business and trade, not procurement specific. Adding them will provide evidence of your suitability to contracting authorities and support any bids you submit. For example, ISO certification.</value>
@@ -409,13 +430,19 @@
     <value>Add another exclusion?</value>
   </data>
   <data name="Exclusions_Configuration_SingularSummaryHeading" xml:space="preserve">
-    <value>You have added 1 exclusion</value>
+    <value>1 added</value>
+  </data>
+  <data name="Exclusions_Configuration_SingularSummaryHeadingHint" xml:space="preserve">
+    <value>Exclusions</value>
   </data>
   <data name="Exclusions_Configuration_RemoveConfirmationHeading" xml:space="preserve">
     <value>Are you sure you want to remove this exclusion?</value>
   </data>
   <data name="Exclusions_Configuration_PluralSummaryHeadingFormat" xml:space="preserve">
-    <value>You have added {0} exclusions</value>
+    <value>{0} added</value>
+  </data>
+  <data name="Exclusions_Configuration_PluralSummaryHeadingHintFormat" xml:space="preserve">
+    <value>Exclusions</value>
   </data>
   <data name="Exclusions_Configuration_FurtherQuestionsExemptedHeading" xml:space="preserve">
     <value>Do you have any exclusions to add for your organisation or a connected person?</value>
@@ -428,6 +455,9 @@
   </data>
   <data name="TradeAssurance_01_SummaryTitle" xml:space="preserve">
     <value>Awarded by</value>
+  </data>
+  <data name="TradeAssurance_01_SummaryValue" xml:space="preserve">
+    <value>Awarded on {0:dd MMMM yyyy}</value>
   </data>
   <data name="TradeAssurance_02_Title" xml:space="preserve">
     <value>Do you know the reference number?</value>
@@ -445,13 +475,19 @@
     <value>Add another trade assurance?</value>
   </data>
   <data name="TradeAssurances_Configuration_SingularSummaryHeading" xml:space="preserve">
-    <value>You have added 1 trade assurance</value>
+    <value>1 added</value>
+  </data>
+  <data name="TradeAssurances_Configuration_SingularSummaryHeadingHint" xml:space="preserve">
+    <value>Trade assurances</value>
   </data>
   <data name="TradeAssurances_Configuration_RemoveConfirmationHeading" xml:space="preserve">
     <value>Are you sure you want to remove this trade assurance?</value>
   </data>
   <data name="TradeAssurances_Configuration_PluralSummaryHeadingFormat" xml:space="preserve">
-    <value>You have added {0} trade assurances</value>
+    <value>{0} added</value>
+  </data>
+  <data name="TradeAssurances_Configuration_PluralSummaryHeadingHintFormat" xml:space="preserve">
+    <value>Trade assurances</value>
   </data>
   <data name="TradeAssurances_Configuration_FurtherQuestionsExemptedHint" xml:space="preserve">
     <value>These are trade assurances for business and trade, not procurement specific. Adding them will provide confidence to contracting authorities and support any bids you submit. For example, Red Tractor Assurance covers food safety, traceability, animal welfare and environmental protection.</value>

@@ -162,7 +162,10 @@ public class FormsLandingPageTests
                     removeConfirmationCaption: null,
                     removeConfirmationHeading: null,
                     furtherQuestionsExemptedHeading: null,
-                    furtherQuestionsExemptedHint: null
+                    furtherQuestionsExemptedHint: null,
+                    pluralSummaryHeadingHintFormat: null,
+                    singularSummaryHeadingHint: null,
+                    summaryRenderFormatter: null
                 ),
                 id: sectionId,
                 title: "SectionTitle"
@@ -179,7 +182,8 @@ public class FormsLandingPageTests
                     isRequired: true,
                     nextQuestion: Guid.NewGuid(),
                     nextQuestionAlternative: null,
-                    options: null
+                    options: null,
+                    name: "Question1"
                 )
             ],
             answerSets: []
