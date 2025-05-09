@@ -1,7 +1,3 @@
-import {
-  id = "Z04057483Q7XT55RB4P27"
-  to = aws_route53_zone.public
-}
 resource "aws_route53_zone" "public" {
 
   name = var.product.public_hosted_zone
@@ -39,3 +35,34 @@ resource "aws_route53_record" "development_delegation"{
   ]
 }
 
+resource "aws_route53_record" "staging_delegation"{
+  count = var.is_production ? 1 : 0
+
+  name    = "staging.${aws_route53_zone.public.name}"
+  type    = "NS"
+  ttl     = 300
+  zone_id = aws_route53_zone.public.id
+
+  records = [
+    "ns-1329.awsdns-38.org.",
+    "ns-1871.awsdns-41.co.uk.",
+    "ns-482.awsdns-60.com.",
+    "ns-613.awsdns-12.net.",
+  ]
+}
+
+resource "aws_route53_record" "integration_delegation"{
+  count = var.is_production ? 1 : 0
+
+  name    = "integration.${aws_route53_zone.public.name}"
+  type    = "NS"
+  ttl     = 300
+  zone_id = aws_route53_zone.public.id
+
+  records = [
+    "ns-1067.awsdns-05.org.",
+    "ns-559.awsdns-05.net.",
+    "ns-57.awsdns-07.com.",
+    "ns-1636.awsdns-12.co.uk.",
+  ]
+}
