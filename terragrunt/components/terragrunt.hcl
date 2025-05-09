@@ -93,7 +93,7 @@ locals {
         "10.${local.cidr_b_staging}.3.0/24"
       ]
       redis_node_type  = "cache.t3.medium"
-      top_level_domain = "supplier.information.findatender.codatt.net"
+      top_level_domain = "supplier-information.find-tender.service.gov.uk"
 
       externals_cidr_block      = "integration account feature" # To be deprecated after FTS Migration
       externals_private_subnets = "integration account feature" # To be deprecated after FTS Migration
@@ -157,7 +157,7 @@ locals {
         "10.${local.cidr_b_integration}.3.0/24"
       ]
       redis_node_type  = "cache.t3.medium"
-      top_level_domain = "supplier.information.findatender.codatt.net"
+      top_level_domain = "supplier-information.find-tender.service.gov.uk"
 
       externals_cidr_block      = "10.${local.cidr_b_external_integration}.0.0/16"
       externals_private_subnets = [
