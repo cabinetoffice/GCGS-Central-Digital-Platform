@@ -55,6 +55,9 @@ public class LegalFormSelectOrganisationModel(
 
     public IActionResult OnPost()
     {
+        var ta = tempDataService.PeekOrDefault<LegalForm>(LegalForm.TempDataKey);
+        RegisteredUnderAct2006 = ta.RegisteredUnderAct2006;
+
         if (!ModelState.IsValid)
         {
             return Page();
@@ -66,8 +69,8 @@ public class LegalFormSelectOrganisationModel(
         }
 
         var redirectPage = string.Empty;
-        var ta = tempDataService.PeekOrDefault<LegalForm>(LegalForm.TempDataKey);
         ta.RegisteredLegalForm = RegisteredOrg;
+        RegisteredOrg = ta.RegisteredLegalForm;
 
         if ((string.IsNullOrEmpty(OtherLegalForm)) && (OrganisationLegalForm.ContainsKey(RegisteredOrg!)))
         {
@@ -80,7 +83,7 @@ public class LegalFormSelectOrganisationModel(
             ta.LawRegistered = (ta.LawRegistered != null && ta.LawRegistered != "Companies Act 2006") ? ta.LawRegistered: null;
             redirectPage = "LegalFormLawRegistered";
         }
-        
+
         tempDataService.Put(LegalForm.TempDataKey, ta);
 
         return RedirectToPage(redirectPage, new { Id });

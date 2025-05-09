@@ -73,6 +73,12 @@ public class LegalFormSelectOrganisationModelTests
     [Fact]
     public void OnPost_ReturnsPage_WhenModelStateIsInvalid()
     {
+        var legalForm = new LegalForm
+        {
+            RegisteredLegalForm = "LimitedCompany"
+        };
+
+        _mockTempDataService.Setup(s => s.PeekOrDefault<LegalForm>(LegalForm.TempDataKey)).Returns(legalForm);
 
         _model.ModelState.AddModelError("RegisteredOrg", "Required");
 
