@@ -174,7 +174,7 @@ locals {
       fts_service_allowed_origins       = []
       name                              = "production"
       onelogin_logout_notification_urls = ["https://www.find-tender.service.gov.uk/auth/backchannellogout"]
-      pinned_service_version            = "1.0.59"
+      pinned_service_version            = "1.0.62"
       postgres_instance_type            = "db.t4g.micro"
       postgres_aurora_instance_type     = "db.r5.8xlarge"
       postgres_aurora_instance_type_ev  = "db.r5.4xlarge"
