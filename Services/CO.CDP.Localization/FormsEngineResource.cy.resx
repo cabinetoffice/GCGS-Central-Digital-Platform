@@ -324,14 +324,8 @@
   <data name="Exclusions_Configuration_FurtherQuestionsExemptedHeading" xml:space="preserve">
     <value>A oes gennych unrhyw waharddiadau i'w hychwanegu ar gyfer eich sefydliad neu unigolyn cysylltiedig?</value>
   </data>
-  <data name="Exclusions_Configuration_PluralSummaryHeadingFormat" xml:space="preserve">
-    <value>Rydych wedi ychwanegu {0} gwaharddiad</value>
-  </data>
   <data name="Exclusions_Configuration_RemoveConfirmationHeading" xml:space="preserve">
     <value>Ydych chi’n si?r eich bod am ddileu’r gwaharddiad hwn?</value>
-  </data>
-  <data name="Exclusions_Configuration_SingularSummaryHeading" xml:space="preserve">
-    <value>Rydych wedi ychwanegu 1 gwaharddiad</value>
   </data>
   <data name="FinancialInformation_01_SummaryTitle" xml:space="preserve">
     <value>Dyddiad diwedd y flwyddyn ariannol</value>
@@ -362,16 +356,10 @@
   </data>
   <data name="FinancialInformation_Configuration_AddAnotherAnswerLabel" xml:space="preserve">
     <value>Ychwanegu ffeil arall?</value>
-  </data>
-  <data name="FinancialInformation_Configuration_PluralSummaryHeadingFormat" xml:space="preserve">
-    <value>Rydych wedi ychwanegu {0} ffeil</value>
-  </data>
+  </data>  
   <data name="FinancialInformation_Configuration_RemoveConfirmationHeading" xml:space="preserve">
     <value>Ydych chi’n si?r eich bod am ddileu’r ffeil hon?</value>
-  </data>
-  <data name="FinancialInformation_Configuration_SingularSummaryHeading" xml:space="preserve">
-    <value>Rydych wedi ychwanegu 1 ffeil</value>
-  </data>
+  </data>  
   <data name="Global_CheckYourAnswers" xml:space="preserve">
     <value>Gwiriwch eich atebion</value>
   </data>
@@ -408,14 +396,8 @@
   <data name="Qualifications_Configuration_FurtherQuestionsExemptedHint" xml:space="preserve">
     <value>Cymwysterau cyffredinol ar gyfer busnes a masnach yw'r rhain, nid caffael yn benodol. Drwy eu hychwanegu, byddwch yn rhoi tystiolaeth o'ch addasrwydd i awdurdodau contractio ac yn cefnogi unrhyw gynigion y byddwch yn eu cyflwyno. Er enghraifft, ardystiad ISO. </value>
   </data>
-  <data name="Qualifications_Configuration_PluralSummaryHeadingFormat" xml:space="preserve">
-    <value>Rydych wedi ychwanegu {0} cymhwyster</value>
-  </data>
   <data name="Qualifications_Configuration_RemoveConfirmationHeading" xml:space="preserve">
     <value>Ydych chi’n si?r eich bod am ddileu’r cymhwyster hwn?</value>
-  </data>
-  <data name="Qualifications_Configuration_SingularSummaryHeading" xml:space="preserve">
-    <value>Rydych wedi ychwanegu 1 cymhwyster</value>
   </data>
   <data name="TradeAssurance_01_Description" xml:space="preserve">
     <value>&lt;div class="govuk-hint"&gt;Rhowch enw'r person neu gorff. Gallwch ychwanegu un arall ar y diwedd os bydd angen. Er enghraifft, Cynllun Sicrwydd y Tractor Coch neu Quality Meat Scotland (QMS) Assurance.&lt;/div&gt;</value>
@@ -450,14 +432,8 @@
   <data name="TradeAssurances_Configuration_FurtherQuestionsExemptedHint" xml:space="preserve">
     <value>Sicrwydd masnach ar gyfer busnes a masnach yw'r rhain, nid caffael yn benodol. Drwy eu hychwanegu, byddwch yn rhoi hyder i awdurdodau contractio ac yn cefnogi unrhyw gynigion y byddwch yn eu cyflwyno. Er enghraifft, mae Cynllun Sicrwydd y Tractor Coch yn cwmpasu diogelwch bwyd, olrhain, lles anifeiliaid a diogelwch amgylcheddol.</value>
   </data>
-  <data name="TradeAssurances_Configuration_PluralSummaryHeadingFormat" xml:space="preserve">
-    <value>Rydych wedi ychwanegu {0} sicrwydd masnach</value>
-  </data>
   <data name="TradeAssurances_Configuration_RemoveConfirmationHeading" xml:space="preserve">
     <value>Ydych chi’n si?r eich bod am ddileu’r sicrwydd masnach hwn?</value>
-  </data>
-  <data name="TradeAssurances_Configuration_SingularSummaryHeading" xml:space="preserve">
-    <value>Rydych wedi ychwanegu 1 sicrwydd masnach</value>
   </data>
   <data name="Global_Enter_Your_Email_Address" xml:space="preserve">
     <value>Rhowch eich cyfeiriad e-bost</value>

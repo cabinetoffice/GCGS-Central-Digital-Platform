@@ -126,7 +126,8 @@ public class GetFormSectionQuestionsTest
                         Description = "You will need to upload accounts or statements for your 2 most recent financial years. If you do not have 2 years, you can upload your most recent financial year. You will need to enter the financial year end date for the information you upload.",
                         Type = FormQuestionType.NoInput,
                         IsRequired = true,
-                        Options = new FormQuestionOptions()
+                        Options = new FormQuestionOptions(),
+                        Name = "FinancialInformation1"
                     },
                     new FormQuestion
                     {
@@ -135,7 +136,8 @@ public class GetFormSectionQuestionsTest
                         Title = "Were your accounts audited?",
                         Type = FormQuestionType.YesOrNo,
                         IsRequired = true,
-                        Options = new FormQuestionOptions()
+                        Options = new FormQuestionOptions(),
+                        Name = "FinancialInformation2"
                     },
                     new FormQuestion
                     {
@@ -145,7 +147,8 @@ public class GetFormSectionQuestionsTest
                         Description = "Upload your most recent 2 financial years. If you do not have 2, upload your most recent financial year.",
                         Type = FormQuestionType.FileUpload,
                         IsRequired = true,
-                        Options = new FormQuestionOptions()
+                        Options = new FormQuestionOptions(),
+                        Name = "FinancialInformation3"
                     },
                     new FormQuestion
                     {
@@ -154,7 +157,8 @@ public class GetFormSectionQuestionsTest
                         Title = "What is the financial year end date for the information you uploaded?",
                         Type = FormQuestionType.Date,
                         IsRequired = true,
-                        Options = new FormQuestionOptions()
+                        Options = new FormQuestionOptions(),
+                        Name = "FinancialInformation4"
                     },
                     new FormQuestion
                     {
@@ -163,7 +167,8 @@ public class GetFormSectionQuestionsTest
                         Title = "Check your answers",
                         Type = FormQuestionType.CheckYourAnswers,
                         IsRequired = true,
-                        Options = new FormQuestionOptions()
+                        Options = new FormQuestionOptions(),
+                        Name = "FinancialInformation5"
                     },
                     new FormQuestion
                     {
@@ -172,7 +177,8 @@ public class GetFormSectionQuestionsTest
                         Title = "Enter your postal address",
                         Type = FormQuestionType.Address,
                         IsRequired = true,
-                        Options = new FormQuestionOptions()
+                        Options = new FormQuestionOptions(),
+                        Name = "FinancialInformation6"
                     }
                 },
             AnswerSets = new List<FormAnswerSet>
