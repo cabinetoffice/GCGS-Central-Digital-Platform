@@ -23,11 +23,31 @@ public enum FormSectionType
 
 public record FormSectionConfiguration
 {
+    public string? SingularSummaryHeadingHint { get; set; }
     public string? SingularSummaryHeading { get; set; }
     public string? PluralSummaryHeadingFormat { get; set; }
+    public string? PluralSummaryHeadingHintFormat { get; set; }
     public string? AddAnotherAnswerLabel { get; set; }
     public string? RemoveConfirmationCaption { get; set; }
     public string? RemoveConfirmationHeading { get; set; }
     public string? FurtherQuestionsExemptedHeading { get; set; }
     public string? FurtherQuestionsExemptedHint { get; set; }
+    public SummaryRenderFormatter? SummaryRenderFormatter { get; set; }
+}
+
+public record SummaryRenderFormatter
+{
+    public string? KeyExpression { get; set; }
+    public List<string> KeyParams { get; set; } = [];
+    public ExpressionOperationType KeyExpressionOperation { get; set; }
+    public string? ValueExpression { get; set; }
+    public List<string> ValueParams { get; set; } = [];
+    public ExpressionOperationType ValueExpressionOperation { get; set; }
+}
+
+[JsonConverter(typeof(JsonStringEnumConverter))]
+public enum ExpressionOperationType
+{
+    StringFormat,
+    Equality
 }
