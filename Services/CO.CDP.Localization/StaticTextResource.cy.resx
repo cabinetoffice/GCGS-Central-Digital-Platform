@@ -3422,4 +3422,19 @@
   <data name="User_UserSummary_HasPersonValidation" xml:space="preserve">
     <value>Dewiswch ✓ i ychwanegu defnyddiwr arall</value>
   </data>
+  <data name="SessionTimeoutWarningDialog_Header" xml:space="preserve">
+    <value>Terfyn amser sesiwn</value>
+  </data>
+  <data name="SessionTimeoutWarningDialog_Lede" xml:space="preserve">
+    <value>Bydd eich sesiwn yn cyrraedd y terfyn amser cyn bo hir.</value>
+  </data>
+  <data name="SessionTimeoutWarningDialog_Text" xml:space="preserve">
+    <value>Byddwn yn eich allgofnodi o'ch cyfrif os an wnewch chi ymateb o fewn {0} munud. Gwnawn hyn er mwyn cadw eich gwybodaeth yn ddiogel.</value>
+  </data>
+  <data name="SessionTimeoutWarningDialog_Continue" xml:space="preserve">
+    <value>Parhau â'r sesiwn</value>
+  </data>
+  <data name="SessionTimeoutWarningDialog_SignOut" xml:space="preserve">
+    <value>Allgofnodi</value>
+  </data>
 </root>
