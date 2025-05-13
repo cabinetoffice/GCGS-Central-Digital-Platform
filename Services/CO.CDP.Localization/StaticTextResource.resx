@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!--
     Microsoft ResX Schema
@@ -3368,7 +3368,7 @@
   </data>
 
   <data name="Users_ViewAdmins_Title" xml:space="preserve">
-    <value>Admins</value>
+    <value>Admin</value>
   </data>
   <data name="OrganisationInviteExpired_Title" xml:space="preserve">
     <value>Your invite has expired</value>
