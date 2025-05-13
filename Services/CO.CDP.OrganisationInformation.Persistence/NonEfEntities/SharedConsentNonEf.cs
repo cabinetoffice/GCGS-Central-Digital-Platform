@@ -26,6 +26,10 @@ public record OrganisationNonEf
     public List<PartyRole> Roles { get; set; } = [];
     public SupplierInformationNonEf? SupplierInfo { get; set; }
     public List<ConnectedEntityNonEf> ConnectedEntities { get; set; } = [];
+    public IEnumerable<ConnectedEntityNonEf> AdditionalEntities =>
+        ConnectedEntities.Where(ce => ce.EntityType == ConnectedEntityType.Organisation && ce.Organisation != null);
+    public IEnumerable<ConnectedEntityNonEf> AssociatedPersons =>
+        ConnectedEntities.Where(ce => ce.EntityType != ConnectedEntityType.Organisation && ce.IndividualOrTrust != null);
 }
 
 public class ConnectedEntityNonEf

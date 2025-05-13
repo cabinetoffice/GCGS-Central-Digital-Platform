@@ -4,7 +4,6 @@ using CO.CDP.DataSharing.WebApi.UseCase;
 using CO.CDP.OrganisationInformation;
 using FluentAssertions;
 using FluentAssertions.Common;
-using Microsoft.Extensions.Configuration;
 using Moq;
 using Address = CO.CDP.OrganisationInformation.Address;
 
@@ -13,13 +12,11 @@ namespace CO.CDP.DataSharing.WebApi.Tests.UseCase;
 public class GetSharedDataUseCaseTest : IClassFixture<AutoMapperFixture>
 {
     private readonly Mock<OrganisationInformation.Persistence.IShareCodeRepository> _shareCodeRepository = new();
-    private readonly Mock<IConfiguration> _configuration = new();
     private readonly GetSharedDataUseCase _useCase;
 
     public GetSharedDataUseCaseTest(AutoMapperFixture mapperFixture)
     {
-        _useCase = new GetSharedDataUseCase(_shareCodeRepository.Object,
-            mapperFixture.Mapper, _configuration.Object);
+        _useCase = new GetSharedDataUseCase(_shareCodeRepository.Object, mapperFixture.Mapper);
     }
 
     [Fact]
@@ -31,21 +28,9 @@ public class GetSharedDataUseCaseTest : IClassFixture<AutoMapperFixture>
     }
 
     [Fact]
-    public async Task ThrowsException_WhenDataSharingApiUrl_NotConfigured()
-    {
-        var (shareCode, _, organisationGuid, _) = SetupTestData();
-
-        var response = async () => await _useCase.Execute((shareCode));
-
-        await response.Should().ThrowAsync<Exception>();
-    }
-
-    [Fact]
     public async Task ItReturnsMappedSupplierInformationWhenSharedConsentIsFound()
     {
         var (shareCode, _, organisationGuid, _) = SetupTestData();
-
-        _configuration.Setup(c => c["DataSharingApiUrl"]).Returns("https://localhost");
 
         var result = await _useCase.Execute((shareCode));
         result.Should().NotBeNull();
@@ -67,8 +52,6 @@ public class GetSharedDataUseCaseTest : IClassFixture<AutoMapperFixture>
     [Fact]
     public async Task Execute_ShouldAddConsortiumOrganisationSharedConsent_WhenOrganisationIsInformalConsortium()
     {
-        _configuration.Setup(c => c["DataSharingApiUrl"]).Returns("https://localhost");
-
         var consortiumShareCode = "consortium-sharecode";
         var subSharecode1 = "sub-sharecode-1";
         var subSharecode2 = "sub-sharecode-2";

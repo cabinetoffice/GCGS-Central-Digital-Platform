@@ -1,4 +1,5 @@
 using CO.CDP.OrganisationInformation;
+using System.Text.Json.Serialization;
 
 namespace CO.CDP.DataSharing.WebApi.Model;
 
@@ -43,6 +44,7 @@ public record AssociatedEntity
     public required AssociatedPeriod Period { get; init; }
 }
 
+[JsonConverter(typeof(JsonStringEnumConverter))]
 public enum AssociatedRelationship
 {
     PersonWithSignificantControlForIndividual = 1,
