@@ -223,6 +223,7 @@ locals {
     entity_verification                  = {}
     entity_verification_migrations       = { cpu = 256,  memory = 512}
     forms                                = {}
+    fts                                  = { desired_count = 1 }
     organisation                         = {}
     organisation_app                     = {}
     organisation_information_migrations  = { cpu = 256,  memory = 512}
@@ -265,6 +266,7 @@ locals {
     entity_verification                  = { port = 8094, port_host = 8094, name = "entity-verification"}
     entity_verification_migrations       = { port = 9191, port_host = null, name = "entity-verification-migrations"}
     forms                                = { port = 8086, port_host = 8086, name = "forms"}
+    fts                                  = { port = 8070, port_host = 8070, name = "fts"}
     organisation                         = { port = 8082, port_host = 8082, name = "organisation"}
     organisation_app                     = { port = 8090, port_host = 80  , name = "organisation-app"}
     organisation_information_migrations  = { port = 9090, port_host = null, name = "organisation-information-migrations"}

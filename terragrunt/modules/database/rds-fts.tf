@@ -1,0 +1,21 @@
+module "cluster_fts" {
+  source = "../rds-cluster"
+
+  backup_retention_period      = var.is_production ? 14 : 1
+  copy_tags_to_snapshot        = true
+  db_name                      = local.fts_cluster_name
+  db_parameters_cluster        = local.fts_db_parameters_cluster
+  db_parameters_instance       = local.fts_db_parameters_instance
+  db_sg_id                     = var.db_mysql_sg_id
+  deletion_protection          = var.is_production
+  engine_version               = var.aurora_mysql_engine_version
+  family                       = "aurora-mysql8.0"
+  instance_type                = var.aurora_mysql_instance_type
+  monitoring_interval          = var.is_production ? 30 : 0
+  monitoring_role_arn          = var.is_production ? var.role_rds_cloudwatch_arn : ""
+  performance_insights_enabled = var.is_production
+  private_subnet_ids           = var.private_subnet_ids
+  publicly_accessible          = true
+  role_terraform_arn           = var.role_terraform_arn
+  tags                         = var.tags
+}

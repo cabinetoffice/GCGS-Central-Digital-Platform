@@ -41,6 +41,7 @@ dependency core_networking {
 dependency core_security_groups {
   config_path = "../../core/security-groups"
   mock_outputs = {
+    db_mysql_sg_id    = "mock"
     db_postgres_sg_id = "mock"
   }
 }
@@ -54,6 +55,7 @@ inputs = {
   private_subnets_cidr_blocks = dependency.core_networking.outputs.private_subnets_cidr_blocks
   vpc_id                      = dependency.core_networking.outputs.vpc_id
 
+  db_mysql_sg_id    = dependency.core_security_groups.outputs.db_mysql_sg_id
   db_postgres_sg_id = dependency.core_security_groups.outputs.db_postgres_sg_id
 
   role_rds_backup_arn     = dependency.core_iam.outputs.rds_backup_arn
