@@ -8,22 +8,22 @@ using Persistence = CO.CDP.OrganisationInformation.Persistence;
 
 namespace CO.CDP.Organisation.WebApi.Tests.UseCase;
 
-public class GetPersonsInRoleUseCaseTests
+public class GetAdminPersonsUseCaseTests
 {
     private readonly Mock<IPersonRepository> _mockPersonRepository;
     private readonly Mock<IOrganisationRepository> _mockOrganisationRepository;
     private readonly Mock<IMapper> _mockMapper;
-    private readonly GetPersonsInRoleUseCase _useCase;
+    private readonly GetAdminPersonsUseCase _useCase;
     private readonly Guid _organisationId = Guid.NewGuid();
     private readonly Guid _personId = Guid.NewGuid();
 
-    public GetPersonsInRoleUseCaseTests()
+    public GetAdminPersonsUseCaseTests()
     {
         _mockPersonRepository = new Mock<IPersonRepository>();
         _mockOrganisationRepository = new Mock<IOrganisationRepository>();
         _mockMapper = new Mock<IMapper>();
 
-        _useCase = new GetPersonsInRoleUseCase(
+        _useCase = new GetAdminPersonsUseCase(
             _mockPersonRepository.Object,
             _mockOrganisationRepository.Object,
             _mockMapper.Object
@@ -39,7 +39,7 @@ public class GetPersonsInRoleUseCaseTests
         _mockPersonRepository.Setup(repo => repo.FindByOrganisation(_organisationId))
             .ReturnsAsync(new List<Persistence.Person>());
 
-        var result = await _useCase.Execute((Organisation.Guid, "ADMIN"));
+        var result = await _useCase.Execute(Organisation.Guid);
 
         result.Should().BeEmpty();
     }
@@ -104,7 +104,7 @@ public class GetPersonsInRoleUseCaseTests
         _mockMapper.Setup(mapper => mapper.Map<Model.Person>(persons[1]))
             .Returns(new Model.Person() { Email = persons[1].Email, FirstName = persons[1].FirstName, Id = persons[1].Guid, LastName = persons[1].LastName, Scopes = persons[1].Scopes });
 
-        var result = await _useCase.Execute((Organisation.Guid, "ADMIN"));
+        var result = await _useCase.Execute(Organisation.Guid);
 
         result.Should().HaveCount(1);
         result.First().Id.Should().Be(person_admin.Guid);
