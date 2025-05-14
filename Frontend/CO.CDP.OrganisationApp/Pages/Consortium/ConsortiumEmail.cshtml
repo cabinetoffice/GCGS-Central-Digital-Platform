@@ -6,7 +6,7 @@
 @{
     ViewData["Title"] = StaticTextResource.Consortium_ConsortiumEmail_Heading;
     var emailAddressHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.EmailAddress)).HasInnerHtml;
-    var backLink = ConsortiumStepModel.ConsortiumAddressPage;
+    var backLink = Request.Query.ContainsKey("frm-chk-answer") ? ConsortiumStepModel.ConsortiumCheckAnswerPage : ConsortiumStepModel.ConsortiumAddressPage;
 }
 
 @section BeforeContent {

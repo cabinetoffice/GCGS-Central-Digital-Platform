@@ -195,6 +195,9 @@
   <data name="Organisation_OrganisationName" xml:space="preserve">
     <value>Organisation name</value>
   </data>
+  <data name="Organisation_ViewOrganisation" xml:space="preserve">
+    <value>View organisation</value>
+  </data>
   <data name="Organisation_ChangeName" xml:space="preserve">
     <value>Change&lt;span class="govuk-visually-hidden"&gt; the organisation name&lt;/span&gt;</value>
   </data>
@@ -209,6 +212,9 @@
   </data>
   <data name="Organisation_AddAddress" xml:space="preserve">
     <value>Add&lt;span class="govuk-visually-hidden"&gt; address&lt;/span&gt;</value>
+  </data>
+  <data name="Organisation_AddOrganisationIdentifier" xml:space="preserve">
+    <value>Add&lt;span class="govuk-visually-hidden"&gt; organisation identifier&lt;/span&gt;</value>
   </data>
   <data name="Organisation_ChangeAddress" xml:space="preserve">
     <value>Change&lt;span class="govuk-visually-hidden"&gt; address&lt;/span&gt;</value>
@@ -380,6 +386,9 @@
   </data>
   <data name="Header_ServiceName" xml:space="preserve">
     <value>Find a Tender</value>
+  </data>
+  <data name="Header_SkipToMainContent_Link" xml:space="preserve">
+    <value>Skip to main content</value>
   </data>
   <data name="Header_Search" xml:space="preserve">
     <value>Search</value>
@@ -577,7 +586,7 @@
     <value>Change your settings</value>
   </data>
   <data name="Supplementary_CookieDetails_ChangeSettingsInfo" xml:space="preserve">
-    <value>You can &lt;a href="/cookies"&gt;change which cookies you're happy for us to use&lt;/a&gt;.</value>
+    <value>You can &lt;a class="govuk-link" href="/cookies"&gt;change which cookies you're happy for us to use&lt;/a&gt;.</value>
   </data>
   <data name="Supplementary_CookieDetails_TableHeader_Name" xml:space="preserve">
     <value>Name</value>
@@ -708,6 +717,9 @@
   <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswers_PSCDetails" xml:space="preserve">
     <value>PSC details</value>
   </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswers_DateNoLongerConnected" xml:space="preserve">
+    <value>Date no longer connected</value>
+  </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswers_DoB" xml:space="preserve">
     <value>Date of birth</value>
   </data>
@@ -817,7 +829,7 @@
     <value>Select specified conditions of control</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityControlCondition_Hint" xml:space="preserve">
-    <value>As defined in &lt;a href="https://www.legislation.gov.uk/ukpga/2006/46/schedule/1A/part/1?timeline=false" target="_blank"&gt;part 1 schedule 1a of the Companies Act 2006&lt;/a&gt;. Select all that apply.</value>
+    <value>As defined in &lt;a class="govuk-link" href="https://www.legislation.gov.uk/ukpga/2006/46/schedule/1A/part/1?timeline=false" target="_blank"&gt;part 1 schedule 1a of the Companies Act 2006&lt;/a&gt;. Select all that apply.</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityControlCondition_OwnsSharesLabel" xml:space="preserve">
     <value>Owns shares</value>
@@ -841,10 +853,16 @@
     <value>Has other significant influence or control</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityControlCondition_HasOtherSignificantInfluenceOrControlHint" xml:space="preserve">
-    <value>Has the right to exercise, or exercises, significant influence or control over the company. As defined in the &lt;a href="https://www.gov.uk/government/publications/guidance-to-the-people-with-significant-control-requirements-for-companies-and-limited-liability-partnerships" target="_blank"&gt;person of significant control (PSC) guidance&lt;/a&gt;.</value>
+    <value>Has the right to exercise, or exercises, significant influence or control over the company. As defined in the &lt;a class="govuk-link" href="https://www.gov.uk/government/publications/guidance-to-the-people-with-significant-control-requirements-for-companies-and-limited-liability-partnerships" target="_blank"&gt;person of significant control (PSC) guidance&lt;/a&gt;.</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityControlCondition_NoneApplyLabel" xml:space="preserve">
     <value>None apply</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_NotConnectedDate_Heading" xml:space="preserve">
+    <value>When did {0} stop being connected to your organisation?</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_NotConnectedDate_Hint" xml:space="preserve">
+    <value>For example, 27 03 2007</value>
   </data>
   <data name="Global_Or" xml:space="preserve">
     <value>or</value>
@@ -856,7 +874,7 @@
     <value>A ‘connected person’ is someone who influences or controls your company.</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityDeclaration_Paragraph2" xml:space="preserve">
-    <value>It includes &lt;a href="https://www.gov.uk/guidance/people-with-significant-control-pscs" target="_blank"&gt;people with significant control (opens in new tab)&lt;/a&gt; and any other individual or company other than yourself that has a declarable interest in your organisation.</value>
+    <value>It includes &lt;a class="govuk-link" href="https://www.gov.uk/guidance/people-with-significant-control-pscs" target="_blank"&gt;people with significant control (opens in new tab)&lt;/a&gt; and any other individual or company other than yourself that has a declarable interest in your organisation.</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityDeclaration_Paragraph3" xml:space="preserve">
     <value>For example, a director, a trustee of a trust, a majority shareholder or a parent or subsidiary company.</value>
@@ -1030,7 +1048,7 @@
     <value>Were you required to register {0} as a person with significant control?</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityRegistrationDateQuestion_Hint" xml:space="preserve">
-    <value>In the UK this is defined by &lt;a href="https://www.legislation.gov.uk/ukpga/2006/46/section/790C" target="_blank"&gt;section 790C(4) of the Companies Act 2006 (opens in new tab)&lt;/a&gt;</value>
+    <value>In the UK this is defined by &lt;a class="govuk-link" href="https://www.legislation.gov.uk/ukpga/2006/46/section/790C" target="_blank"&gt;section 790C(4) of the Companies Act 2006 (opens in new tab)&lt;/a&gt;</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityRegistrationDateQuestion_DateRegisteredLabel" xml:space="preserve">
     <value>Date registered</value>
@@ -1043,33 +1061,6 @@
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityRemoveConfirmation_ConfirmRemoveError" xml:space="preserve">
     <value>Select yes to confirm removal of the connected person</value>
-  </data>
-  <data name="Supplier_ConnectedEntity_ConnectedEntityRemoveConfirmation_EndDateLabel" xml:space="preserve">
-    <value>When was the connected person no longer associated with your organisation?</value>
-  </data>
-  <data name="Supplier_ConnectedEntity_ConnectedEntityRemoveConfirmation_EndDateHint" xml:space="preserve">
-    <value>For example, 27 3 2007</value>
-  </data>
-  <data name="Supplier_ConnectedEntity_ConnectedEntityRemoveConfirmation_DayRequiredError" xml:space="preserve">
-    <value>Date of removal must include a day</value>
-  </data>
-  <data name="Supplier_ConnectedEntity_ConnectedEntityRemoveConfirmation_DayInvalidError" xml:space="preserve">
-    <value>Day must be a valid number</value>
-  </data>
-  <data name="Supplier_ConnectedEntity_ConnectedEntityRemoveConfirmation_MonthRequiredError" xml:space="preserve">
-    <value>Date of removal must include a month</value>
-  </data>
-  <data name="Supplier_ConnectedEntity_ConnectedEntityRemoveConfirmation_MonthInvalidError" xml:space="preserve">
-    <value>Month must be a valid number</value>
-  </data>
-  <data name="Supplier_ConnectedEntity_ConnectedEntityRemoveConfirmation_YearRequiredError" xml:space="preserve">
-    <value>Date of removal must include a year</value>
-  </data>
-  <data name="Supplier_ConnectedEntity_ConnectedEntityRemoveConfirmation_YearInvalidError" xml:space="preserve">
-    <value>Year must be a valid number</value>
-  </data>
-  <data name="Supplier_ConnectedEntity_ConnectedEntityRemoveConfirmation_DateInvalidError" xml:space="preserve">
-    <value>Date of removal must be a real date</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntitySupplierCompanyQuestion_PageTitle" xml:space="preserve">
     <value>Is your organisation registered with Companies House?</value>
@@ -1086,14 +1077,14 @@
   <data name="Supplier_ConnectedEntity_ConnectedPersonSummary_PageTitle" xml:space="preserve">
     <value>You have added {0} connected person(s)</value>
   </data>
+  <data name="Supplier_ConnectedEntity_ConnectedPersonSummary_NoLongerConnected" xml:space="preserve">
+    <value>No longer connected</value>
+  </data>
   <data name="Supplier_ConnectedEntity_ConnectedPersonSummary_AddAnotherQuestion" xml:space="preserve">
     <value>Add another connected person?</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedPersonSummary_AddAnotherConnectedPersonError" xml:space="preserve">
     <value>Select yes to add another connected person</value>
-  </data>
-  <data name="Supplier_ConnectedEntity_ConnectedPersonSummary_RemovedOn" xml:space="preserve">
-    <value>Removed on {0}</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedPersonSummary_BackToSupplierInformation" xml:space="preserve">
     <value>Back to supplier information</value>
@@ -1239,6 +1230,12 @@
   <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswers_ChangeControlConditions" xml:space="preserve">
     <value>Change&lt;span class="govuk-visually-hidden"&gt; the conditions of control&lt;/span&gt;</value>
   </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswers_AddDateNoLongerConnected" xml:space="preserve">
+    <value>Add&lt;span class="govuk-visually-hidden"&gt; date no longer connected&lt;/span&gt;</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswers_ChangeDateNoLongerConnected" xml:space="preserve">
+    <value>Change&lt;span class="govuk-visually-hidden"&gt; date no longer connected&lt;/span&gt;</value>
+  </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswers_ChangeRegisteredAsPSC" xml:space="preserve">
     <value>Change&lt;span class="govuk-visually-hidden"&gt; the registered as PSC date&lt;/span&gt;</value>
   </data>
@@ -1283,6 +1280,9 @@
   </data>
   <data name="Global_Change" xml:space="preserve">
     <value>Change</value>
+  </data>
+  <data name="Global_Add" xml:space="preserve">
+    <value>Add</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityIndividualCategory_CategoryOption_PSC" xml:space="preserve">
     <value>person with significant control</value>
@@ -1567,7 +1567,7 @@
     <value>You must complete all sections of your supplier information before you can create a share code.</value>
   </data>
   <data name="ShareYourInformation_CreateShareCodeButton" xml:space="preserve">
-    <value>Create a share code</value>
+    <value>Create share code</value>
   </data>
   <data name="ShareYourInformation_TableCaption" xml:space="preserve">
     <value>Your share codes and supplier information files</value>
@@ -1594,10 +1594,10 @@
     <value>Your share code</value>
   </data>
   <data name="ShareYourInformation_ShareCodeCreatedFooterBody1" xml:space="preserve">
-    <value>You can save your share code and &lt;a href="?handler=download&amp;shareCode={0}"&gt;download your supplier information file&lt;/a&gt; or come back and get them when needed.</value>
+    <value>You can save your share code and &lt;a class="govuk-link" href="?handler=download&amp;shareCode={0}"&gt;download your supplier information file&lt;/a&gt; or come back and get them when needed.</value>
   </data>
   <data name="ShareYourInformation_ConsortiumShareCodeCreatedFooterBody1" xml:space="preserve">
-    <value>You can save your share code and &lt;a href="?handler=download&amp;shareCode={0}"&gt;download your combined supplier information file&lt;/a&gt; or come back and get them when needed.</value>
+    <value>You can save your share code and &lt;a class="govuk-link" href="?handler=download&amp;shareCode={0}"&gt;download your combined supplier information file&lt;/a&gt; or come back and get them when needed.</value>
   </data>
   <data name="ShareYourInformation_ShareCodeCreatedFooterBody2" xml:space="preserve">
     <value>If your supplier information changes, you can update it and create a new share code and file to share the new information.</value>
@@ -1609,7 +1609,7 @@
     <value>Back to consortium details</value>
   </data>
   <data name="OrganisationRegistration_CompanyHouseNumberQuestion_Hint" xml:space="preserve">
-    <value>You can &lt;a href="https://find-and-update.company-information.service.gov.uk/" target="_blank"&gt;find your company number on Companies House (opens in a new tab)&lt;/a&gt;. It is an 8 digit or 2 letter and 6 digit number. For example, 12345678 or SC123456.</value>
+    <value>You can &lt;a class="govuk-link" href="https://find-and-update.company-information.service.gov.uk/" target="_blank"&gt;find your company number on Companies House (opens in a new tab)&lt;/a&gt;. It is an 8 digit or 2 letter and 6 digit number. For example, 12345678 or SC123456.</value>
   </data>
   <data name="OrganisationRegistration_CompanyHouseNumberQuestion_CompanyNotFound_NotificationBanner" xml:space="preserve">
     <value>We cannot find your company number on Companies House. If it’s correct, continue and enter your details manually.</value>
@@ -1633,7 +1633,7 @@
     <value>Wales</value>
   </data>
   <data name="OrganisationRegistration_BuyerSelectDevolvedRegulation_Hint" xml:space="preserve">
-    <value>Read the &lt;a href="https://www.gov.uk/government/publications/procurement-act-2023-guidance-documents-plan-phase/guidance-devolved-contracting-authorities-html#:~:text=Procurement%20is%20largely%20a%20devolved,are%20conducted%20and%20contracts%20managed." target="_blank"&gt;devolved contracting authorities guidance (opens in new tab). &lt;/a&gt;</value>
+    <value>Read the &lt;a class="govuk-link" href="https://www.gov.uk/government/publications/procurement-act-2023-guidance-documents-plan-phase/guidance-devolved-contracting-authorities-html#:~:text=Procurement%20is%20largely%20a%20devolved,are%20conducted%20and%20contracts%20managed." target="_blank"&gt;devolved contracting authorities guidance (opens in new tab). &lt;/a&gt;</value>
   </data>
   <data name="OrganisationRegistration_BuyerOrganisationType_CentralGovernment_Label" xml:space="preserve">
     <value>Central government - UK or devolved administrations</value>
@@ -2046,7 +2046,7 @@
     <value>Offences are listed as 'mandatory exclusion grounds' and 'discretionary exclusion grounds' in the Procurement Act 2023.</value>
   </data>
   <data name="Exclusions_AddExclusionDeclaration_InsetText" xml:space="preserve">
-    <value>If any exclusions apply to a person with significant control, such as a director or majority shareholder, make sure you have added them as a &lt;a href="{0}"&gt;connected person&lt;/a&gt;.</value>
+    <value>If any exclusions apply to a person with significant control, such as a director or majority shareholder, make sure you have added them as a &lt;a class="govuk-link" href="{0}"&gt;connected person&lt;/a&gt;.</value>
   </data>
   <data name="Exclusions_AddExclusionDeclaration_Paragraph3" xml:space="preserve">
     <value>You'll need to provide details about each exclusion, such as where it happened and who it applies to and upload any supporting documents you may have.</value>
@@ -2106,7 +2106,7 @@
     <value>theft, fraud and bribery</value>
   </data>
   <data name="Exclusions_AddExclusionDeclaration_MandatoryExclusionsLinkText" xml:space="preserve">
-    <value>These exclusions are defined in &lt;a href="{0}" target="_blank"&gt;schedule 6 of the Procurement Act 2023 (opens in new tab)&lt;/a&gt;.</value>
+    <value>These exclusions are defined in &lt;a class="govuk-link" href="{0}" target="_blank"&gt;schedule 6 of the Procurement Act 2023 (opens in new tab)&lt;/a&gt;.</value>
   </data>
   <data name="Exclusions_AddExclusionDeclaration_DiscretionaryExclusionsHeading" xml:space="preserve">
     <value>Discretionary exclusions</value>
@@ -2142,7 +2142,7 @@
     <value>suspension or ceasing to carry on all or a substantial part of a business</value>
   </data>
   <data name="Exclusions_AddExclusionDeclaration_DiscretionaryExclusionsLinkText" xml:space="preserve">
-    <value>These exclusions are defined in &lt;a href="{0}" target="_blank"&gt;schedule 7 of the Procurement Act 2023 (opens in new tab)&lt;/a&gt;.</value>
+    <value>These exclusions are defined in &lt;a class="govuk-link" href="{0}" target="_blank"&gt;schedule 7 of the Procurement Act 2023 (opens in new tab)&lt;/a&gt;.</value>
   </data>
   <data name="Global_NotApplicable" xml:space="preserve">
     <value>N/A</value>
@@ -2178,6 +2178,9 @@
     <value>Registered legal form</value>
   </data>
   <data name="PdfGenerator_BasicInformation_RegistrationDate" xml:space="preserve">
+    <value>Registration date</value>
+  </data>
+  <data name="PdfGenerator_ConnectedOrganisationInformation_RegistrationDate" xml:space="preserve">
     <value>Registration date</value>
   </data>
   <data name="PdfGenerator_BasicInformation_Suppliertype" xml:space="preserve">
@@ -2232,7 +2235,7 @@
     <value>Category</value>
   </data>
   <data name="PdfGenerator_ConnectedPersonInformation_Title" xml:space="preserve">
-    <value>People connected to organisation</value>
+    <value>People connected to your organisation</value>
   </data>
   <data name="PdfGenerator_ConnectedPerson_Type" xml:space="preserve">
     <value>Type</value>
@@ -2324,8 +2327,8 @@
   <data name="PdfGenerator_NoAdditionalIdentifiersAvailableMsg" xml:space="preserve">
     <value>No additional identifiers available.</value>
   </data>
-  <data name="PdfGenerator_NoConnectedPersonInformationAvailableMsg" xml:space="preserve">
-    <value>No connected person information available.</value>
+  <data name="PdfGenerator_NoneApplyMsg" xml:space="preserve">
+    <value>None apply</value>
   </data>
   <data name="PdfGenerator_OrganisationSchemeTitle_CharityCommission" xml:space="preserve">
     <value>Charity Commission (England and Wales)</value>
@@ -2377,6 +2380,27 @@
   </data>
   <data name="PdfGenerator_SupplierInformation_Title" xml:space="preserve">
     <value>Supplier information</value>
+  </data>
+  <data name="PdfGenerator_Supplier_OperationType" xml:space="preserve">
+    <value>Supplier operation type</value>
+  </data>
+  <data name="PdfGenerator_Supplier_OperationType_SmallOrMediumSized_Short" xml:space="preserve">
+    <value>Small or medium-sized enterprise</value>
+  </data>
+  <data name="PdfGenerator_Supplier_OperationType_NonGovernmental_Short" xml:space="preserve">
+    <value>Non-governmental organisation</value>
+  </data>
+  <data name="PdfGenerator_Supplier_OperationType_SupportedEmploymentProvider_Short" xml:space="preserve">
+    <value>Supported employment provider</value>
+  </data>
+  <data name="PdfGenerator_Supplier_OperationType_PublicService_Short" xml:space="preserve">
+    <value>Public service mutual</value>
+  </data>
+  <data name="PdfGenerator_Supplier_OperationType_None_Short" xml:space="preserve">
+    <value>My organisation is not defined</value>
+  </data>
+  <data name="PdfGenerator_Supplier_OperationType_Unknown_Short" xml:space="preserve">
+    <value>Unknown supplier opration type</value>
   </data>
   <data name="PdfGenerator_UnknownCategory" xml:space="preserve">
     <value>Unknown category</value>
@@ -2596,7 +2620,7 @@
     <value>What date was your organisation registered?</value>
   </data>
   <data name="Supplier_LegalFormFormationDate_Title_UK_Hint" xml:space="preserve">
-    <value>The incorporation date with &lt;a href="https://www.gov.uk/government/organisations/companies-house" target="_blank"&gt;Companies House (opens in new tab) &lt;/a&gt;</value>
+    <value>The incorporation date with &lt;a class="govuk-link" href="https://www.gov.uk/government/organisations/companies-house" target="_blank"&gt;Companies House (opens in new tab) &lt;/a&gt;</value>
   </data>
   <data name="Supplier_LegalFormFormationDate_Title_NonUK_Hint" xml:space="preserve">
     <value>For non-UK organisations, this is registration with an overseas equivalent to Companies House. If you're unsure, enter the date your organisation started trading.</value>
@@ -2656,7 +2680,7 @@
     <value>For non-UK organisations, select the equivalent legal structure when it was set up and registered</value>
   </data>
   <data name="Supplier_LegalForm_UK_Hint" xml:space="preserve">
-    <value>The legal structure when it was set up and registered with &lt;a href="https://www.gov.uk/government/organisations/companies-house" target="_blank"&gt;Companies House (opens in new tab)&lt;/a&gt;</value>
+    <value>The legal structure when it was set up and registered with &lt;a class="govuk-link" href="https://www.gov.uk/government/organisations/companies-house" target="_blank"&gt;Companies House (opens in new tab)&lt;/a&gt;</value>
   </data>
   <data name="Supplier_LegalFormSelectOrganisation_Title" xml:space="preserve">
     <value>How was your organisation registered?</value>
@@ -2781,6 +2805,21 @@
   <data name="Organisation_CreateNewConsortium" xml:space="preserve">
     <value>Create a new consortium</value>
   </data>
+  <data name="Consortium_ConsortiumOverview_Title" xml:space="preserve">
+    <value>Check answers</value>
+  </data>
+  <data name="Consortium_ConsortiumOverview_Heading" xml:space="preserve">
+    <value>Check your answers</value>
+  </data>
+  <data name="Consortium_CheckAnswer_Name_list" xml:space="preserve">
+    <value>Consortium name</value>
+  </data>
+  <data name="Consortium_CheckAnswer_PostalAddress_list" xml:space="preserve">
+    <value>Postal address</value>
+  </data>
+  <data name="Consortium_CheckAnswer_EmailAddress_list" xml:space="preserve">
+    <value>Email address</value>
+  </data>
   <data name="Consortium_ConsortiumOverview_Heading" xml:space="preserve">
     <value>Consortium details</value>
   </data>
@@ -2805,8 +2844,14 @@
   <data name="Consortium_ConsortiumOverview_CreateSharecode_list" xml:space="preserve">
     <value>Declare and create a share code</value>
   </data>
+  <data name="Consortium_ConsortiumOverview_CreateSharecode_list_hint" xml:space="preserve">
+    <value>Add 2 or more organisations to your consortium to create a share code</value>
+  </data>
   <data name="Consortium_ConsortiumOverview_status_list" xml:space="preserve">
     <value>Cannot start yet</value>
+  </data>
+  <data name="Consortium_ConsortiumOverview_CreateSharecode_NotStarted" xml:space="preserve">
+    <value>Not started</value>
   </data>
   <data name="Consortium_ConsortiumOverview_ChangeName" xml:space="preserve">
     <value>Change&lt;span class="govuk-visually-hidden"&gt;consortium name&lt;/span&gt;</value>
@@ -2908,7 +2953,7 @@
     <value>the Greater London Authority</value>
   </data>
   <data name="SupplierToBuyer_OrganisationType_Hint" xml:space="preserve">
-    <value>Decide on your organisation type, as defined in the &lt;a href="https://www.gov.uk/government/publications/procurement-act-2023-guidance-documents-plan-phase/guidance-contracting-authority-definition-html" target="_blank"&gt;contracting authority definition guidance (opens in new tab) &lt;/a&gt;</value>
+    <value>Decide on your organisation type, as defined in the &lt;a class="govuk-link" href="https://www.gov.uk/government/publications/procurement-act-2023-guidance-documents-plan-phase/guidance-contracting-authority-definition-html" target="_blank"&gt;contracting authority definition guidance (opens in new tab) &lt;/a&gt;</value>
   </data>
   <data name="SupplierToBuyer_OrganisationType_HousingAssociations" xml:space="preserve">
     <value>housing associations</value>
@@ -2950,7 +2995,7 @@
     <value>Scotland</value>
   </data>
   <data name="SupplierToBuyer_SelectDevolvedRegulation_Hint" xml:space="preserve">
-    <value>Read the &lt;a href="https://www.gov.uk/government/publications/procurement-act-2023-guidance-documents-plan-phase/guidance-devolved-contracting-authorities-html#:~:text=Procurement%20is%20largely%20a%20devolved,are%20conducted%20and%20contracts%20managed." target="_blank"&gt;devolved contracting authorities guidance (opens in new tab). &lt;/a&gt;</value>
+    <value>Read the &lt;a class="govuk-link" href="https://www.gov.uk/government/publications/procurement-act-2023-guidance-documents-plan-phase/guidance-devolved-contracting-authorities-html#:~:text=Procurement%20is%20largely%20a%20devolved,are%20conducted%20and%20contracts%20managed." target="_blank"&gt;devolved contracting authorities guidance (opens in new tab). &lt;/a&gt;</value>
   </data>
   <data name="SupplierToBuyer_SelectDevolvedRegulation_Title" xml:space="preserve">
     <value>Select which devolved nation regulations apply</value>
@@ -2990,6 +3035,9 @@
   </data>
   <data name="Organisation_ConsortiumName" xml:space="preserve">
     <value>Consortium name</value>
+  </data>
+  <data name="Organisation_ViewConsortium" xml:space="preserve">
+    <value>View consortium</value>
   </data>
   <data name="Cookies_ChooseCookiePreferences" xml:space="preserve">
     <value>Choose whether you accept cookies that measure website use</value>
@@ -3195,7 +3243,6 @@
   <data name="Users_UserRoleViewer_HintTitle" xml:space="preserve">
     <value>What viewers can do</value>
   </data>
-
   <data name="Users_UserRoleAdmin_BuyerHint1" xml:space="preserve">
     <value>add, remove and edit users</value>
   </data>
@@ -3253,7 +3300,6 @@
   <data name="Users_UserRoleViewer_SupplierHint2" xml:space="preserve">
     <value>view supplier information</value>
   </data>
-
   <data name="Users_UserRoleAdmin_BuyerSupplierHint1" xml:space="preserve">
     <value>add, remove and edit users</value>
   </data>
@@ -3293,7 +3339,6 @@
   <data name="Users_UserRoleEditor_BuyerSupplierHint5" xml:space="preserve">
     <value>view, add and edit supplier information</value>
   </data>
-
   <data name="Users_UserRoleViewer_BuyerSupplierHint1" xml:space="preserve">
     <value>create, edit and publish notices</value>
   </data>
@@ -3303,11 +3348,6 @@
   <data name="Users_UserRoleViewer_BuyerSupplierHint3" xml:space="preserve">
     <value>view supplier information</value>
   </data>
-
-
-
-
-
   <data name="Users_CheckYourAnswers_Title" xml:space="preserve">
     <value>Check your answers</value>
   </data>
@@ -3322,6 +3362,9 @@
   </data>
   <data name="OrganisationInviteExpired_Link" xml:space="preserve">
     <value>Go to my account</value>
+  </data>
+  <data name="ErrorMessageList_ConnectedPersons_Cannot_Remove" xml:space="preserve">
+    <value>You have an exclusion recorded for this connected person. You must &lt;a class="govuk-notification-banner__link" href="/organisation/{organisationIdentifier}/forms/{formId}/sections/{sectionId}/summary"&gt;remove the exclusion&lt;/a&gt; before you can remove the connected person.</value>
   </data>
   <data name="ErrorMessageList_DuplicatePersonName" xml:space="preserve">
     <value>A person with this name already exists. Try again.</value>
@@ -3465,7 +3508,7 @@
     <value>Request to join</value>
   </data>
   <data name="OrganisationRegistration_SearchOrganisationName_ExactMatchAlreadyExists" xml:space="preserve">
-    <value>The organisation you entered is already registered. Request to join the registered organisation or &lt;a href="/registration/organisation-name\"&gt;enter a different name&lt;/a&gt;.</value>
+    <value>The organisation you entered is already registered. Request to join the registered organisation or &lt;a class="govuk-link" href="/registration/organisation-name\"&gt;enter a different name&lt;/a&gt;.</value>
   </data>
   <data name="Global_SignAndContinue" xml:space="preserve">
     <value>Sign and continue</value>
@@ -3534,7 +3577,7 @@
     <value>Before you can use this service:</value>
   </data>
   <data name="OrganisationOverView_Banner_Review_MoU_Link" xml:space="preserve">
-    <value>you must &lt;a href="/organisation/{0}/review-and-sign-memorandom"&gt;read and agree the data sharing agreement&lt;/a&gt;</value>
+    <value>you must &lt;a class="govuk-link" href="/organisation/{0}/review-and-sign-memorandom"&gt;read and agree the data sharing agreement&lt;/a&gt;</value>
   </data>
   <data name="OrganisationOverview_RegisterAsBuyer_Link" xml:space="preserve">
     <value>Register as a buyer</value>
@@ -3564,7 +3607,7 @@
     <value>A contracting authority operating in a devolved nation may be subject to devolved regulations. For example, Northern Ireland, Scotland or Wales.</value>
   </data>
   <data name="OrganisationRegistration_BuyerOrganisationType_Hint" xml:space="preserve">
-    <value>Decide on your organisation type, as defined in the &lt;a href="https://www.gov.uk/government/publications/procurement-act-2023-guidance-documents-plan-phase/guidance-contracting-authority-definition-html" target="_blank"&gt;contracting authority definition guidance (opens in new tab). &lt;/a&gt;</value>
+    <value>Decide on your organisation type, as defined in the &lt;a class="govuk-link" href="https://www.gov.uk/government/publications/procurement-act-2023-guidance-documents-plan-phase/guidance-contracting-authority-definition-html" target="_blank"&gt;contracting authority definition guidance (opens in new tab). &lt;/a&gt;</value>
   </data>
   <data name="Supplementary_CookieDetails_TableRow_FT_Auth" xml:space="preserve">
     <value>Provides Find a Tender with your account details once you’ve signed in</value>
@@ -3612,7 +3655,7 @@
     <value>When you submit a bid for a procurement, the contracting authority will let you know how to give them the share code or file.</value>
   </data>
   <data name="ConsortiumShareMyInformation_HowItWorksParagraph3" xml:space="preserve">
-    <value>If any of the supplier information for any organisation in the consortium changes, you can update its share code on the consortium details page and then create a new combined share code and file to share the new information.</value>
+    <value>If any of the supplier information for an organisation in the consortium changes, it must create a new share code. &lt;br&gt;&lt;br&gt;You must update its share code and create a new combined share code and file to share the new information.</value>
   </data>
   <data name="ConsortiumShareMyInformation_Title" xml:space="preserve">
     <value>Share your consortium information</value>
@@ -3648,7 +3691,7 @@
     <value>You have been signed out</value>
   </data>
   <data name="Supplementary_SignedOut_Paragraph1" xml:space="preserve">
-    <value>&lt;a href="/one-login/sign-in" class="govuk-link break-word" aria-label="Sign in"&gt;Sign in&lt;/a&gt; again, or &lt;a href="{0}" class="govuk-link break-word"&gt;browse from the homepage&lt;/a&gt; to find the information you need.</value>
+    <value>&lt;a href="/one-login/sign-in" class="govuk-link break-word" aria-label="Sign in"&gt;Sign in&lt;/a&gt; again, or &lt;a class="govuk-link" href="{0}" class="govuk-link break-word"&gt;browse from the homepage&lt;/a&gt; to find the information you need.</value>
   </data>
   <data name="Supplementary_SignedOut_Paragraph2" xml:space="preserve">
     <value>&lt;a href="/contact-us" class="govuk-link break-word"&gt;Contact us&lt;/a&gt; if you are experiencing problems using Find a Tender.</value>
@@ -3718,5 +3761,8 @@
   </data>
   <data name="PdfGenerator_ConsortiumSharecodeInformation_Sharecode" xml:space="preserve">
     <value>Share code</value>
+  </data>
+  <data name="CompaniesHouse_Number_Error" xml:space="preserve">
+    <value>Company number must be 8 digits or 2 letters and 6 digits</value>
   </data>
 </root>

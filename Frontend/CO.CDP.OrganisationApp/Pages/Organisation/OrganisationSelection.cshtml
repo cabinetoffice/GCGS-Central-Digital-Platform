@@ -51,11 +51,12 @@
                     <caption class="govuk-table__caption govuk-table__caption--m">@StaticTextResource.Organisation_MyOrganisations</caption>
                     <thead class="govuk-table__head">
                         <tr class="govuk-table__row">
-                            <th scope="col" colspan="2" class="govuk-table__header">@StaticTextResource.Organisation_OrganisationName</th>
+                            <th scope="col" class="govuk-table__header">@StaticTextResource.Organisation_OrganisationName</th>
+                            <th scope="col" class="govuk-table__header"><span class="govuk-visually-hidden">@StaticTextResource.Organisation_ViewOrganisation</span></th>
                         </tr>
                     </thead>
                     <tbody class="govuk-table__body">
-                        @{                            
+                        @{
                             foreach (var (org, review) in Model.UserOrganisations)
                             {
                                 if (org.Type != Tenant.WebApiClient.OrganisationType.InformalConsortium)
@@ -79,7 +80,9 @@
                                         </th>
 
                                         <td class="govuk-table__cell">
-                                            <a class="govuk-link govuk-link--no-visited-state" href="/organisation/@org.Id">@StaticTextResource.Global_View</a>
+                                            <a class="govuk-link govuk-link--no-visited-state" href="/organisation/@org.Id">
+                                                @StaticTextResource.Global_View<span class="govuk-visually-hidden"> @org.Name</span>
+                                            </a>
                                         </td>
                                     </tr>
                                 }
@@ -125,11 +128,12 @@
                     <caption class="govuk-table__caption govuk-table__caption--m">@string.Format(StaticTextResource.Organisation_MyConsortium, consortiumCount)</caption>
                     <thead class="govuk-table__head">
                         <tr class="govuk-table__row">
-                            <th scope="col" colspan="2" class="govuk-table__header">@StaticTextResource.Organisation_ConsortiumName</th>
+                            <th scope="col" class="govuk-table__header">@StaticTextResource.Organisation_ConsortiumName</th>
+                            <th scope="col" class="govuk-table__header"><span class="govuk-visually-hidden">@StaticTextResource.Organisation_ViewConsortium</span></th>
                         </tr>
                     </thead>
                     <tbody class="govuk-table__body">
-                        @{                            
+                        @{
                             foreach (var (org, review) in Model.UserOrganisations)
                             {
                                 if (org.Type == Tenant.WebApiClient.OrganisationType.InformalConsortium)
@@ -140,7 +144,9 @@
                                         </th>
 
                                         <td class="govuk-table__cell">
-                                            <a class="govuk-link govuk-link--no-visited-state" href="/consortium/@org.Id/overview">@StaticTextResource.Global_View</a>
+                                            <a class="govuk-link govuk-link--no-visited-state" href="/consortium/@org.Id/overview">
+                                                @StaticTextResource.Global_View<span class="govuk-visually-hidden"> @org.Name</span>
+                                            </a>
                                         </td>
                                     </tr>
                                 }
@@ -148,7 +154,7 @@
                         }
                     </tbody>
                 </table>
-                
+
                 <div class="govuk-body">
                     <a class="govuk-button govuk-button--secondary" href="/consortium/start">@StaticTextResource.Organisation_CreateNewConsortium</a>
                 </div>

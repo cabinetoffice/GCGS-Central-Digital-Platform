@@ -155,4 +155,35 @@ public class SupplierVatModelQuestionTest
 
         result.Should().BeOfType<RedirectResult>().Which.Url.Should().Be("/page-not-found");
     }
+
+    [Fact]
+    public async Task OnPost_ShouldTrimOrganisationIdentifiers_BeforeUpdate()
+    {
+        var id = Guid.NewGuid();
+        _model.Id = id;
+        _model.HasVatNumber = true;
+        _model.VatNumber = " \t 1234ABCD \n";
+
+        _organisationClientMock.Setup(client => client.GetOrganisationSupplierInformationAsync(id))
+            .ReturnsAsync(SupplierDetailsFactory.CreateSupplierInformationClientModel());
+
+        _organisationClientMock.Setup(client => client.GetOrganisationAsync(id))
+            .ReturnsAsync(SupplierDetailsFactory.GivenOrganisationClientModel(id));
+
+        List<OrganisationIdentifier> capturedIdentifiers = [];
+
+        _organisationClientMock
+            .Setup(x => x.UpdateOrganisationAsync(id, It.IsAny<UpdatedOrganisation>()))
+            .Callback<Guid, UpdatedOrganisation>((_, updatedOrganisation) =>
+            {
+                capturedIdentifiers = updatedOrganisation.Organisation.AdditionalIdentifiers.ToList();
+            })
+            .Returns(Task.CompletedTask);
+
+
+        var result = await _model.OnPost();
+
+        capturedIdentifiers.Should().HaveCount(1);
+        capturedIdentifiers[0].Id.Should().Be("1234ABCD");
+    }
 }

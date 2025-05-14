@@ -135,6 +135,12 @@
   <data name="FinancialInformation_01_Title" xml:space="preserve">
     <value>What is the financial year end date for the information you uploaded?</value>
   </data>
+  <data name="FinancialInformation_SummaryList_Key" xml:space="preserve">
+    <value>{0} == {1} ? Unaudited accounts : Audited accounts</value>
+  </data>
+  <data name="FinancialInformation_SummaryList_Value" xml:space="preserve">
+    <value>Year ending {0:dd MMMM yyyy}</value>
+  </data>
   <data name="FinancialInformation_01_SummaryTitle" xml:space="preserve">
     <value>Date of financial year end</value>
   </data>
@@ -166,13 +172,19 @@
     <value>Add another file?</value>
   </data>
   <data name="FinancialInformation_Configuration_SingularSummaryHeading" xml:space="preserve">
-    <value>You have added 1 file</value>
+    <value>1 added</value>
+  </data>
+  <data name="FinancialInformation_Configuration_SingularSummaryHeadingHint" xml:space="preserve">
+    <value>Financial information</value>
   </data>
   <data name="FinancialInformation_Configuration_RemoveConfirmationHeading" xml:space="preserve">
     <value>Are you sure you want to remove this file?</value>
   </data>
   <data name="FinancialInformation_Configuration_PluralSummaryHeadingFormat" xml:space="preserve">
-    <value>You have added {0} files</value>
+    <value>{0} added</value>
+  </data>
+  <data name="FinancialInformation_Configuration_PluralSummaryHeadingHintFormat" xml:space="preserve">
+    <value>Financial information</value>
   </data>
   <data name="Qualifications_01_SummaryTitle" xml:space="preserve">
     <value>Qualification name</value>
@@ -185,6 +197,9 @@
   </data>
   <data name="Qualifications_02_SummaryTitle" xml:space="preserve">
     <value>Awarded by</value>
+  </data>
+  <data name="Qualifications_02_SummaryValue" xml:space="preserve">
+    <value>Awarded on {0:dd MMMM yyyy}</value>
   </data>
   <data name="Qualifications_02_Title" xml:space="preserve">
     <value>Who awarded the qualification?</value>
@@ -205,13 +220,19 @@
     <value>Add another qualification?</value>
   </data>
   <data name="Qualifications_Configuration_SingularSummaryHeading" xml:space="preserve">
-    <value>You have added 1 qualification</value>
+    <value>1 added</value>
+  </data>
+  <data name="Qualifications_Configuration_SingularSummaryHeadingHint" xml:space="preserve">
+    <value>Qualifications</value>
   </data>
   <data name="Qualifications_Configuration_RemoveConfirmationHeading" xml:space="preserve">
     <value>Are you sure you want to remove this qualification?</value>
   </data>
   <data name="Qualifications_Configuration_PluralSummaryHeadingFormat" xml:space="preserve">
-    <value>You have added {0} qualifications</value>
+    <value>{0} added</value>
+  </data>
+  <data name="Qualifications_Configuration_PluralSummaryHeadingHintFormat" xml:space="preserve">
+    <value>Qualifications</value>
   </data>
   <data name="Qualifications_Configuration_FurtherQuestionsExemptedHint" xml:space="preserve">
     <value>These are general qualifications for business and trade, not procurement specific. Adding them will provide evidence of your suitability to contracting authorities and support any bids you submit. For example, ISO certification.</value>
@@ -271,7 +292,7 @@
     <value>&lt;div id="isEventEnded-hint" class="govuk-hint"&gt;For example, a court decision for environmental misconduct led your organisation or the connected person to stop harming the environment.&lt;/div&gt;</value>
   </data>
   <data name="Exclusions_02_Caption" xml:space="preserve">
-    <value>&lt;legend class="govuk-fieldset__legend"&gt;Enter the date the circumstances ended&lt;/legend&gt;&lt;div class="govuk-hint"&gt;For example, 27 3 2007&lt;/div&gt;</value>
+    <value>&lt;legend class="govuk-fieldset__legend" id="inner-legend"&gt;Enter the date the circumstances ended&lt;/legend&gt;&lt;div class="govuk-hint"&gt;For example, 27 3 2007&lt;/div&gt;</value>
   </data>
   <data name="Exclusions_02_SummaryTitle" xml:space="preserve">
     <value>Date circumstances ended</value>
@@ -409,13 +430,19 @@
     <value>Add another exclusion?</value>
   </data>
   <data name="Exclusions_Configuration_SingularSummaryHeading" xml:space="preserve">
-    <value>You have added 1 exclusion</value>
+    <value>1 added</value>
+  </data>
+  <data name="Exclusions_Configuration_SingularSummaryHeadingHint" xml:space="preserve">
+    <value>Exclusions</value>
   </data>
   <data name="Exclusions_Configuration_RemoveConfirmationHeading" xml:space="preserve">
     <value>Are you sure you want to remove this exclusion?</value>
   </data>
   <data name="Exclusions_Configuration_PluralSummaryHeadingFormat" xml:space="preserve">
-    <value>You have added {0} exclusions</value>
+    <value>{0} added</value>
+  </data>
+  <data name="Exclusions_Configuration_PluralSummaryHeadingHintFormat" xml:space="preserve">
+    <value>Exclusions</value>
   </data>
   <data name="Exclusions_Configuration_FurtherQuestionsExemptedHeading" xml:space="preserve">
     <value>Do you have any exclusions to add for your organisation or a connected person?</value>
@@ -424,10 +451,13 @@
     <value>Who awarded the trade assurance?</value>
   </data>
   <data name="TradeAssurance_01_Description" xml:space="preserve">
-    <value>&lt;div class="govuk-hint"&gt;Enter the name of the person or body. You can add another at the end if you need to. For example, Red Tractor Assurance, QMS Assurance.&lt;/div&gt;</value>
+    <value>&lt;div class="govuk-hint"&gt;Enter the name of the person or body. You can add another at the end if you need to. For example, Red Tractor Assurance or Quality Meat Scotland (QMS) Assurance.&lt;/div&gt;</value>
   </data>
   <data name="TradeAssurance_01_SummaryTitle" xml:space="preserve">
     <value>Awarded by</value>
+  </data>
+  <data name="TradeAssurance_01_SummaryValue" xml:space="preserve">
+    <value>Awarded on {0:dd MMMM yyyy}</value>
   </data>
   <data name="TradeAssurance_02_Title" xml:space="preserve">
     <value>Do you know the reference number?</value>
@@ -445,13 +475,19 @@
     <value>Add another trade assurance?</value>
   </data>
   <data name="TradeAssurances_Configuration_SingularSummaryHeading" xml:space="preserve">
-    <value>You have added 1 trade assurance</value>
+    <value>1 added</value>
+  </data>
+  <data name="TradeAssurances_Configuration_SingularSummaryHeadingHint" xml:space="preserve">
+    <value>Trade assurances</value>
   </data>
   <data name="TradeAssurances_Configuration_RemoveConfirmationHeading" xml:space="preserve">
     <value>Are you sure you want to remove this trade assurance?</value>
   </data>
   <data name="TradeAssurances_Configuration_PluralSummaryHeadingFormat" xml:space="preserve">
-    <value>You have added {0} trade assurances</value>
+    <value>{0} added</value>
+  </data>
+  <data name="TradeAssurances_Configuration_PluralSummaryHeadingHintFormat" xml:space="preserve">
+    <value>Trade assurances</value>
   </data>
   <data name="TradeAssurances_Configuration_FurtherQuestionsExemptedHint" xml:space="preserve">
     <value>These are trade assurances for business and trade, not procurement specific. Adding them will provide confidence to contracting authorities and support any bids you submit. For example, Red Tractor Assurance covers food safety, traceability, animal welfare and environmental protection.</value>
@@ -476,5 +512,53 @@
   </data>
   <data name="Global_Enter_Your_Name" xml:space="preserve">
     <value>Enter your name</value>
+  </data>
+  <data name="Global_Declaration" xml:space="preserve">
+    <value>Declaration</value>
+  </data>
+  <data name="Global_Your_Declaration_Details" xml:space="preserve">
+    <value>Your declaration details</value>
+  </data>
+  <data name="ShareMyInformationConsortium_05_Description" xml:space="preserve">
+    <value>&lt;ul class="govuk-list govuk-list--bullet"&gt;&lt;li&gt;I am authorised to make this declaration on behalf of the consortium and declare that to the best of my knowledge the answers submitted and information contained is correct and accurate at the time of declaration.&lt;/li&gt;&lt;br&gt;&lt;li&gt;I declare that, upon request from the Contracting Authority and without delay I will provide the certificates or documentary evidence referred to in this information.&lt;/li&gt;&lt;br&gt;&lt;li&gt;I understand that the information is required as per the regulations of the Procurement Act 2023 and may be used in the selection process to assess my suitability to participate further in this procurement.&lt;/li&gt;&lt;br&gt;&lt;li&gt;I understand that a contracting authority with whom this information is shared may request further clarity or detail on information provided in this submission.&lt;/li&gt;&lt;/ul&gt;</value>
+  </data>
+  <data name="ShareMyInformationConsortium_04_Description" xml:space="preserve">
+    <value>&lt;div id="declarationNameHint" class="govuk-hint"&gt;Your name as the person authorised to declare the supplier information.&lt;/div&gt;</value>
+  </data>
+  <data name="ShareMyInformation_02_Description" xml:space="preserve">
+    <value>&lt;div id="declarationNameEmailHint" class="govuk-hint"&gt;So the contracting authority can contact you.&lt;/div&gt;</value>
+  </data>
+  <data name="ShareMyInformation_04_Description" xml:space="preserve">
+    <value>&lt;div id="declarationNameEmailHint" class="govuk-hint"&gt;Your name as the person authorised to declare the supplier information.&lt;/div&gt;</value>
+  </data>
+  <data name="ShareMyInformation_05_Description" xml:space="preserve">
+    <value>&lt;ul class="govuk-list govuk-list--bullet"&gt;&lt;li class="govuk-!-margin-bottom-4"&gt;I am authorised to make this declaration on behalf of the supplier and declare that to the best of my knowledge the answers submitted and information contained is correct and accurate at the time of declaration.&lt;/li&gt; &lt;li class="govuk-!-margin-bottom-4"&gt;I declare that, upon request from the Contracting Authority and without delay I will provide the certificates or documentary evidence referred to in this information.&lt;/li&gt;&lt;li class="govuk-!-margin-bottom-4"&gt;I understand that the information is required as per the regulations of the Procurement Act 2023 and may be used in the selection process to assess my suitability to participate further in this procurement.&lt;/li&gt;&lt;li class="govuk-!-margin-bottom-4"&gt;I understand that a contracting authority with whom this information is shared may request further clarity or detail on information provided in this submission.&lt;/li&gt;&lt;/ul&gt;</value>
+  </data>
+  <data name="ShareMyInformation_01_Description" xml:space="preserve">
+    <value>&lt;div id="declarationNameEmailHint" class="govuk-hint"&gt;So the contracting authority can contact you.&lt;/div&gt;</value>
+  </data>
+  <data name="ShareMyInformationConsortium_01_SummaryTitle" xml:space="preserve">
+    <value>Postal address</value>
+  </data>
+  <data name="ShareMyInformationConsortium_02_SummaryTitle" xml:space="preserve">
+    <value>Email address</value>
+  </data>
+  <data name="ShareMyInformationConsortium_03_SummaryTitle" xml:space="preserve">
+    <value>Job title</value>
+  </data>
+  <data name="ShareMyInformationConsortium_04_SummaryTitle" xml:space="preserve">
+    <value>Declared by</value>
+  </data>
+  <data name="ShareMyInformation_01_SummaryTitle" xml:space="preserve">
+    <value>Postal address</value>
+  </data>
+  <data name="ShareMyInformation_02_SummaryTitle" xml:space="preserve">
+    <value>Email address</value>
+  </data>
+  <data name="ShareMyInformation_03_SummaryTitle" xml:space="preserve">
+    <value>Job title</value>
+  </data>
+  <data name="ShareMyInformation_04_SummaryTitle" xml:space="preserve">
+    <value>Declared by</value>
   </data>
 </root>

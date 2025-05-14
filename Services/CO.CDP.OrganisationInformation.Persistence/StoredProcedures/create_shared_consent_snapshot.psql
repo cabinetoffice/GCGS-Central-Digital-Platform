@@ -1,0 +1,195 @@
+CREATE OR REPLACE PROCEDURE public.create_shared_consent_snapshot(
+    IN p_share_code text)
+LANGUAGE 'plpgsql'
+AS $$
+
+DECLARE v_shared_consent_id INT;
+DECLARE v_organisation_id INT;
+DECLARE v_inserted_id INT;
+BEGIN
+    SELECT id, organisation_id 
+    INTO v_shared_consent_id, v_organisation_id
+    FROM shared_consents
+    WHERE share_code = p_share_code;
+
+    -- Organisation
+    INSERT INTO organisations_snapshot
+		(shared_consent_id, "name")
+    SELECT 
+    	v_shared_consent_id, "name"
+   	FROM 
+   		organisations 
+  	WHERE 
+  		id = v_organisation_id;
+
+    -- Contact Points
+    INSERT INTO contact_points_snapshot
+		(shared_consent_id, "name", email, telephone, url, created_on, updated_on)
+    SELECT 
+    	v_shared_consent_id, "name", email, telephone, url, created_on, updated_on 
+   	FROM 
+   		contact_points 
+  	WHERE 
+  		organisation_id = v_organisation_id;
+
+    -- Identifiers
+  	INSERT INTO identifiers_snapshot
+		(shared_consent_id, identifier_id, scheme, legal_name, uri, "primary", created_on, updated_on)
+	SELECT 
+		v_shared_consent_id, identifier_id, scheme, legal_name, uri, "primary", created_on, updated_on
+	FROM 
+		identifiers 
+	WHERE 
+		organisation_id = v_organisation_id;
+	
+    -- Supplier information
+	INSERT INTO supplier_information_snapshot
+		(shared_consent_id, supplier_type, operation_types, completed_reg_address, completed_postal_address, 
+		completed_vat, completed_website_address, completed_email_address, completed_operation_type, 
+		completed_legal_form, completed_connected_person, created_on, updated_on)
+    SELECT 
+        v_shared_consent_id, supplier_type, operation_types, completed_reg_address, completed_postal_address, 
+        completed_vat, completed_website_address, completed_email_address, completed_operation_type, 
+        completed_legal_form, completed_connected_person, created_on, updated_on
+    FROM 
+        supplier_information
+    WHERE 
+        id = v_organisation_id
+   	RETURNING id INTO v_inserted_id;
+	
+    -- Legal forms
+	INSERT INTO legal_forms_snapshot
+		(id, registered_under_act2006, registered_legal_form, law_registered, registration_date, created_on, updated_on)
+    SELECT 
+        v_inserted_id, registered_under_act2006, registered_legal_form, law_registered, registration_date, created_on, updated_on
+    FROM 
+        legal_forms
+    WHERE 
+        id = v_organisation_id;
+
+	-- Organisation addessess
+ 	CREATE TEMP TABLE temp_inserted_address_data (id INT);
+	WITH inserted_address_data AS (
+		INSERT INTO addresses_snapshot
+			(street_address, locality, region, postal_code, country_name, 
+			country, created_on, updated_on, mapping_id)
+		SELECT 
+            a.street_address, a.locality, a.region, a.postal_code, a.country_name, 
+            a.country, a.created_on, a.updated_on, oa.id
+        FROM 
+            organisation_address AS oa 
+            INNER JOIN addresses AS a ON a.id = oa.address_id 
+        WHERE 
+            oa.organisation_id = v_organisation_id
+		RETURNING id
+	)
+	INSERT INTO temp_inserted_address_data (id)
+	SELECT id FROM inserted_address_data;
+
+	INSERT INTO organisation_address_snapshot
+		(shared_consent_id, "type", address_id)
+	SELECT 
+        v_shared_consent_id, oa."type", a.id
+    FROM 
+        organisation_address AS oa 
+        INNER JOIN addresses_snapshot AS a on a.mapping_id = oa.id
+        INNER JOIN temp_inserted_address_data AS iad ON iad.id = a.id;
+	
+    -- Connected entities
+	CREATE TEMP TABLE temp_inserted_connected_entities_data (id INT);
+	WITH inserted_connected_entities_data AS (
+		INSERT INTO connected_entities_snapshot
+			(shared_consent_id, "guid", entity_type, has_compnay_house_number, company_house_number, overseas_company_number, 
+			registered_date, register_name, start_date, end_date, created_on, updated_on, mapping_id, deleted)
+	    SELECT 
+	        v_shared_consent_id, "guid", entity_type, has_compnay_house_number, company_house_number, overseas_company_number, 
+			registered_date, register_name, start_date, end_date, created_on, updated_on, id, deleted
+	    FROM 
+	        connected_entities
+	    WHERE 
+	        supplier_organisation_id = v_organisation_id
+        RETURNING id
+    )
+	INSERT INTO temp_inserted_connected_entities_data (id)
+	SELECT id FROM inserted_connected_entities_data;
+   
+    -- Connected entities individual trust
+	INSERT INTO connected_individual_trust_snapshot
+		(id, category, first_name, last_name, date_of_birth, nationality, "control_condition", 
+		connected_type, person_id, resident_country, created_on, updated_on)
+	SELECT
+    	ces.id, cit.category, cit.first_name, cit.last_name, cit.date_of_birth, cit.nationality, cit."control_condition", 
+    	cit.connected_type, cit.person_id, cit.resident_country, cit.created_on, cit.updated_on
+	FROM 
+        connected_entities AS ce
+        INNER JOIN connected_individual_trust cit ON cit.connected_individual_trust_id = ce.id
+        INNER JOIN connected_entities_snapshot ces ON ces.mapping_id = ce.id
+        INNER JOIN temp_inserted_connected_entities_data vid ON vid.id = ces.id;
+   
+    -- Connected entities organisation
+	INSERT INTO connected_organisation_snapshot
+		(id, category, "name", insolvency_date, registered_legal_form, 
+		law_registered, "control_condition", organisation_id, created_on, updated_on)
+	SELECT
+    	ces.id, co.category, co."name", co.insolvency_date, co.registered_legal_form, 
+		co.law_registered, co."control_condition", co.organisation_id, co.created_on, co.updated_on
+	FROM 
+        connected_entities AS ce
+        INNER JOIN connected_organisation AS co ON co.connected_organisation_id = ce.id
+        INNER JOIN connected_entities_snapshot ces ON ces.mapping_id = ce.id
+        INNER JOIN temp_inserted_connected_entities_data vid ON vid.id = ces.id 
+    WHERE 
+        ce.supplier_organisation_id = v_organisation_id;
+   
+	CREATE TEMP TABLE temp_connected_entities_address_map (
+		id SERIAL PRIMARY key,
+		connected_entity_id INT,
+		connected_entity_address_type INT,
+		connected_entity_address_address_id INT,
+		connected_entity_snapshot_id INT);
+	
+	INSERT INTO temp_connected_entities_address_map 
+		(connected_entity_id, connected_entity_address_type, connected_entity_address_address_id, connected_entity_snapshot_id)
+	SELECT 
+	    ce.id, cea."type", cea.address_id, tice.id 
+	FROM 
+	    connected_entities AS ce
+	    INNER JOIN connected_entity_address cea ON cea.connected_entity_id = ce.id
+	    INNER JOIN addresses AS a ON a.id = cea.address_id 
+	    INNER JOIN connected_entities_snapshot AS ces ON ces.mapping_id = ce.id 
+	    INNER JOIN temp_inserted_connected_entities_data tice on tice.id = ces.id
+	WHERE 
+	    ce.supplier_organisation_id = v_organisation_id;
+ 
+	-- Connected entity addessesss
+	CREATE TEMP TABLE temp_inserted_connected_entities_address_data (id INT);
+	WITH inserted_connected_entities_address_data AS (
+		INSERT INTO addresses_snapshot
+			(street_address, locality, region, postal_code, country_name, 
+			country, created_on, updated_on, mapping_id)
+		SELECT 
+	        a.street_address, a.locality, a.region, a.postal_code, a.country_name, 
+	        a.country, a.created_on, a.updated_on, tcea.id
+	    FROM 
+	        temp_connected_entities_address_map tcea
+	        INNER JOIN addresses AS a ON a.id = tcea.connected_entity_address_address_id
+        RETURNING id
+    )
+	INSERT INTO temp_inserted_connected_entities_address_data (id)
+	SELECT id FROM inserted_connected_entities_address_data;
+	
+	INSERT INTO connected_entity_address_snapshot
+		(connected_entity_snapshot_id, "type", address_id)
+	SELECT 
+        tcea.connected_entity_snapshot_id, tcea.connected_entity_address_type, a.id
+    FROM 
+        temp_connected_entities_address_map AS tcea
+        INNER JOIN addresses_snapshot AS a on a.mapping_id = tcea.id
+	    INNER JOIN temp_inserted_connected_entities_address_data ticea on ticea.id = a.id;
+       
+   	DROP TABLE IF EXISTS temp_inserted_address_data;
+	DROP TABLE IF EXISTS temp_inserted_connected_entities_data;
+	DROP TABLE IF EXISTS temp_connected_entities_address_map;
+	DROP TABLE IF EXISTS temp_inserted_connected_entities_address_data;
+END;
+$$;

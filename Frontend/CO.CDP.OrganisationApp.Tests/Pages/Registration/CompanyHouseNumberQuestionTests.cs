@@ -1,6 +1,5 @@
 using CO.CDP.Localization;
 using CO.CDP.Organisation.WebApiClient;
-using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.Pages.Registration;
 using CO.CDP.OrganisationApp.ThirdPartyApiClients;
@@ -9,7 +8,6 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moq;
-using System.Net;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages.Registration;
 public class CompanyHouseNumberQuestionTests
@@ -28,6 +26,22 @@ public class CompanyHouseNumberQuestionTests
         flashMessageServiceMock = new Mock<IFlashMessageService>();
         companiesHouseApiMock = new Mock<ICompaniesHouseApi>();
         organisationClientMock = new Mock<IOrganisationClient>();
+    }
+
+    [Theory]
+    [InlineData("1234")]
+    [InlineData("0123456789ABCD")]
+    public void Validate_WhenInvalidCompanyHouseNumber_ShouldReturnPageWithModelStateError(string? companyNUmber)
+    {
+        var model = GivenCompaniesHouseQuestionModel();
+
+        model.HasCompaniesHouseNumber = true;
+        model.CompaniesHouseNumber = companyNUmber;
+
+        var results = ModelValidationHelper.Validate(model);
+
+        results.Where(c => c.MemberNames.Contains("CompaniesHouseNumber")).First()
+            .ErrorMessage.Should().Be(nameof(StaticTextResource.CompaniesHouse_Number_Error));
     }
 
     [Theory]
@@ -81,6 +95,31 @@ public class CompanyHouseNumberQuestionTests
         var result = await model.OnPost();
         result.Should().BeOfType<RedirectToPageResult>();
         (result as RedirectToPageResult)?.PageName.Should().Be("OrganisationName");
+    }
+
+    [Fact]
+    public async Task OnPost_CompaniesHouseNumberHaveLeadingAndTrailingSpace_VerifyCompaniesHouseNumberIsTrimmed()
+    {
+        var model = GivenCompaniesHouseQuestionModel();
+
+        model.HasCompaniesHouseNumber = true;
+        model.CompaniesHouseNumber = " 123458 ";
+
+        GivenRegistrationIsInProgress(model.HasCompaniesHouseNumber, model.CompaniesHouseNumber);
+
+        organisationClientMock.Setup(o => o.LookupOrganisationAsync(string.Empty, It.IsAny<string>()))
+            .Throws(new ApiException(string.Empty, 404, string.Empty, null, null));
+
+        var profile = GivenProfileOnCompaniesHouse(organisationName: "Acme Ltd");
+        companiesHouseApiMock.Setup(ch => ch.GetProfile("123458"))
+            .ReturnsAsync(profile);
+
+        var result = await model.OnPost();
+        result.Should().BeOfType<RedirectToPageResult>();
+        (result as RedirectToPageResult)?.PageName.Should().Be("OrganisationName");
+
+        sessionMock.Verify(s => s.Set("RegistrationDetails",
+            It.Is<RegistrationDetails>(mo => mo.OrganisationIdentificationNumber == "123458")), Times.Once());
     }
 
     [Fact]

@@ -1,0 +1,117 @@
+using System.Threading.Tasks;
+using NUnit.Framework;
+using E2ETests.Pages;
+
+namespace E2ETests.ConnectedPersons
+{
+    public class ConnectedPersonsNavigationTests : ConnectedPersonsBaseTest
+    {
+        private const string OrgKey = "ConnectedPersons_Org";
+
+        [Test]
+        public async Task NavigateToDeclarationPage()
+        {
+            await _declarationPage.NavigateTo(OrgKey);
+            TestContext.WriteLine("✅ Navigated to Declaration Page");
+        }
+
+        [Test]
+        public async Task NavigateToOrganisationCategoryPage()
+        {
+            await _organisationCategoryPage.NavigateTo(OrgKey);
+            TestContext.WriteLine("✅ Navigated to Organisation Category Page");
+        }
+
+        [Test]
+        public async Task NavigateToSupplierCompanyQuestionPage()
+        {
+            await _supplierCompanyQuestionPage.NavigateTo(OrgKey);
+            TestContext.WriteLine("✅ Navigated to Supplier Company Question Page");
+        }
+
+        [Test]
+        public async Task NavigateToSupplierHasControlPage()
+        {
+            await _supplierHasControlPage.NavigateTo(OrgKey);
+            TestContext.WriteLine("✅ Navigated to Supplier Has Control Page");
+        }
+
+        [Test]
+        public async Task NavigateToNatureOfControlPage()
+        {
+            await _natureOfControlPage.NavigateTo(OrgKey);
+            TestContext.WriteLine("✅ Navigated to Nature Of Control Page");
+        }
+
+        [Test]
+        public async Task NavigateToDateRegisteredPage()
+        {
+            await _dateRegisteredPage.NavigateTo(OrgKey);
+            TestContext.WriteLine("✅ Navigated to Date Registered Page");
+        }
+
+        [Test]
+        public async Task NavigateToCompanyRegisterNamePage()
+        {
+            await _companyRegisterNamePage.NavigateTo(OrgKey);
+            TestContext.WriteLine("✅ Navigated to Company Register Name Page");
+        }
+
+        [Test]
+        public async Task NavigateToPersonTypePage()
+        {
+            await _personTypePage.NavigateTo(OrgKey);
+            TestContext.WriteLine("✅ Navigated to Person Type Page");
+        }
+
+        [Test]
+        public async Task NavigateToOrganisationNamePage()
+        {
+            await _organisationNamePage.NavigateTo(OrgKey);
+            TestContext.WriteLine("✅ Navigated to Organisation Name Page");
+        }
+
+        [Test]
+        public async Task NavigateToRegisteredAddressPage()
+        {
+            await _registeredAddressPage.NavigateTo(OrgKey);
+            TestContext.WriteLine("✅ Navigated to Registered Address Page");
+        }
+
+        [Test]
+        public async Task NavigateToPostalAddressSamePage()
+        {
+            await _postalAddressSamePage.NavigateTo(OrgKey);
+            TestContext.WriteLine("✅ Navigated to Postal Address Same Page");
+        }
+
+        [Test]
+        public async Task NavigateToLawRegisterPage()
+        {
+            await _lawRegisterPage.NavigateTo(OrgKey);
+            TestContext.WriteLine("✅ Navigated to Law Register Page");
+        }
+
+        [Test]
+        public async Task NavigateToCompanyQuestionPage()
+        {
+            await _companyQuestionPage.NavigateTo(OrgKey);
+            TestContext.WriteLine("✅ Navigated to Company Question Page");
+        }
+
+        [Test]
+        public async Task NavigateToCheckYourAnswersPage()
+        {
+            await _checkYourAnswersPage.NavigateTo(OrgKey);
+            TestContext.WriteLine("✅ Navigated to Check Your Answers Page");
+        }
+
+
+        [Test]
+        public async Task NavigateToSupplierInformationPage()
+        {
+            await _organisationSupplierInformationPage.NavigateTo(OrgKey);
+            TestContext.WriteLine("✅ Navigated to Supplier Information Page");
+        }
+    }
+}

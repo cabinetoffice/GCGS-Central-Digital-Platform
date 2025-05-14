@@ -1,9 +1,9 @@
 using CO.CDP.EntityFrameworkCore.DbContext;
 using CO.CDP.OrganisationInformation.Persistence.Constants;
 using CO.CDP.OrganisationInformation.Persistence.NonEfEntities;
+using Microsoft.EntityFrameworkCore;
 using Npgsql;
 using NpgsqlTypes;
-using Microsoft.EntityFrameworkCore;
 
 namespace CO.CDP.OrganisationInformation.Persistence;
 
@@ -198,6 +198,19 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
 
     public async Task<IList<OrganisationRawDto>> GetPaginated(PartyRole? role, PartyRole? pendingRole, string? searchText, int limit, int skip)
     {
+        var conditions = new List<string>();
+
+        var roleConditions = new List<string>();
+        if (role.HasValue) roleConditions.Add(":role = ANY(o.roles)");
+        if (pendingRole.HasValue) roleConditions.Add(":pendingRole = ANY(o.pending_roles)");
+        if (roleConditions.Count > 0)
+            conditions.Add($"({string.Join(" OR ", roleConditions)})");
+
+        if (!string.IsNullOrWhiteSpace(searchText))
+            conditions.Add("(o.name % :searchText OR o.name ILIKE '%' || :searchText || '%')");
+
+        var finalCondition = conditions.Count > 0 ? string.Join(" AND ", conditions) : null;
+
         var sql = @"
             SELECT
                 o.id,
@@ -211,19 +224,24 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
                 reviewed_by.last_name AS reviewed_by_last_name,
                 COALESCE(STRING_AGG(DISTINCT i.scheme || ':' || i.identifier_id, ', '), '') AS identifiers,
                 COALESCE(STRING_AGG(DISTINCT cp.email, ', '), '') AS contact_points,
-                p.email as admin_email
-            FROM organisations o
-            LEFT JOIN organisation_person op ON op.organisation_id = o.id
-            LEFT JOIN persons p ON p.id = op.person_id AND op.scopes @> '[""ADMIN""]'::jsonb
-            LEFT JOIN identifiers i ON i.organisation_id = o.id
-            LEFT JOIN contact_points cp ON cp.organisation_id = o.id
-            LEFT JOIN persons reviewed_by ON reviewed_by.id = o.reviewed_by_id
-            WHERE
-                ((:role IS NULL OR :role = ANY(o.roles))
-              OR (:pendingRole IS NULL OR :pendingRole = ANY(o.pending_roles)))
-              AND (:searchText IS NULL OR o.name ILIKE '%' || :searchText || '%')
-            GROUP BY o.id, o.guid, o.name, o.roles, o.pending_roles, o.approved_on, o.review_comment, reviewed_by.first_name, reviewed_by.last_name, admin_email
-            ORDER BY o.name ASC
+                COALESCE(STRING_AGG(DISTINCT p.email, ', '), '') AS admin_email,"
+                + (string.IsNullOrWhiteSpace(searchText) ? "0 AS similarity_score, 0 AS match_position" : @" 
+                    similarity(o.name, :searchText) AS similarity_score,
+                    NULLIF(POSITION(LOWER(:searchText) IN LOWER(o.name)), 0) AS match_position") +
+            @"
+            FROM
+                organisations o
+                LEFT JOIN organisation_person op ON op.organisation_id = o.id AND op.scopes @> '[""ADMIN""]'::jsonb
+                LEFT JOIN persons p ON p.id = op.person_id
+                LEFT JOIN identifiers i ON i.organisation_id = o.id
+                LEFT JOIN contact_points cp ON cp.organisation_id = o.id
+                LEFT JOIN persons reviewed_by ON reviewed_by.id = o.reviewed_by_id"
+            + (finalCondition != null ? $" WHERE {finalCondition}" : "") +
+            @"
+            GROUP BY
+                o.id, o.guid, o.name, o.roles, o.pending_roles, o.approved_on, o.review_comment, reviewed_by.first_name, reviewed_by.last_name
+            ORDER BY
+                match_position ASC NULLS LAST, similarity_score DESC, o.name ASC
             LIMIT :limit OFFSET :skip;";
 
         var roleValue = role.HasValue ? (int)role.Value : (object)DBNull.Value;

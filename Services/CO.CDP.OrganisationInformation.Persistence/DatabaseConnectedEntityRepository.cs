@@ -1,4 +1,6 @@
+using CO.CDP.OrganisationInformation.Persistence.Forms;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json.Linq;
 
 namespace CO.CDP.OrganisationInformation.Persistence;
 
@@ -28,9 +30,48 @@ public class DatabaseConnectedEntityRepository(OrganisationInformationContext co
                     : (t.IndividualOrTrust == null ? "" : $"{t.IndividualOrTrust.FirstName} {t.IndividualOrTrust.LastName}"),
                 EntityId = t.Guid,
                 EntityType = t.EntityType,
-                EndDate = t.EndDate
+                EndDate = t.EndDate,
+                Deleted = t.Deleted
             })
             .ToArrayAsync();
+    }
+
+    public Task<Tuple<bool, Guid, Guid>> IsConnectedEntityUsedInExclusionAsync(Guid organisationId, Guid connectedEntityId)
+    {
+        var organisationExclusions = (from fas in context.FormAnswerSets
+                                            join fs in context.Set<FormSection>() on fas.SectionId equals fs.Id
+                                            join f in context.Forms on fs.FormId equals f.Id
+                                            join sc in context.SharedConsents on new { fs.FormId, Id = fas.SharedConsentId } equals new { sc.FormId, sc.Id }
+                                            join fa in context.Set<FormAnswer>() on fas.Id equals fa.FormAnswerSetId
+                                            where fas.Deleted == false &&
+                                                fs.Type == FormSectionType.Exclusions &&
+                                                fa.JsonValue != null &&
+                                                sc.Organisation.Guid == organisationId 
+                                            select new { FormAnswerSetGuid = fas.Guid, FormGuid = f.Guid, SectionGuid = fs.Guid, SharedConsentId = sc.Id, fa.JsonValue, fas.Deleted })
+                                            .ToList();
+        var connectedEntityInUse = false;
+
+        foreach (var fas in organisationExclusions)
+        {
+            var isDeleted = from deletedFas in context.FormAnswerSets
+                            where deletedFas.Deleted && deletedFas.CreatedFrom == fas.FormAnswerSetGuid
+                            select deletedFas;
+
+            if (!isDeleted.Any())
+            {
+                if (!string.IsNullOrEmpty(fas.JsonValue))
+                {
+                    dynamic json = JObject.Parse(fas.JsonValue);
+
+                    if (json.id == connectedEntityId)
+                    {
+                        return Task.FromResult(new Tuple<bool, Guid, Guid>(!connectedEntityInUse, fas.FormGuid, fas.SectionGuid));
+                    }
+                }
+            }
+        }
+
+        return Task.FromResult(new Tuple<bool, Guid, Guid>(connectedEntityInUse, Guid.Empty, Guid.Empty));
     }
 
     public async Task Save(ConnectedEntity connectedEntity)

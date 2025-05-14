@@ -41,9 +41,9 @@
                         </h2>
                     </div>
                     <div class="govuk-notification-banner__content">
-                        <p class="govuk-notification-banner__heading">
+                        <h3 class="govuk-notification-banner__heading">
                             @string.Format(@StaticTextResource.Users_UserRoleAdmin_RequestToJoinNotification, @request.Person.FirstName, @request.Person.LastName)
-                        </p>
+                        </h3>
                         <p>
                             <a class="govuk-link govuk-!-font-size-19" href="/organisation/@Model.Id/users/user-summary">
                                 Approve or reject the request

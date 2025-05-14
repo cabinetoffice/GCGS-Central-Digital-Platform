@@ -15,12 +15,10 @@
       }
     ]
   },
-  "description": "",
   "editable": true,
   "fiscalYearStartMonth": 0,
-  "gnetId": 11398,
   "graphTooltip": 0,
-  "id": 15,
+  "id": 34,
   "links": [],
   "panels": [
     {
@@ -41,6 +39,7 @@
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 3,
             "gradientMode": "none",
@@ -72,8 +71,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -141,18 +139,23 @@
       "options": {
         "legend": {
           "calcs": [
-            "mean"
+            "min",
+            "mean",
+            "max"
           ],
           "displayMode": "table",
           "placement": "bottom",
-          "showLegend": true
+          "showLegend": true,
+          "sortBy": "Mean",
+          "sortDesc": true
         },
         "tooltip": {
+          "hideZeros": false,
           "mode": "multi",
           "sort": "none"
         }
       },
-      "pluginVersion": "10.4.3",
+      "pluginVersion": "11.6.0",
       "targets": [
         {
           "datasource": {
@@ -415,6 +418,7 @@
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 3,
             "gradientMode": "none",
@@ -446,8 +450,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -560,18 +563,23 @@
       "options": {
         "legend": {
           "calcs": [
-            "mean"
+            "min",
+            "mean",
+            "max"
           ],
           "displayMode": "table",
           "placement": "bottom",
-          "showLegend": true
+          "showLegend": true,
+          "sortBy": "Mean",
+          "sortDesc": true
         },
         "tooltip": {
+          "hideZeros": false,
           "mode": "multi",
           "sort": "none"
         }
       },
-      "pluginVersion": "10.4.3",
+      "pluginVersion": "11.6.0",
       "targets": [
         {
           "datasource": {
@@ -878,7 +886,7 @@
       "type": "timeseries"
     },
     {
-      "collapsed": false,
+      "collapsed": true,
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -886,322 +894,329 @@
         "y": 10
       },
       "id": 8,
-      "panels": [],
+      "panels": [
+        {
+          "datasource": {
+            "type": "cloudwatch",
+            "uid": "CLOUDWATCH"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "barWidthFactor": 0.6,
+                "drawStyle": "line",
+                "fillOpacity": 3,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "min": 0,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green"
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "percent"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 7,
+            "w": 12,
+            "x": 0,
+            "y": 11
+          },
+          "id": 9,
+          "options": {
+            "legend": {
+              "calcs": [
+                "mean",
+                "lastNotNull",
+                "max",
+                "min"
+              ],
+              "displayMode": "table",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "hideZeros": false,
+              "mode": "multi",
+              "sort": "none"
+            }
+          },
+          "pluginVersion": "11.6.0",
+          "targets": [
+            {
+              "datasource": {
+                "type": "cloudwatch",
+                "uid": "CLOUDWATCH"
+              },
+              "dimensions": {
+                "ClusterName": "cdp-sirsi",
+                "ServiceName": "$service"
+              },
+              "expression": "",
+              "id": "",
+              "label": "",
+              "logGroups": [],
+              "matchExact": true,
+              "metricEditorMode": 0,
+              "metricName": "CPUUtilization",
+              "metricQueryType": 0,
+              "namespace": "AWS/ECS",
+              "period": "",
+              "queryMode": "Metrics",
+              "refId": "A",
+              "region": "default",
+              "sqlExpression": "",
+              "statistic": "Maximum"
+            },
+            {
+              "datasource": {
+                "type": "cloudwatch",
+                "uid": "CLOUDWATCH"
+              },
+              "dimensions": {
+                "ClusterName": "cdp-sirsi",
+                "ServiceName": "$service"
+              },
+              "expression": "",
+              "hide": false,
+              "id": "",
+              "label": "",
+              "logGroups": [],
+              "matchExact": true,
+              "metricEditorMode": 0,
+              "metricName": "CPUUtilization",
+              "metricQueryType": 0,
+              "namespace": "AWS/ECS",
+              "period": "",
+              "queryMode": "Metrics",
+              "refId": "B",
+              "region": "default",
+              "sqlExpression": "",
+              "statistic": "Minimum"
+            }
+          ],
+          "title": "CPU Utilization [ $service ]",
+          "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "type": "cloudwatch",
+            "uid": "CLOUDWATCH"
+          },
+          "description": "",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "barWidthFactor": 0.6,
+                "drawStyle": "line",
+                "fillOpacity": 3,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "min": 0,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green"
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "percent"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 7,
+            "w": 12,
+            "x": 12,
+            "y": 11
+          },
+          "id": 22,
+          "options": {
+            "legend": {
+              "calcs": [
+                "mean",
+                "lastNotNull",
+                "max",
+                "min"
+              ],
+              "displayMode": "table",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "hideZeros": false,
+              "mode": "multi",
+              "sort": "none"
+            }
+          },
+          "pluginVersion": "11.6.0",
+          "targets": [
+            {
+              "datasource": {
+                "type": "cloudwatch",
+                "uid": "CLOUDWATCH"
+              },
+              "dimensions": {
+                "ClusterName": "cdp-sirsi",
+                "ServiceName": "$service"
+              },
+              "expression": "",
+              "id": "",
+              "label": "",
+              "logGroups": [],
+              "matchExact": true,
+              "metricEditorMode": 0,
+              "metricName": "MemoryUtilization",
+              "metricQueryType": 0,
+              "namespace": "AWS/ECS",
+              "period": "",
+              "queryMode": "Metrics",
+              "refId": "A",
+              "region": "default",
+              "sqlExpression": "",
+              "statistic": "Maximum"
+            },
+            {
+              "datasource": {
+                "type": "cloudwatch",
+                "uid": "CLOUDWATCH"
+              },
+              "dimensions": {
+                "ClusterName": "cdp-sirsi",
+                "ServiceName": "$service"
+              },
+              "expression": "",
+              "hide": false,
+              "id": "",
+              "label": "",
+              "logGroups": [],
+              "matchExact": true,
+              "metricEditorMode": 0,
+              "metricName": "MemoryUtilization",
+              "metricQueryType": 0,
+              "namespace": "AWS/ECS",
+              "period": "",
+              "queryMode": "Metrics",
+              "refId": "B",
+              "region": "default",
+              "sqlExpression": "",
+              "statistic": "Minimum"
+            }
+          ],
+          "title": "Memory Utilization [ $service ]",
+          "type": "timeseries"
+        }
+      ],
       "repeat": "service",
-      "repeatDirection": "h",
       "title": "$service",
       "type": "row"
-    },
-    {
-      "datasource": {
-        "type": "cloudwatch",
-        "uid": "CLOUDWATCH"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 3,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "never",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "min": 0,
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "percent"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 7,
-        "w": 12,
-        "x": 0,
-        "y": 11
-      },
-      "id": 9,
-      "options": {
-        "legend": {
-          "calcs": [
-            "mean",
-            "lastNotNull",
-            "max",
-            "min"
-          ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "10.4.3",
-      "targets": [
-        {
-          "datasource": {
-            "type": "cloudwatch",
-            "uid": "CLOUDWATCH"
-          },
-          "dimensions": {
-            "ClusterName": "cdp-sirsi",
-            "ServiceName": "$service"
-          },
-          "expression": "",
-          "id": "",
-          "label": "",
-          "logGroups": [],
-          "matchExact": true,
-          "metricEditorMode": 0,
-          "metricName": "CPUUtilization",
-          "metricQueryType": 0,
-          "namespace": "AWS/ECS",
-          "period": "",
-          "queryMode": "Metrics",
-          "refId": "A",
-          "region": "default",
-          "sqlExpression": "",
-          "statistic": "Maximum"
-        },
-        {
-          "datasource": {
-            "type": "cloudwatch",
-            "uid": "CLOUDWATCH"
-          },
-          "dimensions": {
-            "ClusterName": "cdp-sirsi",
-            "ServiceName": "$service"
-          },
-          "expression": "",
-          "hide": false,
-          "id": "",
-          "label": "",
-          "logGroups": [],
-          "matchExact": true,
-          "metricEditorMode": 0,
-          "metricName": "CPUUtilization",
-          "metricQueryType": 0,
-          "namespace": "AWS/ECS",
-          "period": "",
-          "queryMode": "Metrics",
-          "refId": "B",
-          "region": "default",
-          "sqlExpression": "",
-          "statistic": "Minimum"
-        }
-      ],
-      "title": "CPU Utilization [ $service ]",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "cloudwatch",
-        "uid": "CLOUDWATCH"
-      },
-      "description": "",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 3,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "never",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "min": 0,
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "percent"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 7,
-        "w": 12,
-        "x": 12,
-        "y": 11
-      },
-      "id": 22,
-      "options": {
-        "legend": {
-          "calcs": [
-            "mean",
-            "lastNotNull",
-            "max",
-            "min"
-          ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "10.4.3",
-      "targets": [
-        {
-          "datasource": {
-            "type": "cloudwatch",
-            "uid": "CLOUDWATCH"
-          },
-          "dimensions": {
-            "ClusterName": "cdp-sirsi",
-            "ServiceName": "$service"
-          },
-          "expression": "",
-          "id": "",
-          "label": "",
-          "logGroups": [],
-          "matchExact": true,
-          "metricEditorMode": 0,
-          "metricName": "MemoryUtilization",
-          "metricQueryType": 0,
-          "namespace": "AWS/ECS",
-          "period": "",
-          "queryMode": "Metrics",
-          "refId": "A",
-          "region": "default",
-          "sqlExpression": "",
-          "statistic": "Maximum"
-        },
-        {
-          "datasource": {
-            "type": "cloudwatch",
-            "uid": "CLOUDWATCH"
-          },
-          "dimensions": {
-            "ClusterName": "cdp-sirsi",
-            "ServiceName": "$service"
-          },
-          "expression": "",
-          "hide": false,
-          "id": "",
-          "label": "",
-          "logGroups": [],
-          "matchExact": true,
-          "metricEditorMode": 0,
-          "metricName": "MemoryUtilization",
-          "metricQueryType": 0,
-          "namespace": "AWS/ECS",
-          "period": "",
-          "queryMode": "Metrics",
-          "refId": "B",
-          "region": "default",
-          "sqlExpression": "",
-          "statistic": "Minimum"
-        }
-      ],
-      "title": "Memory Utilization [ $service ]",
-      "type": "timeseries"
     }
   ],
-  "schemaVersion": 39,
+  "preload": false,
+  "refresh": "",
+  "schemaVersion": 41,
   "tags": [],
   "templating": {
     "list": [
       {
         "current": {
-          "selected": true,
           "text": [
-            "All"
+            "$__all"
           ],
           "value": [
             "$__all"
           ]
         },
-        "hide": 0,
         "includeAll": true,
         "label": "Service",
         "multi": true,
         "name": "service",
         "options": [
           {
-            "selected": true,
-            "text": "All",
-            "value": "$__all"
+            "selected": false,
+            "text": "authority",
+            "value": "authority"
+          },
+          {
+            "selected": false,
+            "text": "av-scanner-app",
+            "value": "av-scanner-app"
           },
           {
             "selected": false,
@@ -1240,8 +1255,8 @@
           },
           {
             "selected": false,
-            "text": "outbox-processor-organisation",
-            "value": "outbox-processor-organisation"
+            "text": "outbox-processor-entity-verification",
+            "value": "outbox-processor-entity-verification"
           },
           {
             "selected": false,
@@ -1250,20 +1265,22 @@
           },
           {
             "selected": false,
+            "text": "scheduled-worker",
+            "value": "scheduled-worker"
+          },
+          {
+            "selected": false,
             "text": "tenant",
             "value": "tenant"
           }
         ],
-        "query": "authority, av-scanner-app, clamav-rest, data-sharing, entity-verification, forms, organisation, organisation-app, outbox-processor-entity-verification, outbox-processor-entity-verification, person, tenant",
-        "queryValue": "",
-        "skipUrlSync": false,
+        "query": "authority, av-scanner-app, clamav-rest, data-sharing, entity-verification, forms, organisation, organisation-app, outbox-processor-entity-verification, outbox-processor-entity-verification, person, scheduled-worker, tenant",
         "type": "custom"
       },
       {
         "current": {
-          "selected": false,
-          "text": "app/cdp-sirsi/9e67fe66e4a0652c",
-          "value": "app/cdp-sirsi/9e67fe66e4a0652c"
+          "text": "app/cdp-sirsi/45421bfbe34bc7a5",
+          "value": "app/cdp-sirsi/45421bfbe34bc7a5"
         },
         "datasource": {
           "type": "cloudwatch",
@@ -1273,7 +1290,6 @@
         "hide": 2,
         "includeAll": false,
         "label": "Loadbalancer",
-        "multi": false,
         "name": "loadbalancer",
         "options": [],
         "query": {
@@ -1286,8 +1302,6 @@
         },
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       }
     ]
@@ -1296,34 +1310,10 @@
     "from": "now-3h",
     "to": "now"
   },
-  "timepicker": {
-    "refresh_intervals": [
-      "5s",
-      "10s",
-      "30s",
-      "1m",
-      "5m",
-      "15m",
-      "30m",
-      "1h",
-      "2h",
-      "1d"
-    ],
-    "time_options": [
-      "5m",
-      "15m",
-      "1h",
-      "6h",
-      "12h",
-      "24h",
-      "2d",
-      "7d",
-      "30d"
-    ]
-  },
+  "timepicker": {},
   "timezone": "browser",
   "title": "ECS",
   "uid": "ecs",
-  "version": 1,
+  "version": 2,
   "weekStart": ""
 }

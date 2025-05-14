@@ -113,18 +113,25 @@ public class PdfGenerator(IHtmlLocalizer<FormsEngineResource> localizer) : IPdfG
         {
             col.Item().Text(localizer[group.Key].Value).Bold().FontSize(12);
             col.Item().PaddingBottom(10);
-            col.Item().LineHorizontal(1);
-
 
             foreach (var answerSet in group)
             {
                 if (answerSet.QuestionAnswers != null)
                 {
-                    foreach (var qa in answerSet.QuestionAnswers)
+                    if (answerSet.QuestionAnswers.Any())
                     {
-                        col.Item().Element(container => AddTwoColumnRow(container, localizer[qa.Item1].Value, qa.Item2));
+                        col.Item().LineHorizontal(1);
+
+                        foreach (var qa in answerSet.QuestionAnswers)
+                        {
+                            col.Item().Element(container => AddTwoColumnRow(container, localizer[qa.Item1].Value, qa.Item2));
+                        }
                     }
-                    col.Item().PaddingBottom(10);
+                    else
+                    {
+                        col.Item().Text(StaticTextResource.PdfGenerator_NoneApplyMsg);
+                    }
+
                 }
             }
 
@@ -172,6 +179,19 @@ public class PdfGenerator(IHtmlLocalizer<FormsEngineResource> localizer) : IPdfG
         if (!string.IsNullOrEmpty(basicInformation.Role))
             col.Item().Element(container => AddTwoColumnRow(container, StaticTextResource.PdfGenerator_BasicInformation_OrganisationType, basicInformation.Role));
 
+        if (basicInformation.OperationTypes.Count != 0)
+        {
+            col.Item().Element(container =>
+            {
+                var supplierOperationTypeText = string.Join(", ", basicInformation.OperationTypes.Select(ot =>
+                {
+                    return GetFriendlySupplierOperationTypeText(ot);                    
+                }));
+
+                AddTwoColumnRow(container, StaticTextResource.PdfGenerator_Supplier_OperationType, supplierOperationTypeText);
+            });
+        }
+
         if (basicInformation.LegalForm != null)
         {
             col.Item().Element(container =>
@@ -189,7 +209,7 @@ public class PdfGenerator(IHtmlLocalizer<FormsEngineResource> localizer) : IPdfG
         col.Item().PaddingBottom(10);
     }
 
-    private void AddConnectedPersonInformationSection(ColumnDescriptor col, List<ConnectedPersonInformation> connectedPersons)
+    private void AddConnectedPersonInformationSection(ColumnDescriptor col, List<ConnectedEntityInformation> connectedPersons)
     {
         col.Item().Text(StaticTextResource.PdfGenerator_ConnectedPersonInformation_Title).Bold().FontSize(12);
         col.Item().PaddingBottom(10);
@@ -266,6 +286,9 @@ public class PdfGenerator(IHtmlLocalizer<FormsEngineResource> localizer) : IPdfG
                         FormatAddress(mapAddressDetails(postalAddress))));
                 }
 
+                if (person.RegistrationDate != null)
+                    col.Item().Element(container => AddTwoColumnRow(container, StaticTextResource.PdfGenerator_ConnectedOrganisationInformation_RegistrationDate, person.RegistrationDate?.ToString("dd MMMM yyyy")));
+
                 if (person.Organisation != null)
                 {
                     if (person.Organisation.ControlConditions.Count != 0)
@@ -340,7 +363,7 @@ public class PdfGenerator(IHtmlLocalizer<FormsEngineResource> localizer) : IPdfG
         }
         else
         {
-            col.Item().Text(StaticTextResource.PdfGenerator_NoConnectedPersonInformationAvailableMsg);
+            col.Item().Text(StaticTextResource.PdfGenerator_NoneApplyMsg);
         }
 
         col.Item().LineHorizontal(1);
@@ -476,6 +499,18 @@ public class PdfGenerator(IHtmlLocalizer<FormsEngineResource> localizer) : IPdfG
         };
     }
 
+    private string GetFriendlySupplierOperationTypeText(OperationType operationType)
+    {
+        return operationType switch
+        {
+            OperationType.SmallOrMediumSized => StaticTextResource.PdfGenerator_Supplier_OperationType_SmallOrMediumSized_Short,
+            OperationType.NonGovernmental => StaticTextResource.PdfGenerator_Supplier_OperationType_NonGovernmental_Short,
+            OperationType.SupportedEmploymentProvider => StaticTextResource.PdfGenerator_Supplier_OperationType_SupportedEmploymentProvider_Short,
+            OperationType.PublicService => StaticTextResource.PdfGenerator_Supplier_OperationType_PublicService_Short,
+            OperationType.None => StaticTextResource.PdfGenerator_Supplier_OperationType_None_Short,
+            _ => StaticTextResource.PdfGenerator_Supplier_OperationType_Unknown_Short
+        };
+    }
     private static string GetOrganisationSchemeTitle(string value)
     {
         return value.ToUpper() switch

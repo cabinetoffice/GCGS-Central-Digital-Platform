@@ -47,7 +47,7 @@
 
     <partial name="Shared/_CookieBanner" />
 
-    <a href="#main-content" class="govuk-skip-link" data-module="govuk-skip-link">Skip to main content</a>
+    <a href="#main-content" class="govuk-skip-link" data-module="govuk-skip-link">@StaticTextResource.Header_SkipToMainContent_Link</a>
 
     <header class="govuk-header" role="banner" data-module="govuk-header">
         <div class="govuk-header__container govuk-width-container @ViewData["ContainerClasses"]">
@@ -177,7 +177,7 @@
                     <h2 class="govuk-visually-hidden">@StaticTextResource.Footer_SupportLinks</h2>
                     <ul class="govuk-footer__inline-list">
                         <li class="govuk-footer__inline-list-item">
-                            <a class="govuk-footer__link" target="_blank" href="/contact-us" )">@StaticTextResource.Footer_ContactUs</a>
+                            <a class="govuk-footer__link" href="/contact-us" )">@StaticTextResource.Footer_ContactUs</a>
                         </li>
 
                         <feature name="@FeatureFlags.AllowFtsRedirectLinks">

@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!--
     Microsoft ResX Schema
@@ -217,7 +217,7 @@
     <value>Ymysg yr eithriadau dewisol a all eich eithrio mae:</value>
   </data>
   <data name="Exclusions_AddExclusionDeclaration_DiscretionaryExclusionsLinkText" xml:space="preserve">
-    <value>Mae'r eithriadau hyn wedi'u diffinio yn &lt;a href="{0}" target="_blank"&gt;atodlen 7 o Ddeddf Caffael 2023 (opens in new tab)&lt;/a&gt;.</value>
+    <value>Mae'r eithriadau hyn wedi'u diffinio yn &lt;a class="govuk-link" href="{0}" target="_blank"&gt;atodlen 7 o Ddeddf Caffael 2023 (bydd yn agor mewn tab newydd)&lt;/a&gt;.</value>
   </data>
   <data name="Exclusions_AddExclusionDeclaration_DiscretionaryExclusions_Exclusion1" xml:space="preserve">
     <value>gweithredu'n amhriodol ym maes caffael</value>
@@ -247,7 +247,7 @@
     <value>atal neu beidio â pharhau â busnes neu ran sylweddol ohono</value>
   </data>
   <data name="Exclusions_AddExclusionDeclaration_InsetText" xml:space="preserve">
-    <value>Os bydd unrhyw eithriadau'n gymwys i unigolyn sydd â rheolaeth sylweddol, fel cyfarwyddwr neu brif gyfranddaliwr, dylech sicrhau eich bod wedi'i ychwanegu fel  &lt;a href="{0}"&gt;unigolyn cysylltiedig&lt;/a&gt;.</value>
+    <value>Os bydd unrhyw eithriadau'n gymwys i unigolyn sydd â rheolaeth sylweddol, fel cyfarwyddwr neu brif gyfranddaliwr, dylech sicrhau eich bod wedi'i ychwanegu fel  &lt;a class="govuk-link" href="{0}"&gt;unigolyn cysylltiedig&lt;/a&gt;.</value>
   </data>
   <data name="Exclusions_AddExclusionDeclaration_MandatoryConvictionsIntro" xml:space="preserve">
     <value>Ymysg yr euogfarnau a all eich eithrio mae:</value>
@@ -283,7 +283,7 @@
     <value>Ymysg y cosbau a digwyddiadau eraill a all eich eithrio mae:</value>
   </data>
   <data name="Exclusions_AddExclusionDeclaration_MandatoryExclusionsLinkText" xml:space="preserve">
-    <value>Mae'r eithriadau hyn wedi'u diffinio yn &lt;a href="{0}" target="_blank"&gt;atodlen 6 o Ddeddf Caffael 2023 (opens in new tab)&lt;/a&gt;.</value>
+    <value>Mae'r eithriadau hyn wedi'u diffinio yn &lt;a class="govuk-link" href="{0}" target="_blank"&gt;atodlen 6 o Ddeddf Caffael 2023 (bydd yn agor mewn tab newydd)&lt;/a&gt;.</value>
   </data>
   <data name="Exclusions_AddExclusionDeclaration_MandatoryExclusions_Penalty1" xml:space="preserve">
     <value>addasiadau ar gyfer trefniadau treth sy'n gamdriniol</value>
@@ -425,6 +425,9 @@
   </data>
   <data name="Header_ServiceName" xml:space="preserve">
     <value>Canfod Tendr</value>
+  </data>
+  <data name="Header_SkipToMainContent_Link" xml:space="preserve">
+    <value>Neidio i'r prif gynnwys</value>
   </data>
   <data name="Header_SignIn" xml:space="preserve">
     <value>Mewngofnodi</value>
@@ -1077,7 +1080,7 @@
     <value>Gall benodi neu gael gwared ar gyfarwyddwyr</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityControlCondition_HasOtherSignificantInfluenceOrControlHint" xml:space="preserve">
-    <value>Mae ganddo'r hawl i arfer, neu mae'n arfer, dylanwad neu reolaeth sylweddol dros y cwmni. Fel y nodir yn y &lt;a href="https://www.gov.uk/government/publications/guidance-to-the-people-with-significant-control-requirements-for-companies-and-limited-liability-partnerships" target="_blank"&gt;canllawiau i berson â rheolaeth sylweddol&lt;/a&gt;.</value>
+    <value>Mae ganddo'r hawl i arfer, neu mae'n arfer, dylanwad neu reolaeth sylweddol dros y cwmni. Fel y nodir yn y &lt;a class="govuk-link" href="https://www.gov.uk/government/publications/guidance-to-the-people-with-significant-control-requirements-for-companies-and-limited-liability-partnerships" target="_blank"&gt;canllawiau i berson â rheolaeth sylweddol&lt;/a&gt;.</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityControlCondition_HasOtherSignificantInfluenceOrControlLabel" xml:space="preserve">
     <value>Mae ganddo ddylanwad neu reolaeth sylweddol</value>
@@ -1092,7 +1095,7 @@
     <value>Pa amodau rheolaeth penodol sydd gan {0}?</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityControlCondition_Hint" xml:space="preserve">
-    <value>Fel y nodir yn &lt;a href="https://www.legislation.gov.uk/ukpga/2006/46/schedule/1A/part/1?timeline=false" target="_blank"&gt;rhan 1 atodlen 1a o Ddeddf Cwmnïau 2006 (opens in new tab)&lt;/a&gt;. Dewiswch bob un sy'n berthnasol.</value>
+    <value>Fel y nodir yn &lt;a class="govuk-link" href="https://www.legislation.gov.uk/ukpga/2006/46/schedule/1A/part/1?timeline=false" target="_blank"&gt;rhan 1 atodlen 1a o Ddeddf Cwmnïau 2006 (bydd yn agor mewn tab newydd)&lt;/a&gt;. Dewiswch bob un sy'n berthnasol.</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityControlCondition_NoneApplyLabel" xml:space="preserve">
     <value>Dim un yn gymwys</value>
@@ -1278,7 +1281,7 @@
     <value>A oedd yn ofynnol i chi gofrestru {0} fel person â rheolaeth sylweddol?</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityRegistrationDateQuestion_Hint" xml:space="preserve">
-    <value>Yn y DU, caiff hyn ei ddiffinio gan &lt;a href="https://www.legislation.gov.uk/ukpga/2006/46/section/790C" target="_blank"&gt;adran 790C(4) o Ddeddf Cwmnïau 2006 (opens in new tab)&lt;/a&gt;</value>
+    <value>Yn y DU, caiff hyn ei ddiffinio gan &lt;a class="govuk-link" href="https://www.legislation.gov.uk/ukpga/2006/46/section/790C" target="_blank"&gt;adran 790C(4) o Ddeddf Cwmnïau 2006 (bydd yn agor mewn tab newydd)&lt;/a&gt;</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityRemoveConfirmation_EndDateHint" xml:space="preserve">
     <value>Er enghraifft, 27 3 2007</value>
@@ -1956,6 +1959,9 @@
   <data name="Organisation_AddAddress" xml:space="preserve">
     <value>Ychwanegu&lt;span class="govuk-visually-hidden"&gt; cyfeiriad&lt;/span&gt;</value>
   </data>
+  <data name="Organisation_AddOrganisationIdentifier" xml:space="preserve">
+    <value>Ychwanegu&lt;span class="govuk-visually-hidden"&gt; dynodyddion y sefydliad&lt;/span&gt;</value>
+  </data>
   <data name="Organisation_AfterYouveRegistered" xml:space="preserve">
     <value>Ar ôl i chi gofrestru</value>
   </data>
@@ -2115,6 +2121,9 @@
   <data name="PdfGenerator_BasicInformation_RegistrationDate" xml:space="preserve">
     <value>Dyddiad cofrestru</value>
   </data>
+  <data name="PdfGenerator_ConnectedOrganisationInformation_RegistrationDate" xml:space="preserve">
+    <value>Dyddiad cofrestru</value>
+  </data>
   <data name="PdfGenerator_ConnectedOrganisationInformation_Title" xml:space="preserve">
     <value>Gwybodaeth am sefydliad cysylltiedig</value>
   </data>
@@ -2150,9 +2159,6 @@
   </data>
   <data name="PdfGenerator_NoAdditionalIdentifiersAvailableMsg" xml:space="preserve">
     <value>Nid oes unrhyw ddynodyddion ychwanegol ar gael.</value>
-  </data>
-  <data name="PdfGenerator_NoConnectedPersonInformationAvailableMsg" xml:space="preserve">
-    <value>Nid oes unrhyw wybodaeth am berson cysylltiedig ar gael.</value>
   </data>
   <data name="PdfGenerator_OrganisationSchemeTitle_CharityCommission" xml:space="preserve">
     <value>Comisiwn Elusennau (Cymru a Lloegr)</value>
@@ -2192,7 +2198,19 @@
   </data>
   <data name="PdfGenerator_Scheme" xml:space="preserve">
     <value>Cofrestrfa</value>
+  </data>  
+  <data name="PdfGenerator_Supplier_OperationType_SmallOrMediumSized_Short" xml:space="preserve">
+    <value>Busnes bach neu ganolig</value>
   </data>
+  <data name="PdfGenerator_Supplier_OperationType_NonGovernmental_Short" xml:space="preserve">
+    <value>Corff anllywodraethol</value>
+  </data>
+  <data name="PdfGenerator_Supplier_OperationType_SupportedEmploymentProvider_Short" xml:space="preserve">
+    <value>Darparwr cyflogaeth â chymorth</value>
+  </data>
+  <data name="PdfGenerator_Supplier_OperationType_PublicService_Short" xml:space="preserve">
+    <value>Cwmni gwasanaeth cyhoeddus cydfuddiannol</value>
+  </data>  
   <data name="PdfGenerator_UnknownCategory" xml:space="preserve">
     <value>Categori anhysbys</value>
   </data>
@@ -2308,7 +2326,7 @@
     <value>Cod rhannu wedi'i greu</value>
   </data>
   <data name="ShareYourInformation_ShareCodeCreatedFooterBody1" xml:space="preserve">
-    <value>Gallwch gadw eich cod rhannu a &lt;a href="?handler=download&amp;shareCode={0}"&gt;lawrlwytho'r ffeil wybodaeth am y cyflenwr&lt;/a&gt; neu ddychwelyd pan fydd eu hangen arnoch. </value>
+    <value>Gallwch gadw eich cod rhannu a &lt;a class="govuk-link" href="?handler=download&amp;shareCode={0}"&gt;lawrlwytho'r ffeil wybodaeth am y cyflenwr&lt;/a&gt; neu ddychwelyd pan fydd eu hangen arnoch. </value>
   </data>
   <data name="ShareYourInformation_ShareCodeCreatedFooterBody2" xml:space="preserve">
     <value>Os bydd eich gwybodaeth am y cyflenwr yn newid, gallwch ei diweddaru a chreu ffeil neu god rhannu newydd er mwyn rhannu'r wybodaeth newydd.</value>
@@ -2365,7 +2383,7 @@
     <value>Newid eich gosodiadau</value>
   </data>
   <data name="Supplementary_CookieDetails_ChangeSettingsInfo" xml:space="preserve">
-    <value>Gallwch &lt;a href="/cookies"&gt;newid pa gwcis rydych yn hapus i ni eu defnyddio&lt;/a&gt;.</value>
+    <value>Gallwch &lt;a class="govuk-link" href="/cookies"&gt;newid pa gwcis rydych yn hapus i ni eu defnyddio&lt;/a&gt;.</value>
   </data>
   <data name="Supplementary_CookieDetails_GoogleAnalyticsInfo" xml:space="preserve">
     <value>Mae Google Analytics yn storio gwybodaeth am y canlynol:</value>
@@ -2659,7 +2677,7 @@
     <value>Mae'n rhaid i'r dyddiad cofrestru gynnwys blwyddyn</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityDeclaration_Paragraph2" xml:space="preserve">
-    <value>Mae'n cynnwys &lt;a href="https://www.gov.uk/guidance/people-with-significant-control-pscs" target="_blank"&gt;pobl â rheolaeth sylweddol (bydd yn agor mewn tab newydd)&lt;/a&gt; ac unrhyw unigolyn neu gwmni arall ar wahân i chi sydd â buddiant datganadwy yn eich sefydliad.</value>
+    <value>Mae'n cynnwys &lt;a class="govuk-link" href="https://www.gov.uk/guidance/people-with-significant-control-pscs" target="_blank"&gt;pobl â rheolaeth sylweddol (bydd yn agor mewn tab newydd)&lt;/a&gt; ac unrhyw unigolyn neu gwmni arall ar wahân i chi sydd â buddiant datganadwy yn eich sefydliad.</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityDeclaration_Paragraph3" xml:space="preserve">
     <value>Er enghraifft, cyfarwyddwr, ymddiriedolaeth, cyfranddaliwr o bwys neu riant gwmni neu is-gwmni.</value>
@@ -2973,9 +2991,6 @@
   <data name="ConsortiumShareMyInformation_HowItWorksParagraph2" xml:space="preserve">
     <value>Pan fyddwch yn gwneud cynnig am gaffaeliad, bydd yr awdurdod contractio yn rhoi gwybod i chi sut i ddarparu'r ffeil neu god rhannu.</value>
   </data>
-  <data name="ConsortiumShareMyInformation_HowItWorksParagraph3" xml:space="preserve">
-    <value>Os bydd unrhyw ran o'r wybodaeth am y cyflenwr ar gyfer unrhyw sefydliad yn y consortiwm yn newid, gallwch ddiweddaru ei god rhannu ar dudalen manylion y consortiwm ac yna greu cod a ffeil rhannu cyfun newydd i rannu'r wybodaeth newydd. </value>
-  </data>
   <data name="ConsortiumShareMyInformation_Title" xml:space="preserve">
     <value>Rhannwch wybodaeth am eich consortiwm</value>
   </data>
@@ -3144,7 +3159,7 @@
     <value>Cyn y gallwch ddefnyddio'r gwasanaeth hwn:</value>
   </data>
   <data name="OrganisationOverView_Banner_Review_MoU_Link" xml:space="preserve">
-    <value>rhaid i chi &lt;a href="/organisation/{0}/review-and-sign-memorandom"&gt;ddarllen y cytundeb rhannu data a chytuno arno&lt;/a&gt;</value>
+    <value>rhaid i chi &lt;a class="govuk-link" href="/organisation/{0}/review-and-sign-memorandom"&gt;ddarllen y cytundeb rhannu data a chytuno arno&lt;/a&gt;</value>
   </data>
   <data name="OrganisationOverview_RegisterAsBuyer_Link" xml:space="preserve">
     <value>Cofrestru fel prynwr</value>
@@ -3159,13 +3174,13 @@
     <value>Dewiswch ✓ neu X</value>
   </data>
   <data name="OrganisationRegistration_BuyerOrganisationType_Hint" xml:space="preserve">
-    <value>Penderfynwch ar eich math o sefydliad, fel y'i diffinnir yn y &lt;a href="https://www.gov.uk/government/publications/procurement-act-2023-guidance-documents-plan-phase/guidance-contracting-authority-definition-html" target="_blank"&gt;canllawiau ar ddiffinio awdurdod contractio (agor mewn tab newydd). &lt;/a&gt;</value>
+    <value>Penderfynwch ar eich math o sefydliad, fel y'i diffinnir yn y &lt;a class="govuk-link" href="https://www.gov.uk/government/publications/procurement-act-2023-guidance-documents-plan-phase/guidance-contracting-authority-definition-html" target="_blank"&gt;canllawiau ar ddiffinio awdurdod contractio (agor mewn tab newydd). &lt;/a&gt;</value>
   </data>
   <data name="OrganisationRegistration_BuyerOrganisationType_RegionalAndLocalGovernment_Label" xml:space="preserve">
     <value>Awdurdod cyhoeddus rhanbarthol a lleol (is-ganolog) – gweinyddiaeth y DU neu weinyddiaeth ddatganoledig</value>
   </data>
   <data name="OrganisationRegistration_BuyerSelectDevolvedRegulation_Hint" xml:space="preserve">
-    <value>Darllenwch y &lt;a href="https://www.gov.uk/government/publications/procurement-act-2023-guidance-documents-plan-phase/guidance-devolved-contracting-authorities-html#:~:text=Procurement%20is%20largely%20a%20devolved,are%20conducted%20and%20contracts%20managed." target="_blank"&gt;canllawiau ar awdurdodau contractio datganoledig (agor mewn tab newydd). &lt;/a&gt;</value>
+    <value>Darllenwch y &lt;a class="govuk-link" href="https://www.gov.uk/government/publications/procurement-act-2023-guidance-documents-plan-phase/guidance-devolved-contracting-authorities-html#:~:text=Procurement%20is%20largely%20a%20devolved,are%20conducted%20and%20contracts%20managed." target="_blank"&gt;canllawiau ar awdurdodau contractio datganoledig (agor mewn tab newydd). &lt;/a&gt;</value>
   </data>
   <data name="OrganisationRegistration_Change_Identifier" xml:space="preserve">
     <value>Newid&lt;span class="govuk-visually-hidden"&gt; dynodydd sefydliad&lt;/span&gt;</value>
@@ -3174,7 +3189,7 @@
     <value>Ni allwn ddod o hyd i rif eich cwmni ar wefan Tŷ'r Cwmnïau. Os yw'n gywir, dylech barhau a rhoi eich manylion â llaw.</value>
   </data>
   <data name="OrganisationRegistration_CompanyHouseNumberQuestion_Hint" xml:space="preserve">
-    <value>Gallwch &lt;a href="https://find-and-update.company-information.service.gov.uk/" target="_blank"&gt;ddod o hyd i rif eich cwmni ar wefan Tŷ'r Cwmnïau (bydd yn agor mewn tab newydd)&lt;/a&gt;. Rhif 8 digid neu 2 lythyren a 6 digid ydyw. Er enghraifft, 12345678 neu SC123456.</value>
+    <value>Gallwch &lt;a class="govuk-link" href="https://find-and-update.company-information.service.gov.uk/" target="_blank"&gt;ddod o hyd i rif eich cwmni ar wefan Tŷ'r Cwmnïau (bydd yn agor mewn tab newydd)&lt;/a&gt;. Rhif 8 digid neu 2 lythyren a 6 digid ydyw. Er enghraifft, 12345678 neu SC123456.</value>
   </data>
   <data name="OrganisationRegistration_CompanyHouseNumberQuestion_ValidationErrorMessage" xml:space="preserve">
     <value>Dewiswch ✓ neu X</value>
@@ -3204,7 +3219,7 @@
     <value>Dewiswch ✓ neu X</value>
   </data>
   <data name="OrganisationRegistration_SearchOrganisationName_ExactMatchAlreadyExists" xml:space="preserve">
-    <value>Mae'r sefydliad a gofnodwyd gennych wedi'i gofrestru yn barod. Gwnewch gais i ymuno â'r sefydliad cofrestredig neu &lt;a href="/registration/organisation-name\"&gt;rhowch enw gwahanol&lt;/a&gt;.</value>
+    <value>Mae'r sefydliad a gofnodwyd gennych wedi'i gofrestru yn barod. Gwnewch gais i ymuno â'r sefydliad cofrestredig neu &lt;a class="govuk-link" href="/registration/organisation-name\"&gt;rhowch enw gwahanol&lt;/a&gt;.</value>
   </data>
   <data name="OrganisationRegistration_SearchOrganisationName_Heading_Plural" xml:space="preserve">
     <value>Canfuwyd cyfatebiaethau</value>
@@ -3249,7 +3264,7 @@
     <value>Yn ôl i fanylion y sefydliad</value>
   </data>
   <data name="ShareYourInformation_ConsortiumShareCodeCreatedFooterBody1" xml:space="preserve">
-    <value>Gallwch gadw eich cod rhannu a &lt;a href="?handler=download&amp;shareCode={0}"&gt;lawrlwytho'r ffeil wybodaeth gyfun am y cyflenwr&lt;/a&gt; neu ddychwelyd pan fydd eu hangen arnoch.</value>
+    <value>Gallwch gadw eich cod rhannu a &lt;a class="govuk-link" href="?handler=download&amp;shareCode={0}"&gt;lawrlwytho'r ffeil wybodaeth gyfun am y cyflenwr&lt;/a&gt; neu ddychwelyd pan fydd eu hangen arnoch.</value>
   </data>
   <data name="Supplementary_CookieDetails_BannerMessages" xml:space="preserve">
     <value>Cwcis sy'n cofio eich gosodiadau</value>
@@ -3318,7 +3333,7 @@
     <value>Hysbysiad preifatrwydd</value>
   </data>
   <data name="Supplementary_SignedOut_Paragraph1" xml:space="preserve">
-    <value>&lt;a href="/one-login/sign-in" class="govuk-link break-word" aria-label="Sign in"&gt;Mewngofnodwch&lt;/a&gt; eto, neu &lt;a href="{0}" class="govuk-link break-word"&gt;porwch o'r hafan&lt;/a&gt; i ddod o hyd i'r wybodaeth sydd ei hangen arnoch.</value>
+    <value>&lt;a href="/one-login/sign-in" class="govuk-link break-word" aria-label="Sign in"&gt;Mewngofnodwch&lt;/a&gt; eto, neu &lt;a class="govuk-link" href="{0}" class="govuk-link break-word"&gt;porwch o'r hafan&lt;/a&gt; i ddod o hyd i'r wybodaeth sydd ei hangen arnoch.</value>
   </data>
   <data name="Supplementary_SignedOut_Paragraph2" xml:space="preserve">
     <value>&lt;a href="/contact-us" class="govuk-link break-word"&gt;Cysylltwch â ni&lt;/a&gt; os ydych yn cael problemau wrth ddefnyddio Canfod Tendr.</value>
@@ -3339,7 +3354,7 @@
     <value>Awdurdodau cyhoeddus gan gynnwys cyrff hyd braich a chronfeydd masnachu</value>
   </data>
   <data name="SupplierToBuyer_OrganisationType_Hint" xml:space="preserve">
-    <value>Penderfynwch ar eich math o sefydliad, fel y'i diffinnir yn y &lt;a href="https://www.gov.uk/government/publications/procurement-act-2023-guidance-documents-plan-phase/guidance-contracting-authority-definition-html" target="_blank"&gt;canllawiau ar ddiffinio awdurdod contractio (agor mewn tab newydd) &lt;/a&gt;</value>
+    <value>Penderfynwch ar eich math o sefydliad, fel y'i diffinnir yn y &lt;a class="govuk-link" href="https://www.gov.uk/government/publications/procurement-act-2023-guidance-documents-plan-phase/guidance-contracting-authority-definition-html" target="_blank"&gt;canllawiau ar ddiffinio awdurdod contractio (agor mewn tab newydd) &lt;/a&gt;</value>
   </data>
   <data name="SupplierToBuyer_OrganisationType_PrivateUtility_Hint" xml:space="preserve">
     <value>Cwmni preifat â hawl arbennig neu unigryw i ddarparu cyfleustodau i'r cyhoedd. Er enghraifft, cwmnïau preifat sy'n cyflenwi trydan.</value>

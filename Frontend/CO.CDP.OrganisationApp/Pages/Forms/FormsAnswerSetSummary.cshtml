@@ -18,36 +18,42 @@
         @if (!string.IsNullOrWhiteSpace(Model.Heading))
         {
             <h1 class="govuk-heading-l">
+                <span class="govuk-caption-m">@Model.HeadingHint</span>
                 @Model.Heading
             </h1>
         }
 
         <div class="govuk-form-group">
-            @foreach (var formAnswerSet in Model.FormAnswerSets)
-            {
-                <dl class="govuk-summary-list ros-add-to-a-list">
+            <dl class="govuk-summary-list">
+                @foreach (var formAnswerSet in Model.FormAnswerSets)
+                {
                     <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">
-                            @foreach (var item in formAnswerSet.answers)
-                            {
-                                <p class="govuk-!-margin-top-0">@item.Title: <span class="govuk-!-font-weight-regular">@item.Answer</span></p>
-                            }
-                        </dt>
+                        @foreach (var item in formAnswerSet.answers)
+                        {
+                            <dt class="govuk-summary-list__key">
+                                @item.Title
+                            </dt>
+                            <dd class="govuk-summary-list__value">
+                                @item.Answer
+                            </dd>
+                        }
                         <authorize scope="@OrgScopeRequirement.Editor">
                             <dd class="govuk-summary-list__actions">
                                 <ul class="govuk-summary-list__actions-list">
                                     <li class="govuk-summary-list__actions-list-item">
-                                        <a class="govuk-link" href="?handler=change&answer-set-id=@formAnswerSet.answerSetId">@StaticTextResource.Global_Change</a>
+                                        <a class="govuk-link" href="?handler=change&answer-set-id=@formAnswerSet.answerSetId">@StaticTextResource.Global_View</a>
                                     </li>
                                     <li class="govuk-summary-list__actions-list-item">
-                                        <a class="govuk-link" href="/organisation/@Model.OrganisationId/forms/@Model.FormId/sections/@Model.SectionId/answers/@formAnswerSet.answerSetId/remove-confirmation">@StaticTextResource.Global_Remove</a>
+                                        <a class="govuk-link" href="/organisation/@Model.OrganisationId/forms/@Model.FormId/sections/@Model.SectionId/answers/@formAnswerSet.answerSetId/remove-confirmation">
+                                            @StaticTextResource.Global_Remove
+                                        </a>
                                     </li>
                                 </ul>
                             </dd>
                         </authorize>
                     </div>
-                </dl>
-            }
+                }
+            </dl>
 
             <authorize scope="@OrgScopeRequirement.Editor">
                 <form class="form" method="post">

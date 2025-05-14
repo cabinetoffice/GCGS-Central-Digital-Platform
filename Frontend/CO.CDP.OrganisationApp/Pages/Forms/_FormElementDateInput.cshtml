@@ -1,5 +1,6 @@
 @model FormElementDateInputModel
 @using CO.CDP.Localization
+@using System.Text.RegularExpressions
 
 @{
     var dayHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Day)).HasInnerHtml;
@@ -11,27 +12,17 @@
 
     string GetAriaDescribedBy()
     {
-        string ariaDescribedBy = "date-hint";
+        string html = Model.Description!;
+        string pattern = @"id=""([^""]+)""";
+        string ariaDescribedBy = "";
 
-        @if (dayHasError)
+        if (html != null)
         {
-            ariaDescribedBy += " day-error";
-        }
-        @if (monthHasError)
-        {
-            ariaDescribedBy += " month-error";
-        }
-        @if (yearHasError)
-        {
-            ariaDescribedBy += " year-error";
-        }
-        @if (dateStringHasError)
-        {
-            ariaDescribedBy += " date-error";
-        }
-        @if (selectOptionHasError)
-        {
-            ariaDescribedBy += " has-value-error";
+            Match match = Regex.Match(html, pattern);
+            if (match.Success)
+            {
+                ariaDescribedBy = match.Groups[1].Value;
+            }
         }
 
         return ariaDescribedBy;
@@ -39,6 +30,7 @@
 
     void RenderField()
     {
+
         <div id="date-hint">
             @if (!string.IsNullOrWhiteSpace(Model.Caption))
             {
@@ -112,7 +104,7 @@
 
 <div class="govuk-form-group @((Model.IsRequired && hasDateError) || selectOptionHasError ? "govuk-form-group--error" : "")">
     <fieldset class="govuk-fieldset" role="group" aria-describedby="@GetAriaDescribedBy()">
-        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l" id="outer-legend">
             @if (!string.IsNullOrWhiteSpace(Model.Heading))
             {
                 <h1 class="govuk-fieldset__heading">@Model.Heading</h1>
@@ -148,9 +140,11 @@
 
                 <div class="govuk-radios__conditional" id="conditional-YES">
                     <div class="govuk-form-group @(hasDateError ? "govuk-form-group--error" : "")">
-                        @{
-                            RenderField();
-                        }
+                        <fieldset class="govuk-fieldset" role="group" aria-describedby="date-hint" aria-labelledby="outer-legend inner-legend">
+                            @{
+                                RenderField();
+                            }
+                        </fieldset>
                     </div>
                 </div>
 

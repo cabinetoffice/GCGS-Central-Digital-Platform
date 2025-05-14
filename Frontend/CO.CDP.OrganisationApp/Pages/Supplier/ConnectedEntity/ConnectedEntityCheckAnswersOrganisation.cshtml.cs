@@ -28,6 +28,9 @@ public class ConnectedEntityCheckAnswersOrganisationModel(
     public string? BackPageLink { get; set; }
     public bool ShowRegisterDate { get; set; }
     public bool ShowLegalForm { get; set; }
+    public bool ShowCompaniesHouse { get; set; }
+    public bool ShowOverseasCompanyHouse { get; set; }
+
     public async Task<IActionResult> OnGet()
     {
         var (valid, state) = ValidatePage();
@@ -131,6 +134,8 @@ public class ConnectedEntityCheckAnswersOrganisationModel(
         BackPageLink = GetBackLinkPageName(state);
         ShowRegisterDate = ConnectedEntityCheckAnswersCommon.SetShowRegisterDate(state);
         ShowLegalForm = ConnectedEntityCheckAnswersCommon.SetShowLegalForm(state);
+        ShowCompaniesHouse = ConnectedEntityCheckAnswersCommon.SetShowCompaniesHouse(state);
+        ShowOverseasCompanyHouse = ConnectedEntityCheckAnswersCommon.SetShowOverseasCompanyHouse(state);
     }
 
     private RegisterConnectedEntity? RegisterConnectedEntityPayload(ConnectedEntityState state)
@@ -176,7 +181,8 @@ public class ConnectedEntityCheckAnswersOrganisationModel(
             overseasCompanyNumber: state.OverseasCompaniesHouseNumber,
             registeredDate: (state.RegistrationDate.HasValue ? state.RegistrationDate.Value : null),
             registerName: state.RegisterName,
-            startDate: null
+            startDate: null,
+            deleted: false
         );
 
         return registerConnectedEntity;
@@ -223,7 +229,8 @@ public class ConnectedEntityCheckAnswersOrganisationModel(
             overseasCompanyNumber: state.OverseasCompaniesHouseNumber,
             registeredDate: (state.RegistrationDate.HasValue ? state.RegistrationDate.Value : null),
             registerName: state.RegisterName,
-            startDate: null
+            startDate: null,
+            deleted: false
         );
 
         return updateConnectedEntity;

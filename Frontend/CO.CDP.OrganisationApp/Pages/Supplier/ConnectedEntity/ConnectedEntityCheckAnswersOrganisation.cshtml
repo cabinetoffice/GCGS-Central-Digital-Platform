@@ -149,14 +149,14 @@
                     }
                 }
 
-                @if (details.HasCompaniesHouseNumber.HasValue)
+                @if (Model.ShowCompaniesHouse)
                 {
                     <div class="govuk-summary-list__row">
                         <dt class="govuk-summary-list__key">
                             @StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_CompaniesHouseRegistered
                         </dt>
                         <dd class="govuk-summary-list__value">
-                            @if (details.HasCompaniesHouseNumber == true)
+                            @if (details.HasCompaniesHouseNumber.HasValue && details.HasCompaniesHouseNumber == true)
                             {
                                 @StaticTextResource.Global_Yes
                                 <br />
@@ -175,14 +175,14 @@
                     </div>
                 }
 
-                @if (details.HasOverseasCompaniesHouseNumber.HasValue)
+                @if (Model.ShowOverseasCompanyHouse)
                 {
                     <div class="govuk-summary-list__row">
                         <dt class="govuk-summary-list__key">
                             @StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_OverseasEquivalent
                         </dt>
                         <dd class="govuk-summary-list__value">
-                            @if (details.HasOverseasCompaniesHouseNumber == true)
+                            @if (details.HasOverseasCompaniesHouseNumber.HasValue && details.HasOverseasCompaniesHouseNumber == true)
                             {
                                 @StaticTextResource.Global_Yes
                                 <br />
@@ -289,6 +289,28 @@
                         </dd>
                     </div>
                 }
+
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        @StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityCheckAnswers_DateNoLongerConnected
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        @details.EndDate?.ToString("dd/MM/yyyy")
+                    </dd>
+                    <dd class="govuk-summary-list__actions">
+                        <a class="govuk-link" href="/organisation/@Model.Id/supplier-information/connected-person/not-connected/@Model.ConnectedEntityId?frm-chk-answer=true">
+                            @if (@details.EndDate == null)
+                            {
+                                @Html.Raw(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityCheckAnswers_AddDateNoLongerConnected)
+                            }
+                            else
+                            {
+                                @Html.Raw(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityCheckAnswers_ChangeDateNoLongerConnected)
+                            }
+                        </a>
+                    </dd>
+                </div>
+
             </dl>
 
             <govuk-button>@StaticTextResource.Global_Submit</govuk-button>

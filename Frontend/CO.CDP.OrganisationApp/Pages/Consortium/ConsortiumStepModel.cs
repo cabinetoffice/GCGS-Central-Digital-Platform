@@ -10,6 +10,7 @@ public abstract class ConsortiumStepModel : LoggedInUserAwareModel
     public const string ConsortiumNonUKAddressPage = "/consortium/address/non-uk";
     public const string ConsortiumEmailPage = "/consortium/email";
     public const string ConsortiumOverviewPage = "/consortium/overview";
+    public const string ConsortiumCheckAnswerPage = "/consortium/check-answers";
 
     public abstract string CurrentPage { get; }
 

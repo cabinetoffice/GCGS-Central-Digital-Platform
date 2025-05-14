@@ -68,6 +68,8 @@ public class GetFormSectionQuestionsUseCaseTest(AutoMapperFixture mapperFixture)
                 RemoveConfirmationHeading = "Are you sure you want to remove this file?"
             }
         };
+        var question1Name = "_Section0" + GetQuestionNumber();
+        var question2Name = "_Section1" + GetQuestionNumber();
 
         var questions = new List<CO.CDP.OrganisationInformation.Persistence.Forms.FormQuestion>
         {
@@ -76,7 +78,7 @@ public class GetFormSectionQuestionsUseCaseTest(AutoMapperFixture mapperFixture)
                 Id = 1,
                 Guid = Guid.NewGuid(),
                 Caption = "Page caption",
-                Name = "_Section0" + GetQuestionNumber(),
+                Name = question1Name,
                 Title = "The financial information you will need.",
                 Description = "You will need to upload accounts or statements for your 2 most recent financial years. If you do not have 2 years, you can upload your most recent financial year. You will need to enter the financial year end date for the information you upload.",
                 Type = CO.CDP.OrganisationInformation.Persistence.Forms.FormQuestionType.NoInput,
@@ -92,7 +94,7 @@ public class GetFormSectionQuestionsUseCaseTest(AutoMapperFixture mapperFixture)
                 Id = 2,
                 Guid = Guid.NewGuid(),
                 Caption = "Page caption",
-                Name = "_Section0" + GetQuestionNumber(),
+                Name = question2Name,
                 Title = "Were your accounts audited?.",
                 Description = "",
                 Type = CO.CDP.OrganisationInformation.Persistence.Forms.FormQuestionType.YesOrNo,
@@ -139,7 +141,8 @@ public class GetFormSectionQuestionsUseCaseTest(AutoMapperFixture mapperFixture)
                 Description = questions[0].Description,
                 Type = FormQuestionType.NoInput,
                 IsRequired = questions[0].IsRequired,
-                Options = new FormQuestionOptions()
+                Options = new FormQuestionOptions(),
+                Name = question1Name,
             },
             new FormQuestion
             {
@@ -149,7 +152,8 @@ public class GetFormSectionQuestionsUseCaseTest(AutoMapperFixture mapperFixture)
                 Description = questions[1].Description,
                 Type = FormQuestionType.YesOrNo,
                 IsRequired = questions[1].IsRequired,
-                Options = new FormQuestionOptions()
+                Options = new FormQuestionOptions(),
+                Name = question2Name,
             }
         });
     }

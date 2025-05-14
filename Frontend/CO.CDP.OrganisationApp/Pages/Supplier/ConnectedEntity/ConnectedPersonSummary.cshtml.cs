@@ -11,6 +11,7 @@ namespace CO.CDP.OrganisationApp.Pages.Supplier;
 
 [Authorize(Policy = OrgScopeRequirement.Viewer)]
 public class ConnectedPersonSummaryModel(
+    IFlashMessageService flashMessageService,
     IOrganisationClient organisationClient,
     ISession session) : PageModel
 {
@@ -25,9 +26,44 @@ public class ConnectedPersonSummaryModel(
 
     public async Task<IActionResult> OnGet(bool? selected)
     {
+        return await InitPage(selected);
+    }
+
+    public async Task<IActionResult> OnGetRemove(
+        [FromQuery(Name = "entity-id")] Guid entityId,
+        [FromQuery(Name = "is-in-use")] bool isInUse,
+        [FromQuery(Name = "form-guid")] Guid? formGuid,
+        [FromQuery(Name = "section-guid")] Guid? sectionGuid)
+    {
+        if (isInUse && formGuid != null && sectionGuid != null)
+        {
+            flashMessageService.SetFlashMessage
+               (
+                   FlashMessageType.Important,
+                       heading: StaticTextResource.ErrorMessageList_ConnectedPersons_Cannot_Remove,
+                       urlParameters: new() {
+                            { "organisationIdentifier", Id.ToString() },
+                            { "formId", formGuid.Value.ToString() },
+                            { "sectionId", sectionGuid.Value.ToString() }
+                       }
+               );
+
+            return await InitPage(true);
+        }
+
+        return Redirect($"/organisation/{Id}/supplier-information/connected-person/{@entityId}/remove");
+    }
+
+    private async Task<IActionResult> InitPage(bool? selected)
+    {
         try
         {
-            ConnectedEntities = await organisationClient.GetConnectedEntities(Id);
+            ConnectedEntities = (await organisationClient.GetConnectedEntities(Id))
+                .Where(cp => !cp.Deleted)
+                .OrderBy(item => item.EndDate == null ? 0 : 1)
+                .ThenBy(item => item.EndDate)
+                .ToList();
+
             session.Remove(Session.ConnectedPersonKey);
         }
         catch (ApiException ex) when (ex.StatusCode == 404)

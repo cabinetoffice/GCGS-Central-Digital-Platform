@@ -52,14 +52,10 @@ configure_servers_json() {
 
   echo "#### Adding default servers ####"
   add_server_to_json "1" "admin@cdp-sirsi-pgadmin" "Admin" "$PGADMIN_DATABASE_HOST" 5432 "$PGADMIN_DATABASE_NAME" "$PGADMIN_DATABASE_USERNAME"
-  add_server_to_json "2" "admin@cdp-sirsi" "Admin" "$DB_SIRSI_ADDRESS" 5432 "$DB_SIRSI_NAME" "$DB_SIRSI_USERNAME"
-  add_server_to_json "3" "admin@cdp-sirsi-entity-verification" "Admin" "$DB_ENTITY_VERIFICATION_ADDRESS" 5432 "$DB_ENTITY_VERIFICATION_NAME" "$DB_ENTITY_VERIFICATION_USERNAME"
   add_server_to_json "4" "SIRSI Cluster" "Admin" "$DB_SIRSI_CLUSTER_ADDRESS" 5432 "$DB_SIRSI_CLUSTER_NAME" "${DB_SIRSI_CLUSTER_USERNAME}"
   add_server_to_json "5" "Entity Verification Cluster" "Admin" "$DB_ENTITY_VERIFICATION_CLUSTER_ADDRESS" 5432 "$DB_ENTITY_VERIFICATION_CLUSTER_NAME" "${DB_ENTITY_VERIFICATION_CLUSTER_USERNAME}"
   add_server_to_json "6" "SIRSI Cluster" "CDP" "$DB_SIRSI_CLUSTER_ADDRESS" 5432 "$DB_SIRSI_CLUSTER_NAME" "${DB_SIRSI_CLUSTER_USERNAME}_pgadmin"
   add_server_to_json "7" "Entity Verification Cluster" "CDP" "$DB_ENTITY_VERIFICATION_CLUSTER_ADDRESS" 5432 "$DB_ENTITY_VERIFICATION_CLUSTER_NAME" "${DB_ENTITY_VERIFICATION_CLUSTER_USERNAME}_pgadmin"
-  add_server_to_json "8" "SIRSI" "CDP" "$DB_SIRSI_ADDRESS" 5432 "$DB_SIRSI_NAME" "${DB_SIRSI_USERNAME}_pgadmin"
-  add_server_to_json "9" "Entity Verification" "CDP" "$DB_ENTITY_VERIFICATION_ADDRESS" 5432 "$DB_ENTITY_VERIFICATION_NAME" "${DB_ENTITY_VERIFICATION_USERNAME}_pgadmin"
 
   if [ -z "$SUPPORT_USERNAMES" ]; then
     echo "#### No support users provided ####"

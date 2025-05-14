@@ -13,14 +13,15 @@ public class WebApiToPersistenceProfile : Profile
 
         CreateMap<Persistence.FormQuestion, Model.FormQuestion>()
             .ForMember(dest => dest.Title, opt => opt.MapFrom<LocalizedPropertyResolver<Persistence.FormQuestion, Model.FormQuestion>, string>(src => src.Title))
-            .ForMember(dest => dest.Description, opt =>  opt.MapFrom<NullableLocalizedPropertyResolver<Persistence.FormQuestion, Model.FormQuestion>, string?>(src => src.Description))
+            .ForMember(dest => dest.Description, opt => opt.MapFrom<NullableLocalizedPropertyResolver<Persistence.FormQuestion, Model.FormQuestion>, string?>(src => src.Description))
             .ForMember(dest => dest.Caption, opt => opt.MapFrom<NullableLocalizedPropertyResolver<Persistence.FormQuestion, Model.FormQuestion>, string?>(src => src.Caption))
             .ForMember(dest => dest.SummaryTitle, opt => opt.MapFrom<NullableLocalizedPropertyResolver<Persistence.FormQuestion, Model.FormQuestion>, string?>(src => src.SummaryTitle))
             .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Guid))
             .ForMember(dest => dest.NextQuestion, opt => opt.MapFrom(src => src.NextQuestion != null ? src.NextQuestion.Guid : (Guid?)null))
             .ForMember(dest => dest.NextQuestionAlternative, opt => opt.MapFrom(src => src.NextQuestionAlternative != null ? src.NextQuestionAlternative.Guid : (Guid?)null))
             .ForMember(dest => dest.Type, opt => opt.MapFrom(src => (Model.FormQuestionType)src.Type))
-            .ForMember(dest => dest.Options, opt => opt.MapFrom(src => src.Options));
+            .ForMember(dest => dest.Options, opt => opt.MapFrom(src => src.Options))
+            .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name));
 
         CreateMap<Persistence.FormQuestionOptions, Model.FormQuestionOptions>();
 
@@ -43,13 +44,22 @@ public class WebApiToPersistenceProfile : Profile
             .ForMember(dest => dest.Title, opt => opt.MapFrom<NullableLocalizedPropertyResolver<Persistence.FormQuestionGroupChoice, Model.FormQuestionGroupChoice>, string?>(src => src.Title));
 
         CreateMap<Persistence.FormSectionConfiguration, Model.FormSectionConfiguration>()
+            .ForMember(dest => dest.SingularSummaryHeadingHint, opt => opt.MapFrom<NullableLocalizedPropertyResolver<Persistence.FormSectionConfiguration, Model.FormSectionConfiguration>, string?>(src => src.SingularSummaryHeadingHint))
             .ForMember(dest => dest.SingularSummaryHeading, opt => opt.MapFrom<NullableLocalizedPropertyResolver<Persistence.FormSectionConfiguration, Model.FormSectionConfiguration>, string?>(src => src.SingularSummaryHeading))
             .ForMember(dest => dest.PluralSummaryHeadingFormat, opt => opt.MapFrom<NullableLocalizedPropertyResolver<Persistence.FormSectionConfiguration, Model.FormSectionConfiguration>, string?>(src => src.PluralSummaryHeadingFormat))
+            .ForMember(dest => dest.PluralSummaryHeadingHintFormat, opt => opt.MapFrom<NullableLocalizedPropertyResolver<Persistence.FormSectionConfiguration, Model.FormSectionConfiguration>, string?>(src => src.PluralSummaryHeadingHintFormat))
             .ForMember(dest => dest.AddAnotherAnswerLabel, opt => opt.MapFrom<NullableLocalizedPropertyResolver<Persistence.FormSectionConfiguration, Model.FormSectionConfiguration>, string?>(src => src.AddAnotherAnswerLabel))
             .ForMember(dest => dest.RemoveConfirmationCaption, opt => opt.MapFrom<NullableLocalizedPropertyResolver<Persistence.FormSectionConfiguration, Model.FormSectionConfiguration>, string?>(src => src.RemoveConfirmationCaption))
             .ForMember(dest => dest.RemoveConfirmationHeading, opt => opt.MapFrom<NullableLocalizedPropertyResolver<Persistence.FormSectionConfiguration, Model.FormSectionConfiguration>, string?>(src => src.RemoveConfirmationHeading))
             .ForMember(dest => dest.FurtherQuestionsExemptedHeading, opt => opt.MapFrom<NullableLocalizedPropertyResolver<Persistence.FormSectionConfiguration, Model.FormSectionConfiguration>, string?>(src => src.FurtherQuestionsExemptedHeading))
-            .ForMember(dest => dest.FurtherQuestionsExemptedHint, opt => opt.MapFrom<NullableLocalizedPropertyResolver<Persistence.FormSectionConfiguration, Model.FormSectionConfiguration>, string?>(src => src.FurtherQuestionsExemptedHint));
+            .ForMember(dest => dest.FurtherQuestionsExemptedHint, opt => opt.MapFrom<NullableLocalizedPropertyResolver<Persistence.FormSectionConfiguration, Model.FormSectionConfiguration>, string?>(src => src.FurtherQuestionsExemptedHint))
+            .ForMember(dest => dest.SummaryRenderFormatter, opt => opt.MapFrom(src => src.SummaryRenderFormatter));
+
+        CreateMap<Persistence.SummaryRenderFormatter, Model.SummaryRenderFormatter>()
+            .ForMember(dest => dest.KeyExpression, opt => opt.MapFrom<NullableLocalizedPropertyResolver<Persistence.SummaryRenderFormatter, Model.SummaryRenderFormatter>, string?>(src => src.KeyExpression))
+            .ForMember(dest => dest.ValueExpression, opt => opt.MapFrom<NullableLocalizedPropertyResolver<Persistence.SummaryRenderFormatter, Model.SummaryRenderFormatter>, string?>(src => src.ValueExpression))            
+            .ForMember(dest => dest.KeyExpressionOperation, opt => opt.MapFrom(src => (Model.ExpressionOperationType)Enum.Parse(typeof(Model.ExpressionOperationType), src.KeyExpressionOperation)))
+            .ForMember(dest => dest.ValueExpressionOperation, opt => opt.MapFrom(src => (Model.ExpressionOperationType)Enum.Parse(typeof(Model.ExpressionOperationType), src.ValueExpressionOperation)));
 
         CreateMap<Model.FormAnswer, Persistence.FormAnswer>()
             .ForMember(dest => dest.Guid, opt => opt.MapFrom(src => src.Id))

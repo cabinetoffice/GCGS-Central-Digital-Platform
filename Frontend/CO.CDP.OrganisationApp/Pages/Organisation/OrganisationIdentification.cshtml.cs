@@ -31,6 +31,7 @@ public class OrganisationIdentificationModel(
     [BindProperty]
     [DisplayName(nameof(StaticTextResource.Organisation_OrganisationIdentification_CH_Label))]
     [RequiredIfContains(nameof(OrganisationScheme), "GB-COH", ErrorMessage = nameof(StaticTextResource.Organisation_OrganisationIdentification_CH_ErrorMessage))]
+    [StringLength(8, MinimumLength = 8, ErrorMessage = nameof(StaticTextResource.CompaniesHouse_Number_Error))]
     public string? CompanyHouseNumber { get; set; }
 
     [BindProperty]
@@ -189,7 +190,7 @@ public class OrganisationIdentificationModel(
 
         // Create identifiers for OrganisationScheme
         var identifiers = OrganisationScheme!.Select(scheme => new OrganisationWebApiClient.OrganisationIdentifier(
-                id: GetOrganisationIdentificationNumber(scheme),
+                id: GetOrganisationIdentificationNumber(scheme)?.Trim(),
                 legalName: organisation.Name,
                 scheme: scheme))
             .ToList();
