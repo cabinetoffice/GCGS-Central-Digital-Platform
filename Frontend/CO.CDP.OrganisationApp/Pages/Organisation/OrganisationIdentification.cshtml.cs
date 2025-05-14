@@ -175,7 +175,7 @@ public class OrganisationIdentificationModel(
         if (organisation == null) return Redirect("/page-not-found");
 
         // Ensure OrganisationScheme is valid
-        if (OrganisationScheme == null || !OrganisationScheme.Any())
+        if (!IsSupportAdmin && (OrganisationScheme == null || !OrganisationScheme.Any()))
         {
             ModelState.AddModelError(nameof(OrganisationScheme), StaticTextResource.Organisation_OrganisationIdentification_ValidationErrorMessage);
         }
