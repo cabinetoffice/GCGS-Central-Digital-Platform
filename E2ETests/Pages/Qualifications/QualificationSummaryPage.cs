@@ -50,7 +50,7 @@ public class QualificationSummaryPage
     {
         //await _page.PauseAsync();
 
-        string expectedText = $"You have added {expectedCount} qualification{(expectedCount == 1 ? "" : "s")}";
+        string expectedText = $"Qualifications\n{expectedCount} added";
 
         string selector = "h1.govuk-heading-l";
 
