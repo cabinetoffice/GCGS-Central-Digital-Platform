@@ -37,21 +37,22 @@ services:
   organisation-app:
     environment:
       ASPNETCORE_ENVIRONMENT: Development
-      OneLogin__Authority: "https://oidc.example.com"
-      OneLogin__ClientId: "client-id"
-      OneLogin__PrivateKey: "RSA PRIVATE KEY"
-      CompaniesHouse__Url: ""
-      CompaniesHouse__User: ""
+      OneLogin__AccountUrl: "https://home.integration.account.gov.uk"
+      OneLogin__Authority: "https://oidc.integration.account.gov.uk"
+      OneLogin__ClientId: "<get this from other team members>"
+      OneLogin__PrivateKey: "<get this from other team members>"
+      CompaniesHouse__Url: "https://api.company-information.service.gov.uk"
+      CompaniesHouse__User: "--UserId--"
       CompaniesHouse__Password: ""
-      CharityCommission__Url: ""
-      CharityCommission__SubscriptionKey: ""
+      CharityCommission__Url: "https://api.charitycommission.gov.uk/register/api/"
+      CharityCommission__SubscriptionKey: "--SubscriptionKey --"
     deploy:
       replicas: 1
   authority:
     environment:
       ASPNETCORE_ENVIRONMENT: Development
-      PrivateKey: "-----BEGIN RSA PRIVATE KEY-----"
-      OneLogin__Authority: "https://oidc.example.com"
+      PrivateKey: "<get this from other team members, also can be generated using make command>"
+      OneLogin__Authority: "https://oidc.integration.account.gov.uk"
     deploy:
       replicas: 1
   tenant:

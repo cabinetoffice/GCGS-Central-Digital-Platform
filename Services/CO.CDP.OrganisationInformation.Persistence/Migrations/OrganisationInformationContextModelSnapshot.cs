@@ -368,6 +368,10 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                         .HasColumnName("created_on")
                         .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
+                    b.Property<bool>("Deleted")
+                        .HasColumnType("boolean")
+                        .HasColumnName("deleted");
+
                     b.Property<DateTimeOffset?>("EndDate")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("end_date");

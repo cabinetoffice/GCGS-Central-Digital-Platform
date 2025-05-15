@@ -33,7 +33,7 @@
                         <h1 class="govuk-fieldset__heading">@ViewData["Title"]</h1>
                     </legend>
                     <div id="connectedPersonDate-hint" class="govuk-hint">
-                        @StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityCompanyInsolvencyDate_Hint
+                        @Html.Raw(StaticTextResource.Supplier_ConnectedEntity_ConnectedEntityCompanyInsolvencyDate_Hint)
                     </div>
                     @if (dateOfInsolvencyHasError)
                     {
