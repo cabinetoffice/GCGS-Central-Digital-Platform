@@ -289,7 +289,7 @@
                 <div class="govuk-section-break govuk-section-break--visible govuk-section-break--m"></div>
             </authorize>
 
-            @if ((isViewer) && (!isAdmin))
+            @if (!isAdmin)
             {
                 <h3 class="govuk-heading-s govuk-!-margin-bottom-3">
                     <a class="govuk-link" href="/organisation/@RouteData.Values["id"]/users/view-admins">@StaticTextResource.UserSummary_ViewAdmins_Title</a>

@@ -26,7 +26,6 @@ public class UserInfoService(IHttpContextAccessor httpContextAccessor, ITenantCl
         var organisationUserScopes = userInfo.OrganisationScopes(GetOrganisationId());
 
         return organisationUserScopes.Contains(OrganisationPersonScopes.Viewer) ||
-            organisationUserScopes.Contains(OrganisationPersonScopes.Editor) ||
             (organisationUserScopes.Count == 0 && userScopes.Contains(PersonScopes.SupportAdmin));
     }
     public async Task<bool> IsAdmin()
