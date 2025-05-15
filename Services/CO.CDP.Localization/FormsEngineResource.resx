@@ -240,6 +240,106 @@
   <data name="Qualifications_Configuration_FurtherQuestionsExemptedHeading" xml:space="preserve">
     <value>Do you want to add any relevant qualifications?</value>
   </data>
+
+  <!-- Steel -->
+
+  <!-- Section Info -->
+  <data name="Steel_SectionTitle" xml:space="preserve">
+    <value>Steel module</value>
+  </data>
+  <data name="Steel_Configuration_FurtherQuestionsExemptedHint" xml:space="preserve">
+    <value>You'll need to provide information on Steel Specific supply chain projects or programmes.This may include relevant examples of: </value>
+  </data>
+  <data name="Steel_Configuration_FurtherQuestionsExemptedHeading" xml:space="preserve">
+    <value>The steel information you'll need</value>
+  </data>
+  <data name="Steel_Configuration_AddAnotherAnswerLabel" xml:space="preserve">
+    <value>Add another Steel Information?</value>
+  </data>
+  <data name="Steel_Configuration_SingularSummaryHeading" xml:space="preserve">
+    <value>You have added Steel Information</value>
+  </data>
+  <data name="Steel_Configuration_RemoveConfirmationHeading" xml:space="preserve">
+    <value>Are you sure you want to remove this Steel Information?</value>
+  </data>
+  <data name="Steel_Configuration_PluralSummaryHeadingFormat" xml:space="preserve">
+    <value>You have added {0} Steel Information</value>
+  </data>
+  <data name="Steel_Configuration_SingularSummaryHeadingHint" xml:space="preserve">
+    <value>Steel module</value>
+  </data>
+  <data name="Steel_Configuration_PluralSummaryHeadingHintFormat" xml:space="preserve">
+    <value>Steel module</value>
+  </data>
+
+  <!-- Question 01-->
+  <data name="SteelQuestion_01_Title" xml:space="preserve">
+    <value>Supply chain management in steel procurement</value>
+  </data>
+  <data name="SteelQuestion_01_SummaryTitle" xml:space="preserve">
+    <value>Supply chain management in steel procurement</value>
+  </data>
+  <data name="SteelQuestion_01_Description" xml:space="preserve">
+    <value>&lt;div class="govuk-hint"&gt; Describe the steel specific supply chain management systems, policies, standards and procedures you have in place to ensure effective supply chain management and compliance with relavant legislation for: &lt;ul class="govuk-list govuk-list--bullet"&gt; &lt;li class="govuk-!-margin-top-4"&gt;project and programmes involving steel procurement&lt;/li&gt; &lt;/ul&gt; &lt;/div&gt;</value>
+  </data>
+
+
+  <!-- Question 02-->
+  <data name="SteelQuestion_02_Title" xml:space="preserve">
+    <value>Do you have supporting documents to upload?</value>
+  </data>
+  <data name="SteelQuestion_02_SummaryTitle" xml:space="preserve">
+    <value>Supporting Document Uploaded</value>
+  </data>
+  <data name="SteelQuestion_02_Description" xml:space="preserve">
+    <value>&lt;div class="govuk-hint"&gt; &lt;/div&gt;</value>
+  </data>
+
+
+  <!-- Question 03-->
+  <data name="SteelQuestion_03_Title" xml:space="preserve">
+    <value>Sustainable supply and production of steel</value>
+  </data>
+  <data name="SteelQuestion_03_SummaryTitle" xml:space="preserve">
+    <value>Sustainable supply and production of steel</value>
+  </data>
+  <data name="SteelQuestion_03_Description" xml:space="preserve">
+    <value>&lt;div class="govuk-hint"&gt;Provide details of projects where you have shown skill and effectiveness in managing
+    all supply chain members involved in steel supply or production to ensure a sustainble supply of steel &lt;/div&gt;</value>
+  </data>
+
+  <!-- Question 04-->
+  <data name="SteelQuestion_04_Title" xml:space="preserve">
+    <value>Do you have supporting document to upload?</value>
+  </data>
+  <data name="SteelQuestion_04_SummaryTitle" xml:space="preserve">
+    <value>Supporting Document</value>
+  </data>
+  <!-- <data name="SteelQuestion_04_Description" xml:space="preserve">
+    <value></value>
+  </data> -->
+
+  <!-- Question 05-->
+  <data name="SteelQuestion_05_Title" xml:space="preserve">
+    <value>Health and Safety Legislation Breaches</value>
+  </data>
+  <data name="SteelQuestion_05_SummaryTitle" xml:space="preserve">
+    <value>Sustainable supply and production of steel</value>
+  </data>
+  <data name="SteelQuestion_05_Description" xml:space="preserve">
+    <value>&lt;div class="govuk-hint"&gt; Provide details of any breaches in health and safety legislation in the last 5 years that apply to the country where you work, for both:&lt;ul class="govuk-list govuk-list--bullet" &gt;&lt;li class="govuk-!-margin-top-4"&gt;your &lt;b&gt;organisation&lt;/b&gt;&lt;/li&gt;&lt;li class="govuk-!-margin-top-4"&gt;&lt;b&gt;all your supply chain members&lt;/b&gt; involved in the production or supply of steel&lt;/li&gt;&lt;/ul&gt;&lt;/div&gt;</value>
+  </data>
+
+  <!-- Question 06-->
+  <data name="SteelQuestion_06_Title" xml:space="preserve">
+    <value>Do you have supporting documents to upload ?</value>
+  </data>
+  <data name="SteelQuestion_06_SummaryTitle" xml:space="preserve">
+    <value>Supporting Document</value>
+  </data>
+
+
+
   <data name="Exclusions_07_Title" xml:space="preserve">
     <value>Did this exclusion happen in the UK?</value>
   </data>
