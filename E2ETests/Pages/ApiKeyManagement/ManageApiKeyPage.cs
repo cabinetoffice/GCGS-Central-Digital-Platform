@@ -10,7 +10,7 @@ public class ManageApiKeyPage
     private readonly string PageTitleSelector = "h1.govuk-heading-l";
     private readonly string CreateApiKeyButtonSelector = "button.govuk-button[type='submit']";
     private readonly string BackToSupplierInfoSelector = "a.govuk-back-link";
-    private readonly string CancelApiKeySelector = "#main-content > form > div > dl > div:nth-child(2) > dd.govuk-summary-list__actions > a";
+    private readonly string CancelApiKeySelector = "cancelLink";
     public ManageApiKeyPage(IPage page)
     {
         _page = page;
@@ -51,7 +51,7 @@ public class ManageApiKeyPage
     }
     public async Task ClickCancelApiKey()
     {
-        await _page.ClickAsync(CancelApiKeySelector);
+        await _page.GetByTestId(CancelApiKeySelector).ClickAsync();
         Console.WriteLine("✅ Clicked Cancel API Key link");
     }
     public async Task AssertApiKeyCount(int expectedCount)

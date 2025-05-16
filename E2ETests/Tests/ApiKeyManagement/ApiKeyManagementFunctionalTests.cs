@@ -1,9 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace E2ETests.Tests.ApiKeyManagement;
 public class ApiKeyManagementFunctionalTests : ApiKeyManagementBaseTest
 {
@@ -21,5 +15,7 @@ public class ApiKeyManagementFunctionalTests : ApiKeyManagementBaseTest
 
         await _newApiKeyDetailsPage.ClickBackToManageApiKeys();
         await _manageApiKeyPage.AssertApiKeyCount(1);
+        await _manageApiKeyPage.ClickCancelApiKey();
+        await _revokeApiKeyPage.CompletePage();
     }
 }

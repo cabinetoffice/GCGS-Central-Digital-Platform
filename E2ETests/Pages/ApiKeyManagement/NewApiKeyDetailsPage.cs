@@ -9,8 +9,7 @@ public class NewApiKeyDetailsPage
     // ✅ Page Locators
     private readonly string PageTitleSelector = "#apikeytext";
     private readonly string CreateApiKeyButtonSelector = "button.govuk-button[type='submit']";
-    private readonly string BackToManageApiKeySelector = "#backtoManageApiKey";
-    //#main-content > div > div > form > div.govuk-grid-row > div > p:nth-child(4) > a
+    private readonly string BackToManageApiKeySelector = "backtoManageApiKey";
     public NewApiKeyDetailsPage(IPage page)
     {
         _page = page;
@@ -44,7 +43,7 @@ public class NewApiKeyDetailsPage
     }
     public async Task ClickBackToManageApiKeys()
     {
-        await _page.ClickAsync(BackToManageApiKeySelector);
+        await _page.GetByTestId(BackToManageApiKeySelector).ClickAsync();
         Console.WriteLine("✅ Clicked Back to Manage API Keys");
     }    
     public async Task CompletePage()
