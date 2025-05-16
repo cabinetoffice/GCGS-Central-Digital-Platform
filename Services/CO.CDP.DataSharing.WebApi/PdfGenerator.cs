@@ -232,15 +232,18 @@ public class PdfGenerator(IHtmlLocalizer<FormsEngineResource> localizer) : IPdfG
                         col.Item().Element(container => AddTwoColumnRow(container, StaticTextResource.PdfGenerator_ConnectedPerson_LawRegistered, person.Organisation.LawRegistered));
                 }
 
+                if (person.IndividualTrust != null)
+                {
+                    col.Item().Text($"{StaticTextResource.PdfGenerator_IndividualTrustInformation_Title}:").Bold();
+                    col.Item().PaddingBottom(10);
+                }
+
                 if (!string.IsNullOrEmpty(person.FirstName))
                     col.Item().Element(container => AddTwoColumnRow(container, StaticTextResource.PdfGenerator_ConnectedPerson_FirstName, person.FirstName));
-
                 if (!string.IsNullOrEmpty(person.LastName))
                     col.Item().Element(container => AddTwoColumnRow(container, StaticTextResource.PdfGenerator_ConnectedPerson_LastName, person.LastName));
-
                 if (!string.IsNullOrEmpty(person.Nationality))
                     col.Item().Element(container => AddTwoColumnRow(container, StaticTextResource.PdfGenerator_ConnectedPerson_Nationality, person.Nationality));
-
                 if (person.DateOfBirth != null)
                     col.Item().Element(container => AddTwoColumnRow(container, StaticTextResource.PdfGenerator_ConnectedPerson_DateOfBirth, person.DateOfBirth?.ToString("dd MMMM yyyy")));
 
@@ -326,38 +329,6 @@ public class PdfGenerator(IHtmlLocalizer<FormsEngineResource> localizer) : IPdfG
                     });
                 }
 
-                if (person.IndividualTrust != null)
-                {
-                    col.Item().Text($"{StaticTextResource.PdfGenerator_IndividualTrustInformation_Title}:").Bold();
-                    if (!string.IsNullOrEmpty(person.IndividualTrust.FirstName))
-                        col.Item().Element(container => AddTwoColumnRow(container, StaticTextResource.PdfGenerator_ConnectedPerson_FirstName, person.IndividualTrust.FirstName));
-                    if (!string.IsNullOrEmpty(person.IndividualTrust.LastName))
-                        col.Item().Element(container => AddTwoColumnRow(container, StaticTextResource.PdfGenerator_ConnectedPerson_LastName, person.IndividualTrust.LastName));
-                    if (!string.IsNullOrEmpty(person.IndividualTrust.Nationality))
-                        col.Item().Element(container => AddTwoColumnRow(container, StaticTextResource.PdfGenerator_ConnectedPerson_Nationality, person.IndividualTrust.Nationality));
-                    if (person.IndividualTrust.DateOfBirth != null)
-                        col.Item().Element(container => AddTwoColumnRow(container, StaticTextResource.PdfGenerator_ConnectedPerson_DateOfBirth, person.IndividualTrust.DateOfBirth?.ToString("dd MMMM yyyy")));
-                }
-
-                if (person.IndividualTrust != null)
-                {
-                    if (person.IndividualTrust.ControlConditions.Count != 0)
-                    {
-                        col.Item().Element(container =>
-                        {
-                            var controlConditionsText = string.Join(", ", person.IndividualTrust.ControlConditions.Select(condition =>
-                            {
-                                if (Enum.TryParse(condition, out ControlCondition parsedCondition))
-                                {
-                                    return GetFriendlyControlConditionTypeText(parsedCondition);
-                                }
-                                return condition;
-                            }));
-
-                            AddTwoColumnRow(container, StaticTextResource.PdfGenerator_Organisation_ControlConditions, controlConditionsText);
-                        });
-                    }
-                }
                 col.Item().PaddingBottom(10);
             }
         }
