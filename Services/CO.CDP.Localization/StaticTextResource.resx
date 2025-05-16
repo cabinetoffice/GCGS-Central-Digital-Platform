@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!--
     Microsoft ResX Schema
@@ -1058,6 +1058,9 @@
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityRemoveConfirmation_PageTitle" xml:space="preserve">
     <value>Are you sure you want to remove this connected person?</value>
+  </data>
+  <data name="Supplier_ConnectedEntity_ConnectedEntityRemoveConfirmation_PageTitle_Hint" xml:space="preserve">
+    <value>Only remove a connected person to delete them from your supplier information if added in error. If they are no longer connected to your organisation you can view their details and add an end date.</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityRemoveConfirmation_ConfirmRemoveError" xml:space="preserve">
     <value>Select yes to confirm removal of the connected person</value>
