@@ -63,6 +63,14 @@ internal static class OrganisationClientExtensions
                         type: OrganisationUpdateType.AdditionalIdentifiers,
                         organisation: new OrganisationInfo(additionalIdentifiers: additionalIdentifiers, addresses: null, buyerInformation: null, contactPoint: null, identifierToRemove: null, organisationName: null, roles: null)));
 
+    internal static Task SupportUpdateOrganisationAdditionalIdentifiers(this IOrganisationClient organisationClient,
+        Guid organisationId,
+        ICollection<OrganisationIdentifier> additionalIdentifiers)
+        => organisationClient.SupportUpdateOrganisationAsync(organisationId,
+        new SupportUpdateOrganisation(
+            type: SupportOrganisationUpdateType.AdditionalIdentifiers,
+            organisation: new SupportOrganisationInfo(additionalIdentifiers: additionalIdentifiers, reviewedById: null, comment: null, approved: null)));
+
     internal static Task UpdateOrganisationRemoveIdentifier(this IOrganisationClient organisationClient,
             Guid organisationId,
             OrganisationIdentifier identifierToRemove)
