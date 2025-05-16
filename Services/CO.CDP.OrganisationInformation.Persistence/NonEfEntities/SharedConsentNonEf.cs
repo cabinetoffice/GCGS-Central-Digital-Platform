@@ -26,6 +26,10 @@ public record OrganisationNonEf
     public List<PartyRole> Roles { get; set; } = [];
     public SupplierInformationNonEf? SupplierInfo { get; set; }
     public List<ConnectedEntityNonEf> ConnectedEntities { get; set; } = [];
+    public IEnumerable<ConnectedEntityNonEf> AdditionalEntities =>
+        ConnectedEntities.Where(ce => ce.EntityType == ConnectedEntityType.Organisation && ce.Organisation != null);
+    public IEnumerable<ConnectedEntityNonEf> AssociatedPersons =>
+        ConnectedEntities.Where(ce => ce.EntityType != ConnectedEntityType.Organisation && ce.IndividualOrTrust != null);
 }
 
 public class ConnectedEntityNonEf
@@ -33,7 +37,7 @@ public class ConnectedEntityNonEf
     public int Id { get; set; }
     public required Guid Guid { get; set; }
     public required ConnectedEntityType EntityType { get; set; }
-    public bool HasCompnayHouseNumber { get; set; }
+    public bool HasCompanyHouseNumber { get; set; }
     public string? CompanyHouseNumber { get; set; }
     public string? OverseasCompanyNumber { get; set; }
     public ConnectedOrganisationNonEf? Organisation { get; set; }
@@ -41,7 +45,6 @@ public class ConnectedEntityNonEf
     public ICollection<AddressNonEf> Addresses { get; set; } = [];
     public DateTimeOffset? RegisteredDate { get; set; }
     public string? RegisterName { get; set; }
-    public DateTimeOffset? StartDate { get; set; }
     public DateTimeOffset? EndDate { get; set; }
 }
 

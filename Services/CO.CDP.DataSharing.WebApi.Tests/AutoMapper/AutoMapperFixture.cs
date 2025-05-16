@@ -2,6 +2,7 @@ using AutoMapper;
 using CO.CDP.DataSharing.WebApi.AutoMapper;
 using CO.CDP.Localization;
 using Microsoft.AspNetCore.Mvc.Localization;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
 
@@ -30,11 +31,20 @@ public class AutoMapperFixture
                 return new LocalizedHtmlString(key, key);
             });
 
+
+        var configuration = new ConfigurationBuilder()
+            .AddInMemoryCollection([
+                new("DataSharingApiUrl", "http://example1.com/"),
+                ])
+            .Build();
+
         var services = new ServiceCollection();
         services.AddSingleton<IHtmlLocalizer<FormsEngineResource>>(localizerMock.Object);
         services.AddTransient(typeof(NullableLocalizedPropertyResolver<,>));
         services.AddTransient(typeof(LocalizedPropertyResolver<,>));
         services.AddTransient(typeof(FormQuestionOptionsResolver));
+        services.AddTransient(typeof(DocumentUriValueResolver));
+        services.AddSingleton<IConfiguration>(configuration);
 
         var serviceProvider = services.BuildServiceProvider();
 

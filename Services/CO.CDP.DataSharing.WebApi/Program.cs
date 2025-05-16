@@ -42,6 +42,7 @@ builder.Services.Configure<RequestLocalizationOptions>(options =>
     options.RequestCultureProviders.Insert(0, new AcceptLanguageHeaderRequestCultureProvider());
 });
 
+builder.Services.AddTransient(typeof(DocumentUriValueResolver));
 builder.Services.AddTransient(typeof(FormQuestionOptionsResolver));
 builder.Services.AddTransient(typeof(LocalizedPropertyResolver<,>));
 builder.Services.AddAutoMapper(typeof(DataSharingProfile));

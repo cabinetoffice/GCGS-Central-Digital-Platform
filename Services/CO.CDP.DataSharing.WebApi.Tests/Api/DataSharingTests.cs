@@ -212,6 +212,14 @@ public class DataSharingTests
                 CountryName = "UK",
                 Type = OrganisationInformation.AddressType.Registered
             },
+            AdditionalAddresses = [new OrganisationInformation.Address{
+                StreetAddress = "1 postalst",
+                Locality = "very local",
+                PostalCode = "WS1",
+                Country = "GB",
+                CountryName = "UK",
+                Type = OrganisationInformation.AddressType.Postal
+            }],
             ContactPoint = new OrganisationInformation.ContactPoint(),
             Roles = [],
             Details = new Details(),
