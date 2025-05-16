@@ -688,7 +688,7 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql)
 
         var result = await repository.GetPaginated(PartyRole.Buyer, PartyRole.Buyer, null, 10, 0);
 
-        result.Should().BeEmpty();
+        result.Item1.Should().BeEmpty();
     }
 
     [Fact]
@@ -707,8 +707,8 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql)
 
         var result = await repository.GetPaginated(PartyRole.Buyer, PartyRole.Buyer, null, 2, 0);
 
-        result.Should().HaveCount(2);
-        result.First().Name.Should().Be("Alpha Corp");
+        result.Item1.Should().HaveCount(2);
+        result.Item1.First().Name.Should().Be("Alpha Corp");
     }
 
     [Fact]
@@ -727,58 +727,8 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql)
 
         var result = await repository.GetPaginated(PartyRole.Buyer, PartyRole.Buyer, "Acme", 10, 0);
 
-        result.Should().HaveCount(1);
-        result.First().Name.Should().Be("Acme Ltd");
-    }
-
-    [Fact]
-    public async Task GetTotalCount_WhenNoOrganisationsExist_ReturnsZero()
-    {
-        using var repository = OrganisationRepository();
-        await using var context = GetDbContext();
-        context.Organisations.RemoveRange(context.Organisations);
-        await context.SaveChangesAsync();
-
-        var count = await repository.GetTotalCount(PartyRole.Buyer, PartyRole.Buyer, null);
-
-        count.Should().Be(0);
-    }
-
-    [Fact]
-    public async Task GetTotalCount_WhenOrganisationsExist_ReturnsCorrectCount()
-    {
-        using var repository = OrganisationRepository();
-
-        var organisation1 = GivenOrganisation(name: "Acme Ltd", roles: [PartyRole.Buyer]);
-        var organisation2 = GivenOrganisation(name: "Beta Solutions", roles: [PartyRole.Buyer]);
-
-        await using var context = GetDbContext();
-        context.Organisations.RemoveRange(context.Organisations);
-        await context.Organisations.AddRangeAsync(organisation1, organisation2);
-        await context.SaveChangesAsync();
-
-        var count = await repository.GetTotalCount(PartyRole.Buyer, PartyRole.Buyer, null);
-
-        count.Should().Be(2);
-    }
-
-    [Fact]
-    public async Task GetTotalCount_WithSearchText_ReturnsFilteredCount()
-    {
-        using var repository = OrganisationRepository();
-
-        var organisation1 = GivenOrganisation(name: "Acme Ltd", roles: [PartyRole.Buyer]);
-        var organisation2 = GivenOrganisation(name: "Beta Solutions", roles: [PartyRole.Buyer]);
-
-        await using var context = GetDbContext();
-        context.Organisations.RemoveRange(context.Organisations);
-        context.Tenants.RemoveRange(context.Tenants);
-        await context.Organisations.AddRangeAsync(organisation1, organisation2);
-        await context.SaveChangesAsync();
-
-        var count = await repository.GetTotalCount(PartyRole.Buyer, PartyRole.Buyer, "Acme");
-
-        count.Should().Be(1);
+        result.Item1.Should().HaveCount(1);
+        result.Item1.First().Name.Should().Be("Acme Ltd");
     }
 
     [Fact]

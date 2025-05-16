@@ -17,7 +17,7 @@ public class OrganisationEndpointsTests
 {
     private readonly HttpClient _httpClient;
     private readonly Mock<IUseCase<RegisterOrganisation, Model.Organisation>> _registerOrganisationUseCase = new();
-    private readonly Mock<IUseCase<PaginatedOrganisationQuery, IEnumerable<OrganisationDto>>> _getOrganisationsUseCase = new();
+    private readonly Mock<IUseCase<PaginatedOrganisationQuery, Tuple<IEnumerable<OrganisationDto>, int>>> _getOrganisationsUseCase = new();
     private readonly Mock<IUseCase<Guid, Model.Organisation>> _getOrganisationUseCase = new();
     private readonly Mock<IUseCase<Guid, IEnumerable<Review>>> _getReviewsUseCase = new();
     private readonly Mock<IUseCase<(Guid, UpdateOrganisation), bool>> _updatesOrganisationUseCase = new();
@@ -108,7 +108,7 @@ public class OrganisationEndpointsTests
         HttpStatusCode expectedStatusCode, string channel, string? personScope = null)
     {
         _getOrganisationsUseCase.Setup(uc => uc.Execute(It.IsAny<PaginatedOrganisationQuery>()))
-            .ReturnsAsync([]);
+            .ReturnsAsync(new Tuple<IEnumerable<OrganisationDto>, int>([], 0));
 
         var factory = new TestAuthorizationWebApplicationFactory<Program>(
             channel,
