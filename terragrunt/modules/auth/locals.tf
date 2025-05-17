@@ -1,5 +1,5 @@
 locals {
-  name_prefix             = var.product.resource_name
+  name_prefix = var.product.resource_name
 
   auth_domain             = "${local.name_prefix}-${var.environment}"
   cloud_beaver_domain     = "${local.name_prefix}-${var.environment}-cloud-beaver"

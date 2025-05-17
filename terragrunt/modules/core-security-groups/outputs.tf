@@ -1,3 +1,11 @@
+output "alb_sg_id" {
+  value = aws_security_group.alb.id
+}
+
+output "alb_tools_sg_id" {
+  value = aws_security_group.alb_tools.id
+}
+
 output "canary_sg_id" {
   value = aws_security_group.canary.id
 }

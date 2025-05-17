@@ -4,7 +4,7 @@ resource "aws_route53_record" "clamav_rest_to_entrypoint_alias" {
   type    = "CNAME"
   ttl     = 60
 
-  records = [var.ecs_alb_dns_name]
+  records = [aws_lb.tools.dns_name]
 }
 
 resource "aws_route53_record" "cloud_beaver_to_entrypoint_alias" {
@@ -13,7 +13,7 @@ resource "aws_route53_record" "cloud_beaver_to_entrypoint_alias" {
   type    = "CNAME"
   ttl     = 60
 
-  records = [var.ecs_alb_dns_name]
+  records = [aws_lb.tools.dns_name]
 }
 
 resource "aws_route53_record" "healthcheck_to_entrypoint_alias" {
@@ -22,7 +22,7 @@ resource "aws_route53_record" "healthcheck_to_entrypoint_alias" {
   type    = "CNAME"
   ttl     = 60
 
-  records = [var.ecs_alb_dns_name]
+  records = [aws_lb.tools.dns_name]
 }
 
 resource "aws_route53_record" "pgadmin_to_entrypoint_alias" {
@@ -31,5 +31,5 @@ resource "aws_route53_record" "pgadmin_to_entrypoint_alias" {
   type    = "CNAME"
   ttl     = 60
 
-  records = [var.ecs_alb_dns_name]
+  records = [aws_lb.tools.dns_name]
 }
