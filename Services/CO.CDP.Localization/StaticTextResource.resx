@@ -3759,4 +3759,10 @@
   <data name="CompaniesHouse_Number_Error" xml:space="preserve">
     <value>Company number must be 8 digits or 2 letters and 6 digits</value>
   </data>
+  <data name="Supplier_AdditionalModulesInformation_Heading" xml:space="preserve">
+    <value>Additional supplier modules</value>
+  </data>
+  <data name="Supplier_AdditionalModulesInformation_Hint" xml:space="preserve">
+    <value>An additioanl module is extra information related to a particular topic that suppliers are required to submit for specific contracts</value>
+  </data>
 </root>
