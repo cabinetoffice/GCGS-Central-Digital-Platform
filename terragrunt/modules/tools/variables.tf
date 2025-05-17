@@ -35,6 +35,27 @@ variable "db_ev_cluster_name" {
   type        = string
 }
 
+variable "db_fts_cluster_address" {
+  description = "FTS database endpoint address"
+  type        = string
+}
+
+variable "db_fts_cluster_credentials_arn" {
+  description = "FTS database secret ARN"
+  type        = string
+}
+
+variable "db_fts_cluster_name" {
+  description = "FTS database name"
+  type        = string
+}
+
+variable "db_fts_cluster_port" {
+  description = "FTS database port"
+  type        = number
+  default     = 3306
+}
+
 variable "db_postgres_sg_id" {
   description = "Postgres DB security group ID"
   type        = string
@@ -91,13 +112,13 @@ variable "ecs_sg_id" {
   type        = string
 }
 
-variable "environment" {
-  description = "The environment we are provisioning"
+variable "efs_sg_id" {
+  description = "EFS security group ID"
   type        = string
 }
 
-variable "efs_sg_id" {
-  description = "EFS security group ID"
+variable "environment" {
+  description = "The environment we are provisioning"
   type        = string
 }
 
@@ -244,17 +265,22 @@ variable "tools_configs" {
   }))
 }
 
-variable "user_pool_arn_healthcheck" {
-  default = null
-  type    = string
-}
-
 variable "user_pool_arn_cloud_beaver" {
   default = null
   type    = string
 }
 
+variable "user_pool_arn_healthcheck" {
+  default = null
+  type    = string
+}
+
 variable "user_pool_arn_pgadmin" {
+  default = null
+  type    = string
+}
+
+variable "user_pool_client_id_cloud_beaver" {
   default = null
   type    = string
 }
@@ -265,11 +291,6 @@ variable "user_pool_client_id_healthcheck" {
 }
 
 variable "user_pool_client_id_pgadmin" {
-  default = null
-  type    = string
-}
-
-variable "user_pool_client_id_cloud_beaver" {
   default = null
   type    = string
 }
@@ -292,25 +313,4 @@ variable "user_pool_domain_pgadmin" {
 variable "vpc_id" {
   description = "The ID of the VPC"
   type        = string
-}
-
-variable "db_fts_cluster_address" {
-  description = "FTS database endpoint address"
-  type        = string
-}
-
-variable "db_fts_cluster_credentials_arn" {
-  description = "FTS database secret ARN"
-  type        = string
-}
-
-variable "db_fts_cluster_name" {
-  description = "FTS database name"
-  type        = string
-}
-
-variable "db_fts_cluster_port" {
-  description = "FTS database port"
-  type        = number
-  default     = 3306
 }
