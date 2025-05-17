@@ -315,8 +315,7 @@ ave aws secretsmanager put-secret-value --secret-id cdp-sirsi-terraform-operator
 
 ## Update WAF Allowed IP Set
 
-1. Create a JSON file in the `./secrets` folder containing the list of IP addresses/ranges with comments to identify the owners. Name the file based on the target environment, for example:, e.g., **waf-allowed-ip-set-development.json**:
-
+1. Create a JSON file in the `./secrets` folder containing the list of IP addresses/ranges with comments to identify the owners. Name the file based on the target environment, for example:, e.g., **waf-allowed-ip-set-development.json**, **waf-allowed-ip-set-development-tools.json**:
 ```json
 [
   { "value": "123.123.123.123/32", "comment": "User X in Y team" },
@@ -331,10 +330,15 @@ ave aws secretsmanager put-secret-value --secret-id cdp-sirsi-terraform-operator
 2. Assume the appropriate role for the target environment and update the secret:
 
 ```shell
-# Add using:
+# Add for services using:
 # ave aws secretsmanager create-secret --name cdp-sirsi-waf-allowed-ip-set --secret-string file://secrets/waf-allowed-ip-set-development.json | jq .
-# Or update using:
+# OR for tools
+# ave aws secretsmanager create-secret --name cdp-sirsi-tools-waf-allowed-ip-set --secret-string file://secrets/waf-allowed-ip-set-development-tools.json | jq .
+cdp-sirsi-tools-waf-allowed-ip-set
+# Or update for services using:
 ave aws secretsmanager put-secret-value --secret-id cdp-sirsi-waf-allowed-ip-set --secret-string file://secrets/waf-allowed-ip-set-development.json | jq .
+# OR for tools
+# ave aws secretsmanager put-secret-value --secret-id cdp-sirsi-tools-waf-allowed-ip-set --secret-string file://secrets/waf-allowed-ip-set-development-tools.json | jq .
 ```
 
 3. Plan and apply Terraform to the `core/networking` component.

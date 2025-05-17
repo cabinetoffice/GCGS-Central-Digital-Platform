@@ -2,13 +2,13 @@ resource "aws_efs_file_system" "cloudbeaver" {
   creation_token = "cloudbeaver-config"
   encrypted      = true
 
-  tags = merge({Name = "cloudbeaver-access"}, var.tags)
+  tags = merge({ Name = "cloudbeaver-access" }, var.tags)
 }
 
 resource "aws_efs_mount_target" "cloudbeaver" {
-  for_each       = toset(var.private_subnet_ids)
-  file_system_id = aws_efs_file_system.cloudbeaver.id
-  subnet_id      = each.value
+  for_each        = toset(var.private_subnet_ids)
+  file_system_id  = aws_efs_file_system.cloudbeaver.id
+  subnet_id       = each.value
   security_groups = [var.efs_sg_id]
 }
 
@@ -29,5 +29,5 @@ resource "aws_efs_access_point" "cloudbeaver" {
     }
   }
 
-  tags = merge({Name = "cloudbeaver-access"}, var.tags)
+  tags = merge({ Name = "cloudbeaver-access" }, var.tags)
 }

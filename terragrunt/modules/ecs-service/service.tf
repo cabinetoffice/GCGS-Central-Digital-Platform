@@ -20,7 +20,7 @@ resource "aws_ecs_task_definition" "this" {
 
         authorization_config {
           access_point_id = volume.value.access_point_id
-          iam = volume.value.iam
+          iam             = volume.value.iam
         }
       }
     }
@@ -30,11 +30,13 @@ resource "aws_ecs_task_definition" "this" {
 resource "aws_ecs_service" "this" {
   count = var.is_standalone_task ? 0 : 1 # contains(["app", "telemetry", "tools"], var.family) ? 1 : 0
 
-  name            = var.name
-  cluster         = var.cluster_id
-  task_definition = aws_ecs_task_definition.this.arn
-  desired_count   = var.desired_count
-  launch_type     = "FARGATE"
+  name                               = var.name
+  cluster                            = var.cluster_id
+  task_definition                    = aws_ecs_task_definition.this.arn
+  desired_count                      = var.desired_count
+  launch_type                        = "FARGATE"
+  deployment_maximum_percent         = var.deployment_maximum_percent
+  deployment_minimum_healthy_percent = var.deployment_minimum_healthy_percent
 
   network_configuration {
     assign_public_ip = false

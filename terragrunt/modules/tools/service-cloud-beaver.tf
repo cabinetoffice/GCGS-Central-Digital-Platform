@@ -21,15 +21,17 @@ module "ecs_service_cloud_beaver" {
     }
   )
 
-  cluster_id                    = var.ecs_cluster_id
-  container_port                = var.cloud_beaver_config.port
-  cpu                           = var.cloud_beaver_config.cpu
-  ecs_alb_sg_id                 = var.ecs_alb_sg_id
-  ecs_listener_arn              = var.ecs_listener_arn
-  ecs_service_base_sg_id        = var.ecs_sg_id
-  efs_volume                    = {
+  cluster_id                         = var.ecs_cluster_id
+  container_port                     = var.cloud_beaver_config.port
+  cpu                                = var.cloud_beaver_config.cpu
+  deployment_maximum_percent         = 100
+  deployment_minimum_healthy_percent = 0
+  ecs_alb_sg_id                      = var.alb_tools_sg_id
+  ecs_listener_arn                   = aws_lb_listener.tools.arn
+  ecs_service_base_sg_id             = var.ecs_sg_id
+  efs_volume = {
     access_point_id    = aws_efs_access_point.cloudbeaver.id
-    container_path     =  local.cloud_beaver_container_path
+    container_path     = local.cloud_beaver_container_path
     file_system_id     = aws_efs_file_system.cloudbeaver.id
     iam                = "DISABLED"
     name               = local.cloud_beaver_volume_name

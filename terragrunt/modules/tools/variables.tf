@@ -3,6 +3,16 @@ variable "account_ids" {
   type        = map(string)
 }
 
+variable "alb_tools_sg_id" {
+  description = "Tools application load-balancer security group ID"
+  type        = string
+}
+
+variable "certificate_arn" {
+  description = "ARN of the ACM certificate to use for the Tools ALB"
+  type        = string
+}
+
 variable "cloud_beaver_config" {
   description = "Cloud Beaver services configuration"
   type = object({
@@ -102,11 +112,6 @@ variable "ecs_cluster_name" {
   type        = string
 }
 
-variable "ecs_listener_arn" {
-  description = "ECS Application Loadbalancer Listener ARN"
-  type        = string
-}
-
 variable "ecs_sg_id" {
   description = "ECS security group ID"
   type        = string
@@ -176,6 +181,11 @@ variable "public_domain" {
 variable "public_hosted_zone_id" {
   description = "ID of the public hosted zone"
   type        = string
+}
+
+variable "public_subnet_ids" {
+  description = "List of public subnet IDs"
+  type        = list(string)
 }
 
 variable "redis_auth_token_arn" {
@@ -312,5 +322,10 @@ variable "user_pool_domain_pgadmin" {
 
 variable "vpc_id" {
   description = "The ID of the VPC"
+  type        = string
+}
+
+variable "waf_acl_tools_arn" {
+  description = "WAF ACL ARN to be associated with the Tools ALB"
   type        = string
 }
