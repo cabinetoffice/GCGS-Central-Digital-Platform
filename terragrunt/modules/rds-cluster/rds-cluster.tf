@@ -9,7 +9,7 @@ resource "aws_rds_cluster" "this" {
   deletion_protection              = var.deletion_protection
   engine                           = var.engine
   engine_version                   = var.engine_version
-  master_password                  = jsondecode(aws_secretsmanager_secret_version.master_user_credentials.secret_string)["password"]
+  master_password                  = jsondecode(data.aws_secretsmanager_secret_version.fetched_password.secret_string)["password"]
   master_username                  = "${replace(var.db_name, "-", "_")}_user"
 
   vpc_security_group_ids = [var.db_sg_id]

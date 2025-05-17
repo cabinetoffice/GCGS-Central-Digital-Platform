@@ -1,0 +1,15 @@
+services:
+  cloudbeaver:
+    build: .
+    image: cabinetoffice/cdp-cloud-beaver:latest
+    ports:
+      - "8978:8978"
+#    environment:
+#      - CLOUDBEAVER_WORKSPACE=/opt/cloudbeaver/efs-data
+#      - WORKSPACE=/opt/cloudbeaver/efs-data
+    volumes:
+      - cloudbeaver-data:/opt/cloudbeaver/workspace
+
+volumes:
+  cloudbeaver-data:
+    driver: local

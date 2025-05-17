@@ -3,6 +3,17 @@ variable "account_ids" {
   type        = map(string)
 }
 
+variable "cloud_beaver_config" {
+  description = "Cloud Beaver services configuration"
+  type = object({
+    cpu       = number
+    memory    = number
+    name      = string
+    port      = number
+    port_host = number
+  })
+}
+
 variable "db_entity_verification_cluster_port" {
   description = "Entity Verification database port"
   type        = number
@@ -82,6 +93,11 @@ variable "ecs_sg_id" {
 
 variable "environment" {
   description = "The environment we are provisioning"
+  type        = string
+}
+
+variable "efs_sg_id" {
+  description = "EFS security group ID"
   type        = string
 }
 
@@ -233,6 +249,11 @@ variable "user_pool_arn_healthcheck" {
   type    = string
 }
 
+variable "user_pool_arn_cloud_beaver" {
+  default = null
+  type    = string
+}
+
 variable "user_pool_arn_pgadmin" {
   default = null
   type    = string
@@ -244,6 +265,16 @@ variable "user_pool_client_id_healthcheck" {
 }
 
 variable "user_pool_client_id_pgadmin" {
+  default = null
+  type    = string
+}
+
+variable "user_pool_client_id_cloud_beaver" {
+  default = null
+  type    = string
+}
+
+variable "user_pool_domain_cloud_beaver" {
   default = null
   type    = string
 }
@@ -261,4 +292,25 @@ variable "user_pool_domain_pgadmin" {
 variable "vpc_id" {
   description = "The ID of the VPC"
   type        = string
+}
+
+variable "db_fts_cluster_address" {
+  description = "FTS database endpoint address"
+  type        = string
+}
+
+variable "db_fts_cluster_credentials_arn" {
+  description = "FTS database secret ARN"
+  type        = string
+}
+
+variable "db_fts_cluster_name" {
+  description = "FTS database name"
+  type        = string
+}
+
+variable "db_fts_cluster_port" {
+  description = "FTS database port"
+  type        = number
+  default     = 3306
 }

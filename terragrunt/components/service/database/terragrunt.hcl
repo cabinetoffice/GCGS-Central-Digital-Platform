@@ -49,6 +49,7 @@ dependency core_security_groups {
 inputs = {
   aurora_postgres_instance_type    = local.global_vars.locals.aurora_postgres_instance_type
   aurora_postgres_instance_type_ev = local.global_vars.locals.aurora_postgres_instance_type_ev
+  aurora_mysql_instance_type       = local.global_vars.locals.aurora_mysql_instance_type
   tags                             = local.tags
 
   private_subnet_ids          = dependency.core_networking.outputs.private_subnet_ids

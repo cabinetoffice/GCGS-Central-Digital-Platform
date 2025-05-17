@@ -45,6 +45,19 @@ variable "ecs_service_base_sg_id" {
   type        = string
 }
 
+variable "efs_volume" {
+  description = "Optional EFS volume to mount in the task definition"
+  type = object({
+    access_point_id    = optional(string)
+    container_path     = string
+    file_system_id     = string
+    iam                = optional(string, "DISABLED")
+    name               = string
+    transit_encryption = optional(string, "ENABLED")
+  })
+  default = null
+}
+
 variable "family" {
   description = "A unique name for the task definition"
   type        = string
