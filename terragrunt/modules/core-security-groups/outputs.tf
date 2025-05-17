@@ -6,12 +6,20 @@ output "ci_sg_id" {
   value = aws_security_group.ci.id
 }
 
+output "db_mysql_sg_id" {
+  value = aws_security_group.db_mysql.id
+}
+
 output "db_postgres_sg_id" {
   value = aws_security_group.db_postgres.id
 }
 
 output "ecs_sg_id" {
   value = aws_security_group.ecs.id
+}
+
+output "efs_sg_id" {
+  value = aws_security_group.efs.id
 }
 
 output "elasticache_redis_sg_id" {

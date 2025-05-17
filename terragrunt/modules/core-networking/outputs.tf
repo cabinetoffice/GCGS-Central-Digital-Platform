@@ -60,9 +60,9 @@ output "vpc_cider" {
   value       = aws_vpc.this.cidr_block
 }
 
-output "vpc_cidr_block" {
-  description = "VPC CIDR block"
-  value       = aws_vpc.this.cidr_block
+output "vpc_cidr_blocks" {
+  description = "VPC CIDR blocks"
+  value       = [aws_vpc.this.cidr_block]
 }
 
 output "vpc_id" {

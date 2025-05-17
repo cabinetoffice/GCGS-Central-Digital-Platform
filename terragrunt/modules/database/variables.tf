@@ -1,3 +1,15 @@
+variable "aurora_mysql_engine_version" {
+  description = "DB engine version"
+  type        = string
+  default     = "8.0.mysql_aurora.3.07.1"
+}
+
+variable "aurora_mysql_instance_type" {
+  description = "FTS RDS instance type"
+  type        = string
+  default     = "db.r5.large"
+}
+
 variable "aurora_postgres_engine_version" {
   description = "DB engine version"
   type        = string
@@ -16,6 +28,11 @@ variable "aurora_postgres_instance_type_ev" {
   default     = "db.r5.large"
 }
 
+variable "db_mysql_sg_id" {
+  description = "MySQL DB security group ID"
+  type        = string
+}
+
 variable "db_postgres_sg_id" {
   description = "Postgres DB security group ID"
   type        = string
@@ -29,11 +46,6 @@ variable "environment" {
 variable "is_production" {
   description = "Indicates whether the target account is configured with production-level settings"
   type        = bool
-}
-
-variable "postgres_engine_version" {
-  description = "DB engine version"
-  type        = string
 }
 
 variable "postgres_instance_type" {

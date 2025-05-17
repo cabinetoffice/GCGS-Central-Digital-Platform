@@ -15,4 +15,6 @@ locals {
 
   executable_tasks_by_step_functions = concat(local.auto_redeploy_tools_tasks, ["k6"])
 
+  cloud_beaver_container_path = "/opt/cloudbeaver/workspace"
+  cloud_beaver_volume_name    = "workspace"
 }
