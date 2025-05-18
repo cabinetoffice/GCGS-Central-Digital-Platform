@@ -4,20 +4,21 @@ module "ecs_service_cloud_beaver" {
   container_definitions = templatefile(
     "${path.module}/templates/task-definitions/cloud-beaver.json.tftpl",
     {
-      account_id          = data.aws_caller_identity.current.account_id
-      container_path      = local.cloud_beaver_container_path
-      container_port      = var.cloud_beaver_config.port
-      cpu                 = var.cloud_beaver_config.cpu
-      efs_access_point_id = aws_efs_access_point.cloudbeaver.id
-      efs_file_system_id  = aws_efs_file_system.cloudbeaver.id
-      host_port           = var.cloud_beaver_config.port
-      image               = "${local.orchestrator_account_id}.dkr.ecr.${data.aws_region.current.name}.amazonaws.com/cdp-cloud-beaver:latest"
-      lg_name             = aws_cloudwatch_log_group.cloud_beaver.name
-      lg_prefix           = "tools"
-      lg_region           = data.aws_region.current.name
-      memory              = var.cloud_beaver_config.memory
-      name                = var.cloud_beaver_config.name
-      source_volume       = local.cloud_beaver_volume_name
+      account_id                 = data.aws_caller_identity.current.account_id
+      cb_data_sources_secret_arn = aws_secretsmanager_secret_version.cloud_beaver_data_sources.arn
+      container_path             = local.cloud_beaver_container_path
+      container_port             = var.cloud_beaver_config.port
+      cpu                        = var.cloud_beaver_config.cpu
+      efs_access_point_id        = aws_efs_access_point.cloudbeaver.id
+      efs_file_system_id         = aws_efs_file_system.cloudbeaver.id
+      host_port                  = var.cloud_beaver_config.port
+      image                      = "${local.orchestrator_account_id}.dkr.ecr.${data.aws_region.current.name}.amazonaws.com/cdp-cloud-beaver:latest"
+      lg_name                    = aws_cloudwatch_log_group.cloud_beaver.name
+      lg_prefix                  = "tools"
+      lg_region                  = data.aws_region.current.name
+      memory                     = var.cloud_beaver_config.memory
+      name                       = var.cloud_beaver_config.name
+      source_volume              = local.cloud_beaver_volume_name
     }
   )
 
