@@ -55,7 +55,7 @@
             : and then encoded with base64 encoding.
 
     mimetype: application/x-microsoft.net.object.bytearray.base64
-    value   : The object must be serialized into a byte array 
+    value   : The object must be serialized into a byte array
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
@@ -506,6 +506,95 @@
   </data>
   <data name="Global_Enter_Your_Email_Address" xml:space="preserve">
     <value>Enter your email address</value>
+  </data>
+  <data name="Global_Enter_Your_Job_Title" xml:space="preserve">
+    <value>Enter your job title</value>
+  </data>
+  <!-- Carbon Net Zero -->
+  <data name="CarbonNetZero_01_Title" xml:space="preserve">
+  <value>Submitting your Carbon Net Zero information</value>
+</data>
+  <data name="CarbonNetZero_01_Description" xml:space="preserve">
+  <value>
+    Carbon Net Zero is the commitment to balance greenhouse gas emissions with equivalent removals by 2050.
+    You must develop Carbon Reduction Plans (CRPs) that detail your emissions, reduction strategies, and
+    sustainability practices. This ensures transparency and accountability in your environmental management
+    and aligns with government regulations. For more information, read:
+    &amp;lt;p class="govuk-body"&amp;gt;
+    &amp;lt;a href="https://www.procurementpathway.civilservice.gov.uk/documents/ppn/ppn-006-taking-account-of-carbon-reduction-plans-in-the-procurement-of-major-government-contracts/selection-stage#:~:text=In%2Dscope%20organisations%20should%20take%20action%20to%20apply,the%20Procurement%20Act%202023%20(PA%202023)%2C%20save"
+    class="govuk-link" rel="noreferrer noopener" target="_blank"&amp;gt;
+    PPN 006 Taking account of Carbon Reduction Plans in the procurement of major government contracts
+    (opens in new tab)&amp;lt;/a&amp;gt;&amp;lt;/p&amp;gt;
+
+    &amp;lt;h2 class="govuk-heading-m"&amp;gt;The Carbon Net Zero information you'll need&amp;lt;/h2&amp;gt;
+    &amp;lt;div class="govuk-hint"&amp;gt;You'll need to provide information on your Carbon Reduction Plan. This may include your:
+      &amp;lt;ul class="govuk-list govuk-list--bullet"&amp;gt;
+        &amp;lt;li class="govuk-!-margin-top-4"&amp;gt; Carbon Reduction Plan expiry date&amp;lt;/li&amp;gt;
+        &amp;lt;li class="govuk-!-margin-top-4"&amp;gt; Emissions Declaration&amp;lt;/li&amp;gt;
+        &amp;lt;li class="govuk-!-margin-top-4"&amp;gt; your baseline and reporting year emissions data&amp;lt;/li&amp;gt;
+      &amp;lt;/ul&amp;gt;
+    &amp;lt;/div&amp;gt;
+  </value>
+</data>
+  <data name="CarbonNetZero_ReportingStandard_Title" xml:space="preserve">
+    <value>Have you published a Carbon Reduction Plan which meets the required reporting standard?</value>
+  </data>
+  <data name="CarbonNetZero_ReportingStandard_HintText" xml:space="preserve">
+    <value>&lt;a href="https://www.gov.uk/government/publications/ppn-006-taking-account-of-carbon-reduction-plans-in-the-procurement-of-major-government-contracts/ppn-006-taking-account-of-carbon-reduction-plans-html" class="govuk-link" rel="noreferrer noopener" target="_blank"&gt;Read PPN 006: Taking account of Carbon Reduction Plans (opens in a new tab)&lt;/a&gt;</value>
+  </data>
+  <data name="CarbonNetZero_CarbonReductionPlan_Title" xml:space="preserve">
+    <value>Do you have a link to your most recently published Carbon Reduction Plan?</value>
+  </data>
+  <data name="CarbonNetZero_YouCannotCompleteThisModule_Title" xml:space="preserve">
+    <value>You cannot complete this module</value>
+  </data>
+  <data name="CarbonNetZero_YouCannotCompleteThisModule_Text" xml:space="preserve">
+    <value>To complete the Carbon Net Zero module you must have a published Carbon Reduction Plan.</value>
+  </data>
+  <data name="CarbonNetZero_CarbonNetZeroDetails_Title" xml:space="preserve">
+    <value>Provide your Carbon Net Zero details</value>
+  </data>
+  <data name="CarbonNetZero_CarbonNetZeroDetails_CarbonReductionPlanExpiryDate_Heading" xml:space="preserve">
+    <value>Enter your Carbon Reduction Plan expiry date</value>
+  </data>
+  <data name="CarbonNetZero_CarbonNetZeroDetails_NetZeroTargetYear_Heading" xml:space="preserve">
+    <value>Enter your Net Zero target year</value>
+  </data>
+  <data name="CarbonNetZero_CarbonNetZeroDetails_NetZeroTargetYear_HintText" xml:space="preserve">
+    <value>For example 2030</value>
+  </data>
+  <data name="CarbonNetZero_CarbonNetZeroDetails_RelevantEmissionsData_Heading" xml:space="preserve">
+    <value>Enter the relevant emissions data:</value>
+  </data>
+  <data name="CarbonNetZero_CarbonNetZeroDetails_SupplierEmissionsDeclaration_Text" xml:space="preserve">
+    <value>Supplier Emissions Declaration:</value>
+  </data>
+  <data name="CarbonNetZero_CarbonNetZeroDetails_BaselineYear_Text" xml:space="preserve">
+    <value>Baseline Year:</value>
+  </data>
+  <data name="CarbonNetZero_CarbonNetZeroDetails_ReportingYear_Text" xml:space="preserve">
+    <value>Reporting Year:</value>
+  </data>
+  <data name="CarbonNetZero_CarbonNetZeroDetails_BaselineYear_ScopeOne_Text" xml:space="preserve">
+    <value>Scope 1:</value>
+  </data>
+  <data name="CarbonNetZero_CarbonNetZeroDetails_BaselineYear_ScopeTwo_Text" xml:space="preserve">
+    <value>Scope 2:</value>
+  </data>
+  <data name="CarbonNetZero_CarbonNetZeroDetails_BaselineYear_ScopeThree_Text" xml:space="preserve">
+    <value>Scope 3:</value>
+  </data>
+  <data name="CarbonNetZero_CarbonNetZeroDetails_ReportingYear_ScopeOne_Text" xml:space="preserve">
+    <value>Scope 1:</value>
+  </data>
+  <data name="CarbonNetZero_CarbonNetZeroDetails_ReportingYear_ScopeTwo_Text" xml:space="preserve">
+    <value>Scope 2:</value>
+  </data>
+  <data name="CarbonNetZero_CarbonNetZeroDetails_ReportingYear_ScopeThree_Text" xml:space="preserve">
+    <value>Scope 3:</value>
+  </data>
+  <data name="CarbonNetZero_CarbonNetZeroDetails_TCO2E_Text" xml:space="preserve">
+    <value>tCO2e</value>
   </data>
   <data name="Global_Enter_Your_Job_Title" xml:space="preserve">
     <value>Enter your job title</value>
