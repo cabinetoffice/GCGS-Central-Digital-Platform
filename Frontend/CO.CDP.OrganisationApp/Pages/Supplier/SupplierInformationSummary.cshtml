@@ -2,7 +2,9 @@
 @using CO.CDP.Localization
 @using CO.CDP.OrganisationApp.Pages.Forms
 @using CO.CDP.OrganisationApp.Constants
+@using Microsoft.FeatureManagement
 @inject IUserInfoService userInfoService
+@inject IFeatureManager featureManager
 @inject IShareCodeMandatoryInformationService ShareCodeMandatoryInformationService
 @model CO.CDP.OrganisationApp.Pages.Supplier.SupplierInformationSummaryModel
 
@@ -10,6 +12,7 @@
     ViewData["Title"] = Model.Name;
 
     bool isViewer = await userInfoService.IsViewer();
+    bool isAdditionalSectionEnabled = await featureManager.IsEnabledAsync(FeatureFlags.SupplierAdditionalModule);
 }
 
 @section BeforeContent {
@@ -24,6 +27,8 @@
 <h2 class="govuk-heading-m">@StaticTextResource.Supplier_SupplierInformationSummary_Heading</h2>
 <p class="govuk-body">@StaticTextResource.Supplier_SupplierInformationSummary_Hint</p>
 <ul class="govuk-task-list">
+
+    @* Your Organization *@
     <li class="govuk-task-list__item govuk-task-list__item--with-link">
         <div class="govuk-task-list__name-and-hint">
             <a class="govuk-link govuk-link--no-visited-state" href="@($"/organisation/{Model.Id}/supplier-information/{((Model.HasSupplierType || isViewer) ? "basic-information" : "individual-or-org")}")" aria-describedby="basic-info-status">
@@ -50,6 +55,7 @@
         </div>
     </li>
 
+    @* People connected to your orgnization *@
     <li class="govuk-task-list__item govuk-task-list__item--with-link">
         <div class="govuk-task-list__name-and-hint">
             <a class="govuk-link govuk-link--no-visited-state" href="@($"/organisation/{Model.Id}/supplier-information/connected-person/{((Model.ConnectedEntities.Count > 0 || isViewer) ? "connected-person-summary" : "declaration")}")" aria-describedby="connected-persons-status">
@@ -80,8 +86,13 @@
     </li>
 
     @{
-        var formSections = Model.FormSections.Where(section => section.Type != CDP.Forms.WebApiClient.FormSectionType.Declaration).ToList();
+        var formSections = Model.FormSections
+            .Where(section => section.Type == CDP.Forms.WebApiClient.FormSectionType.Standard
+                              || section.Type == CDP.Forms.WebApiClient.FormSectionType.Exclusions)
+            .ToList();
         var declarationSection = Model.FormSections.Where(section => section.Type == CDP.Forms.WebApiClient.FormSectionType.Declaration).First();
+
+        var additionalSection = Model.FormSections.Where(section => section.Type == CDP.Forms.WebApiClient.FormSectionType.AdditionalSection).ToList();
     }
 
     @foreach (var section in formSections)
@@ -126,6 +137,51 @@
     }
 </ul>
 
+@* Additional Supplier Modules *@
+@if (isAdditionalSectionEnabled)
+{
+    <h2 class="govuk-heading-m">@StaticTextResource.Supplier_AdditionalModulesInformation_Heading</h2>
+    <p class="govuk-body">@StaticTextResource.Supplier_AdditionalModulesInformation_Hint</p>
+
+    <ul class="govuk-task-list">
+        @foreach (var section in additionalSection)
+        {
+            var redirectLink = $"/organisation/{Model.Id}/forms/{FormsEngine.OrganisationSupplierInfoFormId}/sections/{section.SectionId}";
+
+            <li class="govuk-task-list__item govuk-task-list__item--with-link">
+                <div class="govuk-task-list__name-and-hint">
+                    <a class="govuk-link govuk-link--no-visited-state" href="@redirectLink" aria-describedby="form-section-@(section.SectionId)-status">
+                        @(section.SectionName)
+                    </a>
+                </div>
+                <div class="govuk-task-list__status" id="form-section-@(section.SectionId)-status">
+                    @if (section.AnswerSetWithFurtherQuestionExemptedExists)
+                    {
+                        <strong class="govuk-!-font-weight-regular">
+                            @string.Format(StaticTextResource.Supplier_SupplierInformationSummary_FormRecordCount, 0)
+                        </strong>
+                    } else
+                    {
+                        @if (section.AnswerSetCount > 0)
+                        {
+                            <strong class="govuk-!-font-weight-regular">
+                                @(string.Format(StaticTextResource.Supplier_SupplierInformationSummary_FormRecordCount, section.AnswerSetCount))
+                            </strong>
+                        }
+                        else
+                        {
+                            <strong class="govuk-tag govuk-tag--blue">
+                                @StaticTextResource.SupplierInformationStatus_StepStatus_NotStarted
+                            </strong>
+                        }
+                    }
+                </div>
+            </li>
+        }
+    </ul>
+}
+
+@* Declaraion Section *@
 <h2 class="govuk-heading-m">@StaticTextResource.Supplier_SupplierInformationShare_Heading</h2>
 <p class="govuk-body">@StaticTextResource.Supplier_SupplierInformationShare_Hint</p>
 
