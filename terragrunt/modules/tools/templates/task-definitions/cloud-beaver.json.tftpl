@@ -20,7 +20,12 @@
     }
   },
   "environment": [],
-  "secrets": [],
+  "secrets": [
+    {
+      "name": "CLOUD_BEAVER_DATA_SOURCES",
+      "valueFrom": "${cb_data_sources_secret_arn}"
+    }
+  ],
   "volumesFrom": [],
   "mountPoints": [
     {

@@ -11,11 +11,11 @@ module "cluster_fts" {
   engine_version               = var.aurora_mysql_engine_version
   family                       = "aurora-mysql8.0"
   instance_type                = var.aurora_mysql_instance_type
-  monitoring_interval          = var.is_production ? 30 : 0
-  monitoring_role_arn          = var.is_production ? var.role_rds_cloudwatch_arn : ""
-  performance_insights_enabled = var.is_production
+  monitoring_interval          = 30
+  monitoring_role_arn          = var.role_rds_cloudwatch_arn
+  performance_insights_enabled = true
   private_subnet_ids           = var.private_subnet_ids
-  publicly_accessible          = true
+  publicly_accessible          = true # @TODO (ABN) Disable after migration
   role_terraform_arn           = var.role_terraform_arn
   tags                         = var.tags
 }
