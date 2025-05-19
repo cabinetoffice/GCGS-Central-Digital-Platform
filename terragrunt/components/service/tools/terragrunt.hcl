@@ -39,19 +39,23 @@ dependency core_iam {
 dependency core_networking {
   config_path = "../../core/networking"
   mock_outputs = {
-    private_subnet_ids                     = "mock"
-    public_domain                          = "mock"
-    public_hosted_zone_id                  = "mock"
-    vpc_id                                 = "mock"
+    private_subnet_ids    = "mock"
+    public_domain         = "mock"
+    public_hosted_zone_id = "mock"
+    public_subnet_ids     = "mock"
+    vpc_id                = "mock"
+    waf_acl_tools_arn     = "mock"
   }
 }
 
 dependency core_security_groups {
   config_path = "../../core/security-groups"
   mock_outputs = {
-    alb_sg_id         = "mock"
+    alb_tools_sg_id   = "mock"
+    db_mysql_sg_id    = "mock"
     db_postgres_sg_id = "mock"
     ecs_sg_id         = "mock"
+    efs_sg_id         = "mock"
   }
 }
 
@@ -78,10 +82,10 @@ dependency service_cache {
 dependency service_ecs {
   config_path = "../../service/ecs"
   mock_outputs = {
+    certificate_arn  = "mock"
     ecs_alb_dns_name = "mock"
     ecs_cluster_id   = "mock"
     ecs_cluster_name = "mock"
-    ecs_listener_arn = "mock"
   }
 }
 
@@ -91,6 +95,9 @@ dependency service_database {
     entity_verification_cluster_address         = "mock"
     entity_verification_cluster_credentials_arn = "mock"
     entity_verification_cluster_name            = "mock"
+    fts_cluster_address                         = "mock"
+    fts_cluster_credentials_arn                 = "mock"
+    fts_cluster_name                            = "mock"
     sirsi_cluster_address                       = "mock"
     sirsi_cluster_credentials_arn               = "mock"
     sirsi_cluster_name                          = "mock"
@@ -109,11 +116,12 @@ dependency service_queue {
 }
 
 inputs = {
-  account_ids        = local.global_vars.locals.account_ids
-  healthcheck_config = local.global_vars.locals.tools_configs.healthcheck
-  pgadmin_config     = local.global_vars.locals.tools_configs.pgadmin
-  tools_configs      = local.global_vars.locals.tools_configs
-  tags               = local.tags
+  account_ids         = local.global_vars.locals.account_ids
+  cloud_beaver_config = local.global_vars.locals.tools_configs.cloud_beaver
+  healthcheck_config  = local.global_vars.locals.tools_configs.healthcheck
+  pgadmin_config      = local.global_vars.locals.tools_configs.pgadmin
+  tools_configs       = local.global_vars.locals.tools_configs
+  tags                = local.tags
 
   role_cloudwatch_events_arn               = dependency.core_iam.outputs.cloudwatch_events_arn
   role_cloudwatch_events_name              = dependency.core_iam.outputs.cloudwatch_events_name
@@ -129,27 +137,38 @@ inputs = {
   private_subnet_ids    = dependency.core_networking.outputs.private_subnet_ids
   public_domain         = dependency.core_networking.outputs.public_domain
   public_hosted_zone_id = dependency.core_networking.outputs.public_hosted_zone_id
+  public_subnet_ids     = dependency.core_networking.outputs.public_subnet_ids
   vpc_id                = dependency.core_networking.outputs.vpc_id
+  waf_acl_tools_arn     = dependency.core_networking.outputs.waf_acl_tools_arn
 
+  alb_tools_sg_id   = dependency.core_security_groups.outputs.alb_tools_sg_id
+  db_mysql_sg_id    = dependency.core_security_groups.outputs.db_mysql_sg_id
   db_postgres_sg_id = dependency.core_security_groups.outputs.db_postgres_sg_id
   ecs_alb_sg_id     = dependency.core_security_groups.outputs.alb_sg_id
   ecs_sg_id         = dependency.core_security_groups.outputs.ecs_sg_id
+  efs_sg_id         = dependency.core_security_groups.outputs.efs_sg_id
 
-  user_pool_arn_healthcheck       = dependency.service_auth.outputs.healthcheck_user_pool_arn
-  user_pool_arn_pgadmin           = dependency.service_auth.outputs.pgadmin_user_pool_arn
-  user_pool_client_id_healthcheck = dependency.service_auth.outputs.healthcheck_user_pool_client_id
-  user_pool_client_id_pgadmin     = dependency.service_auth.outputs.pgadmin_user_pool_client_id
-  user_pool_domain_healthcheck    = dependency.service_auth.outputs.user_pool_domain
-  user_pool_domain_pgadmin        = dependency.service_auth.outputs.user_pool_domain
+  user_pool_arn_cloud_beaver       = dependency.service_auth.outputs.cloud_beaver_user_pool_arn
+  user_pool_arn_healthcheck        = dependency.service_auth.outputs.healthcheck_user_pool_arn
+  user_pool_arn_pgadmin            = dependency.service_auth.outputs.pgadmin_user_pool_arn
+  user_pool_client_id_cloud_beaver = dependency.service_auth.outputs.cloud_beaver_user_pool_client_id
+  user_pool_client_id_healthcheck  = dependency.service_auth.outputs.healthcheck_user_pool_client_id
+  user_pool_client_id_pgadmin      = dependency.service_auth.outputs.pgadmin_user_pool_client_id
+  user_pool_domain_cloud_beaver    = dependency.service_auth.outputs.user_pool_domain
+  user_pool_domain_healthcheck     = dependency.service_auth.outputs.user_pool_domain
+  user_pool_domain_pgadmin         = dependency.service_auth.outputs.user_pool_domain
 
+  certificate_arn  = dependency.service_ecs.outputs.certificate_arn
   ecs_cluster_id   = dependency.service_ecs.outputs.ecs_cluster_id
   ecs_cluster_name = dependency.service_ecs.outputs.ecs_cluster_name
   ecs_alb_dns_name = dependency.service_ecs.outputs.ecs_alb_dns_name
-  ecs_listener_arn = dependency.service_ecs.outputs.ecs_listener_arn
 
   db_ev_cluster_address                  = dependency.service_database.outputs.entity_verification_cluster_address
   db_ev_cluster_credentials_arn          = dependency.service_database.outputs.entity_verification_cluster_credentials_arn
   db_ev_cluster_name                     = dependency.service_database.outputs.entity_verification_cluster_name
+  db_fts_cluster_address                 = dependency.service_database.outputs.fts_cluster_address
+  db_fts_cluster_credentials_arn         = dependency.service_database.outputs.fts_cluster_credentials_arn
+  db_fts_cluster_name                    = dependency.service_database.outputs.fts_cluster_name
   db_sirsi_cluster_address               = dependency.service_database.outputs.sirsi_cluster_address
   db_sirsi_cluster_credentials_arn       = dependency.service_database.outputs.sirsi_cluster_credentials_arn
   db_sirsi_cluster_name                  = dependency.service_database.outputs.sirsi_cluster_name

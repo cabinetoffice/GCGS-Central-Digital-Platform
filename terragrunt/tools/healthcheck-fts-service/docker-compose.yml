@@ -1,0 +1,23 @@
+services:
+  web:
+    build: .
+    image: cabinetoffice/cdp-fts
+    ports:
+      - "8070:8070"
+    depends_on:
+      - db
+    environment:
+      - DB_HOST=db
+      - DB_USER=root
+      - DB_PASS=example
+      - DB_NAME=testdb
+
+  db:
+    image: mysql:5.7
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: example
+      MYSQL_DATABASE: testdb
+    volumes:
+      - ./mysql:/docker-entrypoint-initdb.d
+

@@ -172,6 +172,7 @@ locals {
       canary_schedule_expression        = "rate(15 minutes)"
       fts_azure_frontdoor               = "nqc-front-door-uksouth.azurefd.net"
       fts_service_allowed_origins       = []
+      mysql_aurora_instance_type        = "db.r5.2xlarge"
       name                              = "production"
       onelogin_logout_notification_urls = ["https://www.find-tender.service.gov.uk/auth/backchannellogout"]
       pinned_service_version            = "1.0.62"
@@ -200,6 +201,7 @@ locals {
   aurora_postgres_instance_type_ev  = try(local.environments[local.environment].postgres_aurora_instance_type_ev, local.aurora_postgres_instance_type)
   fts_azure_frontdoor               = try(local.environments[local.environment].fts_azure_frontdoor, null)
   fts_service_allowed_origins       = try(local.environments[local.environment].fts_service_allowed_origins, null)
+  aurora_mysql_instance_type        = try(local.environments[local.environment].mysql_aurora_instance_type, local.aurora_postgres_instance_type)
   onelogin_logout_notification_urls = try(local.environments[local.environment].onelogin_logout_notification_urls, null)
   pinned_service_version            = try(local.environments[local.environment].pinned_service_version, null)
   redis_node_type                   = try(local.environments[local.environment].redis_node_type, null)
@@ -223,6 +225,7 @@ locals {
     entity_verification                  = {}
     entity_verification_migrations       = { cpu = 256,  memory = 512}
     forms                                = {}
+    fts                                  = { desired_count = 1 }
     organisation                         = {}
     organisation_app                     = {}
     organisation_information_migrations  = { cpu = 256,  memory = 512}
@@ -265,6 +268,7 @@ locals {
     entity_verification                  = { port = 8094, port_host = 8094, name = "entity-verification"}
     entity_verification_migrations       = { port = 9191, port_host = null, name = "entity-verification-migrations"}
     forms                                = { port = 8086, port_host = 8086, name = "forms"}
+    fts                                  = { port = 8070, port_host = 8070, name = "fts"}
     organisation                         = { port = 8082, port_host = 8082, name = "organisation"}
     organisation_app                     = { port = 8090, port_host = 80  , name = "organisation-app"}
     organisation_information_migrations  = { port = 9090, port_host = null, name = "organisation-information-migrations"}
@@ -292,6 +296,13 @@ locals {
       name      = "clamav-rest"
       port      = 9000
       port_host = 9000
+    }
+    cloud_beaver = {
+      cpu       = 1024
+      memory    = 3072
+      name      = "cloud-beaver"
+      port      = 8978
+      port_host = 8978
     }
     grafana = {
       cpu       = 1024

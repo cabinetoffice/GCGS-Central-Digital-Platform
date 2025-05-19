@@ -27,8 +27,8 @@ module "clamav_rest" {
   container_port         = var.tools_configs.clamav_rest.port
   cpu                    = var.is_production || var.environment == "staging" ? 4096 : var.tools_configs.clamav_rest.cpu
   desired_count          = var.is_production ? 9 : 2
-  ecs_alb_sg_id          = var.ecs_alb_sg_id
-  ecs_listener_arn       = var.ecs_listener_arn
+  ecs_alb_sg_id          = var.alb_tools_sg_id
+  ecs_listener_arn       = aws_lb_listener.tools.arn
   ecs_service_base_sg_id = var.ecs_sg_id
   family                 = "tools"
   healthcheck_path       = "/"

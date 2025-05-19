@@ -41,6 +41,7 @@ dependency core_networking {
 dependency core_security_groups {
   config_path = "../../core/security-groups"
   mock_outputs = {
+    db_mysql_sg_id    = "mock"
     db_postgres_sg_id = "mock"
   }
 }
@@ -48,12 +49,14 @@ dependency core_security_groups {
 inputs = {
   aurora_postgres_instance_type    = local.global_vars.locals.aurora_postgres_instance_type
   aurora_postgres_instance_type_ev = local.global_vars.locals.aurora_postgres_instance_type_ev
+  aurora_mysql_instance_type       = local.global_vars.locals.aurora_mysql_instance_type
   tags                             = local.tags
 
   private_subnet_ids          = dependency.core_networking.outputs.private_subnet_ids
   private_subnets_cidr_blocks = dependency.core_networking.outputs.private_subnets_cidr_blocks
   vpc_id                      = dependency.core_networking.outputs.vpc_id
 
+  db_mysql_sg_id    = dependency.core_security_groups.outputs.db_mysql_sg_id
   db_postgres_sg_id = dependency.core_security_groups.outputs.db_postgres_sg_id
 
   role_rds_backup_arn     = dependency.core_iam.outputs.rds_backup_arn
