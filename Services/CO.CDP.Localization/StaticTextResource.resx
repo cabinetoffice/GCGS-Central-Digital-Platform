@@ -3763,6 +3763,6 @@
     <value>Additional supplier modules</value>
   </data>
   <data name="Supplier_AdditionalModulesInformation_Hint" xml:space="preserve">
-    <value>An additioanl module is extra information related to a particular topic that suppliers are required to submit for specific contracts</value>
+    <value>An additional module is extra information related to a particular topic that suppliers are required to submit for specific contracts</value>
   </data>
 </root>
