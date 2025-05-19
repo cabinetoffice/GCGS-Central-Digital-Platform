@@ -278,12 +278,12 @@
   </data>
   <data name="SteelQuestion_01_Description" xml:space="preserve">
     <value>
-      &lt;div class=&quot;govuk-hint&quot;&gt;This module refers to the procurement and use of steel products in government projects. It focuses on compliance with UK regulations regarding sourcing, quality, and sustainability. For further information read &lt;a target=\&quot;_blank\&quot; href=\&quot;https://www.gov.uk/government/publications/ppn-010-procuring-steel-in-government-contracts/ppn-010-revised-guidance-on-procuring-steel-in-government-contracts-html&quot;&gt;PPN 010: Revised guidance on procuring steel in government contracts (opens in new tab).&lt;/a&gt;
+      &lt;div class=&quot;govuk-body&quot;&gt;This module refers to the procurement and use of steel products in government projects. It focuses on compliance with UK regulations regarding sourcing, quality, and sustainability. For further information read &lt;a target=\&quot;_blank\&quot; href=\&quot;https://www.gov.uk/government/publications/ppn-010-procuring-steel-in-government-contracts/ppn-010-revised-guidance-on-procuring-steel-in-government-contracts-html&quot;&gt;PPN 010: Revised guidance on procuring steel in government contracts (opens in new tab).&lt;/a&gt;
 &lt;/div&gt;
-&lt;div class=&quot;govuk-hint&quot;&gt;
-  &lt;p class=&quot;govuk-hint&quot;&gt;The steel information you&#39;ll need&lt;/p&gt;
+&lt;div class=&quot;govuk-body&quot;&gt;
+  &lt;p class=&quot;govuk-body&quot;&gt;The steel information you&#39;ll need&lt;/p&gt;
   &lt;br/&gt;You&#39;ll need to provide information on steel specific supply chain projects or programmes. This may include relevant examples of: 
-  &lt;ul class=&quot;govuk-hint govuk-list govuk-list--bullet&quot;&gt;
+  &lt;ul class=&quot;govuk-body govuk-list govuk-list--bullet&quot;&gt;
     &lt;li&gt;management systems, policies, standards and procedures&lt;/li&gt;
     &lt;li&gt;sustainable practice&lt;/li&gt;
     &lt;li&gt;health and safety breaches&lt;/li&gt;
@@ -300,7 +300,7 @@
     <value>Supply chain management in steel procurement</value>
   </data>
   <data name="SteelQuestion_02_Description" xml:space="preserve">
-    <value>&lt;div class="govuk-hint"&gt; Describe the steel specific supply chain management systems, policies, standards and procedures you have in place to ensure effective supply chain management and compliance with relevant legislation for: &lt;ul class="govuk-hint govuk-list govuk-list--bullet"&gt; &lt;li class="govuk-!-margin-top-4"&gt;project and programmes involving steel procurement&lt;/li&gt; &lt;/ul&gt; &lt;/div&gt;</value>
+    <value>&lt;div class="govuk-body"&gt; Describe the steel specific supply chain management systems, policies, standards and procedures you have in place to ensure effective supply chain management and compliance with relevant legislation for: &lt;ul class="govuk-body govuk-list govuk-list--bullet"&gt; &lt;li class="govuk-!-margin-top-4"&gt;projects and programmes involving steel procurement&lt;/li&gt; &lt;/ul&gt; &lt;/div&gt;</value>
   </data>
 
 
@@ -321,7 +321,7 @@
     <value>Sustainable supply and production of steel</value>
   </data>
   <data name="SteelQuestion_04_Description" xml:space="preserve">
-    <value> &lt;div class="govuk-hint"&gt;Enter details of projects where you have shown skill and effectiveness in managing all supply chain members involved in steel supply or production to ensure a sustainble supply of steel. &lt;/div&gt; &lt;div class="govuk-inset-text"&gt; What is sustainable steel supply? &lt;br/&gt;Sustainable supply of steel refers to the sourcing and production of steel that is environmentally, socially and economically responsible. It involves practices that limit environmental impact, such as reducing carbon emissions and energy use, while also ensuring fair labour practices and supporting local communities. &lt;/div&gt;</value>
+    <value> &lt;div class="govuk-body"&gt;Enter details of projects where you have shown skill and effectiveness in managing all supply chain members involved in steel supply or production to ensure a sustainble supply of steel. &lt;/div&gt; &lt;div class="govuk-inset-text"&gt; What is sustainable steel supply? &lt;br/&gt;Sustainable supply of steel refers to the sourcing and production of steel that is environmentally, socially and economically responsible. It involves practices that limit environmental impact, such as reducing carbon emissions and energy use, while also ensuring fair labour practices and supporting local communities. &lt;/div&gt;</value>
   </data>
 
   <!-- Question 05-->
@@ -348,7 +348,7 @@
     <value>Sustainable supply and production of steel</value>
   </data>
   <data name="SteelQuestion_07_Description" xml:space="preserve">
-    <value> &lt;div class="govuk-hint"&gt; Give us your explanation of breaches in health and safety legislation in the last 5 years that apply to the country where you work, for both: &lt;ul class="govuk-hint govuk-list govuk-list--bullet" &gt; &lt;li class="govuk-!-margin-top-4"&gt;your organisation&lt;/li&gt; &lt;li class="govuk-!-margin-top-4"&gt;all your supply chain members involved in the production or supply of steel&lt;/li&gt; &lt;/ul&gt;&lt;/div&gt; </value>
+    <value> &lt;div class="govuk-body"&gt; Give us your explanation of breaches in health and safety legislation in the last 5 years that apply to the country where you work, for both: &lt;ul class="govuk-body govuk-list govuk-list--bullet" &gt; &lt;li class="govuk-!-margin-top-4"&gt;your organisation&lt;/li&gt; &lt;li class="govuk-!-margin-top-4"&gt;all your supply chain members involved in the production or supply of steel&lt;/li&gt; &lt;/ul&gt;&lt;/div&gt; </value>
   </data>
 
   <!-- Question 08-->
