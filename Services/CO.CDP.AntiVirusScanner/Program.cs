@@ -7,7 +7,7 @@ using CO.CDP.MQ.Hosting;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddHttpClient();
+builder.Services.AddHttpClient(Scanner.ClamAVApiHttpClientName, c => c.Timeout = TimeSpan.FromMinutes(5));
 builder.Services.AddScoped<IScanner, Scanner>();
 builder.Services.AddHealthChecks();
 builder.Services
