@@ -3632,6 +3632,9 @@
   <data name="Consortium_ConsortiumEnterNewSharecode_Heading" xml:space="preserve">
     <value>Enter a new sharecode for {0}</value>
   </data>
+  <data name="Consortium_ConsortiumEnterNewSharecodeNewOrganisation_Heading" xml:space="preserve">
+    <value>Enter a new sharecode</value>
+  </data>
   <data name="Consortium_RemoveFromConsortium_Button" xml:space="preserve">
     <value>Remove from consortium</value>
   </data>
