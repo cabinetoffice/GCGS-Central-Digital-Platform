@@ -16,7 +16,7 @@ public class ScannerTests
     private readonly Mock<IConfiguration> _configurationMock;
     private readonly Mock<ILogger<Scanner>> _loggerMock;
     private readonly Scanner _scanner;
-    private readonly Mock<HttpMessageHandler> _httpMessageHandlerMock;
+    private readonly Mock<IHttpClientFactory> _httpClientFactoryMock;
     private readonly Mock<IGovUKNotifyApiClient> _govUKNotifyApiClient;
 
     public ScannerTests()
@@ -24,13 +24,13 @@ public class ScannerTests
         _fileHostManagerMock = new Mock<IFileHostManager>();
         _configurationMock = new Mock<IConfiguration>();
         _loggerMock = new Mock<ILogger<Scanner>>();
-        _httpMessageHandlerMock = new Mock<HttpMessageHandler>();
+        _httpClientFactoryMock = new Mock<IHttpClientFactory>();
         _govUKNotifyApiClient = new Mock<IGovUKNotifyApiClient>();
         _scanner = new Scanner(_fileHostManagerMock.Object,
             _configurationMock.Object,
             _loggerMock.Object,
             _govUKNotifyApiClient.Object,
-            new HttpClient(_httpMessageHandlerMock.Object));
+            _httpClientFactoryMock.Object);
     }
 
     [Fact]
@@ -39,19 +39,25 @@ public class ScannerTests
         ScanFile fileToScan = GetScanFile();
         var fileStream = new MemoryStream();
         _fileHostManagerMock.Setup(m => m.DownloadStagingFile(fileToScan.QueueFileName)).ReturnsAsync(fileStream);
-        _configurationMock.Setup(c => c["ClamAvScanUrl"]).Returns("http://clamav-rest:9000/scan");
 
-        _httpMessageHandlerMock
+        var mockHandler = new Mock<HttpMessageHandler>();
+
+        mockHandler
             .Protected()
             .Setup<Task<HttpResponseMessage>>(
                 "SendAsync",
                 ItExpr.IsAny<HttpRequestMessage>(),
-                ItExpr.IsAny<CancellationToken>())
+                ItExpr.IsAny<CancellationToken>()
+            )
             .ReturnsAsync(new HttpResponseMessage
             {
                 StatusCode = HttpStatusCode.OK,
                 Content = new StringContent("Scan successful")
-            });
+            })
+            .Verifiable();
+
+        _httpClientFactoryMock.Setup(h => h.CreateClient(It.IsAny<string>()))
+            .Returns(new HttpClient(mockHandler.Object) { BaseAddress = new Uri("http://test.com") });
 
         await _scanner.Scan(fileToScan);
 
@@ -65,21 +71,27 @@ public class ScannerTests
         var fileToScan = GetScanFile();
         var fileStream = new MemoryStream();
         _fileHostManagerMock.Setup(m => m.DownloadStagingFile(fileToScan.QueueFileName)).ReturnsAsync(fileStream);
-        _configurationMock.Setup(c => c["ClamAvScanUrl"]).Returns("http://clamav-rest:9000/scan");
         _configurationMock.Setup(c => c["GOVUKNotify:FileContainedVirusEmailTemplateId"]).Returns("00000000-0000-0000-0000-000000000000");
         _configurationMock.Setup(c => c["OrganisationAppUrl"]).Returns("http://localhost:8090");
 
-        _httpMessageHandlerMock
+        var mockHandler = new Mock<HttpMessageHandler>();
+
+        mockHandler
             .Protected()
             .Setup<Task<HttpResponseMessage>>(
                 "SendAsync",
                 ItExpr.IsAny<HttpRequestMessage>(),
-                ItExpr.IsAny<CancellationToken>())
+                ItExpr.IsAny<CancellationToken>()
+            )
             .ReturnsAsync(new HttpResponseMessage
             {
                 StatusCode = HttpStatusCode.BadRequest,
                 Content = new StringContent("Scan failed")
-            });
+            })
+            .Verifiable();
+
+        _httpClientFactoryMock.Setup(h => h.CreateClient(It.IsAny<string>()))
+            .Returns(new HttpClient(mockHandler.Object) { BaseAddress = new Uri("http://test.com") });
 
         await _scanner.Scan(fileToScan);
 
@@ -95,22 +107,29 @@ public class ScannerTests
         var fileToScan = GetScanFile();
         var fileStream = new MemoryStream(Encoding.UTF8.GetBytes("Fake PDF Content"));
 
-        _configurationMock.Setup(c => c["ClamAvScanUrl"]).Returns("http://clamav-rest:9000/scan");
         _configurationMock.Setup(c => c["GOVUKNotify:FileContainedVirusEmailTemplateId"]).Returns("00000000-0000-0000-0000-000000000000");
         _configurationMock.Setup(c => c["OrganisationAppUrl"]).Returns("http://localhost:8090");
         _fileHostManagerMock.Setup(m => m.DownloadStagingFile(fileToScan.QueueFileName)).ReturnsAsync(fileStream);
 
-        _httpMessageHandlerMock
+        var mockHandler = new Mock<HttpMessageHandler>();
+
+        mockHandler
             .Protected()
             .Setup<Task<HttpResponseMessage>>(
                 "SendAsync",
                 ItExpr.IsAny<HttpRequestMessage>(),
-                ItExpr.IsAny<CancellationToken>())
+                ItExpr.IsAny<CancellationToken>()
+            )
             .ReturnsAsync(new HttpResponseMessage
             {
                 StatusCode = HttpStatusCode.NotAcceptable,
                 Content = new StringContent("Virus Found")
-            });
+            })
+            .Verifiable();
+
+        _httpClientFactoryMock.Setup(h => h.CreateClient(It.IsAny<string>()))
+            .Returns(new HttpClient(mockHandler.Object) { BaseAddress = new Uri("http://test.com") });
+
 
         await _scanner.Scan(fileToScan);
 

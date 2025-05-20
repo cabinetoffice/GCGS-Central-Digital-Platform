@@ -10,6 +10,7 @@ using Match = System.Text.RegularExpressions.Match;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Amazon.SimpleSystemsManagement;
+using CO.CDP.Organisation.WebApiClient;
 using Microsoft.AspNetCore.DataProtection.KeyManagement;
 using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.DataProtection;
@@ -60,12 +61,17 @@ public class ContentSecurityPolicyTests
             .Setup(s => s.Get<UserDetails>(Session.UserDetailsKey))
             .Returns(new UserDetails() { Email = "a@b.com", UserUrn = "urn", PersonId = person.Id });
 
+        var organisationClient = new Mock<IOrganisationClient>();
+
+        organisationClient.Setup(client => client.GetAnnouncementsAsync(It.IsAny<string>()))
+            .ReturnsAsync(new List<Organisation.WebApiClient.Announcement>());
 
         var factory = new TestWebApplicationFactory<Program>(builder =>
         {
             builder.ConfigureServices((context, services) =>
             {
                 services.AddSingleton(session.Object);
+                services.AddSingleton<IOrganisationClient>(organisationClient.Object);
                 services.AddTransient<IAuthenticationSchemeProvider, FakeSchemeProvider>();
                 services.Configure<OpenIdConnectOptions>(OpenIdConnectDefaults.AuthenticationScheme, options => {
                     options.ClientId = "123";

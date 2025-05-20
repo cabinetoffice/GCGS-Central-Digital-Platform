@@ -34,8 +34,8 @@ module "ecs_service_healthcheck" {
   cluster_id             = var.ecs_cluster_id
   container_port         = var.healthcheck_config.port
   cpu                    = var.healthcheck_config.cpu
-  ecs_alb_sg_id          = var.ecs_alb_sg_id
-  ecs_listener_arn       = var.ecs_listener_arn
+  ecs_alb_sg_id          = var.alb_tools_sg_id
+  ecs_listener_arn       = aws_lb_listener.tools.arn
   ecs_service_base_sg_id = var.ecs_sg_id
   family                 = "tools"
   healthcheck_path       = "/healthz"

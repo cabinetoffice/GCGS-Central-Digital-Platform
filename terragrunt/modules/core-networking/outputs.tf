@@ -60,9 +60,9 @@ output "vpc_cider" {
   value       = aws_vpc.this.cidr_block
 }
 
-output "vpc_cidr_block" {
-  description = "VPC CIDR block"
-  value       = aws_vpc.this.cidr_block
+output "vpc_cidr_blocks" {
+  description = "VPC CIDR blocks"
+  value       = [aws_vpc.this.cidr_block]
 }
 
 output "vpc_id" {
@@ -72,4 +72,8 @@ output "vpc_id" {
 
 output "waf_acl_arn" {
   value = try(aws_wafv2_web_acl.this[0].arn, null)
+}
+
+output "waf_acl_tools_arn" {
+  value = try(aws_wafv2_web_acl.tools[0].arn, null)
 }
