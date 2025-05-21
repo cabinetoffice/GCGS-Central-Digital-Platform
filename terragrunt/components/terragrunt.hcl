@@ -43,6 +43,8 @@ locals {
       canary_schedule_expression        = "rate(30 minutes)" # "cron(15 7,11,15 ? * MON-FRI)" # UTC+0
       fts_azure_frontdoor               = null
       fts_service_allowed_origins       = []
+      mysql_aurora_engine_version       = "5.7.mysql_aurora.2.12.5"
+      mysql_aurora_family               = "aurora-mysql5.7"
       name                              = "dev"
       onelogin_logout_notification_urls = [
         "https://test-findtender.nqc.com/auth/backchannellogout",
@@ -201,6 +203,8 @@ locals {
   aurora_postgres_instance_type_ev  = try(local.environments[local.environment].postgres_aurora_instance_type_ev, local.aurora_postgres_instance_type)
   fts_azure_frontdoor               = try(local.environments[local.environment].fts_azure_frontdoor, null)
   fts_service_allowed_origins       = try(local.environments[local.environment].fts_service_allowed_origins, null)
+  aurora_mysql_engine_version       = try(local.environments[local.environment].mysql_aurora_engine_version, null)
+  aurora_mysql_family               = try(local.environments[local.environment].mysql_aurora_family, null)
   aurora_mysql_instance_type        = try(local.environments[local.environment].mysql_aurora_instance_type, local.aurora_postgres_instance_type)
   onelogin_logout_notification_urls = try(local.environments[local.environment].onelogin_logout_notification_urls, null)
   pinned_service_version            = try(local.environments[local.environment].pinned_service_version, null)

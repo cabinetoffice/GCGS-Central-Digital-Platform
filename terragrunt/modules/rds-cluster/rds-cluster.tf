@@ -42,6 +42,7 @@ resource "aws_rds_cluster_instance" "this" {
   cluster_identifier           = aws_rds_cluster.this.id
   db_parameter_group_name      = aws_db_parameter_group.this.name
   engine                       = var.engine
+  engine_version               = var.engine_version
   identifier                   = "${var.db_name}-${count.index}"
   instance_class               = var.instance_type
   monitoring_interval          = var.monitoring_interval
