@@ -3,6 +3,27 @@ variable "account_ids" {
   type        = map(string)
 }
 
+variable "alb_tools_sg_id" {
+  description = "Tools application load-balancer security group ID"
+  type        = string
+}
+
+variable "certificate_arn" {
+  description = "ARN of the ACM certificate to use for the Tools ALB"
+  type        = string
+}
+
+variable "cloud_beaver_config" {
+  description = "Cloud Beaver services configuration"
+  type = object({
+    cpu       = number
+    memory    = number
+    name      = string
+    port      = number
+    port_host = number
+  })
+}
+
 variable "db_entity_verification_cluster_port" {
   description = "Entity Verification database port"
   type        = number
@@ -22,6 +43,27 @@ variable "db_ev_cluster_credentials_arn" {
 variable "db_ev_cluster_name" {
   description = "Entity Verification database name"
   type        = string
+}
+
+variable "db_fts_cluster_address" {
+  description = "FTS database endpoint address"
+  type        = string
+}
+
+variable "db_fts_cluster_credentials_arn" {
+  description = "FTS database secret ARN"
+  type        = string
+}
+
+variable "db_fts_cluster_name" {
+  description = "FTS database name"
+  type        = string
+}
+
+variable "db_fts_cluster_port" {
+  description = "FTS database port"
+  type        = number
+  default     = 3306
 }
 
 variable "db_postgres_sg_id" {
@@ -70,13 +112,13 @@ variable "ecs_cluster_name" {
   type        = string
 }
 
-variable "ecs_listener_arn" {
-  description = "ECS Application Loadbalancer Listener ARN"
+variable "ecs_sg_id" {
+  description = "ECS security group ID"
   type        = string
 }
 
-variable "ecs_sg_id" {
-  description = "ECS security group ID"
+variable "efs_sg_id" {
+  description = "EFS security group ID"
   type        = string
 }
 
@@ -139,6 +181,11 @@ variable "public_domain" {
 variable "public_hosted_zone_id" {
   description = "ID of the public hosted zone"
   type        = string
+}
+
+variable "public_subnet_ids" {
+  description = "List of public subnet IDs"
+  type        = list(string)
 }
 
 variable "redis_auth_token_arn" {
@@ -228,6 +275,11 @@ variable "tools_configs" {
   }))
 }
 
+variable "user_pool_arn_cloud_beaver" {
+  default = null
+  type    = string
+}
+
 variable "user_pool_arn_healthcheck" {
   default = null
   type    = string
@@ -238,12 +290,22 @@ variable "user_pool_arn_pgadmin" {
   type    = string
 }
 
+variable "user_pool_client_id_cloud_beaver" {
+  default = null
+  type    = string
+}
+
 variable "user_pool_client_id_healthcheck" {
   default = null
   type    = string
 }
 
 variable "user_pool_client_id_pgadmin" {
+  default = null
+  type    = string
+}
+
+variable "user_pool_domain_cloud_beaver" {
   default = null
   type    = string
 }
@@ -260,5 +322,10 @@ variable "user_pool_domain_pgadmin" {
 
 variable "vpc_id" {
   description = "The ID of the VPC"
+  type        = string
+}
+
+variable "waf_acl_tools_arn" {
+  description = "WAF ACL ARN to be associated with the Tools ALB"
   type        = string
 }
