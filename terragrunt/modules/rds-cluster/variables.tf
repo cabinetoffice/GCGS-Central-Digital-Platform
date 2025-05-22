@@ -47,7 +47,6 @@ variable "engine" {
 variable "engine_version" {
   description = "DB engine version"
   type        = string
-  default     = "aurora-mysql8.0"
 }
 
 variable "family" {
