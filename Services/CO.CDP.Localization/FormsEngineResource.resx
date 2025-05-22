@@ -363,6 +363,24 @@
   <data name="HealthAndSafety_SectionTitle" xml:space="preserve">
     <value>Health and Safety</value>
   </data>
+  <data name="HealthAndSafetyQuestion_01_Title" xml:space="preserve">
+    <value>Submitting your health and safety information</value>
+  </data>
+  <data name="HealthAndSafetyQuestion_01_Description" xml:space="preserve">
+    <value>
+      &lt;p class=&quot;govuk-body&quot;&gt;
+        Health and safety regulations ensure the well-being of employees and the public in the workplace. This module requires you to provide information about your health and safety policies, risk assessments, and training provided to prevent accidents and injuries. The type, level of experience, and capability to manage health and safety risks may vary based on the risks, size, and complexity of the situation.
+      &lt;/p&gt;
+
+      &lt;h2 class=&quot;govuk-heading-m&quot;&gt;
+        To complete this module you&#39;ll need:
+      &lt;/h2&gt;
+
+      &lt;ul class=&quot;govuk-list govuk-list--bullet&quot;&gt;
+        &lt;li&gt;Information relating to health and safety management and risk&lt;/li&gt;
+      &lt;/ul&gt;
+    </value>
+  </data>
 
   <data name="Exclusions_07_Title" xml:space="preserve">
     <value>Did this exclusion happen in the UK?</value>
