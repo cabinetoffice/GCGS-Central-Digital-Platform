@@ -25,6 +25,10 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                     SELECT id INTO sectionId FROM form_sections where title = 'HealthAndSafety_SectionTitle';
 
                     INSERT INTO form_questions (guid, next_question_id, next_question_alternative_id, section_id, ""type"", is_required, title, description, ""options"",  caption, summary_title, ""name"", sort_order)
+                    VALUES('{Guid.NewGuid()}', previousQuestionId, NULL, sectionId, 10, true, 'HealthAndSafetyQuestion_04_Title', 'HealthAndSafetyQuestion_04_Description', '{{}}', NULL, '', '_HealthAndSafetyQuestion04', 4)
+                    RETURNING id INTO previousQuestionId;
+
+                    INSERT INTO form_questions (guid, next_question_id, next_question_alternative_id, section_id, ""type"", is_required, title, description, ""options"",  caption, summary_title, ""name"", sort_order)
                     VALUES('{Guid.NewGuid()}', previousQuestionId, NULL, sectionId, 2, false, 'HealthAndSafetyQuestion_03_Title', NULL, '{{}}', NULL, '', '_HealthAndSafetyQuestion03', 3)
                     RETURNING id INTO previousQuestionId;
 

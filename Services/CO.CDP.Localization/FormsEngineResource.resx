@@ -394,6 +394,16 @@
   <data name="HealthAndSafetyQuestion_03_Title" xml:space="preserve">
     <value>Do you have supporting documents to upload?</value>
   </data>
+  <data name="HealthAndSafetyQuestion_04_Title" xml:space="preserve">
+    <value>How do you handle significant risks?</value>
+  </data>
+  <data name="HealthAndSafetyQuestion_04_Description" xml:space="preserve">
+    <value>
+      &lt;div class=&quot;govuk-hint govuk-!-margin-bottom-4&quot;&gt;
+        Including those from contractors.
+      &lt;/div&gt;
+    </value>
+  </data>
   <data name="Exclusions_07_Title" xml:space="preserve">
     <value>Did this exclusion happen in the UK?</value>
   </data>
