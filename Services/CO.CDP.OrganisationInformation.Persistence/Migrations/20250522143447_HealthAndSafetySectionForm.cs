@@ -1,0 +1,44 @@
+﻿using Microsoft.EntityFrameworkCore.Migrations;
+
+#nullable disable
+
+namespace CO.CDP.OrganisationInformation.Persistence.Migrations
+{
+    /// <inheritdoc />
+    public partial class HealthAndSafetySectionForm : Migration
+    {
+        /// <inheritdoc />
+        protected override void Up(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.Sql($@"
+                DO $$
+                DECLARE
+                    form_id int;
+                    sectionId INT;
+                    previousQuestionId INT;
+                BEGIN
+                    SELECT id INTO form_id FROM forms WHERE name = 'Standard Questions';
+
+	                INSERT INTO form_sections (guid, title, form_id, allows_multiple_answer_sets, check_further_questions_exempted, type,display_order, configuration)
+                    VALUES ('{Guid.NewGuid()}', 'HealthAndSafety_SectionTitle', form_id, FALSE, FALSE, 3,1, '{{""AddAnotherAnswerLabel"": ""HealthAndSafety_Configuration_AddAnotherAnswerLabel"", ""SingularSummaryHeading"": ""HealthAndSafety_Configuration_SingularSummaryHeading"", ""SummaryRenderFormatter"": {{""KeyParams"": [""_HealthAndSafetyQuestion02"", ""_HealthAndSafetyQuestion04""], ""ValueParams"": [""_HealthAndSafetyQuestion02"", ""_HealthAndSafetyQuestion04""], ""KeyExpression"": ""{{0}}"", ""ValueExpression"": ""{{1}}"", ""KeyExpressionOperation"": ""StringFormat"", ""ValueExpressionOperation"": ""StringFormat""}}, ""RemoveConfirmationCaption"": ""HealthAndSafety_SectionTitle"", ""RemoveConfirmationHeading"": ""HealthAndSafety_Configuration_RemoveConfirmationHeading"", ""PluralSummaryHeadingFormat"": ""HealthAndSafety_Configuration_PluralSummaryHeadingFormat"", ""SingularSummaryHeadingHint"": ""HealthAndSafety_Configuration_SingularSummaryHeadingHint"", ""FurtherQuestionsExemptedHint"": ""HealthAndSafety_Configuration_FurtherQuestionsExemptedHint"", ""PluralSummaryHeadingHintFormat"": ""HealthAndSafety_Configuration_PluralSummaryHeadingHintFormat"", ""FurtherQuestionsExemptedHeading"": ""HealthAndSafety_Configuration_FurtherQuestionsExemptedHeading""}}');
+
+                END $$;
+            ");
+        }
+
+        /// <inheritdoc />
+        protected override void Down(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.Sql($@"
+                DO $$
+                DECLARE
+                    sectionId INT;
+                BEGIN
+                    SELECT id INTO sectionId FROM form_sections WHERE title = 'HealthAndSafety_SectionTitle';
+                    DELETE FROM form_questions WHERE section_id = sectionId;
+                    DELETE FROM form_sections WHERE id = sectionId;
+                END $$;
+            ");
+        }
+    }
+}
