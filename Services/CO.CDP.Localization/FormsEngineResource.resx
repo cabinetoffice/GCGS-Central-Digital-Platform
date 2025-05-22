@@ -391,6 +391,9 @@
       &lt;/div&gt;
     </value>
   </data>
+  <data name="HealthAndSafetyQuestion_03_Title" xml:space="preserve">
+    <value>Do you have supporting documents to upload?</value>
+  </data>
   <data name="Exclusions_07_Title" xml:space="preserve">
     <value>Did this exclusion happen in the UK?</value>
   </data>
