@@ -4,6 +4,12 @@ variable "aurora_mysql_engine_version" {
   default     = "8.0.mysql_aurora.3.07.1"
 }
 
+variable "aurora_mysql_family" {
+  description = "DB family"
+  type        = string
+  default     = "aurora-mysql8.0"
+}
+
 variable "aurora_mysql_instance_type" {
   description = "FTS RDS instance type"
   type        = string

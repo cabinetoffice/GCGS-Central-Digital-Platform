@@ -9,7 +9,7 @@ module "cluster_fts" {
   db_sg_id                     = var.db_mysql_sg_id
   deletion_protection          = var.is_production
   engine_version               = var.aurora_mysql_engine_version
-  family                       = "aurora-mysql8.0"
+  family                       = var.aurora_mysql_family
   instance_type                = var.aurora_mysql_instance_type
   monitoring_interval          = 30
   monitoring_role_arn          = var.role_rds_cloudwatch_arn
