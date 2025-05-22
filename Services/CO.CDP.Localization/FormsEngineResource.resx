@@ -391,8 +391,14 @@
       &lt;/div&gt;
     </value>
   </data>
+  <data name="HealthAndSafetyQuestion_02_SummaryTitle" xml:space="preserve">
+    <value>Health and safety management</value>
+  </data>
   <data name="HealthAndSafetyQuestion_03_Title" xml:space="preserve">
     <value>Do you have supporting documents to upload?</value>
+  </data>
+  <data name="HealthAndSafetyQuestion_03_SummaryTitle" xml:space="preserve">
+    <value>Supporting documents</value>
   </data>
   <data name="HealthAndSafetyQuestion_04_Title" xml:space="preserve">
     <value>How do you handle significant risks?</value>
@@ -404,8 +410,14 @@
       &lt;/div&gt;
     </value>
   </data>
+  <data name="HealthAndSafetyQuestion_04_SummaryTitle" xml:space="preserve">
+    <value>Handling of risks</value>
+  </data>
   <data name="HealthAndSafetyQuestion_05_Title" xml:space="preserve">
     <value>Do you have supporting documents to upload?</value>
+  </data>
+  <data name="HealthAndSafetyQuestion_05_SummaryTitle" xml:space="preserve">
+    <value>Supporting documents</value>
   </data>
   <data name="Exclusions_07_Title" xml:space="preserve">
     <value>Did this exclusion happen in the UK?</value>

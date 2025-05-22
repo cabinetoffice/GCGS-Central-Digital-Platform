@@ -25,19 +25,23 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                     SELECT id INTO sectionId FROM form_sections where title = 'HealthAndSafety_SectionTitle';
 
                     INSERT INTO form_questions (guid, next_question_id, next_question_alternative_id, section_id, ""type"", is_required, title, description, ""options"",  caption, summary_title, ""name"", sort_order)
-                    VALUES('{Guid.NewGuid()}', previousQuestionId, NULL, sectionId, 2, false, 'HealthAndSafetyQuestion_05_Title', NULL, '{{}}', NULL, '', '_HealthAndSafetyQuestion05', 5)
+                    VALUES('{Guid.NewGuid()}', NULL, NULL, sectionId, 6, true, 'Global_CheckYourAnswers', '', '{{}}', NULL, NULL, '_HealthAndSafetyQuestion09', 6)
                     RETURNING id INTO previousQuestionId;
 
                     INSERT INTO form_questions (guid, next_question_id, next_question_alternative_id, section_id, ""type"", is_required, title, description, ""options"",  caption, summary_title, ""name"", sort_order)
-                    VALUES('{Guid.NewGuid()}', previousQuestionId, NULL, sectionId, 10, true, 'HealthAndSafetyQuestion_04_Title', 'HealthAndSafetyQuestion_04_Description', '{{}}', NULL, '', '_HealthAndSafetyQuestion04', 4)
+                    VALUES('{Guid.NewGuid()}', previousQuestionId, NULL, sectionId, 2, false, 'HealthAndSafetyQuestion_05_Title', NULL, '{{}}', NULL, 'HealthAndSafetyQuestion_05_SummaryTitle', '_HealthAndSafetyQuestion05', 5)
                     RETURNING id INTO previousQuestionId;
 
                     INSERT INTO form_questions (guid, next_question_id, next_question_alternative_id, section_id, ""type"", is_required, title, description, ""options"",  caption, summary_title, ""name"", sort_order)
-                    VALUES('{Guid.NewGuid()}', previousQuestionId, NULL, sectionId, 2, false, 'HealthAndSafetyQuestion_03_Title', NULL, '{{}}', NULL, '', '_HealthAndSafetyQuestion03', 3)
+                    VALUES('{Guid.NewGuid()}', previousQuestionId, NULL, sectionId, 10, true, 'HealthAndSafetyQuestion_04_Title', 'HealthAndSafetyQuestion_04_Description', '{{}}', NULL, 'HealthAndSafetyQuestion_04_SummaryTitle', '_HealthAndSafetyQuestion04', 4)
                     RETURNING id INTO previousQuestionId;
 
                     INSERT INTO form_questions (guid, next_question_id, next_question_alternative_id, section_id, ""type"", is_required, title, description, ""options"",  caption, summary_title, ""name"", sort_order)
-                    VALUES('{Guid.NewGuid()}', previousQuestionId, NULL, sectionId, 10, true, 'HealthAndSafetyQuestion_02_Title', 'HealthAndSafetyQuestion_02_Description', '{{}}', NULL, '', '_HealthAndSafetyQuestion02', 2)
+                    VALUES('{Guid.NewGuid()}', previousQuestionId, NULL, sectionId, 2, false, 'HealthAndSafetyQuestion_03_Title', NULL, '{{}}', NULL, 'HealthAndSafetyQuestion_03_SummaryTitle', '_HealthAndSafetyQuestion03', 3)
+                    RETURNING id INTO previousQuestionId;
+
+                    INSERT INTO form_questions (guid, next_question_id, next_question_alternative_id, section_id, ""type"", is_required, title, description, ""options"",  caption, summary_title, ""name"", sort_order)
+                    VALUES('{Guid.NewGuid()}', previousQuestionId, NULL, sectionId, 10, true, 'HealthAndSafetyQuestion_02_Title', 'HealthAndSafetyQuestion_02_Description', '{{}}', NULL, 'HealthAndSafetyQuestion_02_SummaryTitle', '_HealthAndSafetyQuestion02', 2)
                     RETURNING id INTO previousQuestionId;
 
                     INSERT INTO form_questions (guid, next_question_id, next_question_alternative_id, section_id, ""type"", is_required, title, description, ""options"",  caption, summary_title, ""name"", sort_order)
