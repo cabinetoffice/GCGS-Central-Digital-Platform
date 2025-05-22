@@ -1,5 +1,5 @@
 output "cluster_ids" {
-  value = [module.cluster_entity_verification.cluster_id, module.cluster_sirsi.cluster_id]
+  value = [module.cluster_entity_verification.cluster_id, module.cluster_fts.cluster_id, module.cluster_sirsi.cluster_id]
 }
 
 output "entity_verification_cluster_address" {
@@ -16,6 +16,22 @@ output "entity_verification_cluster_credentials_kms_key_id" {
 
 output "entity_verification_cluster_name" {
   value = module.cluster_entity_verification.db_name
+}
+
+output "fts_cluster_address" {
+  value = module.cluster_fts.db_address
+}
+
+output "fts_cluster_credentials_arn" {
+  value = module.cluster_fts.db_credentials_arn
+}
+
+output "fts_cluster_credentials_kms_key_id" {
+  value = module.cluster_fts.db_kms_arn
+}
+
+output "fts_cluster_name" {
+  value = module.cluster_fts.db_name
 }
 
 output "sirsi_cluster_address" {

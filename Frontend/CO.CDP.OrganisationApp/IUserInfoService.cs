@@ -9,6 +9,7 @@ public interface IUserInfoService
     public Task<bool> IsViewer();
     public Task<bool> IsAdmin();
     public Task<bool> HasOrganisations();
+    bool IsAuthenticated();
 }
 
 public record UserInfo

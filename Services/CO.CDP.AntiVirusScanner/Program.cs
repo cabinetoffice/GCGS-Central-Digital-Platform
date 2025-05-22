@@ -1,4 +1,3 @@
-
 using CO.CDP.AntiVirusScanner;
 using CO.CDP.AwsServices;
 using CO.CDP.GovUKNotify;
@@ -7,7 +6,15 @@ using CO.CDP.MQ.Hosting;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddHttpClient();
+string clamAvScanUrl = builder.Configuration.GetValue<string>("ClamAvScanUrl")
+        ?? throw new Exception("Missing configuration key: ClamAvScanUrl.");
+
+builder.Services.AddHttpClient(Scanner.ClamAVApiHttpClientName,
+    c =>
+    {
+        c.BaseAddress = new Uri(clamAvScanUrl);
+        c.Timeout = TimeSpan.FromMinutes(builder.Configuration.GetValue<int?>("ClamAvScanApiTimeoutInMinutes") ?? 5);
+    });
 builder.Services.AddScoped<IScanner, Scanner>();
 builder.Services.AddHealthChecks();
 builder.Services

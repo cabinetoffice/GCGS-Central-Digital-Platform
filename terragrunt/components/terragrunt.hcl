@@ -43,6 +43,8 @@ locals {
       canary_schedule_expression        = "rate(30 minutes)" # "cron(15 7,11,15 ? * MON-FRI)" # UTC+0
       fts_azure_frontdoor               = null
       fts_service_allowed_origins       = []
+      mysql_aurora_engine_version       = "5.7.mysql_aurora.2.12.5"
+      mysql_aurora_family               = "aurora-mysql5.7"
       name                              = "dev"
       onelogin_logout_notification_urls = [
         "https://test-findtender.nqc.com/auth/backchannellogout",
@@ -79,7 +81,7 @@ locals {
         "https://stanvolcere.nqc.com/auth/backchannellogout",
         "https://www-staging.find-tender.service.gov.uk/auth/backchannellogout",
       ]
-      pinned_service_version            = "1.0.61"
+      pinned_service_version            = "1.0.64"
       postgres_instance_type            = "db.t4g.micro"
       postgres_aurora_instance_type     = "db.r5.large"
       private_subnets = [
@@ -93,7 +95,7 @@ locals {
         "10.${local.cidr_b_staging}.3.0/24"
       ]
       redis_node_type  = "cache.t3.medium"
-      top_level_domain = "supplier.information.findatender.codatt.net"
+      top_level_domain = "supplier-information.find-tender.service.gov.uk"
 
       externals_cidr_block      = "integration account feature" # To be deprecated after FTS Migration
       externals_private_subnets = "integration account feature" # To be deprecated after FTS Migration
@@ -143,7 +145,7 @@ locals {
         "https://www-tpp-preview.find-tender.service.gov.uk/auth/backchannellogout",
         "https://www-tpp.find-tender.service.gov.uk/auth/backchannellogout",
       ]
-      pinned_service_version            = "consortiums-2025-04-28-2"
+      pinned_service_version            = "data-sharing-api-fixes-2025-05-12-3"
       postgres_instance_type            = "db.t4g.micro"
       postgres_aurora_instance_type     = "db.r5.large"
       private_subnets = [
@@ -157,7 +159,7 @@ locals {
         "10.${local.cidr_b_integration}.3.0/24"
       ]
       redis_node_type  = "cache.t3.medium"
-      top_level_domain = "supplier.information.findatender.codatt.net"
+      top_level_domain = "supplier-information.find-tender.service.gov.uk"
 
       externals_cidr_block      = "10.${local.cidr_b_external_integration}.0.0/16"
       externals_private_subnets = [
@@ -172,9 +174,10 @@ locals {
       canary_schedule_expression        = "rate(15 minutes)"
       fts_azure_frontdoor               = "nqc-front-door-uksouth.azurefd.net"
       fts_service_allowed_origins       = []
+      mysql_aurora_instance_type        = "db.r5.2xlarge"
       name                              = "production"
       onelogin_logout_notification_urls = ["https://www.find-tender.service.gov.uk/auth/backchannellogout"]
-      pinned_service_version            = "1.0.59"
+      pinned_service_version            = "1.0.64"
       postgres_instance_type            = "db.t4g.micro"
       postgres_aurora_instance_type     = "db.r5.8xlarge"
       postgres_aurora_instance_type_ev  = "db.r5.4xlarge"
@@ -200,6 +203,9 @@ locals {
   aurora_postgres_instance_type_ev  = try(local.environments[local.environment].postgres_aurora_instance_type_ev, local.aurora_postgres_instance_type)
   fts_azure_frontdoor               = try(local.environments[local.environment].fts_azure_frontdoor, null)
   fts_service_allowed_origins       = try(local.environments[local.environment].fts_service_allowed_origins, null)
+  aurora_mysql_engine_version       = try(local.environments[local.environment].mysql_aurora_engine_version, null)
+  aurora_mysql_family               = try(local.environments[local.environment].mysql_aurora_family, null)
+  aurora_mysql_instance_type        = try(local.environments[local.environment].mysql_aurora_instance_type, local.aurora_postgres_instance_type)
   onelogin_logout_notification_urls = try(local.environments[local.environment].onelogin_logout_notification_urls, null)
   pinned_service_version            = try(local.environments[local.environment].pinned_service_version, null)
   redis_node_type                   = try(local.environments[local.environment].redis_node_type, null)
@@ -223,6 +229,7 @@ locals {
     entity_verification                  = {}
     entity_verification_migrations       = { cpu = 256,  memory = 512}
     forms                                = {}
+    fts                                  = { desired_count = 1 }
     organisation                         = {}
     organisation_app                     = {}
     organisation_information_migrations  = { cpu = 256,  memory = 512}
@@ -265,6 +272,7 @@ locals {
     entity_verification                  = { port = 8094, port_host = 8094, name = "entity-verification"}
     entity_verification_migrations       = { port = 9191, port_host = null, name = "entity-verification-migrations"}
     forms                                = { port = 8086, port_host = 8086, name = "forms"}
+    fts                                  = { port = 8070, port_host = 8070, name = "fts"}
     organisation                         = { port = 8082, port_host = 8082, name = "organisation"}
     organisation_app                     = { port = 8090, port_host = 80  , name = "organisation-app"}
     organisation_information_migrations  = { port = 9090, port_host = null, name = "organisation-information-migrations"}
@@ -292,6 +300,13 @@ locals {
       name      = "clamav-rest"
       port      = 9000
       port_host = 9000
+    }
+    cloud_beaver = {
+      cpu       = 1024
+      memory    = 3072
+      name      = "cloud-beaver"
+      port      = 8978
+      port_host = 8978
     }
     grafana = {
       cpu       = 1024

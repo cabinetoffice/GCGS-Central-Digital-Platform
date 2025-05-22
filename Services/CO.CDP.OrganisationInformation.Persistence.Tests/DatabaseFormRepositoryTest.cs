@@ -1,7 +1,10 @@
 using CO.CDP.OrganisationInformation.Persistence.Forms;
 using CO.CDP.Testcontainers.PostgreSql;
 using FluentAssertions;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Xml.Linq;
 using static CO.CDP.OrganisationInformation.Persistence.Tests.Factories.SharedConsentFactory;
 
 namespace CO.CDP.OrganisationInformation.Persistence.Tests;
@@ -262,6 +265,62 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
         found.As<SharedConsent>().AnswerSets.First().Answers.First().Guid.Should().Be(answer.Guid);
     }
 
+    [Fact]
+    public async Task DeleteAnswerSetAsync_IsConnectedEntityUsedInExclusionAsyncReturnsFalse_WhenExclusionDeleted()
+    {
+        using var connectedEntityRepo = ConnectedEntityRepository();
+        await using var context = GetDbContext();
+        var organisationId = Guid.NewGuid();
+        var answerSetId = Guid.NewGuid();
+        var organisation = GivenOrganisation(organisationId: organisationId);
+        var form = GivenForm();
+        var section = GivenFormSection(form: form, type: FormSectionType.Exclusions);
+        var sharedConsent = GivenSharedConsent(
+            state: SubmissionState.Draft,
+            organisation: organisation,
+            form: form);
+        var answerSet = GivenAnswerSet(sharedConsent: sharedConsent, answerSetId: answerSetId, section: section);
+        var ceGuid = Guid.NewGuid();
+        GivenAnswer(
+            question: GivenFormQuestion(type: FormQuestionType.Text, section: section),
+            textValue: "Answer 1",
+            answerSet: answerSet,
+            jsonValue: $@"
+            {{
+                ""id"": ""{ceGuid}"",
+                ""type"": ""connected-entity""
+            }}");
+        context.Organisations.Add(organisation);
+        context.SharedConsents.Add(sharedConsent);
+        await context.SaveChangesAsync();
+
+        var ce1 = new ConnectedEntity
+        {
+            Guid = ceGuid,
+            EntityType = ConnectedEntity.ConnectedEntityType.Organisation,
+            Organisation = new ConnectedEntity.ConnectedOrganisation
+            {
+                OrganisationId = organisation.Guid,
+                Name = "CHN_111",
+                Category = ConnectedEntity.ConnectedOrganisationCategory.DirectorOrTheSameResponsibilities,
+                RegisteredLegalForm = "Legal Form",
+                LawRegistered = "Law Registered"
+            },
+            SupplierOrganisation = organisation
+        };
+        await connectedEntityRepo.Save(ce1);
+
+        var repository = FormRepository();
+
+        var inUse = await connectedEntityRepo.IsConnectedEntityUsedInExclusionAsync(organisationId, ce1.Guid);
+        inUse.Item1.Should().BeTrue();
+
+        var result = await repository.DeleteAnswerSetAsync(organisationId, answerSetId);
+        result.Should().BeTrue();
+
+        inUse = await connectedEntityRepo.IsConnectedEntityUsedInExclusionAsync(organisationId, ce1.Guid);
+        inUse.Item1.Should().BeFalse();
+    }
 
     [Fact]
     public async Task DeleteAnswerSetAsync_ShouldReturnFalse_WhenAnswerSetNotFound()
@@ -543,6 +602,9 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
     {
         return GivenFormQuestion(section: section, type: FormQuestionType.YesOrNo);
     }
+
+    private DatabaseConnectedEntityRepository ConnectedEntityRepository()
+        => new(GetDbContext());
 
     private DatabaseFormRepository FormRepository()
         => new(GetDbContext());

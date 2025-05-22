@@ -1,0 +1,5 @@
+CREATE TABLE IF NOT EXISTS healthcheck (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    status VARCHAR(20) NOT NULL
+);
+

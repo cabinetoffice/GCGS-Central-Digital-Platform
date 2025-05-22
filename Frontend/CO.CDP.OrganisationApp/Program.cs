@@ -14,6 +14,7 @@ using CO.CDP.OrganisationApp.Authorization;
 using CO.CDP.OrganisationApp.Middleware;
 using CO.CDP.OrganisationApp.Pages;
 using CO.CDP.OrganisationApp.Pages.Forms;
+using CO.CDP.OrganisationApp.Pages.Forms.AnswerSummaryStrategies;
 using CO.CDP.OrganisationApp.Pages.Forms.ChoiceProviderStrategies;
 using CO.CDP.OrganisationApp.ThirdPartyApiClients.CharityCommission;
 using CO.CDP.OrganisationApp.ThirdPartyApiClients.CompaniesHouse;
@@ -160,8 +161,12 @@ builder.Services.AddTransient<IFormsEngine, FormsEngine>();
 builder.Services.AddTransient<IDiagnosticPage, DiagnosticPage>();
 builder.Services.AddScoped<IUserInfoService, UserInfoService>();
 builder.Services.AddScoped<IFtsUrlService, FtsUrlService>();
+builder.Services.AddScoped<IAnnouncementService, AnnouncementService>();
 builder.Services.AddScoped<IShareCodeMandatoryInformationService, ShareCodeMandatoryInformationService>();
 
+builder.Services.AddScoped<IEvaluator, StringFormatEvaluator>();
+builder.Services.AddScoped<IEvaluator, EqualityEvaluator>();
+builder.Services.AddScoped<EvaluatorFactory>();
 
 var formsServiceUrl = builder.Configuration.GetValue<string>("FormsService")
             ?? throw new Exception("Missing configuration key: FormsService.");

@@ -8,8 +8,10 @@ public class Scanner(IFileHostManager fileHostManager,
     IConfiguration configuration,
     ILogger<Scanner> logger,
     IGovUKNotifyApiClient govUKNotifyApiClient,
-    HttpClient httpClient) : IScanner
+    IHttpClientFactory httpClientFactory) : IScanner
 {
+    public const string ClamAVApiHttpClientName = "ClamAVApi";
+
     public async Task Scan(ScanFile fileToScan)
     {
         try
@@ -17,37 +19,35 @@ public class Scanner(IFileHostManager fileHostManager,
             var fileAsStream = await fileHostManager.DownloadStagingFile(fileToScan.QueueFileName);
             var fileAsByteArray = StreamToByteArray(fileAsStream);
 
-            using (var content = new MultipartFormDataContent())
+            using var content = new MultipartFormDataContent();
+            var fileContent = new ByteArrayContent(fileAsByteArray);
+            content.Add(fileContent, "file", fileToScan.QueueFileName);
+
+            var httpClient = httpClientFactory.CreateClient(ClamAVApiHttpClientName);
+            var response = await httpClient.PostAsync("/v2/scan", content);
+
+            if (response.IsSuccessStatusCode)
             {
-                var fileContent = new ByteArrayContent(fileAsByteArray);
-                content.Add(fileContent, "file", fileToScan.QueueFileName);
+                var responseContent = await response.Content.ReadAsStringAsync();
+                await fileHostManager.CopyToPermanentBucket(fileToScan.QueueFileName);
 
-                var calmAvUrl = configuration["ClamAvScanUrl"];
-                var response = httpClient.PostAsync(calmAvUrl, content).Result;
-
-                if (response.IsSuccessStatusCode)
+                logger.LogInformation("File scanned successfully: File name: {fileName} OrganisationId: {orgId}", fileToScan.QueueFileName, fileToScan.OrganisationId);
+            }
+            else
+            {
+                if (response.StatusCode == System.Net.HttpStatusCode.NotAcceptable)
                 {
-                    var responseContent = response.Content.ReadAsStringAsync().Result;
-                    await fileHostManager.CopyToPermanentBucket(fileToScan.QueueFileName);
+                    logger.LogInformation("File scan failed - virus is found: {fileName} {orgId}", fileToScan.QueueFileName, fileToScan.OrganisationId);
 
-                    logger.LogInformation("File scanned successfully: File name: {fileName} OrganisationId: {orgId}", fileToScan.QueueFileName, fileToScan.OrganisationId);
+                    await SendEmail(fileToScan.UserEmailAddress, fileToScan);
+                    await SendEmail(fileToScan.OrganisationEmailAddress, fileToScan);
                 }
                 else
                 {
-                    if (response.StatusCode == System.Net.HttpStatusCode.NotAcceptable)
-                    {
-                        logger.LogInformation("File scan failed - virus is found: {fileName} {orgId}", fileToScan.QueueFileName, fileToScan.OrganisationId);
-
-                        await SendEmail(fileToScan.UserEmailAddress, fileToScan);
-                        await SendEmail(fileToScan.OrganisationEmailAddress, fileToScan);
-                    }
-                    else
-                    {
-                        logger.LogError("File scan failed: {fileName} {orgId}", fileToScan.QueueFileName, fileToScan.OrganisationId);
-                    }                    
-
-                    await fileHostManager.RemoveFromStagingBucket(fileToScan.QueueFileName);
+                    logger.LogError("File scan failed: {fileName} {orgId}", fileToScan.QueueFileName, fileToScan.OrganisationId);
                 }
+
+                await fileHostManager.RemoveFromStagingBucket(fileToScan.QueueFileName);
             }
         }
         catch (Exception ex)
