@@ -12,6 +12,7 @@ namespace CO.CDP.OrganisationApp.Tests.Pages.Consortium;
 
 public class ConsortiumEnterNewSharecodeModelTests
 {
+    private readonly Mock<ITempDataService> _tempDataServiceMock = new();
     private readonly Mock<IOrganisationClient> _organisationClientMock = new();
     private readonly Mock<IDataSharingClient> _dataSharingClientMock = new();
     private static readonly Guid _consortiumId = Guid.NewGuid();
@@ -20,7 +21,8 @@ public class ConsortiumEnterNewSharecodeModelTests
     {
         _model = new ConsortiumEnterNewSharecodeModel(
             _organisationClientMock.Object,
-            _dataSharingClientMock.Object)
+            _dataSharingClientMock.Object,
+            _tempDataServiceMock.Object)
         {
             Id = Guid.NewGuid()
         };
@@ -59,7 +61,6 @@ public class ConsortiumEnterNewSharecodeModelTests
 
         result.Should().BeOfType<PageResult>();
         _model.ConsortiumName.Should().Be(organisation.Name);
-        _model.PartyOrganisationName.Should().Be(organisationParty.Name);
     }
 
     [Fact]

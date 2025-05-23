@@ -104,4 +104,5 @@ public class ConsortiumSharecode
     public string? Sharecode { get; set; }
     public string? SharecodeOrganisationName { get; set; }
     public Guid? OrganisationPartyId { get; set; }
+    public bool HasBeenUpdated { get; set; } = false;
 }

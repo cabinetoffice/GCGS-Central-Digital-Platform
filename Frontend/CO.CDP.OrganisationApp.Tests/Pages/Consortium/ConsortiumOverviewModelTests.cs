@@ -68,6 +68,35 @@ public class ConsortiumOverviewModelTests
     }
 
     [Fact]
+    public async Task OnGet_ReturnsPage_WhenSharedCodeUpdaeted()
+    {
+        var organisation = GivenOrganisationClientModel();
+        var formSectionsResponse = GivenFormSectionResponse();
+
+        var parties = new OrganisationParties(new List<OrganisationParty>
+        {
+            new OrganisationParty(Guid.NewGuid(), "Consortium 1", new OrganisationPartyShareCode(DateTimeOffset.Now, "EXISTING_CODE"))
+        });
+
+        var sharecode = new ConsortiumSharecode { SharecodeOrganisationName = "Sharecode Org", HasBeenUpdated = true };
+
+        _organisationClientMock.Setup(x => x.GetOrganisationAsync(_pageModel.Id)).ReturnsAsync(organisation);
+        _organisationClientMock.Setup(x => x.GetOrganisationPartiesAsync(_pageModel.Id)).ReturnsAsync(parties);
+        _tempDataServiceMock.Setup(x => x.Get<ConsortiumSharecode>(ConsortiumSharecode.TempDataKey)).Returns(sharecode);
+        _formsClientMock.Setup(f => f.GetFormSectionsAsync(It.IsAny<Guid>(), _pageModel.Id)).ReturnsAsync(formSectionsResponse);
+
+        var result = await _pageModel.OnGet();
+
+        result.Should().BeOfType<PageResult>();
+        _pageModel.OrganisationDetails.Should().BeEquivalentTo(organisation);
+        _pageModel.Parties.Should().BeEquivalentTo(parties);
+        _flashMessageServiceMock.Verify(x => x.SetFlashMessage
+            (FlashMessageType.Success,
+            string.Format(StaticTextResource.Consortium_ConsortiumOverview_Updated_Success_Heading, sharecode.SharecodeOrganisationName),
+            null, null, null, null), Times.Once);
+    }
+
+    [Fact]
     public async Task OnGet_ReturnsPage_WhenPartiesNotFound()
     {
         var organisation = GivenOrganisationClientModel();
