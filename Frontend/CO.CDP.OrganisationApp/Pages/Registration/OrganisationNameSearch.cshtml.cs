@@ -18,7 +18,11 @@ public class OrganisationNameSearchModel(ISession session, IOrganisationClient o
     public string? OrganisationName { get; set; }
 
     [BindProperty]
+    public string? RequestToJoinOrganisationName { get; set; }
+
+    [BindProperty]
     public bool? RedirectToSummary { get; set; }
+
     public ICollection<OrganisationSearchResult>? MatchingOrganisations { get; set; }
 
     public async Task<IActionResult> OnGet()
@@ -92,7 +96,7 @@ public class OrganisationNameSearchModel(ISession session, IOrganisationClient o
     {
         try
         {
-            await FindMatchingOrgs();
+            MatchingOrganisations = await FindMatchingOrgs();
         }
         catch (ApiException ex) when (ex.StatusCode == 404)
         {
@@ -102,7 +106,16 @@ public class OrganisationNameSearchModel(ISession session, IOrganisationClient o
         if (!ModelState.IsValid)
         {
             return Page();
-        }        
+        }
+
+        if ((!String.IsNullOrEmpty(OrganisationIdentifier)) && (OrganisationIdentifier != "None"))
+        {
+            SessionContext.Set(Session.JoinOrganisationRequest,
+                   new JoinOrganisationRequestState { OrganisationId = Guid.Parse(OrganisationIdentifier), OrganisationName = RequestToJoinOrganisationName }
+                   );
+
+            return RedirectToPage("JoinOrganisation", new { id = OrganisationIdentifier.ToString() });
+        }
 
         if (RedirectToSummary == true)
         {

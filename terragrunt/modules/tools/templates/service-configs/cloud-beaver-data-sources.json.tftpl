@@ -1,0 +1,44 @@
+{
+  "folders": {},
+  "connections": {
+    "sirsi-cluster": {
+      "provider": "postgresql",
+      "driver": "postgresql",
+      "name": "SIRSI Cluster",
+      "save-password": true,
+      "configuration": {
+        "host": "${db_sirsi_cluster_address}",
+        "port": "${db_sirsi_cluster_port}",
+        "database": "${db_sirsi_cluster_name}",
+        "user": "${db_sirsi_cluster_username}",
+        "password": "${db_sirsi_cluster_password}"
+      }
+    },
+    "entity-verification-cluster": {
+      "provider": "postgresql",
+      "driver": "postgresql",
+      "name": "EV Cluster",
+      "save-password": true,
+      "configuration": {
+        "host": "${db_entity_verification_cluster_address}",
+        "port": "${db_entity_verification_cluster_port}",
+        "database": "${db_entity_verification_cluster_name}",
+        "user": "${db_entity_verification_cluster_username}",
+        "password": "${db_entity_verification_cluster_password}"
+      }
+    },
+    "fts-cluster": {
+      "provider": "mysql",
+      "driver": "mysql_jdbc",
+      "name": "FTS Cluster",
+      "save-password": true,
+      "configuration": {
+        "host": "${db_fts_cluster_address}",
+        "port": "${db_fts_cluster_port}",
+        "database": "${db_fts_cluster_name}",
+        "user": "${db_fts_cluster_username}",
+        "password": "${db_fts_cluster_password}"
+      }
+    }
+  }
+}

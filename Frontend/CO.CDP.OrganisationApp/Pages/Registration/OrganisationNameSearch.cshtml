@@ -71,8 +71,9 @@
                         </h2>
                         @if(Model.MatchingOrganisations != null) {
                             foreach (var orgSearchResult in Model.MatchingOrganisations) {
+                                <input id="@Html.NameFor(m => m.RequestToJoinOrganisationName)-@index" type="hidden" name="@Html.NameFor(m => m.RequestToJoinOrganisationName)" value="@orgSearchResult.Name" />
                                 <div class="govuk-radios__item">
-                                    <input class="govuk-radios__input" id="@Html.NameFor(m => m.OrganisationIdentifier)-@index" name="@Html.NameFor(m => m.OrganisationIdentifier)" type="radio" value="@orgSearchResult.Identifier.Scheme:@orgSearchResult.Identifier.Id" aria-describedby="@Html.NameFor(m => m.OrganisationIdentifier)-@index-hint">
+                                    <input class="govuk-radios__input" id="@Html.NameFor(m => m.OrganisationIdentifier)-@index" name="@Html.NameFor(m => m.OrganisationIdentifier)" type="radio" value="@orgSearchResult.Id" aria-describedby="@Html.NameFor(m => m.OrganisationIdentifier)-@index-hint">
                                     <label class="govuk-label govuk-radios__label" for="@Html.NameFor(m => m.OrganisationIdentifier)-@index">
                                             @orgSearchResult.Name
                                     </label>

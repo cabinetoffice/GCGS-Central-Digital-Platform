@@ -4,13 +4,16 @@ locals {
 
   cognito_enabled = contains(["development", "staging"], var.environment)
 
-  db_sirsi_secret_arn = var.db_sirsi_cluster_credentials_arn
   db_ev_secret_arn    = var.db_ev_cluster_credentials_arn
+  db_fts_secret_arn   = var.db_fts_cluster_credentials_arn
+  db_sirsi_secret_arn = var.db_sirsi_cluster_credentials_arn
 
-  db_sirsi_password = "${local.db_sirsi_secret_arn}:password::"
-  db_sirsi_username = "${local.db_sirsi_secret_arn}:username::"
   db_ev_password    = "${local.db_ev_secret_arn}:password::"
   db_ev_username    = "${local.db_ev_secret_arn}:username::"
+  db_fts_password   = "${local.db_fts_secret_arn}:password::"
+  db_fts_username   = "${local.db_fts_secret_arn}:username::"
+  db_sirsi_password = "${local.db_sirsi_secret_arn}:password::"
+  db_sirsi_username = "${local.db_sirsi_secret_arn}:username::"
 
   ecr_urls = {
     for task in local.tasks : task => "${local.orchestrator_account_id}.dkr.ecr.eu-west-2.amazonaws.com/cdp-${task}"
