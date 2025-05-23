@@ -22,9 +22,24 @@
 }
 
 <h1 class="govuk-heading-l">
-    @ViewData["Title"]
+    @Model.Name
 </h1>
-<h2 class="govuk-heading-m">@StaticTextResource.Supplier_SupplierInformationSummary_Heading</h2>
+
+<h2 class="govuk-heading-m govuk-!-margin-top-5">
+    @StaticTextResource.Supplier_SupplierInformationSummary_BeforeStart_Heading
+</h2>
+<p class="govuk-body">@StaticTextResource.Supplier_SupplierInformationSummary_BeforeStart_Hint</p>
+<ul class="govuk-task-list">
+    <li class="govuk-task-list__item govuk-task-list__item--with-link">
+        <div class="govuk-task-list__name-and-hint">
+            <a class="govuk-link govuk-task-list__link" href="supplier-information/before-you-start">
+                @StaticTextResource.Supplier_SupplierInformationSummary_BeforeStart_Link
+            </a>
+        </div>
+    </li>
+</ul>
+
+<h2 class="govuk-heading-m govuk-!-margin-top-5">@StaticTextResource.Supplier_SupplierInformationSummary_Heading</h2>
 <p class="govuk-body">@StaticTextResource.Supplier_SupplierInformationSummary_Hint</p>
 <ul class="govuk-task-list">
 
@@ -117,7 +132,8 @@
                     <strong class="govuk-!-font-weight-regular">
                         @string.Format(StaticTextResource.Supplier_SupplierInformationSummary_FormRecordCount, 0)
                     </strong>
-                } else
+                }
+                else
                 {
                     @if (section.AnswerSetCount > 0)
                     {
@@ -198,7 +214,8 @@
                 <a class="govuk-link govuk-link--no-visited-state" href="/organisation/@Model.Id/forms/@FormsEngine.OrganisationSupplierInfoFormId/sections/@declarationSection.SectionId/share-codes-list-view" aria-describedby="share-code-status share-code-hint">
                     @(declarationSection.SectionName)
                 </a>
-            } else
+            }
+            else
             {
                 <text>@(declarationSection.SectionName)</text>
             }
@@ -223,13 +240,17 @@
         @if (shareCodeCount > 0)
         {
             <div class="govuk-task-list__status" id="share-code-status">@string.Format(StaticTextResource.Supplier_SupplierInformationSummary_ShareCodeRecordCount, shareCodeCount)</div>
-        } else {
-            if (mandatorySectionsCompleted) {
+        }
+        else
+        {
+            if (mandatorySectionsCompleted)
+            {
                 <div class="govuk-task-list__status" id="share-code-status">
                     <strong class="govuk-tag govuk-tag--blue">@StaticTextResource.SupplierInformationStatus_StepStatus_NotStarted</strong>
                 </div>
             }
-            else {
+            else
+            {
                 <div class="govuk-task-list__status govuk-task-list__status--cannot-start-yet" id="share-code-status">@StaticTextResource.Supplier_SupplierInformationSummary_ShareCodeCannotStart</div>
             }
         }
