@@ -66,8 +66,6 @@ namespace E2ETests.Pages
             var registeredAddress = (await _page.InnerTextAsync(registeredAddressSelector)).Trim();
             var postalAddress = (await _page.InnerTextAsync(postalAddressSelector)).Trim();
 
-            await _page.PauseAsync();
-
             if (string.IsNullOrWhiteSpace(postalAddress))
                 throw new System.Exception("❌ Postal address is empty — it should be the same as registered address");
 

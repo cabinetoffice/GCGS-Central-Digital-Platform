@@ -10,7 +10,7 @@ namespace E2ETests.OrganisationDetails
     {
         private const string OrganisationKey = "OrganisationDetails_Org";
 
-        // [Category("OrganisationDetails")]
+        [Category("OrganisationDetails")]
         [Test]
         public async Task CompleteOrganisationDetailsJourney_WithUkRegisteredAddresses()
         {
@@ -79,7 +79,7 @@ namespace E2ETests.OrganisationDetails
 
 
         [Test]
-        // [Category("OrganisationDetails")]
+        [Category("OrganisationDetails")]
         public async Task CompleteOrganisationDetailsJourney_WithPostalAddressUk()
         {
             TestContext.WriteLine("🔹 Scenario: Completing journey with UK postal address");
@@ -90,7 +90,7 @@ namespace E2ETests.OrganisationDetails
             await _yourOrganisationDetailsPage.ClickChangeRegisteredAddress();
             await _registeredAddressPage.CompletePage("123 High Street", "Birmingham", "B1 1AA");
             await _yourOrganisationDetailsPage.ClickAddPostalAddress();
-            await _individualOrOrganisationPage.CompletePage(true);
+            await _postalAddressSameAsRegisteredPage.CompletePage(true);
             await _postalAddressUkPage.CompletePage("321 Low Street", "Birmingham", "Y2 1ZZ");
             await _yourOrganisationDetailsPage.AssertPostalAddressContains("321 Low Street");
             await _yourOrganisationDetailsPage.AssertPostalAddressContains("Birmingham");
@@ -99,7 +99,7 @@ namespace E2ETests.OrganisationDetails
             TestContext.WriteLine("✅ Entered UK postal address");
         }
 
-        // [Category("OrganisationDetails")]
+        [Category("OrganisationDetails")]
         [Test]
         public async Task CompleteOrganisationDetailsJourney_WithNonUkPostalAddress()
         {
@@ -111,7 +111,7 @@ namespace E2ETests.OrganisationDetails
             await _yourOrganisationDetailsPage.ClickAddPostalAddress();
             await _postalAddressSameAsRegisteredPage.CompletePage(true);
             await _postalAddressUkPage.ClickEnterNonUkAddress();
-            await _postalAddressNonUkPage.CompletePage("Main St", "Paris", "75001", "FR");
+            await _postalAddressNonUkPage.CompletePage("1 Rue de Lyon", "Paris", "75001", "FR");
 
             await _yourOrganisationDetailsPage.AssertPostalAddressContains("1 Rue de Lyon");
             await _yourOrganisationDetailsPage.AssertPostalAddressContains("Paris");
@@ -121,7 +121,7 @@ namespace E2ETests.OrganisationDetails
             TestContext.WriteLine("✅ Entered Non-UK postal address");
         }
 
-        // [Category("OrganisationDetails")]
+        [Category("OrganisationDetails")]
         [Test]
         public async Task CompleteOrganisationDetailsJourney_WithPostalAddressSameAsOrg()
         {
@@ -139,9 +139,8 @@ namespace E2ETests.OrganisationDetails
             TestContext.WriteLine("✅ Entered Non-UK postal address");
         }
 
-        // [Category("OrganisationDetails")]
-        [Test]
         [Category("OrganisationDetails")]
+        [Test]
         public async Task CompleteOrganisationDetailsJourney_AsIndividualSupplier()
         {
             TestContext.WriteLine("🔹 Scenario: Completing journey as an Individual supplier");
