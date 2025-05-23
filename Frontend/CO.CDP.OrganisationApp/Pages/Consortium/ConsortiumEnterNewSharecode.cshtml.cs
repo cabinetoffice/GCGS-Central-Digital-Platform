@@ -11,7 +11,7 @@ using OrganisationWebApiClient = CO.CDP.Organisation.WebApiClient;
 namespace CO.CDP.OrganisationApp.Pages.Consortium;
 
 [FeatureGate(FeatureFlags.Consortium)]
-public class ConsortiumEnterSharecodeModel(
+public class ConsortiumEnterNewSharecodeModel(
     IOrganisationClient organisationClient,
     IDataSharingClient dataSharingClient,
     ITempDataService tempDataService) : PageModel
@@ -23,19 +23,19 @@ public class ConsortiumEnterSharecodeModel(
     [BindProperty(SupportsGet = true)]
     public Guid Id { get; set; }
 
+    [BindProperty(SupportsGet = true)]
+    public Guid PartyId { get; set; }
+
     public string? ConsortiumName { get; set; }
+
     public async Task<IActionResult> OnGet()
     {
         try
         {
             var consortium = await organisationClient.GetOrganisationAsync(Id);
+            
             if (consortium == null) return Redirect("/page-not-found");
 
-            var sc = tempDataService.Get<ConsortiumSharecode>(ConsortiumSharecode.TempDataKey);
-            if (sc != null)
-            {
-                EnterSharecode = sc.Sharecode;
-            }
             ConsortiumName = consortium.Name;
 
             return Page();
@@ -62,47 +62,34 @@ public class ConsortiumEnterSharecodeModel(
         {
             DataSharing.WebApiClient.SupplierInformation shareCode = await dataSharingClient.GetSharedDataAsync(EnterSharecode!);
 
-            OrganisationParties? parties;
-
-            try
+            if (PartyId != shareCode.Id)
             {
-                parties = await organisationClient.GetOrganisationPartiesAsync(Id);
-            }
-            catch (CO.CDP.Organisation.WebApiClient.ApiException ex) when (ex.StatusCode == 404)
-            {
-                parties = null;
-            }
-
-            if (parties != null && parties.Parties.Where(p => p.Id == shareCode.Id).Any())
-            {
-                ModelState.AddModelError(nameof(EnterSharecode), string.Format(StaticTextResource.Consortium_ConsortiumEnterSharecode_SharecodeAlreadyExists, shareCode.Name));
+                ModelState.AddModelError(string.Empty, StaticTextResource.Consortium_ConsortiumEnterSharecode_InValidSharecodeError);
                 return Page();
             }
+
+            await organisationClient.UpdateOrganisationPartyAsync(Id, new UpdateOrganisationParty
+                (
+                    organisationPartyId: shareCode.Id,
+                    shareCode: EnterSharecode
+                ));
 
             var sc = new ConsortiumSharecode
             {
                 Sharecode = EnterSharecode,
                 SharecodeOrganisationName = shareCode.Name,
-                OrganisationPartyId = shareCode.Id
+                OrganisationPartyId = shareCode.Id,
+                HasBeenUpdated = true
             };
 
             tempDataService.Put(ConsortiumSharecode.TempDataKey, sc);
 
-            return RedirectToPage("ConsortiumConfirmSupplier", new { Id });
+            return RedirectToPage("ConsortiumOverview", new { Id });
         }
-        catch (CO.CDP.DataSharing.WebApiClient.ApiException<DataSharing.WebApiClient.ProblemDetails> aex)
+        catch (DataSharing.WebApiClient.ApiException<DataSharing.WebApiClient.ProblemDetails> aex)
         {
             DataSharingApiExceptionMapper.MapApiExceptions(aex, ModelState);
             return Page();
         }
     }
-}
-
-public class ConsortiumSharecode
-{
-    public const string TempDataKey = "ConsortiumSharecodeTempData";
-    public string? Sharecode { get; set; }
-    public string? SharecodeOrganisationName { get; set; }
-    public Guid? OrganisationPartyId { get; set; }
-    public bool HasBeenUpdated { get; set; } = false;
 }

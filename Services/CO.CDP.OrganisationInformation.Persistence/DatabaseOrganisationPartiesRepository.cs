@@ -17,7 +17,6 @@ public class DatabaseOrganisationPartiesRepository(OrganisationInformationContex
             .Include(x => x.ChildOrganisation)
             .Include(x => x.SharedConsent)
             .Where(x => x.ParentOrganisation!.Guid == organisationId)
-            .AsNoTracking()
             .ToListAsync();
     }
 
