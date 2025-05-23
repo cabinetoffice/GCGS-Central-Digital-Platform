@@ -29,11 +29,11 @@
                 
     There are any number of "resheader" rows that contain simple 
     name/value pairs.
-    
-    Each data row contains a name, and value. The row also contains a 
-    type or mimetype. Type corresponds to a .NET class that support 
-    text/value conversion through the TypeConverter architecture. 
-    Classes that don't support this are serialized and stored with the 
+
+    Each data row contains a name, and value. The row also contains a
+    type or mimetype. Type corresponds to a .NET class that support
+    text/value conversion through the TypeConverter architecture.
+    Classes that don't support this are serialized and stored with the
     mimetype set.
     
     The mimetype is used for serialized objects, and tells the 
@@ -642,7 +642,7 @@
   <value>
 &lt;p class=&quot;govuk-body&quot;&gt;
 Carbon Net Zero is the commitment to balance greenhouse gas emissions with equivalent removals by 2050.
-You must develop Carbon Reduction Plans (CRPs) that detail your emissions, reduction strategies, and
+You may develop Carbon Reduction Plans (CRPs) that detail your emissions, reduction strategies, and
 sustainability practices. This ensures transparency and accountability in your environmental management
 and aligns with government regulations. For more information, read:
 &lt;a href=&quot;https://www.procurementpathway.civilservice.gov.uk/documents/ppn/ppn-006-taking-account-of-carbon-reduction-plans-in-the-procurement-of-major-government-contracts/selection-stage#:~:text=In%2Dscope%20organisations%20should%20take%20action%20to%20apply,the%20Procurement%20Act%202023%20(PA%202023)%2C%20save&quot;
