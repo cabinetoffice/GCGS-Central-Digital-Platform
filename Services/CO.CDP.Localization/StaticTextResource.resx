@@ -3630,9 +3630,6 @@
     <value>Must be the organisation's most recent share code</value>
   </data>
   <data name="Consortium_ConsortiumEnterNewSharecode_Heading" xml:space="preserve">
-    <value>Enter a new sharecode for {0}</value>
-  </data>
-  <data name="Consortium_ConsortiumEnterNewSharecodeNewOrganisation_Heading" xml:space="preserve">
     <value>Enter a new sharecode</value>
   </data>
   <data name="Consortium_RemoveFromConsortium_Button" xml:space="preserve">
@@ -3655,6 +3652,9 @@
   </data>
   <data name="Consortium_ConsortiumOverview_Success_Heading" xml:space="preserve">
     <value>{0} has been added to this consortium.</value>
+  </data>
+  <data name="Consortium_ConsortiumOverview_Updated_Success_Heading" xml:space="preserve">
+    <value>{0} has been updated for this consortium.</value>
   </data>
   <data name="Consortium_ConsortiumEnterSharecode_SharecodeAlreadyExists" xml:space="preserve">
     <value>{0} organisation is already part of the consortium.</value>

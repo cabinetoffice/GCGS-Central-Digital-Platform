@@ -13,7 +13,8 @@ namespace CO.CDP.OrganisationApp.Pages.Consortium;
 [FeatureGate(FeatureFlags.Consortium)]
 public class ConsortiumEnterNewSharecodeModel(
     IOrganisationClient organisationClient,
-    IDataSharingClient dataSharingClient) : PageModel
+    IDataSharingClient dataSharingClient,
+    ITempDataService tempDataService) : PageModel
 {
     [BindProperty]
     [Required(ErrorMessageResourceName = nameof(StaticTextResource.Consortium_ConsortiumEnterSharecode_EnterSharecodeError), ErrorMessageResourceType = typeof(StaticTextResource))]
@@ -24,9 +25,6 @@ public class ConsortiumEnterNewSharecodeModel(
 
     [BindProperty(SupportsGet = true)]
     public Guid PartyId { get; set; }
-
-    [BindProperty]
-    public string? PartyOrganisationName { get; set; }
 
     public string? ConsortiumName { get; set; }
 
@@ -39,12 +37,6 @@ public class ConsortiumEnterNewSharecodeModel(
             if (consortium == null) return Redirect("/page-not-found");
 
             ConsortiumName = consortium.Name;
-
-            var party = await organisationClient.GetOrganisationAsync(PartyId);
-
-            if (party == null) return Redirect("/page-not-found");
-
-            PartyOrganisationName = party.Name;
 
             return Page();
         }
@@ -81,6 +73,16 @@ public class ConsortiumEnterNewSharecodeModel(
                     organisationPartyId: shareCode.Id,
                     shareCode: EnterSharecode
                 ));
+
+            var sc = new ConsortiumSharecode
+            {
+                Sharecode = EnterSharecode,
+                SharecodeOrganisationName = shareCode.Name,
+                OrganisationPartyId = shareCode.Id,
+                HasBeenUpdated = true
+            };
+
+            tempDataService.Put(ConsortiumSharecode.TempDataKey, sc);
 
             return RedirectToPage("ConsortiumOverview", new { Id });
         }
