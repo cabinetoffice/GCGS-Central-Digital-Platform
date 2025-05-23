@@ -37,7 +37,7 @@ public class OneLoginModel(
         {
             "sign-in" => await SignIn(redirectUri, origin),
             "user-info" => await UserInfo(redirectUri),
-            "sign-out" => await SignOut(),
+            "sign-out" => await SignOut(redirectUri),
             _ => Redirect("/"),
         };
     }
@@ -204,7 +204,7 @@ public class OneLoginModel(
         }
     }
 
-    private async Task<IActionResult> SignOut()
+    private async Task<IActionResult> SignOut(string? redirectUriArgument)
     {
         var ud = session.Get<UserDetails>(Session.UserDetailsKey);
         if (!string.IsNullOrWhiteSpace(ud?.UserUrn))
@@ -212,7 +212,7 @@ public class OneLoginModel(
 
         session.Clear();
 
-        var redirectUri = "/user/signedout";
+        var redirectUri = !string.IsNullOrEmpty(redirectUriArgument) && Helper.ValidRelativeUri(redirectUriArgument) ? redirectUriArgument : "/user/signedout";
 
         if (httpContextAccessor.HttpContext?.User?.Identity?.IsAuthenticated != true)
         {

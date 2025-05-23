@@ -3768,4 +3768,19 @@
   <data name="Supplier_AdditionalModulesInformation_Hint" xml:space="preserve">
     <value>An additional module is extra information related to a particular topic that suppliers are required to submit for specific contracts</value>
   </data>
+  <data name="SessionTimeoutWarningDialog_Header" xml:space="preserve">
+    <value>Session timeout</value>
+  </data>
+  <data name="SessionTimeoutWarningDialog_Lede" xml:space="preserve">
+    <value>Your session will time out soon.</value>
+  </data>
+  <data name="SessionTimeoutWarningDialog_Text" xml:space="preserve">
+    <value>You will be signed out of your account if you do not respond in {0} minutes. We do this to keep your information secure.</value>
+  </data>
+  <data name="SessionTimeoutWarningDialog_Continue" xml:space="preserve">
+    <value>Continue session</value>
+  </data>
+  <data name="SessionTimeoutWarningDialog_SignOut" xml:space="preserve">
+    <value>Sign out</value>
+  </data>
 </root>
