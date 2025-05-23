@@ -49,6 +49,8 @@ dependency core_security_groups {
 inputs = {
   aurora_postgres_instance_type    = local.global_vars.locals.aurora_postgres_instance_type
   aurora_postgres_instance_type_ev = local.global_vars.locals.aurora_postgres_instance_type_ev
+  aurora_mysql_engine_version      = local.global_vars.locals.aurora_mysql_engine_version
+  aurora_mysql_family              = local.global_vars.locals.aurora_mysql_family
   aurora_mysql_instance_type       = local.global_vars.locals.aurora_mysql_instance_type
   tags                             = local.tags
 

@@ -1,7 +1,11 @@
 variable "aurora_mysql_engine_version" {
   description = "DB engine version"
   type        = string
-  default     = "8.0.mysql_aurora.3.07.1"
+}
+
+variable "aurora_mysql_family" {
+  description = "DB family"
+  type        = string
 }
 
 variable "aurora_mysql_instance_type" {
