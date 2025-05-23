@@ -3213,14 +3213,11 @@
   <data name="UserSummary_ViewAdmins_Title" xml:space="preserve">
     <value>View Admins</value>
   </data>
-  <data name="UserSummary_ViewAdmins_Supplier" xml:space="preserve">
-    <value>Admins can add, remove and edit users, create share codes and edit supplier information.</value>
+  <data name="UserSummary_ViewAdmins_Supplier_HintText" xml:space="preserve">
+    <value>Supplier Admins can add, remove and edit users, create share codes and edit supplier information.</value>
   </data>
-  <data name="UserSummary_ViewAdmins_Buyer" xml:space="preserve">
-    <value>Admins can add, remove and edit users, create and delete APIs, create and edit notices and update organisation information.</value>
-  </data>
-  <data name="UserSummary_ViewAdmins_Both" xml:space="preserve">
-    <value>Admins can add, remove and edit users, create and delete APIs create share codes, create and edit notices and update organisation and supplier information. </value>
+  <data name="UserSummary_ViewAdmins_Buyer_HintText" xml:space="preserve">
+    <value>Buyer Admins can add, remove and edit users, create and delete APIs, create and edit notices and update organisation information.</value>
   </data>
   <data name="Users_FirstName_Label" xml:space="preserve">
     <value>First name</value>
