@@ -1,3 +1,11 @@
+output "cloud_beaver_user_pool_arn" {
+  value = aws_cognito_user_pool.auth.arn
+}
+
+output "cloud_beaver_user_pool_client_id" {
+  value = aws_cognito_user_pool_client.cloud_beaver.id
+}
+
 output "grafana_user_pool_arn" {
   value = aws_cognito_user_pool.auth.arn
 }

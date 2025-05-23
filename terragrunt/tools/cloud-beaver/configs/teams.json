@@ -1,0 +1,14 @@
+[
+  {
+    "teamId": "sirsi",
+    "teamName": "Sirsi Team",
+    "description": "Team managing Sirsi-related databases",
+    "users": []
+  },
+  {
+    "teamId": "tfs",
+    "teamName": "TFS Team",
+    "description": "Team working on TFS stack",
+    "users": []
+  }
+]

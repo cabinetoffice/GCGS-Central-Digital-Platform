@@ -87,20 +87,21 @@ public class OrganisationsModel(
         switch (Type)
         {
             case "supplier":
-                Organisations = (await organisationClient
-                        .GetAllOrganisationsAsync("tenderer", "tenderer", OrganisationSearchInput, PageSize, Skip))
-                    .ToList();
-                TotalOrganisations = await organisationClient
-                    .GetOrganisationsTotalCountAsync("tenderer", "tenderer", OrganisationSearchInput);
-                break;
+                {
+                    var orgs = await organisationClient.GetAllOrganisationsAsync("tenderer", "tenderer", OrganisationSearchInput, PageSize, Skip);
 
+                    Organisations = orgs.Item1.ToList();
+                    TotalOrganisations = orgs.Item2;
+                    break;
+                }
             case "buyer":
-                Organisations = (await organisationClient
-                        .GetAllOrganisationsAsync("buyer", "buyer", OrganisationSearchInput, PageSize, Skip))
-                    .ToList();
-                TotalOrganisations = await organisationClient
-                    .GetOrganisationsTotalCountAsync("buyer", "buyer", OrganisationSearchInput);
-                break;
+                {
+                    var orgs = await organisationClient.GetAllOrganisationsAsync("buyer", "buyer", OrganisationSearchInput, PageSize, Skip);
+
+                    Organisations = orgs.Item1.ToList();
+                    TotalOrganisations = orgs.Item2;
+                    break;
+                }
         }
 
         TotalPages = (int)Math.Ceiling((double)TotalOrganisations / PageSize);
