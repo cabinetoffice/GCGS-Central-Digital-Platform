@@ -75,7 +75,7 @@ public class FormsEngine(
         return sectionQuestionsResponse;
     }
 
-    public async Task<Models.FormQuestion?> GetNextQuestion(Guid organisationId, Guid formId, Guid sectionId, Guid currentQuestionId)
+    public async Task<Models.FormQuestion?> GetNextQuestion(Guid organisationId, Guid formId, Guid sectionId, Guid currentQuestionId, FormQuestionAnswerState answerState)
     {
         var section = await GetFormSectionAsync(organisationId, formId, sectionId);
         if (section.Questions == null)
@@ -204,3 +204,4 @@ public class FormsEngine(
     }
 
 }
+
