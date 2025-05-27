@@ -1,6 +1,6 @@
 @page "/organisation/{organisationId:guid}/forms/{formId:guid}/sections/{sectionId:guid}/questions/{currentQuestionId}"
 @using CO.CDP.OrganisationApp.Constants
-@model FormsQuestionPageModel
+@model CO.CDP.OrganisationApp.Pages.Forms.FormsQuestionPageModel
 @using CO.CDP.Localization
 
 @{
@@ -47,11 +47,13 @@
             {
                 ViewData["Title"] = StaticTextResource.Forms_CheckYourAnswers_Title;
                 var answers = await Model.GetAnswers();
-
+                var count = 0;
                 <h1 class="govuk-heading-l">@ViewData["Title"]</h1>
                 <dl class="govuk-summary-list govuk-!-margin-bottom-9">
                     @foreach (var answer in answers)
                     {
+                        count++;
+                        var testId = answer.Title?.Replace(" ", "") + '_' + count;
                         <div class="govuk-summary-list__row">
                             <dt class="govuk-summary-list__key">
                                 @answer.Title
@@ -60,7 +62,7 @@
                                 @answer.Answer
                             </dd>
                             <dd class="govuk-summary-list__actions">
-                                <a class="govuk-link" href="@answer.ChangeLink">
+                                <a class="govuk-link" href="@answer.ChangeLink" data-testid="@testId">
                                     @Html.Raw(string.Format(StaticTextResource.Forms_CheckYourAnswers_Change, answer.Title?.ToLower()))
                                 </a>
                             </dd>

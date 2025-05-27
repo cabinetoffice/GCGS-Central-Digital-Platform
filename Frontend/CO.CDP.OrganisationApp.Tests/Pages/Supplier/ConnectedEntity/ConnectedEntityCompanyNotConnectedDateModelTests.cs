@@ -20,7 +20,7 @@ public class ConnectedEntityCompanyNotConnectedDateModelTests
     }
 
     [Fact]
-    public void OnGet_ShouldInitializeModel_WhenStateExists()
+    public void OnGet_ShouldInitializeModelForOrganisation_WhenStateExists()
     {
         var state = new ConnectedEntityState
         {
@@ -34,6 +34,48 @@ public class ConnectedEntityCompanyNotConnectedDateModelTests
 
         result.Should().BeOfType<PageResult>();
         _model.Heading.Should().Be(string.Format(StaticTextResource.Supplier_ConnectedEntity_NotConnectedDate_Heading, state.OrganisationName));
+        _model.Day.Should().Be("15");
+        _model.Month.Should().Be("5");
+        _model.Year.Should().Be("2023");
+    }
+
+    [Fact]
+    public void OnGet_ShouldInitializeModelForTrustOrTrustee_WhenStateExists()
+    {
+        var state = new ConnectedEntityState
+        {
+            ConnectedEntityType = ConnectedEntityType.TrustOrTrustee,
+            FirstName = "Trust_First_Name",
+            LastName = "Trust_Last_Name",
+            EndDate = new DateTimeOffset(new DateTime(2023, 5, 15), TimeSpan.Zero)
+        };
+        _mockSession.Setup(s => s.Get<ConnectedEntityState>(Session.ConnectedPersonKey)).Returns(state);
+
+        var result = _model.OnGet();
+
+        result.Should().BeOfType<PageResult>();
+        _model.Heading.Should().Be(string.Format(StaticTextResource.Supplier_ConnectedEntity_NotConnectedDate_Heading, string.Join(' ', [state.FirstName, state.LastName])));
+        _model.Day.Should().Be("15");
+        _model.Month.Should().Be("5");
+        _model.Year.Should().Be("2023");
+    }
+
+    [Fact]
+    public void OnGet_ShouldInitializeModelForIndividual_WhenStateExists()
+    {
+        var state = new ConnectedEntityState
+        {
+            ConnectedEntityType = ConnectedEntityType.Individual,
+            FirstName = "Individual_First_Name",
+            LastName = "Individual_Last_Name",
+            EndDate = new DateTimeOffset(new DateTime(2023, 5, 15), TimeSpan.Zero)
+        };
+        _mockSession.Setup(s => s.Get<ConnectedEntityState>(Session.ConnectedPersonKey)).Returns(state);
+
+        var result = _model.OnGet();
+
+        result.Should().BeOfType<PageResult>();
+        _model.Heading.Should().Be(string.Format(StaticTextResource.Supplier_ConnectedEntity_NotConnectedDate_Heading, string.Join(' ', [state.FirstName, state.LastName])));
         _model.Day.Should().Be("15");
         _model.Month.Should().Be("5");
         _model.Year.Should().Be("2023");

@@ -36,6 +36,13 @@ resource "aws_iam_policy" "terraform_global" {
   tags        = var.tags
 }
 
+resource "aws_iam_policy" "terraform_global_efs" {
+  name        = "${local.name_prefix}-terraform-global-efs"
+  description = "Global policy"
+  policy      = data.aws_iam_policy_document.terraform_global_efs.json
+  tags        = var.tags
+}
+
 import {
   to = aws_iam_policy.terraform_product
   id = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:policy/${local.name_prefix}-terraform-product"
@@ -73,6 +80,11 @@ resource "aws_iam_role_policy_attachment" "terraform" {
 
 resource "aws_iam_role_policy_attachment" "terraform_global" {
   policy_arn = aws_iam_policy.terraform_global.arn
+  role       = aws_iam_role.terraform.name
+}
+
+resource "aws_iam_role_policy_attachment" "terraform_global_efs" {
+  policy_arn = aws_iam_policy.terraform_global_efs.arn
   role       = aws_iam_role.terraform.name
 }
 

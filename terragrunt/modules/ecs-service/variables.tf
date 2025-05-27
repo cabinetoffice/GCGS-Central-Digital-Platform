@@ -24,6 +24,18 @@ variable "cpu" {
   type        = number
 }
 
+variable "deployment_maximum_percent" {
+  description = "Upper limit (as a percentage of the service's desiredCount) of the number of running tasks that can be running in a service during a deployment"
+  default     = 200
+  type        = number
+}
+
+variable "deployment_minimum_healthy_percent" {
+  description = "Lower limit (as a percentage of the service's desiredCount) of the number of running tasks that must remain running and healthy in a service during a deployment"
+  default     = 100
+  type        = number
+}
+
 variable "desired_count" {
   description = "Number of instances of the task definition."
   default     = 1
@@ -43,6 +55,19 @@ variable "ecs_listener_arn" {
 variable "ecs_service_base_sg_id" {
   description = "Security group ID of Flask Healthcheck ECS Service"
   type        = string
+}
+
+variable "efs_volume" {
+  description = "Optional EFS volume to mount in the task definition"
+  type = object({
+    access_point_id    = optional(string)
+    container_path     = string
+    file_system_id     = string
+    iam                = optional(string, "DISABLED")
+    name               = string
+    transit_encryption = optional(string, "ENABLED")
+  })
+  default = null
 }
 
 variable "family" {

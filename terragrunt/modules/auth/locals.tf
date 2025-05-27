@@ -1,6 +1,9 @@
 locals {
-  name_prefix             = var.product.resource_name
+  name_prefix = var.product.resource_name
+
   auth_domain             = "${local.name_prefix}-${var.environment}"
+  cloud_beaver_domain     = "${local.name_prefix}-${var.environment}-cloud-beaver"
+  cloud_beaver_url        = "https://cloud-beaver.${var.public_domain}"
   organisation_app_domain = "${local.name_prefix}-${var.environment}-organisatino-app"
   organisation_app_url    = "https://${var.public_domain}"
   grafana_domain          = "${local.name_prefix}-${var.environment}-grafana"

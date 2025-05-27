@@ -53,12 +53,12 @@ public class ConnectedEntityCompanyNotConnectedDateModel(ISession session) : Pag
     {
         var state = session.Get<ConnectedEntityState>(Session.ConnectedPersonKey);
 
+        InitModel(state!);
+
         if (!ModelState.IsValid)
         {
             return Page();
         }
-        
-        InitModel(state!);
 
         var dateString = $"{Year}-{Month!.PadLeft(2, '0')}-{Day!.PadLeft(2, '0')}";
         if (!DateTime.TryParseExact(dateString, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
@@ -80,7 +80,7 @@ public class ConnectedEntityCompanyNotConnectedDateModel(ISession session) : Pag
 
     private void InitModel(ConnectedEntityState state, bool reset = false)
     {
-        if (state.ConnectedEntityType == ConnectedEntityType.Individual)
+        if ((state.ConnectedEntityType == ConnectedEntityType.Individual) || (state.ConnectedEntityType == ConnectedEntityType.TrustOrTrustee))
         {
             Heading = string.Format(StaticTextResource.Supplier_ConnectedEntity_NotConnectedDate_Heading, string.Join(' ', new[] { state.FirstName ?? "", state.LastName ?? "" }));
         }
