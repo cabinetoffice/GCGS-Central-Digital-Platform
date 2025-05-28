@@ -294,11 +294,29 @@ public class FormsEngine(
 
     private void SetAlternativePathQuestions(List<Models.FormQuestion> questions)
     {
-        var (_, alternativeTargets) = GetLinkedQuestionTargets(questions);
+        var (nextQuestionTargets, alternativeTargets) = GetLinkedQuestionTargets(questions);
+        var mainPathQuestionIds = new HashSet<Guid>();
 
-        questions
-            .Where(q => alternativeTargets.Contains(q.Id))
-            .ToList()
-            .ForEach(q => q.BranchType = Models.FormQuestionBranchType.Alternative);
+        foreach (var targetId in nextQuestionTargets)
+        {
+            mainPathQuestionIds.Add(targetId);
+        }
+
+        var startQuestion = GetStartQuestionNode(questions, nextQuestionTargets, alternativeTargets);
+        if (startQuestion != null)
+        {
+            mainPathQuestionIds.Add(startQuestion.Id);
+        }
+
+        foreach (var question in questions)
+        {
+            if (alternativeTargets.Contains(question.Id) ||
+                (!mainPathQuestionIds.Contains(question.Id) &&
+                 question.NextQuestion.HasValue))
+            {
+                question.BranchType = Models.FormQuestionBranchType.Alternative;
+            }
+        }
     }
 }
+
