@@ -73,6 +73,8 @@ public class FormsEngine(
             }))).ToList()
         };
 
+        SetAlternativePathQuestions(sectionQuestionsResponse.Questions);
+
         tempDataService.Put(sessionKey, sectionQuestionsResponse);
         return sectionQuestionsResponse;
     }
@@ -288,5 +290,18 @@ public class FormsEngine(
         }
 
         return sortedFormQuestions;
+    }
+
+    private void SetAlternativePathQuestions(List<Models.FormQuestion> questions)
+    {
+        var alternativeTargets = questions
+            ?.Where(q => q.NextQuestionAlternative.HasValue)
+            .Select(q => q.NextQuestionAlternative!.Value)
+            .ToHashSet() ?? new HashSet<Guid>();
+
+        questions?
+            .Where(q => alternativeTargets.Contains(q.Id))
+            .ToList()
+            .ForEach(q => q.BranchType = Models.FormQuestionBranchType.Alternative);
     }
 }
