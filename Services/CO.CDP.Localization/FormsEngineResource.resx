@@ -694,7 +694,16 @@ PPN 006 Taking account of Carbon Reduction Plans in the procurement of major gov
     <value>Net Zero target year</value>
   </data>
   <data name="CarbonNetZero_05_Description" xml:space="preserve">
-    <value>&lt;p class=&quot;govuk-hint&quot;&gt;For example 2030&lt;/p&gt;</value>
+    <value>&lt;p class=&quot;govuk-hint&quot;&gt;For example, 2030&lt;/p&gt;</value>
+  </data>
+  <data name="Global_YearInput_YearRequiredError" xml:space="preserve">
+    <value>The year is required.</value>
+  </data>
+  <data name="Global_YearInput_YearInvalidError" xml:space="preserve">
+    <value>The year entered is invalid. Please enter a valid year.</value>
+  </data>
+  <data name="Forms_FormElementYearInput_ExampleHint" xml:space="preserve">
+    <value>For example, 2030</value>
   </data>
   <data name="CarbonNetZero_CarbonNetZeroDetails_NetZeroTargetYear_Heading" xml:space="preserve">
     <value>Enter your Net Zero target year</value>

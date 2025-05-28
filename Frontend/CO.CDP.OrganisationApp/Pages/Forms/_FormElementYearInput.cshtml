@@ -1,0 +1,120 @@
+@model FormElementYearInputModel
+@using CO.CDP.Localization
+@using System.Text.RegularExpressions
+
+@{
+    var yearHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Year)).HasInnerHtml;
+    var selectOptionHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.HasValue)).HasInnerHtml;
+
+    string GetAriaDescribedBy()
+    {
+        string html = Model.Description!;
+        string pattern = @"id=""([^""]+)""";
+        string ariaDescribedBy = "";
+
+        if (html != null)
+        {
+            Match match = Regex.Match(html, pattern);
+            if (match.Success)
+            {
+                ariaDescribedBy = match.Groups[1].Value;
+            }
+        }
+
+        return ariaDescribedBy;
+    }
+
+    void RenderField()
+    {
+        <div id="year-hint">
+            @if (!string.IsNullOrWhiteSpace(Model.Caption))
+            {
+                @Html.Raw(Model.Caption)
+            }
+            else
+            {
+                <div class="govuk-hint">@FormsEngineResource.Forms_FormElementYearInput_ExampleHint</div>
+            }
+        </div>
+
+        @if (yearHasError)
+        {
+            <p class="govuk-error-message" id="year-error">
+                <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span>
+                @Html.ValidationMessageFor(m => m.Year)
+            </p>
+        }
+
+        <div class="govuk-form-group">
+            <label class="govuk-label" for="@nameof(Model.Year)">
+                @StaticTextResource.Global_Year
+            </label>
+            <input class="govuk-input govuk-input--width-4 @(yearHasError ? "govuk-input--error" : "")"
+                   id="@nameof(Model.Year)" name="@nameof(Model.Year)" type="text" inputmode="numeric"
+                   value="@Model.Year">
+        </div>
+    }
+}
+
+<div
+    class="govuk-form-group @((Model.IsRequired && yearHasError) || selectOptionHasError ? "govuk-form-group--error" : "")">
+    <fieldset class="govuk-fieldset" role="group" aria-describedby="@GetAriaDescribedBy()">
+        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l" id="outer-legend">
+            @if (!string.IsNullOrWhiteSpace(Model.Heading))
+            {
+                <h1 class="govuk-fieldset__heading">@Model.Heading</h1>
+            }
+        </legend>
+
+        @if (!string.IsNullOrWhiteSpace(Model.Description))
+        {
+            @Html.Raw(Model.Description)
+        }
+
+        @if (selectOptionHasError)
+        {
+            <p class="govuk-error-message" id="has-value-error">
+                <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span>
+                @Html.ValidationMessageFor(m => m.HasValue)
+            </p>
+        }
+
+        @if (Model.IsRequired)
+        {
+            RenderField();
+        }
+        else
+        {
+            <div class="govuk-radios" data-module="govuk-radios">
+                <div class="govuk-radios__item">
+                    <input class="govuk-radios__input" id="@nameof(Model.HasValue)" name="@nameof(Model.HasValue)"
+                           type="radio"
+                           value="true" data-aria-controls="conditional-YES" @(Model.HasValue == true ? "checked" : "")>
+                    <label class="govuk-label govuk-radios__label"
+                           for="@nameof(Model.HasValue)">@StaticTextResource.Global_Yes</label>
+                </div>
+
+                <div class="govuk-radios__conditional" id="conditional-YES">
+                    <div class="govuk-form-group @(yearHasError ? "govuk-form-group--error" : "")">
+                        <fieldset class="govuk-fieldset" role="group" aria-describedby="year-hint"
+                                  aria-labelledby="outer-legend inner-legend">
+                            @{
+                                RenderField();
+                            }
+                        </fieldset>
+                    </div>
+                </div>
+
+                <div class="govuk-radios__item">
+                    <input class="govuk-radios__input" id="@nameof(Model.HasValue)-1" name="@nameof(Model.HasValue)"
+                           type="radio"
+                           value="false" @(Model.HasValue == false ? "checked" : "")>
+                    <label class="govuk-label govuk-radios__label"
+                           for="@nameof(Model.HasValue)-1">@StaticTextResource.Global_No</label>
+                </div>
+            </div>
+        }
+    </fieldset>
+</div>
+
+
