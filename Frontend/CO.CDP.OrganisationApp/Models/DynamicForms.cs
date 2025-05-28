@@ -100,3 +100,9 @@ public enum FormQuestionType
     GroupedSingleChoice,
     Url
 }
+
+public enum FormQuestionBranchType
+{
+    Main,
+    Alternative
+}
