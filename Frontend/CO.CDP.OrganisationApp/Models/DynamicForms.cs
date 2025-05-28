@@ -26,6 +26,7 @@ public class FormQuestion
     public Guid? NextQuestion { get; set; }
     public Guid? NextQuestionAlternative { get; set; }
     public FormQuestionType Type { get; set; }
+    public FormQuestionBranchType BranchType { get; set; } = FormQuestionBranchType.Main;
     public bool IsRequired { get; set; }
     public string? Title { get; set; }
     public string? Description { get; set; }
