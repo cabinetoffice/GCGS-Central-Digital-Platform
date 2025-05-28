@@ -33,7 +33,7 @@ locals {
     aliasemail_service                  = true
     app_host_address                    = "%"
     buyer_corporate_identifier_prefixes = "sid4gov.cabinetoffice.gov.uk|supplierregistration.service.xgov.uk|test-idp-intra.nqc.com"
-    cookie_domain                       = "localhost"
+    cookie_domain                       = "fts.${var.public_domain}"
     database_encryption                 = true
     database_replication_service        = false
     database_schema                     = "fts"
@@ -56,13 +56,13 @@ locals {
     licenced_to                         = "No-one"
     local_version                       = 1100
     session_name_default                = "SRSI_FT_AUTH"
-    site_domain                         = var.public_domain
+    site_domain                         = "fts.${var.public_domain}"
     site_tag                            = "TEST"
     srsi_authority_token_endpoint       = "https://authority.${var.public_domain}/token"
     srsi_dashboard_endpoint             = "https://${var.public_domain}"
     srsi_organisation_lookup_endpoint   = "https://organisation.${var.public_domain}"
     srsi_tenant_lookup_endpoint         = "https://tenant.${var.public_domain}/tenant/lookup"
-    ssl_service                         = false
+    ssl_service                         = true
     two_factor_auth_service             = false
     use_proxy                           = false
     use_srsi                            = true
