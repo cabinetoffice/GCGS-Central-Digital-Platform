@@ -222,6 +222,80 @@ public class FormsEngineTests
     }
 
     [Fact]
+    public async Task GetNextQuestion_ShouldReturnNextQuestionAlternative_WhenAnswerIsNoForYesNoQuestion()
+    {
+        var (organisationId, formId, sectionId, _) = CreateTestGuids();
+        var currentQuestionId = Guid.NewGuid();
+        var nextQuestionId = Guid.NewGuid();
+        var nextQuestionAlternativeId = Guid.NewGuid();
+
+        var sectionResponse = new SectionQuestionsResponse
+        {
+            Section = new FormSection { Id = sectionId, Title = "SectionTitle", AllowsMultipleAnswerSets = true },
+            Questions = new List<FormQuestion>
+            {
+                new FormQuestion { Id = currentQuestionId, NextQuestion = nextQuestionId, NextQuestionAlternative = nextQuestionAlternativeId, Type = FormQuestionType.YesOrNo },
+                new FormQuestion { Id = nextQuestionId },
+                new FormQuestion { Id = nextQuestionAlternativeId }
+            }
+        };
+
+        var answerState = new FormQuestionAnswerState
+        {
+            Answers = new List<QuestionAnswer>
+            {
+                new QuestionAnswer { QuestionId = currentQuestionId, Answer = new FormAnswer { BoolValue = false } }
+            }
+        };
+
+        _tempDataServiceMock.Setup(t => t.Peek<SectionQuestionsResponse>(It.IsAny<string>()))
+            .Returns(sectionResponse);
+
+        var result = await _formsEngine.GetNextQuestion(organisationId, formId, sectionId, currentQuestionId, answerState);
+
+        result.Should().NotBeNull();
+        result!.Id.Should().Be(nextQuestionAlternativeId);
+    }
+
+    [Fact]
+    public async Task GetNextQuestion_ShouldReturnNextQuestion_WhenAnswerIsTrueForYesNoQuestion()
+    {
+        var (organisationId, formId, sectionId, _) = CreateTestGuids();
+        var currentQuestionId = Guid.NewGuid();
+        var nextQuestionId = Guid.NewGuid();
+        var nextQuestionAlternativeId = Guid.NewGuid();
+
+        var sectionResponse = new SectionQuestionsResponse
+        {
+            Section = new FormSection { Id = sectionId, Title = "SectionTitle", AllowsMultipleAnswerSets = true },
+            Questions = new List<FormQuestion>
+            {
+                new FormQuestion { Id = currentQuestionId, NextQuestion = nextQuestionId, NextQuestionAlternative = nextQuestionAlternativeId, Type = FormQuestionType.YesOrNo },
+                new FormQuestion { Id = nextQuestionId },
+                new FormQuestion { Id = nextQuestionAlternativeId }
+            }
+        };
+
+        var answerState = new FormQuestionAnswerState
+        {
+            Answers = new List<QuestionAnswer>
+            {
+                new QuestionAnswer { QuestionId = currentQuestionId, Answer = new FormAnswer { BoolValue = true } }
+            }
+        };
+
+        _tempDataServiceMock.Setup(t => t.Peek<SectionQuestionsResponse>(It.IsAny<string>()))
+            .Returns(sectionResponse);
+
+        var result = await _formsEngine.GetNextQuestion(organisationId, formId, sectionId, currentQuestionId, answerState);
+
+        result.Should().NotBeNull();
+        result!.Id.Should().Be(nextQuestionId);
+    }
+
+
+
+    [Fact]
     public async Task GetPreviousQuestion_ShouldReturnPreviousQuestion_WhenCurrentQuestionExists()
     {
         var (organisationId, formId, sectionId, _) = CreateTestGuids();
@@ -616,5 +690,4 @@ public class FormsEngineTests
 
         return (formId, sectionId, organisationId, answerSet, expectedAnswer);
     }
-
 }

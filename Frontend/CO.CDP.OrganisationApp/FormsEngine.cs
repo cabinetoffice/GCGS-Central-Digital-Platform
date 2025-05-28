@@ -78,16 +78,38 @@ public class FormsEngine(
     }
 
     public async Task<Models.FormQuestion?> GetNextQuestion(Guid organisationId, Guid formId, Guid sectionId,
-        Guid currentQuestionId, FormQuestionAnswerState answerState)
+        Guid currentQuestionId, FormQuestionAnswerState? answerState)
     {
         var section = await GetFormSectionAsync(organisationId, formId, sectionId);
-        if (section.Questions == null)
+
+        var currentQuestion = section.Questions.FirstOrDefault(q => q.Id == currentQuestionId);
+        if (currentQuestion == null)
         {
             return null;
         }
 
-        var nextQuestionId = section.Questions.FirstOrDefault(q => q.Id == currentQuestionId)?.NextQuestion;
-        return section.Questions.FirstOrDefault(q => q.Id == nextQuestionId);
+        Guid? determinedNextQuestionId = currentQuestion.NextQuestion;
+
+        if (currentQuestion.NextQuestionAlternative.HasValue && answerState != null)
+        {
+            var currentQuestionAnswer = answerState.Answers.FirstOrDefault(a => a.QuestionId == currentQuestionId);
+
+            if (currentQuestionAnswer?.Answer?.BoolValue == false)
+            {
+                if (currentQuestion.Type == Models.FormQuestionType.YesOrNo ||
+                    currentQuestion.Type == Models.FormQuestionType.FileUpload)
+                {
+                    determinedNextQuestionId = currentQuestion.NextQuestionAlternative;
+                }
+            }
+        }
+
+        if (!determinedNextQuestionId.HasValue)
+        {
+            return null;
+        }
+
+        return section.Questions.FirstOrDefault(q => q.Id == determinedNextQuestionId.Value);
     }
 
     public async Task<Models.FormQuestion?> GetPreviousQuestion(Guid organisationId, Guid formId, Guid sectionId,
@@ -226,7 +248,7 @@ public class FormsEngine(
         return startQuestionNode;
     }
 
-    private List<Models.FormQuestion> GetSortedFormQuestions(List<Models.FormQuestion> questions)
+    public List<Models.FormQuestion> GetSortedFormQuestions(List<Models.FormQuestion> questions)
     {
         if (!questions.Any())
         {
