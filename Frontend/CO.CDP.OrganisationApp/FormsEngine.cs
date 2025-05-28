@@ -294,12 +294,9 @@ public class FormsEngine(
 
     private void SetAlternativePathQuestions(List<Models.FormQuestion> questions)
     {
-        var alternativeTargets = questions
-            ?.Where(q => q.NextQuestionAlternative.HasValue)
-            .Select(q => q.NextQuestionAlternative!.Value)
-            .ToHashSet() ?? new HashSet<Guid>();
+        var (_, alternativeTargets) = GetLinkedQuestionTargets(questions);
 
-        questions?
+        questions
             .Where(q => alternativeTargets.Contains(q.Id))
             .ToList()
             .ForEach(q => q.BranchType = Models.FormQuestionBranchType.Alternative);
