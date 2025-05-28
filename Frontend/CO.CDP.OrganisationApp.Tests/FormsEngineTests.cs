@@ -216,7 +216,7 @@ public class FormsEngineTests
         _tempDataServiceMock.Setup(t => t.Peek<SectionQuestionsResponse>(It.IsAny<string>()))
             .Returns(sectionResponse);
 
-        var result = await _formsEngine.GetNextQuestion(organisationId, formId, sectionId, currentQuestionId);
+        var result = await _formsEngine.GetNextQuestion(organisationId, formId, sectionId, currentQuestionId, null);
 
         result.Should().BeEquivalentTo(sectionResponse.Questions.First(q => q.Id == nextQuestionId));
     }
@@ -562,6 +562,25 @@ public class FormsEngineTests
         var result = _formsEngine.GetPreviousUnansweredQuestionId(questions, question3.Id, answerState);
 
         result.Should().BeNull();
+    }
+
+    [Fact]
+    public void GetPreviousUnansweredQuestionId_ShouldNotStartSortedListWithBranchedQuestion_WhenCalled()
+    {
+        var qActualStart = new FormQuestion { Id = Guid.NewGuid(), Title = "Actual Start" };
+        var qAlternativeOnlyTarget = new FormQuestion { Id = Guid.NewGuid(), Title = "Alternative Only Target" };
+        var qIntermediate = new FormQuestion { Id = Guid.NewGuid(), Title = "Intermediate" };
+        var qEnd = new FormQuestion { Id = Guid.NewGuid(), Title = "End" };
+
+        qActualStart.NextQuestion = qIntermediate.Id;
+        qIntermediate.NextQuestion = qEnd.Id;
+        qIntermediate.NextQuestionAlternative = qAlternativeOnlyTarget.Id;
+
+        var questions = new List<FormQuestion> { qAlternativeOnlyTarget, qActualStart, qIntermediate, qEnd };
+        var answerState = new FormQuestionAnswerState { Answers = new List<QuestionAnswer>() }; // No questions answered
+        var result = _formsEngine.GetPreviousUnansweredQuestionId(questions, qIntermediate.Id, answerState);
+
+        result.Should().Be(qActualStart.Id);
     }
 
     private (Guid formId, Guid sectionId, Guid organisationId, FormQuestionAnswerState answerSet, FormAnswer expectedAnswer) SetupTestData()
