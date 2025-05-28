@@ -287,6 +287,12 @@ public class FormsQuestionPageModel(
 
         var answerState = tempDataService.PeekOrDefault<FormQuestionAnswerState>(FormQuestionAnswerStateKey);
 
+        var currentQuestion = form.Questions.FirstOrDefault(q => q.Id == CurrentQuestionId);
+        if (currentQuestion?.BranchType == FormQuestionBranchType.Alternative)
+        {
+            return null;
+        }
+
         var previousUnansweredQuestionId = formsEngine.GetPreviousUnansweredQuestionId(form.Questions, CurrentQuestionId, answerState);
 
         if (previousUnansweredQuestionId != null && previousUnansweredQuestionId != CurrentQuestionId)

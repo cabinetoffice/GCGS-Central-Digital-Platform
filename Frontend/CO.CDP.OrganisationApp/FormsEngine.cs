@@ -131,18 +131,17 @@ public class FormsEngine(
         Guid? questionId)
     {
         var section = await GetFormSectionAsync(organisationId, formId, sectionId);
-        if (section.Questions == null)
+        if (section.Questions == null || !section.Questions.Any())
         {
             return null;
         }
 
         if (questionId == null)
         {
-            var nextQuestionGuids = section.Questions.Select(sq => sq.NextQuestion);
-            questionId = section.Questions.FirstOrDefault(q => !nextQuestionGuids.Contains(q.Id))?.Id;
+            return GetFirstQuestion(section.Questions);
         }
 
-        return section.Questions.FirstOrDefault(q => q.Id == questionId);
+        return section.Questions.FirstOrDefault(q => q.Id == questionId.Value);
     }
 
     public async Task SaveUpdateAnswers(Guid formId, Guid sectionId, Guid organisationId,
@@ -240,40 +239,38 @@ public class FormsEngine(
         return (nextQuestionTargets, alternativeTargets);
     }
 
-    private Models.FormQuestion? GetStartQuestionNode(List<Models.FormQuestion> questions,
-        HashSet<Guid> nextQuestionTargets, HashSet<Guid> alternativeTargets)
+    private Models.FormQuestion? GetFirstQuestion(List<Models.FormQuestion> questions)
     {
-        var startQuestionNode = questions.FirstOrDefault(q =>
+        var (nextQuestionTargets, alternativeTargets) = GetLinkedQuestionTargets(questions);
+
+        return questions.FirstOrDefault(q =>
             !nextQuestionTargets.Contains(q.Id) &&
             !alternativeTargets.Contains(q.Id));
-
-        return startQuestionNode;
     }
 
-    public List<Models.FormQuestion> GetSortedFormQuestions(List<Models.FormQuestion> questions)
+    private List<Models.FormQuestion> GetSortedFormQuestions(List<Models.FormQuestion> questions)
     {
         if (!questions.Any())
         {
             return new List<Models.FormQuestion>();
         }
 
-        var (nextQuestionTargets, alternativeTargets) = GetLinkedQuestionTargets(questions);
-        var startNode = GetStartQuestionNode(questions, nextQuestionTargets, alternativeTargets);
+        var firstQuestion = GetFirstQuestion(questions);
 
-        return startNode != null
-            ? GenerateQuestionSequenceFromStartNode(startNode, questions)
+        return firstQuestion != null
+            ? GenerateJourneyFromFirstQuestion(first, questions)
             : throw new InvalidOperationException(
                 "Cannot determine a unique starting question for sorting. The form may be empty, contain circular dependencies," +
                 "all potential start nodes might be targeted as alternative next questions, or the questions list could be malformed.");
     }
 
-    private List<Models.FormQuestion> GenerateQuestionSequenceFromStartNode(Models.FormQuestion startNode,
+    private List<Models.FormQuestion> GenerateJourneyFromFirstQuestion(Models.FormQuestion firstQuestion,
         List<Models.FormQuestion> questions)
     {
         var sortedFormQuestions = new List<Models.FormQuestion>();
         var dict = questions.ToDictionary(q => q.Id, q => q);
         var visitedInThisPath = new HashSet<Guid>();
-        var current = startNode;
+        var current = firstQuestion;
 
         while (current != null && visitedInThisPath.Add(current.Id))
         {
@@ -296,27 +293,24 @@ public class FormsEngine(
     {
         var (nextQuestionTargets, alternativeTargets) = GetLinkedQuestionTargets(questions);
         var mainPathQuestionIds = new HashSet<Guid>();
+        var startQuestion = GetFirstQuestion(questions);
+        if (startQuestion != null)
+        {
+            mainPathQuestionIds.Add(startQuestion.Id);
+        }
 
         foreach (var targetId in nextQuestionTargets)
         {
             mainPathQuestionIds.Add(targetId);
         }
 
-        var startQuestion = GetStartQuestionNode(questions, nextQuestionTargets, alternativeTargets);
-        if (startQuestion != null)
-        {
-            mainPathQuestionIds.Add(startQuestion.Id);
-        }
-
         foreach (var question in questions)
         {
-            if (alternativeTargets.Contains(question.Id) ||
-                (!mainPathQuestionIds.Contains(question.Id) &&
-                 question.NextQuestion.HasValue))
+            if ((alternativeTargets.Contains(question.Id) && !mainPathQuestionIds.Contains(question.Id)) ||
+                (!mainPathQuestionIds.Contains(question.Id) && question.NextQuestion.HasValue))
             {
                 question.BranchType = Models.FormQuestionBranchType.Alternative;
             }
         }
     }
 }
-
