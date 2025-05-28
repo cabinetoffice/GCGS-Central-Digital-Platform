@@ -74,6 +74,10 @@ dependency common_networking {
 dependency service_auth {
   config_path = "../../service/auth"
   mock_outputs = {
+    fts_healthcheck_user_pool_arn        = "mock"
+    fts_healthcheck_user_pool_client_id  = "mock"
+    fts_user_pool_arn                    = "mock"
+    fts_user_pool_client_id              = "mock"
     organisation_app_user_pool_arn       = "mock"
     organisation_app_user_pool_client_id = "mock"
     user_pool_domain                     = "mock"
@@ -165,9 +169,15 @@ inputs = {
   vpce_logs_sg_id           = dependency.core_security_groups.outputs.vpce_logs_sg_id
   vpce_secretsmanager_sg_id = dependency.core_security_groups.outputs.vpce_secretsmanager_sg_id
 
-  user_pool_arn       = dependency.service_auth.outputs.organisation_app_user_pool_arn
-  user_pool_client_id = dependency.service_auth.outputs.organisation_app_user_pool_client_id
-  user_pool_domain    = dependency.service_auth.outputs.user_pool_domain
+  user_pool_arn                       = dependency.service_auth.outputs.organisation_app_user_pool_arn
+  user_pool_client_id                 = dependency.service_auth.outputs.organisation_app_user_pool_client_id
+  user_pool_domain                    = dependency.service_auth.outputs.user_pool_domain
+  user_pool_fts_arn                   = dependency.service_auth.outputs.fts_user_pool_arn
+  user_pool_fts_client_id             = dependency.service_auth.outputs.fts_user_pool_client_id
+  user_pool_fts_domain                = dependency.service_auth.outputs.user_pool_domain
+  user_pool_fts_healthcheck_arn       = dependency.service_auth.outputs.fts_healthcheck_user_pool_arn
+  user_pool_fts_healthcheck_client_id = dependency.service_auth.outputs.fts_healthcheck_user_pool_client_id
+  user_pool_fts_healthcheck_domain    = dependency.service_auth.outputs.user_pool_domain
 
   db_ev_cluster_address                   = dependency.service_database.outputs.entity_verification_cluster_address
   db_ev_cluster_credentials_arn           = dependency.service_database.outputs.entity_verification_cluster_credentials_arn

@@ -1,9 +1,9 @@
 services:
   web:
     build: .
-    image: cabinetoffice/cdp-fts
+    image: cabinetoffice/cdp-fts-healthcheck
     ports:
-      - "8070:8070"
+      - "8071:8071"
     depends_on:
       - db
     environment:
