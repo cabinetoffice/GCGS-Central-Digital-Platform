@@ -60,8 +60,6 @@ public class FormsQuestionPageModel(
     [BindProperty]
     public FormElementUrlInputModel? UrlInputModel { get; set; }
     [BindProperty(SupportsGet = true)]
-    public FormElementYearInputModel? YearInputModel { get; set; }
-    [BindProperty]
 
     public string? UkOrNonUk { get; set; }
     public FormQuestionType? CurrentFormQuestionType { get; private set; }
@@ -250,7 +248,6 @@ public class FormsQuestionPageModel(
             FormQuestionType.MultiLine => answer.TextValue ?? "",
             FormQuestionType.GroupedSingleChoice => GroupedSingleChoiceAnswerString(answer, question),
             FormQuestionType.Url => answer.TextValue ?? "",
-            FormQuestionType.Year => answer.TextValue ?? "",
             _ => ""
         };
 
@@ -336,7 +333,6 @@ public class FormsQuestionPageModel(
             { FormQuestionType.MultiLine, "_FormElementMultiLineInput" },
             { FormQuestionType.GroupedSingleChoice, "_FormElementGroupedSingleChoice" },
             { FormQuestionType.Url, "_FormElementUrlInput" },
-            { FormQuestionType.Year, "_FormElementYearInput" },
         };
 
         if (formQuestionPartials.TryGetValue(question.Type, out var partialView))
@@ -365,7 +361,6 @@ public class FormsQuestionPageModel(
             FormQuestionType.MultiLine => MultiLineInputModel ?? new FormElementMultiLineInputModel(),
             FormQuestionType.GroupedSingleChoice => GroupedSingleChoiceModel ?? new FormElementGroupedSingleChoiceModel(),
             FormQuestionType.Url => UrlInputModel ?? new FormElementUrlInputModel(),
-            FormQuestionType.Year => YearInputModel ?? new FormElementYearInputModel(),
             _ => throw new NotImplementedException($"Forms question: {question.Type} is not supported"),
         };
 

@@ -98,5 +98,4 @@ public enum FormQuestionType
     MultiLine,
     GroupedSingleChoice,
     Url,
-    Year
 }
