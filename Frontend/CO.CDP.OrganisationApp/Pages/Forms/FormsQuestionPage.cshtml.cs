@@ -106,6 +106,8 @@ public class FormsQuestionPageModel(
             return RedirectToPage("FormsQuestionPage", new { OrganisationId, FormId, SectionId, CurrentQuestionId = previousUnansweredQuestionId });
         }
 
+        var sectionDetails = await formsEngine.GetFormSectionAsync(OrganisationId, FormId, SectionId);
+
         var currentQuestion = await InitModel();
         if (currentQuestion == null)
         {
@@ -124,6 +126,9 @@ public class FormsQuestionPageModel(
                 }
                 return Page();
             }
+
+            var oldAnswerObject = GetAnswerFromTempData(currentQuestion);
+            HandleAnswerChangeForAlternativeBranch(currentQuestion, oldAnswerObject, sectionDetails.Questions);
 
             var answer = PartialViewModel.GetAnswer();
 
@@ -151,6 +156,14 @@ public class FormsQuestionPageModel(
 
                     answer ??= new FormAnswer();
                     answer.TextValue = response.Value.filename;
+                }
+                else
+                {
+                    if (string.IsNullOrEmpty(FileUploadModel?.UploadedFile?.FileName) && !string.IsNullOrEmpty(oldAnswerObject?.TextValue))
+                    {
+                        answer ??= new FormAnswer();
+                        answer.TextValue = null;
+                    }
                 }
             }
 
@@ -406,6 +419,74 @@ public class FormsQuestionPageModel(
         questionAnswer.Answer = answer;
 
         tempDataService.Put(FormQuestionAnswerStateKey, state);
+    }
+
+    private void HandleAnswerChangeForAlternativeBranch(FormQuestion currentQuestion, FormAnswer? oldAnswerObject, List<FormQuestion> allQuestionsInSection)
+    {
+        bool answerChangedFromNoToYes = false;
+
+        if (currentQuestion.Type == FormQuestionType.YesOrNo)
+        {
+            bool oldBoolAnswer = oldAnswerObject?.BoolValue ?? false;
+            bool newAnswerIsYesEquivalent = YesNoInputModel?.GetAnswer()?.BoolValue ?? false;
+            if (!oldBoolAnswer && newAnswerIsYesEquivalent)
+            {
+                answerChangedFromNoToYes = true;
+            }
+        }
+        else if (currentQuestion.Type == FormQuestionType.FileUpload)
+        {
+            bool oldFileExisted = !string.IsNullOrEmpty(oldAnswerObject?.TextValue);
+            var newFileUploadedInfo = FileUploadModel?.GetUploadedFileInfo();
+            bool newAnswerIsYesEquivalent = newFileUploadedInfo != null && newFileUploadedInfo.Value.formFile?.Length > 0;
+
+            if (!oldFileExisted && newAnswerIsYesEquivalent)
+            {
+                answerChangedFromNoToYes = true;
+            }
+        }
+
+        if (answerChangedFromNoToYes && currentQuestion.NextQuestionAlternative.HasValue)
+        {
+            RemoveAnswersFromAlternativeBranch(currentQuestion.NextQuestionAlternative.Value, allQuestionsInSection);
+        }
+    }
+
+    private void RemoveAnswersFromAlternativeBranch(Guid alternativeBranchStartNodeId, List<FormQuestion> allQuestionsInSection)
+    {
+        var answerState = tempDataService.PeekOrDefault<FormQuestionAnswerState>(FormQuestionAnswerStateKey);
+        if (answerState.Answers == null || !answerState.Answers.Any()) return;
+
+        var questionsMap = allQuestionsInSection.ToDictionary(q => q.Id);
+        var questionsOnAlternativePath = new HashSet<Guid>();
+        var queue = new Queue<Guid>();
+
+        if (questionsMap.ContainsKey(alternativeBranchStartNodeId))
+        {
+            queue.Enqueue(alternativeBranchStartNodeId);
+        }
+
+        while (queue.Count > 0)
+        {
+            var currentQId = queue.Dequeue();
+            if (!questionsMap.TryGetValue(currentQId, out var questionNode) || !questionsOnAlternativePath.Add(currentQId))
+            {
+                continue;
+            }
+
+            if (questionNode.NextQuestion.HasValue)
+            {
+                queue.Enqueue(questionNode.NextQuestion.Value);
+            }
+        }
+
+        var initialCount = answerState.Answers.Count;
+        answerState.Answers.RemoveAll(answer => questionsOnAlternativePath.Contains(answer.QuestionId));
+
+        if (answerState.Answers.Count < initialCount)
+        {
+            tempDataService.Put(FormQuestionAnswerStateKey, answerState);
+        }
     }
 }
 

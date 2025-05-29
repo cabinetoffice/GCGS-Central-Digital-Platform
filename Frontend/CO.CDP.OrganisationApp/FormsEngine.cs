@@ -258,7 +258,7 @@ public class FormsEngine(
         var firstQuestion = GetFirstQuestion(questions);
 
         return firstQuestion != null
-            ? GenerateJourneyFromFirstQuestion(first, questions)
+            ? GenerateJourneyFromFirstQuestion(firstQuestion, questions)
             : throw new InvalidOperationException(
                 "Cannot determine a unique starting question for sorting. The form may be empty, contain circular dependencies," +
                 "all potential start nodes might be targeted as alternative next questions, or the questions list could be malformed.");
