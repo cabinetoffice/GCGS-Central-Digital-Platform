@@ -562,6 +562,12 @@ public record AddOrganisationParty
 
     public string? ShareCode { get; init; }
 }
+public record UpdateOrganisationParty
+{
+    public required Guid OrganisationPartyId { get; init; }
+
+    public string? ShareCode { get; init; }
+}
 
 public record GetAnnouncementQuery
 {
