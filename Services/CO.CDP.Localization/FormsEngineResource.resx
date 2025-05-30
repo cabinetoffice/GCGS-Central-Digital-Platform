@@ -633,13 +633,13 @@
   </data>
   <!-- Carbon Net Zero -->
   <data name="CarbonNetZero_SectionTitle" xml:space="preserve">
-  <value>Carbon Net Zero</value>
-</data>
+    <value>Carbon Net Zero</value>
+  </data>
   <data name="CarbonNetZero_01_Title" xml:space="preserve">
-  <value>Submitting your Carbon Net Zero information</value>
-</data>
+    <value>Submitting your Carbon Net Zero information</value>
+  </data>
   <data name="CarbonNetZero_01_Description" xml:space="preserve">
-  <value>
+    <value>
 &lt;p class=&quot;govuk-body&quot;&gt;
 Carbon Net Zero is the commitment to balance greenhouse gas emissions with equivalent removals by 2050.
 You may develop Carbon Reduction Plans (CRPs) that detail your emissions, reduction strategies, and
@@ -658,8 +658,8 @@ PPN 006 Taking account of Carbon Reduction Plans in the procurement of major gov
     &lt;li class=&quot;govuk-!-margin-top-4&quot;&gt; your baseline and reporting year emissions data&lt;/li&gt;
   &lt;/ul&gt;
 &lt;/div&gt;
-  </value>
-</data>
+    </value>
+  </data>
   <data name="CarbonNetZero_02_Title" xml:space="preserve">
     <value>Have you published a Carbon Reduction Plan?</value>
   </data>
@@ -694,7 +694,134 @@ PPN 006 Taking account of Carbon Reduction Plans in the procurement of major gov
     <value>Net Zero target year</value>
   </data>
   <data name="CarbonNetZero_05_Description" xml:space="preserve">
-    <value>&lt;p class=&quot;govuk-hint&quot;&gt;For example, 2030&lt;/p&gt;</value>
+    <value>
+    &lt;p class="govuk-hint"&gt;For example, 2030&lt;/p&gt;
+    &lt;p class="govuk-body"&gt;Year&lt;/p&gt;
+    </value>
+  </data>
+  <data name="CarbonNetZero_06_Title" xml:space="preserve">
+    <value>Enter your baseline emissions data</value>
+  </data>
+  <data name="CarbonNetZero_06_SummaryTitle" xml:space="preserve">
+    <value>Baseline Year</value>
+  </data>
+  <data name="CarbonNetZero_06_Description" xml:space="preserve">
+    <value>
+    &lt;div class="govuk-body govuk-!-margin-top-5"&gt;
+      &lt;h2 class="govuk-heading-m govuk-!-margin-bottom-0"&gt;Baseline Year&lt;/h2&gt;
+      &lt;p class="govuk-hint govuk-!-margin-top-1"&gt;For example, 2030&lt;/p&gt;
+    &lt;/div&gt;
+    </value>
+  </data>
+  <data name="CarbonNetZero_07_Title" xml:space="preserve">
+    <value>Enter your baseline emissions data</value>
+  </data>
+  <data name="CarbonNetZero_07_SummaryTitle" xml:space="preserve">
+    <value>Scope 1</value>
+  </data>
+  <data name="CarbonNetZero_07_Description" xml:space="preserve">
+    <value>
+        &lt;div class="govuk-body govuk-!-margin-top-5"&gt;
+            &lt;h2 class="govuk-heading-m govuk-!-margin-bottom-0"&gt;
+                Scope 1
+                &lt;span class="govuk-body govuk-!-font-weight-regular"&gt;(tCO₂)&lt;/span&gt;
+            &lt;/h2&gt;
+        &lt;/div&gt;
+    </value>
+  </data>
+  <data name="CarbonNetZero_08_Title" xml:space="preserve">
+    <value>Enter your baseline emissions data</value>
+  </data>
+  <data name="CarbonNetZero_08_SummaryTitle" xml:space="preserve">
+    <value>Scope 2</value>
+  </data>
+  <data name="CarbonNetZero_08_Description" xml:space="preserve">
+    <value>
+        &lt;div class="govuk-body govuk-!-margin-top-5"&gt;
+            &lt;h2 class="govuk-heading-m govuk-!-margin-bottom-0"&gt;
+                Scope 2
+                &lt;span class="govuk-body govuk-!-font-weight-regular"&gt;(tCO₂)&lt;/span&gt;
+            &lt;/h2&gt;
+        &lt;/div&gt;
+    </value>
+  </data>
+  <data name="CarbonNetZero_09_Title" xml:space="preserve">
+    <value>Enter your baseline emissions data</value>
+  </data>
+  <data name="CarbonNetZero_09_SummaryTitle" xml:space="preserve">
+    <value>Scope 3</value>
+  </data>
+  <data name="CarbonNetZero_09_Description" xml:space="preserve">
+    <value>
+        &lt;div class="govuk-body govuk-!-margin-top-5"&gt;
+            &lt;h2 class="govuk-heading-m govuk-!-margin-bottom-0"&gt;
+                Scope 3
+                &lt;span class="govuk-body govuk-!-font-weight-regular"&gt;(tCO₂)&lt;/span&gt;
+            &lt;/h2&gt;
+        &lt;/div&gt;
+    </value>
+  </data>
+  <data name="CarbonNetZero_10_Title" xml:space="preserve">
+    <value>Enter your current emissions data</value>
+  </data>
+  <data name="CarbonNetZero_10_SummaryTitle" xml:space="preserve">
+    <value>Reporting Year</value>
+  </data>
+  <data name="CarbonNetZero_10_Description" xml:space="preserve">
+    <value>
+    &lt;div class="govuk-body govuk-!-margin-top-5"&gt;
+      &lt;h2 class="govuk-heading-m govuk-!-margin-bottom-0"&gt;Reporting Year&lt;/h2&gt;
+      &lt;p class="govuk-hint govuk-!-margin-top-1"&gt;For example, 2030&lt;/p&gt;
+    &lt;/div&gt;
+    </value>
+  </data>
+  <data name="CarbonNetZero_11_Title" xml:space="preserve">
+    <value>Enter your current emissions data</value>
+  </data>
+  <data name="CarbonNetZero_11_SummaryTitle" xml:space="preserve">
+    <value>Scope 1</value>
+  </data>
+  <data name="CarbonNetZero_11_Description" xml:space="preserve">
+    <value>
+        &lt;div class="govuk-body govuk-!-margin-top-5"&gt;
+            &lt;h2 class="govuk-heading-m govuk-!-margin-bottom-0"&gt;
+                Scope 1
+                &lt;span class="govuk-body govuk-!-font-weight-regular"&gt;(tCO₂)&lt;/span&gt;
+            &lt;/h2&gt;
+        &lt;/div&gt;
+    </value>
+  </data>
+  <data name="CarbonNetZero_12_Title" xml:space="preserve">
+    <value>Enter your current emissions data</value>
+  </data>
+  <data name="CarbonNetZero_12_SummaryTitle" xml:space="preserve">
+    <value>Scope 2</value>
+  </data>
+  <data name="CarbonNetZero_12_Description" xml:space="preserve">
+    <value>
+        &lt;div class="govuk-body govuk-!-margin-top-5"&gt;
+            &lt;h2 class="govuk-heading-m govuk-!-margin-bottom-0"&gt;
+                Scope 2
+                &lt;span class="govuk-body govuk-!-font-weight-regular"&gt;(tCO₂)&lt;/span&gt;
+            &lt;/h2&gt;
+        &lt;/div&gt;
+    </value>
+  </data>
+  <data name="CarbonNetZero_13_Title" xml:space="preserve">
+    <value>Enter your current emissions data</value>
+  </data>
+  <data name="CarbonNetZero_13_SummaryTitle" xml:space="preserve">
+    <value>Scope 3</value>
+  </data>
+  <data name="CarbonNetZero_13_Description" xml:space="preserve">
+    <value>
+        &lt;div class="govuk-body govuk-!-margin-top-5"&gt;
+            &lt;h2 class="govuk-heading-m govuk-!-margin-bottom-0"&gt;
+                Scope 3
+                &lt;span class="govuk-body govuk-!-font-weight-regular"&gt;(tCO₂)&lt;/span&gt;
+            &lt;/h2&gt;
+        &lt;/div&gt;
+    </value>
   </data>
   <data name="Global_YearInput_YearRequiredError" xml:space="preserve">
     <value>The year is required.</value>
