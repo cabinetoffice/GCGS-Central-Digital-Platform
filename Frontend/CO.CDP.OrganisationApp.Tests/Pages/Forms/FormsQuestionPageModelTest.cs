@@ -8,6 +8,12 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moq;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Routing;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using Address = CO.CDP.Organisation.WebApiClient.Address;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages.Forms;
 
@@ -15,42 +21,66 @@ public class FormsQuestionPageModelTest
 {
     private readonly Mock<IFormsEngine> _formsEngineMock;
     private readonly Mock<ITempDataService> _tempDataServiceMock;
-    private readonly Mock<IChoiceProviderService> _choiceProviderServiceMock;
-    private readonly Mock<IFileHostManager> _fileHostManagerMock;
-    private readonly FormsQuestionPageModel _pageModel;
-    private readonly Guid TextQuestionId = Guid.NewGuid();
     private readonly Mock<IPublisher> _publisherMock;
-    private readonly Mock<IOrganisationClient> _organisationClient;
-    private readonly Mock<IUserInfoService> _userInfoService;
+    private readonly Mock<IFileHostManager> _fileHostManagerMock;
+    private readonly Mock<IOrganisationClient> _organisationClientMock;
+    private readonly Mock<IUserInfoService> _userInfoServiceMock;
+    private readonly FormsQuestionPageModel _pageModel;
+    private readonly Guid _textQuestionId = Guid.NewGuid();
+    private readonly Mock<IObjectModelValidator> _objectModelValidatorMock;
 
     public FormsQuestionPageModelTest()
     {
         _formsEngineMock = new Mock<IFormsEngine>();
+        Mock<IChoiceProviderService> choiceProviderServiceMock = new Mock<IChoiceProviderService>();
+        _fileHostManagerMock = new Mock<IFileHostManager>();
+        _publisherMock = new Mock<IPublisher>();
+        _organisationClientMock = new Mock<IOrganisationClient>();
+        _userInfoServiceMock = new Mock<IUserInfoService>();
+        _tempDataServiceMock = new Mock<ITempDataService>();
 
         var form = new SectionQuestionsResponse
         {
-            Questions = [new FormQuestion { Id = TextQuestionId, Type = FormQuestionType.Text, SummaryTitle = "Sample Question" }]
+            Questions =
+            [
+                new FormQuestion
+                {
+                    Id = _textQuestionId, Type = FormQuestionType.Text, SummaryTitle = "Sample Question",
+                    Options = new FormQuestionOptions()
+                }
+            ]
         };
-       
+
         _formsEngineMock.Setup(f => f.GetFormSectionAsync(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid>()))
             .ReturnsAsync(form);
-        _tempDataServiceMock = new Mock<ITempDataService>();
-        _fileHostManagerMock = new Mock<IFileHostManager>();
-        _publisherMock = new Mock<IPublisher>();
-        _choiceProviderServiceMock = new Mock<IChoiceProviderService>();
         _tempDataServiceMock.Setup(t => t.PeekOrDefault<FormQuestionAnswerState>(It.IsAny<string>()))
             .Returns(new FormQuestionAnswerState());
         _tempDataServiceMock.Setup(t => t.Remove(It.IsAny<string>()));
-        _organisationClient = new Mock<IOrganisationClient>();
-        _userInfoService = new Mock<IUserInfoService>();
 
-        _pageModel = new FormsQuestionPageModel(_publisherMock.Object,
+        _pageModel = new FormsQuestionPageModel(
+            _publisherMock.Object,
             _formsEngineMock.Object,
             _tempDataServiceMock.Object,
             _fileHostManagerMock.Object,
-            _choiceProviderServiceMock.Object,
-            _organisationClient.Object,
-            _userInfoService.Object);
+            choiceProviderServiceMock.Object,
+            _organisationClientMock.Object,
+            _userInfoServiceMock.Object);
+
+        var httpContext = new DefaultHttpContext();
+        var modelState = new ModelStateDictionary();
+        var actionContext = new ActionContext(httpContext, new RouteData(), new PageActionDescriptor(), modelState);
+        var modelMetadataProvider = new EmptyModelMetadataProvider();
+
+        _objectModelValidatorMock = new Mock<IObjectModelValidator>();
+        var serviceProviderMock = new Mock<IServiceProvider>();
+        serviceProviderMock.Setup(sp => sp.GetService(typeof(IObjectModelValidator)))
+            .Returns(_objectModelValidatorMock.Object);
+        httpContext.RequestServices = serviceProviderMock.Object;
+
+        _pageModel.PageContext = new PageContext(actionContext)
+        {
+            ViewData = new ViewDataDictionary(modelMetadataProvider, modelState)
+        };
 
         _pageModel.OrganisationId = Guid.NewGuid();
         _pageModel.FormId = Guid.NewGuid();
@@ -60,7 +90,8 @@ public class FormsQuestionPageModelTest
     [Fact]
     public async Task OnGetAsync_RedirectsToPageNotFound_WhenCurrentQuestionIsNull()
     {
-        _formsEngineMock.Setup(f => f.GetCurrentQuestion(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid?>()))
+        _formsEngineMock.Setup(f =>
+                f.GetCurrentQuestion(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid?>()))
             .ReturnsAsync((FormQuestion?)null);
 
         var result = await _pageModel.OnGetAsync();
@@ -71,8 +102,12 @@ public class FormsQuestionPageModelTest
     [Fact]
     public async Task OnGetAsync_ReturnsPage_WhenCurrentQuestionIsNotNull()
     {
-        var formQuestion = new FormQuestion { Id = Guid.NewGuid(), Type = FormQuestionType.Text };
-        _formsEngineMock.Setup(f => f.GetCurrentQuestion(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid?>()))
+        var formQuestion = new FormQuestion
+        {
+            Id = Guid.NewGuid(), Type = FormQuestionType.Text, NextQuestion = Guid.NewGuid()
+        };
+        _formsEngineMock.Setup(f =>
+                f.GetCurrentQuestion(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid?>()))
             .ReturnsAsync(formQuestion);
 
         var result = await _pageModel.OnGetAsync();
@@ -85,7 +120,8 @@ public class FormsQuestionPageModelTest
     [Fact]
     public async Task OnPostAsync_RedirectsToPageNotFound_WhenCurrentQuestionIsNull()
     {
-        _formsEngineMock.Setup(f => f.GetCurrentQuestion(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid?>()))
+        _formsEngineMock.Setup(f =>
+                f.GetCurrentQuestion(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid?>()))
             .ReturnsAsync((FormQuestion?)null);
 
         var result = await _pageModel.OnPostAsync();
@@ -96,11 +132,16 @@ public class FormsQuestionPageModelTest
     [Fact]
     public async Task EncType_ReturnsMultipartFormData_WhenCurrentFormQuestionTypeIsFileUpload()
     {
-        var formQuestion = new FormQuestion { Id = Guid.NewGuid(), Type = FormQuestionType.FileUpload };
-        _formsEngineMock.Setup(f => f.GetCurrentQuestion(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid?>()))
+        var formQuestion = new FormQuestion
+        {
+            Id = Guid.NewGuid(), Type = FormQuestionType.FileUpload, NextQuestion = Guid.NewGuid(),
+            NextQuestionAlternative = Guid.NewGuid()
+        };
+        _formsEngineMock.Setup(f =>
+                f.GetCurrentQuestion(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid?>()))
             .ReturnsAsync(formQuestion);
 
-        var result = await _pageModel.OnGetAsync();
+        await _pageModel.OnGetAsync();
 
         _pageModel.EncType.Should().Be("multipart/form-data");
     }
@@ -108,11 +149,15 @@ public class FormsQuestionPageModelTest
     [Fact]
     public async Task EncType_ReturnsUrlEncoded_WhenCurrentFormQuestionTypeIsNotFileUpload()
     {
-        var formQuestion = new FormQuestion { Id = Guid.NewGuid(), Type = FormQuestionType.Text };
-        _formsEngineMock.Setup(f => f.GetCurrentQuestion(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid?>()))
+        var formQuestion = new FormQuestion
+        {
+            Id = Guid.NewGuid(), Type = FormQuestionType.Text, NextQuestion = Guid.NewGuid()
+        };
+        _formsEngineMock.Setup(f =>
+                f.GetCurrentQuestion(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid?>()))
             .ReturnsAsync(formQuestion);
 
-        var result = await _pageModel.OnGetAsync();
+        await _pageModel.OnGetAsync();
 
         _pageModel.EncType.Should().Be("application/x-www-form-urlencoded");
     }
@@ -122,20 +167,20 @@ public class FormsQuestionPageModelTest
     {
         var answerSet = new FormQuestionAnswerState
         {
-            Answers = new List<QuestionAnswer>
-        {
-            new QuestionAnswer
-            {
-                QuestionId = TextQuestionId,
-                Answer = new FormAnswer { TextValue = "Sample Answer" }
-            }
-        }
+            Answers =
+            [
+                new QuestionAnswer
+                {
+                    QuestionId = _textQuestionId,
+                    Answer = new FormAnswer { TextValue = "Sample Answer" }
+                }
+            ]
         };
 
         _tempDataServiceMock.Setup(t => t.PeekOrDefault<FormQuestionAnswerState>(It.IsAny<string>()))
             .Returns(answerSet);
 
-        var answers = await _pageModel.GetAnswers();
+        var answers = (await _pageModel.GetAnswers()).ToList();
 
         answers.Should().HaveCount(1);
         answers.First().Answer.Should().Be("Sample Answer");
@@ -143,31 +188,41 @@ public class FormsQuestionPageModelTest
     }
 
     [Fact]
-    public async Task OnPostAsync_ShouldCallSaveUpdateAnswersAndRedirectToFormsAnswerSetSummary_WhenCurrentQuestionIsCheckYourAnswerQuestion()
+    public async Task
+        OnPostAsync_ShouldCallSaveUpdateAnswersAndRedirectToFormsAnswerSetSummary_WhenCurrentQuestionIsCheckYourAnswerQuestion()
     {
         var currentQuestionId = Guid.NewGuid();
         var checkYourAnswerQuestionId = currentQuestionId;
-        var formQuestion = new FormQuestion { Id = currentQuestionId, Type = FormQuestionType.CheckYourAnswers };
+        var formQuestion = new FormQuestion
+        {
+            Id = currentQuestionId, Type = FormQuestionType.CheckYourAnswers, NextQuestion = null
+        };
 
-        _formsEngineMock.Setup(f => f.GetCurrentQuestion(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid?>()))
+        _formsEngineMock.Setup(f =>
+                f.GetCurrentQuestion(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid?>()))
             .ReturnsAsync(formQuestion);
 
         _formsEngineMock.Setup(f => f.GetFormSectionAsync(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid>()))
             .ReturnsAsync(new SectionQuestionsResponse
             {
-                Questions = new List<FormQuestion>
-                {
-                new FormQuestion { Id = checkYourAnswerQuestionId, Type = FormQuestionType.CheckYourAnswers }
-                }
+                Questions =
+                [
+                    new()
+                    {
+                        Id = checkYourAnswerQuestionId, Type = FormQuestionType.CheckYourAnswers, NextQuestion = null
+                    }
+                ]
             });
 
         _tempDataServiceMock.Setup(t => t.PeekOrDefault<FormQuestionAnswerState>(It.IsAny<string>()))
             .Returns(new FormQuestionAnswerState());
         var result = await _pageModel.OnPostAsync();
-        _formsEngineMock.Verify(f => f.SaveUpdateAnswers(_pageModel.FormId, _pageModel.SectionId, _pageModel.OrganisationId, It.IsAny<FormQuestionAnswerState>()), Times.Once);
+        _formsEngineMock.Verify(
+            f => f.SaveUpdateAnswers(_pageModel.FormId, _pageModel.SectionId, _pageModel.OrganisationId,
+                It.IsAny<FormQuestionAnswerState>()), Times.Once);
 
         result.Should().BeOfType<RedirectToPageResult>()
-              .Which.PageName.Should().Be("FormsAnswerSetSummary");
+            .Which.PageName.Should().Be("FormsAnswerSetSummary");
     }
 
     [Fact]
@@ -180,40 +235,61 @@ public class FormsQuestionPageModelTest
         var formResponse = new SectionQuestionsResponse
         {
             Section = new FormSection { Type = FormSectionType.Declaration, Title = "Test Section" },
-            Questions = [new FormQuestion { Id = checkYourAnswerQuestionId, Type = FormQuestionType.CheckYourAnswers }]
+            Questions =
+            [
+                new FormQuestion
+                {
+                    Id = checkYourAnswerQuestionId, Type = FormQuestionType.CheckYourAnswers, NextQuestion = null
+                }
+            ]
         };
 
-        _formsEngineMock.Setup(f => f.GetCurrentQuestion(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid?>()))
-            .ReturnsAsync(new FormQuestion { Id = checkYourAnswerQuestionId, Type = FormQuestionType.CheckYourAnswers });
+        _formsEngineMock.Setup(f =>
+                f.GetCurrentQuestion(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid>(), checkYourAnswerQuestionId))
+            .ReturnsAsync(new FormQuestion
+            {
+                Id = checkYourAnswerQuestionId, Type = FormQuestionType.CheckYourAnswers, NextQuestion = null
+            });
 
         _formsEngineMock.Setup(f => f.GetFormSectionAsync(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid>()))
             .ReturnsAsync(formResponse);
 
         var result = await _pageModel.OnPostAsync();
 
-        _formsEngineMock.Verify(f => f.SaveUpdateAnswers(_pageModel.FormId, _pageModel.SectionId, _pageModel.OrganisationId, It.IsAny<FormQuestionAnswerState>()), Times.Once);
+        _formsEngineMock.Verify(
+            f => f.SaveUpdateAnswers(_pageModel.FormId, _pageModel.SectionId, _pageModel.OrganisationId,
+                It.IsAny<FormQuestionAnswerState>()), Times.Once);
         result.Should().BeOfType<RedirectToPageResult>()
-              .Which.PageName.Should().Be("/ShareInformation/ShareCodeConfirmation");
+            .Which.PageName.Should().Be("/ShareInformation/ShareCodeConfirmation");
     }
 
     [Fact]
-    public async Task OnPostAsync_ShouldRedirectToShareCodeConfirmation_WithGeneratedShareCode_WhenSectionIsDeclaration()
+    public async Task
+        OnPostAsync_ShouldRedirectToShareCodeConfirmation_WithGeneratedShareCode_WhenSectionIsDeclaration()
     {
         var shareCode = "HDJ2123F";
         _pageModel.FormSectionType = FormSectionType.Declaration;
-        _pageModel.CurrentQuestionId = Guid.NewGuid();
+        var currentQuestionId = Guid.NewGuid();
+        _pageModel.CurrentQuestionId = currentQuestionId;
 
         var formResponse = new SectionQuestionsResponse
         {
             Section = new FormSection { Type = FormSectionType.Declaration, Title = "Test Section" },
-            Questions = new List<FormQuestion>
-            {
-                new FormQuestion { Id = _pageModel.CurrentQuestionId, Type = FormQuestionType.CheckYourAnswers }
-            }
+            Questions =
+            [
+                new FormQuestion
+                {
+                    Id = currentQuestionId, Type = FormQuestionType.CheckYourAnswers, NextQuestion = null
+                }
+            ]
         };
 
-        _formsEngineMock.Setup(f => f.GetCurrentQuestion(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid?>()))
-            .ReturnsAsync(new FormQuestion { Id = _pageModel.CurrentQuestionId, Type = FormQuestionType.CheckYourAnswers });
+        _formsEngineMock.Setup(f =>
+                f.GetCurrentQuestion(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid>(), currentQuestionId))
+            .ReturnsAsync(new FormQuestion
+            {
+                Id = currentQuestionId, Type = FormQuestionType.CheckYourAnswers, NextQuestion = null
+            });
 
         _formsEngineMock.Setup(f => f.GetFormSectionAsync(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid>()))
             .ReturnsAsync(formResponse);
@@ -229,7 +305,633 @@ public class FormsQuestionPageModelTest
         _formsEngineMock.Verify(f => f.CreateShareCodeAsync(_pageModel.FormId, _pageModel.OrganisationId), Times.Once);
 
         result.Should().BeOfType<RedirectToPageResult>()
-              .Which.PageName.Should().Be("/ShareInformation/ShareCodeConfirmation");
+            .Which.PageName.Should().Be("/ShareInformation/ShareCodeConfirmation");
         (result as RedirectToPageResult)!.RouteValues?["shareCode"].Should().Be(shareCode);
+    }
+
+    [Fact]
+    public async Task OnGetAsync_RedirectsToCorrectPage_WhenPreviousUnansweredQuestionExistsAndIsNotAlternativeBranch()
+    {
+        var previousUnansweredQuestionId = Guid.NewGuid();
+        var currentQuestionId = Guid.NewGuid();
+        var nextQuestionId = Guid.NewGuid();
+        _pageModel.CurrentQuestionId = currentQuestionId;
+
+        var qPrevious = new FormQuestion
+        {
+            Id = previousUnansweredQuestionId, Type = FormQuestionType.Text, NextQuestion = currentQuestionId,
+            Options = new FormQuestionOptions()
+        };
+        var qCurrent = new FormQuestion
+        {
+            Id = currentQuestionId, Type = FormQuestionType.Text, BranchType = FormQuestionBranchType.Main,
+            NextQuestion = nextQuestionId, Options = new FormQuestionOptions()
+        };
+        var qNext = new FormQuestion
+        {
+            Id = nextQuestionId, Type = FormQuestionType.Text, NextQuestion = null, Options = new FormQuestionOptions()
+        };
+        var questionsList = new List<FormQuestion> { qPrevious, qCurrent, qNext };
+
+        _formsEngineMock.Setup(f =>
+                f.GetFormSectionAsync(_pageModel.OrganisationId, _pageModel.FormId, _pageModel.SectionId))
+            .ReturnsAsync(new SectionQuestionsResponse { Questions = questionsList });
+
+        _formsEngineMock.Setup(f =>
+                f.GetCurrentQuestion(_pageModel.OrganisationId, _pageModel.FormId, _pageModel.SectionId,
+                    currentQuestionId))
+            .ReturnsAsync(qCurrent);
+
+        _formsEngineMock.Setup(f => f.GetPreviousUnansweredQuestionId(
+                questionsList,
+                currentQuestionId,
+                It.IsAny<FormQuestionAnswerState>()))
+            .Returns(previousUnansweredQuestionId);
+
+        var result = await _pageModel.OnGetAsync();
+        _objectModelValidatorMock.Verify();
+
+        result.Should().BeOfType<RedirectToPageResult>();
+        var redirectResult = result as RedirectToPageResult;
+        redirectResult!.PageName.Should().Be("FormsQuestionPage");
+        redirectResult.RouteValues!["CurrentQuestionId"].Should().Be(previousUnansweredQuestionId);
+        redirectResult.RouteValues!["OrganisationId"].Should().Be(_pageModel.OrganisationId);
+        redirectResult.RouteValues!["FormId"].Should().Be(_pageModel.FormId);
+        redirectResult.RouteValues!["SectionId"].Should().Be(_pageModel.SectionId);
+    }
+
+    [Fact]
+    public async Task OnPostAsync_RedirectsToCorrectPage_WhenPreviousUnansweredQuestionExistsAndIsNotAlternativeBranch()
+    {
+        var previousUnansweredQuestionId = Guid.NewGuid();
+        var currentQuestionId = Guid.NewGuid();
+        var nextQuestionId = Guid.NewGuid();
+        _pageModel.CurrentQuestionId = currentQuestionId;
+
+        var qPrevious = new FormQuestion
+        {
+            Id = previousUnansweredQuestionId, Type = FormQuestionType.Text, NextQuestion = currentQuestionId,
+            Options = new FormQuestionOptions()
+        };
+        var qCurrent = new FormQuestion
+        {
+            Id = currentQuestionId, Type = FormQuestionType.Text, BranchType = FormQuestionBranchType.Main,
+            NextQuestion = nextQuestionId, Options = new FormQuestionOptions()
+        };
+        var qNext = new FormQuestion
+        {
+            Id = nextQuestionId, Type = FormQuestionType.Text, NextQuestion = null, Options = new FormQuestionOptions()
+        };
+        var questionsList = new List<FormQuestion> { qPrevious, qCurrent, qNext };
+
+        _formsEngineMock.Setup(f =>
+                f.GetFormSectionAsync(_pageModel.OrganisationId, _pageModel.FormId, _pageModel.SectionId))
+            .ReturnsAsync(new SectionQuestionsResponse { Questions = questionsList });
+
+        _formsEngineMock.Setup(f =>
+                f.GetCurrentQuestion(_pageModel.OrganisationId, _pageModel.FormId, _pageModel.SectionId,
+                    currentQuestionId))
+            .ReturnsAsync(qCurrent);
+
+        _formsEngineMock.Setup(f => f.GetPreviousUnansweredQuestionId(
+                questionsList,
+                currentQuestionId,
+                It.IsAny<FormQuestionAnswerState>()))
+            .Returns(previousUnansweredQuestionId);
+
+        _tempDataServiceMock.Setup(t => t.PeekOrDefault<FormQuestionAnswerState>(It.IsAny<string>()))
+            .Returns(new FormQuestionAnswerState());
+
+        var result = await _pageModel.OnPostAsync();
+        _objectModelValidatorMock.Verify();
+
+        result.Should().BeOfType<RedirectToPageResult>();
+        var redirectResult = result as RedirectToPageResult;
+        redirectResult!.PageName.Should().Be("FormsQuestionPage");
+        redirectResult.RouteValues!["CurrentQuestionId"].Should().Be(previousUnansweredQuestionId);
+        redirectResult.RouteValues!["OrganisationId"].Should().Be(_pageModel.OrganisationId);
+        redirectResult.RouteValues!["FormId"].Should().Be(_pageModel.FormId);
+        redirectResult.RouteValues!["SectionId"].Should().Be(_pageModel.SectionId);
+    }
+
+    [Fact]
+    public async Task OnGetAsync_ReturnsPage_WhenCurrentQuestionIsAlternativeBranchAndPreviousUnansweredExists()
+    {
+        var previousUnansweredQuestionId = Guid.NewGuid();
+        var currentQuestionId = Guid.NewGuid();
+        var nextQuestionAfterCurrentId = Guid.NewGuid();
+        var mainPathQuestionId = Guid.NewGuid();
+        var mainPathNextQuestionId = Guid.NewGuid();
+
+        _pageModel.CurrentQuestionId = currentQuestionId;
+
+        var qMainPathBranching = new FormQuestion
+        {
+            Id = mainPathQuestionId,
+            Type = FormQuestionType.YesOrNo,
+            NextQuestion = mainPathNextQuestionId,
+            NextQuestionAlternative = currentQuestionId,
+            Options = new FormQuestionOptions()
+        };
+        var qMainPathNext = new FormQuestion
+        {
+            Id = mainPathNextQuestionId, Type = FormQuestionType.Text, NextQuestion = null,
+            Options = new FormQuestionOptions()
+        };
+        var qCurrentAlternative = new FormQuestion
+        {
+            Id = currentQuestionId,
+            Type = FormQuestionType.Text,
+            BranchType = FormQuestionBranchType.Alternative,
+            NextQuestion = nextQuestionAfterCurrentId,
+            Options = new FormQuestionOptions()
+        };
+        var qNextAfterCurrent = new FormQuestion
+        {
+            Id = nextQuestionAfterCurrentId, Type = FormQuestionType.Text, NextQuestion = null,
+            Options = new FormQuestionOptions()
+        };
+
+        var questionsList = new List<FormQuestion>
+            { qMainPathBranching, qMainPathNext, qCurrentAlternative, qNextAfterCurrent };
+
+        _formsEngineMock.Setup(f =>
+                f.GetFormSectionAsync(_pageModel.OrganisationId, _pageModel.FormId, _pageModel.SectionId))
+            .ReturnsAsync(new SectionQuestionsResponse { Questions = questionsList });
+
+        _formsEngineMock.Setup(f =>
+                f.GetCurrentQuestion(_pageModel.OrganisationId, _pageModel.FormId, _pageModel.SectionId,
+                    currentQuestionId))
+            .ReturnsAsync(qCurrentAlternative);
+
+        _formsEngineMock.Setup(f => f.GetPreviousUnansweredQuestionId(
+                questionsList,
+                currentQuestionId,
+                It.IsAny<FormQuestionAnswerState>()))
+            .Returns(previousUnansweredQuestionId);
+
+        var result = await _pageModel.OnGetAsync();
+
+        result.Should().BeOfType<PageResult>();
+    }
+
+    [Fact]
+    public async Task OnGetAsync_ReturnsPage_WhenNoPreviousUnansweredQuestionAndNotAlternativeBranch()
+    {
+        var currentQuestionId = Guid.NewGuid();
+        var nextQuestionId = Guid.NewGuid();
+        _pageModel.CurrentQuestionId = currentQuestionId;
+
+        var qCurrent = new FormQuestion
+        {
+            Id = currentQuestionId, Type = FormQuestionType.Text, BranchType = FormQuestionBranchType.Main,
+            NextQuestion = nextQuestionId, Options = new FormQuestionOptions()
+        };
+        var qNext = new FormQuestion
+        {
+            Id = nextQuestionId, Type = FormQuestionType.Text, NextQuestion = null, Options = new FormQuestionOptions()
+        };
+        var questionsList = new List<FormQuestion> { qCurrent, qNext };
+
+        _formsEngineMock.Setup(f =>
+                f.GetFormSectionAsync(_pageModel.OrganisationId, _pageModel.FormId, _pageModel.SectionId))
+            .ReturnsAsync(new SectionQuestionsResponse { Questions = questionsList });
+
+        _formsEngineMock.Setup(f =>
+                f.GetCurrentQuestion(_pageModel.OrganisationId, _pageModel.FormId, _pageModel.SectionId,
+                    currentQuestionId))
+            .ReturnsAsync(qCurrent);
+
+        _formsEngineMock.Setup(f => f.GetPreviousUnansweredQuestionId(
+                questionsList,
+                currentQuestionId,
+                It.IsAny<FormQuestionAnswerState>()))
+            .Returns((Guid?)null);
+
+        var result = await _pageModel.OnGetAsync();
+
+        result.Should().BeOfType<PageResult>();
+    }
+
+    [Fact]
+    public async Task OnGetAsync_ReturnsPage_WhenPreviousUnansweredIsCurrentQuestionAndNotAlternativeBranch()
+    {
+        var currentQuestionId = Guid.NewGuid();
+        var nextQuestionId = Guid.NewGuid();
+        _pageModel.CurrentQuestionId = currentQuestionId;
+
+        var qCurrent = new FormQuestion
+        {
+            Id = currentQuestionId, Type = FormQuestionType.Text, BranchType = FormQuestionBranchType.Main,
+            NextQuestion = nextQuestionId, Options = new FormQuestionOptions()
+        };
+        var qNext = new FormQuestion
+        {
+            Id = nextQuestionId, Type = FormQuestionType.Text, NextQuestion = null, Options = new FormQuestionOptions()
+        };
+        var questionsList = new List<FormQuestion> { qCurrent, qNext };
+
+        _formsEngineMock.Setup(f =>
+                f.GetFormSectionAsync(_pageModel.OrganisationId, _pageModel.FormId, _pageModel.SectionId))
+            .ReturnsAsync(new SectionQuestionsResponse { Questions = questionsList });
+
+        _formsEngineMock.Setup(f =>
+                f.GetCurrentQuestion(_pageModel.OrganisationId, _pageModel.FormId, _pageModel.SectionId,
+                    currentQuestionId))
+            .ReturnsAsync(qCurrent);
+
+        _formsEngineMock.Setup(f => f.GetPreviousUnansweredQuestionId(
+                questionsList,
+                currentQuestionId,
+                It.IsAny<FormQuestionAnswerState>()))
+            .Returns(currentQuestionId);
+
+        var result = await _pageModel.OnGetAsync();
+
+        result.Should().BeOfType<PageResult>();
+    }
+
+    [Fact]
+    public async Task OnPostAsync_RedirectsToNextQuestionAlternative_WhenYesNoAnswerIsNo()
+    {
+        var currentQuestionId = Guid.NewGuid();
+        var nextQuestionId = Guid.NewGuid();
+        var nextQuestionAlternativeId = Guid.NewGuid();
+
+        _pageModel.CurrentQuestionId = currentQuestionId;
+
+        var yesNoQuestion = new FormQuestion
+        {
+            Id = currentQuestionId,
+            Title = "Test Yes/No Question",
+            Description = "Please select an option.",
+            Caption = "Test Caption",
+            Type = FormQuestionType.YesOrNo,
+            NextQuestion = nextQuestionId,
+            NextQuestionAlternative = nextQuestionAlternativeId,
+        };
+
+        _formsEngineMock.Setup(f =>
+                f.GetCurrentQuestion(_pageModel.OrganisationId, _pageModel.FormId, _pageModel.SectionId,
+                    currentQuestionId))
+            .ReturnsAsync(yesNoQuestion);
+
+        _pageModel.YesNoInputModel = new FormElementYesNoInputModel { YesNoInput = "no" };
+
+        var answerState = new FormQuestionAnswerState();
+        answerState.Answers.Add(new QuestionAnswer
+            { QuestionId = currentQuestionId, Answer = new FormAnswer { BoolValue = false } });
+        _tempDataServiceMock.Setup(t => t.PeekOrDefault<FormQuestionAnswerState>(It.IsAny<string>()))
+            .Returns(answerState);
+
+        _formsEngineMock.Setup(f => f.GetNextQuestion(
+                _pageModel.OrganisationId, _pageModel.FormId, _pageModel.SectionId, currentQuestionId,
+                It.Is<FormQuestionAnswerState>(s => s.Answers.Any(a =>
+                    a.QuestionId == currentQuestionId && a.Answer != null && a.Answer.BoolValue == false))))
+            .ReturnsAsync(new FormQuestion { Id = nextQuestionAlternativeId, Options = new FormQuestionOptions() });
+
+        var sectionResponse = new SectionQuestionsResponse
+        {
+            Questions =
+            [
+                yesNoQuestion, new FormQuestion { Id = nextQuestionId, Options = new FormQuestionOptions() },
+                new FormQuestion { Id = nextQuestionAlternativeId, Options = new FormQuestionOptions() }
+            ]
+        };
+        _formsEngineMock.Setup(f =>
+                f.GetFormSectionAsync(_pageModel.OrganisationId, _pageModel.FormId, _pageModel.SectionId))
+            .ReturnsAsync(sectionResponse);
+
+        var result = await _pageModel.OnPostAsync();
+
+        result.Should().BeOfType<RedirectToPageResult>();
+        var redirectResult = result as RedirectToPageResult;
+        redirectResult!.PageName.Should().Be("FormsQuestionPage");
+        redirectResult.RouteValues!["CurrentQuestionId"].Should().Be(nextQuestionAlternativeId);
+        redirectResult.RouteValues!["OrganisationId"].Should().Be(_pageModel.OrganisationId);
+        redirectResult.RouteValues!["FormId"].Should().Be(_pageModel.FormId);
+        redirectResult.RouteValues!["SectionId"].Should().Be(_pageModel.SectionId);
+    }
+
+    [Fact]
+    public async Task OnPostAsync_RedirectsToNextQuestion_WhenYesNoAnswerIsYes()
+    {
+        var currentQuestionId = Guid.NewGuid();
+        var nextQuestionId = Guid.NewGuid();
+        var nextQuestionAlternativeId = Guid.NewGuid();
+
+        _pageModel.CurrentQuestionId = currentQuestionId;
+
+        var yesNoQuestion = new FormQuestion
+        {
+            Id = currentQuestionId,
+            Title = "Test Yes/No Question",
+            Description = "Please select an option.",
+            Caption = "Test Caption",
+            Type = FormQuestionType.YesOrNo,
+            NextQuestion = nextQuestionId,
+            NextQuestionAlternative = nextQuestionAlternativeId
+        };
+
+        _formsEngineMock.Setup(f =>
+                f.GetCurrentQuestion(_pageModel.OrganisationId, _pageModel.FormId, _pageModel.SectionId,
+                    currentQuestionId))
+            .ReturnsAsync(yesNoQuestion);
+
+        _pageModel.YesNoInputModel = new FormElementYesNoInputModel { YesNoInput = "yes" };
+        _formsEngineMock.Setup(f =>
+                f.GetFormSectionAsync(_pageModel.OrganisationId, _pageModel.FormId, _pageModel.SectionId))
+            .ReturnsAsync(new SectionQuestionsResponse
+            {
+                Questions = [yesNoQuestion]
+            });
+
+        var answerState = new FormQuestionAnswerState();
+        answerState.Answers.Add(new QuestionAnswer
+            { QuestionId = currentQuestionId, Answer = new FormAnswer { BoolValue = true } });
+        _tempDataServiceMock.Setup(t => t.PeekOrDefault<FormQuestionAnswerState>(It.IsAny<string>()))
+            .Returns(answerState);
+
+        _formsEngineMock.Setup(f => f.GetNextQuestion(
+                _pageModel.OrganisationId, _pageModel.FormId, _pageModel.SectionId, currentQuestionId,
+                It.Is<FormQuestionAnswerState>(s => s.Answers.Any(a =>
+                    a.QuestionId == currentQuestionId && a.Answer != null && a.Answer.BoolValue == true))))
+            .ReturnsAsync(new FormQuestion { Id = nextQuestionId, Options = new FormQuestionOptions() });
+
+        var sectionResponse = new SectionQuestionsResponse
+        {
+            Section = new FormSection { Type = FormSectionType.Standard, Title = "Test Section" },
+            Questions =
+            [
+                yesNoQuestion, new FormQuestion { Id = nextQuestionId, Options = new FormQuestionOptions() },
+                new FormQuestion { Id = nextQuestionAlternativeId, Options = new FormQuestionOptions() }
+            ]
+        };
+        _formsEngineMock.Setup(f =>
+                f.GetFormSectionAsync(_pageModel.OrganisationId, _pageModel.FormId, _pageModel.SectionId))
+            .ReturnsAsync(sectionResponse);
+
+        var result = await _pageModel.OnPostAsync();
+
+        result.Should().BeOfType<RedirectToPageResult>();
+        var redirectResult = result as RedirectToPageResult;
+        redirectResult!.PageName.Should().Be("FormsQuestionPage");
+        redirectResult.RouteValues!["CurrentQuestionId"].Should().Be(nextQuestionId);
+    }
+
+    [Fact]
+    public async Task OnPostAsync_RedirectsToNextQuestionAlternative_WhenFileUploadIsNoFile()
+    {
+        var currentQuestionId = Guid.NewGuid();
+        var nextQuestionId = Guid.NewGuid();
+        var nextQuestionAlternativeId = Guid.NewGuid();
+
+        _pageModel.CurrentQuestionId = currentQuestionId;
+
+        var fileUploadQuestion = new FormQuestion
+        {
+            Id = currentQuestionId,
+            Title = "Test File Upload Question",
+            Description = "Please upload a file.",
+            Caption = "Test Caption",
+            Type = FormQuestionType.FileUpload,
+            NextQuestion = nextQuestionId,
+            NextQuestionAlternative = nextQuestionAlternativeId,
+            Options = new FormQuestionOptions()
+        };
+
+        _formsEngineMock.Setup(f =>
+                f.GetCurrentQuestion(_pageModel.OrganisationId, _pageModel.FormId, _pageModel.SectionId,
+                    currentQuestionId))
+            .ReturnsAsync(fileUploadQuestion);
+
+        _pageModel.FileUploadModel = new FormElementFileUploadModel { UploadedFile = null };
+
+        var answerState = new FormQuestionAnswerState();
+        answerState.Answers.Add(new QuestionAnswer
+            { QuestionId = currentQuestionId, Answer = new FormAnswer { TextValue = null } });
+        _tempDataServiceMock.Setup(t => t.PeekOrDefault<FormQuestionAnswerState>(It.IsAny<string>()))
+            .Returns(answerState);
+
+        _formsEngineMock.Setup(f => f.GetNextQuestion(
+                _pageModel.OrganisationId, _pageModel.FormId, _pageModel.SectionId, currentQuestionId,
+                It.Is<FormQuestionAnswerState>(s => s.Answers.Any(a =>
+                    a.QuestionId == currentQuestionId &&
+                    (a.Answer == null || string.IsNullOrEmpty(a.Answer.TextValue))))))
+            .ReturnsAsync(new FormQuestion { Id = nextQuestionAlternativeId, Options = new FormQuestionOptions() });
+
+        var sectionResponse = new SectionQuestionsResponse
+        {
+            Section = new FormSection { Type = FormSectionType.Standard, Title = "Test Section" },
+            Questions =
+            [
+                fileUploadQuestion, new FormQuestion { Id = nextQuestionId, Options = new FormQuestionOptions() },
+                new FormQuestion { Id = nextQuestionAlternativeId, Options = new FormQuestionOptions() }
+            ]
+        };
+        _formsEngineMock.Setup(f =>
+                f.GetFormSectionAsync(_pageModel.OrganisationId, _pageModel.FormId, _pageModel.SectionId))
+            .ReturnsAsync(sectionResponse);
+
+        var result = await _pageModel.OnPostAsync();
+
+        result.Should().BeOfType<RedirectToPageResult>();
+        var redirectResult = result as RedirectToPageResult;
+        redirectResult!.PageName.Should().Be("FormsQuestionPage");
+        redirectResult.RouteValues!["CurrentQuestionId"].Should().Be(nextQuestionAlternativeId);
+    }
+
+    [Fact]
+    public async Task OnPostAsync_RedirectsToNextQuestion_WhenFileUploadIsAFile()
+    {
+        var currentQuestionId = Guid.NewGuid();
+        var nextQuestionId = Guid.NewGuid();
+        var nextQuestionAlternativeId = Guid.NewGuid();
+        var mockFileName = "test.pdf";
+
+        _pageModel.CurrentQuestionId = currentQuestionId;
+
+        var fileUploadQuestion = new FormQuestion
+        {
+            Id = currentQuestionId,
+            Title = "Test File Upload Question",
+            Description = "Please upload a file.",
+            Caption = "Test Caption",
+            Type = FormQuestionType.FileUpload,
+            NextQuestion = nextQuestionId,
+            NextQuestionAlternative = nextQuestionAlternativeId,
+            Options = new FormQuestionOptions()
+        };
+
+        _formsEngineMock.Setup(f =>
+                f.GetCurrentQuestion(_pageModel.OrganisationId, _pageModel.FormId, _pageModel.SectionId,
+                    currentQuestionId))
+            .ReturnsAsync(fileUploadQuestion);
+
+        var mockFile = new Mock<IFormFile>();
+        mockFile.Setup(f => f.FileName).Returns(mockFileName);
+        mockFile.Setup(f => f.Length).Returns(1024);
+        mockFile.Setup(f => f.ContentType).Returns("application/pdf");
+        mockFile.Setup(f => f.OpenReadStream()).Returns(new MemoryStream());
+
+        _pageModel.FileUploadModel = new FormElementFileUploadModel { UploadedFile = mockFile.Object };
+
+        _fileHostManagerMock.Setup(fhm => fhm.UploadFile(It.IsAny<Stream>(), It.IsAny<string>(), It.IsAny<string>()))
+            .Returns(Task.CompletedTask);
+
+        _publisherMock.Setup(p => p.Publish(It.IsAny<ScanFile>()))
+            .Returns(Task.CompletedTask);
+
+        var orgIdentifier =
+            new OrganisationIdentifier(scheme: "TestScheme", id: "TestId", legalName: "Test Legal Name");
+        var primaryIdentifier = new Identifier(scheme: orgIdentifier.Scheme, id: orgIdentifier.Id,
+            legalName: orgIdentifier.LegalName, uri: null);
+        var additionalIdentifierAsIdentifier = new Identifier(scheme: orgIdentifier.Scheme, id: orgIdentifier.Id,
+            legalName: orgIdentifier.LegalName, uri: null);
+
+        _organisationClientMock.Setup(oc => oc.GetOrganisationAsync(It.IsAny<Guid>()))
+            .ReturnsAsync((Guid actualOrgId) => new CDP.Organisation.WebApiClient.Organisation(
+                id: actualOrgId,
+                name: "Test Org",
+                identifier: primaryIdentifier,
+                additionalIdentifiers: new List<Identifier> { additionalIdentifierAsIdentifier },
+                addresses: new List<Address>(),
+                contactPoint: new ContactPoint(name: "Test Org Contact", email: "test.user@example.com",
+                    telephone: null, url: null),
+                details: new Details(null, null, null, null, null, null, null),
+                roles: new List<PartyRole>(),
+                type: OrganisationType.InformalConsortium
+            ));
+
+        var userInfo = new UserInfo { Name = "Test User", Email = "test.user@example.com" };
+        _userInfoServiceMock.Setup(uis => uis.GetUserInfo())
+            .ReturnsAsync(userInfo);
+
+        var answerState = new FormQuestionAnswerState();
+        answerState.Answers.Add(new QuestionAnswer
+            { QuestionId = currentQuestionId, Answer = new FormAnswer { TextValue = mockFileName } });
+        _tempDataServiceMock.Setup(t => t.PeekOrDefault<FormQuestionAnswerState>(It.IsAny<string>()))
+            .Returns(answerState);
+
+        _formsEngineMock.Setup(f => f.GetNextQuestion(
+                _pageModel.OrganisationId, _pageModel.FormId, _pageModel.SectionId, currentQuestionId,
+                It.Is<FormQuestionAnswerState>(s => s.Answers.Any(a =>
+                    a.QuestionId == currentQuestionId &&
+                    (a.Answer != null && !string.IsNullOrEmpty(a.Answer.TextValue))))))
+            .ReturnsAsync(new FormQuestion { Id = nextQuestionId, Options = new FormQuestionOptions() });
+
+        var sectionResponse = new SectionQuestionsResponse
+        {
+            Section = new FormSection { Type = FormSectionType.Standard, Title = "Test Section" },
+            Questions =
+            [
+                fileUploadQuestion, new FormQuestion { Id = nextQuestionId, Options = new FormQuestionOptions() },
+                new FormQuestion { Id = nextQuestionAlternativeId, Options = new FormQuestionOptions() }
+            ]
+        };
+        _formsEngineMock.Setup(f =>
+                f.GetFormSectionAsync(_pageModel.OrganisationId, _pageModel.FormId, _pageModel.SectionId))
+            .ReturnsAsync(sectionResponse);
+
+        var result = await _pageModel.OnPostAsync();
+
+        result.Should().BeOfType<RedirectToPageResult>();
+        var redirectResult = result as RedirectToPageResult;
+        redirectResult!.PageName.Should().Be("FormsQuestionPage");
+        redirectResult.RouteValues!["CurrentQuestionId"].Should().Be(nextQuestionId);
+        _fileHostManagerMock.Verify(
+            fhm => fhm.UploadFile(It.IsAny<Stream>(),
+                It.Is<string>(s =>
+                    s.StartsWith(Path.GetFileNameWithoutExtension(mockFileName) + "_") &&
+                    s.EndsWith(Path.GetExtension(mockFileName))), "application/pdf"), Times.Once);
+        _publisherMock.Verify(
+            p => p.Publish(It.Is<ScanFile>(sf =>
+                sf.UploadedFileName == mockFileName &&
+                sf.QueueFileName.StartsWith(Path.GetFileNameWithoutExtension(mockFileName) + "_") &&
+                sf.QueueFileName.EndsWith(Path.GetExtension(mockFileName)))), Times.Once);
+    }
+
+    [Fact]
+    public async Task OnGetAsync_PopulatesPartialViewModel_WithExistingTextAnswer()
+    {
+        var currentQuestionId = Guid.NewGuid();
+        _pageModel.CurrentQuestionId = currentQuestionId;
+        var existingAnswerText = "Previous answer";
+
+        var formQuestion = new FormQuestion
+            { Id = currentQuestionId, Type = FormQuestionType.Text, Options = new FormQuestionOptions() };
+        _formsEngineMock.Setup(f =>
+                f.GetCurrentQuestion(_pageModel.OrganisationId, _pageModel.FormId, _pageModel.SectionId,
+                    currentQuestionId))
+            .ReturnsAsync(formQuestion);
+
+        var answerState = new FormQuestionAnswerState();
+        answerState.Answers.Add(new QuestionAnswer
+            { QuestionId = currentQuestionId, Answer = new FormAnswer { TextValue = existingAnswerText } });
+        _tempDataServiceMock.Setup(t => t.PeekOrDefault<FormQuestionAnswerState>(It.IsAny<string>()))
+            .Returns(answerState);
+
+        var result = await _pageModel.OnGetAsync();
+
+        result.Should().BeOfType<PageResult>();
+        _pageModel.PartialViewName.Should().Be("_FormElementTextInput");
+        _pageModel.PartialViewModel.Should().BeOfType<FormElementTextInputModel>();
+        var viewModel = _pageModel.PartialViewModel as FormElementTextInputModel;
+        viewModel!.TextInput.Should().Be(existingAnswerText);
+    }
+
+    [Fact]
+    public async Task OnPostAsync_RedirectsToNextQuestion_ForTextQuestion()
+    {
+        var currentQuestionId = Guid.NewGuid();
+        var nextQuestionId = Guid.NewGuid();
+        _pageModel.CurrentQuestionId = currentQuestionId;
+
+        var textQuestion = new FormQuestion
+        {
+            Id = currentQuestionId,
+            Type = FormQuestionType.Text,
+            NextQuestion = nextQuestionId,
+            Options = new FormQuestionOptions()
+        };
+
+        _formsEngineMock.Setup(f =>
+                f.GetCurrentQuestion(_pageModel.OrganisationId, _pageModel.FormId, _pageModel.SectionId,
+                    currentQuestionId))
+            .ReturnsAsync(textQuestion);
+
+        _pageModel.TextInputModel = new FormElementTextInputModel { TextInput = "Some answer" };
+
+        var answerState = new FormQuestionAnswerState();
+        answerState.Answers.Add(new QuestionAnswer
+        {
+            QuestionId = currentQuestionId, Answer = new FormAnswer { TextValue = "Some answer" }
+        });
+        _tempDataServiceMock.Setup(t => t.PeekOrDefault<FormQuestionAnswerState>(It.IsAny<string>()))
+            .Returns(answerState);
+
+        _formsEngineMock.Setup(f => f.GetNextQuestion(
+                _pageModel.OrganisationId, _pageModel.FormId, _pageModel.SectionId, currentQuestionId,
+                It.IsAny<FormQuestionAnswerState>()))
+            .ReturnsAsync(new FormQuestion { Id = nextQuestionId, Options = new FormQuestionOptions() });
+
+        var sectionResponse = new SectionQuestionsResponse
+        {
+            Section = new FormSection { Type = FormSectionType.Standard, Title = "Test Section" },
+            Questions = [textQuestion, new FormQuestion { Id = nextQuestionId, Options = new FormQuestionOptions() }]
+        };
+        _formsEngineMock.Setup(f =>
+                f.GetFormSectionAsync(_pageModel.OrganisationId, _pageModel.FormId, _pageModel.SectionId))
+            .ReturnsAsync(sectionResponse);
+
+        var result = await _pageModel.OnPostAsync();
+
+        result.Should().BeOfType<RedirectToPageResult>();
+        var redirectResult = result as RedirectToPageResult;
+        redirectResult!.PageName.Should().Be("FormsQuestionPage");
+        redirectResult.RouteValues!["CurrentQuestionId"].Should().Be(nextQuestionId);
+        redirectResult.RouteValues!["OrganisationId"].Should().Be(_pageModel.OrganisationId);
+        redirectResult.RouteValues!["FormId"].Should().Be(_pageModel.FormId);
+        redirectResult.RouteValues!["SectionId"].Should().Be(_pageModel.SectionId);
     }
 }
