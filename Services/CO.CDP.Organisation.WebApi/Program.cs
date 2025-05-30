@@ -59,8 +59,7 @@ builder.Services.AddScoped<IUseCase<OrganisationQuery, Organisation?>, LookupOrg
 builder.Services.AddScoped<IUseCase<OrganisationSearchQuery, IEnumerable<OrganisationSearchResult>>, SearchOrganisationUseCase>();
 builder.Services.AddScoped<IUseCase<OrganisationsByOrganisationEmailQuery, IEnumerable<OrganisationSearchResult>>, FindOrganisationByOrganisationEmailUseCase>();
 builder.Services.AddScoped<IUseCase<OrganisationsByAdminEmailQuery, IEnumerable<OrganisationSearchResult>>, FindOrganisationByAdminEmailUseCase>();
-builder.Services.AddScoped<IUseCase<PaginatedOrganisationQuery, IEnumerable<OrganisationDto>>, GetOrganisationsUseCase>();
-builder.Services.AddScoped<IUseCase<OrganisationTypeQuery, int>, GetOrganisationsTotalUseCase>();
+builder.Services.AddScoped<IUseCase<PaginatedOrganisationQuery, Tuple<IEnumerable<OrganisationDto>, int>>, GetOrganisationsUseCase>();
 builder.Services.AddScoped<IUseCase<Guid, SupplierInformation?>, GetSupplierInformationUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, Guid), ConnectedEntity?>, GetConnectedEntityUseCase>();
 builder.Services.AddScoped<IUseCase<Guid, IEnumerable<ConnectedEntityLookup>>, GetConnectedEntitiesUseCase>();
@@ -95,8 +94,8 @@ builder.Services.AddScoped<IUseCase<(Guid, SignMouRequest),bool>, SignOrganisati
 builder.Services.AddScoped<IUseCase<(Guid, AddOrganisationParty), bool>, AddOrganisationPartyUseCase>();
 builder.Services.AddScoped<IUseCase<CO.CDP.Organisation.WebApi.Model.Mou>, GetLatestMouUseCase>();
 builder.Services.AddScoped<IUseCase<Guid, CO.CDP.Organisation.WebApi.Model.Mou>, GetMouUseCase>();
+builder.Services.AddScoped<IUseCase<(Guid, UpdateOrganisationParty), bool>, UpdateOrganisationPartyUseCase>();
 builder.Services.AddScoped<IUseCase<GetAnnouncementQuery, IEnumerable<Announcement>>, GetAnnouncementsUseCase>();
-
 
 builder.Services.AddGovUKNotifyApiClient(builder.Configuration);
 builder.Services.AddProblemDetails();
