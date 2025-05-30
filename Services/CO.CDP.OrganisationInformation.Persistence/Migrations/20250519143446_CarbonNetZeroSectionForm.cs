@@ -54,7 +54,7 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
 
                     -- Insert the third question (_CarbonNetZeroQuestion03) - This is the 'happy path' from Q2
                     INSERT INTO form_questions (guid, next_question_id, next_question_alternative_id, section_id, ""type"", is_required, title, description, ""options"",  caption, summary_title, ""name"", sort_order)
-                    VALUES('{Guid.NewGuid()}', NULL, NULL, sectionId, 12, true, 'CarbonNetZero_03_Title', NULL, '{{}}', NULL, 'CarbonNetZero_03_SummaryTitle', '_CarbonNetZeroQuestion03', 3)
+                    VALUES('{Guid.NewGuid()}', NULL, NULL, sectionId, 12, false, 'CarbonNetZero_03_Title', NULL, '{{}}', NULL, 'CarbonNetZero_03_SummaryTitle', '_CarbonNetZeroQuestion03', 3)
                     RETURNING id INTO question3_id;
 
                     -- Insert the fourth question (_CarbonNetZeroQuestion04)

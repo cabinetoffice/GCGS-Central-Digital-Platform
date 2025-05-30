@@ -641,36 +641,35 @@
   <data name="CarbonNetZero_01_Description" xml:space="preserve">
     <value>
 &lt;p class=&quot;govuk-body&quot;&gt;
-Carbon Net Zero is the commitment to balance greenhouse gas emissions with equivalent removals by 2050.
-You may develop Carbon Reduction Plans (CRPs) that detail your emissions, reduction strategies, and
-sustainability practices. This ensures transparency and accountability in your environmental management
-and aligns with government regulations. For more information, read:
-&lt;a href=&quot;https://www.procurementpathway.civilservice.gov.uk/documents/ppn/ppn-006-taking-account-of-carbon-reduction-plans-in-the-procurement-of-major-government-contracts/selection-stage#:~:text=In%2Dscope%20organisations%20should%20take%20action%20to%20apply,the%20Procurement%20Act%202023%20(PA%202023)%2C%20save&quot;
+Carbon Net Zero is the commitment to balance greenhouse gas emissions with equivalent removals by 2050. In-scope organisations may be required to submit a Carbon Reduction Plan (CRP) when bidding for certain government contracts.
+This should be in line with &lt;a href=&quot;https://www.gov.uk/government/publications/ppn-006-taking-account-of-carbon-reduction-plans-in-the-procurement-of-major-government-contracts/ppn-006-taking-account-of-carbon-reduction-plans-html#issue&quot;
 class=&quot;govuk-link&quot; rel=&quot;noreferrer noopener&quot; target=&quot;_blank&quot;&gt;
-PPN 006 Taking account of Carbon Reduction Plans in the procurement of major government contracts
-(opens in new tab)&lt;/a&gt;&lt;/p&gt;
-
-&lt;h2 class=&quot;govuk-heading-m&quot;&gt;The Carbon Net Zero information you&#39;ll need&lt;/h2&gt;
-&lt;div class=&quot;govuk-body&quot;&gt;You&#39;ll need to provide information on your Carbon Reduction Plan. This may include your:
+PPN 006 and associated reporting standards (opens in a new tab).&lt;/a&gt;&lt;/p&gt;
+      &lt;p class=&quot;govuk-body&quot;&gt;
+    You are only required to complete this module if requested by the contracting authority you are bidding for.
+    Failure to complete this module may result in your tenders being deemed insufficient where PPN 006 has been applied.
+      &lt;/p&gt;
+&lt;h2 class=&quot;govuk-heading-m&quot;&gt;The information you&#39;ll need&lt;/h2&gt;
+&lt;div class=&quot;govuk-body&quot;&gt;You&#39;ll need to provide information on your Carbon Reduction Plan. This may include:
   &lt;ul class=&quot;govuk-list govuk-list--bullet&quot;&gt;
-    &lt;li class=&quot;govuk-!-margin-top-4&quot;&gt; Carbon Reduction Plan expiry date&lt;/li&gt;
-    &lt;li class=&quot;govuk-!-margin-top-4&quot;&gt; Emissions Declaration&lt;/li&gt;
-    &lt;li class=&quot;govuk-!-margin-top-4&quot;&gt; your baseline and reporting year emissions data&lt;/li&gt;
+    &lt;li class=&quot;govuk-!-margin-top-4&quot;&gt; the expiry date of your Carbon Reduction Plan&lt;/li&gt;
+    &lt;li class=&quot;govuk-!-margin-top-4&quot;&gt; your Emissions Declaration&lt;/li&gt;
+    &lt;li class=&quot;govuk-!-margin-top-4&quot;&gt; your baseline and reporting year data&lt;/li&gt;
   &lt;/ul&gt;
 &lt;/div&gt;
     </value>
   </data>
   <data name="CarbonNetZero_02_Title" xml:space="preserve">
-    <value>Have you published a Carbon Reduction Plan?</value>
+    <value>Have you published a Carbon Reduction Plan which meets the required reporting standard?</value>
   </data>
   <data name="CarbonNetZero_02_SummaryTitle" xml:space="preserve">
     <value>Carbon Reduction Plan published</value>
   </data>
   <data name="CarbonNetZero_02_Description" xml:space="preserve">
-    <value> &lt;p class=&quot;govuk-body&quot;&gt; This should meet the required reporting standards &lt;a href=&quot;https://www.gov.uk/government/publications/ppn-006-taking-account-of-carbon-reduction-plans-in-the-procurement-of-major-government-contracts/ppn-006-taking-account-of-carbon-reduction-plans-html&quot; class=&quot;govuk-link&quot; rel=&quot;noreferrer noopener&quot; target=&quot;_blank&quot;&gt;Read PPN 006: Taking account of Carbon Reduction Plans (opens in a new tab)&lt;/a&gt;&lt;/p&gt;</value>
+    <value> &lt;p class=&quot;govuk-body&quot;&gt; For more information read &lt;a href=&quot;https://www.gov.uk/government/publications/ppn-0923-updates-to-the-cyber-essentials-scheme/procurement-policy-note-updates-to-the-cyber-essentials-scheme-html&quot; class=&quot;govuk-link&quot; rel=&quot;noreferrer noopener&quot; target=&quot;_blank&quot;&gt;PPN 006: Taking account of Carbon Reduction Plans in the procurement of major government contracts (opens in a new tab)&lt;/a&gt;&lt;/p&gt;</value>
   </data>
   <data name="CarbonNetZero_03_Title" xml:space="preserve">
-    <value>Enter the link to your most recently published Carbon Reduction Plan</value>
+    <value>Do you have a link to your most recently published Carbon Reduction Plan?</value>
   </data>
   <data name="CarbonNetZero_03_SummaryTitle" xml:space="preserve">
     <value>Carbon Reduction Plan link</value>
@@ -695,20 +694,20 @@ PPN 006 Taking account of Carbon Reduction Plans in the procurement of major gov
   </data>
   <data name="CarbonNetZero_05_Description" xml:space="preserve">
     <value>
-    &lt;p class="govuk-hint"&gt;For example, 2030&lt;/p&gt;
-    &lt;p class="govuk-body"&gt;Year&lt;/p&gt;
+    &lt;p class="govuk-hint"&gt;For example, 2027&lt;/p&gt;
+    &lt;p class="govuk-body govuk-!-margin-bottom-2"&gt;Year&lt;/p&gt;
     </value>
   </data>
   <data name="CarbonNetZero_06_Title" xml:space="preserve">
     <value>Enter your baseline emissions data</value>
   </data>
   <data name="CarbonNetZero_06_SummaryTitle" xml:space="preserve">
-    <value>Baseline Year</value>
+    <value>Baseline year</value>
   </data>
   <data name="CarbonNetZero_06_Description" xml:space="preserve">
     <value>
     &lt;div class="govuk-body govuk-!-margin-top-5"&gt;
-      &lt;h2 class="govuk-heading-m govuk-!-margin-bottom-0"&gt;Baseline Year&lt;/h2&gt;
+      &lt;p class='govuk-label govuk-!-font-weight-bold govuk-!-margin-bottom-1'&gt;Baseline year&lt;/p&gt;
       &lt;p class="govuk-hint govuk-!-margin-top-1"&gt;For example, 2030&lt;/p&gt;
     &lt;/div&gt;
     </value>
@@ -724,7 +723,7 @@ PPN 006 Taking account of Carbon Reduction Plans in the procurement of major gov
         &lt;div class="govuk-body govuk-!-margin-top-5"&gt;
             &lt;h2 class="govuk-heading-m govuk-!-margin-bottom-0"&gt;
                 Scope 1
-                &lt;span class="govuk-body govuk-!-font-weight-regular"&gt;(tCO₂)&lt;/span&gt;
+                &lt;span class="govuk-body govuk-!-font-weight-regular"&gt;(tCO2)&lt;/span&gt;
             &lt;/h2&gt;
         &lt;/div&gt;
     </value>
@@ -740,7 +739,7 @@ PPN 006 Taking account of Carbon Reduction Plans in the procurement of major gov
         &lt;div class="govuk-body govuk-!-margin-top-5"&gt;
             &lt;h2 class="govuk-heading-m govuk-!-margin-bottom-0"&gt;
                 Scope 2
-                &lt;span class="govuk-body govuk-!-font-weight-regular"&gt;(tCO₂)&lt;/span&gt;
+                &lt;span class="govuk-body govuk-!-font-weight-regular"&gt;(tCO2)&lt;/span&gt;
             &lt;/h2&gt;
         &lt;/div&gt;
     </value>
@@ -756,7 +755,7 @@ PPN 006 Taking account of Carbon Reduction Plans in the procurement of major gov
         &lt;div class="govuk-body govuk-!-margin-top-5"&gt;
             &lt;h2 class="govuk-heading-m govuk-!-margin-bottom-0"&gt;
                 Scope 3
-                &lt;span class="govuk-body govuk-!-font-weight-regular"&gt;(tCO₂)&lt;/span&gt;
+                &lt;span class="govuk-body govuk-!-font-weight-regular"&gt;(tCO2)&lt;/span&gt;
             &lt;/h2&gt;
         &lt;/div&gt;
     </value>
@@ -765,12 +764,12 @@ PPN 006 Taking account of Carbon Reduction Plans in the procurement of major gov
     <value>Enter your current emissions data</value>
   </data>
   <data name="CarbonNetZero_10_SummaryTitle" xml:space="preserve">
-    <value>Reporting Year</value>
+    <value>Reporting year</value>
   </data>
   <data name="CarbonNetZero_10_Description" xml:space="preserve">
     <value>
     &lt;div class="govuk-body govuk-!-margin-top-5"&gt;
-      &lt;h2 class="govuk-heading-m govuk-!-margin-bottom-0"&gt;Reporting Year&lt;/h2&gt;
+      &lt;p class="govuk-label govuk-!-font-weight-bold govuk-!-margin-bottom-1"&gt;Reporting year&lt;/p&gt;
       &lt;p class="govuk-hint govuk-!-margin-top-1"&gt;For example, 2030&lt;/p&gt;
     &lt;/div&gt;
     </value>
@@ -786,7 +785,7 @@ PPN 006 Taking account of Carbon Reduction Plans in the procurement of major gov
         &lt;div class="govuk-body govuk-!-margin-top-5"&gt;
             &lt;h2 class="govuk-heading-m govuk-!-margin-bottom-0"&gt;
                 Scope 1
-                &lt;span class="govuk-body govuk-!-font-weight-regular"&gt;(tCO₂)&lt;/span&gt;
+                &lt;span class="govuk-body govuk-!-font-weight-regular"&gt;(tCO2)&lt;/span&gt;
             &lt;/h2&gt;
         &lt;/div&gt;
     </value>
@@ -802,7 +801,7 @@ PPN 006 Taking account of Carbon Reduction Plans in the procurement of major gov
         &lt;div class="govuk-body govuk-!-margin-top-5"&gt;
             &lt;h2 class="govuk-heading-m govuk-!-margin-bottom-0"&gt;
                 Scope 2
-                &lt;span class="govuk-body govuk-!-font-weight-regular"&gt;(tCO₂)&lt;/span&gt;
+                &lt;span class="govuk-body govuk-!-font-weight-regular"&gt;(tCO2)&lt;/span&gt;
             &lt;/h2&gt;
         &lt;/div&gt;
     </value>
@@ -818,7 +817,7 @@ PPN 006 Taking account of Carbon Reduction Plans in the procurement of major gov
         &lt;div class="govuk-body govuk-!-margin-top-5"&gt;
             &lt;h2 class="govuk-heading-m govuk-!-margin-bottom-0"&gt;
                 Scope 3
-                &lt;span class="govuk-body govuk-!-font-weight-regular"&gt;(tCO₂)&lt;/span&gt;
+                &lt;span class="govuk-body govuk-!-font-weight-regular"&gt;(tCO2)&lt;/span&gt;
             &lt;/h2&gt;
         &lt;/div&gt;
     </value>
