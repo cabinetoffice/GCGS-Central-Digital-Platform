@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
-using System; // Required for Guid
+using System;
 
 #nullable disable
 
@@ -16,12 +16,20 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                 DECLARE
                     form_id int;
                     sectionId INT;
-                    question1_id INT; -- To store the ID of the first question
-                    question2_id INT; -- To store the ID of the second question
-                    question3_id INT; -- To store the ID of the third question
-                    question4_id INT; -- To store the ID of the fourth question
-                    question5_id INT; -- To store the ID of the fifth question
-                    question6_id INT; -- To store the ID of the sixth question
+                    question1_id INT;
+                    question2_id INT;
+                    question3_id INT;
+                    question4_id INT;
+                    question5_id INT;
+                    question6_id INT;
+                    question7_id INT;
+                    question8_id INT;
+                    question9_id INT;
+                    question10_id INT;
+                    question11_id INT;
+                    question12_id INT;
+                    question13_id INT;
+                    question14_id INT;
 
 
                 BEGIN
@@ -59,10 +67,50 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                     VALUES('{Guid.NewGuid()}', NULL, NULL, sectionId, 1, true, 'CarbonNetZero_05_Title', 'CarbonNetZero_05_Description', '{{}}', NULL, 'CarbonNetZero_05_SummaryTitle', '_CarbonNetZeroQuestion05', 5)
                     RETURNING id INTO question5_id;
 
-                    -- Insert the sixth question (_CarbonNetZeroQuestion06)
+                     -- Insert the sixth question (_CarbonNetZeroQuestion06)
                     INSERT INTO form_questions (guid, next_question_id, next_question_alternative_id, section_id, ""type"", is_required, title, description, ""options"",  caption, summary_title, ""name"", sort_order)
-                    VALUES('{Guid.NewGuid()}', NULL, NULL, sectionId, 6, true, 'Global_CheckYourAnswers', NULL, '{{}}', NULL, NULL, '_CarbonNetZeroQuestion06', 6)
+                    VALUES('{Guid.NewGuid()}', NULL, NULL, sectionId, 1, true, 'CarbonNetZero_06_Title', 'CarbonNetZero_06_Description', '{{}}', NULL, 'CarbonNetZero_06_SummaryTitle', '_CarbonNetZeroQuestion06', 6)
                     RETURNING id INTO question6_id;
+
+                    -- Insert the seventh question (_CarbonNetZeroQuestion07)
+                    INSERT INTO form_questions (guid, next_question_id, next_question_alternative_id, section_id, ""type"", is_required, title, description, ""options"",  caption, summary_title, ""name"", sort_order)
+                    VALUES('{Guid.NewGuid()}', NULL, NULL, sectionId, 1, true, 'CarbonNetZero_07_Title', 'CarbonNetZero_07_Description', '{{}}', NULL, 'CarbonNetZero_07_SummaryTitle', '_CarbonNetZeroQuestion07', 7)
+                    RETURNING id INTO question7_id;
+
+                    -- Insert the eighth question (_CarbonNetZeroQuestion08)
+                    INSERT INTO form_questions (guid, next_question_id, next_question_alternative_id, section_id, ""type"", is_required, title, description, ""options"",  caption, summary_title, ""name"", sort_order)
+                    VALUES('{Guid.NewGuid()}', NULL, NULL, sectionId, 1, true, 'CarbonNetZero_08_Title', 'CarbonNetZero_08_Description', '{{}}', NULL, 'CarbonNetZero_08_SummaryTitle', '_CarbonNetZeroQuestion08', 8)
+                    RETURNING id INTO question8_id;
+
+                    -- Insert the ninth question (_CarbonNetZeroQuestion09)
+                    INSERT INTO form_questions (guid, next_question_id, next_question_alternative_id, section_id, ""type"", is_required, title, description, ""options"",  caption, summary_title, ""name"", sort_order)
+                    VALUES('{Guid.NewGuid()}', NULL, NULL, sectionId, 1, true, 'CarbonNetZero_09_Title', 'CarbonNetZero_09_Description', '{{}}', NULL, 'CarbonNetZero_09_SummaryTitle', '_CarbonNetZeroQuestion09', 9)
+                    RETURNING id INTO question9_id;
+
+                    -- Insert the tenth question (_CarbonNetZeroQuestion10)
+                    INSERT INTO form_questions (guid, next_question_id, next_question_alternative_id, section_id, ""type"", is_required, title, description, ""options"",  caption, summary_title, ""name"", sort_order)
+                    VALUES('{Guid.NewGuid()}', NULL, NULL, sectionId, 1, true, 'CarbonNetZero_10_Title', 'CarbonNetZero_10_Description', '{{}}', NULL, 'CarbonNetZero_10_SummaryTitle', '_CarbonNetZeroQuestion10', 10)
+                    RETURNING id INTO question10_id;
+
+                    -- Insert the eleventh question (_CarbonNetZeroQuestion11)
+                    INSERT INTO form_questions (guid, next_question_id, next_question_alternative_id, section_id, ""type"", is_required, title, description, ""options"",  caption, summary_title, ""name"", sort_order)
+                    VALUES('{Guid.NewGuid()}', NULL, NULL, sectionId, 1, true, 'CarbonNetZero_11_Title', 'CarbonNetZero_11_Description', '{{}}', NULL, 'CarbonNetZero_11_SummaryTitle', '_CarbonNetZeroQuestion11', 11)
+                    RETURNING id INTO question11_id;
+
+                    -- Insert the twelfth question (_CarbonNetZeroQuestion12)
+                    INSERT INTO form_questions (guid, next_question_id, next_question_alternative_id, section_id, ""type"", is_required, title, description, ""options"",  caption, summary_title, ""name"", sort_order)
+                    VALUES('{Guid.NewGuid()}', NULL, NULL, sectionId, 1, true, 'CarbonNetZero_12_Title', 'CarbonNetZero_12_Description', '{{}}', NULL, 'CarbonNetZero_12_SummaryTitle', '_CarbonNetZeroQuestion12', 12)
+                    RETURNING id INTO question12_id;
+
+                    -- Insert the thirteenth question (_CarbonNetZeroQuestion13)
+                    INSERT INTO form_questions (guid, next_question_id, next_question_alternative_id, section_id, ""type"", is_required, title, description, ""options"",  caption, summary_title, ""name"", sort_order)
+                    VALUES('{Guid.NewGuid()}', NULL, NULL, sectionId, 1, true, 'CarbonNetZero_13_Title', 'CarbonNetZero_13_Description', '{{}}', NULL, 'CarbonNetZero_13_SummaryTitle', '_CarbonNetZeroQuestion13', 13)
+                    RETURNING id INTO question13_id;
+
+                    -- Insert the fourteenth question (_CarbonNetZeroQuestion14)
+                    INSERT INTO form_questions (guid, next_question_id, next_question_alternative_id, section_id, ""type"", is_required, title, description, ""options"",  caption, summary_title, ""name"", sort_order)
+                    VALUES('{Guid.NewGuid()}', NULL, NULL, sectionId, 6, true, 'Global_CheckYourAnswers', NULL, '{{}}', NULL, NULL, '_CarbonNetZeroQuestion14', 14)
+                    RETURNING id INTO question14_id;
 
                     -- Link Q1 to Q2
                     UPDATE form_questions
@@ -89,6 +137,46 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                     SET next_question_id = question6_id
                     WHERE id = question5_id;
 
+                    -- Link Q6 to Q7
+                    UPDATE form_questions
+                    SET next_question_id = question7_id
+                    WHERE id = question6_id;
+
+                    -- Link Q7 to Q8
+                    UPDATE form_questions
+                    SET next_question_id = question8_id
+                    WHERE id = question7_id;
+
+                    -- Link Q8 to Q9
+                    UPDATE form_questions
+                    SET next_question_id = question9_id
+                    WHERE id = question8_id;
+
+                    -- Link Q9 to Q10
+                    UPDATE form_questions
+                    SET next_question_id = question10_id
+                    WHERE id = question9_id;
+
+                    -- Link Q10 to Q11
+                    UPDATE form_questions
+                    SET next_question_id = question11_id
+                    WHERE id = question10_id;
+
+                    -- Link Q11 to Q12
+                    UPDATE form_questions
+                    SET next_question_id = question12_id
+                    WHERE id = question11_id;
+
+                    -- Link Q12 to Q13
+                    UPDATE form_questions
+                    SET next_question_id = question13_id
+                    WHERE id = question12_id;
+
+                    -- Link Q13 to Q14
+                    UPDATE form_questions
+                    SET next_question_id = question14_id
+                    WHERE id = question13_id;
+
                 END $$;
             ");
         }
@@ -102,7 +190,7 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                     sectionId INT;
                 BEGIN
                     SELECT id INTO sectionId FROM form_sections WHERE title = 'CarbonNetZero_SectionTitle';
-                    DELETE FROM form_questions WHERE section_id = sectionId; -- This will delete all questions in the section
+                    DELETE FROM form_questions WHERE section_id = sectionId;
                     DELETE FROM form_sections WHERE id = sectionId;
                 END $$;
             ");
