@@ -148,7 +148,7 @@ locals {
         "https://www-tpp.find-tender.service.gov.uk/auth/backchannellogout",
       ]
       pinned_fts_service_version        = "0.0.1"
-      pinned_service_version            = "data-sharing-api-fixes-2025-05-23"
+      pinned_service_version            = "data-sharing-api-fixes-2025-05-30"
       postgres_instance_type            = "db.t4g.micro"
       postgres_aurora_instance_type     = "db.r5.large"
       private_subnets = [
