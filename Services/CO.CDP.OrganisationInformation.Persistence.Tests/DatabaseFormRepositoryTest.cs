@@ -297,12 +297,12 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
         var ce1 = new ConnectedEntity
         {
             Guid = ceGuid,
-            EntityType = ConnectedEntity.ConnectedEntityType.Organisation,
+            EntityType = ConnectedEntityType.Organisation,
             Organisation = new ConnectedEntity.ConnectedOrganisation
             {
                 OrganisationId = organisation.Guid,
                 Name = "CHN_111",
-                Category = ConnectedEntity.ConnectedOrganisationCategory.DirectorOrTheSameResponsibilities,
+                Category = ConnectedOrganisationCategory.DirectorOrTheSameResponsibilities,
                 RegisteredLegalForm = "Legal Form",
                 LawRegistered = "Law Registered"
             },

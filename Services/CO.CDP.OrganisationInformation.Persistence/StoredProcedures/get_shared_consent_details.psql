@@ -1,4 +1,4 @@
-CREATE OR REPLACE PROCEDURE public.get_shared_consent_details(
+CREATE OR REPLACE PROCEDURE get_shared_consent_details(
 	IN p_share_code text,
 	INOUT consent_cursor refcursor,
 	INOUT identifier_cursor refcursor,
@@ -10,7 +10,7 @@ CREATE OR REPLACE PROCEDURE public.get_shared_consent_details(
 	INOUT form_question_cursor refcursor,
 	INOUT form_answer_cursor refcursor)
 LANGUAGE 'plpgsql'
-AS $$
+AS $BODY$
 
 DECLARE v_shared_consent_id INT;
 BEGIN
@@ -65,8 +65,8 @@ BEGIN
     -- Cursor for Connected Entities
     OPEN connected_entities_cursor FOR 
         SELECT
-        	ce.id, ce."guid", ce.entity_type, ce.has_compnay_house_number, ce.company_house_number, 
-        	ce.overseas_company_number, ce.registered_date, ce.register_name, ce."start_date", ce.end_date,
+        	ce.id, ce."guid", ce.entity_type, ce.has_company_house_number, ce.company_house_number, 
+        	ce.overseas_company_number, ce.registered_date, ce.register_name, ce.end_date,
         	cit.category AS individual_and_trust_category, cit.first_name, cit.last_name, cit.date_of_birth, 
         	cit.nationality, cit.control_condition AS individual_and_trust_control_condition, 
         	cit.connected_type AS connected_person_type, cit.resident_country,
@@ -125,4 +125,4 @@ BEGIN
         WHERE  
             fas.shared_consent_id = v_shared_consent_id and NOT fas.deleted AND fs."type" <> 1;
 END;
-$$;
+$BODY$;

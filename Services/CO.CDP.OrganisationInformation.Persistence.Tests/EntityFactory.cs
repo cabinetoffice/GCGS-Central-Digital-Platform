@@ -263,7 +263,7 @@ public static class EntityFactory
         return new ConnectedEntity
         {
             Guid = Guid.NewGuid(),
-            EntityType = (ConnectedEntity.ConnectedEntityType)ConnectedEntityType.Organisation,
+            EntityType = ConnectedEntityType.Organisation,
             Organisation = connectedOrganisation,
             SupplierOrganisation = supplierOrganisation,
             CreatedOn = DateTimeOffset.UtcNow,
@@ -292,7 +292,7 @@ public static class EntityFactory
         return new ConnectedEntity
         {
             Guid = Guid.NewGuid(),
-            EntityType = (ConnectedEntity.ConnectedEntityType)ConnectedEntityType.Individual,
+            EntityType = ConnectedEntityType.Individual,
             IndividualOrTrust = individualTrust,
             SupplierOrganisation = supplierOrganisation,
             CreatedOn = DateTimeOffset.UtcNow,
@@ -321,7 +321,7 @@ public static class EntityFactory
         return new ConnectedEntity
         {
             Guid = Guid.NewGuid(),
-            EntityType = (ConnectedEntity.ConnectedEntityType)ConnectedEntityType.TrustOrTrustee,
+            EntityType = ConnectedEntityType.TrustOrTrustee,
             IndividualOrTrust = trustOrTrustee,
             SupplierOrganisation = supplierOrganisation,
             CreatedOn = DateTimeOffset.UtcNow,
