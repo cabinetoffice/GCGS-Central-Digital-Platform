@@ -103,6 +103,18 @@ public enum FormQuestionType
 
 public enum FormQuestionBranchType
 {
+    /// <summary>
+    /// Represents questions that are part of the main flow of the form.
+    /// These questions are connected via NextQuestion links in sequence.
+    /// </summary>
     Main,
+
+    /// <summary>
+    /// Represents questions that are part of an alternative path in the form.
+    /// A question is considered an alternative path if it:
+    /// 1. Is linked to by another question as a NextQuestionAlternative, or
+    /// 2. Follows on from a NextQuestionAlternative but is not included in the main question flow.
+    /// Alternative paths typically represent conditional branches following a 'no' response in the form flow.
+    /// </summary>
     Alternative
 }
