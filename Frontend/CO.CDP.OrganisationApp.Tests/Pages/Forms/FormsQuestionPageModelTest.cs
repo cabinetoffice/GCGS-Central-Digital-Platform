@@ -13,7 +13,6 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
-using Address = CO.CDP.Organisation.WebApiClient.Address;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages.Forms;
 
@@ -782,25 +781,13 @@ public class FormsQuestionPageModelTest
         _publisherMock.Setup(p => p.Publish(It.IsAny<ScanFile>()))
             .Returns(Task.CompletedTask);
 
-        var orgIdentifier =
-            new OrganisationIdentifier(scheme: "TestScheme", id: "TestId", legalName: "Test Legal Name");
-        var primaryIdentifier = new Identifier(scheme: orgIdentifier.Scheme, id: orgIdentifier.Id,
-            legalName: orgIdentifier.LegalName, uri: null);
-        var additionalIdentifierAsIdentifier = new Identifier(scheme: orgIdentifier.Scheme, id: orgIdentifier.Id,
-            legalName: orgIdentifier.LegalName, uri: null);
-
+        var orgApiIdentifier = new Identifier(scheme: "TestScheme", id: "TestId", legalName: "Test Legal Name", uri: null);
         _organisationClientMock.Setup(oc => oc.GetOrganisationAsync(It.IsAny<Guid>()))
-            .ReturnsAsync((Guid actualOrgId) => new CDP.Organisation.WebApiClient.Organisation(
-                id: actualOrgId,
-                name: "Test Org",
-                identifier: primaryIdentifier,
-                additionalIdentifiers: new List<Identifier> { additionalIdentifierAsIdentifier },
-                addresses: new List<Address>(),
-                contactPoint: new ContactPoint(name: "Test Org Contact", email: "test.user@example.com",
-                    telephone: null, url: null),
-                details: new Details(null, null, null, null, null, null, null),
-                roles: new List<PartyRole>(),
-                type: OrganisationType.InformalConsortium
+            .ReturnsAsync(new CDP.Organisation.WebApiClient.Organisation(
+                id: _pageModel.OrganisationId, name: "Test Org", identifier: orgApiIdentifier,
+                additionalIdentifiers: [], addresses: [],
+                contactPoint: new ContactPoint(name: "Test Contact", email: "test@example.com", telephone: null, url: null),
+                details: new Details(null, null, null, null, null, null, null), roles: [], type: OrganisationType.Organisation
             ));
 
         var userInfo = new UserInfo { Name = "Test User", Email = "test.user@example.com" };
@@ -933,5 +920,213 @@ public class FormsQuestionPageModelTest
         redirectResult.RouteValues!["OrganisationId"].Should().Be(_pageModel.OrganisationId);
         redirectResult.RouteValues!["FormId"].Should().Be(_pageModel.FormId);
         redirectResult.RouteValues!["SectionId"].Should().Be(_pageModel.SectionId);
+    }
+
+    [Fact]
+    public async Task OnPostAsync_RemovesAnswersFromAlternativeBranch_WhenYesNoAnswerChangesFromNoToYes()
+    {
+        var currentQuestionId = Guid.NewGuid();
+        var nextQuestionId = Guid.NewGuid();
+        var alternativeQuestionId = Guid.NewGuid();
+        var questionOnAlternativePathId = Guid.NewGuid();
+
+        _pageModel.CurrentQuestionId = currentQuestionId;
+
+        var yesNoQuestion = new FormQuestion
+        {
+            Id = currentQuestionId,
+            Type = FormQuestionType.YesOrNo,
+            NextQuestion = nextQuestionId,
+            NextQuestionAlternative = alternativeQuestionId,
+            Options = new FormQuestionOptions()
+        };
+
+        var questionOnAlternativePath = new FormQuestion
+        {
+            Id = questionOnAlternativePathId,
+            Type = FormQuestionType.Text,
+            NextQuestion = null,
+            Options = new FormQuestionOptions()
+        };
+
+        var nextMainQuestion = new FormQuestion
+        {
+	        Id = nextQuestionId, Type = FormQuestionType.Text, Options = new FormQuestionOptions()
+        };
+
+
+        _formsEngineMock.Setup(f =>
+                f.GetCurrentQuestion(_pageModel.OrganisationId, _pageModel.FormId, _pageModel.SectionId,
+                    currentQuestionId))
+            .ReturnsAsync(yesNoQuestion);
+
+        var initialAnswerState = new FormQuestionAnswerState();
+        initialAnswerState.Answers.Add(new QuestionAnswer
+            { QuestionId = currentQuestionId, Answer = new FormAnswer { BoolValue = false } });
+        initialAnswerState.Answers.Add(new QuestionAnswer
+            { QuestionId = alternativeQuestionId, Answer = new FormAnswer { TextValue = "Answer on alt path" } });
+         initialAnswerState.Answers.Add(new QuestionAnswer
+            { QuestionId = questionOnAlternativePathId, Answer = new FormAnswer { TextValue = "Another answer on alt path" } });
+
+        _tempDataServiceMock.SetupSequence(t => t.PeekOrDefault<FormQuestionAnswerState>(It.IsAny<string>()))
+            .Returns(initialAnswerState)
+            .Returns(initialAnswerState)
+            .Returns(initialAnswerState)
+            .Returns(initialAnswerState)
+            .Returns(initialAnswerState);
+
+        _pageModel.YesNoInputModel = new FormElementYesNoInputModel { YesNoInput = "yes" };
+
+        _formsEngineMock.Setup(f => f.GetNextQuestion(
+                _pageModel.OrganisationId, _pageModel.FormId, _pageModel.SectionId, currentQuestionId,
+                It.Is<FormQuestionAnswerState>(s => s.Answers.Any(a =>
+                    a.QuestionId == currentQuestionId && a.Answer != null && a.Answer.BoolValue == true))))
+            .ReturnsAsync(new FormQuestion { Id = nextQuestionId, Options = new FormQuestionOptions() });
+
+        var sectionResponse = new SectionQuestionsResponse
+        {
+            Section = new FormSection { Type = FormSectionType.Standard, Title = "Test Section" },
+            Questions =
+            [
+                yesNoQuestion,
+                new FormQuestion { Id = alternativeQuestionId, Type = FormQuestionType.Text, NextQuestion = questionOnAlternativePathId, Options = new FormQuestionOptions()},
+                questionOnAlternativePath,
+                nextMainQuestion
+            ]
+        };
+        _formsEngineMock.Setup(f =>
+                f.GetFormSectionAsync(_pageModel.OrganisationId, _pageModel.FormId, _pageModel.SectionId))
+            .ReturnsAsync(sectionResponse);
+
+        FormQuestionAnswerState? capturedState = null;
+        _tempDataServiceMock.Setup(t => t.Put(It.IsAny<string>(), It.IsAny<FormQuestionAnswerState>()))
+            .Callback<string, FormQuestionAnswerState>((_, state) => capturedState = state);
+
+        var result = await _pageModel.OnPostAsync();
+
+        result.Should().BeOfType<RedirectToPageResult>();
+        var redirectResult = result as RedirectToPageResult;
+        redirectResult!.PageName.Should().Be("FormsQuestionPage");
+        redirectResult.RouteValues!["CurrentQuestionId"].Should().Be(nextQuestionId);
+
+        _tempDataServiceMock.Verify(t => t.Put(It.IsAny<string>(), It.IsAny<FormQuestionAnswerState>()), Times.Exactly(2));
+
+        capturedState.Should().NotBeNull();
+        capturedState!.Answers.Should().ContainSingle(a => a.QuestionId == currentQuestionId && a.Answer!.BoolValue == true);
+        capturedState!.Answers.Should().NotContain(a => a.QuestionId == alternativeQuestionId);
+        capturedState!.Answers.Should().NotContain(a => a.QuestionId == questionOnAlternativePathId);
+    }
+
+    [Fact]
+    public async Task OnPostAsync_RemovesAnswersFromAlternativeBranch_WhenFileUploadChangesFromNoFileToAFile()
+    {
+        var currentQuestionId = Guid.NewGuid();
+        var nextQuestionId = Guid.NewGuid();
+        var alternativeQuestionId = Guid.NewGuid();
+        var questionOnAlternativePathId = Guid.NewGuid();
+        var mockFileName = "test_file.pdf";
+
+        _pageModel.CurrentQuestionId = currentQuestionId;
+
+        var fileUploadQuestion = new FormQuestion
+        {
+            Id = currentQuestionId,
+            Type = FormQuestionType.FileUpload,
+            NextQuestion = nextQuestionId,
+            NextQuestionAlternative = alternativeQuestionId,
+            Options = new FormQuestionOptions()
+        };
+
+        var questionOnAlternativePath = new FormQuestion
+        {
+            Id = questionOnAlternativePathId,
+            Type = FormQuestionType.Text,
+            NextQuestion = null,
+            Options = new FormQuestionOptions()
+        };
+
+        var nextMainQuestion = new FormQuestion
+        {
+            Id = nextQuestionId, Type = FormQuestionType.Text, Options = new FormQuestionOptions()
+        };
+
+        _formsEngineMock.Setup(f =>
+                f.GetCurrentQuestion(_pageModel.OrganisationId, _pageModel.FormId, _pageModel.SectionId,
+                    currentQuestionId))
+            .ReturnsAsync(fileUploadQuestion);
+
+        var initialAnswerState = new FormQuestionAnswerState();
+        initialAnswerState.Answers.Add(new QuestionAnswer
+            { QuestionId = currentQuestionId, Answer = new FormAnswer { TextValue = null } });
+        initialAnswerState.Answers.Add(new QuestionAnswer
+            { QuestionId = alternativeQuestionId, Answer = new FormAnswer { TextValue = "Answer on alt path for file upload" } });
+        initialAnswerState.Answers.Add(new QuestionAnswer
+            { QuestionId = questionOnAlternativePathId, Answer = new FormAnswer { TextValue = "Another answer on alt path for file upload" } });
+
+        _tempDataServiceMock.SetupSequence(t => t.PeekOrDefault<FormQuestionAnswerState>(It.IsAny<string>()))
+            .Returns(initialAnswerState)
+            .Returns(initialAnswerState)
+            .Returns(initialAnswerState)
+            .Returns(initialAnswerState);
+
+        var mockFile = new Mock<IFormFile>();
+        mockFile.Setup(f => f.FileName).Returns(mockFileName);
+        mockFile.Setup(f => f.Length).Returns(1024);
+        mockFile.Setup(f => f.ContentType).Returns("application/pdf");
+        mockFile.Setup(f => f.OpenReadStream()).Returns(new MemoryStream());
+        _pageModel.FileUploadModel = new FormElementFileUploadModel { UploadedFile = mockFile.Object };
+
+        _fileHostManagerMock.Setup(fhm => fhm.UploadFile(It.IsAny<Stream>(), It.IsAny<string>(), It.IsAny<string>()))
+            .Returns(Task.CompletedTask);
+        _publisherMock.Setup(p => p.Publish(It.IsAny<ScanFile>()))
+            .Returns(Task.CompletedTask);
+        var orgApiIdentifier = new Identifier(scheme: "TestScheme", id: "TestId", legalName: "Test Legal Name", uri: null);
+        _organisationClientMock.Setup(oc => oc.GetOrganisationAsync(It.IsAny<Guid>()))
+            .ReturnsAsync(new CDP.Organisation.WebApiClient.Organisation(
+                id: _pageModel.OrganisationId, name: "Test Org", identifier: orgApiIdentifier,
+                additionalIdentifiers: [], addresses: [],
+                contactPoint: new ContactPoint(name: "Test Contact", email: "test@example.com", telephone: null, url: null),
+                details: new Details(null, null, null, null, null, null, null), roles: [], type: OrganisationType.Organisation
+            ));
+        _userInfoServiceMock.Setup(uis => uis.GetUserInfo()).ReturnsAsync(new UserInfo { Name = "Test User", Email = "user@example.com" });
+
+        _formsEngineMock.Setup(f => f.GetNextQuestion(
+                _pageModel.OrganisationId, _pageModel.FormId, _pageModel.SectionId, currentQuestionId,
+                It.Is<FormQuestionAnswerState>(s => s.Answers.Any(a =>
+                    a.QuestionId == currentQuestionId && a.Answer != null && !string.IsNullOrEmpty(a.Answer.TextValue)))))
+            .ReturnsAsync(new FormQuestion { Id = nextQuestionId, Options = new FormQuestionOptions() });
+
+        var sectionResponse = new SectionQuestionsResponse
+        {
+            Section = new FormSection { Type = FormSectionType.Standard, Title = "Test Section" },
+            Questions =
+            [
+                fileUploadQuestion,
+                new FormQuestion { Id = alternativeQuestionId, Type = FormQuestionType.Text, NextQuestion = questionOnAlternativePathId, Options = new FormQuestionOptions()},
+                questionOnAlternativePath,
+                nextMainQuestion
+            ]
+        };
+        _formsEngineMock.Setup(f =>
+                f.GetFormSectionAsync(_pageModel.OrganisationId, _pageModel.FormId, _pageModel.SectionId))
+            .ReturnsAsync(sectionResponse);
+
+        FormQuestionAnswerState? capturedState = null;
+        _tempDataServiceMock.Setup(t => t.Put(It.IsAny<string>(), It.IsAny<FormQuestionAnswerState>()))
+            .Callback<string, FormQuestionAnswerState>((_, state) => capturedState = state);
+
+        var result = await _pageModel.OnPostAsync();
+
+        result.Should().BeOfType<RedirectToPageResult>();
+        var redirectResult = result as RedirectToPageResult;
+        redirectResult!.PageName.Should().Be("FormsQuestionPage");
+        redirectResult.RouteValues!["CurrentQuestionId"].Should().Be(nextQuestionId);
+
+        _tempDataServiceMock.Verify(t => t.Put(It.IsAny<string>(), It.IsAny<FormQuestionAnswerState>()), Times.Exactly(2));
+
+        capturedState.Should().NotBeNull();
+        capturedState!.Answers.Should().ContainSingle(a => a.QuestionId == currentQuestionId && a.Answer != null && a.Answer.TextValue!.Contains(Path.GetFileNameWithoutExtension(mockFileName)));
+        capturedState!.Answers.Should().NotContain(a => a.QuestionId == alternativeQuestionId);
+        capturedState!.Answers.Should().NotContain(a => a.QuestionId == questionOnAlternativePathId);
     }
 }
