@@ -1067,6 +1067,7 @@ public class FormsQuestionPageModelTest
             .Returns(initialAnswerState)
             .Returns(initialAnswerState)
             .Returns(initialAnswerState)
+            .Returns(initialAnswerState)
             .Returns(initialAnswerState);
 
         var mockFile = new Mock<IFormFile>();
