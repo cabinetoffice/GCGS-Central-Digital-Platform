@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <root>
-  <!-- 
-    Microsoft ResX Schema 
-    
+  <!--
+    Microsoft ResX Schema
+
     Version 2.0
-    
-    The primary goals of this format is to allow a simple XML format 
-    that is mostly human readable. The generation and parsing of the 
-    various data types are done through the TypeConverter classes 
+
+    The primary goals of this format is to allow a simple XML format
+    that is mostly human readable. The generation and parsing of the
+    various data types are done through the TypeConverter classes
     associated with the data types.
-    
+
     Example:
-    
+
     ... ado.net/XML headers & schema ...
     <resheader name="resmimetype">text/microsoft-resx</resheader>
     <resheader name="version">2.0</resheader>
@@ -26,36 +26,36 @@
         <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
         <comment>This is a comment</comment>
     </data>
-                
-    There are any number of "resheader" rows that contain simple 
+
+    There are any number of "resheader" rows that contain simple
     name/value pairs.
-    
-    Each data row contains a name, and value. The row also contains a 
-    type or mimetype. Type corresponds to a .NET class that support 
-    text/value conversion through the TypeConverter architecture. 
-    Classes that don't support this are serialized and stored with the 
+
+    Each data row contains a name, and value. The row also contains a
+    type or mimetype. Type corresponds to a .NET class that support
+    text/value conversion through the TypeConverter architecture.
+    Classes that don't support this are serialized and stored with the
     mimetype set.
-    
-    The mimetype is used for serialized objects, and tells the 
-    ResXResourceReader how to depersist the object. This is currently not 
+
+    The mimetype is used for serialized objects, and tells the
+    ResXResourceReader how to depersist the object. This is currently not
     extensible. For a given mimetype the value must be set accordingly:
-    
-    Note - application/x-microsoft.net.object.binary.base64 is the format 
-    that the ResXResourceWriter will generate, however the reader can 
+
+    Note - application/x-microsoft.net.object.binary.base64 is the format
+    that the ResXResourceWriter will generate, however the reader can
     read any of the formats listed below.
-    
+
     mimetype: application/x-microsoft.net.object.binary.base64
-    value   : The object must be serialized with 
+    value   : The object must be serialized with
             : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
             : and then encoded with base64 encoding.
-    
+
     mimetype: application/x-microsoft.net.object.soap.base64
-    value   : The object must be serialized with 
+    value   : The object must be serialized with
             : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
             : and then encoded with base64 encoding.
 
     mimetype: application/x-microsoft.net.object.bytearray.base64
-    value   : The object must be serialized into a byte array 
+    value   : The object must be serialized into a byte array
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
@@ -282,7 +282,7 @@
 &lt;/div&gt;
 &lt;div class=&quot;govuk-body&quot;&gt;
   &lt;p class=&quot;govuk-body&quot;&gt;The steel information you&#39;ll need&lt;/p&gt;
-  &lt;br/&gt;You&#39;ll need to provide information on steel specific supply chain projects or programmes. This may include relevant examples of: 
+  &lt;br/&gt;You&#39;ll need to provide information on steel specific supply chain projects or programmes. This may include relevant examples of:
   &lt;ul class=&quot;govuk-body govuk-list govuk-list--bullet&quot;&gt;
     &lt;li&gt;management systems, policies, standards and procedures&lt;/li&gt;
     &lt;li&gt;sustainable practice&lt;/li&gt;
@@ -357,67 +357,6 @@
   </data>
   <data name="SteelQuestion_08_SummaryTitle" xml:space="preserve">
     <value>Health and safety breaches supporting document</value>
-  </data>
-
-
-  <data name="HealthAndSafety_SectionTitle" xml:space="preserve">
-    <value>Health and Safety</value>
-  </data>
-  <data name="HealthAndSafetyQuestion_01_Title" xml:space="preserve">
-    <value>Submitting your health and safety information</value>
-  </data>
-  <data name="HealthAndSafetyQuestion_01_Description" xml:space="preserve">
-    <value>
-      &lt;p class=&quot;govuk-body&quot;&gt;
-        Health and safety regulations ensure the well-being of employees and the public in the workplace. This module requires you to provide information about your health and safety policies, risk assessments, and training provided to prevent accidents and injuries. The type, level of experience, and capability to manage health and safety risks may vary based on the risks, size, and complexity of the situation.
-      &lt;/p&gt;
-
-      &lt;h2 class=&quot;govuk-heading-m&quot;&gt;
-        To complete this module you&#39;ll need:
-      &lt;/h2&gt;
-
-      &lt;ul class=&quot;govuk-list govuk-list--bullet&quot;&gt;
-        &lt;li&gt;Information relating to health and safety management and risk&lt;/li&gt;
-      &lt;/ul&gt;
-    </value>
-  </data>
-  <data name="HealthAndSafetyQuestion_02_Title" xml:space="preserve">
-    <value>How do you ensure health and safety is managed effectively?</value>
-  </data>
-  <data name="HealthAndSafetyQuestion_02_Description" xml:space="preserve">
-    <value>
-      &lt;div class=&quot;govuk-hint govuk-!-margin-bottom-4&quot;&gt;
-        For example, what plans, policies and procedures does your organisation have?
-      &lt;/div&gt;
-    </value>
-  </data>
-  <data name="HealthAndSafetyQuestion_02_SummaryTitle" xml:space="preserve">
-    <value>Health and safety management</value>
-  </data>
-  <data name="HealthAndSafetyQuestion_03_Title" xml:space="preserve">
-    <value>Do you have supporting documents to upload?</value>
-  </data>
-  <data name="HealthAndSafetyQuestion_03_SummaryTitle" xml:space="preserve">
-    <value>Supporting documents</value>
-  </data>
-  <data name="HealthAndSafetyQuestion_04_Title" xml:space="preserve">
-    <value>How do you handle significant risks?</value>
-  </data>
-  <data name="HealthAndSafetyQuestion_04_Description" xml:space="preserve">
-    <value>
-      &lt;div class=&quot;govuk-hint govuk-!-margin-bottom-4&quot;&gt;
-        Including those from contractors.
-      &lt;/div&gt;
-    </value>
-  </data>
-  <data name="HealthAndSafetyQuestion_04_SummaryTitle" xml:space="preserve">
-    <value>Handling of risks</value>
-  </data>
-  <data name="HealthAndSafetyQuestion_05_Title" xml:space="preserve">
-    <value>Do you have supporting documents to upload?</value>
-  </data>
-  <data name="HealthAndSafetyQuestion_05_SummaryTitle" xml:space="preserve">
-    <value>Supporting documents</value>
   </data>
   <data name="Exclusions_07_Title" xml:space="preserve">
     <value>Did this exclusion happen in the UK?</value>
