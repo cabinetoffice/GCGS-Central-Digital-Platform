@@ -33,21 +33,23 @@ public class GetOrganisationsUseCaseTests
         var identifierString = "GB-PPON:0001d4b3-e511-4382-9be4-36c1bb5a3411";
         var orgEmail = "organisation@email.com";
 
-        var organisations = new List<OrganisationRawDto>
-        {
-            new OrganisationRawDto
-            {
-                Id = 1,
-                Guid = organisationGuid,
-                Name = orgName,
-                Identifiers = identifierString,
-                ContactPoints = orgEmail,
-                Roles = [],
-                PendingRoles = [],
-                ApprovedOn = approvedOn,
-                AdminEmail = adminEmail,
-            }
-        };
+        var organisations = new Tuple<IList<OrganisationRawDto>, int>(
+            new List<OrganisationRawDto>()
+                {
+                    new OrganisationRawDto
+                    {
+                        Id = 1,
+                        Guid = organisationGuid,
+                        Name = orgName,
+                        Identifiers = identifierString,
+                        ContactPoints = orgEmail,
+                        Roles = [],
+                        PendingRoles = [],
+                        ApprovedOn = approvedOn,
+                        AdminEmail = adminEmail,
+                    }
+                },
+            1);
 
         List<OrganisationDto> OrganisationDtos =
         [
@@ -70,7 +72,7 @@ public class GetOrganisationsUseCaseTests
 
         var result = await _useCase.Execute(command);
 
-        result.Should().BeEquivalentTo(OrganisationDtos);
+        result.Item1.Should().BeEquivalentTo(OrganisationDtos);
         _organisationRepositoryMock.Verify(repo => repo.GetPaginated(command.Role, command.PendingRole, command.SearchText, command.Limit, command.Skip), Times.Once);
     }
 
@@ -79,7 +81,7 @@ public class GetOrganisationsUseCaseTests
     public async Task Execute_WhenNoOrganisationsExist_ReturnsEmptyList()
     {
         var command = new PaginatedOrganisationQuery(limit: 10, skip: 0, "buyer", "buyer");
-        var organisations = new List<OrganisationRawDto>();
+        var organisations = new Tuple<IList<OrganisationRawDto>, int>([], 0);
 
         _organisationRepositoryMock
             .Setup(repo => repo.GetPaginated(command.Role, command.PendingRole, command.SearchText, command.Limit, command.Skip))
@@ -87,7 +89,7 @@ public class GetOrganisationsUseCaseTests
 
         var result = await _useCase.Execute(command);
 
-        result.Should().BeEmpty();
+        result.Item1.Should().BeEmpty();
         _organisationRepositoryMock.Verify(repo => repo.GetPaginated(command.Role, command.PendingRole, command.SearchText, command.Limit, command.Skip), Times.Once);
     }
 }

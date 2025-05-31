@@ -47,12 +47,24 @@ public class ConsortiumOverviewModel(
 
             if (sc != null)
             {
-                flashMessageService.SetFlashMessage
-                (
-                    FlashMessageType.Success,
-                    heading: string.Format(StaticTextResource.Consortium_ConsortiumOverview_Success_Heading, sc.SharecodeOrganisationName)
-                );
+                if (!sc.HasBeenUpdated)
+                {
+                    flashMessageService.SetFlashMessage
+                    (
+                        FlashMessageType.Success,
+                        heading: string.Format(StaticTextResource.Consortium_ConsortiumOverview_Success_Heading, sc.SharecodeOrganisationName)
+                    );
+                }
+                else
+                {
+                    flashMessageService.SetFlashMessage
+                    (
+                        FlashMessageType.Success,
+                        heading: string.Format(StaticTextResource.Consortium_ConsortiumOverview_Updated_Success_Heading, sc.SharecodeOrganisationName)
+                    );
+                }
             }
+
             var forms = await formsClient.GetFormSectionsAsync(new Guid(FormsEngine.OrganisationConsortiumFormId), Id);
 
             FormSections = forms.FormSections;

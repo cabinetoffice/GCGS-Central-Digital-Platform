@@ -17,8 +17,28 @@ resource "aws_secretsmanager_secret_version" "pgadmin_credentials_version" {
   })
 }
 
+resource "random_string" "cloud_beaver_password" {
+  length  = 20
+  special = true
+}
+
+resource "aws_secretsmanager_secret" "cloud_beaver_credentials" {
+  name        = "${local.name_prefix}-${var.cloud_beaver_config.name}-credentials"
+  description = "Cloud Beaver Credentials"
+  tags        = var.tags
+}
+
+resource "aws_secretsmanager_secret_version" "cloud_beaver_credentials_version" {
+  secret_id = aws_secretsmanager_secret.cloud_beaver_credentials.id
+  secret_string = jsonencode({
+    ADMIN_USERNAME = "cbadmin",
+    ADMIN_PASSWORD = random_string.cloud_beaver_password.result,
+  })
+}
+
 resource "aws_secretsmanager_secret" "cloud_beaver_data_sources" {
-  name = "${local.name_prefix}-${var.pgadmin_config.name}-cloud-beaver-data-sources"
+  name = "${local.name_prefix}-${var.cloud_beaver_config.name}-data-sources"
+  tags = var.tags
 }
 
 resource "aws_secretsmanager_secret_version" "cloud_beaver_data_sources" {

@@ -20,7 +20,7 @@ public class DisplayLogoutMessageMiddleware(RequestDelegate next)
                 || authResult.Ticket?.Properties.ExpiresUtc < DateTimeOffset.UtcNow)
             {
                 await context.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-                context.Response.Redirect("/logged-out-page");
+                context.Response.Redirect("/logged-out");
                 return;
             }
         }
