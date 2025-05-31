@@ -516,6 +516,96 @@ public class FormsEngineTests
     }
 
     [Fact]
+    public async Task SaveUpdateAnswers_ShouldCallApiWithCorrectPayload_WhenYesNoChangesAndAlternativeAnswersAreCleared()
+    {
+        var formId = Guid.NewGuid();
+        var sectionId = Guid.NewGuid();
+        var organisationId = Guid.NewGuid();
+
+        var yesNoQuestionId = Guid.NewGuid();
+        var alternativeQuestionId = Guid.NewGuid();
+        var mainPathQuestionId = Guid.NewGuid();
+
+        var answerSet = new FormQuestionAnswerState
+        {
+            AnswerSetId = Guid.NewGuid(),
+            Answers = new List<QuestionAnswer>
+            {
+                new QuestionAnswer
+                {
+                    QuestionId = yesNoQuestionId,
+                    Answer = new FormAnswer { BoolValue = true }
+                },
+                new QuestionAnswer
+                {
+                    QuestionId = mainPathQuestionId,
+                    Answer = new FormAnswer { TextValue = "Main path answer" }
+                }
+            }
+        };
+
+        await _formsEngine.SaveUpdateAnswers(formId, sectionId, organisationId, answerSet);
+
+        _formsApiClientMock.Verify(api => api.PutFormSectionAnswersAsync(
+            formId,
+            sectionId,
+            answerSet.AnswerSetId.Value,
+            organisationId,
+            It.Is<WebApiClient.UpdateFormSectionAnswers>(payload =>
+                payload.Answers.Count == 2 &&
+                payload.Answers.Any(a => a.QuestionId == yesNoQuestionId && a.BoolValue == true) &&
+                payload.Answers.Any(a => a.QuestionId == mainPathQuestionId && a.TextValue == "Main path answer") &&
+                !payload.Answers.Any(a => a.QuestionId == alternativeQuestionId)
+            )
+        ), Times.Once);
+    }
+
+    [Fact]
+    public async Task SaveUpdateAnswers_ShouldCallApiWithCorrectPayload_WhenFileUploadChangesAndAlternativeAnswersAreCleared()
+    {
+        var formId = Guid.NewGuid();
+        var sectionId = Guid.NewGuid();
+        var organisationId = Guid.NewGuid();
+
+        var fileUploadQuestionId = Guid.NewGuid();
+        var alternativeQuestionId = Guid.NewGuid();
+        var mainPathQuestionId = Guid.NewGuid();
+
+        var answerSet = new FormQuestionAnswerState
+        {
+            AnswerSetId = Guid.NewGuid(),
+            Answers = new List<QuestionAnswer>
+            {
+                new QuestionAnswer
+                {
+                    QuestionId = fileUploadQuestionId,
+                    Answer = new FormAnswer { BoolValue = true, TextValue = "uploaded_file.pdf" }
+                },
+                new QuestionAnswer
+                {
+                    QuestionId = mainPathQuestionId,
+                    Answer = new FormAnswer { TextValue = "Main path answer after file upload" }
+                }
+            }
+        };
+
+        await _formsEngine.SaveUpdateAnswers(formId, sectionId, organisationId, answerSet);
+
+        _formsApiClientMock.Verify(api => api.PutFormSectionAnswersAsync(
+            formId,
+            sectionId,
+            answerSet.AnswerSetId.Value,
+            organisationId,
+            It.Is<WebApiClient.UpdateFormSectionAnswers>(payload =>
+                payload.Answers.Count == 2 &&
+                payload.Answers.Any(a => a.QuestionId == fileUploadQuestionId && a.BoolValue == true && a.TextValue == "uploaded_file.pdf") &&
+                payload.Answers.Any(a => a.QuestionId == mainPathQuestionId && a.TextValue == "Main path answer after file upload") &&
+                !payload.Answers.Any(a => a.QuestionId == alternativeQuestionId)
+            )
+        ), Times.Once);
+    }
+
+    [Fact]
     public async Task CreateShareCodeAsync_ShouldReturnShareCode_WhenApiCallSucceeds()
     {
         var formId = Guid.NewGuid();
@@ -651,7 +741,7 @@ public class FormsEngineTests
         qIntermediate.NextQuestionAlternative = qAlternativeOnlyTarget.Id;
 
         var questions = new List<FormQuestion> { qAlternativeOnlyTarget, qActualStart, qIntermediate, qEnd };
-        var answerState = new FormQuestionAnswerState { Answers = new List<QuestionAnswer>() }; // No questions answered
+        var answerState = new FormQuestionAnswerState { Answers = new List<QuestionAnswer>() };
         var result = _formsEngine.GetPreviousUnansweredQuestionId(questions, qIntermediate.Id, answerState);
 
         result.Should().Be(qActualStart.Id);
