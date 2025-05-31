@@ -3,6 +3,7 @@ using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.Pages.Forms.ChoiceProviderStrategies;
 using DataShareWebApiClient = CO.CDP.DataSharing.WebApiClient;
 using SectionQuestionsResponse = CO.CDP.OrganisationApp.Models.SectionQuestionsResponse;
+
 namespace CO.CDP.OrganisationApp;
 
 public class FormsEngine(
@@ -37,7 +38,8 @@ public class FormsEngine(
             },
             Questions = (await Task.WhenAll(response.Questions.Select(async q =>
             {
-                IChoiceProviderStrategy choiceProviderStrategy = choiceProviderService.GetStrategy(q.Options.ChoiceProviderStrategy);
+                IChoiceProviderStrategy choiceProviderStrategy =
+                    choiceProviderService.GetStrategy(q.Options.ChoiceProviderStrategy);
 
                 return new Models.FormQuestion
                 {
@@ -71,25 +73,50 @@ public class FormsEngine(
             }))).ToList()
         };
 
+        SetAlternativePathQuestions(sectionQuestionsResponse.Questions);
+
         tempDataService.Put(sessionKey, sectionQuestionsResponse);
         return sectionQuestionsResponse;
     }
 
-    public async Task<Models.FormQuestion?> GetNextQuestion(Guid organisationId, Guid formId, Guid sectionId, Guid currentQuestionId)
+    public async Task<Models.FormQuestion?> GetNextQuestion(Guid organisationId, Guid formId, Guid sectionId,
+        Guid currentQuestionId, FormQuestionAnswerState? answerState)
     {
         var section = await GetFormSectionAsync(organisationId, formId, sectionId);
-        if (section.Questions == null)
+
+        var currentQuestion = section.Questions.FirstOrDefault(q => q.Id == currentQuestionId);
+        if (currentQuestion == null)
         {
             return null;
         }
 
-        var nextQuestionId = section.Questions.FirstOrDefault(q => q.Id == currentQuestionId)?.NextQuestion;
-        return section.Questions.FirstOrDefault(q => q.Id == nextQuestionId);
+        Guid? determinedNextQuestionId = currentQuestion.NextQuestion;
+
+        if (currentQuestion.NextQuestionAlternative.HasValue && answerState != null)
+        {
+            var currentQuestionAnswer = answerState.Answers.FirstOrDefault(a => a.QuestionId == currentQuestionId);
+
+            if (currentQuestionAnswer?.Answer?.BoolValue == false)
+            {
+                if (currentQuestion.Type == Models.FormQuestionType.YesOrNo ||
+                    currentQuestion.Type == Models.FormQuestionType.FileUpload)
+                {
+                    determinedNextQuestionId = currentQuestion.NextQuestionAlternative;
+                }
+            }
+        }
+
+        if (!determinedNextQuestionId.HasValue)
+        {
+            return null;
+        }
+
+        return section.Questions.FirstOrDefault(q => q.Id == determinedNextQuestionId.Value);
     }
 
-    public async Task<Models.FormQuestion?> GetPreviousQuestion(Guid organisationId, Guid formId, Guid sectionId, Guid currentQuestionId)
+    public async Task<Models.FormQuestion?> GetPreviousQuestion(Guid organisationId, Guid formId, Guid sectionId,
+        Guid currentQuestionId)
     {
-
         var section = await GetFormSectionAsync(organisationId, formId, sectionId);
         if (section.Questions == null)
         {
@@ -100,24 +127,25 @@ public class FormsEngine(
         return section.Questions.FirstOrDefault(q => q.Id == previousQuestionId);
     }
 
-    public async Task<Models.FormQuestion?> GetCurrentQuestion(Guid organisationId, Guid formId, Guid sectionId, Guid? questionId)
+    public async Task<Models.FormQuestion?> GetCurrentQuestion(Guid organisationId, Guid formId, Guid sectionId,
+        Guid? questionId)
     {
         var section = await GetFormSectionAsync(organisationId, formId, sectionId);
-        if (section.Questions == null)
+        if (section.Questions == null || !section.Questions.Any())
         {
             return null;
         }
 
         if (questionId == null)
         {
-            var nextQuestionGuids = section.Questions.Select(sq => sq.NextQuestion);
-            questionId = section.Questions.FirstOrDefault(q => !nextQuestionGuids.Contains(q.Id))?.Id;
+            return GetFirstQuestion(section.Questions);
         }
 
-        return section.Questions.FirstOrDefault(q => q.Id == questionId);
+        return section.Questions.FirstOrDefault(q => q.Id == questionId.Value);
     }
 
-    public async Task SaveUpdateAnswers(Guid formId, Guid sectionId, Guid organisationId, FormQuestionAnswerState answerSet)
+    public async Task SaveUpdateAnswers(Guid formId, Guid sectionId, Guid organisationId,
+        FormQuestionAnswerState answerSet)
     {
         var answersPayload = new UpdateFormSectionAnswers(
             answers: answerSet.Answers.Select(a => new Forms.WebApiClient.FormAnswer(
@@ -152,7 +180,8 @@ public class FormsEngine(
         return sharingDataDetails.ShareCode;
     }
 
-    public Guid? GetPreviousUnansweredQuestionId(List<Models.FormQuestion> questions, Guid currentQuestionId, FormQuestionAnswerState answerState)
+    public Guid? GetPreviousUnansweredQuestionId(List<Models.FormQuestion> questions, Guid currentQuestionId,
+        FormQuestionAnswerState answerState)
     {
         var answeredQuestionIds = answerState.Answers.Select(a => a.QuestionId).ToList();
 
@@ -188,19 +217,100 @@ public class FormsEngine(
         );
     }
 
-    private List<Models.FormQuestion> GetSortedFormQuestions(List<Models.FormQuestion> questions)
+    private (HashSet<Guid> NextQuestionTargets, HashSet<Guid> AlternativeTargets) GetLinkedQuestionTargets(
+        List<Models.FormQuestion> questions)
     {
-        var dict = questions.ToDictionary(q => q.Id, q => q);
-        var start = questions.First(q => !questions.Any(x => x.NextQuestion == q.Id));
-        var result = new List<Models.FormQuestion>();
-        var current = start;
-        while (current != null)
+        var nextQuestionTargets = new HashSet<Guid>();
+        var alternativeTargets = new HashSet<Guid>();
+
+        foreach (var q in questions)
         {
-            result.Add(current);
-            current = current.NextQuestion.HasValue ? dict[current.NextQuestion.Value] : null;
+            if (q.NextQuestion.HasValue)
+            {
+                nextQuestionTargets.Add(q.NextQuestion.Value);
+            }
+
+            if (q.NextQuestionAlternative.HasValue)
+            {
+                alternativeTargets.Add(q.NextQuestionAlternative.Value);
+            }
         }
 
-        return result;
+        return (nextQuestionTargets, alternativeTargets);
     }
 
+    private Models.FormQuestion? GetFirstQuestion(List<Models.FormQuestion> questions)
+    {
+        var (nextQuestionTargets, alternativeTargets) = GetLinkedQuestionTargets(questions);
+
+        return questions.FirstOrDefault(q =>
+            !nextQuestionTargets.Contains(q.Id) &&
+            !alternativeTargets.Contains(q.Id));
+    }
+
+    private List<Models.FormQuestion> GetSortedFormQuestions(List<Models.FormQuestion> questions)
+    {
+        if (!questions.Any())
+        {
+            return new List<Models.FormQuestion>();
+        }
+
+        var firstQuestion = GetFirstQuestion(questions);
+
+        return firstQuestion != null
+            ? GenerateJourneyFromFirstQuestion(firstQuestion, questions)
+            : throw new InvalidOperationException(
+                "Cannot determine a unique starting question for sorting. The form may be empty, contain circular dependencies," +
+                "all potential start nodes might be targeted as alternative next questions, or the questions list could be malformed.");
+    }
+
+    private List<Models.FormQuestion> GenerateJourneyFromFirstQuestion(Models.FormQuestion firstQuestion,
+        List<Models.FormQuestion> questions)
+    {
+        var sortedFormQuestions = new List<Models.FormQuestion>();
+        var dict = questions.ToDictionary(q => q.Id, q => q);
+        var visitedInThisPath = new HashSet<Guid>();
+        var current = firstQuestion;
+
+        while (current != null && visitedInThisPath.Add(current.Id))
+        {
+            sortedFormQuestions.Add(current);
+            if (current.NextQuestion.HasValue &&
+                dict.TryGetValue(current.NextQuestion.Value, out var nextQuestionModel))
+            {
+                current = nextQuestionModel;
+            }
+            else
+            {
+                current = null;
+            }
+        }
+
+        return sortedFormQuestions;
+    }
+
+    private void SetAlternativePathQuestions(List<Models.FormQuestion> questions)
+    {
+        var (nextQuestionTargets, alternativeTargets) = GetLinkedQuestionTargets(questions);
+        var mainPathQuestionIds = new HashSet<Guid>();
+        var startQuestion = GetFirstQuestion(questions);
+        if (startQuestion != null)
+        {
+            mainPathQuestionIds.Add(startQuestion.Id);
+        }
+
+        foreach (var targetId in nextQuestionTargets)
+        {
+            mainPathQuestionIds.Add(targetId);
+        }
+
+        foreach (var question in questions)
+        {
+            if ((alternativeTargets.Contains(question.Id) && !mainPathQuestionIds.Contains(question.Id)) ||
+                (!mainPathQuestionIds.Contains(question.Id) && question.NextQuestion.HasValue))
+            {
+                question.BranchType = Models.FormQuestionBranchType.Alternative;
+            }
+        }
+    }
 }
