@@ -21,6 +21,38 @@ namespace CO.CDP.Organisation.WebApi.Api;
 
 public static class EndpointExtensions
 {
+    public static void UseGlobalEndpoints(this WebApplication app)
+    {
+        app.MapGet("/announcements",
+            [OrganisationAuthorize([AuthenticationChannel.OneLogin])]
+            async (
+                [FromQuery] string page,
+                IUseCase<GetAnnouncementQuery, IEnumerable<Announcement>> useCase) =>
+            {
+                var results = await useCase.Execute(new GetAnnouncementQuery
+                {
+                    Page = page
+                });
+
+                return Results.Ok(results);
+            })
+        .Produces<IEnumerable<Announcement>>(StatusCodes.Status200OK, "application/json")
+        .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
+        .Produces<ProblemDetails>(StatusCodes.Status404NotFound)
+        .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError)
+        .WithOpenApi(operation =>
+        {
+            operation.OperationId = "GetAnnouncements";
+            operation.Description = "Gets all active announcements matching filters.";
+            operation.Summary = "Get active announcements.";
+            operation.Responses["200"].Description = "Announcements retrieved.";
+            operation.Responses["401"].Description = "Valid authentication credentials are missing.";
+            operation.Responses["404"].Description = "Announcements not found.";
+            operation.Responses["500"].Description = "Internal server error.";
+            return operation;
+        });
+    }
+
     public static void UseOrganisationEndpoints(this WebApplication app)
     {
         app.MapGet("/organisations",
@@ -31,12 +63,12 @@ public static class EndpointExtensions
             [FromQuery] string? searchText,
             [FromQuery] int limit,
             [FromQuery] int skip,
-            IUseCase<PaginatedOrganisationQuery, IEnumerable<OrganisationDto>> useCase) =>
+            IUseCase<PaginatedOrganisationQuery, Tuple<IEnumerable<OrganisationDto>, int>> useCase) =>
                 {
                     return await useCase.Execute(new PaginatedOrganisationQuery(limit, skip, role, pendingRole, searchText))
                         .AndThen(organisations => Results.Ok(organisations));
                 })
-            .Produces<List<OrganisationDto>>(StatusCodes.Status200OK, "application/json")
+            .Produces<Tuple<IEnumerable<OrganisationDto>, int>> (StatusCodes.Status200OK, "application/json")
             .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
             .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError)
             .WithOpenApi(operation =>
@@ -45,27 +77,6 @@ public static class EndpointExtensions
                 operation.Description = "Get a list of all organisations of a certain type (buyer/supplier).";
                 operation.Summary = "Get a list of all organisations.";
                 operation.Responses["200"].Description = "A list of organisations.";
-                operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
-                operation.Responses["500"].Description = "Internal server error.";
-                return operation;
-            });
-
-        app.MapGet("/organisations/count",
-                [OrganisationAuthorize([AuthenticationChannel.OneLogin], personScopes: [Constants.PersonScope.SupportAdmin])]
-                async ([FromQuery] string? role, [FromQuery] string? pendingRole, [FromQuery] string? searchText, IUseCase<OrganisationTypeQuery, int> useCase) =>
-                {
-                    return await useCase.Execute(new OrganisationTypeQuery(role, pendingRole, searchText))
-                        .AndThen(count => Results.Ok(count));
-                })
-            .Produces<int>(StatusCodes.Status200OK, "application/json")
-            .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
-            .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError)
-            .WithOpenApi(operation =>
-            {
-                operation.OperationId = "GetOrganisationsTotalCount";
-                operation.Description = "Get a total count of all the organisations of a certain type (buyer/supplier).";
-                operation.Summary = "Get a total count of all the organisations.";
-                operation.Responses["200"].Description = "A number of organisations.";
                 operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
                 operation.Responses["500"].Description = "Internal server error.";
                 return operation;
@@ -1271,6 +1282,33 @@ public static class EndpointExtensions
                 operation.Description = "Add organisation party";
                 operation.Summary = "Add organisation party";
                 operation.Responses["204"].Description = "Organisation party added successfully.";
+                operation.Responses["400"].Description = "Bad request.";
+                operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
+                operation.Responses["404"].Description = "Organisation parties not found.";
+                operation.Responses["500"].Description = "Internal server error.";
+                return operation;
+            });
+
+        app.MapPost("/{organisationId}/update-party",
+            [OrganisationAuthorize(
+                [AuthenticationChannel.OneLogin],
+                [Constants.OrganisationPersonScope.Admin, Constants.OrganisationPersonScope.Editor],
+                OrganisationIdLocation.Path)]
+        async (Guid organisationId, UpdateOrganisationParty organisationParty, IUseCase<(Guid, UpdateOrganisationParty), bool> useCase) =>
+                await useCase.Execute((organisationId, organisationParty))
+                   .AndThen(_ => Results.NoContent())
+            )
+            .Produces(StatusCodes.Status204NoContent)
+            .ProducesProblem(StatusCodes.Status500InternalServerError)
+            .ProducesProblem(StatusCodes.Status400BadRequest)
+            .ProducesProblem(StatusCodes.Status401Unauthorized)
+            .ProducesProblem(StatusCodes.Status404NotFound)
+            .WithOpenApi(operation =>
+            {
+                operation.OperationId = "UpdateOrganisationParty";
+                operation.Description = "Update organisation party";
+                operation.Summary = "Update organisation party";
+                operation.Responses["204"].Description = "Organisation party updated successfully.";
                 operation.Responses["400"].Description = "Bad request.";
                 operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
                 operation.Responses["404"].Description = "Organisation parties not found.";

@@ -54,6 +54,7 @@ dependency core_security_groups {
   config_path = "../../core/security-groups"
   mock_outputs = {
     alb_sg_id                 = "mock"
+    db_mysql_sg_id            = "mock"
     db_postgres_sg_id         = "mock"
     ecs_sg_id                 = "mock"
     elasticache_redis_sg_id   = "mock"
@@ -73,6 +74,10 @@ dependency common_networking {
 dependency service_auth {
   config_path = "../../service/auth"
   mock_outputs = {
+    fts_healthcheck_user_pool_arn        = "mock"
+    fts_healthcheck_user_pool_client_id  = "mock"
+    fts_user_pool_arn                    = "mock"
+    fts_user_pool_client_id              = "mock"
     organisation_app_user_pool_arn       = "mock"
     organisation_app_user_pool_client_id = "mock"
     user_pool_domain                     = "mock"
@@ -86,6 +91,10 @@ dependency service_database {
     entity_verification_cluster_credentials_arn        = "mock"
     entity_verification_cluster_credentials_kms_key_id = "mock"
     entity_verification_cluster_name                   = "mock"
+    fts_cluster_address                                = "mock"
+    fts_cluster_credentials_arn                        = "mock"
+    fts_cluster_credentials_kms_key_id                 = "mock"
+    fts_cluster_name                                   = "mock"
     sirsi_cluster_address                              = "mock"
     sirsi_cluster_credentials_arn                      = "mock"
     sirsi_cluster_credentials_kms_key_id               = "mock"
@@ -151,6 +160,7 @@ inputs = {
 
 
   alb_sg_id                 = dependency.core_security_groups.outputs.alb_sg_id
+  db_mysql_sg_id            = dependency.core_security_groups.outputs.db_mysql_sg_id
   db_postgres_sg_id         = dependency.core_security_groups.outputs.db_postgres_sg_id
   ecs_sg_id                 = dependency.core_security_groups.outputs.ecs_sg_id
   redis_sg_id               = dependency.core_security_groups.outputs.elasticache_redis_sg_id
@@ -159,14 +169,24 @@ inputs = {
   vpce_logs_sg_id           = dependency.core_security_groups.outputs.vpce_logs_sg_id
   vpce_secretsmanager_sg_id = dependency.core_security_groups.outputs.vpce_secretsmanager_sg_id
 
-  user_pool_arn       = dependency.service_auth.outputs.organisation_app_user_pool_arn
-  user_pool_client_id = dependency.service_auth.outputs.organisation_app_user_pool_client_id
-  user_pool_domain    = dependency.service_auth.outputs.user_pool_domain
+  user_pool_arn                       = dependency.service_auth.outputs.organisation_app_user_pool_arn
+  user_pool_client_id                 = dependency.service_auth.outputs.organisation_app_user_pool_client_id
+  user_pool_domain                    = dependency.service_auth.outputs.user_pool_domain
+  user_pool_fts_arn                   = dependency.service_auth.outputs.fts_user_pool_arn
+  user_pool_fts_client_id             = dependency.service_auth.outputs.fts_user_pool_client_id
+  user_pool_fts_domain                = dependency.service_auth.outputs.user_pool_domain
+  user_pool_fts_healthcheck_arn       = dependency.service_auth.outputs.fts_healthcheck_user_pool_arn
+  user_pool_fts_healthcheck_client_id = dependency.service_auth.outputs.fts_healthcheck_user_pool_client_id
+  user_pool_fts_healthcheck_domain    = dependency.service_auth.outputs.user_pool_domain
 
   db_ev_cluster_address                   = dependency.service_database.outputs.entity_verification_cluster_address
   db_ev_cluster_credentials_arn           = dependency.service_database.outputs.entity_verification_cluster_credentials_arn
   db_ev_cluster_credentials_kms_key_id    = dependency.service_database.outputs.entity_verification_cluster_credentials_kms_key_id
   db_ev_cluster_name                      = dependency.service_database.outputs.entity_verification_cluster_name
+  db_fts_cluster_address                  = dependency.service_database.outputs.fts_cluster_address
+  db_fts_cluster_credentials_arn          = dependency.service_database.outputs.fts_cluster_credentials_arn
+  db_fts_cluster_credentials_kms_key_id   = dependency.service_database.outputs.fts_cluster_credentials_kms_key_id
+  db_fts_cluster_name                     = dependency.service_database.outputs.fts_cluster_name
   db_sirsi_cluster_address                = dependency.service_database.outputs.sirsi_cluster_address
   db_sirsi_cluster_credentials_arn        = dependency.service_database.outputs.sirsi_cluster_credentials_arn
   db_sirsi_cluster_credentials_kms_key_id = dependency.service_database.outputs.sirsi_cluster_credentials_kms_key_id

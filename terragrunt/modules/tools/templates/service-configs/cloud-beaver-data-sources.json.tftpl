@@ -1,0 +1,56 @@
+{
+  "folders": {
+    "SIRSI": {
+      "name": "SIRSI",
+      "description": "SIRSI Postgres clusters"
+    },
+    "FTS": {
+      "name": "FTS",
+      "description": "FTS MySQL cluster"
+    }
+  },
+  "connections": {
+    "organisation_information": {
+      "provider": "postgresql",
+      "driver": "postgresql",
+      "name": "Organisation Information",
+      "folder": "SIRSI",
+      "save-password": true,
+      "configuration": {
+        "host": "${db_sirsi_cluster_address}",
+        "port": "${db_sirsi_cluster_port}",
+        "database": "${db_sirsi_cluster_name}",
+        "user": "${db_sirsi_cluster_username}",
+        "password": "${db_sirsi_cluster_password}"
+      }
+    },
+    "entity_verification": {
+      "provider": "postgresql",
+      "driver": "postgresql",
+      "name": "Entity Verification",
+      "folder": "SIRSI",
+      "save-password": true,
+      "configuration": {
+        "host": "${db_entity_verification_cluster_address}",
+        "port": "${db_entity_verification_cluster_port}",
+        "database": "${db_entity_verification_cluster_name}",
+        "user": "${db_entity_verification_cluster_username}",
+        "password": "${db_entity_verification_cluster_password}"
+      }
+    },
+    "fts": {
+      "provider": "mysql",
+      "driver": "mysql8",
+      "name": "FTS",
+      "folder": "FTS",
+      "save-password": true,
+      "configuration": {
+        "host": "${db_fts_cluster_address}",
+        "port": "${db_fts_cluster_port}",
+        "database": "${db_fts_cluster_name}",
+        "user": "${db_fts_cluster_username}",
+        "password": "${db_fts_cluster_password}"
+      }
+    }
+  }
+}

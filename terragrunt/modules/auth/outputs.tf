@@ -1,3 +1,28 @@
+output "cloud_beaver_user_pool_arn" {
+  value = aws_cognito_user_pool.auth.arn
+}
+
+output "cloud_beaver_user_pool_client_id" {
+  value = aws_cognito_user_pool_client.cloud_beaver.id
+}
+
+output "fts_user_pool_arn" {
+  value = aws_cognito_user_pool.auth.arn
+}
+
+output "fts_user_pool_client_id" {
+  value = aws_cognito_user_pool_client.fts.id
+}
+
+output "fts_healthcheck_user_pool_arn" {
+  value = aws_cognito_user_pool.auth.arn
+}
+
+output "fts_healthcheck_user_pool_client_id" {
+  value = aws_cognito_user_pool_client.fts_healthcheck.id
+}
+
+
 output "grafana_user_pool_arn" {
   value = aws_cognito_user_pool.auth.arn
 }

@@ -28,6 +28,26 @@ variable "db_ev_cluster_name" {
   type        = string
 }
 
+variable "db_fts_cluster_address" {
+  description = "Fts DB address"
+  type        = string
+}
+
+variable "db_fts_cluster_credentials_arn" {
+  description = "ARN of the secret holding Fts DB credentials"
+  type        = string
+}
+
+variable "db_fts_cluster_name" {
+  description = "Fts DB name"
+  type        = string
+}
+
+variable "db_mysql_sg_id" {
+  description = "Postgres DB security group ID"
+  type        = string
+}
+
 variable "db_postgres_sg_id" {
   description = "Postgres DB security group ID"
   type        = string
@@ -241,6 +261,30 @@ variable "user_pool_client_id" {
 }
 
 variable "user_pool_domain" {
+  type = string
+}
+
+variable "user_pool_fts_arn" {
+  type = string
+}
+
+variable "user_pool_fts_client_id" {
+  type = string
+}
+
+variable "user_pool_fts_domain" {
+  type = string
+}
+
+variable "user_pool_fts_healthcheck_arn" {
+  type = string
+}
+
+variable "user_pool_fts_healthcheck_client_id" {
+  type = string
+}
+
+variable "user_pool_fts_healthcheck_domain" {
   type = string
 }
 
