@@ -1,5 +1,5 @@
 module "ecs_migration_tasks" {
-  for_each = local.migration_configs
+  for_each = local.migration_configs_sirsi
 
   source = "../ecs-service"
 
@@ -19,7 +19,7 @@ module "ecs_migration_tasks" {
       db_password         = each.value.name == "entity-verification-migrations" ? local.db_ev_password : local.db_sirsi_password
       db_username         = each.value.name == "entity-verification-migrations" ? local.db_ev_username : local.db_sirsi_username
       public_domain       = var.public_domain
-      service_version     = local.service_version
+      service_version     = local.service_version_sirsi
     }
   )
 

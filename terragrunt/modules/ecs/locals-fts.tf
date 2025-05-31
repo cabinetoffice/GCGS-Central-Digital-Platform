@@ -1,5 +1,7 @@
 locals {
 
+  service_version_fts = var.pinned_service_version_fts
+
   fts_screts_arn = data.aws_secretsmanager_secret.fts_secrets.arn
 
   fts_secrets = {
@@ -81,7 +83,37 @@ locals {
     memory          = var.service_configs.fts.memory
     name            = var.service_configs.fts.name
     public_domain   = var.public_domain
-    service_version = "latest" //local.service_version
+    service_version = local.service_version_fts
+    vpc_cidr        = var.vpc_cider
+  }
+
+  fts_scheduler_service_paremeters = {
+    container_port  = var.service_configs.fts_scheduler.port
+    cpu             = var.service_configs.fts_scheduler.cpu
+    host_port       = var.service_configs.fts_scheduler.port
+    image           = local.ecr_urls[var.service_configs.fts_scheduler.name]
+    lg_name         = aws_cloudwatch_log_group.tasks[var.service_configs.fts_scheduler.name].name
+    lg_prefix       = "app"
+    lg_region       = data.aws_region.current.name
+    memory          = var.service_configs.fts_scheduler.memory
+    name            = var.service_configs.fts_scheduler.name
+    public_domain   = var.public_domain
+    service_version = local.service_version_fts
+    vpc_cidr        = var.vpc_cider
+  }
+
+  fts_migrations_service_paremeters = {
+    container_port  = var.service_configs.fts_migrations.port
+    cpu             = var.service_configs.fts_migrations.cpu
+    host_port       = var.service_configs.fts_migrations.port
+    image           = local.ecr_urls[var.service_configs.fts_migrations.name]
+    lg_name         = aws_cloudwatch_log_group.tasks[var.service_configs.fts_migrations.name].name
+    lg_prefix       = "app"
+    lg_region       = data.aws_region.current.name
+    memory          = var.service_configs.fts_migrations.memory
+    name            = var.service_configs.fts_migrations.name
+    public_domain   = var.public_domain
+    service_version = local.service_version_fts
     vpc_cidr        = var.vpc_cider
   }
 
@@ -90,4 +122,24 @@ locals {
     local.fts_service_paremeters,
     local.fts_secrets
   )
+
+  fts_scheduler_container_parameters = merge(
+    local.fts_parameters,
+    local.fts_scheduler_service_paremeters,
+    local.fts_secrets
+  )
+
+  fts_migrations_container_parameters = merge(
+    local.fts_parameters,
+    local.fts_migrations_service_paremeters,
+    local.fts_secrets
+  )
+
+  migrations_fts   = ["fts-migrations"]
+
+  migration_configs_fts = {
+    for name, config in var.service_configs :
+    config.name => config if contains(local.migrations_fts, config.name)
+  }
+
 }
