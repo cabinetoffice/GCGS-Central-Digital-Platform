@@ -3,32 +3,32 @@
     "name": "${name}",
     "image": "${image}:${service_version}",
     "cpu": ${cpu},
-  "memory": ${memory},
-  "portMappings": [
-  {
-    "containerPort": ${container_port},
-  "hostPort": ${host_port},
-  "protocol": "tcp"
-  }
-],
-  "logConfiguration": {
-  "logDriver": "awslogs",
-  "options": {
-    "awslogs-group": "${lg_name}",
-    "awslogs-region": "${lg_region}",
-    "awslogs-stream-prefix": "${lg_prefix}"
-  }
-},
-  "environment": [
-  {"name": "DB_HOST", "value": "${db_host}"},
-  {"name": "DB_NAME", "value": "${db_name}"}
-],
-  "secrets": [
-  {"name": "DB_PASS", "valueFrom": "${db_pass}"},
-  {"name": "DB_USER", "valueFrom": "${db_user}"}
-],
-  "volumesFrom": [],
-  "mountPoints": [],
-  "essential": true
+    "memory": ${memory},
+    "portMappings": [
+       {
+          "containerPort": ${container_port},
+          "hostPort": ${host_port},
+          "protocol": "tcp"
+      }
+    ],
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+        "awslogs-group": "${lg_name}",
+        "awslogs-region": "${lg_region}",
+        "awslogs-stream-prefix": "${lg_prefix}"
+      }
+    },
+    "environment": [
+      {"name": "DB_HOST", "value": "${db_host}"},
+      {"name": "DB_NAME", "value": "${db_name}"}
+    ],
+    "secrets": [
+      {"name": "DB_PASS", "valueFrom": "${db_pass}"},
+      {"name": "DB_USER", "valueFrom": "${db_user}"}
+    ],
+    "volumesFrom": [],
+    "mountPoints": [],
+    "essential": true
   }
 ]

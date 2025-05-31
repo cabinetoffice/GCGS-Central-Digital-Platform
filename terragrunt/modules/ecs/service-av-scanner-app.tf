@@ -20,7 +20,7 @@ module "ecs_service_av_scanner_app" {
       s3_permanent_bucket      = module.s3_bucket_permanent.bucket
       s3_staging_bucket        = module.s3_bucket_staging.bucket
       send_notify_emails       = local.send_notify_emails
-      service_version          = local.service_version
+      service_version          = local.service_version_sirsi
       uuid_ppon_service_enable = false
       vpc_cidr                 = var.vpc_cider
     }

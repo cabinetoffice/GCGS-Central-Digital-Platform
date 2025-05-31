@@ -31,7 +31,11 @@ output "service_version_global" {
 }
 
 output "service_version_pinned" {
-  value = nonsensitive(var.pinned_service_version == null ? "not pinned, using global ${local.orchestrator_service_version}" : var.pinned_service_version)
+  value = nonsensitive(var.pinned_service_version_sirsi == null ? "not pinned, using global ${local.orchestrator_service_version}" : var.pinned_service_version_sirsi)
+}
+
+output "service_version_fts" {
+  value = var.pinned_service_version_sirsi
 }
 
 output "services_target_group_arn_suffix_map" {
