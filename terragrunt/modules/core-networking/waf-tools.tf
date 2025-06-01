@@ -9,6 +9,21 @@ resource "aws_wafv2_web_acl" "tools" {
     block {}
   }
 
+  # @TODO (ABN) verify functionality before deciding which accounts can be open
+  # dynamic "default_action" {
+  #   for_each = var.environment == "production" ? [1] : []
+  #   content {
+  #     block {}
+  #   }
+  # }
+  #
+  # dynamic "default_action" {
+  #   for_each = var.environment != "production" ? [1] : []
+  #   content {
+  #     allow {}
+  #   }
+  # }
+
   custom_response_body {
     key          = "${local.name_prefix}_tools_blocked_request"
     content      = "Tools Access Denied"
