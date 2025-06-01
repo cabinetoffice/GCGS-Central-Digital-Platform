@@ -241,6 +241,7 @@ data "aws_iam_policy_document" "terraform_product" {
       "wafv2:CreateWebACL",
       "wafv2:DeleteIPSet",
       "wafv2:DeleteLoggingConfiguration",
+      "wafv2:DeleteWebACL",
       "wafv2:GetIPSet",
       "wafv2:GetLoggingConfiguration",
       "wafv2:GetWebACL",

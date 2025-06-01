@@ -6,7 +6,7 @@ resource "aws_wafv2_web_acl" "tools" {
   scope       = "REGIONAL" # "CLOUDFRONT" N.Virginia
 
   default_action {
-    allow {}
+    block {}
   }
 
   custom_response_body {
@@ -88,7 +88,7 @@ resource "aws_wafv2_web_acl" "tools" {
 
   visibility_config {
     cloudwatch_metrics_enabled = true
-    metric_name                = "${local.name_prefix}-waf-acl"
+    metric_name                = "${local.name_prefix}-waf-acl-tools"
     sampled_requests_enabled   = true
   }
 
@@ -104,7 +104,7 @@ resource "aws_wafv2_ip_set" "tools" {
   description        = "IP Set to explicitly allow known trusted IPs to tooling services"
   scope              = "REGIONAL"
   ip_address_version = "IPV4"
-  addresses          = local.waf_allowed_ip_list
+  addresses          = local.waf_allowed_ip_list_tools
 
   tags = merge(
     { Name = "${local.name_prefix}-tools-known-ips" },
