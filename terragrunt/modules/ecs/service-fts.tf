@@ -14,7 +14,7 @@ module "ecs_service_fts" {
   ecs_listener_arn       = aws_lb_listener.ecs.arn
   ecs_service_base_sg_id = var.ecs_sg_id
   family                 = "app"
-  healthcheck_path       = "/" #"/healthz.php"
+  healthcheck_path       = "/Search" # @TODO (ABN) see if it has an actual healthcheck
   host_port              = var.service_configs.fts.port
   memory                 = var.service_configs.fts.memory
   name                   = var.service_configs.fts.name

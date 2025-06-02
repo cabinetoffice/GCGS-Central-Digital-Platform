@@ -34,16 +34,16 @@ locals {
 
   orchestrator_service_version = data.aws_ssm_parameter.orchestrator_service_version.value
 
-  service_version = var.pinned_service_version == null ? data.aws_ssm_parameter.orchestrator_service_version.value : var.pinned_service_version
+  service_version_sirsi = var.pinned_service_version_sirsi == null ? data.aws_ssm_parameter.orchestrator_service_version.value : var.pinned_service_version_sirsi
 
   shared_sessions_enabled    = true
   ssm_data_protection_prefix = "${local.name_prefix}-ec-sessions"
 
-  migrations = ["organisation-information-migrations", "entity-verification-migrations"]
+  migrations_sirsi = ["organisation-information-migrations", "entity-verification-migrations"]
 
-  migration_configs = {
+  migration_configs_sirsi = {
     for name, config in var.service_configs :
-    config.name => config if contains(local.migrations, config.name)
+    config.name => config if contains(local.migrations_sirsi, config.name)
   }
 
   send_notify_emails_enabled_accounts = ["development", "staging", "integration", "production"]
@@ -51,7 +51,7 @@ locals {
 
   service_configs = {
     for name, config in var.service_configs :
-    config.name => config if !contains(local.migrations, config.name)
+    config.name => config if !contains(local.migrations_sirsi, config.name)
   }
 
   tasks = [

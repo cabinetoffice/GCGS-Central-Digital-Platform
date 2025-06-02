@@ -24,7 +24,7 @@ module "ecs_service_organisation" {
       queue_entity_verification_url   = var.queue_entity_verification_url
       queue_organisation_url          = var.queue_organisation_url
       send_notify_emails              = local.send_notify_emails
-      service_version                 = local.service_version
+      service_version                 = local.service_version_sirsi
       vpc_cidr                        = var.vpc_cider
     }
   )

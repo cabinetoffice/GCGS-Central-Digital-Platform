@@ -18,7 +18,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 7,
+  "id": 36,
   "links": [],
   "panels": [
     {
@@ -31,7 +31,7 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 17,
+        "h": 20,
         "w": 24,
         "x": 0,
         "y": 0
@@ -39,14 +39,16 @@
       "id": 2,
       "options": {
         "dedupStrategy": "none",
-        "enableLogDetails": true,
+        "enableInfiniteScrolling": true,
+        "enableLogDetails": false,
         "prettifyLogMessage": false,
         "showCommonLabels": false,
         "showLabels": false,
         "showTime": true,
         "sortOrder": "Descending",
-        "wrapLogMessage": true
+        "wrapLogMessage": false
       },
+      "pluginVersion": "11.6.0",
       "targets": [
         {
           "datasource": {
@@ -54,14 +56,14 @@
             "uid": "CLOUDWATCH"
           },
           "dimensions": {},
-          "expression": "fields @timestamp, @message  \n| sort @timestamp desc",
+          "expression": "fields @timestamp, @message \n| sort @timestamp desc",
           "id": "",
           "label": "",
           "logGroups": [
             {
               "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
-              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/clamav-rest:*",
-              "name": "/ecs/clamav-rest"
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/fts-migrations:*",
+              "name": "/ecs/fts-migrations"
             }
           ],
           "matchExact": true,
@@ -78,11 +80,13 @@
           "statsGroups": []
         }
       ],
-      "title": "All",
+      "title": "",
       "type": "logs"
     }
   ],
-  "schemaVersion": 39,
+  "preload": false,
+  "refresh": "",
+  "schemaVersion": 41,
   "tags": [],
   "templating": {
     "list": []
@@ -93,8 +97,7 @@
   },
   "timepicker": {},
   "timezone": "browser",
-  "title": "ClamAV REST",
-  "uid": "clamav-rest",
-  "version": 1,
-  "weekStart": ""
+  "title": "Migrations (FTS)",
+  "uid": "migrations-fts",
+  "version": 1
 }
