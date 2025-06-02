@@ -250,117 +250,56 @@
   <data name="Steel_Configuration_FurtherQuestionsExemptedHint" xml:space="preserve">
     <value>You'll need to provide information on steel specific supply chain projects or programmes. This may include relevant examples of: </value>
   </data>
-  <data name="Steel_Configuration_FurtherQuestionsExemptedHeading" xml:space="preserve">
-    <value>The steel information you'll need</value>
-  </data>
-  <data name="Steel_Configuration_AddAnotherAnswerLabel" xml:space="preserve">
-    <value>Add another Steel Information?</value>
-  </data>
-  <data name="Steel_Configuration_SingularSummaryHeading" xml:space="preserve">
-    <value>You have added Steel Information</value>
-  </data>
-  <data name="Steel_Configuration_RemoveConfirmationHeading" xml:space="preserve">
-    <value>Are you sure you want to remove this Steel Information?</value>
-  </data>
-  <data name="Steel_Configuration_PluralSummaryHeadingFormat" xml:space="preserve">
-    <value>You have added {0} Steel Information</value>
-  </data>
-  <data name="Steel_Configuration_SingularSummaryHeadingHint" xml:space="preserve">
-    <value>Steel module</value>
-  </data>
-  <data name="Steel_Configuration_PluralSummaryHeadingHintFormat" xml:space="preserve">
-    <value>Steel module</value>
-  </data>
-
-  <!-- Question 01-->
   <data name="SteelQuestion_01_Title" xml:space="preserve">
     <value>Submitting your steel information</value>
   </data>
   <data name="SteelQuestion_01_Description" xml:space="preserve">
     <value>
-      &lt;div class=&quot;govuk-body&quot;&gt;This module refers to the procurement and use of steel products in government projects. It focuses on compliance with UK regulations regarding sourcing, quality, and sustainability. For further information read &lt;a target=\&quot;_blank\&quot; href=\&quot;https://www.gov.uk/government/publications/ppn-010-procuring-steel-in-government-contracts/ppn-010-revised-guidance-on-procuring-steel-in-government-contracts-html&quot;&gt;PPN 010: Revised guidance on procuring steel in government contracts (opens in new tab).&lt;/a&gt;
-&lt;/div&gt;
-&lt;div class=&quot;govuk-body&quot;&gt;
-  &lt;p class=&quot;govuk-body&quot;&gt;The steel information you&#39;ll need&lt;/p&gt;
-  &lt;br/&gt;You&#39;ll need to provide information on steel specific supply chain projects or programmes. This may include relevant examples of: 
-  &lt;ul class=&quot;govuk-body govuk-list govuk-list--bullet&quot;&gt;
-    &lt;li&gt;management systems, policies, standards and procedures&lt;/li&gt;
-    &lt;li&gt;sustainable practice&lt;/li&gt;
-    &lt;li&gt;health and safety breaches&lt;/li&gt;
-  &lt;/ul&gt;
-&lt;/div&gt;
+      &lt;p class="govuk-body"&gt;This module refers to the procurement and use of steel products in government projects. It focuses on compliance with UK regulations regarding sourcing, quality, and sustainability. For further information read &lt;a target="_blank" href="https://www.gov.uk/government/publications/ppn-010-procuring-steel-in-government-contracts/ppn-010-revised-guidance-on-procuring-steel-in-government-contracts-html"&gt;PPN 010: Revised guidance on procuring steel in government contracts (opens in new tab)&lt;/a&gt;.&lt;/p&gt;
+      &lt;p class="govuk-body govuk-!-margin-top-2"&gt;You are only required to complete this module if requested by the contracting authority you are bidding for. Failure to complete this module may result in your tenders being deemed insufficient where PPN 010 has been applied.&lt;/p&gt;
+      &lt;h2 class="govuk-heading-m"&gt;The information you&amp;#39;ll need&lt;/h2&gt;
+      &lt;p class="govuk-body"&gt;You&amp;#39;ll need to provide information on steel specific supply chain projects or programmes. This may include relevant examples of:&lt;/p&gt;
+      &lt;ul class="govuk-list govuk-list--bullet"&gt;
+        &lt;li&gt;management systems, policies, standards and procedures&lt;/li&gt;
+        &lt;li&gt;sustainable practice&lt;/li&gt;
+        &lt;li&gt;health and safety breaches&lt;/li&gt;
+      &lt;/ul&gt;
     </value>
   </data>
-
-  <!-- Question 02-->
   <data name="SteelQuestion_02_Title" xml:space="preserve">
     <value>Supply chain management in steel procurement</value>
   </data>
   <data name="SteelQuestion_02_SummaryTitle" xml:space="preserve">
-    <value>Supply chain management in steel procurement</value>
+    <value>Supply chain management</value>
   </data>
   <data name="SteelQuestion_02_Description" xml:space="preserve">
-    <value>&lt;div class="govuk-body"&gt; Describe the steel specific supply chain management systems, policies, standards and procedures you have in place to ensure effective supply chain management and compliance with relevant legislation for: &lt;ul class="govuk-body govuk-list govuk-list--bullet"&gt; &lt;li class="govuk-!-margin-top-4"&gt;projects and programmes involving steel procurement&lt;/li&gt; &lt;/ul&gt; &lt;/div&gt;</value>
+    <value>
+      &lt;p class=&quot;govuk-body govuk-!-font-weight-bold&quot;&gt;Where relevant, give details of steel projects or programmes where you have shown:&lt;/p&gt;
+      &lt;ul class=&quot;govuk-list govuk-list--bullet&quot;&gt;
+        &lt;li&gt;effective management of your steel supply chain systems, policies, standards and procedures&lt;/li&gt;
+        &lt;li&gt;compliance with relevant legislation&lt;/li&gt;
+        &lt;li&gt;sustainable steel supply (including your supply chain)&lt;/li&gt;
+        &lt;li&gt;management of health and safety breaches in the last 5 years, in the country where you work, for your organisation and supply chain members&lt;/li&gt;
+      &lt;/ul&gt;
+      &lt;details class=&quot;govuk-details&quot;&gt;
+        &lt;summary class=&quot;govuk-details__summary&quot;&gt;
+          &lt;span class=&quot;govuk-details__summary-text&quot;&gt;
+            What is sustainable steel supply?
+          &lt;/span&gt;
+        &lt;/summary&gt;
+        &lt;div class=&quot;govuk-details__text&quot;&gt;
+          Sustainable supply of steel refers to the sourcing and production of steel that is environmentally, socially and economically responsible. It involves practices that limit environmental impact, such as reducing carbon emissions whilst ensuring fair labour practices and supporting local communities.
+        &lt;/div&gt;
+      &lt;/details&gt;
+      &lt;p class=&quot;govuk-hint&quot;&gt;If you would like to provide this information in a document format, continue to the next question&lt;/p&gt;
+    </value>
   </data>
-
-
-  <!-- Question 03-->
   <data name="SteelQuestion_03_Title" xml:space="preserve">
     <value>Do you have supporting documents to upload?</value>
   </data>
   <data name="SteelQuestion_03_SummaryTitle" xml:space="preserve">
-    <value>Supporting Document Uploaded</value>
-  </data>
-
-
-  <!-- Question 04-->
-  <data name="SteelQuestion_04_Title" xml:space="preserve">
-    <value>Sustainable supply and production of steel</value>
-  </data>
-  <data name="SteelQuestion_04_SummaryTitle" xml:space="preserve">
-    <value>Sustainable supply and production of steel</value>
-  </data>
-  <data name="SteelQuestion_04_Description" xml:space="preserve">
-    <value> &lt;div class="govuk-body"&gt;Enter details of projects where you have shown skill and effectiveness in managing all supply chain members involved in steel supply or production to ensure a sustainble supply of steel. &lt;/div&gt; &lt;div class="govuk-inset-text"&gt; What is sustainable steel supply? &lt;br/&gt;Sustainable supply of steel refers to the sourcing and production of steel that is environmentally, socially and economically responsible. It involves practices that limit environmental impact, such as reducing carbon emissions and energy use, while also ensuring fair labour practices and supporting local communities. &lt;/div&gt;</value>
-  </data>
-
-  <!-- Question 05-->
-  <data name="SteelQuestion_05_Title" xml:space="preserve">
-    <value>Do you have supporting document to upload?</value>
-  </data>
-  <data name="SteelQuestion_05_SummaryTitle" xml:space="preserve">
     <value>Supporting document</value>
   </data>
-
-  <!-- Question 06-->
-  <data name="SteelQuestion_06_Title" xml:space="preserve">
-    <value>Have you had any breaches in health and safety legislation in the last 5 years?</value>
-  </data>
-  <data name="SteelQuestion_06_SummaryTitle" xml:space="preserve">
-    <value>Health and safety supporting document</value>
-  </data>
-
-  <!-- Question 07-->
-  <data name="SteelQuestion_07_Title" xml:space="preserve">
-    <value>Describe the health and safety breach in more detail</value>
-  </data>
-  <data name="SteelQuestion_07_SummaryTitle" xml:space="preserve">
-    <value>Sustainable supply and production of steel</value>
-  </data>
-  <data name="SteelQuestion_07_Description" xml:space="preserve">
-    <value> &lt;div class="govuk-body"&gt; Give us your explanation of breaches in health and safety legislation in the last 5 years that apply to the country where you work, for both: &lt;ul class="govuk-body govuk-list govuk-list--bullet" &gt; &lt;li class="govuk-!-margin-top-4"&gt;your organisation&lt;/li&gt; &lt;li class="govuk-!-margin-top-4"&gt;all your supply chain members involved in the production or supply of steel&lt;/li&gt; &lt;/ul&gt;&lt;/div&gt; </value>
-  </data>
-
-  <!-- Question 08-->
-  <data name="SteelQuestion_08_Title" xml:space="preserve">
-    <value>Do you have supporting documents to upload?</value>
-  </data>
-  <data name="SteelQuestion_08_SummaryTitle" xml:space="preserve">
-    <value>Health and safety breaches supporting document</value>
-  </data>
-
-
-
   <data name="Exclusions_07_Title" xml:space="preserve">
     <value>Did this exclusion happen in the UK?</value>
   </data>
