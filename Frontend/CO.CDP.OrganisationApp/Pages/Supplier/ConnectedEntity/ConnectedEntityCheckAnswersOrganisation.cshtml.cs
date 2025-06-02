@@ -175,13 +175,12 @@ public class ConnectedEntityCheckAnswersOrganisationModel(
             companyHouseNumber: (state.HasCompaniesHouseNumber == null ? null : (state.CompaniesHouseNumber ?? "")),
             endDate: null,
             entityType: state.ConnectedEntityType!.Value.AsApiClientConnectedEntityType(),
-            hasCompnayHouseNumber: state.SupplierHasCompanyHouseNumber!.Value,
+            hasCompanyHouseNumber: state.SupplierHasCompanyHouseNumber!.Value,
             individualOrTrust: connectedIndividualTrust,
             organisation: connectedOrganisation,
             overseasCompanyNumber: state.OverseasCompaniesHouseNumber,
             registeredDate: (state.RegistrationDate.HasValue ? state.RegistrationDate.Value : null),
             registerName: state.RegisterName,
-            startDate: null,
             deleted: false
         );
 
@@ -223,13 +222,12 @@ public class ConnectedEntityCheckAnswersOrganisationModel(
             companyHouseNumber: state.CompaniesHouseNumber,
             endDate: state.EndDate,
             entityType: state.ConnectedEntityType!.Value.AsApiClientConnectedEntityType(),
-            hasCompnayHouseNumber: state.SupplierHasCompanyHouseNumber!.Value,
+            hasCompanyHouseNumber: state.SupplierHasCompanyHouseNumber!.Value,
             individualOrTrust: connectedIndividualTrust,
             organisation: connectedOrganisation,
             overseasCompanyNumber: state.OverseasCompaniesHouseNumber,
             registeredDate: (state.RegistrationDate.HasValue ? state.RegistrationDate.Value : null),
             registerName: state.RegisterName,
-            startDate: null,
             deleted: false
         );
 

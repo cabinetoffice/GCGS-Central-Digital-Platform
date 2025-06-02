@@ -2,13 +2,12 @@ using CO.CDP.DataSharing.WebApi.Model;
 using CO.CDP.OrganisationInformation;
 using CO.CDP.OrganisationInformation.Persistence;
 using CO.CDP.OrganisationInformation.Persistence.Forms;
+using FluentAssertions.Common;
 using static CO.CDP.OrganisationInformation.Persistence.ConnectedEntity;
-using ConnectedEntityType = CO.CDP.OrganisationInformation.Persistence.ConnectedEntity.ConnectedEntityType;
-using ConnectedOrganisationCategory = CO.CDP.OrganisationInformation.Persistence.ConnectedEntity.ConnectedOrganisationCategory;
 using Form = CO.CDP.OrganisationInformation.Persistence.Forms.Form;
 using FormQuestion = CO.CDP.OrganisationInformation.Persistence.Forms.FormQuestion;
-using PersistenceForms = CO.CDP.OrganisationInformation.Persistence.Forms;
 using Persistence = CO.CDP.OrganisationInformation.Persistence;
+using PersistenceForms = CO.CDP.OrganisationInformation.Persistence.Forms;
 
 namespace CO.CDP.DataSharing.WebApi.Tests;
 
@@ -49,8 +48,8 @@ internal static class EntityFactory
             Name = "Standard Questions",
             Version = "1.0",
             IsRequired = true,
-            Scope = PersistenceForms.FormScope.SupplierInformation,
-            Sections = new List<PersistenceForms.FormSection> {
+            Scope = FormScope.SupplierInformation,
+            Sections = new List<FormSection> {
                 new FormSection
                 {
                     Id = 1,
@@ -107,7 +106,7 @@ internal static class EntityFactory
             FormId = form.Id,
             Form = form,
             AnswerSets = new List<PersistenceForms.FormAnswerSet> { },
-            SubmissionState = PersistenceForms.SubmissionState.Draft,
+            SubmissionState = SubmissionState.Draft,
             SubmittedAt = DateTime.UtcNow,
             FormVersionId = string.Empty,
             ShareCode = string.Empty
@@ -237,7 +236,7 @@ internal static class EntityFactory
         {
             Guid = theGuid,
             Name = theName,
-            Type = OrganisationInformation.OrganisationType.Organisation,
+            Type = OrganisationType.Organisation,
             Tenant = tenant ?? GivenTenant(name: theName),
 
             Identifiers = identifiers ??
@@ -262,7 +261,7 @@ internal static class EntityFactory
             Addresses = addresses ?? [new OrganisationAddress
             {
                 Type = AddressType.Registered,
-                Address = new OrganisationInformation.Persistence.Address
+                Address = new Persistence.Address
                 {
                     StreetAddress = "1234 Default St",
                     Locality = "Default City",
@@ -321,20 +320,20 @@ internal static class EntityFactory
         return tenant;
     }
 
-    private static PersistenceForms.FormSection GivenSection(Guid sectionId, PersistenceForms.Form form, PersistenceForms.FormSectionType? sectionType = null)
+    private static FormSection GivenSection(Guid sectionId, Form form, FormSectionType? sectionType = null)
     {
-        var formSection = new PersistenceForms.FormSection
+        var formSection = new FormSection
         {
             Guid = sectionId,
             FormId = form.Id,
             Form = form,
-            Questions = new List<PersistenceForms.FormQuestion>(),
+            Questions = new List<FormQuestion>(),
             Title = "Localized_String",
-            Type = sectionType ?? PersistenceForms.FormSectionType.Declaration,
+            Type = sectionType ?? FormSectionType.Declaration,
             AllowsMultipleAnswerSets = true,
             CheckFurtherQuestionsExempted = false,
             DisplayOrder = 1,
-            Configuration = new PersistenceForms.FormSectionConfiguration
+            Configuration = new FormSectionConfiguration
             {
                 PluralSummaryHeadingFormat = "You have added {0} files",
                 SingularSummaryHeading = "You have added 1 file",
@@ -349,7 +348,7 @@ internal static class EntityFactory
 
     public static List<PersistenceForms.FormAnswerSet> GivenQuestionsAndAnswers(
         PersistenceForms.SharedConsent sharedConsent,
-        PersistenceForms.Form form)
+        Form form)
     {
         var section = GivenSection(Guid.NewGuid(), form);
         var answerSet = new PersistenceForms.FormAnswerSet
@@ -363,9 +362,9 @@ internal static class EntityFactory
             FurtherQuestionsExempted = false,
         };
 
-        var questions = new List<PersistenceForms.FormQuestion>
+        var questions = new List<FormQuestion>
                 {
-                    new PersistenceForms.FormQuestion
+                    new FormQuestion
                     {
                         Id = 1,
                         Guid = Guid.NewGuid(),
@@ -375,7 +374,7 @@ internal static class EntityFactory
                         Description = "You will need to upload accounts or statements for your 2 most recent financial years. If you do not have 2 years, you can upload your most recent financial year. You will need to enter the financial year end date for the information you upload.",
                         Type = PersistenceForms.FormQuestionType.NoInput,
                         IsRequired = true,
-                        Options = new PersistenceForms.FormQuestionOptions(),
+                        Options = new FormQuestionOptions(),
                         NextQuestion = null,
                         NextQuestionAlternative = null,
                         CreatedOn = DateTimeOffset.UtcNow,
@@ -383,7 +382,7 @@ internal static class EntityFactory
                         Section = section,
                         SortOrder = 1
                     },
-                    new PersistenceForms.FormQuestion
+                    new FormQuestion
                     {
                         Id = 2,
                         Guid = Guid.NewGuid(),
@@ -393,7 +392,7 @@ internal static class EntityFactory
                         Description = "Localized_String",
                         Type = PersistenceForms.FormQuestionType.YesOrNo,
                         IsRequired = true,
-                        Options = new PersistenceForms.FormQuestionOptions(),
+                        Options = new FormQuestionOptions(),
                         NextQuestion = null,
                         NextQuestionAlternative = null,
                         CreatedOn = DateTimeOffset.UtcNow,
@@ -401,7 +400,7 @@ internal static class EntityFactory
                         Section = section,
                         SortOrder = 2
                     },
-                    new PersistenceForms.FormQuestion
+                    new FormQuestion
                     {
                         Id = 2,
                         Guid  = Guid.NewGuid(),
@@ -411,7 +410,7 @@ internal static class EntityFactory
                         Description = "Upload your most recent 2 financial years. If you do not have 2, upload your most recent financial year.",
                         Type = PersistenceForms.FormQuestionType.FileUpload,
                         IsRequired = true,
-                        Options = new PersistenceForms.FormQuestionOptions(),
+                        Options = new FormQuestionOptions(),
                         NextQuestion = null,
                         NextQuestionAlternative = null,
                         CreatedOn = DateTimeOffset.UtcNow,
@@ -419,7 +418,7 @@ internal static class EntityFactory
                         Section = section,
                         SortOrder = 3
                     },
-                    new PersistenceForms.FormQuestion
+                    new FormQuestion
                     {
                         Id = 3,
                         Guid  = Guid.NewGuid(),
@@ -429,7 +428,7 @@ internal static class EntityFactory
                         Description = String.Empty,
                         Type = PersistenceForms.FormQuestionType.Date,
                         IsRequired = true,
-                        Options = new PersistenceForms.FormQuestionOptions(),
+                        Options = new FormQuestionOptions(),
                         NextQuestion = null,
                         NextQuestionAlternative = null,
                         CreatedOn = DateTimeOffset.UtcNow,
@@ -437,7 +436,7 @@ internal static class EntityFactory
                         Section = section,
                         SortOrder = 4
                     },
-                    new PersistenceForms.FormQuestion
+                    new FormQuestion
                     {
                         Id = 4,
                         Guid  = Guid.NewGuid(),
@@ -447,7 +446,7 @@ internal static class EntityFactory
                         Type = PersistenceForms.FormQuestionType.CheckYourAnswers,
                         Description = String.Empty,
                         IsRequired = true,
-                        Options = new PersistenceForms.FormQuestionOptions(),
+                        Options = new FormQuestionOptions(),
                         NextQuestion = null,
                         NextQuestionAlternative = null,
                         CreatedOn = DateTimeOffset.UtcNow,
@@ -455,7 +454,7 @@ internal static class EntityFactory
                         Section = section,
                         SortOrder = 5
                     },
-                    new PersistenceForms.FormQuestion
+                    new FormQuestion
                     {
                         Id = 5,
                         Guid  = Guid.NewGuid(),
@@ -465,7 +464,7 @@ internal static class EntityFactory
                         Description = string.Empty,
                         Type = PersistenceForms.FormQuestionType.Address,
                         IsRequired = true,
-                        Options = new PersistenceForms.FormQuestionOptions(),
+                        Options = new FormQuestionOptions(),
                         NextQuestion = null,
                         NextQuestionAlternative = null,
                         CreatedOn = DateTimeOffset.UtcNow,
@@ -476,7 +475,7 @@ internal static class EntityFactory
                 };
         section.Questions = questions;
 
-        var exclusionSection = GivenSection(Guid.NewGuid(), form, PersistenceForms.FormSectionType.Exclusions);
+        var exclusionSection = GivenSection(Guid.NewGuid(), form, FormSectionType.Exclusions);
 
         var formAnswers = new List<PersistenceForms.FormAnswerSet>
             {

@@ -1,7 +1,7 @@
-CREATE OR REPLACE PROCEDURE public.create_shared_consent_snapshot(
-    IN p_share_code text)
+CREATE OR REPLACE PROCEDURE create_shared_consent_snapshot(
+	IN p_share_code text)
 LANGUAGE 'plpgsql'
-AS $$
+AS $BODY$
 
 DECLARE v_shared_consent_id INT;
 DECLARE v_organisation_id INT;
@@ -99,11 +99,11 @@ BEGIN
 	CREATE TEMP TABLE temp_inserted_connected_entities_data (id INT);
 	WITH inserted_connected_entities_data AS (
 		INSERT INTO connected_entities_snapshot
-			(shared_consent_id, "guid", entity_type, has_compnay_house_number, company_house_number, overseas_company_number, 
-			registered_date, register_name, start_date, end_date, created_on, updated_on, mapping_id, deleted)
+			(shared_consent_id, "guid", entity_type, has_company_house_number, company_house_number, overseas_company_number, 
+			registered_date, register_name, end_date, created_on, updated_on, mapping_id, deleted)
 	    SELECT 
-	        v_shared_consent_id, "guid", entity_type, has_compnay_house_number, company_house_number, overseas_company_number, 
-			registered_date, register_name, start_date, end_date, created_on, updated_on, id, deleted
+	        v_shared_consent_id, "guid", entity_type, has_company_house_number, company_house_number, overseas_company_number, 
+			registered_date, register_name, end_date, created_on, updated_on, id, deleted
 	    FROM 
 	        connected_entities
 	    WHERE 
@@ -192,4 +192,4 @@ BEGIN
 	DROP TABLE IF EXISTS temp_connected_entities_address_map;
 	DROP TABLE IF EXISTS temp_inserted_connected_entities_address_data;
 END;
-$$;
+$BODY$;

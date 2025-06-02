@@ -9,7 +9,7 @@ public class ConnectedEntity : IEntityDate
     public int Id { get; set; }
     public required Guid Guid { get; set; }
     public required ConnectedEntityType EntityType { get; set; }
-    public bool HasCompnayHouseNumber { get; set; }
+    public bool HasCompanyHouseNumber { get; set; }
     public string? CompanyHouseNumber { get; set; }
     public string? OverseasCompanyNumber { get; set; }
 
@@ -22,7 +22,6 @@ public class ConnectedEntity : IEntityDate
 
     public required Organisation SupplierOrganisation { get; set; }
 
-    public DateTimeOffset? StartDate { get; set; }
     public DateTimeOffset? EndDate { get; set; }
 
     public DateTimeOffset CreatedOn { get; set; }
@@ -70,28 +69,6 @@ public class ConnectedEntity : IEntityDate
         public DateTimeOffset UpdatedOn { get; set; }
     }
 
-    public enum ControlCondition
-    {
-        None,
-        OwnsShares,
-        HasVotingRights,
-        CanAppointOrRemoveDirectors,
-        HasOtherSignificantInfluenceOrControl
-    }
-
-    public enum ConnectedEntityType
-    {
-        Organisation = 1,
-        Individual,
-        TrustOrTrustee
-    }
-
-    public enum ConnectedPersonType
-    {
-        Individual = 1,
-        TrustOrTrustee
-    }
-
     public enum ConnectedEntityIndividualAndTrustCategoryType
     {
         PersonWithSignificantControlForIndiv = 1,
@@ -101,14 +78,4 @@ public class ConnectedEntity : IEntityDate
         DirectorOrIndivWithTheSameResponsibilitiesForTrust,
         AnyOtherIndivWithSignificantInfluenceOrControlForTrust
     }
-
-    public enum ConnectedOrganisationCategory
-    {
-        RegisteredCompany = 1,
-        DirectorOrTheSameResponsibilities,
-        ParentOrSubsidiaryCompany,
-        ACompanyYourOrganisationHasTakenOver,
-        AnyOtherOrganisationWithSignificantInfluenceOrControl,
-    }
-
 }
