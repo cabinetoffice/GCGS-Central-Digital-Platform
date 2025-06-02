@@ -60,6 +60,7 @@ public class FormsQuestionPageModel(
     [BindProperty]
     public FormElementUrlInputModel? UrlInputModel { get; set; }
     [BindProperty(SupportsGet = true)]
+
     public string? UkOrNonUk { get; set; }
     public FormQuestionType? CurrentFormQuestionType { get; private set; }
     public string? PartialViewName { get; private set; }

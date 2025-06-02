@@ -6,6 +6,8 @@ using CO.CDP.OrganisationInformation.Persistence.NonEfEntities;
 using Microsoft.AspNetCore.Mvc.Localization;
 using System.Text.Json;
 using Address = CO.CDP.OrganisationInformation.Address;
+using ConnectedEntityIndividualAndTrustCategoryType =
+    CO.CDP.OrganisationInformation.Persistence.ConnectedEntity.ConnectedEntityIndividualAndTrustCategoryType;
 using Persistence = CO.CDP.OrganisationInformation.Persistence.Forms;
 
 namespace CO.CDP.DataSharing.WebApi.AutoMapper;
@@ -34,24 +36,51 @@ public class DataSharingProfile : Profile
             .ForMember(m => m.Id, o => o.MapFrom(m => m.Organisation.Guid))
             .ForMember(m => m.Name, o => o.MapFrom(m => m.Organisation.Name))
             .ForMember(m => m.Type, o => o.MapFrom(m => m.Organisation.Type))
-            .ForMember(m => m.Identifier,
-                o => o.MapFrom(m => m.Organisation.Identifiers.FirstOrDefault(x => x.Primary)))
-            .ForMember(m => m.AdditionalIdentifiers,
-                o => o.MapFrom(m => m.Organisation.Identifiers.Where(x => !x.Primary).ToList()))
-            .ForMember(m => m.Address,
-                o => o.MapFrom(m =>
-                    m.Organisation.Addresses.FirstOrDefault(x =>
-                        x.Type == AddressType.Registered)))
+            .ForMember(m => m.Identifier, o => o.MapFrom(m => m.Organisation.Identifiers.FirstOrDefault(x => x.Primary)))
+            .ForMember(m => m.AdditionalIdentifiers, o => o.MapFrom(m => m.Organisation.Identifiers.Where(x => !x.Primary).ToList()))
+            .ForMember(m => m.Address, o => o.MapFrom(m => m.Organisation.Addresses.FirstOrDefault(x => x.Type == AddressType.Registered)))
+            .ForMember(m => m.AdditionalAddresses, o => o.MapFrom(m => m.Organisation.Addresses.Where(x => x.Type == AddressType.Postal)))
             .ForMember(m => m.ContactPoint, o => o.MapFrom(m => m.Organisation.ContactPoints.FirstOrDefault()))
             .ForMember(m => m.Roles, o => o.MapFrom(m => m.Organisation.Roles))
-            .ForMember(m => m.Details,
-                o => o.MapFrom((_, _, _, context) => context.Items["Details"]))
+            .ForMember(m => m.Details, o => o.MapFrom<DetailsValueResolver>())
             .ForMember(m => m.SupplierInformationData, o => o.MapFrom(m => m))
-            .ForMember(m => m.AssociatedPersons,
-                o => o.MapFrom((_, _, _, context) => context.Items["AssociatedPersons"]))
-            .ForMember(m => m.AdditionalEntities,
-                o => o.MapFrom((_, _, _, context) => context.Items["AdditionalEntities"]))
+            .ForMember(m => m.AssociatedPersons, o => o.MapFrom(m => m.Organisation.AssociatedPersons))
+            .ForMember(m => m.AdditionalEntities, o => o.MapFrom(m => m.Organisation.AdditionalEntities))
             .ForMember(m => m.AdditionalParties, o => o.Ignore());
+
+        CreateMap<ConnectedEntityNonEf, AssociatedPerson>()
+            .ForMember(m => m.Id, o => o.MapFrom(m => m.Guid))
+            .ForMember(m => m.Addresses, o => o.MapFrom(m => m.Addresses))
+            .ForMember(m => m.RegistrationAuthority, o => o.MapFrom(m => m.RegisterName))
+            .ForMember(m => m.RegisteredDate, o => o.MapFrom(m => m.RegisteredDate))
+            .ForMember(m => m.HasCompanyHouseNumber, o => o.MapFrom(m => m.HasCompanyHouseNumber))
+            .ForMember(m => m.CompanyHouseNumber, o => o.MapFrom(m => m.CompanyHouseNumber))
+            .ForMember(m => m.OverseasCompanyNumber, o => o.MapFrom(m => m.OverseasCompanyNumber))
+            .ForMember(m => m.Period, o => o.MapFrom(m => new AssociatedPeriod { EndDate = m.EndDate }))
+            .ForMember(m => m.EntityType, o => o.MapFrom(m => m.IndividualOrTrust!.ConnectedType))
+            .ForMember(m => m.Relationship, o => o.MapFrom(m => ToAssociatedRelationship(m.IndividualOrTrust!.Category)))
+            .ForMember(m => m.FirstName, o => o.MapFrom(m => m.IndividualOrTrust!.FirstName))
+            .ForMember(m => m.LastName, o => o.MapFrom(m => m.IndividualOrTrust!.LastName))
+            .ForMember(m => m.DateOfBirth, o => o.MapFrom(m => m.IndividualOrTrust!.DateOfBirth))
+            .ForMember(m => m.Nationality, o => o.MapFrom(m => m.IndividualOrTrust!.Nationality))
+            .ForMember(m => m.ResidentCountry, o => o.MapFrom(m => m.IndividualOrTrust!.ResidentCountry))
+            .ForMember(m => m.ControlCondition, o => o.MapFrom(m => m.IndividualOrTrust!.ControlCondition));
+
+        CreateMap<ConnectedEntityNonEf, AssociatedEntity>()
+            .ForMember(m => m.Id, o => o.MapFrom(m => m.Guid))
+            .ForMember(m => m.Addresses, o => o.MapFrom(m => m.Addresses))
+            .ForMember(m => m.RegistrationAuthority, o => o.MapFrom(m => m.RegisterName))
+            .ForMember(m => m.RegisteredDate, o => o.MapFrom(m => m.RegisteredDate))
+            .ForMember(m => m.HasCompanyHouseNumber, o => o.MapFrom(m => m.HasCompanyHouseNumber))
+            .ForMember(m => m.CompanyHouseNumber, o => o.MapFrom(m => m.CompanyHouseNumber))
+            .ForMember(m => m.OverseasCompanyNumber, o => o.MapFrom(m => m.OverseasCompanyNumber))
+            .ForMember(m => m.Period, o => o.MapFrom(m => new AssociatedPeriod { EndDate = m.EndDate }))
+            .ForMember(m => m.Name, o => o.MapFrom(m => m.Organisation!.Name))
+            .ForMember(m => m.Category, o => o.MapFrom(m => m.Organisation!.Category))
+            .ForMember(m => m.InsolvencyDate, o => o.MapFrom(m => m.Organisation!.InsolvencyDate))
+            .ForMember(m => m.RegisteredLegalForm, o => o.MapFrom(m => m.Organisation!.RegisteredLegalForm))
+            .ForMember(m => m.LawRegistered, o => o.MapFrom(m => m.Organisation!.LawRegistered))
+            .ForMember(m => m.ControlCondition, o => o.MapFrom(m => m.Organisation!.ControlCondition));
 
         Uri? tempResult;
         CreateMap<IdentifierNonEf, OrganisationInformation.Identifier>()
@@ -95,7 +124,7 @@ public class DataSharingProfile : Profile
             .ForMember(m => m.Id, o => o.MapFrom(m => m.Guid))
             .ForMember(m => m.SectionName, o => o.MapFrom<LocalizedPropertyResolver<FormAnswerSetNonEf, FormAnswerSet>, string>(m => m.Section.Title))
             .ForMember(m => m.Answers, o => o.MapFrom(m => m.Answers.Where(x => x.Question.Type != Persistence.FormQuestionType.NoInput && x.Question.Type != Persistence.FormQuestionType.CheckYourAnswers)))
-            .ForMember(m => m.OrganisationId, o => o.Ignore());
+            .ForMember(m => m.OrganisationId, o => o.MapFrom((_, _, _, ctx) => ((SharedConsentNonEf)ctx.Items["RootSource"]).Organisation.Guid));
 
         CreateMap<FormAnswerNonEf, FormAnswer>()
             .ForMember(m => m.QuestionName, o => o.MapFrom(m => m.Question.Name))
@@ -104,10 +133,10 @@ public class DataSharingProfile : Profile
             .ForMember(m => m.StartValue, o => o.MapFrom(m => m.StartValue))
             .ForMember(m => m.EndValue, o => o.MapFrom(m => m.EndValue))
             .ForMember(m => m.DateValue, o => o.MapFrom(m => ToDateOnly(m.DateValue)))
-            .ForMember(m => m.TextValue, o => o.MapFrom(m => m.TextValue))
+            .ForMember(m => m.TextValue, o => o.MapFrom(m => m.Question.Type == Persistence.FormQuestionType.FileUpload ? null : m.TextValue))
             .ForMember(m => m.OptionValue, o => o.MapFrom(m => m.OptionValue != null ? new string[] { m.OptionValue } : null))
             .ForMember(m => m.JsonValue, o => o.MapFrom<JsonValueResolver>())
-            .ForMember(m => m.DocumentUri, o => o.Ignore());
+            .ForMember(m => m.DocumentUri, o => o.MapFrom<DocumentUriValueResolver>());
 
         CreateMap<FormQuestionNonEf, FormQuestion>()
             .ForMember(m => m.Type, o => o.MapFrom<CustomFormQuestionTypeResolver>())
@@ -118,7 +147,8 @@ public class DataSharingProfile : Profile
             .ForMember(m => m.SectionName, o => o.MapFrom<LocalizedPropertyResolver<FormQuestionNonEf, FormQuestion>, string>(m => m.Section.Title))
             .ForMember(m => m.Options, o => o.MapFrom<FormQuestionOptionsResolver>())
             .ForMember(m => m.SortOrder, o => o.MapFrom(m => m.SortOrder))
-            .ForMember(m => m.OrganisationId, o => o.Ignore());
+            .ForMember(m => m.OrganisationId, o => o.MapFrom((_, _, _, ctx) => ((SharedConsentNonEf)ctx.Items["RootSource"]).Organisation.Guid));
+
         CreateMap<Persistence.FormQuestionChoice, FormQuestionOption>()
             .ForMember(m => m.Id, o => o.MapFrom(m => m.Id))
             .ForMember(m => m.Value, o => o.MapFrom<LocalizedPropertyResolver<Persistence.FormQuestionChoice, FormQuestionOption>, string>(m => m.Title));
@@ -130,7 +160,47 @@ public class DataSharingProfile : Profile
             .ForMember(m => m.RegisteredUnderAct2006, o => o.MapFrom(m => m.RegisteredUnderAct2006));
     }
 
+    private static AssociatedRelationship ToAssociatedRelationship(ConnectedEntityIndividualAndTrustCategoryType relationship)
+    {
+        return relationship switch
+        {
+            ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForIndiv
+                => AssociatedRelationship.PersonWithSignificantControlForIndividual,
+            ConnectedEntityIndividualAndTrustCategoryType.DirectorOrIndivWithTheSameResponsibilitiesForIndiv
+                => AssociatedRelationship.DirectorOrIndividualWithTheSameResponsibilitiesForIndividual,
+            ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndivWithSignificantInfluenceOrControlForIndiv
+                => AssociatedRelationship.AnyOtherIndividualWithSignificantInfluenceOrControlForIndividual,
+            ConnectedEntityIndividualAndTrustCategoryType.PersonWithSignificantControlForTrust
+                => AssociatedRelationship.PersonWithSignificantControlForTrust,
+            ConnectedEntityIndividualAndTrustCategoryType.DirectorOrIndivWithTheSameResponsibilitiesForTrust
+                => AssociatedRelationship.DirectorOrIndividualWithTheSameResponsibilitiesForTrust,
+            ConnectedEntityIndividualAndTrustCategoryType.AnyOtherIndivWithSignificantInfluenceOrControlForTrust
+                => AssociatedRelationship.AnyOtherIndividualWithSignificantInfluenceOrControlForTrust,
+            _
+                => throw new Exception($"{nameof(ConnectedEntityIndividualAndTrustCategoryType)} enum to {nameof(AssociatedRelationship)} enum does not exists."),
+        };
+    }
+
     private DateOnly? ToDateOnly(DateTime? dateTime) => dateTime.HasValue ? DateOnly.FromDateTime(dateTime.Value) : null;
+}
+public class DetailsValueResolver : IValueResolver<SharedConsentNonEf, SupplierInformation, Details>
+{
+    public Details Resolve(SharedConsentNonEf source, SupplierInformation destination,
+        Details destMember, ResolutionContext context)
+    {
+        var legalForm = source.Organisation.SupplierInfo?.LegalForm;
+        var operationTypes = source.Organisation.SupplierInfo?.OperationTypes;
+
+        return new Details
+        {
+            LegalForm = legalForm != null ? context.Mapper.Map<LegalForm>(legalForm) : null,
+            Scale = (operationTypes != null && operationTypes.Contains(OperationType.SmallOrMediumSized)) ? "small"
+                : ((operationTypes == null || operationTypes.Count == 0) ? null : "large"),
+            Vcse = (operationTypes != null && operationTypes.Count > 0) ? operationTypes.Contains(OperationType.NonGovernmental) : (bool?)null,
+            ShelteredWorkshop = (operationTypes != null && operationTypes.Count > 0) ? operationTypes.Contains(OperationType.SupportedEmploymentProvider) : (bool?)null,
+            PublicServiceMissionOrganization = (operationTypes != null && operationTypes.Count > 0) ? operationTypes.Contains(OperationType.PublicService) : (bool?)null
+        };
+    }
 }
 
 public class CustomFormQuestionTypeResolver : IValueResolver<FormQuestionNonEf, FormQuestion, FormQuestionType>
@@ -224,20 +294,69 @@ public class JsonValueResolver : IValueResolver<FormAnswerNonEf, FormAnswer, Dic
             return null;
         }
 
-        return JsonSerializer.Deserialize<Dictionary<string, object>>(source.JsonValue);
+        var values = JsonSerializer.Deserialize<Dictionary<string, object>>(source.JsonValue);
+
+        if (values != null && values.TryGetValue("type", out object? type)
+            && source.Question?.Options?.ChoiceProviderStrategy == "ExclusionAppliesToChoiceProviderStrategy")
+        {
+            var newType = type;
+            switch (type.ToString())
+            {
+                case "organisation":
+                    newType = "self";
+                    break;
+
+                case "connected-entity":
+                    var entityId = values["id"].ToString();
+
+                    if (context.Items.TryGetValue("RootSource", out var rootObj) && rootObj is SharedConsentNonEf sharedConsent)
+                    {
+                        if (sharedConsent.Organisation.AssociatedPersons.Any(a => a.Guid.ToString() == entityId) == true)
+                        {
+                            newType = "associated-persons";
+                        }
+                        else
+                        {
+                            if (sharedConsent.Organisation.AdditionalEntities.Any(a => a.Guid.ToString() == entityId) == true)
+                            {
+                                newType = "additional-entities";
+                            }
+                        }
+                    }
+                    break;
+            }
+
+            values["type"] = newType;
+        }
+
+        return values;
     }
 }
 
-public class FormQuestionOptionsResolver : IValueResolver<FormQuestionNonEf, FormQuestion, List<FormQuestionOption>>
+public class DocumentUriValueResolver(IConfiguration configuration) : IValueResolver<FormAnswerNonEf, FormAnswer, Uri?>
 {
-    private readonly IHtmlLocalizer<FormsEngineResource> _localizer;
-
-    public FormQuestionOptionsResolver(IHtmlLocalizer<FormsEngineResource> localizer)
+    public Uri? Resolve(FormAnswerNonEf source, FormAnswer destination, Uri? destMember, ResolutionContext context)
     {
-        _localizer = localizer;
-    }
+        if (context.Items.TryGetValue("RootSource", out var rootObj) && rootObj is SharedConsentNonEf sharedConsent)
+        {
+            var dataSharingApiUrl = configuration["DataSharingApiUrl"]
+                    ?? throw new Exception("Missing configuration key: DataSharingApiUrl.");
 
-    public List<FormQuestionOption> Resolve(FormQuestionNonEf src, FormQuestion destination, List<FormQuestionOption> destMember, ResolutionContext context)
+            if (source.Question.Type == Persistence.FormQuestionType.FileUpload)
+            {
+                return new Uri(new Uri(dataSharingApiUrl), $"/share/data/{sharedConsent.ShareCode}/document/{source.TextValue}");
+            }
+        }
+
+        return null;
+    }
+}
+
+public class FormQuestionOptionsResolver(IHtmlLocalizer<FormsEngineResource> localizer)
+    : IValueResolver<FormQuestionNonEf, FormQuestion, List<FormQuestionOption>>
+{
+    public List<FormQuestionOption> Resolve(FormQuestionNonEf src, FormQuestion destination,
+        List<FormQuestionOption> destMember, ResolutionContext context)
     {
         if (src.Options == null)
             return new List<FormQuestionOption>();
@@ -246,9 +365,10 @@ public class FormQuestionOptionsResolver : IValueResolver<FormQuestionNonEf, For
         {
             return src.Options.Groups
                 .SelectMany(g => g.Choices ?? new List<Persistence.FormQuestionGroupChoice>())
-                .Select(gc => new FormQuestionOption {
+                .Select(gc => new FormQuestionOption
+                {
                     Id = gc.Id,
-                    Value = _localizer[gc.Title].Value
+                    Value = localizer[gc.Title].Value
                 })
                 .ToList();
         }
@@ -267,7 +387,7 @@ public class FormQuestionOptionsResolver : IValueResolver<FormQuestionNonEf, For
                 .Select(c => new FormQuestionOption
                 {
                     Id = c.Id,
-                    Value = _localizer[c.Title].Value
+                    Value = localizer[c.Title].Value
                 })
                 .ToList();
         }

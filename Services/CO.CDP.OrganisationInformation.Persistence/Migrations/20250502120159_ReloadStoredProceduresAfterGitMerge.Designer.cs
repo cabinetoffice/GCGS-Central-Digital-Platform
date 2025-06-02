@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using CO.CDP.OrganisationInformation.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -12,9 +13,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CO.CDP.OrganisationInformation.Persistence.Migrations
 {
     [DbContext(typeof(OrganisationInformationContext))]
-    partial class OrganisationInformationContextModelSnapshot : ModelSnapshot
+    [Migration("20250502120159_ReloadStoredProceduresAfterGitMerge")]
+    partial class ReloadStoredProceduresAfterGitMerge
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -194,63 +197,6 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                         .HasName("pk_addresses_snapshot");
 
                     b.ToTable("addresses_snapshot", (string)null);
-                });
-
-            modelBuilder.Entity("CO.CDP.OrganisationInformation.Persistence.Announcement", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Body")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("body");
-
-                    b.Property<DateTimeOffset>("CreatedOn")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("created_on")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
-
-                    b.Property<DateTimeOffset?>("EndDate")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("end_date");
-
-                    b.Property<Guid>("Guid")
-                        .HasColumnType("uuid")
-                        .HasColumnName("guid");
-
-                    b.Property<DateTimeOffset?>("StartDate")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("start_date");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("title");
-
-                    b.Property<DateTimeOffset>("UpdatedOn")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("updated_on")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
-
-                    b.Property<string>("UrlRegex")
-                        .HasColumnType("text")
-                        .HasColumnName("url_regex");
-
-                    b.HasKey("Id")
-                        .HasName("pk_announcements");
-
-                    b.HasIndex("Guid")
-                        .IsUnique()
-                        .HasDatabaseName("ix_announcements_guid");
-
-                    b.ToTable("announcements", (string)null);
                 });
 
             modelBuilder.Entity("CO.CDP.OrganisationInformation.Persistence.AuthenticationKey", b =>
