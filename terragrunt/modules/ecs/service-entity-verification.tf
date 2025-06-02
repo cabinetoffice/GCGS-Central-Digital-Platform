@@ -21,7 +21,7 @@ module "ecs_service_entity_verification" {
       public_domain                 = var.public_domain
       queue_entity_verification_url = var.queue_entity_verification_url
       queue_organisation_url        = var.queue_organisation_url
-      service_version               = local.service_version
+      service_version               = local.service_version_sirsi
       uuid_ppon_service_enable      = false
       vpc_cidr                      = var.vpc_cider
     }

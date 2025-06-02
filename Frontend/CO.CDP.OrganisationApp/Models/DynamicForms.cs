@@ -97,5 +97,5 @@ public enum FormQuestionType
     Address,
     MultiLine,
     GroupedSingleChoice,
-    Url
+    Url,
 }

@@ -21,7 +21,7 @@ module "ecs_service_forms" {
       public_domain       = var.public_domain
       s3_permanent_bucket = module.s3_bucket_permanent.bucket
       s3_staging_bucket   = module.s3_bucket_staging.bucket
-      service_version     = local.service_version
+      service_version     = local.service_version_sirsi
       vpc_cidr            = var.vpc_cider
     }
   )

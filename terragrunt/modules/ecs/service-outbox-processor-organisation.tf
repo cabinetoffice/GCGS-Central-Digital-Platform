@@ -19,7 +19,7 @@ module "ecs_service_outbox_processor_organisation" {
       memory                        = var.service_configs.outbox_processor_organisation.memory
       name                          = var.service_configs.outbox_processor_organisation.name
       queue_entity_verification_url = var.queue_entity_verification_url
-      service_version               = local.service_version
+      service_version               = local.service_version_sirsi
       vpc_cidr                      = var.vpc_cider
     }
   )
