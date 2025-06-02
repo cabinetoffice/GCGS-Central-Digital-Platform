@@ -360,7 +360,54 @@
   </data>
 
 
+  <data name="HealthAndSafety_SectionTitle" xml:space="preserve">
+    <value>Health and Safety</value>
+  </data>
+  <data name="HealthAndSafetyQuestion_01_Title" xml:space="preserve">
+    <value>Submitting your health and safety information</value>
+  </data>
+  <data name="HealthAndSafetyQuestion_01_Description" xml:space="preserve">
+    <value>
+      &lt;p class=&quot;govuk-body&quot;&gt;
+        Health and safety regulations ensure the well-being of employees and the public in the workplace. Some tenders may require you to provide information about your health and safety policies, risk assessments, and training provided to prevent accidents and injuries.
+      &lt;/p&gt;
 
+      &lt;p class=&quot;govuk-body govuk-!-margin-top-2&quot;&gt;
+        You are only required to complete this module if requested by the contracting authority you are bidding for. Failure to complete this module may result in your tenders being deemed insufficient where health and safety information is required.
+      &lt;/p&gt;
+
+      &lt;h2 class=&quot;govuk-heading-m govuk-!-margin-top-4&quot;&gt;
+        The information you&apos;ll need
+      &lt;/h2&gt;
+
+      &lt;p class=&quot;govuk-body govuk-!-margin-top-2 govuk-!-margin-bottom-4&quot;&gt;
+        You&apos;ll need to provide information about your organisation&apos;s health and safety management and risk procedures.
+      &lt;/p&gt;
+    </value>
+  </data>
+  <data name="HealthAndSafetyQuestion_02_Title" xml:space="preserve">
+    <value>How do you manage health and safety?</value>
+  </data>
+  <data name="HealthAndSafetyQuestion_02_Description" xml:space="preserve">
+    <value>
+      &lt;p class=&quot;govuk-body&quot;&gt;
+        Include examples of how you handle significant risks (like the use of contractors, where relevant).
+      &lt;/p&gt;
+
+      &lt;div class=&quot;govuk-hint govuk-!-margin-top-2&quot;&gt;
+        If you would like to provide this information in a document format, continue to the next question.
+      &lt;/div&gt;
+    </value>
+  </data>
+  <data name="HealthAndSafetyQuestion_02_SummaryTitle" xml:space="preserve">
+    <value>Health and safety management</value>
+  </data>
+  <data name="HealthAndSafetyQuestion_03_Title" xml:space="preserve">
+    <value>Do you have supporting documents to upload?</value>
+  </data>
+  <data name="HealthAndSafetyQuestion_03_SummaryTitle" xml:space="preserve">
+    <value>Supporting documents</value>
+  </data>
   <data name="Exclusions_07_Title" xml:space="preserve">
     <value>Did this exclusion happen in the UK?</value>
   </data>
