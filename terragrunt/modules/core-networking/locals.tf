@@ -25,6 +25,6 @@ locals {
     for item in local.waf_raw_ip_set_json_tools : item.value if can(item.value)
   ] : []
 
-  waf_allowed_ip_list_tools = concat(local.waf_allowed_ip_list_tools_secret, [aws_vpc.this.cidr_block])
+  waf_allowed_ip_list_tools = concat(local.waf_allowed_ip_list_tools_secret, [aws_vpc.this.cidr_block, "${aws_nat_gateway.this.public_ip}/32"])
 
 }
