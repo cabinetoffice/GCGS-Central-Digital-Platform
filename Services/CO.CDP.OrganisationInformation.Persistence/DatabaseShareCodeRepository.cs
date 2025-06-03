@@ -191,12 +191,11 @@ public class DatabaseShareCodeRepository(OrganisationInformationContext context)
                         Id = connectedEntitiesReader.GetInt32("id"),
                         Guid = connectedEntitiesReader.GetGuid("guid"),
                         EntityType = (ConnectedEntityType)connectedEntitiesReader.GetInt32("entity_type"),
-                        HasCompnayHouseNumber = connectedEntitiesReader.GetBoolean("has_compnay_house_number"),
+                        HasCompanyHouseNumber = connectedEntitiesReader.GetBoolean("has_company_house_number"),
                         CompanyHouseNumber = connectedEntitiesReader.GetNullableString("company_house_number"),
                         OverseasCompanyNumber = connectedEntitiesReader.GetNullableString("overseas_company_number"),
                         RegisteredDate = connectedEntitiesReader.GetFieldValue<DateTimeOffset?>("registered_date"),
                         RegisterName = connectedEntitiesReader.GetNullableString("register_name"),
-                        StartDate = connectedEntitiesReader.GetFieldValue<DateTimeOffset?>("start_date"),
                         EndDate = connectedEntitiesReader.GetFieldValue<DateTimeOffset?>("end_date")
                     };
 

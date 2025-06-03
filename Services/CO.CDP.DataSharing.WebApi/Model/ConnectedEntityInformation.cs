@@ -18,7 +18,7 @@ public record ConnectedEntityInformation
     string? CompanyHouseNumber,
     ConnectedIndividualTrust? IndividualTrust,
     ConnectedOrganisation? Organisation,
-    OrganisationInformation.ConnectedEntityType EntityType,
+    ConnectedEntityType EntityType,
     ConnectedOrganisationCategory ConnectedOrganisationCategoryType,
     DateTimeOffset? RegistrationDate
 );

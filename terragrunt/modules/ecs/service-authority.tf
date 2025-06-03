@@ -23,7 +23,7 @@ module "ecs_service_authority" {
       onelogin_client_id    = local.one_loging.credential_locations.client_id
       onelogin_private_key  = local.one_loging.credential_locations.private_key
       public_domain         = var.public_domain
-      service_version       = local.service_version
+      service_version       = local.service_version_sirsi
       vpc_cidr              = var.vpc_cider
     }
   )

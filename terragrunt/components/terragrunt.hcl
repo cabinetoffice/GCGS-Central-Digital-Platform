@@ -51,7 +51,7 @@ locals {
         "https://stanvolcere.nqc.com/auth/backchannellogout",
         "https://nadeemshafi2.nqc.com/auth/backchannellogout"
       ]
-      pinned_fts_service_version        = "0.0.1"
+      pinned_service_version_fts        = "0.0.1"
       pinned_service_version            = null
       postgres_instance_type            = "db.t4g.micro"
       postgres_aurora_instance_type     = "db.r5.large"
@@ -82,8 +82,8 @@ locals {
         "https://stanvolcere.nqc.com/auth/backchannellogout",
         "https://www-staging.find-tender.service.gov.uk/auth/backchannellogout",
       ]
-      pinned_fts_service_version        = "0.0.1"
-      pinned_service_version            = "1.0.65"
+      pinned_service_version_fts        = "0.0.1"
+      pinned_service_version            = "1.0.66"
       postgres_instance_type            = "db.t4g.micro"
       postgres_aurora_instance_type     = "db.r5.large"
       private_subnets = [
@@ -147,8 +147,8 @@ locals {
         "https://www-tpp-preview.find-tender.service.gov.uk/auth/backchannellogout",
         "https://www-tpp.find-tender.service.gov.uk/auth/backchannellogout",
       ]
-      pinned_fts_service_version        = "0.0.1"
-      pinned_service_version            = "data-sharing-api-fixes-2025-05-30"
+      pinned_service_version_fts        = "0.0.1"
+      pinned_service_version            = "1.0.66"
       postgres_instance_type            = "db.t4g.micro"
       postgres_aurora_instance_type     = "db.r5.large"
       private_subnets = [
@@ -180,7 +180,7 @@ locals {
       mysql_aurora_instance_type        = "db.r5.2xlarge"
       name                              = "production"
       onelogin_logout_notification_urls = ["https://www.find-tender.service.gov.uk/auth/backchannellogout"]
-      pinned_fts_service_version        = "0.0.1"
+      pinned_service_version_fts        = "0.0.1"
       pinned_service_version            = "1.0.64"
       postgres_instance_type            = "db.t4g.micro"
       postgres_aurora_instance_type     = "db.r5.8xlarge"
@@ -211,7 +211,7 @@ locals {
   aurora_mysql_family               = try(local.environments[local.environment].mysql_aurora_family, "aurora-mysql8.0")
   aurora_mysql_instance_type        = try(local.environments[local.environment].mysql_aurora_instance_type, local.aurora_postgres_instance_type)
   onelogin_logout_notification_urls = try(local.environments[local.environment].onelogin_logout_notification_urls, null)
-  pinned_fts_service_version        = try(local.environments[local.environment].pinned_fts_service_version, "0.0.1")
+  pinned_service_version_fts        = try(local.environments[local.environment].pinned_service_version_fts, "0.0.1")
   pinned_service_version            = try(local.environments[local.environment].pinned_service_version, null)
   redis_node_type                   = try(local.environments[local.environment].redis_node_type, null)
 
@@ -236,6 +236,8 @@ locals {
     forms                                = {}
     fts                                  = { desired_count = 1 }
     fts_healthcheck                      = { desired_count = 1 }
+    fts_migrations                       = { desired_count = 1 }
+    fts_scheduler                        = { desired_count = 1 }
     organisation                         = {}
     organisation_app                     = {}
     organisation_information_migrations  = { cpu = 256,  memory = 512}
@@ -280,6 +282,8 @@ locals {
     forms                                = { port = 8086, port_host = 8086, name = "forms"}
     fts                                  = { port = 8070, port_host = 8070, name = "fts"}
     fts_healthcheck                      = { port = 8071, port_host = 8071, name = "fts-healthcheck"}
+    fts_migrations                       = { port = 8072, port_host = null, name = "fts-migrations"}
+    fts_scheduler                        = { port = 8074, port_host = 8074, name = "fts-scheduler"}
     organisation                         = { port = 8082, port_host = 8082, name = "organisation"}
     organisation_app                     = { port = 8090, port_host = 80  , name = "organisation-app"}
     organisation_information_migrations  = { port = 9090, port_host = null, name = "organisation-information-migrations"}
