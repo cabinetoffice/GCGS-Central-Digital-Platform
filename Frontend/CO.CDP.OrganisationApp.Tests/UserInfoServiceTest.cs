@@ -200,6 +200,8 @@ public class UserInfoServiceTest
     [Theory]
     [InlineData("/organisation/a86ba407-b1ec-4184-b70c-6133f8bbed88", "a86ba407-b1ec-4184-b70c-6133f8bbed88")]
     [InlineData("/organisation/a86ba407-b1ec-4184-b70c-6133f8bbed88/profile", "a86ba407-b1ec-4184-b70c-6133f8bbed88")]
+    [InlineData("/consortium/a86ba407-b1ec-4184-b70c-6133f8bbed88", "a86ba407-b1ec-4184-b70c-6133f8bbed88")]
+    [InlineData("/consortium/a86ba407-b1ec-4184-b70c-6133f8bbed88/whatever", "a86ba407-b1ec-4184-b70c-6133f8bbed88")]
     [InlineData("/organisation/not-a-guid", null)]
     [InlineData("/organisations/a86ba407-b1ec-4184-b70c-6133f8bbed88", null)]
     [InlineData(null, null)]
