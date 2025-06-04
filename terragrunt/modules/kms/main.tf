@@ -21,9 +21,17 @@ resource "aws_kms_key" "key" {
     other_aws_accounts      = var.other_aws_accounts
     other_aws_accounts_json = jsonencode([for env in var.other_aws_accounts : "arn:aws:iam::${env}:root"])
   })
+
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 resource "aws_kms_alias" "alias" {
   name          = replace("alias/${var.key_alias}", "_", "-")
   target_key_id = aws_kms_key.key.key_id
+
+  lifecycle {
+    ignore_changes = [target_key_id]
+  }
 }
