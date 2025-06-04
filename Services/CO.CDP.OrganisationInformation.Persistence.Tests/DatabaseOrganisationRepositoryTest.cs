@@ -1,13 +1,14 @@
 using CO.CDP.OrganisationInformation.Persistence.Constants;
 using CO.CDP.Testcontainers.PostgreSql;
 using FluentAssertions;
+using System.Data;
 using static CO.CDP.OrganisationInformation.Persistence.IOrganisationRepository.OrganisationRepositoryException;
 using static CO.CDP.OrganisationInformation.Persistence.Tests.EntityFactory;
 
 namespace CO.CDP.OrganisationInformation.Persistence.Tests;
 
-public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql)
-    : IClassFixture<PostgreSqlFixture>
+public class DatabaseOrganisationRepositoryTest(OrganisationInformationPostgreSqlFixture postgreSql)
+    : IClassFixture<OrganisationInformationPostgreSqlFixture>
 {
     [Fact]
     public async Task ItFindsSavedOrganisation()
@@ -675,6 +676,65 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql)
 
         result.Should().NotBeNull();
         result.Should().Contain(organisations[5]);
+    }
+
+    [Fact]
+    public async Task SearchByName_ShouldNotReturnConsortium_WhenLessThanTwoOrganisationsJoined()
+    {
+        using var repository = OrganisationRepository();
+        await using var context = GetDbContext();
+        var org1 = GivenOrganisation(name: "Organisation 1");
+        var consortiumOrg = GivenOrganisation(name: "Consortium 1", organisationType: OrganisationType.InformalConsortium);
+
+        context.Organisations.AddRange([org1, consortiumOrg]);
+
+        context.SaveChanges();
+        context.OrganisationParties.Add(new OrganisationParty
+        {
+            ParentOrganisationId = consortiumOrg.Id,
+            ChildOrganisationId = org1.Id,
+            OrganisationRelationship = OrganisationRelationship.Consortium
+        });
+
+        context.SaveChanges();
+
+        var result = await repository.SearchByName("Consortium 1", null, 5, 0.5);
+
+        result.Should().NotBeNull();
+        result.Should().NotContain(consortiumOrg);
+    }
+
+    [Fact]
+    public async Task SearchByName_ShouldReturnConsortium_WhenAtLeastTwoOrganisationsJoined()
+    {
+        using var repository = OrganisationRepository();
+        await using var context = GetDbContext();
+        var org1 = GivenOrganisation(name: "Org 1");
+        var org2 = GivenOrganisation(name: "Org 2");
+        var consortiumOrg = GivenOrganisation(name: "Consort 1", organisationType: OrganisationType.InformalConsortium);
+
+        context.Organisations.AddRange([org1, org2, consortiumOrg]);
+
+        context.SaveChanges();
+        context.OrganisationParties.AddRange([new OrganisationParty
+        {
+            ParentOrganisationId = consortiumOrg.Id,
+            ChildOrganisationId = org1.Id,
+            OrganisationRelationship = OrganisationRelationship.Consortium
+        },
+        new OrganisationParty
+        {
+            ParentOrganisationId = consortiumOrg.Id,
+            ChildOrganisationId = org2.Id,
+            OrganisationRelationship = OrganisationRelationship.Consortium
+        }]);
+
+        context.SaveChanges();
+
+        var result = await repository.SearchByName("Consort 1", null, 5, 0.5);
+
+        result.Should().NotBeNull();
+        result.Should().Contain(consortiumOrg);
     }
 
     [Fact]

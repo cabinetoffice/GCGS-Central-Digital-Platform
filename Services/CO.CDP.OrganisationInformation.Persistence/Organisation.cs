@@ -44,7 +44,7 @@ public class Organisation : IEntityDate
 
     public void UpdateSupplierInformation()
     {
-        if (!Roles.Contains(PartyRole.Tenderer))
+        if (!Roles.Contains(PartyRole.Tenderer) || Type != OrganisationType.Organisation)
         {
             return;
         }
