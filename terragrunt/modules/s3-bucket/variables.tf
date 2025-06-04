@@ -3,6 +3,24 @@ variable "bucket_name" {
   type        = string
 }
 
+variable "enable_access_logging" {
+  type        = bool
+  default     = false
+  description = "Enable server access logging for the bucket"
+}
+
+variable "enable_lifecycle" {
+  type        = bool
+  default     = false
+  description = "Enable lifecycle rule to expire files after a few days"
+}
+
+variable "enable_presigned_urls" {
+  type        = bool
+  default     = false
+  description = "Allow pre-signed URLs for S3 buckets"
+}
+
 variable "kms_key_admin_role" {
   default     = "bootstrap"
   description = "IAM role name to administrate the key"
@@ -13,6 +31,12 @@ variable "kms_key_description" {
   default     = ""
   description = "The description of the KMS used to encrypt S3 bucket contents"
   type        = string
+}
+
+variable "lifecycle_expiration_days" {
+  type        = number
+  default     = 7
+  description = "Number of days before files expire (if lifecycle enabled)"
 }
 
 variable "read_roles" {

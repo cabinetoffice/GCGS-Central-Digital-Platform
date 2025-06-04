@@ -15,6 +15,8 @@ resource "aws_kms_key" "key" {
   policy = templatefile("${path.module}/templates/key-policy.json.tftpl", {
     account_id              = data.aws_caller_identity.current.account_id
     admin_role              = var.key_admin_role
+    bucket_enable_presigned = var.bucket_enable_presigned
+    bucket_name             = var.bucket_name
     custom_policies         = var.custom_policies
     key_user_arns_json      = jsonencode([for arn in var.key_user_arns : arn])
     key_user_arns_length    = length(var.key_user_arns)
