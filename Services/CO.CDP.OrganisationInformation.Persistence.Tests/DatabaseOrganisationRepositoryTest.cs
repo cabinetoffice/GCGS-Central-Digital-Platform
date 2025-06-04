@@ -683,7 +683,7 @@ public class DatabaseOrganisationRepositoryTest(OrganisationInformationPostgreSq
     {
         using var repository = OrganisationRepository();
         await using var context = GetDbContext();
-        var org1 = GivenOrganisation(name: "Organisation 1");
+        var org1 = GivenOrganisation(name: "Child Org 1");
         var consortiumOrg = GivenOrganisation(name: "Consortium 1", organisationType: OrganisationType.InformalConsortium);
 
         context.Organisations.AddRange([org1, consortiumOrg]);
