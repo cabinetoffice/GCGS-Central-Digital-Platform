@@ -74,7 +74,27 @@
             "Resource": "*"
         }
         %{ endif }
-
+        %{ if bucket_enable_presigned }
+        ,{
+          "Sid": "AllowS3PresignedUrlUploads",
+          "Effect": "Allow",
+          "Principal": "*",
+          "Action": [
+            "kms:Decrypt",
+            "kms:GenerateDataKey"
+          ],
+          "Resource": "*",
+          "Condition": {
+            "StringEquals": {
+              "aws:ViaAWSService": "s3.amazonaws.com",
+              "aws:SourceAccount": "${account_id}"
+            },
+            "ArnLike": {
+              "aws:SourceArn": "arn:aws:s3:::${bucket_name}"
+            }
+          }
+        }
+        %{ endif }
         %{ if length(custom_policies) > 0 }
           %{ for custom_policy in custom_policies ~}
             %{ if can(jsondecode(custom_policy)) }
@@ -84,6 +104,5 @@
             %{ endif }
           %{ endfor ~}
         %{ endif }
-
     ]
 }
