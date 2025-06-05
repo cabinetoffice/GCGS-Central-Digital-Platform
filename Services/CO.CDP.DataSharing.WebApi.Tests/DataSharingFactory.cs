@@ -99,7 +99,7 @@ public static class DataSharingFactory
         return new BasicInformation
         {
             SupplierType = SupplierType.Organisation,
-            RegisteredAddress = new CO.CDP.OrganisationInformation.Address
+            RegisteredAddress = new Address
             {
                 StreetAddress = "123 Test Street",
                 Locality = "Test Locality",
@@ -109,7 +109,7 @@ public static class DataSharingFactory
                 Country = "TC",
                 Type = AddressType.Registered
             },
-            PostalAddress = new CO.CDP.OrganisationInformation.Address
+            PostalAddress = new Address
             {
                 StreetAddress = "456 Postal Street",
                 Locality = "Postal Locality",
@@ -176,7 +176,7 @@ public static class DataSharingFactory
                 "12345",
                 null,
                 null,
-                OrganisationInformation.ConnectedEntityType.Individual,
+                ConnectedEntityType.Individual,
                 ConnectedOrganisationCategory.RegisteredCompany,
                 DateTimeOffset.Now
             )

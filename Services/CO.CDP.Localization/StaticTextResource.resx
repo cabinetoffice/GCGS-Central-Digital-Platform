@@ -162,7 +162,7 @@
 &lt;div class=&quot;govuk-inset-text&quot;&gt;
     You can update your supplier information whenever it changes but you must create a new share code and file to share the new information.
 &lt;/div&gt;</value>
-  </data>  
+  </data>
   <data name="SupplierInformation_WhenYourInformationIsSaved_Heading" xml:space="preserve">
     <value>When your information is saved</value>
   </data>
@@ -3629,6 +3629,18 @@
   <data name="Consortium_ConsortiumEnterSharecode_Hint" xml:space="preserve">
     <value>Must be the organisation's most recent share code</value>
   </data>
+  <data name="Consortium_ConsortiumEnterNewSharecode_Heading" xml:space="preserve">
+    <value>Enter a new sharecode</value>
+  </data>
+  <data name="Consortium_RemoveFromConsortium_Button" xml:space="preserve">
+    <value>Remove from consortium</value>
+  </data>
+  <data name="Consortium_Summary_ShareCodeCreatedOn" xml:space="preserve">
+    <value>Share code created on </value>
+  </data>
+  <data name="Consortium_Summary_Change" xml:space="preserve">
+    <value>Change&lt;span class="govuk-visually-hidden"&gt; organisation sharecode&lt;/span&gt;</value>
+  </data>
   <data name="Consortium_ConsortiumConfirmSupplier_Heading" xml:space="preserve">
     <value>Add {0} to the consortium?</value>
   </data>
@@ -3640,6 +3652,9 @@
   </data>
   <data name="Consortium_ConsortiumOverview_Success_Heading" xml:space="preserve">
     <value>{0} has been added to this consortium.</value>
+  </data>
+  <data name="Consortium_ConsortiumOverview_Updated_Success_Heading" xml:space="preserve">
+    <value>{0} has been updated for this consortium.</value>
   </data>
   <data name="Consortium_ConsortiumEnterSharecode_SharecodeAlreadyExists" xml:space="preserve">
     <value>{0} organisation is already part of the consortium.</value>

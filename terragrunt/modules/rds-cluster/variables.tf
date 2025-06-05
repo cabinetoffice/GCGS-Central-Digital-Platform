@@ -93,6 +93,12 @@ variable "private_subnet_ids" {
   type        = list(string)
 }
 
+variable "public_subnet_ids" { # @TODO (ABN) burn me once migration is done
+  description = "List of public subnet IDs while migrating using dumpfile"
+  type        = list(string)
+  default     = []
+}
+
 variable "publicly_accessible" {
   description = "Control if instance is publicly accessible"
   type        = bool

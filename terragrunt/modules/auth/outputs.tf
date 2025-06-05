@@ -6,6 +6,22 @@ output "cloud_beaver_user_pool_client_id" {
   value = aws_cognito_user_pool_client.cloud_beaver.id
 }
 
+output "fts_healthcheck_user_pool_arn" {
+  value = aws_cognito_user_pool.auth.arn
+}
+
+output "fts_healthcheck_user_pool_client_id" {
+  value = aws_cognito_user_pool_client.fts_healthcheck.id
+}
+
+output "fts_user_pool_arn" {
+  value = aws_cognito_user_pool.auth.arn
+}
+
+output "fts_user_pool_client_id" {
+  value = aws_cognito_user_pool_client.fts.id
+}
+
 output "grafana_user_pool_arn" {
   value = aws_cognito_user_pool.auth.arn
 }
@@ -13,7 +29,6 @@ output "grafana_user_pool_arn" {
 output "grafana_user_pool_client_id" {
   value = aws_cognito_user_pool_client.grafana.id
 }
-
 
 output "healthcheck_user_pool_arn" {
   value = aws_cognito_user_pool.auth.arn

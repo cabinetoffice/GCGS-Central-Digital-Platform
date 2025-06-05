@@ -21,7 +21,7 @@ module "ecs_service_scheduled_worker" {
       name                          = var.service_configs.scheduled_worker.name
       public_domain                 = var.public_domain
       queue_entity_verification_url = var.queue_entity_verification_url
-      service_version               = local.service_version
+      service_version               = local.service_version_sirsi
       vpc_cidr                      = var.vpc_cider
     }
   )

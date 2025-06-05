@@ -57,7 +57,7 @@ module "ecs_service_organisation_app" {
       redis_primary_endpoint_address      = var.redis_primary_endpoint
       s3_permanent_bucket                 = module.s3_bucket_permanent.bucket
       s3_staging_bucket                   = module.s3_bucket_staging.bucket
-      service_version                     = local.service_version
+      service_version                     = local.service_version_sirsi
       shared_sessions_enabled             = local.shared_sessions_enabled
       ssm_data_protection_prefix          = local.ssm_data_protection_prefix
       vpc_cidr                            = var.vpc_cider

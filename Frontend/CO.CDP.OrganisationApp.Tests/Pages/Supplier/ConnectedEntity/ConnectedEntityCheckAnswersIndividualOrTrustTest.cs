@@ -302,7 +302,6 @@ public class ConnectedEntityCheckAnswersIndividualOrTrustTest
             null,
             "org name",
             null,
-            null,
             null
         );
 
