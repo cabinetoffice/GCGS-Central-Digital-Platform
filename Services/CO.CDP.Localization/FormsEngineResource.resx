@@ -857,6 +857,47 @@ PPN 006 and associated reporting standards (opens in a new tab).&lt;/a&gt;&lt;/p
   <data name="CarbonNetZero_CarbonNetZeroDetails_TCO2E_Text" xml:space="preserve">
     <value>tCO2e</value>
   </data>
+  <!-- Modern Slavery -->
+  <data name="ModernSlavery_SectionTitle" xml:space="preserve">
+    <value>Modern Slavery</value>
+  </data>
+  <data name="ModernSlavery_01_Title" xml:space="preserve">
+    <value>Submitting your modern slavery information</value>
+  </data>
+  <data name="ModernSlavery_01_Description" xml:space="preserve">
+    <value>
+    &lt;p class=&quot;govuk-body&quot;&gt;
+      Modern slavery refers to offences of slavery, servitude, forced labour and human trafficking. To address these crimes, the UK government has issued Procurement Policy Note (PPN) 009, which mandates that suppliers bidding for specific contracts demonstrate their commitment to addressing modern slavery.
+    &lt;/p&gt;
+    &lt;p class=&quot;govuk-body&quot;&gt;
+      You are only required to complete this module if requested by the contracting authority you are bidding for. Failure to complete this module may result in your tenders being deemed insufficient where PPN 009 has been applied. For more information read
+      This should be in line with &lt;a href=&quot;https://www.gov.uk/government/publications/ppn-009-tackling-modern-slavery-in-government-supply-chains/ppn-009-guidance-on-tackling-modern-slavery-in-government-supply-chains-html&quot; class=&quot;govuk-link&quot; rel=&quot;noreferrer noopener&quot; target=&quot;_blank&quot;&gt;
+      PPN 009: Tackling Modern Slavery in Supply Chains(opens in a new tab).&lt;/a&gt;
+    &lt;/p&gt;
+    &lt;h2 class=&quot;govuk-heading-m&quot;&gt;The information you&#39;ll need&lt;/h2&gt;
+    &lt;div class=&quot;govuk-body&quot;&gt;You&#39;ll need to provide information on modern slavery and trafficking in relation to your organisation. This may include:&lt;/div&gt;
+    &lt;div class=&quot;govuk-body&quot;&gt;
+      &lt;ul class=&quot;govuk-list govuk-list--bullet&quot;&gt;
+        &lt;li&gt; a link to or copy of your Modern Slavery Statement or equivalent documents &lt;/li&gt;
+        &lt;li&gt; instructions on how to find your Modern Slavery Statement or equivalent documents &lt;/li&gt;
+        &lt;li&gt; information you have included in your Modern Slavery Statement or equivalent documentation&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/div&gt;
+    </value>
+  </data>
+  <data name="ModernSlavery_02_Title" xml:space="preserve">
+    <value>Are you a commercial organisation subject to Section 54 of the Modern Slavery Act 2015?</value>
+  </data>
+  <data name="ModernSlavery_02_Description" xml:space="preserve">
+    <value>
+    &lt;span class=&quot;govuk-body&quot;&gt;For example, you are an organisation supplying goods or services that:&lt;/span&gt;
+    &lt;ul class=&quot;govuk-list govuk-list--bullet&quot;&gt;
+      &lt;li&gt;conducts business, or part of a business, in the UK&lt;/li&gt;
+      &lt;li&gt;has an annual turnover of more than £36 million&lt;/li&gt;
+    &lt;/ul&gt;
+    &lt;p class=&quot;govuk-body&quot;&gt;For more information read:&lt;/p&gt;
+    </value>
+  </data>
   <data name="Global_Enter_Your_Job_Title" xml:space="preserve">
     <value>Enter your job title</value>
   </data>
