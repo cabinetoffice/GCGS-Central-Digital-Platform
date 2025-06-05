@@ -15,11 +15,12 @@ public record SupplierInformation
     /// <example>"Acme Corporation"</example>
     [Required(AllowEmptyStrings = true)] public required string Name { get; init; }
     [Required] public required List<AssociatedPerson> AssociatedPersons { get; init; } = [];
+    [Required] public required List<AssociatedEntity> AdditionalEntities { get; init; } = [];
     [Required] public required List<OrganisationReference> AdditionalParties { get; set; } = [];
-    [Required] public required List<OrganisationReference> AdditionalEntities { get; init; } = [];
     [Required] public required OrganisationInformation.Identifier Identifier { get; init; }
     [Required] public required List<OrganisationInformation.Identifier> AdditionalIdentifiers { get; init; } = [];
     [Required] public required Address Address { get; init; }
+    [Required] public required List<Address> AdditionalAddresses { get; init; } = [];
     [Required] public required ContactPoint ContactPoint { get; init; }
 
     /// <example>["supplier"]</example>

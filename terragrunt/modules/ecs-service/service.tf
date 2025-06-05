@@ -28,7 +28,7 @@ resource "aws_ecs_task_definition" "this" {
 }
 
 resource "aws_ecs_service" "this" {
-  count = var.is_standalone_task ? 0 : 1 # contains(["app", "telemetry", "tools"], var.family) ? 1 : 0
+  count = var.is_standalone_task ? 0 : 1
 
   name                               = var.name
   cluster                            = var.cluster_id

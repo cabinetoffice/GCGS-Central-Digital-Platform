@@ -196,7 +196,7 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
                 .FirstOrDefaultAsync(o => o.Identifiers.Any(i => i.Scheme == scheme && i.IdentifierId == identifierId));
     }
 
-    public async Task<IList<OrganisationRawDto>> GetPaginated(PartyRole? role, PartyRole? pendingRole, string? searchText, int limit, int skip)
+    public async Task<Tuple<IList<OrganisationRawDto>, int>> GetPaginated(PartyRole? role, PartyRole? pendingRole, string? searchText, int limit, int skip)
     {
         var conditions = new List<string>();
 
@@ -241,8 +241,7 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
             GROUP BY
                 o.id, o.guid, o.name, o.roles, o.pending_roles, o.approved_on, o.review_comment, reviewed_by.first_name, reviewed_by.last_name
             ORDER BY
-                match_position ASC NULLS LAST, similarity_score DESC, o.name ASC
-            LIMIT :limit OFFSET :skip;";
+                match_position ASC NULLS LAST, similarity_score DESC, o.name ASC";
 
         var roleValue = role.HasValue ? (int)role.Value : (object)DBNull.Value;
         var pendingRoleValue = pendingRole.HasValue ? (int)pendingRole.Value : (object)DBNull.Value;
@@ -257,25 +256,13 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
         };
 
         var rawResults = await context.Database.SqlQueryRaw<OrganisationRawDto>(sql, parameters).ToListAsync();
+        var totalCount = rawResults.Count;
 
-        return rawResults;
-    }
+        rawResults = rawResults.Skip(skip)
+            .Take(limit)
+            .ToList();
 
-    public async Task<int> GetTotalCount(PartyRole? role, PartyRole? pendingRole, string? searchText)
-    {
-        IQueryable<Organisation> result = context.Organisations
-            .Where(o =>
-                (pendingRole.HasValue && o.PendingRoles.Contains(pendingRole.Value)) ||
-                (role.HasValue && o.Roles.Contains(role.Value))
-            );
-
-        if (searchText != null)
-        {
-            result = result.Where(o => o.Name.Contains(searchText) ||
-                                       EF.Functions.TrigramsSimilarity(o.Name, searchText) > 0.3);
-        }
-
-        return await result.CountAsync();
+        return new Tuple<IList<OrganisationRawDto>, int>(rawResults, totalCount);
     }
 
     public async Task<bool> IsEmailUniqueWithinOrganisation(Guid organisationId, string email)

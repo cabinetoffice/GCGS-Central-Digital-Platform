@@ -98,7 +98,13 @@ variable "onelogin_logout_notification_urls" {
   type        = list(string)
 }
 
-variable "pinned_service_version" {
+variable "pinned_service_version_fts" {
+  description = "The FTS service version for the this environment."
+  type        = string
+  default     = null
+}
+
+variable "pinned_service_version_sirsi" {
   description = "The service version for the this environment. If null, latest version from Orchestration will be used"
   type        = string
   default     = null
@@ -261,6 +267,30 @@ variable "user_pool_client_id" {
 }
 
 variable "user_pool_domain" {
+  type = string
+}
+
+variable "user_pool_fts_arn" {
+  type = string
+}
+
+variable "user_pool_fts_client_id" {
+  type = string
+}
+
+variable "user_pool_fts_domain" {
+  type = string
+}
+
+variable "user_pool_fts_healthcheck_arn" {
+  type = string
+}
+
+variable "user_pool_fts_healthcheck_client_id" {
+  type = string
+}
+
+variable "user_pool_fts_healthcheck_domain" {
   type = string
 }
 

@@ -5,7 +5,11 @@ module "ecs_service_cloud_beaver" {
     "${path.module}/templates/task-definitions/cloud-beaver.json.tftpl",
     {
       account_id                 = data.aws_caller_identity.current.account_id
+      cb_admin_password          = "${aws_secretsmanager_secret.cloud_beaver_credentials.arn}:ADMIN_PASSWORD::"
+      cb_admin_username          = "${aws_secretsmanager_secret.cloud_beaver_credentials.arn}:ADMIN_USERNAME::"
       cb_data_sources_secret_arn = aws_secretsmanager_secret_version.cloud_beaver_data_sources.arn
+      cb_server_name             = "CloudBeaver ${title(var.environment)} Server"
+      cb_server_url              = "https://cloud-beaver.${var.public_domain}"
       container_path             = local.cloud_beaver_container_path
       container_port             = var.cloud_beaver_config.port
       cpu                        = var.cloud_beaver_config.cpu

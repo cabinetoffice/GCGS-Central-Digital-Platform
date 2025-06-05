@@ -100,3 +100,35 @@
     color: #fff;
     margin-top: 6px;
 }
+
+/**
+ * Timeout dialog
+*/
+.app-timeout-dialog {
+    border: 0;
+    padding: 0;
+    max-width: 700px;
+    margin-top: 5%;
+}
+
+.app-timeout-dialog::backdrop {
+    background-color: rgba(0,0,0,0.5);
+}
+
+.app-timeout-dialog__header {
+    background-color: #D3D3D3;
+    padding: 15px;
+    margin: 0;
+}
+
+.app-timeout-dialog__inner {
+    padding: 15px 15px 5px 15px;
+}
+
+.app-timeout-dialog__inner:first-child {
+    margin-top: 0;
+}
+
+.app-timeout-dialog .govuk-button {
+    margin-bottom: 15px;
+}

@@ -53,13 +53,16 @@ public class UserInfoService(IHttpContextAccessor httpContextAccessor, ITenantCl
         var path = httpContextAccessor.HttpContext?.Request.Path.Value;
 
         var pathSegments = path?.Split('/', StringSplitOptions.RemoveEmptyEntries);
-        if (pathSegments is ["organisation", _, ..] && Guid.TryParse(pathSegments[1], out Guid organisationId))
+        if (pathSegments is [var first, var id, ..] &&
+            (first == "organisation" || first == "consortium") &&
+            Guid.TryParse(id, out Guid organisationId))
         {
             return organisationId;
         }
 
         return null;
     }
+
 
     private async Task<T> Cached<T>(string cacheKey, Func<Task<T>> call)
     {

@@ -1,9 +1,28 @@
 services:
   web:
-    build: .
-    image: cabinetoffice/cdp-fts
+    build:
+      context: .
+      args:
+        APP_PORT: 8071
+    image: cabinetoffice/cdp-fts-healthcheck
     ports:
-      - "8070:8070"
+      - "8071:8071"
+    depends_on:
+      - db
+    environment:
+      - DB_HOST=db
+      - DB_USER=root
+      - DB_PASS=example
+      - DB_NAME=testdb
+
+  scheduler:
+    build:
+      context: .
+      args:
+        APP_PORT: 8074
+    image: cabinetoffice/cdp-fts-scheduler
+    ports:
+      - "8074:8074"
     depends_on:
       - db
     environment:
@@ -20,4 +39,3 @@ services:
       MYSQL_DATABASE: testdb
     volumes:
       - ./mysql:/docker-entrypoint-initdb.d
-

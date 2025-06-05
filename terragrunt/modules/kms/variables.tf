@@ -1,3 +1,15 @@
+variable "bucket_enable_presigned" {
+  type        = bool
+  default     = false
+  description = "Allow pre-signed URLs for S3 buckets"
+}
+
+variable "bucket_name" {
+  type        = string
+  default     = null
+  description = "Used if bucket_enable_presigned is true"
+}
+
 variable "custom_policies" {
   type = list(string)
 }

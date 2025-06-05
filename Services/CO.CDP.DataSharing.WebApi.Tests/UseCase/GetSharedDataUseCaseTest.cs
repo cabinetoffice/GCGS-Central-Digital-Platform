@@ -3,7 +3,7 @@ using CO.CDP.DataSharing.WebApi.Tests.AutoMapper;
 using CO.CDP.DataSharing.WebApi.UseCase;
 using CO.CDP.OrganisationInformation;
 using FluentAssertions;
-using Microsoft.Extensions.Configuration;
+using FluentAssertions.Common;
 using Moq;
 using Address = CO.CDP.OrganisationInformation.Address;
 
@@ -12,13 +12,11 @@ namespace CO.CDP.DataSharing.WebApi.Tests.UseCase;
 public class GetSharedDataUseCaseTest : IClassFixture<AutoMapperFixture>
 {
     private readonly Mock<OrganisationInformation.Persistence.IShareCodeRepository> _shareCodeRepository = new();
-    private readonly Mock<IConfiguration> _configuration = new();
     private readonly GetSharedDataUseCase _useCase;
 
     public GetSharedDataUseCaseTest(AutoMapperFixture mapperFixture)
     {
-        _useCase = new GetSharedDataUseCase(_shareCodeRepository.Object,
-            mapperFixture.Mapper, _configuration.Object);
+        _useCase = new GetSharedDataUseCase(_shareCodeRepository.Object, mapperFixture.Mapper);
     }
 
     [Fact]
@@ -30,43 +28,30 @@ public class GetSharedDataUseCaseTest : IClassFixture<AutoMapperFixture>
     }
 
     [Fact]
-    public async Task ThrowsException_WhenDataSharingApiUrl_NotConfigured()
-    {
-        var (shareCode, _, organisationGuid, _) = SetupTestData();
-
-        var response = async () => await _useCase.Execute((shareCode));
-
-        await response.Should().ThrowAsync<Exception>();
-    }
-
-    [Fact]
     public async Task ItReturnsMappedSupplierInformationWhenSharedConsentIsFound()
     {
         var (shareCode, _, organisationGuid, _) = SetupTestData();
-
-        _configuration.Setup(c => c["DataSharingApiUrl"]).Returns("https://localhost");
 
         var result = await _useCase.Execute((shareCode));
         result.Should().NotBeNull();
 
         AssertBasicInformation(result, organisationGuid);
-        AssertAddress(result?.Address);
-        AssertAssociatedPersons(result?.AssociatedPersons);
-        AssertAdditionalEntities(result?.AdditionalEntities);
-        AssertIdentifier(result?.Identifier);
-        AssertDetails(result?.Details);
-        AssertAdditionalParties(result?.AdditionalParties);
-        AssertAdditionalIdentifiers(result?.AdditionalIdentifiers);
-        AssertContactPoint(result?.ContactPoint);
-        AssertRoles(result?.Roles);
-        AssertSupplierInformationData(result?.SupplierInformationData);
+        AssertAddress(result!.Address);
+        AssertAdditionalAddress(result.AdditionalAddresses);
+        AssertAssociatedPersons(result.AssociatedPersons);
+        AssertAdditionalEntities(result.AdditionalEntities);
+        AssertIdentifier(result.Identifier);
+        AssertDetails(result.Details);
+        AssertAdditionalParties(result.AdditionalParties);
+        AssertAdditionalIdentifiers(result.AdditionalIdentifiers);
+        AssertContactPoint(result.ContactPoint);
+        AssertRoles(result.Roles);
+        AssertSupplierInformationData(result.SupplierInformationData);
     }
 
     [Fact]
     public async Task Execute_ShouldAddConsortiumOrganisationSharedConsent_WhenOrganisationIsInformalConsortium()
     {
-        _configuration.Setup(c => c["DataSharingApiUrl"]).Returns("https://localhost");
-
         var consortiumShareCode = "consortium-sharecode";
         var subSharecode1 = "sub-sharecode-1";
         var subSharecode2 = "sub-sharecode-2";
@@ -102,7 +87,7 @@ public class GetSharedDataUseCaseTest : IClassFixture<AutoMapperFixture>
         string shareCode = "valid-sharecode", bool isConsortium = false)
     {
         int organisationId = 1;
-        Guid organisationGuid = Guid.NewGuid();
+        Guid organisationGuid = new Guid("1db6029d-a077-475b-a6b8-80a79c824787");
         Guid formId = Guid.NewGuid();
 
         var sharedConsent = NonEfEntityFactory.GetSharedConsent(organisationGuid, formId);
@@ -129,17 +114,89 @@ public class GetSharedDataUseCaseTest : IClassFixture<AutoMapperFixture>
             sharedConsent.Organisation.ConnectedEntities.AddRange(mockTrustOrTrustees);
         }
 
+        SetupConnectedEntityData(
+            sharedConsent,
+            organisationGuid,
+            mockAdditionalEntities.First().Guid,
+            mockIndividuals.First().Guid,
+            mockTrustOrTrustees.First().Guid);
+
         return (shareCode, organisationId, organisationGuid, formId);
     }
 
-    private void AssertBasicInformation(SupplierInformation? result, Guid organisationGuid)
+    private static void SetupConnectedEntityData(
+        OrganisationInformation.Persistence.NonEfEntities.SharedConsentNonEf sharedConsent,
+        Guid organisationGuid,
+        Guid connectedOrganisationGuid,
+        Guid connectedIndividualGuid,
+        Guid connectedTrusteeGuid)
+    {
+        var answerSet = sharedConsent.AnswerSets.First();
+        var section = sharedConsent.AnswerSets.First().Section;
+
+        var question = new OrganisationInformation.Persistence.NonEfEntities.FormQuestionNonEf
+        {
+            Id = 6,
+            Description = "Exclusion applies to",
+            Title = "Exclusion_Applies_To",
+            Guid = Guid.NewGuid(),
+            SortOrder = 7,
+            Section = section,
+            IsRequired = false,
+            Name = "Exclusion_Applies_To",
+            Options = new OrganisationInformation.Persistence.Forms.FormQuestionOptions
+            {
+                ChoiceProviderStrategy = "ExclusionAppliesToChoiceProviderStrategy"
+            },
+            Type = OrganisationInformation.Persistence.Forms.FormQuestionType.SingleChoice
+        };
+        answerSet.Section.Questions.Add(question);
+
+        answerSet.Answers.Add(new OrganisationInformation.Persistence.NonEfEntities.FormAnswerNonEf
+        {
+            QuestionId = question.Id,
+            Question = question,
+            FormAnswerSetId = answerSet.Id,
+            FormAnswerSet = answerSet,
+            JsonValue = $"{{\"id\": \"{organisationGuid}\", \"type\": \"organisation\"}}"
+        });
+
+        answerSet.Answers.Add(new OrganisationInformation.Persistence.NonEfEntities.FormAnswerNonEf
+        {
+            QuestionId = question.Id,
+            Question = question,
+            FormAnswerSetId = answerSet.Id,
+            FormAnswerSet = answerSet,
+            JsonValue = $"{{\"id\": \"{connectedOrganisationGuid}\", \"type\": \"connected-entity\"}}"
+        });
+
+        answerSet.Answers.Add(new OrganisationInformation.Persistence.NonEfEntities.FormAnswerNonEf
+        {
+            QuestionId = question.Id,
+            Question = question,
+            FormAnswerSetId = answerSet.Id,
+            FormAnswerSet = answerSet,
+            JsonValue = $"{{\"id\": \"{connectedIndividualGuid}\", \"type\": \"connected-entity\"}}"
+        });
+
+        answerSet.Answers.Add(new OrganisationInformation.Persistence.NonEfEntities.FormAnswerNonEf
+        {
+            QuestionId = question.Id,
+            Question = question,
+            FormAnswerSetId = answerSet.Id,
+            FormAnswerSet = answerSet,
+            JsonValue = $"{{\"id\": \"{connectedTrusteeGuid}\", \"type\": \"connected-entity\"}}"
+        });
+    }
+
+    private static void AssertBasicInformation(SupplierInformation? result, Guid organisationGuid)
     {
         result.Should().NotBeNull();
         result?.Id.Should().Be(organisationGuid);
         result?.Name.Should().Be("Test Organisation");
     }
 
-    private void AssertAddress(Address? address)
+    private static void AssertAddress(Address? address)
     {
         address.Should().NotBeNull();
         address?.StreetAddress.Should().Be("1234 Default St");
@@ -150,32 +207,105 @@ public class GetSharedDataUseCaseTest : IClassFixture<AutoMapperFixture>
         address?.Country.Should().Be("EX");
     }
 
-    private void AssertAssociatedPersons(IEnumerable<AssociatedPerson>? associatedPersons)
+    private static void AssertAdditionalAddress(List<Address> addresses)
+    {
+        var address = addresses.First();
+        address.Should().NotBeNull();
+        address?.StreetAddress.Should().Be("1234 Default Postal St");
+        address?.Locality.Should().Be("Default City");
+        address?.Region.Should().Be("Default Region");
+        address?.PostalCode.Should().Be("EX1 1EX");
+        address?.CountryName.Should().Be("Example Country");
+        address?.Country.Should().Be("EX");
+    }
+
+    private static void AssertAssociatedPersons(IEnumerable<AssociatedPerson>? associatedPersons)
     {
         associatedPersons.Should().NotBeNull();
         associatedPersons.Should().HaveCount(2);
-        associatedPersons?.First().Name.Should().Be("John Doe");
-        associatedPersons?.Should().Contain(x => x.Name == "John Smith");
+        AssociatedPerson individual = associatedPersons!.First();
+
+        individual.Relationship.Should().Be(AssociatedRelationship.PersonWithSignificantControlForIndividual);
+        individual.FirstName.Should().Be("John");
+        individual.LastName.Should().Be("Doe");
+        individual.DateOfBirth.Should().Be(DateTime.Today.AddYears(30));
+        individual.Nationality.Should().Be("British");
+        individual.ResidentCountry.Should().Be("United Kingdom");
+        individual.ControlCondition.Should()
+            .ContainInConsecutiveOrder([ControlCondition.HasOtherSignificantInfluenceOrControl, ControlCondition.HasVotingRights]);
+        individual.EntityType.Should().Be(ConnectedPersonType.Individual);
+        individual.RegisteredDate.Should().Be(DateTime.Today.ToDateTimeOffset());
+        individual.RegistrationAuthority.Should().Be("Approved By Trade Association");
+        individual.HasCompanyHouseNumber.Should().Be(true);
+        individual.CompanyHouseNumber.Should().Be("TestOrg123");
+        individual.OverseasCompanyNumber.Should().Be("Oversears123");
+        individual.Period.EndDate.Should().Be(DateTime.Today.AddDays(5).ToDateTimeOffset());
+        individual.Addresses.Should().HaveCount(1);
+
+        Address individualAddress = individual.Addresses.First();
+        individualAddress.StreetAddress.Should().Be("1234 Default St");
+        individualAddress.Locality.Should().Be("Default City");
+        individualAddress.Region.Should().Be("Default Region");
+        individualAddress.PostalCode.Should().Be("EX1 1EX");
+        individualAddress.CountryName.Should().Be("Example Country");
+        individualAddress.Country.Should().Be("EX");
+        individualAddress.Type.Should().Be(AddressType.Registered);
+
+        AssociatedPerson trustee = associatedPersons!.Last();
+
+        trustee.FirstName.Should().Be("John");
+        trustee.LastName.Should().Be("Smith");
+        trustee.Relationship.Should().Be(AssociatedRelationship.PersonWithSignificantControlForTrust);
+        trustee.FirstName.Should().Be("John");
+        trustee.LastName.Should().Be("Smith");
+        trustee.EntityType.Should().Be(ConnectedPersonType.TrustOrTrustee);
     }
 
-    private void AssertAdditionalEntities(IEnumerable<OrganisationReference>? additionalEntities)
+    private static void AssertAdditionalEntities(IEnumerable<AssociatedEntity>? additionalEntities)
     {
         additionalEntities.Should().NotBeNull();
-        additionalEntities.Should().HaveCount(NonEfEntityFactory.GetMockAdditionalEntities().Count);
+        additionalEntities.Should().HaveCount(EntityFactory.GetMockAdditionalEntities().Count);
+
+        AssociatedEntity org = additionalEntities!.First();
+
+        org.Name.Should().Be("Acme Group Ltd");
+        org.Category.Should().Be(ConnectedOrganisationCategory.RegisteredCompany);
+        org.InsolvencyDate.Should().Be(DateTime.Today);
+        org.RegisteredLegalForm.Should().Be("Trade Association");
+        org.LawRegistered.Should().Be("Trade Law 2024");
+        org.ControlCondition.Should()
+            .ContainInConsecutiveOrder([ControlCondition.CanAppointOrRemoveDirectors, ControlCondition.HasVotingRights, ControlCondition.OwnsShares]);
+
+        org.RegisteredDate.Should().Be(DateTime.Today.ToDateTimeOffset());
+        org.RegistrationAuthority.Should().Be("Gov Authority of UK");
+        org.HasCompanyHouseNumber.Should().Be(true);
+        org.CompanyHouseNumber.Should().Be("TestOrg456");
+        org.OverseasCompanyNumber.Should().Be("Oversears456");
+        org.Period.EndDate.Should().Be(DateTime.Today.AddMonths(5).ToDateTimeOffset());
+        org.Addresses.Should().HaveCount(1);
+
+        Address orgAddress = org.Addresses.First();
+        orgAddress.StreetAddress.Should().Be("1234 New St");
+        orgAddress.Locality.Should().Be("New City");
+        orgAddress.Region.Should().Be("New Region");
+        orgAddress.PostalCode.Should().Be("SF1 1EX");
+        orgAddress.CountryName.Should().Be("New Country");
+        orgAddress.Country.Should().Be("NW");
+        orgAddress.Type.Should().Be(AddressType.Postal);
     }
 
-    private void AssertIdentifier(OrganisationInformation.Identifier? identifier)
+    private static void AssertIdentifier(OrganisationInformation.Identifier? identifier)
     {
         identifier.Should().NotBeNull();
         identifier?.LegalName.Should().Be("DefaultLegalName");
     }
 
-    private void AssertAdditionalParties(IEnumerable<OrganisationReference>? additionalParties)
+    private static void AssertAdditionalParties(IEnumerable<OrganisationReference>? additionalParties)
     {
         additionalParties.Should().NotBeNull();
     }
 
-    private void AssertAdditionalIdentifiers(IEnumerable<OrganisationInformation.Identifier>? additionalIdentifiers)
+    private static void AssertAdditionalIdentifiers(IEnumerable<OrganisationInformation.Identifier>? additionalIdentifiers)
     {
         additionalIdentifiers.Should().NotBeNull();
         additionalIdentifiers.Should().HaveCount(1);
@@ -186,7 +316,7 @@ public class GetSharedDataUseCaseTest : IClassFixture<AutoMapperFixture>
         identifier?.Uri.Should().Be(new Uri("http://example.com"));
     }
 
-    private void AssertContactPoint(ContactPoint? contactPoint)
+    private static void AssertContactPoint(ContactPoint? contactPoint)
     {
         contactPoint.Should().NotBeNull();
         contactPoint!.Name.Should().Be("Default Contact");
@@ -195,7 +325,7 @@ public class GetSharedDataUseCaseTest : IClassFixture<AutoMapperFixture>
         contactPoint.Url.Should().Be("https://contact.default.org");
     }
 
-    private void AssertRoles(IEnumerable<PartyRole>? roles)
+    private static void AssertRoles(IEnumerable<PartyRole>? roles)
     {
         roles.Should().NotBeNull();
         roles.Should().HaveCount(1);
@@ -204,7 +334,7 @@ public class GetSharedDataUseCaseTest : IClassFixture<AutoMapperFixture>
         roleStrings.Should().Contain("buyer");
     }
 
-    private void AssertDetails(Details? details)
+    private static void AssertDetails(Details? details)
     {
         details.Should().NotBeNull();
         details?.LegalForm?.RegisteredUnderAct2006.Should().Be(false);
@@ -226,7 +356,7 @@ public class GetSharedDataUseCaseTest : IClassFixture<AutoMapperFixture>
         supplierInformationData?.AnswerSets.Should().HaveCount(2);
 
         supplierInformationData?.AnswerSets.First().Answers.Should().NotBeNull();
-        supplierInformationData?.AnswerSets.First().Answers.Should().HaveCount(3);
+        supplierInformationData?.AnswerSets.First().Answers.Should().HaveCount(7);
 
         supplierInformationData?.AnswerSets.First().SectionName.Should().NotBeNull();
         supplierInformationData?.AnswerSets.First().SectionName.Should().Be("Localized string");
@@ -235,8 +365,8 @@ public class GetSharedDataUseCaseTest : IClassFixture<AutoMapperFixture>
 
         supplierInformationData?.Questions.Should().NotBeNull();
         supplierInformationData?.Questions.First().SectionName.Should().Be("Localized string");
-        supplierInformationData?.Questions.First().Title.Should().Be("Localized string");
-        supplierInformationData?.Questions.First().Text.Should().Be("Localized string");
+        supplierInformationData?.Questions.First().Title.Should().Be("Exclusion_Applies_To");
+        supplierInformationData?.Questions.First().Text.Should().Be("Exclusion applies to");
 
         supplierInformationData.Should().NotBeNull();
         supplierInformationData!.Form.Name.Should().Be("Standard Questions");
@@ -287,7 +417,25 @@ public class GetSharedDataUseCaseTest : IClassFixture<AutoMapperFixture>
             actualDate.Should().Be(expectedDate);
         }
 
+        if (answer?.JsonValue != null)
+        {
+            var json = answer.JsonValue;
+            if (json.TryGetValue("id", out object? id))
+            {
+                var idValue = id.ToString();
+                var type = json["type"]?.ToString();
+
+                switch (idValue)
+                {
+                    case "1db6029d-a077-475b-a6b8-80a79c824787": type.Should().Be("self"); break;
+                    case "8f127354-9777-44d3-93dd-a7437e0cc552": type.Should().Be("associated-persons"); break;
+                    case "d3d35f4b-953a-4620-8771-fd245d55dd92": type.Should().Be("associated-persons"); break;
+                    case "57b1895f-11bb-4cd4-ae38-82f38a70237b": type.Should().Be("additional-entities"); break;
+                }
+            }
+        }
     }
+
     private void AssertQuestionDetails(FormQuestion? question)
     {
         question.Should().NotBeNull();
@@ -295,7 +443,6 @@ public class GetSharedDataUseCaseTest : IClassFixture<AutoMapperFixture>
         question?.Name.Should().NotBeNullOrWhiteSpace();
 
         question?.Type.Should().NotBe(FormQuestionType.None);
-        question?.IsRequired.Should().BeTrue();
     }
 
 }
