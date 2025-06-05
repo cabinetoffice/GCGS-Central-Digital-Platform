@@ -65,7 +65,7 @@
                             else
                             {
                                 <authorize scope="@OrgScopeRequirement.Editor">
-                                    <a asp-page="RevokeApiKey" class="govuk-link" asp-route-id="@Model.Id" asp-route-apiKeyName="@ak.Name">@StaticTextResource.ApiKeyManagement_ManageApiKey_Action_Cancel</a>
+                                    <a asp-page="RevokeApiKey" class="govuk-link" data-testid="cancelLink" asp-route-id="@Model.Id" asp-route-apiKeyName="@ak.Name">@StaticTextResource.ApiKeyManagement_ManageApiKey_Action_Cancel</a>
                                 </authorize>
                             }
                         </dd>
