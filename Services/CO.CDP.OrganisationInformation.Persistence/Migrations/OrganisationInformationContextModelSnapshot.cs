@@ -384,9 +384,9 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("guid");
 
-                    b.Property<bool>("HasCompnayHouseNumber")
+                    b.Property<bool>("HasCompanyHouseNumber")
                         .HasColumnType("boolean")
-                        .HasColumnName("has_compnay_house_number");
+                        .HasColumnName("has_company_house_number");
 
                     b.Property<string>("OverseasCompanyNumber")
                         .HasColumnType("text")
@@ -399,10 +399,6 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                     b.Property<DateTimeOffset?>("RegisteredDate")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("registered_date");
-
-                    b.Property<DateTimeOffset?>("StartDate")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("start_date");
 
                     b.Property<int>("SupplierOrganisationId")
                         .HasColumnType("integer")
@@ -456,9 +452,9 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("guid");
 
-                    b.Property<bool>("HasCompnayHouseNumber")
+                    b.Property<bool>("HasCompanyHouseNumber")
                         .HasColumnType("boolean")
-                        .HasColumnName("has_compnay_house_number");
+                        .HasColumnName("has_company_house_number");
 
                     b.Property<int>("MappingId")
                         .HasColumnType("integer")
@@ -479,10 +475,6 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                     b.Property<int>("SharedConsentId")
                         .HasColumnType("integer")
                         .HasColumnName("shared_consent_id");
-
-                    b.Property<DateTimeOffset?>("StartDate")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("start_date");
 
                     b.Property<DateTimeOffset>("UpdatedOn")
                         .HasColumnType("timestamp with time zone")

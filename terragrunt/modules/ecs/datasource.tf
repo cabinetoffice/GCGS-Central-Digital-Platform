@@ -36,6 +36,10 @@ data "aws_secretsmanager_secret" "redis_auth_token" {
   arn = var.redis_auth_token_arn
 }
 
+data "aws_secretsmanager_secret" "fts_secrets" {
+  name = "${local.name_prefix}-fts/secrets"
+}
+
 data "aws_secretsmanager_secret_version" "fts_service_url" {
   secret_id = "${local.name_prefix}-fts-service-url"
 }

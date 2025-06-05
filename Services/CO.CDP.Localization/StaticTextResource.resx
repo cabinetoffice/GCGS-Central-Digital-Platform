@@ -132,6 +132,170 @@
   <data name="Supplier_SupplierInformationSummary_Hint" xml:space="preserve">
     <value>To complete each section, tell us about:</value>
   </data>
+  <data name="Supplier_SupplierInformationSummary_BeforeStart_Heading" xml:space="preserve">
+    <value>Before you start</value>
+  </data>
+  <data name="Supplier_SupplierInformationSummary_BeforeStart_Hint" xml:space="preserve">
+    <value>To find out what information you need to provide and why:</value>
+  </data>
+  <data name="Supplier_SupplierInformationSummary_BeforeStart_Link" xml:space="preserve">
+    <value>Read about supplier information</value>
+  </data>
+  <data name="SupplierInformation_ReadAboutSupplierInformation_Heading" xml:space="preserve">
+    <value>Read about supplier information</value>
+  </data>
+  <data name="SupplierInformation_WhatSupplierInformationIs_Heading" xml:space="preserve">
+    <value>What supplier information is</value>
+  </data>
+  <data name="SupplierInformation_WhatSupplierInformationIs_Message" xml:space="preserve">
+    <value>&lt;p class=&quot;govuk-body&quot;&gt;Suppliers must provide contracting authorities with certain information under the Procurement Act 2024 if they want to bid on a public procurement. The information is not specific to one bid and can be used repeatedly if it hasn’t changed.&lt;/p&gt;
+&lt;p class=&quot;govuk-body&quot;&gt;The supplier information section of this service replaces the supplier questionnaire. It allows suppliers to fill out the required information and create a share code or pdf file to supply to the contracting authority when bidding on a procurement.&lt;/p&gt;
+&lt;p class=&quot;govuk-body&quot;&gt;If a contracting authority wants more information specific to a procurement, they will include a &lt;a href=&quot;https://www.procurementpathway.civilservice.gov.uk/documents/template/pa-2023-procurement-specific-questionnaire&quot; target=&quot;_blank&quot;&gt;procurement specific questionnaire (opens in new tab)&lt;/a&gt; in the bid pack.&lt;/p&gt;
+&lt;p class=&quot;govuk-body&quot;&gt;Watch the &lt;a href=&quot;https://www.youtube.com/watch?v=i4ZdbMGRqeQ&quot; target=&quot;_blank&quot;&gt;guide for suppliers video (opens in a new tab)&lt;/a&gt;.&lt;/p&gt;</value>
+  </data>
+  <data name="SupplierInformation_WhenToUpdateSupplierInformation_Heading" xml:space="preserve">
+    <value>When to update your supplier information</value>
+  </data>
+  <data name="SupplierInformation_WhenToUpdateSupplierInformation_Message" xml:space="preserve">
+    <value>&lt;p class=&quot;govuk-body&quot;&gt;You’ll be asked for your supplier information in the form of a share code or file when you bid for a public procurement.&lt;/p&gt;
+&lt;p class=&quot;govuk-body&quot;&gt;Your supplier information is saved in this service. You only need to update it when information changes.&lt;/p&gt;
+&lt;div class=&quot;govuk-inset-text&quot;&gt;
+    You can update your supplier information whenever it changes but you must create a new share code and file to share the new information.
+&lt;/div&gt;</value>
+  </data>
+  <data name="SupplierInformation_WhenYourInformationIsSaved_Heading" xml:space="preserve">
+    <value>When your information is saved</value>
+  </data>
+  <data name="SupplierInformation_WhenYourInformationIsSaved_Message" xml:space="preserve">
+    <value>&lt;p class=&quot;govuk-body&quot;&gt;You don’t have to enter your supplier information in one go but your information is only saved when you click a ‘save’ button.&lt;/p&gt;
+&lt;p class=&quot;govuk-body&quot;&gt;In some sections, you can save after one or 2 pages. In other sections, it may be 10 or more pages before you can save your information.&lt;/p&gt;
+&lt;p class=&quot;govuk-body&quot;&gt;If you start a section but haven’t clicked the ‘save’ button, your information will be lost if you:&lt;/p&gt;
+&lt;ul class=&quot;govuk-list govuk-list--bullet&quot;&gt;
+    &lt;li&gt;close your browser&lt;/li&gt;
+    &lt;li&gt;navigate away from the service&lt;/li&gt;
+    &lt;li&gt;leave the page unattended for more than an hour&lt;/li&gt;
+&lt;/ul&gt;</value>
+  </data>
+  <data name="SupplierInformation_InformationYouNeed_Heading" xml:space="preserve">
+    <value>The information you need for each section</value>
+  </data>
+  <data name="SupplierInformation_InformationYouNeed_Message" xml:space="preserve">
+    <value>&lt;h3 class=&quot;govuk-heading-m&quot;&gt;Your organisation&lt;/h3&gt;
+&lt;p class=&quot;govuk-body&quot;&gt;Each of these sections within ‘Your organisation’ can be saved independently. You can complete one and save it and then come back to complete another.&lt;/p&gt;
+&lt;p class=&quot;govuk-body&quot;&gt;Where a question isn’t relevant, you need to answer ‘no’ to complete the section.&lt;/p&gt;
+&lt;p class=&quot;govuk-body&quot;&gt;For the whole ‘Your organisation’ section, you’ll need:&lt;/p&gt;
+&lt;ul class=&quot;govuk-list govuk-list--bullet&quot;&gt;
+    &lt;li&gt;the name of your organisation or the name you trade under&lt;/li&gt;
+    &lt;li&gt;your organisation’s registered address&lt;/li&gt;
+    &lt;li&gt;your business postal address, if different or if you aren’t a registered company&lt;/li&gt;
+    &lt;li&gt;a registry number if you have one, for example a Companies House number or a Charity number&lt;/li&gt;
+    &lt;li&gt;your VAT number, if you have one&lt;/li&gt;
+    &lt;li&gt;whether your organisation is a:&lt;/li&gt;
+    &lt;ul class=&quot;govuk-list govuk-list--bullet govuk-!-margin-bottom-2&quot;&gt;
+        &lt;li&gt;small or medium-sized enterprise (SME)&lt;/li&gt;
+        &lt;li&gt;voluntary, community and social enterprise (VCSE)&lt;/li&gt;
+        &lt;li&gt;supported employment provider&lt;/li&gt;
+        &lt;li&gt;public service mutual&lt;/li&gt;
+    &lt;/ul&gt;
+    &lt;li&gt;the legal formation of your company and the law that defines it. For example, a private limited company under the Companies Act 2006.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 class=&quot;govuk-heading-m&quot;&gt;People connected to your organisation&lt;/h3&gt;
+
+&lt;p class=&quot;govuk-body&quot;&gt;A &#39;connected person&#39; is someone who influences or controls your company. It includes ‘people of significant control’ and any other individual, group or company that has a declarable interest in your business.&lt;/p&gt;
+&lt;p class=&quot;govuk-body&quot;&gt;For example, a director, a trustee of a trust, a majority shareholder or a parent or subsidiary company.&lt;/p&gt;
+&lt;p class=&quot;govuk-body&quot;&gt;If your company isn’t influenced or controlled by anyone you need to answer ‘no’ to complete the section.&lt;/p&gt;
+&lt;p class=&quot;govuk-body&quot;&gt;You can only add one connected person at a time. The information you complete will depend on who the ‘person’ is and how they’re connected to your organisation.&lt;/p&gt;
+&lt;p class=&quot;govuk-body&quot;&gt;For organisations, you&#39;ll need:&lt;/p&gt;
+&lt;ul class=&quot;govuk-list govuk-list--bullet&quot;&gt;
+    &lt;li&gt;the name of the connected organisation&lt;/li&gt;
+    &lt;li&gt;its registered address&lt;/li&gt;
+    &lt;li&gt;its business postal address, if different&lt;/li&gt;
+    &lt;li&gt;the legal formation of the organisation and the law that defines it. For example, a private limited company under the Companies Act 2006.&lt;/li&gt;
+    &lt;li&gt;its company number if registered with Companies House, or non-UK equivalent&lt;/li&gt;
+    &lt;li&gt;if the organisation is a registered company or any other organisation with significant influence or control, you need:&lt;/li&gt;
+    &lt;ul class=&quot;govuk-list govuk-list--bullet govuk-!-margin-bottom-2&quot;&gt;
+        &lt;li&gt;how the organisation is connected to yours. For example, owns shares or has voting rights.&lt;/li&gt;
+        &lt;li&gt;the date it was registered as a person of significant control&lt;/li&gt;
+        &lt;li&gt;the name of the register&lt;/li&gt;
+    &lt;/ul&gt;
+&lt;/ul&gt;
+&lt;p class=&quot;govuk-body&quot;&gt;For individuals or trustees, you&#39;ll need:&lt;/p&gt;
+&lt;ul class=&quot;govuk-list govuk-list--bullet&quot;&gt;
+    &lt;li&gt;their name, date of birth and nationality&lt;/li&gt;
+    &lt;li&gt;their business postal address&lt;/li&gt;
+    &lt;li&gt;how they are connected to your organisation. For example, owns shares or has voting rights.&lt;/li&gt;
+    &lt;li&gt;the date they were registered as a person of significant control &lt;/li&gt;
+    &lt;li&gt;the name of the register&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 class=&quot;govuk-heading-m&quot;&gt;Any general qualifications your organisation holds&lt;/h3&gt;
+
+&lt;p class=&quot;govuk-body&quot;&gt;If you don&#39;t have any general qualifications to share you need to answer ‘no’ to complete the section.&lt;/p&gt;
+&lt;p class=&quot;govuk-body&quot;&gt;If you do have any general qualification to share, you&#39;ll need:&lt;/p&gt;
+&lt;ul class=&quot;govuk-list govuk-list--bullet&quot;&gt;
+    &lt;li&gt;the qualification name&lt;/li&gt;
+    &lt;li&gt;who awarded the qualification&lt;/li&gt;
+    &lt;li&gt;the date it was awarded&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p class=&quot;govuk-body&quot;&gt;Contracting authorities will usually ask for qualifications that are specific to a procurement in the bid pack with instructions on how to provide the information.&lt;/p&gt;
+
+&lt;h3 class=&quot;govuk-heading-m&quot;&gt;Any general trade assurances your oganisation holds&lt;/h3&gt;
+
+&lt;p class=&quot;govuk-body&quot;&gt;If you don&#39;t have any general trade assurances to share you need to answer ‘no’ to complete the section.&lt;/p&gt;
+&lt;p class=&quot;govuk-body&quot;&gt;If you do have any general trade assurances to share, you&#39;ll need:&lt;/p&gt;
+&lt;ul class=&quot;govuk-list govuk-list--bullet&quot;&gt;
+    &lt;li&gt;the name of organisation that awarded the trade assurance&lt;/li&gt;
+    &lt;li&gt;a reference number if you have one&lt;/li&gt;
+    &lt;li&gt;the date it was awarded&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p class=&quot;govuk-body&quot;&gt;Contracting authorities will usually ask for trade assurances that are specific to a procurement in the bid pack with instructions on how to provide the information.&lt;/p&gt;
+
+&lt;h3 class=&quot;govuk-heading-m&quot;&gt;Anything that may exclude your organisation from procurement &lt;/h3&gt;
+
+&lt;p class=&quot;govuk-body&quot;&gt;If there isn’t anything that may exclude your organisation from public procurement you need to answer ‘no’ to complete the section.&lt;/p&gt;
+&lt;p class=&quot;govuk-body&quot;&gt;If you have an exclusion to declare, you&#39;ll need:&lt;/p&gt;
+&lt;ul class=&quot;govuk-list govuk-list--bullet&quot;&gt;
+    &lt;li&gt;to say whether the exclusion happened in the UK or not&lt;/li&gt;
+    &lt;li&gt;what the exclusionary penalty, conviction or other event was&lt;/li&gt;
+    &lt;li&gt;who the exclusion applied to. For example, your organisation or a person connected to your organisation.&lt;/li&gt;
+    &lt;li&gt;an email address a contracting authority can use to contact you about the exclusion&lt;/li&gt;
+    &lt;li&gt;a description of what led to the exclusion&lt;/li&gt;
+    &lt;li&gt;how the exclusion is managed including any penalty or fine, steps taken to stop it happening again and how they are being monitored&lt;/li&gt;
+    &lt;li&gt;any supporting documentation you have. For example, documentation from the police, HMRC or the court.&lt;/li&gt;
+    &lt;li&gt;if the decision is recorded on a public authority website, that website address&lt;/li&gt;
+    &lt;li&gt;the date the circumstances that led to the exclusion ended&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 class=&quot;govuk-heading-m&quot;&gt;Your organisation’s recent financial information&lt;/h3&gt;
+&lt;p class=&quot;govuk-body&quot;&gt;If your accounts were audited:&lt;/p&gt;
+&lt;ul class=&quot;govuk-list govuk-list--bullet&quot;&gt;
+    &lt;li&gt;upload one or more files with your most recent 2 financial years, or most recent year if you don’t have 2&lt;/li&gt;
+    &lt;li&gt;the financial year end date of the information uploaded &lt;/li&gt;
+&lt;/ul&gt;
+&lt;p class=&quot;govuk-body&quot;&gt;If your accounts were not audited:&lt;/p&gt;
+&lt;ul class=&quot;govuk-list govuk-list--bullet&quot;&gt;
+    &lt;li&gt;upload one or more files with account or financial statements for:&lt;/li&gt;
+    &lt;ul class=&quot;govuk-list govuk-list--bullet govuk-!-margin-bottom-2&quot;&gt;
+        &lt;li&gt;your most recent 2 financial years, or your most recent year if you don’t have 2&lt;/li&gt;
+        &lt;li&gt;a statement showing your organisation’s financial standing if you do not have a full year of accounts&lt;/li&gt;
+    &lt;/ul&gt;
+    &lt;li&gt;the financial year end date of the information uploaded &lt;/li&gt;
+&lt;/ul&gt;</value>
+  </data>
+  <data name="SupplierInformation_HowToShare_Heading" xml:space="preserve">
+    <value>How to share your supplier information</value>
+  </data>
+  <data name="SupplierInformation_HowToShare_Message" xml:space="preserve">
+    <value>&lt;p class=&quot;govuk-body&quot;&gt;When you bid on a public procurement, you’ll be asked to provide a share code or pdf file of your supplier information.&lt;/p&gt;
+&lt;p class=&quot;govuk-body&quot;&gt;When you create a share code a snapshot of your supplier information is stored against the code, and a pdf file of the information is available to download.&lt;/p&gt;
+&lt;p class=&quot;govuk-body&quot;&gt;The contracting authority will specify in the bid pack how they want to receive your supplier information.&lt;/p&gt;
+&lt;p class=&quot;govuk-body&quot;&gt;They may ask you to put the share code into their e-procurement system, also called an eSender. For example, Atamis or Jaggaer.&lt;/p&gt;
+&lt;p class=&quot;govuk-body&quot;&gt;Alternatively, you may be asked to email a pdf file of your supplier information which you can download from the ‘Declare and create a share code’ section.&lt;/p&gt;
+&lt;div class=&quot;govuk-inset-text&quot;&gt;
+    You can update your supplier information whenever it changes but you must create a new share code and file to share the new information.
+&lt;/div&gt;</value>
+  </data>
   <data name="Supplier_SupplierInformationShare_Heading" xml:space="preserve">
     <value>Share your supplier information</value>
   </data>
@@ -3465,6 +3629,18 @@
   <data name="Consortium_ConsortiumEnterSharecode_Hint" xml:space="preserve">
     <value>Must be the organisation's most recent share code</value>
   </data>
+  <data name="Consortium_ConsortiumEnterNewSharecode_Heading" xml:space="preserve">
+    <value>Enter a new sharecode</value>
+  </data>
+  <data name="Consortium_RemoveFromConsortium_Button" xml:space="preserve">
+    <value>Remove from consortium</value>
+  </data>
+  <data name="Consortium_Summary_ShareCodeCreatedOn" xml:space="preserve">
+    <value>Share code created on </value>
+  </data>
+  <data name="Consortium_Summary_Change" xml:space="preserve">
+    <value>Change&lt;span class="govuk-visually-hidden"&gt; organisation sharecode&lt;/span&gt;</value>
+  </data>
   <data name="Consortium_ConsortiumConfirmSupplier_Heading" xml:space="preserve">
     <value>Add {0} to the consortium?</value>
   </data>
@@ -3476,6 +3652,9 @@
   </data>
   <data name="Consortium_ConsortiumOverview_Success_Heading" xml:space="preserve">
     <value>{0} has been added to this consortium.</value>
+  </data>
+  <data name="Consortium_ConsortiumOverview_Updated_Success_Heading" xml:space="preserve">
+    <value>{0} has been updated for this consortium.</value>
   </data>
   <data name="Consortium_ConsortiumEnterSharecode_SharecodeAlreadyExists" xml:space="preserve">
     <value>{0} organisation is already part of the consortium.</value>
@@ -3767,5 +3946,20 @@
   </data>
   <data name="Supplier_AdditionalModulesInformation_Hint" xml:space="preserve">
     <value>An additional module is extra information related to a particular topic that suppliers are required to submit for specific contracts</value>
+  </data>
+  <data name="SessionTimeoutWarningDialog_Header" xml:space="preserve">
+    <value>Session timeout</value>
+  </data>
+  <data name="SessionTimeoutWarningDialog_Lede" xml:space="preserve">
+    <value>Your session will time out soon.</value>
+  </data>
+  <data name="SessionTimeoutWarningDialog_Text" xml:space="preserve">
+    <value>You will be signed out of your account if you do not respond in {0} minutes. We do this to keep your information secure.</value>
+  </data>
+  <data name="SessionTimeoutWarningDialog_Continue" xml:space="preserve">
+    <value>Continue session</value>
+  </data>
+  <data name="SessionTimeoutWarningDialog_SignOut" xml:space="preserve">
+    <value>Sign out</value>
   </data>
 </root>

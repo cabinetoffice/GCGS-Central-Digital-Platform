@@ -19,12 +19,15 @@
       "awslogs-stream-prefix": "${lg_prefix}"
     }
   },
-  "environment": [],
+  "environment": [
+    {"name": "CB_SERVER_NAME", "value":  "${cb_server_name}"},
+    {"name": "CB_SERVER_URL", "value":  "${cb_server_url}"},
+    {"name": "CLOUDBEAVER_APP_ANONYMOUS_ACCESS_ENABLED", "value":  "false"}
+  ],
   "secrets": [
-    {
-      "name": "CLOUD_BEAVER_DATA_SOURCES",
-      "valueFrom": "${cb_data_sources_secret_arn}"
-    }
+    {"name": "CB_ADMIN_NAME", "valueFrom": "${cb_admin_username}"},
+    {"name": "CB_ADMIN_PASSWORD", "valueFrom": "${cb_admin_password}"},
+    {"name": "CLOUD_BEAVER_DATA_SOURCES", "valueFrom": "${cb_data_sources_secret_arn}"}
   ],
   "volumesFrom": [],
   "mountPoints": [

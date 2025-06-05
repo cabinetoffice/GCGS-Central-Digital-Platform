@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <root>
-  <!-- 
-    Microsoft ResX Schema 
-    
+  <!--
+    Microsoft ResX Schema
+
     Version 2.0
-    
-    The primary goals of this format is to allow a simple XML format 
-    that is mostly human readable. The generation and parsing of the 
-    various data types are done through the TypeConverter classes 
+
+    The primary goals of this format is to allow a simple XML format
+    that is mostly human readable. The generation and parsing of the
+    various data types are done through the TypeConverter classes
     associated with the data types.
-    
+
     Example:
-    
+
     ... ado.net/XML headers & schema ...
     <resheader name="resmimetype">text/microsoft-resx</resheader>
     <resheader name="version">2.0</resheader>
@@ -26,36 +26,36 @@
         <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
         <comment>This is a comment</comment>
     </data>
-                
-    There are any number of "resheader" rows that contain simple 
+
+    There are any number of "resheader" rows that contain simple
     name/value pairs.
-    
-    Each data row contains a name, and value. The row also contains a 
-    type or mimetype. Type corresponds to a .NET class that support 
-    text/value conversion through the TypeConverter architecture. 
-    Classes that don't support this are serialized and stored with the 
+
+    Each data row contains a name, and value. The row also contains a
+    type or mimetype. Type corresponds to a .NET class that support
+    text/value conversion through the TypeConverter architecture.
+    Classes that don't support this are serialized and stored with the
     mimetype set.
-    
-    The mimetype is used for serialized objects, and tells the 
-    ResXResourceReader how to depersist the object. This is currently not 
+
+    The mimetype is used for serialized objects, and tells the
+    ResXResourceReader how to depersist the object. This is currently not
     extensible. For a given mimetype the value must be set accordingly:
-    
-    Note - application/x-microsoft.net.object.binary.base64 is the format 
-    that the ResXResourceWriter will generate, however the reader can 
+
+    Note - application/x-microsoft.net.object.binary.base64 is the format
+    that the ResXResourceWriter will generate, however the reader can
     read any of the formats listed below.
-    
+
     mimetype: application/x-microsoft.net.object.binary.base64
-    value   : The object must be serialized with 
+    value   : The object must be serialized with
             : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
             : and then encoded with base64 encoding.
-    
+
     mimetype: application/x-microsoft.net.object.soap.base64
-    value   : The object must be serialized with 
+    value   : The object must be serialized with
             : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
             : and then encoded with base64 encoding.
 
     mimetype: application/x-microsoft.net.object.bytearray.base64
-    value   : The object must be serialized into a byte array 
+    value   : The object must be serialized into a byte array
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
@@ -250,117 +250,104 @@
   <data name="Steel_Configuration_FurtherQuestionsExemptedHint" xml:space="preserve">
     <value>You'll need to provide information on steel specific supply chain projects or programmes. This may include relevant examples of: </value>
   </data>
-  <data name="Steel_Configuration_FurtherQuestionsExemptedHeading" xml:space="preserve">
-    <value>The steel information you'll need</value>
-  </data>
-  <data name="Steel_Configuration_AddAnotherAnswerLabel" xml:space="preserve">
-    <value>Add another Steel Information?</value>
-  </data>
-  <data name="Steel_Configuration_SingularSummaryHeading" xml:space="preserve">
-    <value>You have added Steel Information</value>
-  </data>
-  <data name="Steel_Configuration_RemoveConfirmationHeading" xml:space="preserve">
-    <value>Are you sure you want to remove this Steel Information?</value>
-  </data>
-  <data name="Steel_Configuration_PluralSummaryHeadingFormat" xml:space="preserve">
-    <value>You have added {0} Steel Information</value>
-  </data>
-  <data name="Steel_Configuration_SingularSummaryHeadingHint" xml:space="preserve">
-    <value>Steel module</value>
-  </data>
-  <data name="Steel_Configuration_PluralSummaryHeadingHintFormat" xml:space="preserve">
-    <value>Steel module</value>
-  </data>
-
-  <!-- Question 01-->
   <data name="SteelQuestion_01_Title" xml:space="preserve">
     <value>Submitting your steel information</value>
   </data>
   <data name="SteelQuestion_01_Description" xml:space="preserve">
     <value>
-      &lt;div class=&quot;govuk-body&quot;&gt;This module refers to the procurement and use of steel products in government projects. It focuses on compliance with UK regulations regarding sourcing, quality, and sustainability. For further information read &lt;a target=\&quot;_blank\&quot; href=\&quot;https://www.gov.uk/government/publications/ppn-010-procuring-steel-in-government-contracts/ppn-010-revised-guidance-on-procuring-steel-in-government-contracts-html&quot;&gt;PPN 010: Revised guidance on procuring steel in government contracts (opens in new tab).&lt;/a&gt;
-&lt;/div&gt;
-&lt;div class=&quot;govuk-body&quot;&gt;
-  &lt;p class=&quot;govuk-body&quot;&gt;The steel information you&#39;ll need&lt;/p&gt;
-  &lt;br/&gt;You&#39;ll need to provide information on steel specific supply chain projects or programmes. This may include relevant examples of: 
-  &lt;ul class=&quot;govuk-body govuk-list govuk-list--bullet&quot;&gt;
-    &lt;li&gt;management systems, policies, standards and procedures&lt;/li&gt;
-    &lt;li&gt;sustainable practice&lt;/li&gt;
-    &lt;li&gt;health and safety breaches&lt;/li&gt;
-  &lt;/ul&gt;
-&lt;/div&gt;
+      &lt;p class="govuk-body"&gt;This module refers to the procurement and use of steel products in government projects. It focuses on compliance with UK regulations regarding sourcing, quality, and sustainability. For further information read &lt;a target="_blank" href="https://www.gov.uk/government/publications/ppn-010-procuring-steel-in-government-contracts/ppn-010-revised-guidance-on-procuring-steel-in-government-contracts-html"&gt;PPN 010: Revised guidance on procuring steel in government contracts (opens in new tab)&lt;/a&gt;.&lt;/p&gt;
+      &lt;p class="govuk-body govuk-!-margin-top-2"&gt;You are only required to complete this module if requested by the contracting authority you are bidding for. Failure to complete this module may result in your tenders being deemed insufficient where PPN 010 has been applied.&lt;/p&gt;
+      &lt;h2 class="govuk-heading-m"&gt;The information you&amp;#39;ll need&lt;/h2&gt;
+      &lt;p class="govuk-body"&gt;You&amp;#39;ll need to provide information on steel specific supply chain projects or programmes. This may include relevant examples of:&lt;/p&gt;
+      &lt;ul class="govuk-list govuk-list--bullet"&gt;
+        &lt;li&gt;management systems, policies, standards and procedures&lt;/li&gt;
+        &lt;li&gt;sustainable practice&lt;/li&gt;
+        &lt;li&gt;health and safety breaches&lt;/li&gt;
+      &lt;/ul&gt;
     </value>
   </data>
-
-  <!-- Question 02-->
   <data name="SteelQuestion_02_Title" xml:space="preserve">
     <value>Supply chain management in steel procurement</value>
   </data>
   <data name="SteelQuestion_02_SummaryTitle" xml:space="preserve">
-    <value>Supply chain management in steel procurement</value>
+    <value>Supply chain management</value>
   </data>
   <data name="SteelQuestion_02_Description" xml:space="preserve">
-    <value>&lt;div class="govuk-body"&gt; Describe the steel specific supply chain management systems, policies, standards and procedures you have in place to ensure effective supply chain management and compliance with relevant legislation for: &lt;ul class="govuk-body govuk-list govuk-list--bullet"&gt; &lt;li class="govuk-!-margin-top-4"&gt;projects and programmes involving steel procurement&lt;/li&gt; &lt;/ul&gt; &lt;/div&gt;</value>
+    <value>
+      &lt;p class=&quot;govuk-body govuk-!-font-weight-bold&quot;&gt;Where relevant, give details of steel projects or programmes where you have shown:&lt;/p&gt;
+      &lt;ul class=&quot;govuk-list govuk-list--bullet&quot;&gt;
+        &lt;li&gt;effective management of your steel supply chain systems, policies, standards and procedures&lt;/li&gt;
+        &lt;li&gt;compliance with relevant legislation&lt;/li&gt;
+        &lt;li&gt;sustainable steel supply (including your supply chain)&lt;/li&gt;
+        &lt;li&gt;management of health and safety breaches in the last 5 years, in the country where you work, for your organisation and supply chain members&lt;/li&gt;
+      &lt;/ul&gt;
+      &lt;details class=&quot;govuk-details&quot;&gt;
+        &lt;summary class=&quot;govuk-details__summary&quot;&gt;
+          &lt;span class=&quot;govuk-details__summary-text&quot;&gt;
+            What is sustainable steel supply?
+          &lt;/span&gt;
+        &lt;/summary&gt;
+        &lt;div class=&quot;govuk-details__text&quot;&gt;
+          Sustainable supply of steel refers to the sourcing and production of steel that is environmentally, socially and economically responsible. It involves practices that limit environmental impact, such as reducing carbon emissions whilst ensuring fair labour practices and supporting local communities.
+        &lt;/div&gt;
+      &lt;/details&gt;
+      &lt;p class=&quot;govuk-hint&quot;&gt;If you would like to provide this information in a document format, continue to the next question&lt;/p&gt;
+    </value>
   </data>
-
-
-  <!-- Question 03-->
   <data name="SteelQuestion_03_Title" xml:space="preserve">
     <value>Do you have supporting documents to upload?</value>
   </data>
   <data name="SteelQuestion_03_SummaryTitle" xml:space="preserve">
-    <value>Supporting Document Uploaded</value>
-  </data>
-
-
-  <!-- Question 04-->
-  <data name="SteelQuestion_04_Title" xml:space="preserve">
-    <value>Sustainable supply and production of steel</value>
-  </data>
-  <data name="SteelQuestion_04_SummaryTitle" xml:space="preserve">
-    <value>Sustainable supply and production of steel</value>
-  </data>
-  <data name="SteelQuestion_04_Description" xml:space="preserve">
-    <value> &lt;div class="govuk-body"&gt;Enter details of projects where you have shown skill and effectiveness in managing all supply chain members involved in steel supply or production to ensure a sustainble supply of steel. &lt;/div&gt; &lt;div class="govuk-inset-text"&gt; What is sustainable steel supply? &lt;br/&gt;Sustainable supply of steel refers to the sourcing and production of steel that is environmentally, socially and economically responsible. It involves practices that limit environmental impact, such as reducing carbon emissions and energy use, while also ensuring fair labour practices and supporting local communities. &lt;/div&gt;</value>
-  </data>
-
-  <!-- Question 05-->
-  <data name="SteelQuestion_05_Title" xml:space="preserve">
-    <value>Do you have supporting document to upload?</value>
-  </data>
-  <data name="SteelQuestion_05_SummaryTitle" xml:space="preserve">
     <value>Supporting document</value>
   </data>
+  <data name="HealthAndSafety_SectionTitle" xml:space="preserve">
+    <value>Health and Safety</value>
+  </data>
+  <data name="HealthAndSafetyQuestion_01_Title" xml:space="preserve">
+    <value>Submitting your health and safety information</value>
+  </data>
+  <data name="HealthAndSafetyQuestion_01_Description" xml:space="preserve">
+    <value>
+      &lt;p class=&quot;govuk-body&quot;&gt;
+        Health and safety regulations ensure the well-being of employees and the public in the workplace. Some tenders may require you to provide information about your health and safety policies, risk assessments, and training provided to prevent accidents and injuries.
+      &lt;/p&gt;
 
-  <!-- Question 06-->
-  <data name="SteelQuestion_06_Title" xml:space="preserve">
-    <value>Have you had any breaches in health and safety legislation in the last 5 years?</value>
-  </data>
-  <data name="SteelQuestion_06_SummaryTitle" xml:space="preserve">
-    <value>Health and safety supporting document</value>
-  </data>
+      &lt;p class=&quot;govuk-body govuk-!-margin-top-2&quot;&gt;
+        You are only required to complete this module if requested by the contracting authority you are bidding for. Failure to complete this module may result in your tenders being deemed insufficient where health and safety information is required.
+      &lt;/p&gt;
 
-  <!-- Question 07-->
-  <data name="SteelQuestion_07_Title" xml:space="preserve">
-    <value>Describe the health and safety breach in more detail</value>
-  </data>
-  <data name="SteelQuestion_07_SummaryTitle" xml:space="preserve">
-    <value>Sustainable supply and production of steel</value>
-  </data>
-  <data name="SteelQuestion_07_Description" xml:space="preserve">
-    <value> &lt;div class="govuk-body"&gt; Give us your explanation of breaches in health and safety legislation in the last 5 years that apply to the country where you work, for both: &lt;ul class="govuk-body govuk-list govuk-list--bullet" &gt; &lt;li class="govuk-!-margin-top-4"&gt;your organisation&lt;/li&gt; &lt;li class="govuk-!-margin-top-4"&gt;all your supply chain members involved in the production or supply of steel&lt;/li&gt; &lt;/ul&gt;&lt;/div&gt; </value>
-  </data>
+      &lt;h2 class=&quot;govuk-heading-m govuk-!-margin-top-4&quot;&gt;
+        The information you&apos;ll need
+      &lt;/h2&gt;
 
-  <!-- Question 08-->
-  <data name="SteelQuestion_08_Title" xml:space="preserve">
+      &lt;p class=&quot;govuk-body govuk-!-margin-top-2 govuk-!-margin-bottom-4&quot;&gt;
+        You&apos;ll need to provide information about your organisation&apos;s health and safety management and risk procedures.
+      &lt;/p&gt;
+    </value>
+  </data>
+  <data name="HealthAndSafetyQuestion_02_Title" xml:space="preserve">
+    <value>How do you manage health and safety?</value>
+  </data>
+  <data name="HealthAndSafetyQuestion_02_Description" xml:space="preserve">
+    <value>
+      &lt;p class=&quot;govuk-body&quot;&gt;
+        Include examples of how you handle significant risks (like the use of contractors, where relevant).
+      &lt;/p&gt;
+
+      &lt;div class=&quot;govuk-hint govuk-!-margin-top-2&quot;&gt;
+        If you would like to provide this information in a document format, continue to the next question.
+      &lt;/div&gt;
+    </value>
+  </data>
+  <data name="HealthAndSafetyQuestion_02_SummaryTitle" xml:space="preserve">
+    <value>Health and safety management</value>
+  </data>
+  <data name="HealthAndSafetyQuestion_03_Title" xml:space="preserve">
     <value>Do you have supporting documents to upload?</value>
   </data>
-  <data name="SteelQuestion_08_SummaryTitle" xml:space="preserve">
-    <value>Health and safety breaches supporting document</value>
+  <data name="HealthAndSafetyQuestion_03_SummaryTitle" xml:space="preserve">
+    <value>Supporting documents</value>
   </data>
-
-
-
   <data name="Exclusions_07_Title" xml:space="preserve">
     <value>Did this exclusion happen in the UK?</value>
   </data>
@@ -627,6 +614,248 @@
   </data>
   <data name="Global_Enter_Your_Email_Address" xml:space="preserve">
     <value>Enter your email address</value>
+  </data>
+  <data name="Global_Enter_Your_Job_Title" xml:space="preserve">
+    <value>Enter your job title</value>
+  </data>
+  <!-- Carbon Net Zero -->
+  <data name="CarbonNetZero_SectionTitle" xml:space="preserve">
+    <value>Carbon Net Zero</value>
+  </data>
+  <data name="CarbonNetZero_01_Title" xml:space="preserve">
+    <value>Submitting your Carbon Net Zero information</value>
+  </data>
+  <data name="CarbonNetZero_01_Description" xml:space="preserve">
+    <value>
+&lt;p class=&quot;govuk-body&quot;&gt;
+Carbon Net Zero is the commitment to balance greenhouse gas emissions with equivalent removals by 2050. In-scope organisations may be required to submit a Carbon Reduction Plan (CRP) when bidding for certain government contracts.
+This should be in line with &lt;a href=&quot;https://www.gov.uk/government/publications/ppn-006-taking-account-of-carbon-reduction-plans-in-the-procurement-of-major-government-contracts/ppn-006-taking-account-of-carbon-reduction-plans-html#issue&quot;
+class=&quot;govuk-link&quot; rel=&quot;noreferrer noopener&quot; target=&quot;_blank&quot;&gt;
+PPN 006 and associated reporting standards (opens in a new tab).&lt;/a&gt;&lt;/p&gt;
+      &lt;p class=&quot;govuk-body&quot;&gt;
+    You are only required to complete this module if requested by the contracting authority you are bidding for.
+    Failure to complete this module may result in your tenders being deemed insufficient where PPN 006 has been applied.
+      &lt;/p&gt;
+&lt;h2 class=&quot;govuk-heading-m&quot;&gt;The information you&#39;ll need&lt;/h2&gt;
+&lt;div class=&quot;govuk-body&quot;&gt;You&#39;ll need to provide information on your Carbon Reduction Plan. This may include:
+  &lt;ul class=&quot;govuk-list govuk-list--bullet&quot;&gt;
+    &lt;li class=&quot;govuk-!-margin-top-4&quot;&gt; the expiry date of your Carbon Reduction Plan&lt;/li&gt;
+    &lt;li class=&quot;govuk-!-margin-top-4&quot;&gt; your Emissions Declaration&lt;/li&gt;
+    &lt;li class=&quot;govuk-!-margin-top-4&quot;&gt; your baseline and reporting year data&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/div&gt;
+    </value>
+  </data>
+  <data name="CarbonNetZero_02_Title" xml:space="preserve">
+    <value>Have you published a Carbon Reduction Plan which meets the required reporting standard?</value>
+  </data>
+  <data name="CarbonNetZero_02_SummaryTitle" xml:space="preserve">
+    <value>Carbon Reduction Plan published</value>
+  </data>
+  <data name="CarbonNetZero_02_Description" xml:space="preserve">
+    <value> &lt;p class=&quot;govuk-body&quot;&gt; For more information read &lt;a href=&quot;https://www.gov.uk/government/publications/ppn-0923-updates-to-the-cyber-essentials-scheme/procurement-policy-note-updates-to-the-cyber-essentials-scheme-html&quot; class=&quot;govuk-link&quot; rel=&quot;noreferrer noopener&quot; target=&quot;_blank&quot;&gt;PPN 006: Taking account of Carbon Reduction Plans in the procurement of major government contracts (opens in a new tab)&lt;/a&gt;&lt;/p&gt;</value>
+  </data>
+  <data name="CarbonNetZero_03_Title" xml:space="preserve">
+    <value>Do you have a link to your most recently published Carbon Reduction Plan?</value>
+  </data>
+  <data name="CarbonNetZero_03_SummaryTitle" xml:space="preserve">
+    <value>Carbon Reduction Plan link</value>
+  </data>
+  <data name="CarbonNetZero_NoCarbonReductionPlan_Title" xml:space="preserve">
+    <value>You cannot complete this module</value>
+  </data>
+  <data name="CarbonNetZero_NoCarbonReductionPlan_Description" xml:space="preserve">
+    <value>&lt;p class=&quot;govuk-body govuk-!-margin-bottom-4&quot;&gt;To complete the Carbon Net Zero module you must have a published Carbon Reduction Plan.&lt;/p&gt;</value>
+  </data>
+  <data name="CarbonNetZero_04_Title" xml:space="preserve">
+    <value>Enter your Carbon Reduction Plan expiry date</value>
+  </data>
+  <data name="CarbonNetZero_04_SummaryTitle" xml:space="preserve">
+    <value>Carbon Reduction Plan expiry date</value>
+  </data>
+  <data name="CarbonNetZero_05_Title" xml:space="preserve">
+    <value>Enter your Net Zero target year</value>
+  </data>
+  <data name="CarbonNetZero_05_SummaryTitle" xml:space="preserve">
+    <value>Net Zero target year</value>
+  </data>
+  <data name="CarbonNetZero_05_Description" xml:space="preserve">
+    <value>
+    &lt;p class="govuk-hint"&gt;For example, 2027&lt;/p&gt;
+    &lt;p class="govuk-body govuk-!-margin-bottom-2"&gt;Year&lt;/p&gt;
+    </value>
+  </data>
+  <data name="CarbonNetZero_06_Title" xml:space="preserve">
+    <value>Enter your baseline emissions data</value>
+  </data>
+  <data name="CarbonNetZero_06_SummaryTitle" xml:space="preserve">
+    <value>Baseline year</value>
+  </data>
+  <data name="CarbonNetZero_06_Description" xml:space="preserve">
+    <value>
+    &lt;div class="govuk-body govuk-!-margin-top-5"&gt;
+      &lt;p class='govuk-label govuk-!-font-weight-bold govuk-!-margin-bottom-1'&gt;Baseline year&lt;/p&gt;
+      &lt;p class="govuk-hint govuk-!-margin-top-1"&gt;For example, 2030&lt;/p&gt;
+    &lt;/div&gt;
+    </value>
+  </data>
+  <data name="CarbonNetZero_07_Title" xml:space="preserve">
+    <value>Enter your baseline emissions data</value>
+  </data>
+  <data name="CarbonNetZero_07_SummaryTitle" xml:space="preserve">
+    <value>Scope 1</value>
+  </data>
+  <data name="CarbonNetZero_07_Description" xml:space="preserve">
+    <value>
+        &lt;div class="govuk-body govuk-!-margin-top-5"&gt;
+            &lt;h2 class="govuk-heading-m govuk-!-margin-bottom-0"&gt;
+                Scope 1
+                &lt;span class="govuk-body govuk-!-font-weight-regular"&gt;(tCO2)&lt;/span&gt;
+            &lt;/h2&gt;
+        &lt;/div&gt;
+    </value>
+  </data>
+  <data name="CarbonNetZero_08_Title" xml:space="preserve">
+    <value>Enter your baseline emissions data</value>
+  </data>
+  <data name="CarbonNetZero_08_SummaryTitle" xml:space="preserve">
+    <value>Scope 2</value>
+  </data>
+  <data name="CarbonNetZero_08_Description" xml:space="preserve">
+    <value>
+        &lt;div class="govuk-body govuk-!-margin-top-5"&gt;
+            &lt;h2 class="govuk-heading-m govuk-!-margin-bottom-0"&gt;
+                Scope 2
+                &lt;span class="govuk-body govuk-!-font-weight-regular"&gt;(tCO2)&lt;/span&gt;
+            &lt;/h2&gt;
+        &lt;/div&gt;
+    </value>
+  </data>
+  <data name="CarbonNetZero_09_Title" xml:space="preserve">
+    <value>Enter your baseline emissions data</value>
+  </data>
+  <data name="CarbonNetZero_09_SummaryTitle" xml:space="preserve">
+    <value>Scope 3</value>
+  </data>
+  <data name="CarbonNetZero_09_Description" xml:space="preserve">
+    <value>
+        &lt;div class="govuk-body govuk-!-margin-top-5"&gt;
+            &lt;h2 class="govuk-heading-m govuk-!-margin-bottom-0"&gt;
+                Scope 3
+                &lt;span class="govuk-body govuk-!-font-weight-regular"&gt;(tCO2)&lt;/span&gt;
+            &lt;/h2&gt;
+        &lt;/div&gt;
+    </value>
+  </data>
+  <data name="CarbonNetZero_10_Title" xml:space="preserve">
+    <value>Enter your current emissions data</value>
+  </data>
+  <data name="CarbonNetZero_10_SummaryTitle" xml:space="preserve">
+    <value>Reporting year</value>
+  </data>
+  <data name="CarbonNetZero_10_Description" xml:space="preserve">
+    <value>
+    &lt;div class="govuk-body govuk-!-margin-top-5"&gt;
+      &lt;p class="govuk-label govuk-!-font-weight-bold govuk-!-margin-bottom-1"&gt;Reporting year&lt;/p&gt;
+      &lt;p class="govuk-hint govuk-!-margin-top-1"&gt;For example, 2030&lt;/p&gt;
+    &lt;/div&gt;
+    </value>
+  </data>
+  <data name="CarbonNetZero_11_Title" xml:space="preserve">
+    <value>Enter your current emissions data</value>
+  </data>
+  <data name="CarbonNetZero_11_SummaryTitle" xml:space="preserve">
+    <value>Scope 1</value>
+  </data>
+  <data name="CarbonNetZero_11_Description" xml:space="preserve">
+    <value>
+        &lt;div class="govuk-body govuk-!-margin-top-5"&gt;
+            &lt;h2 class="govuk-heading-m govuk-!-margin-bottom-0"&gt;
+                Scope 1
+                &lt;span class="govuk-body govuk-!-font-weight-regular"&gt;(tCO2)&lt;/span&gt;
+            &lt;/h2&gt;
+        &lt;/div&gt;
+    </value>
+  </data>
+  <data name="CarbonNetZero_12_Title" xml:space="preserve">
+    <value>Enter your current emissions data</value>
+  </data>
+  <data name="CarbonNetZero_12_SummaryTitle" xml:space="preserve">
+    <value>Scope 2</value>
+  </data>
+  <data name="CarbonNetZero_12_Description" xml:space="preserve">
+    <value>
+        &lt;div class="govuk-body govuk-!-margin-top-5"&gt;
+            &lt;h2 class="govuk-heading-m govuk-!-margin-bottom-0"&gt;
+                Scope 2
+                &lt;span class="govuk-body govuk-!-font-weight-regular"&gt;(tCO2)&lt;/span&gt;
+            &lt;/h2&gt;
+        &lt;/div&gt;
+    </value>
+  </data>
+  <data name="CarbonNetZero_13_Title" xml:space="preserve">
+    <value>Enter your current emissions data</value>
+  </data>
+  <data name="CarbonNetZero_13_SummaryTitle" xml:space="preserve">
+    <value>Scope 3</value>
+  </data>
+  <data name="CarbonNetZero_13_Description" xml:space="preserve">
+    <value>
+        &lt;div class="govuk-body govuk-!-margin-top-5"&gt;
+            &lt;h2 class="govuk-heading-m govuk-!-margin-bottom-0"&gt;
+                Scope 3
+                &lt;span class="govuk-body govuk-!-font-weight-regular"&gt;(tCO2)&lt;/span&gt;
+            &lt;/h2&gt;
+        &lt;/div&gt;
+    </value>
+  </data>
+  <data name="Global_YearInput_YearRequiredError" xml:space="preserve">
+    <value>The year is required.</value>
+  </data>
+  <data name="Global_YearInput_YearInvalidError" xml:space="preserve">
+    <value>The year entered is invalid. Please enter a valid year.</value>
+  </data>
+  <data name="Forms_FormElementYearInput_ExampleHint" xml:space="preserve">
+    <value>For example, 2030</value>
+  </data>
+  <data name="CarbonNetZero_CarbonNetZeroDetails_NetZeroTargetYear_Heading" xml:space="preserve">
+    <value>Enter your Net Zero target year</value>
+  </data>
+  <data name="CarbonNetZero_CarbonNetZeroDetails_NetZeroTargetYear_HintText" xml:space="preserve">
+    <value>For example 2030</value>
+  </data>
+  <data name="CarbonNetZero_CarbonNetZeroDetails_RelevantEmissionsData_Heading" xml:space="preserve">
+    <value>Enter the relevant emissions data:</value>
+  </data>
+  <data name="CarbonNetZero_CarbonNetZeroDetails_SupplierEmissionsDeclaration_Text" xml:space="preserve">
+    <value>Supplier Emissions Declaration:</value>
+  </data>
+  <data name="CarbonNetZero_CarbonNetZeroDetails_BaselineYear_Text" xml:space="preserve">
+    <value>Baseline Year:</value>
+  </data>
+  <data name="CarbonNetZero_CarbonNetZeroDetails_ReportingYear_Text" xml:space="preserve">
+    <value>Reporting Year:</value>
+  </data>
+  <data name="CarbonNetZero_CarbonNetZeroDetails_BaselineYear_ScopeOne_Text" xml:space="preserve">
+    <value>Scope 1:</value>
+  </data>
+  <data name="CarbonNetZero_CarbonNetZeroDetails_BaselineYear_ScopeTwo_Text" xml:space="preserve">
+    <value>Scope 2:</value>
+  </data>
+  <data name="CarbonNetZero_CarbonNetZeroDetails_BaselineYear_ScopeThree_Text" xml:space="preserve">
+    <value>Scope 3:</value>
+  </data>
+  <data name="CarbonNetZero_CarbonNetZeroDetails_ReportingYear_ScopeOne_Text" xml:space="preserve">
+    <value>Scope 1:</value>
+  </data>
+  <data name="CarbonNetZero_CarbonNetZeroDetails_ReportingYear_ScopeTwo_Text" xml:space="preserve">
+    <value>Scope 2:</value>
+  </data>
+  <data name="CarbonNetZero_CarbonNetZeroDetails_ReportingYear_ScopeThree_Text" xml:space="preserve">
+    <value>Scope 3:</value>
+  </data>
+  <data name="CarbonNetZero_CarbonNetZeroDetails_TCO2E_Text" xml:space="preserve">
+    <value>tCO2e</value>
   </data>
   <data name="Global_Enter_Your_Job_Title" xml:space="preserve">
     <value>Enter your job title</value>

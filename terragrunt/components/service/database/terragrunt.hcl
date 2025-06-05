@@ -34,6 +34,7 @@ dependency core_networking {
   mock_outputs = {
     private_subnets             = "mock"
     private_subnets_cidr_blocks = "mock"
+    public_subnets              = "mock" # @TODO (ABN) burn me once migration is done
     vpc_id                      = "mock"
   }
 }
@@ -56,6 +57,7 @@ inputs = {
 
   private_subnet_ids          = dependency.core_networking.outputs.private_subnet_ids
   private_subnets_cidr_blocks = dependency.core_networking.outputs.private_subnets_cidr_blocks
+  public_subnet_ids           = dependency.core_networking.outputs.public_subnet_ids # @TODO (ABN) burn me once migration is done
   vpc_id                      = dependency.core_networking.outputs.vpc_id
 
   db_mysql_sg_id    = dependency.core_security_groups.outputs.db_mysql_sg_id

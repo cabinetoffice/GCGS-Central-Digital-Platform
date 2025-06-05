@@ -169,7 +169,7 @@ public record SupplierInfo
 public record RegisterConnectedEntity
 {
     public required ConnectedEntityType EntityType { get; init; }
-    public bool HasCompnayHouseNumber { get; init; }
+    public bool HasCompanyHouseNumber { get; init; }
     public string? CompanyHouseNumber { get; init; }
     public string? OverseasCompanyNumber { get; init; }
 
@@ -180,7 +180,6 @@ public record RegisterConnectedEntity
     public DateTimeOffset? RegisteredDate { get; init; }
     public string? RegisterName { get; init; }
 
-    public DateTimeOffset? StartDate { get; init; }
     public DateTimeOffset? EndDate { get; init; }
 
     public bool Deleted {  set; get; }
@@ -190,7 +189,7 @@ public record UpdateConnectedEntity
 {
     public string? Id { get; init; }
     public required ConnectedEntityType EntityType { get; init; }
-    public bool HasCompnayHouseNumber { get; init; }
+    public bool HasCompanyHouseNumber { get; init; }
     public string? CompanyHouseNumber { get; init; }
     public string? OverseasCompanyNumber { get; init; }
 
@@ -201,7 +200,6 @@ public record UpdateConnectedEntity
     public DateTimeOffset? RegisteredDate { get; init; }
     public string? RegisterName { get; init; }
 
-    public DateTimeOffset? StartDate { get; init; }
     public DateTimeOffset? EndDate { get; init; }
     public bool Deleted { set; get; }
 }
@@ -509,8 +507,8 @@ public record SignMouRequest
 {
     public required Guid MouId { get; set; }
     public required Guid CreatedById { get; set; }
-    public required string Name{ get; set; }
-    public required string JobTitle{ get; set; }
+    public required string Name { get; set; }
+    public required string JobTitle { get; set; }
 }
 
 public static class MappingExtensions
@@ -557,6 +555,12 @@ public record AddOrganisationParty
     public required Guid OrganisationPartyId { get; init; }
 
     public required OrganisationRelationship OrganisationRelationship { get; init; }
+
+    public string? ShareCode { get; init; }
+}
+public record UpdateOrganisationParty
+{
+    public required Guid OrganisationPartyId { get; init; }
 
     public string? ShareCode { get; init; }
 }

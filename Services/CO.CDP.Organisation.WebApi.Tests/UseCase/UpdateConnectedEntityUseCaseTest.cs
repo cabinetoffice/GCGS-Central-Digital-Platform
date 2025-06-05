@@ -65,11 +65,11 @@ public class UpdateConnectedEntityUseCaseTests
         Persistence.ConnectedEntity connectedEntity = new()
         {
             Guid = Guid.NewGuid(),
-            EntityType = Persistence.ConnectedEntity.ConnectedEntityType.Individual,
+            EntityType = OrganisationInformation.ConnectedEntityType.Individual,
             SupplierOrganisation = organisation,
             Addresses = new List<Persistence.ConnectedEntity.ConnectedEntityAddress>(),
             Id = 1,
-            HasCompnayHouseNumber = true,
+            HasCompanyHouseNumber = true,
             CreatedOn = DateTimeOffset.UtcNow,
             UpdatedOn = DateTimeOffset.UtcNow,
         };

@@ -1,0 +1,87 @@
+@page "/organisation/{id}/supplier-information/before-you-start"
+@using CO.CDP.Localization
+@model CO.CDP.OrganisationApp.Pages.Supplier.SupplierInformationSummaryModel
+
+@section BeforeContent {
+    <a href="/organisation/@RouteData.Values["id"]/supplier-information" class="govuk-back-link">
+        @StaticTextResource.Global_Back
+    </a>
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-l">@StaticTextResource.SupplierInformation_ReadAboutSupplierInformation_Heading</h1>
+
+        <div class="govuk-accordion" data-module="govuk-accordion" id="accordion-default">
+            <div class="govuk-accordion__section">
+                <div class="govuk-accordion__section-header">
+                    <h2 class="govuk-accordion__section-heading">
+                        <span class="govuk-accordion__section-button" id="accordion-default-heading-1">
+                            @StaticTextResource.SupplierInformation_WhatSupplierInformationIs_Heading
+                        </span>
+                    </h2>
+                </div>
+                <div id="accordion-default-content-1" class="govuk-accordion__section-content">
+                    @Html.Raw(StaticTextResource.SupplierInformation_WhatSupplierInformationIs_Message)
+                </div>
+            </div>
+
+            <div class="govuk-accordion__section">
+                <div class="govuk-accordion__section-header">
+                    <h2 class="govuk-accordion__section-heading">
+                        <span class="govuk-accordion__section-button" id="accordion-default-heading-2">
+                            @StaticTextResource.SupplierInformation_WhenToUpdateSupplierInformation_Heading
+                        </span>
+                    </h2>
+                </div>
+                <div id="accordion-default-content-2" class="govuk-accordion__section-content">
+                    @Html.Raw(StaticTextResource.SupplierInformation_WhenToUpdateSupplierInformation_Message)
+                </div>
+            </div>
+
+            <div class="govuk-accordion__section">
+                <div class="govuk-accordion__section-header">
+                    <h2 class="govuk-accordion__section-heading">
+                        <span class="govuk-accordion__section-button" id="accordion-default-heading-3">
+                            @StaticTextResource.SupplierInformation_WhenYourInformationIsSaved_Heading
+                        </span>
+                    </h2>
+                </div>
+                <div id="accordion-default-content-3" class="govuk-accordion__section-content">
+                    @Html.Raw(StaticTextResource.SupplierInformation_WhenYourInformationIsSaved_Message)
+                </div>
+            </div>
+
+            <div class="govuk-accordion__section">
+                <div class="govuk-accordion__section-header">
+                    <h2 class="govuk-accordion__section-heading">
+                        <span class="govuk-accordion__section-button" id="accordion-default-heading-4">
+                            @StaticTextResource.SupplierInformation_InformationYouNeed_Heading
+                        </span>
+                    </h2>
+                </div>
+                <div id="accordion-default-content-4" class="govuk-accordion__section-content">
+                    @Html.Raw(StaticTextResource.SupplierInformation_InformationYouNeed_Message)
+                </div>
+            </div>
+
+            <div class="govuk-accordion__section">
+                <div class="govuk-accordion__section-header">
+                    <h2 class="govuk-accordion__section-heading">
+                        <span class="govuk-accordion__section-button" id="accordion-default-heading-8">
+                            @StaticTextResource.SupplierInformation_HowToShare_Heading
+                        </span>
+                    </h2>
+                </div>
+                <div id="accordion-default-content-5" class="govuk-accordion__section-content">
+                    @Html.Raw(StaticTextResource.SupplierInformation_HowToShare_Message)
+                </div>
+            </div>
+            <div class="govuk-!-margin-top-3">
+                <a class="govuk-link" href="/organisation/@RouteData.Values["id"]/supplier-information">
+                    @StaticTextResource.Supplier_ReturnToAccountHome
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

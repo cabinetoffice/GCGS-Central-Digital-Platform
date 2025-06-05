@@ -25,9 +25,9 @@ public class OrganisationsModelTests
         string type = "buyer";
         int pageNumber = 1;
         int totalOrganisations = 120;
-        var organisations = new List<OrganisationDto>();
+        var organisations = new Tuple_2(new List<OrganisationDto>(), totalOrganisations);
+
         _mockOrganisationClient.Setup(client => client.GetAllOrganisationsAsync(type, type, null, 50, 0)).ReturnsAsync(organisations);
-        _mockOrganisationClient.Setup(client => client.GetOrganisationsTotalCountAsync(type, type, null)).ReturnsAsync(totalOrganisations);
 
         var result = await _organisationsModel.OnGet(type, pageNumber);
 
@@ -45,9 +45,8 @@ public class OrganisationsModelTests
         string role = "tenderer";
         int pageNumber = 2;
         int totalOrganisations = 200;
-        var organisations = new List<OrganisationDto>();
+        var organisations = new Tuple_2(new List<OrganisationDto>(), totalOrganisations);
         _mockOrganisationClient.Setup(client => client.GetAllOrganisationsAsync(role, role, null, 50, 50)).ReturnsAsync(organisations);
-        _mockOrganisationClient.Setup(client => client.GetOrganisationsTotalCountAsync(role, role, null)).ReturnsAsync(totalOrganisations);
 
         var result = await _organisationsModel.OnGet(type, pageNumber);
 
@@ -109,24 +108,5 @@ public class OrganisationsModelTests
 
         result.Should().HaveCount(1);
         result[0].Id.Should().Be("12345678");
-    }
-
-    [Fact]
-    public async Task OnGet_SetsSearchInput_FromSession()
-    {
-        string type = "buyer";
-        int pageNumber = 1;
-        int totalOrganisations = 120;
-        var organisations = new List<OrganisationDto>();
-        _mockOrganisationClient.Setup(client => client.GetAllOrganisationsAsync(type, type, It.IsAny<string>(), 50, 0)).ReturnsAsync(organisations);
-        _mockOrganisationClient.Setup(client => client.GetOrganisationsTotalCountAsync(type, type, It.IsAny<string>())).ReturnsAsync(totalOrganisations);
-
-        var result = await _organisationsModel.OnGet(type, pageNumber);
-
-        result.Should().BeOfType<PageResult>();
-        _organisationsModel.Title.Should().Be("Buyer organisations");
-        _organisationsModel.PageSize.Should().Be(50);
-        _organisationsModel.CurrentPage.Should().Be(pageNumber);
-        _organisationsModel.TotalPages.Should().Be(3);
     }
 }

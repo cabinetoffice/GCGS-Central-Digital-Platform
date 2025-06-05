@@ -1,6 +1,8 @@
 module "s3_kms_key" {
   source = "../kms"
 
+  bucket_enable_presigned  = var.enable_presigned_urls
+  bucket_name              = var.bucket_name
   custom_policies          = []
   customer_master_key_spec = "SYMMETRIC_DEFAULT"
   deletion_window_in_days  = 7

@@ -57,7 +57,7 @@ public class ConnectedEntityCheckAnswersCommon
             DateOfBirth = connectedEntity.IndividualOrTrust?.DateOfBirth,
             OverseasCompaniesHouseNumber = connectedEntity.OverseasCompanyNumber,
             HasOverseasCompaniesHouseNumber = (connectedEntity.OverseasCompanyNumber == null ? null : (!string.IsNullOrEmpty(connectedEntity.OverseasCompanyNumber))),
-            SupplierHasCompanyHouseNumber = connectedEntity.HasCompnayHouseNumber,
+            SupplierHasCompanyHouseNumber = connectedEntity.HasCompanyHouseNumber,
             DirectorLocation = connectedEntity.IndividualOrTrust?.ResidentCountry,
             EndDate = connectedEntity.EndDate
         };
