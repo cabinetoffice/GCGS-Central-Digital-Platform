@@ -88,7 +88,7 @@ public class ConsortiumCheckAnswerModel(
                 scheme: OrganisationSchemeType.Other),
             name: details.ConsortiumName,
             type: OrganisationWebApiClient.OrganisationType.InformalConsortium,
-            roles: []
+            roles: [PartyRole.Tenderer]
         );
     }
 }

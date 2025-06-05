@@ -102,7 +102,8 @@ public static class EntityFactory
         List<(Person, List<string>)>? personsWithScope = null,
         List<Person>? tenantPersons = null,
         BuyerInformation? buyerInformation = null,
-        SupplierInformation? supplierInformation = null
+        SupplierInformation? supplierInformation = null,
+        OrganisationType organisationType = OrganisationType.Organisation
     )
     {
         var theGuid = guid ?? Guid.NewGuid();
@@ -111,7 +112,7 @@ public static class EntityFactory
         {
             Guid = theGuid,
             Name = theName,
-            Type = OrganisationType.Organisation,
+            Type = organisationType,
             Tenant = tenant ?? GivenTenant(name: theName),
 
             Identifiers = identifiers ??
