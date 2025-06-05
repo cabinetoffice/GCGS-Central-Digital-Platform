@@ -31,6 +31,12 @@ public interface IOrganisationRepository : IDisposable
     {
         public class DuplicateOrganisationException(string message, Exception? cause = null)
             : OrganisationRepositoryException(message, cause);
+
+        public class DuplicateIdentifierException(string message, Exception? cause = null)
+            : OrganisationRepositoryException(message, cause);
+
+        public class RemovePrimaryIdentifierException(string message, Exception? cause = null)
+            : OrganisationRepositoryException(message, cause);
     }
 
     public Task<bool> IsEmailUniqueWithinOrganisation(Guid organisationId, string email);
