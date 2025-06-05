@@ -895,6 +895,67 @@ public class DatabaseOrganisationRepositoryTest(PostgreSqlFixture postgreSql)
         result.Should().HaveCount(1);
     }
 
+    [Fact]
+    public async Task RemoveMouSignatures_WhenCalled_ShouldDeleteAllMouSignaturesForOrganisation()
+    {
+        using var repository = OrganisationRepository();
+
+        var organisation = GivenOrganisation();
+
+        await using var context = GetDbContext();
+        await context.Organisations.AddAsync(organisation);
+        await context.SaveChangesAsync();
+
+        var mou = new Mou { Guid = Guid.NewGuid(), FilePath = "" };
+        context.Mou.Add(mou);
+        await context.SaveChangesAsync();
+
+        var person = GivenPerson();
+        organisation.Persons.Add(person);
+        await context.SaveChangesAsync();
+
+        var mouSignature1 = new MouSignature
+        {
+            Id = 1,
+            SignatureGuid = Guid.NewGuid(),
+            OrganisationId = organisation.Id,
+            Organisation = organisation,
+            CreatedById = person.Id,
+            CreatedBy = person,
+            Name = "John Doe",
+            JobTitle = "CEO",
+            MouId = mou.Id,
+            Mou = mou
+        };
+
+        var mouSignature2 = new MouSignature
+        {
+            Id = 2,
+            SignatureGuid = Guid.NewGuid(),
+            OrganisationId = organisation.Id,
+            Organisation = organisation,
+            CreatedById = person.Id,
+            CreatedBy = person,
+            Name = "Jane Smith",
+            JobTitle = "CFO",
+            MouId = mou.Id,
+            Mou = mou
+        };
+
+        context.MouSignature.AddRange(mouSignature1, mouSignature2);
+        await context.SaveChangesAsync();
+
+        // Ensure signatures exist before deletion
+        var beforeDeletion = await repository.GetMouSignatures(organisation.Id);
+        beforeDeletion.Should().HaveCount(2);
+
+        await repository.RemoveMouSignatures(organisation.Id);
+
+        var afterDeletion = await repository.GetMouSignatures(organisation.Id);
+        afterDeletion.Should().BeEmpty();
+    }
+
+
 
     private DatabaseOrganisationRepository OrganisationRepository()
         => new(GetDbContext());
