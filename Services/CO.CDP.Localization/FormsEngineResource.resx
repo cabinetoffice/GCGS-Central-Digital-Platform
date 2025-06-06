@@ -898,6 +898,79 @@ PPN 006 and associated reporting standards (opens in a new tab).&lt;/a&gt;&lt;/p
     &lt;p class=&quot;govuk-body&quot;&gt;For more information read:&lt;/p&gt;
     </value>
   </data>
+  <data name="ModernSlavery_03_Title" xml:space="preserve">
+    <value>Is your latest Modern Slavery Statement available digitally?</value>
+  </data>
+  <data name="ModernSlavery_04_Title" xml:space="preserve">
+    <value> Are your documents or statements related to modern slavery available digitally?</value>
+  </data>
+  <data name="ModernSlavery_04_Description" xml:space="preserve">
+    <value>
+    &lt;div class=&quot;govuk-body govuk-!-margin-top-3&quot;&gt;
+      Published statements or other relevant documents should contain information of a similar type and level to a Modern Slavery Statement.
+    &lt;/div&gt;
+    </value>
+  </data>
+  <data name="ModernSlavery_05_Title" xml:space="preserve">
+    <value>Enter the link to your Modern Slavery Statement</value>
+  </data>
+  <data name="ModernSlavery_05_Description" xml:space="preserve">
+    <value>
+      &lt;div class=&quot;govuk-body&quot;&gt;
+      This should be the link that is published on your organisation's website.
+    &lt;/div&gt;
+    </value>
+  </data>
+  <data name="ModernSlavery_06_Title" xml:space="preserve">
+    <value>Upload a copy of your latest Modern Slavery Statement</value>
+  </data>
+  <data name="ModernSlavery_07_Title" xml:space="preserve">
+    <value>Enter the link to your relevant documentation or published statements on modern slavery</value>
+  </data>
+  <data name="ModernSlavery_08_Title" xml:space="preserve">
+    <value>Upload your relevant documentation or published statements on modern slavery</value>
+  </data>
+  <data name="ModernSlavery_09_Title" xml:space="preserve">
+    <value>Enter instructions on how to find your organisations Modern Slavery Statement</value>
+  </data>
+  <data name="ModernSlavery_09_Description" xml:space="preserve">
+    <value>
+      &lt;div class=&quot;govuk-hint&quot;&gt;
+      This is the exact location online, for example, go to 'website link', scroll down to footer menu and click on 'policies'
+    &lt;/div&gt;
+    </value>
+  </data>
+  <data name="ModernSlavery_10_Title" xml:space="preserve">
+    <value>Enter instructions on how to find your relevant published statements or documents on modern slavery</value>
+  </data>
+  <data name="ModernSlavery_10_Description" xml:space="preserve">
+    <value>
+      &lt;div class=&quot;govuk-hint&quot;&gt;
+      This is the exact location online, for example, go to 'website link', scroll down to footer menu and click on 'policies'
+    &lt;/div&gt;
+    </value>
+  </data>
+  <data name="ModernSlavery_11_Title" xml:space="preserve">
+      <value>Missing information</value>
+  </data>
+  <data name="ModernSlavery_11_SummaryTitle" xml:space="preserve">
+      <value>Missing information</value>
+  </data>
+  <data name="ModernSlavery_11_Description" xml:space="preserve">
+    <value>
+    &lt;p class=&quot;govuk-body&quot;&gt;
+      If the following information is missing from your statements or documents related to modern slavery, explain why and commit to including it before the contract is awarded:
+    &lt;/p&gt;
+    &lt;ul class=&quot;govuk-list govuk-list--bullet&quot;&gt;
+      &lt;li&gt;organisation structure and supply chains&lt;/li&gt;
+      &lt;li&gt;policies in relation to modern slavery and human trafficking&lt;/li&gt;
+      &lt;li&gt;due diligence processes for modern slavery and human trafficking, including your supply chains&lt;/li&gt;
+      &lt;li&gt;risk assessment and management plans&lt;/li&gt;
+      &lt;li&gt;key performance indicators to measure the effectiveness of preventative steps being taken&lt;/li&gt;
+      &lt;li&gt;training on modern slavery and trafficking available to staff&lt;/li&gt;
+    &lt;/ul&gt;
+      </value>
+  </data>
   <data name="Global_Enter_Your_Job_Title" xml:space="preserve">
     <value>Enter your job title</value>
   </data>
