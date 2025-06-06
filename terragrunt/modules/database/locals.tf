@@ -7,14 +7,16 @@ locals {
   is_production = var.is_production || var.environment == "staging"
 
   fts_db_parameters_cluster = {
-    character_set_database          = "latin1"
-    character_set_server            = "latin1"
-    collation_server                = "latin1_swedish_ci"
-    explicit_defaults_for_timestamp = 0
-    sql_mode                        = "NO_ENGINE_SUBSTITUTION,STRICT_TRANS_TABLES"
+    character_set_database           = "latin1"
+    character_set_server             = "latin1"
+    collation_server                 = "latin1_swedish_ci"
+    explicit_defaults_for_timestamp  = 0
+    local_infile                     = 1
+    max_allowed_packet               = "33554432"
+    sql_mode                         = "NO_ENGINE_SUBSTITUTION"
   }
 
   fts_db_parameters_instance = {
-    sql_mode = "NO_ENGINE_SUBSTITUTION,STRICT_TRANS_TABLES"
+    sql_mode = "NO_ENGINE_SUBSTITUTION"
   }
 }
