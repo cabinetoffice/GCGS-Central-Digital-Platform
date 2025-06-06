@@ -13,10 +13,10 @@ locals {
     explicit_defaults_for_timestamp  = 0
     local_infile                     = 1
     max_allowed_packet               = "33554432"
-    sql_mode                         = "NO_ENGINE_SUBSTITUTION"
+    sql_mode                         = "STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION"
   }
 
   fts_db_parameters_instance = {
-    sql_mode = "NO_ENGINE_SUBSTITUTION"
+    sql_mode = "STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION"
   }
 }
