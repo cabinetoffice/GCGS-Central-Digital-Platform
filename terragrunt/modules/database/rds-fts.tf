@@ -1,6 +1,7 @@
 module "cluster_fts" {
   source = "../rds-cluster"
 
+  apply_immediately            = true
   backup_retention_period      = var.is_production ? 14 : 1
   copy_tags_to_snapshot        = true
   db_name                      = local.fts_cluster_name
