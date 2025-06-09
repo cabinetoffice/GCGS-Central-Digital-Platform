@@ -12,7 +12,7 @@ locals {
     collation_server                 = "latin1_swedish_ci"
     explicit_defaults_for_timestamp  = 0
     local_infile                     = 1
-    max_allowed_packet               = "33554432"
+    max_allowed_packet               = "293601280"
     sql_mode                         = "STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION"
   }
 
