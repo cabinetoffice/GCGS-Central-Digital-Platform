@@ -38,18 +38,17 @@ public class OrganisationScopeAuthorizationHandler(
         }
     }
 
-    private static bool MeetsPersonScopesRequirement(AuthorizationHandlerContext context, string[] personScopes)
+    private static bool MeetsPersonScopesRequirement(AuthorizationHandlerContext context, string[] personScopesRequired)
     {
-        if (personScopes.Length == 0)
-        {
-            return false;
-        }
-
         var personRoles = context.User.FindFirstValue(ClaimType.Roles);
-
         var personRolesArray = (personRoles ?? "").Split(",", StringSplitOptions.RemoveEmptyEntries);
 
-        if (personScopes.Intersect(personRolesArray).Any())
+        if (personRolesArray.Contains(PersonScope.SuperAdmin))
+        {
+            return true;
+        }
+
+        if (personScopesRequired.Intersect(personRolesArray).Any())
         {
             return true;
         }

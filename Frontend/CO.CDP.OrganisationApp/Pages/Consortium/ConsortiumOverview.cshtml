@@ -4,14 +4,11 @@
 @using CO.CDP.OrganisationApp.Extensions
 @using CO.CDP.Localization
 
-@inject IUserInfoService userInfoService
-
 @model ConsortiumOverviewModel
 
 @{
     var organisationDetails = Model.OrganisationDetails!;
     var postalAddress = organisationDetails.Addresses.FirstOrDefault(a => a.Type == CO.CDP.Organisation.WebApiClient.AddressType.Postal);
-    bool isViewer = await userInfoService.IsViewer();
     ViewData["Title"] = organisationDetails.Name;
     var ppon = (organisationDetails.Identifier.Scheme == OrganisationSchemeType.Other
                         ? StaticTextResource.Consortium_ConsortiumOverview_Ppon_Status_Pending
