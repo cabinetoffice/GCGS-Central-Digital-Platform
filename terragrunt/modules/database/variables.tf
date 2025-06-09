@@ -71,6 +71,12 @@ variable "product" {
   })
 }
 
+variable "public_subnet_ids" { # @TODO (ABN) burn me once migration is done
+  description = "List of public subnet IDs while migrating using dumpfile"
+  type        = list(string)
+  default     = []
+}
+
 variable "role_rds_backup_arn" {
   description = "The ARN for the IAM role that permits users to access to S3 buckets holding dump files."
   type        = string

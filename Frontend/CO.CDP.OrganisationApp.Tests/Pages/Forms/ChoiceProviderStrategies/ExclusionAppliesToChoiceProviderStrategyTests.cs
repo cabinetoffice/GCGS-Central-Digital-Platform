@@ -63,11 +63,11 @@ public class ExclusionAppliesToChoiceProviderStrategyTests
 
     internal ConnectedEntity ExampleConnectedIndividual(ConnectedEntityType connectedEntityType, ConnectedIndividualAndTrustCategory connectedIndividualAndTrustCategory, ConnectedPersonType connectedPersonType)
     {
-        return new ConnectedEntity([], "asd", null, ConnectedEntityType.TrustOrTrustee, false, new Guid(), new ConnectedIndividualTrust(ConnectedIndividualAndTrustCategory.AnyOtherIndividualWithSignificantInfluenceOrControlForTrust, ConnectedPersonType.TrustOrTrustee, [], null, "First name", 4, "Last name", null, new Guid(), null), null, null, null, "Register name", null);
+        return new ConnectedEntity([], "asd", null, ConnectedEntityType.TrustOrTrustee, false, new Guid(), new ConnectedIndividualTrust(ConnectedIndividualAndTrustCategory.AnyOtherIndividualWithSignificantInfluenceOrControlForTrust, ConnectedPersonType.TrustOrTrustee, [], null, "First name", 4, "Last name", null, new Guid(), null), null, null, null, "Register name");
     }
 
     internal ConnectedEntity ExampleConnectedOrganisation()
     {
-        return new ConnectedEntity([], "asd", null, ConnectedEntityType.Organisation, false, new Guid(), null, new ConnectedOrganisation(ConnectedOrganisationCategory.AnyOtherOrganisationWithSignificantInfluenceOrControl, [], 3, null, null, "Org name", new Guid(), null), null, null, "Register name", null);
+        return new ConnectedEntity([], "asd", null, ConnectedEntityType.Organisation, false, new Guid(), null, new ConnectedOrganisation(ConnectedOrganisationCategory.AnyOtherOrganisationWithSignificantInfluenceOrControl, [], 3, null, null, "Org name", new Guid(), null), null, null, "Register name");
     }
 }

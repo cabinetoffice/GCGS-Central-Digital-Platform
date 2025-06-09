@@ -162,7 +162,7 @@
 &lt;div class=&quot;govuk-inset-text&quot;&gt;
     You can update your supplier information whenever it changes but you must create a new share code and file to share the new information.
 &lt;/div&gt;</value>
-  </data>  
+  </data>
   <data name="SupplierInformation_WhenYourInformationIsSaved_Heading" xml:space="preserve">
     <value>When your information is saved</value>
   </data>
@@ -3374,6 +3374,15 @@
   <data name="UserSummary_AddAnotherUser" xml:space="preserve">
     <value>Add another user?</value>
   </data>
+  <data name="UserSummary_ViewAdmins_Title" xml:space="preserve">
+    <value>View admins</value>
+  </data>
+  <data name="UserSummary_ViewAdmins_Supplier_HintText" xml:space="preserve">
+    <value>Supplier admins can add, remove and edit users, create share codes and edit supplier information.</value>
+  </data>
+  <data name="UserSummary_ViewAdmins_Buyer_HintText" xml:space="preserve">
+    <value>Buyer admins can add, remove and edit users, create and delete APIs, create and edit notices and update organisation information.</value>
+  </data>
   <data name="Users_FirstName_Label" xml:space="preserve">
     <value>First name</value>
   </data>
@@ -3520,6 +3529,10 @@
   </data>
   <data name="Users_SendEmail_Button" xml:space="preserve">
     <value>Send email</value>
+  </data>
+
+  <data name="Users_ViewAdmins_Title" xml:space="preserve">
+    <value>Admins</value>
   </data>
   <data name="OrganisationInviteExpired_Title" xml:space="preserve">
     <value>Your invite has expired</value>
