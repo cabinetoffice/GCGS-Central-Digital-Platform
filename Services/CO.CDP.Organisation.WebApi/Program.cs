@@ -1,5 +1,6 @@
 using System.Reflection;
 using CO.CDP.Authentication;
+using CO.CDP.Authentication.Authorization;
 using CO.CDP.AwsServices;
 using CO.CDP.Configuration.Assembly;
 using CO.CDP.Configuration.ForwardedHeaders;
@@ -17,6 +18,7 @@ using CO.CDP.OrganisationInformation.Persistence;
 using CO.CDP.WebApi.Foundation;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
+using Microsoft.AspNetCore.Authorization;
 using Announcement = CO.CDP.Organisation.WebApi.Model.Announcement;
 using ConnectedEntity = CO.CDP.Organisation.WebApi.Model.ConnectedEntity;
 using ConnectedEntityLookup = CO.CDP.Organisation.WebApi.Model.ConnectedEntityLookup;
@@ -99,8 +101,8 @@ builder.Services.AddScoped<IUseCase<GetAnnouncementQuery, IEnumerable<Announceme
 builder.Services.AddScoped<IUseCase<(Guid organisationId, string role), IEnumerable<Person>>, GetPersonsInRoleUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, string), IEnumerable<Person>>, GetPersonsInRoleUseCase>();
 
-builder.Services.AddSingleton<IAuthorizationHandler, OrganisationScopeAuthorizationHandler>();
-builder.Services.AddSingleton<IAuthorizationHandler, ApiKeyScopeAuthorizationHandler>();
+builder.Services.AddScoped<IAuthorizationHandler, OrganisationScopeAuthorizationHandler>();
+builder.Services.AddScoped<IAuthorizationHandler, ApiKeyScopeAuthorizationHandler>();
 
 builder.Services.AddGovUKNotifyApiClient(builder.Configuration);
 builder.Services.AddProblemDetails();
@@ -201,3 +203,4 @@ app.MapGroup("/mou")
 
 app.Run();
 public abstract partial class Program;
+
