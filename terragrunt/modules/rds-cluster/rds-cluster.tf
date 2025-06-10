@@ -1,4 +1,5 @@
 resource "aws_rds_cluster" "this" {
+  apply_immediately                = var.apply_immediately
   backup_retention_period          = var.backup_retention_period
   cluster_identifier               = var.db_name
   copy_tags_to_snapshot            = var.copy_tags_to_snapshot
@@ -53,6 +54,7 @@ resource "aws_db_subnet_group" "public" {  # @TODO (ABN) burn me once migration 
 resource "aws_rds_cluster_instance" "this" {
   count = var.instance_count
 
+  apply_immediately            = var.apply_immediately
   cluster_identifier           = aws_rds_cluster.this.id
   db_parameter_group_name      = aws_db_parameter_group.this.name
   engine                       = var.engine
