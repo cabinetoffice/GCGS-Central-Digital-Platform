@@ -325,6 +325,9 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
             case { } e when e.Message.Contains("_organisations_guid"):
                 throw new IOrganisationRepository.OrganisationRepositoryException.DuplicateOrganisationException(
                     $"Organisation with guid `{organisation.Guid}` already exists.", cause);
+            case { } e when e.Message.Contains("ix_identifiers_identifier_id_scheme"):
+                throw new IOrganisationRepository.OrganisationRepositoryException.DuplicateIdentifierException(
+                    $"You cannot use this registration number. It is being used by another organisation.", cause);
             default:
                 throw cause;
         }

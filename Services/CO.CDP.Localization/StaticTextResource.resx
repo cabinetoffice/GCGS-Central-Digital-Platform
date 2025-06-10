@@ -3573,6 +3573,12 @@
   <data name="ErrorMessageList_DuplicateOrganisationName" xml:space="preserve">
     <value>An organisation with this name already exists. Try again.</value>
   </data>
+  <data name="ErrorMessageList_DuplicateIdentifier" xml:space="preserve">
+    <value>You cannot use this registration number. It is being used by another organisation.</value>
+  </data>
+  <data name="ErrorMessageList_RemovePrimaryIdentifier" xml:space="preserve">
+    <value>You cannot remove the primary registration number.</value>
+  </data>
   <data name="ErrorMessageList_PayLoadIssueOrNullArgument" xml:space="preserve">
     <value>Enter all the required information correctly.</value>
   </data>

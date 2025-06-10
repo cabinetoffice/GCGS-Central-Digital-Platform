@@ -12,6 +12,8 @@ public static class ErrorCodes
         { typeof(BadHttpRequestException), (StatusCodes.Status422UnprocessableEntity, "UNPROCESSABLE_ENTITY") },
         { typeof(MissingOrganisationIdException), (StatusCodes.Status404NotFound, "ORGANISATION_NOT_FOUND") },
         { typeof(DuplicateOrganisationException), (StatusCodes.Status400BadRequest, "ORGANISATION_ALREADY_EXISTS") },
+        { typeof(DuplicateIdentifierException), (StatusCodes.Status400BadRequest, "IDENTIFIER_ALREADY_EXISTS") },
+        { typeof(RemovePrimaryIdentifierException), (StatusCodes.Status400BadRequest, "REMOVE_PRIMARY_IDENTIFIER") },
         { typeof(UnknownPersonException), (StatusCodes.Status404NotFound, "PERSON_DOES_NOT_EXIST") },
         { typeof(SupplierInfoNotExistException), (StatusCodes.Status422UnprocessableEntity, "UNPROCESSABLE_ENTITY") },
         { typeof(UnknownOrganisationException), (StatusCodes.Status404NotFound, "UNKNOWN_ORGANISATION") },
