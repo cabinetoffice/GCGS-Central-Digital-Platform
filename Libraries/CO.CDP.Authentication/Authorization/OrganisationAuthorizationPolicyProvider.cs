@@ -55,6 +55,7 @@ public class OrganisationAuthorizationPolicyProvider(IOptions<AuthorizationOptio
         string[] organisationPersonScopes = [];
         var organisationIdLocation = OrganisationIdLocation.None;
         string[] personScopes = [];
+        string[] apiKeyScopes = [];
 
         foreach (var token in policyTokens)
         {
@@ -83,6 +84,10 @@ public class OrganisationAuthorizationPolicyProvider(IOptions<AuthorizationOptio
 
                     case OrganisationAuthorizeAttribute.PersonScopesGroup:
                         personScopes = pair[1].Split('|', StringSplitOptions.RemoveEmptyEntries);
+                        break;
+
+                    case OrganisationAuthorizeAttribute.ApiKeyScopesGroup:
+                        apiKeyScopes = pair[1].Split('|', StringSplitOptions.RemoveEmptyEntries);
                         break;
                 }
             }
