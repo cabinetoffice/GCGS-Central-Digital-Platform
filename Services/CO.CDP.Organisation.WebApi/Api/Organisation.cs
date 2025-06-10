@@ -56,7 +56,9 @@ public static class EndpointExtensions
     public static void UseOrganisationEndpoints(this WebApplication app)
     {
         app.MapGet("/organisations",
-            [OrganisationAuthorize([AuthenticationChannel.OneLogin], personScopes: [Constants.PersonScope.SupportAdmin])]
+            [OrganisationAuthorize([AuthenticationChannel.OneLogin, AuthenticationChannel.ServiceKey],
+                personScopes: [Constants.PersonScope.SupportAdmin],
+                apiKeyScopes: [Constants.ApiKeyScopes.ReadOrganisationData])]
         async (
             [FromQuery] string? role,
             [FromQuery] string? pendingRole,
@@ -114,7 +116,8 @@ public static class EndpointExtensions
                 [AuthenticationChannel.OneLogin, AuthenticationChannel.ServiceKey],
                 [Constants.OrganisationPersonScope.Admin, Constants.OrganisationPersonScope.Editor, Constants.OrganisationPersonScope.Viewer],
                 OrganisationIdLocation.Path,
-                [Constants.PersonScope.SupportAdmin])]
+                [Constants.PersonScope.SupportAdmin],
+                apiKeyScopes: [Constants.ApiKeyScopes.ReadOrganisationData])]
         async (Guid organisationId, IUseCase<Guid, Model.Organisation?> useCase) =>
             await useCase.Execute(organisationId)
                    .AndThen(organisation => organisation != null ? Results.Ok(organisation) : Results.NotFound()))

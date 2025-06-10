@@ -99,6 +99,9 @@ builder.Services.AddScoped<IUseCase<GetAnnouncementQuery, IEnumerable<Announceme
 builder.Services.AddScoped<IUseCase<(Guid organisationId, string role), IEnumerable<Person>>, GetPersonsInRoleUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, string), IEnumerable<Person>>, GetPersonsInRoleUseCase>();
 
+builder.Services.AddSingleton<IAuthorizationHandler, OrganisationScopeAuthorizationHandler>();
+builder.Services.AddSingleton<IAuthorizationHandler, ApiKeyScopeAuthorizationHandler>();
+
 builder.Services.AddGovUKNotifyApiClient(builder.Configuration);
 builder.Services.AddProblemDetails();
 
