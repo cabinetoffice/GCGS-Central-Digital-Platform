@@ -30,4 +30,9 @@ public static class Constants
     {
         public const string SupportAdmin = "SUPPORTADMIN";
     }
+
+    public static class ApiKeyScopes
+    {
+        public const string ReadOrganisationData = "read:organisation_data";
+    }
 }
