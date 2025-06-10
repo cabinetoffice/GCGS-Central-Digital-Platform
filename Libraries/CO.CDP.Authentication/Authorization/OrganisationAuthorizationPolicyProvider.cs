@@ -95,15 +95,23 @@ public class OrganisationAuthorizationPolicyProvider(IOptions<AuthorizationOptio
 
         List<IAuthorizationRequirement> requirements = [new ChannelAuthorizationRequirement(channels)];
 
-        if (channels.Contains(AuthenticationChannel.OneLogin) && (organisationPersonScopes.Length > 0 || personScopes.Length > 0))
+        bool oneLoginChannelPresent = channels.Contains(AuthenticationChannel.OneLogin);
+        bool serviceKeyChannelPresent = channels.Contains(AuthenticationChannel.ServiceKey);
+
+        bool hasOrganisationPersonScopes = organisationPersonScopes.Length > 0;
+        bool hasPersonScopes = personScopes.Length > 0;
+        bool hasApiKeyScopes = apiKeyScopes.Length > 0;
+
+        if (oneLoginChannelPresent && (hasOrganisationPersonScopes || hasPersonScopes))
         {
             requirements.Add(new OrganisationScopeAuthorizationRequirement(organisationPersonScopes, organisationIdLocation, personScopes));
         }
 
-        if (apiKeyScopes.Length > 0)
+        if (serviceKeyChannelPresent && hasApiKeyScopes)
         {
             requirements.Add(new ApiKeyScopeAuthorizationRequirement(apiKeyScopes));
         }
+
         return [.. requirements];
     }
 }
