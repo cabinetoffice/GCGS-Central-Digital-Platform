@@ -45,7 +45,7 @@
     </form>
 </div>
 
-<br/>
+<br />
 
 <h2 class="govuk-heading-m">
     @(string.Format(StaticTextResource.Support_OrganisationApproval_OrganisationsCountHeading, Model.TotalOrganisations))
@@ -53,62 +53,68 @@
 
 <table class="govuk-table">
     <thead class="govuk-table__head">
-    <tr class="govuk-table__row">
-        <th scope="col" colspan="1" class="govuk-table__header">@StaticTextResource.Support_Organisations_TableHeader_OrganisationName</th>
-        <th scope="col" colspan="1" class="govuk-table__header">Emails</th>
-        @{
-            if (Model.Type == "buyer")
-            {
-                <th scope="col" colspan="1" class="govuk-table__header">@StaticTextResource.Support_Organisations_TableHeader_Status</th>
-                <th scope="col" colspan="2" class="govuk-table__header">@StaticTextResource.Support_Organisations_TableHeader_Comments</th>
-                <th scope="col" colspan="1" class="govuk-table__header"></th>
-            }
-        }
-    </tr>
+        <tr class="govuk-table__row">
+            <th scope="col" colspan="1" class="govuk-table__header">@StaticTextResource.Support_Organisations_TableHeader_OrganisationName</th>
+            <th scope="col" colspan="1" class="govuk-table__header">@StaticTextResource.Support_Organisations_TableHeader_Emails</th>
+            <th scope="col" colspan="1" class="govuk-table__header">@StaticTextResource.Support_Organisations_TableHeader_Status</th>
+            <th scope="col" colspan="2" class="govuk-table__header">@StaticTextResource.Support_Organisations_TableHeader_Comments</th>
+        </tr>
     </thead>
     <tbody class="govuk-table__body">
-    @{
-        foreach (var org in Model.Organisations)
-        {
-            <tr class="govuk-table__row">
-                <th scope="row" class="govuk-table__header">
-                    <a asp-page="/Organisation/OrganisationOverview" asp-route-id="@org.Id">
-                        @org.Name
-                    </a>
-                    <ul class="govuk-list">
-                        @{
-                            foreach (var i in @org.Identifiers)
-                            {
-                                <li>@i</li>
+        @{
+            foreach (var org in Model.Organisations)
+            {
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header">
+                        <a asp-page="/Organisation/OrganisationOverview" asp-route-id="@org.Id">
+                            @org.Name
+                        </a>
+                        <ul class="govuk-list">
+                            @{
+                                foreach (var i in @org.Identifiers)
+                                {
+                                    <li>@i</li>
+                                }
                             }
-                        }
-                    </ul>
-                </th>
-                <td class="govuk-table__cell">
-                    <ul class="govuk-list">
-                        @{
-                            foreach (var i in @org.ContactPoints)
-                            {
-                                <li>@StaticTextResource.Support_Organisations_TableHeader_OrgEmail: @i</li>
+                        </ul>
+                    </th>
+                    <td class="govuk-table__cell">
+                        <ul class="govuk-list">
+                            @{
+                                foreach (var i in @org.ContactPoints)
+                                {
+                                    <li>@StaticTextResource.Support_Organisations_TableHeader_OrgEmail: @i</li>
+                                }
                             }
-                        }
-                        <li>@StaticTextResource.Support_Organisations_TableHeader_AdminEmail: @org.AdminEmail</li>
-                    </ul>
-                </td>
-                @{
-                    if (Model.Type == "buyer")
-                    {
+                            <li>@StaticTextResource.Support_Organisations_TableHeader_AdminEmail: @org.AdminEmail</li>
+                        </ul>
+                    </td>
+                    @{
+
                         <td class="govuk-table__cell">
                             @{
-                                if (org.ApprovedOn == null)
+                                if (Model.Type == "buyer" && org.ApprovedOn == null)
                                 {
                                     <span>@StaticTextResource.Support_Organisations_Status_Pending</span>
                                 }
                                 else
                                 {
-                                    <span>@StaticTextResource.Support_Organisations_Status_Approved</span><br/>
-                                    <span>@(org.ApprovedOn == null ? "N/A" : org.ApprovedOn)</span><br/>
-                                    <span>@(org.ReviewedByFirstName != null ? org.ReviewedByFirstName + "" + org.ReviewedByLastName : "N/A")</span>
+                                    if (Model.Type == "buyer")
+                                    {
+                                        <span>@StaticTextResource.Support_Organisations_Status_Approved</span>
+                                        <br />
+                                    }
+
+                                    if (org.ApprovedOn != null)
+                                    {
+                                        <span>@org.ApprovedOn</span>
+                                        <br />
+                                    }
+
+                                    if (org.ReviewedByFirstName != null)
+                                    {
+                                        <span>@org.ReviewedByFirstName @org.ReviewedByLastName</span>
+                                    }
                                 }
                             }
                         </td>
@@ -127,30 +133,29 @@
                                         </div>
                                     </details>
                                 }
-                                else
-                                {
-                                    <span>N/A</span>
-                                }
                             }
                         </td>
-                        <td class="govuk-table__cell">
-                            @{
-                                if (@org.ApprovedOn == null)
-                                {
-                                    <a class="govuk-link" href="/support/organisation/@org.Id/approval">@StaticTextResource.Support_Organisations_Review_Link</a>
-                                }
-                                else
-                                {
-                                    <span>@StaticTextResource.Support_Organisations_Status_Approved</span>
-                                }
-                            }
 
-                        </td>
+                        if (Model.Type == "buyer")
+                        {
+                            <td class="govuk-table__cell">
+                                @{
+                                    if (@org.ApprovedOn == null)
+                                    {
+                                        <a class="govuk-link" href="/support/organisation/@org.Id/approval">@StaticTextResource.Support_Organisations_Review_Link</a>
+                                    }
+                                    else
+                                    {
+                                        <span>@StaticTextResource.Support_Organisations_Status_Approved</span>
+                                    }
+                                }
+
+                            </td>
+                        }
                     }
-                }
-            </tr>
+                </tr>
+            }
         }
-    }
     </tbody>
 </table>
 
@@ -160,4 +165,4 @@
     TotalItems = Model.TotalOrganisations,
     PageSize = Model.PageSize,
     Url = $"/support/organisations/{Model.Type}?q={queryValue}"
-    })
+})

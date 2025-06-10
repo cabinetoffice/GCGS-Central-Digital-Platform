@@ -317,7 +317,8 @@ public record UpdateJoinRequest
 [JsonConverter(typeof(JsonStringEnumConverter))]
 public enum SupportOrganisationUpdateType
 {
-    Review
+    Review,
+    ConvertPendingBuyerToSupplier,
 }
 
 public record SupportUpdateOrganisation

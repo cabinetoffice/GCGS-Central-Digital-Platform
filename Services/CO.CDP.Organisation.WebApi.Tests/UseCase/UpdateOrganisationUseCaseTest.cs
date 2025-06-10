@@ -627,7 +627,7 @@ public class UpdateOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
     }
 
     [Fact]
-    public async Task Execute_ShouldUpdateOrganisation_WhenOrganisationHasAddAsBuyerRole()
+    public async Task Execute_ShouldUpdateOrganisation_WhenOrganisationAddedAsBuyer()
     {
         var command = new UpdateOrganisation
         {
@@ -655,6 +655,43 @@ public class UpdateOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
         organisation.PendingRoles.Should().ContainSingle().Which.Should().Be(PartyRole.Buyer);
 
         organisation.Roles.Distinct().Should().BeEquivalentTo(new[] { PartyRole.Tenderer });
+
+        _notifyClient.Verify(n => n.SendEmail(It.IsAny<EmailNotificationRequest>()), Times.Once);
+    }
+
+    [Fact]
+    public async Task Execute_ShouldUpdateOrganisationAndNullifyPreviousReviews_WhenOrganisationAddedAsBuyer()
+    {
+        var command = new UpdateOrganisation
+        {
+            Type = OrganisationUpdateType.AddAsBuyerRole,
+            Organisation = new OrganisationInfo
+            {
+                BuyerInformation = new BuyerInformation
+                {
+                    BuyerType = "A buyer type",
+                    DevolvedRegulations = []
+                }
+            }
+        };
+
+        var organisation = GivenOrganisation([PartyRole.Tenderer], reviewedBy: GivenPerson(), reviewComment: "Initial review comment");
+        _organisationRepositoryMock.Setup(repo => repo.FindIncludingTenant(_organisationId)).ReturnsAsync(organisation);
+
+        var result = await _useCase.Execute((_organisationId, command));
+
+        result.Should().BeTrue();
+
+        _organisationRepositoryMock.Verify(repo => repo.SaveAsync(organisation, AnyOnSave()), Times.Once);
+        organisation.BuyerInfo?.BuyerType.Should().BeEquivalentTo("A buyer type");
+
+        organisation.PendingRoles.Should().ContainSingle().Which.Should().Be(PartyRole.Buyer);
+
+        organisation.Roles.Distinct().Should().BeEquivalentTo(new[] { PartyRole.Tenderer });
+
+        organisation.ReviewComment.Should().BeNullOrEmpty();
+        organisation.ReviewedById.Should().BeNull();
+        organisation.ApprovedOn.Should().BeNull();
 
         _notifyClient.Verify(n => n.SendEmail(It.IsAny<EmailNotificationRequest>()), Times.Once);
     }
