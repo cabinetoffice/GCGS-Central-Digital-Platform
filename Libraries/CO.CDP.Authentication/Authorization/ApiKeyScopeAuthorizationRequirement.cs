@@ -11,6 +11,6 @@ public class ApiKeyScopeAuthorizationRequirement(IEnumerable<string> requiredSco
     /// Gets the collection of scopes that are required for authorization.
     /// The user must have at least one of these scopes.
     /// </summary>
-    public IEnumerable<string> RequiredScopes { get; } = requiredScopes ?? throw new ArgumentNullException(nameof(requiredScopes));
+    public IEnumerable<string> RequiredScopes { get; } = requiredScopes ?? [];
 }
 
