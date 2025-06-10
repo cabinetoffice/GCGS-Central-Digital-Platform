@@ -232,8 +232,15 @@ public class OrganisationIdentificationModelTest
             .Setup(auth => auth.AuthorizeAsync(
                 It.IsAny<ClaimsPrincipal>(),
                 It.IsAny<object>(),
-                It.IsAny<string>()))
+                OrgScopeRequirement.Editor))
             .ReturnsAsync(AuthorizationResult.Success());
+
+        _authorizationServiceMock
+            .Setup(auth => auth.AuthorizeAsync(
+                It.IsAny<ClaimsPrincipal>(),
+                It.IsAny<object>(),
+                PersonScopeRequirement.SupportAdmin))
+            .ReturnsAsync(AuthorizationResult.Failed());
 
         var result = await _pageModel.OnPost();
 
@@ -294,6 +301,29 @@ public class OrganisationIdentificationModelTest
             })
             .Returns(Task.CompletedTask);
 
+        var fakeUser = new ClaimsPrincipal(new ClaimsIdentity(new[]
+        {
+            new Claim(ClaimTypes.Name, "Test User")
+        }, "mock"));
+
+        _pageModel.PageContext = new PageContext
+        {
+            HttpContext = new DefaultHttpContext { User = fakeUser }
+        };
+
+        _authorizationServiceMock
+            .Setup(auth => auth.AuthorizeAsync(
+                It.IsAny<ClaimsPrincipal>(),
+                It.IsAny<object>(),
+                OrgScopeRequirement.Editor))
+            .ReturnsAsync(AuthorizationResult.Success());
+
+        _authorizationServiceMock
+            .Setup(auth => auth.AuthorizeAsync(
+                It.IsAny<ClaimsPrincipal>(),
+                It.IsAny<object>(),
+                PersonScopeRequirement.SupportAdmin))
+            .ReturnsAsync(AuthorizationResult.Failed());
 
         var result = await _pageModel.OnPost();
 
