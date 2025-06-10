@@ -72,7 +72,7 @@ db: render-compose-override ## Start DB and DB migration services
 	@docker compose up organisation-information-migrations entity-verification-migrations --abort-on-container-failure
 .PHONY: db
 
-db-dump: ## Start DB and DB migration services
+db-dump:
 	@docker compose up -d db
 	@docker compose exec -T db sh -c 'PGPASSWORD=$$POSTGRES_PASSWORD pg_dump -a -U $$POSTGRES_USER -d $$POSTGRES_DB'
 .PHONY: db-dump
