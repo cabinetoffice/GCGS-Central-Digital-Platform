@@ -100,6 +100,10 @@ public class OrganisationAuthorizationPolicyProvider(IOptions<AuthorizationOptio
             requirements.Add(new OrganisationScopeAuthorizationRequirement(organisationPersonScopes, organisationIdLocation, personScopes));
         }
 
+        if (apiKeyScopes.Length > 0)
+        {
+            requirements.Add(new ApiKeyScopeAuthorizationRequirement(apiKeyScopes));
+        }
         return [.. requirements];
     }
 }
