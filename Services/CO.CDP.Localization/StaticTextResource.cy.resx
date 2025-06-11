@@ -1574,9 +1574,6 @@
   <data name="Consortium_ConsortiumStart_Paragraph1" xml:space="preserve">
     <value>Gall dau gyflenwr neu fwy sydd am gyflwyno cynnig ar y cyd greu consortiwm. Gallwch ychwanegu cynifer o gyflenwyr ag sydd ei angen.</value>
   </data>
-  <data name="Consortium_ConsortiumStart_Paragraph2" xml:space="preserve">
-    <value> </value>
-  </data>
   <data name="Consortium_ConsortiumStart_Paragraph3" xml:space="preserve">
     <value>Fel y sefydliad sy'n creu'r consortiwm, bydd angen i chi roi:</value>
   </data>
