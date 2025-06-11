@@ -189,22 +189,16 @@ public class FormsEngine(
 
         List<Models.FormQuestion> pathTaken = BuildPathToQuestion(allQuestions, currentQuestionId, answerState);
 
-        foreach (var questionOnPath in pathTaken)
-        {
-            if (questionOnPath.Type == Models.FormQuestionType.NoInput || questionOnPath.Type == Models.FormQuestionType.CheckYourAnswers)
-            {
-                continue;
-            }
+        return FindFirstUnansweredQuestionInPath(pathTaken, answerState);
+    }
 
-            bool isAnswered = IsQuestionAnswered(questionOnPath, answerState);
+    private Guid? FindFirstUnansweredQuestionInPath(List<Models.FormQuestion> pathTaken, FormQuestionAnswerState answerState)
+    {
+        var firstUnansweredValidQuestion = pathTaken
+            .Where(q => q.Type != Models.FormQuestionType.NoInput && q.Type != Models.FormQuestionType.CheckYourAnswers)
+            .FirstOrDefault(q => !IsQuestionAnswered(q, answerState));
 
-            if (!isAnswered)
-            {
-                return questionOnPath.Id;
-            }
-        }
-
-        return null;
+        return firstUnansweredValidQuestion?.Id;
     }
 
     private List<Models.FormQuestion> BuildPathToQuestion(List<Models.FormQuestion> allQuestions, Guid currentQuestionId, FormQuestionAnswerState answerState)
