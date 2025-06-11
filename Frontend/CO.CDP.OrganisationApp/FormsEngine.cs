@@ -276,22 +276,6 @@ public class FormsEngine(
             !alternativeTargets.Contains(q.Id));
     }
 
-    private List<Models.FormQuestion> GetSortedFormQuestions(List<Models.FormQuestion> questions)
-    {
-        if (!questions.Any())
-        {
-            return new List<Models.FormQuestion>();
-        }
-
-        var firstQuestion = GetFirstQuestion(questions);
-
-        return firstQuestion != null
-            ? GenerateJourneyFromFirstQuestion(firstQuestion, questions)
-            : throw new InvalidOperationException(
-                "Cannot determine a unique starting question for sorting. The form may be empty, contain circular dependencies," +
-                "all potential start nodes might be targeted as alternative next questions, or the questions list could be malformed.");
-    }
-
     private List<Models.FormQuestion> GenerateJourneyFromFirstQuestion(Models.FormQuestion firstQuestion,
         List<Models.FormQuestion> questions)
     {
