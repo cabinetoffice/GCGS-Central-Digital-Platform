@@ -244,25 +244,7 @@ public class FormsEngine(
                 continue;
             }
 
-            bool isAnswered = answerState?.Answers.Any(a =>
-            {
-                if (a.QuestionId != questionOnPath.Id || a.Answer == null) return false;
-
-                return questionOnPath.Type switch
-                {
-                    Models.FormQuestionType.Text => !string.IsNullOrWhiteSpace(a.Answer.TextValue),
-                    Models.FormQuestionType.MultiLine => !string.IsNullOrWhiteSpace(a.Answer.TextValue),
-                    Models.FormQuestionType.Url => !string.IsNullOrWhiteSpace(a.Answer.TextValue),
-                    Models.FormQuestionType.FileUpload => !string.IsNullOrWhiteSpace(a.Answer.TextValue),
-                    Models.FormQuestionType.YesOrNo => a.Answer.BoolValue.HasValue,
-                    Models.FormQuestionType.SingleChoice => !string.IsNullOrWhiteSpace(a.Answer.OptionValue) || !string.IsNullOrWhiteSpace(a.Answer.TextValue),
-                    Models.FormQuestionType.GroupedSingleChoice => !string.IsNullOrWhiteSpace(a.Answer.OptionValue),
-                    Models.FormQuestionType.Date => a.Answer.DateValue.HasValue,
-                    Models.FormQuestionType.CheckBox => a.Answer.BoolValue.HasValue,
-                    Models.FormQuestionType.Address => IsAddressAnswered(a.Answer.AddressValue),
-                    _ => false
-                };
-            }) ?? false;
+            bool isAnswered = IsQuestionAnswered(questionOnPath, answerState);
 
             if (!isAnswered)
             {
@@ -389,5 +371,28 @@ public class FormsEngine(
                 question.BranchType = Models.FormQuestionBranchType.Alternative;
             }
         }
+    }
+
+    private bool IsQuestionAnswered(Models.FormQuestion questionOnPath, FormQuestionAnswerState? answerState)
+    {
+        return answerState?.Answers.Any(a =>
+        {
+            if (a.QuestionId != questionOnPath.Id || a.Answer == null) return false;
+
+            return questionOnPath.Type switch
+            {
+                Models.FormQuestionType.Text => !string.IsNullOrWhiteSpace(a.Answer.TextValue),
+                Models.FormQuestionType.MultiLine => !string.IsNullOrWhiteSpace(a.Answer.TextValue),
+                Models.FormQuestionType.Url => !string.IsNullOrWhiteSpace(a.Answer.TextValue),
+                Models.FormQuestionType.FileUpload => !string.IsNullOrWhiteSpace(a.Answer.TextValue),
+                Models.FormQuestionType.YesOrNo => a.Answer.BoolValue.HasValue,
+                Models.FormQuestionType.SingleChoice => !string.IsNullOrWhiteSpace(a.Answer.OptionValue) || !string.IsNullOrWhiteSpace(a.Answer.TextValue),
+                Models.FormQuestionType.GroupedSingleChoice => !string.IsNullOrWhiteSpace(a.Answer.OptionValue),
+                Models.FormQuestionType.Date => a.Answer.DateValue.HasValue,
+                Models.FormQuestionType.CheckBox => a.Answer.BoolValue.HasValue,
+                Models.FormQuestionType.Address => IsAddressAnswered(a.Answer.AddressValue),
+                _ => false
+            };
+        }) ?? false;
     }
 }
