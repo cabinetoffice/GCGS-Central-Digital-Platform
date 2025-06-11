@@ -56,9 +56,7 @@ public static class EndpointExtensions
     public static void UseOrganisationEndpoints(this WebApplication app)
     {
         app.MapGet("/organisations",
-            [OrganisationAuthorize([AuthenticationChannel.OneLogin, AuthenticationChannel.ServiceKey],
-                personScopes: [Constants.PersonScope.SupportAdmin],
-                apiKeyScopes: [Constants.ApiKeyScopes.ReadOrganisationData])]
+            [OrganisationAuthorize([AuthenticationChannel.OneLogin], personScopes: [Constants.PersonScope.SupportAdmin])]
         async (
             [FromQuery] string? role,
             [FromQuery] string? pendingRole,
