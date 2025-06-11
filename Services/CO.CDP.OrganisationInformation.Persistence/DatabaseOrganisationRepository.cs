@@ -221,6 +221,7 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
                 o.id,
                 o.guid,
                 o.name,
+                o.type,
                 o.roles,
                 o.pending_roles,
                 o.approved_on,
@@ -244,7 +245,7 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
             + (finalCondition != null ? $" WHERE {finalCondition}" : "") +
             @"
             GROUP BY
-                o.id, o.guid, o.name, o.roles, o.pending_roles, o.approved_on, o.review_comment, reviewed_by.first_name, reviewed_by.last_name
+                o.id, o.guid, o.name, o.type, o.roles, o.pending_roles, o.approved_on, o.review_comment, reviewed_by.first_name, reviewed_by.last_name
             ORDER BY
                 match_position ASC NULLS LAST, similarity_score DESC, o.name ASC";
 
