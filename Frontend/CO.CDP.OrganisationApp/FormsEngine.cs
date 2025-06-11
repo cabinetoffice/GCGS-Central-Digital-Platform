@@ -187,55 +187,7 @@ public class FormsEngine(
             return null;
         }
 
-        var questionsDictionary = allQuestions.ToDictionary(q => q.Id);
-        var pathTaken = new List<Models.FormQuestion>();
-        Models.FormQuestion? currentPathQuestion = GetFirstQuestion(allQuestions);
-
-        while (currentPathQuestion != null && currentPathQuestion.Id != currentQuestionId)
-        {
-            pathTaken.Add(currentPathQuestion);
-
-            Guid? nextQuestionIdOnPath = currentPathQuestion.NextQuestion;
-
-            if (currentPathQuestion.NextQuestionAlternative.HasValue && answerState?.Answers != null)
-            {
-                var answerToBranchingQuestion = answerState.Answers.FirstOrDefault(a => a.QuestionId == currentPathQuestion.Id);
-                bool tookAlternativePath = false;
-
-                if (answerToBranchingQuestion?.Answer != null)
-                {
-                    switch (currentPathQuestion.Type)
-                    {
-                        case Models.FormQuestionType.YesOrNo:
-                            if (answerToBranchingQuestion.Answer.BoolValue == false)
-                            {
-                                tookAlternativePath = true;
-                            }
-                            break;
-                        case Models.FormQuestionType.FileUpload:
-                            if (string.IsNullOrEmpty(answerToBranchingQuestion.Answer.TextValue))
-                            {
-                                tookAlternativePath = true;
-                            }
-                            break;
-                    }
-                }
-
-                if (tookAlternativePath)
-                {
-                    nextQuestionIdOnPath = currentPathQuestion.NextQuestionAlternative;
-                }
-            }
-
-            if (nextQuestionIdOnPath.HasValue && questionsDictionary.TryGetValue(nextQuestionIdOnPath.Value, out var nextQ))
-            {
-                currentPathQuestion = nextQ;
-            }
-            else
-            {
-                currentPathQuestion = null;
-            }
-        }
+        List<Models.FormQuestion> pathTaken = BuildPathToQuestion(allQuestions, currentQuestionId, answerState);
 
         foreach (var questionOnPath in pathTaken)
         {
@@ -253,6 +205,29 @@ public class FormsEngine(
         }
 
         return null;
+    }
+
+    private List<Models.FormQuestion> BuildPathToQuestion(List<Models.FormQuestion> allQuestions, Guid currentQuestionId, FormQuestionAnswerState answerState)
+    {
+        var questionsDictionary = allQuestions.ToDictionary(q => q.Id);
+        var pathTaken = new List<Models.FormQuestion>();
+        Models.FormQuestion? currentPathQuestion = GetFirstQuestion(allQuestions);
+
+        while (currentPathQuestion != null && currentPathQuestion.Id != currentQuestionId)
+        {
+            pathTaken.Add(currentPathQuestion);
+            Guid? nextQuestionIdOnPath = DetermineNextQuestionIdOnPath(currentPathQuestion, answerState);
+
+            if (nextQuestionIdOnPath.HasValue && questionsDictionary.TryGetValue(nextQuestionIdOnPath.Value, out var nextQ))
+            {
+                currentPathQuestion = nextQ;
+            }
+            else
+            {
+                currentPathQuestion = null;
+            }
+        }
+        return pathTaken;
     }
 
     private bool IsAddressAnswered(Address? address)
@@ -394,5 +369,41 @@ public class FormsEngine(
                 _ => false
             };
         }) ?? false;
+    }
+
+    private Guid? DetermineNextQuestionIdOnPath(Models.FormQuestion currentPathQuestion, FormQuestionAnswerState? answerState)
+    {
+        Guid? nextQuestionIdOnPath = currentPathQuestion.NextQuestion;
+
+        if (currentPathQuestion.NextQuestionAlternative.HasValue && answerState?.Answers != null)
+        {
+            var answerToBranchingQuestion = answerState.Answers.FirstOrDefault(a => a.QuestionId == currentPathQuestion.Id);
+            bool tookAlternativePath = false;
+
+            if (answerToBranchingQuestion?.Answer != null)
+            {
+                switch (currentPathQuestion.Type)
+                {
+                    case Models.FormQuestionType.YesOrNo:
+                        if (answerToBranchingQuestion.Answer.BoolValue == false)
+                        {
+                            tookAlternativePath = true;
+                        }
+                        break;
+                    case Models.FormQuestionType.FileUpload:
+                        if (string.IsNullOrEmpty(answerToBranchingQuestion.Answer.TextValue))
+                        {
+                            tookAlternativePath = true;
+                        }
+                        break;
+                }
+            }
+
+            if (tookAlternativePath)
+            {
+                nextQuestionIdOnPath = currentPathQuestion.NextQuestionAlternative;
+            }
+        }
+        return nextQuestionIdOnPath;
     }
 }
