@@ -52,7 +52,7 @@ locals {
         "https://stanvolcere.nqc.com/auth/backchannellogout",
         "https://nadeemshafi2.nqc.com/auth/backchannellogout"
       ]
-      pinned_service_version_fts        = "0.0.1"
+      pinned_service_version_fts        = "0.0.2"
       pinned_service_version            = null
       postgres_instance_type            = "db.t4g.micro"
       postgres_aurora_instance_type     = "db.r5.large"
@@ -83,7 +83,7 @@ locals {
         "https://stanvolcere.nqc.com/auth/backchannellogout",
         "https://www-staging.find-tender.service.gov.uk/auth/backchannellogout",
       ]
-      pinned_service_version_fts        = "0.0.1"
+      pinned_service_version_fts        = "0.0.2"
       pinned_service_version            = "1.0.68"
       postgres_instance_type            = "db.t4g.micro"
       postgres_aurora_instance_type     = "db.r5.large"
@@ -148,7 +148,7 @@ locals {
         "https://www-tpp-preview.find-tender.service.gov.uk/auth/backchannellogout",
         "https://www-tpp.find-tender.service.gov.uk/auth/backchannellogout",
       ]
-      pinned_service_version_fts        = "0.0.1"
+      pinned_service_version_fts        = "0.0.2"
       pinned_service_version            = "1.0.68"
       postgres_instance_type            = "db.t4g.micro"
       postgres_aurora_instance_type     = "db.r5.large"
@@ -181,7 +181,7 @@ locals {
       mysql_aurora_instance_type        = "db.r5.2xlarge"
       name                              = "production"
       onelogin_logout_notification_urls = ["https://www.find-tender.service.gov.uk/auth/backchannellogout"]
-      pinned_service_version_fts        = "0.0.1"
+      pinned_service_version_fts        = "0.0.2"
       pinned_service_version            = "1.0.67"
       postgres_instance_type            = "db.t4g.micro"
       postgres_aurora_instance_type     = "db.r5.8xlarge"
