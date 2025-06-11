@@ -19,7 +19,7 @@ public class YourDetailsModel(
     public string? FirstName { get; set; }
 
     [BindProperty]
-    [DisplayName(nameof(StaticTextResource.Users_LastName_Validation))]
+    [DisplayName(nameof(StaticTextResource.Users_LastName_Label))]
     [Required(ErrorMessageResourceName = nameof(StaticTextResource.Users_LastName_Validation), ErrorMessageResourceType = typeof(StaticTextResource))]
     public string? LastName { get; set; }
 
