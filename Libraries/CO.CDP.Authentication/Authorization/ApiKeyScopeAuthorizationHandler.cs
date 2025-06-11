@@ -5,15 +5,14 @@ namespace CO.CDP.Authentication.Authorization;
 
 /// <summary>
 /// Handles the <see cref="ApiKeyScopeAuthorizationRequirement"/> for API key scope authorization.
-/// This handler checks if the authenticated API key possesses any of the required scopes.
+/// This handler grants standard API access to service keys and checks for specific scopes to grant privileged access.
 /// </summary>
 public class ApiKeyScopeAuthorizationHandler : AuthorizationHandler<ApiKeyScopeAuthorizationRequirement>
 {
     protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, ApiKeyScopeAuthorizationRequirement requirement)
     {
         var channelClaimValue = context.User.FindFirst(c => c.Type == ClaimType.Channel)?.Value;
-
-        var apiKeyChannels = new[] { AuthenticationChannel.ServiceKey.ToString(), AuthenticationChannel.OrganisationKey.ToString() };
+        var apiKeyChannels = new[] { Channel.ServiceKey, Channel.OrganisationKey };
 
         if (channelClaimValue == null || !apiKeyChannels.Contains(channelClaimValue))
         {
@@ -21,20 +20,21 @@ public class ApiKeyScopeAuthorizationHandler : AuthorizationHandler<ApiKeyScopeA
             return Task.CompletedTask;
         }
 
-        if (!requirement.RequiredScopes.Any())
-        {
-            context.Succeed(requirement);
-            return Task.CompletedTask;
-        }
+        context.Succeed(requirement);
 
-        var apiKeyScopesClaimValue = context.User.FindFirst(c => c.Type == ClaimType.ApiKeyScope)?.Value;
-
-        if (!string.IsNullOrEmpty(apiKeyScopesClaimValue))
+        if (requirement.RequiredScopes.Any())
         {
-            var userScopes = apiKeyScopesClaimValue.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-            if (requirement.RequiredScopes.Any(userScopes.Contains))
+            var userApiKeyScopesClaim = context.User.FindFirst(c => c.Type == ClaimType.ApiKeyScope)?.Value;
+            if (!string.IsNullOrEmpty(userApiKeyScopesClaim))
             {
-                context.Succeed(requirement);
+                var userScopes = userApiKeyScopesClaim.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                if (requirement.RequiredScopes.Any(rs => userScopes.Contains(rs)))
+                {
+                    if (channelClaimValue == Channel.ServiceKey && context.User.Identity is System.Security.Claims.ClaimsIdentity claimsIdentity)
+                    {
+                        claimsIdentity.AddClaim(new System.Security.Claims.Claim("privileged_api_access", "true"));
+                    }
+                }
             }
         }
         return Task.CompletedTask;

@@ -100,14 +100,13 @@ public class OrganisationAuthorizationPolicyProvider(IOptions<AuthorizationOptio
 
         bool hasOrganisationPersonScopes = organisationPersonScopes.Length > 0;
         bool hasPersonScopes = personScopes.Length > 0;
-        bool hasApiKeyScopes = apiKeyScopes.Length > 0;
 
         if (oneLoginChannelPresent && (hasOrganisationPersonScopes || hasPersonScopes))
         {
             requirements.Add(new OrganisationScopeAuthorizationRequirement(organisationPersonScopes, organisationIdLocation, personScopes));
         }
 
-        if (serviceKeyChannelPresent && hasApiKeyScopes)
+        if (serviceKeyChannelPresent)
         {
             requirements.Add(new ApiKeyScopeAuthorizationRequirement(apiKeyScopes));
         }

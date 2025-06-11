@@ -15,12 +15,11 @@ public class ApiKeyScopeAuthorizationRequirementTests
     }
 
     [Fact]
-    public void Constructor_WithNullScopes_ShouldThrowArgumentNullException()
+    public void Constructor_WithNullScopes_ShouldSetEmptyRequiredScopes()
     {
-        Action act = () => new ApiKeyScopeAuthorizationRequirement(null!);
+        var requirement = new ApiKeyScopeAuthorizationRequirement(null!);
 
-        act.Should().Throw<ArgumentNullException>()
-            .WithMessage("Value cannot be null. (Parameter 'requiredScopes')");
+        requirement.RequiredScopes.Should().BeEmpty();
     }
 
     [Fact]
@@ -32,4 +31,3 @@ public class ApiKeyScopeAuthorizationRequirementTests
         requirement.RequiredScopes.Should().BeEmpty();
     }
 }
-
