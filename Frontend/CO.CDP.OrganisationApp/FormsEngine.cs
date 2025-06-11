@@ -182,7 +182,7 @@ public class FormsEngine(
 
     public Guid? GetPreviousUnansweredQuestionId(List<Models.FormQuestion> allQuestions, Guid currentQuestionId, FormQuestionAnswerState answerState)
     {
-        if (allQuestions == null || !allQuestions.Any())
+        if (allQuestions.Count == 0)
         {
             return null;
         }
