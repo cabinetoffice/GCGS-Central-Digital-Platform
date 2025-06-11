@@ -40,7 +40,7 @@
             <fieldset class="govuk-fieldset">
                 <div class="govuk-form-group @(firstNameHasError ? "govuk-form-group--error" : "")">
                     <label class="govuk-label" for="@nameof(Model.FirstName)">
-                        @Html.DisplayNameFor(m => m.FirstName)
+                        @StaticTextResource.Users_FirstName_Label
                     </label>
                     @if (firstNameHasError)
                     {
@@ -56,7 +56,7 @@
 
                 <div class="govuk-form-group @(lastNameHasError ? "govuk-form-group--error" : "")">
                     <label class="govuk-label" for="@nameof(Model.LastName)">
-                        @Html.DisplayNameFor(m => m.LastName)
+                        @StaticTextResource.Users_LastName_Label
                     </label>
                     @if (lastNameHasError)
                     {
