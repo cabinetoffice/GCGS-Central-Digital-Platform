@@ -180,27 +180,104 @@ public class FormsEngine(
         return sharingDataDetails.ShareCode;
     }
 
-    public Guid? GetPreviousUnansweredQuestionId(List<Models.FormQuestion> questions, Guid currentQuestionId,
-        FormQuestionAnswerState answerState)
+    public Guid? GetPreviousUnansweredQuestionId(List<Models.FormQuestion> allQuestions, Guid currentQuestionId, FormQuestionAnswerState answerState)
     {
-        var answeredQuestionIds = answerState.Answers.Select(a => a.QuestionId).ToList();
-
-        var questionsInOrder = GetSortedFormQuestions(questions);
-
-        foreach (var question in questionsInOrder)
+        if (allQuestions == null || !allQuestions.Any())
         {
-            if (question.Id == currentQuestionId)
+            return null;
+        }
+
+        var questionsDictionary = allQuestions.ToDictionary(q => q.Id);
+        var pathTaken = new List<Models.FormQuestion>();
+        Models.FormQuestion? currentPathQuestion = GetFirstQuestion(allQuestions);
+
+        while (currentPathQuestion != null && currentPathQuestion.Id != currentQuestionId)
+        {
+            pathTaken.Add(currentPathQuestion);
+
+            Guid? nextQuestionIdOnPath = currentPathQuestion.NextQuestion;
+
+            if (currentPathQuestion.NextQuestionAlternative.HasValue && answerState?.Answers != null)
             {
-                break;
+                var answerToBranchingQuestion = answerState.Answers.FirstOrDefault(a => a.QuestionId == currentPathQuestion.Id);
+                bool tookAlternativePath = false;
+
+                if (answerToBranchingQuestion?.Answer != null)
+                {
+                    switch (currentPathQuestion.Type)
+                    {
+                        case Models.FormQuestionType.YesOrNo:
+                            if (answerToBranchingQuestion.Answer.BoolValue == false)
+                            {
+                                tookAlternativePath = true;
+                            }
+                            break;
+                        case Models.FormQuestionType.FileUpload:
+                            if (string.IsNullOrEmpty(answerToBranchingQuestion.Answer.TextValue))
+                            {
+                                tookAlternativePath = true;
+                            }
+                            break;
+                    }
+                }
+
+                if (tookAlternativePath)
+                {
+                    nextQuestionIdOnPath = currentPathQuestion.NextQuestionAlternative;
+                }
             }
 
-            if (answerState?.Answers.Any(t => t.QuestionId == question.Id) == false)
+            if (nextQuestionIdOnPath.HasValue && questionsDictionary.TryGetValue(nextQuestionIdOnPath.Value, out var nextQ))
             {
-                return question.Id;
+                currentPathQuestion = nextQ;
+            }
+            else
+            {
+                currentPathQuestion = null;
+            }
+        }
+
+        foreach (var questionOnPath in pathTaken)
+        {
+            if (questionOnPath.Type == Models.FormQuestionType.NoInput || questionOnPath.Type == Models.FormQuestionType.CheckYourAnswers)
+            {
+                continue;
+            }
+
+            bool isAnswered = answerState?.Answers.Any(a =>
+            {
+                if (a.QuestionId != questionOnPath.Id || a.Answer == null) return false;
+
+                return questionOnPath.Type switch
+                {
+                    Models.FormQuestionType.Text => !string.IsNullOrWhiteSpace(a.Answer.TextValue),
+                    Models.FormQuestionType.MultiLine => !string.IsNullOrWhiteSpace(a.Answer.TextValue),
+                    Models.FormQuestionType.Url => !string.IsNullOrWhiteSpace(a.Answer.TextValue),
+                    Models.FormQuestionType.FileUpload => !string.IsNullOrWhiteSpace(a.Answer.TextValue),
+                    Models.FormQuestionType.YesOrNo => a.Answer.BoolValue.HasValue,
+                    Models.FormQuestionType.SingleChoice => !string.IsNullOrWhiteSpace(a.Answer.OptionValue) || !string.IsNullOrWhiteSpace(a.Answer.TextValue),
+                    Models.FormQuestionType.GroupedSingleChoice => !string.IsNullOrWhiteSpace(a.Answer.OptionValue),
+                    Models.FormQuestionType.Date => a.Answer.DateValue.HasValue,
+                    Models.FormQuestionType.CheckBox => a.Answer.BoolValue.HasValue,
+                    Models.FormQuestionType.Address => IsAddressAnswered(a.Answer.AddressValue),
+                    _ => false
+                };
+            }) ?? false;
+
+            if (!isAnswered)
+            {
+                return questionOnPath.Id;
             }
         }
 
         return null;
+    }
+
+    private bool IsAddressAnswered(Address? address)
+    {
+        if (address == null) return false;
+        return !string.IsNullOrWhiteSpace(address.AddressLine1) &&
+               !string.IsNullOrWhiteSpace(address.Postcode);
     }
 
     private static FormAddress? MapAddress(Address? formAdddress)
