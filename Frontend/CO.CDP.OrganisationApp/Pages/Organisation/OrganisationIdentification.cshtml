@@ -51,10 +51,10 @@
                     </p>
 
                     <div class="govuk-checkboxes" data-module="govuk-checkboxes">
-                        @if (existingOrganisationScheme.Contains("GB-COH") == false)
+                        @if (existingOrganisationScheme.Contains("GB-COH") == false || Model.IsSupportAdmin)
                         {
                             <div class="govuk-checkboxes__item">
-                                <input class="govuk-checkboxes__input" id="GB-COH" name="OrganisationScheme" type="checkbox" value="GB-COH" data-aria-controls="conditional-GB-COH" @(Model.OrganisationScheme!.Contains("GB-COH") ? "checked" : "")>
+                                <input class="govuk-checkboxes__input" id="GB-COH" name="OrganisationScheme" type="checkbox" value="GB-COH" data-aria-controls="conditional-GB-COH" @(existingOrganisationScheme.Contains("GB-COH") ? "checked" : "")>
                                 @Html.LabelFor(m => m.CompanyHouse, new { @class = "govuk-label govuk-checkboxes__label", @for = "GB-COH" })
                             </div>
                             <div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-GB-COH">
@@ -65,10 +65,10 @@
                                 </div>
                             </div>
                         }
-                        @if (existingOrganisationScheme.Contains("GB-CHC") == false)
+                        @if (existingOrganisationScheme.Contains("GB-CHC") == false || Model.IsSupportAdmin)
                         {
                             <div class="govuk-checkboxes__item">
-                                <input class="govuk-checkboxes__input" id="GB-CHC" name="OrganisationScheme" type="checkbox" value="GB-CHC" data-aria-controls="conditional-GB-CHC" @(Model.OrganisationScheme!.Contains("GB-CHC") ? "checked" : "")>
+                                <input class="govuk-checkboxes__input" id="GB-CHC" name="OrganisationScheme" type="checkbox" value="GB-CHC" data-aria-controls="conditional-GB-CHC" @(existingOrganisationScheme!.Contains("GB-CHC") ? "checked" : "")>
                                 @Html.LabelFor(m => m.CharityCommissionEnglandWales, new { @class = "govuk-label govuk-checkboxes__label", @for = "GB-CHC" })
                             </div>
                             <div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-GB-CHC">
@@ -80,10 +80,10 @@
                             </div>
 
                         }
-                        @if (existingOrganisationScheme.Contains("GB-SC") == false)
+                        @if (existingOrganisationScheme.Contains("GB-SC") == false || Model.IsSupportAdmin)
                         {
                             <div class="govuk-checkboxes__item">
-                                <input class="govuk-checkboxes__input" id="GB-SC" name="OrganisationScheme" type="checkbox" value="GB-SC" data-aria-controls="conditional-GB-SC" @(Model.OrganisationScheme!.Contains("GB-SC") ? "checked" : "")>
+                                <input class="govuk-checkboxes__input" id="GB-SC" name="OrganisationScheme" type="checkbox" value="GB-SC" data-aria-controls="conditional-GB-SC" @(existingOrganisationScheme!.Contains("GB-SC") ? "checked" : "")>
                                 @Html.LabelFor(m => m.ScottishCharityRegulator, new { @class = "govuk-label govuk-checkboxes__label", @for = "GB-SC" })
                             </div>
                             <div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-GB-SC">
@@ -95,10 +95,10 @@
                             </div>
                         }
 
-                        @if (existingOrganisationScheme.Contains("GB-NIC") == false)
+                        @if (existingOrganisationScheme.Contains("GB-NIC") == false || Model.IsSupportAdmin)
                         {
                             <div class="govuk-checkboxes__item">
-                                <input class="govuk-checkboxes__input" id="GB-NIC" name="OrganisationScheme" type="checkbox" value="GB-NIC" data-aria-controls="conditional-GB-NIC" @(Model.OrganisationScheme.Contains("GB-NIC") ? "checked" : "")>
+                                <input class="govuk-checkboxes__input" id="GB-NIC" name="OrganisationScheme" type="checkbox" value="GB-NIC" data-aria-controls="conditional-GB-NIC" @(existingOrganisationScheme.Contains("GB-NIC") ? "checked" : "")>
                                 @Html.LabelFor(m => m.CharityCommissionNorthernIreland, new { @class = "govuk-label govuk-checkboxes__label", @for = "GB-NIC" })
                             </div>
                             <div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-GB-NIC">
@@ -110,10 +110,10 @@
                             </div>
                         }
 
-                        @if (existingOrganisationScheme.Contains("GB-MPR") == false)
+                        @if (existingOrganisationScheme.Contains("GB-MPR") == false || Model.IsSupportAdmin)
                         {
                             <div class="govuk-checkboxes__item">
-                                <input class="govuk-checkboxes__input" id="GB-MPR" name="OrganisationScheme" type="checkbox" value="GB-MPR" data-aria-controls="conditional-GB-MPR" @(Model.OrganisationScheme.Contains("GB-MPR") ? "checked" : "")>
+                                <input class="govuk-checkboxes__input" id="GB-MPR" name="OrganisationScheme" type="checkbox" value="GB-MPR" data-aria-controls="conditional-GB-MPR" @(existingOrganisationScheme.Contains("GB-MPR") ? "checked" : "")>
                                 @Html.LabelFor(m => m.MutualsPublicRegister, new { @class = "govuk-label govuk-checkboxes__label", @for = "GB-MPR" })
                             </div>
                             <div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-GB-MPR">
@@ -125,10 +125,10 @@
                             </div>
                         }
 
-                        @if (existingOrganisationScheme.Contains("GG-RCE") == false)
+                        @if (existingOrganisationScheme.Contains("GG-RCE") == false || Model.IsSupportAdmin)
                         {
                             <div class="govuk-checkboxes__item">
-                                <input class="govuk-checkboxes__input" id="GG-RCE" name="OrganisationScheme" type="checkbox" value="GG-RCE" data-aria-controls="conditional-GG-RCE" @(Model.OrganisationScheme.Contains("GG-RCE") ? "checked" : "")>
+                                <input class="govuk-checkboxes__input" id="GG-RCE" name="OrganisationScheme" type="checkbox" value="GG-RCE" data-aria-controls="conditional-GG-RCE" @(existingOrganisationScheme.Contains("GG-RCE") ? "checked" : "")>
                                 @Html.LabelFor(m => m.GuernseyRegistry, new { @class = "govuk-label govuk-checkboxes__label", @for = "GG-RCE" })
                             </div>
                             <div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-GG-RCE">
@@ -137,14 +137,14 @@
                                     <div id="conditional-GG-RCE-hint" class="govuk-hint">@StaticTextResource.Organisation_OrganisationIdentification_GG_RCE_Hint</div>
                                     @Html.ValidationMessageFor(m => m.GuernseyRegistryNumber, "", new { @class = "govuk-error-message", @id = "GuernseyRegistryNumber-error" })
                                     @Html.TextBoxFor(m => m.GuernseyRegistryNumber, new { @class = "govuk-input " + (guernseyRegistryNumberHasError ? "govuk-input--error" : ""), @type = "text", spellcheck = "false", autocomplete = "off" })
-                                </div>                                
+                                </div>
                             </div>
                         }
 
-                        @if (existingOrganisationScheme.Contains("JE-FSC") == false)
+                        @if (existingOrganisationScheme.Contains("JE-FSC") == false || Model.IsSupportAdmin)
                         {
                             <div class="govuk-checkboxes__item">
-                                <input class="govuk-checkboxes__input" id="JE-FSC" name="OrganisationScheme" type="checkbox" value="JE-FSC" data-aria-controls="conditional-JE-FSC" @(Model.OrganisationScheme.Contains("JE-FSC") ? "checked" : "")>
+                                <input class="govuk-checkboxes__input" id="JE-FSC" name="OrganisationScheme" type="checkbox" value="JE-FSC" data-aria-controls="conditional-JE-FSC" @(existingOrganisationScheme.Contains("JE-FSC") ? "checked" : "")>
                                 @Html.LabelFor(m => m.JerseyFinancialServicesCommissionRegistry, new { @class = "govuk-label govuk-checkboxes__label", @for = "JE-FSC" })
                             </div>
                             <div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-JE-FSC">
@@ -156,10 +156,10 @@
                             </div>
                         }
 
-                        @if (existingOrganisationScheme.Contains("IM-CR") == false)
+                        @if (existingOrganisationScheme.Contains("IM-CR") == false || Model.IsSupportAdmin)
                         {
                             <div class="govuk-checkboxes__item">
-                                <input class="govuk-checkboxes__input" id="IM-CR" name="OrganisationScheme" type="checkbox" value="IM-CR" data-aria-controls="conditional-IM-CR" @(Model.OrganisationScheme.Contains("IM-CR") ? "checked" : "")>
+                                <input class="govuk-checkboxes__input" id="IM-CR" name="OrganisationScheme" type="checkbox" value="IM-CR" data-aria-controls="conditional-IM-CR" @(existingOrganisationScheme.Contains("IM-CR") ? "checked" : "")>
                                 @Html.LabelFor(m => m.IsleofManCompaniesRegistry, new { @class = "govuk-label govuk-checkboxes__label", @for = "IM-CR" })
                             </div>
                             <div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-IM-CR">
@@ -171,10 +171,10 @@
                             </div>
                         }
 
-                        @if (existingOrganisationScheme.Contains("GB-NHS") == false)
+                        @if (existingOrganisationScheme.Contains("GB-NHS") == false || Model.IsSupportAdmin)
                         {
                             <div class="govuk-checkboxes__item">
-                                <input class="govuk-checkboxes__input" id="GB-NHS" name="OrganisationScheme" type="checkbox" value="GB-NHS" data-aria-controls="conditional-GB-NHS" @(Model.OrganisationScheme.Contains("GB-NHS") ? "checked" : "")>
+                                <input class="govuk-checkboxes__input" id="GB-NHS" name="OrganisationScheme" type="checkbox" value="GB-NHS" data-aria-controls="conditional-GB-NHS" @(existingOrganisationScheme.Contains("GB-NHS") ? "checked" : "")>
                                 @Html.LabelFor(m => m.NationalHealthServiceOrganisationsRegistry, new { @class = "govuk-label govuk-checkboxes__label", @for = "GB-NHS" })
                             </div>
                             <div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-GB-NHS">
@@ -186,10 +186,10 @@
                             </div>
                         }
 
-                        @if (existingOrganisationScheme.Contains("GB-UKPRN") == false)
+                        @if (existingOrganisationScheme.Contains("GB-UKPRN") == false || Model.IsSupportAdmin)
                         {
                             <div class="govuk-checkboxes__item">
-                                <input class="govuk-checkboxes__input" id="GB-UKPRN" name="OrganisationScheme" type="checkbox" value="GB-UKPRN" data-aria-controls="conditional-GB-UKPRN" @(Model.OrganisationScheme.Contains("GB-UKPRN") ? "checked" : "")>
+                                <input class="govuk-checkboxes__input" id="GB-UKPRN" name="OrganisationScheme" type="checkbox" value="GB-UKPRN" data-aria-controls="conditional-GB-UKPRN" @(existingOrganisationScheme.Contains("GB-UKPRN") ? "checked" : "")>
                                 @Html.LabelFor(m => m.UKLearningProviderReference, new { @class = "govuk-label govuk-checkboxes__label", @for = "GB-UKPRN" })
                             </div>
                             <div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-GB-UKPRN">
@@ -201,11 +201,11 @@
                             </div>
                         }
 
-                        @if (existingOrganisationScheme.Contains("Other") == false && (existingOrganisationScheme.Count == 1 && existingOrganisationScheme.Contains("Other")))
+                        @if ((existingOrganisationScheme.Contains("Other") == false || Model.IsSupportAdmin) && (existingOrganisationScheme.Count == 1 && existingOrganisationScheme.Contains("Other")))
                         {
                             <div class="govuk-checkboxes__divider">or</div>
                             <div class="govuk-checkboxes__item">
-                                <input class="govuk-checkboxes__input" id="Other" name="OrganisationScheme" type="checkbox" value="Other" data-behaviour="exclusive" @(Model.OrganisationScheme.Contains("Other") ? "checked" : "")>
+                                <input class="govuk-checkboxes__input" id="Other" name="OrganisationScheme" type="checkbox" value="Other" data-behaviour="exclusive" @(existingOrganisationScheme.Contains("Other") ? "checked" : "")>
                                 @Html.LabelFor(m => m.Other, new { @class = "govuk-label govuk-checkboxes__label", @for = "Other" })
                                 <div id="OrganisationSchemeHint" class="govuk-hint govuk-checkboxes__hint">
                                     @StaticTextResource.Organisation_OrganisationIdentification_Other_Hint

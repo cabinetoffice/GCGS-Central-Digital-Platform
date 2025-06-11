@@ -10,12 +10,14 @@ public static class ErrorMessagesList
     public static readonly string DuplicateInviteEmail = StaticTextResource.ErrorMessageList_DuplicateInviteEmail;
     public static readonly string PersonNotFound = StaticTextResource.ErrorMessageList_PersonNotFound;
     public static readonly string MouNotFound = StaticTextResource.ErrorMessageList_MouNotFound;
-    
+
     public static readonly string PersonCreationFailed = StaticTextResource.ErrorMessageList_PersonCreationFailed;
 
     public static readonly string OrganisationCreationFailed = StaticTextResource.ErrorMessageList_OrganisationCreationFailed;
     public static readonly string OrganisationNotFound = StaticTextResource.ErrorMessageList_OrganisationNotFound;
     public static readonly string DuplicateOrganisationName = StaticTextResource.ErrorMessageList_DuplicateOrganisationName;
+    public static readonly string DuplicateIdentifier = StaticTextResource.ErrorMessageList_DuplicateIdentifier;
+    public static readonly string RemovePrimaryIdentifier = StaticTextResource.ErrorMessageList_RemovePrimaryIdentifier;
 
     public static readonly string PayLoadIssueOrNullArgument = StaticTextResource.ErrorMessageList_PayLoadIssueOrNullArgument;
 
