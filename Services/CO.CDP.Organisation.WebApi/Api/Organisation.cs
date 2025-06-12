@@ -114,7 +114,8 @@ public static class EndpointExtensions
                 [AuthenticationChannel.OneLogin, AuthenticationChannel.ServiceKey],
                 [Constants.OrganisationPersonScope.Admin, Constants.OrganisationPersonScope.Editor, Constants.OrganisationPersonScope.Viewer],
                 OrganisationIdLocation.Path,
-                [Constants.PersonScope.SupportAdmin])]
+                [Constants.PersonScope.SupportAdmin],
+                apiKeyScopes: [Constants.ApiKeyScopes.ReadOrganisationData])]
         async (Guid organisationId, IUseCase<Guid, Model.Organisation?> useCase) =>
             await useCase.Execute(organisationId)
                    .AndThen(organisation => organisation != null ? Results.Ok(organisation) : Results.NotFound()))

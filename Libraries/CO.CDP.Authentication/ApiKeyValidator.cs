@@ -11,6 +11,11 @@ public class ApiKeyValidator(
 
         var authKey = await repository.Find(apiKey);
 
+        if (authKey != null && authKey.Revoked)
+        {
+            return (false, null, []);
+        }
+
         return (authKey != null, authKey?.Organisation?.Guid, authKey?.Scopes ?? []);
     }
 }

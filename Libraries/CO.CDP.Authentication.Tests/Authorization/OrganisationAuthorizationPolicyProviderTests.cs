@@ -39,6 +39,7 @@ public class OrganisationAuthorizationPolicyProviderTests
     [InlineData("Org_Channels$OneLogin|ServiceKey;OrgScopes$scope1|scope2;OrgIdLoc$Header;", true)]
     [InlineData("Org_Channels$InvalidChannel;OrgScopes$scope1;", true)]
     [InlineData("Org_Channels$OneLogin|ServiceKey;PersonScopes$scope1|scope2;", true)]
+    [InlineData("Org_Channels$ServiceKey;ApiKeyScopes$read:data|write:data;", true)]
     [InlineData("InvalidPolicy", false)]
     public async Task GetPolicyAsync_ShouldReturnCorrectPolicyBasedOnPolicyName(string policyName, bool isValidPolicy)
     {
@@ -58,6 +59,11 @@ public class OrganisationAuthorizationPolicyProviderTests
             if (policyName.Contains("PersonScopes") && policyName.Contains("OneLogin"))
             {
                 policy.Requirements.Should().Contain(r => r is OrganisationScopeAuthorizationRequirement);
+            }
+
+            if (policyName.Contains(OrganisationAuthorizeAttribute.ApiKeyScopesGroup))
+            {
+                policy.Requirements.Should().Contain(r => r is ApiKeyScopeAuthorizationRequirement);
             }
         }
         else
