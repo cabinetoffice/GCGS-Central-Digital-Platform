@@ -18,6 +18,11 @@ locals {
     run_migrator_token                    = "${local.fts_screts_arn}:RUN_MIGRATOR_TOKEN::"
     run_registrar_token                   = "${local.fts_screts_arn}:RUN_REGISTRAR_TOKEN::"
     srsi_logout_api_key                   = "${local.fts_screts_arn}:SRSI_LOGOUT_API_KEY::"
+    sso_api_authentication_key            = "${local.fts_screts_arn}:SSO_API_AUTHENTICATION_KEY::"
+    sso_cipher                            = "${local.fts_screts_arn}:SSO_CIPHER::"
+    sso_password                          = "${local.fts_screts_arn}:SSO_PASSWORD::"
+    sso_token_session_authentication_key  = "${local.fts_screts_arn}:SSO_TOKEN_SESSION_AUTHENTICATION_KEY::"
+    sso_token_session_cipher              = "${local.fts_screts_arn}:SSO_TOKEN_SESSION_CIPHER::"
   }
 
   fts_parameters = {
