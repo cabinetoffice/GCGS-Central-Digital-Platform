@@ -2585,22 +2585,25 @@
     <value>Create a consortium</value>
   </data>
   <data name="Consortium_ConsortiumStart_Paragraph1" xml:space="preserve">
-    <value>Two or more suppliers that want to submit a joint bid can create a consortium. You can add as many suppliers as you need to.</value>
+    <value>Create a consortium to bid on a public procurement with other organisations. You need at least 2 suppliers for a joint bid. There is no upper limit.</value>
   </data>
   <data name="Consortium_ConsortiumStart_Paragraph2" xml:space="preserve">
-    <value>As the organisation creating the consortium, you'll need to enter:</value>
+    <value>As the person creating the consortium, only you will be able to add or change information.</value>
   </data>
-  <data name="Consortium_ConsortiumStart_Paragraph2_list" xml:space="preserve">
-    <value>&lt;li&gt;a consortium name&lt;/li&gt;
-&lt;li&gt;an address&lt;/li&gt;
+  <data name="Consortium_ConsortiumStart_Paragraph3" xml:space="preserve">
+    <value>To create a consortium you'll need:</value>
+  </data>
+  <data name="Consortium_ConsortiumStart_Paragraph3_list" xml:space="preserve">
+    <value>&lt;li&gt;to give it a unique name&lt;/li&gt;
+&lt;li&gt;a postal address&lt;/li&gt;
 &lt;li&gt;an email address&lt;/li&gt;
 &lt;li&gt;your most recent share code&lt;/li&gt;
 &lt;li&gt;the most recent share codes for all the other suppliers&lt;/li&gt;</value>
   </data>
-  <data name="Consortium_ConsortiumStart_Paragraph3" xml:space="preserve">
+  <data name="Consortium_ConsortiumStart_Paragraph4" xml:space="preserve">
     <value>Any supplier you want to add to the consortium must have completed their supplier information and created a share code.</value>
   </data>
-  <data name="Consortium_ConsortiumStart_Paragraph4" xml:space="preserve">
+  <data name="Consortium_ConsortiumStart_Paragraph5" xml:space="preserve">
     <value>When you've added all suppliers, you'll create a share code for your combined supplier information.</value>
   </data>
   <data name="Consortium_ConsortiumName_Heading" xml:space="preserve">
