@@ -515,31 +515,25 @@ public class FormsEngineTests
     }
 
     [Fact]
-    public async Task SaveUpdateAnswers_ShouldCallApiWithCorrectPayload_WhenYesNoChangesAndAlternativeAnswersAreCleared()
+    public async Task SaveUpdateAnswers_WhenYesNoChangesToNo_ShouldBeCalledWithPreClearedMainPathAnswers()
     {
         var formId = Guid.NewGuid();
         var sectionId = Guid.NewGuid();
         var organisationId = Guid.NewGuid();
+        var answerSetId = Guid.NewGuid();
 
         var yesNoQuestionId = Guid.NewGuid();
-        var alternativeQuestionId = Guid.NewGuid();
-        var mainPathQuestionId = Guid.NewGuid();
+        var mainPathQuestionId1 = Guid.NewGuid();
+        var mainPathQuestionId2 = Guid.NewGuid();
+        var altPathQuestionId = Guid.NewGuid();
 
         var answerSet = new FormQuestionAnswerState
         {
-            AnswerSetId = Guid.NewGuid(),
+            AnswerSetId = answerSetId,
             Answers = new List<QuestionAnswer>
             {
-                new QuestionAnswer
-                {
-                    QuestionId = yesNoQuestionId,
-                    Answer = new FormAnswer { BoolValue = true }
-                },
-                new QuestionAnswer
-                {
-                    QuestionId = mainPathQuestionId,
-                    Answer = new FormAnswer { TextValue = "Main path answer" }
-                }
+                new QuestionAnswer { QuestionId = yesNoQuestionId, Answer = new FormAnswer { BoolValue = false } },
+                new QuestionAnswer { QuestionId = altPathQuestionId, Answer = new FormAnswer { TextValue = "Correct Alt Path Answer" } }
             }
         };
 
@@ -548,43 +542,37 @@ public class FormsEngineTests
         _formsApiClientMock.Verify(api => api.PutFormSectionAnswersAsync(
             formId,
             sectionId,
-            answerSet.AnswerSetId.Value,
+            answerSetId,
             organisationId,
             It.Is<WebApiClient.UpdateFormSectionAnswers>(payload =>
                 payload.Answers.Count == 2 &&
-                payload.Answers.Any(a => a.QuestionId == yesNoQuestionId && a.BoolValue == true) &&
-                payload.Answers.Any(a => a.QuestionId == mainPathQuestionId && a.TextValue == "Main path answer") &&
-                !payload.Answers.Any(a => a.QuestionId == alternativeQuestionId)
+                payload.Answers.Any(a => a.QuestionId == yesNoQuestionId && a.BoolValue == false) &&
+                payload.Answers.Any(a => a.QuestionId == altPathQuestionId && a.TextValue == "Correct Alt Path Answer") &&
+                !payload.Answers.Any(a => a.QuestionId == mainPathQuestionId1) &&
+                !payload.Answers.Any(a => a.QuestionId == mainPathQuestionId2)
             )
         ), Times.Once);
     }
 
     [Fact]
-    public async Task SaveUpdateAnswers_ShouldCallApiWithCorrectPayload_WhenFileUploadChangesAndAlternativeAnswersAreCleared()
+    public async Task SaveUpdateAnswers_WhenFileUploadChangesToNoFile_ShouldBeCalledWithPreClearedMainPathAnswers()
     {
         var formId = Guid.NewGuid();
         var sectionId = Guid.NewGuid();
         var organisationId = Guid.NewGuid();
+        var answerSetId = Guid.NewGuid();
 
         var fileUploadQuestionId = Guid.NewGuid();
-        var alternativeQuestionId = Guid.NewGuid();
         var mainPathQuestionId = Guid.NewGuid();
+        var altPathQuestionId = Guid.NewGuid();
 
         var answerSet = new FormQuestionAnswerState
         {
-            AnswerSetId = Guid.NewGuid(),
+            AnswerSetId = answerSetId,
             Answers = new List<QuestionAnswer>
             {
-                new QuestionAnswer
-                {
-                    QuestionId = fileUploadQuestionId,
-                    Answer = new FormAnswer { BoolValue = true, TextValue = "uploaded_file.pdf" }
-                },
-                new QuestionAnswer
-                {
-                    QuestionId = mainPathQuestionId,
-                    Answer = new FormAnswer { TextValue = "Main path answer after file upload" }
-                }
+                new QuestionAnswer { QuestionId = fileUploadQuestionId, Answer = new FormAnswer { BoolValue = false, TextValue = null } },
+                new QuestionAnswer { QuestionId = altPathQuestionId, Answer = new FormAnswer { TextValue = "Correct Alt Path Answer" } }
             }
         };
 
@@ -593,13 +581,13 @@ public class FormsEngineTests
         _formsApiClientMock.Verify(api => api.PutFormSectionAnswersAsync(
             formId,
             sectionId,
-            answerSet.AnswerSetId.Value,
+            answerSetId,
             organisationId,
             It.Is<WebApiClient.UpdateFormSectionAnswers>(payload =>
                 payload.Answers.Count == 2 &&
-                payload.Answers.Any(a => a.QuestionId == fileUploadQuestionId && a.BoolValue == true && a.TextValue == "uploaded_file.pdf") &&
-                payload.Answers.Any(a => a.QuestionId == mainPathQuestionId && a.TextValue == "Main path answer after file upload") &&
-                !payload.Answers.Any(a => a.QuestionId == alternativeQuestionId)
+                payload.Answers.Any(a => a.QuestionId == fileUploadQuestionId && a.BoolValue == false && a.TextValue == null) &&
+                payload.Answers.Any(a => a.QuestionId == altPathQuestionId && a.TextValue == "Correct Alt Path Answer") &&
+                !payload.Answers.Any(a => a.QuestionId == mainPathQuestionId)
             )
         ), Times.Once);
     }

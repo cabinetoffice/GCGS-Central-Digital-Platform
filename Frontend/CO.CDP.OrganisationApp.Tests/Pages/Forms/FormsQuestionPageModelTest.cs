@@ -974,7 +974,7 @@ public class FormsQuestionPageModelTest
          initialAnswerState.Answers.Add(new QuestionAnswer
             { QuestionId = questionOnAlternativePathId, Answer = new FormAnswer { TextValue = "Another answer on alt path" } });
 
-        _tempDataServiceMock.SetupSequence(t => t.PeekOrDefault<FormQuestionAnswerState>(It.IsAny<string>()))
+         _tempDataServiceMock.SetupSequence(t => t.PeekOrDefault<FormQuestionAnswerState>(It.IsAny<string>()))
             .Returns(initialAnswerState)
             .Returns(initialAnswerState)
             .Returns(initialAnswerState)
@@ -1069,7 +1069,7 @@ public class FormsQuestionPageModelTest
         initialAnswerState.Answers.Add(new QuestionAnswer
             { QuestionId = questionOnAlternativePathId, Answer = new FormAnswer { TextValue = "Another answer on alt path for file upload" } });
 
-        _tempDataServiceMock.SetupSequence(t => t.PeekOrDefault<FormQuestionAnswerState>(It.IsAny<string>()))
+         _tempDataServiceMock.SetupSequence(t => t.PeekOrDefault<FormQuestionAnswerState>(It.IsAny<string>()))
             .Returns(initialAnswerState)
             .Returns(initialAnswerState)
             .Returns(initialAnswerState)
@@ -1128,13 +1128,16 @@ public class FormsQuestionPageModelTest
         var redirectResult = result as RedirectToPageResult;
         redirectResult!.PageName.Should().Be("FormsQuestionPage");
         redirectResult.RouteValues!["CurrentQuestionId"].Should().Be(nextQuestionId);
-
-        _tempDataServiceMock.Verify(t => t.Put(It.IsAny<string>(), It.IsAny<FormQuestionAnswerState>()), Times.Exactly(2));
-
-        capturedState.Should().NotBeNull();
-        capturedState!.Answers.Should().ContainSingle(a => a.QuestionId == currentQuestionId && a.Answer != null && a.Answer.TextValue!.Contains(Path.GetFileNameWithoutExtension(mockFileName)));
-        capturedState!.Answers.Should().NotContain(a => a.QuestionId == alternativeQuestionId);
-        capturedState!.Answers.Should().NotContain(a => a.QuestionId == questionOnAlternativePathId);
+        _fileHostManagerMock.Verify(
+            fhm => fhm.UploadFile(It.IsAny<Stream>(),
+                It.Is<string>(s =>
+                    s.StartsWith(Path.GetFileNameWithoutExtension(mockFileName) + "_") &&
+                    s.EndsWith(Path.GetExtension(mockFileName))), "application/pdf"), Times.Once);
+        _publisherMock.Verify(
+            p => p.Publish(It.Is<ScanFile>(sf =>
+                sf.UploadedFileName == mockFileName &&
+                sf.QueueFileName.StartsWith(Path.GetFileNameWithoutExtension(mockFileName) + "_") &&
+                sf.QueueFileName.EndsWith(Path.GetExtension(mockFileName)))), Times.Once);
     }
 
     [Fact]
@@ -1195,5 +1198,173 @@ public class FormsQuestionPageModelTest
         var result = await _pageModel.OnGetAsync();
 
         result.Should().BeOfType<PageResult>("because Q4 should be rendered, not redirected to Q3, when navigating the 'No' branch from Q2 and the FormsEngine logic is correct.");
+    }
+
+    [Fact]
+    public async Task OnPostAsync_WhenYesNoChangesFromYesToNo_ShouldClearAnswersOnMainPath()
+    {
+        var currentQuestionId = Guid.NewGuid();
+        var mainPathQuestionId1 = Guid.NewGuid();
+        var mainPathQuestionId2 = Guid.NewGuid();
+        var alternativePathQuestionId = Guid.NewGuid();
+
+        _pageModel.CurrentQuestionId = currentQuestionId;
+
+        var yesNoQuestion = new FormQuestion
+        {
+            Id = currentQuestionId,
+            Type = FormQuestionType.YesOrNo,
+            NextQuestion = mainPathQuestionId1,
+            NextQuestionAlternative = alternativePathQuestionId,
+            Options = new FormQuestionOptions()
+        };
+
+        var qMain1 = new FormQuestion { Id = mainPathQuestionId1, Type = FormQuestionType.Text, NextQuestion = mainPathQuestionId2, Options = new FormQuestionOptions() };
+        var qMain2 = new FormQuestion { Id = mainPathQuestionId2, Type = FormQuestionType.Text, Options = new FormQuestionOptions() };
+        var qAlt = new FormQuestion { Id = alternativePathQuestionId, Type = FormQuestionType.Text, Options = new FormQuestionOptions() };
+
+        _formsEngineMock.Setup(f =>
+                f.GetCurrentQuestion(_pageModel.OrganisationId, _pageModel.FormId, _pageModel.SectionId,
+                    currentQuestionId))
+            .ReturnsAsync(yesNoQuestion);
+
+        var initialAnswerState = new FormQuestionAnswerState();
+        initialAnswerState.Answers.Add(new QuestionAnswer
+            { QuestionId = currentQuestionId, Answer = new FormAnswer { BoolValue = true } });
+        initialAnswerState.Answers.Add(new QuestionAnswer
+            { QuestionId = mainPathQuestionId1, Answer = new FormAnswer { TextValue = "Answer on main path 1" } });
+        initialAnswerState.Answers.Add(new QuestionAnswer
+            { QuestionId = mainPathQuestionId2, Answer = new FormAnswer { TextValue = "Answer on main path 2" } });
+
+        _tempDataServiceMock.SetupSequence(t => t.PeekOrDefault<FormQuestionAnswerState>(It.IsAny<string>()))
+            .Returns(initialAnswerState)
+            .Returns(initialAnswerState)
+            .Returns(initialAnswerState)
+            .Returns(initialAnswerState)
+            .Returns(initialAnswerState);
+
+        _pageModel.YesNoInputModel = new FormElementYesNoInputModel { YesNoInput = "no" };
+
+        _formsEngineMock.Setup(f => f.GetNextQuestion(
+                _pageModel.OrganisationId, _pageModel.FormId, _pageModel.SectionId, currentQuestionId,
+                It.Is<FormQuestionAnswerState>(s => s.Answers.Any(a =>
+                    a.QuestionId == currentQuestionId && a.Answer != null && a.Answer.BoolValue == false))))
+            .ReturnsAsync(new FormQuestion { Id = alternativePathQuestionId, Options = new FormQuestionOptions() });
+
+        var sectionResponse = new SectionQuestionsResponse
+        {
+            Section = new FormSection { Type = FormSectionType.Standard, Title = "Test Section" },
+            Questions = [yesNoQuestion, qMain1, qMain2, qAlt]
+        };
+        _formsEngineMock.Setup(f =>
+                f.GetFormSectionAsync(_pageModel.OrganisationId, _pageModel.FormId, _pageModel.SectionId))
+            .ReturnsAsync(sectionResponse);
+
+        FormQuestionAnswerState? capturedStateAfterClearing = null;
+        _tempDataServiceMock.Setup(t => t.Put(It.IsAny<string>(), It.IsAny<FormQuestionAnswerState>()))
+            .Callback<string, FormQuestionAnswerState>((key, state) =>
+            {
+                if (key.Contains("_Answers"))
+                {
+                    capturedStateAfterClearing = new FormQuestionAnswerState { AnswerSetId = state.AnswerSetId, Answers = new List<QuestionAnswer>(state.Answers) };
+                }
+            });
+
+        var result = await _pageModel.OnPostAsync();
+
+        result.Should().BeOfType<RedirectToPageResult>();
+        var redirectResult = result as RedirectToPageResult;
+        redirectResult!.PageName.Should().Be("FormsQuestionPage");
+        redirectResult.RouteValues!["CurrentQuestionId"].Should().Be(alternativePathQuestionId);
+
+        _tempDataServiceMock.Verify(t => t.Put(It.IsAny<string>(), It.IsAny<FormQuestionAnswerState>()), Times.AtLeastOnce());
+
+        capturedStateAfterClearing.Should().NotBeNull();
+        capturedStateAfterClearing!.Answers.Should().ContainSingle(a => a.QuestionId == currentQuestionId && a.Answer!.BoolValue == false);
+        capturedStateAfterClearing!.Answers.Should().NotContain(a => a.QuestionId == mainPathQuestionId1);
+        capturedStateAfterClearing!.Answers.Should().NotContain(a => a.QuestionId == mainPathQuestionId2);
+    }
+
+    [Fact]
+    public async Task OnPostAsync_WhenYesNoChangesFromNoToYes_ShouldClearAnswersOnAlternativePath()
+    {
+        var currentQuestionId = Guid.NewGuid();
+        var mainPathQuestionId = Guid.NewGuid();
+        var alternativePathQuestionId1 = Guid.NewGuid();
+        var alternativePathQuestionId2 = Guid.NewGuid();
+
+        _pageModel.CurrentQuestionId = currentQuestionId;
+
+        var yesNoQuestion = new FormQuestion
+        {
+            Id = currentQuestionId,
+            Type = FormQuestionType.YesOrNo,
+            NextQuestion = mainPathQuestionId,
+            NextQuestionAlternative = alternativePathQuestionId1,
+            Options = new FormQuestionOptions()
+        };
+        var qMain = new FormQuestion { Id = mainPathQuestionId, Type = FormQuestionType.Text, Options = new FormQuestionOptions() };
+        var qAlt1 = new FormQuestion { Id = alternativePathQuestionId1, Type = FormQuestionType.Text, NextQuestion = alternativePathQuestionId2, Options = new FormQuestionOptions() };
+        var qAlt2 = new FormQuestion { Id = alternativePathQuestionId2, Type = FormQuestionType.Text, Options = new FormQuestionOptions() };
+
+
+        _formsEngineMock.Setup(f =>
+                f.GetCurrentQuestion(_pageModel.OrganisationId, _pageModel.FormId, _pageModel.SectionId,
+                    currentQuestionId))
+            .ReturnsAsync(yesNoQuestion);
+
+        var initialAnswerState = new FormQuestionAnswerState();
+        initialAnswerState.Answers = new List<QuestionAnswer>();
+        initialAnswerState.Answers.Add(new QuestionAnswer { QuestionId = currentQuestionId, Answer = new FormAnswer { BoolValue = false } });
+        initialAnswerState.Answers.Add(new QuestionAnswer { QuestionId = alternativePathQuestionId1, Answer = new FormAnswer { TextValue = "Answer on alt path 1" } });
+        initialAnswerState.Answers.Add(new QuestionAnswer { QuestionId = alternativePathQuestionId2, Answer = new FormAnswer { TextValue = "Answer on alt path 2" } });
+
+         _tempDataServiceMock.SetupSequence(t => t.PeekOrDefault<FormQuestionAnswerState>(It.IsAny<string>()))
+            .Returns(initialAnswerState)
+            .Returns(initialAnswerState)
+            .Returns(initialAnswerState)
+            .Returns(initialAnswerState)
+            .Returns(initialAnswerState);
+
+        _pageModel.YesNoInputModel = new FormElementYesNoInputModel { YesNoInput = "yes" };
+
+        _formsEngineMock.Setup(f => f.GetNextQuestion(
+                _pageModel.OrganisationId, _pageModel.FormId, _pageModel.SectionId, currentQuestionId,
+                It.Is<FormQuestionAnswerState>(s => s.Answers.Any(a =>
+                    a.QuestionId == currentQuestionId && a.Answer != null && a.Answer.BoolValue == true))))
+            .ReturnsAsync(new FormQuestion { Id = mainPathQuestionId, Options = new FormQuestionOptions() });
+
+        var sectionResponse = new SectionQuestionsResponse
+        {
+            Section = new FormSection { Type = FormSectionType.Standard, Title = "Test Section" },
+            Questions = [yesNoQuestion, qMain, qAlt1, qAlt2]
+        };
+        _formsEngineMock.Setup(f =>
+                f.GetFormSectionAsync(_pageModel.OrganisationId, _pageModel.FormId, _pageModel.SectionId))
+            .ReturnsAsync(sectionResponse);
+
+        FormQuestionAnswerState? capturedStateAfterClearing = null;
+        _tempDataServiceMock.Setup(t => t.Put(It.IsAny<string>(), It.IsAny<FormQuestionAnswerState>()))
+            .Callback<string, FormQuestionAnswerState>((key, state) =>
+            {
+                if (key.Contains("_Answers"))
+                {
+                    capturedStateAfterClearing = new FormQuestionAnswerState { AnswerSetId = state.AnswerSetId, Answers = new List<QuestionAnswer>(state.Answers) };
+                }
+            });
+
+        var result = await _pageModel.OnPostAsync();
+
+        result.Should().BeOfType<RedirectToPageResult>();
+        var redirectResult = result as RedirectToPageResult;
+        redirectResult!.PageName.Should().Be("FormsQuestionPage");
+        redirectResult.RouteValues!["CurrentQuestionId"].Should().Be(mainPathQuestionId);
+
+        _tempDataServiceMock.Verify(t => t.Put(It.IsAny<string>(), It.IsAny<FormQuestionAnswerState>()), Times.AtLeastOnce());
+
+        capturedStateAfterClearing.Should().NotBeNull();
+        capturedStateAfterClearing!.Answers.Should().ContainSingle(a => a.QuestionId == currentQuestionId && a.Answer!.BoolValue == true);
+        capturedStateAfterClearing!.Answers.Should().NotContain(a => a.QuestionId == alternativePathQuestionId1);
+        capturedStateAfterClearing!.Answers.Should().NotContain(a => a.QuestionId == alternativePathQuestionId2);
     }
 }

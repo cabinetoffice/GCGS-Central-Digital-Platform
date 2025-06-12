@@ -129,7 +129,7 @@ public class FormsQuestionPageModel(
             }
 
             var oldAnswerObject = GetAnswerFromTempData(currentQuestion);
-            HandleAnswerChangeForAlternativeBranch(currentQuestion, oldAnswerObject, sectionDetails.Questions);
+            HandleBranchingLogicAnswerChange(currentQuestion, oldAnswerObject, sectionDetails.Questions);
 
             var answer = PartialViewModel.GetAnswer();
 
@@ -422,49 +422,62 @@ public class FormsQuestionPageModel(
         tempDataService.Put(FormQuestionAnswerStateKey, state);
     }
 
-    private void HandleAnswerChangeForAlternativeBranch(FormQuestion currentQuestion, FormAnswer? oldAnswerObject, List<FormQuestion> allQuestionsInSection)
+    private void HandleBranchingLogicAnswerChange(FormQuestion currentQuestion, FormAnswer? oldAnswerObject, List<FormQuestion> allQuestionsInSection)
     {
-        bool answerChangedFromNoToYes = false;
+        bool changedFromNoToYes = false;
+        bool changedFromYesToNo = false;
 
         if (currentQuestion.Type == FormQuestionType.YesOrNo)
         {
             bool oldBoolAnswer = oldAnswerObject?.BoolValue ?? false;
-            bool newAnswerIsYesEquivalent = YesNoInputModel?.GetAnswer()?.BoolValue ?? false;
-            if (!oldBoolAnswer && newAnswerIsYesEquivalent)
+            bool newAnswerIsYes = YesNoInputModel?.GetAnswer()?.BoolValue ?? false;
+
+            if (!oldBoolAnswer && newAnswerIsYes)
             {
-                answerChangedFromNoToYes = true;
+                changedFromNoToYes = true;
+            }
+            else if (oldBoolAnswer && !newAnswerIsYes)
+            {
+                changedFromYesToNo = true;
             }
         }
         else if (currentQuestion.Type == FormQuestionType.FileUpload)
         {
             bool oldFileExisted = !string.IsNullOrEmpty(oldAnswerObject?.TextValue);
-            var newFileUploadedInfo = FileUploadModel?.GetUploadedFileInfo();
-            bool newAnswerIsYesEquivalent = newFileUploadedInfo != null && newFileUploadedInfo.Value.formFile?.Length > 0;
+            bool newFileSubmitted = (FileUploadModel?.UploadedFile != null && FileUploadModel.UploadedFile.Length > 0);
 
-            if (!oldFileExisted && newAnswerIsYesEquivalent)
+            if (!oldFileExisted && newFileSubmitted)
             {
-                answerChangedFromNoToYes = true;
+                changedFromNoToYes = true;
+            }
+            else if (oldFileExisted && !newFileSubmitted)
+            {
+                changedFromYesToNo = true;
             }
         }
 
-        if (answerChangedFromNoToYes && currentQuestion.NextQuestionAlternative.HasValue)
+        if (changedFromNoToYes && currentQuestion.NextQuestionAlternative.HasValue)
         {
-            RemoveAnswersFromAlternativeBranch(currentQuestion.NextQuestionAlternative.Value, allQuestionsInSection);
+            RemoveAnswersFromBranchPath(currentQuestion.NextQuestionAlternative.Value, allQuestionsInSection);
+        }
+        else if (changedFromYesToNo && currentQuestion.NextQuestion.HasValue)
+        {
+            RemoveAnswersFromBranchPath(currentQuestion.NextQuestion.Value, allQuestionsInSection);
         }
     }
 
-    private void RemoveAnswersFromAlternativeBranch(Guid alternativeBranchStartNodeId, List<FormQuestion> allQuestionsInSection)
+    private void RemoveAnswersFromBranchPath(Guid branchStartNodeId, List<FormQuestion> allQuestionsInSection)
     {
         var answerState = tempDataService.PeekOrDefault<FormQuestionAnswerState>(FormQuestionAnswerStateKey);
-        if (answerState.Answers == null || !answerState.Answers.Any()) return;
+        if (answerState?.Answers == null || !answerState.Answers.Any()) return;
 
         var questionsMap = allQuestionsInSection.ToDictionary(q => q.Id);
         var questionsOnAlternativePath = new HashSet<Guid>();
         var queue = new Queue<Guid>();
 
-        if (questionsMap.ContainsKey(alternativeBranchStartNodeId))
+        if (questionsMap.ContainsKey(branchStartNodeId))
         {
-            queue.Enqueue(alternativeBranchStartNodeId);
+            queue.Enqueue(branchStartNodeId);
         }
 
         while (queue.Count > 0)
