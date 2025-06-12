@@ -45,6 +45,7 @@ locals {
       fts_service_allowed_origins       = []
       mysql_aurora_engine_version       = "5.7.mysql_aurora.2.12.5"
       mysql_aurora_family               = "aurora-mysql5.7"
+      mysql_aurora_instance_type        = "db.r5.large"
       name                              = "dev"
       onelogin_logout_notification_urls = [
         "https://test-findtender.nqc.com/auth/backchannellogout",
@@ -83,7 +84,7 @@ locals {
         "https://www-staging.find-tender.service.gov.uk/auth/backchannellogout",
       ]
       pinned_service_version_fts        = "0.0.1"
-      pinned_service_version            = "1.0.67"
+      pinned_service_version            = "1.0.68"
       postgres_instance_type            = "db.t4g.micro"
       postgres_aurora_instance_type     = "db.r5.large"
       private_subnets = [
@@ -148,7 +149,7 @@ locals {
         "https://www-tpp.find-tender.service.gov.uk/auth/backchannellogout",
       ]
       pinned_service_version_fts        = "0.0.1"
-      pinned_service_version            = "1.0.67"
+      pinned_service_version            = "1.0.68"
       postgres_instance_type            = "db.t4g.micro"
       postgres_aurora_instance_type     = "db.r5.large"
       private_subnets = [

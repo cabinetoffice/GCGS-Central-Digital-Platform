@@ -24,6 +24,9 @@ public class FormsQuestionPageModelTest
     private readonly Mock<IFileHostManager> _fileHostManagerMock;
     private readonly Mock<IOrganisationClient> _organisationClientMock;
     private readonly Mock<IUserInfoService> _userInfoServiceMock;
+    private readonly Mock<CO.CDP.Forms.WebApiClient.IFormsClient> _formsApiClientMock;
+    private readonly Mock<DataSharing.WebApiClient.IDataSharingClient> _dataSharingClientMock;
+    private readonly Mock<IChoiceProviderService> _choiceProviderServiceMock;
     private readonly FormsQuestionPageModel _pageModel;
     private readonly Guid _textQuestionId = Guid.NewGuid();
     private readonly Mock<IObjectModelValidator> _objectModelValidatorMock;
@@ -31,7 +34,10 @@ public class FormsQuestionPageModelTest
     public FormsQuestionPageModelTest()
     {
         _formsEngineMock = new Mock<IFormsEngine>();
-        Mock<IChoiceProviderService> choiceProviderServiceMock = new Mock<IChoiceProviderService>();
+        _choiceProviderServiceMock = new Mock<IChoiceProviderService>();
+        _formsApiClientMock = new Mock<CO.CDP.Forms.WebApiClient.IFormsClient>();
+        _dataSharingClientMock = new Mock<DataSharing.WebApiClient.IDataSharingClient>();
+
         _fileHostManagerMock = new Mock<IFileHostManager>();
         _publisherMock = new Mock<IPublisher>();
         _organisationClientMock = new Mock<IOrganisationClient>();
@@ -61,7 +67,7 @@ public class FormsQuestionPageModelTest
             _formsEngineMock.Object,
             _tempDataServiceMock.Object,
             _fileHostManagerMock.Object,
-            choiceProviderServiceMock.Object,
+            _choiceProviderServiceMock.Object,
             _organisationClientMock.Object,
             _userInfoServiceMock.Object);
 
@@ -1129,5 +1135,65 @@ public class FormsQuestionPageModelTest
         capturedState!.Answers.Should().ContainSingle(a => a.QuestionId == currentQuestionId && a.Answer != null && a.Answer.TextValue!.Contains(Path.GetFileNameWithoutExtension(mockFileName)));
         capturedState!.Answers.Should().NotContain(a => a.QuestionId == alternativeQuestionId);
         capturedState!.Answers.Should().NotContain(a => a.QuestionId == questionOnAlternativePathId);
+    }
+
+    [Fact]
+    public async Task OnGetAsync_WhenNavigatingToQ4AfterNoOnQ2_ShouldRenderQ4Correctly()
+    {
+        var q1Id = Guid.NewGuid();
+        var q2Id = Guid.NewGuid();
+        var q3Id = Guid.NewGuid();
+        var q4Id = Guid.NewGuid();
+        var q5Id = Guid.NewGuid();
+
+        _pageModel.CurrentQuestionId = q4Id;
+        _pageModel.OrganisationId = Guid.NewGuid();
+        _pageModel.FormId = Guid.NewGuid();
+        _pageModel.SectionId = Guid.NewGuid();
+
+        var q1 = new FormQuestion { Id = q1Id, Type = FormQuestionType.NoInput, NextQuestion = q2Id, Options = new FormQuestionOptions() };
+        var q2 = new FormQuestion { Id = q2Id, Type = FormQuestionType.YesOrNo, NextQuestion = q3Id, NextQuestionAlternative = q4Id, Options = new FormQuestionOptions() };
+        var q3 = new FormQuestion { Id = q3Id, Type = FormQuestionType.NoInput, NextQuestion = null, Options = new FormQuestionOptions() };
+        var q4 = new FormQuestion { Id = q4Id, Type = FormQuestionType.NoInput, NextQuestion = q5Id, BranchType = FormQuestionBranchType.Main, Options = new FormQuestionOptions() };
+        var q5 = new FormQuestion { Id = q5Id, Type = FormQuestionType.NoInput, NextQuestion = null, Options = new FormQuestionOptions() };
+
+        var questionsList = new List<FormQuestion> { q1, q2, q3, q4, q5 };
+
+        _formsEngineMock.Setup(f =>
+                f.GetFormSectionAsync(_pageModel.OrganisationId, _pageModel.FormId, _pageModel.SectionId))
+            .ReturnsAsync(new SectionQuestionsResponse { Questions = questionsList, Section = new FormSection { Title = "Test Section" } });
+
+        _formsEngineMock.Setup(f =>
+                f.GetCurrentQuestion(_pageModel.OrganisationId, _pageModel.FormId, _pageModel.SectionId, q4Id))
+            .ReturnsAsync(q4);
+
+        _formsEngineMock.Setup(f =>
+                f.GetCurrentQuestion(_pageModel.OrganisationId, _pageModel.FormId, _pageModel.SectionId, q3Id))
+            .ReturnsAsync(q3);
+
+        var answerState = new FormQuestionAnswerState();
+        answerState.Answers.Add(new QuestionAnswer { QuestionId = q1Id, Answer = new FormAnswer { TextValue = "Answer Q1" } });
+        answerState.Answers.Add(new QuestionAnswer { QuestionId = q2Id, Answer = new FormAnswer { BoolValue = false } });
+
+        _tempDataServiceMock.Setup(t => t.PeekOrDefault<FormQuestionAnswerState>(It.IsAny<string>()))
+            .Returns(answerState);
+
+        var realFormsEngine = new FormsEngine(
+            _formsApiClientMock.Object,
+            _tempDataServiceMock.Object,
+            _choiceProviderServiceMock.Object,
+            _dataSharingClientMock.Object
+        );
+
+        _formsEngineMock.Setup(f => f.GetPreviousUnansweredQuestionId(
+                It.Is<List<FormQuestion>>(lst => lst.SequenceEqual(questionsList)),
+                q4Id,
+                It.Is<FormQuestionAnswerState>(ars => ars.Equals(answerState))))
+            .Returns((List<FormQuestion> qL, Guid cId, FormQuestionAnswerState aS) =>
+                realFormsEngine.GetPreviousUnansweredQuestionId(qL, cId, aS));
+
+        var result = await _pageModel.OnGetAsync();
+
+        result.Should().BeOfType<PageResult>("because Q4 should be rendered, not redirected to Q3, when navigating the 'No' branch from Q2 and the FormsEngine logic is correct.");
     }
 }

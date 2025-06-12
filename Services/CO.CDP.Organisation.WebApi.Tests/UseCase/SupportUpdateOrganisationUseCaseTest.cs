@@ -288,6 +288,118 @@ public class SupportUpdateOrganisationUseCaseTests
             .WithMessage("Unknown support update organisation command type.");
     }
 
+    [Fact]
+    public async Task Execute_WhenUpdateIsAdditionalIdentifiers_ShouldUpdateIdentifiersCorrectly()
+    {
+        var supportUpdateOrganisation = new SupportUpdateOrganisation
+        {
+            Type = SupportOrganisationUpdateType.AdditionalIdentifiers,
+            Organisation = new SupportOrganisationInfo
+            {
+                AdditionalIdentifiers = new List<OrganisationIdentifier>
+                {
+                    new OrganisationIdentifier
+                    {
+                        Id = "12345678",
+                        Scheme = "GB-COH",
+                        LegalName = "Test Org Ltd"
+                    }
+                }
+            }
+        };
+
+        _organisation.Identifiers = new List<Persistence.Identifier>
+        {
+            new Persistence.Identifier
+            {
+                Scheme = "GB-OLD",
+                IdentifierId = "1111",
+                LegalName = "Old Org Ltd",
+                Primary = false
+            }
+        };
+
+        _mockOrganisationRepository.Setup(repo => repo.Find(_organisation.Guid))
+            .ReturnsAsync(_organisation);
+
+        var result = await _useCase.Execute((_organisation.Guid, supportUpdateOrganisation));
+
+        result.Should().BeTrue();
+
+        _organisation.Identifiers.Should().ContainSingle(i => i.Scheme == "GB-COH" && i.IdentifierId == "12345678" && i.LegalName == "Test Org Ltd");
+        _organisation.Identifiers.Should().NotContain(i => i.Scheme == "GB-OLD");
+
+        _mockOrganisationRepository.Verify(repo => repo.Save(_organisation), Times.Once);
+    }
+
+    [Fact]
+    public async Task Execute_WhenUpdateIsAdditionalIdentifiers_AndMissingIdentifiers_ShouldThrow()
+    {
+        var supportUpdateOrganisation = new SupportUpdateOrganisation
+        {
+            Type = SupportOrganisationUpdateType.AdditionalIdentifiers,
+            Organisation = new SupportOrganisationInfo
+            {
+                AdditionalIdentifiers = null
+            }
+        };
+
+        _mockOrganisationRepository.Setup(repo => repo.Find(_organisation.Guid))
+            .ReturnsAsync(_organisation);
+
+        Func<Task> action = async () => await _useCase.Execute((_organisation.Guid, supportUpdateOrganisation));
+
+        await action.Should().ThrowAsync<InvalidUpdateOrganisationCommand.MissingAdditionalIdentifiers>();
+    }
+
+    [Fact]
+    public async Task Execute_WhenAdditionalIdentifiersAlreadyExist_ShouldUpdateRatherThanDuplicate()
+    {
+        var yesterday = DateTimeOffset.UtcNow.AddDays(-1);
+
+        var existingIdentifier = new Persistence.Identifier
+        {
+            Scheme = "GB-COH",
+            IdentifierId = "old-id",
+            LegalName = "Old Legal Name",
+            CreatedOn = yesterday,
+            UpdatedOn = yesterday,
+            Primary = false
+        };
+
+        _organisation.Identifiers = new List<Persistence.Identifier> { existingIdentifier };
+
+        var supportUpdateOrganisation = new SupportUpdateOrganisation
+        {
+            Type = SupportOrganisationUpdateType.AdditionalIdentifiers,
+            Organisation = new SupportOrganisationInfo
+            {
+                AdditionalIdentifiers = new List<OrganisationIdentifier>
+                {
+                    new OrganisationIdentifier
+                    {
+                        Scheme = "GB-COH",
+                        Id = "new-id",
+                        LegalName = "New Legal Name"
+                    }
+                }
+            }
+        };
+
+        _mockOrganisationRepository.Setup(repo => repo.Find(_organisation.Guid))
+            .ReturnsAsync(_organisation);
+
+        var result = await _useCase.Execute((_organisation.Guid, supportUpdateOrganisation));
+
+        result.Should().BeTrue();
+        _organisation.Identifiers.Count.Should().Be(1);
+        _organisation.Identifiers[0].IdentifierId.Should().Be("new-id");
+        _organisation.Identifiers[0].LegalName.Should().Be("New Legal Name");
+
+        _mockOrganisationRepository.Verify(repo => repo.Save(_organisation), Times.Once);
+    }
+
+
     private static OrganisationPerson GetOrganisationPerson()
     {
         return new OrganisationPerson

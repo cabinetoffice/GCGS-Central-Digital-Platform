@@ -229,7 +229,7 @@ public class AuthorizationTests
 
     public static IEnumerable<object[]> SupportAdminAccessTestCases()
     {
-        yield return new object[] { $"/organisation/{OrganisationId}", new[] { "Organisation name", "Organisation identifier", "Organisation email", "Complete supplier information" }, new[] { "Change", "Users" }, HttpStatusCode.OK };
+        yield return new object[] { $"/organisation/{OrganisationId}", new[] { "Organisation name", "Organisation identifier", "Organisation email", "Complete supplier information" }, new[] { "Users" }, HttpStatusCode.OK };
         yield return new object[] { $"/organisation/{OrganisationId}/address/uk?frm-overview", new string[] { }, new string[] { }, HttpStatusCode.NotFound };
         yield return new object[] { $"/organisation/{OrganisationId}/users/user-summary", new string[] { }, new string[] { }, HttpStatusCode.NotFound };
     }
