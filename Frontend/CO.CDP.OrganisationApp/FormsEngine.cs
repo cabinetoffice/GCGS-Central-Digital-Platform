@@ -276,31 +276,6 @@ public class FormsEngine(
             !alternativeTargets.Contains(q.Id));
     }
 
-    private List<Models.FormQuestion> GenerateJourneyFromFirstQuestion(Models.FormQuestion firstQuestion,
-        List<Models.FormQuestion> questions)
-    {
-        var sortedFormQuestions = new List<Models.FormQuestion>();
-        var dict = questions.ToDictionary(q => q.Id, q => q);
-        var visitedInThisPath = new HashSet<Guid>();
-        var current = firstQuestion;
-
-        while (current != null && visitedInThisPath.Add(current.Id))
-        {
-            sortedFormQuestions.Add(current);
-            if (current.NextQuestion.HasValue &&
-                dict.TryGetValue(current.NextQuestion.Value, out var nextQuestionModel))
-            {
-                current = nextQuestionModel;
-            }
-            else
-            {
-                current = null;
-            }
-        }
-
-        return sortedFormQuestions;
-    }
-
     private void SetAlternativePathQuestions(List<Models.FormQuestion> questions)
     {
         var (nextQuestionTargets, alternativeTargets) = GetLinkedQuestionTargets(questions);
