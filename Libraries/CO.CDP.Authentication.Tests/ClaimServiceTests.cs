@@ -104,6 +104,27 @@ public class ClaimServiceTests
     }
 
     [Fact]
+    public async Task HaveAccessToOrganisation_ShouldReturnTrue_WhenUserIsSuperAdmin()
+    {
+        var organisationId = new Guid("96dc0f35-c059-4d89-91fa-a6ba5e4861a2");
+        var userUrn = "urn:fdc:gov.uk:2022:rynbwxUssDAcmU38U5gxd7dBfu9N7KFP9_nqDuZ66Hg";
+        var httpContextAccessor = GivenHttpContextWith([new(ClaimType.Subject, userUrn)]);
+
+        mockOrgRepo.Setup(m => m.FindOrganisationPerson(organisationId, userUrn))
+            .ReturnsAsync(new OrganisationPerson
+            {
+                Organisation = Mock.Of<Organisation>(),
+                Person = Mock.Of<Person>(),
+                Scopes = []
+            });
+
+        var claimService = new ClaimService(httpContextAccessor.Object, mockOrgRepo.Object);
+        var result = await claimService.HaveAccessToOrganisation(organisationId, null, [PersonScope.SuperAdmin]);
+
+        result.Should().BeTrue();
+    }
+
+    [Fact]
     public void GetChannel_ShouldReturnUrn_WhenUserHasChannelClaim()
     {
         var channel = "onelogin";
