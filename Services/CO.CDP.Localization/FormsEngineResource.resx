@@ -888,6 +888,9 @@ PPN 006 and associated reporting standards (opens in a new tab).&lt;/a&gt;&lt;/p
   <data name="ModernSlavery_02_Title" xml:space="preserve">
     <value>Are you a commercial organisation subject to Section 54 of the Modern Slavery Act 2015?</value>
   </data>
+  <data name="ModernSlavery_02_SummaryTitle" xml:space="preserve">
+    <value>Subject to Section 54 Modern Slavery Act</value>
+  </data>
   <data name="ModernSlavery_02_Description" xml:space="preserve">
     <value>
     &lt;span class=&quot;govuk-body&quot;&gt;For example, you are an organisation supplying goods or services that:&lt;/span&gt;
@@ -903,8 +906,14 @@ PPN 006 and associated reporting standards (opens in a new tab).&lt;/a&gt;&lt;/p
   <data name="ModernSlavery_03_Title" xml:space="preserve">
     <value>Is your latest Modern Slavery Statement available digitally?</value>
   </data>
+  <data name="ModernSlavery_03_SummaryTitle" xml:space="preserve">
+    <value>Electronic Statement</value>
+  </data>
   <data name="ModernSlavery_04_Title" xml:space="preserve">
     <value>Are your documents or statements related to modern slavery available digitally?</value>
+  </data>
+  <data name="ModernSlavery_04_SummaryTitle" xml:space="preserve">
+    <value>Electronic statement</value>
   </data>
   <data name="ModernSlavery_04_Description" xml:space="preserve">
     <value>
@@ -916,6 +925,9 @@ PPN 006 and associated reporting standards (opens in a new tab).&lt;/a&gt;&lt;/p
   <data name="ModernSlavery_05_Title" xml:space="preserve">
     <value>Enter the link to your Modern Slavery Statement</value>
   </data>
+  <data name="ModernSlavery_05_SummaryTitle" xml:space="preserve">
+    <value>Statement link</value>
+  </data>
   <data name="ModernSlavery_05_Description" xml:space="preserve">
     <value>
       &lt;div class=&quot;govuk-body&quot;&gt;
@@ -926,14 +938,26 @@ PPN 006 and associated reporting standards (opens in a new tab).&lt;/a&gt;&lt;/p
   <data name="ModernSlavery_06_Title" xml:space="preserve">
     <value>Upload a copy of your latest Modern Slavery Statement</value>
   </data>
+  <data name="ModernSlavery_06_SummaryTitle" xml:space="preserve">
+    <value>Statement upload</value>
+  </data>
   <data name="ModernSlavery_07_Title" xml:space="preserve">
     <value>Enter the link to your relevant documentation or published statements on modern slavery</value>
+  </data>
+  <data name="ModernSlavery_07_SummaryTitle" xml:space="preserve">
+    <value>Statement link</value>
   </data>
   <data name="ModernSlavery_08_Title" xml:space="preserve">
     <value>Upload your relevant documentation or published statements on modern slavery</value>
   </data>
+  <data name="ModernSlavery_08_SummaryTitle" xml:space="preserve">
+    <value>Statement upload</value>
+  </data>
   <data name="ModernSlavery_09_Title" xml:space="preserve">
-    <value>Enter instructions on how to find your organisations Modern Slavery Statement</value>
+    <value>Enter instructions on how to find your organisation's Modern Slavery Statement</value>
+  </data>
+  <data name="ModernSlavery_09_SummaryTitle" xml:space="preserve">
+    <value>Statement location instructions</value>
   </data>
   <data name="ModernSlavery_09_Description" xml:space="preserve">
     <value>
@@ -944,6 +968,9 @@ PPN 006 and associated reporting standards (opens in a new tab).&lt;/a&gt;&lt;/p
   </data>
   <data name="ModernSlavery_10_Title" xml:space="preserve">
     <value>Enter instructions on how to find your relevant published statements or documents on modern slavery</value>
+  </data>
+  <data name="ModernSlavery_10_SummaryTitle" xml:space="preserve">
+    <value>Statement location instructions</value>
   </data>
   <data name="ModernSlavery_10_Description" xml:space="preserve">
     <value>
