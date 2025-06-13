@@ -104,66 +104,63 @@
                 </div>
             }
         </dl>
-
         <authorize scope="@OrgScopeRequirement.Editor">
             <p>@StaticTextResource.Consortium_ConsortiumOverview_Paragraph1</p>
             <div class="govuk-body">
                 <a class="govuk-button govuk-button--secondary" href="/consortium/@Model.Id/enter-sharecode">@StaticTextResource.Consortium_ConsortiumOverview_AddAnOrganisation_link</a>
             </div>
-
-            <hr class="govuk-section-break govuk-section-break--l">
-
-            <h2 class="govuk-heading-m">@StaticTextResource.Consortium_ConsortiumOverview_Heading3</h2>
-
-            @if (parties.Count >= 2)
-            {
-                int shareCodeCount = await Model.GetShareCodesCount();
-                var redirectLink = $"/organisation/{Model.Id}/forms/{FormsEngine.OrganisationConsortiumFormId}/sections/{Model.FormSections.First().SectionId}/share-codes-list-view";
-
-                <ul class="govuk-task-list">
-                    <li class="govuk-task-list__item govuk-task-list__item--with-link">
-                        <div class="govuk-task-list__name-and-hint">
-                            <a class="govuk-link govuk-link--no-visited-state" href="@redirectLink">
-                                @StaticTextResource.Consortium_ConsortiumOverview_CreateSharecode_list
-                            </a>
-                        </div>
-
-                        @if (shareCodeCount > 0)
-                        {
-                            <div class="govuk-task-list__status">
-                                @(string.Format(StaticTextResource.Supplier_SupplierInformationSummary_ShareCodeRecordCount, shareCodeCount))
-                            </div>
-                        }
-                        else
-                        {
-                            <div class="govuk-task-list__status">
-                                <strong class="govuk-tag">
-                                    @StaticTextResource.Consortium_ConsortiumOverview_CreateSharecode_NotStarted
-                                </strong>
-                            </div>
-                        }
-                    </li>
-                </ul>
-            }
-            else
-            {
-                <ul class="govuk-task-list">
-                    <li class="govuk-task-list__item govuk-task-list__item--with-link">
-                        <div class="govuk-task-list__name-and-hint">
-                            @StaticTextResource.Consortium_ConsortiumOverview_CreateSharecode_list
-                            <div class="govuk-task-list__hint">
-                                @StaticTextResource.Consortium_ConsortiumOverview_CreateSharecode_list_hint
-                            </div>
-                        </div>
-
-                        <div class="govuk-task-list__status govuk-task-list__status--cannot-start-yet">
-                            @StaticTextResource.Consortium_ConsortiumOverview_status_list
-                        </div>
-                    </li>
-                </ul>
-            }
-
         </authorize>
+        <hr class="govuk-section-break govuk-section-break--l">
+
+        <h2 class="govuk-heading-m">@StaticTextResource.Consortium_ConsortiumOverview_Heading3</h2>
+
+        @if (parties.Count >= 2)
+        {
+            int shareCodeCount = await Model.GetShareCodesCount();
+            var redirectLink = $"/organisation/{Model.Id}/forms/{FormsEngine.OrganisationConsortiumFormId}/sections/{Model.FormSections.First().SectionId}/share-codes-list-view";
+
+            <ul class="govuk-task-list">
+                <li class="govuk-task-list__item govuk-task-list__item--with-link">
+                    <div class="govuk-task-list__name-and-hint">
+                        <a class="govuk-link govuk-link--no-visited-state" href="@redirectLink">
+                            @StaticTextResource.Consortium_ConsortiumOverview_CreateSharecode_list
+                        </a>
+                    </div>
+
+                    @if (shareCodeCount > 0)
+                    {
+                        <div class="govuk-task-list__status">
+                            @(string.Format(StaticTextResource.Supplier_SupplierInformationSummary_ShareCodeRecordCount, shareCodeCount))
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="govuk-task-list__status">
+                            <strong class="govuk-tag">
+                                @StaticTextResource.Consortium_ConsortiumOverview_CreateSharecode_NotStarted
+                            </strong>
+                        </div>
+                    }
+                </li>
+            </ul>
+        }
+        else
+        {
+            <ul class="govuk-task-list">
+                <li class="govuk-task-list__item govuk-task-list__item--with-link">
+                    <div class="govuk-task-list__name-and-hint">
+                        @StaticTextResource.Consortium_ConsortiumOverview_CreateSharecode_list
+                        <div class="govuk-task-list__hint">
+                            @StaticTextResource.Consortium_ConsortiumOverview_CreateSharecode_list_hint
+                        </div>
+                    </div>
+
+                    <div class="govuk-task-list__status govuk-task-list__status--cannot-start-yet">
+                        @StaticTextResource.Consortium_ConsortiumOverview_status_list
+                    </div>
+                </li>
+            </ul>
+        }
 
         <hr class="govuk-section-break govuk-section-break--l">
 
