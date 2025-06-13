@@ -5,6 +5,7 @@ public class OrganisationRawDto
     public int Id { get; set; }
     public Guid Guid { get; set; }
     public string? Name { get; set; }
+    public OrganisationType Type { get; set; }
     public int[]? Roles { get; set; }
     public int[]? PendingRoles { get; set; }
     public DateTimeOffset? ApprovedOn { get; set; }

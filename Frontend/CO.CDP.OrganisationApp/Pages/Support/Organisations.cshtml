@@ -72,7 +72,8 @@
         {
             <tr class="govuk-table__row">
                 <th scope="row" class="govuk-table__header">
-                    <a asp-page="/Organisation/OrganisationOverview" asp-route-id="@org.Id">
+                        <a asp-route-id="@org.Id"
+                            asp-page="@(org.Type == CDP.Organisation.WebApiClient.OrganisationType.InformalConsortium ? "/Consortium/ConsortiumOverview" : "/Organisation/OrganisationOverview")">
                         @org.Name
                     </a>
                     <ul class="govuk-list">
