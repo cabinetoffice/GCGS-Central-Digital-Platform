@@ -27,6 +27,7 @@ public class GetOrganisationsUseCaseTests
         var command = new PaginatedOrganisationQuery(limit: 10, skip: 0, "buyer", "buyer");
 
         var orgName = "Organisation 1";
+        var orgType = OrganisationType.Organisation;
         var organisationGuid = Guid.NewGuid();
         var approvedOn = new DateTimeOffset();
         var adminEmail = "admin@email.com";
@@ -41,6 +42,7 @@ public class GetOrganisationsUseCaseTests
                         Id = 1,
                         Guid = organisationGuid,
                         Name = orgName,
+                        Type = orgType,
                         Identifiers = identifierString,
                         ContactPoints = orgEmail,
                         Roles = [],
@@ -57,6 +59,7 @@ public class GetOrganisationsUseCaseTests
             {
                 Id = organisationGuid,
                 Name = orgName,
+                Type = orgType,
                 ContactPoints = [orgEmail],
                 ApprovedOn = approvedOn,
                 Roles = new List<PartyRole>(),
