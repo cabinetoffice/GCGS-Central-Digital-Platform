@@ -31,7 +31,11 @@ public class UserInfoService(IHttpContextAccessor httpContextAccessor, ITenantCl
     public async Task<bool> IsAdmin()
     {
         var userInfo = await GetUserInfo();
-        var userScopes = userInfo.Scopes;
+        if (userInfo.Scopes.Contains(PersonScopes.SuperAdmin))
+        {
+            return true;
+        }
+
         var organisationUserScopes = userInfo.OrganisationScopes(GetOrganisationId());
 
         return organisationUserScopes.Contains(OrganisationPersonScopes.Admin);

@@ -50,6 +50,10 @@ public class CustomScopeHandlerTests
     [InlineData(OrganisationPersonScopes.Viewer, null, PersonScopes.SupportAdmin, true)]        // SupportAdmin CAN do viewer stuff
     [InlineData(OrganisationPersonScopes.Editor, null, PersonScopes.SupportAdmin, false)]       // SupportAdmin CANNOT do editor stuff
     [InlineData(OrganisationPersonScopes.Editor, null, null, false)]                            // No scopes should fail
+    [InlineData(PersonScopes.SupportAdmin, null, PersonScopes.SuperAdmin, true)]                // SuperAdmin can do Support Admin stuff
+    [InlineData(OrganisationPersonScopes.Admin, null, PersonScopes.SuperAdmin, true)]           // SuperAdmin can do Admin stuff
+    [InlineData(OrganisationPersonScopes.Editor, null, PersonScopes.SuperAdmin, true)]          // SuperAdmin can do Editor stuff
+    [InlineData(OrganisationPersonScopes.Viewer, null, PersonScopes.SuperAdmin, true)]          // SuperAdmin can do Viewer stuff
     public async Task HandleRequirementAsync_ShouldEvaluateScopesCorrectly(
         string requirementScope,
         string? organisationUserScope,
