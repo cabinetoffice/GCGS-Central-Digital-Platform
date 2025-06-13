@@ -35,11 +35,13 @@
                 <dd class="govuk-summary-list__value">
                     <p class="govuk-body">@organisationDetails.Name</p>
                 </dd>
-                <dd class="govuk-summary-list__actions">
-                    <a class="govuk-link govuk-link--no-visited-state" href="/consortium/@organisationDetails.Id/change-name">
-                        @Html.Raw(@StaticTextResource.Consortium_ConsortiumOverview_ChangeName)
-                    </a>
-                </dd>
+                <authorize scope="@OrgScopeRequirement.Editor">
+                    <dd class="govuk-summary-list__actions">
+                        <a class="govuk-link govuk-link--no-visited-state" href="/consortium/@organisationDetails.Id/change-name">
+                            @Html.Raw(@StaticTextResource.Consortium_ConsortiumOverview_ChangeName)
+                        </a>
+                    </dd>
+                </authorize>
             </div>
 
             <div class="govuk-summary-list__row">
@@ -54,11 +56,13 @@
                     <p class="govuk-body">@postalAddress.PostalCode</p>
                     <p class="govuk-body">@postalAddress.CountryName</p>
                 </dd>
-                <dd class="govuk-summary-list__actions">
-                    <a class="govuk-link govuk-link--no-visited-state" href="/consortium/@Model.Id/change-address/@(postalAddress.Country == Country.UKCountryCode ? "uk" : "non-uk")">
-                        @Html.Raw(@StaticTextResource.Consortium_ConsortiumOverview_ChangeAddress)
-                    </a>
-                </dd>
+                <authorize scope="@OrgScopeRequirement.Editor">
+                    <dd class="govuk-summary-list__actions">
+                        <a class="govuk-link govuk-link--no-visited-state" href="/consortium/@Model.Id/change-address/@(postalAddress.Country == Country.UKCountryCode ? "uk" : "non-uk")">
+                            @Html.Raw(@StaticTextResource.Consortium_ConsortiumOverview_ChangeAddress)
+                        </a>
+                    </dd>
+                </authorize>
             </div>
 
             <div class="govuk-summary-list__row">
@@ -66,9 +70,13 @@
                 <dd class="govuk-summary-list__value">
                     <p class="govuk-body">@organisationDetails.ContactPoint.Email</p>
                 </dd>
-                <dd class="govuk-summary-list__actions">
-                    <a class="govuk-link govuk-link--no-visited-state" href="/consortium/@Model.Id/change-email">@Html.Raw(@StaticTextResource.Consortium_ConsortiumOverview_ChangeEmailaddress)</a>
-                </dd>
+                <authorize scope="@OrgScopeRequirement.Editor">
+                    <dd class="govuk-summary-list__actions">
+                        <a class="govuk-link govuk-link--no-visited-state" href="/consortium/@Model.Id/change-email">
+                            @Html.Raw(@StaticTextResource.Consortium_ConsortiumOverview_ChangeEmailaddress)
+                        </a>
+                    </dd>
+                </authorize>
             </div>
         </dl>
 
@@ -79,22 +87,26 @@
                 <div class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key">@p.Name</dt>
                     <dd class="govuk-summary-list__value">
-                        <p class="govuk-body">@p.ShareCode.Value
+                        <p class="govuk-body">
+                            @p.ShareCode.Value
                             <span class="govuk-hint govuk-!-display-block">@StaticTextResource.Consortium_Summary_ShareCodeCreatedOn@p.ShareCode.SubmittedAt.ToFormattedString()</span>
                         </p>
                     </dd>
-                    <dd class="govuk-summary-list__actions">
-                        <a class="govuk-link govuk-link--no-visited-state" href="/consortium/@Model.Id/enter-new-sharecode/@p.Id">@Html.Raw(@StaticTextResource.Consortium_Summary_Change)</a>
-                    </dd>
+
+                    <authorize scope="@OrgScopeRequirement.Editor">
+                        <dd class="govuk-summary-list__actions">
+                            <a class="govuk-link govuk-link--no-visited-state" href="/consortium/@Model.Id/enter-new-sharecode/@p.Id">@Html.Raw(@StaticTextResource.Consortium_Summary_Change)</a>
+                        </dd>
+                    </authorize>
                 </div>
             }
         </dl>
-
-        <p>@StaticTextResource.Consortium_ConsortiumOverview_Paragraph1</p>
-        <div class="govuk-body">
-            <a class="govuk-button govuk-button--secondary" href="/consortium/@Model.Id/enter-sharecode">@StaticTextResource.Consortium_ConsortiumOverview_AddAnOrganisation_link</a>
-        </div>
-
+        <authorize scope="@OrgScopeRequirement.Editor">
+            <p>@StaticTextResource.Consortium_ConsortiumOverview_Paragraph1</p>
+            <div class="govuk-body">
+                <a class="govuk-button govuk-button--secondary" href="/consortium/@Model.Id/enter-sharecode">@StaticTextResource.Consortium_ConsortiumOverview_AddAnOrganisation_link</a>
+            </div>
+        </authorize>
         <hr class="govuk-section-break govuk-section-break--l">
 
         <h2 class="govuk-heading-m">@StaticTextResource.Consortium_ConsortiumOverview_Heading3</h2>

@@ -16,6 +16,7 @@ public class GetOrganisationsUseCase(IOrganisationRepository organisationReposit
         {
             Id = o.Guid,
             Name = o.Name,
+            Type = o.Type,
             Roles = o.Roles?.Select(r => (PartyRole)r).ToList() ?? new List<PartyRole>(),
             PendingRoles = o.PendingRoles?.Select(r => (PartyRole)r).ToList() ?? new List<PartyRole>(),
             ApprovedOn = o.ApprovedOn,
