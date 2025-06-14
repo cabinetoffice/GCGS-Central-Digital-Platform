@@ -57,6 +57,7 @@ dependency core_security_groups {
     db_mysql_sg_id            = "mock"
     db_postgres_sg_id         = "mock"
     ecs_sg_id                 = "mock"
+    efs_sg_id                 = "mock"
     elasticache_redis_sg_id   = "mock"
     vpce_ecr_api_sg_id        = "mock"
     vpce_ecr_dkr_sg_id        = "mock"
@@ -164,6 +165,7 @@ inputs = {
   db_mysql_sg_id            = dependency.core_security_groups.outputs.db_mysql_sg_id
   db_postgres_sg_id         = dependency.core_security_groups.outputs.db_postgres_sg_id
   ecs_sg_id                 = dependency.core_security_groups.outputs.ecs_sg_id
+  efs_sg_id                 = dependency.core_security_groups.outputs.efs_sg_id
   redis_sg_id               = dependency.core_security_groups.outputs.elasticache_redis_sg_id
   vpce_ecr_api_sg_id        = dependency.core_security_groups.outputs.vpce_ecr_api_sg_id
   vpce_ecr_dkr_sg_id        = dependency.core_security_groups.outputs.vpce_ecr_dkr_sg_id

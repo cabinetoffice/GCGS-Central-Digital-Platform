@@ -67,7 +67,12 @@
       { "name": "SSO_TOKEN_SESSION_CIPHER", "valueFrom": "${sso_token_session_cipher}"}
     ],
     "volumesFrom": [],
-    "mountPoints": [],
+    "mountPoints": [
+      {
+        "sourceVolume": "${source_volume}",
+        "containerPath": "${container_path}"
+      }
+    ],
     "essential": true
   }
 ]

@@ -78,6 +78,11 @@ variable "ecs_sg_id" {
   type        = string
 }
 
+variable "efs_sg_id" {
+  description = "EFS security group ID"
+  type        = string
+}
+
 variable "environment" {
   description = "The environment we are provisioning"
   type        = string
