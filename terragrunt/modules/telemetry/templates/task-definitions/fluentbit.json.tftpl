@@ -1,0 +1,22 @@
+[
+  {
+    "name": "${name}",
+    "image": "${image}",
+    "cpu": ${cpu},
+    "memory": ${memory},
+    "portMappings": [],
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+        "awslogs-group": "${lg_name}",
+        "awslogs-region": "${lg_region}",
+        "awslogs-stream-prefix": "${lg_prefix}"
+      }
+    },
+    "environment": [],
+    "secrets": [],
+    "volumesFrom": [],
+    "mountPoints": [],
+    "essential": true
+  }
+]

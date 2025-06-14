@@ -28,9 +28,25 @@ variable "ecs_sg_id" {
   type        = string
 }
 
+variable "efs_sg_id" {
+  description = "EFS security group ID"
+  type        = string
+}
+
 variable "environment" {
   description = "The environment we are provisioning"
   type        = string
+}
+
+variable "fluentbit_config" {
+  description = "Fluent Bit service configuration"
+  type = object({
+    cpu       = number
+    memory    = number
+    name      = string
+    port      = number
+    port_host = number
+  })
 }
 
 variable "grafana_config" {

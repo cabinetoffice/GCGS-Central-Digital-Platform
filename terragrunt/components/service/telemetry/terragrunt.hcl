@@ -45,6 +45,7 @@ dependency core_security_groups {
   mock_outputs = {
     alb_sg_id = "mock"
     ecs_sg_id = "mock"
+    efs_sg_id = "mock"
   }
 }
 
@@ -67,10 +68,11 @@ dependency service_ecs {
 }
 
 inputs = {
-  account_ids     = local.global_vars.locals.account_ids
-  grafana_config  = local.global_vars.locals.tools_configs.grafana
-  service_configs = local.global_vars.locals.service_configs
-  tags            = local.tags
+  account_ids      = local.global_vars.locals.account_ids
+  fluentbit_config = local.global_vars.locals.tools_configs.fluentbit
+  grafana_config   = local.global_vars.locals.tools_configs.grafana
+  service_configs  = local.global_vars.locals.service_configs
+  tags             = local.tags
 
   role_ecs_task_arn      = dependency.core_iam.outputs.ecs_task_arn
   role_ecs_task_name     = dependency.core_iam.outputs.ecs_task_name
@@ -84,6 +86,7 @@ inputs = {
 
   ecs_alb_sg_id = dependency.core_security_groups.outputs.alb_sg_id
   ecs_sg_id     = dependency.core_security_groups.outputs.ecs_sg_id
+  efs_sg_id     = dependency.core_security_groups.outputs.efs_sg_id
 
   user_pool_arn_grafana       = dependency.service_auth.outputs.grafana_user_pool_arn
   user_pool_client_id_grafana = dependency.service_auth.outputs.grafana_user_pool_client_id

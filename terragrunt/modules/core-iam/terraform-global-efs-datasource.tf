@@ -15,6 +15,7 @@ data "aws_iam_policy_document" "terraform_global_efs" {
       "elasticfilesystem:DescribeLifecycleConfiguration",
       "elasticfilesystem:DescribeMountTargetSecurityGroups",
       "elasticfilesystem:DescribeMountTargets",
+      "elasticfilesystem:PutLifecycleConfiguration",
       "elasticfilesystem:TagResource",
       "elasticfilesystem:UntagResource",
     ]

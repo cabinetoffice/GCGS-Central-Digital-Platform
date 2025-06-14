@@ -320,6 +320,13 @@ locals {
       port      = 8978
       port_host = 8978
     }
+    fluentbit = {
+      cpu       = 1024
+      memory    = 3072
+      name      = "fluentbit"
+      port      = null
+      port_host = null
+    }
     grafana = {
       cpu       = 1024
       memory    = 3072

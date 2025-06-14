@@ -2,7 +2,7 @@ module "ecs_service_grafana" {
   source = "../ecs-service"
 
   container_definitions = templatefile(
-    "${path.module}/templates/task-definitions/grafana.json.tftpl",
+    "${path.module}/templates/task-definitions/${var.grafana_config.name}.json.tftpl",
     {
       account_id            = data.aws_caller_identity.current.account_id
       cdp_sirsi_environment = "${local.name_prefix}-${var.environment}"
