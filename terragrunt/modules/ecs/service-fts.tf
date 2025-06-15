@@ -15,7 +15,7 @@ module "ecs_service_fts" {
   ecs_service_base_sg_id = var.ecs_sg_id
   efs_volume = {
     access_point_id    = aws_efs_access_point.fluentbit.id
-    container_path     = ""
+    container_path     = local.fluentbit_container_path
     file_system_id     = aws_efs_file_system.fluentbit.id
     iam                = "DISABLED"
     name               = local.fluentbit_volume_name

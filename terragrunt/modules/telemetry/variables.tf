@@ -38,6 +38,11 @@ variable "efs_fluentbit_access_point_id" {
   type        = string
 }
 
+variable "efs_fluentbit_container_path" {
+  description = "The path to mount in container"
+  type        = string
+}
+
 variable "efs_fluentbit_id" {
   description = "The FluentBit's EFS ID"
   type        = string

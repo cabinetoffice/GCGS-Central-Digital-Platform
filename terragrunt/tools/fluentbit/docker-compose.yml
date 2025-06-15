@@ -5,9 +5,9 @@ services:
     ports:
       - "2020:2020"
       - "2021:2021"
-    volumes:
-      - fluentbit-configs:/fluent-bit/etc
-
-volumes:
-  fluentbit-configs:
-    driver: local
+#    volumes:
+#      - fluentbit-configs:/fluent-bit/etc
+#
+#volumes:
+#  fluentbit-configs:
+#    driver: local

@@ -4,7 +4,7 @@ module "ecs_service_fluentbit" {
   container_definitions = templatefile(
     "${path.module}/templates/task-definitions/${var.fluentbit_config.name}.json.tftpl",
     {
-      container_path        = local.fluentbit_container_path
+      container_path        = var.efs_fluentbit_container_path
       container_port        = var.fluentbit_config.port
       cpu                   = var.fluentbit_config.cpu
       host_port             = var.fluentbit_config.port
@@ -27,7 +27,7 @@ module "ecs_service_fluentbit" {
   ecs_service_base_sg_id = var.ecs_sg_id
   efs_volume = {
     access_point_id    = var.efs_fluentbit_access_point_id
-    container_path     = local.fluentbit_container_path
+    container_path     = var.efs_fluentbit_container_path
     file_system_id     = var.efs_fluentbit_id
     iam                = "DISABLED"
     name               = var.efs_fluentbit_volume_name

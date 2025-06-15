@@ -1,7 +1,5 @@
 locals {
 
-  fluentbit_container_path = "/var/log/fluentbit"
-
   name_prefix = var.product.resource_name
 
   orchestrator_account_id = var.account_ids["orchestrator"]

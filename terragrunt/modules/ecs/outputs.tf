@@ -34,6 +34,10 @@ output "efs_fluentbit_volume_name" {
   value = local.fluentbit_volume_name
 }
 
+output "efs_fluentbit_container_path" {
+  value = local.fluentbit_container_path
+}
+
 output "service_configuration" {
   value = local.service_configs
 }
