@@ -33,6 +33,21 @@ variable "efs_sg_id" {
   type        = string
 }
 
+variable "efs_fluentbit_access_point_id" {
+  description = "The FluentBit's EFS Access Point ID"
+  type        = string
+}
+
+variable "efs_fluentbit_id" {
+  description = "The FluentBit's EFS ID"
+  type        = string
+}
+
+variable "efs_fluentbit_volume_name" {
+  description = "The FluentBit's mounted volume with appropriate access"
+}
+
+
 variable "environment" {
   description = "The environment we are provisioning"
   type        = string

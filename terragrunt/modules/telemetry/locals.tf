@@ -1,7 +1,6 @@
 locals {
 
-  fluentbit_container_path = "/var/logs/fluentbit"
-  fluentbit_volume_name    = "fluentbit"
+  fluentbit_container_path = "/var/log/fluentbit"
 
   name_prefix = var.product.resource_name
 

@@ -2,6 +2,9 @@ locals {
 
   service_version_fts = var.pinned_service_version_fts
 
+  fluentbit_container_path = "/var/log/supervisor"
+  fluentbit_volume_name    = "fluentbit"
+
   fts_screts_arn = data.aws_secretsmanager_secret.fts_secrets.arn
 
   fts_secrets = {
@@ -57,6 +60,7 @@ locals {
   }
 
   fts_service_paremeters = {
+    container_path  = local.fluentbit_container_path
     container_port  = var.service_configs.fts.port
     cpu             = var.service_configs.fts.cpu
     host_port       = var.service_configs.fts.port
@@ -69,6 +73,7 @@ locals {
     public_domain   = var.public_domain
     service_version = local.service_version_fts
     vpc_cidr        = var.vpc_cider
+    source_volume   = local.fluentbit_volume_name
   }
 
   fts_scheduler_service_paremeters = {

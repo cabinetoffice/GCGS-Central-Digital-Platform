@@ -4,7 +4,13 @@
     "image": "${image}",
     "cpu": ${cpu},
     "memory": ${memory},
-    "portMappings": [],
+    "portMappings": [
+      {
+        "containerPort": ${container_port},
+      "hostPort": ${host_port},
+      "protocol": "tcp"
+      }
+    ],
     "logConfiguration": {
       "logDriver": "awslogs",
       "options": {
@@ -16,7 +22,12 @@
     "environment": [],
     "secrets": [],
     "volumesFrom": [],
-    "mountPoints": [],
+    "mountPoints": [
+      {
+        "sourceVolume": "${source_volume}",
+        "containerPath": "${container_path}"
+      }
+    ],
     "essential": true
   }
 ]
