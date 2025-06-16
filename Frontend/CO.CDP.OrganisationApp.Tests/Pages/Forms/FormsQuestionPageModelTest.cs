@@ -1511,4 +1511,92 @@ public class FormsQuestionPageModelTest
                 sf.QueueFileName.StartsWith(Path.GetFileNameWithoutExtension(newFileName) + "_") &&
                 sf.QueueFileName.EndsWith(Path.GetExtension(newFileName)))), Times.Once);
     }
+
+        [Fact]
+    public async Task OnPostAsync_WhenTopLevelYesNoAnswerChanges_ClearsAnswersFromMultiLevelPreviouslyTakenBranch()
+    {
+        var q1Id = Guid.NewGuid();
+        var q2yId = Guid.NewGuid();
+        var q3yyId = Guid.NewGuid();
+        var q4yyyId = Guid.NewGuid();
+        var q4yynId = Guid.NewGuid();
+        var q3ynId = Guid.NewGuid();
+
+        var q2nId = Guid.NewGuid();
+        var q3nyId = Guid.NewGuid();
+        var q3nnId = Guid.NewGuid();
+
+        var q1 = new FormQuestion { Id = q1Id, Type = FormQuestionType.YesOrNo, NextQuestion = q2yId, NextQuestionAlternative = q2nId, Options = new FormQuestionOptions() };
+        var q2y = new FormQuestion { Id = q2yId, Type = FormQuestionType.YesOrNo, NextQuestion = q3yyId, NextQuestionAlternative = q3ynId, Options = new FormQuestionOptions() };
+        var q3yy = new FormQuestion { Id = q3yyId, Type = FormQuestionType.YesOrNo, NextQuestion = q4yyyId, NextQuestionAlternative = q4yynId, Options = new FormQuestionOptions() };
+        var q4yyy = new FormQuestion { Id = q4yyyId, Type = FormQuestionType.Text, Options = new FormQuestionOptions(), Title = "Q4YYY Text" };
+        var q4yyn = new FormQuestion { Id = q4yynId, Type = FormQuestionType.Text, Options = new FormQuestionOptions(), Title = "Q4YYN Text" };
+        var q3yn = new FormQuestion { Id = q3ynId, Type = FormQuestionType.Text, Options = new FormQuestionOptions(), Title = "Q3YN Text" };
+
+        var q2n = new FormQuestion { Id = q2nId, Type = FormQuestionType.YesOrNo, NextQuestion = q3nyId, NextQuestionAlternative = q3nnId, Options = new FormQuestionOptions() };
+        var q3ny = new FormQuestion { Id = q3nyId, Type = FormQuestionType.Text, Options = new FormQuestionOptions(), Title = "Q3NY Text" };
+        var q3nn = new FormQuestion { Id = q3nnId, Type = FormQuestionType.Text, Options = new FormQuestionOptions(), Title = "Q3NN Text" };
+
+        var allQuestions = new List<FormQuestion> { q1, q2y, q3yy, q4yyy, q4yyn, q3yn, q2n, q3ny, q3nn };
+
+        _formsEngineMock.Setup(f =>
+                f.GetFormSectionAsync(_pageModel.OrganisationId, _pageModel.FormId, _pageModel.SectionId))
+            .ReturnsAsync(new SectionQuestionsResponse { Questions = allQuestions, Section = new FormSection { Type = FormSectionType.Standard, Title = "Test Section" } });
+
+        var initialAnswerState = new FormQuestionAnswerState();
+        initialAnswerState.Answers.Add(new QuestionAnswer { QuestionId = q1Id, Answer = new FormAnswer { BoolValue = true } });
+        initialAnswerState.Answers.Add(new QuestionAnswer { QuestionId = q2yId, Answer = new FormAnswer { BoolValue = true } });
+        initialAnswerState.Answers.Add(new QuestionAnswer { QuestionId = q3yyId, Answer = new FormAnswer { BoolValue = true } });
+        initialAnswerState.Answers.Add(new QuestionAnswer { QuestionId = q4yyyId, Answer = new FormAnswer { TextValue = "Answer for Q4YYY" } });
+
+        var unrelatedAnswerText = "Unrelated Answer for Q3NY";
+        initialAnswerState.Answers.Add(new QuestionAnswer { QuestionId = q3nyId, Answer = new FormAnswer { TextValue = unrelatedAnswerText } });
+
+        _tempDataServiceMock.SetupSequence(t => t.PeekOrDefault<FormQuestionAnswerState>(It.IsAny<string>()))
+            .Returns(new FormQuestionAnswerState { Answers = new List<QuestionAnswer>(initialAnswerState.Answers) })
+            .Returns(new FormQuestionAnswerState { Answers = new List<QuestionAnswer>(initialAnswerState.Answers) })
+            .Returns(new FormQuestionAnswerState { Answers = new List<QuestionAnswer>(initialAnswerState.Answers) });
+
+
+        FormQuestionAnswerState? capturedState = null;
+        _tempDataServiceMock.Setup(t => t.Put(It.Is<string>(s => s.Contains("_Answers")), It.IsAny<FormQuestionAnswerState>()))
+            .Callback<string, FormQuestionAnswerState>((key, state) =>
+            {
+                capturedState = new FormQuestionAnswerState { AnswerSetId = state.AnswerSetId, Answers = new List<QuestionAnswer>(state.Answers) };
+
+                _tempDataServiceMock.Setup(t2 => t2.PeekOrDefault<FormQuestionAnswerState>(It.Is<string>(s => s == key)))
+                                    .Returns(new FormQuestionAnswerState { AnswerSetId = state.AnswerSetId, Answers = new List<QuestionAnswer>(state.Answers) });
+            });
+
+        _pageModel.CurrentQuestionId = q1Id;
+        _pageModel.YesNoInputModel = new FormElementYesNoInputModel { YesNoInput = "no" };
+
+        _formsEngineMock.Setup(f =>
+                f.GetCurrentQuestion(_pageModel.OrganisationId, _pageModel.FormId, _pageModel.SectionId, q1Id))
+            .ReturnsAsync(q1);
+
+        _formsEngineMock.Setup(f => f.GetNextQuestion(
+                _pageModel.OrganisationId, _pageModel.FormId, _pageModel.SectionId, q1Id,
+                It.Is<FormQuestionAnswerState>(s => s.Answers.Any(a => a.QuestionId == q1Id && a.Answer != null && a.Answer.BoolValue == false))))
+            .ReturnsAsync(q2n);
+
+        var result = await _pageModel.OnPostAsync();
+
+        result.Should().BeOfType<RedirectToPageResult>();
+        var redirectResult = result as RedirectToPageResult;
+        redirectResult!.PageName.Should().Be("FormsQuestionPage");
+        redirectResult.RouteValues!["CurrentQuestionId"].Should().Be(q2nId);
+
+        capturedState.Should().NotBeNull();
+        capturedState!.Answers.Should().ContainSingle(a => a.QuestionId == q1Id && a.Answer!.BoolValue == false, "Q1 answer should be updated to No");
+
+        capturedState.Answers.Should().NotContain(a => a.QuestionId == q2yId, "Answer for Q2Y (previous Yes branch) should be cleared");
+        capturedState.Answers.Should().NotContain(a => a.QuestionId == q3yyId, "Answer for Q3YY (previous Yes branch) should be cleared");
+        capturedState.Answers.Should().NotContain(a => a.QuestionId == q4yyyId, "Answer for Q4YYY (previous Yes branch) should be cleared");
+
+        capturedState.Answers.Should().ContainSingle(a => a.QuestionId == q3nyId && a.Answer!.TextValue == unrelatedAnswerText,
+            "Unrelated answer on the Q1=No path (Q3NY) should be preserved");
+
+        _tempDataServiceMock.Verify(t => t.Put(It.Is<string>(s => s.Contains("_Answers")), It.IsAny<FormQuestionAnswerState>()), Times.AtLeastOnce());
+    }
 }
