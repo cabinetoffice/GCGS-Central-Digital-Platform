@@ -143,20 +143,7 @@ public class FormsQuestionPageModel(
 
         if (currentQuestion.Id == CheckYourAnswerQuestionId)
         {
-            var answerSet = tempDataService.PeekOrDefault<FormQuestionAnswerState>(FormQuestionAnswerStateKey);
-            await formsEngine.SaveUpdateAnswers(FormId, SectionId, OrganisationId, answerSet);
-
-            tempDataService.Remove(FormQuestionAnswerStateKey);
-
-            if (FormSectionType == Models.FormSectionType.Declaration)
-            {
-                var shareCode = await formsEngine.CreateShareCodeAsync(FormId, OrganisationId);
-
-                return RedirectToPage("/ShareInformation/ShareCodeConfirmation",
-                            new { OrganisationId, FormId, SectionId, shareCode });
-            }
-
-            return RedirectToPage("FormsAnswerSetSummary", new { OrganisationId, FormId, SectionId });
+            return await HandleCheckYourAnswers();
         }
 
         Guid? nextQuestionId;
@@ -172,6 +159,24 @@ public class FormsQuestionPageModel(
         }
 
         return RedirectToPage("FormsQuestionPage", new { OrganisationId, FormId, SectionId, CurrentQuestionId = nextQuestionId });
+    }
+
+    private async Task<IActionResult> HandleCheckYourAnswers()
+    {
+        var answerSet = tempDataService.PeekOrDefault<FormQuestionAnswerState>(FormQuestionAnswerStateKey);
+        await formsEngine.SaveUpdateAnswers(FormId, SectionId, OrganisationId, answerSet);
+
+        tempDataService.Remove(FormQuestionAnswerStateKey);
+
+        if (FormSectionType == Models.FormSectionType.Declaration)
+        {
+            var shareCode = await formsEngine.CreateShareCodeAsync(FormId, OrganisationId);
+
+            return RedirectToPage("/ShareInformation/ShareCodeConfirmation",
+                new { OrganisationId, FormId, SectionId, shareCode });
+        }
+
+        return RedirectToPage("FormsAnswerSetSummary", new { OrganisationId, FormId, SectionId });
     }
 
     private async Task<FormAnswer?> HandleFileUpload(FormQuestion currentQuestion, FormAnswer? oldAnswerObject, FormAnswer? answer)
