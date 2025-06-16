@@ -24,6 +24,7 @@ public partial class ModernSlaverySectionForm : Migration
                     v_question10_id INTEGER;
                     v_question11_id INTEGER;
                     v_question12_id INTEGER;
+                    v_question13_id INTEGER;
                 BEGIN
                     SELECT id INTO v_form_id FROM forms WHERE name = 'Standard Questions';
 
@@ -69,8 +70,11 @@ public partial class ModernSlaverySectionForm : Migration
                     VALUES('{Guid.NewGuid()}', NULL, NULL, v_section_id, 10, true, 'ModernSlavery_11_Title', 'ModernSlavery_11_Description', '{{}}', NULL, 'ModernSlavery_11_SummaryTitle', '_ModernSlaveryQuestion11', 11)
                     RETURNING id INTO v_question11_id;
                     INSERT INTO form_questions (guid, next_question_id, next_question_alternative_id, section_id, ""type"", is_required, title, description, ""options"", caption, summary_title, ""name"", sort_order)
-                    VALUES('{Guid.NewGuid()}', NULL, NULL, v_section_id, 6, true, 'Global_CheckYourAnswers', NULL, '{{}}', NULL, '', '_ModernSlaveryQuestion12', 12)
+                    VALUES('{Guid.NewGuid()}', NULL, NULL, v_section_id, 10, true, 'ModernSlavery_12_Title', 'ModernSlavery_12_Description', '{{}}', NULL, 'ModernSlavery_12_SummaryTitle', '_ModernSlaveryQuestion12', 12)
                     RETURNING id INTO v_question12_id;
+                    INSERT INTO form_questions (guid, next_question_id, next_question_alternative_id, section_id, ""type"", is_required, title, description, ""options"", caption, summary_title, ""name"", sort_order)
+                    VALUES('{Guid.NewGuid()}', NULL, NULL, v_section_id, 6, true, 'Global_CheckYourAnswers', NULL, '{{}}', NULL, '', '_ModernSlaveryQuestion13', 13)
+                    RETURNING id INTO v_question13_id;
 
                     -- Update the next question links
                     UPDATE form_questions SET next_question_id = v_question2_id WHERE title = 'ModernSlavery_01_Title' AND section_id = v_section_id;
@@ -80,10 +84,11 @@ public partial class ModernSlaverySectionForm : Migration
                     UPDATE form_questions SET next_question_id = v_question9_id WHERE title = 'ModernSlavery_05_Title' AND section_id = v_section_id;
                     UPDATE form_questions SET next_question_id = v_question9_id WHERE title = 'ModernSlavery_06_Title' AND section_id = v_section_id;
                     UPDATE form_questions SET next_question_id = v_question10_id WHERE title = 'ModernSlavery_07_Title' AND section_id = v_section_id;
-                    UPDATE form_questions SET next_question_id = v_question10_id WHERE title = 'ModernSlavery_08_Title' AND section_id = v_section_id;
-                    UPDATE form_questions SET next_question_id = v_question11_id WHERE title = 'ModernSlavery_09_Title' AND section_id = v_section_id;
+                    UPDATE form_questions SET next_question_id = v_question11_id WHERE title = 'ModernSlavery_08_Title' AND section_id = v_section_id;
+                    UPDATE form_questions SET next_question_id = v_question12_id WHERE title = 'ModernSlavery_09_Title' AND section_id = v_section_id;
                     UPDATE form_questions SET next_question_id = v_question11_id WHERE title = 'ModernSlavery_10_Title' AND section_id = v_section_id;
-                    UPDATE form_questions SET next_question_id = v_question12_id WHERE title = 'ModernSlavery_11_Title' AND section_id = v_section_id;
+                    UPDATE form_questions SET next_question_id = v_question13_id WHERE title = 'ModernSlavery_11_Title' AND section_id = v_section_id;
+                    UPDATE form_questions SET next_question_id = v_question13_id WHERE title = 'ModernSlavery_12_Title' AND section_id = v_section_id;
                 END $$;
             ");
     }
