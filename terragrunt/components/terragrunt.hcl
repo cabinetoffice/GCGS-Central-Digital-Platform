@@ -45,13 +45,14 @@ locals {
       fts_service_allowed_origins       = []
       mysql_aurora_engine_version       = "5.7.mysql_aurora.2.12.5"
       mysql_aurora_family               = "aurora-mysql5.7"
+      mysql_aurora_instance_type        = "db.r5.large"
       name                              = "dev"
       onelogin_logout_notification_urls = [
         "https://test-findtender.nqc.com/auth/backchannellogout",
         "https://stanvolcere.nqc.com/auth/backchannellogout",
         "https://nadeemshafi2.nqc.com/auth/backchannellogout"
       ]
-      pinned_service_version_fts        = "0.0.1"
+      pinned_service_version_fts        = "0.0.6"
       pinned_service_version            = null
       postgres_instance_type            = "db.t4g.micro"
       postgres_aurora_instance_type     = "db.r5.large"
@@ -82,8 +83,8 @@ locals {
         "https://stanvolcere.nqc.com/auth/backchannellogout",
         "https://www-staging.find-tender.service.gov.uk/auth/backchannellogout",
       ]
-      pinned_service_version_fts        = "0.0.1"
-      pinned_service_version            = "1.0.67"
+      pinned_service_version_fts        = "0.0.6"
+      pinned_service_version            = "1.0.68"
       postgres_instance_type            = "db.t4g.micro"
       postgres_aurora_instance_type     = "db.r5.large"
       private_subnets = [
@@ -147,8 +148,8 @@ locals {
         "https://www-tpp-preview.find-tender.service.gov.uk/auth/backchannellogout",
         "https://www-tpp.find-tender.service.gov.uk/auth/backchannellogout",
       ]
-      pinned_service_version_fts        = "0.0.1"
-      pinned_service_version            = "1.0.67"
+      pinned_service_version_fts        = "0.0.6"
+      pinned_service_version            = "1.0.68"
       postgres_instance_type            = "db.t4g.micro"
       postgres_aurora_instance_type     = "db.r5.large"
       private_subnets = [
@@ -180,7 +181,7 @@ locals {
       mysql_aurora_instance_type        = "db.r5.2xlarge"
       name                              = "production"
       onelogin_logout_notification_urls = ["https://www.find-tender.service.gov.uk/auth/backchannellogout"]
-      pinned_service_version_fts        = "0.0.1"
+      pinned_service_version_fts        = "0.0.6"
       pinned_service_version            = "1.0.67"
       postgres_instance_type            = "db.t4g.micro"
       postgres_aurora_instance_type     = "db.r5.8xlarge"
@@ -234,7 +235,7 @@ locals {
     entity_verification                  = {}
     entity_verification_migrations       = { cpu = 256,  memory = 512}
     forms                                = {}
-    fts                                  = { desired_count = 1 }
+    fts                                  = { desired_count = 3 }
     fts_healthcheck                      = { desired_count = 1 }
     fts_migrations                       = { desired_count = 1 }
     fts_scheduler                        = { desired_count = 1 }
@@ -318,6 +319,13 @@ locals {
       name      = "cloud-beaver"
       port      = 8978
       port_host = 8978
+    }
+    fluentbit = {
+      cpu       = 1024
+      memory    = 3072
+      name      = "fluentbit"
+      port      = 2021
+      port_host = 2021
     }
     grafana = {
       cpu       = 1024

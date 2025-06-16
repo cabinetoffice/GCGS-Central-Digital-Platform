@@ -124,6 +124,7 @@ public class UpdateOrganisationUseCase(
 
                 break;
             case OrganisationUpdateType.AdditionalIdentifiers:
+
                 if (updateObject.AdditionalIdentifiers == null || !updateObject.AdditionalIdentifiers.Any())
                 {
                     throw new InvalidUpdateOrganisationCommand.MissingAdditionalIdentifiers();
@@ -298,6 +299,7 @@ public class UpdateOrganisationUseCase(
         }
 
         var organisationIdentifier = await organisationRepository.FindByIdentifier(identifier.Scheme, identifier.Id);
+
         if (organisationIdentifier != null)
         {
             throw new InvalidUpdateOrganisationCommand.IdentiferNumberAlreadyExists();

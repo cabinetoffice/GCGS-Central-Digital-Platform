@@ -78,6 +78,11 @@ variable "ecs_sg_id" {
   type        = string
 }
 
+variable "efs_sg_id" {
+  description = "EFS security group ID"
+  type        = string
+}
+
 variable "environment" {
   description = "The environment we are provisioning"
   type        = string
@@ -98,14 +103,14 @@ variable "onelogin_logout_notification_urls" {
   type        = list(string)
 }
 
-variable "pinned_service_version_sirsi" {
-  description = "The service version for the this environment. If null, latest version from Orchestration will be used"
+variable "pinned_service_version_fts" {
+  description = "The FTS service version for the this environment."
   type        = string
   default     = null
 }
 
-variable "pinned_service_version_fts" {
-  description = "The FTS service version for the this environment."
+variable "pinned_service_version_sirsi" {
+  description = "The service version for the this environment. If null, latest version from Orchestration will be used"
   type        = string
   default     = null
 }

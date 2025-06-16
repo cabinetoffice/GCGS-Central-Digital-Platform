@@ -21,11 +21,12 @@ public class OrganisationPartiesEndpointsTests
     [InlineData(OK, Channel.OneLogin, OrganisationPersonScope.Editor)]
     [InlineData(OK, Channel.OneLogin, OrganisationPersonScope.Responder)]
     [InlineData(OK, Channel.OneLogin, OrganisationPersonScope.Viewer)]
+    [InlineData(OK, Channel.OneLogin, null, PersonScope.SupportAdmin)]
     [InlineData(Forbidden, Channel.ServiceKey)]
     [InlineData(Forbidden, Channel.OrganisationKey)]
     [InlineData(Forbidden, "unknown_channel")]
     public async Task GetOrganisationParties_Authorization_ReturnsExpectedStatusCode(
-        HttpStatusCode expectedStatusCode, string channel, string? scope = null)
+        HttpStatusCode expectedStatusCode, string channel, string? scope = null, string? personScope = null)
     {
         var organisationId = Guid.NewGuid();
 
@@ -34,7 +35,7 @@ public class OrganisationPartiesEndpointsTests
 
         var factory = new TestAuthorizationWebApplicationFactory<Program>(
             channel, organisationId, scope,
-            services => services.AddScoped(_ => _getOrganisationPartiesUseCase.Object));
+            services => services.AddScoped(_ => _getOrganisationPartiesUseCase.Object), personScope);
 
         var response = await factory.CreateClient().GetAsync($"/organisations/{organisationId}/parties");
 

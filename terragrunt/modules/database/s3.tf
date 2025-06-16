@@ -7,3 +7,20 @@ module "deprecated_db_backup" {
 
   tags = var.tags
 }
+
+module "sql_dump_upload_bucket" {
+  source = "../s3-bucket"
+
+  bucket_name           = "${local.name_prefix}-rare-handover-bucket-${data.aws_caller_identity.current.account_id}"
+  enable_presigned_urls = true
+  enable_access_logging = true
+  enable_lifecycle      = false
+  kms_key_admin_role    = var.role_terraform_arn
+
+  tags = merge(
+    var.tags,
+    {
+      description = "Originally provisioned for receiving database dump files during system migrations. Later repurposed to support rare or ad hoc manual handovers of files and objects between teams or environments."
+    }
+  )
+}

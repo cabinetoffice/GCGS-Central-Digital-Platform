@@ -22,8 +22,28 @@ output "ecs_listener_arn" {
   value = aws_lb_listener.ecs.arn
 }
 
+output "efs_fluentbit_access_point_id" {
+  value = aws_efs_access_point.fluentbit.id
+}
+
+output "efs_fluentbit_id" {
+  value = aws_efs_file_system.fluentbit.id
+}
+
+output "efs_fluentbit_volume_name" {
+  value = local.fluentbit_volume_name
+}
+
+output "efs_fluentbit_container_path" {
+  value = local.fluentbit_container_path
+}
+
 output "service_configuration" {
   value = local.service_configs
+}
+
+output "service_version_fts" {
+  value = var.pinned_service_version_sirsi
 }
 
 output "service_version_global" {
@@ -32,10 +52,6 @@ output "service_version_global" {
 
 output "service_version_pinned" {
   value = nonsensitive(var.pinned_service_version_sirsi == null ? "not pinned, using global ${local.orchestrator_service_version}" : var.pinned_service_version_sirsi)
-}
-
-output "service_version_fts" {
-  value = var.pinned_service_version_sirsi
 }
 
 output "services_target_group_arn_suffix_map" {

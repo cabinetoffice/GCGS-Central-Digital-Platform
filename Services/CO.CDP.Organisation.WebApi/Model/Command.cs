@@ -317,7 +317,8 @@ public record UpdateJoinRequest
 [JsonConverter(typeof(JsonStringEnumConverter))]
 public enum SupportOrganisationUpdateType
 {
-    Review
+    Review,
+    AdditionalIdentifiers
 }
 
 public record SupportUpdateOrganisation
@@ -329,9 +330,10 @@ public record SupportUpdateOrganisation
 
 public record SupportOrganisationInfo
 {
-    public required Guid ReviewedById { get; init; }
-    public required Boolean Approved { get; init; }
-    public string? Comment { get; init; }
+    public Guid? ReviewedById { get; set; }
+    public Boolean? Approved { get; set; }
+    public string? Comment { get; set; }
+    public List<OrganisationIdentifier>? AdditionalIdentifiers { get; set; }
 }
 
 public record PaginatedOrganisationQuery
