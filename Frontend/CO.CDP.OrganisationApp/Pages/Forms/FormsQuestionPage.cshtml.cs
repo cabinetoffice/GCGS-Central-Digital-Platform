@@ -135,37 +135,7 @@ public class FormsQuestionPageModel(
 
             if (PartialViewModel.CurrentFormQuestionType == FormQuestionType.FileUpload)
             {
-                var response = FileUploadModel?.GetUploadedFileInfo();
-                if (response != null)
-                {
-                    using var stream = response.Value.formFile.OpenReadStream();
-                    await fileHostManager.UploadFile(stream, response.Value.filename, response.Value.contentType);
-
-                    var userInfo = await userInfoService.GetUserInfo();
-                    var organisation = await organisationClient.GetOrganisationAsync(OrganisationId);
-
-                    await publisher.Publish(new ScanFile()
-                    {
-                        QueueFileName = response.Value.filename,
-                        UploadedFileName = FileUploadModel!.UploadedFile!.FileName,
-                        OrganisationId = OrganisationId,
-                        OrganisationEmailAddress = organisation.ContactPoint.Email,
-                        UserEmailAddress = userInfo.Email,
-                        OrganisationName = organisation.Name,
-                        FullName = userInfo.Name
-                    });
-
-                    answer ??= new FormAnswer();
-                    answer.TextValue = response.Value.filename;
-                }
-                else
-                {
-                    if (string.IsNullOrEmpty(FileUploadModel?.UploadedFile?.FileName) && !string.IsNullOrEmpty(oldAnswerObject?.TextValue))
-                    {
-                        answer ??= new FormAnswer();
-                        answer.TextValue = oldAnswerObject.TextValue;
-                    }
-                }
+                answer = await HandleFileUpload(currentQuestion, oldAnswerObject, answer);
             }
 
             SaveAnswerToTempData(currentQuestion, answer);
@@ -202,6 +172,42 @@ public class FormsQuestionPageModel(
         }
 
         return RedirectToPage("FormsQuestionPage", new { OrganisationId, FormId, SectionId, CurrentQuestionId = nextQuestionId });
+    }
+
+    private async Task<FormAnswer?> HandleFileUpload(FormQuestion currentQuestion, FormAnswer? oldAnswerObject, FormAnswer? answer)
+    {
+        var response = FileUploadModel?.GetUploadedFileInfo();
+        if (response != null)
+        {
+            using var stream = response.Value.formFile.OpenReadStream();
+            await fileHostManager.UploadFile(stream, response.Value.filename, response.Value.contentType);
+
+            var userInfo = await userInfoService.GetUserInfo();
+            var organisation = await organisationClient.GetOrganisationAsync(OrganisationId);
+
+            await publisher.Publish(new ScanFile()
+            {
+                QueueFileName = response.Value.filename,
+                UploadedFileName = FileUploadModel!.UploadedFile!.FileName,
+                OrganisationId = OrganisationId,
+                OrganisationEmailAddress = organisation.ContactPoint.Email,
+                UserEmailAddress = userInfo.Email,
+                OrganisationName = organisation.Name,
+                FullName = userInfo.Name
+            });
+
+            answer ??= new FormAnswer();
+            answer.TextValue = response.Value.filename;
+        }
+        else
+        {
+            if (string.IsNullOrEmpty(FileUploadModel?.UploadedFile?.FileName) && !string.IsNullOrEmpty(oldAnswerObject?.TextValue))
+            {
+                answer ??= new FormAnswer();
+                answer.TextValue = oldAnswerObject.TextValue;
+            }
+        }
+        return answer;
     }
 
     public async Task<IEnumerable<AnswerSummary>> GetAnswers()
