@@ -469,10 +469,13 @@ public class FormsQuestionPageModel(
     private void RemoveAnswersFromBranchPath(Guid branchStartNodeId, List<FormQuestion> allQuestionsInSection)
     {
         var answerState = tempDataService.PeekOrDefault<FormQuestionAnswerState>(FormQuestionAnswerStateKey);
-        if (answerState?.Answers == null || !answerState.Answers.Any()) return;
+        if (answerState?.Answers == null || !answerState.Answers.Any())
+        {
+            return;
+        }
 
         var questionsMap = allQuestionsInSection.ToDictionary(q => q.Id);
-        var questionsOnAlternativePath = new HashSet<Guid>();
+        var questionsToClear = new HashSet<Guid>();
         var queue = new Queue<Guid>();
 
         if (questionsMap.ContainsKey(branchStartNodeId))
@@ -483,19 +486,23 @@ public class FormsQuestionPageModel(
         while (queue.Count > 0)
         {
             var currentQId = queue.Dequeue();
-            if (!questionsMap.TryGetValue(currentQId, out var questionNode) || !questionsOnAlternativePath.Add(currentQId))
+            if (!questionsMap.TryGetValue(currentQId, out var questionNode) || !questionsToClear.Add(currentQId))
             {
                 continue;
             }
 
-            if (questionNode.NextQuestion.HasValue)
+            if (questionNode.NextQuestion.HasValue && questionsMap.ContainsKey(questionNode.NextQuestion.Value))
             {
                 queue.Enqueue(questionNode.NextQuestion.Value);
+            }
+            if (questionNode.NextQuestionAlternative.HasValue && questionsMap.ContainsKey(questionNode.NextQuestionAlternative.Value))
+            {
+                queue.Enqueue(questionNode.NextQuestionAlternative.Value);
             }
         }
 
         var initialCount = answerState.Answers.Count;
-        answerState.Answers.RemoveAll(answer => questionsOnAlternativePath.Contains(answer.QuestionId));
+        answerState.Answers.RemoveAll(answer => questionsToClear.Contains(answer.QuestionId));
 
         if (answerState.Answers.Count < initialCount)
         {
