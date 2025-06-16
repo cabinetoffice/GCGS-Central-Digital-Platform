@@ -1,0 +1,64 @@
+@page "/consortium/{id}/remove-organisation/{partyId}"
+@model ConsortiumRemoveOrganisationModel
+@using CO.CDP.Localization
+
+@{
+    ViewData["Title"] = StaticTextResource.Consortium_RemoveSupplier_PageTitle;
+}
+
+@section BeforeContent {
+    <a href="/consortium/@Model.Id/overview" class="govuk-back-link">@StaticTextResource.Global_Back</a>
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <form class="form" method="post">
+            <div class="govuk-form-group">
+                <fieldset class="govuk-fieldset">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                        <span class="govuk-caption-l">
+                            @Model.ConsortiumName
+                        </span>
+                        <h1 class="govuk-fieldset__heading">
+                            @string.Format(StaticTextResource.Consortium_RemoveSupplier_Heading, Model.PartyName)
+                        </h1>
+                    </legend>
+
+                    <div id="removeSupplier-hint" class="govuk-hint">
+                        @StaticTextResource.Consortium_RemoveSupplier_Hint
+                    </div>
+
+                    @if (((TagBuilder)Html.ValidationMessageFor(m => m.ConfirmRemove)).HasInnerHtml)
+                    {
+                        <p id="devolved-error" class="govuk-error-message">
+                            <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span>
+                            @Html.ValidationMessageFor(m => m.ConfirmRemove)
+                        </p>
+                    }
+
+                    <div class="govuk-radios" data-module="govuk-radios">
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="@nameof(Model.ConfirmRemove)" name="@nameof(Model.ConfirmRemove)"
+                                   type="radio" value="true" @(Model.ConfirmRemove == true ? "checked" : "")>
+                            <label class="govuk-label govuk-radios__label" for="@nameof(Model.ConfirmRemove)">
+                                @StaticTextResource.Global_Yes
+                            </label>
+                        </div>
+
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="@nameof(Model.ConfirmRemove)-1" name="@nameof(Model.ConfirmRemove)"
+                                   type="radio" value="false" @(Model.ConfirmRemove == false ? "checked" : "")>
+                            <label class="govuk-label govuk-radios__label" for="@nameof(Model.ConfirmRemove)-1">
+                                @StaticTextResource.Global_No
+                            </label>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+
+            <button class="govuk-button govuk-button--warning" type="submit">
+                @StaticTextResource.Global_Continue
+            </button>
+        </form>
+    </div>
+</div>
