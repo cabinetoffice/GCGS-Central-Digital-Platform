@@ -163,7 +163,7 @@ public class FormsQuestionPageModel(
                     if (string.IsNullOrEmpty(FileUploadModel?.UploadedFile?.FileName) && !string.IsNullOrEmpty(oldAnswerObject?.TextValue))
                     {
                         answer ??= new FormAnswer();
-                        answer.TextValue = null;
+                        answer.TextValue = oldAnswerObject.TextValue;
                     }
                 }
             }
@@ -449,10 +449,6 @@ public class FormsQuestionPageModel(
             if (!oldFileExisted && newFileSubmitted)
             {
                 changedFromNoToYes = true;
-            }
-            else if (oldFileExisted && !newFileSubmitted)
-            {
-                changedFromYesToNo = true;
             }
         }
 
