@@ -78,8 +78,9 @@ public class SupportUpdateOrganisationUseCase(
             ?? throw new InvalidUpdateOrganisationCommand.MissingAdditionalIdentifiers();
 
         //Remove identifiers that are no longer present in the update request
+        // Exclude PPON, we don't want to remove that
         var removedIdentifiers = organisation.Identifiers
-            .Where(existing => !newIdentifiers.Any(newId => newId.Scheme == existing.Scheme))
+            .Where(existing => !newIdentifiers.Any(newId => newId.Scheme == existing.Scheme) && existing.Scheme != "GB-PPON")
             .ToList();
 
         foreach (var removed in removedIdentifiers)
