@@ -241,6 +241,101 @@
     <value>Do you want to add any relevant qualifications?</value>
   </data>
 
+  <!--Cyber Essentials-->
+
+  <!--Before You Start Q1-->
+  <data name="CyberEssentials_SectionTitle" xml:space="preserve">
+    <value>Cyber Essentials certification scheme</value>
+  </data>
+  <data name="CyberEssentials_01_Title" xml:space="preserve">
+    <value>Submitting your Cyber Essentials certification scheme information</value>
+  </data>
+  <data name="CyberEssentials_01_Description" xml:space="preserve">
+    <value>
+&lt;p class=&quot;govuk-body&quot;&gt;
+The Cyber Essentials certification scheme is a UK government initiative that helps organisations protect themselves from common cyber threats.
+      This certification reduces risks in the supply chain and is important for building trust in government contracts. For more information read &lt;a href=&quot;https://www.gov.uk/government/publications/ppn-014-cyber-essentials-scheme/ppn-014-cyber-essentials-scheme-html#issue&quot;
+class=&quot;govuk-link&quot; rel=&quot;noreferrer noopener&quot; target=&quot;_blank&quot;&gt;
+PPN 014: Cyber Essentials scheme (opens in a new tab).&lt;/a&gt;&lt;/p&gt;
+      &lt;p class=&quot;govuk-body&quot;&gt;
+    You are only required to complete this module if requested by the contracting authority you are bidding for.
+      Failure to complete this module may result in your tenders being deemed insufficient where PPN 014 has been applied.
+      &lt;/p&gt;
+&lt;h2 class=&quot;govuk-heading-m&quot;&gt;The information you&#39;ll need&lt;/h2&gt;
+&lt;div class=&quot;govuk-body&quot;&gt;You&#39;ll need to provide information on your Cyber Essentials or Cyber Essentials Plus certification (or equivalent). This may include:
+  &lt;ul class=&quot;govuk-list govuk-list--bullet&quot;&gt;
+    &lt;li class=&quot;govuk-!-margin-top-4&quot;&gt; confirmation that you meet the requirements of the certification scheme&lt;/li&gt;
+    &lt;li class=&quot;govuk-!-margin-top-4&quot;&gt; the expiry date of your certification&lt;/li&gt;
+    &lt;li class=&quot;govuk-!-margin-top-4&quot;&gt; evidence of your certification&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/div&gt;
+    </value>
+  </data>
+
+  <!--Cyber Q2 Single Choice-->
+  <data name="CyberEssentials_02_Title" xml:space="preserve">
+    <value>Do you meet the Cyber Essentials certification requirements?</value>
+  </data>
+  <data name="CyberEssentials_02_SummaryTitle" xml:space="preserve">
+    <value>Certification requirements</value>
+  </data>
+
+  <!--Cyber Q3 Single Choice-->
+  <data name="CyberEssentials_03_Title" xml:space="preserve">
+    <value>When will you meet the Cyber Essentials certification requirements?</value>
+  </data>
+  <data name="CyberEssentials_03_SummaryTitle" xml:space="preserve">
+    <value>Certification requirements</value>
+  </data>
+
+  <!--Cyber Q4 File Upload-->
+  <data name="CyberEssentials_04_Title" xml:space="preserve">
+    <value>Upload evidence of your Cyber Essentials certification (or equivalent)</value>
+  </data>
+  <data name="CyberEssentials_04_SummaryTitle" xml:space="preserve">
+    <value>Cyber Essentials certification upload</value>
+  </data>
+
+  <!--Cyber Q5 Date Entry-->
+  <data name="CyberEssentials_05_Title" xml:space="preserve">
+    <value>Enter the expiry date of your Cyber Essentials certification (or equivalent)</value>
+  </data>
+  <data name="CyberEssentials_05_SummaryTitle" xml:space="preserve">
+  <value>Cyber Essentials certification expiry date</value>
+  </data>
+
+  <!--Cyber Q6 Single Choice-->
+  <data name="CyberEssentials_06_Title" xml:space="preserve">
+    <value>Do you meet the Cyber Essentials Plus certification requirements?</value>
+  </data>
+  <data name="CyberEssentials_06_SummaryTitle" xml:space="preserve">
+    <value>Certification requirements</value>
+  </data>
+
+  <!--Cyber Q7 Single Choice-->
+  <data name="CyberEssentials_07_Title" xml:space="preserve">
+    <value>When will you meet the Cyber Essentials Plus certification requirements?</value>
+  </data>
+  <data name="CyberEssentials_07_SummaryTitle" xml:space="preserve">
+    <value>Certification requirements</value>
+  </data>
+
+  <!--Cyber Q8 File Upload-->
+  <data name="CyberEssentials_08_Title" xml:space="preserve">
+    <value>Upload evidence of your Cyber Essentials Plus certification (or equivalent)</value>
+  </data>
+  <data name="CyberEssentials_08_SummaryTitle" xml:space="preserve">
+    <value>Cyber Essentials certification upload</value>
+  </data>
+
+  <!--Cyber Q9 Date Entry-->
+  <data name="CyberEssentials_09_Title" xml:space="preserve">
+    <value>Enter the expiry date of your Cyber Essentials Plus certification (or equivalent)</value>
+  </data>
+  <data name="CyberEssentials_09_SummaryTitle" xml:space="preserve">
+  <value>Cyber Essentials certification expiry date</value>
+  </data>
+
   <!-- Steel -->
 
   <!-- Section Info -->
