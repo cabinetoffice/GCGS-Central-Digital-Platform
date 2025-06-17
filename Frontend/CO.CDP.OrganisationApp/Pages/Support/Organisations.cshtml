@@ -8,6 +8,7 @@
 @{
     ViewData["Title"] = Model.Title;
     ViewData["ContainerClasses"] = "app-width-container--wide";
+    var queryValue = Request.Query["q"];
 }
 
 <h1 class="govuk-heading-l">@ViewData["Title"]</h1>
@@ -28,12 +29,12 @@
 </div>
 
 <div class="govuk-grid-row govuk-!-margin-bottom-5">
-    <form method="post">
+    <form method="get">
         <div class="govuk-grid-column-one-half govuk-!-margin-bottom-3">
             <label class="govuk-label" for="organisation-search-input">
                 @Model.SearchTitle
             </label>
-            <input class="govuk-input" id="organisation-search-input" name="OrganisationSearchInput" type="text" value="@Model.OrganisationSearchInput">
+            <input class="govuk-input" id="organisation-search-input" name="q" type="text" value="@queryValue">
         </div>
 
         <div class="govuk-grid-column-full">
@@ -71,7 +72,8 @@
         {
             <tr class="govuk-table__row">
                 <th scope="row" class="govuk-table__header">
-                    <a asp-page="/Organisation/OrganisationOverview" asp-route-id="@org.Id">
+                        <a asp-route-id="@org.Id"
+                            asp-page="@(org.Type == CDP.Organisation.WebApiClient.OrganisationType.InformalConsortium ? "/Consortium/ConsortiumOverview" : "/Organisation/OrganisationOverview")">
                         @org.Name
                     </a>
                     <ul class="govuk-list">
@@ -158,5 +160,5 @@
     CurrentPage = Model.CurrentPage,
     TotalItems = Model.TotalOrganisations,
     PageSize = Model.PageSize,
-    Url = string.Format("/support/organisations/{0}", Model.Type)
+    Url = $"/support/organisations/{Model.Type}?q={queryValue}"
     })

@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using CO.CDP.Localization;
 
 namespace CO.CDP.OrganisationApp.Pages.Support;
+
 [Authorize(Policy = PersonScopeRequirement.SupportAdmin)]
 public class OrganisationsModel(
     IOrganisationClient organisationClient,
@@ -29,33 +30,11 @@ public class OrganisationsModel(
 
     public IList<OrganisationDto> Organisations { get; set; } = [];
 
-    [BindProperty] public string? OrganisationSearchInput { get; set; } = null;
-
-    public async Task<IActionResult> OnGet(string type, int pageNumber = 1)
+    public async Task<IActionResult> OnGet(string type, int pageNumber = 1, [FromQuery(Name = "q")] string? searchText = null)
     {
         InitModel(type, pageNumber);
 
-        OrganisationSearchInput = SessionContext.Get<string>("OrganisationSearchInput");
-
-        await GetResults();
-
-        return Page();
-    }
-
-    public async Task<IActionResult> OnPost(string type, int pageNumber = 1)
-    {
-        InitModel(type, pageNumber);
-
-        if (!string.IsNullOrWhiteSpace(OrganisationSearchInput))
-        {
-            SessionContext.Set("OrganisationSearchInput", OrganisationSearchInput);
-        }
-        else
-        {
-            SessionContext.Remove("OrganisationSearchInput"); // Clear when input is empty
-        }
-
-        await GetResults();
+        await GetResults(searchText);
 
         return Page();
     }
@@ -63,6 +42,7 @@ public class OrganisationsModel(
     private void InitModel(string type, int pageNumber)
     {
         PageSize = 50;
+        if (pageNumber < 1) pageNumber = 1;
 
         Type = type;
 
@@ -82,13 +62,13 @@ public class OrganisationsModel(
         CurrentPage = pageNumber;
     }
 
-    private async Task GetResults()
+    private async Task GetResults(string? searchText)
     {
         switch (Type)
         {
             case "supplier":
                 {
-                    var orgs = await organisationClient.GetAllOrganisationsAsync("tenderer", "tenderer", OrganisationSearchInput, PageSize, Skip);
+                    var orgs = await organisationClient.GetAllOrganisationsAsync("tenderer", "tenderer", searchText, PageSize, Skip);
 
                     Organisations = orgs.Item1.ToList();
                     TotalOrganisations = orgs.Item2;
@@ -96,7 +76,7 @@ public class OrganisationsModel(
                 }
             case "buyer":
                 {
-                    var orgs = await organisationClient.GetAllOrganisationsAsync("buyer", "buyer", OrganisationSearchInput, PageSize, Skip);
+                    var orgs = await organisationClient.GetAllOrganisationsAsync("buyer", "buyer", searchText, PageSize, Skip);
 
                     Organisations = orgs.Item1.ToList();
                     TotalOrganisations = orgs.Item2;

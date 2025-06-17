@@ -2585,22 +2585,25 @@
     <value>Create a consortium</value>
   </data>
   <data name="Consortium_ConsortiumStart_Paragraph1" xml:space="preserve">
-    <value>Two or more suppliers that want to submit a joint bid can create a consortium. You can add as many suppliers as you need to.</value>
+    <value>Create a consortium to bid on a public procurement with other organisations. You need at least 2 suppliers for a joint bid. There is no upper limit.</value>
   </data>
   <data name="Consortium_ConsortiumStart_Paragraph2" xml:space="preserve">
-    <value>As the organisation creating the consortium, you'll need to enter:</value>
+    <value>As the person creating the consortium, only you will be able to add or change information.</value>
   </data>
-  <data name="Consortium_ConsortiumStart_Paragraph2_list" xml:space="preserve">
-    <value>&lt;li&gt;a consortium name&lt;/li&gt;
-&lt;li&gt;an address&lt;/li&gt;
+  <data name="Consortium_ConsortiumStart_Paragraph3" xml:space="preserve">
+    <value>To create a consortium you'll need:</value>
+  </data>
+  <data name="Consortium_ConsortiumStart_Paragraph3_list" xml:space="preserve">
+    <value>&lt;li&gt;to give it a unique name&lt;/li&gt;
+&lt;li&gt;a postal address&lt;/li&gt;
 &lt;li&gt;an email address&lt;/li&gt;
 &lt;li&gt;your most recent share code&lt;/li&gt;
 &lt;li&gt;the most recent share codes for all the other suppliers&lt;/li&gt;</value>
   </data>
-  <data name="Consortium_ConsortiumStart_Paragraph3" xml:space="preserve">
+  <data name="Consortium_ConsortiumStart_Paragraph4" xml:space="preserve">
     <value>Any supplier you want to add to the consortium must have completed their supplier information and created a share code.</value>
   </data>
-  <data name="Consortium_ConsortiumStart_Paragraph4" xml:space="preserve">
+  <data name="Consortium_ConsortiumStart_Paragraph5" xml:space="preserve">
     <value>When you've added all suppliers, you'll create a share code for your combined supplier information.</value>
   </data>
   <data name="Consortium_ConsortiumName_Heading" xml:space="preserve">
@@ -3374,6 +3377,15 @@
   <data name="UserSummary_AddAnotherUser" xml:space="preserve">
     <value>Add another user?</value>
   </data>
+  <data name="UserSummary_ViewAdmins_Title" xml:space="preserve">
+    <value>View admins</value>
+  </data>
+  <data name="UserSummary_ViewAdmins_Supplier_HintText" xml:space="preserve">
+    <value>Supplier admins can add, remove and edit users, create share codes and edit supplier information.</value>
+  </data>
+  <data name="UserSummary_ViewAdmins_Buyer_HintText" xml:space="preserve">
+    <value>Buyer admins can add, remove and edit users, create and delete APIs, create and edit notices and update organisation information.</value>
+  </data>
   <data name="Users_FirstName_Label" xml:space="preserve">
     <value>First name</value>
   </data>
@@ -3521,6 +3533,10 @@
   <data name="Users_SendEmail_Button" xml:space="preserve">
     <value>Send email</value>
   </data>
+
+  <data name="Users_ViewAdmins_Title" xml:space="preserve">
+    <value>Admins</value>
+  </data>
   <data name="OrganisationInviteExpired_Title" xml:space="preserve">
     <value>Your invite has expired</value>
   </data>
@@ -3559,6 +3575,12 @@
   </data>
   <data name="ErrorMessageList_DuplicateOrganisationName" xml:space="preserve">
     <value>An organisation with this name already exists. Try again.</value>
+  </data>
+  <data name="ErrorMessageList_DuplicateIdentifier" xml:space="preserve">
+    <value>You cannot use this registration number. It is being used by another organisation.</value>
+  </data>
+  <data name="ErrorMessageList_RemovePrimaryIdentifier" xml:space="preserve">
+    <value>You cannot remove the primary registration number.</value>
   </data>
   <data name="ErrorMessageList_PayLoadIssueOrNullArgument" xml:space="preserve">
     <value>Enter all the required information correctly.</value>

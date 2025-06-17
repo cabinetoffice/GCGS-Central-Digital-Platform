@@ -1574,20 +1574,20 @@
   <data name="Consortium_ConsortiumStart_Paragraph1" xml:space="preserve">
     <value>Gall dau gyflenwr neu fwy sydd am gyflwyno cynnig ar y cyd greu consortiwm. Gallwch ychwanegu cynifer o gyflenwyr ag sydd ei angen.</value>
   </data>
-  <data name="Consortium_ConsortiumStart_Paragraph2" xml:space="preserve">
-    <value>Fel y sefydliad sy'n creu'r consortiwm, bydd angen i chi roi: </value>
+  <data name="Consortium_ConsortiumStart_Paragraph3" xml:space="preserve">
+    <value>Fel y sefydliad sy'n creu'r consortiwm, bydd angen i chi roi:</value>
   </data>
-  <data name="Consortium_ConsortiumStart_Paragraph2_list" xml:space="preserve">
+  <data name="Consortium_ConsortiumStart_Paragraph3_list" xml:space="preserve">
     <value>&lt;li&gt;enw consortiwm&lt;/li&gt;
 &lt;li&gt;cyfeiriad&lt;/li&gt;
 &lt;li&gt;cyfeiriad e-bost&lt;/li&gt;
 &lt;li&gt;eich cod rhannu diweddaraf&lt;/li&gt;
 &lt;li&gt;codau rhannu diweddaraf pob un o'r cyflenwyr eraill&lt;/li&gt;</value>
   </data>
-  <data name="Consortium_ConsortiumStart_Paragraph3" xml:space="preserve">
+  <data name="Consortium_ConsortiumStart_Paragraph4" xml:space="preserve">
     <value>Mae'n rhaid bod unrhyw gyflenwr rydych am ei ychwanegu at y consortiwm wedi cwblhau ei wybodaeth am y cyflenwr ac wedi creu cod rhannu.</value>
   </data>
-  <data name="Consortium_ConsortiumStart_Paragraph4" xml:space="preserve">
+  <data name="Consortium_ConsortiumStart_Paragraph5" xml:space="preserve">
     <value>Pan fyddwch wedi ychwanegu pob cyflenwr, byddwch yn creu cod rhannu ar gyfer y wybodaeth gyfunol am eich cyflenwyr. </value>
   </data>
   <data name="Cookies_ChooseCookiePreferences" xml:space="preserve">
