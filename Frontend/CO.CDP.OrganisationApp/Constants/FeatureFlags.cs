@@ -8,4 +8,5 @@ public static class FeatureFlags
     public const string RedirectToFtsHomepage = "RedirectToFtsHomepage";
     public const string SupplierAdditionalModule = "SupplierAdditionalModule";
     public const string BuyerParentChildRelationship = "BuyerParentChildRelationship";
+    public const string SearchRegistryPpon = "SearchRegistryPpon";
 }
