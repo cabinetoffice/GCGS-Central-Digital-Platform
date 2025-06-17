@@ -8,7 +8,7 @@ Feel free to use any convenient AWS profiler instead.
 ## build
 
 ```shell
-docker build -t cabinetoffice/cdp-grafana .
+docker compose build
 ```
 
 ## Deploy
