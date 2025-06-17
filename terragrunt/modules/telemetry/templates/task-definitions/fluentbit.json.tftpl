@@ -19,7 +19,9 @@
         "awslogs-stream-prefix": "${lg_prefix}"
       }
     },
-    "environment": [],
+    "environment": [
+      { "name":  "FLB_LOG_LEVEL", "value":  "${flb_log_level}"}
+    ],
     "secrets": [],
     "volumesFrom": [],
     "mountPoints": [
