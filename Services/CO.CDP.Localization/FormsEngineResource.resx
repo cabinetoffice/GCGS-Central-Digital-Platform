@@ -242,7 +242,6 @@
   </data>
 
   <!--Cyber Essentials-->
-
   <!--Before You Start Q1-->
   <data name="CyberEssentials_SectionTitle" xml:space="preserve">
     <value>Cyber Essentials certification scheme</value>
@@ -277,7 +276,7 @@ PPN 014: Cyber Essentials scheme (opens in a new tab).&lt;/a&gt;&lt;/p&gt;
     <value>Do you meet the Cyber Essentials certification requirements?</value>
   </data>
   <data name="CyberEssentials_02_SummaryTitle" xml:space="preserve">
-    <value>Certification requirements</value>
+    <value>Requirements met</value>
   </data>
 
   <!--Cyber Q3 Single Choice-->
@@ -285,7 +284,7 @@ PPN 014: Cyber Essentials scheme (opens in a new tab).&lt;/a&gt;&lt;/p&gt;
     <value>When will you meet the Cyber Essentials certification requirements?</value>
   </data>
   <data name="CyberEssentials_03_SummaryTitle" xml:space="preserve">
-    <value>Certification requirements</value>
+    <value>Requirements status</value>
   </data>
 
   <!--Cyber Q4 File Upload-->
@@ -293,7 +292,7 @@ PPN 014: Cyber Essentials scheme (opens in a new tab).&lt;/a&gt;&lt;/p&gt;
     <value>Upload evidence of your Cyber Essentials certification (or equivalent)</value>
   </data>
   <data name="CyberEssentials_04_SummaryTitle" xml:space="preserve">
-    <value>Cyber Essentials certification upload</value>
+    <value>Certification upload</value>
   </data>
 
   <!--Cyber Q5 Date Entry-->
@@ -301,7 +300,7 @@ PPN 014: Cyber Essentials scheme (opens in a new tab).&lt;/a&gt;&lt;/p&gt;
     <value>Enter the expiry date of your Cyber Essentials certification (or equivalent)</value>
   </data>
   <data name="CyberEssentials_05_SummaryTitle" xml:space="preserve">
-  <value>Cyber Essentials certification expiry date</value>
+  <value>Certification expiry date</value>
   </data>
 
   <!--Cyber Q6 Single Choice-->
@@ -309,7 +308,7 @@ PPN 014: Cyber Essentials scheme (opens in a new tab).&lt;/a&gt;&lt;/p&gt;
     <value>Do you meet the Cyber Essentials Plus certification requirements?</value>
   </data>
   <data name="CyberEssentials_06_SummaryTitle" xml:space="preserve">
-    <value>Certification requirements</value>
+    <value>Requirements met</value>
   </data>
 
   <!--Cyber Q7 Single Choice-->
@@ -317,7 +316,7 @@ PPN 014: Cyber Essentials scheme (opens in a new tab).&lt;/a&gt;&lt;/p&gt;
     <value>When will you meet the Cyber Essentials Plus certification requirements?</value>
   </data>
   <data name="CyberEssentials_07_SummaryTitle" xml:space="preserve">
-    <value>Certification requirements</value>
+    <value>Requirements status</value>
   </data>
 
   <!--Cyber Q8 File Upload-->
@@ -325,7 +324,7 @@ PPN 014: Cyber Essentials scheme (opens in a new tab).&lt;/a&gt;&lt;/p&gt;
     <value>Upload evidence of your Cyber Essentials Plus certification (or equivalent)</value>
   </data>
   <data name="CyberEssentials_08_SummaryTitle" xml:space="preserve">
-    <value>Cyber Essentials certification upload</value>
+    <value>Certification upload</value>
   </data>
 
   <!--Cyber Q9 Date Entry-->
@@ -333,7 +332,7 @@ PPN 014: Cyber Essentials scheme (opens in a new tab).&lt;/a&gt;&lt;/p&gt;
     <value>Enter the expiry date of your Cyber Essentials Plus certification (or equivalent)</value>
   </data>
   <data name="CyberEssentials_09_SummaryTitle" xml:space="preserve">
-  <value>Cyber Essentials certification expiry date</value>
+  <value>Certification expiry date</value>
   </data>
 
   <!-- Steel -->
