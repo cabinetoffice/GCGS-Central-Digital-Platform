@@ -40,7 +40,7 @@ dependency orchestrator_ci {
   config_path = "../ci"
   mock_outputs = {
     deployment_pipeline_name                   = "mock"
-    event_rule_ci_service_version_updated_name = "mock"
+    event_rule_ci_sirsi_service_version_updated_name = "mock"
     ssm_service_version_arn                    = "mock"
     ssm_service_version_name                   = "mock"
   }
@@ -49,7 +49,7 @@ dependency orchestrator_ci {
 dependency orchestrator_common {
   config_path = "../common"
   mock_outputs = {
-    ssm_envs_service_version_name = "mock"
+    ssm_envs_sirsi_service_version_name = "mock"
   }
 }
 
@@ -72,9 +72,8 @@ inputs = {
 
   repository_urls = dependency.orchestrator_ecr.outputs.repository_urls
 
-  deployment_pipeline_name                   = dependency.orchestrator_ci.outputs.deployment_pipeline_name
-  event_rule_ci_service_version_updated_name = dependency.orchestrator_ci.outputs.event_rule_ci_service_version_updated_name
-
-  ssm_envs_service_version_arn  = dependency.orchestrator_common.outputs.ssm_envs_service_version_arn
-  ssm_envs_service_version_name = dependency.orchestrator_common.outputs.ssm_envs_service_version_name
+  ssm_envs_fts_service_version_arn    = dependency.orchestrator_common.outputs.ssm_envs_fts_service_version_arn
+  ssm_envs_fts_service_version_name   = dependency.orchestrator_common.outputs.ssm_envs_fts_service_version_name
+  ssm_envs_sirsi_service_version_arn  = dependency.orchestrator_common.outputs.ssm_envs_sirsi_service_version_arn
+  ssm_envs_sirsi_service_version_name = dependency.orchestrator_common.outputs.ssm_envs_sirsi_service_version_name
 }
