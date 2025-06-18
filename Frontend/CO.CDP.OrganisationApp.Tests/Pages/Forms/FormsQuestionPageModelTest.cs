@@ -979,6 +979,7 @@ public class FormsQuestionPageModelTest
             .Returns(initialAnswerState)
             .Returns(initialAnswerState)
             .Returns(initialAnswerState)
+            .Returns(initialAnswerState)
             .Returns(initialAnswerState);
 
         _pageModel.YesNoInputModel = new FormElementYesNoInputModel { YesNoInput = "yes" };
@@ -1070,6 +1071,7 @@ public class FormsQuestionPageModelTest
             { QuestionId = questionOnAlternativePathId, Answer = new FormAnswer { TextValue = "Another answer on alt path for file upload" } });
 
          _tempDataServiceMock.SetupSequence(t => t.PeekOrDefault<FormQuestionAnswerState>(It.IsAny<string>()))
+            .Returns(initialAnswerState)
             .Returns(initialAnswerState)
             .Returns(initialAnswerState)
             .Returns(initialAnswerState)
@@ -1247,6 +1249,7 @@ public class FormsQuestionPageModelTest
             .Returns(initialAnswerState)
             .Returns(initialAnswerState)
             .Returns(initialAnswerState)
+            .Returns(initialAnswerState)
             .Returns(initialAnswerState);
 
         _pageModel.YesNoInputModel = new FormElementYesNoInputModel { YesNoInput = "no" };
@@ -1337,6 +1340,7 @@ public class FormsQuestionPageModelTest
         initialAnswerState.Answers.Add(new QuestionAnswer { QuestionId = alternativePathQuestionId2, Answer = new FormAnswer { TextValue = altPathAnswer2 } });
 
         _tempDataServiceMock.SetupSequence(t => t.PeekOrDefault<FormQuestionAnswerState>(It.IsAny<string>()))
+            .Returns(initialAnswerState)
             .Returns(initialAnswerState)
             .Returns(initialAnswerState)
             .Returns(initialAnswerState)
@@ -1461,6 +1465,7 @@ public class FormsQuestionPageModelTest
         _tempDataServiceMock.SetupSequence(t => t.PeekOrDefault<FormQuestionAnswerState>(It.IsAny<string>()))
             .Returns(new FormQuestionAnswerState { Answers = new List<QuestionAnswer>(initialAnswerState.Answers) })
             .Returns(new FormQuestionAnswerState { Answers = new List<QuestionAnswer>(initialAnswerState.Answers) })
+            .Returns(new FormQuestionAnswerState { Answers = new List<QuestionAnswer>(initialAnswerState.Answers) })
             .Returns(new FormQuestionAnswerState { Answers = new List<QuestionAnswer>(initialAnswerState.Answers) });
 
 
@@ -1539,6 +1544,8 @@ public class FormsQuestionPageModelTest
         _tempDataServiceMock.SetupSequence(t => t.PeekOrDefault<FormQuestionAnswerState>(It.IsAny<string>()))
             .Returns(() => new FormQuestionAnswerState { Answers = new List<QuestionAnswer>(initialAnswerState.Answers) })
             .Returns(() => new FormQuestionAnswerState { Answers = new List<QuestionAnswer>(initialAnswerState.Answers) })
+            .Returns(() => new FormQuestionAnswerState { Answers = new List<QuestionAnswer>(initialAnswerState.Answers) })
+            .Returns(() => new FormQuestionAnswerState { Answers = new List<QuestionAnswer>(initialAnswerState.Answers) })
             .Returns(() => new FormQuestionAnswerState { Answers = new List<QuestionAnswer>(initialAnswerState.Answers) });
 
         _pageModel.FileUploadModel = new FormElementFileUploadModel { UploadedFile = null };
@@ -1580,4 +1587,99 @@ public class FormsQuestionPageModelTest
         _publisherMock.Verify(
             p => p.Publish(It.IsAny<ScanFile>()), Times.Never);
     }
+
+ [Fact]
+public async Task OnPostAsync_WhenReplacingAnExistingFile_ShouldUpdateAnswerAndPreservePath()
+{
+    var currentQuestionId = Guid.NewGuid();
+    var nextQuestionId = Guid.NewGuid();
+    var questionOnMainPathId = Guid.NewGuid();
+    var originalFileName = "original_file.pdf";
+    var newFileName = "new_file.pdf";
+
+    _pageModel.CurrentQuestionId = currentQuestionId;
+
+    var fileUploadQuestion = new FormQuestion
+    {
+        Id = currentQuestionId,
+        Type = FormQuestionType.FileUpload,
+        NextQuestion = nextQuestionId,
+        Options = new FormQuestionOptions()
+    };
+
+    var questionOnMainPath = new FormQuestion
+    {
+        Id = questionOnMainPathId,
+        Type = FormQuestionType.Text,
+        Options = new FormQuestionOptions()
+    };
+
+    _formsEngineMock.Setup(f =>
+            f.GetCurrentQuestion(_pageModel.OrganisationId, _pageModel.FormId, _pageModel.SectionId,
+                currentQuestionId))
+        .ReturnsAsync(fileUploadQuestion);
+
+    var initialAnswerState = new FormQuestionAnswerState();
+    initialAnswerState.Answers.Add(new QuestionAnswer { QuestionId = currentQuestionId, Answer = new FormAnswer { TextValue = originalFileName } });
+    initialAnswerState.Answers.Add(new QuestionAnswer { QuestionId = questionOnMainPathId, Answer = new FormAnswer { TextValue = "Existing answer on main path" } });
+
+    _tempDataServiceMock.SetupSequence(t => t.PeekOrDefault<FormQuestionAnswerState>(It.IsAny<string>()))
+        .Returns(initialAnswerState)
+        .Returns(initialAnswerState)
+        .Returns(initialAnswerState)
+        .Returns(initialAnswerState);
+
+    var mockFile = new Mock<IFormFile>();
+    mockFile.Setup(f => f.FileName).Returns(newFileName);
+    mockFile.Setup(f => f.Length).Returns(2048);
+    mockFile.Setup(f => f.ContentType).Returns("application/pdf");
+    mockFile.Setup(f => f.OpenReadStream()).Returns(new MemoryStream());
+    _pageModel.FileUploadModel = new FormElementFileUploadModel { UploadedFile = mockFile.Object };
+
+    var orgApiIdentifier = new Identifier(scheme: "TestScheme", id: "TestId", legalName: "Test Legal Name", uri: null);
+    _organisationClientMock.Setup(oc => oc.GetOrganisationAsync(It.IsAny<Guid>()))
+        .ReturnsAsync(new CDP.Organisation.WebApiClient.Organisation(
+            id: _pageModel.OrganisationId, name: "Test Org", identifier: orgApiIdentifier,
+            additionalIdentifiers: [], addresses: [],
+            contactPoint: new ContactPoint(name: "Test Contact", email: "test@example.com", telephone: null, url: null),
+            details: new Details(null, null, null, null, null, null, null), roles: [], type: OrganisationType.Organisation
+        ));
+    _userInfoServiceMock.Setup(uis => uis.GetUserInfo()).ReturnsAsync(new UserInfo { Name = "Test User", Email = "user@example.com" });
+
+    _formsEngineMock.Setup(f => f.GetNextQuestion(
+            _pageModel.OrganisationId, _pageModel.FormId, _pageModel.SectionId, currentQuestionId,
+            It.IsAny<FormQuestionAnswerState>()))
+        .ReturnsAsync(new FormQuestion { Id = nextQuestionId, Options = new FormQuestionOptions() });
+
+    var sectionResponse = new SectionQuestionsResponse
+    {
+        Section = new FormSection { Type = FormSectionType.Standard, Title = "Test Section" },
+        Questions = [fileUploadQuestion, new FormQuestion { Id = nextQuestionId, Options = new FormQuestionOptions() }, questionOnMainPath]
+    };
+    _formsEngineMock.Setup(f =>
+            f.GetFormSectionAsync(_pageModel.OrganisationId, _pageModel.FormId, _pageModel.SectionId))
+        .ReturnsAsync(sectionResponse);
+
+    FormQuestionAnswerState? capturedState = null;
+    _tempDataServiceMock.Setup(t => t.Put(It.IsAny<string>(), It.IsAny<FormQuestionAnswerState>()))
+        .Callback<string, FormQuestionAnswerState>((_, state) => capturedState = state);
+
+    var result = await _pageModel.OnPostAsync();
+
+    result.Should().BeOfType<RedirectToPageResult>();
+    (result as RedirectToPageResult)!.RouteValues!["CurrentQuestionId"].Should().Be(nextQuestionId);
+
+    capturedState.Should().NotBeNull();
+    var fileAnswer = capturedState!.Answers.FirstOrDefault(a => a.QuestionId == currentQuestionId);
+    fileAnswer.Should().NotBeNull();
+    fileAnswer!.Answer!.TextValue.Should().NotBe(originalFileName);
+    fileAnswer.Answer.TextValue.Should().Contain(Path.GetFileNameWithoutExtension(newFileName));
+
+    var preservedAnswer = capturedState.Answers.FirstOrDefault(a => a.QuestionId == questionOnMainPathId);
+    preservedAnswer.Should().NotBeNull();
+    preservedAnswer!.Answer!.TextValue.Should().Be("Existing answer on main path");
+
+    _fileHostManagerMock.Verify(fhm => fhm.UploadFile(It.IsAny<Stream>(), It.Is<string>(s => s.Contains(Path.GetFileNameWithoutExtension(newFileName))), "application/pdf"), Times.Once);
+    _publisherMock.Verify(p => p.Publish(It.Is<ScanFile>(sf => sf.UploadedFileName == newFileName)), Times.Once);
+}
 }

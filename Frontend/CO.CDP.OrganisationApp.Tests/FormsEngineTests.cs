@@ -38,7 +38,7 @@ public class FormsEngineTests
         return (organisationId, formId, sectionId, sessionKey);
     }
 
-    private static WebApiClient.SectionQuestionsResponse CreateApiSectionQuestionsResponse(Guid sectionId, Guid questionId, Guid nextQuestionId, string? choiceProviderStrategy = null, string? answerFieldName = null)
+    private static WebApiClient.SectionQuestionsResponse CreateApiSectionQuestionsResponse(Guid sectionId, Guid questionId, Guid nextQuestionId, string? choiceProviderStrategy = null, string? answerFieldName = null, Guid? nextQuestionAlternative = null)
     {
         return new WebApiClient.SectionQuestionsResponse(
             section: new WebApiClient.FormSection(
@@ -71,7 +71,7 @@ public class FormsEngineTests
                         type: WebApiClient.FormQuestionType.Text,
                         isRequired: true,
                         nextQuestion: nextQuestionId,
-                        nextQuestionAlternative: null,
+                        nextQuestionAlternative: nextQuestionAlternative,
                         name: "Question1",
                         options: new WebApiClient.FormQuestionOptions(
                             choiceProviderStrategy: choiceProviderStrategy,
@@ -164,10 +164,12 @@ public class FormsEngineTests
         var (organisationId, formId, sectionId, sessionKey) = CreateTestGuids();
         var questionId = Guid.NewGuid();
         var nextQuestionId = Guid.NewGuid();
+        var nextQuestionAlternativeId = Guid.NewGuid();
 
-        var apiResponse = CreateApiSectionQuestionsResponse(sectionId, questionId, nextQuestionId);
+        var apiResponse = CreateApiSectionQuestionsResponse(sectionId, questionId, nextQuestionId, nextQuestionAlternative: nextQuestionAlternativeId);
 
         var expectedResponse = CreateModelSectionQuestionsResponse(sectionId, questionId, nextQuestionId);
+        expectedResponse.Questions[0].NextQuestionAlternative = nextQuestionAlternativeId;
 
         expectedResponse.Questions[0].Options.Groups = new List<FormQuestionGroup>
         {
@@ -314,7 +316,7 @@ public class FormsEngineTests
         _tempDataServiceMock.Setup(t => t.Peek<SectionQuestionsResponse>(It.IsAny<string>()))
             .Returns(sectionResponse);
 
-        var result = await _formsEngine.GetPreviousQuestion(organisationId, formId, sectionId, currentQuestionId);
+        var result = await _formsEngine.GetPreviousQuestion(organisationId, formId, sectionId, currentQuestionId, null);
 
         result.Should().BeEquivalentTo(sectionResponse.Questions.First(q => q.Id == previousQuestionId));
     }
@@ -953,5 +955,43 @@ public class FormsEngineTests
         var result = _formsEngine.GetPreviousUnansweredQuestionId(questions, qCurrentId, answerState);
 
         result.Should().BeNull("because all questions in the path (including the NoInput question) are answered");
+    }
+
+    [Fact]
+    public async Task GetPreviousQuestion_WhenOnAlternativePath_ReturnsCorrectPreviousQuestion()
+    {
+        var organisationId = Guid.NewGuid();
+        var formId = Guid.NewGuid();
+        var sectionId = Guid.NewGuid();
+
+        var question1 = new FormQuestion { Id = Guid.NewGuid(), Title = "Question 1", Type = FormQuestionType.YesOrNo };
+        var question2 = new FormQuestion { Id = Guid.NewGuid(), Title = "Question 2" };
+        var question3 = new FormQuestion { Id = Guid.NewGuid(), Title = "Question 3" };
+
+        question1.NextQuestion = question2.Id;
+        question1.NextQuestionAlternative = question3.Id;
+
+        var questions = new List<FormQuestion> { question1, question2, question3 };
+        var sectionQuestionsResponse = new SectionQuestionsResponse
+        {
+            Section = new FormSection { Id = sectionId, Title = "Test Section" },
+            Questions = questions
+        };
+
+        var answerState = new FormQuestionAnswerState
+        {
+            Answers = new List<QuestionAnswer>
+            {
+                new() { QuestionId = question1.Id, Answer = new FormAnswer { BoolValue = false } }
+            }
+        };
+
+        _tempDataServiceMock.Setup(t => t.Peek<SectionQuestionsResponse>(It.IsAny<string>()))
+            .Returns(sectionQuestionsResponse);
+
+        var result = await _formsEngine.GetPreviousQuestion(organisationId, formId, sectionId, question3.Id, answerState);
+
+        result.Should().NotBeNull();
+        result!.Id.Should().Be(question1.Id);
     }
 }

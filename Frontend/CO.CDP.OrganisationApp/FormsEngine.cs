@@ -115,7 +115,7 @@ public class FormsEngine(
     }
 
     public async Task<Models.FormQuestion?> GetPreviousQuestion(Guid organisationId, Guid formId, Guid sectionId,
-        Guid currentQuestionId)
+        Guid currentQuestionId, FormQuestionAnswerState? answerState)
     {
         var section = await GetFormSectionAsync(organisationId, formId, sectionId);
         if (section.Questions == null)
@@ -123,8 +123,8 @@ public class FormsEngine(
             return null;
         }
 
-        var previousQuestionId = section.Questions.FirstOrDefault(q => q.NextQuestion == currentQuestionId)?.Id;
-        return section.Questions.FirstOrDefault(q => q.Id == previousQuestionId);
+        var path = BuildPathToQuestion(section.Questions, currentQuestionId, answerState ?? new FormQuestionAnswerState());
+        return path.LastOrDefault();
     }
 
     public async Task<Models.FormQuestion?> GetCurrentQuestion(Guid organisationId, Guid formId, Guid sectionId,

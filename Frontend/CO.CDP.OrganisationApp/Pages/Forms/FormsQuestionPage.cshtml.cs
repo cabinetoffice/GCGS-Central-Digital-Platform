@@ -337,11 +337,13 @@ public class FormsQuestionPageModel(
         if (currentQuestion == null)
             return null;
 
+        var answerState = tempDataService.PeekOrDefault<FormQuestionAnswerState>(FormQuestionAnswerStateKey);
+
         FormSectionType = form.Section?.Type;
         CurrentFormQuestionType = currentQuestion.Type;
         PartialViewName = GetPartialViewName(currentQuestion);
         PartialViewModel = GetPartialViewModel(currentQuestion, reset);
-        PreviousQuestion = await formsEngine.GetPreviousQuestion(OrganisationId, FormId, SectionId, currentQuestion.Id);
+        PreviousQuestion = await formsEngine.GetPreviousQuestion(OrganisationId, FormId, SectionId, currentQuestion.Id, answerState);
         CheckYourAnswerQuestionId = form.Questions.FirstOrDefault(q => q.Type == FormQuestionType.CheckYourAnswers)?.Id;
 
         return currentQuestion;
