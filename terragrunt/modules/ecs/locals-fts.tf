@@ -1,6 +1,8 @@
 locals {
 
-  service_version_fts = var.pinned_service_version_fts
+  orchestrator_fts_service_version = data.aws_ssm_parameter.orchestrator_fts_service_version.value
+
+  service_version_fts = var.pinned_service_version_fts == null ? local.orchestrator_fts_service_version : var.pinned_service_version_fts
 
   fluentbit_container_path = "/var/log/supervisor"
   fluentbit_volume_name    = "fluentbit"
