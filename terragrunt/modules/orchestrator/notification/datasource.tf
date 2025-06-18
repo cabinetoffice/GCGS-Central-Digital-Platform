@@ -70,7 +70,8 @@ data "aws_iam_policy_document" "notification_step_function" {
       "ssm:GetParameter"
     ]
     resources = [
-      var.ssm_envs_service_version_arn
+      var.ssm_envs_fts_service_version_arn,
+      var.ssm_envs_sirsi_service_version_arn
     ]
   }
 
