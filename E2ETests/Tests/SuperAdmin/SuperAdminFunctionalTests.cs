@@ -8,7 +8,7 @@ internal class SuperAdminFunctionalTests : SuperAdminBaseTest
     [Test]
     public async Task NavigateToChangeOrganisationNamePage()
     {
-        TestContext.WriteLine("🔹 Scenario: SuperAdmin able to change Organisation Name");
+        TestContext.Out.WriteLine("🔹 Scenario: SuperAdmin able to change Organisation Name");
 
         string uniqueOrgName = $"{OrganisationKey} {Guid.NewGuid()}";
 
@@ -17,6 +17,6 @@ internal class SuperAdminFunctionalTests : SuperAdminBaseTest
         await _organisationName.CompletePage(uniqueOrgName);
         await _organisationDetailsPage.AssertOrganisationName(uniqueOrgName);
 
-        TestContext.WriteLine("✅ Completed Change Organisation Name Journey");
+        TestContext.Out.WriteLine("✅ Completed Change Organisation Name Journey");
     }
 }

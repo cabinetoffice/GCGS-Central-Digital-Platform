@@ -19,9 +19,9 @@ public class BaseTest
     private readonly string _testPassword = ConfigUtility.GetTestPassword();
     private readonly string _secretKey = ConfigUtility.GetSecretKey();
 
-    protected static string SuperAdminEmail => ConfigUtility.GetTestEmail();
-    private readonly string _superAdminPassword = ConfigUtility.GetTestPassword();
-    private readonly string _superAdminSecretKey = ConfigUtility.GetSecretKey();
+    protected static string SuperAdminEmail => ConfigUtility.GetTestSupportAdminEmail();
+    private readonly string _superAdminPassword = ConfigUtility.GetTestSupportAdminPassword();
+    private readonly string _superAdminSecretKey = ConfigUtility.GetTestSupportAdminSecretKey();
 
     [SetUp]
     public async Task Setup()
