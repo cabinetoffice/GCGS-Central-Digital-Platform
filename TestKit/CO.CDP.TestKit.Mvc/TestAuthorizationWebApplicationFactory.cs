@@ -16,7 +16,8 @@ public class TestAuthorizationWebApplicationFactory<TProgram>(
         Guid? organisationId = null,
         string? assignedOrganisationScopes = null,
         Action<IServiceCollection>? serviceCollection = null,
-        string? assignedPersonScopes = null)
+        string? assignedPersonScopes = null,
+        string? assignedApiKeyScopes = null)
     : WebApplicationFactory<TProgram> where TProgram : class
 {
     protected override IHost CreateHost(IHostBuilder builder)
@@ -30,6 +31,10 @@ public class TestAuthorizationWebApplicationFactory<TProgram>(
             {
                 additionalUserClaims.Add(new Claim("sub", "urn:fake_user"));
                 if (!string.IsNullOrWhiteSpace(assignedPersonScopes)) additionalUserClaims.Add(new Claim("roles", assignedPersonScopes));
+            }
+            if (channel == "service-key")
+            {
+                if (!string.IsNullOrWhiteSpace(assignedApiKeyScopes)) additionalUserClaims.Add(new Claim("scope", assignedApiKeyScopes));
             }
 
             services.AddTransient<IPolicyEvaluator>(sp => new AuthorizationPolicyEvaluator(
