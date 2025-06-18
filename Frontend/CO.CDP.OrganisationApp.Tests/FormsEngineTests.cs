@@ -515,31 +515,25 @@ public class FormsEngineTests
     }
 
     [Fact]
-    public async Task SaveUpdateAnswers_ShouldCallApiWithCorrectPayload_WhenYesNoChangesAndAlternativeAnswersAreCleared()
+    public async Task SaveUpdateAnswers_WhenYesNoChangesToNo_ShouldBeCalledWithPreClearedMainPathAnswers()
     {
         var formId = Guid.NewGuid();
         var sectionId = Guid.NewGuid();
         var organisationId = Guid.NewGuid();
+        var answerSetId = Guid.NewGuid();
 
         var yesNoQuestionId = Guid.NewGuid();
-        var alternativeQuestionId = Guid.NewGuid();
-        var mainPathQuestionId = Guid.NewGuid();
+        var mainPathQuestionId1 = Guid.NewGuid();
+        var mainPathQuestionId2 = Guid.NewGuid();
+        var altPathQuestionId = Guid.NewGuid();
 
         var answerSet = new FormQuestionAnswerState
         {
-            AnswerSetId = Guid.NewGuid(),
+            AnswerSetId = answerSetId,
             Answers = new List<QuestionAnswer>
             {
-                new QuestionAnswer
-                {
-                    QuestionId = yesNoQuestionId,
-                    Answer = new FormAnswer { BoolValue = true }
-                },
-                new QuestionAnswer
-                {
-                    QuestionId = mainPathQuestionId,
-                    Answer = new FormAnswer { TextValue = "Main path answer" }
-                }
+                new QuestionAnswer { QuestionId = yesNoQuestionId, Answer = new FormAnswer { BoolValue = false } },
+                new QuestionAnswer { QuestionId = altPathQuestionId, Answer = new FormAnswer { TextValue = "Correct Alt Path Answer" } }
             }
         };
 
@@ -548,43 +542,37 @@ public class FormsEngineTests
         _formsApiClientMock.Verify(api => api.PutFormSectionAnswersAsync(
             formId,
             sectionId,
-            answerSet.AnswerSetId.Value,
+            answerSetId,
             organisationId,
             It.Is<WebApiClient.UpdateFormSectionAnswers>(payload =>
                 payload.Answers.Count == 2 &&
-                payload.Answers.Any(a => a.QuestionId == yesNoQuestionId && a.BoolValue == true) &&
-                payload.Answers.Any(a => a.QuestionId == mainPathQuestionId && a.TextValue == "Main path answer") &&
-                !payload.Answers.Any(a => a.QuestionId == alternativeQuestionId)
+                payload.Answers.Any(a => a.QuestionId == yesNoQuestionId && a.BoolValue == false) &&
+                payload.Answers.Any(a => a.QuestionId == altPathQuestionId && a.TextValue == "Correct Alt Path Answer") &&
+                !payload.Answers.Any(a => a.QuestionId == mainPathQuestionId1) &&
+                !payload.Answers.Any(a => a.QuestionId == mainPathQuestionId2)
             )
         ), Times.Once);
     }
 
     [Fact]
-    public async Task SaveUpdateAnswers_ShouldCallApiWithCorrectPayload_WhenFileUploadChangesAndAlternativeAnswersAreCleared()
+    public async Task SaveUpdateAnswers_WhenFileUploadChangesToNoFile_ShouldBeCalledWithPreClearedMainPathAnswers()
     {
         var formId = Guid.NewGuid();
         var sectionId = Guid.NewGuid();
         var organisationId = Guid.NewGuid();
+        var answerSetId = Guid.NewGuid();
 
         var fileUploadQuestionId = Guid.NewGuid();
-        var alternativeQuestionId = Guid.NewGuid();
         var mainPathQuestionId = Guid.NewGuid();
+        var altPathQuestionId = Guid.NewGuid();
 
         var answerSet = new FormQuestionAnswerState
         {
-            AnswerSetId = Guid.NewGuid(),
+            AnswerSetId = answerSetId,
             Answers = new List<QuestionAnswer>
             {
-                new QuestionAnswer
-                {
-                    QuestionId = fileUploadQuestionId,
-                    Answer = new FormAnswer { BoolValue = true, TextValue = "uploaded_file.pdf" }
-                },
-                new QuestionAnswer
-                {
-                    QuestionId = mainPathQuestionId,
-                    Answer = new FormAnswer { TextValue = "Main path answer after file upload" }
-                }
+                new QuestionAnswer { QuestionId = fileUploadQuestionId, Answer = new FormAnswer { BoolValue = false, TextValue = null } },
+                new QuestionAnswer { QuestionId = altPathQuestionId, Answer = new FormAnswer { TextValue = "Correct Alt Path Answer" } }
             }
         };
 
@@ -593,13 +581,13 @@ public class FormsEngineTests
         _formsApiClientMock.Verify(api => api.PutFormSectionAnswersAsync(
             formId,
             sectionId,
-            answerSet.AnswerSetId.Value,
+            answerSetId,
             organisationId,
             It.Is<WebApiClient.UpdateFormSectionAnswers>(payload =>
                 payload.Answers.Count == 2 &&
-                payload.Answers.Any(a => a.QuestionId == fileUploadQuestionId && a.BoolValue == true && a.TextValue == "uploaded_file.pdf") &&
-                payload.Answers.Any(a => a.QuestionId == mainPathQuestionId && a.TextValue == "Main path answer after file upload") &&
-                !payload.Answers.Any(a => a.QuestionId == alternativeQuestionId)
+                payload.Answers.Any(a => a.QuestionId == fileUploadQuestionId && a.BoolValue == false && a.TextValue == null) &&
+                payload.Answers.Any(a => a.QuestionId == altPathQuestionId && a.TextValue == "Correct Alt Path Answer") &&
+                !payload.Answers.Any(a => a.QuestionId == mainPathQuestionId)
             )
         ), Times.Once);
     }
@@ -645,33 +633,38 @@ public class FormsEngineTests
     [Fact]
     public void GetPreviousUnansweredQuestionId_ShouldReturnNull_WhenAllQuestionsAreAnswered()
     {
-        var question1 = new FormQuestion { Id = Guid.NewGuid() };
-        var question2 = new FormQuestion { Id = Guid.NewGuid() };
-        var question3 = new FormQuestion { Id = Guid.NewGuid() };
+        var question1 = new FormQuestion { Id = Guid.NewGuid(), Type = FormQuestionType.Text };
+        var question2 = new FormQuestion { Id = Guid.NewGuid(), Type = FormQuestionType.Text };
+        var question3 = new FormQuestion { Id = Guid.NewGuid(), Type = FormQuestionType.Text };
         var questions = new List<FormQuestion> { question1, question2, question3 };
+
+        question1.NextQuestion = question2.Id;
+        question2.NextQuestion = question3.Id;
 
         var answerState = new FormQuestionAnswerState
         {
             Answers = new List<QuestionAnswer>
         {
-            new QuestionAnswer { QuestionId = question1.Id },
-            new QuestionAnswer { QuestionId = question2.Id },
-            new QuestionAnswer { QuestionId = question3.Id }
+            new QuestionAnswer { QuestionId = question1.Id, Answer = new FormAnswer { TextValue = "Ans1"} },
+            new QuestionAnswer { QuestionId = question2.Id, Answer = new FormAnswer { TextValue = "Ans2"} }
         }
         };
 
         var result = _formsEngine.GetPreviousUnansweredQuestionId(questions, question3.Id, answerState);
 
-        result.Should().BeNull("because all questions have been answered");
+        result.Should().BeNull("because all questions on the path before question3 have been answered");
     }
 
     [Fact]
     public void GetPreviousUnansweredQuestionId_ShouldReturnFirstQuestion_WhenNoQuestionsAreAnswered()
     {
-        var question1 = new FormQuestion { Id = Guid.NewGuid() };
-        var question2 = new FormQuestion { Id = Guid.NewGuid() };
-        var question3 = new FormQuestion { Id = Guid.NewGuid() };
+        var question1 = new FormQuestion { Id = Guid.NewGuid(), Type = FormQuestionType.Text };
+        var question2 = new FormQuestion { Id = Guid.NewGuid(), Type = FormQuestionType.Text };
+        var question3 = new FormQuestion { Id = Guid.NewGuid(), Type = FormQuestionType.Text };
         var questions = new List<FormQuestion> { question1, question2, question3 };
+
+        question1.NextQuestion = question2.Id;
+        question2.NextQuestion = question3.Id;
 
         var answerState = new FormQuestionAnswerState
         {
@@ -680,60 +673,66 @@ public class FormsEngineTests
 
         var result = _formsEngine.GetPreviousUnansweredQuestionId(questions, question3.Id, answerState);
 
-        result.Should().Be(question1.Id, "because no questions have been answered, so the first question should be returned");
+        result.Should().Be(question1.Id, "because no questions have been answered, so the first question on the path should be returned");
     }
 
 
     [Fact]
     public void GetPreviousUnansweredQuestionId_ShouldReturnExpectedResult_WhenCalled()
     {
-        var question1 = new FormQuestion { Id = Guid.NewGuid() };
-        var question2 = new FormQuestion { Id = Guid.NewGuid() };
-        var question3 = new FormQuestion { Id = Guid.NewGuid() };
+        var question1 = new FormQuestion { Id = Guid.NewGuid(), Type = FormQuestionType.Text };
+        var question2 = new FormQuestion { Id = Guid.NewGuid(), Type = FormQuestionType.Text };
+        var question3 = new FormQuestion { Id = Guid.NewGuid(), Type = FormQuestionType.Text };
         var questions = new List<FormQuestion> { question1, question2, question3 };
+
+        question1.NextQuestion = question2.Id;
+        question2.NextQuestion = question3.Id;
 
         var answerState = new FormQuestionAnswerState
         {
             Answers = new List<QuestionAnswer>
         {
-            new QuestionAnswer { QuestionId = question2.Id }
+            new QuestionAnswer { QuestionId = question2.Id, Answer = new FormAnswer { TextValue = "Ans2" } }
         }
         };
 
         var result = _formsEngine.GetPreviousUnansweredQuestionId(questions, question3.Id, answerState);
 
-        result.Should().Be(question1.Id);
+        result.Should().Be(question1.Id, "because question1 is the first unanswered question on the path");
     }
 
     [Fact]
     public void GetPreviousUnansweredQuestionId_ShouldReturnNull_WhenAllPreviousQuestionsAreAnswered()
     {
-        var question1 = new FormQuestion { Id = Guid.NewGuid() };
-        var question2 = new FormQuestion { Id = Guid.NewGuid() };
-        var question3 = new FormQuestion { Id = Guid.NewGuid() };
+        var question1 = new FormQuestion { Id = Guid.NewGuid(), Type = FormQuestionType.Text };
+        var question2 = new FormQuestion { Id = Guid.NewGuid(), Type = FormQuestionType.Text };
+        var question3 = new FormQuestion { Id = Guid.NewGuid(), Type = FormQuestionType.Text };
         var questions = new List<FormQuestion> { question1, question2, question3 };
+
+        question1.NextQuestion = question2.Id;
+        question2.NextQuestion = question3.Id;
 
         var answerState = new FormQuestionAnswerState
         {
             Answers = new List<QuestionAnswer>
         {
-            new QuestionAnswer { QuestionId = question1.Id },
-            new QuestionAnswer { QuestionId = question2.Id }
+            new QuestionAnswer { QuestionId = question1.Id, Answer = new FormAnswer { TextValue = "Ans1" } },
+            new QuestionAnswer { QuestionId = question2.Id, Answer = new FormAnswer { TextValue = "Ans2" } }
         }
         };
 
         var result = _formsEngine.GetPreviousUnansweredQuestionId(questions, question3.Id, answerState);
 
-        result.Should().BeNull();
+        result.Should().BeNull("because all questions on the path before question3 are answered");
     }
 
     [Fact]
     public void GetPreviousUnansweredQuestionId_ShouldNotStartSortedListWithBranchedQuestion_WhenCalled()
     {
-        var qActualStart = new FormQuestion { Id = Guid.NewGuid(), Title = "Actual Start" };
-        var qAlternativeOnlyTarget = new FormQuestion { Id = Guid.NewGuid(), Title = "Alternative Only Target" };
-        var qIntermediate = new FormQuestion { Id = Guid.NewGuid(), Title = "Intermediate" };
-        var qEnd = new FormQuestion { Id = Guid.NewGuid(), Title = "End" };
+        var qActualStart = new FormQuestion { Id = Guid.NewGuid(), Title = "Actual Start", Type = FormQuestionType.Text, Options = new FormQuestionOptions() };
+        var qAlternativeOnlyTarget = new FormQuestion { Id = Guid.NewGuid(), Title = "Alternative Only Target", Type = FormQuestionType.Text, Options = new FormQuestionOptions() };
+        var qIntermediate = new FormQuestion { Id = Guid.NewGuid(), Title = "Intermediate", Type = FormQuestionType.Text, Options = new FormQuestionOptions() };
+        var qEnd = new FormQuestion { Id = Guid.NewGuid(), Title = "End", Options = new FormQuestionOptions() };
 
         qActualStart.NextQuestion = qIntermediate.Id;
         qIntermediate.NextQuestion = qEnd.Id;
@@ -744,6 +743,72 @@ public class FormsEngineTests
         var result = _formsEngine.GetPreviousUnansweredQuestionId(questions, qIntermediate.Id, answerState);
 
         result.Should().Be(qActualStart.Id);
+    }
+
+    [Fact]
+    public void GetPreviousUnansweredQuestionId_PathViaNoOnYesNo_UnansweredOnYesPath_NoUnansweredOnNoPath_ShouldReturnNull()
+    {
+        var qStartId = Guid.NewGuid();
+        var qBranchId = Guid.NewGuid();
+        var qYesPathId = Guid.NewGuid();
+        var qYesEndId = Guid.NewGuid();
+        var qNoPathId = Guid.NewGuid();
+        var qCurrentId = Guid.NewGuid();
+
+        var questions = new List<FormQuestion>
+        {
+            new FormQuestion { Id = qStartId, Type = FormQuestionType.NoInput, NextQuestion = qBranchId, Options = new FormQuestionOptions() },
+            new FormQuestion { Id = qBranchId, Type = FormQuestionType.YesOrNo, NextQuestion = qYesPathId, NextQuestionAlternative = qNoPathId, Options = new FormQuestionOptions() },
+            new FormQuestion { Id = qYesPathId, Type = FormQuestionType.Text, NextQuestion = qYesEndId, Options = new FormQuestionOptions() },
+            new FormQuestion { Id = qYesEndId, Type = FormQuestionType.NoInput, Options = new FormQuestionOptions() },
+            new FormQuestion { Id = qNoPathId, Type = FormQuestionType.NoInput, NextQuestion = qCurrentId, Options = new FormQuestionOptions() },
+            new FormQuestion { Id = qCurrentId, Type = FormQuestionType.Text, Options = new FormQuestionOptions() }
+        };
+
+        var answerState = new FormQuestionAnswerState
+        {
+            Answers = new List<QuestionAnswer>
+            {
+                new QuestionAnswer { QuestionId = qBranchId, Answer = new FormAnswer { BoolValue = false } }
+            }
+        };
+
+        var result = _formsEngine.GetPreviousUnansweredQuestionId(questions, qCurrentId, answerState);
+
+        result.Should().BeNull("because the taken path (Q_Start -> Q_Branch -> Q_NoPath) has no unanswered questions requiring an answer, and Q_YesPath (unanswered) is not on this path");
+    }
+
+    [Fact]
+    public void GetPreviousUnansweredQuestionId_PathViaNoOnYesNo_UnansweredOnNoPath_ShouldReturnIt()
+    {
+        var qStartId = Guid.NewGuid();
+        var qBranchId = Guid.NewGuid();
+        var qYesPathId = Guid.NewGuid();
+        var qYesEndId = Guid.NewGuid();
+        var qNoPathUnansweredId = Guid.NewGuid();
+        var qCurrentId = Guid.NewGuid();
+
+        var questions = new List<FormQuestion>
+        {
+            new FormQuestion { Id = qStartId, Type = FormQuestionType.NoInput, NextQuestion = qBranchId, Options = new FormQuestionOptions() },
+            new FormQuestion { Id = qBranchId, Type = FormQuestionType.YesOrNo, NextQuestion = qYesPathId, NextQuestionAlternative = qNoPathUnansweredId, Options = new FormQuestionOptions() },
+            new FormQuestion { Id = qYesPathId, Type = FormQuestionType.Text, NextQuestion = qYesEndId, Options = new FormQuestionOptions() },
+            new FormQuestion { Id = qYesEndId, Type = FormQuestionType.NoInput, Options = new FormQuestionOptions() },
+            new FormQuestion { Id = qNoPathUnansweredId, Type = FormQuestionType.Text, NextQuestion = qCurrentId, Options = new FormQuestionOptions() },
+            new FormQuestion { Id = qCurrentId, Type = FormQuestionType.Text, Options = new FormQuestionOptions() }
+        };
+
+        var answerState = new FormQuestionAnswerState
+        {
+            Answers = new List<QuestionAnswer>
+            {
+                new QuestionAnswer { QuestionId = qBranchId, Answer = new FormAnswer { BoolValue = false } }
+            }
+        };
+
+        var result = _formsEngine.GetPreviousUnansweredQuestionId(questions, qCurrentId, answerState);
+
+        result.Should().Be(qNoPathUnansweredId, "because Q_NoPathUnansweredId is the first unanswered question on the taken path before Q_Current");
     }
 
     private (Guid formId, Guid sectionId, Guid organisationId, FormQuestionAnswerState answerSet, FormAnswer expectedAnswer) SetupTestData()

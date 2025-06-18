@@ -1,0 +1,6 @@
+services:
+  grafana:
+    build: .
+    image: cabinetoffice/cdp-grafana:latest
+    ports:
+      - "3030:3000"
