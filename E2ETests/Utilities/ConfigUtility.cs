@@ -48,5 +48,10 @@ namespace E2ETests.Utilities
         {
             return _settings?.Headless ?? true;
         }
+
+        public static string DatabaseConnectionString()
+        {
+            return _settings?.DatabaseConnectionString ?? throw new Exception("DatabaseConnectionString is not configured.");
+        }
     }
 }

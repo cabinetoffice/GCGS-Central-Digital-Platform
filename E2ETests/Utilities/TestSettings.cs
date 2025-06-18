@@ -8,5 +8,6 @@ namespace E2ETests.Utilities
         public string Password { get; set; } = string.Empty;
         public string SecretKey { get; set; } = string.Empty;
         public bool Headless { get; set; } = true;
+        public string DatabaseConnectionString { get; set; } = string.Empty;
     }
 }
