@@ -434,6 +434,12 @@
   <data name="Organisation_ProcurementPathwayService" xml:space="preserve">
     <value>Procurement Pathway service (opens in new tab)</value>
   </data>
+  <data name="Organisation_SearchOrganisations" xml:space="preserve">
+    <value>Search for an organisation</value>
+  </data>
+  <data name="Organisation_SearchOrganisationsHint" xml:space="preserve">
+    <value>Search by organisation name, organisation identifier or PPON.</value>
+  </data>
   <data name="Global_Email_Invalid_ErrorMessage" xml:space="preserve">
     <value>Enter an email address in the correct format, like name@example.com</value>
   </data>
