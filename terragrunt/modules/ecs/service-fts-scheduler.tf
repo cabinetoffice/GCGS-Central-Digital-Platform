@@ -1,4 +1,4 @@
-module "ecs_service_fts_scheduler_scheduler" {
+module "ecs_service_fts_scheduler" {
   source = "../ecs-service"
 
   container_definitions = templatefile(

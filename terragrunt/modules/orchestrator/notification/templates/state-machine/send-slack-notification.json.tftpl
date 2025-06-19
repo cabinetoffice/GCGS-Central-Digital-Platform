@@ -206,7 +206,7 @@
       "Type": "Task",
       "Resource": "arn:aws:states:::aws-sdk:ssm:getParameter",
       "Parameters": {
-        "Name": "${ssm_envs_sirsi_service_version_name}",
+        "Name": "${ssm_envs_combined_service_version_name}",
         "WithDecryption": true
       },
       "ResultPath": "$.serviceVersions",
