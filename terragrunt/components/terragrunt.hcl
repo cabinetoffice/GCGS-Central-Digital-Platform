@@ -52,7 +52,7 @@ locals {
         "https://stanvolcere.nqc.com/auth/backchannellogout",
         "https://nadeemshafi2.nqc.com/auth/backchannellogout"
       ]
-      pinned_service_version_fts        = "0.0.0-3e1660c"
+      pinned_service_version_fts        = null
       pinned_service_version            = null
       postgres_instance_type            = "db.t4g.micro"
       postgres_aurora_instance_type     = "db.r5.large"
