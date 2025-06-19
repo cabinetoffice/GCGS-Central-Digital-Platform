@@ -3964,10 +3964,10 @@
     <value>Company number must be 8 digits or 2 letters and 6 digits</value>
   </data>
   <data name="Supplier_AdditionalModulesInformation_Heading" xml:space="preserve">
-    <value>Additional supplier modules</value>
+    <value>Complete your additional supplier modules</value>
   </data>
   <data name="Supplier_AdditionalModulesInformation_Hint" xml:space="preserve">
-    <value>An additional module is extra information related to a particular topic that suppliers are required to submit for specific contracts</value>
+    <value>These are policy specific questions that you may be asked to complete for some bids. You can add this information at any time and the contracting authority you are working with will tell you if they are needed for a specific bid. The questions in this section are all optional and are not needed to be completed to create a sharecode.</value>
   </data>
   <data name="SessionTimeoutWarningDialog_Header" xml:space="preserve">
     <value>Session timeout</value>
