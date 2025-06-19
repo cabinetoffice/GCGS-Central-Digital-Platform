@@ -11,7 +11,7 @@ locals {
 
   envs_combined_versions = jsonencode({
     for env in ["development", "staging", "integration", "production"] : env =>
-    "S:${coalesce(var.pinned_service_versions_sirsi[env], data.aws_ssm_parameter.service_version_sirsi.value)},F:${coalesce(var.pinned_service_versions_fts[env], data.aws_ssm_parameter.service_version_fts.value)}"
+    "S:${coalesce(var.pinned_service_versions_sirsi[env], data.aws_ssm_parameter.service_version_sirsi.value)} | F:${coalesce(var.pinned_service_versions_fts[env], data.aws_ssm_parameter.service_version_fts.value)}"
   })
 
   envs_service_versions = jsonencode({
