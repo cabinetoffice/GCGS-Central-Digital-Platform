@@ -156,6 +156,34 @@ public class ConsortiumOverviewModelTests
             null, null, null, null), Times.Once);
     }
 
+    [Fact]
+    public async Task OnGet_WhenConsortiumOrgIsRemoved_SetsFlashMessage()
+    {
+        var organisation = GivenOrganisationClientModel();
+        var formSectionsResponse = GivenFormSectionResponse();
+        var parties = new OrganisationParties(new List<OrganisationParty>
+        {
+            new OrganisationParty(Guid.NewGuid(), "Consortium 1", new OrganisationPartyShareCode(DateTimeOffset.Now, "EXISTING_CODE"))
+        });
+        
+        _organisationClientMock.Setup(x => x.GetOrganisationAsync(_pageModel.Id))
+            .ReturnsAsync(organisation);
+
+        _organisationClientMock.Setup(x => x.GetOrganisationPartiesAsync(_pageModel.Id))
+            .ReturnsAsync(parties);
+        _formsClientMock.Setup(f => f.GetFormSectionsAsync(It.IsAny<Guid>(), _pageModel.Id)).ReturnsAsync(formSectionsResponse);
+
+        _tempDataServiceMock.Setup(x => x.Get<string>(ConsortiumRemoveOrganisationModel.TempDataKey)).Returns("Consortium 1");
+
+        var result = await _pageModel.OnGet();
+
+        result.Should().BeOfType<PageResult>();
+        _flashMessageServiceMock.Verify(x => x.SetFlashMessage(
+            FlashMessageType.Success,
+            string.Format(StaticTextResource.Consortium_RemoveSupplier_SuccessMessage, "Consortium 1"),
+            null, null, null, null), Times.Once);
+    }
+
     private static FormSectionResponse GivenFormSectionResponse()
     {
         return new FormSectionResponse(new List<FormSectionSummary>() { new FormSectionSummary(true, 3, false, Guid.NewGuid(), "section name", FormSectionType.Standard) });
