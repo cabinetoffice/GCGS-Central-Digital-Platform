@@ -14,6 +14,7 @@ namespace CO.CDP.Organisation.WebApi.Tests.Api;
 public class PersonsEndpointsTests
 {
     private readonly Mock<IUseCase<Guid, IEnumerable<Person>>> _getPersonsUseCase = new();
+    private readonly Mock<IUseCase<(Guid, string), IEnumerable<Person>>> _getOrganisationPersonsUseCase = new();
     private readonly Mock<IUseCase<(Guid, Guid, UpdatePersonToOrganisation), bool>> _updatePersonToOrganisationUseCase = new();
     private readonly Mock<IUseCase<(Guid, RemovePersonFromOrganisation), bool>> _removePersonFromOrganisationUseCase = new();
 
@@ -37,6 +38,34 @@ public class PersonsEndpointsTests
             services => services.AddScoped(_ => _getPersonsUseCase.Object));
 
         var response = await factory.CreateClient().GetAsync($"/organisations/{organisationId}/persons");
+
+        response.StatusCode.Should().Be(expectedStatusCode);
+    }
+
+    [Theory]
+    [InlineData(OK, Channel.OneLogin, null, PersonScope.SupportAdmin)]
+    [InlineData(OK, Channel.OneLogin, OrganisationPersonScope.Admin)]
+    [InlineData(OK, Channel.OneLogin, OrganisationPersonScope.Editor)]
+    [InlineData(OK, Channel.OneLogin, OrganisationPersonScope.Viewer)]
+    [InlineData(Forbidden, Channel.OneLogin, OrganisationPersonScope.Responder)]
+    [InlineData(Forbidden, Channel.ServiceKey)]
+    [InlineData(Forbidden, Channel.OrganisationKey)]
+    [InlineData(Forbidden, "unknown_channel")]
+    public async Task GetOrganisationPersonsInRole_Authorization_ReturnsExpectedStatusCode(
+        HttpStatusCode expectedStatusCode, string channel, string? scope = null, string? personScope = null)
+    {
+        var organisationId = Guid.NewGuid();
+        var role = "ADMIN";
+        var command = (organisationId, role);
+
+        _getOrganisationPersonsUseCase.Setup(uc => uc.Execute(command)).ReturnsAsync([]);
+
+        var factory = new TestAuthorizationWebApplicationFactory<Program>(
+            channel, organisationId, scope,
+            services => services.AddScoped(_ => _getOrganisationPersonsUseCase.Object),
+            assignedPersonScopes: personScope);
+
+        var response = await factory.CreateClient().GetAsync($"/organisations/{organisationId}/persons-in-role?role=ADMIN");
 
         response.StatusCode.Should().Be(expectedStatusCode);
     }
