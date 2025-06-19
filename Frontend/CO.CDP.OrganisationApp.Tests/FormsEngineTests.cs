@@ -216,84 +216,10 @@ public class FormsEngineTests
         _tempDataServiceMock.Setup(t => t.Peek<SectionQuestionsResponse>(It.IsAny<string>()))
             .Returns(sectionResponse);
 
-        var result = await _formsEngine.GetNextQuestion(organisationId, formId, sectionId, currentQuestionId, null);
+        var result = await _formsEngine.GetNextQuestion(organisationId, formId, sectionId, currentQuestionId);
 
         result.Should().BeEquivalentTo(sectionResponse.Questions.First(q => q.Id == nextQuestionId));
     }
-
-    [Fact]
-    public async Task GetNextQuestion_ShouldReturnNextQuestionAlternative_WhenAnswerIsNoForYesNoQuestion()
-    {
-        var (organisationId, formId, sectionId, _) = CreateTestGuids();
-        var currentQuestionId = Guid.NewGuid();
-        var nextQuestionId = Guid.NewGuid();
-        var nextQuestionAlternativeId = Guid.NewGuid();
-
-        var sectionResponse = new SectionQuestionsResponse
-        {
-            Section = new FormSection { Id = sectionId, Title = "SectionTitle", AllowsMultipleAnswerSets = true },
-            Questions = new List<FormQuestion>
-            {
-                new FormQuestion { Id = currentQuestionId, NextQuestion = nextQuestionId, NextQuestionAlternative = nextQuestionAlternativeId, Type = FormQuestionType.YesOrNo },
-                new FormQuestion { Id = nextQuestionId },
-                new FormQuestion { Id = nextQuestionAlternativeId }
-            }
-        };
-
-        var answerState = new FormQuestionAnswerState
-        {
-            Answers = new List<QuestionAnswer>
-            {
-                new QuestionAnswer { QuestionId = currentQuestionId, Answer = new FormAnswer { BoolValue = false } }
-            }
-        };
-
-        _tempDataServiceMock.Setup(t => t.Peek<SectionQuestionsResponse>(It.IsAny<string>()))
-            .Returns(sectionResponse);
-
-        var result = await _formsEngine.GetNextQuestion(organisationId, formId, sectionId, currentQuestionId, answerState);
-
-        result.Should().NotBeNull();
-        result!.Id.Should().Be(nextQuestionAlternativeId);
-    }
-
-    [Fact]
-    public async Task GetNextQuestion_ShouldReturnNextQuestion_WhenAnswerIsTrueForYesNoQuestion()
-    {
-        var (organisationId, formId, sectionId, _) = CreateTestGuids();
-        var currentQuestionId = Guid.NewGuid();
-        var nextQuestionId = Guid.NewGuid();
-        var nextQuestionAlternativeId = Guid.NewGuid();
-
-        var sectionResponse = new SectionQuestionsResponse
-        {
-            Section = new FormSection { Id = sectionId, Title = "SectionTitle", AllowsMultipleAnswerSets = true },
-            Questions = new List<FormQuestion>
-            {
-                new FormQuestion { Id = currentQuestionId, NextQuestion = nextQuestionId, NextQuestionAlternative = nextQuestionAlternativeId, Type = FormQuestionType.YesOrNo },
-                new FormQuestion { Id = nextQuestionId },
-                new FormQuestion { Id = nextQuestionAlternativeId }
-            }
-        };
-
-        var answerState = new FormQuestionAnswerState
-        {
-            Answers = new List<QuestionAnswer>
-            {
-                new QuestionAnswer { QuestionId = currentQuestionId, Answer = new FormAnswer { BoolValue = true } }
-            }
-        };
-
-        _tempDataServiceMock.Setup(t => t.Peek<SectionQuestionsResponse>(It.IsAny<string>()))
-            .Returns(sectionResponse);
-
-        var result = await _formsEngine.GetNextQuestion(organisationId, formId, sectionId, currentQuestionId, answerState);
-
-        result.Should().NotBeNull();
-        result!.Id.Should().Be(nextQuestionId);
-    }
-
-
 
     [Fact]
     public async Task GetPreviousQuestion_ShouldReturnPreviousQuestion_WhenCurrentQuestionExists()
@@ -515,96 +441,6 @@ public class FormsEngineTests
     }
 
     [Fact]
-    public async Task SaveUpdateAnswers_ShouldCallApiWithCorrectPayload_WhenYesNoChangesAndAlternativeAnswersAreCleared()
-    {
-        var formId = Guid.NewGuid();
-        var sectionId = Guid.NewGuid();
-        var organisationId = Guid.NewGuid();
-
-        var yesNoQuestionId = Guid.NewGuid();
-        var alternativeQuestionId = Guid.NewGuid();
-        var mainPathQuestionId = Guid.NewGuid();
-
-        var answerSet = new FormQuestionAnswerState
-        {
-            AnswerSetId = Guid.NewGuid(),
-            Answers = new List<QuestionAnswer>
-            {
-                new QuestionAnswer
-                {
-                    QuestionId = yesNoQuestionId,
-                    Answer = new FormAnswer { BoolValue = true }
-                },
-                new QuestionAnswer
-                {
-                    QuestionId = mainPathQuestionId,
-                    Answer = new FormAnswer { TextValue = "Main path answer" }
-                }
-            }
-        };
-
-        await _formsEngine.SaveUpdateAnswers(formId, sectionId, organisationId, answerSet);
-
-        _formsApiClientMock.Verify(api => api.PutFormSectionAnswersAsync(
-            formId,
-            sectionId,
-            answerSet.AnswerSetId.Value,
-            organisationId,
-            It.Is<WebApiClient.UpdateFormSectionAnswers>(payload =>
-                payload.Answers.Count == 2 &&
-                payload.Answers.Any(a => a.QuestionId == yesNoQuestionId && a.BoolValue == true) &&
-                payload.Answers.Any(a => a.QuestionId == mainPathQuestionId && a.TextValue == "Main path answer") &&
-                !payload.Answers.Any(a => a.QuestionId == alternativeQuestionId)
-            )
-        ), Times.Once);
-    }
-
-    [Fact]
-    public async Task SaveUpdateAnswers_ShouldCallApiWithCorrectPayload_WhenFileUploadChangesAndAlternativeAnswersAreCleared()
-    {
-        var formId = Guid.NewGuid();
-        var sectionId = Guid.NewGuid();
-        var organisationId = Guid.NewGuid();
-
-        var fileUploadQuestionId = Guid.NewGuid();
-        var alternativeQuestionId = Guid.NewGuid();
-        var mainPathQuestionId = Guid.NewGuid();
-
-        var answerSet = new FormQuestionAnswerState
-        {
-            AnswerSetId = Guid.NewGuid(),
-            Answers = new List<QuestionAnswer>
-            {
-                new QuestionAnswer
-                {
-                    QuestionId = fileUploadQuestionId,
-                    Answer = new FormAnswer { BoolValue = true, TextValue = "uploaded_file.pdf" }
-                },
-                new QuestionAnswer
-                {
-                    QuestionId = mainPathQuestionId,
-                    Answer = new FormAnswer { TextValue = "Main path answer after file upload" }
-                }
-            }
-        };
-
-        await _formsEngine.SaveUpdateAnswers(formId, sectionId, organisationId, answerSet);
-
-        _formsApiClientMock.Verify(api => api.PutFormSectionAnswersAsync(
-            formId,
-            sectionId,
-            answerSet.AnswerSetId.Value,
-            organisationId,
-            It.Is<WebApiClient.UpdateFormSectionAnswers>(payload =>
-                payload.Answers.Count == 2 &&
-                payload.Answers.Any(a => a.QuestionId == fileUploadQuestionId && a.BoolValue == true && a.TextValue == "uploaded_file.pdf") &&
-                payload.Answers.Any(a => a.QuestionId == mainPathQuestionId && a.TextValue == "Main path answer after file upload") &&
-                !payload.Answers.Any(a => a.QuestionId == alternativeQuestionId)
-            )
-        ), Times.Once);
-    }
-
-    [Fact]
     public async Task CreateShareCodeAsync_ShouldReturnShareCode_WhenApiCallSucceeds()
     {
         var formId = Guid.NewGuid();
@@ -727,25 +563,6 @@ public class FormsEngineTests
         result.Should().BeNull();
     }
 
-    [Fact]
-    public void GetPreviousUnansweredQuestionId_ShouldNotStartSortedListWithBranchedQuestion_WhenCalled()
-    {
-        var qActualStart = new FormQuestion { Id = Guid.NewGuid(), Title = "Actual Start" };
-        var qAlternativeOnlyTarget = new FormQuestion { Id = Guid.NewGuid(), Title = "Alternative Only Target" };
-        var qIntermediate = new FormQuestion { Id = Guid.NewGuid(), Title = "Intermediate" };
-        var qEnd = new FormQuestion { Id = Guid.NewGuid(), Title = "End" };
-
-        qActualStart.NextQuestion = qIntermediate.Id;
-        qIntermediate.NextQuestion = qEnd.Id;
-        qIntermediate.NextQuestionAlternative = qAlternativeOnlyTarget.Id;
-
-        var questions = new List<FormQuestion> { qAlternativeOnlyTarget, qActualStart, qIntermediate, qEnd };
-        var answerState = new FormQuestionAnswerState { Answers = new List<QuestionAnswer>() };
-        var result = _formsEngine.GetPreviousUnansweredQuestionId(questions, qIntermediate.Id, answerState);
-
-        result.Should().Be(qActualStart.Id);
-    }
-
     private (Guid formId, Guid sectionId, Guid organisationId, FormQuestionAnswerState answerSet, FormAnswer expectedAnswer) SetupTestData()
     {
         var formId = Guid.NewGuid();
@@ -779,4 +596,5 @@ public class FormsEngineTests
 
         return (formId, sectionId, organisationId, answerSet, expectedAnswer);
     }
+
 }
