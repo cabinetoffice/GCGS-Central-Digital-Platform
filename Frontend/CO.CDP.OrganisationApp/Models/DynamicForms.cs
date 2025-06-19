@@ -41,6 +41,7 @@ public class FormQuestionOptions
     public string? ChoiceProviderStrategy { get; set; }
     public List<FormQuestionGroup> Groups { get; set; } = [];
     public string? AnswerFieldName { get; set; }
+    public CustomComponent? CustomComponentProperties { get; set; }
 }
 
 public class FormQuestionAnswerState
@@ -117,4 +118,32 @@ public enum FormQuestionBranchType
     /// Alternative paths typically represent conditional branches following a 'no' response in the form flow.
     /// </summary>
     Alternative
+}
+
+public class CustomComponent
+{
+    public CustomComponentType CustomComponentType { get; set; } = CustomComponentType.None;
+    public FormQuestionType BaseComponent { get; set; }
+    public ViewModelProperties Properties { get; set; } = new();
+    public List<ValidatorConfig> Validators { get; set; } = [];
+}
+// Add future custom component types as needed
+public enum CustomComponentType
+{
+    None,
+    YearInputPast,
+    YearInputFuture
+}
+public class ViewModelProperties
+{
+    public string? Label { get; set; }
+    public string? HtmlInputType { get; set; }
+    public string? PlaceholderText { get; set; }
+}
+public class ValidatorConfig
+{
+    public string? Type { get; set; }
+    public string? ErrorMessage { get; set; }
+    public string? Pattern { get; set; }
+    public string? Granularity { get; set; }
 }
