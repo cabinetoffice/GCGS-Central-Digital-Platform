@@ -74,7 +74,6 @@ public class TradeAssurancesCheckYourAnswersPage
 
     public async Task CompletePage()
     {
-        await _page.PauseAsync();
         await ClickSubmit();
         Console.WriteLine($"✅ Submitted Trade Assurances Check Your Answers Page");
     }
