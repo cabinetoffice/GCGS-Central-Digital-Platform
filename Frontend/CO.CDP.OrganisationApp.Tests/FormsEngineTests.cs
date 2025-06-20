@@ -769,7 +769,9 @@ public class FormsEngineTests
         {
             Answers = new List<QuestionAnswer>
             {
-                new QuestionAnswer { QuestionId = qBranchId, Answer = new FormAnswer { BoolValue = false } }
+                new QuestionAnswer { QuestionId = qStartId, Answer = new FormAnswer() },
+                new QuestionAnswer { QuestionId = qBranchId, Answer = new FormAnswer { BoolValue = false } },
+                new QuestionAnswer { QuestionId = qNoPathId, Answer = new FormAnswer() }
             }
         };
 
@@ -802,6 +804,7 @@ public class FormsEngineTests
         {
             Answers = new List<QuestionAnswer>
             {
+                new QuestionAnswer { QuestionId = qStartId, Answer = new FormAnswer() },
                 new QuestionAnswer { QuestionId = qBranchId, Answer = new FormAnswer { BoolValue = false } }
             }
         };
@@ -843,5 +846,112 @@ public class FormsEngineTests
         }
 
         return (formId, sectionId, organisationId, answerSet, expectedAnswer);
+    }
+
+    [Fact]
+    public void IsQuestionAnswered_NoInputQuestionExists_ShouldBeConsideredAnswered()
+    {
+        var noInputQuestionId = Guid.NewGuid();
+        var noInputQuestion = new FormQuestion {
+            Id = noInputQuestionId,
+            Type = FormQuestionType.NoInput,
+            Options = new FormQuestionOptions()
+        };
+
+        var answerState = new FormQuestionAnswerState
+        {
+            Answers = new List<QuestionAnswer>
+            {
+                new QuestionAnswer {
+                    QuestionId = noInputQuestionId,
+                    AnswerId = Guid.NewGuid(),
+                    Answer = new FormAnswer()
+                }
+            }
+        };
+
+        var methodInfo = typeof(FormsEngine).GetMethod("IsQuestionAnswered",
+            System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+
+        var result = (bool)methodInfo.Invoke(_formsEngine, new object[] { noInputQuestion, answerState });
+
+        result.Should().BeTrue("because NoInput questions should be considered answered when they exist in the answer collection");
+    }
+
+    [Fact]
+    public void IsQuestionAnswered_NoInputQuestionNotExists_ShouldBeConsideredUnanswered()
+    {
+        var noInputQuestionId = Guid.NewGuid();
+        var noInputQuestion = new FormQuestion {
+            Id = noInputQuestionId,
+            Type = FormQuestionType.NoInput,
+            Options = new FormQuestionOptions()
+        };
+
+        var answerState = new FormQuestionAnswerState
+        {
+            Answers = new List<QuestionAnswer>()
+        };
+
+        var methodInfo = typeof(FormsEngine).GetMethod("IsQuestionAnswered",
+            System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+
+        var result = (bool)methodInfo.Invoke(_formsEngine, new object[] { noInputQuestion, answerState });
+
+        result.Should().BeFalse("because NoInput questions should be considered unanswered when they don't exist in the answer collection");
+    }
+
+    [Fact]
+    public void GetPreviousUnansweredQuestionId_NoInputQuestionUnanswered_ShouldReturnIt()
+    {
+        var qStartId = Guid.NewGuid();
+        var qNoInputId = Guid.NewGuid();
+        var qCurrentId = Guid.NewGuid();
+
+        var questions = new List<FormQuestion>
+        {
+            new FormQuestion { Id = qStartId, Type = FormQuestionType.Text, NextQuestion = qNoInputId, Options = new FormQuestionOptions() },
+            new FormQuestion { Id = qNoInputId, Type = FormQuestionType.NoInput, NextQuestion = qCurrentId, Options = new FormQuestionOptions() },
+            new FormQuestion { Id = qCurrentId, Type = FormQuestionType.Text, Options = new FormQuestionOptions() }
+        };
+
+        var answerState = new FormQuestionAnswerState
+        {
+            Answers = new List<QuestionAnswer>
+            {
+                new QuestionAnswer { QuestionId = qStartId, Answer = new FormAnswer { TextValue = "Answered" } }
+            }
+        };
+        var result = _formsEngine.GetPreviousUnansweredQuestionId(questions, qCurrentId, answerState);
+
+        result.Should().Be(qNoInputId, "because the NoInput question is unanswered and should be returned as the first unanswered question");
+    }
+
+    [Fact]
+    public void GetPreviousUnansweredQuestionId_NoInputQuestionAnswered_ShouldNotReturnIt()
+    {
+        var qStartId = Guid.NewGuid();
+        var qNoInputId = Guid.NewGuid();
+        var qCurrentId = Guid.NewGuid();
+
+        var questions = new List<FormQuestion>
+        {
+            new FormQuestion { Id = qStartId, Type = FormQuestionType.Text, NextQuestion = qNoInputId, Options = new FormQuestionOptions() },
+            new FormQuestion { Id = qNoInputId, Type = FormQuestionType.NoInput, NextQuestion = qCurrentId, Options = new FormQuestionOptions() },
+            new FormQuestion { Id = qCurrentId, Type = FormQuestionType.Text, Options = new FormQuestionOptions() }
+        };
+
+        var answerState = new FormQuestionAnswerState
+        {
+            Answers = new List<QuestionAnswer>
+            {
+                new QuestionAnswer { QuestionId = qStartId, Answer = new FormAnswer { TextValue = "Answered" } },
+                new QuestionAnswer { QuestionId = qNoInputId, Answer = new FormAnswer() }
+            }
+        };
+
+        var result = _formsEngine.GetPreviousUnansweredQuestionId(questions, qCurrentId, answerState);
+
+        result.Should().BeNull("because all questions in the path (including the NoInput question) are answered");
     }
 }

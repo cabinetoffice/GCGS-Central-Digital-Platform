@@ -195,7 +195,7 @@ public class FormsEngine(
     private Guid? FindFirstUnansweredQuestionInPath(List<Models.FormQuestion> pathTaken, FormQuestionAnswerState answerState)
     {
         var firstUnansweredValidQuestion = pathTaken
-            .Where(q => q.Type != Models.FormQuestionType.NoInput && q.Type != Models.FormQuestionType.CheckYourAnswers)
+            .Where(q => q.Type != Models.FormQuestionType.CheckYourAnswers)
             .FirstOrDefault(q => !IsQuestionAnswered(q, answerState));
 
         return firstUnansweredValidQuestion?.Id;
@@ -303,6 +303,10 @@ public class FormsEngine(
 
     private bool IsQuestionAnswered(Models.FormQuestion questionOnPath, FormQuestionAnswerState? answerState)
     {
+        if (questionOnPath.Type == Models.FormQuestionType.NoInput)
+        {
+            return answerState?.Answers.Any(a => a.QuestionId == questionOnPath.Id) ?? false;
+        }
         return answerState?.Answers.Any(a =>
         {
             if (a.QuestionId != questionOnPath.Id || a.Answer == null) return false;
