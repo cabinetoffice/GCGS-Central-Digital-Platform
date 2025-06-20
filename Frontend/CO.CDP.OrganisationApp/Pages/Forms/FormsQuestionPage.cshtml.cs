@@ -437,41 +437,41 @@ public class FormsQuestionPageModel(
 
     private void HandleBranchingLogicAnswerChange(FormQuestion currentQuestion, FormAnswer? oldAnswerObject, List<FormQuestion> allQuestionsInSection)
     {
-        bool changedFromNoToYes = false;
-        bool changedFromYesToNo = false;
-
-        if (currentQuestion.Type == FormQuestionType.YesOrNo)
+        if (!currentQuestion.NextQuestionAlternative.HasValue)
         {
-            bool oldBoolAnswer = oldAnswerObject?.BoolValue ?? false;
-            bool newAnswerIsYes = YesNoInputModel?.GetAnswer()?.BoolValue ?? false;
-
-            if (!oldBoolAnswer && newAnswerIsYes)
-            {
-                changedFromNoToYes = true;
-            }
-            else if (oldBoolAnswer && !newAnswerIsYes)
-            {
-                changedFromYesToNo = true;
-            }
-        }
-        else if (currentQuestion.Type == FormQuestionType.FileUpload)
-        {
-            bool oldFileExisted = !string.IsNullOrEmpty(oldAnswerObject?.TextValue);
-            bool newFileSubmitted = (FileUploadModel?.UploadedFile != null && FileUploadModel.UploadedFile.Length > 0);
-
-            if (!oldFileExisted && newFileSubmitted)
-            {
-                changedFromNoToYes = true;
-            }
+            return;
         }
 
-        if (changedFromNoToYes && currentQuestion.NextQuestionAlternative.HasValue)
+        bool oldAnswerIsYes;
+        bool newAnswerIsYes;
+
+        switch (currentQuestion.Type)
         {
-            RemoveAnswersFromBranchPath(currentQuestion.NextQuestionAlternative.Value, allQuestionsInSection);
+            case FormQuestionType.YesOrNo:
+                oldAnswerIsYes = oldAnswerObject?.BoolValue ?? false;
+                newAnswerIsYes = YesNoInputModel?.GetAnswer()?.BoolValue ?? false;
+                break;
+
+            case FormQuestionType.FileUpload:
+                oldAnswerIsYes = !string.IsNullOrEmpty(oldAnswerObject?.TextValue);
+
+                var newFileIsUploaded = FileUploadModel?.UploadedFile is { Length: > 0 };
+                var isRemovedViaNoChoice = !currentQuestion.IsRequired && FileUploadModel?.GetAnswer()?.BoolValue == false;
+
+                newAnswerIsYes = newFileIsUploaded || (oldAnswerIsYes && !isRemovedViaNoChoice);
+                break;
+
+            default:
+                return;
         }
-        else if (changedFromYesToNo && currentQuestion.NextQuestion.HasValue)
+
+        if (oldAnswerIsYes && !newAnswerIsYes && currentQuestion.NextQuestion.HasValue)
         {
             RemoveAnswersFromBranchPath(currentQuestion.NextQuestion.Value, allQuestionsInSection);
+        }
+        else if (!oldAnswerIsYes && newAnswerIsYes)
+        {
+            RemoveAnswersFromBranchPath(currentQuestion.NextQuestionAlternative.Value, allQuestionsInSection);
         }
     }
 

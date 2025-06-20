@@ -90,21 +90,7 @@ public class FormsEngine(
             return null;
         }
 
-        Guid? determinedNextQuestionId = currentQuestion.NextQuestion;
-
-        if (currentQuestion.NextQuestionAlternative.HasValue && answerState != null)
-        {
-            var currentQuestionAnswer = answerState.Answers.FirstOrDefault(a => a.QuestionId == currentQuestionId);
-
-            if (currentQuestionAnswer?.Answer?.BoolValue == false)
-            {
-                if (currentQuestion.Type == Models.FormQuestionType.YesOrNo ||
-                    currentQuestion.Type == Models.FormQuestionType.FileUpload)
-                {
-                    determinedNextQuestionId = currentQuestion.NextQuestionAlternative;
-                }
-            }
-        }
+        Guid? determinedNextQuestionId = DetermineNextQuestionId(currentQuestion, answerState);
 
         if (!determinedNextQuestionId.HasValue)
         {
@@ -123,7 +109,8 @@ public class FormsEngine(
             return null;
         }
 
-        var path = BuildPathToQuestion(section.Questions, currentQuestionId, answerState ?? new FormQuestionAnswerState());
+        var path = BuildPathToQuestion(section.Questions, currentQuestionId,
+            answerState ?? new FormQuestionAnswerState());
         return path.LastOrDefault();
     }
 
@@ -180,7 +167,8 @@ public class FormsEngine(
         return sharingDataDetails.ShareCode;
     }
 
-    public Guid? GetPreviousUnansweredQuestionId(List<Models.FormQuestion> allQuestions, Guid currentQuestionId, FormQuestionAnswerState answerState)
+    public Guid? GetPreviousUnansweredQuestionId(List<Models.FormQuestion> allQuestions, Guid currentQuestionId,
+        FormQuestionAnswerState answerState)
     {
         if (allQuestions.Count == 0)
         {
@@ -192,7 +180,8 @@ public class FormsEngine(
         return FindFirstUnansweredQuestionInPath(pathTaken, answerState);
     }
 
-    private Guid? FindFirstUnansweredQuestionInPath(List<Models.FormQuestion> pathTaken, FormQuestionAnswerState answerState)
+    private Guid? FindFirstUnansweredQuestionInPath(List<Models.FormQuestion> pathTaken,
+        FormQuestionAnswerState answerState)
     {
         var firstUnansweredValidQuestion = pathTaken
             .Where(q => q.Type != Models.FormQuestionType.CheckYourAnswers)
@@ -201,7 +190,8 @@ public class FormsEngine(
         return firstUnansweredValidQuestion?.Id;
     }
 
-    private List<Models.FormQuestion> BuildPathToQuestion(List<Models.FormQuestion> allQuestions, Guid currentQuestionId, FormQuestionAnswerState answerState)
+    private List<Models.FormQuestion> BuildPathToQuestion(List<Models.FormQuestion> allQuestions,
+        Guid currentQuestionId, FormQuestionAnswerState answerState)
     {
         var questionsDictionary = allQuestions.ToDictionary(q => q.Id);
         var pathTaken = new List<Models.FormQuestion>();
@@ -210,9 +200,10 @@ public class FormsEngine(
         while (currentPathQuestion != null && currentPathQuestion.Id != currentQuestionId)
         {
             pathTaken.Add(currentPathQuestion);
-            Guid? nextQuestionIdOnPath = DetermineNextQuestionIdOnPath(currentPathQuestion, answerState);
+            Guid? nextQuestionIdOnPath = DetermineNextQuestionId(currentPathQuestion, answerState);
 
-            if (nextQuestionIdOnPath.HasValue && questionsDictionary.TryGetValue(nextQuestionIdOnPath.Value, out var nextQ))
+            if (nextQuestionIdOnPath.HasValue &&
+                questionsDictionary.TryGetValue(nextQuestionIdOnPath.Value, out var nextQ))
             {
                 currentPathQuestion = nextQ;
             }
@@ -221,6 +212,7 @@ public class FormsEngine(
                 currentPathQuestion = null;
             }
         }
+
         return pathTaken;
     }
 
@@ -307,6 +299,7 @@ public class FormsEngine(
         {
             return answerState?.Answers.Any(a => a.QuestionId == questionOnPath.Id) ?? false;
         }
+
         return answerState?.Answers.Any(a =>
         {
             if (a.QuestionId != questionOnPath.Id || a.Answer == null) return false;
@@ -316,9 +309,10 @@ public class FormsEngine(
                 Models.FormQuestionType.Text => !string.IsNullOrWhiteSpace(a.Answer.TextValue),
                 Models.FormQuestionType.MultiLine => !string.IsNullOrWhiteSpace(a.Answer.TextValue),
                 Models.FormQuestionType.Url => !string.IsNullOrWhiteSpace(a.Answer.TextValue),
-                Models.FormQuestionType.FileUpload => !string.IsNullOrWhiteSpace(a.Answer.TextValue),
+                Models.FormQuestionType.FileUpload => IsFileUploadAnswered(questionOnPath, a.Answer),
                 Models.FormQuestionType.YesOrNo => a.Answer.BoolValue.HasValue,
-                Models.FormQuestionType.SingleChoice => !string.IsNullOrWhiteSpace(a.Answer.OptionValue) || !string.IsNullOrWhiteSpace(a.Answer.TextValue),
+                Models.FormQuestionType.SingleChoice => !string.IsNullOrWhiteSpace(a.Answer.OptionValue) ||
+                                                        !string.IsNullOrWhiteSpace(a.Answer.TextValue),
                 Models.FormQuestionType.GroupedSingleChoice => !string.IsNullOrWhiteSpace(a.Answer.OptionValue),
                 Models.FormQuestionType.Date => a.Answer.DateValue.HasValue,
                 Models.FormQuestionType.CheckBox => a.Answer.BoolValue.HasValue,
@@ -328,39 +322,53 @@ public class FormsEngine(
         }) ?? false;
     }
 
-    private Guid? DetermineNextQuestionIdOnPath(Models.FormQuestion currentPathQuestion, FormQuestionAnswerState? answerState)
+    private bool IsFileUploadAnswered(Models.FormQuestion question, Models.FormAnswer answer)
     {
-        Guid? nextQuestionIdOnPath = currentPathQuestion.NextQuestion;
-
-        if (currentPathQuestion.NextQuestionAlternative.HasValue && answerState?.Answers != null)
+        if (question.IsRequired)
         {
-            var answerToBranchingQuestion = answerState.Answers.FirstOrDefault(a => a.QuestionId == currentPathQuestion.Id);
-            bool tookAlternativePath = false;
-
-            if (answerToBranchingQuestion?.Answer != null)
-            {
-                switch (currentPathQuestion.Type)
-                {
-                    case Models.FormQuestionType.YesOrNo:
-                        if (answerToBranchingQuestion.Answer.BoolValue == false)
-                        {
-                            tookAlternativePath = true;
-                        }
-                        break;
-                    case Models.FormQuestionType.FileUpload:
-                        if (string.IsNullOrEmpty(answerToBranchingQuestion.Answer.TextValue))
-                        {
-                            tookAlternativePath = true;
-                        }
-                        break;
-                }
-            }
-
-            if (tookAlternativePath)
-            {
-                nextQuestionIdOnPath = currentPathQuestion.NextQuestionAlternative;
-            }
+            return !string.IsNullOrWhiteSpace(answer.TextValue);
         }
-        return nextQuestionIdOnPath;
+
+        return !string.IsNullOrWhiteSpace(answer.TextValue) || answer.BoolValue.HasValue;
+    }
+
+    private Guid? DetermineNextQuestionId(Models.FormQuestion currentQuestion, FormQuestionAnswerState? answerState)
+    {
+        var answer = answerState?.Answers.FirstOrDefault(a => a.QuestionId == currentQuestion.Id);
+
+        bool takeAlternativePath = false;
+        switch (currentQuestion.Type)
+        {
+            case Models.FormQuestionType.YesOrNo:
+                if (answer?.Answer?.BoolValue == false && currentQuestion.NextQuestionAlternative.HasValue)
+                {
+                    takeAlternativePath = true;
+                }
+
+                break;
+
+            case Models.FormQuestionType.FileUpload:
+                bool explicitlyAnsweredNo = answer?.Answer?.BoolValue == false;
+
+                if (!currentQuestion.IsRequired && (explicitlyAnsweredNo) &&
+                    currentQuestion.NextQuestionAlternative.HasValue)
+                {
+                    takeAlternativePath = true;
+                }
+
+                break;
+        }
+
+        Guid? nextQuestionId;
+        if (takeAlternativePath)
+        {
+            nextQuestionId = currentQuestion.NextQuestionAlternative;
+        }
+        else
+        {
+            nextQuestionId = currentQuestion.NextQuestion;
+        }
+
+        return nextQuestionId;
     }
 }
