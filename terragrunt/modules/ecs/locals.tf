@@ -59,6 +59,8 @@ locals {
     config.name
   ]
 
+  fts_log_groups = ["app", "clamav", "supervisor", "web"]
+
   waf_enabled = true
 
   # @TODO (ABN) DP-1747 Remove env-based logic and these locals as well as old source of FTS configs once migration is completed
