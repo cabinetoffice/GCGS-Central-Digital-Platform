@@ -32,7 +32,7 @@ module "ecs_service_fts_healthcheck" {
   ecs_service_base_sg_id = var.ecs_sg_id
   family                 = "app"
   healthcheck_path       = "/healthz.php"
-  host_port              = var.service_configs.fts_healthcheck.port
+  host_port              = var.service_configs.fts_healthcheck.port_host
   memory                 = var.service_configs.fts_healthcheck.memory
   name                   = var.service_configs.fts_healthcheck.name
   private_subnet_ids     = var.private_subnet_ids

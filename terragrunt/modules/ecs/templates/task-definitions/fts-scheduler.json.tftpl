@@ -4,6 +4,13 @@
     "image": "${image}:${service_version}",
     "cpu": ${cpu},
     "memory": ${memory},
+    "healthCheck": {
+      "command": ["CMD", "/scheduler-healthcheck.sh"],
+      "interval": 30,
+      "timeout": 5,
+      "retries": 3,
+      "startPeriod": 10
+    },
     "portMappings": [
       {
         "containerPort": ${container_port},
