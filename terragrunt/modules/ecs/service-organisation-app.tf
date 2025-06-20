@@ -72,7 +72,7 @@ module "ecs_service_organisation_app" {
   ecs_listener_arn              = aws_lb_listener.ecs.arn
   ecs_service_base_sg_id        = var.ecs_sg_id
   family                        = "app"
-  host_port                     = var.service_configs.organisation_app.port
+  host_port                     = var.service_configs.organisation_app.port # this needs to stay and can't be same as host, 80
   is_frontend_app               = true
   memory                        = var.service_configs.organisation_app.memory
   name                          = var.service_configs.organisation_app.name
