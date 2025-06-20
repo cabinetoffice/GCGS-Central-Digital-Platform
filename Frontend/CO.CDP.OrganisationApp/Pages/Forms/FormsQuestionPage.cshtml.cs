@@ -206,7 +206,11 @@ public class FormsQuestionPageModel(
         }
         else
         {
-            if (string.IsNullOrEmpty(FileUploadModel?.UploadedFile?.FileName) && !string.IsNullOrEmpty(oldAnswerObject?.TextValue))
+            if (FileUploadModel?.HasValue == false)
+            {
+                answer = null;
+            }
+            else if (!string.IsNullOrEmpty(oldAnswerObject?.TextValue))
             {
                 answer ??= new FormAnswer();
                 answer.TextValue = oldAnswerObject.TextValue;
@@ -415,26 +419,6 @@ public class FormsQuestionPageModel(
         return state.Answers?.FirstOrDefault(a => a.QuestionId == question.Id)?.Answer;
     }
 
-    private void SaveAnswerToTempData(FormQuestion question, FormAnswer? answer)
-    {
-        var state = tempDataService.PeekOrDefault<FormQuestionAnswerState>(FormQuestionAnswerStateKey);
-
-        var questionAnswer = state.Answers.FirstOrDefault(a => a.QuestionId == question.Id);
-        if (questionAnswer == null)
-        {
-            questionAnswer = new QuestionAnswer
-            {
-                QuestionId = question.Id,
-                AnswerId = Guid.NewGuid()
-            };
-            state.Answers.Add(questionAnswer);
-        }
-
-        questionAnswer.Answer = answer;
-
-        tempDataService.Put(FormQuestionAnswerStateKey, state);
-    }
-
     private void HandleBranchingLogicAnswerChange(FormQuestion currentQuestion, FormAnswer? oldAnswerObject, List<FormQuestion> allQuestionsInSection)
     {
         if (!currentQuestion.NextQuestionAlternative.HasValue)
@@ -454,11 +438,9 @@ public class FormsQuestionPageModel(
 
             case FormQuestionType.FileUpload:
                 oldAnswerIsYes = !string.IsNullOrEmpty(oldAnswerObject?.TextValue);
-
                 var newFileIsUploaded = FileUploadModel?.UploadedFile is { Length: > 0 };
-                var isRemovedViaNoChoice = !currentQuestion.IsRequired && FileUploadModel?.GetAnswer()?.BoolValue == false;
-
-                newAnswerIsYes = newFileIsUploaded || (oldAnswerIsYes && !isRemovedViaNoChoice);
+                var existingFileIsKept = !string.IsNullOrEmpty(FileUploadModel?.UploadedFileName) && FileUploadModel?.HasValue != false;
+                newAnswerIsYes = newFileIsUploaded || existingFileIsKept;
                 break;
 
             default:
@@ -473,6 +455,26 @@ public class FormsQuestionPageModel(
         {
             RemoveAnswersFromBranchPath(currentQuestion.NextQuestionAlternative.Value, allQuestionsInSection);
         }
+    }
+
+    private void SaveAnswerToTempData(FormQuestion question, FormAnswer? answer)
+    {
+        var state = tempDataService.PeekOrDefault<FormQuestionAnswerState>(FormQuestionAnswerStateKey);
+
+        var questionAnswer = state.Answers.FirstOrDefault(a => a.QuestionId == question.Id);
+        if (questionAnswer == null)
+        {
+            questionAnswer = new QuestionAnswer
+            {
+                QuestionId = question.Id,
+                AnswerId = Guid.NewGuid()
+            };
+            state.Answers.Add(questionAnswer);
+        }
+
+        questionAnswer.Answer = answer;
+
+        tempDataService.Put(FormQuestionAnswerStateKey, state);
     }
 
     private void RemoveAnswersFromBranchPath(Guid branchStartNodeId, List<FormQuestion> allQuestionsInSection)
