@@ -71,7 +71,6 @@ output "services_target_group_arn_suffix_map" {
     (module.ecs_service_person.service_name)                               = module.ecs_service_person.service_target_group_arn_suffix,
     (module.ecs_service_tenant.service_name)                               = module.ecs_service_tenant.service_target_group_arn_suffix,
     (module.ecs_service_fts.service_name)                                  = module.ecs_service_fts.service_target_group_arn_suffix,
-    (module.ecs_service_fts_scheduler.service_name)                        = module.ecs_service_fts_scheduler.service_target_group_arn_suffix,
     (module.ecs_service_fts.service_name)                                  = module.ecs_service_fts.service_target_group_arn_suffix,
   }
 }
