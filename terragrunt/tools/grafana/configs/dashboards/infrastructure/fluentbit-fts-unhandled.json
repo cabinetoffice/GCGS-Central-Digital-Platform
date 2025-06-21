@@ -63,7 +63,7 @@
             {
               "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
               "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/fluentbit/fts/unhandled:*",
-              "name": "/ecs/fluentbit"
+              "name": "/ecs/fluentbit/fts/unhandled"
             }
           ],
           "matchExact": true,
@@ -92,12 +92,12 @@
     "list": []
   },
   "time": {
-    "from": "now-6h",
+    "from": "now-1h",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "browser",
-  "title": "FluentBit",
-  "uid": "fluentbit",
+  "title": "FluentBit FTS Unhandled Logs",
+  "uid": "fluentbit-fts-unhandled-logs",
   "version": 5
 }
