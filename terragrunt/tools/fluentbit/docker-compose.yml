@@ -1,5 +1,6 @@
 services:
   fluentbit:
+    platform: linux/amd64
     build: .
     image: cabinetoffice/cdp-fluentbit:latest
     ports:

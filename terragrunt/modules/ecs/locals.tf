@@ -59,7 +59,7 @@ locals {
     config.name
   ]
 
-  fts_log_groups = ["app", "clamav", "supervisor", "web"]
+  fts_log_groups = ["app", "clamav", "supervisor", "unhandled", "web"]
 
   waf_enabled = true
 
