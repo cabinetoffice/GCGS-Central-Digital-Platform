@@ -1,6 +1,6 @@
 data "aws_caller_identity" "current" {}
 
-data "aws_iam_policy_document" "bucket" {
+data "aws_iam_policy_document" "private" {
 
   statement {
     sid    = "EnforceSSL"
@@ -14,8 +14,8 @@ data "aws_iam_policy_document" "bucket" {
     actions = ["s3:*"]
 
     resources = [
-      aws_s3_bucket.bucket.arn,
-      "${aws_s3_bucket.bucket.arn}/*"
+      aws_s3_bucket.this.arn,
+      "${aws_s3_bucket.this.arn}/*"
     ]
 
     condition {
@@ -44,8 +44,8 @@ data "aws_iam_policy_document" "bucket" {
         "s3:PutObject",
       ]
       resources = [
-        aws_s3_bucket.bucket.arn,
-        "${aws_s3_bucket.bucket.arn}/*"
+        aws_s3_bucket.this.arn,
+        "${aws_s3_bucket.this.arn}/*"
       ]
     }
   }
@@ -60,7 +60,7 @@ data "aws_iam_policy_document" "bucket" {
         identifiers = [statement.value]
       }
       actions = ["s3:GetObject"]
-      resources = ["${aws_s3_bucket.bucket.arn}/*"]
+      resources = ["${aws_s3_bucket.this.arn}/*"]
     }
   }
 
@@ -74,8 +74,28 @@ data "aws_iam_policy_document" "bucket" {
         identifiers = [statement.value]
       }
       actions = ["s3:PutObject"]
-      resources = ["${aws_s3_bucket.bucket.arn}/*"]
+      resources = ["${aws_s3_bucket.this.arn}/*"]
     }
   }
 }
 
+data "aws_iam_policy_document" "public" {
+
+  statement {
+    sid    = "PublicAccess"
+    effect = "Allow"
+
+    principals {
+      type        = "*"
+      identifiers = ["*"]
+    }
+
+    actions = ["s3:GetObject"]
+
+    resources = [
+      aws_s3_bucket.this.arn,
+      "${aws_s3_bucket.this.arn}/*"
+    ]
+
+  }
+}
