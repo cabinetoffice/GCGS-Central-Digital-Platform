@@ -21,6 +21,12 @@ variable "enable_presigned_urls" {
   description = "Allow pre-signed URLs for S3 buckets"
 }
 
+variable "is_public" {
+  description = "Whether the bucket should be publicly accessible (e.g. for static website hosting)"
+  type        = bool
+  default     = false
+}
+
 variable "kms_key_admin_role" {
   default     = "bootstrap"
   description = "IAM role name to administrate the key"

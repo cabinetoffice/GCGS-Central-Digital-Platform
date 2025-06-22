@@ -1,7 +1,3 @@
-import {
-  id = var.bucket_name
-  to = aws_s3_bucket.this.id
-}
 resource "aws_s3_bucket" "this" {
   bucket = var.bucket_name
 
@@ -11,10 +7,6 @@ resource "aws_s3_bucket" "this" {
       Name = var.bucket_name
     }
   )
-
-  lifecycle {
-    ignore_changes = [bucket]
-  }
 }
 
 
