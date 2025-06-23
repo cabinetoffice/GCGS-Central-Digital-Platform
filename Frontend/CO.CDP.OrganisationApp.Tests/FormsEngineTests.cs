@@ -994,4 +994,285 @@ public class FormsEngineTests
         result.Should().NotBeNull();
         result!.Id.Should().Be(question1.Id);
     }
+
+    [Fact]
+    public void IsQuestionAnswered_NonRequiredTextQuestion_WithFalseBoolValue_ShouldReturnTrue()
+    {
+        var questionId = Guid.NewGuid();
+        var textQuestion = new FormQuestion
+        {
+            Id = questionId,
+            Type = FormQuestionType.Text,
+            IsRequired = false,
+            Options = new FormQuestionOptions()
+        };
+
+        var answerState = new FormQuestionAnswerState
+        {
+            Answers = new List<QuestionAnswer>
+            {
+                new()
+                {
+                    QuestionId = questionId,
+                    Answer = new FormAnswer { BoolValue = false }
+                }
+            }
+        };
+
+        var methodInfo = typeof(FormsEngine).GetMethod("IsQuestionAnswered",
+            System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+
+        var result = (bool)methodInfo.Invoke(_formsEngine, new object[] { textQuestion, answerState });
+
+        result.Should().BeTrue("because a non-required Text question with a false BoolValue should be considered answered");
+    }
+
+    [Fact]
+    public void IsQuestionAnswered_NonRequiredFileUploadQuestion_WithFalseBoolValue_ShouldReturnTrue()
+    {
+        var questionId = Guid.NewGuid();
+        var fileUploadQuestion = new FormQuestion
+        {
+            Id = questionId,
+            Type = FormQuestionType.FileUpload,
+            IsRequired = false,
+            Options = new FormQuestionOptions()
+        };
+
+        var answerState = new FormQuestionAnswerState
+        {
+            Answers = new List<QuestionAnswer>
+            {
+                new()
+                {
+                    QuestionId = questionId,
+                    Answer = new FormAnswer { BoolValue = false }
+                }
+            }
+        };
+
+        var methodInfo = typeof(FormsEngine).GetMethod("IsQuestionAnswered",
+            System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+
+        var result = (bool)methodInfo.Invoke(_formsEngine, new object[] { fileUploadQuestion, answerState });
+
+        result.Should().BeTrue("because a non-required FileUpload question with a false BoolValue should be considered answered");
+    }
+
+    [Fact]
+    public void IsQuestionAnswered_NonRequiredDateQuestion_WithFalseBoolValue_ShouldReturnTrue()
+    {
+        var questionId = Guid.NewGuid();
+        var dateQuestion = new FormQuestion
+        {
+            Id = questionId,
+            Type = FormQuestionType.Date,
+            IsRequired = false,
+            Options = new FormQuestionOptions()
+        };
+
+        var answerState = new FormQuestionAnswerState
+        {
+            Answers = new List<QuestionAnswer>
+            {
+                new()
+                {
+                    QuestionId = questionId,
+                    Answer = new FormAnswer { BoolValue = false }
+                }
+            }
+        };
+
+        var methodInfo = typeof(FormsEngine).GetMethod("IsQuestionAnswered",
+            System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+
+        var result = (bool)methodInfo.Invoke(_formsEngine, new object[] { dateQuestion, answerState });
+
+        result.Should().BeTrue("because a non-required Date question with a false BoolValue should be considered answered");
+    }
+
+    [Fact]
+    public void IsQuestionAnswered_NonRequiredUrlQuestion_WithFalseBoolValue_ShouldReturnTrue()
+    {
+        var questionId = Guid.NewGuid();
+        var urlQuestion = new FormQuestion
+        {
+            Id = questionId,
+            Type = FormQuestionType.Url,
+            IsRequired = false,
+            Options = new FormQuestionOptions()
+        };
+
+        var answerState = new FormQuestionAnswerState
+        {
+            Answers = new List<QuestionAnswer>
+            {
+                new()
+                {
+                    QuestionId = questionId,
+                    Answer = new FormAnswer { BoolValue = false }
+                }
+            }
+        };
+
+        var methodInfo = typeof(FormsEngine).GetMethod("IsQuestionAnswered",
+            System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+
+        var result = (bool)methodInfo.Invoke(_formsEngine, new object[] { urlQuestion, answerState });
+
+        result.Should().BeTrue("because a non-required URL question with a false BoolValue should be considered answered");
+    }
+
+    [Fact]
+    public void IsQuestionAnswered_RequiredQuestion_WithFalseBoolValue_ShouldNotApplySpecialRule()
+    {
+        var questionId = Guid.NewGuid();
+        var textQuestion = new FormQuestion
+        {
+            Id = questionId,
+            Type = FormQuestionType.Text,
+            IsRequired = true,
+            Options = new FormQuestionOptions()
+        };
+
+        var answerState = new FormQuestionAnswerState
+        {
+            Answers = new List<QuestionAnswer>
+            {
+                new()
+                {
+                    QuestionId = questionId,
+                    Answer = new FormAnswer { BoolValue = false }
+                }
+            }
+        };
+
+        var methodInfo = typeof(FormsEngine).GetMethod("IsQuestionAnswered",
+            System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+
+        var result = (bool)methodInfo.Invoke(_formsEngine, new object[] { textQuestion, answerState });
+
+        result.Should().BeFalse("because the special rule for false BoolValue should only apply to non-required questions");
+    }
+
+    [Fact]
+    public void IsQuestionAnswered_NonRequiredQuestion_WithNullBoolValue_ShouldNotApplySpecialRule()
+    {
+        var questionId = Guid.NewGuid();
+        var textQuestion = new FormQuestion
+        {
+            Id = questionId,
+            Type = FormQuestionType.Text,
+            IsRequired = false,
+            Options = new FormQuestionOptions()
+        };
+
+        var answerState = new FormQuestionAnswerState
+        {
+            Answers = new List<QuestionAnswer>
+            {
+                new()
+                {
+                    QuestionId = questionId,
+                    Answer = new FormAnswer { TextValue = "" }
+                }
+            }
+        };
+
+        var methodInfo = typeof(FormsEngine).GetMethod("IsQuestionAnswered",
+            System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+
+        var result = (bool)methodInfo.Invoke(_formsEngine, new object[] { textQuestion, answerState });
+
+        result.Should().BeFalse("because the special rule should only apply when BoolValue is explicitly false");
+    }
+
+    [Fact]
+    public void IsQuestionAnswered_NonRequiredQuestion_WithTrueBoolValue_ShouldNotApplySpecialRule()
+    {
+        var questionId = Guid.NewGuid();
+        var textQuestion = new FormQuestion
+        {
+            Id = questionId,
+            Type = FormQuestionType.Text,
+            IsRequired = false,
+            Options = new FormQuestionOptions()
+        };
+
+        var answerState = new FormQuestionAnswerState
+        {
+            Answers = new List<QuestionAnswer>
+            {
+                new()
+                {
+                    QuestionId = questionId,
+                    Answer = new FormAnswer { BoolValue = true }
+                }
+            }
+        };
+
+        var methodInfo = typeof(FormsEngine).GetMethod("IsQuestionAnswered",
+            System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+
+        var result = (bool)methodInfo.Invoke(_formsEngine, new object[] { textQuestion, answerState });
+
+        result.Should().BeFalse("because the special rule should only apply when BoolValue is explicitly false, not true");
+    }
+
+    [Fact]
+    public void IsQuestionAnswered_NonRequiredQuestion_WithNoAnswer_ShouldNotApplySpecialRule()
+    {
+        var questionId = Guid.NewGuid();
+        var textQuestion = new FormQuestion
+        {
+            Id = questionId,
+            Type = FormQuestionType.Text,
+            IsRequired = false,
+            Options = new FormQuestionOptions()
+        };
+
+        var answerState = new FormQuestionAnswerState
+        {
+            Answers = []
+        };
+
+        var methodInfo = typeof(FormsEngine).GetMethod("IsQuestionAnswered",
+            System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+
+        var result = (bool)methodInfo.Invoke(_formsEngine, new object[] { textQuestion, answerState });
+
+        result.Should().BeFalse("because there is no answer to apply the special rule to");
+    }
+
+    [Fact]
+    public void IsQuestionAnswered_NonRequiredQuestion_WithNullAnswer_ShouldNotApplySpecialRule()
+    {
+        var questionId = Guid.NewGuid();
+        var textQuestion = new FormQuestion
+        {
+            Id = questionId,
+            Type = FormQuestionType.Text,
+            IsRequired = false,
+            Options = new FormQuestionOptions()
+        };
+
+        var answerState = new FormQuestionAnswerState
+        {
+            Answers = new List<QuestionAnswer>
+            {
+                new()
+                {
+                    QuestionId = questionId,
+                    Answer = null
+                }
+            }
+        };
+
+        var methodInfo = typeof(FormsEngine).GetMethod("IsQuestionAnswered",
+            System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+
+        var result = (bool)methodInfo.Invoke(_formsEngine, new object[] { textQuestion, answerState });
+
+        result.Should().BeFalse("because a null answer can't satisfy the pattern match for { BoolValue: false }");
+    }
 }

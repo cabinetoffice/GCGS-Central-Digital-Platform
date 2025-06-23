@@ -295,9 +295,15 @@ public class FormsEngine(
 
     private bool IsQuestionAnswered(Models.FormQuestion questionOnPath, FormQuestionAnswerState? answerState)
     {
+        var answer = answerState?.Answers.FirstOrDefault(a => a.QuestionId == questionOnPath.Id)?.Answer;
         if (questionOnPath.Type == Models.FormQuestionType.NoInput)
         {
             return answerState?.Answers.Any(a => a.QuestionId == questionOnPath.Id) ?? false;
+        }
+
+        if (!questionOnPath.IsRequired && answer is { BoolValue: false })
+        {
+            return true;
         }
 
         return answerState?.Answers.Any(a =>
