@@ -14,7 +14,6 @@ public class ExclusionsCheckAnswerPage
     // ✅ Page Locators
     private readonly string PageTitleSelector = "h1.govuk-fieldset__heading";
     private readonly string BackToSupplierInfoSelector = "a.govuk-back-link";
-    private readonly string SaveButtonSelector = "button.govuk-button[type='submit']";
 
     private readonly string UKexclusionChangeLinkSelector = "UKexclusion_1";
     private readonly string ExclusionappliesChangeLinkSelector = "Exclusionapplies_2";
@@ -101,7 +100,7 @@ public class ExclusionsCheckAnswerPage
     }
     public async Task ClickSave()
     {
-        await _page.ClickAsync(SaveButtonSelector);
+        await _page.GetByRole(AriaRole.Button, new() { Name = "Save" }).ClickAsync();
     }
 
     public async Task ClickBackToSupplierInformation()
