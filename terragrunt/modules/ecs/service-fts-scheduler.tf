@@ -3,7 +3,12 @@ module "ecs_service_fts_scheduler" {
 
   container_definitions = templatefile(
     "${path.module}/templates/task-definitions/${var.service_configs.fts_scheduler.name}.json.tftpl",
-    local.fts_scheduler_container_parameters
+    merge(
+      local.fts_scheduler_container_parameters,
+      {
+        aws_buckets_notices = module.s3_bucket_fts.bucket
+      }
+    )
   )
 
   cluster_id             = aws_ecs_cluster.this.id
