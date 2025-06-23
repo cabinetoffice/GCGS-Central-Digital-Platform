@@ -1457,8 +1457,16 @@ public class FormsEngineTests
         result!.Id.Should().Be(nextQuestionId, "because no file was uploaded but should still go to NextQuestion when NextQuestionAlternative doesn't exist");
     }
 
-        [Fact]
-    public async Task GetNextQuestion_YesNoInput_YesAnswer_ShouldReturnNextQuestion_WhenNextQuestionAlternativeExists()
+    [Theory]
+    [InlineData(FormQuestionType.YesOrNo, true, true, "Yes answer should go to NextQuestion even when NextQuestionAlternative exists")]
+    [InlineData(FormQuestionType.YesOrNo, false, false, "No answer should go to NextQuestionAlternative when it exists")]
+    [InlineData(FormQuestionType.FileUpload, true, true, "a file was uploaded and should go to NextQuestion even when NextQuestionAlternative exists")]
+    [InlineData(FormQuestionType.FileUpload, false, false, "no file was uploaded and should go to NextQuestionAlternative when it exists")]
+    public async Task GetNextQuestion_ShouldNavigateToCorrectQuestion_WhenNextQuestionAlternativeExists(
+        FormQuestionType questionType,
+        bool positiveAnswer,
+        bool expectNextQuestion,
+        string becauseReason)
     {
         var (organisationId, formId, sectionId, _) = CreateTestGuids();
         var currentQuestionId = Guid.NewGuid();
@@ -1473,99 +1481,7 @@ public class FormsEngineTests
                 new FormQuestion
                 {
                     Id = currentQuestionId,
-                    Type = FormQuestionType.YesOrNo,
-                    NextQuestion = nextQuestionId,
-                    NextQuestionAlternative = nextQuestionAlternativeId
-                },
-                new FormQuestion { Id = nextQuestionId, Type = FormQuestionType.Text },
-                new FormQuestion { Id = nextQuestionAlternativeId, Type = FormQuestionType.Text }
-            }
-        };
-
-        var answerState = new FormQuestionAnswerState
-        {
-            Answers = new List<QuestionAnswer>
-            {
-                new QuestionAnswer
-                {
-                    QuestionId = currentQuestionId,
-                    Answer = new FormAnswer { BoolValue = true }
-                }
-            }
-        };
-
-        _tempDataServiceMock.Setup(t => t.Peek<SectionQuestionsResponse>(It.IsAny<string>()))
-            .Returns(sectionResponse);
-
-        var result = await _formsEngine.GetNextQuestion(organisationId, formId, sectionId, currentQuestionId, answerState);
-
-        result.Should().NotBeNull("because a next question should be returned");
-        result!.Id.Should().Be(nextQuestionId, "because Yes answer should go to NextQuestion even when NextQuestionAlternative exists");
-    }
-
-    [Fact]
-    public async Task GetNextQuestion_YesNoInput_NoAnswer_ShouldReturnNextQuestionAlternative_WhenNextQuestionAlternativeExists()
-    {
-        var (organisationId, formId, sectionId, _) = CreateTestGuids();
-        var currentQuestionId = Guid.NewGuid();
-        var nextQuestionId = Guid.NewGuid();
-        var nextQuestionAlternativeId = Guid.NewGuid();
-
-        var sectionResponse = new SectionQuestionsResponse
-        {
-            Section = new FormSection { Id = sectionId, Title = "SectionTitle", AllowsMultipleAnswerSets = true },
-            Questions = new List<FormQuestion>
-            {
-                new FormQuestion
-                {
-                    Id = currentQuestionId,
-                    Type = FormQuestionType.YesOrNo,
-                    NextQuestion = nextQuestionId,
-                    NextQuestionAlternative = nextQuestionAlternativeId
-                },
-                new FormQuestion { Id = nextQuestionId, Type = FormQuestionType.Text },
-                new FormQuestion { Id = nextQuestionAlternativeId, Type = FormQuestionType.Text }
-            }
-        };
-
-        var answerState = new FormQuestionAnswerState
-        {
-            Answers = new List<QuestionAnswer>
-            {
-                new QuestionAnswer
-                {
-                    QuestionId = currentQuestionId,
-                    Answer = new FormAnswer { BoolValue = false }
-                }
-            }
-        };
-
-        _tempDataServiceMock.Setup(t => t.Peek<SectionQuestionsResponse>(It.IsAny<string>()))
-            .Returns(sectionResponse);
-
-        var result = await _formsEngine.GetNextQuestion(organisationId, formId, sectionId, currentQuestionId, answerState);
-
-        result.Should().NotBeNull("because a next question should be returned");
-        result!.Id.Should().Be(nextQuestionAlternativeId, "because No answer should go to NextQuestionAlternative when it exists");
-    }
-
-    [Fact]
-    public async Task GetNextQuestion_FileUpload_YesAnswer_ShouldReturnNextQuestion_WhenNextQuestionAlternativeExists()
-    {
-        var (organisationId, formId, sectionId, _) = CreateTestGuids();
-        var currentQuestionId = Guid.NewGuid();
-        var nextQuestionId = Guid.NewGuid();
-        var nextQuestionAlternativeId = Guid.NewGuid();
-
-        var sectionResponse = new SectionQuestionsResponse
-        {
-            Section = new FormSection { Id = sectionId, Title = "SectionTitle", AllowsMultipleAnswerSets = true },
-            Questions = new List<FormQuestion>
-            {
-                new FormQuestion
-                {
-                    Id = currentQuestionId,
-                    Type = FormQuestionType.FileUpload,
+                    Type = questionType,
                     NextQuestion = nextQuestionId,
                     NextQuestionAlternative = nextQuestionAlternativeId,
                     IsRequired = false
@@ -1579,14 +1495,7 @@ public class FormsEngineTests
         {
             Answers = new List<QuestionAnswer>
             {
-                new QuestionAnswer
-                {
-                    QuestionId = currentQuestionId,
-                    Answer = new FormAnswer
-                    {
-                        TextValue = "sample-file.pdf"
-                    }
-                }
+                CreateQuestionAnswer(currentQuestionId, questionType, positiveAnswer)
             }
         };
 
@@ -1596,16 +1505,23 @@ public class FormsEngineTests
         var result = await _formsEngine.GetNextQuestion(organisationId, formId, sectionId, currentQuestionId, answerState);
 
         result.Should().NotBeNull("because a next question should be returned");
-        result!.Id.Should().Be(nextQuestionId, "because a file was uploaded and should go to NextQuestion even when NextQuestionAlternative exists");
+        var expectedQuestionId = expectNextQuestion ? nextQuestionId : nextQuestionAlternativeId;
+        result!.Id.Should().Be(expectedQuestionId, $"because {becauseReason}");
     }
 
-    [Fact]
-    public async Task GetNextQuestion_FileUpload_NoAnswer_ShouldReturnNextQuestionAlternative_WhenNextQuestionAlternativeExists()
+    [Theory]
+    [InlineData(FormQuestionType.YesOrNo, true, "Yes answer should go to NextQuestion when NextQuestionAlternative doesn't exist")]
+    [InlineData(FormQuestionType.YesOrNo, false, "No answer should go to NextQuestion when NextQuestionAlternative doesn't exist")]
+    [InlineData(FormQuestionType.FileUpload, true, "a file was uploaded and should go to NextQuestion when NextQuestionAlternative doesn't exist")]
+    [InlineData(FormQuestionType.FileUpload, false, "no file was uploaded but should still go to NextQuestion when NextQuestionAlternative doesn't exist")]
+    public async Task GetNextQuestion_ShouldNavigateToNextQuestion_WhenNextQuestionAlternativeDoesNotExist(
+        FormQuestionType questionType,
+        bool boolValue,
+        string becauseReason)
     {
         var (organisationId, formId, sectionId, _) = CreateTestGuids();
         var currentQuestionId = Guid.NewGuid();
         var nextQuestionId = Guid.NewGuid();
-        var nextQuestionAlternativeId = Guid.NewGuid();
 
         var sectionResponse = new SectionQuestionsResponse
         {
@@ -1615,13 +1531,11 @@ public class FormsEngineTests
                 new FormQuestion
                 {
                     Id = currentQuestionId,
-                    Type = FormQuestionType.FileUpload,
+                    Type = questionType,
                     NextQuestion = nextQuestionId,
-                    NextQuestionAlternative = nextQuestionAlternativeId,
                     IsRequired = false
                 },
-                new FormQuestion { Id = nextQuestionId, Type = FormQuestionType.Text },
-                new FormQuestion { Id = nextQuestionAlternativeId, Type = FormQuestionType.Text }
+                new FormQuestion { Id = nextQuestionId, Type = FormQuestionType.Text }
             }
         };
 
@@ -1629,15 +1543,7 @@ public class FormsEngineTests
         {
             Answers = new List<QuestionAnswer>
             {
-                new QuestionAnswer
-                {
-                    QuestionId = currentQuestionId,
-                    Answer = new FormAnswer
-                    {
-                        BoolValue = false,
-                        TextValue = null
-                    }
-                }
+                CreateQuestionAnswer(currentQuestionId, questionType, boolValue)
             }
         };
 
@@ -1647,6 +1553,26 @@ public class FormsEngineTests
         var result = await _formsEngine.GetNextQuestion(organisationId, formId, sectionId, currentQuestionId, answerState);
 
         result.Should().NotBeNull("because a next question should be returned");
-        result!.Id.Should().Be(nextQuestionAlternativeId, "because no file was uploaded and should go to NextQuestionAlternative when it exists");
+        result!.Id.Should().Be(nextQuestionId, $"because {becauseReason}");
+    }
+
+    private static QuestionAnswer CreateQuestionAnswer(Guid questionId, FormQuestionType questionType, bool boolValue)
+    {
+        return questionType switch
+        {
+            FormQuestionType.YesOrNo => new QuestionAnswer
+            {
+                QuestionId = questionId,
+                Answer = new FormAnswer { BoolValue = boolValue }
+            },
+            FormQuestionType.FileUpload => new QuestionAnswer
+            {
+                QuestionId = questionId,
+                Answer = boolValue
+                    ? new FormAnswer { TextValue = "sample-file.pdf" }
+                    : new FormAnswer { BoolValue = false, TextValue = null }
+            },
+            _ => throw new ArgumentException($"Unsupported question type: {questionType}", nameof(questionType))
+        };
     }
 }
