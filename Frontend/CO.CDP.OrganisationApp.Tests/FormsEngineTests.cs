@@ -1456,4 +1456,197 @@ public class FormsEngineTests
         result.Should().NotBeNull("because a next question should be returned");
         result!.Id.Should().Be(nextQuestionId, "because no file was uploaded but should still go to NextQuestion when NextQuestionAlternative doesn't exist");
     }
+
+        [Fact]
+    public async Task GetNextQuestion_YesNoInput_YesAnswer_ShouldReturnNextQuestion_WhenNextQuestionAlternativeExists()
+    {
+        var (organisationId, formId, sectionId, _) = CreateTestGuids();
+        var currentQuestionId = Guid.NewGuid();
+        var nextQuestionId = Guid.NewGuid();
+        var nextQuestionAlternativeId = Guid.NewGuid();
+
+        var sectionResponse = new SectionQuestionsResponse
+        {
+            Section = new FormSection { Id = sectionId, Title = "SectionTitle", AllowsMultipleAnswerSets = true },
+            Questions = new List<FormQuestion>
+            {
+                new FormQuestion
+                {
+                    Id = currentQuestionId,
+                    Type = FormQuestionType.YesOrNo,
+                    NextQuestion = nextQuestionId,
+                    NextQuestionAlternative = nextQuestionAlternativeId
+                },
+                new FormQuestion { Id = nextQuestionId, Type = FormQuestionType.Text },
+                new FormQuestion { Id = nextQuestionAlternativeId, Type = FormQuestionType.Text }
+            }
+        };
+
+        var answerState = new FormQuestionAnswerState
+        {
+            Answers = new List<QuestionAnswer>
+            {
+                new QuestionAnswer
+                {
+                    QuestionId = currentQuestionId,
+                    Answer = new FormAnswer { BoolValue = true }
+                }
+            }
+        };
+
+        _tempDataServiceMock.Setup(t => t.Peek<SectionQuestionsResponse>(It.IsAny<string>()))
+            .Returns(sectionResponse);
+
+        var result = await _formsEngine.GetNextQuestion(organisationId, formId, sectionId, currentQuestionId, answerState);
+
+        result.Should().NotBeNull("because a next question should be returned");
+        result!.Id.Should().Be(nextQuestionId, "because Yes answer should go to NextQuestion even when NextQuestionAlternative exists");
+    }
+
+    [Fact]
+    public async Task GetNextQuestion_YesNoInput_NoAnswer_ShouldReturnNextQuestionAlternative_WhenNextQuestionAlternativeExists()
+    {
+        var (organisationId, formId, sectionId, _) = CreateTestGuids();
+        var currentQuestionId = Guid.NewGuid();
+        var nextQuestionId = Guid.NewGuid();
+        var nextQuestionAlternativeId = Guid.NewGuid();
+
+        var sectionResponse = new SectionQuestionsResponse
+        {
+            Section = new FormSection { Id = sectionId, Title = "SectionTitle", AllowsMultipleAnswerSets = true },
+            Questions = new List<FormQuestion>
+            {
+                new FormQuestion
+                {
+                    Id = currentQuestionId,
+                    Type = FormQuestionType.YesOrNo,
+                    NextQuestion = nextQuestionId,
+                    NextQuestionAlternative = nextQuestionAlternativeId
+                },
+                new FormQuestion { Id = nextQuestionId, Type = FormQuestionType.Text },
+                new FormQuestion { Id = nextQuestionAlternativeId, Type = FormQuestionType.Text }
+            }
+        };
+
+        var answerState = new FormQuestionAnswerState
+        {
+            Answers = new List<QuestionAnswer>
+            {
+                new QuestionAnswer
+                {
+                    QuestionId = currentQuestionId,
+                    Answer = new FormAnswer { BoolValue = false }
+                }
+            }
+        };
+
+        _tempDataServiceMock.Setup(t => t.Peek<SectionQuestionsResponse>(It.IsAny<string>()))
+            .Returns(sectionResponse);
+
+        var result = await _formsEngine.GetNextQuestion(organisationId, formId, sectionId, currentQuestionId, answerState);
+
+        result.Should().NotBeNull("because a next question should be returned");
+        result!.Id.Should().Be(nextQuestionAlternativeId, "because No answer should go to NextQuestionAlternative when it exists");
+    }
+
+    [Fact]
+    public async Task GetNextQuestion_FileUpload_YesAnswer_ShouldReturnNextQuestion_WhenNextQuestionAlternativeExists()
+    {
+        var (organisationId, formId, sectionId, _) = CreateTestGuids();
+        var currentQuestionId = Guid.NewGuid();
+        var nextQuestionId = Guid.NewGuid();
+        var nextQuestionAlternativeId = Guid.NewGuid();
+
+        var sectionResponse = new SectionQuestionsResponse
+        {
+            Section = new FormSection { Id = sectionId, Title = "SectionTitle", AllowsMultipleAnswerSets = true },
+            Questions = new List<FormQuestion>
+            {
+                new FormQuestion
+                {
+                    Id = currentQuestionId,
+                    Type = FormQuestionType.FileUpload,
+                    NextQuestion = nextQuestionId,
+                    NextQuestionAlternative = nextQuestionAlternativeId,
+                    IsRequired = false
+                },
+                new FormQuestion { Id = nextQuestionId, Type = FormQuestionType.Text },
+                new FormQuestion { Id = nextQuestionAlternativeId, Type = FormQuestionType.Text }
+            }
+        };
+
+        var answerState = new FormQuestionAnswerState
+        {
+            Answers = new List<QuestionAnswer>
+            {
+                new QuestionAnswer
+                {
+                    QuestionId = currentQuestionId,
+                    Answer = new FormAnswer
+                    {
+                        TextValue = "sample-file.pdf"
+                    }
+                }
+            }
+        };
+
+        _tempDataServiceMock.Setup(t => t.Peek<SectionQuestionsResponse>(It.IsAny<string>()))
+            .Returns(sectionResponse);
+
+        var result = await _formsEngine.GetNextQuestion(organisationId, formId, sectionId, currentQuestionId, answerState);
+
+        result.Should().NotBeNull("because a next question should be returned");
+        result!.Id.Should().Be(nextQuestionId, "because a file was uploaded and should go to NextQuestion even when NextQuestionAlternative exists");
+    }
+
+    [Fact]
+    public async Task GetNextQuestion_FileUpload_NoAnswer_ShouldReturnNextQuestionAlternative_WhenNextQuestionAlternativeExists()
+    {
+        var (organisationId, formId, sectionId, _) = CreateTestGuids();
+        var currentQuestionId = Guid.NewGuid();
+        var nextQuestionId = Guid.NewGuid();
+        var nextQuestionAlternativeId = Guid.NewGuid();
+
+        var sectionResponse = new SectionQuestionsResponse
+        {
+            Section = new FormSection { Id = sectionId, Title = "SectionTitle", AllowsMultipleAnswerSets = true },
+            Questions = new List<FormQuestion>
+            {
+                new FormQuestion
+                {
+                    Id = currentQuestionId,
+                    Type = FormQuestionType.FileUpload,
+                    NextQuestion = nextQuestionId,
+                    NextQuestionAlternative = nextQuestionAlternativeId,
+                    IsRequired = false
+                },
+                new FormQuestion { Id = nextQuestionId, Type = FormQuestionType.Text },
+                new FormQuestion { Id = nextQuestionAlternativeId, Type = FormQuestionType.Text }
+            }
+        };
+
+        var answerState = new FormQuestionAnswerState
+        {
+            Answers = new List<QuestionAnswer>
+            {
+                new QuestionAnswer
+                {
+                    QuestionId = currentQuestionId,
+                    Answer = new FormAnswer
+                    {
+                        BoolValue = false,
+                        TextValue = null
+                    }
+                }
+            }
+        };
+
+        _tempDataServiceMock.Setup(t => t.Peek<SectionQuestionsResponse>(It.IsAny<string>()))
+            .Returns(sectionResponse);
+
+        var result = await _formsEngine.GetNextQuestion(organisationId, formId, sectionId, currentQuestionId, answerState);
+
+        result.Should().NotBeNull("because a next question should be returned");
+        result!.Id.Should().Be(nextQuestionAlternativeId, "because no file was uploaded and should go to NextQuestionAlternative when it exists");
+    }
 }
