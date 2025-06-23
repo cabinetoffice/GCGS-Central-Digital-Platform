@@ -1079,38 +1079,6 @@ public class FormsEngineTests
     }
 
     [Fact]
-    public void IsQuestionAnswered_NonRequiredQuestion_WithNullAnswer_ShouldReturnTrue()
-    {
-        var questionId = Guid.NewGuid();
-        var textQuestion = new FormQuestion
-        {
-            Id = questionId,
-            Type = FormQuestionType.Text,
-            IsRequired = false,
-            Options = new FormQuestionOptions()
-        };
-
-        var answerState = new FormQuestionAnswerState
-        {
-            Answers = new List<QuestionAnswer>
-            {
-                new()
-                {
-                    QuestionId = questionId,
-                    Answer = null
-                }
-            }
-        };
-
-        var methodInfo = typeof(FormsEngine).GetMethod("IsQuestionAnswered",
-            System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-
-        var result = (bool)methodInfo.Invoke(_formsEngine, new object[] { textQuestion, answerState });
-
-        result.Should().BeTrue("because a non-required question with a null answer is considered answered by visiting");
-    }
-
-    [Fact]
     public void IsQuestionAnswered_RequiredQuestion_WithNullAnswer_ShouldReturnFalse()
     {
         var questionId = Guid.NewGuid();

@@ -2,6 +2,7 @@ using CO.CDP.Forms.WebApiClient;
 using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.Pages.Forms.ChoiceProviderStrategies;
 using DataShareWebApiClient = CO.CDP.DataSharing.WebApiClient;
+using FormQuestionType = CO.CDP.OrganisationApp.Models.FormQuestionType;
 using SectionQuestionsResponse = CO.CDP.OrganisationApp.Models.SectionQuestionsResponse;
 
 namespace CO.CDP.OrganisationApp;
@@ -306,15 +307,6 @@ public class FormsEngine(
 
         if (questionAnswer.Answer == null)
         {
-            if (!questionOnPath.IsRequired &&
-                (questionOnPath.Type == FormQuestionType.Text ||
-                 questionOnPath.Type == FormQuestionType.Url ||
-                 questionOnPath.Type == FormQuestionType.FileUpload ||
-                 questionOnPath.Type == FormQuestionType.Date))
-            {
-                return true;
-            }
-
             return false;
         }
 
