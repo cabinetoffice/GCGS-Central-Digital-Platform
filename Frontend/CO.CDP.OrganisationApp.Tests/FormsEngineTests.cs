@@ -1541,6 +1541,58 @@ public class FormsEngineTests
         result.Type.Should().Be(FormQuestionType.NoInput, "because the next question is of type NoInput");
     }
 
+    [Theory]
+    [InlineData(FormQuestionType.YesOrNo, true)]
+    [InlineData(FormQuestionType.YesOrNo, false)]
+    [InlineData(FormQuestionType.FileUpload, true)]
+    [InlineData(FormQuestionType.FileUpload, false)]
+    public async Task GetPreviousQuestion_OnBranchingQuestion_ReturnsCorrectPreviousQuestion(
+        FormQuestionType questionType, bool boolValue)
+    {
+        var organisationId = Guid.NewGuid();
+        var formId = Guid.NewGuid();
+        var sectionId = Guid.NewGuid();
+
+        var qBranch = new FormQuestion
+        {
+            Id = Guid.NewGuid(), Title = "Branching Question", Type = questionType, Options = new FormQuestionOptions()
+        };
+        var qYesPath = new FormQuestion { Id = Guid.NewGuid(), Title = "Yes Path" };
+        var qNoPath = new FormQuestion { Id = Guid.NewGuid(), Title = "No Path" };
+
+        qBranch.NextQuestion = qYesPath.Id;
+        qBranch.NextQuestionAlternative = qNoPath.Id;
+
+        var questions = new List<FormQuestion> { qBranch, qYesPath, qNoPath };
+        var sectionQuestionsResponse = new SectionQuestionsResponse
+        {
+            Section = new FormSection { Id = sectionId, Title = "Test Section" },
+            Questions = questions
+        };
+
+        var answerState = new FormQuestionAnswerState
+        {
+            Answers = new List<QuestionAnswer>
+            {
+                new() { QuestionId = qBranch.Id, Answer = new FormAnswer { BoolValue = boolValue } }
+            }
+        };
+
+        _tempDataServiceMock.Setup(t => t.Peek<SectionQuestionsResponse>(It.IsAny<string>()))
+            .Returns(sectionQuestionsResponse);
+
+        var currentQuestionId = boolValue ? qYesPath.Id : qNoPath.Id;
+        var because = boolValue
+            ? "the 'yes' path was taken, so the branching question should be the previous one"
+            : "the 'no' path was taken, so the branching question should be the previous one";
+
+        var result =
+            await _formsEngine.GetPreviousQuestion(organisationId, formId, sectionId, currentQuestionId, answerState);
+
+        result.Should().NotBeNull();
+        result!.Id.Should().Be(qBranch.Id, because);
+    }
+
     private static QuestionAnswer CreateQuestionAnswer(Guid questionId, FormQuestionType questionType, bool boolValue)
     {
         return questionType switch
