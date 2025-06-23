@@ -1337,6 +1337,156 @@ public class FormsEngineTests
         result!.Id.Should().Be(nextQuestionId, $"because {becauseReason}");
     }
 
+    [Fact]
+    public async Task GetNextQuestion_ShouldReturnNoInputQuestion_WhenNextQuestionIsNoInput()
+    {
+        var (organisationId, formId, sectionId, _) = CreateTestGuids();
+        var currentQuestionId = Guid.NewGuid();
+        var noInputQuestionId = Guid.NewGuid();
+
+        var sectionResponse = new SectionQuestionsResponse
+        {
+            Section = new FormSection { Id = sectionId, Title = "SectionTitle", AllowsMultipleAnswerSets = true },
+            Questions = new List<FormQuestion>
+            {
+                new FormQuestion
+                {
+                    Id = currentQuestionId,
+                    Type = FormQuestionType.Text,
+                    NextQuestion = noInputQuestionId,
+                    IsRequired = false
+                },
+                new FormQuestion
+                {
+                    Id = noInputQuestionId,
+                    Type = FormQuestionType.NoInput,
+                    Title = "Information only question"
+                }
+            }
+        };
+
+        var answerState = new FormQuestionAnswerState
+        {
+            Answers = new List<QuestionAnswer>
+            {
+                new QuestionAnswer
+                {
+                    QuestionId = currentQuestionId,
+                    Answer = new FormAnswer { TextValue = "Some text answer" }
+                }
+            }
+        };
+
+        _tempDataServiceMock.Setup(t => t.Peek<SectionQuestionsResponse>(It.IsAny<string>()))
+            .Returns(sectionResponse);
+
+        var result = await _formsEngine.GetNextQuestion(organisationId, formId, sectionId, currentQuestionId, answerState);
+
+        result.Should().NotBeNull("because a NoInput question should be returned as the next question");
+        result!.Id.Should().Be(noInputQuestionId, "because the next question in the sequence is a NoInput question");
+        result.Type.Should().Be(FormQuestionType.NoInput, "because the next question is of type NoInput");
+    }
+
+    [Fact]
+    public async Task GetNextQuestion_ShouldReturnCheckYourAnswersQuestion_WhenNextQuestionIsCheckYourAnswers()
+    {
+        var (organisationId, formId, sectionId, _) = CreateTestGuids();
+        var currentQuestionId = Guid.NewGuid();
+        var checkYourAnswersQuestionId = Guid.NewGuid();
+
+        var sectionResponse = new SectionQuestionsResponse
+        {
+            Section = new FormSection { Id = sectionId, Title = "SectionTitle", AllowsMultipleAnswerSets = true },
+            Questions = new List<FormQuestion>
+            {
+                new FormQuestion
+                {
+                    Id = currentQuestionId,
+                    Type = FormQuestionType.Text,
+                    NextQuestion = checkYourAnswersQuestionId,
+                    IsRequired = false
+                },
+                new FormQuestion
+                {
+                    Id = checkYourAnswersQuestionId,
+                    Type = FormQuestionType.CheckYourAnswers,
+                    Title = "Check Your Answers"
+                }
+            }
+        };
+
+        var answerState = new FormQuestionAnswerState
+        {
+            Answers = new List<QuestionAnswer>
+            {
+                new QuestionAnswer
+                {
+                    QuestionId = currentQuestionId,
+                    Answer = new FormAnswer { TextValue = "Some text answer" }
+                }
+            }
+        };
+
+        _tempDataServiceMock.Setup(t => t.Peek<SectionQuestionsResponse>(It.IsAny<string>()))
+            .Returns(sectionResponse);
+
+        var result = await _formsEngine.GetNextQuestion(organisationId, formId, sectionId, currentQuestionId, answerState);
+
+        result.Should().NotBeNull("because a CheckYourAnswers question should be returned as the next question");
+        result!.Id.Should().Be(checkYourAnswersQuestionId, "because the next question in the sequence is a CheckYourAnswers question");
+        result.Type.Should().Be(FormQuestionType.CheckYourAnswers, "because the next question is of type CheckYourAnswers");
+    }
+
+    [Fact]
+    public async Task GetNextQuestion_YesNoInput_ShouldReturnNoInputQuestion_WhenNextQuestionIsNoInput()
+    {
+        var (organisationId, formId, sectionId, _) = CreateTestGuids();
+        var yesNoQuestionId = Guid.NewGuid();
+        var noInputQuestionId = Guid.NewGuid();
+
+        var sectionResponse = new SectionQuestionsResponse
+        {
+            Section = new FormSection { Id = sectionId, Title = "SectionTitle", AllowsMultipleAnswerSets = true },
+            Questions = new List<FormQuestion>
+            {
+                new FormQuestion
+                {
+                    Id = yesNoQuestionId,
+                    Type = FormQuestionType.YesOrNo,
+                    NextQuestion = noInputQuestionId,
+                    Title = "Yes/No question"
+                },
+                new FormQuestion
+                {
+                    Id = noInputQuestionId,
+                    Type = FormQuestionType.NoInput,
+                    Title = "Information only question"
+                }
+            }
+        };
+
+        var answerState = new FormQuestionAnswerState
+        {
+            Answers = new List<QuestionAnswer>
+            {
+                new QuestionAnswer
+                {
+                    QuestionId = yesNoQuestionId,
+                    Answer = new FormAnswer { BoolValue = true }
+                }
+            }
+        };
+
+        _tempDataServiceMock.Setup(t => t.Peek<SectionQuestionsResponse>(It.IsAny<string>()))
+            .Returns(sectionResponse);
+
+        var result = await _formsEngine.GetNextQuestion(organisationId, formId, sectionId, yesNoQuestionId, answerState);
+
+        result.Should().NotBeNull("because a question should be returned after answering a YesNo question");
+        result!.Id.Should().Be(noInputQuestionId, "because the next question after the YesNo question is a NoInput question");
+        result.Type.Should().Be(FormQuestionType.NoInput, "because the next question is of type NoInput");
+    }
+
     private static QuestionAnswer CreateQuestionAnswer(Guid questionId, FormQuestionType questionType, bool boolValue)
     {
         return questionType switch
