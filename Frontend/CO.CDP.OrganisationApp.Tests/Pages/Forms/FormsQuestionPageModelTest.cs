@@ -1686,7 +1686,7 @@ public class FormsQuestionPageModelTest
             .Returns(() => new FormQuestionAnswerState
                 { Answers = new List<QuestionAnswer>(initialAnswerState.Answers) });
 
-        _pageModel.FileUploadModel = new FormElementFileUploadModel { UploadedFile = null };
+        _pageModel.FileUploadModel = new FormElementFileUploadModel { UploadedFile = null, UploadedFileName = originalFileName, HasValue = true };
 
         _formsEngineMock.Setup(f => f.GetNextQuestion(
                 _pageModel.OrganisationId, _pageModel.FormId, _pageModel.SectionId, currentQuestionId,

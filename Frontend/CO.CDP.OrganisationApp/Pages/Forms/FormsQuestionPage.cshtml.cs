@@ -135,7 +135,7 @@ public class FormsQuestionPageModel(
 
             if (PartialViewModel.CurrentFormQuestionType == FormQuestionType.FileUpload)
             {
-                answer = await HandleFileUpload(currentQuestion, oldAnswerObject, answer);
+                answer = await HandleFileUpload();
             }
 
             SaveAnswerToTempData(currentQuestion, answer);
@@ -179,20 +179,20 @@ public class FormsQuestionPageModel(
         return RedirectToPage("FormsAnswerSetSummary", new { OrganisationId, FormId, SectionId });
     }
 
-    private async Task<FormAnswer?> HandleFileUpload(FormQuestion currentQuestion, FormAnswer? oldAnswerObject, FormAnswer? answer)
+    private async Task<FormAnswer?> HandleFileUpload()
     {
-        var response = FileUploadModel?.GetUploadedFileInfo();
-        if (response != null)
+        var newFileInfo = FileUploadModel?.GetUploadedFileInfo();
+        if (newFileInfo != null)
         {
-            using var stream = response.Value.formFile.OpenReadStream();
-            await fileHostManager.UploadFile(stream, response.Value.filename, response.Value.contentType);
+            using var stream = newFileInfo.Value.formFile.OpenReadStream();
+            await fileHostManager.UploadFile(stream, newFileInfo.Value.filename, newFileInfo.Value.contentType);
 
             var userInfo = await userInfoService.GetUserInfo();
             var organisation = await organisationClient.GetOrganisationAsync(OrganisationId);
 
-            await publisher.Publish(new ScanFile()
+            await publisher.Publish(new ScanFile
             {
-                QueueFileName = response.Value.filename,
+                QueueFileName = newFileInfo.Value.filename,
                 UploadedFileName = FileUploadModel!.UploadedFile!.FileName,
                 OrganisationId = OrganisationId,
                 OrganisationEmailAddress = organisation.ContactPoint.Email,
@@ -201,22 +201,20 @@ public class FormsQuestionPageModel(
                 FullName = userInfo.Name
             });
 
-            answer ??= new FormAnswer();
-            answer.TextValue = response.Value.filename;
+            return new FormAnswer { BoolValue = true, TextValue = newFileInfo.Value.filename };
         }
-        else
+
+        if (FileUploadModel?.HasValue == false)
         {
-            if (FileUploadModel?.HasValue == false)
-            {
-                answer = null;
-            }
-            else if (!string.IsNullOrEmpty(oldAnswerObject?.TextValue))
-            {
-                answer ??= new FormAnswer();
-                answer.TextValue = oldAnswerObject.TextValue;
-            }
+            return new FormAnswer { BoolValue = false };
         }
-        return answer;
+
+        if (!string.IsNullOrEmpty(FileUploadModel?.UploadedFileName))
+        {
+            return new FormAnswer { BoolValue = true, TextValue = FileUploadModel.UploadedFileName };
+        }
+
+        return null;
     }
 
     public async Task<IEnumerable<AnswerSummary>> GetAnswers()
