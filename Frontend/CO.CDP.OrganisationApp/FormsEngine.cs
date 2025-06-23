@@ -313,8 +313,9 @@ public class FormsEngine(
                 Models.FormQuestionType.Url => !string.IsNullOrWhiteSpace(a.Answer.TextValue),
                 Models.FormQuestionType.FileUpload => !string.IsNullOrWhiteSpace(a.Answer.TextValue),
                 Models.FormQuestionType.YesOrNo => a.Answer.BoolValue.HasValue,
-                Models.FormQuestionType.SingleChoice => !string.IsNullOrWhiteSpace(a.Answer.OptionValue) ||
-                                                        !string.IsNullOrWhiteSpace(a.Answer.TextValue),
+                Models.FormQuestionType.SingleChoice =>
+                    !string.IsNullOrWhiteSpace(a.Answer.OptionValue) ||
+                    !string.IsNullOrWhiteSpace(a.Answer.JsonValue),
                 Models.FormQuestionType.GroupedSingleChoice => !string.IsNullOrWhiteSpace(a.Answer.OptionValue),
                 Models.FormQuestionType.Date => a.Answer.DateValue.HasValue,
                 Models.FormQuestionType.CheckBox => a.Answer.BoolValue.HasValue,

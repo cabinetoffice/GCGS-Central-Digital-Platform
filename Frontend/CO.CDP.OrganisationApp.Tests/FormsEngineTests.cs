@@ -1366,6 +1366,48 @@ public class FormsEngineTests
     }
 
     [Theory]
+    [InlineData("option1", null, true, "SingleChoice with non-empty OptionValue should be considered answered")]
+    [InlineData(null, "{\"value\":\"data\"}", true, "SingleChoice with non-empty JsonValue should be considered answered")]
+    [InlineData("option1", "{\"value\":\"data\"}", true, "SingleChoice with both OptionValue and JsonValue should be considered answered")]
+    [InlineData(null, null, false, "SingleChoice with neither OptionValue nor JsonValue should be considered unanswered")]
+    [InlineData("", "", false, "SingleChoice with empty strings for both OptionValue and JsonValue should be considered unanswered")]
+    public void IsQuestionAnswered_SingleChoiceQuestion_ReturnsExpectedResult(string optionValue, string jsonValue,
+        bool expectedResult, string becauseMessage)
+    {
+        var questionId = Guid.NewGuid();
+        var singleChoiceQuestion = new FormQuestion
+        {
+            Id = questionId,
+            Type = FormQuestionType.SingleChoice,
+            IsRequired = true,
+            Options = new FormQuestionOptions()
+        };
+
+        var answerState = new FormQuestionAnswerState
+        {
+            Answers = new List<QuestionAnswer>
+            {
+                new()
+                {
+                    QuestionId = questionId,
+                    Answer = new FormAnswer
+                    {
+                        OptionValue = optionValue,
+                        JsonValue = jsonValue
+                    }
+                }
+            }
+        };
+
+        var methodInfo = typeof(FormsEngine).GetMethod("IsQuestionAnswered",
+            System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+
+        var result = (bool)methodInfo.Invoke(_formsEngine, new object[] { singleChoiceQuestion, answerState });
+
+        result.Should().Be(expectedResult, becauseMessage);
+    }
+
+    [Theory]
     [InlineData(FormQuestionType.YesOrNo, true, "Yes answer",
         "should be able to navigate back from a question that follows a YesNoInput with Yes answer")]
     [InlineData(FormQuestionType.YesOrNo, false, "No answer",
