@@ -315,7 +315,7 @@ public class FormsEngine(
                 Models.FormQuestionType.Text => !string.IsNullOrWhiteSpace(a.Answer.TextValue),
                 Models.FormQuestionType.MultiLine => !string.IsNullOrWhiteSpace(a.Answer.TextValue),
                 Models.FormQuestionType.Url => !string.IsNullOrWhiteSpace(a.Answer.TextValue),
-                Models.FormQuestionType.FileUpload => IsFileUploadAnswered(questionOnPath, a.Answer),
+                Models.FormQuestionType.FileUpload => !string.IsNullOrWhiteSpace(a.Answer.TextValue),
                 Models.FormQuestionType.YesOrNo => a.Answer.BoolValue.HasValue,
                 Models.FormQuestionType.SingleChoice => !string.IsNullOrWhiteSpace(a.Answer.OptionValue) ||
                                                         !string.IsNullOrWhiteSpace(a.Answer.TextValue),
@@ -326,16 +326,6 @@ public class FormsEngine(
                 _ => false
             };
         }) ?? false;
-    }
-
-    private bool IsFileUploadAnswered(Models.FormQuestion question, Models.FormAnswer answer)
-    {
-        if (question.IsRequired)
-        {
-            return !string.IsNullOrWhiteSpace(answer.TextValue);
-        }
-
-        return !string.IsNullOrWhiteSpace(answer.TextValue) || answer.BoolValue.HasValue;
     }
 
     private Guid? DetermineNextQuestionId(Models.FormQuestion currentQuestion, FormQuestionAnswerState? answerState)
