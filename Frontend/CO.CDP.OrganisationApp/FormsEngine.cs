@@ -297,32 +297,49 @@ public class FormsEngine(
             return answerState?.Answers.Any(a => a.QuestionId == questionOnPath.Id) ?? false;
         }
 
-        if (!questionOnPath.IsRequired && answer is { BoolValue: false })
+        var questionAnswer = answerState?.Answers.FirstOrDefault(a => a.QuestionId == questionOnPath.Id);
+
+        if (questionAnswer == null)
         {
-            return true;
+            return false;
         }
 
-        return answerState?.Answers.Any(a =>
+        if (questionAnswer.Answer == null)
         {
-            if (a.QuestionId != questionOnPath.Id) return false;
-
-            return questionOnPath.Type switch
+            if (!questionOnPath.IsRequired &&
+                (questionOnPath.Type == FormQuestionType.Text ||
+                 questionOnPath.Type == FormQuestionType.Url ||
+                 questionOnPath.Type == FormQuestionType.FileUpload ||
+                 questionOnPath.Type == FormQuestionType.Date))
             {
-                Models.FormQuestionType.Text => !string.IsNullOrWhiteSpace(a.Answer?.TextValue),
-                Models.FormQuestionType.MultiLine => !string.IsNullOrWhiteSpace(a.Answer?.TextValue),
-                Models.FormQuestionType.Url => !string.IsNullOrWhiteSpace(a.Answer?.TextValue),
-                Models.FormQuestionType.FileUpload => !string.IsNullOrWhiteSpace(a.Answer?.TextValue),
-                Models.FormQuestionType.YesOrNo => a.Answer?.BoolValue.HasValue ?? false,
-                Models.FormQuestionType.SingleChoice =>
-                    !string.IsNullOrWhiteSpace(a.Answer?.OptionValue) ||
-                    !string.IsNullOrWhiteSpace(a.Answer?.JsonValue),
-                Models.FormQuestionType.GroupedSingleChoice => !string.IsNullOrWhiteSpace(a.Answer?.OptionValue),
-                Models.FormQuestionType.Date => a.Answer?.DateValue.HasValue ?? false,
-                Models.FormQuestionType.CheckBox => a.Answer?.BoolValue.HasValue ?? false,
-                Models.FormQuestionType.Address => IsAddressAnswered(a.Answer?.AddressValue),
-                _ => false
-            };
-        }) ?? false;
+                return true;
+            }
+
+            return false;
+        }
+
+        var result = questionOnPath.Type switch
+        {
+            FormQuestionType.Text => !string.IsNullOrWhiteSpace(questionAnswer.Answer.TextValue) ||
+                                     (!questionOnPath.IsRequired && questionAnswer.Answer.BoolValue == false),
+            FormQuestionType.MultiLine => !string.IsNullOrWhiteSpace(questionAnswer.Answer.TextValue),
+            FormQuestionType.Url => !string.IsNullOrWhiteSpace(questionAnswer.Answer.TextValue) ||
+                                    (!questionOnPath.IsRequired && questionAnswer.Answer.BoolValue == false),
+            FormQuestionType.FileUpload => !string.IsNullOrWhiteSpace(questionAnswer.Answer.TextValue) ||
+                                           (!questionOnPath.IsRequired && questionAnswer.Answer.BoolValue == false),
+            FormQuestionType.YesOrNo => questionAnswer.Answer.BoolValue.HasValue,
+            FormQuestionType.SingleChoice =>
+                !string.IsNullOrWhiteSpace(questionAnswer.Answer.OptionValue) ||
+                !string.IsNullOrWhiteSpace(questionAnswer.Answer.JsonValue),
+            FormQuestionType.GroupedSingleChoice => !string.IsNullOrWhiteSpace(questionAnswer.Answer.OptionValue),
+            FormQuestionType.Date => questionAnswer.Answer.DateValue.HasValue ||
+                                     (!questionOnPath.IsRequired && questionAnswer.Answer.BoolValue == false),
+            FormQuestionType.CheckBox => questionAnswer.Answer.BoolValue.HasValue,
+            FormQuestionType.Address => IsAddressAnswered(questionAnswer.Answer.AddressValue),
+            _ => false
+        };
+
+        return result;
     }
 
     private Guid? DetermineNextQuestionId(Models.FormQuestion currentQuestion, FormQuestionAnswerState? answerState)
