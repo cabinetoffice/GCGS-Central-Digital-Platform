@@ -1,8 +1,3 @@
-import {
-  id = "${local.name_prefix}-${var.environment}-deprecated-db-backup-${data.aws_caller_identity.current.account_id}"
-  to = module.deprecated_db_backup.aws_s3_bucket.this
-}
-
 module "deprecated_db_backup" {
   source             = "../s3-bucket"
   bucket_name        = "${local.name_prefix}-${var.environment}-deprecated-db-backup-${data.aws_caller_identity.current.account_id}"
