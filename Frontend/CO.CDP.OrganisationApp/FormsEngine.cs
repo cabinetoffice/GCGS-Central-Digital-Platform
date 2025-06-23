@@ -104,10 +104,6 @@ public class FormsEngine(
         Guid currentQuestionId, FormQuestionAnswerState? answerState)
     {
         var section = await GetFormSectionAsync(organisationId, formId, sectionId);
-        if (section.Questions == null)
-        {
-            return null;
-        }
 
         var path = BuildPathToQuestion(section.Questions, currentQuestionId,
             answerState ?? new FormQuestionAnswerState());
@@ -118,7 +114,7 @@ public class FormsEngine(
         Guid? questionId)
     {
         var section = await GetFormSectionAsync(organisationId, formId, sectionId);
-        if (section.Questions == null || !section.Questions.Any())
+        if (!section.Questions.Any())
         {
             return null;
         }
@@ -288,7 +284,7 @@ public class FormsEngine(
             if ((alternativeTargets.Contains(question.Id) && !mainPathQuestionIds.Contains(question.Id)) ||
                 (!mainPathQuestionIds.Contains(question.Id) && question.NextQuestion.HasValue))
             {
-                question.BranchType = Models.FormQuestionBranchType.Alternative;
+                question.BranchType = FormQuestionBranchType.Alternative;
             }
         }
     }
@@ -355,15 +351,7 @@ public class FormsEngine(
                 break;
         }
 
-        Guid? nextQuestionId;
-        if (takeAlternativePath)
-        {
-            nextQuestionId = currentQuestion.NextQuestionAlternative;
-        }
-        else
-        {
-            nextQuestionId = currentQuestion.NextQuestion;
-        }
+        var nextQuestionId = takeAlternativePath ? currentQuestion.NextQuestionAlternative : currentQuestion.NextQuestion;
 
         return nextQuestionId;
     }
