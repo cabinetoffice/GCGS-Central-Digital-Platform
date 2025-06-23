@@ -13,11 +13,6 @@ module "deprecated_db_backup" {
   tags = var.tags
 }
 
-import {
-  id = "${local.name_prefix}-rare-handover-bucket-${data.aws_caller_identity.current.account_id}"
-  to = module.sql_dump_upload_bucket.aws_s3_bucket.this
-}
-
 module "sql_dump_upload_bucket" {
   source = "../s3-bucket"
 
