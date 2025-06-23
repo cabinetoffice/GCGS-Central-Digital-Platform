@@ -1239,6 +1239,60 @@ public class FormsEngineTests
     }
 
     [Theory]
+    [InlineData(FormQuestionType.YesOrNo, true, "Yes answer", "should be able to navigate back from a question that follows a YesNoInput with Yes answer")]
+    [InlineData(FormQuestionType.YesOrNo, false, "No answer", "should be able to navigate back from a question that follows a YesNoInput with No answer")]
+    [InlineData(FormQuestionType.FileUpload, true, "file was uploaded", "should be able to navigate back from a question that follows a FileUpload with a file")]
+    [InlineData(FormQuestionType.FileUpload, false, "no file was uploaded", "should be able to navigate back from a question that follows a FileUpload with no file")]
+    public async Task GetPreviousQuestion_ShouldReturnPreviousQuestion_WhenOnBranchWithoutNextQuestionAlternative(
+        FormQuestionType questionType,
+        bool boolValue,
+        string answerDescription,
+        string becauseReason)
+    {
+        var (organisationId, formId, sectionId, _) = CreateTestGuids();
+        var branchQuestionId = Guid.NewGuid();
+        var nextQuestionId = Guid.NewGuid();
+
+        var sectionResponse = new SectionQuestionsResponse
+        {
+            Section = new FormSection { Id = sectionId, Title = "SectionTitle", AllowsMultipleAnswerSets = true },
+            Questions = new List<FormQuestion>
+            {
+                new FormQuestion
+                {
+                    Id = branchQuestionId,
+                    Type = questionType,
+                    NextQuestion = nextQuestionId,
+                    Title = $"{questionType} question"
+                },
+                new FormQuestion
+                {
+                    Id = nextQuestionId,
+                    Type = FormQuestionType.Text,
+                    Title = "Next question"
+                }
+            }
+        };
+
+        var answerState = new FormQuestionAnswerState
+        {
+            Answers = new List<QuestionAnswer>
+            {
+                CreateQuestionAnswer(branchQuestionId, questionType, boolValue)
+            }
+        };
+
+        _tempDataServiceMock.Setup(t => t.Peek<SectionQuestionsResponse>(It.IsAny<string>()))
+            .Returns(sectionResponse);
+
+        var result = await _formsEngine.GetPreviousQuestion(organisationId, formId, sectionId, nextQuestionId, answerState);
+
+        result.Should().NotBeNull($"because previous navigation should work when {answerDescription}");
+        result!.Id.Should().Be(branchQuestionId, $"because {becauseReason}");
+        result.Type.Should().Be(questionType, $"because the previous question is of type {questionType}");
+    }
+
+    [Theory]
     [InlineData(FormQuestionType.YesOrNo, true, true, "Yes answer should go to NextQuestion even when NextQuestionAlternative exists")]
     [InlineData(FormQuestionType.YesOrNo, false, false, "No answer should go to NextQuestionAlternative when it exists")]
     [InlineData(FormQuestionType.FileUpload, true, true, "a file was uploaded and should go to NextQuestion even when NextQuestionAlternative exists")]
