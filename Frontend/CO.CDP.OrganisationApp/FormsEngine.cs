@@ -304,22 +304,22 @@ public class FormsEngine(
 
         return answerState?.Answers.Any(a =>
         {
-            if (a.QuestionId != questionOnPath.Id || a.Answer == null) return false;
+            if (a.QuestionId != questionOnPath.Id) return false;
 
             return questionOnPath.Type switch
             {
-                Models.FormQuestionType.Text => !string.IsNullOrWhiteSpace(a.Answer.TextValue),
-                Models.FormQuestionType.MultiLine => !string.IsNullOrWhiteSpace(a.Answer.TextValue),
-                Models.FormQuestionType.Url => !string.IsNullOrWhiteSpace(a.Answer.TextValue),
-                Models.FormQuestionType.FileUpload => !string.IsNullOrWhiteSpace(a.Answer.TextValue),
-                Models.FormQuestionType.YesOrNo => a.Answer.BoolValue.HasValue,
+                Models.FormQuestionType.Text => !string.IsNullOrWhiteSpace(a.Answer?.TextValue),
+                Models.FormQuestionType.MultiLine => !string.IsNullOrWhiteSpace(a.Answer?.TextValue),
+                Models.FormQuestionType.Url => !string.IsNullOrWhiteSpace(a.Answer?.TextValue),
+                Models.FormQuestionType.FileUpload => !string.IsNullOrWhiteSpace(a.Answer?.TextValue),
+                Models.FormQuestionType.YesOrNo => a.Answer?.BoolValue.HasValue ?? false,
                 Models.FormQuestionType.SingleChoice =>
-                    !string.IsNullOrWhiteSpace(a.Answer.OptionValue) ||
-                    !string.IsNullOrWhiteSpace(a.Answer.JsonValue),
-                Models.FormQuestionType.GroupedSingleChoice => !string.IsNullOrWhiteSpace(a.Answer.OptionValue),
-                Models.FormQuestionType.Date => a.Answer.DateValue.HasValue,
-                Models.FormQuestionType.CheckBox => a.Answer.BoolValue.HasValue,
-                Models.FormQuestionType.Address => IsAddressAnswered(a.Answer.AddressValue),
+                    !string.IsNullOrWhiteSpace(a.Answer?.OptionValue) ||
+                    !string.IsNullOrWhiteSpace(a.Answer?.JsonValue),
+                Models.FormQuestionType.GroupedSingleChoice => !string.IsNullOrWhiteSpace(a.Answer?.OptionValue),
+                Models.FormQuestionType.Date => a.Answer?.DateValue.HasValue ?? false,
+                Models.FormQuestionType.CheckBox => a.Answer?.BoolValue.HasValue ?? false,
+                Models.FormQuestionType.Address => IsAddressAnswered(a.Answer?.AddressValue),
                 _ => false
             };
         }) ?? false;

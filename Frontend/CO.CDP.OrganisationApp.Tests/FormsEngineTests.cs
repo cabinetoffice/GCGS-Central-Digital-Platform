@@ -1783,6 +1783,139 @@ public class FormsEngineTests
         result!.Id.Should().Be(qBranch.Id, because);
     }
 
+    [Theory]
+    [InlineData(false, true, "TextValue", true, "a non-required file upload question with a file uploaded should be considered answered")]
+    [InlineData(false, false, null, true, "a non-required file upload question with explicit false BoolValue should be considered answered")]
+    [InlineData(true, true, "TextValue", true, "a required file upload question with a file uploaded should be considered answered")]
+    [InlineData(true, false, null, false, "a required file upload question with explicit false BoolValue should not be considered answered")]
+    [InlineData(true, null, null, false, "a required file upload question with no answer should not be considered answered")]
+    [InlineData(false, null, null, false, "a non-required file upload question with no answer should not be considered answered")]
+    [InlineData(false, null, "TextValue", true, "a non-required file upload question with TextValue but null BoolValue should be considered answered")]
+    [InlineData(true, null, "TextValue", true, "a required file upload question with TextValue but null BoolValue should be considered answered")]
+    public void IsQuestionAnswered_FileUploadQuestion_ReturnsExpectedResult(bool isRequired, bool? boolValue, string textValue, bool expectedResult, string becauseMessage)
+    {
+        var questionId = Guid.NewGuid();
+        var fileUploadQuestion = new FormQuestion
+        {
+            Id = questionId,
+            Type = FormQuestionType.FileUpload,
+            IsRequired = isRequired,
+            Options = new FormQuestionOptions()
+        };
+
+        var answerState = new FormQuestionAnswerState
+        {
+            Answers = new List<QuestionAnswer>
+            {
+                new QuestionAnswer
+                {
+                    QuestionId = questionId,
+                    Answer = new FormAnswer
+                    {
+                        BoolValue = boolValue,
+                        TextValue = textValue
+                    }
+                }
+            }
+        };
+
+        var methodInfo = typeof(FormsEngine).GetMethod("IsQuestionAnswered",
+            System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+
+        var result = (bool)methodInfo.Invoke(_formsEngine, new object[] { fileUploadQuestion, answerState });
+
+        result.Should().Be(expectedResult, becauseMessage);
+    }
+
+    [Fact]
+    public void IsQuestionAnswered_FileUploadQuestion_NoAnswer_ShouldReturnFalse()
+    {
+        var questionId = Guid.NewGuid();
+        var fileUploadQuestion = new FormQuestion
+        {
+            Id = questionId,
+            Type = FormQuestionType.FileUpload,
+            IsRequired = true,
+            Options = new FormQuestionOptions()
+        };
+
+        var answerState = new FormQuestionAnswerState
+        {
+            Answers = new List<QuestionAnswer>()
+        };
+
+        var methodInfo = typeof(FormsEngine).GetMethod("IsQuestionAnswered",
+            System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+
+        var result = (bool)methodInfo.Invoke(_formsEngine, new object[] { fileUploadQuestion, answerState });
+
+        result.Should().BeFalse("because a file upload question with no answer at all should be considered unanswered");
+    }
+
+    [Fact]
+    public void IsQuestionAnswered_FileUploadQuestion_EmptyAnswer_ShouldReturnFalse()
+    {
+        var questionId = Guid.NewGuid();
+        var fileUploadQuestion = new FormQuestion
+        {
+            Id = questionId,
+            Type = FormQuestionType.FileUpload,
+            IsRequired = true,
+            Options = new FormQuestionOptions()
+        };
+
+        var answerState = new FormQuestionAnswerState
+        {
+            Answers = new List<QuestionAnswer>
+            {
+                new QuestionAnswer
+                {
+                    QuestionId = questionId,
+                    Answer = new FormAnswer()
+                }
+            }
+        };
+
+        var methodInfo = typeof(FormsEngine).GetMethod("IsQuestionAnswered",
+            System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+
+        var result = (bool)methodInfo.Invoke(_formsEngine, new object[] { fileUploadQuestion, answerState });
+
+        result.Should().BeFalse("because a file upload question with an empty answer should be considered unanswered");
+    }
+
+    [Fact]
+    public void IsQuestionAnswered_FileUploadQuestion_EmptyTextValue_ShouldReturnFalse()
+    {
+        var questionId = Guid.NewGuid();
+        var fileUploadQuestion = new FormQuestion
+        {
+            Id = questionId,
+            Type = FormQuestionType.FileUpload,
+            IsRequired = true,
+            Options = new FormQuestionOptions()
+        };
+
+        var answerState = new FormQuestionAnswerState
+        {
+            Answers = new List<QuestionAnswer>
+            {
+                new QuestionAnswer
+                {
+                    QuestionId = questionId,
+                    Answer = new FormAnswer { TextValue = "" }
+                }
+            }
+        };
+
+        var methodInfo = typeof(FormsEngine).GetMethod("IsQuestionAnswered",
+            System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+
+        var result = (bool)methodInfo.Invoke(_formsEngine, new object[] { fileUploadQuestion, answerState });
+
+        result.Should().BeFalse("because a file upload question with an empty string TextValue should be considered unanswered");
+    }
+
     private static QuestionAnswer CreateQuestionAnswer(Guid questionId, FormQuestionType questionType, bool boolValue)
     {
         return questionType switch
