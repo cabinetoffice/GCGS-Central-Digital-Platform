@@ -50,8 +50,7 @@ public class TradeAssurancesSummaryPage
 
     public async Task AssertTradeAssurancesCount(int expectedCount)
     {
-        await _page.PauseAsync();
-        string expectedText = expectedCount == 1 ? $"You have added {expectedCount} trade assurance" : $"You have added {expectedCount} trade assurances";
+        string expectedText = $"Trade assurances\n{expectedCount} added";
         string selector = "h1.govuk-heading-l";
 
         await _page.WaitForSelectorAsync(selector);

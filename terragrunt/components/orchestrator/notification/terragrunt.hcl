@@ -72,8 +72,10 @@ inputs = {
 
   repository_urls = dependency.orchestrator_ecr.outputs.repository_urls
 
-  ssm_envs_fts_service_version_arn    = dependency.orchestrator_common.outputs.ssm_envs_fts_service_version_arn
-  ssm_envs_fts_service_version_name   = dependency.orchestrator_common.outputs.ssm_envs_fts_service_version_name
-  ssm_envs_sirsi_service_version_arn  = dependency.orchestrator_common.outputs.ssm_envs_sirsi_service_version_arn
-  ssm_envs_sirsi_service_version_name = dependency.orchestrator_common.outputs.ssm_envs_sirsi_service_version_name
+  ssm_envs_combined_service_version_arn  = dependency.orchestrator_common.outputs.ssm_envs_combined_service_version_arn
+  ssm_envs_combined_service_version_name = dependency.orchestrator_common.outputs.ssm_envs_combined_service_version_name
+  ssm_envs_fts_service_version_arn       = dependency.orchestrator_common.outputs.ssm_envs_fts_service_version_arn
+  ssm_envs_fts_service_version_name      = dependency.orchestrator_common.outputs.ssm_envs_fts_service_version_name
+  ssm_envs_sirsi_service_version_arn     = dependency.orchestrator_common.outputs.ssm_envs_sirsi_service_version_arn
+  ssm_envs_sirsi_service_version_name    = dependency.orchestrator_common.outputs.ssm_envs_sirsi_service_version_name
 }
