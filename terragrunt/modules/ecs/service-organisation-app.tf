@@ -44,12 +44,12 @@ module "ecs_service_organisation_app" {
       lg_region                           = data.aws_region.current.name
       memory                              = var.service_configs.organisation_app.memory
       name                                = var.service_configs.organisation_app.name
-      onelogin_account_url                = local.one_loging.credential_locations.account_url
-      onelogin_authority                  = local.one_loging.credential_locations.authority
-      onelogin_client_id                  = local.one_loging.credential_locations.client_id
+      onelogin_account_url                = local.one_login.credential_locations.account_url
+      onelogin_authority                  = local.one_login.credential_locations.authority
+      onelogin_client_id                  = local.one_login.credential_locations.client_id
       onelogin_fln_api_key_arn            = data.aws_secretsmanager_secret.one_login_forward_logout_notification_api_key.arn
       onelogin_logout_notification_urls   = local.onelogin_logout_notification_urls
-      onelogin_private_key                = local.one_loging.credential_locations.private_key
+      onelogin_private_key                = local.one_login.credential_locations.private_key
       public_domain                       = var.public_domain
       queue_av_scanner_url                = var.queue_av_scanner_url
       redis_auth_token_arn                = var.redis_auth_token_arn
