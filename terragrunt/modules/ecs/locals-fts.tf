@@ -12,13 +12,13 @@ locals {
   fts_secrets = {
     email_subscription_authentication_key = "${local.fts_screts_arn}:EMAIL_SUBSCRIPTION_AUTHENTICATION_KEY::"
     email_subscription_cipher             = "${local.fts_screts_arn}:EMAIL_SUBSCRIPTION_CIPHER::"
-    fts_one_login_client_id               = local.one_loging.credential_locations.client_id
+    fts_one_login_client_id               = local.one_login.credential_locations.client_id
     fts_srsi_api_key                      = "${local.fts_screts_arn}:FTS_SRSI_API_KEY::"
     google_analytics_key                  = "${local.fts_screts_arn}:GOOGLE_ANALYTICS_KEY::"
     google_tag_manager_key                = "${local.fts_screts_arn}:GOOGLE_TAG_MANAGER_KEY::"
-    one_login_base_url                    = local.one_loging.credential_locations.authority
+    one_login_base_url                    = local.one_login.credential_locations.authority
     one_login_fln_api_key_arn             = data.aws_secretsmanager_secret.one_login_forward_logout_notification_api_key.arn
-    one_login_private_key                 = local.one_loging.credential_locations.private_key
+    one_login_private_key                 = local.one_login.credential_locations.private_key
     run_guest_token                       = "${local.fts_screts_arn}:RUN_GUEST_TOKEN::"
     run_migrator_token                    = "${local.fts_screts_arn}:RUN_MIGRATOR_TOKEN::"
     run_registrar_token                   = "${local.fts_screts_arn}:RUN_REGISTRAR_TOKEN::"
