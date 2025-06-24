@@ -1990,6 +1990,9 @@
   <data name="BuyerParentChildRelationship_SearchPage_Link" xml:space="preserve">
     <value>If you do not know the child organisation's PPON, you can find it on the &lt;a class="govuk-link" href=&quot;#&quot; target=&quot;_blank&quot;&gt;Search Registry of PPON (opens in new tab)&lt;/a&gt;</value>
   </data>
+  <data name="BuyerParentChildRelationship_SearchPage_Error" xml:space="preserve">
+    <value>Enter the name or PPON of your child organisation</value>
+  </data>
   <data name="Forms_FormElementAddress_EnterNonUKAddress" xml:space="preserve">
     <value>Enter a non-UK address</value>
   </data>
