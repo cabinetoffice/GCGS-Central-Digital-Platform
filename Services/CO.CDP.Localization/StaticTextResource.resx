@@ -3663,6 +3663,9 @@
   <data name="Consortium_Summary_Change" xml:space="preserve">
     <value>Change&lt;span class="govuk-visually-hidden"&gt; organisation sharecode&lt;/span&gt;</value>
   </data>
+  <data name="Consortium_Summary_Remove" xml:space="preserve">
+    <value>Remove&lt;span class="govuk-visually-hidden"&gt; organisation sharecode&lt;/span&gt;</value>
+  </data>
   <data name="Consortium_ConsortiumConfirmSupplier_Heading" xml:space="preserve">
     <value>Add {0} to the consortium?</value>
   </data>
@@ -3680,6 +3683,21 @@
   </data>
   <data name="Consortium_ConsortiumEnterSharecode_SharecodeAlreadyExists" xml:space="preserve">
     <value>{0} organisation is already part of the consortium.</value>
+  </data>
+  <data name="Consortium_RemoveSupplier_PageTitle" xml:space="preserve">
+    <value>Remove Consortium Organisation</value>
+  </data>
+  <data name="Consortium_RemoveSupplier_Heading" xml:space="preserve">
+    <value>Are you sure you want to remove {0}?</value>
+  </data>
+  <data name="Consortium_RemoveSupplier_Hint" xml:space="preserve">
+    <value>The organisation will remain on any share codes you have created. You must create a new share code and file to share the new information.</value>
+  </data>
+  <data name="Consortium_RemoveSupplier_ErrorMessage" xml:space="preserve">
+    <value>Select yes or no</value>
+  </data>
+  <data name="Consortium_RemoveSupplier_SuccessMessage" xml:space="preserve">
+    <value>{0} has been removed</value>
   </data>
   <data name="ErrorMessageList_MouNotFound" xml:space="preserve">
     <value>Mou not found</value>
