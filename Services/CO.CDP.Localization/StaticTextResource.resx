@@ -2002,8 +2002,11 @@
   <data name="BuyerParentChildRelationship_ResultsPage_Title" xml:space="preserve">
     <value>Search results</value>
   </data>
-  <data name="BuyerParentChildRelationship_ResultsPage_Text" xml:space="preserve">
-    <value>{0} child organisation found for</value>
+  <data name="BuyerParentChildRelationship_ResultsPage_TextSingle" xml:space="preserve">
+    <value>{0} child organisation found for '{1}'</value>
+  </data>
+  <data name="BuyerParentChildRelationship_ResultsPage_TextPlural" xml:space="preserve">
+    <value>{0} child organisations found for '{1}'</value>
   </data>
   <data name="BuyerParentChildRelationship_ResultsPage_Label" xml:space="preserve">
     <value>Select a child organisation</value>

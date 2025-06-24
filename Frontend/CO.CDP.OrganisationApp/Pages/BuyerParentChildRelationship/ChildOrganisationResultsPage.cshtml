@@ -16,8 +16,14 @@
         <form method="post">
             <h1 class="govuk-heading-l">@StaticTextResource.BuyerParentChildRelationship_ResultsPage_Title</h1>
 
-            <p class="govuk-body">@string.Format(StaticTextResource.BuyerParentChildRelationship_ResultsPage_Text, Model.Results.Count)</p>
-
+            @if (Model.Results.Count == 1)
+            {
+                <p class="govuk-body">@string.Format(StaticTextResource.BuyerParentChildRelationship_ResultsPage_TextSingle, Model.Results.Count, Model.Query)</p>
+            }
+            else
+            {
+                <p class="govuk-body">@string.Format(StaticTextResource.BuyerParentChildRelationship_ResultsPage_TextPlural, Model.Results.Count, Model.Query)</p>
+            }
             @if (Model.Results.Count > 0)
             {
                 <div class="govuk-form-group">
