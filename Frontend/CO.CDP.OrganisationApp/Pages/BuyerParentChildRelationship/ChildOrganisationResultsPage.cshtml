@@ -37,16 +37,13 @@
                                 var radioId = $"organisation-{index}";
                                 <div class="govuk-radios__item">
                                     <input class="govuk-radios__input" id="@radioId" asp-for="SelectedOrganisationId"
-                                           type="radio" value="@organisation.Id">
+                                           type="radio" value="@organisation.OrganisationId">
                                     <label class="govuk-label govuk-radios__label" for="@radioId">
                                         @organisation.Name
                                     </label>
-                                    @if (organisation.Identifiers.Any())
-                                    {
-                                        <div id="@($"{radioId}-hint")" class="govuk-hint govuk-radios__hint">
-                                            @organisation.Identifiers.First()
-                                        </div>
-                                    }
+                                    <div id="@($"{radioId}-hint")" class="govuk-hint govuk-radios__hint">
+                                        @organisation.GetFormattedIdentifier()
+                                    </div>
                                 </div>
                             }
                         </div>
