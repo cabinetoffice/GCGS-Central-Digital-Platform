@@ -27,9 +27,7 @@ public class ChildOrganisationResultsPage(
     [BindProperty]
     public Guid? SelectedOrganisationId { get; set; }
 
-    public string? ErrorMessage { get; private set; }
-
-    public async Task OnGetAsync()
+    public async Task<IActionResult> OnGetAsync()
     {
         if (!string.IsNullOrWhiteSpace(Query))
         {
@@ -71,9 +69,11 @@ public class ChildOrganisationResultsPage(
                 var errorCode = IsQueryAllNumeric(Query) ? "LOOKUP_ERROR" : "SEARCH_ERROR";
                 var cdpException = new CdpExceptionLogging(errorMessage, errorCode, ex);
                 _logger.LogError(cdpException, errorMessage);
-                ErrorMessage = StaticTextResource.BuyerParentChildRelationship_ResultsPage_Error;
+                return RedirectToPage("/Error");
             }
         }
+
+        return Page();
     }
 
     private static bool IsQueryAllNumeric(string query) => query.All(char.IsDigit);

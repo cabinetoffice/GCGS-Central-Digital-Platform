@@ -1,8 +1,8 @@
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Logging;
-using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.Pages.BuyerParentChildRelationship;
 using FluentAssertions;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -286,52 +286,8 @@ public class ChildOrganisationResultsPageTests
     }
 
     [Fact]
-    public async Task OnGetAsync_WithNumericOnlyQuery_WhenLookupThrowsException_ReturnsEmptyResults()
+    public async Task OnGetAsync_WhenSearchThrowsException_LogsCdpExceptionAndRedirectsToErrorPage()
     {
-        _model.Query = "12345";
-
-        _mockOrganisationClient
-            .Setup(client => client.LookupOrganisationAsync(
-                null, "12345"))
-            .ThrowsAsync(new Exception("Test exception"));
-
-        await _model.OnGetAsync();
-
-        _mockOrganisationClient.Verify(
-            client => client.LookupOrganisationAsync(
-                null, "12345"),
-            Times.Once);
-        _model.Results.Should().BeEmpty();
-    }
-
-    [Fact]
-    public async Task OnGetAsync_WhenSearchThrowsException_LogsErrorAndSetsErrorMessage()
-    {
-        _model.Query = "test query";
-
-        _mockOrganisationClient
-            .Setup(client => client.SearchOrganisationAsync(
-                _model.Query, "buyer", 20, 0.3))
-            .ThrowsAsync(new Exception("Test exception"));
-
-        await _model.OnGetAsync();
-
-        _mockLogger.Verify(
-            x => x.Log(
-                LogLevel.Error,
-                It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, t) => true),
-                It.IsAny<Exception>(),
-                It.Is<Func<It.IsAnyType, Exception, string>>((v, t) => true)),
-            Times.Once);
-        _model.Results.Should().BeEmpty();
-        _model.ErrorMessage.Should().NotBeNull();
-    }
-
-    [Fact]
-    public async Task OnGetAsync_WhenSearchThrowsException_LogsCdpExceptionAndSetsErrorMessage()
-    {
-        // Arrange
         _model.Query = "test query";
         const string errorCode = "SEARCH_ERROR";
         var exception = new Exception("Test exception");
@@ -341,7 +297,7 @@ public class ChildOrganisationResultsPageTests
                 _model.Query, "buyer", 20, 0.3))
             .ThrowsAsync(exception);
 
-        await _model.OnGetAsync();
+        var result = await _model.OnGetAsync();
 
         _mockLogger.Verify(
             x => x.Log(
@@ -351,36 +307,13 @@ public class ChildOrganisationResultsPageTests
                 It.Is<Exception>(e => e is CdpExceptionLogging && ((CdpExceptionLogging)e).ErrorCode == errorCode),
                 It.IsAny<Func<It.IsAnyType, Exception, string>>()),
             Times.Once);
-        _model.Results.Should().BeEmpty();
-        _model.ErrorMessage.Should().NotBeNull();
+
+        var redirectToPageResult = result.Should().BeOfType<RedirectToPageResult>().Subject;
+        redirectToPageResult.PageName.Should().Be("/Error");
     }
 
     [Fact]
-    public async Task OnGetAsync_WithNumericOnlyQuery_WhenLookupThrowsException_LogsErrorAndSetsErrorMessage()
-    {
-        _model.Query = "12345";
-
-        _mockOrganisationClient
-            .Setup(client => client.LookupOrganisationAsync(
-                null, "12345"))
-            .ThrowsAsync(new Exception("Test exception"));
-
-        await _model.OnGetAsync();
-
-        _mockLogger.Verify(
-            x => x.Log(
-                LogLevel.Error,
-                It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, t) => true),
-                It.IsAny<Exception>(),
-                It.Is<Func<It.IsAnyType, Exception, string>>((v, t) => true)),
-            Times.Once);
-        _model.Results.Should().BeEmpty();
-        _model.ErrorMessage.Should().NotBeNull();
-    }
-
-    [Fact]
-    public async Task OnGetAsync_WithNumericOnlyQuery_WhenLookupThrowsException_LogsCdpExceptionAndSetsErrorMessage()
+    public async Task OnGetAsync_WithNumericOnlyQuery_WhenLookupThrowsException_LogsCdpExceptionAndRedirectsToErrorPage()
     {
         _model.Query = "12345";
         const string errorCode = "LOOKUP_ERROR";
@@ -391,7 +324,7 @@ public class ChildOrganisationResultsPageTests
                 null, "12345"))
             .ThrowsAsync(exception);
 
-        await _model.OnGetAsync();
+        var result = await _model.OnGetAsync();
 
         _mockLogger.Verify(
             x => x.Log(
@@ -401,8 +334,9 @@ public class ChildOrganisationResultsPageTests
                 It.Is<Exception>(e => e is CdpExceptionLogging && ((CdpExceptionLogging)e).ErrorCode == errorCode),
                 It.IsAny<Func<It.IsAnyType, Exception, string>>()),
             Times.Once);
-        _model.Results.Should().BeEmpty();
-        _model.ErrorMessage.Should().NotBeNull();
+
+        var redirectToPageResult = result.Should().BeOfType<RedirectToPageResult>().Subject;
+        redirectToPageResult.PageName.Should().Be("/Error");
     }
 
     private static OrganisationSearchResult CreateTestSearchResult(string name, Guid id, string scheme,
