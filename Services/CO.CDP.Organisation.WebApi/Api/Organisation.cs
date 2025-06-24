@@ -801,7 +801,8 @@ public static class EndpointExtensions
             [OrganisationAuthorize(
                 [AuthenticationChannel.OneLogin],
                 [Constants.OrganisationPersonScope.Admin, Constants.OrganisationPersonScope.Editor, Constants.OrganisationPersonScope.Viewer],
-                OrganisationIdLocation.Path)]
+                OrganisationIdLocation.Path,
+                [Constants.PersonScope.SupportAdmin])]
         async (Guid organisationId, string role, IUseCase<(Guid, string), IEnumerable<Person>> useCase) =>
                     await useCase.Execute((organisationId, role))
                         .AndThen(persons => persons != null ? Results.Ok(persons) : Results.NotFound()))
@@ -1337,6 +1338,33 @@ public static class EndpointExtensions
                 operation.Description = "Update organisation party";
                 operation.Summary = "Update organisation party";
                 operation.Responses["204"].Description = "Organisation party updated successfully.";
+                operation.Responses["400"].Description = "Bad request.";
+                operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
+                operation.Responses["404"].Description = "Organisation parties not found.";
+                operation.Responses["500"].Description = "Internal server error.";
+                return operation;
+            });
+
+        app.MapDelete("/{organisationId}/remove-party",
+            [OrganisationAuthorize(
+                [AuthenticationChannel.OneLogin],
+                [Constants.OrganisationPersonScope.Admin, Constants.OrganisationPersonScope.Editor],
+                OrganisationIdLocation.Path)]
+        async (Guid organisationId, [FromBody]RemoveOrganisationParty organisationParty, IUseCase<(Guid, RemoveOrganisationParty), bool> useCase) =>
+                await useCase.Execute((organisationId, organisationParty))
+                   .AndThen(_ => Results.NoContent())
+            )
+            .Produces(StatusCodes.Status204NoContent)
+            .ProducesProblem(StatusCodes.Status400BadRequest)
+            .ProducesProblem(StatusCodes.Status401Unauthorized)
+            .ProducesProblem(StatusCodes.Status404NotFound)
+            .ProducesProblem(StatusCodes.Status500InternalServerError)
+            .WithOpenApi(operation =>
+            {
+                operation.OperationId = "RemoveOrganisationParty";
+                operation.Description = "Remove organisation party";
+                operation.Summary = "Remove organisation party";
+                operation.Responses["204"].Description = "Organisation party removed successfully.";
                 operation.Responses["400"].Description = "Bad request.";
                 operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
                 operation.Responses["404"].Description = "Organisation parties not found.";

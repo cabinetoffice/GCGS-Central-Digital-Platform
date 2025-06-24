@@ -28,6 +28,7 @@ public static class Constants
 
     public static class PersonScope
     {
+        public const string SuperAdmin = "SUPERADMIN";
         public const string SupportAdmin = "SUPPORTADMIN";
     }
 

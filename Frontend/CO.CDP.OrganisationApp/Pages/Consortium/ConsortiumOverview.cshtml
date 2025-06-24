@@ -4,14 +4,11 @@
 @using CO.CDP.OrganisationApp.Extensions
 @using CO.CDP.Localization
 
-@inject IUserInfoService userInfoService
-
 @model ConsortiumOverviewModel
 
 @{
     var organisationDetails = Model.OrganisationDetails!;
     var postalAddress = organisationDetails.Addresses.FirstOrDefault(a => a.Type == CO.CDP.Organisation.WebApiClient.AddressType.Postal);
-    bool isViewer = await userInfoService.IsViewer();
     ViewData["Title"] = organisationDetails.Name;
     var ppon = (organisationDetails.Identifier.Scheme == OrganisationSchemeType.Other
                         ? StaticTextResource.Consortium_ConsortiumOverview_Ppon_Status_Pending
@@ -98,7 +95,13 @@
 
                     <authorize scope="@OrgScopeRequirement.Editor">
                         <dd class="govuk-summary-list__actions">
-                            <a class="govuk-link govuk-link--no-visited-state" href="/consortium/@Model.Id/enter-new-sharecode/@p.Id">@Html.Raw(@StaticTextResource.Consortium_Summary_Change)</a>
+                            <a class="govuk-link govuk-link--no-visited-state" href="/consortium/@Model.Id/enter-new-sharecode/@p.Id">
+                                @Html.Raw(@StaticTextResource.Consortium_Summary_Change)
+                            </a>
+                            <span class="govuk-!-padding-left-1 govuk-!-padding-right-1">|</span>
+                            <a class="govuk-link govuk-link--no-visited-state" href="/consortium/@Model.Id/remove-organisation/@p.Id">
+                                @Html.Raw(@StaticTextResource.Consortium_Summary_Remove)
+                            </a>
                         </dd>
                     </authorize>
                 </div>

@@ -4,6 +4,13 @@
     "image": "${image}:${service_version}",
     "cpu": ${cpu},
     "memory": ${memory},
+    "healthCheck": {
+      "command": ["CMD", "/scheduler-healthcheck.sh"],
+      "interval": 30,
+      "timeout": 5,
+      "retries": 3,
+      "startPeriod": 10
+    },
     "portMappings": [
       {
         "containerPort": ${container_port},
@@ -21,6 +28,7 @@
     },
     "environment": [
       { "name": "APP_HOST_ADDRESS", "value" :  "${app_host_address}"},
+      { "name": "AWS_BUCKETS_NOTICES", "value" :  "${aws_buckets_notices}"},
       { "name": "BUYER_CORPORATE_IDENTIFIER_PREFIXES", "value" :  "${buyer_corporate_identifier_prefixes}"},
       { "name": "COOKIE_DOMAIN", "value" :  "${cookie_domain}"},
       { "name": "DATABASE_SCHEMA", "value" :  "${db_name}"},

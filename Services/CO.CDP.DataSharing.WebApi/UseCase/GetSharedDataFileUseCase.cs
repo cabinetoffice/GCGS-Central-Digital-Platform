@@ -43,7 +43,7 @@ public class GetSharedDataFileUseCase(
         if (!await claimService.HaveAccessToOrganisation(
             sharedSupplierInfo.OrganisationId,
             [OrganisationPersonScope.Admin, OrganisationPersonScope.Editor, OrganisationPersonScope.Viewer],
-            [PersonScope.SupportAdmin]))
+            [PersonScope.SupportAdmin, PersonScope.SuperAdmin]))
         {
             throw new UserUnauthorizedException();
         }

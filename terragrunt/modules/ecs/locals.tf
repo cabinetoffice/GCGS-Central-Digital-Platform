@@ -21,7 +21,7 @@ locals {
 
   name_prefix = var.product.resource_name
 
-  one_loging = {
+  one_login = {
     credential_locations = {
       account_url = "${data.aws_secretsmanager_secret.one_login_credentials.arn}:AccountUrl::"
       authority   = "${data.aws_secretsmanager_secret.one_login_credentials.arn}:Authority::"
@@ -32,9 +32,9 @@ locals {
 
   orchestrator_account_id = var.account_ids["orchestrator"]
 
-  orchestrator_service_version = data.aws_ssm_parameter.orchestrator_service_version.value
+  orchestrator_sirsi_service_version = data.aws_ssm_parameter.orchestrator_sirsi_service_version.value
 
-  service_version_sirsi = var.pinned_service_version_sirsi == null ? data.aws_ssm_parameter.orchestrator_service_version.value : var.pinned_service_version_sirsi
+  service_version_sirsi = var.pinned_service_version_sirsi == null ? local.orchestrator_sirsi_service_version : var.pinned_service_version_sirsi
 
   shared_sessions_enabled    = true
   ssm_data_protection_prefix = "${local.name_prefix}-ec-sessions"
@@ -58,6 +58,8 @@ locals {
     for name, config in var.service_configs :
     config.name
   ]
+
+  fts_log_groups = ["app", "clamav", "supervisor", "unhandled", "web"]
 
   waf_enabled = true
 
