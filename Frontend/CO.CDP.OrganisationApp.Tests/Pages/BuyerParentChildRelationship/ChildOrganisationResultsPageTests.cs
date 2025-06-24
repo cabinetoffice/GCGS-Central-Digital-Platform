@@ -214,6 +214,88 @@ public class ChildOrganisationResultsPageTests
         _model.Results.Should().BeEmpty();
     }
 
+    [Fact]
+    public async Task OnGetAsync_WithNumericOnlyQuery_CallsLookupOrganisationAsync()
+    {
+        _model.Query = "12345";
+        var organisationId = Guid.NewGuid();
+        var organisation = new CDP.Organisation.WebApiClient.Organisation(
+            additionalIdentifiers: [],
+            addresses: [],
+            contactPoint: new ContactPoint("a@b.com", "Contact", "123", new Uri("http://whatever")),
+            id: organisationId,
+            identifier: new Identifier("asd", "asd", "asd", new Uri("http://whatever")),
+            name: "Org name",
+            type: CDP.Organisation.WebApiClient.OrganisationType.Organisation,
+            roles: [CDP.Organisation.WebApiClient.PartyRole.Supplier, CDP.Organisation.WebApiClient.PartyRole.Tenderer],
+            details: new Details(approval: null, buyerInformation: null, pendingRoles: [],
+                publicServiceMissionOrganization: null, scale: null, shelteredWorkshop: null, vcse: null)
+        );
+
+        _mockOrganisationClient
+            .Setup(client => client.LookupOrganisationAsync(
+                null, "12345"))
+            .ReturnsAsync(organisation);
+
+        await _model.OnGetAsync();
+
+        _mockOrganisationClient.Verify(
+            client => client.LookupOrganisationAsync(
+                null, "12345"),
+            Times.Once);
+        _mockOrganisationClient.Verify(
+            client => client.SearchOrganisationAsync(
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<int>(),
+                It.IsAny<double>()),
+            Times.Never);
+
+        _model.Results.Should().HaveCount(1);
+        var result = _model.Results.First();
+        result.Name.Should().Be("Test Numeric Organisation");
+        result.OrganisationId.Should().Be(organisationId);
+        result.GetFormattedIdentifier().Should().Be("DUNS: 12345");
+    }
+
+    [Fact]
+    public async Task OnGetAsync_WithNumericOnlyQuery_WhenLookupReturnsNull_ReturnsEmptyResults()
+    {
+        _model.Query = "12345";
+
+        _mockOrganisationClient
+            .Setup(client => client.LookupOrganisationAsync(
+                null, "12345"))
+            .ReturnsAsync((CDP.Organisation.WebApiClient.Organisation)null);
+
+        await _model.OnGetAsync();
+
+        _mockOrganisationClient.Verify(
+            client => client.LookupOrganisationAsync(
+                null, "12345"),
+            Times.Once);
+        _model.Results.Should().BeEmpty();
+    }
+
+    [Fact]
+    public async Task OnGetAsync_WithNumericOnlyQuery_WhenLookupThrowsException_ReturnsEmptyResults()
+    {
+        _model.Query = "12345";
+
+        _mockOrganisationClient
+            .Setup(client => client.LookupOrganisationAsync(
+                null, "12345"))
+            .ThrowsAsync(new Exception("Test exception"));
+
+        await _model.OnGetAsync();
+
+        _mockOrganisationClient.Verify(
+            client => client.LookupOrganisationAsync(
+                null, "12345"),
+            Times.Once);
+        _model.Results.Should().BeEmpty();
+    }
+
     private static OrganisationSearchResult CreateTestSearchResult(string name, Guid id, string scheme,
         string identifierId)
     {
