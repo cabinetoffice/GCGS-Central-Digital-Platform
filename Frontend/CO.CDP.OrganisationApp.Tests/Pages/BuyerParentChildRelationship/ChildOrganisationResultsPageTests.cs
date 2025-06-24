@@ -21,4 +21,13 @@ public class ChildOrganisationResultsPageTests
         _model.Id.Should().Be(id);
         _model.Query.Should().Be(query);
     }
+
+    [Fact]
+    public void OnGet_InitialisesResultsAsEmptyList()
+    {
+        _model.OnGet();
+
+        _model.Results.Should().NotBeNull();
+        _model.Results.Should().BeEmpty();
+    }
 }

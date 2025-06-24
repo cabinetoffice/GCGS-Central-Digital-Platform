@@ -14,13 +14,16 @@
     <div class="govuk-grid-column-two-thirds">
         <h1 class="govuk-heading-l">@StaticTextResource.BuyerParentChildRelationship_ResultsPage_Title</h1>
 
-        <p class="govuk-body">@StaticTextResource.BuyerParentChildRelationship_ResultsPage_Text</p>
+        <p class="govuk-body">@string.Format(StaticTextResource.BuyerParentChildRelationship_ResultsPage_Text, Model.Results.Count)</p>
 
-        <div class="govuk-form-group">
-            <label class="govuk-fieldset__legend govuk-fieldset__legend--s" for="child-organisations">
-                @StaticTextResource.BuyerParentChildRelationship_ResultsPage_Label
-            </label>
-        </div>
+        @if (Model.Results.Count > 0)
+        {
+            <div class="govuk-form-group">
+                <label class="govuk-fieldset__legend govuk-fieldset__legend--s" for="child-organisations">
+                    @StaticTextResource.BuyerParentChildRelationship_ResultsPage_Label
+                </label>
+            </div>
+        }
 
         <div class="govuk-button-group">
 
