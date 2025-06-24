@@ -1,10 +1,8 @@
-using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Pages.BuyerParentChildRelationship;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
-using Moq;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages.BuyerParentChildRelationship;
 
