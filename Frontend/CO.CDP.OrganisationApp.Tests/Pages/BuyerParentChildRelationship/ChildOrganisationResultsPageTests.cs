@@ -197,6 +197,23 @@ public class ChildOrganisationResultsPageTests
         result.GetFormattedIdentifier().Should().Be("DUNS: 123456789");
     }
 
+    [Fact]
+    public async Task OnGetAsync_WithNumericOnlyQuery_DoesNotCallOrganisationSearchAndReturnsEmptyResults()
+    {
+        _model.Query = "12345";
+
+        await _model.OnGetAsync();
+
+        _mockOrganisationClient.Verify(
+            client => client.SearchOrganisationAsync(
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<int>(),
+                It.IsAny<double>()),
+            Times.Never);
+        _model.Results.Should().BeEmpty();
+    }
+
     private static OrganisationSearchResult CreateTestSearchResult(string name, Guid id, string scheme,
         string identifierId)
     {

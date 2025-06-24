@@ -21,7 +21,7 @@ public class ChildOrganisationResultsPage(IOrganisationClient organisationClient
 
     public async Task OnGetAsync()
     {
-        if (!string.IsNullOrWhiteSpace(Query))
+        if (!string.IsNullOrWhiteSpace(Query) && !IsQueryAllNumeric(Query))
         {
             try
             {
@@ -43,6 +43,8 @@ public class ChildOrganisationResultsPage(IOrganisationClient organisationClient
             }
         }
     }
+
+    private static bool IsQueryAllNumeric(string query) => query.All(char.IsDigit);
 
     private ChildOrganisation MapSearchResultToChildOrganisation(OrganisationSearchResult searchResult)
     {
