@@ -908,6 +908,9 @@
   <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswers_OnDate" xml:space="preserve">
     <value>On {0}</value>
   </data>
+  <data name="Global_Search" xml:space="preserve">
+    <value>Search</value>
+  </data>
   <data name="Global_Submit" xml:space="preserve">
     <value>Submit</value>
   </data>
@@ -1974,6 +1977,18 @@
   </data>
   <data name="ApiKeyManagement_CreateApiKey_ValidationError" xml:space="preserve">
     <value>Enter the api key name</value>
+  </data>
+  <data name="BuyerParentChildRelationship_SearchPage_Title" xml:space="preserve">
+    <value>Search for your child organisation</value>
+  </data>
+  <data name="BuyerParentChildRelationship_SearchPage_Label" xml:space="preserve">
+    <value>Enter the name or PPON of your child organisation</value>
+  </data>
+  <data name="BuyerParentChildRelationship_SearchPage_Hint" xml:space="preserve">
+    <value>You can only add an immediate child organisation, which is the next level down in your organisation's hierarchy</value>
+  </data>
+  <data name="BuyerParentChildRelationship_SearchPage_Link" xml:space="preserve">
+    <value>If you do not know the child organisation's PPON, you can find it on the &lt;a class="govuk-link" href=&quot;#&quot; target=&quot;_blank&quot;&gt;Search Registry of PPON (opens in new tab)&lt;/a&gt;</value>
   </data>
   <data name="Forms_FormElementAddress_EnterNonUKAddress" xml:space="preserve">
     <value>Enter a non-UK address</value>

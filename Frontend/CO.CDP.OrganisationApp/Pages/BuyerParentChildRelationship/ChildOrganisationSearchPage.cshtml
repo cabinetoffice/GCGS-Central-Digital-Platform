@@ -1,0 +1,41 @@
+@page "/organisation/{id}/buyer-parent-child-relationship/search"
+@model CO.CDP.OrganisationApp.Pages.BuyerParentChildRelationship.ChildOrganisationSearchPage
+@using CO.CDP.Localization
+
+@{
+    ViewData["Title"] = StaticTextResource.BuyerParentChildRelationship_SearchPage_Title;
+}
+
+@section BeforeContent {
+    <a href="/organisation/@Model.Id" class="govuk-back-link">@StaticTextResource.Global_Back</a>
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-l govuk-!-margin-bottom-9">@StaticTextResource.BuyerParentChildRelationship_SearchPage_Title</h1>
+
+        <form method="post" novalidate>
+            <div class="govuk-form-group">
+                <label class="govuk-label govuk-label--m" for="query">
+                    @StaticTextResource.BuyerParentChildRelationship_SearchPage_Label
+                </label>
+                <div id="query-hint" class="govuk-hint">
+                    <p>@StaticTextResource.BuyerParentChildRelationship_SearchPage_Hint</p>
+                </div>
+                <div class="govuk-grid-row govuk-!-margin-bottom-0">
+                    <div class="govuk-grid-column-two-thirds govuk-!-padding-right-0">
+                        <input class="govuk-input" id="query" name="Query" type="text" value="@Model.Query"
+                               aria-describedby="query-hint">
+                    </div>
+                    <div class="govuk-grid-column-one-third govuk-!-padding-left-0">
+                        <button type="submit" class="govuk-button govuk-!-margin-bottom-0" data-module="govuk-button">
+                            @StaticTextResource.Global_Search
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+        <p class="govuk-body govuk-!-margin-top-4">@Html.Raw(StaticTextResource.BuyerParentChildRelationship_SearchPage_Link)</p>
+    </div>
+</div>
