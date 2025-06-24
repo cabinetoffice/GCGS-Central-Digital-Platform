@@ -94,6 +94,25 @@ public class OrganisationScopeAuthorizationHandlerTests
     }
 
     [Fact]
+    public async Task HandleRequirementAsync_ShouldPass_WhenPersonScopeIsSuperAdminAndOrganisationScopeIsRequired()
+    {
+        List<Claim> userClaims = [
+            new Claim(ClaimType.Channel, Channel.OneLogin),
+            new Claim(ClaimType.Subject, "user-urn"),
+            new Claim(ClaimType.Roles, "SUPERADMIN")
+        ];
+
+        var claimsPrincipal = new ClaimsPrincipal(new ClaimsIdentity(userClaims));
+        var context = new AuthorizationHandlerContext(
+            [new OrganisationScopeAuthorizationRequirement(["Scope1"], OrganisationIdLocation.Body)],
+            claimsPrincipal, new object());
+
+        await _handler.HandleAsync(context);
+
+        context.HasSucceeded.Should().BeTrue();
+    }
+
+    [Fact]
     public async Task HandleRequirementAsync_ShouldFail_WhenRequirementPersonScopeIsEmpty()
     {
         var context = CreateAuthorizationHandlerContext("user-urn", []);
@@ -156,18 +175,18 @@ public class OrganisationScopeAuthorizationHandlerTests
     }
 
     private static AuthorizationHandlerContext CreateAuthorizationHandlerContext(
-        string userUrn, string[] personScopes, Claim? additionalUserClaim = null)
+        string userUrn, string[] personScopesRequired, Claim? additionalUserClaim = null)
     {
         return CreateAuthorizationHandlerContext(userUrn,
-            new OrganisationScopeAuthorizationRequirement(personScopes: personScopes),
+            new OrganisationScopeAuthorizationRequirement(personScopes: personScopesRequired),
             additionalUserClaim);
     }
 
     private static AuthorizationHandlerContext CreateAuthorizationHandlerContext(
-        string userUrn, string[] organisationPersonScopes, OrganisationIdLocation orgIdLoc)
+        string userUrn, string[] organisationPersonScopesRequired, OrganisationIdLocation orgIdLoc)
     {
         return CreateAuthorizationHandlerContext(userUrn,
-            new OrganisationScopeAuthorizationRequirement(organisationPersonScopes, orgIdLoc));
+            new OrganisationScopeAuthorizationRequirement(organisationPersonScopesRequired, orgIdLoc));
     }
 
     private static AuthorizationHandlerContext CreateAuthorizationHandlerContext(

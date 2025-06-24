@@ -1,3 +1,7 @@
+import {
+  id = "${local.name_prefix}-${var.environment}-ci-artifact-${data.aws_caller_identity.current.account_id}"
+  to = module.s3_bucket.aws_s3_bucket.this
+}
 module "s3_bucket" {
   source      = "../s3-bucket"
   bucket_name = "${local.name_prefix}-${var.environment}-ci-artifact-${data.aws_caller_identity.current.account_id}"

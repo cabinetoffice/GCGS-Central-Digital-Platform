@@ -1,34 +1,32 @@
-using System;
 using System.Text.Json;
 using System.Text.Json.Nodes;
-using System.Threading.Tasks;
 using Microsoft.Playwright;
 using E2ETests.Utilities;
 
-namespace E2ETests.ApiTests
+namespace E2ETests.ApiTests;
+
+public static class OrganisationApi
 {
-    public static class OrganisationApi
+    private static readonly string ApiBaseUrl = ConfigUtility.GetOrganisationApiBaseUrl();
+    private static readonly string OrganisationsEndpoint = $"{ApiBaseUrl}/organisations";
+
+    /// Creates a new organisation and stores its ID under a given key.
+    public static async Task<string> CreateOrganisation(string token, string organisationPrefix, string storageKey)
     {
-        private static readonly string ApiBaseUrl = ConfigUtility.GetOrganisationApiBaseUrl();
-        private static readonly string OrganisationsEndpoint = $"{ApiBaseUrl}/organisations";
-
-        /// Creates a new organisation and stores its ID under a given key.
-        public static async Task<string> CreateOrganisation(string token, string organisationPrefix, string storageKey)
+        using var playwright = await Playwright.CreateAsync();
+        var requestContext = await playwright.APIRequest.NewContextAsync(new APIRequestNewContextOptions
         {
-            using var playwright = await Playwright.CreateAsync();
-            var requestContext = await playwright.APIRequest.NewContextAsync(new APIRequestNewContextOptions
+            ExtraHTTPHeaders = new Dictionary<string, string>
             {
-                ExtraHTTPHeaders = new Dictionary<string, string>
-                {
-                    { "Authorization", $"Bearer {token}" },
-                    { "Accept", "application/json" }
-                }
-            });
+                { "Authorization", $"Bearer {token}" },
+                { "Accept", "application/json" }
+            }
+        });
 
-            string uniqueOrgId = Guid.NewGuid().ToString();
-            string uniqueOrgName = $"{organisationPrefix} {uniqueOrgId}";
+        string uniqueOrgId = Guid.NewGuid().ToString();
+        string uniqueOrgName = $"{organisationPrefix} {uniqueOrgId}";
 
-            string requestBody = $@"{{
+        string requestBody = $@"{{
                 ""name"": ""{uniqueOrgName}"",
                 ""type"": ""organisation"",
                 ""identifier"": {{
@@ -45,37 +43,36 @@ namespace E2ETests.ApiTests
                 ""roles"": [""tenderer""]
             }}";
 
-            var response = await requestContext.PostAsync(OrganisationsEndpoint, new APIRequestContextOptions
-            {
-                DataObject = JsonDocument.Parse(requestBody).RootElement
-            });
-
-            string responseBody = await response.TextAsync();
-            Console.WriteLine($"✅ Organisation Created: {responseBody}");
-
-            try
-            {
-                var jsonResponse = JsonNode.Parse(responseBody);
-                string organisationId = jsonResponse?["id"]?.ToString();
-
-                if (!string.IsNullOrEmpty(organisationId))
-                {
-                    StorageUtility.Store(storageKey, organisationId);
-                    Console.WriteLine($"📌 Stored Organisation ID: {organisationId} under key '{storageKey}'");
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"⚠️ Error extracting/storing organisation ID: {ex.Message}");
-            }
-
-            return responseBody;
-        }
-
-        /// Returns an organisation ID by its key.
-        public static string GetOrganisationId(string key)
+        var response = await requestContext.PostAsync(OrganisationsEndpoint, new APIRequestContextOptions
         {
-            return StorageUtility.Retrieve(key);
+            DataObject = JsonDocument.Parse(requestBody).RootElement
+        });
+
+        string responseBody = await response.TextAsync();
+        Console.WriteLine($"✅ Organisation Created: {responseBody}");
+
+        try
+        {
+            var jsonResponse = JsonNode.Parse(responseBody);
+            string organisationId = jsonResponse?["id"]?.ToString() ?? string.Empty;
+
+            if (!string.IsNullOrEmpty(organisationId))
+            {
+                StorageUtility.Store(storageKey, organisationId);
+                Console.WriteLine($"📌 Stored Organisation ID: {organisationId} under key '{storageKey}'");
+            }
         }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"⚠️ Error extracting/storing organisation ID: {ex.Message}");
+        }
+
+        return responseBody;
+    }
+
+    /// Returns an organisation ID by its key.
+    public static string GetOrganisationId(string key)
+    {
+        return StorageUtility.Retrieve(key);
     }
 }

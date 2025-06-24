@@ -15,7 +15,12 @@ provider "aws" {
   }
 }
 
-data "aws_ssm_parameter" "orchestrator_service_version" {
+data "aws_ssm_parameter" "orchestrator_fts_service_version" {
+  provider = aws.orchestrator_assume_role
+  name     = "/${local.name_prefix}-fts-service-version"
+}
+
+data "aws_ssm_parameter" "orchestrator_sirsi_service_version" {
   provider = aws.orchestrator_assume_role
   name     = "/${local.name_prefix}-service-version"
 }

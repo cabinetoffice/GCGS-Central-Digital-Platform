@@ -7,6 +7,7 @@ module "ecs_service_fluentbit" {
       container_path        = var.efs_fluentbit_container_path
       container_port        = var.fluentbit_config.port
       cpu                   = var.fluentbit_config.cpu
+      flb_log_level         = var.environment == "production" ? "info" : "debug"
       host_port             = var.fluentbit_config.port
       image                 = "${local.orchestrator_account_id}.dkr.ecr.${data.aws_region.current.name}.amazonaws.com/cdp-${var.fluentbit_config.name}:latest"
       lg_name               = aws_cloudwatch_log_group.fluentbit.name

@@ -1,13 +1,3 @@
-variable "deployment_pipeline_name" {
-  description = "Deployment pipeline name"
-  type        = string
-}
-
-variable "event_rule_ci_service_version_updated_name" {
-  description = "Name of the event rule in charge of picking up on updating the service-version"
-  type        = string
-}
-
 variable "product" {
   description = "product's common attributes"
   type = object({
@@ -43,13 +33,33 @@ variable "slack_channel_id" {
   default     = "C07FUD6GL7R"
 }
 
-variable "ssm_envs_service_version_arn" {
-  description = "ARN of the parameter holding the service versions for all environments"
+variable "ssm_envs_combined_service_version_arn" {
+  description = "ARN of the parameter holding all service versions for all environments"
   type        = string
 }
 
-variable "ssm_envs_service_version_name" {
-  description = "Name of the parameter holding the service versions for all environments"
+variable "ssm_envs_combined_service_version_name" {
+  description = "Name of the parameter holding all service versions for all environments"
+  type        = string
+}
+
+variable "ssm_envs_fts_service_version_arn" {
+  description = "ARN of the parameter holding the FTS service versions for all environments"
+  type        = string
+}
+
+variable "ssm_envs_fts_service_version_name" {
+  description = "Name of the parameter holding the FTS service versions for all environments"
+  type        = string
+}
+
+variable "ssm_envs_sirsi_service_version_arn" {
+  description = "ARN of the parameter holding the SIRSI service versions for all environments"
+  type        = string
+}
+
+variable "ssm_envs_sirsi_service_version_name" {
+  description = "Name of the parameter holding the SIRSI service versions for all environments"
   type        = string
 }
 
