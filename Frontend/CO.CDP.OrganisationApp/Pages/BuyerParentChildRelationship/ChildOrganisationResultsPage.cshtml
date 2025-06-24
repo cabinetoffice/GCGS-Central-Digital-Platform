@@ -7,35 +7,56 @@
 }
 
 @section BeforeContent {
-    <a href="/buyer-parent-child-relationship/search" class="govuk-back-link">@StaticTextResource.Global_Back</a>
+    <a href="@Url.Page("ChildOrganisationSearchPage", new { Model.Id })"
+       class="govuk-back-link">@StaticTextResource.Global_Back</a>
 }
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <h1 class="govuk-heading-l">@StaticTextResource.BuyerParentChildRelationship_ResultsPage_Title</h1>
+        <form method="post">
+            <h1 class="govuk-heading-l">@StaticTextResource.BuyerParentChildRelationship_ResultsPage_Title</h1>
 
-        <p class="govuk-body">@string.Format(StaticTextResource.BuyerParentChildRelationship_ResultsPage_Text, Model.Results.Count)</p>
+            <p class="govuk-body">@string.Format(StaticTextResource.BuyerParentChildRelationship_ResultsPage_Text, Model.Results.Count)</p>
 
-        @if (Model.Results.Count > 0)
-        {
-            <div class="govuk-form-group">
-                <label class="govuk-fieldset__legend govuk-fieldset__legend--s" for="child-organisations">
-                    @StaticTextResource.BuyerParentChildRelationship_ResultsPage_Label
-                </label>
+            @if (Model.Results.Count > 0)
+            {
+                <div class="govuk-form-group">
+                    <fieldset class="govuk-fieldset">
+                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+                            @StaticTextResource.BuyerParentChildRelationship_ResultsPage_Label
+                        </legend>
+                        <div class="govuk-radios" data-module="govuk-radios" data-govuk-radios-init="">
+                            @foreach (var (organisation, index) in Model.Results.Select((value, i) => (value, i)))
+                            {
+                                var radioId = $"organisation-{index}";
+                                <div class="govuk-radios__item">
+                                    <input class="govuk-radios__input" id="@radioId" asp-for="SelectedOrganisationId"
+                                           type="radio" value="@organisation.Id">
+                                    <label class="govuk-label govuk-radios__label" for="@radioId">
+                                        @organisation.Name
+                                    </label>
+                                    @if (organisation.Identifiers.Any())
+                                    {
+                                        <div id="@($"{radioId}-hint")" class="govuk-hint govuk-radios__hint">
+                                            @organisation.Identifiers.First()
+                                        </div>
+                                    }
+                                </div>
+                            }
+                        </div>
+                    </fieldset>
+                </div>
+            }
+
+            <div class="govuk-button-group">
+                <button type="submit" class="govuk-button" data-module="govuk-button">
+                    @StaticTextResource.Global_Continue
+                </button>
+                <a href="@Url.Page("ChildOrganisationSearchPage", new { Model.Id })"
+                   class="govuk-button govuk-button--secondary">@StaticTextResource.Global_SearchAgain</a>
+                <a href="@Url.Page("OrganisationDetailsSummary", new { Model.Id })"
+                   class="govuk-link">@StaticTextResource.Global_Cancel</a>
             </div>
-        }
-
-        <div class="govuk-button-group">
-
-        <button type="submit" class="govuk-button" data-module="govuk-button">
-            @StaticTextResource.Global_Continue
-        </button>
-
-        <button type="button" class="govuk-button govuk-button--secondary" data-module="govuk-button">
-            @StaticTextResource.Global_SearchAgain
-        </button>
-
-            <a href="#" class="govuk-link">@StaticTextResource.Global_Cancel</a>
-        </div>
+        </form>
     </div>
 </div>
