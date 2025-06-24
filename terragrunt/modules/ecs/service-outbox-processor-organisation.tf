@@ -31,7 +31,7 @@ module "ecs_service_outbox_processor_organisation" {
   ecs_listener_arn       = aws_lb_listener.ecs.arn
   ecs_service_base_sg_id = var.ecs_sg_id
   family                 = "app"
-  host_port              = var.service_configs.outbox_processor_organisation.port
+  host_port              = var.service_configs.outbox_processor_organisation.port_host
   listener_name          = "outbox-processor-org"
   memory                 = var.service_configs.outbox_processor_organisation.memory
   name                   = var.service_configs.outbox_processor_organisation.name

@@ -314,6 +314,7 @@ data "aws_iam_policy_document" "terraform_global" {
   statement {
     actions = [
       "ssm:AddTagsToResource",
+      "ssm:Delete*",
       "ssm:Describe*",
       "ssm:Get*",
       "ssm:List*",

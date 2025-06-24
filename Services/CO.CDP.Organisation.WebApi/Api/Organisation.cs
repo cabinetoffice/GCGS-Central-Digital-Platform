@@ -114,7 +114,8 @@ public static class EndpointExtensions
                 [AuthenticationChannel.OneLogin, AuthenticationChannel.ServiceKey],
                 [Constants.OrganisationPersonScope.Admin, Constants.OrganisationPersonScope.Editor, Constants.OrganisationPersonScope.Viewer],
                 OrganisationIdLocation.Path,
-                [Constants.PersonScope.SupportAdmin])]
+                [Constants.PersonScope.SupportAdmin],
+                apiKeyScopes: [Constants.ApiKeyScopes.ReadOrganisationData])]
         async (Guid organisationId, IUseCase<Guid, Model.Organisation?> useCase) =>
             await useCase.Execute(organisationId)
                    .AndThen(organisation => organisation != null ? Results.Ok(organisation) : Results.NotFound()))
@@ -800,7 +801,8 @@ public static class EndpointExtensions
             [OrganisationAuthorize(
                 [AuthenticationChannel.OneLogin],
                 [Constants.OrganisationPersonScope.Admin, Constants.OrganisationPersonScope.Editor, Constants.OrganisationPersonScope.Viewer],
-                OrganisationIdLocation.Path)]
+                OrganisationIdLocation.Path,
+                [Constants.PersonScope.SupportAdmin])]
         async (Guid organisationId, string role, IUseCase<(Guid, string), IEnumerable<Person>> useCase) =>
                     await useCase.Execute((organisationId, role))
                         .AndThen(persons => persons != null ? Results.Ok(persons) : Results.NotFound()))
@@ -1265,7 +1267,8 @@ public static class EndpointExtensions
             [OrganisationAuthorize(
                 [AuthenticationChannel.OneLogin],
                 [Constants.OrganisationPersonScope.Admin, Constants.OrganisationPersonScope.Editor, Constants.OrganisationPersonScope.Responder, Constants.OrganisationPersonScope.Viewer],
-                OrganisationIdLocation.Path)]
+                OrganisationIdLocation.Path,
+                [Constants.PersonScope.SupportAdmin])]
         async (Guid organisationId, IUseCase<Guid, OrganisationParties?> useCase) =>
                 await useCase.Execute(organisationId)
                    .AndThen(parties => parties == null ? Results.NotFound() : Results.Ok(parties))

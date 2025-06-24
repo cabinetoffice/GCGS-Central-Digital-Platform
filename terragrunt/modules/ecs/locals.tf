@@ -32,9 +32,9 @@ locals {
 
   orchestrator_account_id = var.account_ids["orchestrator"]
 
-  orchestrator_service_version = data.aws_ssm_parameter.orchestrator_service_version.value
+  orchestrator_sirsi_service_version = data.aws_ssm_parameter.orchestrator_sirsi_service_version.value
 
-  service_version_sirsi = var.pinned_service_version_sirsi == null ? data.aws_ssm_parameter.orchestrator_service_version.value : var.pinned_service_version_sirsi
+  service_version_sirsi = var.pinned_service_version_sirsi == null ? local.orchestrator_sirsi_service_version : var.pinned_service_version_sirsi
 
   shared_sessions_enabled    = true
   ssm_data_protection_prefix = "${local.name_prefix}-ec-sessions"
@@ -59,6 +59,12 @@ locals {
     config.name
   ]
 
+  fts_log_groups = ["app", "clamav", "supervisor", "unhandled", "web"]
+
   waf_enabled = true
+
+  # @TODO (ABN) DP-1747 Remove env-based logic and these locals as well as old source of FTS configs once migration is completed
+  fts_service_url = var.environment == "development" ? "https://fts.${var.public_domain}" : data.aws_secretsmanager_secret_version.fts_service_url.secret_string
+  onelogin_logout_notification_urls = var.environment == "development" ? "https://fts.${var.public_domain}" : join(",", var.onelogin_logout_notification_urls)
 
 }

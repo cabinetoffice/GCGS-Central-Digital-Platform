@@ -2,7 +2,7 @@ module "ecs_service_grafana" {
   source = "../ecs-service"
 
   container_definitions = templatefile(
-    "${path.module}/templates/task-definitions/grafana.json.tftpl",
+    "${path.module}/templates/task-definitions/${var.grafana_config.name}.json.tftpl",
     {
       account_id            = data.aws_caller_identity.current.account_id
       cdp_sirsi_environment = "${local.name_prefix}-${var.environment}"
@@ -11,7 +11,7 @@ module "ecs_service_grafana" {
       gf_admin_password     = "${aws_secretsmanager_secret.grafana_credentials.arn}:ADMIN_PASSWORD::"
       gf_admin_user         = "${aws_secretsmanager_secret.grafana_credentials.arn}:ADMIN_USERNAME::"
       host_port             = var.grafana_config.port
-      image                 = "${local.orchestrator_account_id}.dkr.ecr.${data.aws_region.current.name}.amazonaws.com/cdp-grafana:latest"
+      image                 = "${local.orchestrator_account_id}.dkr.ecr.${data.aws_region.current.name}.amazonaws.com/cdp-${var.grafana_config.name}:latest"
       lg_name               = aws_cloudwatch_log_group.grafana.name
       lg_prefix             = "telemetry"
       lg_region             = data.aws_region.current.name

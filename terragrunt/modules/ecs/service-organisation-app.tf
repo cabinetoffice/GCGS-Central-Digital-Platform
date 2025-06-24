@@ -34,7 +34,7 @@ module "ecs_service_organisation_app" {
       container_port                      = var.service_configs.organisation_app.port
       cpu                                 = var.service_configs.organisation_app.cpu
       fts_service_allowed_origins         = join(",", var.fts_service_allowed_origins)
-      fts_service_url_arn                 = data.aws_secretsmanager_secret_version.fts_service_url.arn
+      fts_service_url                     = local.fts_service_url
       host_port                           = var.service_configs.organisation_app.port
       image                               = local.ecr_urls[var.service_configs.organisation_app.name]
       diagnostic_page_enabled             = !var.is_production || var.environment == "integration"
@@ -48,7 +48,7 @@ module "ecs_service_organisation_app" {
       onelogin_authority                  = local.one_loging.credential_locations.authority
       onelogin_client_id                  = local.one_loging.credential_locations.client_id
       onelogin_fln_api_key_arn            = data.aws_secretsmanager_secret.one_login_forward_logout_notification_api_key.arn
-      onelogin_logout_notification_urls   = join(",", var.onelogin_logout_notification_urls)
+      onelogin_logout_notification_urls   = local.onelogin_logout_notification_urls
       onelogin_private_key                = local.one_loging.credential_locations.private_key
       public_domain                       = var.public_domain
       queue_av_scanner_url                = var.queue_av_scanner_url
@@ -72,7 +72,7 @@ module "ecs_service_organisation_app" {
   ecs_listener_arn              = aws_lb_listener.ecs.arn
   ecs_service_base_sg_id        = var.ecs_sg_id
   family                        = "app"
-  host_port                     = var.service_configs.organisation_app.port
+  host_port                     = var.service_configs.organisation_app.port # this needs to stay and can't be same as host, 80
   is_frontend_app               = true
   memory                        = var.service_configs.organisation_app.memory
   name                          = var.service_configs.organisation_app.name

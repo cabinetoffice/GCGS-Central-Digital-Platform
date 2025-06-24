@@ -74,4 +74,45 @@ public class ApiKeyValidatorTest
         organisation.Should().BeNull();
         scopes.Should().BeEmpty();
     }
+
+    [Fact]
+    public async Task Validate_RevokedApiKey_ReturnsFalse()
+    {
+        _repository.Setup(r => r.Find(It.IsAny<string>()))
+            .ReturnsAsync(new AuthenticationKey { Name = "FTS", Key = ValidApiKey, Scopes = ["ADMIN"], Revoked = true });
+
+        var (valid, organisation, scopes) = await _validator.Validate(ValidApiKey);
+
+        valid.Should().BeFalse();
+        organisation.Should().BeNull();
+        scopes.Should().BeEmpty();
+    }
+
+    [Fact]
+    public async Task Validate_RevokedApiKeyWithOrganisation_ReturnsFalse()
+    {
+        var orgId = Guid.NewGuid();
+        _repository.Setup(r => r.Find(It.IsAny<string>()))
+            .ReturnsAsync(new AuthenticationKey
+            {
+                Name = "FTS",
+                Key = ValidApiKey,
+                OrganisationId = 42,
+                Organisation = new Organisation
+                {
+                    Guid = orgId,
+                    Name = "",
+                    Type = OrganisationInformation.OrganisationType.Organisation,
+                    Tenant = new Tenant { Guid = Guid.NewGuid(), Name = "" }
+                },
+                Scopes = ["ADMIN"],
+                Revoked = true
+            });
+
+        var (valid, organisation, scopes) = await _validator.Validate(ValidApiKey);
+
+        valid.Should().BeFalse();
+        organisation.Should().BeNull();
+        scopes.Should().BeEmpty();
+    }
 }

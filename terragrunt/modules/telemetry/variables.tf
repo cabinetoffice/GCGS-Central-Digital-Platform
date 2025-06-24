@@ -28,9 +28,44 @@ variable "ecs_sg_id" {
   type        = string
 }
 
+variable "efs_fluentbit_access_point_id" {
+  description = "The FluentBit's EFS Access Point ID"
+  type        = string
+}
+
+variable "efs_fluentbit_container_path" {
+  description = "The path to mount in container"
+  type        = string
+}
+
+variable "efs_fluentbit_id" {
+  description = "The FluentBit's EFS ID"
+  type        = string
+}
+
+variable "efs_fluentbit_volume_name" {
+  description = "The FluentBit's mounted volume with appropriate access"
+}
+
+variable "efs_sg_id" {
+  description = "EFS security group ID"
+  type        = string
+}
+
 variable "environment" {
   description = "The environment we are provisioning"
   type        = string
+}
+
+variable "fluentbit_config" {
+  description = "Fluent Bit service configuration"
+  type = object({
+    cpu       = number
+    memory    = number
+    name      = string
+    port      = number
+    port_host = number
+  })
 }
 
 variable "grafana_config" {

@@ -32,7 +32,7 @@ module "ecs_service_tenant" {
   ecs_listener_arn       = aws_lb_listener.ecs.arn
   ecs_service_base_sg_id = var.ecs_sg_id
   family                 = "app"
-  host_port              = var.service_configs.tenant.port
+  host_port              = var.service_configs.tenant.port_host
   memory                 = var.service_configs.tenant.memory
   name                   = var.service_configs.tenant.name
   private_subnet_ids     = var.private_subnet_ids

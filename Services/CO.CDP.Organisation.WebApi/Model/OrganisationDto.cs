@@ -5,6 +5,7 @@ public class OrganisationDto
 {
     public Guid Id { get; set; }
     public string? Name { get; set; }
+    public OrganisationType Type { get; set; }
     public List<PartyRole> Roles { get; set; } = new();
     public List<PartyRole> PendingRoles { get; set; } = new();
     public DateTimeOffset? ApprovedOn { get; set; }

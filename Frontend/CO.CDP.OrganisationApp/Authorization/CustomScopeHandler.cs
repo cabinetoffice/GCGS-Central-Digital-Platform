@@ -25,6 +25,13 @@ public class CustomScopeHandler(ISession session, IServiceScopeFactory serviceSc
                 var userScopes = userInfo.Scopes;
                 var organisationUserScopes = userInfo.OrganisationScopes(userInfoService.GetOrganisationId());
 
+                // Super admin can do everything
+                if (userScopes.Contains(PersonScopes.SuperAdmin))
+                {
+                    context.Succeed(requirement);
+                    return;
+                }
+
                 // Support admin implies viewer permissions
                 if (requirement.Scope == OrganisationPersonScopes.Viewer &&
                     userScopes.Contains(PersonScopes.SupportAdmin))
