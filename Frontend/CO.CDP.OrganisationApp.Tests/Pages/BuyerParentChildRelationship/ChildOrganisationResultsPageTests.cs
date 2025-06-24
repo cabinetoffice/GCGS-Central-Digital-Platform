@@ -1,8 +1,10 @@
 using CO.CDP.Organisation.WebApiClient;
+using CO.CDP.OrganisationApp.Logging;
 using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.Pages.BuyerParentChildRelationship;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Logging;
 using Moq;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages.BuyerParentChildRelationship;
@@ -10,12 +12,14 @@ namespace CO.CDP.OrganisationApp.Tests.Pages.BuyerParentChildRelationship;
 public class ChildOrganisationResultsPageTests
 {
     private readonly Mock<IOrganisationClient> _mockOrganisationClient;
+    private readonly Mock<ILogger<ChildOrganisationResultsPage>> _mockLogger;
     private readonly ChildOrganisationResultsPage _model;
 
     public ChildOrganisationResultsPageTests()
     {
         _mockOrganisationClient = new Mock<IOrganisationClient>();
-        _model = new ChildOrganisationResultsPage(_mockOrganisationClient.Object);
+        _mockLogger = new Mock<ILogger<ChildOrganisationResultsPage>>();
+        _model = new ChildOrganisationResultsPage(_mockOrganisationClient.Object, _mockLogger.Object);
     }
 
     [Fact]
@@ -158,7 +162,9 @@ public class ChildOrganisationResultsPageTests
     [Fact]
     public void Results_DefaultsToEmptyList()
     {
-        var model = new ChildOrganisationResultsPage(_mockOrganisationClient.Object);
+        var mockOrganisationClient = new Mock<IOrganisationClient>();
+        var mockLogger = new Mock<ILogger<ChildOrganisationResultsPage>>();
+        var model = new ChildOrganisationResultsPage(mockOrganisationClient.Object, mockLogger.Object);
 
         model.Results.Should().NotBeNull();
         model.Results.Should().BeEmpty();
@@ -167,7 +173,9 @@ public class ChildOrganisationResultsPageTests
     [Fact]
     public void SelectedOrganisationId_DefaultsToNull()
     {
-        var model = new ChildOrganisationResultsPage(_mockOrganisationClient.Object);
+        var mockOrganisationClient = new Mock<IOrganisationClient>();
+        var mockLogger = new Mock<ILogger<ChildOrganisationResultsPage>>();
+        var model = new ChildOrganisationResultsPage(mockOrganisationClient.Object, mockLogger.Object);
 
         model.SelectedOrganisationId.Should().BeNull();
     }
@@ -224,8 +232,8 @@ public class ChildOrganisationResultsPageTests
             addresses: [],
             contactPoint: new ContactPoint("a@b.com", "Contact", "123", new Uri("http://whatever")),
             id: organisationId,
-            identifier: new Identifier("asd", "asd", "asd", new Uri("http://whatever")),
-            name: "Org name",
+            identifier: new Identifier("12345", "asd", "PPON", new Uri("http://whatever")),
+            name: "Test Numeric Organisation",
             type: CDP.Organisation.WebApiClient.OrganisationType.Organisation,
             roles: [CDP.Organisation.WebApiClient.PartyRole.Supplier, CDP.Organisation.WebApiClient.PartyRole.Tenderer],
             details: new Details(approval: null, buyerInformation: null, pendingRoles: [],
@@ -255,7 +263,7 @@ public class ChildOrganisationResultsPageTests
         var result = _model.Results.First();
         result.Name.Should().Be("Test Numeric Organisation");
         result.OrganisationId.Should().Be(organisationId);
-        result.GetFormattedIdentifier().Should().Be("DUNS: 12345");
+        result.GetFormattedIdentifier().Should().Be("PPON: 12345");
     }
 
     [Fact]
@@ -294,6 +302,107 @@ public class ChildOrganisationResultsPageTests
                 null, "12345"),
             Times.Once);
         _model.Results.Should().BeEmpty();
+    }
+
+    [Fact]
+    public async Task OnGetAsync_WhenSearchThrowsException_LogsErrorAndSetsErrorMessage()
+    {
+        _model.Query = "test query";
+
+        _mockOrganisationClient
+            .Setup(client => client.SearchOrganisationAsync(
+                _model.Query, "buyer", 20, 0.3))
+            .ThrowsAsync(new Exception("Test exception"));
+
+        await _model.OnGetAsync();
+
+        _mockLogger.Verify(
+            x => x.Log(
+                LogLevel.Error,
+                It.IsAny<EventId>(),
+                It.Is<It.IsAnyType>((v, t) => true),
+                It.IsAny<Exception>(),
+                It.Is<Func<It.IsAnyType, Exception, string>>((v, t) => true)),
+            Times.Once);
+        _model.Results.Should().BeEmpty();
+        _model.ErrorMessage.Should().NotBeNull();
+    }
+
+    [Fact]
+    public async Task OnGetAsync_WhenSearchThrowsException_LogsCdpExceptionAndSetsErrorMessage()
+    {
+        // Arrange
+        _model.Query = "test query";
+        const string errorCode = "SEARCH_ERROR";
+        var exception = new Exception("Test exception");
+
+        _mockOrganisationClient
+            .Setup(client => client.SearchOrganisationAsync(
+                _model.Query, "buyer", 20, 0.3))
+            .ThrowsAsync(exception);
+
+        await _model.OnGetAsync();
+
+        _mockLogger.Verify(
+            x => x.Log(
+                LogLevel.Error,
+                It.IsAny<EventId>(),
+                It.Is<It.IsAnyType>((v, t) => v.ToString() == "Error occurred while searching for organisations"),
+                It.Is<Exception>(e => e is CdpExceptionLogging && ((CdpExceptionLogging)e).ErrorCode == errorCode),
+                It.IsAny<Func<It.IsAnyType, Exception, string>>()),
+            Times.Once);
+        _model.Results.Should().BeEmpty();
+        _model.ErrorMessage.Should().NotBeNull();
+    }
+
+    [Fact]
+    public async Task OnGetAsync_WithNumericOnlyQuery_WhenLookupThrowsException_LogsErrorAndSetsErrorMessage()
+    {
+        _model.Query = "12345";
+
+        _mockOrganisationClient
+            .Setup(client => client.LookupOrganisationAsync(
+                null, "12345"))
+            .ThrowsAsync(new Exception("Test exception"));
+
+        await _model.OnGetAsync();
+
+        _mockLogger.Verify(
+            x => x.Log(
+                LogLevel.Error,
+                It.IsAny<EventId>(),
+                It.Is<It.IsAnyType>((v, t) => true),
+                It.IsAny<Exception>(),
+                It.Is<Func<It.IsAnyType, Exception, string>>((v, t) => true)),
+            Times.Once);
+        _model.Results.Should().BeEmpty();
+        _model.ErrorMessage.Should().NotBeNull();
+    }
+
+    [Fact]
+    public async Task OnGetAsync_WithNumericOnlyQuery_WhenLookupThrowsException_LogsCdpExceptionAndSetsErrorMessage()
+    {
+        _model.Query = "12345";
+        const string errorCode = "LOOKUP_ERROR";
+        var exception = new Exception("Test exception");
+
+        _mockOrganisationClient
+            .Setup(client => client.LookupOrganisationAsync(
+                null, "12345"))
+            .ThrowsAsync(exception);
+
+        await _model.OnGetAsync();
+
+        _mockLogger.Verify(
+            x => x.Log(
+                LogLevel.Error,
+                It.IsAny<EventId>(),
+                It.Is<It.IsAnyType>((v, t) => v.ToString() == "Error occurred while searching for organisations"),
+                It.Is<Exception>(e => e is CdpExceptionLogging && ((CdpExceptionLogging)e).ErrorCode == errorCode),
+                It.IsAny<Func<It.IsAnyType, Exception, string>>()),
+            Times.Once);
+        _model.Results.Should().BeEmpty();
+        _model.ErrorMessage.Should().NotBeNull();
     }
 
     private static OrganisationSearchResult CreateTestSearchResult(string name, Guid id, string scheme,

@@ -1,12 +1,21 @@
+using CO.CDP.Localization;
 using CO.CDP.Organisation.WebApiClient;
+using CO.CDP.OrganisationApp.Logging;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using CO.CDP.OrganisationApp.Models;
+using Microsoft.Extensions.Logging;
 
 namespace CO.CDP.OrganisationApp.Pages.BuyerParentChildRelationship;
 
-public class ChildOrganisationResultsPage(IOrganisationClient organisationClient) : PageModel
+public class ChildOrganisationResultsPage(
+    IOrganisationClient organisationClient,
+    ILogger<ChildOrganisationResultsPage> logger)
+    : PageModel
 {
+    private readonly IOrganisationClient _organisationClient = organisationClient ?? throw new ArgumentNullException(nameof(organisationClient));
+    private readonly ILogger<ChildOrganisationResultsPage> _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+
     [BindProperty(SupportsGet = true)]
     public Guid Id { get; set; }
 
@@ -18,6 +27,8 @@ public class ChildOrganisationResultsPage(IOrganisationClient organisationClient
     [BindProperty]
     public Guid? SelectedOrganisationId { get; set; }
 
+    public string? ErrorMessage { get; private set; }
+
     public async Task OnGetAsync()
     {
         if (!string.IsNullOrWhiteSpace(Query))
@@ -26,7 +37,7 @@ public class ChildOrganisationResultsPage(IOrganisationClient organisationClient
             {
                 if (IsQueryAllNumeric(Query))
                 {
-                    var organisation = await organisationClient.LookupOrganisationAsync(
+                    var organisation = await _organisationClient.LookupOrganisationAsync(
                         name: null,
                         identifier: Query);
 
@@ -40,7 +51,7 @@ public class ChildOrganisationResultsPage(IOrganisationClient organisationClient
                 }
                 else
                 {
-                    var searchResults = await organisationClient.SearchOrganisationAsync(
+                    var searchResults = await _organisationClient.SearchOrganisationAsync(
                         name: Query,
                         role: "buyer",
                         limit: 20,
@@ -56,6 +67,11 @@ public class ChildOrganisationResultsPage(IOrganisationClient organisationClient
             }
             catch (Exception ex)
             {
+                var errorMessage = "Error occurred while searching for organisations";
+                var errorCode = IsQueryAllNumeric(Query) ? "LOOKUP_ERROR" : "SEARCH_ERROR";
+                var cdpException = new CdpExceptionLogging(errorMessage, errorCode, ex);
+                _logger.LogError(cdpException, errorMessage);
+                ErrorMessage = StaticTextResource.BuyerParentChildRelationship_ResultsPage_Error;
             }
         }
     }

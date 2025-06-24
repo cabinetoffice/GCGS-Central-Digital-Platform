@@ -2011,8 +2011,8 @@
   <data name="BuyerParentChildRelationship_ResultsPage_Label" xml:space="preserve">
     <value>Select a child organisation</value>
   </data>
-  <data name="BuyerParentChildRelationship_ResultsPage_Ppon" xml:space="preserve">
-    <value>PPON</value>
+  <data name="BuyerParentChildRelationship_ResultsPage_Error" xml:space="preserve">
+    <value>An error occurred while processing your request. Please try again later.</value>
   </data>
   <data name="Forms_FormElementAddress_EnterNonUKAddress" xml:space="preserve">
     <value>Enter a non-UK address</value>
