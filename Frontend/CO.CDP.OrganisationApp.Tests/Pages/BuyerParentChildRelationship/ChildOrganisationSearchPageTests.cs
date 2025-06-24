@@ -1,6 +1,7 @@
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Pages.BuyerParentChildRelationship;
 using FluentAssertions;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
 using Moq;
@@ -50,5 +51,25 @@ public class ChildOrganisationSearchPageTests
         result.Should().BeOfType<PageResult>();
         _page.ModelState.IsValid.Should().BeFalse();
         _page.ModelState.Should().ContainKey("Query");
+    }
+
+    [Fact]
+    public void OnPost_ValidQuery_RedirectsToResultsPage()
+    {
+        var id = Guid.NewGuid();
+        var query = "Test Organisation";
+
+        _page.Id = id;
+        _page.Query = query;
+
+        var result = _page.OnPost();
+
+        result.Should().BeOfType<RedirectToPageResult>();
+        var redirectResult = (RedirectToPageResult)result;
+        redirectResult.PageName.Should().Be("ChildOrganisationResultsPage");
+        redirectResult.RouteValues.Should().ContainKey("Id");
+        redirectResult.RouteValues.Should().ContainKey("query");
+        redirectResult.RouteValues["Id"].Should().Be(id);
+        redirectResult.RouteValues["query"].Should().Be(query);
     }
 }

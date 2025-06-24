@@ -27,6 +27,6 @@ public class ChildOrganisationSearchPage(IOrganisationClient organisationClient)
             return Page();
         }
 
-        return Page();
+        return RedirectToPage("ChildOrganisationResultsPage", new { Id, query = Query });
     }
 }
