@@ -1,12 +1,11 @@
 using CO.CDP.Localization;
-using CO.CDP.Organisation.WebApiClient;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
 
 namespace CO.CDP.OrganisationApp.Pages.BuyerParentChildRelationship;
 
-public class ChildOrganisationSearchPage(IOrganisationClient organisationClient) : PageModel
+public class ChildOrganisationSearchPage() : PageModel
 {
     [BindProperty(SupportsGet = true)]
     public Guid Id { get; set; }

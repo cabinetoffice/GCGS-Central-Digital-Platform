@@ -10,13 +10,7 @@ namespace CO.CDP.OrganisationApp.Tests.Pages.BuyerParentChildRelationship;
 
 public class ChildOrganisationSearchPageTests
 {
-    private readonly ChildOrganisationSearchPage _page;
-
-    public ChildOrganisationSearchPageTests()
-    {
-        var mockOrganisationClient = new Mock<IOrganisationClient>();
-        _page = new ChildOrganisationSearchPage(mockOrganisationClient.Object);
-    }
+    private readonly ChildOrganisationSearchPage _page = new();
 
     [Fact]
     public void OnGet_ReturnsPageResult()
