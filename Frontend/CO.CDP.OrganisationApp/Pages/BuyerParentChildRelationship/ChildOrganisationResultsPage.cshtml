@@ -1,19 +1,38 @@
 @page "/organisation/{id}/buyer-parent-child-relationship/results"
 @model CO.CDP.OrganisationApp.Pages.BuyerParentChildRelationship.ChildOrganisationResultsPage
+@using CO.CDP.Localization
 
 @{
-    Layout = null;
+    ViewData["Title"] = StaticTextResource.BuyerParentChildRelationship_SearchPage_Title;
 }
 
-<!DOCTYPE html>
+@section BeforeContent {
+    <a href="/buyer-parent-child-relationship/search" class="govuk-back-link">@StaticTextResource.Global_Back</a>
+}
 
-<html>
-<head>
-    <title></title>
-</head>
-<body>
-<div>
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-l">@StaticTextResource.BuyerParentChildRelationship_ResultsPage_Title</h1>
 
+        <p class="govuk-body">@StaticTextResource.BuyerParentChildRelationship_ResultsPage_Text</p>
+
+        <div class="govuk-form-group">
+            <label class="govuk-fieldset__legend govuk-fieldset__legend--s" for="child-organisations">
+                @StaticTextResource.BuyerParentChildRelationship_ResultsPage_Label
+            </label>
+        </div>
+
+        <div class="govuk-button-group">
+
+        <button type="submit" class="govuk-button" data-module="govuk-button">
+            @StaticTextResource.Global_Continue
+        </button>
+
+        <button type="button" class="govuk-button govuk-button--secondary" data-module="govuk-button">
+            @StaticTextResource.Global_SearchAgain
+        </button>
+
+            <a href="#" class="govuk-link">@StaticTextResource.Global_Cancel</a>
+        </div>
+    </div>
 </div>
-</body>
-</html>

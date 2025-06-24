@@ -479,6 +479,9 @@
   <data name="Global_Continue" xml:space="preserve">
     <value>Continue</value>
   </data>
+  <data name="Global_Cancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
   <data name="Global_Admin" xml:space="preserve">
     <value>Admin</value>
   </data>
@@ -910,6 +913,9 @@
   </data>
   <data name="Global_Search" xml:space="preserve">
     <value>Search</value>
+  </data>
+  <data name="Global_SearchAgain" xml:space="preserve">
+    <value>Search again</value>
   </data>
   <data name="Global_Submit" xml:space="preserve">
     <value>Submit</value>
@@ -1992,6 +1998,18 @@
   </data>
   <data name="BuyerParentChildRelationship_SearchPage_Error" xml:space="preserve">
     <value>Enter the name or PPON of your child organisation</value>
+  </data>
+  <data name="BuyerParentChildRelationship_ResultsPage_Title" xml:space="preserve">
+    <value>Search results</value>
+  </data>
+  <data name="BuyerParentChildRelationship_ResultsPage_Text" xml:space="preserve">
+    <value>{0} child organisation found for</value>
+  </data>
+  <data name="BuyerParentChildRelationship_ResultsPage_Label" xml:space="preserve">
+    <value>Select a child organisation</value>
+  </data>
+  <data name="BuyerParentChildRelationship_ResultsPage_Ppon" xml:space="preserve">
+    <value>PPON</value>
   </data>
   <data name="Forms_FormElementAddress_EnterNonUKAddress" xml:space="preserve">
     <value>Enter a non-UK address</value>
