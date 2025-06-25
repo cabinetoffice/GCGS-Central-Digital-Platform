@@ -6,21 +6,61 @@
     ViewData["Title"] = StaticTextResource.BuyerParentChildRelationship_ConfirmPage_Title;
 }
 
-<!DOCTYPE html>
-
-<html>
-<head>
-    <title></title>
-</head>
-<body>
 <div class="govuk-width-container">
     <main class="govuk-main-wrapper " id="main-content" role="main">
         <div class="govuk-grid-row">
             <div class="govuk-grid-column-two-thirds">
+                <h1 class="govuk-heading-l">Confirm your child organisation details</h1>
 
+                <form method="post">
+                    <div class="table-header">
+                        <p class="govuk-body govuk-!-font-weight-bold">
+                            @Model.ChildOrganisation.Name
+                        </p>
+                    </div>
+
+                    <div class="table-content">
+                        <table class="govuk-table">
+                            <tbody class="govuk-table__body">
+                            <tr class="govuk-table__row">
+                                <th scope="row" class="govuk-table__header govuk-!-width-one-third">PPON</th>
+                                <td class="govuk-table__cell govuk-!-width-two-thirds">
+                                    @Model.ChildOrganisation.Identifier.Id
+                                </td>
+                            </tr>
+                            <tr class="govuk-table__row">
+                                <th scope="row" class="govuk-table__header govuk-!-width-one-third">Organisation type
+                                </th>
+                                <td class="govuk-table__cell govuk-!-width-two-thirds">Buyer</td>
+                            </tr>
+                            <tr class="govuk-table__row">
+                                <th scope="row" class="govuk-table__header govuk-!-width-one-third">Organisation
+                                    address
+                                </th>
+                                <td class="govuk-table__cell govuk-!-width-two-thirds">
+                                    123 Street Name<br>Example Town<br>Example County<br>AB1 2CD<br>United Kingdom
+                                </td>
+                            </tr>
+                            <tr class="govuk-table__row">
+                                <th scope="row" class="govuk-table__header govuk-!-width-one-third no-border">
+                                    Organisation email
+                                </th>
+                                <td class="govuk-table__cell govuk-!-width-two-thirds no-border">
+                                    info@org.co.uk
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="govuk-button-group">
+                        <button type="submit" class="govuk-button" asp-page-handler="Post">Confirm</button>
+                        <a class="govuk-button govuk-button--secondary" asp-page="ChildOrganisationSearchPage"
+                           asp-route-id="@Model.Id">Search again</a>
+                        <a class="govuk-link" asp-page="Index">Cancel</a>
+                    </div>
+                </form>
             </div>
         </div>
     </main>
 </div>
-</body>
-</html>
