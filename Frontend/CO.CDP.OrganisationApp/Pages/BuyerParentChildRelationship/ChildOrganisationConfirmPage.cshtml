@@ -56,8 +56,8 @@
                     <div class="govuk-button-group">
                         <button type="submit" class="govuk-button" asp-page-handler="Post">Confirm</button>
                         <a class="govuk-button govuk-button--secondary" asp-page="ChildOrganisationSearchPage"
-                           asp-route-id="@Model.Id">Search again</a>
-                        <a class="govuk-link" asp-page="Index">Cancel</a>
+                           asp-route-id="@Model.Id">@StaticTextResource.Global_SearchAgain</a>
+                        <a class="govuk-link" href="/organisation/@Model.Id">@StaticTextResource.Global_Cancel</a>
                     </div>
                 </form>
             </div>

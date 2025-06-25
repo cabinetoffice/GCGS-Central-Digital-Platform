@@ -57,8 +57,7 @@
                 </button>
                 <a href="@Url.Page("ChildOrganisationSearchPage", new { Model.Id })"
                    class="govuk-button govuk-button--secondary">@StaticTextResource.Global_SearchAgain</a>
-                <a href="@Url.Page("OrganisationDetailsSummary", new { Model.Id })"
-                   class="govuk-link">@StaticTextResource.Global_Cancel</a>
+                <a class="govuk-link" href="/organisation/@Model.Id">@StaticTextResource.Global_Cancel</a>
             </div>
         </form>
     </div>
