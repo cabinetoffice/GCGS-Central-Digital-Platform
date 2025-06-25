@@ -874,12 +874,6 @@
   <data name="DataProtection_05_SummaryTitle" xml:space="preserve">
     <value>Document upload</value>
   </data>
-  <data name="DataProtection_07_Title" xml:space="preserve">
-    <value>Upload your supporting documents</value>
-  </data>
-  <data name="DataProtection_07_SummaryTitle" xml:space="preserve">
-    <value>Supporting documents</value>
-  </data>
   <data name="Global_Enter_Your_Job_Title" xml:space="preserve">
     <value>Enter your job title</value>
   </data>
