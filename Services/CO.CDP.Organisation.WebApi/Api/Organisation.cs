@@ -270,6 +270,29 @@ public static class EndpointExtensions
              operation.Responses["500"].Description = "Internal server error.";
              return operation;
          });
+
+        app.MapPost("/organisations/relationships/parent-child",
+            [OrganisationAuthorize([AuthenticationChannel.OneLogin], personScopes: [Constants.PersonScope.SupportAdmin])]
+        async (CreateParentChildRelationshipRequest request, IUseCase<CreateParentChildRelationshipRequest, ParentChildRelationshipResult> useCase) =>
+                await useCase.Execute(request)
+                    .AndThen(result => result.Success
+                        ? Results.Created($"/organisations/relationships/parent-child/{result.RelationshipId}", result)
+                        : Results.Problem("Failed to create parent-child relationship", statusCode: StatusCodes.Status400BadRequest)))
+        .Produces<ParentChildRelationshipResult>(StatusCodes.Status201Created, "application/json")
+        .ProducesProblem(StatusCodes.Status400BadRequest)
+        .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
+        .ProducesProblem(StatusCodes.Status500InternalServerError)
+        .WithOpenApi(operation =>
+        {
+            operation.OperationId = "CreateParentChildRelationship";
+            operation.Description = "Creates a parent-child relationship between two organisations.";
+            operation.Summary = "Create a parent-child organisation relationship.";
+            operation.Responses["201"].Description = "Parent-child relationship created successfully.";
+            operation.Responses["400"].Description = "Bad request or failed to create relationship.";
+            operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
+            operation.Responses["500"].Description = "Internal server error.";
+            return operation;
+        });
     }
 
     public static RouteGroupBuilder UseOrganisationLookupEndpoints(this RouteGroupBuilder app)
