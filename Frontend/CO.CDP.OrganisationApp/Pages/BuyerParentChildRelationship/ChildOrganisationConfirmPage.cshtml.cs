@@ -82,7 +82,7 @@ public class ChildOrganisationConfirmPage : PageModel
             //     parentId: Id,
             //     childId: childOrganisation.Id);
 
-            return RedirectToPage("ChildOrganisationSuccessPage", new { Id });
+            return RedirectToPage("ChildOrganisationSuccessPage", new { Id, OrganisationName = ChildOrganisation?.Name });
         }
         catch (Exception ex)
         {

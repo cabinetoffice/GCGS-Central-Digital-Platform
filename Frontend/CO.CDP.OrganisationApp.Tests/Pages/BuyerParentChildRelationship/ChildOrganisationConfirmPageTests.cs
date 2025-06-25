@@ -113,15 +113,22 @@ public class ChildOrganisationConfirmPageTests
     }
 
     [Fact]
-    public async Task OnPostAsync_PreservesQueryParameter()
+    public async Task OnPostAsync_PassesOrganisationNameToSuccessPage()
     {
         var id = Guid.NewGuid();
         const string query = "test query";
         const string selectedPponIdentifier = "GB-PPON:12345";
+        const string organisationName = "Test Organisation";
+        var childOrganisationId = Guid.NewGuid();
 
         _model.Id = id;
         _model.Ppon = selectedPponIdentifier;
         _model.Query = query;
+        _model.ChildOrganisation = new Models.ChildOrganisation(
+            organisationName,
+            childOrganisationId,
+            new Identifier(selectedPponIdentifier, organisationName, "PPON", null)
+        );
 
         var result = await _model.OnPostAsync();
 
@@ -129,5 +136,7 @@ public class ChildOrganisationConfirmPageTests
         redirectResult.PageName.Should().Be("ChildOrganisationSuccessPage");
         redirectResult.RouteValues.Should().ContainKey("Id");
         redirectResult.RouteValues["Id"].Should().Be(id);
+        redirectResult.RouteValues.Should().ContainKey("OrganisationName");
+        redirectResult.RouteValues["OrganisationName"].Should().Be(organisationName);
     }
 }
