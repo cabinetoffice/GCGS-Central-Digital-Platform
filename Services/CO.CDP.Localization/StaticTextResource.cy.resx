@@ -527,9 +527,6 @@
   <data name="OrganisationSchemeType_VAT" xml:space="preserve">
     <value>Rhif TAW</value>
   </data>
-  <data name="Organisation_AddAnotherOrganisation" xml:space="preserve">
-    <value>Ychwanegu sefydliad arall</value>
-  </data>
   <data name="Organisation_AddMoreOrganisations" xml:space="preserve">
     <value>ychwanegu mwy o sefydliadau</value>
   </data>

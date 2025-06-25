@@ -525,7 +525,7 @@
     <value>Not approved</value>
   </data>
   <data name="Organisation_AddAnotherOrganisation" xml:space="preserve">
-    <value>Add another organisation</value>
+    <value>Add an organisation</value>
   </data>
   <data name="Organisation_RegisterOrganisation" xml:space="preserve">
     <value>Register an organisation if you are:</value>
