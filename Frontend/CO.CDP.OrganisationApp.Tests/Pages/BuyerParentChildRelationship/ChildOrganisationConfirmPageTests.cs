@@ -76,4 +76,58 @@ public class ChildOrganisationConfirmPageTests
         _model.ChildOrganisation.Name.Should().Be("Test Organisation");
         _model.ChildOrganisation.OrganisationId.Should().Be(organisationId);
     }
+
+    [Fact]
+    public async Task OnGetAsync_SetsPropertiesFromQuery()
+    {
+        var id = Guid.NewGuid();
+        const string query = "test query";
+        const string selectedPponIdentifier = "GB-PPON:12345";
+
+        _model.Id = id;
+        _model.Ppon = selectedPponIdentifier;
+        _model.Query = query;
+
+        var organisation = new CDP.Organisation.WebApiClient.Organisation(
+            additionalIdentifiers: [],
+            addresses: [],
+            contactPoint: new ContactPoint("a@b.com", "Contact", "123", new Uri("http://whatever")),
+            id: Guid.NewGuid(),
+            identifier: new Identifier(selectedPponIdentifier, "Test Org", "PPON", new Uri("http://whatever")),
+            name: "Test Organisation",
+            type: CDP.Organisation.WebApiClient.OrganisationType.Organisation,
+            roles: [CDP.Organisation.WebApiClient.PartyRole.Supplier, CDP.Organisation.WebApiClient.PartyRole.Tenderer],
+            details: new Details(approval: null, buyerInformation: null, pendingRoles: [],
+                publicServiceMissionOrganization: null, scale: null, shelteredWorkshop: null, vcse: null)
+        );
+
+        _mockOrganisationClient
+            .Setup(client => client.LookupOrganisationAsync(null, selectedPponIdentifier))
+            .ReturnsAsync(organisation);
+
+        await _model.OnGetAsync();
+
+        _model.Id.Should().Be(id);
+        _model.Ppon.Should().Be(selectedPponIdentifier);
+        _model.Query.Should().Be(query);
+    }
+
+    [Fact]
+    public async Task OnPostAsync_PreservesQueryParameter()
+    {
+        var id = Guid.NewGuid();
+        const string query = "test query";
+        const string selectedPponIdentifier = "GB-PPON:12345";
+
+        _model.Id = id;
+        _model.Ppon = selectedPponIdentifier;
+        _model.Query = query;
+
+        var result = await _model.OnPostAsync();
+
+        var redirectResult = result.Should().BeOfType<RedirectToPageResult>().Subject;
+        redirectResult.PageName.Should().Be("ChildOrganisationSuccessPage");
+        redirectResult.RouteValues.Should().ContainKey("Id");
+        redirectResult.RouteValues["Id"].Should().Be(id);
+    }
 }

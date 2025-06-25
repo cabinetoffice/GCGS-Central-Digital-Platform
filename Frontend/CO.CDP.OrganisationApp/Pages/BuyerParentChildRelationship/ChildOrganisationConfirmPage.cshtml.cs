@@ -24,6 +24,8 @@ public class ChildOrganisationConfirmPage : PageModel
 
     [BindProperty(SupportsGet = true)] public string? Ppon { get; set; }
 
+    [BindProperty(SupportsGet = true)] public string? Query { get; set; }
+
     public ChildOrganisation? ChildOrganisation { get; set; }
 
     public Address? OrganisationAddress { get; set; }

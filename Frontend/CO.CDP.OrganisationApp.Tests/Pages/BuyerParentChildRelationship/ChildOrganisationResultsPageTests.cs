@@ -170,6 +170,8 @@ public class ChildOrganisationResultsPageTests
         redirectResult.RouteValues["Id"].Should().Be(id);
         redirectResult.RouteValues.Should().ContainKey("Ppon");
         redirectResult.RouteValues["Ppon"].Should().Be(selectedPponIdentifier);
+        redirectResult.RouteValues.Should().ContainKey("Query");
+        redirectResult.RouteValues["Query"].Should().Be(query);
     }
 
     [Fact]
