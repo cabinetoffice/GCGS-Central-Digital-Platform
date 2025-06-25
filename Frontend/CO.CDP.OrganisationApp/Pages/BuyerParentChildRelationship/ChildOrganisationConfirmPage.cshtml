@@ -15,7 +15,7 @@
                 <form method="post">
                     <div class="table-header">
                         <p class="govuk-body govuk-!-font-weight-bold">
-                            @Model.ChildOrganisation.Name
+                            @Model.ChildOrganisation?.Name
                         </p>
                     </div>
 
@@ -25,20 +25,34 @@
                             <tr class="govuk-table__row">
                                 <th scope="row" class="govuk-table__header govuk-!-width-one-third">PPON</th>
                                 <td class="govuk-table__cell govuk-!-width-two-thirds">
-                                    @Model.ChildOrganisation.Identifier.Id
+                                    @Model.ChildOrganisation?.Identifier.Id
                                 </td>
                             </tr>
                             <tr class="govuk-table__row">
                                 <th scope="row" class="govuk-table__header govuk-!-width-one-third">Organisation type
                                 </th>
-                                <td class="govuk-table__cell govuk-!-width-two-thirds">Buyer</td>
+                                <td class="govuk-table__cell govuk-!-width-two-thirds">@Model.OrganisationType</td>
                             </tr>
                             <tr class="govuk-table__row">
                                 <th scope="row" class="govuk-table__header govuk-!-width-one-third">Organisation
                                     address
                                 </th>
                                 <td class="govuk-table__cell govuk-!-width-two-thirds">
-                                    123 Street Name<br>Example Town<br>Example County<br>AB1 2CD<br>United Kingdom
+                                    @if (Model.OrganisationAddress != null)
+                                    {
+                                        @Model.OrganisationAddress.StreetAddress<br/>
+                                        @Model.OrganisationAddress.Locality<br/>
+                                        @if (!string.IsNullOrEmpty(Model.OrganisationAddress.Region))
+                                        {
+                                            @Model.OrganisationAddress.Region<br/>
+                                        }
+                                        @Model.OrganisationAddress.PostalCode<br/>
+                                        @Model.OrganisationAddress.CountryName
+                                    }
+                                    else
+                                    {
+                                        <span>No address information available</span>
+                                    }
                                 </td>
                             </tr>
                             <tr class="govuk-table__row">
@@ -46,7 +60,14 @@
                                     Organisation email
                                 </th>
                                 <td class="govuk-table__cell govuk-!-width-two-thirds no-border">
-                                    info@org.co.uk
+                                    @if (!string.IsNullOrEmpty(Model.OrganisationContactPoint?.Email))
+                                    {
+                                        @Model.OrganisationContactPoint.Email
+                                    }
+                                    else
+                                    {
+                                        <span>No email address available</span>
+                                    }
                                 </td>
                             </tr>
                             </tbody>

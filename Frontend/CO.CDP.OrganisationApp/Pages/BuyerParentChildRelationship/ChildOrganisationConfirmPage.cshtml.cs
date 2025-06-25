@@ -3,6 +3,7 @@ using CO.CDP.OrganisationApp.Logging;
 using CO.CDP.OrganisationApp.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Address = CO.CDP.Organisation.WebApiClient.Address;
 
 namespace CO.CDP.OrganisationApp.Pages.BuyerParentChildRelationship;
 
@@ -25,6 +26,10 @@ public class ChildOrganisationConfirmPage : PageModel
 
     public ChildOrganisation? ChildOrganisation { get; set; }
 
+    public Address? OrganisationAddress { get; set; }
+    public ContactPoint? OrganisationContactPoint { get; set; }
+    public string OrganisationType => "Buyer";
+
     public async Task<IActionResult> OnGetAsync()
     {
         if (string.IsNullOrWhiteSpace(Ppon))
@@ -39,9 +44,10 @@ public class ChildOrganisationConfirmPage : PageModel
                 name: null,
                 identifier: formattedPponIdentifier);
 
-            if (organisation != null)
+            if (organisation == null)
             {
-                Console.WriteLine(organisation.Name);
+                _logger.LogWarning("Organisation not found for identifier: {Identifier}", formattedPponIdentifier);
+                return RedirectToPage("/Error");
             }
 
             ChildOrganisation = new ChildOrganisation(
@@ -49,6 +55,9 @@ public class ChildOrganisationConfirmPage : PageModel
                 organisation.Id,
                 organisation.Identifier
             );
+
+            OrganisationAddress = organisation.Addresses?.FirstOrDefault();
+            OrganisationContactPoint = organisation.ContactPoint;
         }
         catch (Exception ex)
         {
