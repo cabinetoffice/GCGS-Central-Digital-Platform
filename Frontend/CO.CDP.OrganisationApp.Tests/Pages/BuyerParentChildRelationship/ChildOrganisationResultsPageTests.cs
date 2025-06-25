@@ -205,35 +205,21 @@ public class ChildOrganisationResultsPageTests
         result.GetFormattedIdentifier().Should().Be("DUNS: 123456789");
     }
 
-    [Fact]
-    public async Task OnGetAsync_WithNumericOnlyQuery_DoesNotCallOrganisationSearchAndReturnsEmptyResults()
+    [Theory]
+    [InlineData("GB-PPON:12345", "GB-PPON:12345")]
+    [InlineData("GB-PPON-12345", "GB-PPON:12345")]
+    [InlineData("ABCD-1234-EFGH", "GB-PPON:ABCD-1234-EFGH")]
+    public async Task OnGetAsync_WithPponQuery_CallsLookupOrganisationAsync(string query, string expectedIdentifier)
     {
-        _model.Query = "12345";
-
-        await _model.OnGetAsync();
-
-        _mockOrganisationClient.Verify(
-            client => client.SearchOrganisationAsync(
-                It.IsAny<string>(),
-                It.IsAny<string>(),
-                It.IsAny<int>(),
-                It.IsAny<double>()),
-            Times.Never);
-        _model.Results.Should().BeEmpty();
-    }
-
-    [Fact]
-    public async Task OnGetAsync_WithNumericOnlyQuery_CallsLookupOrganisationAsync()
-    {
-        _model.Query = "12345";
+        _model.Query = query;
         var organisationId = Guid.NewGuid();
         var organisation = new CDP.Organisation.WebApiClient.Organisation(
             additionalIdentifiers: [],
             addresses: [],
             contactPoint: new ContactPoint("a@b.com", "Contact", "123", new Uri("http://whatever")),
             id: organisationId,
-            identifier: new Identifier("12345", "asd", "PPON", new Uri("http://whatever")),
-            name: "Test Numeric Organisation",
+            identifier: new Identifier(expectedIdentifier, "asd", "PPON", new Uri("http://whatever")),
+            name: "Test Ppon Organisation",
             type: CDP.Organisation.WebApiClient.OrganisationType.Organisation,
             roles: [CDP.Organisation.WebApiClient.PartyRole.Supplier, CDP.Organisation.WebApiClient.PartyRole.Tenderer],
             details: new Details(approval: null, buyerInformation: null, pendingRoles: [],
@@ -241,15 +227,13 @@ public class ChildOrganisationResultsPageTests
         );
 
         _mockOrganisationClient
-            .Setup(client => client.LookupOrganisationAsync(
-                null, "12345"))
+            .Setup(client => client.LookupOrganisationAsync(null, expectedIdentifier))
             .ReturnsAsync(organisation);
 
         await _model.OnGetAsync();
 
         _mockOrganisationClient.Verify(
-            client => client.LookupOrganisationAsync(
-                null, "12345"),
+            client => client.LookupOrganisationAsync(null, expectedIdentifier),
             Times.Once);
         _mockOrganisationClient.Verify(
             client => client.SearchOrganisationAsync(
@@ -261,26 +245,23 @@ public class ChildOrganisationResultsPageTests
 
         _model.Results.Should().HaveCount(1);
         var result = _model.Results.First();
-        result.Name.Should().Be("Test Numeric Organisation");
+        result.Name.Should().Be("Test Ppon Organisation");
         result.OrganisationId.Should().Be(organisationId);
-        result.GetFormattedIdentifier().Should().Be("PPON: 12345");
     }
 
     [Fact]
-    public async Task OnGetAsync_WithNumericOnlyQuery_WhenLookupReturnsNull_ReturnsEmptyResults()
+    public async Task OnGetAsync_WithPponQuery_WhenLookupReturnsNull_ReturnsEmptyResults()
     {
-        _model.Query = "12345";
+        _model.Query = "GB-PPON-12345";
 
         _mockOrganisationClient
-            .Setup(client => client.LookupOrganisationAsync(
-                null, "12345"))
+            .Setup(client => client.LookupOrganisationAsync(null, "GB-PPON:12345"))
             .ReturnsAsync((CDP.Organisation.WebApiClient.Organisation)null);
 
         await _model.OnGetAsync();
 
         _mockOrganisationClient.Verify(
-            client => client.LookupOrganisationAsync(
-                null, "12345"),
+            client => client.LookupOrganisationAsync(null, "GB-PPON:12345"),
             Times.Once);
         _model.Results.Should().BeEmpty();
     }
@@ -313,15 +294,15 @@ public class ChildOrganisationResultsPageTests
     }
 
     [Fact]
-    public async Task OnGetAsync_WithNumericOnlyQuery_WhenLookupThrowsException_LogsCdpExceptionAndRedirectsToErrorPage()
+    public async Task OnGetAsync_WithPponQuery_WhenLookupThrowsException_LogsCdpExceptionAndRedirectsToErrorPage()
     {
-        _model.Query = "12345";
+        _model.Query = "GB-PPON-12345";
         const string errorCode = "LOOKUP_ERROR";
         var exception = new Exception("Test exception");
 
         _mockOrganisationClient
             .Setup(client => client.LookupOrganisationAsync(
-                null, "12345"))
+                null, "GB-PPON:12345"))
             .ThrowsAsync(exception);
 
         var result = await _model.OnGetAsync();

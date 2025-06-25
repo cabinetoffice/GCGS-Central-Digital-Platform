@@ -33,11 +33,12 @@ public class ChildOrganisationResultsPage(
         {
             try
             {
-                if (IsQueryAllNumeric(Query))
+                var (isPpon, pponIdentifier) = IsLikelyPpon(Query);
+                if (isPpon)
                 {
                     var organisation = await _organisationClient.LookupOrganisationAsync(
                         name: null,
-                        identifier: Query);
+                        identifier: pponIdentifier);
 
                     if (organisation != null)
                     {
@@ -66,7 +67,7 @@ public class ChildOrganisationResultsPage(
             catch (Exception ex)
             {
                 var errorMessage = "Error occurred while searching for organisations";
-                var errorCode = IsQueryAllNumeric(Query) ? "LOOKUP_ERROR" : "SEARCH_ERROR";
+                var errorCode = IsLikelyPpon(Query).Item1 ? "LOOKUP_ERROR" : "SEARCH_ERROR";
                 var cdpException = new CdpExceptionLogging(errorMessage, errorCode, ex);
                 _logger.LogError(cdpException, errorMessage);
                 return RedirectToPage("/Error");
@@ -76,7 +77,31 @@ public class ChildOrganisationResultsPage(
         return Page();
     }
 
-    private static bool IsQueryAllNumeric(string query) => query.All(char.IsDigit);
+    private (bool, string?) IsLikelyPpon(string? query)
+    {
+        if (string.IsNullOrWhiteSpace(query))
+        {
+            return (false, null);
+        }
+
+        if (query.StartsWith("GB-PPON:", StringComparison.OrdinalIgnoreCase))
+        {
+            return (true, query);
+        }
+
+        if (query.StartsWith("GB-PPON-", StringComparison.OrdinalIgnoreCase))
+        {
+            return (true, "GB-PPON:" + query.Substring("GB-PPON-".Length));
+        }
+
+        var pponRegex = new System.Text.RegularExpressions.Regex("^[A-Z]{4}-\\d{4}-[A-Z]{4}$", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+        if (pponRegex.IsMatch(query))
+        {
+            return (true, $"GB-PPON:{query}");
+        }
+
+        return (false, null);
+    }
 
     private ChildOrganisation MapOrganisationSearchResultToChildOrganisation(OrganisationSearchResult searchResult)
     {
