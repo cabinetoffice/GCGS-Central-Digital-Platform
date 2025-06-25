@@ -107,6 +107,8 @@ public class FormsQuestionPageModel(
             return RedirectToPage("FormsQuestionPage", new { OrganisationId, FormId, SectionId, CurrentQuestionId = previousUnansweredQuestionId });
         }
 
+        var sectionDetails = await formsEngine.GetFormSectionAsync(OrganisationId, FormId, SectionId);
+
         var currentQuestion = await InitModel();
         if (currentQuestion == null)
         {
@@ -126,33 +128,14 @@ public class FormsQuestionPageModel(
                 return Page();
             }
 
+            var oldAnswerObject = GetAnswerFromTempData(currentQuestion);
+            HandleBranchingLogicAnswerChange(currentQuestion, oldAnswerObject, sectionDetails.Questions);
+
             var answer = PartialViewModel.GetAnswer();
 
             if (PartialViewModel.CurrentFormQuestionType == FormQuestionType.FileUpload)
             {
-                var response = FileUploadModel?.GetUploadedFileInfo();
-                if (response != null)
-                {
-                    using var stream = response.Value.formFile.OpenReadStream();
-                    await fileHostManager.UploadFile(stream, response.Value.filename, response.Value.contentType);
-
-                    var userInfo = await userInfoService.GetUserInfo();
-                    var organisation = await organisationClient.GetOrganisationAsync(OrganisationId);
-
-                    await publisher.Publish(new ScanFile()
-                    {
-                        QueueFileName = response.Value.filename,
-                        UploadedFileName = FileUploadModel!.UploadedFile!.FileName,
-                        OrganisationId = OrganisationId,
-                        OrganisationEmailAddress = organisation.ContactPoint.Email,
-                        UserEmailAddress = userInfo.Email,
-                        OrganisationName = organisation.Name,
-                        FullName = userInfo.Name
-                    });
-
-                    answer ??= new FormAnswer();
-                    answer.TextValue = response.Value.filename;
-                }
+                answer = await HandleFileUpload();
             }
 
             SaveAnswerToTempData(currentQuestion, answer);
@@ -160,20 +143,7 @@ public class FormsQuestionPageModel(
 
         if (currentQuestion.Id == CheckYourAnswerQuestionId)
         {
-            var answerSet = tempDataService.PeekOrDefault<FormQuestionAnswerState>(FormQuestionAnswerStateKey);
-            await formsEngine.SaveUpdateAnswers(FormId, SectionId, OrganisationId, answerSet);
-
-            tempDataService.Remove(FormQuestionAnswerStateKey);
-
-            if (FormSectionType == Models.FormSectionType.Declaration)
-            {
-                var shareCode = await formsEngine.CreateShareCodeAsync(FormId, OrganisationId);
-
-                return RedirectToPage("/ShareInformation/ShareCodeConfirmation",
-                            new { OrganisationId, FormId, SectionId, shareCode });
-            }
-
-            return RedirectToPage("FormsAnswerSetSummary", new { OrganisationId, FormId, SectionId });
+            return await HandleCheckYourAnswers();
         }
 
         Guid? nextQuestionId;
@@ -184,10 +154,67 @@ public class FormsQuestionPageModel(
         }
         else
         {
-            nextQuestionId = (await formsEngine.GetNextQuestion(OrganisationId, FormId, SectionId, currentQuestion.Id))?.Id;
+            var answerSet = tempDataService.PeekOrDefault<FormQuestionAnswerState>(FormQuestionAnswerStateKey);
+            nextQuestionId = (await formsEngine.GetNextQuestion(OrganisationId, FormId, SectionId, currentQuestion.Id, answerSet))?.Id;
         }
 
         return RedirectToPage("FormsQuestionPage", new { OrganisationId, FormId, SectionId, CurrentQuestionId = nextQuestionId });
+    }
+
+    private async Task<IActionResult> HandleCheckYourAnswers()
+    {
+        var answerSet = tempDataService.PeekOrDefault<FormQuestionAnswerState>(FormQuestionAnswerStateKey);
+        await formsEngine.SaveUpdateAnswers(FormId, SectionId, OrganisationId, answerSet);
+
+        tempDataService.Remove(FormQuestionAnswerStateKey);
+
+        if (FormSectionType == Models.FormSectionType.Declaration)
+        {
+            var shareCode = await formsEngine.CreateShareCodeAsync(FormId, OrganisationId);
+
+            return RedirectToPage("/ShareInformation/ShareCodeConfirmation",
+                new { OrganisationId, FormId, SectionId, shareCode });
+        }
+
+        return RedirectToPage("FormsAnswerSetSummary", new { OrganisationId, FormId, SectionId });
+    }
+
+    private async Task<FormAnswer?> HandleFileUpload()
+    {
+        var newFileInfo = FileUploadModel?.GetUploadedFileInfo();
+        if (newFileInfo != null)
+        {
+            using var stream = newFileInfo.Value.formFile.OpenReadStream();
+            await fileHostManager.UploadFile(stream, newFileInfo.Value.filename, newFileInfo.Value.contentType);
+
+            var userInfo = await userInfoService.GetUserInfo();
+            var organisation = await organisationClient.GetOrganisationAsync(OrganisationId);
+
+            await publisher.Publish(new ScanFile
+            {
+                QueueFileName = newFileInfo.Value.filename,
+                UploadedFileName = FileUploadModel!.UploadedFile!.FileName,
+                OrganisationId = OrganisationId,
+                OrganisationEmailAddress = organisation.ContactPoint.Email,
+                UserEmailAddress = userInfo.Email,
+                OrganisationName = organisation.Name,
+                FullName = userInfo.Name
+            });
+
+            return new FormAnswer { BoolValue = true, TextValue = newFileInfo.Value.filename };
+        }
+
+        if (FileUploadModel?.HasValue == false)
+        {
+            return new FormAnswer { BoolValue = false };
+        }
+
+        if (!string.IsNullOrEmpty(FileUploadModel?.UploadedFileName))
+        {
+            return new FormAnswer { BoolValue = true, TextValue = FileUploadModel.UploadedFileName };
+        }
+
+        return null;
     }
 
     public async Task<IEnumerable<AnswerSummary>> GetAnswers()
@@ -287,6 +314,12 @@ public class FormsQuestionPageModel(
 
         var answerState = tempDataService.PeekOrDefault<FormQuestionAnswerState>(FormQuestionAnswerStateKey);
 
+        var currentQuestion = form.Questions.FirstOrDefault(q => q.Id == CurrentQuestionId);
+        if (currentQuestion?.BranchType == FormQuestionBranchType.Alternative)
+        {
+            return null;
+        }
+
         var previousUnansweredQuestionId = formsEngine.GetPreviousUnansweredQuestionId(form.Questions, CurrentQuestionId, answerState);
 
         if (previousUnansweredQuestionId != null && previousUnansweredQuestionId != CurrentQuestionId)
@@ -306,11 +339,13 @@ public class FormsQuestionPageModel(
         if (currentQuestion == null)
             return null;
 
+        var answerState = tempDataService.PeekOrDefault<FormQuestionAnswerState>(FormQuestionAnswerStateKey);
+
         FormSectionType = form.Section?.Type;
         CurrentFormQuestionType = currentQuestion.Type;
         PartialViewName = GetPartialViewName(currentQuestion);
         PartialViewModel = GetPartialViewModel(currentQuestion, reset);
-        PreviousQuestion = await formsEngine.GetPreviousQuestion(OrganisationId, FormId, SectionId, currentQuestion.Id);
+        PreviousQuestion = await formsEngine.GetPreviousQuestion(OrganisationId, FormId, SectionId, currentQuestion.Id, answerState);
         CheckYourAnswerQuestionId = form.Questions.FirstOrDefault(q => q.Type == FormQuestionType.CheckYourAnswers)?.Id;
 
         return currentQuestion;
@@ -382,6 +417,44 @@ public class FormsQuestionPageModel(
         return state.Answers?.FirstOrDefault(a => a.QuestionId == question.Id)?.Answer;
     }
 
+    private void HandleBranchingLogicAnswerChange(FormQuestion currentQuestion, FormAnswer? oldAnswerObject, List<FormQuestion> allQuestionsInSection)
+    {
+        if (!currentQuestion.NextQuestionAlternative.HasValue)
+        {
+            return;
+        }
+
+        bool oldAnswerIsYes;
+        bool newAnswerIsYes;
+
+        switch (currentQuestion.Type)
+        {
+            case FormQuestionType.YesOrNo:
+                oldAnswerIsYes = oldAnswerObject?.BoolValue ?? false;
+                newAnswerIsYes = YesNoInputModel?.GetAnswer()?.BoolValue ?? false;
+                break;
+
+            case FormQuestionType.FileUpload:
+                oldAnswerIsYes = !string.IsNullOrEmpty(oldAnswerObject?.TextValue);
+                var newFileIsUploaded = FileUploadModel?.UploadedFile is { Length: > 0 };
+                var existingFileIsKept = !string.IsNullOrEmpty(FileUploadModel?.UploadedFileName) && FileUploadModel?.HasValue != false;
+                newAnswerIsYes = newFileIsUploaded || existingFileIsKept;
+                break;
+
+            default:
+                return;
+        }
+
+        if (oldAnswerIsYes && !newAnswerIsYes && currentQuestion.NextQuestion.HasValue)
+        {
+            RemoveAnswersFromBranchPath(currentQuestion.NextQuestion.Value, allQuestionsInSection);
+        }
+        else if (!oldAnswerIsYes && newAnswerIsYes)
+        {
+            RemoveAnswersFromBranchPath(currentQuestion.NextQuestionAlternative.Value, allQuestionsInSection);
+        }
+    }
+
     private void SaveAnswerToTempData(FormQuestion question, FormAnswer? answer)
     {
         var state = tempDataService.PeekOrDefault<FormQuestionAnswerState>(FormQuestionAnswerStateKey);
@@ -400,6 +473,50 @@ public class FormsQuestionPageModel(
         questionAnswer.Answer = answer;
 
         tempDataService.Put(FormQuestionAnswerStateKey, state);
+    }
+
+    private void RemoveAnswersFromBranchPath(Guid branchStartNodeId, List<FormQuestion> allQuestionsInSection)
+    {
+        var answerState = tempDataService.PeekOrDefault<FormQuestionAnswerState>(FormQuestionAnswerStateKey);
+        if (answerState?.Answers == null || !answerState.Answers.Any())
+        {
+            return;
+        }
+
+        var questionsMap = allQuestionsInSection.ToDictionary(q => q.Id);
+        var questionsToClear = new HashSet<Guid>();
+        var queue = new Queue<Guid>();
+
+        if (questionsMap.ContainsKey(branchStartNodeId))
+        {
+            queue.Enqueue(branchStartNodeId);
+        }
+
+        while (queue.Count > 0)
+        {
+            var currentQId = queue.Dequeue();
+            if (!questionsMap.TryGetValue(currentQId, out var questionNode) || !questionsToClear.Add(currentQId))
+            {
+                continue;
+            }
+
+            if (questionNode.NextQuestion.HasValue && questionsMap.ContainsKey(questionNode.NextQuestion.Value))
+            {
+                queue.Enqueue(questionNode.NextQuestion.Value);
+            }
+            if (questionNode.NextQuestionAlternative.HasValue && questionsMap.ContainsKey(questionNode.NextQuestionAlternative.Value))
+            {
+                queue.Enqueue(questionNode.NextQuestionAlternative.Value);
+            }
+        }
+
+        var initialCount = answerState.Answers.Count;
+        answerState.Answers.RemoveAll(answer => questionsToClear.Contains(answer.QuestionId));
+
+        if (answerState.Answers.Count < initialCount)
+        {
+            tempDataService.Put(FormQuestionAnswerStateKey, answerState);
+        }
     }
 }
 
