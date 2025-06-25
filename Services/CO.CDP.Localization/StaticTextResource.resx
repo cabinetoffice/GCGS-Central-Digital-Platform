@@ -2011,6 +2011,9 @@
   <data name="BuyerParentChildRelationship_ResultsPage_Label" xml:space="preserve">
     <value>Select a child organisation</value>
   </data>
+  <data name="BuyerParentChildRelationship_ConfirmPage_Title" xml:space="preserve">
+    <value>Confirm your child organisation details</value>
+  </data>
   <data name="Forms_FormElementAddress_EnterNonUKAddress" xml:space="preserve">
     <value>Enter a non-UK address</value>
   </data>
