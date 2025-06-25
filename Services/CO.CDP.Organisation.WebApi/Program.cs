@@ -99,7 +99,7 @@ builder.Services.AddScoped<IUseCase<Guid, CO.CDP.Organisation.WebApi.Model.Mou>,
 builder.Services.AddScoped<IUseCase<(Guid, UpdateOrganisationParty), bool>, UpdateOrganisationPartyUseCase>();
 builder.Services.AddScoped<IUseCase<GetAnnouncementQuery, IEnumerable<Announcement>>, GetAnnouncementsUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid organisationId, string role), IEnumerable<Person>>, GetPersonsInRoleUseCase>();
-builder.Services.AddScoped<IUseCase<(Guid, string), IEnumerable<Person>>, GetPersonsInRoleUseCase>();
+builder.Services.AddScoped<IUseCase<CreateParentChildRelationshipRequest, ParentChildRelationshipResult>, CreateParentChildRelationshipUseCase>();
 
 builder.Services.AddScoped<IAuthorizationHandler, OrganisationScopeAuthorizationHandler>();
 builder.Services.AddScoped<IAuthorizationHandler, ApiKeyScopeAuthorizationHandler>();
