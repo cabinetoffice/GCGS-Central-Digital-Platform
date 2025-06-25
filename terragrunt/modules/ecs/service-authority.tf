@@ -19,9 +19,9 @@ module "ecs_service_authority" {
       lg_region             = data.aws_region.current.name
       memory                = var.service_configs.authority.memory
       name                  = var.service_configs.authority.name
-      onelogin_authority    = local.one_loging.credential_locations.authority
-      onelogin_client_id    = local.one_loging.credential_locations.client_id
-      onelogin_private_key  = local.one_loging.credential_locations.private_key
+      onelogin_authority    = local.one_login.credential_locations.authority
+      onelogin_client_id    = local.one_login.credential_locations.client_id
+      onelogin_private_key  = local.one_login.credential_locations.private_key
       public_domain         = var.public_domain
       service_version       = local.service_version_sirsi
       vpc_cidr              = var.vpc_cider

@@ -13,10 +13,9 @@ public class ExclusionsInUKYesNoPage
 
     // ✅ Page Locators
     private readonly string PageTitleSelector = "h1.govuk-fieldset__heading";
-    private readonly string ContinueButtonSelector = "button.govuk-button[type='submit']";
     private readonly string BackToSupplierInfoSelector = "a.govuk-back-link";
-    private readonly string YesRadioSelector = "input[name='YesNoInput'][value='yes']";
-    private readonly string NoRadioSelector = "input[name='YesNoInput'][value='no']";
+    private readonly string YesRadioSelector = "input#YesNoInput";
+    private readonly string NoRadioSelector = "input#YesNoInput-1";
     public ExclusionsInUKYesNoPage(IPage page)
     {
         _page = page;
@@ -47,7 +46,7 @@ public class ExclusionsInUKYesNoPage
 
     public async Task ClickContinue()
     {
-        await _page.ClickAsync(ContinueButtonSelector);
+        await _page.GetByRole(AriaRole.Button, new() { Name = "Continue" }).ClickAsync();
     }
 
     public async Task ClickBackToSupplierInformation()
@@ -58,7 +57,6 @@ public class ExclusionsInUKYesNoPage
     {
         string radioSelector = isYes ? YesRadioSelector : NoRadioSelector;
         await _page.CheckAsync(radioSelector);
-        await _page.WaitForTimeoutAsync(2000);
         Console.WriteLine($"✅ Selected Option for exclusion happen in the UK? : {(isYes ? "Yes" : "No")}");
     }
 

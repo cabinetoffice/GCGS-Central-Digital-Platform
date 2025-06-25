@@ -34,7 +34,7 @@ module "ecs_service_av_scanner_app" {
   ecs_listener_arn       = aws_lb_listener.ecs.arn
   ecs_service_base_sg_id = var.ecs_sg_id
   family                 = "app"
-  host_port              = var.service_configs.av_scanner_app.port
+  host_port              = var.service_configs.av_scanner_app.port_host
   memory                 = var.service_configs.av_scanner_app.memory
   name                   = var.service_configs.av_scanner_app.name
   private_subnet_ids     = var.private_subnet_ids

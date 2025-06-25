@@ -33,7 +33,7 @@ module "ecs_service_scheduled_worker" {
   ecs_listener_arn       = aws_lb_listener.ecs.arn
   ecs_service_base_sg_id = var.ecs_sg_id
   family                 = "app"
-  host_port              = var.service_configs.scheduled_worker.port
+  host_port              = var.service_configs.scheduled_worker.port_host
   memory                 = var.service_configs.scheduled_worker.memory
   name                   = var.service_configs.scheduled_worker.name
   private_subnet_ids     = var.private_subnet_ids

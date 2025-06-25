@@ -52,7 +52,7 @@ locals {
         "https://stanvolcere.nqc.com/auth/backchannellogout",
         "https://nadeemshafi2.nqc.com/auth/backchannellogout"
       ]
-      pinned_service_version_fts        = "0.0.0-3e1660c"
+      pinned_service_version_fts        = null
       pinned_service_version            = null
       postgres_instance_type            = "db.t4g.micro"
       postgres_aurora_instance_type     = "db.r5.large"
@@ -284,7 +284,7 @@ locals {
     fts                                  = { port = 8070, port_host = 8070, name = "fts"}
     fts_healthcheck                      = { port = 8071, port_host = 8071, name = "fts-healthcheck"}
     fts_migrations                       = { port = 8072, port_host = null, name = "fts-migrations"}
-    fts_scheduler                        = { port = 8074, port_host = 8074, name = "fts-scheduler"}
+    fts_scheduler                        = { port = 8074, port_host = null, name = "fts-scheduler"}
     organisation                         = { port = 8082, port_host = 8082, name = "organisation"}
     organisation_app                     = { port = 8090, port_host = 80  , name = "organisation-app"}
     organisation_information_migrations  = { port = 9090, port_host = null, name = "organisation-information-migrations"}

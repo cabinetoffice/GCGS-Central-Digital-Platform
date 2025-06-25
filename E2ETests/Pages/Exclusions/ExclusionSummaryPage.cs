@@ -75,7 +75,6 @@ public class ExclusionSummaryPage
             throw new System.Exception($"❌ Expected '{expectedText}' but found '{actualText}'");
         }
         Console.WriteLine($"✅ Exclusions count verified: {actualText}");
-        await _page.PauseAsync();
     }
 
     public async Task CompletePage(bool addAnother)

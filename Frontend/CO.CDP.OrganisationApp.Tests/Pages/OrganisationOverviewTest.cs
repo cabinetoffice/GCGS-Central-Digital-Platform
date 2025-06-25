@@ -53,6 +53,20 @@ public class OrganisationOverviewTest
     }
 
     [Fact]
+    public async Task OnGet_WhenOrgTypeIsConsortium_RedirectToConsortiumOverview()
+    {
+        var id = Guid.NewGuid();
+        _model.Id = id;
+        _organisationClientMock.Setup(o => o.GetOrganisationAsync(id))
+            .ReturnsAsync(GivenOrganisationClientModel(id, organisationType: OrganisationType.InformalConsortium));
+
+        var result = await _model.OnGet();
+
+        result.Should().BeOfType<RedirectToPageResult>()
+            .Subject.PageName.Should().Be("/Consortium/ConsortiumOverview");
+    }
+
+    [Fact]
     public async Task OnGet_PageNotFound()
     {
         _organisationClientMock.Setup(o => o.GetOrganisationAsync(It.IsAny<Guid>()))
@@ -139,7 +153,8 @@ public class OrganisationOverviewTest
         _model.HasBuyerSignedMou.Should().BeFalse();
     }
 
-    private static CO.CDP.Organisation.WebApiClient.Organisation GivenOrganisationClientModel(Guid? id, ICollection<PartyRole>? pendingRoles = null)
+    private static CO.CDP.Organisation.WebApiClient.Organisation GivenOrganisationClientModel(
+        Guid? id, ICollection<PartyRole>? pendingRoles = null, OrganisationType? organisationType = null)
     {
         return new CO.CDP.Organisation.WebApiClient.Organisation(
             additionalIdentifiers: null,
@@ -148,7 +163,7 @@ public class OrganisationOverviewTest
             id: id ?? Guid.NewGuid(),
             identifier: null,
             name: "Test Org",
-            type: OrganisationType.Organisation,
+            type: organisationType ?? OrganisationType.Organisation,
             roles: [],
             details: new Details(approval: null, buyerInformation: null, pendingRoles: pendingRoles != null ? pendingRoles : [], publicServiceMissionOrganization: null, scale: null, shelteredWorkshop: null, vcse: null)
               );

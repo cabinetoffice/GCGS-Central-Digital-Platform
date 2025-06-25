@@ -37,6 +37,11 @@ public class OrganisationOverviewModel(IOrganisationClient organisationClient, I
         {
             OrganisationDetails = await organisationClient.GetOrganisationAsync(Id);
 
+            if (OrganisationDetails.Type == OrganisationWebApiClient.OrganisationType.InformalConsortium)
+            {
+                return RedirectToPage("/Consortium/ConsortiumOverview", new { Id });
+            }
+
             IdentifierRegistriesDetails = await GetIdentifierDetails(OrganisationDetails);
 
             if (OrganisationDetails.IsBuyer() || OrganisationDetails.IsPendingBuyer())
@@ -98,7 +103,7 @@ public class OrganisationOverviewModel(IOrganisationClient organisationClient, I
         try
         {
             var mouSignature = await organisationClient.GetOrganisationLatestMouSignatureAsync(organisationId);
-            if(mouSignature != null && mouSignature.IsLatest)
+            if (mouSignature != null && mouSignature.IsLatest)
             {
                 return mouSignature;
             }

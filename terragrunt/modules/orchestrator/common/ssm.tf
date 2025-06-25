@@ -13,3 +13,11 @@ resource "aws_ssm_parameter" "service_versions_fts" {
   tags        = var.tags
   type        = "String"
 }
+
+resource "aws_ssm_parameter" "service_versions" {
+  description = "This parameter stores the all service versions pinned for all accounts"
+  value       = local.envs_combined_versions
+  name        = "${local.name_prefix}-all-envs-service-version"
+  tags        = var.tags
+  type        = "String"
+}

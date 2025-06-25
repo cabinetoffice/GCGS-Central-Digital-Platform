@@ -36,7 +36,7 @@ module "ecs_service_organisation" {
   ecs_listener_arn       = aws_lb_listener.ecs.arn
   ecs_service_base_sg_id = var.ecs_sg_id
   family                 = "app"
-  host_port              = var.service_configs.organisation.port
+  host_port              = var.service_configs.organisation.port_host
   memory                 = var.service_configs.organisation.memory
   name                   = var.service_configs.organisation.name
   private_subnet_ids     = var.private_subnet_ids

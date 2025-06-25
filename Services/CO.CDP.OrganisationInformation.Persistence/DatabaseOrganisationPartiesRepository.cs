@@ -20,6 +20,12 @@ public class DatabaseOrganisationPartiesRepository(OrganisationInformationContex
             .ToListAsync();
     }
 
+    public async Task Remove(OrganisationParty organisationParty)
+    {
+        context.OrganisationParties.Remove(organisationParty);
+        await context.SaveChangesAsync();
+    }
+
     public async Task Save(OrganisationParty organisationParty)
     {
         context.Update(organisationParty);
