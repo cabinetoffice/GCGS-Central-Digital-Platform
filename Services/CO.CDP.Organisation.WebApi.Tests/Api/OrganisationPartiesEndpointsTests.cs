@@ -15,6 +15,7 @@ public class OrganisationPartiesEndpointsTests
 {
     private readonly Mock<IUseCase<Guid, OrganisationParties?>> _getOrganisationPartiesUseCase = new();
     private readonly Mock<IUseCase<(Guid, AddOrganisationParty), bool>> _addOrganisationPartyUseCase = new();
+    private readonly Mock<IUseCase<(Guid, RemoveOrganisationParty), bool>> _removeOrganisationPartyUseCase = new();
 
     [Theory]
     [InlineData(OK, Channel.OneLogin, OrganisationPersonScope.Admin)]
@@ -70,6 +71,43 @@ public class OrganisationPartiesEndpointsTests
             services => services.AddScoped(_ => _addOrganisationPartyUseCase.Object));
 
         var response = await factory.CreateClient().PostAsJsonAsync($"/organisations/{organisationId}/add-party", organisationParty);
+
+        response.StatusCode.Should().Be(expectedStatusCode);
+    }
+
+    [Theory]
+    [InlineData(NoContent, Channel.OneLogin, OrganisationPersonScope.Admin)]
+    [InlineData(NoContent, Channel.OneLogin, OrganisationPersonScope.Editor)]
+    [InlineData(Forbidden, Channel.OneLogin, OrganisationPersonScope.Responder)]
+    [InlineData(Forbidden, Channel.OneLogin, OrganisationPersonScope.Viewer)]
+    [InlineData(Forbidden, Channel.ServiceKey)]
+    [InlineData(Forbidden, Channel.OrganisationKey)]
+    [InlineData(Forbidden, "unknown_channel")]
+    public async Task RemoveOrganisationParty_Authorization_ReturnsExpectedStatusCode(
+        HttpStatusCode expectedStatusCode, string channel, string? scope = null)
+    {
+        var organisationId = Guid.NewGuid();
+        var organisationParty = new RemoveOrganisationParty
+        {
+            OrganisationPartyId = Guid.NewGuid()
+        };
+        var command = (organisationId, organisationParty);
+
+        _removeOrganisationPartyUseCase.Setup(uc => uc.Execute(command))
+            .ReturnsAsync(true);
+
+        var factory = new TestAuthorizationWebApplicationFactory<Program>(
+            channel, organisationId, scope,
+            services => services.AddScoped(_ => _removeOrganisationPartyUseCase.Object));
+
+        var request = new HttpRequestMessage
+        {
+            Method = HttpMethod.Delete,
+            RequestUri = new Uri($"/organisations/{organisationId}/remove-party", UriKind.RelativeOrAbsolute),
+            Content = JsonContent.Create(organisationParty)
+        };
+
+        var response = await factory.CreateClient().SendAsync(request);
 
         response.StatusCode.Should().Be(expectedStatusCode);
     }

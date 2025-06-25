@@ -21,7 +21,7 @@ locals {
 
   name_prefix = var.product.resource_name
 
-  one_loging = {
+  one_login = {
     credential_locations = {
       account_url = "${data.aws_secretsmanager_secret.one_login_credentials.arn}:AccountUrl::"
       authority   = "${data.aws_secretsmanager_secret.one_login_credentials.arn}:Authority::"
