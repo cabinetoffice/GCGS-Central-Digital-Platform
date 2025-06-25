@@ -25,7 +25,7 @@ public class ChildOrganisationResultsPage(
     public List<ChildOrganisation> Results { get; set; } = new();
 
     [BindProperty]
-    public Guid? SelectedOrganisationId { get; set; }
+    public string? SelectedPponIdentifier { get; set; }
 
     public async Task<IActionResult> OnGetAsync()
     {
@@ -128,6 +128,6 @@ public class ChildOrganisationResultsPage(
             return Page();
         }
 
-        return Page();
+        return RedirectToPage("ChildOrganisationConfirmPage", new { Id, query = Query, selectedPponIdentifier = SelectedPponIdentifier });
     }
 }

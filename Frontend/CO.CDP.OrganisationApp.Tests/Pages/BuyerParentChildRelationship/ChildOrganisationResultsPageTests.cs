@@ -152,11 +152,26 @@ public class ChildOrganisationResultsPageTests
     }
 
     [Fact]
-    public void OnPost_WithValidModelState_ReturnsPageResult()
+    public void OnPost_WithValidModelState_RedirectsToConfirmPage()
     {
+        var id = Guid.NewGuid();
+        const string query = "test query";
+        const string selectedPponIdentifier = "GB-PPON:12345";
+
+        _model.Id = id;
+        _model.Query = query;
+        _model.SelectedPponIdentifier = selectedPponIdentifier;
+
         var result = _model.OnPost();
 
-        result.Should().BeOfType<PageResult>();
+        var redirectResult = result.Should().BeOfType<RedirectToPageResult>().Subject;
+        redirectResult.PageName.Should().Be("ChildOrganisationConfirmPage");
+        redirectResult.RouteValues.Should().ContainKey("Id");
+        redirectResult.RouteValues["Id"].Should().Be(id);
+        redirectResult.RouteValues.Should().ContainKey("query");
+        redirectResult.RouteValues["query"].Should().Be(query);
+        redirectResult.RouteValues.Should().ContainKey("selectedPponIdentifier");
+        redirectResult.RouteValues["selectedPponIdentifier"].Should().Be(selectedPponIdentifier);
     }
 
     [Fact]
@@ -171,13 +186,13 @@ public class ChildOrganisationResultsPageTests
     }
 
     [Fact]
-    public void SelectedOrganisationId_DefaultsToNull()
+    public void SelectedPponIdentifier_DefaultsToNull()
     {
         var mockOrganisationClient = new Mock<IOrganisationClient>();
         var mockLogger = new Mock<ILogger<ChildOrganisationResultsPage>>();
         var model = new ChildOrganisationResultsPage(mockOrganisationClient.Object, mockLogger.Object);
 
-        model.SelectedOrganisationId.Should().BeNull();
+        model.SelectedPponIdentifier.Should().BeNull();
     }
 
     [Fact]
