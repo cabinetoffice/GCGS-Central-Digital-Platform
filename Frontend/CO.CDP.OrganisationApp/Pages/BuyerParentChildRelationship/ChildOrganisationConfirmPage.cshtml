@@ -6,11 +6,13 @@
     ViewData["Title"] = StaticTextResource.BuyerParentChildRelationship_ConfirmPage_Title;
 }
 
+//TODO: back link
+
 <div class="govuk-width-container">
     <main class="govuk-main-wrapper " id="main-content" role="main">
         <div class="govuk-grid-row">
             <div class="govuk-grid-column-two-thirds">
-                <h1 class="govuk-heading-l">Confirm your child organisation details</h1>
+                <h1 class="govuk-heading-l">@StaticTextResource.BuyerParentChildRelationship_ConfirmPage_Title</h1>
 
                 <form method="post">
                     <div class="table-header">
@@ -23,19 +25,21 @@
                         <table class="govuk-table">
                             <tbody class="govuk-table__body">
                             <tr class="govuk-table__row">
-                                <th scope="row" class="govuk-table__header govuk-!-width-one-third">PPON</th>
+                                <th scope="row"
+                                    class="govuk-table__header govuk-!-width-one-third">@StaticTextResource.BuyerParentChildRelationship_ConfirmPage_PponLabel</th>
                                 <td class="govuk-table__cell govuk-!-width-two-thirds">
                                     @Model.ChildOrganisation?.Identifier.Id
                                 </td>
                             </tr>
                             <tr class="govuk-table__row">
-                                <th scope="row" class="govuk-table__header govuk-!-width-one-third">Organisation type
+                                <th scope="row"
+                                    class="govuk-table__header govuk-!-width-one-third">@StaticTextResource.BuyerParentChildRelationship_ConfirmPage_OrganisationTypeLabel
                                 </th>
                                 <td class="govuk-table__cell govuk-!-width-two-thirds">@Model.OrganisationType</td>
                             </tr>
                             <tr class="govuk-table__row">
-                                <th scope="row" class="govuk-table__header govuk-!-width-one-third">Organisation
-                                    address
+                                <th scope="row"
+                                    class="govuk-table__header govuk-!-width-one-third">@StaticTextResource.BuyerParentChildRelationship_ConfirmPage_OrganisationAddressLabel
                                 </th>
                                 <td class="govuk-table__cell govuk-!-width-two-thirds">
                                     @if (Model.OrganisationAddress != null)
@@ -46,18 +50,19 @@
                                         {
                                             @Model.OrganisationAddress.Region<br/>
                                         }
+
                                         @Model.OrganisationAddress.PostalCode<br/>
                                         @Model.OrganisationAddress.CountryName
                                     }
                                     else
                                     {
-                                        <span>No address information available</span>
+                                        @StaticTextResource.BuyerParentChildRelationship_ConfirmPage_NoAddressAvailable
                                     }
                                 </td>
                             </tr>
                             <tr class="govuk-table__row">
                                 <th scope="row" class="govuk-table__header govuk-!-width-one-third no-border">
-                                    Organisation email
+                                    @StaticTextResource.BuyerParentChildRelationship_ConfirmPage_OrganisationEmailLabel
                                 </th>
                                 <td class="govuk-table__cell govuk-!-width-two-thirds no-border">
                                     @if (!string.IsNullOrEmpty(Model.OrganisationContactPoint?.Email))
@@ -66,7 +71,7 @@
                                     }
                                     else
                                     {
-                                        <span>No email address available</span>
+                                        @StaticTextResource.BuyerParentChildRelationship_ConfirmPage_NoEmailAvailable
                                     }
                                 </td>
                             </tr>
@@ -75,7 +80,8 @@
                     </div>
 
                     <div class="govuk-button-group">
-                        <button type="submit" class="govuk-button" asp-page-handler="Post">@StaticTextResource.Global_Continue</button>
+                        <button type="submit" class="govuk-button"
+                                asp-page-handler="Post">@StaticTextResource.Global_Continue</button>
                         <a class="govuk-button govuk-button--secondary" asp-page="ChildOrganisationSearchPage"
                            asp-route-id="@Model.Id">@StaticTextResource.Global_SearchAgain</a>
                         <a class="govuk-link" href="/organisation/@Model.Id">@StaticTextResource.Global_Cancel</a>
