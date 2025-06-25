@@ -19,11 +19,9 @@ public class ChildOrganisationConfirmPage : PageModel
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
-    [BindProperty(SupportsGet = true)]
-    public Guid Id { get; set; }
+    [FromRoute] public Guid Id { get; set; }
 
-    [BindProperty(SupportsGet = true)]
-    public string? Ppon { get; set; }
+    [BindProperty(SupportsGet = true)] public string? Ppon { get; set; }
 
     public ChildOrganisation? ChildOrganisation { get; set; }
 
@@ -67,7 +65,6 @@ public class ChildOrganisationConfirmPage : PageModel
     {
         try
         {
-
             var formattedIdentifier = FormatPponIdentifier(Ppon);
 
             // await _organisationClient.CreateParentChildRelationshipAsync(
@@ -102,7 +99,8 @@ public class ChildOrganisationConfirmPage : PageModel
             return "GB-PPON:" + identifier.Substring("GB-PPON-".Length);
         }
 
-        var pponRegex = new System.Text.RegularExpressions.Regex("^[A-Z]{4}-\\d{4}-[A-Z]{4}$", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+        var pponRegex = new System.Text.RegularExpressions.Regex("^[A-Z]{4}-\\d{4}-[A-Z]{4}$",
+            System.Text.RegularExpressions.RegexOptions.IgnoreCase);
         if (pponRegex.IsMatch(identifier))
         {
             return $"GB-PPON:{identifier}";
