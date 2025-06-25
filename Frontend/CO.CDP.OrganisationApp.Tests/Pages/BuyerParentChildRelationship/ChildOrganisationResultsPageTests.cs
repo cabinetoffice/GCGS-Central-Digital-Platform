@@ -168,8 +168,6 @@ public class ChildOrganisationResultsPageTests
         redirectResult.PageName.Should().Be("ChildOrganisationConfirmPage");
         redirectResult.RouteValues.Should().ContainKey("Id");
         redirectResult.RouteValues["Id"].Should().Be(id);
-        redirectResult.RouteValues.Should().ContainKey("query");
-        redirectResult.RouteValues["query"].Should().Be(query);
         redirectResult.RouteValues.Should().ContainKey("selectedPponIdentifier");
         redirectResult.RouteValues["selectedPponIdentifier"].Should().Be(selectedPponIdentifier);
     }

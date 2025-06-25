@@ -37,7 +37,7 @@
                                 var radioId = $"organisation-{index}";
                                 <div class="govuk-radios__item">
                                     <input class="govuk-radios__input" id="@radioId" asp-for="SelectedPponIdentifier"
-                                           type="radio" value="@organisation.Identifier">
+                                           type="radio" value="@organisation.Identifier.Id">
                                     <label class="govuk-label govuk-radios__label" for="@radioId">
                                         @organisation.Name
                                     </label>

@@ -128,6 +128,6 @@ public class ChildOrganisationResultsPage(
             return Page();
         }
 
-        return RedirectToPage("ChildOrganisationConfirmPage", new { Id, query = Query, selectedPponIdentifier = SelectedPponIdentifier });
+        return RedirectToPage("ChildOrganisationConfirmPage", new { Id, selectedPponIdentifier = SelectedPponIdentifier });
     }
 }
