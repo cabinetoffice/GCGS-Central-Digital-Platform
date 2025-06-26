@@ -130,10 +130,10 @@ public class ChildOrganisationConfirmPageTests
         result.Should().BeOfType<PageResult>();
         _model.ChildOrganisation.Should().NotBeNull();
         _model.ChildOrganisation.Name.Should().Be("Test Organisation");
-        _model.ChildOrganisation.OrganisationId.Should().Be(childId);
-        _model.OrganisationAddress.Should().NotBeNull();
-        _model.OrganisationContactPoint.Should().NotBeNull();
-        _model.OrganisationType.Should().Be("Buyer");
+        _model.ChildOrganisation.Id.Should().Be(childId);
+        _model.ChildOrganisationAddress.Should().NotBeNull();
+        _model.ChildOrganisationContactPoint.Should().NotBeNull();
+        _model.ChildOrganisationType.Should().Be("Buyer");
     }
 
     [Fact]
@@ -141,15 +141,9 @@ public class ChildOrganisationConfirmPageTests
     {
         var id = Guid.NewGuid();
         var childId = Guid.NewGuid();
-        const string organisationName = "Test Organisation";
 
         _model.Id = id;
         _model.ChildId = childId;
-        _model.ChildOrganisation = new Models.ChildOrganisation(
-            organisationName,
-            childId,
-            new Identifier("12345", organisationName, "DUNS", null)
-        );
 
         _mockOrganisationClient
             .Setup(client =>
@@ -182,7 +176,7 @@ public class ChildOrganisationConfirmPageTests
 
         _model.Id = id;
         _model.ChildId = childId;
-        _model.OrganisationName = organisationName;
+        _model.ChildOrganisationName = organisationName;
 
         var relationshipId = Guid.NewGuid();
         _mockOrganisationClient

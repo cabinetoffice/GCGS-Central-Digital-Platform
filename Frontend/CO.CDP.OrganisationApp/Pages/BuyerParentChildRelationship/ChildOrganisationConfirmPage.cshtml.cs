@@ -1,6 +1,5 @@
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Logging;
-using CO.CDP.OrganisationApp.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Address = CO.CDP.Organisation.WebApiClient.Address;
@@ -24,11 +23,13 @@ public class ChildOrganisationConfirmPage(
 
     [BindProperty(SupportsGet = true)] public string? Query { get; set; }
 
+    [BindProperty] public string ChildOrganisationName { get; set; } = string.Empty;
+
     public CO.CDP.Organisation.WebApiClient.Organisation? ChildOrganisation { get; private set; }
 
-    public Address? OrganisationAddress => ChildOrganisation?.Addresses?.FirstOrDefault();
-    public ContactPoint? OrganisationContactPoint => ChildOrganisation?.ContactPoint;
-    public string OrganisationType => "Buyer";
+    public Address? ChildOrganisationAddress => ChildOrganisation?.Addresses?.FirstOrDefault();
+    public ContactPoint? ChildOrganisationContactPoint => ChildOrganisation?.ContactPoint;
+    public string ChildOrganisationType => "Buyer";
 
     public async Task<IActionResult> OnGetAsync()
     {
@@ -46,6 +47,8 @@ public class ChildOrganisationConfirmPage(
                 _logger.LogWarning("Organisation not found for ChildId: {ChildId}", ChildId);
                 return RedirectToPage("/Error");
             }
+
+            ChildOrganisationName = ChildOrganisation.Name;
         }
         catch (Exception ex)
         {
@@ -62,22 +65,19 @@ public class ChildOrganisationConfirmPage(
     {
         try
         {
-            if (ChildOrganisation == null)
-            {
-                _logger.LogWarning("Child organisation not found for ID: {ChildId}", ChildId);
-                return RedirectToPage("/Error");
-            }
+            _logger.LogInformation("Creating relationship between parent ID: {ParentId} and child ID: {ChildId}",
+                Id, ChildId);
 
             var request = new CreateParentChildRelationshipRequest(
-                childId: ChildOrganisation.Id,
                 parentId: Id,
+                childId: ChildId,
                 role: PartyRole.Buyer
             );
 
             await _organisationClient.CreateParentChildRelationshipAsync(request);
 
             return RedirectToPage("ChildOrganisationSuccessPage",
-                new { Id, OrganisationName = ChildOrganisation.Name });
+                new { Id, OrganisationName = ChildOrganisationName });
         }
         catch (Exception ex)
         {
