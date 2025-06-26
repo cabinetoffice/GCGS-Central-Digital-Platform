@@ -7,18 +7,16 @@ using Address = CO.CDP.Organisation.WebApiClient.Address;
 
 namespace CO.CDP.OrganisationApp.Pages.BuyerParentChildRelationship;
 
-public class ChildOrganisationConfirmPage : PageModel
+public class ChildOrganisationConfirmPage(
+    IOrganisationClient organisationClient,
+    ILogger<ChildOrganisationConfirmPage> logger)
+    : PageModel
 {
-    private readonly IOrganisationClient _organisationClient;
-    private readonly ILogger<ChildOrganisationConfirmPage> _logger;
+    private readonly IOrganisationClient _organisationClient =
+        organisationClient ?? throw new ArgumentNullException(nameof(organisationClient));
 
-    public ChildOrganisationConfirmPage(
-        IOrganisationClient organisationClient,
-        ILogger<ChildOrganisationConfirmPage> logger)
-    {
-        _organisationClient = organisationClient ?? throw new ArgumentNullException(nameof(organisationClient));
-        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-    }
+    private readonly ILogger<ChildOrganisationConfirmPage> _logger =
+        logger ?? throw new ArgumentNullException(nameof(logger));
 
     [BindProperty(SupportsGet = true)] public Guid Id { get; set; }
 
@@ -48,8 +46,6 @@ public class ChildOrganisationConfirmPage : PageModel
                 _logger.LogWarning("Organisation not found for ChildId: {ChildId}", ChildId);
                 return RedirectToPage("/Error");
             }
-
-            _logger.LogInformation("Retrieved child organisation: {OrganisationName}", ChildOrganisation.Name);
         }
         catch (Exception ex)
         {
@@ -71,9 +67,6 @@ public class ChildOrganisationConfirmPage : PageModel
                 _logger.LogWarning("Child organisation not found for ID: {ChildId}", ChildId);
                 return RedirectToPage("/Error");
             }
-
-            _logger.LogInformation("Creating relationship between parent ID: {ParentId} and child ID: {ChildId}",
-                Id, ChildOrganisation.Id);
 
             var request = new CreateParentChildRelationshipRequest(
                 Id,
