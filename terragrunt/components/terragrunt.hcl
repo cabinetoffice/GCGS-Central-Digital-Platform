@@ -235,7 +235,7 @@ locals {
     entity_verification                  = {}
     entity_verification_migrations       = { cpu = 256,  memory = 512}
     forms                                = {}
-    fts                                  = { desired_count = 3 }
+    fts                                  = { desired_count = 3, cpu = 1024,  memory = 3072}
     fts_healthcheck                      = { desired_count = 1 }
     fts_migrations                       = { desired_count = 1 }
     fts_scheduler                        = { desired_count = 1 }
