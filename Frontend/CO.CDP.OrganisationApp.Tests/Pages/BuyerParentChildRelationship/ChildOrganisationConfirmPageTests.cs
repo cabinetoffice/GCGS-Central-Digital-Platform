@@ -188,7 +188,7 @@ public class ChildOrganisationConfirmPageTests
         _mockOrganisationClient
             .Setup(client =>
                 client.CreateParentChildRelationshipAsync(It.IsAny<CreateParentChildRelationshipRequest>()))
-            .ReturnsAsync(new ParentChildRelationshipResult(relationshipId, true));
+            .ReturnsAsync(new CreateParentChildRelationshipResult(relationshipId, true));
 
         var result = await _model.OnPostAsync();
 
