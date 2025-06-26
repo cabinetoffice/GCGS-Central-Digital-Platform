@@ -81,12 +81,12 @@ namespace CO.CDP.OrganisationInformation.Persistence.Repositories
             if (parentId == Guid.Empty)
                 throw new ArgumentException("Parent ID cannot be empty", nameof(parentId));
 
-            // Get the parent organisation to retrieve its database ID
             var parent = await _context.Organisations
+                .AsNoTracking()
                 .FirstOrDefaultAsync(o => o.Guid == parentId);
 
             if (parent == null)
-                return Enumerable.Empty<OrganisationHierarchy>();
+                return [];
 
             return await _context.OrganisationHierarchies
                 .Where(h => h.ParentOrganisationId == parent.Id && h.SupersededOn == null)
