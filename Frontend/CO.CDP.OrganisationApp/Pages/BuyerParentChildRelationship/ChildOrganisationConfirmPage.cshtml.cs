@@ -74,7 +74,7 @@ public class ChildOrganisationConfirmPage(
                 role: PartyRole.Buyer
             );
 
-            await _organisationClient.CreateParentChildRelationshipAsync(request);
+            await _organisationClient.CreateParentChildRelationshipAsync(Id, request);
 
             return RedirectToPage("ChildOrganisationSuccessPage",
                 new { Id, ChildId, OrganisationName = ChildOrganisationName });

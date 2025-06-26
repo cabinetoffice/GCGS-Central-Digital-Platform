@@ -147,7 +147,9 @@ public class ChildOrganisationConfirmPageTests
 
         _mockOrganisationClient
             .Setup(client =>
-                client.CreateParentChildRelationshipAsync(It.IsAny<CreateParentChildRelationshipRequest>()))
+                client.CreateParentChildRelationshipAsync(
+                    id,
+                    It.IsAny<CreateParentChildRelationshipRequest>()))
             .ThrowsAsync(new Exception("Test exception"));
 
         var result = await _model.OnPostAsync();
@@ -181,7 +183,9 @@ public class ChildOrganisationConfirmPageTests
         var relationshipId = Guid.NewGuid();
         _mockOrganisationClient
             .Setup(client =>
-                client.CreateParentChildRelationshipAsync(It.IsAny<CreateParentChildRelationshipRequest>()))
+                client.CreateParentChildRelationshipAsync(
+                    id,
+                    It.IsAny<CreateParentChildRelationshipRequest>()))
             .ReturnsAsync(new CreateParentChildRelationshipResult(relationshipId, true));
 
         var result = await _model.OnPostAsync();
@@ -195,6 +199,7 @@ public class ChildOrganisationConfirmPageTests
 
         _mockOrganisationClient.Verify(
             client => client.CreateParentChildRelationshipAsync(
+                id,
                 It.Is<CreateParentChildRelationshipRequest>(r =>
                     r.ParentId == id &&
                     r.ChildId == childId &&
