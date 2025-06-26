@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CO.CDP.OrganisationInformation.Persistence;
 
@@ -9,29 +10,48 @@ namespace CO.CDP.OrganisationInformation.Persistence;
 public class OrganisationHierarchy
 {
     /// <summary>
-    /// The unique identifier for this relationship
+    /// The primary key for this relationship - auto-incrementing integer
     /// </summary>
     [Key]
     [Required]
-    public Guid Id { get; set; }
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    public int Id { get; set; }
 
     /// <summary>
-    /// The unique identifier of the parent organisation
+    /// The unique identifier for this relationship
     /// </summary>
     [Required]
-    public Guid ParentId { get; set; }
+    public required Guid RelationshipId { get; set; }
 
     /// <summary>
-    /// The unique identifier of the child organisation
+    /// The ID of the parent organisation
     /// </summary>
     [Required]
-    public Guid ChildId { get; set; }
+    [ForeignKey(nameof(Parent))]
+    public required int ParentOrganisationId { get; set; }
+
+    /// <summary>
+    /// The parent organisation in this relationship
+    /// </summary>
+    public virtual Organisation? Parent { get; set; }
+
+    /// <summary>
+    /// The ID of the child organisation
+    /// </summary>
+    [Required]
+    [ForeignKey(nameof(Child))]
+    public int ChildOrganisationId { get; set; }
+
+    /// <summary>
+    /// The child organisation in this relationship
+    /// </summary>
+    public virtual Organisation? Child { get; set; }
 
     /// <summary>
     /// The roles associated with this relationship, stored as a serialized collection
     /// </summary>
     [Required]
-    public required  List<PartyRole> Roles { get; set; }
+    public required List<PartyRole> Roles { get; set; }
 
     /// <summary>
     /// The date and time when this relationship was created
