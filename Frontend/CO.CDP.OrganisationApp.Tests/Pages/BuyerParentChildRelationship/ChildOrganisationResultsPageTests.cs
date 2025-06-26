@@ -155,12 +155,12 @@ public class ChildOrganisationResultsPageTests
     public void OnPost_WithValidModelState_RedirectsToConfirmPage()
     {
         var id = Guid.NewGuid();
+        var childId = Guid.NewGuid();
         const string query = "test query";
-        const string selectedPponIdentifier = "GB-PPON:12345";
 
         _model.Id = id;
         _model.Query = query;
-        _model.SelectedPponIdentifier = selectedPponIdentifier;
+        _model.SelectedChildId = childId;
 
         var result = _model.OnPost();
 
@@ -168,8 +168,8 @@ public class ChildOrganisationResultsPageTests
         redirectResult.PageName.Should().Be("ChildOrganisationConfirmPage");
         redirectResult.RouteValues.Should().ContainKey("Id");
         redirectResult.RouteValues["Id"].Should().Be(id);
-        redirectResult.RouteValues.Should().ContainKey("Ppon");
-        redirectResult.RouteValues["Ppon"].Should().Be(selectedPponIdentifier);
+        redirectResult.RouteValues.Should().ContainKey("ChildId");
+        redirectResult.RouteValues["ChildId"].Should().Be(childId);
         redirectResult.RouteValues.Should().ContainKey("Query");
         redirectResult.RouteValues["Query"].Should().Be(query);
     }

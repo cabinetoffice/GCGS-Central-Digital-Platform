@@ -20,11 +20,13 @@ public class ChildOrganisationConfirmPage : PageModel
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
-    [FromRoute] public Guid Id { get; set; }
+    [BindProperty(SupportsGet = true)] public Guid Id { get; set; }
 
-    [BindProperty(SupportsGet = true)] public string? Ppon { get; set; }
+    [BindProperty(SupportsGet = true)] public Guid ChildId { get; set; }
 
     [BindProperty(SupportsGet = true)] public string? Query { get; set; }
+
+    [BindProperty] public string? OrganisationName { get; set; }
 
     public ChildOrganisation? ChildOrganisation { get; set; }
 
@@ -34,21 +36,18 @@ public class ChildOrganisationConfirmPage : PageModel
 
     public async Task<IActionResult> OnGetAsync()
     {
-        if (string.IsNullOrWhiteSpace(Ppon))
+        if (ChildId == Guid.Empty)
         {
             return RedirectToPage("ChildOrganisationSearchPage", new { Id });
         }
 
         try
         {
-            var formattedPponIdentifier = FormatPponIdentifier(Ppon);
-            var organisation = await _organisationClient.LookupOrganisationAsync(
-                name: null,
-                identifier: formattedPponIdentifier);
+            var organisation = await _organisationClient.GetOrganisationAsync(ChildId);
 
             if (organisation == null)
             {
-                _logger.LogWarning("Organisation not found for identifier: {Identifier}", formattedPponIdentifier);
+                _logger.LogWarning("Organisation not found for ChildId: {ChildId}", ChildId);
                 return RedirectToPage("/Error");
             }
 
@@ -57,6 +56,7 @@ public class ChildOrganisationConfirmPage : PageModel
                 organisation.Id,
                 organisation.Identifier
             );
+            OrganisationName = organisation.Name;
 
             OrganisationAddress = organisation.Addresses?.FirstOrDefault();
             OrganisationContactPoint = organisation.ContactPoint;
@@ -76,13 +76,16 @@ public class ChildOrganisationConfirmPage : PageModel
     {
         try
         {
-            var formattedIdentifier = FormatPponIdentifier(Ppon);
+            var request = new CreateParentChildRelationshipRequest
+            (
+                ChildId,
+                Id,
+                PartyRole.Buyer
+            );
 
-            // await _organisationClient.CreateParentChildRelationshipAsync(
-            //     parentId: Id,
-            //     childId: childOrganisation.Id);
+            await _organisationClient.CreateParentChildRelationshipAsync(request);
 
-            return RedirectToPage("ChildOrganisationSuccessPage", new { Id, OrganisationName = ChildOrganisation?.Name });
+            return RedirectToPage("ChildOrganisationSuccessPage", new { Id, OrganisationName });
         }
         catch (Exception ex)
         {
@@ -91,34 +94,5 @@ public class ChildOrganisationConfirmPage : PageModel
             _logger.LogError(cdpException, errorMessage);
             return RedirectToPage("/Error");
         }
-    }
-
-    private string FormatPponIdentifier(string identifier)
-    {
-        if (string.IsNullOrWhiteSpace(identifier))
-        {
-            return string.Empty;
-        }
-
-        if (identifier.StartsWith("GB-PPON:", StringComparison.OrdinalIgnoreCase))
-        {
-            return identifier;
-        }
-
-        if (identifier.StartsWith("GB-PPON-", StringComparison.OrdinalIgnoreCase))
-        {
-            return "GB-PPON:" + identifier.Substring("GB-PPON-".Length);
-        }
-
-        var pponRegex = new System.Text.RegularExpressions.Regex("^[A-Z]{4}-\\d{4}-[A-Z]{4}$",
-            System.Text.RegularExpressions.RegexOptions.IgnoreCase);
-        if (pponRegex.IsMatch(identifier))
-        {
-            return $"GB-PPON:{identifier}";
-        }
-
-        return identifier.StartsWith("GB-PPON", StringComparison.OrdinalIgnoreCase)
-            ? identifier
-            : $"GB-PPON:{identifier}";
     }
 }

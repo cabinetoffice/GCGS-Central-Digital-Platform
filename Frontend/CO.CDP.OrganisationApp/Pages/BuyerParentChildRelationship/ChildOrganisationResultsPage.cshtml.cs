@@ -27,6 +27,9 @@ public class ChildOrganisationResultsPage(
     [BindProperty]
     public string? SelectedPponIdentifier { get; set; }
 
+    [BindProperty]
+    public Guid SelectedChildId { get; set; }
+
     public async Task<IActionResult> OnGetAsync()
     {
         if (!string.IsNullOrWhiteSpace(Query))
@@ -128,6 +131,6 @@ public class ChildOrganisationResultsPage(
             return Page();
         }
 
-        return RedirectToPage("ChildOrganisationConfirmPage", new { Id, Ppon = SelectedPponIdentifier, Query });
+        return RedirectToPage("ChildOrganisationConfirmPage", new { Id, ChildId = SelectedChildId, Query });
     }
 }

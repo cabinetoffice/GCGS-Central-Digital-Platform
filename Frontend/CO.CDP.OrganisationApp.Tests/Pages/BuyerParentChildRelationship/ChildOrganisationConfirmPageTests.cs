@@ -1,10 +1,12 @@
 using CO.CDP.Organisation.WebApiClient;
+using CO.CDP.OrganisationApp.Logging;
 using CO.CDP.OrganisationApp.Pages.BuyerParentChildRelationship;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using Moq;
+using Address = CO.CDP.Organisation.WebApiClient.Address;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages.BuyerParentChildRelationship;
 
@@ -22,51 +24,105 @@ public class ChildOrganisationConfirmPageTests
     }
 
     [Fact]
-    public async Task OnGetAsync_WhenLookupThrowsException_RedirectsToErrorPage()
+    public async Task OnGetAsync_WhenChildIdEmpty_RedirectsToSearchPage()
     {
         var id = Guid.NewGuid();
-        const string query = "test query";
-        const string selectedPponIdentifier = "GB-PPON:12345";
+        _model.Id = id;
+        _model.ChildId = Guid.Empty;
+
+        var result = await _model.OnGetAsync();
+
+        var redirectResult = result.Should().BeOfType<RedirectToPageResult>().Subject;
+        redirectResult.PageName.Should().Be("ChildOrganisationSearchPage");
+        redirectResult.RouteValues.Should().ContainKey("Id");
+        redirectResult.RouteValues["Id"].Should().Be(id);
+    }
+
+    [Fact]
+    public async Task OnGetAsync_WhenGetOrganisationThrowsException_RedirectsToErrorPage()
+    {
+        var id = Guid.NewGuid();
+        var childId = Guid.NewGuid();
 
         _model.Id = id;
-        _model.Ppon = selectedPponIdentifier;
+        _model.ChildId = childId;
 
         _mockOrganisationClient
-            .Setup(client => client.LookupOrganisationAsync(null, selectedPponIdentifier))
+            .Setup(client => client.GetOrganisationAsync(childId))
             .ThrowsAsync(new Exception("Test exception"));
 
         var result = await _model.OnGetAsync();
+
+        _mockLogger.Verify(
+            x => x.Log(
+                LogLevel.Error,
+                It.IsAny<EventId>(),
+                It.Is<It.IsAnyType>((v, t) => v.ToString() == "Error occurred while retrieving organisation details"),
+                It.Is<Exception>(e => e is CdpExceptionLogging && ((CdpExceptionLogging)e).ErrorCode == "LOOKUP_ERROR"),
+                It.IsAny<Func<It.IsAnyType, Exception, string>>()),
+            Times.Once);
 
         var redirectResult = result.Should().BeOfType<RedirectToPageResult>().Subject;
         redirectResult.PageName.Should().Be("/Error");
     }
 
     [Fact]
-    public async Task OnGetAsync_WithValidPponIdentifier_SetsOrganisation()
+    public async Task OnGetAsync_WhenOrganisationIsNull_RedirectsToErrorPage()
     {
         var id = Guid.NewGuid();
-        const string query = "test query";
-        const string selectedPponIdentifier = "GB-PPON:12345";
-        var organisationId = Guid.NewGuid();
+        var childId = Guid.NewGuid();
 
         _model.Id = id;
-        _model.Ppon = selectedPponIdentifier;
+        _model.ChildId = childId;
+
+        _mockOrganisationClient
+            .Setup(client => client.GetOrganisationAsync(childId))
+            .ReturnsAsync((CDP.Organisation.WebApiClient.Organisation)null);
+
+        var result = await _model.OnGetAsync();
+
+        _mockLogger.Verify(
+            x => x.Log(
+                LogLevel.Warning,
+                It.IsAny<EventId>(),
+                It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Organisation not found for ChildId")),
+                null,
+                It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
+            Times.Once);
+
+        var redirectResult = result.Should().BeOfType<RedirectToPageResult>().Subject;
+        redirectResult.PageName.Should().Be("/Error");
+    }
+
+    [Fact]
+    public async Task OnGetAsync_WithValidChildId_SetsOrganisation()
+    {
+        var id = Guid.NewGuid();
+        var childId = Guid.NewGuid();
+        const string query = "test query";
+
+        _model.Id = id;
+        _model.ChildId = childId;
+        _model.Query = query;
 
         var organisation = new CDP.Organisation.WebApiClient.Organisation(
             additionalIdentifiers: [],
-            addresses: [],
+            addresses:
+            [
+                new Address("Line1", "Line2", "City", "PostalCode", "Region", "StreetAddress", AddressType.Registered)
+            ],
             contactPoint: new ContactPoint("a@b.com", "Contact", "123", new Uri("http://whatever")),
-            id: organisationId,
-            identifier: new Identifier(selectedPponIdentifier, "Test Org", "PPON", new Uri("http://whatever")),
+            id: childId,
+            identifier: new Identifier("12345", "Test Org", "DUNS", new Uri("http://whatever")),
             name: "Test Organisation",
-            type: CDP.Organisation.WebApiClient.OrganisationType.Organisation,
-            roles: [CDP.Organisation.WebApiClient.PartyRole.Supplier, CDP.Organisation.WebApiClient.PartyRole.Tenderer],
+            type: OrganisationType.Organisation,
+            roles: [PartyRole.Buyer],
             details: new Details(approval: null, buyerInformation: null, pendingRoles: [],
                 publicServiceMissionOrganization: null, scale: null, shelteredWorkshop: null, vcse: null)
         );
 
         _mockOrganisationClient
-            .Setup(client => client.LookupOrganisationAsync(null, selectedPponIdentifier))
+            .Setup(client => client.GetOrganisationAsync(childId))
             .ReturnsAsync(organisation);
 
         var result = await _model.OnGetAsync();
@@ -74,69 +130,81 @@ public class ChildOrganisationConfirmPageTests
         result.Should().BeOfType<PageResult>();
         _model.ChildOrganisation.Should().NotBeNull();
         _model.ChildOrganisation.Name.Should().Be("Test Organisation");
-        _model.ChildOrganisation.OrganisationId.Should().Be(organisationId);
+        _model.ChildOrganisation.OrganisationId.Should().Be(childId);
+        _model.OrganisationAddress.Should().NotBeNull();
+        _model.OrganisationContactPoint.Should().NotBeNull();
+        _model.OrganisationType.Should().Be("Buyer");
     }
 
     [Fact]
-    public async Task OnGetAsync_SetsPropertiesFromQuery()
+    public async Task OnPostAsync_WhenExceptionOccurs_RedirectsToErrorPage()
     {
         var id = Guid.NewGuid();
-        const string query = "test query";
-        const string selectedPponIdentifier = "GB-PPON:12345";
+        var childId = Guid.NewGuid();
+        const string organisationName = "Test Organisation";
 
         _model.Id = id;
-        _model.Ppon = selectedPponIdentifier;
-        _model.Query = query;
-
-        var organisation = new CDP.Organisation.WebApiClient.Organisation(
-            additionalIdentifiers: [],
-            addresses: [],
-            contactPoint: new ContactPoint("a@b.com", "Contact", "123", new Uri("http://whatever")),
-            id: Guid.NewGuid(),
-            identifier: new Identifier(selectedPponIdentifier, "Test Org", "PPON", new Uri("http://whatever")),
-            name: "Test Organisation",
-            type: CDP.Organisation.WebApiClient.OrganisationType.Organisation,
-            roles: [CDP.Organisation.WebApiClient.PartyRole.Supplier, CDP.Organisation.WebApiClient.PartyRole.Tenderer],
-            details: new Details(approval: null, buyerInformation: null, pendingRoles: [],
-                publicServiceMissionOrganization: null, scale: null, shelteredWorkshop: null, vcse: null)
+        _model.ChildId = childId;
+        _model.ChildOrganisation = new Models.ChildOrganisation(
+            organisationName,
+            childId,
+            new Identifier("12345", organisationName, "DUNS", null)
         );
 
         _mockOrganisationClient
-            .Setup(client => client.LookupOrganisationAsync(null, selectedPponIdentifier))
-            .ReturnsAsync(organisation);
+            .Setup(client =>
+                client.CreateParentChildRelationshipAsync(It.IsAny<CreateParentChildRelationshipRequest>()))
+            .ThrowsAsync(new Exception("Test exception"));
 
-        await _model.OnGetAsync();
+        var result = await _model.OnPostAsync();
 
-        _model.Id.Should().Be(id);
-        _model.Ppon.Should().Be(selectedPponIdentifier);
-        _model.Query.Should().Be(query);
+        _mockLogger.Verify(
+            x => x.Log(
+                LogLevel.Error,
+                It.IsAny<EventId>(),
+                It.Is<It.IsAnyType>((v, t) =>
+                    v.ToString() == "Error occurred while establishing parent-child relationship"),
+                It.Is<Exception>(e =>
+                    e is CdpExceptionLogging && ((CdpExceptionLogging)e).ErrorCode == "RELATIONSHIP_ERROR"),
+                It.IsAny<Func<It.IsAnyType, Exception, string>>()),
+            Times.Once);
+
+        var redirectResult = result.Should().BeOfType<RedirectToPageResult>().Subject;
+        redirectResult.PageName.Should().Be("/Error");
     }
 
     [Fact]
-    public async Task OnPostAsync_PassesOrganisationNameToSuccessPage()
+    public async Task OnPostAsync_WhenSuccessful_RedirectsToSuccessPage()
     {
         var id = Guid.NewGuid();
-        const string query = "test query";
-        const string selectedPponIdentifier = "GB-PPON:12345";
+        var childId = Guid.NewGuid();
         const string organisationName = "Test Organisation";
-        var childOrganisationId = Guid.NewGuid();
 
         _model.Id = id;
-        _model.Ppon = selectedPponIdentifier;
-        _model.Query = query;
-        _model.ChildOrganisation = new Models.ChildOrganisation(
-            organisationName,
-            childOrganisationId,
-            new Identifier(selectedPponIdentifier, organisationName, "PPON", null)
-        );
+        _model.ChildId = childId;
+        _model.OrganisationName = organisationName;
+
+        var relationshipId = Guid.NewGuid();
+        _mockOrganisationClient
+            .Setup(client =>
+                client.CreateParentChildRelationshipAsync(It.IsAny<CreateParentChildRelationshipRequest>()))
+            .ReturnsAsync(new ParentChildRelationshipResult(relationshipId, true));
 
         var result = await _model.OnPostAsync();
 
         var redirectResult = result.Should().BeOfType<RedirectToPageResult>().Subject;
         redirectResult.PageName.Should().Be("ChildOrganisationSuccessPage");
         redirectResult.RouteValues.Should().ContainKey("Id");
-        redirectResult.RouteValues["Id"].Should().Be(id);
+        redirectResult.RouteValues?["Id"].Should().Be(id);
         redirectResult.RouteValues.Should().ContainKey("OrganisationName");
-        redirectResult.RouteValues["OrganisationName"].Should().Be(organisationName);
+        redirectResult.RouteValues?["OrganisationName"].Should().Be(organisationName);
+
+        _mockOrganisationClient.Verify(
+            client => client.CreateParentChildRelationshipAsync(
+                It.Is<CreateParentChildRelationshipRequest>(r =>
+                    r.ParentId == id &&
+                    r.ChildId == childId &&
+                    r.Role == PartyRole.Buyer)),
+            Times.Once);
     }
 }
