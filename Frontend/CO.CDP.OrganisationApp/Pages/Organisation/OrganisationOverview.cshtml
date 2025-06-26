@@ -266,26 +266,29 @@
                 }
             </dl>
 
-            @if(organisationDetails.IsBuyer())
+            @if (organisationDetails.IsBuyer())
             {
-                <h3 class="govuk-heading-m govuk-!-padding-top-8" id="child-organisations">Add child organisations</h3>
-                <p class="govuk-body">This section allows you to add child organisations to your organisation's profile. Once added, child organisations will appear below. You can add new child organisations or remove them at any time.</p>
+                <h3 class="govuk-heading-m govuk-!-padding-top-8"
+                    id="child-organisations">@StaticTextResource.OrganisationOverview_ChildOrganisations_Heading</h3>
+                <p class="govuk-body">@StaticTextResource.OrganisationOverview_ChildOrganisations_Description</p>
                 <ul class="govuk-list govuk-list--bullet">
-                    <li>only a parent organisation can add its child organisations</li>
-                    <li>a child organisation can only be added if they are registered in the <a href="https://www.gov.uk/find-tender" target="_blank">Central Digital Platform (opens in a new tab)</a></li>
+                    <li>@StaticTextResource.OrganisationOverview_ChildOrganisations_ListItem1</li>
+                    <li>@StaticTextResource.OrganisationOverview_ChildOrganisations_ListItem2</li>
                 </ul>
                 <details class="govuk-details govuk-!-padding-top-4">
                     <summary class="govuk-details__summary">
                         <span class="govuk-details__summary-text">
-                            What is a child organisation?
+                            @StaticTextResource.OrganisationOverview_ChildOrganisations_DetailsSummary
                         </span>
                     </summary>
                     <div class="govuk-details__text">
-                        <p class="govuk-body">Some organisations are arranged in a hierarchical structure that connects them together. A parent organisation sponsors one or more child organisations, which report directly to them.</p>
+                        <p class="govuk-body">@StaticTextResource.OrganisationOverview_ChildOrganisations_DetailsText</p>
                     </div>
                 </details>
-                <a href="/organisation/@RouteData.Values["id"]/buyer-parent-child-relationship/search" role="button" draggable="false" class="govuk-button govuk-button--secondary govuk-!-margin-top-3" data-module="govuk-button">
-                    Add child organisation
+                <a href="/organisation/@RouteData.Values["id"]/buyer-parent-child-relationship/search" role="button"
+                   draggable="false" class="govuk-button govuk-button--secondary govuk-!-margin-top-3"
+                   data-module="govuk-button">
+                    @StaticTextResource.OrganisationOverview_ChildOrganisations_ButtonText
                 </a>
             }
 
