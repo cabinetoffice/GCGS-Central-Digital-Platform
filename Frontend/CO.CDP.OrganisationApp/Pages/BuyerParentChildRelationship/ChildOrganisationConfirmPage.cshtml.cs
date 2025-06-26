@@ -77,7 +77,7 @@ public class ChildOrganisationConfirmPage(
             await _organisationClient.CreateParentChildRelationshipAsync(request);
 
             return RedirectToPage("ChildOrganisationSuccessPage",
-                new { Id, OrganisationName = ChildOrganisationName });
+                new { Id, ChildId, OrganisationName = ChildOrganisationName });
         }
         catch (Exception ex)
         {
