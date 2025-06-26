@@ -69,9 +69,9 @@ public class ChildOrganisationConfirmPage(
             }
 
             var request = new CreateParentChildRelationshipRequest(
-                Id,
-                ChildOrganisation.Id,
-                PartyRole.Buyer
+                childId: ChildOrganisation.Id,
+                parentId: Id,
+                role: PartyRole.Buyer
             );
 
             await _organisationClient.CreateParentChildRelationshipAsync(request);
