@@ -266,6 +266,29 @@
                 }
             </dl>
 
+            @if(organisationDetails.IsBuyer())
+            {
+                <h3 class="govuk-heading-m govuk-!-padding-top-8" id="child-organisations">Add child organisations</h3>
+                <p class="govuk-body">This section allows you to add child organisations to your organisation's profile. Once added, child organisations will appear below. You can add new child organisations or remove them at any time.</p>
+                <ul class="govuk-list govuk-list--bullet">
+                    <li>only a parent organisation can add its child organisations</li>
+                    <li>a child organisation can only be added if they are registered in the <a href="https://www.gov.uk/find-tender" target="_blank">Central Digital Platform (opens in a new tab)</a></li>
+                </ul>
+                <details class="govuk-details govuk-!-padding-top-4">
+                    <summary class="govuk-details__summary">
+                        <span class="govuk-details__summary-text">
+                            What is a child organisation?
+                        </span>
+                    </summary>
+                    <div class="govuk-details__text">
+                        <p class="govuk-body">Some organisations are arranged in a hierarchical structure that connects them together. A parent organisation sponsors one or more child organisations, which report directly to them.</p>
+                    </div>
+                </details>
+                <a href="/organisation/@RouteData.Values["id"]/buyer-parent-child-relationship/search" role="button" draggable="false" class="govuk-button govuk-button--secondary govuk-!-margin-top-3" data-module="govuk-button">
+                    Add child organisation
+                </a>
+            }
+
             @if (organisationDetails.IsTenderer())
             {
                 <h3 class="govuk-heading-s govuk-!-margin-bottom-3">
