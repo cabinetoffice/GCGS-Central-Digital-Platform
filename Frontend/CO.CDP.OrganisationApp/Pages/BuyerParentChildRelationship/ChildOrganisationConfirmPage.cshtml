@@ -38,24 +38,24 @@
                                 <th scope="row"
                                     class="govuk-table__header govuk-!-width-one-third">@StaticTextResource.BuyerParentChildRelationship_ConfirmPage_OrganisationTypeLabel
                                 </th>
-                                <td class="govuk-table__cell govuk-!-width-two-thirds">@Model.OrganisationType</td>
+                                <td class="govuk-table__cell govuk-!-width-two-thirds">@Model.ChildOrganisationType</td>
                             </tr>
                             <tr class="govuk-table__row">
                                 <th scope="row"
                                     class="govuk-table__header govuk-!-width-one-third">@StaticTextResource.BuyerParentChildRelationship_ConfirmPage_OrganisationAddressLabel
                                 </th>
                                 <td class="govuk-table__cell govuk-!-width-two-thirds">
-                                    @if (Model.OrganisationAddress != null)
+                                    @if (Model.ChildOrganisationAddress != null)
                                     {
-                                        @Model.OrganisationAddress.StreetAddress<br/>
-                                        @Model.OrganisationAddress.Locality<br/>
-                                        @if (!string.IsNullOrEmpty(Model.OrganisationAddress.Region))
+                                        @Model.ChildOrganisationAddress.StreetAddress<br/>
+                                        @Model.ChildOrganisationAddress.Locality<br/>
+                                        @if (!string.IsNullOrEmpty(Model.ChildOrganisationAddress.Region))
                                         {
-                                            @Model.OrganisationAddress.Region<br/>
+                                            @Model.ChildOrganisationAddress.Region<br/>
                                         }
 
-                                        @Model.OrganisationAddress.PostalCode<br/>
-                                        @Model.OrganisationAddress.CountryName
+                                        @Model.ChildOrganisationAddress.PostalCode<br/>
+                                        @Model.ChildOrganisationAddress.CountryName
                                     }
                                     else
                                     {
@@ -68,9 +68,9 @@
                                     @StaticTextResource.BuyerParentChildRelationship_ConfirmPage_OrganisationEmailLabel
                                 </th>
                                 <td class="govuk-table__cell govuk-!-width-two-thirds no-border">
-                                    @if (!string.IsNullOrEmpty(Model.OrganisationContactPoint?.Email))
+                                    @if (!string.IsNullOrEmpty(Model.ChildOrganisationContactPoint?.Email))
                                     {
-                                        @Model.OrganisationContactPoint.Email
+                                        @Model.ChildOrganisationContactPoint.Email
                                     }
                                     else
                                     {
