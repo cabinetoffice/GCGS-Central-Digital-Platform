@@ -7,7 +7,7 @@ namespace CO.CDP.Organisation.WebApi.UseCase;
 /// </summary>
 public interface
     ICreateParentChildRelationshipUseCase : IUseCase<CreateParentChildRelationshipRequest,
-    ParentChildRelationshipResult>
+    CreateParentChildRelationshipResult>
 {
 }
 
@@ -32,20 +32,20 @@ public class CreateParentChildRelationshipUseCase : ICreateParentChildRelationsh
     /// </summary>
     /// <param name="request">Request containing parent and child organisation IDs and role</param>
     /// <returns>Result of the relationship creation operation</returns>
-    public Task<ParentChildRelationshipResult> Execute(CreateParentChildRelationshipRequest request)
+    public Task<CreateParentChildRelationshipResult> Execute(CreateParentChildRelationshipRequest request)
     {
         try
         {
             if (request.ParentId == Guid.Empty || request.ChildId == Guid.Empty)
             {
                 _logger.LogWarning("Invalid organisation IDs provided for parent-child relationship");
-                return Task.FromResult(new ParentChildRelationshipResult { Success = false });
+                return Task.FromResult(new CreateParentChildRelationshipResult { Success = false });
             }
 
             if (request.ParentId == request.ChildId)
             {
                 _logger.LogWarning("Parent and child organisation IDs cannot be the same");
-                return Task.FromResult(new ParentChildRelationshipResult { Success = false });
+                return Task.FromResult(new CreateParentChildRelationshipResult { Success = false });
             }
 
             var relationshipId = Guid.NewGuid();
@@ -53,7 +53,7 @@ public class CreateParentChildRelationshipUseCase : ICreateParentChildRelationsh
                 "Created parent-child relationship {RelationshipId} between {ParentId} and {ChildId} with role {Role}",
                 relationshipId, request.ParentId, request.ChildId, request.Role);
 
-            return Task.FromResult(new ParentChildRelationshipResult
+            return Task.FromResult(new CreateParentChildRelationshipResult
             {
                 Success = true,
                 RelationshipId = relationshipId
@@ -63,7 +63,7 @@ public class CreateParentChildRelationshipUseCase : ICreateParentChildRelationsh
         {
             _logger.LogError(ex, "Error creating parent-child relationship between {ParentId} and {ChildId}",
                 request.ParentId, request.ChildId);
-            return Task.FromResult(new ParentChildRelationshipResult { Success = false });
+            return Task.FromResult(new CreateParentChildRelationshipResult { Success = false });
         }
     }
 }

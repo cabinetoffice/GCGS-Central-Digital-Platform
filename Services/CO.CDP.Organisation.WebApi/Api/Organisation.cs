@@ -275,12 +275,12 @@ public static class EndpointExtensions
             [OrganisationAuthorize([AuthenticationChannel.OneLogin],
                 organisationPersonScopes: [Constants.OrganisationPersonScope.Admin, Constants.OrganisationPersonScope.Editor],
                 personScopes: [Constants.PersonScope.SupportAdmin])]
-        async (CreateParentChildRelationshipRequest request, IUseCase<CreateParentChildRelationshipRequest, ParentChildRelationshipResult> useCase) =>
+        async (CreateParentChildRelationshipRequest request, IUseCase<CreateParentChildRelationshipRequest, CreateParentChildRelationshipResult> useCase) =>
                 await useCase.Execute(request)
                     .AndThen(result => result.Success
                         ? Results.Created($"/organisations/relationships/parent-child/{result.RelationshipId}", result)
                         : Results.Problem("Failed to create parent-child relationship", statusCode: StatusCodes.Status400BadRequest)))
-        .Produces<ParentChildRelationshipResult>(StatusCodes.Status201Created, "application/json")
+        .Produces<CreateParentChildRelationshipResult>(StatusCodes.Status201Created, "application/json")
         .ProducesProblem(StatusCodes.Status400BadRequest)
         .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
         .ProducesProblem(StatusCodes.Status500InternalServerError)

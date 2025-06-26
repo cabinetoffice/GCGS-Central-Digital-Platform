@@ -30,7 +30,7 @@ public class CreateParentChildRelationshipRequest
 /// <summary>
 /// Result model for parent-child relationship operations
 /// </summary>
-public class ParentChildRelationshipResult
+public class CreateParentChildRelationshipResult
 {
     /// <summary>
     /// Whether the operation was successful
