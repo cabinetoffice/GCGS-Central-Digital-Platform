@@ -103,6 +103,7 @@ builder.Services.AddScoped<IUseCase<(Guid, UpdateOrganisationParty), bool>, Upda
 builder.Services.AddScoped<IUseCase<GetAnnouncementQuery, IEnumerable<Announcement>>, GetAnnouncementsUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid organisationId, string role), IEnumerable<Person>>, GetPersonsInRoleUseCase>();
 builder.Services.AddScoped<IUseCase<CreateParentChildRelationshipRequest, CreateParentChildRelationshipResult>, CreateParentChildRelationshipUseCase>();
+builder.Services.AddScoped<IUseCase<Guid, GetChildOrganisationsResponse>, GetChildOrganisationsUseCase>();
 
 builder.Services.AddScoped<IAuthorizationHandler, OrganisationScopeAuthorizationHandler>();
 builder.Services.AddScoped<IAuthorizationHandler, ApiKeyScopeAuthorizationHandler>();
@@ -198,6 +199,10 @@ app.MapGroup("/feeback")
 app.MapGroup("/organisations")
     .UseOrganisationMouEndpoints()
     .WithTags("Organisation - MOUs");
+
+app.MapGroup("/organisations")
+    .UseOrganisationStructureEndpoints()
+    .WithTags("Organisation - Structure");
 
 app.MapGroup("/mou")
     .UseMouEndpoints()

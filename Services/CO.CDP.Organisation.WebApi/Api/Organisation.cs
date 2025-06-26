@@ -1374,6 +1374,30 @@ public static class EndpointExtensions
                 operation.Responses["500"].Description = "Internal server error.";
                 return operation;
             });
+
+        app.MapGet("/{organisationId}/structure/children",
+                [OrganisationAuthorize([AuthenticationChannel.OneLogin, AuthenticationChannel.ServiceKey],
+                    organisationPersonScopes: [Constants.OrganisationPersonScope.Admin, Constants.OrganisationPersonScope.Editor, Constants.OrganisationPersonScope.Viewer],
+                    OrganisationIdLocation.Path)]
+                async (Guid organisationId, IUseCase<Guid, GetChildOrganisationsResponse> useCase) =>
+                    await useCase.Execute(organisationId)
+                        .AndThen(response => response.Success
+                            ? Results.Ok(response.ChildOrganisations)
+                            : Results.Problem("Failed to retrieve child organisations", statusCode: StatusCodes.Status500InternalServerError)))
+            .Produces<IEnumerable<OrganisationSummary>>(StatusCodes.Status200OK, "application/json")
+            .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
+            .ProducesProblem(StatusCodes.Status500InternalServerError)
+            .WithOpenApi(operation =>
+            {
+                operation.OperationId = "GetChildOrganisations";
+                operation.Description = "Retrieves all child organisations for a given parent organisation.";
+                operation.Summary = "Get all child organisations of a parent organisation.";
+                operation.Responses["200"].Description = "List of child organisations retrieved successfully.";
+                operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
+                operation.Responses["500"].Description = "Internal server error.";
+                return operation;
+            });
+
         return app;
     }
 }
