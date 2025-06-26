@@ -51,35 +51,35 @@ namespace E2ETests.Tests.OrganisationDetails.AdditionalSupplierInformationModule
             await InteractionUtilities.PageShouldContainText("http://testwebsite");
             await InteractionUtilities.PageShouldContainText("test instructions on Modern Slavery Statement");
             await InteractionUtilities.PageShouldContainText("test text on missing information modern slavery");
-            // await InteractionUtilities.ClickLinkByText2("Back");
-            // await InteractionUtilities.PageTitleShouldBe(
-            //     "Missing information - Find a Tender - GOV.UK");
-            // await InteractionUtilities.ClickLinkByText2("Back");
-            // await InteractionUtilities.PageTitleShouldBe(
-            //     "Enter instructions on how to find your organisation's Modern Slavery Statement - Find a Tender - GOV.UK");
-            // await InteractionUtilities.ClickLinkByText2("Back");
-            // await InteractionUtilities.PageTitleShouldBe(
-            //     "Enter the link to your Modern Slavery Statement - Find a Tender - GOV.UK");
-            // await InteractionUtilities.ClickLinkByText2("Back");
-            // await InteractionUtilities.PageTitleShouldBe(
-            //     "Is your latest Modern Slavery Statement available digitally? - Find a Tender - GOV.UK");
-            // await InteractionUtilities.ClickRadioButtonByText("No");
-            // await InteractionUtilities.ClickButtonByText("Continue");
-            // await InteractionUtilities.PageTitleShouldBe(
-            //     "Upload a copy of your latest Modern Slavery Statement - Find a Tender - GOV.UK");
-            // await InteractionUtilities.UploadFile();
-            // //Step below to be updated once change/update is pushed (Should be "Save")
-            // await InteractionUtilities.ClickButtonByText("Continue");
-            // await InteractionUtilities.PageTitleShouldBe(
-            //     "Enter instructions on how to find your organisation's Modern Slavery Statement - Find a Tender - GOV.UK");
-            // await InteractionUtilities.EnterTextIntoTextArea("test instructions on Modern Slavery Statement");
-            // await InteractionUtilities.ClickButtonByText("Continue");
-            // await InteractionUtilities.PageTitleShouldBe(
-            //     "Missing information - Find a Tender - GOV.UK");
-            // await InteractionUtilities.EnterTextIntoTextArea("test text on missing information modern slavery");
-            // //Step below to be updated once change/update is pushed (Should be "Save")
-            // await InteractionUtilities.ClickButtonByText("Continue");
-            // await InteractionUtilities.PageTitleShouldBe("Check your answers - Find a Tender - GOV.UK");
+            await InteractionUtilities.ClickLinkByText2("Back");
+            await InteractionUtilities.PageTitleShouldBe(
+                "Missing information - Find a Tender - GOV.UK");
+            await InteractionUtilities.ClickLinkByText2("Back");
+            await InteractionUtilities.PageTitleShouldBe(
+                "Enter instructions on how to find your organisation's Modern Slavery Statement - Find a Tender - GOV.UK");
+            await InteractionUtilities.ClickLinkByText2("Back");
+            await InteractionUtilities.PageTitleShouldBe(
+                "Enter the link to your Modern Slavery Statement - Find a Tender - GOV.UK");
+            await InteractionUtilities.ClickLinkByText2("Back");
+            await InteractionUtilities.PageTitleShouldBe(
+                "Is your latest Modern Slavery Statement available digitally? - Find a Tender - GOV.UK");
+            await InteractionUtilities.ClickRadioButtonByText("No");
+            await InteractionUtilities.ClickButtonByText("Continue");
+            await InteractionUtilities.PageTitleShouldBe(
+                "Upload a copy of your latest Modern Slavery Statement - Find a Tender - GOV.UK");
+            await InteractionUtilities.UploadFile();
+            //Step below to be updated once change/update is pushed (Should be "Save")
+            await InteractionUtilities.ClickButtonByText("Continue");
+            await InteractionUtilities.PageTitleShouldBe(
+                "Enter instructions on how to find your organisation's Modern Slavery Statement - Find a Tender - GOV.UK");
+            await InteractionUtilities.EnterTextIntoTextArea("test instructions on Modern Slavery Statement");
+            await InteractionUtilities.ClickButtonByText("Continue");
+            await InteractionUtilities.PageTitleShouldBe(
+                "Missing information - Find a Tender - GOV.UK");
+            await InteractionUtilities.EnterTextIntoTextArea("test text on missing information modern slavery");
+            //Step below to be updated once change/update is pushed (Should be "Save")
+            await InteractionUtilities.ClickButtonByText("Continue");
+            await InteractionUtilities.PageTitleShouldBe("Check your answers - Find a Tender - GOV.UK");
         }
 
 [Test]
@@ -118,30 +118,31 @@ namespace E2ETests.Tests.OrganisationDetails.AdditionalSupplierInformationModule
             await InteractionUtilities.PageShouldContainText("http://testwebsite");
             await InteractionUtilities.PageShouldContainText("test instructions on Modern Slavery Statement");
             await InteractionUtilities.PageShouldContainText("test text on missing information modern slavery");
-            // await InteractionUtilities.ClickLinkByText2("Back");
-            // await InteractionUtilities.PageTitleShouldBe(
-            //     "Missing information - Find a Tender - GOV.UK");
-            // await InteractionUtilities.ClickLinkByText2("Back");
-            // await InteractionUtilities.PageTitleShouldBe(
-            //     "Enter instructions on how to find your relevant published statements or documents on modern slavery - Find a Tender - GOV.UK");
-            // await InteractionUtilities.ClickLinkByText2("Back");
-            // await InteractionUtilities.PageTitleShouldBe(
-            //     "Enter the link to your relevant documentation or published statements on modern slavery - Find a Tender - GOV.UK");
-            // await InteractionUtilities.ClickLinkByText2("Back");
-            // await InteractionUtilities.PageTitleShouldBe(
-            //     "Are your documents or statements related to modern slavery available digitally? - Find a Tender - GOV.UK");
-            // await InteractionUtilities.ClickRadioButtonByText("No");
-            // await InteractionUtilities.PageTitleShouldBe(
-            //     "Upload your relevant documentation or published statement on modern slavery - Find a Tender - GOV.UK");
-            // await InteractionUtilities.UploadFile();
-            // //Step below to be updated once change/update is pushed (Should be "Save")
-            // await InteractionUtilities.ClickButtonByText("Continue");
-            // await InteractionUtilities.PageTitleShouldBe(
-            //     "Missing information - Find a Tender - GOV.UK");
-            // await InteractionUtilities.EnterTextIntoTextArea("test text on missing information modern slavery");
-            // //Step below to be updated once change/update is pushed (Should be "Save")
-            // await InteractionUtilities.ClickButtonByText("Continue");
-            // await InteractionUtilities.PageTitleShouldBe("Check your answers - Find a Tender - GOV.UK");
+            await InteractionUtilities.ClickLinkByText2("Back");
+            await InteractionUtilities.PageTitleShouldBe(
+                "Missing information - Find a Tender - GOV.UK");
+            await InteractionUtilities.ClickLinkByText2("Back");
+            await InteractionUtilities.PageTitleShouldBe(
+                "Enter instructions on how to find your relevant published statements or documents on modern slavery - Find a Tender - GOV.UK");
+            await InteractionUtilities.ClickLinkByText2("Back");
+            await InteractionUtilities.PageTitleShouldBe(
+                "Enter the link to your relevant documentation or published statements on modern slavery - Find a Tender - GOV.UK");
+            await InteractionUtilities.ClickLinkByText2("Back");
+            await InteractionUtilities.PageTitleShouldBe(
+                "Are your documents or statements related to modern slavery available digitally? - Find a Tender - GOV.UK");
+            await InteractionUtilities.ClickRadioButtonByText("No");
+            await InteractionUtilities.ClickButtonByText("Continue");
+            await InteractionUtilities.PageTitleShouldBe(
+                "Upload your relevant documentation or published statements on modern slavery - Find a Tender - GOV.UK");
+            await InteractionUtilities.UploadFile();
+            //Step below to be updated once change/update is pushed (Should be "Save")
+            await InteractionUtilities.ClickButtonByText("Continue");
+            await InteractionUtilities.PageTitleShouldBe(
+                "Missing information - Find a Tender - GOV.UK");
+            await InteractionUtilities.EnterTextIntoTextArea("test text on missing information modern slavery");
+            //Step below to be updated once change/update is pushed (Should be "Save")
+            await InteractionUtilities.ClickButtonByText("Continue");
+            await InteractionUtilities.PageTitleShouldBe("Check your answers - Find a Tender - GOV.UK");
         }
 
 
