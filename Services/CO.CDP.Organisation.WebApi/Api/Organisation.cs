@@ -272,7 +272,9 @@ public static class EndpointExtensions
          });
 
         app.MapPost("/organisations/relationships/parent-child",
-            [OrganisationAuthorize([AuthenticationChannel.OneLogin], personScopes: [Constants.PersonScope.SupportAdmin])]
+            [OrganisationAuthorize([AuthenticationChannel.OneLogin],
+                organisationPersonScopes: [Constants.OrganisationPersonScope.Admin, Constants.OrganisationPersonScope.Editor],
+                personScopes: [Constants.PersonScope.SupportAdmin])]
         async (CreateParentChildRelationshipRequest request, IUseCase<CreateParentChildRelationshipRequest, ParentChildRelationshipResult> useCase) =>
                 await useCase.Execute(request)
                     .AndThen(result => result.Success
