@@ -363,7 +363,7 @@ public static class EndpointExtensions
 
                     if (parameter.Name == "role")
                     {
-                        parameter.Description = "Restrict results by role - tenderer or buyer";
+                        parameter.Description = "Restrict results to role - tenderer or buyer";
                     }
 
                     if (parameter.Name == "limit")
@@ -1117,7 +1117,7 @@ public static class EndpointExtensions
               operation.Summary = "Get MOU Signatures by Organisation ID.";
               operation.Responses["200"].Description = "MOU Signatures.";
               operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
-              operation.Responses["404"].Description = "Mou Signatures information not found.";
+              operation.Responses["404"].Description = "Mou Signatures not found.";
               operation.Responses["422"].Description = "Unprocessable entity.";
               operation.Responses["500"].Description = "Internal server error.";
               return operation;
@@ -1141,7 +1141,7 @@ public static class EndpointExtensions
               operation.Summary = "Get MOU Signature by Organisation ID and Mou ID.";
               operation.Responses["200"].Description = "MOU Signature.";
               operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
-              operation.Responses["404"].Description = "Mou Signature information not found.";
+              operation.Responses["404"].Description = "Mou Signature not found.";
               operation.Responses["422"].Description = "Unprocessable entity.";
               operation.Responses["500"].Description = "Internal server error.";
               return operation;
@@ -1168,7 +1168,7 @@ public static class EndpointExtensions
             operation.Summary = "Get Latest MOU Signature by Organisation ID and Mou ID.";
             operation.Responses["200"].Description = "Latest MOU Signature.";
             operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
-            operation.Responses["404"].Description = "Latest Mou Signature information not found.";
+            operation.Responses["404"].Description = "Latest Mou Signature not found.";
             operation.Responses["422"].Description = "Unprocessable entity.";
             operation.Responses["500"].Description = "Internal server error.";
             return operation;
@@ -1394,6 +1394,43 @@ public static class EndpointExtensions
                 operation.Summary = "Get all child organisations of a parent organisation.";
                 operation.Responses["200"].Description = "List of child organisations retrieved successfully.";
                 operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
+                operation.Responses["500"].Description = "Internal server error.";
+                return operation;
+            });
+
+        app.MapDelete("/{organisationId}/structure/parent-child/{childOrganisationId}",
+                [OrganisationAuthorize([AuthenticationChannel.OneLogin],
+                    organisationPersonScopes: [Constants.OrganisationPersonScope.Admin, Constants.OrganisationPersonScope.Editor],
+                    personScopes: [Constants.PersonScope.SupportAdmin])]
+                async (Guid organisationId, Guid childOrganisationId, [FromServices] ISupersedeChildOrganisationUseCase useCase) =>
+                {
+                    var request = new SupersedeChildOrganisationRequest
+                    {
+                        ParentOrganisationId = organisationId,
+                        ChildOrganisationId = childOrganisationId
+                    };
+
+                    return await useCase.Execute(request)
+                        .AndThen(result => result.Success
+                            ? Results.NoContent()
+                            : result.NotFound
+                                ? Results.NotFound()
+                                : Results.Problem("Failed to supersede child organisation relationship", statusCode: StatusCodes.Status400BadRequest));
+                })
+            .Produces(StatusCodes.Status204NoContent)
+            .ProducesProblem(StatusCodes.Status400BadRequest)
+            .ProducesProblem(StatusCodes.Status404NotFound)
+            .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
+            .ProducesProblem(StatusCodes.Status500InternalServerError)
+            .WithOpenApi(operation =>
+            {
+                operation.OperationId = "SupersedeChildOrganisation";
+                operation.Description = "Supersedes a parent-child relationship between two organisations.";
+                operation.Summary = "Supersede a parent-child organisation relationship.";
+                operation.Responses["204"].Description = "Parent-child relationship superseded successfully.";
+                operation.Responses["400"].Description = "Bad request or failed to supersede relationship.";
+                operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
+                operation.Responses["404"].Description = "Relationship not found.";
                 operation.Responses["500"].Description = "Internal server error.";
                 return operation;
             });
