@@ -1,6 +1,7 @@
 using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.Organisation.WebApi.UseCase;
 using CO.CDP.OrganisationInformation;
+using CO.CDP.OrganisationInformation.Persistence.Interfaces;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -10,17 +11,29 @@ namespace CO.CDP.Organisation.WebApi.Tests.UseCase;
 public class CreateParentChildRelationshipUseCaseTest
 {
     private readonly Mock<ILogger<CreateParentChildRelationshipUseCase>> _logger = new();
+    private readonly Mock<IOrganisationHierarchyRepository> _repository = new();
 
     private CreateParentChildRelationshipUseCase UseCase => new(
-        _logger.Object);
+        _logger.Object,
+        _repository.Object);
 
     [Fact]
     public async Task Execute_WithValidParameters_ShouldCreateRelationship()
     {
+        var parentId = Guid.NewGuid();
+        var childId = Guid.NewGuid();
+        var relationshipId = Guid.NewGuid();
+
+        _repository
+            .Setup(r => r.CreateRelationshipAsync(
+                It.IsAny<Guid>(),
+                It.IsAny<Guid>(),
+                It.IsAny<List<PartyRole>>()))
+            .ReturnsAsync(relationshipId);
         var request = new CreateParentChildRelationshipRequest
         {
-            ParentId = Guid.NewGuid(),
-            ChildId = Guid.NewGuid(),
+            ParentId = parentId,
+            ChildId = childId,
             Role = PartyRole.Buyer
         };
 
@@ -28,8 +41,13 @@ public class CreateParentChildRelationshipUseCaseTest
 
         result.Should().NotBeNull();
         result.Success.Should().BeTrue();
-        result.RelationshipId.Should().NotBeNull();
-        result.RelationshipId.Should().NotBe(Guid.Empty);
+        result.RelationshipId.Should().Be(relationshipId);
+
+        _repository.Verify(r => r.CreateRelationshipAsync(
+            parentId,
+            childId,
+            It.Is<List<PartyRole>>(roles => roles.Contains(PartyRole.Buyer))),
+            Times.Once);
     }
 
     [Fact]
@@ -125,7 +143,11 @@ public class CreateParentChildRelationshipUseCaseTest
             )
         ).Throws(new Exception("Simulated exception"));
 
-        var useCase = new CreateParentChildRelationshipUseCase(mockLogger.Object);
+        var mockRepository = new Mock<IOrganisationHierarchyRepository>();
+
+        var useCase = new CreateParentChildRelationshipUseCase(
+            mockLogger.Object,
+            mockRepository.Object);
 
         var request = new CreateParentChildRelationshipRequest
         {
