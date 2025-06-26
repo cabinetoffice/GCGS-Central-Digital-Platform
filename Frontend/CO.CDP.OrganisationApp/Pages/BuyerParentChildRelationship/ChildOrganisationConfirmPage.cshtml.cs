@@ -26,12 +26,10 @@ public class ChildOrganisationConfirmPage : PageModel
 
     [BindProperty(SupportsGet = true)] public string? Query { get; set; }
 
-    [BindProperty] public string? OrganisationName { get; set; }
+    public CO.CDP.Organisation.WebApiClient.Organisation? ChildOrganisation { get; private set; }
 
-    public ChildOrganisation? ChildOrganisation { get; set; }
-
-    public Address? OrganisationAddress { get; set; }
-    public ContactPoint? OrganisationContactPoint { get; set; }
+    public Address? OrganisationAddress => ChildOrganisation?.Addresses?.FirstOrDefault();
+    public ContactPoint? OrganisationContactPoint => ChildOrganisation?.ContactPoint;
     public string OrganisationType => "Buyer";
 
     public async Task<IActionResult> OnGetAsync()
@@ -43,23 +41,15 @@ public class ChildOrganisationConfirmPage : PageModel
 
         try
         {
-            var organisation = await _organisationClient.GetOrganisationAsync(ChildId);
+            ChildOrganisation = await _organisationClient.GetOrganisationAsync(ChildId);
 
-            if (organisation == null)
+            if (ChildOrganisation == null)
             {
                 _logger.LogWarning("Organisation not found for ChildId: {ChildId}", ChildId);
                 return RedirectToPage("/Error");
             }
 
-            ChildOrganisation = new ChildOrganisation(
-                organisation.Name,
-                organisation.Id,
-                organisation.Identifier
-            );
-            OrganisationName = organisation.Name;
-
-            OrganisationAddress = organisation.Addresses?.FirstOrDefault();
-            OrganisationContactPoint = organisation.ContactPoint;
+            _logger.LogInformation("Retrieved child organisation: {OrganisationName}", ChildOrganisation.Name);
         }
         catch (Exception ex)
         {
@@ -76,16 +66,25 @@ public class ChildOrganisationConfirmPage : PageModel
     {
         try
         {
-            var request = new CreateParentChildRelationshipRequest
-            (
-                ChildId,
+            if (ChildOrganisation == null)
+            {
+                _logger.LogWarning("Child organisation not found for ID: {ChildId}", ChildId);
+                return RedirectToPage("/Error");
+            }
+
+            _logger.LogInformation("Creating relationship between parent ID: {ParentId} and child ID: {ChildId}",
+                Id, ChildOrganisation.Id);
+
+            var request = new CreateParentChildRelationshipRequest(
                 Id,
+                ChildOrganisation.Id,
                 PartyRole.Buyer
             );
 
             await _organisationClient.CreateParentChildRelationshipAsync(request);
 
-            return RedirectToPage("ChildOrganisationSuccessPage", new { Id, OrganisationName });
+            return RedirectToPage("ChildOrganisationSuccessPage",
+                new { Id, OrganisationName = ChildOrganisation.Name });
         }
         catch (Exception ex)
         {
