@@ -1,5 +1,6 @@
 @page "/organisation/{id:guid}/buyer/hierarchy/remove/child/{childId:guid}"
 @using CO.CDP.Localization
+@using CO.CDP.OrganisationApp.WebApiClients
 @model ChildOrganisationRemovePage
 
 @{
@@ -58,7 +59,9 @@
                         <tr class="govuk-table__row">
                             <th scope="row"
                                 class="govuk-table__header govuk-!-width-one-third">@StaticTextResource.BuyerParentChildRelationship_RemovePage_OrganisationType</th>
-                            <td class="govuk-table__cell govuk-!-width-two-thirds">@(Model.ChildOrganisation?.Type.ToString() ?? string.Empty)</td>
+                            <td class="govuk-table__cell govuk-!-width-two-thirds">
+                                @((bool)Model.ChildOrganisation?.IsBuyer() ? StaticTextResource.OrganisationRegistration_OrganisationType_Buyer : StaticTextResource.OrganisationRegistration_OrganisationType_Supplier)
+                            </td>
                         </tr>
                         <tr class="govuk-table__row">
                             <th scope="row"
@@ -71,18 +74,22 @@
                                     {
                                         @Model.ChildOrganisationAddress.StreetAddress<br/>
                                     }
+
                                     @if (!string.IsNullOrEmpty(Model.ChildOrganisationAddress.Locality))
                                     {
                                         @Model.ChildOrganisationAddress.Locality<br/>
                                     }
+
                                     @if (!string.IsNullOrEmpty(Model.ChildOrganisationAddress.Region))
                                     {
                                         @Model.ChildOrganisationAddress.Region<br/>
                                     }
+
                                     @if (!string.IsNullOrEmpty(Model.ChildOrganisationAddress.PostalCode))
                                     {
                                         @Model.ChildOrganisationAddress.PostalCode<br/>
                                     }
+
                                     @if (!string.IsNullOrEmpty(Model.ChildOrganisationAddress.CountryName))
                                     {
                                         @Model.ChildOrganisationAddress.CountryName
