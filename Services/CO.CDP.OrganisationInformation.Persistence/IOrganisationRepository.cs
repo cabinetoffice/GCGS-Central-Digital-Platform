@@ -15,7 +15,7 @@ public interface IOrganisationRepository : IDisposable
     public Task<Organisation?> FindIncludingPersons(Guid organisationId);
     public Task<Organisation?> FindIncludingTenant(Guid organisationId);
     public Task<Organisation?> FindIncludingTenantByOrgId(int id);
-    public Task<IEnumerable<OrganisationPerson>> FindOrganisationPersons(Guid organisationId);
+    public Task<IEnumerable<OrganisationPerson>> FindOrganisationPersons(Guid organisationId, IEnumerable<string>? scopes = null);
 
     public Task<OrganisationPerson?> FindOrganisationPerson(Guid organisationId, Guid personId);
 

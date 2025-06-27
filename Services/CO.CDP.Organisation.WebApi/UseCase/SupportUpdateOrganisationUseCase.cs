@@ -2,6 +2,7 @@ using CO.CDP.GovUKNotify.Models;
 using CO.CDP.GovUKNotify;
 using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.OrganisationInformation.Persistence;
+using CO.CDP.Authentication;
 
 namespace CO.CDP.Organisation.WebApi.UseCase;
 public class SupportUpdateOrganisationUseCase(
@@ -38,7 +39,8 @@ public class SupportUpdateOrganisationUseCase(
                     organisation.PendingRoles.Clear();
                     organisation.ReviewComment = string.Empty;
                     sendApprovalEmail = true;
-                } else
+                }
+                else
                 {
                     sendRejectionEmail = true;
                 }
@@ -138,9 +140,7 @@ public class SupportUpdateOrganisationUseCase(
 
         var orgLink = new Uri(new Uri(baseAppUrl), $"/organisation/{organisation.Guid}").ToString();
 
-        var orgPersons = await organisationRepository.FindOrganisationPersons(organisation.Guid);
-
-        var adminPersons = orgPersons.Where(p => p.Scopes.Contains("ADMIN")).ToList();
+        var adminPersons = await organisationRepository.FindOrganisationPersons(organisation.Guid, [Constants.OrganisationPersonScope.Admin]);
         if (!adminPersons.Any())
         {
             logger.LogError(new Exception("Unable to send buyer review email"), "Admin person not found");
@@ -148,17 +148,17 @@ public class SupportUpdateOrganisationUseCase(
         }
 
         var emailNotificationRequests = adminPersons.Select(p => new EmailNotificationRequest
-            {
-                EmailAddress = p.Person.Email,
-                TemplateId = templateId,
-                Personalisation = new Dictionary<string, string>
+        {
+            EmailAddress = p.Person.Email,
+            TemplateId = templateId,
+            Personalisation = new Dictionary<string, string>
                 {
                     { "org_name", organisation.Name },
                     { "first_name", p.Person.FirstName },
                     { "last_name", p.Person.LastName },
                     { "org_link", orgLink }
                 }
-            });
+        });
 
         var orgContactEmail = organisation.ContactPoints?.FirstOrDefault()?.Email;
         if (orgContactEmail != null)
