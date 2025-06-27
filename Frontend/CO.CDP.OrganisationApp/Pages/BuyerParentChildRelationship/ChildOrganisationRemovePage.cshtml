@@ -15,6 +15,28 @@
     <main class="govuk-main-wrapper " id="main-content" role="main">
         <div class="govuk-grid-row">
             <div class="govuk-grid-column-two-thirds">
+                @if (Model.HasValidationErrors)
+                {
+                    <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" data-module="govuk-error-summary">
+                        <h2 class="govuk-error-summary__title" id="error-summary-title">
+                            There is a problem
+                        </h2>
+                        <div class="govuk-error-summary__body">
+                            <ul class="govuk-list govuk-error-summary__list">
+                                @foreach (var modelStateEntry in ViewContext.ModelState.Where(x => x.Value.Errors.Any()))
+                                {
+                                    foreach (var error in modelStateEntry.Value.Errors)
+                                    {
+                                        <li>
+                                            <a href="#@modelStateEntry.Key-error">@error.ErrorMessage</a>
+                                        </li>
+                                    }
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                }
+
                 <h1 class="govuk-heading-l">Remove child organisation</h1>
                 <h2 class="govuk-heading-m">Are you sure you want to remove this child organisation?</h2>
 
@@ -56,19 +78,25 @@
                 </div>
 
                 <form method="post">
-                    <div class="govuk-form-group">
-                        <fieldset class="govuk-fieldset" aria-describedby="remove-organisation-hint">
+                    <div class="govuk-form-group @(ViewData.ModelState["RemoveConfirmation"]?.Errors.Count > 0 ? "govuk-form-group--error" : "")">
+                        <fieldset class="govuk-fieldset" aria-describedby="remove-organisation-hint @(ViewData.ModelState["RemoveConfirmation"]?.Errors.Count > 0 ? "RemoveConfirmation-error" : "")">
                             <legend class="govuk-fieldset__legend">
                                 <span class="govuk-visually-hidden">Confirm if you want to remove this child organisation</span>
                             </legend>
                             <div id="remove-organisation-hint" class="govuk-hint">
                                 Select one option
                             </div>
+                            @if (ViewData.ModelState["RemoveConfirmation"]?.Errors.Count > 0)
+                            {
+                                <p id="RemoveConfirmation-error" class="govuk-error-message">
+                                    <span class="govuk-visually-hidden">Error:</span> @ViewData.ModelState["RemoveConfirmation"].Errors.First().ErrorMessage
+                                </p>
+                            }
                             <div class="govuk-radios" data-module="govuk-radios">
                                 <div class="govuk-radios__item">
                                     <input class="govuk-radios__input" id="remove-yes" name="RemoveConfirmation"
                                            type="radio"
-                                           value="true" required>
+                                           value="true">
                                     <label class="govuk-label govuk-radios__label" for="remove-yes">
                                         Yes, remove
                                     </label>

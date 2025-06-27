@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.ComponentModel.DataAnnotations;
+using CO.CDP.Localization;
 
 namespace CO.CDP.OrganisationApp.Pages.BuyerParentChildRelationship;
 
@@ -12,7 +14,10 @@ public class ChildOrganisationRemovePage : PageModel
     public Guid ChildId { get; set; }
 
     [BindProperty]
-    public bool RemoveConfirmation { get; set; }
+    [Required(ErrorMessageResourceName = nameof(StaticTextResource.Global_PleaseSelect), ErrorMessageResourceType = typeof(StaticTextResource))]
+    public bool? RemoveConfirmation { get; set; }
+
+    public bool HasValidationErrors => !ModelState.IsValid;
 
     public void OnGet()
     {
@@ -25,7 +30,7 @@ public class ChildOrganisationRemovePage : PageModel
             return Page();
         }
 
-        if (RemoveConfirmation)
+        if (RemoveConfirmation == true)
         {
             return Delete();
         }
