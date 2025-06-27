@@ -57,11 +57,12 @@ public class OrganisationHierarchy
     /// The date and time when this relationship was created
     /// </summary>
     [Required]
-    public DateTime CreatedOn { get; set; }
+    public DateTimeOffset CreatedOn { get; set; }
+
 
     /// <summary>
     /// The date and time when this relationship was deleted/superseded
     /// Null if the relationship is still active
     /// </summary>
-    public DateTime? SupersededOn { get; set; }
+    public DateTimeOffset? SupersededOn { get; set; }
 }
