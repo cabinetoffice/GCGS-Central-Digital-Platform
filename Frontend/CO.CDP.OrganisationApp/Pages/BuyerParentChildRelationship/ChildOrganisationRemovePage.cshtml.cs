@@ -64,7 +64,7 @@ public class ChildOrganisationRemovePage(
         }
     }
 
-    public IActionResult OnPost()
+    public async Task<IActionResult> OnPost()
     {
         if (!ModelState.IsValid)
         {
@@ -73,17 +73,17 @@ public class ChildOrganisationRemovePage(
 
         if (RemoveConfirmation == true)
         {
-            return Delete();
+            return await Delete();
         }
 
         return RedirectToPage($"/organisation/{Id}");
     }
 
-    private IActionResult Delete()
+    private async Task<IActionResult> Delete()
     {
         try
         {
-            _organisationClient.SupersedeChildOrganisationAsync(Id, ChildId).GetAwaiter().GetResult();
+            await _organisationClient.SupersedeChildOrganisationAsync(Id, ChildId);
             return RedirectToPage($"/organisation/{Id}", new { childRemoved = true });
         }
         catch (OrganisationApiException ex)

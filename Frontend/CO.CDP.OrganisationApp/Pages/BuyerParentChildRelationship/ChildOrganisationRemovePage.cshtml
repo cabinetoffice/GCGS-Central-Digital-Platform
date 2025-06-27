@@ -3,7 +3,7 @@
 @model CO.CDP.OrganisationApp.Pages.BuyerParentChildRelationship.ChildOrganisationRemovePage
 
 @{
-    ViewData["Title"] = "Remove child organisation";
+    ViewData["Title"] = StaticTextResource.BuyerParentChildRelationship_RemovePage_Title;
 }
 
 @section BeforeContent {
@@ -20,7 +20,7 @@
                     <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert"
                          data-module="govuk-error-summary">
                         <h2 class="govuk-error-summary__title" id="error-summary-title">
-                            There is a problem
+                            @StaticTextResource.Global_ErrorSummary_Heading
                         </h2>
                         <div class="govuk-error-summary__body">
                             <ul class="govuk-list govuk-error-summary__list">
@@ -41,8 +41,8 @@
                     </div>
                 }
 
-                <h1 class="govuk-heading-l">Remove child organisation</h1>
-                <h2 class="govuk-heading-m">Are you sure you want to remove this child organisation?</h2>
+                <h1 class="govuk-heading-l">@StaticTextResource.BuyerParentChildRelationship_RemovePage_Heading</h1>
+                <h2 class="govuk-heading-m">@StaticTextResource.BuyerParentChildRelationship_RemovePage_Confirmation</h2>
 
                 <div class="table-header">
                     <p class="govuk-body govuk-!-font-weight-bold">@(Model.ChildOrganisation?.Name ?? string.Empty)</p>
@@ -51,15 +51,18 @@
                     <table class="govuk-table">
                         <tbody class="govuk-table__body">
                         <tr class="govuk-table__row">
-                            <th scope="row" class="govuk-table__header govuk-!-width-one-third">Identifier</th>
+                            <th scope="row"
+                                class="govuk-table__header govuk-!-width-one-third">@StaticTextResource.BuyerParentChildRelationship_RemovePage_Identifier</th>
                             <td class="govuk-table__cell govuk-!-width-two-thirds">@(Model.ChildOrganisation?.Identifier?.Id ?? string.Empty)</td>
                         </tr>
                         <tr class="govuk-table__row">
-                            <th scope="row" class="govuk-table__header govuk-!-width-one-third">Organisation type</th>
+                            <th scope="row"
+                                class="govuk-table__header govuk-!-width-one-third">@StaticTextResource.BuyerParentChildRelationship_RemovePage_OrganisationType</th>
                             <td class="govuk-table__cell govuk-!-width-two-thirds">@(Model.ChildOrganisation?.Type.ToString() ?? string.Empty)</td>
                         </tr>
                         <tr class="govuk-table__row">
-                            <th scope="row" class="govuk-table__header govuk-!-width-one-third">Organisation address
+                            <th scope="row"
+                                class="govuk-table__header govuk-!-width-one-third">@StaticTextResource.BuyerParentChildRelationship_RemovePage_OrganisationAddress
                             </th>
                             <td class="govuk-table__cell govuk-!-width-two-thirds">
                                 @if (Model.ChildOrganisation?.Addresses != null && Model.ChildOrganisation.Addresses.Any())
@@ -77,18 +80,17 @@
                             </td>
                         </tr>
                         <tr class="govuk-table__row">
-                            <th scope="row" class="govuk-table__header govuk-!-width-one-third">
-                                Organisation email
+                            <th scope="row" class="govuk-table__header govuk-!-width-one-third no-border">
+                                @StaticTextResource.BuyerParentChildRelationship_RemovePage_OrganisationEmail
                             </th>
-                            <td class="govuk-table__cell govuk-!-width-two-thirds">@(Model.ChildOrganisation?.ContactPoint?.Email ?? string.Empty)</td>
+                            <td class="govuk-table__cell govuk-!-width-two-thirds no-border">@(Model.ChildOrganisation?.ContactPoint?.Email ?? string.Empty)</td>
                         </tr>
                         </tbody>
                     </table>
                 </div>
 
                 <div class="govuk-inset-text">
-                    Removing your child organisation will mean it does not show on your account profile and will no
-                    longer be digitally linked to your organisation on Find a Tender.
+                    @StaticTextResource.BuyerParentChildRelationship_RemovePage_InfoText
                 </div>
 
                 <form method="post">
@@ -97,16 +99,17 @@
                         <fieldset class="govuk-fieldset"
                                   aria-describedby="remove-organisation-hint @(ViewData.ModelState["RemoveConfirmation"]?.Errors.Count > 0 ? "RemoveConfirmation-error" : "")">
                             <legend class="govuk-fieldset__legend">
-                                <span class="govuk-visually-hidden">Confirm if you want to remove this child organisation</span>
+                                <span
+                                    class="govuk-visually-hidden">@StaticTextResource.BuyerParentChildRelationship_RemovePage_VisuallyHiddenLegend</span>
                             </legend>
                             <div id="remove-organisation-hint" class="govuk-hint">
-                                Select one option
+                                @StaticTextResource.Global_SelectAnOption
                             </div>
                             @if (ViewData.ModelState["RemoveConfirmation"]?.Errors.Count > 0)
                             {
                                 <p id="RemoveConfirmation-error" class="govuk-error-message">
                                     <span
-                                        class="govuk-visually-hidden">Error:</span> @ViewData.ModelState["RemoveConfirmation"]?.Errors.FirstOrDefault()?.ErrorMessage
+                                        class="govuk-visually-hidden">@StaticTextResource.BuyerParentChildRelationship_RemovePage_Error</span> @ViewData.ModelState["RemoveConfirmation"]?.Errors.FirstOrDefault()?.ErrorMessage
                                 </p>
                             }
                             <div class="govuk-radios" data-module="govuk-radios">
@@ -115,7 +118,7 @@
                                            type="radio"
                                            value="true">
                                     <label class="govuk-label govuk-radios__label" for="remove-yes">
-                                        Yes, remove
+                                        @StaticTextResource.BuyerParentChildRelationship_RemovePage_YesRemove
                                     </label>
                                 </div>
                                 <div class="govuk-radios__item">
@@ -124,15 +127,15 @@
                                            type="radio"
                                            value="false">
                                     <label class="govuk-label govuk-radios__label" for="remove-no">
-                                        No, do not remove
+                                        @StaticTextResource.BuyerParentChildRelationship_RemovePage_NoDoNotRemove
                                     </label>
                                 </div>
                             </div>
                         </fieldset>
                     </div>
-
                     <div class="govuk-button-group">
-                        <button type="submit" class="govuk-button">Confirm</button>
+                        <button type="submit"
+                                class="govuk-button">@StaticTextResource.Global_Continue</button>
                     </div>
                 </form>
             </div>

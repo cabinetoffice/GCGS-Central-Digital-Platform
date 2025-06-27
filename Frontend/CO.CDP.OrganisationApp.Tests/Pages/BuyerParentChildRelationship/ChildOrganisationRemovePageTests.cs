@@ -53,23 +53,23 @@ public class ChildOrganisationRemovePageTests
     }
 
     [Fact]
-    public void OnPost_WithInvalidModelState_ShouldReturnPage()
+    public async Task OnPost_WithInvalidModelState_ShouldReturnPage()
     {
         _modelWithoutDependencies.ModelState.AddModelError("RemoveConfirmation", "Required");
 
-        var result = _modelWithoutDependencies.OnPost();
+        var result = await _modelWithoutDependencies.OnPost();
 
         result.Should().BeOfType<PageResult>();
     }
 
     [Fact]
-    public void OnPost_WithRemoveConfirmationTrue_ShouldCallDelete()
+    public async Task OnPost_WithRemoveConfirmationTrue_ShouldCallDelete()
     {
         var id = Guid.NewGuid();
         _modelWithoutDependencies.Id = id;
         _modelWithoutDependencies.RemoveConfirmation = true;
 
-        var result = _modelWithoutDependencies.OnPost();
+        var result = await _modelWithoutDependencies.OnPost();
 
         var redirectResult = result.Should().BeOfType<RedirectToPageResult>().Subject;
         redirectResult.PageName.Should().Be($"/organisation/{id}");
@@ -79,13 +79,13 @@ public class ChildOrganisationRemovePageTests
     }
 
     [Fact]
-    public void OnPost_WithRemoveConfirmationFalse_ShouldRedirectToOrganisationPage()
+    public async Task OnPost_WithRemoveConfirmationFalse_ShouldRedirectToOrganisationPage()
     {
         var id = Guid.NewGuid();
         _modelWithoutDependencies.Id = id;
         _modelWithoutDependencies.RemoveConfirmation = false;
 
-        var result = _modelWithoutDependencies.OnPost();
+        var result = await _modelWithoutDependencies.OnPost();
 
         var redirectResult = result.Should().BeOfType<RedirectToPageResult>().Subject;
         redirectResult.PageName.Should().Be($"/organisation/{id}");
@@ -158,7 +158,7 @@ public class ChildOrganisationRemovePageTests
     }
 
     [Fact]
-    public void Delete_WhenApiCallSucceeds_ShouldRedirectWithChildRemovedFlag()
+    public async Task Delete_WhenApiCallSucceeds_ShouldRedirectWithChildRemovedFlag()
     {
         _mockOrganisationClient
             .Setup(c => c.SupersedeChildOrganisationAsync(_organisationId, _childOrganisationId))
@@ -166,7 +166,7 @@ public class ChildOrganisationRemovePageTests
 
         _modelWithMocks.RemoveConfirmation = true;
 
-        var result = _modelWithMocks.OnPost();
+        var result = await _modelWithMocks.OnPost();
 
         var redirectResult = result.Should().BeOfType<RedirectToPageResult>().Subject;
         redirectResult.PageName.Should().Be($"/organisation/{_organisationId}");
@@ -178,7 +178,7 @@ public class ChildOrganisationRemovePageTests
     }
 
     [Fact]
-    public void Delete_WhenApiCallFails_ShouldRedirectToErrorPage()
+    public async Task Delete_WhenApiCallFails_ShouldRedirectToErrorPage()
     {
         _mockOrganisationClient
             .Setup(c => c.SupersedeChildOrganisationAsync(_organisationId, _childOrganisationId))
@@ -186,7 +186,7 @@ public class ChildOrganisationRemovePageTests
 
         _modelWithMocks.RemoveConfirmation = true;
 
-        var result = _modelWithMocks.OnPost();
+        var result = await _modelWithMocks.OnPost();
 
         var redirectResult = result.Should().BeOfType<RedirectToPageResult>().Subject;
         redirectResult.PageName.Should().Be("/Error");
