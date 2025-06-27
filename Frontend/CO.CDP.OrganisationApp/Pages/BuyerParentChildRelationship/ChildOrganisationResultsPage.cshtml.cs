@@ -97,10 +97,10 @@ public class ChildOrganisationResultsPage(
             return (true, "GB-PPON:" + query.Substring("GB-PPON-".Length));
         }
 
-        var pponRegex = new System.Text.RegularExpressions.Regex("^[A-Z]{4}-\\d{4}-[A-Z]{4}$", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+        var pponRegex = new System.Text.RegularExpressions.Regex("^[A-Z]{4}-\\d{4}-[A-Z0-9]{4}$", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
         if (pponRegex.IsMatch(query))
         {
-            return (true, $"GB-PPON:{query}");
+            return (true, "GB-PPON:" + query);
         }
 
         return (false, null);
