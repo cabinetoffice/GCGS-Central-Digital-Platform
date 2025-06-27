@@ -62,7 +62,10 @@ public class OrganisationOverviewModel(IOrganisationClient organisationClient, I
                     MouSignedOnDate = string.Format(@StaticTextResource.MoU_SignedOn, mouSignatureLatest.SignatureOn.ToString("dd MMMM yyyy"));
                 }
 
-                ChildOrganisations = await organisationClient.GetChildOrganisationsAsync(OrganisationDetails.Id);
+                if (OrganisationDetails.IsBuyer())
+                {
+                    ChildOrganisations = await organisationClient.GetChildOrganisationsAsync(OrganisationDetails.Id);
+                }
             }
 
             if (OrganisationDetails.Details.PendingRoles.Count > 0)

@@ -153,8 +153,149 @@ public class OrganisationOverviewTest
         _model.HasBuyerSignedMou.Should().BeFalse();
     }
 
+    [Fact]
+    public async Task OnGet_WithBuyerOrganisation_ShouldFetchChildOrganisations()
+    {
+        var id = Guid.NewGuid();
+        var childOrgs = new List<OrganisationSummary>
+        {
+            new(
+                id: Guid.NewGuid(),
+                name: "Child Org 1",
+                roles: new List<PartyRole> { PartyRole.Buyer },
+                identifier: "XXXX-4444-AAAA"
+            ),
+            new(
+                id: Guid.NewGuid(),
+                name: "Child Org 2",
+                roles: new List<PartyRole> { PartyRole.Buyer, PartyRole.Supplier },
+                identifier: "YYYY-4444-AAAA"
+            )
+        };
+
+        _model.Id = id;
+
+        var organisation = new CO.CDP.Organisation.WebApiClient.Organisation(
+            additionalIdentifiers: null,
+            addresses: null,
+            contactPoint: null,
+            id: id,
+            identifier: null,
+            name: "Test Org",
+            type: OrganisationType.Organisation,
+            roles: new List<PartyRole> { PartyRole.Buyer },
+            details: new Details(
+                approval: null,
+                buyerInformation: null,
+                pendingRoles: new List<PartyRole>(),
+                publicServiceMissionOrganization: null,
+                scale: null,
+                shelteredWorkshop: null,
+                vcse: null
+            )
+        );
+
+        _organisationClientMock.Setup(o => o.GetOrganisationAsync(id))
+            .ReturnsAsync(organisation);
+
+        _organisationClientMock.Setup(o => o.GetOrganisationBuyerInformationAsync(id))
+            .ReturnsAsync(new BuyerInformation("RegionalAndLocalGovernment", new List<DevolvedRegulation>()));
+
+        _organisationClientMock.Setup(o => o.GetChildOrganisationsAsync(id))
+            .ReturnsAsync(childOrgs);
+
+        await _model.OnGet();
+
+        _organisationClientMock.Verify(c => c.GetOrganisationAsync(id), Times.Once);
+        _organisationClientMock.Verify(c => c.GetChildOrganisationsAsync(id), Times.Once);
+        _model.ChildOrganisations.Should().NotBeNull();
+        _model.ChildOrganisations.Should().BeEquivalentTo(childOrgs);
+        _model.ChildOrganisations.Count.Should().Be(2);
+        _model.ChildOrganisations.All(o => o.Roles.Contains(PartyRole.Buyer)).Should().BeTrue();
+        _model.ChildOrganisations.All(o => o.Identifier.Contains("-4444-")).Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task OnGet_WithBuyerOrganisationAndNoChildren_ShouldHaveEmptyChildOrganisations()
+    {
+        var id = Guid.NewGuid();
+        var childOrgs = new List<OrganisationSummary>();
+
+        _model.Id = id;
+
+        var organisation = new CO.CDP.Organisation.WebApiClient.Organisation(
+            additionalIdentifiers: null,
+            addresses: null,
+            contactPoint: null,
+            id: id,
+            identifier: null,
+            name: "Test Org",
+            type: OrganisationType.Organisation,
+            roles: new List<PartyRole> { PartyRole.Buyer },
+            details: new Details(
+                approval: null,
+                buyerInformation: null,
+                pendingRoles: new List<PartyRole>(),
+                publicServiceMissionOrganization: null,
+                scale: null,
+                shelteredWorkshop: null,
+                vcse: null
+            )
+        );
+
+        _organisationClientMock.Setup(o => o.GetOrganisationAsync(id))
+            .ReturnsAsync(organisation);
+
+        _organisationClientMock.Setup(o => o.GetOrganisationBuyerInformationAsync(id))
+            .ReturnsAsync(new BuyerInformation("RegionalAndLocalGovernment", new List<DevolvedRegulation>()));
+
+        _organisationClientMock.Setup(o => o.GetChildOrganisationsAsync(id))
+            .ReturnsAsync(childOrgs);
+
+        await _model.OnGet();
+
+        _organisationClientMock.Verify(c => c.GetChildOrganisationsAsync(id), Times.Once);
+        _model.ChildOrganisations.Should().NotBeNull();
+        _model.ChildOrganisations.Should().BeEmpty();
+    }
+
+    [Fact]
+    public async Task OnGet_WithNonBuyerOrganisation_ShouldNotFetchChildOrganisations()
+    {
+        var id = Guid.NewGuid();
+
+        _model.Id = id;
+
+        _organisationClientMock.Setup(o => o.GetOrganisationAsync(id))
+            .ReturnsAsync(GivenOrganisationClientModel(id, roles: new List<PartyRole> { PartyRole.Supplier }));
+
+        await _model.OnGet();
+
+        _organisationClientMock.Verify(c => c.GetChildOrganisationsAsync(id), Times.Never);
+        _model.ChildOrganisations.Should().BeNull();
+    }
+
+    [Fact]
+    public async Task OnGet_WithPendingBuyerOrganisation_ShouldNotFetchChildOrganisations()
+    {
+        var id = Guid.NewGuid();
+
+        _model.Id = id;
+
+        _organisationClientMock.Setup(o => o.GetOrganisationAsync(id))
+            .ReturnsAsync(GivenOrganisationClientModel(id, pendingRoles: new List<PartyRole> { PartyRole.Buyer }));
+
+        _organisationClientMock.Setup(o => o.GetOrganisationBuyerInformationAsync(id))
+            .ReturnsAsync(new BuyerInformation("RegionalAndLocalGovernment", new List<DevolvedRegulation>()));
+
+        await _model.OnGet();
+
+        _organisationClientMock.Verify(c => c.GetChildOrganisationsAsync(id), Times.Never);
+        _model.ChildOrganisations.Should().BeNull();
+    }
+
     private static CO.CDP.Organisation.WebApiClient.Organisation GivenOrganisationClientModel(
-        Guid? id, ICollection<PartyRole>? pendingRoles = null, OrganisationType? organisationType = null)
+        Guid? id, ICollection<PartyRole>? pendingRoles = null, OrganisationType? organisationType = null, ICollection<PartyRole>? roles = null)
     {
         return new CO.CDP.Organisation.WebApiClient.Organisation(
             additionalIdentifiers: null,
