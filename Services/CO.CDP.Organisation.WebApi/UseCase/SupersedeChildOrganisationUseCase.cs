@@ -42,16 +42,6 @@ namespace CO.CDP.Organisation.WebApi.UseCase
         {
             try
             {
-                if (request is null)
-                {
-                    _logger.LogWarning("Supersede child organisation request is null");
-                    return new SupersedeChildOrganisationResult
-                    {
-                        Success = false,
-                        NotFound = false
-                    };
-                }
-
                 var children = await _hierarchyRepository.GetChildrenAsync(request.ParentOrganisationId);
                 var relationship = children.FirstOrDefault(r =>
                     r.Child?.Guid == request.ChildOrganisationId &&
