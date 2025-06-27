@@ -1,0 +1,96 @@
+@page "/organisation/{id:guid}/buyer-parent-child-relationship/remove/{childId:guid}"
+@using CO.CDP.Localization
+@model CO.CDP.OrganisationApp.Pages.BuyerParentChildRelationship.ChildOrganisationRemovePage
+
+@{
+    ViewData["Title"] = "Remove child organisation";
+}
+
+@section BeforeContent {
+    <a href="/organisation/@Model.Id"
+       class="govuk-back-link">@StaticTextResource.Global_Back</a>
+}
+
+<div class="govuk-width-container">
+    <main class="govuk-main-wrapper " id="main-content" role="main">
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-two-thirds">
+                <h1 class="govuk-heading-l">Remove child organisation</h1>
+                <h2 class="govuk-heading-m">Are you sure you want to remove this child organisation?</h2>
+
+                <div class="table-header">
+                    <p class="govuk-body govuk-!-font-weight-bold">[Child Organisations One]</p>
+                </div>
+                <div class="table-content">
+                    <table class="govuk-table">
+                        <tbody class="govuk-table__body">
+                        <tr class="govuk-table__row">
+                            <th scope="row" class="govuk-table__header govuk-!-width-one-third">PPON</th>
+                            <td class="govuk-table__cell govuk-!-width-two-thirds">DRFI-1747-YZZC-EW</td>
+                        </tr>
+                        <tr class="govuk-table__row">
+                            <th scope="row" class="govuk-table__header govuk-!-width-one-third">Organisation type</th>
+                            <td class="govuk-table__cell govuk-!-width-two-thirds">Buyer</td>
+                        </tr>
+                        <tr class="govuk-table__row">
+                            <th scope="row" class="govuk-table__header govuk-!-width-one-third">Organisation address
+                            </th>
+                            <td class="govuk-table__cell govuk-!-width-two-thirds">123 Street Name<br>Example Town<br>Example
+                                County<br>AB1
+                                2CD<br>United Kingdom
+                            </td>
+                        </tr>
+                        <tr class="govuk-table__row">
+                            <th scope="row" class="govuk-table__header govuk-!-width-one-third">
+                                Organisation email
+                            </th>
+                            <td class="govuk-table__cell govuk-!-width-two-thirds">info@org.co.uk</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="govuk-inset-text">
+                    Removing your child organisation will mean it does not show on your account profile and will no
+                    longer be digitally linked to your organisation on Find a Tender.
+                </div>
+
+                <form method="post">
+                    <div class="govuk-form-group">
+                        <fieldset class="govuk-fieldset" aria-describedby="remove-organisation-hint">
+                            <legend class="govuk-fieldset__legend">
+                                <span class="govuk-visually-hidden">Confirm if you want to remove this child organisation</span>
+                            </legend>
+                            <div id="remove-organisation-hint" class="govuk-hint">
+                                Select one option
+                            </div>
+                            <div class="govuk-radios" data-module="govuk-radios">
+                                <div class="govuk-radios__item">
+                                    <input class="govuk-radios__input" id="remove-yes" name="RemoveConfirmation"
+                                           type="radio"
+                                           value="true" required>
+                                    <label class="govuk-label govuk-radios__label" for="remove-yes">
+                                        Yes, remove
+                                    </label>
+                                </div>
+                                <div class="govuk-radios__item">
+                                    <input class="govuk-radios__input" id="remove-no"
+                                           name="RemoveConfirmation"
+                                           type="radio"
+                                           value="false">
+                                    <label class="govuk-label govuk-radios__label" for="remove-no">
+                                        No, do not remove
+                                    </label>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+
+                    <div class="govuk-button-group">
+                        <button type="submit" class="govuk-button">Confirm</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+</div>
