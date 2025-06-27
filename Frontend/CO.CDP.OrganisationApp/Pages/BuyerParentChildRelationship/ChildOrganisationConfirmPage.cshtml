@@ -45,17 +45,28 @@
                                     class="govuk-table__header govuk-!-width-one-third">@StaticTextResource.BuyerParentChildRelationship_ConfirmPage_OrganisationAddressLabel
                                 </th>
                                 <td class="govuk-table__cell govuk-!-width-two-thirds">
-                                    @if (Model.ChildOrganisationAddress != null)
+                                    @if (Model.HasChildOrganisationAddress && Model.ChildOrganisationAddress != null)
                                     {
-                                        @Model.ChildOrganisationAddress.StreetAddress<br/>
-                                        @Model.ChildOrganisationAddress.Locality<br/>
+                                        @if (!string.IsNullOrEmpty(Model.ChildOrganisationAddress.StreetAddress))
+                                        {
+                                            @Model.ChildOrganisationAddress.StreetAddress<br/>
+                                        }
+                                        @if (!string.IsNullOrEmpty(Model.ChildOrganisationAddress.Locality))
+                                        {
+                                            @Model.ChildOrganisationAddress.Locality<br/>
+                                        }
                                         @if (!string.IsNullOrEmpty(Model.ChildOrganisationAddress.Region))
                                         {
                                             @Model.ChildOrganisationAddress.Region<br/>
                                         }
-
-                                        @Model.ChildOrganisationAddress.PostalCode<br/>
-                                        @Model.ChildOrganisationAddress.CountryName
+                                        @if (!string.IsNullOrEmpty(Model.ChildOrganisationAddress.PostalCode))
+                                        {
+                                            @Model.ChildOrganisationAddress.PostalCode<br/>
+                                        }
+                                        @if (!string.IsNullOrEmpty(Model.ChildOrganisationAddress.CountryName))
+                                        {
+                                            @Model.ChildOrganisationAddress.CountryName
+                                        }
                                     }
                                     else
                                     {

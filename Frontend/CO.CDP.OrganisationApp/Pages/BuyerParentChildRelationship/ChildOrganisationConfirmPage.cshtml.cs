@@ -31,6 +31,14 @@ public class ChildOrganisationConfirmPage(
     public ContactPoint? ChildOrganisationContactPoint => ChildOrganisation?.ContactPoint;
     public string ChildOrganisationType => "Buyer";
 
+    public bool HasChildOrganisationAddress =>
+        ChildOrganisationAddress != null &&
+        (!string.IsNullOrEmpty(ChildOrganisationAddress.StreetAddress) ||
+         !string.IsNullOrEmpty(ChildOrganisationAddress.Locality) ||
+         !string.IsNullOrEmpty(ChildOrganisationAddress.Region) ||
+         !string.IsNullOrEmpty(ChildOrganisationAddress.PostalCode) ||
+         !string.IsNullOrEmpty(ChildOrganisationAddress.CountryName));
+
     public async Task<IActionResult> OnGetAsync()
     {
         if (ChildId == Guid.Empty)
