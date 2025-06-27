@@ -300,7 +300,7 @@
                                     <td class="govuk-table__cell govuk-!-width-one-half">@childOrg.Name</td>
                                     <td class="govuk-table__cell govuk-!-width-one-third">@childOrg.Identifier</td>
                                     <td class="govuk-table__cell" style="text-align: right;">
-                                        <authorize scope="@OrgScopeRequirement.Admin, @OrgScopeRequirement.Editor">
+                                        <authorize scope="@OrgScopeRequirement.Editor">
                                             <a href="/organisation/@Model.Id/buyer-parent-child-relationship/remove/@childOrg.Id"
                                                class="govuk-link">@StaticTextResource.Global_Remove</a>
                                         </authorize>
@@ -310,7 +310,7 @@
                             </tbody>
                         </table>
                     }
-                    <authorize scope="@OrgScopeRequirement.Admin, @OrgScopeRequirement.Editor">
+                    <authorize scope="@OrgScopeRequirement.Editor">
                         <a href="/organisation/@RouteData.Values["id"]/buyer-parent-child-relationship/search" role="button"
                            draggable="false" class="govuk-button govuk-button--secondary govuk-!-margin-top-3"
                            data-module="govuk-button">
