@@ -1,12 +1,24 @@
+using CO.CDP.Organisation.WebApiClient;
+using CO.CDP.OrganisationApp.Constants;
+using CO.CDP.OrganisationApp.Logging;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
 using CO.CDP.Localization;
+using OrganisationApiException = CO.CDP.Organisation.WebApiClient.ApiException;
 
 namespace CO.CDP.OrganisationApp.Pages.BuyerParentChildRelationship;
 
-public class ChildOrganisationRemovePage : PageModel
+[Authorize(Policy = OrgScopeRequirement.Admin)]
+public class ChildOrganisationRemovePage(
+    IOrganisationClient organisationClient,
+    ILogger<ChildOrganisationRemovePage> logger)
+    : PageModel
 {
+    private readonly IOrganisationClient _organisationClient = organisationClient ?? throw new ArgumentNullException(nameof(organisationClient));
+    private readonly ILogger<ChildOrganisationRemovePage> _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+
     [BindProperty(SupportsGet = true)]
     public Guid Id { get; set; }
 
@@ -19,8 +31,34 @@ public class ChildOrganisationRemovePage : PageModel
 
     public bool HasValidationErrors => !ModelState.IsValid;
 
-    public void OnGet()
+    public CO.CDP.Organisation.WebApiClient.Organisation? ChildOrganisation { get; set; }
+
+    public async Task<IActionResult> OnGet()
     {
+        try
+        {
+            ChildOrganisation = await _organisationClient.GetOrganisationAsync(ChildId);
+
+            if (ChildOrganisation == null)
+            {
+                return Redirect("/page-not-found");
+            }
+
+            var childOrganisations = await _organisationClient.GetChildOrganisationsAsync(Id);
+            if (childOrganisations.Any(o => o.Id == ChildId)) return Page();
+
+            _logger.LogWarning("Child organisation with ID {ChildId} is not a child of organisation with ID {ParentId}",
+                ChildId, Id);
+            return Redirect("/page-not-found");
+
+        }
+        catch (OrganisationApiException ex)
+        {
+            var errorMessage = $"Error occurred while retrieving child organisation details for parent ID: {Id}, child ID: {ChildId}";
+            var cdpException = new CdpExceptionLogging(errorMessage, "CHILD_ORG_LOOKUP_ERROR", ex);
+            _logger.LogError(cdpException, errorMessage);
+            return RedirectToPage("/Error");
+        }
     }
 
     public IActionResult OnPost()
@@ -40,7 +78,18 @@ public class ChildOrganisationRemovePage : PageModel
 
     private IActionResult Delete()
     {
-        // TODO: Implement the logic to remove the child organisation
-        return RedirectToPage($"/organisation/{Id}", new { childRemoved = true });
+        try
+        {
+            _organisationClient.SupersedeChildOrganisationAsync(Id, ChildId).GetAwaiter().GetResult();
+            return RedirectToPage($"/organisation/{Id}", new { childRemoved = true });
+        }
+        catch (OrganisationApiException ex)
+        {
+            var errorMessage = $"Failed to remove child organisation with ID: {ChildId} from parent organisation with ID: {Id}";
+            var cdpException = new CdpExceptionLogging(errorMessage, "CHILD_ORG_REMOVE_ERROR", ex);
+            _logger.LogError(cdpException, errorMessage);
+
+            return RedirectToPage("/Error");
+        }
     }
 }
