@@ -1,8 +1,12 @@
 using CO.CDP.Organisation.WebApiClient;
+using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Pages.Organisation;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.FeatureManagement;
 using Moq;
+using DevolvedRegulation = CO.CDP.Organisation.WebApiClient.DevolvedRegulation;
+using OrganisationType = CO.CDP.Organisation.WebApiClient.OrganisationType;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages;
 
@@ -10,12 +14,16 @@ public class OrganisationOverviewTest
 {
     private readonly Mock<IOrganisationClient> _organisationClientMock;
     private readonly Mock<EntityVerificationClient.IPponClient> _pponClient = new();
+    private readonly Mock<IFeatureManager> _featureManagerMock = new();
     private readonly OrganisationOverviewModel _model;
 
     public OrganisationOverviewTest()
     {
         _organisationClientMock = new Mock<IOrganisationClient>();
-        _model = new OrganisationOverviewModel(_organisationClientMock.Object, _pponClient.Object);
+        _model = new OrganisationOverviewModel(
+            _organisationClientMock.Object,
+            _pponClient.Object,
+            _featureManagerMock.Object);
     }
 
     [Fact]
@@ -184,22 +192,39 @@ public class OrganisationOverviewTest
         _organisationClientMock.Setup(o => o.GetChildOrganisationsAsync(id))
             .ReturnsAsync(childOrgs);
 
+        _featureManagerMock.Setup(fm => fm.IsEnabledAsync(FeatureFlags.BuyerParentChildRelationship))
+            .ReturnsAsync(true);
+
         await _model.OnGet();
 
         _organisationClientMock.Verify(c => c.GetOrganisationAsync(id), Times.Once);
         _organisationClientMock.Verify(c => c.GetChildOrganisationsAsync(id), Times.Once);
         _model.ChildOrganisations.Should().NotBeNull();
         _model.ChildOrganisations.Should().BeEquivalentTo(childOrgs);
-        _model.ChildOrganisations.Count.Should().Be(2);
+        _model.ChildOrganisations!.Count.Should().Be(2);
         _model.ChildOrganisations.All(o => o.Roles.Contains(PartyRole.Buyer)).Should().BeTrue();
         _model.ChildOrganisations.All(o => o.Identifier.Contains("-4444-")).Should().BeTrue();
     }
 
     [Fact]
-    public async Task OnGet_WithBuyerOrganisationAndNoChildren_ShouldHaveEmptyChildOrganisations()
+    public async Task OnGet_WithBuyerOrganisation_ShouldFetchChildOrganisations_WhenFeatureFlagEnabled()
     {
         var id = Guid.NewGuid();
-        var childOrgs = new List<OrganisationSummary>();
+        var childOrgs = new List<OrganisationSummary>
+        {
+            new(
+                id: Guid.NewGuid(),
+                name: "Child Org 1",
+                roles: new List<PartyRole> { PartyRole.Buyer },
+                identifier: "XXXX-4444-AAAA"
+            ),
+            new(
+                id: Guid.NewGuid(),
+                name: "Child Org 2",
+                roles: new List<PartyRole> { PartyRole.Buyer, PartyRole.Supplier },
+                identifier: "YYYY-4444-AAAA"
+            )
+        };
 
         _model.Id = id;
 
@@ -212,26 +237,42 @@ public class OrganisationOverviewTest
         _organisationClientMock.Setup(o => o.GetChildOrganisationsAsync(id))
             .ReturnsAsync(childOrgs);
 
+        _featureManagerMock.Setup(fm => fm.IsEnabledAsync(FeatureFlags.BuyerParentChildRelationship))
+            .ReturnsAsync(true);
+
         await _model.OnGet();
 
+        _organisationClientMock.Verify(c => c.GetOrganisationAsync(id), Times.Once);
         _organisationClientMock.Verify(c => c.GetChildOrganisationsAsync(id), Times.Once);
-        _model.ChildOrganisations.Should().NotBeNull("ChildOrganisations should not be null for buyer organizations");
-        _model.ChildOrganisations.Should().BeEmpty("ChildOrganisations should be empty when there are no child organizations");
+        _featureManagerMock.Verify(fm => fm.IsEnabledAsync(FeatureFlags.BuyerParentChildRelationship), Times.Once);
+        _model.ChildOrganisations.Should().NotBeNull();
+        _model.ChildOrganisations.Should().BeEquivalentTo(childOrgs);
+        _model.ChildOrganisations.Count.Should().Be(2);
+        _model.ChildOrganisations.All(o => o.Roles.Contains(PartyRole.Buyer)).Should().BeTrue();
+        _model.ChildOrganisations.All(o => o.Identifier.Contains("-4444-")).Should().BeTrue();
     }
 
     [Fact]
-    public async Task OnGet_WithNonBuyerOrganisation_ShouldNotFetchChildOrganisations()
+    public async Task OnGet_WithBuyerOrganisation_ShouldNotFetchChildOrganisations_WhenFeatureFlagDisabled()
     {
         var id = Guid.NewGuid();
 
         _model.Id = id;
 
         _organisationClientMock.Setup(o => o.GetOrganisationAsync(id))
-            .ReturnsAsync(GivenOrganisationClientModel(id, roles: new List<PartyRole> { PartyRole.Supplier }));
+            .ReturnsAsync(GivenOrganisationClientModel(id, roles: new List<PartyRole> { PartyRole.Buyer }));
+
+        _organisationClientMock.Setup(o => o.GetOrganisationBuyerInformationAsync(id))
+            .ReturnsAsync(new BuyerInformation("RegionalAndLocalGovernment", new List<DevolvedRegulation>()));
+
+        _featureManagerMock.Setup(fm => fm.IsEnabledAsync(FeatureFlags.BuyerParentChildRelationship))
+            .ReturnsAsync(false);
 
         await _model.OnGet();
 
+        _organisationClientMock.Verify(c => c.GetOrganisationAsync(id), Times.Once);
         _organisationClientMock.Verify(c => c.GetChildOrganisationsAsync(id), Times.Never);
+        _featureManagerMock.Verify(fm => fm.IsEnabledAsync(FeatureFlags.BuyerParentChildRelationship), Times.Once);
         _model.ChildOrganisations.Should().BeNull();
     }
 
