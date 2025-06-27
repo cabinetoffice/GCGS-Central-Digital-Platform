@@ -86,7 +86,7 @@ public class ChildOrganisationRemovePage(
             return await Delete();
         }
 
-        return RedirectToPage($"/organisation/{Id}");
+        return RedirectToPage("/Organisation/OrganisationOverview", new { id = Id });
     }
 
     private async Task<IActionResult> Delete()
@@ -94,7 +94,7 @@ public class ChildOrganisationRemovePage(
         try
         {
             await _organisationClient.SupersedeChildOrganisationAsync(Id, ChildId);
-            return RedirectToPage($"/organisation/{Id}", new { childRemoved = true });
+            return RedirectToPage("/Organisation/OrganisationOverview", new { id = Id, childRemoved = true });
         }
         catch (OrganisationApiException ex)
         {
