@@ -7,7 +7,7 @@ namespace CO.CDP.OrganisationInformation.Persistence;
 /// Database entity representing a hierarchical relationship between two organisations (parent and child)
 /// in the organisation structure.
 /// </summary>
-public class OrganisationHierarchy
+public sealed class OrganisationHierarchy
 {
     /// <summary>
     /// The primary key for this relationship - auto-incrementing integer
@@ -33,7 +33,7 @@ public class OrganisationHierarchy
     /// <summary>
     /// The parent organisation in this relationship
     /// </summary>
-    public virtual Organisation? Parent { get; set; }
+    public Organisation? Parent { get; set; }
 
     /// <summary>
     /// The ID of the child organisation
@@ -45,7 +45,7 @@ public class OrganisationHierarchy
     /// <summary>
     /// The child organisation in this relationship
     /// </summary>
-    public virtual Organisation? Child { get; set; }
+    public Organisation? Child { get; set; }
 
     /// <summary>
     /// The roles associated with this relationship, stored as a serialized collection
