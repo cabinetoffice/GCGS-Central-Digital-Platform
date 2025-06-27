@@ -13,7 +13,6 @@ public class ExclusionsSupportingDocumentsYesNoPage
 
     // ✅ Page Locators
     private readonly string PageTitleSelector = "h1.govuk-fieldset__heading";
-    private readonly string ContinueButtonSelector = "button.govuk-button[type='submit']";
     private readonly string BackToSupplierInfoSelector = "a.govuk-back-link";
     public ExclusionsSupportingDocumentsYesNoPage(IPage page)
     {
@@ -45,7 +44,7 @@ public class ExclusionsSupportingDocumentsYesNoPage
 
     public async Task ClickContinue()
     {
-        await _page.ClickAsync(ContinueButtonSelector);
+        await _page.GetByRole(AriaRole.Button, new() { Name = "Continue" }).ClickAsync();
     }
 
     public async Task ClickBackToSupplierInformation()

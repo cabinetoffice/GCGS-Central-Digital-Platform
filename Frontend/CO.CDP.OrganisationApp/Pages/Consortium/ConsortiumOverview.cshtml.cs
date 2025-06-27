@@ -38,32 +38,12 @@ public class ConsortiumOverviewModel(
             {
                 Parties = await organisationClient.GetOrganisationPartiesAsync(Id);
             }
-            catch (CO.CDP.Organisation.WebApiClient.ApiException ex) when (ex.StatusCode == 404)
+            catch (OrganisationWebApiClient.ApiException ex) when (ex.StatusCode == 404)
             {
                 Parties = null;
             }
 
-            var sc = tempDataService.Get<ConsortiumSharecode>(ConsortiumSharecode.TempDataKey);
-
-            if (sc != null)
-            {
-                if (!sc.HasBeenUpdated)
-                {
-                    flashMessageService.SetFlashMessage
-                    (
-                        FlashMessageType.Success,
-                        heading: string.Format(StaticTextResource.Consortium_ConsortiumOverview_Success_Heading, sc.SharecodeOrganisationName)
-                    );
-                }
-                else
-                {
-                    flashMessageService.SetFlashMessage
-                    (
-                        FlashMessageType.Success,
-                        heading: string.Format(StaticTextResource.Consortium_ConsortiumOverview_Updated_Success_Heading, sc.SharecodeOrganisationName)
-                    );
-                }
-            }
+            HandleFlashMessages(flashMessageService, tempDataService);
 
             var forms = await formsClient.GetFormSectionsAsync(new Guid(FormsEngine.OrganisationConsortiumFormId), Id);
 
@@ -72,10 +52,46 @@ public class ConsortiumOverviewModel(
             return Page();
         }
         catch (Exception ex)
-            when ((ex is CO.CDP.Organisation.WebApiClient.ApiException oex && oex.StatusCode == 404)
+            when ((ex is OrganisationWebApiClient.ApiException oex && oex.StatusCode == 404)
                 || (ex is CDP.Forms.WebApiClient.ApiException wex && wex.StatusCode == 404))
         {
             return Redirect("/page-not-found");
+        }
+    }
+
+    private static void HandleFlashMessages(IFlashMessageService flashMessageService, ITempDataService tempDataService)
+    {
+        var sc = tempDataService.Get<ConsortiumSharecode>(ConsortiumSharecode.TempDataKey);
+
+        if (sc != null)
+        {
+            if (!sc.HasBeenUpdated)
+            {
+                flashMessageService.SetFlashMessage
+                (
+                    FlashMessageType.Success,
+                    heading: string.Format(StaticTextResource.Consortium_ConsortiumOverview_Success_Heading, sc.SharecodeOrganisationName)
+                );
+            }
+            else
+            {
+                flashMessageService.SetFlashMessage
+                (
+                    FlashMessageType.Success,
+                    heading: string.Format(StaticTextResource.Consortium_ConsortiumOverview_Updated_Success_Heading, sc.SharecodeOrganisationName)
+                );
+            }
+        }
+
+        var removedPartyName = tempDataService.Get<string>(ConsortiumRemoveOrganisationModel.TempDataKey);
+
+        if (removedPartyName != null)
+        {
+            flashMessageService.SetFlashMessage
+                (
+                    FlashMessageType.Success,
+                    heading: string.Format(StaticTextResource.Consortium_RemoveSupplier_SuccessMessage, removedPartyName)
+                );
         }
     }
 

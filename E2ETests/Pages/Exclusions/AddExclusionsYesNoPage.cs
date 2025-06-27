@@ -12,10 +12,9 @@ public class AddExclusionsYesNoPage
 
     // ✅ Page Locators
     private readonly string PageTitleSelector = "h1.govuk-fieldset__heading";
-    private readonly string ContinueButtonSelector = "button.govuk-button[type='submit']";
     private readonly string BackToSupplierInfoSelector = "a.govuk-back-link";
-    private readonly string YesRadioSelector = "input[name='Confirm'][value='true']";
-    private readonly string NoRadioSelector = "input[name='Confirm'][value='false']";
+    private readonly string YesRadioSelector = "input#Confirm";
+    private readonly string NoRadioSelector = "input#Confirm-1";
     public AddExclusionsYesNoPage(IPage page)
     {
         _page = page;
@@ -46,8 +45,7 @@ public class AddExclusionsYesNoPage
 
     public async Task ClickContinue()
     {
-        await _page.ClickAsync(ContinueButtonSelector);
-        await _page.ClickAsync(ContinueButtonSelector);
+        await _page.GetByRole(AriaRole.Button, new() { Name = "Continue" }).ClickAsync();
     }
 
     public async Task ClickBackToSupplierInformation()
@@ -63,7 +61,6 @@ public class AddExclusionsYesNoPage
 
     public async Task CompletePage(bool isYes)
     {
-        await _page.WaitForTimeoutAsync(2000);
         await SelectOption(isYes);
         await ClickContinue();
     }

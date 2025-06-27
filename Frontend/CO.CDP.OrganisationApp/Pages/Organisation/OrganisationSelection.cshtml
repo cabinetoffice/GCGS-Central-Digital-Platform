@@ -44,15 +44,15 @@
 
         <hr class="govuk-section-break govuk-section-break--invisible govuk-section-break--xl">
 
-        <section>
-            @if (Model.UserOrganisations.Any())
-            {
+        @if (Model.UserOrganisations.Any())
+        {
+            <section>
                 <table class="govuk-table">
                     <caption class="govuk-table__caption govuk-table__caption--m">@StaticTextResource.Organisation_MyOrganisations</caption>
                     <thead class="govuk-table__head">
                         <tr class="govuk-table__row">
                             <th scope="col" class="govuk-table__header">@StaticTextResource.Organisation_OrganisationName</th>
-                            <th scope="col" class="govuk-table__header"><span class="govuk-visually-hidden">@StaticTextResource.Organisation_ViewOrganisation</span></th>
+                            <th scope="col" class="govuk-table__header">@StaticTextResource.Organisation_OrganisationAction</th>
                         </tr>
                     </thead>
                     <tbody class="govuk-table__body">
@@ -62,7 +62,7 @@
                                 if (org.Type != Tenant.WebApiClient.OrganisationType.InformalConsortium)
                                 {
                                     <tr class="govuk-table__row">
-                                        <th scope="row" class="govuk-table__header">
+                                        <td class="govuk-table__cell">
                                             @org.Name
                                             @{
                                                 if (review != null)
@@ -73,11 +73,11 @@
                                                     }
                                                     else if (review.Status == ReviewStatus.Pending)
                                                     {
-                                                        <strong class="govuk-tag govuk-tag--blue">@StaticTextResource.Organisation_PendingApproval</strong>
+                                                        <strong class="govuk-tag govuk-tag--light-blue govuk-!-font-size-16">@StaticTextResource.Organisation_PendingApproval</strong>
                                                     }
                                                 }
                                             }
-                                        </th>
+                                        </td>
 
                                         <td class="govuk-table__cell">
                                             <a class="govuk-link govuk-link--no-visited-state" href="/organisation/@org.Id">
@@ -90,13 +90,17 @@
                         }
                     </tbody>
                 </table>
+            </section>
 
-                <a asp-page="/Registration/OrganisationType" class="govuk-body govuk-link govuk-link--no-visited-state">
+            <div class="govuk-body">
+                <a class="govuk-button govuk-button--secondary" asp-page="/Registration/OrganisationType">
                     @StaticTextResource.Organisation_AddAnotherOrganisation
                 </a>
-            }
-            else
-            {
+            </div>
+        }
+        else
+        {
+            <section>
                 <h2 class="govuk-heading-m">@StaticTextResource.Organisation_MyOrganisations</h2>
 
                 <p class="govuk-body">@StaticTextResource.Organisation_RegisterOrganisation</p>
@@ -107,7 +111,7 @@
                 </ul>
 
                 <a asp-page="/Registration/OrganisationType" class="govuk-button" role="button" data-module="govuk-button">
-                @StaticTextResource.Organisation_RegisterAnOrganisation
+                    @StaticTextResource.Organisation_RegisterAnOrganisation
                 </a>
 
                 <h3 class="govuk-heading-s">@StaticTextResource.Organisation_AfterYouveRegistered</h3>
@@ -117,48 +121,76 @@
                     <li>@StaticTextResource.Organisation_RegisterAsOtherRole</li>
                     <li>@StaticTextResource.Organisation_AddMoreOrganisations</li>
                 </ul>
-            }
-        </section>
+            </section>
+        }
 
         <hr class="govuk-section-break govuk-section-break--invisible govuk-section-break--l">
 
         <feature name="@FeatureFlags.Consortium">
-            <section>
-                <table class="govuk-table">
-                    <caption class="govuk-table__caption govuk-table__caption--m">@string.Format(StaticTextResource.Organisation_MyConsortium, consortiumCount)</caption>
-                    <thead class="govuk-table__head">
-                        <tr class="govuk-table__row">
-                            <th scope="col" class="govuk-table__header">@StaticTextResource.Organisation_ConsortiumName</th>
-                            <th scope="col" class="govuk-table__header"><span class="govuk-visually-hidden">@StaticTextResource.Organisation_ViewConsortium</span></th>
-                        </tr>
-                    </thead>
-                    <tbody class="govuk-table__body">
-                        @{
-                            foreach (var (org, review) in Model.UserOrganisations)
-                            {
-                                if (org.Type == Tenant.WebApiClient.OrganisationType.InformalConsortium)
-                                {
-                                    <tr class="govuk-table__row">
-                                        <th scope="row" class="govuk-table__header">
-                                            @org.Name
-                                        </th>
+            @{
+                if (consortiumCount == 0)
+                {
+                    <details class="govuk-details">
+                        <summary class="govuk-details__summary">
+                            <span class="govuk-details__summary-text">
+                                @StaticTextResource.Organisation_CreateConsortiumHowToSummaryHead
+                            </span>
+                        </summary>
+                        <div class="govuk-details__text">
+                            @Html.Raw(StaticTextResource.Organisation_CreateConsortiumHowToSummaryDetail)
 
-                                        <td class="govuk-table__cell">
-                                            <a class="govuk-link govuk-link--no-visited-state" href="/consortium/@org.Id/overview">
-                                                @StaticTextResource.Global_View<span class="govuk-visually-hidden"> @org.Name</span>
-                                            </a>
-                                        </td>
-                                    </tr>
+                            <div class="govuk-body">
+                                <a class="govuk-button govuk-!-margin-bottom-0" href="/consortium/start">
+                                    @StaticTextResource.Organisation_CreateNewConsortium
+                                </a>
+                            </div>
+                        </div>
+                    </details>
+                }
+                else
+                {
+                    <section id="myOrgs">
+                        <h2 class="govuk-heading-m">
+                            @StaticTextResource.Organisation_MyConsortium
+                        </h2>
+
+                        <table class="govuk-table">
+                            <thead class="govuk-table__head">
+                                <tr class="govuk-table__row">
+                                    <th scope="col" class="govuk-table__header">@StaticTextResource.Organisation_ConsortiumName</th>
+                                    <th scope="col" class="govuk-table__header">@StaticTextResource.Organisation_OrganisationAction</th>
+                                </tr>
+                            </thead>
+                            <tbody class="govuk-table__body">
+                                @{
+                                    foreach (var (org, review) in Model.UserOrganisations)
+                                    {
+                                        if (org.Type == Tenant.WebApiClient.OrganisationType.InformalConsortium)
+                                        {
+                                            <tr class="govuk-table__row">
+                                                <td class="govuk-table__cell">
+                                                    @org.Name
+                                                </td>
+                                                <td class="govuk-table__cell">
+                                                    <a class="govuk-link govuk-link--no-visited-state" href="/consortium/@org.Id/overview">
+                                                        @StaticTextResource.Global_View<span class="govuk-visually-hidden"> @org.Name</span>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        }
+                                    }
                                 }
-                            }
-                        }
-                    </tbody>
-                </table>
+                            </tbody>
+                        </table>
 
-                <div class="govuk-body">
-                    <a class="govuk-button govuk-button--secondary" href="/consortium/start">@StaticTextResource.Organisation_CreateNewConsortium</a>
-                </div>
-            </section>
+                    </section>
+                    <div class="govuk-body">
+                        <a class="govuk-button govuk-button--secondary" href="/consortium/start">
+                            @StaticTextResource.Organisation_CreateNewConsortium
+                        </a>
+                    </div>
+                }
+            }
         </feature>
     </div>
 </div>

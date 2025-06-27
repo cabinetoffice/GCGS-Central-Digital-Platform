@@ -527,9 +527,6 @@
   <data name="OrganisationSchemeType_VAT" xml:space="preserve">
     <value>Rhif TAW</value>
   </data>
-  <data name="Organisation_AddAnotherOrganisation" xml:space="preserve">
-    <value>Ychwanegu sefydliad arall</value>
-  </data>
   <data name="Organisation_AddMoreOrganisations" xml:space="preserve">
     <value>ychwanegu mwy o sefydliadau</value>
   </data>
@@ -1983,9 +1980,6 @@
   <data name="Organisation_CreateApiKey" xml:space="preserve">
     <value>Crëwch allwedd API a'i rannu â'r e-Anfonwr rydych yn ei ddefnyddio i gyhoeddi hysbysiadau caffael.</value>
   </data>
-  <data name="Organisation_CreateNewConsortium" xml:space="preserve">
-    <value>Creu consortiwm newydd</value>
-  </data>
   <data name="Organisation_EnterOrganisationName_Buyer_Hint" xml:space="preserve">
     <value>Os ydych yn adran, asiantaeth neu gorff cyhoeddus ar restr sefydliadau GOV.UK &lt;a class="govuk-link" target="_blank" href="https://www.gov.uk/government/organisations"&gt; (bydd yn agor mewn tab newydd)&lt;/a&gt;, defnyddiwch yr union enw a ddangosir. Fel arall, defnyddiwch eich enw swyddogol llawn. Er enghraifft, Cyllid a Thollau EF nid CThEF. </value>
   </data>
@@ -2000,9 +1994,6 @@
   </data>
   <data name="Organisation_MyAccount" xml:space="preserve">
     <value>Fy nghyfrif</value>
-  </data>
-  <data name="Organisation_MyConsortium" xml:space="preserve">
-    <value>Consortia ar gyfer cynigion ar y cyd ({0})</value>
   </data>
   <data name="Organisation_MyOrganisations" xml:space="preserve">
     <value>Fy sefydliadau</value>
