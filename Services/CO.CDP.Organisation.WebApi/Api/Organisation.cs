@@ -1348,16 +1348,16 @@ public static class EndpointExtensions
         return app;
     }
 
-    public static RouteGroupBuilder UseOrganisationStructureEndpoints(this RouteGroupBuilder app)
+    public static RouteGroupBuilder UseOrganisationHierarchyEndpoints(this RouteGroupBuilder app)
     {
-        app.MapPost("/{organisationId}/structure/parent-child",
+        app.MapPost("/{organisationId}/hierarchy/child",
                 [OrganisationAuthorize([AuthenticationChannel.OneLogin],
                     organisationPersonScopes: [Constants.OrganisationPersonScope.Admin, Constants.OrganisationPersonScope.Editor],
                     personScopes: [Constants.PersonScope.SupportAdmin])]
                 async (Guid organisationId, CreateParentChildRelationshipRequest request, IUseCase<CreateParentChildRelationshipRequest, CreateParentChildRelationshipResult> useCase) =>
                     await useCase.Execute(request)
                         .AndThen(result => result.Success
-                            ? Results.Created($"/{organisationId}/structure/parent-child/{result.RelationshipId}", result)
+                            ? Results.Created($"/{organisationId}/hierarchy/child/{result.RelationshipId}", result)
                             : Results.Problem("Failed to create parent-child relationship", statusCode: StatusCodes.Status400BadRequest)))
             .Produces<CreateParentChildRelationshipResult>(StatusCodes.Status201Created, "application/json")
             .ProducesProblem(StatusCodes.Status400BadRequest)
@@ -1375,7 +1375,7 @@ public static class EndpointExtensions
                 return operation;
             });
 
-        app.MapGet("/{organisationId}/structure/children",
+        app.MapGet("/{organisationId}/hierarchy/children",
                 [OrganisationAuthorize([AuthenticationChannel.OneLogin, AuthenticationChannel.ServiceKey],
                     organisationPersonScopes: [Constants.OrganisationPersonScope.Admin, Constants.OrganisationPersonScope.Editor, Constants.OrganisationPersonScope.Viewer],
                     OrganisationIdLocation.Path)]
@@ -1398,7 +1398,7 @@ public static class EndpointExtensions
                 return operation;
             });
 
-        app.MapDelete("/{organisationId}/structure/parent-child/{childOrganisationId}",
+        app.MapDelete("/{organisationId}/hierarchy/child/{childOrganisationId}",
                 [OrganisationAuthorize([AuthenticationChannel.OneLogin],
                     organisationPersonScopes: [Constants.OrganisationPersonScope.Admin, Constants.OrganisationPersonScope.Editor],
                     personScopes: [Constants.PersonScope.SupportAdmin])]

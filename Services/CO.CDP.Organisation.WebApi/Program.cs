@@ -202,8 +202,8 @@ app.MapGroup("/organisations")
     .WithTags("Organisation - MOUs");
 
 app.MapGroup("/organisations")
-    .UseOrganisationStructureEndpoints()
-    .WithTags("Organisation - Structure");
+    .UseOrganisationHierarchyEndpoints()
+    .WithTags("Organisation - Hierarchy");
 
 app.MapGroup("/mou")
     .UseMouEndpoints()
