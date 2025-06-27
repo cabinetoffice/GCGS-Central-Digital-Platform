@@ -1022,4 +1022,45 @@ PPN 014: Cyber Essentials scheme (opens in a new tab).&lt;/a&gt;&lt;/p&gt;
   <data name="ShareMyInformation_04_SummaryTitle" xml:space="preserve">
     <value>Declared by</value>
   </data>
+  <!-- UI Custom Changes -->
+  <!-- Cyber Essentials-->
+  <data name="CyberEssentials_YesRequirements" xml:space="preserve">
+    <value>Yes, I meet the requirements or will meet them by contract award</value>
+  </data>
+  <data name="CyberEssentials_NoRequirements" xml:space="preserve">
+    <value>No, I do not meet the requirements</value>
+  </data>
+  <data name="CyberEssentials_RequirementsHint" xml:space="preserve">
+    <value>&lt;div class="govuk-hint"&gt;You must be ready to provide evidence, if required, before the contract is awarded.&lt;/div&gt;</value>
+  </data>
+  <data name="CyberEssentials_03_Answer_MeetRequirements" xml:space="preserve">
+    <value>I currently meet the requirements</value>
+  </data>
+  <data name="CyberEssentials_03_Answer_WillMeetByAward" xml:space="preserve">
+    <value>I do not currently meet the requirements, but will meet them by contract award</value>
+  </data>
+  <!-- Data Protection-->
+  <data name="DataProtection_YesRequirements" xml:space="preserve">
+    <value>Yes, I have the resources or will have the resources by contract award</value>
+  </data>
+  <data name="DataProtection_NoRequirements" xml:space="preserve">
+    <value>No, I do not have the resources</value>
+  </data>
+  <data name="DataProtection_03_Answer_HaveResources" xml:space="preserve">
+    <value>I currently have the resources</value>
+  </data>
+  <data name="DataProtection_03_Answer_WillMeetByAward" xml:space="preserve">
+    <value>I do not have the resources, but will have them by contract award</value>
+  </data>
+  <!-- Start Button-->
+  <data name="Global_StartButton_Label" xml:space="preserve">
+    <value>Start</value>
+  </data>
+  <!-- Date Hint-->
+  <data name="DateInput_ExampleHint" xml:space="preserve">
+    <value>&lt;div class="govuk-hint"&gt;For example, 27 3 2007&lt;/div&gt;</value>
+  </data>
+  <data name="WebAddress_ExampleHint" xml:space="preserve">
+    <value>&lt;div class="govuk-hint"&gt;Website address &lt;/div&gt;</value>
+  </data>
 </root>
