@@ -16,14 +16,30 @@
         <form method="post">
             <h1 class="govuk-heading-l">@StaticTextResource.BuyerParentChildRelationship_ResultsPage_Title</h1>
 
-            @if (Model.Results.Count == 1)
+            @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+            {
+                <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" data-module="govuk-error-summary">
+                    <h2 class="govuk-error-summary__title" id="error-summary-title">
+                        @StaticTextResource.Global_ErrorSummary_Heading
+                    </h2>
+                    <div class="govuk-error-summary__body">
+                        <p>@Model.ErrorMessage</p>
+                    </div>
+                </div>
+                <p class="govuk-body">
+                    <a href="@Url.Page("ChildOrganisationSearchPage", new { Model.Id })">@StaticTextResource.BuyerParentChildRelationship_ResultsPage_TrySearchAgain</a>
+                    <a href="/organisation/@Model.Id">@StaticTextResource.BuyerParentChildRelationship_ResultsPage_ReturnToDetails</a>
+                </p>
+            }
+            else if (Model.Results.Count == 1)
             {
                 <p class="govuk-body">@string.Format(StaticTextResource.BuyerParentChildRelationship_ResultsPage_TextSingle, Model.Results.Count, Model.Query)</p>
             }
-            else
+            else if (Model.Results.Count > 1)
             {
                 <p class="govuk-body">@string.Format(StaticTextResource.BuyerParentChildRelationship_ResultsPage_TextPlural, Model.Results.Count, Model.Query)</p>
             }
+
             @if (Model.Results.Count > 0)
             {
                 <div class="govuk-form-group">

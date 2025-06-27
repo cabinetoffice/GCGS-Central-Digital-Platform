@@ -3,6 +3,7 @@ using CO.CDP.OrganisationApp.Logging;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using CO.CDP.OrganisationApp.Models;
+using CO.CDP.Localization;
 
 namespace CO.CDP.OrganisationApp.Pages.BuyerParentChildRelationship;
 
@@ -28,6 +29,8 @@ public class ChildOrganisationResultsPage(
     [BindProperty]
     public Guid SelectedChildId { get; set; }
 
+    public string? ErrorMessage { get; set; }
+
     public async Task<IActionResult> OnGetAsync()
     {
         if (!string.IsNullOrWhiteSpace(Query))
@@ -48,6 +51,10 @@ public class ChildOrganisationResultsPage(
                             MapOrganisationLookupResultToChildOrganisation(organisation)
                         };
                     }
+                    else
+                    {
+                        ErrorMessage = StaticTextResource.BuyerParentChildRelationship_ResultsPage_NoResults;
+                    }
                 }
                 else
                 {
@@ -62,6 +69,10 @@ public class ChildOrganisationResultsPage(
                         Results = searchResults
                             .Select(MapOrganisationSearchResultToChildOrganisation)
                             .ToList();
+                    }
+                    else
+                    {
+                        ErrorMessage = StaticTextResource.BuyerParentChildRelationship_ResultsPage_NoResults;
                     }
                 }
             }

@@ -72,8 +72,10 @@ public class ChildOrganisationRemovePageTests
         var result = await _modelWithoutDependencies.OnPost();
 
         var redirectResult = result.Should().BeOfType<RedirectToPageResult>().Subject;
-        redirectResult.PageName.Should().Be($"/organisation/{id}");
+        redirectResult.PageName.Should().Be("/Organisation/OrganisationOverview");
         redirectResult.RouteValues.Should().NotBeNull();
+        redirectResult.RouteValues!.Should().ContainKey("id");
+        redirectResult.RouteValues!["id"].Should().Be(id);
         redirectResult.RouteValues!.Should().ContainKey("childRemoved");
         redirectResult.RouteValues!["childRemoved"].Should().Be(true);
     }
@@ -88,8 +90,10 @@ public class ChildOrganisationRemovePageTests
         var result = await _modelWithoutDependencies.OnPost();
 
         var redirectResult = result.Should().BeOfType<RedirectToPageResult>().Subject;
-        redirectResult.PageName.Should().Be($"/organisation/{id}");
-        redirectResult.RouteValues.Should().BeNull();
+        redirectResult.PageName.Should().Be("/Organisation/OrganisationOverview");
+        redirectResult.RouteValues.Should().NotBeNull();
+        redirectResult.RouteValues!.Should().ContainKey("id");
+        redirectResult.RouteValues!["id"].Should().Be(id);
     }
 
     [Fact]
@@ -169,8 +173,11 @@ public class ChildOrganisationRemovePageTests
         var result = await _modelWithMocks.OnPost();
 
         var redirectResult = result.Should().BeOfType<RedirectToPageResult>().Subject;
-        redirectResult.PageName.Should().Be($"/organisation/{_organisationId}");
-        redirectResult.RouteValues.Should().ContainKey("childRemoved");
+        redirectResult.PageName.Should().Be("/Organisation/OrganisationOverview");
+        redirectResult.RouteValues.Should().NotBeNull();
+        redirectResult.RouteValues!.Should().ContainKey("id");
+        redirectResult.RouteValues!["id"].Should().Be(_organisationId);
+        redirectResult.RouteValues!.Should().ContainKey("childRemoved");
         redirectResult.RouteValues!["childRemoved"].Should().Be(true);
 
         _mockOrganisationClient.Verify(c => c.SupersedeChildOrganisationAsync(_organisationId, _childOrganisationId),
