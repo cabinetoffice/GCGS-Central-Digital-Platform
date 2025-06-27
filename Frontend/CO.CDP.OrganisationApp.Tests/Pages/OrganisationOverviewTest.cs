@@ -215,8 +215,8 @@ public class OrganisationOverviewTest
         await _model.OnGet();
 
         _organisationClientMock.Verify(c => c.GetChildOrganisationsAsync(id), Times.Once);
-        _model.ChildOrganisations.Should().NotBeNull();
-        _model.ChildOrganisations.Should().BeEmpty();
+        _model.ChildOrganisations.Should().NotBeNull("ChildOrganisations should not be null for buyer organizations");
+        _model.ChildOrganisations.Should().BeEmpty("ChildOrganisations should be empty when there are no child organizations");
     }
 
     [Fact]
