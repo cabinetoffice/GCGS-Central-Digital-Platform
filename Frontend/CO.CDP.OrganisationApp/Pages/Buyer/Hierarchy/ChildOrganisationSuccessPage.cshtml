@@ -1,4 +1,4 @@
-@page "/organisation/{id}/buyer-parent-child-relationship/success"
+@page "/organisation/{id}/buyer/hierarchy/add/child/success"
 @using CO.CDP.Localization
 @model ChildOrganisationSuccessPage
 
@@ -17,7 +17,7 @@
         <p class="govuk-body">@StaticTextResource.BuyerParentChildRelationship_SuccessPage_OptionsIntro</p>
         <ul class="govuk-list govuk-list--bullet">
             <li><a class="govuk-link"
-                   href="/organisation/@Model.Id/buyer-parent-child-relationship/search">@StaticTextResource.BuyerParentChildRelationship_SuccessPage_AddAnother</a>
+                   href="/organisation/@Model.Id/buyer/hierarchy/add/child/search">@StaticTextResource.BuyerParentChildRelationship_SuccessPage_AddAnother</a>
             </li>
             <li><a class="govuk-link"
                    href="/organisation/@Model.Id">@StaticTextResource.BuyerParentChildRelationship_SuccessPage_ReturnToDetails</a>
