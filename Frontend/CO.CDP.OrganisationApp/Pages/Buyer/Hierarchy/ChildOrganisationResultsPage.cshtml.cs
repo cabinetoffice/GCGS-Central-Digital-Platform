@@ -1,11 +1,11 @@
+using CO.CDP.Localization;
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Logging;
+using CO.CDP.OrganisationApp.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using CO.CDP.OrganisationApp.Models;
-using CO.CDP.Localization;
 
-namespace CO.CDP.OrganisationApp.Pages.BuyerParentChildRelationship;
+namespace CO.CDP.OrganisationApp.Pages.Buyer.Hierarchy;
 
 public class ChildOrganisationResultsPage(
     IOrganisationClient organisationClient,

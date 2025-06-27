@@ -3,7 +3,7 @@ using CO.CDP.OrganisationApp.Logging;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace CO.CDP.OrganisationApp.Pages.BuyerParentChildRelationship;
+namespace CO.CDP.OrganisationApp.Pages.Buyer.Hierarchy;
 
 public class ChildOrganisationSuccessPage(
     IOrganisationClient organisationClient,

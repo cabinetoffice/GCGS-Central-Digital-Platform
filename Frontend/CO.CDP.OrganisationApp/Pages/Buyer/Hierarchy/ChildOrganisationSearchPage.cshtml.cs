@@ -1,9 +1,9 @@
+using System.ComponentModel.DataAnnotations;
 using CO.CDP.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using System.ComponentModel.DataAnnotations;
 
-namespace CO.CDP.OrganisationApp.Pages.BuyerParentChildRelationship;
+namespace CO.CDP.OrganisationApp.Pages.Buyer.Hierarchy;
 
 public class ChildOrganisationSearchPage() : PageModel
 {

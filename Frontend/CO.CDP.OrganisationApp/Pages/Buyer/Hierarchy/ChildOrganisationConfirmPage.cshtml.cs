@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Address = CO.CDP.Organisation.WebApiClient.Address;
 
-namespace CO.CDP.OrganisationApp.Pages.BuyerParentChildRelationship;
+namespace CO.CDP.OrganisationApp.Pages.Buyer.Hierarchy;
 
 public class ChildOrganisationConfirmPage(
     IOrganisationClient organisationClient,

@@ -1,13 +1,13 @@
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Logging;
-using CO.CDP.OrganisationApp.Pages.BuyerParentChildRelationship;
+using CO.CDP.OrganisationApp.Pages.Buyer.Hierarchy;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using Moq;
 
-namespace CO.CDP.OrganisationApp.Tests.Pages.BuyerParentChildRelationship;
+namespace CO.CDP.OrganisationApp.Tests.Pages.Buyer.Hierarchy;
 
 public class ChildOrganisationResultsPageTests
 {

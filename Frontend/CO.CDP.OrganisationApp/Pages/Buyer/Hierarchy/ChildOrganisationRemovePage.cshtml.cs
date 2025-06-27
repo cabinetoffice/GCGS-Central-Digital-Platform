@@ -1,15 +1,15 @@
+using System.ComponentModel.DataAnnotations;
+using CO.CDP.Localization;
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Logging;
+using CO.CDP.OrganisationApp.WebApiClients;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using System.ComponentModel.DataAnnotations;
-using CO.CDP.Localization;
-using CO.CDP.OrganisationApp.WebApiClients;
 using OrganisationApiException = CO.CDP.Organisation.WebApiClient.ApiException;
 
-namespace CO.CDP.OrganisationApp.Pages.BuyerParentChildRelationship;
+namespace CO.CDP.OrganisationApp.Pages.Buyer.Hierarchy;
 
 [Authorize(Policy = OrgScopeRequirement.Admin)]
 [Authorize(Policy = OrgScopeRequirement.Editor)]
