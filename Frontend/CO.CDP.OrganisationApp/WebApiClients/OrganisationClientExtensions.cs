@@ -206,6 +206,21 @@ internal static class OrganisationClientExtensions
     internal static async Task<bool> ContactUs(this IOrganisationClient organisationClient,
         ContactUs contactUs)
         => await organisationClient.ContactUsAsync(contactUs);
+
+    internal static async Task<List<OrganisationSummary>> GetChildOrganisationsAsync(
+        this IOrganisationClient organisationClient,
+        Guid parentOrganisationId)
+    {
+        try
+        {
+            var childOrganisations = await organisationClient.GetChildOrganisationsAsync(parentOrganisationId);
+            return childOrganisations?.ToList() ?? new List<OrganisationSummary>();
+        }
+        catch (ApiException ex) when (ex.StatusCode == 404)
+        {
+            return new List<OrganisationSummary>();
+        }
+    }
 }
 
 public class ComposedOrganisation

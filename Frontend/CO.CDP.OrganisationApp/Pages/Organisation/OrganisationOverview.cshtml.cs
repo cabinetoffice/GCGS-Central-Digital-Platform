@@ -31,7 +31,7 @@ public class OrganisationOverviewModel(IOrganisationClient organisationClient, I
 
     public string MouSignedOnDate { get; set; } = "";
 
-    public List<OrganisationSummary>? ChildOrganisations { get; set; }
+    public ICollection<OrganisationSummary>? ChildOrganisations { get; set; }
 
     public async Task<IActionResult> OnGet()
     {
@@ -61,6 +61,8 @@ public class OrganisationOverviewModel(IOrganisationClient organisationClient, I
                     HasBuyerSignedMou = true;
                     MouSignedOnDate = string.Format(@StaticTextResource.MoU_SignedOn, mouSignatureLatest.SignatureOn.ToString("dd MMMM yyyy"));
                 }
+
+                ChildOrganisations = await organisationClient.GetChildOrganisationsAsync(OrganisationDetails.Id);
             }
 
             if (OrganisationDetails.Details.PendingRoles.Count > 0)
