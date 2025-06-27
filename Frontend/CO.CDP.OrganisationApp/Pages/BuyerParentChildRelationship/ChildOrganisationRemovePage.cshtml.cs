@@ -16,17 +16,19 @@ public class ChildOrganisationRemovePage(
     ILogger<ChildOrganisationRemovePage> logger)
     : PageModel
 {
-    private readonly IOrganisationClient _organisationClient = organisationClient ?? throw new ArgumentNullException(nameof(organisationClient));
-    private readonly ILogger<ChildOrganisationRemovePage> _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+    private readonly IOrganisationClient _organisationClient =
+        organisationClient ?? throw new ArgumentNullException(nameof(organisationClient));
 
-    [BindProperty(SupportsGet = true)]
-    public Guid Id { get; set; }
+    private readonly ILogger<ChildOrganisationRemovePage> _logger =
+        logger ?? throw new ArgumentNullException(nameof(logger));
 
-    [BindProperty(SupportsGet = true)]
-    public Guid ChildId { get; set; }
+    [BindProperty(SupportsGet = true)] public Guid Id { get; set; }
+
+    [BindProperty(SupportsGet = true)] public Guid ChildId { get; set; }
 
     [BindProperty]
-    [Required(ErrorMessageResourceName = nameof(StaticTextResource.Global_PleaseSelect), ErrorMessageResourceType = typeof(StaticTextResource))]
+    [Required(ErrorMessageResourceName = nameof(StaticTextResource.Global_PleaseSelect),
+        ErrorMessageResourceType = typeof(StaticTextResource))]
     public bool? RemoveConfirmation { get; set; }
 
     public bool HasValidationErrors => !ModelState.IsValid;
@@ -50,11 +52,11 @@ public class ChildOrganisationRemovePage(
             _logger.LogWarning("Child organisation with ID {ChildId} is not a child of organisation with ID {ParentId}",
                 ChildId, Id);
             return Redirect("/page-not-found");
-
         }
         catch (OrganisationApiException ex)
         {
-            var errorMessage = $"Error occurred while retrieving child organisation details for parent ID: {Id}, child ID: {ChildId}";
+            var errorMessage =
+                $"Error occurred while retrieving child organisation details for parent ID: {Id}, child ID: {ChildId}";
             var cdpException = new CdpExceptionLogging(errorMessage, "CHILD_ORG_LOOKUP_ERROR", ex);
             _logger.LogError(cdpException, errorMessage);
             return RedirectToPage("/Error");
@@ -85,7 +87,8 @@ public class ChildOrganisationRemovePage(
         }
         catch (OrganisationApiException ex)
         {
-            var errorMessage = $"Failed to remove child organisation with ID: {ChildId} from parent organisation with ID: {Id}";
+            var errorMessage =
+                $"Failed to remove child organisation with ID: {ChildId} from parent organisation with ID: {Id}";
             var cdpException = new CdpExceptionLogging(errorMessage, "CHILD_ORG_REMOVE_ERROR", ex);
             _logger.LogError(cdpException, errorMessage);
 

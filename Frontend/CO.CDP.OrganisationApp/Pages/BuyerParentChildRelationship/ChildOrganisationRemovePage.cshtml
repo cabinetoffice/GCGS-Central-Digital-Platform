@@ -17,19 +17,23 @@
             <div class="govuk-grid-column-two-thirds">
                 @if (Model.HasValidationErrors)
                 {
-                    <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" data-module="govuk-error-summary">
+                    <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert"
+                         data-module="govuk-error-summary">
                         <h2 class="govuk-error-summary__title" id="error-summary-title">
                             There is a problem
                         </h2>
                         <div class="govuk-error-summary__body">
                             <ul class="govuk-list govuk-error-summary__list">
-                                @foreach (var modelStateEntry in ViewContext.ModelState.Where(x => x.Value.Errors.Any()))
+                                @foreach (var modelStateEntry in ViewContext.ModelState.Where(x => x.Value?.Errors.Any() == true))
                                 {
-                                    foreach (var error in modelStateEntry.Value.Errors)
+                                    if (modelStateEntry.Value?.Errors != null)
                                     {
-                                        <li>
-                                            <a href="#@modelStateEntry.Key-error">@error.ErrorMessage</a>
-                                        </li>
+                                        foreach (var error in modelStateEntry.Value.Errors)
+                                        {
+                                            <li>
+                                                <a href="#@modelStateEntry.Key-error">@error.ErrorMessage</a>
+                                            </li>
+                                        }
                                     }
                                 }
                             </ul>
@@ -41,32 +45,42 @@
                 <h2 class="govuk-heading-m">Are you sure you want to remove this child organisation?</h2>
 
                 <div class="table-header">
-                    <p class="govuk-body govuk-!-font-weight-bold">[Child Organisations One]</p>
+                    <p class="govuk-body govuk-!-font-weight-bold">@(Model.ChildOrganisation?.Name ?? string.Empty)</p>
                 </div>
                 <div class="table-content">
                     <table class="govuk-table">
                         <tbody class="govuk-table__body">
                         <tr class="govuk-table__row">
-                            <th scope="row" class="govuk-table__header govuk-!-width-one-third">PPON</th>
-                            <td class="govuk-table__cell govuk-!-width-two-thirds">DRFI-1747-YZZC-EW</td>
+                            <th scope="row" class="govuk-table__header govuk-!-width-one-third">Identifier</th>
+                            <td class="govuk-table__cell govuk-!-width-two-thirds">@(Model.ChildOrganisation?.Identifier?.Id ?? string.Empty)</td>
                         </tr>
                         <tr class="govuk-table__row">
                             <th scope="row" class="govuk-table__header govuk-!-width-one-third">Organisation type</th>
-                            <td class="govuk-table__cell govuk-!-width-two-thirds">Buyer</td>
+                            <td class="govuk-table__cell govuk-!-width-two-thirds">@(Model.ChildOrganisation?.Type.ToString() ?? string.Empty)</td>
                         </tr>
                         <tr class="govuk-table__row">
                             <th scope="row" class="govuk-table__header govuk-!-width-one-third">Organisation address
                             </th>
-                            <td class="govuk-table__cell govuk-!-width-two-thirds">123 Street Name<br>Example Town<br>Example
-                                County<br>AB1
-                                2CD<br>United Kingdom
+                            <td class="govuk-table__cell govuk-!-width-two-thirds">
+                                @if (Model.ChildOrganisation?.Addresses != null && Model.ChildOrganisation.Addresses.Any())
+                                {
+                                    var address = Model.ChildOrganisation.Addresses.FirstOrDefault();
+                                    if (address != null)
+                                    {
+                                        @(string.IsNullOrEmpty(address.StreetAddress) ? "" : address.StreetAddress)<br/>
+                                        @(string.IsNullOrEmpty(address.Locality) ? "" : address.Locality)<br/>
+                                        @(string.IsNullOrEmpty(address.Region) ? "" : address.Region)<br/>
+                                        @(string.IsNullOrEmpty(address.PostalCode) ? "" : address.PostalCode)<br/>
+                                        @(string.IsNullOrEmpty(address.CountryName) ? "" : address.CountryName)
+                                    }
+                                }
                             </td>
                         </tr>
                         <tr class="govuk-table__row">
                             <th scope="row" class="govuk-table__header govuk-!-width-one-third">
                                 Organisation email
                             </th>
-                            <td class="govuk-table__cell govuk-!-width-two-thirds">info@org.co.uk</td>
+                            <td class="govuk-table__cell govuk-!-width-two-thirds">@(Model.ChildOrganisation?.ContactPoint?.Email ?? string.Empty)</td>
                         </tr>
                         </tbody>
                     </table>
@@ -78,8 +92,10 @@
                 </div>
 
                 <form method="post">
-                    <div class="govuk-form-group @(ViewData.ModelState["RemoveConfirmation"]?.Errors.Count > 0 ? "govuk-form-group--error" : "")">
-                        <fieldset class="govuk-fieldset" aria-describedby="remove-organisation-hint @(ViewData.ModelState["RemoveConfirmation"]?.Errors.Count > 0 ? "RemoveConfirmation-error" : "")">
+                    <div
+                        class="govuk-form-group @(ViewData.ModelState["RemoveConfirmation"]?.Errors.Count > 0 ? "govuk-form-group--error" : "")">
+                        <fieldset class="govuk-fieldset"
+                                  aria-describedby="remove-organisation-hint @(ViewData.ModelState["RemoveConfirmation"]?.Errors.Count > 0 ? "RemoveConfirmation-error" : "")">
                             <legend class="govuk-fieldset__legend">
                                 <span class="govuk-visually-hidden">Confirm if you want to remove this child organisation</span>
                             </legend>
@@ -89,7 +105,8 @@
                             @if (ViewData.ModelState["RemoveConfirmation"]?.Errors.Count > 0)
                             {
                                 <p id="RemoveConfirmation-error" class="govuk-error-message">
-                                    <span class="govuk-visually-hidden">Error:</span> @ViewData.ModelState["RemoveConfirmation"].Errors.First().ErrorMessage
+                                    <span
+                                        class="govuk-visually-hidden">Error:</span> @ViewData.ModelState["RemoveConfirmation"]?.Errors.FirstOrDefault()?.ErrorMessage
                                 </p>
                             }
                             <div class="govuk-radios" data-module="govuk-radios">
