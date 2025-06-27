@@ -1,0 +1,80 @@
+@page "/organisation/{id}/buyer/hierarchy/add/child/results"
+@model ChildOrganisationResultsPage
+@using CO.CDP.Localization
+
+@{
+    ViewData["Title"] = StaticTextResource.BuyerParentChildRelationship_SearchPage_Title;
+}
+
+@section BeforeContent {
+    <a href="@Url.Page("ChildOrganisationSearchPage", new { Model.Id })"
+       class="govuk-back-link">@StaticTextResource.Global_Back</a>
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <form method="post">
+            <h1 class="govuk-heading-l">@StaticTextResource.BuyerParentChildRelationship_ResultsPage_Title</h1>
+
+            @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+            {
+                <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" data-module="govuk-error-summary">
+                    <h2 class="govuk-error-summary__title" id="error-summary-title">
+                        @StaticTextResource.Global_ErrorSummary_Heading
+                    </h2>
+                    <div class="govuk-error-summary__body">
+                        <p>@Model.ErrorMessage</p>
+                    </div>
+                </div>
+                <p class="govuk-body">
+                    <a href="@Url.Page("ChildOrganisationSearchPage", new { Model.Id })">@StaticTextResource.BuyerParentChildRelationship_ResultsPage_TrySearchAgain</a>
+                    <a href="/organisation/@Model.Id">@StaticTextResource.BuyerParentChildRelationship_ResultsPage_ReturnToDetails</a>
+                </p>
+            }
+            else if (Model.Results.Count == 1)
+            {
+                <p class="govuk-body">@string.Format(StaticTextResource.BuyerParentChildRelationship_ResultsPage_TextSingle, Model.Results.Count, Model.Query)</p>
+            }
+            else if (Model.Results.Count > 1)
+            {
+                <p class="govuk-body">@string.Format(StaticTextResource.BuyerParentChildRelationship_ResultsPage_TextPlural, Model.Results.Count, Model.Query)</p>
+            }
+
+            @if (Model.Results.Count > 0)
+            {
+                <div class="govuk-form-group">
+                    <fieldset class="govuk-fieldset">
+                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+                            @StaticTextResource.BuyerParentChildRelationship_ResultsPage_Label
+                        </legend>
+                        <div class="govuk-radios" data-module="govuk-radios" data-govuk-radios-init="">
+                            @foreach (var (organisation, index) in Model.Results.Select((value, i) => (value, i)))
+                            {
+                                var radioId = $"organisation-{index}";
+                                <div class="govuk-radios__item">
+                                    <input class="govuk-radios__input" id="@radioId" asp-for="SelectedChildId"
+                                           type="radio" value="@organisation.OrganisationId">
+                                    <label class="govuk-label govuk-radios__label" for="@radioId">
+                                        @organisation.Name
+                                    </label>
+                                    <div id="@($"{radioId}-hint")" class="govuk-hint govuk-radios__hint">
+                                        @organisation.GetFormattedIdentifier()
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </fieldset>
+                </div>
+            }
+
+            <div class="govuk-button-group">
+                <button type="submit" class="govuk-button" data-module="govuk-button">
+                    @StaticTextResource.Global_Continue
+                </button>
+                <a href="@Url.Page("ChildOrganisationSearchPage", new { Model.Id })"
+                   class="govuk-button govuk-button--secondary">@StaticTextResource.Global_SearchAgain</a>
+                <a class="govuk-link" href="/organisation/@Model.Id">@StaticTextResource.Global_Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
