@@ -104,6 +104,7 @@ builder.Services.AddScoped<IUseCase<GetAnnouncementQuery, IEnumerable<Announceme
 builder.Services.AddScoped<IUseCase<(Guid organisationId, string role), IEnumerable<Person>>, GetPersonsInRoleUseCase>();
 builder.Services.AddScoped<IUseCase<CreateParentChildRelationshipRequest, CreateParentChildRelationshipResult>, CreateParentChildRelationshipUseCase>();
 builder.Services.AddScoped<IUseCase<Guid, GetChildOrganisationsResponse>, GetChildOrganisationsUseCase>();
+builder.Services.AddScoped<ISupersedeChildOrganisationUseCase, SupersedeChildOrganisationUseCase>();
 
 builder.Services.AddScoped<IAuthorizationHandler, OrganisationScopeAuthorizationHandler>();
 builder.Services.AddScoped<IAuthorizationHandler, ApiKeyScopeAuthorizationHandler>();
