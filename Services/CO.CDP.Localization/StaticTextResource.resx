@@ -2086,6 +2086,45 @@
   <data name="BuyerParentChildRelationship_SuccessPage_ReturnToDetails" xml:space="preserve">
     <value>Return to organisation details</value>
   </data>
+  <data name="BuyerParentChildRelationship_RemovePage_Title" xml:space="preserve">
+    <value>Remove child organisation</value>
+  </data>
+  <data name="BuyerParentChildRelationship_RemovePage_Heading" xml:space="preserve">
+    <value>Remove child organisation</value>
+  </data>
+  <data name="BuyerParentChildRelationship_RemovePage_Confirmation" xml:space="preserve">
+    <value>Are you sure you want to remove this child organisation?</value>
+  </data>
+  <data name="BuyerParentChildRelationship_RemovePage_Identifier" xml:space="preserve">
+    <value>Identifier</value>
+  </data>
+  <data name="BuyerParentChildRelationship_RemovePage_OrganisationType" xml:space="preserve">
+    <value>Organisation type</value>
+  </data>
+  <data name="BuyerParentChildRelationship_RemovePage_OrganisationAddress" xml:space="preserve">
+    <value>Organisation address</value>
+  </data>
+  <data name="BuyerParentChildRelationship_RemovePage_OrganisationEmail" xml:space="preserve">
+    <value>Organisation email</value>
+  </data>
+  <data name="BuyerParentChildRelationship_RemovePage_InfoText" xml:space="preserve">
+    <value>Removing your child organisation will mean it does not show on your account profile and will no longer be digitally linked to your organisation on Find a Tender.</value>
+  </data>
+  <data name="BuyerParentChildRelationship_RemovePage_YesRemove" xml:space="preserve">
+    <value>Yes, remove</value>
+  </data>
+  <data name="BuyerParentChildRelationship_RemovePage_NoDoNotRemove" xml:space="preserve">
+    <value>No, do not remove</value>
+  </data>
+  <data name="BuyerParentChildRelationship_RemovePage_Error" xml:space="preserve">
+    <value>Error:</value>
+  </data>
+  <data name="BuyerParentChildRelationship_RemovePage_VisuallyHiddenLegend" xml:space="preserve">
+    <value>Confirm if you want to remove this child organisation</value>
+  </data>
+  <data name="BuyerParentChildRelationship_RemovePage_InfoText" xml:space="preserve">
+    <value>Removing your child organisation will mean it does not show on your account profile and will no longer be digitally linked to your organisation on Find a Tender.</value>
+  </data>
   <data name="Forms_FormElementAddress_EnterNonUKAddress" xml:space="preserve">
     <value>Enter a non-UK address</value>
   </data>
