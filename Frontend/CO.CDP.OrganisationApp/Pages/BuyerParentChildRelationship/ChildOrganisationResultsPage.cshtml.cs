@@ -1,10 +1,8 @@
-using CO.CDP.Localization;
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Logging;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using CO.CDP.OrganisationApp.Models;
-using Microsoft.Extensions.Logging;
 
 namespace CO.CDP.OrganisationApp.Pages.BuyerParentChildRelationship;
 
