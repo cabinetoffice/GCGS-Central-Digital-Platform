@@ -31,6 +31,8 @@ public class OrganisationOverviewModel(IOrganisationClient organisationClient, I
 
     public string MouSignedOnDate { get; set; } = "";
 
+    public List<OrganisationSummary>? ChildOrganisations { get; set; }
+
     public async Task<IActionResult> OnGet()
     {
         try
