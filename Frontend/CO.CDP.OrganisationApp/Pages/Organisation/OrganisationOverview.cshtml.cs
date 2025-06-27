@@ -68,7 +68,7 @@ public class OrganisationOverviewModel(IOrganisationClient organisationClient, I
                     var isBuyerParentChildRelationshipEnabled = await featureManager.IsEnabledAsync(FeatureFlags.BuyerParentChildRelationship);
                     if (isBuyerParentChildRelationshipEnabled)
                     {
-                        ChildOrganisations = await organisationClient.GetChildOrganisationsAsync(OrganisationDetails.Id);
+                        ChildOrganisations = await OrganisationClientExtensions.GetChildOrganisationsAsync(organisationClient, OrganisationDetails.Id);
                     }
                 }
             }

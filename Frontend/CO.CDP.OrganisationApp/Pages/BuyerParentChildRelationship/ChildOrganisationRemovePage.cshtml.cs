@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
 using CO.CDP.Localization;
+using CO.CDP.OrganisationApp.WebApiClients;
 using OrganisationApiException = CO.CDP.Organisation.WebApiClient.ApiException;
 
 namespace CO.CDP.OrganisationApp.Pages.BuyerParentChildRelationship;
@@ -57,7 +58,7 @@ public class ChildOrganisationRemovePage(
                 return Redirect("/page-not-found");
             }
 
-            var childOrganisations = await _organisationClient.GetChildOrganisationsAsync(Id);
+            var childOrganisations = await OrganisationClientExtensions.GetChildOrganisationsAsync(organisationClient, Id);
             if (childOrganisations.Any(o => o.Id == ChildId)) return Page();
 
             _logger.LogWarning("Child organisation with ID {ChildId} is not a child of organisation with ID {ParentId}",
