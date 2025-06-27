@@ -175,28 +175,8 @@ public class OrganisationOverviewTest
 
         _model.Id = id;
 
-        var organisation = new CO.CDP.Organisation.WebApiClient.Organisation(
-            additionalIdentifiers: null,
-            addresses: null,
-            contactPoint: null,
-            id: id,
-            identifier: null,
-            name: "Test Org",
-            type: OrganisationType.Organisation,
-            roles: new List<PartyRole> { PartyRole.Buyer },
-            details: new Details(
-                approval: null,
-                buyerInformation: null,
-                pendingRoles: new List<PartyRole>(),
-                publicServiceMissionOrganization: null,
-                scale: null,
-                shelteredWorkshop: null,
-                vcse: null
-            )
-        );
-
         _organisationClientMock.Setup(o => o.GetOrganisationAsync(id))
-            .ReturnsAsync(organisation);
+            .ReturnsAsync(GivenOrganisationClientModel(id, roles: new List<PartyRole> { PartyRole.Buyer }));
 
         _organisationClientMock.Setup(o => o.GetOrganisationBuyerInformationAsync(id))
             .ReturnsAsync(new BuyerInformation("RegionalAndLocalGovernment", new List<DevolvedRegulation>()));
@@ -223,28 +203,8 @@ public class OrganisationOverviewTest
 
         _model.Id = id;
 
-        var organisation = new CO.CDP.Organisation.WebApiClient.Organisation(
-            additionalIdentifiers: null,
-            addresses: null,
-            contactPoint: null,
-            id: id,
-            identifier: null,
-            name: "Test Org",
-            type: OrganisationType.Organisation,
-            roles: new List<PartyRole> { PartyRole.Buyer },
-            details: new Details(
-                approval: null,
-                buyerInformation: null,
-                pendingRoles: new List<PartyRole>(),
-                publicServiceMissionOrganization: null,
-                scale: null,
-                shelteredWorkshop: null,
-                vcse: null
-            )
-        );
-
         _organisationClientMock.Setup(o => o.GetOrganisationAsync(id))
-            .ReturnsAsync(organisation);
+            .ReturnsAsync(GivenOrganisationClientModel(id, roles: new List<PartyRole> { PartyRole.Buyer }));
 
         _organisationClientMock.Setup(o => o.GetOrganisationBuyerInformationAsync(id))
             .ReturnsAsync(new BuyerInformation("RegionalAndLocalGovernment", new List<DevolvedRegulation>()));
@@ -305,8 +265,8 @@ public class OrganisationOverviewTest
             identifier: null,
             name: "Test Org",
             type: organisationType ?? OrganisationType.Organisation,
-            roles: [],
-            details: new Details(approval: null, buyerInformation: null, pendingRoles: pendingRoles != null ? pendingRoles : [], publicServiceMissionOrganization: null, scale: null, shelteredWorkshop: null, vcse: null)
+            roles: roles ?? new List<PartyRole>(),
+            details: new Details(approval: null, buyerInformation: null, pendingRoles: pendingRoles ?? new List<PartyRole>(), publicServiceMissionOrganization: null, scale: null, shelteredWorkshop: null, vcse: null)
               );
     }
 }
