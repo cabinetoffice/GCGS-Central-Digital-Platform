@@ -36,6 +36,16 @@ public class ChildOrganisationRemovePage(
 
     public CO.CDP.Organisation.WebApiClient.Organisation? ChildOrganisation { get; set; }
 
+    public Address? ChildOrganisationAddress => ChildOrganisation?.Addresses?.FirstOrDefault();
+
+    public bool HasChildOrganisationAddress =>
+        ChildOrganisationAddress != null &&
+        (!string.IsNullOrEmpty(ChildOrganisationAddress.StreetAddress) ||
+         !string.IsNullOrEmpty(ChildOrganisationAddress.Locality) ||
+         !string.IsNullOrEmpty(ChildOrganisationAddress.Region) ||
+         !string.IsNullOrEmpty(ChildOrganisationAddress.PostalCode) ||
+         !string.IsNullOrEmpty(ChildOrganisationAddress.CountryName));
+
     public async Task<IActionResult> OnGet()
     {
         try

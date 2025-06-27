@@ -65,17 +65,32 @@
                                 class="govuk-table__header govuk-!-width-one-third">@StaticTextResource.BuyerParentChildRelationship_RemovePage_OrganisationAddress
                             </th>
                             <td class="govuk-table__cell govuk-!-width-two-thirds">
-                                @if (Model.ChildOrganisation?.Addresses != null && Model.ChildOrganisation.Addresses.Any())
+                                @if (Model.HasChildOrganisationAddress && Model.ChildOrganisationAddress != null)
                                 {
-                                    var address = Model.ChildOrganisation.Addresses.FirstOrDefault();
-                                    if (address != null)
+                                    @if (!string.IsNullOrEmpty(Model.ChildOrganisationAddress.StreetAddress))
                                     {
-                                        @(string.IsNullOrEmpty(address.StreetAddress) ? "" : address.StreetAddress)<br/>
-                                        @(string.IsNullOrEmpty(address.Locality) ? "" : address.Locality)<br/>
-                                        @(string.IsNullOrEmpty(address.Region) ? "" : address.Region)<br/>
-                                        @(string.IsNullOrEmpty(address.PostalCode) ? "" : address.PostalCode)<br/>
-                                        @(string.IsNullOrEmpty(address.CountryName) ? "" : address.CountryName)
+                                        @Model.ChildOrganisationAddress.StreetAddress<br/>
                                     }
+                                    @if (!string.IsNullOrEmpty(Model.ChildOrganisationAddress.Locality))
+                                    {
+                                        @Model.ChildOrganisationAddress.Locality<br/>
+                                    }
+                                    @if (!string.IsNullOrEmpty(Model.ChildOrganisationAddress.Region))
+                                    {
+                                        @Model.ChildOrganisationAddress.Region<br/>
+                                    }
+                                    @if (!string.IsNullOrEmpty(Model.ChildOrganisationAddress.PostalCode))
+                                    {
+                                        @Model.ChildOrganisationAddress.PostalCode<br/>
+                                    }
+                                    @if (!string.IsNullOrEmpty(Model.ChildOrganisationAddress.CountryName))
+                                    {
+                                        @Model.ChildOrganisationAddress.CountryName
+                                    }
+                                }
+                                else
+                                {
+                                    @StaticTextResource.Global_NoAddressAvailable
                                 }
                             </td>
                         </tr>
@@ -83,7 +98,11 @@
                             <th scope="row" class="govuk-table__header govuk-!-width-one-third no-border">
                                 @StaticTextResource.BuyerParentChildRelationship_RemovePage_OrganisationEmail
                             </th>
-                            <td class="govuk-table__cell govuk-!-width-two-thirds no-border">@(Model.ChildOrganisation?.ContactPoint?.Email ?? string.Empty)</td>
+                            <td class="govuk-table__cell govuk-!-width-two-thirds no-border">
+                                @(string.IsNullOrEmpty(Model.ChildOrganisation?.ContactPoint?.Email)
+                                    ? StaticTextResource.Global_NoEmailAvailable
+                                    : Model.ChildOrganisation.ContactPoint.Email)
+                            </td>
                         </tr>
                         </tbody>
                     </table>
