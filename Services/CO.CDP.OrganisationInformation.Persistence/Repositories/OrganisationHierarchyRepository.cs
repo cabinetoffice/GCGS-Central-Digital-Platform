@@ -89,6 +89,8 @@ namespace CO.CDP.OrganisationInformation.Persistence.Repositories
                 return [];
 
             return await _context.OrganisationHierarchies
+                .Include(h => h.Child)
+                    .ThenInclude(c => c!.Identifiers)
                 .Where(h => h.ParentOrganisationId == parent.Id && h.SupersededOn == null)
                 .ToListAsync();
         }
