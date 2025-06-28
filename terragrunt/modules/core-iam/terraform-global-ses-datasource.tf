@@ -2,14 +2,17 @@ data "aws_iam_policy_document" "terraform_global_ses" {
 
   statement {
     actions = [
-      "ses:VerifyDomainIdentity",
-      "ses:VerifyDomainDkim",
-      "ses:SetIdentityMailFromDomain",
       "ses:DeleteIdentity",
-      "ses:GetIdentityVerificationAttributes",
+      "ses:DeleteIdentityPolicy",
       "ses:GetIdentityDkimAttributes",
+      "ses:GetIdentityMailFromDomainAttributes",
+      "ses:GetIdentityPolicies",
+      "ses:GetIdentityVerificationAttributes",
+      "ses:PutIdentityPolicy",
+      "ses:SetIdentityMailFromDomain",
       "ses:UpdateIdentityPolicy",
-      "ses:PutIdentityPolicy"
+      "ses:VerifyDomainDkim",
+      "ses:VerifyDomainIdentity",
     ]
     effect = "Allow"
     resources = [
