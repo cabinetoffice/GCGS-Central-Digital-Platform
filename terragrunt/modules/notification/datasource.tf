@@ -11,7 +11,7 @@ data "aws_iam_policy_document" "ses_send" {
       "ses:SendRawEmail"
     ]
 
-    resources = ["*"]
+    resources = [aws_ses_domain_identity.this.arn]
 
     principals {
       type        = "Service"
