@@ -33,17 +33,6 @@ variable "environment" {
   type        = string
 }
 
-variable "fluentbit_config" {
-  description = "Fluent Bit service configuration"
-  type = object({
-    cpu       = number
-    memory    = number
-    name      = string
-    port      = number
-    port_host = number
-  })
-}
-
 variable "grafana_config" {
   description = "Grafana services configuration"
   type = object({
