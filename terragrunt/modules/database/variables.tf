@@ -42,6 +42,11 @@ variable "db_postgres_sg_id" {
   type        = string
 }
 
+variable "ec2_sg_id" {
+  description = "EC2 instance for DB migration security group ID"
+  type        = string
+}
+
 variable "environment" {
   description = "The environment we are provisioning, i.e. test, do not mistake this with the AWS account"
   type        = string
