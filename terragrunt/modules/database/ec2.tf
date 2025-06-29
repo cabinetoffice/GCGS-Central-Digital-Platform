@@ -9,7 +9,9 @@ resource "aws_key_pair" "import_key" {
 }
 
 resource "aws_instance" "fts_db_import" {
-  ami           = data.aws_ami.al2_latest.id
+  count = var.environment == "development" ? 1 : 0
+
+  ami           = data.aws_ami.al2_latest[0].id
   instance_type = "t3.medium"
   subnet_id     = var.private_subnet_ids[0]
 
@@ -31,5 +33,5 @@ output "import_instance_private_key_pem" {
 }
 
 output "import_instance_public_ip" {
-  value = aws_instance.fts_db_import.public_ip
+  value = aws_instance.fts_db_import[0].public_ip
 }
