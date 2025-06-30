@@ -202,8 +202,7 @@ public class ChildOrganisationConfirmPageTests
                 id,
                 It.Is<CreateParentChildRelationshipRequest>(r =>
                     r.ParentId == id &&
-                    r.ChildId == childId &&
-                    r.Role == PartyRole.Buyer)),
+                    r.ChildId == childId)),
             Times.Once);
     }
 }

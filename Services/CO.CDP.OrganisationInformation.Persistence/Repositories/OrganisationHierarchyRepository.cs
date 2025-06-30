@@ -20,16 +20,13 @@ namespace CO.CDP.OrganisationInformation.Persistence.Repositories
         }
 
         /// <inheritdoc />
-        public async Task<Guid> CreateRelationshipAsync(Guid parentId, Guid childId, List<PartyRole> roles)
+        public async Task<Guid> CreateRelationshipAsync(Guid parentId, Guid childId)
         {
             if (parentId == Guid.Empty)
                 throw new ArgumentException("Parent ID cannot be empty", nameof(parentId));
 
             if (childId == Guid.Empty)
                 throw new ArgumentException("Child ID cannot be empty", nameof(childId));
-
-            if (roles == null || !roles.Any())
-                throw new ArgumentException("At least one role must be specified", nameof(roles));
 
             if (parentId == childId)
                 throw new ArgumentException("Parent and child organisations cannot be the same");
@@ -54,8 +51,6 @@ namespace CO.CDP.OrganisationInformation.Persistence.Repositories
 
             if (existingRelationship != null)
             {
-                existingRelationship.Roles = roles;
-                await _context.SaveChangesAsync();
                 return existingRelationship.RelationshipId;
             }
 
@@ -65,7 +60,6 @@ namespace CO.CDP.OrganisationInformation.Persistence.Repositories
                 RelationshipId = relationshipId,
                 ParentOrganisationId = parent.Id,
                 ChildOrganisationId = child.Id,
-                Roles = roles,
                 CreatedOn = DateTime.UtcNow
             };
 

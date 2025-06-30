@@ -48,12 +48,6 @@ public sealed class OrganisationHierarchy
     public Organisation? Child { get; set; }
 
     /// <summary>
-    /// The roles associated with this relationship, stored as a serialized collection
-    /// </summary>
-    [Required]
-    public required List<PartyRole> Roles { get; set; }
-
-    /// <summary>
     /// The date and time when this relationship was created
     /// </summary>
     [Required]

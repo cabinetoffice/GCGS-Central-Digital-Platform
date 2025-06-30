@@ -58,12 +58,10 @@ public class SupersedeChildOrganisationUseCaseTests
                 Name = "Test Child Organisation",
                 Tenant = new Tenant { Guid = Guid.NewGuid(), Name = "Test Tenant" },
                 Type = OrganisationType.Organisation,
-                Roles = [],
                 CreatedOn = DateTimeOffset.UtcNow,
                 UpdatedOn = DateTimeOffset.UtcNow
             },
             ParentOrganisationId = 1,
-            Roles = [],
             CreatedOn = DateTimeOffset.UtcNow
         };
 
@@ -99,12 +97,10 @@ public class SupersedeChildOrganisationUseCaseTests
                 Name = "Test Child Organisation",
                 Tenant = new Tenant { Guid = Guid.NewGuid(), Name = "Test Tenant" },
                 Type = OrganisationType.Organisation,
-                Roles = [],
                 CreatedOn = DateTimeOffset.UtcNow,
                 UpdatedOn = DateTimeOffset.UtcNow
             },
             ParentOrganisationId = 1,
-            Roles = [],
             CreatedOn = DateTimeOffset.UtcNow
         };
 

@@ -27,14 +27,12 @@ public class CreateParentChildRelationshipUseCaseTest
         _repository
             .Setup(r => r.CreateRelationshipAsync(
                 It.IsAny<Guid>(),
-                It.IsAny<Guid>(),
-                It.IsAny<List<PartyRole>>()))
+                It.IsAny<Guid>()))
             .ReturnsAsync(relationshipId);
         var request = new CreateParentChildRelationshipRequest
         {
             ParentId = parentId,
-            ChildId = childId,
-            Role = PartyRole.Buyer
+            ChildId = childId
         };
 
         var result = await UseCase.Execute(request);
@@ -45,8 +43,7 @@ public class CreateParentChildRelationshipUseCaseTest
 
         _repository.Verify(r => r.CreateRelationshipAsync(
             parentId,
-            childId,
-            It.Is<List<PartyRole>>(roles => roles.Contains(PartyRole.Buyer))),
+            childId),
             Times.Once);
     }
 
@@ -56,8 +53,7 @@ public class CreateParentChildRelationshipUseCaseTest
         var request = new CreateParentChildRelationshipRequest
         {
             ParentId = Guid.Empty,
-            ChildId = Guid.NewGuid(),
-            Role = PartyRole.Buyer
+            ChildId = Guid.NewGuid()
         };
 
         var result = await UseCase.Execute(request);
@@ -82,8 +78,7 @@ public class CreateParentChildRelationshipUseCaseTest
         var request = new CreateParentChildRelationshipRequest
         {
             ParentId = Guid.NewGuid(),
-            ChildId = Guid.Empty,
-            Role = PartyRole.Buyer
+            ChildId = Guid.Empty
         };
 
         var result = await UseCase.Execute(request);
@@ -109,8 +104,7 @@ public class CreateParentChildRelationshipUseCaseTest
         var request = new CreateParentChildRelationshipRequest
         {
             ParentId = sameId,
-            ChildId = sameId,
-            Role = PartyRole.Buyer
+            ChildId = sameId
         };
 
         var result = await UseCase.Execute(request);
@@ -152,8 +146,7 @@ public class CreateParentChildRelationshipUseCaseTest
         var request = new CreateParentChildRelationshipRequest
         {
             ParentId = Guid.NewGuid(),
-            ChildId = Guid.NewGuid(),
-            Role = PartyRole.Buyer
+            ChildId = Guid.NewGuid()
         };
 
         var result = await useCase.Execute(request);

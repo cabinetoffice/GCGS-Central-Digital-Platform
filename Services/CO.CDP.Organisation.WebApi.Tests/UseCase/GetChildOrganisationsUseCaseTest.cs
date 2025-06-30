@@ -80,13 +80,11 @@ public class GetChildOrganisationsUseCaseTest
         Assert.Equal(childOrgs[0].Child!.Guid, firstChild.Id);
         Assert.Equal(childOrgs[0].Child!.Name, firstChild.Name);
         Assert.Equal("PPON123", firstChild.Identifier);
-        Assert.Equal(childOrgs[0].Child!.Roles, firstChild.Roles);
 
         var secondChild = response.ChildOrganisations.ElementAt(1);
         Assert.Equal(childOrgs[1].Child!.Guid, secondChild.Id);
         Assert.Equal(childOrgs[1].Child!.Name, secondChild.Name);
         Assert.Equal(string.Empty, secondChild.Identifier);
-        Assert.Equal(childOrgs[1].Child!.Roles, secondChild.Roles);
 
         _mockHierarchyRepository.Verify(repo => repo.GetChildrenAsync(parentId), Times.Once);
     }
@@ -118,13 +116,11 @@ public class GetChildOrganisationsUseCaseTest
                 RelationshipId = Guid.NewGuid(),
                 ParentOrganisationId = 1,
                 ChildOrganisationId = 2,
-                Roles = new List<PartyRole> { PartyRole.Buyer },
                 Child = new OrganisationInformation.Persistence.Organisation
                 {
                     Id = 2,
                     Guid = childGuid,
                     Name = "Valid Child",
-                    Roles = new List<PartyRole> { PartyRole.Buyer },
                     Identifiers = new List<Identifier>(),
                     Tenant = new Tenant
                     {
@@ -139,7 +135,6 @@ public class GetChildOrganisationsUseCaseTest
                 RelationshipId = Guid.NewGuid(),
                 ParentOrganisationId = 1,
                 ChildOrganisationId = 3,
-                Roles = new List<PartyRole> { PartyRole.Buyer },
                 Child = null
             }
         };
@@ -181,13 +176,11 @@ public class GetChildOrganisationsUseCaseTest
                 RelationshipId = Guid.NewGuid(),
                 ParentOrganisationId = 1,
                 ChildOrganisationId = 2,
-                Roles = new List<PartyRole> { PartyRole.Supplier },
                 Child = new OrganisationInformation.Persistence.Organisation
                 {
                     Id = 2,
                     Guid = childGuid,
                     Name = "Child With Multiple PPONs",
-                    Roles = new List<PartyRole> { PartyRole.Supplier },
                     Identifiers = identifiers,
                     Tenant = new Tenant
                     {
@@ -217,7 +210,6 @@ public class GetChildOrganisationsUseCaseTest
             Id = 2,
             Guid = Guid.NewGuid(),
             Name = "Child Org 1",
-            Roles = new List<PartyRole> { PartyRole.Buyer },
             Identifiers = new List<Identifier>
             {
                 new() { Scheme = "GB-PPON", IdentifierId = "PPON123", LegalName = "Legal Name 1", Primary = true }
@@ -235,7 +227,6 @@ public class GetChildOrganisationsUseCaseTest
             Id = 3,
             Guid = Guid.NewGuid(),
             Name = "Child Org 2",
-            Roles = new List<PartyRole> { PartyRole.Supplier },
             Identifiers = new List<Identifier>(),
             Tenant = new Tenant
             {
@@ -252,16 +243,14 @@ public class GetChildOrganisationsUseCaseTest
                 RelationshipId = Guid.NewGuid(),
                 ParentOrganisationId = parentId,
                 ChildOrganisationId = childOrg1.Id,
-                Child = childOrg1,
-                Roles = new List<PartyRole> { PartyRole.Buyer }
+                Child = childOrg1
             },
             new()
             {
                 RelationshipId = Guid.NewGuid(),
                 ParentOrganisationId = parentId,
                 ChildOrganisationId = childOrg2.Id,
-                Child = childOrg2,
-                Roles = new List<PartyRole> { PartyRole.Supplier }
+                Child = childOrg2
             }
         };
     }

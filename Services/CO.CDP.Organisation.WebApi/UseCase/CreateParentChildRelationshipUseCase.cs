@@ -37,7 +37,7 @@ public class CreateParentChildRelationshipUseCase : ICreateParentChildRelationsh
     /// <summary>
     /// Creates a parent-child relationship between two organisations
     /// </summary>
-    /// <param name="request">Request containing parent and child organisation IDs and role</param>
+    /// <param name="request">Request containing parent and child organisation IDs</param>
     /// <returns>Result of the relationship creation operation</returns>
     public async Task<CreateParentChildRelationshipResult> Execute(CreateParentChildRelationshipRequest request)
     {
@@ -55,16 +55,13 @@ public class CreateParentChildRelationshipUseCase : ICreateParentChildRelationsh
                 return new CreateParentChildRelationshipResult { Success = false };
             }
 
-            var roles = new List<PartyRole> { request.Role };
-
             var relationshipId = await _repository.CreateRelationshipAsync(
                 request.ParentId,
-                request.ChildId,
-                roles);
+                request.ChildId);
 
             _logger.LogInformation(
-                "Created parent-child relationship {RelationshipId} between {ParentId} and {ChildId} with role {Role}",
-                relationshipId, request.ParentId, request.ChildId, request.Role);
+                "Created parent-child relationship {RelationshipId} between {ParentId} and {ChildId}",
+                relationshipId, request.ParentId, request.ChildId);
 
             return new CreateParentChildRelationshipResult
             {

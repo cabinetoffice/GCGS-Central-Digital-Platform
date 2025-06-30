@@ -19,12 +19,6 @@ public class CreateParentChildRelationshipRequest
     /// </summary>
     [Required]
     public Guid ChildId { get; set; }
-
-    /// <summary>
-    /// The role of the organisations in this relationship
-    /// </summary>
-    [Required]
-    public PartyRole Role { get; set; }
 }
 
 /// <summary>

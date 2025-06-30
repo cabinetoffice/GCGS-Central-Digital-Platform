@@ -80,9 +80,6 @@ public class OrganisationInformationContext(DbContextOptions<OrganisationInforma
 
             entity.HasIndex(e => e.RelationshipId).IsUnique();
 
-            entity.Property(e => e.Roles)
-                .HasJsonColumn([], PropertyBuilderExtensions.ListComparer<PartyRole>());
-
             entity.HasIndex(e => e.ParentOrganisationId);
 
             entity.HasIndex(e => e.ChildOrganisationId);

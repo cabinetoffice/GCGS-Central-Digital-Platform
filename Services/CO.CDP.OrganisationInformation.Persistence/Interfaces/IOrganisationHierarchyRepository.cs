@@ -10,9 +10,8 @@ namespace CO.CDP.OrganisationInformation.Persistence.Interfaces
         /// </summary>
         /// <param name="parentId">The ID of the parent organisation</param>
         /// <param name="childId">The ID of the child organisation</param>
-        /// <param name="roles">The roles associated with this relationship</param>
         /// <returns>The ID of the newly created relationship</returns>
-        Task<Guid> CreateRelationshipAsync(Guid parentId, Guid childId, List<PartyRole> roles);
+        Task<Guid> CreateRelationshipAsync(Guid parentId, Guid childId);
 
         /// <summary>
         /// Gets all active relationships where the specified organisation is a parent

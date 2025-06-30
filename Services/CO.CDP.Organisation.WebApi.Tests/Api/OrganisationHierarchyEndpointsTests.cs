@@ -61,8 +61,7 @@ public class OrganisationHierarchyEndpointsTests
         var request = new CreateParentChildRelationshipRequest
         {
             ParentId = organisationId,
-            ChildId = childOrganisationId,
-            Role = OrganisationInformation.PartyRole.Buyer
+            ChildId = childOrganisationId
         };
 
         var expectedResult = new CreateParentChildRelationshipResult
@@ -93,8 +92,7 @@ public class OrganisationHierarchyEndpointsTests
         var request = new CreateParentChildRelationshipRequest
         {
             ParentId = organisationId,
-            ChildId = childOrganisationId,
-            Role = OrganisationInformation.PartyRole.Buyer
+            ChildId = childOrganisationId
         };
 
         var response = await client.PostAsJsonAsync($"/organisations/{organisationId}/hierarchy/child", request);
@@ -114,8 +112,7 @@ public class OrganisationHierarchyEndpointsTests
         var request = new CreateParentChildRelationshipRequest
         {
             ParentId = organisationId,
-            ChildId = childOrganisationId,
-            Role = OrganisationInformation.PartyRole.Buyer
+            ChildId = childOrganisationId
         };
 
         _mockCreateParentChildRelationshipUseCase

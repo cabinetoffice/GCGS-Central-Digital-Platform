@@ -21,9 +21,8 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                     relationship_id = table.Column<Guid>(type: "uuid", nullable: false),
                     parent_organisation_id = table.Column<int>(type: "integer", nullable: false),
                     child_organisation_id = table.Column<int>(type: "integer", nullable: false),
-                    roles = table.Column<string>(type: "jsonb", nullable: false),
-                    created_on = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    superseded_on = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                    created_on = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    superseded_on = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
                 {

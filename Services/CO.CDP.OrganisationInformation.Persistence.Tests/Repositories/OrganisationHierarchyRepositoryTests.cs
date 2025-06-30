@@ -80,7 +80,7 @@ namespace CO.CDP.OrganisationInformation.Persistence.Tests.Repositories
             return tenant;
         }
 
-        private async Task<Guid> CreateTestHierarchy(Guid parentId, Guid childId, List<PartyRole> roles)
+        private async Task<Guid> CreateTestHierarchy(Guid parentId, Guid childId)
         {
             var parent = await _context.Organisations.FirstAsync(o => o.Guid == parentId);
             var child = await _context.Organisations.FirstAsync(o => o.Guid == childId);
@@ -91,7 +91,6 @@ namespace CO.CDP.OrganisationInformation.Persistence.Tests.Repositories
                 RelationshipId = relationshipId,
                 ParentOrganisationId = parent.Id,
                 ChildOrganisationId = child.Id,
-                Roles = roles,
                 CreatedOn = DateTime.UtcNow
             };
 
@@ -109,9 +108,8 @@ namespace CO.CDP.OrganisationInformation.Persistence.Tests.Repositories
         public async Task CreateRelationshipAsync_WithValidData_ShouldCreateNewRelationship()
         {
             var (parentId, childId) = await CreateTestOrganisations();
-            var roles = new List<PartyRole> { PartyRole.Buyer, PartyRole.Supplier };
 
-            var relationshipId = await _repository.CreateRelationshipAsync(parentId, childId, roles);
+            var relationshipId = await _repository.CreateRelationshipAsync(parentId, childId);
 
             relationshipId.Should().NotBeEmpty();
 
@@ -125,29 +123,20 @@ namespace CO.CDP.OrganisationInformation.Persistence.Tests.Repositories
 
             savedHierarchy!.ParentOrganisationId.Should().Be(parent.Id);
             savedHierarchy.ChildOrganisationId.Should().Be(child.Id);
-            savedHierarchy.Roles.Should().BeEquivalentTo(roles);
             savedHierarchy.CreatedOn.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromMinutes(1));
             savedHierarchy.SupersededOn.Should().BeNull();
         }
 
         [Fact]
-        public async Task CreateRelationshipAsync_WithExistingRelationship_ShouldUpdateRoles()
+        public async Task CreateRelationshipAsync_WithExistingRelationship_ShouldReturnExistingRelationshipId()
         {
             var (parentId, childId) = await CreateTestOrganisations();
-            var initialRoles = new List<PartyRole> { PartyRole.Buyer };
-            var updatedRoles = new List<PartyRole> { PartyRole.Buyer, PartyRole.Tenderer };
 
-            var initialRelationshipId = await _repository.CreateRelationshipAsync(parentId, childId, initialRoles);
+            var initialRelationshipId = await _repository.CreateRelationshipAsync(parentId, childId);
 
-            var updatedRelationshipId = await _repository.CreateRelationshipAsync(parentId, childId, updatedRoles);
+            var updatedRelationshipId = await _repository.CreateRelationshipAsync(parentId, childId);
 
             updatedRelationshipId.Should().Be(initialRelationshipId, "Should return the same relationship ID");
-
-            var savedHierarchy = await _context.OrganisationHierarchies
-                .FirstOrDefaultAsync(h => h.RelationshipId == initialRelationshipId);
-
-            savedHierarchy.Should().NotBeNull();
-            savedHierarchy!.Roles.Should().BeEquivalentTo(updatedRoles);
 
             var count = await _context.OrganisationHierarchies
                 .Include(h => h.Parent)
@@ -162,10 +151,9 @@ namespace CO.CDP.OrganisationInformation.Persistence.Tests.Repositories
         public async Task CreateRelationshipAsync_WithEmptyParentId_ShouldThrowArgumentException()
         {
             var (_, childId) = await CreateTestOrganisations();
-            var roles = new List<PartyRole> { PartyRole.Buyer };
 
             var exception = await Assert.ThrowsAsync<ArgumentException>(() =>
-                _repository.CreateRelationshipAsync(Guid.Empty, childId, roles));
+                _repository.CreateRelationshipAsync(Guid.Empty, childId));
 
             exception.Message.Should().Contain("Parent ID cannot be empty");
             exception.ParamName.Should().Be("parentId");
@@ -175,35 +163,21 @@ namespace CO.CDP.OrganisationInformation.Persistence.Tests.Repositories
         public async Task CreateRelationshipAsync_WithEmptyChildId_ShouldThrowArgumentException()
         {
             var (parentId, _) = await CreateTestOrganisations();
-            var roles = new List<PartyRole> { PartyRole.Buyer };
 
             var exception = await Assert.ThrowsAsync<ArgumentException>(() =>
-                _repository.CreateRelationshipAsync(parentId, Guid.Empty, roles));
+                _repository.CreateRelationshipAsync(parentId, Guid.Empty));
 
             exception.Message.Should().Contain("Child ID cannot be empty");
             exception.ParamName.Should().Be("childId");
         }
 
         [Fact]
-        public async Task CreateRelationshipAsync_WithEmptyRoles_ShouldThrowArgumentException()
-        {
-            var (parentId, childId) = await CreateTestOrganisations();
-
-            var exception = await Assert.ThrowsAsync<ArgumentException>(() =>
-                _repository.CreateRelationshipAsync(parentId, childId, new List<PartyRole>()));
-
-            exception.Message.Should().Contain("At least one role must be specified");
-            exception.ParamName.Should().Be("roles");
-        }
-
-        [Fact]
         public async Task CreateRelationshipAsync_WithSameParentAndChild_ShouldThrowArgumentException()
         {
             var (parentId, _) = await CreateTestOrganisations();
-            var roles = new List<PartyRole> { PartyRole.Buyer };
 
             var exception = await Assert.ThrowsAsync<ArgumentException>(() =>
-                _repository.CreateRelationshipAsync(parentId, parentId, roles));
+                _repository.CreateRelationshipAsync(parentId, parentId));
 
             exception.Message.Should().Contain("Parent and child organisations cannot be the same");
         }
@@ -213,10 +187,9 @@ namespace CO.CDP.OrganisationInformation.Persistence.Tests.Repositories
         {
             var (_, childId) = await CreateTestOrganisations();
             var nonExistentParentId = Guid.NewGuid();
-            var roles = new List<PartyRole> { PartyRole.Buyer };
 
             var exception = await Assert.ThrowsAsync<ArgumentException>(() =>
-                _repository.CreateRelationshipAsync(nonExistentParentId, childId, roles));
+                _repository.CreateRelationshipAsync(nonExistentParentId, childId));
 
             exception.Message.Should().Contain("Parent organisation with ID");
             exception.ParamName.Should().Be("parentId");
@@ -227,10 +200,9 @@ namespace CO.CDP.OrganisationInformation.Persistence.Tests.Repositories
         {
             var (parentId, _) = await CreateTestOrganisations();
             var nonExistentChildId = Guid.NewGuid();
-            var roles = new List<PartyRole> { PartyRole.Buyer };
 
             var exception = await Assert.ThrowsAsync<ArgumentException>(() =>
-                _repository.CreateRelationshipAsync(parentId, nonExistentChildId, roles));
+                _repository.CreateRelationshipAsync(parentId, nonExistentChildId));
 
             exception.Message.Should().Contain("Child organisation with ID");
             exception.ParamName.Should().Be("childId");
@@ -271,13 +243,12 @@ namespace CO.CDP.OrganisationInformation.Persistence.Tests.Repositories
             await _context.SaveChangesAsync();
             var childId3 = childOrg3.Guid;
 
-            await CreateTestHierarchy(parentId, childId1, new List<PartyRole> { PartyRole.Buyer });
-            await CreateTestHierarchy(parentId, childId2, new List<PartyRole> { PartyRole.Supplier });
+            await CreateTestHierarchy(parentId, childId1);
+            await CreateTestHierarchy(parentId, childId2);
 
             var supersededRelationshipId = await CreateTestHierarchy(
                 parentId,
-                childId3,
-                new List<PartyRole> { PartyRole.Tenderer }
+                childId3
             );
 
             var supersededRelationship = await _context.OrganisationHierarchies
@@ -328,8 +299,7 @@ namespace CO.CDP.OrganisationInformation.Persistence.Tests.Repositories
         public async Task SupersedeRelationshipAsync_WithExistingRelationship_ShouldMarkAsSuperseded()
         {
             var (parentId, childId) = await CreateTestOrganisations();
-            var roles = new List<PartyRole> { PartyRole.Buyer };
-            var relationshipId = await CreateTestHierarchy(parentId, childId, roles);
+            var relationshipId = await CreateTestHierarchy(parentId, childId);
 
             var result = await _repository.SupersedeRelationshipAsync(relationshipId);
 
