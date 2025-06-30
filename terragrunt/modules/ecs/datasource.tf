@@ -126,6 +126,20 @@ data "aws_iam_policy_document" "ecs_task_access_elasticache" {
   }
 }
 
+data "aws_iam_policy_document" "ecs_task_access_ses" {
+  statement {
+    sid    = "AllowAppToSendEmails"
+    effect = "Allow"
+    actions = [
+      "ses:SendEmail",
+      "ses:SendRawEmail"
+    ]
+    resources = [
+      "arn:aws:ses:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:identity/${var.public_domain}"
+    ]
+  }
+}
+
 data "aws_iam_policy_document" "ecs_task_serilog" {
   statement {
     sid    = "AllowSerilogCreateStreamAndLog"

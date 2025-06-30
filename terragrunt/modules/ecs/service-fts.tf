@@ -13,14 +13,6 @@ module "ecs_service_fts" {
   ecs_alb_sg_id          = var.alb_sg_id
   ecs_listener_arn       = aws_lb_listener.ecs.arn
   ecs_service_base_sg_id = var.ecs_sg_id
-  efs_volume = {
-    access_point_id    = aws_efs_access_point.fluentbit.id
-    container_path     = local.fluentbit_container_path
-    file_system_id     = aws_efs_file_system.fluentbit.id
-    iam                = "DISABLED"
-    name               = local.fluentbit_volume_name
-    transit_encryption = "ENABLED"
-  }
   family                 = "app"
   healthcheck_path       = "/Search" # @TODO (ABN) see if it has an actual healthcheck
   host_port              = var.service_configs.fts.port
