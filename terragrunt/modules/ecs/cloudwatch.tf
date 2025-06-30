@@ -35,13 +35,3 @@ resource "aws_cloudwatch_log_group" "tasks" {
 
   tags = var.tags
 }
-
-resource "aws_cloudwatch_log_group" "fts" {
-  for_each = toset(local.fts_log_groups)
-
-  name = "/ecs/fluentbit/fts/${each.value}"
-
-  retention_in_days = var.environment == "production" ? 0 : 90
-
-  tags = var.tags
-}

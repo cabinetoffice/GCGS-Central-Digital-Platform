@@ -36,12 +36,28 @@ resource "aws_iam_policy" "terraform_global" {
   tags        = var.tags
 }
 
+
+resource "aws_iam_policy" "terraform_global_ec2" {
+  name        = "${local.name_prefix}-terraform-global-ec2"
+  description = "Global policy"
+  policy      = data.aws_iam_policy_document.terraform_global_ec2.json
+  tags        = var.tags
+}
+
 resource "aws_iam_policy" "terraform_global_efs" {
   name        = "${local.name_prefix}-terraform-global-efs"
   description = "Global policy"
   policy      = data.aws_iam_policy_document.terraform_global_efs.json
   tags        = var.tags
 }
+
+resource "aws_iam_policy" "terraform_global_ses" {
+  name        = "${local.name_prefix}-terraform-global-ses"
+  description = "Global policy"
+  policy      = data.aws_iam_policy_document.terraform_global_ses.json
+  tags        = var.tags
+}
+
 
 import {
   to = aws_iam_policy.terraform_product
@@ -83,8 +99,18 @@ resource "aws_iam_role_policy_attachment" "terraform_global" {
   role       = aws_iam_role.terraform.name
 }
 
+resource "aws_iam_role_policy_attachment" "terraform_global_ec2" {
+  policy_arn = aws_iam_policy.terraform_global_ec2.arn
+  role       = aws_iam_role.terraform.name
+}
+
 resource "aws_iam_role_policy_attachment" "terraform_global_efs" {
   policy_arn = aws_iam_policy.terraform_global_efs.arn
+  role       = aws_iam_role.terraform.name
+}
+
+resource "aws_iam_role_policy_attachment" "terraform_global_ses" {
+  policy_arn = aws_iam_policy.terraform_global_ses.arn
   role       = aws_iam_role.terraform.name
 }
 
