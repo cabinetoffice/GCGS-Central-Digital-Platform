@@ -11,7 +11,6 @@ using OrganisationApiException = CO.CDP.Organisation.WebApiClient.ApiException;
 
 namespace CO.CDP.OrganisationApp.Pages.Buyer.Hierarchy;
 
-[Authorize(Policy = OrgScopeRequirement.Admin)]
 [Authorize(Policy = OrgScopeRequirement.Editor)]
 public class ChildOrganisationRemovePage(
     IOrganisationClient organisationClient,
