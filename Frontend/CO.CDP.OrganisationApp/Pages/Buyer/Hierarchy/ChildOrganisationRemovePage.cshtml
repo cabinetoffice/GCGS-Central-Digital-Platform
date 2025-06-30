@@ -62,7 +62,7 @@
                             <td class="govuk-table__cell govuk-!-width-two-thirds">
                                 @if (Model.ChildOrganisation?.Roles?.Any() == true)
                                 {
-                                    @string.Join(", ", Model.ChildOrganisation.Roles.Select(r => r.GetDisplayText()))
+                                    @Model.ChildOrganisation.Roles.GetDisplayText()
                                 }
                                 else
                                 {
