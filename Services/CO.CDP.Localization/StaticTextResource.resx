@@ -4195,4 +4195,40 @@
   <data name="OrganisationOverview_ChildOrganisations_ButtonText" xml:space="preserve">
     <value>Add</value>
   </data>
+  <data name="Global_Buyer" xml:space="preserve">
+    <value>Buyer</value>
+  </data>
+  <data name ="Global_Supplier" xml:space="preserve">
+    <value>Supplier</value>
+  </data>
+  <data name="Global_ProcuringEntity" xml:space="preserve">
+    <value>Procuring Entity</value>
+  </data>
+  <data name="Global_Supplier" xml:space="preserve">
+    <value>Supplier</value>
+  </data>
+  <data name="Global_Tenderer" xml:space="preserve">
+    <value>Tenderer</value>
+  </data>
+  <data name="Global_Funder" xml:space="preserve">
+    <value>Funder</value>
+  </data>
+  <data name="Global_Enquirer" xml:space="preserve">
+    <value>Enquirer</value>
+  </data>
+  <data name="Global_Payer" xml:space="preserve">
+    <value>Payer</value>
+  </data>
+  <data name="Global_Payee" xml:space="preserve">
+    <value>Payee</value>
+  </data>
+  <data name="Global_ReviewBody" xml:space="preserve">
+    <value>Review Body</value>
+  </data>
+  <data name="Global_InterestedParty" xml:space="preserve">
+    <value>Interested Party</value>
+  </data>
+  <data name="Global_Unknown" xml:space="preserve">
+    <value>Unknown</value>
+  </data>
 </root>

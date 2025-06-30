@@ -1,6 +1,6 @@
 @page "/organisation/{id:guid}/buyer/hierarchy/remove/child/{childId:guid}"
 @using CO.CDP.Localization
-@using CO.CDP.OrganisationApp.WebApiClients
+@using CO.CDP.OrganisationApp.Extensions
 @model ChildOrganisationRemovePage
 
 @{
@@ -60,7 +60,14 @@
                             <th scope="row"
                                 class="govuk-table__header govuk-!-width-one-third">@StaticTextResource.BuyerParentChildRelationship_RemovePage_OrganisationType</th>
                             <td class="govuk-table__cell govuk-!-width-two-thirds">
-                                @((bool)Model.ChildOrganisation?.IsBuyer() ? StaticTextResource.OrganisationRegistration_OrganisationType_Buyer : StaticTextResource.OrganisationRegistration_OrganisationType_Supplier)
+                                @if (Model.ChildOrganisation?.Roles?.Any() == true)
+                                {
+                                    @string.Join(", ", Model.ChildOrganisation.Roles.Select(r => r.GetDisplayText()))
+                                }
+                                else
+                                {
+                                    @StaticTextResource.Global_Unknown
+                                }
                             </td>
                         </tr>
                         <tr class="govuk-table__row">
