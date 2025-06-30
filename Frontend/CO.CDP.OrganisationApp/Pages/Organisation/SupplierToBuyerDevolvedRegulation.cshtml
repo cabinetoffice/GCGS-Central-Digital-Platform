@@ -3,7 +3,7 @@
 @using CO.CDP.Localization
 @model CO.CDP.OrganisationApp.Pages.Organisation.SupplierToBuyerDevolvedRegulationModel
 @{
-    ViewData["Title"] = StaticTextResource.SupplierToBuyer_DevolvedRegulation_Title;
+    ViewData["Title"] = StaticTextResource.OrganisationRegistration_BuyerDevolvedRegulation_Heading;
     var devolvedHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Devolved)).HasInnerHtml;
     var fromSummaryPage = Request.Query.ContainsKey("frm-summary");
     var fromOverviewPage = Request.Query.ContainsKey("frm-overview");
@@ -45,6 +45,10 @@
                             @ViewData["Title"]
                         </h1>
                     </legend>
+                    <div id="buyerdevolvedregulation-hint" class="govuk-hint">
+                        @StaticTextResource.OrganisationRegistration_BuyerDevolvedRegulation_Hint
+                    </div>
+
                     @if (devolvedHasError)
                     {
                         <p id="devolved-error" class="govuk-error-message">
