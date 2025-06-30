@@ -1380,12 +1380,12 @@ public static class EndpointExtensions
         app.MapPost("/{organisationId}/hierarchy/child",
                 [OrganisationAuthorize([AuthenticationChannel.OneLogin],
                     organisationPersonScopes: [Constants.OrganisationPersonScope.Admin, Constants.OrganisationPersonScope.Editor],
-                    personScopes: [Constants.PersonScope.SupportAdmin])]
+                    organisationIdLocation: OrganisationIdLocation.Path)]
                 async (Guid organisationId, CreateParentChildRelationshipRequest request, IUseCase<CreateParentChildRelationshipRequest, CreateParentChildRelationshipResult> useCase) =>
                     await useCase.Execute(request)
                         .AndThen(result => result.Success
                             ? Results.Created($"/{organisationId}/hierarchy/child/{result.RelationshipId}", result)
-                            : Results.Problem("Failed to create parent-child relationship", statusCode: StatusCodes.Status400BadRequest)))
+                            : Results.Problem(statusCode: StatusCodes.Status400BadRequest)))
             .Produces<CreateParentChildRelationshipResult>(StatusCodes.Status201Created, "application/json")
             .ProducesProblem(StatusCodes.Status400BadRequest)
             .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
@@ -1405,12 +1405,13 @@ public static class EndpointExtensions
         app.MapGet("/{organisationId}/hierarchy/children",
                 [OrganisationAuthorize([AuthenticationChannel.OneLogin, AuthenticationChannel.ServiceKey],
                     organisationPersonScopes: [Constants.OrganisationPersonScope.Admin, Constants.OrganisationPersonScope.Editor, Constants.OrganisationPersonScope.Viewer],
-                    OrganisationIdLocation.Path)]
+                    organisationIdLocation: OrganisationIdLocation.Path)]
                 async (Guid organisationId, IUseCase<Guid, GetChildOrganisationsResponse> useCase) =>
                     await useCase.Execute(organisationId)
                         .AndThen(response => response.Success
                             ? Results.Ok(response.ChildOrganisations)
-                            : Results.Problem("Failed to retrieve child organisations", statusCode: StatusCodes.Status500InternalServerError)))
+                            : Results.Problem(statusCode: StatusCodes.Status500InternalServerError))
+                        )
             .Produces<IEnumerable<OrganisationSummary>>(StatusCodes.Status200OK, "application/json")
             .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
             .ProducesProblem(StatusCodes.Status500InternalServerError)
@@ -1428,7 +1429,7 @@ public static class EndpointExtensions
         app.MapDelete("/{organisationId}/hierarchy/child/{childOrganisationId}",
                 [OrganisationAuthorize([AuthenticationChannel.OneLogin],
                     organisationPersonScopes: [Constants.OrganisationPersonScope.Admin, Constants.OrganisationPersonScope.Editor],
-                    personScopes: [Constants.PersonScope.SupportAdmin])]
+                    organisationIdLocation: OrganisationIdLocation.Path)]
                 async (Guid organisationId, Guid childOrganisationId, [FromServices] ISupersedeChildOrganisationUseCase useCase) =>
                 {
                     var request = new SupersedeChildOrganisationRequest
@@ -1442,7 +1443,7 @@ public static class EndpointExtensions
                             ? Results.NoContent()
                             : result.NotFound
                                 ? Results.NotFound()
-                                : Results.Problem("Failed to supersede child organisation relationship", statusCode: StatusCodes.Status400BadRequest));
+                                : Results.Problem(statusCode: StatusCodes.Status400BadRequest));
                 })
             .Produces(StatusCodes.Status204NoContent)
             .ProducesProblem(StatusCodes.Status400BadRequest)
