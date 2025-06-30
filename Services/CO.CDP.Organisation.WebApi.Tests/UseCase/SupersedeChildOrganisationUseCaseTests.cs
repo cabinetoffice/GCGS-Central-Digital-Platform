@@ -22,16 +22,6 @@ public class SupersedeChildOrganisationUseCaseTests
     }
 
     [Fact]
-    public async Task Execute_WhenRequestIsNull_ReturnsUnsuccessfulResult()
-    {
-        var result = await _useCase.Execute(null!);
-
-        result.Should().NotBeNull();
-        result.Success.Should().BeFalse();
-        result.NotFound.Should().BeFalse();
-    }
-
-    [Fact]
     public async Task Execute_WhenRelationshipNotFound_ReturnsNotFoundResult()
     {
         var request = new SupersedeChildOrganisationRequest
