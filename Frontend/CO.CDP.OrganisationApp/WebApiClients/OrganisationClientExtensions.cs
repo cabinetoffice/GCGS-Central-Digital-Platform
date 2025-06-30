@@ -1,6 +1,8 @@
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
+using System.Linq;
+using System.Net;
 using DevolvedRegulation = CO.CDP.OrganisationApp.Constants.DevolvedRegulation;
 
 namespace CO.CDP.OrganisationApp.WebApiClients;
@@ -219,6 +221,39 @@ internal static class OrganisationClientExtensions
         catch (ApiException ex) when (ex.StatusCode == 404)
         {
             return new List<OrganisationSummary>();
+        }
+    }
+
+    internal static async Task<ICollection<OrganisationSearchResult>> SearchOrganisationAsync(
+        this IOrganisationClient organisationClient,
+        string name,
+        string role,
+        int limit,
+        double threshold)
+    {
+        try
+        {
+            var searchResults = await organisationClient.SearchOrganisationAsync(name, role, limit, threshold);
+            return searchResults ?? new List<OrganisationSearchResult>();
+        }
+        catch (HttpRequestException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
+        {
+            return new List<OrganisationSearchResult>();
+        }
+    }
+
+    internal static async Task<Organisation.WebApiClient.Organisation?> LookupOrganisationAsync(
+        this IOrganisationClient organisationClient,
+        string? name,
+        string? identifier)
+    {
+        try
+        {
+            return await organisationClient.LookupOrganisationAsync(name, identifier);
+        }
+        catch (ApiException ex) when (ex.StatusCode == 404)
+        {
+            return null;
         }
     }
 }
