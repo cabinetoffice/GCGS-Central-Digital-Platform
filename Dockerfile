@@ -17,8 +17,8 @@ FROM mcr.microsoft.com/dotnet/aspnet:${ASPNET_VERSION}-noble-chiseled-extra AS b
 ARG NUGET_PACKAGES
 ENV NUGET_PACKAGES="${NUGET_PACKAGES}"
 COPY --from=packages /usr/bin/nc /usr/bin/nc
-COPY --from=packages /lib/x86_64-linux-gnu/libbsd.so.0 /lib/x86_64-linux-gnu/libbsd.so.0
-COPY --from=packages /lib/x86_64-linux-gnu/libmd.so.0 /lib/x86_64-linux-gnu/libmd.so.0
+#COPY --from=packages /lib/x86_64-linux-gnu/libbsd.so.0 /lib/x86_64-linux-gnu/libbsd.so.0
+#COPY --from=packages /lib/x86_64-linux-gnu/libmd.so.0 /lib/x86_64-linux-gnu/libmd.so.0
 COPY --from=packages /usr/bin/fc-cache /usr/bin/fc-cache
 COPY --from=packages /usr/share/fonts/truetype/dejavu /usr/share/fonts/truetype/dejavu
 USER $APP_UID
