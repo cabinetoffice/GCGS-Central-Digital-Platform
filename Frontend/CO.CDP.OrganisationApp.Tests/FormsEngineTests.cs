@@ -464,7 +464,7 @@ public class FormsEngineTests
                 payload.Answers.Count == 1 &&
                 payload.Answers.Any(a =>
                     (!expectedAnswer.BoolValue.HasValue || a.BoolValue == expectedAnswer.BoolValue.Value) &&
-                    (!expectedAnswer.NumericValue.HasValue || a.NumericValue == expectedAnswer.NumericValue.Value) &&
+                    (!expectedAnswer.NumericValue.HasValue || a.NumericValue.Value == expectedAnswer.NumericValue.Value) &&
                     (!expectedAnswer.DateValue.HasValue || a.DateValue == expectedAnswer.DateValue.Value) &&
                     (expectedAnswer.TextValue == null || a.TextValue == expectedAnswer.TextValue) &&
                     (expectedAnswer.OptionValue == null || a.OptionValue == expectedAnswer.OptionValue)
@@ -490,7 +490,7 @@ public class FormsEngineTests
                 payload.Answers.Count == 1 &&
                 payload.Answers.Any(a =>
                     (!expectedAnswer.BoolValue.HasValue || a.BoolValue == expectedAnswer.BoolValue.Value) &&
-                    (!expectedAnswer.NumericValue.HasValue || a.NumericValue == expectedAnswer.NumericValue.Value) &&
+                    (!expectedAnswer.NumericValue.HasValue || a.NumericValue.Value == expectedAnswer.NumericValue.Value) &&
                     (!expectedAnswer.DateValue.HasValue || a.DateValue == expectedAnswer.DateValue.Value) &&
                     (expectedAnswer.TextValue == null || a.TextValue == expectedAnswer.TextValue) &&
                     (expectedAnswer.OptionValue == null || a.OptionValue == expectedAnswer.OptionValue)
