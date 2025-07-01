@@ -41,9 +41,8 @@
 
 <br/>
 
-<h2 class="govuk-heading-m">
-    @(string.Format(StaticTextResource.Support_OrganisationApproval_OrganisationsCountHeading, Model.TotalOrganisations))
-</h2>
+<h1 class="govuk-heading-l" style="margin-bottom:5px">Search results</h1>
+<p class="govuk-body">@(string.Format(StaticTextResource.PponSearch_ResultsCountHeading, Model.TotalOrganisations))</p>
 
 @{
     foreach (var org in Model.Organisations)
