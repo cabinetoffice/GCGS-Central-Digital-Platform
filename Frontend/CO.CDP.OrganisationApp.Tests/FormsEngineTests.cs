@@ -464,7 +464,7 @@ public class FormsEngineTests
                 payload.Answers.Count == 1 &&
                 payload.Answers.Any(a =>
                     (!expectedAnswer.BoolValue.HasValue || a.BoolValue == expectedAnswer.BoolValue.Value) &&
-                    (!expectedAnswer.NumericValue.HasValue || a.NumericValue.Value == expectedAnswer.NumericValue.Value) &&
+                    (!expectedAnswer.NumericValue.HasValue || (a.NumericValue.HasValue && a.NumericValue.Value == expectedAnswer.NumericValue.Value)) &&
                     (!expectedAnswer.DateValue.HasValue || a.DateValue == expectedAnswer.DateValue.Value) &&
                     (expectedAnswer.TextValue == null || a.TextValue == expectedAnswer.TextValue) &&
                     (expectedAnswer.OptionValue == null || a.OptionValue == expectedAnswer.OptionValue)
@@ -490,7 +490,7 @@ public class FormsEngineTests
                 payload.Answers.Count == 1 &&
                 payload.Answers.Any(a =>
                     (!expectedAnswer.BoolValue.HasValue || a.BoolValue == expectedAnswer.BoolValue.Value) &&
-                    (!expectedAnswer.NumericValue.HasValue || a.NumericValue.Value == expectedAnswer.NumericValue.Value) &&
+                    (!expectedAnswer.NumericValue.HasValue || (a.NumericValue.HasValue && a.NumericValue.Value == expectedAnswer.NumericValue.Value)) &&
                     (!expectedAnswer.DateValue.HasValue || a.DateValue == expectedAnswer.DateValue.Value) &&
                     (expectedAnswer.TextValue == null || a.TextValue == expectedAnswer.TextValue) &&
                     (expectedAnswer.OptionValue == null || a.OptionValue == expectedAnswer.OptionValue)
@@ -936,7 +936,7 @@ public class FormsEngineTests
         var methodInfo = typeof(FormsEngine).GetMethod("IsQuestionAnswered",
             System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
 
-        var result = (bool)methodInfo.Invoke(_formsEngine, new object[] { noInputQuestion, answerState });
+        var result = (bool?)methodInfo.Invoke(_formsEngine, new object[] { noInputQuestion, answerState });
 
         result.Should()
             .BeTrue("because NoInput questions should be considered answered when they exist in the answer collection");
@@ -961,7 +961,7 @@ public class FormsEngineTests
         var methodInfo = typeof(FormsEngine).GetMethod("IsQuestionAnswered",
             System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
 
-        var result = (bool)methodInfo.Invoke(_formsEngine, new object[] { noInputQuestion, answerState });
+        var result = (bool?)methodInfo.Invoke(_formsEngine, new object[] { noInputQuestion, answerState });
 
         result.Should()
             .BeFalse(
@@ -1116,7 +1116,7 @@ public class FormsEngineTests
     [InlineData("option1", "{\"value\":\"data\"}", true, "SingleChoice with both OptionValue and JsonValue should be considered answered")]
     [InlineData(null, null, false, "SingleChoice with neither OptionValue nor JsonValue should be considered unanswered")]
     [InlineData("", "", false, "SingleChoice with empty strings for both OptionValue and JsonValue should be considered unanswered")]
-    public void IsQuestionAnswered_SingleChoiceQuestion_ReturnsExpectedResult(string optionValue, string jsonValue,
+    public void IsQuestionAnswered_SingleChoiceQuestion_ReturnsExpectedResult(string? optionValue, string? jsonValue,
         bool expectedResult, string becauseMessage)
     {
         var questionId = Guid.NewGuid();
@@ -1537,7 +1537,7 @@ public class FormsEngineTests
     [InlineData(false, null, null, false, "a non-required file upload question with no answer should not be considered answered")]
     [InlineData(false, null, "TextValue", true, "a non-required file upload question with TextValue but null BoolValue should be considered answered")]
     [InlineData(true, null, "TextValue", true, "a required file upload question with TextValue but null BoolValue should be considered answered")]
-    public void IsQuestionAnswered_FileUploadQuestion_ReturnsExpectedResult(bool isRequired, bool? boolValue, string textValue, bool expectedResult, string becauseMessage)
+    public void IsQuestionAnswered_FileUploadQuestion_ReturnsExpectedResult(bool isRequired, bool? boolValue, string? textValue, bool expectedResult, string becauseMessage)
     {
         var questionId = Guid.NewGuid();
         var fileUploadQuestion = new FormQuestion
@@ -1673,7 +1673,7 @@ public class FormsEngineTests
     [InlineData(FormQuestionType.Date, false, false, null, true, "a non-required date question with explicit false BoolValue should be considered answered")]
     [InlineData(FormQuestionType.Date, true, false, null, false, "a required date question with explicit false BoolValue should not be considered answered")]
     [InlineData(FormQuestionType.Date, false, true, "not null", true, "a non-required date question with date should be considered answered")] // "not null" will be used to set a date value
-    public void IsQuestionAnswered_NonRequiredOptionalQuestions_ReturnsExpectedResult(FormQuestionType questionType, bool isRequired, bool? boolValue, string textOrDateValue, bool expectedResult, string becauseMessage)
+    public void IsQuestionAnswered_NonRequiredOptionalQuestions_ReturnsExpectedResult(FormQuestionType questionType, bool isRequired, bool? boolValue, string? textOrDateValue, bool expectedResult, string becauseMessage)
     {
         var questionId = Guid.NewGuid();
         var question = new FormQuestion
