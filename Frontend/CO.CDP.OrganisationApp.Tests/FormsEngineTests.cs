@@ -1735,7 +1735,7 @@ public class FormsEngineTests
                     ? new FormAnswer { TextValue = "sample-file.pdf" }
                     : new FormAnswer { BoolValue = false, TextValue = null }
             },
-            _ => throw new ArgumentException($"Unsupported question type: {questionType}", nameof(questionType))
+            _ => throw new ArgumentException($@"Unsupported question type: {questionType}", nameof(questionType))
         };
     }
 }
