@@ -20,11 +20,12 @@ internal static class OrganisationFactory
             addresses: addresses ??
             [
                 new Address(
-                    type: AddressType.Registered,
+                    type: AddressType.Postal,
                     streetAddress: "123 Test Street",
                     locality: "Test City",
                     region: "Test Region",
                     postalCode: "T1 2ST",
+                    country: "GB",
                     countryName: "United Kingdom"
                 )
             ],
