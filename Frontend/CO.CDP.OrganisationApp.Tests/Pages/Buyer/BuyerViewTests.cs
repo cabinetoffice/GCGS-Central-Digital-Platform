@@ -1,3 +1,4 @@
+using CO.CDP.Localization;
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Pages.Buyer;
@@ -85,5 +86,11 @@ public class BuyerViewTests
 
         _model.Tiles.Should().NotBeEmpty();
         _model.Tiles.Should().HaveCount(3);
+        _model.Tiles[0].Title.Should().Be(StaticTextResource.BuyerView_TileOne_Title);
+        _model.Tiles[0].Body.Should().Be(StaticTextResource.BuyerView_TileOne_Body);
+        _model.Tiles[1].Title.Should().Be(StaticTextResource.BuyerView_TileTwo_Title);
+        _model.Tiles[1].Body.Should().Be(StaticTextResource.BuyerView_TileTwo_Body);
+        _model.Tiles[2].Title.Should().Be(StaticTextResource.BuyerView_TileThree_Title);
+        _model.Tiles[2].Body.Should().Be(StaticTextResource.BuyerView_TileThree_Body);
     }
 }

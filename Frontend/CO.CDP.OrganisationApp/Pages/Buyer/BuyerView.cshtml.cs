@@ -4,10 +4,14 @@ using CO.CDP.OrganisationApp.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.FeatureManagement;
+using CO.CDP.Localization;
 
 namespace CO.CDP.OrganisationApp.Pages.Buyer;
 
-public class BuyerView(IFeatureManager featureManager, IOrganisationClient organisationClient) : PageModel
+public class BuyerView(
+    IFeatureManager featureManager,
+    IOrganisationClient organisationClient)
+    : PageModel
 {
     [BindProperty(SupportsGet = true)]
     public Guid Id { get; set; }
@@ -31,20 +35,20 @@ public class BuyerView(IFeatureManager featureManager, IOrganisationClient organ
         [
             new Tile
             {
-                Title = "View your organisation details",
-                Body = "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.",
+                Title = StaticTextResource.BuyerView_TileOne_Title,
+                Body = StaticTextResource.BuyerView_TileOne_Body,
                 Href = "#"
             },
             new Tile
             {
-                Title = "Public procurement organisation number (PPON) register",
-                Body = "Quisque blandit tellus ac sapien rutrum vehicula praesent vel gravida felis.",
+                Title = StaticTextResource.BuyerView_TileTwo_Title,
+                Body = StaticTextResource.BuyerView_TileTwo_Body,
                 Href = "#"
             },
             new Tile
             {
-                Title = "Statement of work assurance tool",
-                Body = "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.",
+                Title = StaticTextResource.BuyerView_TileThree_Title,
+                Body = StaticTextResource.BuyerView_TileThree_Body,
                 Href = "#"
             }
         ];
