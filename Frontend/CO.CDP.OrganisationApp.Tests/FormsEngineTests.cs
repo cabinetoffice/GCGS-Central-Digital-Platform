@@ -936,7 +936,8 @@ public class FormsEngineTests
         var methodInfo = typeof(FormsEngine).GetMethod("IsQuestionAnswered",
             System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
 
-        var result = (bool?)methodInfo.Invoke(_formsEngine, new object[] { noInputQuestion, answerState });
+        methodInfo.Should().NotBeNull("because the private method 'IsQuestionAnswered' should be found");
+        var result = (bool?)methodInfo!.Invoke(_formsEngine, new object[] { noInputQuestion, answerState });
 
         result.Should()
             .BeTrue("because NoInput questions should be considered answered when they exist in the answer collection");
@@ -961,7 +962,8 @@ public class FormsEngineTests
         var methodInfo = typeof(FormsEngine).GetMethod("IsQuestionAnswered",
             System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
 
-        var result = (bool?)methodInfo.Invoke(_formsEngine, new object[] { noInputQuestion, answerState });
+        methodInfo.Should().NotBeNull("because the private method 'IsQuestionAnswered' should be found");
+        var result = (bool?)methodInfo!.Invoke(_formsEngine, new object[] { noInputQuestion, answerState });
 
         result.Should()
             .BeFalse(
@@ -1105,7 +1107,8 @@ public class FormsEngineTests
         var methodInfo = typeof(FormsEngine).GetMethod("IsQuestionAnswered",
             System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
 
-        var result = (bool?)methodInfo.Invoke(_formsEngine, new object[] { textQuestion, answerState });
+        methodInfo.Should().NotBeNull("because the private method 'IsQuestionAnswered' should be found");
+        var result = (bool?)methodInfo!.Invoke(_formsEngine, new object[] { textQuestion, answerState });
 
         result.Should().BeFalse("because a required question with a null answer should be considered unanswered");
     }
@@ -1147,7 +1150,8 @@ public class FormsEngineTests
         var methodInfo = typeof(FormsEngine).GetMethod("IsQuestionAnswered",
             System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
 
-        var result = (bool?)methodInfo.Invoke(_formsEngine, new object[] { singleChoiceQuestion, answerState });
+        methodInfo.Should().NotBeNull("because the private method 'IsQuestionAnswered' should be found");
+        var result = (bool?)methodInfo!.Invoke(_formsEngine, new object[] { singleChoiceQuestion, answerState });
 
         result.Should().Be(expectedResult, becauseMessage);
     }
@@ -1569,7 +1573,8 @@ public class FormsEngineTests
         var methodInfo = typeof(FormsEngine).GetMethod("IsQuestionAnswered",
             System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
 
-        var result = (bool?)methodInfo.Invoke(_formsEngine, new object[] { fileUploadQuestion, answerState });
+        methodInfo.Should().NotBeNull("because the private method 'IsQuestionAnswered' should be found");
+        var result = (bool?)methodInfo!.Invoke(_formsEngine, new object[] { fileUploadQuestion, answerState });
 
         result.Should().Be(expectedResult, becauseMessage);
     }
@@ -1594,7 +1599,8 @@ public class FormsEngineTests
         var methodInfo = typeof(FormsEngine).GetMethod("IsQuestionAnswered",
             System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
 
-        var result = (bool?)methodInfo.Invoke(_formsEngine, new object[] { fileUploadQuestion, answerState });
+        methodInfo.Should().NotBeNull("because the private method 'IsQuestionAnswered' should be found");
+        var result = (bool?)methodInfo!.Invoke(_formsEngine, new object[] { fileUploadQuestion, answerState });
 
         result.Should().BeFalse("because a file upload question with no answer at all should be considered unanswered");
     }
@@ -1626,7 +1632,8 @@ public class FormsEngineTests
         var methodInfo = typeof(FormsEngine).GetMethod("IsQuestionAnswered",
             System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
 
-        var result = (bool?)methodInfo.Invoke(_formsEngine, new object[] { fileUploadQuestion, answerState });
+        methodInfo.Should().NotBeNull("because the private method 'IsQuestionAnswered' should be found");
+        var result = (bool?)methodInfo!.Invoke(_formsEngine, new object[] { fileUploadQuestion, answerState });
 
         result.Should().BeFalse("because a file upload question with an empty answer should be considered unanswered");
     }
@@ -1658,7 +1665,8 @@ public class FormsEngineTests
         var methodInfo = typeof(FormsEngine).GetMethod("IsQuestionAnswered",
             System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
 
-        var result = (bool?)methodInfo.Invoke(_formsEngine, new object[] { fileUploadQuestion, answerState });
+        methodInfo.Should().NotBeNull("because the private method 'IsQuestionAnswered' should be found");
+        var result = (bool?)methodInfo!.Invoke(_formsEngine, new object[] { fileUploadQuestion, answerState });
 
         result.Should().BeFalse("because a file upload question with an empty string TextValue should be considered unanswered");
     }
@@ -1714,7 +1722,8 @@ public class FormsEngineTests
         var methodInfo = typeof(FormsEngine).GetMethod("IsQuestionAnswered",
             System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
 
-        var result = (bool?)methodInfo.Invoke(_formsEngine, new object[] { question, answerState });
+        methodInfo.Should().NotBeNull("because the private method 'IsQuestionAnswered' should be found");
+        var result = (bool?)methodInfo!.Invoke(_formsEngine, new object[] { question, answerState });
 
         result.Should().Be(expectedResult, becauseMessage);
     }
