@@ -1,0 +1,35 @@
+@page "/organisation/{id:guid}/buyer"
+@model CO.CDP.OrganisationApp.Pages.Buyer.BuyerView
+
+@{
+    ViewData["Title"] = "Buyer View";
+}
+
+<main class="govuk-main-wrapper">
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
+
+            <h1 class="govuk-heading-xl">Buyer View</h1>
+
+            <div class="govuk-grid-row">
+                <div class="govuk-grid-column-two-thirds">
+                    <p class="govuk-body">
+                        Find out more about your organisation details or undertake other actions to facilitate your
+                        procurement process.
+                    </p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="govuk-grid-row">
+        @foreach (var tile in Model.Tiles)
+        {
+            <div class="govuk-grid-column-one-third">
+                <partial name="Shared/_Tile" model="tile"/>
+            </div>
+        }
+    </div>
+</main>
