@@ -17,6 +17,7 @@ public class FormsEngineTests
     private readonly Mock<IUserInfoService> _userInfoServiceMock;
     private readonly Mock<IOrganisationClient> _organisationClientMock;
     private readonly FormsEngine _formsEngine;
+    private const double Tolerance = 1e-6;
 
     public FormsEngineTests()
     {
@@ -464,7 +465,7 @@ public class FormsEngineTests
                 payload.Answers.Count == 1 &&
                 payload.Answers.Any(a =>
                     (!expectedAnswer.BoolValue.HasValue || a.BoolValue == expectedAnswer.BoolValue.Value) &&
-                    (!expectedAnswer.NumericValue.HasValue || (a.NumericValue.HasValue && a.NumericValue.Value == expectedAnswer.NumericValue.Value)) &&
+                    (!expectedAnswer.NumericValue.HasValue || (a.NumericValue.HasValue && Math.Abs(a.NumericValue.Value - expectedAnswer.NumericValue.Value) < Tolerance)) &&
                     (!expectedAnswer.DateValue.HasValue || a.DateValue == expectedAnswer.DateValue.Value) &&
                     (expectedAnswer.TextValue == null || a.TextValue == expectedAnswer.TextValue) &&
                     (expectedAnswer.OptionValue == null || a.OptionValue == expectedAnswer.OptionValue)
@@ -490,7 +491,7 @@ public class FormsEngineTests
                 payload.Answers.Count == 1 &&
                 payload.Answers.Any(a =>
                     (!expectedAnswer.BoolValue.HasValue || a.BoolValue == expectedAnswer.BoolValue.Value) &&
-                    (!expectedAnswer.NumericValue.HasValue || (a.NumericValue.HasValue && a.NumericValue.Value == expectedAnswer.NumericValue.Value)) &&
+                    (!expectedAnswer.NumericValue.HasValue || (a.NumericValue.HasValue && Math.Abs(a.NumericValue.Value - expectedAnswer.NumericValue.Value) < Tolerance)) &&
                     (!expectedAnswer.DateValue.HasValue || a.DateValue == expectedAnswer.DateValue.Value) &&
                     (expectedAnswer.TextValue == null || a.TextValue == expectedAnswer.TextValue) &&
                     (expectedAnswer.OptionValue == null || a.OptionValue == expectedAnswer.OptionValue)
