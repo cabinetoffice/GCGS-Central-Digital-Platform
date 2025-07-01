@@ -13,11 +13,11 @@ resource "aws_instance" "fts_db_import" {
 
   ami           = data.aws_ami.al2_latest[0].id
   instance_type = "t3.medium"
-  subnet_id     = var.private_subnet_ids[0]
+  subnet_id     = var.public_subnet_ids[0]
 
   key_name = aws_key_pair.import_key.key_name
 
-  vpc_security_group_ids = [var.ec2_sg_id] # SG allowing outbound to DB on 3306
+  vpc_security_group_ids = [var.ec2_sg_id]
 
   tags = merge(
     var.tags,
