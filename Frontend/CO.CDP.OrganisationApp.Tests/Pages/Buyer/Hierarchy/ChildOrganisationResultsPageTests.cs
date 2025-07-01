@@ -589,4 +589,71 @@ public class ChildOrganisationResultsPageTests
             type: OrganisationType.Organisation
         );
     }
+
+    [Fact]
+    public async Task OnGetAsync_WithNameSearch_FiltersOutParentOrganisation()
+    {
+        var parentId = Guid.NewGuid();
+        const string query = "test organisation";
+
+        _model.Id = parentId;
+        _model.Query = query;
+
+        var searchResults = new List<OrganisationSearchResult>
+        {
+            CreateTestSearchResult("Parent Organisation", parentId, "DUNS", "123456789"),
+            CreateTestSearchResult("Child Organisation 1", Guid.NewGuid(), "DUNS", "987654321"),
+            CreateTestSearchResult("Child Organisation 2", Guid.NewGuid(), "PPON", "555444333")
+        };
+
+        _mockOrganisationClient
+            .Setup(client => client.SearchOrganisationAsync(
+                query, "buyer", 20, 0.3))
+            .ReturnsAsync(searchResults);
+
+        await _model.OnGetAsync();
+
+        _model.Results.Should().HaveCount(2);
+        _model.Results.Should().NotContain(o => o.OrganisationId == parentId);
+        _model.Results.Should().Contain(o => o.Name == "Child Organisation 1");
+        _model.Results.Should().Contain(o => o.Name == "Child Organisation 2");
+    }
+
+    [Fact]
+    public async Task OnGetAsync_WithPponSearch_FiltersOutParentOrganisation()
+    {
+        var parentId = Guid.NewGuid();
+        const string query = "GB-PPON-12345";
+        const string expectedIdentifier = "GB-PPON:12345";
+
+        _model.Id = parentId;
+        _model.Query = query;
+
+        var organisation = new CDP.Organisation.WebApiClient.Organisation(
+            additionalIdentifiers: [],
+            addresses: [],
+            contactPoint: new ContactPoint("test@example.com", "Contact Name", "123456789", new Uri("http://example.com")),
+            id: parentId,
+            identifier: new Identifier(expectedIdentifier, "Legal Name", "PPON", new Uri("http://identifier.example")),
+            name: "Parent Organisation",
+            type: OrganisationType.Organisation,
+            roles: [PartyRole.Buyer],
+            details: new Details(
+                approval: null,
+                buyerInformation: null,
+                pendingRoles: [],
+                publicServiceMissionOrganization: null,
+                scale: null,
+                shelteredWorkshop: null,
+                vcse: null)
+        );
+
+        _mockOrganisationClient
+            .Setup(client => client.LookupOrganisationAsync(null, expectedIdentifier))
+            .ReturnsAsync(organisation);
+
+        await _model.OnGetAsync();
+
+        _model.Results.Should().BeEmpty();
+    }
 }

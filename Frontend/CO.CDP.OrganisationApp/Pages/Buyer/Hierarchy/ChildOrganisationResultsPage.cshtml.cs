@@ -167,9 +167,12 @@ public class ChildOrganisationResultsPage(
             name: null,
             identifier: pponIdentifier);
 
-        return organisation != null
-            ? (new List<ChildOrganisation> { MapOrganisationLookupResultToChildOrganisation(organisation) }, null)
-            : (new List<ChildOrganisation>(), StaticTextResource.BuyerParentChildRelationship_ResultsPage_NoResults);
+        if (organisation == null || organisation.Id == Id)
+        {
+            return (new List<ChildOrganisation>(), StaticTextResource.BuyerParentChildRelationship_ResultsPage_NoResults);
+        }
+
+        return (new List<ChildOrganisation> { MapOrganisationLookupResultToChildOrganisation(organisation) }, null);
     }
 
     private async Task<(List<ChildOrganisation> Results, string? ErrorMessage)> ExecuteNameSearch()
@@ -180,8 +183,13 @@ public class ChildOrganisationResultsPage(
             limit: 20,
             threshold: 0.3);
 
-        return searchResults.Any()
-            ? (searchResults.Select(MapOrganisationSearchResultToChildOrganisation).ToList(), null)
+        var filteredResults = searchResults
+            .Where(org => org.Id != Id)
+            .Select(MapOrganisationSearchResultToChildOrganisation)
+            .ToList();
+
+        return filteredResults.Count != 0
+            ? (filteredResults, null)
             : (new List<ChildOrganisation>(), StaticTextResource.BuyerParentChildRelationship_ResultsPage_NoResults);
     }
 
