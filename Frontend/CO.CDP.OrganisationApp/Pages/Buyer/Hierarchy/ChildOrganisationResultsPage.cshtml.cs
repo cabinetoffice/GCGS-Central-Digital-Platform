@@ -22,7 +22,7 @@ public class ChildOrganisationResultsPage(
 
     [BindProperty(SupportsGet = true)] public Guid Id { get; set; }
 
-    [BindProperty(SupportsGet = true)] public string? Query { get; set; }
+    [BindProperty(SupportsGet = true)] public string Query { get; set; } = string.Empty;
 
     public List<ChildOrganisation> Results { get; set; } = new();
 
