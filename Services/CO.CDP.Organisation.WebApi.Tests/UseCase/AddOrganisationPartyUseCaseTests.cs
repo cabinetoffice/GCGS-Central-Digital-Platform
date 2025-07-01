@@ -139,7 +139,7 @@ public class AddOrganisationPartyUseCaseTests
         _orgRepoMock.Setup(repo => repo.Find(organisationId)).ReturnsAsync(parentOrg);
         _orgRepoMock.Setup(repo => repo.Find(childOrganisationId)).ReturnsAsync(childOrg);
         _shareCodeRepoMock.Setup(repo => repo.GetShareCodesAsync(childOrganisationId)).ReturnsAsync([sharedConsent]);
-        _orgRepoMock.Setup(r => r.FindOrganisationPersons(parentOrg.Guid, It.IsAny<IEnumerable<string>>())).ReturnsAsync([adminPerson]);
+        _orgRepoMock.Setup(r => r.FindOrganisationPersons(childOrg.Guid, It.IsAny<IEnumerable<string>>())).ReturnsAsync([adminPerson]);
         _claimServiceMock.Setup(c => c.GetUserUrn()).Returns("user-urn");
         _personRepoMock.Setup(r => r.FindByUrn("user-urn")).ReturnsAsync(user);
         _notifyClientMock.Setup(c => c.SendEmail(It.IsAny<EmailNotificationRequest>()))

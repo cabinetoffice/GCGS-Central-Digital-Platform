@@ -68,7 +68,7 @@ public class AddOrganisationPartyUseCase(
         OrganisationInformation.Persistence.Organisation childOrganisation)
     {
         var templateId = configuration.GetValue<string>("GOVUKNotify:ConsortiumOrganisationAddedEmailTemplateId") ?? "";
-        var orgAdmins = await orgRepo.FindOrganisationPersons(parentOrganisation.Guid, [Constants.OrganisationPersonScope.Admin]);
+        var orgAdmins = await orgRepo.FindOrganisationPersons(childOrganisation.Guid, [Constants.OrganisationPersonScope.Admin]);
 
         var userUrn = claimService.GetUserUrn()
                         ?? throw new UnknownPersonException("Ensure the token is valid and contains the necessary claims.");
