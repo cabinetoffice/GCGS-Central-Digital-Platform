@@ -6,6 +6,7 @@ using CO.CDP.OrganisationApp.WebApiClients;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.FeatureManagement;
 using DevolvedRegulation = CO.CDP.OrganisationApp.Constants.DevolvedRegulation;
 using OrganisationApiException = CO.CDP.Organisation.WebApiClient.ApiException;
 using OrganisationWebApiClient = CO.CDP.Organisation.WebApiClient;
@@ -13,7 +14,11 @@ using OrganisationWebApiClient = CO.CDP.Organisation.WebApiClient;
 namespace CO.CDP.OrganisationApp.Pages.Organisation;
 
 [Authorize(Policy = OrgScopeRequirement.Viewer)]
-public class OrganisationOverviewModel(IOrganisationClient organisationClient, IPponClient pponClient) : PageModel
+public class OrganisationOverviewModel(
+    IOrganisationClient organisationClient,
+    IPponClient pponClient,
+    IFeatureManager featureManager)
+    : PageModel
 {
     public OrganisationWebApiClient.Organisation? OrganisationDetails { get; set; }
 
@@ -31,10 +36,14 @@ public class OrganisationOverviewModel(IOrganisationClient organisationClient, I
 
     public string MouSignedOnDate { get; set; } = "";
 
+    public bool SearchRegistryPponEnabled { get; private set; }
+
     public async Task<IActionResult> OnGet()
     {
         try
         {
+            SearchRegistryPponEnabled = await featureManager.IsEnabledAsync(FeatureFlags.SearchRegistryPpon);
+
             OrganisationDetails = await organisationClient.GetOrganisationAsync(Id);
 
             if (OrganisationDetails.Type == OrganisationWebApiClient.OrganisationType.InformalConsortium)
