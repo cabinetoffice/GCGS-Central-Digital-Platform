@@ -2,6 +2,7 @@ using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Pages.Organisation;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.FeatureManagement;
 using Moq;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages;
@@ -10,12 +11,14 @@ public class OrganisationOverviewTest
 {
     private readonly Mock<IOrganisationClient> _organisationClientMock;
     private readonly Mock<EntityVerificationClient.IPponClient> _pponClient = new();
+    private readonly Mock<IFeatureManager> _featureManagerMock;
     private readonly OrganisationOverviewModel _model;
 
     public OrganisationOverviewTest()
     {
         _organisationClientMock = new Mock<IOrganisationClient>();
-        _model = new OrganisationOverviewModel(_organisationClientMock.Object, _pponClient.Object);
+        _featureManagerMock = new Mock<IFeatureManager>();
+        _model = new OrganisationOverviewModel(_organisationClientMock.Object, _pponClient.Object, _featureManagerMock.Object);
     }
 
     [Fact]

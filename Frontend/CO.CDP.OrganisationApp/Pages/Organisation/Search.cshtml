@@ -1,0 +1,90 @@
+@page "/organisation/search/buyer"
+@using CO.CDP.Localization
+@using CO.CDP.OrganisationApp.Pages.Shared
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model SearchModel
+
+@{
+    ViewData["Title"] = Model.Title;
+    var queryValue = Request.Query["q"];
+}
+
+<h1 class="govuk-heading-l">@ViewData["Title"]</h1>
+
+<div class="govuk-grid-row govuk-!-margin-bottom-5">
+    <form method="get">
+        <div class="govuk-grid-column-one-half govuk-!-margin-bottom-3">
+            <label class="govuk-label" for="organisation-search-input">
+                @Model.SearchTitle
+            </label>
+            <input class="govuk-input" id="organisation-search-input" name="q" type="text" value="@queryValue">
+        </div>
+
+        <div class="govuk-grid-column-full">
+            <button type="submit" class="govuk-button" data-module="govuk-button" data-govuk-button-init="">
+                @StaticTextResource.Global_Filter
+            </button>
+        </div>
+    </form>
+</div>
+
+<details class="govuk-details">
+    <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      @StaticTextResource.PponSearch_Ppon_Desc_Title
+    </span>
+    </summary>
+    <div class="govuk-details__text">
+        @StaticTextResource.PponSearch_Ppon_Desc_Hint
+    </div>
+</details>
+
+<br/>
+
+<h2 class="govuk-heading-m">
+    @(string.Format(StaticTextResource.Support_OrganisationApproval_OrganisationsCountHeading, Model.TotalOrganisations))
+</h2>
+
+@{
+    foreach (var org in Model.Organisations)
+    {
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-full">
+                <div class="govuk-grid-column-two-thirds">
+                    <h2 class="govuk-heading-m">@org.Name</h2>
+                    <p class="govuk-body govuk-!-margin-bottom-1">
+                        <span class="govuk-!-font-weight-bold">
+                             @org.Identifiers.FirstOrDefault(id => id.StartsWith("GB-PPON"))
+                        </span>
+                    </p>
+                    <p class="govuk-body">
+                        <span class="govuk-!-font-weight-bold">Organisation address</span>&nbsp;
+                    </p>
+                </div>
+                <div class="govuk-grid-column-one-third">
+                    <div class="govuk-grid-row" style="text-align: right;margin-right:0">
+                        @foreach (var partyRole in @org.Roles)
+                        {
+                            <strong class="govuk-tag govuk-tag--blue">
+                                @partyRole
+                            </strong>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-full">
+                <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+            </div>
+        </div>
+    }
+}
+
+@await Html.PartialAsync("_Pagination", new PaginationPartialModel
+{
+    CurrentPage = Model.CurrentPage,
+    TotalItems = Model.TotalOrganisations,
+    PageSize = Model.PageSize,
+    Url = $"/support/organisations/buyer?q={queryValue}"
+})
