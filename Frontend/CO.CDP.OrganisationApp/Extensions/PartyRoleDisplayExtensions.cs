@@ -38,7 +38,7 @@ public static class PartyRoleDisplayExtensions
     /// <returns>A comma-separated list of localised display texts.</returns>
     public static string GetDisplayText(this IEnumerable<PartyRole> roles)
     {
-        var roleTexts = roles?.Select(r => r.GetDisplayText()) ?? [];
+        var roleTexts = roles?.Select(r => r.GetDisplayText()).Distinct() ?? [];
         return string.Join(", ", roleTexts);
     }
 }
