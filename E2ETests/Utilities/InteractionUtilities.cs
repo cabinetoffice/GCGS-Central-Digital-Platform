@@ -234,4 +234,165 @@ public class InteractionUtilities(IPage page)
             Assert.Fail($"Failed to wait for page load. Error: {ex.Message}");
         }
     }
+
+    public async Task ClickNthLinkByText(string linkText, int nth = 1)
+    {
+        try
+        {
+            var links = page.Locator($"a:has-text(\"{linkText}\")");
+            int count = await links.CountAsync();
+
+            if (count < nth + 1) // Check if there are enough links
+            {
+                Assert.Fail($"Expected at least {nth + 1} links with text '{linkText}', but found {count}.");
+            }
+
+            await links.Nth(nth).ClickAsync();
+            Console.WriteLine($"✅ Clicked link number {nth + 1} with text: '{linkText}'");
+        }
+        catch (System.Exception ex)
+        {
+            Assert.Fail($"Failed to click link number {nth + 1} with text '{linkText}'. Error: {ex.Message}");
+        }
+    }
+
+public async Task EnterDate(int day, int month, int year)
+{
+    try
+    {
+        var dayInput = page.Locator("input[name='Day']");
+        var monthInput = page.Locator("input[name='Month']");
+        var yearInput = page.Locator("input[name='Year']");
+
+        // Check if the day input exists
+        if (await dayInput.CountAsync() == 0)
+        {
+            Assert.Fail("No input element found for Day. Please ensure the input exists.");
+        }
+
+        // Check if the month input exists
+        if (await monthInput.CountAsync() == 0)
+        {
+            Assert.Fail("No input element found for Month. Please ensure the input exists.");
+        }
+
+        // Check if the year input exists
+        if (await yearInput.CountAsync() == 0)
+        {
+            Assert.Fail("No input element found for Year. Please ensure the input exists.");
+        }
+
+        // Fill in the Day, Month, and Year
+        await dayInput.FillAsync(day.ToString(), new LocatorFillOptions { Timeout = 10000 });
+        await monthInput.FillAsync(month.ToString(), new LocatorFillOptions { Timeout = 10000 });
+        await yearInput.FillAsync(year.ToString(), new LocatorFillOptions { Timeout = 10000 });
+
+        Console.WriteLine($"✅ Entered Date: {day}/{month}/{year} into the respective input fields.");
+    }
+    catch (PlaywrightException pe)
+    {
+        string errorMessage = $"Playwright error while entering date '{day}/{month}/{year}'. Error: {pe.Message}";
+        if (pe.Message.Contains("Timeout"))
+        {
+            errorMessage = $"Timeout while trying to enter date '{day}/{month}/{year}'. One or more elements might not be visible, enabled, or found within the timeout period. Error: {pe.Message}";
+        }
+        else if (pe.Message.ToLower().Contains("element is not visible") || pe.Message.ToLower().Contains("element is hidden"))
+        {
+            errorMessage = $"Input fields found but they are not visible. Cannot enter date '{day}/{month}/{year}'. Error: {pe.Message}";
+        }
+        Assert.Fail(errorMessage);
+    }
+    catch (System.Exception ex)
+    {
+        Assert.Fail($"Failed to enter date '{day}/{month}/{year}'. Error: {ex.Message}");
+    }
 }
+
+public async Task EnterDatePlusOne()
+{
+    try
+    {
+                // Get the current date and add one day
+                DateTime datePlusOne = DateTime.Now.AddDays(1);
+                int day = datePlusOne.Day;
+                int month = datePlusOne.Month;
+                int year = datePlusOne.Year;
+
+                var dayInput = page.Locator("input[name='Day']");
+                var monthInput = page.Locator("input[name='Month']");
+                var yearInput = page.Locator("input[name='Year']");
+
+                // Check if the day input exists
+                if (await dayInput.CountAsync() == 0)
+                {
+                    Assert.Fail("No input element found for Day. Please ensure the input exists.");
+                }
+
+                // Check if the month input exists
+                if (await monthInput.CountAsync() == 0)
+                {
+                    Assert.Fail("No input element found for Month. Please ensure the input exists.");
+                }
+
+                // Check if the year input exists
+                if (await yearInput.CountAsync() == 0)
+                {
+                    Assert.Fail("No input element found for Year. Please ensure the input exists.");
+                }
+
+                // Fill in the Day, Month, and Year
+                await dayInput.FillAsync(day.ToString(), new LocatorFillOptions { Timeout = 10000 });
+                await monthInput.FillAsync(month.ToString(), new LocatorFillOptions { Timeout = 10000 });
+                await yearInput.FillAsync(year.ToString(), new LocatorFillOptions { Timeout = 10000 });
+
+                Console.WriteLine($"✅ Entered Date: {day}/{month}/{year} into the respective input fields.");
+}
+            catch (PlaywrightException pe)
+            {
+                string errorMessage = $"Playwright error while entering date. Error: {pe.Message}";
+                if (pe.Message.Contains("Timeout"))
+                {
+                    errorMessage = $"Timeout while trying to enter date. One or more elements might not be visible, enabled, or found within the timeout period. Error: {pe.Message}";
+                }
+                else if (pe.Message.ToLower().Contains("element is not visible") || pe.Message.ToLower().Contains("element is hidden"))
+                {
+                    errorMessage = $"Input fields found but they are not visible. Cannot enter date. Error: {pe.Message}";
+                }
+                Assert.Fail(errorMessage);
+            }
+            catch (System.Exception ex)
+            {
+                Assert.Fail($"Failed to enter date. Error: {ex.Message}");
+            }
+}
+
+public async Task UploadFileName(string fileName)
+{
+    try
+    {
+        string baseDirectory = System.AppContext.BaseDirectory;
+        string projectRootPath = System.IO.Path.GetFullPath(System.IO.Path.Combine(baseDirectory, "..", "..", ".."));
+        string resourceFilePath = System.IO.Path.Combine(projectRootPath, "Resources", fileName);
+
+        var fileInput = page.Locator("input[type='file']");
+        if (await fileInput.CountAsync() == 0)
+        {
+            Assert.Fail("No file input found on the page.");
+        }
+
+        await fileInput.SetInputFilesAsync(resourceFilePath);
+        Console.WriteLine($"✅ Uploaded file: {resourceFilePath}");
+    }
+    catch (System.Exception ex)
+    {
+        Assert.Fail($"Failed to upload the file (Resources/{fileName}). Error: {ex.Message}");
+    }
+}
+
+}
+
+
+
+
+
+
