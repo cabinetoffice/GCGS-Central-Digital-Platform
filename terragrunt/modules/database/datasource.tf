@@ -17,3 +17,7 @@ data "aws_ami" "al2_latest" {
     values = ["hvm"]
   }
 }
+
+data "aws_secretsmanager_secret_version" "allowed_ips" {
+  secret_id = "cdp-sirsi-waf-allowed-ip-set-tools"
+}

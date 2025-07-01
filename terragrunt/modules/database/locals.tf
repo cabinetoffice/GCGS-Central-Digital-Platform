@@ -24,4 +24,6 @@ locals {
     innodb_ft_enable_stopword = "OFF"
     sql_mode                  = "NO_ENGINE_SUBSTITUTION"
   }
+
+  allowed_ips = nonsensitive(jsondecode(data.aws_secretsmanager_secret_version.allowed_ips.secret_string))
 }
