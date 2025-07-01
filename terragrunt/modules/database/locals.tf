@@ -16,12 +16,14 @@ locals {
     innodb_ft_min_token_size        = 1
     local_infile                    = 1
     max_allowed_packet              = "293601280"
-    sql_mode                        = "STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION"
+    sql_mode                        = "NO_ENGINE_SUBSTITUTION"
   }
 
   fts_db_parameters_instance = {
     group_concat_max_len      = 200000
     innodb_ft_enable_stopword = "OFF"
-    sql_mode                  = "STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION"
+    sql_mode                  = "NO_ENGINE_SUBSTITUTION"
   }
+
+  allowed_ips = nonsensitive(jsondecode(data.aws_secretsmanager_secret_version.allowed_ips.secret_string))
 }

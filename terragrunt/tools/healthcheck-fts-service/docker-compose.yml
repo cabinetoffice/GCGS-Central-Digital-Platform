@@ -14,22 +14,8 @@ services:
       - DB_USER=root
       - DB_PASS=example
       - DB_NAME=testdb
-
-  scheduler:
-    build:
-      context: .
-      args:
-        APP_PORT: 8074
-    image: cabinetoffice/cdp-fts-scheduler
-    ports:
-      - "8074:8074"
-    depends_on:
-      - db
-    environment:
-      - DB_HOST=db
-      - DB_USER=root
-      - DB_PASS=example
-      - DB_NAME=testdb
+      - AWS_REGION=eu-west-2
+      - MAIL_DOMAIN=dev.supplier-information.find-tender.service.gov.uk
 
   db:
     image: mysql:5.7

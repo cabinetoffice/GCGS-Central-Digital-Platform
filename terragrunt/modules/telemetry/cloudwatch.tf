@@ -1,9 +1,3 @@
-resource "aws_cloudwatch_log_group" "fluentbit" {
-  name              = "/ecs/fluentbit"
-  retention_in_days = var.environment == "production" ? 0 : 90
-  tags              = var.tags
-}
-
 resource "aws_cloudwatch_log_group" "grafana" {
   # kms_key_id      = var.ecs_cloudwatch_kms_key_id
   name              = "/ecs/grafana"

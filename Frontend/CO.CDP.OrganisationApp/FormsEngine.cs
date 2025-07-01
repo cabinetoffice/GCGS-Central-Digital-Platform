@@ -2,7 +2,9 @@ using CO.CDP.Forms.WebApiClient;
 using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.Pages.Forms.ChoiceProviderStrategies;
 using DataShareWebApiClient = CO.CDP.DataSharing.WebApiClient;
+using FormQuestionType = CO.CDP.OrganisationApp.Models.FormQuestionType;
 using SectionQuestionsResponse = CO.CDP.OrganisationApp.Models.SectionQuestionsResponse;
+
 namespace CO.CDP.OrganisationApp;
 
 public class FormsEngine(
@@ -37,7 +39,8 @@ public class FormsEngine(
             },
             Questions = (await Task.WhenAll(response.Questions.Select(async q =>
             {
-                IChoiceProviderStrategy choiceProviderStrategy = choiceProviderService.GetStrategy(q.Options.ChoiceProviderStrategy);
+                IChoiceProviderStrategy choiceProviderStrategy =
+                    choiceProviderService.GetStrategy(q.Options.ChoiceProviderStrategy);
 
                 return new Models.FormQuestion
                 {
@@ -71,53 +74,62 @@ public class FormsEngine(
             }))).ToList()
         };
 
+        SetAlternativePathQuestions(sectionQuestionsResponse.Questions);
+
         tempDataService.Put(sessionKey, sectionQuestionsResponse);
         return sectionQuestionsResponse;
     }
 
-    public async Task<Models.FormQuestion?> GetNextQuestion(Guid organisationId, Guid formId, Guid sectionId, Guid currentQuestionId)
+    public async Task<Models.FormQuestion?> GetNextQuestion(Guid organisationId, Guid formId, Guid sectionId,
+        Guid currentQuestionId, FormQuestionAnswerState? answerState)
     {
         var section = await GetFormSectionAsync(organisationId, formId, sectionId);
-        if (section.Questions == null)
+
+        var currentQuestion = section.Questions.FirstOrDefault(q => q.Id == currentQuestionId);
+        if (currentQuestion == null)
         {
             return null;
         }
 
-        var nextQuestionId = section.Questions.FirstOrDefault(q => q.Id == currentQuestionId)?.NextQuestion;
-        return section.Questions.FirstOrDefault(q => q.Id == nextQuestionId);
-    }
+        Guid? determinedNextQuestionId = DetermineNextQuestionId(currentQuestion, answerState);
 
-    public async Task<Models.FormQuestion?> GetPreviousQuestion(Guid organisationId, Guid formId, Guid sectionId, Guid currentQuestionId)
-    {
-
-        var section = await GetFormSectionAsync(organisationId, formId, sectionId);
-        if (section.Questions == null)
+        if (!determinedNextQuestionId.HasValue)
         {
             return null;
         }
 
-        var previousQuestionId = section.Questions.FirstOrDefault(q => q.NextQuestion == currentQuestionId)?.Id;
-        return section.Questions.FirstOrDefault(q => q.Id == previousQuestionId);
+        return section.Questions.FirstOrDefault(q => q.Id == determinedNextQuestionId.Value);
     }
 
-    public async Task<Models.FormQuestion?> GetCurrentQuestion(Guid organisationId, Guid formId, Guid sectionId, Guid? questionId)
+    public async Task<Models.FormQuestion?> GetPreviousQuestion(Guid organisationId, Guid formId, Guid sectionId,
+        Guid currentQuestionId, FormQuestionAnswerState? answerState)
     {
         var section = await GetFormSectionAsync(organisationId, formId, sectionId);
-        if (section.Questions == null)
+
+        var path = BuildPathToQuestion(section.Questions, currentQuestionId,
+            answerState ?? new FormQuestionAnswerState());
+        return path.LastOrDefault();
+    }
+
+    public async Task<Models.FormQuestion?> GetCurrentQuestion(Guid organisationId, Guid formId, Guid sectionId,
+        Guid? questionId)
+    {
+        var section = await GetFormSectionAsync(organisationId, formId, sectionId);
+        if (!section.Questions.Any())
         {
             return null;
         }
 
         if (questionId == null)
         {
-            var nextQuestionGuids = section.Questions.Select(sq => sq.NextQuestion);
-            questionId = section.Questions.FirstOrDefault(q => !nextQuestionGuids.Contains(q.Id))?.Id;
+            return GetFirstQuestion(section.Questions);
         }
 
-        return section.Questions.FirstOrDefault(q => q.Id == questionId);
+        return section.Questions.FirstOrDefault(q => q.Id == questionId.Value);
     }
 
-    public async Task SaveUpdateAnswers(Guid formId, Guid sectionId, Guid organisationId, FormQuestionAnswerState answerSet)
+    public async Task SaveUpdateAnswers(Guid formId, Guid sectionId, Guid organisationId,
+        FormQuestionAnswerState answerSet)
     {
         var answersPayload = new UpdateFormSectionAnswers(
             answers: answerSet.Answers.Select(a => new Forms.WebApiClient.FormAnswer(
@@ -152,26 +164,60 @@ public class FormsEngine(
         return sharingDataDetails.ShareCode;
     }
 
-    public Guid? GetPreviousUnansweredQuestionId(List<Models.FormQuestion> questions, Guid currentQuestionId, FormQuestionAnswerState answerState)
+    public Guid? GetPreviousUnansweredQuestionId(List<Models.FormQuestion> allQuestions, Guid currentQuestionId,
+        FormQuestionAnswerState answerState)
     {
-        var answeredQuestionIds = answerState.Answers.Select(a => a.QuestionId).ToList();
-
-        var questionsInOrder = GetSortedFormQuestions(questions);
-
-        foreach (var question in questionsInOrder)
+        if (allQuestions.Count == 0)
         {
-            if (question.Id == currentQuestionId)
-            {
-                break;
-            }
+            return null;
+        }
 
-            if (answerState?.Answers.Any(t => t.QuestionId == question.Id) == false)
+        List<Models.FormQuestion> pathTaken = BuildPathToQuestion(allQuestions, currentQuestionId, answerState);
+
+        return FindFirstUnansweredQuestionInPath(pathTaken, answerState);
+    }
+
+    private Guid? FindFirstUnansweredQuestionInPath(List<Models.FormQuestion> pathTaken,
+        FormQuestionAnswerState answerState)
+    {
+        var firstUnansweredValidQuestion = pathTaken
+            .Where(q => q.Type != Models.FormQuestionType.CheckYourAnswers)
+            .FirstOrDefault(q => !IsQuestionAnswered(q, answerState));
+
+        return firstUnansweredValidQuestion?.Id;
+    }
+
+    private List<Models.FormQuestion> BuildPathToQuestion(List<Models.FormQuestion> allQuestions,
+        Guid currentQuestionId, FormQuestionAnswerState answerState)
+    {
+        var questionsDictionary = allQuestions.ToDictionary(q => q.Id);
+        var pathTaken = new List<Models.FormQuestion>();
+        Models.FormQuestion? currentPathQuestion = GetFirstQuestion(allQuestions);
+
+        while (currentPathQuestion != null && currentPathQuestion.Id != currentQuestionId)
+        {
+            pathTaken.Add(currentPathQuestion);
+            Guid? nextQuestionIdOnPath = DetermineNextQuestionId(currentPathQuestion, answerState);
+
+            if (nextQuestionIdOnPath.HasValue &&
+                questionsDictionary.TryGetValue(nextQuestionIdOnPath.Value, out var nextQ))
             {
-                return question.Id;
+                currentPathQuestion = nextQ;
+            }
+            else
+            {
+                currentPathQuestion = null;
             }
         }
 
-        return null;
+        return pathTaken;
+    }
+
+    private bool IsAddressAnswered(Address? address)
+    {
+        if (address == null) return false;
+        return !string.IsNullOrWhiteSpace(address.AddressLine1) &&
+               !string.IsNullOrWhiteSpace(address.Postcode);
     }
 
     private static FormAddress? MapAddress(Address? formAdddress)
@@ -188,19 +234,121 @@ public class FormsEngine(
         );
     }
 
-    private List<Models.FormQuestion> GetSortedFormQuestions(List<Models.FormQuestion> questions)
+    private (HashSet<Guid> NextQuestionTargets, HashSet<Guid> AlternativeTargets) GetLinkedQuestionTargets(
+        List<Models.FormQuestion> questions)
     {
-        var dict = questions.ToDictionary(q => q.Id, q => q);
-        var start = questions.First(q => !questions.Any(x => x.NextQuestion == q.Id));
-        var result = new List<Models.FormQuestion>();
-        var current = start;
-        while (current != null)
+        var nextQuestionTargets = new HashSet<Guid>();
+        var alternativeTargets = new HashSet<Guid>();
+
+        foreach (var q in questions)
         {
-            result.Add(current);
-            current = current.NextQuestion.HasValue ? dict[current.NextQuestion.Value] : null;
+            if (q.NextQuestion.HasValue)
+            {
+                nextQuestionTargets.Add(q.NextQuestion.Value);
+            }
+
+            if (q.NextQuestionAlternative.HasValue)
+            {
+                alternativeTargets.Add(q.NextQuestionAlternative.Value);
+            }
         }
 
-        return result;
+        return (nextQuestionTargets, alternativeTargets);
     }
 
+    private Models.FormQuestion? GetFirstQuestion(List<Models.FormQuestion> questions)
+    {
+        var (nextQuestionTargets, alternativeTargets) = GetLinkedQuestionTargets(questions);
+
+        return questions.FirstOrDefault(q =>
+            !nextQuestionTargets.Contains(q.Id) &&
+            !alternativeTargets.Contains(q.Id));
+    }
+
+    private void SetAlternativePathQuestions(List<Models.FormQuestion> questions)
+    {
+        var (nextQuestionTargets, alternativeTargets) = GetLinkedQuestionTargets(questions);
+        var mainPathQuestionIds = new HashSet<Guid>();
+        var startQuestion = GetFirstQuestion(questions);
+        if (startQuestion != null)
+        {
+            mainPathQuestionIds.Add(startQuestion.Id);
+        }
+
+        foreach (var targetId in nextQuestionTargets)
+        {
+            mainPathQuestionIds.Add(targetId);
+        }
+
+        foreach (var question in questions)
+        {
+            if ((alternativeTargets.Contains(question.Id) && !mainPathQuestionIds.Contains(question.Id)) ||
+                (!mainPathQuestionIds.Contains(question.Id) && question.NextQuestion.HasValue))
+            {
+                question.BranchType = FormQuestionBranchType.Alternative;
+            }
+        }
+    }
+
+    private bool IsQuestionAnswered(Models.FormQuestion questionOnPath, FormQuestionAnswerState? answerState)
+    {
+        var questionAnswer = answerState?.Answers.FirstOrDefault(a => a.QuestionId == questionOnPath.Id);
+
+        if (questionOnPath.Type == FormQuestionType.NoInput)
+        {
+            return questionAnswer != null;
+        }
+
+        if (questionAnswer?.Answer == null)
+        {
+            return false;
+        }
+
+        var answer = questionAnswer.Answer;
+
+        return questionOnPath.Type switch
+        {
+            FormQuestionType.Text or FormQuestionType.Url or FormQuestionType.FileUpload =>
+                !string.IsNullOrWhiteSpace(answer.TextValue) || (!questionOnPath.IsRequired && answer.BoolValue == false),
+            FormQuestionType.MultiLine => !string.IsNullOrWhiteSpace(answer.TextValue),
+            FormQuestionType.YesOrNo or FormQuestionType.CheckBox => answer.BoolValue.HasValue,
+            FormQuestionType.SingleChoice => !string.IsNullOrWhiteSpace(answer.OptionValue) || !string.IsNullOrWhiteSpace(answer.JsonValue),
+            FormQuestionType.GroupedSingleChoice => !string.IsNullOrWhiteSpace(answer.OptionValue),
+            FormQuestionType.Date => answer.DateValue.HasValue || (!questionOnPath.IsRequired && answer.BoolValue == false),
+            FormQuestionType.Address => IsAddressAnswered(answer.AddressValue),
+            _ => false
+        };
+    }
+
+    private Guid? DetermineNextQuestionId(Models.FormQuestion currentQuestion, FormQuestionAnswerState? answerState)
+    {
+        var answer = answerState?.Answers.FirstOrDefault(a => a.QuestionId == currentQuestion.Id);
+
+        bool takeAlternativePath = false;
+        switch (currentQuestion.Type)
+        {
+            case Models.FormQuestionType.YesOrNo:
+                if (answer?.Answer?.BoolValue == false && currentQuestion.NextQuestionAlternative.HasValue)
+                {
+                    takeAlternativePath = true;
+                }
+
+                break;
+
+            case Models.FormQuestionType.FileUpload:
+                bool explicitlyAnsweredNo = answer?.Answer?.BoolValue == false;
+
+                if (!currentQuestion.IsRequired && (explicitlyAnsweredNo) &&
+                    currentQuestion.NextQuestionAlternative.HasValue)
+                {
+                    takeAlternativePath = true;
+                }
+
+                break;
+        }
+
+        var nextQuestionId = takeAlternativePath ? currentQuestion.NextQuestionAlternative : currentQuestion.NextQuestion;
+
+        return nextQuestionId;
+    }
 }

@@ -44,6 +44,7 @@ dependency core_security_groups {
   mock_outputs = {
     db_mysql_sg_id    = "mock"
     db_postgres_sg_id = "mock"
+    ec2_sg_id         = "mock"
   }
 }
 
@@ -62,6 +63,7 @@ inputs = {
 
   db_mysql_sg_id    = dependency.core_security_groups.outputs.db_mysql_sg_id
   db_postgres_sg_id = dependency.core_security_groups.outputs.db_postgres_sg_id
+  ec2_sg_id         = dependency.core_security_groups.outputs.ec2_sg_id
 
   role_rds_backup_arn     = dependency.core_iam.outputs.rds_backup_arn
   role_rds_cloudwatch_arn = dependency.core_iam.outputs.rds_cloudwatch_arn
