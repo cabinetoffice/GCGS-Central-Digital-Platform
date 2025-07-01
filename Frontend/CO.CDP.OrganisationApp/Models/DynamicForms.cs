@@ -98,7 +98,7 @@ public enum FormQuestionType
     Address,
     MultiLine,
     GroupedSingleChoice,
-    Url
+    Url,
 }
 
 public enum FormQuestionBranchType
@@ -113,7 +113,7 @@ public enum FormQuestionBranchType
     /// Represents questions that are part of an alternative path in the form.
     /// A question is considered an alternative path if it:
     /// 1. Is linked to by another question as a NextQuestionAlternative, or
-    /// 2. Follows on from a NextQuestionAlternative but is not included in the main question flow.
+    /// 2. Follows on from a NextQuestionAlternative.
     /// Alternative paths typically represent conditional branches following a 'no' response in the form flow.
     /// </summary>
     Alternative

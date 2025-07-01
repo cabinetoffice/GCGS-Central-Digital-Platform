@@ -359,6 +359,9 @@
   <data name="Organisation_OrganisationName" xml:space="preserve">
     <value>Organisation name</value>
   </data>
+  <data name="Organisation_OrganisationAction" xml:space="preserve">
+    <value>Action</value>
+  </data>
   <data name="Organisation_ViewOrganisation" xml:space="preserve">
     <value>View organisation</value>
   </data>
@@ -522,7 +525,7 @@
     <value>Not approved</value>
   </data>
   <data name="Organisation_AddAnotherOrganisation" xml:space="preserve">
-    <value>Add another organisation</value>
+    <value>Add an organisation</value>
   </data>
   <data name="Organisation_RegisterOrganisation" xml:space="preserve">
     <value>Register an organisation if you are:</value>
@@ -2973,7 +2976,7 @@
     <value>You cannot select 'None apply' along with other options.</value>
   </data>
   <data name="Organisation_CreateNewConsortium" xml:space="preserve">
-    <value>Create a new consortium</value>
+    <value>Create a consortium</value>
   </data>
   <data name="Consortium_ConsortiumOverview_Title" xml:space="preserve">
     <value>Check answers</value>
@@ -3201,13 +3204,20 @@
     <value>Regional and local public authority (sub-central) - UK or devolved administrations</value>
   </data>
   <data name="Organisation_MyConsortium" xml:space="preserve">
-    <value>Consortiums for joint bids ({0})</value>
+    <value>My consoritums</value>
   </data>
   <data name="Organisation_ConsortiumName" xml:space="preserve">
     <value>Consortium name</value>
   </data>
   <data name="Organisation_ViewConsortium" xml:space="preserve">
     <value>View consortium</value>
+  </data>
+  <data name="Organisation_CreateConsortiumHowToSummaryHead" xml:space="preserve">
+    <value>How to create a consortium for joint bids</value>
+  </data>
+  <data name="Organisation_CreateConsortiumHowToSummaryDetail" xml:space="preserve">
+    <value>&lt;p class=&quot;govuk-body&quot;&gt;Create a consoritium if you want to join with one or more suppliers to bid on a procurement together.&lt;/p&gt;
+&lt;p class=&quot;govuk-body&quot;&gt;To create a consortium, you&#39;ll need your most recent share code and the most recent share codes for the other suppliers.&lt;/p&gt;</value>
   </data>
   <data name="Cookies_ChooseCookiePreferences" xml:space="preserve">
     <value>Choose whether you accept cookies that measure website use</value>
@@ -3663,6 +3673,9 @@
   <data name="Consortium_Summary_Change" xml:space="preserve">
     <value>Change&lt;span class="govuk-visually-hidden"&gt; organisation sharecode&lt;/span&gt;</value>
   </data>
+  <data name="Consortium_Summary_Remove" xml:space="preserve">
+    <value>Remove&lt;span class="govuk-visually-hidden"&gt; organisation sharecode&lt;/span&gt;</value>
+  </data>
   <data name="Consortium_ConsortiumConfirmSupplier_Heading" xml:space="preserve">
     <value>Add {0} to the consortium?</value>
   </data>
@@ -3680,6 +3693,21 @@
   </data>
   <data name="Consortium_ConsortiumEnterSharecode_SharecodeAlreadyExists" xml:space="preserve">
     <value>{0} organisation is already part of the consortium.</value>
+  </data>
+  <data name="Consortium_RemoveSupplier_PageTitle" xml:space="preserve">
+    <value>Remove Consortium Organisation</value>
+  </data>
+  <data name="Consortium_RemoveSupplier_Heading" xml:space="preserve">
+    <value>Are you sure you want to remove {0}?</value>
+  </data>
+  <data name="Consortium_RemoveSupplier_Hint" xml:space="preserve">
+    <value>The organisation will remain on any share codes you have created. You must create a new share code and file to share the new information.</value>
+  </data>
+  <data name="Consortium_RemoveSupplier_ErrorMessage" xml:space="preserve">
+    <value>Select yes or no</value>
+  </data>
+  <data name="Consortium_RemoveSupplier_SuccessMessage" xml:space="preserve">
+    <value>{0} has been removed</value>
   </data>
   <data name="ErrorMessageList_MouNotFound" xml:space="preserve">
     <value>Mou not found</value>
@@ -3964,10 +3992,10 @@
     <value>Company number must be 8 digits or 2 letters and 6 digits</value>
   </data>
   <data name="Supplier_AdditionalModulesInformation_Heading" xml:space="preserve">
-    <value>Additional supplier modules</value>
+    <value>Complete your additional supplier modules</value>
   </data>
   <data name="Supplier_AdditionalModulesInformation_Hint" xml:space="preserve">
-    <value>An additional module is extra information related to a particular topic that suppliers are required to submit for specific contracts</value>
+    <value>These are policy specific questions that you may be asked to complete for some bids. You can add this information at any time and the contracting authority you are working with will tell you if they are needed for a specific bid. The questions in this section are all optional and are not needed to be completed to create a sharecode.</value>
   </data>
   <data name="SessionTimeoutWarningDialog_Header" xml:space="preserve">
     <value>Session timeout</value>

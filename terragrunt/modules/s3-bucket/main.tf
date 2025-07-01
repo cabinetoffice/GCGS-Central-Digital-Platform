@@ -1,4 +1,4 @@
-resource "aws_s3_bucket" "bucket" {
+resource "aws_s3_bucket" "this" {
   bucket = var.bucket_name
 
   tags = merge(
@@ -7,36 +7,56 @@ resource "aws_s3_bucket" "bucket" {
       Name = var.bucket_name
     }
   )
+}
 
-  lifecycle {
-    ignore_changes = [bucket]
+
+resource "aws_s3_bucket_website_configuration" "this" {
+  count  = var.is_public ? 1 : 0
+  bucket = aws_s3_bucket.this.id
+
+  index_document {
+    suffix = "index.html"
+  }
+
+  error_document {
+    key = "error.html"
   }
 }
 
 resource "aws_s3_bucket_ownership_controls" "bucket" {
-  bucket = aws_s3_bucket.bucket.id
+  bucket = aws_s3_bucket.this.id
 
   rule {
     object_ownership = "BucketOwnerPreferred"
   }
 }
 
-resource "aws_s3_bucket_public_access_block" "block" {
-  block_public_acls       = true
-  block_public_policy     = true
-  bucket                  = aws_s3_bucket.bucket.id
-  ignore_public_acls      = true
-  restrict_public_buckets = true
+resource "aws_s3_bucket_public_access_block" "this" {
+  block_public_acls       = !var.is_public
+  block_public_policy     = !var.is_public
+  bucket                  = aws_s3_bucket.this.id
+  ignore_public_acls      = !var.is_public
+  restrict_public_buckets = !var.is_public
 }
 
-resource "aws_s3_bucket_policy" "bucket" {
-  bucket     = aws_s3_bucket.bucket.id
-  depends_on = [aws_s3_bucket_public_access_block.block]
-  policy     = data.aws_iam_policy_document.bucket.json
+resource "aws_s3_bucket_policy" "private" {
+  count = var.is_public ? 0 : 1
+
+  bucket     = aws_s3_bucket.this.id
+  depends_on = [aws_s3_bucket_public_access_block.this]
+  policy     = data.aws_iam_policy_document.private.json
+}
+
+resource "aws_s3_bucket_policy" "public" {
+  count = var.is_public ? 1 : 0
+
+  bucket     = aws_s3_bucket.this.id
+  depends_on = [aws_s3_bucket_public_access_block.this]
+  policy     = data.aws_iam_policy_document.public.json
 }
 
 resource "aws_s3_bucket_versioning" "bucket" {
-  bucket = aws_s3_bucket.bucket.id
+  bucket = aws_s3_bucket.this.id
 
   versioning_configuration {
     status = "Enabled"
@@ -44,7 +64,7 @@ resource "aws_s3_bucket_versioning" "bucket" {
 }
 
 resource "aws_s3_bucket_server_side_encryption_configuration" "encrypted_bucket" {
-  bucket = aws_s3_bucket.bucket.id
+  bucket = aws_s3_bucket.this.id
 
   rule {
     apply_server_side_encryption_by_default {
@@ -86,7 +106,7 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "log_bucket" {
 
 resource "aws_s3_bucket_logging" "this" {
   count         = var.enable_access_logging ? 1 : 0
-  bucket        = aws_s3_bucket.bucket.id
+  bucket        = aws_s3_bucket.this.id
   target_bucket = aws_s3_bucket.log_bucket[0].id
   target_prefix = "${var.bucket_name}/logs/"
 }

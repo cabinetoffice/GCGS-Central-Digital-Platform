@@ -135,7 +135,7 @@ public class FormsQuestionPageModel(
 
             if (PartialViewModel.CurrentFormQuestionType == FormQuestionType.FileUpload)
             {
-                answer = await HandleFileUpload(currentQuestion, oldAnswerObject, answer);
+                answer = await HandleFileUpload();
             }
 
             SaveAnswerToTempData(currentQuestion, answer);
@@ -179,20 +179,20 @@ public class FormsQuestionPageModel(
         return RedirectToPage("FormsAnswerSetSummary", new { OrganisationId, FormId, SectionId });
     }
 
-    private async Task<FormAnswer?> HandleFileUpload(FormQuestion currentQuestion, FormAnswer? oldAnswerObject, FormAnswer? answer)
+    private async Task<FormAnswer?> HandleFileUpload()
     {
-        var response = FileUploadModel?.GetUploadedFileInfo();
-        if (response != null)
+        var newFileInfo = FileUploadModel?.GetUploadedFileInfo();
+        if (newFileInfo != null)
         {
-            using var stream = response.Value.formFile.OpenReadStream();
-            await fileHostManager.UploadFile(stream, response.Value.filename, response.Value.contentType);
+            using var stream = newFileInfo.Value.formFile.OpenReadStream();
+            await fileHostManager.UploadFile(stream, newFileInfo.Value.filename, newFileInfo.Value.contentType);
 
             var userInfo = await userInfoService.GetUserInfo();
             var organisation = await organisationClient.GetOrganisationAsync(OrganisationId);
 
-            await publisher.Publish(new ScanFile()
+            await publisher.Publish(new ScanFile
             {
-                QueueFileName = response.Value.filename,
+                QueueFileName = newFileInfo.Value.filename,
                 UploadedFileName = FileUploadModel!.UploadedFile!.FileName,
                 OrganisationId = OrganisationId,
                 OrganisationEmailAddress = organisation.ContactPoint.Email,
@@ -201,18 +201,20 @@ public class FormsQuestionPageModel(
                 FullName = userInfo.Name
             });
 
-            answer ??= new FormAnswer();
-            answer.TextValue = response.Value.filename;
+            return new FormAnswer { BoolValue = true, TextValue = newFileInfo.Value.filename };
         }
-        else
+
+        if (FileUploadModel?.HasValue == false)
         {
-            if (string.IsNullOrEmpty(FileUploadModel?.UploadedFile?.FileName) && !string.IsNullOrEmpty(oldAnswerObject?.TextValue))
-            {
-                answer ??= new FormAnswer();
-                answer.TextValue = oldAnswerObject.TextValue;
-            }
+            return new FormAnswer { BoolValue = false };
         }
-        return answer;
+
+        if (!string.IsNullOrEmpty(FileUploadModel?.UploadedFileName))
+        {
+            return new FormAnswer { BoolValue = true, TextValue = FileUploadModel.UploadedFileName };
+        }
+
+        return null;
     }
 
     public async Task<IEnumerable<AnswerSummary>> GetAnswers()
@@ -337,11 +339,13 @@ public class FormsQuestionPageModel(
         if (currentQuestion == null)
             return null;
 
+        var answerState = tempDataService.PeekOrDefault<FormQuestionAnswerState>(FormQuestionAnswerStateKey);
+
         FormSectionType = form.Section?.Type;
         CurrentFormQuestionType = currentQuestion.Type;
         PartialViewName = GetPartialViewName(currentQuestion);
         PartialViewModel = GetPartialViewModel(currentQuestion, reset);
-        PreviousQuestion = await formsEngine.GetPreviousQuestion(OrganisationId, FormId, SectionId, currentQuestion.Id);
+        PreviousQuestion = await formsEngine.GetPreviousQuestion(OrganisationId, FormId, SectionId, currentQuestion.Id, answerState);
         CheckYourAnswerQuestionId = form.Questions.FirstOrDefault(q => q.Type == FormQuestionType.CheckYourAnswers)?.Id;
 
         return currentQuestion;
@@ -413,6 +417,44 @@ public class FormsQuestionPageModel(
         return state.Answers?.FirstOrDefault(a => a.QuestionId == question.Id)?.Answer;
     }
 
+    private void HandleBranchingLogicAnswerChange(FormQuestion currentQuestion, FormAnswer? oldAnswerObject, List<FormQuestion> allQuestionsInSection)
+    {
+        if (!currentQuestion.NextQuestionAlternative.HasValue)
+        {
+            return;
+        }
+
+        bool oldAnswerIsYes;
+        bool newAnswerIsYes;
+
+        switch (currentQuestion.Type)
+        {
+            case FormQuestionType.YesOrNo:
+                oldAnswerIsYes = oldAnswerObject?.BoolValue ?? false;
+                newAnswerIsYes = YesNoInputModel?.GetAnswer()?.BoolValue ?? false;
+                break;
+
+            case FormQuestionType.FileUpload:
+                oldAnswerIsYes = !string.IsNullOrEmpty(oldAnswerObject?.TextValue);
+                var newFileIsUploaded = FileUploadModel?.UploadedFile is { Length: > 0 };
+                var existingFileIsKept = !string.IsNullOrEmpty(FileUploadModel?.UploadedFileName) && FileUploadModel?.HasValue != false;
+                newAnswerIsYes = newFileIsUploaded || existingFileIsKept;
+                break;
+
+            default:
+                return;
+        }
+
+        if (oldAnswerIsYes && !newAnswerIsYes && currentQuestion.NextQuestion.HasValue)
+        {
+            RemoveAnswersFromBranchPath(currentQuestion.NextQuestion.Value, allQuestionsInSection);
+        }
+        else if (!oldAnswerIsYes && newAnswerIsYes)
+        {
+            RemoveAnswersFromBranchPath(currentQuestion.NextQuestionAlternative.Value, allQuestionsInSection);
+        }
+    }
+
     private void SaveAnswerToTempData(FormQuestion question, FormAnswer? answer)
     {
         var state = tempDataService.PeekOrDefault<FormQuestionAnswerState>(FormQuestionAnswerStateKey);
@@ -431,46 +473,6 @@ public class FormsQuestionPageModel(
         questionAnswer.Answer = answer;
 
         tempDataService.Put(FormQuestionAnswerStateKey, state);
-    }
-
-    private void HandleBranchingLogicAnswerChange(FormQuestion currentQuestion, FormAnswer? oldAnswerObject, List<FormQuestion> allQuestionsInSection)
-    {
-        bool changedFromNoToYes = false;
-        bool changedFromYesToNo = false;
-
-        if (currentQuestion.Type == FormQuestionType.YesOrNo)
-        {
-            bool oldBoolAnswer = oldAnswerObject?.BoolValue ?? false;
-            bool newAnswerIsYes = YesNoInputModel?.GetAnswer()?.BoolValue ?? false;
-
-            if (!oldBoolAnswer && newAnswerIsYes)
-            {
-                changedFromNoToYes = true;
-            }
-            else if (oldBoolAnswer && !newAnswerIsYes)
-            {
-                changedFromYesToNo = true;
-            }
-        }
-        else if (currentQuestion.Type == FormQuestionType.FileUpload)
-        {
-            bool oldFileExisted = !string.IsNullOrEmpty(oldAnswerObject?.TextValue);
-            bool newFileSubmitted = (FileUploadModel?.UploadedFile != null && FileUploadModel.UploadedFile.Length > 0);
-
-            if (!oldFileExisted && newFileSubmitted)
-            {
-                changedFromNoToYes = true;
-            }
-        }
-
-        if (changedFromNoToYes && currentQuestion.NextQuestionAlternative.HasValue)
-        {
-            RemoveAnswersFromBranchPath(currentQuestion.NextQuestionAlternative.Value, allQuestionsInSection);
-        }
-        else if (changedFromYesToNo && currentQuestion.NextQuestion.HasValue)
-        {
-            RemoveAnswersFromBranchPath(currentQuestion.NextQuestion.Value, allQuestionsInSection);
-        }
     }
 
     private void RemoveAnswersFromBranchPath(Guid branchStartNodeId, List<FormQuestion> allQuestionsInSection)

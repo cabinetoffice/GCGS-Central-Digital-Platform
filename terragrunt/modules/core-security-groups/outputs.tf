@@ -22,6 +22,10 @@ output "db_postgres_sg_id" {
   value = aws_security_group.db_postgres.id
 }
 
+output "ec2_sg_id" {
+  value = aws_security_group.ec2.id
+}
+
 output "ecs_sg_id" {
   value = aws_security_group.ecs.id
 }

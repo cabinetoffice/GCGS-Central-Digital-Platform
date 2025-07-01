@@ -4,6 +4,7 @@ module "ecs_service_fts_healthcheck" {
   container_definitions = templatefile(
     "${path.module}/templates/task-definitions/${var.service_configs.fts_healthcheck.name}.json.tftpl",
     {
+      aws_region      = data.aws_region.current.name
       container_port  = var.service_configs.fts_healthcheck.port
       cpu             = var.service_configs.fts_healthcheck.cpu
       db_host         = var.db_fts_cluster_address
@@ -32,7 +33,7 @@ module "ecs_service_fts_healthcheck" {
   ecs_service_base_sg_id = var.ecs_sg_id
   family                 = "app"
   healthcheck_path       = "/healthz.php"
-  host_port              = var.service_configs.fts_healthcheck.port
+  host_port              = var.service_configs.fts_healthcheck.port_host
   memory                 = var.service_configs.fts_healthcheck.memory
   name                   = var.service_configs.fts_healthcheck.name
   private_subnet_ids     = var.private_subnet_ids

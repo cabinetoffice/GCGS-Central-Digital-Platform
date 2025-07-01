@@ -235,7 +235,7 @@ locals {
     entity_verification                  = {}
     entity_verification_migrations       = { cpu = 256,  memory = 512}
     forms                                = {}
-    fts                                  = { desired_count = 3 }
+    fts                                  = { desired_count = 3, cpu = 1024,  memory = 3072}
     fts_healthcheck                      = { desired_count = 1 }
     fts_migrations                       = { desired_count = 1 }
     fts_scheduler                        = { desired_count = 1 }
@@ -284,7 +284,7 @@ locals {
     fts                                  = { port = 8070, port_host = 8070, name = "fts"}
     fts_healthcheck                      = { port = 8071, port_host = 8071, name = "fts-healthcheck"}
     fts_migrations                       = { port = 8072, port_host = null, name = "fts-migrations"}
-    fts_scheduler                        = { port = 8074, port_host = 8074, name = "fts-scheduler"}
+    fts_scheduler                        = { port = 8074, port_host = null, name = "fts-scheduler"}
     organisation                         = { port = 8082, port_host = 8082, name = "organisation"}
     organisation_app                     = { port = 8090, port_host = 80  , name = "organisation-app"}
     organisation_information_migrations  = { port = 9090, port_host = null, name = "organisation-information-migrations"}
@@ -319,13 +319,6 @@ locals {
       name      = "cloud-beaver"
       port      = 8978
       port_host = 8978
-    }
-    fluentbit = {
-      cpu       = 1024
-      memory    = 3072
-      name      = "fluentbit"
-      port      = 2021
-      port_host = 2021
     }
     grafana = {
       cpu       = 1024

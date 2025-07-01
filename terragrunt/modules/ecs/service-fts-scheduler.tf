@@ -3,19 +3,24 @@ module "ecs_service_fts_scheduler" {
 
   container_definitions = templatefile(
     "${path.module}/templates/task-definitions/${var.service_configs.fts_scheduler.name}.json.tftpl",
-    local.fts_scheduler_container_parameters
+    merge(
+      local.fts_scheduler_container_parameters,
+      {
+        aws_buckets_notices = module.s3_bucket_fts.bucket
+      }
+    )
   )
 
   cluster_id             = aws_ecs_cluster.this.id
   container_port         = var.service_configs.fts_scheduler.port
   cpu                    = var.service_configs.fts_scheduler.cpu
   desired_count          = var.service_configs.fts_scheduler.desired_count
-  ecs_alb_sg_id          = var.alb_sg_id
-  ecs_listener_arn       = aws_lb_listener.ecs.arn
+  ecs_alb_sg_id          = "N/A"
+  ecs_listener_arn       = "N/A"
   ecs_service_base_sg_id = var.ecs_sg_id
-  family                 = "app"
+  family                 = "standalone"
   healthcheck_path       = "/" #"/healthz.php"
-  host_port              = var.service_configs.fts_scheduler.port
+  host_port              = var.service_configs.fts_scheduler.port_host
   memory                 = var.service_configs.fts_scheduler.memory
   name                   = var.service_configs.fts_scheduler.name
   private_subnet_ids     = var.private_subnet_ids

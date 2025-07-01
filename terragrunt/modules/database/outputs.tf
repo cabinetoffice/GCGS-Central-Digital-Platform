@@ -34,6 +34,15 @@ output "fts_cluster_name" {
   value = module.cluster_fts.db_name
 }
 
+output "import_instance_private_key_pem" {
+  sensitive = true
+  value     = tls_private_key.import_key.private_key_pem
+}
+
+output "import_instance_public_ip" {
+  value = length(aws_instance.fts_db_import) > 0 ? aws_instance.fts_db_import[0].public_ip : null
+}
+
 output "sirsi_cluster_address" {
   value = module.cluster_sirsi.db_address
 }

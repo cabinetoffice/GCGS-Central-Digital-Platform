@@ -64,15 +64,11 @@ dependency service_ecs {
     ecs_cluster_id                = "mock"
     ecs_cluster_id                = "mock"
     ecs_alb_dns_name              = "mock"
-    efs_fluentbit_access_point_id = "mock"
-    efs_fluentbit_id              = "mock"
-    efs_fluentbit_volume_name     = "mock"
   }
 }
 
 inputs = {
   account_ids      = local.global_vars.locals.account_ids
-  fluentbit_config = local.global_vars.locals.tools_configs.fluentbit
   grafana_config   = local.global_vars.locals.tools_configs.grafana
   service_configs  = local.global_vars.locals.service_configs
   tags             = local.tags
@@ -98,8 +94,4 @@ inputs = {
   ecs_alb_dns_name              = dependency.service_ecs.outputs.ecs_alb_dns_name
   ecs_cluster_id                = dependency.service_ecs.outputs.ecs_cluster_id
   ecs_listener_arn              = dependency.service_ecs.outputs.ecs_listener_arn
-  efs_fluentbit_access_point_id = dependency.service_ecs.outputs.efs_fluentbit_access_point_id
-  efs_fluentbit_container_path  = dependency.service_ecs.outputs.efs_fluentbit_container_path
-  efs_fluentbit_id              = dependency.service_ecs.outputs.efs_fluentbit_id
-  efs_fluentbit_volume_name     = dependency.service_ecs.outputs.efs_fluentbit_volume_name
 }
