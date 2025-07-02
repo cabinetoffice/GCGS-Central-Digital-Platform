@@ -404,15 +404,17 @@ public class ChildOrganisationResultsPageTests
         _model.Query = query;
         _model.SelectedChildId = childId;
 
-        var httpRequestException = new HttpRequestException(
+        var apiException = new ApiException(
             "Not Found",
-            null,
-            System.Net.HttpStatusCode.NotFound);
+            (int)System.Net.HttpStatusCode.NotFound,
+            "",
+            new Dictionary<string, IEnumerable<string>>(),
+            null);
 
         _mockOrganisationClient
             .Setup(client => client.SearchOrganisationAsync(
                 query, "buyer", 20, 0.3))
-            .ThrowsAsync(httpRequestException);
+            .ThrowsAsync(apiException);
 
         var result = await _model.OnPost();
 

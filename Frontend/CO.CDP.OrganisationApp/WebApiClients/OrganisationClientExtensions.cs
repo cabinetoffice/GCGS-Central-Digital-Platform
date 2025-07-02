@@ -236,7 +236,7 @@ internal static class OrganisationClientExtensions
             var searchResults = await organisationClient.SearchOrganisationAsync(name, role, limit, threshold);
             return searchResults ?? new List<OrganisationSearchResult>();
         }
-        catch (HttpRequestException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
+        catch (ApiException ex) when (ex.StatusCode == 404)
         {
             return new List<OrganisationSearchResult>();
         }
