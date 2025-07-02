@@ -58,7 +58,11 @@ data "aws_iam_policy_document" "terraform_global_ec2" {
 
   statement {
     actions = [
+      "ec2:AssociateAddress",
+      "ec2:AttachVolume",
+      "ec2:CreateVolume",
       "ec2:DeleteKeyPair",
+      "ec2:DeleteVolume",
       "ec2:DescribeImages",
       "ec2:DescribeInstanceAttribute",
       "ec2:DescribeInstanceCreditSpecifications",
@@ -67,7 +71,10 @@ data "aws_iam_policy_document" "terraform_global_ec2" {
       "ec2:DescribeKeyPairs",
       "ec2:DescribeTags",
       "ec2:DescribeVolumes",
+      "ec2:DetachVolume",
+      "ec2:DisassociateAddress",
       "ec2:ImportKeyPair",
+      "ec2:ModifyVolume",
       "ec2:RunInstances",
       "ec2:TerminateInstances",
     ]
