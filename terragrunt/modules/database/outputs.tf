@@ -39,6 +39,10 @@ output "import_instance_private_key_pem" {
   value     = tls_private_key.import_key.private_key_pem
 }
 
+output "import_instance_public_domain" {
+  value = length(aws_route53_record.fts_db_import) > 0 ? aws_route53_record.fts_db_import[0].fqdn : null
+}
+
 output "import_instance_public_ip" {
   value = length(aws_instance.fts_db_import) > 0 ? aws_instance.fts_db_import[0].public_ip : null
 }

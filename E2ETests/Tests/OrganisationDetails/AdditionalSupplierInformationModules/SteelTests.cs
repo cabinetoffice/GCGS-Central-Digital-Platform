@@ -39,6 +39,29 @@ public class SteelTests : OrganisationDetailsBaseTest
         await InteractionUtilities.ClickButtonByText("Continue");
         await InteractionUtilities.PageTitleShouldBe("Check your answers - Find a Tender - GOV.UK");
         await InteractionUtilities.PageShouldContainText("No");
+
         await InteractionUtilities.ClickButtonByText("Save");
     }
+
+    [Test]
+    public async Task ShouldCompleteTheSteelModuleErrorsJourney()
+    {
+        var organisationPageUrl = $"{_baseUrl}/organisation/{_organisationId}";
+        await InteractionUtilities.NavigateToUrl(organisationPageUrl);
+        await InteractionUtilities.ClickLinkByText("Complete supplier information");
+        await InteractionUtilities.ClickLinkByText("Steel module");
+        await InteractionUtilities.PageTitleShouldBe("Submitting your steel information - Find a Tender - GOV.UK");
+        await InteractionUtilities.ClickButtonByText("Continue");
+        await InteractionUtilities.PageTitleShouldBe("Supply chain management in steel procurement - Find a Tender - GOV.UK");
+        await InteractionUtilities.EnterTextIntoTextArea("I love steel");
+        await InteractionUtilities.ClickButtonByText("Continue");
+        await InteractionUtilities.PageTitleShouldBe("Do you have supporting documents to upload? - Find a Tender - GOV.UK");
+        await InteractionUtilities.ClickButtonByText("Continue");
+        await InteractionUtilities.PageShouldContainText("Select an option");
+        await InteractionUtilities.ClickRadioButtonByText("No");
+        await InteractionUtilities.ClickButtonByText("Continue");
+        await InteractionUtilities.PageTitleShouldBe("Check your answers - Find a Tender - GOV.UK");
+        await InteractionUtilities.ClickButtonByText("Save");
+    }
+
 }

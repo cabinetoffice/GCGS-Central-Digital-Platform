@@ -64,6 +64,8 @@ resource "aws_s3_bucket_versioning" "bucket" {
 }
 
 resource "aws_s3_bucket_server_side_encryption_configuration" "encrypted_bucket" {
+  count  = var.enable_encryption ? 1 : 0
+
   bucket = aws_s3_bucket.this.id
 
   rule {
