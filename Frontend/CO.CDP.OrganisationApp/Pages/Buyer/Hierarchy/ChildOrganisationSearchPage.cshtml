@@ -61,7 +61,9 @@
                 </div>
             </div>
         </form>
-
-        <p class="govuk-body govuk-!-margin-top-4">@Html.Raw(StaticTextResource.BuyerParentChildRelationship_SearchPage_Link)</p>
+        @if (Model.SearchRegistryPponEnabled)
+        {
+            <p class="govuk-body govuk-!-margin-top-4">@Html.Raw(StaticTextResource.BuyerParentChildRelationship_SearchPage_Link)</p>
+        }
     </div>
 </div>
