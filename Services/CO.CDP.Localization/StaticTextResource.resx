@@ -2077,9 +2077,6 @@
   <data name="BuyerParentChildRelationship_ConfirmPage_PponLabel" xml:space="preserve">
     <value>PPON</value>
   </data>
-  <data name="BuyerParentChildRelationship_ResultsPage_Label" xml:space="preserve">
-    <value>Select a child organisation</value>
-  </data>
   <data name="BuyerParentChildRelationship_SuccessPage_Title" xml:space="preserve">
     <value>Success</value>
   </data>
@@ -2118,9 +2115,6 @@
   </data>
   <data name="BuyerParentChildRelationship_RemovePage_OrganisationEmail" xml:space="preserve">
     <value>Organisation email</value>
-  </data>
-  <data name="BuyerParentChildRelationship_RemovePage_InfoText" xml:space="preserve">
-    <value>Removing your child organisation will mean it does not show on your account profile and will no longer be digitally linked to your organisation on Find a Tender.</value>
   </data>
   <data name="BuyerParentChildRelationship_RemovePage_YesRemove" xml:space="preserve">
     <value>Yes, remove</value>
