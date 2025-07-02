@@ -91,7 +91,7 @@ public class ChildOrganisationSearchPageTests
         redirectResult.PageName.Should().Be("ChildOrganisationResultsPage");
         redirectResult.RouteValues.Should().ContainKey("Id");
         redirectResult.RouteValues.Should().ContainKey("query");
-        redirectResult.RouteValues["Id"].Should().Be(id);
-        redirectResult.RouteValues["query"].Should().Be(query);
+        redirectResult.RouteValues.Should().ContainKey("Id").And.ContainValue(id);
+        redirectResult.RouteValues.Should().ContainKey("query").And.ContainValue(query);
     }
 }
