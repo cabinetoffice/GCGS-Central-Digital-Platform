@@ -1,44 +1,26 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="govuk-template">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - CO.CDP.RegisterOfCommercialTools.App</title>
-    <script type="importmap"></script>
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/CO.CDP.RegisterOfCommercialTools.App.styles.css" asp-append-version="true" />
+    <govuk-head />
 </head>
-<body>
-    <header>
-        <nav>
-            <div>
-                <a asp-area="" asp-page="/Index">CO.CDP.RegisterOfCommercialTools.App</a>
-                <button type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span></span>
-                </button>
-                <div>
-                    <ul>
-                        <li>
-                            <a asp-area="" asp-page="/Index">Home</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-    </header>
-    <div>
-        <main role="main">
+<body class="govuk-template__body">
+    <govuk-skip-link />
+    <govuk-header>
+        <govuk-header-service-name href="/">Register of Commercial Tools</govuk-header-service-name>
+    </govuk-header>
+
+    <div class="govuk-width-container">
+        <main class="govuk-main-wrapper" id="main-content" role="main">
             @RenderBody()
         </main>
     </div>
 
-    <footer>
-        <div>
-            &copy; 2025 - CO.CDP.RegisterOfCommercialTools.App
-        </div>
-    </footer>
+    <govuk-footer>
+    </govuk-footer>
 
-    @await RenderSectionAsync("Scripts", required: false)
+    <govuk-body-end />
 </body>
 </html>
