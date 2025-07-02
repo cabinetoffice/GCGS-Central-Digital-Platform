@@ -92,7 +92,7 @@ public class AddOrganisationPartyUseCase(
                 }
         });
 
-        var orgContactEmail = parentOrganisation.ContactPoints?.FirstOrDefault()?.Email;
+        var orgContactEmail = childOrganisation.ContactPoints?.FirstOrDefault()?.Email;
         if (orgContactEmail != null)
         {
             emailNotificationRequests = emailNotificationRequests.Append(new EmailNotificationRequest

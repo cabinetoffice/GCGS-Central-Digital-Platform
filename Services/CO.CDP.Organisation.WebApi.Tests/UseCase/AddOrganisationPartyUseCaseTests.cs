@@ -111,7 +111,7 @@ public class AddOrganisationPartyUseCaseTests
         var organisationId = Guid.NewGuid();
         var parentOrg = GivenOrganisation(organisationId, "Parent Org");
         var childOrganisationId = Guid.NewGuid();
-        var childOrg = GivenOrganisation(childOrganisationId, "Child Org");
+        var childOrg = GivenOrganisation(childOrganisationId, "Child Org", "child_org@test.com");
         var shareCode = "ValidCode";
         var sharedConsent = new Persistence.Forms.SharedConsent
         {
@@ -174,20 +174,20 @@ public class AddOrganisationPartyUseCaseTests
         );
 
         capturedRequests.Should().ContainSingle(r =>
-            r.EmailAddress == "test@test.com" &&
+            r.EmailAddress == "child_org@test.com" &&
             r.Personalisation!["first_name"] == "organisation" &&
             r.Personalisation["last_name"] == "owner"
         );
     }
 
-    private static Persistence.Organisation GivenOrganisation(Guid guid, string name = "Test") =>
+    private static Persistence.Organisation GivenOrganisation(Guid guid, string name = "Test", string email = "test@test.com") =>
         new()
         {
             Guid = guid,
             Name = name,
             Type = OrganisationInformation.OrganisationType.Organisation,
             Tenant = It.IsAny<Tenant>(),
-            ContactPoints = [new Persistence.ContactPoint { Email = "test@test.com" }],
+            ContactPoints = [new Persistence.ContactPoint { Email = email }],
             SupplierInfo = new Persistence.SupplierInformation()
         };
 }
