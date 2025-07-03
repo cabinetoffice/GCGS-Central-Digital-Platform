@@ -1,7 +1,12 @@
+using CO.CDP.Authentication;
+using CO.CDP.GovUKNotify;
+using CO.CDP.GovUKNotify.Models;
 using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.Organisation.WebApi.UseCase;
 using CO.CDP.OrganisationInformation.Persistence;
 using FluentAssertions;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Moq;
 using Persistence = CO.CDP.OrganisationInformation.Persistence;
 
@@ -12,7 +17,27 @@ public class AddOrganisationPartyUseCaseTests
     private readonly Mock<IOrganisationRepository> _orgRepoMock = new();
     private readonly Mock<IShareCodeRepository> _shareCodeRepoMock = new();
     private readonly Mock<IOrganisationPartiesRepository> _orgPartiesRepoMock = new();
-    private AddOrganisationPartyUseCase UseCase => new(_orgRepoMock.Object, _shareCodeRepoMock.Object, _orgPartiesRepoMock.Object);
+    private readonly Mock<IGovUKNotifyApiClient> _notifyClientMock = new();
+    private readonly Mock<IClaimService> _claimServiceMock = new();
+    private readonly Mock<IPersonRepository> _personRepoMock = new();
+    private readonly Mock<ILogger<AddOrganisationPartyUseCase>> _loggerMock = new();
+    private readonly IConfiguration _config;
+
+    private AddOrganisationPartyUseCase UseCase => new(
+        _orgRepoMock.Object, _shareCodeRepoMock.Object, _orgPartiesRepoMock.Object, _notifyClientMock.Object,
+        _config, _claimServiceMock.Object, _personRepoMock.Object, _loggerMock.Object);
+
+    public AddOrganisationPartyUseCaseTests()
+    {
+        var inMemorySettings = new List<KeyValuePair<string, string?>>
+        {
+            new("GOVUKNotify:ConsortiumOrganisationAddedEmailTemplateId", "test-template-id")
+        };
+
+        _config = new ConfigurationBuilder()
+            .AddInMemoryCollection(inMemorySettings)
+            .Build();
+    }
 
     [Fact]
     public async Task Execute_ShouldThrowException_WhenParentOrganisationNotFound()
@@ -81,12 +106,12 @@ public class AddOrganisationPartyUseCaseTests
     }
 
     [Fact]
-    public async Task Execute_ShouldSaveOrganisationParty_WhenValidInputProvided()
+    public async Task Execute_ShouldSaveOrganisationPartyAndSendNotificationEmail_WhenValidInputProvided()
     {
         var organisationId = Guid.NewGuid();
-        var parentOrg = GivenOrganisation(organisationId);
+        var parentOrg = GivenOrganisation(organisationId, "Parent Org");
         var childOrganisationId = Guid.NewGuid();
-        var childOrg = GivenOrganisation(childOrganisationId);
+        var childOrg = GivenOrganisation(childOrganisationId, "Child Org", "child_org@test.com");
         var shareCode = "ValidCode";
         var sharedConsent = new Persistence.Forms.SharedConsent
         {
@@ -104,10 +129,22 @@ public class AddOrganisationPartyUseCaseTests
             CreatedOn = DateTimeOffset.UtcNow,
             UpdatedOn = DateTimeOffset.UtcNow,
         };
+        var adminPerson = new OrganisationPerson
+        {
+            Person = new Persistence.Person { Email = "admin@org.com", FirstName = "Alice", LastName = "Smith", Guid = Guid.Empty, UserUrn = "" }
+        };
+        var user = new Persistence.Person { FirstName = "Delta", LastName = "Hero", Email = "", Guid = Guid.Empty, UserUrn = "" };
+        var capturedRequests = new List<EmailNotificationRequest>();
 
         _orgRepoMock.Setup(repo => repo.Find(organisationId)).ReturnsAsync(parentOrg);
         _orgRepoMock.Setup(repo => repo.Find(childOrganisationId)).ReturnsAsync(childOrg);
         _shareCodeRepoMock.Setup(repo => repo.GetShareCodesAsync(childOrganisationId)).ReturnsAsync([sharedConsent]);
+        _orgRepoMock.Setup(r => r.FindOrganisationPersons(childOrg.Guid, It.IsAny<IEnumerable<string>>())).ReturnsAsync([adminPerson]);
+        _claimServiceMock.Setup(c => c.GetUserUrn()).Returns("user-urn");
+        _personRepoMock.Setup(r => r.FindByUrn("user-urn")).ReturnsAsync(user);
+        _notifyClientMock.Setup(c => c.SendEmail(It.IsAny<EmailNotificationRequest>()))
+                         .Callback<EmailNotificationRequest>(capturedRequests.Add)
+                         .ReturnsAsync((EmailNotificationResponse?)null);
 
         var result = await UseCase.Execute((organisationId, new AddOrganisationParty
         {
@@ -123,16 +160,34 @@ public class AddOrganisationPartyUseCaseTests
             party.ChildOrganisationId == childOrg.Id &&
             party.SharedConsentId == sharedConsent.Id &&
             party.OrganisationRelationship == Persistence.OrganisationRelationship.Consortium)), Times.Once);
+
+        capturedRequests.Should().HaveCount(2);
+
+        capturedRequests.Should().ContainSingle(r =>
+            r.EmailAddress == "admin@org.com" &&
+            r.TemplateId == "test-template-id" &&
+            r.Personalisation!["org_name"] == "Child Org" &&
+            r.Personalisation!["first_name"] == "Alice" &&
+            r.Personalisation["last_name"] == "Smith" &&
+            r.Personalisation["consortium_name"] == "Parent Org" &&
+            r.Personalisation["person_who_added_it"] == "Delta Hero"
+        );
+
+        capturedRequests.Should().ContainSingle(r =>
+            r.EmailAddress == "child_org@test.com" &&
+            r.Personalisation!["first_name"] == "organisation" &&
+            r.Personalisation["last_name"] == "owner"
+        );
     }
 
-    private static Persistence.Organisation GivenOrganisation(Guid guid) =>
+    private static Persistence.Organisation GivenOrganisation(Guid guid, string name = "Test", string email = "test@test.com") =>
         new()
         {
             Guid = guid,
-            Name = "Test",
+            Name = name,
             Type = OrganisationInformation.OrganisationType.Organisation,
             Tenant = It.IsAny<Tenant>(),
-            ContactPoints = [new Persistence.ContactPoint { Email = "test@test.com" }],
+            ContactPoints = [new Persistence.ContactPoint { Email = email }],
             SupplierInfo = new Persistence.SupplierInformation()
         };
 }
