@@ -35,7 +35,7 @@ public class ChildOrganisationConfirmPageTests
         var redirectResult = result.Should().BeOfType<RedirectToPageResult>().Subject;
         redirectResult.PageName.Should().Be("ChildOrganisationSearchPage");
         redirectResult.RouteValues.Should().ContainKey("Id");
-        redirectResult.RouteValues["Id"].Should().Be(id);
+        redirectResult.RouteValues?["Id"].Should().Be(id);
     }
 
     [Fact]
@@ -59,7 +59,7 @@ public class ChildOrganisationConfirmPageTests
                 It.IsAny<EventId>(),
                 It.Is<It.IsAnyType>((v, t) => v.ToString() == "Error occurred while retrieving organisation details"),
                 It.Is<Exception>(e => e is CdpExceptionLogging && ((CdpExceptionLogging)e).ErrorCode == "LOOKUP_ERROR"),
-                It.IsAny<Func<It.IsAnyType, Exception, string>>()),
+                It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
             Times.Once);
 
         var redirectResult = result.Should().BeOfType<RedirectToPageResult>().Subject;
@@ -77,7 +77,7 @@ public class ChildOrganisationConfirmPageTests
 
         _mockOrganisationClient
             .Setup(client => client.GetOrganisationAsync(childId))
-            .ReturnsAsync((CDP.Organisation.WebApiClient.Organisation)null);
+            .ReturnsAsync((CDP.Organisation.WebApiClient.Organisation?)null);
 
         var result = await _model.OnGetAsync();
 
@@ -85,7 +85,7 @@ public class ChildOrganisationConfirmPageTests
             x => x.Log(
                 LogLevel.Warning,
                 It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Organisation not found for ChildId")),
+                It.Is<It.IsAnyType>((v, t) => v.ToString()!.Contains("Organisation not found for ChildId")),
                 null,
                 It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
             Times.Once);
@@ -129,7 +129,7 @@ public class ChildOrganisationConfirmPageTests
 
         result.Should().BeOfType<PageResult>();
         _model.ChildOrganisation.Should().NotBeNull();
-        _model.ChildOrganisation.Name.Should().Be("Test Organisation");
+        _model.ChildOrganisation!.Name.Should().Be("Test Organisation");
         _model.ChildOrganisation.Id.Should().Be(childId);
         _model.ChildOrganisationAddress.Should().NotBeNull();
         _model.ChildOrganisationContactPoint.Should().NotBeNull();
@@ -162,7 +162,7 @@ public class ChildOrganisationConfirmPageTests
                     v.ToString() == "Error occurred while establishing parent-child relationship"),
                 It.Is<Exception>(e =>
                     e is CdpExceptionLogging && ((CdpExceptionLogging)e).ErrorCode == "RELATIONSHIP_ERROR"),
-                It.IsAny<Func<It.IsAnyType, Exception, string>>()),
+                It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
             Times.Once);
 
         var redirectResult = result.Should().BeOfType<RedirectToPageResult>().Subject;

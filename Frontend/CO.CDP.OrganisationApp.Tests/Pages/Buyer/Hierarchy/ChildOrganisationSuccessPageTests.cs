@@ -29,8 +29,8 @@ public class ChildOrganisationSuccessPageTests
             id: _testChildId,
             identifier: new Identifier("AAAAA-6666-BBBB", "asd", "PPON", new Uri("http://whatever")),
             name: "Test Ppon Organisation",
-            type: CDP.Organisation.WebApiClient.OrganisationType.Organisation,
-            roles: [CDP.Organisation.WebApiClient.PartyRole.Supplier, CDP.Organisation.WebApiClient.PartyRole.Tenderer],
+            type: OrganisationType.Organisation,
+            roles: [PartyRole.Supplier, PartyRole.Tenderer],
             details: new Details(approval: null, buyerInformation: null, pendingRoles: [],
                 publicServiceMissionOrganization: null, scale: null, shelteredWorkshop: null, vcse: null)
         );
@@ -81,7 +81,7 @@ public class ChildOrganisationSuccessPageTests
     {
         _mockOrganisationClient
             .Setup(client => client.GetOrganisationAsync(It.IsAny<Guid>()))
-            .ReturnsAsync((CO.CDP.Organisation.WebApiClient.Organisation)null);
+            .ReturnsAsync((CDP.Organisation.WebApiClient.Organisation?)null);
 
         var result = await _model.OnGetAsync();
 
@@ -112,7 +112,7 @@ public class ChildOrganisationSuccessPageTests
         result.Should().BeOfType<PageResult>();
         _model.OrganisationName.Should().Be(TestOrganisationName);
         _model.ChildOrganisation.Should().NotBeNull();
-        _model.ChildOrganisation.Name.Should().Be(TestOrganisationName);
+        _model.ChildOrganisation?.Name.Should().Be(TestOrganisationName);
     }
 
     [Fact]

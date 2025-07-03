@@ -13,6 +13,7 @@ namespace CO.CDP.OrganisationApp.Tests.Pages.Buyer.Hierarchy;
 
 public class ChildOrganisationResultsPageTests
 {
+    private const double Tolerance = 1e-6;
     private readonly Mock<IOrganisationClient> _mockOrganisationClient;
     private readonly Mock<ILogger<ChildOrganisationResultsPage>> _mockLogger;
     private readonly ChildOrganisationResultsPage _model;
@@ -81,7 +82,7 @@ public class ChildOrganisationResultsPageTests
     [Fact]
     public async Task OnGetAsync_WithNullQuery_ReturnsEmptyResults()
     {
-        _model.Query = null;
+        _model.Query = null!;
 
         await _model.OnGetAsync();
 
@@ -121,7 +122,7 @@ public class ChildOrganisationResultsPageTests
         _mockOrganisationClient
             .Setup(client => client.SearchOrganisationAsync(
                 _model.Query, "buyer", 20, 0.3))
-            .ReturnsAsync((List<OrganisationSearchResult>)null);
+            .ReturnsAsync((List<OrganisationSearchResult>)null!);
 
         await _model.OnGetAsync();
 
@@ -177,12 +178,13 @@ public class ChildOrganisationResultsPageTests
 
         var redirectResult = result.Should().BeOfType<RedirectToPageResult>().Subject;
         redirectResult.PageName.Should().Be("ChildOrganisationConfirmPage");
+        redirectResult.RouteValues.Should().NotBeNull();
         redirectResult.RouteValues.Should().ContainKey("Id");
-        redirectResult.RouteValues["Id"].Should().Be(id);
+        redirectResult.RouteValues?["Id"].Should().Be(id);
         redirectResult.RouteValues.Should().ContainKey("ChildId");
-        redirectResult.RouteValues["ChildId"].Should().Be(childId);
+        redirectResult.RouteValues?["ChildId"].Should().Be(childId);
         redirectResult.RouteValues.Should().ContainKey("Query");
-        redirectResult.RouteValues["Query"].Should().Be(query);
+        redirectResult.RouteValues?["Query"].Should().Be(query);
     }
 
     [Fact]
@@ -207,7 +209,7 @@ public class ChildOrganisationResultsPageTests
     }
 
     [Fact]
-    public void MapSearchResultToChildOrganisation_MapsPropertiesCorrectly()
+    public async Task MapSearchResultToChildOrganisation_MapsPropertiesCorrectly()
     {
         var testId = Guid.NewGuid();
         var searchResults = new List<OrganisationSearchResult>
@@ -222,7 +224,7 @@ public class ChildOrganisationResultsPageTests
 
         _model.Query = "test";
 
-        _model.OnGetAsync().Wait();
+        await _model.OnGetAsync();
 
         _model.Results.Should().HaveCount(1);
         var result = _model.Results.First();
@@ -246,8 +248,8 @@ public class ChildOrganisationResultsPageTests
             id: organisationId,
             identifier: new Identifier(expectedIdentifier, "asd", "PPON", new Uri("http://whatever")),
             name: "Test Ppon Organisation",
-            type: CDP.Organisation.WebApiClient.OrganisationType.Organisation,
-            roles: [CDP.Organisation.WebApiClient.PartyRole.Supplier, CDP.Organisation.WebApiClient.PartyRole.Tenderer],
+            type: OrganisationType.Organisation,
+            roles: [PartyRole.Supplier, PartyRole.Tenderer],
             details: new Details(approval: null, buyerInformation: null, pendingRoles: [],
                 publicServiceMissionOrganization: null, scale: null, shelteredWorkshop: null, vcse: null)
         );
@@ -282,7 +284,7 @@ public class ChildOrganisationResultsPageTests
 
         _mockOrganisationClient
             .Setup(client => client.LookupOrganisationAsync(null, "GB-PPON:12345"))
-            .ReturnsAsync((CDP.Organisation.WebApiClient.Organisation)null);
+            .ReturnsAsync((CDP.Organisation.WebApiClient.Organisation)null!);
 
         await _model.OnGetAsync();
 
@@ -312,7 +314,7 @@ public class ChildOrganisationResultsPageTests
                 It.IsAny<EventId>(),
                 It.Is<It.IsAnyType>((v, t) => v.ToString() == "Error occurred while searching for organisations"),
                 It.Is<Exception>(e => e is CdpExceptionLogging && ((CdpExceptionLogging)e).ErrorCode == errorCode),
-                It.IsAny<Func<It.IsAnyType, Exception, string>>()),
+                It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
             Times.Exactly(1));
 
         var redirectToPageResult = result.Should().BeOfType<RedirectToPageResult>().Subject;
@@ -339,7 +341,7 @@ public class ChildOrganisationResultsPageTests
                 It.IsAny<EventId>(),
                 It.Is<It.IsAnyType>((v, t) => v.ToString() == "Error occurred while searching for organisations"),
                 It.Is<Exception>(e => e is CdpExceptionLogging && ((CdpExceptionLogging)e).ErrorCode == errorCode),
-                It.IsAny<Func<It.IsAnyType, Exception, string>>()),
+                It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
             Times.Once);
 
         var redirectToPageResult = result.Should().BeOfType<RedirectToPageResult>().Subject;
@@ -428,7 +430,7 @@ public class ChildOrganisationResultsPageTests
                 It.IsAny<EventId>(),
                 It.IsAny<It.IsAnyType>(),
                 It.IsAny<Exception>(),
-                It.IsAny<Func<It.IsAnyType, Exception, string>>()),
+                It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
             Times.Never);
     }
 
@@ -453,7 +455,7 @@ public class ChildOrganisationResultsPageTests
                 It.Is<string>(q => q == query),
                 It.Is<string>(r => r == "buyer"),
                 It.Is<int>(l => l == 20),
-                It.Is<double>(t => t == 0.3)))
+                It.Is<double>(t => Math.Abs(t - 0.3) < Tolerance)))
             .ThrowsAsync(httpRequestException);
 
         var result = await _model.OnPost();
@@ -467,7 +469,7 @@ public class ChildOrganisationResultsPageTests
                 It.IsAny<EventId>(),
                 It.Is<It.IsAnyType>((v, t) => v.ToString() == "Error occurred while searching for organisations"),
                 It.IsAny<Exception>(),
-                It.IsAny<Func<It.IsAnyType, Exception, string>>()),
+                It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
             Times.Once);
     }
 
@@ -556,12 +558,13 @@ public class ChildOrganisationResultsPageTests
 
         var redirectResult = result.Should().BeOfType<RedirectToPageResult>().Subject;
         redirectResult.PageName.Should().Be("ChildOrganisationConfirmPage");
+        redirectResult.RouteValues.Should().NotBeNull();
         redirectResult.RouteValues.Should().ContainKey("Id");
-        redirectResult.RouteValues["Id"].Should().Be(id);
+        redirectResult.RouteValues?["Id"].Should().Be(id);
         redirectResult.RouteValues.Should().ContainKey("ChildId");
-        redirectResult.RouteValues["ChildId"].Should().Be(childId);
+        redirectResult.RouteValues?["ChildId"].Should().Be(childId);
         redirectResult.RouteValues.Should().ContainKey("Query");
-        redirectResult.RouteValues["Query"].Should().Be(query);
+        redirectResult.RouteValues?["Query"].Should().Be(query);
     }
 
     private ChildOrganisation MapOrganisationToChildOrganisation(CDP.Organisation.WebApiClient.Organisation organisation)
