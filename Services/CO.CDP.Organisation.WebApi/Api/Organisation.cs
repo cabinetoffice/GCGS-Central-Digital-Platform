@@ -1382,10 +1382,12 @@ public static class EndpointExtensions
                     organisationPersonScopes: [Constants.OrganisationPersonScope.Admin, Constants.OrganisationPersonScope.Editor],
                     organisationIdLocation: OrganisationIdLocation.Path)]
                 async (Guid organisationId, CreateParentChildRelationshipRequest request, IUseCase<CreateParentChildRelationshipRequest, CreateParentChildRelationshipResult> useCase) =>
-                    await useCase.Execute(request)
+                {
+                    return await useCase.Execute(request)
                         .AndThen(result => result.Success
-                            ? Results.Created($"/{organisationId}/hierarchy/child/{result.RelationshipId}", result)
-                            : Results.Problem(statusCode: StatusCodes.Status400BadRequest)))
+                            ? Results.Created($"/organisations/{organisationId}/hierarchy/child/{result.RelationshipId}", result)
+                            : Results.Problem(statusCode: StatusCodes.Status400BadRequest));
+                })
             .Produces<CreateParentChildRelationshipResult>(StatusCodes.Status201Created, "application/json")
             .ProducesProblem(StatusCodes.Status400BadRequest)
             .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
