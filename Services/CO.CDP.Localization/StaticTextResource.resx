@@ -4025,18 +4025,18 @@
     <value>View your organisation details</value>
   </data>
   <data name="BuyerView_TileOne_Body">
-    <value>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</value>
+    <value>View and manage the details of your organisation.</value>
   </data>
   <data name="BuyerView_TileTwo_Title">
     <value>Public procurement organisation number (PPON) register</value>
   </data>
   <data name="BuyerView_TileTwo_Body">
-    <value>Quisque blandit tellus ac sapien rutrum vehicula praesent vel gravida felis.</value>
+    <value>Search for an organisation’s PPON number.</value>
   </data>
   <data name="BuyerView_TileThree_Title">
     <value>Statement of work assurance tool</value>
   </data>
   <data name="BuyerView_TileThree_Body">
-    <value>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.</value>
+    <value>Review your statement of work with AI to address risks, compliance and clarity.</value>
   </data>
 </root>
