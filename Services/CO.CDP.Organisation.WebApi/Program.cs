@@ -202,9 +202,12 @@ app.MapGroup("/organisations")
     .UseOrganisationMouEndpoints()
     .WithTags("Organisation - MOUs");
 
-app.MapGroup("/organisations")
-    .UseOrganisationHierarchyEndpoints()
-    .WithTags("Organisation - Hierarchy");
+if (app.Configuration.GetValue<bool>("BuyerParentChildRelationship"))
+{
+    app.MapGroup("/organisations")
+        .UseOrganisationHierarchyEndpoints()
+        .WithTags("Organisation - Hierarchy");
+}
 
 app.MapGroup("/mou")
     .UseMouEndpoints()
