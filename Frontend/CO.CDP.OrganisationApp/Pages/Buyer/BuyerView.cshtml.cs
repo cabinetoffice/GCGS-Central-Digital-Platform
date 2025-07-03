@@ -37,13 +37,13 @@ public class BuyerView(
             {
                 Title = StaticTextResource.BuyerView_TileOne_Title,
                 Body = StaticTextResource.BuyerView_TileOne_Body,
-                Href = "#"
+                Href = $"/organisation/{Id}"
             },
             new Tile
             {
                 Title = StaticTextResource.BuyerView_TileTwo_Title,
                 Body = StaticTextResource.BuyerView_TileTwo_Body,
-                Href = "#"
+                Href = "/organisation/search"
             },
             new Tile
             {

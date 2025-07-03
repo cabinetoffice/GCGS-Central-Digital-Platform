@@ -93,4 +93,18 @@ public class BuyerViewTests
         _model.Tiles[2].Title.Should().Be(StaticTextResource.BuyerView_TileThree_Title);
         _model.Tiles[2].Body.Should().Be(StaticTextResource.BuyerView_TileThree_Body);
     }
+
+    [Fact]
+    public async Task OnGet_WhenBuyerViewFeatureIsEnabled_PopulatesTileLinks()
+    {
+        var organisation = OrganisationFactory.CreateOrganisation(roles: new List<PartyRole> { PartyRole.Buyer });
+        _organisationClientMock.Setup(oc => oc.GetOrganisationAsync(_model.Id)).ReturnsAsync(organisation);
+
+        await _model.OnGet();
+
+        _model.Tiles.Should().NotBeEmpty();
+        _model.Tiles[0].Href.Should().Be($"/organisation/{_model.Id}");
+        _model.Tiles[1].Href.Should().Be("/organisation/search");
+        _model.Tiles[2].Href.Should().Be("#");
+    }
 }
