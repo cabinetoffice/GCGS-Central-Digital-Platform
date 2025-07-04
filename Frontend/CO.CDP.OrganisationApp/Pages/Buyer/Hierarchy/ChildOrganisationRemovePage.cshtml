@@ -46,7 +46,7 @@
                 <h2 class="govuk-heading-m">@StaticTextResource.BuyerParentChildRelationship_RemovePage_Confirmation</h2>
 
                 <div class="table-header">
-                    <p class="govuk-body govuk-!-font-weight-bold">@(Model.ChildOrganisation?.Name ?? string.Empty)</p>
+                    <p class="govuk-body govuk-!-font-weight-bold">@(Model.ChildOrganisation?.Name ?? StaticTextResource.Global_Unknown)</p>
                 </div>
                 <div class="table-content">
                     <table class="govuk-table">
@@ -54,7 +54,7 @@
                         <tr class="govuk-table__row">
                             <th scope="row"
                                 class="govuk-table__header govuk-!-width-one-third">@StaticTextResource.BuyerParentChildRelationship_RemovePage_Identifier</th>
-                            <td class="govuk-table__cell govuk-!-width-two-thirds">@(Model.ChildOrganisation?.Identifier?.Id ?? string.Empty)</td>
+                            <td class="govuk-table__cell govuk-!-width-two-thirds">@(Model.ChildOrganisation?.Identifier?.Id ?? StaticTextResource.Global_Unknown)</td>
                         </tr>
                         <tr class="govuk-table__row">
                             <th scope="row"
