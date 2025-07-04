@@ -13,7 +13,7 @@ public static class PartyRoleDisplayExtensions
     /// </summary>
     /// <param name="role">The party role.</param>
     /// <returns>The localised display text for the role.</returns>
-    public static string GetDisplayText(this PartyRole role)
+    public static string GetDisplayText(this PartyRole? role)
     {
         return role switch
         {
@@ -36,9 +36,14 @@ public static class PartyRoleDisplayExtensions
     /// </summary>
     /// <param name="roles">The collection of party roles.</param>
     /// <returns>A comma-separated list of localised display texts.</returns>
-    public static string GetDisplayText(this IEnumerable<PartyRole> roles)
+    public static string GetDisplayText<T>(this IEnumerable<T>? roles) where T : struct, Enum
     {
-        var roleTexts = roles?.Select(r => r.GetDisplayText()).Distinct() ?? [];
+        if (roles == null)
+        {
+            return StaticTextResource.Global_Unknown;
+        }
+
+        var roleTexts = roles.Select(r => (r as PartyRole?).GetDisplayText()).Distinct();
         return string.Join(", ", roleTexts);
     }
 }

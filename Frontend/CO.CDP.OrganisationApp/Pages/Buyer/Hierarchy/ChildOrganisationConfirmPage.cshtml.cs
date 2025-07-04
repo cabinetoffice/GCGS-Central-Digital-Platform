@@ -1,4 +1,6 @@
+using CO.CDP.Localization;
 using CO.CDP.Organisation.WebApiClient;
+using CO.CDP.OrganisationApp.Extensions;
 using CO.CDP.OrganisationApp.Logging;
 using CO.CDP.OrganisationApp.WebApiClients;
 using Microsoft.AspNetCore.Mvc;
@@ -32,7 +34,7 @@ public class ChildOrganisationConfirmPage(
 
     public Address? ChildOrganisationAddress => ChildOrganisation?.Addresses?.FirstOrDefault();
     public ContactPoint? ChildOrganisationContactPoint => ChildOrganisation?.ContactPoint;
-    public string ChildOrganisationType => "Buyer";
+    public string ChildOrganisationType => ChildOrganisation?.Roles.GetDisplayText() ?? StaticTextResource.Global_Unknown;
 
     public bool HasChildOrganisationAddress =>
         ChildOrganisationAddress != null &&
