@@ -149,9 +149,25 @@ public class ChildOrganisationResultsPage(
 
         var (isPpon, pponIdentifier) = IsLikelyPpon(Query);
 
-        return isPpon
-            ? await ExecutePponSearch(pponIdentifier)
-            : await ExecuteNameSearch();
+        var (results, errorMessage) = await (isPpon
+            ? ExecutePponSearch(pponIdentifier)
+            : ExecuteNameSearch());
+
+        if (results.Count == 0)
+        {
+            return (results, errorMessage);
+        }
+
+        var connectedChildren = await _organisationClient.GetChildOrganisationsAsync(Id);
+        var connectedChildIds = connectedChildren.Select(c => c.Id).ToHashSet();
+
+        var filteredResults = results
+            .Where(r => !connectedChildIds.Contains(r.OrganisationId))
+            .ToList();
+
+        return filteredResults.Count > 0
+            ? (filteredResults, null)
+            : (new List<ChildOrganisation>(), StaticTextResource.BuyerParentChildRelationship_ResultsPage_NoResults);
     }
 
     private async Task<(List<ChildOrganisation> Results, string? ErrorMessage)> ExecutePponSearch(
