@@ -1,0 +1,27 @@
+@page "/organisation/{id}/buyer/hierarchy/add/child/success"
+@using CO.CDP.Localization
+@model ChildOrganisationSuccessPage
+
+@{
+    ViewData["Title"] = StaticTextResource.BuyerParentChildRelationship_SuccessPage_Title;
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <div class="govuk-panel govuk-panel--confirmation">
+            <h1 class="govuk-panel__title">
+                @StaticTextResource.BuyerParentChildRelationship_SuccessPage_PanelTitle
+            </h1>
+        </div>
+        <p class="govuk-body">@string.Format(StaticTextResource.BuyerParentChildRelationship_SuccessPage_ConfirmationMessage, Model.OrganisationName)</p>
+        <p class="govuk-body">@StaticTextResource.BuyerParentChildRelationship_SuccessPage_OptionsIntro</p>
+        <ul class="govuk-list govuk-list--bullet">
+            <li><a class="govuk-link"
+                   href="/organisation/@Model.Id/buyer/hierarchy/add/child/search">@StaticTextResource.BuyerParentChildRelationship_SuccessPage_AddAnother</a>
+            </li>
+            <li><a class="govuk-link"
+                   href="/organisation/@Model.Id">@StaticTextResource.BuyerParentChildRelationship_SuccessPage_ReturnToDetails</a>
+            </li>
+        </ul>
+    </div>
+</div>

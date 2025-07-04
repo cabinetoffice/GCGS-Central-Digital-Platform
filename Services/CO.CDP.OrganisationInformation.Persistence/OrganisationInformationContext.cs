@@ -40,6 +40,7 @@ public class OrganisationInformationContext(DbContextOptions<OrganisationInforma
     public DbSet<SupplierInformationSnapshot> SupplierInformationSnapshot { get; set; } = null!;
     public DbSet<ConnectedEntitySnapshot> ConnectedEntitySnapshot { get; set; } = null!;
     public DbSet<OrganisationSnapshot> OrganisationSnapshot { get; set; } = null!;
+    public DbSet<OrganisationHierarchy> OrganisationHierarchies { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -71,6 +72,22 @@ public class OrganisationInformationContext(DbContextOptions<OrganisationInforma
                 a.Property(z => z.UpdatedOn).HasTimestampDefault();
                 a.ToTable("connected_individual_trust");
             });
+        });
+
+        modelBuilder.Entity<OrganisationHierarchy>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+
+            entity.HasIndex(e => e.RelationshipId).IsUnique();
+
+            entity.HasIndex(e => e.ParentOrganisationId);
+
+            entity.HasIndex(e => e.ChildOrganisationId);
+
+            entity.HasIndex(e => new { e.ParentOrganisationId, e.ChildOrganisationId, e.SupersededOn })
+                .HasFilter("superseded_on IS NULL");
+
+            entity.ToTable("organisation_hierarchies");
         });
 
         modelBuilder.Entity<Identifier>().ToTable("identifiers");
