@@ -1,3 +1,4 @@
+using CO.CDP.RegisterOfCommercialTools.WebApiClient;
 using GovUk.Frontend.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -5,6 +6,14 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddGovUkFrontend();
+
+builder.Services.AddHttpClient<ICommercialToolsApiClient, CommercialToolsApiClient>(
+    (client) =>
+    {
+        var url = builder.Configuration.GetValue<string>("CommercialToolsApi:ServiceUrl")
+                    ?? throw new Exception("Missing CommercialToolsApi:ServiceUrl configuration.");
+        client.BaseAddress = new Uri(url);
+    });
 
 var app = builder.Build();
 
