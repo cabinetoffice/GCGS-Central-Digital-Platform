@@ -52,6 +52,9 @@ public class ChildOrganisationResultsPageTests
             CreateTestSearchResult("Stark Industries", Guid.NewGuid(), "DUNS", "123456789"),
             CreateTestSearchResult("Wayne Enterprises", Guid.NewGuid(), "PPON", "987654321"),
             CreateTestSearchResult("Oscorp", Guid.NewGuid(), "DUNS", "456789123")
+            CreateTestSearchResult("Stark Industries", Guid.NewGuid(), "GB-PPON", "STIN-1234-ABCD"),
+            CreateTestSearchResult("Wayne Enterprises", Guid.NewGuid(), "GB-PPON", "WAYN-9876-EFGH"),
+            CreateTestSearchResult("Oscorp", Guid.NewGuid(), "GB-PPON", "OSCO-4567-IJKL")
         };
 
         _mockOrganisationClient
@@ -70,7 +73,7 @@ public class ChildOrganisationResultsPageTests
         _model.Results.Should().Contain(o => o.Name == "Oscorp");
 
         var starkIndustries = _model.Results.FirstOrDefault(o => o.Name == "Stark Industries");
-        starkIndustries?.GetFormattedIdentifier().Should().Be("DUNS: 123456789");
+        starkIndustries?.GetFormattedIdentifier().Should().Be("GB-PPON: STIN-1234-ABCD");
     }
 
     [Fact]
@@ -166,7 +169,7 @@ public class ChildOrganisationResultsPageTests
         const string query = "test query";
         var searchResults = new List<OrganisationSearchResult>
         {
-            CreateTestSearchResult("Test Org", childId, "DUNS", "123456789")
+            CreateTestSearchResult("Test Org", childId, "GB-PPON", "TORG-1234-ABCD")
         };
 
         _model.Id = id;
@@ -221,7 +224,7 @@ public class ChildOrganisationResultsPageTests
         var testId = Guid.NewGuid();
         var searchResults = new List<OrganisationSearchResult>
         {
-            CreateTestSearchResult("Test Org", testId, "DUNS", "123456789")
+            CreateTestSearchResult("Test Org", testId, "GB-PPON", "TORG-1234-BCDE")
         };
 
         _mockOrganisationClient
@@ -240,7 +243,7 @@ public class ChildOrganisationResultsPageTests
         var result = _model.Results.First();
         result.Name.Should().Be("Test Org");
         result.OrganisationId.Should().Be(testId);
-        result.GetFormattedIdentifier().Should().Be("DUNS: 123456789");
+        result.GetFormattedIdentifier().Should().Be("GB-PPON: TORG-1234-BCDE");
     }
 
     [Theory]
@@ -256,7 +259,7 @@ public class ChildOrganisationResultsPageTests
             addresses: [],
             contactPoint: new ContactPoint("a@b.com", "Contact", "123", new Uri("http://whatever")),
             id: organisationId,
-            identifier: new Identifier(expectedIdentifier, "asd", "PPON", new Uri("http://whatever")),
+            identifier: new Identifier(scheme: "GB-PPON", id: expectedIdentifier.Substring("GB-PPON:".Length), legalName: "Test Ppon Organisation", uri: new Uri("http://whatever")),
             name: "Test Ppon Organisation",
             type: OrganisationType.Organisation,
             roles: [PartyRole.Buyer, PartyRole.Supplier, PartyRole.Tenderer],
@@ -302,7 +305,7 @@ public class ChildOrganisationResultsPageTests
             addresses: [],
             contactPoint: new ContactPoint("a@b.com", "Contact", "123", new Uri("http://whatever")),
             id: organisationId,
-            identifier: new Identifier(expectedIdentifier, "asd", "PPON", new Uri("http://whatever")),
+            identifier: new Identifier(scheme: "GB-PPON", id: "PMZV-7732-XXTT", legalName: "Test Ppon Organisation", uri: new Uri("http://whatever")),
             name: "Test Ppon Organisation",
             type: OrganisationType.Organisation,
             roles: [PartyRole.Supplier, PartyRole.Tenderer],
@@ -400,7 +403,7 @@ public class ChildOrganisationResultsPageTests
         const string query = "test query";
         var searchResults = new List<OrganisationSearchResult>
         {
-            CreateTestSearchResult("Test Org", Guid.NewGuid(), "PPON", "123456789")
+            CreateTestSearchResult("Test Org", Guid.NewGuid(), "GB-PPON", "TORG-1234-CDEF")
         };
 
         _model.Id = id;
@@ -534,7 +537,7 @@ public class ChildOrganisationResultsPageTests
             addresses: [],
             contactPoint: new ContactPoint("test@example.com", "Contact Name", "123456789", new Uri("http://example.com")),
             id: organisationId,
-            identifier: new Identifier(expectedIdentifier, "Legal Name", "PPON", new Uri("http://identifier.example")),
+            identifier: new Identifier(scheme: "GB-PPON", id: "PMZV-7732-XXTT", legalName: "Test PPON Organisation", uri: new Uri("http://identifier.example")),
             name: "Test PPON Organisation",
             type: OrganisationType.Organisation,
             roles: [PartyRole.Buyer],
@@ -580,7 +583,7 @@ public class ChildOrganisationResultsPageTests
             addresses: [],
             contactPoint: new ContactPoint("test@example.com", "Contact Name", "123456789", new Uri("http://example.com")),
             id: childId,
-            identifier: new Identifier(expectedIdentifier, "Legal Name", "PPON", new Uri("http://identifier.example")),
+            identifier: new Identifier(scheme: "GB-PPON", id: "PMZV-7732-XXTT", legalName: "Test PPON Organisation", uri: new Uri("http://identifier.example")),
             name: "Test PPON Organisation",
             type: OrganisationType.Organisation,
             roles: [PartyRole.Buyer],
@@ -660,9 +663,9 @@ public class ChildOrganisationResultsPageTests
 
         var searchResults = new List<OrganisationSearchResult>
         {
-            CreateTestSearchResult("Parent Organisation", parentId, "DUNS", "123456789"),
-            CreateTestSearchResult("Child Organisation 1", Guid.NewGuid(), "DUNS", "987654321"),
-            CreateTestSearchResult("Child Organisation 2", Guid.NewGuid(), "PPON", "555444333")
+            CreateTestSearchResult("Parent Organisation", parentId, "GB-PPON", "PORG-1234-ABCD"),
+            CreateTestSearchResult("Child Organisation 1", Guid.NewGuid(), "GB-PPON", "CORG-9876-EFGH"),
+            CreateTestSearchResult("Child Organisation 2", Guid.NewGuid(), "GB-PPON", "CORG-5554-IJKL")
         };
 
         _mockOrganisationClient
@@ -697,7 +700,7 @@ public class ChildOrganisationResultsPageTests
             contactPoint: new ContactPoint("test@example.com", "Contact Name", "123456789",
                 new Uri("http://example.com")),
             id: parentId,
-            identifier: new Identifier(expectedIdentifier, "Legal Name", "PPON", new Uri("http://identifier.example")),
+            identifier: new Identifier(scheme: "GB-PPON", id: "PMZV-7732-XXTT", legalName: "Parent Organisation", uri: new Uri("http://identifier.example")),
             name: "Parent Organisation",
             type: OrganisationType.Organisation,
             roles: [PartyRole.Buyer],
@@ -733,7 +736,7 @@ public class ChildOrganisationResultsPageTests
         var searchResults = new List<CO.CDP.Organisation.WebApiClient.OrganisationSearchResult>
         {
             CreateTestSearchResult("Connected Child", connectedChildId, "GB-PPON", "PMZV-7732-XXTT"),
-            CreateTestSearchResult("New Child", Guid.NewGuid(), "DUNS", "987654321")
+            CreateTestSearchResult("New Child", Guid.NewGuid(), "GB-PPON", "NEWC-9876-ABCD")
         };
 
         var childOrganisations = new List<CO.CDP.Organisation.WebApiClient.OrganisationSummary>
