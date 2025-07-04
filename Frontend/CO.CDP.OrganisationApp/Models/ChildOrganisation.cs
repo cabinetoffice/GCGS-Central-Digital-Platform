@@ -41,4 +41,6 @@ public record ChildOrganisation
     /// </summary>
     /// <returns>A formatted identifier string</returns>
     public string GetFormattedIdentifier() => $"{Identifier.Scheme}: {Identifier.Id}";
+
+    public string GetIdentifierAsString() => $"{Identifier.Scheme}:{Identifier.Id}";
 }

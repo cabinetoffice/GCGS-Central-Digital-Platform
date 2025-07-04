@@ -43,12 +43,14 @@ public class ChildOrganisationConfirmPageTests
     {
         var id = Guid.NewGuid();
         var childId = Guid.NewGuid();
+        var ppon = "GB-PPON:ABCD-1234-EFGH";
 
         _model.Id = id;
         _model.ChildId = childId;
+        _model.Ppon = ppon;
 
         _mockOrganisationClient
-            .Setup(client => client.GetOrganisationAsync(childId))
+            .Setup(client => client.LookupOrganisationAsync(null, ppon))
             .ThrowsAsync(new Exception("Test exception"));
 
         var result = await _model.OnGetAsync();
@@ -71,12 +73,14 @@ public class ChildOrganisationConfirmPageTests
     {
         var id = Guid.NewGuid();
         var childId = Guid.NewGuid();
+        var ppon = "GB-PPON:ABCD-1234-EFGH";
 
         _model.Id = id;
         _model.ChildId = childId;
+        _model.Ppon = ppon;
 
         _mockOrganisationClient
-            .Setup(client => client.GetOrganisationAsync(childId))
+            .Setup(client => client.LookupOrganisationAsync(null, ppon))
             .ReturnsAsync((CDP.Organisation.WebApiClient.Organisation?)null);
 
         var result = await _model.OnGetAsync();
@@ -100,10 +104,12 @@ public class ChildOrganisationConfirmPageTests
         var id = Guid.NewGuid();
         var childId = Guid.NewGuid();
         const string query = "test query";
+        const string ppon = "GB-PPON:ABCD-1234-EFGH";
 
         _model.Id = id;
         _model.ChildId = childId;
         _model.Query = query;
+        _model.Ppon = ppon;
 
         var organisation = new CDP.Organisation.WebApiClient.Organisation(
             additionalIdentifiers: [],
@@ -122,7 +128,7 @@ public class ChildOrganisationConfirmPageTests
         );
 
         _mockOrganisationClient
-            .Setup(client => client.GetOrganisationAsync(childId))
+            .Setup(client => client.LookupOrganisationAsync(null, ppon))
             .ReturnsAsync(organisation);
 
         var result = await _model.OnGetAsync();

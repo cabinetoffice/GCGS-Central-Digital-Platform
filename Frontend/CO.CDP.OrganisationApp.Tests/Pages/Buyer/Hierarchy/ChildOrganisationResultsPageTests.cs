@@ -244,9 +244,9 @@ public class ChildOrganisationResultsPageTests
     }
 
     [Theory]
-    [InlineData("GB-PPON:12345", "GB-PPON:12345")]
-    [InlineData("GB-PPON-12345", "GB-PPON:12345")]
-    [InlineData("ABCD-1234-EFGH", "GB-PPON:ABCD-1234-EFGH")]
+    [InlineData("GB-PPON:PMZV-7732-XXTT", "GB-PPON:PMZV-7732-XXTT")]
+    [InlineData("GB-PPON-PMZV-7732-XXTT", "GB-PPON:PMZV-7732-XXTT")]
+    [InlineData("PMZV-7732-XXTT", "GB-PPON:PMZV-7732-XXTT")]
     public async Task OnGetAsync_WithPponQuery_CallsLookupOrganisationAsync(string query, string expectedIdentifier)
     {
         _model.Query = query;
@@ -293,16 +293,16 @@ public class ChildOrganisationResultsPageTests
     [Fact]
     public async Task OnGetAsync_WithPponQuery_WhenLookupReturnsNull_ReturnsEmptyResults()
     {
-        _model.Query = "GB-PPON-12345";
+        _model.Query = "GB-PPON-PMZV-7732-XXTT";
 
         _mockOrganisationClient
-            .Setup(client => client.LookupOrganisationAsync(null, "GB-PPON:12345"))
+            .Setup(client => client.LookupOrganisationAsync(null, "GB-PPON:PMZV-7732-XXTT"))
             .ReturnsAsync((CDP.Organisation.WebApiClient.Organisation)null!);
 
         await _model.OnGetAsync();
 
         _mockOrganisationClient.Verify(
-            client => client.LookupOrganisationAsync(null, "GB-PPON:12345"),
+            client => client.LookupOrganisationAsync(null, "GB-PPON:PMZV-7732-XXTT"),
             Times.Once);
         _model.Results.Should().BeEmpty();
     }
@@ -337,13 +337,13 @@ public class ChildOrganisationResultsPageTests
     [Fact]
     public async Task OnGetAsync_WithPponQuery_WhenLookupThrowsException_LogsCdpExceptionAndRedirectsToErrorPage()
     {
-        _model.Query = "GB-PPON-12345";
+        _model.Query = "GB-PPON-PMZV-7732-XXTT";
         const string errorCode = "LOOKUP_ERROR";
         var exception = new Exception("Test exception");
 
         _mockOrganisationClient
             .Setup(client => client.LookupOrganisationAsync(
-                null, "GB-PPON:12345"))
+                null, "GB-PPON:PMZV-7732-XXTT"))
             .ThrowsAsync(exception);
 
         var result = await _model.OnGetAsync();
@@ -493,8 +493,8 @@ public class ChildOrganisationResultsPageTests
     public async Task OnPost_WithPponLookup_WithResults_WithNoSelectionMade_ReturnsPageResultWithError()
     {
         var id = Guid.NewGuid();
-        const string query = "GB-PPON-12345";
-        const string expectedIdentifier = "GB-PPON:12345";
+        const string query = "GB-PPON-PMZV-7732-XXTT";
+        const string expectedIdentifier = "GB-PPON:PMZV-7732-XXTT";
         var organisationId = Guid.NewGuid();
 
         var organisation = new CDP.Organisation.WebApiClient.Organisation(
@@ -540,8 +540,8 @@ public class ChildOrganisationResultsPageTests
     {
         var id = Guid.NewGuid();
         var childId = Guid.NewGuid();
-        const string query = "GB-PPON-12345";
-        const string expectedIdentifier = "GB-PPON:12345";
+        const string query = "GB-PPON-PMZV-7732-XXTT";
+        const string expectedIdentifier = "GB-PPON:PMZV-7732-XXTT";
 
         var organisation = new CDP.Organisation.WebApiClient.Organisation(
             additionalIdentifiers: [],
@@ -653,8 +653,8 @@ public class ChildOrganisationResultsPageTests
     public async Task OnGetAsync_WithPponSearch_FiltersOutParentOrganisation()
     {
         var parentId = Guid.NewGuid();
-        const string query = "GB-PPON-12345";
-        const string expectedIdentifier = "GB-PPON:12345";
+        const string query = "GB-PPON-PMZV-7732-XXTT";
+        const string expectedIdentifier = "GB-PPON:PMZV-7732-XXTT";
 
         _model.Id = parentId;
         _model.Query = query;

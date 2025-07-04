@@ -137,7 +137,10 @@ public class ChildOrganisationResultsPage(
             return Page();
         }
 
-        return RedirectToPage("ChildOrganisationConfirmPage", new { Id, ChildId = SelectedChildId, Query });
+        var selectedOrganisation = Results.FirstOrDefault(o => o.OrganisationId == SelectedChildId);
+
+        return RedirectToPage("ChildOrganisationConfirmPage",
+            new { Id, ChildId = SelectedChildId, Query, Ppon = selectedOrganisation?.GetIdentifierAsString() });
     }
 
     private async Task<(List<ChildOrganisation> Results, string? ErrorMessage)> ExecuteSearch()

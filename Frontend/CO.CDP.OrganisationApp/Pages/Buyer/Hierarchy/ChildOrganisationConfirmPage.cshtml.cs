@@ -1,5 +1,6 @@
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Logging;
+using CO.CDP.OrganisationApp.WebApiClients;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Address = CO.CDP.Organisation.WebApiClient.Address;
@@ -20,6 +21,8 @@ public class ChildOrganisationConfirmPage(
     [BindProperty(SupportsGet = true)] public Guid Id { get; set; }
 
     [BindProperty(SupportsGet = true)] public Guid ChildId { get; set; }
+
+    [BindProperty(SupportsGet = true)] public string? Ppon { get; set; }
 
     [BindProperty(SupportsGet = true)] public string? Query { get; set; }
 
@@ -48,7 +51,9 @@ public class ChildOrganisationConfirmPage(
 
         try
         {
-            ChildOrganisation = await _organisationClient.GetOrganisationAsync(ChildId);
+            ChildOrganisation = await OrganisationClientExtensions.LookupOrganisationAsync(_organisationClient,
+                name: null,
+                identifier: Ppon);
 
             if (ChildOrganisation == null)
             {
