@@ -259,7 +259,7 @@ public class ChildOrganisationResultsPageTests
             identifier: new Identifier(expectedIdentifier, "asd", "PPON", new Uri("http://whatever")),
             name: "Test Ppon Organisation",
             type: OrganisationType.Organisation,
-            roles: [PartyRole.Supplier, PartyRole.Tenderer],
+            roles: [PartyRole.Buyer, PartyRole.Supplier, PartyRole.Tenderer],
             details: new Details(approval: null, buyerInformation: null, pendingRoles: [],
                 publicServiceMissionOrganization: null, scale: null, shelteredWorkshop: null, vcse: null)
         );
@@ -288,6 +288,38 @@ public class ChildOrganisationResultsPageTests
         var result = _model.Results.First();
         result.Name.Should().Be("Test Ppon Organisation");
         result.OrganisationId.Should().Be(organisationId);
+    }
+
+    [Fact]
+    public async Task OnGetAsync_WithPponQuery_FiltersOutOrganisationWithoutBuyerRole()
+    {
+        const string query = "GB-PPON-PMZV-7732-XXTT";
+        const string expectedIdentifier = "GB-PPON:PMZV-7732-XXTT";
+        _model.Query = query;
+        var organisationId = Guid.NewGuid();
+        var organisation = new CDP.Organisation.WebApiClient.Organisation(
+            additionalIdentifiers: [],
+            addresses: [],
+            contactPoint: new ContactPoint("a@b.com", "Contact", "123", new Uri("http://whatever")),
+            id: organisationId,
+            identifier: new Identifier(expectedIdentifier, "asd", "PPON", new Uri("http://whatever")),
+            name: "Test Ppon Organisation",
+            type: OrganisationType.Organisation,
+            roles: [PartyRole.Supplier, PartyRole.Tenderer],
+            details: new Details(approval: null, buyerInformation: null, pendingRoles: [],
+                publicServiceMissionOrganization: null, scale: null, shelteredWorkshop: null, vcse: null)
+        );
+
+        _mockOrganisationClient
+            .Setup(client => client.LookupOrganisationAsync(null, expectedIdentifier))
+            .ReturnsAsync(organisation);
+
+        _mockOrganisationClient.Setup(c => c.GetChildOrganisationsAsync(It.IsAny<Guid>()))
+            .ReturnsAsync(new List<OrganisationSummary>());
+
+        await _model.OnGetAsync();
+
+        _model.Results.Should().BeEmpty();
     }
 
     [Fact]

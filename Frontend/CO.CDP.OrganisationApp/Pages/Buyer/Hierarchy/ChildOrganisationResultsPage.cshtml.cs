@@ -186,7 +186,7 @@ public class ChildOrganisationResultsPage(
             name: null,
             identifier: pponIdentifier);
 
-        if (organisation == null || organisation.Id == Id)
+        if (organisation == null || organisation.Id == Id || !organisation.Roles.Contains(PartyRole.Buyer))
         {
             return (new List<ChildOrganisation>(), StaticTextResource.BuyerParentChildRelationship_ResultsPage_NoResults);
         }
@@ -204,6 +204,7 @@ public class ChildOrganisationResultsPage(
 
         var filteredResults = searchResults
             .Where(org => org.Id != Id)
+            .Where(org => org.Roles.Contains(PartyRole.Buyer))
             .Select(MapOrganisationSearchResultToChildOrganisation)
             .ToList();
 
