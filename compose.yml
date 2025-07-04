@@ -21,8 +21,6 @@ services:
       - av-scanner
       - clamav-rest
       - scheduled-worker
-      - commercial-tools-app
-      - commercial-tools-api
     volumes:
       - './docker/gateway/nginx.conf:/etc/nginx/nginx.conf:ro'
       - './docker/gateway/templates:/etc/nginx/templates:ro'
