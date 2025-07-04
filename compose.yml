@@ -240,6 +240,8 @@ services:
       Feature__OutboxProcessorBackgroundService: false
 
   commercial-tools-app:
+    profiles:
+      - enable-commercial-tools
     container_name: co-cdp-commercial-tools-app
     build:
       context: .
@@ -258,6 +260,8 @@ services:
       CommercialToolsApi__ServiceUrl: ''
 
   commercial-tools-api:
+    profiles:
+      - enable-commercial-tools
     container_name: co-cdp-commercial-tools-api
     build:
       context: .
