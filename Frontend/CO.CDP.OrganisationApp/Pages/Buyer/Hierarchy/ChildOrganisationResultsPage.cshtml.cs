@@ -161,16 +161,21 @@ public class ChildOrganisationResultsPage(
             return (results, errorMessage);
         }
 
-        var connectedChildren = await _organisationClient.GetChildOrganisationsAsync(Id);
-        var connectedChildIds = connectedChildren.Select(c => c.Id).ToHashSet();
-
-        var filteredResults = results
-            .Where(r => !connectedChildIds.Contains(r.OrganisationId))
-            .ToList();
+        var filteredResults = await FilterResults(results);
 
         return filteredResults.Count > 0
             ? (filteredResults, null)
             : (new List<ChildOrganisation>(), StaticTextResource.BuyerParentChildRelationship_ResultsPage_NoResults);
+    }
+
+    private async Task<List<ChildOrganisation>> FilterResults(List<ChildOrganisation> results)
+    {
+        var connectedChildren = await _organisationClient.GetChildOrganisationsAsync(Id);
+        var connectedChildIds = connectedChildren.Select(c => c.Id).ToHashSet();
+
+        return results
+            .Where(r => r.OrganisationId != Id && !connectedChildIds.Contains(r.OrganisationId))
+            .ToList();
     }
 
     private async Task<(List<ChildOrganisation> Results, string? ErrorMessage)> ExecutePponSearch(
@@ -186,10 +191,11 @@ public class ChildOrganisationResultsPage(
             name: null,
             identifier: pponIdentifier);
 
-        if (organisation == null || organisation.Id == Id || !organisation.Roles.Contains(PartyRole.Buyer) ||
+        if (organisation == null || !organisation.Roles.Contains(PartyRole.Buyer) ||
             organisation.Identifier.Scheme != "GB-PPON")
         {
-            return (new List<ChildOrganisation>(), StaticTextResource.BuyerParentChildRelationship_ResultsPage_NoResults);
+            return (new List<ChildOrganisation>(),
+                StaticTextResource.BuyerParentChildRelationship_ResultsPage_NoResults);
         }
 
         return (new List<ChildOrganisation> { MapOrganisationLookupResultToChildOrganisation(organisation) }, null);
@@ -203,16 +209,18 @@ public class ChildOrganisationResultsPage(
             limit: 20,
             threshold: 0.3);
 
-        var filteredResults = searchResults
-            .Where(org => org.Id != Id)
-            .Where(org => org.Roles.Contains(PartyRole.Buyer))
-            .Where(org => org.Identifier.Scheme == "GB-PPON")
+        if (searchResults.Count == 0)
+        {
+            return (new List<ChildOrganisation>(),
+                StaticTextResource.BuyerParentChildRelationship_ResultsPage_NoResults);
+        }
+
+        var results = searchResults
+            .Where(r => r.Identifier.Scheme == "GB-PPON")
             .Select(MapOrganisationSearchResultToChildOrganisation)
             .ToList();
 
-        return filteredResults.Count != 0
-            ? (filteredResults, null)
-            : (new List<ChildOrganisation>(), StaticTextResource.BuyerParentChildRelationship_ResultsPage_NoResults);
+        return (results, null);
     }
 
     private void LogApiError(Exception ex)
