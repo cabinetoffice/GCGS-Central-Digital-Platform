@@ -186,7 +186,8 @@ public class ChildOrganisationResultsPage(
             name: null,
             identifier: pponIdentifier);
 
-        if (organisation == null || organisation.Id == Id || !organisation.Roles.Contains(PartyRole.Buyer))
+        if (organisation == null || organisation.Id == Id || !organisation.Roles.Contains(PartyRole.Buyer) ||
+            organisation.Identifier.Scheme != "GB-PPON")
         {
             return (new List<ChildOrganisation>(), StaticTextResource.BuyerParentChildRelationship_ResultsPage_NoResults);
         }
@@ -205,6 +206,7 @@ public class ChildOrganisationResultsPage(
         var filteredResults = searchResults
             .Where(org => org.Id != Id)
             .Where(org => org.Roles.Contains(PartyRole.Buyer))
+            .Where(org => org.Identifier.Scheme == "GB-PPON")
             .Select(MapOrganisationSearchResultToChildOrganisation)
             .ToList();
 

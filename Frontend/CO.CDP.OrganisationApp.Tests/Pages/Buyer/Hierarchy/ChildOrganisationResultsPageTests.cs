@@ -49,9 +49,6 @@ public class ChildOrganisationResultsPageTests
 
         var searchResults = new List<OrganisationSearchResult>
         {
-            CreateTestSearchResult("Stark Industries", Guid.NewGuid(), "DUNS", "123456789"),
-            CreateTestSearchResult("Wayne Enterprises", Guid.NewGuid(), "PPON", "987654321"),
-            CreateTestSearchResult("Oscorp", Guid.NewGuid(), "DUNS", "456789123")
             CreateTestSearchResult("Stark Industries", Guid.NewGuid(), "GB-PPON", "STIN-1234-ABCD"),
             CreateTestSearchResult("Wayne Enterprises", Guid.NewGuid(), "GB-PPON", "WAYN-9876-EFGH"),
             CreateTestSearchResult("Oscorp", Guid.NewGuid(), "GB-PPON", "OSCO-4567-IJKL")
@@ -802,5 +799,66 @@ public class ChildOrganisationResultsPageTests
         await _model.OnGetAsync();
 
         _model.Results.Should().BeEmpty();
+    }
+
+    [Fact]
+    public async Task OnGetAsync_WithPponSearch_FiltersOutNonGbPponSchemes()
+    {
+        var parentId = Guid.NewGuid();
+        const string query = "GB-PPON-PMZV-7732-XXTT";
+        const string expectedIdentifier = "GB-PPON:PMZV-7732-XXTT";
+        var childId = Guid.NewGuid();
+
+        _model.Id = parentId;
+        _model.Query = query;
+
+        var lookedUpOrganisation = OrganisationFactory.CreateOrganisation(
+            id: childId,
+            name: "Non GB-PPON Organisation",
+            roles: new List<PartyRole> { PartyRole.Buyer },
+            identifier: new Identifier(scheme: "NOT-GB-PPON", id: "PMZV-7732-XXTT", legalName: "Non GB-PPON Organisation",
+                uri: new Uri("https://example.com")));
+
+        _mockOrganisationClient
+            .Setup(client => client.LookupOrganisationAsync(null, expectedIdentifier))
+            .ReturnsAsync(lookedUpOrganisation);
+
+        _mockOrganisationClient
+            .Setup(client => client.GetChildOrganisationsAsync(parentId))
+            .ReturnsAsync(new List<OrganisationSummary>());
+
+        await _model.OnGetAsync();
+
+        _model.Results.Should().BeEmpty();
+    }
+
+    [Fact]
+    public async Task OnGetAsync_WithNameSearch_FiltersOutNonGbPponSchemes()
+    {
+        var parentId = Guid.NewGuid();
+        const string query = "test organisation";
+
+        _model.Id = parentId;
+        _model.Query = query;
+
+        var searchResults = new List<OrganisationSearchResult>
+        {
+            CreateTestSearchResult("GB-PPON Organisation", Guid.NewGuid(), "GB-PPON", "PPON-1234-ABCD"),
+            CreateTestSearchResult("Non GB-PPON Organisation", Guid.NewGuid(), "NOT-GB-PPON", "NON-PPON-5678-EFGH")
+        };
+
+        _mockOrganisationClient
+            .Setup(client => client.SearchOrganisationAsync(
+                query, "buyer", 20, 0.3))
+            .ReturnsAsync(searchResults);
+
+        _mockOrganisationClient
+            .Setup(client => client.GetChildOrganisationsAsync(parentId))
+            .ReturnsAsync(new List<OrganisationSummary>());
+
+        await _model.OnGetAsync();
+
+        _model.Results.Should().HaveCount(1);
+        _model.Results.First().Name.Should().Be("GB-PPON Organisation");
     }
 }
