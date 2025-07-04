@@ -53,7 +53,7 @@
                         <tbody class="govuk-table__body">
                         <tr class="govuk-table__row">
                             <th scope="row"
-                                class="govuk-table__header govuk-!-width-one-third">@StaticTextResource.BuyerParentChildRelationship_RemovePage_Identifier</th>
+                                class="govuk-table__header govuk-!-width-one-third">@(Model.ChildOrganisation?.Identifier?.Scheme ?? StaticTextResource.Global_Unknown)</th>
                             <td class="govuk-table__cell govuk-!-width-two-thirds">@(Model.ChildOrganisation?.Identifier?.Id ?? StaticTextResource.Global_Unknown)</td>
                         </tr>
                         <tr class="govuk-table__row">
