@@ -13,6 +13,9 @@ locals {
     fts_srsi_api_key                      = "${local.fts_screts_arn}:FTS_SRSI_API_KEY::"
     google_analytics_key                  = "${local.fts_screts_arn}:GOOGLE_ANALYTICS_KEY::"
     google_tag_manager_key                = "${local.fts_screts_arn}:GOOGLE_TAG_MANAGER_KEY::"
+    http_basic_auth_enabled               = "${local.fts_screts_arn}:HTTP_BASIC_AUTH_ENABLED::"
+    http_basic_auth_pass                  = "${local.fts_screts_arn}:HTTP_BASIC_AUTH_PASS::"
+    http_basic_auth_user                  = "${local.fts_screts_arn}:HTTP_BASIC_AUTH_USER::"
     one_login_base_url                    = local.one_login.credential_locations.authority
     one_login_fln_api_key_arn             = data.aws_secretsmanager_secret.one_login_forward_logout_notification_api_key.arn
     one_login_private_key                 = local.one_login.credential_locations.private_key
