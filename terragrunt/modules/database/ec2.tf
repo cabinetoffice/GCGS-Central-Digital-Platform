@@ -11,7 +11,7 @@ resource "aws_key_pair" "import_key" {
 resource "aws_instance" "fts_db_import" {
   count = local.has_import_instance ? 1 : 0
 
-  ami           = data.aws_ami.al2_latest[0].id
+  ami           = "ami-028a245ba118f4c66"
   instance_type = "t3.medium"
   subnet_id     = var.public_subnet_ids[0]
 
