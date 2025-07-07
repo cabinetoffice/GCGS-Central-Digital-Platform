@@ -8,8 +8,10 @@ This guide explains how to prepare the import EC2 instance for uploading large d
 *Please obtain the private SSH key from DevOps before attempting to connect.*
 
 From your local terminal:
+
 ```shell
-ssh -i ~/.ssh/fts_db_import.pem ubuntu@fts-import.dev.supplier-information.find-tender.service.gov.uk
+
+ssh -i ~/.ssh/fts_db_import.pem ubuntu@fts-import.<env-name>.supplier-information.find-tender.service.gov.uk
 ```
 
 ---
@@ -33,7 +35,7 @@ mkdir -p /mnt/import_data/dumps
 # Install MySQL client on the EC2 instance
 sudo apt update
 sudo apt install -y mysql-client
-Verify installation:
+# Verify installation:
 mysql --version
 ```
 ---
@@ -42,7 +44,7 @@ mysql --version
 
 Use scp with the same key you used for SSH:
 ```shell
-scp -i ~/.ssh/fts_db_import.pem /path/to/your/large-dump.sql ubuntu@fts-import.dev.supplier-information.find-tender.service.gov.uk:/mnt/import_data/dumps/
+scp -i ~/.ssh/fts_db_import.pem /path/to/your/large-dump.sql ubuntu@fts-import.<env-name>.supplier-information.find-tender.service.gov.uk:/mnt/import_data/dumps/
 
 ```
 This will transfer your dump file directly into your persistent volume.
