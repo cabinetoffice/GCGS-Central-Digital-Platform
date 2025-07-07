@@ -18,3 +18,8 @@ button[aria-expanded="false"] .custom-chevron-icon {
 button[aria-expanded="true"] .custom-chevron-icon {
     transform: rotate(180deg);
 }
+
+.accordion-highlight {
+    background-color: #ffffff;
+    border: 1px solid #b1b4b6;
+}

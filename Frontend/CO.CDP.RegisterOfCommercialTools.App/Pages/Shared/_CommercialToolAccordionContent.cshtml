@@ -1,7 +1,7 @@
-<div class="govuk-!-margin-top-0 govuk-!-padding-left-4">
-    <details class="govuk-details" data-module="govuk-details">
+<div class="govuk-!-margin-top-0">
+    <details class="govuk-details govuk-!-margin-left-4 govuk-!-margin-right-4" data-module="govuk-details">
         <summary class="govuk-details__summary">
-            <span class="govuk-details__summary-text">Definitions</span>
+            <span class="govuk-details__summary-text govuk-!-font-size-14">Definitions</span>
         </summary>
         <div class="govuk-details__text">
             <ul class="govuk-list govuk-list--bullet">
@@ -31,5 +31,60 @@
             </ul>
         </div>
     </details>
+    <details class="govuk-details accordion-highlight govuk-!-padding-2 govuk-!-margin-left-2 govuk-!-margin-right-4"
+             data-module="govuk-details">
+        <summary class="govuk-details__summary">
+            <span class="govuk-details__summary-text govuk-!-font-size-14">Procurement Act 2023</span>
+        </summary>
+        <div class="govuk-details__text govuk-!-padding-0 no-border">
+            <div class="govuk-form-group govuk-!-margin-bottom-0">
+                <fieldset class="govuk-fieldset">
+                    <legend class="govuk-fieldset__legend govuk-!-font-size-16">
+                        Frameworks
+                    </legend>
+                    <div class="govuk-radios govuk-radios--small" data-module="govuk-radios">
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="framework-open-only" name="frameworkOptions"
+                                   type="radio"
+                                   value="open">
+                            <label class="govuk-label govuk-radios__label govuk-!-font-size-14" for="framework-open-only">
+                                Open frameworks only
+                            </label>
+                        </div>
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="framework-exclude-open" name="frameworkOptions"
+                                   type="radio"
+                                   value="exclude-open">
+                            <label class="govuk-label govuk-radios__label govuk-!-font-size-14" for="framework-exclude-open">
+                                Exclude open frameworks
+                            </label>
+                        </div>
+                    </div>
+                </fieldset>
+                <fieldset class="govuk-fieldset">
+                    <legend class="govuk-fieldset__legend govuk-!-font-size-16">
+                        Dynamic Markets
+                    </legend>
+                    <div class="govuk-radios govuk-radios--small" data-module="govuk-radios">
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="dynamic-market-utilities-only"
+                                   name="dynamicMarketOptions" type="radio"
+                                   value="utilities-only">
+                            <label class="govuk-label govuk-radios__label govuk-!-font-size-14" for="dynamic-market-utilities-only">
+                                Utilities dynamic markets only
+                            </label>
+                        </div>
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="dynamic-market-exclude-utilities"
+                                   name="dynamicMarketOptions" type="radio"
+                                   value="exclude-utilities">
+                            <label class="govuk-label govuk-radios__label govuk-!-font-size-14" for="dynamic-market-exclude-utilities">
+                                Excludes Utilities dynamic markets
+                            </label>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+        </div>
+    </details>
 </div>
-
