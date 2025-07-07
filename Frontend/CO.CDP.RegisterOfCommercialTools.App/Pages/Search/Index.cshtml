@@ -9,9 +9,22 @@
     <govuk-breadcrumbs-item href="/">Search results</govuk-breadcrumbs-item>
 </govuk-breadcrumbs>
 
-<govuk-inset-text>The Register of Commercial Tools allows you to search for frameworks and dynamic markets.</govuk-inset-text>
+<div class="govuk-width-container">
+        <govuk-inset-text>The Register of Commercial Tools allows you to search for frameworks and dynamic markets.</govuk-inset-text>
 
-<div>
-    <h1 class="govuk-heading-l govuk-!-margin-bottom-2">Search Results</h1>
-    <p class="govuk-body-m">We've found <span class="govuk-!-font-weight-bold">54</span> results</p>
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-two-thirds">
+                <h1 class="govuk-heading-l govuk-!-margin-bottom-2">Search Results</h1>
+                <p class="govuk-body-m">We've found <span class="govuk-!-font-weight-bold">54</span> results</p>
+            </div>
+
+            <div class="govuk-grid-column-one-third">
+                <govuk-select id="sort-results" name="sortOrder">
+                    <govuk-select-label class="govuk-!-font-weight-bold">Sort results</govuk-select-label>
+                    <govuk-select-item value="relevance" selected="true">Relevance</govuk-select-item>
+                    <govuk-select-item value="a-z">Alphabetical (A-Z)</govuk-select-item>
+                    <govuk-select-item value="z-a">Alphabetical (Z-A)</govuk-select-item>
+                </govuk-select>
+            </div>
+        </div>
 </div>
