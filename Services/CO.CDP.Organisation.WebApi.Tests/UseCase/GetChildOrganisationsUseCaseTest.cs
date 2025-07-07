@@ -79,12 +79,12 @@ public class GetChildOrganisationsUseCaseTest
         var firstChild = response.ChildOrganisations.First();
         Assert.Equal(childOrgs[0].Child!.Guid, firstChild.Id);
         Assert.Equal(childOrgs[0].Child!.Name, firstChild.Name);
-        Assert.Equal("PPON123", firstChild.Identifier);
+        Assert.Equal("PPON123", firstChild.Ppon);
 
         var secondChild = response.ChildOrganisations.ElementAt(1);
         Assert.Equal(childOrgs[1].Child!.Guid, secondChild.Id);
         Assert.Equal(childOrgs[1].Child!.Name, secondChild.Name);
-        Assert.Equal(string.Empty, secondChild.Identifier);
+        Assert.Equal(string.Empty, secondChild.Ppon);
 
         _mockHierarchyRepository.Verify(repo => repo.GetChildrenAsync(parentId), Times.Once);
     }
@@ -200,7 +200,7 @@ public class GetChildOrganisationsUseCaseTest
 
         Assert.True(response.Success);
         Assert.Single(response.ChildOrganisations);
-        Assert.Equal("PPON-FIRST", response.ChildOrganisations.First().Identifier);
+        Assert.Equal("PPON-FIRST", response.ChildOrganisations.First().Ppon);
     }
 
     private static List<OrganisationHierarchy> CreateTestOrganisationHierarchies(int parentId)

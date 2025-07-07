@@ -171,13 +171,13 @@ public class OrganisationOverviewTest
                 id: Guid.NewGuid(),
                 name: "Child Org 1",
                 roles: new List<PartyRole> { PartyRole.Buyer },
-                identifier: "XXXX-4444-AAAA"
+                ppon: "XXXX-4444-AAAA"
             ),
             new(
                 id: Guid.NewGuid(),
                 name: "Child Org 2",
                 roles: new List<PartyRole> { PartyRole.Buyer, PartyRole.Supplier },
-                identifier: "YYYY-4444-AAAA"
+                ppon: "YYYY-4444-AAAA"
             )
         };
 
@@ -203,7 +203,7 @@ public class OrganisationOverviewTest
         _model.ChildOrganisations.Should().BeEquivalentTo(childOrgs);
         _model.ChildOrganisations!.Count.Should().Be(2);
         _model.ChildOrganisations.All(o => o.Roles.Contains(PartyRole.Buyer)).Should().BeTrue();
-        _model.ChildOrganisations.All(o => o.Identifier.Contains("-4444-")).Should().BeTrue();
+        _model.ChildOrganisations.All(o => o.Ppon.Contains("-4444-")).Should().BeTrue();
     }
 
     [Fact]
@@ -216,13 +216,13 @@ public class OrganisationOverviewTest
                 id: Guid.NewGuid(),
                 name: "Child Org 1",
                 roles: new List<PartyRole> { PartyRole.Buyer },
-                identifier: "XXXX-4444-AAAA"
+                ppon: "XXXX-4444-AAAA"
             ),
             new(
                 id: Guid.NewGuid(),
                 name: "Child Org 2",
                 roles: new List<PartyRole> { PartyRole.Buyer, PartyRole.Supplier },
-                identifier: "YYYY-4444-AAAA"
+                ppon: "YYYY-4444-AAAA"
             )
         };
 
@@ -249,7 +249,7 @@ public class OrganisationOverviewTest
         _model.ChildOrganisations.Should().BeEquivalentTo(childOrgs);
         _model.ChildOrganisations!.Count.Should().Be(2);
         _model.ChildOrganisations.All(o => o.Roles.Contains(PartyRole.Buyer)).Should().BeTrue();
-        _model.ChildOrganisations.All(o => o.Identifier.Contains("-4444-")).Should().BeTrue();
+        _model.ChildOrganisations.All(o => o.Ppon.Contains("-4444-")).Should().BeTrue();
     }
 
     [Fact]

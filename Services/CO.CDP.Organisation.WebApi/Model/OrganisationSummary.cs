@@ -23,7 +23,7 @@ public class OrganisationSummary
     public IList<PartyRole> Roles { get; set; } = new List<PartyRole>();
 
     /// <summary>
-    /// The primary identifier of the child organisation (PPON)
+    /// The PPON of the child organisation, returned without the prefix
     /// </summary>
-    public string Identifier { get; set; } = string.Empty;
+    public string Ppon { get; set; } = string.Empty;
 }

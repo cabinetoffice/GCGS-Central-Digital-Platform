@@ -104,7 +104,7 @@ public class ChildOrganisationRemovePageTests
         var childOrganisations = new List<OrganisationSummary>
         {
             new(id: _childOrganisationId, name: "Child Organisation",
-                roles: new List<PartyRole> { PartyRole.Buyer }, identifier: "12345678")
+                roles: new List<PartyRole> { PartyRole.Buyer }, ppon: "12345678")
         };
 
         _mockOrganisationClient
@@ -131,7 +131,7 @@ public class ChildOrganisationRemovePageTests
         var childOrganisations = new List<OrganisationSummary>
         {
             new(id: differentChildId, name: "Different Child",
-                roles: new List<PartyRole> { PartyRole.Buyer }, identifier: "87654321")
+                roles: new List<PartyRole> { PartyRole.Buyer }, ppon: "87654321")
         };
 
         _mockOrganisationClient
@@ -156,7 +156,7 @@ public class ChildOrganisationRemovePageTests
         var childOrganisations = new List<OrganisationSummary>
         {
             new(id: _childOrganisationId, name: "Child Organisation",
-                roles: new List<PartyRole> { PartyRole.Buyer }, identifier: "12345678")
+                roles: new List<PartyRole> { PartyRole.Buyer }, ppon: "12345678")
         };
 
         _mockOrganisationClient

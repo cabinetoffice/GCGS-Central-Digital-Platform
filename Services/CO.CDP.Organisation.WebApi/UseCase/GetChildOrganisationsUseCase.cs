@@ -86,10 +86,10 @@ public class GetChildOrganisationsUseCase : IGetChildOrganisationsUseCase
             .Where(hierarchy => hierarchy.Child != null)
             .Select(hierarchy => new OrganisationSummary
             {
-                Id = hierarchy.Child!.Guid, // Non-null assertion is safe because of the Where filter
+                Id = hierarchy.Child!.Guid,
                 Name = hierarchy.Child.Name,
                 Roles = hierarchy.Child.Roles,
-                Identifier = GetPponIdentifier(hierarchy.Child.Identifiers)
+                Ppon = GetPponIdentifier(hierarchy.Child.Identifiers)
             })
             .ToList();
     }
