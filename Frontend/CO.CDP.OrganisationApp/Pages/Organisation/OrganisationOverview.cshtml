@@ -301,8 +301,10 @@
                                     <td class="govuk-table__cell govuk-!-width-one-third">@childOrg.Identifier</td>
                                     <td class="govuk-table__cell" style="text-align: right;">
                                         <authorize scope="@OrgScopeRequirement.Editor">
-                                            <a href="/organisation/@Model.Id/buyer/hierarchy/remove/child/@childOrg.Id"
-                                               class="govuk-link">@StaticTextResource.Global_Remove</a>
+                                            <a class="govuk-link" asp-page="/Buyer/Hierarchy/ChildOrganisationRemovePage"
+                                               asp-route-id="@Model.Id" asp-route-childId="@childOrg.Id" asp-route-ppon="GB-PPON:@childOrg.Identifier">
+                                                @StaticTextResource.Global_Remove<span class="govuk-visually-hidden"> child organisation</span>
+                                            </a>
                                         </authorize>
                                     </td>
                                 </tr>

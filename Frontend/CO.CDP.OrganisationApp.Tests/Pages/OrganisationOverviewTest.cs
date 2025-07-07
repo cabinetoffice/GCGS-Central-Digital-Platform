@@ -247,7 +247,7 @@ public class OrganisationOverviewTest
         _featureManagerMock.Verify(fm => fm.IsEnabledAsync(FeatureFlags.BuyerParentChildRelationship), Times.Once);
         _model.ChildOrganisations.Should().NotBeNull();
         _model.ChildOrganisations.Should().BeEquivalentTo(childOrgs);
-        _model.ChildOrganisations.Count.Should().Be(2);
+        _model.ChildOrganisations!.Count.Should().Be(2);
         _model.ChildOrganisations.All(o => o.Roles.Contains(PartyRole.Buyer)).Should().BeTrue();
         _model.ChildOrganisations.All(o => o.Identifier.Contains("-4444-")).Should().BeTrue();
     }
