@@ -10,21 +10,75 @@
 </govuk-breadcrumbs>
 
 <div class="govuk-width-container">
-        <govuk-inset-text>The Register of Commercial Tools allows you to search for frameworks and dynamic markets.</govuk-inset-text>
+    <govuk-inset-text>The Register of Commercial Tools allows you to search for frameworks and dynamic markets.
+    </govuk-inset-text>
 
-        <div class="govuk-grid-row">
-            <div class="govuk-grid-column-two-thirds">
-                <h1 class="govuk-heading-l govuk-!-margin-bottom-2">Search Results</h1>
-                <p class="govuk-body-m">We've found <span class="govuk-!-font-weight-bold">54</span> results</p>
-            </div>
-
-            <div class="govuk-grid-column-one-third">
-                <govuk-select id="sort-results" name="sortOrder">
-                    <govuk-select-label class="govuk-!-font-weight-bold">Sort results</govuk-select-label>
-                    <govuk-select-item value="relevance" selected="true">Relevance</govuk-select-item>
-                    <govuk-select-item value="a-z">Alphabetical (A-Z)</govuk-select-item>
-                    <govuk-select-item value="z-a">Alphabetical (Z-A)</govuk-select-item>
-                </govuk-select>
-            </div>
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <h1 class="govuk-heading-l govuk-!-margin-bottom-2">Search Results</h1>
+            <p class="govuk-body-m">We've found <span class="govuk-!-font-weight-bold">54</span> results</p>
         </div>
+        <div class="govuk-grid-column-one-third">
+            <govuk-select id="sort-results" name="sortOrder">
+                <govuk-select-label class="govuk-!-font-weight-bold">Sort results</govuk-select-label>
+                <govuk-select-item value="relevance" selected="true">Relevance</govuk-select-item>
+                <govuk-select-item value="a-z">Alphabetical (A-Z)</govuk-select-item>
+                <govuk-select-item value="z-a">Alphabetical (Z-A)</govuk-select-item>
+            </govuk-select>
+        </div>
+    </div>
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-one-third">
+            <form method="post" id="search-form">
+                <div class="govuk-template govuk-!-padding-4">
+                    <h2 class="govuk-heading-m">Keywords</h2>
+
+                    <p class="govuk-body-s">
+                        Search titles, descriptions, identifiers and organisation names
+                    </p>
+
+                    <details class="govuk-details small-details" data-module="govuk-details">
+                        <summary class="govuk-details__summary">
+                            <span class="govuk-details__summary-text govuk-!-font-size-16">
+                                Help with keyword search
+                            </span>
+                        </summary>
+                        <div class="govuk-details__text">
+                            <ul class="govuk-list govuk-list--bullet govuk-body-s">
+                                <li>
+                                    To search for any word, put a space between words.
+                                    For example, radio televisions
+                                </li>
+                                <li>
+                                    To search for all words, put a + between words.
+                                    For example, administration + defence
+                                </li>
+                                <li>
+                                    To search for an exact phrase, use quotes.
+                                    For example, "market research"
+                                </li>
+                            </ul>
+                        </div>
+                    </details>
+
+                    <input id="Keywords" name="SearchParams.Keywords" type="text" class="govuk-input">
+                </div>
+
+                <div class="govuk-button-group govuk-!-margin-top-4">
+                    <button type="submit" class="govuk-button" data-module="govuk-button">
+                        Update results
+                    </button>
+                    <button type="submit" asp-page-handler="Reset" class="govuk-button govuk-button--secondary"
+                            data-module="govuk-button">
+                        Reset
+                    </button>
+                    <button type="submit" asp-page-handler="Save" class="govuk-button govuk-button--secondary"
+                            data-module="govuk-button">
+                        Save search
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
