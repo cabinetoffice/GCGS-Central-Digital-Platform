@@ -243,7 +243,7 @@ locals {
     entity_verification                  = {}
     entity_verification_migrations       = { cpu = 256,  memory = 512}
     forms                                = {}
-    fts                                  = { desired_count = 3, cpu = 1024,  memory = 3072}
+    fts                                  = { desired_count = 3, cpu = 4096,  memory = 8192}
     fts_healthcheck                      = { desired_count = 1 }
     fts_migrations                       = { desired_count = 1 }
     fts_scheduler                        = { desired_count = 1 }
@@ -314,6 +314,13 @@ locals {
   }
 
   tools_configs = {
+    clamav = {
+      cpu       = 1024
+      memory    = 3072
+      name      = "clamav"
+      port      = 9001
+      port_host = 9001
+    }
     clamav_rest = {
       cpu       = 1024
       memory    = 3072
