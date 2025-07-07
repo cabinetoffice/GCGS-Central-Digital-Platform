@@ -108,7 +108,7 @@ public class ChildOrganisationRemovePageTests
         };
 
         _mockOrganisationClient
-            .Setup(c => c.GetOrganisationAsync(_childOrganisationId))
+            .Setup(c => c.LookupOrganisationAsync(null, It.IsAny<string>()))
             .ReturnsAsync(childOrganisation);
 
         _mockOrganisationClient
@@ -135,7 +135,7 @@ public class ChildOrganisationRemovePageTests
         };
 
         _mockOrganisationClient
-            .Setup(c => c.GetOrganisationAsync(_childOrganisationId))
+            .Setup(c => c.LookupOrganisationAsync(null, It.IsAny<string>()))
             .ReturnsAsync(childOrganisation);
 
         _mockOrganisationClient
@@ -149,10 +149,36 @@ public class ChildOrganisationRemovePageTests
     }
 
     [Fact]
+    public async Task OnGet_WhenOrganisationIsFound_ShouldReturnPage()
+    {
+        var childOrganisation = CreateMockOrganisation(id: _childOrganisationId, name: "Child Organisation");
+
+        var childOrganisations = new List<OrganisationSummary>
+        {
+            new(id: _childOrganisationId, name: "Child Organisation",
+                roles: new List<PartyRole> { PartyRole.Buyer }, identifier: "12345678")
+        };
+
+        _mockOrganisationClient
+            .Setup(c => c.LookupOrganisationAsync(null, It.IsAny<string>()))
+            .ReturnsAsync(childOrganisation);
+
+        _mockOrganisationClient
+            .Setup(c => c.GetChildOrganisationsAsync(_organisationId))
+            .ReturnsAsync(childOrganisations);
+
+        var result = await _modelWithMocks.OnGet();
+
+        result.Should().BeOfType<PageResult>();
+        _modelWithMocks.ChildOrganisation.Should().NotBeNull();
+        _modelWithMocks.ChildOrganisation.Should().Be(childOrganisation);
+    }
+
+    [Fact]
     public async Task OnGet_WhenApiThrowsException_ShouldRedirectToErrorPage()
     {
         _mockOrganisationClient
-            .Setup(c => c.GetOrganisationAsync(_childOrganisationId))
+            .Setup(c => c.LookupOrganisationAsync(null, It.IsAny<string>()))
             .ThrowsAsync(new OrganisationApiException("Error", 500, "Error", null, null));
 
         var result = await _modelWithMocks.OnGet();

@@ -27,6 +27,8 @@ public class ChildOrganisationRemovePage(
 
     [BindProperty(SupportsGet = true)] public Guid ChildId { get; set; }
 
+    [BindProperty(SupportsGet = true)] public string? Ppon { get; set; }
+
     [BindProperty]
     [Required(ErrorMessageResourceName = nameof(StaticTextResource.Global_PleaseSelect),
         ErrorMessageResourceType = typeof(StaticTextResource))]
@@ -50,10 +52,13 @@ public class ChildOrganisationRemovePage(
     {
         try
         {
-            ChildOrganisation = await _organisationClient.GetOrganisationAsync(ChildId);
+            ChildOrganisation = await OrganisationClientExtensions.LookupOrganisationAsync(_organisationClient,
+                name: null,
+                identifier: Ppon);
 
             if (ChildOrganisation == null)
             {
+                _logger.LogWarning("Organisation not found for ChildId: {ChildId}", ChildId);
                 return Redirect("/page-not-found");
             }
 
