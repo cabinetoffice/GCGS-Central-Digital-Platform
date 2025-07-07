@@ -4,6 +4,8 @@
     ViewData["Title"] = "Search";
 }
 
+<script src="/js/search.js"></script>
+
 <govuk-breadcrumbs>
     <govuk-breadcrumbs-item href="/">Home</govuk-breadcrumbs-item>
     <govuk-breadcrumbs-item href="/">Search results</govuk-breadcrumbs-item>
@@ -31,7 +33,7 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-one-third">
             <form method="post" id="search-form">
-                <div class="govuk-template govuk-!-padding-4">
+                <div class="govuk-template govuk-!-padding-3">
                     <h2 class="govuk-heading-m">Keywords</h2>
 
                     <p class="govuk-body-s">
@@ -63,6 +65,64 @@
                     </details>
 
                     <input id="Keywords" name="SearchParams.Keywords" type="text" class="govuk-input">
+                </div>
+
+                <div class="govuk-template govuk-!-margin-top-4 govuk-!-padding-0">
+                    <div class="govuk-accordion no-border" id="accordion-commercial-tool">
+                        <div class="govuk-accordion__section no-border">
+                                <button type="button" class="govuk-accordion__section-button govuk-!-padding-left-2 govuk-!-padding-top-2 govuk-!-padding-right-2 govuk-!-padding-bottom-0 govuk-!-width-full no-border"
+                                        aria-expanded="true" aria-controls="accordion-commercial-content">
+                                        <span class="custom-chevron govuk-!-margin-0 govuk-!-margin-right-2" aria-hidden="true">
+                                            <svg class="custom-chevron-icon" xmlns="http://www.w3.org/2000/svg"
+                                                 width="15" height="15" viewBox="0 0 15 15" fill="none">
+                                                <path d="M3.75 6.75L7.5 10.5L11.25 6.75" stroke="#0b0c0c" stroke-width="2"
+                                                      stroke-linecap="round" stroke-linejoin="round"/>
+                                            </svg>
+                                        </span>
+                                    <span class="govuk-body govuk-!-margin-0">
+                                            Commercial tool
+                                        </span>
+                                </button>
+                            <div id="accordion-commercial-content" class="govuk-accordion__section-content no-border">
+                                <div class="govuk-!-margin-top-0 govuk-!-padding-left-4">
+                                    <details class="govuk-details" data-module="govuk-details">
+                                        <summary class="govuk-details__summary">
+                                            <span class="govuk-details__summary-text">Definitions</span>
+                                        </summary>
+                                        <div class="govuk-details__text">
+                                            <ul class="govuk-list govuk-list--bullet">
+                                                <li class="govuk-body-s">
+                                                    <span class="govuk-!-font-weight-bold">Framework</span> - A contract
+                                                    that allows the award of future
+                                                    contracts, which will be advertised only to suppliers on the
+                                                    framework.
+                                                </li>
+                                                <li class="govuk-body-s">
+                                                    <span class="govuk-!-font-weight-bold">Dynamic market</span> -
+                                                    Arrangements that suppliers who meet the conditions for
+                                                    membership can join, which allow them to bid for future contracts
+                                                    restricted to
+                                                    members of the market. Future contracts must be advertised in tender
+                                                    notices.
+                                                    New suppliers can join at any time during the term of the market.
+                                                </li>
+                                                <li class="govuk-body-s">
+                                                    <span
+                                                        class="govuk-!-font-weight-bold">Utilities dynamic market</span>
+                                                    - A dynamic market that can only be used by utility
+                                                    organisations to award utilities contracts. Tender notices may
+                                                    optionally be
+                                                    provided only to members of the market. (Not included in the DM/DPS
+                                                    filter
+                                                    option).
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </details>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="govuk-button-group govuk-!-margin-top-4">
