@@ -15,6 +15,18 @@
         Title = "Commercial tool status",
         Content = @<partial name="_CommercialToolStatusAccordionContent" />
     };
+    var contractingAuthorityUsageAccordion = new Accordion
+    {
+        Id = "contracting-authority-usage",
+        Title = "Contracting authority usage",
+        Content = @<partial name="_ContractingAuthorityUsageAccordionContent" />
+    };
+    var awardMethodAccordion = new Accordion
+    {
+        Id = "award-method",
+        Title = "Award method",
+        Content = @<partial name="_AwardMethodAccordionContent" />
+    };
 }
 
 <script src="/js/search.js"></script>
@@ -83,6 +95,8 @@
                 <div class="govuk-template govuk-!-margin-top-4 govuk-!-padding-0">
                     <partial name="_Accordion" model="commercialToolAccordion" />
                     <partial name ="_Accordion" model="commercialToolStatusAccordion" />
+                    <partial name ="_Accordion" model="contractingAuthorityUsageAccordion" />
+                    <partial name ="_Accordion" model="awardMethodAccordion" />
                 </div>
 
                 <div class="govuk-button-group govuk-!-margin-top-4">
