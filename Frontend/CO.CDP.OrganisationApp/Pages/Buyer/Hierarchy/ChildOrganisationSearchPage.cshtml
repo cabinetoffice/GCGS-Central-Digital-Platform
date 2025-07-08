@@ -40,7 +40,14 @@
                     @StaticTextResource.BuyerParentChildRelationship_SearchPage_Label
                 </label>
                 <div id="query-hint" class="govuk-hint">
-                    <p>@StaticTextResource.BuyerParentChildRelationship_SearchPage_Hint</p>
+                    @if (Model.SearchRegistryPponEnabled)
+                    {
+                        <p>@StaticTextResource.BuyerParentChildRelationship_SearchPage_Hint. @Html.Raw(StaticTextResource.BuyerParentChildRelationship_SearchPage_Link)</p>
+                    }
+                    else
+                    {
+                        <p>@StaticTextResource.BuyerParentChildRelationship_SearchPage_Hint</p>
+                    }
                 </div>
                 @if (!ModelState.IsValid)
                 {
@@ -61,9 +68,5 @@
                 </div>
             </div>
         </form>
-        @if (Model.SearchRegistryPponEnabled)
-        {
-            <p class="govuk-body govuk-!-margin-top-4">@Html.Raw(StaticTextResource.BuyerParentChildRelationship_SearchPage_Link)</p>
-        }
     </div>
 </div>
