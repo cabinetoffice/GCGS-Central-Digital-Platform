@@ -3,6 +3,24 @@
         in a standardised way</p>
 
     <div class="accordion-highlight govuk-!-padding-2 govuk-!-margin-left-2 govuk-!-margin-right-4">
-        <a href="#" class="govuk-link">Browse CPV codes</a>
+        <a href="#" class="govuk-link" id="browse-cpv-codes-link" data-module="cpv-modal">Browse CPV codes</a>
     </div>
 </div>
+
+<div id="cpv-code-modal" class="govuk-modal" role="dialog" aria-modal="true" aria-labelledby="cpv-modal-title" hidden>
+    <div class="govuk-modal__dialog">
+        <div class="govuk-modal__header">
+            <h2 id="cpv-modal-title" class="govuk-heading-m">CPV code filter</h2>
+            <button class="govuk-button govuk-button--secondary" aria-label="Close modal">&times;</button>
+        </div>
+        <div class="govuk-modal__content">
+        </div>
+        <div class="govuk-modal__footer">
+            <button class="govuk-button">Add CPV code(s) to filter</button>
+            <button class="govuk-button govuk-button--secondary">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<link rel="stylesheet" href="~/css/modals.css" />
+<script src="~/js/modals.js" type="module"></script>
