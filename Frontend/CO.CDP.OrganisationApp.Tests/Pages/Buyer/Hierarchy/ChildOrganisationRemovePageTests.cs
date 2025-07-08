@@ -224,4 +224,50 @@ public class ChildOrganisationRemovePageTests
         _mockOrganisationClient.Verify(c => c.SupersedeChildOrganisationAsync(_organisationId, _childOrganisationId),
             Times.Once);
     }
+
+    [Fact]
+    public async Task OnGet_WhenChildOrganisationHasGbPponInAdditionalIdentifiers_ShouldReturnPage()
+    {
+        var childPpon = "ABCD-1234-EFGH";
+
+        var mainIdentifier = new Identifier(
+            scheme: "GB-COH",
+            id: "12345678",
+            legalName: "Child Organisation",
+            uri: null);
+
+        var additionalPponIdentifier = new Identifier(
+            scheme: "GB-PPON",
+            id: childPpon,
+            legalName: "Child Organisation",
+            uri: null);
+
+        var childOrganisation = OrganisationFactory.CreateOrganisation(
+            id: _childOrganisationId,
+            name: "Child Organisation",
+            identifier: mainIdentifier,
+            additionalIdentifiers: new List<Identifier> { additionalPponIdentifier });
+
+        var childOrganisations = new List<OrganisationSummary>
+        {
+            new(id: _childOrganisationId, name: "Child Organisation",
+                roles: new List<PartyRole> { PartyRole.Buyer }, ppon: childPpon)
+        };
+
+        _modelWithMocks.Ppon = childPpon;
+
+        _mockOrganisationClient
+            .Setup(c => c.LookupOrganisationAsync(null, childPpon))
+            .ReturnsAsync(childOrganisation);
+
+        _mockOrganisationClient
+            .Setup(c => c.GetChildOrganisationsAsync(_organisationId))
+            .ReturnsAsync(childOrganisations);
+
+        var result = await _modelWithMocks.OnGet();
+
+        result.Should().BeOfType<PageResult>();
+        _modelWithMocks.ChildOrganisation.Should().NotBeNull();
+        _modelWithMocks.ChildOrganisation.Should().Be(childOrganisation);
+    }
 }
