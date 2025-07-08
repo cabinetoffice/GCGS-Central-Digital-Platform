@@ -1,4 +1,3 @@
-using System.Net;
 using CO.CDP.Localization;
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Logging;
@@ -39,18 +38,15 @@ public class ChildOrganisationResultsPage(
             return Page();
         }
 
-        try
+        var (results, errorMessage, redirectToErrorPage) = await ExecuteSearch();
+
+        if (redirectToErrorPage)
         {
-            var (results, errorMessage) = await ExecuteSearch();
-            Results = results;
-            ErrorMessage = errorMessage;
-        }
-        catch (Exception ex) when (!(ex is HttpRequestException notFoundEx &&
-                                     notFoundEx.StatusCode == HttpStatusCode.NotFound))
-        {
-            LogApiError(ex);
             return RedirectToPage("/Error");
         }
+
+        Results = results;
+        ErrorMessage = errorMessage;
 
         return Page();
     }
@@ -113,18 +109,15 @@ public class ChildOrganisationResultsPage(
             return Page();
         }
 
-        try
+        var (results, errorMessage, redirectToErrorPage) = await ExecuteSearch();
+
+        if (redirectToErrorPage)
         {
-            var (results, errorMessage) = await ExecuteSearch();
-            Results = results;
-            ErrorMessage = errorMessage;
-        }
-        catch (Exception ex) when (!(ex is HttpRequestException notFoundEx &&
-                                     notFoundEx.StatusCode == HttpStatusCode.NotFound))
-        {
-            LogApiError(ex);
             return RedirectToPage("/Error");
         }
+
+        Results = results;
+        ErrorMessage = errorMessage;
 
         if (Results.Count == 0)
         {
@@ -143,39 +136,60 @@ public class ChildOrganisationResultsPage(
             new { Id, ChildId = SelectedChildId, Query, Ppon = selectedOrganisation?.GetIdentifierAsString() });
     }
 
-    private async Task<(List<ChildOrganisation> Results, string? ErrorMessage)> ExecuteSearch()
+    private async Task<(List<ChildOrganisation> Results, string? ErrorMessage, bool RedirectToErrorPage)>
+        ExecuteSearch()
     {
         if (string.IsNullOrWhiteSpace(Query))
         {
-            return (new List<ChildOrganisation>(), null);
+            return (new List<ChildOrganisation>(), null, false);
         }
 
-        var (isPpon, pponIdentifier) = IsLikelyPpon(Query);
-
-        var (results, errorMessage) = await (isPpon
-            ? ExecutePponSearch(pponIdentifier)
-            : ExecuteNameSearch());
-
-        if (results.Count == 0)
+        try
         {
-            return (results, errorMessage);
+            var (isPpon, pponIdentifier) = IsLikelyPpon(Query);
+
+            var (results, errorMessage) = await (isPpon
+                ? ExecutePponSearch(pponIdentifier)
+                : ExecuteNameSearch());
+
+            if (results.Count == 0)
+            {
+                return (results, errorMessage, false);
+            }
+
+            var filteredResults = await FilterResults(results);
+
+            return filteredResults.Count > 0
+                ? (filteredResults, null, false)
+                : (new List<ChildOrganisation>(), StaticTextResource.BuyerParentChildRelationship_ResultsPage_NoResults,
+                    false);
         }
-
-        var filteredResults = await FilterResults(results);
-
-        return filteredResults.Count > 0
-            ? (filteredResults, null)
-            : (new List<ChildOrganisation>(), StaticTextResource.BuyerParentChildRelationship_ResultsPage_NoResults);
+        catch (Exception ex) when (
+            (ex is ApiException apiEx && apiEx.StatusCode != 404) ||
+            (ex is HttpRequestException httpEx && httpEx.StatusCode != System.Net.HttpStatusCode.NotFound) ||
+            (!(ex is ApiException) && !(ex is HttpRequestException)))
+        {
+            LogApiError(ex);
+            return (new List<ChildOrganisation>(), null, true);
+        }
     }
 
     private async Task<List<ChildOrganisation>> FilterResults(List<ChildOrganisation> results)
     {
-        var connectedChildren = await _organisationClient.GetChildOrganisationsAsync(Id);
-        var connectedChildIds = connectedChildren.Select(c => c.Id).ToHashSet();
+        try
+        {
+            var connectedChildren = await _organisationClient.GetChildOrganisationsAsync(Id);
+            var connectedChildIds = connectedChildren.Select(c => c.Id).ToHashSet();
 
-        return results
-            .Where(r => r.OrganisationId != Id && !connectedChildIds.Contains(r.OrganisationId))
-            .ToList();
+            return results
+                .Where(r => r.OrganisationId != Id && !connectedChildIds.Contains(r.OrganisationId))
+                .ToList();
+        }
+        catch (ApiException ex) when (ex.StatusCode == 404)
+        {
+            _logger.LogInformation("No child organisations found for parent {ParentId}", Id);
+            return results.Where(r => r.OrganisationId != Id).ToList();
+        }
     }
 
     private async Task<(List<ChildOrganisation> Results, string? ErrorMessage)> ExecutePponSearch(
