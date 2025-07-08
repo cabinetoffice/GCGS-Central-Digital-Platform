@@ -2,6 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using CO.CDP.Localization;
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Constants;
+using CO.CDP.OrganisationApp.Extensions;
 using CO.CDP.OrganisationApp.Logging;
 using CO.CDP.OrganisationApp.WebApiClients;
 using Microsoft.AspNetCore.Authorization;
@@ -62,7 +63,14 @@ public class ChildOrganisationRemovePage(
                 return Redirect("/page-not-found");
             }
 
-            var childOrganisations = await OrganisationClientExtensions.GetChildOrganisationsAsync(organisationClient, Id);
+            var (hasPpon, _) = ChildOrganisation.GetGbPponIdentifier();
+            if (!hasPpon)
+            {
+                _logger.LogWarning("Organisation does not have a GB-PPON identifier for ChildId: {ChildId}", ChildId);
+                return Redirect("/page-not-found");
+            }
+
+            var childOrganisations = await OrganisationClientExtensions.GetChildOrganisationsAsync(_organisationClient, Id);
             if (childOrganisations.Any(o => o.Id == ChildId)) return Page();
 
             _logger.LogWarning("Child organisation with ID {ChildId} is not a child of organisation with ID {ParentId}",
@@ -77,6 +85,11 @@ public class ChildOrganisationRemovePage(
             _logger.LogError(cdpException, errorMessage);
             return RedirectToPage("/Error");
         }
+    }
+
+    public string? GetChildOrganisationPpon()
+    {
+        return ChildOrganisation?.GetPponValue();
     }
 
     public async Task<IActionResult> OnPost()

@@ -1,5 +1,6 @@
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Pages.Buyer.Hierarchy;
+using CO.CDP.OrganisationApp.Tests.TestData;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -99,16 +100,28 @@ public class ChildOrganisationRemovePageTests
     [Fact]
     public async Task OnGet_WhenChildOrganisationsExistAndChildIsFound_ShouldReturnPage()
     {
-        var childOrganisation = CreateMockOrganisation(id: _childOrganisationId, name: "Child Organisation");
+        var childPpon = "ABCD-1234-EFGH";
+        var childIdentifier = new Identifier(
+            scheme: "GB-PPON",
+            id: childPpon,
+            legalName: "Child Organisation",
+            uri: null);
+
+        var childOrganisation = OrganisationFactory.CreateOrganisation(
+            id: _childOrganisationId,
+            name: "Child Organisation",
+            identifier: childIdentifier);
 
         var childOrganisations = new List<OrganisationSummary>
         {
             new(id: _childOrganisationId, name: "Child Organisation",
-                roles: new List<PartyRole> { PartyRole.Buyer }, ppon: "12345678")
+                roles: new List<PartyRole> { PartyRole.Buyer }, ppon: childPpon)
         };
 
+        _modelWithMocks.Ppon = childPpon;
+
         _mockOrganisationClient
-            .Setup(c => c.LookupOrganisationAsync(null, It.IsAny<string>()))
+            .Setup(c => c.LookupOrganisationAsync(null, childPpon))
             .ReturnsAsync(childOrganisation);
 
         _mockOrganisationClient
@@ -125,13 +138,23 @@ public class ChildOrganisationRemovePageTests
     [Fact]
     public async Task OnGet_WhenChildIsNotFound_ShouldRedirectToNotFound()
     {
-        var childOrganisation = CreateMockOrganisation(id: _childOrganisationId, name: "Child Organisation");
+        var childPpon = "EFGH-5678-IJKL";
+        var childIdentifier = new Identifier(
+            scheme: "GB-PPON",
+            id: childPpon,
+            legalName: "Child Organisation",
+            uri: null);
+
+        var childOrganisation = OrganisationFactory.CreateOrganisation(
+            id: _childOrganisationId,
+            name: "Child Organisation",
+            identifier: childIdentifier);
 
         var differentChildId = Guid.NewGuid();
         var childOrganisations = new List<OrganisationSummary>
         {
             new(id: differentChildId, name: "Different Child",
-                roles: new List<PartyRole> { PartyRole.Buyer }, ppon: "87654321")
+                roles: new List<PartyRole> { PartyRole.Buyer }, ppon: "WXYZ-9876-MNOP")
         };
 
         _mockOrganisationClient
@@ -146,32 +169,6 @@ public class ChildOrganisationRemovePageTests
 
         var redirectResult = result.Should().BeOfType<RedirectResult>().Subject;
         redirectResult.Url.Should().Be("/page-not-found");
-    }
-
-    [Fact]
-    public async Task OnGet_WhenOrganisationIsFound_ShouldReturnPage()
-    {
-        var childOrganisation = CreateMockOrganisation(id: _childOrganisationId, name: "Child Organisation");
-
-        var childOrganisations = new List<OrganisationSummary>
-        {
-            new(id: _childOrganisationId, name: "Child Organisation",
-                roles: new List<PartyRole> { PartyRole.Buyer }, ppon: "12345678")
-        };
-
-        _mockOrganisationClient
-            .Setup(c => c.LookupOrganisationAsync(null, It.IsAny<string>()))
-            .ReturnsAsync(childOrganisation);
-
-        _mockOrganisationClient
-            .Setup(c => c.GetChildOrganisationsAsync(_organisationId))
-            .ReturnsAsync(childOrganisations);
-
-        var result = await _modelWithMocks.OnGet();
-
-        result.Should().BeOfType<PageResult>();
-        _modelWithMocks.ChildOrganisation.Should().NotBeNull();
-        _modelWithMocks.ChildOrganisation.Should().Be(childOrganisation);
     }
 
     [Fact]
@@ -226,32 +223,5 @@ public class ChildOrganisationRemovePageTests
 
         _mockOrganisationClient.Verify(c => c.SupersedeChildOrganisationAsync(_organisationId, _childOrganisationId),
             Times.Once);
-    }
-
-    private static CO.CDP.Organisation.WebApiClient.Organisation CreateMockOrganisation(
-        Guid id,
-        string name = "Test Organisation",
-        ICollection<PartyRole>? roles = null,
-        ICollection<PartyRole>? pendingRoles = null,
-        OrganisationType organisationType = OrganisationType.Organisation)
-    {
-        return new CO.CDP.Organisation.WebApiClient.Organisation(
-            additionalIdentifiers: null,
-            addresses: null,
-            contactPoint: null,
-            id: id,
-            identifier: null,
-            name: name,
-            type: organisationType,
-            roles: roles ?? new List<PartyRole>(),
-            details: new Details(
-                approval: null,
-                buyerInformation: null,
-                pendingRoles: pendingRoles ?? new List<PartyRole>(),
-                publicServiceMissionOrganization: null,
-                scale: null,
-                shelteredWorkshop: null,
-                vcse: null)
-        );
     }
 }

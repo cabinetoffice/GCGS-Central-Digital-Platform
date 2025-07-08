@@ -53,8 +53,13 @@
                         <tbody class="govuk-table__body">
                         <tr class="govuk-table__row">
                             <th scope="row"
-                                class="govuk-table__header govuk-!-width-one-third">@(Model.ChildOrganisation?.Identifier?.Scheme ?? StaticTextResource.Global_Unknown)</th>
-                            <td class="govuk-table__cell govuk-!-width-two-thirds">@(Model.ChildOrganisation?.Identifier?.Id ?? StaticTextResource.Global_Unknown)</td>
+                                class="govuk-table__header govuk-!-width-one-third">@StaticTextResource.Global_PPON</th>
+                            <td class="govuk-table__cell govuk-!-width-two-thirds">
+                                @{
+                                    var pponValue = Model.GetChildOrganisationPpon();
+                                    @(string.IsNullOrEmpty(pponValue) ? StaticTextResource.Global_Unknown : pponValue)
+                                }
+                            </td>
                         </tr>
                         <tr class="govuk-table__row">
                             <th scope="row"
