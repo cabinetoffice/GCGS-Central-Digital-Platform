@@ -11,9 +11,11 @@ resource "aws_key_pair" "import_key" {
 resource "aws_instance" "fts_db_import" {
   count = local.has_import_instance ? 1 : 0
 
-  ami           = "ami-028a245ba118f4c66"
-  instance_type = "t3.medium"
-  subnet_id     = var.public_subnet_ids[0]
+  ami                     = "ami-028a245ba118f4c66"
+  disable_api_stop        = true
+  disable_api_termination = true
+  instance_type           = "c7i.2xlarge"
+  subnet_id               = var.public_subnet_ids[0]
 
   key_name = aws_key_pair.import_key.key_name
 
@@ -26,8 +28,11 @@ resource "aws_ebs_volume" "import_data_disk" {
   count = local.has_import_instance ? 1 : 0
 
   availability_zone = data.aws_subnet.first_public_subnet.availability_zone
-  size              = 200
-  type              = "gp3"
+  iops              = 64000
+  size              = 1280
+  type              = "io1"
+
+
   tags = local.import_instance_tags
 }
 
