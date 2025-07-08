@@ -2077,7 +2077,7 @@
   <data name="BuyerParentChildRelationship_ConfirmPage_OrganisationTypeLabel" xml:space="preserve">
     <value>Organisation type</value>
   </data>
-  <data name="BuyerParentChildRelationship_ConfirmPage_PponLabel" xml:space="preserve">
+  <data name="Global_PPON" xml:space="preserve">
     <value>PPON</value>
   </data>
   <data name="BuyerParentChildRelationship_SuccessPage_Title" xml:space="preserve">
