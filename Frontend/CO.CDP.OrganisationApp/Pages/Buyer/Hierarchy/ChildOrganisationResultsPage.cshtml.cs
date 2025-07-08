@@ -1,5 +1,6 @@
 using CO.CDP.Localization;
 using CO.CDP.Organisation.WebApiClient;
+using CO.CDP.OrganisationApp.Extensions;
 using CO.CDP.OrganisationApp.Logging;
 using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.WebApiClients;
@@ -51,32 +52,6 @@ public class ChildOrganisationResultsPage(
         return Page();
     }
 
-    private (bool, string?) IsLikelyPpon(string? query)
-    {
-        if (string.IsNullOrWhiteSpace(query))
-        {
-            return (false, null);
-        }
-
-        if (query.StartsWith("GB-PPON:", StringComparison.OrdinalIgnoreCase))
-        {
-            return (true, query);
-        }
-
-        if (query.StartsWith("GB-PPON-", StringComparison.OrdinalIgnoreCase))
-        {
-            return (true, "GB-PPON:" + query.Substring("GB-PPON-".Length));
-        }
-
-        var pponRegex = new System.Text.RegularExpressions.Regex("^[A-Z]{4}-\\d{4}-[A-Z0-9]{4}$",
-            System.Text.RegularExpressions.RegexOptions.IgnoreCase);
-        if (pponRegex.IsMatch(query))
-        {
-            return (true, "GB-PPON:" + query);
-        }
-
-        return (false, null);
-    }
 
     private ChildOrganisation MapOrganisationSearchResultToChildOrganisation(OrganisationSearchResult searchResult)
     {
@@ -146,10 +121,10 @@ public class ChildOrganisationResultsPage(
 
         try
         {
-            var (isPpon, pponIdentifier) = IsLikelyPpon(Query);
+            var (isLikelyPpon, formattedPpon) = OrganisationIdentifierExtensions.IsLikelyPpon(Query);
 
-            var (results, errorMessage) = await (isPpon
-                ? ExecutePponSearch(pponIdentifier)
+            var (results, errorMessage) = await (isLikelyPpon
+                ? ExecutePponSearch(formattedPpon)
                 : ExecuteNameSearch());
 
             if (results.Count == 0)
@@ -240,7 +215,7 @@ public class ChildOrganisationResultsPage(
     private void LogApiError(Exception ex)
     {
         var errorMessage = "Error occurred while searching for organisations";
-        var errorCode = IsLikelyPpon(Query).Item1 ? "LOOKUP_ERROR" : "SEARCH_ERROR";
+        var errorCode = OrganisationIdentifierExtensions.IsLikelyPpon(Query).IsLikelyPpon ? "LOOKUP_ERROR" : "SEARCH_ERROR";
         var cdpException = new CdpExceptionLogging(errorMessage, errorCode, ex);
         _logger.LogError(cdpException, errorMessage);
     }
