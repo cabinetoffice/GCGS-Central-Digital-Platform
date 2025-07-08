@@ -11,64 +11,103 @@
 
 <h1 class="govuk-heading-l">@ViewData["Title"]</h1>
 
-<div class="govuk-grid-row govuk-!-margin-bottom-5">
-    <form method="get">
+<form method="get">
+    <div class="govuk-grid-row govuk-!-margin-bottom-5">
         <div class="govuk-grid-column-one-half govuk-!-margin-bottom-3">
             <label class="govuk-label" for="organisation-search-input">
                 @Model.SearchTitle
             </label>
             <input class="govuk-input" id="organisation-search-input" name="q" type="text" value="@queryValue">
         </div>
-
         <div class="govuk-grid-column-full">
             <button type="submit" class="govuk-button" data-module="govuk-button" data-govuk-button-init="">
                 @StaticTextResource.Global_Filter
             </button>
         </div>
-    </form>
-</div>
-
-<details class="govuk-details">
-    <summary class="govuk-details__summary">
-    <span class="govuk-details__summary-text">
-      @StaticTextResource.PponSearch_Ppon_Desc_Title
-    </span>
-    </summary>
-    <div class="govuk-details__text">
-        @StaticTextResource.PponSearch_Ppon_Desc_Hint
     </div>
-</details>
 
-<br/>
+    <details class="govuk-details">
+        <summary class="govuk-details__summary">
+        <span class="govuk-details__summary-text">
+            @StaticTextResource.PponSearch_Ppon_Desc_Title
+        </span>
+        </summary>
+        <div class="govuk-details__text">
+            @StaticTextResource.PponSearch_Ppon_Desc_Hint
+        </div>
+    </details>
 
-<h1 class="govuk-heading-l" style="margin-bottom:5px">Search results</h1>
-<p class="govuk-body">@(string.Format(StaticTextResource.PponSearch_ResultsCountHeading, Model.TotalOrganisations))</p>
-
-@{
-    foreach (var org in Model.Organisations)
+    @if (Model.TotalOrganisations == 0)
     {
         <div class="govuk-grid-row">
             <div class="govuk-grid-column-full">
-                <div class="govuk-grid-column-two-thirds">
-                    <h2 class="govuk-heading-m">@org.Name</h2>
-                    <p class="govuk-body govuk-!-margin-bottom-1">
-                        <span class="govuk-!-font-weight-bold">
-                             @org.Identifiers.FirstOrDefault(id => id.StartsWith("GB-PPON"))
-                        </span>
-                    </p>
-                    <p class="govuk-body">
-                        <span class="govuk-!-font-weight-bold">Organisation address</span>&nbsp;
-                    </p>
+                <p class="govuk-body">
+                    @StaticTextResource.PponSearch_NoResults
+                </p>
+            </div>
+        </div>
+    }
+    else
+    {
+
+        <div class="govuk-grid-row">
+
+            <div class="govuk-grid-column-one-half" style="padding-left: 0">
+                <h2 class="govuk-heading-l">Search results</h2>
+                <p class="govuk-body">@(string.Format(StaticTextResource.PponSearch_ResultsCountHeading, Model.TotalOrganisations))</p>
+            </div>
+
+            <div class="govuk-grid-column-one-half govuk-!-text-align-right" style="padding-left: 0 !important;">
+                <div class="govuk-form-group">
+                    <label class="govuk-label" for="sort-order">
+                        Sort results
+                    </label>
+                    <select class="govuk-select" id="sort-order" name="sortOrder" onchange="this.form.submit()">
+                        <option value="relevance"
+                                selected="@(Request.Query["sortOrder"] == "relevance" ? "selected" : null)">
+                            Relevance
+                        </option>
+                        <option value="ascending"
+                                selected="@(Request.Query["sortOrder"] == "ascending" ? "selected" : null)">
+                            Alphabetical (A-Z)
+                        </option>
+                        <option value="descending"
+                                selected="@(Request.Query["sortOrder"] == "descending" ? "selected" : null)">
+                            Alphabetical (Z-A)
+                        </option>
+                    </select>
                 </div>
-                <div class="govuk-grid-column-one-third">
-                    <div class="govuk-grid-row" style="text-align: right;margin-right:0">
-                        @foreach (var partyRole in @org.Roles)
-                        {
-                            <strong class="govuk-tag govuk-tag--blue">
-                                @partyRole
-                            </strong>
-                        }
-                    </div>
+            </div>
+        </div>
+    }
+</form>
+
+@if (Model.TotalOrganisations > 0)
+{
+    foreach (var org in Model.Organisations)
+    {
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-two-thirds">
+                <h2 class="govuk-heading-m">@org.Name</h2>
+                <p class="govuk-body govuk-!-margin-bottom-1">
+                            <span class="govuk-!-font-weight-bold">
+                                PPON
+                            </span>
+                    @org.Identifier.Id
+                </p>
+                <p class="govuk-body">
+                    <span class="govuk-!-font-weight-bold">Organisation address</span>&nbsp;
+                    @Model.FormatAddresses(org.Addresses)
+                </p>
+            </div>
+            <div class="govuk-grid-column-one-third govuk-!-text-align-right">
+                <div class="govuk-grid-row" style="text-align: right;margin-right:0">
+                    @foreach (var partyRole in @org.Roles)
+                    {
+                        <strong class="govuk-tag @Model.GetTagClassForRole(partyRole)">
+                            @partyRole
+                        </strong>
+                    }
                 </div>
             </div>
         </div>
@@ -87,3 +126,5 @@
     PageSize = Model.PageSize,
     Url = $"/support/organisations/buyer?q={queryValue}"
 })
+
+

@@ -26,55 +26,84 @@ public class SearchModel(
 
     public int Skip { get; set; }
 
-    public IList<OrganisationDto> Organisations { get; set; } = [];
+    public IList<OrganisationSearchByPponResult> Organisations { get; set; } = [];
 
-    public async Task<IActionResult> OnGet(string type, int pageNumber = 1, [FromQuery(Name = "q")] string? searchText = null)
+    public async Task<IActionResult> OnGet(string type, int pageNumber = 1,
+        [FromQuery(Name = "q")] string? searchText = null,
+        [FromQuery(Name = "sortOrder")] string? sortOrder = "relevance")
     {
         InitModel(type, pageNumber);
 
-        await GetResults(searchText);
+        await GetResults(searchText, sortOrder);
 
         return Page();
     }
 
     private void InitModel(string type, int pageNumber)
     {
-        PageSize = 2;
+        PageSize = 10;
         if (pageNumber < 1) pageNumber = 1;
-
         Title = StaticTextResource.PponSearch_Title;
         SearchTitle = StaticTextResource.PponSearch_Hint;
-
         Skip = (pageNumber - 1) * PageSize;
-
         CurrentPage = pageNumber;
     }
 
-    private async Task GetResults(string? searchText)
+    private async Task GetResults(string? searchText, string? sortOrder)
     {
-        var orgs = await organisationClient.GetAllOrganisationsAsync("buyer", "buyer", searchText, PageSize, Skip);
+        if (string.IsNullOrWhiteSpace(searchText))
+        {
+            Organisations = [];
+            TotalOrganisations = 0;
+            TotalPages = 0;
+            return;
+        }
 
-        Organisations = orgs.Item1.ToList();
-        TotalOrganisations = orgs.Item2;
-
+        var orgs = await organisationClient.SearchByNameOrPponAsync("APPLE UK", PageSize, Skip);
+        Organisations = sortOrder switch
+        {
+            "ascending" => orgs.OrderBy(o => o.Name).ToList(),
+            "descending" => orgs.OrderByDescending(o => o.Name).ToList(),
+            _ => orgs.ToList()
+        };
+        TotalOrganisations = orgs.Count;
         TotalPages = (int)Math.Ceiling((double)TotalOrganisations / PageSize);
     }
 
-    // //Unused
-    // public static List<Identifier> CombineIdentifiers(Identifier? identifier, ICollection<Identifier> additionalIdentifiers)
-    // {
-    //     var identifiers = new List<Identifier>();
-    //
-    //     if (identifier != null)
-    //     {
-    //         identifiers.Add(identifier);
-    //     }
-    //
-    //     foreach (var additionalIdentifier in additionalIdentifiers)
-    //     {
-    //         identifiers.Add(additionalIdentifier);
-    //     }
-    //
-    //     return identifiers;
-    // }
+    public string FormatAddresses(IEnumerable<OrganisationAddress> addresses)
+    {
+        if (addresses == null || !addresses.Any())
+            return "N/A";
+        var address = addresses.FirstOrDefault();
+        var parts = new List<string>();
+        if (!string.IsNullOrWhiteSpace(address.StreetAddress))
+            parts.Add(address.StreetAddress);
+        if (!string.IsNullOrWhiteSpace(address.Locality))
+            parts.Add(address.Locality);
+        if (!string.IsNullOrWhiteSpace(address.Region))
+            parts.Add(address.Region);
+        if (!string.IsNullOrWhiteSpace(address.PostalCode))
+            parts.Add(address.PostalCode);
+        if (!string.IsNullOrWhiteSpace(address.Country))
+            parts.Add(address.Country);
+        return parts.Any() ? string.Join(", ", parts) : "N/A";
+    }
+
+    public string GetTagClassForRole(PartyRole role)
+    {
+        return role switch
+        {
+            PartyRole.Buyer => "govuk-tag--blue",
+            PartyRole.ProcuringEntity => "govuk-tag--green",
+            PartyRole.Supplier => "govuk-tag--purple",
+            PartyRole.Tenderer => "govuk-tag--yellow",
+            PartyRole.Funder => "govuk-tag--red",
+            PartyRole.Enquirer => "govuk-tag--orange",
+            PartyRole.Payer => "govuk-tag--pink",
+            PartyRole.Payee => "govuk-tag--grey",
+            PartyRole.ReviewBody => "govuk-tag--turquoise",
+            PartyRole.InterestedParty => "govuk-tag--light-blue",
+            _ => "govuk-tag--black"
+        };
+    }
 }

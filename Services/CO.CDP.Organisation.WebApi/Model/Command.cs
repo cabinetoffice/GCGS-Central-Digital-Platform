@@ -449,6 +449,23 @@ public record OrganisationSearchQuery
     }
 }
 
+public record OrganisationSearchByPponQuery
+{
+    public string Name { get; }
+    public int? Limit { get; }
+    public double Threshold { get; }
+
+    public OrganisationSearchByPponQuery(string name, int? limit, double? threshold)
+    {
+        Name = name;
+        Limit = limit;
+        if (threshold.HasValue)
+        {
+            Threshold = threshold.Value;
+        }
+    }
+}
+
 public record OrganisationsByOrganisationEmailQuery
 {
     public string Email { get; }

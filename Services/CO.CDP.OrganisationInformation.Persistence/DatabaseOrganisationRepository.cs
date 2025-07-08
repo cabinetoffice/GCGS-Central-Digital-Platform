@@ -114,6 +114,28 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
         return await query.Select(t => t.Organisation).ToListAsync();
     }
 
+    public async Task<IEnumerable<Organisation>> SearchByNameOrPpon(string name, int? limit, double threshold = 0.3)
+    {
+        var query = context.Organisations
+            .Include(b => b.Identifiers)
+            .Include(p => p.Addresses)
+            .ThenInclude(p => p.Address)
+            .Where(t => t.PendingRoles.Count == 0)
+            .Where(t =>
+                EF.Functions.TrigramsSimilarity(t.Name, name) >= threshold ||
+                t.Identifiers.Max(i => EF.Functions.TrigramsSimilarity(i.IdentifierId, name)) >= threshold)
+            .Where(t => t.Type == OrganisationType.Organisation)
+            .Where(t => t.Roles.Contains(PartyRole.Buyer) || t.Roles.Contains(PartyRole.Tenderer))
+            .Where(t => t.Identifiers.Any(i => i.Scheme.Equals("GB-PPON")))
+            .OrderBy(t => t.Name).AsQueryable();
+
+        if (limit.HasValue)
+        {
+            query = query.Take(limit.Value);
+        }
+        return await query.ToListAsync();
+    }
+
     public async Task<IEnumerable<Organisation>> FindByOrganisationEmail(string email, PartyRole? role, int? limit)
     {
         var query = context.Organisations

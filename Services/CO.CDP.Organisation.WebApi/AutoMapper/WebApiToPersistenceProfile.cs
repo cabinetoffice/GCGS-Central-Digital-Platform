@@ -46,6 +46,22 @@ public class WebApiToPersistenceProfile : Profile
             .ForMember(m => m.Id, o => o.MapFrom(m => m.Guid))
             .ForMember(m => m.Identifier, o => o.MapFrom(m => m.Identifiers.FirstOrDefault(i => i.Primary)));
 
+        CreateMap<Persistence.Organisation, Model.OrganisationSearchByPponResult>()
+            .ForMember(m => m.Id, o => o.MapFrom(m => m.Guid))
+            .ForMember(m => m.Identifier, o => o.MapFrom(m => m.Identifiers.FirstOrDefault(i => i.Primary)))
+            .ForMember(m => m.Name, o => o.MapFrom(m => m.Name))
+            .ForMember(m => m.Addresses, o => o.MapFrom(m => m.Addresses.Select(a => new OrganisationAddress
+            {
+                Type = a.Type,
+                StreetAddress = a.Address.StreetAddress,
+                Locality = a.Address.Locality,
+                Region = a.Address.Region,
+                PostalCode = a.Address.PostalCode,
+                CountryName = a.Address.CountryName,
+                Country = a.Address.Country
+            }).ToList()))
+            .ForMember(m => m.Roles, o => o.MapFrom(m => m.Roles));
+
         CreateMap<Persistence.Organisation, Review>()
             .ForMember(m => m.ApprovedOn, o => o.MapFrom(m => m.ApprovedOn))
             .ForMember(m => m.ReviewedBy, o => o.MapFrom(m =>
