@@ -4034,9 +4034,9 @@
     <value>Search for an organisation’s PPON number.</value>
   </data>
   <data name="BuyerView_TileThree_Title">
-    <value>Statement of work assurance tool</value>
+    <value>Statement of Work Assessment tool</value>
   </data>
   <data name="BuyerView_TileThree_Body">
-    <value>Review your statement of work with AI to address risks, compliance and clarity.</value>
+    <value>Review Statements of Work to make sure they meet procurement and commercial quality standards.</value>
   </data>
 </root>
