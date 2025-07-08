@@ -730,17 +730,17 @@ public class ChildOrganisationResultsPageTests
         _model.Query = query;
 
         var connectedChildId = Guid.NewGuid();
-        var searchResults = new List<CO.CDP.Organisation.WebApiClient.OrganisationSearchResult>
+        var searchResults = new List<OrganisationSearchResult>
         {
             CreateTestSearchResult("Connected Child", connectedChildId, "GB-PPON", "PMZV-7732-XXTT"),
             CreateTestSearchResult("New Child", Guid.NewGuid(), "GB-PPON", "NEWC-9876-ABCD")
         };
 
-        var childOrganisations = new List<CO.CDP.Organisation.WebApiClient.OrganisationSummary>
+        var childOrganisations = new List<OrganisationSummary>
         {
             new(connectedChildId, "GB-PPON:PMZV-7732-XXTT", "Connected Child",
-                new List<CO.CDP.Organisation.WebApiClient.PartyRole>
-                    { CO.CDP.Organisation.WebApiClient.PartyRole.Buyer })
+                new List<PartyRole>
+                    { PartyRole.Buyer })
         };
 
         _mockOrganisationClient
