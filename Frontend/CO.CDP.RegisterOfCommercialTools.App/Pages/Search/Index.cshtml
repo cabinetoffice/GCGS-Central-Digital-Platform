@@ -27,6 +27,12 @@
         Title = "Award method",
         Content = @<partial name="_AwardMethodAccordionContent" />
     };
+    var feesAccordion = new Accordion
+    {
+        Id = "fees",
+        Title = "Fees",
+        Content = @<partial name="_FeesAccordionContent" />
+    };
 }
 
 <script src="/js/search.js"></script>
@@ -97,6 +103,7 @@
                     <partial name ="_Accordion" model="commercialToolStatusAccordion" />
                     <partial name ="_Accordion" model="contractingAuthorityUsageAccordion" />
                     <partial name ="_Accordion" model="awardMethodAccordion" />
+                    <partial name ="_Accordion" model="feesAccordion" />
                 </div>
 
                 <div class="govuk-button-group govuk-!-margin-top-4">
