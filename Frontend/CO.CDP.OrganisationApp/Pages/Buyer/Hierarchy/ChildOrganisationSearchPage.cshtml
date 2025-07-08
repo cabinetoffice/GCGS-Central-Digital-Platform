@@ -60,7 +60,7 @@
                         <input class="govuk-input @(!ModelState.IsValid ? "govuk-input--error" : "")" id="query" name="Query" type="text" value="@Model.Query"
                                aria-describedby="@(!ModelState.IsValid ? "query-error query-hint" : "query-hint")">
                     </div>
-                    <div class="govuk-grid-column-one-third govuk-!-padding-left-0">
+                    <div class="govuk-grid-column-one-third govuk-!-padding-left-0 govuk-!-padding-bottom-9">
                         <button type="submit" class="govuk-button govuk-!-margin-bottom-0" data-module="govuk-button">
                             @StaticTextResource.Global_Search
                         </button>
