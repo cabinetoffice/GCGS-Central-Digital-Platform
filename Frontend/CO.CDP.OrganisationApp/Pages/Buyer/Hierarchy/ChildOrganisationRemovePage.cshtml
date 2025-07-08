@@ -135,9 +135,6 @@
                                 <span
                                     class="govuk-visually-hidden">@StaticTextResource.BuyerParentChildRelationship_RemovePage_VisuallyHiddenLegend</span>
                             </legend>
-                            <div id="remove-organisation-hint" class="govuk-hint">
-                                @StaticTextResource.Global_SelectAnOption
-                            </div>
                             @if (ViewData.ModelState["RemoveConfirmation"]?.Errors.Count > 0)
                             {
                                 <p id="RemoveConfirmation-error" class="govuk-error-message">
