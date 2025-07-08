@@ -77,7 +77,9 @@ locals {
       account_id                        = 905418042182
       canary_schedule_expression        = "rate(30 minutes)"
       fts_azure_frontdoor               = null
-      fts_service_allowed_origins       = []
+      fts_service_allowed_origins       = [
+        "https://fts.staging.supplier-information.find-tender.service.gov.uk",
+      ]
       name                              = "staging"
       mysql_aurora_engine_version       = "5.7.mysql_aurora.2.12.5"
       mysql_aurora_family               = "aurora-mysql5.7"
@@ -112,21 +114,11 @@ locals {
       canary_schedule_expression        = "rate(30 minutes)"
       fts_azure_frontdoor               = null
       fts_service_allowed_origins       = [
-        "https://akmalnazir.nqc.com",
-        "https://andrewtaberner.nqc.com",
-        "https://anudeepjami.nqc.com",
-        "https://davidchiu.nqc.com",
-        "https://humaarif.nqc.com",
-        "https://kaichan2.nqc.com",
-        "https://kaylemwood.nqc.com",
-        "https://martamajewska.nqc.com",
-        "https://nadeemshafi2.nqc.com",
-        "https://stanvolcere.nqc.com",
+        "https://fts.integration.supplier-information.find-tender.service.gov.uk",
         "https://test-findtender.nqc.com",
         "https://truk-alpha.nqc.com",
         "https://truk-performance.nqc.com",
         "https://truk-prod.nqc.com",
-        "https://wallsm.nqc.com",
         "https://www-integration.find-tender.service.gov.uk",
         "https://www-preview.find-tender.service.gov.uk",
         "https://www-tpp-preview.find-tender.service.gov.uk",
