@@ -33,6 +33,12 @@
         Title = "Fees",
         Content = @<partial name="_FeesAccordionContent" />
     };
+    var dateRangeAccordion = new Accordion
+    {
+        Id = "date-range",
+        Title = "Date range",
+        Content = @<partial name="_DateRangeAccordionContent" />
+    };
 }
 
 <script src="/js/search.js"></script>
@@ -104,6 +110,7 @@
                     <partial name ="_Accordion" model="contractingAuthorityUsageAccordion" />
                     <partial name ="_Accordion" model="awardMethodAccordion" />
                     <partial name ="_Accordion" model="feesAccordion" />
+                    <partial name ="_Accordion" model="dateRangeAccordion" />
                 </div>
 
                 <div class="govuk-button-group govuk-!-margin-top-4">
