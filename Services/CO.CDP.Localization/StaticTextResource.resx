@@ -928,6 +928,9 @@
   <data name="Global_Submit" xml:space="preserve">
     <value>Submit</value>
   </data>
+  <data name="Global_Confirm" xml:space="preserve">
+    <value>Confirm</value>
+  </data>
   <data name="Global_Filter" xml:space="preserve">
     <value>Filter</value>
   </data>
