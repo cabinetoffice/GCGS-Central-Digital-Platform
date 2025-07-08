@@ -70,7 +70,7 @@ public class ChildOrganisationResultsPageTests
         _model.Results.Should().Contain(o => o.Name == "Oscorp");
 
         var starkIndustries = _model.Results.FirstOrDefault(o => o.Name == "Stark Industries");
-        starkIndustries?.GetFormattedIdentifier().Should().Be("GB-PPON: STIN-1234-ABCD");
+        starkIndustries?.GetFormattedIdentifier().Should().Be("PPON: STIN-1234-ABCD");
     }
 
     [Fact]
@@ -240,7 +240,7 @@ public class ChildOrganisationResultsPageTests
         var result = _model.Results.First();
         result.Name.Should().Be("Test Org");
         result.OrganisationId.Should().Be(testId);
-        result.GetFormattedIdentifier().Should().Be("GB-PPON: TORG-1234-BCDE");
+        result.GetFormattedIdentifier().Should().Be("PPON: TORG-1234-BCDE");
     }
 
     [Theory]

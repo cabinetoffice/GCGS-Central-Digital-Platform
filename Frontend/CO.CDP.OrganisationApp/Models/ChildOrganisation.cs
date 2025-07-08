@@ -40,7 +40,7 @@ public record ChildOrganisation
     /// Creates a formatted identifier string in the format "Scheme: Id"
     /// </summary>
     /// <returns>A formatted identifier string</returns>
-    public string GetFormattedIdentifier() => $"{Identifier.Scheme}: {Identifier.Id}";
+    public string GetFormattedIdentifier() => $"PPON: {Identifier.Id}";
 
     public string GetIdentifierAsString() => $"{Identifier.Scheme}:{Identifier.Id}";
 }
