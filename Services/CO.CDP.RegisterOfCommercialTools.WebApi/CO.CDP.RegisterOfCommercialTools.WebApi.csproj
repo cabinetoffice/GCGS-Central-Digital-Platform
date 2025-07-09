@@ -21,4 +21,8 @@
     <ProjectReference Include="..\..\Libraries\CO.CDP.AwsServices\CO.CDP.AwsServices.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <InternalsVisibleTo Include="CO.CDP.RegisterOfCommercialTools.WebApi.Tests" />
+  </ItemGroup>
+
 </Project>
