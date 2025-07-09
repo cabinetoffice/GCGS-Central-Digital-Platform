@@ -24,7 +24,7 @@
             <input class="govuk-input" id="organisation-search-input" name="q" type="text" value="@queryValue">
         </div>
         <div class="govuk-grid-column-full">
-            <button type="submit" class="govuk-button" data-module="govuk-button" data-govuk-button-init="">
+            <button type="submit" class="govuk-button" data-module="govuk-button">
                 @StaticTextResource.Global_Filter
             </button>
         </div>
@@ -54,12 +54,10 @@
     else
     {
         <div class="govuk-grid-row">
-
             <div class="govuk-grid-column-one-half" style="padding-left: 0">
                 <h2 class="govuk-heading-l">Search results</h2>
                 <p class="govuk-body">@(string.Format(StaticTextResource.PponSearch_ResultsCountHeading, Model.TotalOrganisations))</p>
             </div>
-
             <div class="govuk-grid-column-one-half govuk-!-text-align-right" style="padding-left: 0 !important;">
                 <div class="govuk-form-group">
                     <label class="govuk-label" for="sort-order">
@@ -92,13 +90,11 @@
         <div class="govuk-grid-row">
             <div class="govuk-grid-column-two-thirds">
                 <h2 class="govuk-heading-m">@org.Name</h2>
-                @if (org.Identifiers.Where(i => i.Scheme.Equals("GB-PPON")).FirstOrDefault()?.Id != null)
+                @if (org.Identifiers.Any(i => i.Scheme.Equals("GB-PPON") && i.Id != null))
                 {
                     <p class="govuk-body govuk-!-margin-bottom-1">
-                        <span class="govuk-!-font-weight-bold">
-                            PPON
-                        </span>
-                        @org.Identifiers.Where(i => i.Scheme.Equals("GB-PPON")).FirstOrDefault().Id
+                        <span class="govuk-!-font-weight-bold">PPON</span>
+                        @org.Identifiers.First(i => i.Scheme.Equals("GB-PPON")).Id
                     </p>
                 }
                 <p class="govuk-body">
@@ -132,5 +128,3 @@
     PageSize = Model.PageSize,
     Url = $"/support/organisations/buyer?q={queryValue}"
 })
-
-

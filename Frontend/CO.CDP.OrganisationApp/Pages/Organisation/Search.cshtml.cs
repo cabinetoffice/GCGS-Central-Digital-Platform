@@ -35,9 +35,7 @@ public class SearchModel(
         [FromQuery(Name = "sortOrder")] string? sortOrder = "relevance")
     {
         InitModel(type, pageNumber);
-
         await GetResults(searchText, sortOrder);
-
         return Page();
     }
 
