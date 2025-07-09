@@ -43,6 +43,7 @@ locals {
     database_server_port                = 3306
     database_ssl                        = false
     environment                         = upper(var.environment)
+    fts_allowed_target_email_domains    = join(",", var.fts_allowed_target_email_domains)
     fts_client_assertion_type           = "urn:ietf:params:oauth:client-assertion-type:jwt-bearer"
     fts_one_login_logout_redirect_uri   = "https://fts.${var.public_domain}/auth/logout"
     fts_one_login_redirect_uri          = "https://fts.${var.public_domain}/auth/callback"
