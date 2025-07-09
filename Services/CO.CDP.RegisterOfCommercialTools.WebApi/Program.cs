@@ -7,10 +7,14 @@ using CO.CDP.Configuration.Helpers;
 using CO.CDP.OrganisationInformation.Persistence;
 using CO.CDP.RegisterOfCommercialTools.WebApi;
 using CO.CDP.RegisterOfCommercialTools.WebApi.Api;
+using CO.CDP.RegisterOfCommercialTools.WebApi.UseCases;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddScoped<GetCpvChildrenUseCase>();
+builder.Services.AddSingleton<ICpvCodeRepository, InMemoryCpvCodeRepository>();
 
 builder.ConfigureForwardedHeaders();
 builder.Services.AddEndpointsApiExplorer();
@@ -48,6 +52,7 @@ if (builder.Configuration.GetValue("Features:SwaggerUI", false))
 app.UseStatusCodePages();
 app.MapHealthChecks("/health").AllowAnonymous();
 app.MapCpvEndpoint();
-// app.UseAuthentication();
-// app.UseAuthorization();
+
 app.Run();
+
+public abstract partial class Program { }
