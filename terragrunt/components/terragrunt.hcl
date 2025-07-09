@@ -78,7 +78,7 @@ locals {
       cidr_block                        = "10.${local.cidr_b_staging}.0.0/16"
       account_id                        = 905418042182
       canary_schedule_expression        = "rate(30 minutes)"
-      fts_allowed_target_email_domains  = ["goaco.com"]
+      fts_allowed_target_email_domains  = ["goaco.com","cabinetoffice.gov.uk"]
       fts_azure_frontdoor               = null
       fts_service_allowed_origins       = [
         "https://fts.staging.supplier-information.find-tender.service.gov.uk",
@@ -93,7 +93,7 @@ locals {
         "https://www-staging.find-tender.service.gov.uk/auth/backchannellogout",
       ]
       pinned_service_version_fts        = null
-      pinned_service_version            = "1.0.69"
+      pinned_service_version            = "1.0.70"
       postgres_instance_type            = "db.t4g.micro"
       postgres_aurora_instance_type     = "db.r5.large"
       private_subnets = [
