@@ -88,6 +88,11 @@ variable "environment" {
   type        = string
 }
 
+variable "fts_allowed_target_email_domains" {
+  description = "A list of allowed Domain origins"
+  type        = list(string)
+}
+
 variable "fts_service_allowed_origins" {
   description = "A list of allowed URLs"
   type        = list(string)

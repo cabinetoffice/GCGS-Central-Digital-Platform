@@ -41,6 +41,7 @@ locals {
       cidr_block                        = "10.${local.cidr_b_development}.0.0/16"
       account_id                        = 471112892058
       canary_schedule_expression        = "rate(30 minutes)" # "cron(15 7,11,15 ? * MON-FRI)" # UTC+0
+      fts_allowed_target_email_domains  = ["goaco.com"]
       fts_azure_frontdoor               = null
       fts_service_allowed_origins       = []
       mysql_aurora_engine_version       = "5.7.mysql_aurora.2.12.5"
@@ -76,6 +77,7 @@ locals {
       cidr_block                        = "10.${local.cidr_b_staging}.0.0/16"
       account_id                        = 905418042182
       canary_schedule_expression        = "rate(30 minutes)"
+      fts_allowed_target_email_domains  = ["goaco.com"]
       fts_azure_frontdoor               = null
       fts_service_allowed_origins       = [
         "https://fts.staging.supplier-information.find-tender.service.gov.uk",
@@ -112,6 +114,7 @@ locals {
       cidr_block                        = "10.${local.cidr_b_integration}.0.0/16"
       account_id                        = 767397666448
       canary_schedule_expression        = "rate(30 minutes)"
+      fts_allowed_target_email_domains  = ["goaco.com"]
       fts_azure_frontdoor               = null
       fts_service_allowed_origins       = [
         "https://fts.integration.supplier-information.find-tender.service.gov.uk",
@@ -174,6 +177,7 @@ locals {
       cidr_block                        = "10.${local.cidr_b_production}.0.0/16"
       account_id                        = 471112843276
       canary_schedule_expression        = "rate(15 minutes)"
+      fts_allowed_target_email_domains  = ["goaco.com"]
       fts_azure_frontdoor               = "nqc-front-door-uksouth.azurefd.net"
       fts_service_allowed_origins       = []
       mysql_aurora_engine_version       = "5.7.mysql_aurora.2.12.5"
@@ -206,6 +210,7 @@ locals {
 
   aurora_postgres_instance_type     = try(local.environments[local.environment].postgres_aurora_instance_type, null)
   aurora_postgres_instance_type_ev  = try(local.environments[local.environment].postgres_aurora_instance_type_ev, local.aurora_postgres_instance_type)
+  fts_allowed_target_email_domains  = try(local.environments[local.environment].fts_allowed_target_email_domains, null)
   fts_azure_frontdoor               = try(local.environments[local.environment].fts_azure_frontdoor, null)
   fts_service_allowed_origins       = try(local.environments[local.environment].fts_service_allowed_origins, null)
   aurora_mysql_engine_version       = try(local.environments[local.environment].mysql_aurora_engine_version, "8.0.mysql_aurora.3.07.1")
