@@ -1,0 +1,110 @@
+using CO.CDP.Localization;
+using CO.CDP.Organisation.WebApiClient;
+using CO.CDP.OrganisationApp.Constants;
+using CO.CDP.OrganisationApp.Pages.Buyer;
+using CO.CDP.OrganisationApp.Tests.TestData;
+using FluentAssertions;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.FeatureManagement;
+using Moq;
+using PartyRole = CO.CDP.Organisation.WebApiClient.PartyRole;
+
+namespace CO.CDP.OrganisationApp.Tests.Pages.Buyer;
+
+public class BuyerViewTests
+{
+    private readonly Mock<IFeatureManager> _featureManagerMock;
+    private readonly Mock<IOrganisationClient> _organisationClientMock;
+    private readonly BuyerView _model;
+
+    public BuyerViewTests()
+    {
+        _featureManagerMock = new Mock<IFeatureManager>();
+        _organisationClientMock = new Mock<IOrganisationClient>();
+        _model = new BuyerView(_featureManagerMock.Object, _organisationClientMock.Object)
+        {
+            Id = Guid.NewGuid()
+        };
+
+        _featureManagerMock.Setup(fm => fm.IsEnabledAsync(FeatureFlags.BuyerView)).ReturnsAsync(true);
+    }
+
+    [Fact]
+    public async Task OnGet_WhenBuyerViewFeatureIsDisabled_RedirectsToPageNotFound()
+    {
+        _featureManagerMock.Setup(fm => fm.IsEnabledAsync(FeatureFlags.BuyerView)).ReturnsAsync(false);
+
+        var result = await _model.OnGet();
+
+        result.Should().BeOfType<RedirectToPageResult>()
+            .Which.PageName.Should().Be("/PageNotFound");
+    }
+
+    [Fact]
+    public async Task OnGet_WhenOrganisationIsNull_RedirectsToPageNotFound()
+    {
+        _organisationClientMock.Setup(oc => oc.GetOrganisationAsync(_model.Id))
+            .ReturnsAsync((CDP.Organisation.WebApiClient.Organisation)null!);
+
+        var result = await _model.OnGet();
+
+        result.Should().BeOfType<RedirectToPageResult>()
+            .Which.PageName.Should().Be("/PageNotFound");
+    }
+
+    [Fact]
+    public async Task OnGet_WhenOrganisationIsNotBuyer_RedirectsToPageNotFound()
+    {
+        var organisation = OrganisationFactory.CreateOrganisation(roles: new List<PartyRole>());
+        _organisationClientMock.Setup(oc => oc.GetOrganisationAsync(_model.Id)).ReturnsAsync(organisation);
+
+        var result = await _model.OnGet();
+
+        result.Should().BeOfType<RedirectToPageResult>()
+            .Which.PageName.Should().Be("/PageNotFound");
+    }
+
+    [Fact]
+    public async Task OnGet_WhenBuyerViewFeatureIsEnabled_ReturnsPage()
+    {
+        var organisation = OrganisationFactory.CreateOrganisation(roles: new List<PartyRole> { PartyRole.Buyer });
+        _organisationClientMock.Setup(oc => oc.GetOrganisationAsync(_model.Id)).ReturnsAsync(organisation);
+
+        var result = await _model.OnGet();
+
+        result.Should().BeOfType<PageResult>();
+    }
+
+    [Fact]
+    public async Task OnGet_WhenBuyerViewFeatureIsEnabled_PopulatesTiles()
+    {
+        var organisation = OrganisationFactory.CreateOrganisation(roles: new List<PartyRole> { PartyRole.Buyer });
+        _organisationClientMock.Setup(oc => oc.GetOrganisationAsync(_model.Id)).ReturnsAsync(organisation);
+
+        await _model.OnGet();
+
+        _model.Tiles.Should().NotBeEmpty();
+        _model.Tiles.Should().HaveCount(3);
+        _model.Tiles[0].Title.Should().Be(StaticTextResource.BuyerView_TileOne_Title);
+        _model.Tiles[0].Body.Should().Be(StaticTextResource.BuyerView_TileOne_Body);
+        _model.Tiles[1].Title.Should().Be(StaticTextResource.BuyerView_TileTwo_Title);
+        _model.Tiles[1].Body.Should().Be(StaticTextResource.BuyerView_TileTwo_Body);
+        _model.Tiles[2].Title.Should().Be(StaticTextResource.BuyerView_TileThree_Title);
+        _model.Tiles[2].Body.Should().Be(StaticTextResource.BuyerView_TileThree_Body);
+    }
+
+    [Fact]
+    public async Task OnGet_WhenBuyerViewFeatureIsEnabled_PopulatesTileLinks()
+    {
+        var organisation = OrganisationFactory.CreateOrganisation(roles: new List<PartyRole> { PartyRole.Buyer });
+        _organisationClientMock.Setup(oc => oc.GetOrganisationAsync(_model.Id)).ReturnsAsync(organisation);
+
+        await _model.OnGet();
+
+        _model.Tiles.Should().NotBeEmpty();
+        _model.Tiles[0].Href.Should().Be($"/organisation/{_model.Id}");
+        _model.Tiles[1].Href.Should().Be("/organisation/search");
+        _model.Tiles[2].Href.Should().Be("#");
+    }
+}

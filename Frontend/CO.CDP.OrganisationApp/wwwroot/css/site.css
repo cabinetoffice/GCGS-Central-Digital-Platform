@@ -132,3 +132,13 @@
 .app-timeout-dialog .govuk-button {
     margin-bottom: 15px;
 }
+
+.tile {
+    border: 1px solid #b1b4b6;
+    background: #f3f2f1;
+    padding: 15px 15px 0 15px;
+}
+
+.tile__link {
+    text-decoration: none;
+}
