@@ -33,17 +33,20 @@ public class CpvEndpointTest
     [Fact]
     public async Task GetCpvChildren_WhenCodeIsValid_ReturnsChildren()
     {
-        var cpvCodes = new List<CpvCode>
+        var parentCode = "03000000-1";
+        var parentCpvCode = new CpvCode(parentCode, "Agricultural, farming, fishing, forestry and related products");
+        var childrenCpvCodes = new List<CpvCode>
         {
-            new("03000000-1", "Agricultural, farming, fishing, forestry and related products"),
             new("03100000-2", "Agricultural and horticultural products"),
             new("03200000-3", "Cereals, potatoes, vegetables, fruits and nuts"),
             new("03300000-4", "Farming, hunting and fishing products"),
             new("03400000-5", "Forestry and logging products"),
         };
-        _repositoryMock.Setup(r => r.GetAllAsync()).ReturnsAsync(cpvCodes);
 
-        var response = await _httpClient.GetAsync("/filters/cpv/03000000/children");
+        _repositoryMock.Setup(r => r.FindByCodeAsync(parentCode)).ReturnsAsync(parentCpvCode);
+        _repositoryMock.Setup(r => r.GetChildrenAsync(parentCpvCode)).ReturnsAsync(childrenCpvCodes);
+
+        var response = await _httpClient.GetAsync($"/filters/cpv/{parentCode}/children");
         response.EnsureSuccessStatusCode();
 
         var children = await response.Content.ReadFromJsonAsync<List<CpvCode>>();
