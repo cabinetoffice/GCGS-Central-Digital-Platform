@@ -24,8 +24,8 @@ module "ecs_service_fts" {
   role_ecs_task_arn      = var.role_ecs_task_arn
   role_ecs_task_exec_arn = var.role_ecs_task_exec_arn
   tags                   = var.tags
-  user_pool_arn          = var.environment == "development" ? null : var.user_pool_fts_arn
-  user_pool_client_id    = var.environment == "development" ? null : var.user_pool_fts_client_id
-  user_pool_domain       = var.environment == "development" ? null : var.user_pool_fts_domain
+  user_pool_arn          = var.environment == "production" ? var.user_pool_fts_arn : null
+  user_pool_client_id    = var.environment == "production" ? var.user_pool_fts_client_id : null
+  user_pool_domain       = var.environment == "production" ? var.user_pool_fts_domain : null
   vpc_id                 = var.vpc_id
 }
