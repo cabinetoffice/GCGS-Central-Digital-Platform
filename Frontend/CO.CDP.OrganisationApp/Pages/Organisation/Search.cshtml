@@ -9,6 +9,10 @@
     var queryValue = Request.Query["q"];
 }
 
+@section BeforeContent {
+    <a class="govuk-back-link" href="/organisation-selection">@StaticTextResource.Global_Back</a>
+}
+
 <h1 class="govuk-heading-l">@ViewData["Title"]</h1>
 
 <form method="get">

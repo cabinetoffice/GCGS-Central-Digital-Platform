@@ -41,7 +41,7 @@ public class SearchModel(
 
     private void InitModel(string type, int pageNumber)
     {
-        PageSize = 10;
+        PageSize = 50;
         if (pageNumber < 1) pageNumber = 1;
         Title = StaticTextResource.PponSearch_Title;
         SearchTitle = StaticTextResource.PponSearch_Hint;
