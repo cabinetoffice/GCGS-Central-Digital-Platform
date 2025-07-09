@@ -8,5 +8,3 @@ public class SearchCpvCodesUseCase
     }
 }
 
-public record CpvCode(string Code, string Name);
-
