@@ -53,7 +53,6 @@
     }
     else
     {
-
         <div class="govuk-grid-row">
 
             <div class="govuk-grid-column-one-half" style="padding-left: 0">
@@ -93,12 +92,15 @@
         <div class="govuk-grid-row">
             <div class="govuk-grid-column-two-thirds">
                 <h2 class="govuk-heading-m">@org.Name</h2>
-                <p class="govuk-body govuk-!-margin-bottom-1">
-                            <span class="govuk-!-font-weight-bold">
-                                PPON
-                            </span>
-                    @org.Identifier.Id
-                </p>
+                @if (org.Identifiers.Where(i => i.Scheme.Equals("GB-PPON")).FirstOrDefault()?.Id != null)
+                {
+                    <p class="govuk-body govuk-!-margin-bottom-1">
+                        <span class="govuk-!-font-weight-bold">
+                            PPON
+                        </span>
+                        @org.Identifiers.Where(i => i.Scheme.Equals("GB-PPON")).FirstOrDefault().Id
+                    </p>
+                }
                 <p class="govuk-body">
                     <span class="govuk-!-font-weight-bold">Organisation address</span>&nbsp;
                     @Model.FormatAddresses(org.Addresses)

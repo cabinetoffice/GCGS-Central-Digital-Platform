@@ -26,6 +26,8 @@ public class SearchModel(
 
     public int Skip { get; set; }
 
+    public double Threshold { get; set; } = 0.3;
+
     public IList<OrganisationSearchByPponResult> Organisations { get; set; } = [];
 
     public async Task<IActionResult> OnGet(string type, int pageNumber = 1,
@@ -59,7 +61,7 @@ public class SearchModel(
             return;
         }
 
-        var orgs = await organisationClient.SearchByNameOrPponAsync("APPLE UK", PageSize, Skip);
+        var orgs = await organisationClient.SearchByNameOrPponAsync(searchText, PageSize, Skip, Threshold);
         Organisations = sortOrder switch
         {
             "ascending" => orgs.OrderBy(o => o.Name).ToList(),

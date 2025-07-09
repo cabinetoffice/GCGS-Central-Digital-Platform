@@ -380,9 +380,9 @@ public static class EndpointExtensions
                     organisationPersonScopes: [Constants.OrganisationPersonScope.Admin, Constants.OrganisationPersonScope.Editor, Constants.OrganisationPersonScope.Viewer],
                     personScopes:[Constants.PersonScope.SupportAdmin]),
             ]
-            async ([FromQuery] string name, [FromQuery] int limit, [FromServices] IUseCase<OrganisationSearchByPponQuery, IEnumerable<Model.OrganisationSearchByPponResult>> useCase,[FromQuery] double? threshold = 0.3) =>
+            async ([FromQuery] string name, [FromQuery] int limit,[FromQuery] int skip, [FromServices] IUseCase<OrganisationSearchByPponQuery, IEnumerable<Model.OrganisationSearchByPponResult>> useCase,[FromQuery] double? threshold = 0.3) =>
             {
-                if (threshold is < 0 or > 1)
+                if (threshold is <= 0 or > 1)
                 {
                     return Results.BadRequest(new ProblemDetails
                     {
@@ -391,8 +391,7 @@ public static class EndpointExtensions
                         Status = StatusCodes.Status400BadRequest
                     });
                 }
-
-                return await useCase.Execute(new OrganisationSearchByPponQuery(name, limit, threshold))
+                return await useCase.Execute(new OrganisationSearchByPponQuery(name, limit,skip, threshold))
                     .AndThen(results => results.Count() != 0 ? Results.Ok(results) : Results.NotFound());
             })
             .Produces<IEnumerable<Model.OrganisationSearchByPponResult>>(StatusCodes.Status200OK, "application/json")
@@ -414,6 +413,11 @@ public static class EndpointExtensions
 
                 foreach (var parameter in operation.Parameters)
                 {
+                    if (parameter.Name == "threshold")
+                    {
+                        parameter.Description = "The word similarity threshold value for fuzzy searching - Value can be from 0 to 1";
+                    }
+
                     if (parameter.Name == "role")
                     {
                         parameter.Description = "Restrict results by role - tenderer or buyer";

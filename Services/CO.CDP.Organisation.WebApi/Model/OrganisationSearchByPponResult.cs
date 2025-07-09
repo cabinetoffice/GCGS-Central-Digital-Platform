@@ -10,7 +10,7 @@ public record OrganisationSearchByPponResult
 
     public required OrganisationType Type { get; init; }
 
-    public required Identifier Identifier { get; init; }
+    public required List<Identifier> Identifiers { get; init; }
 
     public required List<PartyRole> Roles { get; init; }
 

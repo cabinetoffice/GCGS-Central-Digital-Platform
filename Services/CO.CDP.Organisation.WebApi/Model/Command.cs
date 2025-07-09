@@ -453,12 +453,14 @@ public record OrganisationSearchByPponQuery
 {
     public string Name { get; }
     public int? Limit { get; }
+    public int Skip { get; }
     public double Threshold { get; }
 
-    public OrganisationSearchByPponQuery(string name, int? limit, double? threshold)
+    public OrganisationSearchByPponQuery(string name, int? limit,int skip, double? threshold)
     {
         Name = name;
         Limit = limit;
+        Skip = skip;
         if (threshold.HasValue)
         {
             Threshold = threshold.Value;

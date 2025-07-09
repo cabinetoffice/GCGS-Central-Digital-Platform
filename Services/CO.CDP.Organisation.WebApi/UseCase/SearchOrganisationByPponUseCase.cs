@@ -9,7 +9,7 @@ public class SearchOrganisationByPponUseCase(IOrganisationRepository organisatio
 {
     public async Task<IEnumerable<Model.OrganisationSearchByPponResult>> Execute(OrganisationSearchByPponQuery query)
     {
-        return await organisationRepository.SearchByNameOrPpon(query.Name, query.Limit, query.Threshold)
+        return await organisationRepository.SearchByNameOrPpon(query.Name, query.Limit, query.Skip, query.Threshold)
             .AndThen(organisations => organisations.Select(mapper.Map<Model.OrganisationSearchByPponResult>));
     }
 }
