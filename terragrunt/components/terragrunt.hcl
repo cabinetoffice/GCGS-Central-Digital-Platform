@@ -44,6 +44,7 @@ locals {
       fts_allowed_target_email_domains  = ["goaco.com"]
       fts_azure_frontdoor               = null
       fts_service_allowed_origins       = []
+      mail_from_domain                  = null
       mysql_aurora_engine_version       = "5.7.mysql_aurora.2.12.5"
       mysql_aurora_family               = "aurora-mysql5.7"
       mysql_aurora_instance_type        = "db.r5.8xlarge"
@@ -77,12 +78,13 @@ locals {
       cidr_block                        = "10.${local.cidr_b_staging}.0.0/16"
       account_id                        = 905418042182
       canary_schedule_expression        = "rate(30 minutes)"
-      fts_allowed_target_email_domains  = ["goaco.com"]
+      fts_allowed_target_email_domains  = ["goaco.com","cabinetoffice.gov.uk"]
       fts_azure_frontdoor               = null
       fts_service_allowed_origins       = [
         "https://fts.staging.supplier-information.find-tender.service.gov.uk",
       ]
       name                              = "staging"
+      mail_from_domain                  = null
       mysql_aurora_engine_version       = "5.7.mysql_aurora.2.12.5"
       mysql_aurora_family               = "aurora-mysql5.7"
       mysql_aurora_instance_type        = "db.r5.8xlarge"
@@ -91,7 +93,7 @@ locals {
         "https://www-staging.find-tender.service.gov.uk/auth/backchannellogout",
       ]
       pinned_service_version_fts        = null
-      pinned_service_version            = "1.0.69"
+      pinned_service_version            = "1.0.70"
       postgres_instance_type            = "db.t4g.micro"
       postgres_aurora_instance_type     = "db.r5.large"
       private_subnets = [
@@ -127,6 +129,7 @@ locals {
         "https://www-tpp-preview.find-tender.service.gov.uk",
         "https://www-tpp.find-tender.service.gov.uk",
       ]
+      mail_from_domain                  = null
       mysql_aurora_engine_version       = "5.7.mysql_aurora.2.12.5"
       mysql_aurora_family               = "aurora-mysql5.7"
       mysql_aurora_instance_type        = "db.r5.8xlarge"
@@ -180,6 +183,7 @@ locals {
       fts_allowed_target_email_domains  = ["goaco.com"]
       fts_azure_frontdoor               = "nqc-front-door-uksouth.azurefd.net"
       fts_service_allowed_origins       = []
+      mail_from_domain                  = "find-tender.service.gov.uk"
       mysql_aurora_engine_version       = "5.7.mysql_aurora.2.12.5"
       mysql_aurora_family               = "aurora-mysql5.7"
       mysql_aurora_instance_type        = "db.r5.8xlarge"
@@ -208,17 +212,18 @@ locals {
     }
   }
 
+  aurora_mysql_engine_version       = try(local.environments[local.environment].mysql_aurora_engine_version, "8.0.mysql_aurora.3.07.1")
+  aurora_mysql_family               = try(local.environments[local.environment].mysql_aurora_family, "aurora-mysql8.0")
+  aurora_mysql_instance_type        = try(local.environments[local.environment].mysql_aurora_instance_type, local.aurora_postgres_instance_type)
   aurora_postgres_instance_type     = try(local.environments[local.environment].postgres_aurora_instance_type, null)
   aurora_postgres_instance_type_ev  = try(local.environments[local.environment].postgres_aurora_instance_type_ev, local.aurora_postgres_instance_type)
   fts_allowed_target_email_domains  = try(local.environments[local.environment].fts_allowed_target_email_domains, null)
   fts_azure_frontdoor               = try(local.environments[local.environment].fts_azure_frontdoor, null)
   fts_service_allowed_origins       = try(local.environments[local.environment].fts_service_allowed_origins, null)
-  aurora_mysql_engine_version       = try(local.environments[local.environment].mysql_aurora_engine_version, "8.0.mysql_aurora.3.07.1")
-  aurora_mysql_family               = try(local.environments[local.environment].mysql_aurora_family, "aurora-mysql8.0")
-  aurora_mysql_instance_type        = try(local.environments[local.environment].mysql_aurora_instance_type, local.aurora_postgres_instance_type)
+  mail_from_domain                  = try(local.environments[local.environment].mail_from_domain, null)
   onelogin_logout_notification_urls = try(local.environments[local.environment].onelogin_logout_notification_urls, null)
-  pinned_service_version_fts        = try(local.environments[local.environment].pinned_service_version_fts, "0.0.1")
   pinned_service_version            = try(local.environments[local.environment].pinned_service_version, null)
+  pinned_service_version_fts        = try(local.environments[local.environment].pinned_service_version_fts, "0.0.1")
   redis_node_type                   = try(local.environments[local.environment].redis_node_type, null)
 
   product = {
