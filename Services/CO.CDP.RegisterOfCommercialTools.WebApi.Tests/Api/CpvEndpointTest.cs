@@ -48,6 +48,8 @@ public class CpvEndpointTest
 
         var children = await response.Content.ReadFromJsonAsync<List<CpvCode>>();
 
+        Assert.NotNull(children);
+
         var expectedCodes = new[] { "03100000-2", "03200000-3", "03300000-4", "03400000-5" };
         Assert.Equal(expectedCodes, children.Select(c => c.Code).ToList());
     }
