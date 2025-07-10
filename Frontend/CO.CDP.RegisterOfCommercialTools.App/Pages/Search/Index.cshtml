@@ -39,12 +39,6 @@
         Title = "Date range",
         Content = @<partial name="_DateRangeAccordionContent" />
     };
-    var industryCpvCodeAccordion = new Accordion
-    {
-        Id = "industry-cpv-code",
-        Title = "Industry CPV code",
-        Content = @<partial name="_IndustryCpvCodeAccordionContent" />
-    };
 }
 
 <script src="/js/search.js"></script>
@@ -117,7 +111,6 @@
                     <partial name ="_Accordion" model="awardMethodAccordion" />
                     <partial name ="_Accordion" model="feesAccordion" />
                     <partial name ="_Accordion" model="dateRangeAccordion" />
-                    <partial name ="_Accordion" model="industryCpvCodeAccordion" />
                 </div>
 
                 <div class="govuk-button-group govuk-!-margin-top-4">
