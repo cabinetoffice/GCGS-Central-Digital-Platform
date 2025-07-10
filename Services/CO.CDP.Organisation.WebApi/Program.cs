@@ -15,6 +15,8 @@ using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.Organisation.WebApi.UseCase;
 using CO.CDP.OrganisationInformation;
 using CO.CDP.OrganisationInformation.Persistence;
+using CO.CDP.OrganisationInformation.Persistence.Interfaces;
+using CO.CDP.OrganisationInformation.Persistence.Repositories;
 using CO.CDP.WebApi.Foundation;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
@@ -52,6 +54,7 @@ builder.Services.AddScoped<IAuthenticationKeyRepository, DatabaseAuthenticationK
 builder.Services.AddScoped<IOrganisationJoinRequestRepository, DatabaseOrganisationJoinRequestRepository>();
 builder.Services.AddScoped<IShareCodeRepository, DatabaseShareCodeRepository>();
 builder.Services.AddScoped<IAnnouncementRepository, DatabaseAnnouncementRepository>();
+builder.Services.AddScoped<IOrganisationHierarchyRepository, OrganisationHierarchyRepository>();
 builder.Services.AddScoped<IUseCase<AssignOrganisationIdentifier, bool>, AssignIdentifierUseCase>();
 builder.Services.AddScoped<IUseCase<RegisterOrganisation, Organisation>, RegisterOrganisationUseCase>();
 builder.Services.AddScoped<IUseCase<Guid, Organisation?>, GetOrganisationUseCase>();
@@ -100,7 +103,9 @@ builder.Services.AddScoped<IUseCase<Guid, CO.CDP.Organisation.WebApi.Model.Mou>,
 builder.Services.AddScoped<IUseCase<(Guid, UpdateOrganisationParty), bool>, UpdateOrganisationPartyUseCase>();
 builder.Services.AddScoped<IUseCase<GetAnnouncementQuery, IEnumerable<Announcement>>, GetAnnouncementsUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid organisationId, string role), IEnumerable<Person>>, GetPersonsInRoleUseCase>();
-builder.Services.AddScoped<IUseCase<(Guid, string), IEnumerable<Person>>, GetPersonsInRoleUseCase>();
+builder.Services.AddScoped<IUseCase<CreateParentChildRelationshipRequest, CreateParentChildRelationshipResult>, CreateParentChildRelationshipUseCase>();
+builder.Services.AddScoped<IUseCase<Guid, GetChildOrganisationsResponse>, GetChildOrganisationsUseCase>();
+builder.Services.AddScoped<ISupersedeChildOrganisationUseCase, SupersedeChildOrganisationUseCase>();
 
 builder.Services.AddScoped<IAuthorizationHandler, OrganisationScopeAuthorizationHandler>();
 builder.Services.AddScoped<IAuthorizationHandler, ApiKeyScopeAuthorizationHandler>();
@@ -197,6 +202,13 @@ app.MapGroup("/organisations")
     .UseOrganisationMouEndpoints()
     .WithTags("Organisation - MOUs");
 
+if (app.Configuration.GetValue<bool>("BuyerParentChildRelationship"))
+{
+    app.MapGroup("/organisations")
+        .UseOrganisationHierarchyEndpoints()
+        .WithTags("Organisation - Hierarchy");
+}
+
 app.MapGroup("/mou")
     .UseMouEndpoints()
     .WithTags("Mou");
@@ -204,4 +216,3 @@ app.MapGroup("/mou")
 
 app.Run();
 public abstract partial class Program;
-

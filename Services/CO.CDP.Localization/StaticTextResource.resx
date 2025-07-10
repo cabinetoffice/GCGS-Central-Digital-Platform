@@ -59,46 +59,47 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+              xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
         <xsd:choice maxOccurs="unbounded">
           <xsd:element name="metadata">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
               </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string" />
-              <xsd:attribute name="type" type="xsd:string" />
-              <xsd:attribute name="mimetype" type="xsd:string" />
-              <xsd:attribute ref="xml:space" />
+              <xsd:attribute name="name" use="required" type="xsd:string"/>
+              <xsd:attribute name="type" type="xsd:string"/>
+              <xsd:attribute name="mimetype" type="xsd:string"/>
+              <xsd:attribute ref="xml:space"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="assembly">
             <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string" />
-              <xsd:attribute name="name" type="xsd:string" />
+              <xsd:attribute name="alias" type="xsd:string"/>
+              <xsd:attribute name="name" type="xsd:string"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="data">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
-              <xsd:attribute ref="xml:space" />
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+              <xsd:attribute ref="xml:space"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="resheader">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" />
+              <xsd:attribute name="name" type="xsd:string" use="required"/>
             </xsd:complexType>
           </xsd:element>
         </xsd:choice>
@@ -112,10 +113,14 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+      PublicKeyToken=b77a5c561934e089
+    </value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+      PublicKeyToken=b77a5c561934e089
+    </value>
   </resheader>
   <data name="SupplierInformationStatus_StepStatus_NotStarted" xml:space="preserve">
     <value>Not&#160;started</value>
@@ -481,6 +486,9 @@
   </data>
   <data name="Global_Continue" xml:space="preserve">
     <value>Continue</value>
+  </data>
+  <data name="Global_Cancel" xml:space="preserve">
+    <value>Cancel</value>
   </data>
   <data name="Global_Admin" xml:space="preserve">
     <value>Admin</value>
@@ -911,8 +919,17 @@
   <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswers_OnDate" xml:space="preserve">
     <value>On {0}</value>
   </data>
+  <data name="Global_Search" xml:space="preserve">
+    <value>Search</value>
+  </data>
+  <data name="Global_SearchAgain" xml:space="preserve">
+    <value>Search again</value>
+  </data>
   <data name="Global_Submit" xml:space="preserve">
     <value>Submit</value>
+  </data>
+  <data name="Global_Confirm" xml:space="preserve">
+    <value>Confirm</value>
   </data>
   <data name="Global_Filter" xml:space="preserve">
     <value>Filter</value>
@@ -938,7 +955,8 @@
   <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_EnforcedBy" xml:space="preserve">
     <value>Enforced by</value>
   </data>
-  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_CompaniesHouseRegistered" xml:space="preserve">
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_CompaniesHouseRegistered"
+        xml:space="preserve">
     <value>Companies House registered:</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_CompanyHouseNumber" xml:space="preserve">
@@ -1010,16 +1028,20 @@
   <data name="Supplier_ConnectedEntity_ConnectedEntityControlCondition_HasVotingRightsHint" xml:space="preserve">
     <value>Directly or indirectly holds more than 25% of the voting rights in the company</value>
   </data>
-  <data name="Supplier_ConnectedEntity_ConnectedEntityControlCondition_CanAppointOrRemoveDirectorsLabel" xml:space="preserve">
+  <data name="Supplier_ConnectedEntity_ConnectedEntityControlCondition_CanAppointOrRemoveDirectorsLabel"
+        xml:space="preserve">
     <value>Can appoint or remove directors</value>
   </data>
-  <data name="Supplier_ConnectedEntity_ConnectedEntityControlCondition_CanAppointOrRemoveDirectorsHint" xml:space="preserve">
+  <data name="Supplier_ConnectedEntity_ConnectedEntityControlCondition_CanAppointOrRemoveDirectorsHint"
+        xml:space="preserve">
     <value>Directly or indirectly holds the right to appoint or remove a majority of the company's board of directors</value>
   </data>
-  <data name="Supplier_ConnectedEntity_ConnectedEntityControlCondition_HasOtherSignificantInfluenceOrControlLabel" xml:space="preserve">
+  <data name="Supplier_ConnectedEntity_ConnectedEntityControlCondition_HasOtherSignificantInfluenceOrControlLabel"
+        xml:space="preserve">
     <value>Has other significant influence or control</value>
   </data>
-  <data name="Supplier_ConnectedEntity_ConnectedEntityControlCondition_HasOtherSignificantInfluenceOrControlHint" xml:space="preserve">
+  <data name="Supplier_ConnectedEntity_ConnectedEntityControlCondition_HasOtherSignificantInfluenceOrControlHint"
+        xml:space="preserve">
     <value>Has the right to exercise, or exercises, significant influence or control over the company. As defined in the &lt;a class="govuk-link" href="https://www.gov.uk/government/publications/guidance-to-the-people-with-significant-control-requirements-for-companies-and-limited-liability-partnerships" target="_blank"&gt;person of significant control (PSC) guidance&lt;/a&gt;.</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityControlCondition_NoneApplyLabel" xml:space="preserve">
@@ -1061,7 +1083,8 @@
   <data name="Supplier_ConnectedEntity_ConnectedEntityCompanyRegisterName_OtherRegisterNameLabel" xml:space="preserve">
     <value>Register name</value>
   </data>
-  <data name="Supplier_ConnectedEntity_ConnectedEntityCompanyRegisterName_OtherRegisterNameRequiredError" xml:space="preserve">
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCompanyRegisterName_OtherRegisterNameRequiredError"
+        xml:space="preserve">
     <value>Enter register name</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityCompanyRegisterName_Heading" xml:space="preserve">
@@ -1091,7 +1114,8 @@
   <data name="Supplier_ConnectedEntity_ConnectedEntityLawRegister_LawEnforcesHint" xml:space="preserve">
     <value>For example, Companies Act 2006</value>
   </data>
-  <data name="Supplier_ConnectedEntity_ConnectedEntityLegalFormQuestion_LegalFormNameRequiredError" xml:space="preserve">
+  <data name="Supplier_ConnectedEntity_ConnectedEntityLegalFormQuestion_LegalFormNameRequiredError"
+        xml:space="preserve">
     <value>Enter the legal form name</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityLegalFormQuestion_Heading" xml:space="preserve">
@@ -1112,22 +1136,27 @@
   <data name="Supplier_ConnectedEntity_ConnectedEntityOrganisationCategory_SelectCategoryError" xml:space="preserve">
     <value>Select the category</value>
   </data>
-  <data name="Supplier_ConnectedEntity_ConnectedEntityOrganisationCategory_Option_RegisteredCompany" xml:space="preserve">
+  <data name="Supplier_ConnectedEntity_ConnectedEntityOrganisationCategory_Option_RegisteredCompany"
+        xml:space="preserve">
     <value>registered company</value>
   </data>
-  <data name="Supplier_ConnectedEntity_ConnectedEntityOrganisationCategory_Option_RegisteredCompanyOrEquivalent" xml:space="preserve">
+  <data name="Supplier_ConnectedEntity_ConnectedEntityOrganisationCategory_Option_RegisteredCompanyOrEquivalent"
+        xml:space="preserve">
     <value>registered company or equivalent</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityOrganisationCategory_Option_Director" xml:space="preserve">
     <value>director or organisation with the same responsibilities</value>
   </data>
-  <data name="Supplier_ConnectedEntity_ConnectedEntityOrganisationCategory_Option_ParentOrSubCompany" xml:space="preserve">
+  <data name="Supplier_ConnectedEntity_ConnectedEntityOrganisationCategory_Option_ParentOrSubCompany"
+        xml:space="preserve">
     <value>parent or subsidiary company</value>
   </data>
-  <data name="Supplier_ConnectedEntity_ConnectedEntityOrganisationCategory_Option_CompanyTakenOver" xml:space="preserve">
+  <data name="Supplier_ConnectedEntity_ConnectedEntityOrganisationCategory_Option_CompanyTakenOver"
+        xml:space="preserve">
     <value>a company your organisation has taken over</value>
   </data>
-  <data name="Supplier_ConnectedEntity_ConnectedEntityOrganisationCategory_Option_OrgWithSignificantControl" xml:space="preserve">
+  <data name="Supplier_ConnectedEntity_ConnectedEntityOrganisationCategory_Option_OrgWithSignificantControl"
+        xml:space="preserve">
     <value>any other organisation with significant influence or control</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityPostalSameAsRegisteredAddress_PageTitle" xml:space="preserve">
@@ -1217,7 +1246,8 @@
   <data name="Supplier_ConnectedEntity_ConnectedEntityRegistrationDateQuestion_Hint" xml:space="preserve">
     <value>In the UK this is defined by &lt;a class="govuk-link" href="https://www.legislation.gov.uk/ukpga/2006/46/section/790C" target="_blank"&gt;section 790C(4) of the Companies Act 2006 (opens in new tab)&lt;/a&gt;</value>
   </data>
-  <data name="Supplier_ConnectedEntity_ConnectedEntityRegistrationDateQuestion_DateRegisteredLabel" xml:space="preserve">
+  <data name="Supplier_ConnectedEntity_ConnectedEntityRegistrationDateQuestion_DateRegisteredLabel"
+        xml:space="preserve">
     <value>Date registered</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityRegistrationDateQuestion_DateRegisteredHint" xml:space="preserve">
@@ -1298,7 +1328,8 @@
   <data name="Supplier_ConnectedEntity_ConnectedEntityIndividualCategory_Director" xml:space="preserve">
     <value>Director or individual with the same responsibilities</value>
   </data>
-  <data name="Supplier_ConnectedEntity_ConnectedEntityIndividualCategory_IndividualWithSignificantControl" xml:space="preserve">
+  <data name="Supplier_ConnectedEntity_ConnectedEntityIndividualCategory_IndividualWithSignificantControl"
+        xml:space="preserve">
     <value>Any other individual with significant influence or control</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityIndividualCategory_SelectCategoryError" xml:space="preserve">
@@ -1328,10 +1359,12 @@
   <data name="Supplier_ConnectedEntity_ConnectedEntityOverseasCompanyQuestion_Hint" xml:space="preserve">
     <value>Is the 'connected person' registered with a similar non-UK body that incorporates companies?</value>
   </data>
-  <data name="Supplier_ConnectedEntity_ConnectedEntityOverseasCompanyQuestion_CompanyRegistrationNumberLabel" xml:space="preserve">
+  <data name="Supplier_ConnectedEntity_ConnectedEntityOverseasCompanyQuestion_CompanyRegistrationNumberLabel"
+        xml:space="preserve">
     <value>Company registration number</value>
   </data>
-  <data name="Supplier_ConnectedEntity_ConnectedEntityOverseasCompanyQuestion_CompanyRegistrationNumberRequiredError" xml:space="preserve">
+  <data name="Supplier_ConnectedEntity_ConnectedEntityOverseasCompanyQuestion_CompanyRegistrationNumberRequiredError"
+        xml:space="preserve">
     <value>Enter the overseas company registration number</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityPersonType_PageTitle" xml:space="preserve">
@@ -1349,7 +1382,7 @@
   <data name="Supplier_ConnectedEntity_ConnectedEntityPersonType_OptionIndividual" xml:space="preserve">
     <value>Individual</value>
   </data>
-    <data name="Supplier_ConnectedEntity_ConnectedEntityPersonType_OptionTrustOrTrustee" xml:space="preserve">
+  <data name="Supplier_ConnectedEntity_ConnectedEntityPersonType_OptionTrustOrTrustee" xml:space="preserve">
     <value>Trustee of a trust</value>
   </data>
   <data name="OrganisationRegistration_OrganisationType_Heading" xml:space="preserve">
@@ -1415,13 +1448,16 @@
   <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_ChangeCompanyName" xml:space="preserve">
     <value>Change&lt;span class="govuk-visually-hidden"&gt; the company name&lt;/span&gt;</value>
   </data>
-  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_ChangeRegisteredAddress" xml:space="preserve">
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_ChangeRegisteredAddress"
+        xml:space="preserve">
     <value>Change&lt;span class="govuk-visually-hidden"&gt;the registered address&lt;/span&gt;</value>
   </data>
-  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_ChangePostalAddress" xml:space="preserve">
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_ChangePostalAddress"
+        xml:space="preserve">
     <value>Change&lt;span class="govuk-visually-hidden"&gt; the postal address&lt;/span&gt;</value>
   </data>
-  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_ChangeLegalFormAndLaw" xml:space="preserve">
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_ChangeLegalFormAndLaw"
+        xml:space="preserve">
     <value>Change&lt;span class="govuk-visually-hidden"&gt; the legal form and law&lt;/span&gt;</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_ChangeLegalForm" xml:space="preserve">
@@ -1430,19 +1466,24 @@
   <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_ChangeEnforcedBy" xml:space="preserve">
     <value>Change&lt;span class="govuk-visually-hidden"&gt; the "enforced by" law&lt;/span&gt;</value>
   </data>
-  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_ChangeCompaniesHouseRegistered" xml:space="preserve">
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_ChangeCompaniesHouseRegistered"
+        xml:space="preserve">
     <value>Change&lt;span class="govuk-visually-hidden"&gt; the Companies House registration status and number&lt;/span&gt;</value>
   </data>
-  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_ChangeOverseasEquivalent" xml:space="preserve">
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_ChangeOverseasEquivalent"
+        xml:space="preserve">
     <value>Change&lt;span class="govuk-visually-hidden"&gt; the registered with overseas equivalent&lt;/span&gt;</value>
   </data>
-  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_ChangeControlConditions" xml:space="preserve">
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_ChangeControlConditions"
+        xml:space="preserve">
     <value>Change&lt;span class="govuk-visually-hidden"&gt; the conditions of control&lt;/span&gt;</value>
   </data>
-  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_ChangeRegisteredDate" xml:space="preserve">
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_ChangeRegisteredDate"
+        xml:space="preserve">
     <value>Change&lt;span class="govuk-visually-hidden"&gt; the registered date&lt;/span&gt;</value>
   </data>
-  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_ChangeInsolvencyDate" xml:space="preserve">
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_ChangeInsolvencyDate"
+        xml:space="preserve">
     <value>Change&lt;span class="govuk-visually-hidden"&gt; the insolvency date&lt;/span&gt;</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_ChangeRegisterName" xml:space="preserve">
@@ -1457,10 +1498,12 @@
   <data name="Supplier_ConnectedEntity_ConnectedEntityIndividualCategory_CategoryOption_PSC" xml:space="preserve">
     <value>person with significant control</value>
   </data>
-  <data name="Supplier_ConnectedEntity_ConnectedEntityIndividualCategory_CategoryOption_PSC_Director" xml:space="preserve">
+  <data name="Supplier_ConnectedEntity_ConnectedEntityIndividualCategory_CategoryOption_PSC_Director"
+        xml:space="preserve">
     <value>director or individual with the same responsibilities</value>
   </data>
-  <data name="Supplier_ConnectedEntity_ConnectedEntityIndividualCategory_CategoryOption_PSC_Individual" xml:space="preserve">
+  <data name="Supplier_ConnectedEntity_ConnectedEntityIndividualCategory_CategoryOption_PSC_Individual"
+        xml:space="preserve">
     <value>any other individual with significant influence or control</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityCompanyInsolvencyDate_DayRequiredError" xml:space="preserve">
@@ -1781,10 +1824,12 @@
   <data name="OrganisationRegistration_CompanyHouseNumberQuestion_Hint" xml:space="preserve">
     <value>You can &lt;a class="govuk-link" href="https://find-and-update.company-information.service.gov.uk/" target="_blank"&gt;find your company number on Companies House (opens in a new tab)&lt;/a&gt;. It is an 8 digit or 2 letter and 6 digit number. For example, 12345678 or SC123456.</value>
   </data>
-  <data name="OrganisationRegistration_CompanyHouseNumberQuestion_CompanyNotFound_NotificationBanner" xml:space="preserve">
+  <data name="OrganisationRegistration_CompanyHouseNumberQuestion_CompanyNotFound_NotificationBanner"
+        xml:space="preserve">
     <value>We cannot find your company number on Companies House. If it’s correct, continue and enter your details manually.</value>
   </data>
-  <data name="OrganisationRegistration_CompanyHouseNumberQuestion_CompanyAlreadyRegistered_NotificationBanner" xml:space="preserve">
+  <data name="OrganisationRegistration_CompanyHouseNumberQuestion_CompanyAlreadyRegistered_NotificationBanner"
+        xml:space="preserve">
     <value>An organisation with this company number already exists. Change the company number or &lt;a class="govuk-notification-banner__link" href="/registration/{organisationIdentifier}/join-organisation"&gt;request to join {organisationName}.&lt;/a&gt;</value>
   </data>
   <data name="OrganisationRegistration_CompanyHouseNumberQuestion_ValidationErrorMessage" xml:space="preserve">
@@ -1977,6 +2022,117 @@
   </data>
   <data name="ApiKeyManagement_CreateApiKey_ValidationError" xml:space="preserve">
     <value>Enter the api key name</value>
+  </data>
+  <data name="BuyerParentChildRelationship_SearchPage_Title" xml:space="preserve">
+    <value>Search for your child organisation</value>
+  </data>
+  <data name="BuyerParentChildRelationship_SearchPage_Label" xml:space="preserve">
+    <value>Enter the name or PPON of your child organisation</value>
+  </data>
+  <data name="BuyerParentChildRelationship_SearchPage_Hint" xml:space="preserve">
+    <value>You can only add an immediate child organisation, which is the next level down in your organisation's hierarchy</value>
+  </data>
+  <data name="BuyerParentChildRelationship_SearchPage_Link" xml:space="preserve">
+    <value>If you do not know the child organisation's PPON, you can find it on the &lt;a class="govuk-link" href=&quot;/organisation/search&quot; target=&quot;_blank&quot;&gt;Search Registry of PPON (opens in new tab)&lt;/a&gt;</value>
+  </data>
+  <data name="BuyerParentChildRelationship_SearchPage_Error" xml:space="preserve">
+    <value>Enter the name or PPON of your child organisation</value>
+  </data>
+  <data name="BuyerParentChildRelationship_ResultsPage_Title" xml:space="preserve">
+    <value>Search results</value>
+  </data>
+  <data name="BuyerParentChildRelationship_ResultsPage_TextSingle" xml:space="preserve">
+    <value>{0} child organisation found for '{1}'</value>
+  </data>
+  <data name="BuyerParentChildRelationship_ResultsPage_TextPlural" xml:space="preserve">
+    <value>{0} child organisations found for '{1}'</value>
+  </data>
+  <data name="BuyerParentChildRelationship_ResultsPage_Label" xml:space="preserve">
+    <value>Select a child organisation</value>
+  </data>
+  <data name="BuyerParentChildRelationship_ResultsPage_TrySearchAgain" xml:space="preserve">
+    <value>Try searching again</value>
+  </data>
+  <data name="BuyerParentChildRelationship_ResultsPage_ReturnToDetails" xml:space="preserve">
+    <value>return to organisation details</value>
+  </data>
+  <data name="BuyerParentChildRelationship_ResultsPage_NoResults" xml:space="preserve">
+    <value>No organisations found matching your search criteria </value>
+  </data>
+  <data name="BuyerParentChildRelationship_ConfirmPage_Title" xml:space="preserve">
+    <value>Confirm your child organisation details</value>
+  </data>
+  <data name="Global_NoAddressAvailable" xml:space="preserve">
+    <value>No address information available</value>
+  </data>
+  <data name="Global_NoEmailAvailable" xml:space="preserve">
+    <value>No email address available</value>
+  </data>
+  <data name="BuyerParentChildRelationship_ConfirmPage_OrganisationAddressLabel" xml:space="preserve">
+    <value>Organisation address</value>
+  </data>
+  <data name="BuyerParentChildRelationship_ConfirmPage_OrganisationEmailLabel" xml:space="preserve">
+    <value>Organisation email</value>
+  </data>
+  <data name="BuyerParentChildRelationship_ConfirmPage_OrganisationTypeLabel" xml:space="preserve">
+    <value>Organisation type</value>
+  </data>
+  <data name="Global_PPON" xml:space="preserve">
+    <value>PPON</value>
+  </data>
+  <data name="BuyerParentChildRelationship_SuccessPage_Title" xml:space="preserve">
+    <value>Success</value>
+  </data>
+  <data name="BuyerParentChildRelationship_SuccessPage_PanelTitle" xml:space="preserve">
+    <value>Child organisation successfully added</value>
+  </data>
+  <data name="BuyerParentChildRelationship_SuccessPage_ConfirmationMessage" xml:space="preserve">
+    <value>You have successfully added {0} as a child organisation.</value>
+  </data>
+  <data name="BuyerParentChildRelationship_SuccessPage_OptionsIntro" xml:space="preserve">
+    <value>To continue you can:</value>
+  </data>
+  <data name="BuyerParentChildRelationship_SuccessPage_AddAnother" xml:space="preserve">
+    <value>Add another child organisation</value>
+  </data>
+  <data name="BuyerParentChildRelationship_SuccessPage_ReturnToDetails" xml:space="preserve">
+    <value>Return to organisation details</value>
+  </data>
+  <data name="BuyerParentChildRelationship_RemovePage_Title" xml:space="preserve">
+    <value>Remove child organisation</value>
+  </data>
+  <data name="BuyerParentChildRelationship_RemovePage_Heading" xml:space="preserve">
+    <value>Remove child organisation</value>
+  </data>
+  <data name="BuyerParentChildRelationship_RemovePage_Confirmation" xml:space="preserve">
+    <value>Are you sure you want to remove this child organisation?</value>
+  </data>
+  <data name="BuyerParentChildRelationship_RemovePage_Identifier" xml:space="preserve">
+    <value>Identifier</value>
+  </data>
+  <data name="BuyerParentChildRelationship_RemovePage_OrganisationType" xml:space="preserve">
+    <value>Organisation type</value>
+  </data>
+  <data name="BuyerParentChildRelationship_RemovePage_OrganisationAddress" xml:space="preserve">
+    <value>Organisation address</value>
+  </data>
+  <data name="BuyerParentChildRelationship_RemovePage_OrganisationEmail" xml:space="preserve">
+    <value>Organisation email</value>
+  </data>
+  <data name="BuyerParentChildRelationship_RemovePage_YesRemove" xml:space="preserve">
+    <value>Yes, remove</value>
+  </data>
+  <data name="BuyerParentChildRelationship_RemovePage_NoDoNotRemove" xml:space="preserve">
+    <value>No, do not remove</value>
+  </data>
+  <data name="BuyerParentChildRelationship_RemovePage_Error" xml:space="preserve">
+    <value>Error:</value>
+  </data>
+  <data name="BuyerParentChildRelationship_RemovePage_VisuallyHiddenLegend" xml:space="preserve">
+    <value>Confirm if you want to remove this child organisation</value>
+  </data>
+  <data name="BuyerParentChildRelationship_RemovePage_InfoText" xml:space="preserve">
+    <value>Removing your child organisation will mean it does not show on your account profile and will no longer be digitally linked to your organisation on Find a Tender.</value>
   </data>
   <data name="Forms_FormElementAddress_EnterNonUKAddress" xml:space="preserve">
     <value>Enter a non-UK address</value>
@@ -2365,10 +2521,12 @@
   <data name="PdfGenerator_BasicInformation_WebsiteAddress" xml:space="preserve">
     <value>Website address</value>
   </data>
-  <data name="PdfGenerator_ConnectedEntityIndividualAndTrustCategory_DirectorOrIndividualSameResponsibilities" xml:space="preserve">
+  <data name="PdfGenerator_ConnectedEntityIndividualAndTrustCategory_DirectorOrIndividualSameResponsibilities"
+        xml:space="preserve">
     <value>Director or individual with same responsibilities</value>
   </data>
-  <data name="PdfGenerator_ConnectedEntityIndividualAndTrustCategory_OtherIndividualWithSignificantInfluence" xml:space="preserve">
+  <data name="PdfGenerator_ConnectedEntityIndividualAndTrustCategory_OtherIndividualWithSignificantInfluence"
+        xml:space="preserve">
     <value>Other individual with significant influence or control</value>
   </data>
   <data name="PdfGenerator_ConnectedEntityIndividualAndTrustCategory_PersonWithSignificantControl" xml:space="preserve">
@@ -3059,7 +3217,8 @@
   <data name="OrganisationRegistration_InternationalIdentifier_RegistrationNumber_Heading" xml:space="preserve">
     <value>Registration number</value>
   </data>
-  <data name="OrganisationRegistration_InternationalIdentifier_RegistrationNumber_Required_ErrorMessage" xml:space="preserve">
+  <data name="OrganisationRegistration_InternationalIdentifier_RegistrationNumber_Required_ErrorMessage"
+        xml:space="preserve">
     <value>Enter the number</value>
   </data>
   <data name="Organisation_OrganisationIdentification_NonUk_Link" xml:space="preserve">
@@ -4011,5 +4170,62 @@
   </data>
   <data name="SessionTimeoutWarningDialog_SignOut" xml:space="preserve">
     <value>Sign out</value>
+  </data>
+  <data name="OrganisationOverview_ChildOrganisations_Heading" xml:space="preserve">
+    <value>Add child organisations</value>
+  </data>
+  <data name="OrganisationOverview_ChildOrganisations_Description" xml:space="preserve">
+    <value>This section allows you to add child organisations to your organisation's profile. Once added, child organisations will appear below. You can add new child organisations or remove them at any time.</value>
+  </data>
+  <data name="OrganisationOverview_ChildOrganisations_ListItem1" xml:space="preserve">
+    <value>only a parent organisation can add its child organisations</value>
+  </data>
+  <data name="OrganisationOverview_ChildOrganisations_ListItem2" xml:space="preserve">
+    <value>a child organisation can only be added if they are registered in the &lt;a href="https://www.find-tender.service.gov.uk/Search" target="_blank" class="govuk-link"&gt;Central Digital Platform&lt;/a&gt; (opens in a new tab)</value>
+  </data>
+  <data name="OrganisationOverview_ChildOrganisations_DetailsSummary" xml:space="preserve">
+    <value>What is a child organisation?</value>
+  </data>
+  <data name="OrganisationOverview_ChildOrganisations_DetailsText" xml:space="preserve">
+    <value>Some organisations are arranged in a hierarchical structure that connects them together. A parent organisation sponsors one or more child organisations, which report directly to them.</value>
+  </data>
+  <data name="OrganisationOverview_ChildOrganisations_ButtonText" xml:space="preserve">
+    <value>Add</value>
+  </data>
+  <data name="Global_Buyer" xml:space="preserve">
+    <value>Buyer</value>
+  </data>
+  <data name ="Global_Supplier" xml:space="preserve">
+    <value>Supplier</value>
+  </data>
+  <data name="Global_ProcuringEntity" xml:space="preserve">
+    <value>Procuring Entity</value>
+  </data>
+  <data name="Global_Supplier" xml:space="preserve">
+    <value>Supplier</value>
+  </data>
+  <data name="Global_Tenderer" xml:space="preserve">
+    <value>Tenderer</value>
+  </data>
+  <data name="Global_Funder" xml:space="preserve">
+    <value>Funder</value>
+  </data>
+  <data name="Global_Enquirer" xml:space="preserve">
+    <value>Enquirer</value>
+  </data>
+  <data name="Global_Payer" xml:space="preserve">
+    <value>Payer</value>
+  </data>
+  <data name="Global_Payee" xml:space="preserve">
+    <value>Payee</value>
+  </data>
+  <data name="Global_ReviewBody" xml:space="preserve">
+    <value>Review Body</value>
+  </data>
+  <data name="Global_InterestedParty" xml:space="preserve">
+    <value>Interested Party</value>
+  </data>
+  <data name="Global_Unknown" xml:space="preserve">
+    <value>Unknown</value>
   </data>
 </root>
