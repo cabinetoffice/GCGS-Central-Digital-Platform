@@ -585,23 +585,6 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                     b.ToTable("contact_points_snapshot", (string)null);
                 });
 
-            modelBuilder.Entity("CO.CDP.OrganisationInformation.Persistence.CpvCode", b =>
-                {
-                    b.Property<string>("Code")
-                        .HasColumnType("text")
-                        .HasColumnName("code");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("description");
-
-                    b.HasKey("Code")
-                        .HasName("pk_roct_cpv_codes");
-
-                    b.ToTable("roct_cpv_codes", (string)null);
-                });
-
             modelBuilder.Entity("CO.CDP.OrganisationInformation.Persistence.Forms.Form", b =>
                 {
                     b.Property<int>("Id")

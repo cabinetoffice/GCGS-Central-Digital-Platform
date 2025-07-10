@@ -41,8 +41,6 @@ public class OrganisationInformationContext(DbContextOptions<OrganisationInforma
     public DbSet<ConnectedEntitySnapshot> ConnectedEntitySnapshot { get; set; } = null!;
     public DbSet<OrganisationSnapshot> OrganisationSnapshot { get; set; } = null!;
 
-    public DbSet<CpvCode> CpvCodes { get; set; } = null!;
-
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.HasPostgresEnum<ControlCondition>();
@@ -140,7 +138,6 @@ public class OrganisationInformationContext(DbContextOptions<OrganisationInforma
         modelBuilder.Entity<ContactPointSnapshot>().ToTable("contact_points_snapshot");
         modelBuilder.Entity<IdentifierSnapshot>().ToTable("identifiers_snapshot");
         modelBuilder.Entity<ConnectedEntitySnapshot>().ToTable("connected_entities_snapshot");
-        modelBuilder.Entity<CpvCode>().ToTable("roct_cpv_codes");
 
         foreach (var entityType in modelBuilder.Model.GetEntityTypes())
         {
