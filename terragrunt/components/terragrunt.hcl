@@ -50,9 +50,7 @@ locals {
       mysql_aurora_instance_type        = "db.r5.8xlarge"
       name                              = "dev"
       onelogin_logout_notification_urls = [
-        "https://test-findtender.nqc.com/auth/backchannellogout",
-        "https://stanvolcere.nqc.com/auth/backchannellogout",
-        "https://nadeemshafi2.nqc.com/auth/backchannellogout"
+        "https://test-findtender.nqc.com/auth/backchannellogout"
       ]
       pinned_service_version_fts        = null
       pinned_service_version            = null
@@ -89,8 +87,8 @@ locals {
       mysql_aurora_family               = "aurora-mysql5.7"
       mysql_aurora_instance_type        = "db.r5.8xlarge"
       onelogin_logout_notification_urls = [
-        "https://stanvolcere.nqc.com/auth/backchannellogout",
         "https://www-staging.find-tender.service.gov.uk/auth/backchannellogout",
+        "https://fts.staging.supplier-information.find-tender.service.gov.uk/auth/backchannellogout"
       ]
       pinned_service_version_fts        = null
       pinned_service_version            = "1.0.70"
@@ -140,6 +138,7 @@ locals {
         "https://truk-prod.nqc.com/auth/backchannellogout",
         "https://www-tpp-preview.find-tender.service.gov.uk/auth/backchannellogout",
         "https://www-tpp.find-tender.service.gov.uk/auth/backchannellogout",
+        "https://fts.integration.supplier-information.find-tender.service.gov.uk/auth/backchannellogout"
       ]
       pinned_service_version_fts        = null
       pinned_service_version            = "1.0.69"
