@@ -1,3 +1,5 @@
+using CO.CDP.RegisterOfCommercialTools.App.Pages.Shared;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace CO.CDP.RegisterOfCommercialTools.App.Pages.Search
@@ -5,12 +7,18 @@ namespace CO.CDP.RegisterOfCommercialTools.App.Pages.Search
     public class IndexModel : PageModel
     {
         public List<SearchResult> SearchResults { get; set; } = [];
+        public PaginationPartialModel? Pagination { get; set; }
+
+        [BindProperty(SupportsGet = true, Name = "pageNumber")]
+        public int PageNumber { get; set; } = 1;
+
+        public int PageSize { get; set; } = 2;
 
         public void OnGet()
         {
-            SearchResults =
-            [
-                new SearchResult(
+            var allResults = new List<SearchResult>
+            {
+                new(
                     "Framework for Agile Delivery Services",
                     "Crown Commercial Service",
                     "/",
@@ -22,7 +30,7 @@ namespace CO.CDP.RegisterOfCommercialTools.App.Pages.Search
                     "1 March 2025 to 28 February 2027",
                     "Without competition"
                 ),
-                new SearchResult(
+                new(
                     "Digital Outcomes and Specialists 6",
                     "Crown Commercial Service",
                     "/",
@@ -34,7 +42,7 @@ namespace CO.CDP.RegisterOfCommercialTools.App.Pages.Search
                     "1 March 2025 to 28 February 2027",
                     "Without competition"
                 ),
-                new SearchResult(
+                new(
                     "G-Cloud 13",
                     "Crown Commercial Service",
                     "/",
@@ -45,8 +53,42 @@ namespace CO.CDP.RegisterOfCommercialTools.App.Pages.Search
                     "10 February 2023",
                     "1 March 2023 to 28 February 2024",
                     "Without competition"
+                ),
+                new(
+                    "Vehicle Telematics/Hardware and Software Solutions",
+                    "Crown Commercial Service",
+                    "/",
+                    "Dynamic purchasing system",
+                    SearchResultStatus.Active,
+                    "0.5%",
+                    "Yes",
+                    "10 February 2025",
+                    "1 March 2025 to 28 February 2027",
+                    "Without competition"
+                ),
+                new(
+                    "Gigabit Capable Connectivity",
+                    "Crown Commercial Service",
+                    "/",
+                    "Dynamic purchasing system",
+                    SearchResultStatus.Active,
+                    "1.5%",
+                    "Yes",
+                    "10 February 2025",
+                    "1 March 2025 to 28 February 2027",
+                    "Without competition"
                 )
-            ];
+            };
+
+            SearchResults = allResults.Skip((PageNumber - 1) * PageSize).Take(PageSize).ToList();
+
+            Pagination = new PaginationPartialModel
+            {
+                CurrentPage = PageNumber,
+                PageSize = PageSize,
+                TotalItems = allResults.Count,
+                Url = "/search"
+            };
         }
     }
 
