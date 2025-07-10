@@ -24,6 +24,7 @@ public class OrganisationEndpointsTests
     private readonly Mock<IUseCase<(Guid, OrganisationJoinRequestStatus?), IEnumerable<JoinRequestLookUp>>> _getOrganisationJoinRequestsUseCase = new();
     private readonly Mock<IUseCase<(Guid, Guid, UpdateJoinRequest), bool>> _updateJoinRequestUseCase = new();
     private readonly Mock<IUseCase<OrganisationSearchQuery, IEnumerable<OrganisationSearchResult>>> _searchOrganisationUseCase = new();
+    private readonly Mock<IUseCase<OrganisationSearchByPponQuery, IEnumerable<OrganisationSearchByPponResult>>> _searchByNameOrPponUseCase = new();
 
     public OrganisationEndpointsTests()
     {
@@ -390,6 +391,117 @@ public class OrganisationEndpointsTests
         var response = await factory.CreateClient().GetAsync($"/organisation/search?name=asd&limit=10&threshold=2");
 
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+    }
+
+    [Theory]
+    [InlineData(OK, Channel.OneLogin, OrganisationPersonScope.Admin, null)]
+    [InlineData(OK, Channel.OneLogin, OrganisationPersonScope.Editor, null)]
+    [InlineData(OK, Channel.OneLogin, OrganisationPersonScope.Viewer, null)]
+    [InlineData(Forbidden, Channel.OneLogin, OrganisationPersonScope.Responder, null)]
+    [InlineData(OK, Channel.OneLogin, null, PersonScope.SupportAdmin)]
+    [InlineData(Forbidden, Channel.ServiceKey)]
+    [InlineData(Forbidden, Channel.OrganisationKey)]
+    [InlineData(Forbidden, "unknown_channel")]
+    public async Task GetOrganisationSearchByNameOrPpon_ReturnsExpectedStatusCode(
+        HttpStatusCode expectedStatusCode, string channel, string? organisationPersonScope = null, string? personScope = null)
+    {
+        var organisationId = Guid.NewGuid();
+
+        var searchResults = new List<OrganisationSearchByPponResult>
+        {
+            new OrganisationSearchByPponResult
+            {
+                Id = Guid.NewGuid(),
+                Identifiers = new List<Identifier>
+                {
+                    new Identifier { Scheme = "scheme", Id = "123", LegalName = "Test Organisation" }
+                },
+                Name = "Test Organisation",
+                Type = OrganisationType.Organisation,
+                Roles = new List<PartyRole> { PartyRole.Buyer },
+                Addresses = new List<OrganisationAddress>()
+            }
+        };
+
+        _searchByNameOrPponUseCase.Setup(uc => uc.Execute(It.IsAny<OrganisationSearchByPponQuery>()))
+            .ReturnsAsync(searchResults);
+
+        var factory = new TestAuthorizationWebApplicationFactory<Program>(
+            channel, organisationId, organisationPersonScope,
+            services => services.AddScoped(_ => _searchByNameOrPponUseCase.Object),
+            personScope);
+
+        var response = await factory.CreateClient().GetAsync($"/organisation/search-by-name-or-ppon?name=test&limit=10&skip=0");
+
+        response.StatusCode.Should().Be(expectedStatusCode);
+
+        if (expectedStatusCode != Forbidden)
+        {
+            var results = await response.Content.ReadFromJsonAsync<List<OrganisationSearchByPponResult>>();
+            results.Should().BeEquivalentTo(searchResults, options => options.ComparingByMembers<OrganisationSearchByPponResult>());
+        }
+    }
+
+    [Fact]
+    public async Task GetOrganisationSearchByNameOrPpon_Returns404_WhenNoResultsFound()
+    {
+        var organisationId = Guid.NewGuid();
+        var searchResults = new List<OrganisationSearchByPponResult>();
+
+        _searchByNameOrPponUseCase.Setup(uc => uc.Execute(It.IsAny<OrganisationSearchByPponQuery>()))
+            .ReturnsAsync(searchResults);
+
+        var factory = new TestAuthorizationWebApplicationFactory<Program>(
+            Channel.OneLogin, organisationId, OrganisationPersonScope.Admin,
+            services => services.AddScoped(_ => _searchByNameOrPponUseCase.Object));
+
+        var response = await factory.CreateClient().GetAsync($"/organisation/search-by-name-or-ppon?name=nonexistent&limit=10&skip=0");
+
+        response.StatusCode.Should().Be(NotFound);
+    }
+
+    [Theory]
+    [InlineData("test org", 10, 0)]
+    [InlineData("PPON12345", 5, 10)]
+    [InlineData("partial name", 20, 20)]
+    public async Task GetOrganisationSearchByNameOrPpon_UsesCorrectParameters(string searchTerm, int limit, int skip)
+    {
+        var organisationId = Guid.NewGuid();
+        var expectedQuery = new OrganisationSearchByPponQuery(searchTerm, limit, skip);
+
+        var searchResults = new List<OrganisationSearchByPponResult>
+        {
+            new OrganisationSearchByPponResult
+            {
+                Id = Guid.NewGuid(),
+                Identifiers = new List<Identifier>
+                {
+                    new Identifier { Scheme = "scheme", Id = "123", LegalName = "Test Organisation" }
+                },
+                Name = "Test Organisation",
+                Type = OrganisationType.Organisation,
+                Roles = new List<PartyRole> { PartyRole.Buyer },
+                Addresses = new List<OrganisationAddress>()
+            }
+        };
+
+        _searchByNameOrPponUseCase.Setup(uc => uc.Execute(It.Is<OrganisationSearchByPponQuery>(
+                q => q.Name == expectedQuery.Name && q.Limit == expectedQuery.Limit && q.Skip == expectedQuery.Skip)))
+            .ReturnsAsync(searchResults)
+            .Verifiable();
+
+        var factory = new TestAuthorizationWebApplicationFactory<Program>(
+            Channel.OneLogin, organisationId, OrganisationPersonScope.Admin,
+            services => services.AddScoped(_ => _searchByNameOrPponUseCase.Object));
+
+        var response = await factory.CreateClient().GetAsync(
+            $"/organisation/search-by-name-or-ppon?name={searchTerm}&limit={limit}&skip={skip}");
+
+        response.StatusCode.Should().Be(OK);
+        _searchByNameOrPponUseCase.Verify();
+
+        var results = await response.Content.ReadFromJsonAsync<List<OrganisationSearchByPponResult>>();
+        results.Should().BeEquivalentTo(searchResults, options => options.ComparingByMembers<OrganisationSearchByPponResult>());
     }
 
     public static Model.Organisation GivenOrganisation(Guid organisationId)
