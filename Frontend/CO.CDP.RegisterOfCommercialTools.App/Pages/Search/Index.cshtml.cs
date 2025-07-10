@@ -12,7 +12,7 @@ namespace CO.CDP.RegisterOfCommercialTools.App.Pages.Search
         [BindProperty(SupportsGet = true, Name = "pageNumber")]
         public int PageNumber { get; set; } = 1;
 
-        public int PageSize { get; set; } = 2;
+        private const int PageSize = 10;
 
         public void OnGet()
         {
