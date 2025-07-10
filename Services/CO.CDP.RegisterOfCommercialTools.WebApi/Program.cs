@@ -6,7 +6,6 @@ using CO.CDP.Configuration.ForwardedHeaders;
 using CO.CDP.Configuration.Helpers;
 using CO.CDP.OrganisationInformation.Persistence;
 using CO.CDP.RegisterOfCommercialTools.WebApi;
-using CO.CDP.RegisterOfCommercialTools.WebApi.Api;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
 
@@ -15,7 +14,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.ConfigureForwardedHeaders();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options => options.DocumentCommercialToolsApi(builder.Configuration));
-// builder.Services.AddJwtBearerAndApiKeyAuthentication(builder.Configuration, builder.Environment);
+builder.Services.AddJwtBearerAndApiKeyAuthentication(builder.Configuration, builder.Environment);
 builder.Services.AddHealthChecks();
 builder.Services.AddHttpContextAccessor();
 
@@ -47,7 +46,6 @@ if (builder.Configuration.GetValue("Features:SwaggerUI", false))
 
 app.UseStatusCodePages();
 app.MapHealthChecks("/health").AllowAnonymous();
-app.MapCpvEndpoint();
-// app.UseAuthentication();
-// app.UseAuthorization();
+app.UseAuthentication();
+app.UseAuthorization();
 app.Run();
