@@ -9,7 +9,7 @@ output "domain_identity_arn" {
 
 output "ses_verification_record" {
   value = {
-    name  = "_amazonses.${var.product.public_hosted_zone}"
+    name  = "_amazonses.${aws_ses_domain_identity.this.domain}"
     type  = "TXT"
     value = aws_ses_domain_identity.this.verification_token
   }
