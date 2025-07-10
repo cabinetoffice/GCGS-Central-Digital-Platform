@@ -2,6 +2,7 @@ using CO.CDP.OrganisationInformation.Persistence.Constants;
 using CO.CDP.Testcontainers.PostgreSql;
 using FluentAssertions;
 using System.Data;
+using Microsoft.EntityFrameworkCore;
 using static CO.CDP.OrganisationInformation.Persistence.IOrganisationRepository.OrganisationRepositoryException;
 using static CO.CDP.OrganisationInformation.Persistence.Tests.EntityFactory;
 
@@ -735,6 +736,171 @@ public class DatabaseOrganisationRepositoryTest(OrganisationInformationPostgreSq
 
         result.Should().NotBeNull();
         result.Should().Contain(consortiumOrg);
+    }
+
+    [Fact]
+    public async Task SearchByNameOrPpon_ReturnsMatchingOrganisations_WhenNameMatches()
+    {
+        using var repository = OrganisationRepository();
+        await using var context = GetDbContext();
+
+        await ClearTestData(context);
+
+        var uniqueId1 = Guid.NewGuid().ToString("N").Substring(0, 8);
+        var uniqueId2 = Guid.NewGuid().ToString("N").Substring(0, 8);
+
+        var buyerOrg = GivenOrganisation(
+            name: $"Test Buyer Organisation {uniqueId1}",
+            roles: [PartyRole.Buyer]);
+        buyerOrg.Identifiers.Add(new Identifier {
+            Scheme = "GB-PPON",
+            IdentifierId = $"PPON-{uniqueId1}",
+            LegalName = "Legal Buyer Name",
+            Primary = true
+        });
+
+        var tendererOrg = GivenOrganisation(
+            name: $"Test Tenderer Organisation {uniqueId2}",
+            roles: [PartyRole.Tenderer]);
+        tendererOrg.Identifiers.Add(new Identifier {
+            Scheme = "GB-PPON",
+            IdentifierId = $"PPON-{uniqueId2}",
+            LegalName = "Legal Tenderer Name",
+            Primary = true
+        });
+
+        context.Organisations.AddRange([buyerOrg, tendererOrg]);
+        await context.SaveChangesAsync();
+
+        var result = await repository.SearchByNameOrPpon("Test", 10, 0);
+
+        result.Should().NotBeNull();
+        result.Should().Contain(buyerOrg);
+        result.Should().Contain(tendererOrg);
+    }
+
+    [Fact]
+    public async Task SearchByNameOrPpon_ReturnsMatchingOrganisations_WhenPponIdentifierMatches()
+    {
+        using var repository = OrganisationRepository();
+        await using var context = GetDbContext();
+
+        await ClearTestData(context);
+
+        var uniqueId = Guid.NewGuid().ToString("N").Substring(0, 8);
+        var pponId = $"PPON-{uniqueId}";
+
+        var buyerOrg = GivenOrganisation(
+            name: $"Test Buyer Org {uniqueId}",
+            roles: [PartyRole.Buyer]);
+        buyerOrg.Identifiers.Add(new Identifier {
+            Scheme = "GB-PPON",
+            IdentifierId = pponId,
+            LegalName = "Legal Buyer Name",
+            Primary = true
+        });
+
+        context.Organisations.Add(buyerOrg);
+        await context.SaveChangesAsync();
+
+        var searchText = pponId.Substring(2, 6);
+        var result = await repository.SearchByNameOrPpon(searchText, 10, 0);
+
+        result.Should().NotBeNull();
+        result.Should().HaveCount(1);
+        result.First().Should().Be(buyerOrg);
+    }
+
+    [Fact]
+    public async Task SearchByNameOrPpon_DoesNotReturnOrganisations_WithoutBuyerOrTendererRole()
+    {
+        using var repository = OrganisationRepository();
+        await using var context = GetDbContext();
+
+        await ClearTestData(context);
+
+        var uniqueId1 = Guid.NewGuid().ToString("N").Substring(0, 8);
+        var uniqueId2 = Guid.NewGuid().ToString("N").Substring(0, 8);
+
+        var buyerOrg = GivenOrganisation(
+            name: $"Test Buyer Organisation {uniqueId1}",
+            roles: [PartyRole.Buyer]);
+        buyerOrg.Identifiers.Add(new Identifier {
+            Scheme = "GB-PPON",
+            IdentifierId = $"PPON-{uniqueId1}",
+            LegalName = "Legal Buyer Name",
+            Primary = true
+        });
+
+        var supplierOrg = GivenOrganisation(
+            name: $"Test Supplier Organisation {uniqueId2}",
+            roles: [PartyRole.Supplier]);
+        supplierOrg.Identifiers.Add(new Identifier {
+            Scheme = "GB-PPON",
+            IdentifierId = $"PPON-{uniqueId2}",
+            LegalName = "Legal Supplier Name",
+            Primary = true
+        });
+
+        context.Organisations.AddRange([buyerOrg, supplierOrg]);
+        await context.SaveChangesAsync();
+
+        var result = await repository.SearchByNameOrPpon("Test", 10, 0);
+
+        result.Should().NotBeNull();
+        result.Should().HaveCount(1);
+        result.Should().Contain(buyerOrg);
+        result.Should().NotContain(supplierOrg);
+    }
+
+    [Fact]
+    public async Task SearchByNameOrPpon_DoesNotReturnOrganisations_WithPendingRoles()
+    {
+        using var repository = OrganisationRepository();
+        await using var context = GetDbContext();
+
+        await ClearTestData(context);
+
+        var uniqueId1 = Guid.NewGuid().ToString("N").Substring(0, 8);
+        var uniqueId2 = Guid.NewGuid().ToString("N").Substring(0, 8);
+
+        var activeOrg = GivenOrganisation(
+            name: $"Test Active Organisation {uniqueId1}",
+            roles: [PartyRole.Buyer]);
+        activeOrg.Identifiers.Add(new Identifier {
+            Scheme = "GB-PPON",
+            IdentifierId = $"PPON-{uniqueId1}",
+            LegalName = "Legal Name",
+            Primary = true
+        });
+
+        var pendingOrg = GivenOrganisation(
+            name: $"Test Pending Organisation {uniqueId2}",
+            roles: [],
+            pendingRoles: [PartyRole.Buyer]);
+        pendingOrg.Identifiers.Add(new Identifier {
+            Scheme = "GB-PPON",
+            IdentifierId = $"PPON-{uniqueId2}",
+            LegalName = "Legal Name",
+            Primary = true
+        });
+
+        context.Organisations.AddRange([activeOrg, pendingOrg]);
+        await context.SaveChangesAsync();
+
+        var result = await repository.SearchByNameOrPpon("Test", 10, 0);
+
+        result.Should().NotBeNull();
+        result.Should().HaveCount(1);
+        result.Should().Contain(activeOrg);
+        result.Should().NotContain(pendingOrg);
+    }
+
+    private async Task ClearTestData(OrganisationInformationContext context)
+    {
+        await context.Database.ExecuteSqlRawAsync("DELETE FROM identifiers");
+        await context.Database.ExecuteSqlRawAsync("DELETE FROM organisations");
+        await context.SaveChangesAsync();
     }
 
     [Fact]
