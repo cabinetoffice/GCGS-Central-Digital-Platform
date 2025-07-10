@@ -135,20 +135,9 @@ locals {
       mysql_aurora_instance_type        = "db.r5.8xlarge"
       name                              = "integration"
       onelogin_logout_notification_urls = [
-        "https://akmalnazir.nqc.com/auth/backchannellogout",
-        "https://andrewtaberner.nqc.com/auth/backchannellogout",
-        "https://anudeepjami.nqc.com/auth/backchannellogout",
-        "https://davidchiu.nqc.com/auth/backchannellogout",
-        "https://humaarif.nqc.com/auth/backchannellogout",
-        "https://kaichan2.nqc.com/auth/backchannellogout",
-        "https://kaylemwood.nqc.com/auth/backchannellogout",
-        "https://martamajewska.nqc.com/auth/backchannellogout",
-        "https://nadeemshafi2.nqc.com/auth/backchannellogout",
-        "https://stanvolcere.nqc.com/auth/backchannellogout",
         "https://truk-alpha.nqc.com/auth/backchannellogout",
         "https://truk-performance.nqc.com/auth/backchannellogout",
         "https://truk-prod.nqc.com/auth/backchannellogout",
-        "https://wallsm.nqc.com/auth/backchannellogout",
         "https://www-tpp-preview.find-tender.service.gov.uk/auth/backchannellogout",
         "https://www-tpp.find-tender.service.gov.uk/auth/backchannellogout",
       ]
@@ -182,7 +171,10 @@ locals {
       canary_schedule_expression        = "rate(15 minutes)"
       fts_allowed_target_email_domains  = ["goaco.com"]
       fts_azure_frontdoor               = "nqc-front-door-uksouth.azurefd.net"
-      fts_service_allowed_origins       = []
+      fts_service_allowed_origins       = [
+        "https://fts.supplier-information.find-tender.service.gov.uk",
+        "https://www.find-tender.service.gov.uk"
+      ]
       mail_from_domain                  = "find-tender.service.gov.uk"
       mysql_aurora_engine_version       = "5.7.mysql_aurora.2.12.5"
       mysql_aurora_family               = "aurora-mysql5.7"
