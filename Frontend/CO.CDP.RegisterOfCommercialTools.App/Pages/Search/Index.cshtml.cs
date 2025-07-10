@@ -1,11 +1,15 @@
 using CO.CDP.RegisterOfCommercialTools.App.Pages.Shared;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.ComponentModel;
 
 namespace CO.CDP.RegisterOfCommercialTools.App.Pages.Search
 {
     public class IndexModel : PageModel
     {
+        [BindProperty(SupportsGet = true)]
+        public SearchModel SearchParams { get; set; } = new();
+
         public List<SearchResult> SearchResults { get; set; } = [];
         public PaginationPartialModel? Pagination { get; set; }
 
@@ -104,4 +108,18 @@ namespace CO.CDP.RegisterOfCommercialTools.App.Pages.Search
         string ContractDates,
         string AwardMethod
     );
+
+    public class SearchModel
+    {
+        public string? Keywords { get; set; }
+        public string? SortOrder { get; set; }
+
+        [DisplayName("Framework options")]
+        public string? FrameworkOptions { get; set; }
+
+        [DisplayName("Dynamic market options")]
+        public string? DynamicMarketOptions { get; set; }
+
+        public List<string> Status { get; set; } = [];
+    }
 }

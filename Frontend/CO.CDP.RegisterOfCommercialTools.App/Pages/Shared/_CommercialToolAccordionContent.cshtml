@@ -1,3 +1,5 @@
+@model CO.CDP.RegisterOfCommercialTools.App.Pages.Search.SearchModel
+
 <div class="govuk-!-margin-top-0">
     <details class="govuk-details govuk-!-margin-left-4 govuk-!-margin-right-4 govuk-!-padding-left-1" data-module="govuk-details">
         <summary class="govuk-details__summary">
@@ -44,7 +46,7 @@
                     </legend>
                     <div class="govuk-radios govuk-radios--small" data-module="govuk-radios">
                         <div class="govuk-radios__item">
-                            <input class="govuk-radios__input" id="framework-open-only" name="frameworkOptions"
+                            <input class="govuk-radios__input" id="framework-open-only" asp-for="FrameworkOptions"
                                    type="radio"
                                    value="open">
                             <label class="govuk-label govuk-radios__label govuk-!-font-size-14" for="framework-open-only">
@@ -52,7 +54,7 @@
                             </label>
                         </div>
                         <div class="govuk-radios__item">
-                            <input class="govuk-radios__input" id="framework-exclude-open" name="frameworkOptions"
+                            <input class="govuk-radios__input" id="framework-exclude-open" asp-for="FrameworkOptions"
                                    type="radio"
                                    value="exclude-open">
                             <label class="govuk-label govuk-radios__label govuk-!-font-size-14" for="framework-exclude-open">
@@ -68,7 +70,7 @@
                     <div class="govuk-radios govuk-radios--small" data-module="govuk-radios">
                         <div class="govuk-radios__item">
                             <input class="govuk-radios__input" id="dynamic-market-utilities-only"
-                                   name="dynamicMarketOptions" type="radio"
+                                   asp-for="DynamicMarketOptions" type="radio"
                                    value="utilities-only">
                             <label class="govuk-label govuk-radios__label govuk-!-font-size-14" for="dynamic-market-utilities-only">
                                 Utilities dynamic markets only
@@ -76,7 +78,7 @@
                         </div>
                         <div class="govuk-radios__item">
                             <input class="govuk-radios__input" id="dynamic-market-exclude-utilities"
-                                   name="dynamicMarketOptions" type="radio"
+                                   asp-for="DynamicMarketOptions" type="radio"
                                    value="exclude-utilities">
                             <label class="govuk-label govuk-radios__label govuk-!-font-size-14" for="dynamic-market-exclude-utilities">
                                 Excludes Utilities dynamic markets
