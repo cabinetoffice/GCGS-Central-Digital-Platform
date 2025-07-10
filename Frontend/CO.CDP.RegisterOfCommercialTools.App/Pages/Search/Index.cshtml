@@ -55,7 +55,8 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <h1 class="govuk-heading-l govuk-!-margin-bottom-2">Search Results</h1>
-            <p class="govuk-body-m">We've found <span class="govuk-!-font-weight-bold">54</span> results</p>
+            <p class="govuk-body-m">We've found <span class="govuk-!-font-weight-bold">@Model.SearchResults.Count</span>
+                results</p>
         </div>
         <div class="govuk-grid-column-one-third">
             <govuk-select id="sort-results" name="sortOrder">
@@ -126,6 +127,23 @@
                     </button>
                 </div>
             </form>
+        </div>
+        <div class="govuk-grid-column-two-thirds">
+            @if (Model.SearchResults.Any())
+            {
+                <ul class="govuk-list">
+                    @foreach (var result in Model.SearchResults)
+                    {
+                        <li>
+                            <partial name="Shared/_SearchResult" model="result"/>
+                        </li>
+                    }
+                </ul>
+            }
+            else
+            {
+                <p class="govuk-body">No results found.</p>
+            }
         </div>
     </div>
 </div>

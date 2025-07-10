@@ -1,0 +1,88 @@
+@using CO.CDP.RegisterOfCommercialTools.App.Pages.Search
+@model CO.CDP.RegisterOfCommercialTools.App.Pages.Search.SearchResult
+
+<div class="search-result">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full govuk-grid-column-two-thirds-from-desktop govuk-!-margin-bottom-1">
+            <h2 class="govuk-heading-m govuk-!-margin-bottom-0">
+                <a class="govuk-link" href="@Model.Link">@Model.Title</a>
+            </h2>
+        </div>
+        <div class="govuk-grid-column-full govuk-grid-column-one-third-from-desktop govuk-!-margin-bottom-1">
+            <partial name="Shared/_SearchResultStatusTag" model="Model.Status"/>
+        </div>
+    </div>
+
+    <p class="govuk-caption-m govuk-!-margin-bottom-0">@Model.Caption</p>
+
+    <dl class="govuk-summary-list govuk-summary-list--no-border">
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key govuk-!-margin-bottom-0">
+                Commercial tool
+            </dt>
+            <dd class="govuk-summary-list__value govuk-!-margin-bottom-0">
+                @Model.CommercialTool
+            </dd>
+        </div>
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key govuk-!-margin-bottom-0">
+                Status
+            </dt>
+            <dd class="govuk-summary-list__value govuk-!-margin-bottom-0">
+                @switch (Model.Status)
+                {
+                    case SearchResultStatus.Active:
+                        <span>Applications window is open</span>
+                        break;
+                    case SearchResultStatus.Upcoming:
+                        <span>Applications window opening soon</span>
+                        break;
+                    case SearchResultStatus.Expired:
+                        <span>Applications window has closed</span>
+                        break;
+                }
+            </dd>
+        </div>
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key govuk-!-margin-bottom-0">
+                Maximum fee
+            </dt>
+            <dd class="govuk-summary-list__value govuk-!-margin-bottom-0">
+                @Model.MaximumFee
+            </dd>
+        </div>
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key govuk-!-margin-bottom-0">
+                Other contracting authority can use
+            </dt>
+            <dd class="govuk-summary-list__value govuk-!-margin-bottom-0">
+                @Model.OtherContractingAuthorityCanUse
+            </dd>
+        </div>
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key govuk-!-margin-bottom-0">
+                Submission deadline
+            </dt>
+            <dd class="govuk-summary-list__value govuk-!-margin-bottom-0">
+                @Model.SubmissionDeadline
+            </dd>
+        </div>
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key govuk-!-margin-bottom-0">
+                Contract dates
+            </dt>
+            <dd class="govuk-summary-list__value govuk-!-margin-bottom-0">
+                @Model.ContractDates
+            </dd>
+        </div>
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key govuk-!-margin-bottom-0">
+                Award method
+            </dt>
+            <dd class="govuk-summary-list__value govuk-!-margin-bottom-0">
+                @Model.AwardMethod
+            </dd>
+        </div>
+    </dl>
+    <hr class="govuk-section-break govuk-section-break--visible govuk-!-margin-bottom-4">
+</div>
