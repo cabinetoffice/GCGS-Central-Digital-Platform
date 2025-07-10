@@ -380,18 +380,9 @@ public static class EndpointExtensions
                     organisationPersonScopes: [Constants.OrganisationPersonScope.Admin, Constants.OrganisationPersonScope.Editor, Constants.OrganisationPersonScope.Viewer],
                     personScopes:[Constants.PersonScope.SupportAdmin]),
             ]
-            async ([FromQuery] string name, [FromQuery] int limit,[FromQuery] int skip, [FromServices] IUseCase<OrganisationSearchByPponQuery, IEnumerable<Model.OrganisationSearchByPponResult>> useCase,[FromQuery] double? threshold = 0.3) =>
+            async ([FromQuery] string name, [FromQuery] int limit,[FromQuery] int skip, [FromServices] IUseCase<OrganisationSearchByPponQuery, IEnumerable<Model.OrganisationSearchByPponResult>> useCase) =>
             {
-                if (threshold is <= 0 or > 1)
-                {
-                    return Results.BadRequest(new ProblemDetails
-                    {
-                        Title = "Invalid threshold value",
-                        Detail = "Threshold must be between 0 and 1.",
-                        Status = StatusCodes.Status400BadRequest
-                    });
-                }
-                return await useCase.Execute(new OrganisationSearchByPponQuery(name, limit,skip, threshold))
+                return await useCase.Execute(new OrganisationSearchByPponQuery(name, limit, skip))
                     .AndThen(results => results.Count() != 0 ? Results.Ok(results) : Results.NotFound());
             })
             .Produces<IEnumerable<Model.OrganisationSearchByPponResult>>(StatusCodes.Status200OK, "application/json")

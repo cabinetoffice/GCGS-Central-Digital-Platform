@@ -114,7 +114,7 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
         return await query.Select(t => t.Organisation).ToListAsync();
     }
 
-    public async Task<IEnumerable<Organisation>> SearchByNameOrPpon(string name, int? limit,int skip, double threshold = 0.3)
+    public async Task<IEnumerable<Organisation>> SearchByNameOrPpon(string name, int? limit, int skip)
     {
         var query = context.Organisations
             .Include(b => b.Identifiers)
@@ -122,8 +122,8 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
             .ThenInclude(p => p.Address)
             .Where(t => t.PendingRoles.Count == 0)
             .Where(t =>
-                EF.Functions.TrigramsSimilarity(t.Name, name) >= threshold ||
-                t.Identifiers.Max(i => EF.Functions.TrigramsSimilarity(i.IdentifierId, name)) >= threshold)
+                EF.Functions.ILike(t.Name, $"%{name}%") ||
+                t.Identifiers.Any(i => EF.Functions.ILike(i.IdentifierId, $"%{name}%")))
             .Where(t => t.Type == OrganisationType.Organisation)
             .Where(t => t.Roles.Contains(PartyRole.Buyer) || t.Roles.Contains(PartyRole.Tenderer))
             .Where(t => t.Identifiers.Any(i => i.Scheme.Equals("GB-PPON")))
