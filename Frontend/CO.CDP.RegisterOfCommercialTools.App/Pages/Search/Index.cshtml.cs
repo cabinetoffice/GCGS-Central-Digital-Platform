@@ -121,5 +121,8 @@ namespace CO.CDP.RegisterOfCommercialTools.App.Pages.Search
         public string? DynamicMarketOptions { get; set; }
 
         public List<string> Status { get; set; } = [];
+
+        [DisplayName("Contracting authority usage")]
+        public bool? ContractingAuthorityUsage { get; set; }
     }
 }

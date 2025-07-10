@@ -25,6 +25,7 @@ public class IndexModelTest
         _model.SearchParams.FrameworkOptions.Should().BeNull();
         _model.SearchParams.DynamicMarketOptions.Should().BeNull();
         _model.SearchParams.Status.Should().BeEmpty();
+        _model.SearchParams.ContractingAuthorityUsage.Should().BeNull();
     }
 
     [Fact]
@@ -36,7 +37,8 @@ public class IndexModelTest
             SortOrder = "a-z",
             FrameworkOptions = "open",
             DynamicMarketOptions = "utilities-only",
-            Status = ["upcoming", "active-buyers"]
+            Status = ["upcoming", "active-buyers"],
+            ContractingAuthorityUsage = true
         };
         _model.SearchParams = searchParams;
 
