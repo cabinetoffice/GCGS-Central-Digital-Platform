@@ -120,6 +120,9 @@ namespace CO.CDP.RegisterOfCommercialTools.App.Pages.Search
         [DisplayName("Dynamic market options")]
         public string? DynamicMarketOptions { get; set; }
 
+        [DisplayName("Award method")]
+        public bool? AwardMethod { get; set; }
+
         public List<string> Status { get; set; } = [];
 
         [DisplayName("Contracting authority usage")]

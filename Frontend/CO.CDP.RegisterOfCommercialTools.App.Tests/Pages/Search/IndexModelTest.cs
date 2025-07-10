@@ -24,6 +24,7 @@ public class IndexModelTest
         _model.SearchParams.SortOrder.Should().BeNull();
         _model.SearchParams.FrameworkOptions.Should().BeNull();
         _model.SearchParams.DynamicMarketOptions.Should().BeNull();
+        _model.SearchParams.AwardMethod.Should().BeNull();
         _model.SearchParams.Status.Should().BeEmpty();
         _model.SearchParams.ContractingAuthorityUsage.Should().BeNull();
     }
@@ -37,6 +38,7 @@ public class IndexModelTest
             SortOrder = "a-z",
             FrameworkOptions = "open",
             DynamicMarketOptions = "utilities-only",
+            AwardMethod = true,
             Status = ["upcoming", "active-buyers"],
             ContractingAuthorityUsage = true
         };

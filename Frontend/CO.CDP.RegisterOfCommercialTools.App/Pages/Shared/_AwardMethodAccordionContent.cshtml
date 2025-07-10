@@ -1,15 +1,16 @@
+@model CO.CDP.RegisterOfCommercialTools.App.Pages.Search.SearchModel
 <div class="govuk-!-margin-top-0">
     <div class="govuk-form-group accordion-highlight govuk-!-padding-2 govuk-!-margin-left-2 govuk-!-margin-right-4">
         <fieldset class="govuk-fieldset">
             <div class="govuk-radios govuk-radios--small" data-module="govuk-radios">
                 <div class="govuk-radios__item">
-                    <input class="govuk-radios__input" id="award-method-with-competition" name="awardMethod" type="radio" value="true">
+                    <input class="govuk-radios__input" id="award-method-with-competition" type="radio" value="true" asp-for="AwardMethod">
                     <label class="govuk-label govuk-radios__label govuk-!-font-size-14" for="award-method-with-competition">
                         With competition
                     </label>
                 </div>
                 <div class="govuk-radios__item">
-                    <input class="govuk-radios__input" id="award-method-without-competition" name="awardMethod" type="radio" value="false">
+                    <input class="govuk-radios__input" id="award-method-without-competition" type="radio" value="false" asp-for="AwardMethod">
                     <label class="govuk-label govuk-radios__label govuk-!-font-size-14" for="award-method-without-competition">
                         Without competition
                     </label>
@@ -18,4 +19,3 @@
         </fieldset>
     </div>
 </div>
-
