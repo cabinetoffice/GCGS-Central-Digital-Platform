@@ -180,7 +180,10 @@ locals {
       mysql_aurora_family               = "aurora-mysql5.7"
       mysql_aurora_instance_type        = "db.r5.8xlarge"
       name                              = "production"
-      onelogin_logout_notification_urls = ["https://www.find-tender.service.gov.uk/auth/backchannellogout"]
+      onelogin_logout_notification_urls = [
+        "https://www.find-tender.service.gov.uk/auth/backchannellogout",
+        "https://fts.supplier-information.find-tender.service.gov.uk/auth/backchannellogout"
+      ],
       pinned_service_version_fts        = "0.0.0-3e1660c"
       pinned_service_version            = "1.0.69"
       postgres_instance_type            = "db.t4g.micro"
