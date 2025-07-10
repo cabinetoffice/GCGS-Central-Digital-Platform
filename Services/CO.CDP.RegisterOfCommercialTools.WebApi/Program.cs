@@ -7,7 +7,6 @@ using CO.CDP.Configuration.Helpers;
 using CO.CDP.OrganisationInformation.Persistence;
 using CO.CDP.RegisterOfCommercialTools.WebApi;
 using CO.CDP.RegisterOfCommercialTools.WebApi.Api;
-using CO.CDP.RegisterOfCommercialTools.WebApi.Persistence;
 using CO.CDP.RegisterOfCommercialTools.WebApi.UseCases;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
@@ -15,7 +14,7 @@ using Npgsql;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddScoped<GetCpvChildrenUseCase>();
-builder.Services.AddScoped<ICpvCodeRepository, DatabaseCpvCodeRepository>();
+builder.Services.AddSingleton<ICpvCodeRepository, InMemoryCpvCodeRepository>();
 
 builder.ConfigureForwardedHeaders();
 builder.Services.AddEndpointsApiExplorer();
