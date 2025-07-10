@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Constants;
 using Microsoft.AspNetCore.Authorization;
@@ -53,13 +54,18 @@ public class SearchModel(
     {
         if (string.IsNullOrWhiteSpace(searchText))
         {
-            Organisations = [];
-            TotalOrganisations = 0;
-            TotalPages = 0;
+            resetKeyParams();
             return;
         }
 
-        var orgs = await organisationClient.SearchByNameOrPponAsync(searchText, PageSize, Skip, Threshold);
+        searchText = Regex.Replace(searchText.Trim(), @"[^\w\s]", string.Empty);
+        if (string.IsNullOrWhiteSpace(searchText))
+        {
+            resetKeyParams();
+            return;
+        }
+
+        var orgs = await organisationClient.SearchByNameOrPponAsync(searchText.Trim(), PageSize, Skip, Threshold);
         Organisations = sortOrder switch
         {
             "ascending" => orgs.OrderBy(o => o.Name).ToList(),
@@ -68,6 +74,13 @@ public class SearchModel(
         };
         TotalOrganisations = orgs.Count;
         TotalPages = (int)Math.Ceiling((double)TotalOrganisations / PageSize);
+    }
+
+    private void resetKeyParams()
+    {
+        Organisations = [];
+        TotalOrganisations = 0;
+        TotalPages = 0;
     }
 
     public string FormatAddresses(IEnumerable<OrganisationAddress> addresses)

@@ -25,7 +25,7 @@
         </div>
         <div class="govuk-grid-column-full">
             <button type="submit" class="govuk-button" data-module="govuk-button">
-                @StaticTextResource.Global_Filter
+                @StaticTextResource.Global_Search
             </button>
         </div>
     </div>
@@ -41,7 +41,7 @@
         </div>
     </details>
 
-    @if (Model.TotalOrganisations == 0)
+    @if (Model.TotalOrganisations == 0 && !string.IsNullOrEmpty(queryValue))
     {
         <div class="govuk-grid-row">
             <div class="govuk-grid-column-full">
@@ -51,7 +51,7 @@
             </div>
         </div>
     }
-    else
+    else if(Model.TotalOrganisations > 0)
     {
         <div class="govuk-grid-row">
             <div class="govuk-grid-column-one-half" style="padding-left: 0">

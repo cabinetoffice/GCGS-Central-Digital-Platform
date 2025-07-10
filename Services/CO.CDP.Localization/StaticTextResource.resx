@@ -4036,5 +4036,7 @@
   <data name="PponSearch_Ppon_Desc_Hint" xml:space="preserve">
     <value>A PPON is a unique identifier assigned to organisations that participate in public procurement, generated when an organisation registers on the <a target="_blank" href = "https://www.legislation.gov.uk/ukpga/2006/46/schedule/1A/part/1?timeline=false">Supplier Registration service (opens in a new tab)</a>. It is used to manage and publish notices related to public procurement and connects information about the organisation digitally.<br/>Your PPON is a combination of 16 letters and numbers, separated by hyphens. For example, ABCD-EFGH-1234-IJKL.</value>
   </data>
-
+  <data name="Global_Search" xml:space="preserve">
+    <value>Search</value>
+  </data>
 </root>
