@@ -13,76 +13,40 @@
         </div>
     </div>
 
-    <p class="govuk-caption-m govuk-!-margin-bottom-0">@Model.Caption</p>
+    <p class="govuk-caption-m govuk-!-margin-bottom-1">@Model.Caption</p>
 
-    <dl class="govuk-summary-list govuk-summary-list--no-border">
-        <div class="govuk-summary-list__row">
-            <dt class="govuk-summary-list__key govuk-!-margin-bottom-0">
-                Commercial tool
-            </dt>
-            <dd class="govuk-summary-list__value govuk-!-margin-bottom-0">
-                @Model.CommercialTool
-            </dd>
-        </div>
-        <div class="govuk-summary-list__row">
-            <dt class="govuk-summary-list__key govuk-!-margin-bottom-0">
-                Status
-            </dt>
-            <dd class="govuk-summary-list__value govuk-!-margin-bottom-0">
-                @switch (Model.Status)
-                {
-                    case SearchResultStatus.Active:
-                        <span>Applications window is open</span>
-                        break;
-                    case SearchResultStatus.Upcoming:
-                        <span>Applications window opening soon</span>
-                        break;
-                    case SearchResultStatus.Expired:
-                        <span>Applications window has closed</span>
-                        break;
-                }
-            </dd>
-        </div>
-        <div class="govuk-summary-list__row">
-            <dt class="govuk-summary-list__key govuk-!-margin-bottom-0">
-                Maximum fee
-            </dt>
-            <dd class="govuk-summary-list__value govuk-!-margin-bottom-0">
-                @Model.MaximumFee
-            </dd>
-        </div>
-        <div class="govuk-summary-list__row">
-            <dt class="govuk-summary-list__key govuk-!-margin-bottom-0">
-                Other contracting authority can use
-            </dt>
-            <dd class="govuk-summary-list__value govuk-!-margin-bottom-0">
-                @Model.OtherContractingAuthorityCanUse
-            </dd>
-        </div>
-        <div class="govuk-summary-list__row">
-            <dt class="govuk-summary-list__key govuk-!-margin-bottom-0">
-                Submission deadline
-            </dt>
-            <dd class="govuk-summary-list__value govuk-!-margin-bottom-0">
-                @Model.SubmissionDeadline
-            </dd>
-        </div>
-        <div class="govuk-summary-list__row">
-            <dt class="govuk-summary-list__key govuk-!-margin-bottom-0">
-                Contract dates
-            </dt>
-            <dd class="govuk-summary-list__value govuk-!-margin-bottom-0">
-                @Model.ContractDates
-            </dd>
-        </div>
-        <div class="govuk-summary-list__row">
-            <dt class="govuk-summary-list__key govuk-!-margin-bottom-0">
-                Award method
-            </dt>
-            <dd class="govuk-summary-list__value govuk-!-margin-bottom-0">
-                @Model.AwardMethod
-            </dd>
-        </div>
-    </dl>
+    <p class="govuk-body govuk-!-margin-bottom-1">
+        <span class="govuk-!-font-weight-bold">Commercial tool:</span> @Model.CommercialTool
+    </p>
+    <p class="govuk-body govuk-!-margin-bottom-1">
+        <span class="govuk-!-font-weight-bold">Status:</span>
+        @switch (Model.Status)
+        {
+            case SearchResultStatus.Active:
+                <span>Applications window is open</span>
+                break;
+            case SearchResultStatus.Upcoming:
+                <span>Applications window opening soon</span>
+                break;
+            case SearchResultStatus.Expired:
+                <span>Applications window has closed</span>
+                break;
+        }
+    </p>
+    <p class="govuk-body govuk-!-margin-bottom-1">
+        <span class="govuk-!-font-weight-bold">Maximum fee:</span> @Model.MaximumFee
+    </p>
+    <p class="govuk-body govuk-!-margin-bottom-1">
+        <span class="govuk-!-font-weight-bold">Other contracting authority can use:</span> @Model.OtherContractingAuthorityCanUse
+    </p>
+    <p class="govuk-body govuk-!-margin-bottom-1">
+        <span class="govuk-!-font-weight-bold">Submission deadline:</span> @Model.SubmissionDeadline
+    </p>
+    <p class="govuk-body govuk-!-margin-bottom-1">
+        <span class="govuk-!-font-weight-bold">Contract dates:</span> @Model.ContractDates
+    </p>
+    <p class="govuk-body govuk-!-margin-bottom-2">
+        <span class="govuk-!-font-weight-bold">Award method:</span> @Model.AwardMethod
+    </p>
     <hr class="govuk-section-break govuk-section-break--visible govuk-!-margin-bottom-4">
 </div>
