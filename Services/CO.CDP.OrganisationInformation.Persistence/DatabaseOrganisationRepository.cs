@@ -114,7 +114,7 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
         return await query.Select(t => t.Organisation).ToListAsync();
     }
 
-    public async Task<(IEnumerable<Organisation> Results, int TotalCount)> SearchByNameOrPpon(string name, int? limit, int skip)
+    public async Task<(IEnumerable<Organisation> Results, int TotalCount)> SearchByNameOrPpon(string name, int? limit, int skip, string orderBy)
     {
         var baseQuery = context.Organisations
             .Include(b => b.Identifiers)
@@ -125,13 +125,23 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
                 t.Identifiers.Any(i => EF.Functions.ILike(i.IdentifierId, $"%{name}%")))
             .Where(t => t.Type == OrganisationType.Organisation)
             .Where(t => t.Roles.Contains(PartyRole.Buyer) || t.Roles.Contains(PartyRole.Tenderer))
-            .Where(t => t.Identifiers.Any(i => i.Scheme.Equals("GB-PPON")))
-            .OrderBy(t => t.Name);
+            .Where(t => t.Identifiers.Any(i => i.Scheme.Equals("GB-PPON")));
 
-        // Get total count before pagination
+        // no soring is applied if sortOrder is null or equals to rel or anything
+        if (orderBy != null)
+        {
+            if (orderBy.Equals("asc", StringComparison.OrdinalIgnoreCase))
+            {
+                baseQuery = baseQuery.OrderBy(t => t.Name);
+            }
+            else if (orderBy.Equals("desc", StringComparison.OrdinalIgnoreCase))
+            {
+                baseQuery = baseQuery.OrderByDescending(t => t.Name);
+            }
+        }
+
         int totalCount = await baseQuery.CountAsync();
 
-        // Apply pagination and get results
         var results = limit.HasValue
             ? await baseQuery.Skip(skip).Take(limit.Value).ToListAsync()
             : await baseQuery.Skip(skip).ToListAsync();

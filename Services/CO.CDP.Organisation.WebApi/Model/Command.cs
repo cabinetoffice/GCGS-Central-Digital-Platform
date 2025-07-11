@@ -454,12 +454,17 @@ public record OrganisationSearchByPponQuery
     public string Name { get; }
     public int? Limit { get; }
     public int Skip { get; }
+    public string OrderBy { get; }
 
-    public OrganisationSearchByPponQuery(string name, int? limit,int skip)
+    public OrganisationSearchByPponQuery(string name, int? limit,int skip, string orderBy)
     {
         Name = name;
         Limit = limit;
         Skip = skip;
+        if (!string.IsNullOrEmpty(orderBy))
+        {
+            OrderBy = orderBy;
+        }
     }
 }
 

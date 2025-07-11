@@ -261,10 +261,11 @@ internal static class OrganisationClientExtensions
         this IOrganisationClient organisationClient,
         string searchText,
         int pageSize,
-        int skip) {
+        int skip,
+        string orderBy) {
         try
         {
-            var searchResults =  await organisationClient.SearchByNameOrPponAsync(searchText, pageSize,skip);
+            var searchResults =  await organisationClient.SearchByNameOrPponAsync(searchText, pageSize,skip,orderBy);
             if (searchResults.Results.Count > 0)
             {
                 return (searchResults.Results, searchResults.TotalCount);

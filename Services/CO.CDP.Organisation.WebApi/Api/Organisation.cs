@@ -380,10 +380,10 @@ public static class EndpointExtensions
                     organisationPersonScopes: [Constants.OrganisationPersonScope.Admin, Constants.OrganisationPersonScope.Editor, Constants.OrganisationPersonScope.Viewer],
                     personScopes:[Constants.PersonScope.SupportAdmin]),
             ]
-            async ([FromQuery] string name, [FromQuery] int limit, [FromQuery] int skip,
+            async ([FromQuery] string name, [FromQuery] int limit, [FromQuery] int skip,[FromQuery] string sortOrder,
                 [FromServices] IUseCase<OrganisationSearchByPponQuery, (IEnumerable<Model.OrganisationSearchByPponResult>, int)> useCase) =>
             {
-                return await useCase.Execute(new OrganisationSearchByPponQuery(name, limit, skip))
+                return await useCase.Execute(new OrganisationSearchByPponQuery(name, limit, skip, sortOrder))
                     .AndThen(result => {
                         var (results, totalCount) = result;
                         return results.Any()

@@ -772,7 +772,7 @@ public class DatabaseOrganisationRepositoryTest(OrganisationInformationPostgreSq
         context.Organisations.AddRange([buyerOrg, tendererOrg]);
         await context.SaveChangesAsync();
 
-        var result = await repository.SearchByNameOrPpon("Test", 10, 0);
+        var result = await repository.SearchByNameOrPpon("Test", 10, 0,"asc");
 
         result.Results.Should().NotBeNull();
         result.Results.Should().Contain(buyerOrg);
@@ -805,7 +805,7 @@ public class DatabaseOrganisationRepositoryTest(OrganisationInformationPostgreSq
         await context.SaveChangesAsync();
 
         var searchText = pponId.Substring(2, 6);
-        var result = await repository.SearchByNameOrPpon(searchText, 10, 0);
+        var result = await repository.SearchByNameOrPpon(searchText, 10, 0,"asc");
 
         result.Results.Should().NotBeNull();
         result.Results.Should().HaveCount(1);
@@ -847,7 +847,7 @@ public class DatabaseOrganisationRepositoryTest(OrganisationInformationPostgreSq
         context.Organisations.AddRange([buyerOrg, supplierOrg]);
         await context.SaveChangesAsync();
 
-        var result = await repository.SearchByNameOrPpon("Test", 10, 0);
+        var result = await repository.SearchByNameOrPpon("Test", 10, 0,"asc");
 
         result.Results.Should().NotBeNull();
         result.Results.Should().HaveCount(1);

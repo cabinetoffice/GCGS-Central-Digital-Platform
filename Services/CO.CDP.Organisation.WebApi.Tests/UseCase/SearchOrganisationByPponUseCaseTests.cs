@@ -114,10 +114,10 @@ public class SearchOrganisationByPponUseCaseTests : IClassFixture<AutoMapperFixt
         };
 
         _organisationRepositoryMock
-            .Setup(repo => repo.SearchByNameOrPpon(It.IsAny<string>(), 10, 0))
+            .Setup(repo => repo.SearchByNameOrPpon(It.IsAny<string>(), 10, 0,"asc"))
             .ReturnsAsync((organisations,organisations.Count));
 
-        var results = await _useCase.Execute(new OrganisationSearchByPponQuery("Test", 10, 0));
+        var results = await _useCase.Execute(new OrganisationSearchByPponQuery("Test", 10, 0,"asc"));
 
         results.Results.Should().BeEquivalentTo(expectedResults,
             options => options.ComparingByMembers<OrganisationSearchByPponResult>());
@@ -127,10 +127,10 @@ public class SearchOrganisationByPponUseCaseTests : IClassFixture<AutoMapperFixt
     public async Task Execute_ShouldReturnEmptyList_WhenNoMatchingOrganisations()
     {
         _organisationRepositoryMock
-            .Setup(repo => repo.SearchByNameOrPpon(It.IsAny<string>(), 20, 5))
+            .Setup(repo => repo.SearchByNameOrPpon(It.IsAny<string>(), 20, 5,"asc"))
             .ReturnsAsync(([],0));
 
-        var results = await _useCase.Execute(new OrganisationSearchByPponQuery("NonexistentOrg", 20, 5));
+        var results = await _useCase.Execute(new OrganisationSearchByPponQuery("NonexistentOrg", 20, 5,"asc"));
 
         results.Results.Should().BeEmpty();
     }

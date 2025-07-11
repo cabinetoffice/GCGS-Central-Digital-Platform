@@ -38,7 +38,7 @@ public class SearchModel(IOrganisationClient organisationClient,
 
     public async Task<IActionResult> OnGet(string type, int pageNumber = 1,
         [FromQuery(Name = "q")] string? searchText = null,
-        [FromQuery(Name = "sortOrder")] string? sortOrder = "relevance")
+        [FromQuery(Name = "sortOrder")] string? sortOrder = "rel")
     {
         InitModel(type, pageNumber);
         await GetResults(searchText, sortOrder);
@@ -87,7 +87,7 @@ public class SearchModel(IOrganisationClient organisationClient,
         try
         {
             var (orgs, totalCount) = await OrganisationClientExtensions.SearchOrganisationByNameOrPpon(
-                organisationClient, cleanedSearchText, PageSize, Skip);
+                organisationClient, cleanedSearchText, PageSize, Skip, sortOrder);
 
             if (orgs.Count == 0)
             {
@@ -96,12 +96,7 @@ public class SearchModel(IOrganisationClient organisationClient,
                 return;
             }
 
-            Organisations = sortOrder switch
-            {
-                "ascending" => orgs.OrderBy(o => o.Name).ToList(),
-                "descending" => orgs.OrderByDescending(o => o.Name).ToList(),
-                _ => orgs.ToList()
-            };
+            Organisations = orgs.ToList();
             ErrorMessage = null;
             TotalOrganisations = totalCount;
             TotalPages = (int)Math.Ceiling((double)TotalOrganisations / PageSize);

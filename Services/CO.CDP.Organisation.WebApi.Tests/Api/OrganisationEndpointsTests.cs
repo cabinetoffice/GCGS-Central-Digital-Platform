@@ -467,7 +467,7 @@ public class OrganisationEndpointsTests
     public async Task GetOrganisationSearchByNameOrPpon_UsesCorrectParameters(string searchTerm, int limit, int skip)
     {
         var organisationId = Guid.NewGuid();
-        var expectedQuery = new OrganisationSearchByPponQuery(searchTerm, limit, skip);
+        var expectedQuery = new OrganisationSearchByPponQuery(searchTerm, limit, skip,"asc");
 
         var searchResults = new List<OrganisationSearchByPponResult>
         {

@@ -80,16 +80,16 @@
                         @StaticTextResource.Global_Search_Results
                     </label>
                     <select class="govuk-select" id="sort-order" name="sortOrder" onchange="this.form.submit()">
-                        <option value="relevance"
-                                selected="@(Request.Query["sortOrder"] == "relevance" ? "selected" : null)">
+                        <option value="rel"
+                                selected="@(Request.Query["sortOrder"] == "rel" ? "selected" : null)">
                             @StaticTextResource.Global_Sort_Relevance
                         </option>
-                        <option value="ascending"
-                                selected="@(Request.Query["sortOrder"] == "ascending" ? "selected" : null)">
+                        <option value="asc"
+                                selected="@(Request.Query["sortOrder"] == "asc" ? "selected" : null)">
                             @StaticTextResource.Global_Sort_Alphabetical_Asc
                         </option>
-                        <option value="descending"
-                                selected="@(Request.Query["sortOrder"] == "descending" ? "selected" : null)">
+                        <option value="desc"
+                                selected="@(Request.Query["sortOrder"] == "desc" ? "selected" : null)">
                             @StaticTextResource.Global_Sort_Alphabetical_Desc
                         </option>
                     </select>
@@ -143,5 +143,5 @@
     CurrentPage = Model.CurrentPage,
     TotalItems = Model.TotalOrganisations,
     PageSize = Model.PageSize,
-    Url = $"/organisation/buyer/search?q={queryValue}"
+    Url = $"/organisation/buyer/search?q={queryValue}{(Request.Query["sortOrder"].Any() ? $"&sortOrder={Request.Query["sortOrder"]}" : string.Empty)}"
 })
