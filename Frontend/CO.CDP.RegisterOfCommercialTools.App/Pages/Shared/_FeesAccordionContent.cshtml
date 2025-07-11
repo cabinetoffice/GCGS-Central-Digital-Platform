@@ -1,41 +1,60 @@
 @model CO.CDP.RegisterOfCommercialTools.App.Pages.Search.SearchModel
+
 <div class="govuk-!-margin-top-0">
     <p class="govuk-body-s govuk-!-padding-left-2">Maximum percentage fees charged to suppliers</p>
-    <div class="govuk-form-group accordion-highlight govuk-!-padding-2 govuk-!-margin-left-2 govuk-!-margin-right-4">
+
+    <div class="govuk-form-group @(ViewData.ModelState["SearchParams.FeeFrom"]?.Errors.Count > 0 || ViewData.ModelState["SearchParams.FeeTo"]?.Errors.Count > 0 ? "govuk-form-group--error" : "") accordion-highlight govuk-!-padding-2 govuk-!-margin-left-2 govuk-!-margin-right-4">
         <fieldset class="govuk-fieldset">
             <div class="govuk-form-group">
-                <label class="govuk-label govuk-!-font-size-16" for="fee-from">
+                @if (ViewData.ModelState["SearchParams.FeeFrom"]?.Errors.Count > 0)
+                {
+                    <p id="fee-from-error" class="govuk-error-message">
+                        <span class="govuk-visually-hidden">Error:</span>
+                        @(ViewData.ModelState["SearchParams.FeeFrom"]?.Errors.FirstOrDefault()?.ErrorMessage ?? "Fee values cannot be provided when 'No fees' is selected")
+                    </p>
+                }
+                @if (ViewData.ModelState["SearchParams.FeeTo"]?.Errors.Count > 0)
+                {
+                    <p id="fee-to-error" class="govuk-error-message">
+                        <span class="govuk-visually-hidden">Error:</span>
+                        @(ViewData.ModelState["SearchParams.FeeTo"]?.Errors.FirstOrDefault()?.ErrorMessage ?? "To must be more than from")
+                    </p>
+                }
+
+                <label class="govuk-label govuk-!-font-size-16" for="SearchParams_FeeFrom">
                     From
                 </label>
-                <span asp-validation-for="FeeFrom" class="govuk-error-message"></span>
                 <div class="govuk-input__wrapper">
-                    <input class="govuk-input govuk-input--width-5 govuk-!-font-size-16" id="fee-from"
-                           type="number" step="0.01" min="0" max="100" spellcheck="false" inputmode="decimal" asp-for="FeeFrom">
+                    <input class="govuk-input govuk-input--width-5 govuk-!-font-size-16 @(ViewData.ModelState["SearchParams.FeeFrom"]?.Errors.Count > 0 ? "govuk-input--error" : "")"
+                           id="SearchParams_FeeFrom"
+                           name="SearchParams.FeeFrom"
+                           type="number"
+                           step="0.01"
+                           min="0"
+                           max="100"
+                           value="@Model.FeeFrom"
+                           spellcheck="false"
+                           inputmode="decimal"
+                           aria-describedby="@(ViewData.ModelState["SearchParams.FeeFrom"]?.Errors.Count > 0 ? "fee-from-error" : "")">
                     <div class="govuk-input__suffix govuk-!-font-size-16" aria-hidden="true">%</div>
                 </div>
 
-                <label class="govuk-label govuk-!-font-size-16 govuk-!-margin-top-3" for="fee-to">
+                <label class="govuk-label govuk-!-font-size-16 govuk-!-margin-top-3" for="SearchParams_FeeTo">
                     To
                 </label>
-                <span asp-validation-for="FeeTo" class="govuk-error-message"></span>
                 <div class="govuk-input__wrapper">
-                    <input class="govuk-input govuk-input--width-5 govuk-!-font-size-16" id="fee-to"
-                           type="number" step="0.01" min="0" max="100" spellcheck="false" inputmode="decimal" asp-for="FeeTo">
+                    <input class="govuk-input govuk-input--width-5 govuk-!-font-size-16 @(ViewData.ModelState["SearchParams.FeeTo"]?.Errors.Count > 0 ? "govuk-input--error" : "")"
+                           id="SearchParams_FeeTo"
+                           name="SearchParams.FeeTo"
+                           type="number"
+                           step="0.01"
+                           min="0"
+                           max="100"
+                           value="@Model.FeeTo"
+                           spellcheck="false"
+                           inputmode="decimal"
+                           aria-describedby="@(ViewData.ModelState["SearchParams.FeeTo"]?.Errors.Count > 0 ? "fee-to-error" : "")">
                     <div class="govuk-input__suffix govuk-!-font-size-16" aria-hidden="true">%</div>
-                </div>
-
-                <label class="govuk-label govuk-!-font-size-16 govuk-!-margin-top-3" for="no-fees">
-                    Or
-                </label>
-
-                <div class="govuk-checkboxes govuk-checkboxes--small" data-module="govuk-checkboxes">
-                    <div class="govuk-checkboxes__item">
-                        <input type="hidden" name="SearchParams.NoFeesSet" value="true" />
-                        <input class="govuk-checkboxes__input" id="no-fees" name="SearchParams.NoFees" type="checkbox" value="true" checked="@(Model.NoFeesSet && Model.NoFees)">
-                        <label class="govuk-label govuk-checkboxes__label govuk-!-font-size-16" for="no-fees">
-                            No fees
-                        </label>
-                    </div>
                 </div>
             </div>
         </fieldset>

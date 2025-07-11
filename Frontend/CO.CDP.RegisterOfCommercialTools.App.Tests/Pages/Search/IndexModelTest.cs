@@ -190,4 +190,56 @@ public class IndexModelTest
         validationResults.Should().HaveCount(1);
         validationResults[0].ErrorMessage.Should().Be("To date must be after from date");
     }
+
+    [Fact]
+    public void FeeRangeValidation_WhenToIsLessThanFrom_ShouldHaveValidationError()
+    {
+        var searchParams = new SearchModel
+        {
+            FeeFrom = 10,
+            FeeTo = 5
+        };
+
+        var validationContext = new ValidationContext(searchParams);
+        var validationResults = new List<ValidationResult>();
+        var isValid = Validator.TryValidateObject(searchParams, validationContext, validationResults, true);
+
+        isValid.Should().BeFalse();
+        validationResults.Should().HaveCount(1);
+        validationResults[0].ErrorMessage.Should().Be("To must be more than from");
+    }
+
+    [Fact]
+    public void FeeRangeValidation_WhenToIsEqualToFrom_ShouldBeValid()
+    {
+        var searchParams = new SearchModel
+        {
+            FeeFrom = 10,
+            FeeTo = 10
+        };
+
+        var validationContext = new ValidationContext(searchParams);
+        var validationResults = new List<ValidationResult>();
+        var isValid = Validator.TryValidateObject(searchParams, validationContext, validationResults, true);
+
+        isValid.Should().BeTrue();
+        validationResults.Should().BeEmpty();
+    }
+
+    [Fact]
+    public void FeeRangeValidation_WhenToIsGreaterThanFrom_ShouldBeValid()
+    {
+        var searchParams = new SearchModel
+        {
+            FeeFrom = 10,
+            FeeTo = 20
+        };
+
+        var validationContext = new ValidationContext(searchParams);
+        var validationResults = new List<ValidationResult>();
+        var isValid = Validator.TryValidateObject(searchParams, validationContext, validationResults, true);
+
+        isValid.Should().BeTrue();
+        validationResults.Should().BeEmpty();
+    }
 }

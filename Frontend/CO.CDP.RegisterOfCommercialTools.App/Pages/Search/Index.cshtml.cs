@@ -139,6 +139,7 @@ namespace CO.CDP.RegisterOfCommercialTools.App.Pages.Search
         string AwardMethod
     );
 
+    [FeesValidator("FeeFrom", "FeeTo", "NoFees", ErrorMessage = "Fee values cannot be provided when 'No fees' is selected")]
     public class SearchModel
     {
         public string? Keywords { get; set; }
@@ -161,6 +162,7 @@ namespace CO.CDP.RegisterOfCommercialTools.App.Pages.Search
 
         [DisplayName("Fee to")]
         [Range(0, 100, ErrorMessage = "Enter a value between 0 and 100")]
+        [DecimalRange("FeeFrom", ErrorMessage = "To must be more than from")]
         public decimal? FeeTo { get; set; }
 
         [DisplayName("No fees")]
