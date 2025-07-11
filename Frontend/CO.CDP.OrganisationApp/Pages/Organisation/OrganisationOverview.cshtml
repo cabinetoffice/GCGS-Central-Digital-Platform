@@ -1,14 +1,10 @@
 @page "/organisation/{id}"
 @using CO.CDP.OrganisationApp.Constants
-@using CO.CDP.OrganisationApp.Pages
 @using CO.CDP.OrganisationApp.WebApiClients
 @using CO.CDP.Localization
-@using CO.CDP.Organisation.WebApiClient
-@using CO.CDP.OrganisationApp.Pages.Registration
-@using CO.CDP.OrganisationApp.TagHelpers
-@using Microsoft.AspNetCore.Mvc.Localization
-@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using Microsoft.FeatureManagement
 @inject IUserInfoService userInfoService
+@inject IFeatureManager FeatureManager
 @model OrganisationOverviewModel
 
 @{
@@ -265,6 +261,66 @@
                     }
                 }
             </dl>
+
+            @if (organisationDetails.IsBuyer())
+            {
+                @if (await FeatureManager.IsEnabledAsync(FeatureFlags.BuyerParentChildRelationship))
+                {
+                    <h3 class="govuk-heading-m govuk-!-padding-top-8"
+                        id="child-organisations">@StaticTextResource.OrganisationOverview_ChildOrganisations_Heading</h3>
+                    <p class="govuk-body">@StaticTextResource.OrganisationOverview_ChildOrganisations_Description</p>
+                    <ul class="govuk-list govuk-list--bullet">
+                        <li>@StaticTextResource.OrganisationOverview_ChildOrganisations_ListItem1</li>
+                        <li>@Html.Raw(StaticTextResource.OrganisationOverview_ChildOrganisations_ListItem2)</li>
+                    </ul>
+                    <details class="govuk-details govuk-!-padding-top-4">
+                        <summary class="govuk-details__summary">
+                            <span class="govuk-details__summary-text">
+                                @StaticTextResource.OrganisationOverview_ChildOrganisations_DetailsSummary
+                            </span>
+                        </summary>
+                        <div class="govuk-details__text">
+                            <p class="govuk-body">@StaticTextResource.OrganisationOverview_ChildOrganisations_DetailsText</p>
+                        </div>
+                    </details>
+                    @if (Model.ChildOrganisations != null && Model.ChildOrganisations.Any())
+                    {
+                        <table class="govuk-table govuk-!-margin-bottom-3">
+                            <thead class="govuk-table__head">
+                            <tr class="govuk-table__row">
+                                <th scope="col" class="govuk-table__header">Organisation</th>
+                                <th scope="col" class="govuk-table__header">PPON</th>
+                                <th scope="col" class="govuk-table__header"></th>
+                            </tr>
+                            </thead>
+                            <tbody class="govuk-table__body">
+                            @foreach (var childOrg in Model.ChildOrganisations)
+                            {
+                                <tr class="govuk-table__row">
+                                    <td class="govuk-table__cell govuk-!-width-one-half">@childOrg.Name</td>
+                                    <td class="govuk-table__cell govuk-!-width-one-third">@childOrg.Ppon</td>
+                                    <td class="govuk-table__cell" style="text-align: right;">
+                                        <authorize scope="@OrgScopeRequirement.Editor">
+                                            <a class="govuk-link" asp-page="/Buyer/Hierarchy/ChildOrganisationRemovePage"
+                                               asp-route-id="@Model.Id" asp-route-childId="@childOrg.Id" asp-route-ppon="GB-PPON:@childOrg.Ppon">
+                                                @StaticTextResource.Global_Remove<span class="govuk-visually-hidden"> child organisation</span>
+                                            </a>
+                                        </authorize>
+                                    </td>
+                                </tr>
+                            }
+                            </tbody>
+                        </table>
+                    }
+                    <authorize scope="@OrgScopeRequirement.Editor">
+                        <a href="/organisation/@RouteData.Values["id"]/buyer/hierarchy/add/child/search" role="button"
+                           draggable="false" class="govuk-button govuk-button--secondary govuk-!-margin-top-3"
+                           data-module="govuk-button">
+                            @StaticTextResource.OrganisationOverview_ChildOrganisations_ButtonText
+                        </a>
+                    </authorize>
+                }
+            }
 
             @if (organisationDetails.IsTenderer())
             {

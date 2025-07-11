@@ -242,7 +242,7 @@ public class CreateOrganisationJoinRequestUseCaseTests
             }
         };
 
-        _mockOrganisationRepository.Setup(repo => repo.FindOrganisationPersons(_organisation.Guid))
+        _mockOrganisationRepository.Setup(repo => repo.FindOrganisationPersons(_organisation.Guid, It.IsAny<IEnumerable<string>?>()))
             .ReturnsAsync(adminUsers.Select(admin => new OrganisationPerson
             {
                 Person = admin,

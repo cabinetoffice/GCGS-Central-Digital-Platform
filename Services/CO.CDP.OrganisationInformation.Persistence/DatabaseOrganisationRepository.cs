@@ -189,13 +189,19 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
         return filteredOrganisations;
     }
 
-    public async Task<IEnumerable<OrganisationPerson>> FindOrganisationPersons(Guid organisationId)
+    public async Task<IEnumerable<OrganisationPerson>> FindOrganisationPersons(Guid organisationId, IEnumerable<string>? anyScopes = null)
     {
-        return await context.Set<OrganisationPerson>()
+        var people = await context.Set<OrganisationPerson>()
             .Include(op => op.Person)
             .Where(op => op.Organisation != null && op.Organisation.Guid == organisationId)
-            .AsSingleQuery()
-            .ToListAsync();
+            .AsSingleQuery().ToArrayAsync();
+
+        if (anyScopes?.Any() == true)
+        {
+            people = people.Where(q => anyScopes.Any(scope => q.Scopes.Any(s => s == scope))).ToArray();
+        }
+
+        return people;
     }
 
     public async Task<OrganisationPerson?> FindOrganisationPerson(Guid organisationId, Guid personId)

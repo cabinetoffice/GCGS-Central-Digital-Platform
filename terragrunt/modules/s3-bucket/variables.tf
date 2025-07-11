@@ -9,6 +9,12 @@ variable "enable_access_logging" {
   description = "Enable server access logging for the bucket"
 }
 
+variable "enable_encryption" {
+  description = "Enable server-side encryption on the bucket"
+  type        = bool
+  default     = true
+}
+
 variable "enable_lifecycle" {
   type        = bool
   default     = false

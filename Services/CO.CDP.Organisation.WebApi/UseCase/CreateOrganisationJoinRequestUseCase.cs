@@ -43,7 +43,7 @@ public class CreateOrganisationJoinRequestUseCase(
                            ?? throw new UnknownPersonException($"Unknown person {command.createOrganisationJoinRequestCommand.PersonId}.");
 
         await GuardPersonIsNotAlreadyAdded(organisation, person);
-        
+
         var joinRequest = await organisationJoinRequestRepository.FindByOrganisationAndPerson(organisation.Guid, person.Guid);
 
         if (joinRequest != null)
@@ -108,20 +108,20 @@ public class CreateOrganisationJoinRequestUseCase(
 
         var requestLink = new Uri(new Uri(baseAppUrl), $"/organisation/{organisation.Guid}/users/user-summary").ToString();
 
-        var organisationAdminUsers = await GetOrganisationAdminUsers(organisation);
+        var organisationAdminUsers = await organisationRepository.FindOrganisationPersons(organisation.Guid, [Constants.OrganisationPersonScope.Admin]);
 
         foreach (var adminPerson in organisationAdminUsers)
         {
             var emailRequest = new EmailNotificationRequest
             {
-                EmailAddress = adminPerson.Email,
+                EmailAddress = adminPerson.Person.Email,
                 TemplateId = templateId,
                 Personalisation = new Dictionary<string, string>
                 {
                     { "org_name", organisation.Name },
                     { "request_link", requestLink },
-                    { "first_name", adminPerson.FirstName },
-                    { "last_name", adminPerson.LastName },
+                    { "first_name", adminPerson.Person.FirstName },
+                    { "last_name", adminPerson.Person.LastName },
                     { "requester_first_name", person.FirstName },
                     { "requester_last_name", person.LastName }
                 }
@@ -174,16 +174,10 @@ public class CreateOrganisationJoinRequestUseCase(
         }
     }
 
-    private async Task<List<Person>> GetOrganisationAdminUsers(Persistence.Organisation organisation)
-    {
-        var organisationPersons = await organisationRepository.FindOrganisationPersons(organisation.Guid);
-        return organisationPersons.Where(op => op.Scopes.Contains(Constants.OrganisationPersonScope.Admin)).Select(op => op.Person).ToList();
-    }
-        
     private async Task GuardPersonIsNotAlreadyAdded(Persistence.Organisation organisation, Person person)
     {
         var matchingOrganisationPerson = await organisationRepository.FindOrganisationPerson(organisation.Guid, person.Guid);
-        
+
         if (matchingOrganisationPerson != null)
         {
             throw new PersonAlreadyAddedToOrganisationException(
