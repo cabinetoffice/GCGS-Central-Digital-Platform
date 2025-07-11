@@ -145,5 +145,23 @@ namespace CO.CDP.RegisterOfCommercialTools.App.Pages.Search
         public bool ContractingAuthorityUsage { get; set; }
 
         public bool ContractingAuthorityUsageSet { get; set; }
+
+        [DisplayName("Submission deadline from")]
+        public DateOnly? SubmissionDeadlineFrom { get; set; }
+
+        [DisplayName("Submission deadline to")]
+        public DateOnly? SubmissionDeadlineTo { get; set; }
+
+        [DisplayName("Contract start date from")]
+        public DateOnly? ContractStartDateFrom { get; set; }
+
+        [DisplayName("Contract start date to")]
+        public DateOnly? ContractStartDateTo { get; set; }
+
+        [DisplayName("Contract end date from")]
+        public DateOnly? ContractEndDateFrom { get; set; }
+
+        [DisplayName("Contract end date to")]
+        public DateOnly? ContractEndDateTo { get; set; }
     }
 }

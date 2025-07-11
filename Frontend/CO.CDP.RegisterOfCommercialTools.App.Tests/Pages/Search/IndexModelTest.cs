@@ -33,6 +33,12 @@ public class IndexModelTest
         _model.SearchParams.FeeTo.Should().BeNull();
         _model.SearchParams.NoFees.Should().BeFalse();
         _model.SearchParams.NoFeesSet.Should().BeFalse();
+        _model.SearchParams.SubmissionDeadlineFrom.Should().BeNull();
+        _model.SearchParams.SubmissionDeadlineTo.Should().BeNull();
+        _model.SearchParams.ContractStartDateFrom.Should().BeNull();
+        _model.SearchParams.ContractStartDateTo.Should().BeNull();
+        _model.SearchParams.ContractEndDateFrom.Should().BeNull();
+        _model.SearchParams.ContractEndDateTo.Should().BeNull();
     }
 
     [Fact]
@@ -49,7 +55,13 @@ public class IndexModelTest
             ContractingAuthorityUsage = true,
             FeeFrom = 0,
             FeeTo = 100,
-            NoFees = true
+            NoFees = true,
+            SubmissionDeadlineFrom = new DateOnly(2025, 1, 1),
+            SubmissionDeadlineTo = new DateOnly(2025, 1, 31),
+            ContractStartDateFrom = new DateOnly(2025, 2, 1),
+            ContractStartDateTo = new DateOnly(2025, 2, 28),
+            ContractEndDateFrom = new DateOnly(2026, 1, 1),
+            ContractEndDateTo = new DateOnly(2026, 1, 31)
         };
         _model.SearchParams = searchParams;
 
