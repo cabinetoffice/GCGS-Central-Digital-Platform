@@ -5,25 +5,25 @@
         <fieldset class="govuk-fieldset">
             <div class="govuk-checkboxes govuk-checkboxes--small" data-module="govuk-checkboxes">
                 <div class="govuk-checkboxes__item">
-                    <input class="govuk-checkboxes__input" id="status-upcoming" asp-for="Status" type="checkbox" value="upcoming">
+                    <input class="govuk-checkboxes__input" id="status-upcoming" name="Status" type="checkbox" value="upcoming" checked="@Model.Status.Contains("upcoming")">
                     <label class="govuk-label govuk-checkboxes__label govuk-!-font-size-14" for="status-upcoming">
                         Upcoming
                     </label>
                 </div>
                 <div class="govuk-checkboxes__item">
-                    <input class="govuk-checkboxes__input" id="status-active-buyers" asp-for="Status" type="checkbox" value="active-buyers">
+                    <input class="govuk-checkboxes__input" id="status-active-buyers" name="Status" type="checkbox" value="active-buyers" checked="@Model.Status.Contains("active-buyers")">
                     <label class="govuk-label govuk-checkboxes__label govuk-!-font-size-14" for="status-active-buyers">
                         Active available to buyers
                     </label>
                 </div>
                 <div class="govuk-checkboxes__item">
-                    <input class="govuk-checkboxes__input" id="status-active-suppliers" asp-for="Status" type="checkbox" value="active-suppliers">
+                    <input class="govuk-checkboxes__input" id="status-active-suppliers" name="Status" type="checkbox" value="active-suppliers" checked="@Model.Status.Contains("active-suppliers")">
                     <label class="govuk-label govuk-checkboxes__label govuk-!-font-size-14" for="status-active-suppliers">
                         Active accepting suppliers
                     </label>
                 </div>
                 <div class="govuk-checkboxes__item">
-                    <input class="govuk-checkboxes__input" id="status-expired" asp-for="Status" type="checkbox" value="expired">
+                    <input class="govuk-checkboxes__input" id="status-expired" name="Status" type="checkbox" value="expired" checked="@Model.Status.Contains("expired")">
                     <label class="govuk-label govuk-checkboxes__label govuk-!-font-size-14" for="status-expired">
                         Expired
                     </label>

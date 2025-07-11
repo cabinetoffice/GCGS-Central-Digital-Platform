@@ -2,6 +2,7 @@ using CO.CDP.RegisterOfCommercialTools.App.Pages.Shared;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace CO.CDP.RegisterOfCommercialTools.App.Pages.Search
 {
@@ -121,11 +122,28 @@ namespace CO.CDP.RegisterOfCommercialTools.App.Pages.Search
         public string? DynamicMarketOptions { get; set; }
 
         [DisplayName("Award method")]
-        public bool? AwardMethod { get; set; }
+        public bool AwardMethod { get; set; }
+
+        public bool AwardMethodSet { get; set; }
+
+        [DisplayName("Fee from")]
+        [Range(0, 100, ErrorMessage = "Enter a value between 0 and 100")]
+        public decimal? FeeFrom { get; set; }
+
+        [DisplayName("Fee to")]
+        [Range(0, 100, ErrorMessage = "Enter a value between 0 and 100")]
+        public decimal? FeeTo { get; set; }
+
+        [DisplayName("No fees")]
+        public bool NoFees { get; set; }
+
+        public bool NoFeesSet { get; set; }
 
         public List<string> Status { get; set; } = [];
 
         [DisplayName("Contracting authority usage")]
-        public bool? ContractingAuthorityUsage { get; set; }
+        public bool ContractingAuthorityUsage { get; set; }
+
+        public bool ContractingAuthorityUsageSet { get; set; }
     }
 }

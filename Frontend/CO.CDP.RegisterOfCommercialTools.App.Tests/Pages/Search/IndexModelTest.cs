@@ -24,9 +24,15 @@ public class IndexModelTest
         _model.SearchParams.SortOrder.Should().BeNull();
         _model.SearchParams.FrameworkOptions.Should().BeNull();
         _model.SearchParams.DynamicMarketOptions.Should().BeNull();
-        _model.SearchParams.AwardMethod.Should().BeNull();
+        _model.SearchParams.AwardMethod.Should().BeFalse();
+        _model.SearchParams.AwardMethodSet.Should().BeFalse();
         _model.SearchParams.Status.Should().BeEmpty();
-        _model.SearchParams.ContractingAuthorityUsage.Should().BeNull();
+        _model.SearchParams.ContractingAuthorityUsage.Should().BeFalse();
+        _model.SearchParams.ContractingAuthorityUsageSet.Should().BeFalse();
+        _model.SearchParams.FeeFrom.Should().BeNull();
+        _model.SearchParams.FeeTo.Should().BeNull();
+        _model.SearchParams.NoFees.Should().BeFalse();
+        _model.SearchParams.NoFeesSet.Should().BeFalse();
     }
 
     [Fact]
@@ -40,7 +46,10 @@ public class IndexModelTest
             DynamicMarketOptions = "utilities-only",
             AwardMethod = true,
             Status = ["upcoming", "active-buyers"],
-            ContractingAuthorityUsage = true
+            ContractingAuthorityUsage = true,
+            FeeFrom = 0,
+            FeeTo = 100,
+            NoFees = true
         };
         _model.SearchParams = searchParams;
 
