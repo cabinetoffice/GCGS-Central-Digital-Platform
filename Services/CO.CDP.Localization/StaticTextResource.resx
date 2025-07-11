@@ -4033,10 +4033,35 @@
   <data name="PponSearch_NoResults" xml:space="preserve">
     <value>There are no results</value>
   </data>
-  <data name="PponSearch_Ppon_Desc_Hint" xml:space="preserve">
-    <value>A PPON is a unique identifier assigned to organisations that participate in public procurement, generated when an organisation registers on the <a target="_blank" href = "https://www.legislation.gov.uk/ukpga/2006/46/schedule/1A/part/1?timeline=false">Supplier Registration service (opens in a new tab)</a>. It is used to manage and publish notices related to public procurement and connects information about the organisation digitally.<br/>Your PPON is a combination of 16 letters and numbers, separated by hyphens. For example, ABCD-EFGH-1234-IJKL.</value>
+  <data name="PponSearch_Ppon_Desc_Hint_01" xml:space="preserve">
+    <value>
+      &lt;p class=&quot;govuk-body&quot;&gt;
+        A PPON is a unique identifier assigned to organisations that participate in public procurement, generated when an organisation registers on the
+        &lt;a target=&quot;_blank&quot; href=&quot;https://www.legislation.gov.uk/ukpga/2006/46/schedule/1A/part/1?timeline=false&quot;&gt;
+        Supplier Registration service (opens in a new tab)&lt;/a&gt;. It is used to manage and publish notices related to public procurement and connects information about the organisation digitally.
+      &lt;/p&gt;
+    </value>
+  </data>
+  <data name="PponSearch_Ppon_Desc_Hint_02" xml:space="preserve">
+    <value>
+      &lt;p class=&quot;govuk-body&quot;&gt;
+        Your PPON is a combination of 16 letters and numbers, separated by hyphens. For example, ABCD-EFGH-1234-IJKL.
+      &lt;/p&gt;
+    </value>
   </data>
   <data name="Global_Search" xml:space="preserve">
     <value>Search</value>
+  </data>
+  <data name="Global_Search_Results" xml:space="preserve">
+    <value>Sort results</value>
+  </data>
+  <data name="Global_Sort_Relevance" xml:space="preserve">
+    <value>Relevance</value>
+  </data>
+  <data name="Global_Sort_Alphabetical_Asc" xml:space="preserve">
+    <value>Alphabetical (A-Z)</value>
+  </data>
+  <data name="Global_Sort_Alphabetical_Desc" xml:space="preserve">
+    <value>Alphabetical (Z-A)</value>
   </data>
 </root>

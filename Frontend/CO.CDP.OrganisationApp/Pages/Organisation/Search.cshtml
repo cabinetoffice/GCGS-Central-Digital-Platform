@@ -17,29 +17,31 @@
 
 <form method="get">
     <div class="govuk-grid-row govuk-!-margin-bottom-5">
-        <div class="govuk-grid-column-one-half govuk-!-margin-bottom-3">
+        <div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-3">
             <label class="govuk-label" for="organisation-search-input">
                 @Model.SearchTitle
             </label>
             <input class="govuk-input" id="organisation-search-input" name="q" type="text" value="@queryValue">
         </div>
-        <div class="govuk-grid-column-full">
+        <div class="govuk-grid-column-two-thirds">
             <button type="submit" class="govuk-button" data-module="govuk-button">
                 @StaticTextResource.Global_Search
             </button>
         </div>
-    </div>
-
-    <details class="govuk-details">
-        <summary class="govuk-details__summary">
-        <span class="govuk-details__summary-text">
-            @StaticTextResource.PponSearch_Ppon_Desc_Title
-        </span>
-        </summary>
-        <div class="govuk-details__text">
-            @StaticTextResource.PponSearch_Ppon_Desc_Hint
+        <div class="govuk-grid-column-two-thirds">
+            <details class="govuk-details">
+                <summary class="govuk-details__summary">
+            <span class="govuk-details__summary-text">
+                @StaticTextResource.PponSearch_Ppon_Desc_Title
+            </span>
+                </summary>
+                <div class="govuk-details__text">
+                    @Html.Raw(@StaticTextResource.PponSearch_Ppon_Desc_Hint_01)
+                    @Html.Raw(@StaticTextResource.PponSearch_Ppon_Desc_Hint_02)
+                </div>
+            </details>
         </div>
-    </details>
+    </div>
 
     @if (Model.TotalOrganisations == 0 && !string.IsNullOrEmpty(queryValue))
     {
@@ -51,7 +53,7 @@
             </div>
         </div>
     }
-    else if(Model.TotalOrganisations > 0)
+    else if (Model.TotalOrganisations > 0)
     {
         <div class="govuk-grid-row">
             <div class="govuk-grid-column-one-half" style="padding-left: 0">
@@ -60,21 +62,21 @@
             </div>
             <div class="govuk-grid-column-one-half govuk-!-text-align-right" style="padding-left: 0 !important;">
                 <div class="govuk-form-group">
-                    <label class="govuk-label" for="sort-order">
-                        Sort results
+                    <label class="govuk-label govuk-!-font-weight-bold" for="sort-order">
+                        @StaticTextResource.Global_Search_Results
                     </label>
                     <select class="govuk-select" id="sort-order" name="sortOrder" onchange="this.form.submit()">
                         <option value="relevance"
                                 selected="@(Request.Query["sortOrder"] == "relevance" ? "selected" : null)">
-                            Relevance
+                            @StaticTextResource.Global_Sort_Relevance
                         </option>
                         <option value="ascending"
                                 selected="@(Request.Query["sortOrder"] == "ascending" ? "selected" : null)">
-                            Alphabetical (A-Z)
+                            @StaticTextResource.Global_Sort_Alphabetical_Asc
                         </option>
                         <option value="descending"
                                 selected="@(Request.Query["sortOrder"] == "descending" ? "selected" : null)">
-                            Alphabetical (Z-A)
+                            @StaticTextResource.Global_Sort_Alphabetical_Desc
                         </option>
                     </select>
                 </div>
