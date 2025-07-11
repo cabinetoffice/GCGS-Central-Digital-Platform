@@ -7,8 +7,12 @@ locals {
   fts_screts_arn = data.aws_secretsmanager_secret.fts_secrets.arn
 
   fts_secrets = {
+    email_contactus                       = "${local.fts_screts_arn}:CONTACTUS_EMAIL::"
+    email_e_enablement                    = "${local.fts_screts_arn}:EENABLEMENT_EMAIL::"
     email_subscription_authentication_key = "${local.fts_screts_arn}:EMAIL_SUBSCRIPTION_AUTHENTICATION_KEY::"
     email_subscription_cipher             = "${local.fts_screts_arn}:EMAIL_SUBSCRIPTION_CIPHER::"
+    email_tech_support                    = "${local.fts_screts_arn}:TECHSUPPORT_EMAIL::"
+    email_user_research                   = "${local.fts_screts_arn}:USER_RESEARCH_EMAIL::"
     fts_one_login_client_id               = local.one_login.credential_locations.client_id
     fts_srsi_api_key                      = "${local.fts_screts_arn}:FTS_SRSI_API_KEY::"
     google_analytics_key                  = "${local.fts_screts_arn}:GOOGLE_ANALYTICS_KEY::"
@@ -31,7 +35,7 @@ locals {
   }
 
   fts_parameters = {
-    contactus_email                     = "${local.fts_screts_arn}:CONTACTUS_EMAIL::"
+    email_support                       = var.is_production ? "noreply@find-tender.service.gov.uk" : "noreply@${var.public_domain}"
     dev_email                           = "${local.fts_screts_arn}:DEV_EMAIL::"
     app_host_address                    = "%"
     buyer_corporate_identifier_prefixes = "sid4gov.cabinetoffice.gov.uk|supplierregistration.service.xgov.uk|test-idp-intra.nqc.com"
