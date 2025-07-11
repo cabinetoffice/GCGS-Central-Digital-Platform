@@ -56,7 +56,7 @@ public class SearchModel(
             return;
         }
 
-        searchText = Regex.Replace(searchText.Trim(), @"[^\w\s]", string.Empty);
+        searchText = Regex.Replace(searchText.Trim(), @"[^\w\s\-]", string.Empty);
         if (string.IsNullOrWhiteSpace(searchText))
         {
             resetKeyParams();
