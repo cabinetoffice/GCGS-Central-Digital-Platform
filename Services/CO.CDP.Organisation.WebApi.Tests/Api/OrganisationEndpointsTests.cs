@@ -324,7 +324,7 @@ public class OrganisationEndpointsTests
                 Id = Guid.NewGuid(),
                 Identifier = new Identifier
                 {
-                    Scheme = "scheme",
+                    Scheme = "GB-PPON",
                     Id = "123",
                     LegalName = "legal name"
                 },

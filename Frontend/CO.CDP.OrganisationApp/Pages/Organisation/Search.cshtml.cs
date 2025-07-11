@@ -23,7 +23,7 @@ public class SearchModel(
 
     public int TotalPages { get; set; }
 
-    public int PageSize { get; set; }
+    internal int PageSize { get; set; }
 
     public int Skip { get; set; }
 
@@ -40,7 +40,7 @@ public class SearchModel(
 
     private void InitModel(string type, int pageNumber)
     {
-        PageSize = 50;
+        PageSize = 10;
         if (pageNumber < 1) pageNumber = 1;
         Title = StaticTextResource.PponSearch_Title;
         SearchTitle = StaticTextResource.PponSearch_Hint;

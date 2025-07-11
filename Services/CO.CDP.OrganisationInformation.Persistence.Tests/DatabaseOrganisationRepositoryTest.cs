@@ -746,15 +746,15 @@ public class DatabaseOrganisationRepositoryTest(OrganisationInformationPostgreSq
 
         await ClearTestData(context);
 
-        var uniqueId1 = Guid.NewGuid().ToString("N").Substring(0, 8);
-        var uniqueId2 = Guid.NewGuid().ToString("N").Substring(0, 8);
+        var uniqueId1 = "PGWZ-1758-AAAA";
+        var uniqueId2 = "PGWZ-1758-BBBB";
 
         var buyerOrg = GivenOrganisation(
             name: $"Test Buyer Organisation {uniqueId1}",
             roles: [PartyRole.Buyer]);
         buyerOrg.Identifiers.Add(new Identifier {
             Scheme = "GB-PPON",
-            IdentifierId = $"PPON-{uniqueId1}",
+            IdentifierId = $"{uniqueId1}",
             LegalName = "Legal Buyer Name",
             Primary = true
         });
@@ -764,7 +764,7 @@ public class DatabaseOrganisationRepositoryTest(OrganisationInformationPostgreSq
             roles: [PartyRole.Tenderer]);
         tendererOrg.Identifiers.Add(new Identifier {
             Scheme = "GB-PPON",
-            IdentifierId = $"PPON-{uniqueId2}",
+            IdentifierId = $"{uniqueId2}",
             LegalName = "Legal Tenderer Name",
             Primary = true
         });
@@ -788,7 +788,7 @@ public class DatabaseOrganisationRepositoryTest(OrganisationInformationPostgreSq
         await ClearTestData(context);
 
         var uniqueId = Guid.NewGuid().ToString("N").Substring(0, 8);
-        var pponId = $"PPON-{uniqueId}";
+        var pponId = "PGWZ-1758-CCCC";
 
         var buyerOrg = GivenOrganisation(
             name: $"Test Buyer Org {uniqueId}",
@@ -819,15 +819,15 @@ public class DatabaseOrganisationRepositoryTest(OrganisationInformationPostgreSq
 
         await ClearTestData(context);
 
-        var uniqueId1 = Guid.NewGuid().ToString("N").Substring(0, 8);
-        var uniqueId2 = Guid.NewGuid().ToString("N").Substring(0, 8);
+        var uniqueId1 = "PGWZ-1758-DDDD";;
+        var uniqueId2 = "PGWZ-1758-EEEE";
 
         var buyerOrg = GivenOrganisation(
             name: $"Test Buyer Organisation {uniqueId1}",
             roles: [PartyRole.Buyer]);
         buyerOrg.Identifiers.Add(new Identifier {
             Scheme = "GB-PPON",
-            IdentifierId = $"PPON-{uniqueId1}",
+            IdentifierId = $"{uniqueId1}",
             LegalName = "Legal Buyer Name",
             Primary = true
         });
@@ -837,7 +837,7 @@ public class DatabaseOrganisationRepositoryTest(OrganisationInformationPostgreSq
             roles: [PartyRole.Supplier]);
         supplierOrg.Identifiers.Add(new Identifier {
             Scheme = "GB-PPON",
-            IdentifierId = $"PPON-{uniqueId2}",
+            IdentifierId = $"{uniqueId2}",
             LegalName = "Legal Supplier Name",
             Primary = true
         });
@@ -861,15 +861,15 @@ public class DatabaseOrganisationRepositoryTest(OrganisationInformationPostgreSq
 
         await ClearTestData(context);
 
-        var uniqueId1 = Guid.NewGuid().ToString("N").Substring(0, 8);
-        var uniqueId2 = Guid.NewGuid().ToString("N").Substring(0, 8);
+        var uniqueId1 = "PGWZ-1758-FFFF";
+        var uniqueId2 = "PGWZ-1758-GGGG";
 
         var activeOrg = GivenOrganisation(
             name: $"Test Active Organisation {uniqueId1}",
             roles: [PartyRole.Buyer]);
         activeOrg.Identifiers.Add(new Identifier {
             Scheme = "GB-PPON",
-            IdentifierId = $"PPON-{uniqueId1}",
+            IdentifierId = $"{uniqueId1}",
             LegalName = "Legal Name",
             Primary = true
         });
@@ -880,7 +880,7 @@ public class DatabaseOrganisationRepositoryTest(OrganisationInformationPostgreSq
             pendingRoles: [PartyRole.Buyer]);
         pendingOrg.Identifiers.Add(new Identifier {
             Scheme = "GB-PPON",
-            IdentifierId = $"PPON-{uniqueId2}",
+            IdentifierId = $"{uniqueId2}",
             LegalName = "Legal Name",
             Primary = true
         });
