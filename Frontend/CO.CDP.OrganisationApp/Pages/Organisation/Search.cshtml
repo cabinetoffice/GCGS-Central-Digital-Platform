@@ -56,7 +56,7 @@
     else if (Model.TotalOrganisations > 0)
     {
         <div class="govuk-grid-row">
-            if(Model.TotalOrganisations == 1){
+            @if(Model.TotalOrganisations == 1){
             <div class="govuk-grid-column-one-half" style="padding-left: 0">
                 <h2 class="govuk-heading-l">Search results</h2>
                 <p class="govuk-body">@StaticTextResource.PponSearch_ResultsCountOneHeading</p>

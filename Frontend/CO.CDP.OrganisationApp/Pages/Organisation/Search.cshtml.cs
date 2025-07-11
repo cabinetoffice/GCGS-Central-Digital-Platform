@@ -23,7 +23,7 @@ public class SearchModel(
 
     public int TotalPages { get; set; }
 
-    internal int PageSize { get; set; }
+    public int PageSize { get; set; }
 
     public int Skip { get; set; }
 
