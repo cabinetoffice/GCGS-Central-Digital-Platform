@@ -1,0 +1,23 @@
+@page
+@model CO.CDP.UI.Foundation.Pages.ErrorModel
+@{
+    ViewData["Title"] = "Sorry, there is a problem with the service";
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-l">@ViewData["Title"]</h1>
+        <p class="govuk-body">Try again later.</p>
+        @if (!string.IsNullOrEmpty(Model.FeedbackUrl))
+        {
+        <p class="govuk-body">
+            If you continue to see this message, <a class="govuk-link"
+                                                    href="@Model.FeedbackUrl?context=feedback&traceId=@Model.TraceId">contact
+                the support team</a>.
+        </p>
+        }
+        <p class="govuk-body">
+            <strong>Trace ID:</strong> @Model.TraceId
+        </p>
+    </div>
+</div>
