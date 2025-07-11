@@ -114,9 +114,9 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
         return await query.Select(t => t.Organisation).ToListAsync();
     }
 
-    public async Task<IEnumerable<Organisation>> SearchByNameOrPpon(string name, int? limit, int skip)
+    public async Task<(IEnumerable<Organisation> Results, int TotalCount)> SearchByNameOrPpon(string name, int? limit, int skip)
     {
-        var query = context.Organisations
+        var baseQuery = context.Organisations
             .Include(b => b.Identifiers)
             .Include(p => p.Addresses)
             .ThenInclude(p => p.Address)
@@ -126,13 +126,17 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
             .Where(t => t.Type == OrganisationType.Organisation)
             .Where(t => t.Roles.Contains(PartyRole.Buyer) || t.Roles.Contains(PartyRole.Tenderer))
             .Where(t => t.Identifiers.Any(i => i.Scheme.Equals("GB-PPON")))
-            .OrderBy(t => t.Name).AsQueryable();
+            .OrderBy(t => t.Name);
 
-        if (limit.HasValue)
-        {
-            query = query.Skip(skip).Take(limit.Value);
-        }
-        return await query.ToListAsync();
+        // Get total count before pagination
+        int totalCount = await baseQuery.CountAsync();
+
+        // Apply pagination and get results
+        var results = limit.HasValue
+            ? await baseQuery.Skip(skip).Take(limit.Value).ToListAsync()
+            : await baseQuery.Skip(skip).ToListAsync();
+
+        return (results, totalCount);
     }
 
     public async Task<IEnumerable<Organisation>> FindByOrganisationEmail(string email, PartyRole? role, int? limit)

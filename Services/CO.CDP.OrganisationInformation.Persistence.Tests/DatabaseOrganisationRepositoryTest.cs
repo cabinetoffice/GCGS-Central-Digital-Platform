@@ -774,9 +774,10 @@ public class DatabaseOrganisationRepositoryTest(OrganisationInformationPostgreSq
 
         var result = await repository.SearchByNameOrPpon("Test", 10, 0);
 
-        result.Should().NotBeNull();
-        result.Should().Contain(buyerOrg);
-        result.Should().Contain(tendererOrg);
+        result.Results.Should().NotBeNull();
+        result.Results.Should().Contain(buyerOrg);
+        result.Results.Should().Contain(tendererOrg);
+        result.TotalCount.Should().Be(2);
     }
 
     [Fact]
@@ -806,9 +807,10 @@ public class DatabaseOrganisationRepositoryTest(OrganisationInformationPostgreSq
         var searchText = pponId.Substring(2, 6);
         var result = await repository.SearchByNameOrPpon(searchText, 10, 0);
 
-        result.Should().NotBeNull();
-        result.Should().HaveCount(1);
-        result.First().Should().Be(buyerOrg);
+        result.Results.Should().NotBeNull();
+        result.Results.Should().HaveCount(1);
+        result.Results.First().Should().Be(buyerOrg);
+        result.TotalCount.Should().Be(1);
     }
 
     [Fact]
@@ -819,7 +821,7 @@ public class DatabaseOrganisationRepositoryTest(OrganisationInformationPostgreSq
 
         await ClearTestData(context);
 
-        var uniqueId1 = "PGWZ-1758-DDDD";;
+        var uniqueId1 = "PGWZ-1758-DDDD";
         var uniqueId2 = "PGWZ-1758-EEEE";
 
         var buyerOrg = GivenOrganisation(
@@ -847,10 +849,11 @@ public class DatabaseOrganisationRepositoryTest(OrganisationInformationPostgreSq
 
         var result = await repository.SearchByNameOrPpon("Test", 10, 0);
 
-        result.Should().NotBeNull();
-        result.Should().HaveCount(1);
-        result.Should().Contain(buyerOrg);
-        result.Should().NotContain(supplierOrg);
+        result.Results.Should().NotBeNull();
+        result.Results.Should().HaveCount(1);
+        result.Results.Should().Contain(buyerOrg);
+        result.Results.Should().NotContain(supplierOrg);
+        result.TotalCount.Should().Be(1);
     }
 
     private async Task ClearTestData(OrganisationInformationContext context)

@@ -257,7 +257,7 @@ internal static class OrganisationClientExtensions
         }
     }
 
-    internal static async Task<ICollection<OrganisationSearchByPponResult>> SearchOrganisationByNameOrPpon(
+    internal static async Task<(ICollection<OrganisationSearchByPponResult>,int)> SearchOrganisationByNameOrPpon(
         this IOrganisationClient organisationClient,
         string searchText,
         int pageSize,
@@ -265,11 +265,15 @@ internal static class OrganisationClientExtensions
         try
         {
             var searchResults =  await organisationClient.SearchByNameOrPponAsync(searchText, pageSize,skip);
-            return searchResults ?? new List<OrganisationSearchByPponResult>();
+            if (searchResults.Results.Count > 0)
+            {
+                return (searchResults.Results, searchResults.TotalCount);
+            }
+            return (new List<OrganisationSearchByPponResult>(), 0);
         }
         catch (ApiException ex) when (ex.StatusCode == 404)
         {
-            return new List<OrganisationSearchByPponResult>();
+            return (new List<OrganisationSearchByPponResult>(),0);
         }
     }
 }

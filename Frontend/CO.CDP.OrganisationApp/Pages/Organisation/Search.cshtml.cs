@@ -86,7 +86,7 @@ public class SearchModel(IOrganisationClient organisationClient,
 
         try
         {
-            var orgs = await OrganisationClientExtensions.SearchOrganisationByNameOrPpon(
+            var (orgs, totalCount) = await OrganisationClientExtensions.SearchOrganisationByNameOrPpon(
                 organisationClient, cleanedSearchText, PageSize, Skip);
 
             if (orgs.Count == 0)
@@ -103,7 +103,7 @@ public class SearchModel(IOrganisationClient organisationClient,
                 _ => orgs.ToList()
             };
             ErrorMessage = null;
-            TotalOrganisations = orgs.Count;
+            TotalOrganisations = totalCount;
             TotalPages = (int)Math.Ceiling((double)TotalOrganisations / PageSize);
         }
         catch (Exception ex) when (

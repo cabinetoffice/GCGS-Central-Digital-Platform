@@ -115,11 +115,11 @@ public class SearchOrganisationByPponUseCaseTests : IClassFixture<AutoMapperFixt
 
         _organisationRepositoryMock
             .Setup(repo => repo.SearchByNameOrPpon(It.IsAny<string>(), 10, 0))
-            .ReturnsAsync(organisations);
+            .ReturnsAsync((organisations,organisations.Count));
 
         var results = await _useCase.Execute(new OrganisationSearchByPponQuery("Test", 10, 0));
 
-        results.Should().BeEquivalentTo(expectedResults,
+        results.Results.Should().BeEquivalentTo(expectedResults,
             options => options.ComparingByMembers<OrganisationSearchByPponResult>());
     }
 
@@ -128,10 +128,10 @@ public class SearchOrganisationByPponUseCaseTests : IClassFixture<AutoMapperFixt
     {
         _organisationRepositoryMock
             .Setup(repo => repo.SearchByNameOrPpon(It.IsAny<string>(), 20, 5))
-            .ReturnsAsync([]);
+            .ReturnsAsync(([],0));
 
         var results = await _useCase.Execute(new OrganisationSearchByPponQuery("NonexistentOrg", 20, 5));
 
-        results.Should().BeEmpty();
+        results.Results.Should().BeEmpty();
     }
 }
