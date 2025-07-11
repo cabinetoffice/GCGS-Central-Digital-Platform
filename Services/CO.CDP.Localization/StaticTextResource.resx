@@ -4237,7 +4237,13 @@
   <data name="PponSearch_Ppon_Desc_Title" xml:space="preserve">
     <value>What is a Public procurement organisation number (PPON)?</value>
   </data>
-  <data name="PponSearch_ResultsCountHeading" xml:space="preserve">
+  <data name="PponSearch_Invalid_Search_Query" xml:space="preserve">
+    <value>Invalid search query. Please try with valid Name or Ppon</value>
+  </data>
+  <data name="PponSearch_ResultsCountOneHeading" xml:space="preserve">
+    <value>We've found 1 organisation</value>
+  </data>
+  <data name="PponSearch_ResultsCountMoreThanOneHeading" xml:space="preserve">
     <value>We've found {0} organisations</value>
   </data>
   <data name="PponSearch_NoResults" xml:space="preserve">
@@ -4280,4 +4286,5 @@
   <data name="Organisation_SearchOrganisationsHint" xml:space="preserve">
     <value>Search by organisation name, organisation identifier or PPON.</value>
   </data>
+  
 </root>

@@ -853,49 +853,6 @@ public class DatabaseOrganisationRepositoryTest(OrganisationInformationPostgreSq
         result.Should().NotContain(supplierOrg);
     }
 
-    [Fact]
-    public async Task SearchByNameOrPpon_DoesNotReturnOrganisations_WithPendingRoles()
-    {
-        using var repository = OrganisationRepository();
-        await using var context = GetDbContext();
-
-        await ClearTestData(context);
-
-        var uniqueId1 = "PGWZ-1758-FFFF";
-        var uniqueId2 = "PGWZ-1758-GGGG";
-
-        var activeOrg = GivenOrganisation(
-            name: $"Test Active Organisation {uniqueId1}",
-            roles: [PartyRole.Buyer]);
-        activeOrg.Identifiers.Add(new Identifier {
-            Scheme = "GB-PPON",
-            IdentifierId = $"{uniqueId1}",
-            LegalName = "Legal Name",
-            Primary = true
-        });
-
-        var pendingOrg = GivenOrganisation(
-            name: $"Test Pending Organisation {uniqueId2}",
-            roles: [],
-            pendingRoles: [PartyRole.Buyer]);
-        pendingOrg.Identifiers.Add(new Identifier {
-            Scheme = "GB-PPON",
-            IdentifierId = $"{uniqueId2}",
-            LegalName = "Legal Name",
-            Primary = true
-        });
-
-        context.Organisations.AddRange([activeOrg, pendingOrg]);
-        await context.SaveChangesAsync();
-
-        var result = await repository.SearchByNameOrPpon("Test", 10, 0);
-
-        result.Should().NotBeNull();
-        result.Should().HaveCount(1);
-        result.Should().Contain(activeOrg);
-        result.Should().NotContain(pendingOrg);
-    }
-
     private async Task ClearTestData(OrganisationInformationContext context)
     {
         await context.Database.ExecuteSqlRawAsync("DELETE FROM identifiers");

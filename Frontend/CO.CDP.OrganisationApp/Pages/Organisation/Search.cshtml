@@ -56,9 +56,15 @@
     else if (Model.TotalOrganisations > 0)
     {
         <div class="govuk-grid-row">
+            if(Model.TotalOrganisations == 1){
             <div class="govuk-grid-column-one-half" style="padding-left: 0">
                 <h2 class="govuk-heading-l">Search results</h2>
-                <p class="govuk-body">@(string.Format(StaticTextResource.PponSearch_ResultsCountHeading, Model.TotalOrganisations))</p>
+                <p class="govuk-body">@StaticTextResource.PponSearch_ResultsCountOneHeading</p>
+            </div>
+            }else{
+            <div class="govuk-grid-column-one-half" style="padding-left: 0">
+                <h2 class="govuk-heading-l">Search results</h2>
+                <p class="govuk-body">@(string.Format(StaticTextResource.PponSearch_ResultsCountMoreThanOneHeading, Model.TotalOrganisations))</p>
             </div>
             <div class="govuk-grid-column-one-half govuk-!-text-align-right" style="padding-left: 0 !important;">
                 <div class="govuk-form-group">
@@ -81,6 +87,7 @@
                     </select>
                 </div>
             </div>
+            }
         </div>
     }
 </form>

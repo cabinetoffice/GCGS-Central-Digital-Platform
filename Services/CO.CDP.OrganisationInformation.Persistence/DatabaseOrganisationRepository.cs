@@ -120,7 +120,6 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
             .Include(b => b.Identifiers)
             .Include(p => p.Addresses)
             .ThenInclude(p => p.Address)
-            .Where(t => t.PendingRoles.Count == 0)
             .Where(t =>
                 EF.Functions.ILike(t.Name, $"%{name}%") ||
                 t.Identifiers.Any(i => EF.Functions.ILike(i.IdentifierId, $"%{name}%")))
