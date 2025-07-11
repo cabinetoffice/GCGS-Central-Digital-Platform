@@ -1,6 +1,7 @@
 using CO.CDP.RegisterOfCommercialTools.App.Pages.Search;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace CO.CDP.RegisterOfCommercialTools.App.Tests.Pages.Search;
 
@@ -81,5 +82,112 @@ public class IndexModelTest
         var redirectResult = result.Should().BeOfType<RedirectToPageResult>().Subject;
         redirectResult.PageName.Should().BeNull();
         redirectResult.RouteValues.Should().BeNull();
+    }
+
+    [Fact]
+    public void DateRangeValidation_WhenToDateIsBeforeFromDate_ShouldHaveValidationError()
+    {
+        var searchParams = new SearchModel
+        {
+            SubmissionDeadlineFrom = new DateOnly(2025, 2, 1),
+            SubmissionDeadlineTo = new DateOnly(2025, 1, 1),
+            ContractStartDateFrom = new DateOnly(2025, 2, 1),
+            ContractStartDateTo = new DateOnly(2025, 1, 1),
+            ContractEndDateFrom = new DateOnly(2025, 2, 1),
+            ContractEndDateTo = new DateOnly(2025, 1, 1)
+        };
+
+        var validationContext = new ValidationContext(searchParams);
+        var validationResults = new List<ValidationResult>();
+        var isValid = Validator.TryValidateObject(searchParams, validationContext, validationResults, true);
+
+        isValid.Should().BeFalse();
+        validationResults.Should().HaveCount(3);
+        validationResults.Select(r => r.ErrorMessage).Should().AllBe("To date must be after from date");
+    }
+
+    [Fact]
+    public void DateRangeValidation_WhenToDateIsAfterFromDate_ShouldBeValid()
+    {
+        var searchParams = new SearchModel
+        {
+            SubmissionDeadlineFrom = new DateOnly(2025, 1, 1),
+            SubmissionDeadlineTo = new DateOnly(2025, 2, 1),
+            ContractStartDateFrom = new DateOnly(2025, 1, 1),
+            ContractStartDateTo = new DateOnly(2025, 2, 1),
+            ContractEndDateFrom = new DateOnly(2025, 1, 1),
+            ContractEndDateTo = new DateOnly(2025, 2, 1)
+        };
+
+        var validationContext = new ValidationContext(searchParams);
+        var validationResults = new List<ValidationResult>();
+        var isValid = Validator.TryValidateObject(searchParams, validationContext, validationResults, true);
+
+        isValid.Should().BeTrue();
+        validationResults.Should().BeEmpty();
+    }
+
+    [Fact]
+    public void DateRangeValidation_WhenToDateIsSameAsFromDate_ShouldBeValid()
+    {
+        var searchParams = new SearchModel
+        {
+            SubmissionDeadlineFrom = new DateOnly(2025, 1, 1),
+            SubmissionDeadlineTo = new DateOnly(2025, 1, 1),
+            ContractStartDateFrom = new DateOnly(2025, 1, 1),
+            ContractStartDateTo = new DateOnly(2025, 1, 1),
+            ContractEndDateFrom = new DateOnly(2025, 1, 1),
+            ContractEndDateTo = new DateOnly(2025, 1, 1)
+        };
+
+        var validationContext = new ValidationContext(searchParams);
+        var validationResults = new List<ValidationResult>();
+        var isValid = Validator.TryValidateObject(searchParams, validationContext, validationResults, true);
+
+        isValid.Should().BeTrue();
+        validationResults.Should().BeEmpty();
+    }
+
+    [Fact]
+    public void DateRangeValidation_WhenDatesArePartiallyPopulated_ShouldBeValid()
+    {
+        var searchParams = new SearchModel
+        {
+            SubmissionDeadlineFrom = new DateOnly(2025, 1, 1),
+            SubmissionDeadlineTo = null,
+            ContractStartDateFrom = null,
+            ContractStartDateTo = new DateOnly(2025, 1, 1),
+            ContractEndDateFrom = new DateOnly(2025, 1, 1),
+            ContractEndDateTo = null
+        };
+
+        var validationContext = new ValidationContext(searchParams);
+        var validationResults = new List<ValidationResult>();
+        var isValid = Validator.TryValidateObject(searchParams, validationContext, validationResults, true);
+
+        isValid.Should().BeTrue();
+        validationResults.Should().BeEmpty();
+    }
+
+    [Fact]
+    public void DateRangeValidation_WhenOnlyOneFieldHasError_ShouldOnlyReportThatError()
+    {
+        var searchParams = new SearchModel
+        {
+            SubmissionDeadlineFrom = new DateOnly(2025, 2, 1),
+            SubmissionDeadlineTo = new DateOnly(2025, 1, 1),
+            ContractStartDateFrom = new DateOnly(2025, 1, 1),
+            ContractStartDateTo = new DateOnly(2025, 2, 1),
+            ContractEndDateFrom = new DateOnly(2025, 1, 1),
+            ContractEndDateTo = new DateOnly(2025, 2, 1)
+        };
+
+        var validationContext = new ValidationContext(searchParams);
+        var validationResults = new List<ValidationResult>();
+        var isValid = Validator.TryValidateObject(searchParams, validationContext, validationResults, true);
+
+        isValid.Should().BeFalse();
+        validationResults.Should().HaveCount(1);
+        validationResults[0].ErrorMessage.Should().Be("To date must be after from date");
     }
 }

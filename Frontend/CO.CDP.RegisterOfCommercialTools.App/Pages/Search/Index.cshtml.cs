@@ -1,4 +1,5 @@
 using CO.CDP.RegisterOfCommercialTools.App.Pages.Shared;
+using CO.CDP.RegisterOfCommercialTools.App.Validation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel;
@@ -96,6 +97,29 @@ namespace CO.CDP.RegisterOfCommercialTools.App.Pages.Search
             };
         }
 
+        public IActionResult OnPost()
+        {
+            CheckDateBindingErrors("SearchParams.SubmissionDeadlineFrom", "Please enter a valid date");
+            CheckDateBindingErrors("SearchParams.SubmissionDeadlineTo", "Please enter a valid date");
+            CheckDateBindingErrors("SearchParams.ContractStartDateFrom", "Please enter a valid date");
+            CheckDateBindingErrors("SearchParams.ContractStartDateTo", "Please enter a valid date");
+            CheckDateBindingErrors("SearchParams.ContractEndDateFrom", "Please enter a valid date");
+            CheckDateBindingErrors("SearchParams.ContractEndDateTo", "Please enter a valid date");
+
+            OnGet();
+            return Page();
+        }
+
+        private void CheckDateBindingErrors(string key, string errorMessage)
+        {
+            if (ModelState.TryGetValue(key, out var modelState) && modelState.Errors.Any())
+            {
+                modelState.Errors.Clear();
+
+                ModelState.AddModelError(key, errorMessage);
+            }
+        }
+
         public IActionResult OnPostReset()
         {
             return RedirectToPage();
@@ -155,18 +179,21 @@ namespace CO.CDP.RegisterOfCommercialTools.App.Pages.Search
         public DateOnly? SubmissionDeadlineFrom { get; set; }
 
         [DisplayName("Submission deadline to")]
+        [DateRange("SubmissionDeadlineFrom", ErrorMessage = "To date must be after from date")]
         public DateOnly? SubmissionDeadlineTo { get; set; }
 
         [DisplayName("Contract start date from")]
         public DateOnly? ContractStartDateFrom { get; set; }
 
         [DisplayName("Contract start date to")]
+        [DateRange("ContractStartDateFrom", ErrorMessage = "To date must be after from date")]
         public DateOnly? ContractStartDateTo { get; set; }
 
         [DisplayName("Contract end date from")]
         public DateOnly? ContractEndDateFrom { get; set; }
 
         [DisplayName("Contract end date to")]
+        [DateRange("ContractEndDateFrom", ErrorMessage = "To date must be after from date")]
         public DateOnly? ContractEndDateTo { get; set; }
     }
 }
