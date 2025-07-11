@@ -1,7 +1,6 @@
 using CO.CDP.UI.Foundation.Cookies;
 using CO.CDP.UI.Foundation.Services;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
 using Moq;
 using System.Globalization;
 using System.Text;
@@ -13,7 +12,6 @@ namespace CO.CDP.UI.Foundation.Tests.Services;
 public class FtsUrlServiceTests
 {
     private readonly Mock<IHttpContextAccessor> _mockHttpContextAccessor;
-    private readonly Mock<IConfiguration> _mockConfiguration;
     private readonly Mock<ICookiePreferencesService> _mockCookiePreferencesService;
     private readonly FtsUrlOptions _ftsUrlOptions;
     private readonly Dictionary<string, string> _sessionItems;
@@ -23,7 +21,6 @@ public class FtsUrlServiceTests
         _mockHttpContextAccessor = new Mock<IHttpContextAccessor>();
         var mockHttpContext = new Mock<HttpContext>();
         var mockSession = new Mock<ISession>();
-        _mockConfiguration = new Mock<IConfiguration>();
         _mockCookiePreferencesService = new Mock<ICookiePreferencesService>();
         _sessionItems = new Dictionary<string, string>();
 
@@ -44,8 +41,6 @@ public class FtsUrlServiceTests
                 return exists;
             });
 
-        _mockConfiguration.Setup(c => c["FtsService"]).Returns("https://fts-service.example.com");
-
         _ftsUrlOptions = new FtsUrlOptions
         {
             ServiceBaseUrl = "https://fts-service.example.com",
@@ -59,7 +54,7 @@ public class FtsUrlServiceTests
     [Fact]
     public void BuildUrl_ShouldConstructBasicUrl_WithEndpoint()
     {
-        var service = new FtsUrlService(_mockConfiguration.Object, _ftsUrlOptions, _mockHttpContextAccessor.Object);
+        var service = new FtsUrlService(_ftsUrlOptions, _mockHttpContextAccessor.Object);
 
         var url = service.BuildUrl("/test-endpoint");
 
@@ -69,7 +64,7 @@ public class FtsUrlServiceTests
     [Fact]
     public void BuildUrl_ShouldIncludeOrganisationId_WhenProvided()
     {
-        var service = new FtsUrlService(_mockConfiguration.Object, _ftsUrlOptions, _mockHttpContextAccessor.Object);
+        var service = new FtsUrlService(_ftsUrlOptions, _mockHttpContextAccessor.Object);
         var organisationId = Guid.Parse("12345678-1234-1234-1234-123456789012");
 
         var url = service.BuildUrl("/test-endpoint", organisationId);
@@ -82,7 +77,7 @@ public class FtsUrlServiceTests
     [Fact]
     public void BuildUrl_ShouldIncludeRedirectUrl_WhenProvided()
     {
-        var service = new FtsUrlService(_mockConfiguration.Object, _ftsUrlOptions, _mockHttpContextAccessor.Object);
+        var service = new FtsUrlService(_ftsUrlOptions, _mockHttpContextAccessor.Object);
 
         var url = service.BuildUrl("/test-endpoint", redirectUrl: "https://return.example.com");
 
@@ -95,7 +90,7 @@ public class FtsUrlServiceTests
     public void BuildUrl_ShouldIncludeCookieAcceptance_WhenCookieServiceProvided()
     {
         _mockCookiePreferencesService.Setup(s => s.IsAccepted()).Returns(true);
-        var service = new FtsUrlService(_mockConfiguration.Object, _ftsUrlOptions, _mockHttpContextAccessor.Object,
+        var service = new FtsUrlService(_ftsUrlOptions, _mockHttpContextAccessor.Object,
             _mockCookiePreferencesService.Object);
 
         var url = service.BuildUrl("/test-endpoint");
@@ -107,7 +102,7 @@ public class FtsUrlServiceTests
     public void BuildUrl_ShouldUseSessionOrigin_WhenAvailable()
     {
         _sessionItems.Add("FtsServiceOrigin", "https://session-fts.example.com");
-        var service = new FtsUrlService(_mockConfiguration.Object, _ftsUrlOptions, _mockHttpContextAccessor.Object);
+        var service = new FtsUrlService(_ftsUrlOptions, _mockHttpContextAccessor.Object);
 
         var url = service.BuildUrl("/test-endpoint");
 
@@ -117,8 +112,6 @@ public class FtsUrlServiceTests
     [Fact]
     public void BuildUrl_ShouldThrowException_WhenNoServiceUrlConfigured()
     {
-        var emptyConfig = new Mock<IConfiguration>();
-        emptyConfig.Setup(c => c["FtsService"]).Returns((string?)null);
         var emptyOptions = new FtsUrlOptions
         {
             ServiceBaseUrl = null!,
@@ -127,7 +120,7 @@ public class FtsUrlServiceTests
 
         Action action = () =>
         {
-            _ = new FtsUrlService(emptyConfig.Object, emptyOptions, _mockHttpContextAccessor.Object);
+            _ = new FtsUrlService(emptyOptions, _mockHttpContextAccessor.Object);
         };
 
         action.Should().Throw<InvalidOperationException>()
@@ -142,7 +135,7 @@ public class FtsUrlServiceTests
             ServiceBaseUrl = "https://fts-service.example.com/",
             SessionKey = "FtsServiceOrigin"
         };
-        var service = new FtsUrlService(_mockConfiguration.Object, optionsWithTrailingSlash,
+        var service = new FtsUrlService(optionsWithTrailingSlash,
             _mockHttpContextAccessor.Object);
 
         var url = service.BuildUrl("test-endpoint");
@@ -153,7 +146,7 @@ public class FtsUrlServiceTests
     [Fact]
     public void BuildUrl_ShouldWorkWithWelshLanguage()
     {
-        var service = new FtsUrlService(_mockConfiguration.Object, _ftsUrlOptions, _mockHttpContextAccessor.Object);
+        var service = new FtsUrlService(_ftsUrlOptions, _mockHttpContextAccessor.Object);
 
         var savedCulture = CultureInfo.CurrentUICulture;
         try
@@ -173,7 +166,7 @@ public class FtsUrlServiceTests
     public void BuildUrl_ShouldIncludeAllParameters_WhenAllProvided()
     {
         _mockCookiePreferencesService.Setup(s => s.IsAccepted()).Returns(true);
-        var service = new FtsUrlService(_mockConfiguration.Object, _ftsUrlOptions, _mockHttpContextAccessor.Object,
+        var service = new FtsUrlService(_ftsUrlOptions, _mockHttpContextAccessor.Object,
             _mockCookiePreferencesService.Object);
         var organisationId = Guid.Parse("12345678-1234-1234-1234-123456789012");
 
@@ -190,7 +183,7 @@ public class FtsUrlServiceTests
     public void BuildUrl_ShouldIncludeCorrectCookieAcceptanceValue(bool isAccepted, string expectedValue)
     {
         _mockCookiePreferencesService.Setup(s => s.IsAccepted()).Returns(isAccepted);
-        var service = new FtsUrlService(_mockConfiguration.Object, _ftsUrlOptions, _mockHttpContextAccessor.Object,
+        var service = new FtsUrlService(_ftsUrlOptions, _mockHttpContextAccessor.Object,
             _mockCookiePreferencesService.Object);
 
         var url = service.BuildUrl("/test-endpoint");

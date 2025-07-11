@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
-using Microsoft.Extensions.Configuration;
 using System.Globalization;
 using CO.CDP.UI.Foundation.Cookies;
 
@@ -14,7 +13,7 @@ public class FtsUrlOptions
     /// <summary>
     /// The base URL of the FTS service
     /// </summary>
-    public string ServiceBaseUrl { get; set; } = string.Empty;
+    public string? ServiceBaseUrl { get; set; }
 
     /// <summary>
     /// The session key used to store the FTS service origin
@@ -48,21 +47,18 @@ public class FtsUrlService : IFtsUrlService
     /// <summary>
     /// Initialises a new instance of the FtsUrlService
     /// </summary>
-    /// <param name="configuration">Application configuration</param>
     /// <param name="options">FTS URL options</param>
     /// <param name="httpContextAccessor">HTTP context accessor for session access</param>
     /// <param name="cookiePreferencesService">Optional cookie preferences service</param>
     public FtsUrlService(
-        IConfiguration configuration,
         FtsUrlOptions options,
         IHttpContextAccessor httpContextAccessor,
-        Cookies.ICookiePreferencesService? cookiePreferencesService = null)
+        ICookiePreferencesService? cookiePreferencesService = null)
     {
         _cookiePreferencesService = cookiePreferencesService;
 
         var session = httpContextAccessor.HttpContext?.Session;
         var ftsService = session?.GetString(options.SessionKey)
-                         ?? configuration["FtsService"]
                          ?? options.ServiceBaseUrl
                          ?? throw new InvalidOperationException("FTS service URL is not configured.");
 

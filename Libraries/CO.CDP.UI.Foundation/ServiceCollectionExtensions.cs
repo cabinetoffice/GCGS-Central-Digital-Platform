@@ -1,5 +1,6 @@
 using CO.CDP.UI.Foundation.Cookies;
 using CO.CDP.UI.Foundation.Services;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -56,7 +57,8 @@ public class UiFoundationBuilder
     /// <returns>The builder for method chaining</returns>
     public UiFoundationBuilder AddFtsUrlService()
     {
-        var options = _configuration.GetSection("FtsUrlOptions").Get<FtsUrlOptions>() ?? new FtsUrlOptions();
+        var options = _configuration.GetSection("FtsService").Get<FtsUrlOptions>()
+            ?? throw new InvalidOperationException("FtsService configuration is missing.");
         _services.AddSingleton(options);
         _services.AddScoped<IFtsUrlService, FtsUrlService>();
         return this;
@@ -69,10 +71,33 @@ public class UiFoundationBuilder
     /// <returns>The builder for method chaining</returns>
     public UiFoundationBuilder AddFtsUrlService(Action<FtsUrlOptions> configure)
     {
-        var options = _configuration.GetSection("FtsUrlOptions").Get<FtsUrlOptions>() ?? new FtsUrlOptions();
+        var options = _configuration.GetSection("FtsService").Get<FtsUrlOptions>()
+            ?? throw new InvalidOperationException("FtsService configuration is missing.");
         configure(options);
         _services.AddSingleton(options);
         _services.AddScoped<IFtsUrlService, FtsUrlService>();
+        return this;
+    }
+
+    /// <summary>
+    /// Adds Session services with default configuration
+    /// </summary>
+    /// <param name="isDevelopment">Whether the environment is development</param>
+    /// <returns>The builder for method chaining</returns>
+    public UiFoundationBuilder AddSession(bool isDevelopment)
+    {
+        var sessionTimeoutInMinutes = _configuration.GetValue<double?>("SessionTimeoutInMinutes") ?? 60;
+        var cookieSecurePolicy = isDevelopment ? CookieSecurePolicy.SameAsRequest : CookieSecurePolicy.Always;
+
+        _services.AddDistributedMemoryCache();
+        _services.AddSession(options =>
+        {
+            options.IdleTimeout = TimeSpan.FromMinutes(sessionTimeoutInMinutes);
+            options.Cookie.IsEssential = true;
+            options.Cookie.SameSite = SameSiteMode.Lax;
+            options.Cookie.SecurePolicy = cookieSecurePolicy;
+        });
+
         return this;
     }
 }
