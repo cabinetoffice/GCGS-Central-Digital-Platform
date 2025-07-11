@@ -95,6 +95,11 @@ namespace CO.CDP.RegisterOfCommercialTools.App.Pages.Search
                 Url = "/search"
             };
         }
+
+        public IActionResult OnPostReset()
+        {
+            return RedirectToPage();
+        }
     }
 
     public record SearchResult(

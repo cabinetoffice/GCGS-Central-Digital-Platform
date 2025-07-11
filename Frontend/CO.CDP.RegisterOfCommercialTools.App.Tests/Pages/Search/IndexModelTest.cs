@@ -1,5 +1,6 @@
 using CO.CDP.RegisterOfCommercialTools.App.Pages.Search;
 using FluentAssertions;
+using Microsoft.AspNetCore.Mvc;
 
 namespace CO.CDP.RegisterOfCommercialTools.App.Tests.Pages.Search;
 
@@ -68,5 +69,17 @@ public class IndexModelTest
         _model.OnGet();
 
         _model.SearchParams.Should().Be(searchParams);
+    }
+
+    [Fact]
+    public void OnPostReset_ShouldClearModelStateAndRedirect()
+    {
+        _model.ModelState.AddModelError("test", "test error");
+
+        var result = _model.OnPostReset();
+
+        var redirectResult = result.Should().BeOfType<RedirectToPageResult>().Subject;
+        redirectResult.PageName.Should().BeNull();
+        redirectResult.RouteValues.Should().BeNull();
     }
 }
