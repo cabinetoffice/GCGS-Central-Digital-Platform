@@ -4237,8 +4237,8 @@
   <data name="PponSearch_Ppon_Desc_Title" xml:space="preserve">
     <value>What is a Public procurement organisation number (PPON)?</value>
   </data>
-  <data name="PponSearch_Invalid_Search_Query" xml:space="preserve">
-    <value>Invalid search query. Please try with valid Name or Ppon</value>
+  <data name="PponSearch_Invalid_Search_Value" xml:space="preserve">
+    <value>Enter valid search data. Only alphabets, numbers, space and hyphens(-) are allowed</value>
   </data>
   <data name="PponSearch_ResultsCountOneHeading" xml:space="preserve">
     <value>We've found 1 organisation</value>
@@ -4247,7 +4247,7 @@
     <value>We've found {0} organisations</value>
   </data>
   <data name="PponSearch_NoResults" xml:space="preserve">
-    <value>There are no results</value>
+    <value>No organisations found matching your search criteria</value>
   </data>
   <data name="PponSearch_Ppon_Desc_Hint_01" xml:space="preserve">
     <value>

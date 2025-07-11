@@ -256,6 +256,22 @@ internal static class OrganisationClientExtensions
             return null;
         }
     }
+
+    internal static async Task<ICollection<OrganisationSearchByPponResult>> SearchOrganisationByNameOrPpon(
+        this IOrganisationClient organisationClient,
+        string searchText,
+        int pageSize,
+        int skip) {
+        try
+        {
+            var searchResults =  await organisationClient.SearchByNameOrPponAsync(searchText, pageSize,skip);
+            return searchResults ?? new List<OrganisationSearchByPponResult>();
+        }
+        catch (ApiException ex) when (ex.StatusCode == 404)
+        {
+            return new List<OrganisationSearchByPponResult>();
+        }
+    }
 }
 
 public class ComposedOrganisation
