@@ -256,6 +256,27 @@ internal static class OrganisationClientExtensions
             return null;
         }
     }
+
+    internal static async Task<(ICollection<OrganisationSearchByPponResult>,int)> SearchOrganisationByNameOrPpon(
+        this IOrganisationClient organisationClient,
+        string searchText,
+        int pageSize,
+        int skip,
+        string orderBy) {
+        try
+        {
+            var searchResults =  await organisationClient.SearchByNameOrPponAsync(searchText, pageSize,skip,orderBy);
+            if (searchResults.Results.Count > 0)
+            {
+                return (searchResults.Results, searchResults.TotalCount);
+            }
+            return (new List<OrganisationSearchByPponResult>(), 0);
+        }
+        catch (ApiException ex) when (ex.StatusCode == 404)
+        {
+            return (new List<OrganisationSearchByPponResult>(),0);
+        }
+    }
 }
 
 public class ComposedOrganisation

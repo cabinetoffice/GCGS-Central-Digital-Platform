@@ -32,6 +32,8 @@ public class OrganisationOverviewModel(IOrganisationClient organisationClient, I
 
     public string MouSignedOnDate { get; set; } = "";
 
+    public bool SearchRegistryPponEnabled { get; private set; }
+
     public ICollection<OrganisationSummary>? ChildOrganisations { get; set; }
 
     public async Task<IActionResult> OnGet()
@@ -39,6 +41,8 @@ public class OrganisationOverviewModel(IOrganisationClient organisationClient, I
         try
         {
             OrganisationDetails = await organisationClient.GetOrganisationAsync(Id);
+
+            SearchRegistryPponEnabled = await featureManager.IsEnabledAsync(FeatureFlags.SearchRegistryPpon);
 
             if (OrganisationDetails.Type == OrganisationWebApiClient.OrganisationType.InformalConsortium)
             {

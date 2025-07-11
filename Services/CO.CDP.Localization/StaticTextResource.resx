@@ -4228,4 +4228,63 @@
   <data name="Global_Unknown" xml:space="preserve">
     <value>Unknown</value>
   </data>
+  <data name="PponSearch_Title" xml:space="preserve">
+    <value>Public procurement organisation number register</value>
+  </data>
+  <data name="PponSearch_Hint" xml:space="preserve">
+    <value>Search by organisation name or PPON</value>
+  </data>
+  <data name="PponSearch_Ppon_Desc_Title" xml:space="preserve">
+    <value>What is a Public procurement organisation number (PPON)?</value>
+  </data>
+  <data name="PponSearch_Invalid_Search_Value" xml:space="preserve">
+    <value>Enter valid search data. Only alphabets, numbers, space and hyphens(-) are allowed</value>
+  </data>
+  <data name="PponSearch_ResultsCountOneHeading" xml:space="preserve">
+    <value>We've found 1 organisation</value>
+  </data>
+  <data name="PponSearch_ResultsCountMoreThanOneHeading" xml:space="preserve">
+    <value>We've found {0} organisations</value>
+  </data>
+  <data name="PponSearch_NoResults" xml:space="preserve">
+    <value>No organisations found matching your search criteria</value>
+  </data>
+  <data name="PponSearch_Ppon_Desc_Hint_01" xml:space="preserve">
+    <value>
+      &lt;p class=&quot;govuk-body&quot;&gt;
+        A PPON is a unique identifier assigned to organisations that participate in public procurement, generated when an organisation registers on the
+        &lt;a target=&quot;_blank&quot; href=&quot;https://supplierregistration.cabinetoffice.gov.uk&quot;&gt;
+        Supplier Registration service (opens in a new tab)&lt;/a&gt;. It is used to manage and publish notices related to public procurement and connects information about the organisation digitally.
+      &lt;/p&gt;
+    </value>
+  </data>
+  <data name="PponSearch_Ppon_Desc_Hint_02" xml:space="preserve">
+    <value>
+      &lt;p class=&quot;govuk-body&quot;&gt;
+        Your PPON is a combination of 16 letters and numbers, separated by hyphens. For example, ABCD-EFGH-1234-IJKL.
+      &lt;/p&gt;
+    </value>
+  </data>
+  <data name="Global_Search" xml:space="preserve">
+    <value>Search</value>
+  </data>
+  <data name="Global_Search_Results" xml:space="preserve">
+    <value>Sort results</value>
+  </data>
+  <data name="Global_Sort_Relevance" xml:space="preserve">
+    <value>Relevance</value>
+  </data>
+  <data name="Global_Sort_Alphabetical_Asc" xml:space="preserve">
+    <value>Alphabetical (A-Z)</value>
+  </data>
+  <data name="Global_Sort_Alphabetical_Desc" xml:space="preserve">
+    <value>Alphabetical (Z-A)</value>
+  </data>
+  <data name="Organisation_SearchOrganisations" xml:space="preserve">
+    <value>Search for an organisation</value>
+  </data>
+  <data name="Organisation_SearchOrganisationsHint" xml:space="preserve">
+    <value>Search by organisation name, organisation identifier or PPON.</value>
+  </data>
+  
 </root>
