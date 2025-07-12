@@ -2,6 +2,7 @@ using CO.CDP.RegisterOfCommercialTools.App.Services;
 using CO.CDP.RegisterOfCommercialTools.WebApiClient;
 using CO.CDP.UI.Foundation;
 using GovUk.Frontend.AspNetCore;
+using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,6 +26,7 @@ builder.Services.AddHttpClient<ICommercialToolsApiClient, CommercialToolsApiClie
 });
 
 builder.Services.AddScoped<ISearchService, InMemorySearchService>();
+builder.Services.AddScoped<CO.CDP.UI.Foundation.Pages.NotFoundPage>();
 
 var app = builder.Build();
 
@@ -37,6 +39,12 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseStaticFiles();
+
+app.MapFallback(ctx =>
+{
+    ctx.Response.Redirect("/page-not-found");
+    return Task.CompletedTask;
+});
 
 app.UseRouting();
 
