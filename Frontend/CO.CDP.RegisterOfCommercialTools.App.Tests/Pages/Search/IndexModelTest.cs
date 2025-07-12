@@ -323,4 +323,20 @@ public class IndexModelTest
         await _model.OnGetAsync();
         _model.SirsiHomeUrl.Should().Be("https://sirsi.home/");
     }
+
+    [Fact]
+    public async Task OnGet_ShouldSetTotalCount()
+    {
+        var searchResults = new List<SearchResult>
+        {
+            new(Guid.NewGuid(), "Test Result", "Test Caption", "Test Tool", SearchResultStatus.Active, "1%", "Yes", "2025-01-01",
+                "2025-01-01 to 2025-12-31", "Direct Award")
+        };
+        _mockSearchService.Setup(s => s.SearchAsync(It.IsAny<SearchModel>(), It.IsAny<int>(), It.IsAny<int>()))
+            .ReturnsAsync((searchResults, 42));
+
+        await _model.OnGetAsync();
+
+        _model.TotalCount.Should().Be(42);
+    }
 }

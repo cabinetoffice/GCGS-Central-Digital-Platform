@@ -25,12 +25,15 @@ public class IndexModel(ISearchService searchService, ISirsiUrlService sirsiUrlS
 
     public string SirsiHomeUrl { get; private set; } = string.Empty;
 
+    public int TotalCount { get; set; }
+
     public async Task OnGetAsync()
     {
         SirsiHomeUrl = sirsiUrlService.BuildUrl("/");
         var (results, totalCount) = await searchService.SearchAsync(SearchParams, PageNumber, PageSize);
 
         SearchResults = results;
+        TotalCount = totalCount;
 
         Pagination = new PaginationPartialModel
         {
