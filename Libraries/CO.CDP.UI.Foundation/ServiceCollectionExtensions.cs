@@ -1,5 +1,6 @@
 using CO.CDP.UI.Foundation.Cookies;
 using CO.CDP.UI.Foundation.Services;
+using CO.CDP.UI.Foundation.Session;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -82,21 +83,30 @@ public class UiFoundationBuilder
     /// <summary>
     /// Adds Session services with default configuration
     /// </summary>
+    /// <param name="applicationPrefix">The application name to use as a prefix for the session cookie.</param>
     /// <param name="isDevelopment">Whether the environment is development</param>
     /// <returns>The builder for method chaining</returns>
-    public UiFoundationBuilder AddSession(bool isDevelopment)
+    public UiFoundationBuilder AddSession(string applicationPrefix, bool isDevelopment)
     {
+        if (string.IsNullOrWhiteSpace(applicationPrefix))
+        {
+            throw new ArgumentException("Application prefix must be provided.", nameof(applicationPrefix));
+        }
+
         var sessionTimeoutInMinutes = _configuration.GetValue<double?>("SessionTimeoutInMinutes") ?? 60;
         var cookieSecurePolicy = isDevelopment ? CookieSecurePolicy.SameAsRequest : CookieSecurePolicy.Always;
 
         _services.AddDistributedMemoryCache();
         _services.AddSession(options =>
         {
+            options.Cookie.Name = $"{applicationPrefix}.Session";
             options.IdleTimeout = TimeSpan.FromMinutes(sessionTimeoutInMinutes);
             options.Cookie.IsEssential = true;
             options.Cookie.SameSite = SameSiteMode.Lax;
             options.Cookie.SecurePolicy = cookieSecurePolicy;
         });
+
+        _services.AddScoped<ISessionService, SessionService>();
 
         return this;
     }

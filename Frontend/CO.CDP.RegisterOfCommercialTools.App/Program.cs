@@ -9,7 +9,7 @@ builder.Services.AddGovUkFrontend();
 
 builder.Services.AddUiFoundation(builder.Configuration, uiFoundationBuilder =>
 {
-    uiFoundationBuilder.AddSession(builder.Environment.IsDevelopment());
+    uiFoundationBuilder.AddSession("ROCT", builder.Environment.IsDevelopment());
     uiFoundationBuilder.AddFtsUrlService();
     uiFoundationBuilder.AddCookiePreferences("ROCT");
 });
