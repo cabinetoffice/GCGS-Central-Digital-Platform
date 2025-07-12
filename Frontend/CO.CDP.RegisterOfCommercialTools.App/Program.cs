@@ -11,6 +11,7 @@ builder.Services.AddUiFoundation(builder.Configuration, uiFoundationBuilder =>
 {
     uiFoundationBuilder.AddSession("ROCT", builder.Environment.IsDevelopment());
     uiFoundationBuilder.AddFtsUrlService();
+    uiFoundationBuilder.AddSirsiUrlService();
     uiFoundationBuilder.AddCookiePreferences("ROCT");
 });
 
