@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using CO.CDP.RegisterOfCommercialTools.App.Models;
 using CO.CDP.RegisterOfCommercialTools.App.Pages.Shared;
 using CO.CDP.RegisterOfCommercialTools.App.Services;
 using CO.CDP.RegisterOfCommercialTools.App.Validation;
@@ -64,19 +65,6 @@ namespace CO.CDP.RegisterOfCommercialTools.App.Pages
         }
     }
 
-    public record SearchResult(
-        Guid Id,
-        string Title,
-        string Caption,
-        string Link,
-        string CommercialTool,
-        SearchResultStatus Status,
-        string MaximumFee,
-        string OtherContractingAuthorityCanUse,
-        string SubmissionDeadline,
-        string ContractDates,
-        string AwardMethod
-    );
 
     [FeesValidator("FeeFrom", "FeeTo", "NoFees", ErrorMessage = "Fee values cannot be provided when 'No fees' is selected")]
     public class SearchModel

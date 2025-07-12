@@ -3,6 +3,7 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using System.ComponentModel.DataAnnotations;
+using CO.CDP.RegisterOfCommercialTools.App.Models;
 using CO.CDP.RegisterOfCommercialTools.App.Pages;
 
 namespace CO.CDP.RegisterOfCommercialTools.App.Tests.Pages.Search;
@@ -23,7 +24,7 @@ public class IndexModelTest
     {
         var searchResults = new List<SearchResult>
         {
-            new(Guid.NewGuid(), "Test Result", "Test Caption", "/", "Test Tool", SearchResultStatus.Active, "1%", "Yes", "2025-01-01",
+            new(Guid.NewGuid(), "Test Result", "Test Caption", "Test Tool", SearchResultStatus.Active, "1%", "Yes", "2025-01-01",
                 "2025-01-01 to 2025-12-31", "Direct Award")
         };
         _mockSearchService.Setup(s => s.SearchAsync(It.IsAny<SearchModel>(), It.IsAny<int>(), It.IsAny<int>()))

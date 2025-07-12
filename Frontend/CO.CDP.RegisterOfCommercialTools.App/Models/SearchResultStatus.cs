@@ -1,4 +1,4 @@
-namespace CO.CDP.RegisterOfCommercialTools.App.Pages;
+namespace CO.CDP.RegisterOfCommercialTools.App.Models;
 
 public enum SearchResultStatus
 {
