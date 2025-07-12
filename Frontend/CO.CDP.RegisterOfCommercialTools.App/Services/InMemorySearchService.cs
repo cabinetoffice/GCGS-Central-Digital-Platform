@@ -4,8 +4,8 @@ namespace CO.CDP.RegisterOfCommercialTools.App.Services;
 
 public class InMemorySearchService : ISearchService
 {
-    private readonly List<SearchResult> _allResults = new()
-    {
+    private readonly List<SearchResult> _allResults =
+    [
         new(
             "Framework for Agile Delivery Services",
             "Crown Commercial Service",
@@ -66,7 +66,45 @@ public class InMemorySearchService : ISearchService
             "1 March 2025 to 28 February 2027",
             "Without competition"
         )
-    };
+    ];
+
+    private static int CalculateRelevanceScore(SearchResult result, string keywords)
+    {
+        if (string.IsNullOrWhiteSpace(keywords)) return 0;
+        var title = result.Title;
+        var tool = result.CommercialTool;
+        var content = string.Join(" ", title, tool).ToLowerInvariant();
+        var input = keywords.ToLowerInvariant().Trim();
+
+        if (input.StartsWith("\"") && input.EndsWith("\""))
+        {
+            var phrase = input.Trim('"');
+            return content.Contains(phrase) ? 1000 : 0;
+        }
+
+        var terms = input.Contains('+')
+            ? input.Split('+', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+            : input.Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+
+        var allPresent = terms.All(t => content.Contains(t));
+        var anyPresent = terms.Any(t => content.Contains(t));
+        var frequency = terms.Sum(term =>
+        {
+            int count = 0, idx = 0;
+            while ((idx = content.IndexOf(term, idx, StringComparison.Ordinal)) != -1)
+            {
+                count++;
+                idx += term.Length;
+            }
+            return count;
+        });
+
+        var score = 0;
+        if (allPresent) score += 500;
+        if (anyPresent) score += 100;
+        score += frequency * 10;
+        return score;
+    }
 
     public Task<(List<SearchResult> Results, int TotalCount)> SearchAsync(SearchModel searchModel, int pageNumber, int pageSize)
     {
@@ -106,8 +144,13 @@ public class InMemorySearchService : ISearchService
             {
                 "a-z" => filteredResults.OrderBy(r => r.Title).ToList(),
                 "z-a" => filteredResults.OrderByDescending(r => r.Title).ToList(),
+                "relevance" => filteredResults.OrderByDescending(r => CalculateRelevanceScore(r, searchModel.Keywords ?? "")).ToList(),
                 _ => filteredResults
             };
+        }
+        else
+        {
+            filteredResults = filteredResults.OrderByDescending(r => CalculateRelevanceScore(r, searchModel.Keywords ?? "")).ToList();
         }
 
         var results = filteredResults.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();

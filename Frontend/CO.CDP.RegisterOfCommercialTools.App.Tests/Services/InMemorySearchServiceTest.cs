@@ -16,7 +16,7 @@ public class InMemorySearchServiceTest
     public async Task SearchAsync_WithAnyWord_ReturnsCorrectResults(string keywords, int expectedCount)
     {
         var searchModel = new SearchModel { Keywords = keywords };
-        var (results, totalCount) = await _searchService.SearchAsync(searchModel, 1, 10);
+        var (_, totalCount) = await _searchService.SearchAsync(searchModel, 1, 10);
         totalCount.Should().Be(expectedCount);
     }
 
@@ -26,7 +26,7 @@ public class InMemorySearchServiceTest
     public async Task SearchAsync_WithAllWords_ReturnsCorrectResults(string keywords, int expectedCount)
     {
         var searchModel = new SearchModel { Keywords = keywords };
-        var (results, totalCount) = await _searchService.SearchAsync(searchModel, 1, 10);
+        var (_, totalCount) = await _searchService.SearchAsync(searchModel, 1, 10);
         totalCount.Should().Be(expectedCount);
     }
 
@@ -37,7 +37,7 @@ public class InMemorySearchServiceTest
     public async Task SearchAsync_WithExactPhrase_ReturnsCorrectResults(string keywords, int expectedCount)
     {
         var searchModel = new SearchModel { Keywords = keywords };
-        var (results, totalCount) = await _searchService.SearchAsync(searchModel, 1, 10);
+        var (_, totalCount) = await _searchService.SearchAsync(searchModel, 1, 10);
         totalCount.Should().Be(expectedCount);
     }
 
@@ -45,7 +45,7 @@ public class InMemorySearchServiceTest
     public async Task SearchAsync_WithEmptyKeywords_ReturnsAllResults()
     {
         var searchModel = new SearchModel { Keywords = "" };
-        var (results, totalCount) = await _searchService.SearchAsync(searchModel, 1, 10);
+        var (_, totalCount) = await _searchService.SearchAsync(searchModel, 1, 10);
         totalCount.Should().Be(5);
     }
 
@@ -75,5 +75,39 @@ public class InMemorySearchServiceTest
         var (results, totalCount) = await _searchService.SearchAsync(searchModel, pageNumber, pageSize);
         results.Select(r => r.Title).Should().ContainInOrder(expectedTitles);
         totalCount.Should().Be(5);
+    }
+
+    [Theory]
+    [InlineData("\"Framework for Agile Delivery Services\"", "Framework for Agile Delivery Services", 1000)]
+    [InlineData("agile delivery", "Framework for Agile Delivery Services", 500+100+20)]
+    [InlineData("agile", "Framework for Agile Delivery Services", 100+20)]
+    [InlineData("cloud", "Cloud Hosting and Support", 100+10)]
+    [InlineData("market research", "Market Research Services", 500+100+20)]
+    [InlineData("nonexistent", "Framework for Agile Delivery Services", 0)]
+    public void CalculateRelevanceScore_ReturnsExpectedScore(string keywords, string title, int expectedMinScore)
+    {
+        var result = new SearchResult(
+            title,
+            "Test Caption",
+            "/",
+            title,
+            SearchResultStatus.Active,
+            "1%",
+            "Yes",
+            "2025-01-01",
+            "2025-01-01 to 2025-12-31",
+            "Direct Award");
+        var score = typeof(InMemorySearchService)
+            .GetMethod("CalculateRelevanceScore", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static)!
+            .Invoke(null, [result, keywords]);
+        ((int)score!).Should().BeGreaterThanOrEqualTo(expectedMinScore);
+    }
+
+    [Fact]
+    public async Task SearchAsync_RelevanceSort_ReturnsResultsInExpectedOrder()
+    {
+        var searchModel = new SearchModel { Keywords = "agile delivery", SortOrder = "relevance" };
+        var (results, _) = await _searchService.SearchAsync(searchModel, 1, 10);
+        results.First().Title.ToLowerInvariant().Should().Contain("agile");
     }
 }

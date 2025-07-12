@@ -55,22 +55,45 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <h1 class="govuk-heading-l govuk-!-margin-bottom-2">Search Results</h1>
-            <p class="govuk-body-m">We've found <span class="govuk-!-font-weight-bold">@Model.SearchResults.Count</span>
-                results</p>
+            <p class="govuk-body-m">We've found <span class="govuk-!-font-weight-bold">@Model.SearchResults.Count</span> results</p>
         </div>
         <div class="govuk-grid-column-one-third">
-            <govuk-select id="sort-results" name="sortOrder">
-                <govuk-select-label class="govuk-!-font-weight-bold">Sort results</govuk-select-label>
-                <govuk-select-item value="relevance" selected="@(Model.SearchParams.SortOrder == "relevance" || string.IsNullOrEmpty(Model.SearchParams.SortOrder))">Relevance</govuk-select-item>
-                <govuk-select-item value="a-z" selected="@(Model.SearchParams.SortOrder == "a-z")">Alphabetical (A-Z)</govuk-select-item>
-                <govuk-select-item value="z-a" selected="@(Model.SearchParams.SortOrder == "z-a")">Alphabetical (Z-A)</govuk-select-item>
-            </govuk-select>
+            <form method="get" class="govuk-form-group">
+                <input type="hidden" name="SearchParams.Keywords" value="@Model.SearchParams.Keywords" />
+                <input type="hidden" name="SearchParams.FrameworkOptions" value="@Model.SearchParams.FrameworkOptions" />
+                <input type="hidden" name="SearchParams.DynamicMarketOptions" value="@Model.SearchParams.DynamicMarketOptions" />
+                <input type="hidden" name="SearchParams.AwardMethod" value="@Model.SearchParams.AwardMethod" />
+                <input type="hidden" name="SearchParams.FeeFrom" value="@Model.SearchParams.FeeFrom" />
+                <input type="hidden" name="SearchParams.FeeTo" value="@Model.SearchParams.FeeTo" />
+                <input type="hidden" name="SearchParams.NoFees" value="@Model.SearchParams.NoFees" />
+                <input type="hidden" name="SearchParams.ContractingAuthorityUsage" value="@Model.SearchParams.ContractingAuthorityUsage" />
+                @foreach (var status in Model.SearchParams.Status ?? [])
+                {
+                    <input type="hidden" name="SearchParams.Status" value="@status" />
+                }
+                <input type="hidden" name="SearchParams.SubmissionDeadlineFrom" value="@Model.SearchParams.SubmissionDeadlineFrom" />
+                <input type="hidden" name="SearchParams.SubmissionDeadlineTo" value="@Model.SearchParams.SubmissionDeadlineTo" />
+                <input type="hidden" name="SearchParams.ContractStartDateFrom" value="@Model.SearchParams.ContractStartDateFrom" />
+                <input type="hidden" name="SearchParams.ContractStartDateTo" value="@Model.SearchParams.ContractStartDateTo" />
+                <input type="hidden" name="SearchParams.ContractEndDateFrom" value="@Model.SearchParams.ContractEndDateFrom" />
+                <input type="hidden" name="SearchParams.ContractEndDateTo" value="@Model.SearchParams.ContractEndDateTo" />
+                <label for="sort-results" class="govuk-label govuk-!-font-weight-bold">Sort results</label>
+                <select id="sort-results" class="govuk-select" asp-for="SearchParams.SortOrder" onchange="this.form.submit()">
+                    <option value="relevance">Relevance</option>
+                    <option value="a-z">Alphabetical (A-Z)</option>
+                    <option value="z-a">Alphabetical (Z-A)</option>
+                </select>
+                <noscript>
+                    <button type="submit" class="govuk-button govuk-!-margin-left-2">Sort</button>
+                </noscript>
+            </form>
         </div>
     </div>
 
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-one-third">
             <form method="post" id="search-form">
+                <input type="hidden" asp-for="SearchParams.SortOrder" />
                 <div class="govuk-template govuk-!-padding-3">
                     <h2 class="govuk-heading-m">Keywords</h2>
 
