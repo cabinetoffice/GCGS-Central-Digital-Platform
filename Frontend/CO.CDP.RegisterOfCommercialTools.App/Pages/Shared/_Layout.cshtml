@@ -1,6 +1,7 @@
 ﻿@using CO.CDP.UI.Foundation.Services
 @using CO.CDP.UI.Foundation.Cookies
 @inject IFtsUrlService FtsUrlService
+@inject ISirsiUrlService SirsiUrlService
 @inject ICookiePreferencesService CookiePreferencesService
 @inject IHttpContextAccessor HttpContextAccessor
 @inject CookieSettings CookieSettings
@@ -79,7 +80,7 @@
     <govuk-footer>
         <govuk-footer-meta>
             <govuk-footer-meta-items>
-                <govuk-footer-meta-item href="@FtsUrlService.BuildUrl("/contact-us")">Contact us</govuk-footer-meta-item>
+                <govuk-footer-meta-item href="@SirsiUrlService.BuildUrl("/contact-us")">Contact us</govuk-footer-meta-item>
                 <govuk-footer-meta-item href="@FtsUrlService.BuildUrl("/accessibility-statement")">Accessibility statement</govuk-footer-meta-item>
                 <govuk-footer-meta-item href="@FtsUrlService.BuildUrl("/terms-and-conditions")">Terms and conditions</govuk-footer-meta-item>
                 <govuk-footer-meta-item href="@FtsUrlService.BuildUrl("/cookies")">Cookies</govuk-footer-meta-item>
