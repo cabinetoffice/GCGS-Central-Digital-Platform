@@ -37,7 +37,7 @@ public class IndexModel(ISearchService searchService, ISirsiUrlService sirsiUrlS
             CurrentPage = PageNumber,
             PageSize = PageSize,
             TotalItems = totalCount,
-            Url = "/search"
+            Url = "/"
         };
     }
 
