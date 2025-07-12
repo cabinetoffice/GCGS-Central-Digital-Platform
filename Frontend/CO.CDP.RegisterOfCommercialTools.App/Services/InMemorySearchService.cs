@@ -99,6 +99,17 @@ public class InMemorySearchService : ISearchService
         }
 
         var filteredResults = query.ToList();
+
+        if (!string.IsNullOrEmpty(searchModel.SortOrder))
+        {
+            filteredResults = searchModel.SortOrder switch
+            {
+                "a-z" => filteredResults.OrderBy(r => r.Title).ToList(),
+                "z-a" => filteredResults.OrderByDescending(r => r.Title).ToList(),
+                _ => filteredResults
+            };
+        }
+
         var results = filteredResults.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
         return Task.FromResult((results, filteredResults.Count));
     }

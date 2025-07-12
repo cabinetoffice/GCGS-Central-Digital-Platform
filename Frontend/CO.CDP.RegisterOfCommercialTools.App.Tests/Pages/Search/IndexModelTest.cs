@@ -276,4 +276,40 @@ public class IndexModelTest
         isValid.Should().BeTrue();
         validationResults.Should().BeEmpty();
     }
+
+    public static IEnumerable<object?[]> SearchParamsBindingData => new List<object?[]>
+    {
+        new object[] { "test", "a-z", "open", "utilities-only", "direct-award", new[] { "upcoming", "active-buyers" }, "yes", 0m, 100m, "true" },
+        new object[] { null!, null!, null!, null!, null!, null!, null!, null!, null!, null! }
+    };
+
+    [Theory]
+    [MemberData(nameof(SearchParamsBindingData))]
+    public void SearchParams_BindsValuesCorrectly(string? keywords, string? sortOrder, string? frameworkOptions, string? dynamicMarketOptions, string? awardMethod, string[]? status, string? contractingAuthorityUsage, decimal? feeFrom, decimal? feeTo, string? noFees)
+    {
+        var searchParams = new SearchModel
+        {
+            Keywords = keywords,
+            SortOrder = sortOrder,
+            FrameworkOptions = frameworkOptions,
+            DynamicMarketOptions = dynamicMarketOptions,
+            AwardMethod = awardMethod,
+            Status = status?.ToList() ?? [],
+            ContractingAuthorityUsage = contractingAuthorityUsage,
+            FeeFrom = feeFrom,
+            FeeTo = feeTo,
+            NoFees = noFees
+        };
+        _model.SearchParams = searchParams;
+        _model.SearchParams.Keywords.Should().Be(keywords);
+        _model.SearchParams.SortOrder.Should().Be(sortOrder);
+        _model.SearchParams.FrameworkOptions.Should().Be(frameworkOptions);
+        _model.SearchParams.DynamicMarketOptions.Should().Be(dynamicMarketOptions);
+        _model.SearchParams.AwardMethod.Should().Be(awardMethod);
+        _model.SearchParams.Status.Should().BeEquivalentTo(status ?? []);
+        _model.SearchParams.ContractingAuthorityUsage.Should().Be(contractingAuthorityUsage);
+        _model.SearchParams.FeeFrom.Should().Be(feeFrom);
+        _model.SearchParams.FeeTo.Should().Be(feeTo);
+        _model.SearchParams.NoFees.Should().Be(noFees);
+    }
 }

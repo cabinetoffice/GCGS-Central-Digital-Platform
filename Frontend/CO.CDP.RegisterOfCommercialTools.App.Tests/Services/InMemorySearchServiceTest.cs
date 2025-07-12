@@ -48,4 +48,32 @@ public class InMemorySearchServiceTest
         var (results, totalCount) = await _searchService.SearchAsync(searchModel, 1, 10);
         totalCount.Should().Be(5);
     }
+
+    [Theory]
+    [InlineData(null, new[] { "Framework for Agile Delivery Services", "Digital Outcomes and Specialists 6", "G-Cloud 13", "Vehicle Telematics/Hardware and Software Solutions", "Gigabit Capable Connectivity" })]
+    [InlineData("relevance", new[] { "Framework for Agile Delivery Services", "Digital Outcomes and Specialists 6", "G-Cloud 13", "Vehicle Telematics/Hardware and Software Solutions", "Gigabit Capable Connectivity" })]
+    [InlineData("a-z", new[] { "Digital Outcomes and Specialists 6", "Framework for Agile Delivery Services", "G-Cloud 13", "Gigabit Capable Connectivity", "Vehicle Telematics/Hardware and Software Solutions" })]
+    [InlineData("z-a", new[] { "Vehicle Telematics/Hardware and Software Solutions", "Gigabit Capable Connectivity", "G-Cloud 13", "Framework for Agile Delivery Services", "Digital Outcomes and Specialists 6" })]
+    public async Task SearchAsync_SortsResultsBySortOrder(string? sortOrder, string[] expectedTitles)
+    {
+        var searchModel = new SearchModel { SortOrder = sortOrder };
+        var (results, totalCount) = await _searchService.SearchAsync(searchModel, 1, 10);
+        results.Select(r => r.Title).Should().ContainInOrder(expectedTitles);
+        totalCount.Should().Be(5);
+    }
+
+    [Theory]
+    [InlineData("a-z", 1, 2, new[] { "Digital Outcomes and Specialists 6", "Framework for Agile Delivery Services" })]
+    [InlineData("a-z", 2, 2, new[] { "G-Cloud 13", "Gigabit Capable Connectivity" })]
+    [InlineData("a-z", 3, 2, new[] { "Vehicle Telematics/Hardware and Software Solutions" })]
+    [InlineData("z-a", 1, 2, new[] { "Vehicle Telematics/Hardware and Software Solutions", "Gigabit Capable Connectivity" })]
+    [InlineData("z-a", 2, 2, new[] { "G-Cloud 13", "Framework for Agile Delivery Services" })]
+    [InlineData("z-a", 3, 2, new[] { "Digital Outcomes and Specialists 6" })]
+    public async Task SearchAsync_PaginatesAndSortsResults(string sortOrder, int pageNumber, int pageSize, string[] expectedTitles)
+    {
+        var searchModel = new SearchModel { SortOrder = sortOrder };
+        var (results, totalCount) = await _searchService.SearchAsync(searchModel, pageNumber, pageSize);
+        results.Select(r => r.Title).Should().ContainInOrder(expectedTitles);
+        totalCount.Should().Be(5);
+    }
 }

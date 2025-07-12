@@ -61,9 +61,9 @@
         <div class="govuk-grid-column-one-third">
             <govuk-select id="sort-results" name="sortOrder">
                 <govuk-select-label class="govuk-!-font-weight-bold">Sort results</govuk-select-label>
-                <govuk-select-item value="relevance" selected="true">Relevance</govuk-select-item>
-                <govuk-select-item value="a-z">Alphabetical (A-Z)</govuk-select-item>
-                <govuk-select-item value="z-a">Alphabetical (Z-A)</govuk-select-item>
+                <govuk-select-item value="relevance" selected="@(Model.SearchParams.SortOrder == "relevance" || string.IsNullOrEmpty(Model.SearchParams.SortOrder))">Relevance</govuk-select-item>
+                <govuk-select-item value="a-z" selected="@(Model.SearchParams.SortOrder == "a-z")">Alphabetical (A-Z)</govuk-select-item>
+                <govuk-select-item value="z-a" selected="@(Model.SearchParams.SortOrder == "z-a")">Alphabetical (Z-A)</govuk-select-item>
             </govuk-select>
         </div>
     </div>
