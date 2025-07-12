@@ -8,6 +8,31 @@ variable "alb_sg_id" {
   type        = string
 }
 
+variable "cfs_allowed_target_email_domains" {
+  description = "A list of allowed Domain origins"
+  type        = list(string)
+}
+
+variable "cfs_service_allowed_origins" {
+  description = "A list of allowed URLs"
+  type        = list(string)
+}
+
+variable "db_cfs_cluster_address" {
+  description = "CFS DB address"
+  type        = string
+}
+
+variable "db_cfs_cluster_credentials_arn" {
+  description = "ARN of the secret holding CFS DB credentials"
+  type        = string
+}
+
+variable "db_cfs_cluster_name" {
+  description = "CFS DB name"
+  type        = string
+}
+
 variable "db_ev_cluster_address" {
   description = "Entity Verification DB address"
   type        = string
@@ -25,21 +50,6 @@ variable "db_ev_cluster_credentials_kms_key_id" {
 
 variable "db_ev_cluster_name" {
   description = "Entity Verification DB name"
-  type        = string
-}
-
-variable "db_cfs_cluster_address" {
-  description = "CFS DB address"
-  type        = string
-}
-
-variable "db_cfs_cluster_credentials_arn" {
-  description = "ARN of the secret holding CFS DB credentials"
-  type        = string
-}
-
-variable "db_cfs_cluster_name" {
-  description = "CFS DB name"
   type        = string
 }
 
@@ -93,20 +103,9 @@ variable "ecs_sg_id" {
   type        = string
 }
 
-
 variable "environment" {
   description = "The environment we are provisioning"
   type        = string
-}
-
-variable "cfs_allowed_target_email_domains" {
-  description = "A list of allowed Domain origins"
-  type        = list(string)
-}
-
-variable "cfs_service_allowed_origins" {
-  description = "A list of allowed URLs"
-  type        = list(string)
 }
 
 variable "fts_allowed_target_email_domains" {
@@ -299,19 +298,7 @@ variable "user_pool_arn" {
   type = string
 }
 
-variable "user_pool_client_id" {
-  type = string
-}
-
-variable "user_pool_domain" {
-  type = string
-}
-
 variable "user_pool_cfs_arn" {
-  type = string
-}
-
-variable "user_pool_fts_arn" {
   type = string
 }
 
@@ -320,6 +307,18 @@ variable "user_pool_cfs_client_id" {
 }
 
 variable "user_pool_cfs_domain" {
+  type = string
+}
+
+variable "user_pool_client_id" {
+  type = string
+}
+
+variable "user_pool_domain" {
+  type = string
+}
+
+variable "user_pool_fts_arn" {
   type = string
 }
 
