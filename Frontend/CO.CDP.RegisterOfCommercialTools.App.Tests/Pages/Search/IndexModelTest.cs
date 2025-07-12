@@ -242,4 +242,20 @@ public class IndexModelTest
         isValid.Should().BeTrue();
         validationResults.Should().BeEmpty();
     }
+
+    [Fact]
+    public void SearchModel_WhenKeywordsIsPopulated_ShouldBeValid()
+    {
+        var searchParams = new SearchModel
+        {
+            Keywords = "test keywords"
+        };
+
+        var validationContext = new ValidationContext(searchParams);
+        var validationResults = new List<ValidationResult>();
+        var isValid = Validator.TryValidateObject(searchParams, validationContext, validationResults, true);
+
+        isValid.Should().BeTrue();
+        validationResults.Should().BeEmpty();
+    }
 }

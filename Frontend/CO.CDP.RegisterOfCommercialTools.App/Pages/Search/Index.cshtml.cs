@@ -142,7 +142,9 @@ namespace CO.CDP.RegisterOfCommercialTools.App.Pages.Search
     [FeesValidator("FeeFrom", "FeeTo", "NoFees", ErrorMessage = "Fee values cannot be provided when 'No fees' is selected")]
     public class SearchModel
     {
+        [DisplayName("Keywords")]
         public string? Keywords { get; set; }
+
         public string? SortOrder { get; set; }
 
         [DisplayName("Framework options")]
