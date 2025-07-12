@@ -1,4 +1,5 @@
 using CO.CDP.RegisterOfCommercialTools.App.Services;
+using CO.CDP.UI.Foundation.Services;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -16,7 +17,9 @@ public class IndexModelTest
     public IndexModelTest()
     {
         _mockSearchService = new Mock<ISearchService>();
-        _model = new IndexModel(_mockSearchService.Object);
+        var mockSirsiUrlService = new Mock<ISirsiUrlService>();
+        mockSirsiUrlService.Setup(s => s.BuildUrl(string.Empty, null, null)).Returns("https://sirsi.home/");
+        _model = new IndexModel(_mockSearchService.Object, mockSirsiUrlService.Object);
     }
 
     [Fact]
@@ -312,5 +315,12 @@ public class IndexModelTest
         _model.SearchParams.FeeFrom.Should().Be(feeFrom);
         _model.SearchParams.FeeTo.Should().Be(feeTo);
         _model.SearchParams.NoFees.Should().Be(noFees);
+    }
+
+    [Fact]
+    public async Task OnGetAsync_SetsSirsiHomeUrl()
+    {
+        await _model.OnGetAsync();
+        _model.SirsiHomeUrl.Should().Be("https://sirsi.home/");
     }
 }

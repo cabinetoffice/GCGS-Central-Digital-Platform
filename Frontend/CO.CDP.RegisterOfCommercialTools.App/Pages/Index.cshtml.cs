@@ -5,108 +5,118 @@ using CO.CDP.RegisterOfCommercialTools.App.Services;
 using CO.CDP.RegisterOfCommercialTools.App.Validation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using CO.CDP.UI.Foundation.Services;
 
-namespace CO.CDP.RegisterOfCommercialTools.App.Pages
+namespace CO.CDP.RegisterOfCommercialTools.App.Pages;
+
+public class IndexModel(ISearchService searchService, ISirsiUrlService sirsiUrlService)
+    : PageModel
 {
-    public class IndexModel(ISearchService searchService) : PageModel
+    [BindProperty(SupportsGet = true)]
+    public SearchModel SearchParams { get; set; } = new();
+
+    public List<SearchResult> SearchResults { get; set; } = [];
+    public PaginationPartialModel? Pagination { get; set; }
+
+    [BindProperty(SupportsGet = true, Name = "pageNumber")]
+    public int PageNumber { get; set; } = 1;
+
+    private const int PageSize = 10;
+
+    public string SirsiHomeUrl { get; private set; } = string.Empty;
+
+    public async Task OnGetAsync()
     {
-        [BindProperty(SupportsGet = true)]
-        public SearchModel SearchParams { get; set; } = new();
+        SirsiHomeUrl = sirsiUrlService.BuildUrl("");
+        var (results, totalCount) = await searchService.SearchAsync(SearchParams, PageNumber, PageSize);
 
-        public List<SearchResult> SearchResults { get; set; } = [];
-        public PaginationPartialModel? Pagination { get; set; }
+        SearchResults = results;
 
-        [BindProperty(SupportsGet = true, Name = "pageNumber")]
-        public int PageNumber { get; set; } = 1;
-
-        private const int PageSize = 10;
-
-        public async Task OnGetAsync()
+        Pagination = new PaginationPartialModel
         {
-            var (results, totalCount) = await searchService.SearchAsync(SearchParams, PageNumber, PageSize);
+            CurrentPage = PageNumber,
+            PageSize = PageSize,
+            TotalItems = totalCount,
+            Url = "/search"
+        };
+    }
 
-            SearchResults = results;
+    public async Task<IActionResult> OnPostAsync()
+    {
+        CheckDateBindingErrors("SearchParams.SubmissionDeadlineFrom", "Please enter a valid date");
+        CheckDateBindingErrors("SearchParams.SubmissionDeadlineTo", "Please enter a valid date");
+        CheckDateBindingErrors("SearchParams.ContractStartDateFrom", "Please enter a valid date");
+        CheckDateBindingErrors("SearchParams.ContractStartDateTo", "Please enter a valid date");
+        CheckDateBindingErrors("SearchParams.ContractEndDateFrom", "Please enter a valid date");
+        CheckDateBindingErrors("SearchParams.ContractEndDateTo", "Please enter a valid date");
 
-            Pagination = new PaginationPartialModel
-            {
-                CurrentPage = PageNumber,
-                PageSize = PageSize,
-                TotalItems = totalCount,
-                Url = "/search"
-            };
-        }
+        await OnGetAsync();
+        return Page();
+    }
 
-        public async Task<IActionResult> OnPostAsync()
+    private void CheckDateBindingErrors(string key, string errorMessage)
+    {
+        if (ModelState.TryGetValue(key, out var modelState) && modelState.Errors.Any())
         {
-            CheckDateBindingErrors("SearchParams.SubmissionDeadlineFrom", "Please enter a valid date");
-            CheckDateBindingErrors("SearchParams.SubmissionDeadlineTo", "Please enter a valid date");
-            CheckDateBindingErrors("SearchParams.ContractStartDateFrom", "Please enter a valid date");
-            CheckDateBindingErrors("SearchParams.ContractStartDateTo", "Please enter a valid date");
-            CheckDateBindingErrors("SearchParams.ContractEndDateFrom", "Please enter a valid date");
-            CheckDateBindingErrors("SearchParams.ContractEndDateTo", "Please enter a valid date");
+            modelState.Errors.Clear();
 
-            await OnGetAsync();
-            return Page();
-        }
-
-        private void CheckDateBindingErrors(string key, string errorMessage)
-        {
-            if (ModelState.TryGetValue(key, out var modelState) && modelState.Errors.Any())
-            {
-                modelState.Errors.Clear();
-
-                ModelState.AddModelError(key, errorMessage);
-            }
-        }
-
-        public IActionResult OnPostReset()
-        {
-            return RedirectToPage();
+            ModelState.AddModelError(key, errorMessage);
         }
     }
 
-
-    [FeesValidator("FeeFrom", "FeeTo", "NoFees", ErrorMessage = "Fee values cannot be provided when 'No fees' is selected")]
-    public class SearchModel
+    public IActionResult OnPostReset()
     {
-        public string? Keywords { get; set; }
-
-        public string? SortOrder { get; set; }
-
-        public string? FrameworkOptions { get; set; }
-
-        public string? DynamicMarketOptions { get; set; }
-
-        public string? CommercialToolStatus { get; set; }
-
-        public string? AwardMethod { get; set; }
-
-        [Range(0, 100, ErrorMessage = "Enter a value between 0 and 100")]
-        public decimal? FeeFrom { get; set; }
-
-        [Range(0, 100, ErrorMessage = "Enter a value between 0 and 100")]
-        [DecimalRange("FeeFrom", ErrorMessage = "To must be more than from")]
-        public decimal? FeeTo { get; set; }
-
-        public string? NoFees { get; set; }
-
-        public List<string> Status { get; set; } = [];
-
-        public string? ContractingAuthorityUsage { get; set; }
-
-        public DateOnly? SubmissionDeadlineFrom { get; set; }
-
-        [DateRange("SubmissionDeadlineFrom", ErrorMessage = "To date must be after from date")]
-        public DateOnly? SubmissionDeadlineTo { get; set; }
-
-        public DateOnly? ContractStartDateFrom { get; set; }
-
-        [DateRange("ContractStartDateFrom", ErrorMessage = "To date must be after from date")]
-        public DateOnly? ContractStartDateTo { get; set; }
-
-        public DateOnly? ContractEndDateFrom { get; set; }
-
-        [DateRange("ContractEndDateFrom", ErrorMessage = "To date must be after from date")]
-        public DateOnly? ContractEndDateTo { get; set; }
+        return RedirectToPage();
     }
+
+    public IActionResult OnPostGoToSirsi()
+    {
+        var sirsiHomeUrl = sirsiUrlService.BuildUrl("");
+        return Redirect(sirsiHomeUrl);
+    }
+}
+
+
+[FeesValidator("FeeFrom", "FeeTo", "NoFees", ErrorMessage = "Fee values cannot be provided when 'No fees' is selected")]
+public class SearchModel
+{
+    public string? Keywords { get; set; }
+
+    public string? SortOrder { get; set; }
+
+    public string? FrameworkOptions { get; set; }
+
+    public string? DynamicMarketOptions { get; set; }
+
+    public string? CommercialToolStatus { get; set; }
+
+    public string? AwardMethod { get; set; }
+
+    [Range(0, 100, ErrorMessage = "Enter a value between 0 and 100")]
+    public decimal? FeeFrom { get; set; }
+
+    [Range(0, 100, ErrorMessage = "Enter a value between 0 and 100")]
+    [DecimalRange("FeeFrom", ErrorMessage = "To must be more than from")]
+    public decimal? FeeTo { get; set; }
+
+    public string? NoFees { get; set; }
+
+    public List<string> Status { get; set; } = [];
+
+    public string? ContractingAuthorityUsage { get; set; }
+
+    public DateOnly? SubmissionDeadlineFrom { get; set; }
+
+    [DateRange("SubmissionDeadlineFrom", ErrorMessage = "To date must be after from date")]
+    public DateOnly? SubmissionDeadlineTo { get; set; }
+
+    public DateOnly? ContractStartDateFrom { get; set; }
+
+    [DateRange("ContractStartDateFrom", ErrorMessage = "To date must be after from date")]
+    public DateOnly? ContractStartDateTo { get; set; }
+
+    public DateOnly? ContractEndDateFrom { get; set; }
+
+    [DateRange("ContractEndDateFrom", ErrorMessage = "To date must be after from date")]
+    public DateOnly? ContractEndDateTo { get; set; }
 }
