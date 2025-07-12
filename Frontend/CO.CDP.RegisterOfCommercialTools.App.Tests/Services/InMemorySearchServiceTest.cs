@@ -87,6 +87,7 @@ public class InMemorySearchServiceTest
     public void CalculateRelevanceScore_ReturnsExpectedScore(string keywords, string title, int expectedMinScore)
     {
         var result = new SearchResult(
+            Guid.NewGuid(),
             title,
             "Test Caption",
             "/",

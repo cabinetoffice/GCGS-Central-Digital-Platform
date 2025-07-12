@@ -1,4 +1,5 @@
 using CO.CDP.RegisterOfCommercialTools.App.Pages.Search;
+using System;
 
 namespace CO.CDP.RegisterOfCommercialTools.App.Services;
 
@@ -7,6 +8,7 @@ public class InMemorySearchService : ISearchService
     private readonly List<SearchResult> _allResults =
     [
         new(
+            Guid.NewGuid(),
             "Framework for Agile Delivery Services",
             "Crown Commercial Service",
             "/",
@@ -19,6 +21,7 @@ public class InMemorySearchService : ISearchService
             "Without competition"
         ),
         new(
+            Guid.NewGuid(),
             "Digital Outcomes and Specialists 6",
             "Crown Commercial Service",
             "/",
@@ -31,6 +34,7 @@ public class InMemorySearchService : ISearchService
             "Without competition"
         ),
         new(
+            Guid.NewGuid(),
             "G-Cloud 13",
             "Crown Commercial Service",
             "/",
@@ -43,6 +47,7 @@ public class InMemorySearchService : ISearchService
             "Without competition"
         ),
         new(
+            Guid.NewGuid(),
             "Vehicle Telematics/Hardware and Software Solutions",
             "Crown Commercial Service",
             "/",
@@ -55,6 +60,7 @@ public class InMemorySearchService : ISearchService
             "Without competition"
         ),
         new(
+            Guid.NewGuid(),
             "Gigabit Capable Connectivity",
             "Crown Commercial Service",
             "/",

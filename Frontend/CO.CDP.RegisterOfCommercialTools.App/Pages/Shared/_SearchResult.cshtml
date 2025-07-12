@@ -1,11 +1,11 @@
 @using CO.CDP.RegisterOfCommercialTools.App.Pages.Search
 @model CO.CDP.RegisterOfCommercialTools.App.Pages.Search.SearchResult
 
-<div class="search-result">
+<div class="search-result" data-result-id="@Model.Id">
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-full govuk-grid-column-three-quarters-from-desktop govuk-!-margin-bottom-1">
             <h2 class="govuk-heading-m govuk-!-margin-bottom-0">
-                <a class="govuk-link" href="@Model.Link">@Model.Title</a>
+                <a class="govuk-link" href="/commercial-tools/@Model.Id">@Model.Title</a>
             </h2>
         </div>
         <div class="govuk-grid-column-full govuk-grid-column-one-quarter-from-desktop govuk-!-margin-bottom-1">

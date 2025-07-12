@@ -3,7 +3,6 @@ using CO.CDP.RegisterOfCommercialTools.App.Services;
 using CO.CDP.RegisterOfCommercialTools.App.Validation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace CO.CDP.RegisterOfCommercialTools.App.Pages.Search
@@ -66,6 +65,7 @@ namespace CO.CDP.RegisterOfCommercialTools.App.Pages.Search
     }
 
     public record SearchResult(
+        Guid Id,
         string Title,
         string Caption,
         string Link,
