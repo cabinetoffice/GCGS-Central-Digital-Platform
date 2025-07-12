@@ -81,6 +81,34 @@ public class UiFoundationBuilder
     }
 
     /// <summary>
+    /// Adds Sirsi URL service with default configuration
+    /// </summary>
+    /// <returns>The builder for method chaining</returns>
+    public UiFoundationBuilder AddSirsiUrlService()
+    {
+        var options = _configuration.GetSection("SirsiService").Get<SirsiUrlOptions>()
+                      ?? throw new InvalidOperationException("SirsiService configuration is missing.");
+        _services.AddSingleton(options);
+        _services.AddScoped<ISirsiUrlService, SirsiUrlService>();
+        return this;
+    }
+
+    /// <summary>
+    /// Adds Sirsi URL service with custom configuration
+    /// </summary>
+    /// <param name="configure">Action to configure Sirsi URL options</param>
+    /// <returns>The builder for method chaining</returns>
+    public UiFoundationBuilder AddSirsiUrlService(Action<SirsiUrlOptions> configure)
+    {
+        var options = _configuration.GetSection("SirsiService").Get<SirsiUrlOptions>()
+                      ?? throw new InvalidOperationException("SirsiService configuration is missing.");
+        configure(options);
+        _services.AddSingleton(options);
+        _services.AddScoped<ISirsiUrlService, SirsiUrlService>();
+        return this;
+    }
+
+    /// <summary>
     /// Adds Session services with default configuration
     /// </summary>
     /// <param name="applicationPrefix">The application name to use as a prefix for the session cookie.</param>
