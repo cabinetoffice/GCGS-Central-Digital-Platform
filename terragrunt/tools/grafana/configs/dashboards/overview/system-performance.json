@@ -18,7 +18,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 38,
+  "id": 41,
   "links": [],
   "panels": [
     {
@@ -96,7 +96,7 @@
         "frameIndex": 0,
         "showHeader": true
       },
-      "pluginVersion": "12.0.1",
+      "pluginVersion": "12.0.2",
       "targets": [
         {
           "datasource": {
@@ -372,7 +372,7 @@
         },
         "showHeader": false
       },
-      "pluginVersion": "12.0.1",
+      "pluginVersion": "12.0.2",
       "targets": [
         {
           "dimensions": {},
@@ -576,7 +576,7 @@
         "frameIndex": 0,
         "showHeader": true
       },
-      "pluginVersion": "12.0.1",
+      "pluginVersion": "12.0.2",
       "targets": [
         {
           "datasource": {
@@ -948,7 +948,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.0.1",
+      "pluginVersion": "12.0.2",
       "targets": [
         {
           "datasource": {
@@ -1373,7 +1373,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.0.1",
+      "pluginVersion": "12.0.2",
       "targets": [
         {
           "datasource": {
@@ -1802,7 +1802,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.0.1",
+      "pluginVersion": "12.0.2",
       "targets": [
         {
           "datasource": {
@@ -1967,7 +1967,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.0.1",
+      "pluginVersion": "12.0.2",
       "targets": [
         {
           "datasource": {
@@ -2195,7 +2195,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.0.1",
+      "pluginVersion": "12.0.2",
       "targets": [
         {
           "datasource": {
@@ -2409,7 +2409,7 @@
           "sort": "asc"
         }
       },
-      "pluginVersion": "12.0.1",
+      "pluginVersion": "12.0.2",
       "targets": [
         {
           "datasource": {
@@ -2643,6 +2643,84 @@
           "region": "default",
           "sqlExpression": "",
           "statistic": "Maximum"
+        },
+        {
+          "datasource": {
+            "type": "cloudwatch",
+            "uid": "CLOUDWATCH"
+          },
+          "dimensions": {
+            "DBClusterIdentifier": "cdp-sirsi-cfs-cluster"
+          },
+          "expression": "",
+          "hide": false,
+          "id": "",
+          "label": "CFS",
+          "logGroups": [],
+          "matchExact": true,
+          "metricEditorMode": 0,
+          "metricName": "DatabaseConnections",
+          "metricQueryType": 0,
+          "namespace": "AWS/RDS",
+          "period": "",
+          "queryLanguage": "CWLI",
+          "queryMode": "Metrics",
+          "refId": "J",
+          "region": "default",
+          "sqlExpression": "",
+          "statistic": "Maximum"
+        },
+        {
+          "datasource": {
+            "type": "cloudwatch",
+            "uid": "CLOUDWATCH"
+          },
+          "dimensions": {
+            "DBInstanceIdentifier": "cdp-sirsi-cfs-cluster-0"
+          },
+          "expression": "",
+          "hide": false,
+          "id": "",
+          "label": "CFS 0",
+          "logGroups": [],
+          "matchExact": true,
+          "metricEditorMode": 0,
+          "metricName": "DatabaseConnections",
+          "metricQueryType": 0,
+          "namespace": "AWS/RDS",
+          "period": "",
+          "queryLanguage": "CWLI",
+          "queryMode": "Metrics",
+          "refId": "K",
+          "region": "default",
+          "sqlExpression": "",
+          "statistic": "Maximum"
+        },
+        {
+          "datasource": {
+            "type": "cloudwatch",
+            "uid": "CLOUDWATCH"
+          },
+          "dimensions": {
+            "DBInstanceIdentifier": "cdp-sirsi-cfs-cluster-1"
+          },
+          "expression": "",
+          "hide": false,
+          "id": "",
+          "label": "CFS 1",
+          "logGroups": [],
+          "matchExact": true,
+          "metricEditorMode": 0,
+          "metricName": "DatabaseConnections",
+          "metricQueryType": 0,
+          "namespace": "AWS/RDS",
+          "period": "",
+          "queryLanguage": "CWLI",
+          "queryMode": "Metrics",
+          "refId": "L",
+          "region": "default",
+          "sqlExpression": "",
+          "statistic": "Maximum"
         }
       ],
       "title": "Connections",
@@ -2744,7 +2822,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.0.1",
+      "pluginVersion": "12.0.2",
       "targets": [
         {
           "datasource": {
@@ -2819,6 +2897,32 @@
           "queryLanguage": "CWLI",
           "queryMode": "Metrics",
           "refId": "C",
+          "region": "default",
+          "sqlExpression": "",
+          "statistic": "Maximum"
+        },
+        {
+          "datasource": {
+            "type": "cloudwatch",
+            "uid": "CLOUDWATCH"
+          },
+          "dimensions": {
+            "DBClusterIdentifier": "cdp-sirsi-cfs-cluster"
+          },
+          "expression": "",
+          "hide": false,
+          "id": "",
+          "label": "CFS",
+          "logGroups": [],
+          "matchExact": true,
+          "metricEditorMode": 0,
+          "metricName": "CPUUtilization",
+          "metricQueryType": 0,
+          "namespace": "AWS/RDS",
+          "period": "",
+          "queryLanguage": "CWLI",
+          "queryMode": "Metrics",
+          "refId": "D",
           "region": "default",
           "sqlExpression": "",
           "statistic": "Maximum"
@@ -2923,7 +3027,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.0.1",
+      "pluginVersion": "12.0.2",
       "targets": [
         {
           "datasource": {
@@ -2999,6 +3103,32 @@
           "queryLanguage": "CWLI",
           "queryMode": "Metrics",
           "refId": "C",
+          "region": "default",
+          "sqlExpression": "",
+          "statistic": "Maximum"
+        },
+        {
+          "datasource": {
+            "type": "cloudwatch",
+            "uid": "CLOUDWATCH"
+          },
+          "dimensions": {
+            "DBClusterIdentifier": "cdp-sirsi-cfs-cluster"
+          },
+          "expression": "",
+          "hide": false,
+          "id": "",
+          "label": "CFS",
+          "logGroups": [],
+          "matchExact": true,
+          "metricEditorMode": 0,
+          "metricName": "FreeableMemory",
+          "metricQueryType": 0,
+          "namespace": "AWS/RDS",
+          "period": "",
+          "queryLanguage": "CWLI",
+          "queryMode": "Metrics",
+          "refId": "D",
           "region": "default",
           "sqlExpression": "",
           "statistic": "Maximum"
@@ -3102,7 +3232,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.0.1",
+      "pluginVersion": "12.0.2",
       "targets": [
         {
           "datasource": {
@@ -3258,6 +3388,58 @@
           "region": "default",
           "sqlExpression": "",
           "statistic": "Average"
+        },
+        {
+          "datasource": {
+            "type": "cloudwatch",
+            "uid": "CLOUDWATCH"
+          },
+          "dimensions": {
+            "DBInstanceIdentifier": "cdp-sirsi-cfs-cluster-0"
+          },
+          "expression": "",
+          "hide": false,
+          "id": "",
+          "label": "CFS 0",
+          "logGroups": [],
+          "matchExact": true,
+          "metricEditorMode": 0,
+          "metricName": "DBLoad",
+          "metricQueryType": 0,
+          "namespace": "AWS/RDS",
+          "period": "",
+          "queryLanguage": "CWLI",
+          "queryMode": "Metrics",
+          "refId": "G",
+          "region": "default",
+          "sqlExpression": "",
+          "statistic": "Average"
+        },
+        {
+          "datasource": {
+            "type": "cloudwatch",
+            "uid": "CLOUDWATCH"
+          },
+          "dimensions": {
+            "DBInstanceIdentifier": "cdp-sirsi-cfs-cluster-1"
+          },
+          "expression": "",
+          "hide": false,
+          "id": "",
+          "label": "CFS 1",
+          "logGroups": [],
+          "matchExact": true,
+          "metricEditorMode": 0,
+          "metricName": "DBLoad",
+          "metricQueryType": 0,
+          "namespace": "AWS/RDS",
+          "period": "",
+          "queryLanguage": "CWLI",
+          "queryMode": "Metrics",
+          "refId": "H",
+          "region": "default",
+          "sqlExpression": "",
+          "statistic": "Average"
         }
       ],
       "title": "DB Load",
@@ -3364,7 +3546,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.0.1",
+      "pluginVersion": "12.0.2",
       "targets": [
         {
           "datasource": {
@@ -3481,7 +3663,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.0.1",
+      "pluginVersion": "12.0.2",
       "targets": [
         {
           "datasource": {
@@ -3598,7 +3780,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.0.1",
+      "pluginVersion": "12.0.2",
       "targets": [
         {
           "datasource": {
@@ -3715,7 +3897,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "11.5.2",
+      "pluginVersion": "12.0.2",
       "targets": [
         {
           "datasource": {
@@ -3831,7 +4013,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "11.5.2",
+      "pluginVersion": "12.0.2",
       "targets": [
         {
           "datasource": {
@@ -3948,7 +4130,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "11.5.2",
+      "pluginVersion": "12.0.2",
       "targets": [
         {
           "datasource": {
@@ -4528,6 +4710,5 @@
   "timezone": "browser",
   "title": "System Performance",
   "uid": "system-performance",
-  "version": 4,
-  "weekStart": ""
+  "version": 5
 }
