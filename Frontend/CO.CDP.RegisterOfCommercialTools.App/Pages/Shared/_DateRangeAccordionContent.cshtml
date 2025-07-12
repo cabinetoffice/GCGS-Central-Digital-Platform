@@ -1,4 +1,4 @@
-@model CO.CDP.RegisterOfCommercialTools.App.Pages.Search.SearchModel
+@model SearchModel
 @{
     var submissionDeadlineRangeError = ViewData.ModelState["SearchParams.SubmissionDeadlineTo"]?.Errors.FirstOrDefault()?.ErrorMessage;
     var contractStartDateRangeError = ViewData.ModelState["SearchParams.ContractStartDateTo"]?.Errors.FirstOrDefault()?.ErrorMessage;

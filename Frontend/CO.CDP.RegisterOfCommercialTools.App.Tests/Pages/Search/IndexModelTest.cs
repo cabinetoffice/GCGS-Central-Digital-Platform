@@ -1,9 +1,9 @@
-using CO.CDP.RegisterOfCommercialTools.App.Pages.Search;
 using CO.CDP.RegisterOfCommercialTools.App.Services;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using System.ComponentModel.DataAnnotations;
+using CO.CDP.RegisterOfCommercialTools.App.Pages;
 
 namespace CO.CDP.RegisterOfCommercialTools.App.Tests.Pages.Search;
 

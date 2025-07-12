@@ -1,5 +1,5 @@
-using CO.CDP.RegisterOfCommercialTools.App.Pages.Search;
 using System;
+using CO.CDP.RegisterOfCommercialTools.App.Pages;
 
 namespace CO.CDP.RegisterOfCommercialTools.App.Services;
 

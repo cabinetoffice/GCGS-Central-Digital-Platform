@@ -1,4 +1,4 @@
-using CO.CDP.RegisterOfCommercialTools.App.Pages.Search;
+using CO.CDP.RegisterOfCommercialTools.App.Pages;
 using CO.CDP.RegisterOfCommercialTools.App.Services;
 using FluentAssertions;
 
