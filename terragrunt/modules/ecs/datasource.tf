@@ -15,6 +15,11 @@ provider "aws" {
   }
 }
 
+data "aws_ssm_parameter" "orchestrator_cfs_service_version" {
+  provider = aws.orchestrator_assume_role
+  name     = "/${local.name_prefix}-cfs-service-version"
+}
+
 data "aws_ssm_parameter" "orchestrator_fts_service_version" {
   provider = aws.orchestrator_assume_role
   name     = "/${local.name_prefix}-fts-service-version"
@@ -39,6 +44,10 @@ data "aws_secretsmanager_secret" "companies_house" {
 
 data "aws_secretsmanager_secret" "redis_auth_token" {
   arn = var.redis_auth_token_arn
+}
+
+data "aws_secretsmanager_secret" "cfs_secrets" {
+  name = "${local.name_prefix}-cfs/secrets"
 }
 
 data "aws_secretsmanager_secret" "fts_secrets" {
