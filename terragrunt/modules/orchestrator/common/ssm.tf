@@ -6,6 +6,14 @@ resource "aws_ssm_parameter" "service_versions_sirsi" {
   type        = "String"
 }
 
+resource "aws_ssm_parameter" "service_versions_cfs" {
+  description = "This parameter stores the CFS service version pinned for all accounts"
+  value       = local.envs_service_version_cfs
+  name        = "${local.name_prefix}-cfs-envs-service-version"
+  tags        = var.tags
+  type        = "String"
+}
+
 resource "aws_ssm_parameter" "service_versions_fts" {
   description = "This parameter stores the FTS service version pinned for all accounts"
   value       = local.envs_service_version_fts

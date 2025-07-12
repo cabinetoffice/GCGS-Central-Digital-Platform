@@ -43,6 +43,16 @@ variable "ssm_envs_combined_service_version_name" {
   type        = string
 }
 
+variable "ssm_envs_cfs_service_version_arn" {
+  description = "ARN of the parameter holding the CFS service versions for all environments"
+  type        = string
+}
+
+variable "ssm_envs_cfs_service_version_name" {
+  description = "Name of the parameter holding the CFS service versions for all environments"
+  type        = string
+}
+
 variable "ssm_envs_fts_service_version_arn" {
   description = "ARN of the parameter holding the FTS service versions for all environments"
   type        = string
