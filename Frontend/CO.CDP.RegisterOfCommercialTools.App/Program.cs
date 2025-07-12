@@ -7,6 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddRazorPages();
 builder.Services.AddGovUkFrontend();
+builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddUiFoundation(builder.Configuration, uiFoundationBuilder =>
 {
