@@ -1,4 +1,5 @@
 using CO.CDP.RegisterOfCommercialTools.App.Pages.Shared;
+using CO.CDP.RegisterOfCommercialTools.App.Services;
 using CO.CDP.RegisterOfCommercialTools.App.Validation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -7,7 +8,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CO.CDP.RegisterOfCommercialTools.App.Pages.Search
 {
-    public class IndexModel : PageModel
+    public class IndexModel(ISearchService searchService) : PageModel
     {
         [BindProperty(SupportsGet = true)]
         public SearchModel SearchParams { get; set; } = new();
@@ -19,85 +20,24 @@ namespace CO.CDP.RegisterOfCommercialTools.App.Pages.Search
         public int PageNumber { get; set; } = 1;
 
         private const int PageSize = 10;
+        private readonly ISearchService _searchService = searchService;
 
-        public void OnGet()
+        public async Task OnGetAsync()
         {
-            var allResults = new List<SearchResult>
-            {
-                new(
-                    "Framework for Agile Delivery Services",
-                    "Crown Commercial Service",
-                    "/",
-                    "Open framework scheme",
-                    SearchResultStatus.Active,
-                    "3%",
-                    "Yes",
-                    "10 February 2025",
-                    "1 March 2025 to 28 February 2027",
-                    "Without competition"
-                ),
-                new(
-                    "Digital Outcomes and Specialists 6",
-                    "Crown Commercial Service",
-                    "/",
-                    "Open framework scheme",
-                    SearchResultStatus.Upcoming,
-                    "1%",
-                    "Yes",
-                    "10 February 2025",
-                    "1 March 2025 to 28 February 2027",
-                    "Without competition"
-                ),
-                new(
-                    "G-Cloud 13",
-                    "Crown Commercial Service",
-                    "/",
-                    "Open framework scheme",
-                    SearchResultStatus.Expired,
-                    "0.75%",
-                    "Yes",
-                    "10 February 2023",
-                    "1 March 2023 to 28 February 2024",
-                    "Without competition"
-                ),
-                new(
-                    "Vehicle Telematics/Hardware and Software Solutions",
-                    "Crown Commercial Service",
-                    "/",
-                    "Dynamic purchasing system",
-                    SearchResultStatus.Active,
-                    "0.5%",
-                    "Yes",
-                    "10 February 2025",
-                    "1 March 2025 to 28 February 2027",
-                    "Without competition"
-                ),
-                new(
-                    "Gigabit Capable Connectivity",
-                    "Crown Commercial Service",
-                    "/",
-                    "Dynamic purchasing system",
-                    SearchResultStatus.Active,
-                    "1.5%",
-                    "Yes",
-                    "10 February 2025",
-                    "1 March 2025 to 28 February 2027",
-                    "Without competition"
-                )
-            };
+            var (results, totalCount) = await _searchService.SearchAsync(SearchParams, PageNumber, PageSize);
 
-            SearchResults = allResults.Skip((PageNumber - 1) * PageSize).Take(PageSize).ToList();
+            SearchResults = results;
 
             Pagination = new PaginationPartialModel
             {
                 CurrentPage = PageNumber,
                 PageSize = PageSize,
-                TotalItems = allResults.Count,
+                TotalItems = totalCount,
                 Url = "/search"
             };
         }
 
-        public IActionResult OnPost()
+        public async Task<IActionResult> OnPostAsync()
         {
             CheckDateBindingErrors("SearchParams.SubmissionDeadlineFrom", "Please enter a valid date");
             CheckDateBindingErrors("SearchParams.SubmissionDeadlineTo", "Please enter a valid date");
@@ -106,7 +46,7 @@ namespace CO.CDP.RegisterOfCommercialTools.App.Pages.Search
             CheckDateBindingErrors("SearchParams.ContractEndDateFrom", "Please enter a valid date");
             CheckDateBindingErrors("SearchParams.ContractEndDateTo", "Please enter a valid date");
 
-            OnGet();
+            await OnGetAsync();
             return Page();
         }
 

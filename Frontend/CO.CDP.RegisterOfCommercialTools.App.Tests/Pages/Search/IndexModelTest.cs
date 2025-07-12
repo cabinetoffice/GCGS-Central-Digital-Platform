@@ -1,21 +1,39 @@
 using CO.CDP.RegisterOfCommercialTools.App.Pages.Search;
+using CO.CDP.RegisterOfCommercialTools.App.Services;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
+using Moq;
 using System.ComponentModel.DataAnnotations;
 
 namespace CO.CDP.RegisterOfCommercialTools.App.Tests.Pages.Search;
 
 public class IndexModelTest
 {
-    private readonly IndexModel _model = new();
+    private readonly Mock<ISearchService> _mockSearchService;
+    private readonly IndexModel _model;
+
+    public IndexModelTest()
+    {
+        _mockSearchService = new Mock<ISearchService>();
+        _model = new IndexModel(_mockSearchService.Object);
+    }
 
     [Fact]
-    public void OnGet_ShouldPopulateSearchResults()
+    public async Task OnGet_ShouldPopulateSearchResults()
     {
-        _model.OnGet();
+        var searchResults = new List<SearchResult>
+        {
+            new("Test Result", "Test Caption", "/", "Test Tool", SearchResultStatus.Active, "1%", "Yes", "2025-01-01",
+                "2025-01-01 to 2025-12-31", "Direct Award")
+        };
+        _mockSearchService.Setup(s => s.SearchAsync(It.IsAny<SearchModel>(), It.IsAny<int>(), It.IsAny<int>()))
+            .ReturnsAsync((searchResults, 1));
 
-        _model.SearchResults.Should().NotBeEmpty();
+        await _model.OnGetAsync();
+
+        _model.SearchResults.Should().BeEquivalentTo(searchResults);
         _model.Pagination.Should().NotBeNull();
+        _model.Pagination?.TotalItems.Should().Be(1);
     }
 
     [Fact]
@@ -44,7 +62,7 @@ public class IndexModelTest
     }
 
     [Fact]
-    public void OnGet_WithSearchParams_ShouldRetainSearchParams()
+    public async Task OnGet_WithSearchParams_ShouldRetainSearchParams()
     {
         var searchParams = new SearchModel
         {
@@ -67,7 +85,10 @@ public class IndexModelTest
         };
         _model.SearchParams = searchParams;
 
-        _model.OnGet();
+        _mockSearchService.Setup(s => s.SearchAsync(searchParams, 1, 10))
+            .ReturnsAsync((new List<SearchResult>(), 0));
+
+        await _model.OnGetAsync();
 
         _model.SearchParams.Should().Be(searchParams);
     }
