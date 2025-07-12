@@ -46,17 +46,17 @@
                     </legend>
                     <div class="govuk-radios govuk-radios--small" data-module="govuk-radios">
                         <div class="govuk-radios__item">
-                            <input class="govuk-radios__input" id="framework-open-only" asp-for="FrameworkOptions"
+                            <input class="govuk-radios__input" id="framework-open-only" name="SearchParams.FrameworkOptions"
                                    type="radio"
-                                   value="open">
+                                   value="open" @(Model.FrameworkOptions == "open" ? "checked" : null)>
                             <label class="govuk-label govuk-radios__label govuk-!-font-size-14" for="framework-open-only">
                                 Open frameworks only
                             </label>
                         </div>
                         <div class="govuk-radios__item">
-                            <input class="govuk-radios__input" id="framework-exclude-open" asp-for="FrameworkOptions"
+                            <input class="govuk-radios__input" id="framework-exclude-open" name="SearchParams.FrameworkOptions"
                                    type="radio"
-                                   value="exclude-open">
+                                   value="exclude-open" @(Model.FrameworkOptions == "exclude-open" ? "checked" : null)>
                             <label class="govuk-label govuk-radios__label govuk-!-font-size-14" for="framework-exclude-open">
                                 Exclude open frameworks
                             </label>
@@ -70,16 +70,16 @@
                     <div class="govuk-radios govuk-radios--small" data-module="govuk-radios">
                         <div class="govuk-radios__item">
                             <input class="govuk-radios__input" id="dynamic-market-utilities-only"
-                                   asp-for="DynamicMarketOptions" type="radio"
-                                   value="utilities-only">
+                                   name="SearchParams.DynamicMarketOptions" type="radio"
+                                   value="utilities-only" @(Model.DynamicMarketOptions == "utilities-only" ? "checked" : null)>
                             <label class="govuk-label govuk-radios__label govuk-!-font-size-14" for="dynamic-market-utilities-only">
                                 Utilities dynamic markets only
                             </label>
                         </div>
                         <div class="govuk-radios__item">
                             <input class="govuk-radios__input" id="dynamic-market-exclude-utilities"
-                                   asp-for="DynamicMarketOptions" type="radio"
-                                   value="exclude-utilities">
+                                   name="SearchParams.DynamicMarketOptions" type="radio"
+                                   value="exclude-utilities" @(Model.DynamicMarketOptions == "exclude-utilities" ? "checked" : null)>
                             <label class="govuk-label govuk-radios__label govuk-!-font-size-14" for="dynamic-market-exclude-utilities">
                                 Excludes Utilities dynamic markets
                             </label>

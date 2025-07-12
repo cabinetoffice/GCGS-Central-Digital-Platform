@@ -20,11 +20,10 @@ namespace CO.CDP.RegisterOfCommercialTools.App.Pages.Search
         public int PageNumber { get; set; } = 1;
 
         private const int PageSize = 10;
-        private readonly ISearchService _searchService = searchService;
 
         public async Task OnGetAsync()
         {
-            var (results, totalCount) = await _searchService.SearchAsync(SearchParams, PageNumber, PageSize);
+            var (results, totalCount) = await searchService.SearchAsync(SearchParams, PageNumber, PageSize);
 
             SearchResults = results;
 
@@ -93,10 +92,11 @@ namespace CO.CDP.RegisterOfCommercialTools.App.Pages.Search
         [DisplayName("Dynamic market options")]
         public string? DynamicMarketOptions { get; set; }
 
-        [DisplayName("Award method")]
-        public bool AwardMethod { get; set; }
+        [DisplayName("Commercial tool status")]
+        public string? CommercialToolStatus { get; set; }
 
-        public bool AwardMethodSet { get; set; }
+        [DisplayName("Award method")]
+        public string? AwardMethod { get; set; }
 
         [DisplayName("Fee from")]
         [Range(0, 100, ErrorMessage = "Enter a value between 0 and 100")]
@@ -108,16 +108,12 @@ namespace CO.CDP.RegisterOfCommercialTools.App.Pages.Search
         public decimal? FeeTo { get; set; }
 
         [DisplayName("No fees")]
-        public bool NoFees { get; set; }
-
-        public bool NoFeesSet { get; set; }
+        public string? NoFees { get; set; }
 
         public List<string> Status { get; set; } = [];
 
         [DisplayName("Contracting authority usage")]
-        public bool ContractingAuthorityUsage { get; set; }
-
-        public bool ContractingAuthorityUsageSet { get; set; }
+        public string? ContractingAuthorityUsage { get; set; }
 
         [DisplayName("Submission deadline from")]
         public DateOnly? SubmissionDeadlineFrom { get; set; }

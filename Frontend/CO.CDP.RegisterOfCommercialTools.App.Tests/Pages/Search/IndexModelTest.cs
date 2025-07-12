@@ -44,15 +44,12 @@ public class IndexModelTest
         _model.SearchParams.SortOrder.Should().BeNull();
         _model.SearchParams.FrameworkOptions.Should().BeNull();
         _model.SearchParams.DynamicMarketOptions.Should().BeNull();
-        _model.SearchParams.AwardMethod.Should().BeFalse();
-        _model.SearchParams.AwardMethodSet.Should().BeFalse();
+        _model.SearchParams.AwardMethod.Should().BeNull();
         _model.SearchParams.Status.Should().BeEmpty();
-        _model.SearchParams.ContractingAuthorityUsage.Should().BeFalse();
-        _model.SearchParams.ContractingAuthorityUsageSet.Should().BeFalse();
+        _model.SearchParams.ContractingAuthorityUsage.Should().BeNull();
         _model.SearchParams.FeeFrom.Should().BeNull();
         _model.SearchParams.FeeTo.Should().BeNull();
-        _model.SearchParams.NoFees.Should().BeFalse();
-        _model.SearchParams.NoFeesSet.Should().BeFalse();
+        _model.SearchParams.NoFees.Should().BeNull();
         _model.SearchParams.SubmissionDeadlineFrom.Should().BeNull();
         _model.SearchParams.SubmissionDeadlineTo.Should().BeNull();
         _model.SearchParams.ContractStartDateFrom.Should().BeNull();
@@ -70,12 +67,12 @@ public class IndexModelTest
             SortOrder = "a-z",
             FrameworkOptions = "open",
             DynamicMarketOptions = "utilities-only",
-            AwardMethod = true,
+            AwardMethod = "direct-award",
             Status = ["upcoming", "active-buyers"],
-            ContractingAuthorityUsage = true,
+            ContractingAuthorityUsage = "yes",
             FeeFrom = 0,
             FeeTo = 100,
-            NoFees = true,
+            NoFees = "true",
             SubmissionDeadlineFrom = new DateOnly(2025, 1, 1),
             SubmissionDeadlineTo = new DateOnly(2025, 1, 31),
             ContractStartDateFrom = new DateOnly(2025, 2, 1),
