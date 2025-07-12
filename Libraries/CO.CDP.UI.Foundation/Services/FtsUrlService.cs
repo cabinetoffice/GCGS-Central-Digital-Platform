@@ -8,17 +8,12 @@ namespace CO.CDP.UI.Foundation.Services;
 /// <summary>
 /// Configuration options for the FTS URL service
 /// </summary>
-public class FtsUrlOptions
+public class FtsUrlOptions : ServiceUrlOptions
 {
-    /// <summary>
-    /// The base URL of the FTS service
-    /// </summary>
-    public string? ServiceBaseUrl { get; set; }
-
-    /// <summary>
-    /// The session key used to store the FTS service origin
-    /// </summary>
-    public string SessionKey { get; set; } = "FtsServiceOrigin";
+    public FtsUrlOptions()
+    {
+        SessionKey = "FtsServiceOrigin";
+    }
 }
 
 /// <summary>
@@ -39,11 +34,8 @@ public interface IFtsUrlService
 /// <summary>
 /// Service for building URLs to the FTS service
 /// </summary>
-public class FtsUrlService : IFtsUrlService
+public class FtsUrlService : UrlServiceBase, IFtsUrlService
 {
-    private readonly string _ftsService;
-    private readonly ICookiePreferencesService? _cookiePreferencesService;
-
     /// <summary>
     /// Initialises a new instance of the FtsUrlService
     /// </summary>
@@ -54,47 +46,7 @@ public class FtsUrlService : IFtsUrlService
         FtsUrlOptions options,
         IHttpContextAccessor httpContextAccessor,
         ICookiePreferencesService? cookiePreferencesService = null)
+        : base(options, httpContextAccessor, cookiePreferencesService)
     {
-        _cookiePreferencesService = cookiePreferencesService;
-
-        var session = httpContextAccessor.HttpContext?.Session;
-        var ftsService = session?.GetString(options.SessionKey)
-                         ?? options.ServiceBaseUrl
-                         ?? throw new InvalidOperationException("FTS service URL is not configured.");
-
-        _ftsService = ftsService.TrimEnd('/');
-    }
-
-    /// <inheritdoc />
-    public string BuildUrl(string endpoint, Guid? organisationId = null, string? redirectUrl = null)
-    {
-        var uriBuilder = new UriBuilder(_ftsService)
-        {
-            Path = $"{endpoint.TrimStart('/')}"
-        };
-
-        var queryBuilder = new QueryBuilder
-        {
-            { "language", CultureInfo.CurrentUICulture.Name.Replace("-", "_") }
-        };
-
-        if (organisationId.HasValue)
-        {
-            queryBuilder.Add("organisation_id", organisationId.Value.ToString());
-        }
-
-        if (!string.IsNullOrEmpty(redirectUrl))
-        {
-            queryBuilder.Add("redirect_url", redirectUrl);
-        }
-
-        if (_cookiePreferencesService != null)
-        {
-            var cookiesAccepted = _cookiePreferencesService.IsAccepted() ? "true" : "false";
-            queryBuilder.Add("cookies_accepted", cookiesAccepted);
-        }
-
-        uriBuilder.Query = queryBuilder.ToString();
-        return uriBuilder.Uri.ToString();
     }
 }
