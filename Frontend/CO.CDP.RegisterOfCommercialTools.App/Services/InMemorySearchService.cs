@@ -1,5 +1,6 @@
-using System;
+using CO.CDP.RegisterOfCommercialTools.App.Models;
 using CO.CDP.RegisterOfCommercialTools.App.Pages;
+using SearchResultStatus = CO.CDP.RegisterOfCommercialTools.App.Models.SearchResultStatus;
 
 namespace CO.CDP.RegisterOfCommercialTools.App.Services;
 
@@ -8,10 +9,9 @@ public class InMemorySearchService : ISearchService
     private readonly List<SearchResult> _allResults =
     [
         new(
-            Guid.NewGuid(),
+            Guid.Parse("11111111-1111-1111-1111-111111111111"),
             "Framework for Agile Delivery Services",
             "Crown Commercial Service",
-            "/",
             "Open framework scheme",
             SearchResultStatus.Active,
             "3%",
@@ -21,10 +21,9 @@ public class InMemorySearchService : ISearchService
             "Without competition"
         ),
         new(
-            Guid.NewGuid(),
+            Guid.Parse("22222222-2222-2222-2222-222222222222"),
             "Digital Outcomes and Specialists 6",
             "Crown Commercial Service",
-            "/",
             "Open framework scheme",
             SearchResultStatus.Upcoming,
             "1%",
@@ -34,10 +33,9 @@ public class InMemorySearchService : ISearchService
             "Without competition"
         ),
         new(
-            Guid.NewGuid(),
+            Guid.Parse("33333333-3333-3333-3333-333333333333"),
             "G-Cloud 13",
             "Crown Commercial Service",
-            "/",
             "Open framework scheme",
             SearchResultStatus.Expired,
             "0.75%",
@@ -47,10 +45,9 @@ public class InMemorySearchService : ISearchService
             "Without competition"
         ),
         new(
-            Guid.NewGuid(),
+            Guid.Parse("44444444-4444-4444-4444-444444444444"),
             "Vehicle Telematics/Hardware and Software Solutions",
             "Crown Commercial Service",
-            "/",
             "Dynamic purchasing system",
             SearchResultStatus.Active,
             "0.5%",
@@ -60,10 +57,9 @@ public class InMemorySearchService : ISearchService
             "Without competition"
         ),
         new(
-            Guid.NewGuid(),
+            Guid.Parse("55555555-5555-5555-5555-555555555555"),
             "Gigabit Capable Connectivity",
             "Crown Commercial Service",
-            "/",
             "Dynamic purchasing system",
             SearchResultStatus.Active,
             "1.5%",
@@ -161,5 +157,11 @@ public class InMemorySearchService : ISearchService
 
         var results = filteredResults.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
         return Task.FromResult((results, filteredResults.Count));
+    }
+
+    public Task<SearchResult?> GetByIdAsync(Guid id)
+    {
+        var result = _allResults.FirstOrDefault(r => r.Id == id);
+        return Task.FromResult(result);
     }
 }
