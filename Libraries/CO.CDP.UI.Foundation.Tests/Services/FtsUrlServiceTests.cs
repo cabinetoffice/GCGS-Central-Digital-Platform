@@ -124,7 +124,7 @@ public class FtsUrlServiceTests
         };
 
         action.Should().Throw<InvalidOperationException>()
-            .WithMessage("FTS service URL is not configured.");
+            .WithMessage("Service base URL is not configured.");
     }
 
     [Fact]

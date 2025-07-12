@@ -56,33 +56,55 @@ public abstract class UrlServiceBase
     /// <returns>The complete URL to the service endpoint.</returns>
     public string BuildUrl(string endpoint, Guid? organisationId = null, string? redirectUrl = null)
     {
-        var uriBuilder = new UriBuilder(_serviceBaseUrl)
-        {
-            Path = $"{endpoint.TrimStart('/')}"
-        };
+        var queryParams = new Dictionary<string, string?>();
 
-        var queryBuilder = new QueryBuilder
-        {
-            { "language", CultureInfo.CurrentUICulture.Name.Replace("-", "_") }
-        };
+        var culture = CultureInfo.CurrentUICulture.Name.Replace('-', '_');
+        queryParams.Add("language", culture);
 
         if (organisationId.HasValue)
         {
-            queryBuilder.Add("organisation_id", organisationId.Value.ToString());
+            queryParams.Add("organisation_id", organisationId.Value.ToString());
         }
 
         if (!string.IsNullOrEmpty(redirectUrl))
         {
-            queryBuilder.Add("redirect_url", redirectUrl);
+            queryParams.Add("redirect_url", redirectUrl);
         }
 
         if (_cookiePreferencesService != null)
         {
-            var cookiesAccepted = _cookiePreferencesService.IsAccepted() ? "true" : "false";
-            queryBuilder.Add("cookies_accepted", cookiesAccepted);
+            queryParams.Add("cookies_accepted", _cookiePreferencesService.IsAccepted().ToString().ToLower());
         }
 
-        uriBuilder.Query = queryBuilder.ToString();
-        return uriBuilder.Uri.ToString();
+        return BuildUrl(endpoint, queryParams);
+    }
+
+    /// <summary>
+    /// Builds a URL to a service endpoint.
+    /// </summary>
+    /// <param name="endpoint">The endpoint path.</param>
+    /// <param name="queryParams">The query parameters.</param>
+    /// <returns>The complete URL to the service endpoint.</returns>
+    private string BuildUrl(string endpoint, Dictionary<string, string?> queryParams)
+    {
+        var baseUrl = GetBaseUrl();
+        var url = new Uri(new Uri(baseUrl), endpoint).ToString();
+        return QueryHelpers.AddQueryString(url, queryParams);
+    }
+
+    /// <summary>
+    /// Returns the path for the given endpoint.
+    /// </summary>
+    /// <param name="endpoint">The endpoint path.</param>
+    /// <returns>The path for the given endpoint.</returns>
+    public string GetPath(string endpoint)
+    {
+        var uri = new Uri(new Uri(GetBaseUrl()), endpoint);
+        return uri.AbsolutePath;
+    }
+
+    private string GetBaseUrl()
+    {
+        return _serviceBaseUrl;
     }
 }
