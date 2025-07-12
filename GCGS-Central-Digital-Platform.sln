@@ -162,9 +162,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.RegisterOfCommercial
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.RegisterOfCommercialTools.WebApiClient.Tests", "Libraries\CO.CDP.RegisterOfCommercialTools.WebApiClient.Tests\CO.CDP.RegisterOfCommercialTools.WebApiClient.Tests.csproj", "{757A51E0-C8EE-4450-BF89-4B625DC01F18}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.UI.Foundation", "Libraries\CO.CDP.UI.Foundation\CO.CDP.UI.Foundation.csproj", "{D1FA52DE-4F5E-420C-9B63-AC2698A6D861}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.UI.Foundation", "Libraries\CO.CDP.UI.Foundation\CO.CDP.UI.Foundation.csproj", "{D1FA52DE-4F5E-420C-9B63-AC2698A6D861}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.UI.Foundation.Tests", "Libraries\CO.CDP.UI.Foundation.Tests\CO.CDP.UI.Foundation.Tests.csproj", "{B5FA3ADE-2B5F-45AA-87C2-90C2A40EC863}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.UI.Foundation.Tests", "Libraries\CO.CDP.UI.Foundation.Tests\CO.CDP.UI.Foundation.Tests.csproj", "{B5FA3ADE-2B5F-45AA-87C2-90C2A40EC863}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
