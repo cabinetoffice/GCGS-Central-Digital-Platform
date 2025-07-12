@@ -45,7 +45,7 @@ locals {
       fts_service_allowed_origins       = []
       mysql_aurora_engine_version       = "5.7.mysql_aurora.2.12.5"
       mysql_aurora_family               = "aurora-mysql5.7"
-      mysql_aurora_instance_type        = "db.r5.large"
+      mysql_aurora_instance_type        = "db.r5.8xlarge"
       name                              = "dev"
       onelogin_logout_notification_urls = [
         "https://test-findtender.nqc.com/auth/backchannellogout",
@@ -79,6 +79,9 @@ locals {
       fts_azure_frontdoor               = null
       fts_service_allowed_origins       = []
       name                              = "staging"
+      mysql_aurora_engine_version       = "5.7.mysql_aurora.2.12.5"
+      mysql_aurora_family               = "aurora-mysql5.7"
+      mysql_aurora_instance_type        = "db.r5.8xlarge"
       onelogin_logout_notification_urls = [
         "https://stanvolcere.nqc.com/auth/backchannellogout",
         "https://www-staging.find-tender.service.gov.uk/auth/backchannellogout",
@@ -129,6 +132,9 @@ locals {
         "https://www-tpp-preview.find-tender.service.gov.uk",
         "https://www-tpp.find-tender.service.gov.uk",
       ]
+      mysql_aurora_engine_version       = "5.7.mysql_aurora.2.12.5"
+      mysql_aurora_family               = "aurora-mysql5.7"
+      mysql_aurora_instance_type        = "db.r5.8xlarge"
       name                              = "integration"
       onelogin_logout_notification_urls = [
         "https://akmalnazir.nqc.com/auth/backchannellogout",
@@ -178,11 +184,13 @@ locals {
       canary_schedule_expression        = "rate(15 minutes)"
       fts_azure_frontdoor               = "nqc-front-door-uksouth.azurefd.net"
       fts_service_allowed_origins       = []
-      mysql_aurora_instance_type        = "db.r5.2xlarge"
+      mysql_aurora_engine_version       = "5.7.mysql_aurora.2.12.5"
+      mysql_aurora_family               = "aurora-mysql5.7"
+      mysql_aurora_instance_type        = "db.r5.8xlarge"
       name                              = "production"
       onelogin_logout_notification_urls = ["https://www.find-tender.service.gov.uk/auth/backchannellogout"]
       pinned_service_version_fts        = "0.0.0-3e1660c"
-      pinned_service_version            = "1.0.67"
+      pinned_service_version            = "1.0.69"
       postgres_instance_type            = "db.t4g.micro"
       postgres_aurora_instance_type     = "db.r5.8xlarge"
       postgres_aurora_instance_type_ev  = "db.r5.4xlarge"

@@ -139,7 +139,7 @@ public class SupportUpdateOrganisationUseCaseTests
 
         var orgPersonList = new List<OrganisationPerson>() { GetOrganisationPerson() };
 
-        _mockOrganisationRepository.Setup(repo => repo.FindOrganisationPersons(_organisation.Guid))
+        _mockOrganisationRepository.Setup(repo => repo.FindOrganisationPersons(_organisation.Guid, It.IsAny<IEnumerable<string>?>()))
             .ReturnsAsync(orgPersonList);
 
         var result = await _useCase.Execute((_organisation.Guid, supportUpdateOrganisation));
@@ -196,7 +196,7 @@ public class SupportUpdateOrganisationUseCaseTests
 
         var orgPersonList = new List<OrganisationPerson>() { GetOrganisationPerson() };
 
-        _mockOrganisationRepository.Setup(repo => repo.FindOrganisationPersons(_organisation.Guid))
+        _mockOrganisationRepository.Setup(repo => repo.FindOrganisationPersons(_organisation.Guid, It.IsAny<IEnumerable<string>?>()))
             .ReturnsAsync(orgPersonList);
 
         var result = await _useCase.Execute((_organisation.Guid, supportUpdateOrganisation));
