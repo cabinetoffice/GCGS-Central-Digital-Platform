@@ -70,8 +70,36 @@ public class InMemorySearchService : ISearchService
 
     public Task<(List<SearchResult> Results, int TotalCount)> SearchAsync(SearchModel searchModel, int pageNumber, int pageSize)
     {
-        var results = _allResults.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
-        return Task.FromResult((results, _allResults.Count));
+        var query = _allResults.AsQueryable();
+
+        if (!string.IsNullOrWhiteSpace(searchModel.Keywords))
+        {
+            var keywords = searchModel.Keywords.Trim();
+            if (keywords.StartsWith("\"") && keywords.EndsWith("\""))
+            {
+                var phrase = keywords.Trim('"');
+                query = query.Where(r =>
+                    r.Title.Contains(phrase, StringComparison.OrdinalIgnoreCase) ||
+                    r.CommercialTool.Contains(phrase, StringComparison.OrdinalIgnoreCase));
+            }
+            else if (keywords.Contains('+'))
+            {
+                var terms = keywords.Split('+', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+                query = query.Where(r => terms.All(term =>
+                    r.Title.Contains(term, StringComparison.OrdinalIgnoreCase) ||
+                    r.CommercialTool.Contains(term, StringComparison.OrdinalIgnoreCase)));
+            }
+            else
+            {
+                var terms = keywords.Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+                query = query.Where(r => terms.Any(term =>
+                    r.Title.Contains(term, StringComparison.OrdinalIgnoreCase) ||
+                    r.CommercialTool.Contains(term, StringComparison.OrdinalIgnoreCase)));
+            }
+        }
+
+        var filteredResults = query.ToList();
+        var results = filteredResults.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+        return Task.FromResult((results, filteredResults.Count));
     }
 }
-
