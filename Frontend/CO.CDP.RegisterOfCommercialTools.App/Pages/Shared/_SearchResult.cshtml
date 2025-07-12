@@ -3,17 +3,17 @@
 
 <div class="search-result">
     <div class="govuk-grid-row">
-        <div class="govuk-grid-column-full govuk-grid-column-two-thirds-from-desktop govuk-!-margin-bottom-1">
+        <div class="govuk-grid-column-full govuk-grid-column-three-quarters-from-desktop govuk-!-margin-bottom-1">
             <h2 class="govuk-heading-m govuk-!-margin-bottom-0">
                 <a class="govuk-link" href="@Model.Link">@Model.Title</a>
             </h2>
         </div>
-        <div class="govuk-grid-column-full govuk-grid-column-one-third-from-desktop govuk-!-margin-bottom-1">
+        <div class="govuk-grid-column-full govuk-grid-column-one-quarter-from-desktop govuk-!-margin-bottom-1">
             <partial name="Shared/_SearchResultStatusTag" model="Model.Status"/>
         </div>
     </div>
 
-    <p class="govuk-caption-m govuk-!-margin-bottom-1">@Model.Caption</p>
+    <p class="govuk-caption-m govuk-!-margin-bottom-1 govuk-!-margin-top-0">@Model.Caption</p>
 
     <p class="govuk-body govuk-!-margin-bottom-1">
         <span class="govuk-!-font-weight-bold">Commercial tool:</span> @Model.CommercialTool
