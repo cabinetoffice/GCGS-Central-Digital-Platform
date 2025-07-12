@@ -150,17 +150,17 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.ScheduledWorker", "S
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.ScheduledWorker.Tests", "Services\CO.CDP.ScheduledWorker.Tests\CO.CDP.ScheduledWorker.Tests.csproj", "{52F02369-66EC-4E35-A2B6-61735F9D340C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.RegisterOfCommercialTools.WebApi", "Services\CO.CDP.RegisterOfCommercialTools.WebApi\CO.CDP.RegisterOfCommercialTools.WebApi.csproj", "{4C8BFCDB-01A8-4D97-A3A6-6419D951A0AC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.RegisterOfCommercialTools.WebApi", "Services\CO.CDP.RegisterOfCommercialTools.WebApi\CO.CDP.RegisterOfCommercialTools.WebApi.csproj", "{4C8BFCDB-01A8-4D97-A3A6-6419D951A0AC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.RegisterOfCommercialTools.WebApi.Tests", "Services\CO.CDP.RegisterOfCommercialTools.WebApi.Tests\CO.CDP.RegisterOfCommercialTools.WebApi.Tests.csproj", "{E3B03924-E3FE-4F12-9924-871B1D5EB9D6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.RegisterOfCommercialTools.WebApi.Tests", "Services\CO.CDP.RegisterOfCommercialTools.WebApi.Tests\CO.CDP.RegisterOfCommercialTools.WebApi.Tests.csproj", "{E3B03924-E3FE-4F12-9924-871B1D5EB9D6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.RegisterOfCommercialTools.App", "Frontend\CO.CDP.RegisterOfCommercialTools.App\CO.CDP.RegisterOfCommercialTools.App.csproj", "{947FE5C5-A1DF-41FE-8502-F7B1608FE694}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.RegisterOfCommercialTools.App", "Frontend\CO.CDP.RegisterOfCommercialTools.App\CO.CDP.RegisterOfCommercialTools.App.csproj", "{947FE5C5-A1DF-41FE-8502-F7B1608FE694}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.RegisterOfCommercialTools.App.Tests", "Frontend\CO.CDP.RegisterOfCommercialTools.App.Tests\CO.CDP.RegisterOfCommercialTools.App.Tests.csproj", "{13454DA0-1BB8-4819-9221-92AF4387ECBF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.RegisterOfCommercialTools.App.Tests", "Frontend\CO.CDP.RegisterOfCommercialTools.App.Tests\CO.CDP.RegisterOfCommercialTools.App.Tests.csproj", "{13454DA0-1BB8-4819-9221-92AF4387ECBF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.RegisterOfCommercialTools.WebApiClient", "Libraries\CO.CDP.RegisterOfCommercialTools.WebApiClient\CO.CDP.RegisterOfCommercialTools.WebApiClient.csproj", "{A6242871-42A6-46A9-8E1A-147EB6038F9D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.RegisterOfCommercialTools.WebApiClient", "Libraries\CO.CDP.RegisterOfCommercialTools.WebApiClient\CO.CDP.RegisterOfCommercialTools.WebApiClient.csproj", "{A6242871-42A6-46A9-8E1A-147EB6038F9D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.RegisterOfCommercialTools.WebApiClient.Tests", "Libraries\CO.CDP.RegisterOfCommercialTools.WebApiClient.Tests\CO.CDP.RegisterOfCommercialTools.WebApiClient.Tests.csproj", "{757A51E0-C8EE-4450-BF89-4B625DC01F18}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.RegisterOfCommercialTools.WebApiClient.Tests", "Libraries\CO.CDP.RegisterOfCommercialTools.WebApiClient.Tests\CO.CDP.RegisterOfCommercialTools.WebApiClient.Tests.csproj", "{757A51E0-C8EE-4450-BF89-4B625DC01F18}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
