@@ -27,7 +27,7 @@ public class IndexModel(ISearchService searchService, ISirsiUrlService sirsiUrlS
 
     public async Task OnGetAsync()
     {
-        SirsiHomeUrl = sirsiUrlService.BuildUrl("");
+        SirsiHomeUrl = sirsiUrlService.BuildUrl("/");
         var (results, totalCount) = await searchService.SearchAsync(SearchParams, PageNumber, PageSize);
 
         SearchResults = results;
