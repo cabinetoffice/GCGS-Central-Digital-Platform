@@ -1,7 +1,7 @@
 using CO.CDP.UI.Foundation.Cookies;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Extensions;
 using System.Globalization;
+using Microsoft.AspNetCore.WebUtilities;
 
 namespace CO.CDP.UI.Foundation.Services;
 

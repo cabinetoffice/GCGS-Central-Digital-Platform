@@ -1,3 +1,4 @@
+using CO.CDP.UI.Foundation.Services;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.WebUtilities;
@@ -12,6 +13,7 @@ public class CookieBanner
 {
     private readonly string _serviceName;
     private readonly string _cookieInfoUrl;
+    private readonly string _cookieInfoPath;
     private readonly ICookiePreferencesService _cookiePreferencesService;
     private readonly HttpContext _httpContext;
     private readonly CookieSettings _cookieSettings;
@@ -22,21 +24,22 @@ public class CookieBanner
     /// <param name="cookiePreferencesService">Service to manage cookie preferences</param>
     /// <param name="httpContextAccessor">HTTP context accessor for request information</param>
     /// <param name="cookieSettings">Cookie settings configuration</param>
+    /// <param name="sirsiUrlService">The Sirsi URL service</param>
     /// <param name="serviceName">The name of the service to display in the banner</param>
-    /// <param name="cookieInfoUrl">The URL to navigate to for more information about cookies</param>
     private CookieBanner(
         ICookiePreferencesService cookiePreferencesService,
         IHttpContextAccessor httpContextAccessor,
         CookieSettings cookieSettings,
-        string serviceName = "this service",
-        string cookieInfoUrl = "/cookies")
+        ISirsiUrlService sirsiUrlService,
+        string serviceName = "Find a Tender")
     {
         _cookiePreferencesService = cookiePreferencesService;
         _httpContext = httpContextAccessor.HttpContext
             ?? throw new InvalidOperationException("No active HTTP context.");
         _cookieSettings = cookieSettings;
         _serviceName = serviceName;
-        _cookieInfoUrl = cookieInfoUrl;
+        _cookieInfoUrl = sirsiUrlService.BuildUrl("/cookies");
+        _cookieInfoPath = sirsiUrlService.GetPath("/cookies");
     }
 
     /// <summary>
@@ -65,7 +68,7 @@ public class CookieBanner
     {
         return _cookiePreferencesService.IsUnknown() &&
                !_httpContext.Request.Query.ContainsKey(_cookieSettings.CookieBannerInteractionQueryString) &&
-               !_httpContext.Request.Path.StartsWithSegments(_cookieInfoUrl);
+               !_httpContext.Request.Path.StartsWithSegments(_cookieInfoPath);
     }
 
     /// <summary>
@@ -174,22 +177,22 @@ public class CookieBanner
     /// <param name="cookiePreferencesService">Service to manage cookie preferences</param>
     /// <param name="httpContextAccessor">HTTP context accessor for request information</param>
     /// <param name="cookieSettings">Cookie settings configuration</param>
+    /// <param name="sirsiUrlService">The Sirsi URL service</param>
     /// <param name="serviceName">The name of the service to display in the banner</param>
-    /// <param name="cookieInfoUrl">The URL to navigate to for more information about cookies</param>
     /// <returns>HTML markup for the cookie banner</returns>
     public static HtmlString RenderCookieBanner(
         ICookiePreferencesService cookiePreferencesService,
         IHttpContextAccessor httpContextAccessor,
         CookieSettings cookieSettings,
-        string serviceName = "this service",
-        string cookieInfoUrl = "/cookies")
-    {
+        ISirsiUrlService sirsiUrlService,
+        string serviceName = "Find a Tender")
+        {
         var banner = new CookieBanner(
             cookiePreferencesService,
             httpContextAccessor,
             cookieSettings,
-            serviceName,
-            cookieInfoUrl);
+            sirsiUrlService,
+            serviceName);
         return banner.Render();
     }
 }

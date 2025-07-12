@@ -27,6 +27,13 @@ public interface ISirsiUrlService
     /// <param name="redirectUrl">Optional redirect URL.</param>
     /// <returns>The complete URL to the Sirsi service endpoint.</returns>
     string BuildUrl(string endpoint, Guid? organisationId = null, string? redirectUrl = null);
+
+    /// <summary>
+    /// Returns the path for the given endpoint.
+    /// </summary>
+    /// <param name="endpoint">The endpoint path.</param>
+    /// <returns>The path for the given endpoint.</returns>
+    string GetPath(string endpoint);
 }
 
 /// <summary>
