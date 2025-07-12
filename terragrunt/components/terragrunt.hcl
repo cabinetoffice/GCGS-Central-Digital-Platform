@@ -41,8 +41,10 @@ locals {
       cidr_block                        = "10.${local.cidr_b_development}.0.0/16"
       account_id                        = 471112892058
       canary_schedule_expression        = "rate(30 minutes)" # "cron(15 7,11,15 ? * MON-FRI)" # UTC+0
+      cfs_allowed_target_email_domains  = ["goaco.com"]
       fts_allowed_target_email_domains  = ["goaco.com"]
       fts_azure_frontdoor               = null
+      cfs_service_allowed_origins       = []
       fts_service_allowed_origins       = []
       mail_from_domain                  = null
       mysql_aurora_engine_version       = "5.7.mysql_aurora.2.12.5"
@@ -52,6 +54,7 @@ locals {
       onelogin_logout_notification_urls = [
         "https://test-findtender.nqc.com/auth/backchannellogout"
       ]
+      pinned_service_version_cfs        = null
       pinned_service_version_fts        = null
       pinned_service_version            = null
       postgres_instance_type            = "db.t4g.micro"
@@ -76,8 +79,12 @@ locals {
       cidr_block                        = "10.${local.cidr_b_staging}.0.0/16"
       account_id                        = 905418042182
       canary_schedule_expression        = "rate(30 minutes)"
+      cfs_allowed_target_email_domains  = ["goaco.com","cabinetoffice.gov.uk"]
       fts_allowed_target_email_domains  = ["goaco.com","cabinetoffice.gov.uk"]
       fts_azure_frontdoor               = null
+      cfs_service_allowed_origins       = [
+        "https://cfs.staging.supplier-information.find-tender.service.gov.uk",
+      ]
       fts_service_allowed_origins       = [
         "https://fts.staging.supplier-information.find-tender.service.gov.uk",
       ]
@@ -90,6 +97,7 @@ locals {
         "https://www-staging.find-tender.service.gov.uk/auth/backchannellogout",
         "https://fts.staging.supplier-information.find-tender.service.gov.uk/auth/backchannellogout"
       ]
+      pinned_service_version_cfs        = null
       pinned_service_version_fts        = null
       pinned_service_version            = "1.0.71"
       postgres_instance_type            = "db.t4g.micro"
@@ -114,6 +122,18 @@ locals {
       cidr_block                        = "10.${local.cidr_b_integration}.0.0/16"
       account_id                        = 767397666448
       canary_schedule_expression        = "rate(30 minutes)"
+      cfs_allowed_target_email_domains  = ["goaco.com"]
+      cfs_service_allowed_origins       = [
+        "https://cfs.integration.supplier-information.find-tender.service.gov.uk",
+        "https://test-findtender.nqc.com",
+        "https://truk-alpha.nqc.com",
+        "https://truk-performance.nqc.com",
+        "https://truk-prod.nqc.com",
+        "https://www-integration.find-tender.service.gov.uk",
+        "https://www-preview.find-tender.service.gov.uk",
+        "https://www-tpp-preview.find-tender.service.gov.uk",
+        "https://www-tpp.find-tender.service.gov.uk",
+      ]
       fts_allowed_target_email_domains  = ["goaco.com"]
       fts_azure_frontdoor               = null
       fts_service_allowed_origins       = [
@@ -140,6 +160,7 @@ locals {
         "https://www-tpp.find-tender.service.gov.uk/auth/backchannellogout",
         "https://fts.integration.supplier-information.find-tender.service.gov.uk/auth/backchannellogout"
       ]
+      pinned_service_version_cfs        = null
       pinned_service_version_fts        = null
       pinned_service_version            = "1.0.69"
       postgres_instance_type            = "db.t4g.micro"
@@ -168,6 +189,11 @@ locals {
       cidr_block                        = "10.${local.cidr_b_production}.0.0/16"
       account_id                        = 471112843276
       canary_schedule_expression        = "rate(15 minutes)"
+      cfs_allowed_target_email_domains  = ["goaco.com"]
+      cfs_service_allowed_origins       = [
+        "https://cfs.supplier-information.find-tender.service.gov.uk",
+        "https://www.find-tender.service.gov.uk"
+      ]
       fts_allowed_target_email_domains  = ["goaco.com"]
       fts_azure_frontdoor               = "nqc-front-door-uksouth.azurefd.net"
       fts_service_allowed_origins       = [
@@ -183,6 +209,7 @@ locals {
         "https://www.find-tender.service.gov.uk/auth/backchannellogout",
         "https://fts.supplier-information.find-tender.service.gov.uk/auth/backchannellogout"
       ],
+      pinned_service_version_cfs        = null
       pinned_service_version_fts        = "0.0.0-3e1660c"
       pinned_service_version            = "1.0.69"
       postgres_instance_type            = "db.t4g.micro"
@@ -211,12 +238,15 @@ locals {
   aurora_mysql_instance_type        = try(local.environments[local.environment].mysql_aurora_instance_type, local.aurora_postgres_instance_type)
   aurora_postgres_instance_type     = try(local.environments[local.environment].postgres_aurora_instance_type, null)
   aurora_postgres_instance_type_ev  = try(local.environments[local.environment].postgres_aurora_instance_type_ev, local.aurora_postgres_instance_type)
+  cfs_allowed_target_email_domains  = try(local.environments[local.environment].cfs_allowed_target_email_domains, null)
+  cfs_service_allowed_origins       = try(local.environments[local.environment].cfs_service_allowed_origins, null)
   fts_allowed_target_email_domains  = try(local.environments[local.environment].fts_allowed_target_email_domains, null)
   fts_azure_frontdoor               = try(local.environments[local.environment].fts_azure_frontdoor, null)
   fts_service_allowed_origins       = try(local.environments[local.environment].fts_service_allowed_origins, null)
   mail_from_domain                  = try(local.environments[local.environment].mail_from_domain, null)
   onelogin_logout_notification_urls = try(local.environments[local.environment].onelogin_logout_notification_urls, null)
   pinned_service_version            = try(local.environments[local.environment].pinned_service_version, null)
+  pinned_service_version_cfs        = try(local.environments[local.environment].pinned_service_version_cfs, "0.0.1")
   pinned_service_version_fts        = try(local.environments[local.environment].pinned_service_version_fts, "0.0.1")
   redis_node_type                   = try(local.environments[local.environment].redis_node_type, null)
 
@@ -235,6 +265,9 @@ locals {
   service_configs_base = {
     authority                            = {}
     av_scanner_app                       = {}
+    cfs                                  = { desired_count = 3, cpu = 4096,  memory = 8192}
+    cfs_migrations                       = { desired_count = 1 }
+    cfs_scheduler                        = { desired_count = 1 }
     data_sharing                         = {}
     entity_verification                  = {}
     entity_verification_migrations       = { cpu = 256,  memory = 512}
@@ -281,6 +314,9 @@ locals {
   service_configs_common = {
     authority                            = { port = 8092, port_host = 8092, name = "authority"}
     av_scanner_app                       = { port = 8095, port_host = 8095, name = "av-scanner-app"}
+    cfs                                  = { port = 8060, port_host = 8060, name = "cfs"}
+    cfs_migrations                       = { port = 8062, port_host = null, name = "cfs-migrations"}
+    cfs_scheduler                        = { port = 8064, port_host = null, name = "cfs-scheduler"}
     data_sharing                         = { port = 8088, port_host = 8088, name = "data-sharing"}
     entity_verification                  = { port = 8094, port_host = 8094, name = "entity-verification"}
     entity_verification_migrations       = { port = 9191, port_host = null, name = "entity-verification-migrations"}

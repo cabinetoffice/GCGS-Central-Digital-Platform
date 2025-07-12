@@ -26,6 +26,14 @@ output "service_configuration" {
   value = local.service_configs
 }
 
+output "service_version_cfs" {
+  value = var.pinned_service_version_sirsi
+}
+
+output "service_version_global_cfs" {
+  value = nonsensitive(local.orchestrator_cfs_service_version)
+}
+
 output "service_version_fts" {
   value = var.pinned_service_version_sirsi
 }
