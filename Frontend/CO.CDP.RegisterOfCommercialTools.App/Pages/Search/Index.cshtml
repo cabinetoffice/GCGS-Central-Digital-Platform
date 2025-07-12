@@ -3,42 +3,36 @@
 @model CO.CDP.RegisterOfCommercialTools.App.Pages.Search.IndexModel
 @{
     ViewData["Title"] = "Search";
-    var commercialToolAccordion = new Accordion
-    {
-        Id = "commercial-tool",
-        Title = "Commercial tool",
-        Content = @<partial name="_CommercialToolAccordionContent" model="Model.SearchParams"/>
-    };
-    var commercialToolStatusAccordion = new Accordion
-    {
-        Id = "commercial-tool-status",
-        Title = "Commercial tool status",
-        Content = @<partial name="_CommercialToolStatusAccordionContent" model="Model.SearchParams"/>
-    };
-    var contractingAuthorityUsageAccordion = new Accordion
-    {
-        Id = "contracting-authority-usage",
-        Title = "Contracting authority usage",
-        Content = @<partial name="_ContractingAuthorityUsageAccordionContent" model="Model.SearchParams"/>
-    };
-    var awardMethodAccordion = new Accordion
-    {
-        Id = "award-method",
-        Title = "Award method",
-        Content = @<partial name="_AwardMethodAccordionContent" model="Model.SearchParams"/>
-    };
-    var feesAccordion = new Accordion
-    {
-        Id = "fees",
-        Title = "Fees",
-        Content = @<partial name="_FeesAccordionContent" model="Model.SearchParams"/>
-    };
-    var dateRangeAccordion = new Accordion
-    {
-        Id = "date-range",
-        Title = "Date range",
-        Content = @<partial name="_DateRangeAccordionContent" model="Model.SearchParams"/>
-    };
+    var commercialToolAccordion = new Accordion(
+        "commercial-tool",
+        "Commercial tool",
+        _ => Html.Partial("_CommercialToolAccordionContent", Model.SearchParams)
+    );
+    var commercialToolStatusAccordion = new Accordion(
+        "commercial-tool-status",
+        "Commercial tool status",
+        _ => Html.Partial("_CommercialToolStatusAccordionContent", Model.SearchParams)
+    );
+    var contractingAuthorityUsageAccordion = new Accordion(
+        "contracting-authority-usage",
+        "Contracting authority usage",
+        _ => Html.Partial("_ContractingAuthorityUsageAccordionContent", Model.SearchParams)
+    );
+    var awardMethodAccordion = new Accordion(
+        "award-method",
+        "Award method",
+        _ => Html.Partial("_AwardMethodAccordionContent", Model.SearchParams)
+    );
+    var feesAccordion = new Accordion(
+        "fees",
+        "Fees",
+        _ => Html.Partial("_FeesAccordionContent", Model.SearchParams)
+    );
+    var dateRangeAccordion = new Accordion(
+        "date-range",
+        "Date range",
+        _ => Html.Partial("_DateRangeAccordionContent", Model.SearchParams)
+    );
 }
 
 <script src="/js/search.js"></script>
@@ -67,7 +61,7 @@
                 <input type="hidden" name="SearchParams.FeeTo" value="@Model.SearchParams.FeeTo" />
                 <input type="hidden" name="SearchParams.NoFees" value="@Model.SearchParams.NoFees" />
                 <input type="hidden" name="SearchParams.ContractingAuthorityUsage" value="@Model.SearchParams.ContractingAuthorityUsage" />
-                @foreach (var status in Model.SearchParams.Status ?? [])
+                @foreach (var status in Model.SearchParams.Status)
                 {
                     <input type="hidden" name="SearchParams.Status" value="@status" />
                 }
