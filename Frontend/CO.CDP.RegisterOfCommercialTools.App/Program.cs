@@ -1,3 +1,4 @@
+using CO.CDP.RegisterOfCommercialTools.App.Services;
 using CO.CDP.RegisterOfCommercialTools.WebApiClient;
 using CO.CDP.UI.Foundation;
 using GovUk.Frontend.AspNetCore;
@@ -21,6 +22,8 @@ builder.Services.AddHttpClient<ICommercialToolsApiClient, CommercialToolsApiClie
               ?? throw new Exception("Missing CommercialToolsApi:ServiceUrl configuration.");
     client.BaseAddress = new Uri(url);
 });
+
+builder.Services.AddScoped<ISearchService, InMemorySearchService>();
 
 var app = builder.Build();
 
