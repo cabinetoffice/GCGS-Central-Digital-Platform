@@ -1,18 +1,15 @@
-using Microsoft.AspNetCore.Http;
 using CO.CDP.UI.Foundation.Services;
 
 namespace CO.CDP.UI.Foundation.Pages;
 
 public class ErrorPage
 {
-    public string TraceId { get; }
-    public int StatusCode { get; }
+    public string? TraceId { get; }
     private string? FeedbackUrl { get; }
 
-    public ErrorPage(HttpContext httpContext, ISirsiUrlService sirsiUrlService, int? statusCode = null)
+    public ErrorPage(string? traceId, ISirsiUrlService sirsiUrlService)
     {
-        StatusCode = statusCode ?? 500;
-        TraceId = httpContext.TraceIdentifier;
+        TraceId = traceId;
         FeedbackUrl = sirsiUrlService.BuildUrl($"/provide-feedback-and-contact/?context=feedback&traceId={TraceId}");
     }
 
@@ -24,10 +21,17 @@ public class ErrorPage
         {
             feedbackLink = $@"
                 <p class=""govuk-body"">
-                    If you continue to see this message, <a class=""govuk-link"" href=""{FeedbackUrl}?context=feedback&amp;traceId={TraceId}"">contact the support team</a>.
+                    If you continue to see this message, <a class=""govuk-link"" href=""{FeedbackUrl}"">contact the support team</a>.
                 </p>";
         }
-
+        var traceIdMarkup = string.Empty;
+        if (!string.IsNullOrEmpty(TraceId))
+        {
+            traceIdMarkup = $@"
+                <p class=""govuk-body"">
+                    <strong>Trace ID:</strong> {TraceId}
+                </p>";
+        }
         return $@"
             <div class=""govuk-width-container"">
                 <main class=""govuk-main-wrapper"" id=""main-content"" role=""main"">
@@ -36,9 +40,7 @@ public class ErrorPage
                             <h1 class=""govuk-heading-l"">{title}</h1>
                             <p class=""govuk-body"">Try again later.</p>
                             {feedbackLink}
-                            <p class=""govuk-body"">
-                                <strong>Trace ID:</strong> {TraceId}
-                            </p>
+                            {traceIdMarkup}
                         </div>
                     </div>
                 </main>
