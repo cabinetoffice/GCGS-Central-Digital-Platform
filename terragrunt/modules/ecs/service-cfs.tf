@@ -14,7 +14,7 @@ module "ecs_service_cfs" {
   ecs_listener_arn       = aws_lb_listener.ecs.arn
   ecs_service_base_sg_id = var.ecs_sg_id
   family                 = "app"
-  healthcheck_path       = "/health"
+  healthcheck_path       = "/"
   host_port              = var.service_configs.cfs.port
   memory                 = var.service_configs.cfs.memory
   name                   = var.service_configs.cfs.name
