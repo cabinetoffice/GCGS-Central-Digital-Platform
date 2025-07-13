@@ -14,7 +14,7 @@ locals {
     email_tech_support                    = "${local.cfs_screts_arn}:TECHSUPPORT_EMAIL::"
     email_user_research                   = "${local.cfs_screts_arn}:USER_RESEARCH_EMAIL::"
     cfs_one_login_client_id               = local.one_login.credential_locations.client_id
-    cfs_srsi_api_key                      = "${local.cfs_screts_arn}:cfs_SRSI_API_KEY::"
+    cfs_srsi_api_key                      = "${local.cfs_screts_arn}:CFS_SRSI_API_KEY::"
     google_analytics_key                  = "${local.cfs_screts_arn}:GOOGLE_ANALYTICS_KEY::"
     google_tag_manager_key                = "${local.cfs_screts_arn}:GOOGLE_TAG_MANAGER_KEY::"
     http_basic_auth_enabled               = "${local.cfs_screts_arn}:HTTP_BASIC_AUTH_ENABLED::"
