@@ -10,8 +10,10 @@ using CO.CDP.OrganisationApp.WebApiClients;
 namespace CO.CDP.OrganisationApp.Pages.Organisation;
 
 [Authorize(Policy = OrgScopeRequirement.Viewer)]
-public class OrganisationPponSearchModel(IOrganisationClient organisationClient,
-    ISession session,ILogger<OrganisationPponSearchModel> logger) : LoggedInUserAwareModel(session)
+public class OrganisationPponSearchModel(
+    IOrganisationClient organisationClient,
+    ISession session,
+    ILogger<OrganisationPponSearchModel> logger) : LoggedInUserAwareModel(session)
 {
     private readonly ILogger<OrganisationPponSearchModel> _logger =
         logger ?? throw new ArgumentNullException(nameof(logger));
@@ -36,16 +38,16 @@ public class OrganisationPponSearchModel(IOrganisationClient organisationClient,
 
     public IList<OrganisationSearchByPponResult> Organisations { get; set; } = [];
 
-    public async Task<IActionResult> OnGet(string type, int pageNumber = 1,
+    public async Task<IActionResult> OnGet(int pageNumber = 1,
         [FromQuery(Name = "q")] string? searchText = null,
         [FromQuery(Name = "sortOrder")] string? sortOrder = "rel")
     {
-        InitModel(type, pageNumber);
+        InitModel(pageNumber);
         await GetResults(searchText, sortOrder);
         return Page();
     }
 
-    private void InitModel(string type, int pageNumber)
+    private void InitModel( int pageNumber)
     {
         PageSize = 10;
         if (pageNumber < 1) pageNumber = 1;
@@ -54,20 +56,26 @@ public class OrganisationPponSearchModel(IOrganisationClient organisationClient,
         Skip = (pageNumber - 1) * PageSize;
         CurrentPage = pageNumber;
 
-        string? refererUrl = Request.Headers.Referer.ToString();
+        string? refererUrl = null;
+        if (Request?.Headers != null && Request.Headers.ContainsKey("Referer"))
+        {
+            refererUrl = Request.Headers["Referer"].ToString();
+        }
+
         IsFromSamePage = !string.IsNullOrEmpty(refererUrl) &&
                          refererUrl.Contains("organisation/buyer/search", StringComparison.OrdinalIgnoreCase);
-
     }
 
     private async Task GetResults(string? searchText, string? sortOrder)
     {
-        if (!IsFromSamePage) {
+        if (!IsFromSamePage)
+        {
             resetKeyParams();
             return;
         }
 
-        if (string.IsNullOrWhiteSpace(searchText)) {
+        if (string.IsNullOrWhiteSpace(searchText))
+        {
             ErrorMessage = StaticTextResource.PponSearch_Invalid_Search_Value;
             resetKeyParams();
             return;
@@ -78,7 +86,8 @@ public class OrganisationPponSearchModel(IOrganisationClient organisationClient,
         bool containsInvalidChars = Regex.IsMatch(originalSearchText, regexPattern);
         string cleanedSearchText = Regex.Replace(originalSearchText, regexPattern, string.Empty);
 
-        if (string.IsNullOrWhiteSpace(cleanedSearchText) || containsInvalidChars) {
+        if (string.IsNullOrWhiteSpace(cleanedSearchText) || containsInvalidChars)
+        {
             ErrorMessage = StaticTextResource.PponSearch_Invalid_Search_Value;
             resetKeyParams();
             return;
@@ -104,7 +113,9 @@ public class OrganisationPponSearchModel(IOrganisationClient organisationClient,
         catch (Exception ex) when (
             (ex is ApiException apiEx && apiEx.StatusCode != 404) ||
             (ex is HttpRequestException httpEx && httpEx.StatusCode != System.Net.HttpStatusCode.NotFound) ||
-            (!(ex is ApiException) && !(ex is HttpRequestException))) {
+            (!(ex is ApiException) && !(ex is HttpRequestException)))
+        {
+            resetKeyParams();
             LogApiError(ex);
         }
     }
@@ -152,6 +163,7 @@ public class OrganisationPponSearchModel(IOrganisationClient organisationClient,
             _ => "govuk-tag--black"
         };
     }
+
     private void LogApiError(Exception ex)
     {
         var errorMessage = "Error occurred while searching for organisations";
