@@ -376,10 +376,7 @@ public static class EndpointExtensions
             });
 
         app.MapGet("/search-by-name-or-ppon",
-            [OrganisationAuthorize([AuthenticationChannel.OneLogin, AuthenticationChannel.ServiceKey],
-                    organisationPersonScopes: [Constants.OrganisationPersonScope.Admin, Constants.OrganisationPersonScope.Editor, Constants.OrganisationPersonScope.Viewer],
-                    personScopes:[Constants.PersonScope.SupportAdmin]),
-            ]
+                [OrganisationAuthorize([AuthenticationChannel.OneLogin, AuthenticationChannel.ServiceKey])]
             async ([FromQuery] string searchText, [FromQuery] int limit, [FromQuery] int skip,[FromQuery] string sortOrder,
                 [FromServices] IUseCase<OrganisationSearchByPponQuery, (IEnumerable<Model.OrganisationSearchByPponResult>, int)> useCase) =>
             {
