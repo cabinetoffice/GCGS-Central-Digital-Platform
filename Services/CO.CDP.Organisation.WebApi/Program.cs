@@ -212,7 +212,7 @@ if (app.Configuration.GetValue<bool>("BuyerParentChildRelationship"))
 
 if (app.Configuration.GetValue<bool>("SearchRegistryPpon"))
 {
-    app.MapGroup("/organisations")
+    app.MapGroup("/organisation")
         .useSearchRegistryOfPpon()
         .WithTags("Organisation - Search Registry Of Ppon");
 }
