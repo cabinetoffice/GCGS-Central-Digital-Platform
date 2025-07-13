@@ -492,10 +492,10 @@ public class OrganisationEndpointsTests
     }
 
     [Theory]
-    [InlineData("invalid")]
-    [InlineData("")]
-    [InlineData(null)]
-    public async Task SearchByNameOrPpon_UsesDefaultSortOrder_WhenInvalidSortOrderIsProvided(string invalidSortOrder)
+    [InlineData("invalid", HttpStatusCode.OK)]
+    [InlineData("asecending", HttpStatusCode.OK)]
+    [InlineData(null, HttpStatusCode.OK)]
+    public async Task SearchByNameOrPpon_AcceptsInvalidSortOrder_AndReturnsData(string sortOrder, HttpStatusCode expectedStatusCode)
     {
         var organisationId = Guid.NewGuid();
 
@@ -504,52 +504,50 @@ public class OrganisationEndpointsTests
             new OrganisationSearchByPponResult
             {
                 Id = Guid.NewGuid(),
-                Name = "AOrg",
+                Name = "Demo Org",
                 Type = OrganisationType.Organisation,
                 Identifiers = new List<Identifier>
                 {
-                    new Identifier { Scheme = "GB-PPON", Id = "PGWZ-1758-EFGH", LegalName = "AOrg" }
-                },
-                Roles = new List<PartyRole> { PartyRole.Buyer },
-                Addresses = new List<OrganisationAddress>()
-            },
-            new OrganisationSearchByPponResult
-            {
-                Id = Guid.NewGuid(),
-                Name = "BOrg",
-                Type = OrganisationType.Organisation,
-                Identifiers = new List<Identifier>
-                {
-                    new Identifier { Scheme = "GB-PPON", Id = "PGWZ-1758-LMNO", LegalName = "BOrg" }
+                    new Identifier
+                    {
+                        Scheme = "GB-PPON",
+                        Id = "PGWZ-1758-DEMO",
+                        LegalName = "Demo Org"
+                    }
                 },
                 Roles = new List<PartyRole> { PartyRole.Buyer },
                 Addresses = new List<OrganisationAddress>()
             }
         };
 
-        int totalCount = 2;
+        int totalCount = 1;
         var searchResponse = (searchResults, totalCount);
 
-        _searchByNameOrPponUseCase.Setup(uc => uc.Execute(It.Is<OrganisationSearchByPponQuery>(q =>
-            q.OrderBy != "asc" && q.OrderBy != "desc")))
+        _searchByNameOrPponUseCase.Setup(uc => uc.Execute(It.IsAny<OrganisationSearchByPponQuery>()))
             .ReturnsAsync(searchResponse);
 
         var factory = new TestAuthorizationWebApplicationFactory<Program>(
             Channel.OneLogin, organisationId, OrganisationPersonScope.Admin,
             services => services.AddScoped(_ => _searchByNameOrPponUseCase.Object));
 
-        var queryString = invalidSortOrder == null
-            ? $"/organisation/search-by-name-or-ppon?searchText=test&limit=10&skip=0"
-            : $"/organisation/search-by-name-or-ppon?searchText=test&limit=10&skip=0&sortOrder={invalidSortOrder}";
+        var response = await factory.CreateClient().GetAsync($"/organisation/search-by-name-or-ppon?searchText=test&limit=10&skip=0&sortOrder={sortOrder}");
 
-        var response = await factory.CreateClient().GetAsync(queryString);
+        response.StatusCode.Should().Be(expectedStatusCode);
 
-        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        if (expectedStatusCode == HttpStatusCode.OK)
+        {
+            var content = await response.Content.ReadFromJsonAsync<OrganisationSearchByPponResponse>();
+            content.Should().NotBeNull();
+            content!.Results.Should().HaveCount(1);
+            content.TotalCount.Should().Be(1);
 
-        _searchByNameOrPponUseCase.Verify(uc => uc.Execute(It.Is<OrganisationSearchByPponQuery>(q =>
-            (invalidSortOrder == null && q.OrderBy == null) ||
-            (invalidSortOrder != null && q.OrderBy == invalidSortOrder))), Times.Once);
+            _searchByNameOrPponUseCase.Verify(uc => uc.Execute(
+                It.Is<OrganisationSearchByPponQuery>(q =>
+                    q.OrderBy == (string.IsNullOrEmpty(sortOrder) ? "rel" : sortOrder))),
+                Times.Once);
+        }
     }
+
 
     public static Model.Organisation GivenOrganisation(Guid organisationId)
     {
