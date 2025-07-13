@@ -45,6 +45,27 @@ variable "db_ev_cluster_name" {
   type        = string
 }
 
+variable "db_cfs_cluster_address" {
+  description = "CFS database endpoint address"
+  type        = string
+}
+
+variable "db_cfs_cluster_credentials_arn" {
+  description = "CFS database secret ARN"
+  type        = string
+}
+
+variable "db_cfs_cluster_name" {
+  description = "CFS database name"
+  type        = string
+}
+
+variable "db_cfs_cluster_port" {
+  description = "CFS database port"
+  type        = number
+  default     = 3306
+}
+
 variable "db_fts_cluster_address" {
   description = "FTS database endpoint address"
   type        = string

@@ -6,6 +6,10 @@ data "aws_ssm_parameter" "service_version_sirsi" {
   name = "${local.name_prefix}-service-version"
 }
 
+data "aws_ssm_parameter" "service_version_cfs" {
+  name = "${local.name_prefix}-cfs-service-version"
+}
+
 data "aws_ssm_parameter" "service_version_fts" {
   name = "${local.name_prefix}-fts-service-version"
 }

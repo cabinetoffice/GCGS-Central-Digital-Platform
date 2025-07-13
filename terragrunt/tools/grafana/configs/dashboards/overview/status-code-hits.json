@@ -1281,7 +1281,7 @@
             "value": "tenant"
           }
         ],
-        "query": "authority, av-scanner-app, data-sharing, entity-verification, forms, fts, fts-scheduler, organisation, organisation-app, outbox-processor-entity-verification, outbox-processor-entity-verification, outbox-processor-organisation, person, scheduled-worker, tenant",
+        "query": "authority, av-scanner-app, cfs, cfs-scheduler, data-sharing, entity-verification, forms, fts, fts-scheduler, organisation, organisation-app, outbox-processor-entity-verification, outbox-processor-entity-verification, outbox-processor-organisation, person, scheduled-worker, tenant",
         "type": "custom"
       },
       {

@@ -1,3 +1,8 @@
+variable "pinned_service_versions_cfs" {
+  description = "Specifies the pinned service versions for CFS in each environment, if defined."
+  type        = map(string)
+}
+
 variable "pinned_service_versions_fts" {
   description = "Specifies the pinned service versions for FTS in each environment, if defined."
   type        = map(string)

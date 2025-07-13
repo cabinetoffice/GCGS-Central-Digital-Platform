@@ -8,6 +8,31 @@ variable "alb_sg_id" {
   type        = string
 }
 
+variable "cfs_allowed_target_email_domains" {
+  description = "A list of allowed Domain origins"
+  type        = list(string)
+}
+
+variable "cfs_service_allowed_origins" {
+  description = "A list of allowed URLs"
+  type        = list(string)
+}
+
+variable "db_cfs_cluster_address" {
+  description = "CFS DB address"
+  type        = string
+}
+
+variable "db_cfs_cluster_credentials_arn" {
+  description = "ARN of the secret holding CFS DB credentials"
+  type        = string
+}
+
+variable "db_cfs_cluster_name" {
+  description = "CFS DB name"
+  type        = string
+}
+
 variable "db_ev_cluster_address" {
   description = "Entity Verification DB address"
   type        = string
@@ -29,17 +54,17 @@ variable "db_ev_cluster_name" {
 }
 
 variable "db_fts_cluster_address" {
-  description = "Fts DB address"
+  description = "FTS DB address"
   type        = string
 }
 
 variable "db_fts_cluster_credentials_arn" {
-  description = "ARN of the secret holding Fts DB credentials"
+  description = "ARN of the secret holding FTS DB credentials"
   type        = string
 }
 
 variable "db_fts_cluster_name" {
-  description = "Fts DB name"
+  description = "FTS DB name"
   type        = string
 }
 
@@ -78,11 +103,6 @@ variable "ecs_sg_id" {
   type        = string
 }
 
-variable "efs_sg_id" {
-  description = "EFS security group ID"
-  type        = string
-}
-
 variable "environment" {
   description = "The environment we are provisioning"
   type        = string
@@ -106,6 +126,12 @@ variable "is_production" {
 variable "onelogin_logout_notification_urls" {
   description = "A list of URLs that the organisation app will call to notify other services of a logout event"
   type        = list(string)
+}
+
+variable "pinned_service_version_cfs" {
+  description = "The CFS service version for the this environment."
+  type        = string
+  default     = null
 }
 
 variable "pinned_service_version_fts" {
@@ -269,6 +295,18 @@ variable "tags" {
 }
 
 variable "user_pool_arn" {
+  type = string
+}
+
+variable "user_pool_cfs_arn" {
+  type = string
+}
+
+variable "user_pool_cfs_client_id" {
+  type = string
+}
+
+variable "user_pool_cfs_domain" {
   type = string
 }
 

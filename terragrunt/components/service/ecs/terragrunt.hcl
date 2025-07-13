@@ -75,6 +75,8 @@ dependency common_networking {
 dependency service_auth {
   config_path = "../../service/auth"
   mock_outputs = {
+    cfs_user_pool_arn                    = "mock"
+    cfs_user_pool_client_id              = "mock"
     fts_healthcheck_user_pool_arn        = "mock"
     fts_healthcheck_user_pool_client_id  = "mock"
     fts_user_pool_arn                    = "mock"
@@ -88,6 +90,10 @@ dependency service_auth {
 dependency service_database {
   config_path = "../../service/database"
   mock_outputs = {
+    cfs_cluster_address                                = "mock"
+    cfs_cluster_credentials_arn                        = "mock"
+    cfs_cluster_credentials_kms_key_id                 = "mock"
+    cfs_cluster_name                                   = "mock"
     entity_verification_cluster_address                = "mock"
     entity_verification_cluster_credentials_arn        = "mock"
     entity_verification_cluster_credentials_kms_key_id = "mock"
@@ -128,11 +134,14 @@ dependency service_queue {
 inputs = {
 
   account_ids                       = local.global_vars.locals.account_ids
+  cfs_allowed_target_email_domains  = local.global_vars.locals.cfs_allowed_target_email_domains
+  cfs_service_allowed_origins       = local.global_vars.locals.cfs_service_allowed_origins
   fts_allowed_target_email_domains  = local.global_vars.locals.fts_allowed_target_email_domains
   fts_service_allowed_origins       = local.global_vars.locals.fts_service_allowed_origins
   onelogin_logout_notification_urls = local.global_vars.locals.onelogin_logout_notification_urls
-  pinned_service_version_sirsi      = local.global_vars.locals.pinned_service_version
+  pinned_service_version_cfs        = local.global_vars.locals.pinned_service_version_cfs
   pinned_service_version_fts        = local.global_vars.locals.pinned_service_version_fts
+  pinned_service_version_sirsi      = local.global_vars.locals.pinned_service_version
   service_configs                   = local.global_vars.locals.service_configs
   tags                              = local.tags
 
@@ -175,6 +184,9 @@ inputs = {
 
   user_pool_arn                       = dependency.service_auth.outputs.organisation_app_user_pool_arn
   user_pool_client_id                 = dependency.service_auth.outputs.organisation_app_user_pool_client_id
+  user_pool_cfs_arn                   = dependency.service_auth.outputs.cfs_user_pool_arn
+  user_pool_cfs_client_id             = dependency.service_auth.outputs.cfs_user_pool_client_id
+  user_pool_cfs_domain                = dependency.service_auth.outputs.user_pool_domain
   user_pool_domain                    = dependency.service_auth.outputs.user_pool_domain
   user_pool_fts_arn                   = dependency.service_auth.outputs.fts_user_pool_arn
   user_pool_fts_client_id             = dependency.service_auth.outputs.fts_user_pool_client_id
@@ -183,6 +195,10 @@ inputs = {
   user_pool_fts_healthcheck_client_id = dependency.service_auth.outputs.fts_healthcheck_user_pool_client_id
   user_pool_fts_healthcheck_domain    = dependency.service_auth.outputs.user_pool_domain
 
+  db_cfs_cluster_address                  = dependency.service_database.outputs.cfs_cluster_address
+  db_cfs_cluster_credentials_arn          = dependency.service_database.outputs.cfs_cluster_credentials_arn
+  db_cfs_cluster_credentials_kms_key_id   = dependency.service_database.outputs.cfs_cluster_credentials_kms_key_id
+  db_cfs_cluster_name                     = dependency.service_database.outputs.cfs_cluster_name
   db_ev_cluster_address                   = dependency.service_database.outputs.entity_verification_cluster_address
   db_ev_cluster_credentials_arn           = dependency.service_database.outputs.entity_verification_cluster_credentials_arn
   db_ev_cluster_credentials_kms_key_id    = dependency.service_database.outputs.entity_verification_cluster_credentials_kms_key_id

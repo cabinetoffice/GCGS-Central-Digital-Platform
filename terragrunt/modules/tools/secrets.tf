@@ -59,6 +59,10 @@ data "aws_secretsmanager_secret_version" "rds_creds_ev" {
   secret_id = var.db_ev_cluster_credentials_arn
 }
 
+data "aws_secretsmanager_secret_version" "rds_creds_cfs" {
+  secret_id = var.db_cfs_cluster_credentials_arn
+}
+
 data "aws_secretsmanager_secret_version" "rds_creds_fts" {
   secret_id = var.db_fts_cluster_credentials_arn
 }
