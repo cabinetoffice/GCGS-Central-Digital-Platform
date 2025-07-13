@@ -5,133 +5,261 @@ using CO.CDP.OrganisationInformation;
 using CO.CDP.OrganisationInformation.Persistence;
 using Moq;
 using FluentAssertions;
-using OrganisationAddress = CO.CDP.Organisation.WebApi.Model.OrganisationAddress;
+using Identifier = CO.CDP.OrganisationInformation.Persistence.Identifier;
+using OrganisationPersistence = CO.CDP.OrganisationInformation.Persistence.Organisation;
 
 namespace CO.CDP.Organisation.WebApi.Tests.UseCase;
 
 public class SearchOrganisationByPponUseCaseTests : IClassFixture<AutoMapperFixture>
 {
-    private readonly Mock<IOrganisationRepository> _organisationRepositoryMock;
-    private readonly SearchOrganisationByPponUseCase _useCase;
+    private readonly AutoMapperFixture _mapperFixture;
+    private readonly Mock<IOrganisationRepository> _mockOrganisationRepository;
 
     public SearchOrganisationByPponUseCaseTests(AutoMapperFixture mapperFixture)
     {
-        _organisationRepositoryMock = new Mock<IOrganisationRepository>();
-        _useCase = new SearchOrganisationByPponUseCase(_organisationRepositoryMock.Object, mapperFixture.Mapper);
+        _mapperFixture = mapperFixture;
+        _mockOrganisationRepository = new Mock<IOrganisationRepository>();
     }
 
     [Fact]
-    public async Task Execute_ShouldReturnMappedSearchResults_WhenOrganisationsFound()
+    public async Task Execute_WhenSearchingByPpon_ReturnsMatchingOrganisations()
     {
-        List<CO.CDP.OrganisationInformation.Persistence.Organisation> organisations =
-        [
-            new()
-            {
-                Guid = Guid.NewGuid(),
-                Name = "Organisation 1",
-                Type = OrganisationType.Organisation,
-                Tenant = null!,
-                Roles = new List<PartyRole>()
-                {
-                    PartyRole.Buyer
-                },
-                Identifiers = new List<OrganisationInformation.Persistence.Identifier>()
-                {
-                    new()
-                    {
-                        Primary = true,
-                        Scheme = "scheme",
-                        IdentifierId = "123",
-                        LegalName = "legal name"
-                    },
-                }
-            },
-            new()
-            {
-                Guid = Guid.NewGuid(),
-                Name = "Organisation 2",
-                Type = OrganisationType.Organisation,
-                Tenant = null!,
-                Roles = new List<PartyRole>()
-                {
-                    PartyRole.Buyer
-                },
-                Identifiers = new List<OrganisationInformation.Persistence.Identifier>()
-                {
-                    new()
-                    {
-                        Primary = true,
-                        Scheme = "scheme",
-                        IdentifierId = "456",
-                        LegalName = "legal name 2"
-                    },
-                }
-            }
-        ];
+        // Arrange
+        const string searchTerm = "PGWZ-1758-ABCD";
+        const int limit = 10;
+        const int skip = 0;
+        const string orderBy = "asc";
 
-        var expectedResults = new List<OrganisationSearchByPponResult>
+        var organisationQuery = new OrganisationSearchByPponQuery(searchTerm, limit, skip, orderBy);
+
+        var organisations = new List<OrganisationPersistence>
         {
-            new OrganisationSearchByPponResult
-            {
-                Id = organisations[0].Guid,
-                Identifiers = new List<OrganisationInformation.Identifier>
-                {
-                    new()
-                    {
-                        Scheme = "scheme",
-                        Id = "123",
-                        LegalName = "legal name"
-                    }
-                },
-                Name = "Organisation 1",
-                Roles = new List<PartyRole>
-                {
-                    PartyRole.Buyer
-                },
-                Type = OrganisationType.Organisation,
-                Addresses = new List<OrganisationAddress>()
-            },
-            new OrganisationSearchByPponResult
-            {
-                Id = organisations[1].Guid,
-                Identifiers = new List<OrganisationInformation.Identifier>
-                {
-                    new()
-                    {
-                        Scheme = "scheme",
-                        Id = "456",
-                        LegalName = "legal name 2"
-                    }
-                },
-                Name = "Organisation 2",
-                Roles = new List<PartyRole>
-                {
-                    PartyRole.Buyer
-                },
-                Type = OrganisationType.Organisation,
-                Addresses = new List<OrganisationAddress>()
-            }
+            CreateOrganisation("Test Organisation", "PGWZ-1758-ABCD")
         };
 
-        _organisationRepositoryMock
-            .Setup(repo => repo.SearchByNameOrPpon(It.IsAny<string>(), 10, 0,"asc"))
-            .ReturnsAsync((organisations,organisations.Count));
+        _mockOrganisationRepository
+            .Setup(r => r.SearchByNameOrPpon(searchTerm, limit, skip, orderBy))
+            .ReturnsAsync((organisations, organisations.Count));
 
-        var results = await _useCase.Execute(new OrganisationSearchByPponQuery("Test", 10, 0,"asc"));
+        var useCase = new SearchOrganisationByPponUseCase(
+            _mockOrganisationRepository.Object,
+            _mapperFixture.Mapper);
 
-        results.Results.Should().BeEquivalentTo(expectedResults,
-            options => options.ComparingByMembers<OrganisationSearchByPponResult>());
+        // Act
+        var result = await useCase.Execute(organisationQuery);
+
+        // Assert
+        result.Results.Should().HaveCount(1);
+        result.TotalCount.Should().Be(1);
+
+        var firstResult = result.Results.First();
+        firstResult.Name.Should().Be("Test Organisation");
+        firstResult.Identifiers.First().Id.Should().Be("PGWZ-1758-ABCD");
     }
 
     [Fact]
-    public async Task Execute_ShouldReturnEmptyList_WhenNoMatchingOrganisations()
+    public async Task Execute_WhenSearchingByPartialPpon_ReturnsMatchingOrganisations()
     {
-        _organisationRepositoryMock
-            .Setup(repo => repo.SearchByNameOrPpon(It.IsAny<string>(), 20, 5,"asc"))
-            .ReturnsAsync(([],0));
+        // Arrange
+        const string searchTerm = "1758";
+        const int limit = 10;
+        const int skip = 0;
+        const string orderBy = "asc";
 
-        var results = await _useCase.Execute(new OrganisationSearchByPponQuery("NonexistentOrg", 20, 5,"asc"));
+        var organisationQuery = new OrganisationSearchByPponQuery(searchTerm, limit, skip, orderBy);
 
-        results.Results.Should().BeEmpty();
+        var organisations = new List<OrganisationPersistence>
+        {
+            CreateOrganisation("First Organisation", "PGWZ-1758-ABCD"),
+            CreateOrganisation("Second Organisation", "PGWZ-1758-EFGH")
+        };
+
+        _mockOrganisationRepository
+            .Setup(r => r.SearchByNameOrPpon(searchTerm, limit, skip, orderBy))
+            .ReturnsAsync((organisations, organisations.Count));
+
+        var useCase = new SearchOrganisationByPponUseCase(
+            _mockOrganisationRepository.Object,
+            _mapperFixture.Mapper);
+
+        // Act
+        var result = await useCase.Execute(organisationQuery);
+
+        // Assert
+        result.Results.Should().HaveCount(2);
+        result.TotalCount.Should().Be(2);
+
+        result.Results.First().Identifiers.First().Id.Should().Be("PGWZ-1758-ABCD");
+        result.Results.Last().Identifiers.First().Id.Should().Be("PGWZ-1758-EFGH");
+    }
+
+    [Fact]
+    public async Task Execute_WhenSearchingByName_ReturnsMatchingOrganisations()
+    {
+        // Arrange
+        const string searchTerm = "Test";
+        const int limit = 10;
+        const int skip = 0;
+        const string orderBy = "asc";
+
+        var organisationQuery = new OrganisationSearchByPponQuery(searchTerm, limit, skip, orderBy);
+
+        var organisations = new List<OrganisationPersistence>
+        {
+            CreateOrganisation("Test Organisation A", "PGWZ-1001-AAAA"),
+            CreateOrganisation("Test Organisation B", "PGWZ-1002-BBBB")
+        };
+
+        _mockOrganisationRepository
+            .Setup(r => r.SearchByNameOrPpon(searchTerm, limit, skip, orderBy))
+            .ReturnsAsync((organisations, organisations.Count));
+
+        var useCase = new SearchOrganisationByPponUseCase(
+            _mockOrganisationRepository.Object,
+            _mapperFixture.Mapper);
+
+        // Act
+        var result = await useCase.Execute(organisationQuery);
+
+        // Assert
+        result.Results.Should().HaveCount(2);
+        result.TotalCount.Should().Be(2);
+
+        result.Results.First().Name.Should().Be("Test Organisation A");
+        result.Results.Last().Name.Should().Be("Test Organisation B");
+    }
+
+    [Fact]
+    public async Task Execute_WithPagination_ReturnsCorrectPage()
+    {
+        // Arrange
+        const string searchTerm = "Organisation";
+        const int limit = 1;
+        const int skip = 1;
+        const string orderBy = "asc";
+
+        var organisationQuery = new OrganisationSearchByPponQuery(searchTerm, limit, skip, orderBy);
+
+        var organisations = new List<OrganisationPersistence>
+        {
+            CreateOrganisation("Second Organisation", "PGWZ-2222-BBBB")
+        };
+
+        // Repository returns only the second item, but total count is 2
+        _mockOrganisationRepository
+            .Setup(r => r.SearchByNameOrPpon(searchTerm, limit, skip, orderBy))
+            .ReturnsAsync((organisations, 2));
+
+        var useCase = new SearchOrganisationByPponUseCase(
+            _mockOrganisationRepository.Object,
+            _mapperFixture.Mapper);
+
+        // Act
+        var result = await useCase.Execute(organisationQuery);
+
+        // Assert
+        result.Results.Should().HaveCount(1);
+        result.TotalCount.Should().Be(2);
+        result.Results.First().Name.Should().Be("Second Organisation");
+    }
+
+    [Fact]
+    public async Task Execute_WithDescendingSort_ReturnsCorrectlySortedResults()
+    {
+        // Arrange
+        const string searchTerm = "Organisation";
+        const int limit = 10;
+        const int skip = 0;
+        const string orderBy = "desc";
+
+        var organisationQuery = new OrganisationSearchByPponQuery(searchTerm, limit, skip, orderBy);
+
+        var organisations = new List<OrganisationPersistence>
+        {
+            CreateOrganisation("Z Organisation", "PGWZ-9999-ZZZZ"),
+            CreateOrganisation("A Organisation", "PGWZ-1111-AAAA")
+        };
+
+        _mockOrganisationRepository
+            .Setup(r => r.SearchByNameOrPpon(searchTerm, limit, skip, orderBy))
+            .ReturnsAsync((organisations, organisations.Count));
+
+        var useCase = new SearchOrganisationByPponUseCase(
+            _mockOrganisationRepository.Object,
+            _mapperFixture.Mapper);
+
+        // Act
+        var result = await useCase.Execute(organisationQuery);
+
+        // Assert
+        result.Results.Should().HaveCount(2);
+        result.Results.First().Name.Should().Be("Z Organisation");
+        result.Results.Last().Name.Should().Be("A Organisation");
+    }
+
+    [Fact]
+    public async Task Execute_WhenNoResults_ReturnsEmptyCollection()
+    {
+        // Arrange
+        const string searchTerm = "NonExistentOrganisation";
+        const int limit = 10;
+        const int skip = 0;
+        const string orderBy = "asc";
+
+        var organisationQuery = new OrganisationSearchByPponQuery(searchTerm, limit, skip, orderBy);
+
+        var organisations = new List<OrganisationPersistence>();
+
+        _mockOrganisationRepository
+            .Setup(r => r.SearchByNameOrPpon(searchTerm, limit, skip, orderBy))
+            .ReturnsAsync((organisations, 0));
+
+        var useCase = new SearchOrganisationByPponUseCase(
+            _mockOrganisationRepository.Object,
+            _mapperFixture.Mapper);
+
+        // Act
+        var result = await useCase.Execute(organisationQuery);
+
+        // Assert
+        result.Results.Should().BeEmpty();
+        result.TotalCount.Should().Be(0);
+    }
+
+    private static OrganisationPersistence CreateOrganisation(string name, string pponId)
+    {
+        return new OrganisationPersistence
+        {
+            Name = name,
+            Guid = Guid.NewGuid(),
+            Type = OrganisationType.Organisation,
+            Tenant = new Tenant { Name = name, Guid = Guid.NewGuid() },
+            Identifiers =
+            [
+                new Identifier
+                {
+                    Primary = true,
+                    Scheme = "GB-PPON",
+                    IdentifierId = pponId,
+                    LegalName = name
+                }
+            ],
+            Roles = { PartyRole.Buyer, PartyRole.Tenderer },
+            Addresses =
+            {
+                new OrganisationInformation.Persistence.OrganisationAddress
+                {
+                    Type = AddressType.Registered,
+                    Address = new OrganisationInformation.Persistence.Address
+                    {
+                        StreetAddress = "123 Test Street",
+                        Locality = "London",
+                        PostalCode = "SW1A 1AA",
+                        Country = "GB",
+                        CountryName = "United Kingdom"
+                    }
+                }
+            }
+        };
     }
 }

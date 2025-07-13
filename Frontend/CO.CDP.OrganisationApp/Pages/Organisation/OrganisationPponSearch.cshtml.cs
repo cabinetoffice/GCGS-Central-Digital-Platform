@@ -10,10 +10,10 @@ using CO.CDP.OrganisationApp.WebApiClients;
 namespace CO.CDP.OrganisationApp.Pages.Organisation;
 
 [Authorize(Policy = OrgScopeRequirement.Viewer)]
-public class SearchModel(IOrganisationClient organisationClient,
-    ISession session,ILogger<SearchModel> logger) : LoggedInUserAwareModel(session)
+public class OrganisationPponSearchModel(IOrganisationClient organisationClient,
+    ISession session,ILogger<OrganisationPponSearchModel> logger) : LoggedInUserAwareModel(session)
 {
-    private readonly ILogger<SearchModel> _logger =
+    private readonly ILogger<OrganisationPponSearchModel> _logger =
         logger ?? throw new ArgumentNullException(nameof(logger));
 
     public string? Title { get; set; }
