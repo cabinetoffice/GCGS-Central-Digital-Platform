@@ -210,10 +210,16 @@ if (app.Configuration.GetValue<bool>("BuyerParentChildRelationship"))
         .WithTags("Organisation - Hierarchy");
 }
 
+if (app.Configuration.GetValue<bool>("SearchRegistryPpon"))
+{
+    app.MapGroup("/organisations")
+        .useSearchRegistryOfPpon()
+        .WithTags("Organisation - Search Registry Of Ppon");
+}
+
 app.MapGroup("/mou")
     .UseMouEndpoints()
     .WithTags("Mou");
-
 
 app.Run();
 public abstract partial class Program;
