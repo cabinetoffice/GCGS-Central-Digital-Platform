@@ -380,6 +380,8 @@ public static class EndpointExtensions
             async ([FromQuery] string searchText, [FromQuery] int limit, [FromQuery] int skip,[FromQuery] string sortOrder,
                 [FromServices] IUseCase<OrganisationSearchByPponQuery, (IEnumerable<Model.OrganisationSearchByPponResult>, int)> useCase) =>
             {
+                sortOrder = string.IsNullOrEmpty(sortOrder) ? "rel" : sortOrder;
+
                 return await useCase.Execute(new OrganisationSearchByPponQuery(searchText, limit, skip, sortOrder))
                     .AndThen(result => {
                         var (results, totalCount) = result;
