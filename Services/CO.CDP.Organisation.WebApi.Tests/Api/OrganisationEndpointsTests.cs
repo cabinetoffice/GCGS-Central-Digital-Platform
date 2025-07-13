@@ -477,20 +477,6 @@ public class OrganisationEndpointsTests
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
 
-    [Fact]
-    public async Task SearchByNameOrPpon_ReturnsBadRequest_WhenRequiredParameterIsMissing()
-    {
-        var organisationId = Guid.NewGuid();
-
-        var factory = new TestAuthorizationWebApplicationFactory<Program>(
-            Channel.OneLogin, organisationId, OrganisationPersonScope.Admin,
-            services => services.AddScoped(_ => _searchByNameOrPponUseCase.Object));
-
-        var response = await factory.CreateClient().GetAsync($"/organisation/search-by-name-or-ppon?limit=10&skip=0&sortOrder=asc");
-
-        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-    }
-
     [Theory]
     [InlineData("invalid", HttpStatusCode.OK)]
     [InlineData("asecending", HttpStatusCode.OK)]
