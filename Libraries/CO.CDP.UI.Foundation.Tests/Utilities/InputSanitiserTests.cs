@@ -20,6 +20,10 @@ public class InputSanitiserTests
     [InlineData("a < b > c", "a b c")]
     [InlineData("a\u0000b\u0001c", "a b c")]
     [InlineData("  <b>hello</b>  ", "bhello/b")]
+    [InlineData("radio television", "radio television")]
+    [InlineData("administration + defence", "administration + defence")]
+    [InlineData("\"market research\"", "\"market research\"")]
+
     public void SanitiseSingleLineTextInput_ReturnsExpectedResult(string? input, string? expected)
     {
         var result = InputSanitiser.SanitiseSingleLineTextInput(input);
