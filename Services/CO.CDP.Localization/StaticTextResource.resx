@@ -4235,7 +4235,7 @@
     <value>Search by organisation name or PPON</value>
   </data>
   <data name="PponSearch_Ppon_Desc_Title" xml:space="preserve">
-    <value>What is a Public procurement organisation number (PPON)?</value>
+    <value>Public procurement organisation number (PPON)</value>
   </data>
   <data name="PponSearch_Invalid_Search_Value" xml:space="preserve">
     <value>Enter valid search data. Only alphabets, numbers, space and hyphens(-) are allowed</value>
