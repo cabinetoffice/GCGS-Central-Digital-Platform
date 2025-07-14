@@ -95,6 +95,8 @@ COPY --link Services/CO.CDP.AntiVirusScanner.Tests/CO.CDP.AntiVirusScanner.Tests
 COPY --link Services/CO.CDP.OutboxProcessor/CO.CDP.OutboxProcessor.csproj Services/CO.CDP.OutboxProcessor/
 COPY --link Services/CO.CDP.ScheduledWorker/CO.CDP.ScheduledWorker.csproj Services/CO.CDP.ScheduledWorker/
 COPY --link Services/CO.CDP.ScheduledWorker.Tests/CO.CDP.ScheduledWorker.Tests.csproj Services/CO.CDP.ScheduledWorker.Tests/
+COPY --link Libraries/CO.CDP.UI.Foundation/CO.CDP.UI.Foundation.csproj Libraries/CO.CDP.UI.Foundation/
+COPY --link Libraries/CO.CDP.UI.Foundation.Tests/CO.CDP.UI.Foundation.Tests.csproj Libraries/CO.CDP.UI.Foundation.Tests/
 COPY --link Services/CO.CDP.RegisterOfCommercialTools.WebApi/CO.CDP.RegisterOfCommercialTools.WebApi.csproj Services/CO.CDP.RegisterOfCommercialTools.WebApi/
 COPY --link Services/CO.CDP.RegisterOfCommercialTools.WebApi.Tests/CO.CDP.RegisterOfCommercialTools.WebApi.Tests.csproj Services/CO.CDP.RegisterOfCommercialTools.WebApi.Tests/
 COPY --link Libraries/CO.CDP.RegisterOfCommercialTools.WebApiClient/CO.CDP.RegisterOfCommercialTools.WebApiClient.csproj Libraries/CO.CDP.RegisterOfCommercialTools.WebApiClient/
