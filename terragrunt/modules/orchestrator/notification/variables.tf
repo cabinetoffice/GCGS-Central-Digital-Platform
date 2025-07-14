@@ -33,6 +33,16 @@ variable "slack_channel_id" {
   default     = "C07FUD6GL7R"
 }
 
+variable "ssm_envs_cfs_service_version_arn" {
+  description = "ARN of the parameter holding the CFS service versions for all environments"
+  type        = string
+}
+
+variable "ssm_envs_cfs_service_version_name" {
+  description = "Name of the parameter holding the CFS service versions for all environments"
+  type        = string
+}
+
 variable "ssm_envs_combined_service_version_arn" {
   description = "ARN of the parameter holding all service versions for all environments"
   type        = string

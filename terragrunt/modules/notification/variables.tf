@@ -1,12 +1,7 @@
-variable "environment" {
-  description = "The environment we are provisioning, i.e. test, do not mistake this with the AWS account"
+variable "mail_from_domain" {
+  description = "Domain name to be used for sending email from in each account"
   type        = string
-}
-
-variable "mail_from_subdomain" {
-  description = "Subdomain for MAIL FROM, e.g. 'mail' to create mail.domain.com"
-  type        = string
-  default     = "mail"
+  default     = null
 }
 
 variable "product" {
@@ -21,9 +16,4 @@ variable "product" {
 variable "public_hosted_zone_id" {
   description = "ID of the public hosted zone"
   type        = string
-}
-
-variable "tags" {
-  description = "Tags to apply to all resources in this module"
-  type        = map(string)
 }

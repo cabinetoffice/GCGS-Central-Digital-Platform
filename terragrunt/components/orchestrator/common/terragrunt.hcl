@@ -12,6 +12,11 @@ locals {
 
   exclude_list = ["orchestrator"]
 
+  pinned_service_versions_cfs = {
+    for key, env in local.global_vars.locals.environments :
+    key => try(env.pinned_service_version_cfs, null) if !(contains(local.exclude_list, env.name))
+  }
+
   pinned_service_versions_fts = {
     for key, env in local.global_vars.locals.environments :
     key => try(env.pinned_service_version_fts, null) if !(contains(local.exclude_list, env.name))
@@ -34,6 +39,7 @@ locals {
 
 inputs = {
 
+  pinned_service_versions_cfs   = local.pinned_service_versions_cfs
   pinned_service_versions_fts   = local.pinned_service_versions_fts
   pinned_service_versions_sirsi = local.pinned_service_versions_sirsi
   tags                          = local.tags

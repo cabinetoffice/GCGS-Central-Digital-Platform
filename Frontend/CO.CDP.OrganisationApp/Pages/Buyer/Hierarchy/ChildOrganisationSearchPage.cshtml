@@ -1,0 +1,72 @@
+@page "/organisation/{id}/buyer/hierarchy/add/child/search"
+@model ChildOrganisationSearchPage
+@using CO.CDP.Localization
+
+@{
+    ViewData["Title"] = StaticTextResource.BuyerParentChildRelationship_SearchPage_Title;
+}
+
+@section BeforeContent {
+    <a href="/organisation/@Model.Id" class="govuk-back-link">@StaticTextResource.Global_Back</a>
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        @if (!ModelState.IsValid)
+        {
+            <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" data-module="govuk-error-summary">
+                <h2 class="govuk-error-summary__title" id="error-summary-title">
+                    @StaticTextResource.Global_ErrorSummary_Heading
+                </h2>
+                <div class="govuk-error-summary__body">
+                    <ul class="govuk-list govuk-error-summary__list">
+                        @foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
+                        {
+                            <li><a href="#query">@error.ErrorMessage</a></li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        }
+
+        <form method="post">
+            <div class="govuk-form-group @(!ModelState.IsValid ? "govuk-form-group--error" : "")">
+                <h1 class="govuk-label-wrapper">
+                    <label class="govuk-label govuk-label--l govuk-!-margin-bottom-9" for="query">
+                        @StaticTextResource.BuyerParentChildRelationship_SearchPage_Title
+                    </label>
+                </h1>
+                <label class="govuk-label govuk-label--m" for="query">
+                    @StaticTextResource.BuyerParentChildRelationship_SearchPage_Label
+                </label>
+                <div id="query-hint" class="govuk-hint">
+                    @if (Model.SearchRegistryPponEnabled)
+                    {
+                        <p>@StaticTextResource.BuyerParentChildRelationship_SearchPage_Hint. @Html.Raw(StaticTextResource.BuyerParentChildRelationship_SearchPage_Link)</p>
+                    }
+                    else
+                    {
+                        <p>@StaticTextResource.BuyerParentChildRelationship_SearchPage_Hint</p>
+                    }
+                </div>
+                @if (!ModelState.IsValid)
+                {
+                    <p id="query-error" class="govuk-error-message">
+                        <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span> @StaticTextResource.BuyerParentChildRelationship_SearchPage_Error
+                    </p>
+                }
+                <div class="govuk-grid-row govuk-!-margin-bottom-0">
+                    <div class="govuk-grid-column-two-thirds govuk-!-padding-right-0">
+                        <input class="govuk-input @(!ModelState.IsValid ? "govuk-input--error" : "")" id="query" name="Query" type="text" value="@Model.Query"
+                               aria-describedby="@(!ModelState.IsValid ? "query-error query-hint" : "query-hint")">
+                    </div>
+                    <div class="govuk-grid-column-one-third govuk-!-padding-left-0 govuk-!-padding-bottom-9">
+                        <button type="submit" class="govuk-button govuk-!-margin-bottom-0" data-module="govuk-button">
+                            @StaticTextResource.Global_Search
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

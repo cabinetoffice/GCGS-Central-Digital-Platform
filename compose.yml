@@ -1,3 +1,6 @@
+x-organisation-authority: &organisation-authority
+  '${Organisation__Authority:-http://gateway:${CDP_AUTHORITY_PORT:-8092}}'
+
 services:
 
   gateway:
@@ -97,7 +100,7 @@ services:
       OrganisationInformationDatabase__Database: 'cdp'
       OrganisationInformationDatabase__Username: 'cdp_user'
       OrganisationInformationDatabase__Password: 'cdp123'
-      Organisation__Authority: '${Organisation__Authority:-http://gateway:${CDP_AUTHORITY_PORT:-8092}}'
+      Organisation__Authority: *organisation-authority
 
   entity-verification-migrations:
       container_name: co-cdp-entity-verification-migrations
@@ -117,7 +120,7 @@ services:
         EntityVerificationDatabase__Database: 'cdp'
         EntityVerificationDatabase__Username: 'cdp_user'
         EntityVerificationDatabase__Password: 'cdp123'
-        Organisation__Authority: '${Organisation__Authority:-http://gateway:${CDP_AUTHORITY_PORT:-8092}}'
+        Organisation__Authority: *organisation-authority
 
   organisation-app:
     container_name: co-cdp-organisation-app
@@ -146,7 +149,7 @@ services:
       Aws__SqsPublisher__QueueUrl: "http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/av-scanner.fifo"
       FormsService: '${FormsService:-http://gateway:${CDP_FORMS_PORT:-8086}}'
       OrganisationService: '${OrganisationService:-http://gateway:${CDP_ORGANISATION_PORT:-8082}}'
-      Organisation__Authority: '${Organisation__Authority:-http://gateway:${CDP_AUTHORITY_PORT:-8092}}'
+      Organisation__Authority: *organisation-authority
       PersonService: '${PersonService:-http://gateway:${CDP_PERSON_PORT:-8084}}'
       TenantService: '${TenantService:-http://gateway:${CDP_TENANT_PORT:-8080}}'
       DataSharingService: '${DataSharingService:-http://gateway:${CDP_DATA_SHARING_PORT:-8088}}'
@@ -200,7 +203,7 @@ services:
       OrganisationInformationDatabase__Database: 'cdp'
       OrganisationInformationDatabase__Username: 'cdp_user'
       OrganisationInformationDatabase__Password: 'cdp123'
-      Organisation__Authority: '${Organisation__Authority:-http://gateway:${CDP_AUTHORITY_PORT:-8092}}'
+      Organisation__Authority: *organisation-authority
       Aws__Credentials__AccessKeyId: test
       Aws__Credentials__SecretAccessKey: test
       Aws__ServiceURL: "http://localstack:4566"
@@ -234,7 +237,7 @@ services:
       OrganisationInformationDatabase__Database: 'cdp'
       OrganisationInformationDatabase__Username: 'cdp_user'
       OrganisationInformationDatabase__Password: 'cdp123'
-      Organisation__Authority: '${Organisation__Authority:-http://gateway:${CDP_AUTHORITY_PORT:-8092}}'
+      Organisation__Authority: *organisation-authority
       Feature__OutboxProcessorBackgroundService: false
 
   commercial-tools-app:
@@ -254,7 +257,7 @@ services:
       retries: 3
     environment:
       ASPNETCORE_ENVIRONMENT: Production
-      Organisation__Authority: '${Organisation__Authority:-http://gateway:${CDP_AUTHORITY_PORT:-8092}}'
+      Organisation__Authority: *organisation-authority
       CommercialToolsApi__ServiceUrl: ''
 
   commercial-tools-api:
@@ -280,7 +283,7 @@ services:
       OrganisationInformationDatabase__Database: 'cdp'
       OrganisationInformationDatabase__Username: 'cdp_user'
       OrganisationInformationDatabase__Password: 'cdp123'
-      Organisation__Authority: '${Organisation__Authority:-http://gateway:${CDP_AUTHORITY_PORT:-8092}}'
+      Organisation__Authority: *organisation-authority
 
   person:
     container_name: co-cdp-person
@@ -303,7 +306,7 @@ services:
       OrganisationInformationDatabase__Database: 'cdp'
       OrganisationInformationDatabase__Username: 'cdp_user'
       OrganisationInformationDatabase__Password: 'cdp123'
-      Organisation__Authority: '${Organisation__Authority:-http://gateway:${CDP_AUTHORITY_PORT:-8092}}'
+      Organisation__Authority: *organisation-authority
 
   forms:
     container_name: co-cdp-forms
@@ -331,7 +334,7 @@ services:
       OrganisationInformationDatabase__Database: 'cdp'
       OrganisationInformationDatabase__Username: 'cdp_user'
       OrganisationInformationDatabase__Password: 'cdp123'
-      Organisation__Authority: '${Organisation__Authority:-http://gateway:${CDP_AUTHORITY_PORT:-8092}}'
+      Organisation__Authority: *organisation-authority
 
   data-sharing:
     container_name: co-cdp-data-sharing
@@ -359,7 +362,7 @@ services:
       OrganisationInformationDatabase__Database: 'cdp'
       OrganisationInformationDatabase__Username: 'cdp_user'
       OrganisationInformationDatabase__Password: 'cdp123'
-      Organisation__Authority: '${Organisation__Authority:-http://gateway:${CDP_AUTHORITY_PORT:-8092}}'
+      Organisation__Authority: *organisation-authority
 
   entity-verification:
     container_name: co-cdp-entity-verification
@@ -390,7 +393,7 @@ services:
       EntityVerificationDatabase__Database: 'cdp'
       EntityVerificationDatabase__Username: 'cdp_user'
       EntityVerificationDatabase__Password: 'cdp123'
-      Organisation__Authority: '${Organisation__Authority:-http://gateway:${CDP_AUTHORITY_PORT:-8092}}'
+      Organisation__Authority: *organisation-authority
       Feature__OutboxProcessorBackgroundService: false
   clamav-rest:
     mem_reservation: "2G"

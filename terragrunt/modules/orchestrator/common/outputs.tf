@@ -1,3 +1,11 @@
+output "ssm_envs_cfs_service_version_arn" {
+  value = aws_ssm_parameter.service_versions_cfs.arn
+}
+
+output "ssm_envs_cfs_service_version_name" {
+  value = aws_ssm_parameter.service_versions_cfs.name
+}
+
 output "ssm_envs_combined_service_version_arn" {
   value = aws_ssm_parameter.service_versions.arn
 }

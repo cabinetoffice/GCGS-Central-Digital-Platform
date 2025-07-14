@@ -1,3 +1,19 @@
+output "cfs_cluster_address" {
+  value = module.cluster_cfs.db_address
+}
+
+output "cfs_cluster_credentials_arn" {
+  value = module.cluster_cfs.db_credentials_arn
+}
+
+output "cfs_cluster_credentials_kms_key_id" {
+  value = module.cluster_cfs.db_kms_arn
+}
+
+output "cfs_cluster_name" {
+  value = module.cluster_cfs.db_name
+}
+
 output "cluster_ids" {
   value = [module.cluster_entity_verification.cluster_id, module.cluster_fts.cluster_id, module.cluster_sirsi.cluster_id]
 }

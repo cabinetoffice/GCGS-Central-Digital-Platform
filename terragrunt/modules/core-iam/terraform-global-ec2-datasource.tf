@@ -74,8 +74,11 @@ data "aws_iam_policy_document" "terraform_global_ec2" {
       "ec2:DetachVolume",
       "ec2:DisassociateAddress",
       "ec2:ImportKeyPair",
+      "ec2:ModifyInstanceAttribute",
       "ec2:ModifyVolume",
       "ec2:RunInstances",
+      "ec2:StartInstances",
+      "ec2:StopInstances",
       "ec2:TerminateInstances",
     ]
     effect = "Allow"

@@ -1,4 +1,4 @@
-﻿@using CO.CDP.UI.Foundation.Services
+@using CO.CDP.UI.Foundation.Services
 @using CO.CDP.UI.Foundation.Cookies
 @using CO.CDP.UI.Foundation.Components
 @using Microsoft.AspNetCore.Http
@@ -9,16 +9,9 @@
 @inject CookieSettings CookieSettings
 @{
     Layout = "_GovUkPageTemplate";
+    ViewData["HtmlClasses"] = "govuk-template--rebranded app-html-class";
     ViewData["HtmlLang"] = "en";
-    ViewData["ServiceName"] = "Find a Tender";
-    ViewData["ProductName"] = "Registry of Commercial Tools";
-    var title = (ViewData.ContainsKey("Title") && !string.IsNullOrEmpty((string?)ViewData["Title"]))
-        ? ViewData["Title"] + " - " + ViewData["ProductName"] + " - " + ViewData["ServiceName"] + " - GOV.UK"
-        : ViewData["ProductName"] + " - " + ViewData["ServiceName"] + " - GOV.UK";
-    ViewData["Title"] = title;
 }
-
-<link href="~/css/site.css" rel="stylesheet"/>
 
 @section BodyStart {
     @Html.Raw(CookieBanner.RenderCookieBanner(
@@ -27,6 +20,20 @@
         CookieSettings,
         SirsiUrlService,
         ViewData["ServiceName"]?.ToString() ?? "Find a Tender"))
+    <govuk-cookie-banner aria-label="Cookie on Find a Tender">
+        <govuk-cookie-banner-message>
+            <govuk-cookie-banner-message-heading>Cookies on Find a Tender</govuk-cookie-banner-message-heading>
+            <govuk-cookie-banner-message-content>
+                <p class="govuk-body">We use some essential cookies to make this service work.</p>
+                <p class="govuk-body">We’d also like to use analytics cookies so we can understand how you use the service and make improvements.</p>
+            </govuk-cookie-banner-message-content>
+            <govuk-cookie-banner-message-actions>
+                <govuk-cookie-banner-message-action text="Accept analytics cookies" type="button"/>
+                <govuk-cookie-banner-message-action text="Reject analytics cookies" type="button"/>
+                <govuk-cookie-banner-message-action-link text="View cookies" href="#"/>
+            </govuk-cookie-banner-message-actions>
+        </govuk-cookie-banner-message>
+    </govuk-cookie-banner>
 }
 
 @section Header {
@@ -76,7 +83,12 @@
     </div>
 }
 
-@RenderBody()
+    <div class="govuk-width-container">
+        <main class="govuk-main-wrapper" id="main-content" role="main">
+            @RenderBody()
+        </main>
+    </div>
+
 
 @section Footer {
     <govuk-footer>

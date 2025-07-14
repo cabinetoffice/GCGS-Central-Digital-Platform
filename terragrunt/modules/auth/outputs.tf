@@ -1,3 +1,19 @@
+output "cfs_healthcheck_user_pool_arn" {
+  value = aws_cognito_user_pool.auth.arn
+}
+
+output "cfs_healthcheck_user_pool_client_id" {
+  value = aws_cognito_user_pool_client.cfs_healthcheck.id
+}
+
+output "cfs_user_pool_arn" {
+  value = aws_cognito_user_pool.auth.arn
+}
+
+output "cfs_user_pool_client_id" {
+  value = aws_cognito_user_pool_client.cfs.id
+}
+
 output "cloud_beaver_user_pool_arn" {
   value = aws_cognito_user_pool.auth.arn
 }

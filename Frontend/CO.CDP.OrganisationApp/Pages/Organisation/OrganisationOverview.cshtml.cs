@@ -6,6 +6,7 @@ using CO.CDP.OrganisationApp.WebApiClients;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.FeatureManagement;
 using DevolvedRegulation = CO.CDP.OrganisationApp.Constants.DevolvedRegulation;
 using OrganisationApiException = CO.CDP.Organisation.WebApiClient.ApiException;
 using OrganisationWebApiClient = CO.CDP.Organisation.WebApiClient;
@@ -13,7 +14,7 @@ using OrganisationWebApiClient = CO.CDP.Organisation.WebApiClient;
 namespace CO.CDP.OrganisationApp.Pages.Organisation;
 
 [Authorize(Policy = OrgScopeRequirement.Viewer)]
-public class OrganisationOverviewModel(IOrganisationClient organisationClient, IPponClient pponClient) : PageModel
+public class OrganisationOverviewModel(IOrganisationClient organisationClient, IPponClient pponClient, IFeatureManager featureManager) : PageModel
 {
     public OrganisationWebApiClient.Organisation? OrganisationDetails { get; set; }
 
@@ -30,6 +31,8 @@ public class OrganisationOverviewModel(IOrganisationClient organisationClient, I
     public bool HasBuyerSignedMou { get; set; } = false;
 
     public string MouSignedOnDate { get; set; } = "";
+
+    public ICollection<OrganisationSummary>? ChildOrganisations { get; set; }
 
     public async Task<IActionResult> OnGet()
     {
@@ -58,6 +61,15 @@ public class OrganisationOverviewModel(IOrganisationClient organisationClient, I
                 {
                     HasBuyerSignedMou = true;
                     MouSignedOnDate = string.Format(@StaticTextResource.MoU_SignedOn, mouSignatureLatest.SignatureOn.ToString("dd MMMM yyyy"));
+                }
+
+                if (OrganisationDetails.IsBuyer())
+                {
+                    var isBuyerParentChildRelationshipEnabled = await featureManager.IsEnabledAsync(FeatureFlags.BuyerParentChildRelationship);
+                    if (isBuyerParentChildRelationshipEnabled)
+                    {
+                        ChildOrganisations = await OrganisationClientExtensions.GetChildOrganisationsAsync(organisationClient, OrganisationDetails.Id);
+                    }
                 }
             }
 

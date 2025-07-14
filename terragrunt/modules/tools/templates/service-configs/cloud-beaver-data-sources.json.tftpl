@@ -51,6 +51,20 @@
         "user": "${db_fts_cluster_username}",
         "password": "${db_fts_cluster_password}"
       }
+    },
+    "cfs": {
+      "provider": "mysql",
+      "driver": "mysql8",
+      "name": "CFS",
+      "folder": "CFS",
+      "save-password": true,
+      "configuration": {
+        "host": "${db_cfs_cluster_address}",
+        "port": "${db_cfs_cluster_port}",
+        "database": "${db_cfs_cluster_name}",
+        "user": "${db_cfs_cluster_username}",
+        "password": "${db_cfs_cluster_password}"
+      }
     }
   }
 }

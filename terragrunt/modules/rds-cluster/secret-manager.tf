@@ -12,6 +12,7 @@ resource "aws_secretsmanager_secret_version" "master_user_credentials" {
 }
 
 resource "random_password" "master_user_password" {
-  length  = 20
-  special = true
+  length           = 20
+  special          = true
+  override_special = "!#$%^&*()-_=+[]{}|;:,.<>?"
 }
