@@ -41,8 +41,9 @@ public class OrganisationPponSearchModel(
 
     public async Task<IActionResult> OnGet(int pageNumber = 1,
         [FromQuery(Name = "q")] string? searchText = null,
-        [FromQuery(Name = "sortOrder")] string? sortOrder = "rel")
+        [FromQuery(Name = "sortOrder")] string? sortOrder = null)
     {
+        sortOrder ??= "rel";
         InitModel(pageNumber);
         await GetResults(searchText, sortOrder);
         return Page();
@@ -58,7 +59,7 @@ public class OrganisationPponSearchModel(
         CurrentPage = pageNumber;
 
         string? refererUrl = null;
-        if (Request?.Headers != null && Request.Headers.ContainsKey("Referer"))
+        if (Request.Headers.ContainsKey("Referer"))
         {
             refererUrl = Request.Headers["Referer"].ToString();
         }
@@ -67,7 +68,7 @@ public class OrganisationPponSearchModel(
                           refererUrl.Contains("organisation/buyer/search", StringComparison.OrdinalIgnoreCase);
     }
 
-    private async Task GetResults(string? searchText, string? sortOrder)
+    private async Task GetResults(string? searchText, string sortOrder)
     {
         if (!_isFromSamePage)
         {
@@ -129,21 +130,24 @@ public class OrganisationPponSearchModel(
 
     public string FormatAddresses(IEnumerable<OrganisationAddress> addresses)
     {
-        if (addresses == null || !addresses.Any())
+        var address = addresses?.FirstOrDefault();
+        if (address == null)
+        {
             return "N/A";
-        var address = addresses.FirstOrDefault();
-        var parts = new List<string>();
-        if (!string.IsNullOrWhiteSpace(address.StreetAddress))
-            parts.Add(address.StreetAddress);
-        if (!string.IsNullOrWhiteSpace(address.Locality))
-            parts.Add(address.Locality);
-        if (!string.IsNullOrWhiteSpace(address.Region))
-            parts.Add(address.Region);
-        if (!string.IsNullOrWhiteSpace(address.PostalCode))
-            parts.Add(address.PostalCode);
-        if (!string.IsNullOrWhiteSpace(address.Country))
-            parts.Add(address.Country);
-        return parts.Any() ? string.Join(", ", parts) : "N/A";
+        }
+
+        var parts = new[]
+            {
+                address.StreetAddress,
+                address.Locality,
+                address.Region,
+                address.PostalCode,
+                address.Country
+            }
+            .Where(part => !string.IsNullOrWhiteSpace(part));
+
+        var result = string.Join(", ", parts);
+        return !string.IsNullOrEmpty(result) ? result : "N/A";
     }
 
     public string GetTagClassForRole(PartyRole role)

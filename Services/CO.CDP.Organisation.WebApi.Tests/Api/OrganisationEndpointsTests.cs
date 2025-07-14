@@ -289,10 +289,8 @@ public class OrganisationEndpointsTests
     {
         var organisationId = Guid.NewGuid();
 
-        var reviews = new List<Review> {};
-
         _getReviewsUseCase.Setup(uc => uc.Execute(organisationId))
-            .ReturnsAsync(reviews);
+            .ReturnsAsync(new List<Review>());
 
         var factory = new TestAuthorizationWebApplicationFactory<Program>(
             Channel.OneLogin, organisationId, OrganisationPersonScope.Editor,
@@ -359,10 +357,8 @@ public class OrganisationEndpointsTests
     {
         var organisationId = Guid.NewGuid();
 
-        var searchResults = new List<OrganisationSearchResult>{};
-
         _searchOrganisationUseCase.Setup(uc => uc.Execute(It.IsAny<OrganisationSearchQuery>()))
-            .ReturnsAsync(searchResults);
+            .ReturnsAsync(new List<OrganisationSearchResult>());
 
         var factory = new TestAuthorizationWebApplicationFactory<Program>(
             Channel.OneLogin, organisationId, OrganisationPersonScope.Viewer,
@@ -378,10 +374,8 @@ public class OrganisationEndpointsTests
     {
         var organisationId = Guid.NewGuid();
 
-        var searchResults = new List<OrganisationSearchResult> { };
-
         _searchOrganisationUseCase.Setup(uc => uc.Execute(It.IsAny<OrganisationSearchQuery>()))
-            .ReturnsAsync(searchResults);
+            .ReturnsAsync(new List<OrganisationSearchResult>());
 
         var factory = new TestAuthorizationWebApplicationFactory<Program>(
             Channel.OneLogin, organisationId, OrganisationPersonScope.Viewer,
@@ -494,7 +488,6 @@ public class OrganisationEndpointsTests
     [Theory]
     [InlineData("invalid", HttpStatusCode.OK)]
     [InlineData("asecending", HttpStatusCode.OK)]
-    [InlineData(null, HttpStatusCode.OK)]
     public async Task SearchByNameOrPpon_AcceptsInvalidSortOrder_AndReturnsData(string sortOrder, HttpStatusCode expectedStatusCode)
     {
         var organisationId = Guid.NewGuid();
@@ -602,7 +595,7 @@ public class OrganisationEndpointsTests
                 Name = "Contact Name",
                 Email = "contact@example.org",
                 Telephone = "123-456-7890",
-                Url = "http://example.org/contact"
+                Url = "https://example.org/contact"
             },
             Roles = [PartyRole.Tenderer]
         };

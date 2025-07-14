@@ -21,17 +21,16 @@ public class OrganisationPponSearchModelTest
     private const int DefaultPageNumber = 1;
 
     private readonly Mock<IOrganisationClient> _mockOrganisationClient;
-    private readonly Mock<ISession> _mockSession;
     private readonly OrganisationPponSearchModel _sut;
     private readonly Mock<ILogger<OrganisationPponSearchModel>> _mockLogger;
 
     public OrganisationPponSearchModelTest()
     {
         _mockOrganisationClient = new Mock<IOrganisationClient>();
-        _mockSession = new Mock<ISession>();
+        Mock<ISession> mockSession = new Mock<ISession>();
         _mockLogger = new Mock<ILogger<OrganisationPponSearchModel>>();
 
-        _sut = new OrganisationPponSearchModel(_mockOrganisationClient.Object, _mockSession.Object, _mockLogger.Object);
+        _sut = new OrganisationPponSearchModel(_mockOrganisationClient.Object, mockSession.Object, _mockLogger.Object);
 
         var httpContext = new DefaultHttpContext();
         _sut.PageContext = new PageContext { HttpContext = httpContext };
@@ -42,7 +41,7 @@ public class OrganisationPponSearchModelTest
         _sut.Request.Headers["Referer"] = DefaultRefererUrl;
     }
 
-    private OrganisationSearchByPponResult CreateTestOrganisationResult(string name, List<PartyRole> roles = null)
+    private OrganisationSearchByPponResult CreateTestOrganisationResult(string name, List<PartyRole> roles)
     {
         return new OrganisationSearchByPponResult(
             new List<OrganisationAddress>
@@ -66,7 +65,7 @@ public class OrganisationPponSearchModelTest
                     uri: new Uri("https://www.example.com"))
             },
             name,
-            roles ?? new List<PartyRole> { PartyRole.Buyer },
+            roles,
             OrganisationType.Organisation
         );
     }
@@ -76,7 +75,8 @@ public class OrganisationPponSearchModelTest
         return new OrganisationSearchByPponResponse(results, results.Count);
     }
 
-    private void SetupSuccessfulSearch(string searchText, string sortOrder, int pageSize, int skip, List<OrganisationSearchByPponResult> results)
+    private void SetupSuccessfulSearch(string searchText, string sortOrder, int pageSize, int skip,
+        List<OrganisationSearchByPponResult> results)
     {
         var response = CreateTestResponse(results);
 
@@ -91,7 +91,7 @@ public class OrganisationPponSearchModelTest
     [Fact]
     public async Task OnGet_WhenCalledWithoutSearchText_ShouldReturnPageWithEmptyResults()
     {
-        var result = await _sut.OnGet(DefaultPageNumber, null);
+        var result = await _sut.OnGet(searchText: null);
 
         result.Should().BeOfType<PageResult>();
         _sut.Organisations.Should().BeEmpty();
@@ -128,13 +128,13 @@ public class OrganisationPponSearchModelTest
 
         var mockResults = new List<OrganisationSearchByPponResult>
         {
-            CreateTestOrganisationResult("Test Organisation 1"),
-            CreateTestOrganisationResult("Test Organisation 2", new List<PartyRole> { PartyRole.Supplier })
+            CreateTestOrganisationResult("Test Organisation 1", new List<PartyRole> { PartyRole.Buyer }),
+            CreateTestOrganisationResult("Test Organisation 2", new List<PartyRole> { PartyRole.Buyer })
         };
 
         SetupSuccessfulSearch(DefaultSearchText, DefaultSortOrder, DefaultPageSize, 0, mockResults);
 
-        var result = await _sut.OnGet(DefaultPageNumber, DefaultSearchText, DefaultSortOrder);
+        var result = await _sut.OnGet(DefaultPageNumber, DefaultSearchText);
 
         result.Should().BeOfType<PageResult>();
         _sut.Organisations.Should().HaveCount(2);
@@ -147,8 +147,7 @@ public class OrganisationPponSearchModelTest
     [Fact]
     public void FormatAddresses_WhenAddressesIsEmpty_ShouldReturnNotApplicable()
     {
-        var addresses = new List<OrganisationAddress>();
-        var result = _sut.FormatAddresses(addresses);
+        var result = _sut.FormatAddresses(new List<OrganisationAddress>());
         result.Should().Be("N/A");
     }
 
@@ -227,7 +226,8 @@ public class OrganisationPponSearchModelTest
     public async Task OnGet_WithDifferentSortOrders_PassesCorrectSortOrderToAPI(string sortOrder)
     {
         SetupRefererHeader();
-        var mockResults = new List<OrganisationSearchByPponResult> { CreateTestOrganisationResult("Test Organisation") };
+        var mockResults = new List<OrganisationSearchByPponResult>
+            { CreateTestOrganisationResult("Test Organisation",new List<PartyRole> { PartyRole.Buyer }) };
 
         _mockOrganisationClient.Setup(m => m.SearchByNameOrPponAsync(
                 DefaultSearchText,
@@ -255,7 +255,8 @@ public class OrganisationPponSearchModelTest
         const int totalCount = 25;
 
         SetupRefererHeader();
-        var mockResults = new List<OrganisationSearchByPponResult> { CreateTestOrganisationResult("Test Organisation") };
+        var mockResults = new List<OrganisationSearchByPponResult>
+            { CreateTestOrganisationResult("Test Organisation", new List<PartyRole> { PartyRole.Buyer }) };
 
         var response = new OrganisationSearchByPponResponse(mockResults, totalCount);
 
@@ -267,7 +268,7 @@ public class OrganisationPponSearchModelTest
             .ReturnsAsync(response)
             .Verifiable();
 
-        await _sut.OnGet(pageNumber, DefaultSearchText, DefaultSortOrder);
+        await _sut.OnGet(pageNumber, DefaultSearchText);
 
         _mockOrganisationClient.Verify(m => m.SearchByNameOrPponAsync(
                 DefaultSearchText,
@@ -323,7 +324,7 @@ public class OrganisationPponSearchModelTest
                 LogLevel.Error,
                 It.IsAny<EventId>(),
                 It.Is<It.IsAnyType>((v, t) =>
-                    v.ToString().Contains("Error occurred while searching for organisations")),
+                    v.ToString()!.Contains("Error occurred while searching for organisations")),
                 It.IsAny<Exception>(),
                 It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
             Times.Once);

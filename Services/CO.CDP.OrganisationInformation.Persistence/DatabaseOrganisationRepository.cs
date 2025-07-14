@@ -122,7 +122,7 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
             .ThenInclude(p => p.Address)
             .Where(t =>
                 EF.Functions.ILike(t.Name, $"%{searchText}%") ||
-                t.Identifiers.Any(i => EF.Functions.ILike(i.IdentifierId, $"%{searchText}%")))
+                t.Identifiers.Any(i => i.IdentifierId != null && EF.Functions.ILike(i.IdentifierId, $"%{searchText}%")))
             .Where(t => t.Type == OrganisationType.Organisation)
             .Where(t => t.Roles.Contains(PartyRole.Buyer) || t.Roles.Contains(PartyRole.Tenderer))
             .Where(t => t.Identifiers.Any(i => i.Scheme.Equals("GB-PPON")));
