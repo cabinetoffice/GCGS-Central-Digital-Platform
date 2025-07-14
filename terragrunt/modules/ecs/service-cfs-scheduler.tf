@@ -19,7 +19,7 @@ module "ecs_service_cfs_scheduler" {
   ecs_listener_arn       = "N/A"
   ecs_service_base_sg_id = var.ecs_sg_id
   family                 = "standalone"
-  healthcheck_path       = "/" #"/healthz.php"
+  healthcheck_path       = "/"
   host_port              = var.service_configs.cfs_scheduler.port_host
   memory                 = var.service_configs.cfs_scheduler.memory
   name                   = var.service_configs.cfs_scheduler.name

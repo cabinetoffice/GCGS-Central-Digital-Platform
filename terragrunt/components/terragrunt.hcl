@@ -246,8 +246,8 @@ locals {
   mail_from_domain                  = try(local.environments[local.environment].mail_from_domain, null)
   onelogin_logout_notification_urls = try(local.environments[local.environment].onelogin_logout_notification_urls, null)
   pinned_service_version            = try(local.environments[local.environment].pinned_service_version, null)
-  pinned_service_version_cfs        = try(local.environments[local.environment].pinned_service_version_cfs, "0.0.1")
-  pinned_service_version_fts        = try(local.environments[local.environment].pinned_service_version_fts, "0.0.1")
+  pinned_service_version_cfs        = try(local.environments[local.environment].pinned_service_version_cfs, null)
+  pinned_service_version_fts        = try(local.environments[local.environment].pinned_service_version_fts, null)
   redis_node_type                   = try(local.environments[local.environment].redis_node_type, null)
 
   product = {
