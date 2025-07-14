@@ -2033,7 +2033,7 @@
     <value>You can only add an immediate child organisation, which is the next level down in your organisation's hierarchy</value>
   </data>
   <data name="BuyerParentChildRelationship_SearchPage_Link" xml:space="preserve">
-    <value>If you do not know the child organisation's PPON, you can find it on the &lt;a class="govuk-link" href=&quot;/organisation/search&quot; target=&quot;_blank&quot;&gt;Search Registry of PPON (opens in new tab)&lt;/a&gt;</value>
+    <value>If you do not know the child organisation's PPON, you can find it on the &lt;a class="govuk-link" href=&quot;/organisation/buyer/search&quot; target=&quot;_blank&quot;&gt;Search Registry of PPON (opens in new tab)&lt;/a&gt;</value>
   </data>
   <data name="BuyerParentChildRelationship_SearchPage_Error" xml:space="preserve">
     <value>Enter the name or PPON of your child organisation</value>
@@ -4253,8 +4253,8 @@
     <value>
       &lt;p class=&quot;govuk-body&quot;&gt;
         A PPON is a unique identifier assigned to organisations that participate in public procurement, generated when an organisation registers on the
-        &lt;a target=&quot;_blank&quot; href=&quot;https://supplierregistration.cabinetoffice.gov.uk&quot;&gt;
-        Supplier Registration service (opens in a new tab)&lt;/a&gt;. It is used to manage and publish notices related to public procurement and connects information about the organisation digitally.
+        &lt;a target=&quot;_blank&quot; href=&quot;https://www.find-tender.service.gov.uk&quot;&gt;
+        Central Digital Platform (opens in a new tab)&lt;/a&gt;. It is used to manage and publish notices related to public procurement and connects information about the organisation digitally.
       &lt;/p&gt;
     </value>
   </data>
