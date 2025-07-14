@@ -31,28 +31,37 @@ public class BuyerView(
             return RedirectToPage("/PageNotFound");
         }
 
-        Tiles =
-        [
-            new Tile
+        var tiles = new List<Tile>
+        {
+            new()
             {
                 Title = StaticTextResource.BuyerView_TileOne_Title,
                 Body = StaticTextResource.BuyerView_TileOne_Body,
                 Href = $"/organisation/{Id}"
-            },
-            new Tile
+            }
+        };
+
+        if (await featureManager.IsEnabledAsync(FeatureFlags.SearchRegistryPpon))
+        {
+            tiles.Add(new Tile
             {
                 Title = StaticTextResource.BuyerView_TileTwo_Title,
                 Body = StaticTextResource.BuyerView_TileTwo_Body,
                 Href = "/organisation/buyer/search"
-            },
-            new Tile
+            });
+        }
+
+        if (await featureManager.IsEnabledAsync(FeatureFlags.AiTool))
+        {
+            tiles.Add(new Tile
             {
                 Title = StaticTextResource.BuyerView_TileThree_Title,
                 Body = StaticTextResource.BuyerView_TileThree_Body,
                 Href = "#"
-            }
-        ];
+            });
+        }
 
+        Tiles = tiles;
         return Page();
     }
 }

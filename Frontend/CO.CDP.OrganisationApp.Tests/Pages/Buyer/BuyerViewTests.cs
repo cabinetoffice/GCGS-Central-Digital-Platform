@@ -81,6 +81,8 @@ public class BuyerViewTests
     {
         var organisation = OrganisationFactory.CreateOrganisation(roles: new List<PartyRole> { PartyRole.Buyer });
         _organisationClientMock.Setup(oc => oc.GetOrganisationAsync(_model.Id)).ReturnsAsync(organisation);
+        _featureManagerMock.Setup(fm => fm.IsEnabledAsync(FeatureFlags.SearchRegistryPpon)).ReturnsAsync(true);
+        _featureManagerMock.Setup(fm => fm.IsEnabledAsync(FeatureFlags.AiTool)).ReturnsAsync(true);
 
         await _model.OnGet();
 
@@ -99,6 +101,8 @@ public class BuyerViewTests
     {
         var organisation = OrganisationFactory.CreateOrganisation(roles: new List<PartyRole> { PartyRole.Buyer });
         _organisationClientMock.Setup(oc => oc.GetOrganisationAsync(_model.Id)).ReturnsAsync(organisation);
+        _featureManagerMock.Setup(fm => fm.IsEnabledAsync(FeatureFlags.SearchRegistryPpon)).ReturnsAsync(true);
+        _featureManagerMock.Setup(fm => fm.IsEnabledAsync(FeatureFlags.AiTool)).ReturnsAsync(true);
 
         await _model.OnGet();
 
@@ -106,5 +110,58 @@ public class BuyerViewTests
         _model.Tiles[0].Href.Should().Be($"/organisation/{_model.Id}");
         _model.Tiles[1].Href.Should().Be("/organisation/buyer/search");
         _model.Tiles[2].Href.Should().Be("#");
+    }
+
+    [Fact]
+    public async Task OnGet_WhenSearchRegistryPponDisabled_TileTwoIsNotPresent()
+    {
+        var organisation = OrganisationFactory.CreateOrganisation(roles: new List<PartyRole> { PartyRole.Buyer });
+        _organisationClientMock.Setup(oc => oc.GetOrganisationAsync(_model.Id)).ReturnsAsync(organisation);
+        _featureManagerMock.Setup(fm => fm.IsEnabledAsync(FeatureFlags.SearchRegistryPpon)).ReturnsAsync(false);
+        _featureManagerMock.Setup(fm => fm.IsEnabledAsync(FeatureFlags.AiTool)).ReturnsAsync(false);
+
+        await _model.OnGet();
+
+        _model.Tiles.Should().ContainSingle(tile => tile.Title == StaticTextResource.BuyerView_TileOne_Title);
+        _model.Tiles.Should().NotContain(tile => tile.Title == StaticTextResource.BuyerView_TileTwo_Title);
+    }
+
+    [Fact]
+    public async Task OnGet_WhenSearchRegistryPponEnabled_TileTwoIsPresent()
+    {
+        var organisation = OrganisationFactory.CreateOrganisation(roles: new List<PartyRole> { PartyRole.Buyer });
+        _organisationClientMock.Setup(oc => oc.GetOrganisationAsync(_model.Id)).ReturnsAsync(organisation);
+        _featureManagerMock.Setup(fm => fm.IsEnabledAsync(FeatureFlags.SearchRegistryPpon)).ReturnsAsync(true);
+        _featureManagerMock.Setup(fm => fm.IsEnabledAsync(FeatureFlags.AiTool)).ReturnsAsync(false);
+
+        await _model.OnGet();
+
+        _model.Tiles.Should().Contain(tile => tile.Title == StaticTextResource.BuyerView_TileTwo_Title);
+    }
+
+    [Fact]
+    public async Task OnGet_WhenAiToolDisabled_TileThreeIsNotPresent()
+    {
+        var organisation = OrganisationFactory.CreateOrganisation(roles: new List<PartyRole> { PartyRole.Buyer });
+        _organisationClientMock.Setup(oc => oc.GetOrganisationAsync(_model.Id)).ReturnsAsync(organisation);
+        _featureManagerMock.Setup(fm => fm.IsEnabledAsync(FeatureFlags.SearchRegistryPpon)).ReturnsAsync(false);
+        _featureManagerMock.Setup(fm => fm.IsEnabledAsync(FeatureFlags.AiTool)).ReturnsAsync(false);
+
+        await _model.OnGet();
+
+        _model.Tiles.Should().NotContain(tile => tile.Title == StaticTextResource.BuyerView_TileThree_Title);
+    }
+
+    [Fact]
+    public async Task OnGet_WhenAiToolEnabled_TileThreeIsPresent()
+    {
+        var organisation = OrganisationFactory.CreateOrganisation(roles: new List<PartyRole> { PartyRole.Buyer });
+        _organisationClientMock.Setup(oc => oc.GetOrganisationAsync(_model.Id)).ReturnsAsync(organisation);
+        _featureManagerMock.Setup(fm => fm.IsEnabledAsync(FeatureFlags.SearchRegistryPpon)).ReturnsAsync(false);
+        _featureManagerMock.Setup(fm => fm.IsEnabledAsync(FeatureFlags.AiTool)).ReturnsAsync(true);
+
+        await _model.OnGet();
+
+        _model.Tiles.Should().Contain(tile => tile.Title == StaticTextResource.BuyerView_TileThree_Title);
     }
 }
