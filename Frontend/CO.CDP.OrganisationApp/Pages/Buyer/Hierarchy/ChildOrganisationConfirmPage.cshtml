@@ -1,0 +1,106 @@
+@page "/organisation/{id:guid}/buyer/hierarchy/add/child/confirm"
+@model ChildOrganisationConfirmPage
+@using CO.CDP.Localization
+
+@{
+    ViewData["Title"] = StaticTextResource.BuyerParentChildRelationship_ConfirmPage_Title;
+}
+
+@section BeforeContent {
+    <a href="@Url.Page("ChildOrganisationResultsPage", new { Model.Id, Model.Query })"
+       class="govuk-back-link">@StaticTextResource.Global_Back</a>
+}
+
+<div class="govuk-width-container">
+    <main class="govuk-main-wrapper " id="main-content" role="main">
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-two-thirds">
+                <h1 class="govuk-heading-l">@StaticTextResource.BuyerParentChildRelationship_ConfirmPage_Title</h1>
+
+                <form method="post">
+                    <div class="table-header">
+                        <p class="govuk-body govuk-!-font-weight-bold">
+                            @Model.ChildOrganisation?.Name
+                        </p>
+                    </div>
+
+                    <div class="table-content">
+                        <table class="govuk-table">
+                            <tbody class="govuk-table__body">
+                            <tr class="govuk-table__row">
+                                <th scope="row"
+                                    class="govuk-table__header govuk-!-width-one-third">@StaticTextResource.Global_PPON</th>
+                                <td class="govuk-table__cell govuk-!-width-two-thirds">
+                                    @Model.ChildOrganisation?.Identifier.Id
+                                </td>
+                            </tr>
+                            <tr class="govuk-table__row">
+                                <th scope="row"
+                                    class="govuk-table__header govuk-!-width-one-third">@StaticTextResource.BuyerParentChildRelationship_ConfirmPage_OrganisationTypeLabel
+                                </th>
+                                <td class="govuk-table__cell govuk-!-width-two-thirds">@Model.ChildOrganisationType</td>
+                            </tr>
+                            <tr class="govuk-table__row">
+                                <th scope="row"
+                                    class="govuk-table__header govuk-!-width-one-third">@StaticTextResource.BuyerParentChildRelationship_ConfirmPage_OrganisationAddressLabel
+                                </th>
+                                <td class="govuk-table__cell govuk-!-width-two-thirds">
+                                    @if (Model.HasChildOrganisationAddress && Model.ChildOrganisationAddress != null)
+                                    {
+                                        @if (!string.IsNullOrEmpty(Model.ChildOrganisationAddress.StreetAddress))
+                                        {
+                                            @Model.ChildOrganisationAddress.StreetAddress<br/>
+                                        }
+                                        @if (!string.IsNullOrEmpty(Model.ChildOrganisationAddress.Locality))
+                                        {
+                                            @Model.ChildOrganisationAddress.Locality<br/>
+                                        }
+                                        @if (!string.IsNullOrEmpty(Model.ChildOrganisationAddress.Region))
+                                        {
+                                            @Model.ChildOrganisationAddress.Region<br/>
+                                        }
+                                        @if (!string.IsNullOrEmpty(Model.ChildOrganisationAddress.PostalCode))
+                                        {
+                                            @Model.ChildOrganisationAddress.PostalCode<br/>
+                                        }
+                                        @if (!string.IsNullOrEmpty(Model.ChildOrganisationAddress.CountryName))
+                                        {
+                                            @Model.ChildOrganisationAddress.CountryName
+                                        }
+                                    }
+                                    else
+                                    {
+                                        @StaticTextResource.Global_NoAddressAvailable
+                                    }
+                                </td>
+                            </tr>
+                            <tr class="govuk-table__row">
+                                <th scope="row" class="govuk-table__header govuk-!-width-one-third no-border">
+                                    @StaticTextResource.BuyerParentChildRelationship_ConfirmPage_OrganisationEmailLabel
+                                </th>
+                                <td class="govuk-table__cell govuk-!-width-two-thirds no-border">
+                                    @if (!string.IsNullOrEmpty(Model.ChildOrganisationContactPoint?.Email))
+                                    {
+                                        @Model.ChildOrganisationContactPoint.Email
+                                    }
+                                    else
+                                    {
+                                        @StaticTextResource.Global_NoEmailAvailable
+                                    }
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="govuk-button-group">
+                        <button type="submit" class="govuk-button">@StaticTextResource.Global_Confirm</button>
+                        <a class="govuk-button govuk-button--secondary" asp-page="ChildOrganisationSearchPage"
+                           asp-route-id="@Model.Id">@StaticTextResource.Global_SearchAgain</a>
+                        <a class="govuk-link" href="/organisation/@Model.Id">@StaticTextResource.Global_Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+</div>

@@ -7,12 +7,19 @@ locals {
   fts_screts_arn = data.aws_secretsmanager_secret.fts_secrets.arn
 
   fts_secrets = {
+    email_contactus                       = "${local.fts_screts_arn}:CONTACTUS_EMAIL::"
+    email_e_enablement                    = "${local.fts_screts_arn}:EENABLEMENT_EMAIL::"
     email_subscription_authentication_key = "${local.fts_screts_arn}:EMAIL_SUBSCRIPTION_AUTHENTICATION_KEY::"
     email_subscription_cipher             = "${local.fts_screts_arn}:EMAIL_SUBSCRIPTION_CIPHER::"
+    email_tech_support                    = "${local.fts_screts_arn}:TECHSUPPORT_EMAIL::"
+    email_user_research                   = "${local.fts_screts_arn}:USER_RESEARCH_EMAIL::"
     fts_one_login_client_id               = local.one_login.credential_locations.client_id
     fts_srsi_api_key                      = "${local.fts_screts_arn}:FTS_SRSI_API_KEY::"
     google_analytics_key                  = "${local.fts_screts_arn}:GOOGLE_ANALYTICS_KEY::"
     google_tag_manager_key                = "${local.fts_screts_arn}:GOOGLE_TAG_MANAGER_KEY::"
+    http_basic_auth_enabled               = "${local.fts_screts_arn}:HTTP_BASIC_AUTH_ENABLED::"
+    http_basic_auth_pass                  = "${local.fts_screts_arn}:HTTP_BASIC_AUTH_PASS::"
+    http_basic_auth_user                  = "${local.fts_screts_arn}:HTTP_BASIC_AUTH_USER::"
     one_login_base_url                    = local.one_login.credential_locations.authority
     one_login_fln_api_key_arn             = data.aws_secretsmanager_secret.one_login_forward_logout_notification_api_key.arn
     one_login_private_key                 = local.one_login.credential_locations.private_key
@@ -28,7 +35,7 @@ locals {
   }
 
   fts_parameters = {
-    contactus_email                     = "${local.fts_screts_arn}:CONTACTUS_EMAIL::"
+    email_support                       = var.is_production ? "noreply@find-tender.service.gov.uk" : "noreply@${var.public_domain}"
     dev_email                           = "${local.fts_screts_arn}:DEV_EMAIL::"
     app_host_address                    = "%"
     buyer_corporate_identifier_prefixes = "sid4gov.cabinetoffice.gov.uk|supplierregistration.service.xgov.uk|test-idp-intra.nqc.com"
@@ -40,6 +47,7 @@ locals {
     database_server_port                = 3306
     database_ssl                        = false
     environment                         = upper(var.environment)
+    fts_allowed_target_email_domains    = join(",", var.fts_allowed_target_email_domains)
     fts_client_assertion_type           = "urn:ietf:params:oauth:client-assertion-type:jwt-bearer"
     fts_one_login_logout_redirect_uri   = "https://fts.${var.public_domain}/auth/logout"
     fts_one_login_redirect_uri          = "https://fts.${var.public_domain}/auth/callback"

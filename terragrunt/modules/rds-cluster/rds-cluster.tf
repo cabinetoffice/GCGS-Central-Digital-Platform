@@ -66,7 +66,6 @@ resource "aws_rds_cluster_instance" "this" {
   performance_insights_enabled = var.performance_insights_enabled
   publicly_accessible          = var.publicly_accessible
 
-
   tags = merge(
     var.tags,
     {

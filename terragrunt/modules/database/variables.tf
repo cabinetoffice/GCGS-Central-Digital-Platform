@@ -76,6 +76,11 @@ variable "product" {
   })
 }
 
+variable "public_hosted_zone_id" {
+  description = "ID of the public hosted zone"
+  type        = string
+}
+
 variable "public_subnet_ids" { # @TODO (ABN) burn me once migration is done
   description = "List of public subnet IDs while migrating using dumpfile"
   type        = list(string)

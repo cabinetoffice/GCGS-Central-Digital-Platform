@@ -41,17 +41,20 @@ locals {
       cidr_block                        = "10.${local.cidr_b_development}.0.0/16"
       account_id                        = 471112892058
       canary_schedule_expression        = "rate(30 minutes)" # "cron(15 7,11,15 ? * MON-FRI)" # UTC+0
+      cfs_allowed_target_email_domains  = ["goaco.com"]
+      fts_allowed_target_email_domains  = ["goaco.com"]
       fts_azure_frontdoor               = null
+      cfs_service_allowed_origins       = []
       fts_service_allowed_origins       = []
+      mail_from_domain                  = null
       mysql_aurora_engine_version       = "5.7.mysql_aurora.2.12.5"
       mysql_aurora_family               = "aurora-mysql5.7"
-      mysql_aurora_instance_type        = "db.r5.large"
+      mysql_aurora_instance_type        = "db.r5.8xlarge"
       name                              = "dev"
       onelogin_logout_notification_urls = [
-        "https://test-findtender.nqc.com/auth/backchannellogout",
-        "https://stanvolcere.nqc.com/auth/backchannellogout",
-        "https://nadeemshafi2.nqc.com/auth/backchannellogout"
+        "https://test-findtender.nqc.com/auth/backchannellogout"
       ]
+      pinned_service_version_cfs        = null
       pinned_service_version_fts        = null
       pinned_service_version            = null
       postgres_instance_type            = "db.t4g.micro"
@@ -76,15 +79,27 @@ locals {
       cidr_block                        = "10.${local.cidr_b_staging}.0.0/16"
       account_id                        = 905418042182
       canary_schedule_expression        = "rate(30 minutes)"
+      cfs_allowed_target_email_domains  = ["goaco.com","cabinetoffice.gov.uk"]
+      fts_allowed_target_email_domains  = ["goaco.com","cabinetoffice.gov.uk"]
       fts_azure_frontdoor               = null
-      fts_service_allowed_origins       = []
-      name                              = "staging"
-      onelogin_logout_notification_urls = [
-        "https://stanvolcere.nqc.com/auth/backchannellogout",
-        "https://www-staging.find-tender.service.gov.uk/auth/backchannellogout",
+      cfs_service_allowed_origins       = [
+        "https://cfs.staging.supplier-information.find-tender.service.gov.uk",
       ]
-      pinned_service_version_fts        = "0.0.0-3e1660c"
-      pinned_service_version            = "1.0.69"
+      fts_service_allowed_origins       = [
+        "https://fts.staging.supplier-information.find-tender.service.gov.uk",
+      ]
+      name                              = "staging"
+      mail_from_domain                  = null
+      mysql_aurora_engine_version       = "5.7.mysql_aurora.2.12.5"
+      mysql_aurora_family               = "aurora-mysql5.7"
+      mysql_aurora_instance_type        = "db.r5.8xlarge"
+      onelogin_logout_notification_urls = [
+        "https://www-staging.find-tender.service.gov.uk/auth/backchannellogout",
+        "https://fts.staging.supplier-information.find-tender.service.gov.uk/auth/backchannellogout"
+      ]
+      pinned_service_version_cfs        = null
+      pinned_service_version_fts        = null
+      pinned_service_version            = "1.0.71"
       postgres_instance_type            = "db.t4g.micro"
       postgres_aurora_instance_type     = "db.r5.large"
       private_subnets = [
@@ -107,49 +122,47 @@ locals {
       cidr_block                        = "10.${local.cidr_b_integration}.0.0/16"
       account_id                        = 767397666448
       canary_schedule_expression        = "rate(30 minutes)"
-      fts_azure_frontdoor               = null
-      fts_service_allowed_origins       = [
-        "https://akmalnazir.nqc.com",
-        "https://andrewtaberner.nqc.com",
-        "https://anudeepjami.nqc.com",
-        "https://davidchiu.nqc.com",
-        "https://humaarif.nqc.com",
-        "https://kaichan2.nqc.com",
-        "https://kaylemwood.nqc.com",
-        "https://martamajewska.nqc.com",
-        "https://nadeemshafi2.nqc.com",
-        "https://stanvolcere.nqc.com",
+      cfs_allowed_target_email_domains  = ["goaco.com"]
+      cfs_service_allowed_origins       = [
+        "https://cfs.integration.supplier-information.find-tender.service.gov.uk",
         "https://test-findtender.nqc.com",
         "https://truk-alpha.nqc.com",
         "https://truk-performance.nqc.com",
         "https://truk-prod.nqc.com",
-        "https://wallsm.nqc.com",
         "https://www-integration.find-tender.service.gov.uk",
         "https://www-preview.find-tender.service.gov.uk",
         "https://www-tpp-preview.find-tender.service.gov.uk",
         "https://www-tpp.find-tender.service.gov.uk",
       ]
+      fts_allowed_target_email_domains  = ["goaco.com"]
+      fts_azure_frontdoor               = null
+      fts_service_allowed_origins       = [
+        "https://fts.integration.supplier-information.find-tender.service.gov.uk",
+        "https://test-findtender.nqc.com",
+        "https://truk-alpha.nqc.com",
+        "https://truk-performance.nqc.com",
+        "https://truk-prod.nqc.com",
+        "https://www-integration.find-tender.service.gov.uk",
+        "https://www-preview.find-tender.service.gov.uk",
+        "https://www-tpp-preview.find-tender.service.gov.uk",
+        "https://www-tpp.find-tender.service.gov.uk",
+      ]
+      mail_from_domain                  = null
+      mysql_aurora_engine_version       = "5.7.mysql_aurora.2.12.5"
+      mysql_aurora_family               = "aurora-mysql5.7"
+      mysql_aurora_instance_type        = "db.r5.8xlarge"
       name                              = "integration"
       onelogin_logout_notification_urls = [
-        "https://akmalnazir.nqc.com/auth/backchannellogout",
-        "https://andrewtaberner.nqc.com/auth/backchannellogout",
-        "https://anudeepjami.nqc.com/auth/backchannellogout",
-        "https://davidchiu.nqc.com/auth/backchannellogout",
-        "https://humaarif.nqc.com/auth/backchannellogout",
-        "https://kaichan2.nqc.com/auth/backchannellogout",
-        "https://kaylemwood.nqc.com/auth/backchannellogout",
-        "https://martamajewska.nqc.com/auth/backchannellogout",
-        "https://nadeemshafi2.nqc.com/auth/backchannellogout",
-        "https://stanvolcere.nqc.com/auth/backchannellogout",
         "https://truk-alpha.nqc.com/auth/backchannellogout",
         "https://truk-performance.nqc.com/auth/backchannellogout",
         "https://truk-prod.nqc.com/auth/backchannellogout",
-        "https://wallsm.nqc.com/auth/backchannellogout",
         "https://www-tpp-preview.find-tender.service.gov.uk/auth/backchannellogout",
         "https://www-tpp.find-tender.service.gov.uk/auth/backchannellogout",
+        "https://fts.integration.supplier-information.find-tender.service.gov.uk/auth/backchannellogout"
       ]
-      pinned_service_version_fts        = "0.0.0-3e1660c"
-      pinned_service_version            = "1.0.68"
+      pinned_service_version_cfs        = null
+      pinned_service_version_fts        = null
+      pinned_service_version            = "1.0.69"
       postgres_instance_type            = "db.t4g.micro"
       postgres_aurora_instance_type     = "db.r5.large"
       private_subnets = [
@@ -176,13 +189,29 @@ locals {
       cidr_block                        = "10.${local.cidr_b_production}.0.0/16"
       account_id                        = 471112843276
       canary_schedule_expression        = "rate(15 minutes)"
+      cfs_allowed_target_email_domains  = ["goaco.com"]
+      cfs_service_allowed_origins       = [
+        "https://cfs.supplier-information.find-tender.service.gov.uk",
+        "https://www.find-tender.service.gov.uk"
+      ]
+      fts_allowed_target_email_domains  = ["goaco.com"]
       fts_azure_frontdoor               = "nqc-front-door-uksouth.azurefd.net"
-      fts_service_allowed_origins       = []
-      mysql_aurora_instance_type        = "db.r5.2xlarge"
+      fts_service_allowed_origins       = [
+        "https://fts.supplier-information.find-tender.service.gov.uk",
+        "https://www.find-tender.service.gov.uk"
+      ]
+      mail_from_domain                  = "find-tender.service.gov.uk"
+      mysql_aurora_engine_version       = "5.7.mysql_aurora.2.12.5"
+      mysql_aurora_family               = "aurora-mysql5.7"
+      mysql_aurora_instance_type        = "db.r5.8xlarge"
       name                              = "production"
-      onelogin_logout_notification_urls = ["https://www.find-tender.service.gov.uk/auth/backchannellogout"]
+      onelogin_logout_notification_urls = [
+        "https://www.find-tender.service.gov.uk/auth/backchannellogout",
+        "https://fts.supplier-information.find-tender.service.gov.uk/auth/backchannellogout"
+      ],
+      pinned_service_version_cfs        = null
       pinned_service_version_fts        = "0.0.0-3e1660c"
-      pinned_service_version            = "1.0.67"
+      pinned_service_version            = "1.0.69"
       postgres_instance_type            = "db.t4g.micro"
       postgres_aurora_instance_type     = "db.r5.8xlarge"
       postgres_aurora_instance_type_ev  = "db.r5.4xlarge"
@@ -204,16 +233,21 @@ locals {
     }
   }
 
-  aurora_postgres_instance_type     = try(local.environments[local.environment].postgres_aurora_instance_type, null)
-  aurora_postgres_instance_type_ev  = try(local.environments[local.environment].postgres_aurora_instance_type_ev, local.aurora_postgres_instance_type)
-  fts_azure_frontdoor               = try(local.environments[local.environment].fts_azure_frontdoor, null)
-  fts_service_allowed_origins       = try(local.environments[local.environment].fts_service_allowed_origins, null)
   aurora_mysql_engine_version       = try(local.environments[local.environment].mysql_aurora_engine_version, "8.0.mysql_aurora.3.07.1")
   aurora_mysql_family               = try(local.environments[local.environment].mysql_aurora_family, "aurora-mysql8.0")
   aurora_mysql_instance_type        = try(local.environments[local.environment].mysql_aurora_instance_type, local.aurora_postgres_instance_type)
+  aurora_postgres_instance_type     = try(local.environments[local.environment].postgres_aurora_instance_type, null)
+  aurora_postgres_instance_type_ev  = try(local.environments[local.environment].postgres_aurora_instance_type_ev, local.aurora_postgres_instance_type)
+  cfs_allowed_target_email_domains  = try(local.environments[local.environment].cfs_allowed_target_email_domains, null)
+  cfs_service_allowed_origins       = try(local.environments[local.environment].cfs_service_allowed_origins, null)
+  fts_allowed_target_email_domains  = try(local.environments[local.environment].fts_allowed_target_email_domains, null)
+  fts_azure_frontdoor               = try(local.environments[local.environment].fts_azure_frontdoor, null)
+  fts_service_allowed_origins       = try(local.environments[local.environment].fts_service_allowed_origins, null)
+  mail_from_domain                  = try(local.environments[local.environment].mail_from_domain, null)
   onelogin_logout_notification_urls = try(local.environments[local.environment].onelogin_logout_notification_urls, null)
-  pinned_service_version_fts        = try(local.environments[local.environment].pinned_service_version_fts, "0.0.1")
   pinned_service_version            = try(local.environments[local.environment].pinned_service_version, null)
+  pinned_service_version_cfs        = try(local.environments[local.environment].pinned_service_version_cfs, null)
+  pinned_service_version_fts        = try(local.environments[local.environment].pinned_service_version_fts, null)
   redis_node_type                   = try(local.environments[local.environment].redis_node_type, null)
 
   product = {
@@ -231,11 +265,14 @@ locals {
   service_configs_base = {
     authority                            = {}
     av_scanner_app                       = {}
+    cfs                                  = { desired_count = 3, cpu = 4096,  memory = 8192}
+    cfs_migrations                       = { desired_count = 1 }
+    cfs_scheduler                        = { desired_count = 1 }
     data_sharing                         = {}
     entity_verification                  = {}
     entity_verification_migrations       = { cpu = 256,  memory = 512}
     forms                                = {}
-    fts                                  = { desired_count = 3, cpu = 1024,  memory = 3072}
+    fts                                  = { desired_count = 3, cpu = 4096,  memory = 8192}
     fts_healthcheck                      = { desired_count = 1 }
     fts_migrations                       = { desired_count = 1 }
     fts_scheduler                        = { desired_count = 1 }
@@ -277,6 +314,9 @@ locals {
   service_configs_common = {
     authority                            = { port = 8092, port_host = 8092, name = "authority"}
     av_scanner_app                       = { port = 8095, port_host = 8095, name = "av-scanner-app"}
+    cfs                                  = { port = 8060, port_host = 8060, name = "cfs"}
+    cfs_migrations                       = { port = 8062, port_host = null, name = "cfs-migrations"}
+    cfs_scheduler                        = { port = 8064, port_host = null, name = "cfs-scheduler"}
     data_sharing                         = { port = 8088, port_host = 8088, name = "data-sharing"}
     entity_verification                  = { port = 8094, port_host = 8094, name = "entity-verification"}
     entity_verification_migrations       = { port = 9191, port_host = null, name = "entity-verification-migrations"}
@@ -306,6 +346,13 @@ locals {
   }
 
   tools_configs = {
+    clamav = {
+      cpu       = 1024
+      memory    = 3072
+      name      = "clamav"
+      port      = 9001
+      port_host = 9001
+    }
     clamav_rest = {
       cpu       = 1024
       memory    = 3072
