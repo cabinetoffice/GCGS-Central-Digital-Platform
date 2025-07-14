@@ -1,4 +1,3 @@
-using Amazon.S3.Model;
 using CO.CDP.OrganisationInformation;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
@@ -451,14 +450,14 @@ public record OrganisationSearchQuery
 
 public record OrganisationSearchByPponQuery
 {
-    public string Name { get; }
+    public string SearchText { get; }
     public int? Limit { get; }
     public int Skip { get; }
-    public string OrderBy { get; }
+    public string OrderBy { get; } = "rel";
 
-    public OrganisationSearchByPponQuery(string name, int? limit,int skip, string orderBy)
+    public OrganisationSearchByPponQuery(string searchText, int? limit,int skip, string orderBy)
     {
-        Name = name;
+        SearchText = searchText;
         Limit = limit;
         Skip = skip;
         if (!string.IsNullOrEmpty(orderBy))

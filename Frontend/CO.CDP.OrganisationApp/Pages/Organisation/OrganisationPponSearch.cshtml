@@ -17,7 +17,8 @@
     <div class="govuk-grid-column-two-thirds">
         @if (!string.IsNullOrEmpty(Model.ErrorMessage))
         {
-            <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" data-module="govuk-error-summary">
+            <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert"
+                 data-module="govuk-error-summary">
                 <h2 class="govuk-error-summary__title" id="error-summary-title">
                     @StaticTextResource.Global_ErrorSummary_Heading
                 </h2>
@@ -63,45 +64,47 @@
 
     @if (Model.TotalOrganisations > 0)
     {
-        <div class="govuk-grid-row">
-            @if(Model.TotalOrganisations == 1){
-            <div class="govuk-grid-column-one-half" style="padding-left: 0">
-                <h2 class="govuk-heading-l govuk-!-margin-bottom-2">@StaticTextResource.Global_Search_Result</h2>
-                <p class="govuk-body">@StaticTextResource.PponSearch_ResultsCountOneHeading</p>
-            </div>
-            }else{
-            <div class="govuk-grid-column-one-half" style="padding-left: 0">
-                <h2 class="govuk-heading-l govuk-!-margin-bottom-2">@StaticTextResource.Global_Search_Results</h2>
-                <p class="govuk-body">@(string.Format(StaticTextResource.PponSearch_ResultsCountMoreThanOneHeading, Model.TotalOrganisations))</p>
-            </div>
-            <div class="govuk-grid-column-one-half govuk-!-text-align-right" style="padding-left: 0 !important;">
-                <div class="govuk-form-group">
-                    <label class="govuk-label govuk-!-font-weight-bold" for="sort-order">
-                        @StaticTextResource.Global_Sort_Results
-                    </label>
-                    <select class="govuk-select" id="sort-order" name="sortOrder" aria-controls="sort-submit">
-                        <option value="rel"
-                                selected="@(Request.Query["sortOrder"] == "rel" ? "selected" : null)">
-                            @StaticTextResource.Global_Sort_Relevance
-                        </option>
-                        <option value="asc"
-                                selected="@(Request.Query["sortOrder"] == "asc" ? "selected" : null)">
-                            @StaticTextResource.Global_Sort_Alphabetical_Asc
-                        </option>
-                        <option value="desc"
-                                selected="@(Request.Query["sortOrder"] == "desc" ? "selected" : null)">
-                            @StaticTextResource.Global_Sort_Alphabetical_Desc
-                        </option>
-                    </select>
-                    <button type="submit" id="sort-submit" class="govuk-visually-hidden">
-                        @StaticTextResource.Global_Sort_Txt
-                    </button>
-                    <noscript>
-                        <button type="submit" class="govuk-button govuk-!-margin-left-2">@StaticTextResource.Global_Sort_Txt</button>
-                    </noscript>
+        <div class="govuk-grid-row govuk-!-margin-bottom-5">
 
+            @if (Model.TotalOrganisations == 1)
+            {
+                <div class="govuk-grid-column-one-half">
+                    <h2 class="govuk-heading-l govuk-!-margin-bottom-2">@StaticTextResource.Global_Search_Result</h2>
+                    <p class="govuk-body">@Html.Raw(@StaticTextResource.PponSearch_ResultsCountOneHeading)</p>
                 </div>
-            </div>
+            }
+            else
+            {
+                <div class="govuk-grid-column-one-half">
+                    <h2 class="govuk-heading-l govuk-!-margin-bottom-2">@StaticTextResource.Global_Search_Results</h2>
+                    <p class="govuk-body">@Html.Raw(string.Format(StaticTextResource.PponSearch_ResultsCountMoreThanOneHeading, Model.TotalOrganisations))</p>
+                </div>
+                <div class="govuk-grid-column-one-half govuk-!-text-align-right">
+                    <div class="govuk-form-group">
+                        <label class="govuk-label govuk-!-font-weight-bold" for="sort-order">
+                            @StaticTextResource.Global_Sort_Results
+                        </label>
+                        <select class="govuk-select" id="sort-order" name="sortOrder" aria-controls="sort-submit">
+                            <option value="rel" selected="@(Request.Query["sortOrder"] == "rel")">
+                                @StaticTextResource.Global_Sort_Relevance
+                            </option>
+                            <option value="asc" selected="@(Request.Query["sortOrder"] == "asc")">
+                                @StaticTextResource.Global_Sort_Alphabetical_Asc
+                            </option>
+                            <option value="desc" selected="@(Request.Query["sortOrder"] == "desc")">
+                                @StaticTextResource.Global_Sort_Alphabetical_Desc
+                            </option>
+                        </select>
+                        <button type="submit" id="sort-submit" class="govuk-visually-hidden">
+                            @StaticTextResource.Global_Sort_Txt
+                        </button>
+                        <noscript>
+                            <button type="submit"
+                                    class="govuk-button govuk-!-margin-left-2">@StaticTextResource.Global_Sort_Txt</button>
+                        </noscript>
+
+                    </div>
+                </div>
             }
         </div>
     }
@@ -127,8 +130,8 @@
                 </p>
             </div>
             <div class="govuk-grid-column-one-third govuk-!-text-align-right">
-                <div class="govuk-grid-row" style="text-align: right;margin-right:0">
-                    @foreach (var partyRole in @org.Roles)
+                <div class="govuk-grid-row" >
+                    @foreach (var partyRole in @org.Roles.Distinct())
                     {
                         <strong class="govuk-tag @Model.GetTagClassForRole(partyRole)">
                             @partyRole
@@ -155,10 +158,10 @@
 
 @section Scripts {
     <script nonce-csp>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const sortOrderSelect = document.getElementById('sort-order');
             if (sortOrderSelect) {
-                sortOrderSelect.addEventListener('change', function() {
+                sortOrderSelect.addEventListener('change', function () {
                     document.getElementById('sort-submit').click();
                 });
             }

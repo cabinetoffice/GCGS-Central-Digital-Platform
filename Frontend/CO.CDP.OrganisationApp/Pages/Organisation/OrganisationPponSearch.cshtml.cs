@@ -1,3 +1,4 @@
+using System.Net;
 using System.Text.RegularExpressions;
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Constants;
@@ -34,7 +35,7 @@ public class OrganisationPponSearchModel(
 
     public string? ErrorMessage { get; set; }
 
-    private bool IsFromSamePage = false;
+    private bool _isFromSamePage;
 
     public IList<OrganisationSearchByPponResult> Organisations { get; set; } = [];
 
@@ -47,7 +48,7 @@ public class OrganisationPponSearchModel(
         return Page();
     }
 
-    private void InitModel( int pageNumber)
+    private void InitModel(int pageNumber)
     {
         PageSize = 10;
         if (pageNumber < 1) pageNumber = 1;
@@ -62,22 +63,22 @@ public class OrganisationPponSearchModel(
             refererUrl = Request.Headers["Referer"].ToString();
         }
 
-        IsFromSamePage = !string.IsNullOrEmpty(refererUrl) &&
-                         refererUrl.Contains("organisation/buyer/search", StringComparison.OrdinalIgnoreCase);
+        _isFromSamePage = !string.IsNullOrEmpty(refererUrl) &&
+                          refererUrl.Contains("organisation/buyer/search", StringComparison.OrdinalIgnoreCase);
     }
 
     private async Task GetResults(string? searchText, string? sortOrder)
     {
-        if (!IsFromSamePage)
+        if (!_isFromSamePage)
         {
-            resetKeyParams();
+            ResetKeyParams();
             return;
         }
 
         if (string.IsNullOrWhiteSpace(searchText))
         {
             ErrorMessage = StaticTextResource.PponSearch_Invalid_Search_Value;
-            resetKeyParams();
+            ResetKeyParams();
             return;
         }
 
@@ -89,19 +90,18 @@ public class OrganisationPponSearchModel(
         if (string.IsNullOrWhiteSpace(cleanedSearchText) || containsInvalidChars)
         {
             ErrorMessage = StaticTextResource.PponSearch_Invalid_Search_Value;
-            resetKeyParams();
+            ResetKeyParams();
             return;
         }
 
         try
         {
-            var (orgs, totalCount) = await OrganisationClientExtensions.SearchOrganisationByNameOrPpon(
-                organisationClient, cleanedSearchText, PageSize, Skip, sortOrder);
+            var (orgs, totalCount) = await organisationClient.SearchOrganisationByNameOrPpon(cleanedSearchText, PageSize, Skip, sortOrder);
 
             if (orgs.Count == 0)
             {
                 ErrorMessage = StaticTextResource.PponSearch_NoResults;
-                resetKeyParams();
+                ResetKeyParams();
                 return;
             }
 
@@ -112,15 +112,15 @@ public class OrganisationPponSearchModel(
         }
         catch (Exception ex) when (
             (ex is ApiException apiEx && apiEx.StatusCode != 404) ||
-            (ex is HttpRequestException httpEx && httpEx.StatusCode != System.Net.HttpStatusCode.NotFound) ||
+            (ex is HttpRequestException httpEx && httpEx.StatusCode != HttpStatusCode.NotFound) ||
             (!(ex is ApiException) && !(ex is HttpRequestException)))
         {
-            resetKeyParams();
+            ResetKeyParams();
             LogApiError(ex);
         }
     }
 
-    private void resetKeyParams()
+    private void ResetKeyParams()
     {
         Organisations = [];
         TotalOrganisations = 0;
