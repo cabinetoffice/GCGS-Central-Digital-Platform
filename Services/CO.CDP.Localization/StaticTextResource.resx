@@ -4268,8 +4268,17 @@
   <data name="Global_Search" xml:space="preserve">
     <value>Search</value>
   </data>
-  <data name="Global_Search_Results" xml:space="preserve">
+  <data name="Global_Sort_Results" xml:space="preserve">
     <value>Sort results</value>
+  </data>
+  <data name="Global_Search_Result" xml:space="preserve">
+    <value>Search result</value>
+  </data>
+  <data name="Global_Search_Results" xml:space="preserve">
+    <value>Search results</value>
+  </data>
+  <data name="Global_Sort_Txt" xml:space="preserve">
+    <value>Sort</value>
   </data>
   <data name="Global_Sort_Relevance" xml:space="preserve">
     <value>Relevance</value>

@@ -66,20 +66,20 @@
         <div class="govuk-grid-row">
             @if(Model.TotalOrganisations == 1){
             <div class="govuk-grid-column-one-half" style="padding-left: 0">
-                <h2 class="govuk-heading-l">Search results</h2>
+                <h2 class="govuk-heading-l govuk-!-margin-bottom-2">@StaticTextResource.Global_Search_Result</h2>
                 <p class="govuk-body">@StaticTextResource.PponSearch_ResultsCountOneHeading</p>
             </div>
             }else{
             <div class="govuk-grid-column-one-half" style="padding-left: 0">
-                <h2 class="govuk-heading-l">Search results</h2>
+                <h2 class="govuk-heading-l govuk-!-margin-bottom-2">@StaticTextResource.Global_Search_Results</h2>
                 <p class="govuk-body">@(string.Format(StaticTextResource.PponSearch_ResultsCountMoreThanOneHeading, Model.TotalOrganisations))</p>
             </div>
             <div class="govuk-grid-column-one-half govuk-!-text-align-right" style="padding-left: 0 !important;">
                 <div class="govuk-form-group">
                     <label class="govuk-label govuk-!-font-weight-bold" for="sort-order">
-                        @StaticTextResource.Global_Search_Results
+                        @StaticTextResource.Global_Sort_Results
                     </label>
-                    <select class="govuk-select" id="sort-order" name="sortOrder" onchange="this.form.submit()">
+                    <select class="govuk-select" id="sort-order" name="sortOrder" aria-controls="sort-submit">
                         <option value="rel"
                                 selected="@(Request.Query["sortOrder"] == "rel" ? "selected" : null)">
                             @StaticTextResource.Global_Sort_Relevance
@@ -93,6 +93,13 @@
                             @StaticTextResource.Global_Sort_Alphabetical_Desc
                         </option>
                     </select>
+                    <button type="submit" id="sort-submit" class="govuk-visually-hidden">
+                        @StaticTextResource.Global_Sort_Txt
+                    </button>
+                    <noscript>
+                        <button type="submit" class="govuk-button govuk-!-margin-left-2">@StaticTextResource.Global_Sort_Txt</button>
+                    </noscript>
+
                 </div>
             </div>
             }
@@ -145,3 +152,16 @@
     PageSize = Model.PageSize,
     Url = $"/organisation/buyer/search?q={queryValue}{(Request.Query["sortOrder"].Any() ? $"&sortOrder={Request.Query["sortOrder"]}" : string.Empty)}"
 })
+
+@section Scripts {
+    <script nonce-csp>
+        document.addEventListener('DOMContentLoaded', function() {
+            const sortOrderSelect = document.getElementById('sort-order');
+            if (sortOrderSelect) {
+                sortOrderSelect.addEventListener('change', function() {
+                    document.getElementById('sort-submit').click();
+                });
+            }
+        });
+    </script>
+}
