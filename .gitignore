@@ -47,4 +47,3 @@ msbuild.wrn
 OpenAPI
 TestResults/
 /E2ETests/appsettings.Development.json
-/.github/
