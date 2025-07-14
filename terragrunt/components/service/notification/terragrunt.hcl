@@ -34,7 +34,9 @@ dependency core_iam {
 }
 
 inputs = {
-  tags = local.tags
+  mail_from_domain = local.global_vars.locals.mail_from_domain
+  tags             = local.tags
+
 
   role_ecs_task_arn = dependency.core_iam.outputs.ecs_task_arn
 

@@ -92,6 +92,9 @@ dependency service_ecs {
 dependency service_database {
   config_path = "../../service/database"
   mock_outputs = {
+    cfs_cluster_address                         = "mock"
+    cfs_cluster_credentials_arn                 = "mock"
+    cfs_cluster_name                            = "mock"
     entity_verification_cluster_address         = "mock"
     entity_verification_cluster_credentials_arn = "mock"
     entity_verification_cluster_name            = "mock"
@@ -163,6 +166,9 @@ inputs = {
   ecs_cluster_name = dependency.service_ecs.outputs.ecs_cluster_name
   ecs_alb_dns_name = dependency.service_ecs.outputs.ecs_alb_dns_name
 
+  db_cfs_cluster_address                 = dependency.service_database.outputs.cfs_cluster_address
+  db_cfs_cluster_credentials_arn         = dependency.service_database.outputs.cfs_cluster_credentials_arn
+  db_cfs_cluster_name                    = dependency.service_database.outputs.cfs_cluster_name
   db_ev_cluster_address                  = dependency.service_database.outputs.entity_verification_cluster_address
   db_ev_cluster_credentials_arn          = dependency.service_database.outputs.entity_verification_cluster_credentials_arn
   db_ev_cluster_name                     = dependency.service_database.outputs.entity_verification_cluster_name

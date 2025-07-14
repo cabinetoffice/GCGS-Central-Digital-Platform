@@ -1447,6 +1447,60 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                     b.ToTable("organisation_address_snapshot", (string)null);
                 });
 
+            modelBuilder.Entity("CO.CDP.OrganisationInformation.Persistence.OrganisationHierarchy", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ChildOrganisationId")
+                        .HasColumnType("integer")
+                        .HasColumnName("child_organisation_id");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_on");
+
+                    b.Property<int>("ParentOrganisationId")
+                        .HasColumnType("integer")
+                        .HasColumnName("parent_organisation_id");
+
+                    b.Property<Guid>("RelationshipId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("relationship_id");
+
+                    b.Property<string>("Roles")
+                        .IsRequired()
+                        .HasColumnType("jsonb")
+                        .HasColumnName("roles");
+
+                    b.Property<DateTime?>("SupersededOn")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("superseded_on");
+
+                    b.HasKey("Id")
+                        .HasName("pk_organisation_hierarchies");
+
+                    b.HasIndex("ChildOrganisationId")
+                        .HasDatabaseName("ix_organisation_hierarchies_child_organisation_id");
+
+                    b.HasIndex("ParentOrganisationId")
+                        .HasDatabaseName("ix_organisation_hierarchies_parent_organisation_id");
+
+                    b.HasIndex("RelationshipId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_organisation_hierarchies_relationship_id");
+
+                    b.HasIndex("ParentOrganisationId", "ChildOrganisationId", "SupersededOn")
+                        .HasDatabaseName("ix_organisation_hierarchies_parent_organisation_id_child_organ")
+                        .HasFilter("superseded_on IS NULL");
+
+                    b.ToTable("organisation_hierarchies", (string)null);
+                });
+
             modelBuilder.Entity("CO.CDP.OrganisationInformation.Persistence.OrganisationJoinRequest", b =>
                 {
                     b.Property<int>("Id")
@@ -2683,6 +2737,27 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                     b.Navigation("Address");
 
                     b.Navigation("SharedConsent");
+                });
+
+            modelBuilder.Entity("CO.CDP.OrganisationInformation.Persistence.OrganisationHierarchy", b =>
+                {
+                    b.HasOne("CO.CDP.OrganisationInformation.Persistence.Organisation", "Child")
+                        .WithMany()
+                        .HasForeignKey("ChildOrganisationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_organisation_hierarchies_organisations_child_organisation_id");
+
+                    b.HasOne("CO.CDP.OrganisationInformation.Persistence.Organisation", "Parent")
+                        .WithMany()
+                        .HasForeignKey("ParentOrganisationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_organisation_hierarchies_organisations_parent_organisation_");
+
+                    b.Navigation("Child");
+
+                    b.Navigation("Parent");
                 });
 
             modelBuilder.Entity("CO.CDP.OrganisationInformation.Persistence.OrganisationJoinRequest", b =>
