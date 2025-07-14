@@ -29,6 +29,8 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseGovUkFrontend();
+
 app.UseAuthorization();
 
 app.MapRazorPages();
