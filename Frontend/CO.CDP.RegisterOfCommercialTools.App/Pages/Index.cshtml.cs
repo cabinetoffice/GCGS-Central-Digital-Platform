@@ -6,6 +6,7 @@ using CO.CDP.RegisterOfCommercialTools.App.Validation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using CO.CDP.UI.Foundation.Services;
+using CO.CDP.UI.Foundation.Utilities;
 
 namespace CO.CDP.RegisterOfCommercialTools.App.Pages;
 
@@ -46,6 +47,7 @@ public class IndexModel(ISearchService searchService, ISirsiUrlService sirsiUrlS
 
     public async Task<IActionResult> OnPostAsync()
     {
+        SanitiseSearchParams();
         CheckDateBindingErrors("SearchParams.SubmissionDeadlineFrom", "Please enter a valid date");
         CheckDateBindingErrors("SearchParams.SubmissionDeadlineTo", "Please enter a valid date");
         CheckDateBindingErrors("SearchParams.ContractStartDateFrom", "Please enter a valid date");
@@ -55,6 +57,10 @@ public class IndexModel(ISearchService searchService, ISirsiUrlService sirsiUrlS
 
         await OnGetAsync();
         return Page();
+    }
+    private void SanitiseSearchParams()
+    {
+        SearchParams.Keywords = InputSanitiser.SanitiseSingleLineTextInput(SearchParams.Keywords);
     }
 
     private void CheckDateBindingErrors(string key, string errorMessage)
