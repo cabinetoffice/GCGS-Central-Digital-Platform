@@ -161,3 +161,17 @@
 .no-border {
     border: none !important;
 }
+
+.govuk-blue-banner {
+    background: #1d70b8;
+    padding-top: 30px;
+    padding-bottom: 20px;
+    margin-bottom: 45px;
+}
+
+.govuk-blue-banner h1,
+.govuk-blue-banner p,
+.govuk-blue-banner .govuk-body,
+.govuk-blue-banner .govuk-heading-xl {
+    color: #fff !important;
+}
