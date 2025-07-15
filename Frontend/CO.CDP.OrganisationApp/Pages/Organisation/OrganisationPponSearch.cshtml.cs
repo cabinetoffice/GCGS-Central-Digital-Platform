@@ -41,66 +41,61 @@ public class OrganisationPponSearchModel(
 
     public async Task<IActionResult> OnGet(int pageNumber = 1, string searchText = "", string sortOrder = "")
     {
-        await ExecuteSearch(pageNumber, searchText, sortOrder);
+        await HandleSearch(pageNumber, searchText, sortOrder);
         return Page();
     }
 
     public async Task<IActionResult> OnPost(int pageNumber = 1, string searchText = "", string sortOrder = "")
     {
-        await ExecuteSearch(pageNumber, searchText, sortOrder);
+        await HandleSearch(pageNumber, searchText, sortOrder);
         return Page();
     }
 
-    private async Task ExecuteSearch(int pageNumber, string searchText, string sortOrder)
+    private async Task HandleSearch(int pageNumber, string searchText, string sortOrder)
     {
-        if (string.IsNullOrWhiteSpace(sortOrder)) sortOrder = "rel";
-        if (Id == Guid.Empty && RouteData.Values.TryGetValue("id", out var idValue) && Guid.TryParse(idValue?.ToString(), out var parsedId))
+        var validated = ValidateSearchInput(searchText);
+        if (!validated.IsValid)
         {
-            Id = parsedId;
-        }
-        PageSize = 10;
-        if (pageNumber < 1) pageNumber = 1;
-        Skip = (pageNumber - 1) * PageSize;
-        CurrentPage = pageNumber;
-        await GetResults(searchText, sortOrder);
-        Pagination = new Shared.PaginationPartialModel
-        {
-            CurrentPage = CurrentPage,
-            TotalItems = TotalOrganisations,
-            PageSize = PageSize,
-            Url = $"/organisation/{Id}/buyer/search?q={searchText}&sortOrder={sortOrder}"
-        };
-    }
-
-    private async Task GetResults(string searchText, string sortOrder)
-    {
-        if (string.IsNullOrWhiteSpace(searchText))
-        {
-            ErrorMessage = StaticTextResource.PponSearch_Invalid_Search_Value;
+            ErrorMessage = validated.ErrorMessage;
             return;
         }
+        SetPaginationParams(pageNumber);
+        await FetchAndSetResults(validated.CleanedSearchText, sortOrder);
+        SetPaginationModel(searchText, sortOrder);
+    }
 
+    private (bool IsValid, string ErrorMessage, string CleanedSearchText) ValidateSearchInput(string searchText)
+    {
+        if (string.IsNullOrWhiteSpace(searchText))
+            return (false, StaticTextResource.PponSearch_Invalid_Search_Value, "");
         string regexPattern = @"[^a-zA-Z0-9\s\-]";
         string originalSearchText = searchText.Trim();
         bool containsInvalidChars = Regex.IsMatch(originalSearchText, regexPattern);
         string cleanedSearchText = Regex.Replace(originalSearchText, regexPattern, string.Empty);
-
         if (string.IsNullOrWhiteSpace(cleanedSearchText) || containsInvalidChars)
-        {
-            ErrorMessage = StaticTextResource.PponSearch_Invalid_Search_Value;
-            return;
-        }
+            return (false, StaticTextResource.PponSearch_Invalid_Search_Value, "");
+        return (true, string.Empty, cleanedSearchText);
+    }
 
+    private void SetPaginationParams(int pageNumber)
+    {
+        PageSize = 10;
+        if (pageNumber < 1) pageNumber = 1;
+        Skip = (pageNumber - 1) * PageSize;
+        CurrentPage = pageNumber;
+    }
+
+    private async Task FetchAndSetResults(string cleanedSearchText, string sortOrder)
+    {
+        if (string.IsNullOrWhiteSpace(sortOrder)) sortOrder = "rel";
         try
         {
             var (orgs, totalCount) = await organisationClient.SearchOrganisationByNameOrPpon(cleanedSearchText, PageSize, Skip, sortOrder);
-
             if (orgs.Count == 0)
             {
                 ErrorMessage = StaticTextResource.PponSearch_NoResults;
                 return;
             }
-
             Organisations = orgs.ToList();
             TotalOrganisations = totalCount;
             TotalPages = (int)Math.Ceiling((double)TotalOrganisations / PageSize);
@@ -115,6 +110,16 @@ public class OrganisationPponSearchModel(
         }
     }
 
+    private void SetPaginationModel(string searchText, string sortOrder)
+    {
+        Pagination = new Shared.PaginationPartialModel
+        {
+            CurrentPage = CurrentPage,
+            TotalItems = TotalOrganisations,
+            PageSize = PageSize,
+            Url = $"/organisation/{Id}/buyer/search?q={searchText}&sortOrder={sortOrder}"
+        };
+    }
 
     public string FormatAddresses(IEnumerable<OrganisationAddress> addresses)
     {
