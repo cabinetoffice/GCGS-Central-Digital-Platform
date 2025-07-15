@@ -3,6 +3,7 @@ using CO.CDP.OrganisationApp.Pages.Organisation;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Logging;
 using Moq;
 using AddressType = CO.CDP.Organisation.WebApiClient.AddressType;
@@ -16,9 +17,10 @@ public class OrganisationPponSearchModelTest
 {
     private const string DefaultSearchText = "Test Organisation";
     private const string DefaultSortOrder = "rel";
-    private const string DefaultRefererUrl = "https://example.com/organisation/buyer/search";
     private const int DefaultPageSize = 10;
     private const int DefaultPageNumber = 1;
+    private static readonly Guid DefaultOrganisationId = Guid.NewGuid();
+    private readonly string _defaultRefererUrl = $"https://example.com/organisation/{DefaultOrganisationId}/buyer/search";
 
     private readonly Mock<IOrganisationClient> _mockOrganisationClient;
     private readonly OrganisationPponSearchModel _sut;
@@ -38,7 +40,7 @@ public class OrganisationPponSearchModelTest
 
     private void SetupRefererHeader()
     {
-        _sut.Request.Headers["Referer"] = DefaultRefererUrl;
+        _sut.Request.Headers["Referer"] = _defaultRefererUrl;
     }
 
     private OrganisationSearchByPponResult CreateTestOrganisationResult(string name, List<PartyRole> roles)
@@ -91,39 +93,49 @@ public class OrganisationPponSearchModelTest
     [Fact]
     public async Task OnGet_WhenCalledWithoutSearchText_ShouldReturnPageWithEmptyResults()
     {
+        SetupRouteData(DefaultOrganisationId);
+
         var result = await _sut.OnGet(searchText: null);
 
         result.Should().BeOfType<PageResult>();
         _sut.Organisations.Should().BeEmpty();
         _sut.TotalOrganisations.Should().Be(0);
         _sut.TotalPages.Should().Be(0);
+        _sut.Id.Should().Be(DefaultOrganisationId);
     }
 
     [Fact]
     public async Task OnGet_WhenCalledWithWhitespaceSearchText_ShouldReturnEmptyResults()
     {
+        SetupRouteData(DefaultOrganisationId);
+
         var result = await _sut.OnGet(DefaultPageNumber, "  ");
 
         result.Should().BeOfType<PageResult>();
         _sut.Organisations.Should().BeEmpty();
         _sut.TotalOrganisations.Should().Be(0);
         _sut.TotalPages.Should().Be(0);
+        _sut.Id.Should().Be(DefaultOrganisationId);
     }
 
     [Fact]
     public async Task OnGet_WhenCalledWithSpecialCharactersOnly_ShouldReturnEmptyResults()
     {
+        SetupRouteData(DefaultOrganisationId);
+
         var result = await _sut.OnGet(DefaultPageNumber, "@#$%");
 
         result.Should().BeOfType<PageResult>();
         _sut.Organisations.Should().BeEmpty();
         _sut.TotalOrganisations.Should().Be(0);
         _sut.TotalPages.Should().Be(0);
+        _sut.Id.Should().Be(DefaultOrganisationId);
     }
 
     [Fact]
     public async Task OnGet_WhenCalledWithValidSearchText_ShouldReturnResults()
     {
+        SetupRouteData(DefaultOrganisationId);
         SetupRefererHeader();
 
         var mockResults = new List<OrganisationSearchByPponResult>
@@ -142,6 +154,7 @@ public class OrganisationPponSearchModelTest
         _sut.TotalPages.Should().Be(1);
         _sut.Organisations.ElementAt(0).Name.Should().Be("Test Organisation 1");
         _sut.Organisations.ElementAt(1).Name.Should().Be("Test Organisation 2");
+        _sut.Id.Should().Be(DefaultOrganisationId);
     }
 
     [Fact]
@@ -225,6 +238,7 @@ public class OrganisationPponSearchModelTest
     [InlineData("rel")]
     public async Task OnGet_WithDifferentSortOrders_PassesCorrectSortOrderToAPI(string sortOrder)
     {
+        SetupRouteData(DefaultOrganisationId);
         SetupRefererHeader();
         var mockResults = new List<OrganisationSearchByPponResult>
             { CreateTestOrganisationResult("Test Organisation",new List<PartyRole> { PartyRole.Buyer }) };
@@ -245,6 +259,7 @@ public class OrganisationPponSearchModelTest
                 0,
                 sortOrder),
             Times.Once);
+        _sut.Id.Should().Be(DefaultOrganisationId);
     }
 
     [Fact]
@@ -254,6 +269,7 @@ public class OrganisationPponSearchModelTest
         const int expectedSkip = 20; // (3-1) * 10 = 20
         const int totalCount = 25;
 
+        SetupRouteData(DefaultOrganisationId);
         SetupRefererHeader();
         var mockResults = new List<OrganisationSearchByPponResult>
             { CreateTestOrganisationResult("Test Organisation", new List<PartyRole> { PartyRole.Buyer }) };
@@ -280,6 +296,7 @@ public class OrganisationPponSearchModelTest
         _sut.CurrentPage.Should().Be(pageNumber);
         _sut.Skip.Should().Be(expectedSkip);
         _sut.TotalPages.Should().Be(3);
+        _sut.Id.Should().Be(DefaultOrganisationId);
     }
 
     [Fact]
@@ -289,7 +306,8 @@ public class OrganisationPponSearchModelTest
         string searchText = "Test Organisation";
         string sortOrder = "rel";
 
-        _sut.Request.Headers["Referer"] = "https://example.com/organisation/buyer/search";
+        SetupRouteData(DefaultOrganisationId);
+        SetupRefererHeader();
 
         _sut.Organisations = new List<OrganisationSearchByPponResult>
         {
@@ -318,6 +336,7 @@ public class OrganisationPponSearchModelTest
         _sut.Organisations.Should().BeEmpty();
         _sut.TotalOrganisations.Should().Be(0);
         _sut.TotalPages.Should().Be(0);
+        _sut.Id.Should().Be(DefaultOrganisationId);
 
         _mockLogger.Verify(
             x => x.Log(
@@ -328,5 +347,67 @@ public class OrganisationPponSearchModelTest
                 It.IsAny<Exception>(),
                 It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
             Times.Once);
+    }
+
+    [Fact]
+    public async Task OnGet_WithOrganisationId_SetsIdProperty()
+    {
+        SetupRefererHeader();
+        SetupRouteData(DefaultOrganisationId);
+
+        await _sut.OnGet(DefaultPageNumber, DefaultSearchText);
+
+        _sut.Id.Should().Be(DefaultOrganisationId);
+    }
+
+    [Fact]
+    public async Task OnGet_WithOrganisationId_ShouldUseIdInRefererCheck()
+    {
+        SetupRefererHeader();
+        SetupRouteData(DefaultOrganisationId);
+
+        var mockResults = new List<OrganisationSearchByPponResult>
+        {
+            CreateTestOrganisationResult("Test Organisation", new List<PartyRole> { PartyRole.Buyer })
+        };
+
+        SetupSuccessfulSearch(DefaultSearchText, DefaultSortOrder, DefaultPageSize, 0, mockResults);
+
+        var result = await _sut.OnGet(DefaultPageNumber, DefaultSearchText, DefaultSortOrder);
+
+        result.Should().BeOfType<PageResult>();
+        _sut.Organisations.Should().HaveCount(1);
+        _sut.Id.Should().Be(DefaultOrganisationId);
+    }
+
+    [Fact]
+    public async Task OnGet_WithOrganisationId_PassesCorrectReferrerPathToInitModel()
+    {
+        SetupRefererHeader();
+        SetupRouteData(DefaultOrganisationId);
+
+        await _sut.OnGet(DefaultPageNumber, DefaultSearchText, DefaultSortOrder);
+
+        _sut.Organisations.Should().BeEmpty();
+    }
+
+    [Fact]
+    public async Task OnGet_WithDifferentOrganisationId_ShouldNotFindReferer()
+    {
+        var differentId = Guid.NewGuid();
+        _sut.Request.Headers["Referer"] = $"https://example.com/organisation/{differentId}/buyer/search";
+        SetupRouteData(DefaultOrganisationId);
+
+        await _sut.OnGet(DefaultPageNumber, DefaultSearchText, DefaultSortOrder);
+
+        _sut.Organisations.Should().BeEmpty();
+        _sut.Id.Should().Be(DefaultOrganisationId);
+    }
+
+    private void SetupRouteData(Guid organisationId)
+    {
+        var routeData = new RouteData();
+        routeData.Values["id"] = organisationId.ToString();
+        _sut.PageContext.RouteData = routeData;
     }
 }

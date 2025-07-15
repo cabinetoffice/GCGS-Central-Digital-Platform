@@ -1,7 +1,6 @@
-@page "/organisation/buyer/search"
+@page "/organisation/{id}/buyer/search"
 @using CO.CDP.Localization
 @using CO.CDP.OrganisationApp.Pages.Shared
-@using Microsoft.AspNetCore.Mvc.TagHelpers
 @model OrganisationPponSearchModel
 
 @{
@@ -162,7 +161,7 @@
     CurrentPage = Model.CurrentPage,
     TotalItems = Model.TotalOrganisations,
     PageSize = Model.PageSize,
-    Url = $"/organisation/buyer/search?q={queryValue}{(Request.Query["sortOrder"].Any() ? $"&sortOrder={Request.Query["sortOrder"]}" : string.Empty)}"
+    Url = $"/organisation/{Model.Id}/buyer/search?q={queryValue}&sortOrder={(Request.Query["sortOrder"].Any() ? Request.Query["sortOrder"] : "rel")}"
 })
 
 @section Scripts {

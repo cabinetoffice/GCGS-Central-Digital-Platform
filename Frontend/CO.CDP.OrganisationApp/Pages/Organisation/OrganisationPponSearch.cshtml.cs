@@ -35,7 +35,10 @@ public class OrganisationPponSearchModel(
 
     public string? ErrorMessage { get; set; }
 
-    private bool _isFromSamePage;
+    [BindProperty(SupportsGet = true)]
+    public Guid Id { get; set; }
+
+    public bool IsFromSamePage;
 
     public IList<OrganisationSearchByPponResult> Organisations { get; set; } = [];
 
@@ -44,6 +47,13 @@ public class OrganisationPponSearchModel(
         [FromQuery(Name = "sortOrder")] string? sortOrder = null)
     {
         sortOrder ??= "rel";
+
+        if (Id == Guid.Empty && RouteData.Values.TryGetValue("id", out var idValue) &&
+            Guid.TryParse(idValue?.ToString(), out var parsedId))
+        {
+            Id = parsedId;
+        }
+
         InitModel(pageNumber);
         await GetResults(searchText, sortOrder);
         return Page();
@@ -64,13 +74,13 @@ public class OrganisationPponSearchModel(
             refererUrl = Request.Headers["Referer"].ToString();
         }
 
-        _isFromSamePage = !string.IsNullOrEmpty(refererUrl) &&
-                          refererUrl.Contains("organisation/buyer/search", StringComparison.OrdinalIgnoreCase);
+        IsFromSamePage = !string.IsNullOrEmpty(refererUrl) &&
+                         refererUrl.Contains($"organisation/{Id}/buyer/search", StringComparison.OrdinalIgnoreCase);
     }
 
     private async Task GetResults(string? searchText, string sortOrder)
     {
-        if (!_isFromSamePage)
+        if (!IsFromSamePage)
         {
             ResetKeyParams();
             return;
