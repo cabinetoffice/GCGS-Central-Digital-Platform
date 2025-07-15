@@ -77,7 +77,6 @@ public class OrganisationPponSearchModel(
         if (string.IsNullOrWhiteSpace(searchText))
         {
             ErrorMessage = StaticTextResource.PponSearch_Invalid_Search_Value;
-            ResetKeyParams();
             return;
         }
 
@@ -89,7 +88,6 @@ public class OrganisationPponSearchModel(
         if (string.IsNullOrWhiteSpace(cleanedSearchText) || containsInvalidChars)
         {
             ErrorMessage = StaticTextResource.PponSearch_Invalid_Search_Value;
-            ResetKeyParams();
             return;
         }
 
@@ -100,7 +98,6 @@ public class OrganisationPponSearchModel(
             if (orgs.Count == 0)
             {
                 ErrorMessage = StaticTextResource.PponSearch_NoResults;
-                ResetKeyParams();
                 return;
             }
 
@@ -113,17 +110,11 @@ public class OrganisationPponSearchModel(
             (ex is HttpRequestException httpEx && httpEx.StatusCode != HttpStatusCode.NotFound) ||
             (!(ex is ApiException) && !(ex is HttpRequestException)))
         {
-            ResetKeyParams();
+            ErrorMessage = StaticTextResource.PponSearch_NoResults;
             LogApiError(ex);
         }
     }
 
-    private void ResetKeyParams()
-    {
-        Organisations = new List<OrganisationSearchByPponResult>();
-        TotalOrganisations = 0;
-        TotalPages = 0;
-    }
 
     public string FormatAddresses(IEnumerable<OrganisationAddress> addresses)
     {

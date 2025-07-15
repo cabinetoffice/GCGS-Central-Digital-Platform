@@ -300,7 +300,7 @@ public class OrganisationPponSearchModelTest
     }
 
     [Fact]
-    public async Task OnGet_WhenApiThrowsException_LogsErrorAndResetsResults()
+    public async Task OnGet_WhenApiThrowsException_LogsError()
     {
         int pageNumber = 1;
         string searchText = "Test Organisation";
@@ -331,11 +331,6 @@ public class OrganisationPponSearchModelTest
             .ThrowsAsync(exception);
 
         await _testOrganisationPponSearchModel.OnGet(pageNumber, searchText, sortOrder);
-
-        _testOrganisationPponSearchModel.Organisations.Should().BeEmpty();
-        _testOrganisationPponSearchModel.TotalOrganisations.Should().Be(0);
-        _testOrganisationPponSearchModel.TotalPages.Should().Be(0);
-        _testOrganisationPponSearchModel.Id.Should().Be(DefaultOrganisationId);
 
         _mockLogger.Verify(
             x => x.Log(
