@@ -23,7 +23,7 @@ public class OrganisationPponSearchModelTest
     private readonly string _defaultRefererUrl = $"https://example.com/organisation/{DefaultOrganisationId}/buyer/search";
 
     private readonly Mock<IOrganisationClient> _mockOrganisationClient;
-    private readonly OrganisationPponSearchModel _sut;
+    private readonly OrganisationPponSearchModel _testOrganisationPponSearchModel;
     private readonly Mock<ILogger<OrganisationPponSearchModel>> _mockLogger;
 
     public OrganisationPponSearchModelTest()
@@ -32,15 +32,15 @@ public class OrganisationPponSearchModelTest
         Mock<ISession> mockSession = new Mock<ISession>();
         _mockLogger = new Mock<ILogger<OrganisationPponSearchModel>>();
 
-        _sut = new OrganisationPponSearchModel(_mockOrganisationClient.Object, mockSession.Object, _mockLogger.Object);
+        _testOrganisationPponSearchModel = new OrganisationPponSearchModel(_mockOrganisationClient.Object, mockSession.Object, _mockLogger.Object);
 
         var httpContext = new DefaultHttpContext();
-        _sut.PageContext = new PageContext { HttpContext = httpContext };
+        _testOrganisationPponSearchModel.PageContext = new PageContext { HttpContext = httpContext };
     }
 
     private void SetupRefererHeader()
     {
-        _sut.Request.Headers["Referer"] = _defaultRefererUrl;
+        _testOrganisationPponSearchModel.Request.Headers["Referer"] = _defaultRefererUrl;
     }
 
     private OrganisationSearchByPponResult CreateTestOrganisationResult(string name, List<PartyRole> roles)
@@ -95,13 +95,13 @@ public class OrganisationPponSearchModelTest
     {
         SetupRouteData(DefaultOrganisationId);
 
-        var result = await _sut.OnGet(searchText: null);
+        var result = await _testOrganisationPponSearchModel.OnGet(searchText: null);
 
         result.Should().BeOfType<PageResult>();
-        _sut.Organisations.Should().BeEmpty();
-        _sut.TotalOrganisations.Should().Be(0);
-        _sut.TotalPages.Should().Be(0);
-        _sut.Id.Should().Be(DefaultOrganisationId);
+        _testOrganisationPponSearchModel.Organisations.Should().BeEmpty();
+        _testOrganisationPponSearchModel.TotalOrganisations.Should().Be(0);
+        _testOrganisationPponSearchModel.TotalPages.Should().Be(0);
+        _testOrganisationPponSearchModel.Id.Should().Be(DefaultOrganisationId);
     }
 
     [Fact]
@@ -109,13 +109,13 @@ public class OrganisationPponSearchModelTest
     {
         SetupRouteData(DefaultOrganisationId);
 
-        var result = await _sut.OnGet(DefaultPageNumber, "  ");
+        var result = await _testOrganisationPponSearchModel.OnGet(DefaultPageNumber, "  ");
 
         result.Should().BeOfType<PageResult>();
-        _sut.Organisations.Should().BeEmpty();
-        _sut.TotalOrganisations.Should().Be(0);
-        _sut.TotalPages.Should().Be(0);
-        _sut.Id.Should().Be(DefaultOrganisationId);
+        _testOrganisationPponSearchModel.Organisations.Should().BeEmpty();
+        _testOrganisationPponSearchModel.TotalOrganisations.Should().Be(0);
+        _testOrganisationPponSearchModel.TotalPages.Should().Be(0);
+        _testOrganisationPponSearchModel.Id.Should().Be(DefaultOrganisationId);
     }
 
     [Fact]
@@ -123,13 +123,13 @@ public class OrganisationPponSearchModelTest
     {
         SetupRouteData(DefaultOrganisationId);
 
-        var result = await _sut.OnGet(DefaultPageNumber, "@#$%");
+        var result = await _testOrganisationPponSearchModel.OnGet(DefaultPageNumber, "@#$%");
 
         result.Should().BeOfType<PageResult>();
-        _sut.Organisations.Should().BeEmpty();
-        _sut.TotalOrganisations.Should().Be(0);
-        _sut.TotalPages.Should().Be(0);
-        _sut.Id.Should().Be(DefaultOrganisationId);
+        _testOrganisationPponSearchModel.Organisations.Should().BeEmpty();
+        _testOrganisationPponSearchModel.TotalOrganisations.Should().Be(0);
+        _testOrganisationPponSearchModel.TotalPages.Should().Be(0);
+        _testOrganisationPponSearchModel.Id.Should().Be(DefaultOrganisationId);
     }
 
     [Fact]
@@ -146,21 +146,21 @@ public class OrganisationPponSearchModelTest
 
         SetupSuccessfulSearch(DefaultSearchText, DefaultSortOrder, DefaultPageSize, 0, mockResults);
 
-        var result = await _sut.OnGet(DefaultPageNumber, DefaultSearchText);
+        var result = await _testOrganisationPponSearchModel.OnGet(DefaultPageNumber, DefaultSearchText);
 
         result.Should().BeOfType<PageResult>();
-        _sut.Organisations.Should().HaveCount(2);
-        _sut.TotalOrganisations.Should().Be(2);
-        _sut.TotalPages.Should().Be(1);
-        _sut.Organisations.ElementAt(0).Name.Should().Be("Test Organisation 1");
-        _sut.Organisations.ElementAt(1).Name.Should().Be("Test Organisation 2");
-        _sut.Id.Should().Be(DefaultOrganisationId);
+        _testOrganisationPponSearchModel.Organisations.Should().HaveCount(2);
+        _testOrganisationPponSearchModel.TotalOrganisations.Should().Be(2);
+        _testOrganisationPponSearchModel.TotalPages.Should().Be(1);
+        _testOrganisationPponSearchModel.Organisations.ElementAt(0).Name.Should().Be("Test Organisation 1");
+        _testOrganisationPponSearchModel.Organisations.ElementAt(1).Name.Should().Be("Test Organisation 2");
+        _testOrganisationPponSearchModel.Id.Should().Be(DefaultOrganisationId);
     }
 
     [Fact]
     public void FormatAddresses_WhenAddressesIsEmpty_ShouldReturnNotApplicable()
     {
-        var result = _sut.FormatAddresses(new List<OrganisationAddress>());
+        var result = _testOrganisationPponSearchModel.FormatAddresses(new List<OrganisationAddress>());
         result.Should().Be("N/A");
     }
 
@@ -179,7 +179,7 @@ public class OrganisationPponSearchModelTest
                 type: AddressType.Postal)
         };
 
-        var result = _sut.FormatAddresses(addresses);
+        var result = _testOrganisationPponSearchModel.FormatAddresses(addresses);
         result.Should().Be("123 Test Street, Test City, Test Region, AB12 3CD, United Kingdom");
     }
 
@@ -198,7 +198,7 @@ public class OrganisationPponSearchModelTest
                 type: AddressType.Postal)
         };
 
-        var result = _sut.FormatAddresses(addresses);
+        var result = _testOrganisationPponSearchModel.FormatAddresses(addresses);
         result.Should().Be("123 Test Street, Test Region");
     }
 
@@ -217,7 +217,7 @@ public class OrganisationPponSearchModelTest
                 type: AddressType.Postal)
         };
 
-        var result = _sut.FormatAddresses(addresses);
+        var result = _testOrganisationPponSearchModel.FormatAddresses(addresses);
         result.Should().Be("N/A");
     }
 
@@ -228,7 +228,7 @@ public class OrganisationPponSearchModelTest
     [InlineData(PartyRole.Funder, "govuk-tag--red")]
     public void GetTagClassForRole_ShouldReturnCorrectTagClass(PartyRole role, string expectedTagClass)
     {
-        var result = _sut.GetTagClassForRole(role);
+        var result = _testOrganisationPponSearchModel.GetTagClassForRole(role);
         result.Should().Be(expectedTagClass);
     }
 
@@ -251,7 +251,7 @@ public class OrganisationPponSearchModelTest
             .ReturnsAsync(CreateTestResponse(mockResults))
             .Verifiable();
 
-        await _sut.OnGet(DefaultPageNumber, DefaultSearchText, sortOrder);
+        await _testOrganisationPponSearchModel.OnGet(DefaultPageNumber, DefaultSearchText, sortOrder);
 
         _mockOrganisationClient.Verify(m => m.SearchByNameOrPponAsync(
                 DefaultSearchText,
@@ -259,7 +259,7 @@ public class OrganisationPponSearchModelTest
                 0,
                 sortOrder),
             Times.Once);
-        _sut.Id.Should().Be(DefaultOrganisationId);
+        _testOrganisationPponSearchModel.Id.Should().Be(DefaultOrganisationId);
     }
 
     [Fact]
@@ -284,7 +284,7 @@ public class OrganisationPponSearchModelTest
             .ReturnsAsync(response)
             .Verifiable();
 
-        await _sut.OnGet(pageNumber, DefaultSearchText);
+        await _testOrganisationPponSearchModel.OnGet(pageNumber, DefaultSearchText);
 
         _mockOrganisationClient.Verify(m => m.SearchByNameOrPponAsync(
                 DefaultSearchText,
@@ -293,10 +293,10 @@ public class OrganisationPponSearchModelTest
                 DefaultSortOrder),
             Times.Once);
 
-        _sut.CurrentPage.Should().Be(pageNumber);
-        _sut.Skip.Should().Be(expectedSkip);
-        _sut.TotalPages.Should().Be(3);
-        _sut.Id.Should().Be(DefaultOrganisationId);
+        _testOrganisationPponSearchModel.CurrentPage.Should().Be(pageNumber);
+        _testOrganisationPponSearchModel.Skip.Should().Be(expectedSkip);
+        _testOrganisationPponSearchModel.TotalPages.Should().Be(3);
+        _testOrganisationPponSearchModel.Id.Should().Be(DefaultOrganisationId);
     }
 
     [Fact]
@@ -309,7 +309,7 @@ public class OrganisationPponSearchModelTest
         SetupRouteData(DefaultOrganisationId);
         SetupRefererHeader();
 
-        _sut.Organisations = new List<OrganisationSearchByPponResult>
+        _testOrganisationPponSearchModel.Organisations = new List<OrganisationSearchByPponResult>
         {
             new(
                 new List<OrganisationAddress>(),
@@ -320,8 +320,8 @@ public class OrganisationPponSearchModelTest
                 OrganisationType.Organisation
             )
         };
-        _sut.TotalOrganisations = 1;
-        _sut.TotalPages = 1;
+        _testOrganisationPponSearchModel.TotalOrganisations = 1;
+        _testOrganisationPponSearchModel.TotalPages = 1;
 
         var exception = new HttpRequestException("API Error", null, System.Net.HttpStatusCode.InternalServerError);
         _mockOrganisationClient.Setup(m => m.SearchByNameOrPponAsync(
@@ -331,12 +331,12 @@ public class OrganisationPponSearchModelTest
                 It.IsAny<string>()))
             .ThrowsAsync(exception);
 
-        await _sut.OnGet(pageNumber, searchText, sortOrder);
+        await _testOrganisationPponSearchModel.OnGet(pageNumber, searchText, sortOrder);
 
-        _sut.Organisations.Should().BeEmpty();
-        _sut.TotalOrganisations.Should().Be(0);
-        _sut.TotalPages.Should().Be(0);
-        _sut.Id.Should().Be(DefaultOrganisationId);
+        _testOrganisationPponSearchModel.Organisations.Should().BeEmpty();
+        _testOrganisationPponSearchModel.TotalOrganisations.Should().Be(0);
+        _testOrganisationPponSearchModel.TotalPages.Should().Be(0);
+        _testOrganisationPponSearchModel.Id.Should().Be(DefaultOrganisationId);
 
         _mockLogger.Verify(
             x => x.Log(
@@ -355,9 +355,9 @@ public class OrganisationPponSearchModelTest
         SetupRefererHeader();
         SetupRouteData(DefaultOrganisationId);
 
-        await _sut.OnGet(DefaultPageNumber, DefaultSearchText);
+        await _testOrganisationPponSearchModel.OnGet(DefaultPageNumber, DefaultSearchText);
 
-        _sut.Id.Should().Be(DefaultOrganisationId);
+        _testOrganisationPponSearchModel.Id.Should().Be(DefaultOrganisationId);
     }
 
     [Fact]
@@ -373,11 +373,11 @@ public class OrganisationPponSearchModelTest
 
         SetupSuccessfulSearch(DefaultSearchText, DefaultSortOrder, DefaultPageSize, 0, mockResults);
 
-        var result = await _sut.OnGet(DefaultPageNumber, DefaultSearchText, DefaultSortOrder);
+        var result = await _testOrganisationPponSearchModel.OnGet(DefaultPageNumber, DefaultSearchText, DefaultSortOrder);
 
         result.Should().BeOfType<PageResult>();
-        _sut.Organisations.Should().HaveCount(1);
-        _sut.Id.Should().Be(DefaultOrganisationId);
+        _testOrganisationPponSearchModel.Organisations.Should().HaveCount(1);
+        _testOrganisationPponSearchModel.Id.Should().Be(DefaultOrganisationId);
     }
 
     [Fact]
@@ -386,28 +386,28 @@ public class OrganisationPponSearchModelTest
         SetupRefererHeader();
         SetupRouteData(DefaultOrganisationId);
 
-        await _sut.OnGet(DefaultPageNumber, DefaultSearchText, DefaultSortOrder);
+        await _testOrganisationPponSearchModel.OnGet(DefaultPageNumber, DefaultSearchText, DefaultSortOrder);
 
-        _sut.Organisations.Should().BeEmpty();
+        _testOrganisationPponSearchModel.Organisations.Should().BeEmpty();
     }
 
     [Fact]
     public async Task OnGet_WithDifferentOrganisationId_ShouldNotFindReferer()
     {
         var differentId = Guid.NewGuid();
-        _sut.Request.Headers["Referer"] = $"https://example.com/organisation/{differentId}/buyer/search";
+        _testOrganisationPponSearchModel.Request.Headers["Referer"] = $"https://example.com/organisation/{differentId}/buyer/search";
         SetupRouteData(DefaultOrganisationId);
 
-        await _sut.OnGet(DefaultPageNumber, DefaultSearchText, DefaultSortOrder);
+        await _testOrganisationPponSearchModel.OnGet(DefaultPageNumber, DefaultSearchText, DefaultSortOrder);
 
-        _sut.Organisations.Should().BeEmpty();
-        _sut.Id.Should().Be(DefaultOrganisationId);
+        _testOrganisationPponSearchModel.Organisations.Should().BeEmpty();
+        _testOrganisationPponSearchModel.Id.Should().Be(DefaultOrganisationId);
     }
 
     private void SetupRouteData(Guid organisationId)
     {
         var routeData = new RouteData();
         routeData.Values["id"] = organisationId.ToString();
-        _sut.PageContext.RouteData = routeData;
+        _testOrganisationPponSearchModel.PageContext.RouteData = routeData;
     }
 }
