@@ -4295,5 +4295,7 @@
   <data name="Organisation_SearchOrganisationsHint" xml:space="preserve">
     <value>Search for an organisation’s PPON number.</value>
   </data>
-
+  <data name="Global_EnterSearchTerm" xml:space="preserve">
+    <value>Enter a search term</value>
+  </data>
 </root>
