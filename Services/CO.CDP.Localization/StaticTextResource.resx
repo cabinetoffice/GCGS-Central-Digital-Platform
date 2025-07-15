@@ -4238,7 +4238,7 @@
     <value>Public procurement organisation number (PPON)</value>
   </data>
   <data name="PponSearch_Invalid_Search_Value" xml:space="preserve">
-    <value>Enter valid search data. Only alphabets, numbers, space and hyphens(-) are allowed</value>
+    <value>Enter a search term using only letters, numbers, spaces or hyphens.</value>
   </data>
   <data name="PponSearch_ResultsCountOneHeading" xml:space="preserve">
     <value>We’ve found &lt;b&gt;1&lt;/b&gt; organisation</value>
