@@ -53,28 +53,39 @@ public class OrganisationPponSearchModel(
 
     private async Task HandleSearch(int pageNumber, string searchText, string sortOrder)
     {
-        var validated = ValidateSearchInput(searchText);
-        if (!validated.IsValid)
-        {
-            ErrorMessage = validated.ErrorMessage;
-            return;
-        }
+        var validationResult = ValidateSearchInput(searchText);
+        ErrorMessage = validationResult.ErrorMessage;
         SetPaginationParams(pageNumber);
-        await FetchAndSetResults(validated.CleanedSearchText, sortOrder);
+        if (validationResult.IsValid)
+        {
+            await FetchAndSetResults(validationResult.CleanedSearchText, sortOrder);
+        }
         SetPaginationModel(searchText, sortOrder);
     }
 
     private (bool IsValid, string ErrorMessage, string CleanedSearchText) ValidateSearchInput(string searchText)
     {
+        var isValid = true;
+        var errorMessage = string.Empty;
+        var cleanedSearchText = string.Empty;
         if (string.IsNullOrWhiteSpace(searchText))
-            return (false, StaticTextResource.PponSearch_Invalid_Search_Value, "");
-        string regexPattern = @"[^a-zA-Z0-9\s\-]";
-        string originalSearchText = searchText.Trim();
-        bool containsInvalidChars = Regex.IsMatch(originalSearchText, regexPattern);
-        string cleanedSearchText = Regex.Replace(originalSearchText, regexPattern, string.Empty);
-        if (string.IsNullOrWhiteSpace(cleanedSearchText) || containsInvalidChars)
-            return (false, StaticTextResource.PponSearch_Invalid_Search_Value, "");
-        return (true, string.Empty, cleanedSearchText);
+        {
+            isValid = false;
+            errorMessage = StaticTextResource.PponSearch_Invalid_Search_Value;
+        }
+        else
+        {
+            string regexPattern = @"[^a-zA-Z0-9\s\-]";
+            string originalSearchText = searchText.Trim();
+            bool containsInvalidChars = Regex.IsMatch(originalSearchText, regexPattern);
+            cleanedSearchText = Regex.Replace(originalSearchText, regexPattern, string.Empty);
+            if (string.IsNullOrWhiteSpace(cleanedSearchText) || containsInvalidChars)
+            {
+                isValid = false;
+                errorMessage = StaticTextResource.PponSearch_Invalid_Search_Value;
+            }
+        }
+        return (isValid, errorMessage, cleanedSearchText);
     }
 
     private void SetPaginationParams(int pageNumber)
@@ -94,11 +105,13 @@ public class OrganisationPponSearchModel(
             if (orgs.Count == 0)
             {
                 ErrorMessage = StaticTextResource.PponSearch_NoResults;
-                return;
             }
-            Organisations = orgs.ToList();
-            TotalOrganisations = totalCount;
-            TotalPages = (int)Math.Ceiling((double)TotalOrganisations / PageSize);
+            else
+            {
+                Organisations = orgs.ToList();
+                TotalOrganisations = totalCount;
+                TotalPages = (int)Math.Ceiling((double)TotalOrganisations / PageSize);
+            }
         }
         catch (Exception ex) when (
             (ex is ApiException apiEx && apiEx.StatusCode != 404) ||

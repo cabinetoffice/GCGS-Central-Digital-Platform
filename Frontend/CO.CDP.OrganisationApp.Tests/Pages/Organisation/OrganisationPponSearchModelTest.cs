@@ -397,7 +397,7 @@ public class OrganisationPponSearchModelTest
                 It.IsAny<int>(),
                 It.IsAny<string>()))
             .ThrowsAsync(exception);
-        var result = await _testOrganisationPponSearchModel.OnPost(DefaultPageNumber, DefaultSearchText, DefaultSortOrder);
+        await _testOrganisationPponSearchModel.OnPost(DefaultPageNumber, DefaultSearchText, DefaultSortOrder);
         _testOrganisationPponSearchModel.Organisations.Should().BeEmpty();
         _testOrganisationPponSearchModel.TotalOrganisations.Should().Be(0);
         _testOrganisationPponSearchModel.TotalPages.Should().Be(0);
@@ -411,6 +411,49 @@ public class OrganisationPponSearchModelTest
                 It.IsAny<Exception>(),
                 It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
             Times.Once);
+    }
+
+    [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    [InlineData("   ")]
+    [InlineData("@#$%")]
+    public async Task OnGet_InvalidSearchText_SetsErrorMessageAndNoResults(string? searchText)
+    {
+        SetupRouteData(Id);
+        await _testOrganisationPponSearchModel.OnGet(DefaultPageNumber, searchText!);
+        _testOrganisationPponSearchModel.ErrorMessage.Should().Be(Localization.StaticTextResource.PponSearch_Invalid_Search_Value);
+        _testOrganisationPponSearchModel.Organisations.Should().BeEmpty();
+        _testOrganisationPponSearchModel.TotalOrganisations.Should().Be(0);
+        _testOrganisationPponSearchModel.TotalPages.Should().Be(0);
+    }
+
+    [Fact]
+    public async Task OnGet_NoResults_SetsNoResultsErrorMessage()
+    {
+        SetupRouteData(Id);
+        SetupSuccessfulSearch(DefaultSearchText, DefaultSortOrder, DefaultPageSize, 0, new List<OrganisationSearchByPponResult>());
+        await _testOrganisationPponSearchModel.OnGet(DefaultPageNumber, DefaultSearchText);
+        _testOrganisationPponSearchModel.ErrorMessage.Should().Be(Localization.StaticTextResource.PponSearch_NoResults);
+        _testOrganisationPponSearchModel.Organisations.Should().BeEmpty();
+        _testOrganisationPponSearchModel.TotalOrganisations.Should().Be(0);
+        _testOrganisationPponSearchModel.TotalPages.Should().Be(0);
+    }
+
+    [Fact]
+    public async Task OnGet_ApiThrowsException_SetsNoResultsErrorMessage()
+    {
+        SetupRouteData(Id);
+        _mockOrganisationClient.Setup(m => m.SearchByNameOrPponAsync(
+            It.IsAny<string>(),
+            It.IsAny<int>(),
+            It.IsAny<int>(),
+            It.IsAny<string>())).ThrowsAsync(new HttpRequestException());
+        await _testOrganisationPponSearchModel.OnGet(DefaultPageNumber, DefaultSearchText);
+        _testOrganisationPponSearchModel.ErrorMessage.Should().Be(Localization.StaticTextResource.PponSearch_NoResults);
+        _testOrganisationPponSearchModel.Organisations.Should().BeEmpty();
+        _testOrganisationPponSearchModel.TotalOrganisations.Should().Be(0);
+        _testOrganisationPponSearchModel.TotalPages.Should().Be(0);
     }
 
     private void SetupRouteData(Guid organisationId)
