@@ -156,13 +156,7 @@
     }
 }
 
-@await Html.PartialAsync("_Pagination", new PaginationPartialModel
-{
-    CurrentPage = Model.CurrentPage,
-    TotalItems = Model.TotalOrganisations,
-    PageSize = Model.PageSize,
-    Url = $"/organisation/{Model.Id}/buyer/search?q={queryValue}&sortOrder={(Request.Query["sortOrder"].Any() ? Request.Query["sortOrder"] : "rel")}"
-})
+@await Html.PartialAsync("_Pagination", Model.Pagination)
 
 @section Scripts {
     <script nonce-csp>

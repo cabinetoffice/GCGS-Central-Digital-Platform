@@ -38,6 +38,8 @@ public class OrganisationPponSearchModel(
     [BindProperty(SupportsGet = true)]
     public Guid Id { get; set; }
 
+    public required Shared.PaginationPartialModel Pagination { get; set; }
+
     public IList<OrganisationSearchByPponResult> Organisations { get; set; } = new List<OrganisationSearchByPponResult>();
 
     public async Task<IActionResult> OnGet(int pageNumber = 1,
@@ -45,21 +47,24 @@ public class OrganisationPponSearchModel(
         [FromQuery(Name = "sortOrder")] string sortOrder = "")
     {
         if (string.IsNullOrWhiteSpace(sortOrder)) sortOrder = "rel";
-
-        if (Id == Guid.Empty && RouteData.Values.TryGetValue("id", out var idValue) &&
-            Guid.TryParse(idValue?.ToString(), out var parsedId))
+        if (Id == Guid.Empty && RouteData.Values.TryGetValue("id", out var idValue) && Guid.TryParse(idValue?.ToString(), out var parsedId))
         {
             Id = parsedId;
         }
-
         PageSize = 10;
         if (pageNumber < 1) pageNumber = 1;
         Title = StaticTextResource.PponSearch_Title;
         SearchTitle = StaticTextResource.PponSearch_Hint;
         Skip = (pageNumber - 1) * PageSize;
         CurrentPage = pageNumber;
-
         await GetResults(searchText, sortOrder);
+        Pagination = new Shared.PaginationPartialModel
+        {
+            CurrentPage = CurrentPage,
+            TotalItems = TotalOrganisations,
+            PageSize = PageSize,
+            Url = $"/organisation/{Id}/buyer/search?q={searchText}&sortOrder={sortOrder}"
+        };
         return Page();
     }
 

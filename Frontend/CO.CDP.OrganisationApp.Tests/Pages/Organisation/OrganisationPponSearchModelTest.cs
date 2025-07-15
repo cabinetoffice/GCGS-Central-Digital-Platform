@@ -31,7 +31,16 @@ public class OrganisationPponSearchModelTest
         Mock<ISession> mockSession = new Mock<ISession>();
         _mockLogger = new Mock<ILogger<OrganisationPponSearchModel>>();
 
-        _testOrganisationPponSearchModel = new OrganisationPponSearchModel(_mockOrganisationClient.Object, mockSession.Object, _mockLogger.Object);
+        _testOrganisationPponSearchModel = new OrganisationPponSearchModel(_mockOrganisationClient.Object, mockSession.Object, _mockLogger.Object)
+        {
+            Pagination = new CO.CDP.OrganisationApp.Pages.Shared.PaginationPartialModel
+            {
+                CurrentPage = 1,
+                TotalItems = 0,
+                PageSize = 10,
+                Url = $"/organisation/{DefaultOrganisationId}/buyer/search?q=&sortOrder=rel"
+            }
+        };
 
         var httpContext = new DefaultHttpContext();
         _testOrganisationPponSearchModel.PageContext = new PageContext { HttpContext = httpContext };
