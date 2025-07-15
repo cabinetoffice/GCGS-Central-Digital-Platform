@@ -62,14 +62,26 @@ public class OrganisationPponSearchModel(
 
     private async Task HandleSearch(int pageNumber, string searchText, string sortOrder)
     {
-        var validationResult = ValidateSearchInput(searchText);
-        ErrorMessage = validationResult.ErrorMessage;
-        SetPaginationParams(pageNumber);
-        if (validationResult.IsValid)
+        if (!string.IsNullOrWhiteSpace(searchText))
         {
-            await FetchAndSetResults(validationResult.CleanedSearchText, sortOrder);
+            var validationResult = ValidateSearchInput(searchText);
+            ErrorMessage = validationResult.ErrorMessage;
+            SetPaginationParams(pageNumber);
+            if (validationResult.IsValid)
+            {
+                await FetchAndSetResults(validationResult.CleanedSearchText, sortOrder);
+            }
+            SetPaginationModel(searchText, sortOrder);
         }
-        SetPaginationModel(searchText, sortOrder);
+        else
+        {
+            ErrorMessage = null;
+            Organisations = new List<OrganisationSearchByPponResult>();
+            TotalOrganisations = 0;
+            TotalPages = 0;
+            SetPaginationParams(pageNumber);
+            SetPaginationModel(searchText, sortOrder);
+        }
     }
 
     private (bool IsValid, string ErrorMessage, string CleanedSearchText) ValidateSearchInput(string searchText)

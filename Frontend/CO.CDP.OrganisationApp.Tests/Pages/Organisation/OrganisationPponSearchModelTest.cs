@@ -456,7 +456,14 @@ public class OrganisationPponSearchModelTest
         _testOrganisationPponSearchModel.SearchText = searchText!;
         _testOrganisationPponSearchModel.SortOrder = DefaultSortOrder;
         await _testOrganisationPponSearchModel.OnGet();
-        _testOrganisationPponSearchModel.ErrorMessage.Should().Be(Localization.StaticTextResource.PponSearch_Invalid_Search_Value);
+        if (string.IsNullOrWhiteSpace(searchText))
+        {
+            _testOrganisationPponSearchModel.ErrorMessage.Should().BeNull();
+        }
+        else
+        {
+            _testOrganisationPponSearchModel.ErrorMessage.Should().Be(Localization.StaticTextResource.PponSearch_Invalid_Search_Value);
+        }
         _testOrganisationPponSearchModel.Organisations.Should().BeEmpty();
         _testOrganisationPponSearchModel.TotalOrganisations.Should().Be(0);
         _testOrganisationPponSearchModel.TotalPages.Should().Be(0);
