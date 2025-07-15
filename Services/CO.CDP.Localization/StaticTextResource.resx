@@ -4290,10 +4290,10 @@
     <value>Alphabetical (Z-A)</value>
   </data>
   <data name="Organisation_SearchOrganisations" xml:space="preserve">
-    <value>Search for an organisation</value>
+    <value>Public procurement organisation number (PPON) register</value>
   </data>
   <data name="Organisation_SearchOrganisationsHint" xml:space="preserve">
-    <value>Search by organisation name, organisation identifier or PPON.</value>
+    <value>Search for an organisation’s PPON number.</value>
   </data>
 
 </root>
