@@ -35,19 +35,28 @@ public class OrganisationPponSearchModel(
     [BindProperty(SupportsGet = true)]
     public Guid Id { get; set; }
 
+    [BindProperty(SupportsGet = true)]
+    public int PageNumber { get; set; } = 1;
+
+    [BindProperty(SupportsGet = true)]
+    public string SearchText { get; set; } = string.Empty;
+
+    [BindProperty(SupportsGet = true)]
+    public string SortOrder { get; set; } = "rel";
+
     public required Shared.PaginationPartialModel Pagination { get; set; }
 
     public IList<OrganisationSearchByPponResult> Organisations { get; set; } = new List<OrganisationSearchByPponResult>();
 
-    public async Task<IActionResult> OnGet(int pageNumber = 1, string searchText = "", string sortOrder = "")
+    public async Task<IActionResult> OnGet()
     {
-        await HandleSearch(pageNumber, searchText, sortOrder);
+        await HandleSearch(PageNumber, SearchText, SortOrder);
         return Page();
     }
 
-    public async Task<IActionResult> OnPost(int pageNumber = 1, string searchText = "", string sortOrder = "")
+    public async Task<IActionResult> OnPost()
     {
-        await HandleSearch(pageNumber, searchText, sortOrder);
+        await HandleSearch(PageNumber, SearchText, SortOrder);
         return Page();
     }
 
