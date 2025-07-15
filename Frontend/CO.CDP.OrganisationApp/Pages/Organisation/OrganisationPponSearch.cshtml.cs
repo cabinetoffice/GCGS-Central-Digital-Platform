@@ -10,6 +10,7 @@ using CO.CDP.OrganisationApp.WebApiClients;
 
 namespace CO.CDP.OrganisationApp.Pages.Organisation;
 
+[ValidateAntiForgeryToken]
 [Authorize(Policy = OrgScopeRequirement.Viewer)]
 public class OrganisationPponSearchModel(
     IOrganisationClient organisationClient,
@@ -42,9 +43,19 @@ public class OrganisationPponSearchModel(
 
     public IList<OrganisationSearchByPponResult> Organisations { get; set; } = new List<OrganisationSearchByPponResult>();
 
-    public async Task<IActionResult> OnGet(int pageNumber = 1,
-        [FromQuery(Name = "q")] string searchText = "",
-        [FromQuery(Name = "sortOrder")] string sortOrder = "")
+    public async Task<IActionResult> OnGet(int pageNumber = 1, string searchText = "", string sortOrder = "")
+    {
+        await ExecuteSearch(pageNumber, searchText, sortOrder);
+        return Page();
+    }
+
+    public async Task<IActionResult> OnPost(int pageNumber = 1, string searchText = "", string sortOrder = "")
+    {
+        await ExecuteSearch(pageNumber, searchText, sortOrder);
+        return Page();
+    }
+
+    private async Task ExecuteSearch(int pageNumber, string searchText, string sortOrder)
     {
         if (string.IsNullOrWhiteSpace(sortOrder)) sortOrder = "rel";
         if (Id == Guid.Empty && RouteData.Values.TryGetValue("id", out var idValue) && Guid.TryParse(idValue?.ToString(), out var parsedId))
@@ -65,7 +76,6 @@ public class OrganisationPponSearchModel(
             PageSize = PageSize,
             Url = $"/organisation/{Id}/buyer/search?q={searchText}&sortOrder={sortOrder}"
         };
-        return Page();
     }
 
     private async Task GetResults(string searchText, string sortOrder)
