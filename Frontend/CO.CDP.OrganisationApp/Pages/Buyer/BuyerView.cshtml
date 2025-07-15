@@ -6,30 +6,27 @@
     ViewData["Title"] = StaticTextResource.BuyerView_Title;
 }
 
-<main class="govuk-main-wrapper">
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
 
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-full">
+        <h1 class="govuk-heading-xl">@StaticTextResource.BuyerView_Heading</h1>
 
-            <h1 class="govuk-heading-xl">@StaticTextResource.BuyerView_Heading</h1>
-
-            <div class="govuk-grid-row">
-                <div class="govuk-grid-column-two-thirds">
-                    <p class="govuk-body">
-                        @StaticTextResource.BuyerView_Body
-                    </p>
-                </div>
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-two-thirds">
+                <p class="govuk-body">
+                    @StaticTextResource.BuyerView_Body
+                </p>
             </div>
-
         </div>
-    </div>
 
-    <div class="govuk-grid-row">
-        @foreach (var tile in Model.Tiles)
-        {
-            <div class="govuk-grid-column-one-third">
-                <partial name="Shared/_Tile" model="tile"/>
-            </div>
-        }
     </div>
-</main>
+</div>
+
+<div class="govuk-grid-row">
+    @foreach (var tile in Model.Tiles)
+    {
+        <div class="govuk-grid-column-one-third">
+            <partial name="Shared/_Tile" model="tile"/>
+        </div>
+    }
+</div>
