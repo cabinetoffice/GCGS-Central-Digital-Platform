@@ -5,9 +5,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.FeatureManagement;
 using CO.CDP.Localization;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CO.CDP.OrganisationApp.Pages.Buyer;
-
+[Authorize(OrgScopeRequirement.Viewer)]
 public class BuyerView(
     IFeatureManager featureManager,
     IOrganisationClient organisationClient)
