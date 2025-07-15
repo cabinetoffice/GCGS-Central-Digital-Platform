@@ -20,10 +20,6 @@ public class OrganisationPponSearchModel(
     private readonly ILogger<OrganisationPponSearchModel> _logger =
         logger ?? throw new ArgumentNullException(nameof(logger));
 
-    public string? Title { get; set; }
-
-    public string? SearchTitle { get; set; }
-
     public int TotalOrganisations { get; set; }
 
     public int CurrentPage { get; set; }
@@ -64,8 +60,6 @@ public class OrganisationPponSearchModel(
         }
         PageSize = 10;
         if (pageNumber < 1) pageNumber = 1;
-        Title = StaticTextResource.PponSearch_Title;
-        SearchTitle = StaticTextResource.PponSearch_Hint;
         Skip = (pageNumber - 1) * PageSize;
         CurrentPage = pageNumber;
         await GetResults(searchText, sortOrder);

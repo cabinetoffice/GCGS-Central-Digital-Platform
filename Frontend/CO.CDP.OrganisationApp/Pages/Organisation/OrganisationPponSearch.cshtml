@@ -1,10 +1,9 @@
 @page "/organisation/{id}/buyer/search"
 @using CO.CDP.Localization
-@using CO.CDP.OrganisationApp.Pages.Shared
 @model OrganisationPponSearchModel
 
 @{
-    ViewData["Title"] = Model.Title;
+    ViewData["Title"] = StaticTextResource.PponSearch_Title;
     var queryValue = Request.Query["q"];
 }
 
@@ -38,11 +37,11 @@
     <div class="search-ppon-info-header govuk-!-margin-bottom-8 govuk-!-padding-5">
         <div class="govuk-grid-row">
             <div class="govuk-grid-column-full govuk-!-margin-bottom-1">
-                <h1 class="govuk-heading-l govuk-!-margin-bottom-3 search-ppon-text">@ViewData["Title"]</h1>
+                <h1 class="govuk-heading-l govuk-!-margin-bottom-3 search-ppon-text">@StaticTextResource.PponSearch_Title</h1>
             </div>
             <div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-1">
                 <label class="govuk-label search-ppon-text" for="organisation-search-input">
-                    @Model.SearchTitle
+                    @StaticTextResource.PponSearch_Hint
                 </label>
             </div>
             <div class="govuk-grid-column-two-thirds search-ppon-flex-display">
