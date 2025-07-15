@@ -123,7 +123,7 @@ public enum FormQuestionBranchType
 public class CustomComponent
 {
     public CustomComponentType CustomComponentType { get; set; } = CustomComponentType.None;
-    public FormQuestionType BaseComponent { get; set; }
+    public FormQuestionType BaseComponent { get; set; } // This might be redundant as FormQuestionType can be used directly from parent
     public ViewModelProperties Properties { get; set; } = new();
     public List<ValidatorConfig> Validators { get; set; } = [];
 }
@@ -132,13 +132,16 @@ public enum CustomComponentType
 {
     None,
     YearInputPast,
-    YearInputFuture
+    YearInputFuture,
+    YesNoWithText
+    //Add More as needed
 }
 public class ViewModelProperties
 {
     public string? Label { get; set; }
     public string? HtmlInputType { get; set; }
     public string? PlaceholderText { get; set; }
+    //Option to code in Label Text for Yes/No Options
 }
 public class ValidatorConfig
 {
