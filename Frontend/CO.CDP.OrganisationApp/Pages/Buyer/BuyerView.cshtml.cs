@@ -20,7 +20,11 @@ public class BuyerView(
 
     public async Task<IActionResult> OnGet()
     {
-        if (!await featureManager.IsEnabledAsync(FeatureFlags.BuyerView))
+        var buyerViewEnabled = await featureManager.IsEnabledAsync(FeatureFlags.BuyerView);
+        var searchRegistryPponEnabled = await featureManager.IsEnabledAsync(FeatureFlags.SearchRegistryPpon);
+        var aiToolEnabled = await featureManager.IsEnabledAsync(FeatureFlags.AiTool);
+
+        if (!buyerViewEnabled)
         {
             return RedirectToPage("/PageNotFound");
         }
@@ -41,7 +45,7 @@ public class BuyerView(
             }
         };
 
-        if (await featureManager.IsEnabledAsync(FeatureFlags.SearchRegistryPpon))
+        if (searchRegistryPponEnabled)
         {
             tiles.Add(new Tile
             {
@@ -51,7 +55,8 @@ public class BuyerView(
             });
         }
 
-        if (await featureManager.IsEnabledAsync(FeatureFlags.AiTool))
+
+        if (aiToolEnabled)
         {
             tiles.Add(new Tile
             {
