@@ -38,15 +38,13 @@ public class OrganisationPponSearchModel(
     [BindProperty(SupportsGet = true)]
     public Guid Id { get; set; }
 
-    public bool IsFromSamePage;
-
-    public IList<OrganisationSearchByPponResult> Organisations { get; set; } = [];
+    public IList<OrganisationSearchByPponResult> Organisations { get; set; } = new List<OrganisationSearchByPponResult>();
 
     public async Task<IActionResult> OnGet(int pageNumber = 1,
-        [FromQuery(Name = "q")] string? searchText = null,
-        [FromQuery(Name = "sortOrder")] string? sortOrder = null)
+        [FromQuery(Name = "q")] string searchText = "",
+        [FromQuery(Name = "sortOrder")] string sortOrder = "")
     {
-        sortOrder ??= "rel";
+        if (string.IsNullOrWhiteSpace(sortOrder)) sortOrder = "rel";
 
         if (Id == Guid.Empty && RouteData.Values.TryGetValue("id", out var idValue) &&
             Guid.TryParse(idValue?.ToString(), out var parsedId))
@@ -54,13 +52,6 @@ public class OrganisationPponSearchModel(
             Id = parsedId;
         }
 
-        InitModel(pageNumber);
-        await GetResults(searchText, sortOrder);
-        return Page();
-    }
-
-    private void InitModel(int pageNumber)
-    {
         PageSize = 10;
         if (pageNumber < 1) pageNumber = 1;
         Title = StaticTextResource.PponSearch_Title;
@@ -68,24 +59,12 @@ public class OrganisationPponSearchModel(
         Skip = (pageNumber - 1) * PageSize;
         CurrentPage = pageNumber;
 
-        string? refererUrl = null;
-        if (Request.Headers.ContainsKey("Referer"))
-        {
-            refererUrl = Request.Headers["Referer"].ToString();
-        }
-
-        IsFromSamePage = !string.IsNullOrEmpty(refererUrl) &&
-                         refererUrl.Contains($"organisation/{Id}/buyer/search", StringComparison.OrdinalIgnoreCase);
+        await GetResults(searchText, sortOrder);
+        return Page();
     }
 
-    private async Task GetResults(string? searchText, string sortOrder)
+    private async Task GetResults(string searchText, string sortOrder)
     {
-        if (!IsFromSamePage)
-        {
-            ResetKeyParams();
-            return;
-        }
-
         if (string.IsNullOrWhiteSpace(searchText))
         {
             ErrorMessage = StaticTextResource.PponSearch_Invalid_Search_Value;
@@ -117,7 +96,6 @@ public class OrganisationPponSearchModel(
             }
 
             Organisations = orgs.ToList();
-            ErrorMessage = null;
             TotalOrganisations = totalCount;
             TotalPages = (int)Math.Ceiling((double)TotalOrganisations / PageSize);
         }
@@ -133,7 +111,7 @@ public class OrganisationPponSearchModel(
 
     private void ResetKeyParams()
     {
-        Organisations = [];
+        Organisations = new List<OrganisationSearchByPponResult>();
         TotalOrganisations = 0;
         TotalPages = 0;
     }

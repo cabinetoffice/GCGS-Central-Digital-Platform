@@ -20,7 +20,6 @@ public class OrganisationPponSearchModelTest
     private const int DefaultPageSize = 10;
     private const int DefaultPageNumber = 1;
     private static readonly Guid DefaultOrganisationId = Guid.NewGuid();
-    private readonly string _defaultRefererUrl = $"https://example.com/organisation/{DefaultOrganisationId}/buyer/search";
 
     private readonly Mock<IOrganisationClient> _mockOrganisationClient;
     private readonly OrganisationPponSearchModel _testOrganisationPponSearchModel;
@@ -36,11 +35,6 @@ public class OrganisationPponSearchModelTest
 
         var httpContext = new DefaultHttpContext();
         _testOrganisationPponSearchModel.PageContext = new PageContext { HttpContext = httpContext };
-    }
-
-    private void SetupRefererHeader()
-    {
-        _testOrganisationPponSearchModel.Request.Headers["Referer"] = _defaultRefererUrl;
     }
 
     private OrganisationSearchByPponResult CreateTestOrganisationResult(string name, List<PartyRole> roles)
@@ -95,7 +89,7 @@ public class OrganisationPponSearchModelTest
     {
         SetupRouteData(DefaultOrganisationId);
 
-        var result = await _testOrganisationPponSearchModel.OnGet(searchText: null);
+        var result = await _testOrganisationPponSearchModel.OnGet(searchText: "");
 
         result.Should().BeOfType<PageResult>();
         _testOrganisationPponSearchModel.Organisations.Should().BeEmpty();
@@ -136,7 +130,6 @@ public class OrganisationPponSearchModelTest
     public async Task OnGet_WhenCalledWithValidSearchText_ShouldReturnResults()
     {
         SetupRouteData(DefaultOrganisationId);
-        SetupRefererHeader();
 
         var mockResults = new List<OrganisationSearchByPponResult>
         {
@@ -239,7 +232,6 @@ public class OrganisationPponSearchModelTest
     public async Task OnGet_WithDifferentSortOrders_PassesCorrectSortOrderToAPI(string sortOrder)
     {
         SetupRouteData(DefaultOrganisationId);
-        SetupRefererHeader();
         var mockResults = new List<OrganisationSearchByPponResult>
             { CreateTestOrganisationResult("Test Organisation",new List<PartyRole> { PartyRole.Buyer }) };
 
@@ -270,7 +262,6 @@ public class OrganisationPponSearchModelTest
         const int totalCount = 25;
 
         SetupRouteData(DefaultOrganisationId);
-        SetupRefererHeader();
         var mockResults = new List<OrganisationSearchByPponResult>
             { CreateTestOrganisationResult("Test Organisation", new List<PartyRole> { PartyRole.Buyer }) };
 
@@ -307,7 +298,6 @@ public class OrganisationPponSearchModelTest
         string sortOrder = "rel";
 
         SetupRouteData(DefaultOrganisationId);
-        SetupRefererHeader();
 
         _testOrganisationPponSearchModel.Organisations = new List<OrganisationSearchByPponResult>
         {
@@ -352,55 +342,10 @@ public class OrganisationPponSearchModelTest
     [Fact]
     public async Task OnGet_WithOrganisationId_SetsIdProperty()
     {
-        SetupRefererHeader();
         SetupRouteData(DefaultOrganisationId);
 
         await _testOrganisationPponSearchModel.OnGet(DefaultPageNumber, DefaultSearchText);
 
-        _testOrganisationPponSearchModel.Id.Should().Be(DefaultOrganisationId);
-    }
-
-    [Fact]
-    public async Task OnGet_WithOrganisationId_ShouldUseIdInRefererCheck()
-    {
-        SetupRefererHeader();
-        SetupRouteData(DefaultOrganisationId);
-
-        var mockResults = new List<OrganisationSearchByPponResult>
-        {
-            CreateTestOrganisationResult("Test Organisation", new List<PartyRole> { PartyRole.Buyer })
-        };
-
-        SetupSuccessfulSearch(DefaultSearchText, DefaultSortOrder, DefaultPageSize, 0, mockResults);
-
-        var result = await _testOrganisationPponSearchModel.OnGet(DefaultPageNumber, DefaultSearchText, DefaultSortOrder);
-
-        result.Should().BeOfType<PageResult>();
-        _testOrganisationPponSearchModel.Organisations.Should().HaveCount(1);
-        _testOrganisationPponSearchModel.Id.Should().Be(DefaultOrganisationId);
-    }
-
-    [Fact]
-    public async Task OnGet_WithOrganisationId_PassesCorrectReferrerPathToInitModel()
-    {
-        SetupRefererHeader();
-        SetupRouteData(DefaultOrganisationId);
-
-        await _testOrganisationPponSearchModel.OnGet(DefaultPageNumber, DefaultSearchText, DefaultSortOrder);
-
-        _testOrganisationPponSearchModel.Organisations.Should().BeEmpty();
-    }
-
-    [Fact]
-    public async Task OnGet_WithDifferentOrganisationId_ShouldNotFindReferer()
-    {
-        var differentId = Guid.NewGuid();
-        _testOrganisationPponSearchModel.Request.Headers["Referer"] = $"https://example.com/organisation/{differentId}/buyer/search";
-        SetupRouteData(DefaultOrganisationId);
-
-        await _testOrganisationPponSearchModel.OnGet(DefaultPageNumber, DefaultSearchText, DefaultSortOrder);
-
-        _testOrganisationPponSearchModel.Organisations.Should().BeEmpty();
         _testOrganisationPponSearchModel.Id.Should().Be(DefaultOrganisationId);
     }
 
