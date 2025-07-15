@@ -51,7 +51,7 @@ public class BuyerView(
             {
                 Title = StaticTextResource.BuyerView_TileTwo_Title,
                 Body = StaticTextResource.BuyerView_TileTwo_Body,
-                Href = "/organisation/buyer/search"
+                Href = $"/organisation/{Id}/buyer/search"
             });
         }
 
