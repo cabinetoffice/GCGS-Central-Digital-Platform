@@ -6,6 +6,7 @@ using CO.CDP.OrganisationApp.Constants;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using CO.CDP.Localization;
+using CO.CDP.OrganisationApp.Authorization;
 using CO.CDP.OrganisationApp.Logging;
 using CO.CDP.OrganisationApp.WebApiClients;
 
@@ -14,6 +15,7 @@ namespace CO.CDP.OrganisationApp.Pages.Organisation;
 [ValidateAntiForgeryToken]
 [Authorize(Policy = OrgScopeRequirement.Viewer)]
 public class OrganisationPponSearchModel(
+    IAuthorizationService authorizationService,
     IOrganisationClient organisationClient,
     ISession session,
     ILogger<OrganisationPponSearchModel> logger) : LoggedInUserAwareModel(session)
@@ -48,6 +50,12 @@ public class OrganisationPponSearchModel(
 
     public async Task<IActionResult> OnGet()
     {
+        var authResult = await authorizationService.AuthorizeAsync(User, Id, new IsBuyerRequirement());
+        if (!authResult.Succeeded)
+        {
+            _logger.LogWarning("User is not authorised to access the search registry of PPON with ID {OrganisationId}.", Id);
+            return Redirect("/page-not-found");
+        }
         var result = await HandleSearch(PageNumber, SearchText, SortOrder);
         ApplySearchResult(result);
         return Page();
@@ -55,6 +63,12 @@ public class OrganisationPponSearchModel(
 
     public async Task<IActionResult> OnPost()
     {
+        var authResult = await authorizationService.AuthorizeAsync(User, Id, new IsBuyerRequirement());
+        if (!authResult.Succeeded)
+        {
+            _logger.LogWarning("User is not authorised to access the search registry of PPON with ID {OrganisationId}.", Id);
+            return Redirect("/page-not-found");
+        }
         var result = await HandleSearch(PageNumber, SearchText, SortOrder);
         ApplySearchResult(result);
         return Page();

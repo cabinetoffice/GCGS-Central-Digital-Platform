@@ -1,6 +1,8 @@
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Pages.Organisation;
+using CO.CDP.OrganisationApp.Tests.TestData;
 using FluentAssertions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Routing;
@@ -22,17 +24,24 @@ public class OrganisationPponSearchModelTest
     private static readonly Guid Id = Guid.NewGuid();
 
     private readonly Mock<IOrganisationClient> _mockOrganisationClient;
+    private readonly Mock<IAuthorizationService> _mockAuthorizationService;
     private readonly OrganisationPponSearchModel _testOrganisationPponSearchModel;
     private readonly Mock<ILogger<OrganisationPponSearchModel>> _mockLogger;
 
     public OrganisationPponSearchModelTest()
     {
         _mockOrganisationClient = new Mock<IOrganisationClient>();
-        Mock<ISession> mockSession = new Mock<ISession>();
+        _mockAuthorizationService = new Mock<IAuthorizationService>();
         _mockLogger = new Mock<ILogger<OrganisationPponSearchModel>>();
 
+        _mockAuthorizationService.Setup(a => a.AuthorizeAsync(
+            It.IsAny<System.Security.Claims.ClaimsPrincipal>(),
+            It.IsAny<object>(),
+            It.IsAny<IAuthorizationRequirement[]>()))
+            .ReturnsAsync(AuthorizationResult.Success());
+
         _testOrganisationPponSearchModel =
-            new OrganisationPponSearchModel(_mockOrganisationClient.Object, mockSession.Object, _mockLogger.Object)
+            new OrganisationPponSearchModel(_mockAuthorizationService.Object, _mockOrganisationClient.Object, Mock.Of<ISession>(), _mockLogger.Object)
             {
                 Id = Id,
                 Pagination = new CO.CDP.OrganisationApp.Pages.Shared.PaginationPartialModel
@@ -512,6 +521,53 @@ public class OrganisationPponSearchModelTest
         _testOrganisationPponSearchModel.Organisations.Should().BeEmpty();
         _testOrganisationPponSearchModel.TotalOrganisations.Should().Be(0);
         _testOrganisationPponSearchModel.TotalPages.Should().Be(0);
+    }
+
+    [Theory]
+    [InlineData(PartyRole.Supplier)]
+    [InlineData(PartyRole.ProcuringEntity)]
+    [InlineData(PartyRole.Tenderer)]
+    [InlineData(PartyRole.Funder)]
+    [InlineData(PartyRole.Enquirer)]
+    [InlineData(PartyRole.Payer)]
+    [InlineData(PartyRole.Payee)]
+    [InlineData(PartyRole.ReviewBody)]
+    [InlineData(PartyRole.InterestedParty)]
+    public async Task OnGet_WithNonBuyerRole_RedirectsToPageNotFound(PartyRole role)
+    {
+        var organisation = OrganisationFactory.CreateOrganisation(id: Id, roles: new List<PartyRole> { role });
+        _mockOrganisationClient.Reset();
+        _mockOrganisationClient.Setup(c => c.GetOrganisationAsync(Id)).ReturnsAsync(organisation);
+        _mockOrganisationClient.Setup(c => c.GetOrganisationLatestMouSignatureAsync(Id)).ThrowsAsync(new ApiException("Not found", 404, "", null, null));
+        _mockAuthorizationService.Setup(a => a.AuthorizeAsync(
+            It.IsAny<System.Security.Claims.ClaimsPrincipal>(),
+            Id,
+            It.IsAny<IAuthorizationRequirement[]>()))
+            .ReturnsAsync(AuthorizationResult.Failed());
+        var model = new OrganisationPponSearchModel(_mockAuthorizationService.Object, _mockOrganisationClient.Object, Mock.Of<ISession>(), _mockLogger.Object)
+        {
+            Id = Id,
+            Pagination = new CO.CDP.OrganisationApp.Pages.Shared.PaginationPartialModel
+            {
+                CurrentPage = 1,
+                TotalItems = 0,
+                PageSize = 10,
+                Url = $"/organisation/{Id}/buyer/search?q=&sortOrder=rel"
+            }
+        };
+        SetupRouteDataForModel(model, Id);
+
+        var result = await model.OnGet();
+
+        result.Should().BeOfType<Microsoft.AspNetCore.Mvc.RedirectResult>()
+            .Which.Url.Should().Be("/page-not-found");
+    }
+
+    private void SetupRouteDataForModel(OrganisationPponSearchModel model, Guid organisationId)
+    {
+        var routeData = new RouteData();
+        routeData.Values["id"] = organisationId.ToString();
+        model.PageContext = new PageContext { RouteData = routeData, HttpContext = new DefaultHttpContext() };
     }
 
     private void SetupRouteData(Guid organisationId)
