@@ -11,21 +11,19 @@ namespace CO.CDP.OrganisationApp.Tests.Authorization;
 public class IsBuyerAuthorizationHandlerTests
 {
     private readonly Mock<IOrganisationClient> _organisationClientMock = new();
-    private readonly Mock<ISession> _sessionMock = new();
     private readonly Mock<Microsoft.Extensions.Logging.ILogger<IsBuyerAuthorizationHandler>> _loggerMock = new();
 
     private IsBuyerAuthorizationHandler CreateHandler() =>
-        new(_organisationClientMock.Object, _sessionMock.Object, _loggerMock.Object);
+        new(_organisationClientMock.Object, _loggerMock.Object);
 
-    private static AuthorizationHandlerContext CreateContext() =>
-        new([new IsBuyerRequirement()], new System.Security.Claims.ClaimsPrincipal(), null);
+    private static AuthorizationHandlerContext CreateContext(Guid organisationId) =>
+        new([new IsBuyerRequirement()], new System.Security.Claims.ClaimsPrincipal(), organisationId);
 
     [Fact]
     public async Task HandleRequirementAsync_OrganisationIdMissing_DoesNotSucceed()
     {
-        _sessionMock.Setup(s => s.Get<Guid>("OrganisationId")).Returns(Guid.Empty);
         var handler = CreateHandler();
-        var context = CreateContext();
+        var context = CreateContext(Guid.Empty);
         await handler.HandleAsync(context);
         context.HasSucceeded.Should().BeFalse();
     }
@@ -34,11 +32,10 @@ public class IsBuyerAuthorizationHandlerTests
     public async Task HandleRequirementAsync_OrganisationNotFound_DoesNotSucceed()
     {
         var orgId = Guid.NewGuid();
-        _sessionMock.Setup(s => s.Get<Guid>("OrganisationId")).Returns(orgId);
         _organisationClientMock.Setup(c => c.GetOrganisationAsync(orgId))
             .ReturnsAsync((Organisation.WebApiClient.Organisation)null!);
         var handler = CreateHandler();
-        var context = CreateContext();
+        var context = CreateContext(orgId);
         await handler.HandleAsync(context);
         context.HasSucceeded.Should().BeFalse();
     }
@@ -47,7 +44,6 @@ public class IsBuyerAuthorizationHandlerTests
     public async Task HandleRequirementAsync_OrganisationNotBuyerOrPending_DoesNotSucceed()
     {
         var orgId = Guid.NewGuid();
-        _sessionMock.Setup(s => s.Get<Guid>("OrganisationId")).Returns(orgId);
         var organisation = OrganisationFactory.CreateOrganisation(
             id: orgId,
             roles: new List<PartyRole>(),
@@ -56,7 +52,7 @@ public class IsBuyerAuthorizationHandlerTests
                 publicServiceMissionOrganization: null, scale: null, shelteredWorkshop: null, vcse: null));
         _organisationClientMock.Setup(c => c.GetOrganisationAsync(orgId)).ReturnsAsync(organisation);
         var handler = CreateHandler();
-        var context = CreateContext();
+        var context = CreateContext(orgId);
         await handler.HandleAsync(context);
         context.HasSucceeded.Should().BeFalse();
     }
@@ -65,14 +61,13 @@ public class IsBuyerAuthorizationHandlerTests
     public async Task HandleRequirementAsync_MouSignatureNotFound_DoesNotSucceed()
     {
         var orgId = Guid.NewGuid();
-        _sessionMock.Setup(s => s.Get<Guid>("OrganisationId")).Returns(orgId);
         var organisation =
             OrganisationFactory.CreateOrganisation(id: orgId, roles: new List<PartyRole> { PartyRole.Buyer });
         _organisationClientMock.Setup(c => c.GetOrganisationAsync(orgId)).ReturnsAsync(organisation);
         _organisationClientMock.Setup(c => c.GetOrganisationLatestMouSignatureAsync(orgId))
             .ThrowsAsync(new ApiException("Not found", 404, "", null, null));
         var handler = CreateHandler();
-        var context = CreateContext();
+        var context = CreateContext(orgId);
         await handler.HandleAsync(context);
         context.HasSucceeded.Should().BeFalse();
     }
@@ -81,7 +76,6 @@ public class IsBuyerAuthorizationHandlerTests
     public async Task HandleRequirementAsync_MouSignatureNotLatest_DoesNotSucceed()
     {
         var orgId = Guid.NewGuid();
-        _sessionMock.Setup(s => s.Get<Guid>("OrganisationId")).Returns(orgId);
         var organisation =
             OrganisationFactory.CreateOrganisation(id: orgId, roles: new List<PartyRole> { PartyRole.Buyer });
         _organisationClientMock.Setup(c => c.GetOrganisationAsync(orgId)).ReturnsAsync(organisation);
@@ -97,7 +91,7 @@ public class IsBuyerAuthorizationHandlerTests
         );
         _organisationClientMock.Setup(c => c.GetOrganisationLatestMouSignatureAsync(orgId)).ReturnsAsync(mou);
         var handler = CreateHandler();
-        var context = CreateContext();
+        var context = CreateContext(orgId);
         await handler.HandleAsync(context);
         context.HasSucceeded.Should().BeFalse();
     }
@@ -106,7 +100,6 @@ public class IsBuyerAuthorizationHandlerTests
     public async Task HandleRequirementAsync_AllChecksPass_Succeeds()
     {
         var orgId = Guid.NewGuid();
-        _sessionMock.Setup(s => s.Get<Guid>("OrganisationId")).Returns(orgId);
         var organisation =
             OrganisationFactory.CreateOrganisation(id: orgId, roles: new List<PartyRole> { PartyRole.Buyer });
         _organisationClientMock.Setup(c => c.GetOrganisationAsync(orgId)).ReturnsAsync(organisation);
@@ -122,7 +115,7 @@ public class IsBuyerAuthorizationHandlerTests
         );
         _organisationClientMock.Setup(c => c.GetOrganisationLatestMouSignatureAsync(orgId)).ReturnsAsync(mou);
         var handler = CreateHandler();
-        var context = CreateContext();
+        var context = CreateContext(orgId);
         await handler.HandleAsync(context);
         context.HasSucceeded.Should().BeTrue();
     }

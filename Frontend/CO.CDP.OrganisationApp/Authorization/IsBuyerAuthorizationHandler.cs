@@ -6,17 +6,15 @@ namespace CO.CDP.OrganisationApp.Authorization;
 
 public class IsBuyerAuthorizationHandler(
     IOrganisationClient organisationClient,
-    ISession session,
     ILogger<IsBuyerAuthorizationHandler> logger)
     : AuthorizationHandler<IsBuyerRequirement>
 {
     protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context,
         IsBuyerRequirement requirement)
     {
-        var organisationId = session.Get<Guid>("OrganisationId");
-        if (organisationId == Guid.Empty)
+        if (context.Resource is not Guid organisationId || organisationId == Guid.Empty)
         {
-            logger.LogWarning("OrganisationId not found or invalid in session.");
+            logger.LogWarning("OrganisationId not found or invalid in resource parameter.");
             return;
         }
 
