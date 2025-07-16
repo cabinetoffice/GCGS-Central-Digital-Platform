@@ -555,7 +555,7 @@ public class OrganisationPponSearchModelTest
                 Url = $"/organisation/{Id}/buyer/search?q=&sortOrder=rel"
             }
         };
-        SetupRouteDataForModel(model, Id);
+        SetupRouteData(Id);
 
         var result = await model.OnGet();
 
@@ -563,17 +563,11 @@ public class OrganisationPponSearchModelTest
             .Which.Url.Should().Be("/page-not-found");
     }
 
-    private void SetupRouteDataForModel(OrganisationPponSearchModel model, Guid organisationId)
-    {
-        var routeData = new RouteData();
-        routeData.Values["id"] = organisationId.ToString();
-        model.PageContext = new PageContext { RouteData = routeData, HttpContext = new DefaultHttpContext() };
-    }
-
     private void SetupRouteData(Guid organisationId)
     {
         var routeData = new RouteData();
         routeData.Values["id"] = organisationId.ToString();
         _testOrganisationPponSearchModel.PageContext.RouteData = routeData;
+        _testOrganisationPponSearchModel.PageContext = new PageContext { RouteData = routeData, HttpContext = new DefaultHttpContext() };
     }
 }
