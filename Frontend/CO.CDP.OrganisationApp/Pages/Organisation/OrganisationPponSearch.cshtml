@@ -19,7 +19,7 @@
                 <h2 class="govuk-error-summary__title" id="error-summary-title">
                     @StaticTextResource.Global_ErrorSummary_Heading
                 </h2>
-                <div class="govuk-error-summary__body">
+                <div class="govuk-error-summary__body" role="alert" aria-labelledby="error-summary-title">
                     <ul class="govuk-list govuk-error-summary__list">
                         <li><a href="#organisation-search-input">@Model.ErrorMessage</a></li>
                     </ul>
@@ -31,22 +31,24 @@
 
 
 
-<form method="post">
+<form method="post" aria-label="Organisation PPON search form">
     @Html.AntiForgeryToken()
     <div class="search-ppon-info-header govuk-!-margin-bottom-8 govuk-!-padding-5">
         <div class="govuk-grid-row">
             <div class="govuk-grid-column-full govuk-!-margin-bottom-1">
-                <h1 class="govuk-heading-l govuk-!-margin-bottom-3 search-ppon-text">@StaticTextResource.PponSearch_Title</h1>
+                <h1 class="govuk-heading-l govuk-!-margin-bottom-3 search-ppon-text" id="ppon-search-title">@StaticTextResource.PponSearch_Title</h1>
             </div>
             <div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-1">
-                <label class="govuk-label search-ppon-text" for="organisation-search-input">
+                <label class="govuk-label search-ppon-text" for="organisation-search-input" id="ppon-search-hint">
                     @StaticTextResource.PponSearch_Hint
                 </label>
             </div>
             <div class="govuk-grid-column-two-thirds search-ppon-flex-display">
 
                 <input class="govuk-input search-ppon-text-input"
-                       id="organisation-search-input" name="SearchText" asp-for="SearchText" type="text" value="@Model.SearchText">
+                       id="organisation-search-input" name="SearchText" asp-for="SearchText" type="text" value="@Model.SearchText"
+                       aria-label="Search by PPON or organisation name"
+                       aria-describedby="ppon-search-hint">
 
                 <button type="submit" class="govuk-button search-ppon-button" data-module="govuk-button">
                     <svg class="gem-c-search__icon" width="18" height="18" viewBox="0 0 27 27" fill="none"
@@ -121,26 +123,26 @@
 {
     foreach (var org in Model.Organisations)
     {
-        <div class="govuk-grid-row">
+        <div class="govuk-grid-row" aria-label="Search result for organisation: @org.Name">
             <div class="govuk-grid-column-two-thirds">
-                <h2 class="govuk-heading-m">@org.Name</h2>
+                <h2 class="govuk-heading-m" id="org-name-@org.Id">@org.Name</h2>
                 @if (org.Identifiers.Any(i => i.Scheme.Equals("GB-PPON") && i.Id != null))
                 {
                     <p class="govuk-body govuk-!-margin-bottom-1">
                         <span class="govuk-!-font-weight-bold">PPON</span>
-                        @org.Identifiers.First(i => i.Scheme.Equals("GB-PPON")).Id
+                        <span aria-label="PPON identifier">@org.Identifiers.First(i => i.Scheme.Equals("GB-PPON")).Id</span>
                     </p>
                 }
                 <p class="govuk-body">
                     <span class="govuk-!-font-weight-bold">Organisation address</span>&nbsp;
-                    @Model.FormatAddresses(org.Addresses)
+                    <span aria-label="Organisation address">@Model.FormatAddresses(org.Addresses)</span>
                 </p>
             </div>
             <div class="govuk-grid-column-one-third govuk-!-text-align-right">
-                <div class="govuk-grid-row">
+                <div class="govuk-grid-row" aria-label="Organisation roles">
                     @foreach (var partyRole in @org.Roles.Distinct())
                     {
-                        <strong class="govuk-tag @Model.GetTagClassForRole(partyRole)">
+                        <strong class="govuk-tag @Model.GetTagClassForRole(partyRole)" aria-label="Role: @partyRole">
                             @partyRole
                         </strong>
                     }
