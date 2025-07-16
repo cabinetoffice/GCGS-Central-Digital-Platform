@@ -62,6 +62,7 @@ builder.Services.AddScoped<IUseCase<Guid, IEnumerable<Review>>, GetReviewsUseCas
 builder.Services.AddScoped<IUseCase<Organisation?>, GetMyOrganisationUseCase>();
 builder.Services.AddScoped<IUseCase<OrganisationQuery, Organisation?>, LookupOrganisationUseCase>();
 builder.Services.AddScoped<IUseCase<OrganisationSearchQuery, IEnumerable<OrganisationSearchResult>>, SearchOrganisationUseCase>();
+builder.Services.AddScoped<IUseCase<OrganisationSearchByPponQuery, (IEnumerable<OrganisationSearchByPponResult> Results, int TotalCount)>, SearchOrganisationByPponUseCase>();
 builder.Services.AddScoped<IUseCase<OrganisationsByOrganisationEmailQuery, IEnumerable<OrganisationSearchResult>>, FindOrganisationByOrganisationEmailUseCase>();
 builder.Services.AddScoped<IUseCase<OrganisationsByAdminEmailQuery, IEnumerable<OrganisationSearchResult>>, FindOrganisationByAdminEmailUseCase>();
 builder.Services.AddScoped<IUseCase<PaginatedOrganisationQuery, Tuple<IEnumerable<OrganisationDto>, int>>, GetOrganisationsUseCase>();
@@ -209,10 +210,16 @@ if (app.Configuration.GetValue<bool>("BuyerParentChildRelationship"))
         .WithTags("Organisation - Hierarchy");
 }
 
+if (app.Configuration.GetValue<bool>("SearchRegistryPpon"))
+{
+    app.MapGroup("/organisation")
+        .useSearchRegistryOfPpon()
+        .WithTags("Organisation - Search Registry Of Ppon");
+}
+
 app.MapGroup("/mou")
     .UseMouEndpoints()
     .WithTags("Mou");
-
 
 app.Run();
 public abstract partial class Program;

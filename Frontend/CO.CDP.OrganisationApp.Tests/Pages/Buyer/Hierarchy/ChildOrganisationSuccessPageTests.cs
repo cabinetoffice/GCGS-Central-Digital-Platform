@@ -1,6 +1,7 @@
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Pages.Buyer.Hierarchy;
 using FluentAssertions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
@@ -12,6 +13,7 @@ public class ChildOrganisationSuccessPageTests
 {
     private readonly Mock<IOrganisationClient> _mockOrganisationClient;
     private readonly Mock<ILogger<ChildOrganisationSuccessPage>> _mockLogger;
+    private readonly Mock<IAuthorizationService> _mockAuthorizationService;
     private readonly ChildOrganisationSuccessPage _model;
     private readonly Guid _testParentId = Guid.NewGuid();
     private readonly Guid _testChildId = Guid.NewGuid();
@@ -21,6 +23,12 @@ public class ChildOrganisationSuccessPageTests
     {
         _mockOrganisationClient = new Mock<IOrganisationClient>();
         _mockLogger = new Mock<ILogger<ChildOrganisationSuccessPage>>();
+        _mockAuthorizationService = new Mock<IAuthorizationService>();
+        _mockAuthorizationService.Setup(a => a.AuthorizeAsync(
+                It.IsAny<System.Security.Claims.ClaimsPrincipal>(),
+                It.IsAny<object>(),
+                It.IsAny<IAuthorizationRequirement[]>()))
+            .ReturnsAsync(AuthorizationResult.Success());
 
         var testOrganisation = new CDP.Organisation.WebApiClient.Organisation(
             additionalIdentifiers: [],
@@ -41,7 +49,8 @@ public class ChildOrganisationSuccessPageTests
 
         _model = new ChildOrganisationSuccessPage(
             _mockOrganisationClient.Object,
-            _mockLogger.Object)
+            _mockLogger.Object,
+            _mockAuthorizationService.Object)
         {
             Id = _testParentId,
             ChildId = _testChildId
@@ -53,7 +62,8 @@ public class ChildOrganisationSuccessPageTests
     {
         var model = new ChildOrganisationSuccessPage(
             _mockOrganisationClient.Object,
-            _mockLogger.Object)
+            _mockLogger.Object,
+            _mockAuthorizationService.Object)
         {
             Id = _testParentId,
             ChildId = _testChildId
