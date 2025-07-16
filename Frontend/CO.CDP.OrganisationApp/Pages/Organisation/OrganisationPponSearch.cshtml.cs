@@ -56,8 +56,19 @@ public class OrganisationPponSearchModel(
             _logger.LogWarning("User is not authorised to access the search registry of PPON with ID {OrganisationId}.", Id);
             return Redirect("/page-not-found");
         }
-        var result = await HandleSearch(PageNumber, SearchText, SortOrder);
-        ApplySearchResult(result);
+        if (!string.IsNullOrWhiteSpace(SearchText))
+        {
+            var result = await HandleSearch(PageNumber, SearchText, SortOrder);
+            ApplySearchResult(result);
+        }
+        else
+        {
+            Organisations = ImmutableList<OrganisationSearchByPponResult>.Empty;
+            TotalOrganisations = 0;
+            TotalPages = 0;
+            ErrorMessage = null;
+            Pagination = CreatePaginationModel(PageNumber, TotalOrganisations, 10, Id, SearchText, SortOrder);
+        }
         return Page();
     }
 

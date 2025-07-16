@@ -458,13 +458,13 @@ public class OrganisationPponSearchModelTest
     [InlineData(null)]
     [InlineData("")]
     [InlineData("   ")]
-    public async Task OnGet_EmptySearchText_SetsEnterSearchTermErrorMessage(string? searchText)
+    public async Task OnPost_EmptySearchText_SetsEnterSearchTermErrorMessage(string? searchText)
     {
         SetupRouteData(Id);
         _testOrganisationPponSearchModel.PageNumber = DefaultPageNumber;
         _testOrganisationPponSearchModel.SearchText = searchText!;
         _testOrganisationPponSearchModel.SortOrder = DefaultSortOrder;
-        await _testOrganisationPponSearchModel.OnGet();
+        await _testOrganisationPponSearchModel.OnPost();
         _testOrganisationPponSearchModel.ErrorMessage.Should()
             .Be(Localization.StaticTextResource.Global_EnterSearchTerm);
         _testOrganisationPponSearchModel.Organisations.Should().BeEmpty();
