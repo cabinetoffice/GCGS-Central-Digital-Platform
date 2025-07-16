@@ -92,13 +92,13 @@
                             @StaticTextResource.Global_Sort_Results
                         </label>
                         <select class="govuk-select" id="sort-order" name="sortOrder" aria-controls="sort-submit">
-                            <option value="rel" selected="@(Request.Query["sortOrder"] == "rel")">
+                            <option value="rel" selected="@(Model.SortOrder == "rel")">
                                 @StaticTextResource.Global_Sort_Relevance
                             </option>
-                            <option value="asc" selected="@(Request.Query["sortOrder"] == "asc")">
+                            <option value="asc" selected="@(Model.SortOrder == "asc")">
                                 @StaticTextResource.Global_Sort_Alphabetical_Asc
                             </option>
-                            <option value="desc" selected="@(Request.Query["sortOrder"] == "desc")">
+                            <option value="desc" selected="@(Model.SortOrder == "desc")">
                                 @StaticTextResource.Global_Sort_Alphabetical_Desc
                             </option>
                         </select>
