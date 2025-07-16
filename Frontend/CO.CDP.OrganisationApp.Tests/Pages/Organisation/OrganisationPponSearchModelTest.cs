@@ -49,7 +49,7 @@ public class OrganisationPponSearchModelTest
                     CurrentPage = 1,
                     TotalItems = 0,
                     PageSize = 10,
-                    Url = $"/organisation/{Id}/buyer/search?q=&sortOrder=rel"
+                    Url = $"/organisation/{Id}/buyer/search?SearchText=&sortOrder={DefaultSortOrder}&pageSize={DefaultPageSize}"
                 }
             };
 
