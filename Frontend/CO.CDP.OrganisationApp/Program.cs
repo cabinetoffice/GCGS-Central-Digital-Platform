@@ -33,6 +33,7 @@ using Microsoft.FeatureManagement;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using System.Globalization;
 using System.Net;
+using CO.CDP.OrganisationApp.Constants;
 using static IdentityModel.OidcConstants;
 using static System.Net.Mime.MediaTypeNames;
 using ISession = CO.CDP.OrganisationApp.ISession;
@@ -287,7 +288,7 @@ builder.Services.AddSingleton<IAuthorizationMiddlewareResultHandler, CustomAutho
 builder.Services.AddScoped<IAuthorizationHandler, IsBuyerAuthorizationHandler>();
 builder.Services.AddAuthorization(options =>
 {
-    options.AddPolicy("IsBuyer", policy =>
+    options.AddPolicy(PartyRoleRequirement.Buyer, policy =>
         policy.Requirements.Add(new IsBuyerRequirement()));
 });
 
