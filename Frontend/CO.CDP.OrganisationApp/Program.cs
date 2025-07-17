@@ -285,7 +285,7 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddSingleton<IAuthorizationPolicyProvider, CustomAuthorizationPolicyProvider>();
 builder.Services.AddSingleton<IAuthorizationHandler, CustomScopeHandler>();
 builder.Services.AddSingleton<IAuthorizationMiddlewareResultHandler, CustomAuthorizationMiddlewareResultHandler>();
-builder.Services.AddScoped<IAuthorizationHandler, IsBuyerAuthorizationHandler>();
+builder.Services.AddScoped<IAuthorizationHandler, BuyerRoleAuthorizationHandler>();
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy(PartyRoleRequirement.Buyer, policy =>
