@@ -9,12 +9,14 @@ using CO.CDP.Localization;
 using CO.CDP.OrganisationApp.Authorization;
 using CO.CDP.OrganisationApp.Logging;
 using CO.CDP.OrganisationApp.WebApiClients;
+using Microsoft.FeatureManagement.Mvc;
 
 namespace CO.CDP.OrganisationApp.Pages.Organisation;
 
 [ValidateAntiForgeryToken]
 [Authorize(Policy = PartyRoleRequirement.Buyer)]
 [Authorize(Policy = OrgScopeRequirement.Viewer)]
+[FeatureGate(FeatureFlags.SearchRegistryPpon)]
 public class OrganisationPponSearchModel(
     IAuthorizationService authorizationService,
     IOrganisationClient organisationClient,

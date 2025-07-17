@@ -6,11 +6,13 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.FeatureManagement;
+using Microsoft.FeatureManagement.Mvc;
 
 namespace CO.CDP.OrganisationApp.Pages.Buyer.Hierarchy;
 
 [Authorize(Policy = PartyRoleRequirement.Buyer)]
 [Authorize(Policy = OrgScopeRequirement.Editor)]
+[FeatureGate(FeatureFlags.BuyerParentChildRelationship)]
 public class ChildOrganisationSearchPage(IFeatureManager featureManager, IAuthorizationService authorizationService, ILogger<ChildOrganisationSearchPage> logger)
     : PageModel
 {
