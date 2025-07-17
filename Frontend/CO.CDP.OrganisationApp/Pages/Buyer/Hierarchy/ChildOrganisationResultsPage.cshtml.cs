@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace CO.CDP.OrganisationApp.Pages.Buyer.Hierarchy;
 
+[Authorize(Policy = PartyRoleRequirement.Buyer)]
 [Authorize(Policy = OrgScopeRequirement.Editor)]
 public class ChildOrganisationResultsPage(
     IOrganisationClient organisationClient,
@@ -42,13 +43,6 @@ public class ChildOrganisationResultsPage(
 
     public async Task<IActionResult> OnGetAsync()
     {
-        var authResult = await _authorizationService.AuthorizeAsync(User, Id, new IsBuyerRequirement());
-        if (!authResult.Succeeded)
-        {
-            _logger.LogWarning("User is not authorised to access child organisation results for parent ID {OrganisationId}.", Id);
-            return Redirect("/page-not-found");
-        }
-
         if (string.IsNullOrWhiteSpace(Query))
         {
             return Page();
@@ -89,13 +83,6 @@ public class ChildOrganisationResultsPage(
 
     public async Task<IActionResult> OnPost()
     {
-        var authResult = await _authorizationService.AuthorizeAsync(User, Id, new IsBuyerRequirement());
-        if (!authResult.Succeeded)
-        {
-            _logger.LogWarning("User is not authorised to access child organisation results for parent ID {OrganisationId}.", Id);
-            return Redirect("/page-not-found");
-        }
-
         if (!ModelState.IsValid)
         {
             return Page();

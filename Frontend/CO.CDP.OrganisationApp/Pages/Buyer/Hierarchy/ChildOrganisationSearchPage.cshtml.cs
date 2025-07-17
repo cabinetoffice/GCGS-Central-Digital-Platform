@@ -9,6 +9,7 @@ using Microsoft.FeatureManagement;
 
 namespace CO.CDP.OrganisationApp.Pages.Buyer.Hierarchy;
 
+[Authorize(Policy = PartyRoleRequirement.Buyer)]
 [Authorize(Policy = OrgScopeRequirement.Editor)]
 public class ChildOrganisationSearchPage(IFeatureManager featureManager, IAuthorizationService authorizationService, ILogger<ChildOrganisationSearchPage> logger)
     : PageModel
@@ -28,26 +29,12 @@ public class ChildOrganisationSearchPage(IFeatureManager featureManager, IAuthor
 
     public async Task<IActionResult> OnGetAsync()
     {
-        var authResult = await _authorizationService.AuthorizeAsync(User, Id, new IsBuyerRequirement());
-        if (!authResult.Succeeded)
-        {
-            _logger.LogWarning("User is not authorised to access child organisation search for parent ID {OrganisationId}.", Id);
-            return Redirect("/page-not-found");
-        }
-
         SearchRegistryPponEnabled = await featureManager.IsEnabledAsync(FeatureFlags.SearchRegistryPpon);
         return Page();
     }
 
     public async Task<IActionResult> OnPostAsync()
     {
-        var authResult = await _authorizationService.AuthorizeAsync(User, Id, new IsBuyerRequirement());
-        if (!authResult.Succeeded)
-        {
-            _logger.LogWarning("User is not authorised to access child organisation search for parent ID {OrganisationId}.", Id);
-            return Redirect("/page-not-found");
-        }
-
         if (!ModelState.IsValid)
         {
             SearchRegistryPponEnabled = await featureManager.IsEnabledAsync(FeatureFlags.SearchRegistryPpon);

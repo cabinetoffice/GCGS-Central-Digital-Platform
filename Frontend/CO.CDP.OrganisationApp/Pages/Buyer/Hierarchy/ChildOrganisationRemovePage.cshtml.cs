@@ -13,11 +13,11 @@ using OrganisationApiException = CO.CDP.Organisation.WebApiClient.ApiException;
 
 namespace CO.CDP.OrganisationApp.Pages.Buyer.Hierarchy;
 
+[Authorize(Policy = PartyRoleRequirement.Buyer)]
 [Authorize(Policy = OrgScopeRequirement.Editor)]
 public class ChildOrganisationRemovePage(
     IOrganisationClient organisationClient,
-    ILogger<ChildOrganisationRemovePage> logger,
-    IAuthorizationService authorizationService)
+    ILogger<ChildOrganisationRemovePage> logger)
     : PageModel
 {
     private readonly IOrganisationClient _organisationClient =
@@ -25,9 +25,6 @@ public class ChildOrganisationRemovePage(
 
     private readonly ILogger<ChildOrganisationRemovePage> _logger =
         logger ?? throw new ArgumentNullException(nameof(logger));
-
-    private readonly IAuthorizationService _authorizationService =
-        authorizationService ?? throw new ArgumentNullException(nameof(authorizationService));
 
     [BindProperty(SupportsGet = true)] public Guid Id { get; set; }
 
@@ -56,13 +53,6 @@ public class ChildOrganisationRemovePage(
 
     public async Task<IActionResult> OnGet()
     {
-        var authResult = await _authorizationService.AuthorizeAsync(User, Id, new IsBuyerRequirement());
-        if (!authResult.Succeeded)
-        {
-            _logger.LogWarning("User is not authorised to access child organisation remove page for parent ID {OrganisationId}.", Id);
-            return Redirect("/page-not-found");
-        }
-
         try
         {
             ChildOrganisation = await OrganisationClientExtensions.LookupOrganisationAsync(_organisationClient,
@@ -106,13 +96,6 @@ public class ChildOrganisationRemovePage(
 
     public async Task<IActionResult> OnPost()
     {
-        var authResult = await _authorizationService.AuthorizeAsync(User, Id, new IsBuyerRequirement());
-        if (!authResult.Succeeded)
-        {
-            _logger.LogWarning("User is not authorised to access child organisation remove page for parent ID {OrganisationId}.", Id);
-            return Redirect("/page-not-found");
-        }
-
         if (!ModelState.IsValid)
         {
             return Page();

@@ -13,6 +13,7 @@ using CO.CDP.OrganisationApp.WebApiClients;
 namespace CO.CDP.OrganisationApp.Pages.Organisation;
 
 [ValidateAntiForgeryToken]
+[Authorize(Policy = PartyRoleRequirement.Buyer)]
 [Authorize(Policy = OrgScopeRequirement.Viewer)]
 public class OrganisationPponSearchModel(
     IAuthorizationService authorizationService,
