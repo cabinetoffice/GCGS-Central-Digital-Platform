@@ -356,10 +356,10 @@
   </data>
   <data name="FinancialInformation_Configuration_AddAnotherAnswerLabel" xml:space="preserve">
     <value>Ychwanegu ffeil arall?</value>
-  </data>  
+  </data>
   <data name="FinancialInformation_Configuration_RemoveConfirmationHeading" xml:space="preserve">
     <value>Ydych chi’n si?r eich bod am ddileu’r ffeil hon?</value>
-  </data>  
+  </data>
   <data name="Global_CheckYourAnswers" xml:space="preserve">
     <value>Gwiriwch eich atebion</value>
   </data>
@@ -449,5 +449,112 @@
   </data>
   <data name="Share_My_Information_Consortium_SectionTitle" xml:space="preserve">
     <value>Rhannu fy nghonsortiwm gwybodaeth</value>
+  </data>
+  <data name="CyberEssentials_01_Title" xml:space="preserve">
+    <value>Cyflwyno eich gwybodaeth ar gyfer cynllun ardystio Cyber Essentials</value>
+  </data>
+  <data name="CyberEssentials_02_Title" xml:space="preserve">
+    <value>Ydych chi'n bodloni gofynion ardystio Cyber Essentials? </value>
+  </data>
+  <data name="CyberEssentials_01_Description" xml:space="preserve">
+    <value>
+&lt;p class="govuk-body"&gt;
+Mae cynllun ardystio Cyber Essentials yn un o fentrau Llywodraeth y DU sy'n helpu sefydliadau i amddiffyn eu hunain rhag bygythiadau seiber cyffredin. Mae'r ardystiad hwn yn lleihau risgiau yn y gadwyn gyflenwi ac mae'n bwysig er mwyn meithrin ymddiriedaeth yng nghontractau'r llywodraeth. Bydd yr awdurdod contractio rydych yn gwneud cynnig iddo yn rhoi gwybod i chi pa ardystiad sydd ei angen arnoch. Am ragor o wybodaeth, darllenwch &lt;a href="https://www.gov.uk/government/publications/ppn-014-cyber-essentials-scheme/ppn-014-cyber-essentials-scheme-html"
+class="govuk-link" rel="noreferrer noopener" target="_blank"&gt;
+PPN 014: Cynllun Cyber Essentials (bydd yn agor mewn tab newydd).&lt;/a&gt;&lt;/p&gt;
+      &lt;p class="govuk-body"&gt;
+    Bydd ond angen i chi gwblhau'r modiwl hwn os bydd yr awdurdod contractio rydych yn gwneud cynnig iddo yn gofyn i chi wneud hyny.
+    Gall methu â chwblhau'r modiwl hwn arwain at ystyried bod eich tendrau yn annigonol lle mae PPN 014 wedi'i gymhwyso.
+      &lt;/p&gt;
+&lt;h2 class="govuk-heading-m"&gt;Y wybodaeth y bydd ei hangen arnoch&lt;/h2&gt;
+&lt;div class="govuk-body"&gt;Bydd angen i chi ddarparu gwybodaeth am eich ardystiad Cyber Essentials neu Cyber Essentials Plus (neu ardystiad cyfatebol). Gall hyn gynnwys:
+  &lt;ul class="govuk-list govuk-list--bullet"&gt;
+    &lt;li class="govuk-!-margin-top-4"&gt; cadarnhad eich bod yn bodloni gofynion y cynllun ardystio&lt;/li&gt;
+    &lt;li class="govuk-!-margin-top-4"&gt; dyddiad dirwyn i ben eich ardystiad&lt;/li&gt;
+    &lt;li class="govuk-!-margin-top-4"&gt; tystiolaeth o'ch ardystiad&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/div&gt;
+    </value>
+  </data>
+  <data name="CyberEssentials_02_SummaryTitle" xml:space="preserve">
+    <value>Bodlonwyd y gofynion</value>
+  </data>
+  <data name="CyberEssentials_03_SummaryTitle" xml:space="preserve">
+    <value>Bodlonwyd y gofynion</value>
+  </data>
+  <data name="CyberEssentials_03_Title" xml:space="preserve">
+    <value>Pryd byddwch yn bodloni gofynion ardystio Cyber Essentials? </value>
+  </data>
+  <data name="CyberEssentials_04_SummaryTitle" xml:space="preserve">
+    <value>Lanlwytho'r ardystiad</value>
+  </data>
+  <data name="CyberEssentials_04_Title" xml:space="preserve">
+    <value>Lanlwythwch dystiolaeth o'ch ardystiad Cyber Essentials (neu ardystiad cyfatebol)</value>
+  </data>
+  <data name="CyberEssentials_05_SummaryTitle" xml:space="preserve">
+    <value>Dyddiad dirwyn i ben yr ardystiad</value>
+  </data>
+  <data name="CyberEssentials_05_Title" xml:space="preserve">
+    <value>Cofnodwch ddyddiad dirwyn i ben eich ardystiad Cyber Essentials (neu ardystiad cyfatebol)</value>
+  </data>
+  <data name="CyberEssentials_06_SummaryTitle" xml:space="preserve">
+    <value>Bodlonwyd y gofynion</value>
+  </data>
+  <data name="CyberEssentials_06_Title" xml:space="preserve">
+    <value>Ydych chi'n bodloni gofynion ardystio Cyber Essentials Plus? </value>
+  </data>
+  <data name="CyberEssentials_07_SummaryTitle" xml:space="preserve">
+    <value>Statws y gofynion</value>
+  </data>
+  <data name="CyberEssentials_07_Title" xml:space="preserve">
+    <value>Pryd byddwch yn bodloni gofynion ardystio Cyber Essentials Plus? </value>
+  </data>
+  <data name="CyberEssentials_08_SummaryTitle" xml:space="preserve">
+    <value>Lanlwytho'r ardystiad</value>
+  </data>
+  <data name="CyberEssentials_08_Title" xml:space="preserve">
+    <value>Lanlwythwch dystiolaeth o'ch ardystiad Cyber Essentials Plus (neu ardystiad cyfatebol)</value>
+  </data>
+  <data name="CyberEssentials_09_SummaryTitle" xml:space="preserve">
+    <value>Dyddiad dirwyn i ben yr ardystiad</value>
+  </data>
+  <data name="CyberEssentials_09_Title" xml:space="preserve">
+    <value>Cofnodwch ddyddiad dirwyn i ben eich ardystiad Cyber Essentials Plus (neu ardystiad cyfatebol)</value>
+  </data>
+  <data name="CyberEssentials_SectionTitle" xml:space="preserve">
+    <value>Cynllun ardystio Cyber Essentials</value>
+  </data>
+  <data name="CyberEssentials_CertificationPlus_SubTitle" xml:space="preserve">
+    <value>Cynllun ardystio Cyber Essentials Plus</value>
+  </data>
+  <data name="CyberEssentials_07_Option_2" xml:space="preserve">
+    <value>Nid wyf yn bodloni'r gofynion ar hyn o bryd, ond byddaf yn eu bodloni erbyn i'r contract gael ei ddyfarnu</value>
+  </data>
+  <data name="CyberEssentials_02_Caption" xml:space="preserve">
+    <value>Rhaid i chi fod yn barod i ddarparu tystiolaeth, os bydd yn ofynnol, cyn i'r contract gael ei ddyfarnu.</value>
+  </data>
+  <data name="CyberEssentials_02_Option_1" xml:space="preserve">
+    <value>Ydw, rwy'n bodloni'r gofynion neu byddaf yn eu bodloni erbyn i'r contract gael ei ddyfarnu</value>
+  </data>
+  <data name="CyberEssentials_02_Option_2" xml:space="preserve">
+    <value>Nac ydw, nid wyf yn bodloni'r gofynion</value>
+  </data>
+  <data name="CyberEssentials_03_Option_1" xml:space="preserve">
+    <value>Rwy'n bodloni'r gofynion ar hyn o bryd</value>
+  </data>
+  <data name="CyberEssentials_03_Option_2" xml:space="preserve">
+    <value>Nid wyf yn bodloni'r gofynion ar hyn o bryd, ond byddaf yn eu bodloni erbyn i'r contract gael ei ddyfarnu</value>
+  </data>
+  <data name="CyberEssentials_06_Caption" xml:space="preserve">
+    <value>Rhaid i chi fod yn barod i ddarparu tystiolaeth, os bydd yn ofynnol, cyn i'r contract gael ei ddyfarnu.</value>
+  </data>
+  <data name="CyberEssentials_06_Option_1" xml:space="preserve">
+    <value>Ydw, rwy'n bodloni'r gofynion neu byddaf yn eu bodloni erbyn i'r contract gael ei ddyfarnu</value>
+  </data>
+  <data name="CyberEssentials_06_Option_2" xml:space="preserve">
+    <value>Nac ydw, nid wyf yn bodloni'r gofynion</value>
+  </data>
+  <data name="CyberEssentials_07_Option_1" xml:space="preserve">
+    <value>Rwy'n bodloni'r gofynion ar hyn o bryd</value>
   </data>
 </root>

@@ -1022,4 +1022,37 @@ PPN 014: Cyber Essentials scheme (opens in a new tab).&lt;/a&gt;&lt;/p&gt;
   <data name="ShareMyInformation_04_SummaryTitle" xml:space="preserve">
     <value>Declared by</value>
   </data>
+  <data name="CyberEssentials_02_Option_1" xml:space="preserve">
+    <value>Yes, I meet the requirements or will meet them by contract award</value>
+  </data>
+  <data name="CyberEssentials_02_Option_2" xml:space="preserve">
+    <value>No, I do not meet the requirements</value>
+  </data>
+  <data name="CyberEssentials_02_Caption" xml:space="preserve">
+    <value>You must be ready to provide evidence, if required, before the contract is awarded.</value>
+  </data>
+  <data name="CyberEssentials_03_Option_1" xml:space="preserve">
+    <value>I currently meet the requirements</value>
+  </data>
+  <data name="CyberEssentials_03_Option_2" xml:space="preserve">
+    <value>I do not currently meet the requirements, but will meet them by contract award</value>
+  </data>
+  <data name="CyberEssentials_06_Option_1" xml:space="preserve">
+    <value>Yes, I meet the requirements or will meet them by contract award</value>
+  </data>
+  <data name="CyberEssentials_06_Option_2" xml:space="preserve">
+    <value>No, I do not meet the requirements</value>
+  </data>
+  <data name="CyberEssentials_06_Caption" xml:space="preserve">
+    <value>You must be ready to provide evidence, if required, before the contract is awarded.</value>
+  </data>
+  <data name="CyberEssentials_07_Option_1" xml:space="preserve">
+    <value>I currently meet the requirements</value>
+  </data>
+  <data name="CyberEssentials_07_Option_2" xml:space="preserve">
+    <value>I do not currently meet the requirements, but will meet them by contract award</value>
+  </data>
+  <data name="CyberEssentials_CertificationPlus_SubTitle" xml:space="preserve">
+    <value>Cyber Essentials Plus certification scheme</value>
+  </data>
 </root>
