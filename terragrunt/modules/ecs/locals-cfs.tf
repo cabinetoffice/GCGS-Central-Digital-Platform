@@ -21,7 +21,7 @@ locals {
     saml_x509cert                         = "${local.cfs_screts_arn}:SAML_X509CERT::"
     sso_api_authentication_key            = "${local.cfs_screts_arn}:SSO_API_AUTHENTICATION_KEY::"
     sso_cipher                            = "${local.cfs_screts_arn}:SSO_CIPHER::"
-    sso_password                          = "${local.cfs_screts_arn}:SSO_PASSWORD::"
+    sso_token                             = "${local.cfs_screts_arn}:SSO_TOKEN::"
     sso_token_session_authentication_key  = "${local.cfs_screts_arn}:SSO_TOKEN_SESSION_AUTHENTICATION_KEY::"
     sso_token_session_cipher              = "${local.cfs_screts_arn}:SSO_TOKEN_SESSION_CIPHER::"
     email_tech_support                    = "${local.cfs_screts_arn}:TECHSUPPORT_EMAIL::"
