@@ -60,7 +60,7 @@ locals {
     dev_email                           = "${local.fts_screts_arn}:DEV_EMAIL::"
     app_host_address                    = "%"
     buyer_corporate_identifier_prefixes = "sid4gov.cabinetoffice.gov.uk|supplierregistration.service.xgov.uk|test-idp-intra.nqc.com"
-    cookie_domain                       = local.site_domains[var.environment]
+    cookie_domain                       = local.site_domains["production"]
     database_schema                     = "cdp_sirsi_fts_cluster"
     db_host                             = var.db_fts_cluster_address
     db_name                             = var.db_fts_cluster_name
@@ -70,12 +70,12 @@ locals {
     environment                         = upper(var.environment)
     fts_allowed_target_email_domains    = join(",", var.fts_allowed_target_email_domains)
     fts_client_assertion_type           = "urn:ietf:params:oauth:client-assertion-type:jwt-bearer"
-    fts_one_login_logout_redirect_uri   = local.fts_one_login_logout_redirect_uris[var.environment]
-    fts_one_login_redirect_uri          = local.fts_one_login_redirect_uris[var.environment]
+    fts_one_login_logout_redirect_uri   = local.fts_one_login_logout_redirect_uris["production"]
+    fts_one_login_redirect_uri          = local.fts_one_login_redirect_uris["production"]
     licenced_to                         = "No-one"
     local_version                       = 1100
     session_name_default                = "SRSI_FT_AUTH"
-    site_domain                         = local.site_domains[var.environment]
+    site_domain                         = local.site_domains["production"]
     site_tag                            = "TEST"
     srsi_authority_token_endpoint       = "https://authority.${var.public_domain}/token"
     srsi_dashboard_endpoint             = "https://${var.public_domain}"
