@@ -10,21 +10,21 @@ locals {
     development = "https://fts.${var.public_domain}/auth/logout"
     staging     = "https://www-staging.find-tender.service.gov.uk/auth/logout"
     integration = "https://www-tpp.find-tender.service.gov.uk/auth/logout"
-    peoduction  = "https://fts.${var.public_domain}/auth/logout"
+    production  = "https://fts.${var.public_domain}/auth/logout"
   }
 
   fts_one_login_redirect_uris = {
     development = "https://fts.${var.public_domain}/auth/callback"
     staging     = "https://www-staging.find-tender.service.gov.uk/auth/callback"
     integration = "https://www-tpp.find-tender.service.gov.uk/auth/callback"
-    peoduction  = "https://fts.${var.public_domain}/auth/callback"
+    production  = "https://fts.${var.public_domain}/auth/callback"
   }
 
   site_domains = {
     development = "fts.${var.public_domain}"
     staging     = "www-staging.find-tender.service.gov.uk"
     integration = "www-tpp.find-tender.service.gov.uk"
-    peoduction  = "fts.${var.public_domain}"
+    production  = "fts.${var.public_domain}"
   }
 
   fts_secrets = {
