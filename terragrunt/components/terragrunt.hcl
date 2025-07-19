@@ -79,8 +79,8 @@ locals {
       cidr_block                        = "10.${local.cidr_b_staging}.0.0/16"
       account_id                        = 905418042182
       canary_schedule_expression        = "rate(30 minutes)"
-      cfs_allowed_target_email_domains  = ["goaco.com","cabinetoffice.gov.uk"]
-      fts_allowed_target_email_domains  = ["goaco.com","cabinetoffice.gov.uk"]
+      cfs_allowed_target_email_domains  = ["goaco.com"]
+      fts_allowed_target_email_domains  = ["goaco.com"]
       fts_azure_frontdoor               = null
       cfs_service_allowed_origins       = [
         "https://cfs.staging.supplier-information.find-tender.service.gov.uk",
