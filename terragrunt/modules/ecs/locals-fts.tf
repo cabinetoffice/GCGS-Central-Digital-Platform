@@ -41,6 +41,8 @@ locals {
     http_basic_auth_enabled               = "${local.fts_screts_arn}:HTTP_BASIC_AUTH_ENABLED::"
     http_basic_auth_pass                  = "${local.fts_screts_arn}:HTTP_BASIC_AUTH_PASS::"
     http_basic_auth_user                  = "${local.fts_screts_arn}:HTTP_BASIC_AUTH_USER::"
+    letsencrypt_key_authorization         = "${local.fts_screts_arn}:LETSENCRYPT_KEY_AUTHORIZATION::"
+    letsencrypt_token                     = "${local.fts_screts_arn}:LETSENCRYPT_TOKEN::"
     one_login_base_url                    = local.one_login.credential_locations.authority
     one_login_fln_api_key_arn             = data.aws_secretsmanager_secret.one_login_forward_logout_notification_api_key.arn
     one_login_private_key                 = local.one_login.credential_locations.private_key
