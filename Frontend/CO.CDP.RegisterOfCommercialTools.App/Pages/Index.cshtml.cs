@@ -86,8 +86,7 @@ public class IndexModel(ISearchService searchService, ISirsiUrlService sirsiUrlS
 }
 
 
-[FeesValidator("FeeFrom", "FeeTo", "NoFees", ErrorMessage = "Fee values cannot be provided when 'No fees' is selected")]
-public class SearchModel
+public class SearchModel : IValidatableObject
 {
     public string? Keywords { get; set; }
 
@@ -128,4 +127,37 @@ public class SearchModel
 
     [DateRange("ContractEndDateFrom", ErrorMessage = "To date must be after from date")]
     public DateOnly? ContractEndDateTo { get; set; }
+
+    public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+    {
+        if (string.IsNullOrEmpty(NoFees))
+        {
+            yield break;
+        }
+
+        var feeFromHasValue = FeeFrom.HasValue;
+        var feeToHasValue = FeeTo.HasValue;
+
+        if (feeFromHasValue && feeToHasValue)
+        {
+            yield return new ValidationResult(
+                "Fee from and to cannot be provided when 'No fees' is selected",
+                [nameof(FeeFrom), nameof(FeeTo)]
+            );
+        }
+        else if (feeFromHasValue)
+        {
+            yield return new ValidationResult(
+                "Fee from cannot be provided when 'No fees' is selected",
+                [nameof(FeeFrom)]
+            );
+        }
+        else if (feeToHasValue)
+        {
+            yield return new ValidationResult(
+                "Fee to cannot be provided when 'No fees' is selected",
+                [nameof(FeeTo)]
+            );
+        }
+    }
 }

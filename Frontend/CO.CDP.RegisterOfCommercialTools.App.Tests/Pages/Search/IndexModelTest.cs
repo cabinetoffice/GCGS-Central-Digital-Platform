@@ -281,6 +281,79 @@ public class IndexModelTest
         validationResults.Should().BeEmpty();
     }
 
+    [Fact]
+    public void SearchModel_WhenNoFeesIsSelectedWithFeeFromAndFeeTo_ShouldHaveValidationError()
+    {
+        var searchParams = new SearchModel
+        {
+            NoFees = "true",
+            FeeFrom = 10,
+            FeeTo = 20
+        };
+
+        var validationContext = new ValidationContext(searchParams);
+        var validationResults = new List<ValidationResult>();
+        var isValid = Validator.TryValidateObject(searchParams, validationContext, validationResults, true);
+
+        isValid.Should().BeFalse();
+        validationResults.Should().HaveCount(1);
+        validationResults[0].ErrorMessage.Should().Be("Fee from and to cannot be provided when 'No fees' is selected");
+    }
+
+    [Fact]
+    public void SearchModel_WhenNoFeesIsSelectedWithFeeFrom_ShouldHaveValidationError()
+    {
+        var searchParams = new SearchModel
+        {
+            NoFees = "true",
+            FeeFrom = 10
+        };
+
+        var validationContext = new ValidationContext(searchParams);
+        var validationResults = new List<ValidationResult>();
+        var isValid = Validator.TryValidateObject(searchParams, validationContext, validationResults, true);
+
+        isValid.Should().BeFalse();
+        validationResults.Should().HaveCount(1);
+        validationResults[0].ErrorMessage.Should().Be("Fee from cannot be provided when 'No fees' is selected");
+    }
+
+    [Fact]
+    public void SearchModel_WhenNoFeesIsSelectedWithFeeTo_ShouldHaveValidationError()
+    {
+        var searchParams = new SearchModel
+        {
+            NoFees = "true",
+            FeeTo = 20
+        };
+
+        var validationContext = new ValidationContext(searchParams);
+        var validationResults = new List<ValidationResult>();
+        var isValid = Validator.TryValidateObject(searchParams, validationContext, validationResults, true);
+
+        isValid.Should().BeFalse();
+        validationResults.Should().HaveCount(1);
+        validationResults[0].ErrorMessage.Should().Be("Fee to cannot be provided when 'No fees' is selected");
+    }
+
+    [Fact]
+    public void SearchModel_WhenNoFeesIsNotSelected_ShouldBeValid()
+    {
+        var searchParams = new SearchModel
+        {
+            NoFees = null,
+            FeeFrom = 10,
+            FeeTo = 20
+        };
+
+        var validationContext = new ValidationContext(searchParams);
+        var validationResults = new List<ValidationResult>();
+        var isValid = Validator.TryValidateObject(searchParams, validationContext, validationResults, true);
+
+        isValid.Should().BeTrue();
+        validationResults.Should().BeEmpty();
+    }
+
     public static IEnumerable<object?[]> SearchParamsBindingData => new List<object?[]>
     {
         new object[] { "test", "a-z", "open", "utilities-only", "direct-award", new[] { "upcoming", "active-buyers" }, "yes", 0m, 100m, "true" },
