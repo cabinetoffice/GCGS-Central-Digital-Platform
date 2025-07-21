@@ -1,7 +1,7 @@
 using CO.CDP.RegisterOfCommercialTools.App.Models;
-using CO.CDP.RegisterOfCommercialTools.App.Pages;
 using CO.CDP.RegisterOfCommercialTools.App.Services;
 using FluentAssertions;
+using SearchModel = CO.CDP.RegisterOfCommercialTools.App.Models.SearchModel;
 
 namespace CO.CDP.RegisterOfCommercialTools.App.Tests.Services;
 
