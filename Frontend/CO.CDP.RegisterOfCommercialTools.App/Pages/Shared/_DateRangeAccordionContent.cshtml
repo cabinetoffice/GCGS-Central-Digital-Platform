@@ -1,39 +1,39 @@
-@model SearchModel
+@model CO.CDP.RegisterOfCommercialTools.App.Models.SearchModel
 @{
     var submissionDeadlineFromErrors = new {
-        Day = ViewData.ModelState["SearchParams.SubmissionDeadlineFromDay"]?.Errors.FirstOrDefault()?.ErrorMessage,
-        Month = ViewData.ModelState["SearchParams.SubmissionDeadlineFromMonth"]?.Errors.FirstOrDefault()?.ErrorMessage,
-        Year = ViewData.ModelState["SearchParams.SubmissionDeadlineFromYear"]?.Errors.FirstOrDefault()?.ErrorMessage
+        Day = ViewData.ModelState["SearchParams.SubmissionDeadline.From.Day"]?.Errors.FirstOrDefault()?.ErrorMessage,
+        Month = ViewData.ModelState["SearchParams.SubmissionDeadline.From.Month"]?.Errors.FirstOrDefault()?.ErrorMessage,
+        Year = ViewData.ModelState["SearchParams.SubmissionDeadline.From.Year"]?.Errors.FirstOrDefault()?.ErrorMessage
     };
 
     var submissionDeadlineToErrors = new {
-        Day = ViewData.ModelState["SearchParams.SubmissionDeadlineToDay"]?.Errors.FirstOrDefault()?.ErrorMessage,
-        Month = ViewData.ModelState["SearchParams.SubmissionDeadlineToMonth"]?.Errors.FirstOrDefault()?.ErrorMessage,
-        Year = ViewData.ModelState["SearchParams.SubmissionDeadlineToYear"]?.Errors.FirstOrDefault()?.ErrorMessage
+        Day = ViewData.ModelState["SearchParams.SubmissionDeadline.To.Day"]?.Errors.FirstOrDefault()?.ErrorMessage,
+        Month = ViewData.ModelState["SearchParams.SubmissionDeadline.To.Month"]?.Errors.FirstOrDefault()?.ErrorMessage,
+        Year = ViewData.ModelState["SearchParams.SubmissionDeadline.To.Year"]?.Errors.FirstOrDefault()?.ErrorMessage
     };
 
     var contractStartDateFromErrors = new {
-        Day = ViewData.ModelState["SearchParams.ContractStartDateFromDay"]?.Errors.FirstOrDefault()?.ErrorMessage,
-        Month = ViewData.ModelState["SearchParams.ContractStartDateFromMonth"]?.Errors.FirstOrDefault()?.ErrorMessage,
-        Year = ViewData.ModelState["SearchParams.ContractStartDateFromYear"]?.Errors.FirstOrDefault()?.ErrorMessage
+        Day = ViewData.ModelState["SearchParams.ContractStartDate.From.Day"]?.Errors.FirstOrDefault()?.ErrorMessage,
+        Month = ViewData.ModelState["SearchParams.ContractStartDate.From.Month"]?.Errors.FirstOrDefault()?.ErrorMessage,
+        Year = ViewData.ModelState["SearchParams.ContractStartDate.From.Year"]?.Errors.FirstOrDefault()?.ErrorMessage
     };
 
     var contractStartDateToErrors = new {
-        Day = ViewData.ModelState["SearchParams.ContractStartDateToDay"]?.Errors.FirstOrDefault()?.ErrorMessage,
-        Month = ViewData.ModelState["SearchParams.ContractStartDateToMonth"]?.Errors.FirstOrDefault()?.ErrorMessage,
-        Year = ViewData.ModelState["SearchParams.ContractStartDateToYear"]?.Errors.FirstOrDefault()?.ErrorMessage
+        Day = ViewData.ModelState["SearchParams.ContractStartDate.To.Day"]?.Errors.FirstOrDefault()?.ErrorMessage,
+        Month = ViewData.ModelState["SearchParams.ContractStartDate.To.Month"]?.Errors.FirstOrDefault()?.ErrorMessage,
+        Year = ViewData.ModelState["SearchParams.ContractStartDate.To.Year"]?.Errors.FirstOrDefault()?.ErrorMessage
     };
 
     var contractEndDateFromErrors = new {
-        Day = ViewData.ModelState["SearchParams.ContractEndDateFromDay"]?.Errors.FirstOrDefault()?.ErrorMessage,
-        Month = ViewData.ModelState["SearchParams.ContractEndDateFromMonth"]?.Errors.FirstOrDefault()?.ErrorMessage,
-        Year = ViewData.ModelState["SearchParams.ContractEndDateFromYear"]?.Errors.FirstOrDefault()?.ErrorMessage
+        Day = ViewData.ModelState["SearchParams.ContractEndDate.From.Day"]?.Errors.FirstOrDefault()?.ErrorMessage,
+        Month = ViewData.ModelState["SearchParams.ContractEndDate.From.Month"]?.Errors.FirstOrDefault()?.ErrorMessage,
+        Year = ViewData.ModelState["SearchParams.ContractEndDate.From.Year"]?.Errors.FirstOrDefault()?.ErrorMessage
     };
 
     var contractEndDateToErrors = new {
-        Day = ViewData.ModelState["SearchParams.ContractEndDateToDay"]?.Errors.FirstOrDefault()?.ErrorMessage,
-        Month = ViewData.ModelState["SearchParams.ContractEndDateToMonth"]?.Errors.FirstOrDefault()?.ErrorMessage,
-        Year = ViewData.ModelState["SearchParams.ContractEndDateToYear"]?.Errors.FirstOrDefault()?.ErrorMessage
+        Day = ViewData.ModelState["SearchParams.ContractEndDate.To.Day"]?.Errors.FirstOrDefault()?.ErrorMessage,
+        Month = ViewData.ModelState["SearchParams.ContractEndDate.To.Month"]?.Errors.FirstOrDefault()?.ErrorMessage,
+        Year = ViewData.ModelState["SearchParams.ContractEndDate.To.Year"]?.Errors.FirstOrDefault()?.ErrorMessage
     };
 
     bool HasDateErrors(dynamic errors) => !string.IsNullOrEmpty(errors.Day) || !string.IsNullOrEmpty(errors.Month) || !string.IsNullOrEmpty(errors.Year);
@@ -80,7 +80,7 @@
                                        id="SearchParams.SubmissionDeadlineFromDay"
                                        name="SearchParams.SubmissionDeadlineFromDay"
                                        type="text" inputmode="numeric"
-                                       value="@Model.SubmissionDeadlineFromDay">
+                                       value="@Model.SubmissionDeadline.From.Day">
                             </div>
                         </div>
                         <div class="govuk-date-input__item govuk-!-margin-right-3">
@@ -93,7 +93,7 @@
                                        id="SearchParams.SubmissionDeadlineFromMonth"
                                        name="SearchParams.SubmissionDeadlineFromMonth"
                                        type="text" inputmode="numeric"
-                                       value="@Model.SubmissionDeadlineFromMonth">
+                                       value="@Model.SubmissionDeadline.From.Month">
                             </div>
                         </div>
                         <div class="govuk-date-input__item">
@@ -106,7 +106,7 @@
                                        id="SearchParams.SubmissionDeadlineFromYear"
                                        name="SearchParams.SubmissionDeadlineFromYear"
                                        type="text" inputmode="numeric"
-                                       value="@Model.SubmissionDeadlineFromYear">
+                                       value="@Model.SubmissionDeadline.From.Year">
                             </div>
                         </div>
                     </div>
@@ -136,7 +136,7 @@
                                        id="SearchParams.SubmissionDeadlineToDay"
                                        name="SearchParams.SubmissionDeadlineToDay"
                                        type="text" inputmode="numeric"
-                                       value="@Model.SubmissionDeadlineToDay">
+                                       value="@Model.SubmissionDeadline.To.Day">
                             </div>
                         </div>
                         <div class="govuk-date-input__item govuk-!-margin-right-3">
@@ -149,7 +149,7 @@
                                        id="SearchParams.SubmissionDeadlineToMonth"
                                        name="SearchParams.SubmissionDeadlineToMonth"
                                        type="text" inputmode="numeric"
-                                       value="@Model.SubmissionDeadlineToMonth">
+                                       value="@Model.SubmissionDeadline.To.Month">
                             </div>
                         </div>
                         <div class="govuk-date-input__item">
@@ -162,7 +162,7 @@
                                        id="SearchParams.SubmissionDeadlineToYear"
                                        name="SearchParams.SubmissionDeadlineToYear"
                                        type="text" inputmode="numeric"
-                                       value="@Model.SubmissionDeadlineToYear">
+                                       value="@Model.SubmissionDeadline.To.Year">
                             </div>
                         </div>
                     </div>
@@ -205,7 +205,7 @@
                                        id="SearchParams.ContractStartDateFromDay"
                                        name="SearchParams.ContractStartDateFromDay"
                                        type="text" inputmode="numeric"
-                                       value="@Model.ContractStartDateFromDay">
+                                       value="@Model.ContractStartDate.From.Day">
                             </div>
                         </div>
                         <div class="govuk-date-input__item govuk-!-margin-right-3">
@@ -218,7 +218,7 @@
                                        id="SearchParams.ContractStartDateFromMonth"
                                        name="SearchParams.ContractStartDateFromMonth"
                                        type="text" inputmode="numeric"
-                                       value="@Model.ContractStartDateFromMonth">
+                                       value="@Model.ContractStartDate.From.Month">
                             </div>
                         </div>
                         <div class="govuk-date-input__item">
@@ -231,7 +231,7 @@
                                        id="SearchParams.ContractStartDateFromYear"
                                        name="SearchParams.ContractStartDateFromYear"
                                        type="text" inputmode="numeric"
-                                       value="@Model.ContractStartDateFromYear">
+                                       value="@Model.ContractStartDate.From.Year">
                             </div>
                         </div>
                     </div>
@@ -261,7 +261,7 @@
                                        id="SearchParams.ContractStartDateToDay"
                                        name="SearchParams.ContractStartDateToDay"
                                        type="text" inputmode="numeric"
-                                       value="@Model.ContractStartDateToDay">
+                                       value="@Model.ContractStartDate.To.Day">
                             </div>
                         </div>
                         <div class="govuk-date-input__item govuk-!-margin-right-3">
@@ -274,7 +274,7 @@
                                        id="SearchParams.ContractStartDateToMonth"
                                        name="SearchParams.ContractStartDateToMonth"
                                        type="text" inputmode="numeric"
-                                       value="@Model.ContractStartDateToMonth">
+                                       value="@Model.ContractStartDate.To.Month">
                             </div>
                         </div>
                         <div class="govuk-date-input__item">
@@ -287,7 +287,7 @@
                                        id="SearchParams.ContractStartDateToYear"
                                        name="SearchParams.ContractStartDateToYear"
                                        type="text" inputmode="numeric"
-                                       value="@Model.ContractStartDateToYear">
+                                       value="@Model.ContractStartDate.To.Year">
                             </div>
                         </div>
                     </div>
@@ -330,7 +330,7 @@
                                        id="SearchParams.ContractEndDateFromDay"
                                        name="SearchParams.ContractEndDateFromDay"
                                        type="text" inputmode="numeric"
-                                       value="@Model.ContractEndDateFromDay">
+                                       value="@Model.ContractEndDate.From.Day">
                             </div>
                         </div>
                         <div class="govuk-date-input__item govuk-!-margin-right-3">
@@ -343,7 +343,7 @@
                                        id="SearchParams.ContractEndDateFromMonth"
                                        name="SearchParams.ContractEndDateFromMonth"
                                        type="text" inputmode="numeric"
-                                       value="@Model.ContractEndDateFromMonth">
+                                       value="@Model.ContractEndDate.From.Month">
                             </div>
                         </div>
                         <div class="govuk-date-input__item">
@@ -356,7 +356,7 @@
                                        id="SearchParams.ContractEndDateFromYear"
                                        name="SearchParams.ContractEndDateFromYear"
                                        type="text" inputmode="numeric"
-                                       value="@Model.ContractEndDateFromYear">
+                                       value="@Model.ContractEndDate.From.Year">
                             </div>
                         </div>
                     </div>
@@ -386,7 +386,7 @@
                                        id="SearchParams.ContractEndDateToDay"
                                        name="SearchParams.ContractEndDateToDay"
                                        type="text" inputmode="numeric"
-                                       value="@Model.ContractEndDateToDay">
+                                       value="@Model.ContractEndDate.To.Day">
                             </div>
                         </div>
                         <div class="govuk-date-input__item govuk-!-margin-right-3">
@@ -399,20 +399,20 @@
                                        id="SearchParams.ContractEndDateToMonth"
                                        name="SearchParams.ContractEndDateToMonth"
                                        type="text" inputmode="numeric"
-                                       value="@Model.ContractEndDateToMonth">
+                                       value="@Model.ContractEndDate.To.Month">
                             </div>
                         </div>
                         <div class="govuk-date-input__item">
                             <div class="govuk-form-group">
                                 <label class="govuk-label govuk-date-input__label govuk-!-font-size-16"
-                                       for="SearchParams.ContractEndDateToYear">
+                                       for="SearchParams.ContractEndDate.To.Year">
                                     Year
                                 </label>
                                 <input class="govuk-input govuk-date-input__input govuk-input--width-4 @(!string.IsNullOrEmpty(contractEndDateToErrors.Year) ? "govuk-input--error" : "")"
-                                       id="SearchParams.ContractEndDateToYear"
-                                       name="SearchParams.ContractEndDateToYear"
+                                       id="SearchParams.ContractEndDate.To.Year"
+                                       name="SearchParams.ContractEndDate.To.Year"
                                        type="text" inputmode="numeric"
-                                       value="@Model.ContractEndDateToYear">
+                                       value="@Model.ContractEndDate.To.Year">
                             </div>
                         </div>
                     </div>

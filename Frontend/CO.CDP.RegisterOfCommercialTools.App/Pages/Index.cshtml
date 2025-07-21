@@ -95,18 +95,24 @@
                 {
                     <input type="hidden" name="SearchParams.Status" value="@status"/>
                 }
-                <input type="hidden" name="SearchParams.SubmissionDeadlineFrom"
-                       value="@Model.SearchParams.SubmissionDeadlineFrom"/>
-                <input type="hidden" name="SearchParams.SubmissionDeadlineTo"
-                       value="@Model.SearchParams.SubmissionDeadlineTo"/>
-                <input type="hidden" name="SearchParams.ContractStartDateFrom"
-                       value="@Model.SearchParams.ContractStartDateFrom"/>
-                <input type="hidden" name="SearchParams.ContractStartDateTo"
-                       value="@Model.SearchParams.ContractStartDateTo"/>
-                <input type="hidden" name="SearchParams.ContractEndDateFrom"
-                       value="@Model.SearchParams.ContractEndDateFrom"/>
-                <input type="hidden" name="SearchParams.ContractEndDateTo"
-                       value="@Model.SearchParams.ContractEndDateTo"/>
+                <input type="hidden" name="SearchParams.SubmissionDeadline.From.Day" value="@Model.SearchParams.SubmissionDeadline.From.Day"/>
+                <input type="hidden" name="SearchParams.SubmissionDeadline.From.Month" value="@Model.SearchParams.SubmissionDeadline.From.Month"/>
+                <input type="hidden" name="SearchParams.SubmissionDeadline.From.Year" value="@Model.SearchParams.SubmissionDeadline.From.Year"/>
+                <input type="hidden" name="SearchParams.SubmissionDeadline.To.Day" value="@Model.SearchParams.SubmissionDeadline.To.Day"/>
+                <input type="hidden" name="SearchParams.SubmissionDeadline.To.Month" value="@Model.SearchParams.SubmissionDeadline.To.Month"/>
+                <input type="hidden" name="SearchParams.SubmissionDeadline.To.Year" value="@Model.SearchParams.SubmissionDeadline.To.Year"/>
+                <input type="hidden" name="SearchParams.ContractStartDate.From.Day" value="@Model.SearchParams.ContractStartDate.From.Day"/>
+                <input type="hidden" name="SearchParams.ContractStartDate.From.Month" value="@Model.SearchParams.ContractStartDate.From.Month"/>
+                <input type="hidden" name="SearchParams.ContractStartDate.From.Year" value="@Model.SearchParams.ContractStartDate.From.Year"/>
+                <input type="hidden" name="SearchParams.ContractStartDate.To.Day" value="@Model.SearchParams.ContractStartDate.To.Day"/>
+                <input type="hidden" name="SearchParams.ContractStartDate.To.Month" value="@Model.SearchParams.ContractStartDate.To.Month"/>
+                <input type="hidden" name="SearchParams.ContractStartDate.To.Year" value="@Model.SearchParams.ContractStartDate.To.Year"/>
+                <input type="hidden" name="SearchParams.ContractEndDate.From.Day" value="@Model.SearchParams.ContractEndDate.From.Day"/>
+                <input type="hidden" name="SearchParams.ContractEndDate.From.Month" value="@Model.SearchParams.ContractEndDate.From.Month"/>
+                <input type="hidden" name="SearchParams.ContractEndDate.From.Year" value="@Model.SearchParams.ContractEndDate.From.Year"/>
+                <input type="hidden" name="SearchParams.ContractEndDate.To.Day" value="@Model.SearchParams.ContractEndDate.To.Day"/>
+                <input type="hidden" name="SearchParams.ContractEndDate.To.Month" value="@Model.SearchParams.ContractEndDate.To.Month"/>
+                <input type="hidden" name="SearchParams.ContractEndDate.To.Year" value="@Model.SearchParams.ContractEndDate.To.Year"/>
                 <label for="sort-results" class="govuk-label govuk-!-font-weight-bold">Sort results</label>
                 <select id="sort-results" class="govuk-select" asp-for="SearchParams.SortOrder"
                         onchange="this.form.submit()">
