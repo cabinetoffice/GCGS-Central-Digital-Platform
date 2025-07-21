@@ -7,32 +7,32 @@
         "commercial-tool",
         "Commercial tool",
         _ => Html.Partial("_CommercialToolAccordionContent", Model.SearchParams)
-    );
+    ) { IsOpen = Model.OpenAccordions.Contains("commercial-tool") };
     var commercialToolStatusAccordion = new Accordion(
         "commercial-tool-status",
         "Commercial tool status",
         _ => Html.Partial("_CommercialToolStatusAccordionContent", Model.SearchParams)
-    );
+    ) { IsOpen = Model.OpenAccordions.Contains("commercial-tool-status") };
     var contractingAuthorityUsageAccordion = new Accordion(
         "contracting-authority-usage",
         "Contracting authority usage",
         _ => Html.Partial("_ContractingAuthorityUsageAccordionContent", Model.SearchParams)
-    );
+    ) { IsOpen = Model.OpenAccordions.Contains("contracting-authority-usage") };
     var awardMethodAccordion = new Accordion(
         "award-method",
         "Award method",
         _ => Html.Partial("_AwardMethodAccordionContent", Model.SearchParams)
-    );
+    ) { IsOpen = Model.OpenAccordions.Contains("award-method") };
     var feesAccordion = new Accordion(
         "fees",
         "Fees",
         _ => Html.Partial("_FeesAccordionContent", Model.SearchParams)
-    );
+    ) { IsOpen = Model.OpenAccordions.Contains("fees") };
     var dateRangeAccordion = new Accordion(
         "date-range",
         "Date range",
         _ => Html.Partial("_DateRangeAccordionContent", Model.SearchParams)
-    );
+    ) { IsOpen = Model.OpenAccordions.Contains("date-range") };
 }
 
 <script src="/js/search.js"></script>

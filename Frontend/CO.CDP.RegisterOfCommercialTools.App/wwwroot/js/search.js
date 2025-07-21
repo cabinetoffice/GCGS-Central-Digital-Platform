@@ -1,43 +1,55 @@
-(function() {
-    function initialiseAccordion(accordionSection) {
-        if (!accordionSection) return;
+document.addEventListener("DOMContentLoaded", function () {
+    const accordionControls = document.querySelectorAll("[data-accordion-section]");
+    const storageKey = "accordionStates";
 
-        const accordionButton = accordionSection.querySelector('[data-accordion-button]');
-        const accordionContent = accordionSection.querySelector('[data-accordion-content]');
+    let states = JSON.parse(sessionStorage.getItem(storageKey));
 
-        if (!accordionButton || !accordionContent) return;
+    accordionControls.forEach(control => {
+        const button = control.querySelector("[data-accordion-button]");
+        const content = control.querySelector("[data-accordion-content]");
+        const accordionSection = control.querySelector(".govuk-accordion__section");
+        const input = control.querySelector('[data-accordion-input]');
 
-        const chevronIcon = accordionButton.querySelector('svg');
-
-        const initialExpanded = accordionButton.getAttribute('aria-expanded') === 'true';
-        accordionContent.style.display = initialExpanded ? 'block' : 'none';
-        if (chevronIcon) {
-            chevronIcon.style.transform = initialExpanded ? 'rotate(180deg)' : 'rotate(0deg)';
+        if (!button || !content || !input || !accordionSection) {
+            return;
         }
 
-        accordionButton.addEventListener('click', function(event) {
-            event.preventDefault();
+        const id = content.id.replace("-content", "");
 
-            const expanded = this.getAttribute('aria-expanded') === 'true';
-            const newExpandedState = !expanded;
+        if (states === null) {
+            states = {};
+            states[id] = accordionSection.classList.contains("govuk-accordion__section--expanded");
+        }
 
-            this.setAttribute('aria-expanded', newExpandedState);
-            accordionContent.style.display = newExpandedState ? 'block' : 'none';
+        const isExpanded = states[id];
+        button.setAttribute("aria-expanded", isExpanded);
+        if (isExpanded) {
+            accordionSection.classList.add("govuk-accordion__section--expanded");
+        } else {
+            accordionSection.classList.remove("govuk-accordion__section--expanded");
+        }
+        input.value = isExpanded ? id : "";
 
-            if (chevronIcon) {
-                chevronIcon.style.transform = newExpandedState ? 'rotate(180deg)' : 'rotate(0deg)';
+        button.addEventListener("click", function () {
+            const wasExpanded = this.getAttribute("aria-expanded") === "true";
+            const isNowExpanded = !wasExpanded;
+
+            this.setAttribute("aria-expanded", isNowExpanded);
+
+            if (isNowExpanded) {
+                accordionSection.classList.add("govuk-accordion__section--expanded");
+                input.value = id;
+            } else {
+                accordionSection.classList.remove("govuk-accordion__section--expanded");
+                input.value = "";
             }
+
+            states[id] = isNowExpanded;
+            sessionStorage.setItem(storageKey, JSON.stringify(states));
         });
-    }
+    });
 
-    function initialiseAllAccordions() {
-        const accordionSections = document.querySelectorAll('[data-accordion-section]');
-        accordionSections.forEach(initialiseAccordion);
+    if (sessionStorage.getItem(storageKey) === null) {
+        sessionStorage.setItem(storageKey, JSON.stringify(states));
     }
-
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initialiseAllAccordions);
-    } else {
-        initialiseAllAccordions();
-    }
-})();
+});

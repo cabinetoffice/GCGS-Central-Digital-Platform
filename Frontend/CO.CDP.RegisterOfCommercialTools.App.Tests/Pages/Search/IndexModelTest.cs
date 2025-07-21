@@ -60,6 +60,13 @@ public class IndexModelTest
         _model.SearchParams.ContractStartDateTo.Should().BeNull();
         _model.SearchParams.ContractEndDateFrom.Should().BeNull();
         _model.SearchParams.ContractEndDateTo.Should().BeNull();
+
+        var expectedOpenAccordions = new[]
+        {
+            "commercial-tool", "commercial-tool-status", "contracting-authority-usage", "award-method", "fees",
+            "date-range"
+        };
+        _model.OpenAccordions.Should().BeEquivalentTo(expectedOpenAccordions);
     }
 
     [Fact]

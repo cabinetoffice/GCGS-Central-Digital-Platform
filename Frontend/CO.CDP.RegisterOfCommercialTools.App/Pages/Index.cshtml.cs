@@ -13,8 +13,14 @@ namespace CO.CDP.RegisterOfCommercialTools.App.Pages;
 public class IndexModel(ISearchService searchService, ISirsiUrlService sirsiUrlService)
     : PageModel
 {
+    [BindProperty(SupportsGet = true)] public SearchModel SearchParams { get; set; } = new();
+
     [BindProperty(SupportsGet = true)]
-    public SearchModel SearchParams { get; set; } = new();
+    public List<string> OpenAccordions { get; set; } =
+    [
+        "commercial-tool", "commercial-tool-status", "contracting-authority-usage", "award-method", "fees",
+        "date-range"
+    ];
 
     public List<SearchResult> SearchResults { get; set; } = [];
     public PaginationPartialModel? Pagination { get; set; }
@@ -83,7 +89,6 @@ public class IndexModel(ISearchService searchService, ISirsiUrlService sirsiUrlS
         return Redirect(sirsiHomeUrl);
     }
 }
-
 
 public class SearchModel : IValidatableObject
 {
