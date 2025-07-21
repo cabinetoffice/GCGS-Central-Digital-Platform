@@ -47,6 +47,27 @@
     </govuk-inset-text>
 
     <div class="govuk-grid-row">
+        @if (!ModelState.IsValid)
+        {
+            <div class="govuk-error-summary" data-module="govuk-error-summary">
+                <div role="alert">
+                    <h2 class="govuk-error-summary__title">
+                        There is a problem
+                    </h2>
+                    <div class="govuk-error-summary__body">
+                        <ul class="govuk-list govuk-error-summary__list">
+                            @foreach (var (key, value) in ModelState)
+                            {
+                                @foreach (var error in value.Errors)
+                                {
+                                    <li><a href="#@key">@error.ErrorMessage</a></li>
+                                }
+                            }
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        }
         <div class="govuk-grid-column-two-thirds">
             <h1 class="govuk-heading-l govuk-!-margin-bottom-2">Search Results</h1>
             <p class="govuk-body-m">We've found <span class="govuk-!-font-weight-bold">@Model.TotalCount</span>
