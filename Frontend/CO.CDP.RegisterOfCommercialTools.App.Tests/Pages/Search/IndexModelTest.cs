@@ -54,12 +54,24 @@ public class IndexModelTest
         _model.SearchParams.FeeFrom.Should().BeNull();
         _model.SearchParams.FeeTo.Should().BeNull();
         _model.SearchParams.NoFees.Should().BeNull();
-        _model.SearchParams.SubmissionDeadlineFrom.Should().BeNull();
-        _model.SearchParams.SubmissionDeadlineTo.Should().BeNull();
-        _model.SearchParams.ContractStartDateFrom.Should().BeNull();
-        _model.SearchParams.ContractStartDateTo.Should().BeNull();
-        _model.SearchParams.ContractEndDateFrom.Should().BeNull();
-        _model.SearchParams.ContractEndDateTo.Should().BeNull();
+        _model.SearchParams.SubmissionDeadlineFromDay.Should().BeNull();
+        _model.SearchParams.SubmissionDeadlineFromMonth.Should().BeNull();
+        _model.SearchParams.SubmissionDeadlineFromYear.Should().BeNull();
+        _model.SearchParams.SubmissionDeadlineToDay.Should().BeNull();
+        _model.SearchParams.SubmissionDeadlineToMonth.Should().BeNull();
+        _model.SearchParams.SubmissionDeadlineToYear.Should().BeNull();
+        _model.SearchParams.ContractStartDateFromDay.Should().BeNull();
+        _model.SearchParams.ContractStartDateFromMonth.Should().BeNull();
+        _model.SearchParams.ContractStartDateFromYear.Should().BeNull();
+        _model.SearchParams.ContractStartDateToDay.Should().BeNull();
+        _model.SearchParams.ContractStartDateToMonth.Should().BeNull();
+        _model.SearchParams.ContractStartDateToYear.Should().BeNull();
+        _model.SearchParams.ContractEndDateFromDay.Should().BeNull();
+        _model.SearchParams.ContractEndDateFromMonth.Should().BeNull();
+        _model.SearchParams.ContractEndDateFromYear.Should().BeNull();
+        _model.SearchParams.ContractEndDateToDay.Should().BeNull();
+        _model.SearchParams.ContractEndDateToMonth.Should().BeNull();
+        _model.SearchParams.ContractEndDateToYear.Should().BeNull();
 
         var expectedOpenAccordions = new[]
         {
@@ -84,12 +96,24 @@ public class IndexModelTest
             FeeFrom = 0,
             FeeTo = 100,
             NoFees = "true",
-            SubmissionDeadlineFrom = new DateOnly(2025, 1, 1),
-            SubmissionDeadlineTo = new DateOnly(2025, 1, 31),
-            ContractStartDateFrom = new DateOnly(2025, 2, 1),
-            ContractStartDateTo = new DateOnly(2025, 2, 28),
-            ContractEndDateFrom = new DateOnly(2026, 1, 1),
-            ContractEndDateTo = new DateOnly(2026, 1, 31)
+            SubmissionDeadlineFromDay = "1",
+            SubmissionDeadlineFromMonth = "1",
+            SubmissionDeadlineFromYear = "2025",
+            SubmissionDeadlineToDay = "31",
+            SubmissionDeadlineToMonth = "1",
+            SubmissionDeadlineToYear = "2025",
+            ContractStartDateFromDay = "1",
+            ContractStartDateFromMonth = "2",
+            ContractStartDateFromYear = "2025",
+            ContractStartDateToDay = "28",
+            ContractStartDateToMonth = "2",
+            ContractStartDateToYear = "2025",
+            ContractEndDateFromDay = "1",
+            ContractEndDateFromMonth = "1",
+            ContractEndDateFromYear = "2026",
+            ContractEndDateToDay = "31",
+            ContractEndDateToMonth = "1",
+            ContractEndDateToYear = "2026"
         };
         _model.SearchParams = searchParams;
 
@@ -118,12 +142,24 @@ public class IndexModelTest
     {
         var searchParams = new SearchModel
         {
-            SubmissionDeadlineFrom = new DateOnly(2025, 2, 1),
-            SubmissionDeadlineTo = new DateOnly(2025, 1, 1),
-            ContractStartDateFrom = new DateOnly(2025, 2, 1),
-            ContractStartDateTo = new DateOnly(2025, 1, 1),
-            ContractEndDateFrom = new DateOnly(2025, 2, 1),
-            ContractEndDateTo = new DateOnly(2025, 1, 1)
+            SubmissionDeadlineFromDay = "1",
+            SubmissionDeadlineFromMonth = "2",
+            SubmissionDeadlineFromYear = "2025",
+            SubmissionDeadlineToDay = "1",
+            SubmissionDeadlineToMonth = "1",
+            SubmissionDeadlineToYear = "2025",
+            ContractStartDateFromDay = "1",
+            ContractStartDateFromMonth = "2",
+            ContractStartDateFromYear = "2025",
+            ContractStartDateToDay = "1",
+            ContractStartDateToMonth = "1",
+            ContractStartDateToYear = "2025",
+            ContractEndDateFromDay = "1",
+            ContractEndDateFromMonth = "2",
+            ContractEndDateFromYear = "2025",
+            ContractEndDateToDay = "1",
+            ContractEndDateToMonth = "1",
+            ContractEndDateToYear = "2025"
         };
 
         var validationContext = new ValidationContext(searchParams);
@@ -132,7 +168,9 @@ public class IndexModelTest
 
         isValid.Should().BeFalse();
         validationResults.Should().HaveCount(3);
-        validationResults.Select(r => r.ErrorMessage).Should().AllBe("To date must be after from date");
+        validationResults.Select(r => r.ErrorMessage).Should().Contain("Submission deadline to date must be after from date");
+        validationResults.Select(r => r.ErrorMessage).Should().Contain("Contract start date to date must be after from date");
+        validationResults.Select(r => r.ErrorMessage).Should().Contain("Contract end date to date must be after from date");
     }
 
     [Fact]
@@ -140,12 +178,24 @@ public class IndexModelTest
     {
         var searchParams = new SearchModel
         {
-            SubmissionDeadlineFrom = new DateOnly(2025, 1, 1),
-            SubmissionDeadlineTo = new DateOnly(2025, 2, 1),
-            ContractStartDateFrom = new DateOnly(2025, 1, 1),
-            ContractStartDateTo = new DateOnly(2025, 2, 1),
-            ContractEndDateFrom = new DateOnly(2025, 1, 1),
-            ContractEndDateTo = new DateOnly(2025, 2, 1)
+            SubmissionDeadlineFromDay = "1",
+            SubmissionDeadlineFromMonth = "1",
+            SubmissionDeadlineFromYear = "2025",
+            SubmissionDeadlineToDay = "1",
+            SubmissionDeadlineToMonth = "2",
+            SubmissionDeadlineToYear = "2025",
+            ContractStartDateFromDay = "1",
+            ContractStartDateFromMonth = "1",
+            ContractStartDateFromYear = "2025",
+            ContractStartDateToDay = "1",
+            ContractStartDateToMonth = "2",
+            ContractStartDateToYear = "2025",
+            ContractEndDateFromDay = "1",
+            ContractEndDateFromMonth = "1",
+            ContractEndDateFromYear = "2025",
+            ContractEndDateToDay = "1",
+            ContractEndDateToMonth = "2",
+            ContractEndDateToYear = "2025"
         };
 
         var validationContext = new ValidationContext(searchParams);
@@ -161,12 +211,24 @@ public class IndexModelTest
     {
         var searchParams = new SearchModel
         {
-            SubmissionDeadlineFrom = new DateOnly(2025, 1, 1),
-            SubmissionDeadlineTo = new DateOnly(2025, 1, 1),
-            ContractStartDateFrom = new DateOnly(2025, 1, 1),
-            ContractStartDateTo = new DateOnly(2025, 1, 1),
-            ContractEndDateFrom = new DateOnly(2025, 1, 1),
-            ContractEndDateTo = new DateOnly(2025, 1, 1)
+            SubmissionDeadlineFromDay = "1",
+            SubmissionDeadlineFromMonth = "1",
+            SubmissionDeadlineFromYear = "2025",
+            SubmissionDeadlineToDay = "1",
+            SubmissionDeadlineToMonth = "1",
+            SubmissionDeadlineToYear = "2025",
+            ContractStartDateFromDay = "1",
+            ContractStartDateFromMonth = "1",
+            ContractStartDateFromYear = "2025",
+            ContractStartDateToDay = "1",
+            ContractStartDateToMonth = "1",
+            ContractStartDateToYear = "2025",
+            ContractEndDateFromDay = "1",
+            ContractEndDateFromMonth = "1",
+            ContractEndDateFromYear = "2025",
+            ContractEndDateToDay = "1",
+            ContractEndDateToMonth = "1",
+            ContractEndDateToYear = "2025"
         };
 
         var validationContext = new ValidationContext(searchParams);
@@ -182,12 +244,18 @@ public class IndexModelTest
     {
         var searchParams = new SearchModel
         {
-            SubmissionDeadlineFrom = new DateOnly(2025, 1, 1),
-            SubmissionDeadlineTo = null,
-            ContractStartDateFrom = null,
-            ContractStartDateTo = new DateOnly(2025, 1, 1),
-            ContractEndDateFrom = new DateOnly(2025, 1, 1),
-            ContractEndDateTo = null
+            SubmissionDeadlineFromDay = "1",
+            SubmissionDeadlineFromMonth = "1",
+            SubmissionDeadlineFromYear = "2025",
+            // SubmissionDeadlineTo components left null
+            // ContractStartDateFrom components left null
+            ContractStartDateToDay = "1",
+            ContractStartDateToMonth = "1",
+            ContractStartDateToYear = "2025",
+            ContractEndDateFromDay = "1",
+            ContractEndDateFromMonth = "1",
+            ContractEndDateFromYear = "2025"
+            // ContractEndDateTo components left null
         };
 
         var validationContext = new ValidationContext(searchParams);
@@ -203,12 +271,24 @@ public class IndexModelTest
     {
         var searchParams = new SearchModel
         {
-            SubmissionDeadlineFrom = new DateOnly(2025, 2, 1),
-            SubmissionDeadlineTo = new DateOnly(2025, 1, 1),
-            ContractStartDateFrom = new DateOnly(2025, 1, 1),
-            ContractStartDateTo = new DateOnly(2025, 2, 1),
-            ContractEndDateFrom = new DateOnly(2025, 1, 1),
-            ContractEndDateTo = new DateOnly(2025, 2, 1)
+            SubmissionDeadlineFromDay = "1",
+            SubmissionDeadlineFromMonth = "2",
+            SubmissionDeadlineFromYear = "2025",
+            SubmissionDeadlineToDay = "1",
+            SubmissionDeadlineToMonth = "1",
+            SubmissionDeadlineToYear = "2025",
+            ContractStartDateFromDay = "1",
+            ContractStartDateFromMonth = "1",
+            ContractStartDateFromYear = "2025",
+            ContractStartDateToDay = "1",
+            ContractStartDateToMonth = "2",
+            ContractStartDateToYear = "2025",
+            ContractEndDateFromDay = "1",
+            ContractEndDateFromMonth = "1",
+            ContractEndDateFromYear = "2025",
+            ContractEndDateToDay = "1",
+            ContractEndDateToMonth = "2",
+            ContractEndDateToYear = "2025"
         };
 
         var validationContext = new ValidationContext(searchParams);
@@ -217,7 +297,7 @@ public class IndexModelTest
 
         isValid.Should().BeFalse();
         validationResults.Should().HaveCount(1);
-        validationResults[0].ErrorMessage.Should().Be("To date must be after from date");
+        validationResults[0].ErrorMessage.Should().Be("Submission deadline to date must be after from date");
     }
 
     [Fact]
@@ -418,5 +498,137 @@ public class IndexModelTest
         await _model.OnGetAsync();
 
         _model.TotalCount.Should().Be(42);
+    }
+
+    [Fact]
+    public void DateComponentValidation_WhenAllComponentsEmpty_ShouldBeValid()
+    {
+        var searchParams = new SearchModel
+        {
+            SubmissionDeadlineFromDay = null,
+            SubmissionDeadlineFromMonth = null,
+            SubmissionDeadlineFromYear = null
+        };
+
+        var validationContext = new ValidationContext(searchParams);
+        var validationResults = new List<ValidationResult>();
+        var isValid = Validator.TryValidateObject(searchParams, validationContext, validationResults, true);
+
+        isValid.Should().BeTrue();
+        validationResults.Should().BeEmpty();
+    }
+
+    [Fact]
+    public void DateComponentValidation_WhenOnlyYearProvided_ShouldHaveValidationError()
+    {
+        var searchParams = new SearchModel
+        {
+            SubmissionDeadlineFromDay = null,
+            SubmissionDeadlineFromMonth = null,
+            SubmissionDeadlineFromYear = "2025"
+        };
+
+        var validationContext = new ValidationContext(searchParams);
+        var validationResults = new List<ValidationResult>();
+        var isValid = Validator.TryValidateObject(searchParams, validationContext, validationResults, true);
+
+        isValid.Should().BeFalse();
+        validationResults.Should().HaveCount(2);
+        validationResults.Select(r => r.ErrorMessage).Should().Contain("Submission deadline from must include a day and month");
+    }
+
+    [Fact]
+    public void DateComponentValidation_WhenAllComponentsProvided_ShouldBeValid()
+    {
+        var searchParams = new SearchModel
+        {
+            SubmissionDeadlineFromDay = "15",
+            SubmissionDeadlineFromMonth = "6",
+            SubmissionDeadlineFromYear = "2025"
+        };
+
+        var validationContext = new ValidationContext(searchParams);
+        var validationResults = new List<ValidationResult>();
+        var isValid = Validator.TryValidateObject(searchParams, validationContext, validationResults, true);
+
+        isValid.Should().BeTrue();
+        validationResults.Should().BeEmpty();
+    }
+
+    [Fact]
+    public void DateComponentValidation_WhenInvalidDay_ShouldHaveValidationError()
+    {
+        var searchParams = new SearchModel
+        {
+            SubmissionDeadlineFromDay = "32",
+            SubmissionDeadlineFromMonth = "6",
+            SubmissionDeadlineFromYear = "2025"
+        };
+
+        var validationContext = new ValidationContext(searchParams);
+        var validationResults = new List<ValidationResult>();
+        var isValid = Validator.TryValidateObject(searchParams, validationContext, validationResults, true);
+
+        isValid.Should().BeFalse();
+        validationResults.Should().HaveCount(1);
+        validationResults[0].ErrorMessage.Should().Be("Submission deadline from must have a valid day");
+    }
+
+    [Fact]
+    public void DateComponentValidation_WhenInvalidMonth_ShouldHaveValidationError()
+    {
+        var searchParams = new SearchModel
+        {
+            SubmissionDeadlineFromDay = "15",
+            SubmissionDeadlineFromMonth = "13",
+            SubmissionDeadlineFromYear = "2025"
+        };
+
+        var validationContext = new ValidationContext(searchParams);
+        var validationResults = new List<ValidationResult>();
+        var isValid = Validator.TryValidateObject(searchParams, validationContext, validationResults, true);
+
+        isValid.Should().BeFalse();
+        validationResults.Should().HaveCount(2);
+        validationResults.Select(r => r.ErrorMessage).Should().Contain("Submission deadline from must have a valid month");
+        validationResults.Select(r => r.ErrorMessage).Should().Contain("Submission deadline from must be a real date");
+    }
+
+    [Fact]
+    public void DateComponentValidation_WhenInvalidYear_ShouldHaveValidationError()
+    {
+        var searchParams = new SearchModel
+        {
+            SubmissionDeadlineFromDay = "15",
+            SubmissionDeadlineFromMonth = "6",
+            SubmissionDeadlineFromYear = "25"
+        };
+
+        var validationContext = new ValidationContext(searchParams);
+        var validationResults = new List<ValidationResult>();
+        var isValid = Validator.TryValidateObject(searchParams, validationContext, validationResults, true);
+
+        isValid.Should().BeFalse();
+        validationResults.Should().HaveCount(1);
+        validationResults[0].ErrorMessage.Should().Be("Submission deadline from year must include 4 numbers");
+    }
+
+    [Fact]
+    public void DateComponentValidation_WhenInvalidDate_ShouldHaveValidationError()
+    {
+        var searchParams = new SearchModel
+        {
+            SubmissionDeadlineFromDay = "31",
+            SubmissionDeadlineFromMonth = "2",
+            SubmissionDeadlineFromYear = "2025"
+        };
+
+        var validationContext = new ValidationContext(searchParams);
+        var validationResults = new List<ValidationResult>();
+        var isValid = Validator.TryValidateObject(searchParams, validationContext, validationResults, true);
+
+        isValid.Should().BeFalse();
+        validationResults.Should().HaveCount(1);
+        validationResults[0].ErrorMessage.Should().Be("Submission deadline from must be a real date");
     }
 }

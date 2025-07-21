@@ -54,12 +54,6 @@ public class IndexModel(ISearchService searchService, ISirsiUrlService sirsiUrlS
     public async Task<IActionResult> OnPostAsync()
     {
         SanitiseSearchParams();
-        CheckDateBindingErrors("SearchParams.SubmissionDeadlineFrom");
-        CheckDateBindingErrors("SearchParams.SubmissionDeadlineTo");
-        CheckDateBindingErrors("SearchParams.ContractStartDateFrom");
-        CheckDateBindingErrors("SearchParams.ContractStartDateTo");
-        CheckDateBindingErrors("SearchParams.ContractEndDateFrom");
-        CheckDateBindingErrors("SearchParams.ContractEndDateTo");
 
         await OnGetAsync();
         return Page();
@@ -69,14 +63,6 @@ public class IndexModel(ISearchService searchService, ISirsiUrlService sirsiUrlS
         SearchParams.Keywords = InputSanitiser.SanitiseSingleLineTextInput(SearchParams.Keywords);
     }
 
-    private void CheckDateBindingErrors(string key)
-    {
-        if (ModelState.TryGetValue(key, out var modelState) && modelState.Errors.Any(e => e.Exception is FormatException))
-        {
-            modelState.Errors.Clear();
-            ModelState.AddModelError(key, "Please enter a valid date");
-        }
-    }
 
     public IActionResult OnPostReset()
     {
@@ -117,50 +103,130 @@ public class SearchModel : IValidatableObject
 
     public string? ContractingAuthorityUsage { get; set; }
 
-    public DateOnly? SubmissionDeadlineFrom { get; set; }
+    [DateComponentValidation("SubmissionDeadlineFrom")]
+    public string? SubmissionDeadlineFromDay { get; set; }
+    [DateComponentValidation("SubmissionDeadlineFrom")]
+    public string? SubmissionDeadlineFromMonth { get; set; }
+    [DateComponentValidation("SubmissionDeadlineFrom")]
+    public string? SubmissionDeadlineFromYear { get; set; }
 
-    [DateRange("SubmissionDeadlineFrom", ErrorMessage = "To date must be after from date")]
-    public DateOnly? SubmissionDeadlineTo { get; set; }
+    [DateComponentValidation("SubmissionDeadlineTo")]
+    public string? SubmissionDeadlineToDay { get; set; }
+    [DateComponentValidation("SubmissionDeadlineTo")]
+    public string? SubmissionDeadlineToMonth { get; set; }
+    [DateComponentValidation("SubmissionDeadlineTo")]
+    public string? SubmissionDeadlineToYear { get; set; }
 
-    public DateOnly? ContractStartDateFrom { get; set; }
+    [DateComponentValidation("ContractStartDateFrom")]
+    public string? ContractStartDateFromDay { get; set; }
+    [DateComponentValidation("ContractStartDateFrom")]
+    public string? ContractStartDateFromMonth { get; set; }
+    [DateComponentValidation("ContractStartDateFrom")]
+    public string? ContractStartDateFromYear { get; set; }
 
-    [DateRange("ContractStartDateFrom", ErrorMessage = "To date must be after from date")]
-    public DateOnly? ContractStartDateTo { get; set; }
+    [DateComponentValidation("ContractStartDateTo")]
+    public string? ContractStartDateToDay { get; set; }
+    [DateComponentValidation("ContractStartDateTo")]
+    public string? ContractStartDateToMonth { get; set; }
+    [DateComponentValidation("ContractStartDateTo")]
+    public string? ContractStartDateToYear { get; set; }
 
-    public DateOnly? ContractEndDateFrom { get; set; }
+    [DateComponentValidation("ContractEndDateFrom")]
+    public string? ContractEndDateFromDay { get; set; }
+    [DateComponentValidation("ContractEndDateFrom")]
+    public string? ContractEndDateFromMonth { get; set; }
+    [DateComponentValidation("ContractEndDateFrom")]
+    public string? ContractEndDateFromYear { get; set; }
 
-    [DateRange("ContractEndDateFrom", ErrorMessage = "To date must be after from date")]
-    public DateOnly? ContractEndDateTo { get; set; }
+    [DateComponentValidation("ContractEndDateTo")]
+    public string? ContractEndDateToDay { get; set; }
+    [DateComponentValidation("ContractEndDateTo")]
+    public string? ContractEndDateToMonth { get; set; }
+    [DateComponentValidation("ContractEndDateTo")]
+    public string? ContractEndDateToYear { get; set; }
+
+    public DateOnly? SubmissionDeadlineFrom =>
+        TryParseDate(SubmissionDeadlineFromDay, SubmissionDeadlineFromMonth, SubmissionDeadlineFromYear);
+
+    public DateOnly? SubmissionDeadlineTo =>
+        TryParseDate(SubmissionDeadlineToDay, SubmissionDeadlineToMonth, SubmissionDeadlineToYear);
+
+    public DateOnly? ContractStartDateFrom =>
+        TryParseDate(ContractStartDateFromDay, ContractStartDateFromMonth, ContractStartDateFromYear);
+
+    public DateOnly? ContractStartDateTo =>
+        TryParseDate(ContractStartDateToDay, ContractStartDateToMonth, ContractStartDateToYear);
+
+    public DateOnly? ContractEndDateFrom =>
+        TryParseDate(ContractEndDateFromDay, ContractEndDateFromMonth, ContractEndDateFromYear);
+
+    public DateOnly? ContractEndDateTo =>
+        TryParseDate(ContractEndDateToDay, ContractEndDateToMonth, ContractEndDateToYear);
+
+    private static DateOnly? TryParseDate(string? day, string? month, string? year)
+    {
+        if (string.IsNullOrWhiteSpace(day) || string.IsNullOrWhiteSpace(month) || string.IsNullOrWhiteSpace(year))
+            return null;
+
+        if (!int.TryParse(day, out var d) || !int.TryParse(month, out var m) ||
+            !int.TryParse(year, out var y)) return null;
+        if (DateTime.TryParse($"{y}-{m:D2}-{d:D2}", out var date))
+            return DateOnly.FromDateTime(date);
+
+        return null;
+    }
 
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {
-        if (string.IsNullOrEmpty(NoFees))
+        if (!string.IsNullOrEmpty(NoFees))
         {
-            yield break;
+            var feeFromHasValue = FeeFrom.HasValue;
+            var feeToHasValue = FeeTo.HasValue;
+
+            if (feeFromHasValue && feeToHasValue)
+            {
+                yield return new ValidationResult(
+                    "Fee from and to cannot be provided when 'No fees' is selected",
+                    [nameof(FeeFrom), nameof(FeeTo)]
+                );
+            }
+            else if (feeFromHasValue)
+            {
+                yield return new ValidationResult(
+                    "Fee from cannot be provided when 'No fees' is selected",
+                    [nameof(FeeFrom)]
+                );
+            }
+            else if (feeToHasValue)
+            {
+                yield return new ValidationResult(
+                    "Fee to cannot be provided when 'No fees' is selected",
+                    [nameof(FeeTo)]
+                );
+            }
         }
 
-        var feeFromHasValue = FeeFrom.HasValue;
-        var feeToHasValue = FeeTo.HasValue;
+        if (SubmissionDeadlineFrom.HasValue && SubmissionDeadlineTo.HasValue && SubmissionDeadlineTo < SubmissionDeadlineFrom)
+        {
+            yield return new ValidationResult(
+                "Submission deadline to date must be after from date",
+                [nameof(SubmissionDeadlineToDay), nameof(SubmissionDeadlineToMonth), nameof(SubmissionDeadlineToYear)]
+            );
+        }
 
-        if (feeFromHasValue && feeToHasValue)
+        if (ContractStartDateFrom.HasValue && ContractStartDateTo.HasValue && ContractStartDateTo < ContractStartDateFrom)
         {
             yield return new ValidationResult(
-                "Fee from and to cannot be provided when 'No fees' is selected",
-                [nameof(FeeFrom), nameof(FeeTo)]
+                "Contract start date to date must be after from date",
+                [nameof(ContractStartDateToDay), nameof(ContractStartDateToMonth), nameof(ContractStartDateToYear)]
             );
         }
-        else if (feeFromHasValue)
+
+        if (ContractEndDateFrom.HasValue && ContractEndDateTo.HasValue && ContractEndDateTo < ContractEndDateFrom)
         {
             yield return new ValidationResult(
-                "Fee from cannot be provided when 'No fees' is selected",
-                [nameof(FeeFrom)]
-            );
-        }
-        else if (feeToHasValue)
-        {
-            yield return new ValidationResult(
-                "Fee to cannot be provided when 'No fees' is selected",
-                [nameof(FeeTo)]
+                "Contract end date to date must be after from date",
+                [nameof(ContractEndDateToDay), nameof(ContractEndDateToMonth), nameof(ContractEndDateToYear)]
             );
         }
     }

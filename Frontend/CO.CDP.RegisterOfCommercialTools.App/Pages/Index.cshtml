@@ -56,12 +56,18 @@
                     </h2>
                     <div class="govuk-error-summary__body">
                         <ul class="govuk-list govuk-error-summary__list">
-                            @foreach (var (key, value) in ModelState)
-                            {
-                                @foreach (var error in value.Errors)
+                            @{
+                                var uniqueErrors = new List<(string Key, string Message)>();
+                                var seenMessages = new HashSet<string>();
+
+                                foreach (var (key, value) in ModelState)
                                 {
-                                    <li><a href="#@key">@error.ErrorMessage</a></li>
+                                    uniqueErrors.AddRange(from error in value.Errors where !string.IsNullOrEmpty(error.ErrorMessage) && seenMessages.Add(error.ErrorMessage) select (key, error.ErrorMessage));
                                 }
+                            }
+                            @foreach (var error in uniqueErrors)
+                            {
+                                <li><a href="#@error.Key">@error.Message</a></li>
                             }
                         </ul>
                     </div>

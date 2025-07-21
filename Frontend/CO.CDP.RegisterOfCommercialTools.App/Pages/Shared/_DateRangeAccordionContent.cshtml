@@ -1,8 +1,44 @@
 @model SearchModel
 @{
-    var submissionDeadlineRangeError = ViewData.ModelState["SearchParams.SubmissionDeadlineTo"]?.Errors.FirstOrDefault()?.ErrorMessage;
-    var contractStartDateRangeError = ViewData.ModelState["SearchParams.ContractStartDateTo"]?.Errors.FirstOrDefault()?.ErrorMessage;
-    var contractEndDateRangeError = ViewData.ModelState["SearchParams.ContractEndDateTo"]?.Errors.FirstOrDefault()?.ErrorMessage;
+    var submissionDeadlineFromErrors = new {
+        Day = ViewData.ModelState["SearchParams.SubmissionDeadlineFromDay"]?.Errors.FirstOrDefault()?.ErrorMessage,
+        Month = ViewData.ModelState["SearchParams.SubmissionDeadlineFromMonth"]?.Errors.FirstOrDefault()?.ErrorMessage,
+        Year = ViewData.ModelState["SearchParams.SubmissionDeadlineFromYear"]?.Errors.FirstOrDefault()?.ErrorMessage
+    };
+
+    var submissionDeadlineToErrors = new {
+        Day = ViewData.ModelState["SearchParams.SubmissionDeadlineToDay"]?.Errors.FirstOrDefault()?.ErrorMessage,
+        Month = ViewData.ModelState["SearchParams.SubmissionDeadlineToMonth"]?.Errors.FirstOrDefault()?.ErrorMessage,
+        Year = ViewData.ModelState["SearchParams.SubmissionDeadlineToYear"]?.Errors.FirstOrDefault()?.ErrorMessage
+    };
+
+    var contractStartDateFromErrors = new {
+        Day = ViewData.ModelState["SearchParams.ContractStartDateFromDay"]?.Errors.FirstOrDefault()?.ErrorMessage,
+        Month = ViewData.ModelState["SearchParams.ContractStartDateFromMonth"]?.Errors.FirstOrDefault()?.ErrorMessage,
+        Year = ViewData.ModelState["SearchParams.ContractStartDateFromYear"]?.Errors.FirstOrDefault()?.ErrorMessage
+    };
+
+    var contractStartDateToErrors = new {
+        Day = ViewData.ModelState["SearchParams.ContractStartDateToDay"]?.Errors.FirstOrDefault()?.ErrorMessage,
+        Month = ViewData.ModelState["SearchParams.ContractStartDateToMonth"]?.Errors.FirstOrDefault()?.ErrorMessage,
+        Year = ViewData.ModelState["SearchParams.ContractStartDateToYear"]?.Errors.FirstOrDefault()?.ErrorMessage
+    };
+
+    var contractEndDateFromErrors = new {
+        Day = ViewData.ModelState["SearchParams.ContractEndDateFromDay"]?.Errors.FirstOrDefault()?.ErrorMessage,
+        Month = ViewData.ModelState["SearchParams.ContractEndDateFromMonth"]?.Errors.FirstOrDefault()?.ErrorMessage,
+        Year = ViewData.ModelState["SearchParams.ContractEndDateFromYear"]?.Errors.FirstOrDefault()?.ErrorMessage
+    };
+
+    var contractEndDateToErrors = new {
+        Day = ViewData.ModelState["SearchParams.ContractEndDateToDay"]?.Errors.FirstOrDefault()?.ErrorMessage,
+        Month = ViewData.ModelState["SearchParams.ContractEndDateToMonth"]?.Errors.FirstOrDefault()?.ErrorMessage,
+        Year = ViewData.ModelState["SearchParams.ContractEndDateToYear"]?.Errors.FirstOrDefault()?.ErrorMessage
+    };
+
+    bool HasDateErrors(dynamic errors) => !string.IsNullOrEmpty(errors.Day) || !string.IsNullOrEmpty(errors.Month) || !string.IsNullOrEmpty(errors.Year);
+
+    string GetFirstError(dynamic errors) => errors.Day ?? errors.Month ?? errors.Year ?? "";
 }
 
 <div class="govuk-!-margin-top-0">
@@ -18,8 +54,8 @@
             </span>
         </summary>
         <div class="govuk-details__text govuk-!-padding-0 no-border">
-            <div class="govuk-form-group @(!string.IsNullOrEmpty(submissionDeadlineRangeError) ? "govuk-form-group--error" : "") govuk-!-margin-bottom-0">
-                <fieldset class="govuk-fieldset govuk-!-margin-bottom-4" role="group" aria-describedby="submission-deadline-from-hint">
+            <div class="govuk-form-group @(HasDateErrors(submissionDeadlineFromErrors) ? "govuk-form-group--error" : "") govuk-!-margin-bottom-0">
+                <fieldset class="govuk-fieldset govuk-!-margin-bottom-4" role="group" aria-describedby="submission-deadline-from-hint @(HasDateErrors(submissionDeadlineFromErrors) ? "submission-deadline-from-error" : "")">
                     <legend class="govuk-fieldset__legend govuk-!-font-size-16">
                         From
                     </legend>
@@ -27,88 +63,106 @@
                          class="govuk-hint govuk-!-font-size-16 govuk-!-margin-bottom-2">
                         For example, 25 05 2025
                     </div>
-                    <div class="govuk-date-input" id="submission-deadline-from">
+                    @if (HasDateErrors(submissionDeadlineFromErrors))
+                    {
+                        <p id="submission-deadline-from-error" class="govuk-error-message">
+                            <span class="govuk-visually-hidden">Error:</span> @GetFirstError(submissionDeadlineFromErrors)
+                        </p>
+                    }
+                    <div class="govuk-date-input @(HasDateErrors(submissionDeadlineFromErrors) ? "govuk-date-input--error" : "")" id="submission-deadline-from">
                         <div class="govuk-date-input__item govuk-!-margin-right-3">
                             <div class="govuk-form-group">
                                 <label class="govuk-label govuk-date-input__label govuk-!-font-size-16"
-                                       for="submission-deadline-from-day">
+                                       for="SearchParams.SubmissionDeadlineFromDay">
                                     Day
                                 </label>
-                                <input class="govuk-input govuk-date-input__input govuk-input--width-2"
-                                       id="submission-deadline-from-day" name="SearchParams.SubmissionDeadlineFrom.Day" type="text"
-                                       inputmode="numeric" value="@Model?.SubmissionDeadlineFrom?.Day">
+                                <input class="govuk-input govuk-date-input__input govuk-input--width-2 @(!string.IsNullOrEmpty(submissionDeadlineFromErrors.Day) ? "govuk-input--error" : "")"
+                                       id="SearchParams.SubmissionDeadlineFromDay"
+                                       name="SearchParams.SubmissionDeadlineFromDay"
+                                       type="text" inputmode="numeric"
+                                       value="@Model.SubmissionDeadlineFromDay">
                             </div>
                         </div>
                         <div class="govuk-date-input__item govuk-!-margin-right-3">
                             <div class="govuk-form-group">
                                 <label class="govuk-label govuk-date-input__label govuk-!-font-size-16"
-                                       for="submission-deadline-from-month">
+                                       for="SearchParams.SubmissionDeadlineFromMonth">
                                     Month
                                 </label>
-                                <input class="govuk-input govuk-date-input__input govuk-input--width-2"
-                                       id="submission-deadline-from-month" name="SearchParams.SubmissionDeadlineFrom.Month"
-                                       type="text" inputmode="numeric" value="@Model?.SubmissionDeadlineFrom?.Month">
+                                <input class="govuk-input govuk-date-input__input govuk-input--width-2 @(!string.IsNullOrEmpty(submissionDeadlineFromErrors.Month) ? "govuk-input--error" : "")"
+                                       id="SearchParams.SubmissionDeadlineFromMonth"
+                                       name="SearchParams.SubmissionDeadlineFromMonth"
+                                       type="text" inputmode="numeric"
+                                       value="@Model.SubmissionDeadlineFromMonth">
                             </div>
                         </div>
                         <div class="govuk-date-input__item">
                             <div class="govuk-form-group">
                                 <label class="govuk-label govuk-date-input__label govuk-!-font-size-16"
-                                       for="submission-deadline-from-year">
+                                       for="SearchParams.SubmissionDeadlineFromYear">
                                     Year
                                 </label>
-                                <input class="govuk-input govuk-date-input__input govuk-input--width-4"
-                                       id="submission-deadline-from-year" name="SearchParams.SubmissionDeadlineFrom.Year" type="text"
-                                       inputmode="numeric" value="@Model?.SubmissionDeadlineFrom?.Year">
+                                <input class="govuk-input govuk-date-input__input govuk-input--width-4 @(!string.IsNullOrEmpty(submissionDeadlineFromErrors.Year) ? "govuk-input--error" : "")"
+                                       id="SearchParams.SubmissionDeadlineFromYear"
+                                       name="SearchParams.SubmissionDeadlineFromYear"
+                                       type="text" inputmode="numeric"
+                                       value="@Model.SubmissionDeadlineFromYear">
                             </div>
                         </div>
                     </div>
                 </fieldset>
 
-                <fieldset class="govuk-fieldset" role="group" aria-describedby="@(!string.IsNullOrEmpty(submissionDeadlineRangeError) ? "submission-deadline-to-error" : "submission-deadline-to-hint")">
+                <fieldset class="govuk-fieldset" role="group" aria-describedby="submission-deadline-to-hint @(HasDateErrors(submissionDeadlineToErrors) ? "submission-deadline-to-error" : "")">
                     <legend class="govuk-fieldset__legend govuk-!-font-size-16 govuk-!-margin-bottom-2">
                         To
                     </legend>
                     <div id="submission-deadline-to-hint" class="govuk-hint govuk-!-font-size-16 govuk-!-margin-bottom-2">
                         For example, 25 05 2025
                     </div>
-                    @if (!string.IsNullOrEmpty(submissionDeadlineRangeError))
+                    @if (HasDateErrors(submissionDeadlineToErrors))
                     {
                         <p id="submission-deadline-to-error" class="govuk-error-message">
-                            <span class="govuk-visually-hidden">Error:</span> @submissionDeadlineRangeError
+                            <span class="govuk-visually-hidden">Error:</span> @GetFirstError(submissionDeadlineToErrors)
                         </p>
                     }
-                    <div class="govuk-date-input @(!string.IsNullOrEmpty(submissionDeadlineRangeError) ? "govuk-date-input--error" : "")" id="submission-deadline-to">
+                    <div class="govuk-date-input @(HasDateErrors(submissionDeadlineToErrors) ? "govuk-date-input--error" : "")" id="submission-deadline-to">
                         <div class="govuk-date-input__item govuk-!-margin-right-3">
                             <div class="govuk-form-group">
                                 <label class="govuk-label govuk-date-input__label govuk-!-font-size-16"
-                                       for="submission-deadline-to-day">
+                                       for="SearchParams.SubmissionDeadlineToDay">
                                     Day
                                 </label>
-                                <input class="govuk-input govuk-date-input__input govuk-input--width-2 @(!string.IsNullOrEmpty(submissionDeadlineRangeError) ? "govuk-input--error" : "")"
-                                       id="submission-deadline-to-day" name="SearchParams.SubmissionDeadlineTo.Day" type="text"
-                                       inputmode="numeric" value="@Model?.SubmissionDeadlineTo?.Day">
+                                <input class="govuk-input govuk-date-input__input govuk-input--width-2 @(!string.IsNullOrEmpty(submissionDeadlineToErrors.Day) ? "govuk-input--error" : "")"
+                                       id="SearchParams.SubmissionDeadlineToDay"
+                                       name="SearchParams.SubmissionDeadlineToDay"
+                                       type="text" inputmode="numeric"
+                                       value="@Model.SubmissionDeadlineToDay">
                             </div>
                         </div>
                         <div class="govuk-date-input__item govuk-!-margin-right-3">
                             <div class="govuk-form-group">
                                 <label class="govuk-label govuk-date-input__label govuk-!-font-size-16"
-                                       for="submission-deadline-to-month">
+                                       for="SearchParams.SubmissionDeadlineToMonth">
                                     Month
                                 </label>
-                                <input class="govuk-input govuk-date-input__input govuk-input--width-2 @(!string.IsNullOrEmpty(submissionDeadlineRangeError) ? "govuk-input--error" : "")"
-                                       id="submission-deadline-to-month" name="SearchParams.SubmissionDeadlineTo.Month" type="text"
-                                       inputmode="numeric" value="@Model?.SubmissionDeadlineTo?.Month">
+                                <input class="govuk-input govuk-date-input__input govuk-input--width-2 @(!string.IsNullOrEmpty(submissionDeadlineToErrors.Month) ? "govuk-input--error" : "")"
+                                       id="SearchParams.SubmissionDeadlineToMonth"
+                                       name="SearchParams.SubmissionDeadlineToMonth"
+                                       type="text" inputmode="numeric"
+                                       value="@Model.SubmissionDeadlineToMonth">
                             </div>
                         </div>
                         <div class="govuk-date-input__item">
                             <div class="govuk-form-group">
                                 <label class="govuk-label govuk-date-input__label govuk-!-font-size-16"
-                                       for="submission-deadline-to-year">
+                                       for="SearchParams.SubmissionDeadlineToYear">
                                     Year
                                 </label>
-                                <input class="govuk-input govuk-date-input__input govuk-input--width-4 @(!string.IsNullOrEmpty(submissionDeadlineRangeError) ? "govuk-input--error" : "")"
-                                       id="submission-deadline-to-year" name="SearchParams.SubmissionDeadlineTo.Year" type="text"
-                                       inputmode="numeric" value="@Model?.SubmissionDeadlineTo?.Year">
+                                <input class="govuk-input govuk-date-input__input govuk-input--width-4 @(!string.IsNullOrEmpty(submissionDeadlineToErrors.Year) ? "govuk-input--error" : "")"
+                                       id="SearchParams.SubmissionDeadlineToYear"
+                                       name="SearchParams.SubmissionDeadlineToYear"
+                                       type="text" inputmode="numeric"
+                                       value="@Model.SubmissionDeadlineToYear">
                             </div>
                         </div>
                     </div>
@@ -125,8 +179,8 @@
             </span>
         </summary>
         <div class="govuk-details__text govuk-!-padding-0 no-border">
-            <div class="govuk-form-group @(!string.IsNullOrEmpty(contractStartDateRangeError) ? "govuk-form-group--error" : "") govuk-!-margin-bottom-0">
-                <fieldset class="govuk-fieldset govuk-!-margin-bottom-4" role="group" aria-describedby="contract-start-date-from-hint">
+            <div class="govuk-form-group @(HasDateErrors(contractStartDateFromErrors) ? "govuk-form-group--error" : "") govuk-!-margin-bottom-0">
+                <fieldset class="govuk-fieldset govuk-!-margin-bottom-4" role="group" aria-describedby="contract-start-date-from-hint @(HasDateErrors(contractStartDateFromErrors) ? "contract-start-date-from-error" : "")">
                     <legend class="govuk-fieldset__legend govuk-!-font-size-16">
                         From
                     </legend>
@@ -134,88 +188,106 @@
                          class="govuk-hint govuk-!-font-size-16 govuk-!-margin-bottom-2">
                         For example, 25 05 2025
                     </div>
-                    <div class="govuk-date-input" id="contract-start-date-from">
+                    @if (HasDateErrors(contractStartDateFromErrors))
+                    {
+                        <p id="contract-start-date-from-error" class="govuk-error-message">
+                            <span class="govuk-visually-hidden">Error:</span> @GetFirstError(contractStartDateFromErrors)
+                        </p>
+                    }
+                    <div class="govuk-date-input @(HasDateErrors(contractStartDateFromErrors) ? "govuk-date-input--error" : "")" id="contract-start-date-from">
                         <div class="govuk-date-input__item govuk-!-margin-right-3">
                             <div class="govuk-form-group">
                                 <label class="govuk-label govuk-date-input__label govuk-!-font-size-16"
-                                       for="contract-start-date-from-day">
+                                       for="SearchParams.ContractStartDateFromDay">
                                     Day
                                 </label>
-                                <input class="govuk-input govuk-date-input__input govuk-input--width-2"
-                                       id="contract-start-date-from-day" name="SearchParams.ContractStartDateFrom.Day" type="text"
-                                       inputmode="numeric" value="@Model?.ContractStartDateFrom?.Day">
+                                <input class="govuk-input govuk-date-input__input govuk-input--width-2 @(!string.IsNullOrEmpty(contractStartDateFromErrors.Day) ? "govuk-input--error" : "")"
+                                       id="SearchParams.ContractStartDateFromDay"
+                                       name="SearchParams.ContractStartDateFromDay"
+                                       type="text" inputmode="numeric"
+                                       value="@Model.ContractStartDateFromDay">
                             </div>
                         </div>
                         <div class="govuk-date-input__item govuk-!-margin-right-3">
                             <div class="govuk-form-group">
                                 <label class="govuk-label govuk-date-input__label govuk-!-font-size-16"
-                                       for="contract-start-date-from-month">
+                                       for="SearchParams.ContractStartDateFromMonth">
                                     Month
                                 </label>
-                                <input class="govuk-input govuk-date-input__input govuk-input--width-2"
-                                       id="contract-start-date-from-month" name="SearchParams.ContractStartDateFrom.Month"
-                                       type="text" inputmode="numeric" value="@Model?.ContractStartDateFrom?.Month">
+                                <input class="govuk-input govuk-date-input__input govuk-input--width-2 @(!string.IsNullOrEmpty(contractStartDateFromErrors.Month) ? "govuk-input--error" : "")"
+                                       id="SearchParams.ContractStartDateFromMonth"
+                                       name="SearchParams.ContractStartDateFromMonth"
+                                       type="text" inputmode="numeric"
+                                       value="@Model.ContractStartDateFromMonth">
                             </div>
                         </div>
                         <div class="govuk-date-input__item">
                             <div class="govuk-form-group">
                                 <label class="govuk-label govuk-date-input__label govuk-!-font-size-16"
-                                       for="contract-start-date-from-year">
+                                       for="SearchParams.ContractStartDateFromYear">
                                     Year
                                 </label>
-                                <input class="govuk-input govuk-date-input__input govuk-input--width-4"
-                                       id="contract-start-date-from-year" name="SearchParams.ContractStartDateFrom.Year" type="text"
-                                       inputmode="numeric" value="@Model?.ContractStartDateFrom?.Year">
+                                <input class="govuk-input govuk-date-input__input govuk-input--width-4 @(!string.IsNullOrEmpty(contractStartDateFromErrors.Year) ? "govuk-input--error" : "")"
+                                       id="SearchParams.ContractStartDateFromYear"
+                                       name="SearchParams.ContractStartDateFromYear"
+                                       type="text" inputmode="numeric"
+                                       value="@Model.ContractStartDateFromYear">
                             </div>
                         </div>
                     </div>
                 </fieldset>
 
-                <fieldset class="govuk-fieldset" role="group" aria-describedby="@(!string.IsNullOrEmpty(contractStartDateRangeError) ? "contract-start-date-to-error" : "contract-start-date-to-hint")">
+                <fieldset class="govuk-fieldset" role="group" aria-describedby="contract-start-date-to-hint @(HasDateErrors(contractStartDateToErrors) ? "contract-start-date-to-error" : "")">
                     <legend class="govuk-fieldset__legend govuk-!-font-size-16 govuk-!-margin-bottom-2">
                         To
                     </legend>
                     <div id="contract-start-date-to-hint" class="govuk-hint govuk-!-font-size-16 govuk-!-margin-bottom-2">
                         For example, 25 05 2025
                     </div>
-                    @if (!string.IsNullOrEmpty(contractStartDateRangeError))
+                    @if (HasDateErrors(contractStartDateToErrors))
                     {
                         <p id="contract-start-date-to-error" class="govuk-error-message">
-                            <span class="govuk-visually-hidden">Error:</span> @contractStartDateRangeError
+                            <span class="govuk-visually-hidden">Error:</span> @GetFirstError(contractStartDateToErrors)
                         </p>
                     }
-                    <div class="govuk-date-input @(!string.IsNullOrEmpty(contractStartDateRangeError) ? "govuk-date-input--error" : "")" id="contract-start-date-to">
+                    <div class="govuk-date-input @(HasDateErrors(contractStartDateToErrors) ? "govuk-date-input--error" : "")" id="contract-start-date-to">
                         <div class="govuk-date-input__item govuk-!-margin-right-3">
                             <div class="govuk-form-group">
                                 <label class="govuk-label govuk-date-input__label govuk-!-font-size-16"
-                                       for="contract-start-date-to-day">
+                                       for="SearchParams.ContractStartDateToDay">
                                     Day
                                 </label>
-                                <input class="govuk-input govuk-date-input__input govuk-input--width-2 @(!string.IsNullOrEmpty(contractStartDateRangeError) ? "govuk-input--error" : "")"
-                                       id="contract-start-date-to-day" name="SearchParams.ContractStartDateTo.Day" type="text"
-                                       inputmode="numeric" value="@Model?.ContractStartDateTo?.Day">
+                                <input class="govuk-input govuk-date-input__input govuk-input--width-2 @(!string.IsNullOrEmpty(contractStartDateToErrors.Day) ? "govuk-input--error" : "")"
+                                       id="SearchParams.ContractStartDateToDay"
+                                       name="SearchParams.ContractStartDateToDay"
+                                       type="text" inputmode="numeric"
+                                       value="@Model.ContractStartDateToDay">
                             </div>
                         </div>
                         <div class="govuk-date-input__item govuk-!-margin-right-3">
                             <div class="govuk-form-group">
                                 <label class="govuk-label govuk-date-input__label govuk-!-font-size-16"
-                                       for="contract-start-date-to-month">
+                                       for="SearchParams.ContractStartDateToMonth">
                                     Month
                                 </label>
-                                <input class="govuk-input govuk-date-input__input govuk-input--width-2 @(!string.IsNullOrEmpty(contractStartDateRangeError) ? "govuk-input--error" : "")"
-                                       id="contract-start-date-to-month" name="SearchParams.ContractStartDateTo.Month" type="text"
-                                       inputmode="numeric" value="@Model?.ContractStartDateTo?.Month">
+                                <input class="govuk-input govuk-date-input__input govuk-input--width-2 @(!string.IsNullOrEmpty(contractStartDateToErrors.Month) ? "govuk-input--error" : "")"
+                                       id="SearchParams.ContractStartDateToMonth"
+                                       name="SearchParams.ContractStartDateToMonth"
+                                       type="text" inputmode="numeric"
+                                       value="@Model.ContractStartDateToMonth">
                             </div>
                         </div>
                         <div class="govuk-date-input__item">
                             <div class="govuk-form-group">
                                 <label class="govuk-label govuk-date-input__label govuk-!-font-size-16"
-                                       for="contract-start-date-to-year">
+                                       for="SearchParams.ContractStartDateToYear">
                                     Year
                                 </label>
-                                <input class="govuk-input govuk-date-input__input govuk-input--width-4 @(!string.IsNullOrEmpty(contractStartDateRangeError) ? "govuk-input--error" : "")"
-                                       id="contract-start-date-to-year" name="SearchParams.ContractStartDateTo.Year" type="text"
-                                       inputmode="numeric" value="@Model?.ContractStartDateTo?.Year">
+                                <input class="govuk-input govuk-date-input__input govuk-input--width-4 @(!string.IsNullOrEmpty(contractStartDateToErrors.Year) ? "govuk-input--error" : "")"
+                                       id="SearchParams.ContractStartDateToYear"
+                                       name="SearchParams.ContractStartDateToYear"
+                                       type="text" inputmode="numeric"
+                                       value="@Model.ContractStartDateToYear">
                             </div>
                         </div>
                     </div>
@@ -232,8 +304,8 @@
             </span>
         </summary>
         <div class="govuk-details__text govuk-!-padding-0 no-border">
-            <div class="govuk-form-group @(!string.IsNullOrEmpty(contractEndDateRangeError) ? "govuk-form-group--error" : "") govuk-!-margin-bottom-0">
-                <fieldset class="govuk-fieldset govuk-!-margin-bottom-4" role="group" aria-describedby="contract-end-date-from-hint">
+            <div class="govuk-form-group @(HasDateErrors(contractEndDateFromErrors) ? "govuk-form-group--error" : "") govuk-!-margin-bottom-0">
+                <fieldset class="govuk-fieldset govuk-!-margin-bottom-4" role="group" aria-describedby="contract-end-date-from-hint @(HasDateErrors(contractEndDateFromErrors) ? "contract-end-date-from-error" : "")">
                     <legend class="govuk-fieldset__legend govuk-!-font-size-16">
                         From
                     </legend>
@@ -241,88 +313,106 @@
                          class="govuk-hint govuk-!-font-size-16 govuk-!-margin-bottom-2">
                         For example, 25 05 2025
                     </div>
-                    <div class="govuk-date-input" id="contract-end-date-from">
+                    @if (HasDateErrors(contractEndDateFromErrors))
+                    {
+                        <p id="contract-end-date-from-error" class="govuk-error-message">
+                            <span class="govuk-visually-hidden">Error:</span> @GetFirstError(contractEndDateFromErrors)
+                        </p>
+                    }
+                    <div class="govuk-date-input @(HasDateErrors(contractEndDateFromErrors) ? "govuk-date-input--error" : "")" id="contract-end-date-from">
                         <div class="govuk-date-input__item govuk-!-margin-right-3">
                             <div class="govuk-form-group">
                                 <label class="govuk-label govuk-date-input__label govuk-!-font-size-16"
-                                       for="contract-end-date-from-day">
+                                       for="SearchParams.ContractEndDateFromDay">
                                     Day
                                 </label>
-                                <input class="govuk-input govuk-date-input__input govuk-input--width-2"
-                                       id="contract-end-date-from-day" name="SearchParams.ContractEndDateFrom.Day" type="text"
-                                       inputmode="numeric" value="@Model?.ContractEndDateFrom?.Day">
+                                <input class="govuk-input govuk-date-input__input govuk-input--width-2 @(!string.IsNullOrEmpty(contractEndDateFromErrors.Day) ? "govuk-input--error" : "")"
+                                       id="SearchParams.ContractEndDateFromDay"
+                                       name="SearchParams.ContractEndDateFromDay"
+                                       type="text" inputmode="numeric"
+                                       value="@Model.ContractEndDateFromDay">
                             </div>
                         </div>
                         <div class="govuk-date-input__item govuk-!-margin-right-3">
                             <div class="govuk-form-group">
                                 <label class="govuk-label govuk-date-input__label govuk-!-font-size-16"
-                                       for="contract-end-date-from-month">
+                                       for="SearchParams.ContractEndDateFromMonth">
                                     Month
                                 </label>
-                                <input class="govuk-input govuk-date-input__input govuk-input--width-2"
-                                       id="contract-end-date-from-month" name="SearchParams.ContractEndDateFrom.Month"
-                                       type="text" inputmode="numeric" value="@Model?.ContractEndDateFrom?.Month">
+                                <input class="govuk-input govuk-date-input__input govuk-input--width-2 @(!string.IsNullOrEmpty(contractEndDateFromErrors.Month) ? "govuk-input--error" : "")"
+                                       id="SearchParams.ContractEndDateFromMonth"
+                                       name="SearchParams.ContractEndDateFromMonth"
+                                       type="text" inputmode="numeric"
+                                       value="@Model.ContractEndDateFromMonth">
                             </div>
                         </div>
                         <div class="govuk-date-input__item">
                             <div class="govuk-form-group">
                                 <label class="govuk-label govuk-date-input__label govuk-!-font-size-16"
-                                       for="contract-end-date-from-year">
+                                       for="SearchParams.ContractEndDateFromYear">
                                     Year
                                 </label>
-                                <input class="govuk-input govuk-date-input__input govuk-input--width-4"
-                                       id="contract-end-date-from-year" name="SearchParams.ContractEndDateFrom.Year" type="text"
-                                       inputmode="numeric" value="@Model?.ContractEndDateFrom?.Year">
+                                <input class="govuk-input govuk-date-input__input govuk-input--width-4 @(!string.IsNullOrEmpty(contractEndDateFromErrors.Year) ? "govuk-input--error" : "")"
+                                       id="SearchParams.ContractEndDateFromYear"
+                                       name="SearchParams.ContractEndDateFromYear"
+                                       type="text" inputmode="numeric"
+                                       value="@Model.ContractEndDateFromYear">
                             </div>
                         </div>
                     </div>
                 </fieldset>
 
-                <fieldset class="govuk-fieldset" role="group" aria-describedby="@(!string.IsNullOrEmpty(contractEndDateRangeError) ? "contract-end-date-to-error" : "contract-end-date-to-hint")">
+                <fieldset class="govuk-fieldset" role="group" aria-describedby="contract-end-date-to-hint @(HasDateErrors(contractEndDateToErrors) ? "contract-end-date-to-error" : "")">
                     <legend class="govuk-fieldset__legend govuk-!-font-size-16 govuk-!-margin-bottom-2">
                         To
                     </legend>
                     <div id="contract-end-date-to-hint" class="govuk-hint govuk-!-font-size-16 govuk-!-margin-bottom-2">
                         For example, 25 05 2025
                     </div>
-                    @if (!string.IsNullOrEmpty(contractEndDateRangeError))
+                    @if (HasDateErrors(contractEndDateToErrors))
                     {
                         <p id="contract-end-date-to-error" class="govuk-error-message">
-                            <span class="govuk-visually-hidden">Error:</span> @contractEndDateRangeError
+                            <span class="govuk-visually-hidden">Error:</span> @GetFirstError(contractEndDateToErrors)
                         </p>
                     }
-                    <div class="govuk-date-input @(!string.IsNullOrEmpty(contractEndDateRangeError) ? "govuk-date-input--error" : "")" id="contract-end-date-to">
+                    <div class="govuk-date-input @(HasDateErrors(contractEndDateToErrors) ? "govuk-date-input--error" : "")" id="contract-end-date-to">
                         <div class="govuk-date-input__item govuk-!-margin-right-3">
                             <div class="govuk-form-group">
                                 <label class="govuk-label govuk-date-input__label govuk-!-font-size-16"
-                                       for="contract-end-date-to-day">
+                                       for="SearchParams.ContractEndDateToDay">
                                     Day
                                 </label>
-                                <input class="govuk-input govuk-date-input__input govuk-input--width-2 @(!string.IsNullOrEmpty(contractEndDateRangeError) ? "govuk-input--error" : "")"
-                                       id="contract-end-date-to-day" name="SearchParams.ContractEndDateTo.Day" type="text"
-                                       inputmode="numeric" value="@Model?.ContractEndDateTo?.Day">
+                                <input class="govuk-input govuk-date-input__input govuk-input--width-2 @(!string.IsNullOrEmpty(contractEndDateToErrors.Day) ? "govuk-input--error" : "")"
+                                       id="SearchParams.ContractEndDateToDay"
+                                       name="SearchParams.ContractEndDateToDay"
+                                       type="text" inputmode="numeric"
+                                       value="@Model.ContractEndDateToDay">
                             </div>
                         </div>
                         <div class="govuk-date-input__item govuk-!-margin-right-3">
                             <div class="govuk-form-group">
                                 <label class="govuk-label govuk-date-input__label govuk-!-font-size-16"
-                                       for="contract-end-date-to-month">
+                                       for="SearchParams.ContractEndDateToMonth">
                                     Month
                                 </label>
-                                <input class="govuk-input govuk-date-input__input govuk-input--width-2 @(!string.IsNullOrEmpty(contractEndDateRangeError) ? "govuk-input--error" : "")"
-                                       id="contract-end-date-to-month" name="SearchParams.ContractEndDateTo.Month" type="text"
-                                       inputmode="numeric" value="@Model?.ContractEndDateTo?.Month">
+                                <input class="govuk-input govuk-date-input__input govuk-input--width-2 @(!string.IsNullOrEmpty(contractEndDateToErrors.Month) ? "govuk-input--error" : "")"
+                                       id="SearchParams.ContractEndDateToMonth"
+                                       name="SearchParams.ContractEndDateToMonth"
+                                       type="text" inputmode="numeric"
+                                       value="@Model.ContractEndDateToMonth">
                             </div>
                         </div>
                         <div class="govuk-date-input__item">
                             <div class="govuk-form-group">
                                 <label class="govuk-label govuk-date-input__label govuk-!-font-size-16"
-                                       for="contract-end-date-to-year">
+                                       for="SearchParams.ContractEndDateToYear">
                                     Year
                                 </label>
-                                <input class="govuk-input govuk-date-input__input govuk-input--width-4 @(!string.IsNullOrEmpty(contractEndDateRangeError) ? "govuk-input--error" : "")"
-                                       id="contract-end-date-to-year" name="SearchParams.ContractEndDateTo.Year" type="text"
-                                       inputmode="numeric" value="@Model?.ContractEndDateTo?.Year">
+                                <input class="govuk-input govuk-date-input__input govuk-input--width-4 @(!string.IsNullOrEmpty(contractEndDateToErrors.Year) ? "govuk-input--error" : "")"
+                                       id="SearchParams.ContractEndDateToYear"
+                                       name="SearchParams.ContractEndDateToYear"
+                                       type="text" inputmode="numeric"
+                                       value="@Model.ContractEndDateToYear">
                             </div>
                         </div>
                     </div>
