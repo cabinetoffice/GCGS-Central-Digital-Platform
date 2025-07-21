@@ -48,12 +48,12 @@ public class IndexModel(ISearchService searchService, ISirsiUrlService sirsiUrlS
     public async Task<IActionResult> OnPostAsync()
     {
         SanitiseSearchParams();
-        CheckDateBindingErrors("SearchParams.SubmissionDeadlineFrom", "Please enter a valid date");
-        CheckDateBindingErrors("SearchParams.SubmissionDeadlineTo", "Please enter a valid date");
-        CheckDateBindingErrors("SearchParams.ContractStartDateFrom", "Please enter a valid date");
-        CheckDateBindingErrors("SearchParams.ContractStartDateTo", "Please enter a valid date");
-        CheckDateBindingErrors("SearchParams.ContractEndDateFrom", "Please enter a valid date");
-        CheckDateBindingErrors("SearchParams.ContractEndDateTo", "Please enter a valid date");
+        CheckDateBindingErrors("SearchParams.SubmissionDeadlineFrom");
+        CheckDateBindingErrors("SearchParams.SubmissionDeadlineTo");
+        CheckDateBindingErrors("SearchParams.ContractStartDateFrom");
+        CheckDateBindingErrors("SearchParams.ContractStartDateTo");
+        CheckDateBindingErrors("SearchParams.ContractEndDateFrom");
+        CheckDateBindingErrors("SearchParams.ContractEndDateTo");
 
         await OnGetAsync();
         return Page();
@@ -63,13 +63,12 @@ public class IndexModel(ISearchService searchService, ISirsiUrlService sirsiUrlS
         SearchParams.Keywords = InputSanitiser.SanitiseSingleLineTextInput(SearchParams.Keywords);
     }
 
-    private void CheckDateBindingErrors(string key, string errorMessage)
+    private void CheckDateBindingErrors(string key)
     {
-        if (ModelState.TryGetValue(key, out var modelState) && modelState.Errors.Any())
+        if (ModelState.TryGetValue(key, out var modelState) && modelState.Errors.Any(e => e.Exception is FormatException))
         {
             modelState.Errors.Clear();
-
-            ModelState.AddModelError(key, errorMessage);
+            ModelState.AddModelError(key, "Please enter a valid date");
         }
     }
 
