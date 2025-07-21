@@ -12,6 +12,8 @@ locals {
     email_subscription_authentication_key = "${local.cfs_screts_arn}:EMAIL_SUBSCRIPTION_AUTHENTICATION_KEY::"
     email_subscription_cipher             = "${local.cfs_screts_arn}:EMAIL_SUBSCRIPTION_CIPHER::"
     email_licence_request                 = "${local.cfs_screts_arn}:LICENCEREQUEST_EMAIL::"
+    http_basic_auth_pass                  = "${local.cfs_screts_arn}:HTTP_BASIC_AUTH_PASS::"
+    http_basic_auth_user                  = "${local.cfs_screts_arn}:HTTP_BASIC_AUTH_USER::"
     run_guest_token                       = "${local.cfs_screts_arn}:RUN_GUEST_TOKEN::"
     run_migrator_token                    = "${local.cfs_screts_arn}:RUN_MIGRATOR_TOKEN::"
     run_registrar_token                   = "${local.cfs_screts_arn}:RUN_REGISTRAR_TOKEN::"
@@ -39,6 +41,7 @@ locals {
     demo                                = false
     cfs_allowed_target_email_domains    = join(",", var.cfs_allowed_target_email_domains)
     environment                         = upper(var.environment)
+    http_basic_auth_enabled             = 1
     include_devel                       = false
     local_version                       = 1000
     site_domain                         = "cfs.${var.public_domain}"
