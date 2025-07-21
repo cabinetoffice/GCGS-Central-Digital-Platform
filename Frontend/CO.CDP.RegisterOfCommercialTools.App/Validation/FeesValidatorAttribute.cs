@@ -22,9 +22,11 @@ public class FeesValidatorAttribute(string feeFrom, string feeTo, string noFees)
 
         var feeFromValue = feeFromProperty.GetValue(validationContext.ObjectInstance) as decimal?;
         var feeToValue = feeToProperty.GetValue(validationContext.ObjectInstance) as decimal?;
-        var noFeesValue = noFeesProperty.GetValue(validationContext.ObjectInstance) as bool?;
+        var noFeesValue = noFeesProperty.GetValue(validationContext.ObjectInstance) as string;
 
-        if (noFeesValue == true && (feeFromValue.HasValue || feeToValue.HasValue))
+        var isNoFeesSelected = !string.IsNullOrEmpty(noFeesValue);
+
+        if (isNoFeesSelected && (feeFromValue.HasValue || feeToValue.HasValue))
         {
             return new ValidationResult("Fee values cannot be provided when 'No fees' is selected.",
                 [FeeFrom, FeeTo]);

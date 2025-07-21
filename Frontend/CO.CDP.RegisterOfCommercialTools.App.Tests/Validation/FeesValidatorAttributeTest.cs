@@ -9,7 +9,7 @@ public class FeesValidatorAttributeTest
     [Fact]
     public void IsValid_WhenNoFeesIsSelectedAndFeeValuesAreProvided_ReturnsValidationError()
     {
-        var model = new TestModel { FeeFrom = 10, FeeTo = 20, NoFees = true };
+        var model = new TestModel { FeeFrom = 10, FeeTo = 20, NoFees = "true" };
         var validationContext = new ValidationContext(model);
         var attribute = new FeesValidatorAttribute(nameof(model.FeeFrom), nameof(model.FeeTo), nameof(model.NoFees));
 
@@ -22,7 +22,7 @@ public class FeesValidatorAttributeTest
     [Fact]
     public void IsValid_WhenNoFeesIsSelectedAndFeeValuesAreNull_ReturnsSuccess()
     {
-        var model = new TestModel { FeeFrom = null, FeeTo = null, NoFees = true };
+        var model = new TestModel { FeeFrom = null, FeeTo = null, NoFees = "true" };
         var validationContext = new ValidationContext(model);
         var attribute = new FeesValidatorAttribute(nameof(model.FeeFrom), nameof(model.FeeTo), nameof(model.NoFees));
 
@@ -34,7 +34,7 @@ public class FeesValidatorAttributeTest
     [Fact]
     public void IsValid_WhenNoFeesIsNotSelectedAndFeeValuesAreProvided_ReturnsSuccess()
     {
-        var model = new TestModel { FeeFrom = 10, FeeTo = 20, NoFees = false };
+        var model = new TestModel { FeeFrom = 10, FeeTo = 20, NoFees = null };
         var validationContext = new ValidationContext(model);
         var attribute = new FeesValidatorAttribute(nameof(model.FeeFrom), nameof(model.FeeTo), nameof(model.NoFees));
 
@@ -46,7 +46,7 @@ public class FeesValidatorAttributeTest
     [Fact]
     public void IsValid_WhenInvalidPropertyNamesAreProvided_ReturnsValidationError()
     {
-        var model = new TestModel { FeeFrom = 10, FeeTo = 20, NoFees = true };
+        var model = new TestModel { FeeFrom = 10, FeeTo = 20, NoFees = "true" };
         var validationContext = new ValidationContext(model);
         var attribute = new FeesValidatorAttribute("InvalidFrom", "InvalidTo", "InvalidNoFees");
 
@@ -60,7 +60,7 @@ public class FeesValidatorAttributeTest
     {
         public decimal? FeeFrom { get; set; }
         public decimal? FeeTo { get; set; }
-        public bool NoFees { get; set; }
+        public string? NoFees { get; set; }
     }
 }
 
