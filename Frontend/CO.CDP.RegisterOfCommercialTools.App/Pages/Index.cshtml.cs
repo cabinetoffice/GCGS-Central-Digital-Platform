@@ -30,13 +30,12 @@ public class IndexModel(ISearchService searchService, ISirsiUrlService sirsiUrlS
 
     private const int PageSize = 10;
 
-    public string SirsiHomeUrl { get; private set; } = string.Empty;
+    public string SirsiHomeUrl { get; private set; } = sirsiUrlService.BuildUrl("/");
 
     public int TotalCount { get; set; }
 
     public async Task OnGetAsync()
     {
-        SirsiHomeUrl = sirsiUrlService.BuildUrl("/");
         var (results, totalCount) = await searchService.SearchAsync(SearchParams, PageNumber, PageSize);
 
         SearchResults = results;
@@ -67,12 +66,6 @@ public class IndexModel(ISearchService searchService, ISirsiUrlService sirsiUrlS
     public IActionResult OnPostReset()
     {
         return RedirectToPage();
-    }
-
-    public IActionResult OnPostGoToSirsi()
-    {
-        var sirsiHomeUrl = sirsiUrlService.BuildUrl("");
-        return Redirect(sirsiHomeUrl);
     }
 }
 
