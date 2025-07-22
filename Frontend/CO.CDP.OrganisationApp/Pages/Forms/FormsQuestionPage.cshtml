@@ -22,7 +22,7 @@
         }
         else if (Model.PreviousQuestion != null)
         {
-            backUrl = $"/organisation/{Model.OrganisationId}/forms/{Model.FormId}/sections/{Model.SectionId}/questions/{Model.PreviousQuestion.Id}{(Model.PreviousQuestionHasNonUKAddressAnswer() ? "?UkOrNonUk=non-uk" : "")}";
+            backUrl = $"/organisation/{Model.OrganisationId}/forms/{Model.FormId}/sections/{Model.SectionId}/questions/{Model.PreviousQuestion.Id}{(Model.PreviousQuestionHasNonUkAddressAnswer() ? "?UkOrNonUk=non-uk" : "")}";
         }
     }
 }

@@ -188,7 +188,7 @@ public class FormsQuestionPageModel(
         var newFileInfo = FileUploadModel?.GetUploadedFileInfo();
         if (newFileInfo != null)
         {
-            using var stream = newFileInfo.Value.formFile.OpenReadStream();
+            await using var stream = newFileInfo.Value.formFile.OpenReadStream();
             await fileHostManager.UploadFile(stream, newFileInfo.Value.filename, newFileInfo.Value.contentType);
 
             var userInfo = await userInfoService.GetUserInfo();
@@ -260,21 +260,21 @@ public class FormsQuestionPageModel(
         if (answer == null)
             return "";
 
-        async Task<string> singleChoiceString(FormAnswer a)
+        async Task<string> SingleChoiceString(FormAnswer a)
         {
             var choiceProviderStrategy = choiceProviderService.GetStrategy(question.Options.ChoiceProviderStrategy);
             return await choiceProviderStrategy.RenderOption(a) ?? "";
         }
 
-        string boolAnswerString = answer.BoolValue.HasValue == true ? (answer.BoolValue == true ? "Yes" : "No") : "";
+        string boolAnswerString = answer.BoolValue.HasValue ? (answer.BoolValue == true ? "Yes" : "No") : "";
 
         string answerString = question.Type switch
         {
             FormQuestionType.Text => answer.TextValue ?? "",
             FormQuestionType.FileUpload => answer.TextValue ?? "",
-            FormQuestionType.SingleChoice => await singleChoiceString(answer),
-            FormQuestionType.Date => answer.DateValue.HasValue == true ? answer.DateValue.Value.ToFormattedString() : "",
-            FormQuestionType.CheckBox => answer.BoolValue == true ? question?.Options?.Choices?.Values.FirstOrDefault() ?? "" : "",
+            FormQuestionType.SingleChoice => await SingleChoiceString(answer),
+            FormQuestionType.Date => answer.DateValue.HasValue ? answer.DateValue.Value.ToFormattedString() : "",
+            FormQuestionType.CheckBox => answer.BoolValue == true ? question.Options.Choices?.Values.FirstOrDefault() ?? "" : "",
             FormQuestionType.Address => answer.AddressValue != null ? answer.AddressValue.ToHtmlString() : "",
             FormQuestionType.MultiLine => answer.TextValue ?? "",
             FormQuestionType.GroupedSingleChoice => GroupedSingleChoiceAnswerString(answer, question),
@@ -287,14 +287,14 @@ public class FormsQuestionPageModel(
         return string.Join(", ", answers.Where(s => !string.IsNullOrWhiteSpace(s)));
     }
 
-    public bool PreviousQuestionHasNonUKAddressAnswer()
+    public bool PreviousQuestionHasNonUkAddressAnswer()
     {
-        if (PreviousQuestion != null && PreviousQuestion.Type == FormQuestionType.Address)
+        if (PreviousQuestion is { Type: FormQuestionType.Address })
         {
             var answer = GetAnswerFromTempData(PreviousQuestion);
             if (answer?.AddressValue != null)
             {
-                return answer.AddressValue.Country != Constants.Country.UKCountryCode;
+                return answer.AddressValue.Country != Country.UKCountryCode;
             }
         }
 
@@ -339,8 +339,6 @@ public class FormsQuestionPageModel(
         var form = await formsEngine.GetFormSectionAsync(OrganisationId, FormId, SectionId);
         var currentQuestion = await formsEngine.GetCurrentQuestion(OrganisationId, FormId, SectionId, CurrentQuestionId);
 
-        if (currentQuestion == null)
-            return null;
         return currentQuestion switch
         {
             null => null,
@@ -408,7 +406,7 @@ public class FormsQuestionPageModel(
     private static Dictionary<Guid, FormAnswer> GetExistingAnswersForMultiQuestion(List<FormQuestion> questions, FormQuestionAnswerState answerState)
     {
         return questions
-            .Select(q => new { QuestionId = q.Id, Answer = answerState.Answers.FirstOrDefault(a => a.QuestionId == q.Id)?.Answer })
+            .Select(q => new { QuestionId = q.Id, answerState.Answers.FirstOrDefault(a => a.QuestionId == q.Id)?.Answer })
             .Where(x => x.Answer != null)
             .ToDictionary(x => x.QuestionId, x => x.Answer!);
     }
@@ -476,7 +474,7 @@ public class FormsQuestionPageModel(
     private FormAnswer? GetAnswerFromTempData(FormQuestion question)
     {
         var state = tempDataService.PeekOrDefault<FormQuestionAnswerState>(FormQuestionAnswerStateKey);
-        return state.Answers?.FirstOrDefault(a => a.QuestionId == question.Id)?.Answer;
+        return state.Answers.FirstOrDefault(a => a.QuestionId == question.Id)?.Answer;
     }
 
     private void HandleBranchingLogicAnswerChange(FormQuestion currentQuestion, FormAnswer? oldAnswerObject, List<FormQuestion> allQuestionsInSection)
@@ -540,7 +538,7 @@ public class FormsQuestionPageModel(
     private void RemoveAnswersFromBranchPath(Guid branchStartNodeId, List<FormQuestion> allQuestionsInSection)
     {
         var answerState = tempDataService.PeekOrDefault<FormQuestionAnswerState>(FormQuestionAnswerStateKey);
-        if (answerState?.Answers == null || !answerState.Answers.Any())
+        if (answerState.Answers.Count == 0)
         {
             return;
         }
