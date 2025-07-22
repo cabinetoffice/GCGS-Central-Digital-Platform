@@ -112,7 +112,17 @@ public class FormsEngineTests
                                     )
                                 }
                             )
-                        }
+                        },
+                        grouping: new WebApiClient.FormQuestionGrouping(
+                            page: new WebApiClient.PageGrouping(
+                                nextQuestionsToDisplay: 1,
+                                pageTitleResourceKey: "PageTitle",
+                                submitButtonTextResourceKey: "Submit"
+                            ),
+                            checkYourAnswers: new WebApiClient.CheckYourAnswersGrouping(
+                                groupTitleResourceKey: "GroupTitle"
+                            )
+                        )
                     )
                 )
             },
@@ -194,6 +204,20 @@ public class FormsEngineTests
                     new FormQuestionGroupChoice { Title = "Group Choice 1", Value = "group_choice_1" },
                     new FormQuestionGroupChoice { Title = "Group Choice 2", Value = "group_choice_2" }
                 }
+            }
+        };
+
+        expectedResponse.Questions[0].Options.Grouping = new FormQuestionGrouping
+        {
+            Page = new PageGrouping
+            {
+                NextQuestionsToDisplay = 1,
+                PageTitleResourceKey = "PageTitle",
+                SubmitButtonTextResourceKey = "Submit"
+            },
+            CheckYourAnswers = new CheckYourAnswersGrouping
+            {
+                GroupTitleResourceKey = "GroupTitle"
             }
         };
 
@@ -383,6 +407,20 @@ public class FormsEngineTests
                     new FormQuestionGroupChoice { Title = "Group Choice 1", Value = "group_choice_1" },
                     new FormQuestionGroupChoice { Title = "Group Choice 2", Value = "group_choice_2" }
                 }
+            }
+        };
+
+        expectedResponse.Questions[0].Options.Grouping = new FormQuestionGrouping
+        {
+            Page = new PageGrouping
+            {
+                NextQuestionsToDisplay = 1,
+                PageTitleResourceKey = "PageTitle",
+                SubmitButtonTextResourceKey = "Submit"
+            },
+            CheckYourAnswers = new CheckYourAnswersGrouping
+            {
+                GroupTitleResourceKey = "GroupTitle"
             }
         };
 
@@ -1682,26 +1720,31 @@ public class FormsEngineTests
         var secondQuestionId = Guid.NewGuid();
         var thirdQuestionId = Guid.NewGuid();
 
-        var expectedMultiQuestionOptions = new Dictionary<string, string>
-        {
-            { "Option1", "Option1" },
-            { "multiQuestionPage", "{\"nextQuestionsToDisplay\":2,\"pageTitleResourceKey\":\"ModernSlavery_02_Title\",\"submitButtonTextResourceKey\":\"ModernSlavery_02_SubmitButton\"}" }
-        };
-
         var sectionResponse = new SectionQuestionsResponse
         {
             Section = new FormSection { Id = sectionId, Title = "SectionTitle", AllowsMultipleAnswerSets = true },
-            Questions =
-            [
+            Questions = new List<FormQuestion>
+            {
                 new FormQuestion
                 {
                     Id = firstQuestionId,
                     Type = FormQuestionType.Text,
                     Title = "Question 1",
                     NextQuestion = secondQuestionId,
-                    Options = new FormQuestionOptions { Choices = expectedMultiQuestionOptions }
+                    Options = new FormQuestionOptions
+                    {
+                        Grouping = new FormQuestionGrouping
+                        {
+                            Page = new PageGrouping
+                            {
+                                NextQuestionsToDisplay = 2,
+                                PageTitleResourceKey = "ModernSlavery_02_Title",
+                                SubmitButtonTextResourceKey = "ModernSlavery_02_SubmitButton"
+                            },
+                            CheckYourAnswers = null
+                        },
+                    }
                 },
-
                 new FormQuestion
                 {
                     Id = secondQuestionId,
@@ -1710,7 +1753,6 @@ public class FormsEngineTests
                     NextQuestion = thirdQuestionId,
                     Options = new FormQuestionOptions()
                 },
-
                 new FormQuestion
                 {
                     Id = thirdQuestionId,
@@ -1718,7 +1760,7 @@ public class FormsEngineTests
                     Title = "Question 3",
                     Options = new FormQuestionOptions()
                 }
-            ]
+            }
         };
 
         _tempDataServiceMock.Setup(t => t.Peek<SectionQuestionsResponse>(sessionKey))
@@ -1777,11 +1819,6 @@ public class FormsEngineTests
         var thirdQuestionId = Guid.NewGuid();
         var fourthQuestionId = Guid.NewGuid();
 
-        var multiQuestionOptions = new Dictionary<string, string>
-        {
-            { "multiQuestionPage", "{\"nextQuestionsToDisplay\":2}" }
-        };
-
         var sectionResponse = new SectionQuestionsResponse
         {
             Section = new FormSection { Id = sectionId, Title = "SectionTitle", AllowsMultipleAnswerSets = true },
@@ -1791,7 +1828,16 @@ public class FormsEngineTests
                 {
                     Id = firstQuestionId,
                     NextQuestion = secondQuestionId,
-                    Options = new FormQuestionOptions { Choices = multiQuestionOptions }
+                    Options = new FormQuestionOptions 
+                    { 
+                        Grouping = new FormQuestionGrouping
+                        {
+                            Page = new PageGrouping
+                            {
+                                NextQuestionsToDisplay = 2
+                            }
+                        }
+                    }
                 },
                 new FormQuestion { Id = secondQuestionId, NextQuestion = thirdQuestionId },
                 new FormQuestion { Id = thirdQuestionId, NextQuestion = fourthQuestionId },
@@ -1808,61 +1854,6 @@ public class FormsEngineTests
 
         result.Should().NotBeNull();
         result!.Id.Should().Be(fourthQuestionId, "because the next question should skip the multi-question page questions");
-    }
-
-    [Fact]
-    public void ParseMultiQuestionConfiguration_ShouldReturnCorrectConfiguration_WhenValidJson()
-    {
-        var jsonOptions = new Dictionary<string, string>
-        {
-            { "multiQuestionPage", "{\"nextQuestionsToDisplay\":3,\"pageTitleResourceKey\":\"ModernSlavery_03_Title\",\"submitButtonTextResourceKey\":\"ModernSlavery_03_SubmitButton\"}" }
-        };
-
-        var question = new FormQuestion
-        {
-            Id = Guid.NewGuid(),
-            Options = new FormQuestionOptions { Choices = jsonOptions }
-        };
-
-        var result = _formsEngine.ParseMultiQuestionConfiguration(question);
-
-        result.Should().NotBeNull();
-        result!.NextQuestionsToDisplay.Should().Be(3);
-        result.PageTitleResourceKey.Should().Be("ModernSlavery_03_Title");
-        result.SubmitButtonTextResourceKey.Should().Be("ModernSlavery_03_SubmitButton");
-    }
-
-    [Fact]
-    public void ParseMultiQuestionConfiguration_ShouldReturnNull_WhenNoConfiguration()
-    {
-        var question = new FormQuestion
-        {
-            Id = Guid.NewGuid(),
-            Options = new FormQuestionOptions()
-        };
-
-        var result = _formsEngine.ParseMultiQuestionConfiguration(question);
-
-        result.Should().BeNull();
-    }
-
-    [Fact]
-    public void ParseMultiQuestionConfiguration_ShouldReturnNull_WhenInvalidJson()
-    {
-        var jsonOptions = new Dictionary<string, string>
-        {
-            { "multiQuestionPage", "invalid json" }
-        };
-
-        var question = new FormQuestion
-        {
-            Id = Guid.NewGuid(),
-            Options = new FormQuestionOptions { Choices = jsonOptions }
-        };
-
-        var result = _formsEngine.ParseMultiQuestionConfiguration(question);
-
-        result.Should().BeNull();
     }
 
     [Theory]
@@ -2058,11 +2049,6 @@ public class FormsEngineTests
         var question2Id = Guid.NewGuid();
         var question3Id = Guid.NewGuid();
 
-        var multiQuestionOptions = new Dictionary<string, string>
-        {
-            { "multiQuestionPage", "{\"nextQuestionsToDisplay\":2,\"pageTitleResourceKey\":\"Test Group Title\"}" }
-        };
-
         var sectionResponse = new SectionQuestionsResponse
         {
             Section = new FormSection { Id = sectionId, Title = "Test Section" },
@@ -2074,9 +2060,15 @@ public class FormsEngineTests
                     Type = FormQuestionType.Text,
                     Title = "Question 1",
                     NextQuestion = question2Id,
-                    Options = new FormQuestionOptions { Choices = multiQuestionOptions }
+                    Options = new FormQuestionOptions
+                    {
+                        Grouping = new FormQuestionGrouping
+                        {
+                            Page = new PageGrouping { NextQuestionsToDisplay = 2, PageTitleResourceKey = "Test Group Title" },
+                            CheckYourAnswers = new CheckYourAnswersGrouping { GroupTitleResourceKey = "Test Group Title" }
+                        }
+                    }
                 },
-
                 new FormQuestion
                 {
                     Id = question2Id,
@@ -2152,10 +2144,6 @@ public class FormsEngineTests
         var question2Id = Guid.NewGuid();
         var question3Id = Guid.NewGuid();
 
-        var multiQuestionOptions = new Dictionary<string, string>
-        {
-            { "multiQuestionPage", "{\"nextQuestionsToDisplay\":1,\"pageTitleResourceKey\":\"Group Title\"}" }
-        };
 
         var sectionResponse = new SectionQuestionsResponse
         {
@@ -2168,7 +2156,21 @@ public class FormsEngineTests
                     Type = FormQuestionType.Text,
                     Title = "Grouped Question 1",
                     NextQuestion = question2Id,
-                    Options = new FormQuestionOptions { Choices = multiQuestionOptions }
+                    Options = new FormQuestionOptions 
+                    { 
+                        Grouping = new FormQuestionGrouping
+                        {
+                            Page = new PageGrouping
+                            {
+                                NextQuestionsToDisplay = 1,
+                                PageTitleResourceKey = "Group Title"
+                            },
+                            CheckYourAnswers = new CheckYourAnswersGrouping
+                            {
+                                GroupTitleResourceKey = "Group Title"
+                            }
+                        }
+                    }
                 },
 
                 new FormQuestion

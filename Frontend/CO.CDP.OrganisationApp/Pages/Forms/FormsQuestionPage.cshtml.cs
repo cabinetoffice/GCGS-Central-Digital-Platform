@@ -361,11 +361,10 @@ public class FormsQuestionPageModel(
     private async Task<FormQuestion> InitializeModelState(SectionQuestionsResponse form, FormQuestion currentQuestion, bool reset)
     {
         var answerState = tempDataService.PeekOrDefault<FormQuestionAnswerState>(FormQuestionAnswerStateKey);
-        var multiQuestionConfig = formsEngine.ParseMultiQuestionConfiguration(currentQuestion);
 
         SetCommonProperties(form, currentQuestion);
 
-        await SetViewModelProperties(currentQuestion, multiQuestionConfig, answerState, reset);
+        await SetViewModelProperties(currentQuestion, answerState, reset);
 
         await SetNavigationProperties(form, currentQuestion, answerState);
 
@@ -376,12 +375,12 @@ public class FormsQuestionPageModel(
     {
         FormSectionType = form.Section?.Type;
         CurrentFormQuestionType = currentQuestion.Type;
-        IsMultiQuestionPage = formsEngine.ParseMultiQuestionConfiguration(currentQuestion) != null;
+        IsMultiQuestionPage = currentQuestion.Options.Grouping?.Page != null;
     }
 
-    private async Task SetViewModelProperties(FormQuestion currentQuestion, MultiQuestionPageConfiguration? multiQuestionConfig, FormQuestionAnswerState answerState, bool reset)
+    private async Task SetViewModelProperties(FormQuestion currentQuestion, FormQuestionAnswerState answerState, bool reset)
     {
-        if (multiQuestionConfig != null)
+        if (currentQuestion.Options.Grouping?.Page != null)
         {
             await InitializeMultiQuestionView(currentQuestion, answerState);
         }

@@ -38,9 +38,10 @@ public class FormQuestion
 public class FormQuestionOptions
 {
     public Dictionary<string, string>? Choices { get; set; }
-    public string? ChoiceProviderStrategy { get; set; }
     public List<FormQuestionGroup> Groups { get; set; } = [];
+    public string? ChoiceProviderStrategy { get; set; }
     public string? AnswerFieldName { get; set; }
+    public FormQuestionGrouping? Grouping { get; set; }
 }
 
 public class FormQuestionAnswerState

@@ -23,7 +23,12 @@ public class WebApiToPersistenceProfile : Profile
             .ForMember(dest => dest.Options, opt => opt.MapFrom(src => src.Options))
             .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name));
 
-        CreateMap<Persistence.FormQuestionOptions, Model.FormQuestionOptions>();
+        CreateMap<Persistence.FormQuestionOptions, Model.FormQuestionOptions>()
+            .ForMember(dest => dest.Grouping, opt => opt.MapFrom(src => src.Grouping));
+
+        CreateMap<Persistence.FormQuestionGrouping, Model.FormQuestionGrouping>().ReverseMap();
+        CreateMap<Persistence.PageGrouping, Model.PageGrouping>().ReverseMap();
+        CreateMap<Persistence.CheckYourAnswersGrouping, Model.CheckYourAnswersGrouping>().ReverseMap();
 
         CreateMap<Persistence.FormQuestionChoice, Model.FormQuestionChoice>()
             .ForMember(dest => dest.Title, opt => opt.MapFrom<LocalizedPropertyResolver<Persistence.FormQuestionChoice, Model.FormQuestionChoice>, string>(src => src.Title))

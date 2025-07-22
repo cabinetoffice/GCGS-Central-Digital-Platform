@@ -9,6 +9,7 @@ using FormAnswer = CO.CDP.OrganisationApp.Models.FormAnswer;
 using FormQuestion = CO.CDP.OrganisationApp.Models.FormQuestion;
 using FormQuestionGroup = CO.CDP.OrganisationApp.Models.FormQuestionGroup;
 using FormQuestionGroupChoice = CO.CDP.OrganisationApp.Models.FormQuestionGroupChoice;
+using FormQuestionGrouping = CO.CDP.OrganisationApp.Models.FormQuestionGrouping;
 using FormQuestionOptions = CO.CDP.OrganisationApp.Models.FormQuestionOptions;
 using FormQuestionType = CO.CDP.OrganisationApp.Models.FormQuestionType;
 using FormSection = CO.CDP.OrganisationApp.Models.FormSection;
@@ -78,7 +79,20 @@ public class FormsEngine(
                                 Value = c.Value
                             }).ToList()
                         }).ToList(),
-                        AnswerFieldName = q.Options.AnswerFieldName
+                        AnswerFieldName = q.Options.AnswerFieldName,
+                        Grouping = q.Options.Grouping != null ? new FormQuestionGrouping
+                        {
+                            Page = q.Options.Grouping.Page != null ? new Models.PageGrouping
+                            {
+                                NextQuestionsToDisplay = q.Options.Grouping.Page.NextQuestionsToDisplay,
+                                PageTitleResourceKey = q.Options.Grouping.Page.PageTitleResourceKey,
+                                SubmitButtonTextResourceKey = q.Options.Grouping.Page.SubmitButtonTextResourceKey
+                            } : null,
+                            CheckYourAnswers = q.Options.Grouping.CheckYourAnswers != null ? new Models.CheckYourAnswersGrouping
+                            {
+                                GroupTitleResourceKey = q.Options.Grouping.CheckYourAnswers.GroupTitleResourceKey
+                            } : null
+                        } : null
                     }
                 };
             }))).ToList()
@@ -108,10 +122,10 @@ public class FormsEngine(
             return null;
         }
 
-        var multiQuestionConfig = ParseMultiQuestionConfiguration(currentQuestion);
-        if (multiQuestionConfig != null)
+        var grouping = currentQuestion.Options.Grouping;
+        if (grouping?.Page != null)
         {
-            determinedNextQuestionId = SkipMultiQuestionPageQuestions(determinedNextQuestionId.Value, section.Questions, multiQuestionConfig.NextQuestionsToDisplay);
+            determinedNextQuestionId = SkipMultiQuestionPageQuestions(determinedNextQuestionId.Value, section.Questions, grouping.Page.NextQuestionsToDisplay);
         }
 
         return !determinedNextQuestionId.HasValue ? null : section.Questions.FirstOrDefault(q => q.Id == determinedNextQuestionId.Value);
@@ -399,18 +413,16 @@ public class FormsEngine(
 
     private MultiQuestionPageModel BuildMultiQuestionPage(FormQuestion startingQuestion, List<FormQuestion> allQuestions)
     {
-        var multiQuestionConfig = ParseMultiQuestionConfiguration(startingQuestion);
+        var grouping = startingQuestion.Options.Grouping;
 
-        return multiQuestionConfig switch
-        {
-            null => new MultiQuestionPageModel { Questions = [startingQuestion] },
-            _ => new MultiQuestionPageModel
+        return grouping?.Page == null
+            ? new MultiQuestionPageModel { Questions = [startingQuestion] }
+            : new MultiQuestionPageModel
             {
-                Questions = CollectQuestionsForPage(startingQuestion, allQuestions, multiQuestionConfig.NextQuestionsToDisplay),
-                PageTitleResourceKey = multiQuestionConfig.PageTitleResourceKey,
-                SubmitButtonTextResourceKey = multiQuestionConfig.SubmitButtonTextResourceKey
-            }
-        };
+                Questions = CollectQuestionsForPage(startingQuestion, allQuestions, grouping.Page.NextQuestionsToDisplay),
+                PageTitleResourceKey = grouping.Page.PageTitleResourceKey,
+                SubmitButtonTextResourceKey = grouping.Page.SubmitButtonTextResourceKey
+            };
     }
 
     private static List<FormQuestion> CollectQuestionsForPage(FormQuestion startingQuestion, List<FormQuestion> allQuestions, int questionsToDisplay)
@@ -431,31 +443,6 @@ public class FormsEngine(
         return questions;
     }
 
-    public MultiQuestionPageConfiguration? ParseMultiQuestionConfiguration(FormQuestion question)
-    {
-        var jsonString = question.Options.Choices?.GetValueOrDefault("multiQuestionPage") ?? string.Empty;
-
-        return string.IsNullOrWhiteSpace(jsonString)
-            ? null
-            : TryDeserializeConfiguration(jsonString);
-    }
-
-    private static MultiQuestionPageConfiguration? TryDeserializeConfiguration(string jsonString)
-    {
-        try
-        {
-            return System.Text.Json.JsonSerializer.Deserialize<MultiQuestionPageConfiguration>(jsonString,
-                new System.Text.Json.JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true
-            });
-        }
-        catch
-        {
-            return null;
-        }
-    }
-
     public async Task<List<IAnswerDisplayItem>> GetGroupedAnswerSummaries(Guid organisationId, Guid formId, Guid sectionId, FormQuestionAnswerState answerState)
     {
         var form = await GetFormSectionAsync(organisationId, formId, sectionId);
@@ -471,11 +458,11 @@ public class FormsEngine(
         {
             if (processedQuestionIds.Contains(question.Id)) continue;
 
-            var multiQuestionConfig = ParseMultiQuestionConfiguration(question);
+            var grouping = question.Options.Grouping;
 
-            if (multiQuestionConfig != null)
+            if (grouping?.CheckYourAnswers != null)
             {
-                var group = await CreateMultiQuestionGroup(question, relevantQuestions, answerState, organisationId, formId, sectionId, multiQuestionConfig);
+                var group = await CreateMultiQuestionGroup(question, relevantQuestions, answerState, organisationId, formId, sectionId, grouping);
 
                 if (!group.Answers.Any()) continue;
                 displayItems.Add(group);
@@ -497,7 +484,7 @@ public class FormsEngine(
 
     private async Task<GroupedAnswerSummary> CreateMultiQuestionGroup(
         FormQuestion startingQuestion, List<FormQuestion> allQuestions, FormQuestionAnswerState answerState,
-        Guid organisationId, Guid formId, Guid sectionId, MultiQuestionPageConfiguration config)
+        Guid organisationId, Guid formId, Guid sectionId, FormQuestionGrouping grouping)
     {
         var multiQuestionPage = BuildMultiQuestionPage(startingQuestion, allQuestions);
 
@@ -511,7 +498,7 @@ public class FormsEngine(
 
         return new GroupedAnswerSummary
         {
-            GroupTitle = !string.IsNullOrEmpty(config.PageTitleResourceKey) ? config.PageTitleResourceKey : startingQuestion.Title,
+            GroupTitle = !string.IsNullOrEmpty(grouping.CheckYourAnswers?.GroupTitleResourceKey) ? grouping.CheckYourAnswers.GroupTitleResourceKey : startingQuestion.Title,
             GroupChangeLink = $"/organisation/{organisationId}/forms/{formId}/sections/{sectionId}/questions/{startingQuestion.Id}",
             Answers = answers
         };
