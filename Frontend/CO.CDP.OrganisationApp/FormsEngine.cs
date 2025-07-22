@@ -248,17 +248,17 @@ public class FormsEngine(
                !string.IsNullOrWhiteSpace(address.Postcode);
     }
 
-    private static FormAddress? MapAddress(Address? formAdddress)
+    private static FormAddress? MapAddress(Address? formAddress)
     {
-        if (formAdddress == null)
+        if (formAddress == null)
             return null;
         return new FormAddress(
-            streetAddress: formAdddress.AddressLine1,
-            locality: formAdddress.TownOrCity,
+            streetAddress: formAddress.AddressLine1,
+            locality: formAddress.TownOrCity,
             region: null,
-            postalCode: formAdddress.Postcode,
-            countryName: formAdddress.CountryName,
-            country: formAdddress.Country
+            postalCode: formAddress.Postcode,
+            countryName: formAddress.CountryName,
+            country: formAddress.Country
         );
     }
 
