@@ -14,6 +14,19 @@ public interface IFormElementModel
     void SetAnswer(FormAnswer? answer);
 }
 
+public interface IMultiQuestionFormElementModel
+{
+    List<FormQuestion> Questions { get; }
+    string? PageTitleResourceKey { get; }
+    string? SubmitButtonTextResourceKey { get; }
+
+    void Initialize(MultiQuestionPageModel multiQuestionPage, Dictionary<Guid, FormAnswer> existingAnswers);
+
+    IFormElementModel? GetQuestionModel(Guid questionId);
+
+    Dictionary<Guid, FormAnswer> GetAllAnswers();
+}
+
 public abstract class FormElementModel : IFormElementModel
 {
     public string? Heading { get; set; }
