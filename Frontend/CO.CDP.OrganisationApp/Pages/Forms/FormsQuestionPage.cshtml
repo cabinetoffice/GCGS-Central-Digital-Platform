@@ -50,38 +50,8 @@
             @if (isCheckYourAnswersPage)
             {
                 ViewData["Title"] = StaticTextResource.Forms_CheckYourAnswers_Title;
-                var answers = await Model.GetAnswers();
-                var count = 0;
-                <h1 class="govuk-heading-l">@ViewData["Title"]</h1>
-                <dl class="govuk-summary-list govuk-!-margin-bottom-9">
-                    @foreach (var answer in answers)
-                    {
-                        count++;
-                        var testId = answer.Title?.Replace(" ", "") + '_' + count;
-                        <div class="govuk-summary-list__row">
-                            <dt class="govuk-summary-list__key">
-                                @answer.Title
-                            </dt>
-                            <dd class="govuk-summary-list__value">
-                                @answer.Answer
-                            </dd>
-                            <dd class="govuk-summary-list__actions">
-                                <a class="govuk-link" href="@answer.ChangeLink" data-testid="@testId">
-                                    @Html.Raw(string.Format(StaticTextResource.Forms_CheckYourAnswers_Change, answer.Title?.ToLower()))
-                                </a>
-                            </dd>
-                        </div>
-                    }
-                </dl>
-
-                if (Model.FormSectionType == Models.FormSectionType.Declaration)
-                {
-                    <govuk-button>@StaticTextResource.Forms_DeclarationSection_ConfirmAndGetShareCode</govuk-button>
-                }
-                else
-                {
-                    <govuk-button>@StaticTextResource.Global_Save</govuk-button>
-                }
+                var groupedAnswersModel = await Model.GetGroupedAnswersModel();
+                @await Html.PartialAsync("_FormElementCheckYourAnswers", groupedAnswersModel)
             }
             else
             {

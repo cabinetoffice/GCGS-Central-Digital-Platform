@@ -1,4 +1,5 @@
 using CO.CDP.OrganisationApp.Models;
+using CO.CDP.OrganisationApp.Pages.Forms;
 
 namespace CO.CDP.OrganisationApp;
 
@@ -21,4 +22,6 @@ public interface IFormsEngine
     Task<MultiQuestionPageModel> GetMultiQuestionPage(Guid organisationId, Guid formId, Guid sectionId, Guid startingQuestionId);
     
     MultiQuestionPageConfiguration? ParseMultiQuestionConfiguration(FormQuestion question);
+    
+    Task<List<IAnswerDisplayItem>> GetGroupedAnswerSummaries(Guid organisationId, Guid formId, Guid sectionId, FormQuestionAnswerState answerState);
 }

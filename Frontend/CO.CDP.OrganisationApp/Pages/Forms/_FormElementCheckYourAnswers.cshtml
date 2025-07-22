@@ -1,0 +1,89 @@
+@model CO.CDP.OrganisationApp.Pages.Forms.FormElementCheckYourAnswersModel
+@using CO.CDP.Localization
+@using CO.CDP.OrganisationApp.Models
+
+@{
+    ViewData["Title"] = StaticTextResource.Forms_CheckYourAnswers_Title;
+}
+
+<h1 class="govuk-heading-l">@ViewData["Title"]</h1>
+
+@{
+    var count = 0;
+    var groupedItems = new List<GroupedAnswerSummary>();
+    var individualItems = new List<AnswerSummary>();
+
+    foreach (var item in Model.DisplayItems)
+    {
+        if (item.IsGroup)
+        {
+            groupedItems.Add((GroupedAnswerSummary)item);
+        }
+        else
+        {
+            individualItems.Add((AnswerSummary)item);
+        }
+    }
+}
+
+@if (individualItems.Any())
+{
+    <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+        @foreach (var answer in individualItems)
+        {
+            count++;
+            var testId = answer.Title?.Replace(" ", "") + '_' + count;
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    @answer.Title
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @answer.Answer
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                    <a class="govuk-link" href="@answer.ChangeLink" data-testid="@testId">
+                        @Html.Raw(string.Format(StaticTextResource.Forms_CheckYourAnswers_Change, answer.Title?.ToLower()))
+                    </a>
+                </dd>
+            </div>
+        }
+    </dl>
+}
+
+@foreach (var group in groupedItems)
+{
+    @if (!string.IsNullOrEmpty(group.GroupTitle))
+    {
+        <h3 class="govuk-heading-m">@group.GroupTitle</h3>
+    }
+
+    <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+        @foreach (var answer in group.Answers)
+        {
+            count++;
+            var testId = answer.Title?.Replace(" ", "") + '_' + count;
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    @answer.Title
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @answer.Answer
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                    <a class="govuk-link" href="@group.GroupChangeLink" data-testid="@testId">
+                        @Html.Raw(string.Format(StaticTextResource.Forms_CheckYourAnswers_Change, answer.Title?.ToLower()))
+                    </a>
+                </dd>
+            </div>
+        }
+    </dl>
+}
+
+@if (Model.FormSectionType == FormSectionType.Declaration)
+{
+    <govuk-button>@StaticTextResource.Forms_DeclarationSection_ConfirmAndGetShareCode</govuk-button>
+}
+else
+{
+    <govuk-button>@StaticTextResource.Global_Save</govuk-button>
+}

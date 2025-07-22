@@ -1,8 +1,10 @@
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Models;
+using CO.CDP.OrganisationApp.Pages.Forms;
 using CO.CDP.OrganisationApp.Pages.Forms.ChoiceProviderStrategies;
 using FluentAssertions;
 using Moq;
+using Address = CO.CDP.OrganisationApp.Models.Address;
 using DataShareWebApiClient = CO.CDP.DataSharing.WebApiClient;
 using WebApiClient = CO.CDP.Forms.WebApiClient;
 
@@ -1939,4 +1941,629 @@ public class FormsEngineTests
             _ => throw new ArgumentException($@"Unsupported question type: {questionType}", nameof(questionType))
         };
     }
+
+    #region GetGroupedAnswerSummaries Tests
+
+    [Fact]
+    public async Task GetGroupedAnswerSummaries_ShouldReturnEmptyList_WhenNoRelevantQuestions()
+    {
+        var (organisationId, formId, sectionId, sessionKey) = CreateTestGuids();
+        var sectionResponse = new SectionQuestionsResponse
+        {
+            Section = new FormSection { Id = sectionId, Title = "Test Section" },
+            Questions =
+            [
+                new FormQuestion
+                {
+                    Id = Guid.NewGuid(),
+                    Type = FormQuestionType.NoInput,
+                    Title = "Information only"
+                },
+
+                new FormQuestion
+                {
+                    Id = Guid.NewGuid(),
+                    Type = FormQuestionType.CheckYourAnswers,
+                    Title = "Check your answers"
+                }
+            ]
+        };
+
+        var answerState = new FormQuestionAnswerState();
+
+        _tempDataServiceMock.Setup(t => t.Peek<SectionQuestionsResponse>(sessionKey))
+            .Returns(sectionResponse);
+
+        var result = await _formsEngine.GetGroupedAnswerSummaries(organisationId, formId, sectionId, answerState);
+
+        result.Should().BeEmpty("because NoInput and CheckYourAnswers questions should be filtered out");
+    }
+
+    [Fact]
+    public async Task GetGroupedAnswerSummaries_ShouldReturnIndividualAnswers_WhenNoMultiQuestionConfiguration()
+    {
+        var (organisationId, formId, sectionId, sessionKey) = CreateTestGuids();
+        var question1Id = Guid.NewGuid();
+        var question2Id = Guid.NewGuid();
+
+        var sectionResponse = new SectionQuestionsResponse
+        {
+            Section = new FormSection { Id = sectionId, Title = "Test Section" },
+            Questions =
+            [
+                new FormQuestion
+                {
+                    Id = question1Id,
+                    Type = FormQuestionType.Text,
+                    Title = "Question 1",
+                    SummaryTitle = "Summary 1",
+                    Options = new FormQuestionOptions()
+                },
+
+                new FormQuestion
+                {
+                    Id = question2Id,
+                    Type = FormQuestionType.YesOrNo,
+                    Title = "Question 2",
+                    Options = new FormQuestionOptions()
+                }
+            ]
+        };
+
+        var answerState = new FormQuestionAnswerState
+        {
+            Answers =
+            [
+                new QuestionAnswer
+                {
+                    QuestionId = question1Id,
+                    Answer = new FormAnswer { TextValue = "Answer 1" }
+                },
+
+                new QuestionAnswer
+                {
+                    QuestionId = question2Id,
+                    Answer = new FormAnswer { BoolValue = true }
+                }
+            ]
+        };
+
+        _tempDataServiceMock.Setup(t => t.Peek<SectionQuestionsResponse>(sessionKey))
+            .Returns(sectionResponse);
+        _choiceProviderServiceMock.Setup(c => c.GetStrategy(null))
+            .Returns(new DefaultChoiceProviderStrategy());
+
+        var result = await _formsEngine.GetGroupedAnswerSummaries(organisationId, formId, sectionId, answerState);
+
+        result.Should().HaveCount(2, "because there are 2 individual questions");
+
+        var answer1 = result.FirstOrDefault(r => !r.IsGroup) as AnswerSummary;
+        answer1.Should().NotBeNull();
+        answer1!.Title.Should().Be("Summary 1");
+        answer1.Answer.Should().Be("Answer 1");
+        answer1.ChangeLink.Should().Be($"/organisation/{organisationId}/forms/{formId}/sections/{sectionId}/questions/{question1Id}?frm-chk-answer=true");
+
+        var answer2 = result.Skip(1).FirstOrDefault(r => !r.IsGroup) as AnswerSummary;
+        answer2.Should().NotBeNull();
+        answer2!.Title.Should().Be("Question 2");
+        answer2.Answer.Should().Be("Yes");
+        answer2.ChangeLink.Should().Be($"/organisation/{organisationId}/forms/{formId}/sections/{sectionId}/questions/{question2Id}?frm-chk-answer=true");
+    }
+
+    [Fact]
+    public async Task GetGroupedAnswerSummaries_ShouldReturnGroupedAnswers_WhenMultiQuestionConfiguration()
+    {
+        var (organisationId, formId, sectionId, sessionKey) = CreateTestGuids();
+        var question1Id = Guid.NewGuid();
+        var question2Id = Guid.NewGuid();
+        var question3Id = Guid.NewGuid();
+
+        var multiQuestionOptions = new Dictionary<string, string>
+        {
+            { "multiQuestionPage", "{\"nextQuestionsToDisplay\":2,\"pageTitleResourceKey\":\"Test Group Title\"}" }
+        };
+
+        var sectionResponse = new SectionQuestionsResponse
+        {
+            Section = new FormSection { Id = sectionId, Title = "Test Section" },
+            Questions =
+            [
+                new FormQuestion
+                {
+                    Id = question1Id,
+                    Type = FormQuestionType.Text,
+                    Title = "Question 1",
+                    NextQuestion = question2Id,
+                    Options = new FormQuestionOptions { Choices = multiQuestionOptions }
+                },
+
+                new FormQuestion
+                {
+                    Id = question2Id,
+                    Type = FormQuestionType.YesOrNo,
+                    Title = "Question 2",
+                    NextQuestion = question3Id,
+                    Options = new FormQuestionOptions()
+                },
+
+                new FormQuestion
+                {
+                    Id = question3Id,
+                    Type = FormQuestionType.Date,
+                    Title = "Question 3",
+                    Options = new FormQuestionOptions()
+                }
+            ]
+        };
+
+        var answerState = new FormQuestionAnswerState
+        {
+            Answers =
+            [
+                new QuestionAnswer
+                {
+                    QuestionId = question1Id,
+                    Answer = new FormAnswer { TextValue = "Answer 1" }
+                },
+
+                new QuestionAnswer
+                {
+                    QuestionId = question2Id,
+                    Answer = new FormAnswer { BoolValue = false }
+                },
+
+                new QuestionAnswer
+                {
+                    QuestionId = question3Id,
+                    Answer = new FormAnswer { DateValue = DateTimeOffset.Parse("2024-01-01") }
+                }
+            ]
+        };
+
+        _tempDataServiceMock.Setup(t => t.Peek<SectionQuestionsResponse>(sessionKey))
+            .Returns(sectionResponse);
+        _choiceProviderServiceMock.Setup(c => c.GetStrategy(null))
+            .Returns(new DefaultChoiceProviderStrategy());
+
+        var result = await _formsEngine.GetGroupedAnswerSummaries(organisationId, formId, sectionId, answerState);
+
+        result.Should().HaveCount(1, "because the multi-question configuration should group the first 3 questions");
+
+        var groupedAnswer = result.First() as GroupedAnswerSummary;
+        groupedAnswer.Should().NotBeNull();
+        groupedAnswer!.IsGroup.Should().BeTrue();
+        groupedAnswer.GroupTitle.Should().Be("Test Group Title");
+        groupedAnswer.GroupChangeLink.Should().Be($"/organisation/{organisationId}/forms/{formId}/sections/{sectionId}/questions/{question1Id}");
+        groupedAnswer.Answers.Should().HaveCount(3);
+
+        groupedAnswer.Answers[0].Title.Should().Be("Question 1");
+        groupedAnswer.Answers[0].Answer.Should().Be("Answer 1");
+        groupedAnswer.Answers[1].Title.Should().Be("Question 2");
+        groupedAnswer.Answers[1].Answer.Should().Be("No");
+        groupedAnswer.Answers[2].Title.Should().Be("Question 3");
+        groupedAnswer.Answers[2].Answer.Should().Be("01 January 2024");
+    }
+
+    [Fact]
+    public async Task GetGroupedAnswerSummaries_ShouldMixGroupedAndIndividualAnswers()
+    {
+        var (organisationId, formId, sectionId, sessionKey) = CreateTestGuids();
+        var question1Id = Guid.NewGuid();
+        var question2Id = Guid.NewGuid();
+        var question3Id = Guid.NewGuid();
+
+        var multiQuestionOptions = new Dictionary<string, string>
+        {
+            { "multiQuestionPage", "{\"nextQuestionsToDisplay\":1,\"pageTitleResourceKey\":\"Group Title\"}" }
+        };
+
+        var sectionResponse = new SectionQuestionsResponse
+        {
+            Section = new FormSection { Id = sectionId, Title = "Test Section" },
+            Questions =
+            [
+                new FormQuestion
+                {
+                    Id = question1Id,
+                    Type = FormQuestionType.Text,
+                    Title = "Grouped Question 1",
+                    NextQuestion = question2Id,
+                    Options = new FormQuestionOptions { Choices = multiQuestionOptions }
+                },
+
+                new FormQuestion
+                {
+                    Id = question2Id,
+                    Type = FormQuestionType.YesOrNo,
+                    Title = "Grouped Question 2",
+                    Options = new FormQuestionOptions()
+                },
+
+                new FormQuestion
+                {
+                    Id = question3Id,
+                    Type = FormQuestionType.Text,
+                    Title = "Individual Question",
+                    Options = new FormQuestionOptions()
+                }
+            ]
+        };
+
+        var answerState = new FormQuestionAnswerState
+        {
+            Answers =
+            [
+                new QuestionAnswer
+                {
+                    QuestionId = question1Id,
+                    Answer = new FormAnswer { TextValue = "Grouped Answer 1" }
+                },
+
+                new QuestionAnswer
+                {
+                    QuestionId = question2Id,
+                    Answer = new FormAnswer { BoolValue = true }
+                },
+
+                new QuestionAnswer
+                {
+                    QuestionId = question3Id,
+                    Answer = new FormAnswer { TextValue = "Individual Answer" }
+                }
+            ]
+        };
+
+        _tempDataServiceMock.Setup(t => t.Peek<SectionQuestionsResponse>(sessionKey))
+            .Returns(sectionResponse);
+        _choiceProviderServiceMock.Setup(c => c.GetStrategy(null))
+            .Returns(new DefaultChoiceProviderStrategy());
+
+        var result = await _formsEngine.GetGroupedAnswerSummaries(organisationId, formId, sectionId, answerState);
+
+        result.Should().HaveCount(2, "because there should be 1 grouped answer and 1 individual answer");
+
+        var groupedAnswer = result.FirstOrDefault(r => r.IsGroup) as GroupedAnswerSummary;
+        groupedAnswer.Should().NotBeNull();
+        groupedAnswer!.GroupTitle.Should().Be("Group Title");
+        groupedAnswer.Answers.Should().HaveCount(2);
+
+        var individualAnswer = result.FirstOrDefault(r => !r.IsGroup) as AnswerSummary;
+        individualAnswer.Should().NotBeNull();
+        individualAnswer!.Title.Should().Be("Individual Question");
+        individualAnswer.Answer.Should().Be("Individual Answer");
+    }
+
+    [Fact]
+    public async Task GetGroupedAnswerSummaries_ShouldSkipUnansweredQuestions()
+    {
+        var (organisationId, formId, sectionId, sessionKey) = CreateTestGuids();
+        var question1Id = Guid.NewGuid();
+        var question2Id = Guid.NewGuid();
+
+        var sectionResponse = new SectionQuestionsResponse
+        {
+            Section = new FormSection { Id = sectionId, Title = "Test Section" },
+            Questions =
+            [
+                new FormQuestion
+                {
+                    Id = question1Id,
+                    Type = FormQuestionType.Text,
+                    Title = "Answered Question",
+                    Options = new FormQuestionOptions()
+                },
+
+                new FormQuestion
+                {
+                    Id = question2Id,
+                    Type = FormQuestionType.Text,
+                    Title = "Unanswered Question",
+                    Options = new FormQuestionOptions()
+                }
+            ]
+        };
+
+        var answerState = new FormQuestionAnswerState
+        {
+            Answers =
+            [
+                new QuestionAnswer
+                {
+                    QuestionId = question1Id,
+                    Answer = new FormAnswer { TextValue = "I have an answer" }
+                }
+            ]
+        };
+
+        _tempDataServiceMock.Setup(t => t.Peek<SectionQuestionsResponse>(sessionKey))
+            .Returns(sectionResponse);
+        _choiceProviderServiceMock.Setup(c => c.GetStrategy(null))
+            .Returns(new DefaultChoiceProviderStrategy());
+
+        var result = await _formsEngine.GetGroupedAnswerSummaries(organisationId, formId, sectionId, answerState);
+
+        result.Should().HaveCount(1, "because only answered questions should be included");
+
+        var answer = result.First() as AnswerSummary;
+        answer.Should().NotBeNull();
+        answer!.Title.Should().Be("Answered Question");
+        answer.Answer.Should().Be("I have an answer");
+    }
+
+    [Fact]
+    public async Task GetGroupedAnswerSummaries_ShouldHandleAddressQuestion_WithNonUkAddress()
+    {
+        var (organisationId, formId, sectionId, sessionKey) = CreateTestGuids();
+        var questionId = Guid.NewGuid();
+
+        var sectionResponse = new SectionQuestionsResponse
+        {
+            Section = new FormSection { Id = sectionId, Title = "Test Section" },
+            Questions =
+            [
+                new FormQuestion
+                {
+                    Id = questionId,
+                    Type = FormQuestionType.Address,
+                    Title = "Address Question",
+                    Options = new FormQuestionOptions()
+                }
+            ]
+        };
+
+        var address = new Address
+        {
+            AddressLine1 = "123 Test Street",
+            TownOrCity = "Test City",
+            Postcode = "12345",
+            Country = "FR",
+            CountryName = "France"
+        };
+
+        var answerState = new FormQuestionAnswerState
+        {
+            Answers =
+            [
+                new QuestionAnswer
+                {
+                    QuestionId = questionId,
+                    Answer = new FormAnswer { AddressValue = address }
+                }
+            ]
+        };
+
+        _tempDataServiceMock.Setup(t => t.Peek<SectionQuestionsResponse>(sessionKey))
+            .Returns(sectionResponse);
+        _choiceProviderServiceMock.Setup(c => c.GetStrategy(null))
+            .Returns(new DefaultChoiceProviderStrategy());
+
+        var result = await _formsEngine.GetGroupedAnswerSummaries(organisationId, formId, sectionId, answerState);
+
+        result.Should().HaveCount(1);
+
+        var answer = result.First() as AnswerSummary;
+        answer.Should().NotBeNull();
+        answer!.ChangeLink.Should().Contain("&UkOrNonUk=non-uk", "because non-UK addresses should include the UkOrNonUk parameter");
+    }
+
+    [Fact]
+    public async Task GetGroupedAnswerSummaries_ShouldHandleGroupedSingleChoiceQuestion()
+    {
+        var (organisationId, formId, sectionId, sessionKey) = CreateTestGuids();
+        var questionId = Guid.NewGuid();
+
+        var sectionResponse = new SectionQuestionsResponse
+        {
+            Section = new FormSection { Id = sectionId, Title = "Test Section" },
+            Questions =
+            [
+                new FormQuestion
+                {
+                    Id = questionId,
+                    Type = FormQuestionType.GroupedSingleChoice,
+                    Title = "Choice Question",
+                    Options = new FormQuestionOptions
+                    {
+                        Groups = new List<FormQuestionGroup>
+                        {
+                            new FormQuestionGroup
+                            {
+                                Name = "Group 1",
+                                Choices = new List<FormQuestionGroupChoice>
+                                {
+                                    new FormQuestionGroupChoice { Title = "Option 1", Value = "option1" },
+                                    new FormQuestionGroupChoice { Title = "Option 2", Value = "option2" }
+                                }
+                            }
+                        }
+                    }
+                }
+            ]
+        };
+
+        var answerState = new FormQuestionAnswerState
+        {
+            Answers =
+            [
+                new QuestionAnswer
+                {
+                    QuestionId = questionId,
+                    Answer = new FormAnswer { OptionValue = "option1" }
+                }
+            ]
+        };
+
+        _tempDataServiceMock.Setup(t => t.Peek<SectionQuestionsResponse>(sessionKey))
+            .Returns(sectionResponse);
+        _choiceProviderServiceMock.Setup(c => c.GetStrategy(null))
+            .Returns(new DefaultChoiceProviderStrategy());
+
+        var result = await _formsEngine.GetGroupedAnswerSummaries(organisationId, formId, sectionId, answerState);
+
+        result.Should().HaveCount(1);
+
+        var answer = result.First() as AnswerSummary;
+        answer.Should().NotBeNull();
+        answer!.Answer.Should().Be("Option 1", "because the choice title should be displayed, not the value");
+    }
+
+    [Fact]
+    public async Task GetGroupedAnswerSummaries_ShouldHandleSingleChoiceQuestion_WithChoiceProvider()
+    {
+        var (organisationId, formId, sectionId, sessionKey) = CreateTestGuids();
+        var questionId = Guid.NewGuid();
+
+        var sectionResponse = new SectionQuestionsResponse
+        {
+            Section = new FormSection { Id = sectionId, Title = "Test Section" },
+            Questions =
+            [
+                new FormQuestion
+                {
+                    Id = questionId,
+                    Type = FormQuestionType.SingleChoice,
+                    Title = "Single Choice Question",
+                    Options = new FormQuestionOptions
+                    {
+                        ChoiceProviderStrategy = "TestChoiceProvider"
+                    }
+                }
+            ]
+        };
+
+        var answerState = new FormQuestionAnswerState
+        {
+            Answers =
+            [
+                new QuestionAnswer
+                {
+                    QuestionId = questionId,
+                    Answer = new FormAnswer { OptionValue = "test-option" }
+                }
+            ]
+        };
+
+        var mockChoiceProvider = new Mock<IChoiceProviderStrategy>();
+        mockChoiceProvider.Setup(cp => cp.RenderOption(It.IsAny<FormAnswer>()))
+            .ReturnsAsync("Rendered Option");
+
+        _tempDataServiceMock.Setup(t => t.Peek<SectionQuestionsResponse>(sessionKey))
+            .Returns(sectionResponse);
+        _choiceProviderServiceMock.Setup(c => c.GetStrategy("TestChoiceProvider"))
+            .Returns(mockChoiceProvider.Object);
+
+        var result = await _formsEngine.GetGroupedAnswerSummaries(organisationId, formId, sectionId, answerState);
+
+        result.Should().HaveCount(1);
+
+        var answer = result.First() as AnswerSummary;
+        answer.Should().NotBeNull();
+        answer!.Answer.Should().Be("Rendered Option", "because the choice provider should render the option");
+    }
+
+    [Fact]
+    public async Task GetGroupedAnswerSummaries_ShouldHandleCheckboxQuestion()
+    {
+        var (organisationId, formId, sectionId, sessionKey) = CreateTestGuids();
+        var questionId = Guid.NewGuid();
+
+        var sectionResponse = new SectionQuestionsResponse
+        {
+            Section = new FormSection { Id = sectionId, Title = "Test Section" },
+            Questions =
+            [
+                new FormQuestion
+                {
+                    Id = questionId,
+                    Type = FormQuestionType.CheckBox,
+                    Title = "Checkbox Question",
+                    Options = new FormQuestionOptions
+                    {
+                        Choices = new Dictionary<string, string>
+                        {
+                            { "agree", "I agree to the terms" }
+                        }
+                    }
+                }
+            ]
+        };
+
+        var answerState = new FormQuestionAnswerState
+        {
+            Answers =
+            [
+                new QuestionAnswer
+                {
+                    QuestionId = questionId,
+                    Answer = new FormAnswer { BoolValue = true }
+                }
+            ]
+        };
+
+        _tempDataServiceMock.Setup(t => t.Peek<SectionQuestionsResponse>(sessionKey))
+            .Returns(sectionResponse);
+        _choiceProviderServiceMock.Setup(c => c.GetStrategy(null))
+            .Returns(new DefaultChoiceProviderStrategy());
+
+        var result = await _formsEngine.GetGroupedAnswerSummaries(organisationId, formId, sectionId, answerState);
+
+        result.Should().HaveCount(1);
+
+        var answer = result.First() as AnswerSummary;
+        answer.Should().NotBeNull();
+        answer!.Answer.Should().Be("Yes, I agree to the terms", "because checkbox answers should show both the Yes answer and the choice text");
+    }
+
+    [Fact]
+    public async Task GetGroupedAnswerSummaries_ShouldHandleEmptyGroupedAnswers()
+    {
+        var (organisationId, formId, sectionId, sessionKey) = CreateTestGuids();
+        var question1Id = Guid.NewGuid();
+        var question2Id = Guid.NewGuid();
+
+        var multiQuestionOptions = new Dictionary<string, string>
+        {
+            { "multiQuestionPage", "{\"nextQuestionsToDisplay\":1}" }
+        };
+
+        var sectionResponse = new SectionQuestionsResponse
+        {
+            Section = new FormSection { Id = sectionId, Title = "Test Section" },
+            Questions =
+            [
+                new FormQuestion
+                {
+                    Id = question1Id,
+                    Type = FormQuestionType.Text,
+                    Title = "Unanswered Grouped Question",
+                    NextQuestion = question2Id,
+                    Options = new FormQuestionOptions { Choices = multiQuestionOptions }
+                },
+
+                new FormQuestion
+                {
+                    Id = question2Id,
+                    Type = FormQuestionType.Text,
+                    Title = "Another Unanswered Question",
+                    Options = new FormQuestionOptions()
+                }
+            ]
+        };
+
+        var answerState = new FormQuestionAnswerState
+        {
+            Answers = new List<QuestionAnswer>()
+        };
+
+        _tempDataServiceMock.Setup(t => t.Peek<SectionQuestionsResponse>(sessionKey))
+            .Returns(sectionResponse);
+        _choiceProviderServiceMock.Setup(c => c.GetStrategy(null))
+            .Returns(new DefaultChoiceProviderStrategy());
+
+        var result = await _formsEngine.GetGroupedAnswerSummaries(organisationId, formId, sectionId, answerState);
+
+        result.Should().BeEmpty("because groups with no answers should not be included");
+    }
+
+    #endregion
 }

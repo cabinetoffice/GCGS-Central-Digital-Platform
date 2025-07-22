@@ -1,7 +1,11 @@
 using CO.CDP.Forms.WebApiClient;
+using CO.CDP.OrganisationApp.Constants;
+using CO.CDP.OrganisationApp.Extensions;
 using CO.CDP.OrganisationApp.Models;
+using CO.CDP.OrganisationApp.Pages.Forms;
 using CO.CDP.OrganisationApp.Pages.Forms.ChoiceProviderStrategies;
 using DataShareWebApiClient = CO.CDP.DataSharing.WebApiClient;
+using FormAnswer = CO.CDP.OrganisationApp.Models.FormAnswer;
 using FormQuestion = CO.CDP.OrganisationApp.Models.FormQuestion;
 using FormQuestionGroup = CO.CDP.OrganisationApp.Models.FormQuestionGroup;
 using FormQuestionGroupChoice = CO.CDP.OrganisationApp.Models.FormQuestionGroupChoice;
@@ -450,5 +454,168 @@ public class FormsEngine(
         {
             return null;
         }
+    }
+
+    public async Task<List<IAnswerDisplayItem>> GetGroupedAnswerSummaries(Guid organisationId, Guid formId, Guid sectionId, FormQuestionAnswerState answerState)
+    {
+        var form = await GetFormSectionAsync(organisationId, formId, sectionId);
+
+        var relevantQuestions = form.Questions
+            .Where(q => q.Type != FormQuestionType.NoInput && q.Type != FormQuestionType.CheckYourAnswers)
+            .ToList();
+
+        var (multiQuestionGroups, processedQuestionIds) = await ProcessMultiQuestionGroups(relevantQuestions, answerState, organisationId, formId, sectionId);
+
+        var individualGroups = await ProcessIndividualQuestions(
+            relevantQuestions.Where(q => !processedQuestionIds.Contains(q.Id)),
+            answerState, organisationId, formId, sectionId);
+
+        return multiQuestionGroups.Cast<IAnswerDisplayItem>()
+            .Concat(individualGroups.Cast<IAnswerDisplayItem>())
+            .ToList();
+    }
+
+    private async Task<(List<GroupedAnswerSummary> Groups, HashSet<Guid> ProcessedQuestionIds)> ProcessMultiQuestionGroups(
+        List<FormQuestion> questions, FormQuestionAnswerState answerState, Guid organisationId, Guid formId, Guid sectionId)
+    {
+        var groups = new List<GroupedAnswerSummary>();
+        var processedIds = new HashSet<Guid>();
+
+        var multiQuestionStarters = questions
+            .Where(q => ParseMultiQuestionConfiguration(q) != null)
+            .ToList();
+
+        foreach (var starter in multiQuestionStarters)
+        {
+            if (processedIds.Contains(starter.Id)) continue;
+
+            var config = ParseMultiQuestionConfiguration(starter)!;
+            var group = await CreateMultiQuestionGroup(starter, questions, answerState, organisationId, formId, sectionId, config);
+
+            if (group.Answers.Count == 0) continue;
+            groups.Add(group);
+            var multiQuestionPage = BuildMultiQuestionPage(starter, questions);
+            multiQuestionPage.Questions.ForEach(q => processedIds.Add(q.Id));
+        }
+
+        return (groups, processedIds);
+    }
+
+    private async Task<List<AnswerSummary>> ProcessIndividualQuestions(
+        IEnumerable<FormQuestion> questions, FormQuestionAnswerState answerState, Guid organisationId, Guid formId, Guid sectionId)
+    {
+        var individualAnswerTasks = questions
+            .Select(async q => await CreateIndividualAnswerSummary(q, answerState, organisationId, formId, sectionId));
+
+        var individualAnswers = await Task.WhenAll(individualAnswerTasks);
+
+        return individualAnswers
+            .Where(answer => answer != null)
+            .Cast<AnswerSummary>()
+            .ToList();
+    }
+
+    private async Task<GroupedAnswerSummary> CreateMultiQuestionGroup(
+        FormQuestion startingQuestion, List<FormQuestion> allQuestions, FormQuestionAnswerState answerState,
+        Guid organisationId, Guid formId, Guid sectionId, MultiQuestionPageConfiguration config)
+    {
+        var multiQuestionPage = BuildMultiQuestionPage(startingQuestion, allQuestions);
+
+        var answerTasks = multiQuestionPage.Questions
+            .Select(async q => await CreateIndividualAnswerSummary(q, answerState, organisationId, formId, sectionId));
+
+        var answers = (await Task.WhenAll(answerTasks))
+            .Where(answer => answer != null)
+            .Cast<AnswerSummary>()
+            .ToList();
+
+        return new GroupedAnswerSummary
+        {
+            GroupTitle = !string.IsNullOrEmpty(config.PageTitleResourceKey) ? config.PageTitleResourceKey : startingQuestion.Title,
+            GroupChangeLink = $"/organisation/{organisationId}/forms/{formId}/sections/{sectionId}/questions/{startingQuestion.Id}",
+            Answers = answers
+        };
+    }
+
+    private async Task<AnswerSummary?> CreateIndividualAnswerSummary(
+        FormQuestion question, FormQuestionAnswerState answerState, Guid organisationId, Guid formId, Guid sectionId)
+    {
+        var questionAnswer = answerState.Answers
+            .FirstOrDefault(a => a.QuestionId == question.Id && a.Answer != null);
+
+        if (questionAnswer == null) return null;
+
+        var answerString = await GetAnswerStringForSummary(questionAnswer, question);
+        return string.IsNullOrWhiteSpace(answerString)
+            ? null
+            : CreateAnswerSummary(question, questionAnswer, answerString, organisationId, formId, sectionId);
+    }
+
+    private static AnswerSummary CreateAnswerSummary(
+        FormQuestion question, QuestionAnswer questionAnswer, string answerString,
+        Guid organisationId, Guid formId, Guid sectionId)
+    {
+        var changeLink = $"/organisation/{organisationId}/forms/{formId}/sections/{sectionId}/questions/{question.Id}?frm-chk-answer=true";
+
+        var isNonUkAddress = question.Type == FormQuestionType.Address
+            && questionAnswer.Answer?.AddressValue?.Country != Country.UKCountryCode;
+
+        if (isNonUkAddress)
+        {
+            changeLink += "&UkOrNonUk=non-uk";
+        }
+
+        return new AnswerSummary
+        {
+            Title = question.SummaryTitle ?? question.Title,
+            Answer = answerString,
+            ChangeLink = changeLink
+        };
+    }
+
+    private async Task<string> GetAnswerStringForSummary(QuestionAnswer questionAnswer, FormQuestion question)
+    {
+        var answer = questionAnswer.Answer;
+        if (answer == null) return "";
+
+        var boolAnswerString = answer.BoolValue?.ToString() switch
+        {
+            "True" => "Yes",
+            "False" => "No",
+            _ => ""
+        };
+
+        var answerString = question.Type switch
+        {
+            FormQuestionType.Text or FormQuestionType.FileUpload or FormQuestionType.MultiLine or FormQuestionType.Url
+                => answer.TextValue ?? "",
+            FormQuestionType.SingleChoice => await GetSingleChoiceAnswerString(answer, question),
+            FormQuestionType.Date => answer.DateValue?.ToFormattedString() ?? "",
+            FormQuestionType.CheckBox => answer.BoolValue == true
+                ? question.Options.Choices?.Values.FirstOrDefault() ?? ""
+                : "",
+            FormQuestionType.Address => answer.AddressValue?.ToHtmlString() ?? "",
+            FormQuestionType.GroupedSingleChoice => GetGroupedSingleChoiceAnswerString(answer, question),
+            _ => ""
+        };
+
+        return new[] { boolAnswerString, answerString }
+            .Where(s => !string.IsNullOrWhiteSpace(s))
+            .Aggregate("", (acc, s) => string.IsNullOrEmpty(acc) ? s : $"{acc}, {s}");
+    }
+
+    private async Task<string> GetSingleChoiceAnswerString(FormAnswer answer, FormQuestion question)
+    {
+        var choiceProviderStrategy = choiceProviderService.GetStrategy(question.Options.ChoiceProviderStrategy);
+        return await choiceProviderStrategy.RenderOption(answer) ?? "";
+    }
+
+    private static string GetGroupedSingleChoiceAnswerString(FormAnswer? answer, FormQuestion question)
+    {
+        return question.Options.Groups
+            .SelectMany(g => g.Choices)
+            .Where(c => c.Value == answer?.OptionValue)
+            .Select(c => c.Title)
+            .FirstOrDefault() ?? answer?.OptionValue ?? "";
     }
 }

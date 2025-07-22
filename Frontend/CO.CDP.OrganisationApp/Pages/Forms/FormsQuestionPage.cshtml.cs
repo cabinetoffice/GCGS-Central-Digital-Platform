@@ -254,6 +254,18 @@ public class FormsQuestionPageModel(
         return summaryList;
     }
 
+    public async Task<FormElementCheckYourAnswersModel> GetGroupedAnswersModel()
+    {
+        var answerSet = tempDataService.PeekOrDefault<FormQuestionAnswerState>(FormQuestionAnswerStateKey);
+        var displayItems = await formsEngine.GetGroupedAnswerSummaries(OrganisationId, FormId, SectionId, answerSet);
+        
+        return new FormElementCheckYourAnswersModel
+        {
+            DisplayItems = displayItems,
+            FormSectionType = FormSectionType
+        };
+    }
+
     private async Task<string> GetAnswerString(QuestionAnswer questionAnswer, FormQuestion question)
     {
         var answer = questionAnswer.Answer;
@@ -578,11 +590,4 @@ public class FormsQuestionPageModel(
             tempDataService.Put(FormQuestionAnswerStateKey, answerState);
         }
     }
-}
-
-public class AnswerSummary
-{
-    public string? Title { get; set; }
-    public required string Answer { get; set; }
-    public string? ChangeLink { get; set; }
 }
