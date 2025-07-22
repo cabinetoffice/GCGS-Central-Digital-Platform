@@ -1672,6 +1672,197 @@ public class FormsEngineTests
         result.Should().BeFalse("because a file upload question with an empty string TextValue should be considered unanswered");
     }
 
+    [Fact]
+    public async Task GetMultiQuestionPage_ShouldReturnMultipleQuestions_WhenMultiQuestionConfigurationExists()
+    {
+        var (organisationId, formId, sectionId, sessionKey) = CreateTestGuids();
+        var firstQuestionId = Guid.NewGuid();
+        var secondQuestionId = Guid.NewGuid();
+        var thirdQuestionId = Guid.NewGuid();
+
+        var expectedMultiQuestionOptions = new Dictionary<string, string>
+        {
+            { "Option1", "Option1" },
+            { "multiQuestionPage", "{\"nextQuestionsToDisplay\":2,\"pageTitleResourceKey\":\"ModernSlavery_02_Title\",\"submitButtonTextResourceKey\":\"ModernSlavery_02_SubmitButton\"}" }
+        };
+
+        var sectionResponse = new SectionQuestionsResponse
+        {
+            Section = new FormSection { Id = sectionId, Title = "SectionTitle", AllowsMultipleAnswerSets = true },
+            Questions =
+            [
+                new FormQuestion
+                {
+                    Id = firstQuestionId,
+                    Type = FormQuestionType.Text,
+                    Title = "Question 1",
+                    NextQuestion = secondQuestionId,
+                    Options = new FormQuestionOptions { Choices = expectedMultiQuestionOptions }
+                },
+
+                new FormQuestion
+                {
+                    Id = secondQuestionId,
+                    Type = FormQuestionType.YesOrNo,
+                    Title = "Question 2",
+                    NextQuestion = thirdQuestionId,
+                    Options = new FormQuestionOptions()
+                },
+
+                new FormQuestion
+                {
+                    Id = thirdQuestionId,
+                    Type = FormQuestionType.Date,
+                    Title = "Question 3",
+                    Options = new FormQuestionOptions()
+                }
+            ]
+        };
+
+        _tempDataServiceMock.Setup(t => t.Peek<SectionQuestionsResponse>(sessionKey))
+            .Returns(sectionResponse);
+
+        var result = await _formsEngine.GetMultiQuestionPage(organisationId, formId, sectionId, firstQuestionId);
+
+        result.Should().NotBeNull();
+        result.Questions.Should().HaveCount(3);
+        result.Questions[0].Id.Should().Be(firstQuestionId);
+        result.Questions[1].Id.Should().Be(secondQuestionId);
+        result.Questions[2].Id.Should().Be(thirdQuestionId);
+        result.PageTitleResourceKey.Should().Be("ModernSlavery_02_Title");
+        result.SubmitButtonTextResourceKey.Should().Be("ModernSlavery_02_SubmitButton");
+    }
+
+    [Fact]
+    public async Task GetMultiQuestionPage_ShouldReturnSingleQuestion_WhenNoMultiQuestionConfiguration()
+    {
+        var (organisationId, formId, sectionId, sessionKey) = CreateTestGuids();
+        var questionId = Guid.NewGuid();
+
+        var sectionResponse = new SectionQuestionsResponse
+        {
+            Section = new FormSection { Id = sectionId, Title = "SectionTitle", AllowsMultipleAnswerSets = true },
+            Questions = new List<FormQuestion>
+            {
+                new FormQuestion
+                {
+                    Id = questionId,
+                    Type = FormQuestionType.Text,
+                    Title = "Single Question",
+                    Options = new FormQuestionOptions()
+                }
+            }
+        };
+
+        _tempDataServiceMock.Setup(t => t.Peek<SectionQuestionsResponse>(sessionKey))
+            .Returns(sectionResponse);
+
+        var result = await _formsEngine.GetMultiQuestionPage(organisationId, formId, sectionId, questionId);
+
+        result.Should().NotBeNull();
+        result.Questions.Should().HaveCount(1);
+        result.Questions[0].Id.Should().Be(questionId);
+        result.PageTitleResourceKey.Should().BeNull();
+        result.SubmitButtonTextResourceKey.Should().BeNull();
+    }
+
+    [Fact]
+    public async Task GetNextQuestion_ShouldSkipQuestionsInMultiQuestionPage_WhenMultiQuestionConfigurationExists()
+    {
+        var (organisationId, formId, sectionId, sessionKey) = CreateTestGuids();
+        var firstQuestionId = Guid.NewGuid();
+        var secondQuestionId = Guid.NewGuid();
+        var thirdQuestionId = Guid.NewGuid();
+        var fourthQuestionId = Guid.NewGuid();
+
+        var multiQuestionOptions = new Dictionary<string, string>
+        {
+            { "multiQuestionPage", "{\"nextQuestionsToDisplay\":2}" }
+        };
+
+        var sectionResponse = new SectionQuestionsResponse
+        {
+            Section = new FormSection { Id = sectionId, Title = "SectionTitle", AllowsMultipleAnswerSets = true },
+            Questions = new List<FormQuestion>
+            {
+                new FormQuestion
+                {
+                    Id = firstQuestionId,
+                    NextQuestion = secondQuestionId,
+                    Options = new FormQuestionOptions { Choices = multiQuestionOptions }
+                },
+                new FormQuestion { Id = secondQuestionId, NextQuestion = thirdQuestionId },
+                new FormQuestion { Id = thirdQuestionId, NextQuestion = fourthQuestionId },
+                new FormQuestion { Id = fourthQuestionId }
+            }
+        };
+
+        _tempDataServiceMock.Setup(t => t.Peek<SectionQuestionsResponse>(sessionKey))
+            .Returns(sectionResponse);
+
+        var answerState = new FormQuestionAnswerState();
+
+        var result = await _formsEngine.GetNextQuestion(organisationId, formId, sectionId, firstQuestionId, answerState);
+
+        result.Should().NotBeNull();
+        result!.Id.Should().Be(fourthQuestionId, "because the next question should skip the multi-question page questions");
+    }
+
+    [Fact]
+    public void ParseMultiQuestionConfiguration_ShouldReturnCorrectConfiguration_WhenValidJson()
+    {
+        var jsonOptions = new Dictionary<string, string>
+        {
+            { "multiQuestionPage", "{\"nextQuestionsToDisplay\":3,\"pageTitleResourceKey\":\"ModernSlavery_03_Title\",\"submitButtonTextResourceKey\":\"ModernSlavery_03_SubmitButton\"}" }
+        };
+
+        var question = new FormQuestion
+        {
+            Id = Guid.NewGuid(),
+            Options = new FormQuestionOptions { Choices = jsonOptions }
+        };
+
+        var result = _formsEngine.ParseMultiQuestionConfiguration(question);
+
+        result.Should().NotBeNull();
+        result!.NextQuestionsToDisplay.Should().Be(3);
+        result.PageTitleResourceKey.Should().Be("ModernSlavery_03_Title");
+        result.SubmitButtonTextResourceKey.Should().Be("ModernSlavery_03_SubmitButton");
+    }
+
+    [Fact]
+    public void ParseMultiQuestionConfiguration_ShouldReturnNull_WhenNoConfiguration()
+    {
+        var question = new FormQuestion
+        {
+            Id = Guid.NewGuid(),
+            Options = new FormQuestionOptions()
+        };
+
+        var result = _formsEngine.ParseMultiQuestionConfiguration(question);
+
+        result.Should().BeNull();
+    }
+
+    [Fact]
+    public void ParseMultiQuestionConfiguration_ShouldReturnNull_WhenInvalidJson()
+    {
+        var jsonOptions = new Dictionary<string, string>
+        {
+            { "multiQuestionPage", "invalid json" }
+        };
+
+        var question = new FormQuestion
+        {
+            Id = Guid.NewGuid(),
+            Options = new FormQuestionOptions { Choices = jsonOptions }
+        };
+
+        var result = _formsEngine.ParseMultiQuestionConfiguration(question);
+
+        result.Should().BeNull();
+    }
+
     [Theory]
     [InlineData(FormQuestionType.Text, false, false, null, true, "a non-required text question with explicit false BoolValue should be considered answered")]
     [InlineData(FormQuestionType.Text, true, false, null, false, "a required text question with explicit false BoolValue should not be considered answered")]

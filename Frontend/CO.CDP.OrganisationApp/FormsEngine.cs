@@ -2,6 +2,7 @@ using CO.CDP.Forms.WebApiClient;
 using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.Pages.Forms.ChoiceProviderStrategies;
 using DataShareWebApiClient = CO.CDP.DataSharing.WebApiClient;
+using FormQuestion = CO.CDP.OrganisationApp.Models.FormQuestion;
 using FormQuestionType = CO.CDP.OrganisationApp.Models.FormQuestionType;
 using SectionQuestionsResponse = CO.CDP.OrganisationApp.Models.SectionQuestionsResponse;
 
@@ -98,7 +99,29 @@ public class FormsEngine(
             return null;
         }
 
-        return section.Questions.FirstOrDefault(q => q.Id == determinedNextQuestionId.Value);
+        var multiQuestionConfig = ParseMultiQuestionConfiguration(currentQuestion);
+        if (multiQuestionConfig != null)
+        {
+            determinedNextQuestionId = SkipMultiQuestionPageQuestions(determinedNextQuestionId.Value, section.Questions, multiQuestionConfig.NextQuestionsToDisplay);
+        }
+
+        return !determinedNextQuestionId.HasValue ? null : section.Questions.FirstOrDefault(q => q.Id == determinedNextQuestionId.Value);
+    }
+
+    private static Guid? SkipMultiQuestionPageQuestions(Guid startQuestionId, List<Models.FormQuestion> allQuestions, int questionsToSkip)
+    {
+        var questionLookup = allQuestions.ToDictionary(q => q.Id);
+        Guid? currentQuestionId = startQuestionId;
+
+        for (int i = 0; i < questionsToSkip && currentQuestionId.HasValue; i++)
+        {
+            if (!questionLookup.TryGetValue(currentQuestionId.Value, out var question))
+                return currentQuestionId;
+
+            currentQuestionId = question.NextQuestion;
+        }
+
+        return currentQuestionId;
     }
 
     public async Task<Models.FormQuestion?> GetPreviousQuestion(Guid organisationId, Guid formId, Guid sectionId,
@@ -350,5 +373,77 @@ public class FormsEngine(
         var nextQuestionId = takeAlternativePath ? currentQuestion.NextQuestionAlternative : currentQuestion.NextQuestion;
 
         return nextQuestionId;
+    }
+
+    public async Task<MultiQuestionPageModel> GetMultiQuestionPage(Guid organisationId, Guid formId, Guid sectionId, Guid startingQuestionId)
+    {
+        var section = await GetFormSectionAsync(organisationId, formId, sectionId);
+
+        var startingQuestion = section.Questions.FirstOrDefault(q => q.Id == startingQuestionId);
+
+        return startingQuestion switch
+        {
+            null => new MultiQuestionPageModel { Questions = [] },
+            _ => BuildMultiQuestionPage(startingQuestion, section.Questions)
+        };
+    }
+
+    private MultiQuestionPageModel BuildMultiQuestionPage(FormQuestion startingQuestion, List<FormQuestion> allQuestions)
+    {
+        var multiQuestionConfig = ParseMultiQuestionConfiguration(startingQuestion);
+
+        return multiQuestionConfig switch
+        {
+            null => new MultiQuestionPageModel { Questions = [startingQuestion] },
+            _ => new MultiQuestionPageModel
+            {
+                Questions = CollectQuestionsForPage(startingQuestion, allQuestions, multiQuestionConfig.NextQuestionsToDisplay),
+                PageTitleResourceKey = multiQuestionConfig.PageTitleResourceKey,
+                SubmitButtonTextResourceKey = multiQuestionConfig.SubmitButtonTextResourceKey
+            }
+        };
+    }
+
+    private static List<FormQuestion> CollectQuestionsForPage(FormQuestion startingQuestion, List<FormQuestion> allQuestions, int questionsToDisplay)
+    {
+        var questionLookup = allQuestions.ToDictionary(q => q.Id);
+        var questions = new List<FormQuestion> { startingQuestion };
+        var currentQuestionId = startingQuestion.NextQuestion;
+
+        for (var i = 0; i < questionsToDisplay && currentQuestionId.HasValue; i++)
+        {
+            if (!questionLookup.TryGetValue(currentQuestionId.Value, out var nextQuestion))
+                break;
+
+            questions.Add(nextQuestion);
+            currentQuestionId = nextQuestion.NextQuestion;
+        }
+
+        return questions;
+    }
+
+    public MultiQuestionPageConfiguration? ParseMultiQuestionConfiguration(FormQuestion question)
+    {
+        var jsonString = question.Options.Choices?.GetValueOrDefault("multiQuestionPage") ?? string.Empty;
+
+        return string.IsNullOrWhiteSpace(jsonString)
+            ? null
+            : TryDeserializeConfiguration(jsonString);
+    }
+
+    private static MultiQuestionPageConfiguration? TryDeserializeConfiguration(string jsonString)
+    {
+        try
+        {
+            return System.Text.Json.JsonSerializer.Deserialize<MultiQuestionPageConfiguration>(jsonString,
+                new System.Text.Json.JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            });
+        }
+        catch
+        {
+            return null;
+        }
     }
 }
