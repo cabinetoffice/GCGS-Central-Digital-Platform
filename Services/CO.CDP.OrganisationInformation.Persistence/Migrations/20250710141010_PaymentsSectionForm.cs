@@ -59,11 +59,11 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                     RETURNING id INTO v_question5_id;
 
                     INSERT INTO form_questions (guid, next_question_id, next_question_alternative_id, section_id, ""type"", is_required, title, description, ""options"",  caption, summary_title, ""name"", sort_order)
-                    VALUES('{Guid.NewGuid()}', NULL, NULL, v_section_id, 13, true, 'Payments_06_Title', 'Payments_06_Description', '{{}}', NULL, '', '_Payments06', 6)
+                    VALUES('{Guid.NewGuid()}', NULL, NULL, v_section_id, 3, true, 'Payments_06_Title', 'Payments_06_Description', '{{}}', NULL, '', '_Payments06', 6)
                     RETURNING id INTO v_question6_id;
 
                     INSERT INTO form_questions (guid, next_question_id, next_question_alternative_id, section_id, ""type"", is_required, title, description, ""options"",  caption, summary_title, ""name"", sort_order)
-                    VALUES('{Guid.NewGuid()}', NULL, NULL, v_section_id, 13, true, 'Payments_07_Title', 'Payments_07_Description', '{{}}', NULL, '', '_Payments07', 7)
+                    VALUES('{Guid.NewGuid()}', NULL, NULL, v_section_id, 3, true, 'Payments_07_Title', 'Payments_07_Description', '{{}}', NULL, '', '_Payments07', 7)
                     RETURNING id INTO v_question7_id;
 
                     INSERT INTO form_questions (guid, next_question_id, next_question_alternative_id, section_id, ""type"", is_required, title, description, ""options"",  caption, summary_title, ""name"", sort_order)
