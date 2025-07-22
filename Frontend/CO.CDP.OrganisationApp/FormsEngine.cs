@@ -3,7 +3,12 @@ using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.Pages.Forms.ChoiceProviderStrategies;
 using DataShareWebApiClient = CO.CDP.DataSharing.WebApiClient;
 using FormQuestion = CO.CDP.OrganisationApp.Models.FormQuestion;
+using FormQuestionGroup = CO.CDP.OrganisationApp.Models.FormQuestionGroup;
+using FormQuestionGroupChoice = CO.CDP.OrganisationApp.Models.FormQuestionGroupChoice;
+using FormQuestionOptions = CO.CDP.OrganisationApp.Models.FormQuestionOptions;
 using FormQuestionType = CO.CDP.OrganisationApp.Models.FormQuestionType;
+using FormSection = CO.CDP.OrganisationApp.Models.FormSection;
+using FormSectionType = CO.CDP.OrganisationApp.Models.FormSectionType;
 using SectionQuestionsResponse = CO.CDP.OrganisationApp.Models.SectionQuestionsResponse;
 
 namespace CO.CDP.OrganisationApp;
@@ -31,10 +36,10 @@ public class FormsEngine(
 
         var sectionQuestionsResponse = new SectionQuestionsResponse
         {
-            Section = new Models.FormSection
+            Section = new FormSection
             {
                 Id = response.Section.Id,
-                Type = (Models.FormSectionType)response.Section.Type,
+                Type = (FormSectionType)response.Section.Type,
                 Title = response.Section.Title,
                 AllowsMultipleAnswerSets = response.Section.AllowsMultipleAnswerSets
             },
@@ -43,27 +48,27 @@ public class FormsEngine(
                 IChoiceProviderStrategy choiceProviderStrategy =
                     choiceProviderService.GetStrategy(q.Options.ChoiceProviderStrategy);
 
-                return new Models.FormQuestion
+                return new FormQuestion
                 {
                     Id = q.Id,
                     Title = q.Title,
                     Description = q.Description,
                     Caption = q.Caption,
                     SummaryTitle = q.SummaryTitle,
-                    Type = (Models.FormQuestionType)q.Type,
+                    Type = (FormQuestionType)q.Type,
                     IsRequired = q.IsRequired,
                     NextQuestion = q.NextQuestion,
                     NextQuestionAlternative = q.NextQuestionAlternative,
-                    Options = new Models.FormQuestionOptions
+                    Options = new FormQuestionOptions
                     {
                         Choices = await choiceProviderStrategy.Execute(q.Options),
                         ChoiceProviderStrategy = q.Options.ChoiceProviderStrategy,
-                        Groups = q.Options.Groups.Select(g => new Models.FormQuestionGroup
+                        Groups = q.Options.Groups.Select(g => new FormQuestionGroup
                         {
                             Name = g.Name,
                             Hint = g.Hint,
                             Caption = g.Caption,
-                            Choices = g.Choices.Select(c => new Models.FormQuestionGroupChoice
+                            Choices = g.Choices.Select(c => new FormQuestionGroupChoice
                             {
                                 Title = c.Title,
                                 Value = c.Value
@@ -81,7 +86,7 @@ public class FormsEngine(
         return sectionQuestionsResponse;
     }
 
-    public async Task<Models.FormQuestion?> GetNextQuestion(Guid organisationId, Guid formId, Guid sectionId,
+    public async Task<FormQuestion?> GetNextQuestion(Guid organisationId, Guid formId, Guid sectionId,
         Guid currentQuestionId, FormQuestionAnswerState? answerState)
     {
         var section = await GetFormSectionAsync(organisationId, formId, sectionId);
@@ -108,7 +113,7 @@ public class FormsEngine(
         return !determinedNextQuestionId.HasValue ? null : section.Questions.FirstOrDefault(q => q.Id == determinedNextQuestionId.Value);
     }
 
-    private static Guid? SkipMultiQuestionPageQuestions(Guid startQuestionId, List<Models.FormQuestion> allQuestions, int questionsToSkip)
+    private static Guid? SkipMultiQuestionPageQuestions(Guid startQuestionId, List<FormQuestion> allQuestions, int questionsToSkip)
     {
         var questionLookup = allQuestions.ToDictionary(q => q.Id);
         Guid? currentQuestionId = startQuestionId;
@@ -124,7 +129,7 @@ public class FormsEngine(
         return currentQuestionId;
     }
 
-    public async Task<Models.FormQuestion?> GetPreviousQuestion(Guid organisationId, Guid formId, Guid sectionId,
+    public async Task<FormQuestion?> GetPreviousQuestion(Guid organisationId, Guid formId, Guid sectionId,
         Guid currentQuestionId, FormQuestionAnswerState? answerState)
     {
         var section = await GetFormSectionAsync(organisationId, formId, sectionId);
@@ -134,7 +139,7 @@ public class FormsEngine(
         return path.LastOrDefault();
     }
 
-    public async Task<Models.FormQuestion?> GetCurrentQuestion(Guid organisationId, Guid formId, Guid sectionId,
+    public async Task<FormQuestion?> GetCurrentQuestion(Guid organisationId, Guid formId, Guid sectionId,
         Guid? questionId)
     {
         var section = await GetFormSectionAsync(organisationId, formId, sectionId);
@@ -187,7 +192,7 @@ public class FormsEngine(
         return sharingDataDetails.ShareCode;
     }
 
-    public Guid? GetPreviousUnansweredQuestionId(List<Models.FormQuestion> allQuestions, Guid currentQuestionId,
+    public Guid? GetPreviousUnansweredQuestionId(List<FormQuestion> allQuestions, Guid currentQuestionId,
         FormQuestionAnswerState answerState)
     {
         if (allQuestions.Count == 0)
@@ -195,27 +200,27 @@ public class FormsEngine(
             return null;
         }
 
-        List<Models.FormQuestion> pathTaken = BuildPathToQuestion(allQuestions, currentQuestionId, answerState);
+        List<FormQuestion> pathTaken = BuildPathToQuestion(allQuestions, currentQuestionId, answerState);
 
         return FindFirstUnansweredQuestionInPath(pathTaken, answerState);
     }
 
-    private Guid? FindFirstUnansweredQuestionInPath(List<Models.FormQuestion> pathTaken,
+    private Guid? FindFirstUnansweredQuestionInPath(List<FormQuestion> pathTaken,
         FormQuestionAnswerState answerState)
     {
         var firstUnansweredValidQuestion = pathTaken
-            .Where(q => q.Type != Models.FormQuestionType.CheckYourAnswers)
+            .Where(q => q.Type != FormQuestionType.CheckYourAnswers)
             .FirstOrDefault(q => !IsQuestionAnswered(q, answerState));
 
         return firstUnansweredValidQuestion?.Id;
     }
 
-    private List<Models.FormQuestion> BuildPathToQuestion(List<Models.FormQuestion> allQuestions,
+    private List<FormQuestion> BuildPathToQuestion(List<FormQuestion> allQuestions,
         Guid currentQuestionId, FormQuestionAnswerState answerState)
     {
         var questionsDictionary = allQuestions.ToDictionary(q => q.Id);
-        var pathTaken = new List<Models.FormQuestion>();
-        Models.FormQuestion? currentPathQuestion = GetFirstQuestion(allQuestions);
+        var pathTaken = new List<FormQuestion>();
+        FormQuestion? currentPathQuestion = GetFirstQuestion(allQuestions);
 
         while (currentPathQuestion != null && currentPathQuestion.Id != currentQuestionId)
         {
@@ -258,7 +263,7 @@ public class FormsEngine(
     }
 
     private (HashSet<Guid> NextQuestionTargets, HashSet<Guid> AlternativeTargets) GetLinkedQuestionTargets(
-        List<Models.FormQuestion> questions)
+        List<FormQuestion> questions)
     {
         var nextQuestionTargets = new HashSet<Guid>();
         var alternativeTargets = new HashSet<Guid>();
@@ -279,7 +284,7 @@ public class FormsEngine(
         return (nextQuestionTargets, alternativeTargets);
     }
 
-    private Models.FormQuestion? GetFirstQuestion(List<Models.FormQuestion> questions)
+    private FormQuestion? GetFirstQuestion(List<FormQuestion> questions)
     {
         var (nextQuestionTargets, alternativeTargets) = GetLinkedQuestionTargets(questions);
 
@@ -288,7 +293,7 @@ public class FormsEngine(
             !alternativeTargets.Contains(q.Id));
     }
 
-    private void SetAlternativePathQuestions(List<Models.FormQuestion> questions)
+    private void SetAlternativePathQuestions(List<FormQuestion> questions)
     {
         var (nextQuestionTargets, alternativeTargets) = GetLinkedQuestionTargets(questions);
         var mainPathQuestionIds = new HashSet<Guid>();
@@ -313,7 +318,7 @@ public class FormsEngine(
         }
     }
 
-    private bool IsQuestionAnswered(Models.FormQuestion questionOnPath, FormQuestionAnswerState? answerState)
+    private bool IsQuestionAnswered(FormQuestion questionOnPath, FormQuestionAnswerState? answerState)
     {
         var questionAnswer = answerState?.Answers.FirstOrDefault(a => a.QuestionId == questionOnPath.Id);
 
@@ -343,14 +348,14 @@ public class FormsEngine(
         };
     }
 
-    private Guid? DetermineNextQuestionId(Models.FormQuestion currentQuestion, FormQuestionAnswerState? answerState)
+    private Guid? DetermineNextQuestionId(FormQuestion currentQuestion, FormQuestionAnswerState? answerState)
     {
         var answer = answerState?.Answers.FirstOrDefault(a => a.QuestionId == currentQuestion.Id);
 
         bool takeAlternativePath = false;
         switch (currentQuestion.Type)
         {
-            case Models.FormQuestionType.YesOrNo:
+            case FormQuestionType.YesOrNo:
                 if (answer?.Answer?.BoolValue == false && currentQuestion.NextQuestionAlternative.HasValue)
                 {
                     takeAlternativePath = true;
@@ -358,7 +363,7 @@ public class FormsEngine(
 
                 break;
 
-            case Models.FormQuestionType.FileUpload:
+            case FormQuestionType.FileUpload:
                 bool explicitlyAnsweredNo = answer?.Answer?.BoolValue == false;
 
                 if (!currentQuestion.IsRequired && (explicitlyAnsweredNo) &&
