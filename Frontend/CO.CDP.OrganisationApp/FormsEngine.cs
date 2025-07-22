@@ -464,56 +464,36 @@ public class FormsEngine(
             .Where(q => q.Type != FormQuestionType.NoInput && q.Type != FormQuestionType.CheckYourAnswers)
             .ToList();
 
-        var (multiQuestionGroups, processedQuestionIds) = await ProcessMultiQuestionGroups(relevantQuestions, answerState, organisationId, formId, sectionId);
+        var displayItems = new List<IAnswerDisplayItem>();
+        var processedQuestionIds = new HashSet<Guid>();
 
-        var individualGroups = await ProcessIndividualQuestions(
-            relevantQuestions.Where(q => !processedQuestionIds.Contains(q.Id)),
-            answerState, organisationId, formId, sectionId);
-
-        return multiQuestionGroups.Cast<IAnswerDisplayItem>()
-            .Concat(individualGroups.Cast<IAnswerDisplayItem>())
-            .ToList();
-    }
-
-    private async Task<(List<GroupedAnswerSummary> Groups, HashSet<Guid> ProcessedQuestionIds)> ProcessMultiQuestionGroups(
-        List<FormQuestion> questions, FormQuestionAnswerState answerState, Guid organisationId, Guid formId, Guid sectionId)
-    {
-        var groups = new List<GroupedAnswerSummary>();
-        var processedIds = new HashSet<Guid>();
-
-        var multiQuestionStarters = questions
-            .Where(q => ParseMultiQuestionConfiguration(q) != null)
-            .ToList();
-
-        foreach (var starter in multiQuestionStarters)
+        foreach (var question in relevantQuestions)
         {
-            if (processedIds.Contains(starter.Id)) continue;
+            if (processedQuestionIds.Contains(question.Id)) continue;
 
-            var config = ParseMultiQuestionConfiguration(starter)!;
-            var group = await CreateMultiQuestionGroup(starter, questions, answerState, organisationId, formId, sectionId, config);
+            var multiQuestionConfig = ParseMultiQuestionConfiguration(question);
 
-            if (group.Answers.Count == 0) continue;
-            groups.Add(group);
-            var multiQuestionPage = BuildMultiQuestionPage(starter, questions);
-            multiQuestionPage.Questions.ForEach(q => processedIds.Add(q.Id));
+            if (multiQuestionConfig != null)
+            {
+                var group = await CreateMultiQuestionGroup(question, relevantQuestions, answerState, organisationId, formId, sectionId, multiQuestionConfig);
+
+                if (!group.Answers.Any()) continue;
+                displayItems.Add(group);
+                var multiQuestionPage = BuildMultiQuestionPage(question, relevantQuestions);
+                multiQuestionPage.Questions.ForEach(q => processedQuestionIds.Add(q.Id));
+            }
+            else
+            {
+                var individualAnswer = await CreateIndividualAnswerSummary(question, answerState, organisationId, formId, sectionId);
+                if (individualAnswer == null) continue;
+                displayItems.Add(individualAnswer);
+                processedQuestionIds.Add(question.Id);
+            }
         }
 
-        return (groups, processedIds);
+        return displayItems;
     }
 
-    private async Task<List<AnswerSummary>> ProcessIndividualQuestions(
-        IEnumerable<FormQuestion> questions, FormQuestionAnswerState answerState, Guid organisationId, Guid formId, Guid sectionId)
-    {
-        var individualAnswerTasks = questions
-            .Select(async q => await CreateIndividualAnswerSummary(q, answerState, organisationId, formId, sectionId));
-
-        var individualAnswers = await Task.WhenAll(individualAnswerTasks);
-
-        return individualAnswers
-            .Where(answer => answer != null)
-            .Cast<AnswerSummary>()
-            .ToList();
-    }
 
     private async Task<GroupedAnswerSummary> CreateMultiQuestionGroup(
         FormQuestion startingQuestion, List<FormQuestion> allQuestions, FormQuestionAnswerState answerState,

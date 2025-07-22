@@ -10,29 +10,49 @@
 
 @{
     var count = 0;
-    var groupedItems = new List<GroupedAnswerSummary>();
-    var individualItems = new List<AnswerSummary>();
-
-    foreach (var item in Model.DisplayItems)
-    {
-        if (item.IsGroup)
-        {
-            groupedItems.Add((GroupedAnswerSummary)item);
-        }
-        else
-        {
-            individualItems.Add((AnswerSummary)item);
-        }
-    }
+    var itemIndex = 0;
 }
 
-@if (individualItems.Any())
+@foreach (var item in Model.DisplayItems)
 {
-    <dl class="govuk-summary-list govuk-!-margin-bottom-9">
-        @foreach (var answer in individualItems)
+    itemIndex++;
+    if (item.IsGroup)
+    {
+        var group = (GroupedAnswerSummary)item;
+        @if (!string.IsNullOrEmpty(group.GroupTitle))
         {
-            count++;
-            var testId = answer.Title?.Replace(" ", "") + '_' + count;
+            <h3 class="govuk-heading-m">@group.GroupTitle</h3>
+        }
+
+        <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+            @foreach (var answer in group.Answers)
+            {
+                count++;
+                var testId = answer.Title?.Replace(" ", "") + '_' + count;
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        @answer.Title
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        @answer.Answer
+                    </dd>
+                    <dd class="govuk-summary-list__actions">
+                        <a class="govuk-link" href="@group.GroupChangeLink" data-testid="@testId">
+                            @Html.Raw(string.Format(StaticTextResource.Forms_CheckYourAnswers_Change, answer.Title?.ToLower()))
+                        </a>
+                    </dd>
+                </div>
+            }
+        </dl>
+    }
+    else
+    {
+        var answer = (AnswerSummary)item;
+        count++;
+        var testId = answer.Title?.Replace(" ", "") + '_' + count;
+        var isLast = itemIndex == Model.DisplayItems.Count;
+
+        <dl class="govuk-summary-list @(isLast ? "govuk-!-margin-bottom-9" : "govuk-!-margin-bottom-0")">
             <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">
                     @answer.Title
@@ -46,37 +66,8 @@
                     </a>
                 </dd>
             </div>
-        }
-    </dl>
-}
-
-@foreach (var group in groupedItems)
-{
-    @if (!string.IsNullOrEmpty(group.GroupTitle))
-    {
-        <h3 class="govuk-heading-m">@group.GroupTitle</h3>
+        </dl>
     }
-
-    <dl class="govuk-summary-list govuk-!-margin-bottom-9">
-        @foreach (var answer in group.Answers)
-        {
-            count++;
-            var testId = answer.Title?.Replace(" ", "") + '_' + count;
-            <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                    @answer.Title
-                </dt>
-                <dd class="govuk-summary-list__value">
-                    @answer.Answer
-                </dd>
-                <dd class="govuk-summary-list__actions">
-                    <a class="govuk-link" href="@group.GroupChangeLink" data-testid="@testId">
-                        @Html.Raw(string.Format(StaticTextResource.Forms_CheckYourAnswers_Change, answer.Title?.ToLower()))
-                    </a>
-                </dd>
-            </div>
-        }
-    </dl>
 }
 
 @if (Model.FormSectionType == FormSectionType.Declaration)
