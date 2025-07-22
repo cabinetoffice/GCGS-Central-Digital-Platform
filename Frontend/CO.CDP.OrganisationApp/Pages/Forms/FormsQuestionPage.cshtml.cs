@@ -59,15 +59,19 @@ public class FormsQuestionPageModel(
     public FormElementMultiLineInputModel? MultiLineInputModel { get; set; }
     [BindProperty]
     public FormElementUrlInputModel? UrlInputModel { get; set; }
+    [BindProperty]
+    public FormElementMultiQuestionModel? MultiQuestionModel { get; set; }
     [BindProperty(SupportsGet = true)]
 
     public string? UkOrNonUk { get; set; }
     public FormQuestionType? CurrentFormQuestionType { get; private set; }
     public string? PartialViewName { get; private set; }
     public IFormElementModel? PartialViewModel { get; private set; }
+    public IMultiQuestionFormElementModel? MultiQuestionViewModel { get; private set; }
     public FormQuestion? PreviousQuestion { get; private set; }
     public Guid? CheckYourAnswerQuestionId { get; private set; }
     public FormSectionType? FormSectionType { get; set; }
+    public bool IsMultiQuestionPage { get; private set; }
 
     public string EncType => CurrentFormQuestionType == FormQuestionType.FileUpload
         ? Multipart.FormData : Application.FormUrlEncoded;
@@ -333,22 +337,80 @@ public class FormsQuestionPageModel(
     private async Task<FormQuestion?> InitModel(bool reset = false)
     {
         var form = await formsEngine.GetFormSectionAsync(OrganisationId, FormId, SectionId);
-
         var currentQuestion = await formsEngine.GetCurrentQuestion(OrganisationId, FormId, SectionId, CurrentQuestionId);
 
         if (currentQuestion == null)
             return null;
+        return currentQuestion switch
+        {
+            null => null,
+            _ => await InitializeModelState(form, currentQuestion, reset)
+        };
+    }
 
+    private async Task<FormQuestion> InitializeModelState(SectionQuestionsResponse form, FormQuestion currentQuestion, bool reset)
+    {
         var answerState = tempDataService.PeekOrDefault<FormQuestionAnswerState>(FormQuestionAnswerStateKey);
+        var multiQuestionConfig = formsEngine.ParseMultiQuestionConfiguration(currentQuestion);
 
-        FormSectionType = form.Section?.Type;
-        CurrentFormQuestionType = currentQuestion.Type;
-        PartialViewName = GetPartialViewName(currentQuestion);
-        PartialViewModel = GetPartialViewModel(currentQuestion, reset);
-        PreviousQuestion = await formsEngine.GetPreviousQuestion(OrganisationId, FormId, SectionId, currentQuestion.Id, answerState);
-        CheckYourAnswerQuestionId = form.Questions.FirstOrDefault(q => q.Type == FormQuestionType.CheckYourAnswers)?.Id;
+        SetCommonProperties(form, currentQuestion);
+
+        await SetViewModelProperties(currentQuestion, multiQuestionConfig, answerState, reset);
+
+        await SetNavigationProperties(form, currentQuestion, answerState);
 
         return currentQuestion;
+    }
+
+    private void SetCommonProperties(SectionQuestionsResponse form, FormQuestion currentQuestion)
+    {
+        FormSectionType = form.Section?.Type;
+        CurrentFormQuestionType = currentQuestion.Type;
+        IsMultiQuestionPage = formsEngine.ParseMultiQuestionConfiguration(currentQuestion) != null;
+    }
+
+    private async Task SetViewModelProperties(FormQuestion currentQuestion, MultiQuestionPageConfiguration? multiQuestionConfig, FormQuestionAnswerState answerState, bool reset)
+    {
+        if (multiQuestionConfig != null)
+        {
+            await InitializeMultiQuestionView(currentQuestion, answerState);
+        }
+        else
+        {
+            InitializeSingleQuestionView(currentQuestion, reset);
+        }
+    }
+
+    private async Task InitializeMultiQuestionView(FormQuestion currentQuestion, FormQuestionAnswerState answerState)
+    {
+        var multiQuestionPage = await formsEngine.GetMultiQuestionPage(OrganisationId, FormId, SectionId, currentQuestion.Id);
+        var existingAnswers = GetExistingAnswersForMultiQuestion(multiQuestionPage.Questions, answerState);
+
+        PartialViewName = "_FormElementMultiQuestion";
+        MultiQuestionViewModel = MultiQuestionModel ?? new FormElementMultiQuestionModel();
+        MultiQuestionViewModel.Initialize(multiQuestionPage, existingAnswers);
+        PartialViewModel = null;
+    }
+
+    private void InitializeSingleQuestionView(FormQuestion currentQuestion, bool reset)
+    {
+        PartialViewName = GetPartialViewName(currentQuestion);
+        PartialViewModel = GetPartialViewModel(currentQuestion, reset);
+        MultiQuestionViewModel = null;
+    }
+
+    private async Task SetNavigationProperties(SectionQuestionsResponse form, FormQuestion currentQuestion, FormQuestionAnswerState answerState)
+    {
+        PreviousQuestion = await formsEngine.GetPreviousQuestion(OrganisationId, FormId, SectionId, currentQuestion.Id, answerState);
+        CheckYourAnswerQuestionId = form.Questions.FirstOrDefault(q => q.Type == FormQuestionType.CheckYourAnswers)?.Id;
+    }
+
+    private static Dictionary<Guid, FormAnswer> GetExistingAnswersForMultiQuestion(List<FormQuestion> questions, FormQuestionAnswerState answerState)
+    {
+        return questions
+            .Select(q => new { QuestionId = q.Id, Answer = answerState.Answers.FirstOrDefault(a => a.QuestionId == q.Id)?.Answer })
+            .Where(x => x.Answer != null)
+            .ToDictionary(x => x.QuestionId, x => x.Answer!);
     }
 
     private static string? GetPartialViewName(FormQuestion question)

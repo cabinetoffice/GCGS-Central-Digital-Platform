@@ -1,5 +1,4 @@
 @page "/organisation/{organisationId:guid}/forms/{formId:guid}/sections/{sectionId:guid}/questions/{currentQuestionId}"
-@using CO.CDP.OrganisationApp.Constants
 @model CO.CDP.OrganisationApp.Pages.Forms.FormsQuestionPageModel
 @using CO.CDP.Localization
 
@@ -37,7 +36,12 @@
         <partial name="_ErrorSummary" model="@ModelState" />
 
         <form method="post" enctype="@Model.EncType" novalidate>
-            @if (Model.PartialViewName != null && Model.PartialViewModel != null)
+            @if (Model.IsMultiQuestionPage && Model.MultiQuestionViewModel != null)
+            {
+                @await Html.PartialAsync("_FormElementMultiQuestion", Model.MultiQuestionViewModel)
+                ViewData["Title"] = Model.MultiQuestionViewModel.Questions.FirstOrDefault()?.Title;
+            }
+            else if (Model.PartialViewName != null && Model.PartialViewModel != null)
             {
                 @await Html.PartialAsync(Model.PartialViewName, Model.PartialViewModel)
                 ViewData["Title"] = Model.PartialViewModel.Heading;
