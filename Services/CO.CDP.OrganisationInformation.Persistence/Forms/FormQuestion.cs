@@ -43,19 +43,19 @@ public enum FormQuestionType
 
 public record FormQuestionOptions
 {
-    public List<FormQuestionChoice>? Choices { get; init; } = new();
-    public string? ChoiceProviderStrategy { get; init; }
-    public string? AnswerFieldName { get; init; }
-    public List<FormQuestionGroup>? Groups { get; set; } = new();
-    public FormQuestionGrouping? Grouping { get; set; }
+    public ICollection<FormQuestionChoice>? Choices { get; set; } = null;
+    public string? ChoiceProviderStrategy { get; set; }
+    public string? AnswerFieldName { get; set; }
+    public ICollection<FormQuestionGroup>? Groups { get; set; }
+    public FormQuestionGrouping? Grouping { get; set; } = null;
 }
 
 public class FormQuestionChoice
 {
     public required Guid Id { get; set; }
     public required string Title { get; set; }
-    public required string? GroupName { get; set; } = null;
-    public required FormQuestionChoiceHint? Hint { get; set; } = null;
+    public required string? GroupName { get; set; }
+    public required FormQuestionChoiceHint? Hint { get; set; }
 }
 
 public class FormQuestionChoiceHint
@@ -78,6 +78,7 @@ public class FormQuestionGroupChoice
     public required string Title { get; set; }
     public required string Value { get; set; }
 }
+
 
 public class FormQuestionGrouping
 {

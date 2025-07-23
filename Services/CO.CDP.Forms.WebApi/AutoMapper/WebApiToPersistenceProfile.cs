@@ -23,12 +23,7 @@ public class WebApiToPersistenceProfile : Profile
             .ForMember(dest => dest.Options, opt => opt.MapFrom(src => src.Options))
             .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name));
 
-        CreateMap<Persistence.FormQuestionOptions, Model.FormQuestionOptions>()
-            .ForMember(dest => dest.Grouping, opt => opt.MapFrom(src => src.Grouping));
-
-        CreateMap<Persistence.FormQuestionGrouping, Model.FormQuestionGrouping>().ReverseMap();
-        CreateMap<Persistence.PageGrouping, Model.PageGrouping>().ReverseMap();
-        CreateMap<Persistence.CheckYourAnswersGrouping, Model.CheckYourAnswersGrouping>().ReverseMap();
+        CreateMap<Persistence.FormQuestionOptions, Model.FormQuestionOptions>();
 
         CreateMap<Persistence.FormQuestionChoice, Model.FormQuestionChoice>()
             .ForMember(dest => dest.Title, opt => opt.MapFrom<LocalizedPropertyResolver<Persistence.FormQuestionChoice, Model.FormQuestionChoice>, string>(src => src.Title))
@@ -48,6 +43,15 @@ public class WebApiToPersistenceProfile : Profile
         CreateMap<Persistence.FormQuestionGroupChoice, Model.FormQuestionGroupChoice>()
             .ForMember(dest => dest.Title, opt => opt.MapFrom<NullableLocalizedPropertyResolver<Persistence.FormQuestionGroupChoice, Model.FormQuestionGroupChoice>, string?>(src => src.Title));
 
+        CreateMap<Persistence.FormQuestionGrouping, Model.FormQuestionGrouping>();
+
+        CreateMap<Persistence.PageGrouping, Model.PageGrouping>()
+            .ForMember(dest => dest.PageTitleResourceKey, opt => opt.MapFrom<NullableLocalizedPropertyResolver<Persistence.PageGrouping, Model.PageGrouping>, string?>(src => src.PageTitleResourceKey))
+            .ForMember(dest => dest.SubmitButtonTextResourceKey, opt => opt.MapFrom<NullableLocalizedPropertyResolver<Persistence.PageGrouping, Model.PageGrouping>, string?>(src => src.SubmitButtonTextResourceKey));
+
+        CreateMap<Persistence.CheckYourAnswersGrouping, Model.CheckYourAnswersGrouping>()
+            .ForMember(dest => dest.GroupTitleResourceKey, opt => opt.MapFrom<NullableLocalizedPropertyResolver<Persistence.CheckYourAnswersGrouping, Model.CheckYourAnswersGrouping>, string?>(src => src.GroupTitleResourceKey));
+
         CreateMap<Persistence.FormSectionConfiguration, Model.FormSectionConfiguration>()
             .ForMember(dest => dest.SingularSummaryHeadingHint, opt => opt.MapFrom<NullableLocalizedPropertyResolver<Persistence.FormSectionConfiguration, Model.FormSectionConfiguration>, string?>(src => src.SingularSummaryHeadingHint))
             .ForMember(dest => dest.SingularSummaryHeading, opt => opt.MapFrom<NullableLocalizedPropertyResolver<Persistence.FormSectionConfiguration, Model.FormSectionConfiguration>, string?>(src => src.SingularSummaryHeading))
@@ -62,7 +66,7 @@ public class WebApiToPersistenceProfile : Profile
 
         CreateMap<Persistence.SummaryRenderFormatter, Model.SummaryRenderFormatter>()
             .ForMember(dest => dest.KeyExpression, opt => opt.MapFrom<NullableLocalizedPropertyResolver<Persistence.SummaryRenderFormatter, Model.SummaryRenderFormatter>, string?>(src => src.KeyExpression))
-            .ForMember(dest => dest.ValueExpression, opt => opt.MapFrom<NullableLocalizedPropertyResolver<Persistence.SummaryRenderFormatter, Model.SummaryRenderFormatter>, string?>(src => src.ValueExpression))            
+            .ForMember(dest => dest.ValueExpression, opt => opt.MapFrom<NullableLocalizedPropertyResolver<Persistence.SummaryRenderFormatter, Model.SummaryRenderFormatter>, string?>(src => src.ValueExpression))
             .ForMember(dest => dest.KeyExpressionOperation, opt => opt.MapFrom(src => (Model.ExpressionOperationType)Enum.Parse(typeof(Model.ExpressionOperationType), src.KeyExpressionOperation)))
             .ForMember(dest => dest.ValueExpressionOperation, opt => opt.MapFrom(src => (Model.ExpressionOperationType)Enum.Parse(typeof(Model.ExpressionOperationType), src.ValueExpressionOperation)));
 
