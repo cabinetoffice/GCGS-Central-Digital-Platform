@@ -8,12 +8,12 @@
 
     if (!string.IsNullOrWhiteSpace(Model.Description))
     {
-        ariaDescribedby += "SelectedOption-description";
+        ariaDescribedby += Model.GetFieldName("SelectedOption-description");
     }
 
     if (hasError)
     {
-        ariaDescribedby += " SelectedOption-error";
+        ariaDescribedby += " " + Model.GetFieldName("SelectedOption-error");
     }
 }
 
@@ -27,21 +27,21 @@
                     {
                         <span class="govuk-caption-l govuk-!-margin-bottom-3">@Model.Caption</span>
                     }
-                    @Model.Heading                    
+                    @Model.Heading
                 </h1>
-            </legend>           
+            </legend>
         }
 
         @if (!string.IsNullOrWhiteSpace(Model.Description))
         {
-            <div id="SelectedOption-description">
+            <div id="@Model.GetFieldName("SelectedOption-description")">
                 @Html.Raw(Model.Description)
             </div>
         }
 
         @if (hasError)
         {
-            <p class="govuk-error-message" id="SelectedOption-error">
+            <p class="govuk-error-message" id="@Model.GetFieldName("SelectedOption-error")">
                 <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span>
                 @Html.ValidationMessageFor(m => m.SelectedOption)
             </p>

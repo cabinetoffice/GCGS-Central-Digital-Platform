@@ -31,7 +31,7 @@
     void RenderField()
     {
 
-        <div id="date-hint">
+        <div id="@Model.GetFieldName("date-hint")">
             @if (!string.IsNullOrWhiteSpace(Model.Caption))
             {
                 @Html.Raw(Model.Caption)
@@ -44,28 +44,28 @@
 
         @if (dayHasError)
         {
-            <p class="govuk-error-message" id="day-error">
+            <p class="govuk-error-message" id="@Model.GetFieldName("day-error")">
                 <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span>
                 @Html.ValidationMessageFor(m => m.Day)
             </p>
         }
         @if (monthHasError)
         {
-            <p class="govuk-error-message" id="month-error">
+            <p class="govuk-error-message" id="@Model.GetFieldName("month-error")">
                 <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span>
                 @Html.ValidationMessageFor(m => m.Month)
             </p>
         }
         @if (yearHasError)
         {
-            <p class="govuk-error-message" id="year-error">
+            <p class="govuk-error-message" id="@Model.GetFieldName("year-error")">
                 <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span>
                 @Html.ValidationMessageFor(m => m.Year)
             </p>
         }
         @if (dateStringHasError)
         {
-            <p class="govuk-error-message" id="date-error">
+            <p class="govuk-error-message" id="@Model.GetFieldName("date-error")">
                 <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span>
                 @Html.ValidationMessageFor(m => m.DateString)
             </p>
@@ -104,7 +104,7 @@
 
 <div class="govuk-form-group @((Model.IsRequired && hasDateError) || selectOptionHasError ? "govuk-form-group--error" : "")">
     <fieldset class="govuk-fieldset" role="group" aria-describedby="@GetAriaDescribedBy()">
-        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l" id="outer-legend">
+        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l" id="@Model.GetFieldName("outer-legend")">
             @if (!string.IsNullOrWhiteSpace(Model.Heading))
             {
                 <h1 class="govuk-fieldset__heading">@Model.Heading</h1>
@@ -118,7 +118,7 @@
 
         @if (selectOptionHasError)
         {
-            <p class="govuk-error-message" id="has-value-error">
+            <p class="govuk-error-message" id="@Model.GetFieldName("has-value-error")">
                 <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span>
                 @Html.ValidationMessageFor(m => m.HasValue)
             </p>
@@ -138,7 +138,7 @@
                     <label class="govuk-label govuk-radios__label" for="@Model.GetFieldName(nameof(Model.HasValue))">@StaticTextResource.Global_Yes</label>
                 </div>
 
-                <div class="govuk-radios__conditional" id="conditional-YES">
+                <div class="govuk-radios__conditional" id="@Model.GetFieldName("conditional-YES")">
                     <div class="govuk-form-group @(hasDateError ? "govuk-form-group--error" : "")">
                         <fieldset class="govuk-fieldset" role="group" aria-describedby="date-hint" aria-labelledby="outer-legend inner-legend">
                             @{

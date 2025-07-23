@@ -18,7 +18,7 @@
         <label class="govuk-label" for="@Model.GetFieldName(nameof(Model.UploadedFile))">
             @StaticTextResource.Forms_FormElementFileUpload_UploadFileLabel
         </label>
-        <div id="documents-hint" class="govuk-hint">
+        <div id="@Model.GetFieldName("documents-hint")" class="govuk-hint">
             @StaticTextResource.Forms_FormElementFileUpload_DocumentsHint
         </div>
 
@@ -26,7 +26,7 @@
         if (uploadFileHasError)
         {
             ariaDescribedby += " documents-error";
-            <p class="govuk-error-message" id="documents-error">
+            <p class="govuk-error-message" id="@Model.GetFieldName("documents-error")">
                 <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span>
                 @Html.ValidationMessageFor(m => m.UploadedFile)
             </p>
@@ -76,7 +76,7 @@
                     <label class="govuk-label govuk-radios__label" for="@Model.GetFieldName(nameof(Model.HasValue))">@StaticTextResource.Global_Yes</label>
                 </div>
 
-                <div class="govuk-radios__conditional" id="conditional-YES">
+                <div class="govuk-radios__conditional" id="@Model.GetFieldName("conditional-YES")">
                     <div class="govuk-form-group @(uploadFileHasError ? "govuk-form-group--error" : "")">
                         @{
                             RenderField();
