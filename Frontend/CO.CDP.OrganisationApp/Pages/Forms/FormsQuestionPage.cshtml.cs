@@ -2,7 +2,6 @@ using CO.CDP.AwsServices;
 using CO.CDP.MQ;
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Constants;
-using CO.CDP.OrganisationApp.Extensions;
 using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.Pages.Forms.ChoiceProviderStrategies;
 using Microsoft.AspNetCore.Authorization;
@@ -10,6 +9,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using static System.Net.Mime.MediaTypeNames;
 using OrganisationType = CO.CDP.Organisation.WebApiClient.OrganisationType;
+using WebApiClientOrganisation = CO.CDP.Organisation.WebApiClient.Organisation;
+using Address = CO.CDP.OrganisationApp.Models.Address;
 
 namespace CO.CDP.OrganisationApp.Pages.Forms;
 
@@ -23,48 +24,27 @@ public class FormsQuestionPageModel(
     IOrganisationClient organisationClient,
     IUserInfoService userInfoService) : PageModel
 {
-    [BindProperty(SupportsGet = true)]
-    public Guid OrganisationId { get; set; }
-
-    [BindProperty(SupportsGet = true)]
-    public Guid FormId { get; set; }
-
-    [BindProperty(SupportsGet = true)]
-    public Guid SectionId { get; set; }
-
-    [BindProperty(SupportsGet = true)]
-    public Guid CurrentQuestionId { get; set; }
+    [BindProperty(SupportsGet = true)] public Guid OrganisationId { get; set; }
+    [BindProperty(SupportsGet = true)] public Guid FormId { get; set; }
+    [BindProperty(SupportsGet = true)] public Guid SectionId { get; set; }
+    [BindProperty(SupportsGet = true)] public Guid CurrentQuestionId { get; set; }
 
     [BindProperty(SupportsGet = true, Name = "frm-chk-answer")]
     public bool? RedirectFromCheckYourAnswerPage { get; set; }
 
-    [BindProperty]
-    public FormElementNoInputModel? NoInputModel { get; set; }
-    [BindProperty]
-    public FormElementTextInputModel? TextInputModel { get; set; }
-    [BindProperty]
-    public FormElementFileUploadModel? FileUploadModel { get; set; }
-    [BindProperty]
-    public FormElementYesNoInputModel? YesNoInputModel { get; set; }
-    [BindProperty]
-    public FormElementSingleChoiceModel? SingleChoiceModel { get; set; }
-    [BindProperty]
-    public FormElementGroupedSingleChoiceModel? GroupedSingleChoiceModel { get; set; }
-    [BindProperty]
-    public FormElementDateInputModel? DateInputModel { get; set; }
-    [BindProperty]
-    public FormElementCheckBoxInputModel? CheckBoxModel { get; set; }
-    [BindProperty]
-    public FormElementAddressModel? AddressModel { get; set; }
-    [BindProperty]
-    public FormElementMultiLineInputModel? MultiLineInputModel { get; set; }
-    [BindProperty]
-    public FormElementUrlInputModel? UrlInputModel { get; set; }
-    [BindProperty]
-    public FormElementMultiQuestionModel? MultiQuestionModel { get; set; }
-    [BindProperty(SupportsGet = true)]
-
-    public string? UkOrNonUk { get; set; }
+    [BindProperty(SupportsGet = true)] public string? UkOrNonUk { get; set; }
+    [BindProperty] public FormElementNoInputModel? NoInputModel { get; set; }
+    [BindProperty] public FormElementTextInputModel? TextInputModel { get; set; }
+    [BindProperty] public FormElementFileUploadModel? FileUploadModel { get; set; }
+    [BindProperty] public FormElementYesNoInputModel? YesNoInputModel { get; set; }
+    [BindProperty] public FormElementSingleChoiceModel? SingleChoiceModel { get; set; }
+    [BindProperty] public FormElementGroupedSingleChoiceModel? GroupedSingleChoiceModel { get; set; }
+    [BindProperty] public FormElementDateInputModel? DateInputModel { get; set; }
+    [BindProperty] public FormElementCheckBoxInputModel? CheckBoxModel { get; set; }
+    [BindProperty] public FormElementAddressModel? AddressModel { get; set; }
+    [BindProperty] public FormElementMultiLineInputModel? MultiLineInputModel { get; set; }
+    [BindProperty] public FormElementUrlInputModel? UrlInputModel { get; set; }
+    [BindProperty] public FormElementMultiQuestionModel? MultiQuestionModel { get; set; }
     public FormQuestionType? CurrentFormQuestionType { get; private set; }
     public string? PartialViewName { get; private set; }
     public IFormElementModel? PartialViewModel { get; private set; }
@@ -73,334 +53,251 @@ public class FormsQuestionPageModel(
     public Guid? CheckYourAnswerQuestionId { get; private set; }
     public FormSectionType? FormSectionType { get; set; }
     public bool IsMultiQuestionPage { get; private set; }
+    public bool IsInformalConsortium { get; set; }
 
     public string EncType => CurrentFormQuestionType == FormQuestionType.FileUpload
-        ? Multipart.FormData : Application.FormUrlEncoded;
+        ? Multipart.FormData
+        : Application.FormUrlEncoded;
 
     private string FormQuestionAnswerStateKey => $"Form_{OrganisationId}_{FormId}_{SectionId}_Answers";
 
-    public bool IsInformalConsortium { get; set; }
-
-    public async Task<IActionResult> OnGetAsync()
+    private async Task<ValidationResult> ValidateWithOrganisationLoad<T>(T? viewModel) where T : class
     {
-        var previousUnansweredQuestionId = await ValidateIfNeedRedirect();
-        if (previousUnansweredQuestionId != null)
-        {
-            return RedirectToPage("FormsQuestionPage", new { OrganisationId, FormId, SectionId, CurrentQuestionId = previousUnansweredQuestionId });
-        }
+        ModelState.Clear();
 
-        var currentQuestion = await InitModel(true);
-        if (currentQuestion == null)
-        {
-            return Redirect("/page-not-found");
-        }
+        if (viewModel != null && TryValidateModel(viewModel)) return ValidationResult.Success();
+        var organisation = await LoadOrganisation();
+        return ValidationResult.Failed(organisation);
+    }
 
+    private async Task<WebApiClientOrganisation?> LoadOrganisation()
+    {
         var organisation = await organisationClient.GetOrganisationAsync(OrganisationId);
         if (organisation != null)
         {
             IsInformalConsortium = organisation.Type == OrganisationType.InformalConsortium;
         }
 
-        return Page();
+        return organisation;
+    }
+
+    private async Task<FormAnswer?> ProcessAnswer(IFormElementModel questionModel) =>
+        questionModel.CurrentFormQuestionType == FormQuestionType.FileUpload
+            ? await HandleFileUpload()
+            : questionModel.GetAnswer();
+
+    private async Task ProcessQuestions(
+        IEnumerable<IFormElementModel> questionModels,
+        Func<IFormElementModel, Task<FormQuestion?>> questionLookup,
+        Action<FormQuestion, FormAnswer?> saveAnswer)
+    {
+        foreach (var questionModel in questionModels)
+        {
+            var questionInSequence = await questionLookup(questionModel);
+            if (questionInSequence == null) continue;
+
+            var answer = await ProcessAnswer(questionModel);
+            saveAnswer(questionInSequence, answer);
+        }
     }
 
     public async Task<IActionResult> OnPostAsync()
     {
-        var previousUnansweredQuestionId = await ValidateIfNeedRedirect();
-        if (previousUnansweredQuestionId != null)
-        {
-            return RedirectToPage("FormsQuestionPage", new { OrganisationId, FormId, SectionId, CurrentQuestionId = previousUnansweredQuestionId });
-        }
+        var redirectResult = await CheckForRequiredRedirect();
+        if (redirectResult != null) return redirectResult;
 
+        var (currentQuestion, sectionDetails) = await InitializeForPost();
+        if (currentQuestion == null) return Redirect("/page-not-found");
+
+        return await ProcessQuestionSubmission(currentQuestion, sectionDetails);
+    }
+
+    private async Task<IActionResult?> CheckForRequiredRedirect()
+    {
+        var previousUnansweredQuestionId = await ValidateIfNeedRedirect();
+        return previousUnansweredQuestionId != null
+            ? RedirectToPage("FormsQuestionPage",
+                new { OrganisationId, FormId, SectionId, CurrentQuestionId = previousUnansweredQuestionId })
+            : null;
+    }
+
+    private async Task<(FormQuestion?, SectionQuestionsResponse)> InitializeForPost()
+    {
         var sectionDetails = await formsEngine.GetFormSectionAsync(OrganisationId, FormId, SectionId);
         var currentQuestion = await InitModel();
-        if (currentQuestion == null)
-        {
-            return Redirect("/page-not-found");
-        }
+        return (currentQuestion, sectionDetails);
+    }
 
+    private async Task<IActionResult> ProcessQuestionSubmission(FormQuestion currentQuestion,
+        SectionQuestionsResponse sectionDetails)
+    {
         IActionResult? result = null;
+
         if (PartialViewModel != null)
         {
-            result = await HandleSingleQuestionPostAsync(currentQuestion, sectionDetails);
+            result = await HandleSingleQuestionPost(currentQuestion, sectionDetails);
         }
         else if (MultiQuestionViewModel != null && IsMultiQuestionPage)
         {
-            result = await HandleMultiQuestionPostAsync(currentQuestion);
-        }
-        if (result != null)
-        {
-            return result;
+            result = await HandleMultiQuestionPost(currentQuestion);
         }
 
-        return RedirectToNextQuestion(currentQuestion);
+        return result ?? RedirectToNextQuestion(currentQuestion);
     }
 
-    private async Task<IActionResult?> HandleSingleQuestionPostAsync(FormQuestion currentQuestion, SectionQuestionsResponse sectionDetails)
+    private async Task<IActionResult?> HandleSingleQuestionPost(FormQuestion currentQuestion,
+        SectionQuestionsResponse sectionDetails)
     {
-        ModelState.Clear();
-        if (PartialViewModel == null || !TryValidateModel(PartialViewModel))
-        {
-            var organisation = await organisationClient.GetOrganisationAsync(OrganisationId);
-            if (organisation != null)
-            {
-                IsInformalConsortium = organisation.Type == OrganisationType.InformalConsortium;
-            }
+        var validationResult = await ValidateWithOrganisationLoad(PartialViewModel);
+        if (!validationResult.IsValid)
             return Page();
-        }
-        var oldAnswerObject = GetAnswerFromTempData(currentQuestion);
-        HandleBranchingLogicAnswerChange(currentQuestion, oldAnswerObject, sectionDetails.Questions);
-        var answer = PartialViewModel.GetAnswer();
-        if (PartialViewModel.CurrentFormQuestionType == FormQuestionType.FileUpload)
-        {
-            answer = await HandleFileUpload();
-        }
+
+        return await ProcessSingleQuestion(currentQuestion, sectionDetails);
+    }
+
+    private async Task<IActionResult?> ProcessSingleQuestion(FormQuestion currentQuestion,
+        SectionQuestionsResponse sectionDetails)
+    {
+        var oldAnswer = GetAnswerFromTempData(currentQuestion);
+        HandleBranchingLogicAnswerChange(currentQuestion, oldAnswer, sectionDetails.Questions);
+
+        var answer = await ProcessAnswer(PartialViewModel!);
         SaveAnswerToTempData(currentQuestion, answer);
-        return RedirectToNextQuestion(currentQuestion);
-    }
-
-    private async Task<IActionResult?> HandleMultiQuestionPostAsync(FormQuestion currentQuestion)
-    {
-        ModelState.Clear();
-        if (MultiQuestionViewModel != null && !TryValidateModel(MultiQuestionViewModel))
-        {
-            var organisation = await organisationClient.GetOrganisationAsync(OrganisationId);
-            if (organisation != null)
-            {
-                IsInformalConsortium = organisation.Type == OrganisationType.InformalConsortium;
-            }
-            return Page();
-        }
-        var multiQuestionPage = await formsEngine.GetMultiQuestionPage(OrganisationId, FormId, SectionId, currentQuestion.Id);
-        foreach (var question in multiQuestionPage.Questions)
-        {
-            var questionModel = MultiQuestionViewModel?.GetQuestionModel(question.Id);
-            if (questionModel == null) continue;
-
-            if (!TryValidateModel(questionModel))
-            {
-                var organisation = await organisationClient.GetOrganisationAsync(OrganisationId);
-                if (organisation != null)
-                {
-                    IsInformalConsortium = organisation.Type == OrganisationType.InformalConsortium;
-                }
-                return Page();
-            }
-
-            var answer = questionModel.GetAnswer();
-            if (questionModel.CurrentFormQuestionType == FormQuestionType.FileUpload)
-            {
-                answer = await HandleFileUpload();
-            }
-            SaveAnswerToTempData(question, answer);
-        }
-        return RedirectToNextQuestion(currentQuestion);
-    }
-
-    private IActionResult RedirectToNextQuestion(FormQuestion currentQuestion)
-    {
-        if (currentQuestion.Id == CheckYourAnswerQuestionId)
-        {
-            return HandleCheckYourAnswers().GetAwaiter().GetResult();
-        }
-        Guid? nextQuestionId;
-        if (RedirectFromCheckYourAnswerPage == true)
-        {
-            nextQuestionId = CheckYourAnswerQuestionId;
-        }
-        else
-        {
-            var answerSet = tempDataService.PeekOrDefault<FormQuestionAnswerState>(FormQuestionAnswerStateKey);
-            nextQuestionId = formsEngine.GetNextQuestion(OrganisationId, FormId, SectionId, currentQuestion.Id, answerSet).GetAwaiter().GetResult()?.Id;
-        }
-        return RedirectToPage("FormsQuestionPage", new { OrganisationId, FormId, SectionId, CurrentQuestionId = nextQuestionId });
-    }
-
-    private async Task<IActionResult> HandleCheckYourAnswers()
-    {
-        var answerSet = tempDataService.PeekOrDefault<FormQuestionAnswerState>(FormQuestionAnswerStateKey);
-        await formsEngine.SaveUpdateAnswers(FormId, SectionId, OrganisationId, answerSet);
-
-        tempDataService.Remove(FormQuestionAnswerStateKey);
-
-        if (FormSectionType == Models.FormSectionType.Declaration)
-        {
-            var shareCode = await formsEngine.CreateShareCodeAsync(FormId, OrganisationId);
-
-            return RedirectToPage("/ShareInformation/ShareCodeConfirmation",
-                new { OrganisationId, FormId, SectionId, shareCode });
-        }
-
-        return RedirectToPage("FormsAnswerSetSummary", new { OrganisationId, FormId, SectionId });
-    }
-
-    private async Task<FormAnswer?> HandleFileUpload()
-    {
-        var newFileInfo = FileUploadModel?.GetUploadedFileInfo();
-        if (newFileInfo != null)
-        {
-            await using var stream = newFileInfo.Value.formFile.OpenReadStream();
-            await fileHostManager.UploadFile(stream, newFileInfo.Value.filename, newFileInfo.Value.contentType);
-
-            var userInfo = await userInfoService.GetUserInfo();
-            var organisation = await organisationClient.GetOrganisationAsync(OrganisationId);
-
-            await publisher.Publish(new ScanFile
-            {
-                QueueFileName = newFileInfo.Value.filename,
-                UploadedFileName = FileUploadModel!.UploadedFile!.FileName,
-                OrganisationId = OrganisationId,
-                OrganisationEmailAddress = organisation.ContactPoint.Email,
-                UserEmailAddress = userInfo.Email,
-                OrganisationName = organisation.Name,
-                FullName = userInfo.Name
-            });
-
-            return new FormAnswer { BoolValue = true, TextValue = newFileInfo.Value.filename };
-        }
-
-        if (FileUploadModel?.HasValue == false)
-        {
-            return new FormAnswer { BoolValue = false };
-        }
-
-        if (!string.IsNullOrEmpty(FileUploadModel?.UploadedFileName))
-        {
-            return new FormAnswer { BoolValue = true, TextValue = FileUploadModel.UploadedFileName };
-        }
 
         return null;
     }
 
-    public async Task<IEnumerable<AnswerSummary>> GetAnswers()
+    private async Task<IActionResult?> HandleMultiQuestionPost(FormQuestion currentQuestion)
     {
-        var answerSet = tempDataService.PeekOrDefault<FormQuestionAnswerState>(FormQuestionAnswerStateKey);
+        var validationResult = await ValidateWithOrganisationLoad(MultiQuestionViewModel);
+        if (!validationResult.IsValid)
+            return Page();
 
-        var form = await formsEngine.GetFormSectionAsync(OrganisationId, FormId, SectionId);
-
-        List<AnswerSummary> summaryList = [];
-        foreach (QuestionAnswer answer in answerSet.Answers)
-        {
-            var question = form?.Questions.FirstOrDefault(q => q.Id == answer.QuestionId);
-
-            if (question != null && question.Type != FormQuestionType.NoInput && question.Type != FormQuestionType.CheckYourAnswers)
-            {
-                var summary = new AnswerSummary
-                {
-                    Title = question.SummaryTitle ?? question.Title,
-                    Answer = await GetAnswerString(answer, question),
-                    ChangeLink = $"/organisation/{OrganisationId}/forms/{FormId}/sections/{SectionId}/questions/{answer.QuestionId}?frm-chk-answer=true"
-                };
-
-                if (question.Type == FormQuestionType.Address && answer.Answer?.AddressValue != null
-                    && answer.Answer.AddressValue.Country != Country.UKCountryCode)
-                {
-                    summary.ChangeLink += "&UkOrNonUk=non-uk";
-                }
-
-                summaryList.Add(summary);
-            }
-        }
-
-        return summaryList;
+        await ProcessMultiQuestions(currentQuestion);
+        return null;
     }
 
-    public async Task<FormElementCheckYourAnswersModel> GetGroupedAnswersModel()
+    private async Task ProcessMultiQuestions(FormQuestion currentQuestion)
     {
-        var answerSet = tempDataService.PeekOrDefault<FormQuestionAnswerState>(FormQuestionAnswerStateKey);
-        var displayItems = await formsEngine.GetGroupedAnswerSummaries(OrganisationId, FormId, SectionId, answerSet);
+        var multiQuestionPage =
+            await formsEngine.GetMultiQuestionPage(OrganisationId, FormId, SectionId, currentQuestion.Id);
 
-        return new FormElementCheckYourAnswersModel
-        {
-            DisplayItems = displayItems,
-            FormSectionType = FormSectionType
-        };
+        await ProcessQuestions(
+            MultiQuestionViewModel!.QuestionModels,
+            questionModel => Task.FromResult(
+                multiQuestionPage.Questions.FirstOrDefault(q => q.Id == questionModel.QuestionId)
+            ),
+            SaveAnswerToTempData
+        );
     }
 
     private async Task<string> GetAnswerString(QuestionAnswer questionAnswer, FormQuestion question)
     {
         var answer = questionAnswer.Answer;
-        if (answer == null)
-            return "";
+        if (answer == null) return string.Empty;
 
-        async Task<string> SingleChoiceString(FormAnswer a)
+        var boolPart = FormatBoolAnswer(answer.BoolValue);
+        var valuePart = await FormatAnswerByType(answer, question);
+
+        return CombineAnswerParts(boolPart, valuePart);
+    }
+
+    private static string FormatBoolAnswer(bool? boolValue) =>
+        boolValue switch
         {
-            var choiceProviderStrategy = choiceProviderService.GetStrategy(question.Options.ChoiceProviderStrategy);
-            return await choiceProviderStrategy.RenderOption(a) ?? "";
-        }
-
-        string boolAnswerString = answer.BoolValue.HasValue ? (answer.BoolValue == true ? "Yes" : "No") : "";
-
-        string answerString = question.Type switch
-        {
-            FormQuestionType.Text => answer.TextValue ?? "",
-            FormQuestionType.FileUpload => answer.TextValue ?? "",
-            FormQuestionType.SingleChoice => await SingleChoiceString(answer),
-            FormQuestionType.Date => answer.DateValue.HasValue ? answer.DateValue.Value.ToFormattedString() : "",
-            FormQuestionType.CheckBox => answer.BoolValue == true ? question.Options.Choices?.Values.FirstOrDefault() ?? "" : "",
-            FormQuestionType.Address => answer.AddressValue != null ? answer.AddressValue.ToHtmlString() : "",
-            FormQuestionType.MultiLine => answer.TextValue ?? "",
-            FormQuestionType.GroupedSingleChoice => GroupedSingleChoiceAnswerString(answer, question),
-            FormQuestionType.Url => answer.TextValue ?? "",
-            _ => ""
+            true => "Yes",
+            false => "No",
+            _ => string.Empty
         };
 
-        string[] answers = [boolAnswerString, answerString];
-
-        return string.Join(", ", answers.Where(s => !string.IsNullOrWhiteSpace(s)));
-    }
-
-    public bool PreviousQuestionHasNonUkAddressAnswer()
-    {
-        if (PreviousQuestion is { Type: FormQuestionType.Address })
+    private async Task<string> FormatAnswerByType(FormAnswer answer, FormQuestion question) =>
+        question.Type switch
         {
-            var answer = GetAnswerFromTempData(PreviousQuestion);
-            if (answer?.AddressValue != null)
-            {
-                return answer.AddressValue.Country != Country.UKCountryCode;
-            }
-        }
+            FormQuestionType.Text or FormQuestionType.FileUpload or FormQuestionType.MultiLine or FormQuestionType.Url
+                => answer.TextValue ?? string.Empty,
+            FormQuestionType.SingleChoice => await FormatSingleChoice(answer, question),
+            FormQuestionType.Date => FormatDate(answer.DateValue),
+            FormQuestionType.CheckBox => FormatCheckBox(answer, question),
+            FormQuestionType.Address => FormatAddress(answer.AddressValue),
+            FormQuestionType.GroupedSingleChoice => FormatGroupedSingleChoice(answer, question),
+            _ => string.Empty
+        };
 
-        return false;
+    private async Task<string> FormatSingleChoice(FormAnswer answer, FormQuestion question)
+    {
+        var strategy = choiceProviderService.GetStrategy(question.Options.ChoiceProviderStrategy);
+        return await strategy.RenderOption(answer) ?? string.Empty;
     }
 
-    private static string GroupedSingleChoiceAnswerString(FormAnswer? answer, FormQuestion question)
+    private static string FormatDate(DateTimeOffset? dateValue) =>
+        dateValue?.ToString("dd/MM/yyyy") ?? string.Empty;
+
+    private static string FormatCheckBox(FormAnswer answer, FormQuestion question) =>
+        answer.BoolValue == true
+            ? question.Options.Choices?.Values.FirstOrDefault() ?? string.Empty
+            : string.Empty;
+
+    private static string FormatAddress(Address? address)
     {
-        if (answer?.OptionValue == null) return "";
+        if (address == null) return string.Empty;
+        var parts = new[] { address.AddressLine1, address.TownOrCity, address.Postcode }
+            .Where(p => !string.IsNullOrWhiteSpace(p));
+        return string.Join(", ", parts);
+    }
 
-        var choices = question.Options.Groups.SelectMany(g => g.Choices);
+    private static string FormatGroupedSingleChoice(FormAnswer answer, FormQuestion question)
+    {
+        if (answer.OptionValue == null) return string.Empty;
 
-        var choiceOption = choices.FirstOrDefault(c => c.Value == answer.OptionValue);
+        var choice = question.Options.Groups
+            .SelectMany(g => g.Choices)
+            .FirstOrDefault(c => c.Value == answer.OptionValue);
 
-        return (choiceOption == null ? answer.OptionValue : choiceOption.Title) ?? "";
+        return choice?.Title ?? answer.OptionValue ?? string.Empty;
+    }
+
+    private static string CombineAnswerParts(params string[] parts) =>
+        string.Join(", ", parts.Where(s => !string.IsNullOrWhiteSpace(s)));
+
+    private record ValidationResult(bool IsValid, WebApiClientOrganisation? Organisation = null)
+    {
+        public static ValidationResult Success() => new(true);
+        public static ValidationResult Failed(WebApiClientOrganisation? org) => new(false, org);
+    }
+
+    public async Task<IActionResult> OnGetAsync()
+    {
+        var redirectResult = await CheckForRequiredRedirect();
+        if (redirectResult != null) return redirectResult;
+
+        var currentQuestion = await InitModel(true);
+        if (currentQuestion == null) return Redirect("/page-not-found");
+
+        await LoadOrganisation();
+        return Page();
     }
 
     private async Task<Guid?> ValidateIfNeedRedirect()
     {
         var form = await formsEngine.GetFormSectionAsync(OrganisationId, FormId, SectionId);
-
         var answerState = tempDataService.PeekOrDefault<FormQuestionAnswerState>(FormQuestionAnswerStateKey);
 
         var currentQuestion = form.Questions.FirstOrDefault(q => q.Id == CurrentQuestionId);
         if (currentQuestion?.BranchType == FormQuestionBranchType.Alternative)
-        {
             return null;
-        }
 
-        var previousUnansweredQuestionId = formsEngine.GetPreviousUnansweredQuestionId(form.Questions, CurrentQuestionId, answerState);
-
-        if (previousUnansweredQuestionId != null && previousUnansweredQuestionId != CurrentQuestionId)
-        {
-            return previousUnansweredQuestionId;
-        }
-
-        return null;
+        var previousUnansweredQuestionId =
+            formsEngine.GetPreviousUnansweredQuestionId(form.Questions, CurrentQuestionId, answerState);
+        return previousUnansweredQuestionId != null && previousUnansweredQuestionId != CurrentQuestionId
+            ? previousUnansweredQuestionId
+            : null;
     }
 
     private async Task<FormQuestion?> InitModel(bool reset = false)
     {
         var form = await formsEngine.GetFormSectionAsync(OrganisationId, FormId, SectionId);
-        var currentQuestion = await formsEngine.GetCurrentQuestion(OrganisationId, FormId, SectionId, CurrentQuestionId);
+        var currentQuestion =
+            await formsEngine.GetCurrentQuestion(OrganisationId, FormId, SectionId, CurrentQuestionId);
 
         return currentQuestion switch
         {
@@ -409,14 +306,13 @@ public class FormsQuestionPageModel(
         };
     }
 
-    private async Task<FormQuestion> InitializeModelState(SectionQuestionsResponse form, FormQuestion currentQuestion, bool reset)
+    private async Task<FormQuestion> InitializeModelState(SectionQuestionsResponse form, FormQuestion currentQuestion,
+        bool reset)
     {
         var answerState = tempDataService.PeekOrDefault<FormQuestionAnswerState>(FormQuestionAnswerStateKey);
 
         SetCommonProperties(form, currentQuestion);
-
         await SetViewModelProperties(currentQuestion, answerState, reset);
-
         await SetNavigationProperties(form, currentQuestion, answerState);
 
         return currentQuestion;
@@ -429,7 +325,8 @@ public class FormsQuestionPageModel(
         IsMultiQuestionPage = currentQuestion.Options.Grouping?.Page != null;
     }
 
-    private async Task SetViewModelProperties(FormQuestion currentQuestion, FormQuestionAnswerState answerState, bool reset)
+    private async Task SetViewModelProperties(FormQuestion currentQuestion, FormQuestionAnswerState answerState,
+        bool reset)
     {
         if (currentQuestion.Options.Grouping?.Page != null)
         {
@@ -443,7 +340,8 @@ public class FormsQuestionPageModel(
 
     private async Task InitializeMultiQuestionView(FormQuestion currentQuestion, FormQuestionAnswerState answerState)
     {
-        var multiQuestionPage = await formsEngine.GetMultiQuestionPage(OrganisationId, FormId, SectionId, currentQuestion.Id);
+        var multiQuestionPage =
+            await formsEngine.GetMultiQuestionPage(OrganisationId, FormId, SectionId, currentQuestion.Id);
         var existingAnswers = GetExistingAnswersForMultiQuestion(multiQuestionPage.Questions, answerState);
 
         PartialViewName = "_FormElementMultiQuestion";
@@ -459,16 +357,20 @@ public class FormsQuestionPageModel(
         MultiQuestionViewModel = null;
     }
 
-    private async Task SetNavigationProperties(SectionQuestionsResponse form, FormQuestion currentQuestion, FormQuestionAnswerState answerState)
+    private async Task SetNavigationProperties(SectionQuestionsResponse form, FormQuestion currentQuestion,
+        FormQuestionAnswerState answerState)
     {
-        PreviousQuestion = await formsEngine.GetPreviousQuestion(OrganisationId, FormId, SectionId, currentQuestion.Id, answerState);
+        PreviousQuestion =
+            await formsEngine.GetPreviousQuestion(OrganisationId, FormId, SectionId, currentQuestion.Id, answerState);
         CheckYourAnswerQuestionId = form.Questions.FirstOrDefault(q => q.Type == FormQuestionType.CheckYourAnswers)?.Id;
     }
 
-    private static Dictionary<Guid, FormAnswer> GetExistingAnswersForMultiQuestion(List<FormQuestion> questions, FormQuestionAnswerState answerState)
+    private static Dictionary<Guid, FormAnswer> GetExistingAnswersForMultiQuestion(List<FormQuestion> questions,
+        FormQuestionAnswerState answerState)
     {
         return questions
-            .Select(q => new { QuestionId = q.Id, answerState.Answers.FirstOrDefault(a => a.QuestionId == q.Id)?.Answer })
+            .Select(q => new
+                { QuestionId = q.Id, answerState.Answers.FirstOrDefault(a => a.QuestionId == q.Id)?.Answer })
             .Where(x => x.Answer != null)
             .ToDictionary(x => x.QuestionId, x => x.Answer!);
     }
@@ -478,7 +380,8 @@ public class FormsQuestionPageModel(
         if (question.Type == FormQuestionType.CheckYourAnswers)
             return null;
 
-        Dictionary<FormQuestionType, string> formQuestionPartials = new(){
+        var formQuestionPartials = new Dictionary<FormQuestionType, string>
+        {
             { FormQuestionType.NoInput, "_FormElementNoInput" },
             { FormQuestionType.Text, "_FormElementTextInput" },
             { FormQuestionType.FileUpload, "_FormElementFileUpload" },
@@ -489,15 +392,12 @@ public class FormsQuestionPageModel(
             { FormQuestionType.Address, "_FormElementAddress" },
             { FormQuestionType.MultiLine, "_FormElementMultiLineInput" },
             { FormQuestionType.GroupedSingleChoice, "_FormElementGroupedSingleChoice" },
-            { FormQuestionType.Url, "_FormElementUrlInput" },
+            { FormQuestionType.Url, "_FormElementUrlInput" }
         };
 
-        if (formQuestionPartials.TryGetValue(question.Type, out var partialView))
-        {
-            return partialView;
-        }
-
-        throw new NotImplementedException($"Forms question: {question.Type} is not supported");
+        return formQuestionPartials.TryGetValue(question.Type, out var partialView)
+            ? partialView
+            : throw new NotImplementedException($"Forms question: {question.Type} is not supported");
     }
 
     private IFormElementModel? GetPartialViewModel(FormQuestion question, bool reset)
@@ -516,9 +416,10 @@ public class FormsQuestionPageModel(
             FormQuestionType.Address => AddressModel ?? new FormElementAddressModel(),
             FormQuestionType.SingleChoice => SingleChoiceModel ?? new FormElementSingleChoiceModel(),
             FormQuestionType.MultiLine => MultiLineInputModel ?? new FormElementMultiLineInputModel(),
-            FormQuestionType.GroupedSingleChoice => GroupedSingleChoiceModel ?? new FormElementGroupedSingleChoiceModel(),
+            FormQuestionType.GroupedSingleChoice => GroupedSingleChoiceModel ??
+                                                    new FormElementGroupedSingleChoiceModel(),
             FormQuestionType.Url => UrlInputModel ?? new FormElementUrlInputModel(),
-            _ => throw new NotImplementedException($"Forms question: {question.Type} is not supported"),
+            _ => throw new NotImplementedException($"Forms question: {question.Type} is not supported")
         };
 
         model.Initialize(question);
@@ -539,39 +440,31 @@ public class FormsQuestionPageModel(
         return state.Answers.FirstOrDefault(a => a.QuestionId == question.Id)?.Answer;
     }
 
-    private void HandleBranchingLogicAnswerChange(FormQuestion currentQuestion, FormAnswer? oldAnswerObject, List<FormQuestion> allQuestionsInSection)
+    private void HandleBranchingLogicAnswerChange(FormQuestion currentQuestion, FormAnswer? oldAnswerObject,
+        List<FormQuestion> allQuestionsInSection)
     {
         if (!currentQuestion.NextQuestionAlternative.HasValue)
-        {
             return;
-        }
 
-        bool oldAnswerIsYes;
-        bool newAnswerIsYes;
-
-        switch (currentQuestion.Type)
+        var (oldAnswerIsYes, newAnswerIsYes) = currentQuestion.Type switch
         {
-            case FormQuestionType.YesOrNo:
-                oldAnswerIsYes = oldAnswerObject?.BoolValue ?? false;
-                newAnswerIsYes = YesNoInputModel?.GetAnswer()?.BoolValue ?? false;
-                break;
-
-            case FormQuestionType.FileUpload:
-                oldAnswerIsYes = !string.IsNullOrEmpty(oldAnswerObject?.TextValue);
-                var newFileIsUploaded = FileUploadModel?.UploadedFile is { Length: > 0 };
-                var existingFileIsKept = !string.IsNullOrEmpty(FileUploadModel?.UploadedFileName) && FileUploadModel?.HasValue != false;
-                newAnswerIsYes = newFileIsUploaded || existingFileIsKept;
-                break;
-
-            default:
-                return;
-        }
+            FormQuestionType.YesOrNo => (
+                oldAnswerObject?.BoolValue ?? false,
+                YesNoInputModel?.GetAnswer()?.BoolValue ?? false
+            ),
+            FormQuestionType.FileUpload => (
+                !string.IsNullOrEmpty(oldAnswerObject?.TextValue),
+                (FileUploadModel?.UploadedFile is { Length: > 0 }) ||
+                (!string.IsNullOrEmpty(FileUploadModel?.UploadedFileName) && FileUploadModel?.HasValue != false)
+            ),
+            _ => (false, false)
+        };
 
         if (oldAnswerIsYes && !newAnswerIsYes && currentQuestion.NextQuestion.HasValue)
         {
             RemoveAnswersFromBranchPath(currentQuestion.NextQuestion.Value, allQuestionsInSection);
         }
-        else if (!oldAnswerIsYes && newAnswerIsYes)
+        else if (!oldAnswerIsYes && newAnswerIsYes && currentQuestion.NextQuestionAlternative.HasValue)
         {
             RemoveAnswersFromBranchPath(currentQuestion.NextQuestionAlternative.Value, allQuestionsInSection);
         }
@@ -593,51 +486,173 @@ public class FormsQuestionPageModel(
         }
 
         questionAnswer.Answer = answer;
-
         tempDataService.Put(FormQuestionAnswerStateKey, state);
     }
 
     private void RemoveAnswersFromBranchPath(Guid branchStartNodeId, List<FormQuestion> allQuestionsInSection)
     {
         var answerState = tempDataService.PeekOrDefault<FormQuestionAnswerState>(FormQuestionAnswerStateKey);
-        if (answerState.Answers.Count == 0)
-        {
-            return;
-        }
+        if (answerState.Answers.Count == 0) return;
 
         var questionsMap = allQuestionsInSection.ToDictionary(q => q.Id);
         var questionsToClear = new HashSet<Guid>();
         var queue = new Queue<Guid>();
 
         if (questionsMap.ContainsKey(branchStartNodeId))
-        {
             queue.Enqueue(branchStartNodeId);
-        }
 
         while (queue.Count > 0)
         {
             var currentQId = queue.Dequeue();
             if (!questionsMap.TryGetValue(currentQId, out var questionNode) || !questionsToClear.Add(currentQId))
-            {
                 continue;
-            }
 
             if (questionNode.NextQuestion.HasValue && questionsMap.ContainsKey(questionNode.NextQuestion.Value))
-            {
                 queue.Enqueue(questionNode.NextQuestion.Value);
-            }
-            if (questionNode.NextQuestionAlternative.HasValue && questionsMap.ContainsKey(questionNode.NextQuestionAlternative.Value))
-            {
+            if (questionNode.NextQuestionAlternative.HasValue &&
+                questionsMap.ContainsKey(questionNode.NextQuestionAlternative.Value))
                 queue.Enqueue(questionNode.NextQuestionAlternative.Value);
-            }
         }
 
         var initialCount = answerState.Answers.Count;
         answerState.Answers.RemoveAll(answer => questionsToClear.Contains(answer.QuestionId));
 
         if (answerState.Answers.Count < initialCount)
-        {
             tempDataService.Put(FormQuestionAnswerStateKey, answerState);
+    }
+
+    private IActionResult RedirectToNextQuestion(FormQuestion currentQuestion)
+    {
+        if (currentQuestion.Id == CheckYourAnswerQuestionId)
+            return HandleCheckYourAnswers().GetAwaiter().GetResult();
+
+        var nextQuestionId = RedirectFromCheckYourAnswerPage == true
+            ? CheckYourAnswerQuestionId
+            : GetNextQuestionId(currentQuestion);
+
+        return RedirectToPage("FormsQuestionPage",
+            new { OrganisationId, FormId, SectionId, CurrentQuestionId = nextQuestionId });
+    }
+
+    private Guid? GetNextQuestionId(FormQuestion currentQuestion)
+    {
+        var answerSet = tempDataService.PeekOrDefault<FormQuestionAnswerState>(FormQuestionAnswerStateKey);
+        return formsEngine.GetNextQuestion(OrganisationId, FormId, SectionId, currentQuestion.Id, answerSet)
+            .GetAwaiter().GetResult()?.Id;
+    }
+
+    private async Task<IActionResult> HandleCheckYourAnswers()
+    {
+        var answerSet = tempDataService.PeekOrDefault<FormQuestionAnswerState>(FormQuestionAnswerStateKey);
+        await formsEngine.SaveUpdateAnswers(FormId, SectionId, OrganisationId, answerSet);
+        tempDataService.Remove(FormQuestionAnswerStateKey);
+
+        return FormSectionType == Models.FormSectionType.Declaration
+            ? await CreateShareCodeAndRedirect()
+            : RedirectToPage("FormsAnswerSetSummary", new { OrganisationId, FormId, SectionId });
+    }
+
+    private async Task<IActionResult> CreateShareCodeAndRedirect()
+    {
+        var shareCode = await formsEngine.CreateShareCodeAsync(FormId, OrganisationId);
+        return RedirectToPage("/ShareInformation/ShareCodeConfirmation",
+            new { OrganisationId, FormId, SectionId, shareCode });
+    }
+
+    private async Task<FormAnswer?> HandleFileUpload()
+    {
+        var newFileInfo = FileUploadModel?.GetUploadedFileInfo();
+        if (newFileInfo != null)
+        {
+            return await ProcessNewFileUpload(newFileInfo.Value);
         }
+
+        if (FileUploadModel?.HasValue == false)
+        {
+            return new FormAnswer { BoolValue = false };
+        }
+
+        return !string.IsNullOrEmpty(FileUploadModel?.UploadedFileName)
+            ? new FormAnswer { BoolValue = true, TextValue = FileUploadModel.UploadedFileName }
+            : null;
+    }
+
+    private async Task<FormAnswer> ProcessNewFileUpload(
+        (IFormFile formFile, string filename, string contentType) fileInfo)
+    {
+        await using var stream = fileInfo.formFile.OpenReadStream();
+        await fileHostManager.UploadFile(stream, fileInfo.filename, fileInfo.contentType);
+
+        var userInfo = await userInfoService.GetUserInfo();
+        var organisation = await organisationClient.GetOrganisationAsync(OrganisationId);
+
+        await publisher.Publish(new ScanFile
+        {
+            QueueFileName = fileInfo.filename,
+            UploadedFileName = FileUploadModel!.UploadedFile!.FileName,
+            OrganisationId = OrganisationId,
+            OrganisationEmailAddress = organisation.ContactPoint.Email,
+            UserEmailAddress = userInfo.Email,
+            OrganisationName = organisation.Name,
+            FullName = userInfo.Name
+        });
+
+        return new FormAnswer { BoolValue = true, TextValue = fileInfo.filename };
+    }
+
+    public async Task<IEnumerable<AnswerSummary>> GetAnswers()
+    {
+        var answerSet = tempDataService.PeekOrDefault<FormQuestionAnswerState>(FormQuestionAnswerStateKey);
+        var form = await formsEngine.GetFormSectionAsync(OrganisationId, FormId, SectionId);
+
+        var summaryList = new List<AnswerSummary>();
+        foreach (var answer in answerSet.Answers)
+        {
+            var question = form?.Questions.FirstOrDefault(q => q.Id == answer.QuestionId);
+            if (question == null || question.Type == FormQuestionType.NoInput ||
+                question.Type == FormQuestionType.CheckYourAnswers) continue;
+            var summary = new AnswerSummary
+            {
+                Title = question.SummaryTitle ?? question.Title,
+                Answer = await GetAnswerString(answer, question),
+                ChangeLink =
+                    $"/organisation/{OrganisationId}/forms/{FormId}/sections/{SectionId}/questions/{answer.QuestionId}?frm-chk-answer=true"
+            };
+
+            if (question.Type == FormQuestionType.Address && answer.Answer?.AddressValue != null
+                                                          && answer.Answer.AddressValue.Country !=
+                                                          Country.UKCountryCode)
+            {
+                summary.ChangeLink += "&UkOrNonUk=non-uk";
+            }
+
+            summaryList.Add(summary);
+        }
+
+        return summaryList;
+    }
+
+    public async Task<FormElementCheckYourAnswersModel> GetGroupedAnswersModel()
+    {
+        var answerSet = tempDataService.PeekOrDefault<FormQuestionAnswerState>(FormQuestionAnswerStateKey);
+        var displayItems = await formsEngine.GetGroupedAnswerSummaries(OrganisationId, FormId, SectionId, answerSet);
+
+        return new FormElementCheckYourAnswersModel
+        {
+            DisplayItems = displayItems,
+            FormSectionType = FormSectionType
+        };
+    }
+
+    public bool PreviousQuestionHasNonUkAddressAnswer()
+    {
+        if (PreviousQuestion is not { Type: FormQuestionType.Address }) return false;
+        var answer = GetAnswerFromTempData(PreviousQuestion);
+        if (answer?.AddressValue != null)
+        {
+            return answer.AddressValue.Country != Country.UKCountryCode;
+        }
+
+        return false;
     }
 }
