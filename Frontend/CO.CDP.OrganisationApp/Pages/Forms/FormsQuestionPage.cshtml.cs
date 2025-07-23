@@ -1,4 +1,5 @@
 using CO.CDP.AwsServices;
+using CO.CDP.Localization;
 using CO.CDP.MQ;
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Constants;
@@ -7,6 +8,7 @@ using CO.CDP.OrganisationApp.Pages.Forms.ChoiceProviderStrategies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Localization;
 using static System.Net.Mime.MediaTypeNames;
 using OrganisationType = CO.CDP.Organisation.WebApiClient.OrganisationType;
 using WebApiClientOrganisation = CO.CDP.Organisation.WebApiClient.Organisation;
@@ -22,7 +24,8 @@ public class FormsQuestionPageModel(
     IFileHostManager fileHostManager,
     IChoiceProviderService choiceProviderService,
     IOrganisationClient organisationClient,
-    IUserInfoService userInfoService) : PageModel
+    IUserInfoService userInfoService,
+    IStringLocalizer<StaticTextResource> localizer) : PageModel
 {
     [BindProperty(SupportsGet = true)] public Guid OrganisationId { get; set; }
     [BindProperty(SupportsGet = true)] public Guid FormId { get; set; }
@@ -202,11 +205,11 @@ public class FormsQuestionPageModel(
         return CombineAnswerParts(boolPart, valuePart);
     }
 
-    private static string FormatBoolAnswer(bool? boolValue) =>
+    private string FormatBoolAnswer(bool? boolValue) =>
         boolValue switch
         {
-            true => "Yes",
-            false => "No",
+            true => localizer[nameof(StaticTextResource.Global_Yes)],
+            false => localizer[nameof(StaticTextResource.Global_No)],
             _ => string.Empty
         };
 
