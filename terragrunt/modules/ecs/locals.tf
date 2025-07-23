@@ -66,4 +66,7 @@ locals {
   fts_service_url = var.environment == "development" ? "https://fts.${var.public_domain}" : data.aws_secretsmanager_secret_version.fts_service_url.secret_string
   onelogin_logout_notification_urls = var.environment == "development" ? "https://fts.${var.public_domain}" : join(",", var.onelogin_logout_notification_urls)
 
+  ses_identity_domain = var.is_production ? replace(var.public_domain, "supplier-information.", "") : var.public_domain
+
+
 }
