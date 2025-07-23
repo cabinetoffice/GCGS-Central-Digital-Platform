@@ -80,19 +80,27 @@ public class FormsEngine(
                             }).ToList()
                         }).ToList(),
                         AnswerFieldName = q.Options.AnswerFieldName,
-                        Grouping = q.Options.Grouping != null ? new FormQuestionGrouping
-                        {
-                            Page = q.Options.Grouping.Page != null ? new Models.PageGrouping
+                        Grouping = q.Options.Grouping != null
+                            ? new FormQuestionGrouping
                             {
-                                NextQuestionsToDisplay = q.Options.Grouping.Page.NextQuestionsToDisplay,
-                                PageTitleResourceKey = q.Options.Grouping.Page.PageTitleResourceKey,
-                                SubmitButtonTextResourceKey = q.Options.Grouping.Page.SubmitButtonTextResourceKey
-                            } : null,
-                            CheckYourAnswers = q.Options.Grouping.CheckYourAnswers != null ? new Models.CheckYourAnswersGrouping
-                            {
-                                GroupTitleResourceKey = q.Options.Grouping.CheckYourAnswers.GroupTitleResourceKey
-                            } : null
-                        } : null
+                                Page = q.Options.Grouping.Page != null
+                                    ? new Models.PageGrouping
+                                    {
+                                        NextQuestionsToDisplay = q.Options.Grouping.Page.NextQuestionsToDisplay,
+                                        PageTitleResourceKey = q.Options.Grouping.Page.PageTitleResourceKey,
+                                        SubmitButtonTextResourceKey =
+                                            q.Options.Grouping.Page.SubmitButtonTextResourceKey
+                                    }
+                                    : null,
+                                CheckYourAnswers = q.Options.Grouping.CheckYourAnswers != null
+                                    ? new Models.CheckYourAnswersGrouping
+                                    {
+                                        GroupTitleResourceKey =
+                                            q.Options.Grouping.CheckYourAnswers.GroupTitleResourceKey
+                                    }
+                                    : null
+                            }
+                            : null
                     }
                 };
             }))).ToList()
@@ -125,22 +133,26 @@ public class FormsEngine(
         var grouping = currentQuestion.Options.Grouping;
         if (grouping?.Page != null)
         {
-            determinedNextQuestionId = SkipMultiQuestionPageQuestions(determinedNextQuestionId.Value, section.Questions, grouping.Page.NextQuestionsToDisplay);
+            determinedNextQuestionId = SkipMultiQuestionPageQuestions(determinedNextQuestionId.Value, section.Questions,
+                grouping.Page.NextQuestionsToDisplay);
         }
 
-        return !determinedNextQuestionId.HasValue ? null : section.Questions.FirstOrDefault(q => q.Id == determinedNextQuestionId.Value);
+        return !determinedNextQuestionId.HasValue
+            ? null
+            : section.Questions.FirstOrDefault(q => q.Id == determinedNextQuestionId.Value);
     }
 
-    private static Guid? SkipMultiQuestionPageQuestions(Guid startQuestionId, List<FormQuestion> allQuestions, int questionsToSkip)
+    private static Guid? SkipMultiQuestionPageQuestions(Guid? startQuestionId, List<FormQuestion> allQuestions,
+        int questionsToSkip)
     {
+        if (!startQuestionId.HasValue)
+            return null;
         var questionLookup = allQuestions.ToDictionary(q => q.Id);
         Guid? currentQuestionId = startQuestionId;
-
         for (int i = 0; i < questionsToSkip && currentQuestionId.HasValue; i++)
         {
             if (!questionLookup.TryGetValue(currentQuestionId.Value, out var question))
                 return currentQuestionId;
-
             currentQuestionId = question.NextQuestion;
         }
 
@@ -151,8 +163,15 @@ public class FormsEngine(
         Guid currentQuestionId, FormQuestionAnswerState? answerState)
     {
         var section = await GetFormSectionAsync(organisationId, formId, sectionId);
+        var currentQuestion = section.Questions.FirstOrDefault(q => q.Id == currentQuestionId);
 
-        var path = BuildPathToQuestion(section.Questions, currentQuestionId,
+        if (currentQuestion == null)
+            return null;
+
+        var effectiveCurrentQuestionId =
+            GetMultiQuestionGroupStart(currentQuestion, section.Questions) ?? currentQuestionId;
+
+        var path = BuildPathToQuestion(section.Questions, effectiveCurrentQuestionId,
             answerState ?? new FormQuestionAnswerState());
         return path.LastOrDefault();
     }
@@ -218,19 +237,48 @@ public class FormsEngine(
             return null;
         }
 
-        List<FormQuestion> pathTaken = BuildPathToQuestion(allQuestions, currentQuestionId, answerState);
+        var currentQuestion = allQuestions.FirstOrDefault(q => q.Id == currentQuestionId);
+        if (currentQuestion == null)
+            return null;
 
-        return FindFirstUnansweredQuestionInPath(pathTaken, answerState);
+        var effectiveCurrentQuestionId = GetMultiQuestionGroupStart(currentQuestion, allQuestions) ?? currentQuestionId;
+
+        List<FormQuestion> pathTaken = BuildPathToQuestion(allQuestions, effectiveCurrentQuestionId, answerState);
+
+        return FindFirstUnansweredQuestionInPath(pathTaken, answerState, allQuestions);
     }
 
     private Guid? FindFirstUnansweredQuestionInPath(List<FormQuestion> pathTaken,
-        FormQuestionAnswerState answerState)
+        FormQuestionAnswerState answerState, List<FormQuestion> allQuestions)
     {
-        var firstUnansweredValidQuestion = pathTaken
-            .Where(q => q.Type != FormQuestionType.CheckYourAnswers)
-            .FirstOrDefault(q => !IsQuestionAnswered(q, answerState));
+        foreach (var question in pathTaken.Where(q => q.Type != FormQuestionType.CheckYourAnswers))
+        {
+            var grouping = question.Options.Grouping;
+            if (grouping?.Page != null)
+            {
+                var multiQuestionPage = BuildMultiQuestionPage(question, allQuestions);
 
-        return firstUnansweredValidQuestion?.Id;
+                var unansweredQuestions = multiQuestionPage.Questions
+                    .Where(q => !IsQuestionAnswered(q, answerState))
+                    .ToList();
+
+                if (unansweredQuestions.Count != 0)
+                {
+                    return question.Id;
+                }
+            }
+            else
+            {
+                var isAnswered = IsQuestionAnswered(question, answerState);
+
+                if (!isAnswered)
+                {
+                    return question.Id;
+                }
+            }
+        }
+
+        return null;
     }
 
     private List<FormQuestion> BuildPathToQuestion(List<FormQuestion> allQuestions,
@@ -245,10 +293,17 @@ public class FormsEngine(
             pathTaken.Add(currentPathQuestion);
             Guid? nextQuestionIdOnPath = DetermineNextQuestionId(currentPathQuestion, answerState);
 
-            if (nextQuestionIdOnPath.HasValue &&
-                questionsDictionary.TryGetValue(nextQuestionIdOnPath.Value, out var nextQ))
+            var grouping = currentPathQuestion.Options.Grouping;
+            if (grouping?.Page != null && nextQuestionIdOnPath.HasValue)
             {
-                currentPathQuestion = nextQ;
+                nextQuestionIdOnPath = SkipMultiQuestionPageQuestions(nextQuestionIdOnPath, allQuestions,
+                    grouping.Page.NextQuestionsToDisplay);
+            }
+
+            if (nextQuestionIdOnPath.HasValue &&
+                questionsDictionary.TryGetValue(nextQuestionIdOnPath.Value, out var nextQuestion))
+            {
+                currentPathQuestion = nextQuestion;
             }
             else
             {
@@ -257,6 +312,21 @@ public class FormsEngine(
         }
 
         return pathTaken;
+    }
+
+    private Guid? GetMultiQuestionGroupStart(FormQuestion currentQuestion, List<FormQuestion> allQuestions)
+    {
+        foreach (var question in allQuestions)
+        {
+            var grouping = question.Options.Grouping;
+            if (grouping?.Page == null) continue;
+            var multiQuestionPage = BuildMultiQuestionPage(question, allQuestions);
+            if (multiQuestionPage.Questions.Any(q => q.Id == currentQuestion.Id))
+            {
+                return question.Id;
+            }
+        }
+        return null;
     }
 
     private bool IsAddressAnswered(Address? address)
@@ -393,12 +463,14 @@ public class FormsEngine(
                 break;
         }
 
-        var nextQuestionId = takeAlternativePath ? currentQuestion.NextQuestionAlternative : currentQuestion.NextQuestion;
+        var nextQuestionId =
+            takeAlternativePath ? currentQuestion.NextQuestionAlternative : currentQuestion.NextQuestion;
 
         return nextQuestionId;
     }
 
-    public async Task<MultiQuestionPageModel> GetMultiQuestionPage(Guid organisationId, Guid formId, Guid sectionId, Guid startingQuestionId)
+    public async Task<MultiQuestionPageModel> GetMultiQuestionPage(Guid organisationId, Guid formId, Guid sectionId,
+        Guid startingQuestionId)
     {
         var section = await GetFormSectionAsync(organisationId, formId, sectionId);
 
@@ -411,7 +483,8 @@ public class FormsEngine(
         };
     }
 
-    private MultiQuestionPageModel BuildMultiQuestionPage(FormQuestion startingQuestion, List<FormQuestion> allQuestions)
+    private MultiQuestionPageModel BuildMultiQuestionPage(FormQuestion startingQuestion,
+        List<FormQuestion> allQuestions)
     {
         var grouping = startingQuestion.Options.Grouping;
 
@@ -419,13 +492,15 @@ public class FormsEngine(
             ? new MultiQuestionPageModel { Questions = [startingQuestion] }
             : new MultiQuestionPageModel
             {
-                Questions = CollectQuestionsForPage(startingQuestion, allQuestions, grouping.Page.NextQuestionsToDisplay),
+                Questions = CollectQuestionsForPage(startingQuestion, allQuestions,
+                    grouping.Page.NextQuestionsToDisplay),
                 PageTitleResourceKey = grouping.Page.PageTitleResourceKey,
                 SubmitButtonTextResourceKey = grouping.Page.SubmitButtonTextResourceKey
             };
     }
 
-    private static List<FormQuestion> CollectQuestionsForPage(FormQuestion startingQuestion, List<FormQuestion> allQuestions, int questionsToDisplay)
+    private static List<FormQuestion> CollectQuestionsForPage(FormQuestion startingQuestion,
+        List<FormQuestion> allQuestions, int questionsToDisplay)
     {
         var questionLookup = allQuestions.ToDictionary(q => q.Id);
         var questions = new List<FormQuestion> { startingQuestion };
@@ -443,7 +518,8 @@ public class FormsEngine(
         return questions;
     }
 
-    public async Task<List<IAnswerDisplayItem>> GetGroupedAnswerSummaries(Guid organisationId, Guid formId, Guid sectionId, FormQuestionAnswerState answerState)
+    public async Task<List<IAnswerDisplayItem>> GetGroupedAnswerSummaries(Guid organisationId, Guid formId,
+        Guid sectionId, FormQuestionAnswerState answerState)
     {
         var form = await GetFormSectionAsync(organisationId, formId, sectionId);
 
@@ -462,7 +538,8 @@ public class FormsEngine(
 
             if (grouping?.CheckYourAnswers != null)
             {
-                var group = await CreateMultiQuestionGroup(question, relevantQuestions, answerState, organisationId, formId, sectionId, grouping);
+                var group = await CreateMultiQuestionGroup(question, relevantQuestions, answerState, organisationId,
+                    formId, sectionId, grouping);
 
                 if (!group.Answers.Any()) continue;
                 displayItems.Add(group);
@@ -471,7 +548,8 @@ public class FormsEngine(
             }
             else
             {
-                var individualAnswer = await CreateIndividualAnswerSummary(question, answerState, organisationId, formId, sectionId);
+                var individualAnswer =
+                    await CreateIndividualAnswerSummary(question, answerState, organisationId, formId, sectionId);
                 if (individualAnswer == null) continue;
                 displayItems.Add(individualAnswer);
                 processedQuestionIds.Add(question.Id);
@@ -498,8 +576,11 @@ public class FormsEngine(
 
         return new GroupedAnswerSummary
         {
-            GroupTitle = !string.IsNullOrEmpty(grouping.CheckYourAnswers?.GroupTitleResourceKey) ? grouping.CheckYourAnswers.GroupTitleResourceKey : startingQuestion.Title,
-            GroupChangeLink = $"/organisation/{organisationId}/forms/{formId}/sections/{sectionId}/questions/{startingQuestion.Id}",
+            GroupTitle = !string.IsNullOrEmpty(grouping.CheckYourAnswers?.GroupTitleResourceKey)
+                ? grouping.CheckYourAnswers.GroupTitleResourceKey
+                : startingQuestion.Title,
+            GroupChangeLink =
+                $"/organisation/{organisationId}/forms/{formId}/sections/{sectionId}/questions/{startingQuestion.Id}",
             Answers = answers
         };
     }
@@ -522,10 +603,11 @@ public class FormsEngine(
         FormQuestion question, QuestionAnswer questionAnswer, string answerString,
         Guid organisationId, Guid formId, Guid sectionId)
     {
-        var changeLink = $"/organisation/{organisationId}/forms/{formId}/sections/{sectionId}/questions/{question.Id}?frm-chk-answer=true";
+        var changeLink =
+            $"/organisation/{organisationId}/forms/{formId}/sections/{sectionId}/questions/{question.Id}?frm-chk-answer=true";
 
         var isNonUkAddress = question.Type == FormQuestionType.Address
-            && questionAnswer.Answer?.AddressValue?.Country != Country.UKCountryCode;
+                             && questionAnswer.Answer?.AddressValue?.Country != Country.UKCountryCode;
 
         if (isNonUkAddress)
         {

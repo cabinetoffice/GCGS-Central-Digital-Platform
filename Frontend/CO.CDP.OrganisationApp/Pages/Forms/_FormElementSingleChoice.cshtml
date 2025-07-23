@@ -53,10 +53,10 @@
                 if (Model.Options?.Choices != null ) {
                     foreach(var choice in Model.Options.Choices)
                     {
-                        var id = index == 0 ? "SelectedOption" : $"SelectedOption_{index}";
+                        var id = index == 0 ? Model.GetFieldName(nameof(Model.SelectedOption)) : $"{Model.GetFieldName(nameof(Model.SelectedOption))}_{index}";
 
                         <div class="govuk-radios__item">
-                            <input class="govuk-radios__input" id="@id" name="@nameof(Model.SelectedOption)" type="radio" value="@choice.Key" @(Model.SelectedOption == choice.Key ? "checked" : "")>
+                            <input class="govuk-radios__input" id="@id" name="@Model.GetFieldName(nameof(Model.SelectedOption))" type="radio" value="@choice.Key" @(Model.SelectedOption == choice.Key ? "checked" : "")>
                             <label class="govuk-label govuk-radios__label" for="@id">@choice.Value</label>
                         </div>
 

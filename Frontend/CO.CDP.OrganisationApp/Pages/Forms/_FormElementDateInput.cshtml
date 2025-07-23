@@ -73,29 +73,29 @@
         <div class="govuk-date-input">
             <div class="govuk-date-input__item">
                 <div class="govuk-form-group">
-                    <label class="govuk-label govuk-date-input__label" for="@nameof(Model.Day)">
+                    <label class="govuk-label govuk-date-input__label" for="@Model.GetFieldName(nameof(Model.Day))">
                         @StaticTextResource.Global_Day
                     </label>
                     <input class="govuk-input govuk-date-input__input govuk-input--width-2 @(dayHasError || dateStringHasError ? "govuk-input--error" : "")"
-                           id="@nameof(Model.Day)" name="@nameof(Model.Day)" type="text" inputmode="numeric" value="@Model.Day">
+                           id="@Model.GetFieldName(nameof(Model.Day))" name="@Model.GetFieldName(nameof(Model.Day))" type="text" inputmode="numeric" value="@Model.Day">
                 </div>
             </div>
             <div class="govuk-date-input__item">
                 <div class="govuk-form-group">
-                    <label class="govuk-label govuk-date-input__label" for="@nameof(Model.Month)">
+                    <label class="govuk-label govuk-date-input__label" for="@Model.GetFieldName(nameof(Model.Month))">
                         @StaticTextResource.Global_Month
                     </label>
                     <input class="govuk-input govuk-date-input__input govuk-input--width-2 @(monthHasError || dateStringHasError ? "govuk-input--error" : "")"
-                           id="@nameof(Model.Month)" name="@nameof(Model.Month)" type="text" inputmode="numeric" value="@Model.Month">
+                           id="@Model.GetFieldName(nameof(Model.Month))" name="@Model.GetFieldName(nameof(Model.Month))" type="text" inputmode="numeric" value="@Model.Month">
                 </div>
             </div>
             <div class="govuk-date-input__item">
                 <div class="govuk-form-group">
-                    <label class="govuk-label govuk-date-input__label" for="@nameof(Model.Year)">
+                    <label class="govuk-label govuk-date-input__label" for="@Model.GetFieldName(nameof(Model.Year))">
                         @StaticTextResource.Global_Year
                     </label>
                     <input class="govuk-input govuk-date-input__input govuk-input--width-4 @(yearHasError || dateStringHasError ? "govuk-input--error" : "")"
-                           id="@nameof(Model.Year)" name="@nameof(Model.Year)" type="text" inputmode="numeric" value="@Model.Year">
+                           id="@Model.GetFieldName(nameof(Model.Year))" name="@Model.GetFieldName(nameof(Model.Year))" type="text" inputmode="numeric" value="@Model.Year">
                 </div>
             </div>
         </div>
@@ -133,9 +133,9 @@
             <div class="govuk-radios" data-module="govuk-radios">
 
                 <div class="govuk-radios__item">
-                    <input class="govuk-radios__input" id="@nameof(Model.HasValue)" name="@nameof(Model.HasValue)" type="radio"
+                    <input class="govuk-radios__input" id="@Model.GetFieldName(nameof(Model.HasValue))" name="@Model.GetFieldName(nameof(Model.HasValue))" type="radio"
                            value="true" data-aria-controls="conditional-YES" @(Model.HasValue == true ? "checked" : "")>
-                    <label class="govuk-label govuk-radios__label" for="@nameof(Model.HasValue)">@StaticTextResource.Global_Yes</label>
+                    <label class="govuk-label govuk-radios__label" for="@Model.GetFieldName(nameof(Model.HasValue))">@StaticTextResource.Global_Yes</label>
                 </div>
 
                 <div class="govuk-radios__conditional" id="conditional-YES">
@@ -149,9 +149,9 @@
                 </div>
 
                 <div class="govuk-radios__item">
-                    <input class="govuk-radios__input" id="@nameof(Model.HasValue)-1" name="@nameof(Model.HasValue)" type="radio"
+                    <input class="govuk-radios__input" id="@(Model.GetFieldName(nameof(Model.HasValue)) + "-1")" name="@Model.GetFieldName(nameof(Model.HasValue))" type="radio"
                            value="false" @(Model.HasValue == false ? "checked" : "")>
-                    <label class="govuk-label govuk-radios__label" for="@nameof(Model.HasValue)-1">@StaticTextResource.Global_No</label>
+                    <label class="govuk-label govuk-radios__label" for="@(Model.GetFieldName(nameof(Model.HasValue)) + "-1")">@StaticTextResource.Global_No</label>
                 </div>
             </div>
         }

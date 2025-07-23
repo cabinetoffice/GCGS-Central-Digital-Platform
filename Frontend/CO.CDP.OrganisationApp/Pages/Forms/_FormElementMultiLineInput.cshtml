@@ -10,7 +10,7 @@
     @if (!string.IsNullOrWhiteSpace(Model.Heading))
     {
         <h1 class="govuk-label-wrapper">
-            <label class="govuk-label govuk-label--l" for="TextInput">@Model.Heading</label>
+            <label class="govuk-label govuk-label--l" for="@Model.GetFieldName(nameof(Model.TextInput))">@Model.Heading</label>
         </h1>
     }
     @if (!string.IsNullOrWhiteSpace(Model.Caption))
@@ -31,7 +31,7 @@
         </p>
     }
 
-    <textarea class="govuk-textarea govuk-js-character-count" rows="5" id="@nameof(Model.TextInput)" name="@nameof(Model.TextInput)" aria-describedby="TextInput-info">@Model.TextInput</textarea>
+    <textarea class="govuk-textarea govuk-js-character-count" rows="5" id="@Model.GetFieldName(nameof(Model.TextInput))" name="@Model.GetFieldName(nameof(Model.TextInput))" aria-describedby="TextInput-info">@Model.TextInput</textarea>
 
     <div id="TextInput-info" class="govuk-hint govuk-character-count__message">
         @string.Format(StaticTextResource.GovukFrontend_CharacterCount_CharactersAvailable, "10,000")

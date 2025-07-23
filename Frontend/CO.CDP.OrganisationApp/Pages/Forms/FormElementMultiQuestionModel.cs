@@ -19,6 +19,10 @@ public class FormElementMultiQuestionModel : IMultiQuestionFormElementModel
         foreach (var question in Questions)
         {
             var questionModel = CreateQuestionModel(question);
+            if (questionModel is FormElementModel fem)
+            {
+                fem.QuestionId = question.Id;
+            }
             questionModel.Initialize(question);
 
             if (existingAnswers.TryGetValue(question.Id, out var existingAnswer))

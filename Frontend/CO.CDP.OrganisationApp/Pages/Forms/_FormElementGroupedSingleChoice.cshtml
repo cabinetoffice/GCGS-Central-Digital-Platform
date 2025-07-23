@@ -70,10 +70,10 @@
                     
                         foreach (var choice in group.Choices)
                         {
-                            var id = index == 0 ? "SelectedOption" : $"SelectedOption_{index}";
+                            var id = index == 0 ? Model.GetFieldName(nameof(Model.SelectedOption)) : $"{Model.GetFieldName(nameof(Model.SelectedOption))}_{index}";
 
                             <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="@id" name="@nameof(Model.SelectedOption)" type="radio" value="@choice.Value" @(Model.SelectedOption == choice.Value ? "checked" : "")>
+                                <input class="govuk-radios__input" id="@id" name="@Model.GetFieldName(nameof(Model.SelectedOption))" type="radio" value="@choice.Value" @(Model.SelectedOption == choice.Value ? "checked" : "")>
                                 <label class="govuk-label govuk-radios__label" for="@id">@choice.Title</label>
                             </div>
                             

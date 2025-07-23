@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using static System.Net.Mime.MediaTypeNames;
+using OrganisationType = CO.CDP.Organisation.WebApiClient.OrganisationType;
 
 namespace CO.CDP.OrganisationApp.Pages.Forms;
 
@@ -97,7 +98,7 @@ public class FormsQuestionPageModel(
         var organisation = await organisationClient.GetOrganisationAsync(OrganisationId);
         if (organisation != null)
         {
-            IsInformalConsortium = organisation.Type == CDP.Organisation.WebApiClient.OrganisationType.InformalConsortium;
+            IsInformalConsortium = organisation.Type == OrganisationType.InformalConsortium;
         }
 
         return Page();
@@ -112,46 +113,97 @@ public class FormsQuestionPageModel(
         }
 
         var sectionDetails = await formsEngine.GetFormSectionAsync(OrganisationId, FormId, SectionId);
-
         var currentQuestion = await InitModel();
         if (currentQuestion == null)
         {
             return Redirect("/page-not-found");
         }
 
+        IActionResult? result = null;
         if (PartialViewModel != null)
         {
-            ModelState.Clear();
-            if (!TryValidateModel(PartialViewModel))
+            result = await HandleSingleQuestionPostAsync(currentQuestion, sectionDetails);
+        }
+        else if (MultiQuestionViewModel != null && IsMultiQuestionPage)
+        {
+            result = await HandleMultiQuestionPostAsync(currentQuestion);
+        }
+        if (result != null)
+        {
+            return result;
+        }
+
+        return RedirectToNextQuestion(currentQuestion);
+    }
+
+    private async Task<IActionResult?> HandleSingleQuestionPostAsync(FormQuestion currentQuestion, SectionQuestionsResponse sectionDetails)
+    {
+        ModelState.Clear();
+        if (PartialViewModel == null || !TryValidateModel(PartialViewModel))
+        {
+            var organisation = await organisationClient.GetOrganisationAsync(OrganisationId);
+            if (organisation != null)
+            {
+                IsInformalConsortium = organisation.Type == OrganisationType.InformalConsortium;
+            }
+            return Page();
+        }
+        var oldAnswerObject = GetAnswerFromTempData(currentQuestion);
+        HandleBranchingLogicAnswerChange(currentQuestion, oldAnswerObject, sectionDetails.Questions);
+        var answer = PartialViewModel.GetAnswer();
+        if (PartialViewModel.CurrentFormQuestionType == FormQuestionType.FileUpload)
+        {
+            answer = await HandleFileUpload();
+        }
+        SaveAnswerToTempData(currentQuestion, answer);
+        return RedirectToNextQuestion(currentQuestion);
+    }
+
+    private async Task<IActionResult?> HandleMultiQuestionPostAsync(FormQuestion currentQuestion)
+    {
+        ModelState.Clear();
+        if (MultiQuestionViewModel != null && !TryValidateModel(MultiQuestionViewModel))
+        {
+            var organisation = await organisationClient.GetOrganisationAsync(OrganisationId);
+            if (organisation != null)
+            {
+                IsInformalConsortium = organisation.Type == OrganisationType.InformalConsortium;
+            }
+            return Page();
+        }
+        var multiQuestionPage = await formsEngine.GetMultiQuestionPage(OrganisationId, FormId, SectionId, currentQuestion.Id);
+        foreach (var question in multiQuestionPage.Questions)
+        {
+            var questionModel = MultiQuestionViewModel?.GetQuestionModel(question.Id);
+            if (questionModel == null) continue;
+
+            if (!TryValidateModel(questionModel))
             {
                 var organisation = await organisationClient.GetOrganisationAsync(OrganisationId);
                 if (organisation != null)
                 {
-                    IsInformalConsortium = organisation.Type == CDP.Organisation.WebApiClient.OrganisationType.InformalConsortium;
+                    IsInformalConsortium = organisation.Type == OrganisationType.InformalConsortium;
                 }
                 return Page();
             }
 
-            var oldAnswerObject = GetAnswerFromTempData(currentQuestion);
-            HandleBranchingLogicAnswerChange(currentQuestion, oldAnswerObject, sectionDetails.Questions);
-
-            var answer = PartialViewModel.GetAnswer();
-
-            if (PartialViewModel.CurrentFormQuestionType == FormQuestionType.FileUpload)
+            var answer = questionModel.GetAnswer();
+            if (questionModel.CurrentFormQuestionType == FormQuestionType.FileUpload)
             {
                 answer = await HandleFileUpload();
             }
-
-            SaveAnswerToTempData(currentQuestion, answer);
+            SaveAnswerToTempData(question, answer);
         }
+        return RedirectToNextQuestion(currentQuestion);
+    }
 
+    private IActionResult RedirectToNextQuestion(FormQuestion currentQuestion)
+    {
         if (currentQuestion.Id == CheckYourAnswerQuestionId)
         {
-            return await HandleCheckYourAnswers();
+            return HandleCheckYourAnswers().GetAwaiter().GetResult();
         }
-
         Guid? nextQuestionId;
-
         if (RedirectFromCheckYourAnswerPage == true)
         {
             nextQuestionId = CheckYourAnswerQuestionId;
@@ -159,9 +211,8 @@ public class FormsQuestionPageModel(
         else
         {
             var answerSet = tempDataService.PeekOrDefault<FormQuestionAnswerState>(FormQuestionAnswerStateKey);
-            nextQuestionId = (await formsEngine.GetNextQuestion(OrganisationId, FormId, SectionId, currentQuestion.Id, answerSet))?.Id;
+            nextQuestionId = formsEngine.GetNextQuestion(OrganisationId, FormId, SectionId, currentQuestion.Id, answerSet).GetAwaiter().GetResult()?.Id;
         }
-
         return RedirectToPage("FormsQuestionPage", new { OrganisationId, FormId, SectionId, CurrentQuestionId = nextQuestionId });
     }
 
@@ -258,7 +309,7 @@ public class FormsQuestionPageModel(
     {
         var answerSet = tempDataService.PeekOrDefault<FormQuestionAnswerState>(FormQuestionAnswerStateKey);
         var displayItems = await formsEngine.GetGroupedAnswerSummaries(OrganisationId, FormId, SectionId, answerSet);
-        
+
         return new FormElementCheckYourAnswersModel
         {
             DisplayItems = displayItems,

@@ -29,6 +29,8 @@ public interface IMultiQuestionFormElementModel
 
 public abstract class FormElementModel : IFormElementModel
 {
+    public Guid? QuestionId { get; set; }
+
     public string? Heading { get; set; }
 
     public string? Description { get; set; }
@@ -40,6 +42,11 @@ public abstract class FormElementModel : IFormElementModel
     public bool IsRequired { get; set; }
 
     public FormQuestionOptions? Options { get; set; }
+
+    public string GetFieldName(string propertyName)
+    {
+        return QuestionId.HasValue ? $"Q_{QuestionId.Value}_{propertyName}" : propertyName;
+    }
 
     public virtual void Initialize(FormQuestion question)
     {
