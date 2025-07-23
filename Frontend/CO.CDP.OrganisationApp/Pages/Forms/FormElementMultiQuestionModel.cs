@@ -9,6 +9,7 @@ public class FormElementMultiQuestionModel : IMultiQuestionFormElementModel
     public string? SubmitButtonTextResourceKey { get; private set; }
 
     private readonly Dictionary<Guid, IFormElementModel> _questionModels = new();
+    public IEnumerable<IFormElementModel> QuestionModels => _questionModels.Values;
 
     public void Initialize(MultiQuestionPageModel multiQuestionPage, Dictionary<Guid, FormAnswer> existingAnswers)
     {

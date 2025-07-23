@@ -4,6 +4,7 @@ namespace CO.CDP.OrganisationApp.Pages.Forms;
 
 public interface IFormElementModel
 {
+    Guid? QuestionId { get; set; }
     FormQuestionType? CurrentFormQuestionType { get; set; }
     string? Heading { get; set; }
 
@@ -17,6 +18,7 @@ public interface IFormElementModel
 public interface IMultiQuestionFormElementModel
 {
     List<FormQuestion> Questions { get; }
+    IEnumerable<IFormElementModel> QuestionModels { get; }
     string? PageTitleResourceKey { get; }
     string? SubmitButtonTextResourceKey { get; }
 
