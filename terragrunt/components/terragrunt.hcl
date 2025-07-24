@@ -252,7 +252,7 @@ locals {
         "https://cfs.supplier-information.find-tender.service.gov.uk",
         "https://www.find-tender.service.gov.uk"
       ]
-      fts_allowed_target_email_domains  = ["goaco.com"]
+      fts_allowed_target_email_domains  = []
       fts_extra_domains                 = ["www.find-tender.service.gov.uk", "find-tender.service.gov.uk"]
       fts_azure_frontdoor               = "nqc-front-door-uksouth.azurefd.net"
       fts_service_allowed_origins       = [
