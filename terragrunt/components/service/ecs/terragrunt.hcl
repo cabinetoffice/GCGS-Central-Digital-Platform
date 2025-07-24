@@ -137,6 +137,7 @@ inputs = {
   cfs_allowed_target_email_domains  = local.global_vars.locals.cfs_allowed_target_email_domains
   cfs_service_allowed_origins       = local.global_vars.locals.cfs_service_allowed_origins
   fts_allowed_target_email_domains  = local.global_vars.locals.fts_allowed_target_email_domains
+  fts_extra_host_headers            = local.global_vars.locals.fts_extra_host_headers
   fts_service_allowed_origins       = local.global_vars.locals.fts_service_allowed_origins
   onelogin_logout_notification_urls = local.global_vars.locals.onelogin_logout_notification_urls
   pinned_service_version_cfs        = local.global_vars.locals.pinned_service_version_cfs
