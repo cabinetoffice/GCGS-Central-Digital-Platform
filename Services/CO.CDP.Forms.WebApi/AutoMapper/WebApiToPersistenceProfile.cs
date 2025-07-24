@@ -43,14 +43,11 @@ public class WebApiToPersistenceProfile : Profile
         CreateMap<Persistence.FormQuestionGroupChoice, Model.FormQuestionGroupChoice>()
             .ForMember(dest => dest.Title, opt => opt.MapFrom<NullableLocalizedPropertyResolver<Persistence.FormQuestionGroupChoice, Model.FormQuestionGroupChoice>, string?>(src => src.Title));
 
-        CreateMap<Persistence.FormQuestionGrouping, Model.FormQuestionGrouping>();
-
-        CreateMap<Persistence.PageGrouping, Model.PageGrouping>()
-            .ForMember(dest => dest.PageTitleResourceKey, opt => opt.MapFrom<NullableLocalizedPropertyResolver<Persistence.PageGrouping, Model.PageGrouping>, string?>(src => src.PageTitleResourceKey))
-            .ForMember(dest => dest.SubmitButtonTextResourceKey, opt => opt.MapFrom<NullableLocalizedPropertyResolver<Persistence.PageGrouping, Model.PageGrouping>, string?>(src => src.SubmitButtonTextResourceKey));
-
-        CreateMap<Persistence.CheckYourAnswersGrouping, Model.CheckYourAnswersGrouping>()
-            .ForMember(dest => dest.GroupTitleResourceKey, opt => opt.MapFrom<NullableLocalizedPropertyResolver<Persistence.CheckYourAnswersGrouping, Model.CheckYourAnswersGrouping>, string?>(src => src.GroupTitleResourceKey));
+        CreateMap<Persistence.FormQuestionGrouping, Model.FormQuestionGrouping>()
+            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+            .ForMember(dest => dest.CheckYourAnswers, opt => opt.MapFrom(src => src.CheckYourAnswers))
+            .ForMember(dest => dest.Page, opt => opt.MapFrom(src => src.Page))
+            .ForMember(dest => dest.SummaryTitle, opt => opt.MapFrom<NullableLocalizedPropertyResolver<Persistence.FormQuestionGrouping, Model.FormQuestionGrouping>, string?>(src => src.SummaryTitle));
 
         CreateMap<Persistence.FormSectionConfiguration, Model.FormSectionConfiguration>()
             .ForMember(dest => dest.SingularSummaryHeadingHint, opt => opt.MapFrom<NullableLocalizedPropertyResolver<Persistence.FormSectionConfiguration, Model.FormSectionConfiguration>, string?>(src => src.SingularSummaryHeadingHint))

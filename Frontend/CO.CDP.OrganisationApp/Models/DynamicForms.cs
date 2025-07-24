@@ -120,15 +120,6 @@ public enum FormQuestionBranchType
     Alternative
 }
 
-/// <summary>
-/// Represents a multi-question page configuration parsed from JSON options
-/// </summary>
-public class MultiQuestionPageConfiguration
-{
-    public int NextQuestionsToDisplay { get; set; }
-    public string? PageTitleResourceKey { get; set; }
-    public string? SubmitButtonTextResourceKey { get; set; }
-}
 
 /// <summary>
 /// Represents a collection of questions that should be displayed on the same page

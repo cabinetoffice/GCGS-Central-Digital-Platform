@@ -2,18 +2,8 @@ namespace CO.CDP.Forms.WebApi.Model;
 
 public class FormQuestionGrouping
 {
-    public PageGrouping? Page { get; set; }
-    public CheckYourAnswersGrouping? CheckYourAnswers { get; set; }
-}
-
-public class PageGrouping
-{
-    public int NextQuestionsToDisplay { get; set; }
-    public string? PageTitleResourceKey { get; set; }
-    public string? SubmitButtonTextResourceKey { get; set; }
-}
-
-public class CheckYourAnswersGrouping
-{
-    public string? GroupTitleResourceKey { get; set; }
+    public Guid Id { get; set; }
+    public bool CheckYourAnswers { get; set; }
+    public bool Page { get; set; }
+    public string? SummaryTitle { get; set; }
 }

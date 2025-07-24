@@ -16,6 +16,8 @@
 @foreach (var item in Model.DisplayItems)
 {
     itemIndex++;
+    var isLast = itemIndex == Model.DisplayItems.Count;
+
     if (item.IsGroup)
     {
         var group = (GroupedAnswerSummary)item;
@@ -24,7 +26,7 @@
             <h3 class="govuk-heading-m">@group.GroupTitle</h3>
         }
 
-        <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+        <dl class="govuk-summary-list @(isLast ? "govuk-!-margin-bottom-6" : "govuk-!-margin-bottom-9")">
             @foreach (var answer in group.Answers)
             {
                 count++;
@@ -50,9 +52,8 @@
         var answer = (AnswerSummary)item;
         count++;
         var testId = answer.Title?.Replace(" ", "") + '_' + count;
-        var isLast = itemIndex == Model.DisplayItems.Count;
 
-        <dl class="govuk-summary-list @(isLast ? "govuk-!-margin-bottom-9" : "govuk-!-margin-bottom-0")">
+        <dl class="govuk-summary-list @(isLast ? "govuk-!-margin-bottom-6" : "govuk-!-margin-bottom-0")">
             <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">
                     @answer.Title

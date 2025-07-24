@@ -60,7 +60,8 @@ public class FormsQuestionPageModel(
 
     public string EncType =>
         (CurrentFormQuestionType == FormQuestionType.FileUpload) ||
-        (IsMultiQuestionPage && MultiQuestionViewModel?.Questions.Any(q => q.Type == FormQuestionType.FileUpload) == true)
+        (IsMultiQuestionPage &&
+         MultiQuestionViewModel?.Questions.Any(q => q.Type == FormQuestionType.FileUpload) == true)
             ? Multipart.FormData
             : Application.FormUrlEncoded;
 
@@ -130,8 +131,10 @@ public class FormsQuestionPageModel(
 
     private async Task ProcessMultiQuestionPageSubmission(FormQuestion currentQuestion)
     {
-        var multiQuestionPage = await formsEngine.GetMultiQuestionPage(OrganisationId, FormId, SectionId, currentQuestion.Id);
-        var existingAnswers = GetExistingAnswersForMultiQuestion(multiQuestionPage.Questions, tempDataService.PeekOrDefault<FormQuestionAnswerState>(FormQuestionAnswerStateKey));
+        var multiQuestionPage =
+            await formsEngine.GetMultiQuestionPage(OrganisationId, FormId, SectionId, currentQuestion.Id);
+        var existingAnswers = GetExistingAnswersForMultiQuestion(multiQuestionPage.Questions,
+            tempDataService.PeekOrDefault<FormQuestionAnswerState>(FormQuestionAnswerStateKey));
 
         MultiQuestionModel = new FormElementMultiQuestionModel();
         MultiQuestionModel.Initialize(multiQuestionPage, existingAnswers);
@@ -149,21 +152,25 @@ public class FormsQuestionPageModel(
             {
                 case FormQuestionType.SingleChoice:
                     var singleChoiceModel = (FormElementSingleChoiceModel)questionModel;
-                    var singleChoiceFieldName = singleChoiceModel.GetFieldName(nameof(singleChoiceModel.SelectedOption));
+                    var singleChoiceFieldName =
+                        singleChoiceModel.GetFieldName(nameof(singleChoiceModel.SelectedOption));
                     if (Request.Form.ContainsKey(singleChoiceFieldName))
                     {
                         singleChoiceModel.SelectedOption = Request.Form[singleChoiceFieldName].ToString();
                         newAnswer = singleChoiceModel.GetAnswer();
                     }
+
                     break;
                 case FormQuestionType.GroupedSingleChoice:
                     var groupedSingleChoiceModel = (FormElementGroupedSingleChoiceModel)questionModel;
-                    var groupedSingleChoiceFieldName = groupedSingleChoiceModel.GetFieldName(nameof(groupedSingleChoiceModel.SelectedOption));
+                    var groupedSingleChoiceFieldName =
+                        groupedSingleChoiceModel.GetFieldName(nameof(groupedSingleChoiceModel.SelectedOption));
                     if (Request.Form.ContainsKey(groupedSingleChoiceFieldName))
                     {
                         groupedSingleChoiceModel.SelectedOption = Request.Form[groupedSingleChoiceFieldName].ToString();
                         newAnswer = groupedSingleChoiceModel.GetAnswer();
                     }
+
                     break;
                 case FormQuestionType.Text:
                     var textInputModel = (FormElementTextInputModel)questionModel;
@@ -173,6 +180,7 @@ public class FormsQuestionPageModel(
                         textInputModel.TextInput = Request.Form[textInputFieldName].ToString();
                         newAnswer = textInputModel.GetAnswer();
                     }
+
                     break;
                 case FormQuestionType.MultiLine:
                     var multiLineInputModel = (FormElementMultiLineInputModel)questionModel;
@@ -182,6 +190,7 @@ public class FormsQuestionPageModel(
                         multiLineInputModel.TextInput = Request.Form[multiLineFieldName].ToString();
                         newAnswer = multiLineInputModel.GetAnswer();
                     }
+
                     break;
                 case FormQuestionType.Url:
                     var urlInputModel = (FormElementUrlInputModel)questionModel;
@@ -191,6 +200,7 @@ public class FormsQuestionPageModel(
                         urlInputModel.TextInput = Request.Form[urlFieldName].ToString();
                         newAnswer = urlInputModel.GetAnswer();
                     }
+
                     break;
                 case FormQuestionType.Date:
                     var dateInputModel = (FormElementDateInputModel)questionModel;
@@ -198,9 +208,12 @@ public class FormsQuestionPageModel(
                     var monthFieldName = dateInputModel.GetFieldName(nameof(dateInputModel.Month));
                     var yearFieldName = dateInputModel.GetFieldName(nameof(dateInputModel.Year));
 
-                    if (Request.Form.ContainsKey(dayFieldName)) dateInputModel.Day = Request.Form[dayFieldName].ToString();
-                    if (Request.Form.ContainsKey(monthFieldName)) dateInputModel.Month = Request.Form[monthFieldName].ToString();
-                    if (Request.Form.ContainsKey(yearFieldName)) dateInputModel.Year = Request.Form[yearFieldName].ToString();
+                    if (Request.Form.ContainsKey(dayFieldName))
+                        dateInputModel.Day = Request.Form[dayFieldName].ToString();
+                    if (Request.Form.ContainsKey(monthFieldName))
+                        dateInputModel.Month = Request.Form[monthFieldName].ToString();
+                    if (Request.Form.ContainsKey(yearFieldName))
+                        dateInputModel.Year = Request.Form[yearFieldName].ToString();
                     newAnswer = dateInputModel.GetAnswer();
                     break;
                 case FormQuestionType.YesOrNo:
@@ -211,6 +224,7 @@ public class FormsQuestionPageModel(
                         yesNoInputModel.YesNoInput = Request.Form[yesNoFieldName].ToString();
                         newAnswer = yesNoInputModel.GetAnswer();
                     }
+
                     break;
                 case FormQuestionType.CheckBox:
                     var checkBoxInputModel = (FormElementCheckBoxInputModel)questionModel;
@@ -220,6 +234,7 @@ public class FormsQuestionPageModel(
                         checkBoxInputModel.CheckBoxInput = bool.Parse(Request.Form[checkBoxFieldName].ToString());
                         newAnswer = checkBoxInputModel.GetAnswer();
                     }
+
                     break;
                 case FormQuestionType.Address:
                     var addressModel = (FormElementAddressModel)questionModel;
@@ -228,15 +243,20 @@ public class FormsQuestionPageModel(
                     var postcodeFieldName = addressModel.GetFieldName(nameof(addressModel.Postcode));
                     var countryFieldName = addressModel.GetFieldName(nameof(addressModel.Country));
 
-                    if (Request.Form.ContainsKey(addressLine1FieldName)) addressModel.AddressLine1 = Request.Form[addressLine1FieldName].ToString();
-                    if (Request.Form.ContainsKey(townOrCityFieldName)) addressModel.TownOrCity = Request.Form[townOrCityFieldName].ToString();
-                    if (Request.Form.ContainsKey(postcodeFieldName)) addressModel.Postcode = Request.Form[postcodeFieldName].ToString();
-                    if (Request.Form.ContainsKey(countryFieldName)) addressModel.Country = Request.Form[countryFieldName].ToString();
+                    if (Request.Form.ContainsKey(addressLine1FieldName))
+                        addressModel.AddressLine1 = Request.Form[addressLine1FieldName].ToString();
+                    if (Request.Form.ContainsKey(townOrCityFieldName))
+                        addressModel.TownOrCity = Request.Form[townOrCityFieldName].ToString();
+                    if (Request.Form.ContainsKey(postcodeFieldName))
+                        addressModel.Postcode = Request.Form[postcodeFieldName].ToString();
+                    if (Request.Form.ContainsKey(countryFieldName))
+                        addressModel.Country = Request.Form[countryFieldName].ToString();
                     newAnswer = addressModel.GetAnswer();
                     break;
                 case FormQuestionType.FileUpload:
                     var fileUploadModel = (FormElementFileUploadModel)questionModel;
-                    var uploadedFileNameFieldName = fileUploadModel.GetFieldName(nameof(fileUploadModel.UploadedFileName));
+                    var uploadedFileNameFieldName =
+                        fileUploadModel.GetFieldName(nameof(fileUploadModel.UploadedFileName));
                     var uploadedFileFieldName = fileUploadModel.GetFieldName(nameof(fileUploadModel.UploadedFile));
                     var hasValueFieldName = fileUploadModel.GetFieldName(nameof(fileUploadModel.HasValue));
 
@@ -447,16 +467,19 @@ public class FormsQuestionPageModel(
     {
         var form = await formsEngine.GetFormSectionAsync(OrganisationId, FormId, SectionId);
         var answerState = tempDataService.PeekOrDefault<FormQuestionAnswerState>(FormQuestionAnswerStateKey);
-
         var currentQuestion = form.Questions.FirstOrDefault(q => q.Id == CurrentQuestionId);
+
         if (currentQuestion?.BranchType == FormQuestionBranchType.Alternative)
+        {
             return null;
+        }
 
         var previousUnansweredQuestionId =
             formsEngine.GetPreviousUnansweredQuestionId(form.Questions, CurrentQuestionId, answerState);
-        return previousUnansweredQuestionId != null && previousUnansweredQuestionId != CurrentQuestionId
-            ? previousUnansweredQuestionId
-            : null;
+
+        var shouldRedirect = previousUnansweredQuestionId != null && previousUnansweredQuestionId != CurrentQuestionId;
+
+        return shouldRedirect ? previousUnansweredQuestionId : null;
     }
 
     private async Task<FormQuestion?> InitModel(bool reset = false)
@@ -738,12 +761,9 @@ public class FormsQuestionPageModel(
             return new FormAnswer { BoolValue = false };
         }
 
-        if (!string.IsNullOrEmpty(fileUploadModel.UploadedFileName))
-        {
-            return new FormAnswer { BoolValue = true, TextValue = fileUploadModel.UploadedFileName };
-        }
-
-        return null;
+        return !string.IsNullOrEmpty(fileUploadModel.UploadedFileName)
+            ? new FormAnswer { BoolValue = true, TextValue = fileUploadModel.UploadedFileName }
+            : null;
     }
 
     private async Task<FormAnswer> ProcessNewFileUpload(

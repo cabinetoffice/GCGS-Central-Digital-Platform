@@ -5,9 +5,9 @@
 
 @{
     var isCheckYourAnswersPage = Model.CurrentFormQuestionType == Models.FormQuestionType.CheckYourAnswers;
-    var backUrl = Model.IsInformalConsortium ?
-            $"/consortium/{Model.OrganisationId}/overview"
-            : $"/organisation/{Model.OrganisationId}/supplier-information";
+    var backUrl = Model.IsInformalConsortium
+        ? $"/consortium/{Model.OrganisationId}/overview"
+        : $"/organisation/{Model.OrganisationId}/supplier-information";
     var fromCheckAnswerPage = Model.RedirectFromCheckYourAnswerPage == true;
 
     if (Request.Query["UkOrNonUk"] == "non-uk")
@@ -34,7 +34,7 @@
 
 <div class="govuk-grid-row">
     <div class="@(isCheckYourAnswersPage ? "govuk-grid-column-full" : "govuk-grid-column-two-thirds")">
-        <partial name="_ErrorSummary" model="@ModelState" />
+        <partial name="_ErrorSummary" model="@ModelState"/>
 
         <form method="post" enctype="@Model.EncType" novalidate>
             @if (Model.IsMultiQuestionPage && Model.MultiQuestionViewModel != null)
@@ -90,8 +90,13 @@
         ViewData["Title"] = Model.PartialViewModel.Heading;
 
         var questionContent = await Html.PartialAsync(Model.PartialViewName, Model.PartialViewModel);
-        var continueButton = Html.Raw("<govuk-button>" + StaticTextResource.Global_Continue + "</govuk-button>");
+        var continueButton = Html.Raw("<button type=\"submit\" class=\"govuk-button\">" + StaticTextResource.Global_Continue + "</button>");
 
-        return Html.Raw(questionContent + Environment.NewLine + continueButton);
+        var builder = new HtmlContentBuilder();
+        builder.AppendHtml(questionContent);
+        builder.AppendHtml(Environment.NewLine);
+        builder.AppendHtml(continueButton);
+
+        return builder;
     }
 }
