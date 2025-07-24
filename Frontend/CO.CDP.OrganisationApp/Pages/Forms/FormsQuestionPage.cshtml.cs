@@ -58,9 +58,11 @@ public class FormsQuestionPageModel(
     public bool IsMultiQuestionPage { get; private set; }
     public bool IsInformalConsortium { get; set; }
 
-    public string EncType => CurrentFormQuestionType == FormQuestionType.FileUpload
-        ? Multipart.FormData
-        : Application.FormUrlEncoded;
+    public string EncType =>
+        (CurrentFormQuestionType == FormQuestionType.FileUpload) ||
+        (IsMultiQuestionPage && MultiQuestionViewModel?.Questions.Any(q => q.Type == FormQuestionType.FileUpload) == true)
+            ? Multipart.FormData
+            : Application.FormUrlEncoded;
 
     private string FormQuestionAnswerStateKey => $"Form_{OrganisationId}_{FormId}_{SectionId}_Answers";
 
@@ -85,9 +87,11 @@ public class FormsQuestionPageModel(
     }
 
     private async Task<FormAnswer?> ProcessAnswer(IFormElementModel questionModel) =>
-        questionModel.CurrentFormQuestionType == FormQuestionType.FileUpload
-            ? await HandleFileUpload()
-            : questionModel.GetAnswer();
+        questionModel switch
+        {
+            FormElementFileUploadModel fileUploadModel => await HandleFileUpload(fileUploadModel),
+            _ => questionModel.GetAnswer()
+        };
 
     private async Task ProcessQuestions(
         IEnumerable<IFormElementModel> questionModels,
@@ -106,16 +110,172 @@ public class FormsQuestionPageModel(
 
     public async Task<IActionResult> OnPostAsync()
     {
-        var redirectResult = await CheckForRequiredRedirect();
-        if (redirectResult != null) return redirectResult;
-
         var (currentQuestion, sectionDetails) = await InitializeForPost();
         if (currentQuestion == null) return Redirect("/page-not-found");
 
-        return await ProcessQuestionSubmission(currentQuestion, sectionDetails);
+        if (IsMultiQuestionPage)
+        {
+            await ProcessMultiQuestionPageSubmission(currentQuestion);
+        }
+        else
+        {
+            PartialViewModel = GetPartialViewModel(currentQuestion, false);
+        }
+
+        var submissionResult = await ProcessQuestionSubmission(currentQuestion, sectionDetails);
+        if (submissionResult != null) return submissionResult;
+
+        return await RedirectToPreviousQuestion() ?? RedirectToNextQuestion(currentQuestion);
     }
 
-    private async Task<IActionResult?> CheckForRequiredRedirect()
+    private async Task ProcessMultiQuestionPageSubmission(FormQuestion currentQuestion)
+    {
+        var multiQuestionPage = await formsEngine.GetMultiQuestionPage(OrganisationId, FormId, SectionId, currentQuestion.Id);
+        var existingAnswers = GetExistingAnswersForMultiQuestion(multiQuestionPage.Questions, tempDataService.PeekOrDefault<FormQuestionAnswerState>(FormQuestionAnswerStateKey));
+
+        MultiQuestionModel = new FormElementMultiQuestionModel();
+        MultiQuestionModel.Initialize(multiQuestionPage, existingAnswers);
+
+        MultiQuestionViewModel = MultiQuestionModel;
+
+        foreach (var questionModel in MultiQuestionModel.QuestionModels)
+        {
+            FormAnswer? newAnswer = null;
+            var question = multiQuestionPage.Questions.FirstOrDefault(q => q.Id == questionModel.QuestionId);
+
+            if (question == null) continue;
+
+            switch (question.Type)
+            {
+                case FormQuestionType.SingleChoice:
+                    var singleChoiceModel = (FormElementSingleChoiceModel)questionModel;
+                    var singleChoiceFieldName = singleChoiceModel.GetFieldName(nameof(singleChoiceModel.SelectedOption));
+                    if (Request.Form.ContainsKey(singleChoiceFieldName))
+                    {
+                        singleChoiceModel.SelectedOption = Request.Form[singleChoiceFieldName].ToString();
+                        newAnswer = singleChoiceModel.GetAnswer();
+                    }
+                    break;
+                case FormQuestionType.GroupedSingleChoice:
+                    var groupedSingleChoiceModel = (FormElementGroupedSingleChoiceModel)questionModel;
+                    var groupedSingleChoiceFieldName = groupedSingleChoiceModel.GetFieldName(nameof(groupedSingleChoiceModel.SelectedOption));
+                    if (Request.Form.ContainsKey(groupedSingleChoiceFieldName))
+                    {
+                        groupedSingleChoiceModel.SelectedOption = Request.Form[groupedSingleChoiceFieldName].ToString();
+                        newAnswer = groupedSingleChoiceModel.GetAnswer();
+                    }
+                    break;
+                case FormQuestionType.Text:
+                    var textInputModel = (FormElementTextInputModel)questionModel;
+                    var textInputFieldName = textInputModel.GetFieldName(nameof(textInputModel.TextInput));
+                    if (Request.Form.ContainsKey(textInputFieldName))
+                    {
+                        textInputModel.TextInput = Request.Form[textInputFieldName].ToString();
+                        newAnswer = textInputModel.GetAnswer();
+                    }
+                    break;
+                case FormQuestionType.MultiLine:
+                    var multiLineInputModel = (FormElementMultiLineInputModel)questionModel;
+                    var multiLineFieldName = multiLineInputModel.GetFieldName(nameof(multiLineInputModel.TextInput));
+                    if (Request.Form.ContainsKey(multiLineFieldName))
+                    {
+                        multiLineInputModel.TextInput = Request.Form[multiLineFieldName].ToString();
+                        newAnswer = multiLineInputModel.GetAnswer();
+                    }
+                    break;
+                case FormQuestionType.Url:
+                    var urlInputModel = (FormElementUrlInputModel)questionModel;
+                    var urlFieldName = urlInputModel.GetFieldName(nameof(urlInputModel.TextInput));
+                    if (Request.Form.ContainsKey(urlFieldName))
+                    {
+                        urlInputModel.TextInput = Request.Form[urlFieldName].ToString();
+                        newAnswer = urlInputModel.GetAnswer();
+                    }
+                    break;
+                case FormQuestionType.Date:
+                    var dateInputModel = (FormElementDateInputModel)questionModel;
+                    var dayFieldName = dateInputModel.GetFieldName(nameof(dateInputModel.Day));
+                    var monthFieldName = dateInputModel.GetFieldName(nameof(dateInputModel.Month));
+                    var yearFieldName = dateInputModel.GetFieldName(nameof(dateInputModel.Year));
+
+                    if (Request.Form.ContainsKey(dayFieldName)) dateInputModel.Day = Request.Form[dayFieldName].ToString();
+                    if (Request.Form.ContainsKey(monthFieldName)) dateInputModel.Month = Request.Form[monthFieldName].ToString();
+                    if (Request.Form.ContainsKey(yearFieldName)) dateInputModel.Year = Request.Form[yearFieldName].ToString();
+                    newAnswer = dateInputModel.GetAnswer();
+                    break;
+                case FormQuestionType.YesOrNo:
+                    var yesNoInputModel = (FormElementYesNoInputModel)questionModel;
+                    var yesNoFieldName = yesNoInputModel.GetFieldName(nameof(yesNoInputModel.YesNoInput));
+                    if (Request.Form.ContainsKey(yesNoFieldName))
+                    {
+                        yesNoInputModel.YesNoInput = Request.Form[yesNoFieldName].ToString();
+                        newAnswer = yesNoInputModel.GetAnswer();
+                    }
+                    break;
+                case FormQuestionType.CheckBox:
+                    var checkBoxInputModel = (FormElementCheckBoxInputModel)questionModel;
+                    var checkBoxFieldName = checkBoxInputModel.GetFieldName(nameof(checkBoxInputModel.CheckBoxInput));
+                    if (Request.Form.ContainsKey(checkBoxFieldName))
+                    {
+                        checkBoxInputModel.CheckBoxInput = bool.Parse(Request.Form[checkBoxFieldName].ToString());
+                        newAnswer = checkBoxInputModel.GetAnswer();
+                    }
+                    break;
+                case FormQuestionType.Address:
+                    var addressModel = (FormElementAddressModel)questionModel;
+                    var addressLine1FieldName = addressModel.GetFieldName(nameof(addressModel.AddressLine1));
+                    var townOrCityFieldName = addressModel.GetFieldName(nameof(addressModel.TownOrCity));
+                    var postcodeFieldName = addressModel.GetFieldName(nameof(addressModel.Postcode));
+                    var countryFieldName = addressModel.GetFieldName(nameof(addressModel.Country));
+
+                    if (Request.Form.ContainsKey(addressLine1FieldName)) addressModel.AddressLine1 = Request.Form[addressLine1FieldName].ToString();
+                    if (Request.Form.ContainsKey(townOrCityFieldName)) addressModel.TownOrCity = Request.Form[townOrCityFieldName].ToString();
+                    if (Request.Form.ContainsKey(postcodeFieldName)) addressModel.Postcode = Request.Form[postcodeFieldName].ToString();
+                    if (Request.Form.ContainsKey(countryFieldName)) addressModel.Country = Request.Form[countryFieldName].ToString();
+                    newAnswer = addressModel.GetAnswer();
+                    break;
+                case FormQuestionType.FileUpload:
+                    var fileUploadModel = (FormElementFileUploadModel)questionModel;
+                    var uploadedFileNameFieldName = fileUploadModel.GetFieldName(nameof(fileUploadModel.UploadedFileName));
+                    var uploadedFileFieldName = fileUploadModel.GetFieldName(nameof(fileUploadModel.UploadedFile));
+                    var hasValueFieldName = fileUploadModel.GetFieldName(nameof(fileUploadModel.HasValue));
+
+                    if (Request.Form.ContainsKey(uploadedFileNameFieldName))
+                    {
+                        fileUploadModel.UploadedFileName = Request.Form[uploadedFileNameFieldName].ToString();
+                    }
+
+                    if (Request.Form.ContainsKey(hasValueFieldName))
+                    {
+                        fileUploadModel.HasValue = bool.Parse(Request.Form[hasValueFieldName].ToString());
+                    }
+
+                    if (Request.Form.Files.Any(f => f.Name == uploadedFileFieldName))
+                    {
+                        fileUploadModel.UploadedFile = Request.Form.Files.GetFile(uploadedFileFieldName);
+                    }
+
+                    newAnswer = await HandleFileUpload(fileUploadModel);
+                    break;
+                case FormQuestionType.NoInput:
+                default:
+                    break;
+            }
+
+            if (newAnswer != null)
+            {
+                SaveAnswerToTempData(question, newAnswer);
+            }
+            else if (question.Type != FormQuestionType.NoInput)
+            {
+                SaveAnswerToTempData(question, null);
+            }
+        }
+
+        TryValidateModel(MultiQuestionModel);
+    }
+
+    private async Task<IActionResult?> RedirectToPreviousQuestion()
     {
         var previousUnansweredQuestionId = await ValidateIfNeedRedirect();
         return previousUnansweredQuestionId != null
@@ -131,21 +291,15 @@ public class FormsQuestionPageModel(
         return (currentQuestion, sectionDetails);
     }
 
-    private async Task<IActionResult> ProcessQuestionSubmission(FormQuestion currentQuestion,
+    private async Task<IActionResult?> ProcessQuestionSubmission(FormQuestion currentQuestion,
         SectionQuestionsResponse sectionDetails)
     {
-        IActionResult? result = null;
-
-        if (PartialViewModel != null)
+        return (PartialViewModel, MultiQuestionViewModel, IsMultiQuestionPage) switch
         {
-            result = await HandleSingleQuestionPost(currentQuestion, sectionDetails);
-        }
-        else if (MultiQuestionViewModel != null && IsMultiQuestionPage)
-        {
-            result = await HandleMultiQuestionPost(currentQuestion);
-        }
-
-        return result ?? RedirectToNextQuestion(currentQuestion);
+            (not null, _, _) => await HandleSingleQuestionPost(currentQuestion, sectionDetails),
+            (null, not null, true) => await HandleMultiQuestionPost(currentQuestion),
+            _ => null
+        };
     }
 
     private async Task<IActionResult?> HandleSingleQuestionPost(FormQuestion currentQuestion,
@@ -192,6 +346,15 @@ public class FormsQuestionPageModel(
             ),
             SaveAnswerToTempData
         );
+
+        var questionsWithModels = MultiQuestionViewModel.QuestionModels.Select(q => q.QuestionId).ToHashSet();
+        var noInputQuestions = multiQuestionPage.Questions
+            .Where(q => q.Type == FormQuestionType.NoInput && !questionsWithModels.Contains(q.Id));
+
+        foreach (var noInputQuestion in noInputQuestions)
+        {
+            SaveAnswerToTempData(noInputQuestion, null);
+        }
     }
 
     private async Task<string> GetAnswerString(QuestionAnswer questionAnswer, FormQuestion question)
@@ -270,7 +433,7 @@ public class FormsQuestionPageModel(
 
     public async Task<IActionResult> OnGetAsync()
     {
-        var redirectResult = await CheckForRequiredRedirect();
+        var redirectResult = await RedirectToPreviousQuestion();
         if (redirectResult != null) return redirectResult;
 
         var currentQuestion = await InitModel(true);
@@ -562,26 +725,30 @@ public class FormsQuestionPageModel(
             new { OrganisationId, FormId, SectionId, shareCode });
     }
 
-    private async Task<FormAnswer?> HandleFileUpload()
+    private async Task<FormAnswer?> HandleFileUpload(FormElementFileUploadModel fileUploadModel)
     {
-        var newFileInfo = FileUploadModel?.GetUploadedFileInfo();
+        var newFileInfo = fileUploadModel.GetUploadedFileInfo();
         if (newFileInfo != null)
         {
-            return await ProcessNewFileUpload(newFileInfo.Value);
+            return await ProcessNewFileUpload(newFileInfo.Value, fileUploadModel);
         }
 
-        if (FileUploadModel?.HasValue == false)
+        if (fileUploadModel.HasValue == false)
         {
             return new FormAnswer { BoolValue = false };
         }
 
-        return !string.IsNullOrEmpty(FileUploadModel?.UploadedFileName)
-            ? new FormAnswer { BoolValue = true, TextValue = FileUploadModel.UploadedFileName }
-            : null;
+        if (!string.IsNullOrEmpty(fileUploadModel.UploadedFileName))
+        {
+            return new FormAnswer { BoolValue = true, TextValue = fileUploadModel.UploadedFileName };
+        }
+
+        return null;
     }
 
     private async Task<FormAnswer> ProcessNewFileUpload(
-        (IFormFile formFile, string filename, string contentType) fileInfo)
+        (IFormFile formFile, string filename, string contentType) fileInfo,
+        FormElementFileUploadModel fileUploadModel)
     {
         await using var stream = fileInfo.formFile.OpenReadStream();
         await fileHostManager.UploadFile(stream, fileInfo.filename, fileInfo.contentType);
@@ -592,7 +759,7 @@ public class FormsQuestionPageModel(
         await publisher.Publish(new ScanFile
         {
             QueueFileName = fileInfo.filename,
-            UploadedFileName = FileUploadModel!.UploadedFile!.FileName,
+            UploadedFileName = fileUploadModel.UploadedFile!.FileName,
             OrganisationId = OrganisationId,
             OrganisationEmailAddress = organisation.ContactPoint.Email,
             UserEmailAddress = userInfo.Email,
