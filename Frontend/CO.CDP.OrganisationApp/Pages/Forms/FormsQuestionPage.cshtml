@@ -36,16 +36,26 @@
     <div class="@(isCheckYourAnswersPage ? "govuk-grid-column-full" : "govuk-grid-column-two-thirds")">
         <partial name="_ErrorSummary" model="@ModelState"/>
 
-        <form method="post" enctype="@Model.EncType" novalidate>
-            @if (Model.IsMultiQuestionPage && Model.MultiQuestionViewModel != null)
-            {
-                @await RenderMultiQuestionPage()
-            }
-            else
-            {
-                @await RenderSingleQuestionPage()
-            }
-        </form>
+        @if (!string.IsNullOrWhiteSpace(Model.PartialViewModel?.Options?.Layout?.PreHeadingContent))
+{
+    @Html.Raw(Model.PartialViewModel.Options.Layout.PreHeadingContent)
+}
+
+<form method="post" enctype="@Model.EncType" novalidate>
+    @if (Model.IsMultiQuestionPage && Model.MultiQuestionViewModel != null)
+    {
+        @await RenderMultiQuestionPage()
+    }
+    else
+    {
+        @await RenderSingleQuestionPage()
+    }
+</form>
+
+@if (!string.IsNullOrWhiteSpace(Model.PartialViewModel?.Options?.Layout?.PostSubmitContent))
+{
+    @Html.Raw(Model.PartialViewModel.Options.Layout.PostSubmitContent)
+}
     </div>
 </div>
 
@@ -90,7 +100,8 @@
         ViewData["Title"] = Model.PartialViewModel.Heading;
 
         var questionContent = await Html.PartialAsync(Model.PartialViewName, Model.PartialViewModel);
-        var continueButton = Html.Raw("<button type=\"submit\" class=\"govuk-button\">" + StaticTextResource.Global_Continue + "</button>");
+        var buttonText = !string.IsNullOrEmpty(Model.PartialViewModel?.Options?.Layout?.PrimaryButtonText) ? StaticTextResource.ResourceManager.GetString(Model.PartialViewModel.Options.Layout.PrimaryButtonText) ?? StaticTextResource.Global_Continue : StaticTextResource.Global_Continue;
+        var continueButton = Html.Raw("<button type=\"submit\" class=\"govuk-button\">" + buttonText + "</button>");
 
         var builder = new HtmlContentBuilder();
         builder.AppendHtml(questionContent);

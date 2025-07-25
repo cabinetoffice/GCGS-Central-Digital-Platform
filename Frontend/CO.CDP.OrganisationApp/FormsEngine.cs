@@ -14,7 +14,9 @@ using FormQuestionOptions = CO.CDP.OrganisationApp.Models.FormQuestionOptions;
 using FormQuestionType = CO.CDP.OrganisationApp.Models.FormQuestionType;
 using FormSection = CO.CDP.OrganisationApp.Models.FormSection;
 using FormSectionType = CO.CDP.OrganisationApp.Models.FormSectionType;
+using LayoutOptions = CO.CDP.OrganisationApp.Models.LayoutOptions;
 using SectionQuestionsResponse = CO.CDP.OrganisationApp.Models.SectionQuestionsResponse;
+using ValidationOptions = CO.CDP.OrganisationApp.Models.ValidationOptions;
 
 namespace CO.CDP.OrganisationApp;
 
@@ -89,6 +91,38 @@ public class FormsEngine(
                                 Page = q.Options.Grouping.Page,
                                 CheckYourAnswers = q.Options.Grouping.CheckYourAnswers,
                                 SummaryTitle = q.Options.Grouping.SummaryTitle
+                            }
+                            : null,
+                        Layout = q.Options.Layout != null && (
+                            !string.IsNullOrWhiteSpace(q.Options.Layout.CustomYesText) ||
+                            !string.IsNullOrWhiteSpace(q.Options.Layout.CustomNoText) ||
+                            q.Options.Layout.InputWidth.HasValue ||
+                            !string.IsNullOrWhiteSpace(q.Options.Layout.InputSuffix) ||
+                            !string.IsNullOrWhiteSpace(q.Options.Layout.CustomCssClasses) ||
+                            !string.IsNullOrWhiteSpace(q.Options.Layout.PreHeadingContent) ||
+                            !string.IsNullOrWhiteSpace(q.Options.Layout.PostSubmitContent) ||
+                            !string.IsNullOrWhiteSpace(q.Options.Layout.PrimaryButtonText))
+                            ? new LayoutOptions
+                            {
+                                CustomYesText = q.Options.Layout.CustomYesText,
+                                CustomNoText = q.Options.Layout.CustomNoText,
+                                InputWidth = q.Options.Layout.InputWidth.HasValue ? (CO.CDP.OrganisationApp.Models.InputWidthType)q.Options.Layout.InputWidth.Value : null,
+                                InputSuffix = q.Options.Layout.InputSuffix,
+                                CustomCssClasses = q.Options.Layout.CustomCssClasses,
+                                PreHeadingContent = q.Options.Layout.PreHeadingContent,
+                                PostSubmitContent = q.Options.Layout.PostSubmitContent,
+                                PrimaryButtonText = q.Options.Layout.PrimaryButtonText
+                            }
+                            : null,
+                        Validation = q.Options.Validation != null && (
+                            q.Options.Validation.DateValidationType.HasValue ||
+                            q.Options.Validation.MinDate.HasValue ||
+                            q.Options.Validation.MaxDate.HasValue)
+                            ? new ValidationOptions
+                            {
+                                DateValidationType = q.Options.Validation.DateValidationType.HasValue ? (CO.CDP.OrganisationApp.Models.DateValidationType)q.Options.Validation.DateValidationType.Value : null,
+                                MinDate = q.Options.Validation.MinDate,
+                                MaxDate = q.Options.Validation.MaxDate
                             }
                             : null
                     }

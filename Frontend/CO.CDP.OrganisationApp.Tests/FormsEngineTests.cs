@@ -117,6 +117,22 @@ public class FormsEngineTests
                             page: true,
                             checkYourAnswers: true,
                             summaryTitle: "SummaryTitle"
+                        ),
+                        layout: new WebApiClient.LayoutOptions(
+                            customYesText: null,
+                            customNoText: null,
+                            inputWidth: null,
+                            inputSuffix: null,
+                            customCssClasses: null,
+                            preHeadingContent: null,
+                            postSubmitContent: null,
+                            primaryButtonText: null
+                        ),
+                        validation: new WebApiClient.ValidationOptions(
+                            dateValidationType: null,
+                            textValidationType: null,
+                            minDate: null,
+                            maxDate: null
                         )
                     )
                 )

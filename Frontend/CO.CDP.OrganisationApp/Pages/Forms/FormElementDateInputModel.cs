@@ -118,9 +118,49 @@ public class FormElementDateInputModel : FormElementModel, IValidatableObject
                     yield return new ValidationResult(StaticTextResource.Global_DateInput_DateInvalidError, [nameof(DateString)]);
                 }
 
-                if (parsedDate > DateTime.Today)
+                var validationApplied = false;
+                switch (Options?.Validation?.DateValidationType)
                 {
-                    yield return new ValidationResult(StaticTextResource.Global_DateInput_DateInFutureError, [nameof(DateString)]);
+                    case DateValidationType.PastOnly:
+                        validationApplied = true;
+                        if (parsedDate > DateTimeOffset.UtcNow)
+                        {
+                            yield return new ValidationResult(StaticTextResource.Global_DateInput_DateMustBeTodayOrInThePast, [nameof(DateString)]);
+                        }
+                        break;
+                    case DateValidationType.FutureOnly:
+                        validationApplied = true;
+                        if (parsedDate < DateTimeOffset.UtcNow)
+                        {
+                            yield return new ValidationResult(StaticTextResource.Global_DateInput_DateMustBeTodayOrInTheFuture, [nameof(DateString)]);
+                        }
+                        break;
+                    case DateValidationType.MinDate:
+                        validationApplied = true;
+                        if (Options.Validation.MinDate.HasValue && parsedDate < Options.Validation.MinDate.Value)
+                        {
+                            yield return new ValidationResult($"The date must be on or after {Options.Validation.MinDate.Value.Date.ToShortDateString()}.", [nameof(DateString)]);
+                        }
+                        break;
+                    case DateValidationType.MaxDate:
+                        validationApplied = true;
+                        if (Options.Validation.MaxDate.HasValue && parsedDate > Options.Validation.MaxDate.Value)
+                        {
+                            yield return new ValidationResult(string.Format(StaticTextResource.Global_DateInput_DateMustBeOnOrBefore, Options.Validation.MaxDate.Value.Date.ToShortDateString()), [nameof(DateString)]);
+                        }
+                        break;
+                    case DateValidationType.DateRange:
+                        validationApplied = true;
+                        if (Options.Validation.MinDate.HasValue && parsedDate < Options.Validation.MinDate.Value || Options.Validation.MaxDate.HasValue && parsedDate > Options.Validation.MaxDate.Value)
+                        {
+                            yield return new ValidationResult(string.Format(StaticTextResource.Global_DateInput_DateMustBeBetween, Options.Validation.MinDate?.Date.ToShortDateString(), Options.Validation.MaxDate?.Date.ToShortDateString()), [nameof(DateString)]);
+                        }
+                        break;
+                }
+
+                if (!validationApplied && parsedDate > DateTimeOffset.UtcNow.Date)
+                {
+                    yield return new ValidationResult(StaticTextResource.Global_DateInput_DateMustBeTodayOrInThePast, [nameof(DateString)]);
                 }
             }
         }

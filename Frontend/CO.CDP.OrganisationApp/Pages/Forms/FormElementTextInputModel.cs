@@ -63,6 +63,14 @@ public class FormElementTextInputModel : FormElementModel, IValidatableObject
             {
                 yield return new ValidationResult(StaticTextResource.Forms_FormElementTextInput_InvalidEmailError, [nameof(TextInput)]);
             }
+            else if (Options?.Validation?.TextValidationType == TextValidationType.Year)
+            {
+                var yearAttribute = new Validation.YearAttribute();
+                if (!yearAttribute.IsValid(TextInput))
+                {
+                    yield return new ValidationResult(StaticTextResource.Forms_FormElementTextInput_InvalidYearError, [nameof(TextInput)]);
+                }
+            }
             else if (string.IsNullOrWhiteSpace(TextInput))
             {
                 yield return new ValidationResult(StaticTextResource.Forms_FormElementTextInput_EnterValueError, [nameof(TextInput)]);

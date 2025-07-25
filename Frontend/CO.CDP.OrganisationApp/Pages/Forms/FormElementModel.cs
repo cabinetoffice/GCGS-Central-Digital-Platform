@@ -7,6 +7,7 @@ public interface IFormElementModel
     Guid? QuestionId { get; set; }
     FormQuestionType? CurrentFormQuestionType { get; set; }
     string? Heading { get; set; }
+    FormQuestionOptions? Options { get; set; }
 
     void Initialize(FormQuestion question);
 
@@ -20,7 +21,6 @@ public interface IMultiQuestionFormElementModel
     List<FormQuestion> Questions { get; }
     IEnumerable<IFormElementModel> QuestionModels { get; }
     string? PageTitleResourceKey { get; }
-    string? SubmitButtonTextResourceKey { get; }
 
     void Initialize(MultiQuestionPageModel multiQuestionPage, Dictionary<Guid, FormAnswer> existingAnswers);
 

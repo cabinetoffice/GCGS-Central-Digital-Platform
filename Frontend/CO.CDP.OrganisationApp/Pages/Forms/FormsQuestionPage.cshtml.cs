@@ -596,18 +596,17 @@ public class FormsQuestionPageModel(
 
         IFormElementModel model = question.Type switch
         {
-            FormQuestionType.NoInput => NoInputModel ?? new FormElementNoInputModel(),
-            FormQuestionType.Text => TextInputModel ?? new FormElementTextInputModel(),
-            FormQuestionType.FileUpload => FileUploadModel ?? new FormElementFileUploadModel(),
-            FormQuestionType.YesOrNo => YesNoInputModel ?? new FormElementYesNoInputModel(),
-            FormQuestionType.Date => DateInputModel ?? new FormElementDateInputModel(),
-            FormQuestionType.CheckBox => CheckBoxModel ?? new FormElementCheckBoxInputModel(),
-            FormQuestionType.Address => AddressModel ?? new FormElementAddressModel(),
-            FormQuestionType.SingleChoice => SingleChoiceModel ?? new FormElementSingleChoiceModel(),
-            FormQuestionType.MultiLine => MultiLineInputModel ?? new FormElementMultiLineInputModel(),
-            FormQuestionType.GroupedSingleChoice => GroupedSingleChoiceModel ??
-                                                    new FormElementGroupedSingleChoiceModel(),
-            FormQuestionType.Url => UrlInputModel ?? new FormElementUrlInputModel(),
+            FormQuestionType.NoInput => NoInputModel ?? new FormElementNoInputModel { Options = question.Options },
+            FormQuestionType.Text => TextInputModel ?? new FormElementTextInputModel { Options = question.Options },
+            FormQuestionType.FileUpload => FileUploadModel ?? new FormElementFileUploadModel { Options = question.Options },
+            FormQuestionType.YesOrNo => YesNoInputModel ?? new FormElementYesNoInputModel { Options = question.Options },
+            FormQuestionType.Date => DateInputModel ?? new FormElementDateInputModel { Options = question.Options },
+            FormQuestionType.CheckBox => CheckBoxModel ?? new FormElementCheckBoxInputModel { Options = question.Options },
+            FormQuestionType.Address => AddressModel ?? new FormElementAddressModel { Options = question.Options },
+            FormQuestionType.SingleChoice => SingleChoiceModel ?? new FormElementSingleChoiceModel { Options = question.Options },
+            FormQuestionType.MultiLine => MultiLineInputModel ?? new FormElementMultiLineInputModel { Options = question.Options },
+            FormQuestionType.GroupedSingleChoice => GroupedSingleChoiceModel ?? new FormElementGroupedSingleChoiceModel { Options = question.Options },
+            FormQuestionType.Url => UrlInputModel ?? new FormElementUrlInputModel { Options = question.Options },
             _ => throw new NotImplementedException($"Forms question: {question.Type} is not supported")
         };
 

@@ -42,6 +42,29 @@ public class FormQuestionOptions
     public string? ChoiceProviderStrategy { get; set; }
     public string? AnswerFieldName { get; set; }
     public FormQuestionGrouping? Grouping { get; set; }
+    public LayoutOptions? Layout { get; set; }
+    public ValidationOptions? Validation { get; set; }
+}
+
+public class LayoutOptions
+{
+    public string? CustomYesText { get; set; }
+    public string? CustomNoText { get; set; }
+    public InputWidthType? InputWidth { get; set; }
+    public string? InputSuffix { get; set; }
+    public string? CustomCssClasses { get; set; }
+    public string? PreHeadingContent { get; set; }
+    public string? PostSubmitContent { get; set; }
+    public string? PrimaryButtonText { get; set; }
+}
+
+public class ValidationOptions
+{
+    public DateValidationType? DateValidationType { get; set; }
+    public DateTimeOffset? MinDate { get; set; }
+    public DateTimeOffset? MaxDate { get; set; }
+
+    public TextValidationType? TextValidationType { get; set; }
 }
 
 public class FormQuestionAnswerState

@@ -26,7 +26,7 @@
                     {
                         <span class="govuk-caption-l">@Model.Caption</span>
                     }
-                    @Model.Heading                    
+                    @Model.Heading
                 </h1>
             </legend>
         }
@@ -49,7 +49,7 @@
         @if (Model.Options?.Groups != null)
         {
             var index = 0;
-                
+
             foreach (var group in Model.Options.Groups)
             {
                 <h2 class="govuk-heading-m">
@@ -65,23 +65,19 @@
                 }
 
                 <div class="govuk-radios govuk-!-margin-bottom-5" data-module="govuk-radios">
-                    @if (group.Choices != null)
+                    @foreach (var choice in group.Choices)
                     {
-                    
-                        foreach (var choice in group.Choices)
-                        {
-                            var id = index == 0 ? Model.GetFieldName(nameof(Model.SelectedOption)) : $"{Model.GetFieldName(nameof(Model.SelectedOption))}_{index}";
+                        var id = index == 0 ? Model.GetFieldName(nameof(Model.SelectedOption)) : $"{Model.GetFieldName(nameof(Model.SelectedOption))}_{index}";
 
-                            <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="@id" name="@Model.GetFieldName(nameof(Model.SelectedOption))" type="radio" value="@choice.Value" @(Model.SelectedOption == choice.Value ? "checked" : "")>
-                                <label class="govuk-label govuk-radios__label" for="@id">@choice.Title</label>
-                            </div>
-                            
-                            index++;
-                        }
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="@id" name="@Model.GetFieldName(nameof(Model.SelectedOption))" type="radio" value="@choice.Value" @(Model.SelectedOption == choice.Value ? "checked" : "")>
+                            <label class="govuk-label govuk-radios__label" for="@id">@choice.Title</label>
+                        </div>
+
+                        index++;
                     }
-                </div>                   
+                </div>
             }
-        }        
+        }
     </fieldset>
 </div>
