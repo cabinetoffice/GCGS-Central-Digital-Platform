@@ -69,12 +69,12 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
 
                      -- Insert the sixth question (_CarbonNetZeroQuestion06)
                     INSERT INTO form_questions (guid, next_question_id, next_question_alternative_id, section_id, ""type"", is_required, title, description, ""options"",  caption, summary_title, ""name"", sort_order)
-                    VALUES('{Guid.NewGuid()}', NULL, NULL, sectionId, 1, true, 'CarbonNetZero_06_Title', 'CarbonNetZero_06_Description', '{{}}', NULL, 'CarbonNetZero_06_SummaryTitle', '_CarbonNetZeroQuestion06', 6)
+                    VALUES('{Guid.NewGuid()}', NULL, NULL, sectionId, 1, true, 'CarbonNetZero_06_Title', '', '{{}}', NULL, 'CarbonNetZero_06_SummaryTitle', '_CarbonNetZeroQuestion06', 6)
                     RETURNING id INTO question6_id;
 
                     -- Insert the seventh question (_CarbonNetZeroQuestion07)
                     INSERT INTO form_questions (guid, next_question_id, next_question_alternative_id, section_id, ""type"", is_required, title, description, ""options"",  caption, summary_title, ""name"", sort_order)
-                    VALUES('{Guid.NewGuid()}', NULL, NULL, sectionId, 1, true, 'CarbonNetZero_07_Title', 'CarbonNetZero_07_Description', '{{}}', NULL, 'CarbonNetZero_07_SummaryTitle', '_CarbonNetZeroQuestion07', 7)
+                    VALUES('{Guid.NewGuid()}', NULL, NULL, sectionId, 1, true, 'CarbonNetZero_07_Title', '', '{{}}', NULL, 'CarbonNetZero_07_SummaryTitle', '_CarbonNetZeroQuestion07', 7)
                     RETURNING id INTO question7_id;
 
                     -- Insert the eighth question (_CarbonNetZeroQuestion08)
