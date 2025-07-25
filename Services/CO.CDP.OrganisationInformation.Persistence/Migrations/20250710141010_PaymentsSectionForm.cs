@@ -27,6 +27,20 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                     v_question10_id INT;
                     v_question11_id INT;
                     v_question12_id INT;
+                    v_question6_1_id INT;
+                    v_question6_2_id INT;
+                    v_question6_3_id INT;
+                    v_question6_4_id INT;
+                    v_question6_5_id INT;
+                    v_question6_6_id INT;
+                    v_question6_7_id INT;
+                    v_question7_1_id INT;
+                    v_question7_2_id INT;
+                    v_question7_3_id INT;
+                    v_question7_4_id INT;
+                    v_question7_5_id INT;
+                    v_question7_6_id INT;
+                    v_question7_7_id INT;
                 BEGIN
                     SELECT id INTO v_form_id FROM forms WHERE name = 'Standard Questions';
 
@@ -59,31 +73,87 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                     RETURNING id INTO v_question5_id;
 
                     INSERT INTO form_questions (guid, next_question_id, next_question_alternative_id, section_id, ""type"", is_required, title, description, ""options"",  caption, summary_title, ""name"", sort_order)
-                    VALUES('{Guid.NewGuid()}', NULL, NULL, v_section_id, 3, true, 'Payments_06_Title', 'Payments_06_Description', '{{}}', NULL, '', '_Payments06', 6)
+                    VALUES('{Guid.NewGuid()}', NULL, NULL, v_section_id, 0, true, 'Payments_06_Title', 'Payments_06_Description', '{{}}', NULL, '', '_Payments06', 6)
                     RETURNING id INTO v_question6_id;
 
                     INSERT INTO form_questions (guid, next_question_id, next_question_alternative_id, section_id, ""type"", is_required, title, description, ""options"",  caption, summary_title, ""name"", sort_order)
-                    VALUES('{Guid.NewGuid()}', NULL, NULL, v_section_id, 3, true, 'Payments_07_Title', 'Payments_07_Description', '{{}}', NULL, '', '_Payments07', 7)
+                    VALUES('{Guid.NewGuid()}', NULL, NULL, v_section_id, 7, true, 'Payments_06_ReportingStartDate', null, '{{}}', NULL, '', '_Payments06_1', 7)
+                    RETURNING id INTO v_question6_1_id;
+
+                    INSERT INTO form_questions (guid, next_question_id, next_question_alternative_id, section_id, ""type"", is_required, title, description, ""options"",  caption, summary_title, ""name"", sort_order)
+                    VALUES('{Guid.NewGuid()}', NULL, NULL, v_section_id, 1, true, 'Payments_06_AverageDaysToPayInvoice', null, '{{}}', NULL, '', '_Payments06_2', 8)
+                    RETURNING id INTO v_question6_2_id;
+
+                    INSERT INTO form_questions (guid, next_question_id, next_question_alternative_id, section_id, ""type"", is_required, title, description, ""options"",  caption, summary_title, ""name"", sort_order)
+                    VALUES('{Guid.NewGuid()}', NULL, NULL, v_section_id, 0, true, 'Payments_06_InvoicesPaid_Label', null, '{{}}', NULL, '', '_Payments06_3', 9)
+                    RETURNING id INTO v_question6_3_id;
+
+                    INSERT INTO form_questions (guid, next_question_id, next_question_alternative_id, section_id, ""type"", is_required, title, description, ""options"",  caption, summary_title, ""name"", sort_order)
+                    VALUES('{Guid.NewGuid()}', NULL, NULL, v_section_id, 1, true, 'Payments_06_PctPaidWithin30Days', null, '{{}}', NULL, '', '_Payments06_4', 10)
+                    RETURNING id INTO v_question6_4_id;
+
+                    INSERT INTO form_questions (guid, next_question_id, next_question_alternative_id, section_id, ""type"", is_required, title, description, ""options"",  caption, summary_title, ""name"", sort_order)
+                    VALUES('{Guid.NewGuid()}', NULL, NULL, v_section_id, 1, true, 'Payments_06_PctPaid31To60Days', null, '{{}}', NULL, '', '_Payments06_5', 11)
+                    RETURNING id INTO v_question6_5_id;
+
+                    INSERT INTO form_questions (guid, next_question_id, next_question_alternative_id, section_id, ""type"", is_required, title, description, ""options"",  caption, summary_title, ""name"", sort_order)
+                    VALUES('{Guid.NewGuid()}', NULL, NULL, v_section_id, 1, true, 'Payments_06_PctPaid61OrMoreDays', null, '{{}}', NULL, '', '_Payments06_6', 12)
+                    RETURNING id INTO v_question6_6_id;
+
+                    INSERT INTO form_questions (guid, next_question_id, next_question_alternative_id, section_id, ""type"", is_required, title, description, ""options"",  caption, summary_title, ""name"", sort_order)
+                    VALUES('{Guid.NewGuid()}', NULL, NULL, v_section_id, 1, true, 'Payments_06_PctPaidOverdue', null, '{{}}', NULL, '', '_Payments06_7', 13)
+                    RETURNING id INTO v_question6_7_id;
+
+                    INSERT INTO form_questions (guid, next_question_id, next_question_alternative_id, section_id, ""type"", is_required, title, description, ""options"", caption, summary_title, ""name"", sort_order)
+                    VALUES('{Guid.NewGuid()}', NULL, NULL, v_section_id, 1, true, 'Payments_07_Title', 'Payments_07_Description', '{{}}', NULL, '', '_Payments07', 14)
                     RETURNING id INTO v_question7_id;
 
                     INSERT INTO form_questions (guid, next_question_id, next_question_alternative_id, section_id, ""type"", is_required, title, description, ""options"",  caption, summary_title, ""name"", sort_order)
-                    VALUES('{Guid.NewGuid()}', NULL, NULL, v_section_id, 10, true, 'Payments_08_Title', 'Payments_08_Description', '{{}}', NULL, '', '_Payments08', 8)
+                    VALUES('{Guid.NewGuid()}', NULL, NULL, v_section_id, 7, true, 'Payments_07_ReportingStartDate', null, '{{}}', NULL, '', '_Payments07_1', 15)
+                    RETURNING id INTO v_question7_1_id;
+
+                    INSERT INTO form_questions (guid, next_question_id, next_question_alternative_id, section_id, ""type"", is_required, title, description, ""options"",  caption, summary_title, ""name"", sort_order)
+                    VALUES('{Guid.NewGuid()}', NULL, NULL, v_section_id, 1, true, 'Payments_07_AverageDaysToPayInvoice', null, '{{}}', NULL, '', '_Payments07_2', 16)
+                    RETURNING id INTO v_question7_2_id;
+
+                    INSERT INTO form_questions (guid, next_question_id, next_question_alternative_id, section_id, ""type"", is_required, title, description, ""options"",  caption, summary_title, ""name"", sort_order)
+                    VALUES('{Guid.NewGuid()}', NULL, NULL, v_section_id, 0, true, 'Payments_07_InvoicesPaid_Label', null, '{{}}', NULL, '', '_Payments07_3', 17)
+                    RETURNING id INTO v_question7_3_id;
+
+                    INSERT INTO form_questions (guid, next_question_id, next_question_alternative_id, section_id, ""type"", is_required, title, description, ""options"",  caption, summary_title, ""name"", sort_order)
+                    VALUES('{Guid.NewGuid()}', NULL, NULL, v_section_id, 1, true, 'Payments_07_PctPaidWithin30Days', null, '{{}}', NULL, '', '_Payments07_4', 18)
+                    RETURNING id INTO v_question7_4_id;
+
+                    INSERT INTO form_questions (guid, next_question_id, next_question_alternative_id, section_id, ""type"", is_required, title, description, ""options"",  caption, summary_title, ""name"", sort_order)
+                    VALUES('{Guid.NewGuid()}', NULL, NULL, v_section_id, 1, true, 'Payments_07_PctPaid31To60Days', null, '{{}}', NULL, '', '_Payments07_5', 19)
+                    RETURNING id INTO v_question7_5_id;
+
+                    INSERT INTO form_questions (guid, next_question_id, next_question_alternative_id, section_id, ""type"", is_required, title, description, ""options"",  caption, summary_title, ""name"", sort_order)
+                    VALUES('{Guid.NewGuid()}', NULL, NULL, v_section_id, 1, true, 'Payments_07_PctPaid61OrMoreDays', null, '{{}}', NULL, '', '_Payments07_6', 20)
+                    RETURNING id INTO v_question7_6_id;
+
+                    INSERT INTO form_questions (guid, next_question_id, next_question_alternative_id, section_id, ""type"", is_required, title, description, ""options"",  caption, summary_title, ""name"", sort_order)
+                    VALUES('{Guid.NewGuid()}', NULL, NULL, v_section_id, 1, true, 'Payments_07_PctPaidOverdue', null, '{{}}', NULL, '', '_Payments07_7', 21)
+                    RETURNING id INTO v_question7_7_id;
+
+                    INSERT INTO form_questions (guid, next_question_id, next_question_alternative_id, section_id, ""type"", is_required, title, description, ""options"",  caption, summary_title, ""name"", sort_order)
+                    VALUES('{Guid.NewGuid()}', NULL, NULL, v_section_id, 10, true, 'Payments_08_Title', 'Payments_08_Description', '{{}}', NULL, '', '_Payments08', 22)
                     RETURNING id INTO v_question8_id;
 
                     INSERT INTO form_questions (guid, next_question_id, next_question_alternative_id, section_id, ""type"", is_required, title, description, ""options"",  caption, summary_title, ""name"", sort_order)
-                    VALUES('{Guid.NewGuid()}', NULL, NULL, v_section_id, 3, true, 'Payments_09_Title', 'Payments_09_Description', '{{}}', NULL, 'Payments_09_SummaryTitle', '_Payments09', 9)
+                    VALUES('{Guid.NewGuid()}', NULL, NULL, v_section_id, 3, true, 'Payments_09_Title', 'Payments_09_Description', '{{}}', NULL, 'Payments_09_SummaryTitle', '_Payments09', 23)
                     RETURNING id INTO v_question9_id;
 
                     INSERT INTO form_questions (guid, next_question_id, next_question_alternative_id, section_id, ""type"", is_required, title, description, ""options"",  caption, summary_title, ""name"", sort_order)
-                    VALUES('{Guid.NewGuid()}', NULL, NULL, v_section_id, 3, true, 'Payments_10_Title', 'Payments_10_Description', '{{}}', NULL, 'Payments_10_SummaryTitle', '_Payments10', 10)
+                    VALUES('{Guid.NewGuid()}', NULL, NULL, v_section_id, 3, true, 'Payments_10_Title', 'Payments_10_Description', '{{}}', NULL, 'Payments_10_SummaryTitle', '_Payments10', 24)
                     RETURNING id INTO v_question10_id;
 
                     INSERT INTO form_questions (guid, next_question_id, next_question_alternative_id, section_id, ""type"", is_required, title, description, ""options"",  caption, summary_title, ""name"", sort_order)
-                    VALUES('{Guid.NewGuid()}', NULL, NULL, v_section_id, 10, true, 'Payments_11_Title', 'Payments_11_Description', '{{}}', NULL, 'Payments_11_SummaryTitle', '_Payments11', 11)
+                    VALUES('{Guid.NewGuid()}', NULL, NULL, v_section_id, 10, true, 'Payments_11_Title', 'Payments_11_Description', '{{}}', NULL, 'Payments_11_SummaryTitle', '_Payments11', 25)
                     RETURNING id INTO v_question11_id;
 
                     INSERT INTO form_questions (guid, next_question_id, next_question_alternative_id, section_id, ""type"", is_required, title, description, ""options"", caption, summary_title, ""name"", sort_order)
-                    VALUES('{Guid.NewGuid()}', NULL, NULL, v_section_id, 6, true, 'Global_CheckYourAnswers', NULL, '{{}}', NULL, '', '_Payments12', 12)
+                    VALUES('{Guid.NewGuid()}', NULL, NULL, v_section_id, 6, true, 'Global_CheckYourAnswers', NULL, '{{}}', NULL, '', '_Payments12', 26)
                     RETURNING id INTO v_question12_id;
 
                     -- Update the next question links
@@ -92,8 +162,22 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                     UPDATE form_questions SET next_question_id = v_question4_id WHERE title = 'Payments_03_Title' AND section_id = v_section_id;
                     UPDATE form_questions SET next_question_id = v_question5_id WHERE title = 'Payments_04_Title' AND section_id = v_section_id;
                     UPDATE form_questions SET next_question_id = v_question6_id WHERE title = 'Payments_05_Title' AND section_id = v_section_id;
-                    UPDATE form_questions SET next_question_id = v_question7_id WHERE title = 'Payments_06_Title' AND section_id = v_section_id;
-                    UPDATE form_questions SET next_question_id = v_question8_id WHERE title = 'Payments_07_Title' AND section_id = v_section_id;
+                    UPDATE form_questions SET next_question_id = v_question6_1_id WHERE title = 'Payments_06_Title' AND section_id = v_section_id;
+                    UPDATE form_questions SET next_question_id = v_question6_2_id WHERE title = 'Payments_06_ReportingStartDate' AND section_id = v_section_id;
+                    UPDATE form_questions SET next_question_id = v_question6_3_id WHERE title = 'Payments_06_AverageDaysToPayInvoice' AND section_id = v_section_id;
+                    UPDATE form_questions SET next_question_id = v_question6_4_id WHERE title = 'Payments_06_InvoicesPaid_Label' AND section_id = v_section_id;
+                    UPDATE form_questions SET next_question_id = v_question6_5_id WHERE title = 'Payments_06_PctPaidWithin30Days' AND section_id = v_section_id;
+                    UPDATE form_questions SET next_question_id = v_question6_6_id WHERE title = 'Payments_06_PctPaid31To60Days' AND section_id = v_section_id;
+                    UPDATE form_questions SET next_question_id = v_question6_7_id WHERE title = 'Payments_06_PctPaid61OrMoreDays' AND section_id = v_section_id;
+                    UPDATE form_questions SET next_question_id = v_question7_id WHERE title = 'Payments_06_PctPaidOverdue' AND section_id = v_section_id;
+                    UPDATE form_questions SET next_question_id = v_question7_1_id WHERE title = 'Payments_07_Title' AND section_id = v_section_id;
+                    UPDATE form_questions SET next_question_id = v_question7_2_id WHERE title = 'Payments_07_ReportingStartDate' AND section_id = v_section_id;
+                    UPDATE form_questions SET next_question_id = v_question7_3_id WHERE title = 'Payments_07_AverageDaysToPayInvoice' AND section_id = v_section_id;
+                    UPDATE form_questions SET next_question_id = v_question7_4_id WHERE title = 'Payments_07_InvoicesPaid_Label' AND section_id = v_section_id;
+                    UPDATE form_questions SET next_question_id = v_question7_5_id WHERE title = 'Payments_07_PctPaidWithin30Days' AND section_id = v_section_id;
+                    UPDATE form_questions SET next_question_id = v_question7_6_id WHERE title = 'Payments_07_PctPaid31To60Days' AND section_id = v_section_id;
+                    UPDATE form_questions SET next_question_id = v_question7_7_id WHERE title = 'Payments_07_PctPaid61OrMoreDays' AND section_id = v_section_id;
+                    UPDATE form_questions SET next_question_id = v_question8_id WHERE title = 'Payments_07_PctPaidOverdue' AND section_id = v_section_id;
                     UPDATE form_questions SET next_question_id = v_question9_id WHERE title = 'Payments_08_Title' AND section_id = v_section_id;
                     UPDATE form_questions SET next_question_id = v_question10_id WHERE title = 'Payments_09_Title' AND section_id = v_section_id;
                     UPDATE form_questions SET next_question_id = v_question11_id WHERE title = 'Payments_10_Title' AND section_id = v_section_id;
