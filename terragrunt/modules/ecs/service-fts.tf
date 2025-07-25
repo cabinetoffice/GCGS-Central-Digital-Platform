@@ -13,6 +13,7 @@ module "ecs_service_fts" {
   ecs_alb_sg_id          = var.alb_sg_id
   ecs_listener_arn       = aws_lb_listener.ecs.arn
   ecs_service_base_sg_id = var.ecs_sg_id
+  extra_host_headers     = var.fts_extra_host_headers
   family                 = "app"
   healthcheck_path       = "/health"
   host_port              = var.service_configs.fts.port

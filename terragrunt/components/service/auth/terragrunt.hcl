@@ -29,7 +29,8 @@ dependency core_networking {
 
 
 inputs = {
-  tags = local.tags
+  fts_extra_domains = local.global_vars.locals.fts_extra_domains
+  tags              = local.tags
 
   public_domain = dependency.core_networking.outputs.public_domain
 }

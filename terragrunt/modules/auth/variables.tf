@@ -4,6 +4,12 @@ variable "environment" {
   type        = string
 }
 
+variable "fts_extra_domains" {
+  description = "Optional list of additional host headers to be added for FTS service"
+  type        = list(string)
+  default     = []
+}
+
 variable "product" {
   description = "product's common attributes"
   type = object({
