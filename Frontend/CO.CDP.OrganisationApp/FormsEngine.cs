@@ -139,7 +139,7 @@ public class FormsEngine(
         {
             return null;
         }
-        if (currentQuestion.Options?.Grouping?.Page == true)
+        if (currentQuestion.Options.Grouping is { Page: true })
         {
             var groupNextQuestionId = GetMultiQuestionPageExitQuestion(currentQuestion, section.Questions);
 
@@ -168,7 +168,7 @@ public class FormsEngine(
     private Guid? GetMultiQuestionPageExitQuestion(FormQuestion currentQuestion, List<FormQuestion> allQuestions)
     {
 
-        if (currentQuestion.Options?.Grouping?.Page != true)
+        if (currentQuestion.Options.Grouping is not { Page: true })
         {
             return null;
         }
@@ -176,7 +176,7 @@ public class FormsEngine(
         var groupId = currentQuestion.Options.Grouping.Id;
 
         var questionsInGroup = allQuestions
-            .Where(q => q.Options.Grouping?.Id == groupId && q.Options.Grouping?.Page == true)
+            .Where(q => q.Options.Grouping?.Id == groupId && q.Options.Grouping.Page)
             .OrderBy(q => q.NextQuestion.HasValue ? 0 : 1)
             .ToList();
 
@@ -201,13 +201,13 @@ public class FormsEngine(
             return null;
 
         var startQuestion = allQuestions.FirstOrDefault(q => q.Id == startQuestionId.Value);
-        if (startQuestion?.Options?.Grouping?.Page != true)
+        if (startQuestion?.Options.Grouping is not { Page: true })
         {
             return startQuestionId;
         }
 
         var currentGroupQuestions = allQuestions
-            .Where(q => q.Options.Grouping?.Id == startQuestion.Options.Grouping.Id && q.Options.Grouping?.Page == true)
+            .Where(q => q.Options.Grouping?.Id == startQuestion.Options.Grouping.Id && q.Options.Grouping.Page)
             .ToList();
 
         var lastQuestionInGroup = currentGroupQuestions.LastOrDefault();
@@ -338,12 +338,10 @@ public class FormsEngine(
     {
         var questionsDictionary = allQuestions.ToDictionary(q => q.Id);
         var pathTaken = new List<FormQuestion>();
-        var visitedQuestions = new HashSet<Guid>();
         var currentPathQuestion = GetFirstQuestion(allQuestions);
 
         while (currentPathQuestion != null && currentPathQuestion.Id != currentQuestionId)
         {
-            visitedQuestions.Add(currentPathQuestion.Id);
             pathTaken.Add(currentPathQuestion);
 
             var nextQuestionId = GetNextQuestionInPath(currentPathQuestion, allQuestions, answerState);
@@ -362,13 +360,13 @@ public class FormsEngine(
     {
         var nextQuestionId = DetermineNextQuestionId(currentQuestion, answerState);
 
-        if (currentQuestion.Options.Grouping?.Page != true)
+        if (currentQuestion.Options.Grouping is not { Page: true })
         {
             return nextQuestionId;
         }
         var questionsInGroup = allQuestions
             .Where(q => q.Options.Grouping?.Id == currentQuestion.Options.Grouping.Id &&
-                        q.Options.Grouping?.Page == true)
+                        q.Options.Grouping.Page)
             .ToList();
 
         var currentQuestionInGroup = questionsInGroup.FirstOrDefault(q => q.Id == currentQuestion.Id);
