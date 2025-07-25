@@ -325,14 +325,14 @@ locals {
   service_configs_base = {
     authority                            = {}
     av_scanner_app                       = {}
-    cfs                                  = { desired_count = 3, cpu = 4096,  memory = 8192}
+    cfs                                  = { desired_count = 3, cpu = 4096,  memory = 16384}
     cfs_migrations                       = { desired_count = 1 }
     cfs_scheduler                        = { desired_count = 1 }
     data_sharing                         = {}
     entity_verification                  = {}
     entity_verification_migrations       = { cpu = 256,  memory = 512}
     forms                                = {}
-    fts                                  = { desired_count = 3, cpu = 4096,  memory = 8192}
+    fts                                  = { desired_count = 3, cpu = 4096,  memory = 16384}
     fts_healthcheck                      = { desired_count = 1 }
     fts_migrations                       = { desired_count = 1 }
     fts_scheduler                        = { desired_count = 1 }
