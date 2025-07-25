@@ -3,7 +3,6 @@ using CO.CDP.Organisation.WebApi.UseCase;
 using CO.CDP.OrganisationInformation;
 using CO.CDP.TestKit.Mvc;
 using FluentAssertions;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Moq;
@@ -24,6 +23,7 @@ public class OrganisationEndpointsTests
     private readonly Mock<IUseCase<(Guid, OrganisationJoinRequestStatus?), IEnumerable<JoinRequestLookUp>>> _getOrganisationJoinRequestsUseCase = new();
     private readonly Mock<IUseCase<(Guid, Guid, UpdateJoinRequest), bool>> _updateJoinRequestUseCase = new();
     private readonly Mock<IUseCase<OrganisationSearchQuery, IEnumerable<OrganisationSearchResult>>> _searchOrganisationUseCase = new();
+    private readonly Mock<IUseCase<OrganisationSearchByPponQuery, (IEnumerable<OrganisationSearchByPponResult>, int)>> _searchByNameOrPponUseCase = new();
 
     public OrganisationEndpointsTests()
     {
@@ -289,10 +289,8 @@ public class OrganisationEndpointsTests
     {
         var organisationId = Guid.NewGuid();
 
-        var reviews = new List<Review> {};
-
         _getReviewsUseCase.Setup(uc => uc.Execute(organisationId))
-            .ReturnsAsync(reviews);
+            .ReturnsAsync(new List<Review>());
 
         var factory = new TestAuthorizationWebApplicationFactory<Program>(
             Channel.OneLogin, organisationId, OrganisationPersonScope.Editor,
@@ -323,7 +321,7 @@ public class OrganisationEndpointsTests
                 Id = Guid.NewGuid(),
                 Identifier = new Identifier
                 {
-                    Scheme = "scheme",
+                    Scheme = "GB-PPON",
                     Id = "123",
                     LegalName = "legal name"
                 },
@@ -359,10 +357,8 @@ public class OrganisationEndpointsTests
     {
         var organisationId = Guid.NewGuid();
 
-        var searchResults = new List<OrganisationSearchResult>{};
-
         _searchOrganisationUseCase.Setup(uc => uc.Execute(It.IsAny<OrganisationSearchQuery>()))
-            .ReturnsAsync(searchResults);
+            .ReturnsAsync(new List<OrganisationSearchResult>());
 
         var factory = new TestAuthorizationWebApplicationFactory<Program>(
             Channel.OneLogin, organisationId, OrganisationPersonScope.Viewer,
@@ -378,10 +374,8 @@ public class OrganisationEndpointsTests
     {
         var organisationId = Guid.NewGuid();
 
-        var searchResults = new List<OrganisationSearchResult> { };
-
         _searchOrganisationUseCase.Setup(uc => uc.Execute(It.IsAny<OrganisationSearchQuery>()))
-            .ReturnsAsync(searchResults);
+            .ReturnsAsync(new List<OrganisationSearchResult>());
 
         var factory = new TestAuthorizationWebApplicationFactory<Program>(
             Channel.OneLogin, organisationId, OrganisationPersonScope.Viewer,
@@ -391,6 +385,162 @@ public class OrganisationEndpointsTests
 
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
+
+    [Fact]
+    public async Task SearchByNameOrPpon_ReturnsResults_WhenResultsAreFound()
+    {
+        var organisationId = Guid.NewGuid();
+
+        var searchResults = new List<OrganisationSearchByPponResult>
+        {
+            new OrganisationSearchByPponResult
+            {
+                Id = Guid.NewGuid(),
+                Name = "Test Organisation",
+                Type = OrganisationType.Organisation,
+                Identifiers = new List<Identifier>
+                {
+                    new Identifier
+                    {
+                        Scheme = "GB-PPON",
+                        Id = "PGWZ-1758-ABCD",
+                        LegalName = "Test Organisation Legal Name"
+                    }
+                },
+                Roles = new List<PartyRole> { PartyRole.Buyer },
+                Addresses = new List<OrganisationAddress>()
+            },
+            new OrganisationSearchByPponResult
+            {
+                Id = Guid.NewGuid(),
+                Name = "Another Organisation",
+                Type = OrganisationType.Organisation,
+                Identifiers = new List<Identifier>
+                {
+                    new Identifier
+                    {
+                        Scheme = "GB-PPON",
+                        Id = "PGWZ-1758-EFGH",
+                        LegalName = "Another Organisation Legal Name"
+                    }
+                },
+                Roles = new List<PartyRole> { PartyRole.Tenderer },
+                Addresses = new List<OrganisationAddress>()
+            }
+        };
+
+        int totalCount = 2;
+        var searchResponse = (searchResults, totalCount);
+
+        _searchByNameOrPponUseCase.Setup(uc => uc.Execute(It.IsAny<OrganisationSearchByPponQuery>()))
+            .ReturnsAsync(searchResponse);
+
+        var factory = new TestAuthorizationWebApplicationFactory<Program>(
+            Channel.OneLogin, organisationId, OrganisationPersonScope.Admin,
+            services => services.AddScoped(_ => _searchByNameOrPponUseCase.Object));
+
+        var response = await factory.CreateClient().GetAsync($"/organisation/search-by-name-or-ppon?searchText=test&limit=10&skip=0&sortOrder=asc");
+
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+
+        var content = await response.Content.ReadFromJsonAsync<OrganisationSearchByPponResponse>();
+        content.Should().NotBeNull();
+        content!.Results.Should().HaveCount(2);
+        content.TotalCount.Should().Be(2);
+        content.Results.Should().BeEquivalentTo(searchResults, options => options.ComparingByMembers<OrganisationSearchByPponResult>());
+    }
+
+    [Fact]
+    public async Task SearchByNameOrPpon_ReturnsNotFound_WhenNoResultsAreFound()
+    {
+        var organisationId = Guid.NewGuid();
+
+        var searchResults = new List<OrganisationSearchByPponResult>();
+        int totalCount = 0;
+        var searchResponse = (searchResults, totalCount);
+
+        _searchByNameOrPponUseCase.Setup(uc => uc.Execute(It.IsAny<OrganisationSearchByPponQuery>()))
+            .ReturnsAsync(searchResponse);
+
+        var factory = new TestAuthorizationWebApplicationFactory<Program>(
+            Channel.OneLogin, organisationId, OrganisationPersonScope.Admin,
+            services => services.AddScoped(_ => _searchByNameOrPponUseCase.Object));
+
+        var response = await factory.CreateClient().GetAsync($"/organisation/search-by-name-or-ppon?searchText=nonexistent&limit=10&skip=0&sortOrder=asc");
+
+        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+    }
+
+    [Fact]
+    public async Task SearchByNameOrPpon_ReturnsUnprocessableContent_WhenRequiredParameterIsMissing()
+    {
+        var organisationId = Guid.NewGuid();
+
+        var factory = new TestAuthorizationWebApplicationFactory<Program>(
+            Channel.OneLogin, organisationId, OrganisationPersonScope.Admin,
+            services => services.AddScoped(_ => _searchByNameOrPponUseCase.Object));
+
+        var response = await factory.CreateClient().GetAsync($"/organisation/search-by-name-or-ppon?limit=10&skip=0&sortOrder=asc");
+
+        response.StatusCode.Should().Be(HttpStatusCode.UnprocessableContent);
+    }
+
+    [Theory]
+    [InlineData("invalid", HttpStatusCode.OK)]
+    [InlineData("asecending", HttpStatusCode.OK)]
+    public async Task SearchByNameOrPpon_AcceptsInvalidSortOrder_AndReturnsData(string sortOrder, HttpStatusCode expectedStatusCode)
+    {
+        var organisationId = Guid.NewGuid();
+
+        var searchResults = new List<OrganisationSearchByPponResult>
+        {
+            new OrganisationSearchByPponResult
+            {
+                Id = Guid.NewGuid(),
+                Name = "Demo Org",
+                Type = OrganisationType.Organisation,
+                Identifiers = new List<Identifier>
+                {
+                    new Identifier
+                    {
+                        Scheme = "GB-PPON",
+                        Id = "PGWZ-1758-DEMO",
+                        LegalName = "Demo Org"
+                    }
+                },
+                Roles = new List<PartyRole> { PartyRole.Buyer },
+                Addresses = new List<OrganisationAddress>()
+            }
+        };
+
+        int totalCount = 1;
+        var searchResponse = (searchResults, totalCount);
+
+        _searchByNameOrPponUseCase.Setup(uc => uc.Execute(It.IsAny<OrganisationSearchByPponQuery>()))
+            .ReturnsAsync(searchResponse);
+
+        var factory = new TestAuthorizationWebApplicationFactory<Program>(
+            Channel.OneLogin, organisationId, OrganisationPersonScope.Admin,
+            services => services.AddScoped(_ => _searchByNameOrPponUseCase.Object));
+
+        var response = await factory.CreateClient().GetAsync($"/organisation/search-by-name-or-ppon?searchText=test&limit=10&skip=0&sortOrder={sortOrder}");
+
+        response.StatusCode.Should().Be(expectedStatusCode);
+
+        if (expectedStatusCode == HttpStatusCode.OK)
+        {
+            var content = await response.Content.ReadFromJsonAsync<OrganisationSearchByPponResponse>();
+            content.Should().NotBeNull();
+            content!.Results.Should().HaveCount(1);
+            content.TotalCount.Should().Be(1);
+
+            _searchByNameOrPponUseCase.Verify(uc => uc.Execute(
+                It.Is<OrganisationSearchByPponQuery>(q =>
+                    q.OrderBy == (string.IsNullOrEmpty(sortOrder) ? "rel" : sortOrder))),
+                Times.Once);
+        }
+    }
+
 
     public static Model.Organisation GivenOrganisation(Guid organisationId)
     {
@@ -445,7 +595,7 @@ public class OrganisationEndpointsTests
                 Name = "Contact Name",
                 Email = "contact@example.org",
                 Telephone = "123-456-7890",
-                Url = "http://example.org/contact"
+                Url = "https://example.org/contact"
             },
             Roles = [PartyRole.Tenderer]
         };

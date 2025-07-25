@@ -13,6 +13,13 @@ locals {
 
   fts_domain              = "${local.auth_domain}-fts"
   fts_url                 = "https://fts.${var.public_domain}"
+  fts_urls = concat(
+    [local.fts_url],
+    var.fts_extra_domains
+  )
+  fts_callback_urls = [for url in local.fts_urls : "https://${url}/oauth2/idpresponse"]
+  fts_logout_urls   = [for url in local.fts_urls : "https://${url}/logout"]
+
   fts_healthcheck_domain  = "${local.auth_domain}-fts-healthcheck"
   fts_healthcheck_url     = "https://fts-healthcheck.${var.public_domain}"
 
