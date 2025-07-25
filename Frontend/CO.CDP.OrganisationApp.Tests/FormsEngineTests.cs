@@ -164,7 +164,25 @@ public class FormsEngineTests
                         Choices = options == null
                             ? new Dictionary<string, string>() { { "Option1", "Option1" } }
                             : options,
-                        ChoiceProviderStrategy = choiceProviderStrategy
+                        ChoiceProviderStrategy = choiceProviderStrategy,
+                        Layout = new LayoutOptions
+                        {
+                            CustomYesText = null,
+                            CustomNoText = null,
+                            InputWidth = null,
+                            InputSuffix = null,
+                            CustomCssClasses = null,
+                            PreHeadingContent = null,
+                            PostSubmitContent = null,
+                            PrimaryButtonText = null
+                        },
+                        Validation = new ValidationOptions
+                        {
+                            DateValidationType = null,
+                            MinDate = null,
+                            MaxDate = null,
+                            TextValidationType = null
+                        }
                     }
                 }
             }

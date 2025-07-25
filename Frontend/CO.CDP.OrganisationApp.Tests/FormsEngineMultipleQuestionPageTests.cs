@@ -392,4 +392,131 @@ public class FormsEngineMultipleQuestionPageTests
         var answer = result.First() as AnswerSummary;
         answer!.Title.Should().Be("Answered Question");
     }
+
+    [Fact]
+    public async Task GetNextQuestion_ShouldNavigateToExitQuestion_WhenSubmittingFromMultiQuestionPage()
+    {
+        var (organisationId, formId, sectionId, sessionKey) = CreateTestGuids();
+        var groupId = Guid.NewGuid();
+
+        var textQuestionId = new Guid("ffffffff-ffff-ffff-ffff-ffffffffffff");
+        var yesNoQuestionId = new Guid("99999999-9999-9999-9999-999999999999");
+        var fileUploadQuestionId = new Guid("dddddddd-dddd-dddd-dddd-dddddddddddd");
+
+        var groupStartQuestionId = new Guid("a2222222-2222-2222-2222-222222222222");
+
+        var checkYourAnswersId = new Guid("a1111111-1111-1111-1111-111111111111");
+
+        var sectionResponse = new SectionQuestionsResponse
+        {
+            Section = new FormSection { Id = sectionId, Title = "Test Section" },
+            Questions =
+            {
+                new FormQuestion
+                {
+                    Id = textQuestionId,
+                    Type = FormQuestionType.Text,
+                    Title = "Text Question",
+                    NextQuestion = yesNoQuestionId,
+                    Options = new FormQuestionOptions
+                    {
+                        Grouping = new FormQuestionGrouping
+                        {
+                            Id = groupId,
+                            Page = true,
+                            CheckYourAnswers = true,
+                            SummaryTitle = "Multi Question Group"
+                        }
+                    }
+                },
+                new FormQuestion
+                {
+                    Id = yesNoQuestionId,
+                    Type = FormQuestionType.YesOrNo,
+                    Title = "Yes/No Question",
+                    NextQuestion = fileUploadQuestionId,
+                    Options = new FormQuestionOptions
+                    {
+                        Grouping = new FormQuestionGrouping
+                        {
+                            Id = groupId,
+                            Page = true,
+                            CheckYourAnswers = true,
+                            SummaryTitle = "Multi Question Group"
+                        }
+                    }
+                },
+                new FormQuestion
+                {
+                    Id = fileUploadQuestionId,
+                    Type = FormQuestionType.FileUpload,
+                    Title = "File Upload Question",
+                    NextQuestion = groupStartQuestionId,
+                    Options = new FormQuestionOptions
+                    {
+                        Grouping = new FormQuestionGrouping
+                        {
+                            Id = groupId,
+                            Page = true,
+                            CheckYourAnswers = true,
+                            SummaryTitle = "Multi Question Group"
+                        }
+                    }
+                },
+                new FormQuestion
+                {
+                    Id = groupStartQuestionId,
+                    Type = FormQuestionType.Text,
+                    Title = "Group Start Question",
+                    NextQuestion = checkYourAnswersId,
+                    Options = new FormQuestionOptions
+                    {
+                        Grouping = new FormQuestionGrouping
+                        {
+                            Id = groupId,
+                            Page = true,
+                            CheckYourAnswers = true,
+                            SummaryTitle = "Multi Question Group"
+                        }
+                    }
+                },
+                new FormQuestion
+                {
+                    Id = checkYourAnswersId,
+                    Type = FormQuestionType.CheckYourAnswers,
+                    Title = "Check Your Answers",
+                    Options = new FormQuestionOptions()
+                }
+            }
+        };
+
+        var answerState = new FormQuestionAnswerState
+        {
+            Answers =
+            {
+                new QuestionAnswer { QuestionId = textQuestionId, Answer = new FormAnswer { TextValue = "Text answer" } },
+                new QuestionAnswer { QuestionId = yesNoQuestionId, Answer = new FormAnswer { BoolValue = true } },
+                new QuestionAnswer { QuestionId = fileUploadQuestionId, Answer = new FormAnswer { TextValue = "file.pdf" } }
+            }
+        };
+
+        _tempDataServiceMock.Setup(t => t.Peek<SectionQuestionsResponse>(sessionKey))
+            .Returns(sectionResponse);
+
+        var resultFromTextQuestion = await _formsEngine.GetNextQuestion(organisationId, formId, sectionId, textQuestionId, answerState);
+        var resultFromYesNoQuestion = await _formsEngine.GetNextQuestion(organisationId, formId, sectionId, yesNoQuestionId, answerState);
+        var resultFromFileUploadQuestion = await _formsEngine.GetNextQuestion(organisationId, formId, sectionId, fileUploadQuestionId, answerState);
+
+        resultFromTextQuestion.Should().NotBeNull();
+        resultFromTextQuestion!.Id.Should().Be(checkYourAnswersId,
+            "navigation from text question in multi-question page should go to Check Your Answers");
+
+        resultFromYesNoQuestion.Should().NotBeNull();
+        resultFromYesNoQuestion!.Id.Should().Be(checkYourAnswersId,
+            "navigation from yes/no question in multi-question page should go to Check Your Answers");
+
+        resultFromFileUploadQuestion.Should().NotBeNull();
+        resultFromFileUploadQuestion!.Id.Should().Be(checkYourAnswersId,
+            "navigation from file upload question in multi-question page should go to Check Your Answers");
+    }
 }

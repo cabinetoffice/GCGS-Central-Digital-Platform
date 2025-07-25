@@ -5,6 +5,7 @@ using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.Pages.Forms;
 using CO.CDP.OrganisationApp.Pages.Forms.ChoiceProviderStrategies;
 using DataShareWebApiClient = CO.CDP.DataSharing.WebApiClient;
+using DateValidationType = CO.CDP.OrganisationApp.Models.DateValidationType;
 using FormAnswer = CO.CDP.OrganisationApp.Models.FormAnswer;
 using FormQuestion = CO.CDP.OrganisationApp.Models.FormQuestion;
 using FormQuestionGroup = CO.CDP.OrganisationApp.Models.FormQuestionGroup;
@@ -14,8 +15,10 @@ using FormQuestionOptions = CO.CDP.OrganisationApp.Models.FormQuestionOptions;
 using FormQuestionType = CO.CDP.OrganisationApp.Models.FormQuestionType;
 using FormSection = CO.CDP.OrganisationApp.Models.FormSection;
 using FormSectionType = CO.CDP.OrganisationApp.Models.FormSectionType;
+using InputWidthType = CO.CDP.OrganisationApp.Models.InputWidthType;
 using LayoutOptions = CO.CDP.OrganisationApp.Models.LayoutOptions;
 using SectionQuestionsResponse = CO.CDP.OrganisationApp.Models.SectionQuestionsResponse;
+using TextValidationType = CO.CDP.OrganisationApp.Models.TextValidationType;
 using ValidationOptions = CO.CDP.OrganisationApp.Models.ValidationOptions;
 
 namespace CO.CDP.OrganisationApp;
@@ -98,7 +101,7 @@ public class FormsEngine(
                             {
                                 CustomYesText = q.Options.Layout.CustomYesText,
                                 CustomNoText = q.Options.Layout.CustomNoText,
-                                InputWidth = q.Options.Layout.InputWidth.HasValue ? (CO.CDP.OrganisationApp.Models.InputWidthType)q.Options.Layout.InputWidth.Value : null,
+                                InputWidth = q.Options.Layout.InputWidth.HasValue ? (InputWidthType)q.Options.Layout.InputWidth.Value : null,
                                 InputSuffix = q.Options.Layout.InputSuffix,
                                 CustomCssClasses = q.Options.Layout.CustomCssClasses,
                                 PreHeadingContent = q.Options.Layout.PreHeadingContent,
@@ -109,10 +112,10 @@ public class FormsEngine(
                         Validation = q.Options.Validation != null
                             ? new ValidationOptions
                             {
-                                DateValidationType = q.Options.Validation.DateValidationType.HasValue ? (CO.CDP.OrganisationApp.Models.DateValidationType)q.Options.Validation.DateValidationType.Value : null,
+                                DateValidationType = q.Options.Validation.DateValidationType.HasValue ? (DateValidationType)q.Options.Validation.DateValidationType.Value : null,
                                 MinDate = q.Options.Validation.MinDate,
                                 MaxDate = q.Options.Validation.MaxDate,
-                                TextValidationType = q.Options.Validation.TextValidationType.HasValue ? (CO.CDP.OrganisationApp.Models.TextValidationType)q.Options.Validation.TextValidationType.Value : null
+                                TextValidationType = q.Options.Validation.TextValidationType.HasValue ? (TextValidationType)q.Options.Validation.TextValidationType.Value : null
                             }
                             : null
                     }
@@ -136,6 +139,17 @@ public class FormsEngine(
         {
             return null;
         }
+        if (currentQuestion.Options?.Grouping?.Page == true)
+        {
+            var groupNextQuestionId = GetMultiQuestionPageExitQuestion(currentQuestion, section.Questions);
+
+            if (!groupNextQuestionId.HasValue)
+            {
+                return null;
+            }
+
+            return section.Questions.FirstOrDefault(q => q.Id == groupNextQuestionId.Value);
+        }
 
         Guid? determinedNextQuestionId = DetermineNextQuestionId(currentQuestion, answerState);
 
@@ -149,6 +163,36 @@ public class FormsEngine(
         return determinedNextQuestionId.HasValue
             ? section.Questions.FirstOrDefault(q => q.Id == determinedNextQuestionId.Value)
             : null;
+    }
+
+    private Guid? GetMultiQuestionPageExitQuestion(FormQuestion currentQuestion, List<FormQuestion> allQuestions)
+    {
+
+        if (currentQuestion.Options?.Grouping?.Page != true)
+        {
+            return null;
+        }
+
+        var groupId = currentQuestion.Options.Grouping.Id;
+
+        var questionsInGroup = allQuestions
+            .Where(q => q.Options.Grouping?.Id == groupId && q.Options.Grouping?.Page == true)
+            .OrderBy(q => q.NextQuestion.HasValue ? 0 : 1)
+            .ToList();
+
+        foreach (var question in questionsInGroup)
+        {
+            if (question.NextQuestion.HasValue)
+            {
+                var nextQuestion = allQuestions.FirstOrDefault(q => q.Id == question.NextQuestion.Value);
+                if (nextQuestion == null || nextQuestion.Options.Grouping?.Id != groupId)
+                {
+                    return question.NextQuestion;
+                }
+            }
+        }
+
+        return null;
     }
 
     private Guid? SkipMultiQuestionPageQuestions(Guid? startQuestionId, List<FormQuestion> allQuestions)
@@ -318,13 +362,29 @@ public class FormsEngine(
     {
         var nextQuestionId = DetermineNextQuestionId(currentQuestion, answerState);
 
-        if (currentQuestion.Options.Grouping?.Page != true) return nextQuestionId;
+        if (currentQuestion.Options.Grouping?.Page != true)
+        {
+            return nextQuestionId;
+        }
         var questionsInGroup = allQuestions
             .Where(q => q.Options.Grouping?.Id == currentQuestion.Options.Grouping.Id &&
                         q.Options.Grouping?.Page == true)
             .ToList();
 
-        return questionsInGroup.LastOrDefault()?.NextQuestion;
+        var currentQuestionInGroup = questionsInGroup.FirstOrDefault(q => q.Id == currentQuestion.Id);
+        while (currentQuestionInGroup != null)
+        {
+            var nextQuestion = allQuestions.FirstOrDefault(q => q.Id == currentQuestionInGroup.NextQuestion);
+            if (nextQuestion == null || nextQuestion.Options.Grouping?.Id != currentQuestion.Options.Grouping.Id)
+            {
+                var result = currentQuestionInGroup.NextQuestion;
+                return result;
+            }
+            currentQuestionInGroup = nextQuestion;
+        }
+
+        var fallbackResult = questionsInGroup.LastOrDefault()?.NextQuestion;
+        return fallbackResult;
     }
 
     private Guid? GetMultiQuestionGroupStart(FormQuestion currentQuestion, List<FormQuestion> allQuestions)
