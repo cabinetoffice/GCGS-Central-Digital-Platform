@@ -2,6 +2,7 @@ using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Logging;
 using CO.CDP.OrganisationApp.Pages.Buyer.Hierarchy;
 using FluentAssertions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
@@ -20,7 +21,13 @@ public class ChildOrganisationConfirmPageTests
     {
         _mockOrganisationClient = new Mock<IOrganisationClient>();
         _mockLogger = new Mock<ILogger<ChildOrganisationConfirmPage>>();
-        _model = new ChildOrganisationConfirmPage(_mockOrganisationClient.Object, _mockLogger.Object);
+        var mockAuthorizationService = new Mock<IAuthorizationService>();
+        _model = new ChildOrganisationConfirmPage(_mockOrganisationClient.Object, _mockLogger.Object, mockAuthorizationService.Object);
+        mockAuthorizationService.Setup(a => a.AuthorizeAsync(
+                It.IsAny<System.Security.Claims.ClaimsPrincipal>(),
+                It.IsAny<object>(),
+                It.IsAny<IAuthorizationRequirement[]>()))
+            .ReturnsAsync(AuthorizationResult.Success());
     }
 
     [Fact]

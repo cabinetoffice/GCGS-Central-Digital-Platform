@@ -1,7 +1,6 @@
 using CO.CDP.OrganisationInformation.Persistence.Constants;
-using CO.CDP.Testcontainers.PostgreSql;
 using FluentAssertions;
-using System.Data;
+using Microsoft.EntityFrameworkCore;
 using static CO.CDP.OrganisationInformation.Persistence.IOrganisationRepository.OrganisationRepositoryException;
 using static CO.CDP.OrganisationInformation.Persistence.Tests.EntityFactory;
 
@@ -260,7 +259,6 @@ public class DatabaseOrganisationRepositoryTest(OrganisationInformationPostgreSq
             organisationToUpdate.Name = updatedName;
             repository.Save(organisationToUpdate);
         }
-
 
         repository.Save(organisation);
 
@@ -738,6 +736,387 @@ public class DatabaseOrganisationRepositoryTest(OrganisationInformationPostgreSq
     }
 
     [Fact]
+    public async Task SearchByNameOrPpon_WhenNoOrganisationsExist_ReturnsEmptyList()
+    {
+        using var repository = OrganisationRepository();
+        await using var context = GetDbContext();
+        await ClearTestData(context);
+
+        var result = await repository.SearchByNameOrPpon("Test", 10, 0, "asc");
+
+        result.Results.Should().BeEmpty();
+        result.TotalCount.Should().Be(0);
+    }
+
+    [Fact]
+    public async Task SearchByNameOrPpon_WhenSearchingByName_ReturnsMatchingOrganisations()
+    {
+        using var repository = OrganisationRepository();
+        await using var context = GetDbContext();
+        await ClearTestData(context);
+
+        var organisation1 = GivenOrganisation(
+            name: "AOrg",
+            roles: [PartyRole.Buyer],
+            identifiers: [new Identifier
+            {
+                Primary = true,
+                Scheme = "GB-PPON",
+                IdentifierId = "PGWZ-1758-ABCD",
+                LegalName = "AOrg",
+                Uri = "http://example.org"
+            }]
+        );
+        var organisation2 = GivenOrganisation(
+            name: "BOrg",
+            roles: [PartyRole.Tenderer],
+            identifiers: [new Identifier
+            {
+                Primary = true,
+                Scheme = "GB-PPON",
+                IdentifierId = "PGWZ-1759-EFGH",
+                LegalName = "BOrg",
+                Uri = "http://example.org"
+            }]
+        );
+
+        await context.Organisations.AddRangeAsync(organisation1, organisation2);
+        await context.SaveChangesAsync();
+
+        var result = await repository.SearchByNameOrPpon("AOrg", 10, 0, "asc");
+
+        result.Results.Should().HaveCount(1);
+        result.Results.First().Name.Should().Be("AOrg");
+        result.TotalCount.Should().Be(1);
+    }
+
+    [Fact]
+    public async Task SearchByNameOrPpon_WhenSearchingByPpon_ReturnsMatchingOrganisations()
+    {
+        using var repository = OrganisationRepository();
+        await using var context = GetDbContext();
+        await ClearTestData(context);
+
+        var organisation1 = GivenOrganisation(
+            name: "COrg",
+            roles: [PartyRole.Buyer],
+            identifiers: [new Identifier
+            {
+                Primary = true,
+                Scheme = "GB-PPON",
+                IdentifierId = "PGWZ-1758-ABCD",
+                LegalName = "COrg",
+                Uri = "http://example.org"
+            }]
+        );
+        var organisation2 = GivenOrganisation(
+            name: "DOrg",
+            roles: [PartyRole.Tenderer],
+            identifiers: [new Identifier
+            {
+                Primary = true,
+                Scheme = "GB-PPON",
+                IdentifierId = "PGWZ-1761-EFGH",
+                LegalName = "DOrg",
+                Uri = "http://example.org"
+            }]
+        );
+
+        await context.Organisations.AddRangeAsync(organisation1, organisation2);
+        await context.SaveChangesAsync();
+
+        var result = await repository.SearchByNameOrPpon("1758", 10, 0, "asc");
+
+        result.Results.Should().HaveCount(1);
+        result.Results.First().Name.Should().Be("COrg");
+        result.TotalCount.Should().Be(1);
+    }
+
+    [Fact]
+    public async Task SearchByNameOrPpon_WithPagination_ReturnsCorrectPage()
+    {
+        using var repository = OrganisationRepository();
+        await using var context = GetDbContext();
+        await ClearTestData(context);
+
+        var organisations = new[]
+        {
+            GivenOrganisation(
+                name: "Org1",
+                roles: [PartyRole.Buyer, PartyRole.Tenderer],
+                identifiers: [new Identifier
+                {
+                    Primary = true,
+                    Scheme = "GB-PPON",
+                    IdentifierId = "PGWZ-1001-AAAA",
+                    LegalName = "Org1",
+                    Uri = "http://example.org"
+                }]
+            ),
+            GivenOrganisation(
+                name: "Org2",
+                roles: [PartyRole.Buyer, PartyRole.Tenderer],
+                identifiers: [new Identifier
+                {
+                    Primary = true,
+                    Scheme = "GB-PPON",
+                    IdentifierId = "PGWZ-1002-BBBB",
+                    LegalName = "Org2",
+                    Uri = "http://example.org"
+                }]
+            ),
+            GivenOrganisation(
+                name: "Org3",
+                roles: [PartyRole.Buyer, PartyRole.Tenderer],
+                identifiers: [new Identifier
+                {
+                    Primary = true,
+                    Scheme = "GB-PPON",
+                    IdentifierId = "PGWZ-1003-CCCC",
+                    LegalName = "Org3",
+                    Uri = "http://example.org"
+                }]
+            ),
+        };
+
+        await context.Organisations.AddRangeAsync(organisations);
+        await context.SaveChangesAsync();
+
+        var result = await repository.SearchByNameOrPpon("Org", 1, 1, "asc");
+
+        result.Results.Should().HaveCount(1);
+        result.Results.First().Name.Should().Be("Org2");
+        result.TotalCount.Should().Be(3);
+    }
+
+    [Fact]
+    public async Task SearchByNameOrPpon_WithAscendingSort_ReturnsSortedResults()
+    {
+        using var repository = OrganisationRepository();
+        await using var context = GetDbContext();
+        await ClearTestData(context);
+
+        var organisations = new[]
+        {
+            GivenOrganisation(
+                name: "EOrg",
+                roles: [PartyRole.Buyer, PartyRole.Tenderer],
+                identifiers: [new Identifier
+                {
+                    Primary = true,
+                    Scheme = "GB-PPON",
+                    IdentifierId = "PGWZ-2001-AAAA",
+                    LegalName = "EOrg",
+                    Uri = "http://example.org"
+                }]
+            ),
+            GivenOrganisation(
+                name: "FOrg",
+                roles: [PartyRole.Buyer, PartyRole.Tenderer],
+                identifiers: [new Identifier
+                {
+                    Primary = true,
+                    Scheme = "GB-PPON",
+                    IdentifierId = "PGWZ-2002-BBBB",
+                    LegalName = "FOrg",
+                    Uri = "http://example.org"
+                }]
+            ),
+            GivenOrganisation(
+                name: "GOrg",
+                roles: [PartyRole.Buyer, PartyRole.Tenderer],
+                identifiers: [new Identifier
+                {
+                    Primary = true,
+                    Scheme = "GB-PPON",
+                    IdentifierId = "PGWZ-2003-CCCC",
+                    LegalName = "GOrg",
+                    Uri = "http://example.org"
+                }]
+            ),
+        };
+
+        await context.Organisations.AddRangeAsync(organisations);
+        await context.SaveChangesAsync();
+
+        var result = await repository.SearchByNameOrPpon("Org", 10, 0, "asc");
+
+        result.Results.Should().HaveCount(3);
+        result.Results.First().Name.Should().Be("EOrg");
+        result.Results.Last().Name.Should().Be("GOrg");
+        result.TotalCount.Should().Be(3);
+    }
+
+    [Fact]
+    public async Task SearchByNameOrPpon_WithDescendingSort_ReturnsSortedResults()
+    {
+        using var repository = OrganisationRepository();
+        await using var context = GetDbContext();
+        await ClearTestData(context);
+
+        var organisations = new[]
+        {
+            GivenOrganisation(
+                name: "HOrg",
+                roles: [PartyRole.Buyer, PartyRole.Tenderer],
+                identifiers: [new Identifier
+                {
+                    Primary = true,
+                    Scheme = "GB-PPON",
+                    IdentifierId = "PGWZ-4001-AAAA",
+                    LegalName = "HOrg",
+                    Uri = "http://example.org"
+                }]
+            ),
+            GivenOrganisation(
+                name: "IOrg",
+                roles: [PartyRole.Buyer, PartyRole.Tenderer],
+                identifiers: [new Identifier
+                {
+                    Primary = true,
+                    Scheme = "GB-PPON",
+                    IdentifierId = "PGWZ-5002-BBBB",
+                    LegalName = "IOrg",
+                    Uri = "http://example.org"
+                }]
+            ),
+            GivenOrganisation(
+                name: "JOrg",
+                roles: [PartyRole.Buyer, PartyRole.Tenderer],
+                identifiers: [new Identifier
+                {
+                    Primary = true,
+                    Scheme = "GB-PPON",
+                    IdentifierId = "PGWZ-5003-CCCC",
+                    LegalName = "JOrg",
+                    Uri = "http://example.org"
+                }]
+            ),
+        };
+
+        await context.Organisations.AddRangeAsync(organisations);
+        await context.SaveChangesAsync();
+
+        var result = await repository.SearchByNameOrPpon("Org", 10, 0, "desc");
+
+        result.Results.Should().HaveCount(3);
+        result.Results.First().Name.Should().Be("JOrg");
+        result.Results.Last().Name.Should().Be("HOrg");
+        result.TotalCount.Should().Be(3);
+    }
+
+    [Fact]
+    public async Task SearchByNameOrPpon_WithNoOrderBySpecified_ReturnsResultsInDefaultOrder()
+    {
+        using var repository = OrganisationRepository();
+        await using var context = GetDbContext();
+        await ClearTestData(context);
+
+        var organisations = new[]
+        {
+            GivenOrganisation(
+                name: "Org5",
+                roles: [PartyRole.Buyer, PartyRole.Tenderer],
+                identifiers: [new Identifier
+                {
+                    Primary = true,
+                    Scheme = "GB-PPON",
+                    IdentifierId = "PGWZ-9001-AAAA",
+                    LegalName = "Org5",
+                    Uri = "http://example.org"
+                }]
+            ),
+            GivenOrganisation(
+                name: "Org6",
+                roles: [PartyRole.Buyer, PartyRole.Tenderer],
+                identifiers: [new Identifier
+                {
+                    Primary = true,
+                    Scheme = "GB-PPON",
+                    IdentifierId = "PGWZ-9102-BBBB",
+                    LegalName = "Org6",
+                    Uri = "http://example.org"
+                }]
+            ),
+        };
+
+        await context.Organisations.AddRangeAsync(organisations);
+        await context.SaveChangesAsync();
+
+        var result = await repository.SearchByNameOrPpon("Org", 10, 0, "rel");
+
+        result.Results.Should().HaveCount(2);
+        result.TotalCount.Should().Be(2);
+    }
+
+    [Fact]
+    public async Task SearchByNameOrPpon_WithoutGbPponIdentifier_ReturnsNoResults()
+    {
+        using var repository = OrganisationRepository();
+        await using var context = GetDbContext();
+        await ClearTestData(context);
+
+        var organisation = GivenOrganisation(
+            name: "Org9",
+            roles: [PartyRole.Buyer, PartyRole.Tenderer],
+            identifiers: [new Identifier
+            {
+                Primary = true,
+                Scheme = "GB-COH",
+                IdentifierId = "12345678",
+                LegalName = "Org9",
+                Uri = "http://example.org"
+            }]
+        );
+
+        await context.Organisations.AddAsync(organisation);
+        await context.SaveChangesAsync();
+
+        var result = await repository.SearchByNameOrPpon("Org", 10, 0, "asc");
+
+        result.Results.Should().BeEmpty();
+        result.TotalCount.Should().Be(0);
+    }
+
+    [Fact]
+    public async Task SearchByNameOrPpon_WithPartialPponMatch_ReturnsMatchingOrganisations()
+    {
+        using var repository = OrganisationRepository();
+        await using var context = GetDbContext();
+        await ClearTestData(context);
+
+        var organisation = GivenOrganisation(
+            name: "KOrg",
+            roles: [PartyRole.Buyer, PartyRole.Tenderer],
+            identifiers: [new Identifier
+            {
+                Primary = true,
+                Scheme = "GB-PPON",
+                IdentifierId = "PGWZ-1780-ABCD",
+                LegalName = "KOrg",
+                Uri = "http://example.org"
+            }]
+        );
+
+        await context.Organisations.AddAsync(organisation);
+        await context.SaveChangesAsync();
+
+        // Search with just part of the PPON
+        var result = await repository.SearchByNameOrPpon("ABCD", 10, 0, "asc");
+
+        result.Results.Should().HaveCount(1);
+        result.Results.First().Name.Should().Be("KOrg");
+        result.TotalCount.Should().Be(1);
+    }
+
+    private async Task ClearTestData(OrganisationInformationContext context)
+    {
+        await context.Database.ExecuteSqlRawAsync("DELETE FROM identifiers");
+        await context.Database.ExecuteSqlRawAsync("DELETE FROM organisations");
+        await context.SaveChangesAsync();
+    }
+
+    [Fact]
     public async Task GetPaginated_WhenNoOrganisationsExist_ReturnsEmptyList()
     {
         using var repository = OrganisationRepository();
@@ -968,3 +1347,4 @@ public class DatabaseOrganisationRepositoryTest(OrganisationInformationPostgreSq
         return context;
     }
 }
+
