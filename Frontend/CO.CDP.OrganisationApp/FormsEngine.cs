@@ -93,15 +93,7 @@ public class FormsEngine(
                                 SummaryTitle = q.Options.Grouping.SummaryTitle
                             }
                             : null,
-                        Layout = q.Options.Layout != null && (
-                            !string.IsNullOrWhiteSpace(q.Options.Layout.CustomYesText) ||
-                            !string.IsNullOrWhiteSpace(q.Options.Layout.CustomNoText) ||
-                            q.Options.Layout.InputWidth.HasValue ||
-                            !string.IsNullOrWhiteSpace(q.Options.Layout.InputSuffix) ||
-                            !string.IsNullOrWhiteSpace(q.Options.Layout.CustomCssClasses) ||
-                            !string.IsNullOrWhiteSpace(q.Options.Layout.PreHeadingContent) ||
-                            !string.IsNullOrWhiteSpace(q.Options.Layout.PostSubmitContent) ||
-                            !string.IsNullOrWhiteSpace(q.Options.Layout.PrimaryButtonText))
+                        Layout = q.Options.Layout != null
                             ? new LayoutOptions
                             {
                                 CustomYesText = q.Options.Layout.CustomYesText,
@@ -114,15 +106,13 @@ public class FormsEngine(
                                 PrimaryButtonText = q.Options.Layout.PrimaryButtonText
                             }
                             : null,
-                        Validation = q.Options.Validation != null && (
-                            q.Options.Validation.DateValidationType.HasValue ||
-                            q.Options.Validation.MinDate.HasValue ||
-                            q.Options.Validation.MaxDate.HasValue)
+                        Validation = q.Options.Validation != null
                             ? new ValidationOptions
                             {
                                 DateValidationType = q.Options.Validation.DateValidationType.HasValue ? (CO.CDP.OrganisationApp.Models.DateValidationType)q.Options.Validation.DateValidationType.Value : null,
                                 MinDate = q.Options.Validation.MinDate,
-                                MaxDate = q.Options.Validation.MaxDate
+                                MaxDate = q.Options.Validation.MaxDate,
+                                TextValidationType = q.Options.Validation.TextValidationType.HasValue ? (CO.CDP.OrganisationApp.Models.TextValidationType)q.Options.Validation.TextValidationType.Value : null
                             }
                             : null
                     }

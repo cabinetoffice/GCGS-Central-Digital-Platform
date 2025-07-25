@@ -64,7 +64,7 @@
                     </div>
                 }
 
-                <div class="govuk-radios govuk-!-margin-bottom-5" data-module="govuk-radios">
+                <div class="govuk-radios govuk-!-margin-bottom-5 @Model.Options?.Layout?.CustomCssClasses" data-module="govuk-radios">
                     @foreach (var choice in group.Choices)
                     {
                         var id = index == 0 ? Model.GetFieldName(nameof(Model.SelectedOption)) : $"{Model.GetFieldName(nameof(Model.SelectedOption))}_{index}";

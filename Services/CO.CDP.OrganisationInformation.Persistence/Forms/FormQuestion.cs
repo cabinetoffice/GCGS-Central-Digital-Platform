@@ -1,6 +1,8 @@
 using CO.CDP.EntityFrameworkCore.Timestamps;
 using Microsoft.EntityFrameworkCore;
 
+using System.Text.Json.Serialization;
+
 namespace CO.CDP.OrganisationInformation.Persistence.Forms;
 
 [Index(nameof(Name), IsUnique = true)]
@@ -41,21 +43,23 @@ public enum FormQuestionType
     Url
 }
 
-public enum InputWidthType
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public enum InputWidthType
 {
-    Full,
-    TwoThirds,
-    OneHalf,
-    OneThird,
-    Width20,
-    Width10,
-    Width5,
-    Width4,
+    Width2,
     Width3,
-    Width2
+    Width4,
+    Width5,
+    Width10,
+    Width20,
+    OneThird,
+    OneHalf,
+    TwoThirds,
+    Full
 }
 
-public enum DateValidationType
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public enum DateValidationType
 {
     None,
     PastOnly,
@@ -65,7 +69,8 @@ public enum DateValidationType
     DateRange
 }
 
-public enum TextValidationType
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public enum TextValidationType
 {
     None,
     Year

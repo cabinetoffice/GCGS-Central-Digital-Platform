@@ -26,7 +26,7 @@
             </p>
         }
 
-        <div class="govuk-radios" data-module="govuk-radios">
+        <div class="govuk-radios @Model.Options?.Layout?.CustomCssClasses" data-module="govuk-radios">
             <div class="govuk-radios__item">
                 <input class="govuk-radios__input" id="@Model.GetFieldName(nameof(Model.YesNoInput))" name="@Model.GetFieldName(nameof(Model.YesNoInput))" type="radio" value="yes" @(Model.YesNoInput == "yes" ? "checked" : "")>
                 <label class="govuk-label govuk-radios__label" for="@Model.GetFieldName(nameof(Model.YesNoInput))">@(Model.Options?.Layout?.CustomYesText ?? StaticTextResource.Global_Yes)</label>
