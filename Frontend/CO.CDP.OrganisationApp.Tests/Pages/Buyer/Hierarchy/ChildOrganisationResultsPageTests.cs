@@ -5,6 +5,7 @@ using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.Pages.Buyer.Hierarchy;
 using CO.CDP.OrganisationApp.Tests.TestData;
 using FluentAssertions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
@@ -23,7 +24,13 @@ public class ChildOrganisationResultsPageTests
     {
         _mockOrganisationClient = new Mock<IOrganisationClient>();
         _mockLogger = new Mock<ILogger<ChildOrganisationResultsPage>>();
-        _model = new ChildOrganisationResultsPage(_mockOrganisationClient.Object, _mockLogger.Object);
+        var mockAuthorizationService = new Mock<IAuthorizationService>();
+        _model = new ChildOrganisationResultsPage(_mockOrganisationClient.Object, _mockLogger.Object, mockAuthorizationService.Object);
+        mockAuthorizationService.Setup(a => a.AuthorizeAsync(
+                It.IsAny<System.Security.Claims.ClaimsPrincipal>(),
+                It.IsAny<object>(),
+                It.IsAny<IAuthorizationRequirement[]>()))
+            .ReturnsAsync(AuthorizationResult.Success());
     }
 
     [Fact]
@@ -199,7 +206,8 @@ public class ChildOrganisationResultsPageTests
     {
         var mockOrganisationClient = new Mock<IOrganisationClient>();
         var mockLogger = new Mock<ILogger<ChildOrganisationResultsPage>>();
-        var model = new ChildOrganisationResultsPage(mockOrganisationClient.Object, mockLogger.Object);
+        var mockAuthorizationService = new Mock<IAuthorizationService>();
+        var model = new ChildOrganisationResultsPage(mockOrganisationClient.Object, mockLogger.Object, mockAuthorizationService.Object);
 
         model.Results.Should().NotBeNull();
         model.Results.Should().BeEmpty();
@@ -210,7 +218,8 @@ public class ChildOrganisationResultsPageTests
     {
         var mockOrganisationClient = new Mock<IOrganisationClient>();
         var mockLogger = new Mock<ILogger<ChildOrganisationResultsPage>>();
-        var model = new ChildOrganisationResultsPage(mockOrganisationClient.Object, mockLogger.Object);
+        var mockAuthorizationService = new Mock<IAuthorizationService>();
+        var model = new ChildOrganisationResultsPage(mockOrganisationClient.Object, mockLogger.Object, mockAuthorizationService.Object);
 
         model.SelectedPponIdentifier.Should().BeNull();
     }

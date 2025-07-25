@@ -1,5 +1,7 @@
 using CO.CDP.Organisation.WebApiClient;
+using CO.CDP.OrganisationApp.Authorization;
 using CO.CDP.OrganisationApp.Logging;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
@@ -7,7 +9,8 @@ namespace CO.CDP.OrganisationApp.Pages.Buyer.Hierarchy;
 
 public class ChildOrganisationSuccessPage(
     IOrganisationClient organisationClient,
-    ILogger<ChildOrganisationSuccessPage> logger)
+    ILogger<ChildOrganisationSuccessPage> logger,
+    IAuthorizationService authorizationService)
     : PageModel
 {
     private readonly IOrganisationClient _organisationClient =
@@ -15,6 +18,9 @@ public class ChildOrganisationSuccessPage(
 
     private readonly ILogger<ChildOrganisationSuccessPage> _logger =
         logger ?? throw new ArgumentNullException(nameof(logger));
+
+    private readonly IAuthorizationService _authorizationService =
+        authorizationService ?? throw new ArgumentNullException(nameof(authorizationService));
 
     [BindProperty(SupportsGet = true)] public required Guid Id { get; set; }
 
@@ -26,6 +32,13 @@ public class ChildOrganisationSuccessPage(
 
     public async Task<IActionResult> OnGetAsync()
     {
+        var authResult = await _authorizationService.AuthorizeAsync(User, Id, new IsBuyerRequirement());
+        if (!authResult.Succeeded)
+        {
+            _logger.LogWarning("User is not authorised to access child organisation success page for parent ID {OrganisationId}.", Id);
+            return Redirect("/page-not-found");
+        }
+
         if (ChildId == Guid.Empty)
         {
             return RedirectToPage("/Error");
