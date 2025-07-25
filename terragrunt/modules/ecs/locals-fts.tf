@@ -17,7 +17,7 @@ locals {
     development = "https://fts.${var.public_domain}/auth/callback"
     staging     = "https://www-staging.find-tender.service.gov.uk/auth/callback"
     integration = "https://www-tpp.find-tender.service.gov.uk/auth/callback"
-    production  = "https://www.find-tender.service.gov.uk/auth/callba"
+    production  = "https://www.find-tender.service.gov.uk/auth/callback"
   }
 
   site_domains = {
