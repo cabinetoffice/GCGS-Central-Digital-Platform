@@ -10,21 +10,21 @@ locals {
     development = "https://fts.${var.public_domain}/auth/logout"
     staging     = "https://www-staging.find-tender.service.gov.uk/auth/logout"
     integration = "https://www-tpp.find-tender.service.gov.uk/auth/logout"
-    production  = "https://fts.${var.public_domain}/auth/logout"
+    production  = "https://www.find-tender.service.gov.uk/auth/logout"
   }
 
   fts_one_login_redirect_uris = {
     development = "https://fts.${var.public_domain}/auth/callback"
     staging     = "https://www-staging.find-tender.service.gov.uk/auth/callback"
     integration = "https://www-tpp.find-tender.service.gov.uk/auth/callback"
-    production  = "https://fts.${var.public_domain}/auth/callback"
+    production  = "https://www.find-tender.service.gov.uk/auth/callba"
   }
 
   site_domains = {
     development = "fts.${var.public_domain}"
     staging     = "www-staging.find-tender.service.gov.uk"
     integration = "www-tpp.find-tender.service.gov.uk"
-    production  = "fts.${var.public_domain}"
+    production  = "www.find-tender.service.gov.uk"
   }
 
   fts_secrets = {
@@ -97,7 +97,7 @@ locals {
     lg_name         = aws_cloudwatch_log_group.tasks[var.service_configs.fts.name].name
     lg_prefix       = "app"
     lg_region       = data.aws_region.current.name
-    memory          = var.service_configs.fts.memory
+    memory          = var.is_production ? var.service_configs.fts.memory * 2 : var.service_configs.fts.memory  // @TODO (ABN) Burn me
     name            = var.service_configs.fts.name
     public_domain   = var.public_domain
     service_version = local.service_version_fts
@@ -112,7 +112,7 @@ locals {
     lg_name         = aws_cloudwatch_log_group.tasks[var.service_configs.fts_scheduler.name].name
     lg_prefix       = "app"
     lg_region       = data.aws_region.current.name
-    memory          = var.service_configs.fts_scheduler.memory
+    memory          = var.is_production ? var.service_configs.fts_scheduler.memory * 2 :var.service_configs.fts_scheduler.memory // @TODO (ABN) Burn me
     name            = var.service_configs.fts_scheduler.name
     public_domain   = var.public_domain
     service_version = local.service_version_fts
