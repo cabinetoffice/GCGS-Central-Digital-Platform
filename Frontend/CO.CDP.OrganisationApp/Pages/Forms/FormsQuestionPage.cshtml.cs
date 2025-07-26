@@ -321,8 +321,6 @@ public class FormsQuestionPageModel(
                 SaveAnswerToTempData(question, null);
             }
         }
-
-        TryValidateModel(MultiQuestionModel);
     }
 
 
