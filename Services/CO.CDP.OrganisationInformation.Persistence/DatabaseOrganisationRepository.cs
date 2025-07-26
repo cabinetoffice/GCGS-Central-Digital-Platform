@@ -114,6 +114,37 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
         return await query.Select(t => t.Organisation).ToListAsync();
     }
 
+    public async Task<(IEnumerable<Organisation> Results, int TotalCount)> SearchByNameOrPpon(string searchText, int? limit, int skip, string orderBy)
+    {
+        var baseQuery = context.Organisations
+            .Include(b => b.Identifiers)
+            .Include(p => p.Addresses)
+            .ThenInclude(p => p.Address)
+            .Where(t =>
+                EF.Functions.ILike(t.Name, $"%{searchText}%") ||
+                t.Identifiers.Any(i => i.IdentifierId != null && EF.Functions.ILike(i.IdentifierId, $"%{searchText}%")))
+            .Where(t => t.Type == OrganisationType.Organisation)
+            .Where(t => t.Roles.Contains(PartyRole.Buyer) || t.Roles.Contains(PartyRole.Tenderer))
+            .Where(t => t.Identifiers.Any(i => i.Scheme.Equals("GB-PPON")));
+
+        if (orderBy.Equals("asc", StringComparison.OrdinalIgnoreCase))
+        {
+            baseQuery = baseQuery.OrderBy(t => t.Name);
+        }
+        else if (orderBy.Equals("desc", StringComparison.OrdinalIgnoreCase))
+        {
+            baseQuery = baseQuery.OrderByDescending(t => t.Name);
+        }
+
+        int totalCount = await baseQuery.CountAsync();
+
+        var results = limit.HasValue
+            ? await baseQuery.Skip(skip).Take(limit.Value).ToListAsync()
+            : await baseQuery.Skip(skip).ToListAsync();
+
+        return (results, totalCount);
+    }
+
     public async Task<IEnumerable<Organisation>> FindByOrganisationEmail(string email, PartyRole? role, int? limit)
     {
         var query = context.Organisations
@@ -237,7 +268,7 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
                 COALESCE(STRING_AGG(DISTINCT i.scheme || ':' || i.identifier_id, ', '), '') AS identifiers,
                 COALESCE(STRING_AGG(DISTINCT cp.email, ', '), '') AS contact_points,
                 COALESCE(STRING_AGG(DISTINCT p.email, ', '), '') AS admin_email,"
-                + (string.IsNullOrWhiteSpace(searchText) ? "0 AS similarity_score, 0 AS match_position" : @" 
+                + (string.IsNullOrWhiteSpace(searchText) ? "0 AS similarity_score, 0 AS match_position" : @"
                     similarity(o.name, :searchText) AS similarity_score,
                     NULLIF(POSITION(LOWER(:searchText) IN LOWER(o.name)), 0) AS match_position") +
             @"

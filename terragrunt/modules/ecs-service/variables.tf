@@ -70,6 +70,12 @@ variable "efs_volume" {
   default = null
 }
 
+variable "extra_host_headers" {
+  description = "Optional list of additional host headers to be added for this service"
+  type        = list(string)
+  default     = []
+}
+
 variable "family" {
   description = "A unique name for the task definition"
   type        = string

@@ -2,10 +2,12 @@ using System.ComponentModel.DataAnnotations;
 using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Pages.Buyer.Hierarchy;
 using FluentAssertions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.FeatureManagement;
 using Moq;
+using Microsoft.Extensions.Logging;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages.Buyer.Hierarchy;
 
@@ -17,7 +19,14 @@ public class ChildOrganisationSearchPageTests
     public ChildOrganisationSearchPageTests()
     {
         _featureManager = new Mock<IFeatureManager>();
-        _page = new ChildOrganisationSearchPage(_featureManager.Object);
+        var mockAuthorizationService = new Mock<IAuthorizationService>();
+        var mockLogger = new Mock<ILogger<ChildOrganisationSearchPage>>();
+        mockAuthorizationService.Setup(a => a.AuthorizeAsync(
+            It.IsAny<System.Security.Claims.ClaimsPrincipal>(),
+            It.IsAny<object>(),
+            It.IsAny<IAuthorizationRequirement[]>()))
+            .ReturnsAsync(AuthorizationResult.Success());
+        _page = new ChildOrganisationSearchPage(_featureManager.Object, mockAuthorizationService.Object, mockLogger.Object);
     }
 
     [Fact]

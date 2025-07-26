@@ -2,6 +2,7 @@ using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Pages.Buyer.Hierarchy;
 using CO.CDP.OrganisationApp.Tests.TestData;
 using FluentAssertions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
@@ -22,18 +23,23 @@ public class ChildOrganisationRemovePageTests
     {
         _mockOrganisationClient = new Mock<IOrganisationClient>();
         var mockLogger = new Mock<ILogger<ChildOrganisationRemovePage>>();
-
-        _modelWithMocks = new ChildOrganisationRemovePage(_mockOrganisationClient.Object, mockLogger.Object)
+        var mockAuthorizationService = new Mock<IAuthorizationService>();
+        _modelWithMocks = new ChildOrganisationRemovePage(_mockOrganisationClient.Object, mockLogger.Object, mockAuthorizationService.Object)
         {
             Id = _organisationId,
             ChildId = _childOrganisationId
         };
 
-        _modelWithoutDependencies = new ChildOrganisationRemovePage(_mockOrganisationClient.Object, mockLogger.Object)
+        _modelWithoutDependencies = new ChildOrganisationRemovePage(_mockOrganisationClient.Object, mockLogger.Object, mockAuthorizationService.Object)
         {
             Id = Guid.NewGuid(),
             ChildId = Guid.NewGuid()
         };
+        mockAuthorizationService.Setup(a => a.AuthorizeAsync(
+                It.IsAny<System.Security.Claims.ClaimsPrincipal>(),
+                It.IsAny<object>(),
+                It.IsAny<IAuthorizationRequirement[]>()))
+            .ReturnsAsync(AuthorizationResult.Success());
     }
 
     [Fact]
