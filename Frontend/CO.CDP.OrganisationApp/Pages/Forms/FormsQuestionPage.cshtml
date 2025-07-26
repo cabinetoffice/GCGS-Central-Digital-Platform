@@ -100,7 +100,7 @@
         ViewData["Title"] = Model.PartialViewModel.Heading;
 
         var questionContent = await Html.PartialAsync(Model.PartialViewName, Model.PartialViewModel);
-        var buttonText = !string.IsNullOrEmpty(Model.PartialViewModel?.Options?.Layout?.PrimaryButtonText) ? StaticTextResource.ResourceManager.GetString(Model.PartialViewModel.Options.Layout.PrimaryButtonText) ?? StaticTextResource.Global_Continue : StaticTextResource.Global_Continue;
+        var buttonText = !string.IsNullOrEmpty(Model.PartialViewModel?.Options?.Layout?.PrimaryButtonText) ? StaticTextResource.ResourceManager.GetString(Model.PartialViewModel.Options.Layout.PrimaryButtonText!) ?? StaticTextResource.Global_Continue : StaticTextResource.Global_Continue;
         var continueButton = Html.Raw("<button type=\"submit\" class=\"govuk-button\">" + buttonText + "</button>");
 
         var builder = new HtmlContentBuilder();
