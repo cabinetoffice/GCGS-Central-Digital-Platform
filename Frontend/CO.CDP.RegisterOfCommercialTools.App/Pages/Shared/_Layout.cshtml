@@ -70,6 +70,22 @@
                     </button>
                     <ul id="navigation" class="govuk-header__navigation-list">
                         @RenderSection("HeaderNavigation", required: false)
+                        @if (User.Identity?.IsAuthenticated == true)
+                        {
+                            <li class="govuk-header__navigation-item">
+                                <a class="govuk-header__link" href="/Auth/Logout">
+                                    Sign out
+                                </a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="govuk-header__navigation-item">
+                                <a class="govuk-header__link" href="/Auth/Login">
+                                    Sign in
+                                </a>
+                            </li>
+                        }
                     </ul>
                 </nav>
             </div>
