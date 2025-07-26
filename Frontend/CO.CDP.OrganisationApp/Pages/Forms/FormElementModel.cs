@@ -50,6 +50,23 @@ public abstract class FormElementModel : IFormElementModel
         return QuestionId.HasValue ? $"Q_{QuestionId.Value}_{propertyName}" : propertyName;
     }
 
+    public string? GetValidationMessage(string propertyName, Microsoft.AspNetCore.Mvc.ModelBinding.ModelStateDictionary modelState)
+    {
+        var fieldName = GetFieldName(propertyName);
+        if (modelState.TryGetValue(fieldName, out var modelStateEntry) && modelStateEntry.Errors.Count > 0)
+        {
+            return modelStateEntry.Errors[0].ErrorMessage;
+        }
+
+        return null;
+    }
+
+    public bool HasValidationError(string propertyName, Microsoft.AspNetCore.Mvc.ModelBinding.ModelStateDictionary modelState)
+    {
+        var fieldName = GetFieldName(propertyName);
+        return modelState.TryGetValue(fieldName, out var modelStateEntry) && modelStateEntry.Errors.Count > 0;
+    }
+
     public virtual void Initialize(FormQuestion question)
     {
         Heading = question.Title;

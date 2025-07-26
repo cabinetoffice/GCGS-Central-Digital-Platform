@@ -2,8 +2,8 @@
 @using CO.CDP.Localization
 
 @{
-    var uploadFileHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.UploadedFile)).HasInnerHtml;
-    var selectOptionHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.HasValue)).HasInnerHtml;
+    var uploadFileHasError = Model.HasValidationError(nameof(Model.UploadedFile), ViewData.ModelState);
+    var selectOptionHasError = Model.HasValidationError(nameof(Model.HasValue), ViewData.ModelState);
 
     void RenderDescription()
     {
@@ -28,7 +28,7 @@
             ariaDescribedby += " documents-error";
             <p class="govuk-error-message" id="@Model.GetFieldName("documents-error")">
                 <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span>
-                @Html.ValidationMessageFor(m => m.UploadedFile)
+                @Model.GetValidationMessage(nameof(Model.UploadedFile), ViewData.ModelState)
             </p>
         }
 
@@ -64,7 +64,7 @@
             {
                 <p class="govuk-error-message">
                     <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span>
-                    @Html.ValidationMessageFor(m => m.HasValue)
+                    @Model.GetValidationMessage(nameof(Model.HasValue), ViewData.ModelState)
                 </p>
             }
 

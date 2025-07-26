@@ -2,7 +2,7 @@
 @using CO.CDP.Localization
 
 @{
-    var hasError = ((TagBuilder)Html.ValidationMessageFor(m => m.CheckBoxInput)).HasInnerHtml;
+    var hasError = Model.HasValidationError(nameof(Model.CheckBoxInput), ViewData.ModelState);
 }
 
 <div class="govuk-form-group @(hasError ? "govuk-form-group--error" : "")">
@@ -25,7 +25,7 @@
         {
             <span class="govuk-error-message" id="@Model.GetFieldName("checkbox-error")">
                 <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span>
-                @Html.ValidationMessageFor(m => m.CheckBoxInput)
+                @Model.GetValidationMessage(nameof(Model.CheckBoxInput), ViewData.ModelState)
             </span>
         }
 

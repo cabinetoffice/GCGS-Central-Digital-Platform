@@ -2,10 +2,10 @@
 @using CO.CDP.Localization
 
 @{
-    var addressLine1HasError = ((TagBuilder)Html.ValidationMessageFor(m => m.AddressLine1)).HasInnerHtml;
-    var cityOrTownHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.TownOrCity)).HasInnerHtml;
-    var postcodeHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Postcode)).HasInnerHtml;
-    var countryHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.Country)).HasInnerHtml;
+    var addressLine1HasError = Model.HasValidationError(nameof(Model.AddressLine1), ViewData.ModelState);
+    var cityOrTownHasError = Model.HasValidationError(nameof(Model.TownOrCity), ViewData.ModelState);
+    var postcodeHasError = Model.HasValidationError(nameof(Model.Postcode), ViewData.ModelState);
+    var countryHasError = Model.HasValidationError(nameof(Model.Country), ViewData.ModelState);
 }
 
 <fieldset class="govuk-fieldset" @(!string.IsNullOrWhiteSpace(Model.Description) ? Html.Raw($"aria-describedby=\"{Model.GetFieldName("address-hint")}\"") : null)>
@@ -44,7 +44,7 @@
         {
             <p id="@Model.GetFieldName("address-one-error")" class="govuk-error-message">
                 <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span>
-                @Html.ValidationMessageFor(m => m.AddressLine1)
+                @Model.GetValidationMessage(nameof(Model.AddressLine1), ViewData.ModelState)
             </p>
         }
         <input class="govuk-input @(addressLine1HasError ? "govuk-input--error" : "")" id="@Model.GetFieldName(nameof(Model.AddressLine1))"
@@ -60,7 +60,7 @@
         {
             <p id="@Model.GetFieldName("city-error")" class="govuk-error-message">
                 <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span>
-                @Html.ValidationMessageFor(m => m.TownOrCity)
+                @Model.GetValidationMessage(nameof(Model.TownOrCity), ViewData.ModelState)
             </p>
         }
         <input class="govuk-input govuk-!-width-two-thirds @(cityOrTownHasError ? "govuk-input--error" : "")" id="@Model.GetFieldName(nameof(Model.TownOrCity))"
@@ -76,7 +76,7 @@
         {
             <p id="@Model.GetFieldName("postcode-error")" class="govuk-error-message">
                 <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span>
-                @Html.ValidationMessageFor(m => m.Postcode)
+                @Model.GetValidationMessage(nameof(Model.Postcode), ViewData.ModelState)
             </p>
         }
         <input class="govuk-input govuk-input--width-10 @(postcodeHasError ? "govuk-input--error" : "")" id="@Model.GetFieldName(nameof(Model.Postcode))"
@@ -94,7 +94,7 @@
             {
                 <p id="@Model.GetFieldName("country-error")" class="govuk-error-message">
                     <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span>
-                    @Html.ValidationMessageFor(m => m.Country)
+                    @Model.GetValidationMessage(nameof(Model.Country), ViewData.ModelState)
                 </p>
             }
             <select asp-for="Country" class="govuk-select @(countryHasError ? "govuk-select--error" : "")" id="@Model.GetFieldName(nameof(Model.Country))" name="@Model.GetFieldName(nameof(Model.Country))">

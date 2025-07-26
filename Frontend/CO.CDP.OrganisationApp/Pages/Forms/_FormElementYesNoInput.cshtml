@@ -1,7 +1,7 @@
 @model FormElementYesNoInputModel
 @using CO.CDP.Localization
 @{
-    var hasError = ((TagBuilder)Html.ValidationMessageFor(m => m.YesNoInput)).HasInnerHtml;
+    var hasError = Model.HasValidationError(nameof(Model.YesNoInput), ViewData.ModelState);
 }
 
 <div class="govuk-form-group @(hasError ? "govuk-form-group--error" : "")" @(hasError ? Html.Raw($"aria-describedby=\"{Model.GetFieldName("yes-no-error")}\"") : null)>
@@ -22,7 +22,7 @@
         {
             <p class="govuk-error-message" id="@Model.GetFieldName("yes-no-error")">
                 <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span>
-                @Html.ValidationMessageFor(m => m.YesNoInput)
+                @Model.GetValidationMessage(nameof(Model.YesNoInput), ViewData.ModelState)
             </p>
         }
 

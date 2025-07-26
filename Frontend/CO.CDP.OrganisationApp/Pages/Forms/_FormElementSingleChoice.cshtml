@@ -3,7 +3,7 @@
 @using CO.CDP.OrganisationApp.Pages.Forms.ChoiceProviderStrategies
 
 @{
-    var hasError = ((TagBuilder)Html.ValidationMessageFor(m => m.SelectedOption)).HasInnerHtml;
+    var hasError = Model.HasValidationError(nameof(Model.SelectedOption), ViewData.ModelState);
     string ariaDescribedby = "";
 
     if (!string.IsNullOrWhiteSpace(Model.Description))
@@ -17,7 +17,7 @@
     }
 }
 
-<div class="govuk-form-group">
+<div class="govuk-form-group @(hasError ? "govuk-form-group--error" : "")">
     <fieldset class="govuk-fieldset" aria-describedby="@ariaDescribedby">
         @if (!string.IsNullOrWhiteSpace(Model.Heading))
         {
@@ -43,7 +43,7 @@
         {
             <p class="govuk-error-message" id="@Model.GetFieldName("SelectedOption-error")">
                 <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span>
-                @Html.ValidationMessageFor(m => m.SelectedOption)
+                @Model.GetValidationMessage(nameof(Model.SelectedOption), ViewData.ModelState)
             </p>
         }
 

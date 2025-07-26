@@ -7,6 +7,7 @@ using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.Pages.Forms.ChoiceProviderStrategies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Localization;
 using static System.Net.Mime.MediaTypeNames;
@@ -51,7 +52,7 @@ public class FormsQuestionPageModel(
     public FormQuestionType? CurrentFormQuestionType { get; private set; }
     public string? PartialViewName { get; private set; }
     public IFormElementModel? PartialViewModel { get; private set; }
-    public IMultiQuestionFormElementModel? MultiQuestionViewModel { get; private set; }
+    public IMultiQuestionFormElementModel? MultiQuestionViewModel { get; set; }
     public FormQuestion? PreviousQuestion { get; private set; }
     public Guid? CheckYourAnswerQuestionId { get; private set; }
     public FormSectionType? FormSectionType { get; set; }
@@ -71,7 +72,36 @@ public class FormsQuestionPageModel(
     {
         ModelState.Clear();
 
-        if (viewModel != null && TryValidateModel(viewModel)) return ValidationResult.Success();
+        if (viewModel != null)
+        {
+            var isValid = TryValidateModel(viewModel);
+
+            if (viewModel is FormElementMultiQuestionModel multiQuestionModel && IsMultiQuestionPage)
+            {
+                var questionModelsList = multiQuestionModel.QuestionModels.ToList();
+                for (int i = 0; i < questionModelsList.Count; i++)
+                {
+                    var questionModel = questionModelsList[i];
+                    var questionIsValid = TryValidateModel(questionModel, $"QuestionModels[{i}]");
+
+                    if (!questionIsValid)
+                    {
+                        isValid = false;
+                    }
+                }
+            }
+
+            if (isValid)
+            {
+                return ValidationResult.Success();
+            }
+        }
+
+        if (viewModel is FormElementMultiQuestionModel && IsMultiQuestionPage)
+        {
+            MapMultiQuestionValidationErrors(ModelState);
+        }
+
         var organisation = await LoadOrganisation();
         return ValidationResult.Failed(organisation);
     }
@@ -295,6 +325,150 @@ public class FormsQuestionPageModel(
         TryValidateModel(MultiQuestionModel);
     }
 
+
+    private void MapMultiQuestionValidationErrors(ModelStateDictionary modelState)
+    {
+        if (MultiQuestionViewModel?.QuestionModels == null || modelState.ErrorCount == 0)
+        {
+            return;
+        }
+
+        var errorsToRemap = new List<(string originalKey, string newKey, ModelError error)>();
+
+        foreach (var modelStateEntry in modelState)
+        {
+            var originalKey = modelStateEntry.Key;
+
+            foreach (var error in modelStateEntry.Value.Errors)
+            {
+                var matchingQuestionModel = FindMatchingQuestionModel(originalKey, MultiQuestionViewModel.QuestionModels);
+
+                if (matchingQuestionModel != null)
+                {
+                    var newKey = GetMappedFieldName(originalKey, matchingQuestionModel);
+                    errorsToRemap.Add((originalKey, newKey, error));
+                }
+            }
+        }
+
+        foreach (var (originalKey, newKey, error) in errorsToRemap)
+        {
+            modelState.Remove(originalKey);
+            modelState.AddModelError(newKey, error.ErrorMessage);
+        }
+    }
+
+    private IFormElementModel? FindMatchingQuestionModel(string errorKey, IEnumerable<IFormElementModel> questionModels)
+    {
+        var formElementModels = questionModels.ToList();
+        if (errorKey.StartsWith("QuestionModels["))
+        {
+            var questionModelsList = formElementModels.ToList();
+            var startIndex = errorKey.IndexOf('[') + 1;
+            var endIndex = errorKey.IndexOf(']');
+
+            if (startIndex > 0 && endIndex > startIndex)
+            {
+                var indexString = errorKey.Substring(startIndex, endIndex - startIndex);
+                if (int.TryParse(indexString, out var index) && index >= 0 && index < questionModelsList.Count)
+                {
+                    return questionModelsList[index];
+                }
+            }
+        }
+
+        return formElementModels.FirstOrDefault(q => IsErrorForQuestionModel(errorKey, q));
+    }
+
+    private bool IsErrorForQuestionModel(string errorKey, IFormElementModel questionModel)
+    {
+        if (questionModel is not FormElementModel fem || !fem.QuestionId.HasValue)
+            return false;
+
+        var questionId = fem.QuestionId.Value;
+
+        if (errorKey.StartsWith("MultiQuestionViewModel.QuestionModels["))
+        {
+            var questionModels = MultiQuestionViewModel?.QuestionModels.ToList();
+            if (questionModels != null)
+            {
+                var index = questionModels.IndexOf(questionModel);
+                if (index >= 0 && errorKey.StartsWith($"MultiQuestionViewModel.QuestionModels[{index}]."))
+                {
+                    return true;
+                }
+            }
+        }
+
+        return errorKey.Contains(questionId.ToString()) ||
+               IsPropertyOfQuestionModel(errorKey, questionModel);
+    }
+
+    private bool IsPropertyOfQuestionModel(string propertyName, IFormElementModel questionModel)
+    {
+        return questionModel switch
+        {
+            FormElementTextInputModel => propertyName.Contains("TextInput") || propertyName.Contains("HasValue"),
+            FormElementYesNoInputModel => propertyName.Contains("YesNoInput"),
+            FormElementDateInputModel => propertyName.Contains("Day") || propertyName.Contains("Month") || propertyName.Contains("Year") || propertyName.Contains("DateString") || propertyName.Contains("HasValue"),
+            FormElementSingleChoiceModel => propertyName.Contains("SelectedOption"),
+            FormElementGroupedSingleChoiceModel => propertyName.Contains("SelectedOption"),
+            FormElementMultiLineInputModel => propertyName.Contains("TextInput"),
+            FormElementUrlInputModel => propertyName.Contains("TextInput") || propertyName.Contains("HasValue"),
+            FormElementAddressModel => propertyName.Contains("AddressLine1") || propertyName.Contains("TownOrCity") || propertyName.Contains("Postcode") || propertyName.Contains("Country"),
+            FormElementCheckBoxInputModel => propertyName.Contains("CheckBoxInput"),
+            FormElementFileUploadModel => propertyName.Contains("UploadedFileName") || propertyName.Contains("HasValue") || propertyName.Contains("UploadedFile"),
+            _ => false
+        };
+    }
+
+    private string GetMappedFieldName(string originalKey, IFormElementModel questionModel)
+    {
+        if (questionModel is not FormElementModel fem)
+            return originalKey;
+
+        var propertyName = ExtractPropertyName(originalKey, questionModel);
+
+        return fem.GetFieldName(propertyName);
+    }
+
+    private string ExtractPropertyName(string originalKey, IFormElementModel questionModel)
+    {
+        if (originalKey.StartsWith("MultiQuestionViewModel.QuestionModels["))
+        {
+            var lastDotIndex = originalKey.LastIndexOf('.');
+            if (lastDotIndex >= 0 && lastDotIndex < originalKey.Length - 1)
+            {
+                return originalKey.Substring(lastDotIndex + 1);
+            }
+        }
+
+        return questionModel switch
+        {
+            FormElementTextInputModel when originalKey.Contains("TextInput") => "TextInput",
+            FormElementTextInputModel when originalKey.Contains("HasValue") => "HasValue",
+            FormElementDateInputModel when originalKey.Contains("Day") => "Day",
+            FormElementDateInputModel when originalKey.Contains("Month") => "Month",
+            FormElementDateInputModel when originalKey.Contains("Year") => "Year",
+            FormElementDateInputModel when originalKey.Contains("DateString") => "DateString",
+            FormElementDateInputModel when originalKey.Contains("HasValue") => "HasValue",
+            FormElementSingleChoiceModel when originalKey.Contains("SelectedOption") => "SelectedOption",
+            FormElementGroupedSingleChoiceModel when originalKey.Contains("SelectedOption") => "SelectedOption",
+            FormElementMultiLineInputModel when originalKey.Contains("TextInput") => "TextInput",
+            FormElementUrlInputModel when originalKey.Contains("TextInput") => "TextInput",
+            FormElementUrlInputModel when originalKey.Contains("HasValue") => "HasValue",
+            FormElementAddressModel when originalKey.Contains("AddressLine1") => "AddressLine1",
+            FormElementAddressModel when originalKey.Contains("TownOrCity") => "TownOrCity",
+            FormElementAddressModel when originalKey.Contains("Postcode") => "Postcode",
+            FormElementAddressModel when originalKey.Contains("Country") => "Country",
+            FormElementCheckBoxInputModel when originalKey.Contains("CheckBoxInput") => "CheckBoxInput",
+            FormElementFileUploadModel when originalKey.Contains("UploadedFileName") => "UploadedFileName",
+            FormElementFileUploadModel when originalKey.Contains("HasValue") => "HasValue",
+            FormElementFileUploadModel when originalKey.Contains("UploadedFile") => "UploadedFile",
+            FormElementYesNoInputModel when originalKey.Contains("YesNoInput") => "YesNoInput",
+            _ => originalKey
+        };
+    }
     private async Task<IActionResult?> RedirectToPreviousQuestion()
     {
         var previousUnansweredQuestionId = await ValidateIfNeedRedirect();

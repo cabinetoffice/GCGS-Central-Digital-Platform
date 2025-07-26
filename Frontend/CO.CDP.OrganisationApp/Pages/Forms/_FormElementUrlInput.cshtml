@@ -2,8 +2,8 @@
 @using CO.CDP.Localization
 
 @{
-    var textInputHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.TextInput)).HasInnerHtml;
-    var selectOptionHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.HasValue)).HasInnerHtml;
+    var textInputHasError = Model.HasValidationError(nameof(Model.TextInput), ViewData.ModelState);
+    var selectOptionHasError = Model.HasValidationError(nameof(Model.HasValue), ViewData.ModelState);
     string textInputAriaDescribedby = "";
 
     void RenderDescription()
@@ -26,11 +26,11 @@
 
             <p class="govuk-error-message" id="@Model.GetFieldName("TextInput-error")">
                 <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span>
-                @Html.ValidationMessageFor(m => m.TextInput)
+                @Model.GetValidationMessage(nameof(Model.TextInput), ViewData.ModelState)
             </p>
         }
 
-        <input class="govuk-input govuk-!-width-two-thirds @(Model.Options?.Layout?.CustomCssClasses)" id="@Model.GetFieldName(nameof(Model.TextInput))" name="@Model.GetFieldName(nameof(Model.TextInput))" type="text" value="@Model.TextInput"
+        <input class="govuk-input govuk-!-width-two-thirds @(Model.Options?.Layout?.CustomCssClasses) @(textInputHasError ? "govuk-input--error" : "")" id="@Model.GetFieldName(nameof(Model.TextInput))" name="@Model.GetFieldName(nameof(Model.TextInput))" type="text" value="@Model.TextInput"
         @(string.IsNullOrWhiteSpace(textInputAriaDescribedby) ? "" : Html.Raw($"aria-describedby=\"{textInputAriaDescribedby}\""))>
     }
 }
@@ -73,7 +73,7 @@
             {
                 <p class="govuk-error-message">
                     <span id="@Model.GetFieldName("input-error")" class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span>
-                    @Html.ValidationMessageFor(m => m.HasValue)
+                    @Model.GetValidationMessage(nameof(Model.HasValue), ViewData.ModelState)
                 </p>
             }
 
