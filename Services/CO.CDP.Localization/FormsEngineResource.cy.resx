@@ -529,6 +529,51 @@
   <data name="DataProtection_05_SummaryTitle" xml:space="preserve">
     <value>Lanlwytho Dogfen</value>
   </data>
+  <data name="HealthAndSafetyQuestion_01_Title" xml:space="preserve">
+    <value>Cyflwyno eich gwybodaeth am iechyd a diogelwch</value>
+  </data>
+  <data name="HealthAndSafetyQuestion_01_Description" xml:space="preserve">
+    <value>
+      &lt;p class=&quot;govuk-body&quot;&gt;
+        Mae rheoliadau iechyd a diogelwch yn sicrhau llesiant cyflogeion a'r cyhoedd yn y gweithle. Gall rhai tendrau ofyn i chi ddarparu gwybodaeth am eich polisïau iechyd a diogelwch, asesiadau risg a'r hyfforddiant a ddarperir er mwyn atal damweiniau ac anafiadau.
+      &lt;/p&gt;
+
+      &lt;p class=&quot;govuk-body govuk-!-margin-top-2&quot;&gt;
+        Mae ond os bydd yr awdurdod contractio rydych yn gwneud cynnig iddo yn gofyn i chi wneud hynny y bydd angen i chi gwblhau'r modiwl hwn. Gall methu â chwblhau'r modiwl hwn arwain at ystyried bod eich tendrau yn annigonol lle mae gwybodaeth am iechyd a diogelwch yn ofynnol.
+      &lt;/p&gt;
+
+      &lt;h2 class=&quot;govuk-heading-m govuk-!-margin-top-4&quot;&gt;
+        Y wybodaeth fydd ei hangen arnoch
+      &lt;/h2&gt;
+
+      &lt;p class=&quot;govuk-body govuk-!-margin-top-2 govuk-!-margin-bottom-4&quot;&gt;
+        Bydd angen i chi ddarparu gwybodaeth am reolaeth iechyd a diogelwch a gweithdrefnau risg eich sefydliad.
+      &lt;/p&gt;
+    </value>
+  </data>
+  <data name="HealthAndSafetyQuestion_02_Title" xml:space="preserve">
+    <value>Sut ydych yn rheoli iechyd a diogelwch? </value>
+  </data>
+  <data name="HealthAndSafetyQuestion_02_SummaryTitle" xml:space="preserve">
+    <value>Rheoli Iechyd a Diogelwch</value>
+  </data>
+  <data name="HealthAndSafetyQuestion_02_Description" xml:space="preserve">
+    <value>
+      &lt;p class=&quot;govuk-body&quot;&gt;
+        Cofiwch gynnwys enghreifftiau o'r ffordd rydych yn ymdrin â risgiau sylweddol (fel defnyddio contractwyr, lle y bo'n berthnasol).
+      &lt;/p&gt;
+
+      &lt;div class=&quot;govuk-hint govuk-!-margin-top-2&quot;&gt;
+        Os hoffech ddarparu'r wybodaeth hon ar ffurf dogfen, ewch ymlaen i'r cwestiwn nesaf.
+      &lt;/div&gt;
+    </value>
+  </data>
+  <data name="HealthAndSafetyQuestion_03_Title" xml:space="preserve">
+    <value>A oes gennych ddogfennau ategol i'w lanlwytho?</value>
+  </data>
+  <data name="HealthAndSafetyQuestion_03_SummaryTitle" xml:space="preserve">
+    <value>Dogfennau ategol </value>
+  </data>
   <data name="CyberEssentials_01_Title" xml:space="preserve">
     <value>Cyflwyno eich gwybodaeth ar gyfer cynllun ardystio Cyber Essentials</value>
   </data>
