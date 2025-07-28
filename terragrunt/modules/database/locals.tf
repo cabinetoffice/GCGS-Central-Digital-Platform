@@ -17,6 +17,7 @@ locals {
     local_infile                    = 1
     max_allowed_packet              = "293601280"
     sql_mode                        = "NO_ENGINE_SUBSTITUTION"
+    time_zone                       = "Europe/Dublin"
   }
   cfs_db_parameters_instance = {
     group_concat_max_len      = 200000
@@ -36,6 +37,7 @@ locals {
     local_infile                    = 1
     max_allowed_packet              = "293601280"
     sql_mode                        = "NO_ENGINE_SUBSTITUTION"
+    time_zone                       = "Europe/Dublin"
   }
   fts_db_parameters_instance = {
     group_concat_max_len      = 200000

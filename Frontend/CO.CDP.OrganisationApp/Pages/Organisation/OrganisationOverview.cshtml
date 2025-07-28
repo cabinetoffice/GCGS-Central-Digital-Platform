@@ -342,6 +342,17 @@
                 <div class="govuk-section-break govuk-section-break--visible govuk-section-break--m"></div>
             }
 
+            @if (organisationDetails.IsBuyer() && Model.SearchRegistryPponEnabled)
+            {
+                <h3 class="govuk-heading-s govuk-!-margin-bottom-3">
+                    <a class="govuk-link" href="/organisation/@Model.Id/buyer/search">@StaticTextResource.Organisation_SearchOrganisations</a>
+                </h3>
+
+                <p class="govuk-body">@StaticTextResource.Organisation_SearchOrganisationsHint</p>
+
+                <div class="govuk-section-break govuk-section-break--visible govuk-section-break--m"></div>
+            }
+
             <authorize scope="@OrgScopeRequirement.Admin">
                 <h3 class="govuk-heading-s govuk-!-margin-bottom-3">
                     <a class="govuk-link" href="/organisation/@RouteData.Values["id"]/users/user-summary">@StaticTextResource.Organisation_ManageUsers</a>

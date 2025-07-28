@@ -375,6 +375,9 @@ public static class EndpointExtensions
                 return operation;
             });
 
+
+
+
         app.MapGet("/find/by-organisation-email",
                 [OrganisationAuthorize([AuthenticationChannel.OneLogin, AuthenticationChannel.ServiceKey])]
                 async ([FromQuery] string email, [FromQuery] string? role, [FromQuery] int limit, [FromServices] IUseCase<OrganisationsByOrganisationEmailQuery, IEnumerable<Model.OrganisationSearchResult>> useCase) =>
@@ -1465,6 +1468,60 @@ public static class EndpointExtensions
                 return operation;
             });
 
+        return app;
+    }
+
+    public static RouteGroupBuilder useSearchRegistryOfPpon(this RouteGroupBuilder app)
+    {
+        app.MapGet("/search-by-name-or-ppon",
+                [OrganisationAuthorize([AuthenticationChannel.OneLogin, AuthenticationChannel.ServiceKey])]
+            async ([FromQuery] string searchText, [FromQuery] int limit, [FromQuery] int skip,[FromQuery] string sortOrder,
+                [FromServices] IUseCase<OrganisationSearchByPponQuery, (IEnumerable<Model.OrganisationSearchByPponResult>, int)> useCase) =>
+            {
+                sortOrder = string.IsNullOrEmpty(sortOrder) ? "rel" : sortOrder;
+
+                return await useCase.Execute(new OrganisationSearchByPponQuery(searchText, limit, skip, sortOrder))
+                    .AndThen(result => {
+                        var (results, totalCount) = result;
+                        return results.Any()
+                            ? Results.Ok(new { Results = results, TotalCount = totalCount })
+                            : Results.NotFound();
+                    });
+            })
+            .Produces<OrganisationSearchByPponResponse>(StatusCodes.Status200OK, "application/json")
+            .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
+            .Produces<ProblemDetails>(StatusCodes.Status404NotFound)
+            .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError)
+            .Produces<ProblemDetails>(StatusCodes.Status400BadRequest)
+            .WithOpenApi(operation =>
+            {
+                operation.OperationId = "SearchByNameOrPpon";
+                operation.Description = "Find organisations by partial matches of name or ppon.";
+                operation.Summary = "Find organisations by partial matches of name or ppon.";
+                operation.Tags = new List<OpenApiTag> { new() { Name = "Organisation - Lookup" } };
+                operation.Responses["200"].Description = "Matching organisations with total count.";
+                operation.Responses["400"].Description = "Bad request.";
+                operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
+                operation.Responses["404"].Description = "No organisations found.";
+                operation.Responses["500"].Description = "Internal server error.";
+
+                foreach (var parameter in operation.Parameters)
+                {
+                    if (parameter.Name == "threshold")
+                    {
+                        parameter.Description = "The word similarity threshold value for fuzzy searching - Value can be from 0 to 1";
+                    }
+                    if (parameter.Name == "limit")
+                    {
+                        parameter.Description = "Number of results to return";
+                    }
+                    if (parameter.Name == "skip")
+                    {
+                        parameter.Description = "Number of results to skip for pagination";
+                    }
+                }
+                return operation;
+            });
         return app;
     }
 }

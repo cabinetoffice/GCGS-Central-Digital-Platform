@@ -42,7 +42,10 @@
                 <div id="query-hint" class="govuk-hint">
                     @if (Model.SearchRegistryPponEnabled)
                     {
-                        <p>@StaticTextResource.BuyerParentChildRelationship_SearchPage_Hint. @Html.Raw(StaticTextResource.BuyerParentChildRelationship_SearchPage_Link)</p>
+                        <p>
+                            @StaticTextResource.BuyerParentChildRelationship_SearchPage_Hint.
+                            @Html.Raw(string.Format(StaticTextResource.BuyerParentChildRelationship_SearchPage_Link, Model.Id))
+                        </p>
                     }
                     else
                     {
