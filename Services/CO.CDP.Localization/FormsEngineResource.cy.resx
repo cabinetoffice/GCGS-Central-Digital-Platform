@@ -450,6 +450,85 @@
   <data name="Share_My_Information_Consortium_SectionTitle" xml:space="preserve">
     <value>Rhannu fy nghonsortiwm gwybodaeth</value>
   </data>
+  <data name="DataProtection_01_Title" xml:space="preserve">
+    <value>Cyflwyno eich gwybodaeth am ddiogelu data</value>
+  </data>
+  <data name="DataProtection_01_Description" xml:space="preserve">
+    <value>
+      &lt;p class="govuk-body"&gt;
+        Mae a wnelo diogelu data â diogelu data personol rhag cael eu camddefnyddio, eu colli neu fynediad anawdurdodedig. Mae'r modiwl hwn yn canolbwyntio ar gydymffurfio â chyfreithiau diogelu data (fel GDPR) a sut mae cyflenwr yn rheoli, yn storio ac yn prosesu gwybodaeth bersonol.
+      &lt;/p&gt;
+      &lt;p class="govuk-body"&gt;
+        Mae ond os bydd yr awdurdod contractio rydych yn gwneud cynnig iddo yn gofyn i chi wneud hynny y bydd angen i chi gwblhau'r modiwl hwn. Gall methu â chwblhau'r modiwl hwn arwain at ystyried bod eich tendrau yn annigonol lle mae PPN 020 wedi'i gymhwyso. Am ragor o wybodaeth, darllenwch
+        &lt;a href="https://www.gov.uk/government/publications/ppn-020-guidance-on-data-protection-legislation/ppn-020-guidance-on-data-protection-legislation-html" class="govuk-link" rel="noreferrer noopener" target="_blank"&gt;
+          PPN 020: Canllaw ar ddeddfwriaeth diogelu data (bydd yn agor mewn tab newydd)
+        &lt;/a&gt;.
+      &lt;/p&gt;
+      &lt;h2 class="govuk-heading-m"&gt;Y wybodaeth y bydd ei hangen arnoch&lt;/h2&gt;
+      &lt;div class="govuk-body"&gt;Bydd angen i chi ddarparu gwybodaeth am ddiogelu data yn eich sefydliad. Gall hyn gynnwys:&lt;/div&gt;
+      &lt;div class="govuk-body"&gt;
+        &lt;ul class="govuk-list govuk-list--bullet"&gt;
+          &lt;li&gt;cadarnhad ynghylch adnoddau&lt;/li&gt;
+          &lt;li&gt;cael cyfleusterau a mesurau ar waith i sicrhau cydymffurfiaeth â chyfreithiau diogelu data&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/div&gt;
+    </value>
+  </data>
+  <data name="DataProtection_02_Title" xml:space="preserve">
+    <value>A oes gennych yr adnoddau i sicrhau cydymffurfiaeth â GDPR y DU?</value>
+  </data>
+  <data name="DataProtection_02_SummaryTitle" xml:space="preserve">
+    <value>Cadarnhau adnoddau ar gyfer cydymffurfiaeth</value>
+  </data>
+  <data name="DataProtection_02_Description" xml:space="preserve">
+    <value>
+      &lt;div class=&quot;govuk-hint govuk-!-margin-top-2&quot;&gt;
+        Dylech ystyried eich adnoddau dynol a thechnegol
+      &lt;/div&gt;
+    </value>
+  </data>
+  <data name="DataProtection_03_Title" xml:space="preserve">
+    <value>Pryd bydd gennych yr adnoddau i sicrhau cydymffurfiaeth â GDPR y DU?</value>
+  </data>
+  <data name="DataProtection_03_SummaryTitle" xml:space="preserve">
+    <value>Statws gofynion o ran adnoddau</value>
+  </data>
+  <data name="DataProtection_03_Description" xml:space="preserve">
+    <value>
+      &lt;div class=&quot;govuk-hint govuk-!-margin-top-2&quot;&gt;
+        Dylech ystyried eich adnoddau dynol a thechnegol
+      &lt;/div&gt;
+    </value>
+  </data>
+  <data name="DataProtection_04_Title" xml:space="preserve">
+    <value>Sut mae sicrhau cydymffurfiaeth â chyfraith diogelu data y DU?</value>
+  </data>
+  <data name="DataProtection_04_SummaryTitle" xml:space="preserve">
+    <value>Manylion cyfleusterau a mesurau</value>
+  </data>
+  <data name="DataProtection_04_Description" xml:space="preserve">
+    <value>
+      &lt;div class=&quot;govuk-body govuk-!-margin-top-2&quot;&gt;Dylai eich ymateb gynnwys y cyfleusterau a'r prosesau technegol sydd gennych ar waith, neu a fydd ar waith erbyn i'r contract gael ei ddyfarnu, er mwyn sicrhau'r canlynol:&lt;/div&gt;
+      &lt;div class=&quot;govuk-body&quot;&gt;
+        &lt;ul class=&quot;govuk-list govuk-list--bullet&quot;&gt;
+          &lt;li&gt;caiff hawliau gwrthrychau data eu diogelu&lt;/li&gt;
+          &lt;li&gt;caiff systemau prosesu a gwasanaethau eu cadw'n ddiogel ac yn ddibynadwy&lt;/li&gt;
+          &lt;li&gt;caiff hawliau unigolion i dderbyn gwybodaeth am breifatrwydd ac i gael gafael ar ddata personol, eu cywiro, eu dileu a'u trosglwyddo eu diogelu&lt;/li&gt;
+          &lt;li&gt;mae cydsyniad ar gyfer prosesu data personol yn glir a chaiff ei gofnodi'n briodol&lt;/li&gt;
+          &lt;li&gt;mae amddiffyniadau cyfreithiol ar waith i drosglwyddo data personol y tu allan i'r DU (lle y bo'n berthnasol)&lt;/li&gt;
+          &lt;li&gt;caiff cofnodion o weithgareddau prosesu data personol eu cynnal&lt;/li&gt;
+          &lt;li&gt;caiff y mesurau uchod eu profi a'u hadolygu'n rheolaidd  &lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/div&gt;
+      &lt;p class="govuk-hint"&gt;Os hoffech ddarparu'r wybodaeth hon ar ffurf dogfen, ewch ymlaen i'r cwestiwn nesaf&lt;/p&gt;
+    </value>
+  </data>
+  <data name="DataProtection_05_Title" xml:space="preserve">
+    <value>A oes gennych ddogfennau ategol i'w lanlwytho?</value>
+  </data>
+  <data name="DataProtection_05_SummaryTitle" xml:space="preserve">
+    <value>Lanlwytho Dogfen</value>
+  </data>
   <data name="HealthAndSafetyQuestion_01_Title" xml:space="preserve">
     <value>Cyflwyno eich gwybodaeth am iechyd a diogelwch</value>
   </data>
