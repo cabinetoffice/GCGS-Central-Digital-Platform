@@ -14,18 +14,21 @@
 
     <ItemGroup>
         <Compile Remove="Pages\Privacy.cshtml.cs"/>
+        <Compile Remove="Pages\Details.cshtml.cs" />
+        <Compile Remove="Services\InMemorySearchService.cs" />
     </ItemGroup>
 
     <ItemGroup>
+        <PackageReference Include="Amazon.AspNetCore.DataProtection.SSM" Version="3.2.1"/>
         <PackageReference Include="GovUk.Frontend.AspNetCore" Version="3.2.2"/>
-        <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="8.0.6"/>
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="8.0.8"/>
         <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="8.0.6"/>
         <PackageReference Include="AWSSDK.CognitoIdentityProvider" Version="3.7.0.13"/>
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\Libraries\CO.CDP.RegisterOfCommercialTools.WebApiClient\CO.CDP.RegisterOfCommercialTools.WebApiClient.csproj"/>
+        <ProjectReference Include="..\..\Libraries\CO.CDP.AwsServices\CO.CDP.AwsServices.csproj"/>
         <ProjectReference Include="..\..\Libraries\CO.CDP.UI.Foundation\CO.CDP.UI.Foundation.csproj"/>
+        <ProjectReference Include="..\..\Services\CO.CDP.RegisterOfCommercialTools.WebApi\CO.CDP.RegisterOfCommercialTools.WebApi.csproj"/>
     </ItemGroup>
-
 </Project>

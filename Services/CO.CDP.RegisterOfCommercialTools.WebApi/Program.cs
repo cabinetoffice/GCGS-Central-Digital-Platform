@@ -1,5 +1,6 @@
 using CO.CDP.Configuration.ForwardedHeaders;
 using CO.CDP.RegisterOfCommercialTools.WebApi;
+using CO.CDP.RegisterOfCommercialTools.WebApi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +13,14 @@ builder.Services.AddHealthChecks();
 
 builder.Services.AddAuthorization();
 builder.Services.AddAwsCognitoAuthentication(builder.Configuration, builder.Environment);
+
+builder.Services.AddTransient<ICommercialToolsQueryBuilder, CommercialToolsQueryBuilder>();
+builder.Services.AddHttpClient<ICommercialToolsRepository, CommercialToolsRepository>((serviceProvider, client) =>
+{
+    client.BaseAddress = new Uri(serviceProvider.GetRequiredService<IConfiguration>().GetSection("ODataApi:BaseUrl").Value ?? throw new InvalidOperationException("ODataApi:BaseUrl is not configured."));
+});
+
+builder.Services.AddTransient<ISearchService, SearchService>();
 
 var app = builder.Build();
 
@@ -29,3 +38,4 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 app.Run();
+public abstract partial class Program;

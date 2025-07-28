@@ -31,6 +31,7 @@ public class IndexModel(ISearchService searchService, ISirsiUrlService sirsiUrlS
     public string SirsiHomeUrl { get; private set; } = sirsiUrlService.BuildUrl("/");
 
     public int TotalCount { get; set; }
+    public string? ScriptNonce => HttpContext.Items["ContentSecurityPolicyNonce"] as string;
 
     public async Task OnGetAsync()
     {
