@@ -968,6 +968,196 @@ PPN 014: Cyber Essentials scheme (opens in a new tab).&lt;/a&gt;&lt;/p&gt;
   <data name="DataProtection_05_SummaryTitle" xml:space="preserve">
     <value>Document upload</value>
   </data>
+  <!-- Payments -->
+  <data name="Payments_SectionTitle" xml:space="preserve">
+    <value>Payments Information</value>
+  </data>
+  <data name="Payments_01_Title" xml:space="preserve">
+    <value>Submitting your payments information</value>
+  </data>
+  <data name="Payments_01_Description" xml:space="preserve">
+    <value>
+    &lt;p class="govuk-body"&gt;
+      The Government has committed to tackling late payments as part of its Plan for Small Businesses. This module focuses on identifying the reliability of a supplier's payment systems, to ensure compliance with government payment policies and promote fair cash flow for businesses. For more information read
+      &lt;a href="https://www.gov.uk/government/publications/ppn-015-how-to-take-account-of-a-suppliers-approach-to-payment-in-the-procurement-of-major-contracts/ppn-015-taking-account-of-a-suppliers-approach-to-payment-in-the-procurement-of-major-contracts-html" class="govuk-link" rel="noreferrer noopener" target="_blank"&gt;
+      PPN 015: Taking account of a supplier's approach to payment in the procurement of major contracts (opens in a new tab)&lt;/a&gt;.
+    &lt;/p&gt;
+    &lt;p class="govuk-body"&gt;
+      You are only required to complete this module if requested by the contracting authority you are bidding for. Failure to complete this module may result in your tenders being deemed insufficient where PPN 015 has been applied.
+    &lt;/p&gt;
+    &lt;h2 class="govuk-heading-m"&gt;The information you&#39;ll need&lt;/h2&gt;
+    &lt;div class="govuk-body"&gt;You&#39;ll need to provide information on your payments and invoices. This may include:&lt;/div&gt;
+    &lt;div class="govuk-body"&gt;
+      &lt;ul class="govuk-list govuk-list--bullet"&gt;
+        &lt;li&gt;compliance with your payment terms&lt;/li&gt;
+        &lt;li&gt;payment and invoice details for the last two six month reporting periods&lt;/li&gt;
+        &lt;li&gt;an action plan for reducing late payments (where relevant)&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/div&gt;
+    </value>
+  </data>
+  <data name="Payments_02_Title" xml:space="preserve">
+    <value>Do you have processes to ensure you pay your supply chain on time?</value>
+  </data>
+  <data name="Payments_02_SummaryTitle" xml:space="preserve">
+    <value>Payment Process</value>
+  </data>
+  <data name="Payments_02_Description" xml:space="preserve">
+    <value>
+      &lt;div class=&quot;govuk-hint govuk-!-margin-top-2&quot;&gt;
+        For example, within your agreed contractual terms
+      &lt;/div&gt;
+    </value>
+  </data>
+  <data name="Payments_03_Title" xml:space="preserve">
+    <value>Do you have processes to resolve disputed payments and invoices in your supply chain on time?</value>
+  </data>
+  <data name="Payments_03_SummaryTitle" xml:space="preserve">
+    <value>Payment Process</value>
+  </data>
+  <data name="Payments_03_Description" xml:space="preserve">
+    <value>
+      &lt;div class=&quot;govuk-hint govuk-!-margin-top-2&quot;&gt;
+        For example, within your agreed contractual terms
+      &lt;/div&gt;
+    </value>
+  </data>
+  <data name="Payments_04_Title" xml:space="preserve">
+    <value>Confirmation of payment terms for public sector contracts</value>
+  </data>
+  <data name="Payments_04_SummaryTitle" xml:space="preserve">
+    <value>Payment terms</value>
+  </data>
+  <data name="Payments_04_Description" xml:space="preserve">
+    <value>
+      &lt;div class=&quot;govuk-hint govuk-!-margin-top-2&quot;&gt;
+        The following question refers to public sector contracts awarded under the Procurement Act 2023
+      &lt;/div&gt;
+      &lt;p class="govuk-body"&gt;Confirm you have:&lt;/p&gt;
+      &lt;ul class="govuk-list govuk-list--bullet"&gt;
+        &lt;li&gt;systems in place to include a minimum of 30-day payment terms in all your supply chain contracts&lt;/li&gt;
+        &lt;li&gt;the requirment that these payment terms are passed down through your supply chain&lt;/li&gt;
+      &lt;/ul&gt;
+    </value>
+  </data>
+  <data name="Payments_05_Title" xml:space="preserve">
+    <value>Do you report under the Payment Practices Reporting Regulations?</value>
+  </data>
+  <data name="Payments_05_SummaryTitle" xml:space="preserve">
+    <value>Reporting under the Payment Practices Reporting Regulations</value>
+  </data>
+  <!-- ===== PAYMENTS 06 ===== -->
+  <data name="Payments_06_Title" xml:space="preserve">
+    <value>Payment and invoice reporting within your immediate supply chain</value>
+  </data>
+  <data name="Payments_06_Description" xml:space="preserve">
+    <value>&lt;p class="govuk-body"&gt;Enter your payment and invoice details for your most recent 6 month reporting period.&lt;/p&gt;</value>
+  </data>
+  <data name="Payments_06_ReportingStartDate" xml:space="preserve">
+    <value>Reporting period start date</value>
+  </data>
+  <data name="Payments_06_AverageDaysToPayInvoice" xml:space="preserve">
+    <value>Average number of days to pay an invoice</value>
+  </data>
+  <data name="Payments_06_InvoicesPaid_Label" xml:space="preserve">
+    <value>Invoices paid:</value>
+  </data>
+  <data name="Payments_06_PctPaidWithin30Days" xml:space="preserve">
+    <value>Within 30 days</value>
+  </data>
+  <data name="Payments_06_PctPaid31To60Days" xml:space="preserve">
+    <value>31 to 60 days</value>
+  </data>
+  <data name="Payments_06_PctPaid61OrMoreDays" xml:space="preserve">
+    <value>61 days or more</value>
+  </data>
+  <data name="Payments_06_PctPaidOverdue" xml:space="preserve">
+    <value>Overdue within this reporting period</value>
+  </data>
+  <!-- ===== PAYMENTS 07 ===== -->
+  <data name="Payments_07_Title" xml:space="preserve">
+    <value>Payment and invoice reporting within your immediate supply chain</value>
+  </data>
+  <data name="Payments_07_Description" xml:space="preserve">
+    <value>&lt;p class="govuk-body"&gt;Enter your payment and invoice details for the 6 month reporting period prior to your most recent reporting period.&lt;/p&gt;</value>
+  </data>
+  <data name="Payments_07_ReportingStartDate" xml:space="preserve">
+    <value>Reporting period start date</value>
+  </data>
+  <data name="Payments_07_AverageDaysToPayInvoice" xml:space="preserve">
+    <value>Average number of days to pay an invoice</value>
+  </data>
+  <data name="Payments_07_InvoicesPaid_Label" xml:space="preserve">
+    <value>Invoices paid:</value>
+  </data>
+  <data name="Payments_07_PctPaidWithin30Days" xml:space="preserve">
+    <value>Within 30 days</value>
+  </data>
+  <data name="Payments_07_PctPaid31To60Days" xml:space="preserve">
+    <value>31 to 60 days</value>
+  </data>
+  <data name="Payments_07_PctPaid61OrMoreDays" xml:space="preserve">
+    <value>61 days or more</value>
+  </data>
+  <data name="Payments_07_PctPaidOverdue" xml:space="preserve">
+    <value>Overdue within this reporting period</value>
+  </data>
+  <data name="Payments_08_Title" xml:space="preserve">
+    <value>Explain why you have not paid all invoices within agreed contractual terms (where relevant)</value>
+  </data>
+  <data name="Payments_08_Description" xml:space="preserve">
+    <value>
+    &lt;div class=&quot;govuk-hint govuk-!-margin-top-2&quot;&gt;
+    You do not need to complete this question if you have paid all invoices within agreed contract terms.
+    &lt;/div&gt;
+    </value>
+  </data>
+  <data name="Payments_09_Title" xml:space="preserve">
+    <value>Have you shown that 95% or more of your payable invoices have been paid?</value>
+  </data>
+  <data name="Payments_09_SummaryTitle" xml:space="preserve">
+    <value>X</value>
+  </data>
+  <data name="Payments_09_Description" xml:space="preserve">
+    <value>
+      &lt;p class="govuk-body"&gt;Your invoices to suppliers must have been paid:&lt;/p&gt;
+      &lt;ul class="govuk-list govuk-list--bullet"&gt;
+        &lt;li&gt;within 60 days of invoice receipt&lt;/li&gt;
+        &lt;li&gt;in at least one of the last two 6 month reporting periods&lt;/li&gt;
+      &lt;/ul&gt;
+    </value>
+  </data>
+  <data name="Payments_10_Title" xml:space="preserve">
+    <value>Can you confirm you have paid all your invoices within an average of 55 days?</value>
+  </data>
+  <data name="Payments_10_SummaryTitle" xml:space="preserve">
+  <value>Y</value>
+  </data>
+  <data name="Payments_10_Description" xml:space="preserve">
+    <value>
+      &lt;div class="govuk-body"&gt;
+        Your invoices to suppliers must have been paid within an average of 55 days in at least one of the last two 6 month reporting periods.
+      &lt;/div&gt;
+    </value>
+  </data>
+  <data name="Payments_11_Title" xml:space="preserve">
+    <value>Submit your action plan (where relevant)</value>
+  </data>
+  <data name="Payments_11_SummaryTitle" xml:space="preserve">
+  <value>Y</value>
+  </data>
+  <data name="Payments_11_Description" xml:space="preserve">
+    <value>
+      &lt;p class="govuk-body"&gt;Your plan must include, as a minimum:&lt;/p&gt;
+      &lt;ul class="govuk-list govuk-list--bullet"&gt;
+        &lt;li&gt;identification of the main causes of failure to pay 95% of all supply chain invoices paid within 60 days and overdue payments (where relevant)&lt;/li&gt;
+        &lt;li&gt;actions to address the cause of each payment failure&lt;/li&gt;
+        &lt;li&gt;commitment to a process for regular reporting on progress to the suppliers bidder's audit committee (or equivalent)&lt;/li&gt;
+        &lt;li&gt;a plan signed off by your director&lt;/li&gt;
+        &lt;li&gt;a plan published on your website (this can be a shorter, summary plan)&lt;/li&gt;
+      &lt;/ul&gt;
+    </value>
+  </data>
   <data name="Global_Enter_Your_Job_Title" xml:space="preserve">
     <value>Enter your job title</value>
   </data>
