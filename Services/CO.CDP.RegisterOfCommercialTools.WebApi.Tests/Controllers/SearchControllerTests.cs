@@ -3,7 +3,6 @@ using CO.CDP.RegisterOfCommercialTools.WebApi.Models;
 using CO.CDP.RegisterOfCommercialTools.WebApi.Services;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Moq;
 
 namespace CO.CDP.RegisterOfCommercialTools.WebApi.Tests.Controllers;
@@ -12,13 +11,11 @@ public class SearchControllerTests
 {
     private readonly Mock<ISearchService> _mockSearchService;
     private readonly SearchController _controller;
-    private readonly Mock<ILogger<SearchController>> _mockLogger;
 
     public SearchControllerTests()
     {
         _mockSearchService = new Mock<ISearchService>();
-        _mockLogger = new Mock<ILogger<SearchController>>();
-        _controller = new SearchController(_mockSearchService.Object, _mockLogger.Object);
+        _controller = new SearchController(_mockSearchService.Object);
     }
 
     [Fact]
@@ -88,80 +85,12 @@ public class SearchControllerTests
         var expectedException = new InvalidOperationException("Service error");
         _mockSearchService.Setup(x => x.Search(request)).ThrowsAsync(expectedException);
 
-        _mockSearchService.Setup(x => x.Search(request)).ReturnsAsync(new SearchResponse
-        {
-            Results = Enumerable.Empty<SearchResultDto>(),
-            TotalCount = 0,
-            PageNumber = request.PageNumber,
-            PageSize = request.PageSize
-        });
+        var act = async () => await _controller.Search(request);
 
-        var result = await _controller.Search(request);
-
-        result.Should().BeOfType<ActionResult<SearchResponse>>();
-        var actionResult = result as ActionResult<SearchResponse>;
-        actionResult.Should().NotBeNull();
-        actionResult?.Result.Should().BeOfType<OkObjectResult>();
-        var okResult = actionResult?.Result as OkObjectResult;
-        okResult.Should().NotBeNull();
-        okResult?.Value.Should().BeOfType<SearchResponse>();
-        var searchResponse = okResult?.Value as SearchResponse;
-        searchResponse.Should().NotBeNull();
-        searchResponse?.Results.Should().BeEmpty();
-        searchResponse?.TotalCount.Should().Be(0);
+        await act.Should().ThrowAsync<InvalidOperationException>().WithMessage("Service error");
         _mockSearchService.Verify(x => x.Search(request), Times.Once);
     }
 
-    [Fact]
-    public async Task GetById_WhenResultExists_ShouldReturnOkWithResult()
-    {
-        var id = "003033-2025";
-        var expectedResult = new SearchResultDto
-        {
-            Id = id,
-            Title = "Test Framework",
-            Description = "Test Description"
-        };
-
-        _mockSearchService.Setup(x => x.GetById(id)).ReturnsAsync(expectedResult);
-
-        var result = await _controller.GetById(id);
-
-        result.Result.Should().BeOfType<OkObjectResult>();
-        var okResult = result.Result as OkObjectResult;
-        okResult!.Value.Should().BeEquivalentTo(expectedResult);
-        _mockSearchService.Verify(x => x.GetById(id), Times.Once);
-    }
-
-    [Fact]
-    public async Task GetById_WhenResultNotFound_ShouldReturnNotFound()
-    {
-        var id = "nonexistent-id";
-        _mockSearchService.Setup(x => x.GetById(id)).ReturnsAsync((SearchResultDto?)null);
-
-        var result = await _controller.GetById(id);
-
-        result.Result.Should().BeOfType<NotFoundResult>();
-        _mockSearchService.Verify(x => x.GetById(id), Times.Once);
-    }
-
-    [Fact]
-    public async Task GetById_WhenServiceThrows_ShouldPropagateException()
-    {
-        var id = "test-id";
-        var expectedException = new InvalidOperationException("Service error");
-        _mockSearchService.Setup(x => x.GetById(id)).ThrowsAsync(expectedException);
-
-        _mockSearchService.Setup(x => x.GetById(id)).ReturnsAsync((SearchResultDto?)null);
-
-        var result = await _controller.GetById(id);
-
-        result.Should().BeOfType<ActionResult<SearchResultDto>>();
-        var actionResult = result as ActionResult<SearchResultDto>;
-        actionResult.Should().NotBeNull();
-        actionResult?.Result.Should().BeOfType<NotFoundResult>();
-        _mockSearchService.Verify(x => x.GetById(id), Times.Once);
-    }
 
     [Fact]
     public async Task Search_WithComplexRequest_ShouldPassAllParametersToService()

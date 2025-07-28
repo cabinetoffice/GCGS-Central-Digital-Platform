@@ -176,30 +176,6 @@ public class SearchServiceTests
         mockBuilder.Verify(x => x.ContractEndDateTo(It.IsAny<DateTime>()), Times.Never);
     }
 
-    [Fact]
-    public async Task GetById_ShouldCallRepositoryWithCorrectId()
-    {
-        var id = "003033-2025";
-        var expectedResult = new SearchResultDto { Id = id, Title = "Test Result" };
-        _mockRepository.Setup(x => x.GetCommercialToolById(id)).ReturnsAsync(expectedResult);
-
-        var result = await _searchService.GetById(id);
-
-        result.Should().BeEquivalentTo(expectedResult);
-        _mockRepository.Verify(x => x.GetCommercialToolById(id), Times.Once);
-    }
-
-    [Fact]
-    public async Task GetById_WhenNotFound_ShouldReturnNull()
-    {
-        var id = "nonexistent-id";
-        _mockRepository.Setup(x => x.GetCommercialToolById(id)).ReturnsAsync((SearchResultDto?)null);
-
-        var result = await _searchService.GetById(id);
-
-        result.Should().BeNull();
-        _mockRepository.Verify(x => x.GetCommercialToolById(id), Times.Once);
-    }
 
     [Fact]
     public async Task Search_WithEmptyKeyword_ShouldPassEmptyStringToQueryBuilder()

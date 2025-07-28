@@ -97,31 +97,6 @@ public class SearchIntegrationTests
     }
 
     [Fact]
-    public async Task Get_SearchById_ShouldReturnSpecificResult()
-    {
-        var response = await _client.GetAsync("/api/Search/003033-2025");
-
-        response.StatusCode.Should().Be(HttpStatusCode.OK);
-        var content = await response.Content.ReadAsStringAsync();
-        var result = JsonSerializer.Deserialize<SearchResultDto>(content, new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true
-        });
-
-        result.Should().NotBeNull();
-        result!.Id.Should().Be("003033-2025");
-        result.Title.Should().Be("Specific Integration Test Framework");
-    }
-
-    [Fact]
-    public async Task Get_SearchById_WhenNotFound_ShouldReturnNotFound()
-    {
-        var response = await _client.GetAsync("/api/Search/nonexistent-id");
-
-        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
-    }
-
-    [Fact]
     public async Task Get_SearchEndpoint_WithInvalidParameters_ShouldHandleGracefully()
     {
         var response = await _client.GetAsync("/api/Search?PageSize=0&PageNumber=-1&MinFees=invalid");
