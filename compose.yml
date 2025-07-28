@@ -258,7 +258,7 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: Production
       Organisation__Authority: *organisation-authority
-      CommercialToolsApi__ServiceUrl: ''
+      CommercialToolsApi__ServiceUrl: '${CommercialToolsApi__ServiceUrl:-http://gateway:${CDP_COMMERCIAL_TOOLS_API_PORT:-8080}}'
 
   commercial-tools-api:
     profiles:

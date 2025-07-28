@@ -2,7 +2,9 @@ namespace CO.CDP.RegisterOfCommercialTools.App.Models;
 
 public enum SearchResultStatus
 {
+    Unknown,
     Active,
-    Upcoming,
-    Expired
+    Closed,
+    Awarded,
+    Upcoming
 }

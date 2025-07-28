@@ -1,9 +1,10 @@
 using CO.CDP.RegisterOfCommercialTools.App;
+using CO.CDP.RegisterOfCommercialTools.App.Middleware;
 using CO.CDP.RegisterOfCommercialTools.App.Services;
-using CO.CDP.RegisterOfCommercialTools.WebApiClient;
 using CO.CDP.UI.Foundation;
 using GovUk.Frontend.AspNetCore;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.DataProtection;
+using ISession = CO.CDP.RegisterOfCommercialTools.App.ISession;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +17,10 @@ builder.Services.AddRazorPages(options =>
 builder.Services.AddGovUkFrontend();
 builder.Services.AddHttpContextAccessor();
 
+builder.Services.AddSingleton<ISession, Session>();
+
+builder.Services.AddCors();
+
 builder.Services.AddUiFoundation(builder.Configuration, uiFoundationBuilder =>
 {
     uiFoundationBuilder.AddSession("ROCT", builder.Environment.IsDevelopment());
@@ -26,7 +31,7 @@ builder.Services.AddUiFoundation(builder.Configuration, uiFoundationBuilder =>
 
 builder.Services.AddScoped<CO.CDP.RegisterOfCommercialTools.App.Handlers.BearerTokenHandler>();
 
-builder.Services.AddHttpClient<ICommercialToolsApiClient, CommercialToolsApiClient>((client) =>
+builder.Services.AddHttpClient<ISearchService, CommercialToolsApiClient>(client =>
 {
     var url = builder.Configuration.GetValue<string>("CommercialToolsApi:ServiceUrl")
               ?? throw new Exception("Missing CommercialToolsApi:ServiceUrl configuration.");
@@ -40,6 +45,7 @@ var cookieSecurePolicy = builder.Environment.IsDevelopment() ? CookieSecurePolic
 builder.Services.AddSession(options =>
 {
     options.IdleTimeout = TimeSpan.FromMinutes(sessionTimeoutInMinutes);
+    options.Cookie.Name = "CommercialTools.Session";
     options.Cookie.IsEssential = true;
     options.Cookie.SameSite = SameSiteMode.Lax;
     options.Cookie.SecurePolicy = cookieSecurePolicy;
@@ -52,11 +58,30 @@ builder.Services.AddCookiePolicy(options =>
     options.Secure = cookieSecurePolicy;
 });
 
+builder.Services.AddAntiforgery(options =>
+{
+    options.Cookie.SecurePolicy = cookieSecurePolicy;
+    options.Cookie.SameSite = SameSiteMode.Lax;
+    options.Cookie.HttpOnly = true;
+});
+
+builder.Services.AddHsts(options =>
+{
+    options.MaxAge = TimeSpan.FromDays(365); // see https://aka.ms/aspnetcore-hsts
+});
+
+var dataProtectionBuilder = builder.Services.AddDataProtection()
+    .SetApplicationName("CO.CDP.RegisterOfCommercialTools.App");
+
+var dataProtectionPrefix = builder.Configuration.GetValue<string>("Aws:SystemManager:DataProtectionPrefix");
+if (!string.IsNullOrEmpty(dataProtectionPrefix))
+{
+    dataProtectionBuilder.PersistKeysToAWSSystemsManager(dataProtectionPrefix);
+}
+
 builder.Services.AddAwsCognitoAuthentication(builder.Configuration, builder.Environment);
 
 builder.Configuration.GetValue<string>("CommercialToolsApi:ServiceUrl");
-
-builder.Services.AddScoped<ISearchService, InMemorySearchService>();
 builder.Services.AddScoped<CO.CDP.UI.Foundation.Pages.NotFoundPage>();
 
 var app = builder.Build();
@@ -69,10 +94,20 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+app.UseMiddleware<ContentSecurityPolicyMiddleware>();
+app.UseMiddleware<ExceptionMiddleware>();
+
+if (!app.Environment.IsDevelopment())
+{
+    app.UseAntiforgery();
+}
+
 app.UseCookiePolicy();
 app.UseStaticFiles();
 
 app.UseRouting();
+
+app.UseCors("AllowAllOrigins"); // to be updated when OneLogin is implemented
 
 app.UseGovUkFrontend();
 

@@ -18,7 +18,7 @@
             </span>
         </button>
         <div id="@Model.Id-content" class="govuk-accordion__section-content no-border govuk-!-padding-bottom-0" data-accordion-content>
-            @Model.Content(new object())
+            <partial name="@Model.PartialViewName" model="@Model.PartialViewModel" />
         </div>
     </div>
 </div>

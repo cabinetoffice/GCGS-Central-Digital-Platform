@@ -1,11 +1,13 @@
 @model CO.CDP.RegisterOfCommercialTools.App.Models.SearchResult
 @using CO.CDP.RegisterOfCommercialTools.App.Models
+@using CO.CDP.UI.Foundation.Services
+@inject IFtsUrlService FtsUrlService
 
 <div class="search-result" data-result-id="@Model.Id">
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-full govuk-grid-column-three-quarters-from-desktop govuk-!-margin-bottom-1">
             <h2 class="govuk-heading-m govuk-!-margin-bottom-0">
-                <a class="govuk-link" href="/@Model.Id">@Model.Title</a>
+                <a class="govuk-link" href="@FtsUrlService.BuildUrl($"/Notice/{Model.Id}")">@Model.Title</a>
             </h2>
         </div>
         <div class="govuk-grid-column-full govuk-grid-column-one-quarter-from-desktop govuk-!-margin-bottom-1">
@@ -28,8 +30,11 @@
             case SearchResultStatus.Upcoming:
                 <span>Applications window opening soon</span>
                 break;
-            case SearchResultStatus.Expired:
+            case SearchResultStatus.Closed:
                 <span>Applications window has closed</span>
+                break;
+            case SearchResultStatus.Awarded:
+                <span>Awarded</span>
                 break;
         }
     </p>

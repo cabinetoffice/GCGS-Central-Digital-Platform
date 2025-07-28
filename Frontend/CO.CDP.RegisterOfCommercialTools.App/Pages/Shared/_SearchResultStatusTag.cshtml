@@ -9,8 +9,15 @@
     case SearchResultStatus.Upcoming:
         <strong class="govuk-tag govuk-tag--yellow">Upcoming</strong>
         break;
-    case SearchResultStatus.Expired:
-        <strong class="govuk-tag govuk-tag--red">Expired</strong>
+    case SearchResultStatus.Closed:
+        <strong class="govuk-tag govuk-tag--red">Closed</strong>
+        break;
+    case SearchResultStatus.Awarded:
+        <strong class="govuk-tag govuk-tag--blue">Awarded</strong>
+        break;
+    case SearchResultStatus.Unknown:
+    default:
+        <strong class="govuk-tag govuk-tag--grey">Unknown</strong>
         break;
 }
 

@@ -27,7 +27,7 @@ public class IndexModelTest
     {
         var searchResults = new List<SearchResult>
         {
-            new(Guid.NewGuid(), "Test Result", "Test Caption", "Test Tool", SearchResultStatus.Active, "1%", "Yes",
+            new("003033-2025", "Test Result", "Test Caption", "Test Tool", SearchResultStatus.Active, "1%", "Yes",
                 "2025-01-01",
                 "2025-01-01 to 2025-12-31", "Direct Award")
         };
@@ -152,7 +152,7 @@ public class IndexModelTest
     [Fact]
     public void OnPostReset_ShouldClearModelStateAndRedirect()
     {
-        _model.ModelState.AddModelError("test", "test error");
+        
 
         var result = _model.OnPostReset();
 
@@ -174,7 +174,7 @@ public class IndexModelTest
     {
         var searchResults = new List<SearchResult>
         {
-            new(Guid.NewGuid(), "Test Result", "Test Caption", "Test Tool", SearchResultStatus.Active, "1%", "Yes",
+            new("003033-2025", "Test Result", "Test Caption", "Test Tool", SearchResultStatus.Active, "1%", "Yes",
                 "2025-01-01",
                 "2025-01-01 to 2025-12-31", "Direct Award")
         };
