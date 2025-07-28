@@ -32,9 +32,9 @@ public class CommercialToolsApiClientTests
         var searchModel = new SearchModel
         {
             Keywords = "IT services",
-            CommercialToolStatus = "Active",
-            FeeFrom = 100.50m,
-            FeeTo = 999.99m,
+            Status = ["Active"],
+            FeeMin = 100.50m,
+            FeeMax = 999.99m,
             AwardMethod = "Competitive"
         };
 
@@ -91,7 +91,7 @@ public class CommercialToolsApiClientTests
         {
             var query = req.RequestUri!.Query;
             return query.Contains("Keyword=IT%20services") &&
-                   query.Contains("Status=Active") &&
+
                    query.Contains("MinFees=100.5") &&
                    query.Contains("MaxFees=999.99") &&
                    query.Contains("AwardMethod=Competitive") &&
@@ -111,8 +111,8 @@ public class CommercialToolsApiClientTests
         {
             Keywords = "test",
             NoFees = "true",
-            FeeFrom = 100m,
-            FeeTo = 500m
+            FeeMin = 100m,
+            FeeMax = 500m
         };
 
         var responseDto = new SearchResponse

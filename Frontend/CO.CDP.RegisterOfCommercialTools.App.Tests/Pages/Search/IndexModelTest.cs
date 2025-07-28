@@ -1,11 +1,13 @@
 using CO.CDP.RegisterOfCommercialTools.App.Services;
 using CO.CDP.UI.Foundation.Services;
 using FluentAssertions;
-using Microsoft.AspNetCore.Mvc;
 using Moq;
 using CO.CDP.RegisterOfCommercialTools.App.Models;
 using CO.CDP.RegisterOfCommercialTools.App.Pages;
 using SearchModel = CO.CDP.RegisterOfCommercialTools.App.Models.SearchModel;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Logging;
 
 namespace CO.CDP.RegisterOfCommercialTools.App.Tests.Pages.Search;
 
@@ -17,9 +19,23 @@ public class IndexModelTest
     public IndexModelTest()
     {
         _mockSearchService = new Mock<ISearchService>();
+        _mockSearchService.Setup(s => s.SearchAsync(It.IsAny<SearchModel>(), It.IsAny<int>(), It.IsAny<int>()))
+            .ReturnsAsync((new List<SearchResult>(), 0));
+
         var mockSirsiUrlService = new Mock<ISirsiUrlService>();
         mockSirsiUrlService.Setup(s => s.BuildUrl("/", null, null)).Returns("https://sirsi.home/");
-        _model = new IndexModel(_mockSearchService.Object, mockSirsiUrlService.Object);
+        var mockLogger = new Mock<ILogger<IndexModel>>();
+        _model = new IndexModel(_mockSearchService.Object, mockSirsiUrlService.Object, mockLogger.Object);
+
+        var mockHttpContext = new Mock<HttpContext>();
+        var mockRequest = new Mock<HttpRequest>();
+        mockRequest.Setup(r => r.Path).Returns("/");
+        mockRequest.Setup(r => r.QueryString).Returns(QueryString.Empty);
+        mockRequest.Setup(r => r.Query).Returns(new QueryCollection());
+        mockHttpContext.Setup(c => c.Request).Returns(mockRequest.Object);
+
+        var pageContext = new PageContext { HttpContext = mockHttpContext.Object };
+        _model.PageContext = pageContext;
     }
 
     [Fact]
@@ -52,8 +68,8 @@ public class IndexModelTest
         _model.SearchParams.AwardMethod.Should().BeNull();
         _model.SearchParams.Status.Should().BeEmpty();
         _model.SearchParams.ContractingAuthorityUsage.Should().BeNull();
-        _model.SearchParams.FeeFrom.Should().BeNull();
-        _model.SearchParams.FeeTo.Should().BeNull();
+        _model.SearchParams.FeeMin.Should().BeNull();
+        _model.SearchParams.FeeMax.Should().BeNull();
         _model.SearchParams.NoFees.Should().BeNull();
         _model.SearchParams.SubmissionDeadline.From.Day.Should().BeNull();
         _model.SearchParams.SubmissionDeadline.From.Month.Should().BeNull();
@@ -73,13 +89,6 @@ public class IndexModelTest
         _model.SearchParams.ContractEndDate.To.Day.Should().BeNull();
         _model.SearchParams.ContractEndDate.To.Month.Should().BeNull();
         _model.SearchParams.ContractEndDate.To.Year.Should().BeNull();
-
-        var expectedOpenAccordions = new[]
-        {
-            "commercial-tool", "commercial-tool-status", "contracting-authority-usage", "award-method", "fees",
-            "date-range"
-        };
-        _model.OpenAccordions.Should().BeEquivalentTo(expectedOpenAccordions);
     }
 
     [Fact]
@@ -92,8 +101,8 @@ public class IndexModelTest
         _model.SearchParams.AwardMethod = "direct-award";
         _model.SearchParams.Status = ["upcoming", "active-buyers"];
         _model.SearchParams.ContractingAuthorityUsage = "yes";
-        _model.SearchParams.FeeFrom = 0;
-        _model.SearchParams.FeeTo = 100;
+        _model.SearchParams.FeeMin = 0;
+        _model.SearchParams.FeeMax = 100;
         _model.SearchParams.NoFees = "true";
         _model.SearchParams.SubmissionDeadline.From.Day = "1";
         _model.SearchParams.SubmissionDeadline.From.Month = "1";
@@ -126,8 +135,8 @@ public class IndexModelTest
         _model.SearchParams.AwardMethod.Should().Be("direct-award");
         _model.SearchParams.Status.Should().BeEquivalentTo(["upcoming", "active-buyers"]);
         _model.SearchParams.ContractingAuthorityUsage.Should().Be("yes");
-        _model.SearchParams.FeeFrom.Should().Be(0);
-        _model.SearchParams.FeeTo.Should().Be(100);
+        _model.SearchParams.FeeMin.Should().Be(0);
+        _model.SearchParams.FeeMax.Should().Be(100);
         _model.SearchParams.NoFees.Should().Be("true");
         _model.SearchParams.SubmissionDeadline.From.Day.Should().Be("1");
         _model.SearchParams.SubmissionDeadline.From.Month.Should().Be("1");
@@ -149,17 +158,7 @@ public class IndexModelTest
         _model.SearchParams.ContractEndDate.To.Year.Should().Be("2026");
     }
 
-    [Fact]
-    public void OnPostReset_ShouldClearModelStateAndRedirect()
-    {
-        
 
-        var result = _model.OnPostReset();
-
-        var redirectResult = result.Should().BeOfType<RedirectToPageResult>().Subject;
-        redirectResult.PageName.Should().BeNull();
-        redirectResult.RouteValues.Should().BeNull();
-    }
 
 
     [Fact]
@@ -184,5 +183,31 @@ public class IndexModelTest
         await _model.OnGetAsync();
 
         _model.TotalCount.Should().Be(42);
+    }
+
+    [Fact]
+    public async Task OnGet_ShouldSetDefaultOpenAccordionsWhenNoAccParam()
+    {
+        // Arrange
+        var mockHttpContext = new Mock<HttpContext>();
+        var mockRequest = new Mock<HttpRequest>();
+        mockRequest.Setup(r => r.Path).Returns("/");
+        mockRequest.Setup(r => r.QueryString).Returns(QueryString.Empty);
+        mockRequest.Setup(r => r.Query).Returns(new QueryCollection()); // Ensure no 'acc' parameter
+        mockHttpContext.Setup(c => c.Request).Returns(mockRequest.Object);
+
+        var pageContext = new PageContext { HttpContext = mockHttpContext.Object };
+        _model.PageContext = pageContext;
+
+        // Act
+        await _model.OnGetAsync();
+
+        // Assert
+        var expectedOpenAccordions = new[]
+        {
+            "commercial-tool", "commercial-tool-status", "contracting-authority-usage", "award-method", "fees",
+            "date-range"
+        };
+        _model.OpenAccordions.Should().BeEquivalentTo(expectedOpenAccordions);
     }
 }

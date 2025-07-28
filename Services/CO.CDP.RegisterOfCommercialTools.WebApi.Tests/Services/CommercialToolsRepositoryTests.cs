@@ -260,8 +260,8 @@ public class CommercialToolsRepositoryTests
         var id = "nonexistent-id";
         SetupHttpResponse(HttpStatusCode.NotFound, "Not Found");
 
-        var action = async () => await _repository.GetCommercialToolById(id);
-        await action.Should().ThrowAsync<HttpRequestException>();
+        var result = await _repository.GetCommercialToolById(id);
+        result.Should().BeNull();
     }
 
     [Fact]

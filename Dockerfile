@@ -99,8 +99,6 @@ COPY --link Libraries/CO.CDP.UI.Foundation/CO.CDP.UI.Foundation.csproj Libraries
 COPY --link Libraries/CO.CDP.UI.Foundation.Tests/CO.CDP.UI.Foundation.Tests.csproj Libraries/CO.CDP.UI.Foundation.Tests/
 COPY --link Services/CO.CDP.RegisterOfCommercialTools.WebApi/CO.CDP.RegisterOfCommercialTools.WebApi.csproj Services/CO.CDP.RegisterOfCommercialTools.WebApi/
 COPY --link Services/CO.CDP.RegisterOfCommercialTools.WebApi.Tests/CO.CDP.RegisterOfCommercialTools.WebApi.Tests.csproj Services/CO.CDP.RegisterOfCommercialTools.WebApi.Tests/
-COPY --link Libraries/CO.CDP.RegisterOfCommercialTools.WebApiClient/CO.CDP.RegisterOfCommercialTools.WebApiClient.csproj Libraries/CO.CDP.RegisterOfCommercialTools.WebApiClient/
-COPY --link Libraries/CO.CDP.RegisterOfCommercialTools.WebApiClient.Tests/CO.CDP.RegisterOfCommercialTools.WebApiClient.Tests.csproj Libraries/CO.CDP.RegisterOfCommercialTools.WebApiClient.Tests/
 
 COPY --link GCGS-Central-Digital-Platform.sln .
 RUN dotnet restore "GCGS-Central-Digital-Platform.sln"
