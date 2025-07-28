@@ -33,7 +33,7 @@ public class CommercialToolsApiClient : ISearchService
 
         var response = await _httpClient.GetFromJsonAsync<SearchResponse>($"api/Search?{ToQueryString(requestDto)}");
 
-        var results = response?.Results?.Select(MapToSearchResult).ToList() ?? new List<SearchResult>();
+        var results = response?.Results.Select(MapToSearchResult).ToList() ?? [];
         var totalCount = response?.TotalCount ?? 0;
         return (results, totalCount);
     }
@@ -60,7 +60,7 @@ public class CommercialToolsApiClient : ISearchService
             Caption: dto.Description,
             CommercialTool: dto.Title,
             Status: (SearchResultStatus)Enum.Parse(typeof(SearchResultStatus), dto.Status.ToString()),
-            MaximumFee: dto.Fees.ToString("C"),
+            MaximumFee: dto.Fees.ToString("C", new System.Globalization.CultureInfo("en-GB")),
             OtherContractingAuthorityCanUse: dto.ReservedParticipation ?? "N/A",
             SubmissionDeadline: dto.SubmissionDeadline?.ToShortDateString() ?? "N/A",
             ContractDates: "N/A",
