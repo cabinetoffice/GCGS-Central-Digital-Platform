@@ -24,10 +24,25 @@ test: ## Run tests
 	@dotnet test $(TEST_OPTIONS)
 .PHONY: test
 
-build-docker: VERSION ?= "undefined"
-build-docker: ## Build Docker images
-	@docker compose build --build-arg VERSION=$(VERSION)
-.PHONY: build-docker
+BUILD_SERVICES := \
+    organisation-information-migrations \
+    entity-verification-migrations \
+    organisation-app \
+    authority \
+    tenant \
+    organisation \
+    commercial-tools-app \
+    commercial-tools-api \
+    person \
+    forms \
+    data-sharing \
+    entity-verification \
+    av-scanner \
+    outbox-processor-organisation \
+    outbox-processor-entity-verification \
+    scheduled-worker
+
+build-docker: VERSION ?= "undefined"build-docker: ## Build Docker images	$(foreach service,$(BUILD_SERVICES), 		@echo "Building $(service)..."; 		@docker compose build --build-arg VERSION=$(VERSION) $(service);).PHONY: build-docker
 
 up: render-compose-override ## Start Docker containers
 	@docker compose ls
