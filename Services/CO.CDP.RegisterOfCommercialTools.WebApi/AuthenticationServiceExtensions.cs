@@ -8,10 +8,10 @@ public static class AuthenticationServiceExtensions
     public static IServiceCollection AddAwsCognitoAuthentication(this IServiceCollection services, IConfiguration configuration, IWebHostEnvironment hostEnvironment)
     {
         services.Configure<AwsSettings>(configuration.GetSection("AWS"));
-        services.Configure<CognitoAuthenticationSettings>(configuration.GetSection("CognitoAuthentication"));
+        services.Configure<CognitoAuthenticationSettings>(configuration.GetSection("AWS:CognitoAuthentication"));
 
         var awsSettings = configuration.GetSection("AWS").Get<AwsSettings>();
-        var cognitoSettings = configuration.GetSection("CognitoAuthentication").Get<CognitoAuthenticationSettings>();
+        var cognitoSettings = configuration.GetSection("AWS:CognitoAuthentication").Get<CognitoAuthenticationSettings>();
 
         services.AddAuthentication("Bearer")
             .AddJwtBearer("Bearer", options =>
