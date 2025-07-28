@@ -23,3 +23,7 @@ button[aria-expanded="true"] .custom-chevron-icon {
     background-color: #ffffff;
     border: 1px solid #b1b4b6;
 }
+
+.govuk-filter-section {
+    background-color: #f3f2f1;
+}

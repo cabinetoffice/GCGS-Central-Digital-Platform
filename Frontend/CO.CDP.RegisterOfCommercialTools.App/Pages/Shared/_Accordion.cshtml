@@ -2,7 +2,7 @@
 
 <div class="govuk-accordion no-border" data-accordion-section>
     <div class="govuk-accordion__section no-border @(Model.IsOpen ? "govuk-accordion__section--expanded" : "")">
-        <input type="hidden" name="OpenAccordions" data-accordion-input value="@(Model.IsOpen ? Model.Id : null)"/>
+        <input type="hidden" name="acc" data-accordion-input value="@(Model.IsOpen ? Model.Id : null)"/>
         <button type="button"
                 class="govuk-accordion__section-button govuk-!-padding-left-2 govuk-!-padding-top-2 govuk-!-padding-right-2 govuk-!-padding-bottom-0 govuk-!-width-full no-border"
                 aria-expanded="@(Model.IsOpen)" aria-controls="@Model.Id-content" data-accordion-button>
@@ -17,7 +17,7 @@
                 @Model.Title
             </span>
         </button>
-        <div id="@Model.Id-content" class="govuk-accordion__section-content no-border govuk-!-padding-bottom-0" data-accordion-content>
+        <div id="@Model.Id-content" class="govuk-accordion__section-content no-border govuk-!-padding-bottom-0 govuk-!-margin-left-2" data-accordion-content>
             <partial name="@Model.PartialViewName" model="@Model.PartialViewModel" />
         </div>
     </div>

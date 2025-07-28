@@ -162,8 +162,8 @@ public class SearchModelTest
     {
         var searchParams = new SearchModel
         {
-            FeeFrom = 10,
-            FeeTo = 5
+            FeeMin = 10,
+            FeeMax = 5
         };
 
         var validationContext = new ValidationContext(searchParams);
@@ -180,8 +180,8 @@ public class SearchModelTest
     {
         var searchParams = new SearchModel
         {
-            FeeFrom = 10,
-            FeeTo = 10
+            FeeMin = 10,
+            FeeMax = 10
         };
 
         var validationContext = new ValidationContext(searchParams);
@@ -197,8 +197,8 @@ public class SearchModelTest
     {
         var searchParams = new SearchModel
         {
-            FeeFrom = 10,
-            FeeTo = 20
+            FeeMin = 10,
+            FeeMax = 20
         };
 
         var validationContext = new ValidationContext(searchParams);
@@ -231,8 +231,8 @@ public class SearchModelTest
         var searchParams = new SearchModel
         {
             NoFees = "true",
-            FeeFrom = 10,
-            FeeTo = 20
+            FeeMin = 10,
+            FeeMax = 20
         };
 
         var validationContext = new ValidationContext(searchParams);
@@ -250,7 +250,7 @@ public class SearchModelTest
         var searchParams = new SearchModel
         {
             NoFees = "true",
-            FeeFrom = 10
+            FeeMin = 10
         };
 
         var validationContext = new ValidationContext(searchParams);
@@ -268,7 +268,7 @@ public class SearchModelTest
         var searchParams = new SearchModel
         {
             NoFees = "true",
-            FeeTo = 20
+            FeeMax = 20
         };
 
         var validationContext = new ValidationContext(searchParams);
@@ -286,8 +286,8 @@ public class SearchModelTest
         var searchParams = new SearchModel
         {
             NoFees = null,
-            FeeFrom = 10,
-            FeeTo = 20
+            FeeMin = 10,
+            FeeMax = 20
         };
 
         var validationContext = new ValidationContext(searchParams);

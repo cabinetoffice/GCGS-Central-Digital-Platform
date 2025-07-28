@@ -8,17 +8,13 @@ using CO.CDP.UI.Foundation.Utilities;
 
 namespace CO.CDP.RegisterOfCommercialTools.App.Pages;
 
-public class IndexModel(ISearchService searchService, ISirsiUrlService sirsiUrlService)
+public class IndexModel(ISearchService searchService, ISirsiUrlService sirsiUrlService, ILogger<IndexModel> logger)
     : PageModel
 {
-    [BindProperty(SupportsGet = true)] public SearchModel SearchParams { get; set; } = new();
+    [BindProperty(SupportsGet = true, Name = "sort")] public SearchModel SearchParams { get; set; } = new();
 
-    [BindProperty(SupportsGet = true)]
-    public List<string> OpenAccordions { get; set; } =
-    [
-        "commercial-tool", "commercial-tool-status", "contracting-authority-usage", "award-method", "fees",
-        "date-range"
-    ];
+    [BindProperty(SupportsGet = true, Name = "acc")]
+    public List<string> OpenAccordions { get; set; } = new();
 
     public List<SearchResult> SearchResults { get; set; } = [];
     public PaginationPartialModel? Pagination { get; set; }
@@ -35,36 +31,43 @@ public class IndexModel(ISearchService searchService, ISirsiUrlService sirsiUrlS
 
     public async Task OnGetAsync()
     {
-        var (results, totalCount) = await searchService.SearchAsync(SearchParams, PageNumber, PageSize);
-
-        SearchResults = results;
-        TotalCount = totalCount;
-
-        Pagination = new PaginationPartialModel
+        logger.LogInformation("Processing search request: Page {PageNumber}, Keywords: {Keywords}, Status: [{Status}]", 
+            PageNumber, SearchParams.Keywords, string.Join(", ", SearchParams.Status));
+            
+        try
         {
-            CurrentPage = PageNumber,
-            PageSize = PageSize,
-            TotalItems = totalCount,
-            Url = "/"
-        };
+            if (!Request.Query.ContainsKey("acc") && !OpenAccordions.Any())
+            {
+                OpenAccordions =
+                [
+                    "commercial-tool", "commercial-tool-status", "contracting-authority-usage", "award-method", "fees",
+                    "date-range"
+                ];
+            }
+
+            var (results, totalCount) = await searchService.SearchAsync(SearchParams, PageNumber, PageSize);
+
+            SearchResults = results;
+            TotalCount = totalCount;
+
+            logger.LogInformation("Search completed successfully. Found {TotalCount} results for page {PageNumber}", 
+                totalCount, PageNumber);
+
+            Pagination = new PaginationPartialModel
+            {
+                CurrentPage = PageNumber,
+                PageSize = PageSize,
+                TotalItems = totalCount,
+                Url = Request.QueryString.HasValue ? Request.Path + Request.QueryString : Request.Path
+            };
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Error processing search request: Page {PageNumber}, Keywords: {Keywords}", 
+                PageNumber, SearchParams.Keywords);
+            throw;
+        }
     }
 
-    public async Task<IActionResult> OnPostAsync()
-    {
-        SanitiseSearchParams();
 
-        await OnGetAsync();
-        return Page();
-    }
-    private void SanitiseSearchParams()
-    {
-        SearchParams.Keywords = InputSanitiser.SanitiseSingleLineTextInput(SearchParams.Keywords);
-    }
-
-
-    public IActionResult OnPostReset()
-    {
-        return RedirectToPage();
-    }
 }
-
