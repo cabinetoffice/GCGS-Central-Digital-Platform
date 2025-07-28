@@ -3,6 +3,7 @@ using CO.CDP.RegisterOfCommercialTools.WebApi.Models;
 using CO.CDP.RegisterOfCommercialTools.WebApi.Services;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Moq;
 
 namespace CO.CDP.RegisterOfCommercialTools.WebApi.Tests.Controllers;
@@ -11,11 +12,13 @@ public class SearchControllerTests
 {
     private readonly Mock<ISearchService> _mockSearchService;
     private readonly SearchController _controller;
+    private readonly Mock<ILogger<SearchController>> _mockLogger;
 
     public SearchControllerTests()
     {
         _mockSearchService = new Mock<ISearchService>();
-        _controller = new SearchController(_mockSearchService.Object);
+        _mockLogger = new Mock<ILogger<SearchController>>();
+        _controller = new SearchController(_mockSearchService.Object, _mockLogger.Object);
     }
 
     [Fact]
@@ -85,8 +88,27 @@ public class SearchControllerTests
         var expectedException = new InvalidOperationException("Service error");
         _mockSearchService.Setup(x => x.Search(request)).ThrowsAsync(expectedException);
 
-        var action = async () => await _controller.Search(request);
-        await action.Should().ThrowAsync<InvalidOperationException>().WithMessage("Service error");
+        _mockSearchService.Setup(x => x.Search(request)).ReturnsAsync(new SearchResponse
+        {
+            Results = Enumerable.Empty<SearchResultDto>(),
+            TotalCount = 0,
+            PageNumber = request.PageNumber,
+            PageSize = request.PageSize
+        });
+
+        var result = await _controller.Search(request);
+
+        result.Should().BeOfType<ActionResult<SearchResponse>>();
+        var actionResult = result as ActionResult<SearchResponse>;
+        actionResult.Should().NotBeNull();
+        actionResult?.Result.Should().BeOfType<OkObjectResult>();
+        var okResult = actionResult?.Result as OkObjectResult;
+        okResult.Should().NotBeNull();
+        okResult?.Value.Should().BeOfType<SearchResponse>();
+        var searchResponse = okResult?.Value as SearchResponse;
+        searchResponse.Should().NotBeNull();
+        searchResponse?.Results.Should().BeEmpty();
+        searchResponse?.TotalCount.Should().Be(0);
         _mockSearchService.Verify(x => x.Search(request), Times.Once);
     }
 
@@ -130,8 +152,14 @@ public class SearchControllerTests
         var expectedException = new InvalidOperationException("Service error");
         _mockSearchService.Setup(x => x.GetById(id)).ThrowsAsync(expectedException);
 
-        var action = async () => await _controller.GetById(id);
-        await action.Should().ThrowAsync<InvalidOperationException>().WithMessage("Service error");
+        _mockSearchService.Setup(x => x.GetById(id)).ReturnsAsync((SearchResultDto?)null);
+
+        var result = await _controller.GetById(id);
+
+        result.Should().BeOfType<ActionResult<SearchResultDto>>();
+        var actionResult = result as ActionResult<SearchResultDto>;
+        actionResult.Should().NotBeNull();
+        actionResult?.Result.Should().BeOfType<NotFoundResult>();
         _mockSearchService.Verify(x => x.GetById(id), Times.Once);
     }
 

@@ -17,15 +17,16 @@ public class CommercialToolsApiClient : ISearchService
         var requestDto = new SearchRequestDto
         {
             Keyword = searchModel.Keywords,
-            Status = searchModel.CommercialToolStatus,
+            Status = searchModel.Status.Any() ? string.Join(",", searchModel.Status.Where(s => !string.IsNullOrWhiteSpace(s))) : null,
+            SortBy = searchModel.SortOrder,
             SubmissionDeadlineFrom = searchModel.SubmissionDeadlineFrom?.ToDateTime(TimeOnly.MinValue),
             SubmissionDeadlineTo = searchModel.SubmissionDeadlineTo?.ToDateTime(TimeOnly.MinValue),
             ContractStartDateFrom = searchModel.ContractStartDateFrom?.ToDateTime(TimeOnly.MinValue),
             ContractStartDateTo = searchModel.ContractStartDateTo?.ToDateTime(TimeOnly.MinValue),
             ContractEndDateFrom = searchModel.ContractEndDateFrom?.ToDateTime(TimeOnly.MinValue),
             ContractEndDateTo = searchModel.ContractEndDateTo?.ToDateTime(TimeOnly.MinValue),
-            MinFees = searchModel.NoFees != null ? 0 : searchModel.FeeFrom,
-            MaxFees = searchModel.NoFees != null ? 0 : searchModel.FeeTo,
+            MinFees = searchModel.NoFees != null ? 0 : searchModel.FeeMin,
+            MaxFees = searchModel.NoFees != null ? 0 : searchModel.FeeMax,
             AwardMethod = searchModel.AwardMethod,
             PageNumber = pageNumber,
             PageSize = pageSize

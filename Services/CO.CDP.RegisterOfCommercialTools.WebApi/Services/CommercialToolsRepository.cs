@@ -19,6 +19,13 @@ public class CommercialToolsRepository : ICommercialToolsRepository
     public async Task<IEnumerable<SearchResultDto>> SearchCommercialTools(string queryUrl)
     {
         var response = await _httpClient.GetAsync(queryUrl);
+        
+        // Handle 404 gracefully - return empty results instead of throwing
+        if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+        {
+            return Enumerable.Empty<SearchResultDto>();
+        }
+        
         response.EnsureSuccessStatusCode();
 
         var content = await response.Content.ReadAsStringAsync();
@@ -73,6 +80,13 @@ public class CommercialToolsRepository : ICommercialToolsRepository
         {
             var countUrl = AddCountParameter(queryUrl);
             var response = await _httpClient.GetAsync(countUrl);
+            
+            // Handle 404 gracefully - return 0 count
+            if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                return 0;
+            }
+            
             response.EnsureSuccessStatusCode();
 
             var content = await response.Content.ReadAsStringAsync();
@@ -114,6 +128,13 @@ public class CommercialToolsRepository : ICommercialToolsRepository
     public async Task<SearchResultDto?> GetCommercialToolById(string id)
     {
         var response = await _httpClient.GetAsync($"CommercialTools({id})");
+        
+        // Handle 404 gracefully - return null
+        if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+        {
+            return null;
+        }
+        
         response.EnsureSuccessStatusCode();
 
         var content = await response.Content.ReadAsStringAsync();
