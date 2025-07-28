@@ -31,7 +31,7 @@
             </div>
         }
 
-        <h1 class="govuk-heading-l">You need to sign the latest Memorandum of Understanding</h1>
+        <h1 class="govuk-heading-l">Your organisation needs to sign the latest Memorandum of Understanding (MoU)</h1>
 
         <div class="govuk-warning-text">
             <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
@@ -40,7 +40,7 @@
             </strong>
         </div>
 
-        <p class="govuk-body">@Model.OrganisationName needs to sign the latest Memorandum of Understanding (MoU) before
+        <p class="govuk-body">@Model.OrganisationName needs to sign the latest MoU before
             you can access buyer services.</p>
 
         <p class="govuk-body">The MoU is an agreement between your organisation and the Crown Commercial Service that
@@ -57,7 +57,7 @@
         @if (Model.CanSignMou)
         {
             <div class="govuk-inset-text">
-                <p class="govuk-body">As an editor or admin for @Model.OrganisationName, you can sign the Memorandum of Understanding.</p>
+                <p class="govuk-body">As an editor or admin for @Model.OrganisationName, you can sign the MoU.</p>
             </div>
 
             <a href="/organisation/@Model.OrganisationId/review-and-sign-memorandom" role="button" draggable="false" class="govuk-button govuk-button--start" data-module="govuk-button">
@@ -70,8 +70,7 @@
         else
         {
             <div class="govuk-inset-text">
-                <p class="govuk-body">As a viewer for @Model.OrganisationName, you cannot sign the Memorandum of
-                    Understanding.</p>
+                <p class="govuk-body">As a viewer for @Model.OrganisationName, you cannot sign the MoU.</p>
                 <p class="govuk-body">Please contact an editor or admin in your organisation to sign the MoU.</p>
             </div>
         }

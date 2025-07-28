@@ -6,7 +6,6 @@ using CO.CDP.OrganisationApp.Constants;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using CO.CDP.Localization;
-using CO.CDP.OrganisationApp.Authorization;
 using CO.CDP.OrganisationApp.Logging;
 using CO.CDP.OrganisationApp.WebApiClients;
 using Microsoft.FeatureManagement.Mvc;
@@ -14,11 +13,10 @@ using Microsoft.FeatureManagement.Mvc;
 namespace CO.CDP.OrganisationApp.Pages.Organisation;
 
 [ValidateAntiForgeryToken]
-[Authorize(Policy = PartyRoleRequirement.Buyer)]
+[Authorize(Policy = PolicyNames.PartyRole.BuyerWithSignedMou)]
 [Authorize(Policy = OrgScopeRequirement.Viewer)]
 [FeatureGate(FeatureFlags.SearchRegistryPpon)]
 public class OrganisationPponSearchModel(
-    IAuthorizationService authorizationService,
     IOrganisationClient organisationClient,
     ISession session,
     ILogger<OrganisationPponSearchModel> logger) : LoggedInUserAwareModel(session)
@@ -53,12 +51,6 @@ public class OrganisationPponSearchModel(
 
     public async Task<IActionResult> OnGet()
     {
-        var authResult = await authorizationService.AuthorizeAsync(User, Id, new IsBuyerRequirement());
-        if (!authResult.Succeeded)
-        {
-            _logger.LogWarning("User is not authorised to access the search registry of PPON with ID {OrganisationId}.", Id);
-            return Redirect("/page-not-found");
-        }
         if (!string.IsNullOrWhiteSpace(SearchText))
         {
             var result = await HandleSearch(PageNumber, SearchText, SortOrder);
@@ -77,12 +69,6 @@ public class OrganisationPponSearchModel(
 
     public async Task<IActionResult> OnPost()
     {
-        var authResult = await authorizationService.AuthorizeAsync(User, Id, new IsBuyerRequirement());
-        if (!authResult.Succeeded)
-        {
-            _logger.LogWarning("User is not authorised to access the search registry of PPON with ID {OrganisationId}.", Id);
-            return Redirect("/page-not-found");
-        }
         var result = await HandleSearch(PageNumber, SearchText, SortOrder);
         ApplySearchResult(result);
         return Page();

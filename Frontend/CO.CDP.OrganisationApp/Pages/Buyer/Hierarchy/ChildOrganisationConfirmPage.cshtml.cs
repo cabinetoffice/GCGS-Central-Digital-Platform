@@ -12,7 +12,7 @@ using Address = CO.CDP.Organisation.WebApiClient.Address;
 
 namespace CO.CDP.OrganisationApp.Pages.Buyer.Hierarchy;
 
-[Authorize(Policy = PartyRoleRequirement.Buyer)]
+[Authorize(Policy = PolicyNames.PartyRole.BuyerWithSignedMou)]
 [Authorize(Policy = OrgScopeRequirement.Editor)]
 [FeatureGate(FeatureFlags.BuyerParentChildRelationship)]
 public class ChildOrganisationConfirmPage(

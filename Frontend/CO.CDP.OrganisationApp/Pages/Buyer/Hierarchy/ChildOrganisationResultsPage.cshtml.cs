@@ -1,6 +1,5 @@
 using CO.CDP.Localization;
 using CO.CDP.Organisation.WebApiClient;
-using CO.CDP.OrganisationApp.Authorization;
 using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Extensions;
 using CO.CDP.OrganisationApp.Logging;
@@ -13,13 +12,12 @@ using Microsoft.FeatureManagement.Mvc;
 
 namespace CO.CDP.OrganisationApp.Pages.Buyer.Hierarchy;
 
-[Authorize(Policy = PartyRoleRequirement.Buyer)]
+[Authorize(Policy = PolicyNames.PartyRole.BuyerWithSignedMou)]
 [Authorize(Policy = OrgScopeRequirement.Editor)]
 [FeatureGate(FeatureFlags.BuyerParentChildRelationship)]
 public class ChildOrganisationResultsPage(
     IOrganisationClient organisationClient,
-    ILogger<ChildOrganisationResultsPage> logger,
-    IAuthorizationService authorizationService)
+    ILogger<ChildOrganisationResultsPage> logger)
     : PageModel
 {
     private readonly IOrganisationClient _organisationClient =
@@ -27,9 +25,6 @@ public class ChildOrganisationResultsPage(
 
     private readonly ILogger<ChildOrganisationResultsPage> _logger =
         logger ?? throw new ArgumentNullException(nameof(logger));
-
-    private readonly IAuthorizationService _authorizationService =
-        authorizationService ?? throw new ArgumentNullException(nameof(authorizationService));
 
     [BindProperty(SupportsGet = true)] public Guid Id { get; set; }
 

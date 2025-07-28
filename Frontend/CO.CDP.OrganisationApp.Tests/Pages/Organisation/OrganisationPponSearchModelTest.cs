@@ -41,7 +41,7 @@ public class OrganisationPponSearchModelTest
             .ReturnsAsync(AuthorizationResult.Success());
 
         _testOrganisationPponSearchModel =
-            new OrganisationPponSearchModel(_mockAuthorizationService.Object, _mockOrganisationClient.Object, Mock.Of<ISession>(), _mockLogger.Object)
+            new OrganisationPponSearchModel(_mockOrganisationClient.Object, Mock.Of<ISession>(), _mockLogger.Object)
             {
                 Id = Id,
                 Pagination = new CO.CDP.OrganisationApp.Pages.Shared.PaginationPartialModel
@@ -544,7 +544,7 @@ public class OrganisationPponSearchModelTest
             Id,
             It.IsAny<IAuthorizationRequirement[]>()))
             .ReturnsAsync(AuthorizationResult.Failed());
-        var model = new OrganisationPponSearchModel(_mockAuthorizationService.Object, _mockOrganisationClient.Object, Mock.Of<ISession>(), _mockLogger.Object)
+        var model = new OrganisationPponSearchModel(_mockOrganisationClient.Object, Mock.Of<ISession>(), _mockLogger.Object)
         {
             Id = Id,
             Pagination = new CO.CDP.OrganisationApp.Pages.Shared.PaginationPartialModel

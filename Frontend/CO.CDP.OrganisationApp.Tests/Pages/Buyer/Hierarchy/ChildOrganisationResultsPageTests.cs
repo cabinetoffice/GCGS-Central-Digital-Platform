@@ -25,7 +25,7 @@ public class ChildOrganisationResultsPageTests
         _mockOrganisationClient = new Mock<IOrganisationClient>();
         _mockLogger = new Mock<ILogger<ChildOrganisationResultsPage>>();
         var mockAuthorizationService = new Mock<IAuthorizationService>();
-        _model = new ChildOrganisationResultsPage(_mockOrganisationClient.Object, _mockLogger.Object, mockAuthorizationService.Object);
+        _model = new ChildOrganisationResultsPage(_mockOrganisationClient.Object, _mockLogger.Object);
         mockAuthorizationService.Setup(a => a.AuthorizeAsync(
                 It.IsAny<System.Security.Claims.ClaimsPrincipal>(),
                 It.IsAny<object>(),
@@ -206,8 +206,7 @@ public class ChildOrganisationResultsPageTests
     {
         var mockOrganisationClient = new Mock<IOrganisationClient>();
         var mockLogger = new Mock<ILogger<ChildOrganisationResultsPage>>();
-        var mockAuthorizationService = new Mock<IAuthorizationService>();
-        var model = new ChildOrganisationResultsPage(mockOrganisationClient.Object, mockLogger.Object, mockAuthorizationService.Object);
+        var model = new ChildOrganisationResultsPage(mockOrganisationClient.Object, mockLogger.Object);
 
         model.Results.Should().NotBeNull();
         model.Results.Should().BeEmpty();
@@ -218,8 +217,7 @@ public class ChildOrganisationResultsPageTests
     {
         var mockOrganisationClient = new Mock<IOrganisationClient>();
         var mockLogger = new Mock<ILogger<ChildOrganisationResultsPage>>();
-        var mockAuthorizationService = new Mock<IAuthorizationService>();
-        var model = new ChildOrganisationResultsPage(mockOrganisationClient.Object, mockLogger.Object, mockAuthorizationService.Object);
+        var model = new ChildOrganisationResultsPage(mockOrganisationClient.Object, mockLogger.Object);
 
         model.SelectedPponIdentifier.Should().BeNull();
     }

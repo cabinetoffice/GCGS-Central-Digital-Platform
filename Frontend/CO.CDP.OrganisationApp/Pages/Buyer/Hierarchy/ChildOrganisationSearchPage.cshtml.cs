@@ -1,6 +1,5 @@
 using System.ComponentModel.DataAnnotations;
 using CO.CDP.Localization;
-using CO.CDP.OrganisationApp.Authorization;
 using CO.CDP.OrganisationApp.Constants;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -10,10 +9,10 @@ using Microsoft.FeatureManagement.Mvc;
 
 namespace CO.CDP.OrganisationApp.Pages.Buyer.Hierarchy;
 
-[Authorize(Policy = PartyRoleRequirement.Buyer)]
+[Authorize(Policy = PolicyNames.PartyRole.BuyerWithSignedMou)]
 [Authorize(Policy = OrgScopeRequirement.Editor)]
 [FeatureGate(FeatureFlags.BuyerParentChildRelationship)]
-public class ChildOrganisationSearchPage(IFeatureManager featureManager, IAuthorizationService authorizationService, ILogger<ChildOrganisationSearchPage> logger)
+public class ChildOrganisationSearchPage(IFeatureManager featureManager)
     : PageModel
 {
     [BindProperty(SupportsGet = true)] public Guid Id { get; set; }
@@ -23,11 +22,6 @@ public class ChildOrganisationSearchPage(IFeatureManager featureManager, IAuthor
     public string? Query { get; set; }
 
     public bool SearchRegistryPponEnabled { get; private set; }
-
-    private readonly ILogger<ChildOrganisationSearchPage> _logger =
-        logger ?? throw new ArgumentNullException(nameof(logger));
-    private readonly IAuthorizationService _authorizationService =
-        authorizationService ?? throw new ArgumentNullException(nameof(authorizationService));
 
     public async Task<IActionResult> OnGetAsync()
     {

@@ -1,5 +1,4 @@
 using CO.CDP.Organisation.WebApiClient;
-using CO.CDP.OrganisationApp.Authorization;
 using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Logging;
 using Microsoft.AspNetCore.Authorization;
@@ -9,7 +8,7 @@ using Microsoft.FeatureManagement.Mvc;
 
 namespace CO.CDP.OrganisationApp.Pages.Buyer.Hierarchy;
 
-[Authorize(Policy = PartyRoleRequirement.Buyer)]
+[Authorize(Policy = PolicyNames.PartyRole.BuyerWithSignedMou)]
 [Authorize(Policy = OrgScopeRequirement.Editor)]
 [FeatureGate(FeatureFlags.BuyerParentChildRelationship)]
 public class ChildOrganisationSuccessPage(
