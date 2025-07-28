@@ -24,9 +24,14 @@ test: ## Run tests
 	@dotnet test $(TEST_OPTIONS)
 .PHONY: test
 
+BUILD_SERVICES :=     organisation-information-migrations     entity-verification-migrations     organisation-app     authority     tenant     organisation     commercial-tools-app     commercial-tools-api     person     forms     data-sharing     entity-verification     av-scanner     outbox-processor-organisation     outbox-processor-entity-verification     scheduled-worker
+
 build-docker: VERSION ?= "undefined"
 build-docker: ## Build Docker images
-	@docker compose build --build-arg VERSION=$(VERSION)
+	@for service in $(BUILD_SERVICES); do \
+        echo "Building $service..."; \
+        docker compose build --build-arg VERSION=$(VERSION) $service; \
+    done
 .PHONY: build-docker
 
 up: render-compose-override ## Start Docker containers
