@@ -53,8 +53,9 @@ public abstract class UrlServiceBase
     /// <param name="endpoint">The endpoint path.</param>
     /// <param name="organisationId">Optional organisation ID.</param>
     /// <param name="redirectUrl">Optional redirect URL.</param>
+    /// <param name="cookieAcceptance">Optional cookie acceptance override.</param>
     /// <returns>The complete URL to the service endpoint.</returns>
-    public string BuildUrl(string endpoint, Guid? organisationId = null, string? redirectUrl = null)
+    public string BuildUrl(string endpoint, Guid? organisationId = null, string? redirectUrl = null, bool? cookieAcceptance = null)
     {
         var queryParams = new Dictionary<string, string?>();
 
@@ -71,9 +72,20 @@ public abstract class UrlServiceBase
             queryParams.Add("redirect_url", redirectUrl);
         }
 
-        if (_cookiePreferencesService != null)
+        if (cookieAcceptance.HasValue)
         {
-            queryParams.Add("cookies_accepted", _cookiePreferencesService.IsAccepted().ToString().ToLower());
+            queryParams.Add("cookies_accepted", cookieAcceptance.Value.ToString().ToLower());
+        }
+        else if (_cookiePreferencesService != null)
+        {
+            var cookiesAccepted = _cookiePreferencesService.GetValue();
+            string cookiesAcceptedValue = cookiesAccepted switch
+            {
+                CookieAcceptanceValues.Accept => "true",
+                CookieAcceptanceValues.Reject => "false",
+                _ => "unknown"
+            };
+            queryParams.Add("cookies_accepted", cookiesAcceptedValue);
         }
 
         return BuildUrl(endpoint, queryParams);

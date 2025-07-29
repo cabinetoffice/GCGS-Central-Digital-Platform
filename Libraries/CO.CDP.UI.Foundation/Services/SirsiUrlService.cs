@@ -14,27 +14,6 @@ public class SirsiUrlOptions : ServiceUrlOptions
     }
 }
 
-/// <summary>
-/// Interface for building URLs to the Sirsi service.
-/// </summary>
-public interface ISirsiUrlService
-{
-    /// <summary>
-    /// Builds a URL to a Sirsi service endpoint.
-    /// </summary>
-    /// <param name="endpoint">The endpoint path.</param>
-    /// <param name="organisationId">Optional organisation ID.</param>
-    /// <param name="redirectUrl">Optional redirect URL.</param>
-    /// <returns>The complete URL to the Sirsi service endpoint.</returns>
-    string BuildUrl(string endpoint, Guid? organisationId = null, string? redirectUrl = null);
-
-    /// <summary>
-    /// Returns the path for the given endpoint.
-    /// </summary>
-    /// <param name="endpoint">The endpoint path.</param>
-    /// <returns>The path for the given endpoint.</returns>
-    string GetPath(string endpoint);
-}
 
 /// <summary>
 /// Service for building URLs to the Sirsi service.
@@ -53,5 +32,10 @@ public class SirsiUrlService : UrlServiceBase, ISirsiUrlService
         ICookiePreferencesService? cookiePreferencesService = null)
         : base(options, httpContextAccessor, cookiePreferencesService)
     {
+    }
+
+    public new string BuildUrl(string endpoint, Guid? organisationId = null, string? redirectUrl = null, bool? cookieAcceptance = null)
+    {
+        return base.BuildUrl(endpoint, organisationId, redirectUrl, cookieAcceptance);
     }
 }

@@ -9,14 +9,14 @@ using FluentAssertions;
 
 namespace CO.CDP.UI.Foundation.Tests.Services;
 
-public class SirsiUrlServiceTests
+public class CommercialToolsUrlServiceTests
 {
     private readonly Mock<IHttpContextAccessor> _mockHttpContextAccessor;
     private readonly Mock<ICookiePreferencesService> _mockCookiePreferencesService;
-    private readonly SirsiUrlOptions _sirsiUrlOptions;
+    private readonly CommercialToolsUrlOptions _commercialToolsUrlOptions;
     private readonly Dictionary<string, string> _sessionItems;
 
-    public SirsiUrlServiceTests()
+    public CommercialToolsUrlServiceTests()
     {
         _mockHttpContextAccessor = new Mock<IHttpContextAccessor>();
         var mockHttpContext = new Mock<HttpContext>();
@@ -41,10 +41,10 @@ public class SirsiUrlServiceTests
                 return exists;
             });
 
-        _sirsiUrlOptions = new SirsiUrlOptions
+        _commercialToolsUrlOptions = new CommercialToolsUrlOptions
         {
-            ServiceBaseUrl = "https://sirsi-service.example.com",
-            SessionKey = "SirsiServiceOrigin"
+            ServiceBaseUrl = "https://commercial-tools-service.example.com",
+            SessionKey = "CommercialToolsServiceOrigin"
         };
 
         Thread.CurrentThread.CurrentCulture = new CultureInfo("en-GB");
@@ -54,71 +54,74 @@ public class SirsiUrlServiceTests
     [Fact]
     public void BuildUrl_ShouldConstructBasicUrl_WithEndpoint()
     {
-        var service = new SirsiUrlService(_sirsiUrlOptions, _mockHttpContextAccessor.Object);
+        var service = new CommercialToolsUrlService(_commercialToolsUrlOptions, _mockHttpContextAccessor.Object);
 
         var url = service.BuildUrl("/test-endpoint");
 
-        url.Should().Be("https://sirsi-service.example.com/test-endpoint?language=en_GB");
+        url.Should().Be("https://commercial-tools-service.example.com/test-endpoint?language=en_GB");
     }
 
     [Fact]
     public void BuildUrl_ShouldIncludeOrganisationId_WhenProvided()
     {
-        var service = new SirsiUrlService(_sirsiUrlOptions, _mockHttpContextAccessor.Object);
+        var service = new CommercialToolsUrlService(_commercialToolsUrlOptions, _mockHttpContextAccessor.Object);
         var organisationId = Guid.Parse("12345678-1234-1234-1234-123456789012");
 
         var url = service.BuildUrl("/test-endpoint", organisationId);
 
         url.Should()
             .Be(
-                "https://sirsi-service.example.com/test-endpoint?language=en_GB&organisation_id=12345678-1234-1234-1234-123456789012");
+                "https://commercial-tools-service.example.com/test-endpoint?language=en_GB&organisation_id=12345678-1234-1234-1234-123456789012");
     }
 
     [Fact]
     public void BuildUrl_ShouldIncludeRedirectUrl_WhenProvided()
     {
-        var service = new SirsiUrlService(_sirsiUrlOptions, _mockHttpContextAccessor.Object);
+        var service = new CommercialToolsUrlService(_commercialToolsUrlOptions, _mockHttpContextAccessor.Object);
 
         var url = service.BuildUrl("/test-endpoint", redirectUrl: "https://return.example.com");
 
         url.Should()
             .Be(
-                "https://sirsi-service.example.com/test-endpoint?language=en_GB&redirect_url=https%3A%2F%2Freturn.example.com");
+                "https://commercial-tools-service.example.com/test-endpoint?language=en_GB&redirect_url=https%3A%2F%2Freturn.example.com");
     }
 
     [Fact]
     public void BuildUrl_ShouldIncludeCookieAcceptance_WhenCookieServiceProvided()
     {
         _mockCookiePreferencesService.Setup(s => s.GetValue()).Returns(CookieAcceptanceValues.Accept);
-        var service = new SirsiUrlService(_sirsiUrlOptions, _mockHttpContextAccessor.Object,
+        var service = new CommercialToolsUrlService(_commercialToolsUrlOptions, _mockHttpContextAccessor.Object,
             _mockCookiePreferencesService.Object);
 
         var url = service.BuildUrl("/test-endpoint");
 
-        url.Should().Be("https://sirsi-service.example.com/test-endpoint?language=en_GB&cookies_accepted=true");
+        url.Should().Be("https://commercial-tools-service.example.com/test-endpoint?language=en_GB&cookies_accepted=true");
     }
 
     [Fact]
     public void BuildUrl_ShouldUseSessionOrigin_WhenAvailable()
     {
-        _sessionItems.Add("SirsiServiceOrigin", "https://session-sirsi.example.com");
-        var service = new SirsiUrlService(_sirsiUrlOptions, _mockHttpContextAccessor.Object);
+        _sessionItems.Add("CommercialToolsServiceOrigin", "https://session-commercial-tools.example.com");
+        var service = new CommercialToolsUrlService(_commercialToolsUrlOptions, _mockHttpContextAccessor.Object);
 
         var url = service.BuildUrl("/test-endpoint");
 
-        url.Should().Be("https://session-sirsi.example.com/test-endpoint?language=en_GB");
+        url.Should().Be("https://session-commercial-tools.example.com/test-endpoint?language=en_GB");
     }
 
     [Fact]
     public void BuildUrl_ShouldThrowException_WhenNoServiceUrlConfigured()
     {
-        var emptyOptions = new SirsiUrlOptions
+        var emptyOptions = new CommercialToolsUrlOptions
         {
             ServiceBaseUrl = null!,
-            SessionKey = "SirsiServiceOrigin"
+            SessionKey = "CommercialToolsServiceOrigin"
         };
 
-        Action action = () => { _ = new SirsiUrlService(emptyOptions, _mockHttpContextAccessor.Object); };
+        Action action = () =>
+        {
+            _ = new CommercialToolsUrlService(emptyOptions, _mockHttpContextAccessor.Object);
+        };
 
         action.Should().Throw<InvalidOperationException>()
             .WithMessage("Service base URL is not configured.");
@@ -127,23 +130,23 @@ public class SirsiUrlServiceTests
     [Fact]
     public void BuildUrl_ShouldTrimTrailingSlashFromBaseServiceUrl()
     {
-        var optionsWithTrailingSlash = new SirsiUrlOptions
+        var optionsWithTrailingSlash = new CommercialToolsUrlOptions
         {
-            ServiceBaseUrl = "https://sirsi-service.example.com/",
-            SessionKey = "SirsiServiceOrigin"
+            ServiceBaseUrl = "https://commercial-tools-service.example.com/",
+            SessionKey = "CommercialToolsServiceOrigin"
         };
-        var service = new SirsiUrlService(optionsWithTrailingSlash,
+        var service = new CommercialToolsUrlService(optionsWithTrailingSlash,
             _mockHttpContextAccessor.Object);
 
         var url = service.BuildUrl("test-endpoint");
 
-        url.Should().Be("https://sirsi-service.example.com/test-endpoint?language=en_GB");
+        url.Should().Be("https://commercial-tools-service.example.com/test-endpoint?language=en_GB");
     }
 
     [Fact]
     public void BuildUrl_ShouldWorkWithWelshLanguage()
     {
-        var service = new SirsiUrlService(_sirsiUrlOptions, _mockHttpContextAccessor.Object);
+        var service = new CommercialToolsUrlService(_commercialToolsUrlOptions, _mockHttpContextAccessor.Object);
 
         var savedCulture = CultureInfo.CurrentUICulture;
         try
@@ -151,7 +154,7 @@ public class SirsiUrlServiceTests
             CultureInfo.CurrentUICulture = new CultureInfo("cy");
             var url = service.BuildUrl("/test-endpoint");
 
-            url.Should().Be("https://sirsi-service.example.com/test-endpoint?language=cy");
+            url.Should().Be("https://commercial-tools-service.example.com/test-endpoint?language=cy");
         }
         finally
         {
@@ -163,7 +166,7 @@ public class SirsiUrlServiceTests
     public void BuildUrl_ShouldIncludeAllParameters_WhenAllProvided()
     {
         _mockCookiePreferencesService.Setup(s => s.GetValue()).Returns(CookieAcceptanceValues.Accept);
-        var service = new SirsiUrlService(_sirsiUrlOptions, _mockHttpContextAccessor.Object,
+        var service = new CommercialToolsUrlService(_commercialToolsUrlOptions, _mockHttpContextAccessor.Object,
             _mockCookiePreferencesService.Object);
         var organisationId = Guid.Parse("12345678-1234-1234-1234-123456789012");
 
@@ -171,7 +174,7 @@ public class SirsiUrlServiceTests
 
         url.Should()
             .Be(
-                "https://sirsi-service.example.com/test-endpoint?language=en_GB&organisation_id=12345678-1234-1234-1234-123456789012&redirect_url=https%3A%2F%2Freturn.example.com&cookies_accepted=true");
+                "https://commercial-tools-service.example.com/test-endpoint?language=en_GB&organisation_id=12345678-1234-1234-1234-123456789012&redirect_url=https%3A%2F%2Freturn.example.com&cookies_accepted=true");
     }
 
     [Theory]
@@ -181,12 +184,27 @@ public class SirsiUrlServiceTests
     public void BuildUrl_ShouldIncludeCorrectCookieAcceptanceValue(CookieAcceptanceValues cookieValue, string expectedValue)
     {
         _mockCookiePreferencesService.Setup(s => s.GetValue()).Returns(cookieValue);
-        var service = new SirsiUrlService(_sirsiUrlOptions, _mockHttpContextAccessor.Object,
+        var service = new CommercialToolsUrlService(_commercialToolsUrlOptions, _mockHttpContextAccessor.Object,
             _mockCookiePreferencesService.Object);
 
         var url = service.BuildUrl("/test-endpoint");
 
         url.Should()
-            .Be($"https://sirsi-service.example.com/test-endpoint?language=en_GB&cookies_accepted={expectedValue}");
+            .Be($"https://commercial-tools-service.example.com/test-endpoint?language=en_GB&cookies_accepted={expectedValue}");
+    }
+
+    [Theory]
+    [InlineData(true, "true")]
+    [InlineData(false, "false")]
+    public void BuildUrl_ShouldUseExplicitCookieAcceptanceValue_WhenProvided(bool explicitAcceptance, string expectedValue)
+    {
+        _mockCookiePreferencesService.Setup(s => s.GetValue()).Returns(CookieAcceptanceValues.Reject); // Different from explicit
+        var service = new CommercialToolsUrlService(_commercialToolsUrlOptions, _mockHttpContextAccessor.Object,
+            _mockCookiePreferencesService.Object);
+
+        var url = service.BuildUrl("/test-endpoint", cookieAcceptance: explicitAcceptance);
+
+        url.Should()
+            .Be($"https://commercial-tools-service.example.com/test-endpoint?language=en_GB&cookies_accepted={expectedValue}");
     }
 }

@@ -12,7 +12,7 @@ public class ErrorPageTests
     {
         var traceId = "trace-123";
         var sirsiUrlService = new Mock<ISirsiUrlService>();
-        sirsiUrlService.Setup(s => s.BuildUrl(It.IsAny<string>(), null, null))
+        sirsiUrlService.Setup(s => s.BuildUrl(It.IsAny<string>(), It.IsAny<Guid?>(), It.IsAny<string?>(), It.IsAny<bool?>()))
             .Returns("https://example.com/provide-feedback-and-contact/");
 
         var page = new ErrorPage(traceId, sirsiUrlService.Object);
@@ -25,7 +25,7 @@ public class ErrorPageTests
     {
         var traceId = "trace-abc";
         var sirsiUrlService = new Mock<ISirsiUrlService>();
-        sirsiUrlService.Setup(s => s.BuildUrl(It.IsAny<string>(), null, null))
+        sirsiUrlService.Setup(s => s.BuildUrl(It.IsAny<string>(), It.IsAny<Guid?>(), It.IsAny<string?>(), It.IsAny<bool?>()))
             .Returns("https://example.com/provide-feedback-and-contact/");
         var page = new ErrorPage(traceId, sirsiUrlService.Object);
 
@@ -56,7 +56,7 @@ public class ErrorPageTests
     {
         var traceId = string.Empty;
         var sirsiUrlService = new Mock<ISirsiUrlService>();
-        sirsiUrlService.Setup(s => s.BuildUrl(It.IsAny<string>(), null, null))
+        sirsiUrlService.Setup(s => s.BuildUrl(It.IsAny<string>(), It.IsAny<Guid?>(), It.IsAny<string?>(), It.IsAny<bool?>()))
             .Returns("https://example.com/provide-feedback-and-contact/");
         var page = new ErrorPage(traceId, sirsiUrlService.Object);
 
@@ -70,7 +70,7 @@ public class ErrorPageTests
     {
         string? traceId = null;
         var sirsiUrlService = new Mock<ISirsiUrlService>();
-        sirsiUrlService.Setup(s => s.BuildUrl(It.IsAny<string>(), null, null))
+        sirsiUrlService.Setup(s => s.BuildUrl(It.IsAny<string>(), It.IsAny<Guid?>(), It.IsAny<string?>(), It.IsAny<bool?>()))
             .Returns("https://example.com/provide-feedback-and-contact/");
         var page = new ErrorPage(traceId, sirsiUrlService.Object);
 

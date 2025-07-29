@@ -93,7 +93,7 @@ public class FtsUrlServiceTests
         var service = new FtsUrlService(_ftsUrlOptions, _mockHttpContextAccessor.Object,
             _mockCookiePreferencesService.Object);
 
-        var url = service.BuildUrl("/test-endpoint");
+        var url = service.BuildUrl("/test-endpoint", null, null, true);
 
         url.Should().Be("https://fts-service.example.com/test-endpoint?language=en_GB&cookies_accepted=true");
     }
@@ -170,7 +170,7 @@ public class FtsUrlServiceTests
             _mockCookiePreferencesService.Object);
         var organisationId = Guid.Parse("12345678-1234-1234-1234-123456789012");
 
-        var url = service.BuildUrl("/test-endpoint", organisationId, "https://return.example.com");
+        var url = service.BuildUrl("/test-endpoint", organisationId, "https://return.example.com", true);
 
         url.Should()
             .Be(
@@ -186,7 +186,7 @@ public class FtsUrlServiceTests
         var service = new FtsUrlService(_ftsUrlOptions, _mockHttpContextAccessor.Object,
             _mockCookiePreferencesService.Object);
 
-        var url = service.BuildUrl("/test-endpoint");
+        var url = service.BuildUrl("/test-endpoint", null, null, isAccepted);
 
         url.Should()
             .Be($"https://fts-service.example.com/test-endpoint?language=en_GB&cookies_accepted={expectedValue}");
