@@ -24,7 +24,7 @@ public class IndexModel(ISearchService searchService, ISirsiUrlService sirsiUrlS
 
     private const int PageSize = 10;
 
-    public string SirsiHomeUrl { get; private set; } = sirsiUrlService.BuildUrl("/");
+    public string SirsiHomeUrl { get; } = sirsiUrlService.BuildUrl("/", null, null, null);
 
     public int TotalCount { get; set; }
     public string? ScriptNonce => HttpContext.Items["ContentSecurityPolicyNonce"] as string;

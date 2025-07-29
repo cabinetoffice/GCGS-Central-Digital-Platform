@@ -23,7 +23,7 @@ public class IndexModelTest
             .ReturnsAsync((new List<SearchResult>(), 0));
 
         var mockSirsiUrlService = new Mock<ISirsiUrlService>();
-        mockSirsiUrlService.Setup(s => s.BuildUrl("/", null, null)).Returns("https://sirsi.home/");
+        mockSirsiUrlService.Setup(s => s.BuildUrl("/", null, null, null)).Returns("https://sirsi.home/");
         var mockLogger = new Mock<ILogger<IndexModel>>();
         _model = new IndexModel(_mockSearchService.Object, mockSirsiUrlService.Object, mockLogger.Object);
 
