@@ -926,6 +926,12 @@ PPN 014: Cyber Essentials scheme (opens in a new tab).&lt;/a&gt;&lt;/p&gt;
       &lt;/div&gt;
     </value>
   </data>
+  <data name="DataProtection_02_Custom_Yes" xml:space="preserve">
+    <value>Yes, I have the resources or will have the resources by contract award</value>
+  </data>
+  <data name="DataProtection_02_Custom_No" xml:space="preserve">
+    <value>No, I do not have the resources</value>
+  </data>
   <data name="DataProtection_03_Title" xml:space="preserve">
     <value>When will you have the resources to ensure compliance with UK GDPR?</value>
   </data>
@@ -938,6 +944,12 @@ PPN 014: Cyber Essentials scheme (opens in a new tab).&lt;/a&gt;&lt;/p&gt;
         You should consider both your human and technical resources
       &lt;/div&gt;
     </value>
+  </data>
+  <data name="DataProtection_03_Custom_Yes" xml:space="preserve">
+    <value>I currently have the resources</value>
+  </data>
+  <data name="DataProtection_03_Custom_No" xml:space="preserve">
+    <value>I do not have the resources, but will have them by contract award</value>
   </data>
   <data name="DataProtection_04_Title" xml:space="preserve">
     <value>How do you ensure compliance with UK data protection law?</value>
