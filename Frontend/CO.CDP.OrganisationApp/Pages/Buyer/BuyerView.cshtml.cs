@@ -1,4 +1,3 @@
-using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -13,8 +12,7 @@ namespace CO.CDP.OrganisationApp.Pages.Buyer;
 [Authorize(PolicyNames.PartyRole.Buyer)]
 [Authorize(OrgScopeRequirement.Viewer)]
 public class BuyerView(
-    IFeatureManager featureManager,
-    IOrganisationClient organisationClient)
+    IFeatureManager featureManager)
     : PageModel
 {
     [BindProperty(SupportsGet = true)]
@@ -26,12 +24,6 @@ public class BuyerView(
     {
         var searchRegistryPponEnabled = await featureManager.IsEnabledAsync(FeatureFlags.SearchRegistryPpon);
         var aiToolEnabled = await featureManager.IsEnabledAsync(FeatureFlags.AiTool);
-
-        var organisation = await organisationClient.GetOrganisationAsync(Id);
-        if (organisation == null || !organisation.Roles.Contains(PartyRole.Buyer))
-        {
-            return RedirectToPage("/PageNotFound");
-        }
 
         var tiles = new List<Tile>
         {

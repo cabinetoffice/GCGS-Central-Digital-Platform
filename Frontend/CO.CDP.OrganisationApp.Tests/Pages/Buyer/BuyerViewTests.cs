@@ -22,47 +22,12 @@ public class BuyerViewTests
     {
         _featureManagerMock = new Mock<IFeatureManager>();
         _organisationClientMock = new Mock<IOrganisationClient>();
-        _model = new BuyerView(_featureManagerMock.Object, _organisationClientMock.Object)
+        _model = new BuyerView(_featureManagerMock.Object)
         {
             Id = Guid.NewGuid()
         };
 
         _featureManagerMock.Setup(fm => fm.IsEnabledAsync(FeatureFlags.BuyerView)).ReturnsAsync(true);
-    }
-
-    [Fact]
-    public async Task OnGet_WhenBuyerViewFeatureIsDisabled_RedirectsToPageNotFound()
-    {
-        _featureManagerMock.Setup(fm => fm.IsEnabledAsync(FeatureFlags.BuyerView)).ReturnsAsync(false);
-
-        var result = await _model.OnGet();
-
-        result.Should().BeOfType<RedirectToPageResult>()
-            .Which.PageName.Should().Be("/PageNotFound");
-    }
-
-    [Fact]
-    public async Task OnGet_WhenOrganisationIsNull_RedirectsToPageNotFound()
-    {
-        _organisationClientMock.Setup(oc => oc.GetOrganisationAsync(_model.Id))
-            .ReturnsAsync((CDP.Organisation.WebApiClient.Organisation)null!);
-
-        var result = await _model.OnGet();
-
-        result.Should().BeOfType<RedirectToPageResult>()
-            .Which.PageName.Should().Be("/PageNotFound");
-    }
-
-    [Fact]
-    public async Task OnGet_WhenOrganisationIsNotBuyer_RedirectsToPageNotFound()
-    {
-        var organisation = OrganisationFactory.CreateOrganisation(roles: new List<PartyRole>());
-        _organisationClientMock.Setup(oc => oc.GetOrganisationAsync(_model.Id)).ReturnsAsync(organisation);
-
-        var result = await _model.OnGet();
-
-        result.Should().BeOfType<RedirectToPageResult>()
-            .Which.PageName.Should().Be("/PageNotFound");
     }
 
     [Fact]
