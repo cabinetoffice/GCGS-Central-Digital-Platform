@@ -5,8 +5,13 @@ using CO.CDP.UI.Foundation;
 using GovUk.Frontend.AspNetCore;
 using Microsoft.AspNetCore.DataProtection;
 using ISession = CO.CDP.RegisterOfCommercialTools.App.ISession;
+using Microsoft.FeatureManagement;
+using CO.CDP.RegisterOfCommercialTools.App.Constants;
+using CO.CDP.UI.Foundation.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddFeatureManagement();
 
 builder.Services.AddRazorPages(options =>
 {
@@ -21,12 +26,18 @@ builder.Services.AddSingleton<ISession, Session>();
 
 builder.Services.AddCors();
 
+var cookieSettings = new CookieSettings();
+builder.Configuration.GetSection("CookieSettings").Bind(cookieSettings);
+builder.Services.AddSingleton(cookieSettings);
+builder.Services.AddScoped<ICookiePreferencesService, CookiePreferencesService>();
+
 builder.Services.AddUiFoundation(builder.Configuration, uiFoundationBuilder =>
 {
-    uiFoundationBuilder.AddSession("ROCT", builder.Environment.IsDevelopment());
+
     uiFoundationBuilder.AddFtsUrlService();
     uiFoundationBuilder.AddSirsiUrlService();
-    uiFoundationBuilder.AddCookiePreferences("ROCT");
+    uiFoundationBuilder.AddCommercialToolsUrlService();
+
 });
 
 builder.Services.AddScoped<CO.CDP.RegisterOfCommercialTools.App.Handlers.BearerTokenHandler>();
@@ -85,6 +96,20 @@ builder.Configuration.GetValue<string>("CommercialToolsApi:ServiceUrl");
 builder.Services.AddScoped<CO.CDP.UI.Foundation.Pages.NotFoundPage>();
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var featureManager = scope.ServiceProvider.GetRequiredService<IFeatureManager>();
+    if (!await featureManager.IsEnabledAsync(FeatureFlags.CommercialTools))
+    {
+        app.UseStatusCodePages(async context =>
+        {
+            context.HttpContext.Response.ContentType = "text/plain";
+            context.HttpContext.Response.StatusCode = StatusCodes.Status404NotFound;
+            await context.HttpContext.Response.WriteAsync("404 Not Found");
+        });
+    }
+}
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
