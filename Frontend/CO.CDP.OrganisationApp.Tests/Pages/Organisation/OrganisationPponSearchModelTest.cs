@@ -41,7 +41,7 @@ public class OrganisationPponSearchModelTest
             .ReturnsAsync(AuthorizationResult.Success());
 
         _testOrganisationPponSearchModel =
-            new OrganisationPponSearchModel(_mockAuthorizationService.Object, _mockOrganisationClient.Object, Mock.Of<ISession>(), _mockLogger.Object)
+            new OrganisationPponSearchModel(_mockOrganisationClient.Object, Mock.Of<ISession>(), _mockLogger.Object)
             {
                 Id = Id,
                 Pagination = new CO.CDP.OrganisationApp.Pages.Shared.PaginationPartialModel
@@ -523,45 +523,6 @@ public class OrganisationPponSearchModelTest
         _testOrganisationPponSearchModel.TotalPages.Should().Be(0);
     }
 
-    [Theory]
-    [InlineData(PartyRole.Supplier)]
-    [InlineData(PartyRole.ProcuringEntity)]
-    [InlineData(PartyRole.Tenderer)]
-    [InlineData(PartyRole.Funder)]
-    [InlineData(PartyRole.Enquirer)]
-    [InlineData(PartyRole.Payer)]
-    [InlineData(PartyRole.Payee)]
-    [InlineData(PartyRole.ReviewBody)]
-    [InlineData(PartyRole.InterestedParty)]
-    public async Task OnGet_WithNonBuyerRole_RedirectsToPageNotFound(PartyRole role)
-    {
-        var organisation = OrganisationFactory.CreateOrganisation(id: Id, roles: new List<PartyRole> { role });
-        _mockOrganisationClient.Reset();
-        _mockOrganisationClient.Setup(c => c.GetOrganisationAsync(Id)).ReturnsAsync(organisation);
-        _mockOrganisationClient.Setup(c => c.GetOrganisationLatestMouSignatureAsync(Id)).ThrowsAsync(new ApiException("Not found", 404, "", null, null));
-        _mockAuthorizationService.Setup(a => a.AuthorizeAsync(
-            It.IsAny<System.Security.Claims.ClaimsPrincipal>(),
-            Id,
-            It.IsAny<IAuthorizationRequirement[]>()))
-            .ReturnsAsync(AuthorizationResult.Failed());
-        var model = new OrganisationPponSearchModel(_mockAuthorizationService.Object, _mockOrganisationClient.Object, Mock.Of<ISession>(), _mockLogger.Object)
-        {
-            Id = Id,
-            Pagination = new CO.CDP.OrganisationApp.Pages.Shared.PaginationPartialModel
-            {
-                CurrentPage = 1,
-                TotalItems = 0,
-                PageSize = 10,
-                Url = $"/organisation/{Id}/buyer/search?q=&sortOrder=rel"
-            }
-        };
-        SetupRouteData(Id);
-
-        var result = await model.OnGet();
-
-        result.Should().BeOfType<Microsoft.AspNetCore.Mvc.RedirectResult>()
-            .Which.Url.Should().Be("/page-not-found");
-    }
 
     private void SetupRouteData(Guid organisationId)
     {

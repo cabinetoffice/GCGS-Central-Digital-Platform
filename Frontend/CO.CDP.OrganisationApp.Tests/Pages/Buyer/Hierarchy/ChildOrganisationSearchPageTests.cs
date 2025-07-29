@@ -26,7 +26,7 @@ public class ChildOrganisationSearchPageTests
             It.IsAny<object>(),
             It.IsAny<IAuthorizationRequirement[]>()))
             .ReturnsAsync(AuthorizationResult.Success());
-        _page = new ChildOrganisationSearchPage(_featureManager.Object, mockAuthorizationService.Object, mockLogger.Object);
+        _page = new ChildOrganisationSearchPage(_featureManager.Object);
     }
 
     [Fact]

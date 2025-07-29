@@ -24,13 +24,13 @@ public class ChildOrganisationRemovePageTests
         _mockOrganisationClient = new Mock<IOrganisationClient>();
         var mockLogger = new Mock<ILogger<ChildOrganisationRemovePage>>();
         var mockAuthorizationService = new Mock<IAuthorizationService>();
-        _modelWithMocks = new ChildOrganisationRemovePage(_mockOrganisationClient.Object, mockLogger.Object, mockAuthorizationService.Object)
+        _modelWithMocks = new ChildOrganisationRemovePage(_mockOrganisationClient.Object, mockLogger.Object)
         {
             Id = _organisationId,
             ChildId = _childOrganisationId
         };
 
-        _modelWithoutDependencies = new ChildOrganisationRemovePage(_mockOrganisationClient.Object, mockLogger.Object, mockAuthorizationService.Object)
+        _modelWithoutDependencies = new ChildOrganisationRemovePage(_mockOrganisationClient.Object, mockLogger.Object)
         {
             Id = Guid.NewGuid(),
             ChildId = Guid.NewGuid()

@@ -1,7 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using CO.CDP.Localization;
 using CO.CDP.Organisation.WebApiClient;
-using CO.CDP.OrganisationApp.Authorization;
 using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Extensions;
 using CO.CDP.OrganisationApp.Logging;
@@ -9,15 +8,17 @@ using CO.CDP.OrganisationApp.WebApiClients;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.FeatureManagement.Mvc;
 using OrganisationApiException = CO.CDP.Organisation.WebApiClient.ApiException;
 
 namespace CO.CDP.OrganisationApp.Pages.Buyer.Hierarchy;
 
+[Authorize(Policy = PolicyNames.PartyRole.BuyerWithSignedMou)]
 [Authorize(Policy = OrgScopeRequirement.Editor)]
+[FeatureGate(FeatureFlags.BuyerParentChildRelationship)]
 public class ChildOrganisationRemovePage(
     IOrganisationClient organisationClient,
-    ILogger<ChildOrganisationRemovePage> logger,
-    IAuthorizationService authorizationService)
+    ILogger<ChildOrganisationRemovePage> logger)
     : PageModel
 {
     private readonly IOrganisationClient _organisationClient =
@@ -25,9 +26,6 @@ public class ChildOrganisationRemovePage(
 
     private readonly ILogger<ChildOrganisationRemovePage> _logger =
         logger ?? throw new ArgumentNullException(nameof(logger));
-
-    private readonly IAuthorizationService _authorizationService =
-        authorizationService ?? throw new ArgumentNullException(nameof(authorizationService));
 
     [BindProperty(SupportsGet = true)] public Guid Id { get; set; }
 
@@ -56,13 +54,6 @@ public class ChildOrganisationRemovePage(
 
     public async Task<IActionResult> OnGet()
     {
-        var authResult = await _authorizationService.AuthorizeAsync(User, Id, new IsBuyerRequirement());
-        if (!authResult.Succeeded)
-        {
-            _logger.LogWarning("User is not authorised to access child organisation remove page for parent ID {OrganisationId}.", Id);
-            return Redirect("/page-not-found");
-        }
-
         try
         {
             ChildOrganisation = await OrganisationClientExtensions.LookupOrganisationAsync(_organisationClient,
@@ -106,13 +97,6 @@ public class ChildOrganisationRemovePage(
 
     public async Task<IActionResult> OnPost()
     {
-        var authResult = await _authorizationService.AuthorizeAsync(User, Id, new IsBuyerRequirement());
-        if (!authResult.Succeeded)
-        {
-            _logger.LogWarning("User is not authorised to access child organisation remove page for parent ID {OrganisationId}.", Id);
-            return Redirect("/page-not-found");
-        }
-
         if (!ModelState.IsValid)
         {
             return Page();
