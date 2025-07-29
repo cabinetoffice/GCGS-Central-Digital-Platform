@@ -26,7 +26,7 @@ test: ## Run tests
 
 build-docker: VERSION ?= "undefined"
 build-docker: ## Build Docker images
-	@docker compose build --build-arg VERSION=$(VERSION)
+	@docker compose build --parallel 1 --build-arg VERSION=$(VERSION)
 .PHONY: build-docker
 
 up: render-compose-override ## Start Docker containers
