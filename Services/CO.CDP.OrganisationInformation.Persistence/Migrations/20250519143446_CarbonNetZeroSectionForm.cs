@@ -79,32 +79,32 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
 
                     -- Insert the eighth question (_CarbonNetZeroQuestion08)
                     INSERT INTO form_questions (guid, next_question_id, next_question_alternative_id, section_id, ""type"", is_required, title, description, ""options"",  caption, summary_title, ""name"", sort_order)
-                    VALUES('{Guid.NewGuid()}', NULL, NULL, sectionId, 1, true, 'CarbonNetZero_08_Title', '', '{{}}', NULL, 'CarbonNetZero_08_SummaryTitle', '_CarbonNetZeroQuestion08', 8)
+                    VALUES('{Guid.NewGuid()}', NULL, NULL, sectionId, 1, true, 'CarbonNetZero_08_Title', 'CarbonNetZero_08_Description', '{{}}', NULL, 'CarbonNetZero_08_SummaryTitle', '_CarbonNetZeroQuestion08', 8)
                     RETURNING id INTO question8_id;
 
                     -- Insert the ninth question (_CarbonNetZeroQuestion09)
                     INSERT INTO form_questions (guid, next_question_id, next_question_alternative_id, section_id, ""type"", is_required, title, description, ""options"",  caption, summary_title, ""name"", sort_order)
-                    VALUES('{Guid.NewGuid()}', NULL, NULL, sectionId, 1, true, 'CarbonNetZero_09_Title', '', '{{}}', NULL, 'CarbonNetZero_09_SummaryTitle', '_CarbonNetZeroQuestion09', 9)
+                    VALUES('{Guid.NewGuid()}', NULL, NULL, sectionId, 1, true, 'CarbonNetZero_09_Title', 'CarbonNetZero_09_Description', '{{}}', NULL, 'CarbonNetZero_09_SummaryTitle', '_CarbonNetZeroQuestion09', 9)
                     RETURNING id INTO question9_id;
 
                     -- Insert the tenth question (_CarbonNetZeroQuestion10)
                     INSERT INTO form_questions (guid, next_question_id, next_question_alternative_id, section_id, ""type"", is_required, title, description, ""options"",  caption, summary_title, ""name"", sort_order)
-                    VALUES('{Guid.NewGuid()}', NULL, NULL, sectionId, 1, true, 'CarbonNetZero_10_Title', '', '{{}}', NULL, 'CarbonNetZero_10_SummaryTitle', '_CarbonNetZeroQuestion10', 10)
+                    VALUES('{Guid.NewGuid()}', NULL, NULL, sectionId, 1, true, 'CarbonNetZero_10_Title', 'CarbonNetZero_10_Description', '{{}}', NULL, 'CarbonNetZero_10_SummaryTitle', '_CarbonNetZeroQuestion10', 10)
                     RETURNING id INTO question10_id;
 
                     -- Insert the eleventh question (_CarbonNetZeroQuestion11)
                     INSERT INTO form_questions (guid, next_question_id, next_question_alternative_id, section_id, ""type"", is_required, title, description, ""options"",  caption, summary_title, ""name"", sort_order)
-                    VALUES('{Guid.NewGuid()}', NULL, NULL, sectionId, 1, true, 'CarbonNetZero_11_Title', '', '{{}}', NULL, 'CarbonNetZero_11_SummaryTitle', '_CarbonNetZeroQuestion11', 11)
+                    VALUES('{Guid.NewGuid()}', NULL, NULL, sectionId, 1, true, 'CarbonNetZero_11_Title', 'CarbonNetZero_11_Description', '{{}}', NULL, 'CarbonNetZero_11_SummaryTitle', '_CarbonNetZeroQuestion11', 11)
                     RETURNING id INTO question11_id;
 
                     -- Insert the twelfth question (_CarbonNetZeroQuestion12)
                     INSERT INTO form_questions (guid, next_question_id, next_question_alternative_id, section_id, ""type"", is_required, title, description, ""options"",  caption, summary_title, ""name"", sort_order)
-                    VALUES('{Guid.NewGuid()}', NULL, NULL, sectionId, 1, true, 'CarbonNetZero_12_Title', '', '{{}}', NULL, 'CarbonNetZero_12_SummaryTitle', '_CarbonNetZeroQuestion12', 12)
+                    VALUES('{Guid.NewGuid()}', NULL, NULL, sectionId, 1, true, 'CarbonNetZero_12_Title', 'CarbonNetZero_12_Description', '{{}}', NULL, 'CarbonNetZero_12_SummaryTitle', '_CarbonNetZeroQuestion12', 12)
                     RETURNING id INTO question12_id;
 
                     -- Insert the thirteenth question (_CarbonNetZeroQuestion13)
                     INSERT INTO form_questions (guid, next_question_id, next_question_alternative_id, section_id, ""type"", is_required, title, description, ""options"",  caption, summary_title, ""name"", sort_order)
-                    VALUES('{Guid.NewGuid()}', NULL, NULL, sectionId, 1, true, 'CarbonNetZero_13_Title', '', '{{}}', NULL, 'CarbonNetZero_13_SummaryTitle', '_CarbonNetZeroQuestion13', 13)
+                    VALUES('{Guid.NewGuid()}', NULL, NULL, sectionId, 1, true, 'CarbonNetZero_13_Title', 'CarbonNetZero_13_Description', '{{}}', NULL, 'CarbonNetZero_13_SummaryTitle', '_CarbonNetZeroQuestion13', 13)
                     RETURNING id INTO question13_id;
 
                     -- Insert the fourteenth question (_CarbonNetZeroQuestion14)
