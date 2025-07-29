@@ -6,6 +6,27 @@ locals {
 
   fts_screts_arn = data.aws_secretsmanager_secret.fts_secrets.arn
 
+  fts_one_login_logout_redirect_uris = {
+    development = "https://fts.${var.public_domain}/auth/logout"
+    staging     = "https://www-staging.find-tender.service.gov.uk/auth/logout"
+    integration = "https://www-tpp.find-tender.service.gov.uk/auth/logout"
+    production  = "https://www.find-tender.service.gov.uk/auth/logout"
+  }
+
+  fts_one_login_redirect_uris = {
+    development = "https://fts.${var.public_domain}/auth/callback"
+    staging     = "https://www-staging.find-tender.service.gov.uk/auth/callback"
+    integration = "https://www-tpp.find-tender.service.gov.uk/auth/callback"
+    production  = "https://www.find-tender.service.gov.uk/auth/callback"
+  }
+
+  site_domains = {
+    development = "fts.${var.public_domain}"
+    staging     = "www-staging.find-tender.service.gov.uk"
+    integration = "www-tpp.find-tender.service.gov.uk"
+    production  = "www.find-tender.service.gov.uk"
+  }
+
   fts_secrets = {
     email_contactus                       = "${local.fts_screts_arn}:CONTACTUS_EMAIL::"
     email_e_enablement                    = "${local.fts_screts_arn}:EENABLEMENT_EMAIL::"
@@ -20,6 +41,8 @@ locals {
     http_basic_auth_enabled               = "${local.fts_screts_arn}:HTTP_BASIC_AUTH_ENABLED::"
     http_basic_auth_pass                  = "${local.fts_screts_arn}:HTTP_BASIC_AUTH_PASS::"
     http_basic_auth_user                  = "${local.fts_screts_arn}:HTTP_BASIC_AUTH_USER::"
+    letsencrypt_key_authorization         = "${local.fts_screts_arn}:LETSENCRYPT_KEY_AUTHORIZATION::"
+    letsencrypt_token                     = "${local.fts_screts_arn}:LETSENCRYPT_TOKEN::"
     one_login_base_url                    = local.one_login.credential_locations.authority
     one_login_fln_api_key_arn             = data.aws_secretsmanager_secret.one_login_forward_logout_notification_api_key.arn
     one_login_private_key                 = local.one_login.credential_locations.private_key
@@ -39,7 +62,7 @@ locals {
     dev_email                           = "${local.fts_screts_arn}:DEV_EMAIL::"
     app_host_address                    = "%"
     buyer_corporate_identifier_prefixes = "sid4gov.cabinetoffice.gov.uk|supplierregistration.service.xgov.uk|test-idp-intra.nqc.com"
-    cookie_domain                       = "fts.${var.public_domain}"
+    cookie_domain                       = local.site_domains[var.environment]
     database_schema                     = "cdp_sirsi_fts_cluster"
     db_host                             = var.db_fts_cluster_address
     db_name                             = var.db_fts_cluster_name
@@ -49,12 +72,12 @@ locals {
     environment                         = upper(var.environment)
     fts_allowed_target_email_domains    = join(",", var.fts_allowed_target_email_domains)
     fts_client_assertion_type           = "urn:ietf:params:oauth:client-assertion-type:jwt-bearer"
-    fts_one_login_logout_redirect_uri   = "https://fts.${var.public_domain}/auth/logout"
-    fts_one_login_redirect_uri          = "https://fts.${var.public_domain}/auth/callback"
+    fts_one_login_logout_redirect_uri   = local.fts_one_login_logout_redirect_uris[var.environment]
+    fts_one_login_redirect_uri          = local.fts_one_login_redirect_uris[var.environment]
     licenced_to                         = "No-one"
     local_version                       = 1100
     session_name_default                = "SRSI_FT_AUTH"
-    site_domain                         = "fts.${var.public_domain}"
+    site_domain                         = local.site_domains[var.environment]
     site_tag                            = "TEST"
     srsi_authority_token_endpoint       = "https://authority.${var.public_domain}/token"
     srsi_dashboard_endpoint             = "https://${var.public_domain}"
@@ -74,7 +97,7 @@ locals {
     lg_name         = aws_cloudwatch_log_group.tasks[var.service_configs.fts.name].name
     lg_prefix       = "app"
     lg_region       = data.aws_region.current.name
-    memory          = var.service_configs.fts.memory
+    memory          = var.is_production ? var.service_configs.fts.memory * 2 : var.service_configs.fts.memory  // @TODO (ABN) Burn me
     name            = var.service_configs.fts.name
     public_domain   = var.public_domain
     service_version = local.service_version_fts
@@ -89,7 +112,7 @@ locals {
     lg_name         = aws_cloudwatch_log_group.tasks[var.service_configs.fts_scheduler.name].name
     lg_prefix       = "app"
     lg_region       = data.aws_region.current.name
-    memory          = var.service_configs.fts_scheduler.memory
+    memory          = var.is_production ? var.service_configs.fts_scheduler.memory * 2 :var.service_configs.fts_scheduler.memory // @TODO (ABN) Burn me
     name            = var.service_configs.fts_scheduler.name
     public_domain   = var.public_domain
     service_version = local.service_version_fts

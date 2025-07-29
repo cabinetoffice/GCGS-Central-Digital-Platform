@@ -52,7 +52,8 @@ public class OrganisationOverviewTest
             .ReturnsAsync([new Review(null, null, null, ReviewStatus.Pending)]);
 
         _organisationClientMock.Setup(o => o.GetOrganisationBuyerInformationAsync(id))
-            .ReturnsAsync(new BuyerInformation(buyerType: "RegionalAndLocalGovernment", new List<DevolvedRegulation>()));
+            .ReturnsAsync(new BuyerInformation(buyerType: "RegionalAndLocalGovernment",
+                new List<DevolvedRegulation>()));
 
         await _model.OnGet();
 
@@ -73,6 +74,7 @@ public class OrganisationOverviewTest
         result.Should().BeOfType<RedirectToPageResult>()
             .Subject.PageName.Should().Be("/Consortium/ConsortiumOverview");
     }
+
 
     [Fact]
     public async Task OnGet_PageNotFound()
@@ -295,8 +297,71 @@ public class OrganisationOverviewTest
         _model.ChildOrganisations.Should().BeNull();
     }
 
+    [Fact]
+    public async Task OnGet_WhenSearchRegistryPponFeatureFlagIsEnabled_SearchRegistryPponFieldIsSetToTrue()
+    {
+        var id = Guid.NewGuid();
+        var childOrgs = new List<OrganisationSummary>
+        {
+            new(
+                id: Guid.NewGuid(),
+                name: "Child Org 1",
+                roles: new List<PartyRole> { PartyRole.Buyer },
+                ppon: "ABCD-4444-AAAA"
+            ),
+            new(
+                id: Guid.NewGuid(),
+                name: "Child Org 2",
+                roles: new List<PartyRole> { PartyRole.Buyer, PartyRole.Supplier },
+                ppon: "ABCD-3333-AAAA"
+            )
+        };
+
+        _model.Id = id;
+
+        _organisationClientMock.Setup(o => o.GetOrganisationAsync(id))
+            .ReturnsAsync(GivenOrganisationClientModel(id, roles: new List<PartyRole> { PartyRole.Buyer }));
+
+        _organisationClientMock.Setup(o => o.GetOrganisationBuyerInformationAsync(id))
+            .ReturnsAsync(new BuyerInformation("RegionalAndLocalGovernment", new List<DevolvedRegulation>()));
+
+        _organisationClientMock.Setup(o => o.GetChildOrganisationsAsync(id))
+            .ReturnsAsync(childOrgs);
+
+        _featureManagerMock.Setup(fm => fm.IsEnabledAsync(FeatureFlags.SearchRegistryPpon))
+            .ReturnsAsync(true);
+
+        await _model.OnGet();
+
+        _featureManagerMock.Verify(fm => fm.IsEnabledAsync(FeatureFlags.SearchRegistryPpon), Times.Once);
+        _model.SearchRegistryPponEnabled.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task OnGet_WhenSearchRegistryPponFeatureFlagIsDisabled_SearchRegistryPponFieldIsSetToFalse()
+    {
+        var id = Guid.NewGuid();
+
+        _model.Id = id;
+
+        _organisationClientMock.Setup(o => o.GetOrganisationAsync(id))
+            .ReturnsAsync(GivenOrganisationClientModel(id, roles: new List<PartyRole> { PartyRole.Buyer }));
+
+        _organisationClientMock.Setup(o => o.GetOrganisationBuyerInformationAsync(id))
+            .ReturnsAsync(new BuyerInformation("RegionalAndLocalGovernment", new List<DevolvedRegulation>()));
+
+        _featureManagerMock.Setup(fm => fm.IsEnabledAsync(FeatureFlags.SearchRegistryPpon))
+            .ReturnsAsync(false);
+
+        await _model.OnGet();
+
+        _featureManagerMock.Verify(fm => fm.IsEnabledAsync(FeatureFlags.SearchRegistryPpon), Times.Once);
+        _model.SearchRegistryPponEnabled.Should().BeFalse();
+    }
+
     private static CO.CDP.Organisation.WebApiClient.Organisation GivenOrganisationClientModel(
-        Guid? id, ICollection<PartyRole>? pendingRoles = null, OrganisationType? organisationType = null, ICollection<PartyRole>? roles = null)
+        Guid? id, ICollection<PartyRole>? pendingRoles = null, OrganisationType? organisationType = null,
+        ICollection<PartyRole>? roles = null)
     {
         return new CO.CDP.Organisation.WebApiClient.Organisation(
             additionalIdentifiers: null,
@@ -307,7 +372,9 @@ public class OrganisationOverviewTest
             name: "Test Org",
             type: organisationType ?? OrganisationType.Organisation,
             roles: roles ?? new List<PartyRole>(),
-            details: new Details(approval: null, buyerInformation: null, pendingRoles: pendingRoles ?? new List<PartyRole>(), publicServiceMissionOrganization: null, scale: null, shelteredWorkshop: null, vcse: null)
-              );
+            details: new Details(approval: null, buyerInformation: null,
+                pendingRoles: pendingRoles ?? new List<PartyRole>(), publicServiceMissionOrganization: null,
+                scale: null, shelteredWorkshop: null, vcse: null)
+        );
     }
 }
