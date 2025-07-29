@@ -180,3 +180,37 @@
 .govuk-blue-banner .govuk-heading-xl {
     color: #fff !important;
 }
+
+.search-ppon-info-header {
+    background-color: #1d70b8;
+    color: #ffffff !important;
+    padding: 15px 0px;
+}
+
+.search-ppon-text-input{
+    border: none !important;
+    height: 40px;
+}
+
+.search-ppon-text{
+    color: #ffffff !important;
+}
+
+.search-ppon-button{
+    color: #1d70b8;
+    background-color: #F4F8FB !important;
+    box-shadow: none;
+    margin-bottom: 10px;
+    height: 40px;
+    align-items: center;
+    justify-content: center;
+}
+
+.search-ppon-button:hover {
+    background-color: #e5e9ed;
+    color: #1d70b8;
+}
+
+.search-ppon-flex-display{
+    display: flex;
+}

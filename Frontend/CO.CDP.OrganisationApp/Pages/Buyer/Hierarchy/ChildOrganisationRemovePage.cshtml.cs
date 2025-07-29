@@ -8,11 +8,14 @@ using CO.CDP.OrganisationApp.WebApiClients;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.FeatureManagement.Mvc;
 using OrganisationApiException = CO.CDP.Organisation.WebApiClient.ApiException;
 
 namespace CO.CDP.OrganisationApp.Pages.Buyer.Hierarchy;
 
+[Authorize(Policy = PolicyNames.PartyRole.BuyerWithSignedMou)]
 [Authorize(Policy = OrgScopeRequirement.Editor)]
+[FeatureGate(FeatureFlags.BuyerParentChildRelationship)]
 public class ChildOrganisationRemovePage(
     IOrganisationClient organisationClient,
     ILogger<ChildOrganisationRemovePage> logger)

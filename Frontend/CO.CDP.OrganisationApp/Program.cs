@@ -32,6 +32,8 @@ using Microsoft.Extensions.Options;
 using Microsoft.FeatureManagement;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using System.Globalization;
+using System.Net;
+using CO.CDP.OrganisationApp.Constants;
 using static IdentityModel.OidcConstants;
 using static System.Net.Mime.MediaTypeNames;
 using ISession = CO.CDP.OrganisationApp.ISession;
@@ -282,7 +284,9 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddSingleton<IAuthorizationPolicyProvider, CustomAuthorizationPolicyProvider>();
 builder.Services.AddSingleton<IAuthorizationHandler, CustomScopeHandler>();
-builder.Services.AddSingleton<IAuthorizationMiddlewareResultHandler, CustomAuthorizationMiddlewareResultHandler>();
+builder.Services.AddSingleton<IAuthorizationHandler, PartyRoleAuthorizationHandler>();
+builder.Services.AddScoped<IAuthorizationHandler, BuyerMouAuthorizationHandler>();
+builder.Services.AddScoped<IAuthorizationMiddlewareResultHandler, CustomAuthorizationMiddlewareResultHandler>();
 builder.Services.AddAuthorization();
 
 builder.Services.AddScoped<CookieAcceptanceMiddleware>();
@@ -344,3 +348,4 @@ if (builder.Configuration.GetValue("Features:DiagnosticPage:Enabled", false)
 app.Run();
 
 public abstract partial class Program;
+

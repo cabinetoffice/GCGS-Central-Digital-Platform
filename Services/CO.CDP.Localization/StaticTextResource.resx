@@ -2033,7 +2033,7 @@
     <value>You can only add an immediate child organisation, which is the next level down in your organisation's hierarchy</value>
   </data>
   <data name="BuyerParentChildRelationship_SearchPage_Link" xml:space="preserve">
-    <value>If you do not know the child organisation's PPON, you can find it on the &lt;a class="govuk-link" href=&quot;/organisation/search&quot; target=&quot;_blank&quot;&gt;Search Registry of PPON (opens in new tab)&lt;/a&gt;</value>
+    <value>If you do not know the child organisation's PPON, you can find it on the &lt;a class="govuk-link" href=&quot;/organisation/{0}/buyer/search&quot; target=&quot;_blank&quot;&gt;Search Registry of PPON (opens in new tab)&lt;/a&gt;</value>
   </data>
   <data name="BuyerParentChildRelationship_SearchPage_Error" xml:space="preserve">
     <value>Enter the name or PPON of your child organisation</value>
@@ -4227,6 +4227,76 @@
   </data>
   <data name="Global_Unknown" xml:space="preserve">
     <value>Unknown</value>
+  </data>
+  <data name="PponSearch_Title" xml:space="preserve">
+    <value>Public procurement organisation number register</value>
+  </data>
+  <data name="PponSearch_Hint" xml:space="preserve">
+    <value>Search by organisation name or PPON</value>
+  </data>
+  <data name="PponSearch_Ppon_Desc_Title" xml:space="preserve">
+    <value>Public procurement organisation number (PPON)</value>
+  </data>
+  <data name="PponSearch_Invalid_Search_Value" xml:space="preserve">
+    <value>Enter a search term using only letters, numbers, spaces or hyphens.</value>
+  </data>
+  <data name="PponSearch_ResultsCountOneHeading" xml:space="preserve">
+    <value>We’ve found &lt;b&gt;1&lt;/b&gt; organisation</value>
+  </data>
+  <data name="PponSearch_ResultsCountMoreThanOneHeading" xml:space="preserve">
+    <value>We've found &lt;b&gt;{0}&lt;/b&gt; organisations</value>
+  </data>
+  <data name="PponSearch_NoResults" xml:space="preserve">
+    <value>No organisations found matching your search criteria</value>
+  </data>
+  <data name="PponSearch_Ppon_Desc_Hint_01" xml:space="preserve">
+    <value>
+      &lt;p class=&quot;govuk-body&quot;&gt;
+        A PPON is a unique identifier assigned to organisations that participate in public procurement, generated when an organisation registers on the
+        &lt;a target=&quot;_blank&quot; href=&quot;https://www.find-tender.service.gov.uk&quot;&gt;
+        Central Digital Platform (opens in a new tab)&lt;/a&gt;. It is used to manage and publish notices related to public procurement and connects information about the organisation digitally.
+      &lt;/p&gt;
+    </value>
+  </data>
+  <data name="PponSearch_Ppon_Desc_Hint_02" xml:space="preserve">
+    <value>
+      &lt;p class=&quot;govuk-body&quot;&gt;
+        Your PPON is a combination of 16 letters and numbers, separated by hyphens. For example, ABCD-EFGH-1234-IJKL.
+      &lt;/p&gt;
+    </value>
+  </data>
+  <data name="Global_Search" xml:space="preserve">
+    <value>Search</value>
+  </data>
+  <data name="Global_Sort_Results" xml:space="preserve">
+    <value>Sort results</value>
+  </data>
+  <data name="Global_Search_Result" xml:space="preserve">
+    <value>Search result</value>
+  </data>
+  <data name="Global_Search_Results" xml:space="preserve">
+    <value>Search results</value>
+  </data>
+  <data name="Global_Sort_Txt" xml:space="preserve">
+    <value>Sort</value>
+  </data>
+  <data name="Global_Sort_Relevance" xml:space="preserve">
+    <value>Relevance</value>
+  </data>
+  <data name="Global_Sort_Alphabetical_Asc" xml:space="preserve">
+    <value>Alphabetical (A-Z)</value>
+  </data>
+  <data name="Global_Sort_Alphabetical_Desc" xml:space="preserve">
+    <value>Alphabetical (Z-A)</value>
+  </data>
+  <data name="Organisation_SearchOrganisations" xml:space="preserve">
+    <value>Public procurement organisation number (PPON) register</value>
+  </data>
+  <data name="Organisation_SearchOrganisationsHint" xml:space="preserve">
+    <value>Search for an organisation’s PPON number.</value>
+  </data>
+  <data name="Global_EnterSearchTerm" xml:space="preserve">
+    <value>Enter a search term</value>
   </data>
   <data name="BuyerView_Title">
     <value>Buyer View</value>
