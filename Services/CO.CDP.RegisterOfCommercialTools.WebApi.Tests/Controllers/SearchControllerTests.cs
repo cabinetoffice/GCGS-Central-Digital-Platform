@@ -1,5 +1,5 @@
 using CO.CDP.RegisterOfCommercialTools.WebApi.Controllers;
-using CO.CDP.RegisterOfCommercialTools.WebApi.Models;
+using CO.CDP.RegisterOfCommercialTools.WebApiClient.Models;
 using CO.CDP.RegisterOfCommercialTools.WebApi.Services;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;

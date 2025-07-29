@@ -1,4 +1,4 @@
-using CO.CDP.RegisterOfCommercialTools.WebApi.Models;
+using CO.CDP.RegisterOfCommercialTools.WebApiClient.Models;
 using CO.CDP.RegisterOfCommercialTools.WebApi.Services;
 using FluentAssertions;
 using Microsoft.Extensions.Configuration;

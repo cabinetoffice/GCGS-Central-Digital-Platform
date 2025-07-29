@@ -29,6 +29,6 @@
     <ItemGroup>
         <ProjectReference Include="..\..\Libraries\CO.CDP.AwsServices\CO.CDP.AwsServices.csproj"/>
         <ProjectReference Include="..\..\Libraries\CO.CDP.UI.Foundation\CO.CDP.UI.Foundation.csproj"/>
-        <ProjectReference Include="..\..\Services\CO.CDP.RegisterOfCommercialTools.WebApi\CO.CDP.RegisterOfCommercialTools.WebApi.csproj"/>
+        <ProjectReference Include="..\..\Libraries\CO.CDP.RegisterOfCommercialTools.WebApiClient\CO.CDP.RegisterOfCommercialTools.WebApiClient.csproj"/>
     </ItemGroup>
 </Project>

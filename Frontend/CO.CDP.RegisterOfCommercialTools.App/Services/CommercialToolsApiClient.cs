@@ -1,5 +1,5 @@
 using CO.CDP.RegisterOfCommercialTools.App.Models;
-using CO.CDP.RegisterOfCommercialTools.WebApi.Models;
+using CO.CDP.RegisterOfCommercialTools.WebApiClient.Models;
 
 namespace CO.CDP.RegisterOfCommercialTools.App.Services;
 
@@ -37,19 +37,6 @@ public class CommercialToolsApiClient : ISearchService
         var results = response?.Results.Select(MapToSearchResult).ToList() ?? [];
         var totalCount = response?.TotalCount ?? 0;
         return (results, totalCount);
-    }
-
-    public async Task<SearchResult?> GetByIdAsync(string id)
-    {
-        try
-        {
-            var response = await _httpClient.GetFromJsonAsync<SearchResultDto>($"api/Search/{id}");
-            return response == null ? null : MapToSearchResult(response);
-        }
-        catch (HttpRequestException ex) when (ex.Message.Contains("404"))
-        {
-            return null;
-        }
     }
 
     private static SearchResult MapToSearchResult(SearchResultDto dto)

@@ -1,6 +1,6 @@
 using CO.CDP.RegisterOfCommercialTools.App.Models;
 using CO.CDP.RegisterOfCommercialTools.App.Services;
-using CO.CDP.RegisterOfCommercialTools.WebApi.Models;
+using CO.CDP.RegisterOfCommercialTools.WebApiClient.Models;
 using FluentAssertions;
 using Moq;
 using Moq.Protected;
@@ -165,51 +165,6 @@ public class CommercialToolsApiClientTests
             return !query.Contains("SubmissionDeadlineFrom=") ||
                    query.Contains("SubmissionDeadlineFrom=&");
         });
-    }
-
-    [Fact]
-    public async Task GetByIdAsync_WhenResultExists_ShouldReturnMappedResult()
-    {
-        var id = "003033-2025";
-        var responseDto = new SearchResultDto
-        {
-            Id = id,
-            Title = "Specific Framework",
-            Description = "Specific Description",
-            Link = "https://test.com/specific",
-            PublishedDate = DateTime.UtcNow,
-            SubmissionDeadline = DateTime.UtcNow.AddDays(30),
-            Status = CommercialToolStatus.Active,
-            Fees = 750.00m,
-            AwardMethod = "Direct Award"
-        };
-
-        var jsonResponse = JsonSerializer.Serialize(responseDto);
-        SetupHttpResponse(HttpStatusCode.OK, jsonResponse);
-
-        var result = await _apiClient.GetByIdAsync(id);
-
-        result.Should().NotBeNull();
-        result!.Id.Should().Be(id);
-        result.Title.Should().Be("Specific Framework");
-        result.Caption.Should().Be("Specific Description");
-        result.Status.Should().Be(SearchResultStatus.Active);
-        result.MaximumFee.Should().Be("£750.00");
-        result.AwardMethod.Should().Be("Direct Award");
-
-        VerifyHttpRequest(HttpMethod.Get, req => req.RequestUri!.PathAndQuery.Contains($"api/Search/{id}"));
-    }
-
-    [Fact]
-    public async Task GetByIdAsync_WhenResultNotFound_ShouldReturnNull()
-    {
-        var id = "nonexistent-id";
-        SetupHttpResponse(HttpStatusCode.NotFound, "");
-
-        var result = await _apiClient.GetByIdAsync(id);
-
-        result.Should().BeNull();
-        VerifyHttpRequest(HttpMethod.Get, req => req.RequestUri!.PathAndQuery.Contains($"api/Search/{id}"));
     }
 
     [Fact]

@@ -1,4 +1,4 @@
-namespace CO.CDP.RegisterOfCommercialTools.WebApi.Models;
+namespace CO.CDP.RegisterOfCommercialTools.WebApiClient.Models;
 
 public class AwsSettings
 {

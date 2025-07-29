@@ -1,4 +1,4 @@
-using CO.CDP.RegisterOfCommercialTools.WebApi.Models;
+using CO.CDP.RegisterOfCommercialTools.WebApiClient.Models;
 
 namespace CO.CDP.RegisterOfCommercialTools.WebApi.Services;
 
