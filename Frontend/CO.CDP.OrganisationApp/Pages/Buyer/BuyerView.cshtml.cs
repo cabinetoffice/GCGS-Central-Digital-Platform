@@ -6,8 +6,11 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.FeatureManagement;
 using CO.CDP.Localization;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.FeatureManagement.Mvc;
 
 namespace CO.CDP.OrganisationApp.Pages.Buyer;
+[FeatureGate(FeatureFlags.BuyerView)]
+[Authorize(PolicyNames.PartyRole.Buyer)]
 [Authorize(OrgScopeRequirement.Viewer)]
 public class BuyerView(
     IFeatureManager featureManager,
@@ -21,14 +24,8 @@ public class BuyerView(
 
     public async Task<IActionResult> OnGet()
     {
-        var buyerViewEnabled = await featureManager.IsEnabledAsync(FeatureFlags.BuyerView);
         var searchRegistryPponEnabled = await featureManager.IsEnabledAsync(FeatureFlags.SearchRegistryPpon);
         var aiToolEnabled = await featureManager.IsEnabledAsync(FeatureFlags.AiTool);
-
-        if (!buyerViewEnabled)
-        {
-            return RedirectToPage("/PageNotFound");
-        }
 
         var organisation = await organisationClient.GetOrganisationAsync(Id);
         if (organisation == null || !organisation.Roles.Contains(PartyRole.Buyer))
