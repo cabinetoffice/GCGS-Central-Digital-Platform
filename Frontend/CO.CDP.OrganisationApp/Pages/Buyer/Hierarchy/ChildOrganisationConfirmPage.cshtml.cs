@@ -1,6 +1,5 @@
 using CO.CDP.Localization;
 using CO.CDP.Organisation.WebApiClient;
-using CO.CDP.OrganisationApp.Authorization;
 using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Extensions;
 using CO.CDP.OrganisationApp.Logging;
@@ -8,15 +7,17 @@ using CO.CDP.OrganisationApp.WebApiClients;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.FeatureManagement.Mvc;
 using Address = CO.CDP.Organisation.WebApiClient.Address;
 
 namespace CO.CDP.OrganisationApp.Pages.Buyer.Hierarchy;
 
+[Authorize(Policy = PolicyNames.PartyRole.BuyerWithSignedMou)]
 [Authorize(Policy = OrgScopeRequirement.Editor)]
+[FeatureGate(FeatureFlags.BuyerParentChildRelationship)]
 public class ChildOrganisationConfirmPage(
     IOrganisationClient organisationClient,
-    ILogger<ChildOrganisationConfirmPage> logger,
-    IAuthorizationService authorizationService)
+    ILogger<ChildOrganisationConfirmPage> logger)
     : PageModel
 {
     private readonly IOrganisationClient _organisationClient =
@@ -24,9 +25,6 @@ public class ChildOrganisationConfirmPage(
 
     private readonly ILogger<ChildOrganisationConfirmPage> _logger =
         logger ?? throw new ArgumentNullException(nameof(logger));
-
-    private readonly IAuthorizationService _authorizationService =
-        authorizationService ?? throw new ArgumentNullException(nameof(authorizationService));
 
     [BindProperty(SupportsGet = true)] public Guid Id { get; set; }
 
@@ -54,13 +52,6 @@ public class ChildOrganisationConfirmPage(
 
     public async Task<IActionResult> OnGetAsync()
     {
-        var authResult = await _authorizationService.AuthorizeAsync(User, Id, new IsBuyerRequirement());
-        if (!authResult.Succeeded)
-        {
-            _logger.LogWarning("User is not authorised to access child organisation search for parent ID {OrganisationId}.", Id);
-            return Redirect("/page-not-found");
-        }
-
         if (ChildId == Guid.Empty)
         {
             return RedirectToPage("ChildOrganisationSearchPage", new { Id });
@@ -93,13 +84,6 @@ public class ChildOrganisationConfirmPage(
 
     public async Task<IActionResult> OnPostAsync()
     {
-        var authResult = await _authorizationService.AuthorizeAsync(User, Id, new IsBuyerRequirement());
-        if (!authResult.Succeeded)
-        {
-            _logger.LogWarning("User is not authorised to access child organisation search for parent ID {OrganisationId}.", Id);
-            return Redirect("/page-not-found");
-        }
-
         try
         {
             _logger.LogInformation("Creating relationship between parent ID: {ParentId} and child ID: {ChildId}",

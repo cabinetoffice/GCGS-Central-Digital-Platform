@@ -22,7 +22,7 @@ public class ChildOrganisationConfirmPageTests
         _mockOrganisationClient = new Mock<IOrganisationClient>();
         _mockLogger = new Mock<ILogger<ChildOrganisationConfirmPage>>();
         var mockAuthorizationService = new Mock<IAuthorizationService>();
-        _model = new ChildOrganisationConfirmPage(_mockOrganisationClient.Object, _mockLogger.Object, mockAuthorizationService.Object);
+        _model = new ChildOrganisationConfirmPage(_mockOrganisationClient.Object, _mockLogger.Object);
         mockAuthorizationService.Setup(a => a.AuthorizeAsync(
                 It.IsAny<System.Security.Claims.ClaimsPrincipal>(),
                 It.IsAny<object>(),

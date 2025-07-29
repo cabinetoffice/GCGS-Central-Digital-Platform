@@ -49,8 +49,7 @@ public class ChildOrganisationSuccessPageTests
 
         _model = new ChildOrganisationSuccessPage(
             _mockOrganisationClient.Object,
-            _mockLogger.Object,
-            _mockAuthorizationService.Object)
+            _mockLogger.Object)
         {
             Id = _testParentId,
             ChildId = _testChildId
@@ -62,8 +61,7 @@ public class ChildOrganisationSuccessPageTests
     {
         var model = new ChildOrganisationSuccessPage(
             _mockOrganisationClient.Object,
-            _mockLogger.Object,
-            _mockAuthorizationService.Object)
+            _mockLogger.Object)
         {
             Id = _testParentId,
             ChildId = _testChildId
