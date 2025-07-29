@@ -100,7 +100,7 @@ locals {
         "https://fts.staging.supplier-information.find-tender.service.gov.uk/auth/backchannellogout"
       ]
       pinned_service_version_cfs        = null
-      pinned_service_version_fts        = "1.0.3"
+      pinned_service_version_fts        = "1.0.9"
       pinned_service_version            = "1.0.72"
       postgres_instance_type            = "db.t4g.micro"
       postgres_aurora_instance_type     = "db.r5.large"
@@ -219,7 +219,7 @@ locals {
         "https://fts.integration.supplier-information.find-tender.service.gov.uk/auth/backchannellogout"
       ]
       pinned_service_version_cfs        = null
-      pinned_service_version_fts        = "1.0.3"
+      pinned_service_version_fts        = "1.0.9"
       pinned_service_version            = "1.0.71"
       postgres_instance_type            = "db.t4g.micro"
       postgres_aurora_instance_type     = "db.r5.large"
@@ -252,7 +252,7 @@ locals {
         "https://cfs.supplier-information.find-tender.service.gov.uk",
         "https://www.find-tender.service.gov.uk"
       ]
-      fts_allowed_target_email_domains  = ["goaco.com"]
+      fts_allowed_target_email_domains  = []
       fts_extra_domains                 = ["www.find-tender.service.gov.uk", "find-tender.service.gov.uk"]
       fts_azure_frontdoor               = "nqc-front-door-uksouth.azurefd.net"
       fts_service_allowed_origins       = [
@@ -269,7 +269,7 @@ locals {
         "https://fts.supplier-information.find-tender.service.gov.uk/auth/backchannellogout"
       ],
       pinned_service_version_cfs        = null
-      pinned_service_version_fts        = "1.0.3"
+      pinned_service_version_fts        = "1.0.9"
       pinned_service_version            = "1.0.71"
       postgres_instance_type            = "db.t4g.micro"
       postgres_aurora_instance_type     = "db.r5.8xlarge"
@@ -325,14 +325,14 @@ locals {
   service_configs_base = {
     authority                            = {}
     av_scanner_app                       = {}
-    cfs                                  = { desired_count = 3, cpu = 4096,  memory = 16384}
+    cfs                                  = { desired_count = 3, cpu = 4096,  memory = 8192}
     cfs_migrations                       = { desired_count = 1 }
     cfs_scheduler                        = { desired_count = 1 }
     data_sharing                         = {}
     entity_verification                  = {}
     entity_verification_migrations       = { cpu = 256,  memory = 512}
     forms                                = {}
-    fts                                  = { desired_count = 3, cpu = 4096,  memory = 16384}
+    fts                                  = { desired_count = 3, cpu = 4096,  memory = 8192}
     fts_healthcheck                      = { desired_count = 1 }
     fts_migrations                       = { desired_count = 1 }
     fts_scheduler                        = { desired_count = 1 }

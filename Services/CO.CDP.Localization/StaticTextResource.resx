@@ -4298,4 +4298,31 @@
   <data name="Global_EnterSearchTerm" xml:space="preserve">
     <value>Enter a search term</value>
   </data>
+  <data name="BuyerView_Title">
+    <value>Buyer View</value>
+  </data>
+  <data name="BuyerView_Heading">
+    <value>Buyer View</value>
+  </data>
+  <data name="BuyerView_Body">
+    <value>Find out more about your organisation details or undertake other actions to facilitate your procurement process.</value>
+  </data>
+  <data name="BuyerView_TileOne_Title">
+    <value>View your organisation details</value>
+  </data>
+  <data name="BuyerView_TileOne_Body">
+    <value>View and manage the details of your organisation.</value>
+  </data>
+  <data name="BuyerView_TileTwo_Title">
+    <value>Public procurement organisation number (PPON) register</value>
+  </data>
+  <data name="BuyerView_TileTwo_Body">
+    <value>Search for an organisation’s PPON number.</value>
+  </data>
+  <data name="BuyerView_TileThree_Title">
+    <value>Statement of Work Assessment tool</value>
+  </data>
+  <data name="BuyerView_TileThree_Body">
+    <value>Review Statements of Work to make sure they meet procurement and commercial quality standards.</value>
+  </data>
 </root>

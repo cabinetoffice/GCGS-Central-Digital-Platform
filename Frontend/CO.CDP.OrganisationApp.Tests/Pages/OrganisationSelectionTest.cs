@@ -1,7 +1,9 @@
 using CO.CDP.Organisation.WebApiClient;
+using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.Pages.Organisation;
 using FluentAssertions;
+using Microsoft.FeatureManagement;
 using Moq;
 using PartyRole = CO.CDP.Tenant.WebApiClient.PartyRole;
 
@@ -12,6 +14,7 @@ public class OrganisationSelectionTest
     private readonly Mock<ISession> _session = new();
     private readonly Mock<IUserInfoService> _userInfoService = new();
     private readonly Mock<IOrganisationClient> _organisationClient = new();
+    private readonly Mock<IFeatureManager> _featureManager = new();
 
     public OrganisationSelectionTest()
     {
@@ -27,6 +30,8 @@ public class OrganisationSelectionTest
         _session.Setup(s => s.Get<UserDetails>(Session.UserDetailsKey))
             .Returns(new UserDetails { UserUrn = "urn:test" });
 
+        _featureManager.Setup(f => f.IsEnabledAsync(FeatureFlags.BuyerView)).ReturnsAsync(true);
+
         _userInfoService.Setup(s => s.GetUserInfo()).ReturnsAsync(UserInfo());
 
         await model.OnGet();
@@ -41,6 +46,8 @@ public class OrganisationSelectionTest
 
         _session.Setup(s => s.Get<UserDetails>(Session.UserDetailsKey))
             .Returns(new UserDetails { UserUrn = "urn:test" });
+
+        _featureManager.Setup(f => f.IsEnabledAsync(FeatureFlags.BuyerView)).ReturnsAsync(true);
 
         _userInfoService.Setup(s => s.GetUserInfo()).ReturnsAsync(UserInfo(pendingRoles: [PartyRole.Buyer]));
 
@@ -63,6 +70,8 @@ public class OrganisationSelectionTest
         _session.Setup(s => s.Get<UserDetails>(Session.UserDetailsKey))
             .Returns(new UserDetails { UserUrn = "urn:test" });
 
+        _featureManager.Setup(f => f.IsEnabledAsync(FeatureFlags.BuyerView)).ReturnsAsync(true);
+
         _userInfoService.Setup(s => s.GetUserInfo()).ReturnsAsync(UserInfo(pendingRoles: [PartyRole.Buyer]));
 
         _organisationClient.Setup(o => o.GetOrganisationReviewsAsync(It.IsAny<Guid>()))
@@ -78,7 +87,51 @@ public class OrganisationSelectionTest
 
     private OrganisationSelectionModel GivenOrganisationSelectionModelModel()
     {
-        return new OrganisationSelectionModel(_userInfoService.Object, _organisationClient.Object, _session.Object);
+        return new OrganisationSelectionModel(_userInfoService.Object, _organisationClient.Object, _session.Object, _featureManager.Object);
+    }
+
+    [Fact]
+    public void OrganisationUrl_WhenBuyerViewFeatureIsEnabled_AndUserIsBuyer_ShouldReturnBuyerDashboardUrl()
+    {
+        var model = GivenOrganisationSelectionModelModel();
+        var org = new UserOrganisationInfo { Id = Guid.NewGuid(), Name = "Test Org", Roles = [PartyRole.Buyer] };
+
+        var url = model.OrganisationUrl(org, true);
+
+        url.Should().Be($"/organisation/{org.Id}/buyer");
+    }
+
+    [Fact]
+    public void OrganisationUrl_WhenBuyerViewFeatureIsDisabled_AndUserIsBuyer_ShouldReturnOrganisationDetailsUrl()
+    {
+        var model = GivenOrganisationSelectionModelModel();
+        var org = new UserOrganisationInfo { Id = Guid.NewGuid(), Name = "Test Org", Roles = [PartyRole.Buyer] };
+
+        var url = model.OrganisationUrl(org, false);
+
+        url.Should().Be($"/organisation/{org.Id}");
+    }
+
+    [Fact]
+    public void OrganisationUrl_WhenBuyerViewFeatureIsEnabled_AndUserIsSupplier_ShouldReturnOrganisationDetailsUrl()
+    {
+        var model = GivenOrganisationSelectionModelModel();
+        var org = new UserOrganisationInfo { Id = Guid.NewGuid(), Name = "Test Org", Roles = [PartyRole.Tenderer] };
+
+        var url = model.OrganisationUrl(org, true);
+
+        url.Should().Be($"/organisation/{org.Id}");
+    }
+
+    [Fact]
+    public void OrganisationUrl_WhenBuyerViewFeatureIsDisabled_AndUserIsSupplier_ShouldReturnOrganisationDetailsUrl()
+    {
+        var model = GivenOrganisationSelectionModelModel();
+        var org = new UserOrganisationInfo { Id = Guid.NewGuid(), Name = "Test Org", Roles = [PartyRole.Tenderer] };
+
+        var url = model.OrganisationUrl(org, false);
+
+        url.Should().Be($"/organisation/{org.Id}");
     }
 
     private static Review GivenReview(ReviewStatus reviewStatus)
