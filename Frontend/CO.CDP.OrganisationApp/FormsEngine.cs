@@ -588,7 +588,14 @@ public class FormsEngine(
     {
         var form = await GetFormSectionAsync(organisationId, formId, sectionId);
 
-        var relevantQuestions = form.Questions
+        var checkYourAnswersQuestion = form.Questions
+            .FirstOrDefault(q => q.Type == FormQuestionType.CheckYourAnswers);
+
+        var questionsInOrder = checkYourAnswersQuestion != null
+            ? BuildPathToQuestion(form.Questions, checkYourAnswersQuestion.Id, answerState)
+            : form.Questions.Where(q => q.Type != FormQuestionType.NoInput && q.Type != FormQuestionType.CheckYourAnswers).ToList();
+
+        var relevantQuestions = questionsInOrder
             .Where(q => q.Type != FormQuestionType.NoInput && q.Type != FormQuestionType.CheckYourAnswers)
             .ToList();
 
