@@ -45,6 +45,7 @@ locals {
       fts_allowed_target_email_domains  = ["goaco.com"]
       fts_azure_frontdoor               = null
       cfs_service_allowed_origins       = []
+      fts_extra_domains                 = []
       fts_service_allowed_origins       = []
       mail_from_domain                  = null
       mysql_aurora_engine_version       = "5.7.mysql_aurora.2.12.5"
@@ -81,6 +82,7 @@ locals {
       canary_schedule_expression        = "rate(30 minutes)"
       cfs_allowed_target_email_domains  = ["goaco.com"]
       fts_allowed_target_email_domains  = ["goaco.com"]
+      fts_extra_domains                 = ["www-staging.find-tender.service.gov.uk"]
       fts_azure_frontdoor               = null
       cfs_service_allowed_origins       = [
         "https://cfs.staging.supplier-information.find-tender.service.gov.uk",
@@ -98,7 +100,7 @@ locals {
         "https://fts.staging.supplier-information.find-tender.service.gov.uk/auth/backchannellogout"
       ]
       pinned_service_version_cfs        = null
-      pinned_service_version_fts        = "1.0.1"
+      pinned_service_version_fts        = "1.0.9"
       pinned_service_version            = "1.0.72"
       postgres_instance_type            = "db.t4g.micro"
       postgres_aurora_instance_type     = "db.r5.large"
@@ -190,6 +192,7 @@ locals {
         "waxdigital.com",
         "xansium.com"
       ]
+      fts_extra_domains                 = ["www-tpp.find-tender.service.gov.uk"]
       fts_azure_frontdoor               = null
       fts_service_allowed_origins       = [
         "https://fts.integration.supplier-information.find-tender.service.gov.uk",
@@ -216,7 +219,7 @@ locals {
         "https://fts.integration.supplier-information.find-tender.service.gov.uk/auth/backchannellogout"
       ]
       pinned_service_version_cfs        = null
-      pinned_service_version_fts        = "1.0.1"
+      pinned_service_version_fts        = "1.0.9"
       pinned_service_version            = "1.0.71"
       postgres_instance_type            = "db.t4g.micro"
       postgres_aurora_instance_type     = "db.r5.large"
@@ -249,7 +252,8 @@ locals {
         "https://cfs.supplier-information.find-tender.service.gov.uk",
         "https://www.find-tender.service.gov.uk"
       ]
-      fts_allowed_target_email_domains  = ["goaco.com"]
+      fts_allowed_target_email_domains  = []
+      fts_extra_domains                 = ["www.find-tender.service.gov.uk", "find-tender.service.gov.uk"]
       fts_azure_frontdoor               = "nqc-front-door-uksouth.azurefd.net"
       fts_service_allowed_origins       = [
         "https://fts.supplier-information.find-tender.service.gov.uk",
@@ -265,7 +269,7 @@ locals {
         "https://fts.supplier-information.find-tender.service.gov.uk/auth/backchannellogout"
       ],
       pinned_service_version_cfs        = null
-      pinned_service_version_fts        = "1.0.0"
+      pinned_service_version_fts        = "1.0.9"
       pinned_service_version            = "1.0.71"
       postgres_instance_type            = "db.t4g.micro"
       postgres_aurora_instance_type     = "db.r5.8xlarge"
@@ -296,6 +300,7 @@ locals {
   cfs_allowed_target_email_domains  = try(local.environments[local.environment].cfs_allowed_target_email_domains, null)
   cfs_service_allowed_origins       = try(local.environments[local.environment].cfs_service_allowed_origins, null)
   fts_allowed_target_email_domains  = try(local.environments[local.environment].fts_allowed_target_email_domains, null)
+  fts_extra_domains                 = try(local.environments[local.environment].fts_extra_domains, null)
   fts_azure_frontdoor               = try(local.environments[local.environment].fts_azure_frontdoor, null)
   fts_service_allowed_origins       = try(local.environments[local.environment].fts_service_allowed_origins, null)
   mail_from_domain                  = try(local.environments[local.environment].mail_from_domain, null)

@@ -21,6 +21,7 @@ locals {
     saml_slo_url                          = "${local.cfs_screts_arn}:SAML_SLO_URL::"
     saml_sso_url                          = "${local.cfs_screts_arn}:SAML_SSO_URL::"
     saml_x509cert                         = "${local.cfs_screts_arn}:SAML_X509CERT::"
+    srs_private_key                       = "${local.cfs_screts_arn}:SRS_PRIVATE_KEY::"
     sso_api_authentication_key            = "${local.cfs_screts_arn}:SSO_API_AUTHENTICATION_KEY::"
     sso_cipher                            = "${local.cfs_screts_arn}:SSO_CIPHER::"
     sso_token                             = "${local.cfs_screts_arn}:SSO_TOKEN::"

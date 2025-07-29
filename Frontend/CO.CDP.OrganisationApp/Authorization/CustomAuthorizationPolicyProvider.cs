@@ -1,3 +1,5 @@
+using CO.CDP.OrganisationApp.Constants;
+using CO.CDP.Tenant.WebApiClient;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Options;
 
@@ -5,8 +7,9 @@ namespace CO.CDP.OrganisationApp.Authorization;
 
 public class CustomAuthorizationPolicyProvider : IAuthorizationPolicyProvider
 {
-    const string ORG_POLICY_PREFIX = "OrgScope_";
-    const string POLICY_PREFIX = "PersonScope_";
+    const string OrgPolicyPrefix = "OrgScope_";
+    const string PolicyPrefix = "PersonScope_";
+    const string PartyRolePolicyPrefix = "PartyRole_";
     private readonly DefaultAuthorizationPolicyProvider _fallbackPolicyProvider;
 
     public CustomAuthorizationPolicyProvider(IOptions<AuthorizationOptions> options)
@@ -16,8 +19,31 @@ public class CustomAuthorizationPolicyProvider : IAuthorizationPolicyProvider
 
     public Task<AuthorizationPolicy?> GetPolicyAsync(string policyName)
     {
-        var role = extractRoleFromPolicyName(policyName);
+        if (policyName.StartsWith(PartyRolePolicyPrefix))
+        {
+            var roleString = policyName.Substring(PartyRolePolicyPrefix.Length);
+            if (Enum.TryParse<PartyRole>(roleString, out var partyRole))
+            {
+                var policy = new AuthorizationPolicyBuilder()
+                    .RequireAuthenticatedUser()
+                    .AddRequirements(new PartyRoleAuthorizationRequirement(partyRole))
+                    .Build();
 
+                return Task.FromResult<AuthorizationPolicy?>(policy);
+            }
+        }
+
+        if (policyName == PolicyNames.PartyRole.BuyerWithSignedMou)
+        {
+            var policy = new AuthorizationPolicyBuilder()
+                .RequireAuthenticatedUser()
+                .AddRequirements(new BuyerMouRequirement())
+                .Build();
+
+            return Task.FromResult<AuthorizationPolicy?>(policy);
+        }
+
+        var role = ExtractRoleFromPolicyName(policyName);
         if (role != null)
         {
             var policy = new AuthorizationPolicyBuilder()
@@ -31,16 +57,16 @@ public class CustomAuthorizationPolicyProvider : IAuthorizationPolicyProvider
         return _fallbackPolicyProvider.GetPolicyAsync(policyName);
     }
 
-    private static string? extractRoleFromPolicyName(string policyName)
+    private static string? ExtractRoleFromPolicyName(string policyName)
     {
-        if (policyName.StartsWith(ORG_POLICY_PREFIX))
+        if (policyName.StartsWith(OrgPolicyPrefix))
         {
-            return policyName.Substring(ORG_POLICY_PREFIX.Length);
+            return policyName.Substring(OrgPolicyPrefix.Length);
         }
 
-        if (policyName.StartsWith(POLICY_PREFIX))
+        if (policyName.StartsWith(PolicyPrefix))
         {
-            return policyName.Substring(POLICY_PREFIX.Length);
+            return policyName.Substring(PolicyPrefix.Length);
         }
 
         return null;

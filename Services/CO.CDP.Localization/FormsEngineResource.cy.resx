@@ -356,10 +356,10 @@
   </data>
   <data name="FinancialInformation_Configuration_AddAnotherAnswerLabel" xml:space="preserve">
     <value>Ychwanegu ffeil arall?</value>
-  </data>  
+  </data>
   <data name="FinancialInformation_Configuration_RemoveConfirmationHeading" xml:space="preserve">
     <value>Ydych chi’n si?r eich bod am ddileu’r ffeil hon?</value>
-  </data>  
+  </data>
   <data name="Global_CheckYourAnswers" xml:space="preserve">
     <value>Gwiriwch eich atebion</value>
   </data>
@@ -449,5 +449,455 @@
   </data>
   <data name="Share_My_Information_Consortium_SectionTitle" xml:space="preserve">
     <value>Rhannu fy nghonsortiwm gwybodaeth</value>
+  </data>
+  <data name="Steel_SectionTitle" xml:space="preserve">
+    <value>Modiwl dur</value>
+  </data>
+  <data name="SteelQuestion_01_Title" xml:space="preserve">
+    <value>Cyflwyno eich gwybodaeth am ddur</value>
+  </data>
+  <data name="SteelQuestion_01_Description" xml:space="preserve">
+    <value>
+      &lt;p class="govuk-body"&gt;Mae'r modiwl canlynol yn cyfeirio at gaffael a defnyddio cynhyrchion dur ym mhrosiectau'r llywodraeth. Mae'n canolbwyntio ar gydymffurfio â rheoliadau'r DU mewn perthynas â chyrchu, ansawdd a chynaliadwyedd. Am ragor o wybodaeth, darllenwch &lt;a target="_blank" href="https://www.gov.uk/government/publications/ppn-010-procuring-steel-in-government-contracts/ppn-010-revised-guidance-on-procuring-steel-in-government-contracts-html"&gt;PPN 010: Canllawiau diwygiedig ar gaffael dur yng nghontractau'r llywodraeth (bydd yn agor mewn tab newydd)&lt;/a&gt;.&lt;/p&gt;
+      &lt;p class="govuk-body govuk-!-margin-top-2"&gt;Mae ond os bydd yr awdurdod contractio rydych yn gwneud cynnig iddo yn gofyn i chi wneud hynny y bydd angen i chi gwblhau'r modiwl hwn. Gall methu â chwblhau'r modiwl hwn arwain at ystyried bod eich tendrau yn annigonol lle mae PPN 010 wedi'i gymhwyso.&lt;/p&gt;
+      &lt;h2 class="govuk-heading-m"&gt;Y wybodaeth y bydd ei hangen arnoch&lt;/h2&gt;
+      &lt;p class="govuk-body"&gt;Bydd angen i chi ddarparu gwybodaeth am brosiectau neu raglenni cadwyn gyflenwi penodol i ddur Gall hyn gynnwys enghreifftiau perthnasol o'r canlynol:&lt;/p&gt;
+      &lt;ul class="govuk-list govuk-list--bullet"&gt;
+        &lt;li&gt;systemau rheoli, polisïau, safonau a gweithdrefnau&lt;/li&gt;
+        &lt;li&gt;arferion cynaliadwy&lt;/li&gt;
+        &lt;li&gt;achosion o dorri deddfwriaeth iechyd a diogelwch&lt;/li&gt;
+      &lt;/ul&gt;
+    </value>
+  </data>
+  <data name="SteelQuestion_02_Title" xml:space="preserve">
+    <value>Rheoli'r gadwyn gyflenwi ym maes caffael dur</value>
+  </data>
+  <data name="SteelQuestion_02_SummaryTitle" xml:space="preserve">
+    <value>Rheoli'r Gadwyn Gyflenwi</value>
+  </data>
+  <data name="SteelQuestion_02_Description" xml:space="preserve">
+    <value>
+      &lt;p class=&quot;govuk-body govuk-!-font-weight-bold&quot;&gt;Lle y bo'n berthnasol, rhowch fanylion prosiectau neu raglenni dur lle rydych chi wedi dangos:&lt;/p&gt;
+      &lt;ul class=&quot;govuk-list govuk-list--bullet&quot;&gt;
+        &lt;li&gt;rheolaeth effeithiol o'ch systemau cadwyn gyflenwi dur, polisïau, safonau a gweithdrefnau&lt;/li&gt;
+        &lt;li&gt;cydymffurfiaeth â deddfwriaeth berthnasol&lt;/li&gt;
+        &lt;li&gt;cyflenwi dur yn gynaliadwy (gan gynnwys eich cadwyn gyflenwi)&lt;/li&gt;
+        &lt;li&gt;rheoli achosion o dorri iechyd a diogelwch yn ystod y 5 mlynedd diwethaf, yn y wlad lle rydych yn gweithio, i'ch sefydliad ac i aelodau eich cadwyn gyflenwi&lt;/li&gt;
+      &lt;/ul&gt;
+      &lt;details class=&quot;govuk-details&quot;&gt;
+        &lt;summary class=&quot;govuk-details__summary&quot;&gt;
+          &lt;span class=&quot;govuk-details__summary-text&quot;&gt;
+            Beth yw cyflenwad dur yn gynaliadwy?
+          &lt;/span&gt;
+        &lt;/summary&gt;
+        &lt;div class=&quot;govuk-details__text&quot;&gt;
+          Mae cyflenwi dur yn gynaliadwy yn cyfeirio at y broses o gael gaffael dur a chynhyrchu dur sy'n gyfrifol yn amgylcheddol, cymdeithasol ac economaidd. Mae'n cynnwys arferion sy'n cyfyngu ar yr effaith ar yr amgylchedd, fel lleihau allyriadau carbon, gan sicrhau arferion llafur teg a chefnogi cymunedau lleol.
+        &lt;/div&gt;
+      &lt;/details&gt;
+      &lt;p class=&quot;govuk-hint&quot;&gt;Os hoffech ddarparu'r wybodaeth hon ar ffurf dogfen, ewch ymlaen i'r cwestiwn nesaf&lt;/p&gt;
+    </value>
+  </data>
+  <data name="SteelQuestion_03_Title" xml:space="preserve">
+    <value>A oes gennych ddogfennau ategol i'w lanlwytho?</value>
+  </data>
+  <data name="SteelQuestion_03_SummaryTitle" xml:space="preserve">
+    <value>Dogfen ategol</value>
+  </data>
+  <data name="Steel_Configuration_FurtherQuestionsExemptedHint" xml:space="preserve">
+    <value>Bydd angen i chi ddarparu gwybodaeth am brosiectau neu raglenni cadwyn gyflenwi penodol i ddur Gall hyn gynnwys enghreifftiau perthnasol o'r canlynol:</value>
+  </data>
+  <data name="DataProtection_01_Title" xml:space="preserve">
+    <value>Cyflwyno eich gwybodaeth am ddiogelu data</value>
+  </data>
+  <data name="DataProtection_01_Description" xml:space="preserve">
+    <value>
+      &lt;p class="govuk-body"&gt;
+        Mae a wnelo diogelu data â diogelu data personol rhag cael eu camddefnyddio, eu colli neu fynediad anawdurdodedig. Mae'r modiwl hwn yn canolbwyntio ar gydymffurfio â chyfreithiau diogelu data (fel GDPR) a sut mae cyflenwr yn rheoli, yn storio ac yn prosesu gwybodaeth bersonol.
+      &lt;/p&gt;
+      &lt;p class="govuk-body"&gt;
+        Mae ond os bydd yr awdurdod contractio rydych yn gwneud cynnig iddo yn gofyn i chi wneud hynny y bydd angen i chi gwblhau'r modiwl hwn. Gall methu â chwblhau'r modiwl hwn arwain at ystyried bod eich tendrau yn annigonol lle mae PPN 020 wedi'i gymhwyso. Am ragor o wybodaeth, darllenwch
+        &lt;a href="https://www.gov.uk/government/publications/ppn-020-guidance-on-data-protection-legislation/ppn-020-guidance-on-data-protection-legislation-html" class="govuk-link" rel="noreferrer noopener" target="_blank"&gt;
+          PPN 020: Canllaw ar ddeddfwriaeth diogelu data (bydd yn agor mewn tab newydd)
+        &lt;/a&gt;.
+      &lt;/p&gt;
+      &lt;h2 class="govuk-heading-m"&gt;Y wybodaeth y bydd ei hangen arnoch&lt;/h2&gt;
+      &lt;div class="govuk-body"&gt;Bydd angen i chi ddarparu gwybodaeth am ddiogelu data yn eich sefydliad. Gall hyn gynnwys:&lt;/div&gt;
+      &lt;div class="govuk-body"&gt;
+        &lt;ul class="govuk-list govuk-list--bullet"&gt;
+          &lt;li&gt;cadarnhad ynghylch adnoddau&lt;/li&gt;
+          &lt;li&gt;cael cyfleusterau a mesurau ar waith i sicrhau cydymffurfiaeth â chyfreithiau diogelu data&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/div&gt;
+    </value>
+  </data>
+  <data name="DataProtection_02_Title" xml:space="preserve">
+    <value>A oes gennych yr adnoddau i sicrhau cydymffurfiaeth â GDPR y DU?</value>
+  </data>
+  <data name="DataProtection_02_SummaryTitle" xml:space="preserve">
+    <value>Cadarnhau adnoddau ar gyfer cydymffurfiaeth</value>
+  </data>
+  <data name="DataProtection_02_Description" xml:space="preserve">
+    <value>
+      &lt;div class=&quot;govuk-hint govuk-!-margin-top-2&quot;&gt;
+        Dylech ystyried eich adnoddau dynol a thechnegol
+      &lt;/div&gt;
+    </value>
+  </data>
+  <data name="DataProtection_03_Title" xml:space="preserve">
+    <value>Pryd bydd gennych yr adnoddau i sicrhau cydymffurfiaeth â GDPR y DU?</value>
+  </data>
+  <data name="DataProtection_03_SummaryTitle" xml:space="preserve">
+    <value>Statws gofynion o ran adnoddau</value>
+  </data>
+  <data name="DataProtection_03_Description" xml:space="preserve">
+    <value>
+      &lt;div class=&quot;govuk-hint govuk-!-margin-top-2&quot;&gt;
+        Dylech ystyried eich adnoddau dynol a thechnegol
+      &lt;/div&gt;
+    </value>
+  </data>
+  <data name="DataProtection_04_Title" xml:space="preserve">
+    <value>Sut mae sicrhau cydymffurfiaeth â chyfraith diogelu data y DU?</value>
+  </data>
+  <data name="DataProtection_04_SummaryTitle" xml:space="preserve">
+    <value>Manylion cyfleusterau a mesurau</value>
+  </data>
+  <data name="DataProtection_04_Description" xml:space="preserve">
+    <value>
+      &lt;div class=&quot;govuk-body govuk-!-margin-top-2&quot;&gt;Dylai eich ymateb gynnwys y cyfleusterau a'r prosesau technegol sydd gennych ar waith, neu a fydd ar waith erbyn i'r contract gael ei ddyfarnu, er mwyn sicrhau'r canlynol:&lt;/div&gt;
+      &lt;div class=&quot;govuk-body&quot;&gt;
+        &lt;ul class=&quot;govuk-list govuk-list--bullet&quot;&gt;
+          &lt;li&gt;caiff hawliau gwrthrychau data eu diogelu&lt;/li&gt;
+          &lt;li&gt;caiff systemau prosesu a gwasanaethau eu cadw'n ddiogel ac yn ddibynadwy&lt;/li&gt;
+          &lt;li&gt;caiff hawliau unigolion i dderbyn gwybodaeth am breifatrwydd ac i gael gafael ar ddata personol, eu cywiro, eu dileu a'u trosglwyddo eu diogelu&lt;/li&gt;
+          &lt;li&gt;mae cydsyniad ar gyfer prosesu data personol yn glir a chaiff ei gofnodi'n briodol&lt;/li&gt;
+          &lt;li&gt;mae amddiffyniadau cyfreithiol ar waith i drosglwyddo data personol y tu allan i'r DU (lle y bo'n berthnasol)&lt;/li&gt;
+          &lt;li&gt;caiff cofnodion o weithgareddau prosesu data personol eu cynnal&lt;/li&gt;
+          &lt;li&gt;caiff y mesurau uchod eu profi a'u hadolygu'n rheolaidd  &lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/div&gt;
+      &lt;p class="govuk-hint"&gt;Os hoffech ddarparu'r wybodaeth hon ar ffurf dogfen, ewch ymlaen i'r cwestiwn nesaf&lt;/p&gt;
+    </value>
+  </data>
+  <data name="DataProtection_05_Title" xml:space="preserve">
+    <value>A oes gennych ddogfennau ategol i'w lanlwytho?</value>
+  </data>
+  <data name="DataProtection_05_SummaryTitle" xml:space="preserve">
+    <value>Lanlwytho Dogfen</value>
+  </data>
+  <data name="HealthAndSafetyQuestion_01_Title" xml:space="preserve">
+    <value>Cyflwyno eich gwybodaeth am iechyd a diogelwch</value>
+  </data>
+  <data name="HealthAndSafetyQuestion_01_Description" xml:space="preserve">
+    <value>
+      &lt;p class=&quot;govuk-body&quot;&gt;
+        Mae rheoliadau iechyd a diogelwch yn sicrhau llesiant cyflogeion a'r cyhoedd yn y gweithle. Gall rhai tendrau ofyn i chi ddarparu gwybodaeth am eich polisïau iechyd a diogelwch, asesiadau risg a'r hyfforddiant a ddarperir er mwyn atal damweiniau ac anafiadau.
+      &lt;/p&gt;
+
+      &lt;p class=&quot;govuk-body govuk-!-margin-top-2&quot;&gt;
+        Mae ond os bydd yr awdurdod contractio rydych yn gwneud cynnig iddo yn gofyn i chi wneud hynny y bydd angen i chi gwblhau'r modiwl hwn. Gall methu â chwblhau'r modiwl hwn arwain at ystyried bod eich tendrau yn annigonol lle mae gwybodaeth am iechyd a diogelwch yn ofynnol.
+      &lt;/p&gt;
+
+      &lt;h2 class=&quot;govuk-heading-m govuk-!-margin-top-4&quot;&gt;
+        Y wybodaeth fydd ei hangen arnoch
+      &lt;/h2&gt;
+
+      &lt;p class=&quot;govuk-body govuk-!-margin-top-2 govuk-!-margin-bottom-4&quot;&gt;
+        Bydd angen i chi ddarparu gwybodaeth am reolaeth iechyd a diogelwch a gweithdrefnau risg eich sefydliad.
+      &lt;/p&gt;
+    </value>
+  </data>
+  <data name="HealthAndSafetyQuestion_02_Title" xml:space="preserve">
+    <value>Sut ydych yn rheoli iechyd a diogelwch? </value>
+  </data>
+  <data name="HealthAndSafetyQuestion_02_SummaryTitle" xml:space="preserve">
+    <value>Rheoli Iechyd a Diogelwch</value>
+  </data>
+  <data name="HealthAndSafetyQuestion_02_Description" xml:space="preserve">
+    <value>
+      &lt;p class=&quot;govuk-body&quot;&gt;
+        Cofiwch gynnwys enghreifftiau o'r ffordd rydych yn ymdrin â risgiau sylweddol (fel defnyddio contractwyr, lle y bo'n berthnasol).
+      &lt;/p&gt;
+
+      &lt;div class=&quot;govuk-hint govuk-!-margin-top-2&quot;&gt;
+        Os hoffech ddarparu'r wybodaeth hon ar ffurf dogfen, ewch ymlaen i'r cwestiwn nesaf.
+      &lt;/div&gt;
+    </value>
+  </data>
+  <data name="HealthAndSafetyQuestion_03_Title" xml:space="preserve">
+    <value>A oes gennych ddogfennau ategol i'w lanlwytho?</value>
+  </data>
+  <data name="HealthAndSafetyQuestion_03_SummaryTitle" xml:space="preserve">
+    <value>Dogfennau ategol </value>
+  </data>
+  <data name="CyberEssentials_01_Title" xml:space="preserve">
+    <value>Cyflwyno eich gwybodaeth ar gyfer cynllun ardystio Cyber Essentials</value>
+  </data>
+  <data name="CyberEssentials_02_Title" xml:space="preserve">
+    <value>Ydych chi'n bodloni gofynion ardystio Cyber Essentials? </value>
+  </data>
+  <data name="CyberEssentials_01_Description" xml:space="preserve">
+    <value>
+&lt;p class="govuk-body"&gt;
+Mae cynllun ardystio Cyber Essentials yn un o fentrau Llywodraeth y DU sy'n helpu sefydliadau i amddiffyn eu hunain rhag bygythiadau seiber cyffredin. Mae'r ardystiad hwn yn lleihau risgiau yn y gadwyn gyflenwi ac mae'n bwysig er mwyn meithrin ymddiriedaeth yng nghontractau'r llywodraeth. Bydd yr awdurdod contractio rydych yn gwneud cynnig iddo yn rhoi gwybod i chi pa ardystiad sydd ei angen arnoch. Am ragor o wybodaeth, darllenwch &lt;a href="https://www.gov.uk/government/publications/ppn-014-cyber-essentials-scheme/ppn-014-cyber-essentials-scheme-html"
+class="govuk-link" rel="noreferrer noopener" target="_blank"&gt;
+PPN 014: Cynllun Cyber Essentials (bydd yn agor mewn tab newydd).&lt;/a&gt;&lt;/p&gt;
+      &lt;p class="govuk-body"&gt;
+    Bydd ond angen i chi gwblhau'r modiwl hwn os bydd yr awdurdod contractio rydych yn gwneud cynnig iddo yn gofyn i chi wneud hyny.
+    Gall methu â chwblhau'r modiwl hwn arwain at ystyried bod eich tendrau yn annigonol lle mae PPN 014 wedi'i gymhwyso.
+      &lt;/p&gt;
+&lt;h2 class="govuk-heading-m"&gt;Y wybodaeth y bydd ei hangen arnoch&lt;/h2&gt;
+&lt;div class="govuk-body"&gt;Bydd angen i chi ddarparu gwybodaeth am eich ardystiad Cyber Essentials neu Cyber Essentials Plus (neu ardystiad cyfatebol). Gall hyn gynnwys:
+  &lt;ul class="govuk-list govuk-list--bullet"&gt;
+    &lt;li class="govuk-!-margin-top-4"&gt; cadarnhad eich bod yn bodloni gofynion y cynllun ardystio&lt;/li&gt;
+    &lt;li class="govuk-!-margin-top-4"&gt; dyddiad dirwyn i ben eich ardystiad&lt;/li&gt;
+    &lt;li class="govuk-!-margin-top-4"&gt; tystiolaeth o'ch ardystiad&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/div&gt;
+    </value>
+  </data>
+  <data name="CyberEssentials_02_SummaryTitle" xml:space="preserve">
+    <value>Bodlonwyd y gofynion</value>
+  </data>
+  <data name="CyberEssentials_03_SummaryTitle" xml:space="preserve">
+    <value>Statws y gofynion</value>
+  </data>
+  <data name="CyberEssentials_03_Title" xml:space="preserve">
+    <value>Pryd byddwch yn bodloni gofynion ardystio Cyber Essentials? </value>
+  </data>
+  <data name="CyberEssentials_04_SummaryTitle" xml:space="preserve">
+    <value>Lanlwytho'r ardystiad</value>
+  </data>
+  <data name="CyberEssentials_04_Title" xml:space="preserve">
+    <value>Lanlwythwch dystiolaeth o'ch ardystiad Cyber Essentials (neu ardystiad cyfatebol)</value>
+  </data>
+  <data name="CyberEssentials_05_SummaryTitle" xml:space="preserve">
+    <value>Dyddiad dirwyn i ben yr ardystiad</value>
+  </data>
+  <data name="CyberEssentials_05_Title" xml:space="preserve">
+    <value>Cofnodwch ddyddiad dirwyn i ben eich ardystiad Cyber Essentials (neu ardystiad cyfatebol)</value>
+  </data>
+  <data name="CyberEssentials_06_SummaryTitle" xml:space="preserve">
+    <value>Bodlonwyd y gofynion</value>
+  </data>
+  <data name="CyberEssentials_06_Title" xml:space="preserve">
+    <value>Ydych chi'n bodloni gofynion ardystio Cyber Essentials Plus? </value>
+  </data>
+  <data name="CyberEssentials_07_SummaryTitle" xml:space="preserve">
+    <value>Statws y gofynion</value>
+  </data>
+  <data name="CyberEssentials_07_Title" xml:space="preserve">
+    <value>Pryd byddwch yn bodloni gofynion ardystio Cyber Essentials Plus? </value>
+  </data>
+  <data name="CyberEssentials_08_SummaryTitle" xml:space="preserve">
+    <value>Lanlwytho'r ardystiad</value>
+  </data>
+  <data name="CyberEssentials_08_Title" xml:space="preserve">
+    <value>Lanlwythwch dystiolaeth o'ch ardystiad Cyber Essentials Plus (neu ardystiad cyfatebol)</value>
+  </data>
+  <data name="CyberEssentials_09_SummaryTitle" xml:space="preserve">
+    <value>Dyddiad dirwyn i ben yr ardystiad</value>
+  </data>
+  <data name="CyberEssentials_09_Title" xml:space="preserve">
+    <value>Cofnodwch ddyddiad dirwyn i ben eich ardystiad Cyber Essentials Plus (neu ardystiad cyfatebol)</value>
+  </data>
+  <data name="CyberEssentials_SectionTitle" xml:space="preserve">
+    <value>Cynllun ardystio Cyber Essentials</value>
+  </data>
+  <data name="CyberEssentials_CertificationPlus_SubTitle" xml:space="preserve">
+    <value>Cynllun ardystio Cyber Essentials Plus</value>
+  </data>
+  <data name="CyberEssentials_07_Option_2" xml:space="preserve">
+    <value>Nid wyf yn bodloni'r gofynion ar hyn o bryd, ond byddaf yn eu bodloni erbyn i'r contract gael ei ddyfarnu</value>
+  </data>
+  <data name="CyberEssentials_02_Caption" xml:space="preserve">
+    <value>Rhaid i chi fod yn barod i ddarparu tystiolaeth, os bydd yn ofynnol, cyn i'r contract gael ei ddyfarnu.</value>
+  </data>
+  <data name="CyberEssentials_02_Option_1" xml:space="preserve">
+    <value>Ydw, rwy'n bodloni'r gofynion neu byddaf yn eu bodloni erbyn i'r contract gael ei ddyfarnu</value>
+  </data>
+  <data name="CyberEssentials_02_Option_2" xml:space="preserve">
+    <value>Nac ydw, nid wyf yn bodloni'r gofynion</value>
+  </data>
+  <data name="CyberEssentials_03_Option_1" xml:space="preserve">
+    <value>Rwy'n bodloni'r gofynion ar hyn o bryd</value>
+  </data>
+  <data name="CyberEssentials_03_Option_2" xml:space="preserve">
+    <value>Nid wyf yn bodloni'r gofynion ar hyn o bryd, ond byddaf yn eu bodloni erbyn i'r contract gael ei ddyfarnu</value>
+  </data>
+  <data name="CyberEssentials_06_Caption" xml:space="preserve">
+    <value>Rhaid i chi fod yn barod i ddarparu tystiolaeth, os bydd yn ofynnol, cyn i'r contract gael ei ddyfarnu.</value>
+  </data>
+  <data name="CyberEssentials_06_Option_1" xml:space="preserve">
+    <value>Ydw, rwy'n bodloni'r gofynion neu byddaf yn eu bodloni erbyn i'r contract gael ei ddyfarnu</value>
+  </data>
+  <data name="CyberEssentials_06_Option_2" xml:space="preserve">
+    <value>Nac ydw, nid wyf yn bodloni'r gofynion</value>
+  </data>
+  <data name="CyberEssentials_07_Option_1" xml:space="preserve">
+    <value>Rwy'n bodloni'r gofynion ar hyn o bryd</value>
+  </data>
+  <data name="ModernSlavery_01_Title" xml:space="preserve">
+    <value>Cyflwyno eich gwybodaeth am gaethwasiaeth fodern</value>
+  </data>
+  <data name="ModernSlavery_01_Description" xml:space="preserve">
+    <value>
+    &lt;p class="govuk-body"&gt;
+      Mae caethwasiaeth fodern yn cyfeirio at droseddau caethwasiaeth, caethiwed, llafur dan orfod a masnachu mewn pobl. Er mwyn mynd i'r afael â'r troseddau hyn, mae Llywodraeth y DU wedi cyhoeddi Nodyn Polisi Caffael (PPN) 009, sy'n mynnu bod cyflenwyr sy'n cynnig am gontractau penodol yn dangos eu hymrwymiad i fynd i'r afael â chaethwasiaeth fodern.
+    &lt;/p&gt;
+    &lt;p class="govuk-body"&gt;
+      Mae ond yn ofynnol os bydd yr awdurdod contractio rydych yn gwneud cynnig iddo yn gofyn i chi wneud hynny y bydd angen i chi gwblhau'r modiwl hwn. Gall methu â chwblhau'r modiwl hwn arwain at ystyried bod eich tendrau yn annigonol lle mae PPN 009 wedi'i gymhwyso. Am ragor o wybodaeth, darllenwch
+      &lt;a href="https://www.gov.uk/government/publications/ppn-009-tackling-modern-slavery-in-government-supply-chains/ppn-009-guidance-on-tackling-modern-slavery-in-government-supply-chains-html" class="govuk-link" rel="noreferrer noopener" target="_blank"&gt;
+      PPN 009: Mynd i'r Afael â Chaethwasiaeth Fodern mewn Cadwyni Cyflenwi (bydd yn agor mewn tab newydd)&lt;/a&gt;.
+    &lt;/p&gt;
+    &lt;h2 class="govuk-heading-m"&gt;Y wybodaeth y bydd ei hangen arnoch&lt;/h2&gt;
+    &lt;div class="govuk-body"&gt;Bydd angen i chi ddarparu gwybodaeth am gaethwasiaeth fodern a masnachu mewn pobl mewn perthynas â'ch sefydliad. Gall hyn gynnwys:&lt;/div&gt;
+    &lt;div class="govuk-body"&gt;
+      &lt;ul class="govuk-list govuk-list--bullet"&gt;
+        &lt;li&gt;dolen i'ch Datganiad Caethwasiaeth Fodern neu ddogfennau cyfatebol neu gopi ohonynt&lt;/li&gt;
+        &lt;li&gt;cyfarwyddiadau ar sut i ddod o hyd i'ch Datganiad Caethwasiaeth Fodern neu ddogfennau cyfatebol&lt;/li&gt;
+        &lt;li&gt;gwybodaeth rydych chi wedi'i chynnwys yn eich Datganiad Caethwasiaeth Fodern neu ddogfennaeth gyfatebol&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/div&gt;
+    </value>
+  </data>
+  <data name="ModernSlavery_02_Title" xml:space="preserve">
+    <value>A ydych yn sefydliad masnachol sy'n ddarostyngedig i Adran 54 o Ddeddf Caethwasiaeth Fodern 2015?</value>
+  </data>
+  <data name="ModernSlavery_02_SummaryTitle" xml:space="preserve">
+    <value>Yn ddarostyngedig i Adran 54 o'r Ddeddf Caethwasiaeth Fodern</value>
+  </data>
+  <data name="ModernSlavery_02_Description" xml:space="preserve">
+    <value>
+    &lt;span class=&quot;govuk-body&quot;&gt;Er enghraifft, rydych yn sefydliad sy'n cyflenwi nwyddau neu wasanaethau sydd:&lt;/span&gt;
+    &lt;ul class=&quot;govuk-list govuk-list--bullet&quot;&gt;
+      &lt;li&gt;yn cynnal busnes neu ran o fusnes yn y DU&lt;/li&gt;
+      &lt;li&gt;â throsiant blynyddol o dros £36 miliwn&lt;/li&gt;
+    &lt;/ul&gt;
+    &lt;p class=&quot;govuk-body&quot;&gt;I gael rhagor o wybodaeth, darllenwch&lt;a href=&quot;https://www.legislation.gov.uk/ukpga/2015/30/section/54&quot; class=&quot;govuk-link&quot; rel=&quot;noreferrer noopener&quot; target=&quot;_blank&quot;&gt;
+       adran 54 o Ddeddf Caethwasiaeth Fodern 2015 (bydd yn agor mewn tab newydd)&lt;/a&gt;.
+    &lt;/p&gt;
+    </value>
+  </data>
+  <data name="ModernSlavery_03_Title" xml:space="preserve">
+    <value>Ydy'ch Datganiad Caethwasiaeth Fodern diweddaraf ar gael yn ddigidol?</value>
+  </data>
+  <data name="ModernSlavery_03_SummaryTitle" xml:space="preserve">
+    <value>Datganiad electronig</value>
+  </data>
+  <data name="ModernSlavery_04_Title" xml:space="preserve">
+    <value>Ydy'ch dogfennau neu ddatganiadau sy'n gysylltiedig â chaethwasiaeth fodern ar gael yn ddigidol?</value>
+  </data>
+  <data name="ModernSlavery_04_SummaryTitle" xml:space="preserve">
+    <value>Datganiad electronig</value>
+  </data>
+  <data name="ModernSlavery_04_Description" xml:space="preserve">
+    <value>
+      &lt;div class=&quot;govuk-body govuk-!-margin-top-3&quot;&gt;
+        Dylai datganiadau neu ddogfennau perthnasol eraill sydd wedi'u cyhoeddi gynnwys gwybodaeth o fath a lefel debyg i Ddatganiad Caethwasiaeth Fodern.
+      &lt;/div&gt;
+    </value>
+  </data>
+  <data name="ModernSlavery_05_Title" xml:space="preserve">
+    <value>Cofiwch gynnwys y ddolen i'ch Datganiad Caethwasiaeth Fodern</value>
+  </data>
+  <data name="ModernSlavery_05_SummaryTitle" xml:space="preserve">
+    <value>Dolen i'r datganiad</value>
+  </data>
+  <data name="ModernSlavery_05_Description" xml:space="preserve">
+    <value>
+      &lt;div class=&quot;govuk-body&quot;&gt;
+        Dyma'r ddolen y dylid ei chyhoeddi ar wefan eich sefydliad.
+      &lt;/div&gt;
+    </value>
+  </data>
+  <data name="ModernSlavery_06_Title" xml:space="preserve">
+    <value>Lanlwythwch gopi o'ch Datganiad Caethwasiaeth Fodern diweddaraf</value>
+  </data>
+  <data name="ModernSlavery_06_SummaryTitle" xml:space="preserve">
+    <value>Lanlwytho'r datganiad</value>
+  </data>
+  <data name="ModernSlavery_07_Title" xml:space="preserve">
+    <value>Cofnodwch y ddolen i'ch dogfennaeth berthnasol neu ddatganiadau cyhoeddedig ar gaethwasiaeth fodern</value>
+  </data>
+  <data name="ModernSlavery_07_SummaryTitle" xml:space="preserve">
+    <value>Dolen i'r datganiad</value>
+  </data>
+  <data name="ModernSlavery_08_Title" xml:space="preserve">
+    <value>Lanlwythwch eich dogfennaeth berthnasol neu ddatganiadau cyhoeddedig ar gaethwasiaeth fodern</value>
+  </data>
+  <data name="ModernSlavery_08_SummaryTitle" xml:space="preserve">
+    <value>Lanlwytho'r datganiad</value>
+  </data>
+  <data name="ModernSlavery_09_Title" xml:space="preserve">
+    <value>Cofnodwch gyfarwyddiadau ar sut i ddod o hyd i Ddatganiad Caethwasiaeth Fodern eich sefydliad</value>
+  </data>
+  <data name="ModernSlavery_09_SummaryTitle" xml:space="preserve">
+    <value>Cyfarwyddiadau o ran lleoliad y datganiad</value>
+  </data>
+  <data name="ModernSlavery_09_Description" xml:space="preserve">
+    <value>
+      &lt;div class=&quot;govuk-hint&quot;&gt;
+        Dyma'r union leoliad ar-lein, er enghraifft, ewch i 'ddolen y wefan', sgroliwch i lawr i ddewislen y troedyn a chliciwch ar 'polisïau'
+      &lt;/div&gt;
+    </value>
+  </data>
+  <data name="ModernSlavery_10_Title" xml:space="preserve">
+    <value>Cofnodwch gyfarwyddiadau ar sut i ddod o hyd i'ch datganiadau cyhoeddedig neu ddogfennau perthnasol ar gaethwasiaeth fodern</value>
+  </data>
+  <data name="ModernSlavery_10_SummaryTitle" xml:space="preserve">
+    <value>Cyfarwyddiadau o ran lleoliad y datganiad</value>
+  </data>
+  <data name="ModernSlavery_10_Description" xml:space="preserve">
+    <value>
+      &lt;div class=&quot;govuk-hint&quot;&gt;
+        Dyma'r union leoliad ar-lein, er enghraifft, ewch i 'ddolen y wefan', sgroliwch i lawr i ddewislen y troedyn a chliciwch ar 'polisïau'
+      &lt;/div&gt;
+    </value>
+  </data>
+  <data name="ModernSlavery_11_Title" xml:space="preserve">
+    <value>Gwybodaeth goll</value>
+  </data>
+  <data name="ModernSlavery_11_SummaryTitle" xml:space="preserve">
+    <value>Gwybodaeth goll</value>
+  </data>
+  <data name="ModernSlavery_11_Description" xml:space="preserve">
+    <value>
+      &lt;p class=&quot;govuk-body&quot;&gt;
+        Os bydd y wybodaeth ganlynol ar goll o'ch datganiadau neu ddogfennau sy'n gysylltiedig â chaethwasiaeth fodern, esboniwch pan ac ymrwymwch i'w gynnwys cyn i'r contract gael ei ddyfarnu:
+      &lt;/p&gt;
+      &lt;ul class=&quot;govuk-list govuk-list--bullet&quot;&gt;
+        &lt;li&gt;strwythur y sefydliad a chadwyni cyflenwi&lt;/li&gt;
+        &lt;li&gt;polisïau mewn perthynas â chaethwasiaeth fodern a masnachu mewn pobl&lt;/li&gt;
+        &lt;li&gt;prosesau diwydrwydd dyladwy ar gyfer caethwasiaeth fodern a masnachu mewn pobl, gan gynnwys eich cadwyni cyflenwi&lt;/li&gt;
+        &lt;li&gt;asesu risg a chynlluniau rheoli&lt;/li&gt;
+        &lt;li&gt;dangosyddion perfformiad allweddol i fesur effeithiolrwydd y camau ataliol a gymerir&lt;/li&gt;
+        &lt;li&gt;mae hyfforddiant ar gaethwasiaeth fodern a masnachu mewn pobl ar gael i staff&lt;/li&gt;
+      &lt;/ul&gt;
+    </value>
+  </data>
+  <data name="ModernSlavery_12_Title" xml:space="preserve">
+    <value>Gwybodaeth goll</value>
+  </data>
+  <data name="ModernSlavery_12_SummaryTitle" xml:space="preserve">
+    <value>Gwybodaeth goll</value>
+  </data>
+  <data name="ModernSlavery_12_Description" xml:space="preserve">
+    <value>
+      &lt;p class=&quot;govuk-body&quot;&gt;
+        Os bydd y wybodaeth ganlynol ar goll o'ch Datganiad Caethwasiaeth Fodern neu ddogfennau cyfatebol, esboniwch pam ac ymrwymwch i'w gynnwys cyn i'r contract gael ei ddyfarnu:
+      &lt;/p&gt;
+      &lt;ul class=&quot;govuk-list govuk-list--bullet&quot;&gt;
+        &lt;li&gt;strwythur y sefydliad a chadwyni cyflenwi&lt;/li&gt;
+        &lt;li&gt;polisïau mewn perthynas â chaethwasiaeth fodern a masnachu mewn pobl&lt;/li&gt;
+        &lt;li&gt;prosesau diwydrwydd dyladwy ar gyfer caethwasiaeth fodern a masnachu mewn pobl, gan gynnwys eich cadwyni cyflenwi&lt;/li&gt;
+        &lt;li&gt;asesu risg a chynlluniau rheoli&lt;/li&gt;
+        &lt;li&gt;dangosyddion perfformiad allweddol i fesur effeithiolrwydd y camau ataliol a gymerir&lt;/li&gt;
+        &lt;li&gt;mae hyfforddiant ar gaethwasiaeth fodern a masnachu mewn pobl ar gael i staff&lt;/li&gt;
+      &lt;/ul&gt;
+    </value>
+  </data>
+  <data name="ModernSlavery_SectionTitle" xml:space="preserve">
+    <value>Caethwasiaeth Fodern</value>
   </data>
 </root>

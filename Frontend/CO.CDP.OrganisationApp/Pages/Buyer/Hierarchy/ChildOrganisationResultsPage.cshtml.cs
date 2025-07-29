@@ -1,6 +1,5 @@
 using CO.CDP.Localization;
 using CO.CDP.Organisation.WebApiClient;
-using CO.CDP.OrganisationApp.Authorization;
 using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Extensions;
 using CO.CDP.OrganisationApp.Logging;
@@ -9,14 +8,16 @@ using CO.CDP.OrganisationApp.WebApiClients;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.FeatureManagement.Mvc;
 
 namespace CO.CDP.OrganisationApp.Pages.Buyer.Hierarchy;
 
+[Authorize(Policy = PolicyNames.PartyRole.BuyerWithSignedMou)]
 [Authorize(Policy = OrgScopeRequirement.Editor)]
+[FeatureGate(FeatureFlags.BuyerParentChildRelationship)]
 public class ChildOrganisationResultsPage(
     IOrganisationClient organisationClient,
-    ILogger<ChildOrganisationResultsPage> logger,
-    IAuthorizationService authorizationService)
+    ILogger<ChildOrganisationResultsPage> logger)
     : PageModel
 {
     private readonly IOrganisationClient _organisationClient =
@@ -24,9 +25,6 @@ public class ChildOrganisationResultsPage(
 
     private readonly ILogger<ChildOrganisationResultsPage> _logger =
         logger ?? throw new ArgumentNullException(nameof(logger));
-
-    private readonly IAuthorizationService _authorizationService =
-        authorizationService ?? throw new ArgumentNullException(nameof(authorizationService));
 
     [BindProperty(SupportsGet = true)] public Guid Id { get; set; }
 
@@ -42,13 +40,6 @@ public class ChildOrganisationResultsPage(
 
     public async Task<IActionResult> OnGetAsync()
     {
-        var authResult = await _authorizationService.AuthorizeAsync(User, Id, new IsBuyerRequirement());
-        if (!authResult.Succeeded)
-        {
-            _logger.LogWarning("User is not authorised to access child organisation results for parent ID {OrganisationId}.", Id);
-            return Redirect("/page-not-found");
-        }
-
         if (string.IsNullOrWhiteSpace(Query))
         {
             return Page();
@@ -89,13 +80,6 @@ public class ChildOrganisationResultsPage(
 
     public async Task<IActionResult> OnPost()
     {
-        var authResult = await _authorizationService.AuthorizeAsync(User, Id, new IsBuyerRequirement());
-        if (!authResult.Succeeded)
-        {
-            _logger.LogWarning("User is not authorised to access child organisation results for parent ID {OrganisationId}.", Id);
-            return Redirect("/page-not-found");
-        }
-
         if (!ModelState.IsValid)
         {
             return Page();

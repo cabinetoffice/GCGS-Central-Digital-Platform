@@ -288,13 +288,10 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddSingleton<IAuthorizationPolicyProvider, CustomAuthorizationPolicyProvider>();
 builder.Services.AddSingleton<IAuthorizationHandler, CustomScopeHandler>();
-builder.Services.AddSingleton<IAuthorizationMiddlewareResultHandler, CustomAuthorizationMiddlewareResultHandler>();
-builder.Services.AddScoped<IAuthorizationHandler, IsBuyerAuthorizationHandler>();
-builder.Services.AddAuthorization(options =>
-{
-    options.AddPolicy(PartyRoleRequirement.Buyer, policy =>
-        policy.Requirements.Add(new IsBuyerRequirement()));
-});
+builder.Services.AddSingleton<IAuthorizationHandler, PartyRoleAuthorizationHandler>();
+builder.Services.AddScoped<IAuthorizationHandler, BuyerMouAuthorizationHandler>();
+builder.Services.AddScoped<IAuthorizationMiddlewareResultHandler, CustomAuthorizationMiddlewareResultHandler>();
+builder.Services.AddAuthorization();
 
 builder.Services.AddScoped<CookieAcceptanceMiddleware>();
 builder.Services.AddScoped<ICookiePreferencesService, CookiePreferencesService>();
