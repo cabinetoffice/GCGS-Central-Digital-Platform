@@ -278,6 +278,16 @@ PPN 014: Cyber Essentials scheme (opens in a new tab).&lt;/a&gt;&lt;/p&gt;
   <data name="CyberEssentials_02_SummaryTitle" xml:space="preserve">
     <value>Requirements met</value>
   </data>
+  <data name="CyberEssentials_02_CustomYesText" xml:space="preserve">
+    <value>Yes, I meet the requirements or will meet them by contract award</value>
+  </data>
+  <data name="CyberEssentials_02_CustomNoText" xml:space="preserve">
+    <value>No, I do not meet the requirements</value>
+  </data>
+  <data name="CyberEssentials_02_CustomInsetText" xml:space="preserve">
+    <value>&lt;div class=&quot;govuk-inset-text&quot;&gt;You must be ready to provide evidence, if required, before the contract is awarded.&lt;/div&gt;</value>
+  </data>
+
 
   <!--Cyber Q3 Single Choice-->
   <data name="CyberEssentials_03_Title" xml:space="preserve">
@@ -285,6 +295,12 @@ PPN 014: Cyber Essentials scheme (opens in a new tab).&lt;/a&gt;&lt;/p&gt;
   </data>
   <data name="CyberEssentials_03_SummaryTitle" xml:space="preserve">
     <value>Requirements status</value>
+  </data>
+  <data name="CyberEssentials_03_CustomYesText" xml:space="preserve">
+    <value>I currently meet the requirements</value>
+  </data>
+  <data name="CyberEssentials_03_CustomNoText" xml:space="preserve">
+    <value>I do not currently meet the requirements, but will meet them by contract award</value>
   </data>
 
   <!--Cyber Q4 File Upload-->
@@ -310,6 +326,15 @@ PPN 014: Cyber Essentials scheme (opens in a new tab).&lt;/a&gt;&lt;/p&gt;
   <data name="CyberEssentials_06_SummaryTitle" xml:space="preserve">
     <value>Requirements met</value>
   </data>
+  <data name="CyberEssentials_06_CustomYesText" xml:space="preserve">
+    <value>Yes, I meet the requirements or will meet them by contract award</value>
+  </data>
+  <data name="CyberEssentials_06_CustomNoText" xml:space="preserve">
+    <value>No, I do not meet the requirements</value>
+  </data>
+  <data name="CyberEssentials_06_CustomInsetText" xml:space="preserve">
+    <value>&lt;div class=&quot;govuk-inset-text&quot;&gt;You must be ready to provide evidence, if required, before the contract is awarded.&lt;/div&gt;</value>
+  </data>
 
   <!--Cyber Q7 Single Choice-->
   <data name="CyberEssentials_07_Title" xml:space="preserve">
@@ -317,6 +342,12 @@ PPN 014: Cyber Essentials scheme (opens in a new tab).&lt;/a&gt;&lt;/p&gt;
   </data>
   <data name="CyberEssentials_07_SummaryTitle" xml:space="preserve">
     <value>Requirements status</value>
+  </data>
+  <data name="CyberEssentials_07_CustomYesText" xml:space="preserve">
+    <value>I currently meet the requirements</value>
+  </data>
+  <data name="CyberEssentials_07_CustomNoText" xml:space="preserve">
+    <value>I do not currently meet the requirements, but will meet them by contract award</value>
   </data>
 
   <!--Cyber Q8 File Upload-->
@@ -333,6 +364,12 @@ PPN 014: Cyber Essentials scheme (opens in a new tab).&lt;/a&gt;&lt;/p&gt;
   </data>
   <data name="CyberEssentials_09_SummaryTitle" xml:space="preserve">
   <value>Certification expiry date</value>
+  </data>
+  <data name="CyberEssentials_Group1_SummaryTitle" xml:space="preserve">
+  <value>Cyber Essentials certification scheme</value>
+  </data>
+  <data name="CyberEssentials_Group2_SummaryTitle" xml:space="preserve">
+  <value>Cyber Essentials Plus certification scheme</value>
   </data>
 
   <!-- Steel -->
