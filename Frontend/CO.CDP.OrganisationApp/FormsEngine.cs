@@ -585,12 +585,31 @@ public class FormsEngine(
             .ToList();
     }
 
+    private List<FormQuestion> BuildJourney(List<FormQuestion> allQuestions, FormQuestionAnswerState answerState)
+    {
+        var journey = new List<FormQuestion>();
+        var question = GetFirstQuestion(allQuestions);
+
+        while (question != null)
+        {
+            journey.Add(question);
+            var nextQuestionId = DetermineNextQuestionId(question, answerState);
+            question = nextQuestionId.HasValue
+                ? allQuestions.FirstOrDefault(q => q.Id == nextQuestionId.Value)
+                : null;
+        }
+
+        return journey;
+    }
+
     public async Task<List<IAnswerDisplayItem>> GetGroupedAnswerSummaries(Guid organisationId, Guid formId,
         Guid sectionId, FormQuestionAnswerState answerState)
     {
         var form = await GetFormSectionAsync(organisationId, formId, sectionId);
 
-        var relevantQuestions = form.Questions
+        var journey = BuildJourney(form.Questions, answerState);
+
+        var relevantQuestions = journey
             .Where(q => q.Type != FormQuestionType.NoInput && q.Type != FormQuestionType.CheckYourAnswers)
             .ToList();
 
@@ -605,13 +624,19 @@ public class FormsEngine(
 
             if (grouping?.CheckYourAnswers == true)
             {
-                var group = await CreateMultiQuestionGroup(question, relevantQuestions, answerState, organisationId,
+                var group = await CreateMultiQuestionGroup(question, journey, answerState, organisationId,
                     formId, sectionId, grouping);
 
                 if (group.Answers.Count == 0) continue;
                 displayItems.Add(group);
-                var multiQuestionPage = BuildMultiQuestionPage(question, relevantQuestions);
-                multiQuestionPage.Questions.ForEach(q => processedQuestionIds.Add(q.Id));
+
+                var groupQuestionIds = journey
+                    .Where(q => q.Options.Grouping?.Id == grouping.Id)
+                    .Select(q => q.Id);
+                foreach (var id in groupQuestionIds)
+                {
+                    processedQuestionIds.Add(id);
+                }
             }
             else
             {
@@ -628,12 +653,14 @@ public class FormsEngine(
 
 
     private async Task<GroupedAnswerSummary> CreateMultiQuestionGroup(
-        FormQuestion startingQuestion, List<FormQuestion> allQuestions, FormQuestionAnswerState answerState,
+        FormQuestion startingQuestion, List<FormQuestion> orderedJourney, FormQuestionAnswerState answerState,
         Guid organisationId, Guid formId, Guid sectionId, FormQuestionGrouping grouping)
     {
-        var multiQuestionPage = BuildMultiQuestionPage(startingQuestion, allQuestions);
+        var questionsInGroup = orderedJourney
+            .Where(q => q.Options.Grouping?.Id == grouping.Id)
+            .ToList();
 
-        var answerTasks = multiQuestionPage.Questions
+        var answerTasks = questionsInGroup
             .Select(async q => await CreateIndividualAnswerSummary(q, answerState, organisationId, formId, sectionId));
 
         var answers = (await Task.WhenAll(answerTasks))
@@ -641,13 +668,24 @@ public class FormsEngine(
             .Cast<AnswerSummary>()
             .ToList();
 
+        var groupChangeLink = grouping.Page
+            ? $"/organisation/{organisationId}/forms/{formId}/sections/{sectionId}/questions/{startingQuestion.Id}"
+            : null;
+
+        if (!grouping.Page)
+        {
+            foreach (var answer in answers)
+            {
+                answer.ChangeLink = $"/organisation/{organisationId}/forms/{formId}/sections/{sectionId}/questions/{questionsInGroup.First(q => q.Title == answer.Title).Id}?frm-chk-answer=true";
+            }
+        }
+
         return new GroupedAnswerSummary
         {
             GroupTitle = !string.IsNullOrEmpty(grouping.SummaryTitle)
                 ? grouping.SummaryTitle
                 : startingQuestion.SummaryTitle,
-            GroupChangeLink =
-                $"/organisation/{organisationId}/forms/{formId}/sections/{sectionId}/questions/{startingQuestion.Id}",
+            GroupChangeLink = groupChangeLink,
             Answers = answers
         };
     }

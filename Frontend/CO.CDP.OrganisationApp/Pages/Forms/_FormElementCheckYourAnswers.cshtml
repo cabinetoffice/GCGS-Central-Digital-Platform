@@ -39,7 +39,7 @@
                         @answer.Answer
                     </dd>
                     <dd class="govuk-summary-list__actions">
-                        <a class="govuk-link" href="@group.GroupChangeLink" data-testid="@testId">
+                        <a class="govuk-link" href="@(group.GroupChangeLink ?? answer.ChangeLink)" data-testid="@testId">
                             @Html.Raw(string.Format(StaticTextResource.Forms_CheckYourAnswers_Change, answer.Title?.ToLower()))
                         </a>
                     </dd>

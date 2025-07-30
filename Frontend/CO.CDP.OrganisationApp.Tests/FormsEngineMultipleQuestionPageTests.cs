@@ -324,7 +324,7 @@ public class FormsEngineMultipleQuestionPageTests
             Questions =
             {
                 new FormQuestion { Id = question1Id, Type = FormQuestionType.Text, Title = "Grouped Question 1", NextQuestion = question2Id, Options = new FormQuestionOptions { Grouping = new FormQuestionGrouping { Id = groupId, Page = true, CheckYourAnswers = true, SummaryTitle = "Group Title" } } },
-                new FormQuestion { Id = question2Id, Type = FormQuestionType.YesOrNo, Title = "Grouped Question 2", Options = new FormQuestionOptions { Grouping = new FormQuestionGrouping { Id = groupId, Page = true, CheckYourAnswers = true, SummaryTitle = "Group Title" } } },
+                new FormQuestion { Id = question2Id, Type = FormQuestionType.YesOrNo, Title = "Grouped Question 2", NextQuestion = question3Id, Options = new FormQuestionOptions { Grouping = new FormQuestionGrouping { Id = groupId, Page = true, CheckYourAnswers = true, SummaryTitle = "Group Title" } } },
                 new FormQuestion { Id = question3Id, Type = FormQuestionType.Text, Title = "Individual Question", Options = new FormQuestionOptions() }
             }
         };
@@ -518,5 +518,104 @@ public class FormsEngineMultipleQuestionPageTests
         resultFromFileUploadQuestion.Should().NotBeNull();
         resultFromFileUploadQuestion!.Id.Should().Be(checkYourAnswersId,
             "navigation from file upload question in multi-question page should go to Check Your Answers");
+    }
+
+    [Fact]
+    public async Task GetGroupedAnswerSummaries_WhenGroupedOnPage_ShouldHaveSingleChangeLink()
+    {
+        var (organisationId, formId, sectionId, sessionKey) = CreateTestGuids();
+        var groupId = Guid.NewGuid();
+        var question1Id = Guid.NewGuid();
+        var question2Id = Guid.NewGuid();
+
+        var sectionResponse = new SectionQuestionsResponse
+        {
+            Section = new FormSection { Id = sectionId, Title = "Test Section" },
+            Questions =
+            {
+                new FormQuestion
+                {
+                    Id = question1Id, Type = FormQuestionType.Text, Title = "Grouped Question 1",
+                    NextQuestion = question2Id,
+                    Options = new FormQuestionOptions
+                        { Grouping = new FormQuestionGrouping { Id = groupId, Page = true, CheckYourAnswers = true, SummaryTitle = "Group Title" } }
+                },
+                new FormQuestion
+                {
+                    Id = question2Id, Type = FormQuestionType.YesOrNo, Title = "Grouped Question 2",
+                    Options = new FormQuestionOptions
+                        { Grouping = new FormQuestionGrouping { Id = groupId, Page = true, CheckYourAnswers = true, SummaryTitle = "Group Title" } }
+                }
+            }
+        };
+
+        var answerState = new FormQuestionAnswerState
+        {
+            Answers =
+            {
+                new QuestionAnswer { QuestionId = question1Id, Answer = new FormAnswer { TextValue = "Grouped Answer 1" } },
+                new QuestionAnswer { QuestionId = question2Id, Answer = new FormAnswer { BoolValue = true } }
+            }
+        };
+
+        _tempDataServiceMock.Setup(t => t.Peek<SectionQuestionsResponse>(sessionKey)).Returns(sectionResponse);
+        _choiceProviderServiceMock.Setup(c => c.GetStrategy(null)).Returns(new DefaultChoiceProviderStrategy());
+
+        var result = await _formsEngine.GetGroupedAnswerSummaries(organisationId, formId, sectionId, answerState);
+
+        var groupedAnswer = result.First() as GroupedAnswerSummary;
+        groupedAnswer.Should().NotBeNull();
+        groupedAnswer!.GroupChangeLink.Should().NotBeNull();
+        groupedAnswer.Answers.ForEach(a => a.ChangeLink.Should().Contain("?frm-chk-answer=true"));
+    }
+
+    [Fact]
+    public async Task GetGroupedAnswerSummaries_WhenGroupedOnSummaryOnly_ShouldHaveIndividualChangeLinks()
+    {
+        var (organisationId, formId, sectionId, sessionKey) = CreateTestGuids();
+        var groupId = Guid.NewGuid();
+        var question1Id = Guid.NewGuid();
+        var question2Id = Guid.NewGuid();
+
+        var sectionResponse = new SectionQuestionsResponse
+        {
+            Section = new FormSection { Id = sectionId, Title = "Test Section" },
+            Questions =
+            {
+                new FormQuestion
+                {
+                    Id = question1Id, Type = FormQuestionType.Text, Title = "Grouped Question 1",
+                    NextQuestion = question2Id,
+                    Options = new FormQuestionOptions
+                        { Grouping = new FormQuestionGrouping { Id = groupId, Page = false, CheckYourAnswers = true, SummaryTitle = "Group Title" } }
+                },
+                new FormQuestion
+                {
+                    Id = question2Id, Type = FormQuestionType.YesOrNo, Title = "Grouped Question 2",
+                    Options = new FormQuestionOptions
+                        { Grouping = new FormQuestionGrouping { Id = groupId, Page = false, CheckYourAnswers = true, SummaryTitle = "Group Title" } }
+                }
+            }
+        };
+
+        var answerState = new FormQuestionAnswerState
+        {
+            Answers =
+            {
+                new QuestionAnswer { QuestionId = question1Id, Answer = new FormAnswer { TextValue = "Grouped Answer 1" } },
+                new QuestionAnswer { QuestionId = question2Id, Answer = new FormAnswer { BoolValue = true } }
+            }
+        };
+
+        _tempDataServiceMock.Setup(t => t.Peek<SectionQuestionsResponse>(sessionKey)).Returns(sectionResponse);
+        _choiceProviderServiceMock.Setup(c => c.GetStrategy(null)).Returns(new DefaultChoiceProviderStrategy());
+
+        var result = await _formsEngine.GetGroupedAnswerSummaries(organisationId, formId, sectionId, answerState);
+
+        var groupedAnswer = result.First() as GroupedAnswerSummary;
+        groupedAnswer.Should().NotBeNull();
+        groupedAnswer!.GroupChangeLink.Should().BeNull();
+        groupedAnswer.Answers[0].ChangeLink.Should().Be($"/organisation/{organisationId}/forms/{formId}/sections/{sectionId}/questions/{question1Id}?frm-chk-answer=true");
+        groupedAnswer.Answers[1].ChangeLink.Should().Be($"/organisation/{organisationId}/forms/{formId}/sections/{sectionId}/questions/{question2Id}?frm-chk-answer=true");
     }
 }
