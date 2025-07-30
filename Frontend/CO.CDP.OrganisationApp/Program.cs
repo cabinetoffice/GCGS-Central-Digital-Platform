@@ -80,7 +80,11 @@ var mvcBuilder = builder.Services.AddRazorPages()
     {
         options.DataAnnotationLocalizerProvider = (type, factory) => factory.Create(typeof(StaticTextResource));
     })
-    .AddSessionStateTempDataProvider();
+    .AddSessionStateTempDataProvider()
+    .AddMvcOptions(options =>
+    {
+        options.ModelBinderProviders.Insert(0, new MultiQuestionFormElementModelBinderProvider());
+    });
 
 if (builder.Environment.IsDevelopment())
 {

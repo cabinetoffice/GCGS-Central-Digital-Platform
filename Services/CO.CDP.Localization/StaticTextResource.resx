@@ -2185,8 +2185,26 @@
   <data name="Global_DateInput_DateInvalidError" xml:space="preserve">
     <value>Date must be a real date</value>
   </data>
-  <data name="Global_DateInput_DateInFutureError" xml:space="preserve">
+  <data name="Global_DateInput_DateMustBeTodayOrInThePast" xml:space="preserve">
     <value>Date must be today or in the past</value>
+  </data>
+  <data name="Global_DateInput_DateMustBeTodayOrInTheFuture" xml:space="preserve">
+    <value>Date must be today or in the future</value>
+  </data>
+  <data name="Global_DateInput_DateInPastValidation" xml:space="preserve">
+    <value>Date must be in the past</value>
+  </data>
+  <data name="Global_DateInput_DateInFutureValidation" xml:space="preserve">
+    <value>Date must be in the future</value>
+  </data>
+  <data name="Global_DateInput_DateMustBeOnOrAfter" xml:space="preserve">
+    <value>Date must be on or after {0}</value>
+  </data>
+  <data name="Global_DateInput_DateMustBeOnOrBefore" xml:space="preserve">
+    <value>Date must be on or before {0}</value>
+  </data>
+  <data name="Global_DateInput_DateMustBeBetween" xml:space="preserve">
+    <value>Date must be between {0} and {1}</value>
   </data>
   <data name="Forms_FormElementFileUpload_NoFileSelectedError" xml:space="preserve">
     <value>Select a file</value>
@@ -2202,6 +2220,9 @@
   </data>
   <data name="Forms_FormElementTextInput_InvalidEmailError" xml:space="preserve">
     <value>Enter an email address in the correct format, like name@example.com</value>
+  </data>
+  <data name="Forms_FormElementTextInput_InvalidYearError" xml:space="preserve">
+    <value>Enter a valid year</value>
   </data>
   <data name="Forms_FormElementTextInput_EnterValueError" xml:space="preserve">
     <value>Enter a value</value>

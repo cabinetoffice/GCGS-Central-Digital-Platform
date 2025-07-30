@@ -18,6 +18,7 @@ public class FormsEngineTests
     private readonly Mock<IOrganisationClient> _organisationClientMock;
     private readonly FormsEngine _formsEngine;
     private const double Tolerance = 1e-6;
+    private static readonly Guid GroupId = Guid.NewGuid();
 
     public FormsEngineTests()
     {
@@ -83,7 +84,7 @@ public class FormsEngineTests
                         choices: new List<WebApiClient.FormQuestionChoice>
                         {
                             new WebApiClient.FormQuestionChoice(
-                                id: Guid.NewGuid(),
+                                id: GroupId,
                                 title: "Option1",
                                 groupName: null,
                                 hint: new WebApiClient.FormQuestionChoiceHint(
@@ -110,7 +111,29 @@ public class FormsEngineTests
                                     )
                                 }
                             )
-                        }
+                        },
+                        grouping: new WebApiClient.FormQuestionGrouping(
+                            id: GroupId,
+                            page: true,
+                            checkYourAnswers: true,
+                            summaryTitle: "SummaryTitle"
+                        ),
+                        layout: new WebApiClient.LayoutOptions(
+                            customYesText: null,
+                            customNoText: null,
+                            inputWidth: null,
+                            inputSuffix: null,
+                            customCssClasses: null,
+                            preHeadingContent: null,
+                            postSubmitContent: null,
+                            primaryButtonText: null
+                        ),
+                        validation: new WebApiClient.ValidationOptions(
+                            dateValidationType: null,
+                            textValidationType: null,
+                            minDate: null,
+                            maxDate: null
+                        )
                     )
                 )
             },
@@ -141,7 +164,25 @@ public class FormsEngineTests
                         Choices = options == null
                             ? new Dictionary<string, string>() { { "Option1", "Option1" } }
                             : options,
-                        ChoiceProviderStrategy = choiceProviderStrategy
+                        ChoiceProviderStrategy = choiceProviderStrategy,
+                        Layout = new LayoutOptions
+                        {
+                            CustomYesText = null,
+                            CustomNoText = null,
+                            InputWidth = null,
+                            InputSuffix = null,
+                            CustomCssClasses = null,
+                            PreHeadingContent = null,
+                            PostSubmitContent = null,
+                            PrimaryButtonText = null
+                        },
+                        Validation = new ValidationOptions
+                        {
+                            DateValidationType = null,
+                            MinDate = null,
+                            MaxDate = null,
+                            TextValidationType = null
+                        }
                     }
                 }
             }
@@ -193,6 +234,14 @@ public class FormsEngineTests
                     new FormQuestionGroupChoice { Title = "Group Choice 2", Value = "group_choice_2" }
                 }
             }
+        };
+
+        expectedResponse.Questions[0].Options.Grouping = new FormQuestionGrouping
+        {
+            Id = GroupId,
+            Page = true,
+            CheckYourAnswers = true,
+            SummaryTitle = "SummaryTitle"
         };
 
         _tempDataServiceMock.Setup(t => t.Peek<SectionQuestionsResponse>(sessionKey))
@@ -382,6 +431,14 @@ public class FormsEngineTests
                     new FormQuestionGroupChoice { Title = "Group Choice 2", Value = "group_choice_2" }
                 }
             }
+        };
+
+        expectedResponse.Questions[0].Options.Grouping = new FormQuestionGrouping
+        {
+            Id = GroupId,
+            Page = true,
+            CheckYourAnswers = true,
+            SummaryTitle = "SummaryTitle"
         };
 
         var connectedIndividualGuid = new Guid("e4bdd7ef-8200-4257-9892-b16f43d1803e");

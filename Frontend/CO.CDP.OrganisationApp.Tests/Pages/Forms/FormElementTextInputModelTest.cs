@@ -2,6 +2,7 @@ using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.Pages.Forms;
 using FluentAssertions;
 using System.ComponentModel.DataAnnotations;
+using CO.CDP.Localization;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages.Forms;
 
@@ -158,5 +159,89 @@ public class FormElementTextInputModelTest
         {
             validationResults.Should().BeEmpty();
         }
+    }
+
+    private FormElementTextInputModel CreateModelWithOptions(FormQuestionType type, bool isRequired, InputWidthType? inputWidth = null, string? inputSuffix = null, string? customCssClasses = null, TextValidationType? textValidationType = null)
+    {
+        return new FormElementTextInputModel
+        {
+            CurrentFormQuestionType = type,
+            IsRequired = isRequired,
+            Options = new FormQuestionOptions
+            {
+                Layout = new LayoutOptions
+                {
+                    InputWidth = inputWidth,
+                    InputSuffix = inputSuffix,
+                    CustomCssClasses = customCssClasses
+                },
+                Validation = new ValidationOptions
+                {
+                    TextValidationType = textValidationType
+                }
+            }
+        };
+    }
+
+    [Fact]
+    public void Options_InputWidth_IsSet()
+    {
+        var model = CreateModelWithOptions(FormQuestionType.Text, true, inputWidth: InputWidthType.OneHalf);
+        model.Options?.Layout?.InputWidth.Should().Be(InputWidthType.OneHalf);
+    }
+
+    [Fact]
+    public void Options_InputSuffix_IsSet()
+    {
+        var model = CreateModelWithOptions(FormQuestionType.Text, true, inputSuffix: "kg");
+        model.Options?.Layout?.InputSuffix.Should().Be("kg");
+    }
+
+    [Fact]
+    public void Options_CustomCssClasses_IsSet()
+    {
+        var model = CreateModelWithOptions(FormQuestionType.Text, true, customCssClasses: "custom-class");
+        model.Options?.Layout?.CustomCssClasses.Should().Be("custom-class");
+    }
+
+    [Fact]
+    public void Validate_YearInputValid_ReturnsNoErrors()
+    {
+        var model = CreateModelWithOptions(FormQuestionType.Text, true, textValidationType: TextValidationType.Year);
+        model.TextInput = "2023";
+        var validationContext = new ValidationContext(model);
+
+        var results = model.Validate(validationContext).ToList();
+
+        results.Should().BeEmpty();
+    }
+
+    [Fact]
+    public void Validate_YearInputInvalid_ReturnsError()
+    {
+        var model = CreateModelWithOptions(FormQuestionType.Text, true, textValidationType: TextValidationType.Year);
+        model.TextInput = "invalid";
+        var validationContext = new ValidationContext(model);
+
+        var results = model.Validate(validationContext).ToList();
+
+        results.Should().ContainSingle(r => r.MemberNames.Contains("TextInput") && r.ErrorMessage == StaticTextResource.Forms_FormElementTextInput_InvalidYearError);
+    }
+
+    [Fact]
+    public void Validate_YearInputOutOfRange_ReturnsError()
+    {
+        var model = CreateModelWithOptions(FormQuestionType.Text, true, textValidationType: TextValidationType.Year);
+        model.TextInput = "1899";
+        var validationContext = new ValidationContext(model);
+
+        var results = model.Validate(validationContext).ToList();
+
+        results.Should().ContainSingle(r => r.MemberNames.Contains("TextInput") && r.ErrorMessage == StaticTextResource.Forms_FormElementTextInput_InvalidYearError);
+
+        model.TextInput = (DateTimeOffset.UtcNow.Year + 101).ToString();
+        results = model.Validate(validationContext).ToList();
+
+        results.Should().ContainSingle(r => r.MemberNames.Contains("TextInput") && r.ErrorMessage == StaticTextResource.Forms_FormElementTextInput_InvalidYearError);
     }
 }
