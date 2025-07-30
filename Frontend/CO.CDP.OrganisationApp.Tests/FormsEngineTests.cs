@@ -124,8 +124,9 @@ public class FormsEngineTests
                             inputWidth: null,
                             inputSuffix: null,
                             customCssClasses: null,
-                            preHeadingContent: null,
-                            postSubmitContent: null,
+                            beforeTitleContent: null,
+                            beforeButtonContent: null,
+                            afterButtonContent: null,
                             primaryButtonText: null
                         ),
                         validation: new WebApiClient.ValidationOptions(
@@ -172,8 +173,9 @@ public class FormsEngineTests
                             InputWidth = null,
                             InputSuffix = null,
                             CustomCssClasses = null,
-                            PreHeadingContent = null,
-                            PostSubmitContent = null,
+                            BeforeTitleContent = null,
+                            BeforeButtonContent = null,
+                            AfterButtonContent = null,
                             PrimaryButtonText = null
                         },
                         Validation = new ValidationOptions

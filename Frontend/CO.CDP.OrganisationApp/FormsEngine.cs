@@ -104,8 +104,9 @@ public class FormsEngine(
                                 InputWidth = q.Options.Layout.InputWidth.HasValue ? (InputWidthType)q.Options.Layout.InputWidth.Value : null,
                                 InputSuffix = q.Options.Layout.InputSuffix,
                                 CustomCssClasses = q.Options.Layout.CustomCssClasses,
-                                PreHeadingContent = q.Options.Layout.PreHeadingContent,
-                                PostSubmitContent = q.Options.Layout.PostSubmitContent,
+                                BeforeTitleContent = q.Options.Layout.BeforeTitleContent,
+                                BeforeButtonContent = q.Options.Layout.BeforeButtonContent,
+                                AfterButtonContent = q.Options.Layout.AfterButtonContent,
                                 PrimaryButtonText = q.Options.Layout.PrimaryButtonText
                             }
                             : null,

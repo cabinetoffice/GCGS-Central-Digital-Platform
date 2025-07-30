@@ -53,8 +53,9 @@ public class LayoutOptions
     public InputWidthType? InputWidth { get; set; }
     public string? InputSuffix { get; set; }
     public string? CustomCssClasses { get; set; }
-    public string? PreHeadingContent { get; set; }
-    public string? PostSubmitContent { get; set; }
+    public string? BeforeTitleContent { get; set; }
+    public string? BeforeButtonContent { get; set; }
+    public string? AfterButtonContent { get; set; }
     public string? PrimaryButtonText { get; set; }
 }
 

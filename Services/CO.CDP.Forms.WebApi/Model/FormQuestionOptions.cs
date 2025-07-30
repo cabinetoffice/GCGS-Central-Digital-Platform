@@ -21,8 +21,9 @@ public record LayoutOptions
     public InputWidthType? InputWidth { get; init; }
     public string? InputSuffix { get; init; }
     public string? CustomCssClasses { get; init; }
-    public string? PreHeadingContent { get; init; }
-    public string? PostSubmitContent { get; init; }
+    public string? BeforeTitleContent { get; init; }
+    public string? BeforeButtonContent { get; set; }
+    public string? AfterButtonContent { get; init; }
     public string? PrimaryButtonText { get; init; }
 }
 
