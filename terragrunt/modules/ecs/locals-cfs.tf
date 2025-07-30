@@ -14,6 +14,8 @@ locals {
     email_licence_request                 = "${local.cfs_screts_arn}:LICENCEREQUEST_EMAIL::"
     http_basic_auth_pass                  = "${local.cfs_screts_arn}:HTTP_BASIC_AUTH_PASS::"
     http_basic_auth_user                  = "${local.cfs_screts_arn}:HTTP_BASIC_AUTH_USER::"
+    letsencrypt_key_authorization         = "${local.cfs_screts_arn}:LETSENCRYPT_KEY_AUTHORIZATION::"
+    letsencrypt_token                     = "${local.cfs_screts_arn}:LETSENCRYPT_TOKEN::"
     run_guest_token                       = "${local.cfs_screts_arn}:RUN_GUEST_TOKEN::"
     run_migrator_token                    = "${local.cfs_screts_arn}:RUN_MIGRATOR_TOKEN::"
     run_registrar_token                   = "${local.cfs_screts_arn}:RUN_REGISTRAR_TOKEN::"
