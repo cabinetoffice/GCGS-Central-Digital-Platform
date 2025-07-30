@@ -1,4 +1,5 @@
 using CO.CDP.Forms.WebApiClient;
+using CO.CDP.Localization;
 using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Extensions;
 using CO.CDP.OrganisationApp.Models;
@@ -174,10 +175,10 @@ public class FormsEngine(
             return null;
         }
 
-        var groupId = currentQuestion.Options.Grouping.Id;
+        var groupId = currentQuestion.Options.Grouping?.Id;
 
         var questionsInGroup = allQuestions
-            .Where(q => q.Options.Grouping?.Id == groupId && q.Options.Grouping.Page)
+            .Where(q => q.Options.Grouping?.Id == groupId && q.Options.Grouping?.Page == true)
             .OrderBy(q => q.NextQuestion.HasValue ? 0 : 1)
             .ToList();
 
@@ -208,7 +209,7 @@ public class FormsEngine(
         }
 
         var currentGroupQuestions = allQuestions
-            .Where(q => q.Options.Grouping?.Id == startQuestion.Options.Grouping.Id && q.Options.Grouping.Page)
+            .Where(q => q.Options.Grouping?.Id == startQuestion.Options.Grouping?.Id && q.Options.Grouping?.Page == true)
             .ToList();
 
         var lastQuestionInGroup = currentGroupQuestions.LastOrDefault();
@@ -307,7 +308,7 @@ public class FormsEngine(
         foreach (var question in pathTaken.Where(q => q.Type != FormQuestionType.CheckYourAnswers))
         {
             var grouping = question.Options.Grouping;
-            if (grouping?.Page != null)
+            if (grouping?.Page == true)
             {
                 var multiQuestionPage = BuildMultiQuestionPage(question, allQuestions);
 
@@ -366,15 +367,15 @@ public class FormsEngine(
             return nextQuestionId;
         }
         var questionsInGroup = allQuestions
-            .Where(q => q.Options.Grouping?.Id == currentQuestion.Options.Grouping.Id &&
-                        q.Options.Grouping.Page)
+            .Where(q => q.Options.Grouping?.Id == currentQuestion.Options.Grouping?.Id &&
+                        q.Options.Grouping?.Page == true)
             .ToList();
 
         var currentQuestionInGroup = questionsInGroup.FirstOrDefault(q => q.Id == currentQuestion.Id);
         while (currentQuestionInGroup != null)
         {
             var nextQuestion = allQuestions.FirstOrDefault(q => q.Id == currentQuestionInGroup.NextQuestion);
-            if (nextQuestion == null || nextQuestion.Options.Grouping?.Id != currentQuestion.Options.Grouping.Id)
+            if (nextQuestion == null || nextQuestion.Options.Grouping?.Id != currentQuestion.Options.Grouping?.Id)
             {
                 var result = currentQuestionInGroup.NextQuestion;
                 return result;
@@ -391,7 +392,7 @@ public class FormsEngine(
         foreach (var question in allQuestions)
         {
             var grouping = question.Options.Grouping;
-            if (grouping?.Page == null) continue;
+            if (grouping?.Page != true) continue;
             var multiQuestionPage = BuildMultiQuestionPage(question, allQuestions);
             if (multiQuestionPage.Questions.Any(q => q.Id == currentQuestion.Id))
             {
@@ -564,7 +565,7 @@ public class FormsEngine(
     {
         var grouping = startingQuestion.Options.Grouping;
 
-        return grouping?.Page == null
+        return grouping?.Page != true
             ? new MultiQuestionPageModel { Questions = [startingQuestion] }
             : new MultiQuestionPageModel
             {
@@ -579,8 +580,8 @@ public class FormsEngine(
             return [startingQuestion];
 
         return allQuestions
-            .Where(q => q.Options.Grouping?.Page != null &&
-                        q.Options.Grouping.Id == startingQuestion.Options.Grouping.Id)
+            .Where(q => q.Options.Grouping?.Page == true &&
+                        q.Options.Grouping?.Id == startingQuestion.Options.Grouping?.Id)
             .ToList();
     }
 
@@ -602,7 +603,7 @@ public class FormsEngine(
 
             var grouping = question.Options.Grouping;
 
-            if (grouping?.CheckYourAnswers != null)
+            if (grouping?.CheckYourAnswers == true)
             {
                 var group = await CreateMultiQuestionGroup(question, relevantQuestions, answerState, organisationId,
                     formId, sectionId, grouping);
