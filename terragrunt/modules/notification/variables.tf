@@ -1,7 +1,7 @@
-variable "mail_from_domain" {
-  description = "Domain name to be used for sending email from in each account"
-  type        = string
-  default     = null
+variable "mail_from_domains" {
+  description = "List of domain names to verify with SES and Route53 (e.g., mail-from domains)"
+  type        = list(string)
+  default     = []
 }
 
 variable "product" {

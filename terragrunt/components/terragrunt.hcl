@@ -47,7 +47,7 @@ locals {
       cfs_service_allowed_origins       = []
       fts_extra_domains                 = []
       fts_service_allowed_origins       = []
-      mail_from_domain                  = null
+      mail_from_domains                 = []
       mysql_aurora_engine_version       = "5.7.mysql_aurora.2.12.5"
       mysql_aurora_family               = "aurora-mysql5.7"
       mysql_aurora_instance_type        = "db.r5.8xlarge"
@@ -91,7 +91,7 @@ locals {
         "https://fts.staging.supplier-information.find-tender.service.gov.uk",
       ]
       name                              = "staging"
-      mail_from_domain                  = null
+      mail_from_domains                 = []
       mysql_aurora_engine_version       = "5.7.mysql_aurora.2.12.5"
       mysql_aurora_family               = "aurora-mysql5.7"
       mysql_aurora_instance_type        = "db.r5.8xlarge"
@@ -205,7 +205,7 @@ locals {
         "https://www-tpp-preview.find-tender.service.gov.uk",
         "https://www-tpp.find-tender.service.gov.uk",
       ]
-      mail_from_domain                  = null
+      mail_from_domains                 = []
       mysql_aurora_engine_version       = "5.7.mysql_aurora.2.12.5"
       mysql_aurora_family               = "aurora-mysql5.7"
       mysql_aurora_instance_type        = "db.r5.8xlarge"
@@ -259,7 +259,7 @@ locals {
         "https://fts.supplier-information.find-tender.service.gov.uk",
         "https://www.find-tender.service.gov.uk"
       ]
-      mail_from_domain                  = "find-tender.service.gov.uk"
+      mail_from_domains                 = ["find-tender.service.gov.uk", "contractsfinder.service.gov.uk"]
       mysql_aurora_engine_version       = "5.7.mysql_aurora.2.12.5"
       mysql_aurora_family               = "aurora-mysql5.7"
       mysql_aurora_instance_type        = "db.r5.8xlarge"
@@ -303,7 +303,7 @@ locals {
   fts_extra_domains                 = try(local.environments[local.environment].fts_extra_domains, null)
   fts_azure_frontdoor               = try(local.environments[local.environment].fts_azure_frontdoor, null)
   fts_service_allowed_origins       = try(local.environments[local.environment].fts_service_allowed_origins, null)
-  mail_from_domain                  = try(local.environments[local.environment].mail_from_domain, null)
+  mail_from_domains                  = try(local.environments[local.environment].mail_from_domains, [])
   onelogin_logout_notification_urls = try(local.environments[local.environment].onelogin_logout_notification_urls, null)
   pinned_service_version            = try(local.environments[local.environment].pinned_service_version, null)
   pinned_service_version_cfs        = try(local.environments[local.environment].pinned_service_version_cfs, null)
