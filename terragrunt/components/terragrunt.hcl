@@ -335,7 +335,7 @@ locals {
     fts                                  = { desired_count = 3, cpu = 4096,  memory = 8192}
     fts_healthcheck                      = { desired_count = 1 }
     fts_migrations                       = { desired_count = 1 }
-    fts_scheduler                        = { desired_count = 1 }
+    fts_scheduler                        = { desired_count = 1, cpu = 4096,  memory = 8192 }
     organisation                         = {}
     organisation_app                     = {}
     organisation_information_migrations  = { cpu = 256,  memory = 512}
