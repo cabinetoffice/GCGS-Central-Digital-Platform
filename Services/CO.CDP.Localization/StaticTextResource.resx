@@ -2057,7 +2057,7 @@
     <value>return to organisation details</value>
   </data>
   <data name="BuyerParentChildRelationship_ResultsPage_NoResults" xml:space="preserve">
-    <value>No organisations found matching your search criteria </value>
+    <value>No organisations found matching your search criteria.</value>
   </data>
   <data name="BuyerParentChildRelationship_ConfirmPage_Title" xml:space="preserve">
     <value>Confirm your child organisation details</value>
