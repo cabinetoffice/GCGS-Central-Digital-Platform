@@ -1,17 +1,24 @@
 output "dkim_tokens" {
-  value       = aws_ses_domain_dkim.this.dkim_tokens
-  description = "DKIM tokens for the domain"
+  value = {
+    for domain, res in aws_ses_domain_dkim.this :
+    domain => res.dkim_tokens
+  }
 }
 
 output "domain_identity_arn" {
-  value = aws_ses_domain_identity.this.arn
+  value = {
+    for domain, res in aws_ses_domain_identity.this :
+    domain => res.arn
+  }
 }
 
-output "ses_verification_record" {
+output "ses_verification_records" {
   value = {
-    name  = "_amazonses.${var.product.public_hosted_zone}"
-    type  = "TXT"
-    value = aws_ses_domain_identity.this.verification_token
+    for domain, res in aws_ses_domain_identity.this :
+    domain => {
+      name  = "_amazonses.${domain}"
+      type  = "TXT"
+      value = res.verification_token
+    }
   }
-  description = "Record to verify SES domain"
 }
