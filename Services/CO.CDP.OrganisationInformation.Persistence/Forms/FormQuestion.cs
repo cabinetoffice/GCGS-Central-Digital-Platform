@@ -92,7 +92,7 @@ public record LayoutOptions
     public string? CustomYesText { get; set; }
     public string? CustomNoText { get; set; }
     public InputWidthType? InputWidth { get; set; }
-    public string? InputSuffix { get; set; }
+    public InputSuffixOptions? InputSuffix { get; set; }
     public string? CustomCssClasses { get; set; }
     public string? BeforeTitleContent { get; set; }
     public string? BeforeButtonContent { get; set; }
