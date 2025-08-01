@@ -39,31 +39,14 @@
 
     @if (Model.IsRequired)
     {
-        if (!string.IsNullOrWhiteSpace(Model.Heading))
-        {
-            <h1 class="govuk-label-wrapper">
-                <label class="govuk-label govuk-label--l" for="@Model.GetFieldName(nameof(Model.TextInput))">@Model.Heading</label>
-
-                @if (!string.IsNullOrWhiteSpace(Model.Caption))
-                {
-                    <span class="govuk-caption-l govuk-!-margin-bottom-3">@Model.Caption</span>
-                }
-            </h1>
-        }
+        @RenderLabelHeading(Model.Heading, Model.GetFieldName(nameof(Model.TextInput)), Model.Caption, Model.IsFirstQuestion, Model.Options?.Layout?.HeadingSize)
         RenderDescription();
         RenderField();
     }
     else
     {
         <fieldset class="govuk-fieldset" @(selectOptionHasError ? Html.Raw("aria-describedby=\"input-error\"") : "") >
-            <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                @if (!string.IsNullOrWhiteSpace(Model.Heading))
-                {
-                    <h1 class="govuk-fieldset__heading">
-                        @Model.Heading
-                    </h1>
-                }
-            </legend>
+            @RenderLegend(Model.Heading, Model.Caption, Model.IsFirstQuestion, Model.Options?.Layout?.HeadingSize)
 
             @{
                 RenderDescription();

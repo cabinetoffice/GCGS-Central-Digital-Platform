@@ -16,6 +16,7 @@ using FormQuestionOptions = CO.CDP.OrganisationApp.Models.FormQuestionOptions;
 using FormQuestionType = CO.CDP.OrganisationApp.Models.FormQuestionType;
 using FormSection = CO.CDP.OrganisationApp.Models.FormSection;
 using FormSectionType = CO.CDP.OrganisationApp.Models.FormSectionType;
+using HeadingSize = CO.CDP.OrganisationApp.Models.HeadingSize;
 using InputSuffixOptions = CO.CDP.OrganisationApp.Models.InputSuffixOptions;
 using InputSuffixType = CO.CDP.OrganisationApp.Models.InputSuffixType;
 using InputWidthType = CO.CDP.OrganisationApp.Models.InputWidthType;

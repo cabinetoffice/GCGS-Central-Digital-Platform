@@ -127,7 +127,8 @@ public class FormsEngineTests
                             beforeTitleContent: null,
                             beforeButtonContent: null,
                             afterButtonContent: null,
-                            primaryButtonText: null
+                            primaryButtonText: null,
+                            headingSize: null
                         ),
                         validation: new WebApiClient.ValidationOptions(
                             dateValidationType: null,

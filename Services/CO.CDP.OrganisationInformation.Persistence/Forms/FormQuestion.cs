@@ -98,6 +98,29 @@ public record LayoutOptions
     public string? BeforeButtonContent { get; set; }
     public string? AfterButtonContent { get; set; }
     public string? PrimaryButtonText { get; set; }
+    public HeadingSize? HeadingSize { get; set; }
+}
+
+public record InputSuffixOptions
+{
+    public InputSuffixType Type { get; set; }
+    public string? Text { get; set; }
+}
+
+[JsonConverter(typeof(JsonStringEnumConverter))]
+public enum InputSuffixType
+{
+    GovUkDefault,
+    CustomText
+}
+
+[JsonConverter(typeof(JsonStringEnumConverter))]
+public enum HeadingSize
+{
+    Small,
+    Medium,
+    Large,
+    ExtraLarge
 }
 
 public record ValidationOptions

@@ -1,6 +1,5 @@
 @model FormElementTextInputModel
 @using CO.CDP.Localization
-@using CO.CDP.OrganisationApp.Helpers
 
 @{
     var textInputHasError = Model.HasValidationError(nameof(Model.TextInput), ViewData.ModelState);
@@ -77,31 +76,14 @@
 <div class="govuk-form-group @((Model.IsRequired && textInputHasError) || selectOptionHasError ? "govuk-form-group--error" : "")">
     @if (Model.IsRequired)
     {
-        if (!string.IsNullOrWhiteSpace(Model.Heading))
-        {
-            <h1 class="govuk-label-wrapper">
-                @if (!string.IsNullOrWhiteSpace(Model.Caption))
-                {
-                    <span class="govuk-caption-l">@Model.Caption</span>
-                }
-
-                <label class="govuk-label govuk-label--l" for="@Model.GetFieldName(nameof(Model.TextInput))">@Model.Heading</label>
-            </h1>
-        }
+        @RenderLabelHeading(Model.Heading, Model.GetFieldName(nameof(Model.TextInput)), Model.Caption, Model.IsFirstQuestion, Model.Options?.Layout?.HeadingSize)
         RenderDescription();
         RenderField();
     }
     else
     {
         <fieldset class="govuk-fieldset" @(selectOptionHasError ? Html.Raw($"aria-describedby=\"{Model.GetFieldName("input-error")}\"") : "")>
-            <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                @if (!string.IsNullOrWhiteSpace(Model.Heading))
-                {
-                    <h1 class="govuk-fieldset__heading">
-                        @Model.Heading
-                    </h1>
-                }
-            </legend>
+            @RenderLegend(Model.Heading, Model.Caption, Model.IsFirstQuestion, Model.Options?.Layout?.HeadingSize)
             @{
                 RenderDescription();
             }

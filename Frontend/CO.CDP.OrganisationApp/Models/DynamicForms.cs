@@ -51,12 +51,33 @@ public class LayoutOptions
     public string? CustomYesText { get; set; }
     public string? CustomNoText { get; set; }
     public InputWidthType? InputWidth { get; set; }
-    public string? InputSuffix { get; set; }
+    public InputSuffixOptions? InputSuffix { get; set; }
     public string? CustomCssClasses { get; set; }
     public string? BeforeTitleContent { get; set; }
     public string? BeforeButtonContent { get; set; }
     public string? AfterButtonContent { get; set; }
     public string? PrimaryButtonText { get; set; }
+    public HeadingSize? HeadingSize { get; set; }
+}
+
+public class InputSuffixOptions
+{
+    public InputSuffixType Type { get; set; }
+    public string? Text { get; set; }
+}
+
+public enum InputSuffixType
+{
+    GovUkDefault,
+    CustomText
+}
+
+public enum HeadingSize
+{
+    Small,
+    Medium,
+    Large,
+    ExtraLarge
 }
 
 public class ValidationOptions

@@ -1,9 +1,6 @@
 @model FormElementNoInputModel
 
-@if (!string.IsNullOrWhiteSpace(Model.Heading))
-{
-    <h1 class="govuk-heading-l">@Model.Heading</h1>
-}
+@RenderHeading(Model.Heading, Model.Caption, Model.IsFirstQuestion, Model.Options?.Layout?.HeadingSize)
 
 @if (!string.IsNullOrWhiteSpace(Model.Description))
 {

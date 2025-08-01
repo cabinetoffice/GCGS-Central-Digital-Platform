@@ -20,15 +20,7 @@
     <fieldset class="govuk-fieldset" aria-describedby="@ariaDescribedby">
         @if (!string.IsNullOrWhiteSpace(Model.Heading))
         {
-            <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                <h1 class="govuk-fieldset__heading">
-                    @if (!string.IsNullOrWhiteSpace(Model.Caption))
-                    {
-                        <span class="govuk-caption-l">@Model.Caption</span>
-                    }
-                    @Model.Heading
-                </h1>
-            </legend>
+            @RenderLegend(Model.Heading, Model.Caption, Model.IsFirstQuestion, Model.Options?.Layout?.HeadingSize)
         }
 
         @if (!string.IsNullOrWhiteSpace(Model.Description))

@@ -6,12 +6,7 @@
 
 <div class="govuk-form-group @(hasError ? "govuk-form-group--error" : "")" @(hasError ? Html.Raw($"aria-describedby=\"{Model.GetFieldName("yes-no-error")}\"") : null)>
     <fieldset class="govuk-fieldset">
-        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-            @if (!string.IsNullOrWhiteSpace(Model.Heading))
-            {
-                <h1 class="govuk-fieldset__heading">@Model.Heading</h1>
-            }
-        </legend>
+        @RenderLegend(Model.Heading, Model.Caption, Model.IsFirstQuestion, Model.Options?.Layout?.HeadingSize)
 
         @if (!string.IsNullOrWhiteSpace(Model.Description))
         {
