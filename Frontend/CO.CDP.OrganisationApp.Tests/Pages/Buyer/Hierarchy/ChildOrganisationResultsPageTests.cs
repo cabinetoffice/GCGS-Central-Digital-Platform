@@ -63,7 +63,7 @@ public class ChildOrganisationResultsPageTests
 
         _mockOrganisationClient
             .Setup(client => client.SearchOrganisationAsync(
-                query, "buyer", 20, 0.3))
+                query, "buyer", 20, 0.3, false))
             .ReturnsAsync(searchResults);
 
         _mockOrganisationClient.Setup(c => c.GetChildOrganisationsAsync(It.IsAny<Guid>()))
@@ -117,7 +117,7 @@ public class ChildOrganisationResultsPageTests
 
         _mockOrganisationClient
             .Setup(client => client.SearchOrganisationAsync(
-                _model.Query, "buyer", 20, 0.3))
+                _model.Query, "buyer", 20, 0.3, false))
             .ThrowsAsync(new Exception("Test exception"));
 
         await _model.OnGetAsync();
@@ -132,7 +132,7 @@ public class ChildOrganisationResultsPageTests
 
         _mockOrganisationClient
             .Setup(client => client.SearchOrganisationAsync(
-                _model.Query, "buyer", 20, 0.3))
+                _model.Query, "buyer", 20, 0.3, false))
             .ReturnsAsync((List<OrganisationSearchResult>)null!);
 
         await _model.OnGetAsync();
@@ -147,7 +147,7 @@ public class ChildOrganisationResultsPageTests
 
         _mockOrganisationClient
             .Setup(client => client.SearchOrganisationAsync(
-                _model.Query, "buyer", 20, 0.3))
+                _model.Query, "buyer", 20, 0.3, false))
             .ReturnsAsync(new List<OrganisationSearchResult>());
 
         await _model.OnGetAsync();
@@ -182,7 +182,7 @@ public class ChildOrganisationResultsPageTests
 
         _mockOrganisationClient
             .Setup(client => client.SearchOrganisationAsync(
-                query, "buyer", 20, 0.3))
+                query, "buyer", 20, 0.3, false))
             .ReturnsAsync(searchResults);
 
         _mockOrganisationClient.Setup(c => c.GetChildOrganisationsAsync(It.IsAny<Guid>()))
@@ -233,7 +233,7 @@ public class ChildOrganisationResultsPageTests
 
         _mockOrganisationClient
             .Setup(client => client.SearchOrganisationAsync(
-                "test", "buyer", 20, 0.3))
+                "test", "buyer", 20, 0.3, false))
             .ReturnsAsync(searchResults);
 
         _mockOrganisationClient.Setup(c => c.GetChildOrganisationsAsync(It.IsAny<Guid>()))
@@ -288,7 +288,8 @@ public class ChildOrganisationResultsPageTests
                 It.IsAny<string>(),
                 It.IsAny<string>(),
                 It.IsAny<int>(),
-                It.IsAny<double>()),
+                It.IsAny<double>(),
+                It.IsAny<bool>()),
             Times.Never);
 
         _model.Results.Should().HaveCount(1);
@@ -355,7 +356,7 @@ public class ChildOrganisationResultsPageTests
 
         _mockOrganisationClient
             .Setup(client => client.SearchOrganisationAsync(
-                _model.Query, "buyer", 20, 0.3))
+                _model.Query, "buyer", 20, 0.3, false))
             .ThrowsAsync(exception);
 
         var result = await _model.OnGetAsync();
@@ -415,7 +416,7 @@ public class ChildOrganisationResultsPageTests
 
         _mockOrganisationClient
             .Setup(client => client.SearchOrganisationAsync(
-                query, "buyer", 20, 0.3))
+                query, "buyer", 20, 0.3, false))
             .ReturnsAsync(searchResults);
 
         _mockOrganisationClient.Setup(c => c.GetChildOrganisationsAsync(It.IsAny<Guid>()))
@@ -440,7 +441,7 @@ public class ChildOrganisationResultsPageTests
 
         _mockOrganisationClient
             .Setup(client => client.SearchOrganisationAsync(
-                query, "buyer", 20, 0.3))
+                query, "buyer", 20, 0.3, false))
             .ReturnsAsync(new List<OrganisationSearchResult>());
 
         var result = await _model.OnPost();
@@ -470,7 +471,7 @@ public class ChildOrganisationResultsPageTests
 
         _mockOrganisationClient
             .Setup(client => client.SearchOrganisationAsync(
-                query, "buyer", 20, 0.3))
+                query, "buyer", 20, 0.3, false))
             .ThrowsAsync(apiException);
 
         var result = await _model.OnPost();
@@ -510,7 +511,8 @@ public class ChildOrganisationResultsPageTests
                 It.Is<string>(q => q == query),
                 It.Is<string>(r => r == "buyer"),
                 It.Is<int>(l => l == 20),
-                It.Is<double>(t => Math.Abs(t - 0.3) < Tolerance)))
+                It.Is<double>(t => Math.Abs(t - 0.3) < Tolerance),
+                false))
             .ThrowsAsync(httpRequestException);
 
         var result = await _model.OnPost();
@@ -674,7 +676,7 @@ public class ChildOrganisationResultsPageTests
 
         _mockOrganisationClient
             .Setup(client => client.SearchOrganisationAsync(
-                query, "buyer", 20, 0.3))
+                query, "buyer", 20, 0.3, false))
             .ReturnsAsync(searchResults);
 
         _mockOrganisationClient.Setup(c => c.GetChildOrganisationsAsync(It.IsAny<Guid>()))
@@ -752,7 +754,7 @@ public class ChildOrganisationResultsPageTests
 
         _mockOrganisationClient
             .Setup(client => client.SearchOrganisationAsync(
-                query, "buyer", 20, 0.3))
+                query, "buyer", 20, 0.3, false))
             .ReturnsAsync(searchResults);
 
         _mockOrganisationClient.Setup(c => c.GetChildOrganisationsAsync(It.IsAny<Guid>()))
@@ -856,7 +858,7 @@ public class ChildOrganisationResultsPageTests
 
         _mockOrganisationClient
             .Setup(client => client.SearchOrganisationAsync(
-                query, "buyer", 20, 0.3))
+                query, "buyer", 20, 0.3, false))
             .ReturnsAsync(searchResults);
 
         _mockOrganisationClient
