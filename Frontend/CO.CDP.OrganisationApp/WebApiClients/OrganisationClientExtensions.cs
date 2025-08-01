@@ -229,11 +229,12 @@ internal static class OrganisationClientExtensions
         string name,
         string role,
         int limit,
-        double threshold)
+        double threshold,
+        bool includePendingRoles)
     {
         try
         {
-            var searchResults = await organisationClient.SearchOrganisationAsync(name, role, limit, threshold);
+            var searchResults = await organisationClient.SearchOrganisationAsync(name, role, limit, threshold, includePendingRoles);
             return searchResults ?? new List<OrganisationSearchResult>();
         }
         catch (ApiException ex) when (ex.StatusCode == 404)
