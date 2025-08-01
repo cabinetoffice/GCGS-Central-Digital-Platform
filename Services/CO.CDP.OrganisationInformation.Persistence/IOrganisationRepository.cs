@@ -49,7 +49,7 @@ public interface IOrganisationRepository : IDisposable
     public Task<Mou?> GetLatestMou();
 
     public Task<Mou?> GetMou(Guid mouId);
-    Task<IEnumerable<Organisation>> SearchByName(string name, PartyRole? role, int? limit, double threshold);
+    Task<IEnumerable<Organisation>> SearchByName(string name, PartyRole? role, int? limit, double threshold, bool? includePendingRoles = true);
 
     Task<(IEnumerable<Organisation> Results, int TotalCount)> SearchByNameOrPpon(string searchText,  int? limit, int skip,string orderBy);
 

@@ -322,7 +322,7 @@ public static class EndpointExtensions
 
         app.MapGet("/search",
             [OrganisationAuthorize([AuthenticationChannel.OneLogin, AuthenticationChannel.ServiceKey])]
-            async ([FromQuery] string name, [FromQuery] string? role, [FromQuery] int limit, [FromServices] IUseCase<OrganisationSearchQuery, IEnumerable<Model.OrganisationSearchResult>> useCase, [FromQuery] double? threshold = 0.3) =>
+            async ([FromQuery] string name, [FromQuery] string? role, [FromQuery] int limit, [FromServices] IUseCase<OrganisationSearchQuery, IEnumerable<Model.OrganisationSearchResult>> useCase, [FromQuery] double? threshold = 0.3, [FromQuery] bool? includePendingRoles = true) =>
             {
                 if (threshold is < 0 or > 1)
                 {
@@ -334,7 +334,7 @@ public static class EndpointExtensions
                     });
                 }
 
-                return await useCase.Execute(new OrganisationSearchQuery(name, limit, threshold, role))
+                return await useCase.Execute(new OrganisationSearchQuery(name, limit, threshold, role, includePendingRoles))
                     .AndThen(results => results.Count() != 0 ? Results.Ok(results) : Results.NotFound());
             })
             .Produces<IEnumerable<Model.OrganisationSearchResult>>(StatusCodes.Status200OK, "application/json")

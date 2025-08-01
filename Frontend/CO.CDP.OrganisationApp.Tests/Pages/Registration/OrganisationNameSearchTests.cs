@@ -68,7 +68,7 @@ public class OrganisationNameSearchModelTests
         var matchingOrganisation = GivenOrganisationSearchResult("Test org", "scheme", "123", _givenOrganisationId);
 
         _organisationClientMock
-            .Setup(client => client.SearchOrganisationAsync("Test org", "Buyer", 10, 0.3))
+            .Setup(client => client.SearchOrganisationAsync("Test org", "Buyer", 10, 0.3, false))
             .ReturnsAsync(new List<OrganisationSearchResult> { matchingOrganisation });
 
         var model = GivenOrganisationNameSearchModel();
@@ -128,7 +128,7 @@ public class OrganisationNameSearchModelTests
         var matchingOrganisation = GivenOrganisationSearchResult("Test org", "scheme", "123", _givenOrganisationId);
 
         _organisationClientMock
-            .Setup(client => client.SearchOrganisationAsync("Test org", "Buyer", 10, 0.3))
+            .Setup(client => client.SearchOrganisationAsync("Test org", "Buyer", 10, 0.3, false))
             .ReturnsAsync(new List<OrganisationSearchResult> { nonMatchingOrganisation1, nonMatchingOrganisation2, matchingOrganisation });
 
         var model = GivenOrganisationNameSearchModel();
@@ -165,7 +165,7 @@ public class OrganisationNameSearchModelTests
         };
 
         _organisationClientMock
-            .Setup(client => client.SearchOrganisationAsync("Test org", "Buyer", 10, 0.3))
+            .Setup(client => client.SearchOrganisationAsync("Test org", "Buyer", 10, 0.3, false))
             .ReturnsAsync(matchingOrganisations);
 
         var model = GivenOrganisationNameSearchModel();
@@ -193,7 +193,7 @@ public class OrganisationNameSearchModelTests
         };
 
         _organisationClientMock
-            .Setup(client => client.SearchOrganisationAsync("Test org", "Buyer", 10, 0.3))
+            .Setup(client => client.SearchOrganisationAsync("Test org", "Buyer", 10, 0.3, false))
             .ReturnsAsync(matchingOrganisations);
 
         var model = GivenOrganisationNameSearchModel();
@@ -241,7 +241,7 @@ public class OrganisationNameSearchModelTests
         _sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(registrationDetails);
 
         _organisationClientMock
-            .Setup(client => client.SearchOrganisationAsync("Test Org", "Buyer", 10, 0.3))
+            .Setup(client => client.SearchOrganisationAsync("Test Org", "Buyer", 10, 0.3, false))
             .ThrowsAsync(new ApiException(string.Empty, (int)HttpStatusCode.NotFound, string.Empty, null, null));
 
         var model = GivenOrganisationNameSearchModel();

@@ -182,7 +182,7 @@ public class OrganisationApprovalModelTests
             .ReturnsAsync(expectedPersons);
 
         _mockOrganisationClient
-            .Setup(client => client.SearchOrganisationAsync(expectedOrganisation.Name, "buyer", 3, 0.3))
+            .Setup(client => client.SearchOrganisationAsync(expectedOrganisation.Name, "buyer", 3, 0.3, false))
             .ReturnsAsync(expectedMatchingOrganisations);
 
         _mockOrganisationClient
@@ -212,7 +212,7 @@ public class OrganisationApprovalModelTests
             .ReturnsAsync(expectedPersons);
 
         _mockOrganisationClient
-            .Setup(client => client.SearchOrganisationAsync(expectedOrganisation.Name, "buyer", 3, 0.3))
+            .Setup(client => client.SearchOrganisationAsync(expectedOrganisation.Name, "buyer", 3, 0.3, false))
             .ThrowsAsync(new ApiException("Not Found", 404, "", default, null));
 
         _mockOrganisationClient

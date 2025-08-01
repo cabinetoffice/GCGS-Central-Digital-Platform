@@ -69,7 +69,7 @@ public class OrganisationApprovalModel(
         try
         {
             MatchingOrganisations =
-                await organisationClient.SearchOrganisationAsync(OrganisationDetails.Name, "buyer", 3, 0.3);
+                await organisationClient.SearchOrganisationAsync(OrganisationDetails.Name, "buyer", 3, 0.3, false);
         }
         catch (ApiException ex) when (ex.StatusCode == 404)
         {
