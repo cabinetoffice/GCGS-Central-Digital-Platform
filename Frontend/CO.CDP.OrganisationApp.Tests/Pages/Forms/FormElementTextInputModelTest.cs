@@ -161,7 +161,7 @@ public class FormElementTextInputModelTest
         }
     }
 
-    private FormElementTextInputModel CreateModelWithOptions(FormQuestionType type, bool isRequired, InputWidthType? inputWidth = null, string? inputSuffix = null, string? customCssClasses = null, TextValidationType? textValidationType = null)
+    private FormElementTextInputModel CreateModelWithOptions(FormQuestionType type, bool isRequired, InputWidthType? inputWidth = null, InputSuffixOptions? inputSuffix = null, string? customCssClasses = null, TextValidationType? textValidationType = null)
     {
         return new FormElementTextInputModel
         {
@@ -191,10 +191,27 @@ public class FormElementTextInputModelTest
     }
 
     [Fact]
-    public void Options_InputSuffix_IsSet()
+    public void Options_InputSuffix_CustomText_IsSet()
     {
-        var model = CreateModelWithOptions(FormQuestionType.Text, true, inputSuffix: "kg");
-        model.Options?.Layout?.InputSuffix.Should().Be("kg");
+        var inputSuffixOptions = new InputSuffixOptions
+        {
+            Type = InputSuffixType.CustomText,
+            Text = "kg"
+        };
+        var model = CreateModelWithOptions(FormQuestionType.Text, true, inputSuffix: inputSuffixOptions);
+        model.Options?.Layout?.InputSuffix.Should().Be(inputSuffixOptions);
+    }
+
+    [Fact]
+    public void Options_InputSuffix_GovUkDefault_IsSet()
+    {
+        var inputSuffixOptions = new InputSuffixOptions
+        {
+            Type = InputSuffixType.GovUkDefault,
+            Text = "Global_Percentage"
+        };
+        var model = CreateModelWithOptions(FormQuestionType.Text, true, inputSuffix: inputSuffixOptions);
+        model.Options?.Layout?.InputSuffix.Should().Be(inputSuffixOptions);
     }
 
     [Fact]

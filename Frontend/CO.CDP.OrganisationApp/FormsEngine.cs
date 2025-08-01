@@ -16,6 +16,8 @@ using FormQuestionOptions = CO.CDP.OrganisationApp.Models.FormQuestionOptions;
 using FormQuestionType = CO.CDP.OrganisationApp.Models.FormQuestionType;
 using FormSection = CO.CDP.OrganisationApp.Models.FormSection;
 using FormSectionType = CO.CDP.OrganisationApp.Models.FormSectionType;
+using InputSuffixOptions = CO.CDP.OrganisationApp.Models.InputSuffixOptions;
+using InputSuffixType = CO.CDP.OrganisationApp.Models.InputSuffixType;
 using InputWidthType = CO.CDP.OrganisationApp.Models.InputWidthType;
 using LayoutOptions = CO.CDP.OrganisationApp.Models.LayoutOptions;
 using SectionQuestionsResponse = CO.CDP.OrganisationApp.Models.SectionQuestionsResponse;
@@ -103,12 +105,19 @@ public class FormsEngine(
                                 CustomYesText = q.Options.Layout.CustomYesText,
                                 CustomNoText = q.Options.Layout.CustomNoText,
                                 InputWidth = q.Options.Layout.InputWidth.HasValue ? (InputWidthType)q.Options.Layout.InputWidth.Value : null,
-                                InputSuffix = q.Options.Layout.InputSuffix,
+                                InputSuffix = q.Options.Layout.InputSuffix != null
+                                    ? new InputSuffixOptions
+                                    {
+                                        Type = (InputSuffixType)q.Options.Layout.InputSuffix.Type,
+                                        Text = q.Options.Layout.InputSuffix.Text
+                                    }
+                                    : null,
                                 CustomCssClasses = q.Options.Layout.CustomCssClasses,
                                 BeforeTitleContent = q.Options.Layout.BeforeTitleContent,
                                 BeforeButtonContent = q.Options.Layout.BeforeButtonContent,
                                 AfterButtonContent = q.Options.Layout.AfterButtonContent,
-                                PrimaryButtonText = q.Options.Layout.PrimaryButtonText
+                                PrimaryButtonText = q.Options.Layout.PrimaryButtonText,
+                                HeadingSize = q.Options.Layout.HeadingSize.HasValue ? (HeadingSize)q.Options.Layout.HeadingSize.Value : null,
                             }
                             : null,
                         Validation = q.Options.Validation != null

@@ -37,6 +37,9 @@ public class WebApiToPersistenceProfile : Profile
             .ForMember(dest => dest.BeforeButtonContent, opt => opt.MapFrom(src => src.BeforeButtonContent))
             .ForMember(dest => dest.AfterButtonContent, opt => opt.MapFrom(src => src.AfterButtonContent))
             .ForMember(dest => dest.PrimaryButtonText, opt => opt.MapFrom(src => src.PrimaryButtonText));
+        CreateMap<Persistence.InputSuffixOptions, Model.InputSuffixOptions>()
+            .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.Type))
+            .ForMember(dest => dest.Text, opt => opt.MapFrom<NullableLocalizedPropertyResolver<Persistence.InputSuffixOptions, Model.InputSuffixOptions>, string?>(src => src.Text));
 
         CreateMap<Persistence.ValidationOptions, Model.ValidationOptions>()
             .ForMember(dest => dest.DateValidationType, opt => opt.MapFrom(src => src.DateValidationType))

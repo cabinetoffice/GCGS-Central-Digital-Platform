@@ -32,17 +32,39 @@
         }
 
         var finalAriaDescribedby = textInputAriaDescribedby;
-           if (!string.IsNullOrWhiteSpace(Model.Options?.Layout?.InputSuffix))
-           {
-               finalAriaDescribedby += (string.IsNullOrWhiteSpace(finalAriaDescribedby) ? "" : " ") + Model.GetFieldName("TextInput-suffix");
-           }
-        @if (!string.IsNullOrWhiteSpace(Model.Options?.Layout?.InputSuffix))
+        var suffixInfo = InputSuffixHelper.GetSuffixRenderInfo(Model.Options?.Layout?.InputSuffix);
+
+        if (suffixInfo.HasSuffix)
         {
-            <div class="govuk-input__wrapper">
-                <input class="govuk-input @GovUkCssHelper.GetInputWidthCssClass(Model.Options?.Layout?.InputWidth) @Model.Options?.Layout?.CustomCssClasses @(textInputHasError ? "govuk-input--error" : "")" id="@Model.GetFieldName(nameof(Model.TextInput))" name="@Model.GetFieldName(nameof(Model.TextInput))" type="@Model.GetFieldType()" value="@Model.TextInput"
+            finalAriaDescribedby += (string.IsNullOrWhiteSpace(finalAriaDescribedby) ? "" : " ") + Model.GetFieldName("TextInput-suffix");
+        }
+
+        var inputCssClasses = InputSuffixHelper.GetInputCssClasses(
+            suffixInfo,
+            Model.Options?.Layout?.InputWidth,
+            Model.Options?.Layout?.CustomCssClasses,
+            textInputHasError);
+
+        @if (suffixInfo.HasSuffix)
+        {
+            var suffixCssClasses = InputSuffixHelper.GetSuffixCssClasses(suffixInfo);
+            var suffixElementTag = InputSuffixHelper.GetSuffixElementTag(suffixInfo);
+            var shouldUseInputWrapper = InputSuffixHelper.ShouldUseInputWrapper(suffixInfo);
+
+            @if (shouldUseInputWrapper)
+            {
+                <div class="govuk-input__wrapper">
+                    <input class="@inputCssClasses" id="@Model.GetFieldName(nameof(Model.TextInput))" name="@Model.GetFieldName(nameof(Model.TextInput))" type="@Model.GetFieldType()" value="@Model.TextInput"
+                    @(string.IsNullOrWhiteSpace(finalAriaDescribedby) ? "" : Html.Raw($"aria-describedby=\"{finalAriaDescribedby}\""))>
+                    @Html.Raw($"<{suffixElementTag} class=\"{suffixCssClasses}\" id=\"{Model.GetFieldName("TextInput-suffix")}\">{suffixInfo.ResolvedText}</{suffixElementTag}>")
+                </div>
+            }
+            else
+            {
+                <input class="@inputCssClasses" id="@Model.GetFieldName(nameof(Model.TextInput))" name="@Model.GetFieldName(nameof(Model.TextInput))" type="@Model.GetFieldType()" value="@Model.TextInput"
                 @(string.IsNullOrWhiteSpace(finalAriaDescribedby) ? "" : Html.Raw($"aria-describedby=\"{finalAriaDescribedby}\""))>
-                <div class="govuk-input__suffix" id="@Model.GetFieldName("TextInput-suffix")">@Model.Options!.Layout!.InputSuffix</div>
-            </div>
+                @Html.Raw($"<{suffixElementTag} class=\"{suffixCssClasses}\" id=\"{Model.GetFieldName("TextInput-suffix")}\">{suffixInfo.ResolvedText}</{suffixElementTag}>")
+            }
         }
         else
         {

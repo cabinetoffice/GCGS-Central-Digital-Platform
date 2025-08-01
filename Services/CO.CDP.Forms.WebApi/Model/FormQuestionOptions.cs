@@ -19,7 +19,7 @@ public record LayoutOptions
     public string? CustomYesText { get; init; }
     public string? CustomNoText { get; init; }
     public InputWidthType? InputWidth { get; init; }
-    public string? InputSuffix { get; init; }
+    public InputSuffixOptions? InputSuffix { get; init; }
     public string? CustomCssClasses { get; init; }
     public string? BeforeTitleContent { get; init; }
     public string? BeforeButtonContent { get; set; }
