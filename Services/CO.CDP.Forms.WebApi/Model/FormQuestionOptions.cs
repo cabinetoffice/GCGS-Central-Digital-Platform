@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using DateValidationType = CO.CDP.Forms.WebApi.Model.Validation.DateValidationType;
 using TextValidationType = CO.CDP.Forms.WebApi.Model.Validation.TextValidationType;
 
@@ -22,10 +23,25 @@ public record LayoutOptions
     public InputSuffixOptions? InputSuffix { get; init; }
     public string? CustomCssClasses { get; init; }
     public string? BeforeTitleContent { get; init; }
-    public string? BeforeButtonContent { get; set; }
+    public string? BeforeButtonContent { get; init; }
     public string? AfterButtonContent { get; init; }
     public string? PrimaryButtonText { get; init; }
-    public HeadingSize? HeadingSize { get; set; }
+    public HeadingSize? HeadingSize { get; init; }
+}
+
+public record InputSuffixOptions
+{
+    public InputSuffixType Type { get; init; }
+    public string? Text { get; init; }
+}
+
+[JsonConverter(typeof(JsonStringEnumConverter))]
+public enum InputSuffixType
+{
+    GovUkDefault,
+    CustomText
+}
+
 [JsonConverter(typeof(JsonStringEnumConverter))]
 public enum HeadingSize
 {
