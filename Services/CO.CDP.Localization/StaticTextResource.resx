@@ -4268,7 +4268,7 @@
     <value>We've found &lt;b&gt;{0}&lt;/b&gt; organisations</value>
   </data>
   <data name="PponSearch_NoResults" xml:space="preserve">
-    <value>No organisations found matching your search criteria</value>
+    <value>No organisations found matching your search criteria.</value>
   </data>
   <data name="PponSearch_Ppon_Desc_Hint_01" xml:space="preserve">
     <value>

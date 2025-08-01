@@ -71,6 +71,12 @@
         </div>
     </div>
 
+
+    @if (!string.IsNullOrEmpty(Model.FeedbackMessage))
+    {
+        <p class="govuk-body">@Model.FeedbackMessage</p>
+    }
+
     @if (Model.TotalOrganisations > 0)
     {
         <div class="govuk-grid-row govuk-!-margin-bottom-5">
