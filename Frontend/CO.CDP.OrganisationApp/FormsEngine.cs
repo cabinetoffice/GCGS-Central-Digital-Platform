@@ -699,12 +699,13 @@ public class FormsEngine(
             .Select(async q => await CreateIndividualAnswerSummary(q, answerState, organisationId, formId, sectionId));
 
         var answers = (await Task.WhenAll(answerTasks))
-            .Where(answer => answer != null)
-            .Cast<AnswerSummary>()
+            .OfType<AnswerSummary>()
             .ToList();
 
+        var firstQuestionInGroup = GetFirstQuestion(questionsInGroup) ?? startingQuestion;
+
         var groupChangeLink = grouping.Page
-            ? $"/organisation/{organisationId}/forms/{formId}/sections/{sectionId}/questions/{startingQuestion.Id}"
+            ? $"/organisation/{organisationId}/forms/{formId}/sections/{sectionId}/questions/{firstQuestionInGroup.Id}"
             : null;
 
         if (!grouping.Page)
