@@ -4,7 +4,14 @@ locals {
   auth_domain             = "${local.name_prefix}-${var.environment}"
 
   cfs_domain              = "${local.auth_domain}-cfs"
-  cfs_url                 = "https://cfs.${var.public_domain}"
+  cfs_url                 = "cfs.${var.public_domain}"
+  cfs_urls = concat(
+    [local.cfs_url],
+    var.cfs_extra_domains
+  )
+  cfs_callback_urls = [for url in local.cfs_urls : "https://${url}/oauth2/idpresponse"]
+  cfs_logout_urls   = [for url in local.cfs_urls : "https://${url}/logout"]
+
   cfs_healthcheck_domain  = "${local.auth_domain}-cfs-healthcheck"
   cfs_healthcheck_url     = "https://cfs-healthcheck.${var.public_domain}"
 
@@ -12,7 +19,7 @@ locals {
   cloud_beaver_url        = "https://cloud-beaver.${var.public_domain}"
 
   fts_domain              = "${local.auth_domain}-fts"
-  fts_url                 = "https://fts.${var.public_domain}"
+  fts_url                 = "fts.${var.public_domain}"
   fts_urls = concat(
     [local.fts_url],
     var.fts_extra_domains
