@@ -24,9 +24,20 @@ test: ## Run tests
 	@dotnet test $(TEST_OPTIONS)
 .PHONY: test
 
+build-docker-parallel: VERSION ?= "undefined"
+build-docker-parallel: ## Build Docker images in parallel
+	@DOCKER_BUILDKIT_INLINE_CACHE=1 docker compose build --build-arg VERSION=$(VERSION)
+.PHONY: build-docker-parallel
+
 build-docker: VERSION ?= "undefined"
-build-docker: ## Build Docker images
-	@docker compose build --build-arg VERSION=$(VERSION)
+build-docker: ## Build Docker images sequentially to reduce memory usage
+	@DOCKER_BUILDKIT_INLINE_CACHE=1 docker compose build --no-cache --memory=2g --build-arg VERSION=$(VERSION) db gateway
+	@DOCKER_BUILDKIT_INLINE_CACHE=1 docker compose build --memory=2g --build-arg VERSION=$(VERSION) authority tenant
+	@DOCKER_BUILDKIT_INLINE_CACHE=1 docker compose build --memory=2g --build-arg VERSION=$(VERSION) organisation person forms
+	@DOCKER_BUILDKIT_INLINE_CACHE=1 docker compose build --memory=2g --build-arg VERSION=$(VERSION) data-sharing entity-verification
+	@DOCKER_BUILDKIT_INLINE_CACHE=1 docker compose build --memory=2g --build-arg VERSION=$(VERSION) organisation-app commercial-tools-app commercial-tools-api
+	@DOCKER_BUILDKIT_INLINE_CACHE=1 docker compose build --memory=2g --build-arg VERSION=$(VERSION) av-scanner scheduled-worker outbox-processor-organisation outbox-processor-entity-verification
+	@DOCKER_BUILDKIT_INLINE_CACHE=1 docker compose build --memory=2g --build-arg VERSION=$(VERSION) organisation-information-migrations entity-verification-migrations
 .PHONY: build-docker
 
 up: render-compose-override ## Start Docker containers

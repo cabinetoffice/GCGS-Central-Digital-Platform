@@ -9,6 +9,8 @@ services:
       - '${CDP_FORMS_PORT:-8086}:8086'
       - '${CDP_DATA_SHARING_PORT:-8088}:8088'
       - '${CDP_ENTITY_VERIFICATION_PORT:-8094}:8094'
+      - '${CDP_COMMERCIAL_TOOLS_APP_PORT:-8192}:8192'
+      - '${CDP_COMMERCIAL_TOOLS_API_PORT:-8184}:8184'
     environment:
 #      CDP_ORGANISATION_APP_HOST: 'http://host.docker.internal:58090'
 #      CDP_AUTHORITY_HOST: 'http://host.docker.internal:5050'
@@ -18,6 +20,8 @@ services:
 #      CDP_FORMS_HOST: 'http://host.docker.internal:58086'
 #      CDP_DATA_SHARING_HOST: 'http://host.docker.internal:58088'
 #      CDP_ENTITY_VERIFICATION_HOST: 'http://host.docker.internal:58094'
+#      CDP_COMMERCIAL_TOOLS_APP_HOST: 'http://host.docker.internal:58192'
+#      CDP_COMMERCIAL_TOOLS_API_HOST: 'http://host.docker.internal:58184'
     deploy:
       replicas: 1
   db:
@@ -111,5 +115,15 @@ services:
     environment:
       DOTNET_ENVIRONMENT: Development
       OrganisationAppUrl: ""
+    deploy:
+      replicas: 1
+  commercial-tools-app:
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+    deploy:
+      replicas: 1
+  commercial-tools-api:
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
     deploy:
       replicas: 1
