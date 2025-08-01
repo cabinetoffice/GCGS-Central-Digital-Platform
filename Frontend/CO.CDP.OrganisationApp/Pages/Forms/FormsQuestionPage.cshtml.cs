@@ -150,7 +150,7 @@ public class FormsQuestionPageModel(
         }
         else
         {
-            PartialViewModel = GetPartialViewModel(currentQuestion, false);
+            PartialViewModel = GetPartialViewModel(currentQuestion, false, isFirst: true);
         }
 
         var submissionResult = await ProcessQuestionSubmission(currentQuestion, sectionDetails);

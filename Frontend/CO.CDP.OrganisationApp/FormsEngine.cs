@@ -1,5 +1,4 @@
 using CO.CDP.Forms.WebApiClient;
-using CO.CDP.Localization;
 using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Extensions;
 using CO.CDP.OrganisationApp.Models;
@@ -682,6 +681,11 @@ public class FormsEngine(
         return displayItems;
     }
 
+    public async Task<FormQuestion?> GetFirstQuestion(Guid organisationId, Guid formId, Guid sectionId)
+    {
+        var section = await GetFormSectionAsync(organisationId, formId, sectionId);
+        return GetFirstQuestion(section.Questions);
+    }
 
     private async Task<GroupedAnswerSummary> CreateMultiQuestionGroup(
         FormQuestion startingQuestion, List<FormQuestion> orderedJourney, FormQuestionAnswerState answerState,

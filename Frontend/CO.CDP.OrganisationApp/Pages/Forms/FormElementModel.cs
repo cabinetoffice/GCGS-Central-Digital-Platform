@@ -9,7 +9,7 @@ public interface IFormElementModel
     string? Heading { get; set; }
     FormQuestionOptions? Options { get; set; }
 
-    void Initialize(FormQuestion question);
+    void Initialize(FormQuestion question, bool isFirst);
 
     FormAnswer? GetAnswer();
 
@@ -45,6 +45,8 @@ public abstract class FormElementModel : IFormElementModel
 
     public FormQuestionOptions? Options { get; set; }
 
+    public bool IsFirstQuestion { get; set; }
+
     public string GetFieldName(string propertyName)
     {
         return QuestionId.HasValue ? $"Q_{QuestionId.Value}_{propertyName}" : propertyName;
@@ -67,7 +69,7 @@ public abstract class FormElementModel : IFormElementModel
         return modelState.TryGetValue(fieldName, out var modelStateEntry) && modelStateEntry.Errors.Count > 0;
     }
 
-    public virtual void Initialize(FormQuestion question)
+    public virtual void Initialize(FormQuestion question, bool isFirst)
     {
         Heading = question.Title;
         Description = question.Description;
@@ -75,6 +77,7 @@ public abstract class FormElementModel : IFormElementModel
         CurrentFormQuestionType = question.Type;
         IsRequired = question.IsRequired;
         Options = question.Options;
+        IsFirstQuestion = isFirst;
     }
 
     public abstract FormAnswer? GetAnswer();

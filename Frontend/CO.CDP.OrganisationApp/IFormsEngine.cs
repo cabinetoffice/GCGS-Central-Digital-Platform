@@ -22,4 +22,6 @@ public interface IFormsEngine
     Task<MultiQuestionPageModel> GetMultiQuestionPage(Guid organisationId, Guid formId, Guid sectionId, Guid startingQuestionId);
 
     Task<List<IAnswerDisplayItem>> GetGroupedAnswerSummaries(Guid organisationId, Guid formId, Guid sectionId, FormQuestionAnswerState answerState);
+
+    Task<FormQuestion?> GetFirstQuestion(Guid organisationId, Guid formId, Guid sectionId);
 }
