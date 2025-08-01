@@ -25,8 +25,8 @@ module "ecs_service_cfs" {
   role_ecs_task_arn      = var.role_ecs_task_arn
   role_ecs_task_exec_arn = var.role_ecs_task_exec_arn
   tags                   = var.tags
-  user_pool_arn          = var.environment == "production" ? var.user_pool_cfs_arn : null
-  user_pool_client_id    = var.environment == "production" ? var.user_pool_cfs_client_id : null
-  user_pool_domain       = var.environment == "production" ? var.user_pool_cfs_domain : null
+  user_pool_arn          = contains(["staging", "integration", "production"], var.environment) ? var.user_pool_cfs_arn : null
+  user_pool_client_id    = contains(["staging", "integration", "production"], var.environment) ? var.user_pool_cfs_client_id : null
+  user_pool_domain       = contains(["staging", "integration", "production"], var.environment) ? var.user_pool_cfs_domain : null
   vpc_id                 = var.vpc_id
 }
