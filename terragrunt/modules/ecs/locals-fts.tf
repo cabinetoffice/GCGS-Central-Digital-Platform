@@ -20,7 +20,7 @@ locals {
     production  = "https://www.find-tender.service.gov.uk/auth/callback"
   }
 
-  site_domains = {
+  fts_site_domains = {
     development = "fts.${var.public_domain}"
     staging     = "www-staging.find-tender.service.gov.uk"
     integration = "www-tpp.find-tender.service.gov.uk"
@@ -62,7 +62,7 @@ locals {
     dev_email                           = "${local.fts_screts_arn}:DEV_EMAIL::"
     app_host_address                    = "%"
     buyer_corporate_identifier_prefixes = "sid4gov.cabinetoffice.gov.uk|supplierregistration.service.xgov.uk|test-idp-intra.nqc.com"
-    cookie_domain                       = local.site_domains[var.environment]
+    cookie_domain                       = local.fts_site_domains[var.environment]
     database_schema                     = "cdp_sirsi_fts_cluster"
     db_host                             = var.db_fts_cluster_address
     db_name                             = var.db_fts_cluster_name
@@ -77,7 +77,7 @@ locals {
     licenced_to                         = "No-one"
     local_version                       = 1100
     session_name_default                = "SRSI_FT_AUTH"
-    site_domain                         = local.site_domains[var.environment]
+    site_domain                         = local.fts_site_domains[var.environment]
     site_tag                            = "TEST"
     srsi_authority_token_endpoint       = "https://authority.${var.public_domain}/token"
     srsi_dashboard_endpoint             = "https://${var.public_domain}"

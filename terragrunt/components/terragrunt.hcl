@@ -81,6 +81,7 @@ locals {
       account_id                        = 905418042182
       canary_schedule_expression        = "rate(30 minutes)"
       cfs_allowed_target_email_domains  = ["goaco.com"]
+      cfs_extra_domains                 = ["www-preview.contractsfinder.service.gov.uk"]
       fts_allowed_target_email_domains  = ["goaco.com"]
       fts_extra_domains                 = ["www-staging.find-tender.service.gov.uk"]
       fts_azure_frontdoor               = null
@@ -125,6 +126,7 @@ locals {
       account_id                        = 767397666448
       canary_schedule_expression        = "rate(30 minutes)"
       cfs_allowed_target_email_domains  = ["goaco.com"]
+      cfs_extra_domains                 = ["www-integration.contractsfinder.service.gov.uk"]
       cfs_service_allowed_origins       = [
         "https://cfs.integration.supplier-information.find-tender.service.gov.uk",
         "https://test-findtender.nqc.com",
@@ -248,6 +250,7 @@ locals {
       account_id                        = 471112843276
       canary_schedule_expression        = "rate(15 minutes)"
       cfs_allowed_target_email_domains  = ["goaco.com"]
+      fts_extra_domains                 = []
       cfs_service_allowed_origins       = [
         "https://cfs.supplier-information.find-tender.service.gov.uk",
         "https://www.find-tender.service.gov.uk"
@@ -298,9 +301,10 @@ locals {
   aurora_postgres_instance_type     = try(local.environments[local.environment].postgres_aurora_instance_type, null)
   aurora_postgres_instance_type_ev  = try(local.environments[local.environment].postgres_aurora_instance_type_ev, local.aurora_postgres_instance_type)
   cfs_allowed_target_email_domains  = try(local.environments[local.environment].cfs_allowed_target_email_domains, null)
+  cfs_extra_domains                 = try(local.environments[local.environment].cfs_extra_domains, [])
   cfs_service_allowed_origins       = try(local.environments[local.environment].cfs_service_allowed_origins, null)
   fts_allowed_target_email_domains  = try(local.environments[local.environment].fts_allowed_target_email_domains, null)
-  fts_extra_domains                 = try(local.environments[local.environment].fts_extra_domains, null)
+  fts_extra_domains                 = try(local.environments[local.environment].fts_extra_domains, [])
   fts_azure_frontdoor               = try(local.environments[local.environment].fts_azure_frontdoor, null)
   fts_service_allowed_origins       = try(local.environments[local.environment].fts_service_allowed_origins, null)
   mail_from_domains                  = try(local.environments[local.environment].mail_from_domains, [])
