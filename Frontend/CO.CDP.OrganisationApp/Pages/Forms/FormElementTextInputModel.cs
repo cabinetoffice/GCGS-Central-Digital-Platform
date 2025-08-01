@@ -71,6 +71,22 @@ public class FormElementTextInputModel : FormElementModel, IValidatableObject
                     yield return new ValidationResult(StaticTextResource.Forms_FormElementTextInput_InvalidYearError, [nameof(TextInput)]);
                 }
             }
+            else if (Options?.Validation?.TextValidationType == TextValidationType.Number)
+            {
+                var numberAttribute = new Validation.NumberAttribute();
+                if (!numberAttribute.IsValid(TextInput))
+                {
+                    yield return new ValidationResult(StaticTextResource.Global_Number_InvalidError, [nameof(TextInput)]);
+                }
+            }
+            else if (Options?.Validation?.TextValidationType == TextValidationType.Percentage)
+            {
+                var percentageAttribute = new Validation.PercentageAttribute();
+                if (!percentageAttribute.IsValid(TextInput))
+                {
+                    yield return new ValidationResult(StaticTextResource.Global_Percentage_InvalidError, [nameof(TextInput)]);
+                }
+            }
             else if (string.IsNullOrWhiteSpace(TextInput))
             {
                 yield return new ValidationResult(StaticTextResource.Forms_FormElementTextInput_EnterValueError, [nameof(TextInput)]);

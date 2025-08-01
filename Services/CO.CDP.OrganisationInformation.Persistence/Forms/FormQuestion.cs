@@ -72,8 +72,9 @@ public enum FormQuestionType
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum TextValidationType
 {
-    None,
-    Year
+    Year,
+    Number,
+    Percentage
 }
 
 public record FormQuestionOptions
