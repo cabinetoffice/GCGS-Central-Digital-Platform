@@ -77,6 +77,29 @@ public static class FormHeadingHelpers
         return content;
     }
 
+    public static IHtmlContent RenderLabelHeadingWithCaptionAfter(string? heading, string fieldId, string? caption = null,
+        bool isFirst = false, HeadingSize? headingSize = null)
+    {
+        if (string.IsNullOrWhiteSpace(heading))
+            return HtmlString.Empty;
+
+        var govUkSizeSuffix = GetGovUkSizeSuffix(headingSize, isFirst);
+
+        var content = new HtmlContentBuilder();
+        content.AppendHtml("<h1 class=\"govuk-label-wrapper\">");
+        content.AppendHtml(
+            $"<label class=\"govuk-label govuk-label--{govUkSizeSuffix}\" for=\"{fieldId}\">{heading}</label>");
+
+        if (!string.IsNullOrWhiteSpace(caption))
+        {
+            content.AppendHtml($"<span class=\"govuk-caption-{govUkSizeSuffix} govuk-!-margin-bottom-3\">{caption}</span>");
+        }
+
+        content.AppendHtml("</h1>");
+
+        return content;
+    }
+
     public static IHtmlContent RenderLegend(string? heading, string? caption = null,
         bool isFirst = false, HeadingSize? headingSize = null, string? id = null)
     {
@@ -97,6 +120,24 @@ public static class FormHeadingHelpers
             content.AppendHtml($"<span class=\"govuk-caption-{govUkSizeSuffix}\">{caption}</span>");
         }
 
+        content.AppendHtml($"<{headingTag} class=\"govuk-fieldset__heading\">{heading}</{headingTag}>");
+        content.AppendHtml("</legend>");
+
+        return content;
+    }
+
+    public static IHtmlContent RenderLegendWithoutCaption(string? heading, bool isFirst = false, HeadingSize? headingSize = null, string? id = null)
+    {
+        if (string.IsNullOrWhiteSpace(heading))
+            return HtmlString.Empty;
+
+        var govUkSizeSuffix = GetGovUkSizeSuffix(headingSize, isFirst);
+        var (headingTag, _) = GetHeadingTagAndClass(headingSize, isFirst);
+
+        var content = new HtmlContentBuilder();
+        var idAttribute = string.IsNullOrWhiteSpace(id) ? "" : $" id=\"{id}\"";
+        content.AppendHtml(
+            $"<legend class=\"govuk-fieldset__legend govuk-fieldset__legend--{govUkSizeSuffix}\"{idAttribute}>");
         content.AppendHtml($"<{headingTag} class=\"govuk-fieldset__heading\">{heading}</{headingTag}>");
         content.AppendHtml("</legend>");
 
