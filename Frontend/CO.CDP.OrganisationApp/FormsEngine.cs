@@ -579,10 +579,31 @@ public class FormsEngine(
         if (startingQuestion.Options.Grouping is null)
             return [startingQuestion];
 
-        return allQuestions
+        var questionsInGroup = allQuestions
             .Where(q => q.Options.Grouping?.Page == true &&
                         q.Options.Grouping?.Id == startingQuestion.Options.Grouping?.Id)
-            .ToList();
+            .ToDictionary(q => q.Id);
+
+        return BuildQuestionChain(startingQuestion, questionsInGroup);
+    }
+
+    private static List<FormQuestion> BuildQuestionChain(FormQuestion startingQuestion,
+        IReadOnlyDictionary<Guid, FormQuestion> questionsInGroup)
+    {
+        var orderedQuestions = new List<FormQuestion>();
+        var currentQuestion = startingQuestion;
+
+        while (currentQuestion != null)
+        {
+            orderedQuestions.Add(currentQuestion);
+
+            currentQuestion = currentQuestion.NextQuestion.HasValue &&
+                             questionsInGroup.TryGetValue(currentQuestion.NextQuestion.Value, out var nextQuestion)
+                ? nextQuestion
+                : null;
+        }
+
+        return orderedQuestions;
     }
 
     private List<FormQuestion> BuildJourney(List<FormQuestion> allQuestions, FormQuestionAnswerState answerState)
