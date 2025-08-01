@@ -1,54 +1,20 @@
 @using CO.CDP.Localization
-@using CO.CDP.OrganisationApp.Models
 @model FormElementMultiQuestionModel
 
 @{
-    string GetPageTitle() => !string.IsNullOrEmpty(Model.PageTitleResourceKey)
-        ? FormsEngineResource.ResourceManager.GetString(Model.PageTitleResourceKey) ?? Model.Questions.FirstOrDefault()?.Title ?? ""
-        : Model.Questions.FirstOrDefault()?.Title ?? "";
-
     string GetSubmitButtonText() => !string.IsNullOrEmpty(Model.SubmitButtonTextResourceKey)
         ? FormsEngineResource.ResourceManager.GetString(Model.SubmitButtonTextResourceKey) ?? "Continue"
         : "Continue";
 
-    var pageTitle = GetPageTitle();
     var submitButtonText = GetSubmitButtonText();
 }
 
-<h1 class="govuk-heading-l">@pageTitle</h1>
-
-@foreach (var question in Model.Questions)
+@foreach (var questionItem in Model.GetRenderableQuestions())
 {
     <div class="govuk-!-margin-bottom-6">
-        @{
-            var questionModel = Model.GetQuestionModel(question.Id);
-            var partialName = GetPartialViewName(question.Type);
-        }
 
-        @if (questionModel != null && !string.IsNullOrEmpty(partialName))
-        {
-            @await Html.PartialAsync(partialName, questionModel)
-        }
+        @await Html.PartialAsync(questionItem.PartialViewName, questionItem.QuestionModel, ViewData)
     </div>
 }
 
 <govuk-button>@submitButtonText</govuk-button>
-
-@functions {
-    string GetPartialViewName(FormQuestionType questionType) =>
-        questionType switch
-        {
-            FormQuestionType.Text => "_FormElementTextInput",
-            FormQuestionType.YesOrNo => "_FormElementYesNoInput",
-            FormQuestionType.Date => "_FormElementDateInput",
-            FormQuestionType.SingleChoice => "_FormElementSingleChoice",
-            FormQuestionType.GroupedSingleChoice => "_FormElementGroupedSingleChoice",
-            FormQuestionType.MultiLine => "_FormElementMultiLineInput",
-            FormQuestionType.Url => "_FormElementUrlInput",
-            FormQuestionType.Address => "_FormElementAddress",
-            FormQuestionType.CheckBox => "_FormElementCheckBoxInput",
-            FormQuestionType.FileUpload => "_FormElementFileUpload",
-            FormQuestionType.NoInput => "_FormElementNoInput",
-            _ => throw new NotSupportedException($"Question type {questionType} is not supported in multi-question pages")
-        };
-}

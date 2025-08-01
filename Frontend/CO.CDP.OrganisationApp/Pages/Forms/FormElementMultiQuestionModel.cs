@@ -2,6 +2,13 @@ using CO.CDP.OrganisationApp.Models;
 
 namespace CO.CDP.OrganisationApp.Pages.Forms;
 
+public class RenderableQuestionItem
+{
+    public IFormElementModel QuestionModel { get; init; } = null!;
+    public string PartialViewName { get; init; } = string.Empty;
+    public bool IsFirstQuestion { get; init; }
+}
+
 public class FormElementMultiQuestionModel : IMultiQuestionFormElementModel
 {
     public List<FormQuestion> Questions { get; private set; } = [];
