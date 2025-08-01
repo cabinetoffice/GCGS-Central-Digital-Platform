@@ -8,6 +8,8 @@ resource "aws_ses_domain_dkim" "this" {
   for_each = aws_ses_domain_identity.this
 
   domain   = each.value.domain
+
+  depends_on = [aws_ses_domain_identity.this]
 }
 
 resource "aws_ses_identity_policy" "send_policy" {
