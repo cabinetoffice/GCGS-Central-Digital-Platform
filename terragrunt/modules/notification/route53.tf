@@ -1,19 +1,33 @@
 resource "aws_route53_record" "dkim" {
-  count   = local.manage_dns_records ? 3 : 0
+  for_each = {
+    for pair in flatten([
+      for domain in local.effective_mail_from_domains : [
+        for i in range(3) : {
+          key     = "${domain}-${i}"
+          domain  = domain
+          index   = i
+        }
+      ]
+    ]) : pair.key => {
+      domain = pair.domain
+      index  = pair.index
+    }
+  }
 
-  zone_id = var.public_hosted_zone_id
-  name    = "${aws_ses_domain_dkim.this.dkim_tokens[count.index]}.${var.product.public_hosted_zone}"
+  name    = "${aws_ses_domain_dkim.this[each.value.domain].dkim_tokens[each.value.index]}.${each.value.domain}"
   type    = "CNAME"
   ttl     = 300
-  records = ["${aws_ses_domain_dkim.this.dkim_tokens[count.index]}.dkim.amazonses.com"]
+  zone_id = var.public_hosted_zone_id
+  records = ["${aws_ses_domain_dkim.this[each.value.domain].dkim_tokens[each.value.index]}.dkim.amazonses.com"]
 }
 
 resource "aws_route53_record" "ses_verification" {
-  count   = local.manage_dns_records ? 1 : 0
+  for_each = aws_ses_domain_identity.this
 
-  zone_id = var.public_hosted_zone_id
-  name    = "_amazonses.${var.product.public_hosted_zone}"
+  name    = "_amazonses.${each.key}"
   type    = "TXT"
   ttl     = 300
-  records = [aws_ses_domain_identity.this.verification_token]
+  zone_id = var.public_hosted_zone_id
+  records = [each.value.verification_token]
 }
+
