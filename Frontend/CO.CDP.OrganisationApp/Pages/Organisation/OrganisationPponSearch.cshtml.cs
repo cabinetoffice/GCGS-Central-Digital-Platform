@@ -36,6 +36,8 @@ public class OrganisationPponSearchModel(
 
     public string? ErrorMessage { get; set; }
 
+    public string? FeedbackMessage { get; set; }
+
     [BindProperty(SupportsGet = true)] public Guid Id { get; set; }
 
     [BindProperty(SupportsGet = true)] public int PageNumber { get; set; } = 1;
