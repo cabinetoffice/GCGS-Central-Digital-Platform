@@ -695,7 +695,7 @@ public class FormsQuestionPageModel(
         }
         else
         {
-            InitializeSingleQuestionView(currentQuestion, reset);
+            await InitializeSingleQuestionView(currentQuestion, reset);
         }
     }
 
@@ -711,11 +711,12 @@ public class FormsQuestionPageModel(
         PartialViewModel = null;
     }
 
-    private void InitializeSingleQuestionView(FormQuestion currentQuestion, bool reset)
+    private Task InitializeSingleQuestionView(FormQuestion currentQuestion, bool reset)
     {
         PartialViewName = GetPartialViewName(currentQuestion);
-        PartialViewModel = GetPartialViewModel(currentQuestion, reset);
+        PartialViewModel = GetPartialViewModel(currentQuestion, reset, isFirst: true);
         MultiQuestionViewModel = null;
+        return Task.CompletedTask;
     }
 
     private async Task SetNavigationProperties(SectionQuestionsResponse form, FormQuestion currentQuestion,
@@ -761,7 +762,7 @@ public class FormsQuestionPageModel(
             : throw new NotImplementedException($"Forms question: {question.Type} is not supported");
     }
 
-    private IFormElementModel? GetPartialViewModel(FormQuestion question, bool reset)
+    private IFormElementModel? GetPartialViewModel(FormQuestion question, bool reset, bool isFirst)
     {
         if (question.Type == FormQuestionType.CheckYourAnswers)
             return null;
@@ -782,7 +783,7 @@ public class FormsQuestionPageModel(
             _ => throw new NotImplementedException($"Forms question: {question.Type} is not supported")
         };
 
-        model.Initialize(question);
+        model.Initialize(question, isFirst);
         if (question.Type == FormQuestionType.Address && model is FormElementAddressModel addressModel)
         {
             addressModel.UkOrNonUk = UkOrNonUk ?? addressModel.UkOrNonUk;
