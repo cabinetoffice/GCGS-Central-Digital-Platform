@@ -489,7 +489,7 @@ public class OrganisationPponSearchModelTest
     }
 
     [Fact]
-    public async Task OnGet_NoResults_SetsNoResultsErrorMessage()
+    public async Task OnGet_NoResults_SetsNoResultsMessage()
     {
         SetupRouteData(Id);
         _testOrganisationPponSearchModel.PageNumber = DefaultPageNumber;
@@ -498,7 +498,8 @@ public class OrganisationPponSearchModelTest
         SetupSuccessfulSearch(DefaultSearchText, DefaultSortOrder, DefaultPageSize, 0,
             new List<OrganisationSearchByPponResult>());
         await _testOrganisationPponSearchModel.OnGet();
-        _testOrganisationPponSearchModel.ErrorMessage.Should().Be(Localization.StaticTextResource.PponSearch_NoResults);
+        _testOrganisationPponSearchModel.ErrorMessage.Should().Be(null);
+        _testOrganisationPponSearchModel.FeedbackMessage.Should().Be(Localization.StaticTextResource.PponSearch_NoResults);
         _testOrganisationPponSearchModel.Organisations.Should().BeEmpty();
         _testOrganisationPponSearchModel.TotalOrganisations.Should().Be(0);
         _testOrganisationPponSearchModel.TotalPages.Should().Be(0);
