@@ -683,13 +683,13 @@ public class FormsQuestionPageModel(
     {
         FormSectionType = form.Section?.Type;
         CurrentFormQuestionType = currentQuestion.Type;
-        IsMultiQuestionPage = currentQuestion.Options.Grouping?.Page != null;
+        IsMultiQuestionPage = currentQuestion.Options.Grouping?.Page == true;
     }
 
     private async Task SetViewModelProperties(FormQuestion currentQuestion, FormQuestionAnswerState answerState,
         bool reset)
     {
-        if (currentQuestion.Options.Grouping?.Page != null)
+        if (currentQuestion.Options.Grouping?.Page == true)
         {
             await InitializeMultiQuestionView(currentQuestion, answerState);
         }
