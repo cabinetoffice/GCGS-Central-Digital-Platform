@@ -47,7 +47,7 @@
 <div class="govuk-form-group @((Model.IsRequired && uploadFileHasError) || selectOptionHasError ? "govuk-form-group--error" : "")">
     @if (Model.IsRequired)
     {
-        @RenderFieldsetHeading(Model.Heading, Model.Caption, Model.IsFirstQuestion, Model.Options?.Layout?.HeadingSize)
+        @RenderHeading(Model.Heading, Model.Caption, Model.IsFirstQuestion, Model.Options?.Layout?.HeadingSize)
         RenderDescription();
         RenderField();
     }
