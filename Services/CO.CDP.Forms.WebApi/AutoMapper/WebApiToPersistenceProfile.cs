@@ -33,10 +33,10 @@ public class WebApiToPersistenceProfile : Profile
             .ForMember(dest => dest.InputWidth, opt => opt.MapFrom(src => src.InputWidth))
             .ForMember(dest => dest.InputSuffix, opt => opt.MapFrom(src => src.InputSuffix))
             .ForMember(dest => dest.CustomCssClasses, opt => opt.MapFrom(src => src.CustomCssClasses))
-            .ForMember(dest => dest.BeforeTitleContent, opt => opt.MapFrom(src => src.BeforeTitleContent))
-            .ForMember(dest => dest.BeforeButtonContent, opt => opt.MapFrom(src => src.BeforeButtonContent))
-            .ForMember(dest => dest.AfterButtonContent, opt => opt.MapFrom(src => src.AfterButtonContent))
-            .ForMember(dest => dest.PrimaryButtonText, opt => opt.MapFrom(src => src.PrimaryButtonText))
+            .ForMember(dest => dest.BeforeTitleContent, opt => opt.MapFrom<NullableLocalizedPropertyResolver<Persistence.LayoutOptions, Model.LayoutOptions>, string?>(src => src.BeforeTitleContent))
+            .ForMember(dest => dest.BeforeButtonContent, opt => opt.MapFrom<NullableLocalizedPropertyResolver<Persistence.LayoutOptions, Model.LayoutOptions>, string?>(src => src.BeforeButtonContent))
+            .ForMember(dest => dest.AfterButtonContent, opt => opt.MapFrom<NullableLocalizedPropertyResolver<Persistence.LayoutOptions, Model.LayoutOptions>, string?>(src => src.AfterButtonContent))
+            .ForMember(dest => dest.PrimaryButtonText, opt => opt.MapFrom<NullableLocalizedPropertyResolver<Persistence.LayoutOptions, Model.LayoutOptions>, string?>(src => src.PrimaryButtonText))
             .ForMember(dest => dest.HeadingSize, opt => opt.MapFrom(src => src.HeadingSize));
 
         CreateMap<Persistence.InputSuffixOptions, Model.InputSuffixOptions>()
