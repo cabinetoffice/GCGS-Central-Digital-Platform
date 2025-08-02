@@ -205,12 +205,19 @@ public class FormsQuestionPageModel(
                 case FormQuestionType.Text:
                     var textInputModel = (FormElementTextInputModel)questionModel;
                     var textInputFieldName = textInputModel.GetFieldName(nameof(textInputModel.TextInput));
+                    var textHasValueFieldName = textInputModel.GetFieldName(nameof(textInputModel.HasValue));
+                    
                     if (Request.Form.ContainsKey(textInputFieldName))
                     {
                         textInputModel.TextInput = Request.Form[textInputFieldName].ToString();
-                        newAnswer = textInputModel.GetAnswer();
                     }
-
+                    
+                    if (Request.Form.ContainsKey(textHasValueFieldName))
+                    {
+                        textInputModel.HasValue = bool.Parse(Request.Form[textHasValueFieldName].ToString());
+                    }
+                    
+                    newAnswer = textInputModel.GetAnswer();
                     break;
                 case FormQuestionType.MultiLine:
                     var multiLineInputModel = (FormElementMultiLineInputModel)questionModel;
@@ -225,18 +232,26 @@ public class FormsQuestionPageModel(
                 case FormQuestionType.Url:
                     var urlInputModel = (FormElementUrlInputModel)questionModel;
                     var urlFieldName = urlInputModel.GetFieldName(nameof(urlInputModel.TextInput));
+                    var urlHasValueFieldName = urlInputModel.GetFieldName(nameof(urlInputModel.HasValue));
+                    
                     if (Request.Form.ContainsKey(urlFieldName))
                     {
                         urlInputModel.TextInput = Request.Form[urlFieldName].ToString();
-                        newAnswer = urlInputModel.GetAnswer();
                     }
-
+                    
+                    if (Request.Form.ContainsKey(urlHasValueFieldName))
+                    {
+                        urlInputModel.HasValue = bool.Parse(Request.Form[urlHasValueFieldName].ToString());
+                    }
+                    
+                    newAnswer = urlInputModel.GetAnswer();
                     break;
                 case FormQuestionType.Date:
                     var dateInputModel = (FormElementDateInputModel)questionModel;
                     var dayFieldName = dateInputModel.GetFieldName(nameof(dateInputModel.Day));
                     var monthFieldName = dateInputModel.GetFieldName(nameof(dateInputModel.Month));
                     var yearFieldName = dateInputModel.GetFieldName(nameof(dateInputModel.Year));
+                    var dateHasValueFieldName = dateInputModel.GetFieldName(nameof(dateInputModel.HasValue));
 
                     if (Request.Form.ContainsKey(dayFieldName))
                         dateInputModel.Day = Request.Form[dayFieldName].ToString();
@@ -244,6 +259,8 @@ public class FormsQuestionPageModel(
                         dateInputModel.Month = Request.Form[monthFieldName].ToString();
                     if (Request.Form.ContainsKey(yearFieldName))
                         dateInputModel.Year = Request.Form[yearFieldName].ToString();
+                    if (Request.Form.ContainsKey(dateHasValueFieldName))
+                        dateInputModel.HasValue = bool.Parse(Request.Form[dateHasValueFieldName].ToString());
                     newAnswer = dateInputModel.GetAnswer();
                     break;
                 case FormQuestionType.YesOrNo:
