@@ -1,5 +1,4 @@
 using CO.CDP.AwsServices;
-using CO.CDP.Localization;
 using CO.CDP.MQ;
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Models;
@@ -10,7 +9,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.Extensions.Localization;
 using Moq;
 using System.Reflection;
 using FormAnswer = CO.CDP.OrganisationApp.Models.FormAnswer;
@@ -38,10 +36,9 @@ public class FormsQuestionPageValidationTests
             formsEngineMock.Object,
             tempDataServiceMock.Object,
             Mock.Of<IFileHostManager>(),
-            choiceProviderServiceMock.Object,
             organisationClientMock.Object,
             userInfoServiceMock.Object,
-            Mock.Of<IStringLocalizer<StaticTextResource>>());
+            Mock.Of<IAnswerDisplayService>());
 
         _modelState = new ModelStateDictionary();
 

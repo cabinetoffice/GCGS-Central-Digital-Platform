@@ -16,6 +16,7 @@ public class FormsEngineTests
     private readonly Mock<IChoiceProviderService> _choiceProviderServiceMock;
     private readonly Mock<IUserInfoService> _userInfoServiceMock;
     private readonly Mock<IOrganisationClient> _organisationClientMock;
+    private readonly Mock<IAnswerDisplayService> _answerDisplayServiceMock;
     private readonly FormsEngine _formsEngine;
     private const double Tolerance = 1e-6;
     private static readonly Guid GroupId = Guid.NewGuid();
@@ -28,8 +29,9 @@ public class FormsEngineTests
         _choiceProviderServiceMock = new Mock<IChoiceProviderService>();
         _userInfoServiceMock = new Mock<IUserInfoService>();
         _organisationClientMock = new Mock<IOrganisationClient>();
+        _answerDisplayServiceMock = new Mock<IAnswerDisplayService>();
         _formsEngine = new FormsEngine(_formsApiClientMock.Object, _tempDataServiceMock.Object,
-            _choiceProviderServiceMock.Object, _dataSharingClientMock.Object);
+            _choiceProviderServiceMock.Object, _dataSharingClientMock.Object, _answerDisplayServiceMock.Object);
     }
 
     private static (Guid organisationId, Guid formId, Guid sectionId, string sessionKey) CreateTestGuids()

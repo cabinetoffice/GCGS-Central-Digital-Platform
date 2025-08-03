@@ -1,12 +1,10 @@
 using CO.CDP.Forms.WebApiClient;
 using CO.CDP.OrganisationApp.Constants;
-using CO.CDP.OrganisationApp.Extensions;
 using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.Pages.Forms;
 using CO.CDP.OrganisationApp.Pages.Forms.ChoiceProviderStrategies;
 using DataShareWebApiClient = CO.CDP.DataSharing.WebApiClient;
 using DateValidationType = CO.CDP.OrganisationApp.Models.DateValidationType;
-using FormAnswer = CO.CDP.OrganisationApp.Models.FormAnswer;
 using FormQuestion = CO.CDP.OrganisationApp.Models.FormQuestion;
 using FormQuestionGroup = CO.CDP.OrganisationApp.Models.FormQuestionGroup;
 using FormQuestionGroupChoice = CO.CDP.OrganisationApp.Models.FormQuestionGroupChoice;
@@ -30,7 +28,8 @@ public class FormsEngine(
     IFormsClient formsApiClient,
     ITempDataService tempDataService,
     IChoiceProviderService choiceProviderService,
-    DataShareWebApiClient.IDataSharingClient dataSharingClient) : IFormsEngine
+    DataShareWebApiClient.IDataSharingClient dataSharingClient,
+    IAnswerDisplayService answerDisplayService) : IFormsEngine
 {
     public const string OrganisationSupplierInfoFormId = "0618b13e-eaf2-46e3-a7d2-6f2c44be7022";
     public const string OrganisationConsortiumFormId = "24482a2a-88a8-4432-b03c-4c966c9fce23";
@@ -712,7 +711,9 @@ public class FormsEngine(
         {
             foreach (var answer in answers)
             {
-                answer.ChangeLink = $"/organisation/{organisationId}/forms/{formId}/sections/{sectionId}/questions/{questionsInGroup.First(q => q.Title == answer.Title).Id}?frm-chk-answer=true";
+                var matchingQuestion = questionsInGroup.First(q =>
+                    q.Title == answer.Title || (q.SummaryTitle != null && q.SummaryTitle == answer.Title));
+                answer.ChangeLink = $"/organisation/{organisationId}/forms/{formId}/sections/{sectionId}/questions/{matchingQuestion.Id}?frm-chk-answer=true";
             }
         }
 
@@ -734,7 +735,7 @@ public class FormsEngine(
 
         if (questionAnswer == null) return null;
 
-        var answerString = await GetAnswerStringForSummary(questionAnswer, question);
+        var answerString = await answerDisplayService.FormatAnswerForDisplayAsync(questionAnswer, question);
         return string.IsNullOrWhiteSpace(answerString)
             ? null
             : CreateAnswerSummary(question, questionAnswer, answerString, organisationId, formId, sectionId);
@@ -761,51 +762,5 @@ public class FormsEngine(
             Answer = answerString,
             ChangeLink = changeLink
         };
-    }
-
-    private async Task<string> GetAnswerStringForSummary(QuestionAnswer questionAnswer, FormQuestion question)
-    {
-        var answer = questionAnswer.Answer;
-        if (answer == null) return "";
-
-        var boolAnswerString = answer.BoolValue?.ToString() switch
-        {
-            "True" => "Yes",
-            "False" => "No",
-            _ => ""
-        };
-
-        var answerString = question.Type switch
-        {
-            FormQuestionType.Text or FormQuestionType.FileUpload or FormQuestionType.MultiLine or FormQuestionType.Url
-                => answer.TextValue ?? "",
-            FormQuestionType.SingleChoice => await GetSingleChoiceAnswerString(answer, question),
-            FormQuestionType.Date => answer.DateValue?.ToFormattedString() ?? "",
-            FormQuestionType.CheckBox => answer.BoolValue == true
-                ? question.Options.Choices?.Values.FirstOrDefault() ?? ""
-                : "",
-            FormQuestionType.Address => answer.AddressValue?.ToHtmlString() ?? "",
-            FormQuestionType.GroupedSingleChoice => GetGroupedSingleChoiceAnswerString(answer, question),
-            _ => ""
-        };
-
-        return new[] { boolAnswerString, answerString }
-            .Where(s => !string.IsNullOrWhiteSpace(s))
-            .Aggregate("", (acc, s) => string.IsNullOrEmpty(acc) ? s : $"{acc}, {s}");
-    }
-
-    private async Task<string> GetSingleChoiceAnswerString(FormAnswer answer, FormQuestion question)
-    {
-        var choiceProviderStrategy = choiceProviderService.GetStrategy(question.Options.ChoiceProviderStrategy);
-        return await choiceProviderStrategy.RenderOption(answer) ?? "";
-    }
-
-    private static string GetGroupedSingleChoiceAnswerString(FormAnswer? answer, FormQuestion question)
-    {
-        return question.Options.Groups
-            .SelectMany(g => g.Choices)
-            .Where(c => c.Value == answer?.OptionValue)
-            .Select(c => c.Title)
-            .FirstOrDefault() ?? answer?.OptionValue ?? "";
     }
 }

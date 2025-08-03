@@ -30,11 +30,15 @@ public class FormsEngineMultipleQuestionPageTests
         var dataSharingClientMock = new Mock<IDataSharingClient>();
         _tempDataServiceMock = new Mock<ITempDataService>();
         _choiceProviderServiceMock = new Mock<IChoiceProviderService>();
+        var answerDisplayServiceMock = new Mock<IAnswerDisplayService>();
         UserInfoServiceMock = new Mock<IUserInfoService>();
         OrganisationClientMock = new Mock<IOrganisationClient>();
 
+        answerDisplayServiceMock.Setup(a => a.FormatAnswerForDisplayAsync(It.IsAny<QuestionAnswer>(), It.IsAny<FormQuestion>()))
+            .ReturnsAsync((QuestionAnswer qa, FormQuestion _) => qa.Answer?.TextValue ?? string.Empty);
+
         _formsEngine = new FormsEngine(formsApiClientMock.Object, _tempDataServiceMock.Object,
-            _choiceProviderServiceMock.Object, dataSharingClientMock.Object);
+            _choiceProviderServiceMock.Object, dataSharingClientMock.Object, answerDisplayServiceMock.Object);
     }
 
     private static (Guid organisationId, Guid formId, Guid sectionId, string sessionKey) CreateTestGuids()
@@ -624,7 +628,7 @@ public class FormsEngineMultipleQuestionPageTests
     {
         var (organisationId, formId, sectionId, sessionKey) = CreateTestGuids();
         var groupId = Guid.NewGuid();
-        
+
         var titleId = Guid.NewGuid();
         var question1Id = Guid.NewGuid();
         var question2Id = Guid.NewGuid();
@@ -684,7 +688,6 @@ public class FormsEngineMultipleQuestionPageTests
         _tempDataServiceMock.Setup(t => t.Peek<SectionQuestionsResponse>(sessionKey))
             .Returns(sectionResponse);
 
-        // Navigate to a question in the middle of the group
         var result = await _formsEngine.GetMultiQuestionPage(organisationId, formId, sectionId, question2Id);
 
         result.Should().NotBeNull();
@@ -698,7 +701,7 @@ public class FormsEngineMultipleQuestionPageTests
     {
         var (organisationId, formId, sectionId, sessionKey) = CreateTestGuids();
         var groupId = Guid.NewGuid();
-        
+
         var beforeGroupId = Guid.NewGuid();
         var titleId = Guid.NewGuid();
         var question1Id = Guid.NewGuid();
@@ -763,7 +766,7 @@ public class FormsEngineMultipleQuestionPageTests
             ]
         };
 
-        // When navigating to a question in the middle of a group, 
+        // When navigating to a question in the middle of a group,
         // previous question should return the question before the group start
         var result = await _formsEngine.GetPreviousQuestion(organisationId, formId, sectionId, question2Id, answerState);
 
@@ -776,7 +779,7 @@ public class FormsEngineMultipleQuestionPageTests
     {
         var (organisationId, formId, sectionId, sessionKey) = CreateTestGuids();
         var groupId = Guid.NewGuid();
-        
+
         var question1Id = Guid.NewGuid();
         var question2Id = Guid.NewGuid();
         var question3Id = Guid.NewGuid();

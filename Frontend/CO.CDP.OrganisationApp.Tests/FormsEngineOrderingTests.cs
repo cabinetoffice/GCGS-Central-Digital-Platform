@@ -19,8 +19,13 @@ public class FormsEngineOrderingTests
         var dataSharingClientMock = new Mock<DataShareWebApiClient.IDataSharingClient>();
         _tempDataServiceMock = new Mock<ITempDataService>();
         var choiceProviderServiceMock = new Mock<IChoiceProviderService>();
+        var answerDisplayServiceMock = new Mock<IAnswerDisplayService>();
+
+        answerDisplayServiceMock.Setup(a => a.FormatAnswerForDisplayAsync(It.IsAny<QuestionAnswer>(), It.IsAny<FormQuestion>()))
+            .ReturnsAsync((QuestionAnswer qa, FormQuestion _) => qa.Answer?.TextValue ?? string.Empty);
+
         _formsEngine = new FormsEngine(formsApiClientMock.Object, _tempDataServiceMock.Object,
-            choiceProviderServiceMock.Object, dataSharingClientMock.Object);
+            choiceProviderServiceMock.Object, dataSharingClientMock.Object, answerDisplayServiceMock.Object);
     }
 
     [Fact]
