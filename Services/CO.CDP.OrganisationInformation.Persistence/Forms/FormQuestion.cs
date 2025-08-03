@@ -60,14 +60,15 @@ public enum FormQuestionType
 
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum DateValidationType
-{
-    None,
-    PastOnly,
-    FutureOnly,
-    MinDate,
-    MaxDate,
-    DateRange
-}
+    {
+        PastOrTodayOnly,
+        FutureOrTodayOnly,
+        MinDate,
+        MaxDate,
+        DateRange,
+        PastOnly,
+        FutureOnly
+    }
 
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum TextValidationType
