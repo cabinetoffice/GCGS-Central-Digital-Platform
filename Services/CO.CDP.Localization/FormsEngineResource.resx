@@ -1209,7 +1209,7 @@ PPN 006 and associated reporting standards (opens in a new tab).&lt;/a&gt;&lt;/p
     <value>Do you have processes to ensure you pay your supply chain on time?</value>
   </data>
   <data name="Payments_02_SummaryTitle" xml:space="preserve">
-    <value>Payment Process</value>
+    <value>Payment process</value>
   </data>
   <data name="Payments_02_Description" xml:space="preserve">
     <value>
@@ -1222,7 +1222,7 @@ PPN 006 and associated reporting standards (opens in a new tab).&lt;/a&gt;&lt;/p
     <value>Do you have processes to resolve disputed payments and invoices in your supply chain on time?</value>
   </data>
   <data name="Payments_03_SummaryTitle" xml:space="preserve">
-    <value>Payment Process</value>
+    <value>Dispute resolution process</value>
   </data>
   <data name="Payments_03_Description" xml:space="preserve">
     <value>
@@ -1255,9 +1255,15 @@ PPN 006 and associated reporting standards (opens in a new tab).&lt;/a&gt;&lt;/p
   <data name="Payments_05_SummaryTitle" xml:space="preserve">
     <value>Reporting under the Payment Practices Reporting Regulations</value>
   </data>
+  <data name="Payments_05_Caption" xml:space="preserve">
+    <value>Enter the link to your most recent report</value>
+  </data>
   <!-- ===== PAYMENTS 06 ===== -->
   <data name="Payments_06_Title" xml:space="preserve">
     <value>Payment and invoice reporting within your immediate supply chain</value>
+  </data>
+  <data name="Payments_06_Caption" xml:space="preserve">
+    <value>Reporting period 1</value>
   </data>
   <data name="Payments_06_Description" xml:space="preserve">
     <value>&lt;p class="govuk-body"&gt;Enter your payment and invoice details for your most recent 6 month reporting period.&lt;/p&gt;</value>
@@ -1283,9 +1289,30 @@ PPN 006 and associated reporting standards (opens in a new tab).&lt;/a&gt;&lt;/p
   <data name="Payments_06_PctPaidOverdue" xml:space="preserve">
     <value>Overdue within this reporting period</value>
   </data>
+  <data name="Payments_06_ReportingStartDate_SummaryTitle" xml:space="preserve">
+    <value>Reporting period start date</value>
+  </data>
+  <data name="Payments_06_AverageDaysToPayInvoice_SummaryTitle" xml:space="preserve">
+    <value>Average number of days to pay an invoice</value>
+  </data>
+  <data name="Payments_06_PctPaidWithin30Days_SummaryTitle" xml:space="preserve">
+    <value>Paid within 30 days</value>
+  </data>
+  <data name="Payments_06_PctPaid31To60Days_SummaryTitle" xml:space="preserve">
+    <value>Paid within 31 to 60 days</value>
+  </data>
+  <data name="Payments_06_PctPaid61OrMoreDays_SummaryTitle" xml:space="preserve">
+    <value>Paid at 61 days or more</value>
+  </data>
+  <data name="Payments_06_PctPaidOverdue_SummaryTitle" xml:space="preserve">
+    <value>Overdue within the reporting period</value>
+  </data>
   <!-- ===== PAYMENTS 07 ===== -->
   <data name="Payments_07_Title" xml:space="preserve">
     <value>Payment and invoice reporting within your immediate supply chain</value>
+  </data>
+  <data name="Payments_07_Caption" xml:space="preserve">
+    <value>Reporting period 2</value>
   </data>
   <data name="Payments_07_Description" xml:space="preserve">
     <value>&lt;p class="govuk-body"&gt;Enter your payment and invoice details for the 6 month reporting period prior to your most recent reporting period.&lt;/p&gt;</value>
@@ -1311,8 +1338,29 @@ PPN 006 and associated reporting standards (opens in a new tab).&lt;/a&gt;&lt;/p
   <data name="Payments_07_PctPaidOverdue" xml:space="preserve">
     <value>Overdue within this reporting period</value>
   </data>
+  <data name="Payments_07_ReportingStartDate_SummaryTitle" xml:space="preserve">
+    <value>Reporting period start date</value>
+  </data>
+  <data name="Payments_07_AverageDaysToPayInvoice_SummaryTitle" xml:space="preserve">
+    <value>Average number of days to pay an invoice</value>
+  </data>
+  <data name="Payments_07_PctPaidWithin30Days_SummaryTitle" xml:space="preserve">
+    <value>Paid within 30 days</value>
+  </data>
+  <data name="Payments_07_PctPaid31To60Days_SummaryTitle" xml:space="preserve">
+    <value>Paid within 31 to 60 days</value>
+  </data>
+  <data name="Payments_07_PctPaid61OrMoreDays_SummaryTitle" xml:space="preserve">
+    <value>Paid at 61 days or more</value>
+  </data>
+  <data name="Payments_07_PctPaidOverdue_SummaryTitle" xml:space="preserve">
+    <value>Overdue within the reporting period</value>
+  </data>
   <data name="Payments_08_Title" xml:space="preserve">
     <value>Explain why you have not paid all invoices within agreed contractual terms (where relevant)</value>
+  </data>
+  <data name="Payments_08_SummaryTitle" xml:space="preserve">
+    <value>Invoices not paid within contractual terms</value>
   </data>
   <data name="Payments_08_Description" xml:space="preserve">
     <value>
@@ -1325,7 +1373,7 @@ PPN 006 and associated reporting standards (opens in a new tab).&lt;/a&gt;&lt;/p
     <value>Have you shown that 95% or more of your payable invoices have been paid?</value>
   </data>
   <data name="Payments_09_SummaryTitle" xml:space="preserve">
-    <value>X</value>
+    <value>95% of invoices paid within 60 days</value>
   </data>
   <data name="Payments_09_Description" xml:space="preserve">
     <value>
@@ -1340,7 +1388,7 @@ PPN 006 and associated reporting standards (opens in a new tab).&lt;/a&gt;&lt;/p
     <value>Can you confirm you have paid all your invoices within an average of 55 days?</value>
   </data>
   <data name="Payments_10_SummaryTitle" xml:space="preserve">
-  <value>Y</value>
+    <value>Invoices paid within 55-day average</value>
   </data>
   <data name="Payments_10_Description" xml:space="preserve">
     <value>
@@ -1353,7 +1401,7 @@ PPN 006 and associated reporting standards (opens in a new tab).&lt;/a&gt;&lt;/p
     <value>Submit your action plan (where relevant)</value>
   </data>
   <data name="Payments_11_SummaryTitle" xml:space="preserve">
-  <value>Y</value>
+  <value>Action plan upload</value>
   </data>
   <data name="Payments_11_Description" xml:space="preserve">
     <value>
@@ -1366,6 +1414,24 @@ PPN 006 and associated reporting standards (opens in a new tab).&lt;/a&gt;&lt;/p
         &lt;li&gt;a plan published on your website (this can be a shorter, summary plan)&lt;/li&gt;
       &lt;/ul&gt;
     </value>
+  </data>
+  <data name="Payments_11_InsetText" xml:space="preserve">
+    <value>&lt;div class=&quot;govuk-inset-text&quot;&gt;You can submit an existing action plan prepared for a different purpose, but it must cover the points mentioned on this page.&lt;/div&gt;</value>
+  </data>
+  <data name="Payments_Days" xml:space="preserve">
+    <value>Days</value>
+  </data>
+  <data name="Payments_Group1_SummaryTitle" xml:space="preserve">
+    <value>Terms and processes</value>
+  </data>
+  <data name="Payments_Group2_SummaryTitle" xml:space="preserve">
+    <value>Reporting period 1</value>
+  </data>
+  <data name="Payments_Group3_SummaryTitle" xml:space="preserve">
+    <value>Reporting period 2</value>
+  </data>
+  <data name="Payments_Group4_SummaryTitle" xml:space="preserve">
+    <value>Non-compliance details</value>
   </data>
   <data name="Global_Enter_Your_Job_Title" xml:space="preserve">
     <value>Enter your job title</value>
