@@ -1,10 +1,12 @@
 using CO.CDP.DataSharing.WebApiClient;
 using CO.CDP.Forms.WebApiClient;
+using CO.CDP.Localization;
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.Pages.Forms;
 using CO.CDP.OrganisationApp.Pages.Forms.ChoiceProviderStrategies;
 using FluentAssertions;
+using Microsoft.Extensions.Localization;
 using Moq;
 using FormAnswer = CO.CDP.OrganisationApp.Models.FormAnswer;
 using FormQuestion = CO.CDP.OrganisationApp.Models.FormQuestion;
@@ -30,15 +32,17 @@ public class FormsEngineMultipleQuestionPageTests
         var dataSharingClientMock = new Mock<IDataSharingClient>();
         _tempDataServiceMock = new Mock<ITempDataService>();
         _choiceProviderServiceMock = new Mock<IChoiceProviderService>();
-        var answerDisplayServiceMock = new Mock<IAnswerDisplayService>();
         UserInfoServiceMock = new Mock<IUserInfoService>();
         OrganisationClientMock = new Mock<IOrganisationClient>();
 
-        answerDisplayServiceMock.Setup(a => a.FormatAnswerForDisplayAsync(It.IsAny<QuestionAnswer>(), It.IsAny<FormQuestion>()))
-            .ReturnsAsync((QuestionAnswer qa, FormQuestion _) => qa.Answer?.TextValue ?? string.Empty);
+        var localizerMock = new Mock<IStringLocalizer<StaticTextResource>>();
+        localizerMock.Setup(l => l["Global_Yes"]).Returns(new LocalizedString("Global_Yes", "Yes"));
+        localizerMock.Setup(l => l["Global_No"]).Returns(new LocalizedString("Global_No", "No"));
+        
+        var realAnswerDisplayService = new AnswerDisplayService(localizerMock.Object, _choiceProviderServiceMock.Object);
 
         _formsEngine = new FormsEngine(formsApiClientMock.Object, _tempDataServiceMock.Object,
-            _choiceProviderServiceMock.Object, dataSharingClientMock.Object, answerDisplayServiceMock.Object);
+            _choiceProviderServiceMock.Object, dataSharingClientMock.Object, realAnswerDisplayService);
     }
 
     private static (Guid organisationId, Guid formId, Guid sectionId, string sessionKey) CreateTestGuids()

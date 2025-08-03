@@ -1,7 +1,9 @@
+using CO.CDP.Localization;
 using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.Pages.Forms;
 using CO.CDP.OrganisationApp.Pages.Forms.ChoiceProviderStrategies;
 using FluentAssertions;
+using Microsoft.Extensions.Localization;
 using Moq;
 using DataShareWebApiClient = CO.CDP.DataSharing.WebApiClient;
 using WebApiClient = CO.CDP.Forms.WebApiClient;
@@ -19,13 +21,15 @@ public class FormsEngineOrderingTests
         var dataSharingClientMock = new Mock<DataShareWebApiClient.IDataSharingClient>();
         _tempDataServiceMock = new Mock<ITempDataService>();
         var choiceProviderServiceMock = new Mock<IChoiceProviderService>();
-        var answerDisplayServiceMock = new Mock<IAnswerDisplayService>();
 
-        answerDisplayServiceMock.Setup(a => a.FormatAnswerForDisplayAsync(It.IsAny<QuestionAnswer>(), It.IsAny<FormQuestion>()))
-            .ReturnsAsync((QuestionAnswer qa, FormQuestion _) => qa.Answer?.TextValue ?? string.Empty);
+        var localizerMock = new Mock<IStringLocalizer<StaticTextResource>>();
+        localizerMock.Setup(l => l["Global_Yes"]).Returns(new LocalizedString("Global_Yes", "Yes"));
+        localizerMock.Setup(l => l["Global_No"]).Returns(new LocalizedString("Global_No", "No"));
+        
+        var realAnswerDisplayService = new AnswerDisplayService(localizerMock.Object, choiceProviderServiceMock.Object);
 
         _formsEngine = new FormsEngine(formsApiClientMock.Object, _tempDataServiceMock.Object,
-            choiceProviderServiceMock.Object, dataSharingClientMock.Object, answerDisplayServiceMock.Object);
+            choiceProviderServiceMock.Object, dataSharingClientMock.Object, realAnswerDisplayService);
     }
 
     [Fact]
