@@ -83,7 +83,7 @@
     else
     {
         <fieldset class="govuk-fieldset" @(selectOptionHasError ? Html.Raw($"aria-describedby=\"{Model.GetFieldName("input-error")}\"") : "")>
-            @RenderLegend(Model.Heading, Model.Caption, Model.IsFirstQuestion, Model.Options?.Layout?.HeadingSize)
+            @RenderLegendWithoutCaption(Model.Heading, Model.IsFirstQuestion, Model.Options?.Layout?.HeadingSize)
             @{
                 RenderDescription();
             }

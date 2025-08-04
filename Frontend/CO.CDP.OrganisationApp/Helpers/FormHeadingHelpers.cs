@@ -59,7 +59,7 @@ public static class FormHeadingHelpers
         if (string.IsNullOrWhiteSpace(heading))
             return HtmlString.Empty;
 
-        var (headingTag, headingClass) = GetHeadingTagAndClass(headingSize, isFirst);
+        var (headingTag, _) = GetHeadingTagAndClass(headingSize, isFirst);
         var govUkSizeSuffix = GetGovUkSizeSuffix(headingSize, isFirst);
 
         var content = new HtmlContentBuilder();
@@ -70,6 +70,23 @@ public static class FormHeadingHelpers
             content.AppendHtml($"<span class=\"govuk-caption-{govUkSizeSuffix}\">{caption}</span>");
         }
 
+        content.AppendHtml(
+            $"<label class=\"govuk-label govuk-label--{govUkSizeSuffix}\" for=\"{fieldId}\">{heading}</label>");
+        content.AppendHtml($"</{headingTag}>");
+
+        return content;
+    }
+
+    public static IHtmlContent RenderLabelHeadingWithoutCaption(string? heading, string fieldId, bool isFirst = false, HeadingSize? headingSize = null)
+    {
+        if (string.IsNullOrWhiteSpace(heading))
+            return HtmlString.Empty;
+
+        var (headingTag, _) = GetHeadingTagAndClass(headingSize, isFirst);
+        var govUkSizeSuffix = GetGovUkSizeSuffix(headingSize, isFirst);
+
+        var content = new HtmlContentBuilder();
+        content.AppendHtml($"<{headingTag} class=\"govuk-label-wrapper\">");
         content.AppendHtml(
             $"<label class=\"govuk-label govuk-label--{govUkSizeSuffix}\" for=\"{fieldId}\">{heading}</label>");
         content.AppendHtml($"</{headingTag}>");

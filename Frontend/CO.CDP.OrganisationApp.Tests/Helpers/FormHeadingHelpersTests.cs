@@ -116,14 +116,14 @@ public class FormHeadingHelpersTests
     }
 
     [Theory]
-    [InlineData(HeadingSize.ExtraLarge, true, "h1", "govuk-heading-xl", "xl")]
-    [InlineData(HeadingSize.Large, true, "h1", "govuk-heading-l", "l")]
-    [InlineData(HeadingSize.Medium, true, "h2", "govuk-heading-m", "m")]
-    [InlineData(HeadingSize.Small, true, "h3", "govuk-heading-s", "s")]
-    [InlineData(null, true, "h1", "govuk-heading-l", "l")]
-    [InlineData(null, false, "h2", "govuk-heading-m", "m")]
+    [InlineData(HeadingSize.ExtraLarge, true, "h1", "xl")]
+    [InlineData(HeadingSize.Large, true, "h1", "l")]
+    [InlineData(HeadingSize.Medium, true, "h2", "m")]
+    [InlineData(HeadingSize.Small, true, "h3", "s")]
+    [InlineData(null, true, "h1", "l")]
+    [InlineData(null, false, "h2", "m")]
     public void RenderFieldsetLegend_ShouldRenderCorrectHtml(HeadingSize? headingSize, bool isFirst, string expectedTag,
-        string expectedClass, string expectedLegendSize)
+        string expectedLegendSize)
     {
         var heading = "Test Legend Heading";
         var caption = "Test Legend Caption";
@@ -299,6 +299,53 @@ public class FormHeadingHelpersTests
         string heading = "";
 
         var result = FormHeadingHelpers.RenderLegendWithoutCaption(heading);
+
+        result.Should().Be(HtmlString.Empty);
+    }
+
+    [Theory]
+    [InlineData(HeadingSize.ExtraLarge, true, "h1", "xl")]
+    [InlineData(HeadingSize.Large, true, "h1", "l")]
+    [InlineData(HeadingSize.Medium, true, "h2", "m")]
+    [InlineData(HeadingSize.Small, true, "h3", "s")]
+    [InlineData(null, true, "h1", "l")]
+    [InlineData(null, false, "h2", "m")]
+    public void RenderLabelHeadingWithoutCaption_ShouldRenderCorrectHtml(HeadingSize? headingSize, bool isFirst,
+        string expectedTag, string expectedLabelSize)
+    {
+        var heading = "Test Label Heading";
+        var fieldId = "test-field-id";
+
+        var result = FormHeadingHelpers.RenderLabelHeadingWithoutCaption(heading, fieldId, isFirst, headingSize);
+
+        result.Should().NotBeNull();
+        var htmlContent = GetHtmlContent(result);
+        htmlContent.Should().Contain($"<{expectedTag} class=\"govuk-label-wrapper\">");
+        htmlContent.Should()
+            .Contain(
+                $"<label class=\"govuk-label govuk-label--{expectedLabelSize}\" for=\"{fieldId}\">{heading}</label>");
+        htmlContent.Should().NotContain("govuk-caption-");
+        htmlContent.Should().Contain($"</{expectedTag}>");
+    }
+
+    [Fact]
+    public void RenderLabelHeadingWithoutCaption_ShouldReturnEmpty_WhenHeadingIsNull()
+    {
+        string? heading = null;
+        string fieldId = "some-id";
+
+        var result = FormHeadingHelpers.RenderLabelHeadingWithoutCaption(heading, fieldId);
+
+        result.Should().Be(HtmlString.Empty);
+    }
+
+    [Fact]
+    public void RenderLabelHeadingWithoutCaption_ShouldReturnEmpty_WhenHeadingIsEmpty()
+    {
+        string heading = "";
+        string fieldId = "some-id";
+
+        var result = FormHeadingHelpers.RenderLabelHeadingWithoutCaption(heading, fieldId);
 
         result.Should().Be(HtmlString.Empty);
     }

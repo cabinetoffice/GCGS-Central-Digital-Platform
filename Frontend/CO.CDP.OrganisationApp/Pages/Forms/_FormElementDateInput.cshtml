@@ -105,7 +105,7 @@
 
 <div class="govuk-form-group @((Model.IsRequired && hasDateError) || selectOptionHasError ? "govuk-form-group--error" : "")">
     <fieldset class="govuk-fieldset" role="group" aria-describedby="@GetAriaDescribedBy()">
-        @RenderLegend(Model.Heading, Model.Caption, Model.IsFirstQuestion, Model.Options?.Layout?.HeadingSize, Model.GetFieldName("outer-legend"))
+        @RenderLegendWithoutCaption(Model.Heading, Model.IsFirstQuestion, Model.Options?.Layout?.HeadingSize, Model.GetFieldName("outer-legend"))
 
         @if (!string.IsNullOrWhiteSpace(Model.Description))
         {

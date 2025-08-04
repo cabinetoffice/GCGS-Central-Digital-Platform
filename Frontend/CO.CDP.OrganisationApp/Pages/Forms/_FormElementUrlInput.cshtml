@@ -39,7 +39,7 @@
 
     @if (Model.IsRequired)
     {
-        @RenderLabelHeadingWithCaptionAfter(Model.Heading, Model.GetFieldName(nameof(Model.TextInput)), Model.Caption, Model.IsFirstQuestion, Model.Options?.Layout?.HeadingSize)
+        @RenderLabelHeadingWithoutCaption(Model.Heading, Model.GetFieldName(nameof(Model.TextInput)), Model.IsFirstQuestion, Model.Options?.Layout?.HeadingSize)
         RenderDescription();
         RenderField();
     }
