@@ -261,4 +261,57 @@ public class FormElementTextInputModelTest
 
         results.Should().ContainSingle(r => r.MemberNames.Contains("TextInput") && r.ErrorMessage == StaticTextResource.Forms_FormElementTextInput_InvalidYearError);
     }
+
+    [Theory]
+    [InlineData("123.45", null)]
+    [InlineData("0.1", null)]
+    [InlineData("1000", null)]
+    [InlineData("-123.45", null)]
+    [InlineData("0", null)]
+    [InlineData("invalid", "Enter a valid decimal number")]
+    [InlineData("abc123", "Enter a valid decimal number")]
+    [InlineData("12.34.56", "Enter a valid decimal number")]
+    public void Validate_DecimalInput_ReturnsExpectedResults(string input, string? expectedErrorMessage)
+    {
+        var model = CreateModelWithOptions(FormQuestionType.Text, true, textValidationType: TextValidationType.Decimal);
+        model.TextInput = input;
+        var validationContext = new ValidationContext(model);
+
+        var results = model.Validate(validationContext).ToList();
+
+        if (expectedErrorMessage != null)
+        {
+            results.Should().ContainSingle(r => r.MemberNames.Contains("TextInput") && r.ErrorMessage == expectedErrorMessage);
+        }
+        else
+        {
+            results.Should().BeEmpty();
+        }
+    }
+
+    [Fact]
+    public void Validate_DecimalInputEmpty_ReturnsNoError()
+    {
+        var model = CreateModelWithOptions(FormQuestionType.Text, false, textValidationType: TextValidationType.Decimal);
+        model.TextInput = "";
+        model.HasValue = false;
+        var validationContext = new ValidationContext(model);
+
+        var results = model.Validate(validationContext).ToList();
+
+        results.Should().BeEmpty();
+    }
+
+    [Fact] 
+    public void Validate_DecimalInputNull_ReturnsNoError()
+    {
+        var model = CreateModelWithOptions(FormQuestionType.Text, false, textValidationType: TextValidationType.Decimal);
+        model.TextInput = null;
+        model.HasValue = false;
+        var validationContext = new ValidationContext(model);
+
+        var results = model.Validate(validationContext).ToList();
+
+        results.Should().BeEmpty();
+    }
 }

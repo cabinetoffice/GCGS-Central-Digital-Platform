@@ -75,7 +75,8 @@ public enum FormQuestionType
 {
     Year,
     Number,
-    Percentage
+    Percentage,
+    Decimal
 }
 
 public record FormQuestionOptions

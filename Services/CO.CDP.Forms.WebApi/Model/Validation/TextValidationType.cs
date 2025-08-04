@@ -7,5 +7,6 @@ public enum TextValidationType
 {
     Year,
     Number,
-    Percentage
+    Percentage,
+    Decimal
 }

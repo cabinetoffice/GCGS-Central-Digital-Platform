@@ -84,6 +84,8 @@ public class FormElementTextInputModel : FormElementModel, IValidatableObject
                 new ValidationResult(StaticTextResource.Global_Number_InvalidError, [nameof(TextInput)]),
             TextValidationType.Percentage when !new Validation.PercentageAttribute().IsValid(input) =>
                 new ValidationResult(StaticTextResource.Global_Percentage_InvalidError, [nameof(TextInput)]),
+            TextValidationType.Decimal when !new Validation.DecimalAttribute().IsValid(input) =>
+                new ValidationResult(StaticTextResource.Global_Decimal_InvalidError, [nameof(TextInput)]),
             _ => null
         };
 

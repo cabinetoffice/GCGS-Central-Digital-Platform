@@ -4358,4 +4358,7 @@
   <data name="BuyerView_TileThree_Body">
     <value>Review Statements of Work to make sure they meet procurement and commercial quality standards.</value>
   </data>
+  <data name="Global_Decimal_InvalidError" xml:space="preserve">
+    <value>Enter a valid decimal number</value>
+  </data>
 </root>
