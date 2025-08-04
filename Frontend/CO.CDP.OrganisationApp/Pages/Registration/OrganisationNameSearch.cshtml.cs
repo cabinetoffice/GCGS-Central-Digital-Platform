@@ -84,7 +84,7 @@ public class OrganisationNameSearchModel(ISession session, IOrganisationClient o
 
         try
         {
-            return await organisationClient.SearchOrganisationAsync(RegistrationDetails.OrganisationName, Constants.OrganisationType.Buyer.ToString(), 10, 0.3);
+            return await organisationClient.SearchOrganisationAsync(RegistrationDetails.OrganisationName, Constants.OrganisationType.Buyer.ToString(), 10, 0.3, false);
         }
         catch (ApiException ex) when (ex.StatusCode == 404)
         {
