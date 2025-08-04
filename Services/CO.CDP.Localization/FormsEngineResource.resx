@@ -1538,4 +1538,7 @@ PPN 006 and associated reporting standards (opens in a new tab)&lt;/a&gt;.&lt;/p
   <data name="DateForm_FutureDate_Hint" xml:space="preserve">
     <value>&lt;div class=&quot;govuk-hint&quot;&gt;For example, 27 3 2027&lt;/div&gt;</value>
   </data>
+  <data name="Global_Start" xml:space="preserve">
+    <value>Start</value>
+  </data>
 </root>
