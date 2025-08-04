@@ -1271,7 +1271,7 @@ PPN 006 and associated reporting standards (opens in a new tab)&lt;/a&gt;.&lt;/p
     <value>Reporting under the Payment Practices Reporting Regulations</value>
   </data>
   <data name="Payments_05_Caption" xml:space="preserve">
-    <value>&lt;p class="govuk-hint"&gt;Enter the link to your most recent report&lt;/p&gt;</value>
+    <value>Enter the link to your most recent report</value>
   </data>
   <!-- ===== PAYMENTS 06 ===== -->
   <data name="Payments_06_Title" xml:space="preserve">
