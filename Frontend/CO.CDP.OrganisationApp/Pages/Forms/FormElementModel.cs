@@ -21,12 +21,15 @@ public interface IMultiQuestionFormElementModel
     List<FormQuestion> Questions { get; }
     IEnumerable<IFormElementModel> QuestionModels { get; }
     string? PageTitleResourceKey { get; }
+    ButtonOptions? Button { get; }
 
     void Initialize(MultiQuestionPageModel multiQuestionPage, Dictionary<Guid, FormAnswer> existingAnswers);
 
     IFormElementModel? GetQuestionModel(Guid questionId);
 
     Dictionary<Guid, FormAnswer> GetAllAnswers();
+
+    IEnumerable<RenderableQuestionItem> GetRenderableQuestions();
 }
 
 public abstract class FormElementModel : IFormElementModel

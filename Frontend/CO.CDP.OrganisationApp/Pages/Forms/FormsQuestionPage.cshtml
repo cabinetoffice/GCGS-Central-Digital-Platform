@@ -78,9 +78,9 @@
     {
         public static FormContentBlocks FromLayout(LayoutOptions? layout) =>
             layout == null ? Empty : new(
-                BeforeTitle: new ContentBlock(layout.BeforeTitleContent ?? ""),
-                BeforeButton: new ContentBlock(layout.BeforeButtonContent ?? ""),
-                AfterButton: new ContentBlock(layout.AfterButtonContent ?? "")
+                BeforeTitle: new ContentBlock(layout.Heading?.BeforeHeadingContent ?? ""),
+                BeforeButton: new ContentBlock(layout.Button?.BeforeButtonContent ?? ""),
+                AfterButton: new ContentBlock(layout.Button?.AfterButtonContent ?? "")
             );
 
         private static FormContentBlocks Empty => new(ContentBlock.Empty, ContentBlock.Empty, ContentBlock.Empty);

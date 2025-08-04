@@ -48,22 +48,32 @@ public class FormQuestionOptions
 
 public class LayoutOptions
 {
+    public InputOptions? Input { get; set; }
+    public HeadingOptions? Heading { get; set; }
+    public ButtonOptions? Button { get; set; }
+}
+
+public class InputOptions
+{
     public string? CustomYesText { get; set; }
     public string? CustomNoText { get; set; }
-    public InputWidthType? InputWidth { get; set; }
-    public InputSuffixOptions? InputSuffix { get; set; }
+    public InputWidthType? Width { get; set; }
+    public InputSuffixOptions? Suffix { get; set; }
     public string? CustomCssClasses { get; set; }
-    public string? BeforeTitleContent { get; set; }
-    public string? BeforeButtonContent { get; set; }
-    public string? AfterButtonContent { get; set; }
-    public ButtonOptions? Button { get; set; }
-    public HeadingSize? HeadingSize { get; set; }
+}
+
+public class HeadingOptions
+{
+    public HeadingSize? Size { get; set; }
+    public string? BeforeHeadingContent { get; set; }
 }
 
 public class ButtonOptions
 {
     public string? Text { get; set; }
     public PrimaryButtonStyle? Style { get; set; }
+    public string? BeforeButtonContent { get; set; }
+    public string? AfterButtonContent { get; set; }
 }
 
 public class InputSuffixOptions

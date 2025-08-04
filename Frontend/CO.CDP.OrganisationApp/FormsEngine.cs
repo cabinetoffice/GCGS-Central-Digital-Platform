@@ -13,6 +13,7 @@ using FormQuestionType = CO.CDP.OrganisationApp.Models.FormQuestionType;
 using FormSection = CO.CDP.OrganisationApp.Models.FormSection;
 using FormSectionType = CO.CDP.OrganisationApp.Models.FormSectionType;
 using HeadingSize = CO.CDP.OrganisationApp.Models.HeadingSize;
+using InputOptions = CO.CDP.OrganisationApp.Models.InputOptions;
 using InputSuffixOptions = CO.CDP.OrganisationApp.Models.InputSuffixOptions;
 using InputSuffixType = CO.CDP.OrganisationApp.Models.InputSuffixType;
 using InputWidthType = CO.CDP.OrganisationApp.Models.InputWidthType;
@@ -100,28 +101,34 @@ public class FormsEngine(
                         Layout = q.Options.Layout != null
                             ? new LayoutOptions
                             {
-                                CustomYesText = q.Options.Layout.CustomYesText,
-                                CustomNoText = q.Options.Layout.CustomNoText,
-                                InputWidth = q.Options.Layout.InputWidth.HasValue ? (InputWidthType)q.Options.Layout.InputWidth.Value : null,
-                                InputSuffix = q.Options.Layout.InputSuffix != null
-                                    ? new InputSuffixOptions
-                                    {
-                                        Type = (InputSuffixType)q.Options.Layout.InputSuffix.Type,
-                                        Text = q.Options.Layout.InputSuffix.Text
-                                    }
-                                    : null,
-                                CustomCssClasses = q.Options.Layout.CustomCssClasses,
-                                BeforeTitleContent = q.Options.Layout.BeforeTitleContent,
-                                BeforeButtonContent = q.Options.Layout.BeforeButtonContent,
-                                AfterButtonContent = q.Options.Layout.AfterButtonContent,
+                                Input = new InputOptions
+                                {
+                                    CustomYesText = q.Options.Layout.Input.CustomYesText,
+                                    CustomNoText = q.Options.Layout.Input.CustomNoText,
+                                    Width = q.Options.Layout.Input.Width.HasValue ? (InputWidthType)q.Options.Layout.Input.Width.Value : null,
+                                    Suffix = q.Options.Layout.Input.Suffix != null
+                                        ? new InputSuffixOptions
+                                        {
+                                            Type = (InputSuffixType)q.Options.Layout.Input.Suffix.Type,
+                                            Text = q.Options.Layout.Input.Suffix.Text
+                                        }
+                                        : null,
+                                    CustomCssClasses = q.Options.Layout.Input.CustomCssClasses
+                                },
+                                Heading = new Models.HeadingOptions
+                                {
+                                    Size = q.Options.Layout.Heading.Size.HasValue ? (HeadingSize)q.Options.Layout.Heading.Size.Value : null,
+                                    BeforeHeadingContent = q.Options.Layout.Heading.BeforeHeadingContent
+                                },
                                 Button = q.Options.Layout.Button != null
                                     ? new Models.ButtonOptions
                                     {
                                         Text = q.Options.Layout.Button.Text,
-                                        Style = q.Options.Layout.Button.Style.HasValue ? (Models.PrimaryButtonStyle)q.Options.Layout.Button.Style.Value : null
+                                        Style = q.Options.Layout.Button.Style.HasValue ? (Models.PrimaryButtonStyle)q.Options.Layout.Button.Style.Value : null,
+                                        BeforeButtonContent = q.Options.Layout.Button.BeforeButtonContent,
+                                        AfterButtonContent = q.Options.Layout.Button.AfterButtonContent
                                     }
-                                    : null,
-                                HeadingSize = q.Options.Layout.HeadingSize.HasValue ? (HeadingSize) q.Options.Layout.HeadingSize.Value : null,
+                                    : null
                             }
                             : null,
                         Validation = q.Options.Validation != null

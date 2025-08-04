@@ -31,7 +31,7 @@
         }
 
         var finalAriaDescribedby = textInputAriaDescribedby;
-        var suffixInfo = InputSuffixHelper.GetSuffixRenderInfo(Model.Options?.Layout?.InputSuffix);
+        var suffixInfo = InputSuffixHelper.GetSuffixRenderInfo(Model.Options?.Layout?.Input?.Suffix);
 
         if (suffixInfo.HasSuffix)
         {
@@ -40,8 +40,8 @@
 
         var inputCssClasses = InputSuffixHelper.GetInputCssClasses(
             suffixInfo,
-            Model.Options?.Layout?.InputWidth,
-            Model.Options?.Layout?.CustomCssClasses,
+            Model.Options?.Layout?.Input?.Width,
+            Model.Options?.Layout?.Input?.CustomCssClasses,
             textInputHasError);
 
         @if (suffixInfo.HasSuffix)
@@ -67,7 +67,7 @@
         }
         else
         {
-            <input class="govuk-input @GovUkCssHelper.GetInputWidthCssClass(Model.Options?.Layout?.InputWidth) @Model.Options?.Layout?.CustomCssClasses @(textInputHasError ? "govuk-input--error" : "")" id="@Model.GetFieldName(nameof(Model.TextInput))" name="@Model.GetFieldName(nameof(Model.TextInput))" type="@Model.GetFieldType()" value="@Model.TextInput"
+            <input class="govuk-input @GovUkCssHelper.GetInputWidthCssClass(Model.Options?.Layout?.Input?.Width) @Model.Options?.Layout?.Input?.CustomCssClasses @(textInputHasError ? "govuk-input--error" : "")" id="@Model.GetFieldName(nameof(Model.TextInput))" name="@Model.GetFieldName(nameof(Model.TextInput))" type="@Model.GetFieldType()" value="@Model.TextInput"
             @(string.IsNullOrWhiteSpace(finalAriaDescribedby) ? "" : Html.Raw($"aria-describedby=\"{finalAriaDescribedby}\""))>
         }
     }
@@ -76,14 +76,14 @@
 <div class="govuk-form-group @((Model.IsRequired && textInputHasError) || selectOptionHasError ? "govuk-form-group--error" : "")">
     @if (Model.IsRequired)
     {
-        @RenderLabelHeading(Model.Heading, Model.GetFieldName(nameof(Model.TextInput)), Model.Caption, Model.IsFirstQuestion, Model.Options?.Layout?.HeadingSize)
+        @RenderLabelHeading(Model.Heading, Model.GetFieldName(nameof(Model.TextInput)), Model.Caption, Model.IsFirstQuestion, Model.Options?.Layout?.Heading?.Size)
         RenderDescription();
         RenderField();
     }
     else
     {
         <fieldset class="govuk-fieldset" @(selectOptionHasError ? Html.Raw($"aria-describedby=\"{Model.GetFieldName("input-error")}\"") : "")>
-            @RenderLegendWithoutCaption(Model.Heading, Model.IsFirstQuestion, Model.Options?.Layout?.HeadingSize)
+            @RenderLegendWithoutCaption(Model.Heading, Model.IsFirstQuestion, Model.Options?.Layout?.Heading?.Size)
             @{
                 RenderDescription();
             }

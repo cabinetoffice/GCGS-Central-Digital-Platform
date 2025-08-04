@@ -20,7 +20,7 @@
     <fieldset class="govuk-fieldset" aria-describedby="@ariaDescribedby">
         @if (!string.IsNullOrWhiteSpace(Model.Heading))
         {
-            @RenderLegend(Model.Heading, Model.Caption, Model.IsFirstQuestion, Model.Options?.Layout?.HeadingSize)
+            @RenderLegend(Model.Heading, Model.Caption, Model.IsFirstQuestion, Model.Options?.Layout?.Heading?.Size)
         }
 
         @if (!string.IsNullOrWhiteSpace(Model.Description))
@@ -56,7 +56,7 @@
                     </div>
                 }
 
-                <div class="govuk-radios govuk-!-margin-bottom-5 @Model.Options?.Layout?.CustomCssClasses" data-module="govuk-radios">
+                <div class="govuk-radios govuk-!-margin-bottom-5 @(Model.Options?.Layout?.Input?.CustomCssClasses)" data-module="govuk-radios">
                     @foreach (var choice in group.Choices)
                     {
                         var id = index == 0 ? Model.GetFieldName(nameof(Model.SelectedOption)) : $"{Model.GetFieldName(nameof(Model.SelectedOption))}_{index}";

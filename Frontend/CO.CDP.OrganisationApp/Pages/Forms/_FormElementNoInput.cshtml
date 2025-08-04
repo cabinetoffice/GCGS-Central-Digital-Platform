@@ -1,6 +1,6 @@
 @model FormElementNoInputModel
 
-@RenderHeading(Model.Heading, Model.Caption, Model.IsFirstQuestion, Model.Options?.Layout?.HeadingSize)
+@RenderHeading(Model.Heading, Model.Caption, Model.IsFirstQuestion, Model.Options?.Layout?.Heading?.Size)
 
 @if (!string.IsNullOrWhiteSpace(Model.Description))
 {

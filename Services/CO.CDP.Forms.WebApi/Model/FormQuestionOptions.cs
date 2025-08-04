@@ -17,22 +17,32 @@ public record FormQuestionOptions
 
 public record LayoutOptions
 {
+    public InputOptions? Input { get; init; }
+    public HeadingOptions? Heading { get; init; }
+    public ButtonOptions? Button { get; init; }
+}
+
+public record InputOptions
+{
     public string? CustomYesText { get; init; }
     public string? CustomNoText { get; init; }
-    public InputWidthType? InputWidth { get; init; }
-    public InputSuffixOptions? InputSuffix { get; init; }
+    public InputWidthType? Width { get; init; }
+    public InputSuffixOptions? Suffix { get; init; }
     public string? CustomCssClasses { get; init; }
-    public string? BeforeTitleContent { get; init; }
-    public string? BeforeButtonContent { get; init; }
-    public string? AfterButtonContent { get; init; }
-    public ButtonOptions? Button { get; init; }
-    public HeadingSize? HeadingSize { get; init; }
+}
+
+public record HeadingOptions
+{
+    public HeadingSize? Size { get; init; }
+    public string? BeforeHeadingContent { get; init; }
 }
 
 public record ButtonOptions
 {
     public string? Text { get; init; }
     public PrimaryButtonStyle? Style { get; init; }
+    public string? BeforeButtonContent { get; init; }
+    public string? AfterButtonContent { get; init; }
 }
 
 public record InputSuffixOptions

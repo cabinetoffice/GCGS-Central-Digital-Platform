@@ -121,16 +121,23 @@ public class FormsEngineTests
                             summaryTitle: "SummaryTitle"
                         ),
                         layout: new WebApiClient.LayoutOptions(
-                            customYesText: null,
-                            customNoText: null,
-                            inputWidth: null,
-                            inputSuffix: null,
-                            customCssClasses: null,
-                            beforeTitleContent: null,
-                            beforeButtonContent: null,
-                            afterButtonContent: null,
-                            button: null,
-                            headingSize: null
+                            input: new WebApiClient.InputOptions(
+                                customYesText: null,
+                                customNoText: null,
+                                width: null,
+                                suffix: null,
+                                customCssClasses: null
+                            ),
+                            heading: new WebApiClient.HeadingOptions(
+                                beforeHeadingContent: null,
+                                size: null
+                            ),
+                            button: new WebApiClient.ButtonOptions(
+                                text: null,
+                                style: null,
+                                beforeButtonContent: null,
+                                afterButtonContent: null
+                            )
                         ),
                         validation: new WebApiClient.ValidationOptions(
                             dateValidationType: null,
@@ -171,15 +178,26 @@ public class FormsEngineTests
                         ChoiceProviderStrategy = choiceProviderStrategy,
                         Layout = new LayoutOptions
                         {
-                            CustomYesText = null,
-                            CustomNoText = null,
-                            InputWidth = null,
-                            InputSuffix = null,
-                            CustomCssClasses = null,
-                            BeforeTitleContent = null,
-                            BeforeButtonContent = null,
-                            AfterButtonContent = null,
-                            Button = null
+                            Input = new InputOptions
+                            {
+                                CustomYesText = null,
+                                CustomNoText = null,
+                                Width = null,
+                                Suffix = null,
+                                CustomCssClasses = null
+                            },
+                            Heading = new HeadingOptions
+                            {
+                                Size = null,
+                                BeforeHeadingContent = null
+                            },
+                            Button = new ButtonOptions
+                            {
+                                Text = null,
+                                Style = null,
+                                BeforeButtonContent = null,
+                                AfterButtonContent = null
+                            }
                         },
                         Validation = new ValidationOptions
                         {
@@ -1230,7 +1248,7 @@ public class FormsEngineTests
         "should be able to navigate back from a question that follows a FileUpload with no file")]
     public async Task GetPreviousQuestion_ShouldReturnPreviousQuestion_WhenOnBranchWithoutNextQuestionAlternative(
         FormQuestionType questionType,
-        bool boolValue,
+        bool positiveAnswer,
         string answerDescription,
         string becauseReason)
     {
@@ -1263,7 +1281,7 @@ public class FormsEngineTests
         {
             Answers = new List<QuestionAnswer>
             {
-                CreateQuestionAnswer(branchQuestionId, questionType, boolValue)
+                CreateQuestionAnswer(branchQuestionId, questionType, positiveAnswer)
             }
         };
 

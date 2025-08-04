@@ -171,9 +171,12 @@ public class FormElementTextInputModelTest
             {
                 Layout = new LayoutOptions
                 {
-                    InputWidth = inputWidth,
-                    InputSuffix = inputSuffix,
-                    CustomCssClasses = customCssClasses
+                    Input = new InputOptions
+                    {
+                        Width = inputWidth,
+                        Suffix = inputSuffix,
+                        CustomCssClasses = customCssClasses
+                    }
                 },
                 Validation = new ValidationOptions
                 {
@@ -187,7 +190,7 @@ public class FormElementTextInputModelTest
     public void Options_InputWidth_IsSet()
     {
         var model = CreateModelWithOptions(FormQuestionType.Text, true, inputWidth: InputWidthType.OneHalf);
-        model.Options?.Layout?.InputWidth.Should().Be(InputWidthType.OneHalf);
+        model.Options?.Layout?.Input?.Width.Should().Be(InputWidthType.OneHalf);
     }
 
     [Fact]
@@ -199,7 +202,7 @@ public class FormElementTextInputModelTest
             Text = "kg"
         };
         var model = CreateModelWithOptions(FormQuestionType.Text, true, inputSuffix: inputSuffixOptions);
-        model.Options?.Layout?.InputSuffix.Should().Be(inputSuffixOptions);
+        model.Options?.Layout?.Input?.Suffix.Should().Be(inputSuffixOptions);
     }
 
     [Fact]
@@ -211,14 +214,14 @@ public class FormElementTextInputModelTest
             Text = "Global_Percentage"
         };
         var model = CreateModelWithOptions(FormQuestionType.Text, true, inputSuffix: inputSuffixOptions);
-        model.Options?.Layout?.InputSuffix.Should().Be(inputSuffixOptions);
+        model.Options?.Layout?.Input?.Suffix.Should().Be(inputSuffixOptions);
     }
 
     [Fact]
     public void Options_CustomCssClasses_IsSet()
     {
         var model = CreateModelWithOptions(FormQuestionType.Text, true, customCssClasses: "custom-class");
-        model.Options?.Layout?.CustomCssClasses.Should().Be("custom-class");
+        model.Options?.Layout?.Input?.CustomCssClasses.Should().Be("custom-class");
     }
 
     [Fact]
