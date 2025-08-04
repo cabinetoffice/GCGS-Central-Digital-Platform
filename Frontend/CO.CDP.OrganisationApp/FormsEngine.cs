@@ -101,25 +101,29 @@ public class FormsEngine(
                         Layout = q.Options.Layout != null
                             ? new LayoutOptions
                             {
-                                Input = new InputOptions
-                                {
-                                    CustomYesText = q.Options.Layout.Input.CustomYesText,
-                                    CustomNoText = q.Options.Layout.Input.CustomNoText,
-                                    Width = q.Options.Layout.Input.Width.HasValue ? (InputWidthType)q.Options.Layout.Input.Width.Value : null,
-                                    Suffix = q.Options.Layout.Input.Suffix != null
-                                        ? new InputSuffixOptions
-                                        {
-                                            Type = (InputSuffixType)q.Options.Layout.Input.Suffix.Type,
-                                            Text = q.Options.Layout.Input.Suffix.Text
-                                        }
-                                        : null,
-                                    CustomCssClasses = q.Options.Layout.Input.CustomCssClasses
-                                },
-                                Heading = new Models.HeadingOptions
-                                {
-                                    Size = q.Options.Layout.Heading.Size.HasValue ? (HeadingSize)q.Options.Layout.Heading.Size.Value : null,
-                                    BeforeHeadingContent = q.Options.Layout.Heading.BeforeHeadingContent
-                                },
+                                Input = q.Options.Layout.Input != null
+                                    ? new InputOptions
+                                    {
+                                        CustomYesText = q.Options.Layout.Input.CustomYesText,
+                                        CustomNoText = q.Options.Layout.Input.CustomNoText,
+                                        Width = q.Options.Layout.Input.Width.HasValue ? (InputWidthType)q.Options.Layout.Input.Width.Value : null,
+                                        Suffix = q.Options.Layout.Input.Suffix != null
+                                            ? new InputSuffixOptions
+                                            {
+                                                Type = (InputSuffixType)q.Options.Layout.Input.Suffix.Type,
+                                                Text = q.Options.Layout.Input.Suffix.Text
+                                            }
+                                            : null,
+                                        CustomCssClasses = q.Options.Layout.Input.CustomCssClasses
+                                    }
+                                    : null,
+                                Heading = q.Options.Layout.Heading != null
+                                    ? new Models.HeadingOptions
+                                    {
+                                        Size = q.Options.Layout.Heading.Size.HasValue ? (HeadingSize)q.Options.Layout.Heading.Size.Value : null,
+                                        BeforeHeadingContent = q.Options.Layout.Heading.BeforeHeadingContent
+                                    }
+                                    : null,
                                 Button = q.Options.Layout.Button != null
                                     ? new Models.ButtonOptions
                                     {
