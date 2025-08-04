@@ -13,7 +13,7 @@ public class FormElementMultiQuestionModel : IMultiQuestionFormElementModel
 {
     public List<FormQuestion> Questions { get; private set; } = [];
     public string? PageTitleResourceKey { get; private set; }
-    public string? SubmitButtonTextResourceKey { get; private set; }
+    public ButtonOptions? Button { get; private set; }
 
     private readonly Dictionary<Guid, IFormElementModel> _questionModels = new();
     public IEnumerable<IFormElementModel> QuestionModels => _questionModels.Values;
@@ -22,7 +22,11 @@ public class FormElementMultiQuestionModel : IMultiQuestionFormElementModel
     {
         Questions = multiQuestionPage.Questions;
         PageTitleResourceKey = multiQuestionPage.PageTitleResourceKey;
-        SubmitButtonTextResourceKey = multiQuestionPage.SubmitButtonTextResourceKey;
+        Button = new ButtonOptions
+        {
+            Text = multiQuestionPage.SubmitButtonTextResourceKey,
+            Style = multiQuestionPage.SubmitButtonStyle
+        };
 
         foreach (var question in Questions)
         {

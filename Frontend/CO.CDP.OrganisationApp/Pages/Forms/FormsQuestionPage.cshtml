@@ -93,14 +93,11 @@
             .AppendHtml(block.Content)
             .AppendHtml("</div>");
 
-    private static IHtmlContent CreateButton(string buttonText) =>
-        new HtmlContentBuilder()
-            .AppendHtml($"<button type=\"submit\" class=\"govuk-button\">{buttonText}</button>");
+    private static IHtmlContent CreateButton(string buttonText, PrimaryButtonStyle? buttonStyle = null) =>
+        ButtonHelper.CreateFormButton(buttonText, buttonStyle);
 
     private static string GetButtonText(IFormElementModel? viewModel) =>
-        !string.IsNullOrEmpty(viewModel?.Options?.Layout?.PrimaryButtonText)
-            ? StaticTextResource.ResourceManager.GetString(viewModel.Options.Layout.PrimaryButtonText!) ?? StaticTextResource.Global_Continue
-            : StaticTextResource.Global_Continue;
+        viewModel?.Options?.Layout?.Button?.Text ?? StaticTextResource.Global_Continue;
 
     private static IHtmlContent RenderQuestionWithContent(
         IHtmlContent questionContent,
@@ -141,7 +138,7 @@
         var contentBlocks = FormContentBlocks.FromLayout(Model.PartialViewModel.Options?.Layout);
 
         var questionContent = await Html.PartialAsync(Model.PartialViewName, Model.PartialViewModel);
-        var button = CreateButton(GetButtonText(Model.PartialViewModel));
+        var button = CreateButton(GetButtonText(Model.PartialViewModel), Model.PartialViewModel?.Options?.Layout?.Button?.Style);
 
         return RenderQuestionWithContent(questionContent, button, contentBlocks);
     }

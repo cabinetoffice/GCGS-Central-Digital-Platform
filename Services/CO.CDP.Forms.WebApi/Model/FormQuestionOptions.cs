@@ -25,8 +25,14 @@ public record LayoutOptions
     public string? BeforeTitleContent { get; init; }
     public string? BeforeButtonContent { get; init; }
     public string? AfterButtonContent { get; init; }
-    public string? PrimaryButtonText { get; init; }
+    public ButtonOptions? Button { get; init; }
     public HeadingSize? HeadingSize { get; init; }
+}
+
+public record ButtonOptions
+{
+    public string? Text { get; init; }
+    public PrimaryButtonStyle? Style { get; init; }
 }
 
 public record InputSuffixOptions
@@ -49,6 +55,13 @@ public enum HeadingSize
     Medium,
     Large,
     ExtraLarge
+}
+
+[JsonConverter(typeof(JsonStringEnumConverter))]
+public enum PrimaryButtonStyle
+{
+    Default,
+    Start
 }
 
 public record ValidationOptions

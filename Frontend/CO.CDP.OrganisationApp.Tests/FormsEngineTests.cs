@@ -129,7 +129,7 @@ public class FormsEngineTests
                             beforeTitleContent: null,
                             beforeButtonContent: null,
                             afterButtonContent: null,
-                            primaryButtonText: null,
+                            button: null,
                             headingSize: null
                         ),
                         validation: new WebApiClient.ValidationOptions(
@@ -179,7 +179,7 @@ public class FormsEngineTests
                             BeforeTitleContent = null,
                             BeforeButtonContent = null,
                             AfterButtonContent = null,
-                            PrimaryButtonText = null
+                            Button = null
                         },
                         Validation = new ValidationOptions
                         {

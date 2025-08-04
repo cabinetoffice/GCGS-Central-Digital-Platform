@@ -25,7 +25,7 @@ public class FormElementMultiQuestionModelTests
         _model.Questions.Should().HaveCount(3);
         _model.Questions.Should().BeEquivalentTo(questions);
         _model.PageTitleResourceKey.Should().Be("Test_Page_Title");
-        _model.SubmitButtonTextResourceKey.Should().Be("Test_Submit_Button");
+        _model.Button?.Text.Should().Be("Test_Submit_Button");
     }
 
     [Fact]
@@ -187,7 +187,7 @@ public class FormElementMultiQuestionModelTests
         _model.Questions.Should().HaveCount(originalQuestionCount);
         _model.Questions.Should().BeEquivalentTo(questions);
         _model.PageTitleResourceKey.Should().Be("Original_Title");
-        _model.SubmitButtonTextResourceKey.Should().Be("Original_Button");
+        _model.Button?.Text.Should().Be("Original_Button");
     }
 
     [Fact]

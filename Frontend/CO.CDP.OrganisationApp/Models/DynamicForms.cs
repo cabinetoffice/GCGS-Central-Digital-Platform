@@ -56,8 +56,14 @@ public class LayoutOptions
     public string? BeforeTitleContent { get; set; }
     public string? BeforeButtonContent { get; set; }
     public string? AfterButtonContent { get; set; }
-    public string? PrimaryButtonText { get; set; }
+    public ButtonOptions? Button { get; set; }
     public HeadingSize? HeadingSize { get; set; }
+}
+
+public class ButtonOptions
+{
+    public string? Text { get; set; }
+    public PrimaryButtonStyle? Style { get; set; }
 }
 
 public class InputSuffixOptions
@@ -78,6 +84,12 @@ public enum HeadingSize
     Medium,
     Large,
     ExtraLarge
+}
+
+public enum PrimaryButtonStyle
+{
+    Default,
+    Start
 }
 
 public class ValidationOptions
@@ -174,4 +186,5 @@ public class MultiQuestionPageModel
     public List<FormQuestion> Questions { get; set; } = [];
     public string? PageTitleResourceKey { get; set; }
     public string? SubmitButtonTextResourceKey { get; set; }
+    public PrimaryButtonStyle? SubmitButtonStyle { get; set; }
 }

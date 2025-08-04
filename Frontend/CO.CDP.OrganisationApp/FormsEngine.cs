@@ -114,8 +114,14 @@ public class FormsEngine(
                                 BeforeTitleContent = q.Options.Layout.BeforeTitleContent,
                                 BeforeButtonContent = q.Options.Layout.BeforeButtonContent,
                                 AfterButtonContent = q.Options.Layout.AfterButtonContent,
-                                PrimaryButtonText = q.Options.Layout.PrimaryButtonText,
-                                HeadingSize = q.Options.Layout.HeadingSize.HasValue ? (HeadingSize)q.Options.Layout.HeadingSize.Value : null,
+                                Button = q.Options.Layout.Button != null
+                                    ? new Models.ButtonOptions
+                                    {
+                                        Text = q.Options.Layout.Button.Text,
+                                        Style = q.Options.Layout.Button.Style.HasValue ? (Models.PrimaryButtonStyle)q.Options.Layout.Button.Style.Value : null
+                                    }
+                                    : null,
+                                HeadingSize = q.Options.Layout.HeadingSize.HasValue ? (HeadingSize) q.Options.Layout.HeadingSize.Value : null,
                             }
                             : null,
                         Validation = q.Options.Validation != null
@@ -572,12 +578,23 @@ public class FormsEngine(
     {
         var grouping = startingQuestion.Options.Grouping;
 
-        return grouping?.Page != true
-            ? new MultiQuestionPageModel { Questions = [startingQuestion] }
-            : new MultiQuestionPageModel
+        if (grouping?.Page != true)
+        {
+            return new MultiQuestionPageModel
             {
-                Questions = CollectQuestionsForPage(startingQuestion, allQuestions)
+                Questions = [startingQuestion],
+                SubmitButtonStyle = startingQuestion.Options.Layout?.Button?.Style
             };
+        }
+
+        var questions = CollectQuestionsForPage(startingQuestion, allQuestions);
+        var buttonStyle = questions.FirstOrDefault(q => q.Options.Layout?.Button?.Style != null)?.Options.Layout?.Button?.Style;
+
+        return new MultiQuestionPageModel
+        {
+            Questions = questions,
+            SubmitButtonStyle = buttonStyle
+        };
     }
 
     private static List<FormQuestion> CollectQuestionsForPage(FormQuestion startingQuestion,

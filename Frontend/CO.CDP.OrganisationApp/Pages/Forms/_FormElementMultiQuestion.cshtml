@@ -2,11 +2,7 @@
 @model FormElementMultiQuestionModel
 
 @{
-    string GetSubmitButtonText() => !string.IsNullOrEmpty(Model.SubmitButtonTextResourceKey)
-        ? FormsEngineResource.ResourceManager.GetString(Model.SubmitButtonTextResourceKey) ?? "Continue"
-        : "Continue";
-
-    var submitButtonText = GetSubmitButtonText();
+    var submitButtonText = Model.Button?.Text ?? StaticTextResource.Global_Continue;
 }
 
 @foreach (var questionItem in Model.GetRenderableQuestions())
@@ -17,4 +13,4 @@
     </div>
 }
 
-<govuk-button>@submitButtonText</govuk-button>
+@ButtonHelper.CreateFormButton(submitButtonText, Model.Button?.Style)
