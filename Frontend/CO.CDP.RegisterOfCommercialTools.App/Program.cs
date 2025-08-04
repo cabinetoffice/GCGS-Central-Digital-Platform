@@ -1,3 +1,4 @@
+using CO.CDP.AwsServices;
 using CO.CDP.RegisterOfCommercialTools.App;
 using CO.CDP.RegisterOfCommercialTools.App.Middleware;
 using CO.CDP.RegisterOfCommercialTools.App.Services;
@@ -21,6 +22,7 @@ builder.Services.AddRazorPages(options =>
 });
 builder.Services.AddGovUkFrontend();
 builder.Services.AddHttpContextAccessor();
+builder.Services.AddHealthChecks();
 
 builder.Services.AddSingleton<ISession, Session>();
 
@@ -33,11 +35,8 @@ builder.Services.AddScoped<ICookiePreferencesService, CookiePreferencesService>(
 
 builder.Services.AddUiFoundation(builder.Configuration, uiFoundationBuilder =>
 {
-
     uiFoundationBuilder.AddFtsUrlService();
     uiFoundationBuilder.AddSirsiUrlService();
-    uiFoundationBuilder.AddCommercialToolsUrlService();
-
 });
 
 builder.Services.AddScoped<CO.CDP.RegisterOfCommercialTools.App.Handlers.BearerTokenHandler>();
@@ -90,6 +89,12 @@ if (!string.IsNullOrEmpty(dataProtectionPrefix))
     dataProtectionBuilder.PersistKeysToAWSSystemsManager(dataProtectionPrefix);
 }
 
+builder.Services
+    .AddAwsConfiguration(builder.Configuration)
+    .AddLoggingConfiguration(builder.Configuration)
+    .AddAmazonCloudWatchLogsService()
+    .AddCloudWatchSerilog(builder.Configuration);
+
 builder.Services.AddAwsCognitoAuthentication(builder.Configuration, builder.Environment);
 
 builder.Configuration.GetValue<string>("CommercialToolsApi:ServiceUrl");
@@ -141,6 +146,7 @@ app.UseSession();
 
 app.UseAuthorization();
 
+app.MapHealthChecks("/health").AllowAnonymous();
 app.MapRazorPages();
 
 app.MapFallback(ctx =>

@@ -1,3 +1,4 @@
+using CO.CDP.AwsServices;
 using CO.CDP.Configuration.ForwardedHeaders;
 using CO.CDP.RegisterOfCommercialTools.WebApi;
 using CO.CDP.RegisterOfCommercialTools.WebApi.Services;
@@ -22,6 +23,12 @@ builder.Services.AddHttpClient<ICommercialToolsRepository, CommercialToolsReposi
 });
 
 builder.Services.AddTransient<ISearchService, SearchService>();
+
+builder.Services
+    .AddAwsConfiguration(builder.Configuration)
+    .AddLoggingConfiguration(builder.Configuration)
+    .AddAmazonCloudWatchLogsService()
+    .AddCloudWatchSerilog(builder.Configuration);
 
 var app = builder.Build();
 
