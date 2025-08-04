@@ -1061,7 +1061,7 @@ PPN 006 and associated reporting standards (opens in a new tab)&lt;/a&gt;.&lt;/p
     <value>Carbon Reduction Plan link</value>
   </data>
   <data name="CarbonNetZero_03_Caption" xml:space="preserve">
-    <value>&lt;p class="govuk-hint"&gt;Website address&lt;/p&gt;</value>
+    <value>Website address</value>
   </data>
   <data name="CarbonNetZero_NoCarbonReductionPlan_Title" xml:space="preserve">
     <value>You cannot complete this module</value>
