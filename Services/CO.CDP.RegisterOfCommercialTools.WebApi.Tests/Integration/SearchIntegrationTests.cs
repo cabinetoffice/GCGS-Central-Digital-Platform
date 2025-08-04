@@ -8,6 +8,7 @@ using Moq;
 using System.Net;
 using System.Net.Http.Json;
 using System.Text.Json;
+using Microsoft.Extensions.Configuration;
 
 namespace CO.CDP.RegisterOfCommercialTools.WebApi.Tests.Integration;
 
@@ -19,6 +20,13 @@ public class SearchIntegrationTests
     {
         var factory = new TestWebApplicationFactory<Program>(builder =>
         {
+            builder.ConfigureAppConfiguration((_, config) =>
+            {
+                config.AddInMemoryCollection(new Dictionary<string, string?>
+                {
+                    { "Aws:ServiceURL", "http://localhost:4566" }
+                });
+            });
             builder.ConfigureServices(services =>
             {
                 var descriptor = services.SingleOrDefault(d => d.ServiceType == typeof(ICommercialToolsRepository));
