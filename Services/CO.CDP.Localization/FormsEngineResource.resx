@@ -1030,7 +1030,7 @@ PPN 014: Cyber Essentials scheme (opens in a new tab).&lt;/a&gt;&lt;/p&gt;
 Carbon Net Zero is the commitment to balance greenhouse gas emissions with equivalent removals by 2050. In-scope organisations may be required to submit a Carbon Reduction Plan (CRP) when bidding for certain government contracts.
 This should be in line with &lt;a href=&quot;https://www.gov.uk/government/publications/ppn-006-taking-account-of-carbon-reduction-plans-in-the-procurement-of-major-government-contracts/ppn-006-taking-account-of-carbon-reduction-plans-html#issue&quot;
 class=&quot;govuk-link&quot; rel=&quot;noreferrer noopener&quot; target=&quot;_blank&quot;&gt;
-PPN 006 and associated reporting standards (opens in a new tab).&lt;/a&gt;&lt;/p&gt;
+PPN 006 and associated reporting standards (opens in a new tab)&lt;/a&gt;.&lt;/p&gt;
       &lt;p class=&quot;govuk-body&quot;&gt;
     You are only required to complete this module if requested by the contracting authority you are bidding for.
     Failure to complete this module may result in your tenders being deemed insufficient where PPN 006 has been applied.
@@ -1038,9 +1038,9 @@ PPN 006 and associated reporting standards (opens in a new tab).&lt;/a&gt;&lt;/p
 &lt;h2 class=&quot;govuk-heading-m&quot;&gt;The information you&#39;ll need&lt;/h2&gt;
 &lt;div class=&quot;govuk-body&quot;&gt;You&#39;ll need to provide information on your Carbon Reduction Plan. This may include:
   &lt;ul class=&quot;govuk-list govuk-list--bullet&quot;&gt;
-    &lt;li class=&quot;govuk-!-margin-top-4&quot;&gt; the expiry date of your Carbon Reduction Plan&lt;/li&gt;
-    &lt;li class=&quot;govuk-!-margin-top-4&quot;&gt; your Emissions Declaration&lt;/li&gt;
-    &lt;li class=&quot;govuk-!-margin-top-4&quot;&gt; your baseline and reporting year data&lt;/li&gt;
+    &lt;li class=&quot;govuk-!-margin-top-2&quot;&gt; the expiry date of your Carbon Reduction Plan&lt;/li&gt;
+    &lt;li class=&quot;govuk-!-margin-top-2&quot;&gt; your Emissions Declaration&lt;/li&gt;
+    &lt;li class=&quot;govuk-!-margin-top-2&quot;&gt; your baseline and reporting year data&lt;/li&gt;
   &lt;/ul&gt;
 &lt;/div&gt;
     </value>
@@ -1052,13 +1052,16 @@ PPN 006 and associated reporting standards (opens in a new tab).&lt;/a&gt;&lt;/p
     <value>Carbon Reduction Plan published</value>
   </data>
   <data name="CarbonNetZero_02_Description" xml:space="preserve">
-    <value> &lt;p class=&quot;govuk-body&quot;&gt; For more information read &lt;a href=&quot;https://www.gov.uk/government/publications/ppn-0923-updates-to-the-cyber-essentials-scheme/procurement-policy-note-updates-to-the-cyber-essentials-scheme-html&quot; class=&quot;govuk-link&quot; rel=&quot;noreferrer noopener&quot; target=&quot;_blank&quot;&gt;PPN 006: Taking account of Carbon Reduction Plans in the procurement of major government contracts (opens in a new tab)&lt;/a&gt;&lt;/p&gt;</value>
+    <value> &lt;p class=&quot;govuk-body&quot;&gt; For more information read &lt;a href=&quot;https://www.gov.uk/government/publications/ppn-0923-updates-to-the-cyber-essentials-scheme/procurement-policy-note-updates-to-the-cyber-essentials-scheme-html&quot; class=&quot;govuk-link&quot; rel=&quot;noreferrer noopener&quot; target=&quot;_blank&quot;&gt;PPN 006: Taking account of Carbon Reduction Plans in the procurement of major government contracts (opens in a new tab)&lt;/a&gt;.&lt;/p&gt;</value>
   </data>
   <data name="CarbonNetZero_03_Title" xml:space="preserve">
     <value>Do you have a link to your most recently published Carbon Reduction Plan?</value>
   </data>
   <data name="CarbonNetZero_03_SummaryTitle" xml:space="preserve">
     <value>Carbon Reduction Plan link</value>
+  </data>
+  <data name="CarbonNetZero_03_Caption" xml:space="preserve">
+    <value>&lt;p class="govuk-hint"&gt;Website address&lt;/p&gt;</value>
   </data>
   <data name="CarbonNetZero_NoCarbonReductionPlan_Title" xml:space="preserve">
     <value>You cannot complete this module</value>
@@ -1085,73 +1088,85 @@ PPN 006 and associated reporting standards (opens in a new tab).&lt;/a&gt;&lt;/p
     </value>
   </data>
   <data name="CarbonNetZero_06_Title" xml:space="preserve">
-    <value>Enter your baseline emissions data</value>
+    <value>Baseline year</value>
   </data>
   <data name="CarbonNetZero_06_SummaryTitle" xml:space="preserve">
     <value>Baseline year</value>
   </data>
-  <data name="CarbonNetZero_07_Title" xml:space="preserve">
+  <data name="CarbonNetZero_06_BaselineContainer_Title" xml:space="preserve">
     <value>Enter your baseline emissions data</value>
+  </data>
+  <data name="CarbonNetZero_07_Title" xml:space="preserve">
+    <value>Scope 1</value>
   </data>
   <data name="CarbonNetZero_07_SummaryTitle" xml:space="preserve">
     <value>Scope 1</value>
   </data>
   <data name="CarbonNetZero_08_Title" xml:space="preserve">
-    <value>Enter your baseline emissions data</value>
+    <value>Scope 2</value>
   </data>
   <data name="CarbonNetZero_08_SummaryTitle" xml:space="preserve">
     <value>Scope 2</value>
   </data>
   <data name="CarbonNetZero_09_Title" xml:space="preserve">
-    <value>Enter your baseline emissions data</value>
+    <value>Scope 3</value>
   </data>
   <data name="CarbonNetZero_09_SummaryTitle" xml:space="preserve">
     <value>Scope 3</value>
   </data>
   <data name="CarbonNetZero_10_Title" xml:space="preserve">
-    <value>Enter your current emissions data</value>
+    <value>Reporting year</value>
   </data>
   <data name="CarbonNetZero_10_SummaryTitle" xml:space="preserve">
     <value>Reporting year</value>
   </data>
-  <data name="CarbonNetZero_11_Title" xml:space="preserve">
+  <data name="CarbonNetZero_10_ReportingContainer_Title" xml:space="preserve">
     <value>Enter your current emissions data</value>
+  </data>
+  <data name="CarbonNetZero_10_Description" xml:space="preserve">
+    <value>&lt;div class=&quot;govuk-hint&quot;&gt;For example, 2030&lt;/div&gt;</value>
+  </data>
+  <data name="CarbonNetZero_11_Title" xml:space="preserve">
+    <value>Scope 1</value>
   </data>
   <data name="CarbonNetZero_11_SummaryTitle" xml:space="preserve">
     <value>Scope 1</value>
   </data>
   <data name="CarbonNetZero_12_Title" xml:space="preserve">
-    <value>Enter your current emissions data</value>
+    <value>Scope 2</value>
   </data>
   <data name="CarbonNetZero_12_SummaryTitle" xml:space="preserve">
     <value>Scope 2</value>
   </data>
   <data name="CarbonNetZero_13_Title" xml:space="preserve">
-    <value>Enter your current emissions data</value>
+    <value>Scope 3</value>
   </data>
   <data name="CarbonNetZero_13_SummaryTitle" xml:space="preserve">
     <value>Scope 3</value>
-  </data>
-  <data name="Global_YearInput_YearRequiredError" xml:space="preserve">
-    <value>The year is required.</value>
-  </data>
-  <data name="Global_YearInput_YearInvalidError" xml:space="preserve">
-    <value>The year entered is invalid. Please enter a valid year.</value>
-  </data>
-  <data name="Forms_FormElementYearInput_ExampleHint" xml:space="preserve">
-    <value>For example, 2030</value>
   </data>
   <data name="CarbonNetZero_CarbonNetZeroDetails_NetZeroTargetYear_Heading" xml:space="preserve">
     <value>Enter your Net Zero target year</value>
   </data>
   <data name="CarbonNetZero_CarbonNetZeroDetails_NetZeroTargetYear_HintText" xml:space="preserve">
-    <value>For example 2030</value>
+    <value>For example, 2030</value>
   </data>
   <data name="CarbonNetZero_CarbonNetZeroDetails_RelevantEmissionsData_Heading" xml:space="preserve">
     <value>Enter the relevant emissions data:</value>
   </data>
   <data name="CarbonNetZero_CarbonNetZeroDetails_SupplierEmissionsDeclaration_Text" xml:space="preserve">
-    <value>Supplier Emissions Declaration:</value>
+    <value>Supplier Emissions Declaration</value>
+  </data>
+  <data name="CarbonNetZero_tCO2e" xml:space="preserve">
+    <value>tCO2e</value>
+  </data>
+  <data name="CarbonNetZero_CarbonReductionPlan" xml:space="preserve">
+    <value>Carbon Reduction Plan</value>
+  </data>
+  <data name="CarbonNetZero_BaselineEmissions_Group" xml:space="preserve">
+    <value>Supplier Emissions Declaration</value>
+  </data>
+  <data name="CarbonNetZero_ReportingEmissions_Group" xml:space="preserve">
+    <value>Supplier Emissions Declaration</value>
   </data>
   <data name="CarbonNetZero_CarbonNetZeroDetails_BaselineYear_Text" xml:space="preserve">
     <value>Baseline Year:</value>
@@ -1256,7 +1271,7 @@ PPN 006 and associated reporting standards (opens in a new tab).&lt;/a&gt;&lt;/p
     <value>Reporting under the Payment Practices Reporting Regulations</value>
   </data>
   <data name="Payments_05_Caption" xml:space="preserve">
-    <value>Enter the link to your most recent report</value>
+    <value>&lt;p class="govuk-hint"&gt;Enter the link to your most recent report&lt;/p&gt;</value>
   </data>
   <!-- ===== PAYMENTS 06 ===== -->
   <data name="Payments_06_Title" xml:space="preserve">
@@ -1519,5 +1534,8 @@ PPN 006 and associated reporting standards (opens in a new tab).&lt;/a&gt;&lt;/p
   </data>
   <data name="CyberEssentials_CertificationPlus_SubTitle" xml:space="preserve">
     <value>Cyber Essentials Plus certification scheme</value>
+  </data>
+  <data name="DateForm_FutureDate_Hint" xml:space="preserve">
+    <value>&lt;div class=&quot;govuk-hint&quot;&gt;For example, 27 3 2027&lt;/div&gt;</value>
   </data>
 </root>
