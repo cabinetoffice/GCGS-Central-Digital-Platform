@@ -5,7 +5,12 @@ module "ecs_migration_tasks_fts" {
 
   container_definitions = templatefile(
     "${path.module}/templates/task-definitions/${each.value.name}.json.tftpl",
-    local.fts_migrations_container_parameters
+    merge(
+      local.fts_migrations_container_parameters,
+      {
+        aws_buckets_notices = module.s3_bucket_fts.bucket
+      }
+    )
   )
 
   cluster_id             = aws_ecs_cluster.this.id
