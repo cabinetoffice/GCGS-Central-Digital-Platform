@@ -26,7 +26,7 @@ public class ButtonHelperTests
     public void CreateFormButton_WithCustomButtonText_UsesProvidedText()
     {
         var buttonText = "Save and continue";
-        
+
         var result = ButtonHelper.CreateFormButton(buttonText);
         var html = GetHtmlString(result);
 
@@ -64,7 +64,7 @@ public class ButtonHelperTests
         html.Should().Contain("govuk-button__start-icon");
         html.Should().Contain("<svg");
         html.Should().Contain("<path fill=\"currentColor\" d=\"M0 0h13l20 20-20 20H0l20-20z\" />");
-        html.Should().NotContain("data-prevent-double-click");
+        html.Should().Contain("data-prevent-double-click");
     }
 
     [Fact]
@@ -98,13 +98,12 @@ public class ButtonHelperTests
     }
 
     [Fact]
-    public void CreateFormButton_StartButtonWithPreventDoubleClickTrue_DoesNotIncludePreventDoubleClick()
+    public void CreateFormButton_StartButtonWithPreventDoubleClickTrue_IncludesPreventDoubleClick()
     {
-        // Start buttons should never have prevent double click, regardless of the parameter
         var result = ButtonHelper.CreateFormButton("Start now", PrimaryButtonStyle.Start, preventDoubleClick: true);
         var html = GetHtmlString(result);
 
-        html.Should().NotContain("data-prevent-double-click");
+        html.Should().Contain("data-prevent-double-click=\"true\"");
     }
 
     [Fact]

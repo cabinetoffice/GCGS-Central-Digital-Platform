@@ -16,7 +16,7 @@ public static class ButtonHelper
         var builder = new HtmlContentBuilder()
             .AppendHtml($"<button type=\"submit\" class=\"{classes}\" data-module=\"govuk-button\"");
 
-        if (preventDoubleClick && !isStartButton)
+        if (preventDoubleClick)
         {
             builder.AppendHtml(" data-prevent-double-click=\"true\"");
         }
