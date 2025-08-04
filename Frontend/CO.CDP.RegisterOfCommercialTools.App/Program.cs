@@ -26,8 +26,6 @@ builder.Services.AddHealthChecks();
 
 builder.Services.AddSingleton<ISession, Session>();
 
-builder.Services.AddCors();
-
 var cookieSettings = new CookieSettings();
 builder.Configuration.GetSection("CookieSettings").Bind(cookieSettings);
 builder.Services.AddSingleton(cookieSettings);
@@ -136,8 +134,6 @@ app.UseCookiePolicy();
 app.UseStaticFiles();
 
 app.UseRouting();
-
-app.UseCors("AllowAllOrigins"); // to be updated when OneLogin is implemented
 
 app.UseGovUkFrontend();
 
