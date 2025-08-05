@@ -1,4 +1,5 @@
 using CO.CDP.GovUKNotify;
+using CO.CDP.MQ;
 using CO.CDP.OrganisationInformation.Persistence;
 using CO.CDP.TestKit.Mvc;
 using FluentAssertions;
@@ -15,15 +16,22 @@ public class OrganisationClientIntegrationTest
 
     public OrganisationClientIntegrationTest(ITestOutputHelper testOutputHelper)
     {
+        var mockPublisher = new Mock<IPublisher>();
         TestWebApplicationFactory<Program> _factory = new(builder =>
         {
             builder.ConfigureInMemoryDbContext<OrganisationInformationContext>();
             builder.ConfigureFakePolicyEvaluator();
             builder.ConfigureLogging(testOutputHelper);
+
             builder.ConfigureServices((_, s) =>
             {
                 s.AddScoped(_ => _govUKNotifyApiClientMock.Object);
+                s.AddScoped(_ => mockPublisher.Object);
             });
+
+
+
+
         });
 
         _httpClient = _factory.CreateClient();

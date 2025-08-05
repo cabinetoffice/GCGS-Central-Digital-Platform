@@ -4253,7 +4253,7 @@
     <value>Public procurement organisation number register</value>
   </data>
   <data name="PponSearch_Hint" xml:space="preserve">
-    <value>Search by organisation name or PPON</value>
+    <value>Search by organisation name, PPON or other unique identifiers</value>
   </data>
   <data name="PponSearch_Ppon_Desc_Title" xml:space="preserve">
     <value>Public procurement organisation number (PPON)</value>
@@ -4272,17 +4272,17 @@
   </data>
   <data name="PponSearch_Ppon_Desc_Hint_01" xml:space="preserve">
     <value>
-      &lt;p class=&quot;govuk-body&quot;&gt;
+      &lt;p class="govuk-body"&gt;
         A PPON is a unique identifier assigned to organisations that participate in public procurement, generated when an organisation registers on the
-        &lt;a target=&quot;_blank&quot; href=&quot;https://www.find-tender.service.gov.uk&quot;&gt;
-        Central Digital Platform (opens in a new tab)&lt;/a&gt;. It is used to manage and publish notices related to public procurement and connects information about the organisation digitally.
+        &lt;a target="_blank" href="https://www.find-tender.service.gov.uk"&gt;
+        Find a Tender (opens in a new tab)&lt;/a&gt;. It is used to manage and publish notices related to public procurement and connects information about the organisation digitally.
       &lt;/p&gt;
     </value>
   </data>
   <data name="PponSearch_Ppon_Desc_Hint_02" xml:space="preserve">
     <value>
       &lt;p class=&quot;govuk-body&quot;&gt;
-        Your PPON is a combination of 16 letters and numbers, separated by hyphens. For example, ABCD-EFGH-1234-IJKL.
+        Your PPON is a combination of 12 letters and numbers, separated by hyphens. For example, EFGH-1234-IJKL.
       &lt;/p&gt;
     </value>
   </data>

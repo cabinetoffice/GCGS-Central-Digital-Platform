@@ -51,7 +51,7 @@ public interface IOrganisationRepository : IDisposable
     public Task<Mou?> GetMou(Guid mouId);
     Task<IEnumerable<Organisation>> SearchByName(string name, PartyRole? role, int? limit, double threshold);
 
-    Task<(IEnumerable<Organisation> Results, int TotalCount)> SearchByNameOrPpon(string searchText,  int? limit, int skip,string orderBy);
+    Task<(IEnumerable<Organisation> Results, int TotalCount)> SearchByNameOrPpon(string searchText,  int? limit, int skip,string orderBy, double threshold);
 
     public Task<IEnumerable<Organisation>> FindByAdminEmail(string email, PartyRole? role, int? limit);
 

@@ -140,7 +140,7 @@
             </div>
             <div class="govuk-grid-column-one-third govuk-!-text-align-right">
                 <div class="govuk-grid-row" aria-label="Organisation roles">
-                    @foreach (var partyRole in @org.Roles.Distinct())
+                    @foreach (var partyRole in @org.Roles.Distinct().OrderBy(r=> r.ToString()))
                     {
                         <strong class="govuk-tag @Model.GetTagClassForRole(partyRole)" aria-label="Role: @partyRole">
                             @partyRole
