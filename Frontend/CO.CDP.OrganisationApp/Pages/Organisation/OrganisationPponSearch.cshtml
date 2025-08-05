@@ -74,7 +74,7 @@
 
     @if (!string.IsNullOrEmpty(Model.FeedbackMessage))
     {
-        <p class="govuk-body">@Model.FeedbackMessage</p>
+        <p class="govuk-body">@Html.Raw(Model.FeedbackMessage)</p>
     }
 
     @if (Model.TotalOrganisations > 0)

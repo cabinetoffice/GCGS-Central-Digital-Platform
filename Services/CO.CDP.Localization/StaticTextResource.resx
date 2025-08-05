@@ -4268,8 +4268,18 @@
     <value>We've found &lt;b&gt;{0}&lt;/b&gt; organisations</value>
   </data>
   <data name="PponSearch_NoResults" xml:space="preserve">
-    <value>No organisations found matching your search criteria.</value>
-  </data>
+  <value>
+    &lt;p class=&quot;govuk-body govuk-!-margin-bottom-3&quot;&gt;
+      &lt;b&gt;Search results&lt;/b&gt;
+    &lt;/p&gt;
+    &lt;p class=&quot;govuk-body&quot;&gt;
+      &lt;b&gt;0&lt;/b&gt; child organisations found.
+    &lt;/p&gt;
+    &lt;p class=&quot;govuk-body&quot;&gt;
+      &lt;b&gt;There are no matching results.&lt;/b&gt;
+    &lt;/p&gt;
+  </value>
+</data>
   <data name="PponSearch_Ppon_Desc_Hint_01" xml:space="preserve">
     <value>
       &lt;p class=&quot;govuk-body&quot;&gt;
