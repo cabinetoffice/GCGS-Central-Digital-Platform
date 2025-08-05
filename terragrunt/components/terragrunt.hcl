@@ -101,7 +101,7 @@ locals {
         "https://fts.staging.supplier-information.find-tender.service.gov.uk/auth/backchannellogout"
       ]
       pinned_service_version_cfs        = "1.0.0"
-      pinned_service_version_fts        = "1.0.11"
+      pinned_service_version_fts        = "1.0.12"
       pinned_service_version            = "1.0.72"
       postgres_instance_type            = "db.t4g.micro"
       postgres_aurora_instance_type     = "db.r5.large"
