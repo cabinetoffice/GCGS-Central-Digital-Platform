@@ -56,7 +56,7 @@ locals {
     local_version                       = 1000
     site_domain                         = local.cfs_site_domains[var.environment]
     ssl_service                         = true
-    email_support                       = var.is_production ? "noreply@find-tender.service.gov.uk" : "noreply@${var.public_domain}"
+    email_support                       = var.is_production ? "noreply@contractsfinder.service.gov.uk" : "noreply@${var.public_domain}"
     valid_until                         = 1924990799
   }
 
