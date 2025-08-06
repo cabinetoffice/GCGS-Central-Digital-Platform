@@ -1118,7 +1118,7 @@ public class DatabaseOrganisationRepositoryTest(OrganisationInformationPostgreSq
         var organisations = new[]
         {
             GivenOrganisation(
-                name: "Company A",
+                name: "Company E",
                 roles: [PartyRole.Buyer, PartyRole.Tenderer],
                 identifiers: [new Identifier
                 {
@@ -1130,7 +1130,7 @@ public class DatabaseOrganisationRepositoryTest(OrganisationInformationPostgreSq
                 }]
             ),
             GivenOrganisation(
-                name: "Organisation 1",
+                name: "Supplier B",
                 roles: [PartyRole.Buyer, PartyRole.Tenderer],
                 identifiers: [new Identifier
                 {
@@ -1142,7 +1142,7 @@ public class DatabaseOrganisationRepositoryTest(OrganisationInformationPostgreSq
                 }]
             ),
             GivenOrganisation(
-                name: "Company B",
+                name: "Company G",
                 roles: [PartyRole.Buyer, PartyRole.Tenderer],
                 identifiers: [new Identifier
                 {
@@ -1186,7 +1186,7 @@ public class DatabaseOrganisationRepositoryTest(OrganisationInformationPostgreSq
                 }]
             ),
             GivenOrganisation(
-                name: "Organisation 1",
+                name: "Supplier A",
                 roles: [PartyRole.Buyer, PartyRole.Tenderer],
                 identifiers: [new Identifier
                 {
