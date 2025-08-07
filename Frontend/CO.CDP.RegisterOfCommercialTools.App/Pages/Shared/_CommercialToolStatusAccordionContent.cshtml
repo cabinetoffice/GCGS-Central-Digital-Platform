@@ -1,0 +1,34 @@
+@model CO.CDP.RegisterOfCommercialTools.App.Models.SearchModel
+
+<div class="govuk-!-margin-top-0">
+    <div class="govuk-form-group accordion-highlight govuk-!-padding-2 govuk-!-margin-left-2 govuk-!-margin-right-4">
+        <fieldset class="govuk-fieldset">
+            <div class="govuk-checkboxes govuk-checkboxes--small" data-module="govuk-checkboxes">
+                <div class="govuk-checkboxes__item">
+                    <input class="govuk-checkboxes__input" id="status-upcoming" name="status" type="checkbox" value="upcoming" @(Model.Status.Contains("upcoming") ? "checked" : "")>
+                    <label class="govuk-label govuk-checkboxes__label govuk-!-font-size-14" for="status-upcoming">
+                        Upcoming
+                    </label>
+                </div>
+                <div class="govuk-checkboxes__item">
+                    <input class="govuk-checkboxes__input" id="status-active-buyers" name="status" type="checkbox" value="active-buyers" @(Model.Status.Contains("active-buyers") ? "checked" : "")>
+                    <label class="govuk-label govuk-checkboxes__label govuk-!-font-size-14" for="status-active-buyers">
+                        Active available to buyers
+                    </label>
+                </div>
+                <div class="govuk-checkboxes__item">
+                    <input class="govuk-checkboxes__input" id="status-active-suppliers" name="status" type="checkbox" value="active-suppliers" @(Model.Status.Contains("active-suppliers") ? "checked" : "")>
+                    <label class="govuk-label govuk-checkboxes__label govuk-!-font-size-14" for="status-active-suppliers">
+                        Active accepting suppliers
+                    </label>
+                </div>
+                <div class="govuk-checkboxes__item">
+                    <input class="govuk-checkboxes__input" id="status-expired" name="status" type="checkbox" value="expired" @(Model.Status.Contains("expired") ? "checked" : "")>
+                    <label class="govuk-label govuk-checkboxes__label govuk-!-font-size-14" for="status-expired">
+                        Expired
+                    </label>
+                </div>
+            </div>
+        </fieldset>
+    </div>
+</div>

@@ -6,13 +6,17 @@ using Microsoft.FeatureManagement;
 using CO.CDP.Localization;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.FeatureManagement.Mvc;
+using CO.CDP.UI.Foundation.Services;
+using CO.CDP.UI.Foundation.Cookies;
 
 namespace CO.CDP.OrganisationApp.Pages.Buyer;
 [FeatureGate(FeatureFlags.BuyerView)]
 [Authorize(PolicyNames.PartyRole.Buyer)]
 [Authorize(OrgScopeRequirement.Viewer)]
 public class BuyerView(
-    IFeatureManager featureManager)
+    IFeatureManager featureManager,
+    ICommercialToolsUrlService commercialToolsUrlService,
+    ICookiePreferencesService cookiePreferencesService)
     : PageModel
 {
     [BindProperty(SupportsGet = true)]
@@ -53,6 +57,19 @@ public class BuyerView(
                 Title = StaticTextResource.BuyerView_TileThree_Title,
                 Body = StaticTextResource.BuyerView_TileThree_Body,
                 Href = "#"
+            });
+        }
+
+        var commercialToolsEnabled = await featureManager.IsEnabledAsync(FeatureFlags.CommercialTools);
+        if (commercialToolsEnabled)
+        {
+            var cookiesAccepted = cookiePreferencesService.IsAccepted();
+            
+            tiles.Add(new Tile
+            {
+                Title = StaticTextResource.BuyerView_TileFour_Title,
+                Body = StaticTextResource.BuyerView_TileFour_Body,
+                Href = commercialToolsUrlService.BuildUrl("", Id, null, cookiesAccepted)
             });
         }
 

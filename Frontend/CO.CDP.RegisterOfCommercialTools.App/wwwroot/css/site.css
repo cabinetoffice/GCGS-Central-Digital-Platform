@@ -1,0 +1,29 @@
+.govuk-accordion__section-button:before {
+    display: none !important;
+}
+
+.no-border {
+    border: none !important;
+}
+
+.custom-chevron-icon {
+    transition: transform 0.2s ease-in-out;
+    vertical-align: middle;
+}
+
+button[aria-expanded="false"] .custom-chevron-icon {
+    transform: rotate(0deg);
+}
+
+button[aria-expanded="true"] .custom-chevron-icon {
+    transform: rotate(180deg);
+}
+
+.accordion-highlight {
+    background-color: #ffffff;
+    border: 1px solid #b1b4b6;
+}
+
+.govuk-filter-section {
+    background-color: #f3f2f1;
+}

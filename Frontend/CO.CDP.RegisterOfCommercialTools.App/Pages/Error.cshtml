@@ -1,0 +1,14 @@
+﻿@page
+@model ErrorModel
+
+@using Microsoft.AspNetCore.Http
+@using CO.CDP.UI.Foundation.Pages
+@inject CO.CDP.UI.Foundation.Services.ISirsiUrlService SirsiUrlService
+@inject IHttpContextAccessor HttpContextAccessor
+
+@{
+    ViewData["Title"] = "Error";
+    var errorPage = new ErrorPage(HttpContextAccessor.HttpContext?.TraceIdentifier, SirsiUrlService);
+}
+@Html.Raw(errorPage.Render())
+
