@@ -4276,6 +4276,9 @@
     &lt;p class=&quot;govuk-body&quot;&gt;
       &lt;b&gt;There are no matching results.&lt;/b&gt;
     &lt;/p&gt;
+    &lt;p class=&quot;govuk-body&quot;&gt;
+      Double-check your spelling to improve your search results.
+    &lt;/p&gt;
   </value>
 </data>
   <data name="PponSearch_Ppon_Desc_Hint_01" xml:space="preserve">
