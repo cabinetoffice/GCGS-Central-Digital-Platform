@@ -13,7 +13,6 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
-using CO.CDP.Localization;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages.Forms;
 
@@ -28,7 +27,7 @@ public class FormsQuestionPageModelTest
     private readonly Mock<CO.CDP.Forms.WebApiClient.IFormsClient> _formsApiClientMock;
     private readonly Mock<DataSharing.WebApiClient.IDataSharingClient> _dataSharingClientMock;
     private readonly Mock<IChoiceProviderService> _choiceProviderServiceMock;
-    private readonly Mock<Microsoft.Extensions.Localization.IStringLocalizer<StaticTextResource>> _localizerMock;
+    private readonly Mock<IAnswerDisplayService> _answerDisplayServiceMock;
     private readonly FormsQuestionPageModel _pageModel;
     private readonly Guid _textQuestionId = Guid.NewGuid();
     private readonly Mock<IObjectModelValidator> _objectModelValidatorMock;
@@ -39,7 +38,7 @@ public class FormsQuestionPageModelTest
         _choiceProviderServiceMock = new Mock<IChoiceProviderService>();
         _formsApiClientMock = new Mock<CO.CDP.Forms.WebApiClient.IFormsClient>();
         _dataSharingClientMock = new Mock<DataSharing.WebApiClient.IDataSharingClient>();
-        _localizerMock = new Mock<Microsoft.Extensions.Localization.IStringLocalizer<StaticTextResource>>();
+        _answerDisplayServiceMock = new Mock<IAnswerDisplayService>();
 
         _fileHostManagerMock = new Mock<IFileHostManager>();
         _publisherMock = new Mock<IPublisher>();
@@ -70,10 +69,9 @@ public class FormsQuestionPageModelTest
             _formsEngineMock.Object,
             _tempDataServiceMock.Object,
             _fileHostManagerMock.Object,
-            _choiceProviderServiceMock.Object,
             _organisationClientMock.Object,
             _userInfoServiceMock.Object,
-            _localizerMock.Object);
+            _answerDisplayServiceMock.Object);
 
         var httpContext = new DefaultHttpContext();
         var modelState = new ModelStateDictionary();
@@ -189,8 +187,8 @@ public class FormsQuestionPageModelTest
         _tempDataServiceMock.Setup(t => t.PeekOrDefault<FormQuestionAnswerState>(It.IsAny<string>()))
             .Returns(answerSet);
 
-        _localizerMock.Setup(l => l[nameof(StaticTextResource.Global_Yes)]).Returns(new Microsoft.Extensions.Localization.LocalizedString(nameof(StaticTextResource.Global_Yes), "Yes"));
-        _localizerMock.Setup(l => l[nameof(StaticTextResource.Global_No)]).Returns(new Microsoft.Extensions.Localization.LocalizedString(nameof(StaticTextResource.Global_No), "No"));
+        _answerDisplayServiceMock.Setup(a => a.FormatAnswerForDisplayAsync(It.IsAny<QuestionAnswer>(), It.IsAny<FormQuestion>()))
+            .ReturnsAsync("Sample Answer");
 
         var answers = (await _pageModel.GetAnswers()).ToList();
 
@@ -217,8 +215,8 @@ public class FormsQuestionPageModelTest
         _tempDataServiceMock.Setup(t => t.PeekOrDefault<FormQuestionAnswerState>(It.IsAny<string>()))
             .Returns(answerSet);
 
-        _localizerMock.Setup(l => l[nameof(StaticTextResource.Global_Yes)]).Returns(new Microsoft.Extensions.Localization.LocalizedString(nameof(StaticTextResource.Global_Yes), "Yes"));
-        _localizerMock.Setup(l => l[nameof(StaticTextResource.Global_No)]).Returns(new Microsoft.Extensions.Localization.LocalizedString(nameof(StaticTextResource.Global_No), "No"));
+        _answerDisplayServiceMock.Setup(a => a.FormatAnswerForDisplayAsync(It.IsAny<QuestionAnswer>(), It.IsAny<FormQuestion>()))
+            .ReturnsAsync("Yes");
 
         var answers = (await _pageModel.GetAnswers()).ToList();
 
@@ -244,8 +242,8 @@ public class FormsQuestionPageModelTest
         _tempDataServiceMock.Setup(t => t.PeekOrDefault<FormQuestionAnswerState>(It.IsAny<string>()))
             .Returns(answerSet);
 
-        _localizerMock.Setup(l => l[nameof(StaticTextResource.Global_Yes)]).Returns(new Microsoft.Extensions.Localization.LocalizedString(nameof(StaticTextResource.Global_Yes), "Yes"));
-        _localizerMock.Setup(l => l[nameof(StaticTextResource.Global_No)]).Returns(new Microsoft.Extensions.Localization.LocalizedString(nameof(StaticTextResource.Global_No), "No"));
+        _answerDisplayServiceMock.Setup(a => a.FormatAnswerForDisplayAsync(It.IsAny<QuestionAnswer>(), It.IsAny<FormQuestion>()))
+            .ReturnsAsync("No");
 
         var answers = (await _pageModel.GetAnswers()).ToList();
 
@@ -1288,7 +1286,8 @@ public class FormsQuestionPageModelTest
             _formsApiClientMock.Object,
             _tempDataServiceMock.Object,
             _choiceProviderServiceMock.Object,
-            _dataSharingClientMock.Object
+            _dataSharingClientMock.Object,
+            Mock.Of<IAnswerDisplayService>()
         );
 
         _formsEngineMock.Setup(f => f.GetPreviousUnansweredQuestionId(

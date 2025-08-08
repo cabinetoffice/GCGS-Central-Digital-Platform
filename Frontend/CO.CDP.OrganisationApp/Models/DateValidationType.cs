@@ -5,10 +5,11 @@ namespace CO.CDP.OrganisationApp.Models;
 [JsonConverter(typeof(JsonStringEnumConverter))]
 public enum DateValidationType
 {
-    None,
-    PastOnly,
-    FutureOnly,
+    PastOrTodayOnly,
+    FutureOrTodayOnly,
     MinDate,
     MaxDate,
-    DateRange
+    DateRange,
+    PastOnly,
+    FutureOnly
 }

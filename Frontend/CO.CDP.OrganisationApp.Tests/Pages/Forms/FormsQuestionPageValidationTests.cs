@@ -1,5 +1,4 @@
 using CO.CDP.AwsServices;
-using CO.CDP.Localization;
 using CO.CDP.MQ;
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Models;
@@ -10,7 +9,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.Extensions.Localization;
 using Moq;
 using System.Reflection;
 using FormAnswer = CO.CDP.OrganisationApp.Models.FormAnswer;
@@ -38,10 +36,9 @@ public class FormsQuestionPageValidationTests
             formsEngineMock.Object,
             tempDataServiceMock.Object,
             Mock.Of<IFileHostManager>(),
-            choiceProviderServiceMock.Object,
             organisationClientMock.Object,
             userInfoServiceMock.Object,
-            Mock.Of<IStringLocalizer<StaticTextResource>>());
+            Mock.Of<IAnswerDisplayService>());
 
         _modelState = new ModelStateDictionary();
 
@@ -495,6 +492,146 @@ public class FormsQuestionPageValidationTests
         _modelState.Should().ContainKey($"Q_{actualQuestionId}_Year");
         _modelState[$"Q_{actualQuestionId}_Month"]!.Errors.Should().Contain(e => e.ErrorMessage == "Month is required");
         _modelState[$"Q_{actualQuestionId}_Year"]!.Errors.Should().Contain(e => e.ErrorMessage == "Year is required");
+    }
+
+    [Theory]
+    [InlineData(FormQuestionType.Text, "HasValue", "Text input requires selection")]
+    [InlineData(FormQuestionType.Url, "HasValue", "URL input requires selection")]
+    [InlineData(FormQuestionType.Date, "HasValue", "Date input requires selection")]
+    [InlineData(FormQuestionType.FileUpload, "HasValue", "File upload requires selection")]
+    public void MapMultiQuestionValidationErrors_ShouldMapOptionalQuestionHasValueErrors_WhenMultiQuestionModelHasErrors(FormQuestionType questionType, string propertyName, string errorMessage)
+    {
+        var questionId = Guid.NewGuid();
+
+        var multiQuestionModel = CreateMultiQuestionModel(new[]
+        {
+            CreateFormQuestion(questionId, questionType, $"{questionType} Question")
+        });
+
+        _page.MultiQuestionViewModel = multiQuestionModel;
+
+        var questionModels = multiQuestionModel.QuestionModels.ToArray();
+        var actualQuestionId = questionModels[0].QuestionId!.Value;
+
+        _modelState.AddModelError($"MultiQuestionViewModel.QuestionModels[0].{propertyName}", errorMessage);
+
+        InvokeMapMultiQuestionValidationErrors();
+
+        _modelState.Should().ContainKey($"Q_{actualQuestionId}_{propertyName}");
+        _modelState[$"Q_{actualQuestionId}_{propertyName}"]!.Errors.Should().Contain(e => e.ErrorMessage == errorMessage);
+    }
+
+    [Fact]
+    public void MapMultiQuestionValidationErrors_ShouldMapTextInputOptionalQuestionErrors_WhenMultiQuestionModelHasErrors()
+    {
+        var questionId = Guid.NewGuid();
+
+        var multiQuestionModel = CreateMultiQuestionModel(new[]
+        {
+            CreateFormQuestion(questionId, FormQuestionType.Text, "Text Question")
+        });
+
+        _page.MultiQuestionViewModel = multiQuestionModel;
+
+        var questionModels = multiQuestionModel.QuestionModels.ToArray();
+        var actualQuestionId = questionModels[0].QuestionId!.Value;
+
+        _modelState.AddModelError("MultiQuestionViewModel.QuestionModels[0].TextInput", "Text is required");
+        _modelState.AddModelError("MultiQuestionViewModel.QuestionModels[0].HasValue", "Selection is required");
+
+        InvokeMapMultiQuestionValidationErrors();
+
+        _modelState.Should().ContainKey($"Q_{actualQuestionId}_TextInput");
+        _modelState.Should().ContainKey($"Q_{actualQuestionId}_HasValue");
+        _modelState[$"Q_{actualQuestionId}_TextInput"]!.Errors.Should().Contain(e => e.ErrorMessage == "Text is required");
+        _modelState[$"Q_{actualQuestionId}_HasValue"]!.Errors.Should().Contain(e => e.ErrorMessage == "Selection is required");
+    }
+
+    [Fact]
+    public void MapMultiQuestionValidationErrors_ShouldMapUrlInputOptionalQuestionErrors_WhenMultiQuestionModelHasErrors()
+    {
+        var questionId = Guid.NewGuid();
+
+        var multiQuestionModel = CreateMultiQuestionModel(new[]
+        {
+            CreateFormQuestion(questionId, FormQuestionType.Url, "URL Question")
+        });
+
+        _page.MultiQuestionViewModel = multiQuestionModel;
+
+        var questionModels = multiQuestionModel.QuestionModels.ToArray();
+        var actualQuestionId = questionModels[0].QuestionId!.Value;
+
+        _modelState.AddModelError("MultiQuestionViewModel.QuestionModels[0].TextInput", "URL is required");
+        _modelState.AddModelError("MultiQuestionViewModel.QuestionModels[0].HasValue", "Selection is required");
+
+        InvokeMapMultiQuestionValidationErrors();
+
+        _modelState.Should().ContainKey($"Q_{actualQuestionId}_TextInput");
+        _modelState.Should().ContainKey($"Q_{actualQuestionId}_HasValue");
+        _modelState[$"Q_{actualQuestionId}_TextInput"]!.Errors.Should().Contain(e => e.ErrorMessage == "URL is required");
+        _modelState[$"Q_{actualQuestionId}_HasValue"]!.Errors.Should().Contain(e => e.ErrorMessage == "Selection is required");
+    }
+
+    [Fact]
+    public void MapMultiQuestionValidationErrors_ShouldMapDateInputOptionalQuestionErrors_WhenMultiQuestionModelHasErrors()
+    {
+        var questionId = Guid.NewGuid();
+
+        var multiQuestionModel = CreateMultiQuestionModel(new[]
+        {
+            CreateFormQuestion(questionId, FormQuestionType.Date, "Date Question")
+        });
+
+        _page.MultiQuestionViewModel = multiQuestionModel;
+
+        var questionModels = multiQuestionModel.QuestionModels.ToArray();
+        var actualQuestionId = questionModels[0].QuestionId!.Value;
+
+        _modelState.AddModelError("MultiQuestionViewModel.QuestionModels[0].Day", "Day is required");
+        _modelState.AddModelError("MultiQuestionViewModel.QuestionModels[0].Month", "Month is required");
+        _modelState.AddModelError("MultiQuestionViewModel.QuestionModels[0].Year", "Year is required");
+        _modelState.AddModelError("MultiQuestionViewModel.QuestionModels[0].HasValue", "Selection is required");
+
+        InvokeMapMultiQuestionValidationErrors();
+
+        _modelState.Should().ContainKey($"Q_{actualQuestionId}_Day");
+        _modelState.Should().ContainKey($"Q_{actualQuestionId}_Month");
+        _modelState.Should().ContainKey($"Q_{actualQuestionId}_Year");
+        _modelState.Should().ContainKey($"Q_{actualQuestionId}_HasValue");
+        _modelState[$"Q_{actualQuestionId}_Day"]!.Errors.Should().Contain(e => e.ErrorMessage == "Day is required");
+        _modelState[$"Q_{actualQuestionId}_Month"]!.Errors.Should().Contain(e => e.ErrorMessage == "Month is required");
+        _modelState[$"Q_{actualQuestionId}_Year"]!.Errors.Should().Contain(e => e.ErrorMessage == "Year is required");
+        _modelState[$"Q_{actualQuestionId}_HasValue"]!.Errors.Should().Contain(e => e.ErrorMessage == "Selection is required");
+    }
+
+    [Fact]
+    public void MapMultiQuestionValidationErrors_ShouldMapFileUploadOptionalQuestionErrors_WhenMultiQuestionModelHasErrors()
+    {
+        var questionId = Guid.NewGuid();
+
+        var multiQuestionModel = CreateMultiQuestionModel(new[]
+        {
+            CreateFormQuestion(questionId, FormQuestionType.FileUpload, "File Upload Question")
+        });
+
+        _page.MultiQuestionViewModel = multiQuestionModel;
+
+        var questionModels = multiQuestionModel.QuestionModels.ToArray();
+        var actualQuestionId = questionModels[0].QuestionId!.Value;
+
+        _modelState.AddModelError("MultiQuestionViewModel.QuestionModels[0].UploadedFileName", "File name is required");
+        _modelState.AddModelError("MultiQuestionViewModel.QuestionModels[0].UploadedFile", "File is required");
+        _modelState.AddModelError("MultiQuestionViewModel.QuestionModels[0].HasValue", "Selection is required");
+
+        InvokeMapMultiQuestionValidationErrors();
+
+        _modelState.Should().ContainKey($"Q_{actualQuestionId}_UploadedFileName");
+        _modelState.Should().ContainKey($"Q_{actualQuestionId}_UploadedFile");
+        _modelState.Should().ContainKey($"Q_{actualQuestionId}_HasValue");
+        _modelState[$"Q_{actualQuestionId}_UploadedFileName"]!.Errors.Should().Contain(e => e.ErrorMessage == "File name is required");
+        _modelState[$"Q_{actualQuestionId}_UploadedFile"]!.Errors.Should().Contain(e => e.ErrorMessage == "File is required");
+        _modelState[$"Q_{actualQuestionId}_HasValue"]!.Errors.Should().Contain(e => e.ErrorMessage == "Selection is required");
     }
 
     private void InvokeMapMultiQuestionValidationErrors()

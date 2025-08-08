@@ -2,11 +2,18 @@ using CO.CDP.OrganisationApp.Models;
 
 namespace CO.CDP.OrganisationApp.Pages.Forms;
 
+public class RenderableQuestionItem
+{
+    public IFormElementModel QuestionModel { get; init; } = null!;
+    public string PartialViewName { get; init; } = string.Empty;
+    public bool IsFirstQuestion { get; init; }
+}
+
 public class FormElementMultiQuestionModel : IMultiQuestionFormElementModel
 {
     public List<FormQuestion> Questions { get; private set; } = [];
     public string? PageTitleResourceKey { get; private set; }
-    public string? SubmitButtonTextResourceKey { get; private set; }
+    public ButtonOptions? Button { get; private set; }
 
     private readonly Dictionary<Guid, IFormElementModel> _questionModels = new();
     public IEnumerable<IFormElementModel> QuestionModels => _questionModels.Values;
@@ -15,7 +22,11 @@ public class FormElementMultiQuestionModel : IMultiQuestionFormElementModel
     {
         Questions = multiQuestionPage.Questions;
         PageTitleResourceKey = multiQuestionPage.PageTitleResourceKey;
-        SubmitButtonTextResourceKey = multiQuestionPage.SubmitButtonTextResourceKey;
+        Button = new ButtonOptions
+        {
+            Text = multiQuestionPage.SubmitButtonTextResourceKey,
+            Style = multiQuestionPage.SubmitButtonStyle
+        };
 
         foreach (var question in Questions)
         {
@@ -24,7 +35,7 @@ public class FormElementMultiQuestionModel : IMultiQuestionFormElementModel
             {
                 fem.QuestionId = question.Id;
             }
-            questionModel.Initialize(question);
+            questionModel.Initialize(question, Questions.IndexOf(question) == 0);
 
             if (existingAnswers.TryGetValue(question.Id, out var existingAnswer))
             {
@@ -55,6 +66,35 @@ public class FormElementMultiQuestionModel : IMultiQuestionFormElementModel
 
         return answers;
     }
+
+    public IEnumerable<RenderableQuestionItem> GetRenderableQuestions()
+    {
+        return Questions
+            .Select((question, index) => new RenderableQuestionItem
+            {
+                QuestionModel = GetQuestionModel(question.Id)!,
+                PartialViewName = GetPartialViewName(question.Type),
+                IsFirstQuestion = index == 0
+            })
+            .Where(item => !string.IsNullOrEmpty(item.PartialViewName));
+    }
+
+    private static string GetPartialViewName(FormQuestionType questionType) =>
+        questionType switch
+        {
+            FormQuestionType.Text => "_FormElementTextInput",
+            FormQuestionType.YesOrNo => "_FormElementYesNoInput",
+            FormQuestionType.Date => "_FormElementDateInput",
+            FormQuestionType.SingleChoice => "_FormElementSingleChoice",
+            FormQuestionType.GroupedSingleChoice => "_FormElementGroupedSingleChoice",
+            FormQuestionType.MultiLine => "_FormElementMultiLineInput",
+            FormQuestionType.Url => "_FormElementUrlInput",
+            FormQuestionType.Address => "_FormElementAddress",
+            FormQuestionType.CheckBox => "_FormElementCheckBoxInput",
+            FormQuestionType.FileUpload => "_FormElementFileUpload",
+            FormQuestionType.NoInput => "_FormElementNoInput",
+            _ => throw new NotSupportedException($"Question type {questionType} is not supported in multi-question pages")
+        };
 
     private static IFormElementModel CreateQuestionModel(FormQuestion question)
     {

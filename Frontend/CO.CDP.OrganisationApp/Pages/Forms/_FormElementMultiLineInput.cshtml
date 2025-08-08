@@ -9,15 +9,8 @@
 
     @if (!string.IsNullOrWhiteSpace(Model.Heading))
     {
-        <h1 class="govuk-label-wrapper">
-            <label class="govuk-label govuk-label--l" for="@Model.GetFieldName(nameof(Model.TextInput))">@Model.Heading</label>
-        </h1>
+        @RenderLabelHeading(Model.Heading, Model.GetFieldName(nameof(Model.TextInput)), Model.Caption, Model.IsFirstQuestion, Model.Options?.Layout?.Heading?.Size)
     }
-    @if (!string.IsNullOrWhiteSpace(Model.Caption))
-    {
-        <span class="govuk-caption-l">@Model.Caption</span>
-    }
-
     @if (!string.IsNullOrWhiteSpace(Model.Description))
     {
         @Html.Raw(Model.Description)
@@ -31,7 +24,7 @@
         </p>
     }
 
-    <textarea class="govuk-textarea govuk-js-character-count @(Model.Options?.Layout?.CustomCssClasses)" rows="5" id="@Model.GetFieldName(nameof(Model.TextInput))" name="@Model.GetFieldName(nameof(Model.TextInput))" aria-describedby="@(hasError ? Model.GetFieldName("TextInput-error") + " " : "")@Model.GetFieldName("TextInput-info")">@Model.TextInput</textarea>
+    <textarea class="govuk-textarea govuk-js-character-count @(Model.Options?.Layout?.Input?.CustomCssClasses)" rows="5" id="@Model.GetFieldName(nameof(Model.TextInput))" name="@Model.GetFieldName(nameof(Model.TextInput))" aria-describedby="@(hasError ? Model.GetFieldName("TextInput-error") + " " : "")@Model.GetFieldName("TextInput-info")">@Model.TextInput</textarea>
 
     <div id="@Model.GetFieldName("TextInput-info")" class="govuk-hint govuk-character-count__message">
         @string.Format(StaticTextResource.GovukFrontend_CharacterCount_CharactersAvailable, "10,000")

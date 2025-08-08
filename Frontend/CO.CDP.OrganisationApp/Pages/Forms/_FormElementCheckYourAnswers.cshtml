@@ -10,64 +10,60 @@
 
 @{
     var count = 0;
-    var itemIndex = 0;
+    var groupedItems = Model.GroupedDisplayItems.ToList();
+
+    IEnumerable<int> GetAnswerIds(IAnswerDisplayItem item) => item switch
+    {
+        GroupedAnswerSummary group => group.Answers.Select(_ => ++count),
+        SingleQuestionsGroup singleGroup => singleGroup.Answers.Select(_ => ++count),
+        _ => Enumerable.Empty<int>()
+    };
+
+    void RenderAnswerRow(AnswerSummary answer, int answerId, string? groupChangeLink = null)
+    {
+        var testId = answer.Title?.Replace(" ", "") + '_' + answerId;
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+                @answer.Title
+            </dt>
+            <dd class="govuk-summary-list__value">
+                @answer.Answer
+            </dd>
+            <dd class="govuk-summary-list__actions">
+                <a class="govuk-link" href="@(groupChangeLink ?? answer.ChangeLink)" data-testid="@testId">
+                    @Html.Raw(string.Format(StaticTextResource.Forms_CheckYourAnswers_Change, answer.Title?.ToLower()))
+                </a>
+            </dd>
+        </div>
+    }
 }
 
-@foreach (var item in Model.DisplayItems)
+@foreach (var (item, isLast) in groupedItems.Select((item, index) => (item, index == groupedItems.Count - 1)))
 {
-    itemIndex++;
-    var isLast = itemIndex == Model.DisplayItems.Count;
-
-    if (item.IsGroup)
+    switch (item)
     {
-        var group = (GroupedAnswerSummary)item;
-        @if (!string.IsNullOrEmpty(group.GroupTitle))
-        {
-            <h3 class="govuk-heading-m">@group.GroupTitle</h3>
-        }
-
-        <dl class="govuk-summary-list @(isLast ? "govuk-!-margin-bottom-6" : "govuk-!-margin-bottom-9")">
-            @foreach (var answer in group.Answers)
+        case GroupedAnswerSummary group:
+            @if (!string.IsNullOrEmpty(group.GroupTitle))
             {
-                count++;
-                var testId = answer.Title?.Replace(" ", "") + '_' + count;
-                <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">
-                        @answer.Title
-                    </dt>
-                    <dd class="govuk-summary-list__value">
-                        @answer.Answer
-                    </dd>
-                    <dd class="govuk-summary-list__actions">
-                        <a class="govuk-link" href="@group.GroupChangeLink" data-testid="@testId">
-                            @Html.Raw(string.Format(StaticTextResource.Forms_CheckYourAnswers_Change, answer.Title?.ToLower()))
-                        </a>
-                    </dd>
-                </div>
+                <h3 class="govuk-heading-m">@group.GroupTitle</h3>
             }
-        </dl>
-    }
-    else
-    {
-        var answer = (AnswerSummary)item;
-        count++;
-        var testId = answer.Title?.Replace(" ", "") + '_' + count;
 
-        <dl class="govuk-summary-list @(isLast ? "govuk-!-margin-bottom-6" : "govuk-!-margin-bottom-0")">
-            <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                    @answer.Title
-                </dt>
-                <dd class="govuk-summary-list__value">
-                    @answer.Answer
-                </dd>
-                <dd class="govuk-summary-list__actions">
-                    <a class="govuk-link" href="@answer.ChangeLink" data-testid="@testId">
-                        @Html.Raw(string.Format(StaticTextResource.Forms_CheckYourAnswers_Change, answer.Title?.ToLower()))
-                    </a>
-                </dd>
-            </div>
-        </dl>
+            <dl class="govuk-summary-list @(isLast ? "govuk-!-margin-bottom-6" : "govuk-!-margin-bottom-9")">
+                @foreach (var (answer, answerId) in group.Answers.Zip(GetAnswerIds(item)))
+                {
+                    RenderAnswerRow(answer, answerId, group.GroupChangeLink);
+                }
+            </dl>
+            break;
+
+        case SingleQuestionsGroup singleGroup:
+            <dl class="govuk-summary-list @(isLast ? "govuk-!-margin-bottom-6" : "govuk-!-margin-bottom-9")">
+                @foreach (var (answer, answerId) in singleGroup.Answers.Zip(GetAnswerIds(item)))
+                {
+                    RenderAnswerRow(answer, answerId);
+                }
+            </dl>
+            break;
     }
 }
 

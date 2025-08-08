@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using DateValidationType = CO.CDP.Forms.WebApi.Model.Validation.DateValidationType;
 using TextValidationType = CO.CDP.Forms.WebApi.Model.Validation.TextValidationType;
 
@@ -16,14 +17,61 @@ public record FormQuestionOptions
 
 public record LayoutOptions
 {
+    public InputOptions? Input { get; init; }
+    public HeadingOptions? Heading { get; init; }
+    public ButtonOptions? Button { get; init; }
+}
+
+public record InputOptions
+{
     public string? CustomYesText { get; init; }
     public string? CustomNoText { get; init; }
-    public InputWidthType? InputWidth { get; init; }
-    public string? InputSuffix { get; init; }
+    public InputWidthType? Width { get; init; }
+    public InputSuffixOptions? Suffix { get; init; }
     public string? CustomCssClasses { get; init; }
-    public string? PreHeadingContent { get; init; }
-    public string? PostSubmitContent { get; init; }
-    public string? PrimaryButtonText { get; init; }
+}
+
+public record HeadingOptions
+{
+    public HeadingSize? Size { get; init; }
+    public string? BeforeHeadingContent { get; init; }
+}
+
+public record ButtonOptions
+{
+    public string? Text { get; init; }
+    public PrimaryButtonStyle? Style { get; init; }
+    public string? BeforeButtonContent { get; init; }
+    public string? AfterButtonContent { get; init; }
+}
+
+public record InputSuffixOptions
+{
+    public InputSuffixType Type { get; init; }
+    public string? Text { get; init; }
+}
+
+[JsonConverter(typeof(JsonStringEnumConverter))]
+public enum InputSuffixType
+{
+    GovUkDefault,
+    CustomText
+}
+
+[JsonConverter(typeof(JsonStringEnumConverter))]
+public enum HeadingSize
+{
+    Small,
+    Medium,
+    Large,
+    ExtraLarge
+}
+
+[JsonConverter(typeof(JsonStringEnumConverter))]
+public enum PrimaryButtonStyle
+{
+    Default,
+    Start
 }
 
 public record ValidationOptions

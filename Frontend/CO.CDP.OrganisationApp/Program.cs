@@ -164,6 +164,7 @@ builder.Services.AddKeyedTransient<IChoiceProviderStrategy, DefaultChoiceProvide
 builder.Services.AddTransient<IChoiceProviderService, ChoiceProviderService>();
 
 builder.Services.AddTransient<IFormsEngine, FormsEngine>();
+builder.Services.AddTransient<IAnswerDisplayService, AnswerDisplayService>();
 builder.Services.AddTransient<IDiagnosticPage, DiagnosticPage>();
 builder.Services.AddScoped<IUserInfoService, UserInfoService>();
 builder.Services.AddScoped<IFtsUrlService, FtsUrlService>();

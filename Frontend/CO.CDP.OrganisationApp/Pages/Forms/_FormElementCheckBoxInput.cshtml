@@ -31,7 +31,7 @@
 
         <div class="govuk-checkboxes" data-module="govuk-checkboxes">
             <div class="govuk-checkboxes__item">
-                <input class="govuk-checkboxes__input @Model.Options?.Layout?.CustomCssClasses" id="@Model.GetFieldName(nameof(Model.CheckBoxInput))" name="@Model.GetFieldName(nameof(Model.CheckBoxInput))" type="checkbox" value="true" @(Model.CheckBoxInput == true ? "checked" : "") @(hasError ? Html.Raw($"aria-describedby=\"{Model.GetFieldName("checkbox-error")}\"") : null)>
+                <input class="govuk-checkboxes__input @(Model.Options?.Layout?.Input?.CustomCssClasses)" id="@Model.GetFieldName(nameof(Model.CheckBoxInput))" name="@Model.GetFieldName(nameof(Model.CheckBoxInput))" type="checkbox" value="true" @(Model.CheckBoxInput == true ? "checked" : "") @(hasError ? Html.Raw($"aria-describedby=\"{Model.GetFieldName("checkbox-error")}\"") : null)>
                 <label class="govuk-label govuk-checkboxes__label" for="@Model.GetFieldName(nameof(Model.CheckBoxInput))">
                     @Model.Options?.Choices?.Values.FirstOrDefault()
                 </label>
