@@ -10,7 +10,7 @@ locals {
     development = "cfs.${var.public_domain}"
     staging     = "www-preview.contractsfinder.service.gov.uk"
     integration = "www-integration.contractsfinder.service.gov.uk"
-    production  = "cfs.${var.public_domain}"
+    production  = "www.contractsfinder.service.gov.uk"
   }
 
   cfs_secrets = {
