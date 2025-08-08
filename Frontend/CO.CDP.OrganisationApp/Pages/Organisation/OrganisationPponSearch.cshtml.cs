@@ -119,7 +119,7 @@ public class OrganisationPponSearchModel(
             {
                 return new SearchResult(
                     ImmutableList<OrganisationSearchByPponResult>.Empty,
-                    0, 0, pageSize, skip, currentPage,null,
+                    0, 0, pageSize, skip, currentPage, null,
                     StaticTextResource.PponSearch_NoResults
                 );
             }
