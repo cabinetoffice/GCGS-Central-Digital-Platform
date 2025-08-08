@@ -28,10 +28,6 @@ public class OrganisationClientIntegrationTest
                 s.AddScoped(_ => _govUKNotifyApiClientMock.Object);
                 s.AddScoped(_ => mockPublisher.Object);
             });
-
-
-
-
         });
 
         _httpClient = _factory.CreateClient();
