@@ -8,6 +8,7 @@ using Microsoft.Extensions.Hosting;
 using Moq;
 using System.Net;
 using System.Net.Http.Json;
+using CO.CDP.MQ;
 using static CO.CDP.Authentication.Constants;
 using static System.Net.HttpStatusCode;
 
@@ -35,6 +36,11 @@ public class OrganisationEndpointsTests
                 services.AddScoped(_ => _getOrganisationsUseCase.Object);
                 services.AddScoped(_ => _getOrganisationUseCase.Object);
                 services.AddScoped(_ => _updatesOrganisationUseCase.Object);
+                var mockPublisher = new Mock<IPublisher>();
+
+                services.AddScoped(
+                    sp => mockPublisher.Object);
+
                 services.ConfigureFakePolicyEvaluator();
             });
         });

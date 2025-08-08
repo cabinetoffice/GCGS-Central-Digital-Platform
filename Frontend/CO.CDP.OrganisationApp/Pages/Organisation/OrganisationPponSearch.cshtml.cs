@@ -36,6 +36,8 @@ public class OrganisationPponSearchModel(
 
     public string? ErrorMessage { get; set; }
 
+    public double Threshold { get; set; } = 0.3;
+
     [BindProperty(SupportsGet = true)] public Guid Id { get; set; }
 
     [BindProperty(SupportsGet = true)] public int PageNumber { get; set; } = 1;
@@ -53,7 +55,7 @@ public class OrganisationPponSearchModel(
     {
         if (!string.IsNullOrWhiteSpace(SearchText))
         {
-            var result = await HandleSearch(PageNumber, SearchText, SortOrder);
+            var result = await HandleSearch(PageNumber, SearchText, SortOrder, Threshold);
             ApplySearchResult(result);
         }
         else
@@ -69,7 +71,7 @@ public class OrganisationPponSearchModel(
 
     public async Task<IActionResult> OnPost()
     {
-        var result = await HandleSearch(PageNumber, SearchText, SortOrder);
+        var result = await HandleSearch(PageNumber, SearchText, SortOrder, Threshold);
         ApplySearchResult(result);
         return Page();
     }
@@ -84,7 +86,7 @@ public class OrganisationPponSearchModel(
         string? ErrorMessage
     );
 
-    private async Task<SearchResult> HandleSearch(int pageNumber, string searchText, string sortOrder)
+    private async Task<SearchResult> HandleSearch(int pageNumber, string searchText, string sortOrder, double threshold)
     {
         var (pageSize, skip, currentPage) = CalculatePagination(pageNumber);
         var validationResult = ValidateSearchInput(searchText);
@@ -92,7 +94,7 @@ public class OrganisationPponSearchModel(
         {
             return CreateInvalidSearchResult(pageSize, skip, currentPage, validationResult.ErrorMessage);
         }
-        return await FetchOrganisationSearchResults(validationResult.CleanedSearchText, sortOrder, pageSize, skip, currentPage);
+        return await FetchOrganisationSearchResults(validationResult.CleanedSearchText, sortOrder, pageSize, skip, currentPage, threshold);
     }
 
     private static SearchResult CreateEmptySearchResult(int pageSize, int skip, int currentPage) =>
@@ -111,12 +113,12 @@ public class OrganisationPponSearchModel(
         );
 
     private async Task<SearchResult> FetchOrganisationSearchResults(string cleanedSearchText, string sortOrder,
-        int pageSize, int skip, int currentPage)
+        int pageSize, int skip, int currentPage, double threshold)
     {
         try
         {
             var (orgs, totalCount) =
-                await organisationClient.SearchOrganisationByNameOrPpon(cleanedSearchText, pageSize, skip, sortOrder);
+                await organisationClient.SearchOrganisationByNameOrPpon(cleanedSearchText, pageSize, skip, sortOrder, threshold);
             if (orgs.Count == 0)
             {
                 return new SearchResult(

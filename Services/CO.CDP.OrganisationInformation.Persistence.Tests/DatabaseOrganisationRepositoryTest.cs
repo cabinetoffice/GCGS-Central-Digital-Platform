@@ -825,7 +825,7 @@ public class DatabaseOrganisationRepositoryTest(OrganisationInformationPostgreSq
         await context.Organisations.AddRangeAsync(organisation1, organisation2);
         await context.SaveChangesAsync();
 
-        var result = await repository.SearchByNameOrPpon("1758", 10, 0, "asc");
+        var result = await repository.SearchByNameOrPpon("PGWZ-1758-ABCD", 10, 0, "asc");
 
         result.Results.Should().HaveCount(1);
         result.Results.First().Name.Should().Be("COrg");
@@ -939,7 +939,7 @@ public class DatabaseOrganisationRepositoryTest(OrganisationInformationPostgreSq
         await context.Organisations.AddRangeAsync(organisations);
         await context.SaveChangesAsync();
 
-        var result = await repository.SearchByNameOrPpon("Org", 10, 0, "asc");
+        var result = await repository.SearchByNameOrPpon("Org", 10, 0, "asc", 0.2);
 
         result.Results.Should().HaveCount(3);
         result.Results.First().Name.Should().Be("EOrg");
@@ -997,7 +997,7 @@ public class DatabaseOrganisationRepositoryTest(OrganisationInformationPostgreSq
         await context.Organisations.AddRangeAsync(organisations);
         await context.SaveChangesAsync();
 
-        var result = await repository.SearchByNameOrPpon("Org", 10, 0, "desc");
+        var result = await repository.SearchByNameOrPpon("Org", 10, 0, "desc", 0.2);
 
         result.Results.Should().HaveCount(3);
         result.Results.First().Name.Should().Be("JOrg");
@@ -1043,7 +1043,7 @@ public class DatabaseOrganisationRepositoryTest(OrganisationInformationPostgreSq
         await context.Organisations.AddRangeAsync(organisations);
         await context.SaveChangesAsync();
 
-        var result = await repository.SearchByNameOrPpon("Org", 10, 0, "rel");
+        var result = await repository.SearchByNameOrPpon("Org", 10, 0, "rel", 0.2);
 
         result.Results.Should().HaveCount(2);
         result.TotalCount.Should().Be(2);
@@ -1079,7 +1079,7 @@ public class DatabaseOrganisationRepositoryTest(OrganisationInformationPostgreSq
     }
 
     [Fact]
-    public async Task SearchByNameOrPpon_WithPartialPponMatch_ReturnsMatchingOrganisations()
+    public async Task SearchByNameOrPpon_WithPartialPponMatch_ReturnsNoMatchingOrganisations()
     {
         using var repository = OrganisationRepository();
         await using var context = GetDbContext();
@@ -1104,9 +1104,120 @@ public class DatabaseOrganisationRepositoryTest(OrganisationInformationPostgreSq
         // Search with just part of the PPON
         var result = await repository.SearchByNameOrPpon("ABCD", 10, 0, "asc");
 
-        result.Results.Should().HaveCount(1);
-        result.Results.First().Name.Should().Be("KOrg");
-        result.TotalCount.Should().Be(1);
+        result.Results.Should().HaveCount(0);
+        result.TotalCount.Should().Be(0);
+    }
+
+    [Fact]
+    public async Task SearchByNameOrPpon_WithHighFuzzyMatchThreshold_ReturnsNoResults()
+    {
+        using var repository = OrganisationRepository();
+        await using var context = GetDbContext();
+        await ClearTestData(context);
+
+        var organisations = new[]
+        {
+            GivenOrganisation(
+                name: "Company E",
+                roles: [PartyRole.Buyer, PartyRole.Tenderer],
+                identifiers: [new Identifier
+                {
+                    Primary = true,
+                    Scheme = "GB-PPON",
+                    IdentifierId = "PGWZ-9001-AAAA",
+                    LegalName = "Org1",
+                    Uri = "http://example.org"
+                }]
+            ),
+            GivenOrganisation(
+                name: "Supplier B",
+                roles: [PartyRole.Buyer, PartyRole.Tenderer],
+                identifiers: [new Identifier
+                {
+                    Primary = true,
+                    Scheme = "GB-PPON",
+                    IdentifierId = "PGWZ-9102-BBBB",
+                    LegalName = "Org2",
+                    Uri = "http://example.org"
+                }]
+            ),
+            GivenOrganisation(
+                name: "Company G",
+                roles: [PartyRole.Buyer, PartyRole.Tenderer],
+                identifiers: [new Identifier
+                {
+                    Primary = true,
+                    Scheme = "GB-PPON",
+                    IdentifierId = "PGWZ-9102-CCCC",
+                    LegalName = "Org3",
+                    Uri = "http://example.org"
+                }]
+            ),
+        };
+
+        await context.Organisations.AddRangeAsync(organisations);
+        await context.SaveChangesAsync();
+
+        var result = await repository.SearchByNameOrPpon("Comp", 10, 0, "rel", 0.9);
+
+        result.Results.Should().HaveCount(0);
+        result.TotalCount.Should().Be(0);
+    }
+
+    [Fact]
+    public async Task SearchByNameOrPpon_WithLowFuzzyMatchThreshold_ReturnsResults()
+    {
+        using var repository = OrganisationRepository();
+        await using var context = GetDbContext();
+        await ClearTestData(context);
+
+        var organisations = new[]
+        {
+            GivenOrganisation(
+                name: "Company A",
+                roles: [PartyRole.Buyer, PartyRole.Tenderer],
+                identifiers: [new Identifier
+                {
+                    Primary = true,
+                    Scheme = "GB-PPON",
+                    IdentifierId = "PGWZ-9001-AAAA",
+                    LegalName = "Org1",
+                    Uri = "http://example.org"
+                }]
+            ),
+            GivenOrganisation(
+                name: "Supplier A",
+                roles: [PartyRole.Buyer, PartyRole.Tenderer],
+                identifiers: [new Identifier
+                {
+                    Primary = true,
+                    Scheme = "GB-PPON",
+                    IdentifierId = "PGWZ-9102-BBBB",
+                    LegalName = "Org2",
+                    Uri = "http://example.org"
+                }]
+            ),
+            GivenOrganisation(
+                name: "Company B",
+                roles: [PartyRole.Buyer, PartyRole.Tenderer],
+                identifiers: [new Identifier
+                {
+                    Primary = true,
+                    Scheme = "GB-PPON",
+                    IdentifierId = "PGWZ-9102-CCCC",
+                    LegalName = "Org3",
+                    Uri = "http://example.org"
+                }]
+            ),
+        };
+
+        await context.Organisations.AddRangeAsync(organisations);
+        await context.SaveChangesAsync();
+
+        var result = await repository.SearchByNameOrPpon("Comp", 10, 0, "rel", 0.2);
+
+        result.Results.Should().HaveCount(2);
+        result.TotalCount.Should().Be(2);
     }
 
     private async Task ClearTestData(OrganisationInformationContext context)

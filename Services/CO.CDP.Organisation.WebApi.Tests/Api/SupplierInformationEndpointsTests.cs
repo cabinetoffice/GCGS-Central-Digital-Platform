@@ -9,6 +9,7 @@ using System.Net;
 using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
+using CO.CDP.MQ;
 using static CO.CDP.Authentication.Constants;
 using static System.Net.HttpStatusCode;
 
@@ -28,6 +29,11 @@ public class SupplierInformationEndpointsTests
             {
                 services.AddScoped(_ => _getSupplierInformationUseCase.Object);
                 services.AddScoped(_ => _updatesSupplierInformationUseCase.Object);
+                var mockPublisher = new Mock<IPublisher>();
+
+                services.AddScoped(
+                    sp => mockPublisher.Object);
+
                 services.ConfigureFakePolicyEvaluator();
             });
         });

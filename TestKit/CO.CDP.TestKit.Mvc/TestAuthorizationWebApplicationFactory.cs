@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Moq;
 using System.Security.Claims;
+using CO.CDP.MQ;
 
 namespace CO.CDP.TestKit.Mvc;
 
@@ -52,7 +53,10 @@ public class TestAuthorizationWebApplicationFactory<TProgram>(
                         Scopes = [assignedOrganisationScopes]
                     });
             }
+            var mockPublisher = new Mock<IPublisher>();
 
+            services.AddScoped(
+                sp => mockPublisher.Object);
             services.AddTransient(sc => mockDatabaseOrgRepo.Object);
         });
 
