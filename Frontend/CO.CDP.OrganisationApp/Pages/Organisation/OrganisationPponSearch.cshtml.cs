@@ -104,7 +104,7 @@ public class OrganisationPponSearchModel(
         new(
             ImmutableList<OrganisationSearchByPponResult>.Empty,
             0, 0, pageSize, skip, currentPage,
-            errorMessage,null
+            errorMessage, null
 
         );
 
