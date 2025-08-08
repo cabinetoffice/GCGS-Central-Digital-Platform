@@ -19,6 +19,8 @@ locals {
     email_subscription_authentication_key = "${local.cfs_screts_arn}:EMAIL_SUBSCRIPTION_AUTHENTICATION_KEY::"
     email_subscription_cipher             = "${local.cfs_screts_arn}:EMAIL_SUBSCRIPTION_CIPHER::"
     email_licence_request                 = "${local.cfs_screts_arn}:LICENCEREQUEST_EMAIL::"
+    google_analytics_key                  = "${local.cfs_screts_arn}:GOOGLE_ANALYTICS_KEY::"
+    google_tag_manager_key                = "${local.cfs_screts_arn}:GOOGLE_TAG_MANAGER_KEY::"
     http_basic_auth_pass                  = "${local.cfs_screts_arn}:HTTP_BASIC_AUTH_PASS::"
     http_basic_auth_user                  = "${local.cfs_screts_arn}:HTTP_BASIC_AUTH_USER::"
     letsencrypt_key_authorization         = "${local.cfs_screts_arn}:LETSENCRYPT_KEY_AUTHORIZATION::"
