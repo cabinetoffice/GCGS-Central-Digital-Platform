@@ -320,7 +320,7 @@ locals {
       cidr_block                        = "10.${local.cidr_b_production}.0.0/16"
       account_id                        = 471112843276
       canary_schedule_expression        = "rate(15 minutes)"
-      cfs_allowed_target_email_domains  = ["goaco.com"]
+      cfs_allowed_target_email_domains  = []
       fts_extra_domains                 = []
       cfs_service_allowed_origins       = [
         "https://cfs.supplier-information.find-tender.service.gov.uk",
