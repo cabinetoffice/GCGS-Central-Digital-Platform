@@ -53,7 +53,7 @@ locals {
     demo                                = false
     cfs_allowed_target_email_domains    = join(",", var.cfs_allowed_target_email_domains)
     environment                         = upper(var.environment)
-    http_basic_auth_enabled             = 1
+    http_basic_auth_enabled             = 0
     include_devel                       = false
     local_version                       = 1000
     site_domain                         = local.cfs_site_domains[var.environment]
