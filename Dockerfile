@@ -52,8 +52,6 @@ COPY --link Libraries/CO.CDP.Swashbuckle/CO.CDP.Swashbuckle.csproj Libraries/CO.
 COPY --link Libraries/CO.CDP.Swashbuckle.Tests/CO.CDP.Swashbuckle.Tests.csproj Libraries/CO.CDP.Swashbuckle.Tests/
 COPY --link Frontend/CO.CDP.OrganisationApp/CO.CDP.OrganisationApp.csproj Frontend/CO.CDP.OrganisationApp/
 COPY --link Frontend/CO.CDP.OrganisationApp.Tests/CO.CDP.OrganisationApp.Tests.csproj Frontend/CO.CDP.OrganisationApp.Tests/
-COPY --link Frontend/CO.CDP.RegisterOfCommercialTools.App/CO.CDP.RegisterOfCommercialTools.App.csproj Frontend/CO.CDP.RegisterOfCommercialTools.App/
-COPY --link Frontend/CO.CDP.RegisterOfCommercialTools.App.Tests/CO.CDP.RegisterOfCommercialTools.App.Tests.csproj Frontend/CO.CDP.RegisterOfCommercialTools.App.Tests/
 COPY --link Libraries/CO.CDP.Tenant.WebApiClient/CO.CDP.Tenant.WebApiClient.csproj Libraries/CO.CDP.Tenant.WebApiClient/
 COPY --link Libraries/CO.CDP.Tenant.WebApiClient.Tests/CO.CDP.Tenant.WebApiClient.Tests.csproj Libraries/CO.CDP.Tenant.WebApiClient.Tests/
 COPY --link Libraries/CO.CDP.Organisation.WebApiClient/CO.CDP.Organisation.WebApiClient.csproj Libraries/CO.CDP.Organisation.WebApiClient/
@@ -65,8 +63,6 @@ COPY --link Libraries/CO.CDP.Forms.WebApiClient.Tests/CO.CDP.Forms.WebApiClient.
 COPY --link Libraries/CO.CDP.DataSharing.WebApiClient/CO.CDP.DataSharing.WebApiClient.csproj Libraries/CO.CDP.DataSharing.WebApiClient/
 COPY --link Libraries/CO.CDP.DataSharing.WebApiClient.Tests/CO.CDP.DataSharing.WebApiClient.Tests.csproj Libraries/CO.CDP.DataSharing.WebApiClient.Tests/
 COPY --link Libraries/CO.CDP.EntityVerificationClient/CO.CDP.EntityVerificationClient.csproj Libraries/CO.CDP.EntityVerificationClient/
-COPY --link Libraries/CO.CDP.RegisterOfCommercialTools.WebApiClient/CO.CDP.RegisterOfCommercialTools.WebApiClient.csproj Libraries/CO.CDP.RegisterOfCommercialTools.WebApiClient/
-COPY --link Libraries/CO.CDP.RegisterOfCommercialTools.WebApiClient.Tests/CO.CDP.RegisterOfCommercialTools.WebApiClient.Tests.csproj Libraries/CO.CDP.RegisterOfCommercialTools.WebApiClient.Tests/
 COPY --link TestKit/CO.CDP.TestKit.Mvc/CO.CDP.TestKit.Mvc.csproj TestKit/CO.CDP.TestKit.Mvc/
 COPY --link TestKit/CO.CDP.TestKit.Mvc.Tests/CO.CDP.TestKit.Mvc.Tests.csproj TestKit/CO.CDP.TestKit.Mvc.Tests/
 COPY --link TestKit/CO.CDP.Testcontainers.PostgreSql/CO.CDP.Testcontainers.PostgreSql.csproj TestKit/CO.CDP.Testcontainers.PostgreSql/
@@ -99,8 +95,6 @@ COPY --link Services/CO.CDP.ScheduledWorker/CO.CDP.ScheduledWorker.csproj Servic
 COPY --link Services/CO.CDP.ScheduledWorker.Tests/CO.CDP.ScheduledWorker.Tests.csproj Services/CO.CDP.ScheduledWorker.Tests/
 COPY --link Libraries/CO.CDP.UI.Foundation/CO.CDP.UI.Foundation.csproj Libraries/CO.CDP.UI.Foundation/
 COPY --link Libraries/CO.CDP.UI.Foundation.Tests/CO.CDP.UI.Foundation.Tests.csproj Libraries/CO.CDP.UI.Foundation.Tests/
-COPY --link Services/CO.CDP.RegisterOfCommercialTools.WebApi/CO.CDP.RegisterOfCommercialTools.WebApi.csproj Services/CO.CDP.RegisterOfCommercialTools.WebApi/
-COPY --link Services/CO.CDP.RegisterOfCommercialTools.WebApi.Tests/CO.CDP.RegisterOfCommercialTools.WebApi.Tests.csproj Services/CO.CDP.RegisterOfCommercialTools.WebApi.Tests/
 
 COPY --link GCGS-Central-Digital-Platform.sln .
 RUN dotnet restore "GCGS-Central-Digital-Platform.sln"
@@ -171,16 +165,6 @@ ARG BUILD_CONFIGURATION
 WORKDIR /src/Frontend/CO.CDP.OrganisationApp
 RUN dotnet build -c $BUILD_CONFIGURATION -o /app/build
 
-FROM build AS build-commercial-tools-app
-ARG BUILD_CONFIGURATION
-WORKDIR /src/Frontend/CO.CDP.RegisterOfCommercialTools.App
-RUN dotnet build -c $BUILD_CONFIGURATION -o /app/build
-
-FROM build AS build-commercial-tools-api
-ARG BUILD_CONFIGURATION
-WORKDIR /src/Services/CO.CDP.RegisterOfCommercialTools.WebApi
-RUN dotnet build -c $BUILD_CONFIGURATION -o /app/build
-
 FROM build-authority AS publish-authority
 ARG BUILD_CONFIGURATION
 RUN dotnet publish "CO.CDP.Organisation.Authority.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
@@ -212,14 +196,6 @@ RUN dotnet publish "CO.CDP.EntityVerification.csproj" -c $BUILD_CONFIGURATION -o
 FROM build-organisation-app AS publish-organisation-app
 ARG BUILD_CONFIGURATION
 RUN dotnet publish "CO.CDP.OrganisationApp.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
-
-FROM build-commercial-tools-app AS publish-commercial-tools-app
-ARG BUILD_CONFIGURATION
-RUN dotnet publish "CO.CDP.RegisterOfCommercialTools.App.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
-
-FROM build-commercial-tools-api AS publish-commercial-tools-api
-ARG BUILD_CONFIGURATION
-RUN dotnet publish "CO.CDP.RegisterOfCommercialTools.WebApi.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 FROM build-antivirus-app AS publish-antivirus-app
 ARG BUILD_CONFIGURATION
@@ -319,20 +295,6 @@ ENV VERSION=${VERSION}
 WORKDIR /app
 COPY --from=publish-organisation-app /app/publish .
 ENTRYPOINT ["dotnet", "CO.CDP.OrganisationApp.dll"]
-
-FROM base AS final-commercial-tools-app
-ARG VERSION
-ENV VERSION=${VERSION}
-WORKDIR /app
-COPY --from=publish-commercial-tools-app /app/publish .
-ENTRYPOINT ["dotnet", "CO.CDP.RegisterOfCommercialTools.App.dll"]
-
-FROM base AS final-commercial-tools-api
-ARG VERSION
-ENV VERSION=${VERSION}
-WORKDIR /app
-COPY --from=publish-commercial-tools-api /app/publish .
-ENTRYPOINT ["dotnet", "CO.CDP.RegisterOfCommercialTools.WebApi.dll"]
 
 FROM base AS final-antivirus-app
 ARG VERSION

@@ -24,8 +24,6 @@ services:
       - av-scanner
       - clamav-rest
       - scheduled-worker
-      - commercial-tools-app
-      - commercial-tools-api
     volumes:
       - './docker/gateway/nginx.conf:/etc/nginx/nginx.conf:ro'
       - './docker/gateway/templates:/etc/nginx/templates:ro'
@@ -38,8 +36,6 @@ services:
       CDP_FORMS_HOST: 'http://forms:8080'
       CDP_DATA_SHARING_HOST: 'http://data-sharing:8080'
       CDP_ENTITY_VERIFICATION_HOST: 'http://entity-verification:8080'
-      CDP_COMMERCIAL_TOOLS_APP_HOST: 'http://commercial-tools-app:8080'
-      CDP_COMMERCIAL_TOOLS_API_HOST: 'http://commercial-tools-api:8080'
   db:
     container_name: co-cdp-db
     image: postgres:16.3
@@ -242,70 +238,6 @@ services:
       OrganisationInformationDatabase__Password: 'cdp123'
       Organisation__Authority: *organisation-authority
       Feature__OutboxProcessorBackgroundService: false
-
-  commercial-tools-app:
-    container_name: co-cdp-commercial-tools-app
-    build:
-      context: .
-      dockerfile: Dockerfile
-      target: final-commercial-tools-app
-    image: 'cabinetoffice/cdp-commercial-tools-app:${IMAGE_VERSION:-latest}'
-    healthcheck:
-      test: ["CMD", "nc", "-z", "127.0.0.1", "8080"]
-      start_period: 10s
-      interval: 10s
-      timeout: 10s
-      retries: 3
-    depends_on:
-      commercial-tools-api:
-        condition: service_healthy
-      localstack:
-        condition: service_healthy
-    environment:
-      ASPNETCORE_ENVIRONMENT: Production
-      Aws__Credentials__AccessKeyId: test
-      Aws__Credentials__SecretAccessKey: test
-      Aws__ServiceURL: "http://localstack:4566"
-      Aws__Region: "us-east-1"
-      Aws__CognitoAuthentication__Domain: ""
-      Aws__CognitoAuthentication__UserPoolId: ""
-      Aws__CognitoAuthentication__UserPoolClientId: ""
-      Aws__CognitoAuthentication__UserPoolClientSecret: ""
-      Aws__SystemManager__DataProtectionPrefix: "/cdp/commercial-tools-app/data-protection"
-      CloudWatch__LogGroup: "/ecs/commercial-tools-app"
-      CommercialToolsApi__ServiceUrl: '${CommercialToolsApi__ServiceUrl:-http://gateway:${CDP_COMMERCIAL_TOOLS_API_PORT:-8184}}'
-      SessionTimeoutInMinutes: "30"
-      Features__CommercialTools: "true"
-
-  commercial-tools-api:
-    container_name: co-cdp-commercial-tools-api
-    build:
-      context: .
-      dockerfile: Dockerfile
-      target: final-commercial-tools-api
-    image: 'cabinetoffice/cdp-commercial-tools-api:${IMAGE_VERSION:-latest}'
-    healthcheck:
-      test: ["CMD", "nc", "-z", "127.0.0.1", "8080"]
-      start_period: 10s
-      interval: 10s
-      timeout: 10s
-      retries: 3
-    depends_on:
-      localstack:
-        condition: service_healthy
-    environment:
-      ASPNETCORE_ENVIRONMENT: Production
-      Aws__Credentials__AccessKeyId: test
-      Aws__Credentials__SecretAccessKey: test
-      Aws__ServiceURL: "http://localstack:4566"
-      Aws__Region: ""
-      Aws__CognitoAuthentication__Domain: ""
-      Aws__CognitoAuthentication__UserPoolId: ""
-      Aws__CognitoAuthentication__UserPoolClientId: ""
-      Aws__CognitoAuthentication__UserPoolClientSecret: ""
-      CloudWatch__LogGroup: "/ecs/commercial-tools-api"
-      ODataApi__BaseUrl: ""
-      ODataApi__ApiKey: ""
 
   person:
     container_name: co-cdp-person
