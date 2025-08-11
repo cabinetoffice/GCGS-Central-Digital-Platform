@@ -194,7 +194,5 @@ public enum FormQuestionBranchType
 public class MultiQuestionPageModel
 {
     public List<FormQuestion> Questions { get; set; } = [];
-    public string? PageTitleResourceKey { get; set; }
-    public string? SubmitButtonTextResourceKey { get; set; }
-    public PrimaryButtonStyle? SubmitButtonStyle { get; set; }
+    public ButtonOptions? Button { get; set; }
 }

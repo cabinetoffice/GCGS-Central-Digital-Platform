@@ -20,7 +20,6 @@ public interface IMultiQuestionFormElementModel
 {
     List<FormQuestion> Questions { get; }
     IEnumerable<IFormElementModel> QuestionModels { get; }
-    string? PageTitleResourceKey { get; }
     ButtonOptions? Button { get; }
 
     void Initialize(MultiQuestionPageModel multiQuestionPage, Dictionary<Guid, FormAnswer> existingAnswers);

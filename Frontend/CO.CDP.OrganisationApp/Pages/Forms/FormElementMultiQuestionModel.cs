@@ -12,7 +12,6 @@ public class RenderableQuestionItem
 public class FormElementMultiQuestionModel : IMultiQuestionFormElementModel
 {
     public List<FormQuestion> Questions { get; private set; } = [];
-    public string? PageTitleResourceKey { get; private set; }
     public ButtonOptions? Button { get; private set; }
 
     private readonly Dictionary<Guid, IFormElementModel> _questionModels = new();
@@ -21,12 +20,7 @@ public class FormElementMultiQuestionModel : IMultiQuestionFormElementModel
     public void Initialize(MultiQuestionPageModel multiQuestionPage, Dictionary<Guid, FormAnswer> existingAnswers)
     {
         Questions = multiQuestionPage.Questions;
-        PageTitleResourceKey = multiQuestionPage.PageTitleResourceKey;
-        Button = new ButtonOptions
-        {
-            Text = multiQuestionPage.SubmitButtonTextResourceKey,
-            Style = multiQuestionPage.SubmitButtonStyle
-        };
+        Button = multiQuestionPage.Button;
 
         foreach (var question in Questions)
         {

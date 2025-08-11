@@ -594,17 +594,16 @@ public class FormsEngine(
             return new MultiQuestionPageModel
             {
                 Questions = [startingQuestion],
-                SubmitButtonStyle = startingQuestion.Options.Layout?.Button?.Style
+                Button = startingQuestion.Options.Layout?.Button
             };
         }
 
         var questions = CollectQuestionsForPage(startingQuestion, allQuestions);
-        var buttonStyle = questions.FirstOrDefault(q => q.Options.Layout?.Button?.Style != null)?.Options.Layout?.Button?.Style;
 
         return new MultiQuestionPageModel
         {
             Questions = questions,
-            SubmitButtonStyle = buttonStyle
+            Button = questions.FirstOrDefault()?.Options.Layout?.Button
         };
     }
 
