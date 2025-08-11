@@ -114,9 +114,7 @@
         if (Model.MultiQuestionViewModel == null)
             return HtmlString.Empty;
 
-        var pageTitle = !string.IsNullOrEmpty(Model.MultiQuestionViewModel.PageTitleResourceKey)
-            ? FormsEngineResource.ResourceManager.GetString(Model.MultiQuestionViewModel.PageTitleResourceKey) ?? Model.MultiQuestionViewModel.Questions.FirstOrDefault()?.Title ?? ""
-            : Model.MultiQuestionViewModel.Questions.FirstOrDefault()?.Title ?? "";
+        var pageTitle = Model.MultiQuestionViewModel.Questions.FirstOrDefault()?.Title ?? "";
         ViewData["Title"] = pageTitle;
 
         return await Html.PartialAsync("_FormElementMultiQuestion", Model.MultiQuestionViewModel);
@@ -134,6 +132,7 @@
         if (Model.PartialViewName == null || Model.PartialViewModel == null)
             return HtmlString.Empty;
 
+        ViewData["Title"] = Model.PartialViewModel.Heading;
 
         var contentBlocks = FormContentBlocks.FromLayout(Model.PartialViewModel.Options?.Layout);
 
