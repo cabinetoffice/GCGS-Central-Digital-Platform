@@ -1,24 +1,20 @@
 using CO.CDP.RegisterOfCommercialTools.WebApiClient.Models;
-using System.Text.Json;
 
 namespace CO.CDP.RegisterOfCommercialTools.WebApi.Services;
 
-public class SearchService : ISearchService
+public class SearchService(
+    ICommercialToolsQueryBuilder builder,
+    ICommercialToolsRepository repository,
+    IConfiguration configuration)
+    : ISearchService
 {
-    private readonly ICommercialToolsQueryBuilder _queryBuilder;
-    private readonly ICommercialToolsRepository _repository;
-    private readonly string _odataBaseUrl;
-
-    public SearchService(ICommercialToolsQueryBuilder queryBuilder, ICommercialToolsRepository repository, IConfiguration configuration)
-    {
-        _queryBuilder = queryBuilder;
-        _repository = repository;
-        _odataBaseUrl = configuration.GetSection("ODataApi:BaseUrl").Value ?? throw new InvalidOperationException("ODataApi:BaseUrl configuration is required");
-    }
+    private readonly string _odataBaseUrl = configuration.GetSection("ODataApi:BaseUrl").Value ??
+                                            throw new InvalidOperationException(
+                                                "ODataApi:BaseUrl configuration is required");
 
     public async Task<SearchResponse> Search(SearchRequestDto request)
     {
-        var queryBuilder = _queryBuilder
+        var queryBuilder = builder
             .WithKeywords(request.Keyword ?? string.Empty)
             .WithStatus(request.Status ?? string.Empty)
             .FeeFrom(request.MinFees ?? 0)
@@ -26,8 +22,6 @@ public class SearchService : ISearchService
             .WithPageSize(request.PageSize)
             .WithPageNumber(request.PageNumber);
 
-
-        // Add submission deadline filters if provided
         if (request.SubmissionDeadlineFrom.HasValue)
             queryBuilder = queryBuilder.SubmissionDeadlineFrom(request.SubmissionDeadlineFrom.Value);
 
@@ -46,10 +40,39 @@ public class SearchService : ISearchService
         if (request.ContractEndDateTo.HasValue)
             queryBuilder = queryBuilder.ContractEndDateTo(request.ContractEndDateTo.Value);
 
+        if (!string.IsNullOrWhiteSpace(request.FrameworkOptions))
+        {
+            queryBuilder = request.FrameworkOptions.ToLowerInvariant() switch
+            {
+                "open" => queryBuilder.OnlyOpenFrameworks(),
+                "exclude-open" => queryBuilder.OnlyOpenFrameworks(false),
+                _ => queryBuilder
+            };
+        }
+
+        if (!string.IsNullOrWhiteSpace(request.DynamicMarketOptions))
+        {
+            switch (request.DynamicMarketOptions.ToLowerInvariant())
+            {
+                case "utilities-only":
+                    queryBuilder = queryBuilder.WithBuyerClassificationRestrictions("utilities");
+                    break;
+                case "exclude-utilities":
+                    queryBuilder = queryBuilder.ExcludeBuyerClassificationRestrictions("utilities");
+                    break;
+            }
+        }
+
+        if (!string.IsNullOrWhiteSpace(request.ContractingAuthorityUsage))
+        {
+            var frameworkType = request.ContractingAuthorityUsage.ToLowerInvariant() == "yes" ? "open" : "closed";
+            queryBuilder = queryBuilder.WithFrameworkType(frameworkType);
+        }
+
         var queryUrl = queryBuilder.Build(_odataBaseUrl);
 
-        var results = await _repository.SearchCommercialTools(queryUrl);
-        var totalCount = await _repository.GetCommercialToolsCount(queryUrl);
+        var results = await repository.SearchCommercialTools(queryUrl);
+        var totalCount = await repository.GetCommercialToolsCount(queryUrl);
 
         return new SearchResponse
         {
@@ -62,6 +85,6 @@ public class SearchService : ISearchService
 
     public async Task<SearchResultDto?> GetById(string id)
     {
-        return await _repository.GetCommercialToolById(id);
+        return await repository.GetCommercialToolById(id);
     }
 }

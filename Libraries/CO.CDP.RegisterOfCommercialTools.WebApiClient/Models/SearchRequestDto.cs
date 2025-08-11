@@ -13,6 +13,9 @@ public class SearchRequestDto
     public decimal? MinFees { get; set; }
     public decimal? MaxFees { get; set; }
     public string? AwardMethod { get; set; }
+    public string? FrameworkOptions { get; set; }
+    public string? DynamicMarketOptions { get; set; }
+    public string? ContractingAuthorityUsage { get; set; }
     public string? SortBy { get; set; }
     public int PageNumber { get; set; } = 1;
     public int PageSize { get; set; } = 10;

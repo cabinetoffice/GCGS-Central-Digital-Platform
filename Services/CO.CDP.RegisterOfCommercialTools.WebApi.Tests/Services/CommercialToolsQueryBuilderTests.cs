@@ -9,24 +9,25 @@ public class CommercialToolsQueryBuilderTests
     private const string BaseUrl = "https://api.example.com/tenders";
 
     [Fact]
-    public void Constructor_ShouldSetDefaultOpenFrameworkFilter()
+    public void Constructor_ShouldNotAddAnyFilters()
     {
         var builder = new CommercialToolsQueryBuilder();
 
         var result = builder.Build(BaseUrl);
 
-        result.Should().Contain("filter[tender.techniques.frameworkAgreement.isOpenFrameworkScheme]=true");
+        result.Should().Be(BaseUrl);
     }
 
     [Fact]
-    public void WithKeywords_WhenKeywordsProvided_ShouldAddAllKeywordFilters()
+    public void WithKeywords_WhenKeywordsProvided_ShouldAddSearchParameterAndFieldFilters()
     {
         var builder = new CommercialToolsQueryBuilder();
 
         var result = builder.WithKeywords("test keyword").Build(BaseUrl);
 
-        result.Should().Contain("filter[tender.title]=test%20keyword");
-        result.Should().Contain("filter[tender.description]=test%20keyword");
+        result.Should().Contain("$search=test%20keyword");
+        result.Should().Contain("filter[tender.name]=test%20keyword");
+        result.Should().Contain("filter[tender.techniques.frameworkAgreement.description]=test%20keyword");
         result.Should().Contain("filter[parties.identifier.id]=test%20keyword");
         result.Should().Contain("filter[parties.name]=test%20keyword");
     }
@@ -52,11 +53,51 @@ public class CommercialToolsQueryBuilderTests
     }
 
     [Fact]
+    public void WithKeywords_WhenSpaceSeparatedWords_ShouldPassThroughForAnyWordSearch()
+    {
+        var builder = new CommercialToolsQueryBuilder();
+
+        var result = builder.WithKeywords("radio televisions").Build(BaseUrl);
+
+        result.Should().Contain("$search=radio%20televisions");
+    }
+
+    [Fact]
+    public void WithKeywords_WhenPlusOperatorUsed_ShouldConvertToAndOperator()
+    {
+        var builder = new CommercialToolsQueryBuilder();
+
+        var result = builder.WithKeywords("administration + defence").Build(BaseUrl);
+
+        result.Should().Contain("$search=administration%20AND%20defence");
+    }
+
+    [Fact]
+    public void WithKeywords_WhenQuotedPhrase_ShouldPassThroughForExactMatch()
+    {
+        var builder = new CommercialToolsQueryBuilder();
+
+        var result = builder.WithKeywords("\"market research\"").Build(BaseUrl);
+
+        result.Should().Contain("$search=%22market%20research%22");
+    }
+
+    [Fact]
+    public void WithKeywords_WhenMultiplePlusOperators_ShouldConvertAllToAnd()
+    {
+        var builder = new CommercialToolsQueryBuilder();
+
+        var result = builder.WithKeywords("technology + innovation + digital").Build(BaseUrl);
+
+        result.Should().Contain("$search=technology%20AND%20innovation%20AND%20digital");
+    }
+
+    [Fact]
     public void OnlyOpenFrameworks_WhenTrue_ShouldSetFilterToTrue()
     {
         var builder = new CommercialToolsQueryBuilder();
 
-        var result = builder.OnlyOpenFrameworks(true).Build(BaseUrl);
+        var result = builder.OnlyOpenFrameworks().Build(BaseUrl);
 
         result.Should().Contain("filter[tender.techniques.frameworkAgreement.isOpenFrameworkScheme]=true");
     }
@@ -197,15 +238,6 @@ public class CommercialToolsQueryBuilderTests
         result.Should().Contain("page[number]=3");
     }
 
-    [Fact]
-    public void ReservedParticipation_WhenModeProvided_ShouldAddReservedParticipationFilter()
-    {
-        var builder = new CommercialToolsQueryBuilder();
-
-        var result = builder.ReservedParticipation("sme").Build(BaseUrl);
-
-        result.Should().Contain("filter[tender.otherRequirements.reservedParticipation]=sme");
-    }
 
     [Fact]
     public void ContractLocation_WhenRegionProvided_ShouldAddContractLocationFilter()
@@ -266,7 +298,8 @@ public class CommercialToolsQueryBuilderTests
 
         var result = builder.WithKeywords("test with spaces").Build(BaseUrl);
 
-        result.Should().Contain("filter[tender.title]=test%20with%20spaces");
+        result.Should().Contain("$search=test%20with%20spaces");
+        result.Should().Contain("filter[tender.name]=test%20with%20spaces");
     }
 
     [Fact]
@@ -283,13 +316,16 @@ public class CommercialToolsQueryBuilderTests
         var result2 = builder2.Build(BaseUrl);
         var result3 = builder3.Build(BaseUrl);
 
-        result1.Should().NotContain("filter[tender.title]=test");
+        result1.Should().NotContain("$search=test");
+        result1.Should().NotContain("filter[tender.name]=test");
         result1.Should().NotContain("filter[tender.status]=Active");
 
-        result2.Should().Contain("filter[tender.title]=test");
+        result2.Should().Contain("$search=test");
+        result2.Should().Contain("filter[tender.name]=test");
         result2.Should().NotContain("filter[tender.status]=Active");
 
-        result3.Should().Contain("filter[tender.title]=test");
+        result3.Should().Contain("$search=test");
+        result3.Should().Contain("filter[tender.name]=test");
         result3.Should().Contain("filter[tender.status]=Active");
     }
 
@@ -312,7 +348,8 @@ public class CommercialToolsQueryBuilderTests
             .Build(BaseUrl);
 
         result.Should().StartWith(BaseUrl);
-        result.Should().Contain("filter[tender.title]=IT%20services");
+        result.Should().Contain("$search=IT%20services");
+        result.Should().Contain("filter[tender.name]=IT%20services");
         result.Should().Contain("filter[tender.status]=Active");
         result.Should().Contain("filter[tender.participationFees.relativeValue.proportion.value.from]=100.5");
         result.Should().Contain("filter[tender.participationFees.relativeValue.proportion.value.to]=999.99");
@@ -322,5 +359,66 @@ public class CommercialToolsQueryBuilderTests
         result.Should().Contain("filter[tender.lots.contractPeriod.startDate.to]=2025-06-30");
         result.Should().Contain("page[size]=25");
         result.Should().Contain("page[number]=2");
+    }
+
+
+    [Fact]
+    public void WithFrameworkType_WhenTypeProvided_ShouldAddFrameworkTypeFilter()
+    {
+        var builder = new CommercialToolsQueryBuilder();
+
+        var result = builder.WithFrameworkType("open").Build(BaseUrl);
+
+        result.Should().Contain("filter[tender.techniques.frameworkAgreement.type]=open");
+    }
+
+    [Fact]
+    public void WithFrameworkType_WhenEmpty_ShouldReturnSameInstance()
+    {
+        var builder = new CommercialToolsQueryBuilder();
+
+        var result = builder.WithFrameworkType("");
+
+        result.Should().BeSameAs(builder);
+    }
+
+    [Fact]
+    public void WithBuyerClassificationRestrictions_WhenUtilities_ShouldAddUtilitiesFilter()
+    {
+        var builder = new CommercialToolsQueryBuilder();
+
+        var result = builder.WithBuyerClassificationRestrictions("utilities").Build(BaseUrl);
+
+        result.Should().Contain("filter[tender.techniques.frameworkAgreement.buyerClassificationRestrictions.id]=utilities");
+    }
+
+    [Fact]
+    public void WithBuyerClassificationRestrictions_WhenEmpty_ShouldReturnSameInstance()
+    {
+        var builder = new CommercialToolsQueryBuilder();
+
+        var result = builder.WithBuyerClassificationRestrictions("");
+
+        result.Should().BeSameAs(builder);
+    }
+
+    [Fact]
+    public void ExcludeBuyerClassificationRestrictions_WhenUtilities_ShouldAddNotEqualsFilter()
+    {
+        var builder = new CommercialToolsQueryBuilder();
+
+        var result = builder.ExcludeBuyerClassificationRestrictions("utilities").Build(BaseUrl);
+
+        result.Should().Contain("filter[tender.techniques.frameworkAgreement.buyerClassificationRestrictions.id ne]=utilities");
+    }
+
+    [Fact]
+    public void ExcludeBuyerClassificationRestrictions_WhenEmpty_ShouldReturnSameInstance()
+    {
+        var builder = new CommercialToolsQueryBuilder();
+
+        var result = builder.ExcludeBuyerClassificationRestrictions("");
+
+        result.Should().BeSameAs(builder);
     }
 }

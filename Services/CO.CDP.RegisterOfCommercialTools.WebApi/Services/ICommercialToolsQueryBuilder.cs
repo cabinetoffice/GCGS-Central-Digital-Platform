@@ -1,12 +1,9 @@
-using CO.CDP.RegisterOfCommercialTools.WebApiClient.Models;
-
 namespace CO.CDP.RegisterOfCommercialTools.WebApi.Services;
 
 public interface ICommercialToolsQueryBuilder
 {
     ICommercialToolsQueryBuilder WithKeywords(string keywords);
     ICommercialToolsQueryBuilder OnlyOpenFrameworks(bool only = true);
-    ICommercialToolsQueryBuilder ExcludeOpenFrameworks(string frameworkType);
     ICommercialToolsQueryBuilder WithStatus(string status);
     ICommercialToolsQueryBuilder FeeFrom(decimal from);
     ICommercialToolsQueryBuilder FeeTo(decimal to);
@@ -16,7 +13,9 @@ public interface ICommercialToolsQueryBuilder
     ICommercialToolsQueryBuilder ContractStartDateTo(DateTime to);
     ICommercialToolsQueryBuilder ContractEndDateFrom(DateTime from);
     ICommercialToolsQueryBuilder ContractEndDateTo(DateTime to);
-    ICommercialToolsQueryBuilder ReservedParticipation(string mode);
+    ICommercialToolsQueryBuilder WithFrameworkType(string frameworkType);
+    ICommercialToolsQueryBuilder WithBuyerClassificationRestrictions(string restrictionId);
+    ICommercialToolsQueryBuilder ExcludeBuyerClassificationRestrictions(string restrictionId);
     ICommercialToolsQueryBuilder ContractLocation(string region);
     ICommercialToolsQueryBuilder WithCpv(string cpv);
     ICommercialToolsQueryBuilder WithPageSize(int size);
