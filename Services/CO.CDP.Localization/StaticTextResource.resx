@@ -2059,13 +2059,13 @@
   <data name="BuyerParentChildRelationship_ResultsPage_NoResults" xml:space="preserve">
   <value>
     &lt;p class=&quot;govuk-body&quot;&gt;
-      &lt;b&gt;0&lt;/b&gt; organisations found.
+        &lt;span class=&quot;govuk-!-font-weight-bold&quot;&gt;0&lt;/span&gt; organisations found.
     &lt;/p&gt;
     &lt;p class=&quot;govuk-body&quot;&gt;
-      &lt;b&gt;There are no matching results.&lt;/b&gt;
+        &lt;span class=&quot;govuk-!-font-weight-bold&quot;&gt;There are no matching results.&lt;/span&gt;
     &lt;/p&gt;
     &lt;p class=&quot;govuk-body&quot;&gt;
-      Double-check your spelling to improve your search results.
+        Double-check your spelling to improve your search results.
     &lt;/p&gt;
   </value>
 </data>
