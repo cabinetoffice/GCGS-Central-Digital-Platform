@@ -29,8 +29,9 @@ public class SearchOrganisationByPponUseCaseTests : IClassFixture<AutoMapperFixt
         const int limit = 10;
         const int skip = 0;
         const string orderBy = "asc";
+        const double threshold = 1.0;
 
-        var organisationQuery = new OrganisationSearchByPponQuery(searchTerm, limit, skip, orderBy);
+        var organisationQuery = new OrganisationSearchByPponQuery(searchTerm, limit, skip, orderBy, threshold);
 
         var organisations = new List<OrganisationPersistence>
         {
@@ -38,7 +39,7 @@ public class SearchOrganisationByPponUseCaseTests : IClassFixture<AutoMapperFixt
         };
 
         _mockOrganisationRepository
-            .Setup(r => r.SearchByNameOrPpon(searchTerm, limit, skip, orderBy))
+            .Setup(r => r.SearchByNameOrPpon(searchTerm, limit, skip, orderBy, threshold))
             .ReturnsAsync((organisations, organisations.Count));
 
         var useCase = new SearchOrganisationByPponUseCase(
@@ -65,8 +66,9 @@ public class SearchOrganisationByPponUseCaseTests : IClassFixture<AutoMapperFixt
         const int limit = 10;
         const int skip = 0;
         const string orderBy = "asc";
+        const double threshold = 1.0;
 
-        var organisationQuery = new OrganisationSearchByPponQuery(searchTerm, limit, skip, orderBy);
+        var organisationQuery = new OrganisationSearchByPponQuery(searchTerm, limit, skip, orderBy, threshold);
 
         var organisations = new List<OrganisationPersistence>
         {
@@ -75,7 +77,7 @@ public class SearchOrganisationByPponUseCaseTests : IClassFixture<AutoMapperFixt
         };
 
         _mockOrganisationRepository
-            .Setup(r => r.SearchByNameOrPpon(searchTerm, limit, skip, orderBy))
+            .Setup(r => r.SearchByNameOrPpon(searchTerm, limit, skip, orderBy, threshold))
             .ReturnsAsync((organisations, organisations.Count));
 
         var useCase = new SearchOrganisationByPponUseCase(
@@ -101,8 +103,9 @@ public class SearchOrganisationByPponUseCaseTests : IClassFixture<AutoMapperFixt
         const int limit = 10;
         const int skip = 0;
         const string orderBy = "asc";
+        const double threshold = 0.3;
 
-        var organisationQuery = new OrganisationSearchByPponQuery(searchTerm, limit, skip, orderBy);
+        var organisationQuery = new OrganisationSearchByPponQuery(searchTerm, limit, skip, orderBy, threshold);
 
         var organisations = new List<OrganisationPersistence>
         {
@@ -111,7 +114,7 @@ public class SearchOrganisationByPponUseCaseTests : IClassFixture<AutoMapperFixt
         };
 
         _mockOrganisationRepository
-            .Setup(r => r.SearchByNameOrPpon(searchTerm, limit, skip, orderBy))
+            .Setup(r => r.SearchByNameOrPpon(searchTerm, limit, skip, orderBy, threshold))
             .ReturnsAsync((organisations, organisations.Count));
 
         var useCase = new SearchOrganisationByPponUseCase(
@@ -137,8 +140,9 @@ public class SearchOrganisationByPponUseCaseTests : IClassFixture<AutoMapperFixt
         const int limit = 1;
         const int skip = 1;
         const string orderBy = "asc";
+        const double threshold = 0.3;
 
-        var organisationQuery = new OrganisationSearchByPponQuery(searchTerm, limit, skip, orderBy);
+        var organisationQuery = new OrganisationSearchByPponQuery(searchTerm, limit, skip, orderBy, threshold);
 
         var organisations = new List<OrganisationPersistence>
         {
@@ -147,7 +151,7 @@ public class SearchOrganisationByPponUseCaseTests : IClassFixture<AutoMapperFixt
 
         // Repository returns only the second item, but total count is 2
         _mockOrganisationRepository
-            .Setup(r => r.SearchByNameOrPpon(searchTerm, limit, skip, orderBy))
+            .Setup(r => r.SearchByNameOrPpon(searchTerm, limit, skip, orderBy, threshold))
             .ReturnsAsync((organisations, 2));
 
         var useCase = new SearchOrganisationByPponUseCase(
@@ -171,8 +175,9 @@ public class SearchOrganisationByPponUseCaseTests : IClassFixture<AutoMapperFixt
         const int limit = 10;
         const int skip = 0;
         const string orderBy = "desc";
+        const double threshold = 0.3;
 
-        var organisationQuery = new OrganisationSearchByPponQuery(searchTerm, limit, skip, orderBy);
+        var organisationQuery = new OrganisationSearchByPponQuery(searchTerm, limit, skip, orderBy, threshold);
 
         var organisations = new List<OrganisationPersistence>
         {
@@ -181,7 +186,7 @@ public class SearchOrganisationByPponUseCaseTests : IClassFixture<AutoMapperFixt
         };
 
         _mockOrganisationRepository
-            .Setup(r => r.SearchByNameOrPpon(searchTerm, limit, skip, orderBy))
+            .Setup(r => r.SearchByNameOrPpon(searchTerm, limit, skip, orderBy, threshold))
             .ReturnsAsync((organisations, organisations.Count));
 
         var useCase = new SearchOrganisationByPponUseCase(
@@ -205,13 +210,14 @@ public class SearchOrganisationByPponUseCaseTests : IClassFixture<AutoMapperFixt
         const int limit = 10;
         const int skip = 0;
         const string orderBy = "asc";
+        const double threshold = 0.3;
 
-        var organisationQuery = new OrganisationSearchByPponQuery(searchTerm, limit, skip, orderBy);
+        var organisationQuery = new OrganisationSearchByPponQuery(searchTerm, limit, skip, orderBy, threshold);
 
         var organisations = new List<OrganisationPersistence>();
 
         _mockOrganisationRepository
-            .Setup(r => r.SearchByNameOrPpon(searchTerm, limit, skip, orderBy))
+            .Setup(r => r.SearchByNameOrPpon(searchTerm, limit, skip, orderBy, threshold))
             .ReturnsAsync((organisations, 0));
 
         var useCase = new SearchOrganisationByPponUseCase(

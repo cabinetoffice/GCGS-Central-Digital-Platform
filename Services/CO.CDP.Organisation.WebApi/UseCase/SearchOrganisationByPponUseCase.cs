@@ -11,7 +11,7 @@ public class SearchOrganisationByPponUseCase(IOrganisationRepository organisatio
 {
     public async Task<(IEnumerable<Model.OrganisationSearchByPponResult> Results, int TotalCount)> Execute(OrganisationSearchByPponQuery query)
     {
-        var result = await organisationRepository.SearchByNameOrPpon(query.SearchText, query.Limit, query.Skip, query.OrderBy);
+        var result = await organisationRepository.SearchByNameOrPpon(query.SearchText, query.Limit, query.Skip, query.OrderBy, query.Threshold);
 
         var mappedResults = result.Results.Select(mapper.Map<Model.OrganisationSearchByPponResult>);
 
