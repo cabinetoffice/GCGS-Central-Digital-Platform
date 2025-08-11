@@ -29,6 +29,7 @@ dependency core_networking {
 
 
 inputs = {
+  cfs_extra_domains = local.global_vars.locals.cfs_extra_domains
   fts_extra_domains = local.global_vars.locals.fts_extra_domains
   tags              = local.tags
 

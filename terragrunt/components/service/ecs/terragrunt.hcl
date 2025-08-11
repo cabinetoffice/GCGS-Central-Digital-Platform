@@ -135,6 +135,7 @@ inputs = {
 
   account_ids                       = local.global_vars.locals.account_ids
   cfs_allowed_target_email_domains  = local.global_vars.locals.cfs_allowed_target_email_domains
+  cfs_extra_host_headers            = local.global_vars.locals.cfs_extra_domains
   cfs_service_allowed_origins       = local.global_vars.locals.cfs_service_allowed_origins
   fts_allowed_target_email_domains  = local.global_vars.locals.fts_allowed_target_email_domains
   fts_extra_host_headers            = local.global_vars.locals.fts_extra_domains

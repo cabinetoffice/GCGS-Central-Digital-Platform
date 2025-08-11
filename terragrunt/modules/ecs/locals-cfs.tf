@@ -6,6 +6,13 @@ locals {
 
   cfs_screts_arn = data.aws_secretsmanager_secret.cfs_secrets.arn
 
+  cfs_site_domains = {
+    development = "cfs.${var.public_domain}"
+    staging     = "www-preview.contractsfinder.service.gov.uk"
+    integration = "www-integration.contractsfinder.service.gov.uk"
+    production  = "cfs.${var.public_domain}"
+  }
+
   cfs_secrets = {
     dev_email                             = "${local.cfs_screts_arn}:DEV_EMAIL::"
     email_contactus                       = "${local.cfs_screts_arn}:CONTACTUS_EMAIL::"
@@ -36,7 +43,7 @@ locals {
   cfs_parameters = {
     app_host_address                    = "%"
     buyer_corporate_identifier_prefixes = "sid4gov.cabinetoffice.gov.uk|supplierregistration.cabinetoffice.gov.uk"
-    cookie_domain                       = "cfs.${var.public_domain}"
+    cookie_domain                       = local.cfs_site_domains[var.environment]
     db_host                             = var.db_cfs_cluster_address
     db_name                             = var.db_cfs_cluster_name
     db_port                             = 3306
@@ -47,9 +54,9 @@ locals {
     http_basic_auth_enabled             = 1
     include_devel                       = false
     local_version                       = 1000
-    site_domain                         = "cfs.${var.public_domain}"
+    site_domain                         = local.cfs_site_domains[var.environment]
     ssl_service                         = true
-    email_support                       = var.is_production ? "noreply@find-tender.service.gov.uk" : "noreply@${var.public_domain}"
+    email_support                       = var.is_production ? "noreply@contractsfinder.service.gov.uk" : "noreply@${var.public_domain}"
     valid_until                         = 1924990799
   }
 
