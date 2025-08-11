@@ -456,7 +456,7 @@ public record OrganisationSearchByPponQuery
     public string OrderBy { get; } = "rel";
     public double Threshold { get; }
 
-    public OrganisationSearchByPponQuery(string searchText, int? limit,int skip, string orderBy, double? threshold)
+    public OrganisationSearchByPponQuery(string searchText, int? limit, int skip, string orderBy, double? threshold)
     {
         SearchText = searchText;
         Limit = limit;
