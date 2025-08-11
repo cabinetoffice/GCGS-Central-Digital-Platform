@@ -26,3 +26,10 @@
 **/OpenAPI
 LICENSE
 README.md
+
+Services/CO.CDP.RegisterOfCommercialTools.WebApi/
+Services/CO.CDP.RegisterOfCommercialTools.WebApi.Tests/
+Frontend/CO.CDP.RegisterOfCommercialTools.App/
+Frontend/CO.CDP.RegisterOfCommercialTools.App.Tests/
+Libraries/CO.CDP.RegisterOfCommercialTools.WebApiClient/
+Libraries/CO.CDP.RegisterOfCommercialTools.WebApiClient.Tests/
