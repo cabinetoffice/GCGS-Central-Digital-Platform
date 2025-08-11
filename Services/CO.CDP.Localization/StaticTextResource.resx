@@ -4269,7 +4269,7 @@
   </data>
   <data name="PponSearch_NoResults" xml:space="preserve">
   <value>
-    &lt;h1 class=&quot;govuk-heading-l&quot;&gt;Search results&lt;/h1&gt;
+    &lt;h2 class=&quot;govuk-heading-l&quot;&gt;Search results&lt;/h2&gt;
     &lt;p class=&quot;govuk-body&quot;&gt;
       &lt;span class=&quot;govuk-!-font-weight-bold&quot;&gt;0&lt;/span&gt; organisations found
     &lt;/p&gt;

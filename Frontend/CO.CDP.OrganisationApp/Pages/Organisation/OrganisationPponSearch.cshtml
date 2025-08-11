@@ -74,7 +74,7 @@
 
     @if (!string.IsNullOrEmpty(Model.FeedbackMessage))
     {
-        <p class="govuk-body">@Html.Raw(Model.FeedbackMessage)</p>
+        @Html.Raw(Model.FeedbackMessage)
     }
 
     @if (Model.TotalOrganisations > 0)
@@ -131,7 +131,7 @@
     {
         <div class="govuk-grid-row" aria-label="Search result for organisation: @org.Name">
             <div class="govuk-grid-column-two-thirds">
-                <h2 class="govuk-heading-m" id="org-name-@org.Id">@org.Name</h2>
+                <h3 class="govuk-heading-m" id="org-name-@org.Id">@org.Name</h3>
                 @if (org.Identifiers.Any(i => i.Scheme.Equals("GB-PPON") && i.Id != null))
                 {
                     <p class="govuk-body govuk-!-margin-bottom-1">
