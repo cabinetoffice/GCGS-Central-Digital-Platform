@@ -1476,11 +1476,12 @@ public static class EndpointExtensions
         app.MapGet("/search-by-name-or-ppon",
                 [OrganisationAuthorize([AuthenticationChannel.OneLogin, AuthenticationChannel.ServiceKey])]
             async ([FromQuery] string searchText, [FromQuery] int limit, [FromQuery] int skip,[FromQuery] string sortOrder,
-                [FromServices] IUseCase<OrganisationSearchByPponQuery, (IEnumerable<Model.OrganisationSearchByPponResult>, int)> useCase) =>
+                [FromServices] IUseCase<OrganisationSearchByPponQuery, (IEnumerable<Model.OrganisationSearchByPponResult>, int)> useCase,
+                [FromQuery] double? threshold = 0.3) =>
             {
                 sortOrder = string.IsNullOrEmpty(sortOrder) ? "rel" : sortOrder;
 
-                return await useCase.Execute(new OrganisationSearchByPponQuery(searchText, limit, skip, sortOrder))
+                return await useCase.Execute(new OrganisationSearchByPponQuery(searchText, limit, skip, sortOrder, threshold))
                     .AndThen(result => {
                         var (results, totalCount) = result;
                         return results.Any()

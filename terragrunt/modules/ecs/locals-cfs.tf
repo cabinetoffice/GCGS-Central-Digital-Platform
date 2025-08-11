@@ -10,7 +10,7 @@ locals {
     development = "cfs.${var.public_domain}"
     staging     = "www-preview.contractsfinder.service.gov.uk"
     integration = "www-integration.contractsfinder.service.gov.uk"
-    production  = "cfs.${var.public_domain}"
+    production  = "www.contractsfinder.service.gov.uk"
   }
 
   cfs_secrets = {
@@ -19,6 +19,8 @@ locals {
     email_subscription_authentication_key = "${local.cfs_screts_arn}:EMAIL_SUBSCRIPTION_AUTHENTICATION_KEY::"
     email_subscription_cipher             = "${local.cfs_screts_arn}:EMAIL_SUBSCRIPTION_CIPHER::"
     email_licence_request                 = "${local.cfs_screts_arn}:LICENCEREQUEST_EMAIL::"
+    google_analytics_key                  = "${local.cfs_screts_arn}:GOOGLE_ANALYTICS_KEY::"
+    google_tag_manager_key                = "${local.cfs_screts_arn}:GOOGLE_TAG_MANAGER_KEY::"
     http_basic_auth_pass                  = "${local.cfs_screts_arn}:HTTP_BASIC_AUTH_PASS::"
     http_basic_auth_user                  = "${local.cfs_screts_arn}:HTTP_BASIC_AUTH_USER::"
     letsencrypt_key_authorization         = "${local.cfs_screts_arn}:LETSENCRYPT_KEY_AUTHORIZATION::"
@@ -51,7 +53,7 @@ locals {
     demo                                = false
     cfs_allowed_target_email_domains    = join(",", var.cfs_allowed_target_email_domains)
     environment                         = upper(var.environment)
-    http_basic_auth_enabled             = 1
+    http_basic_auth_enabled             = 0
     include_devel                       = false
     local_version                       = 1000
     site_domain                         = local.cfs_site_domains[var.environment]

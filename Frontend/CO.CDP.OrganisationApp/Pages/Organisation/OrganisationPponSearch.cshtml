@@ -31,8 +31,7 @@
 
 
 
-<form method="post" aria-label="Organisation PPON search form">
-    @Html.AntiForgeryToken()
+<form method="get" aria-label="Organisation PPON search form">
     <div class="search-ppon-info-header govuk-!-margin-bottom-8 govuk-!-padding-5">
         <div class="govuk-grid-row">
             <div class="govuk-grid-column-full govuk-!-margin-bottom-1">
@@ -146,7 +145,7 @@
             </div>
             <div class="govuk-grid-column-one-third govuk-!-text-align-right">
                 <div class="govuk-grid-row" aria-label="Organisation roles">
-                    @foreach (var partyRole in @org.Roles.Distinct())
+                    @foreach (var partyRole in @org.Roles.Distinct().OrderBy(r => r.ToString()))
                     {
                         <strong class="govuk-tag @Model.GetTagClassForRole(partyRole)" aria-label="Role: @partyRole">
                             @partyRole
