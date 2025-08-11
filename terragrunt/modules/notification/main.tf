@@ -20,3 +20,18 @@ resource "aws_ses_identity_policy" "send_policy" {
   policy   = data.aws_iam_policy_document.ses_send[each.key].json
 }
 
+resource "aws_ses_configuration_set" "json_logging" {
+  name = "${local.logging_prefix}-config-set"
+}
+
+resource "aws_ses_event_destination" "json_logging" {
+  name                   = "${local.logging_prefix}-to-sns"
+  configuration_set_name = aws_ses_configuration_set.json_logging.name
+  enabled                = true
+
+  matching_types = var.ses_logging_event_types
+
+  sns_destination {
+    topic_arn = aws_sns_topic.ses_json_events.arn
+  }
+}

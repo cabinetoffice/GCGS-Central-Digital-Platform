@@ -2,8 +2,12 @@ data "aws_iam_policy_document" "terraform_global_ses" {
 
   statement {
     actions = [
+      "ses:CreateConfigurationSet",
+      "ses:CreateConfigurationSetEventDestination",
+      "ses:DeleteConfigurationSet",
       "ses:DeleteIdentity",
       "ses:DeleteIdentityPolicy",
+      "ses:DescribeConfigurationSet",
       "ses:GetIdentityDkimAttributes",
       "ses:GetIdentityMailFromDomainAttributes",
       "ses:GetIdentityPolicies",
