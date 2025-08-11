@@ -100,8 +100,8 @@ locals {
         "https://www-staging.find-tender.service.gov.uk/auth/backchannellogout",
         "https://fts.staging.supplier-information.find-tender.service.gov.uk/auth/backchannellogout"
       ]
-      pinned_service_version_cfs        = "1.0.1"
-      pinned_service_version_fts        = "1.0.12"
+      pinned_service_version_cfs        = "1.0.2"
+      pinned_service_version_fts        = "1.0.13"
       pinned_service_version            = "1.0.72"
       postgres_instance_type            = "db.t4g.micro"
       postgres_aurora_instance_type     = "db.r5.large"
@@ -291,7 +291,7 @@ locals {
         "https://www-tpp.find-tender.service.gov.uk/auth/backchannellogout",
         "https://fts.integration.supplier-information.find-tender.service.gov.uk/auth/backchannellogout"
       ]
-      pinned_service_version_cfs        = "1.0.1"
+      pinned_service_version_cfs        = "1.0.2"
       pinned_service_version_fts        = "1.0.12"
       pinned_service_version            = "1.0.71"
       postgres_instance_type            = "db.t4g.micro"
@@ -321,6 +321,7 @@ locals {
       account_id                        = 471112843276
       canary_schedule_expression        = "rate(15 minutes)"
       cfs_allowed_target_email_domains  = []
+      cfs_extra_domains                 = ["www.contractsfinder.service.gov.uk"]
       fts_extra_domains                 = []
       cfs_service_allowed_origins       = [
         "https://cfs.supplier-information.find-tender.service.gov.uk",
@@ -342,7 +343,7 @@ locals {
         "https://www.find-tender.service.gov.uk/auth/backchannellogout",
         "https://fts.supplier-information.find-tender.service.gov.uk/auth/backchannellogout"
       ],
-      pinned_service_version_cfs        = "1.0.1"
+      pinned_service_version_cfs        = "1.0.2"
       pinned_service_version_fts        = "1.0.12"
       pinned_service_version            = "1.0.71"
       postgres_instance_type            = "db.t4g.micro"

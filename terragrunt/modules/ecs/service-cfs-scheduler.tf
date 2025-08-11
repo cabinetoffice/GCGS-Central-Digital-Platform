@@ -14,7 +14,7 @@ module "ecs_service_cfs_scheduler" {
   cluster_id             = aws_ecs_cluster.this.id
   container_port         = var.service_configs.cfs_scheduler.port
   cpu                    = var.service_configs.cfs_scheduler.cpu
-  desired_count          = var.service_configs.cfs_scheduler.desired_count
+  desired_count          = var.environment == "production" ? 0 : var.service_configs.cfs_scheduler.desired_count
   ecs_alb_sg_id          = "N/A"
   ecs_listener_arn       = "N/A"
   ecs_service_base_sg_id = var.ecs_sg_id
