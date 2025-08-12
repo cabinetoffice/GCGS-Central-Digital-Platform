@@ -264,11 +264,14 @@ data "aws_iam_policy_document" "terraform_product" {
   statement {
     actions = [
       "SNS:CreateTopic",
-      "SNS:TagResource",
-      "SNS:SetTopicAttributes",
+      "SNS:DeleteTopic",
+      "SNS:GetSubscriptionAttributes",
       "SNS:GetTopicAttributes",
       "SNS:ListTagsForResource",
-      "SNS:DeleteTopic",
+      "SNS:SetTopicAttributes",
+      "SNS:Subscribe",
+      "SNS:TagResource",
+      "SNS:Unsubscribe",
     ]
     effect = "Allow"
     resources = [
