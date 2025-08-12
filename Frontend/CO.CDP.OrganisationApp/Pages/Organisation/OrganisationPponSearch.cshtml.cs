@@ -38,6 +38,8 @@ public class OrganisationPponSearchModel(
 
     public double Threshold { get; set; } = 0.3;
 
+    public string? FeedbackMessage { get; set; }
+
     [BindProperty(SupportsGet = true)] public Guid Id { get; set; }
 
     [BindProperty(SupportsGet = true)] public int PageNumber { get; set; } = 1;
@@ -83,7 +85,9 @@ public class OrganisationPponSearchModel(
         int PageSize,
         int Skip,
         int CurrentPage,
-        string? ErrorMessage
+        string? ErrorMessage,
+        string? FeedbackMessage
+
     );
 
     private async Task<SearchResult> HandleSearch(int pageNumber, string searchText, string sortOrder, double threshold)
@@ -97,19 +101,13 @@ public class OrganisationPponSearchModel(
         return await FetchOrganisationSearchResults(validationResult.CleanedSearchText, sortOrder, pageSize, skip, currentPage, threshold);
     }
 
-    private static SearchResult CreateEmptySearchResult(int pageSize, int skip, int currentPage) =>
-        new(
-            ImmutableList<OrganisationSearchByPponResult>.Empty,
-            0, 0, pageSize, skip, currentPage,
-            null
-        );
-
     private static SearchResult
         CreateInvalidSearchResult(int pageSize, int skip, int currentPage, string? errorMessage) =>
         new(
             ImmutableList<OrganisationSearchByPponResult>.Empty,
             0, 0, pageSize, skip, currentPage,
-            errorMessage
+            errorMessage, null
+
         );
 
     private async Task<SearchResult> FetchOrganisationSearchResults(string cleanedSearchText, string sortOrder,
@@ -123,7 +121,7 @@ public class OrganisationPponSearchModel(
             {
                 return new SearchResult(
                     ImmutableList<OrganisationSearchByPponResult>.Empty,
-                    0, 0, pageSize, skip, currentPage,
+                    0, 0, pageSize, skip, currentPage, null,
                     StaticTextResource.PponSearch_NoResults
                 );
             }
@@ -136,6 +134,7 @@ public class OrganisationPponSearchModel(
                 pageSize,
                 skip,
                 currentPage,
+                null,
                 null
             );
         }
@@ -148,7 +147,7 @@ public class OrganisationPponSearchModel(
             return new SearchResult(
                 ImmutableList<OrganisationSearchByPponResult>.Empty,
                 0, 0, pageSize, skip, currentPage,
-                StaticTextResource.PponSearch_NoResults
+                StaticTextResource.PponSearch_NoResults, null
             );
         }
     }
@@ -162,6 +161,7 @@ public class OrganisationPponSearchModel(
         Skip = result.Skip;
         CurrentPage = result.CurrentPage;
         ErrorMessage = result.ErrorMessage;
+        FeedbackMessage = result.FeedbackMessage;
         Pagination = CreatePaginationModel(CurrentPage, TotalOrganisations, PageSize, Id, SearchText, SortOrder);
     }
 
