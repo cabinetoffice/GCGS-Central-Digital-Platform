@@ -33,7 +33,7 @@ public class FormHeadingHelpersTests
         result.Should().NotBeNull();
         var htmlContent = GetHtmlContent(result);
         htmlContent.Should().Contain($"<{expectedTag} class=\"govuk-fieldset__heading {expectedClass}\">");
-        
+
         var expectedCaptionSize = headingSize switch
         {
             HeadingSize.ExtraLarge => "xl",

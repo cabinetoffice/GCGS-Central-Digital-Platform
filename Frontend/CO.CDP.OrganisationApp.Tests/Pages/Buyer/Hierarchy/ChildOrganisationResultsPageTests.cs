@@ -428,7 +428,7 @@ public class ChildOrganisationResultsPageTests
     }
 
     [Fact]
-    public async Task OnPost_WithNoResults_StaysOnPageWithErrorMessage()
+    public async Task OnPost_WithNoResults_StaysOnPageWithNoResultsFoundMessage()
     {
         var id = Guid.NewGuid();
         const string query = "test query with no results";
@@ -446,12 +446,12 @@ public class ChildOrganisationResultsPageTests
         var result = await _model.OnPost();
 
         result.Should().BeOfType<PageResult>();
-        _model.ErrorMessage.Should().Be(StaticTextResource.BuyerParentChildRelationship_ResultsPage_NoResults);
+        _model.FeedbackMessage.Should().Be(StaticTextResource.BuyerParentChildRelationship_ResultsPage_NoResults);
         _model.Results.Should().BeEmpty();
     }
 
     [Fact]
-    public async Task OnPost_WhenSearchOrganisation404ExceptionOccurs_StaysOnPageWithNoResultsErrorMessage()
+    public async Task OnPost_WhenSearchOrganisation404ExceptionOccurs_StaysOnPageWithNoResultsFoundMessage()
     {
         var id = Guid.NewGuid();
         const string query = "test query that causes 404";
@@ -476,7 +476,7 @@ public class ChildOrganisationResultsPageTests
         var result = await _model.OnPost();
 
         result.Should().BeOfType<PageResult>();
-        _model.ErrorMessage.Should().Be(StaticTextResource.BuyerParentChildRelationship_ResultsPage_NoResults);
+        _model.FeedbackMessage.Should().Be(StaticTextResource.BuyerParentChildRelationship_ResultsPage_NoResults);
         _model.Results.Should().BeEmpty();
 
         _mockLogger.Verify(

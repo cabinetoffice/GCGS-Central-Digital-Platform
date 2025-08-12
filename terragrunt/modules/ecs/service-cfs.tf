@@ -13,6 +13,7 @@ module "ecs_service_cfs" {
   ecs_alb_sg_id          = var.alb_sg_id
   ecs_listener_arn       = aws_lb_listener.ecs.arn
   ecs_service_base_sg_id = var.ecs_sg_id
+  extra_host_headers     = var.cfs_extra_host_headers
   family                 = "app"
   healthcheck_path       = "/health"
   host_port              = var.service_configs.cfs.port
@@ -24,8 +25,5 @@ module "ecs_service_cfs" {
   role_ecs_task_arn      = var.role_ecs_task_arn
   role_ecs_task_exec_arn = var.role_ecs_task_exec_arn
   tags                   = var.tags
-  user_pool_arn          = var.environment == "production" ? var.user_pool_cfs_arn : null
-  user_pool_client_id    = var.environment == "production" ? var.user_pool_cfs_client_id : null
-  user_pool_domain       = var.environment == "production" ? var.user_pool_cfs_domain : null
   vpc_id                 = var.vpc_id
 }

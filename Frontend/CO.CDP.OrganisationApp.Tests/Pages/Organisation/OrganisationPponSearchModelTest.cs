@@ -21,6 +21,7 @@ public class OrganisationPponSearchModelTest
     private const string DefaultSortOrder = "rel";
     private const int DefaultPageSize = 10;
     private const int DefaultPageNumber = 1;
+    private const double DefaultThreshold = 0.3;
     private static readonly Guid Id = Guid.NewGuid();
 
     private readonly Mock<IOrganisationClient> _mockOrganisationClient;
@@ -91,7 +92,7 @@ public class OrganisationPponSearchModelTest
         return new OrganisationSearchByPponResponse(results, results.Count);
     }
 
-    private void SetupSuccessfulSearch(string searchText, string sortOrder, int pageSize, int skip,
+    private void SetupSuccessfulSearch(string searchText, string sortOrder, int pageSize, int skip, double threshold,
         List<OrganisationSearchByPponResult> results)
     {
         var response = CreateTestResponse(results);
@@ -100,7 +101,8 @@ public class OrganisationPponSearchModelTest
                 searchText,
                 pageSize,
                 skip,
-                sortOrder))
+                sortOrder,
+                threshold))
             .ReturnsAsync(response);
     }
 
@@ -169,7 +171,7 @@ public class OrganisationPponSearchModelTest
             CreateTestOrganisationResult("Test Organisation 2", new List<PartyRole> { PartyRole.Buyer })
         };
 
-        SetupSuccessfulSearch(DefaultSearchText, DefaultSortOrder, DefaultPageSize, 0, mockResults);
+        SetupSuccessfulSearch(DefaultSearchText, DefaultSortOrder, DefaultPageSize, 0, DefaultThreshold, mockResults);
 
         var result = await _testOrganisationPponSearchModel.OnGet();
 
@@ -274,7 +276,8 @@ public class OrganisationPponSearchModelTest
                 DefaultSearchText,
                 DefaultPageSize,
                 0,
-                sortOrder))
+                sortOrder,
+                DefaultThreshold))
             .ReturnsAsync(CreateTestResponse(mockResults))
             .Verifiable();
 
@@ -284,7 +287,8 @@ public class OrganisationPponSearchModelTest
                 DefaultSearchText,
                 DefaultPageSize,
                 0,
-                sortOrder),
+                sortOrder,
+                DefaultThreshold),
             Times.Once);
         _testOrganisationPponSearchModel.Id.Should().Be(Id);
     }
@@ -309,7 +313,8 @@ public class OrganisationPponSearchModelTest
                 DefaultSearchText,
                 DefaultPageSize,
                 expectedSkip,
-                DefaultSortOrder))
+                DefaultSortOrder,
+                DefaultThreshold))
             .ReturnsAsync(response)
             .Verifiable();
 
@@ -319,7 +324,8 @@ public class OrganisationPponSearchModelTest
                 DefaultSearchText,
                 DefaultPageSize,
                 expectedSkip,
-                DefaultSortOrder),
+                DefaultSortOrder,
+                DefaultThreshold),
             Times.Once);
 
         _testOrganisationPponSearchModel.CurrentPage.Should().Be(pageNumber);
@@ -359,7 +365,8 @@ public class OrganisationPponSearchModelTest
                 It.IsAny<string>(),
                 It.IsAny<int>(),
                 It.IsAny<int>(),
-                It.IsAny<string>()))
+                It.IsAny<string>(),
+                It.IsAny<double>()))
             .ThrowsAsync(exception);
 
         await _testOrganisationPponSearchModel.OnGet();
@@ -398,7 +405,7 @@ public class OrganisationPponSearchModelTest
             CreateTestOrganisationResult("Test Organisation 1", new List<PartyRole> { PartyRole.Buyer }),
             CreateTestOrganisationResult("Test Organisation 2", new List<PartyRole> { PartyRole.Buyer })
         };
-        SetupSuccessfulSearch(DefaultSearchText, DefaultSortOrder, DefaultPageSize, 0, mockResults);
+        SetupSuccessfulSearch(DefaultSearchText, DefaultSortOrder, DefaultPageSize, 0, DefaultThreshold, mockResults);
         var result = await _testOrganisationPponSearchModel.OnPost();
         result.Should().BeOfType<PageResult>();
         _testOrganisationPponSearchModel.Organisations.Should().HaveCount(2);
@@ -436,7 +443,8 @@ public class OrganisationPponSearchModelTest
                 It.IsAny<string>(),
                 It.IsAny<int>(),
                 It.IsAny<int>(),
-                It.IsAny<string>()))
+                It.IsAny<string>(),
+                It.IsAny<double>()))
             .ThrowsAsync(exception);
         await _testOrganisationPponSearchModel.OnPost();
         _testOrganisationPponSearchModel.Organisations.Should().BeEmpty();
@@ -489,16 +497,17 @@ public class OrganisationPponSearchModelTest
     }
 
     [Fact]
-    public async Task OnGet_NoResults_SetsNoResultsErrorMessage()
+    public async Task OnGet_NoResults_SetsNoResultsMessage()
     {
         SetupRouteData(Id);
         _testOrganisationPponSearchModel.PageNumber = DefaultPageNumber;
         _testOrganisationPponSearchModel.SearchText = DefaultSearchText;
         _testOrganisationPponSearchModel.SortOrder = DefaultSortOrder;
-        SetupSuccessfulSearch(DefaultSearchText, DefaultSortOrder, DefaultPageSize, 0,
+        SetupSuccessfulSearch(DefaultSearchText, DefaultSortOrder, DefaultPageSize, 0, DefaultThreshold,
             new List<OrganisationSearchByPponResult>());
         await _testOrganisationPponSearchModel.OnGet();
-        _testOrganisationPponSearchModel.ErrorMessage.Should().Be(Localization.StaticTextResource.PponSearch_NoResults);
+        _testOrganisationPponSearchModel.ErrorMessage.Should().Be(null);
+        _testOrganisationPponSearchModel.FeedbackMessage.Should().Be(Localization.StaticTextResource.PponSearch_NoResults);
         _testOrganisationPponSearchModel.Organisations.Should().BeEmpty();
         _testOrganisationPponSearchModel.TotalOrganisations.Should().Be(0);
         _testOrganisationPponSearchModel.TotalPages.Should().Be(0);
@@ -515,7 +524,8 @@ public class OrganisationPponSearchModelTest
             It.IsAny<string>(),
             It.IsAny<int>(),
             It.IsAny<int>(),
-            It.IsAny<string>())).ThrowsAsync(new HttpRequestException());
+            It.IsAny<string>(),
+            It.IsAny<double>())).ThrowsAsync(new HttpRequestException());
         await _testOrganisationPponSearchModel.OnGet();
         _testOrganisationPponSearchModel.ErrorMessage.Should().Be(Localization.StaticTextResource.PponSearch_NoResults);
         _testOrganisationPponSearchModel.Organisations.Should().BeEmpty();

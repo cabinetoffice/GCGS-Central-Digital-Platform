@@ -348,7 +348,7 @@ services:
   clamav-rest:
     mem_reservation: "2G"
     mem_limit: "3G"
-    image: ajilaag/clamav-rest
+    image: ajilaag/clamav-rest:20250802
     read_only: true
     user: 100:101
     healthcheck:

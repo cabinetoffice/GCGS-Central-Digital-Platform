@@ -13,6 +13,12 @@ variable "cfs_allowed_target_email_domains" {
   type        = list(string)
 }
 
+variable "cfs_extra_host_headers" {
+  description = "Optional list of additional host headers to be added for CFS service"
+  type        = list(string)
+  default     = []
+}
+
 variable "cfs_service_allowed_origins" {
   description = "A list of allowed URLs"
   type        = list(string)

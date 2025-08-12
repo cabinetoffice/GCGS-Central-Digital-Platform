@@ -1,7 +1,7 @@
-variable "mail_from_domain" {
-  description = "Domain name to be used for sending email from in each account"
-  type        = string
-  default     = null
+variable "mail_from_domains" {
+  description = "List of domain names to verify with SES and Route53 (e.g., mail-from domains)"
+  type        = list(string)
+  default     = []
 }
 
 variable "product" {
@@ -16,4 +16,15 @@ variable "product" {
 variable "public_hosted_zone_id" {
   description = "ID of the public hosted zone"
   type        = string
+}
+
+variable "ses_logging_event_types" {
+  description = "SES event types to capture"
+  type        = list(string)
+  default     = ["bounce", "complaint", "delivery", "reject", "renderingFailure"]
+}
+
+variable "tags" {
+  description = "Tags to apply to all resources in this module"
+  type        = map(string)
 }
