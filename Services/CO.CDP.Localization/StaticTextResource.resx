@@ -2057,18 +2057,18 @@
     <value>return to organisation details</value>
   </data>
   <data name="BuyerParentChildRelationship_ResultsPage_NoResults" xml:space="preserve">
-  <value>
-    &lt;p class=&quot;govuk-body&quot;&gt;
-      &lt;b&gt;0&lt;/b&gt; organisations found.
+    <value>
+    &lt;p class="govuk-body"&gt;
+      &lt;span class="govuk-!-font-weight-bold"&gt;0&lt;/span&gt; organisations found.
     &lt;/p&gt;
-    &lt;p class=&quot;govuk-body&quot;&gt;
-      &lt;b&gt;There are no matching results.&lt;/b&gt;
+    &lt;p class="govuk-body"&gt;
+      &lt;span class="govuk-!-font-weight-bold"&gt;There are no matching results.&lt;/span&gt;
     &lt;/p&gt;
-    &lt;p class=&quot;govuk-body&quot;&gt;
+    &lt;p class="govuk-body"&gt;
       Double-check your spelling to improve your search results.
     &lt;/p&gt;
   </value>
-</data>
+  </data>
   <data name="BuyerParentChildRelationship_ConfirmPage_Title" xml:space="preserve">
     <value>Confirm your child organisation details</value>
   </data>
