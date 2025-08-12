@@ -271,9 +271,9 @@ public class FormElementTextInputModelTest
     [InlineData("1000", null)]
     [InlineData("-123.45", null)]
     [InlineData("0", null)]
-    [InlineData("invalid", "Enter a valid decimal number")]
-    [InlineData("abc123", "Enter a valid decimal number")]
-    [InlineData("12.34.56", "Enter a valid decimal number")]
+    [InlineData("invalid", "Enter a valid number")]
+    [InlineData("abc123", "Enter a valid number")]
+    [InlineData("12.34.56", "Enter a valid number")]
     public void Validate_DecimalInput_ReturnsExpectedResults(string input, string? expectedErrorMessage)
     {
         var model = CreateModelWithOptions(FormQuestionType.Text, true, textValidationType: TextValidationType.Decimal);
@@ -305,7 +305,7 @@ public class FormElementTextInputModelTest
         results.Should().BeEmpty();
     }
 
-    [Fact] 
+    [Fact]
     public void Validate_DecimalInputNull_ReturnsNoError()
     {
         var model = CreateModelWithOptions(FormQuestionType.Text, false, textValidationType: TextValidationType.Decimal);
