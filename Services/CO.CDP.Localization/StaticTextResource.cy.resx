@@ -1725,7 +1725,7 @@
   <data name="Global_Back" xml:space="preserve">
     <value>Yn ôl</value>
   </data>
-  <data name="Global_DateInput_DateInFutureError" xml:space="preserve">
+  <data name="Global_DateInput_DateMustBeTodayOrInThePast" xml:space="preserve">
     <value>Mae'n rhaid i’r dyddiad fod heddiw neu yn y gorffennol</value>
   </data>
   <data name="Global_DateInput_DateInvalidError" xml:space="preserve">
@@ -2189,7 +2189,7 @@
   </data>
   <data name="PdfGenerator_Scheme" xml:space="preserve">
     <value>Cofrestrfa</value>
-  </data>  
+  </data>
   <data name="PdfGenerator_Supplier_OperationType_SmallOrMediumSized_Short" xml:space="preserve">
     <value>Busnes bach neu ganolig</value>
   </data>
@@ -2201,7 +2201,7 @@
   </data>
   <data name="PdfGenerator_Supplier_OperationType_PublicService_Short" xml:space="preserve">
     <value>Cwmni gwasanaeth cyhoeddus cydfuddiannol</value>
-  </data>  
+  </data>
   <data name="PdfGenerator_UnknownCategory" xml:space="preserve">
     <value>Categori anhysbys</value>
   </data>

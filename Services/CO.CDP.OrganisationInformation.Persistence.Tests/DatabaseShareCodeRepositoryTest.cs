@@ -404,7 +404,11 @@ public class DatabaseShareCodeRepositoryTest(PostgreSqlFixture postgreSql)
             NextQuestion = null,
             NextQuestionAlternative = null,
             Caption = null,
-            Options = new(),
+            Options = new FormQuestionOptions
+            {
+                Choices = null,
+                Groups = null
+            },
             SortOrder = 0
         };
         section.Questions.Add(question);

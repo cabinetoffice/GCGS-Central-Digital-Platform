@@ -2,11 +2,11 @@
 @using CO.CDP.Localization
 
 @{
-    var hasError = ((TagBuilder)Html.ValidationMessageFor(m => m.CheckBoxInput)).HasInnerHtml;
+    var hasError = Model.HasValidationError(nameof(Model.CheckBoxInput), ViewData.ModelState);
 }
 
 <div class="govuk-form-group @(hasError ? "govuk-form-group--error" : "")">
-    <fieldset class="govuk-fieldset" @(!string.IsNullOrWhiteSpace(Model.Description) ? Html.Raw(@"aria-describedby=""checkbox-hint""") : null)>
+    <fieldset class="govuk-fieldset" @(!string.IsNullOrWhiteSpace(Model.Description) ? Html.Raw($"aria-describedby=\"{Model.GetFieldName("checkbox-hint")}\"") : null)>
         <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
             @if (!string.IsNullOrWhiteSpace(Model.Heading))
             {
@@ -16,23 +16,23 @@
 
         @if (!string.IsNullOrEmpty(Model.Description))
         {
-            <div id="checkbox-hint">
+            <div id="@Model.GetFieldName("checkbox-hint")">
                 @Html.Raw(Model.Description)
             </div>
         }
 
         @if (hasError)
         {
-            <span class="govuk-error-message" id="checkbox-error">
+            <span class="govuk-error-message" id="@Model.GetFieldName("checkbox-error")">
                 <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span>
-                @Html.ValidationMessageFor(m => m.CheckBoxInput)
+                @Model.GetValidationMessage(nameof(Model.CheckBoxInput), ViewData.ModelState)
             </span>
         }
 
         <div class="govuk-checkboxes" data-module="govuk-checkboxes">
             <div class="govuk-checkboxes__item">
-                <input class="govuk-checkboxes__input" id="@nameof(Model.CheckBoxInput)" name="@nameof(Model.CheckBoxInput)" type="checkbox" value="true" @(Model.CheckBoxInput == true ? "checked" : "") @(hasError ? Html.Raw(@"aria-describedby=""checkbox-error""") : null)>
-                <label class="govuk-label govuk-checkboxes__label" for="@nameof(Model.CheckBoxInput)">
+                <input class="govuk-checkboxes__input @(Model.Options?.Layout?.Input?.CustomCssClasses)" id="@Model.GetFieldName(nameof(Model.CheckBoxInput))" name="@Model.GetFieldName(nameof(Model.CheckBoxInput))" type="checkbox" value="true" @(Model.CheckBoxInput == true ? "checked" : "") @(hasError ? Html.Raw($"aria-describedby=\"{Model.GetFieldName("checkbox-error")}\"") : null)>
+                <label class="govuk-label govuk-checkboxes__label" for="@Model.GetFieldName(nameof(Model.CheckBoxInput))">
                     @Model.Options?.Choices?.Values.FirstOrDefault()
                 </label>
             </div>

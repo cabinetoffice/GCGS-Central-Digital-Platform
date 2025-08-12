@@ -47,7 +47,7 @@ locals {
       cfs_service_allowed_origins       = []
       fts_extra_domains                 = []
       fts_service_allowed_origins       = []
-      mail_from_domain                  = null
+      mail_from_domains                 = []
       mysql_aurora_engine_version       = "5.7.mysql_aurora.2.12.5"
       mysql_aurora_family               = "aurora-mysql5.7"
       mysql_aurora_instance_type        = "db.r5.8xlarge"
@@ -81,6 +81,7 @@ locals {
       account_id                        = 905418042182
       canary_schedule_expression        = "rate(30 minutes)"
       cfs_allowed_target_email_domains  = ["goaco.com"]
+      cfs_extra_domains                 = ["www-preview.contractsfinder.service.gov.uk"]
       fts_allowed_target_email_domains  = ["goaco.com"]
       fts_extra_domains                 = ["www-staging.find-tender.service.gov.uk"]
       fts_azure_frontdoor               = null
@@ -91,7 +92,7 @@ locals {
         "https://fts.staging.supplier-information.find-tender.service.gov.uk",
       ]
       name                              = "staging"
-      mail_from_domain                  = null
+      mail_from_domains                 = []
       mysql_aurora_engine_version       = "5.7.mysql_aurora.2.12.5"
       mysql_aurora_family               = "aurora-mysql5.7"
       mysql_aurora_instance_type        = "db.r5.8xlarge"
@@ -99,8 +100,8 @@ locals {
         "https://www-staging.find-tender.service.gov.uk/auth/backchannellogout",
         "https://fts.staging.supplier-information.find-tender.service.gov.uk/auth/backchannellogout"
       ]
-      pinned_service_version_cfs        = null
-      pinned_service_version_fts        = "1.0.9"
+      pinned_service_version_cfs        = "1.0.2"
+      pinned_service_version_fts        = "1.0.14"
       pinned_service_version            = "1.0.72"
       postgres_instance_type            = "db.t4g.micro"
       postgres_aurora_instance_type     = "db.r5.large"
@@ -124,7 +125,79 @@ locals {
       cidr_block                        = "10.${local.cidr_b_integration}.0.0/16"
       account_id                        = 767397666448
       canary_schedule_expression        = "rate(30 minutes)"
-      cfs_allowed_target_email_domains  = ["goaco.com"]
+      cfs_allowed_target_email_domains  = [
+        "adb.co.uk",
+        "atamis.co.uk",
+        "axians.com",
+        "b2bquote.co.uk",
+        "bankofengland.co.uk",
+        "bipsolutions.com",
+        "bravosolution.com",
+        "cabinetoffice.gov.uk",
+        "caeser.org",
+        "cimple.uk",
+        "cognizant.com",
+        "commercedecisions.com",
+        "crowncommercial.gov.uk",
+        "curtisfitchglobal.com",
+        "dfid.gov.uk",
+        "digital.cabinet-office.gov.uk",
+        "eu-supply.com",
+        "eurodyn.com",
+        "evosysglobal.com",
+        "excelerateds2p.com",
+        "firefly-online.net",
+        "fusionpractices.com",
+        "geometrasystems.co.uk",
+        "goaco.com",
+        "govfsl.com",
+        "gpa.gov.uk",
+        "guinness.org.uk",
+        "hillingdon.gov.uk",
+        "homeoffice.gov.uk",
+        "hull.ac.uk",
+        "in-tend.co.uk",
+        "incic.org.uk",
+        "jaggaer.com",
+        "londoncouncils.gov.uk",
+        "maistro.com",
+        "mastersoftware.co.uk",
+        "millstream.eu",
+        "mk9-development.com",
+        "multiquote.com",
+        "mytenders.co.uk",
+        "ne1procurementservices.com",
+        "nepo.org",
+        "nitrous.city",
+        "nqc.com",
+        "nqcltd.com",
+        "Olenick.com",
+        "oneadvanced.com",
+        "oracle.com",
+        "panacea-software.com",
+        "platformhg.com",
+        "Proactis.com",
+        "proactisinterfaces.com",
+        "prologic.ie",
+        "publiccontractsscotland.gov.uk",
+        "sap.com",
+        "sell2wales.gov.wales",
+        "somerset.gov.uk",
+        "sourcedogg.com",
+        "spendnetwork.com",
+        "supplychainpartner.com",
+        "sussex.ac.uk",
+        "tcs.com",
+        "technologyonecorp.com",
+        "tenderlake.com",
+        "testpartners.co.uk",
+        "trisaas.com",
+        "useadam-tech.com",
+        "useadam.co.uk",
+        "viaem.co.uk",
+        "waxdigital.com"
+      ]
+      cfs_extra_domains                 = ["www-integration.contractsfinder.service.gov.uk"]
       cfs_service_allowed_origins       = [
         "https://cfs.integration.supplier-information.find-tender.service.gov.uk",
         "https://test-findtender.nqc.com",
@@ -205,7 +278,7 @@ locals {
         "https://www-tpp-preview.find-tender.service.gov.uk",
         "https://www-tpp.find-tender.service.gov.uk",
       ]
-      mail_from_domain                  = null
+      mail_from_domains                 = []
       mysql_aurora_engine_version       = "5.7.mysql_aurora.2.12.5"
       mysql_aurora_family               = "aurora-mysql5.7"
       mysql_aurora_instance_type        = "db.r5.8xlarge"
@@ -218,8 +291,8 @@ locals {
         "https://www-tpp.find-tender.service.gov.uk/auth/backchannellogout",
         "https://fts.integration.supplier-information.find-tender.service.gov.uk/auth/backchannellogout"
       ]
-      pinned_service_version_cfs        = null
-      pinned_service_version_fts        = "1.0.9"
+      pinned_service_version_cfs        = "1.0.2"
+      pinned_service_version_fts        = "1.0.12"
       pinned_service_version            = "1.0.71"
       postgres_instance_type            = "db.t4g.micro"
       postgres_aurora_instance_type     = "db.r5.large"
@@ -247,7 +320,9 @@ locals {
       cidr_block                        = "10.${local.cidr_b_production}.0.0/16"
       account_id                        = 471112843276
       canary_schedule_expression        = "rate(15 minutes)"
-      cfs_allowed_target_email_domains  = ["goaco.com"]
+      cfs_allowed_target_email_domains  = []
+      cfs_extra_domains                 = ["www.contractsfinder.service.gov.uk"]
+      fts_extra_domains                 = []
       cfs_service_allowed_origins       = [
         "https://cfs.supplier-information.find-tender.service.gov.uk",
         "https://www.find-tender.service.gov.uk"
@@ -259,7 +334,7 @@ locals {
         "https://fts.supplier-information.find-tender.service.gov.uk",
         "https://www.find-tender.service.gov.uk"
       ]
-      mail_from_domain                  = "find-tender.service.gov.uk"
+      mail_from_domains                 = ["find-tender.service.gov.uk", "contractsfinder.service.gov.uk"]
       mysql_aurora_engine_version       = "5.7.mysql_aurora.2.12.5"
       mysql_aurora_family               = "aurora-mysql5.7"
       mysql_aurora_instance_type        = "db.r5.8xlarge"
@@ -268,8 +343,8 @@ locals {
         "https://www.find-tender.service.gov.uk/auth/backchannellogout",
         "https://fts.supplier-information.find-tender.service.gov.uk/auth/backchannellogout"
       ],
-      pinned_service_version_cfs        = null
-      pinned_service_version_fts        = "1.0.9"
+      pinned_service_version_cfs        = "1.0.2"
+      pinned_service_version_fts        = "1.0.12"
       pinned_service_version            = "1.0.71"
       postgres_instance_type            = "db.t4g.micro"
       postgres_aurora_instance_type     = "db.r5.8xlarge"
@@ -298,12 +373,13 @@ locals {
   aurora_postgres_instance_type     = try(local.environments[local.environment].postgres_aurora_instance_type, null)
   aurora_postgres_instance_type_ev  = try(local.environments[local.environment].postgres_aurora_instance_type_ev, local.aurora_postgres_instance_type)
   cfs_allowed_target_email_domains  = try(local.environments[local.environment].cfs_allowed_target_email_domains, null)
+  cfs_extra_domains                 = try(local.environments[local.environment].cfs_extra_domains, [])
   cfs_service_allowed_origins       = try(local.environments[local.environment].cfs_service_allowed_origins, null)
   fts_allowed_target_email_domains  = try(local.environments[local.environment].fts_allowed_target_email_domains, null)
-  fts_extra_domains                 = try(local.environments[local.environment].fts_extra_domains, null)
+  fts_extra_domains                 = try(local.environments[local.environment].fts_extra_domains, [])
   fts_azure_frontdoor               = try(local.environments[local.environment].fts_azure_frontdoor, null)
   fts_service_allowed_origins       = try(local.environments[local.environment].fts_service_allowed_origins, null)
-  mail_from_domain                  = try(local.environments[local.environment].mail_from_domain, null)
+  mail_from_domains                  = try(local.environments[local.environment].mail_from_domains, [])
   onelogin_logout_notification_urls = try(local.environments[local.environment].onelogin_logout_notification_urls, null)
   pinned_service_version            = try(local.environments[local.environment].pinned_service_version, null)
   pinned_service_version_cfs        = try(local.environments[local.environment].pinned_service_version_cfs, null)
@@ -335,7 +411,7 @@ locals {
     fts                                  = { desired_count = 3, cpu = 4096,  memory = 8192}
     fts_healthcheck                      = { desired_count = 1 }
     fts_migrations                       = { desired_count = 1 }
-    fts_scheduler                        = { desired_count = 1 }
+    fts_scheduler                        = { desired_count = 1, cpu = 4096,  memory = 8192 }
     organisation                         = {}
     organisation_app                     = {}
     organisation_information_migrations  = { cpu = 256,  memory = 512}

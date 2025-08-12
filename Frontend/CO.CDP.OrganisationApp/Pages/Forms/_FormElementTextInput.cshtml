@@ -2,17 +2,17 @@
 @using CO.CDP.Localization
 
 @{
-    var textInputHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.TextInput)).HasInnerHtml;
-    var selectOptionHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.HasValue)).HasInnerHtml;
+    var textInputHasError = Model.HasValidationError(nameof(Model.TextInput), ViewData.ModelState);
+    var selectOptionHasError = Model.HasValidationError(nameof(Model.HasValue), ViewData.ModelState);
     string textInputAriaDescribedby = "";
 
     void RenderDescription()
     {
         @if (!string.IsNullOrWhiteSpace(Model.Description))
         {
-            textInputAriaDescribedby += "TextInput-description";
+            textInputAriaDescribedby += Model.GetFieldName("TextInput-description");
 
-            <div id="TextInput-description">
+            <div id="@Model.GetFieldName("TextInput-description")">
                 @Html.Raw(Model.Description)
             </div>
         }
@@ -22,66 +22,87 @@
     {
         if (textInputHasError)
         {
-            textInputAriaDescribedby += " TextInput-error";
+            textInputAriaDescribedby += " " + Model.GetFieldName("TextInput-error");
 
-            <p class="govuk-error-message" id="TextInput-error">
+            <p class="govuk-error-message" id="@Model.GetFieldName("TextInput-error")">
                 <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span>
-                @Html.ValidationMessageFor(m => m.TextInput)
+                @Model.GetValidationMessage(nameof(Model.TextInput), ViewData.ModelState)
             </p>
         }
 
-        <input class="govuk-input govuk-!-width-two-thirds" id="@nameof(Model.TextInput)" name="@nameof(Model.TextInput)" type="@Model.GetFieldType()" value="@Model.TextInput"
-        @(string.IsNullOrWhiteSpace(textInputAriaDescribedby) ? "" : Html.Raw($"aria-describedby=\"{textInputAriaDescribedby}\""))>
+        var finalAriaDescribedby = textInputAriaDescribedby;
+        var suffixInfo = InputSuffixHelper.GetSuffixRenderInfo(Model.Options?.Layout?.Input?.Suffix);
+
+        if (suffixInfo.HasSuffix)
+        {
+            finalAriaDescribedby += (string.IsNullOrWhiteSpace(finalAriaDescribedby) ? "" : " ") + Model.GetFieldName("TextInput-suffix");
+        }
+
+        var inputCssClasses = InputSuffixHelper.GetInputCssClasses(
+            suffixInfo,
+            Model.Options?.Layout?.Input?.Width,
+            Model.Options?.Layout?.Input?.CustomCssClasses,
+            textInputHasError);
+
+        @if (suffixInfo.HasSuffix)
+        {
+            var suffixCssClasses = InputSuffixHelper.GetSuffixCssClasses(suffixInfo);
+            var suffixElementTag = InputSuffixHelper.GetSuffixElementTag(suffixInfo);
+            var shouldUseInputWrapper = InputSuffixHelper.ShouldUseInputWrapper(suffixInfo);
+
+            @if (shouldUseInputWrapper)
+            {
+                <div class="govuk-input__wrapper">
+                    <input class="@inputCssClasses" id="@Model.GetFieldName(nameof(Model.TextInput))" name="@Model.GetFieldName(nameof(Model.TextInput))" type="@Model.GetFieldType()" value="@Model.TextInput"
+                    @(string.IsNullOrWhiteSpace(finalAriaDescribedby) ? "" : Html.Raw($"aria-describedby=\"{finalAriaDescribedby}\""))>
+                    @Html.Raw($"<{suffixElementTag} class=\"{suffixCssClasses}\" id=\"{Model.GetFieldName("TextInput-suffix")}\">{suffixInfo.ResolvedText}</{suffixElementTag}>")
+                </div>
+            }
+            else
+            {
+                <input class="@inputCssClasses" id="@Model.GetFieldName(nameof(Model.TextInput))" name="@Model.GetFieldName(nameof(Model.TextInput))" type="@Model.GetFieldType()" value="@Model.TextInput"
+                @(string.IsNullOrWhiteSpace(finalAriaDescribedby) ? "" : Html.Raw($"aria-describedby=\"{finalAriaDescribedby}\""))>
+                @Html.Raw($"<{suffixElementTag} class=\"{suffixCssClasses}\" id=\"{Model.GetFieldName("TextInput-suffix")}\">{suffixInfo.ResolvedText}</{suffixElementTag}>")
+            }
+        }
+        else
+        {
+            <input class="govuk-input @GovUkCssHelper.GetInputWidthCssClass(Model.Options?.Layout?.Input?.Width) @Model.Options?.Layout?.Input?.CustomCssClasses @(textInputHasError ? "govuk-input--error" : "")" id="@Model.GetFieldName(nameof(Model.TextInput))" name="@Model.GetFieldName(nameof(Model.TextInput))" type="@Model.GetFieldType()" value="@Model.TextInput"
+            @(string.IsNullOrWhiteSpace(finalAriaDescribedby) ? "" : Html.Raw($"aria-describedby=\"{finalAriaDescribedby}\""))>
+        }
     }
 }
 
 <div class="govuk-form-group @((Model.IsRequired && textInputHasError) || selectOptionHasError ? "govuk-form-group--error" : "")">
     @if (Model.IsRequired)
     {
-        if (!string.IsNullOrWhiteSpace(Model.Heading))
-        {
-            <h1 class="govuk-label-wrapper">
-                @if (!string.IsNullOrWhiteSpace(Model.Caption))
-                {
-                    <span class="govuk-caption-l">@Model.Caption</span>
-                }
-
-                <label class="govuk-label govuk-label--l" for="TextInput">@Model.Heading</label>
-            </h1>
-        }
+        @RenderLabelHeading(Model.Heading, Model.GetFieldName(nameof(Model.TextInput)), Model.Caption, Model.IsFirstQuestion, Model.Options?.Layout?.Heading?.Size)
         RenderDescription();
         RenderField();
     }
     else
     {
-        <fieldset class="govuk-fieldset" @(selectOptionHasError ? Html.Raw("aria-describedby=\"input-error\"") : "")>
-            <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                @if (!string.IsNullOrWhiteSpace(Model.Heading))
-                {
-                    <h1 class="govuk-fieldset__heading">
-                        @Model.Heading
-                    </h1>
-                }
-            </legend>
+        <fieldset class="govuk-fieldset" @(selectOptionHasError ? Html.Raw($"aria-describedby=\"{Model.GetFieldName("input-error")}\"") : "")>
+            @RenderLegendWithoutCaption(Model.Heading, Model.IsFirstQuestion, Model.Options?.Layout?.Heading?.Size)
             @{
                 RenderDescription();
             }
             @if (selectOptionHasError)
             {
-                <p class="govuk-error-message" id="input-error">
+                <p class="govuk-error-message" id="@Model.GetFieldName("input-error")">
                     <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span>
-                    @Html.ValidationMessageFor(m => m.HasValue)
+                    @Model.GetValidationMessage(nameof(Model.HasValue), ViewData.ModelState)
                 </p>
             }
             <div class="govuk-radios" data-module="govuk-radios">
 
                 <div class="govuk-radios__item">
-                    <input class="govuk-radios__input" id="@nameof(Model.HasValue)" name="@nameof(Model.HasValue)" type="radio"
-                           value="true" data-aria-controls="conditional-YES" @(Model.HasValue == true ? "checked" : "")>
-                    <label class="govuk-label govuk-radios__label" for="@nameof(Model.HasValue)">@StaticTextResource.Global_Yes</label>
+                    <input class="govuk-radios__input" id="@Model.GetFieldName(nameof(Model.HasValue))" name="@Model.GetFieldName(nameof(Model.HasValue))" type="radio"
+                           value="true" data-aria-controls="@Model.GetFieldName("conditional-YES")" @(Model.HasValue == true ? "checked" : "")>
+                    <label class="govuk-label govuk-radios__label" for="@Model.GetFieldName(nameof(Model.HasValue))">@StaticTextResource.Global_Yes</label>
                 </div>
 
-                <div class="govuk-radios__conditional" id="conditional-YES">
+                <div class="govuk-radios__conditional" id="@Model.GetFieldName("conditional-YES")">
                     <div class="govuk-form-group @(textInputHasError ? "govuk-form-group--error" : "")">
                         @{
                             <label class="govuk-label" for="@nameof(Model.TextInput)">@Model.Caption</label>
@@ -91,9 +112,9 @@
                 </div>
 
                 <div class="govuk-radios__item">
-                    <input class="govuk-radios__input" id="@nameof(Model.HasValue)-1" name="@nameof(Model.HasValue)" type="radio"
+                    <input class="govuk-radios__input" id="@(Model.GetFieldName(nameof(Model.HasValue)) + "-1")" name="@Model.GetFieldName(nameof(Model.HasValue))" type="radio"
                            value="false" @(Model.HasValue == false ? "checked" : "")>
-                    <label class="govuk-label govuk-radios__label" for="@nameof(Model.HasValue)-1">@StaticTextResource.Global_No</label>
+                    <label class="govuk-label govuk-radios__label" for="@(Model.GetFieldName(nameof(Model.HasValue)) + "-1")">@StaticTextResource.Global_No</label>
                 </div>
             </div>
         </fieldset>

@@ -38,9 +38,77 @@ public class FormQuestion
 public class FormQuestionOptions
 {
     public Dictionary<string, string>? Choices { get; set; }
-    public string? ChoiceProviderStrategy { get; set; }
     public List<FormQuestionGroup> Groups { get; set; } = [];
+    public string? ChoiceProviderStrategy { get; set; }
     public string? AnswerFieldName { get; set; }
+    public FormQuestionGrouping? Grouping { get; set; }
+    public LayoutOptions? Layout { get; set; }
+    public ValidationOptions? Validation { get; set; }
+}
+
+public class LayoutOptions
+{
+    public InputOptions? Input { get; set; }
+    public HeadingOptions? Heading { get; set; }
+    public ButtonOptions? Button { get; set; }
+}
+
+public class InputOptions
+{
+    public string? CustomYesText { get; set; }
+    public string? CustomNoText { get; set; }
+    public InputWidthType? Width { get; set; }
+    public InputSuffixOptions? Suffix { get; set; }
+    public string? CustomCssClasses { get; set; }
+}
+
+public class HeadingOptions
+{
+    public HeadingSize? Size { get; set; }
+    public string? BeforeHeadingContent { get; set; }
+}
+
+public class ButtonOptions
+{
+    public string? Text { get; set; }
+    public PrimaryButtonStyle? Style { get; set; }
+    public string? BeforeButtonContent { get; set; }
+    public string? AfterButtonContent { get; set; }
+}
+
+public class InputSuffixOptions
+{
+    public InputSuffixType Type { get; set; }
+    public string? Text { get; set; }
+}
+
+public enum InputSuffixType
+{
+    GovUkDefault,
+    CustomText
+}
+
+public enum HeadingSize
+{
+    Small,
+    Medium,
+    Large,
+    ExtraLarge
+}
+
+public enum PrimaryButtonStyle
+{
+    Default,
+    Start
+}
+
+public class ValidationOptions
+{
+    public DateValidationType? DateValidationType { get; set; }
+    public DateTimeOffset? MinDate { get; set; }
+    public DateTimeOffset? MaxDate { get; set; }
+
+    public TextValidationType? TextValidationType { get; set; }
 }
 
 public class FormQuestionAnswerState
@@ -117,4 +185,14 @@ public enum FormQuestionBranchType
     /// Alternative paths typically represent conditional branches following a 'no' response in the form flow.
     /// </summary>
     Alternative
+}
+
+
+/// <summary>
+/// Represents a collection of questions that should be displayed on the same page
+/// </summary>
+public class MultiQuestionPageModel
+{
+    public List<FormQuestion> Questions { get; set; } = [];
+    public ButtonOptions? Button { get; set; }
 }

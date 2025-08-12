@@ -263,9 +263,9 @@ PPN 014: Cyber Essentials scheme (opens in a new tab).&lt;/a&gt;&lt;/p&gt;
 &lt;h2 class=&quot;govuk-heading-m&quot;&gt;The information you&#39;ll need&lt;/h2&gt;
 &lt;div class=&quot;govuk-body&quot;&gt;You&#39;ll need to provide information on your Cyber Essentials or Cyber Essentials Plus certification (or equivalent). This may include:
   &lt;ul class=&quot;govuk-list govuk-list--bullet&quot;&gt;
-    &lt;li class=&quot;govuk-!-margin-top-4&quot;&gt; confirmation that you meet the requirements of the certification scheme&lt;/li&gt;
-    &lt;li class=&quot;govuk-!-margin-top-4&quot;&gt; the expiry date of your certification&lt;/li&gt;
-    &lt;li class=&quot;govuk-!-margin-top-4&quot;&gt; evidence of your certification&lt;/li&gt;
+    &lt;li class=&quot;govuk-!-margin-top-2&quot;&gt; confirmation that you meet the requirements of the certification scheme&lt;/li&gt;
+    &lt;li class=&quot;govuk-!-margin-top-2&quot;&gt; the expiry date of your certification&lt;/li&gt;
+    &lt;li class=&quot;govuk-!-margin-top-2&quot;&gt; evidence of your certification&lt;/li&gt;
   &lt;/ul&gt;
 &lt;/div&gt;
     </value>
@@ -278,6 +278,16 @@ PPN 014: Cyber Essentials scheme (opens in a new tab).&lt;/a&gt;&lt;/p&gt;
   <data name="CyberEssentials_02_SummaryTitle" xml:space="preserve">
     <value>Requirements met</value>
   </data>
+  <data name="CyberEssentials_02_CustomYesText" xml:space="preserve">
+    <value>Yes, I meet the requirements or will meet them by contract award</value>
+  </data>
+  <data name="CyberEssentials_02_CustomNoText" xml:space="preserve">
+    <value>No, I do not meet the requirements</value>
+  </data>
+  <data name="CyberEssentials_02_CustomInsetText" xml:space="preserve">
+    <value>&lt;div class=&quot;govuk-inset-text&quot;&gt;You must be ready to provide evidence, if required, before the contract is awarded.&lt;/div&gt;</value>
+  </data>
+
 
   <!--Cyber Q3 Single Choice-->
   <data name="CyberEssentials_03_Title" xml:space="preserve">
@@ -285,6 +295,12 @@ PPN 014: Cyber Essentials scheme (opens in a new tab).&lt;/a&gt;&lt;/p&gt;
   </data>
   <data name="CyberEssentials_03_SummaryTitle" xml:space="preserve">
     <value>Requirements status</value>
+  </data>
+  <data name="CyberEssentials_03_CustomYesText" xml:space="preserve">
+    <value>I currently meet the requirements</value>
+  </data>
+  <data name="CyberEssentials_03_CustomNoText" xml:space="preserve">
+    <value>I do not currently meet the requirements, but will meet them by contract award</value>
   </data>
 
   <!--Cyber Q4 File Upload-->
@@ -310,6 +326,15 @@ PPN 014: Cyber Essentials scheme (opens in a new tab).&lt;/a&gt;&lt;/p&gt;
   <data name="CyberEssentials_06_SummaryTitle" xml:space="preserve">
     <value>Requirements met</value>
   </data>
+  <data name="CyberEssentials_06_CustomYesText" xml:space="preserve">
+    <value>Yes, I meet the requirements or will meet them by contract award</value>
+  </data>
+  <data name="CyberEssentials_06_CustomNoText" xml:space="preserve">
+    <value>No, I do not meet the requirements</value>
+  </data>
+  <data name="CyberEssentials_06_CustomInsetText" xml:space="preserve">
+    <value>&lt;div class=&quot;govuk-inset-text&quot;&gt;You must be ready to provide evidence, if required, before the contract is awarded.&lt;/div&gt;</value>
+  </data>
 
   <!--Cyber Q7 Single Choice-->
   <data name="CyberEssentials_07_Title" xml:space="preserve">
@@ -317,6 +342,12 @@ PPN 014: Cyber Essentials scheme (opens in a new tab).&lt;/a&gt;&lt;/p&gt;
   </data>
   <data name="CyberEssentials_07_SummaryTitle" xml:space="preserve">
     <value>Requirements status</value>
+  </data>
+  <data name="CyberEssentials_07_CustomYesText" xml:space="preserve">
+    <value>I currently meet the requirements</value>
+  </data>
+  <data name="CyberEssentials_07_CustomNoText" xml:space="preserve">
+    <value>I do not currently meet the requirements, but will meet them by contract award</value>
   </data>
 
   <!--Cyber Q8 File Upload-->
@@ -333,6 +364,12 @@ PPN 014: Cyber Essentials scheme (opens in a new tab).&lt;/a&gt;&lt;/p&gt;
   </data>
   <data name="CyberEssentials_09_SummaryTitle" xml:space="preserve">
   <value>Certification expiry date</value>
+  </data>
+  <data name="CyberEssentials_Group1_SummaryTitle" xml:space="preserve">
+  <value>Cyber Essentials certification scheme</value>
+  </data>
+  <data name="CyberEssentials_Group2_SummaryTitle" xml:space="preserve">
+  <value>Cyber Essentials Plus certification scheme</value>
   </data>
 
   <!-- Steel -->
@@ -926,6 +963,12 @@ PPN 014: Cyber Essentials scheme (opens in a new tab).&lt;/a&gt;&lt;/p&gt;
       &lt;/div&gt;
     </value>
   </data>
+  <data name="DataProtection_02_Custom_Yes" xml:space="preserve">
+    <value>Yes, I have the resources or will have the resources by contract award</value>
+  </data>
+  <data name="DataProtection_02_Custom_No" xml:space="preserve">
+    <value>No, I do not have the resources</value>
+  </data>
   <data name="DataProtection_03_Title" xml:space="preserve">
     <value>When will you have the resources to ensure compliance with UK GDPR?</value>
   </data>
@@ -938,6 +981,12 @@ PPN 014: Cyber Essentials scheme (opens in a new tab).&lt;/a&gt;&lt;/p&gt;
         You should consider both your human and technical resources
       &lt;/div&gt;
     </value>
+  </data>
+  <data name="DataProtection_03_Custom_Yes" xml:space="preserve">
+    <value>I currently have the resources</value>
+  </data>
+  <data name="DataProtection_03_Custom_No" xml:space="preserve">
+    <value>I do not have the resources, but will have them by contract award</value>
   </data>
   <data name="DataProtection_04_Title" xml:space="preserve">
     <value>How do you ensure compliance with UK data protection law?</value>
@@ -967,6 +1016,181 @@ PPN 014: Cyber Essentials scheme (opens in a new tab).&lt;/a&gt;&lt;/p&gt;
   </data>
   <data name="DataProtection_05_SummaryTitle" xml:space="preserve">
     <value>Document upload</value>
+  </data>
+  <!-- Carbon Net Zero -->
+  <data name="CarbonNetZero_SectionTitle" xml:space="preserve">
+    <value>Carbon Net Zero</value>
+  </data>
+  <data name="CarbonNetZero_01_Title" xml:space="preserve">
+    <value>Submitting your Carbon Net Zero information</value>
+  </data>
+  <data name="CarbonNetZero_01_Description" xml:space="preserve">
+    <value>
+&lt;p class=&quot;govuk-body&quot;&gt;
+Carbon Net Zero is the commitment to balance greenhouse gas emissions with equivalent removals by 2050. In-scope organisations may be required to submit a Carbon Reduction Plan (CRP) when bidding for certain government contracts.
+This should be in line with &lt;a href=&quot;https://www.gov.uk/government/publications/ppn-006-taking-account-of-carbon-reduction-plans-in-the-procurement-of-major-government-contracts/ppn-006-taking-account-of-carbon-reduction-plans-html#issue&quot;
+class=&quot;govuk-link&quot; rel=&quot;noreferrer noopener&quot; target=&quot;_blank&quot;&gt;
+PPN 006 and associated reporting standards (opens in a new tab)&lt;/a&gt;.&lt;/p&gt;
+      &lt;p class=&quot;govuk-body&quot;&gt;
+    You are only required to complete this module if requested by the contracting authority you are bidding for.
+    Failure to complete this module may result in your tenders being deemed insufficient where PPN 006 has been applied.
+      &lt;/p&gt;
+&lt;h2 class=&quot;govuk-heading-m&quot;&gt;The information you&#39;ll need&lt;/h2&gt;
+&lt;div class=&quot;govuk-body&quot;&gt;You&#39;ll need to provide information on your Carbon Reduction Plan. This may include:
+  &lt;ul class=&quot;govuk-list govuk-list--bullet&quot;&gt;
+    &lt;li class=&quot;govuk-!-margin-top-2&quot;&gt; the expiry date of your Carbon Reduction Plan&lt;/li&gt;
+    &lt;li class=&quot;govuk-!-margin-top-2&quot;&gt; your Emissions Declaration&lt;/li&gt;
+    &lt;li class=&quot;govuk-!-margin-top-2&quot;&gt; your baseline and reporting year data&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/div&gt;
+    </value>
+  </data>
+  <data name="CarbonNetZero_02_Title" xml:space="preserve">
+    <value>Have you published a Carbon Reduction Plan which meets the required reporting standard?</value>
+  </data>
+  <data name="CarbonNetZero_02_SummaryTitle" xml:space="preserve">
+    <value>Carbon Reduction Plan published</value>
+  </data>
+  <data name="CarbonNetZero_02_Description" xml:space="preserve">
+    <value> &lt;p class=&quot;govuk-body&quot;&gt; For more information read &lt;a href=&quot;https://www.gov.uk/government/publications/ppn-0923-updates-to-the-cyber-essentials-scheme/procurement-policy-note-updates-to-the-cyber-essentials-scheme-html&quot; class=&quot;govuk-link&quot; rel=&quot;noreferrer noopener&quot; target=&quot;_blank&quot;&gt;PPN 006: Taking account of Carbon Reduction Plans in the procurement of major government contracts (opens in a new tab)&lt;/a&gt;.&lt;/p&gt;</value>
+  </data>
+  <data name="CarbonNetZero_03_Title" xml:space="preserve">
+    <value>Do you have a link to your most recently published Carbon Reduction Plan?</value>
+  </data>
+  <data name="CarbonNetZero_03_SummaryTitle" xml:space="preserve">
+    <value>Carbon Reduction Plan link</value>
+  </data>
+  <data name="CarbonNetZero_03_Caption" xml:space="preserve">
+    <value>Website address</value>
+  </data>
+  <data name="CarbonNetZero_NoCarbonReductionPlan_Title" xml:space="preserve">
+    <value>You cannot complete this module</value>
+  </data>
+  <data name="CarbonNetZero_NoCarbonReductionPlan_Description" xml:space="preserve">
+    <value>&lt;p class=&quot;govuk-body govuk-!-margin-bottom-4&quot;&gt;To complete the Carbon Net Zero module you must have a published Carbon Reduction Plan.&lt;/p&gt;</value>
+  </data>
+  <data name="CarbonNetZero_04_Title" xml:space="preserve">
+    <value>Enter your Carbon Reduction Plan expiry date</value>
+  </data>
+  <data name="CarbonNetZero_04_SummaryTitle" xml:space="preserve">
+    <value>Carbon Reduction Plan expiry date</value>
+  </data>
+  <data name="CarbonNetZero_05_Title" xml:space="preserve">
+    <value>Enter your Net Zero target year</value>
+  </data>
+  <data name="CarbonNetZero_05_SummaryTitle" xml:space="preserve">
+    <value>Net Zero target year</value>
+  </data>
+  <data name="CarbonNetZero_05_Description" xml:space="preserve">
+    <value>
+    &lt;p class="govuk-hint"&gt;For example, 2027&lt;/p&gt;
+    &lt;p class="govuk-body govuk-!-margin-bottom-2"&gt;Year&lt;/p&gt;
+    </value>
+  </data>
+  <data name="CarbonNetZero_06_Title" xml:space="preserve">
+    <value>Baseline year</value>
+  </data>
+  <data name="CarbonNetZero_06_SummaryTitle" xml:space="preserve">
+    <value>Baseline year</value>
+  </data>
+  <data name="CarbonNetZero_06_BaselineContainer_Title" xml:space="preserve">
+    <value>Enter your baseline emissions data</value>
+  </data>
+  <data name="CarbonNetZero_07_Title" xml:space="preserve">
+    <value>Scope 1</value>
+  </data>
+  <data name="CarbonNetZero_07_SummaryTitle" xml:space="preserve">
+    <value>Scope 1</value>
+  </data>
+  <data name="CarbonNetZero_08_Title" xml:space="preserve">
+    <value>Scope 2</value>
+  </data>
+  <data name="CarbonNetZero_08_SummaryTitle" xml:space="preserve">
+    <value>Scope 2</value>
+  </data>
+  <data name="CarbonNetZero_09_Title" xml:space="preserve">
+    <value>Scope 3</value>
+  </data>
+  <data name="CarbonNetZero_09_SummaryTitle" xml:space="preserve">
+    <value>Scope 3</value>
+  </data>
+  <data name="CarbonNetZero_10_Title" xml:space="preserve">
+    <value>Reporting year</value>
+  </data>
+  <data name="CarbonNetZero_10_SummaryTitle" xml:space="preserve">
+    <value>Reporting year</value>
+  </data>
+  <data name="CarbonNetZero_10_ReportingContainer_Title" xml:space="preserve">
+    <value>Enter your current emissions data</value>
+  </data>
+  <data name="CarbonNetZero_10_Description" xml:space="preserve">
+    <value>&lt;div class=&quot;govuk-hint&quot;&gt;For example, 2030&lt;/div&gt;</value>
+  </data>
+  <data name="CarbonNetZero_11_Title" xml:space="preserve">
+    <value>Scope 1</value>
+  </data>
+  <data name="CarbonNetZero_11_SummaryTitle" xml:space="preserve">
+    <value>Scope 1</value>
+  </data>
+  <data name="CarbonNetZero_12_Title" xml:space="preserve">
+    <value>Scope 2</value>
+  </data>
+  <data name="CarbonNetZero_12_SummaryTitle" xml:space="preserve">
+    <value>Scope 2</value>
+  </data>
+  <data name="CarbonNetZero_13_Title" xml:space="preserve">
+    <value>Scope 3</value>
+  </data>
+  <data name="CarbonNetZero_13_SummaryTitle" xml:space="preserve">
+    <value>Scope 3</value>
+  </data>
+  <data name="CarbonNetZero_CarbonNetZeroDetails_NetZeroTargetYear_Heading" xml:space="preserve">
+    <value>Enter your Net Zero target year</value>
+  </data>
+  <data name="CarbonNetZero_CarbonNetZeroDetails_NetZeroTargetYear_HintText" xml:space="preserve">
+    <value>For example, 2030</value>
+  </data>
+  <data name="CarbonNetZero_CarbonNetZeroDetails_RelevantEmissionsData_Heading" xml:space="preserve">
+    <value>Enter the relevant emissions data:</value>
+  </data>
+  <data name="CarbonNetZero_CarbonNetZeroDetails_SupplierEmissionsDeclaration_Text" xml:space="preserve">
+    <value>Supplier Emissions Declaration</value>
+  </data>
+  <data name="CarbonNetZero_tCO2e" xml:space="preserve">
+    <value>tCO2e</value>
+  </data>
+  <data name="CarbonNetZero_CarbonReductionPlan" xml:space="preserve">
+    <value>Carbon Reduction Plan</value>
+  </data>
+  <data name="CarbonNetZero_BaselineEmissions_Group" xml:space="preserve">
+    <value>Supplier Emissions Declaration</value>
+  </data>
+  <data name="CarbonNetZero_ReportingEmissions_Group" xml:space="preserve">
+    <value>Supplier Emissions Declaration</value>
+  </data>
+  <data name="CarbonNetZero_CarbonNetZeroDetails_BaselineYear_Text" xml:space="preserve">
+    <value>Baseline Year:</value>
+  </data>
+  <data name="CarbonNetZero_CarbonNetZeroDetails_ReportingYear_Text" xml:space="preserve">
+    <value>Reporting Year:</value>
+  </data>
+  <data name="CarbonNetZero_CarbonNetZeroDetails_BaselineYear_ScopeOne_Text" xml:space="preserve">
+    <value>Scope 1:</value>
+  </data>
+  <data name="CarbonNetZero_CarbonNetZeroDetails_BaselineYear_ScopeTwo_Text" xml:space="preserve">
+    <value>Scope 2:</value>
+  </data>
+  <data name="CarbonNetZero_CarbonNetZeroDetails_BaselineYear_ScopeThree_Text" xml:space="preserve">
+    <value>Scope 3:</value>
+  </data>
+  <data name="CarbonNetZero_CarbonNetZeroDetails_ReportingYear_ScopeOne_Text" xml:space="preserve">
+    <value>Scope 1:</value>
+  </data>
+  <data name="CarbonNetZero_CarbonNetZeroDetails_ReportingYear_ScopeTwo_Text" xml:space="preserve">
+    <value>Scope 2:</value>
+  </data>
+  <data name="CarbonNetZero_CarbonNetZeroDetails_ReportingYear_ScopeThree_Text" xml:space="preserve">
+    <value>Scope 3:</value>
   </data>
   <!-- Payments -->
   <data name="Payments_SectionTitle" xml:space="preserve">
@@ -1000,7 +1224,7 @@ PPN 014: Cyber Essentials scheme (opens in a new tab).&lt;/a&gt;&lt;/p&gt;
     <value>Do you have processes to ensure you pay your supply chain on time?</value>
   </data>
   <data name="Payments_02_SummaryTitle" xml:space="preserve">
-    <value>Payment Process</value>
+    <value>Payment process</value>
   </data>
   <data name="Payments_02_Description" xml:space="preserve">
     <value>
@@ -1013,7 +1237,7 @@ PPN 014: Cyber Essentials scheme (opens in a new tab).&lt;/a&gt;&lt;/p&gt;
     <value>Do you have processes to resolve disputed payments and invoices in your supply chain on time?</value>
   </data>
   <data name="Payments_03_SummaryTitle" xml:space="preserve">
-    <value>Payment Process</value>
+    <value>Dispute resolution process</value>
   </data>
   <data name="Payments_03_Description" xml:space="preserve">
     <value>
@@ -1046,9 +1270,15 @@ PPN 014: Cyber Essentials scheme (opens in a new tab).&lt;/a&gt;&lt;/p&gt;
   <data name="Payments_05_SummaryTitle" xml:space="preserve">
     <value>Reporting under the Payment Practices Reporting Regulations</value>
   </data>
+  <data name="Payments_05_Caption" xml:space="preserve">
+    <value>Enter the link to your most recent report</value>
+  </data>
   <!-- ===== PAYMENTS 06 ===== -->
   <data name="Payments_06_Title" xml:space="preserve">
     <value>Payment and invoice reporting within your immediate supply chain</value>
+  </data>
+  <data name="Payments_06_Caption" xml:space="preserve">
+    <value>Reporting period 1</value>
   </data>
   <data name="Payments_06_Description" xml:space="preserve">
     <value>&lt;p class="govuk-body"&gt;Enter your payment and invoice details for your most recent 6 month reporting period.&lt;/p&gt;</value>
@@ -1074,9 +1304,30 @@ PPN 014: Cyber Essentials scheme (opens in a new tab).&lt;/a&gt;&lt;/p&gt;
   <data name="Payments_06_PctPaidOverdue" xml:space="preserve">
     <value>Overdue within this reporting period</value>
   </data>
+  <data name="Payments_06_ReportingStartDate_SummaryTitle" xml:space="preserve">
+    <value>Reporting period start date</value>
+  </data>
+  <data name="Payments_06_AverageDaysToPayInvoice_SummaryTitle" xml:space="preserve">
+    <value>Average number of days to pay an invoice</value>
+  </data>
+  <data name="Payments_06_PctPaidWithin30Days_SummaryTitle" xml:space="preserve">
+    <value>Paid within 30 days</value>
+  </data>
+  <data name="Payments_06_PctPaid31To60Days_SummaryTitle" xml:space="preserve">
+    <value>Paid within 31 to 60 days</value>
+  </data>
+  <data name="Payments_06_PctPaid61OrMoreDays_SummaryTitle" xml:space="preserve">
+    <value>Paid at 61 days or more</value>
+  </data>
+  <data name="Payments_06_PctPaidOverdue_SummaryTitle" xml:space="preserve">
+    <value>Overdue within the reporting period</value>
+  </data>
   <!-- ===== PAYMENTS 07 ===== -->
   <data name="Payments_07_Title" xml:space="preserve">
     <value>Payment and invoice reporting within your immediate supply chain</value>
+  </data>
+  <data name="Payments_07_Caption" xml:space="preserve">
+    <value>Reporting period 2</value>
   </data>
   <data name="Payments_07_Description" xml:space="preserve">
     <value>&lt;p class="govuk-body"&gt;Enter your payment and invoice details for the 6 month reporting period prior to your most recent reporting period.&lt;/p&gt;</value>
@@ -1102,8 +1353,29 @@ PPN 014: Cyber Essentials scheme (opens in a new tab).&lt;/a&gt;&lt;/p&gt;
   <data name="Payments_07_PctPaidOverdue" xml:space="preserve">
     <value>Overdue within this reporting period</value>
   </data>
+  <data name="Payments_07_ReportingStartDate_SummaryTitle" xml:space="preserve">
+    <value>Reporting period start date</value>
+  </data>
+  <data name="Payments_07_AverageDaysToPayInvoice_SummaryTitle" xml:space="preserve">
+    <value>Average number of days to pay an invoice</value>
+  </data>
+  <data name="Payments_07_PctPaidWithin30Days_SummaryTitle" xml:space="preserve">
+    <value>Paid within 30 days</value>
+  </data>
+  <data name="Payments_07_PctPaid31To60Days_SummaryTitle" xml:space="preserve">
+    <value>Paid within 31 to 60 days</value>
+  </data>
+  <data name="Payments_07_PctPaid61OrMoreDays_SummaryTitle" xml:space="preserve">
+    <value>Paid at 61 days or more</value>
+  </data>
+  <data name="Payments_07_PctPaidOverdue_SummaryTitle" xml:space="preserve">
+    <value>Overdue within the reporting period</value>
+  </data>
   <data name="Payments_08_Title" xml:space="preserve">
     <value>Explain why you have not paid all invoices within agreed contractual terms (where relevant)</value>
+  </data>
+  <data name="Payments_08_SummaryTitle" xml:space="preserve">
+    <value>Invoices not paid within contractual terms</value>
   </data>
   <data name="Payments_08_Description" xml:space="preserve">
     <value>
@@ -1116,7 +1388,7 @@ PPN 014: Cyber Essentials scheme (opens in a new tab).&lt;/a&gt;&lt;/p&gt;
     <value>Have you shown that 95% or more of your payable invoices have been paid?</value>
   </data>
   <data name="Payments_09_SummaryTitle" xml:space="preserve">
-    <value>X</value>
+    <value>95% of invoices paid within 60 days</value>
   </data>
   <data name="Payments_09_Description" xml:space="preserve">
     <value>
@@ -1131,7 +1403,7 @@ PPN 014: Cyber Essentials scheme (opens in a new tab).&lt;/a&gt;&lt;/p&gt;
     <value>Can you confirm you have paid all your invoices within an average of 55 days?</value>
   </data>
   <data name="Payments_10_SummaryTitle" xml:space="preserve">
-  <value>Y</value>
+    <value>Invoices paid within 55-day average</value>
   </data>
   <data name="Payments_10_Description" xml:space="preserve">
     <value>
@@ -1144,7 +1416,7 @@ PPN 014: Cyber Essentials scheme (opens in a new tab).&lt;/a&gt;&lt;/p&gt;
     <value>Submit your action plan (where relevant)</value>
   </data>
   <data name="Payments_11_SummaryTitle" xml:space="preserve">
-  <value>Y</value>
+  <value>Action plan upload</value>
   </data>
   <data name="Payments_11_Description" xml:space="preserve">
     <value>
@@ -1157,6 +1429,24 @@ PPN 014: Cyber Essentials scheme (opens in a new tab).&lt;/a&gt;&lt;/p&gt;
         &lt;li&gt;a plan published on your website (this can be a shorter, summary plan)&lt;/li&gt;
       &lt;/ul&gt;
     </value>
+  </data>
+  <data name="Payments_11_InsetText" xml:space="preserve">
+    <value>&lt;div class=&quot;govuk-inset-text&quot;&gt;You can submit an existing action plan prepared for a different purpose, but it must cover the points mentioned on this page.&lt;/div&gt;</value>
+  </data>
+  <data name="Payments_Days" xml:space="preserve">
+    <value>Days</value>
+  </data>
+  <data name="Payments_Group1_SummaryTitle" xml:space="preserve">
+    <value>Terms and processes</value>
+  </data>
+  <data name="Payments_Group2_SummaryTitle" xml:space="preserve">
+    <value>Reporting period 1</value>
+  </data>
+  <data name="Payments_Group3_SummaryTitle" xml:space="preserve">
+    <value>Reporting period 2</value>
+  </data>
+  <data name="Payments_Group4_SummaryTitle" xml:space="preserve">
+    <value>Non-compliance details</value>
   </data>
   <data name="Global_Enter_Your_Job_Title" xml:space="preserve">
     <value>Enter your job title</value>
@@ -1244,5 +1534,11 @@ PPN 014: Cyber Essentials scheme (opens in a new tab).&lt;/a&gt;&lt;/p&gt;
   </data>
   <data name="CyberEssentials_CertificationPlus_SubTitle" xml:space="preserve">
     <value>Cyber Essentials Plus certification scheme</value>
+  </data>
+  <data name="DateForm_FutureDate_Hint" xml:space="preserve">
+    <value>&lt;div class=&quot;govuk-hint&quot;&gt;For example, 27 3 2027&lt;/div&gt;</value>
+  </data>
+  <data name="Global_Start" xml:space="preserve">
+    <value>Start</value>
   </data>
 </root>

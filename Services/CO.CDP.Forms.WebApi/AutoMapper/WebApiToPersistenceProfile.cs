@@ -23,7 +23,41 @@ public class WebApiToPersistenceProfile : Profile
             .ForMember(dest => dest.Options, opt => opt.MapFrom(src => src.Options))
             .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name));
 
-        CreateMap<Persistence.FormQuestionOptions, Model.FormQuestionOptions>();
+        CreateMap<Persistence.FormQuestionOptions, Model.FormQuestionOptions>()
+            .ForMember(dest => dest.Layout, opt => opt.MapFrom(src => src.Layout))
+            .ForMember(dest => dest.Validation, opt => opt.MapFrom(src => src.Validation));
+
+        CreateMap<Persistence.LayoutOptions, Model.LayoutOptions>()
+            .ForMember(dest => dest.Input, opt => opt.MapFrom(src => src.Input))
+            .ForMember(dest => dest.Heading, opt => opt.MapFrom(src => src.Heading))
+            .ForMember(dest => dest.Button, opt => opt.MapFrom(src => src.Button));
+
+        CreateMap<Persistence.InputOptions, Model.InputOptions>()
+            .ForMember(dest => dest.CustomYesText, opt => opt.MapFrom<NullableLocalizedPropertyResolver<Persistence.InputOptions, Model.InputOptions>, string?>(src => src.CustomYesText))
+            .ForMember(dest => dest.CustomNoText, opt => opt.MapFrom<NullableLocalizedPropertyResolver<Persistence.InputOptions, Model.InputOptions>, string?>(src => src.CustomNoText))
+            .ForMember(dest => dest.Width, opt => opt.MapFrom(src => src.Width))
+            .ForMember(dest => dest.Suffix, opt => opt.MapFrom(src => src.Suffix))
+            .ForMember(dest => dest.CustomCssClasses, opt => opt.MapFrom(src => src.CustomCssClasses));
+
+        CreateMap<Persistence.HeadingOptions, Model.HeadingOptions>()
+            .ForMember(dest => dest.Size, opt => opt.MapFrom(src => src.Size))
+            .ForMember(dest => dest.BeforeHeadingContent, opt => opt.MapFrom<NullableLocalizedPropertyResolver<Persistence.HeadingOptions, Model.HeadingOptions>, string?>(src => src.BeforeHeadingContent));
+
+        CreateMap<Persistence.ButtonOptions, Model.ButtonOptions>()
+            .ForMember(dest => dest.Text, opt => opt.MapFrom<NullableLocalizedPropertyResolver<Persistence.ButtonOptions, Model.ButtonOptions>, string?>(src => src.Text))
+            .ForMember(dest => dest.Style, opt => opt.MapFrom(src => src.Style))
+            .ForMember(dest => dest.BeforeButtonContent, opt => opt.MapFrom<NullableLocalizedPropertyResolver<Persistence.ButtonOptions, Model.ButtonOptions>, string?>(src => src.BeforeButtonContent))
+            .ForMember(dest => dest.AfterButtonContent, opt => opt.MapFrom<NullableLocalizedPropertyResolver<Persistence.ButtonOptions, Model.ButtonOptions>, string?>(src => src.AfterButtonContent));
+
+        CreateMap<Persistence.InputSuffixOptions, Model.InputSuffixOptions>()
+            .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.Type))
+            .ForMember(dest => dest.Text, opt => opt.MapFrom<NullableLocalizedPropertyResolver<Persistence.InputSuffixOptions, Model.InputSuffixOptions>, string?>(src => src.Text));
+
+        CreateMap<Persistence.ValidationOptions, Model.ValidationOptions>()
+            .ForMember(dest => dest.DateValidationType, opt => opt.MapFrom(src => src.DateValidationType))
+            .ForMember(dest => dest.MinDate, opt => opt.MapFrom(src => src.MinDate))
+            .ForMember(dest => dest.MaxDate, opt => opt.MapFrom(src => src.MaxDate))
+            .ForMember(dest => dest.TextValidationType, opt => opt.MapFrom(src => src.TextValidationType));
 
         CreateMap<Persistence.FormQuestionChoice, Model.FormQuestionChoice>()
             .ForMember(dest => dest.Title, opt => opt.MapFrom<LocalizedPropertyResolver<Persistence.FormQuestionChoice, Model.FormQuestionChoice>, string>(src => src.Title))
@@ -43,6 +77,12 @@ public class WebApiToPersistenceProfile : Profile
         CreateMap<Persistence.FormQuestionGroupChoice, Model.FormQuestionGroupChoice>()
             .ForMember(dest => dest.Title, opt => opt.MapFrom<NullableLocalizedPropertyResolver<Persistence.FormQuestionGroupChoice, Model.FormQuestionGroupChoice>, string?>(src => src.Title));
 
+        CreateMap<Persistence.FormQuestionGrouping, Model.FormQuestionGrouping>()
+            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+            .ForMember(dest => dest.CheckYourAnswers, opt => opt.MapFrom(src => src.CheckYourAnswers))
+            .ForMember(dest => dest.Page, opt => opt.MapFrom(src => src.Page))
+            .ForMember(dest => dest.SummaryTitle, opt => opt.MapFrom<NullableLocalizedPropertyResolver<Persistence.FormQuestionGrouping, Model.FormQuestionGrouping>, string?>(src => src.SummaryTitle));
+
         CreateMap<Persistence.FormSectionConfiguration, Model.FormSectionConfiguration>()
             .ForMember(dest => dest.SingularSummaryHeadingHint, opt => opt.MapFrom<NullableLocalizedPropertyResolver<Persistence.FormSectionConfiguration, Model.FormSectionConfiguration>, string?>(src => src.SingularSummaryHeadingHint))
             .ForMember(dest => dest.SingularSummaryHeading, opt => opt.MapFrom<NullableLocalizedPropertyResolver<Persistence.FormSectionConfiguration, Model.FormSectionConfiguration>, string?>(src => src.SingularSummaryHeading))
@@ -57,7 +97,7 @@ public class WebApiToPersistenceProfile : Profile
 
         CreateMap<Persistence.SummaryRenderFormatter, Model.SummaryRenderFormatter>()
             .ForMember(dest => dest.KeyExpression, opt => opt.MapFrom<NullableLocalizedPropertyResolver<Persistence.SummaryRenderFormatter, Model.SummaryRenderFormatter>, string?>(src => src.KeyExpression))
-            .ForMember(dest => dest.ValueExpression, opt => opt.MapFrom<NullableLocalizedPropertyResolver<Persistence.SummaryRenderFormatter, Model.SummaryRenderFormatter>, string?>(src => src.ValueExpression))            
+            .ForMember(dest => dest.ValueExpression, opt => opt.MapFrom<NullableLocalizedPropertyResolver<Persistence.SummaryRenderFormatter, Model.SummaryRenderFormatter>, string?>(src => src.ValueExpression))
             .ForMember(dest => dest.KeyExpressionOperation, opt => opt.MapFrom(src => (Model.ExpressionOperationType)Enum.Parse(typeof(Model.ExpressionOperationType), src.KeyExpressionOperation)))
             .ForMember(dest => dest.ValueExpressionOperation, opt => opt.MapFrom(src => (Model.ExpressionOperationType)Enum.Parse(typeof(Model.ExpressionOperationType), src.ValueExpressionOperation)));
 

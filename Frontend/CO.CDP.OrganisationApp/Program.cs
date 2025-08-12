@@ -85,7 +85,11 @@ var mvcBuilder = builder.Services.AddRazorPages()
     {
         options.DataAnnotationLocalizerProvider = (type, factory) => factory.Create(typeof(StaticTextResource));
     })
-    .AddSessionStateTempDataProvider();
+    .AddSessionStateTempDataProvider()
+    .AddMvcOptions(options =>
+    {
+        options.ModelBinderProviders.Insert(0, new MultiQuestionFormElementModelBinderProvider());
+    });
 
 if (builder.Environment.IsDevelopment())
 {
@@ -165,6 +169,7 @@ builder.Services.AddKeyedTransient<IChoiceProviderStrategy, DefaultChoiceProvide
 builder.Services.AddTransient<IChoiceProviderService, ChoiceProviderService>();
 
 builder.Services.AddTransient<IFormsEngine, FormsEngine>();
+builder.Services.AddTransient<IAnswerDisplayService, AnswerDisplayService>();
 builder.Services.AddTransient<IDiagnosticPage, DiagnosticPage>();
 builder.Services.AddScoped<IUserInfoService, UserInfoService>();
 

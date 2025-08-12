@@ -2,54 +2,46 @@
 @using CO.CDP.Localization
 
 @{
-    var hasError = ((TagBuilder)Html.ValidationMessageFor(m => m.SelectedOption)).HasInnerHtml;
+    var hasError = Model.HasValidationError(nameof(Model.SelectedOption), ViewData.ModelState);
     string ariaDescribedby = "";
 
     if (!string.IsNullOrWhiteSpace(Model.Description))
     {
-        ariaDescribedby += "SelectedOption-description";
+        ariaDescribedby += Model.GetFieldName("SelectedOption-description");
     }
 
     if (hasError)
     {
-        ariaDescribedby += " SelectedOption-error";
+        ariaDescribedby += " " + Model.GetFieldName("SelectedOption-error");
     }
 }
 
-<div class="govuk-form-group">
+<div class="govuk-form-group @(hasError ? "govuk-form-group--error" : "")">
     <fieldset class="govuk-fieldset" aria-describedby="@ariaDescribedby">
         @if (!string.IsNullOrWhiteSpace(Model.Heading))
         {
-            <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                <h1 class="govuk-fieldset__heading">
-                    @if (!string.IsNullOrWhiteSpace(Model.Caption))
-                    {
-                        <span class="govuk-caption-l">@Model.Caption</span>
-                    }
-                    @Model.Heading                    
-                </h1>
-            </legend>
+            @RenderLegend(Model.Heading, Model.Caption, Model.IsFirstQuestion, Model.Options?.Layout?.Heading?.Size)
         }
 
         @if (!string.IsNullOrWhiteSpace(Model.Description))
         {
-            <div id="SelectedOption-description">
+            <div id="@Model.GetFieldName("SelectedOption-description")">
                 @Html.Raw(Model.Description)
             </div>
         }
 
         @if (hasError)
         {
-            <p class="govuk-error-message" id="SelectedOption-error">
+            <p class="govuk-error-message" id="@Model.GetFieldName("SelectedOption-error")">
                 <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span>
-                @Html.ValidationMessageFor(m => m.SelectedOption)
+                @Model.GetValidationMessage(nameof(Model.SelectedOption), ViewData.ModelState)
             </p>
         }
 
         @if (Model.Options?.Groups != null)
         {
             var index = 0;
-                
+
             foreach (var group in Model.Options.Groups)
             {
                 <h2 class="govuk-heading-m">
@@ -64,24 +56,20 @@
                     </div>
                 }
 
-                <div class="govuk-radios govuk-!-margin-bottom-5" data-module="govuk-radios">
-                    @if (group.Choices != null)
+                <div class="govuk-radios govuk-!-margin-bottom-5 @(Model.Options?.Layout?.Input?.CustomCssClasses)" data-module="govuk-radios">
+                    @foreach (var choice in group.Choices)
                     {
-                    
-                        foreach (var choice in group.Choices)
-                        {
-                            var id = index == 0 ? "SelectedOption" : $"SelectedOption_{index}";
+                        var id = index == 0 ? Model.GetFieldName(nameof(Model.SelectedOption)) : $"{Model.GetFieldName(nameof(Model.SelectedOption))}_{index}";
 
-                            <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="@id" name="@nameof(Model.SelectedOption)" type="radio" value="@choice.Value" @(Model.SelectedOption == choice.Value ? "checked" : "")>
-                                <label class="govuk-label govuk-radios__label" for="@id">@choice.Title</label>
-                            </div>
-                            
-                            index++;
-                        }
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="@id" name="@Model.GetFieldName(nameof(Model.SelectedOption))" type="radio" value="@choice.Value" @(Model.SelectedOption == choice.Value ? "checked" : "")>
+                            <label class="govuk-label govuk-radios__label" for="@id">@choice.Title</label>
+                        </div>
+
+                        index++;
                     }
-                </div>                   
+                </div>
             }
-        }        
+        }
     </fieldset>
 </div>

@@ -1,0 +1,16 @@
+@using CO.CDP.Localization
+@model IMultiQuestionFormElementModel
+
+@{
+    var submitButtonText = Model.Button?.Text ?? StaticTextResource.Global_Continue;
+}
+
+@foreach (var questionItem in Model.GetRenderableQuestions())
+{
+    <div class="govuk-!-margin-bottom-6">
+
+        @await Html.PartialAsync(questionItem.PartialViewName, questionItem.QuestionModel, ViewData)
+    </div>
+}
+
+@ButtonHelper.CreateFormButton(submitButtonText, Model.Button?.Style)

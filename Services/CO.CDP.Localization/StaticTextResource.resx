@@ -2057,7 +2057,17 @@
     <value>return to organisation details</value>
   </data>
   <data name="BuyerParentChildRelationship_ResultsPage_NoResults" xml:space="preserve">
-    <value>No organisations found matching your search criteria </value>
+    <value>
+    &lt;p class="govuk-body"&gt;
+      &lt;span class="govuk-!-font-weight-bold"&gt;0&lt;/span&gt; organisations found.
+    &lt;/p&gt;
+    &lt;p class="govuk-body"&gt;
+      &lt;span class="govuk-!-font-weight-bold"&gt;There are no matching results.&lt;/span&gt;
+    &lt;/p&gt;
+    &lt;p class="govuk-body"&gt;
+      Double-check your spelling to improve your search results.
+    &lt;/p&gt;
+  </value>
   </data>
   <data name="BuyerParentChildRelationship_ConfirmPage_Title" xml:space="preserve">
     <value>Confirm your child organisation details</value>
@@ -2185,8 +2195,38 @@
   <data name="Global_DateInput_DateInvalidError" xml:space="preserve">
     <value>Date must be a real date</value>
   </data>
-  <data name="Global_DateInput_DateInFutureError" xml:space="preserve">
+  <data name="Global_DateInput_DateMustBeTodayOrInThePast" xml:space="preserve">
     <value>Date must be today or in the past</value>
+  </data>
+  <data name="Global_DateInput_DateMustBeTodayOrInTheFuture" xml:space="preserve">
+    <value>Date must be today or in the future</value>
+  </data>
+  <data name="Global_DateInput_DateInPastValidation" xml:space="preserve">
+    <value>Date must be in the past</value>
+  </data>
+  <data name="Global_DateInput_DateInFutureValidation" xml:space="preserve">
+    <value>Date must be in the future</value>
+  </data>
+  <data name="Global_DateInput_DateMustBeOnOrAfter" xml:space="preserve">
+    <value>Date must be on or after {0}</value>
+  </data>
+  <data name="Global_DateInput_DateMustBeOnOrBefore" xml:space="preserve">
+    <value>Date must be on or before {0}</value>
+  </data>
+  <data name="Global_DateInput_DateMustBeBetween" xml:space="preserve">
+    <value>Date must be between {0} and {1}</value>
+  </data>
+  <data name="Global_DateInput_DateMustBeInThePast" xml:space="preserve">
+    <value>Date must be in the past</value>
+  </data>
+  <data name="Global_DateInput_DateMustBeInTheFuture" xml:space="preserve">
+    <value>Date must be in the future</value>
+  </data>
+  <data name="Global_Number_InvalidError" xml:space="preserve">
+    <value>Enter a valid number</value>
+  </data>
+  <data name="Global_Percentage_InvalidError" xml:space="preserve">
+    <value>Enter a number between 0 and 100</value>
   </data>
   <data name="Forms_FormElementFileUpload_NoFileSelectedError" xml:space="preserve">
     <value>Select a file</value>
@@ -2202,6 +2242,9 @@
   </data>
   <data name="Forms_FormElementTextInput_InvalidEmailError" xml:space="preserve">
     <value>Enter an email address in the correct format, like name@example.com</value>
+  </data>
+  <data name="Forms_FormElementTextInput_InvalidYearError" xml:space="preserve">
+    <value>Enter a valid year</value>
   </data>
   <data name="Forms_FormElementTextInput_EnterValueError" xml:space="preserve">
     <value>Enter a value</value>
@@ -4232,7 +4275,7 @@
     <value>Public procurement organisation number register</value>
   </data>
   <data name="PponSearch_Hint" xml:space="preserve">
-    <value>Search by organisation name or PPON</value>
+    <value>Search by organisation name, PPON or other unique identifiers</value>
   </data>
   <data name="PponSearch_Ppon_Desc_Title" xml:space="preserve">
     <value>Public procurement organisation number (PPON)</value>
@@ -4247,21 +4290,32 @@
     <value>We've found &lt;b&gt;{0}&lt;/b&gt; organisations</value>
   </data>
   <data name="PponSearch_NoResults" xml:space="preserve">
-    <value>No organisations found matching your search criteria</value>
-  </data>
+  <value>
+    &lt;h2 class=&quot;govuk-heading-l&quot;&gt;Search results&lt;/h2&gt;
+    &lt;p class=&quot;govuk-body&quot;&gt;
+      &lt;span class=&quot;govuk-!-font-weight-bold&quot;&gt;0&lt;/span&gt; organisations found
+    &lt;/p&gt;
+    &lt;p class=&quot;govuk-body&quot;&gt;
+      &lt;span class=&quot;govuk-!-font-weight-bold&quot;&gt;There are no matching results.&lt;/span&gt;
+    &lt;/p&gt;
+    &lt;p class=&quot;govuk-body&quot;&gt;
+      Double-check your spelling to improve your search results.
+    &lt;/p&gt;
+  </value>
+</data>
   <data name="PponSearch_Ppon_Desc_Hint_01" xml:space="preserve">
     <value>
-      &lt;p class=&quot;govuk-body&quot;&gt;
+      &lt;p class="govuk-body"&gt;
         A PPON is a unique identifier assigned to organisations that participate in public procurement, generated when an organisation registers on the
-        &lt;a target=&quot;_blank&quot; href=&quot;https://www.find-tender.service.gov.uk&quot;&gt;
-        Central Digital Platform (opens in a new tab)&lt;/a&gt;. It is used to manage and publish notices related to public procurement and connects information about the organisation digitally.
+        &lt;a target="_blank" href="https://www.find-tender.service.gov.uk"&gt;
+        Find a Tender (opens in a new tab)&lt;/a&gt;. It is used to manage and publish notices related to public procurement and connects information about the organisation digitally.
       &lt;/p&gt;
     </value>
   </data>
   <data name="PponSearch_Ppon_Desc_Hint_02" xml:space="preserve">
     <value>
       &lt;p class=&quot;govuk-body&quot;&gt;
-        Your PPON is a combination of 16 letters and numbers, separated by hyphens. For example, ABCD-EFGH-1234-IJKL.
+        Your PPON is a combination of 12 letters and numbers, separated by hyphens. For example, EFGH-1234-IJKL.
       &lt;/p&gt;
     </value>
   </data>
@@ -4330,5 +4384,8 @@
   </data>
   <data name="BuyerView_TileFour_Body">
     <value>Search for frameworks and dynamic markets.</value>
+  </data>
+  <data name="Global_Decimal_InvalidError" xml:space="preserve">
+    <value>Enter a valid decimal number</value>
   </data>
 </root>

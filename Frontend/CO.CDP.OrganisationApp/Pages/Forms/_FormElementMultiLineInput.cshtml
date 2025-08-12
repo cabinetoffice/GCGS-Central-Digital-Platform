@@ -2,22 +2,15 @@
 @using CO.CDP.Localization
 
 @{
-    var hasError = ((TagBuilder)Html.ValidationMessageFor(m => m.TextInput)).HasInnerHtml;
+    var hasError = Model.HasValidationError(nameof(Model.TextInput), ViewData.ModelState);
 }
 
-<div class="govuk-form-group govuk-character-count" data-module="govuk-character-count" data-maxlength="10000" data-threshold="90">
+<div class="govuk-form-group @(hasError ? "govuk-form-group--error" : "") govuk-character-count" data-module="govuk-character-count" data-maxlength="10000" data-threshold="90">
 
     @if (!string.IsNullOrWhiteSpace(Model.Heading))
     {
-        <h1 class="govuk-label-wrapper">
-            <label class="govuk-label govuk-label--l" for="TextInput">@Model.Heading</label>
-        </h1>
+        @RenderLabelHeading(Model.Heading, Model.GetFieldName(nameof(Model.TextInput)), Model.Caption, Model.IsFirstQuestion, Model.Options?.Layout?.Heading?.Size)
     }
-    @if (!string.IsNullOrWhiteSpace(Model.Caption))
-    {
-        <span class="govuk-caption-l">@Model.Caption</span>
-    }
-
     @if (!string.IsNullOrWhiteSpace(Model.Description))
     {
         @Html.Raw(Model.Description)
@@ -25,15 +18,43 @@
 
     @if (hasError)
     {
-        <p class="govuk-error-message">
+        <p class="govuk-error-message" id="@Model.GetFieldName("TextInput-error")">
             <span class="govuk-visually-hidden">Error:</span>
-            @Html.ValidationMessageFor(m => m.TextInput)
+            @Model.GetValidationMessage(nameof(Model.TextInput), ViewData.ModelState)
         </p>
     }
 
-    <textarea class="govuk-textarea govuk-js-character-count" rows="5" id="@nameof(Model.TextInput)" name="@nameof(Model.TextInput)" aria-describedby="TextInput-info">@Model.TextInput</textarea>
+    <textarea class="govuk-textarea govuk-js-character-count @(Model.Options?.Layout?.Input?.CustomCssClasses)" rows="5" id="@Model.GetFieldName(nameof(Model.TextInput))" name="@Model.GetFieldName(nameof(Model.TextInput))" aria-describedby="@(hasError ? Model.GetFieldName("TextInput-error") + " " : "")@Model.GetFieldName("TextInput-info")">@Model.TextInput</textarea>
 
-    <div id="TextInput-info" class="govuk-hint govuk-character-count__message">
+    <div id="@Model.GetFieldName("TextInput-info")" class="govuk-hint govuk-character-count__message">
         @string.Format(StaticTextResource.GovukFrontend_CharacterCount_CharactersAvailable, "10,000")
     </div>
 </div>
+
+@if (hasError)
+{
+    <script nonce-csp>
+        // GOV.UK character count is interfering with the error class application
+        (function() {
+            var textareaId = '@Model.GetFieldName(nameof(Model.TextInput))';
+
+            function applyErrorClass() {
+                var textarea = document.getElementById(textareaId);
+                if (textarea && !textarea.classList.contains('govuk-textarea--error')) {
+                    textarea.classList.add('govuk-textarea--error');
+                }
+            }
+
+            // Apply on DOM ready and after a short delay to handle GOV.UK Frontend initialisation
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', function() {
+                    applyErrorClass();
+                    setTimeout(applyErrorClass, 100); // Fallback for late-initialising components
+                });
+            } else {
+                applyErrorClass();
+                setTimeout(applyErrorClass, 100);
+            }
+        })();
+    </script>
+}

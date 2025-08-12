@@ -8,11 +8,9 @@ namespace CO.CDP.OrganisationApp.Pages.Forms;
 
 public class FormElementTextInputModel : FormElementModel, IValidatableObject
 {
-    [BindProperty]
-    public string? TextInput { get; set; }
+    [BindProperty] public string? TextInput { get; set; }
 
-    [BindProperty]
-    public bool? HasValue { get; set; }
+    [BindProperty] public bool? HasValue { get; set; }
 
 
     public override FormAnswer? GetAnswer()
@@ -41,34 +39,61 @@ public class FormElementTextInputModel : FormElementModel, IValidatableObject
         TextInput = answer.TextValue;
     }
 
-    public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
-    {
-        var validateTextField = IsRequired;
+    public IEnumerable<ValidationResult> Validate(ValidationContext validationContext) =>
+        ValidateHasValue()
+            .Concat(ValidateTextField());
 
-        if (IsRequired == false)
-        {
-            if (HasValue == null)
-            {
-                yield return new ValidationResult(StaticTextResource.Global_RadioField_SelectOptionError, [nameof(HasValue)]);
-            }
-            else if (HasValue == true)
-            {
-                validateTextField = true;
-            }
-        }
+    private IEnumerable<ValidationResult> ValidateHasValue() =>
+        !IsRequired && HasValue == null
+            ? [new ValidationResult(StaticTextResource.Global_RadioField_SelectOptionError, [nameof(HasValue)])]
+            : [];
 
-        if (validateTextField)
+    private IEnumerable<ValidationResult> ValidateTextField() =>
+        ShouldValidateTextField()
+            ? ValidateTextInput()
+            : [];
+
+    private bool ShouldValidateTextField() =>
+        IsRequired || HasValue == true;
+
+    private IEnumerable<ValidationResult> ValidateTextInput() =>
+        GetTextValidationRules()
+            .Select(rule => rule(TextInput))
+            .Where(result => result != null)
+            .Cast<ValidationResult>();
+
+    private IEnumerable<Func<string?, ValidationResult?>> GetTextValidationRules() =>
+    [
+        ValidateEmail,
+        ValidateByType,
+        ValidateRequired
+    ];
+
+    private ValidationResult? ValidateEmail(string? input) =>
+        IsEmailValidationRequired() && !IsValidEmail(input)
+            ? new ValidationResult(StaticTextResource.Forms_FormElementTextInput_InvalidEmailError, [nameof(TextInput)])
+            : null;
+
+    private ValidationResult? ValidateByType(string? input) =>
+        Options?.Validation?.TextValidationType switch
         {
-            if (IsEmailValidationRequired() && !IsValidEmail(TextInput))
-            {
-                yield return new ValidationResult(StaticTextResource.Forms_FormElementTextInput_InvalidEmailError, [nameof(TextInput)]);
-            }
-            else if (string.IsNullOrWhiteSpace(TextInput))
-            {
-                yield return new ValidationResult(StaticTextResource.Forms_FormElementTextInput_EnterValueError, [nameof(TextInput)]);
-            }
-        }
-    }
+            TextValidationType.Year when !new Validation.YearAttribute().IsValid(input) =>
+                new ValidationResult(StaticTextResource.Forms_FormElementTextInput_InvalidYearError,
+                    [nameof(TextInput)]),
+            TextValidationType.Number when !new Validation.NumberAttribute().IsValid(input) =>
+                new ValidationResult(StaticTextResource.Global_Number_InvalidError, [nameof(TextInput)]),
+            TextValidationType.Percentage when !new Validation.PercentageAttribute().IsValid(input) =>
+                new ValidationResult(StaticTextResource.Global_Percentage_InvalidError, [nameof(TextInput)]),
+            TextValidationType.Decimal when !new Validation.DecimalAttribute().IsValid(input) =>
+                new ValidationResult(StaticTextResource.Global_Decimal_InvalidError, [nameof(TextInput)]),
+            _ => null
+        };
+
+    private ValidationResult? ValidateRequired(string? input) =>
+        string.IsNullOrWhiteSpace(input) && !IsEmailValidationRequired()
+            ? new ValidationResult(StaticTextResource.Forms_FormElementTextInput_EnterValueError, [nameof(TextInput)])
+            : null;
+
     private bool IsEmailValidationRequired()
     {
         return Heading?.Contains("email", StringComparison.OrdinalIgnoreCase) == true;

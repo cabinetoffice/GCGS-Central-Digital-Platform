@@ -454,8 +454,9 @@ public record OrganisationSearchByPponQuery
     public int? Limit { get; }
     public int Skip { get; }
     public string OrderBy { get; } = "rel";
+    public double Threshold { get; }
 
-    public OrganisationSearchByPponQuery(string searchText, int? limit,int skip, string orderBy)
+    public OrganisationSearchByPponQuery(string searchText, int? limit, int skip, string orderBy, double? threshold)
     {
         SearchText = searchText;
         Limit = limit;
@@ -463,6 +464,11 @@ public record OrganisationSearchByPponQuery
         if (!string.IsNullOrEmpty(orderBy))
         {
             OrderBy = orderBy;
+        }
+
+        if (threshold.HasValue)
+        {
+            Threshold = threshold.Value;
         }
     }
 }

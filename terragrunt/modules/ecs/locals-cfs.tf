@@ -6,14 +6,25 @@ locals {
 
   cfs_screts_arn = data.aws_secretsmanager_secret.cfs_secrets.arn
 
+  cfs_site_domains = {
+    development = "cfs.${var.public_domain}"
+    staging     = "www-preview.contractsfinder.service.gov.uk"
+    integration = "www-integration.contractsfinder.service.gov.uk"
+    production  = "www.contractsfinder.service.gov.uk"
+  }
+
   cfs_secrets = {
     dev_email                             = "${local.cfs_screts_arn}:DEV_EMAIL::"
     email_contactus                       = "${local.cfs_screts_arn}:CONTACTUS_EMAIL::"
     email_subscription_authentication_key = "${local.cfs_screts_arn}:EMAIL_SUBSCRIPTION_AUTHENTICATION_KEY::"
     email_subscription_cipher             = "${local.cfs_screts_arn}:EMAIL_SUBSCRIPTION_CIPHER::"
     email_licence_request                 = "${local.cfs_screts_arn}:LICENCEREQUEST_EMAIL::"
+    google_analytics_key                  = "${local.cfs_screts_arn}:GOOGLE_ANALYTICS_KEY::"
+    google_tag_manager_key                = "${local.cfs_screts_arn}:GOOGLE_TAG_MANAGER_KEY::"
     http_basic_auth_pass                  = "${local.cfs_screts_arn}:HTTP_BASIC_AUTH_PASS::"
     http_basic_auth_user                  = "${local.cfs_screts_arn}:HTTP_BASIC_AUTH_USER::"
+    letsencrypt_key_authorization         = "${local.cfs_screts_arn}:LETSENCRYPT_KEY_AUTHORIZATION::"
+    letsencrypt_token                     = "${local.cfs_screts_arn}:LETSENCRYPT_TOKEN::"
     run_guest_token                       = "${local.cfs_screts_arn}:RUN_GUEST_TOKEN::"
     run_migrator_token                    = "${local.cfs_screts_arn}:RUN_MIGRATOR_TOKEN::"
     run_registrar_token                   = "${local.cfs_screts_arn}:RUN_REGISTRAR_TOKEN::"
@@ -34,7 +45,7 @@ locals {
   cfs_parameters = {
     app_host_address                    = "%"
     buyer_corporate_identifier_prefixes = "sid4gov.cabinetoffice.gov.uk|supplierregistration.cabinetoffice.gov.uk"
-    cookie_domain                       = "cfs.${var.public_domain}"
+    cookie_domain                       = local.cfs_site_domains[var.environment]
     db_host                             = var.db_cfs_cluster_address
     db_name                             = var.db_cfs_cluster_name
     db_port                             = 3306
@@ -42,12 +53,12 @@ locals {
     demo                                = false
     cfs_allowed_target_email_domains    = join(",", var.cfs_allowed_target_email_domains)
     environment                         = upper(var.environment)
-    http_basic_auth_enabled             = 1
+    http_basic_auth_enabled             = 0
     include_devel                       = false
     local_version                       = 1000
-    site_domain                         = "cfs.${var.public_domain}"
+    site_domain                         = local.cfs_site_domains[var.environment]
     ssl_service                         = true
-    email_support                       = var.is_production ? "noreply@find-tender.service.gov.uk" : "noreply@${var.public_domain}"
+    email_support                       = var.is_production ? "noreply@contractsfinder.service.gov.uk" : "noreply@${var.public_domain}"
     valid_until                         = 1924990799
   }
 

@@ -2,8 +2,8 @@
 @using CO.CDP.Localization
 
 @{
-    var uploadFileHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.UploadedFile)).HasInnerHtml;
-    var selectOptionHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.HasValue)).HasInnerHtml;
+    var uploadFileHasError = Model.HasValidationError(nameof(Model.UploadedFile), ViewData.ModelState);
+    var selectOptionHasError = Model.HasValidationError(nameof(Model.HasValue), ViewData.ModelState);
 
     void RenderDescription()
     {
@@ -15,10 +15,10 @@
 
     void RenderField()
     {
-        <label class="govuk-label" for="@nameof(Model.UploadedFile)">
+        <label class="govuk-label" for="@Model.GetFieldName(nameof(Model.UploadedFile))">
             @StaticTextResource.Forms_FormElementFileUpload_UploadFileLabel
         </label>
-        <div id="documents-hint" class="govuk-hint">
+        <div id="@Model.GetFieldName("documents-hint")" class="govuk-hint">
             @StaticTextResource.Forms_FormElementFileUpload_DocumentsHint
         </div>
 
@@ -26,13 +26,13 @@
         if (uploadFileHasError)
         {
             ariaDescribedby += " documents-error";
-            <p class="govuk-error-message" id="documents-error">
+            <p class="govuk-error-message" id="@Model.GetFieldName("documents-error")">
                 <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span>
-                @Html.ValidationMessageFor(m => m.UploadedFile)
+                @Model.GetValidationMessage(nameof(Model.UploadedFile), ViewData.ModelState)
             </p>
         }
 
-        <input id="@nameof(Model.UploadedFile)" class="govuk-file-upload" name="@nameof(Model.UploadedFile)" type="file" aria-describedby="@ariaDescribedby"
+        <input id="@Model.GetFieldName(nameof(Model.UploadedFile))" class="govuk-file-upload" name="@Model.GetFieldName(nameof(Model.UploadedFile))" type="file" aria-describedby="@ariaDescribedby"
                accept="image/png, image/gif, image/jpeg, application/pdf, text/plain, text/csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document">
 
         @if (!string.IsNullOrWhiteSpace(@Model.UploadedFileName))
@@ -42,21 +42,19 @@
     }
 }
 
-<input type="hidden" name="UploadedFileName" value="@Model.UploadedFileName" />
+<input type="hidden" name="@Model.GetFieldName(nameof(Model.UploadedFileName))" value="@Model.UploadedFileName" />
 
 <div class="govuk-form-group @((Model.IsRequired && uploadFileHasError) || selectOptionHasError ? "govuk-form-group--error" : "")">
     @if (Model.IsRequired)
     {
-        <h1 class="govuk-heading-l">@Model.Heading</h1>
+        @RenderHeading(Model.Heading, Model.Caption, Model.IsFirstQuestion, Model.Options?.Layout?.Heading?.Size)
         RenderDescription();
         RenderField();
     }
     else
     {
         <fieldset class="govuk-fieldset">
-            <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                <h1 class="govuk-fieldset__heading">@Model.Heading</h1>
-            </legend>
+            @RenderLegend(Model.Heading, Model.Caption, Model.IsFirstQuestion, Model.Options?.Layout?.Heading?.Size)
             @{
                 RenderDescription();
             }
@@ -64,19 +62,19 @@
             {
                 <p class="govuk-error-message">
                     <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span>
-                    @Html.ValidationMessageFor(m => m.HasValue)
+                    @Model.GetValidationMessage(nameof(Model.HasValue), ViewData.ModelState)
                 </p>
             }
 
             <div class="govuk-radios" data-module="govuk-radios">
 
                 <div class="govuk-radios__item">
-                    <input class="govuk-radios__input" id="@nameof(Model.HasValue)" name="@nameof(Model.HasValue)" type="radio"
+                    <input class="govuk-radios__input" id="@Model.GetFieldName(nameof(Model.HasValue))" name="@Model.GetFieldName(nameof(Model.HasValue))" type="radio"
                            value="true" data-aria-controls="conditional-YES" @(Model.HasValue == true ? "checked" : "")>
-                    <label class="govuk-label govuk-radios__label" for="@nameof(Model.HasValue)">@StaticTextResource.Global_Yes</label>
+                    <label class="govuk-label govuk-radios__label" for="@Model.GetFieldName(nameof(Model.HasValue))">@StaticTextResource.Global_Yes</label>
                 </div>
 
-                <div class="govuk-radios__conditional" id="conditional-YES">
+                <div class="govuk-radios__conditional" id="@Model.GetFieldName("conditional-YES")">
                     <div class="govuk-form-group @(uploadFileHasError ? "govuk-form-group--error" : "")">
                         @{
                             RenderField();
@@ -85,9 +83,9 @@
                 </div>
 
                 <div class="govuk-radios__item">
-                    <input class="govuk-radios__input" id="@nameof(Model.HasValue)-1" name="@nameof(Model.HasValue)" type="radio"
+                    <input class="govuk-radios__input" id="@(Model.GetFieldName(nameof(Model.HasValue)) + "-1")" name="@Model.GetFieldName(nameof(Model.HasValue))" type="radio"
                            value="false" @(Model.HasValue == false ? "checked" : "")>
-                    <label class="govuk-label govuk-radios__label" for="@nameof(Model.HasValue)-1">@StaticTextResource.Global_No</label>
+                    <label class="govuk-label govuk-radios__label" for="@(Model.GetFieldName(nameof(Model.HasValue)) + "-1")">@StaticTextResource.Global_No</label>
                 </div>
             </div>
         </fieldset>

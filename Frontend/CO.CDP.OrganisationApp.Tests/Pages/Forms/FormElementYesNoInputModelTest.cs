@@ -80,4 +80,38 @@ public class FormElementYesNoInputModelTest
             validationResults.Should().BeEmpty();
         }
     }
+
+    private FormElementYesNoInputModel CreateModelWithOptions(FormQuestionType type, bool isRequired, string? customYesText = null, string? customNoText = null)
+    {
+        return new FormElementYesNoInputModel
+        {
+            CurrentFormQuestionType = type,
+            IsRequired = isRequired,
+            Options = new FormQuestionOptions
+            {
+                Layout = new LayoutOptions
+                {
+                    Input = new InputOptions
+                    {
+                        CustomYesText = customYesText,
+                        CustomNoText = customNoText
+                    }
+                }
+            }
+        };
+    }
+
+    [Fact]
+    public void Options_CustomYesText_IsSet()
+    {
+        var model = CreateModelWithOptions(FormQuestionType.YesOrNo, true, customYesText: "Custom Yes");
+        model.Options?.Layout?.Input?.CustomYesText.Should().Be("Custom Yes");
+    }
+
+    [Fact]
+    public void Options_CustomNoText_IsSet()
+    {
+        var model = CreateModelWithOptions(FormQuestionType.YesOrNo, true, customNoText: "Custom No");
+        model.Options?.Layout?.Input?.CustomNoText.Should().Be("Custom No");
+    }
 }

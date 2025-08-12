@@ -1,17 +1,12 @@
 @model FormElementYesNoInputModel
 @using CO.CDP.Localization
 @{
-    var hasError = ((TagBuilder)Html.ValidationMessageFor(m => m.YesNoInput)).HasInnerHtml;
+    var hasError = Model.HasValidationError(nameof(Model.YesNoInput), ViewData.ModelState);
 }
 
-<div class="govuk-form-group @(hasError ? "govuk-form-group--error" : "")" @(hasError ? Html.Raw(@"aria-describedby=""yes-no-error""") : null)>
+<div class="govuk-form-group @(hasError ? "govuk-form-group--error" : "")" @(hasError ? Html.Raw($"aria-describedby=\"{Model.GetFieldName("yes-no-error")}\"") : null)>
     <fieldset class="govuk-fieldset">
-        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-            @if (!string.IsNullOrWhiteSpace(Model.Heading))
-            {
-                <h1 class="govuk-fieldset__heading">@Model.Heading</h1>
-            }
-        </legend>
+        @RenderLegend(Model.Heading, Model.Caption, Model.IsFirstQuestion, Model.Options?.Layout?.Heading?.Size)
 
         @if (!string.IsNullOrWhiteSpace(Model.Description))
         {
@@ -20,20 +15,20 @@
 
         @if (hasError)
         {
-            <p class="govuk-error-message" id="yes-no-error">
+            <p class="govuk-error-message" id="@Model.GetFieldName("yes-no-error")">
                 <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span>
-                @Html.ValidationMessageFor(m => m.YesNoInput)
+                @Model.GetValidationMessage(nameof(Model.YesNoInput), ViewData.ModelState)
             </p>
         }
 
-        <div class="govuk-radios" data-module="govuk-radios">
+        <div class="govuk-radios @Model.Options?.Layout?.Input?.CustomCssClasses" data-module="govuk-radios">
             <div class="govuk-radios__item">
-                <input class="govuk-radios__input" id="@nameof(Model.YesNoInput)" name="@nameof(Model.YesNoInput)" type="radio" value="yes" @(Model.YesNoInput == "yes" ? "checked" : "")>
-                <label class="govuk-label govuk-radios__label" for="@nameof(Model.YesNoInput)">@StaticTextResource.Global_Yes</label>
+                <input class="govuk-radios__input" id="@Model.GetFieldName(nameof(Model.YesNoInput))" name="@Model.GetFieldName(nameof(Model.YesNoInput))" type="radio" value="yes" @(Model.YesNoInput == "yes" ? "checked" : "")>
+                <label class="govuk-label govuk-radios__label" for="@Model.GetFieldName(nameof(Model.YesNoInput))">@(!string.IsNullOrWhiteSpace(Model.Options?.Layout?.Input?.CustomYesText) ? Model.Options.Layout.Input.CustomYesText : StaticTextResource.Global_Yes)</label>
             </div>
             <div class="govuk-radios__item">
-                <input class="govuk-radios__input" id="@nameof(Model.YesNoInput)-1" name="@nameof(Model.YesNoInput)" type="radio" value="no" @(Model.YesNoInput == "no" ? "checked" : "")>
-                <label class="govuk-label govuk-radios__label" for="@nameof(Model.YesNoInput)-1">@StaticTextResource.Global_No</label>
+                <input class="govuk-radios__input" id="@(Model.GetFieldName(nameof(Model.YesNoInput)) + "-1")" name="@Model.GetFieldName(nameof(Model.YesNoInput))" type="radio" value="no" @(Model.YesNoInput == "no" ? "checked" : "")>
+                <label class="govuk-label govuk-radios__label" for="@(Model.GetFieldName(nameof(Model.YesNoInput)) + "-1")">@(!string.IsNullOrWhiteSpace(Model.Options?.Layout?.Input?.CustomNoText) ? Model.Options.Layout.Input.CustomNoText : StaticTextResource.Global_No)</label>
             </div>
         </div>
     </fieldset>

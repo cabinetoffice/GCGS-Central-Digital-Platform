@@ -180,9 +180,7 @@
                     {
                         @if (section.AnswerSetCount > 0)
                         {
-                            <strong class="govuk-!-font-weight-regular">
-                                @(string.Format(StaticTextResource.Supplier_SupplierInformationSummary_FormRecordCount, section.AnswerSetCount))
-                            </strong>
+                            <p class="govuk-body govuk-!-margin-bottom-0">@StaticTextResource.SupplierInformationStatus_StepStatus_Completed</p>
                         }
                         else
                         {
