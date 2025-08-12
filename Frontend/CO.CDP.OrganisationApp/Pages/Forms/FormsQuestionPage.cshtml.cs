@@ -1,19 +1,15 @@
 using CO.CDP.AwsServices;
-using CO.CDP.Localization;
 using CO.CDP.MQ;
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
-using CO.CDP.OrganisationApp.Pages.Forms.ChoiceProviderStrategies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.Extensions.Localization;
 using static System.Net.Mime.MediaTypeNames;
 using OrganisationType = CO.CDP.Organisation.WebApiClient.OrganisationType;
 using WebApiClientOrganisation = CO.CDP.Organisation.WebApiClient.Organisation;
-using Address = CO.CDP.OrganisationApp.Models.Address;
 
 namespace CO.CDP.OrganisationApp.Pages.Forms;
 
@@ -23,10 +19,9 @@ public class FormsQuestionPageModel(
     IFormsEngine formsEngine,
     ITempDataService tempDataService,
     IFileHostManager fileHostManager,
-    IChoiceProviderService choiceProviderService,
     IOrganisationClient organisationClient,
     IUserInfoService userInfoService,
-    IStringLocalizer<StaticTextResource> localizer) : PageModel
+    IAnswerDisplayService answerDisplayService) : PageModel
 {
     [BindProperty(SupportsGet = true)] public Guid OrganisationId { get; set; }
     [BindProperty(SupportsGet = true)] public Guid FormId { get; set; }
@@ -150,13 +145,13 @@ public class FormsQuestionPageModel(
         }
         else
         {
-            PartialViewModel = GetPartialViewModel(currentQuestion, false);
+            PartialViewModel = GetPartialViewModel(currentQuestion, false, isFirst: true);
         }
 
         var submissionResult = await ProcessQuestionSubmission(currentQuestion, sectionDetails);
         if (submissionResult != null) return submissionResult;
 
-        return await RedirectToPreviousQuestion() ?? RedirectToNextQuestion(currentQuestion);
+        return await RedirectToPreviousQuestion() ?? await RedirectToNextQuestion(currentQuestion);
     }
 
     private async Task ProcessMultiQuestionPageSubmission(FormQuestion currentQuestion)
@@ -205,12 +200,19 @@ public class FormsQuestionPageModel(
                 case FormQuestionType.Text:
                     var textInputModel = (FormElementTextInputModel)questionModel;
                     var textInputFieldName = textInputModel.GetFieldName(nameof(textInputModel.TextInput));
+                    var textHasValueFieldName = textInputModel.GetFieldName(nameof(textInputModel.HasValue));
+
                     if (Request.Form.ContainsKey(textInputFieldName))
                     {
                         textInputModel.TextInput = Request.Form[textInputFieldName].ToString();
-                        newAnswer = textInputModel.GetAnswer();
                     }
 
+                    if (Request.Form.ContainsKey(textHasValueFieldName))
+                    {
+                        textInputModel.HasValue = bool.Parse(Request.Form[textHasValueFieldName].ToString());
+                    }
+
+                    newAnswer = textInputModel.GetAnswer();
                     break;
                 case FormQuestionType.MultiLine:
                     var multiLineInputModel = (FormElementMultiLineInputModel)questionModel;
@@ -225,18 +227,26 @@ public class FormsQuestionPageModel(
                 case FormQuestionType.Url:
                     var urlInputModel = (FormElementUrlInputModel)questionModel;
                     var urlFieldName = urlInputModel.GetFieldName(nameof(urlInputModel.TextInput));
+                    var urlHasValueFieldName = urlInputModel.GetFieldName(nameof(urlInputModel.HasValue));
+
                     if (Request.Form.ContainsKey(urlFieldName))
                     {
                         urlInputModel.TextInput = Request.Form[urlFieldName].ToString();
-                        newAnswer = urlInputModel.GetAnswer();
                     }
 
+                    if (Request.Form.ContainsKey(urlHasValueFieldName))
+                    {
+                        urlInputModel.HasValue = bool.Parse(Request.Form[urlHasValueFieldName].ToString());
+                    }
+
+                    newAnswer = urlInputModel.GetAnswer();
                     break;
                 case FormQuestionType.Date:
                     var dateInputModel = (FormElementDateInputModel)questionModel;
                     var dayFieldName = dateInputModel.GetFieldName(nameof(dateInputModel.Day));
                     var monthFieldName = dateInputModel.GetFieldName(nameof(dateInputModel.Month));
                     var yearFieldName = dateInputModel.GetFieldName(nameof(dateInputModel.Year));
+                    var dateHasValueFieldName = dateInputModel.GetFieldName(nameof(dateInputModel.HasValue));
 
                     if (Request.Form.ContainsKey(dayFieldName))
                         dateInputModel.Day = Request.Form[dayFieldName].ToString();
@@ -244,6 +254,8 @@ public class FormsQuestionPageModel(
                         dateInputModel.Month = Request.Form[monthFieldName].ToString();
                     if (Request.Form.ContainsKey(yearFieldName))
                         dateInputModel.Year = Request.Form[yearFieldName].ToString();
+                    if (Request.Form.ContainsKey(dateHasValueFieldName))
+                        dateInputModel.HasValue = bool.Parse(Request.Form[dateHasValueFieldName].ToString());
                     newAnswer = dateInputModel.GetAnswer();
                     break;
                 case FormQuestionType.YesOrNo:
@@ -551,71 +563,9 @@ public class FormsQuestionPageModel(
 
     private async Task<string> GetAnswerString(QuestionAnswer questionAnswer, FormQuestion question)
     {
-        var answer = questionAnswer.Answer;
-        if (answer == null) return string.Empty;
-
-        var boolPart = FormatBoolAnswer(answer.BoolValue);
-        var valuePart = await FormatAnswerByType(answer, question);
-
-        return CombineAnswerParts(boolPart, valuePart);
+        return await answerDisplayService.FormatAnswerForDisplayAsync(questionAnswer, question);
     }
 
-    private string FormatBoolAnswer(bool? boolValue) =>
-        boolValue switch
-        {
-            true => localizer[nameof(StaticTextResource.Global_Yes)],
-            false => localizer[nameof(StaticTextResource.Global_No)],
-            _ => string.Empty
-        };
-
-    private async Task<string> FormatAnswerByType(FormAnswer answer, FormQuestion question) =>
-        question.Type switch
-        {
-            FormQuestionType.Text or FormQuestionType.FileUpload or FormQuestionType.MultiLine or FormQuestionType.Url
-                => answer.TextValue ?? string.Empty,
-            FormQuestionType.SingleChoice => await FormatSingleChoice(answer, question),
-            FormQuestionType.Date => FormatDate(answer.DateValue),
-            FormQuestionType.CheckBox => FormatCheckBox(answer, question),
-            FormQuestionType.Address => FormatAddress(answer.AddressValue),
-            FormQuestionType.GroupedSingleChoice => FormatGroupedSingleChoice(answer, question),
-            _ => string.Empty
-        };
-
-    private async Task<string> FormatSingleChoice(FormAnswer answer, FormQuestion question)
-    {
-        var strategy = choiceProviderService.GetStrategy(question.Options.ChoiceProviderStrategy);
-        return await strategy.RenderOption(answer) ?? string.Empty;
-    }
-
-    private static string FormatDate(DateTimeOffset? dateValue) =>
-        dateValue?.ToString("dd/MM/yyyy") ?? string.Empty;
-
-    private static string FormatCheckBox(FormAnswer answer, FormQuestion question) =>
-        answer.BoolValue == true
-            ? question.Options.Choices?.Values.FirstOrDefault() ?? string.Empty
-            : string.Empty;
-
-    private static string FormatAddress(Address? address)
-    {
-        if (address == null) return string.Empty;
-        var parts = new[] { address.AddressLine1, address.TownOrCity, address.Postcode }
-            .Where(p => !string.IsNullOrWhiteSpace(p));
-        return string.Join(", ", parts);
-    }
-
-    private static string FormatGroupedSingleChoice(FormAnswer answer, FormQuestion question)
-    {
-        if (answer.OptionValue == null) return string.Empty;
-
-        var choice = question.Options.Groups
-            .SelectMany(g => g.Choices)
-            .FirstOrDefault(c => c.Value == answer.OptionValue);
-
-        return choice?.Title ?? answer.OptionValue ?? string.Empty;
-    }
-
-    private static string CombineAnswerParts(params string[] parts) =>
-        string.Join(", ", parts.Where(s => !string.IsNullOrWhiteSpace(s)));
 
     private record ValidationResult(bool IsValid, WebApiClientOrganisation? Organisation = null)
     {
@@ -683,19 +633,19 @@ public class FormsQuestionPageModel(
     {
         FormSectionType = form.Section?.Type;
         CurrentFormQuestionType = currentQuestion.Type;
-        IsMultiQuestionPage = currentQuestion.Options.Grouping?.Page != null;
+        IsMultiQuestionPage = currentQuestion.Options.Grouping?.Page == true;
     }
 
     private async Task SetViewModelProperties(FormQuestion currentQuestion, FormQuestionAnswerState answerState,
         bool reset)
     {
-        if (currentQuestion.Options.Grouping?.Page != null)
+        if (currentQuestion.Options.Grouping?.Page == true)
         {
             await InitializeMultiQuestionView(currentQuestion, answerState);
         }
         else
         {
-            InitializeSingleQuestionView(currentQuestion, reset);
+            await InitializeSingleQuestionView(currentQuestion, reset);
         }
     }
 
@@ -711,11 +661,12 @@ public class FormsQuestionPageModel(
         PartialViewModel = null;
     }
 
-    private void InitializeSingleQuestionView(FormQuestion currentQuestion, bool reset)
+    private Task InitializeSingleQuestionView(FormQuestion currentQuestion, bool reset)
     {
         PartialViewName = GetPartialViewName(currentQuestion);
-        PartialViewModel = GetPartialViewModel(currentQuestion, reset);
+        PartialViewModel = GetPartialViewModel(currentQuestion, reset, isFirst: true);
         MultiQuestionViewModel = null;
+        return Task.CompletedTask;
     }
 
     private async Task SetNavigationProperties(SectionQuestionsResponse form, FormQuestion currentQuestion,
@@ -761,7 +712,7 @@ public class FormsQuestionPageModel(
             : throw new NotImplementedException($"Forms question: {question.Type} is not supported");
     }
 
-    private IFormElementModel? GetPartialViewModel(FormQuestion question, bool reset)
+    private IFormElementModel? GetPartialViewModel(FormQuestion question, bool reset, bool isFirst)
     {
         if (question.Type == FormQuestionType.CheckYourAnswers)
             return null;
@@ -782,7 +733,7 @@ public class FormsQuestionPageModel(
             _ => throw new NotImplementedException($"Forms question: {question.Type} is not supported")
         };
 
-        model.Initialize(question);
+        model.Initialize(question, isFirst);
         if (question.Type == FormQuestionType.Address && model is FormElementAddressModel addressModel)
         {
             addressModel.UkOrNonUk = UkOrNonUk ?? addressModel.UkOrNonUk;
@@ -881,24 +832,24 @@ public class FormsQuestionPageModel(
             tempDataService.Put(FormQuestionAnswerStateKey, answerState);
     }
 
-    private IActionResult RedirectToNextQuestion(FormQuestion currentQuestion)
+    private async Task<IActionResult> RedirectToNextQuestion(FormQuestion currentQuestion)
     {
         if (currentQuestion.Id == CheckYourAnswerQuestionId)
-            return HandleCheckYourAnswers().GetAwaiter().GetResult();
+            return await HandleCheckYourAnswers();
 
         var nextQuestionId = RedirectFromCheckYourAnswerPage == true
             ? CheckYourAnswerQuestionId
-            : GetNextQuestionId(currentQuestion);
+            : await GetNextQuestionId(currentQuestion);
 
         return RedirectToPage("FormsQuestionPage",
             new { OrganisationId, FormId, SectionId, CurrentQuestionId = nextQuestionId });
     }
 
-    private Guid? GetNextQuestionId(FormQuestion currentQuestion)
+    private async Task<Guid?> GetNextQuestionId(FormQuestion currentQuestion)
     {
         var answerSet = tempDataService.PeekOrDefault<FormQuestionAnswerState>(FormQuestionAnswerStateKey);
-        return formsEngine.GetNextQuestion(OrganisationId, FormId, SectionId, currentQuestion.Id, answerSet)
-            .GetAwaiter().GetResult()?.Id;
+        var nextQuestion = await formsEngine.GetNextQuestion(OrganisationId, FormId, SectionId, currentQuestion.Id, answerSet);
+        return nextQuestion?.Id;
     }
 
     private async Task<IActionResult> HandleCheckYourAnswers()

@@ -1,6 +1,5 @@
 @model FormElementSingleChoiceModel
 @using CO.CDP.Localization
-@using CO.CDP.OrganisationApp.Pages.Forms.ChoiceProviderStrategies
 
 @{
     var hasError = Model.HasValidationError(nameof(Model.SelectedOption), ViewData.ModelState);
@@ -19,18 +18,7 @@
 
 <div class="govuk-form-group @(hasError ? "govuk-form-group--error" : "")">
     <fieldset class="govuk-fieldset" aria-describedby="@ariaDescribedby">
-        @if (!string.IsNullOrWhiteSpace(Model.Heading))
-        {
-            <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                <h1 class="govuk-fieldset__heading">
-                    @if (!string.IsNullOrWhiteSpace(Model.Caption))
-                    {
-                        <span class="govuk-caption-l govuk-!-margin-bottom-3">@Model.Caption</span>
-                    }
-                    @Model.Heading
-                </h1>
-            </legend>
-        }
+        @RenderLegend(Model.Heading, Model.Caption, Model.IsFirstQuestion, Model.Options?.Layout?.Heading?.Size)
 
         @if (!string.IsNullOrWhiteSpace(Model.Description))
         {

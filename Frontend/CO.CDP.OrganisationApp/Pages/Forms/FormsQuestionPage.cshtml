@@ -1,10 +1,11 @@
 @page "/organisation/{organisationId:guid}/forms/{formId:guid}/sections/{sectionId:guid}/questions/{currentQuestionId}"
 @model CO.CDP.OrganisationApp.Pages.Forms.FormsQuestionPageModel
 @using CO.CDP.Localization
+@using CO.CDP.OrganisationApp.Models
 @using Microsoft.AspNetCore.Html
 
 @{
-    var isCheckYourAnswersPage = Model.CurrentFormQuestionType == Models.FormQuestionType.CheckYourAnswers;
+    var isCheckYourAnswersPage = Model.CurrentFormQuestionType == FormQuestionType.CheckYourAnswers;
     var backUrl = Model.IsInformalConsortium
         ? $"/consortium/{Model.OrganisationId}/overview"
         : $"/organisation/{Model.OrganisationId}/supplier-information";
@@ -36,12 +37,15 @@
     <div class="@(isCheckYourAnswersPage ? "govuk-grid-column-full" : "govuk-grid-column-two-thirds")">
         <partial name="_ErrorSummary" model="@ModelState"/>
 
-        @if (!string.IsNullOrWhiteSpace(Model.PartialViewModel?.Options?.Layout?.PreHeadingContent))
-{
-    @Html.Raw(Model.PartialViewModel.Options.Layout.PreHeadingContent)
-}
+        @{
+            var contentBlocks = FormContentBlocks.FromLayout(Model.PartialViewModel?.Options?.Layout);
+        }
+        @if (!Model.IsMultiQuestionPage)
+        {
+            @RenderContentBlock(contentBlocks.BeforeTitle, "govuk-!-margin-bottom-1")
+        }
 
-<form method="post" enctype="@Model.EncType" novalidate>
+        <form method="post" enctype="@Model.EncType" novalidate>
     @if (Model.IsMultiQuestionPage && Model.MultiQuestionViewModel != null)
     {
         @await RenderMultiQuestionPage()
@@ -52,22 +56,65 @@
     }
 </form>
 
-@if (!string.IsNullOrWhiteSpace(Model.PartialViewModel?.Options?.Layout?.PostSubmitContent))
-{
-    @Html.Raw(Model.PartialViewModel.Options.Layout.PostSubmitContent)
-}
+        @if (!Model.IsMultiQuestionPage)
+        {
+            @RenderContentBlock(contentBlocks.AfterButton, "govuk-!-margin-top-0")
+        }
     </div>
 </div>
 
 @functions {
+    public record ContentBlock(string Content)
+    {
+        public static ContentBlock Empty => new("");
+        public bool HasContent => !string.IsNullOrWhiteSpace(Content);
+    }
+
+    public record FormContentBlocks(
+        ContentBlock BeforeTitle,
+        ContentBlock BeforeButton,
+        ContentBlock AfterButton
+    )
+    {
+        public static FormContentBlocks FromLayout(LayoutOptions? layout) =>
+            layout == null ? Empty : new(
+                BeforeTitle: new ContentBlock(layout.Heading?.BeforeHeadingContent ?? ""),
+                BeforeButton: new ContentBlock(layout.Button?.BeforeButtonContent ?? ""),
+                AfterButton: new ContentBlock(layout.Button?.AfterButtonContent ?? "")
+            );
+
+        private static FormContentBlocks Empty => new(ContentBlock.Empty, ContentBlock.Empty, ContentBlock.Empty);
+    }
+
+    private static IHtmlContent RenderContentBlock(ContentBlock block, string cssClass) =>
+        !block.HasContent ? HtmlString.Empty :
+        new HtmlContentBuilder()
+            .AppendHtml($"<div class=\"{cssClass}\">")
+            .AppendHtml(block.Content)
+            .AppendHtml("</div>");
+
+    private static IHtmlContent CreateButton(string buttonText, PrimaryButtonStyle? buttonStyle = null) =>
+        ButtonHelper.CreateFormButton(buttonText, buttonStyle);
+
+    private static string GetButtonText(IFormElementModel? viewModel) =>
+        viewModel?.Options?.Layout?.Button?.Text ?? StaticTextResource.Global_Continue;
+
+    private static IHtmlContent RenderQuestionWithContent(
+        IHtmlContent questionContent,
+        IHtmlContent button,
+        FormContentBlocks content) =>
+        new HtmlContentBuilder()
+            .AppendHtml(questionContent)
+            .AppendHtml(RenderContentBlock(content.BeforeButton, "govuk-!-margin-top-2 govuk-!-margin-bottom-1"))
+            .AppendHtml(Environment.NewLine)
+            .AppendHtml(button);
+
     private async Task<IHtmlContent> RenderMultiQuestionPage()
     {
         if (Model.MultiQuestionViewModel == null)
             return HtmlString.Empty;
 
-        var pageTitle = !string.IsNullOrEmpty(Model.MultiQuestionViewModel.PageTitleResourceKey)
-            ? FormsEngineResource.ResourceManager.GetString(Model.MultiQuestionViewModel.PageTitleResourceKey) ?? Model.MultiQuestionViewModel.Questions.FirstOrDefault()?.Title ?? ""
-            : Model.MultiQuestionViewModel.Questions.FirstOrDefault()?.Title ?? "";
+        var pageTitle = Model.MultiQuestionViewModel.Questions.FirstOrDefault()?.Title ?? "";
         ViewData["Title"] = pageTitle;
 
         return await Html.PartialAsync("_FormElementMultiQuestion", Model.MultiQuestionViewModel);
@@ -75,14 +122,24 @@
 
     private async Task<IHtmlContent> RenderSingleQuestionPage()
     {
-        var isCheckYourAnswersPage = Model.CurrentFormQuestionType == Models.FormQuestionType.CheckYourAnswers;
+        var isCheckYourAnswersPage = Model.CurrentFormQuestionType == FormQuestionType.CheckYourAnswers;
 
         if (isCheckYourAnswersPage)
         {
             return await RenderCheckYourAnswersPage();
         }
 
-        return await RenderRegularSingleQuestionPage();
+        if (Model.PartialViewName == null || Model.PartialViewModel == null)
+            return HtmlString.Empty;
+
+        ViewData["Title"] = Model.PartialViewModel.Heading;
+
+        var contentBlocks = FormContentBlocks.FromLayout(Model.PartialViewModel.Options?.Layout);
+
+        var questionContent = await Html.PartialAsync(Model.PartialViewName, Model.PartialViewModel);
+        var button = CreateButton(GetButtonText(Model.PartialViewModel), Model.PartialViewModel?.Options?.Layout?.Button?.Style);
+
+        return RenderQuestionWithContent(questionContent, button, contentBlocks);
     }
 
     private async Task<IHtmlContent> RenderCheckYourAnswersPage()
@@ -90,24 +147,5 @@
         ViewData["Title"] = StaticTextResource.Forms_CheckYourAnswers_Title;
         var groupedAnswersModel = await Model.GetGroupedAnswersModel();
         return await Html.PartialAsync("_FormElementCheckYourAnswers", groupedAnswersModel);
-    }
-
-    private async Task<IHtmlContent> RenderRegularSingleQuestionPage()
-    {
-        if (Model.PartialViewName == null || Model.PartialViewModel == null)
-            return HtmlString.Empty;
-
-        ViewData["Title"] = Model.PartialViewModel.Heading;
-
-        var questionContent = await Html.PartialAsync(Model.PartialViewName, Model.PartialViewModel);
-        var buttonText = !string.IsNullOrEmpty(Model.PartialViewModel?.Options?.Layout?.PrimaryButtonText) ? StaticTextResource.ResourceManager.GetString(Model.PartialViewModel.Options.Layout.PrimaryButtonText!) ?? StaticTextResource.Global_Continue : StaticTextResource.Global_Continue;
-        var continueButton = Html.Raw("<button type=\"submit\" class=\"govuk-button\">" + buttonText + "</button>");
-
-        var builder = new HtmlContentBuilder();
-        builder.AppendHtml(questionContent);
-        builder.AppendHtml(Environment.NewLine);
-        builder.AppendHtml(continueButton);
-
-        return builder;
     }
 }

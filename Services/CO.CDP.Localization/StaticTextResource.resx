@@ -2206,6 +2206,18 @@
   <data name="Global_DateInput_DateMustBeBetween" xml:space="preserve">
     <value>Date must be between {0} and {1}</value>
   </data>
+  <data name="Global_DateInput_DateMustBeInThePast" xml:space="preserve">
+    <value>Date must be in the past</value>
+  </data>
+  <data name="Global_DateInput_DateMustBeInTheFuture" xml:space="preserve">
+    <value>Date must be in the future</value>
+  </data>
+  <data name="Global_Number_InvalidError" xml:space="preserve">
+    <value>Enter a valid number</value>
+  </data>
+  <data name="Global_Percentage_InvalidError" xml:space="preserve">
+    <value>Enter a number between 0 and 100</value>
+  </data>
   <data name="Forms_FormElementFileUpload_NoFileSelectedError" xml:space="preserve">
     <value>Select a file</value>
   </data>
@@ -4356,5 +4368,8 @@
   </data>
   <data name="BuyerView_TileThree_Body">
     <value>Review Statements of Work to make sure they meet procurement and commercial quality standards.</value>
+  </data>
+  <data name="Global_Decimal_InvalidError" xml:space="preserve">
+    <value>Enter a valid decimal number</value>
   </data>
 </root>

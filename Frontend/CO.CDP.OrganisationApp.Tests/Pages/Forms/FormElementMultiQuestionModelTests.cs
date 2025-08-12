@@ -12,11 +12,15 @@ public class FormElementMultiQuestionModelTests
     public void Initialize_ShouldSetPropertiesFromMultiQuestionPageModel()
     {
         var questions = CreateTestQuestions();
+        var buttonOptions = new ButtonOptions
+        {
+            Text = "Test_Submit_Button",
+            Style = PrimaryButtonStyle.Start
+        };
         var multiQuestionPage = new MultiQuestionPageModel
         {
             Questions = questions,
-            PageTitleResourceKey = "Test_Page_Title",
-            SubmitButtonTextResourceKey = "Test_Submit_Button"
+            Button = buttonOptions
         };
         var existingAnswers = new Dictionary<Guid, FormAnswer>();
 
@@ -24,8 +28,7 @@ public class FormElementMultiQuestionModelTests
 
         _model.Questions.Should().HaveCount(3);
         _model.Questions.Should().BeEquivalentTo(questions);
-        _model.PageTitleResourceKey.Should().Be("Test_Page_Title");
-        _model.SubmitButtonTextResourceKey.Should().Be("Test_Submit_Button");
+        _model.Button.Should().BeEquivalentTo(buttonOptions);
     }
 
     [Fact]
@@ -175,19 +178,22 @@ public class FormElementMultiQuestionModelTests
     {
         var questions = CreateTestQuestions();
         var originalQuestionCount = questions.Count;
+        var buttonOptions = new ButtonOptions
+        {
+            Text = "Original_Button",
+            Style = PrimaryButtonStyle.Default
+        };
         var multiQuestionPage = new MultiQuestionPageModel
         {
             Questions = questions,
-            PageTitleResourceKey = "Original_Title",
-            SubmitButtonTextResourceKey = "Original_Button"
+            Button = buttonOptions
         };
 
         _model.Initialize(multiQuestionPage, new Dictionary<Guid, FormAnswer>());
 
         _model.Questions.Should().HaveCount(originalQuestionCount);
         _model.Questions.Should().BeEquivalentTo(questions);
-        _model.PageTitleResourceKey.Should().Be("Original_Title");
-        _model.SubmitButtonTextResourceKey.Should().Be("Original_Button");
+        _model.Button.Should().BeEquivalentTo(buttonOptions);
     }
 
     [Fact]
@@ -195,15 +201,30 @@ public class FormElementMultiQuestionModelTests
     {
         var multiQuestionPage = new MultiQuestionPageModel
         {
-            Questions = [],
-            PageTitleResourceKey = "Empty_Page_Title"
+            Questions = []
         };
 
         _model.Initialize(multiQuestionPage, new Dictionary<Guid, FormAnswer>());
 
         _model.Questions.Should().BeEmpty();
-        _model.PageTitleResourceKey.Should().Be("Empty_Page_Title");
+        _model.Button.Should().BeNull();
         _model.GetAllAnswers().Should().BeEmpty();
+    }
+
+    [Fact]
+    public void Initialize_ShouldHandleNullButtonOptions()
+    {
+        var questions = CreateTestQuestions();
+        var multiQuestionPage = new MultiQuestionPageModel
+        {
+            Questions = questions,
+            Button = null
+        };
+
+        _model.Initialize(multiQuestionPage, new Dictionary<Guid, FormAnswer>());
+
+        _model.Questions.Should().BeEquivalentTo(questions);
+        _model.Button.Should().BeNull();
     }
 
     private static List<FormQuestion> CreateTestQuestions()

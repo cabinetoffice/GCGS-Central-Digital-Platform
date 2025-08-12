@@ -1,10 +1,12 @@
 using CO.CDP.DataSharing.WebApiClient;
 using CO.CDP.Forms.WebApiClient;
+using CO.CDP.Localization;
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.Pages.Forms;
 using CO.CDP.OrganisationApp.Pages.Forms.ChoiceProviderStrategies;
 using FluentAssertions;
+using Microsoft.Extensions.Localization;
 using Moq;
 using FormAnswer = CO.CDP.OrganisationApp.Models.FormAnswer;
 using FormQuestion = CO.CDP.OrganisationApp.Models.FormQuestion;
@@ -33,8 +35,14 @@ public class FormsEngineMultipleQuestionPageTests
         UserInfoServiceMock = new Mock<IUserInfoService>();
         OrganisationClientMock = new Mock<IOrganisationClient>();
 
+        var localizerMock = new Mock<IStringLocalizer<StaticTextResource>>();
+        localizerMock.Setup(l => l["Global_Yes"]).Returns(new LocalizedString("Global_Yes", "Yes"));
+        localizerMock.Setup(l => l["Global_No"]).Returns(new LocalizedString("Global_No", "No"));
+        
+        var realAnswerDisplayService = new AnswerDisplayService(localizerMock.Object, _choiceProviderServiceMock.Object);
+
         _formsEngine = new FormsEngine(formsApiClientMock.Object, _tempDataServiceMock.Object,
-            _choiceProviderServiceMock.Object, dataSharingClientMock.Object);
+            _choiceProviderServiceMock.Object, dataSharingClientMock.Object, realAnswerDisplayService);
     }
 
     private static (Guid organisationId, Guid formId, Guid sectionId, string sessionKey) CreateTestGuids()
@@ -324,7 +332,7 @@ public class FormsEngineMultipleQuestionPageTests
             Questions =
             {
                 new FormQuestion { Id = question1Id, Type = FormQuestionType.Text, Title = "Grouped Question 1", NextQuestion = question2Id, Options = new FormQuestionOptions { Grouping = new FormQuestionGrouping { Id = groupId, Page = true, CheckYourAnswers = true, SummaryTitle = "Group Title" } } },
-                new FormQuestion { Id = question2Id, Type = FormQuestionType.YesOrNo, Title = "Grouped Question 2", Options = new FormQuestionOptions { Grouping = new FormQuestionGrouping { Id = groupId, Page = true, CheckYourAnswers = true, SummaryTitle = "Group Title" } } },
+                new FormQuestion { Id = question2Id, Type = FormQuestionType.YesOrNo, Title = "Grouped Question 2", NextQuestion = question3Id, Options = new FormQuestionOptions { Grouping = new FormQuestionGrouping { Id = groupId, Page = true, CheckYourAnswers = true, SummaryTitle = "Group Title" } } },
                 new FormQuestion { Id = question3Id, Type = FormQuestionType.Text, Title = "Individual Question", Options = new FormQuestionOptions() }
             }
         };
@@ -519,4 +527,329 @@ public class FormsEngineMultipleQuestionPageTests
         resultFromFileUploadQuestion!.Id.Should().Be(checkYourAnswersId,
             "navigation from file upload question in multi-question page should go to Check Your Answers");
     }
+
+    [Fact]
+    public async Task GetGroupedAnswerSummaries_WhenGroupedOnPage_ShouldHaveSingleChangeLink()
+    {
+        var (organisationId, formId, sectionId, sessionKey) = CreateTestGuids();
+        var groupId = Guid.NewGuid();
+        var question1Id = Guid.NewGuid();
+        var question2Id = Guid.NewGuid();
+
+        var sectionResponse = new SectionQuestionsResponse
+        {
+            Section = new FormSection { Id = sectionId, Title = "Test Section" },
+            Questions =
+            {
+                new FormQuestion
+                {
+                    Id = question1Id, Type = FormQuestionType.Text, Title = "Grouped Question 1",
+                    NextQuestion = question2Id,
+                    Options = new FormQuestionOptions
+                        { Grouping = new FormQuestionGrouping { Id = groupId, Page = true, CheckYourAnswers = true, SummaryTitle = "Group Title" } }
+                },
+                new FormQuestion
+                {
+                    Id = question2Id, Type = FormQuestionType.YesOrNo, Title = "Grouped Question 2",
+                    Options = new FormQuestionOptions
+                        { Grouping = new FormQuestionGrouping { Id = groupId, Page = true, CheckYourAnswers = true, SummaryTitle = "Group Title" } }
+                }
+            }
+        };
+
+        var answerState = new FormQuestionAnswerState
+        {
+            Answers =
+            {
+                new QuestionAnswer { QuestionId = question1Id, Answer = new FormAnswer { TextValue = "Grouped Answer 1" } },
+                new QuestionAnswer { QuestionId = question2Id, Answer = new FormAnswer { BoolValue = true } }
+            }
+        };
+
+        _tempDataServiceMock.Setup(t => t.Peek<SectionQuestionsResponse>(sessionKey)).Returns(sectionResponse);
+        _choiceProviderServiceMock.Setup(c => c.GetStrategy(null)).Returns(new DefaultChoiceProviderStrategy());
+
+        var result = await _formsEngine.GetGroupedAnswerSummaries(organisationId, formId, sectionId, answerState);
+
+        var groupedAnswer = result.First() as GroupedAnswerSummary;
+        groupedAnswer.Should().NotBeNull();
+        groupedAnswer!.GroupChangeLink.Should().NotBeNull();
+        groupedAnswer.Answers.ForEach(a => a.ChangeLink.Should().Contain("?frm-chk-answer=true"));
+    }
+
+    [Fact]
+    public async Task GetGroupedAnswerSummaries_WhenGroupedOnSummaryOnly_ShouldHaveIndividualChangeLinks()
+    {
+        var (organisationId, formId, sectionId, sessionKey) = CreateTestGuids();
+        var groupId = Guid.NewGuid();
+        var question1Id = Guid.NewGuid();
+        var question2Id = Guid.NewGuid();
+
+        var sectionResponse = new SectionQuestionsResponse
+        {
+            Section = new FormSection { Id = sectionId, Title = "Test Section" },
+            Questions =
+            {
+                new FormQuestion
+                {
+                    Id = question1Id, Type = FormQuestionType.Text, Title = "Grouped Question 1",
+                    NextQuestion = question2Id,
+                    Options = new FormQuestionOptions
+                        { Grouping = new FormQuestionGrouping { Id = groupId, Page = false, CheckYourAnswers = true, SummaryTitle = "Group Title" } }
+                },
+                new FormQuestion
+                {
+                    Id = question2Id, Type = FormQuestionType.YesOrNo, Title = "Grouped Question 2",
+                    Options = new FormQuestionOptions
+                        { Grouping = new FormQuestionGrouping { Id = groupId, Page = false, CheckYourAnswers = true, SummaryTitle = "Group Title" } }
+                }
+            }
+        };
+
+        var answerState = new FormQuestionAnswerState
+        {
+            Answers =
+            {
+                new QuestionAnswer { QuestionId = question1Id, Answer = new FormAnswer { TextValue = "Grouped Answer 1" } },
+                new QuestionAnswer { QuestionId = question2Id, Answer = new FormAnswer { BoolValue = true } }
+            }
+        };
+
+        _tempDataServiceMock.Setup(t => t.Peek<SectionQuestionsResponse>(sessionKey)).Returns(sectionResponse);
+        _choiceProviderServiceMock.Setup(c => c.GetStrategy(null)).Returns(new DefaultChoiceProviderStrategy());
+
+        var result = await _formsEngine.GetGroupedAnswerSummaries(organisationId, formId, sectionId, answerState);
+
+        var groupedAnswer = result.First() as GroupedAnswerSummary;
+        groupedAnswer.Should().NotBeNull();
+        groupedAnswer!.GroupChangeLink.Should().BeNull();
+        groupedAnswer.Answers[0].ChangeLink.Should().Be($"/organisation/{organisationId}/forms/{formId}/sections/{sectionId}/questions/{question1Id}?frm-chk-answer=true");
+        groupedAnswer.Answers[1].ChangeLink.Should().Be($"/organisation/{organisationId}/forms/{formId}/sections/{sectionId}/questions/{question2Id}?frm-chk-answer=true");
+    }
+
+    [Fact]
+    public async Task GetMultiQuestionPage_ShouldStartFromCorrectQuestion_WhenNavigatingToMidGroupQuestion()
+    {
+        var (organisationId, formId, sectionId, sessionKey) = CreateTestGuids();
+        var groupId = Guid.NewGuid();
+
+        var titleId = Guid.NewGuid();
+        var question1Id = Guid.NewGuid();
+        var question2Id = Guid.NewGuid();
+        var question3Id = Guid.NewGuid();
+
+        var sectionResponse = new SectionQuestionsResponse
+        {
+            Section = new FormSection { Id = sectionId, Title = "Test Section" },
+            Questions =
+            [
+                new FormQuestion
+                {
+                    Id = titleId,
+                    Type = FormQuestionType.NoInput,
+                    Title = "Group Title",
+                    NextQuestion = question1Id,
+                    Options = new FormQuestionOptions
+                    {
+                        Grouping = new FormQuestionGrouping { Id = groupId, Page = true }
+                    }
+                },
+                new FormQuestion
+                {
+                    Id = question1Id,
+                    Type = FormQuestionType.Text,
+                    Title = "Question 1",
+                    NextQuestion = question2Id,
+                    Options = new FormQuestionOptions
+                    {
+                        Grouping = new FormQuestionGrouping { Id = groupId, Page = true }
+                    }
+                },
+                new FormQuestion
+                {
+                    Id = question2Id,
+                    Type = FormQuestionType.Text,
+                    Title = "Question 2",
+                    NextQuestion = question3Id,
+                    Options = new FormQuestionOptions
+                    {
+                        Grouping = new FormQuestionGrouping { Id = groupId, Page = true }
+                    }
+                },
+                new FormQuestion
+                {
+                    Id = question3Id,
+                    Type = FormQuestionType.Text,
+                    Title = "Question 3",
+                    Options = new FormQuestionOptions
+                    {
+                        Grouping = new FormQuestionGrouping { Id = groupId, Page = true }
+                    }
+                }
+            ]
+        };
+
+        _tempDataServiceMock.Setup(t => t.Peek<SectionQuestionsResponse>(sessionKey))
+            .Returns(sectionResponse);
+
+        var result = await _formsEngine.GetMultiQuestionPage(organisationId, formId, sectionId, question2Id);
+
+        result.Should().NotBeNull();
+        result.Questions.Should().HaveCount(2, "Should only return questions from the starting point onwards");
+        result.Questions[0].Id.Should().Be(question2Id, "Should start from the specified question");
+        result.Questions[1].Id.Should().Be(question3Id, "Should continue the chain from starting question");
+    }
+
+    [Fact]
+    public async Task GetPreviousQuestion_ShouldReturnGroupStart_WhenCurrentQuestionIsInMiddleOfGroup()
+    {
+        var (organisationId, formId, sectionId, sessionKey) = CreateTestGuids();
+        var groupId = Guid.NewGuid();
+
+        var beforeGroupId = Guid.NewGuid();
+        var titleId = Guid.NewGuid();
+        var question1Id = Guid.NewGuid();
+        var question2Id = Guid.NewGuid();
+
+        var sectionResponse = new SectionQuestionsResponse
+        {
+            Section = new FormSection { Id = sectionId, Title = "Test Section" },
+            Questions =
+            [
+                new FormQuestion
+                {
+                    Id = beforeGroupId,
+                    Type = FormQuestionType.Text,
+                    Title = "Before Group",
+                    NextQuestion = titleId,
+                    Options = new FormQuestionOptions()
+                },
+                new FormQuestion
+                {
+                    Id = titleId,
+                    Type = FormQuestionType.NoInput,
+                    Title = "Group Title",
+                    NextQuestion = question1Id,
+                    Options = new FormQuestionOptions
+                    {
+                        Grouping = new FormQuestionGrouping { Id = groupId, Page = true }
+                    }
+                },
+                new FormQuestion
+                {
+                    Id = question1Id,
+                    Type = FormQuestionType.Text,
+                    Title = "Question 1",
+                    NextQuestion = question2Id,
+                    Options = new FormQuestionOptions
+                    {
+                        Grouping = new FormQuestionGrouping { Id = groupId, Page = true }
+                    }
+                },
+                new FormQuestion
+                {
+                    Id = question2Id,
+                    Type = FormQuestionType.Text,
+                    Title = "Question 2",
+                    Options = new FormQuestionOptions
+                    {
+                        Grouping = new FormQuestionGrouping { Id = groupId, Page = true }
+                    }
+                }
+            ]
+        };
+
+        _tempDataServiceMock.Setup(t => t.Peek<SectionQuestionsResponse>(sessionKey))
+            .Returns(sectionResponse);
+
+        var answerState = new FormQuestionAnswerState
+        {
+            Answers =
+            [
+                new QuestionAnswer { QuestionId = beforeGroupId, Answer = new FormAnswer { TextValue = "Before answer" } }
+            ]
+        };
+
+        // When navigating to a question in the middle of a group,
+        // previous question should return the question before the group start
+        var result = await _formsEngine.GetPreviousQuestion(organisationId, formId, sectionId, question2Id, answerState);
+
+        result.Should().NotBeNull();
+        result!.Id.Should().Be(beforeGroupId, "Previous question should be the question before the group starts");
+    }
+
+    [Fact]
+    public async Task CollectQuestionsForPage_ShouldHandlePartialChain_WhenStartingFromMiddleQuestion()
+    {
+        var (organisationId, formId, sectionId, sessionKey) = CreateTestGuids();
+        var groupId = Guid.NewGuid();
+
+        var question1Id = Guid.NewGuid();
+        var question2Id = Guid.NewGuid();
+        var question3Id = Guid.NewGuid();
+        var question4Id = Guid.NewGuid();
+
+        var sectionResponse = new SectionQuestionsResponse
+        {
+            Section = new FormSection { Id = sectionId, Title = "Test Section" },
+            Questions =
+            [
+                new FormQuestion
+                {
+                    Id = question1Id,
+                    Type = FormQuestionType.Text,
+                    Title = "Question 1",
+                    NextQuestion = question2Id,
+                    Options = new FormQuestionOptions
+                    {
+                        Grouping = new FormQuestionGrouping { Id = groupId, Page = true }
+                    }
+                },
+                new FormQuestion
+                {
+                    Id = question2Id,
+                    Type = FormQuestionType.Text,
+                    Title = "Question 2",
+                    NextQuestion = question3Id,
+                    Options = new FormQuestionOptions
+                    {
+                        Grouping = new FormQuestionGrouping { Id = groupId, Page = true }
+                    }
+                },
+                new FormQuestion
+                {
+                    Id = question3Id,
+                    Type = FormQuestionType.Text,
+                    Title = "Question 3",
+                    NextQuestion = question4Id,
+                    Options = new FormQuestionOptions
+                    {
+                        Grouping = new FormQuestionGrouping { Id = groupId, Page = true }
+                    }
+                },
+                new FormQuestion
+                {
+                    Id = question4Id,
+                    Type = FormQuestionType.Text,
+                    Title = "Question 4",
+                    Options = new FormQuestionOptions
+                    {
+                        Grouping = new FormQuestionGrouping { Id = groupId, Page = true }
+                    }
+                }
+            ]
+        };
+
+        _tempDataServiceMock.Setup(t => t.Peek<SectionQuestionsResponse>(sessionKey))
+            .Returns(sectionResponse);
+
+        // Start from question 3 (middle of the chain)
+        var result = await _formsEngine.GetMultiQuestionPage(organisationId, formId, sectionId, question3Id);
+
+        result.Should().NotBeNull();
+        result.Questions.Should().HaveCount(2, "Should return only questions from starting point onwards");
+        result.Questions[0].Id.Should().Be(question3Id);
+        result.Questions[1].Id.Should().Be(question4Id);
+    }
+
 }

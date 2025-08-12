@@ -1,12 +1,9 @@
 using CO.CDP.Forms.WebApiClient;
-using CO.CDP.OrganisationApp.Constants;
-using CO.CDP.OrganisationApp.Extensions;
 using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.Pages.Forms;
 using CO.CDP.OrganisationApp.Pages.Forms.ChoiceProviderStrategies;
 using DataShareWebApiClient = CO.CDP.DataSharing.WebApiClient;
 using DateValidationType = CO.CDP.OrganisationApp.Models.DateValidationType;
-using FormAnswer = CO.CDP.OrganisationApp.Models.FormAnswer;
 using FormQuestion = CO.CDP.OrganisationApp.Models.FormQuestion;
 using FormQuestionGroup = CO.CDP.OrganisationApp.Models.FormQuestionGroup;
 using FormQuestionGroupChoice = CO.CDP.OrganisationApp.Models.FormQuestionGroupChoice;
@@ -15,6 +12,10 @@ using FormQuestionOptions = CO.CDP.OrganisationApp.Models.FormQuestionOptions;
 using FormQuestionType = CO.CDP.OrganisationApp.Models.FormQuestionType;
 using FormSection = CO.CDP.OrganisationApp.Models.FormSection;
 using FormSectionType = CO.CDP.OrganisationApp.Models.FormSectionType;
+using HeadingSize = CO.CDP.OrganisationApp.Models.HeadingSize;
+using InputOptions = CO.CDP.OrganisationApp.Models.InputOptions;
+using InputSuffixOptions = CO.CDP.OrganisationApp.Models.InputSuffixOptions;
+using InputSuffixType = CO.CDP.OrganisationApp.Models.InputSuffixType;
 using InputWidthType = CO.CDP.OrganisationApp.Models.InputWidthType;
 using LayoutOptions = CO.CDP.OrganisationApp.Models.LayoutOptions;
 using SectionQuestionsResponse = CO.CDP.OrganisationApp.Models.SectionQuestionsResponse;
@@ -27,7 +28,8 @@ public class FormsEngine(
     IFormsClient formsApiClient,
     ITempDataService tempDataService,
     IChoiceProviderService choiceProviderService,
-    DataShareWebApiClient.IDataSharingClient dataSharingClient) : IFormsEngine
+    DataShareWebApiClient.IDataSharingClient dataSharingClient,
+    IAnswerDisplayService answerDisplayService) : IFormsEngine
 {
     public const string OrganisationSupplierInfoFormId = "0618b13e-eaf2-46e3-a7d2-6f2c44be7022";
     public const string OrganisationConsortiumFormId = "24482a2a-88a8-4432-b03c-4c966c9fce23";
@@ -99,14 +101,38 @@ public class FormsEngine(
                         Layout = q.Options.Layout != null
                             ? new LayoutOptions
                             {
-                                CustomYesText = q.Options.Layout.CustomYesText,
-                                CustomNoText = q.Options.Layout.CustomNoText,
-                                InputWidth = q.Options.Layout.InputWidth.HasValue ? (InputWidthType)q.Options.Layout.InputWidth.Value : null,
-                                InputSuffix = q.Options.Layout.InputSuffix,
-                                CustomCssClasses = q.Options.Layout.CustomCssClasses,
-                                PreHeadingContent = q.Options.Layout.PreHeadingContent,
-                                PostSubmitContent = q.Options.Layout.PostSubmitContent,
-                                PrimaryButtonText = q.Options.Layout.PrimaryButtonText
+                                Input = q.Options.Layout.Input != null
+                                    ? new InputOptions
+                                    {
+                                        CustomYesText = q.Options.Layout.Input.CustomYesText,
+                                        CustomNoText = q.Options.Layout.Input.CustomNoText,
+                                        Width = q.Options.Layout.Input.Width.HasValue ? (InputWidthType)q.Options.Layout.Input.Width.Value : null,
+                                        Suffix = q.Options.Layout.Input.Suffix != null
+                                            ? new InputSuffixOptions
+                                            {
+                                                Type = (InputSuffixType)q.Options.Layout.Input.Suffix.Type,
+                                                Text = q.Options.Layout.Input.Suffix.Text
+                                            }
+                                            : null,
+                                        CustomCssClasses = q.Options.Layout.Input.CustomCssClasses
+                                    }
+                                    : null,
+                                Heading = q.Options.Layout.Heading != null
+                                    ? new Models.HeadingOptions
+                                    {
+                                        Size = q.Options.Layout.Heading.Size.HasValue ? (HeadingSize)q.Options.Layout.Heading.Size.Value : null,
+                                        BeforeHeadingContent = q.Options.Layout.Heading.BeforeHeadingContent
+                                    }
+                                    : null,
+                                Button = q.Options.Layout.Button != null
+                                    ? new Models.ButtonOptions
+                                    {
+                                        Text = q.Options.Layout.Button.Text,
+                                        Style = q.Options.Layout.Button.Style.HasValue ? (Models.PrimaryButtonStyle)q.Options.Layout.Button.Style.Value : null,
+                                        BeforeButtonContent = q.Options.Layout.Button.BeforeButtonContent,
+                                        AfterButtonContent = q.Options.Layout.Button.AfterButtonContent
+                                    }
+                                    : null
                             }
                             : null,
                         Validation = q.Options.Validation != null
@@ -173,10 +199,10 @@ public class FormsEngine(
             return null;
         }
 
-        var groupId = currentQuestion.Options.Grouping.Id;
+        var groupId = currentQuestion.Options.Grouping?.Id;
 
         var questionsInGroup = allQuestions
-            .Where(q => q.Options.Grouping?.Id == groupId && q.Options.Grouping.Page)
+            .Where(q => q.Options.Grouping?.Id == groupId && q.Options.Grouping?.Page == true)
             .OrderBy(q => q.NextQuestion.HasValue ? 0 : 1)
             .ToList();
 
@@ -207,7 +233,7 @@ public class FormsEngine(
         }
 
         var currentGroupQuestions = allQuestions
-            .Where(q => q.Options.Grouping?.Id == startQuestion.Options.Grouping.Id && q.Options.Grouping.Page)
+            .Where(q => q.Options.Grouping?.Id == startQuestion.Options.Grouping?.Id && q.Options.Grouping?.Page == true)
             .ToList();
 
         var lastQuestionInGroup = currentGroupQuestions.LastOrDefault();
@@ -306,7 +332,7 @@ public class FormsEngine(
         foreach (var question in pathTaken.Where(q => q.Type != FormQuestionType.CheckYourAnswers))
         {
             var grouping = question.Options.Grouping;
-            if (grouping?.Page != null)
+            if (grouping?.Page == true)
             {
                 var multiQuestionPage = BuildMultiQuestionPage(question, allQuestions);
 
@@ -365,15 +391,15 @@ public class FormsEngine(
             return nextQuestionId;
         }
         var questionsInGroup = allQuestions
-            .Where(q => q.Options.Grouping?.Id == currentQuestion.Options.Grouping.Id &&
-                        q.Options.Grouping.Page)
+            .Where(q => q.Options.Grouping?.Id == currentQuestion.Options.Grouping?.Id &&
+                        q.Options.Grouping?.Page == true)
             .ToList();
 
         var currentQuestionInGroup = questionsInGroup.FirstOrDefault(q => q.Id == currentQuestion.Id);
         while (currentQuestionInGroup != null)
         {
             var nextQuestion = allQuestions.FirstOrDefault(q => q.Id == currentQuestionInGroup.NextQuestion);
-            if (nextQuestion == null || nextQuestion.Options.Grouping?.Id != currentQuestion.Options.Grouping.Id)
+            if (nextQuestion == null || nextQuestion.Options.Grouping?.Id != currentQuestion.Options.Grouping?.Id)
             {
                 var result = currentQuestionInGroup.NextQuestion;
                 return result;
@@ -390,7 +416,7 @@ public class FormsEngine(
         foreach (var question in allQuestions)
         {
             var grouping = question.Options.Grouping;
-            if (grouping?.Page == null) continue;
+            if (grouping?.Page != true) continue;
             var multiQuestionPage = BuildMultiQuestionPage(question, allQuestions);
             if (multiQuestionPage.Questions.Any(q => q.Id == currentQuestion.Id))
             {
@@ -563,12 +589,22 @@ public class FormsEngine(
     {
         var grouping = startingQuestion.Options.Grouping;
 
-        return grouping?.Page == null
-            ? new MultiQuestionPageModel { Questions = [startingQuestion] }
-            : new MultiQuestionPageModel
+        if (grouping?.Page != true)
+        {
+            return new MultiQuestionPageModel
             {
-                Questions = CollectQuestionsForPage(startingQuestion, allQuestions)
+                Questions = [startingQuestion],
+                Button = startingQuestion.Options.Layout?.Button
             };
+        }
+
+        var questions = CollectQuestionsForPage(startingQuestion, allQuestions);
+
+        return new MultiQuestionPageModel
+        {
+            Questions = questions,
+            Button = questions.FirstOrDefault()?.Options.Layout?.Button
+        };
     }
 
     private static List<FormQuestion> CollectQuestionsForPage(FormQuestion startingQuestion,
@@ -577,10 +613,48 @@ public class FormsEngine(
         if (startingQuestion.Options.Grouping is null)
             return [startingQuestion];
 
-        return allQuestions
-            .Where(q => q.Options.Grouping?.Page != null &&
-                        q.Options.Grouping.Id == startingQuestion.Options.Grouping.Id)
-            .ToList();
+        var questionsInGroup = allQuestions
+            .Where(q => q.Options.Grouping?.Page == true &&
+                        q.Options.Grouping?.Id == startingQuestion.Options.Grouping?.Id)
+            .ToDictionary(q => q.Id);
+
+        return BuildQuestionChain(startingQuestion, questionsInGroup);
+    }
+
+    private static List<FormQuestion> BuildQuestionChain(FormQuestion startingQuestion,
+        IReadOnlyDictionary<Guid, FormQuestion> questionsInGroup)
+    {
+        var orderedQuestions = new List<FormQuestion>();
+        var currentQuestion = startingQuestion;
+
+        while (currentQuestion != null)
+        {
+            orderedQuestions.Add(currentQuestion);
+
+            currentQuestion = currentQuestion.NextQuestion.HasValue &&
+                             questionsInGroup.TryGetValue(currentQuestion.NextQuestion.Value, out var nextQuestion)
+                ? nextQuestion
+                : null;
+        }
+
+        return orderedQuestions;
+    }
+
+    private List<FormQuestion> BuildJourney(List<FormQuestion> allQuestions, FormQuestionAnswerState answerState)
+    {
+        var journey = new List<FormQuestion>();
+        var question = GetFirstQuestion(allQuestions);
+
+        while (question != null)
+        {
+            journey.Add(question);
+            var nextQuestionId = DetermineNextQuestionId(question, answerState);
+            question = nextQuestionId.HasValue
+                ? allQuestions.FirstOrDefault(q => q.Id == nextQuestionId.Value)
+                : null;
+        }
+
+        return journey;
     }
 
     public async Task<List<IAnswerDisplayItem>> GetGroupedAnswerSummaries(Guid organisationId, Guid formId,
@@ -588,14 +662,9 @@ public class FormsEngine(
     {
         var form = await GetFormSectionAsync(organisationId, formId, sectionId);
 
-        var checkYourAnswersQuestion = form.Questions
-            .FirstOrDefault(q => q.Type == FormQuestionType.CheckYourAnswers);
+        var journey = BuildJourney(form.Questions, answerState);
 
-        var questionsInOrder = checkYourAnswersQuestion != null
-            ? BuildPathToQuestion(form.Questions, checkYourAnswersQuestion.Id, answerState)
-            : form.Questions.Where(q => q.Type != FormQuestionType.NoInput && q.Type != FormQuestionType.CheckYourAnswers).ToList();
-
-        var relevantQuestions = questionsInOrder
+        var relevantQuestions = journey
             .Where(q => q.Type != FormQuestionType.NoInput && q.Type != FormQuestionType.CheckYourAnswers)
             .ToList();
 
@@ -608,20 +677,26 @@ public class FormsEngine(
 
             var grouping = question.Options.Grouping;
 
-            if (grouping?.CheckYourAnswers != null)
+            if (grouping?.CheckYourAnswers == true)
             {
-                var group = await CreateMultiQuestionGroup(question, relevantQuestions, answerState, organisationId,
-                    formId, sectionId, grouping);
+                var group = await answerDisplayService.CreateMultiQuestionGroupAsync(question, journey, answerState, organisationId,
+                    formId, sectionId, grouping, GetFirstQuestion);
 
                 if (group.Answers.Count == 0) continue;
                 displayItems.Add(group);
-                var multiQuestionPage = BuildMultiQuestionPage(question, relevantQuestions);
-                multiQuestionPage.Questions.ForEach(q => processedQuestionIds.Add(q.Id));
+
+                var groupQuestionIds = journey
+                    .Where(q => q.Options.Grouping?.Id == grouping.Id)
+                    .Select(q => q.Id);
+                foreach (var id in groupQuestionIds)
+                {
+                    processedQuestionIds.Add(id);
+                }
             }
             else
             {
                 var individualAnswer =
-                    await CreateIndividualAnswerSummary(question, answerState, organisationId, formId, sectionId);
+                    await answerDisplayService.CreateIndividualAnswerSummaryAsync(question, answerState, organisationId, formId, sectionId);
                 if (individualAnswer == null) continue;
                 displayItems.Add(individualAnswer);
                 processedQuestionIds.Add(question.Id);
@@ -631,112 +706,10 @@ public class FormsEngine(
         return displayItems;
     }
 
-
-    private async Task<GroupedAnswerSummary> CreateMultiQuestionGroup(
-        FormQuestion startingQuestion, List<FormQuestion> allQuestions, FormQuestionAnswerState answerState,
-        Guid organisationId, Guid formId, Guid sectionId, FormQuestionGrouping grouping)
+    public async Task<FormQuestion?> GetFirstQuestion(Guid organisationId, Guid formId, Guid sectionId)
     {
-        var multiQuestionPage = BuildMultiQuestionPage(startingQuestion, allQuestions);
-
-        var answerTasks = multiQuestionPage.Questions
-            .Select(async q => await CreateIndividualAnswerSummary(q, answerState, organisationId, formId, sectionId));
-
-        var answers = (await Task.WhenAll(answerTasks))
-            .Where(answer => answer != null)
-            .Cast<AnswerSummary>()
-            .ToList();
-
-        return new GroupedAnswerSummary
-        {
-            GroupTitle = !string.IsNullOrEmpty(grouping.SummaryTitle)
-                ? grouping.SummaryTitle
-                : startingQuestion.SummaryTitle,
-            GroupChangeLink =
-                $"/organisation/{organisationId}/forms/{formId}/sections/{sectionId}/questions/{startingQuestion.Id}",
-            Answers = answers
-        };
+        var section = await GetFormSectionAsync(organisationId, formId, sectionId);
+        return GetFirstQuestion(section.Questions);
     }
 
-    private async Task<AnswerSummary?> CreateIndividualAnswerSummary(
-        FormQuestion question, FormQuestionAnswerState answerState, Guid organisationId, Guid formId, Guid sectionId)
-    {
-        var questionAnswer = answerState.Answers
-            .FirstOrDefault(a => a.QuestionId == question.Id && a.Answer != null);
-
-        if (questionAnswer == null) return null;
-
-        var answerString = await GetAnswerStringForSummary(questionAnswer, question);
-        return string.IsNullOrWhiteSpace(answerString)
-            ? null
-            : CreateAnswerSummary(question, questionAnswer, answerString, organisationId, formId, sectionId);
-    }
-
-    private static AnswerSummary CreateAnswerSummary(
-        FormQuestion question, QuestionAnswer questionAnswer, string answerString,
-        Guid organisationId, Guid formId, Guid sectionId)
-    {
-        var changeLink =
-            $"/organisation/{organisationId}/forms/{formId}/sections/{sectionId}/questions/{question.Id}?frm-chk-answer=true";
-
-        var isNonUkAddress = question.Type == FormQuestionType.Address
-                             && questionAnswer.Answer?.AddressValue?.Country != Country.UKCountryCode;
-
-        if (isNonUkAddress)
-        {
-            changeLink += "&UkOrNonUk=non-uk";
-        }
-
-        return new AnswerSummary
-        {
-            Title = question.SummaryTitle ?? question.Title,
-            Answer = answerString,
-            ChangeLink = changeLink
-        };
-    }
-
-    private async Task<string> GetAnswerStringForSummary(QuestionAnswer questionAnswer, FormQuestion question)
-    {
-        var answer = questionAnswer.Answer;
-        if (answer == null) return "";
-
-        var boolAnswerString = answer.BoolValue?.ToString() switch
-        {
-            "True" => "Yes",
-            "False" => "No",
-            _ => ""
-        };
-
-        var answerString = question.Type switch
-        {
-            FormQuestionType.Text or FormQuestionType.FileUpload or FormQuestionType.MultiLine or FormQuestionType.Url
-                => answer.TextValue ?? "",
-            FormQuestionType.SingleChoice => await GetSingleChoiceAnswerString(answer, question),
-            FormQuestionType.Date => answer.DateValue?.ToFormattedString() ?? "",
-            FormQuestionType.CheckBox => answer.BoolValue == true
-                ? question.Options.Choices?.Values.FirstOrDefault() ?? ""
-                : "",
-            FormQuestionType.Address => answer.AddressValue?.ToHtmlString() ?? "",
-            FormQuestionType.GroupedSingleChoice => GetGroupedSingleChoiceAnswerString(answer, question),
-            _ => ""
-        };
-
-        return new[] { boolAnswerString, answerString }
-            .Where(s => !string.IsNullOrWhiteSpace(s))
-            .Aggregate("", (acc, s) => string.IsNullOrEmpty(acc) ? s : $"{acc}, {s}");
-    }
-
-    private async Task<string> GetSingleChoiceAnswerString(FormAnswer answer, FormQuestion question)
-    {
-        var choiceProviderStrategy = choiceProviderService.GetStrategy(question.Options.ChoiceProviderStrategy);
-        return await choiceProviderStrategy.RenderOption(answer) ?? "";
-    }
-
-    private static string GetGroupedSingleChoiceAnswerString(FormAnswer? answer, FormQuestion question)
-    {
-        return question.Options.Groups
-            .SelectMany(g => g.Choices)
-            .Where(c => c.Value == answer?.OptionValue)
-            .Select(c => c.Title)
-            .FirstOrDefault() ?? answer?.OptionValue ?? "";
-    }
 }

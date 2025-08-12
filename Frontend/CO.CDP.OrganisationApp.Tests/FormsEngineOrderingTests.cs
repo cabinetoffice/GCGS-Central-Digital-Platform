@@ -1,7 +1,9 @@
+using CO.CDP.Localization;
 using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.Pages.Forms;
 using CO.CDP.OrganisationApp.Pages.Forms.ChoiceProviderStrategies;
 using FluentAssertions;
+using Microsoft.Extensions.Localization;
 using Moq;
 using DataShareWebApiClient = CO.CDP.DataSharing.WebApiClient;
 using WebApiClient = CO.CDP.Forms.WebApiClient;
@@ -19,8 +21,15 @@ public class FormsEngineOrderingTests
         var dataSharingClientMock = new Mock<DataShareWebApiClient.IDataSharingClient>();
         _tempDataServiceMock = new Mock<ITempDataService>();
         var choiceProviderServiceMock = new Mock<IChoiceProviderService>();
+
+        var localizerMock = new Mock<IStringLocalizer<StaticTextResource>>();
+        localizerMock.Setup(l => l["Global_Yes"]).Returns(new LocalizedString("Global_Yes", "Yes"));
+        localizerMock.Setup(l => l["Global_No"]).Returns(new LocalizedString("Global_No", "No"));
+        
+        var realAnswerDisplayService = new AnswerDisplayService(localizerMock.Object, choiceProviderServiceMock.Object);
+
         _formsEngine = new FormsEngine(formsApiClientMock.Object, _tempDataServiceMock.Object,
-            choiceProviderServiceMock.Object, dataSharingClientMock.Object);
+            choiceProviderServiceMock.Object, dataSharingClientMock.Object, realAnswerDisplayService);
     }
 
     [Fact]
@@ -310,5 +319,205 @@ public class FormsEngineOrderingTests
         answerSummaries[2].Title.Should().Be("Third Question",
             "because the third question logically follows the second question");
         answerSummaries[2].Answer.Should().Be("No");
+    }
+
+    [Fact]
+    public async Task GetMultiQuestionPage_ShouldOrderQuestionsByJourney_WhenQuestionsHaveNextQuestionChain()
+    {
+        var organisationId = Guid.NewGuid();
+        var formId = Guid.NewGuid();
+        var sectionId = Guid.NewGuid();
+        var groupId = Guid.NewGuid();
+
+        // Create questions with intentionally mixed order but proper next_question chain
+        var titleId = Guid.NewGuid();
+        var dateId = Guid.NewGuid();
+        var daysId = Guid.NewGuid();
+        var labelId = Guid.NewGuid();
+        var within30Id = Guid.NewGuid();
+        var days31To60Id = Guid.NewGuid();
+        var days61PlusId = Guid.NewGuid();
+        var overdueId = Guid.NewGuid();
+
+        var sectionResponse = new SectionQuestionsResponse
+        {
+            Section = new FormSection { Id = sectionId, Title = "Test Section" },
+            Questions = new List<FormQuestion>
+            {
+                // Questions in mixed order (not journey order)
+                new FormQuestion
+                {
+                    Id = within30Id,
+                    Type = FormQuestionType.Text,
+                    Title = "Within 30 days (%)",
+                    NextQuestion = days31To60Id,
+                    Options = new FormQuestionOptions
+                    {
+                        Grouping = new FormQuestionGrouping { Id = groupId, Page = true }
+                    }
+                },
+                new FormQuestion
+                {
+                    Id = titleId,
+                    Type = FormQuestionType.NoInput,
+                    Title = "Payment Title",
+                    NextQuestion = dateId,
+                    Options = new FormQuestionOptions
+                    {
+                        Grouping = new FormQuestionGrouping { Id = groupId, Page = true }
+                    }
+                },
+                new FormQuestion
+                {
+                    Id = overdueId,
+                    Type = FormQuestionType.Text,
+                    Title = "Overdue (%)",
+                    Options = new FormQuestionOptions
+                    {
+                        Grouping = new FormQuestionGrouping { Id = groupId, Page = true }
+                    }
+                },
+                new FormQuestion
+                {
+                    Id = daysId,
+                    Type = FormQuestionType.Text,
+                    Title = "Average days to pay",
+                    NextQuestion = labelId,
+                    Options = new FormQuestionOptions
+                    {
+                        Grouping = new FormQuestionGrouping { Id = groupId, Page = true }
+                    }
+                },
+                new FormQuestion
+                {
+                    Id = dateId,
+                    Type = FormQuestionType.Date,
+                    Title = "Reporting start date",
+                    NextQuestion = daysId,
+                    Options = new FormQuestionOptions
+                    {
+                        Grouping = new FormQuestionGrouping { Id = groupId, Page = true }
+                    }
+                },
+                new FormQuestion
+                {
+                    Id = days61PlusId,
+                    Type = FormQuestionType.Text,
+                    Title = "61+ days (%)",
+                    NextQuestion = overdueId,
+                    Options = new FormQuestionOptions
+                    {
+                        Grouping = new FormQuestionGrouping { Id = groupId, Page = true }
+                    }
+                },
+                new FormQuestion
+                {
+                    Id = labelId,
+                    Type = FormQuestionType.NoInput,
+                    Title = "Invoices paid:",
+                    NextQuestion = within30Id,
+                    Options = new FormQuestionOptions
+                    {
+                        Grouping = new FormQuestionGrouping { Id = groupId, Page = true }
+                    }
+                },
+                new FormQuestion
+                {
+                    Id = days31To60Id,
+                    Type = FormQuestionType.Text,
+                    Title = "31-60 days (%)",
+                    NextQuestion = days61PlusId,
+                    Options = new FormQuestionOptions
+                    {
+                        Grouping = new FormQuestionGrouping { Id = groupId, Page = true }
+                    }
+                }
+            }
+        };
+
+        var sessionKey = $"Form_{organisationId}_{formId}_{sectionId}_Questions";
+        _tempDataServiceMock.Setup(t => t.Peek<SectionQuestionsResponse>(sessionKey))
+            .Returns(sectionResponse);
+
+        var result = await _formsEngine.GetMultiQuestionPage(organisationId, formId, sectionId, titleId);
+
+        result.Should().NotBeNull();
+        result.Questions.Should().HaveCount(8);
+
+        // Verify questions are ordered by journey chain, not database order
+        result.Questions[0].Id.Should().Be(titleId, "Title should be first");
+        result.Questions[1].Id.Should().Be(dateId, "Date should be second");
+        result.Questions[2].Id.Should().Be(daysId, "Days should be third");
+        result.Questions[3].Id.Should().Be(labelId, "Label should be fourth");
+        result.Questions[4].Id.Should().Be(within30Id, "Within 30 should be fifth");
+        result.Questions[5].Id.Should().Be(days31To60Id, "31-60 days should be sixth");
+        result.Questions[6].Id.Should().Be(days61PlusId, "61+ days should be seventh");
+        result.Questions[7].Id.Should().Be(overdueId, "Overdue should be last");
+    }
+
+    [Fact]
+    public async Task GetMultiQuestionPage_ShouldHandleBrokenChain_WhenNextQuestionIdMissing()
+    {
+        var organisationId = Guid.NewGuid();
+        var formId = Guid.NewGuid();
+        var sectionId = Guid.NewGuid();
+        var groupId = Guid.NewGuid();
+
+        var question1Id = Guid.NewGuid();
+        var question2Id = Guid.NewGuid();
+        var question3Id = Guid.NewGuid();
+        var missingQuestionId = Guid.NewGuid(); // This ID won't exist in the questions list
+
+        var sectionResponse = new SectionQuestionsResponse
+        {
+            Section = new FormSection { Id = sectionId, Title = "Test Section" },
+            Questions =
+            [
+                new FormQuestion
+                {
+                    Id = question1Id,
+                    Type = FormQuestionType.Text,
+                    Title = "Question 1",
+                    NextQuestion = missingQuestionId, // Points to non-existent question
+                    Options = new FormQuestionOptions
+                    {
+                        Grouping = new FormQuestionGrouping { Id = groupId, Page = true }
+                    }
+                },
+
+                new FormQuestion
+                {
+                    Id = question2Id,
+                    Type = FormQuestionType.Text,
+                    Title = "Question 2",
+                    NextQuestion = question3Id,
+                    Options = new FormQuestionOptions
+                    {
+                        Grouping = new FormQuestionGrouping { Id = groupId, Page = true }
+                    }
+                },
+
+                new FormQuestion
+                {
+                    Id = question3Id,
+                    Type = FormQuestionType.Text,
+                    Title = "Question 3",
+                    Options = new FormQuestionOptions
+                    {
+                        Grouping = new FormQuestionGrouping { Id = groupId, Page = true }
+                    }
+                }
+            ]
+        };
+
+        var sessionKey = $"Form_{organisationId}_{formId}_{sectionId}_Questions";
+        _tempDataServiceMock.Setup(t => t.Peek<SectionQuestionsResponse>(sessionKey))
+            .Returns(sectionResponse);
+
+        var result = await _formsEngine.GetMultiQuestionPage(organisationId, formId, sectionId, question1Id);
+
+        result.Should().NotBeNull();
+        result.Questions.Should().HaveCount(1, "Should stop at first question when chain is broken");
+        result.Questions[0].Id.Should().Be(question1Id);
     }
 }

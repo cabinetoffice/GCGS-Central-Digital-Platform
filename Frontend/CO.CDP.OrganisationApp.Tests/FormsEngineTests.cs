@@ -16,6 +16,7 @@ public class FormsEngineTests
     private readonly Mock<IChoiceProviderService> _choiceProviderServiceMock;
     private readonly Mock<IUserInfoService> _userInfoServiceMock;
     private readonly Mock<IOrganisationClient> _organisationClientMock;
+    private readonly Mock<IAnswerDisplayService> _answerDisplayServiceMock;
     private readonly FormsEngine _formsEngine;
     private const double Tolerance = 1e-6;
     private static readonly Guid GroupId = Guid.NewGuid();
@@ -28,8 +29,9 @@ public class FormsEngineTests
         _choiceProviderServiceMock = new Mock<IChoiceProviderService>();
         _userInfoServiceMock = new Mock<IUserInfoService>();
         _organisationClientMock = new Mock<IOrganisationClient>();
+        _answerDisplayServiceMock = new Mock<IAnswerDisplayService>();
         _formsEngine = new FormsEngine(_formsApiClientMock.Object, _tempDataServiceMock.Object,
-            _choiceProviderServiceMock.Object, _dataSharingClientMock.Object);
+            _choiceProviderServiceMock.Object, _dataSharingClientMock.Object, _answerDisplayServiceMock.Object);
     }
 
     private static (Guid organisationId, Guid formId, Guid sectionId, string sessionKey) CreateTestGuids()
@@ -119,14 +121,23 @@ public class FormsEngineTests
                             summaryTitle: "SummaryTitle"
                         ),
                         layout: new WebApiClient.LayoutOptions(
-                            customYesText: null,
-                            customNoText: null,
-                            inputWidth: null,
-                            inputSuffix: null,
-                            customCssClasses: null,
-                            preHeadingContent: null,
-                            postSubmitContent: null,
-                            primaryButtonText: null
+                            input: new WebApiClient.InputOptions(
+                                customYesText: null,
+                                customNoText: null,
+                                width: null,
+                                suffix: null,
+                                customCssClasses: null
+                            ),
+                            heading: new WebApiClient.HeadingOptions(
+                                beforeHeadingContent: null,
+                                size: null
+                            ),
+                            button: new WebApiClient.ButtonOptions(
+                                text: null,
+                                style: null,
+                                beforeButtonContent: null,
+                                afterButtonContent: null
+                            )
                         ),
                         validation: new WebApiClient.ValidationOptions(
                             dateValidationType: null,
@@ -167,14 +178,26 @@ public class FormsEngineTests
                         ChoiceProviderStrategy = choiceProviderStrategy,
                         Layout = new LayoutOptions
                         {
-                            CustomYesText = null,
-                            CustomNoText = null,
-                            InputWidth = null,
-                            InputSuffix = null,
-                            CustomCssClasses = null,
-                            PreHeadingContent = null,
-                            PostSubmitContent = null,
-                            PrimaryButtonText = null
+                            Input = new InputOptions
+                            {
+                                CustomYesText = null,
+                                CustomNoText = null,
+                                Width = null,
+                                Suffix = null,
+                                CustomCssClasses = null
+                            },
+                            Heading = new HeadingOptions
+                            {
+                                Size = null,
+                                BeforeHeadingContent = null
+                            },
+                            Button = new ButtonOptions
+                            {
+                                Text = null,
+                                Style = null,
+                                BeforeButtonContent = null,
+                                AfterButtonContent = null
+                            }
                         },
                         Validation = new ValidationOptions
                         {
@@ -1225,7 +1248,7 @@ public class FormsEngineTests
         "should be able to navigate back from a question that follows a FileUpload with no file")]
     public async Task GetPreviousQuestion_ShouldReturnPreviousQuestion_WhenOnBranchWithoutNextQuestionAlternative(
         FormQuestionType questionType,
-        bool boolValue,
+        bool positiveAnswer,
         string answerDescription,
         string becauseReason)
     {
@@ -1258,7 +1281,7 @@ public class FormsEngineTests
         {
             Answers = new List<QuestionAnswer>
             {
-                CreateQuestionAnswer(branchQuestionId, questionType, boolValue)
+                CreateQuestionAnswer(branchQuestionId, questionType, positiveAnswer)
             }
         };
 

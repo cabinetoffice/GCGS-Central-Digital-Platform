@@ -60,20 +60,23 @@ public enum FormQuestionType
 
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum DateValidationType
-{
-    None,
-    PastOnly,
-    FutureOnly,
-    MinDate,
-    MaxDate,
-    DateRange
-}
+    {
+        PastOrTodayOnly,
+        FutureOrTodayOnly,
+        MinDate,
+        MaxDate,
+        DateRange,
+        PastOnly,
+        FutureOnly
+    }
 
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum TextValidationType
 {
-    None,
-    Year
+    Year,
+    Number,
+    Percentage,
+    Decimal
 }
 
 public record FormQuestionOptions
@@ -89,14 +92,61 @@ public record FormQuestionOptions
 
 public record LayoutOptions
 {
+    public InputOptions? Input { get; set; }
+    public HeadingOptions? Heading { get; set; }
+    public ButtonOptions? Button { get; set; }
+}
+
+public record InputOptions
+{
     public string? CustomYesText { get; set; }
     public string? CustomNoText { get; set; }
-    public InputWidthType? InputWidth { get; set; }
-    public string? InputSuffix { get; set; }
+    public InputWidthType? Width { get; set; }
+    public InputSuffixOptions? Suffix { get; set; }
     public string? CustomCssClasses { get; set; }
-    public string? PreHeadingContent { get; set; }
-    public string? PostSubmitContent { get; set; }
-    public string? PrimaryButtonText { get; set; }
+}
+
+public record HeadingOptions
+{
+    public HeadingSize? Size { get; set; }
+    public string? BeforeHeadingContent { get; set; }
+}
+
+public record ButtonOptions
+{
+    public string? Text { get; set; }
+    public PrimaryButtonStyle? Style { get; set; }
+    public string? BeforeButtonContent { get; set; }
+    public string? AfterButtonContent { get; set; }
+}
+
+public record InputSuffixOptions
+{
+    public InputSuffixType Type { get; set; }
+    public string? Text { get; set; }
+}
+
+[JsonConverter(typeof(JsonStringEnumConverter))]
+public enum InputSuffixType
+{
+    GovUkDefault,
+    CustomText
+}
+
+[JsonConverter(typeof(JsonStringEnumConverter))]
+public enum HeadingSize
+{
+    Small,
+    Medium,
+    Large,
+    ExtraLarge
+}
+
+[JsonConverter(typeof(JsonStringEnumConverter))]
+public enum PrimaryButtonStyle
+{
+    Default,
+    Start
 }
 
 public record ValidationOptions

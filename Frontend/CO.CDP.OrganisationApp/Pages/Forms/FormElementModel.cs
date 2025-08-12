@@ -9,7 +9,7 @@ public interface IFormElementModel
     string? Heading { get; set; }
     FormQuestionOptions? Options { get; set; }
 
-    void Initialize(FormQuestion question);
+    void Initialize(FormQuestion question, bool isFirst);
 
     FormAnswer? GetAnswer();
 
@@ -20,13 +20,15 @@ public interface IMultiQuestionFormElementModel
 {
     List<FormQuestion> Questions { get; }
     IEnumerable<IFormElementModel> QuestionModels { get; }
-    string? PageTitleResourceKey { get; }
+    ButtonOptions? Button { get; }
 
     void Initialize(MultiQuestionPageModel multiQuestionPage, Dictionary<Guid, FormAnswer> existingAnswers);
 
     IFormElementModel? GetQuestionModel(Guid questionId);
 
     Dictionary<Guid, FormAnswer> GetAllAnswers();
+
+    IEnumerable<RenderableQuestionItem> GetRenderableQuestions();
 }
 
 public abstract class FormElementModel : IFormElementModel
@@ -44,6 +46,8 @@ public abstract class FormElementModel : IFormElementModel
     public bool IsRequired { get; set; }
 
     public FormQuestionOptions? Options { get; set; }
+
+    public bool IsFirstQuestion { get; set; }
 
     public string GetFieldName(string propertyName)
     {
@@ -67,7 +71,7 @@ public abstract class FormElementModel : IFormElementModel
         return modelState.TryGetValue(fieldName, out var modelStateEntry) && modelStateEntry.Errors.Count > 0;
     }
 
-    public virtual void Initialize(FormQuestion question)
+    public virtual void Initialize(FormQuestion question, bool isFirst)
     {
         Heading = question.Title;
         Description = question.Description;
@@ -75,6 +79,7 @@ public abstract class FormElementModel : IFormElementModel
         CurrentFormQuestionType = question.Type;
         IsRequired = question.IsRequired;
         Options = question.Options;
+        IsFirstQuestion = isFirst;
     }
 
     public abstract FormAnswer? GetAnswer();

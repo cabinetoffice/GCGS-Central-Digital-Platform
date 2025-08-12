@@ -30,7 +30,7 @@
             </p>
         }
 
-        <input class="govuk-input govuk-!-width-two-thirds @(Model.Options?.Layout?.CustomCssClasses) @(textInputHasError ? "govuk-input--error" : "")" id="@Model.GetFieldName(nameof(Model.TextInput))" name="@Model.GetFieldName(nameof(Model.TextInput))" type="text" value="@Model.TextInput"
+        <input class="govuk-input govuk-!-width-two-thirds @(Model.Options?.Layout?.Input?.CustomCssClasses) @(textInputHasError ? "govuk-input--error" : "")" id="@Model.GetFieldName(nameof(Model.TextInput))" name="@Model.GetFieldName(nameof(Model.TextInput))" type="text" value="@Model.TextInput"
         @(string.IsNullOrWhiteSpace(textInputAriaDescribedby) ? "" : Html.Raw($"aria-describedby=\"{textInputAriaDescribedby}\""))>
     }
 }
@@ -39,31 +39,14 @@
 
     @if (Model.IsRequired)
     {
-        if (!string.IsNullOrWhiteSpace(Model.Heading))
-        {
-            <h1 class="govuk-label-wrapper">
-                <label class="govuk-label govuk-label--l" for="@Model.GetFieldName(nameof(Model.TextInput))">@Model.Heading</label>
-
-                @if (!string.IsNullOrWhiteSpace(Model.Caption))
-                {
-                    <span class="govuk-caption-l govuk-!-margin-bottom-3">@Model.Caption</span>
-                }
-            </h1>
-        }
+        @RenderLabelHeadingWithoutCaption(Model.Heading, Model.GetFieldName(nameof(Model.TextInput)), Model.IsFirstQuestion, Model.Options?.Layout?.Heading?.Size)
         RenderDescription();
         RenderField();
     }
     else
     {
         <fieldset class="govuk-fieldset" @(selectOptionHasError ? Html.Raw("aria-describedby=\"input-error\"") : "") >
-            <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                @if (!string.IsNullOrWhiteSpace(Model.Heading))
-                {
-                    <h1 class="govuk-fieldset__heading">
-                        @Model.Heading
-                    </h1>
-                }
-            </legend>
+            @RenderLegendWithoutCaption(Model.Heading, Model.IsFirstQuestion, Model.Options?.Layout?.Heading?.Size)
 
             @{
                 RenderDescription();
