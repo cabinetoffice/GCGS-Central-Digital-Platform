@@ -349,4 +349,46 @@ public class FormHeadingHelpersTests
 
         result.Should().Be(HtmlString.Empty);
     }
+
+    [Theory]
+    [InlineData(HeadingSize.ExtraLarge, true, "h1", "govuk-heading-xl")]
+    [InlineData(HeadingSize.Large, true, "h1", "govuk-heading-l")]
+    [InlineData(HeadingSize.Medium, true, "h2", "govuk-heading-m")]
+    [InlineData(HeadingSize.Small, true, "h3", "govuk-heading-s")]
+    [InlineData(null, true, "h1", "govuk-heading-l")]
+    [InlineData(null, false, "h2", "govuk-heading-m")]
+    public void RenderHeadingWithoutCaption_ShouldRenderCorrectHtml(HeadingSize? headingSize, bool isFirst,
+        string expectedTag, string expectedClass)
+    {
+        var heading = "Test Heading";
+
+        var result = FormHeadingHelpers.RenderHeadingWithoutCaption(heading, isFirst, headingSize);
+
+        result.Should().NotBeNull();
+        var htmlContent = GetHtmlContent(result);
+        htmlContent.Should().StartWith($"<{expectedTag} class=\"{expectedClass}\">");
+        htmlContent.Should().Contain(heading);
+        htmlContent.Should().NotContain("govuk-caption-");
+        htmlContent.Should().EndWith($"</{expectedTag}>");
+    }
+
+    [Fact]
+    public void RenderHeadingWithoutCaption_ShouldReturnEmpty_WhenHeadingIsNull()
+    {
+        string? heading = null;
+
+        var result = FormHeadingHelpers.RenderHeadingWithoutCaption(heading);
+
+        result.Should().Be(HtmlString.Empty);
+    }
+
+    [Fact]
+    public void RenderHeadingWithoutCaption_ShouldReturnEmpty_WhenHeadingIsEmpty()
+    {
+        string heading = "";
+
+        var result = FormHeadingHelpers.RenderHeadingWithoutCaption(heading);
+
+        result.Should().Be(HtmlString.Empty);
+    }
 }
