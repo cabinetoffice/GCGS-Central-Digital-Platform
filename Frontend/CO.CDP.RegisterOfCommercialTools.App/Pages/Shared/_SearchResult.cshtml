@@ -1,0 +1,57 @@
+@model CO.CDP.RegisterOfCommercialTools.App.Models.SearchResult
+@using CO.CDP.RegisterOfCommercialTools.App.Models
+@using CO.CDP.UI.Foundation.Services
+@inject IFtsUrlService FtsUrlService
+
+<div class="search-result" data-result-id="@Model.Id">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full govuk-grid-column-three-quarters-from-desktop govuk-!-margin-bottom-1">
+            <h2 class="govuk-heading-m govuk-!-margin-bottom-0">
+                <a class="govuk-link" href="@FtsUrlService.BuildUrl($"/Notice/{Model.Id}")">@Model.Title</a>
+            </h2>
+        </div>
+        <div class="govuk-grid-column-full govuk-grid-column-one-quarter-from-desktop govuk-!-margin-bottom-1">
+            <partial name="Shared/_SearchResultStatusTag" model="Model.Status"/>
+        </div>
+    </div>
+
+    <p class="govuk-caption-m govuk-!-margin-bottom-1 govuk-!-margin-top-0">@Model.Caption</p>
+
+    <p class="govuk-body govuk-!-margin-bottom-1">
+        <span class="govuk-!-font-weight-bold">Commercial tool:</span> @Model.CommercialTool
+    </p>
+    <p class="govuk-body govuk-!-margin-bottom-1">
+        <span class="govuk-!-font-weight-bold">Status:</span>
+        @switch (Model.Status)
+        {
+            case SearchResultStatus.Active:
+                <span>Applications window is open</span>
+                break;
+            case SearchResultStatus.Upcoming:
+                <span>Applications window opening soon</span>
+                break;
+            case SearchResultStatus.Closed:
+                <span>Applications window has closed</span>
+                break;
+            case SearchResultStatus.Awarded:
+                <span>Awarded</span>
+                break;
+        }
+    </p>
+    <p class="govuk-body govuk-!-margin-bottom-1">
+        <span class="govuk-!-font-weight-bold">Maximum fee:</span> @Model.MaximumFee
+    </p>
+    <p class="govuk-body govuk-!-margin-bottom-1">
+        <span class="govuk-!-font-weight-bold">Other contracting authority can use:</span> @Model.OtherContractingAuthorityCanUse
+    </p>
+    <p class="govuk-body govuk-!-margin-bottom-1">
+        <span class="govuk-!-font-weight-bold">Submission deadline:</span> @Model.SubmissionDeadline
+    </p>
+    <p class="govuk-body govuk-!-margin-bottom-1">
+        <span class="govuk-!-font-weight-bold">Contract dates:</span> @Model.ContractDates
+    </p>
+    <p class="govuk-body govuk-!-margin-bottom-2">
+        <span class="govuk-!-font-weight-bold">Award method:</span> @Model.AwardMethod
+    </p>
+    <hr class="govuk-section-break govuk-section-break--visible govuk-!-margin-bottom-4">
+</div>

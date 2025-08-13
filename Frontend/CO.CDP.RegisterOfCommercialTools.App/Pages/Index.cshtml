@@ -1,0 +1,206 @@
+@page "/"
+@using CO.CDP.RegisterOfCommercialTools.App.Models
+@model IndexModel
+@{
+    ViewData["Title"] = "Search Results";
+    var commercialToolAccordion = new Accordion(
+        "commercial-tool",
+        "Commercial tool",
+        "_CommercialToolAccordionContent", Model.SearchParams
+    ) { IsOpen = Model.OpenAccordions.Contains("commercial-tool") };
+    var commercialToolStatusAccordion = new Accordion(
+        "commercial-tool-status",
+        "Commercial tool status",
+        "_CommercialToolStatusAccordionContent", Model.SearchParams
+    ) { IsOpen = Model.OpenAccordions.Contains("commercial-tool-status") };
+    var contractingAuthorityUsageAccordion = new Accordion(
+        "contracting-authority-usage",
+        "Contracting authority usage",
+        "_ContractingAuthorityUsageAccordionContent", Model.SearchParams
+    ) { IsOpen = Model.OpenAccordions.Contains("contracting-authority-usage") };
+    var awardMethodAccordion = new Accordion(
+        "award-method",
+        "Award method",
+        "_AwardMethodAccordionContent", Model.SearchParams
+    ) { IsOpen = Model.OpenAccordions.Contains("award-method") };
+    var feesAccordion = new Accordion(
+        "fees",
+        "Fees",
+        "_FeesAccordionContent", Model.SearchParams
+    ) { IsOpen = Model.OpenAccordions.Contains("fees") };
+    var dateRangeAccordion = new Accordion(
+        "date-range",
+        "Date range",
+        "_DateRangeAccordionContent", Model.SearchParams
+    ) { IsOpen = Model.OpenAccordions.Contains("date-range") };
+}
+
+<script src="/js/search.js" nonce="@Model.ScriptNonce"></script>
+
+<govuk-breadcrumbs>
+    <govuk-breadcrumbs-item href="@Model.SirsiHomeUrl">Home</govuk-breadcrumbs-item>
+    <govuk-breadcrumbs-item href="/">Search results</govuk-breadcrumbs-item>
+</govuk-breadcrumbs>
+
+<div class="govuk-width-container">
+    <govuk-inset-text>The Register of Commercial Tools allows you to search for frameworks and dynamic markets.
+    </govuk-inset-text>
+
+    <div class="govuk-grid-row">
+        @if (!ModelState.IsValid)
+        {
+            <div class="govuk-error-summary" data-module="govuk-error-summary">
+                <div role="alert">
+                    <h2 class="govuk-error-summary__title">
+                        There is a problem
+                    </h2>
+                    <div class="govuk-error-summary__body">
+                        <ul class="govuk-list govuk-error-summary__list">
+                            @{
+                                var uniqueErrors = new List<(string Key, string Message)>();
+                                var seenMessages = new HashSet<string>();
+
+                                foreach (var (key, value) in ModelState)
+                                {
+                                    uniqueErrors.AddRange(from error in value.Errors where !string.IsNullOrEmpty(error.ErrorMessage) && seenMessages.Add(error.ErrorMessage) select (key, error.ErrorMessage));
+                                }
+                            }
+                            @foreach (var error in uniqueErrors)
+                            {
+                                <li><a href="#@error.Key">@error.Message</a></li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        }
+        <div class="govuk-grid-column-two-thirds">
+            <h1 class="govuk-heading-l govuk-!-margin-bottom-2">Search Results</h1>
+            <p class="govuk-body-m">We've found <span class="govuk-!-font-weight-bold">@Model.TotalCount</span>
+                result@(Model.TotalCount == 1 ? "" : "s")</p>
+        </div>
+        <div class="govuk-grid-column-one-third">
+            <form method="get" class="govuk-form-group">
+                <input type="hidden" name="q" value="@Model.SearchParams.Keywords"/>
+                <input type="hidden" name="framework" value="@Model.SearchParams.FrameworkOptions"/>
+                <input type="hidden" name="market" value="@Model.SearchParams.DynamicMarketOptions"/>
+                <input type="hidden" name="award" value="@Model.SearchParams.AwardMethod"/>
+                <input type="hidden" name="fee_min" value="@Model.SearchParams.FeeMin"/>
+                <input type="hidden" name="fee_max" value="@Model.SearchParams.FeeMax"/>
+                <input type="hidden" name="no_fees" value="@Model.SearchParams.NoFees"/>
+                <input type="hidden" name="usage" value="@Model.SearchParams.ContractingAuthorityUsage"/>
+                @foreach (var status in Model.SearchParams.Status)
+                {
+                    <input type="hidden" name="status" value="@status"/>
+                }
+                <input type="hidden" name="sub_from" value="@Model.SearchParams.SubmissionDeadlineFrom"/>
+                <input type="hidden" name="sub_to" value="@Model.SearchParams.SubmissionDeadlineTo"/>
+                <input type="hidden" name="start_from" value="@Model.SearchParams.ContractStartDateFrom"/>
+                <input type="hidden" name="start_to" value="@Model.SearchParams.ContractStartDateTo"/>
+                <input type="hidden" name="end_from" value="@Model.SearchParams.ContractEndDateFrom"/>
+                <input type="hidden" name="end_to" value="@Model.SearchParams.ContractEndDateTo"/>
+                <label for="sort-results" class="govuk-label govuk-!-font-weight-bold">Sort results</label>
+                <select id="sort-results" class="govuk-select" name="sort"
+                        onchange="this.form.submit()">
+                    <option value="relevance">Relevance</option>
+                    <option value="a-z">Alphabetical (A-Z)</option>
+                    <option value="z-a">Alphabetical (Z-A)</option>
+                </select>
+                <noscript>
+                    <button type="submit" class="govuk-button govuk-!-margin-left-2">Sort</button>
+                </noscript>
+            </form>
+        </div>
+    </div>
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-one-third">
+            <form method="get" id="search-form">
+                <input type="hidden" asp-for="SearchParams.SortOrder" name="sort"/>
+                <div class="govuk-!-padding-3 govuk-!-margin-bottom-0 govuk-filter-section">
+                    <h2 class="govuk-heading-m">Keywords</h2>
+
+                    <p class="govuk-body-s">
+                        Search titles, descriptions, identifiers and organisation names
+                    </p>
+
+                    <details class="govuk-details small-details govuk-!-margin-right-2" data-module="govuk-details">
+                        <summary class="govuk-details__summary">
+                            <span class="govuk-details__summary-text govuk-!-font-size-16">
+                                Help with keyword search
+                            </span>
+                        </summary>
+                        <div class="govuk-details__text">
+                            <ul class="govuk-list govuk-list--bullet govuk-body-s">
+                                <li>
+                                    To search for <span class="govuk-!-font-weight-bold">any</span> word, put a <span
+                                        class="govuk-!-font-weight-bold">space</span> between words.
+                                    For example, <span class="govuk-!-font-weight-bold">radio televisions</span>
+                                </li>
+                                <li>
+                                    To search for <span class="govuk-!-font-weight-bold">all</span> words, put a +
+                                    between words.
+                                    For example, <span class="govuk-!-font-weight-bold">administration + defence</span>
+                                </li>
+                                <li>
+                                    To search for an <span class="govuk-!-font-weight-bold">exact</span> phrase, use
+                                    <span class="govuk-!-font-weight-bold">quotes</span>.
+                                    For example, <span class="govuk-!-font-weight-bold">"market research"</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </details>
+
+                    <input id="Keywords" name="q" type="text" asp-for="SearchParams.Keywords"
+                           class="govuk-input">
+                </div>
+
+                <div class="govuk-!-margin-top-0 govuk-!-padding-bottom-2 govuk-filter-section">
+                    <partial name="_Accordion" model="commercialToolAccordion"/>
+                    <partial name="_Accordion" model="commercialToolStatusAccordion"/>
+                    <partial name="_Accordion" model="contractingAuthorityUsageAccordion"/>
+                    <partial name="_Accordion" model="awardMethodAccordion"/>
+                    <partial name="_Accordion" model="feesAccordion"/>
+                    <partial name="_Accordion" model="dateRangeAccordion"/>
+                </div>
+
+                <div class="govuk-button-group govuk-!-margin-top-4">
+                    <button type="submit" class="govuk-button" data-module="govuk-button">
+                        Update results
+                    </button>
+                    <a href="/" class="govuk-button govuk-button--secondary" data-module="govuk-button">
+                        Reset
+                    </a>
+                </div>
+            </form>
+        </div>
+        <div class="govuk-grid-column-two-thirds">
+            @if (Model.SearchResults.Any())
+            {
+                <ul class="govuk-list">
+                    @foreach (var result in Model.SearchResults)
+                    {
+                        <li>
+                            <partial name="Shared/_SearchResult" model="result"/>
+                        </li>
+                    }
+                </ul>
+
+                <partial name="Shared/_Pagination" model="Model.Pagination"/>
+            }
+            else
+            {
+                <div class="govuk-grid-column-one-half govuk-!-margin-left-auto govuk-!-margin-right-auto">
+                    <p class="govuk-body govuk-!-font-size-19 govuk-!-font-weight-bold">No results found.</p>
+                    <p class="govuk-body">Try:</p>
+                    <ul class="govuk-list govuk-list--bullet">
+                        <li>checking your spelling</li>
+                        <li>using fewer keywords</li>
+                        <li>using different search terms</li>
+                        <li>removing some filters</li>
+                    </ul>
+                </div>
+            }
+        </div>
+    </div>
+</div>
