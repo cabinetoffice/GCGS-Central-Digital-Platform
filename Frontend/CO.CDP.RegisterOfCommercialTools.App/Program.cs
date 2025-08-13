@@ -19,6 +19,7 @@ builder.Services.AddRazorPages(options =>
     options.Conventions.AuthorizeFolder("/");
     options.Conventions.AllowAnonymousToPage("/Auth/Login");
     options.Conventions.AllowAnonymousToPage("/Auth/Logout");
+    options.Conventions.AllowAnonymousToPage("/page-not-found");
 });
 builder.Services.AddGovUkFrontend();
 builder.Services.AddHttpContextAccessor();
