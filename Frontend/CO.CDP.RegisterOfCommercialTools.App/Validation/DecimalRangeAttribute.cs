@@ -7,6 +7,7 @@ public class DecimalRangeAttribute(string compareToPropertyName) : ValidationAtt
     protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
     {
         var property = validationContext.ObjectType.GetProperty(compareToPropertyName);
+
         if (property == null)
         {
             return new ValidationResult($"Unknown property: {compareToPropertyName}");
