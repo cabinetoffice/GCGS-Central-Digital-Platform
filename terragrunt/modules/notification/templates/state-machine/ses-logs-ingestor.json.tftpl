@@ -1,0 +1,94 @@
+{
+  "Comment": "Drain SES events from SQS and write to CloudWatch Logs",
+  "StartAt": "ReceiveMessages",
+  "States": {
+    "ReceiveMessages": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::aws-sdk:sqs:receiveMessage",
+      "Parameters": {
+        "QueueUrl": "${queue_url}",
+        "MaxNumberOfMessages": 10,
+        "WaitTimeSeconds": 2,
+        "VisibilityTimeout": 30,
+        "AttributeNames": ["SentTimestamp", "ApproximateFirstReceiveTimestamp"]
+      },
+      "ResultPath": "$.batch",
+      "Next": "AnyMessages?"
+    },
+    "AnyMessages?": {
+      "Type": "Choice",
+      "Choices": [
+        { "Variable": "$.batch.Messages", "IsPresent": true, "Next": "PrepareLogStreamName" }
+      ],
+      "Default": "Done"
+    },
+    "PrepareLogStreamName": {
+      "Type": "Pass",
+      "Parameters": {
+        "logStreamName.$": "States.Format('{}-{}','${logging_prefix}', States.UUID())"
+      },
+      "ResultPath": "$.log",
+      "Next": "CreateLogStream"
+    },
+    "CreateLogStream": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::aws-sdk:cloudwatchlogs:createLogStream",
+      "Parameters": {
+        "LogGroupName": "${log_group_name}",
+        "LogStreamName.$": "$.log.logStreamName"
+      },
+      "ResultPath": "$.log.create",
+      "Next": "ForEachMessage"
+    },
+    "ForEachMessage": {
+      "Type": "Map",
+      "ItemsPath": "$.batch.Messages",
+      "ItemSelector": {
+        "message.$": "$$.Map.Item.Value",
+        "logStreamName.$": "$.log.logStreamName"
+      },
+      "ResultPath": "$.mapResult",
+      "Iterator": {
+        "StartAt": "CoerceTimestamp",
+        "States": {
+          "CoerceTimestamp": {
+            "Type": "Pass",
+            "Parameters": {
+              "body.$": "$.message.Body",
+              "ts.$": "States.StringToJson($.message.Attributes.ApproximateFirstReceiveTimestamp)"
+            },
+            "ResultPath": "$.coerced",
+            "Next": "PutLogEvent"
+          },
+          "PutLogEvent": {
+            "Type": "Task",
+            "Resource": "arn:aws:states:::aws-sdk:cloudwatchlogs:putLogEvents",
+            "Parameters": {
+              "LogGroupName": "${log_group_name}",
+              "LogStreamName.$": "$.logStreamName",
+              "LogEvents": [
+                {
+                  "Message.$": "$.coerced.body",
+                  "Timestamp.$": "$.coerced.ts"
+                }
+              ]
+            },
+            "ResultPath": "$.put",
+            "Next": "DeleteMessage"
+          },
+          "DeleteMessage": {
+            "Type": "Task",
+            "Resource": "arn:aws:states:::aws-sdk:sqs:deleteMessage",
+            "Parameters": {
+              "QueueUrl": "${queue_url}",
+              "ReceiptHandle.$": "$.message.ReceiptHandle"
+            },
+            "End": true
+          }
+        }
+      },
+      "Next": "Done"
+    },
+    "Done": { "Type": "Succeed" }
+  }
+}

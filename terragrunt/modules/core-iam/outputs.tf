@@ -94,6 +94,23 @@ output "service_deployer_step_function_name" {
   value = aws_iam_role.service_deployer_step_function.name
 }
 
+output "ses_logs_ingestor_step_function_arn" {
+  value = aws_iam_role.ses_logs_ingestor_step_function.arn
+}
+
+output "ses_logs_ingestor_step_function_name" {
+  value = aws_iam_role.ses_logs_ingestor_step_function.name
+}
+
+
+output "ses_cloudwatch_events_arn" {
+  value = aws_iam_role.ses_cloudwatch_events.arn
+}
+
+output "ses_cloudwatch_events_name" {
+  value = aws_iam_role.ses_cloudwatch_events.name
+}
+
 output "telemetry_arn" {
   value = aws_iam_role.telemetry.arn
 }

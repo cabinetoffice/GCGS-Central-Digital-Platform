@@ -71,3 +71,37 @@ data "aws_iam_policy_document" "sqs_allow_sns" {
     }
   }
 }
+data "aws_iam_policy_document" "ses_logs_ingestor" {
+  statement {
+    effect = "Allow"
+    actions = [
+      "sqs:DeleteMessage",
+      "sqs:GetQueueAttributes",
+      "sqs:ReceiveMessage",
+    ]
+    resources = [aws_sqs_queue.ses_json.arn]
+  }
+  statement {
+    effect = "Allow"
+    actions = [
+      "logs:CreateLogStream",
+      "logs:DescribeLogStreams",
+      "logs:PutLogEvents"
+    ]
+    resources = [
+      "${aws_cloudwatch_log_group.ses_logs_ingestor.arn}:*",
+      "arn:aws:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:log-group:${aws_cloudwatch_log_group.ses_logs_ingestor.name}:*"
+    ]
+  }
+}
+
+data "aws_iam_policy_document" "cloudwatch_event_invoke_deployer_step_function" {
+  statement {
+    actions = [
+      "states:StartExecution"
+    ]
+    resources = [
+      aws_sfn_state_machine.ses_logs_ingestor.arn
+    ]
+  }
+}

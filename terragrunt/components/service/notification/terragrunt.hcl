@@ -29,7 +29,11 @@ dependency core_networking {
 dependency core_iam {
   config_path = "../../core/iam"
   mock_outputs = {
-    ecs_task_arn = "mock"
+    cloudwatch_events_arn  = "mock"
+    cloudwatch_events_name = "mock"
+    ecs_task_arn           = "mock"
+    notification_role_arn  = "mock"
+    notification_role_name = "mock"
   }
 }
 
@@ -38,7 +42,11 @@ inputs = {
   tags              = local.tags
 
 
-  role_ecs_task_arn = dependency.core_iam.outputs.ecs_task_arn
+  role_ses_cloudwatch_events_arn                = dependency.core_iam.outputs.ses_cloudwatch_events_arn
+  role_ses_cloudwatch_events_name               = dependency.core_iam.outputs.ses_cloudwatch_events_name
+  role_ecs_task_arn                         = dependency.core_iam.outputs.ecs_task_arn
+  role_ses_logs_ingestor_step_function_arn  = dependency.core_iam.outputs.ses_logs_ingestor_step_function_arn
+  role_ses_logs_ingestor_step_function_name = dependency.core_iam.outputs.ses_logs_ingestor_step_function_name
 
   public_hosted_zone_id = dependency.core_networking.outputs.public_hosted_zone_id
 }
