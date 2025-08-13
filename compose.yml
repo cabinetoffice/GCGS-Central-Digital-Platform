@@ -261,6 +261,8 @@ services:
         condition: service_healthy
       localstack:
         condition: service_healthy
+      redis:
+        condition: service_healthy
     environment:
       ASPNETCORE_ENVIRONMENT: Production
       Aws__Credentials__AccessKeyId: test
@@ -272,10 +274,10 @@ services:
       Aws__CognitoAuthentication__UserPoolClientId: ""
       Aws__CognitoAuthentication__UserPoolClientSecret: ""
       Aws__SystemManager__DataProtectionPrefix: "/cdp/commercial-tools-app/data-protection"
+      Aws__ElastiCache__Hostname: "redis"
       CloudWatch__LogGroup: "/ecs/commercial-tools-app"
       CommercialToolsApi__ServiceUrl: '${CommercialToolsApi__ServiceUrl:-http://gateway:${CDP_COMMERCIAL_TOOLS_API_PORT:-8184}}'
       SessionTimeoutInMinutes: "30"
-      Features__CommercialTools: "true"
 
   commercial-tools-api:
     container_name: co-cdp-commercial-tools-api
