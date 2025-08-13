@@ -178,7 +178,6 @@ builder.Services.AddUiFoundation(builder.Configuration, uiFoundationBuilder =>
     uiFoundationBuilder.AddCommercialToolsUrlService();
 });
 
-// Register OrganisationApp's own FtsUrlService
 builder.Services.AddScoped<CO.CDP.OrganisationApp.IFtsUrlService, CO.CDP.OrganisationApp.FtsUrlService>();
 
 builder.Services.AddScoped<IAnnouncementService, AnnouncementService>();

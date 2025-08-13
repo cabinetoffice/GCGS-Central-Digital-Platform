@@ -1,7 +1,9 @@
 using CO.CDP.AwsServices;
 using CO.CDP.Configuration.ForwardedHeaders;
 using CO.CDP.RegisterOfCommercialTools.WebApi;
+using CO.CDP.RegisterOfCommercialTools.WebApi.Constants;
 using CO.CDP.RegisterOfCommercialTools.WebApi.Services;
+using Microsoft.FeatureManagement;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +17,8 @@ builder.Services.AddHealthChecks();
 
 builder.Services.AddAuthorization();
 builder.Services.AddAwsCognitoAuthentication(builder.Configuration, builder.Environment);
+
+builder.Services.AddFeatureManagement(builder.Configuration.GetSection("Features"));
 
 builder.Services.AddTransient<ICommercialToolsQueryBuilder, CommercialToolsQueryBuilder>();
 builder.Services.AddHttpClient<ICommercialToolsRepository, CommercialToolsRepository>((serviceProvider, client) =>
@@ -31,6 +35,20 @@ builder.Services
     .AddCloudWatchSerilog(builder.Configuration);
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var featureManager = scope.ServiceProvider.GetRequiredService<IFeatureManager>();
+    if (!await featureManager.IsEnabledAsync(FeatureFlags.CommercialTools))
+    {
+        app.Run(async context =>
+        {
+            context.Response.StatusCode = StatusCodes.Status404NotFound;
+            context.Response.ContentType = "application/json";
+            await context.Response.WriteAsync("{\"error\":\"Not Found\",\"message\":\"The requested service is not available\"}");
+        });
+    }
+}
 
 app.UseForwardedHeaders();
 

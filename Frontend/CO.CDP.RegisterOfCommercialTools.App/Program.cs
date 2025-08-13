@@ -91,7 +91,8 @@ builder.Services
     .AddAwsConfiguration(builder.Configuration)
     .AddLoggingConfiguration(builder.Configuration)
     .AddAmazonCloudWatchLogsService()
-    .AddCloudWatchSerilog(builder.Configuration);
+    .AddCloudWatchSerilog(builder.Configuration)
+    .AddSharedSessions(builder.Configuration);
 
 builder.Services.AddAwsCognitoAuthentication(builder.Configuration, builder.Environment);
 
@@ -105,12 +106,7 @@ using (var scope = app.Services.CreateScope())
     var featureManager = scope.ServiceProvider.GetRequiredService<IFeatureManager>();
     if (!await featureManager.IsEnabledAsync(FeatureFlags.CommercialTools))
     {
-        app.UseStatusCodePages(async context =>
-        {
-            context.HttpContext.Response.ContentType = "text/plain";
-            context.HttpContext.Response.StatusCode = StatusCodes.Status404NotFound;
-            await context.HttpContext.Response.WriteAsync("404 Not Found");
-        });
+        app.UseStatusCodePagesWithRedirects("/page-not-found");
     }
 }
 

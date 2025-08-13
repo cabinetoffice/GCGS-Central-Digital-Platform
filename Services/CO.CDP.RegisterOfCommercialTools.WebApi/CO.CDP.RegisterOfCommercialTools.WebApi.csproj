@@ -12,6 +12,7 @@
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.8"/>
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.4"/>
         <PackageReference Include="AspNetCore.HealthChecks.NpgSql" Version="8.0.1"/>
+        <PackageReference Include="Microsoft.FeatureManagement.AspNetCore" Version="3.5.0"/>
     </ItemGroup>
 
     <ItemGroup>
