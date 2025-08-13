@@ -1,0 +1,88 @@
+@model CO.CDP.RegisterOfCommercialTools.App.Models.SearchModel
+
+<div class="govuk-!-margin-top-0">
+    <p class="govuk-body-s govuk-!-padding-left-2">Maximum percentage fees charged to suppliers</p>
+
+    <div class="govuk-form-group @(ViewData.ModelState.HasError("fee_min") || ViewData.ModelState.HasError("fee_max") ? "govuk-form-group--error" : "") accordion-highlight govuk-!-padding-2 govuk-!-margin-left-2 govuk-!-margin-right-4">
+        <fieldset class="govuk-fieldset">
+            <div class="govuk-form-group">
+                @{
+                    var feeFromError = ViewData.ModelState.GetError("fee_min");
+                    var feeToError = ViewData.ModelState.GetError("fee_max");
+                }
+
+                @if (feeFromError != null && feeFromError == feeToError)
+                {
+                    <p id="fee-from-error" class="govuk-error-message">
+                        <span class="govuk-visually-hidden">Error:</span> @feeFromError
+                    </p>
+                }
+                else
+                {
+                    if (feeFromError != null)
+                    {
+                        <p id="fee-from-error" class="govuk-error-message">
+                            <span class="govuk-visually-hidden">Error:</span> @feeFromError
+                        </p>
+                    }
+                    if (feeToError != null)
+                    {
+                        <p id="fee-to-error" class="govuk-error-message">
+                            <span class="govuk-visually-hidden">Error:</span> @feeToError
+                        </p>
+                    }
+                }
+
+                <label class="govuk-label govuk-!-font-size-16" for="fee_min">
+                    From
+                </label>
+                <div class="govuk-input__wrapper">
+                    <input class="govuk-input govuk-input--width-5 govuk-!-font-size-16 @(ViewData.ModelState.HasError("fee_min") ? "govuk-input--error" : "")"
+                           id="fee_min"
+                           name="fee_min"
+                           type="number"
+                           step="0.01"
+                           min="0"
+                           max="100"
+                           value="@Model.FeeMin"
+                           spellcheck="false"
+                           inputmode="decimal"
+                           aria-describedby="@(feeFromError != null && feeFromError == feeToError ? "fee-from-error" : ViewData.ModelState.HasError("fee_min") ? "fee-from-error" : "")">
+                    <div class="govuk-input__suffix govuk-!-font-size-16" aria-hidden="true">%</div>
+                </div>
+
+                <label class="govuk-label govuk-!-font-size-16 govuk-!-margin-top-3" for="fee_max">
+                    To
+                </label>
+                <div class="govuk-input__wrapper">
+                    <input class="govuk-input govuk-input--width-5 govuk-!-font-size-16 @(ViewData.ModelState.HasError("fee_max") ? "govuk-input--error" : "")"
+                           id="fee_max"
+                           name="fee_max"
+                           type="number"
+                           step="0.01"
+                           min="0"
+                           max="100"
+                           value="@Model.FeeMax"
+                           spellcheck="false"
+                           inputmode="decimal"
+                           aria-describedby="@(feeFromError != null && feeFromError == feeToError ? "fee-from-error" : ViewData.ModelState.HasError("fee_max") ? "fee-to-error" : "")">
+                    <div class="govuk-input__suffix govuk-!-font-size-16" aria-hidden="true">%</div>
+                </div>
+            </div>
+
+        <label class="govuk-label govuk-!-font-size-16 govuk-!-margin-top-3" for="no-fees">
+            Or
+        </label>
+
+        <div class="govuk-checkboxes govuk-checkboxes--small" data-module="govuk-checkboxes"
+             data-govuk-checkboxes-init="">
+            <div class="govuk-checkboxes__item">
+                <input class="govuk-checkboxes__input" id="no-fees" name="no_fees" type="checkbox" value="true" checked="@(Model.NoFees == "true")">
+                <label class="govuk-label govuk-checkboxes__label govuk-!-font-size-16" for="no-fees">
+                    No fees
+                </label>
+            </div>
+        </div>
+        </fieldset>
+    </div>
+</div>

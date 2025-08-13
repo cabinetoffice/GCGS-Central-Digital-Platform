@@ -4376,8 +4376,14 @@
   <data name="BuyerView_TileThree_Title">
     <value>Statement of Work Assessment tool</value>
   </data>
-  <data name="BuyerView_TileThree_Body">
+  <data name="BuyerView_TileThree_Body" xml:space="preserve">
     <value>Review Statements of Work to make sure they meet procurement and commercial quality standards.</value>
+  </data>
+  <data name="BuyerView_TileFour_Title">
+    <value>Register of Commercial Tools</value>
+  </data>
+  <data name="BuyerView_TileFour_Body">
+    <value>Search for frameworks and dynamic markets.</value>
   </data>
   <data name="Global_Decimal_InvalidError" xml:space="preserve">
     <value>Enter a valid number</value>

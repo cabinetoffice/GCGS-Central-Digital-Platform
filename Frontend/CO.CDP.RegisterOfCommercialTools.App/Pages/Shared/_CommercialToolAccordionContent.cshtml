@@ -1,0 +1,92 @@
+@model CO.CDP.RegisterOfCommercialTools.App.Models.SearchModel
+
+<div class="govuk-!-margin-top-0">
+    <details class="govuk-details govuk-!-margin-left-4 govuk-!-margin-right-4 govuk-!-padding-left-0" data-module="govuk-details">
+        <summary class="govuk-details__summary">
+            <span class="govuk-details__summary-text govuk-!-font-size-14">Definitions</span>
+        </summary>
+        <div class="govuk-details__text">
+            <ul class="govuk-list govuk-list--bullet">
+                <li class="govuk-body-s">
+                    <span class="govuk-!-font-weight-bold">Framework</span> - A contract
+                    that allows the award of future
+                    contracts, which will be advertised only to suppliers on the
+                    framework.
+                </li>
+                <li class="govuk-body-s">
+                    <span class="govuk-!-font-weight-bold">Dynamic market</span> -
+                    Arrangements that suppliers who meet the conditions for
+                    membership can join, which allow them to bid for future contracts
+                    restricted to
+                    members of the market. Future contracts must be advertised in tender
+                    notices.
+                    New suppliers can join at any time during the term of the market.
+                </li>
+                <li class="govuk-body-s">
+                    <span class="govuk-!-font-weight-bold">Utilities dynamic market</span>
+                    - A dynamic market that can only be used by utility
+                    organisations to award utilities contracts. Tender notices may
+                    optionally be
+                    provided only to members of the market (Not included in the DM/DPS
+                    filter option).
+                </li>
+            </ul>
+        </div>
+    </details>
+    <details class="govuk-details accordion-highlight govuk-!-padding-2 govuk-!-margin-left-2 govuk-!-margin-right-4"
+             data-module="govuk-details">
+        <summary class="govuk-details__summary">
+            <span class="govuk-details__summary-text govuk-!-font-size-14">Procurement Act 2023</span>
+        </summary>
+        <div class="govuk-details__text govuk-!-padding-0 no-border">
+            <div class="govuk-form-group govuk-!-margin-bottom-0">
+                <fieldset class="govuk-fieldset">
+                    <legend class="govuk-fieldset__legend govuk-!-font-size-16">
+                        Frameworks
+                    </legend>
+                    <div class="govuk-radios govuk-radios--small" data-module="govuk-radios">
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="framework-open-only" name="framework"
+                                   type="radio"
+                                   value="open" @(Model.FrameworkOptions == "open" ? "checked" : null)>
+                            <label class="govuk-label govuk-radios__label govuk-!-font-size-14" for="framework-open-only">
+                                Open frameworks only
+                            </label>
+                        </div>
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="framework-exclude-open" name="framework"
+                                   type="radio"
+                                   value="exclude-open" @(Model.FrameworkOptions == "exclude-open" ? "checked" : null)>
+                            <label class="govuk-label govuk-radios__label govuk-!-font-size-14" for="framework-exclude-open">
+                                Exclude open frameworks
+                            </label>
+                        </div>
+                    </div>
+                </fieldset>
+                <fieldset class="govuk-fieldset">
+                    <legend class="govuk-fieldset__legend govuk-!-font-size-16">
+                        Dynamic Markets
+                    </legend>
+                    <div class="govuk-radios govuk-radios--small" data-module="govuk-radios">
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="dynamic-market-utilities-only"
+                                   name="market" type="radio"
+                                   value="utilities-only" @(Model.DynamicMarketOptions == "utilities-only" ? "checked" : null)>
+                            <label class="govuk-label govuk-radios__label govuk-!-font-size-14" for="dynamic-market-utilities-only">
+                                Utilities dynamic markets only
+                            </label>
+                        </div>
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="dynamic-market-exclude-utilities"
+                                   name="market" type="radio"
+                                   value="exclude-utilities" @(Model.DynamicMarketOptions == "exclude-utilities" ? "checked" : null)>
+                            <label class="govuk-label govuk-radios__label govuk-!-font-size-14" for="dynamic-market-exclude-utilities">
+                                Excludes Utilities dynamic markets
+                            </label>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+        </div>
+    </details>
+</div>

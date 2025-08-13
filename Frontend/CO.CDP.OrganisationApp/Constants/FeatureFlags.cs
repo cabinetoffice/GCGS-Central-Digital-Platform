@@ -11,4 +11,5 @@ public static class FeatureFlags
     public const string BuyerParentChildRelationship = "BuyerParentChildRelationship";
     public const string SearchRegistryPpon = "SearchRegistryPpon";
     public const string AiTool = "AiTool";
+    public const string CommercialTools = "CommercialTools";
 }
