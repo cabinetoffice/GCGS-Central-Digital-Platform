@@ -125,7 +125,7 @@ locals {
     local.cfs_secrets
   )
 
-  migrations_cfs   = ["cfs-migrations"]
+  migrations_cfs = ["cfs-migrations"]
 
   migration_configs_cfs = {
     for name, config in var.service_configs :

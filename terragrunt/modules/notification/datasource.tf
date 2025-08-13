@@ -44,7 +44,7 @@ data "aws_iam_policy_document" "sns_allow_ses_publish" {
     condition {
       test     = "ArnLike"
       variable = "AWS:SourceArn"
-      values   = [
+      values = [
         aws_ses_configuration_set.json_logging.arn
       ]
     }

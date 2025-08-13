@@ -23,11 +23,6 @@ variable "public_hosted_zone_id" {
   type        = string
 }
 
-variable "role_ses_logs_ingestor_step_function_arn" {
-  description = "IAM role ARN to be associated with the SES log ingestor step-function"
-  type        = string
-}
-
 variable "role_ses_cloudwatch_events_arn" {
   description = "ARN of the IAM role used by CloudWatch Events"
   type        = string
@@ -35,6 +30,11 @@ variable "role_ses_cloudwatch_events_arn" {
 
 variable "role_ses_cloudwatch_events_name" {
   description = "Name of the IAM role used by CloudWatch Events"
+  type        = string
+}
+
+variable "role_ses_logs_ingestor_step_function_arn" {
+  description = "IAM role ARN to be associated with the SES log ingestor step-function"
   type        = string
 }
 

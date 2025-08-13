@@ -42,9 +42,9 @@ inputs = {
   tags              = local.tags
 
 
-  role_ses_cloudwatch_events_arn                = dependency.core_iam.outputs.ses_cloudwatch_events_arn
-  role_ses_cloudwatch_events_name               = dependency.core_iam.outputs.ses_cloudwatch_events_name
   role_ecs_task_arn                         = dependency.core_iam.outputs.ecs_task_arn
+  role_ses_cloudwatch_events_arn            = dependency.core_iam.outputs.ses_cloudwatch_events_arn
+  role_ses_cloudwatch_events_name           = dependency.core_iam.outputs.ses_cloudwatch_events_name
   role_ses_logs_ingestor_step_function_arn  = dependency.core_iam.outputs.ses_logs_ingestor_step_function_arn
   role_ses_logs_ingestor_step_function_name = dependency.core_iam.outputs.ses_logs_ingestor_step_function_name
 

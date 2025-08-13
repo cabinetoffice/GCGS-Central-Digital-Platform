@@ -1,13 +1,13 @@
 resource "aws_ses_domain_identity" "this" {
   for_each = toset(local.effective_mail_from_domains)
 
-  domain   = each.value
+  domain = each.value
 }
 
 resource "aws_ses_domain_dkim" "this" {
   for_each = aws_ses_domain_identity.this
 
-  domain   = each.value.domain
+  domain = each.value.domain
 
   depends_on = [aws_ses_domain_identity.this]
 }

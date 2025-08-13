@@ -4,9 +4,9 @@ resource "aws_sfn_state_machine" "ses_logs_ingestor" {
   tags     = var.tags
 
   definition = templatefile("${path.module}/templates/state-machine/ses-logs-ingestor.json.tftpl", {
-    queue_url       = aws_sqs_queue.ses_json.id
-    log_group_name  = aws_cloudwatch_log_group.ses_logs_ingestor.name
-    logging_prefix  = local.logging_prefix
+    queue_url      = aws_sqs_queue.ses_json.id
+    log_group_name = aws_cloudwatch_log_group.ses_logs_ingestor.name
+    logging_prefix = local.logging_prefix
   })
 }
 

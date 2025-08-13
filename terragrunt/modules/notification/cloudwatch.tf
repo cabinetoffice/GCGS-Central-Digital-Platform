@@ -32,7 +32,7 @@ resource "aws_cloudwatch_event_rule" "ses_logs_ingestor" {
 }
 
 resource "aws_cloudwatch_event_target" "ses_logs_ingestor" {
-  arn  = aws_sfn_state_machine.ses_logs_ingestor.arn
-  rule = aws_cloudwatch_event_rule.ses_logs_ingestor.name
+  arn      = aws_sfn_state_machine.ses_logs_ingestor.arn
+  rule     = aws_cloudwatch_event_rule.ses_logs_ingestor.name
   role_arn = var.role_ses_cloudwatch_events_arn
 }

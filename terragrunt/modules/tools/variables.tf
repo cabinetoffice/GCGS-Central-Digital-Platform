@@ -24,27 +24,6 @@ variable "cloud_beaver_config" {
   })
 }
 
-variable "db_entity_verification_cluster_port" {
-  description = "Entity Verification database port"
-  type        = number
-  default     = 5432
-}
-
-variable "db_ev_cluster_address" {
-  description = "Entity Verification database endpoint address"
-  type        = string
-}
-
-variable "db_ev_cluster_credentials_arn" {
-  description = "Entity Verification database secret ARN"
-  type        = string
-}
-
-variable "db_ev_cluster_name" {
-  description = "Entity Verification database name"
-  type        = string
-}
-
 variable "db_cfs_cluster_address" {
   description = "CFS database endpoint address"
   type        = string
@@ -64,6 +43,27 @@ variable "db_cfs_cluster_port" {
   description = "CFS database port"
   type        = number
   default     = 3306
+}
+
+variable "db_entity_verification_cluster_port" {
+  description = "Entity Verification database port"
+  type        = number
+  default     = 5432
+}
+
+variable "db_ev_cluster_address" {
+  description = "Entity Verification database endpoint address"
+  type        = string
+}
+
+variable "db_ev_cluster_credentials_arn" {
+  description = "Entity Verification database secret ARN"
+  type        = string
+}
+
+variable "db_ev_cluster_name" {
+  description = "Entity Verification database name"
+  type        = string
 }
 
 variable "db_fts_cluster_address" {

@@ -137,8 +137,8 @@
           "label": "",
           "logGroups": [
             {
-              "accountId": "471112892058",
-              "arn": "arn:aws:logs:eu-west-2:471112892058:log-group:/cdp-sirsi/ses:*",
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/cdp-sirsi/ses:*",
               "name": "/cdp-sirsi/ses"
             }
           ],
@@ -234,5 +234,5 @@
   "timezone": "browser",
   "title": "SES Event Logs",
   "uid": "ses-event-logs",
-  "version": 15
+  "version": 1
 }
