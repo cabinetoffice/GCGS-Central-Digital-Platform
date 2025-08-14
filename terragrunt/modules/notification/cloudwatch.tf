@@ -26,13 +26,17 @@ resource "aws_cloudwatch_log_group" "ses_logs_ingestor" {
 }
 
 resource "aws_cloudwatch_event_rule" "ses_logs_ingestor" {
+  count = var.enable_ses_logs ? 1 : 0
+
   name                = "${local.name_prefix}-ses-logs-ingestor"
   schedule_expression = "rate(1 minute)"
   tags                = var.tags
 }
 
 resource "aws_cloudwatch_event_target" "ses_logs_ingestor" {
+  count = var.enable_ses_logs ? 1 : 0
+
   arn      = aws_sfn_state_machine.ses_logs_ingestor.arn
-  rule     = aws_cloudwatch_event_rule.ses_logs_ingestor.name
+  rule     = aws_cloudwatch_event_rule.ses_logs_ingestor[0].name
   role_arn = var.role_ses_cloudwatch_events_arn
 }

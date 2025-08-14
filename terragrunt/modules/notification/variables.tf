@@ -1,3 +1,9 @@
+variable "enable_ses_logs" {
+  description = "Master switch: publish SES events to SNS/SQS and run the ingestion Step Function."
+  type        = bool
+  default     = true
+}
+
 variable "environment" {
   description = "The environment we are provisioning"
   type        = string
@@ -46,7 +52,14 @@ variable "role_ses_logs_ingestor_step_function_name" {
 variable "ses_logging_event_types" {
   description = "SES event types to capture"
   type        = list(string)
-  default     = ["bounce", "complaint", "delivery", "reject", "renderingFailure"]
+  default     = [
+    "bounce",
+    "complaint",
+    "delivery",
+    "reject",
+    "renderingFailure",
+    "send",
+  ]
 }
 
 variable "tags" {

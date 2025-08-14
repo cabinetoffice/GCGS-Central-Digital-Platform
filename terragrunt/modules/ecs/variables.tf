@@ -301,6 +301,11 @@ variable "service_configs" {
   }))
 }
 
+variable "ses_configuration_set_name" {
+  description = "Name of the SES Configuration Configuration"
+  type = string
+}
+
 variable "tags" {
   description = "Tags to apply to all resources in this module"
   type        = map(string)
