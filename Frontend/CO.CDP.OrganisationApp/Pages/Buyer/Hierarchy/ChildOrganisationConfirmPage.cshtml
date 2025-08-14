@@ -16,12 +16,33 @@
         <div class="govuk-grid-row">
             <div class="govuk-grid-column-two-thirds">
                 <h1 class="govuk-heading-l">@StaticTextResource.BuyerParentChildRelationship_ConfirmPage_Title</h1>
-
+                @if (!string.IsNullOrEmpty(Model.WarningMessage))
+                {
+                    <div class="govuk-warning-text">
+                        <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+                        <strong class="govuk-warning-text__text">
+                            <span class="govuk-visually-hidden">Warning</span>
+                            @Model.WarningMessage
+                        </strong>
+                    </div>
+                }
                 <form method="post">
                     <div class="table-header">
-                        <p class="govuk-body govuk-!-font-weight-bold">
-                            @Model.ChildOrganisation?.Name
-                        </p>
+                        <div class="govuk-grid-row">
+                            <div class="govuk-grid-column-two-thirds">
+                                <span class="govuk-body govuk-!-font-weight-bold govuk-!-text-break-word">
+                                    @Model.ChildOrganisation?.Name
+                                </span>
+                            </div>
+                            <div class="govuk-grid-column-one-third">
+                                @if (!string.IsNullOrEmpty(Model.WarningTagMessage))
+                                {
+                                    <strong class="govuk-tag govuk-tag--blue govuk-!-margin-bottom-3">
+                                        @Model.WarningTagMessage
+                                    </strong>
+                                }
+                            </div>
+                        </div>
                     </div>
 
                     <div class="table-content">
@@ -94,9 +115,17 @@
                     </div>
 
                     <div class="govuk-button-group">
-                        <button type="submit" class="govuk-button">@StaticTextResource.Global_Confirm</button>
-                        <a class="govuk-button govuk-button--secondary" asp-page="ChildOrganisationSearchPage"
-                           asp-route-id="@Model.Id">@StaticTextResource.Global_SearchAgain</a>
+                        @if (string.IsNullOrEmpty(Model.WarningMessage))
+                        {
+                            <button type="submit" class="govuk-button">@StaticTextResource.Global_Confirm</button>
+                            <a class="govuk-button govuk-button--secondary" asp-page="ChildOrganisationSearchPage"
+                               asp-route-id="@Model.Id">@StaticTextResource.Global_SearchAgain</a>
+                        }
+                        else
+                        {
+                            <a class="govuk-button govuk-button" asp-page="ChildOrganisationSearchPage"
+                               asp-route-id="@Model.Id">@StaticTextResource.Global_SearchAgain</a>
+                        }
                         <a class="govuk-link" href="/organisation/@Model.Id">@StaticTextResource.Global_Cancel</a>
                     </div>
                 </form>

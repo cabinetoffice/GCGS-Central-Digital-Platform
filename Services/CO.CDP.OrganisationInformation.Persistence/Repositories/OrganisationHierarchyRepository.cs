@@ -106,5 +106,25 @@ namespace CO.CDP.OrganisationInformation.Persistence.Repositories
 
             return true;
         }
+
+        /// <inheritdoc />
+        public async Task<IEnumerable<OrganisationHierarchy>> GetParentsAsync(Guid childId)
+        {
+            if (childId == Guid.Empty)
+                throw new ArgumentException("Child ID cannot be empty", nameof(childId));
+
+            var child = await _context.Organisations
+                .AsNoTracking()
+                .FirstOrDefaultAsync(o => o.Guid == childId);
+
+            if (child == null)
+                return [];
+
+            return await _context.OrganisationHierarchies
+                .Include(h => h.Parent)
+                .ThenInclude(p => p!.Identifiers)
+                .Where(h => h.ChildOrganisationId == child.Id && h.SupersededOn == null)
+                .ToListAsync();
+        }
     }
 }
