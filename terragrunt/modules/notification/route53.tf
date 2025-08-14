@@ -3,12 +3,12 @@ resource "aws_route53_record" "dkim" {
     for pair in flatten([
       for domain in local.effective_mail_from_domains : [
         for i in range(3) : {
-          key     = "${domain}-${i}"
-          domain  = domain
-          index   = i
+          key    = "${domain}-${i}"
+          domain = domain
+          index  = i
         }
       ]
-    ]) : pair.key => {
+      ]) : pair.key => {
       domain = pair.domain
       index  = pair.index
     }

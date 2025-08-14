@@ -59,7 +59,7 @@ data "aws_iam_policy_document" "private" {
         type        = "AWS"
         identifiers = [statement.value]
       }
-      actions = ["s3:GetObject"]
+      actions   = ["s3:GetObject"]
       resources = ["${aws_s3_bucket.this.arn}/*"]
     }
   }
@@ -73,7 +73,7 @@ data "aws_iam_policy_document" "private" {
         type        = "AWS"
         identifiers = [statement.value]
       }
-      actions = ["s3:PutObject"]
+      actions   = ["s3:PutObject"]
       resources = ["${aws_s3_bucket.this.arn}/*"]
     }
   }
