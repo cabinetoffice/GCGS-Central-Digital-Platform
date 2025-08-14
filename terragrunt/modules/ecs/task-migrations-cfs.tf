@@ -8,7 +8,7 @@ module "ecs_migration_tasks_cfs" {
     merge(
       local.cfs_migrations_container_parameters,
       {
-        aws_buckets_notices = module.s3_bucket_fts.bucket
+        aws_buckets_notices = module.s3_bucket_cfs.bucket
       }
     )
   )
