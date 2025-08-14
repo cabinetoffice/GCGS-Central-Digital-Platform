@@ -203,7 +203,8 @@ public class ChildOrganisationResultsPage(
             name: Query,
             role: "buyer",
             limit: 20,
-            threshold: 0.3);
+            threshold: 0.3,
+            includePendingRoles: false);
 
         if (searchResults.Count == 0)
         {
