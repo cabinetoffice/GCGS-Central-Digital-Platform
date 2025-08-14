@@ -20,14 +20,14 @@
       }
     },
     "environment": [
-      {"name": "DB_HOST", "value": "${db_host}"},
-      {"name": "DB_NAME", "value": "${db_name}"},
-      {"name": "AWS_REGION", "value": "${aws_region}"},
-      {"name": "MAIL_DOMAIN", "value": "${public_domain}"}
+      { "name" : "DB_HOST", "value" : "${db_host}"},
+      { "name" : "DB_NAME", "value" : "${db_name}"},
+      { "name" : "AWS_REGION", "value" : "${aws_region}"},
+      { "name" : "MAIL_DOMAIN", "value" : "${public_domain}"}
     ],
     "secrets": [
-      {"name": "DB_PASS", "valueFrom": "${db_pass}"},
-      {"name": "DB_USER", "valueFrom": "${db_user}"}
+      { "name" : "DB_PASS", "valueFrom" : "${db_pass}"},
+      { "name" : "DB_USER", "valueFrom" : "${db_user}"}
     ],
     "volumesFrom": [],
     "mountPoints": [],

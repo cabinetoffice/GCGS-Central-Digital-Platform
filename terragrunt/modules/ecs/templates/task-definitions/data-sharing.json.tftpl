@@ -20,22 +20,23 @@
       }
     },
     "environment": [
-        {"name": "ASPNETCORE_ENVIRONMENT", "value": "${aspcore_environment}"},
-        {"name": "ASPNETCORE_HTTP_PORTS", "value": "${host_port}"},
-        {"name": "Aws__Buckets__PermanentBucket", "value": "${s3_permanent_bucket}"},
-        {"name": "Aws__Buckets__StagingBucket", "value": "${s3_staging_bucket}"},
-        {"name": "Aws__CloudWatch__LogGroup", "value": "${lg_name}"},
-        {"name": "Aws__CloudWatch__LogStream", "value": "${lg_prefix}-serilog"},
-        {"name": "DataSharingApiUrl", "value": "https://data-sharing.${public_domain}"},
-        {"name": "ForwardedHeaders__KnownNetwork", "value": "${vpc_cidr}"},
-        {"name": "OrganisationInformationDatabase__Database", "value": "${db_name}"},
-        {"name": "OrganisationInformationDatabase__Host", "value": "${db_address}"},
-        {"name": "OrganisationInformationDatabase__Server", "value": "${db_address}"},
-        {"name": "Organisation__Authority", "value": "https://authority.${public_domain}"}
+        { "name" : "ASPNETCORE_ENVIRONMENT", "value" : "${aspcore_environment}"},
+        { "name" : "ASPNETCORE_HTTP_PORTS", "value" : "${host_port}"},
+        { "name" : "AWS_REGION", "value" : "eu-west-2"},
+        { "name" : "Aws__Buckets__PermanentBucket", "value" : "${s3_permanent_bucket}"},
+        { "name" : "Aws__Buckets__StagingBucket", "value" : "${s3_staging_bucket}"},
+        { "name" : "Aws__CloudWatch__LogGroup", "value" : "${lg_name}"},
+        { "name" : "Aws__CloudWatch__LogStream", "value" : "${lg_prefix}-serilog"},
+        { "name" : "DataSharingApiUrl", "value" : "https://data-sharing.${public_domain}"},
+        { "name" : "ForwardedHeaders__KnownNetwork", "value" : "${vpc_cidr}"},
+        { "name" : "OrganisationInformationDatabase__Database", "value" : "${db_name}"},
+        { "name" : "OrganisationInformationDatabase__Host", "value" : "${db_address}"},
+        { "name" : "OrganisationInformationDatabase__Server", "value" : "${db_address}"},
+        { "name" : "Organisation__Authority", "value" : "https://authority.${public_domain}"}
     ],
     "secrets": [
-        {"name": "OrganisationInformationDatabase__Password", "valueFrom": "${db_password}"},
-        {"name": "OrganisationInformationDatabase__Username", "valueFrom": "${db_username}"}
+        { "name" : "OrganisationInformationDatabase__Password", "valueFrom" : "${db_password}"},
+        { "name" : "OrganisationInformationDatabase__Username", "valueFrom" : "${db_username}"}
     ],
     "volumesFrom": [],
     "mountPoints": [],

@@ -20,20 +20,21 @@
       }
     },
     "environment": [
-        {"name": "ASPNETCORE_ENVIRONMENT", "value": "${aspcore_environment}"},
-        {"name": "ASPNETCORE_HTTP_PORTS", "value": "${host_port}"},
-        {"name": "Aws__CloudWatch__LogGroup", "value": "${lg_name}"},
-        {"name": "Aws__CloudWatch__LogStream", "value": "${lg_prefix}-serilog"},
-        {"name": "CdpApiKeys__0", "value": "a955a529-1433-4acf-92b2-342a3e5e8086"},
-        {"name": "ForwardedHeaders__KnownNetwork", "value": "${vpc_cidr}"},
-        {"name": "OrganisationInformationDatabase__Database", "value": "${db_name}"},
-        {"name": "OrganisationInformationDatabase__Host", "value": "${db_address}"},
-        {"name": "OrganisationInformationDatabase__Server", "value": "${db_address}"},
-        {"name": "Organisation__Authority", "value": "https://authority.${public_domain}"}
+        { "name" : "ASPNETCORE_ENVIRONMENT", "value" : "${aspcore_environment}"},
+        { "name" : "ASPNETCORE_HTTP_PORTS", "value" : "${host_port}"},
+        { "name" : "AWS_REGION", "value" : "eu-west-2"},
+        { "name" : "Aws__CloudWatch__LogGroup", "value" : "${lg_name}"},
+        { "name" : "Aws__CloudWatch__LogStream", "value" : "${lg_prefix}-serilog"},
+        { "name" : "CdpApiKeys__0", "value" : "a955a529-1433-4acf-92b2-342a3e5e8086"},
+        { "name" : "ForwardedHeaders__KnownNetwork", "value" : "${vpc_cidr}"},
+        { "name" : "OrganisationInformationDatabase__Database", "value" : "${db_name}"},
+        { "name" : "OrganisationInformationDatabase__Host", "value" : "${db_address}"},
+        { "name" : "OrganisationInformationDatabase__Server", "value" : "${db_address}"},
+        { "name" : "Organisation__Authority", "value" : "https://authority.${public_domain}"}
     ],
     "secrets": [
-        {"name": "OrganisationInformationDatabase__Password", "valueFrom": "${db_password}"},
-        {"name": "OrganisationInformationDatabase__Username", "valueFrom": "${db_username}"}
+        { "name" : "OrganisationInformationDatabase__Password", "valueFrom" : "${db_password}"},
+        { "name" : "OrganisationInformationDatabase__Username", "valueFrom" : "${db_username}"}
     ],
     "volumesFrom": [],
     "mountPoints": [],
