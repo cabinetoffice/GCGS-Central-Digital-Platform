@@ -430,7 +430,8 @@ public record OrganisationSearchQuery
     public PartyRole? Role { get; }
     public int? Limit { get; }
     public double Threshold { get; }
-    public OrganisationSearchQuery(string name, int? limit, double? threshold, string? role = null)
+    public bool IncludePendingRoles { get; }
+    public OrganisationSearchQuery(string name, int? limit, double? threshold, string? role = null, bool includePendingRoles = false)
     {
         Name = name;
 
@@ -445,6 +446,8 @@ public record OrganisationSearchQuery
         {
             Threshold = threshold.Value;
         }
+
+        IncludePendingRoles = includePendingRoles;
     }
 }
 

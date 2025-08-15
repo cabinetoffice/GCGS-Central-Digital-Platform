@@ -26,5 +26,12 @@ namespace CO.CDP.OrganisationInformation.Persistence.Interfaces
         /// <param name="id">The relationship ID</param>
         /// <returns>True if successful, false otherwise</returns>
         Task<bool> SupersedeRelationshipAsync(Guid id);
+
+        /// <summary>
+        /// Gets all active relationships where the specified organisation is a child
+        /// </summary>
+        /// <param name="childId">The child organisation ID</param>
+        /// <returns>A collection of active organisation hierarchies</returns>
+        Task<IEnumerable<OrganisationHierarchy>> GetParentsAsync(Guid childId);
     }
 }

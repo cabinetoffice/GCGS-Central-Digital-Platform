@@ -79,14 +79,13 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
                 .FirstOrDefaultAsync(t => t.Name.ToLower() == name.ToLower());
     }
 
-    public async Task<IEnumerable<Organisation>> SearchByName(string name, PartyRole? role, int? limit, double threshold = 0.3)
+    public async Task<IEnumerable<Organisation>> SearchByName(string name, PartyRole? role, int? limit, double threshold = 0.3, bool includePendingRoles = false)
     {
         var query = context.Organisations
             .Include(b => b.Identifiers)
             .Include(p => p.Addresses)
             .ThenInclude(p => p.Address)
             .AsSingleQuery()
-            .Where(t => t.PendingRoles.Count == 0)
             .Select(t => new
             {
                 Organisation = t,
@@ -99,9 +98,17 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
                         .Count(op => op.ParentOrganisationId == t.Organisation.Id) >= 2
                 );
 
-        if (role.HasValue)
+        if (role.HasValue && !includePendingRoles)
+        {
+            query = query.Where(t => t.Organisation.Roles.Contains(role.Value) && t.Organisation.PendingRoles.Count == 0);
+        }
+        else if (role.HasValue)
         {
             query = query.Where(t => t.Organisation.Roles.Contains(role.Value));
+        }
+        else if (!includePendingRoles)
+        {
+            query = query.Where(t => t.Organisation.PendingRoles.Count == 0);
         }
 
         query = query.OrderByDescending(t => t.SimilarityScore);
