@@ -146,7 +146,8 @@ data "aws_iam_policy_document" "ecs_task_access_ses" {
     resources = [
       "arn:aws:ses:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:identity/${local.ses_identity_domain}",
       "arn:aws:ses:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:identity/*.service.gov.uk",
-      "arn:aws:ses:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:identity/*goaco.com"
+      "arn:aws:ses:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:identity/*goaco.com",
+      var.ses_configuration_set_arn
     ]
   }
 }

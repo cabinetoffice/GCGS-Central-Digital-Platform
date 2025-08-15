@@ -4,23 +4,24 @@ module "ecs_service_fts_healthcheck" {
   container_definitions = templatefile(
     "${path.module}/templates/task-definitions/${var.service_configs.fts_healthcheck.name}.json.tftpl",
     {
-      aws_region      = data.aws_region.current.name
-      container_port  = var.service_configs.fts_healthcheck.port
-      cpu             = var.service_configs.fts_healthcheck.cpu
-      db_host         = var.db_fts_cluster_address
-      db_name         = var.db_fts_cluster_name
-      db_pass         = local.db_fts_password
-      db_user         = local.db_fts_username
-      host_port       = var.service_configs.fts_healthcheck.port
-      image           = local.ecr_urls[var.service_configs.fts_healthcheck.name]
-      lg_name         = aws_cloudwatch_log_group.tasks[var.service_configs.fts_healthcheck.name].name
-      lg_prefix       = "app"
-      lg_region       = data.aws_region.current.name
-      memory          = var.service_configs.fts_healthcheck.memory
-      name            = var.service_configs.fts_healthcheck.name
-      public_domain   = var.public_domain
+      aws_region                 = data.aws_region.current.name
+      container_port             = var.service_configs.fts_healthcheck.port
+      cpu                        = var.service_configs.fts_healthcheck.cpu
+      db_host                    = var.db_fts_cluster_address
+      db_name                    = var.db_fts_cluster_name
+      db_pass                    = local.db_fts_password
+      db_user                    = local.db_fts_username
+      host_port                  = var.service_configs.fts_healthcheck.port
+      image                      = local.ecr_urls[var.service_configs.fts_healthcheck.name]
+      lg_name                    = aws_cloudwatch_log_group.tasks[var.service_configs.fts_healthcheck.name].name
+      lg_prefix                  = "app"
+      lg_region                  = data.aws_region.current.name
+      memory                     = var.service_configs.fts_healthcheck.memory
+      name                       = var.service_configs.fts_healthcheck.name
+      public_domain              = var.public_domain
+      ses_configuration_set_name = var.ses_configuration_set_name
       service_version = "latest" //local.service_version
-      vpc_cidr        = var.vpc_cider
+      vpc_cidr                   = var.vpc_cider
     }
   )
 
