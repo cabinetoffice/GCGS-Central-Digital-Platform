@@ -16,8 +16,8 @@ module "cluster_fts" {
   monitoring_role_arn          = var.role_rds_cloudwatch_arn
   performance_insights_enabled = true
   private_subnet_ids           = var.private_subnet_ids
-  public_subnet_ids            = var.environment == "development" ? var.public_subnet_ids : []  # @TODO (ABN) burn me once migration is done
-  publicly_accessible          = true # @TODO (ABN) Disable after migration
+  public_subnet_ids            = var.environment == "development" ? var.public_subnet_ids : [] # @TODO (ABN) burn me once migration is done
+  publicly_accessible          = true                                                          # @TODO (ABN) Disable after migration
   role_terraform_arn           = var.role_terraform_arn
   tags                         = var.tags
 }

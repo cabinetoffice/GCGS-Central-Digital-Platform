@@ -21,6 +21,8 @@ using CO.CDP.OrganisationApp.ThirdPartyApiClients.CompaniesHouse;
 using CO.CDP.OrganisationApp.WebApiClients;
 using CO.CDP.Person.WebApiClient;
 using CO.CDP.Tenant.WebApiClient;
+using CO.CDP.UI.Foundation.Services;
+using CO.CDP.UI.Foundation.Cookies;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
@@ -34,8 +36,11 @@ using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using System.Globalization;
 using System.Net;
 using CO.CDP.OrganisationApp.Constants;
+using CO.CDP.UI.Foundation;
 using static IdentityModel.OidcConstants;
 using static System.Net.Mime.MediaTypeNames;
+using CookiePreferencesService = CO.CDP.OrganisationApp.CookiePreferencesService;
+using ICookiePreferencesService = CO.CDP.OrganisationApp.ICookiePreferencesService;
 using ISession = CO.CDP.OrganisationApp.ISession;
 
 const string FormsHttpClientName = "FormsHttpClient";
@@ -167,7 +172,14 @@ builder.Services.AddTransient<IFormsEngine, FormsEngine>();
 builder.Services.AddTransient<IAnswerDisplayService, AnswerDisplayService>();
 builder.Services.AddTransient<IDiagnosticPage, DiagnosticPage>();
 builder.Services.AddScoped<IUserInfoService, UserInfoService>();
-builder.Services.AddScoped<IFtsUrlService, FtsUrlService>();
+
+builder.Services.AddUiFoundation(builder.Configuration, uiFoundationBuilder =>
+{
+    uiFoundationBuilder.AddCommercialToolsUrlService();
+});
+
+builder.Services.AddScoped<CO.CDP.OrganisationApp.IFtsUrlService, CO.CDP.OrganisationApp.FtsUrlService>();
+
 builder.Services.AddScoped<IAnnouncementService, AnnouncementService>();
 builder.Services.AddScoped<IShareCodeMandatoryInformationService, ShareCodeMandatoryInformationService>();
 

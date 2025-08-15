@@ -20,22 +20,23 @@
       }
     },
     "environment": [
-        {"name": "ASPNETCORE_ENVIRONMENT", "value": "${aspcore_environment}"},
-        {"name": "ASPNETCORE_HTTP_PORTS", "value": "${host_port}"},
-        {"name": "Aws__CloudWatch__LogGroup", "value": "${lg_name}"},
-        {"name": "Aws__CloudWatch__LogStream", "value": "${lg_prefix}-serilog"},
-        {"name": "ForwardedHeaders__KnownNetwork", "value": "${vpc_cidr}"},
-        {"name": "Issuer", "value": "https://authority.${public_domain}"},
-        {"name": "OrganisationInformationDatabase__Database", "value": "${db_name}"},
-        {"name": "OrganisationInformationDatabase__Host", "value": "${db_address}"},
-        {"name": "OrganisationInformationDatabase__Server", "value": "${db_address}"}
+        { "name" : "ASPNETCORE_ENVIRONMENT", "value" : "${aspcore_environment}"},
+        { "name" : "ASPNETCORE_HTTP_PORTS", "value" : "${host_port}"},
+        { "name" : "AWS_REGION", "value" : "eu-west-2"},
+        { "name" : "Aws__CloudWatch__LogGroup", "value" : "${lg_name}"},
+        { "name" : "Aws__CloudWatch__LogStream", "value" : "${lg_prefix}-serilog"},
+        { "name" : "ForwardedHeaders__KnownNetwork", "value" : "${vpc_cidr}"},
+        { "name" : "Issuer", "value" : "https://authority.${public_domain}"},
+        { "name" : "OrganisationInformationDatabase__Database", "value" : "${db_name}"},
+        { "name" : "OrganisationInformationDatabase__Host", "value" : "${db_address}"},
+        { "name" : "OrganisationInformationDatabase__Server", "value" : "${db_address}"}
     ],
     "secrets": [
-        {"name": "OneLogin__Authority", "valueFrom": "${onelogin_authority}"},
-        {"name": "OneLogin__ClientId", "valueFrom": "${onelogin_client_id}"},
-        {"name": "OrganisationInformationDatabase__Password", "valueFrom": "${db_password}"},
-        {"name": "OrganisationInformationDatabase__Username", "valueFrom": "${db_username}"},
-        {"name": "PrivateKey", "valueFrom": "${authority_private_key}"}
+        { "name" : "OneLogin__Authority", "valueFrom" : "${onelogin_authority}"},
+        { "name" : "OneLogin__ClientId", "valueFrom" : "${onelogin_client_id}"},
+        { "name" : "OrganisationInformationDatabase__Password", "valueFrom" : "${db_password}"},
+        { "name" : "OrganisationInformationDatabase__Username", "valueFrom" : "${db_username}"},
+        { "name" : "PrivateKey", "valueFrom" : "${authority_private_key}"}
     ],
     "volumesFrom": [],
     "mountPoints": [],

@@ -49,7 +49,7 @@ locals {
   send_notify_emails_enabled_accounts = ["development", "staging", "integration", "production"]
   send_notify_emails                  = contains(local.send_notify_emails_enabled_accounts, var.environment)
 
-  migrations_all  = concat(local.migrations_sirsi, local.migrations_fts, local.migrations_cfs)
+  migrations_all = concat(local.migrations_sirsi, local.migrations_fts, local.migrations_cfs)
   service_configs = {
     for name, config in var.service_configs :
     config.name => config if !contains(local.migrations_all, config.name)
@@ -63,7 +63,7 @@ locals {
   waf_enabled = true
 
   # @TODO (ABN) DP-1747 Remove env-based logic and these locals as well as old source of FTS configs once migration is completed
-  fts_service_url = var.environment == "development" ? "https://fts.${var.public_domain}" : data.aws_secretsmanager_secret_version.fts_service_url.secret_string
+  fts_service_url                   = var.environment == "development" ? "https://fts.${var.public_domain}" : data.aws_secretsmanager_secret_version.fts_service_url.secret_string
   onelogin_logout_notification_urls = var.environment == "development" ? "https://fts.${var.public_domain}" : join(",", var.onelogin_logout_notification_urls)
 
   ses_identity_domain = var.is_production ? replace(var.public_domain, "supplier-information.", "") : var.public_domain

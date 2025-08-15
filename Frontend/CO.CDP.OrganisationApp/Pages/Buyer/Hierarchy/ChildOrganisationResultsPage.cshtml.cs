@@ -36,6 +36,7 @@ public class ChildOrganisationResultsPage(
 
     [BindProperty] public Guid SelectedChildId { get; set; }
 
+    public string? FeedbackMessage { get; set; }
     public string? ErrorMessage { get; set; }
 
     public async Task<IActionResult> OnGetAsync()
@@ -45,7 +46,7 @@ public class ChildOrganisationResultsPage(
             return Page();
         }
 
-        var (results, errorMessage, redirectToErrorPage) = await ExecuteSearch();
+        var (results, feedbackMessage, redirectToErrorPage) = await ExecuteSearch();
 
         if (redirectToErrorPage)
         {
@@ -53,10 +54,11 @@ public class ChildOrganisationResultsPage(
         }
 
         Results = results;
-        ErrorMessage = errorMessage;
+        FeedbackMessage = feedbackMessage;
 
         return Page();
     }
+
 
     private ChildOrganisation MapOrganisationSearchResultToChildOrganisation(OrganisationSearchResult searchResult)
     {
@@ -89,7 +91,7 @@ public class ChildOrganisationResultsPage(
             return Page();
         }
 
-        var (results, errorMessage, redirectToErrorPage) = await ExecuteSearch();
+        var (results, feedbackMessage, redirectToErrorPage) = await ExecuteSearch();
 
         if (redirectToErrorPage)
         {
@@ -97,7 +99,7 @@ public class ChildOrganisationResultsPage(
         }
 
         Results = results;
-        ErrorMessage = errorMessage;
+        FeedbackMessage = feedbackMessage;
 
         if (Results.Count == 0)
         {
@@ -116,7 +118,7 @@ public class ChildOrganisationResultsPage(
             new { Id, ChildId = SelectedChildId, Query, Ppon = selectedOrganisation?.GetIdentifierAsString() });
     }
 
-    private async Task<(List<ChildOrganisation> Results, string? ErrorMessage, bool RedirectToErrorPage)>
+    private async Task<(List<ChildOrganisation> Results, string? FeedbackMessage, bool RedirectToErrorPage)>
         ExecuteSearch()
     {
         if (string.IsNullOrWhiteSpace(Query))
@@ -128,13 +130,13 @@ public class ChildOrganisationResultsPage(
         {
             var (isLikelyPpon, formattedPpon) = OrganisationIdentifierExtensions.IsLikelyPpon(Query);
 
-            var (results, errorMessage) = await (isLikelyPpon
+            var (results, feedbackMessage) = await (isLikelyPpon
                 ? ExecutePponSearch(formattedPpon)
                 : ExecuteNameSearch());
 
             if (results.Count == 0)
             {
-                return (results, errorMessage, false);
+                return (results, feedbackMessage, false);
             }
 
             return results.Count > 0
@@ -175,7 +177,7 @@ public class ChildOrganisationResultsPage(
         return (new List<ChildOrganisation> { MapOrganisationLookupResultToChildOrganisation(organisation) }, null);
     }
 
-    private async Task<(List<ChildOrganisation> Results, string? ErrorMessage)> ExecuteNameSearch()
+    private async Task<(List<ChildOrganisation> Results, string? FeedbackMessage)> ExecuteNameSearch()
     {
         var searchResults = await OrganisationClientExtensions.SearchOrganisationAsync(_organisationClient,
             name: Query,

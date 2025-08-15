@@ -23,6 +23,8 @@ resource "aws_sqs_queue_policy" "ses_json" {
 }
 
 resource "aws_sns_topic_subscription" "ses_json_sqs" {
+  count = var.enable_ses_logs ? 1 : 0
+
   topic_arn = aws_sns_topic.ses_json_events.arn
   protocol  = "sqs"
   endpoint  = aws_sqs_queue.ses_json.arn

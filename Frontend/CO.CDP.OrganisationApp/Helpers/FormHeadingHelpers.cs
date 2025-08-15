@@ -184,4 +184,19 @@ public static class FormHeadingHelpers
 
         return content;
     }
+
+    public static IHtmlContent RenderHeadingWithoutCaption(string? heading, bool isFirst = false, HeadingSize? headingSize = null)
+    {
+        if (string.IsNullOrWhiteSpace(heading))
+            return HtmlString.Empty;
+
+        var (headingTag, headingClass) = GetHeadingTagAndClass(headingSize, isFirst);
+
+        var content = new HtmlContentBuilder();
+        content.AppendHtml($"<{headingTag} class=\"{headingClass}\">");
+        content.AppendHtml(heading);
+        content.AppendHtml($"</{headingTag}>");
+
+        return content;
+    }
 }

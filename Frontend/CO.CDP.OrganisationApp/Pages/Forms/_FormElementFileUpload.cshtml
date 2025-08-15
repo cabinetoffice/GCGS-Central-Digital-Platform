@@ -47,14 +47,14 @@
 <div class="govuk-form-group @((Model.IsRequired && uploadFileHasError) || selectOptionHasError ? "govuk-form-group--error" : "")">
     @if (Model.IsRequired)
     {
-        @RenderHeading(Model.Heading, Model.Caption, Model.IsFirstQuestion, Model.Options?.Layout?.Heading?.Size)
+        @RenderHeadingWithoutCaption(Model.Heading, Model.IsFirstQuestion, Model.Options?.Layout?.Heading?.Size)
         RenderDescription();
         RenderField();
     }
     else
     {
         <fieldset class="govuk-fieldset">
-            @RenderLegend(Model.Heading, Model.Caption, Model.IsFirstQuestion, Model.Options?.Layout?.Heading?.Size)
+            @RenderLegendWithoutCaption(Model.Heading, Model.IsFirstQuestion, Model.Options?.Layout?.Heading?.Size)
             @{
                 RenderDescription();
             }

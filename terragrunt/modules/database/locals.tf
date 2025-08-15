@@ -5,7 +5,7 @@ locals {
 
   is_production = var.is_production || var.environment == "staging"
 
-  cfs_cluster_name          = "${local.name_prefix}-cfs-cluster"
+  cfs_cluster_name = "${local.name_prefix}-cfs-cluster"
   cfs_db_parameters_cluster = {
     character_set_database          = "latin1"
     character_set_server            = "latin1"
@@ -25,7 +25,7 @@ locals {
     sql_mode                  = "NO_ENGINE_SUBSTITUTION"
   }
 
-  fts_cluster_name          = "${local.name_prefix}-fts-cluster"
+  fts_cluster_name = "${local.name_prefix}-fts-cluster"
   fts_db_parameters_cluster = {
     character_set_database          = "latin1"
     character_set_server            = "latin1"
@@ -47,6 +47,6 @@ locals {
 
   allowed_ips = nonsensitive(jsondecode(data.aws_secretsmanager_secret_version.allowed_ips.secret_string))
 
-  has_import_instance = true
+  has_import_instance  = true
   import_instance_tags = merge(var.tags, { Name = "fts-db-import" })
 }

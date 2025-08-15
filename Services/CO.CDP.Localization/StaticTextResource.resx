@@ -2057,7 +2057,17 @@
     <value>return to organisation details</value>
   </data>
   <data name="BuyerParentChildRelationship_ResultsPage_NoResults" xml:space="preserve">
-    <value>No organisations found matching your search criteria </value>
+    <value>
+    &lt;p class="govuk-body"&gt;
+      &lt;span class="govuk-!-font-weight-bold"&gt;0&lt;/span&gt; organisations found.
+    &lt;/p&gt;
+    &lt;p class="govuk-body"&gt;
+      &lt;span class="govuk-!-font-weight-bold"&gt;There are no matching results.&lt;/span&gt;
+    &lt;/p&gt;
+    &lt;p class="govuk-body"&gt;
+      Double-check your spelling to improve your search results.
+    &lt;/p&gt;
+  </value>
   </data>
   <data name="BuyerParentChildRelationship_ConfirmPage_Title" xml:space="preserve">
     <value>Confirm your child organisation details</value>
@@ -4390,10 +4400,16 @@
   <data name="BuyerView_TileThree_Title">
     <value>Statement of Work Assessment tool</value>
   </data>
-  <data name="BuyerView_TileThree_Body">
+  <data name="BuyerView_TileThree_Body" xml:space="preserve">
     <value>Review Statements of Work to make sure they meet procurement and commercial quality standards.</value>
   </data>
+  <data name="BuyerView_TileFour_Title">
+    <value>Register of Commercial Tools</value>
+  </data>
+  <data name="BuyerView_TileFour_Body">
+    <value>Search for frameworks and dynamic markets.</value>
+  </data>
   <data name="Global_Decimal_InvalidError" xml:space="preserve">
-    <value>Enter a valid decimal number</value>
+    <value>Enter a valid number</value>
   </data>
 </root>

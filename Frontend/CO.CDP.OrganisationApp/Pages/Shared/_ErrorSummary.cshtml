@@ -10,12 +10,16 @@
 			</h2>
 			<div class="govuk-error-summary__body">
 				<ul class="govuk-list govuk-error-summary__list">
-					@foreach (var ms in Model.Where(m => m.Value != null))
+					@{
+						var distinctErrors = Model
+							.Where(m => m.Value != null)
+							.SelectMany(ms => ms.Value!.Errors.Select(error => new { ms.Key, error.ErrorMessage }))
+							.GroupBy(item => item.ErrorMessage)
+							.Select(group => group.First());
+					}
+					@foreach (var item in distinctErrors)
 					{
-						@foreach (var msv in ms.Value!.Errors)
-						{
-							<li><a href="#@ms.Key">@msv.ErrorMessage</a></li>
-						}
+						<li><a href="#@item.Key">@item.ErrorMessage</a></li>
 					}
 				</ul>
 			</div>

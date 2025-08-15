@@ -100,8 +100,8 @@ locals {
         "https://www-staging.find-tender.service.gov.uk/auth/backchannellogout",
         "https://fts.staging.supplier-information.find-tender.service.gov.uk/auth/backchannellogout"
       ]
-      pinned_service_version_cfs        = "1.0.2"
-      pinned_service_version_fts        = "1.0.14"
+      pinned_service_version_cfs        = "1.0.3"
+      pinned_service_version_fts        = "1.0.15"
       pinned_service_version            = "1.0.72"
       postgres_instance_type            = "db.t4g.micro"
       postgres_aurora_instance_type     = "db.r5.large"
@@ -292,7 +292,7 @@ locals {
         "https://fts.integration.supplier-information.find-tender.service.gov.uk/auth/backchannellogout"
       ]
       pinned_service_version_cfs        = "1.0.2"
-      pinned_service_version_fts        = "1.0.12"
+      pinned_service_version_fts        = "1.0.14"
       pinned_service_version            = "1.0.71"
       postgres_instance_type            = "db.t4g.micro"
       postgres_aurora_instance_type     = "db.r5.large"
@@ -344,7 +344,7 @@ locals {
         "https://fts.supplier-information.find-tender.service.gov.uk/auth/backchannellogout"
       ],
       pinned_service_version_cfs        = "1.0.2"
-      pinned_service_version_fts        = "1.0.12"
+      pinned_service_version_fts        = "1.0.14"
       pinned_service_version            = "1.0.71"
       postgres_instance_type            = "db.t4g.micro"
       postgres_aurora_instance_type     = "db.r5.8xlarge"

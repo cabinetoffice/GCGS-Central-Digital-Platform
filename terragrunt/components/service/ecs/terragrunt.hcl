@@ -131,6 +131,13 @@ dependency service_queue {
   }
 }
 
+dependency service_notification {
+  config_path = "../../service/notification"
+  mock_outputs = {
+    configuration_set_name = "mock"
+  }
+}
+
 inputs = {
 
   account_ids                       = local.global_vars.locals.account_ids
@@ -171,7 +178,6 @@ inputs = {
   vpc_id                      = dependency.core_networking.outputs.vpc_id
   vpc_cider                   = dependency.core_networking.outputs.vpc_cider
   waf_acl_arn                 = dependency.core_networking.outputs.waf_acl_arn
-
 
   alb_sg_id                 = dependency.core_security_groups.outputs.alb_sg_id
   db_mysql_sg_id            = dependency.core_security_groups.outputs.db_mysql_sg_id
@@ -224,4 +230,7 @@ inputs = {
   queue_entity_verification_url = dependency.service_queue.outputs.entity_verification_queue_url
   queue_organisation_arn        = dependency.service_queue.outputs.organisation_queue_arn
   queue_organisation_url        = dependency.service_queue.outputs.organisation_queue_url
+
+  ses_configuration_set_arn  = dependency.service_notification.outputs.configuration_set_arn
+  ses_configuration_set_name = dependency.service_notification.outputs.configuration_set_name
 }
