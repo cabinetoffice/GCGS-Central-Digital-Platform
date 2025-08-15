@@ -1,3 +1,8 @@
+output "configuration_set_arn" {
+  value = aws_ses_configuration_set.json_logging.arn
+}
+
+
 output "configuration_set_name" {
   value = aws_ses_configuration_set.json_logging.name
 }

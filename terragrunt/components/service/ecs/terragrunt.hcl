@@ -231,5 +231,6 @@ inputs = {
   queue_organisation_arn        = dependency.service_queue.outputs.organisation_queue_arn
   queue_organisation_url        = dependency.service_queue.outputs.organisation_queue_url
 
+  ses_configuration_set_arn  = dependency.service_notification.outputs.configuration_set_arn
   ses_configuration_set_name = dependency.service_notification.outputs.configuration_set_name
 }

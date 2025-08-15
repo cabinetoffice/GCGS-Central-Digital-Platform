@@ -301,8 +301,13 @@ variable "service_configs" {
   }))
 }
 
+variable "ses_configuration_set_arn" {
+  description = "ARN of the SES Configuration set"
+  type = string
+}
+
 variable "ses_configuration_set_name" {
-  description = "Name of the SES Configuration Configuration"
+  description = "Name of the SES Configuration set"
   type = string
 }
 

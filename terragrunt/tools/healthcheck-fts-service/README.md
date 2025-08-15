@@ -36,15 +36,5 @@ docker push ${ACCOUNT_ID}.dkr.ecr.eu-west-2.amazonaws.com/cdp-fts-healthcheck:la
 
 ```shell
 aws-switch-to-cdp-sirsi-development-goaco-terraform
-ave aws ecs update-service --cluster cdp-sirsi --service healthcheck --force-new-deployment | jq .
-```
-
-```shell
-aws-switch-to-cdp-sirsi-staging-goaco-terraform
-ave aws ecs update-service --cluster cdp-sirsi --service healthcheck --force-new-deployment | jq .
-```
-
-```shell
-aws-switch-to-cdp-sirsi-integration-goaco-terraform
-ave aws ecs update-service --cluster cdp-sirsi --service healthcheck --force-new-deployment | jq .
+ave aws ecs update-service --cluster cdp-sirsi --service fts-healthcheck --force-new-deployment | jq .
 ```
