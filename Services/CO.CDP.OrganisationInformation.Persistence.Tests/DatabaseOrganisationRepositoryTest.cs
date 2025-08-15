@@ -1445,6 +1445,149 @@ public class DatabaseOrganisationRepositoryTest(OrganisationInformationPostgreSq
         result.Should().HaveCount(1);
     }
 
+    [Fact]
+    public async Task SearchByName_WithBuyerRoleAndNoPendingRole_ReturnsOnlyOrganisationsWithBuyerRole()
+    {
+        using var repository = OrganisationRepository();
+        await using var context = GetDbContext();
+
+        var orgs = new[]
+        {
+            GivenOrganisation(
+                name: "TestOrg1",
+                roles: new List<PartyRole> { PartyRole.Buyer },
+                pendingRoles: new List<PartyRole>()
+            ),
+            GivenOrganisation(
+                name: "TestOrg2",
+                roles: new List<PartyRole> { PartyRole.Buyer },
+                pendingRoles: new List<PartyRole> { PartyRole.Supplier }
+            ),
+            GivenOrganisation(
+                name: "TestOrg3",
+                roles: new List<PartyRole>(),
+                pendingRoles: new List<PartyRole> { PartyRole.Buyer }
+            ),
+            GivenOrganisation(
+                name: "TestOrg4",
+                roles: new List<PartyRole> { PartyRole.Supplier },
+                pendingRoles: new List<PartyRole>()
+            ),
+            GivenOrganisation(
+                name: "TestOrg5",
+                roles: new List<PartyRole> { PartyRole.Buyer, PartyRole.Supplier },
+                pendingRoles: new List<PartyRole> { PartyRole.Tenderer }
+            )
+        };
+
+        await context.Organisations.AddRangeAsync(orgs);
+        await context.SaveChangesAsync();
+
+        var results = await repository.SearchByName("TestOrg", PartyRole.Buyer, null, 0.3, false);
+
+        results.Should().HaveCount(1);
+        results.Should().Contain(o => o.Name == "TestOrg1");
+        results.Should().NotContain(o => o.Name == "TestOrg2"); // Has pending roles
+        results.Should().NotContain(o => o.Name == "TestOrg3"); // No active buyer role
+        results.Should().NotContain(o => o.Name == "TestOrg4"); // No buyer role
+        results.Should().NotContain(o => o.Name == "TestOrg5"); // Has pending roles
+    }
+
+    [Fact]
+    public async Task SearchByName_WithNoRoleAndIncludePendingRole_ReturnsAllOrganisations()
+    {
+        using var repository = OrganisationRepository();
+        await using var context = GetDbContext();
+
+        var orgs = new[]
+        {
+            GivenOrganisation(
+                name: "SearchOrg1",
+                roles: new List<PartyRole> { PartyRole.Buyer },
+                pendingRoles: new List<PartyRole>()
+            ),
+            GivenOrganisation(
+                name: "SearchOrg2",
+                roles: new List<PartyRole>(),
+                pendingRoles: new List<PartyRole> { PartyRole.Supplier }
+            ),
+            GivenOrganisation(
+                name: "SearchOrg3",
+                roles: new List<PartyRole> { PartyRole.Tenderer },
+                pendingRoles: new List<PartyRole> { PartyRole.Buyer }
+            ),
+            GivenOrganisation(
+                name: "SearchOrg4",
+                roles: new List<PartyRole>(),
+                pendingRoles: new List<PartyRole>()
+            ),
+            GivenOrganisation(
+                name: "SearchOrg5",
+                roles: new List<PartyRole> { PartyRole.Buyer },
+                pendingRoles: new List<PartyRole> { PartyRole.Supplier }
+            )
+        };
+
+        await context.Organisations.AddRangeAsync(orgs);
+        await context.SaveChangesAsync();
+
+        var results = await repository.SearchByName("SearchOrg", null, null, 0.3, true);
+
+        results.Should().HaveCount(5);
+        results.Should().Contain(o => o.Name == "SearchOrg1" && o.PendingRoles.Count == 0);
+        results.Should().Contain(o => o.Name == "SearchOrg2" && o.PendingRoles.Contains(PartyRole.Supplier));
+        results.Should().Contain(o => o.Name == "SearchOrg3" && o.PendingRoles.Contains(PartyRole.Buyer));
+        results.Should().Contain(o => o.Name == "SearchOrg4" && o.PendingRoles.Count == 0);
+        results.Should().Contain(o => o.Name == "SearchOrg5" && o.PendingRoles.Contains(PartyRole.Supplier));
+    }
+
+    [Fact]
+    public async Task SearchByName_WithNoRoleAndNoPendingRole_ReturnsOrganisationsWithoutPendingRoles()
+    {
+        using var repository = OrganisationRepository();
+        await using var context = GetDbContext();
+
+        var orgs = new[]
+        {
+            GivenOrganisation(
+                name: "FilterOrg1",
+                roles: new List<PartyRole> { PartyRole.Buyer },
+                pendingRoles: new List<PartyRole>()
+            ),
+            GivenOrganisation(
+                name: "FilterOrg2",
+                roles: new List<PartyRole> { PartyRole.Supplier },
+                pendingRoles: new List<PartyRole> { PartyRole.Buyer }
+            ),
+            GivenOrganisation(
+                name: "FilterOrg3",
+                roles: new List<PartyRole> { PartyRole.Buyer },
+                pendingRoles: new List<PartyRole> { PartyRole.Supplier }
+            ),
+            GivenOrganisation(
+                name: "FilterOrg4",
+                roles: new List<PartyRole>(),
+                pendingRoles: new List<PartyRole>()
+            ),
+            GivenOrganisation(
+                name: "FilterOrg5",
+                roles: new List<PartyRole> { PartyRole.Tenderer },
+                pendingRoles: new List<PartyRole>()
+            )
+        };
+
+        await context.Organisations.AddRangeAsync(orgs);
+        await context.SaveChangesAsync();
+
+        var results = await repository.SearchByName("FilterOrg", null, null, 0.3, false);
+
+        results.Should().HaveCount(3);
+        results.Should().Contain(o => o.Name == "FilterOrg1" && o.PendingRoles.Count == 0);
+        results.Should().NotContain(o => o.Name == "FilterOrg2"); // Has pending roles
+        results.Should().NotContain(o => o.Name == "FilterOrg3"); // Has pending roles
+        results.Should().Contain(o => o.Name == "FilterOrg4" && o.PendingRoles.Count == 0);
+        results.Should().Contain(o => o.Name == "FilterOrg5" && o.PendingRoles.Count == 0);
+    }
 
     private DatabaseOrganisationRepository OrganisationRepository()
         => new(GetDbContext());

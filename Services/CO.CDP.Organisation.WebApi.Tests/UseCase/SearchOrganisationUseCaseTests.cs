@@ -100,7 +100,7 @@ public class SearchOrganisationUseCaseTests : IClassFixture<AutoMapperFixture>
         };
 
         _organisationRepositoryMock
-            .Setup(repo => repo.SearchByName(It.IsAny<string>(), null, 10, 0.5))
+            .Setup(repo => repo.SearchByName(It.IsAny<string>(), null, 10, 0.5, false))
             .ReturnsAsync(organisations);
 
         var results = await _useCase.Execute(new OrganisationSearchQuery("Test org", 10, 0.5));
@@ -114,7 +114,7 @@ public class SearchOrganisationUseCaseTests : IClassFixture<AutoMapperFixture>
         var organisationId = Guid.NewGuid();
 
         _organisationRepositoryMock
-            .Setup(repo => repo.SearchByName(It.IsAny<string>(), null, 10, 0.3))
+            .Setup(repo => repo.SearchByName(It.IsAny<string>(), null, 10, 0.3, false))
             .ReturnsAsync([]);
 
         var results = await _useCase.Execute(new OrganisationSearchQuery("Test org", 10, 0.3));

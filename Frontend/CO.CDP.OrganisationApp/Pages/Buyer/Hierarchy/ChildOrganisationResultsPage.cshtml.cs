@@ -58,7 +58,6 @@ public class ChildOrganisationResultsPage(
         return Page();
     }
 
-
     private ChildOrganisation MapOrganisationSearchResultToChildOrganisation(OrganisationSearchResult searchResult)
     {
         return new ChildOrganisation(
@@ -138,10 +137,8 @@ public class ChildOrganisationResultsPage(
                 return (results, errorMessage, false);
             }
 
-            var filteredResults = await FilterResults(results);
-
-            return filteredResults.Count > 0
-                ? (filteredResults, null, false)
+            return results.Count > 0
+                ? (results, null, false)
                 : (new List<ChildOrganisation>(), StaticTextResource.BuyerParentChildRelationship_ResultsPage_NoResults,
                     false);
         }
@@ -152,24 +149,6 @@ public class ChildOrganisationResultsPage(
         {
             LogApiError(ex);
             return (new List<ChildOrganisation>(), null, true);
-        }
-    }
-
-    private async Task<List<ChildOrganisation>> FilterResults(List<ChildOrganisation> results)
-    {
-        try
-        {
-            var connectedChildren = await _organisationClient.GetChildOrganisationsAsync(Id);
-            var connectedChildIds = connectedChildren.Select(c => c.Id).ToHashSet();
-
-            return results
-                .Where(r => r.OrganisationId != Id && !connectedChildIds.Contains(r.OrganisationId))
-                .ToList();
-        }
-        catch (ApiException ex) when (ex.StatusCode == 404)
-        {
-            _logger.LogInformation("No child organisations found for parent {ParentId}", Id);
-            return results.Where(r => r.OrganisationId != Id).ToList();
         }
     }
 
@@ -186,7 +165,7 @@ public class ChildOrganisationResultsPage(
             name: null,
             identifier: pponIdentifier);
 
-        if (organisation == null || !organisation.Roles.Contains(PartyRole.Buyer) ||
+        if (organisation == null ||
             organisation.Identifier.Scheme != "GB-PPON")
         {
             return (new List<ChildOrganisation>(),
@@ -200,9 +179,10 @@ public class ChildOrganisationResultsPage(
     {
         var searchResults = await OrganisationClientExtensions.SearchOrganisationAsync(_organisationClient,
             name: Query,
-            role: "buyer",
+            role: null,
             limit: 20,
-            threshold: 0.3);
+            threshold: 0.3,
+            true);
 
         if (searchResults.Count == 0)
         {
