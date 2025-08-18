@@ -476,7 +476,7 @@ public class ChildOrganisationResultsPageTests
         _mockOrganisationClient
             .Setup(client => client.SearchOrganisationAsync(
                 It.Is<string>(q => q == query),
-                It.Is<string>(r => r == null),
+                It.Is<string?>(r => r == null),
                 It.Is<int>(l => l == 20),
                 It.Is<double>(t => Math.Abs(t - 0.3) < Tolerance),
                 It.Is<bool>(f => f == true)))
@@ -684,5 +684,50 @@ public class ChildOrganisationResultsPageTests
 
         _model.Results.Should().HaveCount(1);
         _model.Results.First().Name.Should().Be("GB-PPON Organisation");
+    }
+
+    [Fact]
+    public async Task OnGetAsync_FiltersOutParentOrganisation()
+    {
+        var parentId = Guid.NewGuid();
+        var childId1 = Guid.NewGuid();
+        var childId2 = Guid.NewGuid();
+        var childId3 = Guid.NewGuid();
+        const string query = "test query";
+
+        var searchResults = new List<OrganisationSearchResult>
+        {
+            CreateTestSearchResult("Parent Org", parentId, "GB-PPON", "PARENT-1234"),
+            CreateTestSearchResult("Child Org 1", childId1, "GB-PPON", "CHILD-5678"),
+            CreateTestSearchResult("Child Org 2", childId2, "GB-PPON", "CHILD-9012"),
+            CreateTestSearchResult("Child Org 3", childId3, "GB-PPON", "CHILD-3456"),
+        };
+
+        _model.Id = parentId;
+        _model.Query = query;
+
+        _mockOrganisationClient
+            .Setup(client => client.SearchOrganisationAsync(
+                query, null, 20, 0.3, true))
+            .ReturnsAsync(searchResults);
+
+        _mockOrganisationClient.Setup(c => c.GetChildOrganisationsAsync(It.IsAny<Guid>()))
+            .ReturnsAsync(new List<OrganisationSummary>());
+
+        await _model.OnGetAsync();
+
+        _model.Results.Should().HaveCount(3);
+        _model.Results.Should().NotContain(o => o.OrganisationId == parentId);
+        _model.Results.Should().Contain(o => o.OrganisationId == childId1);
+        _model.Results.Should().Contain(o => o.OrganisationId == childId2);
+        _model.Results.Should().Contain(o => o.OrganisationId == childId3);
+
+        var resultsList = _model.Results.OrderBy(r => r.Name).ToList();
+        resultsList[0].Name.Should().Be("Child Org 1");
+        resultsList[0].GetFormattedIdentifier().Should().Be("PPON: CHILD-5678");
+        resultsList[1].Name.Should().Be("Child Org 2");
+        resultsList[1].GetFormattedIdentifier().Should().Be("PPON: CHILD-9012");
+        resultsList[2].Name.Should().Be("Child Org 3");
+        resultsList[2].GetFormattedIdentifier().Should().Be("PPON: CHILD-3456");
     }
 }

@@ -139,8 +139,10 @@ public class ChildOrganisationResultsPage(
                 return (results, feedbackMessage, false);
             }
 
-            return results.Count > 0
-                ? (results, null, false)
+            var filteredResults = FilterResults(results);
+
+            return filteredResults.Count > 0
+                ? (filteredResults, null, false)
                 : (new List<ChildOrganisation>(), StaticTextResource.BuyerParentChildRelationship_ResultsPage_NoResults,
                     false);
         }
@@ -151,6 +153,21 @@ public class ChildOrganisationResultsPage(
         {
             LogApiError(ex);
             return (new List<ChildOrganisation>(), null, true);
+        }
+    }
+
+    private List<ChildOrganisation> FilterResults(List<ChildOrganisation> results)
+    {
+        try
+        {
+            return results
+                .Where(r => r.OrganisationId != Id)
+                .ToList();
+        }
+        catch (ApiException ex) when (ex.StatusCode == 404)
+        {
+            _logger.LogInformation("No child organisations found for parent {ParentId}", Id);
+            return results.Where(r => r.OrganisationId != Id).ToList();
         }
     }
 
