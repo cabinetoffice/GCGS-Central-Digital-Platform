@@ -336,38 +336,4 @@ public class ChildOrganisationConfirmPageTests
         _model.WarningTagMessage.Should().Be(StaticTextResource.BuyerParentChildRelationship_ConfirmPage_Tag_ChildConnectedAsChild);
         _model.WarningMessage.Should().Be(StaticTextResource.BuyerParentChildRelationship_ConfirmPage_Warning_ChildConnectedAsChild);
     }
-
-    [Fact]
-    public async Task OnGetAsync_WhenChildIsSameAsOrganisation_SetsWarningMessage()
-    {
-        var id = Guid.NewGuid();
-        const string ppon = "ABCD-1234-EFGH";
-
-        _model.Id = id;
-        _model.ChildId = id;
-        _model.Ppon = ppon;
-
-        var organisation = new CDP.Organisation.WebApiClient.Organisation(
-            additionalIdentifiers: [],
-            addresses: [],
-            contactPoint: null,
-            id: id,
-            identifier: new Identifier("12345", "Test Org", "DUNS", new Uri("http://test")),
-            name: "Test Organisation",
-            type: OrganisationType.Organisation,
-            roles: [PartyRole.Buyer],
-            details: new Details(approval: null, buyerInformation: null, pendingRoles: [],
-                publicServiceMissionOrganization: null, scale: null, shelteredWorkshop: null, vcse: null)
-        );
-
-        _mockOrganisationClient
-            .Setup(client => client.LookupOrganisationAsync(null, ppon))
-            .ReturnsAsync(organisation);
-
-        var result = await _model.OnGetAsync();
-
-        result.Should().BeOfType<PageResult>();
-        _model.WarningTagMessage.Should().Be(StaticTextResource.BuyerParentChildRelationship_ConfirmPage_Tag_ChildSameAsOrganisation);
-        _model.WarningMessage.Should().Be(StaticTextResource.BuyerParentChildRelationship_ConfirmPage_Warning_ChildSameAsOrganisation);
-    }
 }

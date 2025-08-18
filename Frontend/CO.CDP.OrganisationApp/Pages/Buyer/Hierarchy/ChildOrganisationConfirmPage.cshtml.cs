@@ -99,13 +99,6 @@ public class ChildOrganisationConfirmPage(
                 WarningMessage = @StaticTextResource
                     .BuyerParentChildRelationship_ConfirmPage_Warning_ChildConnectedAsChild;
             }
-            else if (IsChildSameAsOrganisation())
-            {
-                WarningTagMessage = @StaticTextResource
-                    .BuyerParentChildRelationship_ConfirmPage_Tag_ChildSameAsOrganisation;
-                WarningMessage = @StaticTextResource
-                    .BuyerParentChildRelationship_ConfirmPage_Warning_ChildSameAsOrganisation;
-            }
         }
         catch (Exception ex)
         {
@@ -171,18 +164,6 @@ public class ChildOrganisationConfirmPage(
             "Child organisation {ChildId} is already a parent to the organisation for the parent {ParentId}",
             ChildId, Id);
         return true;
-    }
-
-    private bool IsChildSameAsOrganisation()
-    {
-        if (Id == ChildId)
-        {
-            _logger.LogInformation("Child organisation {ChildId} is the same as the organisation {ParentId}",
-                ChildId, Id);
-            return true;
-        }
-
-        return false;
     }
 
     public async Task<IActionResult> OnPostAsync()
