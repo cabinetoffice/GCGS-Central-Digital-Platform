@@ -2073,19 +2073,19 @@
     <value>Confirm your child organisation details</value>
   </data>
   <data name="BuyerParentChildRelationship_ConfirmPage_Warning_ApprovalPending" xml:space="preserve">
-    <value>The selected organisation is pending approval as a buyer.</value>
+    <value>The selected organisation is pending approval.</value>
   </data>
   <data name="BuyerParentChildRelationship_ConfirmPage_Tag_ApprovalPending" xml:space="preserve">
     <value>Pending approval</value>
   </data>
   <data name="BuyerParentChildRelationship_ConfirmPage_Warning_ChildConnectedAsParent" xml:space="preserve">
-    <value>The selected organisation is a parent of the organisation.</value>
+    <value>The selected organisation is already a parent of this organisation.</value>
   </data>
   <data name="BuyerParentChildRelationship_ConfirmPage_Tag_ChildConnectedAsParent" xml:space="preserve">
     <value>Parent organisation</value>
   </data>
   <data name="BuyerParentChildRelationship_ConfirmPage_Warning_ChildConnectedAsChild" xml:space="preserve">
-    <value>The selected organisation is already connected as a child.</value>
+    <value>The selected organisation is already connected as a child to this organisation.</value>
   </data>
   <data name="BuyerParentChildRelationship_ConfirmPage_Tag_ChildConnectedAsChild" xml:space="preserve">
     <value>Already added</value>
