@@ -1446,7 +1446,7 @@ public class DatabaseOrganisationRepositoryTest(OrganisationInformationPostgreSq
     }
 
     [Fact]
-    public async Task SearchByName_WithBuyerRoleAndNoPendingRole_ReturnsOnlyOrganisationsWithBuyerRole()
+    public async Task SearchByName_WithBuyerRoleAndIncludePendingRoleFalse_ReturnsOnlyOrganisationsWithBuyerRole()
     {
         using var repository = OrganisationRepository();
         await using var context = GetDbContext();
@@ -1494,7 +1494,7 @@ public class DatabaseOrganisationRepositoryTest(OrganisationInformationPostgreSq
     }
 
     [Fact]
-    public async Task SearchByName_WithNoRoleAndIncludePendingRole_ReturnsAllOrganisations()
+    public async Task SearchByName_WithNoRoleAndIncludePendingRoleTrue_ReturnsAllOrganisations()
     {
         using var repository = OrganisationRepository();
         await using var context = GetDbContext();
@@ -1542,7 +1542,7 @@ public class DatabaseOrganisationRepositoryTest(OrganisationInformationPostgreSq
     }
 
     [Fact]
-    public async Task SearchByName_WithNoRoleAndNoPendingRole_ReturnsOrganisationsWithoutPendingRoles()
+    public async Task SearchByName_WithNoRoleAndIncludePendingRoleFalse_ReturnsOrganisationsWithoutPendingRoles()
     {
         using var repository = OrganisationRepository();
         await using var context = GetDbContext();

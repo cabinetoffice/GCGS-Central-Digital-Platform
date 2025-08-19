@@ -336,7 +336,8 @@ public class OrganisationEndpointsTests
                 {
                     PartyRole.Buyer
                 },
-                Type = OrganisationType.Organisation
+                Type = OrganisationType.Organisation,
+                PendingRoles = new List<PartyRole>()
             }
         };
 

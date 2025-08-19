@@ -284,6 +284,7 @@ public class OrganisationNameSearchModelTests
                     organisationId ?? Guid.NewGuid(),
                     new Identifier(idenfifierId, "legal name", identifierScheme, new Uri("http://whatever")),
                     name,
+                    new List<PartyRole>(),
                     new List<PartyRole>() { PartyRole.Buyer },
                     OrganisationType.Organisation
                 );

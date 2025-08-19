@@ -79,7 +79,8 @@ public class SearchOrganisationUseCaseTests : IClassFixture<AutoMapperFixture>
                 {
                     PartyRole.Buyer
                 },
-                Type = OrganisationType.Organisation
+                Type = OrganisationType.Organisation,
+                PendingRoles = new List<PartyRole>()
             },
             new OrganisationSearchResult
             {
@@ -95,7 +96,8 @@ public class SearchOrganisationUseCaseTests : IClassFixture<AutoMapperFixture>
                 {
                     PartyRole.Buyer
                 },
-                Type = OrganisationType.Organisation
+                Type = OrganisationType.Organisation,
+                PendingRoles = new List<PartyRole>()
             }
         };
 

@@ -155,7 +155,8 @@ public class OrganisationApprovalModelTests
                     uri: new Uri("https://example.com/1")
                 ),
                 roles: new List<PartyRole> { PartyRole.Buyer },
-                type: OrganisationType.Organisation
+                type: OrganisationType.Organisation,
+                pendingRoles: new List<PartyRole>()
             ),
             new OrganisationSearchResult(
                 id: Guid.NewGuid(),
@@ -167,7 +168,8 @@ public class OrganisationApprovalModelTests
                     uri: new Uri("https://example.com/2")
                 ),
                 roles: new List<PartyRole> { PartyRole.Buyer },
-                type: OrganisationType.Organisation
+                type: OrganisationType.Organisation,
+                pendingRoles: new List<PartyRole>()
             )
         };
 
@@ -494,7 +496,8 @@ public class OrganisationApprovalModelTests
                     uri: new Uri("https://example.com/1")
                 ),
                 roles: new List<PartyRole> { PartyRole.Buyer },
-                type: OrganisationType.Organisation
+                type: OrganisationType.Organisation,
+                pendingRoles: new List<PartyRole>()
             ),
             new OrganisationSearchResult(
                 id: Guid.NewGuid(),
@@ -506,7 +509,8 @@ public class OrganisationApprovalModelTests
                     uri: new Uri("https://example.com/2")
                 ),
                 roles: new List<PartyRole> { PartyRole.Buyer },
-                type: OrganisationType.Organisation
+                type: OrganisationType.Organisation,
+                pendingRoles: new List<PartyRole>()
             )
         };
     }

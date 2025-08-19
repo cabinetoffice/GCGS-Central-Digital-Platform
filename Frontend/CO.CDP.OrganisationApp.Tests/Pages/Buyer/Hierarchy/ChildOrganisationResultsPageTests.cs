@@ -620,6 +620,7 @@ public class ChildOrganisationResultsPageTests
             id: id,
             identifier: identifier,
             name: name,
+            pendingRoles: new List<PartyRole>(),
             roles: new List<PartyRole> { PartyRole.Buyer },
             type: OrganisationType.Organisation
         );
@@ -729,5 +730,74 @@ public class ChildOrganisationResultsPageTests
         resultsList[1].GetFormattedIdentifier().Should().Be("PPON: CHILD-9012");
         resultsList[2].Name.Should().Be("Child Org 3");
         resultsList[2].GetFormattedIdentifier().Should().Be("PPON: CHILD-3456");
+    }
+
+    [Fact]
+    public async Task OnGet_SearchResults_OnlyReturnsOrganisationsWithBuyerRoleOrPendingBuyerRole()
+    {
+        var id = Guid.NewGuid();
+        const string query = "test query";
+        var allSearchResults = new List<OrganisationSearchResult>
+        {
+            // Should be included - has buyer role
+            CreateTestSearchResultBasedOnRoles("Buyer Org", Guid.NewGuid(), "GB-PPON", "BORG-1234",
+                roles: new List<PartyRole> { PartyRole.Buyer },
+                pendingRoles: new List<PartyRole>()),
+
+            // Should be included - has pending buyer role
+            CreateTestSearchResultBasedOnRoles("Pending Buyer Org", Guid.NewGuid(), "GB-PPON", "PBORG-5678",
+                roles: new List<PartyRole>(),
+                pendingRoles: new List<PartyRole> { PartyRole.Buyer }),
+
+            // Should NOT be included - no buyer role
+            CreateTestSearchResultBasedOnRoles("Supplier Only", Guid.NewGuid(), "GB-PPON", "SORG-9012",
+                roles: new List<PartyRole> { PartyRole.Supplier },
+                pendingRoles: new List<PartyRole>()),
+
+            // Should NOT be included - pending supplier only
+            CreateTestSearchResultBasedOnRoles("Pending Supplier", Guid.NewGuid(), "GB-PPON", "PSORG-3456",
+                roles: new List<PartyRole>(),
+                pendingRoles: new List<PartyRole> { PartyRole.Supplier })
+        };
+
+        _model.Id = id;
+        _model.Query = query;
+
+        _mockOrganisationClient
+            .Setup(client => client.SearchOrganisationAsync(
+                query, null, 20, 0.3, true))
+            .ReturnsAsync(allSearchResults);
+
+        var result = await _model.OnGetAsync();
+
+        result.Should().BeOfType<PageResult>();
+        _model.Results.Should().HaveCount(2);
+        _model.Results.Should().Contain(org =>
+            org.Name == "Buyer Org");
+        _model.Results.Should().Contain(org =>
+            org.Name == "Pending Buyer Org");
+    }
+
+    private static OrganisationSearchResult CreateTestSearchResultBasedOnRoles(
+        string name,
+        Guid id,
+        string scheme,
+        string identifierId,
+        List<PartyRole>? roles = null,
+        List<PartyRole>? pendingRoles = null)
+    {
+        return new OrganisationSearchResult(
+            id: id,
+            name: name,
+            type: OrganisationType.Organisation,
+            identifier: new Identifier(
+                scheme: scheme,
+                id: identifierId,
+                legalName: name,
+                uri: new Uri($"https://test.com/{identifierId}")
+            ),
+            roles: roles ?? new List<PartyRole>(),
+            pendingRoles: pendingRoles ?? new List<PartyRole>()
+        );
     }
 }

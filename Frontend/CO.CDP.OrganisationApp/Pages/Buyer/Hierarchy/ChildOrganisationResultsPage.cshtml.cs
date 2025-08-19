@@ -210,7 +210,8 @@ public class ChildOrganisationResultsPage(
         }
 
         var results = searchResults
-            .Where(r => r.Identifier.Scheme == "GB-PPON")
+            .Where(r => r.Identifier.Scheme == "GB-PPON" &&
+                        (r.Roles.Contains(PartyRole.Buyer) || r.PendingRoles.Contains(PartyRole.Buyer)))
             .Select(MapOrganisationSearchResultToChildOrganisation)
             .ToList();
 

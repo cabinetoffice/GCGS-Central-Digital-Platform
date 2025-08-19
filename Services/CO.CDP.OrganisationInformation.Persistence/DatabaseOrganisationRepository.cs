@@ -98,15 +98,12 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
                         .Count(op => op.ParentOrganisationId == t.Organisation.Id) >= 2
                 );
 
-        if (role.HasValue && !includePendingRoles)
-        {
-            query = query.Where(t => t.Organisation.Roles.Contains(role.Value) && t.Organisation.PendingRoles.Count == 0);
-        }
-        else if (role.HasValue)
+        if (role.HasValue)
         {
             query = query.Where(t => t.Organisation.Roles.Contains(role.Value));
         }
-        else if (!includePendingRoles)
+
+        if (!includePendingRoles)
         {
             query = query.Where(t => t.Organisation.PendingRoles.Count == 0);
         }

@@ -20,4 +20,6 @@ public record OrganisationSearchResult
 
     /// <example>["supplier"]</example>
     public required List<PartyRole> Roles { get; init; }
+
+    public required List<PartyRole> PendingRoles { get; init; }
 }

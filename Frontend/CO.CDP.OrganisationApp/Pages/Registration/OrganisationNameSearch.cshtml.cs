@@ -71,6 +71,7 @@ public class OrganisationNameSearchModel(ISession session, IOrganisationClient o
                 var orgSearchResult = new OrganisationSearchResult(existingOrg.Id,
                     existingOrg.Identifier,
                     existingOrg.Name,
+                    existingOrg.Details.PendingRoles,
                     existingOrg.Roles,
                     existingOrg.Type);
 
