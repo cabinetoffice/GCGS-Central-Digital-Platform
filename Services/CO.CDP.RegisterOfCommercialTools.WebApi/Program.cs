@@ -3,6 +3,7 @@ using CO.CDP.Configuration.ForwardedHeaders;
 using CO.CDP.RegisterOfCommercialTools.WebApi;
 using CO.CDP.RegisterOfCommercialTools.WebApi.Constants;
 using CO.CDP.RegisterOfCommercialTools.WebApi.Services;
+using CO.CDP.RegisterOfCommercialTools.WebApi.Middleware;
 using Microsoft.FeatureManagement;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -51,6 +52,7 @@ using (var scope = app.Services.CreateScope())
 }
 
 app.UseForwardedHeaders();
+app.UseMiddleware<ExceptionMiddleware>();
 
 if (builder.Environment.IsDevelopment() || builder.Configuration.GetValue("Features:SwaggerUI", false))
 {
