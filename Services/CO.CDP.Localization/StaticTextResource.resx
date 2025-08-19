@@ -2090,12 +2090,6 @@
   <data name="BuyerParentChildRelationship_ConfirmPage_Tag_ChildConnectedAsChild" xml:space="preserve">
     <value>Already added</value>
   </data>
-  <data name="BuyerParentChildRelationship_ConfirmPage_Warning_ChildSameAsOrganisation" xml:space="preserve">
-    <value>The selected organisation is the same as the organisation.</value>
-  </data>
-  <data name="BuyerParentChildRelationship_ConfirmPage_Tag_ChildSameAsOrganisation" xml:space="preserve">
-    <value>Same organisation</value>
-  </data>
   <data name="Global_NoAddressAvailable" xml:space="preserve">
     <value>No address information available</value>
   </data>
