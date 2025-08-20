@@ -76,6 +76,13 @@ public class ChildOrganisationConfirmPage(
                 return RedirectToPage("/Error");
             }
 
+            if (!ChildOrganisation.Roles.Contains(PartyRole.Buyer) &&
+                !ChildOrganisation.Details.PendingRoles.Contains(PartyRole.Buyer))
+            {
+                _logger.LogWarning("Child organisation {ChildId} does not have a buyer role or pending buyer role associated", ChildId);
+                return RedirectToPage("/Error");
+            }
+
             ChildOrganisationName = ChildOrganisation.Name;
 
             if (IsChildPendingBuyer())

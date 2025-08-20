@@ -107,6 +107,55 @@ public class ChildOrganisationConfirmPageTests
     }
 
     [Fact]
+    public async Task OnGetAsync_WhenOrganisationNoBuyerOrPendingBuyerRole_RedirectsToErrorPage()
+    {
+        var id = Guid.NewGuid();
+        var childId = Guid.NewGuid();
+        const string query = "test query";
+        const string ppon = "GB-PPON:ABCD-1234-EFGH";
+
+        _model.Id = id;
+        _model.ChildId = childId;
+        _model.Query = query;
+        _model.Ppon = ppon;
+
+        var organisation = new CDP.Organisation.WebApiClient.Organisation(
+            additionalIdentifiers: [],
+            addresses:
+            [
+                new Address("Line1", "Line2", "City", "PostalCode", "Region", "StreetAddress", AddressType.Registered)
+            ],
+            contactPoint: new ContactPoint("a@b.com", "Contact", "123", new Uri("http://whatever")),
+            id: childId,
+            identifier: new Identifier("12345", "Test Org", "DUNS", new Uri("http://whatever")),
+            name: "Test Organisation",
+            type: OrganisationType.Organisation,
+            roles: [PartyRole.Supplier],
+            details: new Details(approval: null, buyerInformation: null, pendingRoles: [],
+                publicServiceMissionOrganization: null, scale: null, shelteredWorkshop: null, vcse: null)
+        );
+
+        _mockOrganisationClient
+            .Setup(client => client.LookupOrganisationAsync(null, ppon))
+            .ReturnsAsync(organisation);
+
+        var result = await _model.OnGetAsync();
+
+        _mockLogger.Verify(
+            x => x.Log(
+                LogLevel.Warning,
+                It.IsAny<EventId>(),
+                It.Is<It.IsAnyType>((v, t) => v.ToString()!.Contains(
+                    $"Child organisation {childId} does not have a buyer role or pending buyer role associated")),
+                null,
+                It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
+            Times.Once);
+
+        var redirectResult = result.Should().BeOfType<RedirectToPageResult>().Subject;
+        redirectResult.PageName.Should().Be("/Error");
+    }
+
+    [Fact]
     public async Task OnGetAsync_WithValidChildId_SetsOrganisation()
     {
         var id = Guid.NewGuid();
