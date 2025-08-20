@@ -43,6 +43,15 @@ namespace CO.CDP.OrganisationInformation.Persistence.Repositories
             if (child == null)
                 throw new ArgumentException($"Child organisation with ID {childId} does not exist", nameof(childId));
 
+            var inverseRelationship = await _context.OrganisationHierarchies
+                .Where(h => h.ParentOrganisationId == child.Id &&
+                            h.ChildOrganisationId == parent.Id &&
+                            h.SupersededOn == null)
+                .FirstOrDefaultAsync();
+
+            if (inverseRelationship != null)
+                throw new ArgumentException($"Child organisation with ID {childId} is already a parent to the parent organisation with ID {parentId}");
+
             var existingRelationship = await _context.OrganisationHierarchies
                 .Where(h => h.ParentOrganisationId == parent.Id &&
                             h.ChildOrganisationId == child.Id &&
