@@ -124,7 +124,6 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
                 EF.Functions.TrigramsSimilarity(t.Name, searchText) >= threshold ||
                 t.Identifiers.Any(i => i.IdentifierId != null && i.IdentifierId.Equals(searchText)))
             .Where(t => t.Type == OrganisationType.Organisation)
-            .Where(t => t.Roles.Contains(PartyRole.Buyer) || t.Roles.Contains(PartyRole.Tenderer))
             .Where(t => t.Identifiers.Any(i => i.Scheme.Equals("GB-PPON")));
 
         if (orderBy.Equals("asc", StringComparison.OrdinalIgnoreCase))
