@@ -177,6 +177,16 @@ public class ChildOrganisationConfirmPage(
     {
         try
         {
+            ChildOrganisation = await OrganisationClientExtensions.LookupOrganisationAsync(_organisationClient,
+                name: null,
+                identifier: Ppon);
+
+            if (ChildOrganisation == null)
+            {
+                _logger.LogWarning("Organisation not found for Ppon: {Ppon}", Ppon);
+                return RedirectToPage("/Error");
+            }
+
             _logger.LogInformation("Creating relationship between parent ID: {ParentId} and child ID: {ChildId}",
                 Id, ChildId);
 
@@ -187,8 +197,9 @@ public class ChildOrganisationConfirmPage(
 
             await _organisationClient.CreateParentChildRelationshipAsync(Id, request);
 
-            return RedirectToPage("ChildOrganisationSuccessPage",
-                new { Id, ChildId, OrganisationName = ChildOrganisationName });
+            TempData["ChildName"] = ChildOrganisation.Name;
+
+            return RedirectToPage("ChildOrganisationSuccessPage", new { Id });
         }
         catch (Exception ex)
         {
