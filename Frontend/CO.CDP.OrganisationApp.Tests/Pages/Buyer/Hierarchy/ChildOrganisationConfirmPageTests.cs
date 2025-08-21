@@ -5,6 +5,7 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.Extensions.Logging;
 using Moq;
 using CO.CDP.Localization;
@@ -24,6 +25,7 @@ public class ChildOrganisationConfirmPageTests
         _mockLogger = new Mock<ILogger<ChildOrganisationConfirmPage>>();
         var mockAuthorizationService = new Mock<IAuthorizationService>();
         _model = new ChildOrganisationConfirmPage(_mockOrganisationClient.Object, _mockLogger.Object);
+        _model.TempData = new TempDataDictionary(new Mock<Microsoft.AspNetCore.Http.HttpContext>().Object, new Mock<ITempDataProvider>().Object);
         mockAuthorizationService.Setup(a => a.AuthorizeAsync(
                 It.IsAny<System.Security.Claims.ClaimsPrincipal>(),
                 It.IsAny<object>(),
@@ -204,9 +206,28 @@ public class ChildOrganisationConfirmPageTests
     {
         var id = Guid.NewGuid();
         var childId = Guid.NewGuid();
+        const string ppon = "GB-PPON:ABCD-1234-EFGH";
 
         _model.Id = id;
         _model.ChildId = childId;
+        _model.Ppon = ppon;
+
+        var organisation = new CDP.Organisation.WebApiClient.Organisation(
+            additionalIdentifiers: [],
+            addresses: [],
+            contactPoint: null,
+            id: childId,
+            identifier: new Identifier("12345", "Test Org", "DUNS", new Uri("http://test")),
+            name: "Test Organisation",
+            type: OrganisationType.Organisation,
+            roles: [PartyRole.Buyer],
+            details: new Details(approval: null, buyerInformation: null, pendingRoles: [],
+                publicServiceMissionOrganization: null, scale: null, shelteredWorkshop: null, vcse: null)
+        );
+
+        _mockOrganisationClient
+            .Setup(client => client.LookupOrganisationAsync(null, ppon))
+            .ReturnsAsync(organisation);
 
         _mockOrganisationClient
             .Setup(client =>
@@ -238,10 +259,32 @@ public class ChildOrganisationConfirmPageTests
         var id = Guid.NewGuid();
         var childId = Guid.NewGuid();
         const string organisationName = "Test Organisation";
+        const string ppon = "GB-PPON:ABCD-1234-EFGH";
 
         _model.Id = id;
         _model.ChildId = childId;
         _model.ChildOrganisationName = organisationName;
+        _model.Ppon = ppon;
+
+        var organisation = new CDP.Organisation.WebApiClient.Organisation(
+            additionalIdentifiers: [],
+            addresses:
+            [
+                new Address("Line1", "Line2", "City", "PostalCode", "Region", "StreetAddress", AddressType.Registered)
+            ],
+            contactPoint: new ContactPoint("a@b.com", "Contact", "123", new Uri("http://whatever")),
+            id: childId,
+            identifier: new Identifier(ppon, "Test Org", "GB-PPON", new Uri("http://whatever")),
+            name: "Test Organisation",
+            type: OrganisationType.Organisation,
+            roles: [PartyRole.Buyer],
+            details: new Details(approval: null, buyerInformation: null, pendingRoles: [],
+                publicServiceMissionOrganization: null, scale: null, shelteredWorkshop: null, vcse: null)
+        );
+
+        _mockOrganisationClient
+            .Setup(client => client.LookupOrganisationAsync(null, ppon))
+            .ReturnsAsync(organisation);
 
         var relationshipId = Guid.NewGuid();
         _mockOrganisationClient
@@ -257,8 +300,6 @@ public class ChildOrganisationConfirmPageTests
         redirectResult.PageName.Should().Be("ChildOrganisationSuccessPage");
         redirectResult.RouteValues.Should().ContainKey("Id");
         redirectResult.RouteValues?["Id"].Should().Be(id);
-        redirectResult.RouteValues.Should().ContainKey("OrganisationName");
-        redirectResult.RouteValues?["OrganisationName"].Should().Be(organisationName);
 
         _mockOrganisationClient.Verify(
             client => client.CreateParentChildRelationshipAsync(
