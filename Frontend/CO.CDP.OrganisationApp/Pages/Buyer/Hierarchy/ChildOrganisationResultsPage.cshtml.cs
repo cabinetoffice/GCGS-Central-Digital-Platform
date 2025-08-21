@@ -139,7 +139,7 @@ public class ChildOrganisationResultsPage(
                 return (results, feedbackMessage, false);
             }
 
-            var filteredResults = await FilterResults(results);
+            var filteredResults = FilterResults(results);
 
             return filteredResults.Count > 0
                 ? (filteredResults, null, false)
@@ -156,15 +156,12 @@ public class ChildOrganisationResultsPage(
         }
     }
 
-    private async Task<List<ChildOrganisation>> FilterResults(List<ChildOrganisation> results)
+    private List<ChildOrganisation> FilterResults(List<ChildOrganisation> results)
     {
         try
         {
-            var connectedChildren = await _organisationClient.GetChildOrganisationsAsync(Id);
-            var connectedChildIds = connectedChildren.Select(c => c.Id).ToHashSet();
-
             return results
-                .Where(r => r.OrganisationId != Id && !connectedChildIds.Contains(r.OrganisationId))
+                .Where(r => r.OrganisationId != Id)
                 .ToList();
         }
         catch (ApiException ex) when (ex.StatusCode == 404)
@@ -174,7 +171,7 @@ public class ChildOrganisationResultsPage(
         }
     }
 
-    private async Task<(List<ChildOrganisation> Results, string? FeedbackMessage)> ExecutePponSearch(
+    private async Task<(List<ChildOrganisation> Results, string? ErrorMessage)> ExecutePponSearch(
         string? pponIdentifier)
     {
         if (string.IsNullOrWhiteSpace(pponIdentifier))
@@ -187,7 +184,7 @@ public class ChildOrganisationResultsPage(
             name: null,
             identifier: pponIdentifier);
 
-        if (organisation == null || !organisation.Roles.Contains(PartyRole.Buyer) ||
+        if (organisation == null ||
             organisation.Identifier.Scheme != "GB-PPON")
         {
             return (new List<ChildOrganisation>(),
@@ -201,9 +198,10 @@ public class ChildOrganisationResultsPage(
     {
         var searchResults = await OrganisationClientExtensions.SearchOrganisationAsync(_organisationClient,
             name: Query,
-            role: "buyer",
+            role: null,
             limit: 20,
-            threshold: 0.3);
+            threshold: 0.3,
+            true);
 
         if (searchResults.Count == 0)
         {
@@ -212,7 +210,8 @@ public class ChildOrganisationResultsPage(
         }
 
         var results = searchResults
-            .Where(r => r.Identifier.Scheme == "GB-PPON")
+            .Where(r => r.Identifier.Scheme == "GB-PPON" &&
+                        (r.Roles.Contains(PartyRole.Buyer) || r.PendingRoles.Contains(PartyRole.Buyer)))
             .Select(MapOrganisationSearchResultToChildOrganisation)
             .ToList();
 

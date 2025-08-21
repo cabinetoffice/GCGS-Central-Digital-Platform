@@ -227,13 +227,14 @@ internal static class OrganisationClientExtensions
     internal static async Task<ICollection<OrganisationSearchResult>> SearchOrganisationAsync(
         this IOrganisationClient organisationClient,
         string name,
-        string role,
+        string? role,
         int limit,
-        double threshold)
+        double threshold,
+        bool includePendingRoles = false)
     {
         try
         {
-            var searchResults = await organisationClient.SearchOrganisationAsync(name, role, limit, threshold);
+            var searchResults = await organisationClient.SearchOrganisationAsync(name, role, limit, threshold, includePendingRoles);
             return searchResults ?? new List<OrganisationSearchResult>();
         }
         catch (ApiException ex) when (ex.StatusCode == 404)

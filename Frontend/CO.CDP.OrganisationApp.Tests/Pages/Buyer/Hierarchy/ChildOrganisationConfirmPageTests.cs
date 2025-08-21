@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using Moq;
+using CO.CDP.Localization;
 using Address = CO.CDP.Organisation.WebApiClient.Address;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages.Buyer.Hierarchy;
@@ -97,6 +98,55 @@ public class ChildOrganisationConfirmPageTests
                 LogLevel.Warning,
                 It.IsAny<EventId>(),
                 It.Is<It.IsAnyType>((v, t) => v.ToString()!.Contains("Organisation not found for ChildId")),
+                null,
+                It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
+            Times.Once);
+
+        var redirectResult = result.Should().BeOfType<RedirectToPageResult>().Subject;
+        redirectResult.PageName.Should().Be("/Error");
+    }
+
+    [Fact]
+    public async Task OnGetAsync_WhenOrganisationNoBuyerOrPendingBuyerRole_RedirectsToErrorPage()
+    {
+        var id = Guid.NewGuid();
+        var childId = Guid.NewGuid();
+        const string query = "test query";
+        const string ppon = "GB-PPON:ABCD-1234-EFGH";
+
+        _model.Id = id;
+        _model.ChildId = childId;
+        _model.Query = query;
+        _model.Ppon = ppon;
+
+        var organisation = new CDP.Organisation.WebApiClient.Organisation(
+            additionalIdentifiers: [],
+            addresses:
+            [
+                new Address("Line1", "Line2", "City", "PostalCode", "Region", "StreetAddress", AddressType.Registered)
+            ],
+            contactPoint: new ContactPoint("a@b.com", "Contact", "123", new Uri("http://whatever")),
+            id: childId,
+            identifier: new Identifier("12345", "Test Org", "DUNS", new Uri("http://whatever")),
+            name: "Test Organisation",
+            type: OrganisationType.Organisation,
+            roles: [PartyRole.Supplier],
+            details: new Details(approval: null, buyerInformation: null, pendingRoles: [],
+                publicServiceMissionOrganization: null, scale: null, shelteredWorkshop: null, vcse: null)
+        );
+
+        _mockOrganisationClient
+            .Setup(client => client.LookupOrganisationAsync(null, ppon))
+            .ReturnsAsync(organisation);
+
+        var result = await _model.OnGetAsync();
+
+        _mockLogger.Verify(
+            x => x.Log(
+                LogLevel.Warning,
+                It.IsAny<EventId>(),
+                It.Is<It.IsAnyType>((v, t) => v.ToString()!.Contains(
+                    $"Child organisation {childId} does not have a buyer role or pending buyer role associated")),
                 null,
                 It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
             Times.Once);
@@ -217,5 +267,122 @@ public class ChildOrganisationConfirmPageTests
                     r.ParentId == id &&
                     r.ChildId == childId)),
             Times.Once);
+    }
+
+    [Fact]
+    public async Task OnGetAsync_WhenChildIsPendingBuyer_SetsWarningMessage()
+    {
+        var id = Guid.NewGuid();
+        var childId = Guid.NewGuid();
+        const string ppon = "ABCD-1234-EFGH";
+
+        _model.Id = id;
+        _model.ChildId = childId;
+        _model.Ppon = ppon;
+
+        var organisation = new CDP.Organisation.WebApiClient.Organisation(
+            additionalIdentifiers: [],
+            addresses: [],
+            contactPoint: null,
+            id: childId,
+            identifier: new Identifier("12345", "Test Org", "DUNS", new Uri("http://test")),
+            name: "Test Organisation",
+            type: OrganisationType.Organisation,
+            roles: [],
+            details: new Details(approval: null, buyerInformation: null, pendingRoles: [PartyRole.Buyer],
+                publicServiceMissionOrganization: null, scale: null, shelteredWorkshop: null, vcse: null)
+        );
+
+        _mockOrganisationClient
+            .Setup(client => client.LookupOrganisationAsync(null, ppon))
+            .ReturnsAsync(organisation);
+
+        var result = await _model.OnGetAsync();
+
+        result.Should().BeOfType<PageResult>();
+        _model.WarningTagMessage.Should().Be(StaticTextResource.BuyerParentChildRelationship_ConfirmPage_Tag_ApprovalPending);
+        _model.WarningMessage.Should().Be(StaticTextResource.BuyerParentChildRelationship_ConfirmPage_Warning_ApprovalPending);
+    }
+
+    [Fact]
+    public async Task OnGetAsync_WhenChildIsConnectedAsParent_SetsWarningMessage()
+    {
+        var id = Guid.NewGuid();
+        var childId = Guid.NewGuid();
+        const string ppon = "ABCD-1234-EFGH";
+
+        _model.Id = id;
+        _model.ChildId = childId;
+        _model.Ppon = ppon;
+
+        var organisation = new CDP.Organisation.WebApiClient.Organisation(
+            additionalIdentifiers: [],
+            addresses: [],
+            contactPoint: null,
+            id: childId,
+            identifier: new Identifier("12345", "Test Org", "DUNS", new Uri("http://test")),
+            name: "Test Organisation",
+            type: OrganisationType.Organisation,
+            roles: [PartyRole.Buyer],
+            details: new Details(approval: null, buyerInformation: null, pendingRoles: [],
+                publicServiceMissionOrganization: null, scale: null, shelteredWorkshop: null, vcse: null)
+        );
+
+        _mockOrganisationClient
+            .Setup(client => client.LookupOrganisationAsync(null, ppon))
+            .ReturnsAsync(organisation);
+
+        _mockOrganisationClient
+            .Setup(client => client.GetParentOrganisationsAsync(id))
+            .ReturnsAsync(new List<OrganisationSummary> {
+                new(childId, "Test Organisation", "Buyer", null)
+            });
+
+        var result = await _model.OnGetAsync();
+
+        result.Should().BeOfType<PageResult>();
+        _model.WarningTagMessage.Should().Be(StaticTextResource.BuyerParentChildRelationship_ConfirmPage_Tag_ChildConnectedAsParent);
+        _model.WarningMessage.Should().Be(StaticTextResource.BuyerParentChildRelationship_ConfirmPage_Warning_ChildConnectedAsParent);
+    }
+
+    [Fact]
+    public async Task OnGetAsync_WhenChildIsConnectedAsChild_SetsWarningMessage()
+    {
+        var id = Guid.NewGuid();
+        var childId = Guid.NewGuid();
+        const string ppon = "ABCD-1234-EFGH";
+
+        _model.Id = id;
+        _model.ChildId = childId;
+        _model.Ppon = ppon;
+
+        var organisation = new CDP.Organisation.WebApiClient.Organisation(
+            additionalIdentifiers: [],
+            addresses: [],
+            contactPoint: null,
+            id: childId,
+            identifier: new Identifier("12345", "Test Org", "DUNS", new Uri("http://test")),
+            name: "Test Organisation",
+            type: OrganisationType.Organisation,
+            roles: [PartyRole.Buyer],
+            details: new Details(approval: null, buyerInformation: null, pendingRoles: [],
+                publicServiceMissionOrganization: null, scale: null, shelteredWorkshop: null, vcse: null)
+        );
+
+        _mockOrganisationClient
+            .Setup(client => client.LookupOrganisationAsync(null, ppon))
+            .ReturnsAsync(organisation);
+
+        _mockOrganisationClient
+            .Setup(client => client.GetChildOrganisationsAsync(id))
+            .ReturnsAsync(new List<OrganisationSummary> {
+                new(childId, "Test Organisation", "Buyer", null)
+            });
+
+        var result = await _model.OnGetAsync();
+
+        result.Should().BeOfType<PageResult>();
+        _model.WarningTagMessage.Should().Be(StaticTextResource.BuyerParentChildRelationship_ConfirmPage_Tag_ChildConnectedAsChild);
+        _model.WarningMessage.Should().Be(StaticTextResource.BuyerParentChildRelationship_ConfirmPage_Warning_ChildConnectedAsChild);
     }
 }

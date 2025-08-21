@@ -208,6 +208,20 @@ namespace CO.CDP.OrganisationInformation.Persistence.Tests.Repositories
             exception.ParamName.Should().Be("childId");
         }
 
+        [Fact]
+        public async Task CreateRelationshipAsync_WithExistingInvertedChildToParentRelationship_ShouldThrowArgumentException()
+        {
+            var (parentId, childId) = await CreateTestOrganisations();
+
+            var invertedRelationshipId = await _repository.CreateRelationshipAsync(childId, parentId);
+
+            var exception = await Assert.ThrowsAsync<ArgumentException>(() =>
+                _repository.CreateRelationshipAsync(parentId, childId));
+
+            exception.Message.Should()
+                .Contain($"Child organisation with ID {childId} is already a parent to the parent organisation with ID {parentId}");
+        }
+
         #endregion
 
         #region GetChildrenAsync Tests
