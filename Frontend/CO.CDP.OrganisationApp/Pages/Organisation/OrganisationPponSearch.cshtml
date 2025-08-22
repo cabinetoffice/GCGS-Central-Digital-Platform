@@ -141,7 +141,7 @@
                 }
             </div>
             <div class="govuk-grid-column-full govuk-grid-column-one-third-from-desktop govuk-!-text-align-right-from-desktop">
-                <div class="govuk-!-margin-top-2 govuk-!-text-align-right-from-desktop" aria-label="Organisation roles">
+                <div class="govuk-!-margin-top-2 search-ppon-roles" aria-label="Organisation roles">
                     @foreach (var partyRole in org.Roles.Distinct().OrderBy(r => PartyRoleDisplayExtensions.GetDisplayText(r)))
                     {
                         <strong class="govuk-tag govuk-!-margin-right-1 govuk-!-margin-bottom-2 @Model.GetTagClassForRole(partyRole)" aria-label="Role: @partyRole">

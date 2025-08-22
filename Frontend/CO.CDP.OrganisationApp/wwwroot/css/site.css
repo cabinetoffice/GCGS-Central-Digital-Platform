@@ -216,6 +216,18 @@
     gap: 0;
 }
 
+@media screen and (min-width: 768px) {
+    .search-ppon-roles {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        gap: 0.25rem 0.5rem;
+    }
+    .search-ppon-roles .govuk-tag {
+        margin: 0;
+    }
+}
+
 @media screen and (max-width: 767px) {
     .search-ppon-button {
         width: auto;
