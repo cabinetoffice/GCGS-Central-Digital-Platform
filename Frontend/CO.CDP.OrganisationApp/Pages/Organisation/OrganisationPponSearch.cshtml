@@ -1,5 +1,6 @@
 @page "/organisation/{id}/buyer/search"
 @using CO.CDP.Localization
+@using CO.CDP.OrganisationApp.Extensions
 @model OrganisationPponSearchModel
 
 @{
@@ -141,10 +142,10 @@
             </div>
             <div class="govuk-grid-column-one-third govuk-!-text-align-right">
                 <div class="govuk-grid-row" aria-label="Organisation roles">
-                    @foreach (var partyRole in @org.Roles.Distinct().OrderBy(r => r.ToString()))
+                    @foreach (var partyRole in org.Roles.Distinct().OrderBy(r => PartyRoleDisplayExtensions.GetDisplayText(r)))
                     {
-                        <strong class="govuk-tag @Model.GetTagClassForRole(partyRole)" aria-label="Role: @partyRole">
-                            @partyRole
+                        <strong class="govuk-tag govuk-!-margin-1 govuk-!-margin-top-0 @Model.GetTagClassForRole(partyRole)" aria-label="Role: @partyRole">
+                            @PartyRoleDisplayExtensions.GetDisplayText(partyRole)
                         </strong>
                     }
                 </div>
