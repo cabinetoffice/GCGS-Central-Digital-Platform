@@ -196,14 +196,14 @@
     color: #ffffff !important;
 }
 
-.search-ppon-button{
+.search-ppon-button {
     color: #1d70b8;
     background-color: #F4F8FB !important;
     box-shadow: none;
-    margin-bottom: 10px;
     height: 40px;
     align-items: center;
     justify-content: center;
+    flex-shrink: 0;
 }
 
 .search-ppon-button:hover {
@@ -211,6 +211,27 @@
     color: #1d70b8;
 }
 
-.search-ppon-flex-display{
+.search-ppon-flex-display {
     display: flex;
+    gap: 0;
+}
+
+@media screen and (min-width: 768px) {
+    .search-ppon-roles {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        gap: 0.25rem 0.5rem;
+    }
+    .search-ppon-roles .govuk-tag {
+        margin: 0;
+    }
+}
+
+@media screen and (max-width: 767px) {
+    .search-ppon-button {
+        width: auto;
+        min-width: 44px;
+        padding: 0 8px;
+    }
 }

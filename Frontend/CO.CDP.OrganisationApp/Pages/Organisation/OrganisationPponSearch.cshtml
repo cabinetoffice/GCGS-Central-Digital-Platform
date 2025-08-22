@@ -1,5 +1,6 @@
 @page "/organisation/{id}/buyer/search"
 @using CO.CDP.Localization
+@using CO.CDP.OrganisationApp.Extensions
 @model OrganisationPponSearchModel
 
 @{
@@ -49,7 +50,7 @@
                        aria-label="Search by PPON or organisation name"
                        aria-describedby="ppon-search-hint">
 
-                <button type="submit" class="govuk-button search-ppon-button" data-module="govuk-button">
+                <button type="submit" class="govuk-button search-ppon-button govuk-!-width-auto" data-module="govuk-button">
                     <svg class="gem-c-search__icon" width="18" height="18" viewBox="0 0 27 27" fill="none"
                          xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
                         <circle cx="12.0161" cy="11.0161" r="8.51613" stroke="currentColor" stroke-width="3"></circle>
@@ -129,8 +130,8 @@
     foreach (var org in Model.Organisations)
     {
         <div class="govuk-grid-row" aria-label="Search result for organisation: @org.Name">
-            <div class="govuk-grid-column-two-thirds">
-                <h3 class="govuk-heading-m" id="org-name-@org.Id">@org.Name</h3>
+            <div class="govuk-grid-column-full govuk-grid-column-two-thirds-from-desktop">
+                <h3 class="govuk-heading-m govuk-!-text-overflow-ellipsis" id="org-name-@org.Id">@org.Name</h3>
                 @if (org.Identifiers.Any(i => i.Scheme.Equals("GB-PPON") && i.Id != null))
                 {
                     <p class="govuk-body govuk-!-margin-bottom-1">
@@ -139,12 +140,12 @@
                     </p>
                 }
             </div>
-            <div class="govuk-grid-column-one-third govuk-!-text-align-right">
-                <div class="govuk-grid-row" aria-label="Organisation roles">
-                    @foreach (var partyRole in @org.Roles.Distinct().OrderBy(r => r.ToString()))
+            <div class="govuk-grid-column-full govuk-grid-column-one-third-from-desktop govuk-!-text-align-right-from-desktop">
+                <div class="govuk-!-margin-top-2 search-ppon-roles" aria-label="Organisation roles">
+                    @foreach (var partyRole in org.Roles.Distinct().OrderBy(r => PartyRoleDisplayExtensions.GetDisplayText(r)))
                     {
-                        <strong class="govuk-tag @Model.GetTagClassForRole(partyRole)" aria-label="Role: @partyRole">
-                            @partyRole
+                        <strong class="govuk-tag govuk-!-margin-right-1 govuk-!-margin-bottom-2 @Model.GetTagClassForRole(partyRole)" aria-label="Role: @partyRole">
+                            @PartyRoleDisplayExtensions.GetDisplayText(partyRole)
                         </strong>
                     }
                 </div>
