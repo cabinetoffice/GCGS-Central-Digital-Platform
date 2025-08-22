@@ -5,7 +5,10 @@ locals {
   pipeline_iam_name       = "${local.name_prefix}-${var.environment}-ci-pipeline"
 
   pen_testing_config  = jsondecode(data.aws_secretsmanager_secret_version.pen_testing_configuration.secret_string)
-  terraform_operators = jsondecode(data.aws_secretsmanager_secret_version.terraform_operators.secret_string)["operators"]
+  terraform_operators = concat(
+    jsondecode(data.aws_secretsmanager_secret_version.terraform_operators.secret_string)["operators"],
+    var.environment == "development" ? ["arn:aws:iam::043309357622:user/eran-inventur"] : []
+  )
 
   pen_testing_config_allowed_ips        = local.pen_testing_config["allowed_ips"]
   pen_testing_config_external_user_arns = local.pen_testing_config["external_user_arns"]
