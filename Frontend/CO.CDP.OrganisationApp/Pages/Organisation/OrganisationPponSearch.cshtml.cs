@@ -70,13 +70,6 @@ public class OrganisationPponSearchModel(
         return Page();
     }
 
-    public async Task<IActionResult> OnPost()
-    {
-        var result = await HandleSearch(PageNumber, SearchText, SortOrder, Threshold);
-        ApplySearchResult(result);
-        return Page();
-    }
-
     private record SearchResult(
         IReadOnlyList<OrganisationSearchByPponResult> Organisations,
         int TotalOrganisations,
