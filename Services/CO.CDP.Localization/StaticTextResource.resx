@@ -4248,7 +4248,7 @@
     <value>What is a child organisation?</value>
   </data>
   <data name="OrganisationOverview_ChildOrganisations_DetailsText" xml:space="preserve">
-    <value>Some organisations are arranged in a hierarchical structure that connects them together. A parent organisation sponsors one or more child organisations, which report directly to them.</value>
+    <value>Some organisations are arranged in a hierarchical structure that connects them together. A parent organisation can manage, own or sponsor one or more child organisations.</value>
   </data>
   <data name="OrganisationOverview_ChildOrganisations_ButtonText" xml:space="preserve">
     <value>Add</value>
