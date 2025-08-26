@@ -4389,7 +4389,7 @@
     <value>View your organisation details</value>
   </data>
   <data name="BuyerView_TileOne_Body">
-    <value>View and manage the details of your organisation.</value>
+    <value>View and manage the details of your organisation. Supplier organisations can view and manage supplier information.</value>
   </data>
   <data name="BuyerView_TileTwo_Title">
     <value>Public procurement organisation number (PPON) register</value>
