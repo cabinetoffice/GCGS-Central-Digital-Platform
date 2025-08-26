@@ -152,7 +152,7 @@ public class ChildOrganisationResultsPage(
             pageSize: 20,
             skip: 0,
             orderBy: "rel",
-            threshold: 0.3);
+            threshold: 0.2);
 
         if (searchResults.Count == 0)
         {

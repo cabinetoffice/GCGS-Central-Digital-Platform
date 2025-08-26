@@ -22,7 +22,7 @@ public class OrganisationPponSearchModelTest
     private const string DefaultSortOrder = "rel";
     private const int DefaultPageSize = 10;
     private const int DefaultPageNumber = 1;
-    private const double DefaultThreshold = 0.3;
+    private const double DefaultThreshold = 0.2;
     private static readonly Guid Id = Guid.NewGuid();
 
     private readonly Mock<IOrganisationClient> _mockOrganisationClient;

@@ -35,7 +35,7 @@ public class OrganisationPponSearchModel(
 
     public string? ErrorMessage { get; set; }
 
-    public double Threshold { get; set; } = 0.3;
+    public double Threshold { get; set; } = 0.2;
 
     public string? FeedbackMessage { get; set; }
 
