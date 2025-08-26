@@ -4337,6 +4337,12 @@
       &lt;/p&gt;
     </value>
   </data>
+  <data name="PponSearch_Tenderer_Details_Summary" xml:space="preserve">
+    <value>What does 'Tenderer' mean?</value>
+  </data>
+  <data name="PponSearch_Tenderer_Details_Content" xml:space="preserve">
+    <value>The Procurement Act 2023 refers to suppliers or bidders as tenderers.</value>
+  </data>
   <data name="Global_Search" xml:space="preserve">
     <value>Search</value>
   </data>

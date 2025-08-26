@@ -69,6 +69,17 @@
             <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-1">@StaticTextResource.PponSearch_Ppon_Desc_Title</p>
             <p class="govuk-body">@Html.Raw(@StaticTextResource.PponSearch_Ppon_Desc_Hint_01)</p>
             <p class="govuk-body">@Html.Raw(@StaticTextResource.PponSearch_Ppon_Desc_Hint_02)</p>
+            
+            <details class="govuk-details" data-module="govuk-details">
+                <summary class="govuk-details__summary">
+                    <span class="govuk-details__summary-text">
+                        @StaticTextResource.PponSearch_Tenderer_Details_Summary
+                    </span>
+                </summary>
+                <div class="govuk-details__text">
+                    @StaticTextResource.PponSearch_Tenderer_Details_Content
+                </div>
+            </details>
         </div>
     </div>
 
