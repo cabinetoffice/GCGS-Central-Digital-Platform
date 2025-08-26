@@ -4242,7 +4242,7 @@
     <value>only a parent organisation can add its child organisations</value>
   </data>
   <data name="OrganisationOverview_ChildOrganisations_ListItem2" xml:space="preserve">
-    <value>a child organisation can only be added if they are registered in the &lt;a href="https://www.find-tender.service.gov.uk/Search" target="_blank" class="govuk-link"&gt;Central Digital Platform&lt;/a&gt; (opens in a new tab)</value>
+    <value>a child organisation can only be added if it is registered on &lt;a href="https://www.find-tender.service.gov.uk/Search" target="_blank" class="govuk-link"&gt;Find a Tender&lt;/a&gt; (opens in a new tab)</value>
   </data>
   <data name="OrganisationOverview_ChildOrganisations_DetailsSummary" xml:space="preserve">
     <value>What is a child organisation?</value>
