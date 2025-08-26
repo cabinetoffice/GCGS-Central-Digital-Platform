@@ -1,5 +1,4 @@
 using System.Collections.Immutable;
-using System.Net;
 using System.Text.RegularExpressions;
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Constants;
@@ -87,7 +86,6 @@ public class OrganisationPponSearchModel(
         int CurrentPage,
         string? ErrorMessage,
         string? FeedbackMessage
-
     );
 
     private async Task<SearchResult> HandleSearch(int pageNumber, string searchText, string sortOrder, double threshold)
@@ -116,7 +114,8 @@ public class OrganisationPponSearchModel(
         try
         {
             var (orgs, totalCount) =
-                await organisationClient.SearchOrganisationByNameOrPpon(cleanedSearchText, pageSize, skip, sortOrder, threshold);
+                await organisationClient.SearchOrganisationByNameOrPpon(cleanedSearchText, pageSize, skip, sortOrder, threshold, OrganisationSearchFilter.ExcludeOnlyPendingBuyerRoles);
+
             if (orgs.Count == 0)
             {
                 return new SearchResult(
@@ -138,10 +137,7 @@ public class OrganisationPponSearchModel(
                 null
             );
         }
-        catch (Exception ex) when (
-            (ex is ApiException apiEx && apiEx.StatusCode != 404) ||
-            (ex is HttpRequestException httpEx && httpEx.StatusCode != HttpStatusCode.NotFound) ||
-            (!(ex is ApiException) && !(ex is HttpRequestException)))
+        catch (Exception ex)
         {
             LogApiError(ex);
             return new SearchResult(
@@ -200,7 +196,7 @@ public class OrganisationPponSearchModel(
 
     public string FormatAddresses(IEnumerable<OrganisationAddress> addresses)
     {
-        var address = addresses?.FirstOrDefault();
+        var address = addresses.FirstOrDefault();
         if (address == null)
         {
             return "N/A";

@@ -11,9 +11,18 @@ public class SearchOrganisationByPponUseCase(IOrganisationRepository organisatio
 {
     public async Task<(IEnumerable<Model.OrganisationSearchByPponResult> Results, int TotalCount)> Execute(OrganisationSearchByPponQuery query)
     {
-        var result = await organisationRepository.SearchByNameOrPpon(query.SearchText, query.Limit, query.Skip, query.OrderBy, query.Threshold);
+        var excludeOnlyPendingBuyerRoles = query.Filters.HasValue &&
+            query.Filters.Value.HasFlag(Model.OrganisationSearchFilter.ExcludeOnlyPendingBuyerRoles);
 
-        var mappedResults = result.Results.Select(mapper.Map<Model.OrganisationSearchByPponResult>);
+        var result = await organisationRepository.SearchByNameOrPpon(
+            query.SearchText,
+            query.Limit,
+            query.Skip,
+            query.OrderBy,
+            query.Threshold,
+            excludeOnlyPendingBuyerRoles);
+
+        var mappedResults = result.Results.Select(mapper.Map<Model.OrganisationSearchByPponResult>).ToList();
 
         return (mappedResults, result.TotalCount);
     }

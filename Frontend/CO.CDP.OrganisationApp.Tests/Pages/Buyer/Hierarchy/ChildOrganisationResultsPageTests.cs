@@ -3,7 +3,6 @@ using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Logging;
 using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.Pages.Buyer.Hierarchy;
-using CO.CDP.OrganisationApp.Tests.TestData;
 using FluentAssertions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -54,20 +53,18 @@ public class ChildOrganisationResultsPageTests
         const string query = "test query";
         _model.Query = query;
 
-        var searchResults = new List<OrganisationSearchResult>
+        var searchResults = new List<OrganisationSearchByPponResult>
         {
-            CreateTestSearchResult("Stark Industries", Guid.NewGuid(), "GB-PPON", "STIN-1234-ABCD"),
-            CreateTestSearchResult("Wayne Enterprises", Guid.NewGuid(), "GB-PPON", "WAYN-9876-EFGH"),
-            CreateTestSearchResult("Oscorp", Guid.NewGuid(), "GB-PPON", "OSCO-4567-IJKL")
+            CreateTestSearchByPponResult("Stark Industries", Guid.NewGuid(), "STIN-1234-ABCD"),
+            CreateTestSearchByPponResult("Wayne Enterprises", Guid.NewGuid(), "WAYN-9876-EFGH"),
+            CreateTestSearchByPponResult("Oscorp", Guid.NewGuid(), "OSCO-4567-IJKL")
         };
 
+        var searchResponse = new OrganisationSearchByPponResponse(searchResults, 3);
         _mockOrganisationClient
-            .Setup(client => client.SearchOrganisationAsync(
-                query, null, 20, 0.3, true))
-            .ReturnsAsync(searchResults);
-
-        _mockOrganisationClient.Setup(c => c.GetChildOrganisationsAsync(It.IsAny<Guid>()))
-            .ReturnsAsync(new List<OrganisationSummary>());
+            .Setup(client => client.SearchByNameOrPponAsync(
+                query, 20, 0, "rel", 0.3, null))
+            .ReturnsAsync(searchResponse);
 
         await _model.OnGetAsync();
 
@@ -116,8 +113,8 @@ public class ChildOrganisationResultsPageTests
         _model.Query = "test query";
 
         _mockOrganisationClient
-            .Setup(client => client.SearchOrganisationAsync(
-                _model.Query, null, 20, 0.3, true))
+            .Setup(client => client.SearchByNameOrPponAsync(
+                _model.Query, 20, 0, "rel", 0.3, null))
             .ThrowsAsync(new Exception("Test exception"));
 
         await _model.OnGetAsync();
@@ -131,9 +128,9 @@ public class ChildOrganisationResultsPageTests
         _model.Query = "test query";
 
         _mockOrganisationClient
-            .Setup(client => client.SearchOrganisationAsync(
-                _model.Query, null, 20, 0.3, true))
-            .ReturnsAsync((List<OrganisationSearchResult>)null!);
+            .Setup(client => client.SearchByNameOrPponAsync(
+                _model.Query, 20, 0, "rel", 0.3, null))
+            .ReturnsAsync((OrganisationSearchByPponResponse)null!);
 
         await _model.OnGetAsync();
 
@@ -145,10 +142,11 @@ public class ChildOrganisationResultsPageTests
     {
         _model.Query = "test query";
 
+        var emptyResponse = new OrganisationSearchByPponResponse(new List<OrganisationSearchByPponResult>(), 0);
         _mockOrganisationClient
-            .Setup(client => client.SearchOrganisationAsync(
-                _model.Query, null, 20, 0.3, true))
-            .ReturnsAsync(new List<OrganisationSearchResult>());
+            .Setup(client => client.SearchByNameOrPponAsync(
+                _model.Query, 20, 0, "rel", 0.3, null))
+            .ReturnsAsync(emptyResponse);
 
         await _model.OnGetAsync();
 
@@ -171,19 +169,20 @@ public class ChildOrganisationResultsPageTests
         var id = Guid.NewGuid();
         var childId = Guid.NewGuid();
         const string query = "test query";
-        var searchResults = new List<OrganisationSearchResult>
+        var searchResults = new List<OrganisationSearchByPponResult>
         {
-            CreateTestSearchResult("Test Org", childId, "GB-PPON", "TORG-1234-ABCD")
+            CreateTestSearchByPponResult("Test Org", childId, "TORG-1234-ABCD")
         };
 
         _model.Id = id;
         _model.Query = query;
         _model.SelectedChildId = childId;
 
+        var searchResponse = new OrganisationSearchByPponResponse(searchResults, 1);
         _mockOrganisationClient
-            .Setup(client => client.SearchOrganisationAsync(
-                query, null, 20, 0.3, true))
-            .ReturnsAsync(searchResults);
+            .Setup(client => client.SearchByNameOrPponAsync(
+                query, 20, 0, "rel", 0.3, null))
+            .ReturnsAsync(searchResponse);
 
         await _model.OnGetAsync();
 
@@ -225,18 +224,16 @@ public class ChildOrganisationResultsPageTests
     public async Task MapSearchResultToChildOrganisation_MapsPropertiesCorrectly()
     {
         var testId = Guid.NewGuid();
-        var searchResults = new List<OrganisationSearchResult>
+        var searchResults = new List<OrganisationSearchByPponResult>
         {
-            CreateTestSearchResult("Test Org", testId, "GB-PPON", "TORG-1234-BCDE")
+            CreateTestSearchByPponResult("Test Org", testId, "TORG-1234-BCDE")
         };
 
+        var searchResponse = new OrganisationSearchByPponResponse(searchResults, 1);
         _mockOrganisationClient
-            .Setup(client => client.SearchOrganisationAsync(
-                "test", null, 20, 0.3, true))
-            .ReturnsAsync(searchResults);
-
-        _mockOrganisationClient.Setup(c => c.GetChildOrganisationsAsync(It.IsAny<Guid>()))
-            .ReturnsAsync(new List<OrganisationSummary>());
+            .Setup(client => client.SearchByNameOrPponAsync(
+                "test", 20, 0, "rel", 0.3, null))
+            .ReturnsAsync(searchResponse);
 
         _model.Query = "test";
 
@@ -253,26 +250,27 @@ public class ChildOrganisationResultsPageTests
     [InlineData("GB-PPON:PMZV-7732-XXTT", "GB-PPON:PMZV-7732-XXTT")]
     [InlineData("GB-PPON-PMZV-7732-XXTT", "GB-PPON:PMZV-7732-XXTT")]
     [InlineData("PMZV-7732-XXTT", "GB-PPON:PMZV-7732-XXTT")]
-    public async Task OnGetAsync_WithPponQuery_CallsLookupOrganisationAsync(string query, string expectedIdentifier)
+    public async Task OnGetAsync_WithPponQuery_CallsSearchByNameOrPponAsync(string query, string expectedIdentifier)
     {
         _model.Query = query;
         var organisationId = Guid.NewGuid();
-        var organisation = new CDP.Organisation.WebApiClient.Organisation(
-            additionalIdentifiers: [],
-            addresses: [],
-            contactPoint: new ContactPoint("a@b.com", "Contact", "123", new Uri("http://whatever")),
+        var searchResult = new OrganisationSearchByPponResult(
             id: organisationId,
-            identifier: new Identifier(scheme: "GB-PPON", id: expectedIdentifier.Substring("GB-PPON:".Length), legalName: "Test Ppon Organisation", uri: new Uri("http://whatever")),
             name: "Test Ppon Organisation",
             type: OrganisationType.Organisation,
-            roles: [PartyRole.Buyer, PartyRole.Supplier, PartyRole.Tenderer],
-            details: new Details(approval: null, buyerInformation: null, pendingRoles: [],
-                publicServiceMissionOrganization: null, scale: null, shelteredWorkshop: null, vcse: null)
+            identifiers: new List<Identifier> { new Identifier(scheme: "GB-PPON", id: expectedIdentifier.Substring("GB-PPON:".Length), legalName: "Test Ppon Organisation", uri: new Uri("http://whatever")) },
+            partyRoles: new List<PartyRoleWithStatus> { new PartyRoleWithStatus(PartyRole.Buyer, PartyRoleStatus.Active) },
+            addresses: new List<OrganisationAddress>()
+        );
+
+        var searchResponse = new OrganisationSearchByPponResponse(
+            new List<OrganisationSearchByPponResult> { searchResult },
+            1
         );
 
         _mockOrganisationClient
-            .Setup(client => client.LookupOrganisationAsync(null, expectedIdentifier))
-            .ReturnsAsync(organisation);
+            .Setup(client => client.SearchByNameOrPponAsync(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<double?>(), null))
+            .ReturnsAsync(searchResponse);
 
         _mockOrganisationClient.Setup(c => c.GetChildOrganisationsAsync(It.IsAny<Guid>()))
             .ReturnsAsync(new List<OrganisationSummary>());
@@ -280,7 +278,7 @@ public class ChildOrganisationResultsPageTests
         await _model.OnGetAsync();
 
         _mockOrganisationClient.Verify(
-            client => client.LookupOrganisationAsync(null, expectedIdentifier),
+            client => client.SearchByNameOrPponAsync(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<double?>(), null),
             Times.Once);
         _mockOrganisationClient.Verify(
             client => client.SearchOrganisationAsync(
@@ -298,18 +296,23 @@ public class ChildOrganisationResultsPageTests
     }
 
     [Fact]
-    public async Task OnGetAsync_WithPponQuery_WhenLookupReturnsNull_ReturnsEmptyResults()
+    public async Task OnGetAsync_WithPponQuery_WhenSearchReturnsEmpty_ReturnsEmptyResults()
     {
         _model.Query = "GB-PPON-PMZV-7732-XXTT";
 
+        var searchResponse = new OrganisationSearchByPponResponse(
+            new List<OrganisationSearchByPponResult>(),
+            0
+        );
+
         _mockOrganisationClient
-            .Setup(client => client.LookupOrganisationAsync(null, "GB-PPON:PMZV-7732-XXTT"))
-            .ReturnsAsync((CDP.Organisation.WebApiClient.Organisation)null!);
+            .Setup(client => client.SearchByNameOrPponAsync(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<double?>(), null))
+            .ReturnsAsync(searchResponse);
 
         await _model.OnGetAsync();
 
         _mockOrganisationClient.Verify(
-            client => client.LookupOrganisationAsync(null, "GB-PPON:PMZV-7732-XXTT"),
+            client => client.SearchByNameOrPponAsync(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<double?>(), null),
             Times.Once);
         _model.Results.Should().BeEmpty();
     }
@@ -322,8 +325,8 @@ public class ChildOrganisationResultsPageTests
         var exception = new Exception("Test exception");
 
         _mockOrganisationClient
-            .Setup(client => client.SearchOrganisationAsync(
-                _model.Query, null, 20, 0.3, true))
+            .Setup(client => client.SearchByNameOrPponAsync(
+                _model.Query, 20, 0, "rel", 0.3, null))
             .ThrowsAsync(exception);
 
         var result = await _model.OnGetAsync();
@@ -342,15 +345,14 @@ public class ChildOrganisationResultsPageTests
     }
 
     [Fact]
-    public async Task OnGetAsync_WithPponQuery_WhenLookupThrowsException_LogsCdpExceptionAndRedirectsToErrorPage()
+    public async Task OnGetAsync_WithPponQuery_WhenSearchThrowsException_LogsCdpExceptionAndRedirectsToErrorPage()
     {
         _model.Query = "GB-PPON-PMZV-7732-XXTT";
-        const string errorCode = "LOOKUP_ERROR";
+        const string errorCode = "SEARCH_ERROR";
         var exception = new Exception("Test exception");
 
         _mockOrganisationClient
-            .Setup(client => client.LookupOrganisationAsync(
-                null, "GB-PPON:PMZV-7732-XXTT"))
+            .Setup(client => client.SearchByNameOrPponAsync(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<double?>(), null))
             .ThrowsAsync(exception);
 
         var result = await _model.OnGetAsync();
@@ -373,21 +375,19 @@ public class ChildOrganisationResultsPageTests
     {
         var id = Guid.NewGuid();
         const string query = "test query";
-        var searchResults = new List<OrganisationSearchResult>
+        var searchResults = new List<OrganisationSearchByPponResult>
         {
-            CreateTestSearchResult("Test Org", Guid.NewGuid(), "GB-PPON", "TORG-1234-CDEF")
+            CreateTestSearchByPponResult("Test Org", Guid.NewGuid(), "TORG-1234-CDEF")
         };
 
         _model.Id = id;
         _model.Query = query;
 
+        var searchResponse = new OrganisationSearchByPponResponse(searchResults, 1);
         _mockOrganisationClient
-            .Setup(client => client.SearchOrganisationAsync(
-                query, null, 20, 0.3, true))
-            .ReturnsAsync(searchResults);
-
-        _mockOrganisationClient.Setup(c => c.GetChildOrganisationsAsync(It.IsAny<Guid>()))
-            .ReturnsAsync(new List<OrganisationSummary>());
+            .Setup(client => client.SearchByNameOrPponAsync(
+                query, 20, 0, "rel", 0.3, null))
+            .ReturnsAsync(searchResponse);
 
         var result = await _model.OnPost();
 
@@ -406,10 +406,11 @@ public class ChildOrganisationResultsPageTests
         _model.Query = query;
         _model.SelectedChildId = childId;
 
+        var emptyResponse = new OrganisationSearchByPponResponse(new List<OrganisationSearchByPponResult>(), 0);
         _mockOrganisationClient
-            .Setup(client => client.SearchOrganisationAsync(
-                query, null, 20, 0.3, true))
-            .ReturnsAsync(new List<OrganisationSearchResult>());
+            .Setup(client => client.SearchByNameOrPponAsync(
+                query, 20, 0, "rel", 0.3, null))
+            .ReturnsAsync(emptyResponse);
 
         var result = await _model.OnPost();
 
@@ -437,8 +438,8 @@ public class ChildOrganisationResultsPageTests
             null);
 
         _mockOrganisationClient
-            .Setup(client => client.SearchOrganisationAsync(
-                query, null, 20, 0.3, true))
+            .Setup(client => client.SearchByNameOrPponAsync(
+                query, 20, 0, "rel", 0.3, null))
             .ThrowsAsync(apiException);
 
         var result = await _model.OnPost();
@@ -474,12 +475,13 @@ public class ChildOrganisationResultsPageTests
             System.Net.HttpStatusCode.InternalServerError);
 
         _mockOrganisationClient
-            .Setup(client => client.SearchOrganisationAsync(
+            .Setup(client => client.SearchByNameOrPponAsync(
                 It.Is<string>(q => q == query),
-                It.Is<string?>(r => r == null),
-                It.Is<int>(l => l == 20),
+                It.Is<int>(p => p == 20),
+                It.Is<int>(s => s == 0),
+                It.Is<string>(o => o == "rel"),
                 It.Is<double>(t => Math.Abs(t - 0.3) < Tolerance),
-                It.Is<bool>(f => f == true)))
+                null))
             .ThrowsAsync(httpRequestException);
 
         var result = await _model.OnPost();
@@ -502,40 +504,33 @@ public class ChildOrganisationResultsPageTests
     {
         var id = Guid.NewGuid();
         const string query = "GB-PPON-PMZV-7732-XXTT";
-        const string expectedIdentifier = "GB-PPON:PMZV-7732-XXTT";
         var organisationId = Guid.NewGuid();
 
-        var organisation = new CDP.Organisation.WebApiClient.Organisation(
-            additionalIdentifiers: [],
-            addresses: [],
-            contactPoint: new ContactPoint("test@example.com", "Contact Name", "123456789", new Uri("http://example.com")),
+        var searchResult = new OrganisationSearchByPponResult(
             id: organisationId,
-            identifier: new Identifier(scheme: "GB-PPON", id: "PMZV-7732-XXTT", legalName: "Test PPON Organisation", uri: new Uri("http://identifier.example")),
             name: "Test PPON Organisation",
             type: OrganisationType.Organisation,
-            roles: [PartyRole.Buyer],
-            details: new Details(
-                approval: null,
-                buyerInformation: null,
-                pendingRoles: [],
-                publicServiceMissionOrganization: null,
-                scale: null,
-                shelteredWorkshop: null,
-                vcse: null)
+            identifiers: new List<Identifier> { new Identifier(scheme: "GB-PPON", id: "PMZV-7732-XXTT", legalName: "Test PPON Organisation", uri: new Uri("http://identifier.example")) },
+            partyRoles: new List<PartyRoleWithStatus> { new PartyRoleWithStatus(PartyRole.Buyer, PartyRoleStatus.Active) },
+            addresses: new List<OrganisationAddress>()
+        );
+
+        var searchResponse = new OrganisationSearchByPponResponse(
+            new List<OrganisationSearchByPponResult> { searchResult },
+            1
         );
 
         _model.Id = id;
         _model.Query = query;
 
         _mockOrganisationClient
-            .Setup(client => client.LookupOrganisationAsync(
-                null, expectedIdentifier))
-            .ReturnsAsync(organisation);
+            .Setup(client => client.SearchByNameOrPponAsync(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<double?>(), null))
+            .ReturnsAsync(searchResponse);
 
         _mockOrganisationClient.Setup(c => c.GetChildOrganisationsAsync(It.IsAny<Guid>()))
             .ReturnsAsync(new List<OrganisationSummary>());
 
-        _model.Results.Add(MapOrganisationToChildOrganisation(organisation));
+        _model.Results.Add(MapSearchResultToChildOrganisation(searchResult));
 
         var result = await _model.OnPost();
 
@@ -549,40 +544,33 @@ public class ChildOrganisationResultsPageTests
         var id = Guid.NewGuid();
         var childId = Guid.NewGuid();
         const string query = "GB-PPON-PMZV-7732-XXTT";
-        const string expectedIdentifier = "GB-PPON:PMZV-7732-XXTT";
 
-        var organisation = new CDP.Organisation.WebApiClient.Organisation(
-            additionalIdentifiers: [],
-            addresses: [],
-            contactPoint: new ContactPoint("test@example.com", "Contact Name", "123456789", new Uri("http://example.com")),
+        var searchResult = new OrganisationSearchByPponResult(
             id: childId,
-            identifier: new Identifier(scheme: "GB-PPON", id: "PMZV-7732-XXTT", legalName: "Test PPON Organisation", uri: new Uri("http://identifier.example")),
             name: "Test PPON Organisation",
             type: OrganisationType.Organisation,
-            roles: [PartyRole.Buyer],
-            details: new Details(
-                approval: null,
-                buyerInformation: null,
-                pendingRoles: [],
-                publicServiceMissionOrganization: null,
-                scale: null,
-                shelteredWorkshop: null,
-                vcse: null)
-    );
+            identifiers: new List<Identifier> { new Identifier(scheme: "GB-PPON", id: "PMZV-7732-XXTT", legalName: "Test PPON Organisation", uri: new Uri("http://identifier.example")) },
+            partyRoles: new List<PartyRoleWithStatus> { new PartyRoleWithStatus(PartyRole.Buyer, PartyRoleStatus.Active) },
+            addresses: new List<OrganisationAddress>()
+        );
+
+        var searchResponse = new OrganisationSearchByPponResponse(
+            new List<OrganisationSearchByPponResult> { searchResult },
+            1
+        );
 
         _model.Id = id;
         _model.Query = query;
         _model.SelectedChildId = childId;
 
         _mockOrganisationClient
-            .Setup(client => client.LookupOrganisationAsync(
-                null, expectedIdentifier))
-            .ReturnsAsync(organisation);
+            .Setup(client => client.SearchByNameOrPponAsync(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<double?>(), null))
+            .ReturnsAsync(searchResponse);
 
         _mockOrganisationClient.Setup(c => c.GetChildOrganisationsAsync(It.IsAny<Guid>()))
             .ReturnsAsync(new List<OrganisationSummary>());
 
-        _model.Results.Add(MapOrganisationToChildOrganisation(organisation));
+        _model.Results.Add(MapSearchResultToChildOrganisation(searchResult));
 
         var result = await _model.OnPost();
 
@@ -597,32 +585,69 @@ public class ChildOrganisationResultsPageTests
         redirectResult.RouteValues?["Query"].Should().Be(query);
     }
 
-    private ChildOrganisation MapOrganisationToChildOrganisation(CDP.Organisation.WebApiClient.Organisation organisation)
+    private ChildOrganisation MapSearchResultToChildOrganisation(OrganisationSearchByPponResult searchResult)
     {
         return new ChildOrganisation(
-            name: organisation.Name,
-            organisationId: organisation.Id,
-            identifier: organisation.Identifier
+            name: searchResult.Name,
+            organisationId: searchResult.Id,
+            identifier: searchResult.Identifiers.First()
         );
     }
 
-    private static OrganisationSearchResult CreateTestSearchResult(string name, Guid id, string scheme,
-        string identifierId)
+    private static OrganisationSearchByPponResult CreateTestSearchByPponResult(string name, Guid id, string identifierId)
+    {
+        var identifier = new Identifier(
+            scheme: "GB-PPON",
+            id: identifierId,
+            legalName: name,
+            uri: null
+        );
+
+        return new OrganisationSearchByPponResult(
+            id: id,
+            identifiers: new List<Identifier> { identifier },
+            name: name,
+            partyRoles: new List<PartyRoleWithStatus> { new PartyRoleWithStatus(PartyRole.Buyer, PartyRoleStatus.Active) },
+            type: OrganisationType.Organisation,
+            addresses: new List<OrganisationAddress>()
+        );
+    }
+
+    private static OrganisationSearchByPponResult CreateTestSearchByPponResultWithScheme(string name, Guid id, string scheme, string identifierId)
     {
         var identifier = new Identifier(
             scheme: scheme,
             id: identifierId,
-            legalName: null,
+            legalName: name,
             uri: null
         );
 
-        return new OrganisationSearchResult(
+        return new OrganisationSearchByPponResult(
             id: id,
-            identifier: identifier,
+            identifiers: new List<Identifier> { identifier },
             name: name,
-            pendingRoles: new List<PartyRole>(),
-            roles: new List<PartyRole> { PartyRole.Buyer },
-            type: OrganisationType.Organisation
+            partyRoles: new List<PartyRoleWithStatus> { new PartyRoleWithStatus(PartyRole.Buyer, PartyRoleStatus.Active) },
+            type: OrganisationType.Organisation,
+            addresses: new List<OrganisationAddress>()
+        );
+    }
+
+    private static OrganisationSearchByPponResult CreateTestSearchByPponResultWithRoles(string name, Guid id, string identifierId, List<PartyRoleWithStatus> partyRoles)
+    {
+        var identifier = new Identifier(
+            scheme: "GB-PPON",
+            id: identifierId,
+            legalName: name,
+            uri: null
+        );
+
+        return new OrganisationSearchByPponResult(
+            id: id,
+            identifiers: new List<Identifier> { identifier },
+            name: name,
+            partyRoles: partyRoles,
+            type: OrganisationType.Organisation,
+            addresses: new List<OrganisationAddress>()
         );
     }
 
@@ -631,22 +656,29 @@ public class ChildOrganisationResultsPageTests
     {
         var parentId = Guid.NewGuid();
         const string query = "GB-PPON-PMZV-7732-XXTT";
-        const string expectedIdentifier = "GB-PPON:PMZV-7732-XXTT";
         var childId = Guid.NewGuid();
 
         _model.Id = parentId;
         _model.Query = query;
 
-        var lookedUpOrganisation = OrganisationFactory.CreateOrganisation(
-            id: childId,
-            name: "Non GB-PPON Organisation",
-            roles: new List<PartyRole> { PartyRole.Buyer },
-            identifier: new Identifier(scheme: "NOT-GB-PPON", id: "PMZV-7732-XXTT", legalName: "Non GB-PPON Organisation",
-                uri: new Uri("https://example.com")));
+        var searchResponse = new OrganisationSearchByPponResponse(
+            new List<OrganisationSearchByPponResult>
+            {
+                new OrganisationSearchByPponResult(
+                    id: childId,
+                    name: "Non GB-PPON Organisation",
+                    type: OrganisationType.Organisation,
+                    identifiers: new List<Identifier> { new Identifier(scheme: "NOT-GB-PPON", id: "PMZV-7732-XXTT", legalName: "Non GB-PPON Organisation", uri: new Uri("https://example.com")) },
+                    partyRoles: new List<PartyRoleWithStatus> { new(PartyRole.Buyer, PartyRoleStatus.Active) },
+                    addresses: new List<OrganisationAddress>()
+                )
+            },
+            1
+        );
 
         _mockOrganisationClient
-            .Setup(client => client.LookupOrganisationAsync(null, expectedIdentifier))
-            .ReturnsAsync(lookedUpOrganisation);
+            .Setup(client => client.SearchByNameOrPponAsync(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<double?>(), null))
+            .ReturnsAsync(searchResponse);
 
         _mockOrganisationClient
             .Setup(client => client.GetChildOrganisationsAsync(parentId))
@@ -666,20 +698,17 @@ public class ChildOrganisationResultsPageTests
         _model.Id = parentId;
         _model.Query = query;
 
-        var searchResults = new List<OrganisationSearchResult>
+        var searchResults = new List<OrganisationSearchByPponResult>
         {
-            CreateTestSearchResult("GB-PPON Organisation", Guid.NewGuid(), "GB-PPON", "PPON-1234-ABCD"),
-            CreateTestSearchResult("Non GB-PPON Organisation", Guid.NewGuid(), "NOT-GB-PPON", "NON-PPON-5678-EFGH")
+            CreateTestSearchByPponResult("GB-PPON Organisation", Guid.NewGuid(), "PPON-1234-ABCD"),
+            CreateTestSearchByPponResultWithScheme("Non GB-PPON Organisation", Guid.NewGuid(), "NOT-GB-PPON", "NON-PPON-5678-EFGH")
         };
 
+        var searchResponse = new OrganisationSearchByPponResponse(searchResults, 2);
         _mockOrganisationClient
-            .Setup(client => client.SearchOrganisationAsync(
-                query, null, 20, 0.3, true))
-            .ReturnsAsync(searchResults);
-
-        _mockOrganisationClient
-            .Setup(client => client.GetChildOrganisationsAsync(parentId))
-            .ReturnsAsync(new List<OrganisationSummary>());
+            .Setup(client => client.SearchByNameOrPponAsync(
+                query, 20, 0, "rel", 0.3, null))
+            .ReturnsAsync(searchResponse);
 
         await _model.OnGetAsync();
 
@@ -696,24 +725,22 @@ public class ChildOrganisationResultsPageTests
         var childId3 = Guid.NewGuid();
         const string query = "test query";
 
-        var searchResults = new List<OrganisationSearchResult>
+        var searchResults = new List<OrganisationSearchByPponResult>
         {
-            CreateTestSearchResult("Parent Org", parentId, "GB-PPON", "PARENT-1234"),
-            CreateTestSearchResult("Child Org 1", childId1, "GB-PPON", "CHILD-5678"),
-            CreateTestSearchResult("Child Org 2", childId2, "GB-PPON", "CHILD-9012"),
-            CreateTestSearchResult("Child Org 3", childId3, "GB-PPON", "CHILD-3456"),
+            CreateTestSearchByPponResult("Parent Org", parentId, "PARENT-1234"),
+            CreateTestSearchByPponResult("Child Org 1", childId1, "CHILD-5678"),
+            CreateTestSearchByPponResult("Child Org 2", childId2, "CHILD-9012"),
+            CreateTestSearchByPponResult("Child Org 3", childId3, "CHILD-3456"),
         };
 
         _model.Id = parentId;
         _model.Query = query;
 
+        var searchResponse = new OrganisationSearchByPponResponse(searchResults, 4);
         _mockOrganisationClient
-            .Setup(client => client.SearchOrganisationAsync(
-                query, null, 20, 0.3, true))
-            .ReturnsAsync(searchResults);
-
-        _mockOrganisationClient.Setup(c => c.GetChildOrganisationsAsync(It.IsAny<Guid>()))
-            .ReturnsAsync(new List<OrganisationSummary>());
+            .Setup(client => client.SearchByNameOrPponAsync(
+                query, 20, 0, "rel", 0.3, null))
+            .ReturnsAsync(searchResponse);
 
         await _model.OnGetAsync();
 
@@ -733,71 +760,35 @@ public class ChildOrganisationResultsPageTests
     }
 
     [Fact]
-    public async Task OnGet_SearchResults_OnlyReturnsOrganisationsWithBuyerRoleOrPendingBuyerRole()
+    public async Task OnGet_SearchResults_OnlyReturnsOrganisationsWithBuyerRole()
     {
         var id = Guid.NewGuid();
         const string query = "test query";
-        var allSearchResults = new List<OrganisationSearchResult>
+        var allSearchResults = new List<OrganisationSearchByPponResult>
         {
             // Should be included - has buyer role
-            CreateTestSearchResultBasedOnRoles("Buyer Org", Guid.NewGuid(), "GB-PPON", "BORG-1234",
-                roles: new List<PartyRole> { PartyRole.Buyer },
-                pendingRoles: new List<PartyRole>()),
-
-            // Should be included - has pending buyer role
-            CreateTestSearchResultBasedOnRoles("Pending Buyer Org", Guid.NewGuid(), "GB-PPON", "PBORG-5678",
-                roles: new List<PartyRole>(),
-                pendingRoles: new List<PartyRole> { PartyRole.Buyer }),
+            CreateTestSearchByPponResultWithRoles("Buyer Org", Guid.NewGuid(), "BORG-1234",
+                partyRoles: new List<PartyRoleWithStatus> { new PartyRoleWithStatus(PartyRole.Buyer, PartyRoleStatus.Active) }),
 
             // Should NOT be included - no buyer role
-            CreateTestSearchResultBasedOnRoles("Supplier Only", Guid.NewGuid(), "GB-PPON", "SORG-9012",
-                roles: new List<PartyRole> { PartyRole.Supplier },
-                pendingRoles: new List<PartyRole>()),
-
-            // Should NOT be included - pending supplier only
-            CreateTestSearchResultBasedOnRoles("Pending Supplier", Guid.NewGuid(), "GB-PPON", "PSORG-3456",
-                roles: new List<PartyRole>(),
-                pendingRoles: new List<PartyRole> { PartyRole.Supplier })
+            CreateTestSearchByPponResultWithRoles("Supplier Only", Guid.NewGuid(), "SORG-9012",
+                partyRoles: new List<PartyRoleWithStatus> { new PartyRoleWithStatus(PartyRole.Supplier, PartyRoleStatus.Active) })
         };
 
         _model.Id = id;
         _model.Query = query;
 
+        var searchResponse = new OrganisationSearchByPponResponse(allSearchResults, 2);
         _mockOrganisationClient
-            .Setup(client => client.SearchOrganisationAsync(
-                query, null, 20, 0.3, true))
-            .ReturnsAsync(allSearchResults);
+            .Setup(client => client.SearchByNameOrPponAsync(
+                query, 20, 0, "rel", 0.3, null))
+            .ReturnsAsync(searchResponse);
 
         var result = await _model.OnGetAsync();
 
         result.Should().BeOfType<PageResult>();
-        _model.Results.Should().HaveCount(2);
+        _model.Results.Should().HaveCount(1);
         _model.Results.Should().Contain(org =>
             org.Name == "Buyer Org");
-        _model.Results.Should().Contain(org =>
-            org.Name == "Pending Buyer Org");
-    }
-
-    private static OrganisationSearchResult CreateTestSearchResultBasedOnRoles(
-        string name,
-        Guid id,
-        string scheme,
-        string identifierId,
-        List<PartyRole>? roles = null,
-        List<PartyRole>? pendingRoles = null)
-    {
-        return new OrganisationSearchResult(
-            id: id,
-            name: name,
-            type: OrganisationType.Organisation,
-            identifier: new Identifier(
-                scheme: scheme,
-                id: identifierId,
-                legalName: name,
-                uri: new Uri($"https://test.com/{identifierId}")
-            ),
-            roles: roles ?? new List<PartyRole>(),
-            pendingRoles: pendingRoles ?? new List<PartyRole>()
-        );
     }
 }

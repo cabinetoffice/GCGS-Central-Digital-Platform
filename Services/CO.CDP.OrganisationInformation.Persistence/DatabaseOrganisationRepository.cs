@@ -120,6 +120,11 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
 
     public async Task<(IEnumerable<Organisation> Results, int TotalCount)> SearchByNameOrPpon(string searchText, int? limit, int skip, string orderBy, double threshold = 0.3)
     {
+        return await SearchByNameOrPpon(searchText, limit, skip, orderBy, threshold, false);
+    }
+
+    public async Task<(IEnumerable<Organisation> Results, int TotalCount)> SearchByNameOrPpon(string searchText, int? limit, int skip, string orderBy, double threshold, bool excludeOnlyPendingBuyerRoles)
+    {
         var baseQuery = context.Organisations
             .Include(b => b.Identifiers)
             .Include(p => p.Addresses)
@@ -129,6 +134,15 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
                 t.Identifiers.Any(i => i.IdentifierId != null && i.IdentifierId.Equals(searchText)))
             .Where(t => t.Type == OrganisationType.Organisation)
             .Where(t => t.Identifiers.Any(i => i.Scheme.Equals("GB-PPON")));
+
+        if (excludeOnlyPendingBuyerRoles)
+        {
+            baseQuery = baseQuery.Where(t =>
+                !t.PendingRoles.Contains(PartyRole.Buyer) ||
+                t.Roles.Any(r => r != PartyRole.Buyer) ||
+                t.Roles.Contains(PartyRole.Buyer)
+            );
+        }
 
         if (orderBy.Equals("asc", StringComparison.OrdinalIgnoreCase))
         {

@@ -1,7 +1,6 @@
 using CO.CDP.Localization;
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Constants;
-using CO.CDP.OrganisationApp.Extensions;
 using CO.CDP.OrganisationApp.Logging;
 using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.WebApiClients;
@@ -60,22 +59,13 @@ public class ChildOrganisationResultsPage(
     }
 
 
-    private ChildOrganisation MapOrganisationSearchResultToChildOrganisation(OrganisationSearchResult searchResult)
+    private ChildOrganisation MapOrganisationSearchByPponResultToChildOrganisation(OrganisationSearchByPponResult searchResult)
     {
+        var pponIdentifier = searchResult.Identifiers.FirstOrDefault(i => i.Scheme == "GB-PPON") ?? searchResult.Identifiers.First();
         return new ChildOrganisation(
             name: searchResult.Name,
             organisationId: searchResult.Id,
-            identifier: searchResult.Identifier
-        );
-    }
-
-    private ChildOrganisation MapOrganisationLookupResultToChildOrganisation(
-        CDP.Organisation.WebApiClient.Organisation organisation)
-    {
-        return new ChildOrganisation(
-            name: organisation.Name,
-            organisationId: organisation.Id,
-            identifier: organisation.Identifier
+            identifier: pponIdentifier
         );
     }
 
@@ -128,11 +118,7 @@ public class ChildOrganisationResultsPage(
 
         try
         {
-            var (isLikelyPpon, formattedPpon) = OrganisationIdentifierExtensions.IsLikelyPpon(Query);
-
-            var (results, feedbackMessage) = await (isLikelyPpon
-                ? ExecutePponSearch(formattedPpon)
-                : ExecuteNameSearch());
+            var (results, feedbackMessage) = await ExecuteOrganisationSearch();
 
             if (results.Count == 0)
             {
@@ -146,10 +132,7 @@ public class ChildOrganisationResultsPage(
                 : (new List<ChildOrganisation>(), StaticTextResource.BuyerParentChildRelationship_ResultsPage_NoResults,
                     false);
         }
-        catch (Exception ex) when (
-            (ex is ApiException apiEx && apiEx.StatusCode != 404) ||
-            (ex is HttpRequestException httpEx && httpEx.StatusCode != System.Net.HttpStatusCode.NotFound) ||
-            (!(ex is ApiException) && !(ex is HttpRequestException)))
+        catch (Exception ex)
         {
             LogApiError(ex);
             return (new List<ChildOrganisation>(), null, true);
@@ -158,50 +141,18 @@ public class ChildOrganisationResultsPage(
 
     private List<ChildOrganisation> FilterResults(List<ChildOrganisation> results)
     {
-        try
-        {
-            return results
-                .Where(r => r.OrganisationId != Id)
-                .ToList();
-        }
-        catch (ApiException ex) when (ex.StatusCode == 404)
-        {
-            _logger.LogInformation("No child organisations found for parent {ParentId}", Id);
-            return results.Where(r => r.OrganisationId != Id).ToList();
-        }
+        return results
+            .Where(r => r.OrganisationId != Id)
+            .ToList();
     }
 
-    private async Task<(List<ChildOrganisation> Results, string? ErrorMessage)> ExecutePponSearch(
-        string? pponIdentifier)
+    private async Task<(List<ChildOrganisation> Results, string? FeedbackMessage)> ExecuteOrganisationSearch()
     {
-        if (string.IsNullOrWhiteSpace(pponIdentifier))
-        {
-            return (new List<ChildOrganisation>(),
-                StaticTextResource.BuyerParentChildRelationship_ResultsPage_NoResults);
-        }
-
-        var organisation = await OrganisationClientExtensions.LookupOrganisationAsync(_organisationClient,
-            name: null,
-            identifier: pponIdentifier);
-
-        if (organisation == null ||
-            organisation.Identifier.Scheme != "GB-PPON")
-        {
-            return (new List<ChildOrganisation>(),
-                StaticTextResource.BuyerParentChildRelationship_ResultsPage_NoResults);
-        }
-
-        return (new List<ChildOrganisation> { MapOrganisationLookupResultToChildOrganisation(organisation) }, null);
-    }
-
-    private async Task<(List<ChildOrganisation> Results, string? FeedbackMessage)> ExecuteNameSearch()
-    {
-        var searchResults = await OrganisationClientExtensions.SearchOrganisationAsync(_organisationClient,
-            name: Query,
-            role: null,
-            limit: 20,
-            threshold: 0.3,
-            true);
+        var (searchResults, _) = await _organisationClient.SearchOrganisationByNameOrPpon(searchText: Query,
+            pageSize: 20,
+            skip: 0,
+            orderBy: "rel",
+            threshold: 0.3);
 
         if (searchResults.Count == 0)
         {
@@ -210,9 +161,9 @@ public class ChildOrganisationResultsPage(
         }
 
         var results = searchResults
-            .Where(r => r.Identifier.Scheme == "GB-PPON" &&
-                        (r.Roles.Contains(PartyRole.Buyer) || r.PendingRoles.Contains(PartyRole.Buyer)))
-            .Select(MapOrganisationSearchResultToChildOrganisation)
+            .Where(r => r.Identifiers.Any(i => i.Scheme == "GB-PPON") &&
+                        r.PartyRoles.Any(pr => pr.Role == PartyRole.Buyer))
+            .Select(MapOrganisationSearchByPponResultToChildOrganisation)
             .ToList();
 
         return (results, null);
@@ -221,8 +172,7 @@ public class ChildOrganisationResultsPage(
     private void LogApiError(Exception ex)
     {
         var errorMessage = "Error occurred while searching for organisations";
-        var errorCode = OrganisationIdentifierExtensions.IsLikelyPpon(Query).IsLikelyPpon ? "LOOKUP_ERROR" : "SEARCH_ERROR";
-        var cdpException = new CdpExceptionLogging(errorMessage, errorCode, ex);
+        var cdpException = new CdpExceptionLogging(errorMessage, "SEARCH_ERROR", ex);
         _logger.LogError(cdpException, errorMessage);
     }
 }
