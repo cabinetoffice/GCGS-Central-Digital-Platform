@@ -33,6 +33,8 @@ public class OrganisationOverviewModel(IOrganisationClient organisationClient, I
     public string MouSignedOnDate { get; set; } = "";
 
     public bool SearchRegistryPponEnabled { get; private set; }
+    public bool BuyerViewEnabled { get; private set; }
+    public string BackLinkUrl { get; private set; } = "";
 
     public ICollection<OrganisationSummary>? ChildOrganisations { get; set; }
 
@@ -43,6 +45,12 @@ public class OrganisationOverviewModel(IOrganisationClient organisationClient, I
             OrganisationDetails = await organisationClient.GetOrganisationAsync(Id);
 
             SearchRegistryPponEnabled = await featureManager.IsEnabledAsync(FeatureFlags.SearchRegistryPpon);
+
+            BuyerViewEnabled = await featureManager.IsEnabledAsync(FeatureFlags.BuyerView);
+
+            BackLinkUrl = BuyerViewEnabled
+                ? $"/organisation/{Id}/buyer"
+                : "/organisation-selection";
 
             if (OrganisationDetails.Type == OrganisationWebApiClient.OrganisationType.InformalConsortium)
             {
