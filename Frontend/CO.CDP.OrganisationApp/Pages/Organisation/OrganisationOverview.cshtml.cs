@@ -48,9 +48,9 @@ public class OrganisationOverviewModel(IOrganisationClient organisationClient, I
 
             BuyerViewEnabled = await featureManager.IsEnabledAsync(FeatureFlags.BuyerView);
 
-            BackLinkUrl =BuyerViewEnabled
+            BackLinkUrl = BuyerViewEnabled
                 ? $"/organisation/{Id}/buyer"
-                : $"/organisation-selection";
+                : "/organisation-selection";
 
             if (OrganisationDetails.Type == OrganisationWebApiClient.OrganisationType.InformalConsortium)
             {
