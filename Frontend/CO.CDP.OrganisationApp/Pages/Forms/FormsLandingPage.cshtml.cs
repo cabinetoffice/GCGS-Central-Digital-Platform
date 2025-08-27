@@ -81,7 +81,7 @@ public class FormsLandingPage(
 
     private Task<IActionResult> HandleAdditionalSectionAsync(SectionQuestionsResponse form)
     {
-        return Task.FromResult<IActionResult>(RedirectToPage("FormsAdditionalSummary", new { OrganisationId, FormId, SectionId }));
+        return Task.FromResult<IActionResult>(RedirectToPage("FormsAdditionalSummary", new { organisationId = OrganisationId, formId = FormId, sectionId = SectionId }));
     }
 
     private IActionResult CreateRedirectResult(string pageName) =>
