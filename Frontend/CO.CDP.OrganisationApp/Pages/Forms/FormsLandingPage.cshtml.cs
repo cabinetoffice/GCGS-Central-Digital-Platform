@@ -39,6 +39,11 @@ public class FormsLandingPage(
 
         if (form.Section.Type != FormSectionType.Declaration)
         {
+            if (form.Section.Type == FormSectionType.AdditionalSection)
+            {
+                return await HandleAdditionalSectionAsync(form);
+            }
+
             if (await userInfoService.IsViewer())
             {
                 return RedirectToPage("FormsAnswerSetSummary", new { OrganisationId, FormId, SectionId });
@@ -70,6 +75,47 @@ public class FormsLandingPage(
             return Redirect("/page-not-found");
         }
 
-        return RedirectToPage("FormsQuestionPage", new { OrganisationId, FormId, SectionId, CurrentQuestionId = currentQuestion.Id });
+        return RedirectToPage("FormsQuestionPage",
+            new { OrganisationId, FormId, SectionId, CurrentQuestionId = currentQuestion.Id });
+    }
+
+    private Task<IActionResult> HandleAdditionalSectionAsync(SectionQuestionsResponse form)
+    {
+        return Task.FromResult<IActionResult>(RedirectToPage("FormsAdditionalSummary", new { organisationId = OrganisationId, formId = FormId, sectionId = SectionId }));
+    }
+
+    private IActionResult CreateRedirectResult(string pageName) =>
+        RedirectToPage(pageName, new { OrganisationId, FormId, SectionId });
+
+    private IActionResult CreateRedirectToQuestionResult(Guid questionId) =>
+        RedirectToPage("FormsQuestionPage", new { OrganisationId, FormId, SectionId, CurrentQuestionId = questionId });
+
+    private static FormQuestion? FindCheckYourAnswersQuestion(IEnumerable<FormQuestion>? questions) =>
+        questions?.FirstOrDefault(q => q.Type == FormQuestionType.CheckYourAnswers);
+
+    private async Task<Result<Guid>> TryGetCurrentQuestionAsync()
+    {
+        var question = await formsEngine.GetCurrentQuestion(OrganisationId, FormId, SectionId, null);
+        return question != null
+            ? Result.Success(question.Id)
+            : Result.Failure<Guid>("Current question not found");
+    }
+
+    private class Result<T>
+    {
+        private Result(bool isSuccess, T value, string error)
+        {
+        }
+
+        public static Result<T> Success(T value) => new(true, value, string.Empty);
+
+        public static Result<T> Failure(string error) => new(false, default!, error);
+    }
+
+    private static class Result
+    {
+        public static Result<T> Success<T>(T value) => Result<T>.Success(value);
+
+        public static Result<T> Failure<T>(string error) => Result<T>.Failure(error);
     }
 }
