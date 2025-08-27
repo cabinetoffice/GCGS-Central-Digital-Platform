@@ -12,6 +12,8 @@ using AddressType = CO.CDP.Organisation.WebApiClient.AddressType;
 using Identifier = CO.CDP.Organisation.WebApiClient.Identifier;
 using OrganisationType = CO.CDP.Organisation.WebApiClient.OrganisationType;
 using PartyRole = CO.CDP.Organisation.WebApiClient.PartyRole;
+using Microsoft.FeatureManagement;
+using CO.CDP.OrganisationApp.Constants;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages.Organisation;
 
@@ -28,12 +30,14 @@ public class OrganisationPponSearchModelTest
     private readonly Mock<IAuthorizationService> _mockAuthorizationService;
     private readonly OrganisationPponSearchModel _testOrganisationPponSearchModel;
     private readonly Mock<ILogger<OrganisationPponSearchModel>> _mockLogger;
+    private readonly Mock<IFeatureManager> _mockFeatureManager;
 
     public OrganisationPponSearchModelTest()
     {
         _mockOrganisationClient = new Mock<IOrganisationClient>();
         _mockAuthorizationService = new Mock<IAuthorizationService>();
         _mockLogger = new Mock<ILogger<OrganisationPponSearchModel>>();
+        _mockFeatureManager = new Mock<IFeatureManager>();
 
         _mockAuthorizationService.Setup(a => a.AuthorizeAsync(
             It.IsAny<System.Security.Claims.ClaimsPrincipal>(),
@@ -42,7 +46,7 @@ public class OrganisationPponSearchModelTest
             .ReturnsAsync(AuthorizationResult.Success());
 
         _testOrganisationPponSearchModel =
-            new OrganisationPponSearchModel(_mockOrganisationClient.Object, Mock.Of<ISession>(), _mockLogger.Object)
+            new OrganisationPponSearchModel(_mockOrganisationClient.Object, Mock.Of<ISession>(), _mockLogger.Object, _mockFeatureManager.Object)
             {
                 Id = Id,
                 Pagination = new CO.CDP.OrganisationApp.Pages.Shared.PaginationPartialModel
@@ -56,6 +60,26 @@ public class OrganisationPponSearchModelTest
 
         var httpContext = new DefaultHttpContext();
         _testOrganisationPponSearchModel.PageContext = new PageContext { HttpContext = httpContext };
+    }
+
+    [Fact]
+    public async Task OnGet_WhenBuyerViewFeatureIsEnabled_SetsCorrectBackLinkUrl()
+    {
+        _mockFeatureManager.Setup(f => f.IsEnabledAsync(FeatureFlags.BuyerView)).ReturnsAsync(true);
+
+        await _testOrganisationPponSearchModel.OnGet();
+
+        _testOrganisationPponSearchModel.BackLinkUrl.Should().Be($"/organisation/{Id}/buyer");
+    }
+
+    [Fact]
+    public async Task OnGet_WhenBuyerViewFeatureIsDisabled_SetsCorrectBackLinkUrl()
+    {
+        _mockFeatureManager.Setup(f => f.IsEnabledAsync(FeatureFlags.BuyerView)).ReturnsAsync(false);
+
+        await _testOrganisationPponSearchModel.OnGet();
+
+        _testOrganisationPponSearchModel.BackLinkUrl.Should().Be($"/organisation/{Id}");
     }
 
     private OrganisationSearchByPponResult CreateTestOrganisationResult(string name, List<PartyRole> roles)
