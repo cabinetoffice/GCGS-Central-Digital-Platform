@@ -10,21 +10,13 @@ using OrganisationPersistence = CO.CDP.OrganisationInformation.Persistence.Organ
 
 namespace CO.CDP.Organisation.WebApi.Tests.UseCase;
 
-public class SearchOrganisationByPponUseCaseTests : IClassFixture<AutoMapperFixture>
+public class SearchOrganisationByPponUseCaseTests(AutoMapperFixture mapperFixture) : IClassFixture<AutoMapperFixture>
 {
-    private readonly AutoMapperFixture _mapperFixture;
-    private readonly Mock<IOrganisationRepository> _mockOrganisationRepository;
-
-    public SearchOrganisationByPponUseCaseTests(AutoMapperFixture mapperFixture)
-    {
-        _mapperFixture = mapperFixture;
-        _mockOrganisationRepository = new Mock<IOrganisationRepository>();
-    }
+    private readonly Mock<IOrganisationRepository> _mockOrganisationRepository = new();
 
     [Fact]
     public async Task Execute_WhenSearchingByPpon_ReturnsMatchingOrganisations()
     {
-        // Arrange
         const string searchTerm = "PGWZ-1758-ABCD";
         const int limit = 10;
         const int skip = 0;
@@ -39,17 +31,15 @@ public class SearchOrganisationByPponUseCaseTests : IClassFixture<AutoMapperFixt
         };
 
         _mockOrganisationRepository
-            .Setup(r => r.SearchByNameOrPpon(searchTerm, limit, skip, orderBy, threshold))
+            .Setup(r => r.SearchByNameOrPpon(searchTerm, limit, skip, orderBy, threshold, false))
             .ReturnsAsync((organisations, organisations.Count));
 
         var useCase = new SearchOrganisationByPponUseCase(
             _mockOrganisationRepository.Object,
-            _mapperFixture.Mapper);
+            mapperFixture.Mapper);
 
-        // Act
         var result = await useCase.Execute(organisationQuery);
 
-        // Assert
         result.Results.Should().HaveCount(1);
         result.TotalCount.Should().Be(1);
 
@@ -61,7 +51,6 @@ public class SearchOrganisationByPponUseCaseTests : IClassFixture<AutoMapperFixt
     [Fact]
     public async Task Execute_WhenSearchingByPartialPpon_ReturnsMatchingOrganisations()
     {
-        // Arrange
         const string searchTerm = "1758";
         const int limit = 10;
         const int skip = 0;
@@ -77,17 +66,15 @@ public class SearchOrganisationByPponUseCaseTests : IClassFixture<AutoMapperFixt
         };
 
         _mockOrganisationRepository
-            .Setup(r => r.SearchByNameOrPpon(searchTerm, limit, skip, orderBy, threshold))
+            .Setup(r => r.SearchByNameOrPpon(searchTerm, limit, skip, orderBy, threshold, false))
             .ReturnsAsync((organisations, organisations.Count));
 
         var useCase = new SearchOrganisationByPponUseCase(
             _mockOrganisationRepository.Object,
-            _mapperFixture.Mapper);
+            mapperFixture.Mapper);
 
-        // Act
         var result = await useCase.Execute(organisationQuery);
 
-        // Assert
         result.Results.Should().HaveCount(2);
         result.TotalCount.Should().Be(2);
 
@@ -98,7 +85,6 @@ public class SearchOrganisationByPponUseCaseTests : IClassFixture<AutoMapperFixt
     [Fact]
     public async Task Execute_WhenSearchingByName_ReturnsMatchingOrganisations()
     {
-        // Arrange
         const string searchTerm = "Test";
         const int limit = 10;
         const int skip = 0;
@@ -114,17 +100,15 @@ public class SearchOrganisationByPponUseCaseTests : IClassFixture<AutoMapperFixt
         };
 
         _mockOrganisationRepository
-            .Setup(r => r.SearchByNameOrPpon(searchTerm, limit, skip, orderBy, threshold))
+            .Setup(r => r.SearchByNameOrPpon(searchTerm, limit, skip, orderBy, threshold, false))
             .ReturnsAsync((organisations, organisations.Count));
 
         var useCase = new SearchOrganisationByPponUseCase(
             _mockOrganisationRepository.Object,
-            _mapperFixture.Mapper);
+            mapperFixture.Mapper);
 
-        // Act
         var result = await useCase.Execute(organisationQuery);
 
-        // Assert
         result.Results.Should().HaveCount(2);
         result.TotalCount.Should().Be(2);
 
@@ -135,7 +119,6 @@ public class SearchOrganisationByPponUseCaseTests : IClassFixture<AutoMapperFixt
     [Fact]
     public async Task Execute_WithPagination_ReturnsCorrectPage()
     {
-        // Arrange
         const string searchTerm = "Organisation";
         const int limit = 1;
         const int skip = 1;
@@ -149,19 +132,16 @@ public class SearchOrganisationByPponUseCaseTests : IClassFixture<AutoMapperFixt
             CreateOrganisation("Second Organisation", "PGWZ-2222-BBBB")
         };
 
-        // Repository returns only the second item, but total count is 2
         _mockOrganisationRepository
-            .Setup(r => r.SearchByNameOrPpon(searchTerm, limit, skip, orderBy, threshold))
+            .Setup(r => r.SearchByNameOrPpon(searchTerm, limit, skip, orderBy, threshold, false))
             .ReturnsAsync((organisations, 2));
 
         var useCase = new SearchOrganisationByPponUseCase(
             _mockOrganisationRepository.Object,
-            _mapperFixture.Mapper);
+            mapperFixture.Mapper);
 
-        // Act
         var result = await useCase.Execute(organisationQuery);
 
-        // Assert
         result.Results.Should().HaveCount(1);
         result.TotalCount.Should().Be(2);
         result.Results.First().Name.Should().Be("Second Organisation");
@@ -170,7 +150,6 @@ public class SearchOrganisationByPponUseCaseTests : IClassFixture<AutoMapperFixt
     [Fact]
     public async Task Execute_WithDescendingSort_ReturnsCorrectlySortedResults()
     {
-        // Arrange
         const string searchTerm = "Organisation";
         const int limit = 10;
         const int skip = 0;
@@ -186,17 +165,15 @@ public class SearchOrganisationByPponUseCaseTests : IClassFixture<AutoMapperFixt
         };
 
         _mockOrganisationRepository
-            .Setup(r => r.SearchByNameOrPpon(searchTerm, limit, skip, orderBy, threshold))
+            .Setup(r => r.SearchByNameOrPpon(searchTerm, limit, skip, orderBy, threshold, false))
             .ReturnsAsync((organisations, organisations.Count));
 
         var useCase = new SearchOrganisationByPponUseCase(
             _mockOrganisationRepository.Object,
-            _mapperFixture.Mapper);
+            mapperFixture.Mapper);
 
-        // Act
         var result = await useCase.Execute(organisationQuery);
 
-        // Assert
         result.Results.Should().HaveCount(2);
         result.Results.First().Name.Should().Be("Z Organisation");
         result.Results.Last().Name.Should().Be("A Organisation");
@@ -205,7 +182,6 @@ public class SearchOrganisationByPponUseCaseTests : IClassFixture<AutoMapperFixt
     [Fact]
     public async Task Execute_WhenNoResults_ReturnsEmptyCollection()
     {
-        // Arrange
         const string searchTerm = "NonExistentOrganisation";
         const int limit = 10;
         const int skip = 0;
@@ -217,19 +193,53 @@ public class SearchOrganisationByPponUseCaseTests : IClassFixture<AutoMapperFixt
         var organisations = new List<OrganisationPersistence>();
 
         _mockOrganisationRepository
-            .Setup(r => r.SearchByNameOrPpon(searchTerm, limit, skip, orderBy, threshold))
+            .Setup(r => r.SearchByNameOrPpon(searchTerm, limit, skip, orderBy, threshold, false))
             .ReturnsAsync((organisations, 0));
 
         var useCase = new SearchOrganisationByPponUseCase(
             _mockOrganisationRepository.Object,
-            _mapperFixture.Mapper);
+            mapperFixture.Mapper);
 
-        // Act
         var result = await useCase.Execute(organisationQuery);
 
-        // Assert
         result.Results.Should().BeEmpty();
         result.TotalCount.Should().Be(0);
+    }
+
+    [Fact]
+    public async Task Execute_WithExcludeOnlyPendingBuyerRolesFilter_CallsRepositoryWithTrueFlag()
+    {
+        const string searchTerm = "Test";
+        const int limit = 10;
+        const int skip = 0;
+        const string orderBy = "asc";
+        const double threshold = 0.3;
+
+        var organisationQuery = new OrganisationSearchByPponQuery(
+            searchTerm, limit, skip, orderBy, threshold, 
+            Model.OrganisationSearchFilter.ExcludeOnlyPendingBuyerRoles);
+
+        var organisations = new List<OrganisationPersistence>
+        {
+            CreateOrganisation("Test Organisation", "PGWZ-1001-AAAA")
+        };
+
+        _mockOrganisationRepository
+            .Setup(r => r.SearchByNameOrPpon(searchTerm, limit, skip, orderBy, threshold, true))
+            .ReturnsAsync((organisations, organisations.Count));
+
+        var useCase = new SearchOrganisationByPponUseCase(
+            _mockOrganisationRepository.Object,
+            mapperFixture.Mapper);
+
+        var result = await useCase.Execute(organisationQuery);
+
+        result.Results.Should().HaveCount(1);
+        result.TotalCount.Should().Be(1);
+        
+        _mockOrganisationRepository.Verify(
+            r => r.SearchByNameOrPpon(searchTerm, limit, skip, orderBy, threshold, true), 
+            Times.Once);
     }
 
     private static OrganisationPersistence CreateOrganisation(string name, string pponId)
@@ -250,7 +260,8 @@ public class SearchOrganisationByPponUseCaseTests : IClassFixture<AutoMapperFixt
                     LegalName = name
                 }
             ],
-            Roles = { PartyRole.Buyer, PartyRole.Tenderer },
+            Roles = { PartyRole.Tenderer },
+            PendingRoles = { PartyRole.Buyer },
             Addresses =
             {
                 new OrganisationInformation.Persistence.OrganisationAddress

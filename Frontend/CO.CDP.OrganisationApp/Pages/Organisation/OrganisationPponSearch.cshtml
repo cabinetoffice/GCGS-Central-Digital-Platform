@@ -1,6 +1,7 @@
 @page "/organisation/{id}/buyer/search"
 @using CO.CDP.Localization
 @using CO.CDP.OrganisationApp.Extensions
+@using CO.CDP.Organisation.WebApiClient
 @model OrganisationPponSearchModel
 
 @{
@@ -68,6 +69,17 @@
             <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-1">@StaticTextResource.PponSearch_Ppon_Desc_Title</p>
             <p class="govuk-body">@Html.Raw(@StaticTextResource.PponSearch_Ppon_Desc_Hint_01)</p>
             <p class="govuk-body">@Html.Raw(@StaticTextResource.PponSearch_Ppon_Desc_Hint_02)</p>
+            
+            <details class="govuk-details" data-module="govuk-details">
+                <summary class="govuk-details__summary">
+                    <span class="govuk-details__summary-text">
+                        @StaticTextResource.PponSearch_Tenderer_Details_Summary
+                    </span>
+                </summary>
+                <div class="govuk-details__text">
+                    @StaticTextResource.PponSearch_Tenderer_Details_Content
+                </div>
+            </details>
         </div>
     </div>
 
@@ -142,10 +154,10 @@
             </div>
             <div class="govuk-grid-column-full govuk-grid-column-one-third-from-desktop govuk-!-text-align-right-from-desktop">
                 <div class="govuk-!-margin-top-2 search-ppon-roles" aria-label="Organisation roles">
-                    @foreach (var partyRole in org.Roles.Distinct().OrderBy(r => PartyRoleDisplayExtensions.GetDisplayText(r)))
+                    @foreach (var partyRoleWithStatus in org.PartyRoles.Where(r => r.Status == PartyRoleStatus.Active).Distinct().OrderBy(r => PartyRoleDisplayExtensions.GetDisplayText(r.Role)))
                     {
-                        <strong class="govuk-tag govuk-!-margin-right-1 govuk-!-margin-bottom-2 @Model.GetTagClassForRole(partyRole)" aria-label="Role: @partyRole">
-                            @PartyRoleDisplayExtensions.GetDisplayText(partyRole)
+                        <strong class="govuk-tag govuk-!-margin-right-1 govuk-!-margin-bottom-2 @Model.GetTagClassForRole(partyRoleWithStatus.Role)" aria-label="Role: @partyRoleWithStatus.Role">
+                            @PartyRoleDisplayExtensions.GetDisplayText(partyRoleWithStatus.Role)
                         </strong>
                     }
                 </div>
