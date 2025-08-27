@@ -84,7 +84,7 @@ public class FormsAdditionalSummaryModel(
 
                 if (checkYourAnswersQuestionId.HasValue)
                 {
-                    return RedirectToPage("FormsQuestionPage", new { OrganisationId, FormId, SectionId, CurrentQuestionId = checkYourAnswersQuestionId });
+                    return RedirectToPage("FormsQuestionPage", new { OrganisationId, FormId, SectionId, CurrentQuestionId = checkYourAnswersQuestionId, fromAdditionalSummary = "true" });
                 }
 
                 var currentQuestion = await formsEngine.GetCurrentQuestion(OrganisationId, FormId, SectionId, null);
