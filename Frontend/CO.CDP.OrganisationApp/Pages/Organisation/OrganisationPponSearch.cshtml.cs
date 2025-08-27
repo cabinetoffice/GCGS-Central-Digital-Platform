@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using CO.CDP.Localization;
 using CO.CDP.OrganisationApp.Logging;
 using CO.CDP.OrganisationApp.WebApiClients;
+using Microsoft.FeatureManagement;
 using Microsoft.FeatureManagement.Mvc;
 
 namespace CO.CDP.OrganisationApp.Pages.Organisation;
@@ -19,10 +20,12 @@ namespace CO.CDP.OrganisationApp.Pages.Organisation;
 public class OrganisationPponSearchModel(
     IOrganisationClient organisationClient,
     ISession session,
-    ILogger<OrganisationPponSearchModel> logger) : LoggedInUserAwareModel(session)
+    ILogger<OrganisationPponSearchModel> logger,
+    IFeatureManager featureManager) : LoggedInUserAwareModel(session)
 {
     private readonly ILogger<OrganisationPponSearchModel> _logger =
         logger ?? throw new ArgumentNullException(nameof(logger));
+    private readonly IFeatureManager _featureManager = featureManager;
 
     public int TotalOrganisations { get; set; }
 
@@ -40,6 +43,8 @@ public class OrganisationPponSearchModel(
 
     public string? FeedbackMessage { get; set; }
 
+    public string BackLinkUrl { get; set; } = default!;
+
     [BindProperty(SupportsGet = true)] public Guid Id { get; set; }
 
     [BindProperty(SupportsGet = true)] public int PageNumber { get; set; } = 1;
@@ -55,6 +60,7 @@ public class OrganisationPponSearchModel(
 
     public async Task<IActionResult> OnGet()
     {
+        await SetBackLinkUrl();
         if (!string.IsNullOrWhiteSpace(SearchText))
         {
             var result = await HandleSearch(PageNumber, SearchText, SortOrder, Threshold);
@@ -73,6 +79,7 @@ public class OrganisationPponSearchModel(
 
     public async Task<IActionResult> OnPost()
     {
+        await SetBackLinkUrl();
         var result = await HandleSearch(PageNumber, SearchText, SortOrder, Threshold);
         ApplySearchResult(result);
         return Page();
@@ -89,6 +96,11 @@ public class OrganisationPponSearchModel(
         string? FeedbackMessage
 
     );
+
+    private async Task SetBackLinkUrl()
+    {
+        BackLinkUrl = await _featureManager.IsEnabledAsync(FeatureFlags.BuyerView) ? $"/organisation/{Id}/buyer" : $"/organisation/{Id}";
+    }
 
     private async Task<SearchResult> HandleSearch(int pageNumber, string searchText, string sortOrder, double threshold)
     {
