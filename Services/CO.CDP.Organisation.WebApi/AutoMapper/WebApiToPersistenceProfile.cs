@@ -60,7 +60,10 @@ public class WebApiToPersistenceProfile : Profile
                 CountryName = a.Address.CountryName,
                 Country = a.Address.Country
             }).ToList()))
-            .ForMember(m => m.Roles, o => o.MapFrom(m => m.Roles));
+            .ForMember(m => m.PartyRoles, o => o.MapFrom(m =>
+                m.Roles.Select(r => new PartyRoleWithStatus { Role = r, Status = PartyRoleStatus.Active })
+                .Concat(m.PendingRoles.Select(r => new PartyRoleWithStatus { Role = r, Status = PartyRoleStatus.Pending }))
+                .ToList()));
 
         CreateMap<Persistence.Organisation, Review>()
             .ForMember(m => m.ApprovedOn, o => o.MapFrom(m => m.ApprovedOn))
