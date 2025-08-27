@@ -129,6 +129,7 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
             .Include(b => b.Identifiers)
             .Include(p => p.Addresses)
             .ThenInclude(p => p.Address)
+            .AsSingleQuery()
             .Where(t =>
                 EF.Functions.TrigramsSimilarity(t.Name, searchText) >= threshold ||
                 t.Identifiers.Any(i => i.IdentifierId != null && i.IdentifierId.Equals(searchText)))
@@ -144,14 +145,12 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
             );
         }
 
-        if (orderBy.Equals("asc", StringComparison.OrdinalIgnoreCase))
+        baseQuery = orderBy.ToLowerInvariant() switch
         {
-            baseQuery = baseQuery.OrderBy(t => t.Name);
-        }
-        else if (orderBy.Equals("desc", StringComparison.OrdinalIgnoreCase))
-        {
-            baseQuery = baseQuery.OrderByDescending(t => t.Name);
-        }
+            "asc" => baseQuery.OrderBy(t => t.Name),
+            "desc" => baseQuery.OrderByDescending(t => t.Name),
+            _ => baseQuery.OrderByDescending(t => EF.Functions.TrigramsSimilarity(t.Name, searchText)).ThenBy(t => t.Name)
+        };
 
         int totalCount = await baseQuery.CountAsync();
 
