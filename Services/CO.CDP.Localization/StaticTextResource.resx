@@ -4341,7 +4341,7 @@
     <value>What does 'Tenderer' mean?</value>
   </data>
   <data name="PponSearch_Tenderer_Details_Content" xml:space="preserve">
-    <value>The Procurement Act 2023 refers to suppliers or bidders as tenderers.</value>
+    <value>Tenderer means a supplier registered on Find a Tender.</value>
   </data>
   <data name="Global_Search" xml:space="preserve">
     <value>Search</value>
