@@ -39,7 +39,7 @@ public class OrganisationEndpointsTests
                 var mockPublisher = new Mock<IPublisher>();
 
                 services.AddScoped(
-                    sp => mockPublisher.Object);
+                    _ => mockPublisher.Object);
 
                 services.ConfigureFakePolicyEvaluator();
             });
@@ -414,7 +414,7 @@ public class OrganisationEndpointsTests
                         LegalName = "Test Organisation Legal Name"
                     }
                 },
-                Roles = new List<PartyRole> { PartyRole.Buyer },
+                PartyRoles = new List<PartyRoleWithStatus> { new PartyRoleWithStatus { Role = PartyRole.Buyer, Status = PartyRoleStatus.Active } },
                 Addresses = new List<OrganisationAddress>()
             },
             new OrganisationSearchByPponResult
@@ -431,7 +431,7 @@ public class OrganisationEndpointsTests
                         LegalName = "Another Organisation Legal Name"
                     }
                 },
-                Roles = new List<PartyRole> { PartyRole.Tenderer },
+                PartyRoles = new List<PartyRoleWithStatus> { new PartyRoleWithStatus { Role = PartyRole.Tenderer, Status = PartyRoleStatus.Active } },
                 Addresses = new List<OrganisationAddress>()
             }
         };
@@ -515,7 +515,7 @@ public class OrganisationEndpointsTests
                         LegalName = "Demo Org"
                     }
                 },
-                Roles = new List<PartyRole> { PartyRole.Buyer },
+                PartyRoles = new List<PartyRoleWithStatus> { new PartyRoleWithStatus { Role = PartyRole.Buyer, Status = PartyRoleStatus.Active } },
                 Addresses = new List<OrganisationAddress>()
             }
         };

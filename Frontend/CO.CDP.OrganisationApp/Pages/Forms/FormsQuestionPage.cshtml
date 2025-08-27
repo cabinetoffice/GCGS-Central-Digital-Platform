@@ -10,6 +10,7 @@
         ? $"/consortium/{Model.OrganisationId}/overview"
         : $"/organisation/{Model.OrganisationId}/supplier-information";
     var fromCheckAnswerPage = Model.RedirectFromCheckYourAnswerPage == true;
+    var fromAdditionalSummary = Model.FromAdditionalSummary == "true";
 
     if (Request.Query["UkOrNonUk"] == "non-uk")
     {
@@ -17,7 +18,11 @@
     }
     else
     {
-        if (fromCheckAnswerPage)
+        if (fromAdditionalSummary && isCheckYourAnswersPage)
+        {
+            backUrl = $"/organisation/{Model.OrganisationId}/supplier-information";
+        }
+        else if (fromCheckAnswerPage)
         {
             var checkYourAnswerQuestionId = Model.CheckYourAnswerQuestionId;
             backUrl = $"/organisation/{Model.OrganisationId}/forms/{Model.FormId}/sections/{Model.SectionId}/questions/{checkYourAnswerQuestionId}";

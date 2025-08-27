@@ -1511,11 +1511,11 @@ public static class EndpointExtensions
                 [OrganisationAuthorize([AuthenticationChannel.OneLogin, AuthenticationChannel.ServiceKey])]
             async ([FromQuery] string searchText, [FromQuery] int limit, [FromQuery] int skip,[FromQuery] string sortOrder,
                 [FromServices] IUseCase<OrganisationSearchByPponQuery, (IEnumerable<Model.OrganisationSearchByPponResult>, int)> useCase,
-                [FromQuery] double? threshold = 0.3) =>
+                [FromQuery] double? threshold = 0.3, [FromQuery] OrganisationSearchFilter? filters = null) =>
             {
                 sortOrder = string.IsNullOrEmpty(sortOrder) ? "rel" : sortOrder;
 
-                return await useCase.Execute(new OrganisationSearchByPponQuery(searchText, limit, skip, sortOrder, threshold))
+                return await useCase.Execute(new OrganisationSearchByPponQuery(searchText, limit, skip, sortOrder, threshold, filters))
                     .AndThen(result => {
                         var (results, totalCount) = result;
                         return results.Any()

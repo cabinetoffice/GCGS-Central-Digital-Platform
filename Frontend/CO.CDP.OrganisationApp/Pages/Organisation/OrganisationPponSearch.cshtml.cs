@@ -1,5 +1,4 @@
 using System.Collections.Immutable;
-using System.Net;
 using System.Text.RegularExpressions;
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Constants;
@@ -9,6 +8,7 @@ using CO.CDP.Localization;
 using CO.CDP.OrganisationApp.Logging;
 using CO.CDP.OrganisationApp.WebApiClients;
 using Microsoft.FeatureManagement;
+using CO.CDP.UI.Foundation.Utilities;
 using Microsoft.FeatureManagement.Mvc;
 
 namespace CO.CDP.OrganisationApp.Pages.Organisation;
@@ -17,7 +17,7 @@ namespace CO.CDP.OrganisationApp.Pages.Organisation;
 [Authorize(Policy = PolicyNames.PartyRole.BuyerWithSignedMou)]
 [Authorize(Policy = OrgScopeRequirement.Viewer)]
 [FeatureGate(FeatureFlags.SearchRegistryPpon)]
-public class OrganisationPponSearchModel(
+public partial class OrganisationPponSearchModel(
     IOrganisationClient organisationClient,
     ISession session,
     ILogger<OrganisationPponSearchModel> logger,
@@ -39,7 +39,7 @@ public class OrganisationPponSearchModel(
 
     public string? ErrorMessage { get; set; }
 
-    public double Threshold { get; set; } = 0.3;
+    public double Threshold { get; set; } = 0.2;
 
     public string? FeedbackMessage { get; set; }
 
@@ -61,6 +61,16 @@ public class OrganisationPponSearchModel(
     public async Task<IActionResult> OnGet()
     {
         await SetBackLinkUrl();
+        if (Request.Query.ContainsKey("SearchText") && string.IsNullOrWhiteSpace(SearchText))
+        {
+            ErrorMessage = StaticTextResource.Global_EnterSearchTerm;
+            Organisations = ImmutableList<OrganisationSearchByPponResult>.Empty;
+            TotalOrganisations = 0;
+            TotalPages = 0;
+            Pagination = CreatePaginationModel(PageNumber, TotalOrganisations, 10, Id, SearchText, SortOrder);
+            return Page();
+        }
+
         if (!string.IsNullOrWhiteSpace(SearchText))
         {
             var result = await HandleSearch(PageNumber, SearchText, SortOrder, Threshold);
@@ -77,14 +87,6 @@ public class OrganisationPponSearchModel(
         return Page();
     }
 
-    public async Task<IActionResult> OnPost()
-    {
-        await SetBackLinkUrl();
-        var result = await HandleSearch(PageNumber, SearchText, SortOrder, Threshold);
-        ApplySearchResult(result);
-        return Page();
-    }
-
     private record SearchResult(
         IReadOnlyList<OrganisationSearchByPponResult> Organisations,
         int TotalOrganisations,
@@ -94,7 +96,6 @@ public class OrganisationPponSearchModel(
         int CurrentPage,
         string? ErrorMessage,
         string? FeedbackMessage
-
     );
 
     private async Task SetBackLinkUrl()
@@ -128,7 +129,8 @@ public class OrganisationPponSearchModel(
         try
         {
             var (orgs, totalCount) =
-                await organisationClient.SearchOrganisationByNameOrPpon(cleanedSearchText, pageSize, skip, sortOrder, threshold);
+                await organisationClient.SearchOrganisationByNameOrPpon(cleanedSearchText, pageSize, skip, sortOrder, threshold, OrganisationSearchFilter.ExcludeOnlyPendingBuyerRoles);
+
             if (orgs.Count == 0)
             {
                 return new SearchResult(
@@ -150,16 +152,13 @@ public class OrganisationPponSearchModel(
                 null
             );
         }
-        catch (Exception ex) when (
-            (ex is ApiException apiEx && apiEx.StatusCode != 404) ||
-            (ex is HttpRequestException httpEx && httpEx.StatusCode != HttpStatusCode.NotFound) ||
-            (!(ex is ApiException) && !(ex is HttpRequestException)))
+        catch (Exception ex)
         {
             LogApiError(ex);
             return new SearchResult(
                 ImmutableList<OrganisationSearchByPponResult>.Empty,
                 0, 0, pageSize, skip, currentPage,
-                StaticTextResource.PponSearch_NoResults, null
+                null, StaticTextResource.PponSearch_NoResults
             );
         }
     }
@@ -190,17 +189,24 @@ public class OrganisationPponSearchModel(
         {
             return (false, StaticTextResource.Global_EnterSearchTerm, string.Empty);
         }
-        string regexPattern = @"[^a-zA-Z0-9\s\-]";
-        string originalSearchText = searchText.Trim();
-        bool containsInvalidChars = Regex.IsMatch(originalSearchText, regexPattern);
-        string cleanedSearchText = Regex.Replace(originalSearchText, regexPattern, string.Empty);
-        if (string.IsNullOrWhiteSpace(cleanedSearchText) || containsInvalidChars)
+
+        var cleanedSearchText = InputSanitiser.SanitiseSingleLineTextInput(searchText) ?? string.Empty;
+
+        if (string.IsNullOrWhiteSpace(cleanedSearchText))
         {
-            return (false, StaticTextResource.PponSearch_Invalid_Search_Value, cleanedSearchText);
+            return (false, StaticTextResource.PponSearch_Invalid_Search_Value, string.Empty);
+        }
+
+        if (!ContainsAlphanumericCharacters(cleanedSearchText))
+        {
+            return (false, StaticTextResource.PponSearch_Invalid_Search_Value, string.Empty);
         }
 
         return (true, string.Empty, cleanedSearchText);
     }
+
+    private static bool ContainsAlphanumericCharacters(string input) =>
+        !string.IsNullOrWhiteSpace(input) && HasLetterOrNumberRegex().IsMatch(input);
 
     public static (int PageSize, int Skip, int CurrentPage) CalculatePagination(int pageNumber,
         int defaultPageSize = 10)
@@ -212,7 +218,7 @@ public class OrganisationPponSearchModel(
 
     public string FormatAddresses(IEnumerable<OrganisationAddress> addresses)
     {
-        var address = addresses?.FirstOrDefault();
+        var address = addresses.FirstOrDefault();
         if (address == null)
         {
             return "N/A";
@@ -256,4 +262,7 @@ public class OrganisationPponSearchModel(
             Url = $"/organisation/{id}/buyer/search?SearchText={Uri.EscapeDataString(searchText ?? string.Empty)}&sortOrder={sortOrder}&pageSize={pageSize}"
         };
     }
+
+    [GeneratedRegex(@"[a-zA-Z0-9]")]
+    private static partial Regex HasLetterOrNumberRegex();
 }

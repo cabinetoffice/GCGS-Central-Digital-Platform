@@ -31,6 +31,9 @@ public class FormsQuestionPageModel(
     [BindProperty(SupportsGet = true, Name = "frm-chk-answer")]
     public bool? RedirectFromCheckYourAnswerPage { get; set; }
 
+    [BindProperty(SupportsGet = true)]
+    public string? FromAdditionalSummary { get; set; }
+
     [BindProperty(SupportsGet = true)] public string? UkOrNonUk { get; set; }
     [BindProperty] public FormElementNoInputModel? NoInputModel { get; set; }
     [BindProperty] public FormElementTextInputModel? TextInputModel { get; set; }
@@ -858,9 +861,12 @@ public class FormsQuestionPageModel(
         await formsEngine.SaveUpdateAnswers(FormId, SectionId, OrganisationId, answerSet);
         tempDataService.Remove(FormQuestionAnswerStateKey);
 
-        return FormSectionType == Models.FormSectionType.Declaration
-            ? await CreateShareCodeAndRedirect()
-            : RedirectToPage("FormsAnswerSetSummary", new { OrganisationId, FormId, SectionId });
+        return FormSectionType switch
+        {
+            Models.FormSectionType.Declaration => await CreateShareCodeAndRedirect(),
+            Models.FormSectionType.Additional => RedirectToPage("../Supplier/SupplierInformationSummary", new { Id = OrganisationId }),
+            _ => RedirectToPage("FormsAnswerSetSummary", new { OrganisationId, FormId, SectionId })
+        };
     }
 
     private async Task<IActionResult> CreateShareCodeAndRedirect()
