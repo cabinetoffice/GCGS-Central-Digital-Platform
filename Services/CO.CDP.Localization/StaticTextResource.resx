@@ -319,6 +319,12 @@
   <data name="Global_Back" xml:space="preserve">
     <value>Back</value>
   </data>
+  <data name="Global_NotProvided" xml:space="preserve">
+    <value>Not provided</value>
+  </data>
+  <data name="Global_NoInformationProvided" xml:space="preserve">
+    <value>No information has been provided for this section yet.</value>
+  </data>
   <data name="Global_Download" xml:space="preserve">
     <value>Download</value>
   </data>

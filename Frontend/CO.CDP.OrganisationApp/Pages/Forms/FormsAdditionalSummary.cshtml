@@ -1,0 +1,46 @@
+@page "/organisation/{organisationId:guid}/forms/{formId:guid}/sections/{sectionId:guid}/additional-summary"
+@using CO.CDP.Localization
+@model CO.CDP.OrganisationApp.Pages.Forms.FormsAdditionalSummaryModel
+@{
+    ViewData["Title"] = Model.SectionTitle;
+}
+
+@section BeforeContent {
+    <a href="@Url.Page("../Supplier/SupplierInformationSummary", new { Id = Model.OrganisationId })"
+       class="govuk-back-link">@StaticTextResource.Global_Back</a>
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+        <h1 class="govuk-heading-l">@Model.SectionTitle</h1>
+
+        @if (Model.AnswerSummaries.Any())
+        {
+            <dl class="govuk-summary-list">
+                @foreach (var answer in Model.AnswerSummaries)
+                {
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            @answer.Title
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            @if (!string.IsNullOrEmpty(answer.Answer))
+                            {
+                                @Html.Raw(answer.Answer)
+                            }
+                            else
+                            {
+                                <span class="govuk-hint">@StaticTextResource.Global_NotProvided</span>
+                            }
+                        </dd>
+                    </div>
+                }
+            </dl>
+        }
+        else
+        {
+            <p class="govuk-body">@StaticTextResource.Global_NoInformationProvided</p>
+        }
+    </div>
+</div>

@@ -17,7 +17,9 @@ public class FormSection
 public enum FormSectionType
 {
     Standard,
-    Declaration
+    Declaration,
+    Exclusions,
+    Additional
 }
 
 public class FormQuestion
