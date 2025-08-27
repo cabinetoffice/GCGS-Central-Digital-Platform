@@ -374,6 +374,50 @@ public class FormsQuestionPageModelTest
     }
 
     [Fact]
+    public async Task OnPostAsync_ShouldRedirectToSupplierInformationSummary_WhenSectionIsAdditional()
+    {
+        var checkYourAnswerQuestionId = Guid.NewGuid();
+        _pageModel.FormSectionType = FormSectionType.Additional;
+        _pageModel.CurrentQuestionId = checkYourAnswerQuestionId;
+        _pageModel.OrganisationId = Guid.NewGuid();
+
+        var formResponse = new SectionQuestionsResponse
+        {
+            Section = new FormSection { Type = FormSectionType.Additional, Title = "Test Additional Section" },
+            Questions =
+            [
+                new FormQuestion
+                {
+                    Id = checkYourAnswerQuestionId, Type = FormQuestionType.CheckYourAnswers, NextQuestion = null
+                }
+            ]
+        };
+
+        _formsEngineMock.Setup(f =>
+                f.GetCurrentQuestion(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid>(), checkYourAnswerQuestionId))
+            .ReturnsAsync(new FormQuestion
+            {
+                Id = checkYourAnswerQuestionId, Type = FormQuestionType.CheckYourAnswers, NextQuestion = null
+            });
+
+        _formsEngineMock.Setup(f => f.GetFormSectionAsync(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid>()))
+            .ReturnsAsync(formResponse);
+
+        _tempDataServiceMock.Setup(t => t.PeekOrDefault<FormQuestionAnswerState>(It.IsAny<string>()))
+            .Returns(new FormQuestionAnswerState());
+
+        var result = await _pageModel.OnPostAsync();
+
+        _formsEngineMock.Verify(
+            f => f.SaveUpdateAnswers(_pageModel.FormId, _pageModel.SectionId, _pageModel.OrganisationId,
+                It.IsAny<FormQuestionAnswerState>()), Times.Once);
+
+        result.Should().BeOfType<RedirectToPageResult>()
+            .Which.PageName.Should().Be("../Supplier/SupplierInformationSummary");
+        (result as RedirectToPageResult)!.RouteValues?["Id"].Should().Be(_pageModel.OrganisationId);
+    }
+
+    [Fact]
     public async Task OnGetAsync_RedirectsToCorrectPage_WhenPreviousUnansweredQuestionExistsAndIsNotAlternativeBranch()
     {
         var previousUnansweredQuestionId = Guid.NewGuid();

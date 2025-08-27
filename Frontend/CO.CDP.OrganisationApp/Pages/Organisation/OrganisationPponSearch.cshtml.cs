@@ -55,6 +55,16 @@ public partial class OrganisationPponSearchModel(
 
     public async Task<IActionResult> OnGet()
     {
+        if (Request.Query.ContainsKey("SearchText") && string.IsNullOrWhiteSpace(SearchText))
+        {
+            ErrorMessage = StaticTextResource.Global_EnterSearchTerm;
+            Organisations = ImmutableList<OrganisationSearchByPponResult>.Empty;
+            TotalOrganisations = 0;
+            TotalPages = 0;
+            Pagination = CreatePaginationModel(PageNumber, TotalOrganisations, 10, Id, SearchText, SortOrder);
+            return Page();
+        }
+
         if (!string.IsNullOrWhiteSpace(SearchText))
         {
             var result = await HandleSearch(PageNumber, SearchText, SortOrder, Threshold);
@@ -169,20 +179,23 @@ public partial class OrganisationPponSearchModel(
             return (false, StaticTextResource.Global_EnterSearchTerm, string.Empty);
         }
 
-        string cleanedSearchText = InputSanitiser.SanitiseSingleLineTextInput(searchText) ?? string.Empty;
+        var cleanedSearchText = InputSanitiser.SanitiseSingleLineTextInput(searchText) ?? string.Empty;
 
         if (string.IsNullOrWhiteSpace(cleanedSearchText))
         {
-            return (false, StaticTextResource.PponSearch_Invalid_Search_Value, cleanedSearchText);
+            return (false, StaticTextResource.PponSearch_Invalid_Search_Value, string.Empty);
         }
 
-        if (!HasLetterOrNumberRegex().IsMatch(cleanedSearchText))
+        if (!ContainsAlphanumericCharacters(cleanedSearchText))
         {
-            return (false, StaticTextResource.PponSearch_Invalid_Search_Value, cleanedSearchText);
+            return (false, StaticTextResource.PponSearch_Invalid_Search_Value, string.Empty);
         }
 
         return (true, string.Empty, cleanedSearchText);
     }
+
+    private static bool ContainsAlphanumericCharacters(string input) =>
+        !string.IsNullOrWhiteSpace(input) && HasLetterOrNumberRegex().IsMatch(input);
 
     public static (int PageSize, int Skip, int CurrentPage) CalculatePagination(int pageNumber,
         int defaultPageSize = 10)

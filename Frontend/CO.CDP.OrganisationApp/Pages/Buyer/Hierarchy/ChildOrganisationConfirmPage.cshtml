@@ -1,6 +1,7 @@
 @page "/organisation/{id:guid}/buyer/hierarchy/add/child/confirm"
 @model ChildOrganisationConfirmPage
 @using CO.CDP.Localization
+@using CO.CDP.OrganisationApp.Extensions
 
 @{
     ViewData["Title"] = StaticTextResource.BuyerParentChildRelationship_ConfirmPage_Title;
@@ -48,7 +49,7 @@
                                 @StaticTextResource.Global_PPON
                             </dt>
                             <dd class="govuk-summary-list__value">
-                                @Model.ChildOrganisation?.Identifier.Id
+                                @Model.ChildOrganisation?.GetPponValue()
                             </dd>
                         </div>
                         <div class="govuk-summary-list__row">
