@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using CO.CDP.Localization;
 using CO.CDP.OrganisationApp.Logging;
 using CO.CDP.OrganisationApp.WebApiClients;
+using CO.CDP.UI.Foundation.Utilities;
 using Microsoft.FeatureManagement.Mvc;
 
 namespace CO.CDP.OrganisationApp.Pages.Organisation;
@@ -15,7 +16,7 @@ namespace CO.CDP.OrganisationApp.Pages.Organisation;
 [Authorize(Policy = PolicyNames.PartyRole.BuyerWithSignedMou)]
 [Authorize(Policy = OrgScopeRequirement.Viewer)]
 [FeatureGate(FeatureFlags.SearchRegistryPpon)]
-public class OrganisationPponSearchModel(
+public partial class OrganisationPponSearchModel(
     IOrganisationClient organisationClient,
     ISession session,
     ILogger<OrganisationPponSearchModel> logger) : LoggedInUserAwareModel(session)
@@ -136,7 +137,7 @@ public class OrganisationPponSearchModel(
             return new SearchResult(
                 ImmutableList<OrganisationSearchByPponResult>.Empty,
                 0, 0, pageSize, skip, currentPage,
-                StaticTextResource.PponSearch_NoResults, null
+                null, StaticTextResource.PponSearch_NoResults
             );
         }
     }
@@ -167,11 +168,15 @@ public class OrganisationPponSearchModel(
         {
             return (false, StaticTextResource.Global_EnterSearchTerm, string.Empty);
         }
-        string regexPattern = @"[^a-zA-Z0-9\s\-]";
-        string originalSearchText = searchText.Trim();
-        bool containsInvalidChars = Regex.IsMatch(originalSearchText, regexPattern);
-        string cleanedSearchText = Regex.Replace(originalSearchText, regexPattern, string.Empty);
-        if (string.IsNullOrWhiteSpace(cleanedSearchText) || containsInvalidChars)
+
+        string cleanedSearchText = InputSanitiser.SanitiseSingleLineTextInput(searchText) ?? string.Empty;
+
+        if (string.IsNullOrWhiteSpace(cleanedSearchText))
+        {
+            return (false, StaticTextResource.PponSearch_Invalid_Search_Value, cleanedSearchText);
+        }
+
+        if (!HasLetterOrNumberRegex().IsMatch(cleanedSearchText))
         {
             return (false, StaticTextResource.PponSearch_Invalid_Search_Value, cleanedSearchText);
         }
@@ -233,4 +238,7 @@ public class OrganisationPponSearchModel(
             Url = $"/organisation/{id}/buyer/search?SearchText={Uri.EscapeDataString(searchText ?? string.Empty)}&sortOrder={sortOrder}&pageSize={pageSize}"
         };
     }
+
+    [GeneratedRegex(@"[a-zA-Z0-9]")]
+    private static partial Regex HasLetterOrNumberRegex();
 }

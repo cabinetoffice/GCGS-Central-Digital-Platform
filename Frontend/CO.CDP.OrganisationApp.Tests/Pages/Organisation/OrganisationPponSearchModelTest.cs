@@ -426,7 +426,7 @@ public class OrganisationPponSearchModelTest
     }
 
     [Fact]
-    public async Task OnGet_ApiThrowsException_SetsNoResultsErrorMessage()
+    public async Task OnGet_ApiThrowsException_SetsNoResultsFeedbackMessage()
     {
         SetupRouteData(Id);
         _testOrganisationPponSearchModel.PageNumber = DefaultPageNumber;
@@ -440,7 +440,8 @@ public class OrganisationPponSearchModelTest
             It.IsAny<double>(),
             OrganisationSearchFilter.ExcludeOnlyPendingBuyerRoles)).ThrowsAsync(new HttpRequestException());
         await _testOrganisationPponSearchModel.OnGet();
-        _testOrganisationPponSearchModel.ErrorMessage.Should().Be(Localization.StaticTextResource.PponSearch_NoResults);
+        _testOrganisationPponSearchModel.ErrorMessage.Should().BeNull();
+        _testOrganisationPponSearchModel.FeedbackMessage.Should().Be(Localization.StaticTextResource.PponSearch_NoResults);
         _testOrganisationPponSearchModel.Organisations.Should().BeEmpty();
         _testOrganisationPponSearchModel.TotalOrganisations.Should().Be(0);
         _testOrganisationPponSearchModel.TotalPages.Should().Be(0);

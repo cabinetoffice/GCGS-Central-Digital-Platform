@@ -4,6 +4,7 @@ using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Logging;
 using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.WebApiClients;
+using CO.CDP.UI.Foundation.Utilities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -40,6 +41,8 @@ public class ChildOrganisationResultsPage(
 
     public async Task<IActionResult> OnGetAsync()
     {
+        Query = InputSanitiser.SanitiseSingleLineTextInput(Query) ?? string.Empty;
+        
         if (string.IsNullOrWhiteSpace(Query))
         {
             return Page();
@@ -71,6 +74,8 @@ public class ChildOrganisationResultsPage(
 
     public async Task<IActionResult> OnPost()
     {
+        Query = InputSanitiser.SanitiseSingleLineTextInput(Query) ?? string.Empty;
+        
         if (!ModelState.IsValid)
         {
             return Page();
