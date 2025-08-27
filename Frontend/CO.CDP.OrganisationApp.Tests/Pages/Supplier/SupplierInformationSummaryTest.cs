@@ -4,6 +4,8 @@ using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Pages.Supplier;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using Microsoft.FeatureManagement;
 using Moq;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages.Supplier;
@@ -13,6 +15,8 @@ public class SupplierInformationSummaryTest
     private readonly Mock<IOrganisationClient> _organisationClientMock;
     private readonly Mock<IFormsClient> _formClient;
     private readonly Mock<IDataSharingClient> _dataSharingClient;
+    private readonly Mock<IFeatureManager> _featureManagerMock;
+    private readonly Mock<ILogger<SupplierInformationSummaryModel>> _loggerMock;
     private readonly SupplierInformationSummaryModel _model;
 
     public SupplierInformationSummaryTest()
@@ -24,7 +28,9 @@ public class SupplierInformationSummaryTest
         _dataSharingClient = new();
         _dataSharingClient.Setup(DataSharingClient => DataSharingClient.GetShareCodeListAsync(It.IsAny<Guid>()))
             .ReturnsAsync(new List<SharedConsent>());
-        _model = new SupplierInformationSummaryModel(_organisationClientMock.Object, _formClient.Object, _dataSharingClient.Object);
+        _featureManagerMock = new();
+        _loggerMock = new();
+        _model = new SupplierInformationSummaryModel(_organisationClientMock.Object, _formClient.Object, _dataSharingClient.Object, _featureManagerMock.Object, _loggerMock.Object);
     }
 
     [Theory]

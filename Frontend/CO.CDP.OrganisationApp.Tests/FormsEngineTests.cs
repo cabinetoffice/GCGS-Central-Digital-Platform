@@ -2,6 +2,7 @@ using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.Pages.Forms.ChoiceProviderStrategies;
 using FluentAssertions;
+using Microsoft.Extensions.Logging;
 using Moq;
 using DataShareWebApiClient = CO.CDP.DataSharing.WebApiClient;
 using WebApiClient = CO.CDP.Forms.WebApiClient;
@@ -17,6 +18,7 @@ public class FormsEngineTests
     private readonly Mock<IUserInfoService> _userInfoServiceMock;
     private readonly Mock<IOrganisationClient> _organisationClientMock;
     private readonly Mock<IAnswerDisplayService> _answerDisplayServiceMock;
+    private readonly Mock<ILogger<FormsEngine>> _loggerMock;
     private readonly FormsEngine _formsEngine;
     private const double Tolerance = 1e-6;
     private static readonly Guid GroupId = Guid.NewGuid();
@@ -30,8 +32,9 @@ public class FormsEngineTests
         _userInfoServiceMock = new Mock<IUserInfoService>();
         _organisationClientMock = new Mock<IOrganisationClient>();
         _answerDisplayServiceMock = new Mock<IAnswerDisplayService>();
+        _loggerMock = new Mock<ILogger<FormsEngine>>();
         _formsEngine = new FormsEngine(_formsApiClientMock.Object, _tempDataServiceMock.Object,
-            _choiceProviderServiceMock.Object, _dataSharingClientMock.Object, _answerDisplayServiceMock.Object);
+            _choiceProviderServiceMock.Object, _dataSharingClientMock.Object, _answerDisplayServiceMock.Object, _loggerMock.Object);
     }
 
     private static (Guid organisationId, Guid formId, Guid sectionId, string sessionKey) CreateTestGuids()

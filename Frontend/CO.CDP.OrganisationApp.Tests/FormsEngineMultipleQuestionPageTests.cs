@@ -7,6 +7,7 @@ using CO.CDP.OrganisationApp.Pages.Forms;
 using CO.CDP.OrganisationApp.Pages.Forms.ChoiceProviderStrategies;
 using FluentAssertions;
 using Microsoft.Extensions.Localization;
+using Microsoft.Extensions.Logging;
 using Moq;
 using FormAnswer = CO.CDP.OrganisationApp.Models.FormAnswer;
 using FormQuestion = CO.CDP.OrganisationApp.Models.FormQuestion;
@@ -40,9 +41,10 @@ public class FormsEngineMultipleQuestionPageTests
         localizerMock.Setup(l => l["Global_No"]).Returns(new LocalizedString("Global_No", "No"));
         
         var realAnswerDisplayService = new AnswerDisplayService(localizerMock.Object, _choiceProviderServiceMock.Object);
+        var loggerMock = new Mock<ILogger<FormsEngine>>();
 
         _formsEngine = new FormsEngine(formsApiClientMock.Object, _tempDataServiceMock.Object,
-            _choiceProviderServiceMock.Object, dataSharingClientMock.Object, realAnswerDisplayService);
+            _choiceProviderServiceMock.Object, dataSharingClientMock.Object, realAnswerDisplayService, loggerMock.Object);
     }
 
     private static (Guid organisationId, Guid formId, Guid sectionId, string sessionKey) CreateTestGuids()

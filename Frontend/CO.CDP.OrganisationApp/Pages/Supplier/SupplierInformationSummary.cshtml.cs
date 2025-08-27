@@ -5,6 +5,7 @@ using CO.CDP.OrganisationApp.Constants;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.FeatureManagement;
 
 namespace CO.CDP.OrganisationApp.Pages.Supplier;
 
@@ -12,7 +13,9 @@ namespace CO.CDP.OrganisationApp.Pages.Supplier;
 public class SupplierInformationSummaryModel(
     IOrganisationClient organisationClient,
     IFormsClient formsClient,
-    IDataSharingClient dataSharingClient) : PageModel
+    IDataSharingClient dataSharingClient,
+    IFeatureManager featureManager,
+    ILogger<SupplierInformationSummaryModel> logger) : PageModel
 {
     [BindProperty]
     public string? Name { get; set; }
@@ -50,7 +53,35 @@ public class SupplierInformationSummaryModel(
 
             supplierInfo = getSupplierInfoTask.Result;
             ConnectedEntities = getConnectedEntitiesTask.Result;
-            FormSections = formSectionsTask.Result.FormSections;
+
+            var formSectionsResult = formSectionsTask.Result;
+            FormSections = formSectionsResult.FormSections;
+
+            logger.LogInformation("SupplierInformationSummary - OrganisationId: {OrganisationId}, FormId: {FormId}", id, FormsEngine.OrganisationSupplierInfoFormId);
+            logger.LogInformation("SupplierInformationSummary - Raw FormSections count: {Count}", FormSections.Count);
+
+            foreach (var section in FormSections)
+            {
+                logger.LogInformation("SupplierInformationSummary - Section: {SectionId}, Name: {SectionName}, Type: {Type} ({TypeValue}), AnswerSetCount: {AnswerSetCount}",
+                    section.SectionId, section.SectionName, section.Type, (int)section.Type, section.AnswerSetCount);
+            }
+
+            var standardSections = FormSections.Where(s => s.Type == FormSectionType.Standard || s.Type == FormSectionType.Exclusions).ToList();
+            var additionalSections = FormSections.Where(s => s.Type == FormSectionType.AdditionalSection).ToList();
+
+            logger.LogInformation("SupplierInformationSummary - Standard/Exclusions sections count: {StandardCount}", standardSections.Count);
+            logger.LogInformation("SupplierInformationSummary - Additional sections count: {AdditionalCount}", additionalSections.Count);
+
+            foreach (var additionalSection in additionalSections)
+            {
+                logger.LogInformation("SupplierInformationSummary - Additional section: {SectionId}, Name: {SectionName}, Type: {Type} ({TypeValue})",
+                    additionalSection.SectionId, additionalSection.SectionName, additionalSection.Type, (int)additionalSection.Type);
+            }
+
+            logger.LogInformation("SupplierInformationSummary - WebApiClient.FormSectionType.AdditionalSection enum value: {AdditionalSectionEnumValue}", (int)CDP.Forms.WebApiClient.FormSectionType.AdditionalSection);
+
+            var isAdditionalSectionEnabled = await featureManager.IsEnabledAsync(FeatureFlags.SupplierAdditionalModule);
+            logger.LogInformation("SupplierInformationSummary - SupplierAdditionalModule feature flag enabled: {FeatureFlagEnabled}", isAdditionalSectionEnabled);
 
             HasSupplierType = supplierInfo.SupplierType.HasValue;
         }
