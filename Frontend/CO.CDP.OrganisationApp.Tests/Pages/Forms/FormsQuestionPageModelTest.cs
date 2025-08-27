@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using Microsoft.Extensions.Logging;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages.Forms;
 
@@ -1331,7 +1332,8 @@ public class FormsQuestionPageModelTest
             _tempDataServiceMock.Object,
             _choiceProviderServiceMock.Object,
             _dataSharingClientMock.Object,
-            Mock.Of<IAnswerDisplayService>()
+            Mock.Of<IAnswerDisplayService>(),
+            Mock.Of<ILogger<FormsEngine>>()
         );
 
         _formsEngineMock.Setup(f => f.GetPreviousUnansweredQuestionId(

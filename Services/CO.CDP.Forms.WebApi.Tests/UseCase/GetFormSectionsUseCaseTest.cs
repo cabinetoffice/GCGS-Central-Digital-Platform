@@ -3,6 +3,7 @@ using CO.CDP.Forms.WebApi.UseCase;
 using CO.CDP.OrganisationInformation.Persistence;
 using CO.CDP.OrganisationInformation.Persistence.Forms;
 using FluentAssertions;
+using Microsoft.Extensions.Logging;
 using Moq;
 
 namespace CO.CDP.Forms.WebApi.Tests.UseCase;
@@ -10,8 +11,9 @@ namespace CO.CDP.Forms.WebApi.Tests.UseCase;
 public class GetFormSectionsUseCaseTest(AutoMapperFixture mapperFixture) : IClassFixture<AutoMapperFixture>
 {
     private readonly Mock<IFormRepository> _repository = new();
+    private readonly Mock<ILogger<GetFormSectionsUseCase>> _logger = new();
 
-    private GetFormSectionsUseCase _useCase => new(_repository.Object, mapperFixture.Mapper);
+    private GetFormSectionsUseCase _useCase => new(_repository.Object, mapperFixture.Mapper, _logger.Object);
 
     [Fact]
     public async Task Execute_ShouldReturnNull_WhenNoFormSummariesFound()

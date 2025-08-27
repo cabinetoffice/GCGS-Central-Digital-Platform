@@ -29,7 +29,8 @@ public class FormsEngine(
     ITempDataService tempDataService,
     IChoiceProviderService choiceProviderService,
     DataShareWebApiClient.IDataSharingClient dataSharingClient,
-    IAnswerDisplayService answerDisplayService) : IFormsEngine
+    IAnswerDisplayService answerDisplayService,
+    ILogger<FormsEngine> logger) : IFormsEngine
 {
     public const string OrganisationSupplierInfoFormId = "0618b13e-eaf2-46e3-a7d2-6f2c44be7022";
     public const string OrganisationConsortiumFormId = "24482a2a-88a8-4432-b03c-4c966c9fce23";
@@ -39,12 +40,21 @@ public class FormsEngine(
         var sessionKey = $"Form_{organisationId}_{formId}_{sectionId}_Questions";
         var cachedResponse = tempDataService.Peek<SectionQuestionsResponse>(sessionKey);
 
+        logger.LogInformation("FormsEngine.GetFormSectionAsync - OrganisationId: {OrganisationId}, FormId: {FormId}, SectionId: {SectionId}", organisationId, formId, sectionId);
+        logger.LogInformation("FormsEngine.GetFormSectionAsync - Cache key: {CacheKey}, Cache hit: {CacheHit}", sessionKey, cachedResponse != null);
+
         if (cachedResponse != null)
         {
+            logger.LogInformation("FormsEngine.GetFormSectionAsync - Returning cached response - Section: {SectionTitle}, Type: {SectionType} ({SectionTypeValue}), Questions count: {QuestionCount}", 
+                cachedResponse.Section?.Title, cachedResponse.Section?.Type, (int?)cachedResponse.Section?.Type, cachedResponse.Questions?.Count);
             return cachedResponse;
         }
 
+        logger.LogInformation("FormsEngine.GetFormSectionAsync - Making API call to formsApiClient.GetFormSectionQuestionsAsync");
         var response = await formsApiClient.GetFormSectionQuestionsAsync(formId, sectionId, organisationId);
+        
+        logger.LogInformation("FormsEngine.GetFormSectionAsync - API response - Section: {SectionTitle}, Type: {SectionType} ({SectionTypeValue}), Questions count: {QuestionCount}", 
+            response.Section.Title, response.Section.Type, (int)response.Section.Type, response.Questions.Count);
 
         var sectionQuestionsResponse = new SectionQuestionsResponse
         {
@@ -150,7 +160,12 @@ public class FormsEngine(
         };
 
 
+        logger.LogInformation("FormsEngine.GetFormSectionAsync - Mapped response - Section: {SectionTitle}, Type: {SectionType} ({SectionTypeValue}), Questions count: {QuestionCount}", 
+            sectionQuestionsResponse.Section.Title, sectionQuestionsResponse.Section.Type, (int)sectionQuestionsResponse.Section.Type, sectionQuestionsResponse.Questions.Count);
+
         SetAlternativePathQuestions(sectionQuestionsResponse.Questions);
+        
+        logger.LogInformation("FormsEngine.GetFormSectionAsync - Caching response with key: {CacheKey}", sessionKey);
         tempDataService.Put(sessionKey, sectionQuestionsResponse);
         return sectionQuestionsResponse;
     }

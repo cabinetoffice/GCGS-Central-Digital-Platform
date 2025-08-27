@@ -4,6 +4,7 @@ using CO.CDP.OrganisationApp.Pages.Forms;
 using CO.CDP.OrganisationApp.Pages.Forms.ChoiceProviderStrategies;
 using FluentAssertions;
 using Microsoft.Extensions.Localization;
+using Microsoft.Extensions.Logging;
 using Moq;
 using DataShareWebApiClient = CO.CDP.DataSharing.WebApiClient;
 using WebApiClient = CO.CDP.Forms.WebApiClient;
@@ -27,9 +28,10 @@ public class FormsEngineOrderingTests
         localizerMock.Setup(l => l["Global_No"]).Returns(new LocalizedString("Global_No", "No"));
         
         var realAnswerDisplayService = new AnswerDisplayService(localizerMock.Object, choiceProviderServiceMock.Object);
+        var loggerMock = new Mock<ILogger<FormsEngine>>();
 
         _formsEngine = new FormsEngine(formsApiClientMock.Object, _tempDataServiceMock.Object,
-            choiceProviderServiceMock.Object, dataSharingClientMock.Object, realAnswerDisplayService);
+            choiceProviderServiceMock.Object, dataSharingClientMock.Object, realAnswerDisplayService, loggerMock.Object);
     }
 
     [Fact]
