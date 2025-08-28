@@ -47,6 +47,6 @@ public class OrganisationSelectionModel(
         {
             return $"/organisation/{organisation.Id}/buyer";
         }
-        return $"/organisation/{organisation.Id}";
+        return $"/organisation/{organisation.Id}?origin=selection";
     }
 }

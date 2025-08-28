@@ -14,7 +14,6 @@ using PartyRole = CO.CDP.Organisation.WebApiClient.PartyRole;
 using PartyRoleStatus = CO.CDP.Organisation.WebApiClient.PartyRoleStatus;
 using PartyRoleWithStatus = CO.CDP.Organisation.WebApiClient.PartyRoleWithStatus;
 using Microsoft.FeatureManagement;
-using CO.CDP.OrganisationApp.Constants;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages.Organisation;
 
@@ -30,16 +29,15 @@ public class OrganisationPponSearchModelTest
     private readonly Mock<IOrganisationClient> _mockOrganisationClient;
     private readonly OrganisationPponSearchModel _testOrganisationPponSearchModel;
     private readonly Mock<ILogger<OrganisationPponSearchModel>> _mockLogger;
-    private readonly Mock<IFeatureManager> _mockFeatureManager;
 
     public OrganisationPponSearchModelTest()
     {
         _mockOrganisationClient = new Mock<IOrganisationClient>();
         _mockLogger = new Mock<ILogger<OrganisationPponSearchModel>>();
-        _mockFeatureManager = new Mock<IFeatureManager>();
+        var mockFeatureManager = new Mock<IFeatureManager>();
 
         _testOrganisationPponSearchModel =
-            new OrganisationPponSearchModel(_mockOrganisationClient.Object, Mock.Of<ISession>(), _mockLogger.Object, _mockFeatureManager.Object)
+            new OrganisationPponSearchModel(_mockOrganisationClient.Object, Mock.Of<ISession>(), _mockLogger.Object, mockFeatureManager.Object)
             {
                 Id = Id,
                 Pagination = new CO.CDP.OrganisationApp.Pages.Shared.PaginationPartialModel
@@ -56,9 +54,9 @@ public class OrganisationPponSearchModelTest
     }
 
     [Fact]
-    public async Task OnGet_WhenBuyerViewFeatureIsEnabled_SetsCorrectBackLinkUrl()
+    public async Task OnGet_WhenOriginIsBuyerView_SetsCorrectBackLinkUrl()
     {
-        _mockFeatureManager.Setup(f => f.IsEnabledAsync(FeatureFlags.BuyerView)).ReturnsAsync(true);
+        _testOrganisationPponSearchModel.Origin = "buyer-view";
 
         await _testOrganisationPponSearchModel.OnGet();
 
@@ -66,9 +64,9 @@ public class OrganisationPponSearchModelTest
     }
 
     [Fact]
-    public async Task OnGet_WhenBuyerViewFeatureIsDisabled_SetsCorrectBackLinkUrl()
+    public async Task OnGet_WhenOriginIsNotBuyerView_SetsCorrectBackLinkUrl()
     {
-        _mockFeatureManager.Setup(f => f.IsEnabledAsync(FeatureFlags.BuyerView)).ReturnsAsync(false);
+        _testOrganisationPponSearchModel.Origin = "overview";
 
         await _testOrganisationPponSearchModel.OnGet();
 

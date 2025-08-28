@@ -53,6 +53,8 @@ public partial class OrganisationPponSearchModel(
 
     [BindProperty(SupportsGet = true)] public string SortOrder { get; set; } = "rel";
 
+    [BindProperty(SupportsGet = true)] public string? Origin { get; set; }
+
     public required Shared.PaginationPartialModel Pagination { get; set; }
 
     public IReadOnlyList<OrganisationSearchByPponResult> Organisations { get; set; } =
@@ -98,9 +100,14 @@ public partial class OrganisationPponSearchModel(
         string? FeedbackMessage
     );
 
-    private async Task SetBackLinkUrl()
+    private Task SetBackLinkUrl()
     {
-        BackLinkUrl = await _featureManager.IsEnabledAsync(FeatureFlags.BuyerView) ? $"/organisation/{Id}/buyer" : $"/organisation/{Id}";
+        BackLinkUrl = Origin switch
+        {
+            "buyer-view" => $"/organisation/{Id}/buyer",
+            _ => $"/organisation/{Id}"
+        };
+        return Task.CompletedTask;
     }
 
     private async Task<SearchResult> HandleSearch(int pageNumber, string searchText, string sortOrder, double threshold)

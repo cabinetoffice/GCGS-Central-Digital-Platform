@@ -3,15 +3,16 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace CO.CDP.OrganisationApp.Authorization;
 
-public class CustomAuthorizationMiddlewareResultHandler : IAuthorizationMiddlewareResultHandler
+public class CustomAuthorizationMiddlewareResultHandler(IServiceScopeFactory serviceScopeFactory)
+    : IAuthorizationMiddlewareResultHandler
 {
     private readonly AuthorizationMiddlewareResultHandler _defaultHandler = new();
-    private readonly IServiceScopeFactory _serviceScopeFactory;
 
-    public CustomAuthorizationMiddlewareResultHandler(IServiceScopeFactory serviceScopeFactory)
-    {
-        this._serviceScopeFactory = serviceScopeFactory;
-    }
+    private static readonly HashSet<string> AllowedOrigins =
+    [
+        "buyer-view",
+        "overview"
+    ];
 
     public async Task HandleAsync(
         RequestDelegate next,
@@ -26,7 +27,9 @@ public class CustomAuthorizationMiddlewareResultHandler : IAuthorizationMiddlewa
                 var organisationId = TryGetOrganisationId();
                 if (organisationId.HasValue)
                 {
-                    context.Response.Redirect($"/organisation/{organisationId}/not-signed-memorandum");
+                    var origin = GetSecureOrigin(context);
+                    var redirectUrl = $"/organisation/{organisationId}/not-signed-memorandum?origin={Uri.EscapeDataString(origin)}";
+                    context.Response.Redirect(redirectUrl);
                     return;
                 }
             }
@@ -38,11 +41,23 @@ public class CustomAuthorizationMiddlewareResultHandler : IAuthorizationMiddlewa
         await _defaultHandler.HandleAsync(next, context, policy, authorizeResult);
     }
 
+    private string GetSecureOrigin(HttpContext context)
+    {
+        var requestedOrigin = context.Request.Query["origin"].ToString();
+
+        if (!string.IsNullOrEmpty(requestedOrigin) && AllowedOrigins.Contains(requestedOrigin))
+        {
+            return requestedOrigin;
+        }
+
+        return "overview";
+    }
+
     private Guid? TryGetOrganisationId()
     {
         try
         {
-            using var serviceScope = _serviceScopeFactory.CreateScope();
+            using var serviceScope = serviceScopeFactory.CreateScope();
             var userInfoService = serviceScope.ServiceProvider.GetRequiredService<IUserInfoService>();
             userInfoService.GetUserInfo().Wait();
             return userInfoService.GetOrganisationId();

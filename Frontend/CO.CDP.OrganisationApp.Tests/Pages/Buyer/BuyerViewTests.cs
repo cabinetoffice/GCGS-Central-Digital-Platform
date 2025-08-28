@@ -87,8 +87,8 @@ public class BuyerViewTests
         await _model.OnGet();
 
         _model.Tiles.Should().NotBeEmpty();
-        _model.Tiles[0].Href.Should().Be($"/organisation/{_model.Id}");
-        _model.Tiles[1].Href.Should().Be($"/organisation/{_model.Id}/buyer/search");
+        _model.Tiles[0].Href.Should().Be($"/organisation/{_model.Id}?origin=buyer-view");
+        _model.Tiles[1].Href.Should().Be($"/organisation/{_model.Id}/buyer/search?origin=buyer-view");
         _model.Tiles[2].Href.Should().Be("#");
         _model.Tiles[3].Href.Should().Be("https://commercial-tools.example.com");
     }
