@@ -85,6 +85,7 @@ locals {
     srsi_organisation_lookup_endpoint   = "https://organisation.${var.public_domain}"
     srsi_tenant_lookup_endpoint         = "https://tenant.${var.public_domain}/tenant/lookup"
     ssl_service                         = true
+    uk9_enabled                         = contains(["development"], var.environment) ? true : false
     use_srsi                            = true
     use_srsi_for_api                    = true
     valid_until                         = 1924990799
