@@ -100,10 +100,16 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
 
         if (role.HasValue)
         {
-            query = query.Where(t => t.Organisation.Roles.Contains(role.Value));
+            if (includePendingRoles == true)
+            {
+                query = query.Where(t => t.Organisation.Roles.Contains(role.Value) || t.Organisation.PendingRoles.Contains(role.Value));
+            }
+            else
+            {
+                query = query.Where(t => t.Organisation.Roles.Contains(role.Value));
+            }
         }
-
-        if (!includePendingRoles)
+        else if (includePendingRoles == false)
         {
             query = query.Where(t => t.Organisation.PendingRoles.Count == 0);
         }

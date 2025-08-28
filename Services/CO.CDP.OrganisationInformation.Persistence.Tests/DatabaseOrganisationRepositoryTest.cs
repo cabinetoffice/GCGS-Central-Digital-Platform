@@ -1,5 +1,6 @@
 using CO.CDP.OrganisationInformation.Persistence.Constants;
 using FluentAssertions;
+using FluentAssertions.Execution;
 using Microsoft.EntityFrameworkCore;
 using static CO.CDP.OrganisationInformation.Persistence.IOrganisationRepository.OrganisationRepositoryException;
 using static CO.CDP.OrganisationInformation.Persistence.Tests.EntityFactory;
@@ -1485,12 +1486,12 @@ public class DatabaseOrganisationRepositoryTest(OrganisationInformationPostgreSq
 
         var results = await repository.SearchByName("TestOrg", PartyRole.Buyer, null, 0.3, false);
 
-        results.Should().HaveCount(1);
+        results.Should().HaveCount(3);
         results.Should().Contain(o => o.Name == "TestOrg1");
-        results.Should().NotContain(o => o.Name == "TestOrg2"); // Has pending roles
+        results.Should().Contain(o => o.Name == "TestOrg2"); // Has pending roles
         results.Should().NotContain(o => o.Name == "TestOrg3"); // No active buyer role
         results.Should().NotContain(o => o.Name == "TestOrg4"); // No buyer role
-        results.Should().NotContain(o => o.Name == "TestOrg5"); // Has pending roles
+        results.Should().Contain(o => o.Name == "TestOrg5"); // Has pending roles
     }
 
     [Fact]
