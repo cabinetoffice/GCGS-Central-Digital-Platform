@@ -79,41 +79,6 @@ public class CustomAuthorizationMiddlewareResultHandlerTests
     }
 
     [Fact]
-    public async Task HandleAsync_WhenBuyerMouRequirementForbidden_WithoutOriginParameter_RedirectsWithoutOrigin()
-    {
-        var organisationId = Guid.NewGuid();
-
-        _userInfoServiceMock.Setup(u => u.GetUserInfo()).ReturnsAsync(new UserInfo
-        {
-            Name = "Test User",
-            Email = "test@test.com",
-            Organisations = new List<UserOrganisationInfo>
-            {
-                new()
-                {
-                    Id = organisationId,
-                    Name = "Test Organisation",
-                    Roles = new List<PartyRole> { PartyRole.Buyer },
-                    Type = OrganisationType.Organisation
-                }
-            }
-        });
-        _userInfoServiceMock.Setup(u => u.GetOrganisationId()).Returns(organisationId);
-
-        var authorizeResult = PolicyAuthorizationResult.Forbid();
-
-        await _handler.HandleAsync(
-            _ => Task.CompletedTask,
-            _httpContext,
-            _policy,
-            authorizeResult);
-
-        _httpContext.Response.StatusCode.Should().Be(302);
-        _httpContext.Response.Headers.Location.ToString()
-            .Should().Be($"/organisation/{organisationId}/not-signed-memorandum");
-    }
-
-    [Fact]
     public async Task HandleAsync_WhenBuyerMouRequirementForbidden_WithOverviewOrigin_PreservesOverviewOrigin()
     {
         var organisationId = Guid.NewGuid();
@@ -203,5 +168,78 @@ public class CustomAuthorizationMiddlewareResultHandlerTests
         _httpContext.Response.StatusCode.Should().Be(302);
         _httpContext.Response.Headers.Location.ToString()
             .Should().Be("/page-not-found");
+    }
+
+    [Fact]
+    public async Task HandleAsync_WhenBuyerMouRequirementForbidden_WithInvalidOrigin_DefaultsToOverview()
+    {
+        var organisationId = Guid.NewGuid();
+        var invalidOrigin = "malicious";
+        _httpContext.Request.QueryString = new QueryString($"?origin={invalidOrigin}");
+
+        _userInfoServiceMock.Setup(u => u.GetUserInfo()).ReturnsAsync(new UserInfo
+        {
+            Name = "Test User",
+            Email = "test@test.com",
+            Organisations = new List<UserOrganisationInfo>
+            {
+                new()
+                {
+                    Id = organisationId,
+                    Name = "Test Organisation",
+                    Roles = new List<PartyRole> { PartyRole.Buyer },
+                    Type = OrganisationType.Organisation
+                }
+            }
+        });
+        _userInfoServiceMock.Setup(u => u.GetOrganisationId()).Returns(organisationId);
+
+        var authorizeResult = PolicyAuthorizationResult.Forbid();
+
+        await _handler.HandleAsync(
+            _ => Task.CompletedTask,
+            _httpContext,
+            _policy,
+            authorizeResult);
+
+        _httpContext.Response.StatusCode.Should().Be(302);
+        _httpContext.Response.Headers.Location.ToString()
+            .Should().Be($"/organisation/{organisationId}/not-signed-memorandum?origin=overview");
+    }
+
+    [Fact]
+    public async Task HandleAsync_WhenBuyerMouRequirementForbidden_WithEmptyOrigin_DefaultsToOverview()
+    {
+        var organisationId = Guid.NewGuid();
+        _httpContext.Request.QueryString = new QueryString("?origin=");
+
+        _userInfoServiceMock.Setup(u => u.GetUserInfo()).ReturnsAsync(new UserInfo
+        {
+            Name = "Test User",
+            Email = "test@test.com",
+            Organisations = new List<UserOrganisationInfo>
+            {
+                new()
+                {
+                    Id = organisationId,
+                    Name = "Test Organisation",
+                    Roles = new List<PartyRole> { PartyRole.Buyer },
+                    Type = OrganisationType.Organisation
+                }
+            }
+        });
+        _userInfoServiceMock.Setup(u => u.GetOrganisationId()).Returns(organisationId);
+
+        var authorizeResult = PolicyAuthorizationResult.Forbid();
+
+        await _handler.HandleAsync(
+            _ => Task.CompletedTask,
+            _httpContext,
+            _policy,
+            authorizeResult);
+
+        _httpContext.Response.StatusCode.Should().Be(302);
+        _httpContext.Response.Headers.Location.ToString()
+            .Should().Be($"/organisation/{organisationId}/not-signed-memorandum?origin=overview");
     }
 }
