@@ -26,7 +26,11 @@ public class CustomAuthorizationMiddlewareResultHandler : IAuthorizationMiddlewa
                 var organisationId = TryGetOrganisationId();
                 if (organisationId.HasValue)
                 {
-                    context.Response.Redirect($"/organisation/{organisationId}/not-signed-memorandum");
+                    var origin = context.Request.Query["origin"].ToString();
+                    var redirectUrl = string.IsNullOrEmpty(origin) 
+                        ? $"/organisation/{organisationId}/not-signed-memorandum"
+                        : $"/organisation/{organisationId}/not-signed-memorandum?origin={Uri.EscapeDataString(origin)}";
+                    context.Response.Redirect(redirectUrl);
                     return;
                 }
             }

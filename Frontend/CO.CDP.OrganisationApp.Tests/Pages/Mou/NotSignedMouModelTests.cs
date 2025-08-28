@@ -112,4 +112,61 @@ public class NotSignedMouModelTests
         _model.OrganisationName.Should().Be("Test Org");
         _model.CanSignMou.Should().BeFalse();
     }
+
+    [Fact]
+    public async Task OnGetAsync_WhenOriginIsBuyerView_SetsBackLinkToBuyerView()
+    {
+        var organisationId = Guid.NewGuid();
+        var organisation = OrganisationFactory.CreateOrganisation(id: organisationId, name: "Test Org");
+        _model.OrganisationId = organisationId;
+        _model.Origin = "buyer-view";
+
+        _sessionMock.Setup(s => s.Get<UserDetails>(It.IsAny<string>())).Returns(UserDetailsFactory.CreateUserDetails());
+        _organisationClientMock.Setup(o => o.GetOrganisationAsync(organisationId)).ReturnsAsync(organisation);
+        _authorizationServiceMock.Setup(a => a.AuthorizeAsync(It.IsAny<ClaimsPrincipal>(), It.IsAny<object>(), OrgScopeRequirement.Editor))
+            .ReturnsAsync(AuthorizationResult.Success());
+
+        var result = await _model.OnGetAsync();
+
+        result.Should().BeOfType<PageResult>();
+        _model.BackLinkUrl.Should().Be($"/organisation/{organisationId}/buyer");
+    }
+
+    [Fact]
+    public async Task OnGetAsync_WhenOriginIsOverview_SetsBackLinkToOrganisationOverview()
+    {
+        var organisationId = Guid.NewGuid();
+        var organisation = OrganisationFactory.CreateOrganisation(id: organisationId, name: "Test Org");
+        _model.OrganisationId = organisationId;
+        _model.Origin = "overview";
+
+        _sessionMock.Setup(s => s.Get<UserDetails>(It.IsAny<string>())).Returns(UserDetailsFactory.CreateUserDetails());
+        _organisationClientMock.Setup(o => o.GetOrganisationAsync(organisationId)).ReturnsAsync(organisation);
+        _authorizationServiceMock.Setup(a => a.AuthorizeAsync(It.IsAny<ClaimsPrincipal>(), It.IsAny<object>(), OrgScopeRequirement.Editor))
+            .ReturnsAsync(AuthorizationResult.Success());
+
+        var result = await _model.OnGetAsync();
+
+        result.Should().BeOfType<PageResult>();
+        _model.BackLinkUrl.Should().Be($"/organisation/{organisationId}");
+    }
+
+    [Fact]
+    public async Task OnGetAsync_WhenOriginIsNull_SetsBackLinkToOrganisationOverview()
+    {
+        var organisationId = Guid.NewGuid();
+        var organisation = OrganisationFactory.CreateOrganisation(id: organisationId, name: "Test Org");
+        _model.OrganisationId = organisationId;
+        _model.Origin = null;
+
+        _sessionMock.Setup(s => s.Get<UserDetails>(It.IsAny<string>())).Returns(UserDetailsFactory.CreateUserDetails());
+        _organisationClientMock.Setup(o => o.GetOrganisationAsync(organisationId)).ReturnsAsync(organisation);
+        _authorizationServiceMock.Setup(a => a.AuthorizeAsync(It.IsAny<ClaimsPrincipal>(), It.IsAny<object>(), OrgScopeRequirement.Editor))
+            .ReturnsAsync(AuthorizationResult.Success());
+
+        var result = await _model.OnGetAsync();
+
+        result.Should().BeOfType<PageResult>();
+        _model.BackLinkUrl.Should().Be($"/organisation/{organisationId}");
+    }
 }

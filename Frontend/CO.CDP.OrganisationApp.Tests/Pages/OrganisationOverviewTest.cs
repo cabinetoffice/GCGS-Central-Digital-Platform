@@ -359,6 +359,48 @@ public class OrganisationOverviewTest
         _model.SearchRegistryPponEnabled.Should().BeFalse();
     }
 
+    [Fact]
+    public async Task OnGet_WhenOriginIsBuyerView_SetsBackLinkToBuyerView()
+    {
+        var id = Guid.NewGuid();
+        _model.Id = id;
+        _model.Origin = "buyer-view";
+        _organisationClientMock.Setup(o => o.GetOrganisationAsync(id))
+            .ReturnsAsync(GivenOrganisationClientModel(id));
+
+        await _model.OnGet();
+
+        _model.BackLinkUrl.Should().Be($"/organisation/{id}/buyer");
+    }
+
+    [Fact]
+    public async Task OnGet_WhenOriginIsSelection_SetsBackLinkToOrganisationSelection()
+    {
+        var id = Guid.NewGuid();
+        _model.Id = id;
+        _model.Origin = "selection";
+        _organisationClientMock.Setup(o => o.GetOrganisationAsync(id))
+            .ReturnsAsync(GivenOrganisationClientModel(id));
+
+        await _model.OnGet();
+
+        _model.BackLinkUrl.Should().Be("/organisation-selection");
+    }
+
+    [Fact]
+    public async Task OnGet_WhenOriginIsNull_SetsBackLinkToOrganisationSelection()
+    {
+        var id = Guid.NewGuid();
+        _model.Id = id;
+        _model.Origin = null;
+        _organisationClientMock.Setup(o => o.GetOrganisationAsync(id))
+            .ReturnsAsync(GivenOrganisationClientModel(id));
+
+        await _model.OnGet();
+
+        _model.BackLinkUrl.Should().Be("/organisation-selection");
+    }
+
     private static CO.CDP.Organisation.WebApiClient.Organisation GivenOrganisationClientModel(
         Guid? id, ICollection<PartyRole>? pendingRoles = null, OrganisationType? organisationType = null,
         ICollection<PartyRole>? roles = null)

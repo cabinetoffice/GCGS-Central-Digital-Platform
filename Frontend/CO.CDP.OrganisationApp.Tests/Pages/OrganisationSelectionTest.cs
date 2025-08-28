@@ -109,7 +109,7 @@ public class OrganisationSelectionTest
 
         var url = model.OrganisationUrl(org, false);
 
-        url.Should().Be($"/organisation/{org.Id}");
+        url.Should().Be($"/organisation/{org.Id}?origin=selection");
     }
 
     [Fact]
@@ -120,7 +120,7 @@ public class OrganisationSelectionTest
 
         var url = model.OrganisationUrl(org, true);
 
-        url.Should().Be($"/organisation/{org.Id}");
+        url.Should().Be($"/organisation/{org.Id}?origin=selection");
     }
 
     [Fact]
@@ -131,7 +131,7 @@ public class OrganisationSelectionTest
 
         var url = model.OrganisationUrl(org, false);
 
-        url.Should().Be($"/organisation/{org.Id}");
+        url.Should().Be($"/organisation/{org.Id}?origin=selection");
     }
 
     private static Review GivenReview(ReviewStatus reviewStatus)

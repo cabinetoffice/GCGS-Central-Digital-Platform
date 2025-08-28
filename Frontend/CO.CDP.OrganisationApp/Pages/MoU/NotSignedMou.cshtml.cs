@@ -16,11 +16,15 @@ public class NotSignedMouModel(
 {
     [BindProperty(SupportsGet = true)] public Guid OrganisationId { get; set; }
 
+    [BindProperty(SupportsGet = true)] public string? Origin { get; set; }
+
     [BindProperty] public string OrganisationName { get; set; } = string.Empty;
 
     [BindProperty] public bool CanSignMou { get; private set; }
 
     [BindProperty] public UserDetails? UserDetails { get; private set; }
+
+    public string BackLinkUrl { get; private set; } = "";
 
     public async Task<IActionResult> OnGetAsync()
     {
@@ -45,6 +49,12 @@ public class NotSignedMouModel(
 
             var isEditorResult = await authorizationService.AuthorizeAsync(User, OrgScopeRequirement.Editor);
             CanSignMou = isEditorResult.Succeeded;
+
+            BackLinkUrl = Origin switch
+            {
+                "buyer-view" => $"/organisation/{OrganisationId}/buyer",
+                _ => $"/organisation/{OrganisationId}"
+            };
         }
         catch (Exception ex)
         {
