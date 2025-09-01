@@ -15,7 +15,7 @@ phases:
     commands:
       - echo "Applying updates to all components..."
       - cd $CODEBUILD_SRC_DIR/terragrunt/components
-      - terragrunt run-all apply -auto-approve -terragrunt-non-interactive
+      - terragrunt run-all apply -auto-approve -non-interactive
 
   post_build:
     commands:
