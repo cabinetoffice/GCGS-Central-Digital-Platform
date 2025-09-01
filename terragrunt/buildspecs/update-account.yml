@@ -10,5 +10,5 @@ phases:
   build:
     commands:
       - cd terragrunt/components
-      - terragrunt run-all apply -auto-approve -terragrunt-non-interactive
+      - terragrunt run-all apply -auto-approve -non-interactive
 
