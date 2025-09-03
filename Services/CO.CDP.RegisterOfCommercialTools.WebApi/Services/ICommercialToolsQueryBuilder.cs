@@ -18,7 +18,9 @@ public interface ICommercialToolsQueryBuilder
     ICommercialToolsQueryBuilder ExcludeBuyerClassificationRestrictions(string restrictionId);
     ICommercialToolsQueryBuilder ContractLocation(string region);
     ICommercialToolsQueryBuilder WithCpv(string cpv);
+    ICommercialToolsQueryBuilder WithAwardMethod(string awardMethod);
     ICommercialToolsQueryBuilder WithPageSize(int size);
     ICommercialToolsQueryBuilder WithPageNumber(int number);
+    ICommercialToolsQueryBuilder WithCustomFilter(string filter);
     string Build(string baseUrl);
 }

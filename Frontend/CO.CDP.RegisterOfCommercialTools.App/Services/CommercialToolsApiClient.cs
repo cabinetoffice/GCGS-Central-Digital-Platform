@@ -3,15 +3,8 @@ using CO.CDP.RegisterOfCommercialTools.WebApiClient.Models;
 
 namespace CO.CDP.RegisterOfCommercialTools.App.Services;
 
-public class CommercialToolsApiClient : ISearchService
+public class CommercialToolsApiClient(HttpClient httpClient) : ISearchService
 {
-    private readonly HttpClient _httpClient;
-
-    public CommercialToolsApiClient(HttpClient httpClient)
-    {
-        _httpClient = httpClient;
-    }
-
     public async Task<(List<SearchResult> Results, int TotalCount)> SearchAsync(SearchModel searchModel, int pageNumber, int pageSize)
     {
         var requestDto = new SearchRequestDto
@@ -32,14 +25,14 @@ public class CommercialToolsApiClient : ISearchService
             PageSize = pageSize
         };
 
-        var response = await _httpClient.GetFromJsonAsync<SearchResponse>($"api/Search?{ToQueryString(requestDto)}");
+        var response = await httpClient.GetFromJsonAsync<SearchResponse>($"api/Search?{ToQueryString(requestDto)}");
 
-        var results = response?.Results.Select(MapToSearchResult).ToList() ?? [];
+        var results = response?.Results.Select(dto => MapToSearchResult(dto)).ToList() ?? [];
         var totalCount = response?.TotalCount ?? 0;
         return (results, totalCount);
     }
 
-    private static SearchResult MapToSearchResult(SearchResultDto dto)
+    private SearchResult MapToSearchResult(SearchResultDto dto)
     {
         return new SearchResult
         (
@@ -48,11 +41,12 @@ public class CommercialToolsApiClient : ISearchService
             Caption: dto.Description,
             CommercialTool: dto.Title,
             Status: (SearchResultStatus)Enum.Parse(typeof(SearchResultStatus), dto.Status.ToString()),
-            MaximumFee: dto.Fees.ToString("C", new System.Globalization.CultureInfo("en-GB")),
-            OtherContractingAuthorityCanUse: dto.ReservedParticipation ?? "N/A",
-            SubmissionDeadline: dto.SubmissionDeadline?.ToShortDateString() ?? "N/A",
-            ContractDates: "N/A",
-            AwardMethod: dto.AwardMethod
+            MaximumFee: dto.Fees > 0 ? dto.Fees.ToString("C", new System.Globalization.CultureInfo("en-GB")) : "Unknown",
+            OtherContractingAuthorityCanUse: dto.ReservedParticipation ?? "Unknown",
+            SubmissionDeadline: dto.SubmissionDeadline?.ToShortDateString() ?? "Unknown",
+            ContractDates: "Unknown",
+            AwardMethod: dto.AwardMethod,
+            Url: dto.Url
         );
     }
 

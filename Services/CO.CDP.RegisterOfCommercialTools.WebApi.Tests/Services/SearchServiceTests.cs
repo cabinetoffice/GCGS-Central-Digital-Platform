@@ -9,14 +9,14 @@ namespace CO.CDP.RegisterOfCommercialTools.WebApi.Tests.Services;
 public class SearchServiceTests
 {
     private readonly Mock<ICommercialToolsQueryBuilder> _mockQueryBuilder;
-    private readonly Mock<ICommercialToolsRepository> _mockRepository;
+    private readonly Mock<ICommercialToolsService> _mockRepository;
     private readonly Mock<IConfiguration> _mockConfiguration;
     private readonly SearchService _searchService;
 
     public SearchServiceTests()
     {
         _mockQueryBuilder = new Mock<ICommercialToolsQueryBuilder>();
-        _mockRepository = new Mock<ICommercialToolsRepository>();
+        _mockRepository = new Mock<ICommercialToolsService>();
         _mockConfiguration = new Mock<IConfiguration>();
         var mockBaseUrlSection = new Mock<IConfigurationSection>();
         mockBaseUrlSection.Setup(s => s.Value).Returns("https://test-api.example.com/v1/tender");
@@ -49,10 +49,9 @@ public class SearchServiceTests
 
         _mockQueryBuilder.Setup(x => x.WithKeywords("IT services")).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.WithStatus("Active")).Returns(mockBuilder.Object);
-        mockBuilder.Setup(x => x.FeeFrom(100.50m)).Returns(mockBuilder.Object);
-        mockBuilder.Setup(x => x.FeeTo(999.99m)).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.WithPageSize(20)).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.WithPageNumber(2)).Returns(mockBuilder.Object);
+        mockBuilder.Setup(x => x.WithCustomFilter(It.IsAny<string>())).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.SubmissionDeadlineFrom(new DateTime(2025, 1, 1))).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.SubmissionDeadlineTo(new DateTime(2025, 12, 31))).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.ContractStartDateFrom(new DateTime(2025, 6, 1))).Returns(mockBuilder.Object);
@@ -65,8 +64,7 @@ public class SearchServiceTests
         {
             new() { Id = "003033-2025", Title = "Test Result" }
         };
-        _mockRepository.Setup(x => x.SearchCommercialTools(queryUrl)).ReturnsAsync(expectedResults);
-        _mockRepository.Setup(x => x.GetCommercialToolsCount(queryUrl)).ReturnsAsync(100);
+        _mockRepository.Setup(x => x.SearchCommercialToolsWithCount(queryUrl)).ReturnsAsync((expectedResults, 100));
 
         var result = await _searchService.Search(request);
 
@@ -76,8 +74,7 @@ public class SearchServiceTests
         result.PageSize.Should().Be(20);
         _mockQueryBuilder.Verify(x => x.WithKeywords("IT services"), Times.Once);
         mockBuilder.Verify(x => x.WithStatus("Active"), Times.Once);
-        mockBuilder.Verify(x => x.FeeFrom(100.50m), Times.Once);
-        mockBuilder.Verify(x => x.FeeTo(999.99m), Times.Once);
+        mockBuilder.Verify(x => x.WithCustomFilter(It.Is<string>(s => s.Contains("participationFees") && s.Contains("proportion"))), Times.Once);
         mockBuilder.Verify(x => x.WithPageSize(20), Times.Once);
         mockBuilder.Verify(x => x.WithPageNumber(2), Times.Once);
         mockBuilder.Verify(x => x.SubmissionDeadlineFrom(new DateTime(2025, 1, 1)), Times.Once);
@@ -86,8 +83,7 @@ public class SearchServiceTests
         mockBuilder.Verify(x => x.ContractStartDateTo(new DateTime(2025, 6, 30)), Times.Once);
         mockBuilder.Verify(x => x.ContractEndDateFrom(new DateTime(2026, 1, 1)), Times.Once);
         mockBuilder.Verify(x => x.ContractEndDateTo(new DateTime(2026, 12, 31)), Times.Once);
-        _mockRepository.Verify(x => x.SearchCommercialTools(queryUrl), Times.Once);
-        _mockRepository.Verify(x => x.GetCommercialToolsCount(queryUrl), Times.Once);
+        _mockRepository.Verify(x => x.SearchCommercialToolsWithCount(queryUrl), Times.Once);
     }
 
     [Fact]
@@ -110,13 +106,13 @@ public class SearchServiceTests
         mockBuilder.Setup(x => x.WithStatus("Active")).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.FeeFrom(0)).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.FeeTo(decimal.MaxValue)).Returns(mockBuilder.Object);
+        mockBuilder.Setup(x => x.WithCustomFilter(It.IsAny<string>())).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.WithPageSize(10)).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.WithPageNumber(1)).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.Build(It.IsAny<string>())).Returns(queryUrl);
 
         var expectedResults = new List<SearchResultDto>();
-        _mockRepository.Setup(x => x.SearchCommercialTools(queryUrl)).ReturnsAsync(expectedResults);
-        _mockRepository.Setup(x => x.GetCommercialToolsCount(queryUrl)).ReturnsAsync(0);
+        _mockRepository.Setup(x => x.SearchCommercialToolsWithCount(queryUrl)).ReturnsAsync((expectedResults, 0));
 
         var result = await _searchService.Search(request);
 
@@ -154,14 +150,14 @@ public class SearchServiceTests
         mockBuilder.Setup(x => x.WithStatus("Active")).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.FeeFrom(0)).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.FeeTo(decimal.MaxValue)).Returns(mockBuilder.Object);
+        mockBuilder.Setup(x => x.WithCustomFilter(It.IsAny<string>())).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.WithPageSize(10)).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.WithPageNumber(1)).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.SubmissionDeadlineFrom(new DateTime(2025, 1, 1))).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.Build(It.IsAny<string>())).Returns(queryUrl);
 
         var expectedResults = new List<SearchResultDto>();
-        _mockRepository.Setup(x => x.SearchCommercialTools(queryUrl)).ReturnsAsync(expectedResults);
-        _mockRepository.Setup(x => x.GetCommercialToolsCount(queryUrl)).ReturnsAsync(0);
+        _mockRepository.Setup(x => x.SearchCommercialToolsWithCount(queryUrl)).ReturnsAsync((expectedResults, 0));
 
         var result = await _searchService.Search(request);
 
@@ -197,13 +193,13 @@ public class SearchServiceTests
         mockBuilder.Setup(x => x.WithStatus("")).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.FeeFrom(0)).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.FeeTo(decimal.MaxValue)).Returns(mockBuilder.Object);
+        mockBuilder.Setup(x => x.WithCustomFilter(It.IsAny<string>())).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.WithPageSize(10)).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.WithPageNumber(1)).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.Build(It.IsAny<string>())).Returns(queryUrl);
 
         var expectedResults = new List<SearchResultDto>();
-        _mockRepository.Setup(x => x.SearchCommercialTools(queryUrl)).ReturnsAsync(expectedResults);
-        _mockRepository.Setup(x => x.GetCommercialToolsCount(queryUrl)).ReturnsAsync(0);
+        _mockRepository.Setup(x => x.SearchCommercialToolsWithCount(queryUrl)).ReturnsAsync((expectedResults, 0));
 
         var result = await _searchService.Search(request);
 
@@ -217,7 +213,7 @@ public class SearchServiceTests
     public void Constructor_WhenBaseUrlConfigurationIsMissing_ShouldThrowException()
     {
         var mockQueryBuilder = new Mock<ICommercialToolsQueryBuilder>();
-        var mockRepository = new Mock<ICommercialToolsRepository>();
+        var mockRepository = new Mock<ICommercialToolsService>();
         var mockConfiguration = new Mock<IConfiguration>();
         var mockBaseUrlSection = new Mock<IConfigurationSection>();
         mockBaseUrlSection.Setup(s => s.Value).Returns((string?)null);

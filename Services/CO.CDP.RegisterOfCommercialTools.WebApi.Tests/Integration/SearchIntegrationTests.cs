@@ -29,13 +29,13 @@ public class SearchIntegrationTests
             });
             builder.ConfigureServices(services =>
             {
-                var descriptor = services.SingleOrDefault(d => d.ServiceType == typeof(ICommercialToolsRepository));
+                var descriptor = services.SingleOrDefault(d => d.ServiceType == typeof(ICommercialToolsService));
                 if (descriptor != null)
                 {
                     services.Remove(descriptor);
                 }
 
-                var mockRepository = new Mock<ICommercialToolsRepository>();
+                var mockRepository = new Mock<ICommercialToolsService>();
                 SetupMockRepository(mockRepository);
                 services.AddSingleton(mockRepository.Object);
             });
@@ -147,7 +147,7 @@ public class SearchIntegrationTests
         searchResponse.PageSize.Should().Be(5);
     }
 
-    private static void SetupMockRepository(Mock<ICommercialToolsRepository> mockRepository)
+    private static void SetupMockRepository(Mock<ICommercialToolsService> mockRepository)
     {
         var defaultResults = new List<SearchResultDto>
         {
@@ -156,7 +156,6 @@ public class SearchIntegrationTests
                 Id = "003033-2025",
                 Title = "Integration Test Framework 1",
                 Description = "First integration test framework",
-                Link = "https://test.com/framework1",
                 PublishedDate = DateTime.UtcNow.AddDays(-10),
                 SubmissionDeadline = DateTime.UtcNow.AddDays(30),
                 Status = CommercialToolStatus.Active,
@@ -168,7 +167,6 @@ public class SearchIntegrationTests
                 Id = "004044-2025",
                 Title = "Integration Test Framework 2",
                 Description = "Second integration test framework",
-                Link = "https://test.com/framework2",
                 PublishedDate = DateTime.UtcNow.AddDays(-5),
                 SubmissionDeadline = DateTime.UtcNow.AddDays(45),
                 Status = CommercialToolStatus.Upcoming,
@@ -178,30 +176,8 @@ public class SearchIntegrationTests
         };
 
         mockRepository
-            .Setup(x => x.SearchCommercialTools(It.IsAny<string>()))
-            .ReturnsAsync(defaultResults);
+            .Setup(x => x.SearchCommercialToolsWithCount(It.IsAny<string>()))
+            .ReturnsAsync((defaultResults, 50));
 
-        mockRepository
-            .Setup(x => x.GetCommercialToolsCount(It.IsAny<string>()))
-            .ReturnsAsync(50);
-
-        mockRepository
-            .Setup(x => x.GetCommercialToolById("003033-2025"))
-            .ReturnsAsync(new SearchResultDto
-            {
-                Id = "003033-2025",
-                Title = "Specific Integration Test Framework",
-                Description = "Specific framework for testing GetById",
-                Link = "https://test.com/specific",
-                PublishedDate = DateTime.UtcNow.AddDays(-15),
-                SubmissionDeadline = DateTime.UtcNow.AddDays(60),
-                Status = CommercialToolStatus.Active,
-                Fees = 750.00m,
-                AwardMethod = "Framework"
-            });
-
-        mockRepository
-            .Setup(x => x.GetCommercialToolById("nonexistent-id"))
-            .ReturnsAsync((SearchResultDto?)null);
     }
 }
