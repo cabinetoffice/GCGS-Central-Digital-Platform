@@ -1,0 +1,71 @@
+[
+  {
+    "name": "${name}",
+    "image": "${image}:${service_version}",
+    "cpu": ${cpu},
+    "memory": ${memory},
+    "portMappings": [
+      {
+        "containerPort": ${container_port},
+        "hostPort": ${host_port},
+        "protocol": "tcp"
+      }
+    ],
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+        "awslogs-group": "${lg_name}",
+        "awslogs-region": "${lg_region}",
+        "awslogs-stream-prefix": "${lg_prefix}"
+      }
+    },
+    "environment": [
+        { "name" : "ASPNETCORE_ENVIRONMENT", "value" : "${aspcore_environment}"},
+        { "name" : "ASPNETCORE_HTTP_PORTS", "value" : "${host_port}"},
+        { "name" : "AWS_REGION", "value" : "eu-west-2"},
+        { "name" : "Aws__Buckets__PermanentBucket", "value" : "${s3_permanent_bucket}"},
+        { "name" : "Aws__Buckets__StagingBucket", "value" : "${s3_staging_bucket}"},
+        { "name" : "Aws__CloudWatch__LogGroup", "value" : "${lg_name}"},
+        { "name" : "Aws__CloudWatch__LogStream", "value" : "${lg_prefix}-serilog"},
+        { "name" : "Aws__ElastiCache__Hostname", "value" : "${redis_primary_endpoint_address}"},
+        { "name" : "Aws__ElastiCache__Port", "value" : "${redis_port}"},
+        { "name" : "Aws__SqsPublisher__QueueUrl", "value" : "${queue_av_scanner_url}"},
+        { "name" : "AWS__SystemManager__DataProtectionPrefix", "value" : "${ssm_data_protection_prefix}"},
+        { "name" : "Features__DiagnosticPage__Enabled", "value" : "${diagnostic_page_enabled}"},
+        { "name" : "Features__SharedSessions", "value" : "${shared_sessions_enabled}"},
+        { "name" : "FormsService", "value" : "https://forms.${public_domain}"},
+        { "name" : "ForwardedHeaders__KnownNetwork", "value" : "${vpc_cidr}"},
+        { "name" : "FtsService", "value" : "${fts_service_url}"},
+        { "name" : "FtsServiceAllowedOrigins", "value" : "${fts_service_allowed_origins}"},
+        { "name" : "OneLogin__ForwardLogoutNotificationUrls", "value" : "${onelogin_logout_notification_urls}"},
+        { "name" : "OrganisationService", "value" : "https://organisation.${public_domain}"},
+        { "name" : "Organisation__Authority", "value" : "https://authority.${public_domain}"},
+        { "name" : "PersonService", "value" : "https://person.${public_domain}"},
+        { "name" : "TenantService", "value" : "https://tenant.${public_domain}"}
+        { "name" : "Aws__Credentials__AccessKeyId", "value" : "${credential_accesskeyid}"},
+        { "name" : "Aws__Credentials__SecretAccessKey", "value" : "${credential_secretaccesskey}"},
+        { "name" : "Aws__ServiceURL", "value" : "${service_url}"},
+        { "name" : "Aws__CognitoAuthentication__Domain", "value" : "${cognitoauthentication_domain}"},
+        { "name" : "Aws__CognitoAuthentication__UserPoolId", "value" : "${cognitoauthentication_userpoolid}"},
+        { "name" : "Aws__CognitoAuthentication__UserPoolClientId", "value" : "${cognitoauthentication_userpoolclientid}"},
+        { "name" : "Aws__CognitoAuthentication__UserPoolClientSecret", "value" : "${cognitoauthentication_userpoolclientsecret}"},
+        { "name" : "Aws__SystemManager__DataProtectionPrefix", "value" : "${systemmanager_dataprotectionprefix}"},
+        { "name" : "Aws__ElastiCache__Hostname", "value" : "${elasticache_hostname}"},
+        { "name" : "Aws__ElastiCache__Hostname", "value" : "${elasticache_hostname}"},
+        { "name" : "CommercialToolsApi__ServiceUrl", "value" : "${commercialtoolsapi_serviceurl}"},
+        { "name" : "SessionTimeoutInMinutes", "value" : "${sessiontimeoutinminutes}"},
+    ],
+    "secrets": [
+        { "name" : "Aws__ElastiCache__Token", "valueFrom" : "${redis_auth_token_arn}"},
+        { "name" : "Features__DiagnosticPage__Path", "valueFrom" : "${diagnostic_page_path_arn}"},
+        { "name" : "OneLogin__AccountUrl", "valueFrom" : "${onelogin_account_url}"},
+        { "name" : "OneLogin__Authority", "valueFrom" : "${onelogin_authority}"},
+        { "name" : "OneLogin__ClientId", "valueFrom" : "${onelogin_client_id}"},
+        { "name" : "OneLogin__ForwardLogoutNotificationApiKey", "valueFrom" : "${onelogin_fln_api_key_arn}"},
+        { "name" : "OneLogin__PrivateKey", "valueFrom" : "${onelogin_private_key}"}
+    ],
+    "volumesFrom": [],
+    "mountPoints": [],
+    "essential": true
+  }
+]

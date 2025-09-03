@@ -1,0 +1,61 @@
+module "ecs_service_commercial_tools_api" {
+  source = "../ecs-service"
+
+  container_definitions = templatefile(
+    "${path.module}/templates/task-definitions/${var.service_configs.commercial_tools_api.name}.json.tftpl",
+    {
+      aspcore_environment             = local.aspcore_environment
+      container_port                  = var.service_configs.commercial_tools_api.port
+      cpu                             = var.service_configs.commercial_tools_api.cpu
+      db_address                      = var.db_sirsi_cluster_address
+      db_name                         = var.db_sirsi_cluster_name
+      db_password                     = local.db_sirsi_password
+      db_username                     = local.db_sirsi_username
+      govuknotify_apikey              = data.aws_secretsmanager_secret_version.govuknotify_apikey.arn
+      govuknotify_support_admin_email = data.aws_secretsmanager_secret_version.govuknotify_support_admin_email.arn
+      host_port                       = var.service_configs.commercial_tools_api.port
+      image                           = local.ecr_urls[var.service_configs.commercial_tools_api.name]
+      lg_name                         = aws_cloudwatch_log_group.tasks[var.service_configs.commercial_tools_api.name].name
+      lg_prefix                       = "app"
+      lg_region                       = data.aws_region.current.name
+      memory                          = var.service_configs.commercial_tools_api.memory
+      name                            = var.service_configs.commercial_tools_api.name
+      public_domain                   = var.public_domain
+      queue_entity_verification_url   = var.queue_entity_verification_url
+      queue_organisation_url          = var.queue_organisation_url
+      send_notify_emails              = local.send_notify_emails
+      service_version                 = local.service_version_sirsi
+      vpc_cidr                        = var.vpc_cider
+      credential_access_key_id        = data.aws_credential_access_key_id
+      credential_secret_access_key    = data.aws_credential_secret_access_key
+      service_url                     = data.aws_service_url
+      cognitoauthentication_domain    = data.aws_cognitoauthentication_domain.domain
+      cognitoauthentication_userpoolid           = data.aws_cognitoauthentication_userpoolid.userpoolid
+      cognitoauthentication_userpoolclientid     = data.aws_cognitoauthentication_userpoolclientid.userpoolclientid
+      cognitoauthentication_userpoolclientsecret = data.aws_cognitoauthentication_userpoolclientsecret.userpoolclientsecret
+      odataapi_baseurl                = var.odataapi_baseurl
+      odataapi_apikey                 = var.odataapi_apikey
+    }
+  )
+  cluster_id             = aws_ecs_cluster.this.id
+  container_port         = var.service_configs.commercial_tools_api.port
+  cpu                    = var.service_configs.commercial_tools_api.cpu
+  desired_count          = var.service_configs.commercial_tools_api.desired_count
+  ecs_alb_sg_id          = var.alb_sg_id
+  ecs_listener_arn       = aws_lb_listener.ecs.arn
+  ecs_service_base_sg_id = var.ecs_sg_id
+  family                 = "app"
+  host_port              = var.service_configs.commercial_tools_api.port_host
+  memory                 = var.service_configs.commercial_tools_api.memory
+  name                   = var.service_configs.commercial_tools_api.name
+  private_subnet_ids     = var.private_subnet_ids
+  product                = var.product
+  public_domain          = var.public_domain
+  role_ecs_task_arn      = var.role_ecs_task_arn
+  role_ecs_task_exec_arn = var.role_ecs_task_exec_arn
+  tags                   = var.tags
+  unhealthy_threshold    = 10  # @todo (ABN) go-live this must come out, hopefully before monday!
+  healthcheck_interval   = 120 # @todo (ABN) go-live this must come out, hopefully before monday!
+  healthcheck_timeout    = 10  # @todo (ABN) go-live this must come out, hopefully before monday!
+  vpc_id                 = var.vpc_id
+}

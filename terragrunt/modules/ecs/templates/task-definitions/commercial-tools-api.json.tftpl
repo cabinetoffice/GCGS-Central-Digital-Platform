@@ -1,0 +1,51 @@
+[
+  {
+    "name": "${name}",
+    "image": "${image}:${service_version}",
+    "cpu": ${cpu},
+    "memory": ${memory},
+    "portMappings": [
+      {
+        "containerPort": ${container_port},
+        "hostPort": ${host_port},
+        "protocol": "tcp"
+      }
+    ],
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+        "awslogs-group": "${lg_name}",
+        "awslogs-region": "${lg_region}",
+        "awslogs-stream-prefix": "${lg_prefix}"
+      }
+    },
+    "environment": [
+        { "name" : "ASPNETCORE_ENVIRONMENT", "value" : "${aspcore_environment}"},
+        { "name" : "ASPNETCORE_HTTP_PORTS", "value" : "${host_port}"},
+        { "name" : "AWS_REGION", "value" : "eu-west-2"},
+        { "name" : "Aws__CloudWatch__LogGroup", "value" : "${lg_name}"},
+        { "name" : "Aws__CloudWatch__LogStream", "value" : "${lg_prefix}-serilog"},
+        { "name" : "Aws__SqsDispatcher__QueueUrl", "value" : "${queue_entity_verification_url}"},
+        { "name" : "Aws__SqsPublisher__QueueUrl", "value" : "${queue_organisation_url}"},
+        { "name" : "CdpApiKeys__0", "value" : "a955a529-1433-4acf-92b2-342a3e5e8086"},
+        { "name" : "Features__SendNotifyEmails", "value" : "${send_notify_emails}"},
+        { "name" : "ForwardedHeaders__KnownNetwork", "value" : "${vpc_cidr}"},
+       
+       
+        { "name" : "CommercialToolsApiUrl", "value" : "https://commercialtoolsapi.${public_domain}"},
+        { "name" : "CommercialToolsApiUrl__Database", "value" : "${db_name}"},
+        { "name" : "CommercialToolsApiInformationDatabase__Host", "value" : "${db_address}"},
+        { "name" : "CommercialToolsApiInformationDatabase__Server", "value" : "${db_address}"},
+        { "name" : "CommercialToolsApi__Authority", "value" : "https://authority.${public_domain}"}
+    ],
+    "secrets": [
+        { "name" : "GOVUKNotify__ApiKey", "valueFrom" : "${govuknotify_apikey}"},
+        { "name" : "GOVUKNotify__SupportAdminEmailAddress", "valueFrom" : "${govuknotify_support_admin_email}"},
+        { "name" : "CommercialToolsApiInformationDatabase__Password", "valueFrom" : "${db_password}"},
+        { "name" : "CommercialToolsApiInformationDatabase__Username", "valueFrom" : "${db_username}"}
+    ],
+    "volumesFrom": [],
+    "mountPoints": [],
+    "essential": true
+  }
+]
