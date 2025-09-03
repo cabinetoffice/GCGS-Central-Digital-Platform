@@ -1,0 +1,140 @@
+= Additional Supplier Information Modules Guide for eSenders
+
+== Overview
+
+The Central Digital Platform has introduced new Additional Supplier Information (ASI) modules that suppliers must complete when bidding for certain tenders.
+These modules include branched journeys for the first time, so the questions and answers retrieved from each organisation may vary based on their responses.
+
+== New Additional SI Modules
+
+The following modules have been added to the Standard Questions form:
+
+. *Steel* - Steel industry-specific requirements and certifications
+. *Modern Slavery* - Modern slavery compliance and policies
+. *Health & Safety* - Health and safety management systems
+. *Cyber Essentials* - Cybersecurity certifications and practices
+. *Data Protection* - Data protection and GDPR compliance
+. *Payments* - Payment practices and reporting
+
+== Question Types in Additional SI Modules
+
+The new modules use these question types that eSenders will encounter in the shared data:
+
+[cols="1,2,3"]
+|===
+|Type |Description |Data Considerations
+
+|1
+|Text
+|Standard text responses
+
+|2
+|FileUpload
+|File references and boolean upload status
+
+|3
+|YesOrNo
+|Boolean responses
+
+|7
+|Date
+|Date values in standard format
+
+|10
+|MultiLine
+|Extended text responses
+
+|12
+|Url
+|URL text values
+|===
+
+== Data Validation Rules Applied
+
+While eSenders won't see the validation configuration, they should be aware that supplier answers have been validated according to these rules:
+
+=== Date Validation
+
+* *Past-only dates*: Reporting start dates, certification dates
+* *Future dates*: Policy expiry dates, certification renewals
+
+=== Text Validation
+
+* *Percentage values*: Payment statistics (0-100% format)
+* *Numeric values*: Days, counts, measurements
+* *URL format*: Website addresses and document links
+
+=== File Upload Validation
+
+* *Document requirements*: Policies, certificates, reports
+* *Optional uploads*: May have boolean "No document" responses
+
+== Data Handling Considerations for eSenders
+
+=== Answer Structure
+
+* eSenders will continue to receive *question and answer data only* via the Data Sharing API
+* *Variable question sets*: Due to branched journeys, different suppliers may answer different subsets of questions within the same module based on their responses to conditional questions
+
+=== What eSenders Will NOT See
+
+* Question grouping and multi-page configurations
+* UI layout options (input width, suffix text, custom styling)
+* Branching logic metadata (nextQuestionId, nextQuestionAlternativeId)
+* Platform-specific validation rules and error messages
+* Button content and form navigation elements
+
+== Integration Environment Status
+
+* *Current Status*: All Additional SI modules are available in the integration environment
+* *Production Deployment*: Planned for *early 2026*
+* *Testing*: eSenders should test against integration environment forms
+
+== Localisation Status
+
+* *English Content*: Fully implemented for all modules
+* *Welsh Content*: Some Welsh translations are outstanding and will be added in future releases
+
+== API Contract Assurance
+
+====
+No changes have been made to the Data Sharing API contract:
+
+* Existing API endpoints remain unchanged
+* Response formats are consistent with the current implementation
+* Authentication and authorization mechanisms unchanged
+* Error handling and status codes remain the same
+====
+
+== Module-Specific Answer Patterns
+
+=== Payments Module
+
+* *Financial Data*: Multiple reporting periods with percentage and numeric values
+* *Structured Answers*: Related payment statistics grouped logically
+* *Optional Evidence*: File upload answers may be boolean (no document provided)
+
+=== Modern Slavery Module
+
+* *Policy Answers*: Mix of text descriptions, dates, and document references
+* *Compliance Data*: Yes/No responses for policy existence and implementation
+* *Evidence Documents*: Optional file uploads for policies and procedures
+
+=== Steel/Health & Safety/Cyber Essentials/Data Protection
+
+* *Certification Data*: Dates, reference numbers, and document uploads
+* *Evidence Requirements*: Document uploads for certificates and policies
+
+== Recommendations for eSenders
+
+* *Test Integration*: Thoroughly test against integration environment to understand answer structures
+* *Share Feedback*: Provide feedback to the CDP technical team on integration experiences and any issues encountered
+
+== Support and Further Information
+
+For technical queries regarding the Additional SI modules or integration support, contact the CDP technical team through standard support channels.
+
+'''
+
+_Last Updated: 3 September 2025_ +
+_Target Audience: eSender Technical Teams_
