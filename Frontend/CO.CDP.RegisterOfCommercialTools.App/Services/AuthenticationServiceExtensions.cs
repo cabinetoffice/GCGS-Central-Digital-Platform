@@ -75,7 +75,6 @@ public static class AuthenticationServiceExtensions
             })
             .AddOpenIdConnect(options =>
             {
-                Console.WriteLine($"[STARTUP] Setting ClientId in OpenIdConnect options: {(string.IsNullOrEmpty(oneLoginClientId) ? "EMPTY" : "PRESENT")}");
                 options.Authority = oneLoginAuthority;
                 options.ClientId = oneLoginClientId;
                 options.CallbackPath = oneLoginCallback;
@@ -106,10 +105,6 @@ public static class AuthenticationServiceExtensions
             var domain = configuration.GetValue<string>("AWS:CognitoAuthentication:Domain");
             var region = configuration.GetValue<string>("AWS:Region");
 
-            Console.WriteLine($"[COGNITO] UserPoolId: {(string.IsNullOrEmpty(userPoolId) ? "MISSING" : "PRESENT")}");
-            Console.WriteLine($"[COGNITO] ClientId: {(string.IsNullOrEmpty(clientId) ? "MISSING" : "PRESENT")}");
-            Console.WriteLine($"[COGNITO] Domain: {(string.IsNullOrEmpty(domain) ? "MISSING" : "PRESENT")}");
-            Console.WriteLine($"[COGNITO] Region: {(string.IsNullOrEmpty(region) ? "MISSING" : "PRESENT")}");
 
             options.ResponseType = OpenIdConnectResponseType.Code;
             options.MetadataAddress =
