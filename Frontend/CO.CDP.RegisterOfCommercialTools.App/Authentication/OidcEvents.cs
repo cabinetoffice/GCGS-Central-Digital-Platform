@@ -18,24 +18,25 @@ public class OidcEvents(
     public override Task AuthenticationFailed(AuthenticationFailedContext context)
     {
         logger.LogError(context.Exception,
-            "Oidc Authentication failed.{NewLine}State: {State}{NewLine}Redirect URI: {RedirectUri}{NewLine}Cookies: {Cookies}{NewLine}Query: {Query}",
-                Environment.NewLine,
-                context.ProtocolMessage?.State,
-                Environment.NewLine,
-                context.ProtocolMessage?.RedirectUri,
-                Environment.NewLine,
-                context.HttpContext.Request.Headers["Cookie"].ToString(),
-                Environment.NewLine,
-                context.HttpContext.Request.QueryString);
+            "Oidc Authentication failed.{NewLine}State: {State}{NewLine}Redirect URI: {RedirectUri}{NewLine}Cookies: [REDACTED]{NewLine}Query: {Query}",
+            Environment.NewLine,
+            SanitizeForLogging(context.ProtocolMessage?.State),
+            Environment.NewLine,
+            SanitizeForLogging(context.ProtocolMessage?.RedirectUri),
+            Environment.NewLine,
+            Environment.NewLine,
+            SanitizeForLogging(context.HttpContext.Request.QueryString.ToString()));
 
         return base.AuthenticationFailed(context);
     }
 
     public override async Task RemoteFailure(RemoteFailureContext context)
     {
-        var authCookieName = cookieAuthOptions.Get(CookieAuthenticationDefaults.AuthenticationScheme).Cookie.Name ?? ".AspNetCore.Cookies";
+        var authCookieName = cookieAuthOptions.Get(CookieAuthenticationDefaults.AuthenticationScheme).Cookie.Name ??
+                             ".AspNetCore.Cookies";
 
-        if (context.HttpContext.Request.Cookies.TryGetValue(authCookieName, out var authCookie) && !string.IsNullOrEmpty(authCookie))
+        if (context.HttpContext.Request.Cookies.TryGetValue(authCookieName, out var authCookie) &&
+            !string.IsNullOrEmpty(authCookie))
         {
             var authenticateResult = await context.HttpContext.AuthenticateAsync();
 
@@ -48,13 +49,13 @@ public class OidcEvents(
         }
 
         logger.LogError(context.Failure,
-            "Oidc Remote Failure.{NewLine}Redirect URI: {RedirectUri}{NewLine}Cookies: {Cookies}",
-                Environment.NewLine,
-                context.Request.Path + context.Request.QueryString,
-                Environment.NewLine,
-                context.HttpContext.Request.Headers["Cookie"].ToString());
+            "Oidc Remote Failure.{NewLine}Redirect URI: {RedirectUri}{NewLine}Cookies: [REDACTED]",
+            Environment.NewLine,
+            SanitizeForLogging(context.Request.Path + context.Request.QueryString),
+            Environment.NewLine);
 
-        context.Response.Redirect($"/?one-login-error={Uri.EscapeDataString(context.Failure?.Message ?? "Unknown error")}");
+        context.Response.Redirect(
+            $"/?one-login-error={Uri.EscapeDataString(context.Failure?.Message ?? "Unknown error")}");
         context.HandleResponse();
 
         return;
@@ -79,11 +80,11 @@ public class OidcEvents(
     private string CreateClientToken()
     {
         var clientId = configuration.GetValue<string>("OneLogin:ClientId")
-            ?? throw new Exception("Missing configuration key: OneLogin:ClientId.");
+                       ?? throw new Exception("Missing configuration key: OneLogin:ClientId.");
         var authority = configuration.GetValue<string>("OneLogin:Authority")
-            ?? throw new Exception("Missing configuration key: OneLogin:Authority.");
+                        ?? throw new Exception("Missing configuration key: OneLogin:Authority.");
         var privateKey = configuration.GetValue<string>("OneLogin:PrivateKey")
-            ?? throw new Exception("Missing configuration key: OneLogin:PrivateKey.");
+                         ?? throw new Exception("Missing configuration key: OneLogin:PrivateKey.");
 
         using var rsa = RSA.Create();
         rsa.ImportFromPem(privateKey);
@@ -109,5 +110,14 @@ public class OidcEvents(
 
         var tokenHandler = new JwtSecurityTokenHandler();
         return tokenHandler.WriteToken(token);
+    }
+
+    private static string? SanitizeForLogging(string? input)
+    {
+        if (string.IsNullOrEmpty(input))
+            return input;
+
+        var sanitized = new string(input.Where(c => !char.IsControl(c) || c == '\r' || c == '\n').ToArray());
+        return sanitized.Length > 500 ? sanitized[..500] + "..." : sanitized;
     }
 }
