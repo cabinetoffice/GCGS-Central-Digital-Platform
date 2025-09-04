@@ -403,3 +403,31 @@ variable "waf_acl_arn" {
   description = "WAF ACL ARN to be associated with the ALB"
   type        = string
 }
+
+variable "commercialtoolsapi_serviceurl" {
+  description = "CommercialToolsApi Service Url"
+  type        = string
+  default     = "https://default.url/api" # <-- Set your desired default value here
+}
+
+variable "sessiontimeoutinminutes" {
+  description = "Session timeout in minutes"
+  type        = string
+  default     = 30
+}
+
+variable "odataapi_baseurl" {
+  description = "Odataapi Base Url"
+  type        = string
+  default     = "https://staging.odi.data-platform.codatplat.com/"  
+}
+
+variable "odataapi_apikey" {
+  description = "odataapi Api Key"
+  type        = string
+  default     = "https://staging.odi.data-platform.codatplat.com/"  
+}
+
+
+
+

@@ -404,6 +404,8 @@ locals {
     cfs                                  = { desired_count = 3, cpu = 4096,  memory = 8192}
     cfs_migrations                       = { desired_count = 1 }
     cfs_scheduler                        = { desired_count = 1 }
+    commercial_tools_app                 = {}
+    commercial_tools_api                 = {}
     data_sharing                         = {}
     entity_verification                  = {}
     entity_verification_migrations       = { cpu = 256,  memory = 512}
@@ -453,6 +455,8 @@ locals {
     cfs                                  = { port = 8060, port_host = 8060, name = "cfs"}
     cfs_migrations                       = { port = 8062, port_host = null, name = "cfs-migrations"}
     cfs_scheduler                        = { port = 8064, port_host = null, name = "cfs-scheduler"}
+    commercial_tools_app                 = { port = 8192, port_host = 8180, name = "commercial-tools-app"}
+    commercial_tools_api                 = { port = 8194, port_host = null, name = "commercial-tools-api"}
     data_sharing                         = { port = 8088, port_host = 8088, name = "data-sharing"}
     entity_verification                  = { port = 8094, port_host = 8094, name = "entity-verification"}
     entity_verification_migrations       = { port = 9191, port_host = null, name = "entity-verification-migrations"}

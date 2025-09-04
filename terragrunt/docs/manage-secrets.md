@@ -12,10 +12,11 @@
 - [Retrieve Diagnostic URI](#retrieve-diagnostic-uri)
 - [Update Authority Secrets](#update-authority-secrets)
 - [Update Charity Commission Secrets](#update-charity-commission-secrets)
-- [Update Companies House Secrets](#update-companies-house-secrets)
+- [Update ODI Data Platform Secrets](#update-odi-data-platform-secret)
 - [Update FtsService URL](#update-ftsservice-url)
 - [Update GOVUKNotify ApiKey](#update-govuknotify-apikey)
 - [Update GOVUKNotify Support Admin Email](#update-govuknotify-support-admin-email)
+- [Update Companies House Secrets](#update-companies-house-secrets)
 - [Update OneLogin Secrets](#update-onelogin-secrets)
 - [Update OneLogin Forward Logout Notification API Key](#update-onelogin-forward-logout-notification-api-key)
 - [Update Pen Testing Configuration](#update-pen-testing-configuration)
@@ -342,3 +343,30 @@ ave aws secretsmanager put-secret-value --secret-id cdp-sirsi-waf-allowed-ip-set
 ```
 
 3. Plan and apply Terraform to the `core/networking` component.
+
+---
+## Update Companies House Secrets
+
+1. Create a JSON file in the `./secrets` folder with the following attributes, e.g., **companies-house-secrets-development.json**:
+
+```json
+{
+    "url": "https://api.company-information.service.gov.uk",
+    "User": "<value>",
+    "Password": "<value>"
+}
+```
+*Note: The `./secrets` folder is set to ignore all files to ensure no sensitive information is committed.*
+
+2. Assume the appropriate role for the target environment and update the secret:
+
+```shell
+# Add using:
+# ave aws secretsmanager create-secret --name cdp-sirsi-companies-house-credentials --secret-string file://secrets/companies-house-secrets-development.json | jq .
+# Or update using:
+ave aws secretsmanager put-secret-value --secret-id cdp-sirsi-companies-house-credentials --secret-string file://secrets/companies-house-secrets-development.json | jq .
+```
+
+3. Redeploy the `organisation-app` service.
+
+---

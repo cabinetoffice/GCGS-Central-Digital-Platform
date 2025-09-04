@@ -7,12 +7,6 @@ module "ecs_service_commercial_tools_api" {
       aspcore_environment             = local.aspcore_environment
       container_port                  = var.service_configs.commercial_tools_api.port
       cpu                             = var.service_configs.commercial_tools_api.cpu
-      db_address                      = var.db_sirsi_cluster_address
-      db_name                         = var.db_sirsi_cluster_name
-      db_password                     = local.db_sirsi_password
-      db_username                     = local.db_sirsi_username
-      govuknotify_apikey              = data.aws_secretsmanager_secret_version.govuknotify_apikey.arn
-      govuknotify_support_admin_email = data.aws_secretsmanager_secret_version.govuknotify_support_admin_email.arn
       host_port                       = var.service_configs.commercial_tools_api.port
       image                           = local.ecr_urls[var.service_configs.commercial_tools_api.name]
       lg_name                         = aws_cloudwatch_log_group.tasks[var.service_configs.commercial_tools_api.name].name
@@ -21,20 +15,10 @@ module "ecs_service_commercial_tools_api" {
       memory                          = var.service_configs.commercial_tools_api.memory
       name                            = var.service_configs.commercial_tools_api.name
       public_domain                   = var.public_domain
-      queue_entity_verification_url   = var.queue_entity_verification_url
-      queue_organisation_url          = var.queue_organisation_url
-      send_notify_emails              = local.send_notify_emails
       service_version                 = local.service_version_sirsi
-      vpc_cidr                        = var.vpc_cider
-      credential_access_key_id        = data.aws_credential_access_key_id
-      credential_secret_access_key    = data.aws_credential_secret_access_key
-      service_url                     = data.aws_service_url
-      cognitoauthentication_domain    = data.aws_cognitoauthentication_domain.domain
-      cognitoauthentication_userpoolid           = data.aws_cognitoauthentication_userpoolid.userpoolid
-      cognitoauthentication_userpoolclientid     = data.aws_cognitoauthentication_userpoolclientid.userpoolclientid
-      cognitoauthentication_userpoolclientsecret = data.aws_cognitoauthentication_userpoolclientsecret.userpoolclientsecret
-      odataapi_baseurl                = var.odataapi_baseurl
-      odataapi_apikey                 = var.odataapi_apikey
+      vpc_cidr                        = var.vpc_cider      
+      odataapi_baseurl                = "${data.aws_secretsmanager_secret.odi_data_platform_secret.arn}:BaseUrl::"
+      odataapi_apikey                 = "${data.aws_secretsmanager_secret.odi_data_platform_secret.arn}:ApiKey::"
     }
   )
   cluster_id             = aws_ecs_cluster.this.id
