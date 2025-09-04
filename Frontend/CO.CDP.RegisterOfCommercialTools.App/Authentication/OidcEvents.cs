@@ -117,7 +117,7 @@ public class OidcEvents(
         if (string.IsNullOrEmpty(input))
             return input;
 
-        var sanitized = new string(input.Where(c => !char.IsControl(c) || c == '\r' || c == '\n').ToArray());
+        var sanitized = new string(input.Where(c => !char.IsControl(c)).ToArray());
         return sanitized.Length > 500 ? sanitized[..500] + "..." : sanitized;
     }
 }
