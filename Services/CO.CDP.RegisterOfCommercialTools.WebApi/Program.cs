@@ -3,6 +3,7 @@ using CO.CDP.Configuration.ForwardedHeaders;
 using CO.CDP.RegisterOfCommercialTools.WebApi;
 using CO.CDP.RegisterOfCommercialTools.WebApi.Constants;
 using CO.CDP.RegisterOfCommercialTools.WebApi.Services;
+using CO.CDP.RegisterOfCommercialTools.WebApi.Middleware;
 using Microsoft.FeatureManagement;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -21,7 +22,7 @@ builder.Services.AddAwsCognitoAuthentication(builder.Configuration, builder.Envi
 builder.Services.AddFeatureManagement(builder.Configuration.GetSection("Features"));
 
 builder.Services.AddTransient<ICommercialToolsQueryBuilder, CommercialToolsQueryBuilder>();
-builder.Services.AddHttpClient<ICommercialToolsRepository, CommercialToolsRepository>((serviceProvider, client) =>
+builder.Services.AddHttpClient<ICommercialToolsService, CommercialToolsService>((serviceProvider, client) =>
 {
     client.BaseAddress = new Uri(serviceProvider.GetRequiredService<IConfiguration>().GetSection("ODataApi:BaseUrl").Value ?? throw new InvalidOperationException("ODataApi:BaseUrl is not configured."));
 });
@@ -51,6 +52,7 @@ using (var scope = app.Services.CreateScope())
 }
 
 app.UseForwardedHeaders();
+app.UseMiddleware<ExceptionMiddleware>();
 
 if (builder.Environment.IsDevelopment() || builder.Configuration.GetValue("Features:SwaggerUI", false))
 {

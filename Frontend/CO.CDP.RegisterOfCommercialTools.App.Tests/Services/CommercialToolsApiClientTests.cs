@@ -13,17 +13,16 @@ namespace CO.CDP.RegisterOfCommercialTools.App.Tests.Services;
 public class CommercialToolsApiClientTests
 {
     private readonly Mock<HttpMessageHandler> _mockHttpMessageHandler;
-    private readonly HttpClient _httpClient;
     private readonly CommercialToolsApiClient _apiClient;
 
     public CommercialToolsApiClientTests()
     {
         _mockHttpMessageHandler = new Mock<HttpMessageHandler>();
-        _httpClient = new HttpClient(_mockHttpMessageHandler.Object)
+        var httpClient = new HttpClient(_mockHttpMessageHandler.Object)
         {
             BaseAddress = new Uri("https://api.test.com/")
         };
-        _apiClient = new CommercialToolsApiClient(_httpClient);
+        _apiClient = new CommercialToolsApiClient(httpClient);
     }
 
     [Fact]
@@ -61,7 +60,6 @@ public class CommercialToolsApiClientTests
                     Id = "003033-2025",
                     Title = "Test Framework",
                     Description = "Test Description",
-                    Link = "https://test.com/framework",
                     PublishedDate = DateTime.UtcNow,
                     SubmissionDeadline = DateTime.UtcNow.AddDays(30),
                     Status = CommercialToolStatus.Active,
@@ -155,7 +153,7 @@ public class CommercialToolsApiClientTests
         var jsonResponse = JsonSerializer.Serialize(responseDto);
         SetupHttpResponse(HttpStatusCode.OK, jsonResponse);
 
-        var (results, totalCount) = await _apiClient.SearchAsync(searchModel, 1, 10);
+        var (results, _) = await _apiClient.SearchAsync(searchModel, 1, 10);
 
         results.Should().BeEmpty();
 
@@ -212,8 +210,7 @@ public class CommercialToolsApiClientTests
                     Status = CommercialToolStatus.Active,
                     Fees = 1250.75m,
                     AwardMethod = "Open",
-                    Description = "Test",
-                    Link = "https://test.com"
+                    Description = "Test"
                 }
             },
             TotalCount = 1,
@@ -247,7 +244,6 @@ public class CommercialToolsApiClientTests
                     Fees = 0,
                     AwardMethod = "Open",
                     Description = "Test",
-                    Link = "https://test.com",
                     SubmissionDeadline = submissionDeadline
                 }
             },

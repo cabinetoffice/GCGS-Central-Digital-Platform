@@ -45,7 +45,7 @@ public class IndexModelTest
         {
             new("003033-2025", "Test Result", "Test Caption", "Test Tool", SearchResultStatus.Active, "1%", "Yes",
                 "2025-01-01",
-                "2025-01-01 to 2025-12-31", "Direct Award")
+                "2025-01-01 to 2025-12-31", "Direct Award", null)
         };
         _mockSearchService.Setup(s => s.SearchAsync(It.IsAny<SearchModel>(), It.IsAny<int>(), It.IsAny<int>()))
             .ReturnsAsync((searchResults, 1));
@@ -175,7 +175,7 @@ public class IndexModelTest
         {
             new("003033-2025", "Test Result", "Test Caption", "Test Tool", SearchResultStatus.Active, "1%", "Yes",
                 "2025-01-01",
-                "2025-01-01 to 2025-12-31", "Direct Award")
+                "2025-01-01 to 2025-12-31", "Direct Award", null)
         };
         _mockSearchService.Setup(s => s.SearchAsync(It.IsAny<SearchModel>(), It.IsAny<int>(), It.IsAny<int>()))
             .ReturnsAsync((searchResults, 42));

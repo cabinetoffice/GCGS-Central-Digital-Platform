@@ -9,10 +9,9 @@
 @{
     ViewData["HtmlLang"] ??= "en";
     ViewData["ServiceName"] ??= "Find a Tender";
-    ViewData["ProductName"] ??= "Register of Commercial Tools";
     var title = (ViewData.ContainsKey("Title") && !string.IsNullOrEmpty((string?)ViewData["Title"]))
-        ? ViewData["Title"] + " - " + ViewData["ProductName"] + " - " + ViewData["ServiceName"] + " - GOV.UK"
-        : ViewData["ProductName"] + " - " + ViewData["ServiceName"] + " - GOV.UK";
+        ? ViewData["Title"] + " - " + ViewData["ServiceName"] + " - GOV.UK"
+        : ViewData["ServiceName"] + " - GOV.UK";
     ViewData["Title"] = title;
 }
 

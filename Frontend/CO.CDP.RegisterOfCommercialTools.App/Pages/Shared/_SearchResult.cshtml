@@ -1,13 +1,18 @@
 @model CO.CDP.RegisterOfCommercialTools.App.Models.SearchResult
 @using CO.CDP.RegisterOfCommercialTools.App.Models
-@using CO.CDP.UI.Foundation.Services
-@inject IFtsUrlService FtsUrlService
 
 <div class="search-result" data-result-id="@Model.Id">
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-full govuk-grid-column-three-quarters-from-desktop govuk-!-margin-bottom-1">
             <h2 class="govuk-heading-m govuk-!-margin-bottom-0">
-                <a class="govuk-link" href="@FtsUrlService.BuildUrl($"/Notice/{Model.Id}")">@Model.Title</a>
+                @if (!string.IsNullOrEmpty(Model.Url))
+                {
+                    <a class="govuk-link" href="@Model.Url">@Model.Title</a>
+                }
+                else
+                {
+                    @Model.Title
+                }
             </h2>
         </div>
         <div class="govuk-grid-column-full govuk-grid-column-one-quarter-from-desktop govuk-!-margin-bottom-1">

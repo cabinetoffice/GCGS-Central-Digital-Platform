@@ -82,8 +82,8 @@ public class UiFoundationBuilder
     /// <returns>The builder for method chaining</returns>
     public UiFoundationBuilder AddCommercialToolsUrlService()
     {
-        var options = _configuration.GetSection("CommercialToolsService").Get<CommercialToolsUrlOptions>()
-                      ?? throw new InvalidOperationException("CommercialToolsService configuration is missing.");
+        var options = _configuration.GetSection("CommercialToolsApp").Get<CommercialToolsUrlOptions>()
+                      ?? throw new InvalidOperationException("CommercialToolsApp configuration is missing.");
         _services.AddSingleton(options);
         _services.AddScoped<ICommercialToolsUrlService, CommercialToolsUrlService>();
         return this;
@@ -96,8 +96,8 @@ public class UiFoundationBuilder
     /// <returns>The builder for method chaining</returns>
     public UiFoundationBuilder AddCommercialToolsUrlService(Action<CommercialToolsUrlOptions> configure)
     {
-        var options = _configuration.GetSection("CommercialToolsService").Get<CommercialToolsUrlOptions>()
-                      ?? throw new InvalidOperationException("CommercialToolsService configuration is missing.");
+        var options = _configuration.GetSection("CommercialToolsApp").Get<CommercialToolsUrlOptions>()
+                      ?? throw new InvalidOperationException("CommercialToolsApp configuration is missing.");
         configure(options);
         _services.AddSingleton(options);
         _services.AddScoped<ICommercialToolsUrlService, CommercialToolsUrlService>();
