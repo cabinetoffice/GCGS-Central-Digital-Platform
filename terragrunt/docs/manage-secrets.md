@@ -345,15 +345,14 @@ ave aws secretsmanager put-secret-value --secret-id cdp-sirsi-waf-allowed-ip-set
 3. Plan and apply Terraform to the `core/networking` component.
 
 ---
-## Update Companies House Secrets
+## Update ODI Data Platform Secrets
 
-1. Create a JSON file in the `./secrets` folder with the following attributes, e.g., **companies-house-secrets-development.json**:
+1. Create a JSON file in the `./secrets` folder with the following attributes, e.g., **odi-data-platform-secret.json**:
 
 ```json
 {
-    "url": "https://api.company-information.service.gov.uk",
-    "User": "<value>",
-    "Password": "<value>"
+    "BaseUrl": "https://staging.odi.data-platform.codatplat.com/",
+    "ApiKey": "8d7ZJsnIBGVuApw"
 }
 ```
 *Note: The `./secrets` folder is set to ignore all files to ensure no sensitive information is committed.*
@@ -361,12 +360,9 @@ ave aws secretsmanager put-secret-value --secret-id cdp-sirsi-waf-allowed-ip-set
 2. Assume the appropriate role for the target environment and update the secret:
 
 ```shell
-# Add using:
-# ave aws secretsmanager create-secret --name cdp-sirsi-companies-house-credentials --secret-string file://secrets/companies-house-secrets-development.json | jq .
-# Or update using:
-ave aws secretsmanager put-secret-value --secret-id cdp-sirsi-companies-house-credentials --secret-string file://secrets/companies-house-secrets-development.json | jq .
+aws-vault exec cdp-sirsi-development-terraform -- aws secretsmanager create-secret --name cdp-sirsi-odi-data-platform-secret --secret-string file://secrets/odi-data-platform-secret.json | jq .
 ```
 
-3. Redeploy the `organisation-app` service.
+3. Redeploy the `service-commercial-tools-app` and 'service-commercial-tools-api' services.
 
 ---
