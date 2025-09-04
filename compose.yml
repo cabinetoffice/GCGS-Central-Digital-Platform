@@ -279,6 +279,7 @@ services:
       Aws__ElastiCache__Hostname: "redis"
       CloudWatch__LogGroup: "/ecs/commercial-tools-app"
       CommercialToolsApi__ServiceUrl: '${CommercialToolsApi__ServiceUrl:-http://gateway:${CDP_COMMERCIAL_TOOLS_API_PORT:-8184}}'
+      SirsiService__ServiceBaseUrl: 'http://gateway:${CDP_ORGANISATION_APP_PORT:-8090}'
       SessionTimeoutInMinutes: "30"
       Organisation__Authority: *organisation-authority
 
