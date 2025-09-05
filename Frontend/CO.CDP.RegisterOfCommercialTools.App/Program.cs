@@ -12,7 +12,7 @@ using CO.CDP.UI.Foundation.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddFeatureManagement();
+builder.Services.AddFeatureManagement(builder.Configuration.GetSection("Features"));
 
 builder.Services.AddRazorPages(options =>
 {
@@ -53,8 +53,9 @@ var cookieSecurePolicy = builder.Environment.IsDevelopment() ? CookieSecurePolic
 
 builder.Services.AddSession(options =>
 {
-    options.IdleTimeout = TimeSpan.FromMinutes(sessionTimeoutInMinutes);
+    options.IdleTimeout = TimeSpan.FromMinutes(60);
     options.Cookie.Name = "CommercialTools.Session";
+    options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
     options.Cookie.SameSite = SameSiteMode.Lax;
     options.Cookie.SecurePolicy = cookieSecurePolicy;
@@ -95,7 +96,33 @@ builder.Services
     .AddCloudWatchSerilog(builder.Configuration)
     .AddSharedSessions(builder.Configuration);
 
-builder.Services.AddAwsCognitoAuthentication(builder.Configuration, builder.Environment);
+var organisationAuthority = builder.Configuration.GetValue<Uri>("Organisation:Authority");
+
+var oneLoginAuthority = builder.Configuration.GetValue<string>("OneLogin:Authority");
+var oneLoginClientId = builder.Configuration.GetValue<string>("OneLogin:ClientId");
+var oneLoginCallback = builder.Configuration.GetValue<string>("OneLogin:CallbackPath") ?? "/signin-oidc";
+
+
+using (var tempServiceProvider = builder.Services.BuildServiceProvider())
+{
+    var authFeatureManager = tempServiceProvider.GetRequiredService<IFeatureManager>();
+    var useOneLogin = await authFeatureManager.IsEnabledAsync(FeatureFlags.UseOneLogin);
+
+    if (useOneLogin)
+    {
+        if (string.IsNullOrEmpty(oneLoginAuthority) || string.IsNullOrEmpty(oneLoginClientId))
+        {
+            throw new Exception("OneLogin is enabled but missing required configuration: OneLogin:Authority and OneLogin:ClientId");
+        }
+        builder.Services.AddOneLoginAuthentication(builder.Configuration, builder.Environment);
+    }
+    else
+    {
+        builder.Services.AddAwsCognitoAuthentication(builder.Configuration, builder.Environment);
+    }
+}
+
+builder.Services.AddAuthorization();
 
 builder.Configuration.GetValue<string>("CommercialToolsApi:ServiceUrl");
 builder.Services.AddScoped<CO.CDP.UI.Foundation.Pages.NotFoundPage>();

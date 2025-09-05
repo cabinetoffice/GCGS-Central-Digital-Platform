@@ -21,6 +21,7 @@
     <ItemGroup>
         <PackageReference Include="Amazon.AspNetCore.DataProtection.SSM" Version="3.2.1"/>
         <PackageReference Include="GovUk.Frontend.AspNetCore" Version="3.2.2"/>
+        <PackageReference Include="IdentityModel" Version="7.0.0"/>
         <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="8.0.8"/>
         <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="8.0.6"/>
         <PackageReference Include="Microsoft.FeatureManagement.AspNetCore" Version="3.5.0"/>
