@@ -431,6 +431,61 @@ PPN 014: Cyber Essentials scheme (opens in a new tab).&lt;/a&gt;&lt;/p&gt;
   <data name="SteelQuestion_03_SummaryTitle" xml:space="preserve">
     <value>Supporting document</value>
   </data>
+
+
+  <data name="QualityManagement_SectionTitle" xml:space="preserve">
+    <value>Quality Management</value>
+  </data>
+  <data name="QualityManagementQuestion_01_Title" xml:space="preserve">
+    <value>Submitting your quality management information</value>
+  </data>
+  <data name="QualityManagementQuestion_01_Description" xml:space="preserve">
+    <value>
+    &lt;p class="govuk-body"&gt;
+      The Welsh government is committed to supporting quality assurance in public procurement. It is recommended that bidding organisations have a third-party certified quality management system (QMS), with appropriate scope, where required. This module aims to understand how a bidding organisation ensures product and service quality management.
+    &lt;/p&gt;
+    &lt;p class="govuk-body"&gt;
+      You are only required to complete this module if requested by the contracting authority you are bidding for.
+    &lt;/p&gt;
+    &lt;p class="govuk-body"&gt;
+      Failure to complete this module may result in your tenders being deemed insufficient where XXX has been applied. For more information read
+      &lt;a href="https://www.gov.uk/placeholder" class="govuk-link" rel="noreferrer noopener" target="_blank"&gt;
+      Placeholder (opens in a new tab)&lt;/a&gt;.
+    &lt;/p&gt;
+    &lt;h2 class="govuk-heading-m"&gt;The information you&#39;ll need&lt;/h2&gt;
+    &lt;div class="govuk-body"&gt;You'll need to provide information on quality management in your organisation including:&lt;/div&gt;
+    &lt;div class="govuk-body"&gt;
+      &lt;ul class="govuk-list govuk-list--bullet"&gt;
+        &lt;li&gt; the accrediting body of your QMS certification &lt;/li&gt;
+        &lt;li&gt; the standard (ISO 9001 or equivalent) assessed against &lt;/li&gt;
+        &lt;li&gt; whether you have documented processes for ensuring product quality&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/div&gt;
+    </value>
+  </data>
+  <data name="QualityManagementQuestion_02_Title" xml:space="preserve">
+    <value>
+      Do you operate in accordance with a quality management system that is certified by a UKAS-accredited (or national equivalent) third party against ISO 9001 or an equivalent standard?
+    </value>
+  </data>
+  <data name="QualityManagementQuestion_02_SummaryTitle" xml:space="preserve">
+    <value>Quality management system</value>
+  </data>
+  <data name="QualityManagementQuestion_02_CustomInsetText" xml:space="preserve">
+    <value>
+      &lt;div class=&quot;govuk-inset-text&quot;&gt;
+        If you are successful you must be in a position to provide evidence if required, prior to contract award, and without delay.
+      &lt;/div&gt;
+    </value>
+  </data>
+  <data name="QualityManagementQuestion_03_Title" xml:space="preserve">
+    <value>Do you have a documented process designed to ensure that the quality of your products or services is consistent?
+</value>
+  </data>
+  <data name="QualityManagementQuestion_03_SummaryTitle" xml:space="preserve">
+    <value>Product quality processes</value>
+  </data>
+
   <data name="HealthAndSafety_SectionTitle" xml:space="preserve">
     <value>Health and Safety</value>
   </data>
