@@ -351,8 +351,8 @@ ave aws secretsmanager put-secret-value --secret-id cdp-sirsi-waf-allowed-ip-set
 
 ```json
 {
-    "BaseUrl": "https://staging.odi.data-platform.codatplat.com/",
-    "ApiKey": "8d7ZJsnIBGVuApw"
+    "BaseUrl": "",
+    "ApiKey": ""
 }
 ```
 *Note: The `./secrets` folder is set to ignore all files to ensure no sensitive information is committed.*
