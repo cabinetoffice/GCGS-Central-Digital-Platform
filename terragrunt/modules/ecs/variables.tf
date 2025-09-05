@@ -425,7 +425,7 @@ variable "odataapi_baseurl" {
 variable "odataapi_apikey" {
   description = "odataapi Api Key"
   type        = string
-  default     = "https://staging.odi.data-platform.codatplat.com/"  
+  default     = ""  
 }
 
 
