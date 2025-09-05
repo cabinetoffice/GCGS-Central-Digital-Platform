@@ -1,7 +1,5 @@
 data "aws_caller_identity" "current" {}
-
 data "aws_region" "current" {}
-
 # Configure the provider to assume the role in the orchestrator account and fetch the latest service version
 provider "aws" {
   alias  = "orchestrator"
@@ -38,10 +36,13 @@ data "aws_secretsmanager_secret" "charity_commission" {
   name = "${local.name_prefix}-charity-commission-credentials"
 }
 
+data "aws_secretsmanager_secret" "odi_data_platform_secret" {
+  name = "${local.name_prefix}-odi-data-platform-secret"
+}
+
 data "aws_secretsmanager_secret" "companies_house" {
   name = "${local.name_prefix}-companies-house-credentials"
 }
-
 data "aws_secretsmanager_secret" "redis_auth_token" {
   arn = var.redis_auth_token_arn
 }

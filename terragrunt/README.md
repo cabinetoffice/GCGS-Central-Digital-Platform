@@ -26,6 +26,7 @@ This code base is responsible for provisioning the AWS infrastructure needed to 
    - [Update FtsService URL](./docs/manage-secrets.md#update-ftsservice-url)
    - [Update GOVUKNotify ApiKey](./docs/manage-secrets.md#update-govuknotify-apikey)
    - [Update GOVUKNotify Support Admin Email](./docs/manage-secrets.md#update-govuknotify-support-admin-email)
+   - [Update ODI Data Platform Secrets](./docs/manage-secrets.md#update-odi-data-platform-secret)
    - [Update OneLogin Secrets](./docs/manage-secrets.md#update-onelogin-secrets)
    - [Update OneLogin Forward Logout Notification API Key](./docs/manage-secrets.md#update-onelogin-forward-logout-notification-api-key)
    - [Update Pen Testing Configuration](./docs/manage-secrets.md#update-pen-testing-configuration)
