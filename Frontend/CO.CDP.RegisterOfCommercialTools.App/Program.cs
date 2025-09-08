@@ -17,6 +17,7 @@ builder.Services.AddFeatureManagement(builder.Configuration.GetSection("Features
 builder.Services.AddRazorPages(options =>
 {
     options.Conventions.AuthorizeFolder("/");
+    options.Conventions.AllowAnonymousToPage("/Index");
     options.Conventions.AllowAnonymousToPage("/Auth/Login");
     options.Conventions.AllowAnonymousToPage("/Auth/Logout");
     options.Conventions.AllowAnonymousToPage("/page-not-found");
