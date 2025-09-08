@@ -27,10 +27,18 @@
         { "name" : "Aws__CloudWatch__LogStream", "value" : "${lg_prefix}-serilog"},
         { "name" : "Aws__ElastiCache__Hostname", "value" : "${redis_primary_endpoint_address}"},
         { "name" : "Aws__ElastiCache__Port", "value" : "${redis_port}"},
-        { "name" : "CommercialToolsApi__ServiceUrl", "value" : "https://commercial-tools-api.${public_domain}"}
+        { "name" : "CommercialToolsApi__ServiceUrl", "value" : "https://commercial-tools-api.${public_domain}"},
+        { "name" : "OneLogin__ForwardLogoutNotificationUrls", "value" : "${onelogin_logout_notification_urls}"},
+        { "name" : "Organisation__Authority", "value" : "https://authority.${public_domain}"},
+        { "name" : "SessionTimeoutInMinutes", "value" : "${sessiontimeoutinminutes}"}
     ],
     "secrets": [
-        { "name" : "Aws__ElastiCache__Token", "valueFrom" : "${redis_auth_token_arn}"}        
+        { "name" : "Aws__ElastiCache__Token", "valueFrom" : "${redis_auth_token_arn}"},
+        { "name" : "OneLogin__AccountUrl", "valueFrom" : "${onelogin_account_url}"},
+        { "name" : "OneLogin__Authority", "valueFrom" : "${onelogin_authority}"},
+        { "name" : "OneLogin__ClientId", "valueFrom" : "${onelogin_client_id}"},
+        { "name" : "OneLogin__ForwardLogoutNotificationApiKey", "valueFrom" : "${onelogin_fln_api_key_arn}"},
+        { "name" : "OneLogin__PrivateKey", "valueFrom" : "${onelogin_private_key}"}
     ],
     "volumesFrom": [],
     "mountPoints": [],

@@ -99,30 +99,22 @@ builder.Services
     .AddCloudWatchSerilog(builder.Configuration)
     .AddSharedSessions(builder.Configuration);
 
-var organisationAuthority = builder.Configuration.GetValue<Uri>("Organisation:Authority");
-
 var oneLoginAuthority = builder.Configuration.GetValue<string>("OneLogin:Authority");
 var oneLoginClientId = builder.Configuration.GetValue<string>("OneLogin:ClientId");
-var oneLoginCallback = builder.Configuration.GetValue<string>("OneLogin:CallbackPath") ?? "/signin-oidc";
 
+var useOneLogin = builder.Configuration.GetValue("Features:UseOneLogin", false);
 
-using (var tempServiceProvider = builder.Services.BuildServiceProvider())
+if (useOneLogin)
 {
-    var authFeatureManager = tempServiceProvider.GetRequiredService<IFeatureManager>();
-    var useOneLogin = await authFeatureManager.IsEnabledAsync(FeatureFlags.UseOneLogin);
-
-    if (useOneLogin)
+    if (string.IsNullOrEmpty(oneLoginAuthority) || string.IsNullOrEmpty(oneLoginClientId))
     {
-        if (string.IsNullOrEmpty(oneLoginAuthority) || string.IsNullOrEmpty(oneLoginClientId))
-        {
-            throw new Exception("OneLogin is enabled but missing required configuration: OneLogin:Authority and OneLogin:ClientId");
-        }
-        builder.Services.AddOneLoginAuthentication(builder.Configuration, builder.Environment);
+        throw new Exception("OneLogin is enabled but missing required configuration: OneLogin:Authority and OneLogin:ClientId");
     }
-    else
-    {
-        builder.Services.AddAwsCognitoAuthentication(builder.Configuration, builder.Environment);
-    }
+    builder.Services.AddOneLoginAuthentication(builder.Configuration, builder.Environment);
+}
+else
+{
+    builder.Services.AddAwsCognitoAuthentication(builder.Configuration, builder.Environment);
 }
 
 builder.Services.AddAuthorization();

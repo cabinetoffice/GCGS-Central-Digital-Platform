@@ -21,6 +21,12 @@ module "ecs_service_commercial_tools_app" {
       service_version                = local.service_version_sirsi
       sessiontimeoutinminutes        = var.commercial_tools_session_timeout
       vpc_cidr                       = var.vpc_cider
+      onelogin_account_url              = local.one_login.credential_locations.account_url
+      onelogin_authority                = local.one_login.credential_locations.authority
+      onelogin_client_id                = local.one_login.credential_locations.client_id
+      onelogin_fln_api_key_arn          = data.aws_secretsmanager_secret.one_login_forward_logout_notification_api_key.arn
+      onelogin_logout_notification_urls = local.onelogin_logout_notification_urls
+      onelogin_private_key              = local.one_login.credential_locations.private_key
     }
   )
 
