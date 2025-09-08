@@ -18,14 +18,15 @@ public class OidcEvents(
     public override Task AuthenticationFailed(AuthenticationFailedContext context)
     {
         logger.LogError(context.Exception,
-            "Oidc Authentication failed.{NewLine}State: {State}{NewLine}Redirect URI: {RedirectUri}{NewLine}Cookies: [REDACTED]{NewLine}Query: {Query}",
+            "Oidc Authentication failed.{NewLine}State: {State}{NewLine}Redirect URI: {RedirectUri}{NewLine}Cookies: {Cookies}{NewLine}Query: {Query}",
             Environment.NewLine,
-            SanitizeForLogging(context.ProtocolMessage?.State),
+            SanitiseForLogging(context.ProtocolMessage.State),
             Environment.NewLine,
-            SanitizeForLogging(context.ProtocolMessage?.RedirectUri),
+            SanitiseForLogging(context.ProtocolMessage.RedirectUri),
             Environment.NewLine,
+            SanitiseForLogging(context.HttpContext.Request.Headers.Cookie.ToString()),
             Environment.NewLine,
-            SanitizeForLogging(context.HttpContext.Request.QueryString.ToString()));
+            SanitiseForLogging(context.HttpContext.Request.QueryString.ToString()));
 
         return base.AuthenticationFailed(context);
     }
@@ -49,16 +50,15 @@ public class OidcEvents(
         }
 
         logger.LogError(context.Failure,
-            "Oidc Remote Failure.{NewLine}Redirect URI: {RedirectUri}{NewLine}Cookies: [REDACTED]",
+            "Oidc Remote Failure.{NewLine}Redirect URI: {RedirectUri}{NewLine}Cookies: {Cookies}",
             Environment.NewLine,
-            SanitizeForLogging(context.Request.Path + context.Request.QueryString),
-            Environment.NewLine);
+            SanitiseForLogging(context.Request.Path + context.Request.QueryString),
+            Environment.NewLine,
+            SanitiseForLogging(context.HttpContext.Request.Headers["Cookie"].ToString()));
 
         context.Response.Redirect(
             $"/?one-login-error={Uri.EscapeDataString(context.Failure?.Message ?? "Unknown error")}");
         context.HandleResponse();
-
-        return;
     }
 
     public override Task RedirectToIdentityProvider(RedirectContext context)
@@ -112,12 +112,14 @@ public class OidcEvents(
         return tokenHandler.WriteToken(token);
     }
 
-    private static string? SanitizeForLogging(string? input)
+    private static string? SanitiseForLogging(string? input)
     {
         if (string.IsNullOrEmpty(input))
             return input;
 
-        var sanitized = new string(input.Where(c => !char.IsControl(c)).ToArray());
-        return sanitized.Length > 500 ? sanitized[..500] + "..." : sanitized;
+        var sanitised = new string(input.Where(c => !char.IsControl(c)).ToArray())
+            .Replace("\r", "")
+            .Replace("\n", "");
+        return sanitised.Length > 500 ? sanitised[..500] + "..." : sanitised;
     }
 }
