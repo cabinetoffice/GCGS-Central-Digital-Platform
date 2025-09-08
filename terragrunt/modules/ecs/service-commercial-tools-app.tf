@@ -18,8 +18,9 @@ module "ecs_service_commercial_tools_app" {
       redis_auth_token_arn                = var.redis_auth_token_arn
       redis_port                          = var.redis_port
       redis_primary_endpoint_address      = var.redis_primary_endpoint      
+      service_version                     = local.service_version_sirsi   
+      sessiontimeoutinminutes             = var.sessiontimeoutinminutes        
       vpc_cidr                            = var.vpc_cider
-      sessiontimeoutinminutes             = var.sessiontimeoutinminutes     
     }
   )
 
