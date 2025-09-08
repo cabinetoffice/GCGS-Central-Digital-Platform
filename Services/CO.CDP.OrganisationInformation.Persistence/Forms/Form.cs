@@ -26,7 +26,9 @@ public enum FormSectionType
 {
     Standard,
     Declaration,
-    Exclusions
+    Exclusions,
+    AdditionalSection,
+    WelshAdditionalSection
 }
 
 public enum FormScope

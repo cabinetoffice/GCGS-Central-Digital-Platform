@@ -13,6 +13,7 @@
 
     bool isViewer = await userInfoService.IsViewer();
     bool isAdditionalSectionEnabled = await featureManager.IsEnabledAsync(FeatureFlags.SupplierAdditionalModule);
+    bool isWelshProcurementAdditionalModuleEnabled = await featureManager.IsEnabledAsync(FeatureFlags.WelshProcurementAdditionalModule);
 }
 
 @section BeforeContent {
@@ -108,6 +109,8 @@
         var declarationSection = Model.FormSections.Where(section => section.Type == CDP.Forms.WebApiClient.FormSectionType.Declaration).First();
 
         var additionalSection = Model.FormSections.Where(section => section.Type == CDP.Forms.WebApiClient.FormSectionType.AdditionalSection).ToList();
+
+       var welshAdditionalSection = Model.FormSections.Where(section => section.Type == CDP.Forms.WebApiClient.FormSectionType.WelshAdditionalSection).ToList();
     }
 
     @foreach (var section in formSections)
@@ -188,6 +191,44 @@
                                 @StaticTextResource.SupplierInformationStatus_StepStatus_NotStarted
                             </strong>
                         }
+                    }
+                </div>
+            </li>
+        }
+    </ul>
+}
+
+@* Welsh Procurement Modules *@
+@if (isWelshProcurementAdditionalModuleEnabled)
+{
+    <h2 class="govuk-heading-m">
+        @StaticTextResource.Supplier_WelshProcurementAdditionalModulesInformation_Heading
+    </h2>
+
+    <ul class="govuk-task-list">
+        @foreach (var section in welshAdditionalSection)
+        {
+            var redirectLink =
+                $"/organisation/{Model.Id}/forms/{FormsEngine.OrganisationSupplierInfoFormId}/sections/{section.SectionId}";
+
+            <li class="govuk-task-list__item govuk-task-list__item--with-link">
+                <a class="govuk-link govuk-task-list__link govuk-link--no-visited-state"
+                   href="@redirectLink"
+                   aria-describedby="form-section-@(section.SectionId)-status">
+                    @(section.SectionName)
+                </a>
+                <div class="govuk-task-list__status" id="form-section-@(section.SectionId)-status">
+                    @if (section.AnswerSetCount > 0)
+                    {
+                        <p class="govuk-body govuk-!-margin-bottom-0">
+                            @StaticTextResource.SupplierInformationStatus_StepStatus_Completed
+                        </p>
+                    }
+                    else
+                    {
+                        <strong class="govuk-tag govuk-tag--blue">
+                            @StaticTextResource.SupplierInformationStatus_StepStatus_NotStarted
+                        </strong>
                     }
                 </div>
             </li>

@@ -1537,7 +1537,7 @@ PPN 006 and associated reporting standards (opens in a new tab)&lt;/a&gt;.&lt;/p
   </data>
   <!-- Welsh Exclusions -->
   <data name="WelshExclusions_SectionTitle" xml:space="preserve">
-    <value>Exclusions?</value>
+    <value>Welsh Exclusions</value>
   </data>
   <data name="WelshExclusions_01_Title" xml:space="preserve">
     <value>Submitting your 'blacklisting' information</value>
