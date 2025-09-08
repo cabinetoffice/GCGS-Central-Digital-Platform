@@ -12,10 +12,11 @@
 - [Retrieve Diagnostic URI](#retrieve-diagnostic-uri)
 - [Update Authority Secrets](#update-authority-secrets)
 - [Update Charity Commission Secrets](#update-charity-commission-secrets)
-- [Update Companies House Secrets](#update-companies-house-secrets)
+- [Update ODI Data Platform Secrets](#update-odi-data-platform-secret)
 - [Update FtsService URL](#update-ftsservice-url)
 - [Update GOVUKNotify ApiKey](#update-govuknotify-apikey)
 - [Update GOVUKNotify Support Admin Email](#update-govuknotify-support-admin-email)
+- [Update Companies House Secrets](#update-companies-house-secrets)
 - [Update OneLogin Secrets](#update-onelogin-secrets)
 - [Update OneLogin Forward Logout Notification API Key](#update-onelogin-forward-logout-notification-api-key)
 - [Update Pen Testing Configuration](#update-pen-testing-configuration)
@@ -342,3 +343,26 @@ ave aws secretsmanager put-secret-value --secret-id cdp-sirsi-waf-allowed-ip-set
 ```
 
 3. Plan and apply Terraform to the `core/networking` component.
+
+---
+## Update ODI Data Platform Secrets
+
+1. Create a JSON file in the `./secrets` folder with the following attributes, e.g., **odi-data-platform-secret.json**:
+
+```json
+{
+    "BaseUrl": "",
+    "ApiKey": ""
+}
+```
+*Note: The `./secrets` folder is set to ignore all files to ensure no sensitive information is committed.*
+
+2. Assume the appropriate role for the target environment and update the secret:
+
+```shell
+aws-vault exec cdp-sirsi-development-terraform -- aws secretsmanager create-secret --name cdp-sirsi-odi-data-platform-secret --secret-string file://secrets/odi-data-platform-secret.json | jq .
+```
+
+3. Redeploy the `service-commercial-tools-app` and 'service-commercial-tools-api' services.
+
+---
