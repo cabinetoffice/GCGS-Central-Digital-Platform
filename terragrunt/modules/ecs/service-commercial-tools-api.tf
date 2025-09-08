@@ -24,7 +24,7 @@ module "ecs_service_commercial_tools_api" {
   cluster_id             = aws_ecs_cluster.this.id
   container_port         = var.service_configs.commercial_tools_api.port
   cpu                    = var.service_configs.commercial_tools_api.cpu
-  desired_count          = var.service_configs.commercial_tools_api.desired_count
+  desired_count          = var.environment == "development" ? 1 : 0 // var.service_configs.commercial_tools_api.desired_count
   ecs_alb_sg_id          = var.alb_sg_id
   ecs_listener_arn       = aws_lb_listener.ecs.arn
   ecs_service_base_sg_id = var.ecs_sg_id
